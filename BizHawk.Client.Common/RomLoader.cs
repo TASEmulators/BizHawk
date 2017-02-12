@@ -828,7 +828,7 @@ namespace BizHawk.Client.Common
 								//core = CoreInventory.Instance["GEN", "Genplus-gx"];
 								if (Environment.Is64BitProcess)
 									core = CoreInventory.Instance["GEN", "Genplus-gx64"];
-								else core = CoreInventory.Instance["GEN", "Genplus-gx64"];
+								else core = CoreInventory.Instance["GEN", "Genplus-gx"];
 								break;
 						}
 
