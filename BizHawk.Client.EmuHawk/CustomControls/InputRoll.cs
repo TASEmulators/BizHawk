@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 		// Hiding lag frames (Mainly intended for < 60fps play.)
 		public int LagFramesToHide { get; set; }
 		public bool HideWasLagFrames { get; set; }
-		private byte[] lagFrames = new byte[100]; // Large enough value that it shouldn't ever need resizing.
+		private byte[] lagFrames = new byte[256]; // Large enough value that it shouldn't ever need resizing. // apparently not large enough for 4K
 
 		public bool allowRightClickSelecton { get; set; }
 		public bool letKeysModifySelection { get; set; }
