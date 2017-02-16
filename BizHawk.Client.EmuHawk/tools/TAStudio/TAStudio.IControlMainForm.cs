@@ -94,6 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
+				StopSeeking(); //late breaking memo: dont know whether this is needed
 				GoToPreviousFrame();
 			}
 			return true;

@@ -59,6 +59,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool? _autoRestorePaused = null;
 		private int? _seekStartFrame = null;
 		private bool _wasRecording = false;
+		private bool _shouldUnpauseFromRewind = false;
 
 		private Emulation.Common.ControllerDefinition controllerType
 		{ get { return Global.MovieSession.MovieControllerAdapter.Definition; } }
@@ -105,6 +106,11 @@ namespace BizHawk.Client.EmuHawk
 				_wasRecording = false;
 			}
 			Mainform.PauseOnFrame = null;
+			if (_shouldUnpauseFromRewind)
+			{
+				Mainform.UnpauseEmulator();
+				_shouldUnpauseFromRewind = false;
+			}
 			if (CurrentTasMovie != null)
 				RefreshDialog();
 		}

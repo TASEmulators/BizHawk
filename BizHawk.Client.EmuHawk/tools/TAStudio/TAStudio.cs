@@ -807,11 +807,12 @@ namespace BizHawk.Client.EmuHawk
 			//_autoRestoreFrame = null;
 		}
 
-		private void StartAtNearestFrameAndEmulate(int frame, bool fromLua)
+		private void StartAtNearestFrameAndEmulate(int frame, bool fromLua, bool fromRewinding)
 		{
 			if (frame == Emulator.Frame)
 				return;
 
+			_shouldUnpauseFromRewind = fromRewinding && !Mainform.EmulatorPaused;
 			_wasRecording = CurrentTasMovie.IsRecording || _wasRecording;
 			TastudioPlayMode();
 			KeyValuePair<int, byte[]> closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
@@ -845,17 +846,18 @@ namespace BizHawk.Client.EmuHawk
 				//now the next section won't happen since we're at the right spot
 			}
 
-			// frame == Emualtor.Frame when frame == 0
+			// frame == Emulator.Frame when frame == 0
 			if (frame > Emulator.Frame)
 			{
-				if (Mainform.EmulatorPaused || Mainform.IsSeeking) // make seek frame keep up with emulation on fast scrolls
+				if (Mainform.EmulatorPaused || Mainform.IsSeeking || fromRewinding) // make seek frame keep up with emulation on fast scrolls
 				{
 					StartSeeking(frame);
 				}
 				else
 				{
-					//GUI users hand need to be protected from clobbering their video when skipping around
-					//so we don't re-enable recording
+					//GUI users may want to be protected from clobbering their video when skipping around...
+					//well, users who are rewinding arent. (that gets done through the seeking system in the call above)
+					//users who are clicking around.. I dont know.
 				}
 			}
 		}

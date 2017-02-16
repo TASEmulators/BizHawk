@@ -1370,6 +1370,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _runloopFrameProgress;
 		private long _frameAdvanceTimestamp;
 		private long _frameRewindTimestamp;
+		private bool _frameRewindWasPaused;
 		private bool _runloopFrameadvance;
 		private bool _lastFastForwardingOrRewinding;
 		private bool _inResizeLoop;
@@ -4121,12 +4122,24 @@ namespace BizHawk.Client.EmuHawk
 					{
 						isRewinding = true;
 						_frameRewindTimestamp = currentTimestamp;
+						_frameRewindWasPaused = EmulatorPaused;
 					}
 					else
 					{
 						double timestampDeltaMs = (double)(currentTimestamp - _frameRewindTimestamp) / Stopwatch.Frequency * 1000.0;
 						isRewinding = timestampDeltaMs >= Global.Config.FrameProgressDelayMs;
+
+						//clear this flag once we get out of the progress stage
+						if (isRewinding)
+							_frameRewindWasPaused = false;
+
+						//if we're freely running, there's no need for reverse frame progress semantics (that may be debateable though)
+						if (!EmulatorPaused) isRewinding = true;
+
+						if (_frameRewindWasPaused)
+							if (IsSeeking) isRewinding = false;
 					}
+
 
 					if (isRewinding)
 					{
