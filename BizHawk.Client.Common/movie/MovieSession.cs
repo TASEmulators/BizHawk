@@ -294,7 +294,8 @@ namespace BizHawk.Client.Common
 
 		private void HandleFrameLoopForRecordMode()
 		{
-			if (!(Movie is TasMovie) || !Movie.IsPlaying) // tasmovie is appended via recording frames, but we don't want it to latch input outside its inetrnal recording mode
+			// tasmovie is appended via recording frames, but we don't want it to latch input outside its inetrnal recording mode
+			if (!(Movie is TasMovie) || !Movie.IsPlaying)
 			{
 				if (MultiTrack.IsActive)
 				{
