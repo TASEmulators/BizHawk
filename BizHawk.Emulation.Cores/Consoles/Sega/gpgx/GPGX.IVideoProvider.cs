@@ -42,6 +42,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			LibGPGX.gpgx_get_video(out gpwidth, out gpheight, out gppitch, ref src);
 
+			//in case we're receiving high vertical resolution video, we shall double the horizontal resolution to keep the same proportions
+			//(concept pioneered for snes)
+
+			bool dotDouble = (gpheight == 448); //todo: pal?
+
 			vwidth = gpwidth;
 			vheight = gpheight;
 
@@ -51,24 +56,42 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			int xpad = (vwidth - gpwidth) / 2;
 			int xpad2 = vwidth - gpwidth - xpad;
 
+			if (dotDouble) vwidth *= 2;
+
 			if (vidbuff.Length < vwidth * vheight)
 				vidbuff = new int[vwidth * vheight];
 
-			int rinc = (gppitch / 4) - gpwidth;
-			fixed (int* pdst_ = &vidbuff[0])
-			{
-				int* pdst = pdst_;
-				int* psrc = (int*)src;
+			int xskip = 1;
+			if (dotDouble)
+				xskip = 2;
 
-				for (int j = 0; j < gpheight; j++)
+			for (int D = 0; D < xskip; D++)
+			{
+				int rinc = (gppitch / 4) - gpwidth;
+				fixed (int* pdst_ = &vidbuff[0])
 				{
-					for (int i = 0; i < xpad; i++)
-						*pdst++ = unchecked((int)0xff000000);
-					for (int i = 0; i < gpwidth; i++)
-						*pdst++ = *psrc++;// | unchecked((int)0xff000000);
-					for (int i = 0; i < xpad2; i++)
-						*pdst++ = unchecked((int)0xff000000);
-					psrc += rinc;
+					int* pdst = pdst_ + D;
+					int* psrc = (int*)src;
+
+					for (int j = 0; j < gpheight; j++)
+					{
+						for (int i = 0; i < xpad; i++)
+						{
+							*pdst = unchecked((int)0xff000000);
+							pdst += xskip;
+						}
+						for (int i = 0; i < gpwidth; i++)
+						{
+							*pdst = *psrc++;// | unchecked((int)0xff000000);
+							pdst += xskip;
+						}
+						for (int i = 0; i < xpad2; i++)
+						{
+							*pdst = unchecked((int)0xff000000);
+							pdst += xskip;
+						}
+						psrc += rinc;
+					}
 				}
 			}
 		}
