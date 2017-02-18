@@ -9,9 +9,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 {
 	[CoreAttributes(
 		"IntelliHawk",
-		"BrandonE",
+		"BrandonE, Alyosha",
 		isPorted: false,
-		isReleased: false
+		isReleased: true
 		)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
 	public sealed partial class Intellivision : IEmulator, IStatable, IInputPollable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
