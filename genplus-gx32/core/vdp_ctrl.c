@@ -135,11 +135,11 @@ static uint16 sat_base_mask;  /* Base bits of SAT */
 static uint16 sat_addr_mask;  /* Index bits of SAT */
 static uint16 dma_src;        /* DMA source address */
 static uint32 dma_endCycles;  /* 68k cycles to DMA end */
-static int dmafill;           /* DMA Fill pending flag */
-static int cached_write;      /* 2nd part of 32-bit CTRL port write (Genesis mode) or LSB of CRAM data (Game Gear mode) */
+static uint8 dmafill;           /* DMA Fill pending flag */
+static int32 cached_write;      /* 2nd part of 32-bit CTRL port write (Genesis mode) or LSB of CRAM data (Game Gear mode) */
 static uint16 fifo[4];        /* FIFO ring-buffer */
-static int fifo_idx;          /* FIFO write index */
-static int fifo_byte_access;  /* FIFO byte access flag */
+static int32 fifo_idx;          /* FIFO write index */
+static int32 fifo_byte_access;  /* FIFO byte access flag */
 static uint32 fifo_cycles;    /* FIFO next access cycle */
 
  /* set Z80 or 68k interrupt lines */
@@ -428,42 +428,135 @@ void vdp_reset(void)
   color_update_m4(0x40, 0x00);
 }
 
+
 int vdp_context_save(uint8 *state)
 {
   int bufferptr = 0;
+  uint8 special;
 
+  /* VDP context */
   save_param(sat, sizeof(sat));
   save_param(vram, sizeof(vram));
   save_param(cram, sizeof(cram));
   save_param(vsram, sizeof(vsram));
   save_param(reg, sizeof(reg));
-  save_param(&addr, sizeof(addr));
-  save_param(&addr_latch, sizeof(addr_latch));
-  save_param(&code, sizeof(code));
-  save_param(&pending, sizeof(pending));
-  save_param(&status, sizeof(status));
-  save_param(&dmafill, sizeof(dmafill));
-  save_param(&fifo_idx, sizeof(fifo_idx));
-  save_param(&fifo, sizeof(fifo));
   save_param(&hint_pending, sizeof(hint_pending));
   save_param(&vint_pending, sizeof(vint_pending));
+  save_param(&status, sizeof(status));
   save_param(&dma_length, sizeof(dma_length));
+
+  /* Global variables */
+  save_param(&ntab, sizeof(ntab));
+  save_param(&ntbb, sizeof(ntbb));
+  save_param(&ntwb, sizeof(ntwb));
+  save_param(&satb, sizeof(satb));
+  save_param(&hscb, sizeof(hscb));
+  /*save_param(bg_name_dirty, sizeof(bg_name_dirty)); not needed */
+  /*save_param(bg_name_list, sizeof(bg_name_list)); not needed */
+  /*save_param(&bg_list_index, sizeof(bg_list_index)); not needed */
+  save_param(&hscroll_mask, sizeof(hscroll_mask));
+  save_param(&playfield_shift, sizeof(playfield_shift));
+  save_param(&playfield_col_mask, sizeof(playfield_col_mask));
+  save_param(&playfield_row_mask, sizeof(playfield_row_mask));
+  save_param(&vscroll, sizeof(vscroll));
+  save_param(&odd_frame, sizeof(odd_frame));
+  save_param(&im2_flag, sizeof(im2_flag));
+  save_param(&interlaced, sizeof(interlaced));
+  /*save_param(&vdp_pal, sizeof(vdp_pal)); I believe this is just set during initialization */
+  save_param(&v_counter, sizeof(v_counter));
+  save_param(&vc_max, sizeof(vc_max));
+  /*save_param(&lines_per_frame, sizeof(lines_per_frame)); I believe this is just set during initialization */
+  save_param(&max_sprite_pixels, sizeof(max_sprite_pixels));
+  save_param(&fifo_write_cnt, sizeof(fifo_write_cnt));
+  save_param(&fifo_slots, sizeof(fifo_slots));
+  save_param(&hvc_latch, sizeof(hvc_latch));
+  /*special*/
+  special = (hctab==cycle2hc32)?32:40;
+  save_param(&special, sizeof(special));
+
+  /* other things */
+  save_param(&pending, sizeof(pending));
+  save_param(&code, sizeof(code));
   save_param(&dma_type, sizeof(dma_type));
+  save_param(&addr, sizeof(addr));
+  save_param(&addr_latch, sizeof(addr_latch));
+  save_param(&status, sizeof(status));
+  save_param(&sat_base_mask, sizeof(sat_base_mask));
+  save_param(&sat_addr_mask, sizeof(sat_addr_mask));
   save_param(&dma_src, sizeof(dma_src));
+  save_param(&dma_endCycles, sizeof(dma_endCycles));
+  save_param(&dmafill, sizeof(dmafill));
   save_param(&cached_write, sizeof(cached_write));
+  save_param(fifo, sizeof(fifo));
+  save_param(&fifo_idx, sizeof(fifo_idx));
+  save_param(&fifo_cycles, sizeof(fifo_cycles));
+
   return bufferptr;
 }
 
 int vdp_context_load(uint8 *state, uint8 version)
 {
   int i, bufferptr = 0;
-  uint8 temp_reg[0x20];
+  uint8 special;
+	uint8 temp_reg[0x20];
 
+  /* VDP context */
   load_param(sat, sizeof(sat));
   load_param(vram, sizeof(vram));
   load_param(cram, sizeof(cram));
   load_param(vsram, sizeof(vsram));
   load_param(temp_reg, sizeof(temp_reg));
+  load_param(&hint_pending, sizeof(hint_pending));
+  load_param(&vint_pending, sizeof(vint_pending));
+  load_param(&status, sizeof(status));
+  load_param(&dma_length, sizeof(dma_length));
+
+  /* Global variables */
+  load_param(&ntab, sizeof(ntab));
+  load_param(&ntbb, sizeof(ntbb));
+  load_param(&ntwb, sizeof(ntwb));
+  load_param(&satb, sizeof(satb));
+  load_param(&hscb, sizeof(hscb));
+  /*load_param(bg_name_dirty, sizeof(bg_name_dirty)); not needed */
+  /*load_param(bg_name_list, sizeof(bg_name_list)); not needed */
+  /*load_param(&bg_list_index, sizeof(bg_list_index)); not needed */
+  load_param(&hscroll_mask, sizeof(hscroll_mask));
+  load_param(&playfield_shift, sizeof(playfield_shift));
+  load_param(&playfield_col_mask, sizeof(playfield_col_mask));
+  load_param(&playfield_row_mask, sizeof(playfield_row_mask));
+  load_param(&vscroll, sizeof(vscroll));
+  load_param(&odd_frame, sizeof(odd_frame));
+  load_param(&im2_flag, sizeof(im2_flag));
+  load_param(&interlaced, sizeof(interlaced));
+  /*load_param(&vdp_pal, sizeof(vdp_pal)); I believe this is just set during initialization */
+  load_param(&v_counter, sizeof(v_counter));
+  load_param(&vc_max, sizeof(vc_max));
+  /*load_param(&lines_per_frame, sizeof(lines_per_frame)); I believe this is just set during initialization */
+  load_param(&max_sprite_pixels, sizeof(max_sprite_pixels));
+  load_param(&fifo_write_cnt, sizeof(fifo_write_cnt));
+  load_param(&fifo_slots, sizeof(fifo_slots));
+  load_param(&hvc_latch, sizeof(hvc_latch));
+  /*special*/
+  load_param(&special, sizeof(special));
+  if(special==32) hctab = cycle2hc32; else hctab = cycle2hc40;
+
+  /* other things */
+  load_param(&pending, sizeof(pending));
+  load_param(&code, sizeof(code));
+  load_param(&dma_type, sizeof(dma_type));
+  load_param(&addr, sizeof(addr));
+  load_param(&addr_latch, sizeof(addr_latch));
+  load_param(&status, sizeof(status));
+  load_param(&sat_base_mask, sizeof(sat_base_mask));
+  load_param(&sat_addr_mask, sizeof(sat_addr_mask));
+  load_param(&dma_src, sizeof(dma_src));
+  load_param(&dma_endCycles, sizeof(dma_endCycles));
+  load_param(&dmafill, sizeof(dmafill));
+  load_param(&cached_write, sizeof(cached_write));
+  load_param(fifo, sizeof(fifo));
+  load_param(&fifo_idx, sizeof(fifo_idx));
+  load_param(&fifo_cycles, sizeof(fifo_cycles));
+
 
   /* restore VDP registers */
   if (system_hw < SYSTEM_MD)
@@ -495,44 +588,6 @@ int vdp_context_load(uint8 *state, uint8 version)
     }
   }
 
-  load_param(&addr, sizeof(addr));
-  load_param(&addr_latch, sizeof(addr_latch));
-  load_param(&code, sizeof(code));
-  load_param(&pending, sizeof(pending));
-  load_param(&status, sizeof(status));
-
-  /* 1.7.1 state compatibility */
-  if (version < 0x35)
-  {
-    uint16 temp;
-    load_param(&temp, 2);
-    dmafill = temp >> 8;
-    temp &= 0xff;
-    fifo_idx = 0;
-    fifo[0] = fifo[1] = fifo[2] = fifo[3] = (temp << 8) | temp;
-  }
-  else
-  {
-    load_param(&dmafill, sizeof(dmafill));
-    load_param(&fifo_idx, sizeof(fifo_idx));
-    load_param(&fifo, sizeof(fifo));
-  }
-
-  load_param(&hint_pending, sizeof(hint_pending));
-  load_param(&vint_pending, sizeof(vint_pending));
-  load_param(&dma_length, sizeof(dma_length));
-  load_param(&dma_type, sizeof(dma_type));
-  load_param(&dma_src, sizeof(dma_src));
-  load_param(&cached_write, sizeof(cached_write));
-
-  /* restore FIFO byte access flag */
-  fifo_byte_access = ((code & 0x0F) < 0x03);
-
-  /* restore current NTSC/PAL mode */
-  if (system_hw & SYSTEM_MD)
-  {
-    status = (status & ~1) | vdp_pal;
-  }
 
   if (reg[1] & 0x04)
   {
@@ -568,6 +623,7 @@ int vdp_context_load(uint8 *state, uint8 version)
 
   return bufferptr;
 }
+
 
 
 /*--------------------------------------------------------------------------*/
