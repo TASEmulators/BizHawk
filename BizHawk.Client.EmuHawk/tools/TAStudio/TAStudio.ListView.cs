@@ -24,23 +24,18 @@ namespace BizHawk.Client.EmuHawk
 		private bool _selectionDragState;
 		private bool _supressContextMenu;
 
-		// SuuperW: For editing analog input
+		// Editing analog input
 		private string _floatEditColumn = string.Empty;
 		private int _floatEditRow = -1;
 		private string _floatTypedValue;
 		private int _floatEditYPos = -1;
-		private int floatEditRow
-		{
-			set
-			{
-				_floatEditRow = value;
-				TasView.suspendHotkeys = FloatEditingMode;
-			}
-		}
-		public bool FloatEditingMode
-		{
-			get { return _floatEditRow != -1; }
-		}
+		private int floatEditRow { set {
+			_floatEditRow = value;
+			TasView.suspendHotkeys = FloatEditingMode;
+		} }
+		public bool FloatEditingMode { get {
+			return _floatEditRow != -1;
+		} }
 		private List<int> _extraFloatRows = new List<int>();
 
 		// Right-click dragging
@@ -50,20 +45,17 @@ namespace BizHawk.Client.EmuHawk
 		private int _rightClickLastFrame = -1;
 		private bool _rightClickShift, _rightClickControl, _rightClickAlt;
 		private bool _leftButtonHeld = false;
-		private bool mouseButtonHeld
-		{
-			get { return _rightClickFrame != -1 || _leftButtonHeld; }
-		}
-
+		private bool mouseButtonHeld { get {
+			return _rightClickFrame != -1 || _leftButtonHeld;
+		} }
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
 		private bool? _autoRestorePaused = null;
 		private int? _seekStartFrame = null;
-		private bool _wasRecording = false;
 		private bool _shouldUnpauseFromRewind = false;
-
-		private Emulation.Common.ControllerDefinition controllerType
-		{ get { return Global.MovieSession.MovieControllerAdapter.Definition; } }
-
+		private Emulation.Common.ControllerDefinition controllerType { get {
+			return Global.MovieSession.MovieControllerAdapter.Definition;
+		} }
+		public bool WasRecording = false;
 		public AutoPatternBool[] BoolPatterns;
 		public AutoPatternFloat[] FloatPatterns;
 
@@ -100,10 +92,10 @@ namespace BizHawk.Client.EmuHawk
 		public void StopSeeking()
 		{
 			_seekBackgroundWorker.CancelAsync();
-			if (_wasRecording)
+			if (WasRecording)
 			{
 				TastudioRecordMode();
-				_wasRecording = false;
+				WasRecording = false;
 			}
 			Mainform.PauseOnFrame = null;
 			if (_shouldUnpauseFromRewind)
@@ -498,6 +490,7 @@ namespace BizHawk.Client.EmuHawk
 				else // User changed input
 				{
 					bool wasPaused = Mainform.EmulatorPaused;
+					WasRecording = CurrentTasMovie.IsRecording || WasRecording;
 
 					if (Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.Contains(buttonName))
 					{
@@ -897,7 +890,8 @@ namespace BizHawk.Client.EmuHawk
 			// Left-click
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
 			{
-                Global.MovieSession.Movie.IsCountingRerecords = false;
+				Global.MovieSession.Movie.IsCountingRerecords = false;
+				WasRecording = CurrentTasMovie.IsRecording || WasRecording;
 
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{

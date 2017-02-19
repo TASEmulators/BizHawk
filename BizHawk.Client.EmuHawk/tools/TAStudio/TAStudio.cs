@@ -814,7 +814,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			_shouldUnpauseFromRewind = fromRewinding && !Mainform.EmulatorPaused;
-			_wasRecording = CurrentTasMovie.IsRecording || _wasRecording;
+			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
 			TastudioPlayMode();
 			KeyValuePair<int, byte[]> closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
 			if (closestState.Value != null && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
@@ -839,7 +839,7 @@ namespace BizHawk.Client.EmuHawk
 				if(!wasPaused) Mainform.UnpauseEmulator();
 
 				//lua botting users will want to re-activate record mode automatically -- it should be like nothing ever happened
-				if (_wasRecording)
+				if (WasRecording)
 				{
 					TastudioRecordMode();
 				}
