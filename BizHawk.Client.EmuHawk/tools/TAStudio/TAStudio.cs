@@ -814,7 +814,6 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			_shouldUnpauseFromRewind = fromRewinding && !Mainform.EmulatorPaused;
-			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
 			TastudioPlayMode();
 			KeyValuePair<int, byte[]> closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
 			if (closestState.Value != null && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))

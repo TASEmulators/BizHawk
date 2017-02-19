@@ -77,22 +77,24 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			if (Mainform.PauseOnFrame != null)
-				StopSeeking();
+				StopSeeking(true); // don't restore rec mode just yet, as with heavy editing checkbox updating causes lag
 
 			_seekStartFrame = Emulator.Frame;
 			Mainform.PauseOnFrame = frame.Value;
 			int? diff = Mainform.PauseOnFrame - _seekStartFrame;
 
+			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
+			TastudioPlayMode(); // suspend rec mode until seek ends, to allow mouse editing
 			Mainform.UnpauseEmulator();
 
 			if (!_seekBackgroundWorker.IsBusy && diff.Value > TasView.VisibleRows)
 				_seekBackgroundWorker.RunWorkerAsync();
 		}
 
-		public void StopSeeking()
+		public void StopSeeking(bool skipRecModeCheck = false)
 		{
 			_seekBackgroundWorker.CancelAsync();
-			if (WasRecording)
+			if (WasRecording && !skipRecModeCheck)
 			{
 				TastudioRecordMode();
 				WasRecording = false;
@@ -429,7 +431,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int frame = TasView.CurrentCell.RowIndex.Value;
 			string buttonName = TasView.CurrentCell.Column.Name;
-
+			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
 
 			if (e.Button == MouseButtons.Left)
 			{
@@ -490,7 +492,6 @@ namespace BizHawk.Client.EmuHawk
 				else // User changed input
 				{
 					bool wasPaused = Mainform.EmulatorPaused;
-					WasRecording = CurrentTasMovie.IsRecording || WasRecording;
 
 					if (Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.Contains(buttonName))
 					{
@@ -765,7 +766,8 @@ namespace BizHawk.Client.EmuHawk
 
             // skip rerecord counting on drawing entirely, mouse down is enough
             // avoid introducing another global
-            bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
+			bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
+			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
 
 			int startVal, endVal;
 			int frame = e.NewCell.RowIndex.Value;
@@ -891,7 +893,6 @@ namespace BizHawk.Client.EmuHawk
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
 			{
 				Global.MovieSession.Movie.IsCountingRerecords = false;
-				WasRecording = CurrentTasMovie.IsRecording || WasRecording;
 
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
