@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"setmarker",
-			"Adds or sets a marker at the given frame with the given message"
+			"Adds or sets a marker at the given frame, with an optional message"
 		)]
 		public void SetMarker(int frame, string message = null)
 		{
