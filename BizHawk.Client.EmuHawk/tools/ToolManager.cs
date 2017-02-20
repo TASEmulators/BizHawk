@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -244,7 +245,7 @@ namespace BizHawk.Client.EmuHawk
 
 			RefreshSettings(form, dest, settings, idx);
 
-			if (settings.UseWindowPosition)
+			if (settings.UseWindowPosition && IsOnScreen(settings.TopLeft))
 			{
 				form.StartPosition = FormStartPosition.Manual;
 				form.Location = settings.WindowPosition;
@@ -362,6 +363,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return false;
+		}
+
+		public static bool IsOnScreen(Point topLeft)
+		{
+			return Screen.AllScreens.Any(
+				screen => screen.WorkingArea.Contains(topLeft));
 		}
 
 		/// <summary>

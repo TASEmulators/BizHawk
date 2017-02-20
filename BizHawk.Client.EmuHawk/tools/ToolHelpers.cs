@@ -9,6 +9,7 @@ using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+using System.Drawing;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -130,6 +131,11 @@ namespace BizHawk.Client.EmuHawk
 		protected void RefreshFloatingWindowControl(bool floatingWindow)
 		{
 			Owner = floatingWindow ? null : GlobalWin.MainForm;
+		}
+
+		protected bool IsOnScreen(Point topLeft)
+		{
+			return ToolManager.IsOnScreen(topLeft);
 		}
 	}
 }
