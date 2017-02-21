@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
@@ -48,7 +40,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void textBox1_DragEnter(object sender, DragEventArgs e)
+		private void PathBox_DragEnter(object sender, DragEventArgs e)
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop) &&
 				((string[])e.Data.GetData(DataFormats.FileDrop)).Length == 1)
@@ -61,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void textBox1_DragDrop(object sender, DragEventArgs e)
+		private void PathBox_DragDrop(object sender, DragEventArgs e)
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
@@ -73,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void button1_Click(object sender, EventArgs e)
+		private void BrowseButton_Click(object sender, EventArgs e)
 		{
 			using (var ofd = new OpenFileDialog
 			{
@@ -104,8 +96,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			UseCurrentRomButton.Enabled = Global.Emulator != null // For the designer
-				&& !string.IsNullOrEmpty(GlobalWin.MainForm.CurrentlyOpenRom)
+			UseCurrentRomButton.Enabled =
+				!string.IsNullOrEmpty(GlobalWin.MainForm.CurrentlyOpenRom)
 				&& !GlobalWin.MainForm.CurrentlyOpenRom.Contains(".xml"); // Can't already be an xml
 		}
 

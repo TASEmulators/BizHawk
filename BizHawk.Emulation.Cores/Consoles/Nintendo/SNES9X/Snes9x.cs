@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
@@ -11,13 +10,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
 	[CoreAttributes("Snes9x", "FIXME", true, false, "5e0319ab3ef9611250efb18255186d0dc0d7e125", "https://github.com/snes9xgit/snes9x", true)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public class Snes9x : IEmulator, IVideoProvider, ISyncSoundProvider
+	public class Snes9x : IEmulator, IVideoProvider, ISoundProvider
 	{
 		#region controller
 
 		public ControllerDefinition ControllerDefinition
 		{
-			get { return NullEmulator.NullController; }
+			get { return NullController.Instance.Definition; }
 		}
 
 		public IController Controller { get; set; }
@@ -72,15 +71,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		#endregion
 
-		#region ISyncSoundProvider
+		#region ISoundProvider
 
 		private short[] _sbuff = new short[2048];
-		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
 
-		public void GetSamples(out short[] samples, out int nsamp)
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			samples = _sbuff;
 			nsamp = 735;
@@ -88,6 +83,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		public void DiscardSamples()
 		{
+			// Nothing to do
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public bool CanProvideAsync
+		{
+			get { return false; }
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Sync; }
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
 		#endregion

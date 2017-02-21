@@ -371,7 +371,7 @@ namespace BizHawk.Client.Common
 			Changes = true;
 			InvalidateAfter(frame);
 
-			ChangeLog.AddBoolToggle(frame, buttonName, !adapter[buttonName], "Toggle " + buttonName + ": " + frame);
+			ChangeLog.AddBoolToggle(frame, buttonName, !adapter.IsPressed(buttonName), "Toggle " + buttonName + ": " + frame);
 		}
 
 		public void SetBoolState(int frame, string buttonName, bool val)
@@ -380,7 +380,7 @@ namespace BizHawk.Client.Common
 				ExtendMovieForEdit(frame - _log.Count + 1);
 
 			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
-			var old = adapter[buttonName];
+			var old = adapter.IsPressed(buttonName);
 			adapter[buttonName] = val;
 
 			var lg = LogGeneratorInstance();
@@ -406,7 +406,7 @@ namespace BizHawk.Client.Common
 			for (int i = 0; i < count; i++)
 			{
 				var adapter = GetInputState(frame + i) as Bk2ControllerAdapter;
-				bool old = adapter[buttonName];
+				bool old = adapter.IsPressed(buttonName);
 				adapter[buttonName] = val;
 
 				var lg = LogGeneratorInstance();

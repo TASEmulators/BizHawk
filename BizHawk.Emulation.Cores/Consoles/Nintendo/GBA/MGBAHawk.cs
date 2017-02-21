@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	[CoreAttributes("mGBA", "endrift", true, true, "0.5.0", "https://mgba.io/", false)]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
-	public class MGBAHawk : IEmulator, IVideoProvider, ISyncSoundProvider, IGBAGPUViewable,
+	public class MGBAHawk : IEmulator, IVideoProvider, ISoundProvider, IGBAGPUViewable,
 		ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>
 	{
 		private IntPtr _core;
@@ -63,6 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				CoreComm.VsyncDen = 4389;
 				CoreComm.NominalWidth = 240;
 				CoreComm.NominalHeight = 160;
+				PutSettings(_settings);
 			}
 			catch
 			{
@@ -127,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			Frame++;
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 			{
 				LibmGBA.BizReset(_core);
 				//BizReset caused memorydomain pointers to change.
@@ -191,9 +192,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		#endregion
 
 		#region ISoundProvider
+
 		private readonly short[] soundbuff = new short[2048];
 		private int nsamp;
-		public void GetSamples(out short[] samples, out int nsamp)
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			nsamp = this.nsamp;
 			samples = soundbuff;
@@ -203,10 +205,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			nsamp = 0;
 		}
-		public ISoundProvider SoundProvider { get { throw new InvalidOperationException(); } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
+
+		public bool CanProvideAsync
+		{
+			get { return false; }
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Sync; }
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
+		}
+
 		#endregion
 
 		#region IMemoryDomains
@@ -494,27 +516,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public class Settings
 		{
+			[DisplayName("Display BG Layer 0")]
 			[DefaultValue(true)]
 			public bool DisplayBG0 { get; set; }
+			[DisplayName("Display BG Layer 1")]
 			[DefaultValue(true)]
 			public bool DisplayBG1 { get; set; }
+			[DisplayName("Display BG Layer 2")]
 			[DefaultValue(true)]
 			public bool DisplayBG2 { get; set; }
+			[DisplayName("Display BG Layer 3")]
 			[DefaultValue(true)]
 			public bool DisplayBG3 { get; set; }
+			[DisplayName("Display Sprite Layer")]
 			[DefaultValue(true)]
 			public bool DisplayOBJ { get; set; }
 
+			[DisplayName("Play Square 1")]
 			[DefaultValue(true)]
 			public bool PlayCh0 { get; set; }
+			[DisplayName("Play Square 2")]
 			[DefaultValue(true)]
 			public bool PlayCh1 { get; set; }
+			[DisplayName("Play Wave")]
 			[DefaultValue(true)]
 			public bool PlayCh2 { get; set; }
+			[DisplayName("Play Noise")]
 			[DefaultValue(true)]
 			public bool PlayCh3 { get; set; }
+			[DisplayName("Play Direct Sound A")]
 			[DefaultValue(true)]
 			public bool PlayChA { get; set; }
+			[DisplayName("Play Direct Sound B")]
 			[DefaultValue(true)]
 			public bool PlayChB { get; set; }
 

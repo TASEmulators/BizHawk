@@ -413,7 +413,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public byte Read(IController c)
 		{
-			byte ret = c["0Fire"] ? (byte)0x08 : (byte)0x00;
+			byte ret = c.IsPressed("0Fire") ? (byte)0x08 : (byte)0x00;
 			if (resetting)
 				return ret;
 
@@ -572,7 +572,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte Read(IController c)
 		{
 			byte ret = 0;
-			if (c["0Fire"])
+			if (c.IsPressed("0Fire"))
 				ret |= 0x10;
 			if (!PPUCallback((int)c.GetFloat("0Zapper X"), (int)c.GetFloat("0Zapper Y")))
 				ret |= 0x08;
@@ -620,7 +620,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		void Latch(IController c)
 		{
 			byte ret = 0;
-			if (c["0Fire"])
+			if (c.IsPressed("0Fire"))
 				ret |= 0x80;
 			if (PPUCallback((int)c.GetFloat("0Zapper X"), (int)c.GetFloat("0Zapper Y")))
 				ret |= 0x40;
@@ -712,7 +712,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte ret = 0;
 			ret |= (byte)(Player1.Read(Player1U.UnMerge(c)) & 1);
 			ret |= (byte)(Player3.ReadA(Player3U.UnMerge(c)) & 2);
-			if (c["P2 Microphone"])
+			if (c.IsPressed("P2 Microphone"))
 				ret |= 4;
 			return ret;
 		}
@@ -774,7 +774,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public byte ReadA(IController c)
 		{
-			return c["0Fire"] ? (byte)0x02 : (byte)0x00;
+			return c.IsPressed("0Fire") ? (byte)0x02 : (byte)0x00;
 		}
 
 		public byte ReadB(IController c)
@@ -927,10 +927,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			byte ret = 0;
 
-			if (c[Buttons[idx]]) ret |= 16;
-			if (c[Buttons[idx + 1]]) ret |= 8;
-			if (c[Buttons[idx + 2]]) ret |= 4;
-			if (c[Buttons[idx + 3]]) ret |= 2;
+			if (c.IsPressed(Buttons[idx])) ret |= 16;
+			if (c.IsPressed(Buttons[idx + 1])) ret |= 8;
+			if (c.IsPressed(Buttons[idx + 2])) ret |= 4;
+			if (c.IsPressed(Buttons[idx + 3])) ret |= 2;
 
 			// nothing is clocked here
 			return ret;
@@ -1040,9 +1040,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				x &= 255;
 				y &= 255;
 				latchedvalue = x << 10 | y << 2;
-				if (c["0Touch"])
+				if (c.IsPressed("0Touch"))
 					latchedvalue |= 2;
-				if (c["0Click"])
+				if (c.IsPressed("0Click"))
 					latchedvalue |= 1;
 			}
 			if (s.OUT0 > s.OUT0old) // L->H: reset shift
@@ -1118,7 +1118,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (values.Length > i)
 				{
-					if (values[i] != null && c[values[i]])
+					if (values[i] != null && c.IsPressed(values[i]))
 						ret |= 1 << i;
 				}
 				else
@@ -1156,7 +1156,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				this.remaps = remaps;
 			}
 
-			public ControllerDefinition Type { get { throw new NotImplementedException(); } }
+			public ControllerDefinition Definition { get { throw new NotImplementedException(); } }
 
 			public bool this[string button] { get { return IsPressed(button); } }
 

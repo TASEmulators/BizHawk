@@ -246,16 +246,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			switch (EffectivePriorityMode)
 			{
 				case 0:
-					RenderBackgroundScanline(VDC1, 12, PCE._settings.ShowBG1);
-					RenderBackgroundScanline(VDC2, 2, PCE._settings.ShowBG2);
-					RenderSpritesScanline(VDC1, 11, 14, PCE._settings.ShowOBJ1);
-					RenderSpritesScanline(VDC2, 1, 3, PCE._settings.ShowOBJ2);
+					RenderBackgroundScanline(VDC1, 12, PCE.Settings.ShowBG1);
+					RenderBackgroundScanline(VDC2, 2, PCE.Settings.ShowBG2);
+					RenderSpritesScanline(VDC1, 11, 14, PCE.Settings.ShowOBJ1);
+					RenderSpritesScanline(VDC2, 1, 3, PCE.Settings.ShowOBJ2);
 					break;
 				case 1:
-					RenderBackgroundScanline(VDC1, 12, PCE._settings.ShowBG1);
-					RenderBackgroundScanline(VDC2, 2, PCE._settings.ShowBG2);
-					RenderSpritesScanline(VDC1, 11, 14, PCE._settings.ShowOBJ1);
-					RenderSpritesScanline(VDC2, 1, 13, PCE._settings.ShowOBJ2);
+					RenderBackgroundScanline(VDC1, 12, PCE.Settings.ShowBG1);
+					RenderBackgroundScanline(VDC2, 2, PCE.Settings.ShowBG2);
+					RenderSpritesScanline(VDC1, 11, 14, PCE.Settings.ShowOBJ1);
+					RenderSpritesScanline(VDC2, 1, 13, PCE.Settings.ShowOBJ2);
 					break;
 			}
 		}

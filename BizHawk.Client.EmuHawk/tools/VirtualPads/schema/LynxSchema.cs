@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	[SchemaAttributes("Lynx")]
 	public class LYNXSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas()
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
 			yield return StandardController();
 			//yield return ConsoleButtons();

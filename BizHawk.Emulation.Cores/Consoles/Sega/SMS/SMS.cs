@@ -42,7 +42,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public VDP Vdp;
 		private SN76489 PSG;
 		private YM2413 YM2413;
-		private SoundMixer SoundMixer;
 		public bool IsGameGear { get; set; }
 		public bool IsSG1000 { get; set; }
 
@@ -103,7 +102,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				HasYM2413 = true;
 
 			if (Controller == null)
-				Controller = NullController.GetNullController();
+			{
+				Controller = NullController.Instance;
+			}
 
 			Cpu = new Z80A();
 			Cpu.RegisterSP = 0xDFF0;
@@ -118,7 +119,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			SoundMixer = new SoundMixer(YM2413, PSG);
 			if (HasYM2413 && game["WhenFMDisablePSG"])
 				SoundMixer.DisableSource(PSG);
-			ActiveSoundProvider = HasYM2413 ? (ISoundProvider)SoundMixer : PSG;
+			ActiveSoundProvider = HasYM2413 ? (IAsyncSoundProvider)SoundMixer : PSG;
+			_fakeSyncSound = new FakeSyncSound(ActiveSoundProvider, 735);
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_fakeSyncSound);
 
 			SystemRam = new byte[0x2000];
 
@@ -309,8 +312,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (port == 0xF1 && HasYM2413) YM2413.Write(value);
 			else if (port == 0xF2 && HasYM2413) YM2413.DetectionValue = value;
 		}
-
-		private ISoundProvider ActiveSoundProvider;
 
 		private string _region;
 		private string RegionStr

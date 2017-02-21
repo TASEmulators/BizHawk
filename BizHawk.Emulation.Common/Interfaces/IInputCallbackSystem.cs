@@ -3,7 +3,12 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
 {
-	// TODO: This isn't a CoreService, it is a sub class of a core service, it would be nice to make that clear
+	/// <summary>
+	/// This is a property of IInputPollable, and defines the means by which a client
+	/// gets and sets input callbacks in the core.  An input callback should fire any time input is
+	/// polled by the core
+	/// </summary>
+	/// <seealso cref="IInputPollable"/> 
 	public interface IInputCallbackSystem : ICollection<Action>
 	{
 		/// <summary>

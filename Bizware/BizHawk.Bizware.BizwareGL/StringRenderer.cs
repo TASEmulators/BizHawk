@@ -47,27 +47,42 @@ namespace BizHawk.Bizware.BizwareGL
 
 		public void RenderString(IGuiRenderer renderer, float x, float y, string str)
 		{
+			float ox = x;
 			int len = str.Length;
 			for (int i = 0; i < len; i++)
 			{
-				Cyotek.Drawing.BitmapFont.Character c;
-				if (!FontInfo.Characters.TryGetValue(str[i], out c))
-					c = FontInfo.Characters[unchecked((char)-1)];
+				int c = str[i];
+				if (c == '\r')
+				{
+					if (i != len - 1 && str[i + 1] == '\n')
+						i++;
+				}
+				if (c == '\r') c = '\n';
+
+				if(c == '\n') {
+					x = ox;
+					y += FontInfo.LineHeight;
+					continue;
+				}
+
+				Cyotek.Drawing.BitmapFont.Character bfc;
+				if (!FontInfo.Characters.TryGetValue((char)c, out bfc))
+					bfc = FontInfo.Characters[unchecked((char)-1)];
 				
 				//calculate texcoords (we shouldve already had this cached, but im speedcoding now)
-				Texture2d tex = TexturePages[c.TexturePage];
+				Texture2d tex = TexturePages[bfc.TexturePage];
 				float w = tex.Width;
 				float h = tex.Height;
-				float u0 = c.Bounds.Left / w;
-				float v0 = c.Bounds.Top / h;
-				float u1 = c.Bounds.Right / w;
-				float v1 = c.Bounds.Bottom / h;
+				float u0 = bfc.Bounds.Left / w;
+				float v0 = bfc.Bounds.Top / h;
+				float u1 = bfc.Bounds.Right / w;
+				float v1 = bfc.Bounds.Bottom / h;
 
-				float gx = x + c.Offset.X;
-				float gy = y + c.Offset.Y;
-				renderer.DrawSubrect(tex, gx, gy, c.Bounds.Width, c.Bounds.Height, u0, v0, u1, v1);
+				float gx = x + bfc.Offset.X;
+				float gy = y + bfc.Offset.Y;
+				renderer.DrawSubrect(tex, gx, gy, bfc.Bounds.Width, bfc.Bounds.Height, u0, v0, u1, v1);
 
-				x += c.XAdvance;
+				x += bfc.XAdvance;
 			}
 		}
 

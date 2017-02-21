@@ -34,6 +34,9 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		public IInputPollable InputPollableCore { get; set; }
 
+		[OptionalService]
+		public IRegionable RegionableCore { get; set; }
+
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
 
@@ -182,6 +185,31 @@ namespace BizHawk.Client.Common
 				Log(string.Format(
 					"Error: {0} does not yet implement setregister()",
 					Emulator.Attributes().CoreName));
+			}
+		}
+
+		[LuaMethodAttributes(
+			"totalexecutedcycles",
+			"gets the total number of executed cpu cycles"
+		)]
+		public int TotalExecutedycles()
+		{
+			try
+			{
+				if (DebuggableCore == null)
+				{
+					throw new NotImplementedException();
+				}
+
+				return DebuggableCore.TotalExecutedCycles;
+			}
+			catch (NotImplementedException)
+			{
+				Log(string.Format(
+					"Error: {0} does not yet implement totalexecutedcycles()",
+					Emulator.Attributes().CoreName));
+
+				return 0;
 			}
 		}
 
@@ -364,13 +392,9 @@ namespace BizHawk.Client.Common
 		)]
 		public string GetDisplayType()
 		{
-			if (Global.Game != null)
+			if (RegionableCore != null)
 			{
-				var displaytype = Emulator.GetType().GetProperty("DisplayType");
-				if (displaytype != null)
-				{
-					return displaytype.GetValue(Emulator, null).ToString();
-				}
+				return RegionableCore.Region.ToString();
 			}
 
 			return string.Empty;

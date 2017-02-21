@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
-using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sony.PSX;
 
 namespace BizHawk.Client.EmuHawk
@@ -9,9 +9,9 @@ namespace BizHawk.Client.EmuHawk
 	[SchemaAttributes("PSX")]
 	public class PSXSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas()
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			var psx = ((Octoshock)Global.Emulator);
+			var psx = ((Octoshock)core);
 			var settings = (Octoshock.SyncSettings)psx.GetSyncSettings();
 
 			var fioConfig = settings.FIOConfig.ToLogical();

@@ -29,6 +29,7 @@
 #include gamedb_msx1.txt
 #include gamedb_msx2.txt
 #include gamedb_vs.txt
+#include gamedb_intv.txt
 
 ; ************ NES / Famicom ************
 
@@ -311,6 +312,7 @@ sha1:35C157A921156E47FD3F6573D150F54108D0EDFC		Blargg's 5.MMC3_rev_A.nes	NES		bo
 sha1:0E971E2CCAD1DEE51A0C305ED38FAFD2E6CA3B41		Blargg's 6.MMC3_rev_B.nes	NES		board=MAPPER004;MMC3=MMC3B
 sha1:F794FDA12D34E611D58E652319ED583AE61B81E0		Blargg's 6-MMC6.nes	NES		board=MAPPER004_MMC6
 sha1:2F29F3DC724027FAD926BC9D4470A481884E42A5		Blargg's 6-MMC6.nes (newer)	NES		board=MAPPER004_MMC6
+sha1:6F3184ACDC7333683D459C7613CA1C235CEAFD3F		Aladdin (SuperGame) (Mapper 4) [!]	NES		board=MAPPER004;MMC3=MMC3A
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;datach stuff

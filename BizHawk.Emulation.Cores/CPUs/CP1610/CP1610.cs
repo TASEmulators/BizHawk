@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components.CP1610
@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 
 		private bool FlagS, FlagC, FlagZ, FlagO, FlagI, FlagD, IntRM, BusRq, BusAk, Interruptible, Interrupted;
 		//private bool MSync;
-		private readonly ushort[] Register = new ushort[8];
+		private ushort[] Register = new ushort[8];
 		private ushort RegisterSP { get { return Register[6]; } set { Register[6] = value; } }
 		private ushort RegisterPC { get { return Register[7]; } set { Register[7] = value; } }
 
@@ -29,13 +29,37 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		public int TotalExecutedCycles;
 		public int PendingCycles;
 
-		public Func<ushort, ushort> ReadMemory;
-		public Func<ushort, ushort, bool> WriteMemory;
+		public Func<ushort, bool, ushort> ReadMemory;
+		public Func<ushort, ushort, bool, bool> WriteMemory;
 
-		private static bool Logging = true;
+		private static bool Logging = false;
 		private static readonly StreamWriter Log;
 
-		static CP1610()
+		public void SyncState(Serializer ser)
+		{
+			ser.BeginSection("CP1610");
+
+			ser.Sync("Register", ref Register, false);
+			ser.Sync("FlagS", ref FlagS);
+			ser.Sync("FlagC", ref FlagC);
+			ser.Sync("FlagZ", ref FlagZ);
+			ser.Sync("FlagO", ref FlagO);
+			ser.Sync("FlagI", ref FlagI);
+			ser.Sync("FlagD", ref FlagD);
+			ser.Sync("IntRM", ref IntRM);
+			ser.Sync("BusRq", ref BusRq);
+			ser.Sync("BusAk", ref BusAk);
+			ser.Sync("BusRq", ref BusRq);
+			ser.Sync("Interruptible", ref Interruptible);
+			ser.Sync("Interrupted", ref Interrupted);
+			ser.Sync("Toal_executed_cycles", ref TotalExecutedCycles);
+			ser.Sync("Pending_Cycles", ref PendingCycles);
+
+
+			ser.EndSection();
+		}
+
+	static CP1610()
 		{
 			if (Logging)
 			{
@@ -71,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 
 		public void SetBusRq(bool value)
 		{
-			BusRq = value;
+			BusRq = !value;
 		}
 
 		public int GetPendingCycles()

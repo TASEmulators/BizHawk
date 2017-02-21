@@ -301,13 +301,15 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 
 		public CoreComm CoreComm { get; private set; }
 
-		public ISoundProvider SoundProvider
+		// TODO: Implement ISoundProvider
+		/*
+		public IAsyncSoundProvider SoundProvider
 		{
 			get { return SoundMixer; }
 		}
+
 		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(SoundMixer, 735); } }
-		public bool StartAsyncSound() { return true; }
-		public void EndAsyncSound() { }
+		*/
 
 		public int Frame { get; set; }
 		public int LagCount { get { return _lagcount; } set { _lagcount = value; } }

@@ -89,6 +89,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 
+		[FeatureNotImplemented]
+		public int TotalExecutedCycles
+		{
+			get { throw new NotImplementedException(); }
+		}
+
 		private mupen64plusApi.MemoryCallback _readcb;
 		private mupen64plusApi.MemoryCallback _writecb;
 		private mupen64plusApi.MemoryCallback _executecb;

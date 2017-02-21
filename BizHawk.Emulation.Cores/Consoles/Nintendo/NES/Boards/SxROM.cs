@@ -399,7 +399,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			mmc1.SyncState(ser);
 			ser.Sync("ppuclock", ref ppuclock);
-			ser.Sync("chr wram enable", ref chr_wram_enable);
+			ser.Sync("chr_wram_enable", ref chr_wram_enable);
 			if (NES._isVS)
 				ser.Sync("VS_CIRAM", ref CIRAM_VS, false);
 		}

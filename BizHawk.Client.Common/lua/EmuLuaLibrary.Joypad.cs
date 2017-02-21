@@ -21,19 +21,19 @@ namespace BizHawk.Client.Common
 		{
 			var buttons = Lua.NewTable();
 			var adaptor = Global.AutofireStickyXORAdapter;
-			foreach (var button in adaptor.Source.Type.BoolButtons)
+			foreach (var button in adaptor.Source.Definition.BoolButtons)
 			{
 				if (!controller.HasValue)
 				{
-					buttons[button] = adaptor[button];
+					buttons[button] = adaptor.IsPressed(button);
 				}
 				else if (button.Length >= 3 && button.Substring(0, 2) == "P" + controller)
 				{
-					buttons[button.Substring(3)] = adaptor["P" + controller + " " + button.Substring(3)];
+					buttons[button.Substring(3)] = adaptor.IsPressed("P" + controller + " " + button.Substring(3));
 				}
 			}
 
-			foreach (var button in adaptor.Source.Type.FloatControls)
+			foreach (var button in adaptor.Source.Definition.FloatControls)
 			{
 				if (controller == null)
 				{
@@ -52,6 +52,7 @@ namespace BizHawk.Client.Common
 			return buttons;
 		}
 
+		// TODO: what about float controls?
 		[LuaMethodAttributes(
 			"getimmediate",
 			"returns a lua table of any controller buttons currently pressed by the user"
@@ -59,9 +60,9 @@ namespace BizHawk.Client.Common
 		public LuaTable GetImmediate()
 		{
 			var buttons = Lua.NewTable();
-			foreach (var button in Global.ActiveController.Type.BoolButtons)
+			foreach (var button in Global.ActiveController.Definition.BoolButtons)
 			{
-				buttons[button] = Global.ActiveController[button];
+				buttons[button] = Global.ActiveController.IsPressed(button);
 			}
 
 			return buttons;
@@ -78,12 +79,12 @@ namespace BizHawk.Client.Common
 				var lg = Global.MovieSession.MovieControllerInstance();
 				lg.SetControllersAsMnemonic(inputLogEntry);
 
-				foreach (var button in lg.Type.BoolButtons)
+				foreach (var button in lg.Definition.BoolButtons)
 				{
 					Global.LuaAndAdaptor.SetButton(button, lg.IsPressed(button));
 				}
 
-				foreach (var floatButton in lg.Type.FloatControls)
+				foreach (var floatButton in lg.Definition.FloatControls)
 				{
 					Global.LuaAndAdaptor.SetFloat(floatButton, lg.GetFloat(floatButton));
 				}

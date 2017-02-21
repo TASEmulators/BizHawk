@@ -120,6 +120,11 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			}
 		}
 
+		public int TotalExecutedCycles
+		{
+			get { return (int)_machine.Cpu.Cycles; }
+		}
+
 		private void StepInto()
 		{
 			if (Tracer.Enabled)

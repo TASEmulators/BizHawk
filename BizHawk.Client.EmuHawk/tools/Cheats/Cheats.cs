@@ -212,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 			_defaultWidth = Size.Width;
 			_defaultHeight = Size.Height;
 
-			if (Settings.UseWindowPosition)
+			if (Settings.UseWindowPosition && IsOnScreen(Settings.TopLeft))
 			{
 				Location = Settings.WindowPosition;
 			}

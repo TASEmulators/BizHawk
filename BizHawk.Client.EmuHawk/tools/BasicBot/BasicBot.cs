@@ -903,7 +903,7 @@ namespace BizHawk.Client.EmuHawk
 					var lg = Global.MovieSession.MovieControllerInstance();
 					lg.SetControllersAsMnemonic(logEntry);
 
-					foreach (var button in lg.Type.BoolButtons)
+					foreach (var button in lg.Definition.BoolButtons)
 					{
 						// TODO: make an input adapter specifically for the bot?
 						Global.LuaAndAdaptor.SetButton(button, lg.IsPressed(button));
@@ -916,7 +916,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (_isBotting)
 			{
-				if (Global.Emulator.Frame >= _targetFrame)
+				if (Emulator.Frame >= _targetFrame)
 				{
 					Attempts++;
 					Frames += FrameLength;
@@ -1075,7 +1075,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true); // Triggers an UpdateValues call
 			_dontUpdateValues = false;
 
-			_targetFrame = Global.Emulator.Frame + (int)FrameLengthNumeric.Value;
+			_targetFrame = Emulator.Frame + (int)FrameLengthNumeric.Value;
 
 			GlobalWin.MainForm.UnpauseEmulator();
 			if (Settings.TurboWhenBotting)

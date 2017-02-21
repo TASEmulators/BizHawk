@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 
 using LuaInterface;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 
+using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -20,26 +21,21 @@ namespace BizHawk.Client.Common
 
 		private readonly Dictionary<Guid, byte[]> MemorySavestates = new Dictionary<Guid, byte[]>();
 
+		[RequiredService]
+		private IStatable _statableCore { get; set; }
+
 		[LuaMethodAttributes(
 			"savecorestate",
 			"creates a core savestate and stores it in memory.  Note: a core savestate is only the raw data from the core, and not extras such as movie input logs, or framebuffers. Returns a unique identifer for the savestate"
 		)]
 		public string SaveCoreStateToMemory()
 		{
-			if (Global.Emulator.HasSavestates())
-			{
-				var guid = Guid.NewGuid();
-				var bytes = (byte[])Global.Emulator.AsStatable().SaveStateBinary().Clone();
+			var guid = Guid.NewGuid();
+			var bytes = (byte[])_statableCore.SaveStateBinary().Clone();
 
-				MemorySavestates.Add(guid, bytes);
+			MemorySavestates.Add(guid, bytes);
 
-				return guid.ToString();
-			}
-			else
-			{
-				Log("Savestates not supported on this core");
-				return Guid.Empty.ToString();
-			}
+			return guid.ToString();
 		}
 
 		[LuaMethodAttributes(
@@ -50,27 +46,19 @@ namespace BizHawk.Client.Common
 		{
 			var guid = new Guid(identifier);
 
-			if (Global.Emulator.HasSavestates())
+			try
 			{
-				try
-				{
-					var statableCore = Global.Emulator.AsStatable();
-					var state = MemorySavestates[guid];
+				var state = MemorySavestates[guid];
 
-					using (MemoryStream ms = new MemoryStream(state))
-					using (BinaryReader br = new BinaryReader(ms))
-					{
-						statableCore.LoadStateBinary(br);
-					}
-				}
-				catch
+				using (MemoryStream ms = new MemoryStream(state))
+				using (BinaryReader br = new BinaryReader(ms))
 				{
-					Log("Unable to find the given savestate in memory");
+					_statableCore.LoadStateBinary(br);
 				}
 			}
-			else
+			catch
 			{
-				Log("Savestates not supported on this core");
+				Log("Unable to find the given savestate in memory");
 			}
 		}
 

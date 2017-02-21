@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 					ToggleFrameCounter();
 					break;
 				case "Lag Counter":
-					if (Global.Emulator.CanPollInput())
+					if (Emulator.CanPollInput())
 					{
 						ToggleLagCounter();
 					}
@@ -114,6 +114,10 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Reboot Core":
 					RebootCore();
+					break;
+				case "Toggle Skip Lag Frame":
+					Global.Config.SkipLagFrame ^= true;
+					GlobalWin.OSD.AddMessage("Skip Lag Frames toggled " + (Global.Config.SkipLagFrame ? "On" : "Off"));
 					break;
 
 				// Save States

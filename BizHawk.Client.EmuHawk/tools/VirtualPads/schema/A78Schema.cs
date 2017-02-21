@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
-using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Atari.Atari7800;
 
 namespace BizHawk.Client.EmuHawk
@@ -9,9 +9,9 @@ namespace BizHawk.Client.EmuHawk
 	[SchemaAttributes("A78")]
 	public class A78Schema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas()
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			switch ((Global.Emulator as Atari7800).ControlAdapter.ControlType.Name)
+			switch ((core as Atari7800).ControlAdapter.ControlType.Name)
 			{
 				case "Atari 7800 Joystick Controller":
 					yield return JoystickController(1);

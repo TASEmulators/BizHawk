@@ -1,9 +1,19 @@
 ﻿using System;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed class Intellicart : ICart
 	{
+		public void SyncState(Serializer ser)
+		{
+			ser.BeginSection("Cart");
+
+			// TODO
+
+			ser.EndSection();
+		}
+
 		private ushort[] Data = new ushort[65536];
 		private bool[][] MemoryAttributes = new bool[32][];
 		private ushort[][] FineAddresses = new ushort[32][];
@@ -146,7 +156,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return offset;
 		}
 
-		public ushort? ReadCart(ushort addr)
+		public ushort? ReadCart(ushort addr, bool peek)
 		{
 			int range = addr / 2048;
 			bool[] attributes = MemoryAttributes[range];
@@ -157,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return null;
 		}
 
-		public bool WriteCart(ushort addr, ushort value)
+		public bool WriteCart(ushort addr, ushort value, bool poke)
 		{
 			int range = addr / 2048;
 			bool[] attributes = MemoryAttributes[range];

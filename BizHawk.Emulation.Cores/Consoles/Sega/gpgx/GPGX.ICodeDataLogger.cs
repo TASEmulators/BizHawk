@@ -7,14 +7,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public partial class GPGX : ICodeDataLogger
 	{
-		public void SetCDL(CodeDataLog cdl)
+		public void SetCDL(ICodeDataLog cdl)
 		{
 			CDL = cdl;
 			if (cdl == null) LibGPGX.gpgx_set_cd_callback(null);
 			else LibGPGX.gpgx_set_cd_callback(CDCallback);
 		}
 
-		public void NewCDL(CodeDataLog cdl)
+		public void NewCDL(ICodeDataLog cdl)
 		{
 			cdl["MD CART"] = new byte[MemoryDomains["MD CART"].Size];
 			cdl["68K RAM"] = new byte[MemoryDomains["68K RAM"].Size];
@@ -29,9 +29,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		// TODO: we have Disassembling now
 		// not supported
-		public void DisassembleCDL(Stream s, CodeDataLog cdl) { }
+		public void DisassembleCDL(Stream s, ICodeDataLog cdl) { }
 
-		private CodeDataLog CDL;
+		private ICodeDataLog CDL;
 		private void CDCallbackProc(int addr, LibGPGX.CDLog_AddrType addrtype, LibGPGX.CDLog_Flags flags)
 		{
 			//TODO - hard reset makes CDL go nuts.

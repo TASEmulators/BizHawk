@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 	// perform a "soft" correction by resampling it to hopefully get back inside our
 	// window shortly. If it ends up going too low or too high, we will perform a
 	// "hard" correction by generating silence or discarding samples.
-	public class SoundOutputProvider
+	public class SoundOutputProvider : IBufferedSoundProvider
 	{
 		private const int SampleRate = 44100;
 		private const int ChannelCount = 2;
@@ -54,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public int MaxSamplesDeficit { get; set; }
 
-		public ISyncSoundProvider BaseSoundProvider { get; set; }
+		public ISoundProvider BaseSoundProvider { get; set; }
 
 		public void DiscardSamples()
 		{
@@ -164,7 +164,11 @@ namespace BizHawk.Client.EmuHawk
 			short[] samples;
 			int count;
 
-			BaseSoundProvider.GetSamples(out samples, out count);
+			if (BaseSoundProvider.SyncMode != SyncSoundMode.Sync)
+			{
+				throw new InvalidOperationException("Base sound provider must be in sync mode.");
+			}
+			BaseSoundProvider.GetSamplesSync(out samples, out count);
 
 			bool correctedEmptyFrame = false;
 			if (count == 0)

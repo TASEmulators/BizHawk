@@ -4,7 +4,7 @@ namespace BizHawk.Client.Common
 {
 	public interface IMovieController: IController
 	{
-		new ControllerDefinition Type { get; set; }
+		new ControllerDefinition Definition { get; set; }
 
 		void LatchPlayerFromSource(IController playerSource, int playerNum);
 

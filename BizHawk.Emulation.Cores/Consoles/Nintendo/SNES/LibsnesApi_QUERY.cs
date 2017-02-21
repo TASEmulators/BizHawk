@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Marshal.Copy(temp, 0, new IntPtr(ptr), CpuRegs.SIZEOF);
 		}
 
-		public void QUERY_set_cdl(CodeDataLog cdl)
+		public void QUERY_set_cdl(ICodeDataLog cdl)
 		{
 			WritePipeMessage(eMessage.eMessage_QUERY_set_cdl);
 			if (cdl == null)

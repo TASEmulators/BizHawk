@@ -9,21 +9,27 @@ namespace BizHawk.Emulation.Cores.Intellivision
 {
 	[CoreAttributes(
 		"IntelliHawk",
-		"BrandonE",
+		"BrandonE, Alyosha",
 		isPorted: false,
-		isReleased: false
+		isReleased: true
 		)]
-	[ServiceNotApplicable(typeof(ISaveRam))]
-	public sealed partial class Intellivision : IEmulator
+	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
+	public sealed partial class Intellivision : IEmulator, IStatable, IInputPollable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
 	{
 		[CoreConstructor("INTV")]
-		public Intellivision(CoreComm comm, GameInfo game, byte[] rom)
+		public Intellivision(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 
 			_rom = rom;
 			_gameInfo = game;
+
+			this.Settings = (IntvSettings)Settings ?? new IntvSettings();
+			this.SyncSettings = (IntvSyncSettings)SyncSettings ?? new IntvSyncSettings();
+
+			ControllerDeck = new IntellivisionControllerDeck(this.SyncSettings.Port1, this.SyncSettings.Port2);
+
 			_cart = new Intellicart();
 			if (_cart.Parse(_rom) == -1)
 			{
@@ -43,8 +49,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(_stic);
 
 			_psg = new PSG();
+			_psg.Reset();
 			_psg.ReadMemory = ReadMemory;
 			_psg.WriteMemory = WriteMemory;
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_psg);
 
 			Connect();
 
@@ -59,7 +67,30 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			SetupMemoryDomains();
 		}
 
+		public IntellivisionControllerDeck ControllerDeck { get; private set; }
+
 		private ITraceable Tracer { get; set; }
+
+		public int LagCount
+		{
+			get {return lagcount;}
+
+			set{}
+		}
+
+		public bool IsLagFrame
+		{
+			get {return islag;}
+
+			set {}
+		}
+
+		public IInputCallbackSystem InputCallbacks
+		{
+			get { return _inputCallbacks; }
+		}
+
+		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 
 		private byte[] _rom;
 		private GameInfo _gameInfo;
@@ -101,23 +132,15 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			GraphicsRom = grom;
 		}
 
-		public static readonly ControllerDefinition IntellivisionController =
-			new ControllerDefinition
-			{
-				Name = "Intellivision Controller",
-				BoolButtons = {					
-					"P1 L", "P1 R", "P1 Top",
-					"P1 Key 0", "P1 Key 1", "P1 Key 2", "P1 Key 3", "P1 Key 4", "P1 Key 5",
-					"P1 Key 6", "P1 Key 7", "P1 Key 8", "P1 Key 9", "P1 Enter", "P1 Clear",
-					"P1 N", "P1 NNE", "P1 NE", "P1 ENE","P1 E", "P1 ESE", "P1 SE", "P1 SSE",
-					"P1 S", "P1 SSW", "P1 SW", "P1 WSW","P1 W", "P1 WNW", "P1 NW", "P1 NNW",
+		public void get_controller_state()
+		{
+			InputCallbacks.Call();
 
-					"P2 L", "P2 R", "P2 Top",
-					"P2 Key 0", "P2 Key 1", "P2 Key 2", "P2 Key 3", "P2 Key 4", "P2 Key 5",
-					"P2 Key 6", "P2 Key 7", "P2 Key 8", "P2 Key 9", "P2 Enter", "P2 Clear",
-					"P2 N", "P2 NNE", "P2 NE", "P2 ENE","P2 E", "P2 ESE", "P2 SE", "P2 SSE",
-					"P2 S", "P2 SSW", "P2 SW", "P2 WSW","P2 W", "P2 WNW", "P2 NW", "P2 NNW",
-				}
-			};
+			ushort port1 = ControllerDeck.ReadPort1(Controller);
+			_psg.Register[15] = (ushort)(0xFF - port1);
+
+			ushort port2 = ControllerDeck.ReadPort2(Controller);
+			_psg.Register[14] = (ushort)(0xFF - port2);
+		}
 	}
 }

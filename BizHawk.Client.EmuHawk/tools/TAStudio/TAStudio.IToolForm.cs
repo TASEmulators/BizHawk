@@ -14,6 +14,9 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		public IStatable StatableEmulator { get; private set; }
 
+		[RequiredService]
+		public IVideoProvider VideoProvider { get; private set; }
+
 		[OptionalService]
 		public ISaveRam SaveRamEmulator { get; private set; }
 
@@ -28,14 +31,13 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateValues()
 		{
 			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
-			{
 				return;
-			}
 
 			if (_hackyDontUpdate)
-			{
 				return;
-			}
+
+			if (_exiting)
+				return;
 
 			bool refreshNeeded = false;
 			if (AutoadjustInputMenuItem.Checked)
@@ -46,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 
 			MaybeFollowCursor();
 
-			if (TasView.IsPartiallyVisible(Global.Emulator.Frame) || TasView.IsPartiallyVisible(lastRefresh))
+			if (TasView.IsPartiallyVisible(Emulator.Frame) || TasView.IsPartiallyVisible(lastRefresh))
 				refreshNeeded = true;
 
 			RefreshDialog(refreshNeeded);

@@ -1,16 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 
-using Newtonsoft.Json;
-
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
@@ -24,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		portedUrl: "https://github.com/kode54/QuickNES"
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class QuickNES : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IInputPollable,
+	public partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable,
 		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, Cores.Nintendo.NES.INESPPUViewable
 	{
 		static readonly LibQuickNES QN;
@@ -172,7 +165,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			int ret = 0;
 			foreach (var b in buttons)
 			{
-				if (Controller[b.Name])
+				if (Controller.IsPressed(b.Name))
 					ret |= b.Mask;
 			}
 			return ret;
@@ -197,9 +190,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			CheckDisposed();
 			using (FP.Save())
 			{
-				if (Controller["Power"])
+				if (Controller.IsPressed("Power"))
 					QN.qn_reset(Context, true);
-				if (Controller["Reset"])
+				if (Controller.IsPressed("Reset"))
 					QN.qn_reset(Context, false);
 
 				int j1, j2;
@@ -320,52 +313,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				throw new ObjectDisposedException(GetType().Name);
 		}
 
-		#region SoundProvider
-
-		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
-
-		void InitAudio()
-		{
-			LibQuickNES.ThrowStringError(QN.qn_set_sample_rate(Context, 44100));
-		}
-
-		void DrainAudio()
-		{
-			NumSamples = QN.qn_read_audio(Context, MonoBuff, MonoBuff.Length);
-			unsafe
-			{
-				fixed (short* _src = &MonoBuff[0], _dst = &StereoBuff[0])
-				{
-					short* src = _src;
-					short* dst = _dst;
-					for (int i = 0; i < NumSamples; i++)
-					{
-						*dst++ = *src;
-						*dst++ = *src++;
-					}
-				}
-			}
-		}
-
-		short[] MonoBuff = new short[1024];
-		short[] StereoBuff = new short[2048];
-		int NumSamples = 0;
-
-		public void GetSamples(out short[] samples, out int nsamp)
-		{
-			samples = StereoBuff;
-			nsamp = NumSamples;
-		}
-
-		public void DiscardSamples()
-		{
-		}
-
-		#endregion
-
 		#region Blacklist
 
 		// These games are known to not work in quicknes but quicknes thinks it can run them, bail out if one of these is loaded
@@ -426,6 +373,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			"F49F55748D8F1139F26289C3D390A138AF627195", // CPUtime (PD)
 			"A31B7F4BE478353442EED59EAAA71743A5C26C9D", // Crisis Force (J) [hM04]
 			"D9A6384293002315B8663F8C5CD2CC9BB273BFB2", // Crisis Force (J) [hM04][b2]
+			"DF3B2EC1EE818DA7C57672A82E76D9591C9D9DC1", // Cybernoid - The Fighting Machine
 			"819C27583EA289301649BA3157709EB7C0E35800", // Demo 1 by zgh4000 (2006-03) (PD)
 			"9EEA0CC3189B6A985C25D86B40D91CB6AFD87F89", // Demo 2 by zgh4000 (2006-03) (PD)
 			"FF944D6D5A187834D4F796CD1C9FC91EA7BFADAC", // Demo 3 by zgh4000 (2006-07-26) (PD)

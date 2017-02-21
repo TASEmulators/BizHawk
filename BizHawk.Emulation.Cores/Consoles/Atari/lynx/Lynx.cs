@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
 	[CoreAttributes("Handy", "K. Wilkins", true, true, "mednafen 0-9-34-1", "http://mednafen.sourceforge.net/")]
 	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight), typeof(IRegionable))]
-	public partial class Lynx : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable
+	public partial class Lynx : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable
 	{
 		IntPtr Core;
 
@@ -128,8 +128,10 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
 			Frame++;
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
+			{
 				LibLynx.Reset(Core);
+			}
 
 			int samples = soundbuff.Length;
 			IsLagFrame = LibLynx.Advance(Core, GetButtons(), videobuff, soundbuff, ref samples);
@@ -178,39 +180,17 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		LibLynx.Buttons GetButtons()
 		{
 			LibLynx.Buttons ret = 0;
-			if (Controller["A"]) ret |= LibLynx.Buttons.A;
-			if (Controller["B"]) ret |= LibLynx.Buttons.B;
-			if (Controller["Up"]) ret |= LibLynx.Buttons.Up;
-			if (Controller["Down"]) ret |= LibLynx.Buttons.Down;
-			if (Controller["Left"]) ret |= LibLynx.Buttons.Left;
-			if (Controller["Right"]) ret |= LibLynx.Buttons.Right;
-			if (Controller["Pause"]) ret |= LibLynx.Buttons.Pause;
-			if (Controller["Option 1"]) ret |= LibLynx.Buttons.Option_1;
-			if (Controller["Option 2"]) ret |= LibLynx.Buttons.Option_2;
+			if (Controller.IsPressed("A")) ret |= LibLynx.Buttons.A;
+			if (Controller.IsPressed("B")) ret |= LibLynx.Buttons.B;
+			if (Controller.IsPressed("Up")) ret |= LibLynx.Buttons.Up;
+			if (Controller.IsPressed("Down")) ret |= LibLynx.Buttons.Down;
+			if (Controller.IsPressed("Left")) ret |= LibLynx.Buttons.Left;
+			if (Controller.IsPressed("Right")) ret |= LibLynx.Buttons.Right;
+			if (Controller.IsPressed("Pause")) ret |= LibLynx.Buttons.Pause;
+			if (Controller.IsPressed("Option 1")) ret |= LibLynx.Buttons.Option_1;
+			if (Controller.IsPressed("Option 2")) ret |= LibLynx.Buttons.Option_2;
 
 			return ret;
-		}
-
-		#endregion
-
-		#region SoundProvider
-
-		short[] soundbuff = new short[2048];
-		int numsamp;
-
-		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
-
-		public void GetSamples(out short[] samples, out int nsamp)
-		{
-			samples = soundbuff;
-			nsamp = numsamp;
-		}
-
-		public void DiscardSamples()
-		{
 		}
 
 		#endregion

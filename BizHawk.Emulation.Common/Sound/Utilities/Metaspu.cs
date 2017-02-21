@@ -4,23 +4,26 @@ using System.Collections.Generic;
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// uses Metaspu to have an ISyncSoundProvider input to a ISoundProvider
+	/// uses Metaspu to provide async sound to an ISoundProvider that does not provide its own async implementation
 	/// </summary>
+	// Sound Refactor TODO: rename me to MetaspuAsyncSoundProvider
 	public class MetaspuAsync : ISoundProvider
 	{
 		private readonly ISynchronizingAudioBuffer buffer;
-		private readonly ISyncSoundProvider input;
-		public MetaspuAsync(ISyncSoundProvider input, ESynchMethod method)
+		private readonly ISoundProvider input;
+
+		public MetaspuAsync(ISoundProvider input, ESynchMethod method)
 		{
+			input.SetSyncMode(SyncSoundMode.Sync);
 			buffer = Metaspu.metaspu_construct(method);
 			this.input = input;
 		}
 
-		public void GetSamples(short[] samples)
+		public void GetSamplesAsync(short[] samples)
 		{
 			short[] sampin;
 			int numsamp;
-			input.GetSamples(out sampin, out numsamp);
+			input.GetSamplesSync(out sampin, out numsamp);
 			buffer.enqueue_samples(sampin, numsamp);
 			buffer.output_samples(samples, samples.Length / 2);
 		}
@@ -31,41 +34,28 @@ namespace BizHawk.Emulation.Common
 			buffer.clear();
 		}
 
-		public int MaxVolume { get; set; }
-	}
-
-	public class MetaspuSoundProvider : ISoundProvider
-	{
-		public ISynchronizingAudioBuffer buffer;
-		public MetaspuSoundProvider(ESynchMethod method)
+		public bool CanProvideAsync
 		{
-			buffer = Metaspu.metaspu_construct(method);
+			get { return true; }
 		}
 
-		public MetaspuSoundProvider()
-			: this(ESynchMethod.ESynchMethod_V)
+		public SyncSoundMode SyncMode
 		{
+			get { return SyncSoundMode.Async; }
 		}
 
-		private readonly short[] pullBuffer = new short[1470];
-		public void PullSamples(ISoundProvider source)
+		public void SetSyncMode(SyncSoundMode mode)
 		{
-			Array.Clear(pullBuffer, 0, 1470);
-			source.GetSamples(pullBuffer);
-			buffer.enqueue_samples(pullBuffer, 735);
+			if (mode != SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Only Async mode is supported");
+			}
 		}
 
-		public void GetSamples(short[] samples)
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			buffer.output_samples(samples, samples.Length / 2);
+			throw new InvalidOperationException("Sync mode not supported");
 		}
-
-		public void DiscardSamples()
-		{
-			buffer.clear();
-		}
-
-		public int MaxVolume { get; set; }
 	}
 
 	public interface ISynchronizingAudioBuffer
@@ -107,7 +97,6 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 	}
-
 
 	class ZeromusSynchronizer : ISynchronizingAudioBuffer
 	{

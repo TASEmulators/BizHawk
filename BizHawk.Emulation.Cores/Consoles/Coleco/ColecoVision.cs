@@ -16,13 +16,12 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		// ROM
 		public byte[] RomData;
 		public int RomLength;
-
 		public byte[] BiosRom;
 
 		// Machine
 		public Z80A Cpu;
 		public TMS9918A VDP;
-		public SN76489 PSG;
+		
 		public byte[] Ram = new byte[1024];
 		private readonly TraceBuffer Tracer = new TraceBuffer();
 
@@ -45,6 +44,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			VDP = new TMS9918A(Cpu);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(VDP);
 			PSG = new SN76489();
+			_fakeSyncSound = new FakeSyncSound(PSG, 735);
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_fakeSyncSound);
 
 			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
 			BiosRom = CoreComm.CoreFileProvider.GetFirmware("Coleco", "Bios", true, "Coleco BIOS file is required.");
@@ -167,12 +168,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public string SystemId { get { return "Coleco"; } }
 		public GameInfo game;
 		public CoreComm CoreComm { get; private set; }
-		public ISoundProvider SoundProvider { get { return PSG; } }
-
 		public string BoardName { get { return null; } }
-
-		public ISyncSoundProvider SyncSoundProvider { get { return new FakeSyncSound(SoundProvider, 735); } }
-		public bool StartAsyncSound() { return true; }
-		public void EndAsyncSound() { }
 	}
 }

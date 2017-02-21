@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Reflection;
+
 using BizHawk.Common.ReflectionExtensions;
 
 namespace BizHawk.Emulation.Common
@@ -15,7 +13,6 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// clears all services from a target
 		/// </summary>
-		/// <param name="target"></param>
 		public static void ClearServices(object target)
 		{
 			Type targetType = target.GetType();
@@ -65,7 +62,6 @@ namespace BizHawk.Emulation.Common
 				.All(t => source.HasService(t));
 		}
 	}
-
 
 	[AttributeUsage(AttributeTargets.Property)]
 	public class RequiredService : Attribute

@@ -129,5 +129,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			throw new NotImplementedException();
 		}
+
+		public int TotalExecutedCycles
+		{
+			get { return Cpu.TotalExecutedCycles; }
+		}
 	}
 }

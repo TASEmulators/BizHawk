@@ -123,8 +123,8 @@ namespace BizHawk.Client.EmuHawk
 			var g = _luaSurface == null ? Graphics.FromImage(_nullGraphicsBitmap) : _luaSurface.GetGraphics();
 
 			//we don't like CoreComm, right? Someone should find a different way to do this then.
-			var tx = Global.Emulator.CoreComm.ScreenLogicalOffsetX;
-			var ty = Global.Emulator.CoreComm.ScreenLogicalOffsetY;
+			var tx = Emulator.CoreComm.ScreenLogicalOffsetX;
+			var ty = Emulator.CoreComm.ScreenLogicalOffsetY;
 			if (tx != 0 || ty != 0)
 			{
 				var transform = g.Transform;
@@ -153,6 +153,7 @@ namespace BizHawk.Client.EmuHawk
 		public void ClearGraphics()
 		{
 			_luaSurface.Clear();
+			DrawFinish();
 		}
 
 		[LuaMethodAttributes(
@@ -706,8 +707,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				x -= Global.Emulator.CoreComm.ScreenLogicalOffsetX;
-				y -= Global.Emulator.CoreComm.ScreenLogicalOffsetY;
+				x -= Emulator.CoreComm.ScreenLogicalOffsetX;
+				y -= Emulator.CoreComm.ScreenLogicalOffsetY;
 			}
 
 			GlobalWin.OSD.AddGUIText(message, x, y, Color.Black, forecolor ?? Color.White, a);

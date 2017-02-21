@@ -10,7 +10,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Components
 {
-	public sealed class CDAudio : ISoundProvider
+	public sealed class CDAudio : IMixedSoundProvider
 	{
 		public const byte CDAudioMode_Stopped = 0;
 		public const byte CDAudioMode_Playing = 1;

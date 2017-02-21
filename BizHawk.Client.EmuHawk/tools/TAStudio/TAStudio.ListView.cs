@@ -24,23 +24,18 @@ namespace BizHawk.Client.EmuHawk
 		private bool _selectionDragState;
 		private bool _supressContextMenu;
 
-		// SuuperW: For editing analog input
+		// Editing analog input
 		private string _floatEditColumn = string.Empty;
 		private int _floatEditRow = -1;
 		private string _floatTypedValue;
 		private int _floatEditYPos = -1;
-		private int floatEditRow
-		{
-			set
-			{
-				_floatEditRow = value;
-				TasView.suspendHotkeys = FloatEditingMode;
-			}
-		}
-		public bool FloatEditingMode
-		{
-			get { return _floatEditRow != -1; }
-		}
+		private int floatEditRow { set {
+			_floatEditRow = value;
+			TasView.suspendHotkeys = FloatEditingMode;
+		} }
+		public bool FloatEditingMode { get {
+			return _floatEditRow != -1;
+		} }
 		private List<int> _extraFloatRows = new List<int>();
 
 		// Right-click dragging
@@ -50,25 +45,23 @@ namespace BizHawk.Client.EmuHawk
 		private int _rightClickLastFrame = -1;
 		private bool _rightClickShift, _rightClickControl, _rightClickAlt;
 		private bool _leftButtonHeld = false;
-		private bool mouseButtonHeld
-		{
-			get { return _rightClickFrame != -1 || _leftButtonHeld; }
-		}
-
+		private bool mouseButtonHeld { get {
+			return _rightClickFrame != -1 || _leftButtonHeld;
+		} }
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
 		private bool? _autoRestorePaused = null;
 		private int? _seekStartFrame = null;
-		private bool _wasRecording = false;
-
-		private Emulation.Common.ControllerDefinition controllerType
-		{ get { return Global.MovieSession.MovieControllerAdapter.Type; } }
-
+		private bool _shouldUnpauseFromRewind = false;
+		private Emulation.Common.ControllerDefinition controllerType { get {
+			return Global.MovieSession.MovieControllerAdapter.Definition;
+		} }
+		public bool WasRecording = false;
 		public AutoPatternBool[] BoolPatterns;
 		public AutoPatternFloat[] FloatPatterns;
 
 		private void JumpToGreenzone()
 		{
-			if (Global.Emulator.Frame > CurrentTasMovie.LastValidFrame)
+			if (Emulator.Frame > CurrentTasMovie.LastValidFrame)
 			{
 				GoToLastEmulatedFrameIfNecessary(CurrentTasMovie.LastValidFrame);
 			}
@@ -84,27 +77,34 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			if (Mainform.PauseOnFrame != null)
-				StopSeeking();
+				StopSeeking(true); // don't restore rec mode just yet, as with heavy editing checkbox updating causes lag
 
 			_seekStartFrame = Emulator.Frame;
 			Mainform.PauseOnFrame = frame.Value;
 			int? diff = Mainform.PauseOnFrame - _seekStartFrame;
 
+			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
+			TastudioPlayMode(); // suspend rec mode until seek ends, to allow mouse editing
 			Mainform.UnpauseEmulator();
 
 			if (!_seekBackgroundWorker.IsBusy && diff.Value > TasView.VisibleRows)
 				_seekBackgroundWorker.RunWorkerAsync();
 		}
 
-		public void StopSeeking()
+		public void StopSeeking(bool skipRecModeCheck = false)
 		{
 			_seekBackgroundWorker.CancelAsync();
-			if (_wasRecording)
+			if (WasRecording && !skipRecModeCheck)
 			{
 				TastudioRecordMode();
-				_wasRecording = false;
+				WasRecording = false;
 			}
 			Mainform.PauseOnFrame = null;
+			if (_shouldUnpauseFromRewind)
+			{
+				Mainform.UnpauseEmulator();
+				_shouldUnpauseFromRewind = false;
+			}
 			if (CurrentTasMovie != null)
 				RefreshDialog();
 		}
@@ -209,8 +209,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index) && Settings.DenoteMarkersWithBGColor)
 					color = Marker_FrameCol;
-                else
-                    color = Color.FromArgb(0x60FFFFFF);
+				else
+					color = Color.FromArgb(0x60FFFFFF);
 			}
 			else if (FloatEditingMode &&
 				(index == _floatEditRow || _extraFloatRows.Contains(index)) &&
@@ -219,7 +219,7 @@ namespace BizHawk.Client.EmuHawk
 				color = AnalogEdit_Col;
 			}
 
-			int player = Global.Emulator.ControllerDefinition.PlayerNumber(columnName);
+			int player = Emulator.ControllerDefinition.PlayerNumber(columnName);
 			if (player != 0 && player % 2 == 0)
 				color = Color.FromArgb(0x0D000000);
 		}
@@ -297,8 +297,8 @@ namespace BizHawk.Client.EmuHawk
 						if (column.Type == InputRoll.RollColumn.InputType.Float)
 						{
 							// feos: this could be cashed, but I don't notice any slowdown this way either
-							Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
-								[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(columnName)];
+							Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
+								[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(columnName)];
 							if (text == range.Mid.ToString())
 								text = "";
 						}
@@ -413,7 +413,7 @@ namespace BizHawk.Client.EmuHawk
 				if (Mainform.EmulatorPaused)
 				{
 					TasMovieRecord record = CurrentTasMovie[LastPositionFrame];
-					if (!record.Lagged.HasValue && LastPositionFrame > Global.Emulator.Frame)
+					if (!record.Lagged.HasValue && LastPositionFrame > Emulator.Frame)
 						StartSeeking(LastPositionFrame);
 					else
 						Mainform.UnpauseEmulator();
@@ -431,7 +431,7 @@ namespace BizHawk.Client.EmuHawk
 
 			int frame = TasView.CurrentCell.RowIndex.Value;
 			string buttonName = TasView.CurrentCell.Column.Name;
-
+			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
 
 			if (e.Button == MouseButtons.Left)
 			{
@@ -493,7 +493,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					bool wasPaused = Mainform.EmulatorPaused;
 
-					if (Global.MovieSession.MovieControllerAdapter.Type.BoolButtons.Contains(buttonName))
+					if (Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.Contains(buttonName))
 					{
 						CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Bool " + buttonName + " from frame " + frame);
 
@@ -703,7 +703,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Mainform.PauseOnFrame -= notch;
 					// that's a weird condition here, but for whatever reason it works best
-					if (notch > 0 && Global.Emulator.Frame >= Mainform.PauseOnFrame)
+					if (notch > 0 && Emulator.Frame >= Mainform.PauseOnFrame)
 					{
 						Mainform.PauseEmulator();
 						Mainform.PauseOnFrame = null;
@@ -721,23 +721,33 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
+			if (TasView.CurrentCell.Column == null)
+				return;
+
 			if (e.Button == MouseButtons.Left)
 			{
-				var buttonName = TasView.CurrentCell.Column.Name;
-
 				if (TasView.CurrentCell.RowIndex.HasValue &&
-					buttonName == FrameColumnName &&
+					TasView.CurrentCell.Column.Name == FrameColumnName &&
 					!FloatEditingMode)
 				{
-					if (Settings.EmptyMarkers)
+					var existingMarker = CurrentTasMovie.Markers.FirstOrDefault(m => m.Frame == TasView.CurrentCell.RowIndex.Value);
+
+					if (existingMarker != null)
 					{
-						CurrentTasMovie.Markers.Add(TasView.CurrentCell.RowIndex.Value, string.Empty);
-						RefreshDialog();
+						MarkerControl.EditMarkerPopUp(existingMarker, true);
 					}
 					else
 					{
-						ClearLeftMouseStates();
-						MarkerControl.AddMarker(false, TasView.CurrentCell.RowIndex.Value);
+						if (Settings.EmptyMarkers)
+						{
+							CurrentTasMovie.Markers.Add(TasView.CurrentCell.RowIndex.Value, string.Empty);
+							RefreshDialog();
+						}
+						else
+						{
+							ClearLeftMouseStates();
+							MarkerControl.AddMarker(false, TasView.CurrentCell.RowIndex.Value);
+						}
 					}
 				}
 			}
@@ -756,7 +766,8 @@ namespace BizHawk.Client.EmuHawk
 
             // skip rerecord counting on drawing entirely, mouse down is enough
             // avoid introducing another global
-            bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
+			bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
+			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
 
 			int startVal, endVal;
 			int frame = e.NewCell.RowIndex.Value;
@@ -881,7 +892,7 @@ namespace BizHawk.Client.EmuHawk
 			// Left-click
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startBoolDrawColumn))
 			{
-                Global.MovieSession.Movie.IsCountingRerecords = false;
+				Global.MovieSession.Movie.IsCountingRerecords = false;
 
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
@@ -952,8 +963,8 @@ namespace BizHawk.Client.EmuHawk
 				return;
 
 			float value = _floatPaintState + increment;
-			Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
-				[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(_floatEditColumn)];
+			Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
+				[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(_floatEditColumn)];
 			// Range for N64 Y axis has max -128 and min 127. That should probably be fixed in ControllerDefinition.cs.
 			// SuuperW: I really don't think changing it would break anything, but adelikat isn't so sure.
 			float rMax = range.Max;
@@ -1027,8 +1038,8 @@ namespace BizHawk.Client.EmuHawk
 			float prev = value;
 			string prevTyped = _floatTypedValue;
 
-			Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Type.FloatRanges
-				[Global.MovieSession.MovieControllerAdapter.Type.FloatControls.IndexOf(_floatEditColumn)];
+			Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
+				[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(_floatEditColumn)];
 
 			float rMax = range.Max;
 			float rMin = range.Min;

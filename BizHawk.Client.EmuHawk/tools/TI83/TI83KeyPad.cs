@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TI83KeyPad_Load(object sender, EventArgs e)
 		{
-			if (Global.Config.TI83KeypadSettings.UseWindowPosition)
+			if (Global.Config.TI83KeypadSettings.UseWindowPosition && IsOnScreen(Global.Config.TI83KeypadSettings.TopLeft))
 			{
 				Location = Global.Config.TI83KeypadSettings.WindowPosition;
 			}

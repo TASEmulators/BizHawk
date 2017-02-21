@@ -349,14 +349,25 @@ namespace BizHawk.Client.EmuHawk
 			ushort* palette = (ushort*)palram + 256;
 			if (!eightbit)
 				palette += attr2 >> 12 << 4;
-			if (!eightbit)
-				tiles += 32 * (attr2 & 1023);
-			else
-				tiles += 32 * (attr2 & 1022);
 
-			int tilestride = 0;
-			if (twodee)
-				tilestride = 1024 - tw * (eightbit ? 64 : 32);
+			int tileindex = eightbit ? attr2 & 1022 : attr2 & 1023;
+			int tilestride = twodee ? 1024 - tw * (eightbit ? 64 : 32) : 0;
+
+			// see if the sprite would read past the end of vram, and skip it if it would
+			{
+				int tileend;
+
+				if (!twodee)
+					tileend = tileindex + tw * th * (eightbit ? 2 : 1);
+				else
+					tileend = tileindex + tw * (eightbit ? 2 : 1) + (th - 1) * 32;
+
+				if (tileend > 1024)
+					return;
+			}
+
+			tiles += 32 * tileindex;
+
 			if (vflip)
 				dest += pitch * 8 * (th - 1);
 			if (hflip)

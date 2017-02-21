@@ -14,27 +14,26 @@ namespace BizHawk.Client.EmuHawk
 		public const int BlockAlign = BytesPerSample * ChannelCount;
 
 		private bool _disposed;
-		private ISoundOutput _soundOutput;
-		private ISyncSoundProvider _syncSoundProvider;
-		private ISoundProvider _asyncSoundProvider;
-		private SoundOutputProvider _outputProvider;
-		private readonly BufferedAsync _semiSync = new BufferedAsync();
+		private readonly ISoundOutput _outputDevice;
+		private readonly SoundOutputProvider _outputProvider = new SoundOutputProvider(); // Buffer for Sync sources
+		private readonly BufferedAsync _bufferedAsync = new BufferedAsync(); // Buffer for Async sources
+		private IBufferedSoundProvider _bufferedProvider; // One of the preceding buffers, or null if no source is set
 
 		public Sound(IntPtr mainWindowHandle)
 		{
 #if WINDOWS
 			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.DirectSound)
-				_soundOutput = new DirectSoundSoundOutput(this, mainWindowHandle);
+				_outputDevice = new DirectSoundSoundOutput(this, mainWindowHandle);
 
 			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.XAudio2)
-				_soundOutput = new XAudio2SoundOutput(this);
+				_outputDevice = new XAudio2SoundOutput(this);
 #endif
 
 			if (Global.Config.SoundOutputMethod == Config.ESoundOutputMethod.OpenAL)
-				_soundOutput = new OpenALSoundOutput(this);
+				_outputDevice = new OpenALSoundOutput(this);
 
-			if (_soundOutput == null)
-				_soundOutput = new DummySoundOutput(this);
+			if (_outputDevice == null)
+				_outputDevice = new DummySoundOutput(this);
 		}
 
 		public void Dispose()
@@ -43,8 +42,7 @@ namespace BizHawk.Client.EmuHawk
 
 			StopSound();
 
-			_soundOutput.Dispose();
-			_soundOutput = null;
+			_outputDevice.Dispose();
 
 			_disposed = true;
 		}
@@ -57,151 +55,113 @@ namespace BizHawk.Client.EmuHawk
 			if (!Global.Config.SoundEnabled) return;
 			if (IsStarted) return;
 
-			_soundOutput.StartSound();
+			_outputDevice.StartSound();
 
-			_outputProvider = new SoundOutputProvider();
-			_outputProvider.MaxSamplesDeficit = _soundOutput.MaxSamplesDeficit;
-			_outputProvider.BaseSoundProvider = _syncSoundProvider;
+			_outputProvider.MaxSamplesDeficit = _outputDevice.MaxSamplesDeficit;
 
-			Global.SoundMaxBufferDeficitMs = (int)Math.Ceiling(SamplesToMilliseconds(_soundOutput.MaxSamplesDeficit));
+			Global.SoundMaxBufferDeficitMs = (int)Math.Ceiling(SamplesToMilliseconds(_outputDevice.MaxSamplesDeficit));
 
 			IsStarted = true;
-
-			//ApplyVolumeSettings();
-
-			//LogUnderruns = true;
-			//_outputProvider.LogDebug = true;
 		}
 
 		public void StopSound()
 		{
 			if (!IsStarted) return;
 
-			_soundOutput.StopSound();
+			_outputDevice.StopSound();
 
-			_outputProvider = null;
+			if (_bufferedProvider != null) _bufferedProvider.DiscardSamples();
 
 			Global.SoundMaxBufferDeficitMs = 0;
 
 			IsStarted = false;
 		}
 
-		//public void ApplyVolumeSettings()
-		//{
-		//  if (!IsStarted) return;
-
-		//  double volume = Global.Config.SoundVolume / 100.0;
-		//  if (volume < 0.0) volume = 0.0;
-		//  if (volume > 1.0) volume = 1.0;
-		//  _soundOutput.ApplyVolumeSettings(volume);
-		//}
-
-		public void SetSyncInputPin(ISyncSoundProvider source)
+		/// <summary>
+		/// Attaches a new input pin which will run either in sync or async mode depending
+		/// on its SyncMode property. Once attached, the sync mode must not change unless
+		/// the pin is re-attached.
+		/// </summary>
+		public void SetInputPin(ISoundProvider source)
 		{
-			if (_asyncSoundProvider != null)
+			if (_bufferedProvider != null)
 			{
-				_asyncSoundProvider.DiscardSamples();
-				_asyncSoundProvider = null;
+				_bufferedProvider.BaseSoundProvider = null;
+				_bufferedProvider.DiscardSamples();
+				_bufferedProvider = null;
 			}
-			_semiSync.DiscardSamples();
-			_semiSync.BaseSoundProvider = null;
-			_syncSoundProvider = source;
-			if (_outputProvider != null)
-			{
-				_outputProvider.BaseSoundProvider = source;
-			}
-		}
 
-		public void SetAsyncInputPin(ISoundProvider source)
-		{
-			if (_syncSoundProvider != null)
+			if (source == null) return;
+
+			if (source.SyncMode == SyncSoundMode.Sync)
 			{
-				_syncSoundProvider.DiscardSamples();
-				_syncSoundProvider = null;
+				_bufferedProvider = _outputProvider;
 			}
-			if (_outputProvider != null)
+			else if (source.SyncMode == SyncSoundMode.Async)
 			{
-				_outputProvider.DiscardSamples();
-				_outputProvider.BaseSoundProvider = null;
+				_bufferedAsync.RecalculateMagic(Global.Emulator.CoreComm.VsyncRate);
+				_bufferedProvider = _bufferedAsync;
 			}
-			_asyncSoundProvider = source;
-			_semiSync.BaseSoundProvider = source;
-			_semiSync.RecalculateMagic(Global.Emulator.CoreComm.VsyncRate);
+			else throw new InvalidOperationException("Unsupported sync mode.");
+
+			_bufferedProvider.BaseSoundProvider = source;
 		}
 
 		public bool LogUnderruns { get; set; }
 
-		private bool InitializeBufferWithSilence
-		{
-			get { return true; }
-		}
-
-		private bool RecoverFromUnderrunsWithSilence
-		{
-			get { return true; }
-		}
-
-		private int SilenceLeaveRoomForFrameCount
-		{
-			get { return Global.Config.SoundThrottle ? 1 : 2; } // Why 2? I don't know, but it seems to work well with the clock throttle's behavior.
-		}
-
 		internal void HandleInitializationOrUnderrun(bool isUnderrun, ref int samplesNeeded)
 		{
-			if ((!isUnderrun && InitializeBufferWithSilence) || (isUnderrun && RecoverFromUnderrunsWithSilence))
+			// Fill device buffer with silence but leave enough room for one frame
+			int samplesPerFrame = (int)Math.Round(SampleRate / Global.Emulator.CoreComm.VsyncRate);
+			int silenceSamples = Math.Max(samplesNeeded - samplesPerFrame, 0);
+			_outputDevice.WriteSamples(new short[silenceSamples * 2], silenceSamples);
+			samplesNeeded -= silenceSamples;
+
+			if (isUnderrun)
 			{
-				int samplesPerFrame = (int)Math.Round(Sound.SampleRate / Global.Emulator.CoreComm.VsyncRate);
-				int silenceSamples = Math.Max(samplesNeeded - (SilenceLeaveRoomForFrameCount * samplesPerFrame), 0);
-				_soundOutput.WriteSamples(new short[silenceSamples * 2], silenceSamples);
-				samplesNeeded -= silenceSamples;
+				if (LogUnderruns) Console.WriteLine("Sound underrun detected!");
+				_outputProvider.OnVolatility();
 			}
-		}
-
-		internal void OnUnderrun()
-		{
-			if (!IsStarted) return;
-
-			if (LogUnderruns) Console.WriteLine("Sound underrun detected!");
-			_outputProvider.OnVolatility();
 		}
 
 		public void UpdateSound(float atten)
 		{
-			if (!Global.Config.SoundEnabled || !IsStarted || _disposed)
+			if (!Global.Config.SoundEnabled || !IsStarted || _bufferedProvider == null || _disposed)
 			{
-				if (_asyncSoundProvider != null) _asyncSoundProvider.DiscardSamples();
-				if (_syncSoundProvider != null) _syncSoundProvider.DiscardSamples();
-				if (_outputProvider != null) _outputProvider.DiscardSamples();
+				if (_bufferedProvider != null) _bufferedProvider.DiscardSamples();
 				return;
 			}
 
 			if (atten < 0) atten = 0;
 			if (atten > 1) atten = 1;
-			_soundOutput.ApplyVolumeSettings(atten);
+			_outputDevice.ApplyVolumeSettings(atten);
 
 			short[] samples;
-			int samplesNeeded = _soundOutput.CalculateSamplesNeeded();
+			int samplesNeeded = _outputDevice.CalculateSamplesNeeded();
 			int samplesProvided;
 
-			if (atten==0)
+			if (atten == 0)
 			{
 				samples = new short[samplesNeeded * ChannelCount];
 				samplesProvided = samplesNeeded;
 
-				if (_asyncSoundProvider != null) _asyncSoundProvider.DiscardSamples();
-				if (_syncSoundProvider != null) _syncSoundProvider.DiscardSamples();
-				if (_outputProvider != null) _outputProvider.DiscardSamples();
+				_bufferedProvider.DiscardSamples();
 			}
-			else if (_syncSoundProvider != null)
+			else if (_bufferedProvider == _outputProvider)
 			{
 				if (Global.Config.SoundThrottle)
 				{
-					_syncSoundProvider.GetSamples(out samples, out samplesProvided);
+					_outputProvider.BaseSoundProvider.GetSamplesSync(out samples, out samplesProvided);
 
-					while (samplesNeeded < samplesProvided && !Global.DisableSecondaryThrottling)
+					if (Global.DisableSecondaryThrottling && samplesProvided > samplesNeeded)
+					{
+						return;
+					}
+
+					while (samplesProvided > samplesNeeded)
 					{
 						Thread.Sleep((samplesProvided - samplesNeeded) / (SampleRate / 1000)); // Let the audio clock control sleep time
-						samplesNeeded = _soundOutput.CalculateSamplesNeeded();
+						samplesNeeded = _outputDevice.CalculateSamplesNeeded();
 					}
 				}
 				else
@@ -213,11 +173,11 @@ namespace BizHawk.Client.EmuHawk
 					_outputProvider.GetSamples(samplesNeeded, out samples, out samplesProvided);
 				}
 			}
-			else if (_asyncSoundProvider != null)
+			else if (_bufferedProvider == _bufferedAsync)
 			{
 				samples = new short[samplesNeeded * ChannelCount];
 
-				_semiSync.GetSamples(samples);
+				_bufferedAsync.GetSamplesAsync(samples);
 
 				samplesProvided = samplesNeeded;
 			}
@@ -226,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			_soundOutput.WriteSamples(samples, samplesProvided);
+			_outputDevice.WriteSamples(samples, samplesProvided);
 		}
 
 		public static int MillisecondsToSamples(int milliseconds)
@@ -238,15 +198,5 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return samples * 1000.0 / SampleRate;
 		}
-	}
-
-	public interface ISoundOutput : IDisposable
-	{
-		void StartSound();
-		void StopSound();
-		void ApplyVolumeSettings(double volume);
-		int MaxSamplesDeficit { get; }
-		int CalculateSamplesNeeded();
-		void WriteSamples(short[] samples, int sampleCount);
 	}
 }

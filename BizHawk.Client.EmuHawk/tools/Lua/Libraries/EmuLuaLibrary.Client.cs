@@ -16,6 +16,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		[RequiredService]
 		public IEmulator Emulator { get; set; }
+
 		[RequiredService]
 		public IVideoProvider VideoProvider { get; set; }
 
@@ -76,26 +77,23 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"bufferheight",
-			"Gets the visible height of the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
+			"Gets the visible height of the emu display surface (the core video output). This excludes the gameExtraPadding you've set."
 		)]
 		public int BufferHeight()
 		{
-			var height = VideoProvider.BufferHeight;
-			var point = new System.Drawing.Point(0, height);
-
-			return GlobalWin.DisplayManager.TransformPoint(point).Y - BorderHeight();
+			return VideoProvider.BufferHeight;
+			//memento of original behaviour from scepheo's commit -- why?
+			//var point = new System.Drawing.Point(0, height);
+			//return GlobalWin.DisplayManager.TransformPoint(point).Y - BorderHeight();
 		}
 
 		[LuaMethodAttributes(
 			"bufferwidth",
-			"Gets the visible width of the emu display surface, excluding the gameExtraPadding you've set. This function (the whole lot of them) should be renamed or refactored since the padding areas have got more complex."
+			"Gets the visible width of the emu display surface (the core video output). This excludes the gameExtraPadding you've set."
 		)]
 		public int BufferWidth()
 		{
-			var width = VideoProvider.BufferWidth;
-			var point = new System.Drawing.Point(width, 0);
-
-			return GlobalWin.DisplayManager.TransformPoint(point).X - BorderWidth();
+			return VideoProvider.BufferWidth;
 		}
 
 		[LuaMethodAttributes(
@@ -155,9 +153,9 @@ namespace BizHawk.Client.EmuHawk
 			"getwindowsize",
 			"Gets the main window's size Possible values are 1, 2, 3, 4, 5, and 10"
 		)]
-		public static int GetWindowSize()
+		public int GetWindowSize()
 		{
-			return Global.Config.TargetZoomFactors[Global.Emulator.SystemId];
+			return Global.Config.TargetZoomFactors[Emulator.SystemId];
 		}
 
 		[LuaMethodAttributes(
@@ -378,7 +376,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (size == 1 || size == 2 || size == 3 || size == 4 || size == 5 || size == 10)
 			{
-				Global.Config.TargetZoomFactors[Global.Emulator.SystemId] = size;
+				Global.Config.TargetZoomFactors[Emulator.SystemId] = size;
 				GlobalWin.MainForm.FrameBufferResized();
 				GlobalWin.OSD.AddMessage("Window size set to " + size + "x");
 			}

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
-using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 namespace BizHawk.Client.EmuHawk
@@ -9,9 +9,9 @@ namespace BizHawk.Client.EmuHawk
 	[SchemaAttributes("GEN")]
 	public class GenSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas()
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			var devs = ((GPGX)Global.Emulator).GetDevices();
+			var devs = ((GPGX)core).GetDevices();
 			int player = 1;
 			foreach (var dev in devs)
 			{

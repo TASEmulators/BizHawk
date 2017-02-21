@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 		// Hiding lag frames (Mainly intended for < 60fps play.)
 		public int LagFramesToHide { get; set; }
 		public bool HideWasLagFrames { get; set; }
-		private byte[] lagFrames = new byte[100]; // Large enough value that it shouldn't ever need resizing.
+		private byte[] lagFrames = new byte[256]; // Large enough value that it shouldn't ever need resizing. // apparently not large enough for 4K
 
 		public bool allowRightClickSelecton { get; set; }
 		public bool letKeysModifySelection { get; set; }
@@ -1152,19 +1152,14 @@ namespace BizHawk.Client.EmuHawk
 						var hadIndex = SelectedItems.Any();
 						SelectedItems.Clear();
 						SelectCell(CurrentCell);
-
-						// In this case the SelectCell did not invoke the change event since there was nothing to select
-						// But we went from selected to unselected, that is a change, so catch it here
-						if (hadIndex && CurrentCell.RowIndex.HasValue && CurrentCell.RowIndex > RowCount)
-						{
-							if (SelectedIndexChanged != null)
-							{
-								SelectedIndexChanged(this, new EventArgs());
-							}
-						}
 					}
 
 					Refresh();
+
+					if (SelectedIndexChanged != null)
+					{
+						SelectedIndexChanged(this, new EventArgs());
+					}
 				}
 			}
 
@@ -1678,11 +1673,6 @@ namespace BizHawk.Client.EmuHawk
 					{
 						SelectedItems.Add(CurrentCell);
 					}
-				}
-
-				if (SelectedIndexChanged != null)
-				{
-					SelectedIndexChanged(this, new EventArgs());
 				}
 			}
 		}
