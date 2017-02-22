@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using System.Windows.Shell;
 using System.IO;
 using System.Reflection;
+
+#if WINDOWS
+using System.Windows.Shell;
+#endif
 
 namespace BizHawk.Client.EmuHawk
 {
 	public class JumpLists
 	{
+#if WINDOWS
 		static Application _app;
 		static JumpLists()
 		{
@@ -19,6 +23,9 @@ namespace BizHawk.Client.EmuHawk
 			jmp.ShowRecentCategory = true;
 			JumpList.SetJumpList(_app, jmp);
 		}
+#else
+		static JumpLists() {}
+#endif
 
 		/// <summary>
 		/// add an item to the W7+ jumplist
@@ -32,6 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			//else
 			//  title = Path.GetFileName(fullpath);
 
+#if WINDOWS
 			string exepath = Assembly.GetEntryAssembly().Location;
 
 			var ji = new JumpTask
@@ -43,6 +51,7 @@ namespace BizHawk.Client.EmuHawk
 				WorkingDirectory = Path.GetDirectoryName(exepath)
 			};
 			JumpList.AddToRecentCategory(ji);
+#endif
 		}
 	}
 }

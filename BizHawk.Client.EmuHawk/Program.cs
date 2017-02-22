@@ -191,6 +191,7 @@ namespace BizHawk.Client.EmuHawk
 				goto REDO_DISPMETHOD;
 			}
 
+#if WINDOWS
 			//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 			//The relevant initialization happened just before in "create IGL context".
 			//It isn't clear whether we need the earlier SetDllDirectory(), but I think we do.
@@ -198,6 +199,7 @@ namespace BizHawk.Client.EmuHawk
 			//pasting should be safe (not affecting the jit order of things)
 			string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 			SetDllDirectory(dllDir);
+#endif
 
 			if (System.Diagnostics.Debugger.IsAttached)
 			{ // Let the debugger handle errors

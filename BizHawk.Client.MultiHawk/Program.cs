@@ -34,7 +34,7 @@ namespace BizHawk.Client.MultiHawk
 #endif
 		}
 
-		
+
 		/// <summary>
 		/// The main entry point for the application.
 		/// </summary>
@@ -67,6 +67,7 @@ namespace BizHawk.Client.MultiHawk
 			}
 
 
+#if WINDOWS
 			//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 			//The relevant initialization happened just before in "create IGL context".
 			//It isn't clear whether we need the earlier SetDllDirectory(), but I think we do.
@@ -74,6 +75,7 @@ namespace BizHawk.Client.MultiHawk
 			//pasting should be safe (not affecting the jit order of things)
 			string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 			SetDllDirectory(dllDir);
+#endif
 
 			try
 			{
