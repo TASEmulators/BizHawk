@@ -112,8 +112,6 @@ namespace BizHawk.Client.EmuHawk
 			// Do nothing
 		}
 
-		public LuaConsole Get() { return this; }
-
 		public void ConsoleLog(string message)
 		{
 			OutputBox.Text += message + Environment.NewLine + Environment.NewLine;

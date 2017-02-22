@@ -49,7 +49,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
-			_caller = passed.Get();
 
 			// Register lua libraries
 			var libs = Assembly
