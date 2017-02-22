@@ -1,23 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 
-using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
-using System;
+
 namespace BizHawk.Client.EmuHawk
 {
 	[SchemaAttributes("NES")]
 	public class NesSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas()
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			if (Global.Emulator is NES)
+			if (core is NES)
 			{
-				var ss = ((NES)Global.Emulator).GetSyncSettings();
-				var core = (Global.Emulator as NES);
-				var isFds = core.BoardName == "FDS";
+				var nes = core as NES;
+				var ss = nes.GetSyncSettings();
+
+				var isFds = nes.IsFDS;
 				if (ss.Controls.Famicom)
 				{
 					yield return StandardController(1);
@@ -124,7 +126,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 				// Quicknes Can support none, one or two controllers.
 			{
-				var ss = ((QuickNES)Global.Emulator).GetSyncSettings();
+				var ss = ((QuickNES)core).GetSyncSettings();
 				if (ss.LeftPortConnected == true && ss.RightPortConnected == true)
 				{
 					//Set both controllers

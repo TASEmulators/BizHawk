@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Components
 {
-	public sealed class SN76489 : ISoundProvider
+	public sealed class SN76489 : IMixedSoundProvider
 	{
 		public sealed class Channel
 		{

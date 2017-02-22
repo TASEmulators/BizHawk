@@ -30,5 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 
+		[FeatureNotImplemented]
+		public int TotalExecutedCycles {  get { throw new NotImplementedException(); } }
 	}
 }

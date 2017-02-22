@@ -65,7 +65,7 @@ namespace BizHawk.Client.Common
 		public IMovieController MovieControllerInstance()
 		{
 			var adapter = Movie.LogGeneratorInstance().MovieControllerAdapter;
-			adapter.Type = MovieControllerAdapter.Type;
+			adapter.Definition = MovieControllerAdapter.Definition;
 			return adapter;
 		}
 
@@ -263,7 +263,7 @@ namespace BizHawk.Client.Common
 					// Movie may go into finished mode as a result from latching
 					if (!Movie.IsFinished)
 					{
-						if (Global.ClientControls["Scrub Input"])
+						if (Global.ClientControls.IsPressed("Scrub Input"))
 						{
 							LatchInputFromPlayer(Global.MovieInputSourceAdapter);
 							ClearFrame();
@@ -294,13 +294,17 @@ namespace BizHawk.Client.Common
 
 		private void HandleFrameLoopForRecordMode()
 		{
-			if (MultiTrack.IsActive)
+			// tasmovie is appended via recording frames, but we don't want it to latch input outside its inetrnal recording mode
+			if (!(Movie is TasMovie) || !Movie.IsPlaying)
 			{
-				LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringAdapter);
-			}
-			else
-			{
-				LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+				if (MultiTrack.IsActive)
+				{
+					LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringAdapter);
+				}
+				else
+				{
+					LatchInputFromPlayer(Global.MovieInputSourceAdapter);
+				}
 			}
 
 			// the movie session makes sure that the correct input has been read and merged to its MovieControllerAdapter;

@@ -29,6 +29,7 @@
 #include gamedb_msx1.txt
 #include gamedb_msx2.txt
 #include gamedb_vs.txt
+#include gamedb_intv.txt
 
 ; ************ NES / Famicom ************
 
@@ -311,6 +312,7 @@ sha1:35C157A921156E47FD3F6573D150F54108D0EDFC		Blargg's 5.MMC3_rev_A.nes	NES		bo
 sha1:0E971E2CCAD1DEE51A0C305ED38FAFD2E6CA3B41		Blargg's 6.MMC3_rev_B.nes	NES		board=MAPPER004;MMC3=MMC3B
 sha1:F794FDA12D34E611D58E652319ED583AE61B81E0		Blargg's 6-MMC6.nes	NES		board=MAPPER004_MMC6
 sha1:2F29F3DC724027FAD926BC9D4470A481884E42A5		Blargg's 6-MMC6.nes (newer)	NES		board=MAPPER004_MMC6
+sha1:6F3184ACDC7333683D459C7613CA1C235CEAFD3F		Aladdin (SuperGame) (Mapper 4) [!]	NES		board=MAPPER004;MMC3=MMC3A
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;datach stuff
@@ -323,6 +325,9 @@ EDD7A45A7F27E396B6D686F1861642D509863132		Datach SD Gundam Gundam Wars	NES		boar
 74218AAE93E4FEBFB2284BCF15811453418A2029		Datach Yuu Yuu Hakusho Bakutou Ankoku Bujutsu Kai	NES		board=MAPPER157
 6F3C65BD945FE13305A7A39D8CD884A5BF314A8F		Datach Crayon Shin Chan Ora to Poi Poi	NES		board=MAPPER157
 1218C891DEE878C18D31D38D07CAD5FB06B3B2CE		Datach Yuu Yuu akusho Baktutou	NES		board=MAPPER157
+
+;testrom
+sha1:E925A172C29DD46BA385D526F3C317DB039FA2BF		mmc1_a12	NES		board=NES-SNROM
 
 ; ArcadePit hacks
 ; Why does this one need NesHawk?
@@ -349,7 +354,6 @@ C94257E7	B	Looney Tunes - Sheep Raider (STATiC Dump)	PSX		dh=00000000
 829A295C	B	Monster Rancher 2 (U) (EXE Patched)	PSX		dh=00000000
 
 #include gamedb_neshomebrew.txt
-#include gamedb_vs.txt
 #include gamedb_user.txt
 #include gamedb_ws.txt
 #include gamedb_wsc.txt

@@ -4,8 +4,65 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// Defines the schema for all the currently available controls for an IEmulator instance
+	/// </summary>
+	/// <seealso cref="IEmulator" /> 
 	public class ControllerDefinition
 	{
+		public ControllerDefinition()
+		{
+			BoolButtons = new List<string>();
+			FloatControls = new List<string>();
+			FloatRanges = new List<FloatRange>();
+			AxisConstraints = new List<AxisConstraint>();
+			CategoryLabels = new Dictionary<string, string>();
+		}
+
+		public ControllerDefinition(ControllerDefinition source)
+			: this()
+		{
+			Name = source.Name;
+			BoolButtons.AddRange(source.BoolButtons);
+			FloatControls.AddRange(source.FloatControls);
+			FloatRanges.AddRange(source.FloatRanges);
+			AxisConstraints.AddRange(source.AxisConstraints);
+			CategoryLabels = source.CategoryLabels;
+		}
+
+		/// <summary>
+		/// The name of the controller definition
+		/// </summary>
+		public string Name { get; set; }
+
+		/// <summary>
+		/// A list of all button types that have a boolean (on/off) value
+		/// </summary>
+		public List<string> BoolButtons { get; set; }
+
+		/// <summary>
+		/// A list of all non-boolean types, that can be represented by a numerical value (such as analog controls, stylus coordinates, etc
+		/// </summary>
+		public List<string> FloatControls { get; private set; }
+
+		/// <summary>
+		/// A list of all float ranges for each float control (must be one to one with FloatControls)
+		/// FloatRanges include the min/max/default values
+		/// </summary>
+		public List<FloatRange> FloatRanges { get; private set; }
+
+		/// <summary>
+		/// Axis contraints apply artificial contraints to float values
+		/// For instance, a N64 controller's analog range is actually larger than the amount allowed by the plastic that artificially contrains it to lower values
+		/// Axis contraints provide a way to technically allow the full range but have a user option to contrain down to typical values that a real control would have
+		/// </summary>
+		public List<AxisConstraint> AxisConstraints { get; private set; }
+
+		/// <summary>
+		/// A means of categorizing controls in various controller display and config screens
+		/// </summary>
+		public Dictionary<string, string> CategoryLabels { get; private set; }
+
 		public void ApplyAxisConstraints(string constraintClass, IDictionary<string, float> floatButtons)
 		{
 			if (AxisConstraints == null) return;
@@ -89,32 +146,6 @@ namespace BizHawk.Emulation.Common
 			public object[] Params;
 		}
 
-		public string Name { get; set; }
-
-		public Dictionary<string, string> CategoryLabels = new Dictionary<string, string>();
-		public List<string> BoolButtons { get; set; }
-		public List<string> FloatControls { get; private set; }
-		public List<FloatRange> FloatRanges { get; private set; }
-		public List<AxisConstraint> AxisConstraints { get; private set; }
-
-		public ControllerDefinition(ControllerDefinition source)
-			: this()
-		{
-			Name = source.Name;
-			BoolButtons.AddRange(source.BoolButtons);
-			FloatControls.AddRange(source.FloatControls);
-			FloatRanges.AddRange(source.FloatRanges);
-			AxisConstraints.AddRange(source.AxisConstraints);
-		}
-
-		public ControllerDefinition()
-		{
-			BoolButtons = new List<string>();
-			FloatControls = new List<string>();
-			FloatRanges = new List<FloatRange>();
-			AxisConstraints = new List<AxisConstraint>();
-		}
-
 		/// <summary>
 		/// Puts the controls in a logical order such as by controller number,
 		/// This is a default implementation that should work most of the time
@@ -153,7 +184,7 @@ namespace BizHawk.Emulation.Common
 		}
 
 		// TODO: a more respectable logic here, and possibly per core implementation
-		public virtual int PlayerCount
+		public int PlayerCount
 		{
 			get
 			{
@@ -172,7 +203,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public virtual bool Any()
+		public bool Any()
 		{
 			return BoolButtons.Any() || FloatControls.Any();
 		}

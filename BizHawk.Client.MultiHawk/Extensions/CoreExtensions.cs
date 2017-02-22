@@ -9,14 +9,14 @@ namespace BizHawk.Client.MultiHawk.CoreExtensions
 	{
 		public static string DisplayName(this IEmulator core)
 		{
-			var attributes = Global.Emulator.Attributes();
+			var attributes = core.Attributes();
 
 			var str = (!attributes.Released ? "(Experimental) " : string.Empty) +
 				attributes.CoreName;
 
-			if (Global.Emulator is LibsnesCore)
+			if (core is LibsnesCore)
 			{
-				str += " (" + ((LibsnesCore)Global.Emulator).CurrentProfile + ")";
+				str += " (" + ((LibsnesCore)core).CurrentProfile + ")";
 			}
 
 			return str;

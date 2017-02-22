@@ -4,6 +4,14 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// A generic implementation of IEmulatorService provider that provides
+	/// this functionality to any core.
+	/// The provider will scan an IEmulator and register all IEmulatorServices
+	/// that the core object itself implements.  In addition it provides
+	/// a Register() method to allow the core to pass in any additional services
+	/// </summary>
+	/// <seealso cref="IEmulatorServiceProvider"/> 
 	public class BasicServiceProvider : IEmulatorServiceProvider
 	{
 		private Dictionary<Type, object> Services = new Dictionary<Type, object>();

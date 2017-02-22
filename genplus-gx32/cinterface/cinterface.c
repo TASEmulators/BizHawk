@@ -547,7 +547,7 @@ GPGX_EX int gpgx_init(const char *feromextension, int (*feload_archive_cb)(const
 	config.overscan = 0;
 	config.gg_extra = 0;
 	config.ntsc = 0;
-	config.render = 0;
+	config.render = 1;
 
 	// set overall input system type
 	// usual is MD GAMEPAD or NONE

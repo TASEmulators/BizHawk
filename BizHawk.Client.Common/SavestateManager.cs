@@ -34,9 +34,9 @@ namespace BizHawk.Client.Common
 						bs.PutLump(BinaryStateLump.Corestate, bw => core.SaveStateBinary(bw));
 				}
 
-				if (Global.Config.SaveScreenshotWithStates)
+				if (Global.Config.SaveScreenshotWithStates && Global.Emulator.HasVideoProvider())
 				{
-					var vp = Global.Emulator.VideoProvider();
+					var vp = Global.Emulator.AsVideoProvider();
 					var buff = vp.GetVideoBuffer();
 					if (buff.Length == 1)
 					{
@@ -58,7 +58,7 @@ namespace BizHawk.Client.Common
 							out_h /= 2;
 						}
 						using (new SimpleTime("Save Framebuffer"))
-							bs.PutLump(BinaryStateLump.Framebuffer, (s) => QuickBmpFile.Save(Global.Emulator.VideoProvider(), s, out_w, out_h));
+							bs.PutLump(BinaryStateLump.Framebuffer, (s) => QuickBmpFile.Save(Global.Emulator.AsVideoProvider(), s, out_w, out_h));
 					}
 				}
 
@@ -96,14 +96,19 @@ namespace BizHawk.Client.Common
 
 		public static void PopulateFramebuffer(BinaryReader br)
 		{
+			if (!Global.Emulator.HasVideoProvider())
+			{
+				return;
+			}
+
 			try
 			{
 				using (new SimpleTime("Load Framebuffer"))
-					QuickBmpFile.Load(Global.Emulator.VideoProvider(), br.BaseStream);
+					QuickBmpFile.Load(Global.Emulator.AsVideoProvider(), br.BaseStream);
 			}
 			catch
 			{
-				var buff = Global.Emulator.VideoProvider().GetVideoBuffer();
+				var buff = Global.Emulator.AsVideoProvider().GetVideoBuffer();
 				try
 				{
 					for (int i = 0; i < buff.Length; i++)
@@ -219,9 +224,9 @@ namespace BizHawk.Client.Common
 							}
 
 							var args = str.Split(' ');
-							if (args[0] == "Framebuffer")
+							if (args[0] == "Framebuffer" && Global.Emulator.HasVideoProvider())
 							{
-								Global.Emulator.VideoProvider().GetVideoBuffer().ReadFromHex(args[1]);
+								Global.Emulator.AsVideoProvider().GetVideoBuffer().ReadFromHex(args[1]);
 							}
 						}
 					}

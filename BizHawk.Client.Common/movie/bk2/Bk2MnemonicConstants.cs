@@ -107,7 +107,10 @@ namespace BizHawk.Client.Common
 				{ "Square", 'Q' },
 
 				{ "Toggle Left Difficulty", 'l' },
-				{ "Toggle Right Difficulty", 'r' }
+				{ "Toggle Right Difficulty", 'r' },
+
+				{ "Open", 'O' },
+				{ "Close", 'C' }
 			};
 
 		private readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>
@@ -278,6 +281,27 @@ namespace BizHawk.Client.Common
 						{ "Black Apple", 'b' },
 						{ "L", 'L' },
 						{ "R", 'R' }
+					}
+				},
+				{
+					"INTV",
+					new Dictionary<string, char>
+					{
+						{ "Clear", 'C' },
+						{ "Enter", 'E' },
+						{ "Top", 'T' },
+						{ "NNE", 'n' },
+						{ "NE", '/' },
+						{ "ENE", 'e' },
+						{ "ESE", 'e' },
+						{ "SE", '\\' },
+						{ "SSE", 's' },
+						{ "SSW", 's' },
+						{ "SW", '/' },
+						{ "WSW", 'w' },
+						{ "WNW", 'w' },
+						{ "NW", '\\' },
+						{ "NNW", 'n' }
 					}
 				}
 			};

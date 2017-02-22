@@ -6,23 +6,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public ISoundProvider SoundProvider
-		{
-			get { return ActiveSoundProvider; }
-		}
-
-		public ISyncSoundProvider SyncSoundProvider
-		{
-			get { return new FakeSyncSound(ActiveSoundProvider, 735); }
-		}
-
-		public bool StartAsyncSound()
-		{
-			return true;
-		}
-
-		public void EndAsyncSound() { }
-
 		public ControllerDefinition ControllerDefinition
 		{
 			get
@@ -56,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			if (IsGameGear == false)
 			{
-				Cpu.NonMaskableInterrupt = Controller["Pause"];
+				Cpu.NonMaskableInterrupt = Controller.IsPressed("Pause");
 			}
 
 			if (IsGame3D && Settings.Fix3D)

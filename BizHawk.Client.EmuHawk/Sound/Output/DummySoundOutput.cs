@@ -56,7 +56,6 @@ namespace BizHawk.Client.EmuHawk
 					if (_remainingSamples < 0)
 					{
 						_remainingSamples = 0;
-						_sound.OnUnderrun();
 						detectedUnderrun = true;
 					}
 					_lastWriteTime = currentWriteTime;

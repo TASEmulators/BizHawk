@@ -126,5 +126,10 @@ namespace BizHawk.Emulation.Cores.Calculators
 		public void Step(StepType type) { throw new NotImplementedException(); }
 
 		public bool CanStep(StepType type) { return false; }
+
+		public int TotalExecutedCycles
+		{
+			get { return Cpu.TotalExecutedCycles; }
+		}
 	}
 }

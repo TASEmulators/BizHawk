@@ -874,19 +874,28 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			var tw = new TextureWrapper() { Texture = d3dtex };
 			var tex = new Texture2d(this, tw, w, h);
 			RenderTarget rt = new RenderTarget(this, tw, tex);
-			ResetHandlers.Add(rt, "RenderTarget",
-				() =>
-				{
-					d3dtex.Dispose();
-					tw.Texture = null;
-				},
-				() =>
-				{
-					d3dtex = new d3d9.Texture(dev, w, h, 1, d3d9.Usage.RenderTarget, d3d9.Format.A8R8G8B8, d3d9.Pool.Default);
-					tw.Texture = d3dtex;
-				}
-			);
+
+			ResetHandlers.Add(rt, "RenderTarget", () => ResetRenderTarget(rt), () => RestoreRenderTarget(rt));
 			return rt;
+		}
+
+		void ResetRenderTarget(RenderTarget rt)
+		{
+			var tw = rt.Texture2d.Opaque as TextureWrapper;
+			tw.Texture.Dispose();
+			tw.Texture = null;
+		}
+
+		void RestoreRenderTarget(RenderTarget rt)
+		{
+			var tw = rt.Texture2d.Opaque as TextureWrapper;
+			int w = rt.Texture2d.IntWidth;
+			int h = rt.Texture2d.IntHeight;
+			var d3dtex = new d3d9.Texture(dev, w, h, 1, d3d9.Usage.RenderTarget, d3d9.Format.A8R8G8B8, d3d9.Pool.Default);
+			tw.Texture = d3dtex;
+			//i know it's weird, we have to re-add ourselves to the list
+			//bad design..
+			ResetHandlers.Add(rt, "RenderTarget", () => ResetRenderTarget(rt), () => RestoreRenderTarget(rt));
 		}
 
 		public void BindRenderTarget(RenderTarget rt)

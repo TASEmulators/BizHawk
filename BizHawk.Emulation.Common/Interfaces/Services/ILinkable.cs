@@ -2,7 +2,7 @@
 {
 	/// <summary>
 	/// This service is use by link cable capable cores to manage the status of the link cable
-	/// If available the client will display the link cable status
+	/// If available, the client will display the link cable status
 	/// </summary>
 	public interface ILinkable : ISpecializedEmulatorService
 	{

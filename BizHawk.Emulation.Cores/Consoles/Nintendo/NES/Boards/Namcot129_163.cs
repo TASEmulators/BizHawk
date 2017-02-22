@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			prg_banks_8k[3] = (byte)(0xFF & prg_bank_mask_8k);
 			prg_banks_8k[2] = (byte)(0xFF & prg_bank_mask_8k)-1;
-			chr_banks_1k[8] = chr_banks_1k[10] = 0xFF;
+			chr_banks_1k[8] = chr_banks_1k[10] = 0xFE;
 			chr_banks_1k[9] = chr_banks_1k[11] = 0xFF;
 
 			vram_enable[2] = true;

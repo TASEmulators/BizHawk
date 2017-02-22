@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 {
 	public partial class HuC6280
 	{
-	  public void DisassembleCDL(Stream s, CodeDataLog cdl, IMemoryDomains mem)
+	  public void DisassembleCDL(Stream s, ICodeDataLog cdl, IMemoryDomains mem)
 	  {
 	    var w = new StreamWriter(s);
 	    w.WriteLine("; Bizhawk CDL Disassembly");
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 
 		public MemMapping[] Mappings; // = new MemMapping[256];
 
-		public CodeDataLog CDL = null;
+		public ICodeDataLog CDL = null;
 
 		[Flags]
 		public enum CDLUsage : byte

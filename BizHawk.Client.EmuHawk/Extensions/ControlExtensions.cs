@@ -157,9 +157,14 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 		/// <summary>
 		/// Handles EmuHawk specific issues before showing a modal dialog
 		/// </summary>
-		public static DialogResult ShowHawkDialog(this Form form, IWin32Window owner = null)
+		public static DialogResult ShowHawkDialog(this Form form, IWin32Window owner = null, Point position = default(Point))
 		{
 			GlobalWin.Sound.StopSound();
+			if (position != default(Point))
+			{
+				form.StartPosition = FormStartPosition.Manual;
+				form.Location = position;
+			}
 			var result = (owner == null ? form.ShowDialog() : form.ShowDialog(owner));
 			GlobalWin.Sound.StartSound();
 			return result;

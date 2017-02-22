@@ -258,7 +258,7 @@ namespace BizHawk.Emulation.Cores
 		private bool GetButton(uint pnum, string type, string button)
 		{
 			string key = string.Format("P{0} {1} {2}", pnum, type, button);
-			bool b = Controller[key];
+			bool b = Controller.IsPressed(key);
 			if (b == true)
 			{
 				return true; //debugging placeholder
@@ -496,6 +496,7 @@ namespace BizHawk.Emulation.Cores
 			CoreComm.VsyncDen = 10000000;
 
 			SetupResampler(av.timing.fps, av.timing.sample_rate);
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(resampler);
 
 			ControllerDefinition = CreateControllerDefinition(_SyncSettings);
 
@@ -736,11 +737,6 @@ namespace BizHawk.Emulation.Cores
 		}
 
 		#region ISoundProvider
-
-		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return resampler; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
 
 		SpeexResampler resampler;
 

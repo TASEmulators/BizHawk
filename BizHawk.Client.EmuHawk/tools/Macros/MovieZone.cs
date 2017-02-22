@@ -1,27 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.IO;
 
-using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Client.Common.InputAdapterExtensions;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public class MovieZone
 	{
-		public string Name;
+		public string Name { get; set; }
+		public int Start { get; set; }
+		public int Length { get; set; }
 
-		public int Start;
-		public int Length;
 		private string _inputKey;
 		public string InputKey
 		{
 			get { return _inputKey; }
 			set { _inputKey = value; ReSetLog(); }
 		}
+
 		private string[] _log;
 
 		public bool Replace = true;
@@ -30,19 +28,19 @@ namespace BizHawk.Client.EmuHawk
 		private Bk2ControllerAdapter controller;
 		private Bk2ControllerAdapter targetController;
 
-		public MovieZone()
-		{
-		}
 		public MovieZone(IMovie movie, int start, int length, string key = "")
 		{
-			Bk2LogEntryGenerator lg = Global.MovieSession.LogGeneratorInstance() as Bk2LogEntryGenerator;
+			var lg = Global.MovieSession.LogGeneratorInstance() as Bk2LogEntryGenerator;
 			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
 			targetController = new Bk2ControllerAdapter();
-			targetController.Type = Global.Emulator.ControllerDefinition;
+			targetController.Definition = Global.Emulator.ControllerDefinition;
 			targetController.LatchFromSource(targetController); // Reference and create all buttons
 
 			if (key == "")
+			{
 				key = lg.GenerateLogKey();
+			}
+
 			key = key.Replace("LogKey:", "").Replace("#", "");
 			key = key.Substring(0, key.Length - 1);
 
@@ -52,17 +50,21 @@ namespace BizHawk.Client.EmuHawk
 
 			// Get a IController that only contains buttons in key.
 			string[] keys = key.Split('|');
-			ControllerDefinition d = new ControllerDefinition();
+			var d = new ControllerDefinition();
 			for (int i = 0; i < keys.Length; i++)
 			{
 				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(keys[i]))
+				{
 					d.BoolButtons.Add(keys[i]);
+				}
 				else
+				{
 					d.FloatControls.Add(keys[i]);
+				}
 			}
 
-			controller = new Bk2ControllerAdapter() { Type = d };
-			Bk2LogEntryGenerator logGenerator = new Bk2LogEntryGenerator("");
+			controller = new Bk2ControllerAdapter { Definition = d };
+			var logGenerator = new Bk2LogEntryGenerator("");
 			logGenerator.SetSource(controller);
 			logGenerator.GenerateLogEntry(); // Reference and create all buttons.
 
@@ -71,7 +73,9 @@ namespace BizHawk.Client.EmuHawk
 			if (key == movieKey)
 			{
 				for (int i = 0; i < length; i++)
+				{
 					_log[i] = movie.GetInputLogEntry(i + start);
+				}
 			}
 			else
 			{
@@ -82,25 +86,32 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
+
 		private void ReSetLog()
 		{
 			// Get a IController that only contains buttons in key.
 			string[] keys = _inputKey.Split('|');
-			ControllerDefinition d = new ControllerDefinition();
+			var d = new ControllerDefinition();
 			for (int i = 0; i < keys.Length; i++)
 			{
 				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(keys[i]))
+				{
 					d.BoolButtons.Add(keys[i]);
+				}
 				else
+				{
 					d.FloatControls.Add(keys[i]);
+				}
 			}
-			Bk2ControllerAdapter newController = new Bk2ControllerAdapter() { Type = d };
 
-			Bk2LogEntryGenerator logGenerator = new Bk2LogEntryGenerator("");
+			var newController = new Bk2ControllerAdapter { Definition = d };
+			var logGenerator = new Bk2LogEntryGenerator("");
+
 			logGenerator.SetSource(newController);
 			logGenerator.GenerateLogEntry(); // Reference and create all buttons.
+
 			// Reset all buttons in targetController (it may still have buttons that aren't being set here set true)
-			Bk2LogEntryGenerator tC = new Bk2LogEntryGenerator("");
+			var tC = new Bk2LogEntryGenerator("");
 			tC.SetSource(targetController);
 			targetController.SetControllersAsMnemonic(tC.EmptyEntry);
 			for (int i = 0; i < Length; i++)
@@ -117,7 +128,9 @@ namespace BizHawk.Client.EmuHawk
 		public void PlaceZone(IMovie movie)
 		{
 			if (movie is TasMovie)
+			{
 				(movie as TasMovie).ChangeLog.BeginNewBatch("Place Macro at " + Start);
+			}
 
 			if (Start > movie.InputLogLength)
 			{ // Cannot place a frame here. Find a nice way around this.
@@ -161,7 +174,9 @@ namespace BizHawk.Client.EmuHawk
 
 					// Or do this, if TAStudio has to be open.
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						(GlobalWin.Tools.Get<TAStudio>() as TAStudio).GoToFrame(Start);
+					}
 
 					GlobalWin.Tools.UpdateBefore();
 					GlobalWin.Tools.UpdateAfter();
@@ -193,12 +208,16 @@ namespace BizHawk.Client.EmuHawk
 			File.WriteAllLines(fileName, header);
 			File.AppendAllLines(fileName, _log);
 		}
+
 		public MovieZone(string fileName)
 		{
 			if (!File.Exists(fileName))
+			{
 				return;
+			}
 
 			string[] readText = File.ReadAllLines(fileName);
+
 			// If the LogKey contains buttons/controls not accepted by the emulator,
 			//	tell the user and display the macro's controller name and player count
 			_inputKey = readText[0];
@@ -233,30 +252,35 @@ namespace BizHawk.Client.EmuHawk
 
 			// Adapters
 			targetController = new Bk2ControllerAdapter();
-			targetController.Type = Global.Emulator.ControllerDefinition;
+			targetController.Definition = Global.Emulator.ControllerDefinition;
 			targetController.LatchFromSource(targetController); // Reference and create all buttons
 			string[] keys = _inputKey.Split('|');
 			ControllerDefinition d = new ControllerDefinition();
 			for (int i = 0; i < keys.Length; i++)
 			{
 				if (Global.Emulator.ControllerDefinition.BoolButtons.Contains(keys[i]))
+				{
 					d.BoolButtons.Add(keys[i]);
+				}
 				else
+				{
 					d.FloatControls.Add(keys[i]);
+				}
 			}
-			controller = new Bk2ControllerAdapter() { Type = d };
+
+			controller = new Bk2ControllerAdapter { Definition = d };
 		}
 
-		#region "Custom Latch"
+		#region Custom Latch
 
-		public void LatchFromSourceButtons(Bk2ControllerAdapter latching, IController source)
+		private void LatchFromSourceButtons(Bk2ControllerAdapter latching, IController source)
 		{
-			foreach (string button in source.Type.BoolButtons)
+			foreach (string button in source.Definition.BoolButtons)
 			{
 				latching[button] = source.IsPressed(button);
 			}
 
-			foreach (string name in source.Type.FloatControls)
+			foreach (string name in source.Definition.FloatControls)
 			{
 				latching.SetFloat(name, source.GetFloat(name));
 			}
@@ -264,17 +288,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ORLatchFromSource(Bk2ControllerAdapter latching, IController source)
 		{
-			foreach (string button in latching.Type.BoolButtons)
+			foreach (string button in latching.Definition.BoolButtons)
 			{
 				latching[button] |= source.IsPressed(button);
 			}
 
-			foreach (string name in latching.Type.FloatControls)
+			foreach (string name in latching.Definition.FloatControls)
 			{
 				float sFloat = source.GetFloat(name);
-				int indexRange = source.Type.FloatControls.IndexOf(name);
-				if (sFloat == source.Type.FloatRanges[indexRange].Mid)
+				int indexRange = source.Definition.FloatControls.IndexOf(name);
+				if (sFloat == source.Definition.FloatRanges[indexRange].Mid)
+				{
 					latching.SetFloat(name, sFloat);
+				}
 			}
 		}
 

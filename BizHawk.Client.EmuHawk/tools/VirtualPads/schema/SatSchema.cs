@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
+using BizHawk.Emulation.Common;
+
 namespace BizHawk.Client.EmuHawk
 {
 	[SchemaAttributes("SAT")]
 	public class SaturnSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas()
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
 			yield return StandardController(1);
 			yield return StandardController(2);

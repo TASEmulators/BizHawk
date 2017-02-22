@@ -7,20 +7,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public ISoundProvider SoundProvider { get { return null; } }
-
-		public ISyncSoundProvider SyncSoundProvider
-		{
-			get { return this; }
-		}
-
-		public bool StartAsyncSound()
-		{
-			return false;
-		}
-
-		public void EndAsyncSound() { }
-
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
 		public IController Controller { get; set; }
@@ -28,9 +14,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		// TODO: use render and rendersound
 		public void FrameAdvance(bool render, bool rendersound = true)
 		{
-			if (Controller["Reset"])
+			if (Controller.IsPressed("Reset"))
 				LibGPGX.gpgx_reset(false);
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 				LibGPGX.gpgx_reset(true);
 
 			// do we really have to get each time?  nothing has changed

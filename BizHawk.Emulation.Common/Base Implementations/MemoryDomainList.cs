@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// A generic implementation of IMemoryDomain that can be used by any core
+	/// </summary>
+	/// <seealso cref="IMemoryDomains" />
 	public class MemoryDomainList : ReadOnlyCollection<MemoryDomain>, IMemoryDomains
 	{
 		private MemoryDomain _mainMemory;

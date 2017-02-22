@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
@@ -15,6 +16,9 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaConsole : ToolFormBase, IToolFormAutoConfig
 	{
+		[RequiredService]
+		private IEmulator Emulator { get; set; }
+
 		private readonly LuaFileList _luaList;
 		private bool _sortReverse;
 		private string _lastColumnSorted;
@@ -61,9 +65,10 @@ namespace BizHawk.Client.EmuHawk
 				if (AskSaveChanges())
 				{
 					SaveColumnInfo(LuaListView, Settings.Columns);
-					CloseLua();
+					
 					GlobalWin.DisplayManager.ClearLuaSurfaces();
 					LuaImp.GuiLibrary.DrawFinish();
+					CloseLua();
 				}
 				else
 				{
@@ -107,8 +112,6 @@ namespace BizHawk.Client.EmuHawk
 			// Do nothing
 		}
 
-		public LuaConsole Get() { return this; }
-
 		public void ConsoleLog(string message)
 		{
 			OutputBox.Text += message + Environment.NewLine + Environment.NewLine;
@@ -139,7 +142,7 @@ namespace BizHawk.Client.EmuHawk
 			// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
 			if (IsRebootingCore)
 			{
-				LuaImp.Restart();
+				LuaImp.Restart(Emulator.ServiceProvider);
 				return;
 			}
 
@@ -164,7 +167,7 @@ namespace BizHawk.Client.EmuHawk
 				file.Stop();
 			}
 
-			LuaImp = new EmuLuaLibrary(this);
+			LuaImp = new EmuLuaLibrary(Emulator.ServiceProvider);
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => a.Library + "." + a.Name).ToArray());
 
 			foreach (var file in runningScripts)
@@ -532,8 +535,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}, () =>
 					{
-						lf.State = LuaFile.RunState.Disabled;
-						lf.Thread = null;
+						lf.Stop();
 					});
 				}
 				catch (Exception ex)
@@ -832,6 +834,13 @@ namespace BizHawk.Client.EmuHawk
 							item.State = LuaFile.RunState.Disabled;
 						});
 
+						// Shenanigans
+						// We want any gui.text messages from a script to immediately update even when paused
+						GlobalWin.OSD.ClearGUIText();
+						GlobalWin.Tools.UpdateToolsAfter();
+						EndLuaDrawing();
+						StartLuaDrawing();
+
 					}
 					catch (IOException)
 					{
@@ -879,7 +888,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void EditScriptMenuItem_Click(object sender, EventArgs e)
 		{
-			SelectedFiles.ToList().ForEach(file => System.Diagnostics.Process.Start(file.Path));
+			SelectedFiles.ToList().ForEach(file =>
+			{
+				// adelikat; copy/pasting from code above.  We need a method or something for this, there's probably other places we need this logic
+				string pathToLoad = Path.IsPathRooted(file.Path) ? file.Path : PathManager.MakeProgramRelativePath(file.Path); //JUNIPIER SQUATCHBOX COMPLEX
+				System.Diagnostics.Process.Start(pathToLoad);
+			});
 		}
 
 		private void RemoveScriptMenuItem_Click(object sender, EventArgs e)

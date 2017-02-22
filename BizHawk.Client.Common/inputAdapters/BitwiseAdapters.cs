@@ -1,74 +1,56 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using BizHawk.Common;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
 	public class AndAdapter : IController
 	{
+		public ControllerDefinition Definition
+		{
+			get { return Source.Definition; }
+		}
+
 		public bool IsPressed(string button)
 		{
-			return this[button];
+			if (Source != null && SourceAnd != null)
+			{
+				return Source.IsPressed(button) & SourceAnd.IsPressed(button);
+			}
+
+			return false;
 		}
 
 		// pass floats solely from the original source
 		// this works in the code because SourceOr is the autofire controller
-		public float GetFloat(string name) { return Source.GetFloat(name); }
-
-		public IController Source { get; set; }
-		public IController SourceAnd { get; set; }
-		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
-
-		public bool this[string button]
+		public float GetFloat(string name)
 		{
-			get
-			{
-				if (Source != null && SourceAnd != null)
-				{
-					return Source[button] & SourceAnd[button];
-				}
-
-				return false;
-			}
-
-			set
-			{
-				throw new InvalidOperationException();
-			}
+			return Source.GetFloat(name);
 		}
+
+		internal IController Source { get; set; }
+		internal IController SourceAnd { get; set; }
 	}
 
 	public class ORAdapter : IController
 	{
+		public ControllerDefinition Definition
+		{
+			get { return Source.Definition; }
+		}
+
 		public bool IsPressed(string button)
 		{
-			return this[button];
+			return (Source != null ? Source.IsPressed(button) : false)
+					| (SourceOr != null ? SourceOr.IsPressed(button) : false);
 		}
 
 		// pass floats solely from the original source
 		// this works in the code because SourceOr is the autofire controller
-		public float GetFloat(string name) { return Source.GetFloat(name); }
-
-		public IController Source { get; set; }
-		public IController SourceOr { get; set; }
-		public ControllerDefinition Type { get { return Source.Type; } set { throw new InvalidOperationException(); } }
-
-		public bool this[string button]
+		public float GetFloat(string name)
 		{
-			get
-			{
-				return (Source != null ? Source[button] : false) |
-					(SourceOr != null ? SourceOr[button] : false);
-			}
-			set
-			{
-				throw new InvalidOperationException();
-			}
+			return Source.GetFloat(name);
 		}
 
+		internal IController Source { get; set; }
+		internal IController SourceOr { get; set; }
 	}
 }

@@ -36,11 +36,6 @@ namespace BizHawk.Client.Common
 				// TasProj extras
 				bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(StateManager.Settings.ToString()));
 
-				if (StateManager.Settings.SaveStateHistory)
-				{
-					bs.PutLump(BinaryStateLump.StateHistory, (BinaryWriter bw) => StateManager.Save(bw));
-				}
-
 				bs.PutLump(BinaryStateLump.LagLog, (BinaryWriter bw) => LagLog.Save(bw));
 				bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
 
@@ -81,6 +76,11 @@ namespace BizHawk.Client.Common
 				}
 
 				bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(Session.ToString()));
+
+				if (StateManager.Settings.SaveStateHistory)
+				{
+					bs.PutLump(BinaryStateLump.StateHistory, (BinaryWriter bw) => StateManager.Save(bw));
+				}
 			}
 
 			if (!backup)
@@ -201,21 +201,6 @@ namespace BizHawk.Client.Common
 					StateManager.Settings.PopulateFromString(tr.ReadToEnd());
 				});
 
-				if(!preload)
-				{
-					if (StateManager.Settings.SaveStateHistory)
-					{
-						bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
-						{
-							StateManager.Load(br);
-						});
-					}
-
-					// Movie should always have a state at frame 0.
-					if (!this.StartsFromSavestate && Global.Emulator.Frame == 0)
-						StateManager.Capture();
-				}
-
 				bl.GetLump(BinaryStateLump.Markers, false, delegate(TextReader tr)
 				{
 					string line;
@@ -280,6 +265,21 @@ namespace BizHawk.Client.Common
 				{
 					Session.PopulateFromString(tr.ReadToEnd());
 				});
+
+				if (!preload)
+				{
+					if (StateManager.Settings.SaveStateHistory)
+					{
+						bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
+						{
+							StateManager.Load(br);
+						});
+					}
+
+					// Movie should always have a state at frame 0.
+					if (!this.StartsFromSavestate && Global.Emulator.Frame == 0)
+						StateManager.Capture();
+				}
 			}
 
 			Changes = false;

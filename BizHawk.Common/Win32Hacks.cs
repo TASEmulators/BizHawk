@@ -259,4 +259,14 @@ namespace BizHawk.Common
 
 	}
 
+	public static class Win32Hacks
+	{
+		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
+		static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
+
+		public static void RemoveMOTW(string path)
+		{
+			DeleteFileW(path + ":Zone.Identifier");
+		}
+	}
 }

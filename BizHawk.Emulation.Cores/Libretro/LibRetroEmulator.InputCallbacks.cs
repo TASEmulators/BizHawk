@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores
 						{
 							case LibRetro.RETRO_DEVICE_ID_POINTER.X: return (short)Controller.GetFloat("Pointer X");
 							case LibRetro.RETRO_DEVICE_ID_POINTER.Y: return (short)Controller.GetFloat("Pointer Y");
-							case LibRetro.RETRO_DEVICE_ID_POINTER.PRESSED: return (short)(Controller["Pointer Pressed"] ? 1 : 0);
+							case LibRetro.RETRO_DEVICE_ID_POINTER.PRESSED: return (short)(Controller.IsPressed("Pointer Pressed") ? 1 : 0);
 						}
 						return 0;
 					}
@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Cores
 							case LibRetro.RETRO_KEY.UNDO: button = "Undo"; break;
 						}
 
-						return (short)(Controller["Key " + button] ? 1 : 0);
+						return (short)(Controller.IsPressed("Key " + button) ? 1 : 0);
 					}
 
 				case LibRetro.RETRO_DEVICE.JOYPAD:

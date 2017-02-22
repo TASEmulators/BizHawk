@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		portedUrl: "http://yabause.org",
 		singleInstance: true
 		)]
-	public partial class Yabause : IEmulator, IVideoProvider, ISyncSoundProvider, ISaveRam, IStatable, IInputPollable,
+	public partial class Yabause : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable,
 		ISettable<object, Yabause.SaturnSyncSettings>, IDriveLight
 	{
 		public static ControllerDefinition SaturnController = new ControllerDefinition
@@ -214,64 +214,64 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			LibYabause.Buttons1 p21 = (LibYabause.Buttons1)0xff;
 			LibYabause.Buttons2 p22 = (LibYabause.Buttons2)0xff;
 
-			if (Controller["P1 A"])
+			if (Controller.IsPressed("P1 A"))
 				p11 &= ~LibYabause.Buttons1.A;
-			if (Controller["P1 B"])
+			if (Controller.IsPressed("P1 B"))
 				p11 &= ~LibYabause.Buttons1.B;
-			if (Controller["P1 C"])
+			if (Controller.IsPressed("P1 C"))
 				p11 &= ~LibYabause.Buttons1.C;
-			if (Controller["P1 Start"])
+			if (Controller.IsPressed("P1 Start"))
 				p11 &= ~LibYabause.Buttons1.S;
-			if (Controller["P1 Left"])
+			if (Controller.IsPressed("P1 Left"))
 				p11 &= ~LibYabause.Buttons1.L;
-			if (Controller["P1 Right"])
+			if (Controller.IsPressed("P1 Right"))
 				p11 &= ~LibYabause.Buttons1.R;
-			if (Controller["P1 Up"])
+			if (Controller.IsPressed("P1 Up"))
 				p11 &= ~LibYabause.Buttons1.U;
-			if (Controller["P1 Down"])
+			if (Controller.IsPressed("P1 Down"))
 				p11 &= ~LibYabause.Buttons1.D;
-			if (Controller["P1 L"])
+			if (Controller.IsPressed("P1 L"))
 				p12 &= ~LibYabause.Buttons2.L;
-			if (Controller["P1 R"])
+			if (Controller.IsPressed("P1 R"))
 				p12 &= ~LibYabause.Buttons2.R;
-			if (Controller["P1 X"])
+			if (Controller.IsPressed("P1 X"))
 				p12 &= ~LibYabause.Buttons2.X;
-			if (Controller["P1 Y"])
+			if (Controller.IsPressed("P1 Y"))
 				p12 &= ~LibYabause.Buttons2.Y;
-			if (Controller["P1 Z"])
+			if (Controller.IsPressed("P1 Z"))
 				p12 &= ~LibYabause.Buttons2.Z;
 
-			if (Controller["P2 A"])
+			if (Controller.IsPressed("P2 A"))
 				p21 &= ~LibYabause.Buttons1.A;
-			if (Controller["P2 B"])
+			if (Controller.IsPressed("P2 B"))
 				p21 &= ~LibYabause.Buttons1.B;
-			if (Controller["P2 C"])
+			if (Controller.IsPressed("P2 C"))
 				p21 &= ~LibYabause.Buttons1.C;
-			if (Controller["P2 Start"])
+			if (Controller.IsPressed("P2 Start"))
 				p21 &= ~LibYabause.Buttons1.S;
-			if (Controller["P2 Left"])
+			if (Controller.IsPressed("P2 Left"))
 				p21 &= ~LibYabause.Buttons1.L;
-			if (Controller["P2 Right"])
+			if (Controller.IsPressed("P2 Right"))
 				p21 &= ~LibYabause.Buttons1.R;
-			if (Controller["P2 Up"])
+			if (Controller.IsPressed("P2 Up"))
 				p21 &= ~LibYabause.Buttons1.U;
-			if (Controller["P2 Down"])
+			if (Controller.IsPressed("P2 Down"))
 				p21 &= ~LibYabause.Buttons1.D;
-			if (Controller["P2 L"])
+			if (Controller.IsPressed("P2 L"))
 				p22 &= ~LibYabause.Buttons2.L;
-			if (Controller["P2 R"])
+			if (Controller.IsPressed("P2 R"))
 				p22 &= ~LibYabause.Buttons2.R;
-			if (Controller["P2 X"])
+			if (Controller.IsPressed("P2 X"))
 				p22 &= ~LibYabause.Buttons2.X;
-			if (Controller["P2 Y"])
+			if (Controller.IsPressed("P2 Y"))
 				p22 &= ~LibYabause.Buttons2.Y;
-			if (Controller["P2 Z"])
+			if (Controller.IsPressed("P2 Z"))
 				p22 &= ~LibYabause.Buttons2.Z;
 
 
-			if (Controller["Reset"])
+			if (Controller.IsPressed("Reset"))
 				LibYabause.libyabause_softreset();
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 				LibYabause.libyabause_hardreset();
 
 			LibYabause.libyabause_setpads(p11, p12, p21, p22);
@@ -354,20 +354,39 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		#region ISyncSoundProvider
 
-		short[] SoundBuffer = new short[44100 * 2];
-		int SoundNSamp = 0;
+		private short[] SoundBuffer = new short[44100 * 2];
+		private int SoundNSamp = 0;
 
-		public void GetSamples(out short[] samples, out int nsamp)
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			nsamp = SoundNSamp;
 			samples = SoundBuffer;
 		}
 
 		public void DiscardSamples() { }
-		public ISoundProvider SoundProvider { get { return null; } }
-		public ISyncSoundProvider SyncSoundProvider { get { return this; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
+
+		public bool CanProvideAsync
+		{
+			get { return false; }
+		}
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public SyncSoundMode SyncMode
+		{
+			get { return SyncSoundMode.Sync; }
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
+		}
 
 		#endregion
 

@@ -63,14 +63,14 @@ namespace BizHawk.Client.Common
 				return null;
 			}
 
-			foreach (var button in adapter.Type.BoolButtons)
+			foreach (var button in adapter.Definition.BoolButtons)
 			{
-				input[button] = adapter[button];
+				input[button] = adapter.IsPressed(button);
 			}
 
-			foreach (var button in adapter.Type.FloatControls)
+			foreach (var button in adapter.Definition.FloatControls)
 			{
-				input[button] = adapter[button];
+				input[button] = adapter.GetFloat(button);
 			}
 
 			return input;
@@ -199,10 +199,6 @@ namespace BizHawk.Client.Common
 		)]
 		public static void SetReadOnly(bool readOnly)
 		{
-			int x = 0;
-			x++;
-			int y = x;
-
 			Global.MovieSession.ReadOnly = readOnly;
 		}
 

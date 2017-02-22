@@ -68,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 					ToggleFrameCounter();
 					break;
 				case "Lag Counter":
-					if (Global.Emulator.CanPollInput())
+					if (Emulator.CanPollInput())
 					{
 						ToggleLagCounter();
 					}
@@ -114,6 +114,10 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Reboot Core":
 					RebootCore();
+					break;
+				case "Toggle Skip Lag Frame":
+					Global.Config.SkipLagFrame ^= true;
+					GlobalWin.OSD.AddMessage("Skip Lag Frames toggled " + (Global.Config.SkipLagFrame ? "On" : "Off"));
 					break;
 
 				// Save States
@@ -396,6 +400,30 @@ namespace BizHawk.Client.EmuHawk
 				case "Clone Frames":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
 						GlobalWin.Tools.TAStudio.CloneFramesExternal();
+					break;
+				case "Analog Increment":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.AnalogIncrementByOne();
+					break;
+				case "Analog Decrement":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.AnalogDecrementByOne();
+					break;
+				case "Analog Incr. by 10":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.AnalogIncrementByTen();
+					break;
+				case "Analog Decr. by 10":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.AnalogDecrementByTen();
+					break;
+				case "Analog Maximum":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.AnalogMax();
+					break;
+				case "Analog Minimum":
+					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+						GlobalWin.Tools.TAStudio.AnalogMin();
 					break;
 
 				// SNES

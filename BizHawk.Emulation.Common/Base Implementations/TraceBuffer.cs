@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-//garbage
+﻿//garbage
 
 namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// A generic implementation of ITraceable that can be used by any core
+	/// </summary>
+	/// <seealso cref="ITraceable" />
 	public class TraceBuffer : ITraceable
 	{
 		public TraceBuffer()

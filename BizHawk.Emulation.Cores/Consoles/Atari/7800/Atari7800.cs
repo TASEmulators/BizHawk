@@ -29,12 +29,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				TIATables.NTSCPalette[i] |= unchecked((int)0xff000000);
 			for (int i = 0; i < TIATables.PALPalette.Length; i++)
 				TIATables.PALPalette[i] |= unchecked((int)0xff000000);
+			for (int i = 0; i < MariaTables.NTSCPalette.Length; i++)
+				MariaTables.NTSCPalette[i] |= unchecked((int)0xff000000);
+			for (int i = 0; i < MariaTables.PALPalette.Length; i++)
+				MariaTables.PALPalette[i] |= unchecked((int)0xff000000);
 		}
 
 		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, string GameDBfn)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(avProvider);
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(avProvider);
 			InputCallbacks = new InputCallbackSystem();
 			CoreComm = comm;
 			byte[] highscoreBIOS = comm.CoreFileProvider.GetFirmware("A78", "Bios_HSC", false, "Some functions may not work without the high score BIOS.");
@@ -91,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		{
 			_frame++;
 
-			if (Controller["Power"])
+			if (Controller.IsPressed("Power"))
 			{
 				// it seems that theMachine.Reset() doesn't clear ram, etc
 				// this should leave hsram intact but clear most other things
@@ -206,14 +211,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 		#region audio\video
 
-		public ISyncSoundProvider SyncSoundProvider { get { return avProvider; } }
-		public bool StartAsyncSound() { return false; }
-		public void EndAsyncSound() { }
-		public ISoundProvider SoundProvider { get { return null; } }
-
 		MyAVProvider avProvider = new MyAVProvider();
 
-		class MyAVProvider : IVideoProvider, ISyncSoundProvider, IDisposable
+		class MyAVProvider : IVideoProvider, ISoundProvider, IDisposable
 		{
 			public FrameBuffer framebuffer { get; private set; }
 			public void ConnectToMachine(MachineBase m, EMU7800.Win.GameProgram g)
@@ -231,12 +231,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 						resampler.Dispose();
 					resampler = new SpeexResampler(3, newsamplerate, 44100, newsamplerate, 44100, null, null);
 					samplerate = newsamplerate;
-					dcfilter = DCFilter.DetatchedMode(256);
+					dcfilter = new DCFilter(256);
 				}
-				if (g.MachineType == MachineType.A7800PAL || g.MachineType == MachineType.A2600PAL)
+				if (g.MachineType == MachineType.A2600PAL)
 					palette = TIATables.PALPalette;
-				else
+				else if (g.MachineType == MachineType.A7800PAL)
+					palette = MariaTables.PALPalette;
+				else if (g.MachineType == MachineType.A2600NTSC)
 					palette = TIATables.NTSCPalette;
+				else
+					palette = MariaTables.NTSCPalette;
 			}
 
 			uint samplerate;
@@ -274,7 +278,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			public int BufferHeight { get; private set; }
 			public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
-			public void GetSamples(out short[] samples, out int nsamp)
+			#region ISoundProvider
+
+			public bool CanProvideAsync
+			{
+				get { return false; }
+			}
+
+			public void GetSamplesSync(out short[] samples, out int nsamp)
 			{
 				int nsampin = framebuffer.SoundBufferByteLength;
 				unsafe
@@ -291,8 +302,26 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 					}
 				}
-				resampler.GetSamples(out samples, out nsamp);
+				resampler.GetSamplesSync(out samples, out nsamp);
 				dcfilter.PushThroughSamples(samples, nsamp * 2);
+			}
+
+			public SyncSoundMode SyncMode
+			{
+				get { return SyncSoundMode.Sync; }
+			}
+
+			public void SetSyncMode(SyncSoundMode mode)
+			{
+				if (mode == SyncSoundMode.Async)
+				{
+					throw new NotSupportedException("Async mode is not supported.");
+				}
+			}
+
+			public void GetSamplesAsync(short[] samples)
+			{
+				throw new InvalidOperationException("Async mode is not supported.");
 			}
 
 			public void DiscardSamples()
@@ -300,6 +329,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				if (resampler != null)
 					resampler.DiscardSamples();
 			}
+
+			#endregion
 
 			public void Dispose()
 			{
@@ -310,6 +341,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				}
 			}
 		}
+
 		#endregion
 	}
 }

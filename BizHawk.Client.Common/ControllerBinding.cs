@@ -9,14 +9,6 @@ namespace BizHawk.Client.Common
 {
 	public class Controller : IController
 	{
-		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
-		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, float> _floatButtons = new WorkingDictionary<string, float>();
-		private readonly Dictionary<string, ControllerDefinition.FloatRange> _floatRanges = new WorkingDictionary<string, ControllerDefinition.FloatRange>();
-		private readonly Dictionary<string, Config.AnalogBind> _floatBinds = new Dictionary<string, Config.AnalogBind>();
-
-		private ControllerDefinition _type;
-
 		public Controller(ControllerDefinition definition)
 		{
 			_type = definition;
@@ -27,14 +19,35 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public ControllerDefinition Type { get { return _type; } }
+		public ControllerDefinition Definition
+		{
+			get { return _type; }
+		}
 
-		/// <summary>don't do this</summary>
-		public void ForceType(ControllerDefinition newtype) { _type = newtype; }
-		public bool this[string button] { get { return IsPressed(button); } }
 		public bool IsPressed(string button)
 		{
 			return _buttons[button];
+		}
+
+		public float GetFloat(string name)
+		{
+			return _floatButtons[name];
+		}
+
+		private readonly WorkingDictionary<string, List<string>> _bindings = new WorkingDictionary<string, List<string>>();
+		private readonly WorkingDictionary<string, bool> _buttons = new WorkingDictionary<string, bool>();
+		private readonly WorkingDictionary<string, float> _floatButtons = new WorkingDictionary<string, float>();
+		private readonly Dictionary<string, ControllerDefinition.FloatRange> _floatRanges = new WorkingDictionary<string, ControllerDefinition.FloatRange>();
+		private readonly Dictionary<string, Config.AnalogBind> _floatBinds = new Dictionary<string, Config.AnalogBind>();
+
+		private ControllerDefinition _type;
+
+		/// <summary>don't do this</summary>
+		public void ForceType(ControllerDefinition newtype) { _type = newtype; }
+
+		public bool this[string button]
+		{
+			get { return IsPressed(button); }
 		}
 
 		public bool AnyPressed
@@ -49,8 +62,6 @@ namespace BizHawk.Client.Common
 				return _floatButtons.Any(x => x.Value != 0);
 			}
 		}
-
-		public float GetFloat(string name) { return _floatButtons[name]; }
 
 		// Looks for bindings which are activated by the supplied physical button.
 		public List<string> SearchBindings(string button)
@@ -132,7 +143,7 @@ namespace BizHawk.Client.Common
 				_buttons[kvp.Key] = false;
 				foreach (var bound_button in kvp.Value)
 				{
-					if (controller[bound_button])
+					if (controller.IsPressed(bound_button))
 					{
 						_buttons[kvp.Key] = true;
 					}
@@ -165,9 +176,9 @@ namespace BizHawk.Client.Common
 		{
 			// change: or from each button that the other input controller has
 			// foreach (string button in type.BoolButtons)
-			if (controller.Type != null)
+			if (controller.Definition != null)
 			{
-				foreach (var button in controller.Type.BoolButtons)
+				foreach (var button in controller.Definition.BoolButtons)
 				{
 					if (controller.IsPressed(button))
 					{
@@ -181,7 +192,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var button in controller.Overrides)
 			{
-				_buttons[button] = controller[button];
+				_buttons[button] = controller.IsPressed(button);
 			}
 
 			foreach (var button in controller.FloatOverrides)
@@ -259,8 +270,8 @@ namespace BizHawk.Client.Common
 		public int On { get; set; }
 		public int Off { get; set; }
 
-		public ControllerDefinition Type { get { return _type; } }
-		public bool this[string button] { get { return IsPressed(button); } }
+		public ControllerDefinition Definition { get { return _type; } }
+
 		public bool IsPressed(string button)
 		{
 			if (_autofire)
@@ -295,7 +306,7 @@ namespace BizHawk.Client.Common
 			{
 				foreach (var bound_button in kvp.Value)
 				{
-					if (_buttons[kvp.Key] == false && controller[bound_button])
+					if (_buttons[kvp.Key] == false && controller.IsPressed(bound_button))
 					{
 						_buttonStarts[kvp.Key] = _emulator.Frame;
 					}
@@ -308,7 +319,7 @@ namespace BizHawk.Client.Common
 				_buttons[kvp.Key] = false;
 				foreach (var bound_button in kvp.Value)
 				{
-					if (controller[bound_button])
+					if (controller.IsPressed(bound_button))
 					{
 						_buttons[kvp.Key] = true;
 					}

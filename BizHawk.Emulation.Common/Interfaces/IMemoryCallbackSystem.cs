@@ -3,6 +3,12 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
 {
+	/// <summary>
+	/// This is a property of IDebuggable, and defines the means by which a client
+	/// gets and sets memory callbacks in the core.  A memory callback should fire any time memory is
+	/// read/written/executed by the core, and depends on the type specified by the callback
+	/// </summary>
+	/// <seealso cref="IDebuggable"/> 
 	public interface IMemoryCallbackSystem : IEnumerable<IMemoryCallback>
 	{
 		/*
@@ -69,6 +75,10 @@ namespace BizHawk.Emulation.Common
 		void Clear();
 	}
 
+	/// <summary>
+	/// This service defines a memory callback used by an IMemoryCallbackSystem implementation
+	/// </summary>
+	/// <seealso cref="IMemoryCallbackSystem"/> 
 	public interface IMemoryCallback
 	{
 		MemoryCallbackType Type { get; }

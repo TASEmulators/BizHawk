@@ -154,9 +154,14 @@
     <Compile Include="Global.cs" />
     <Compile Include="inputAdapters\AutoPattern.cs" />
     <Compile Include="inputAdapters\BitwiseAdapters.cs" />
+    <Compile Include="inputAdapters\ClickyVirtualPadController.cs" />
+    <Compile Include="inputAdapters\CopyController.cs" />
     <Compile Include="inputAdapters\InputAdapterExtensions.cs" />
-    <Compile Include="inputAdapters\InputAdapters.cs" />
+    <Compile Include="inputAdapters\StickyAdapters.cs" />
     <Compile Include="inputAdapters\InputManager.cs" />
+    <Compile Include="inputAdapters\OverrideAdaptor.cs" />
+    <Compile Include="inputAdapters\SimpleController.cs" />
+    <Compile Include="inputAdapters\UDLRController.cs" />
     <Compile Include="IonicZipWriter.cs" />
     <Compile Include="IPS.cs" />
     <Compile Include="IZipWriter.cs" />

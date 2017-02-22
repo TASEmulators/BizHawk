@@ -58,6 +58,8 @@ namespace BizHawk.Client.Common
 				{"C64_NTSC", NTSC_CARRIER*2/7/263/65},
 				{"C64_NTSC_OLD", NTSC_CARRIER*2/7/262/64},
 				{"C64_DREAN", PAL_N_CARRIER*2/7/312/65},
+				{"INTV", 59.92 }
+
 
 				//according to ryphecha, using
 				//clocks[2] = { 53.693182e06, 53.203425e06 }; //ntsc console, pal console

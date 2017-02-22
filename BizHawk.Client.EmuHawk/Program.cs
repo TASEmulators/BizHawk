@@ -65,6 +65,8 @@ namespace BizHawk.Client.EmuHawk
 			//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
 			WhackAllMOTW(dllDir);
 
+			//We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
+
 			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
 			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 
@@ -265,7 +267,7 @@ namespace BizHawk.Client.EmuHawk
 									if (!VersionInfo.DeveloperBuild && Global.MovieSession.Movie.IsActive)
 									{
 										var result = MessageBox.Show(
-											"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may succeed)",
+											"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
 											"Fatal error: " + e.GetType().Name,
 											MessageBoxButtons.YesNo,
 											MessageBoxIcon.Exclamation
@@ -318,13 +320,6 @@ namespace BizHawk.Client.EmuHawk
 		[DllImport("kernel32.dll", SetLastError = true)]
 		static extern uint SetDllDirectory(string lpPathName);
 
-		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
-		static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
-		static void RemoveMOTW(string path)
-		{
-			DeleteFileW(path + ":Zone.Identifier");
-		}
-
 		static void WhackAllMOTW(string dllDir)
 		{
 			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
@@ -333,9 +328,9 @@ namespace BizHawk.Client.EmuHawk
 				var di = todo.Dequeue();
 				foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
 				foreach (var fi in di.GetFiles("*.dll"))
-					RemoveMOTW(fi.FullName);
+					Win32Hacks.RemoveMOTW(fi.FullName);
 				foreach (var fi in di.GetFiles("*.exe"))
-					RemoveMOTW(fi.FullName);
+					Win32Hacks.RemoveMOTW(fi.FullName);
 			}
 
 		}

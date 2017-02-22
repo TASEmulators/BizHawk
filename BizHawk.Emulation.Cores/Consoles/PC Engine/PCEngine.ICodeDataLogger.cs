@@ -1,15 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.H6280;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
-	partial class PCEngine
+	public sealed partial class PCEngine : ICodeDataLogger
 	{
-		static void CDLMappingApplyRange(HuC6280.MemMapping[] mm, string name, int block, int len, int initialoffs = 0)
+		public void SetCDL(ICodeDataLog cdl)
+		{
+			Cpu.CDL = cdl;
+		}
+
+		public void NewCDL(ICodeDataLog cdl)
+		{
+			InitCDLMappings();
+			var mm = this.Cpu.Mappings;
+			foreach (var kvp in SizesFromHuMap(mm))
+			{
+				cdl[kvp.Key] = new byte[kvp.Value];
+			}
+
+			cdl.SubType = "PCE";
+			cdl.SubVer = 0;
+		}
+
+		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
+		{
+			Cpu.DisassembleCDL(s, cdl, _memoryDomains);
+		}
+
+		private static void CDLMappingApplyRange(HuC6280.MemMapping[] mm, string name, int block, int len, int initialoffs = 0)
 		{
 			for (int i = block, offs = initialoffs; i < 256 && len > (offs - initialoffs); i++, offs += 8192)
 			{
@@ -21,10 +43,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		/// <summary>
 		/// informs the CPU of the general memory layout, so it can do CDL
 		/// </summary>
-		public void InitCDLMappings()
+		private void InitCDLMappings()
 		{
 			if (Cpu.Mappings != null)
+			{
 				return;
+			}
 
 			SF2UpdateCDLMappings = true;
 
@@ -32,7 +56,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			CDLMappingApplyRange(mm, "ROM", 0x00, Math.Min(RomLength, 1024 * 1024));
 			if (PopulousRAM != null)
+			{
 				CDLMappingApplyRange(mm, "Cart Battery RAM", 0x40, PopulousRAM.Length);
+			}
 
 			// actual games came in 128K, 256K, 384K, 512K, 768K, 1024K, and Street Fighter sizes
 			// except street fighter, games were on 1 or 2 mask roms
@@ -49,6 +75,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					mm[i].Name = null;
 					mm[i].Offs = 0;
 				}
+
 				for (int i = 0x40; i < 0x50; i++)
 				{
 					// rebase
@@ -62,18 +89,23 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 
 			if (SuperRam != null)
+			{
 				CDLMappingApplyRange(mm, "Super System Card RAM", 0x68, SuperRam.Length);
+			}
 
 			if (CDRam != null)
+			{
 				CDLMappingApplyRange(mm, "TurboCD RAM", 0x80, CDRam.Length);
+			}
 
 			if (BRAM != null)
-				CDLMappingApplyRange(mm, "Battery RAM", 0xf7, BRAM.Length);
-
 			{
-				var rammirrors = new HuC6280.MemMapping { Name = "Main Memory", Offs = 0 };
-				mm[0xf9] = mm[0xfa] = mm[0xfb] = rammirrors;
+				CDLMappingApplyRange(mm, "Battery RAM", 0xf7, BRAM.Length);
 			}
+
+			var rammirrors = new HuC6280.MemMapping { Name = "Main Memory", Offs = 0 };
+			mm[0xf9] = mm[0xfa] = mm[0xfb] = rammirrors;
+
 			CDLMappingApplyRange(mm, "Main Memory", 0xf8, Ram.Length);
 
 			mm[0xff] = new HuC6280.MemMapping { Name = "MMIO", Offs = 0 };
@@ -81,7 +113,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			for (int i = 0; i < 256; i++)
 			{
 				if (mm[i].Name == null)
+				{
 					mm[i].Name = "UNKNOWN";
+				}
 			}
 
 			Cpu.Mappings = mm;

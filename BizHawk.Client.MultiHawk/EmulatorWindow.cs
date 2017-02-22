@@ -19,6 +19,8 @@ using System.IO;
 
 namespace BizHawk.Client.MultiHawk
 {
+	// TODO: we can safely assume videoprovider cores are a requirement of multihawk,
+	// but fail sooner and with a clear message instead of making misc calls to AsVideoProvider that will fail
 	public partial class EmulatorWindow : Form
 	{
 		public EmulatorWindow(Mainform parent)
@@ -165,7 +167,7 @@ namespace BizHawk.Client.MultiHawk
 							var args = str.Split(' ');
 							if (args[0] == "Framebuffer")
 							{
-								Emulator.VideoProvider().GetVideoBuffer().ReadFromHex(args[1]);
+								Emulator.AsVideoProvider().GetVideoBuffer().ReadFromHex(args[1]);
 							}
 						}
 					}
@@ -184,11 +186,11 @@ namespace BizHawk.Client.MultiHawk
 			try
 			{
 				using (new SimpleTime("Load Framebuffer"))
-					QuickBmpFile.Load(Emulator.VideoProvider(), br.BaseStream);
+					QuickBmpFile.Load(Emulator.AsVideoProvider(), br.BaseStream);
 			}
 			catch
 			{
-				var buff = Emulator.VideoProvider().GetVideoBuffer();
+				var buff = Emulator.AsVideoProvider().GetVideoBuffer();
 				try
 				{
 					for (int i = 0; i < buff.Length; i++)
@@ -264,9 +266,9 @@ namespace BizHawk.Client.MultiHawk
 						bs.PutLump(BinaryStateLump.Corestate, bw => core.SaveStateBinary(bw));
 				}
 
-				if (true) //Global.Config.SaveScreenshotWithStates)
+				if (true) //TODO: Global.Config.SaveScreenshotWithStates)
 				{
-					var vp = Emulator.VideoProvider();
+					var vp = Emulator.AsVideoProvider();
 					var buff = vp.GetVideoBuffer();
 
 					int out_w = vp.BufferWidth;
@@ -279,7 +281,7 @@ namespace BizHawk.Client.MultiHawk
 						out_h /= 2;
 					}
 					using (new SimpleTime("Save Framebuffer"))
-						bs.PutLump(BinaryStateLump.Framebuffer, (s) => QuickBmpFile.Save(Emulator.VideoProvider(), s, out_w, out_h));
+						bs.PutLump(BinaryStateLump.Framebuffer, (s) => QuickBmpFile.Save(Emulator.AsVideoProvider(), s, out_w, out_h));
 				}
 
 				if (IAmMaster)
@@ -311,7 +313,7 @@ namespace BizHawk.Client.MultiHawk
 			// run this entire thing exactly twice, since the first resize may adjust the menu stacking
 			for (int i = 0; i < 2; i++)
 			{
-				var video = Emulator.VideoProvider();
+				var video = Emulator.AsVideoProvider();
 				int zoom = Global.Config.TargetZoomFactors[Global.Emulator.SystemId];
 				var area = Screen.FromControl(this).WorkingArea;
 
@@ -355,7 +357,7 @@ namespace BizHawk.Client.MultiHawk
 		private Size _lastVideoSize = new Size(-1, -1), _lastVirtualSize = new Size(-1, -1);
 		public void Render()
 		{
-			var video = Emulator.VideoProvider();
+			var video = Emulator.AsVideoProvider();
 
 			Size currVideoSize = new Size(video.BufferWidth, video.BufferHeight);
 			Size currVirtualSize = new Size(video.VirtualWidth, video.VirtualWidth);

@@ -41,11 +41,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewTasMenuItem_Click(object sender, EventArgs e)
 		{
-			if (Mainform.GameIsClosing)
-			{
-				Close();
-			}
-			else
+			if (!Mainform.GameIsClosing)
 			{
 				StartNewTasMovie();
 			}
@@ -61,15 +57,41 @@ namespace BizHawk.Client.EmuHawk
 					filename = string.Empty;
 				}
 
-				var file = OpenFileDialog(
-					filename,
-					PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
-					"Tas Project Files",
-					"tasproj");
-
-				if (file != null)
+				// need to be fancy here, so call the ofd constructor directly instead of helper
+				var all = "*." + string.Join(";*.", MovieService.MovieExtensions.Reverse());
+				var ofd = new OpenFileDialog
 				{
-					LoadFile(file);
+					FileName = filename,
+					InitialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesPathFragment, null),
+					Filter = string.Format(
+						"All Available Files ({0})|{0}|TAS Project Files (*.{1})|*.{1}|Movie Files (*.{2})|*.{2}|All Files|*.*",
+						all, TasMovie.Extension, MovieService.DefaultExtension)
+				};
+
+				var result = ofd.ShowHawkDialog();
+				if (result == DialogResult.OK)
+				{
+					if (ofd.FileName.EndsWith(TasMovie.Extension))
+					{
+						LoadFile(new FileInfo(ofd.FileName));
+					}
+					else if (ofd.FileName.EndsWith(".bkm") || ofd.FileName.EndsWith(".bk2")) // was loaded using "All Files" filter. todo: proper extention iteration
+					{
+						Mainform.StartNewMovie(MovieService.Get(ofd.FileName), false);
+
+						var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+						if (result1 == DialogResult.OK)
+						{
+							ConvertCurrentMovieToTasproj();
+							StartNewMovieWrapper(false);
+							SetUpColumns();
+							SetTextProperty();
+						}
+					}
+					else
+					{
+						MessageBox.Show("This is not a BizHawk movie!", "Movie load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					}
 				}
 			}
 		}
@@ -363,8 +385,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.AnyRowsSelected)
 			{
-				//_tasClipboard.Clear();
-				var list = TasView.SelectedRows.ToList();
+				_tasClipboard.Clear();
+				var list = TasView.SelectedRows.ToArray();
 				var sb = new StringBuilder();
 
 				foreach (var index in list)
@@ -372,7 +394,7 @@ namespace BizHawk.Client.EmuHawk
 					var input = CurrentTasMovie.GetInputState(index);
 					if (input == null)
 						break;
-					//_tasClipboard.Add(new TasClipboardEntry(index, input));
+					_tasClipboard.Add(new TasClipboardEntry(index, input));
 					var lg = CurrentTasMovie.LogGeneratorInstance();
 					lg.SetSource(input);
 					sb.AppendLine(lg.GenerateLogEntry());
@@ -415,14 +437,7 @@ namespace BizHawk.Client.EmuHawk
 						if (needsToRollback)
 						{
 							GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
-							if (wasPaused)
-							{
-								DoAutoRestore();
-							}
-							else
-							{
-								Mainform.UnpauseEmulator();
-							}
+							DoAutoRestore();
 						}
 						else
 						{
@@ -462,14 +477,7 @@ namespace BizHawk.Client.EmuHawk
 						if (needsToRollback)
 						{
 							GoToLastEmulatedFrameIfNecessary(TasView.FirstSelectedIndex.Value);
-							if (wasPaused)
-							{
-								DoAutoRestore();
-							}
-							else
-							{
-								Mainform.UnpauseEmulator();
-							}
+							DoAutoRestore();
 						}
 						else
 						{
@@ -488,7 +496,7 @@ namespace BizHawk.Client.EmuHawk
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 
-				//_tasClipboard.Clear();
+				_tasClipboard.Clear();
 				var list = TasView.SelectedRows.ToArray();
 				var sb = new StringBuilder();
 
@@ -497,7 +505,7 @@ namespace BizHawk.Client.EmuHawk
 					var input = CurrentTasMovie.GetInputState(index);
 					if (input == null)
 						break;
-					//_tasClipboard.Add(new TasClipboardEntry(index, input));
+					_tasClipboard.Add(new TasClipboardEntry(index, input));
 					var lg = CurrentTasMovie.LogGeneratorInstance();
 					lg.SetSource(input);
 					sb.AppendLine(lg.GenerateLogEntry());
@@ -511,14 +519,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					if (wasPaused)
-					{
-						DoAutoRestore();
-					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
+					DoAutoRestore();
 				}
 				else
 				{
@@ -545,14 +546,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					if (wasPaused)
-					{
-						DoAutoRestore();
-					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
+					DoAutoRestore();
 				}
 				else
 				{
@@ -580,14 +574,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(rollBackFrame);
-					if (wasPaused)
-					{
-						DoAutoRestore();
-					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
+					DoAutoRestore();
 				}
 				else
 				{
@@ -614,14 +601,7 @@ namespace BizHawk.Client.EmuHawk
 				if (needsToRollback)
 				{
 					GoToLastEmulatedFrameIfNecessary(insertionFrame);
-					if (wasPaused)
-					{
-						DoAutoRestore();
-					}
-					else
-					{
-						Mainform.UnpauseEmulator();
-					}
+					DoAutoRestore();
 				}
 				else
 				{
@@ -641,14 +621,7 @@ namespace BizHawk.Client.EmuHawk
 			if (needsToRollback)
 			{
 				GoToLastEmulatedFrameIfNecessary(insertionFrame);
-				if (wasPaused)
-				{
-					DoAutoRestore();
-				}
-				else
-				{
-					Mainform.UnpauseEmulator();
-				}
+				DoAutoRestore();
 			}
 			else
 			{
@@ -672,14 +645,7 @@ namespace BizHawk.Client.EmuHawk
 			if (needsToRollback)
 			{
 				GoToLastEmulatedFrameIfNecessary(insertionFrame);
-				if (wasPaused)
-				{
-					DoAutoRestore();
-				}
-				else
-				{
-					Mainform.UnpauseEmulator();
-				}
+				DoAutoRestore();
 			}
 			else
 			{
@@ -772,7 +738,7 @@ namespace BizHawk.Client.EmuHawk
 
 					lastState = Emulator.Frame;
 				}
-			} while (Global.Emulator.Frame < goToFrame);
+			} while (Emulator.Frame < goToFrame);
 
 			MessageBox.Show("Integrity Check passed");
 		}
@@ -1040,10 +1006,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void iconsToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			denoteStatesWithIconsToolStripMenuItem.Checked = Settings.denoteStatesWithIcons;
-			denoteStatesWithBGColorToolStripMenuItem.Checked = Settings.denoteStatesWithBGColor;
-			denoteMarkersWithIconsToolStripMenuItem.Checked = Settings.denoteMarkersWithIcons;
-			denoteMarkersWithBGColorToolStripMenuItem.Checked = Settings.denoteMarkersWithBGColor;
+			DenoteStatesWithIconsToolStripMenuItem.Checked = Settings.DenoteStatesWithIcons;
+			DenoteStatesWithBGColorToolStripMenuItem.Checked = Settings.DenoteStatesWithBGColor;
+			DenoteMarkersWithIconsToolStripMenuItem.Checked = Settings.DenoteMarkersWithIcons;
+			DenoteMarkersWithBGColorToolStripMenuItem.Checked = Settings.DenoteMarkersWithBGColor;
 		}
 
 		private void followCursorToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -1106,27 +1072,27 @@ namespace BizHawk.Client.EmuHawk
 			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "center";
         }
 
-        private void denoteStatesWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DenoteStatesWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TasView.denoteStatesWithIcons = Settings.denoteStatesWithIcons = denoteStatesWithIconsToolStripMenuItem.Checked;
+            Settings.DenoteStatesWithIcons = DenoteStatesWithIconsToolStripMenuItem.Checked;
             RefreshDialog();
         }
 
-        private void denoteStatesWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DenoteStatesWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TasView.denoteStatesWithBGColor = Settings.denoteStatesWithBGColor = denoteStatesWithBGColorToolStripMenuItem.Checked;
+            Settings.DenoteStatesWithBGColor = DenoteStatesWithBGColorToolStripMenuItem.Checked;
             RefreshDialog();
         }
 
-        private void denoteMarkersWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DenoteMarkersWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TasView.denoteMarkersWithIcons = Settings.denoteMarkersWithIcons = denoteMarkersWithIconsToolStripMenuItem.Checked;
+            Settings.DenoteMarkersWithIcons = DenoteMarkersWithIconsToolStripMenuItem.Checked;
             RefreshDialog();
         }
 
-        private void denoteMarkersWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
+        private void DenoteMarkersWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TasView.denoteMarkersWithBGColor = Settings.denoteMarkersWithBGColor = denoteMarkersWithBGColorToolStripMenuItem.Checked;
+            Settings.DenoteMarkersWithBGColor = DenoteMarkersWithBGColorToolStripMenuItem.Checked;
             RefreshDialog();
         }
 
@@ -1156,7 +1122,7 @@ namespace BizHawk.Client.EmuHawk
 				.Where(x => !string.IsNullOrWhiteSpace(x.Text))
 				.Where(x => x.Name != "FrameColumn");
 
-			ToolStripMenuItem[] playerMenus = new ToolStripMenuItem[Global.Emulator.ControllerDefinition.PlayerCount + 1];
+			ToolStripMenuItem[] playerMenus = new ToolStripMenuItem[Emulator.ControllerDefinition.PlayerCount + 1];
 			playerMenus[0] = ColumnsSubMenu;
 			for (int i = 1; i < playerMenus.Length; i++)
 			{
@@ -1241,6 +1207,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			ColumnsSubMenu.DropDownItems.Add(defaults);
+			TasView.AllColumns.ColumnsChanged();
 		}
 
 		#endregion

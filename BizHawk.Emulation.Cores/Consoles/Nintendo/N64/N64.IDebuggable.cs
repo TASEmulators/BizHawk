@@ -108,6 +108,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 					break;
 			}
 		}
+    
+		[FeatureNotImplemented]
+		public int TotalExecutedCycles
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		private mupen64plusApi.MemoryCallback _readcb;
+		private mupen64plusApi.MemoryCallback _writecb;
+		private mupen64plusApi.MemoryCallback _executecb;
 
 		private void SetBreakpointHandler()
 		{

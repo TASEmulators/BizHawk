@@ -14,7 +14,6 @@ namespace BizHawk.Client.EmuHawk
 	public class EmuLuaLibrary
 	{
 		private readonly Dictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
-		private readonly LuaConsole _caller;
 
 		private Lua _lua = new Lua();
 		private Lua _currThread;
@@ -44,12 +43,11 @@ namespace BizHawk.Client.EmuHawk
 			get { return (GuiLuaLibrary)Libraries[typeof(GuiLuaLibrary)]; }
 		}
 
-		public EmuLuaLibrary(LuaConsole passed)
+		public EmuLuaLibrary(IEmulatorServiceProvider serviceProvider)
 			: this()
 		{
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
-			_caller = passed.Get();
 
 			// Register lua libraries
 			var libs = Assembly
@@ -57,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 				.GetTypes()
 				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t))
 				.Where(t => t.IsSealed)
-				.Where(t => ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t))
+				.Where(t => ServiceInjector.IsAvailable(serviceProvider, t))
 				.ToList();
 
 			libs.AddRange(
@@ -66,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 				.GetTypes()
 				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t))
 				.Where(t => t.IsSealed)
-				.Where(t => ServiceInjector.IsAvailable(Global.Emulator.ServiceProvider, t))
+				.Where(t => ServiceInjector.IsAvailable(serviceProvider, t))
 			);
 
 			foreach (var lib in libs)
@@ -83,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 					var instance = (LuaLibraryBase)Activator.CreateInstance(lib, _lua);
 					instance.LuaRegister(lib, Docs);
 					instance.LogOutputCallback = ConsoleLuaLibrary.LogOutput;
-					ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, instance);
+					ServiceInjector.UpdateServices(serviceProvider, instance);
 					Libraries.Add(lib, instance);
 				}
 			}
@@ -94,11 +92,11 @@ namespace BizHawk.Client.EmuHawk
 			EmulatorLuaLibrary.YieldCallback = EmuYield;
 		}
 
-		public void Restart()
+		public void Restart(IEmulatorServiceProvider newServiceProvider)
 		{
 			foreach (var lib in Libraries)
 			{
-				ServiceInjector.UpdateServices(Global.Emulator.ServiceProvider, lib.Value);
+				ServiceInjector.UpdateServices(newServiceProvider, lib.Value);
 			}
 		}
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 
-using BizHawk.Client.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
@@ -9,9 +9,9 @@ namespace BizHawk.Client.EmuHawk
 	[SchemaAttributes("SMS")]
 	public class SmsSchema : IVirtualPadSchema
 	{
-		public IEnumerable<PadSchema> GetPadSchemas()
+		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			if ((Global.Emulator as SMS).IsGameGear)
+			if ((core as SMS).IsGameGear)
 			{
 				yield return GGController(1);
 				yield return GGConsoleButtons();

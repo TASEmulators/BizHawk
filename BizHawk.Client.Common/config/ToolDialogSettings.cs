@@ -1,6 +1,8 @@
-﻿using System.Drawing;
+﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+
 using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
@@ -53,6 +55,25 @@ namespace BizHawk.Client.Common
 					_wndy = value;
 				}
 
+			}
+		}
+
+		/// <summary>
+		/// Represents the top left corner coordinate, if Wndx and Wndy form a valid point
+		/// Throws an InvalidOperationException if Wndx or Wndy is null
+		/// It is expected to check for this before using this property
+		/// </summary>
+		[JsonIgnore]
+		public Point TopLeft
+		{
+			get
+			{
+				if (_wndx.HasValue && _wndy.HasValue)
+				{
+					return new Point(_wndx.Value, _wndy.Value);
+				}
+
+				throw new InvalidOperationException("TopLeft can not be used when one of the coordinates is null");
 			}
 		}
 

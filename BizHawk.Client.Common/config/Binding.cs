@@ -152,6 +152,7 @@ namespace BizHawk.Client.Common
 						Bind("General", "Exit Program"),
 						Bind("General", "Screen Raw to Clipboard", "Ctrl+C"),
 						Bind("General", "Screen Client to Clipboard", "Ctrl+Shift+C"),
+						Bind("General", "Toggle Skip Lag Frame"),
 
 						Bind("Save States", "Save State 0", "Shift+F10"),
 						Bind("Save States", "Save State 1", "Shift+F1"),
@@ -229,6 +230,12 @@ namespace BizHawk.Client.Common
 						Bind("TAStudio", "Insert Frame", "Insert"),
 						Bind("TAStudio", "Delete Frames", "Ctrl+Delete"),
 						Bind("TAStudio", "Clone Frames", "Ctrl+Insert"),
+						Bind("TAStudio", "Analog Increment", "UpArrow"),
+						Bind("TAStudio", "Analog Decrement", "DownArrow"),
+						Bind("TAStudio", "Analog Incr. by 10", "Shift+UpArrow"),
+						Bind("TAStudio", "Analog Decr. by 10", "Shift+DownArrow"),
+						Bind("TAStudio", "Analog Maximum", "RightArrow"),
+						Bind("TAStudio", "Analog Minimum", "LeftArrow"),
 
 						Bind("SNES", "Toggle BG 1"),
 						Bind("SNES", "Toggle BG 2"),

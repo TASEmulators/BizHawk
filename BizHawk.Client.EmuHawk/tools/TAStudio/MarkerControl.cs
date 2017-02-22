@@ -16,7 +16,6 @@ namespace BizHawk.Client.EmuHawk
 	public partial class MarkerControl : UserControl
 	{
 		public TAStudio Tastudio { get; set; }
-		public IEmulator Emulator { get; set; }
 		public TasMovieMarkerList Markers { get { return Tastudio.CurrentTasMovie.Markers; } }
 
 		public MarkerControl()
@@ -52,11 +51,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
-			var prev = Markers.PreviousOrCurrent(Global.Emulator.Frame);//Temp fix
-
+			var prev = Markers.PreviousOrCurrent(Tastudio.Emulator.Frame);
+				
 			if (prev != null && index == Markers.IndexOf(prev))
 			{
-				color = TAStudio.Marker_FrameCol;
+				// feos: taseditor doesn't have it, so we're free to set arbitrary color scheme. and I prefer consistency
+				color = TAStudio.CurrentFrame_InputLog;
 			}
 			else if (index < Markers.Count)
 			{
@@ -161,7 +161,7 @@ namespace BizHawk.Client.EmuHawk
 		public void AddMarker(bool editText = false, int? frame = null)
 		{
 			// feos: we specify the selected frame if we call this from TasView, otherwise marker should be added to the emulated frame
-			var markerFrame = frame ?? Global.Emulator.Frame;
+			var markerFrame = frame ?? Tastudio.Emulator.Frame;
 
 			if (editText)
 			{
@@ -175,7 +175,11 @@ namespace BizHawk.Client.EmuHawk
 						Markers.PreviousOrCurrent(markerFrame).Message :
 						""
 				};
-				var result = i.ShowHawkDialog();
+
+				var point = Cursor.Position;
+				point.Offset(i.Width / -2, i.Height / -2);
+
+				var result = i.ShowHawkDialog(position: point);
 				if (result == DialogResult.OK)
 				{
 					Markers.Add(new TasMovieMarker(markerFrame, i.PromptText));
@@ -190,9 +194,10 @@ namespace BizHawk.Client.EmuHawk
 			Tastudio.RefreshDialog();
 		}
 
-		public void EditMarkerPopUp(TasMovieMarker marker)
+		public void EditMarkerPopUp(TasMovieMarker marker, bool followCursor = false)
 		{
 			var markerFrame = marker.Frame;
+			var point = default(Point);
 			InputPrompt i = new InputPrompt
 			{
 				Text = "Marker for frame " + markerFrame,
@@ -204,7 +209,12 @@ namespace BizHawk.Client.EmuHawk
 					""
 			};
 
-			var result = i.ShowHawkDialog();
+			if (followCursor)
+			{
+				point = Cursor.Position;
+				point.Offset(i.Width / -2, i.Height / -2);
+			}
+			var result = i.ShowHawkDialog(position: point);
 
 			if (result == DialogResult.OK)
 			{

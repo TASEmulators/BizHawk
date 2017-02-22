@@ -160,9 +160,6 @@
     </Compile>
     <Compile Include="Calculator\TI83LinkPort.cs" />
     <Compile Include="Computers\AppleII\AppleII.cs" />
-    <Compile Include="Computers\AppleII\AppleII.IAudioProvider.cs">
-      <DependentUpon>AppleII.cs</DependentUpon>
-    </Compile>
     <Compile Include="Computers\AppleII\AppleII.IDebuggable.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
@@ -179,6 +176,9 @@
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
     <Compile Include="Computers\AppleII\AppleII.ISettable.cs">
+      <DependentUpon>AppleII.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\AppleII\AppleII.ISoundProvider.cs">
       <DependentUpon>AppleII.cs</DependentUpon>
     </Compile>
     <Compile Include="Computers\AppleII\AppleII.IStatable.cs">
@@ -375,6 +375,9 @@
     <Compile Include="Consoles\Atari\lynx\Lynx.ISaveRam.cs">
       <DependentUpon>Lynx.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Atari\lynx\Lynx.ISoundProvider.cs">
+      <DependentUpon>Lynx.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Atari\lynx\Lynx.IStatable.cs">
       <DependentUpon>Lynx.cs</DependentUpon>
     </Compile>
@@ -397,18 +400,29 @@
     <Compile Include="Consoles\Coleco\ColecoVision.IStatable.cs">
       <DependentUpon>ColecoVision.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Coleco\ColecoVision.ISoundProvider.cs">
+      <DependentUpon>ColecoVision.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Coleco\Input.cs" />
     <Compile Include="Consoles\Coleco\MemoryMap.cs" />
     <Compile Include="Consoles\Coleco\TMS9918A.cs" />
     <Compile Include="Consoles\Intellivision\Cartridge.cs" />
+    <Compile Include="Consoles\Intellivision\Controllers\IntellivisionControllerDeck.cs" />
     <Compile Include="Consoles\Intellivision\ICart.cs" />
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
+    <Compile Include="Consoles\Intellivision\Intellivision.ISettable.cs">
+      <DependentUpon>Intellivision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Intellivision\Controllers\IntellivisionControllers.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.IEmulator.cs">
       <DependentUpon>Intellivision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Intellivision\Intellivision.IMemoryDomains.cs">
-        <DependentUpon>Intellivision.cs</DependentUpon>
+      <DependentUpon>Intellivision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Intellivision\Intellivision.IStatable.cs">
+      <DependentUpon>Intellivision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Intellivision\Intellivision.MemoryMap.cs">
       <DependentUpon>Intellivision.cs</DependentUpon>
@@ -429,6 +443,9 @@
       <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ISettable.cs">
+      <DependentUpon>Gambatte.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ISoundProvider.cs">
       <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IStatable.cs">
@@ -504,6 +521,9 @@
       <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.ISettings.cs">
+      <DependentUpon>VBANext.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\VBANext.ISoundProvider.cs">
       <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.IStatable.cs">
@@ -641,6 +661,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper183.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper186.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper188.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper190.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper193.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper200.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper201.cs" />
@@ -799,7 +820,6 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC6.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\VRC7.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\VS_M99.cs" />
-    <Compile Include="Consoles\Nintendo\NES\BisqAPU.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDS.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDSAudio.cs" />
     <Compile Include="Consoles\Nintendo\NES\FDS\FDSInspector.cs" />
@@ -864,6 +884,9 @@
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.ISettable.cs">
       <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.ISoundProvider.cs">
+      <DependentUpon>QuickNES.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\QuickNES\QuickNES.IStatable.cs">
       <DependentUpon>QuickNES.cs</DependentUpon>
     </Compile>
@@ -888,8 +911,34 @@
     <Compile Include="Consoles\PC Engine\MemoryMap.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.Populous.cs" />
     <Compile Include="Consoles\PC Engine\PCEngine.ArcadeCard.cs" />
-    <Compile Include="Consoles\PC Engine\PCEngine.CDLMapping.cs" />
+    <Compile Include="Consoles\PC Engine\PCEngine.ICodeDataLogger.cs">
+      <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\PC Engine\PCEngine.IDebuggable.cs">
+      <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\PC Engine\PCEngine.IDriveLight.cs">
+      <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\PC Engine\PCEngine.IEmulator.cs">
+      <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\PC Engine\PCEngine.IInputPollable.cs">
+      <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\PC Engine\PCEngine.IMemoryDomains.cs">
+      <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.Input.cs" />
+    <Compile Include="Consoles\PC Engine\PCEngine.ISaveRam.cs">
+      <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\PC Engine\PCEngine.ISettable.cs">
+      <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\PC Engine\PCEngine.IStatable.cs">
+      <DependentUpon>PCEngine.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
     <Compile Include="Consoles\Sega\Genesis\Cart\EEPROM.cs" />
@@ -898,6 +947,9 @@
     <Compile Include="Consoles\Sega\Genesis\Genesis.Input.cs" />
     <Compile Include="Consoles\Sega\Genesis\Genesis.IO.cs" />
     <Compile Include="Consoles\Sega\Genesis\Native68000\Musashi.cs" />
+    <Compile Include="Consoles\Sega\gpgx64\GPGX.ISoundProvider.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Sega\gpgx\GenDbgHlp.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.cs" />
     <Compile Include="Consoles\Sega\gpgx\GPGX.ICodeDataLogger.cs">
@@ -925,6 +977,9 @@
       <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.ISettable.cs">
+      <DependentUpon>GPGX.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Sega\gpgx\GPGX.ISoundProvider.cs">
       <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Sega\gpgx\GPGX.IStatable.cs">
@@ -1027,6 +1082,9 @@
     <Compile Include="Consoles\Sega\SMS\SMS.ISettable.cs">
       <DependentUpon>SMS.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Sega\SMS\SMS.ISoundProvider.cs">
+      <DependentUpon>SMS.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Sega\SMS\SMS.IStatable.cs">
       <DependentUpon>SMS.cs</DependentUpon>
     </Compile>
@@ -1068,6 +1126,9 @@
       <DependentUpon>WonderSwan.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\WonderSwan\WonderSwan.ISettable.cs">
+      <DependentUpon>WonderSwan.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\WonderSwan\WonderSwan.ISoundProvider.cs">
       <DependentUpon>WonderSwan.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\WonderSwan\WonderSwan.IStatable.cs">
@@ -1137,8 +1198,10 @@
     <Compile Include="Consoles\Sega\Genesis\MemoryMap.Z80.cs" />
     <Compile Include="Sound\CDAudio.cs" />
     <Compile Include="Sound\HuC6280PSG.cs" />
+    <Compile Include="Sound\IAsyncSoundProvider.cs" />
     <Compile Include="Sound\MMC5Audio.cs" />
     <Compile Include="Sound\SN76489.cs" />
+    <Compile Include="Sound\SoundMixer.cs" />
     <Compile Include="Sound\Sunsoft5BAudio.cs" />
     <Compile Include="Sound\VRC6Alt.cs" />
     <Compile Include="Sound\YM2413.cs" />

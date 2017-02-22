@@ -37,12 +37,8 @@ namespace BizHawk.Client.EmuHawk
 		// Hiding lag frames (Mainly intended for < 60fps play.)
 		public int LagFramesToHide { get; set; }
 		public bool HideWasLagFrames { get; set; }
-		private byte[] lagFrames = new byte[100]; // Large enough value that it shouldn't ever need resizing.
+		private byte[] lagFrames = new byte[256]; // Large enough value that it shouldn't ever need resizing. // apparently not large enough for 4K
 
-		public bool denoteStatesWithIcons { get; set; }
-		public bool denoteStatesWithBGColor { get; set; }
-		public bool denoteMarkersWithIcons { get; set; }
-		public bool denoteMarkersWithBGColor { get; set; }
 		public bool allowRightClickSelecton { get; set; }
 		public bool letKeysModifySelection { get; set; }
 		public bool suspendHotkeys { get; set; }
@@ -618,6 +614,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var rollSettings = settings as InputRollSettings;
 				_columns = rollSettings.Columns;
+				_columns.ChangedCallback = ColumnChangedCallback;
 				HorizontalOrientation = rollSettings.HorizontalOrientation;
 				LagFramesToHide = rollSettings.LagFramesToHide;
 				HideWasLagFrames = rollSettings.HideWasLagFrames;
@@ -1155,19 +1152,14 @@ namespace BizHawk.Client.EmuHawk
 						var hadIndex = SelectedItems.Any();
 						SelectedItems.Clear();
 						SelectCell(CurrentCell);
-
-						// In this case the SelectCell did not invoke the change event since there was nothing to select
-						// But we went from selected to unselected, that is a change, so catch it here
-						if (hadIndex && CurrentCell.RowIndex.HasValue && CurrentCell.RowIndex > RowCount)
-						{
-							if (SelectedIndexChanged != null)
-							{
-								SelectedIndexChanged(this, new EventArgs());
-							}
-						}
 					}
 
 					Refresh();
+
+					if (SelectedIndexChanged != null)
+					{
+						SelectedIndexChanged(this, new EventArgs());
+					}
 				}
 			}
 
@@ -1682,11 +1674,6 @@ namespace BizHawk.Client.EmuHawk
 						SelectedItems.Add(CurrentCell);
 					}
 				}
-
-				if (SelectedIndexChanged != null)
-				{
-					SelectedIndexChanged(this, new EventArgs());
-				}
 			}
 		}
 
@@ -2021,10 +2008,11 @@ namespace BizHawk.Client.EmuHawk
 
 			private void DoChangeCallback()
 			{
-				if (ChangedCallback != null)
-				{
+				// no check will make it crash for user too, not sure which way of alarm we prefer. no alarm at all will cause all sorts of subtle bugs
+				if (ChangedCallback == null)
+					System.Diagnostics.Debug.Fail("ColumnChangedCallback has died!");
+				else
 					ChangedCallback();
-				}
 			}
 
 			// TODO: this shouldn't be exposed.  But in order to not expose it, each RollColumn must have a change callback, and all property changes must call it, it is quicker and easier to just call this when needed

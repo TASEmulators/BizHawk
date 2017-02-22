@@ -125,7 +125,8 @@ namespace BizHawk.Client.Common
 
 				foreach (var frame in frames.OrderByDescending(x => x)) // Removin them in reverse order allows us to remove by index;
 				{
-					_log.RemoveAt(frame);
+					if (frame < _log.Count)
+						_log.RemoveAt(frame);
 					if (BindMarkersToInput) // TODO: This is slow, is there a better way to do it?
 					{
 						bool wasRecording = ChangeLog.IsRecording;
@@ -370,7 +371,7 @@ namespace BizHawk.Client.Common
 			Changes = true;
 			InvalidateAfter(frame);
 
-			ChangeLog.AddBoolToggle(frame, buttonName, !adapter[buttonName], "Toggle " + buttonName + ": " + frame);
+			ChangeLog.AddBoolToggle(frame, buttonName, !adapter.IsPressed(buttonName), "Toggle " + buttonName + ": " + frame);
 		}
 
 		public void SetBoolState(int frame, string buttonName, bool val)
@@ -379,7 +380,7 @@ namespace BizHawk.Client.Common
 				ExtendMovieForEdit(frame - _log.Count + 1);
 
 			var adapter = GetInputState(frame) as Bk2ControllerAdapter;
-			var old = adapter[buttonName];
+			var old = adapter.IsPressed(buttonName);
 			adapter[buttonName] = val;
 
 			var lg = LogGeneratorInstance();
@@ -405,7 +406,7 @@ namespace BizHawk.Client.Common
 			for (int i = 0; i < count; i++)
 			{
 				var adapter = GetInputState(frame + i) as Bk2ControllerAdapter;
-				bool old = adapter[buttonName];
+				bool old = adapter.IsPressed(buttonName);
 				adapter[buttonName] = val;
 
 				var lg = LogGeneratorInstance();

@@ -194,10 +194,6 @@ namespace BizHawk.Emulation.Common
 						game.MetaData = items.Length >= 6 ? items[5] : null;
 						game.Region = items.Length >= 7 ? items[6] : string.Empty;
 						game.ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : string.Empty;
-						if (items.Length >= 8)
-						{
-							int zzz = 9;
-						}
 
 						if (db.ContainsKey(game.Hash))
 						{

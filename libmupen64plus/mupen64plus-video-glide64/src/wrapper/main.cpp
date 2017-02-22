@@ -212,10 +212,10 @@ static int texbuf_i;
 
 static SDL_Surface *m_pScreen;
 
-// unsigned short * frameBuffer = NULL;
-// unsigned short * depthBuffer = NULL;
-unsigned short frameBuffer[2048*2048];
-unsigned short depthBuffer[2048*2048];
+unsigned short *frameBuffer = NULL;
+unsigned short *depthBuffer = NULL;
+// unsigned short frameBuffer[2048*2048];
+// unsigned short depthBuffer[2048*2048];
 
 //#define VOODOO1
 
@@ -550,6 +550,8 @@ grSstWinOpen(
 
 //   frameBuffer = (unsigned short *) calloc(2048, 2048*sizeof(unsigned short));
 //   depthBuffer = (unsigned short *) calloc(2048, 2048*sizeof(unsigned short));
+  frameBuffer = (unsigned short *)_aligned_malloc(height*width*4, 256);
+  depthBuffer = (unsigned short *)_aligned_malloc(height*width*2, 256);
 
   screen_width = width;
   screen_height = height;
@@ -605,15 +607,15 @@ grSstWinClose( GrContext_t context )
     invtex[i] = 0;
   }
 
-//   if (frameBuffer)
-//     free(frameBuffer);
-//   if (depthBuffer)
-//     free(depthBuffer);
-//   frameBuffer = depthBuffer = NULL;
+  if (frameBuffer)
+    _aligned_free(frameBuffer);
+  if (depthBuffer)
+    _aligned_free(depthBuffer);
+  frameBuffer = depthBuffer = NULL;
   
-    free_combiners();
-    if (use_fbo)
-      glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, 0 );
+  free_combiners();
+  if (use_fbo)
+    glBindFramebufferEXT( GL_FRAMEBUFFER_EXT, 0 );
 
   if (clear_texbuff)
   {

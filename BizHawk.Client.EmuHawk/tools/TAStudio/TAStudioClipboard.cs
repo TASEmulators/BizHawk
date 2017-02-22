@@ -27,12 +27,12 @@ namespace BizHawk.Client.EmuHawk
 				var lg = Global.MovieSession.MovieControllerInstance();
 				lg.SetControllersAsMnemonic(inputLogEntry);
 
-				foreach (var button in lg.Type.BoolButtons)
+				foreach (var button in lg.Definition.BoolButtons)
 				{
 					Global.LuaAndAdaptor.SetButton(button, lg.IsPressed(button));
 				}
 
-				foreach (var floatButton in lg.Type.FloatControls)
+				foreach (var floatButton in lg.Definition.FloatControls)
 				{
 					Global.LuaAndAdaptor.SetFloat(floatButton, lg.GetFloat(floatButton));
 				}
