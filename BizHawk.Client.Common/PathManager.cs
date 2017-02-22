@@ -31,6 +31,7 @@ namespace BizHawk.Client.Common
 
 		public static string GetDllDirectory() { return Path.Combine(GetExeDirectoryAbsolute(), "dll"); }
 
+		private static string _defaultIniPath;
 		/// <summary>
 		/// The location of the default INI file
 		/// </summary>
@@ -38,7 +39,15 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return MakeProgramRelativePath("config.ini");
+				if (_defaultIniPath == null) 
+				{
+					_defaultIniPath = MakeProgramRelativePath ("config.ini");
+				}
+				return _defaultIniPath;
+			}
+			set 
+			{
+				_defaultIniPath = value;
 			}
 		}
 

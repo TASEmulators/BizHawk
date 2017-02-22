@@ -49,6 +49,18 @@ namespace MonoMacWrapper
 
 		private void StartApplication()
 		{
+			NSUrl[] urls = NSFileManager.DefaultManager.GetUrls(NSSearchPathDirectory.ApplicationSupportDirectory, NSSearchPathDomain.User);
+			if (urls.Length > 0) 
+			{
+				string bizhawkSupport = System.IO.Path.Combine(urls[0].Path, "BizHawk/");
+				if(!System.IO.Directory.Exists(bizhawkSupport)) 
+				{
+					System.IO.Directory.CreateDirectory(bizhawkSupport);
+				}
+				string iniPath = System.IO.Path.Combine(bizhawkSupport, "config.ini");
+				BizHawk.Client.Common.PathManager.DefaultIniPath = iniPath;
+			}
+
 			BizHawk.Client.EmuHawk.HawkDialogFactory.OpenDialogClass = typeof(MacOpenFileDialog);
 			BizHawk.Client.EmuHawk.HawkDialogFactory.SaveDialogClass = typeof(MacSaveFileDialog);
 			BizHawk.Client.EmuHawk.HawkDialogFactory.FolderBrowserClass = typeof(MacFolderBrowserDialog);
