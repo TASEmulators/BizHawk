@@ -14,7 +14,6 @@ namespace BizHawk.Client.EmuHawk
 	public class EmuLuaLibrary
 	{
 		private readonly Dictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
-		private readonly LuaConsole _caller;
 
 		private Lua _lua = new Lua();
 		private Lua _currThread;
