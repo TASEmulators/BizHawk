@@ -67,6 +67,19 @@ int add_breakpoint_struct(breakpoint* newbp)
     return g_NumBreakpoints++;
 }
 
+int get_breakpoint_struct(int bpt, breakpoint* copy)
+{
+    if (bpt >= g_NumBreakpoints)
+    {
+        DebugMessage(M64MSG_ERROR, "Invalid breakpoint index.");
+        return -1;
+    }
+
+    memcpy(copy, &g_Breakpoints[bpt], sizeof(breakpoint));
+
+    return 0;
+}
+
 void enable_breakpoint( int bpt)
 {
     breakpoint *curBpt = g_Breakpoints + bpt;
@@ -196,7 +209,7 @@ int check_breakpoints_on_mem_access( uint32 pc, uint32 address, uint32 size, uin
                 log_breakpoint(pc, flags, address);
             
             run = 0;
-            update_debugger(pc);
+            update_debugger(pc, bpt);
         
             return bpt;
         }

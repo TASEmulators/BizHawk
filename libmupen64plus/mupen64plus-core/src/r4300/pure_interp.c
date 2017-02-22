@@ -417,9 +417,8 @@ void pure_interpreter(void)
      CoreCompareCallback();
 #endif
 #ifdef DBG
-     if (g_DebuggerActive) update_debugger(PC->addr);
+     if (g_DebuggerActive) update_debugger(PC->addr, -1);
 #endif
-     EXECUTECB();
 	 TRACECB();
      PC->ops();
    }

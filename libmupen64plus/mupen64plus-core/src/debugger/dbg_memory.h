@@ -31,13 +31,17 @@
 
 #define MEMBREAKREAD(name,size) \
     void name##_break(void) { \
-        check_breakpoints_on_mem_access((PC->addr)-0x4, address, size, BPT_FLAG_ENABLED | BPT_FLAG_READ); \
+        PC->addr-=0x4; \
+        check_breakpoints_on_mem_access(PC->addr, address, size, BPT_FLAG_ENABLED | BPT_FLAG_READ); \
+        PC->addr+=0x4; \
         name (); \
     }
 
 #define MEMBREAKWRITE(name,size) \
     void name##_break(void) { \
-        check_breakpoints_on_mem_access((PC->addr)-0x4, address, size, BPT_FLAG_ENABLED | BPT_FLAG_WRITE); \
+        PC->addr-=0x4; \
+        check_breakpoints_on_mem_access(PC->addr, address, size, BPT_FLAG_ENABLED | BPT_FLAG_WRITE); \
+        PC->addr+=0x4; \
         name (); \
     }
 

@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace BizHawk.Emulation.Common
 {
@@ -14,11 +17,15 @@ namespace BizHawk.Emulation.Common
 		public MemoryCallbackSystem()
 		{
 			ExecuteCallbacksAvailable = true;
+
+			Reads.CollectionChanged += OnCollectionChanged;
+			Writes.CollectionChanged += OnCollectionChanged;
+			Execs.CollectionChanged += OnCollectionChanged;
 		}
 
-		private readonly List<IMemoryCallback> Reads = new List<IMemoryCallback>();
-		private readonly List<IMemoryCallback> Writes = new List<IMemoryCallback>();
-		private readonly List<IMemoryCallback> Execs = new List<IMemoryCallback>();
+		private readonly ObservableCollection<IMemoryCallback> Reads = new ObservableCollection<IMemoryCallback>();
+		private readonly ObservableCollection<IMemoryCallback> Writes = new ObservableCollection<IMemoryCallback>();
+		private readonly ObservableCollection<IMemoryCallback> Execs = new ObservableCollection<IMemoryCallback>();
 
 		private bool _empty = true;
 
@@ -54,7 +61,7 @@ namespace BizHawk.Emulation.Common
 			_empty = false;
 		}
 
-		private static void Call(List<IMemoryCallback> cbs, uint addr)
+		private static void Call(ObservableCollection<IMemoryCallback> cbs, uint addr)
 		{
 			for (int i = 0; i < cbs.Count; i++)
 			{
@@ -105,20 +112,28 @@ namespace BizHawk.Emulation.Common
 		private void UpdateHasVariables()
 		{
 			_hasReads = Reads.Count > 0;
-			_hasWrites = Reads.Count > 0;
-			_hasExecutes = Reads.Count > 0;
+			_hasWrites = Writes.Count > 0;
+			_hasExecutes = Execs.Count > 0;
 		}
 
 		private int RemoveInternal(Action action)
 		{
-			int ret = 0;
-			ret += Reads.RemoveAll(imc => imc.Callback == action);
-			ret += Writes.RemoveAll(imc => imc.Callback == action);
-			ret += Execs.RemoveAll(imc => imc.Callback == action);
+			var readsToRemove = Reads.Where(imc => imc.Callback == action).ToList();
+			var writesToRemove = Writes.Where(imc => imc.Callback == action).ToList();
+			var execsToRemove = Execs.Where(imc => imc.Callback == action).ToList();
+
+			foreach(var read in readsToRemove)
+				Reads.Remove(read);
+
+			foreach(var write in writesToRemove)
+				Writes.Remove(write);
+
+			foreach(var exec in execsToRemove)
+				Execs.Remove(exec);
 
 			UpdateHasVariables();
 
-			return ret;
+			return readsToRemove.Count + writesToRemove.Count + execsToRemove.Count;
 		}
 
 		public void Remove(Action action)
@@ -152,9 +167,16 @@ namespace BizHawk.Emulation.Common
 
 		public void Clear()
 		{
-			Reads.Clear();
-			Writes.Clear();
-			Execs.Clear();
+			// Remove one-by-one to avoid NotifyCollectionChangedAction.Reset events.
+			for(int i = (Reads.Count - 1); i >= 0; i--)
+				Reads.RemoveAt(i);
+
+			for(int i = (Reads.Count - 1); i >= 0; i--)
+				Writes.RemoveAt(i);
+
+			for(int i = (Reads.Count - 1); i >= 0; i--)
+				Execs.RemoveAt(i);
+
 			if (!_empty)
 				Changes();
 			_empty = true;
@@ -165,11 +187,42 @@ namespace BizHawk.Emulation.Common
 		public delegate void ActiveChangedEventHandler();
 		public event ActiveChangedEventHandler ActiveChanged;
 
+		public delegate void CallbackAddedEventHandler(IMemoryCallback callback);
+		public event CallbackAddedEventHandler CallbackAdded;
+
+		public delegate void CallbackRemovedEventHandler(IMemoryCallback callback);
+		public event CallbackRemovedEventHandler CallbackRemoved;
+
 		private void Changes()
 		{
 			if (ActiveChanged != null)
 			{
 				ActiveChanged();
+			}
+		}
+
+		public void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+		{
+			switch(args.Action)
+			{
+				case NotifyCollectionChangedAction.Add:
+					foreach(IMemoryCallback callback in args.NewItems)
+					{
+						if(CallbackAdded != null)
+						{
+							CallbackAdded(callback);
+						}
+					}
+					break;
+				case NotifyCollectionChangedAction.Remove:
+					foreach(IMemoryCallback callback in args.OldItems)
+					{
+						if(CallbackRemoved != null)
+						{
+							CallbackRemoved(callback);
+						}
+					}
+					break;
 			}
 		}
 
