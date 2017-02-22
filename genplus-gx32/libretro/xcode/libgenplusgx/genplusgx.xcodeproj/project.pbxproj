@@ -583,7 +583,7 @@
 		9EB9177B189DBE7D002DF58F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = bizhawk;
 			};
 			buildConfigurationList = 9EB9177E189DBE7D002DF58F /* Build configuration list for PBXProject "genplusgx" */;
