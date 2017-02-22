@@ -167,7 +167,7 @@ namespace BizHawk.Client.EmuHawk
 				file.Stop();
 			}
 
-			LuaImp = new EmuLuaLibrary(this, Emulator.ServiceProvider);
+			LuaImp = new EmuLuaLibrary(Emulator.ServiceProvider);
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => a.Library + "." + a.Name).ToArray());
 
 			foreach (var file in runningScripts)
