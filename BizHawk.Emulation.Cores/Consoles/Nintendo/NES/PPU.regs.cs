@@ -479,6 +479,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//VRAM address register (write)
 		void write_2006(byte value)
 		{
+			if (ppur.status.cycle==256)
+			{
+				conflict_2006 = true;
+			}
 			if (!vtoggle)
 			{
 				ppur._vt &= 0x07;

@@ -35,6 +35,7 @@ namespace BizHawk.Client.EmuHawk
 			GraphicsControl.MouseDoubleClick += (o, e) => HandleFullscreenToggle(o, e);
 			GraphicsControl.MouseClick += (o, e) => GlobalWin.MainForm.MainForm_MouseClick(o, e);
 			GraphicsControl.MouseMove += (o, e) => GlobalWin.MainForm.MainForm_MouseMove(o, e);
+			GraphicsControl.MouseWheel += (o, e) => GlobalWin.MainForm.MainForm_MouseWheel(o, e);
 		}
 
 		bool IsDisposed = false;

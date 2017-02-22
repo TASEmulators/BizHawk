@@ -90,9 +90,9 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"setmarker",
-			"Adds or sets a marker at the given frame with the given message"
+			"Adds or sets a marker at the given frame, with an optional message"
 		)]
-		public void SetMarker(int frame, string message)
+		public void SetMarker(int frame, string message = null)
 		{
 			if (Engaged())
 			{
@@ -153,6 +153,29 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return false;
+		}
+
+		[LuaMethodAttributes(
+			"setplayback",
+			"Seeks the given frame (a number) or marker (a string)"
+		)]
+		public void SetPlayback(object frame)
+		{
+			if (Engaged())
+			{
+				int f;
+				if (frame is double) f = (int)(double)frame;
+				else
+				{
+					f = Tastudio.CurrentTasMovie.Markers.FindIndex((string)frame);
+					if (f == -1) return;
+					f = Tastudio.CurrentTasMovie.Markers[f].Frame;
+				}
+				if (f < Tastudio.CurrentTasMovie.InputLogLength && f>=0)
+				{
+					Tastudio.GoToFrame(f,true);
+				}
+			}
 		}
 
 		[LuaMethodAttributes(

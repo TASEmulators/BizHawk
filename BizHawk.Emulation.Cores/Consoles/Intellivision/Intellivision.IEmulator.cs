@@ -93,7 +93,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			while (_cpu.GetPendingCycles() > 0)
 			{
 				int cycles = _cpu.Execute();
-				//_psg.generate_sound(cycles);
+				_psg.generate_sound(cycles);
 				Connect();
 			}
 
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			while (_cpu.GetPendingCycles() > 0)
 			{
 				int cycles = _cpu.Execute();
-				//_psg.generate_sound(cycles);
+				_psg.generate_sound(cycles);
 				Connect();
 			}
 			_stic.in_vb_2 = false;

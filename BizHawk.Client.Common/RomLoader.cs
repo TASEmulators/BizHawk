@@ -12,6 +12,7 @@ using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
+using GPGX64=BizHawk.Emulation.Cores.Consoles.Sega.gpgx64;
 using BizHawk.Emulation.Cores.Intellivision;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
@@ -474,9 +475,16 @@ namespace BizHawk.Client.Common
 						switch (game.System)
 						{
 							case "GEN":
-								var genesis = new GPGX(
-										nextComm, null, disc, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
-								nextEmulator = genesis;
+								if (Environment.Is64BitProcess)
+								{
+									var genesis = new GPGX64.GPGX(nextComm, null, disc, GetCoreSettings<GPGX64.GPGX>(), GetCoreSyncSettings<GPGX64.GPGX>());
+									nextEmulator = genesis;
+								}
+								else
+								{
+									var genesis = new GPGX(nextComm, null, disc, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
+									nextEmulator = genesis;
+								}
 								break;
 							case "SAT":
 								nextEmulator = new Yabause(nextComm, disc, GetCoreSyncSettings<Yabause>());
@@ -816,8 +824,11 @@ namespace BizHawk.Client.Common
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "GEN":
-								// discard "Genplus-gx64", auto-added due to implementing IEmulator
-								core = CoreInventory.Instance["GEN", "Genplus-gx"];
+								// discard "Genplus-gx64", auto-added due to implementing IEmulator // HUH?
+								//core = CoreInventory.Instance["GEN", "Genplus-gx"];
+								if (Environment.Is64BitProcess)
+									core = CoreInventory.Instance["GEN", "Genplus-gx64"];
+								else core = CoreInventory.Instance["GEN", "Genplus-gx"];
 								break;
 						}
 

@@ -31,14 +31,13 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateValues()
 		{
 			if (!IsHandleCreated || IsDisposed || CurrentTasMovie == null)
-			{
 				return;
-			}
 
 			if (_hackyDontUpdate)
-			{
 				return;
-			}
+
+			if (_exiting)
+				return;
 
 			bool refreshNeeded = false;
 			if (AutoadjustInputMenuItem.Checked)

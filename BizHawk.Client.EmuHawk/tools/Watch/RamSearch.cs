@@ -233,7 +233,7 @@ namespace BizHawk.Client.EmuHawk
 			_defaultWidth = Size.Width;
 			_defaultHeight = Size.Height;
 
-			if (Settings.UseWindowPosition)
+			if (Settings.UseWindowPosition && IsOnScreen(Settings.TopLeft))
 			{
 				Location = Settings.WindowPosition;
 			}
@@ -311,6 +311,8 @@ namespace BizHawk.Client.EmuHawk
 			MessageLabel.Text = "Search restarted";
 			DoDomainSizeCheck();
 			NewSearch();
+			SetSize(_settings.Size);
+			HardSetDisplayTypeDropDown(_settings.Type);
 		}
 
 		public void SaveConfigSettings()

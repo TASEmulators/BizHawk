@@ -74,6 +74,7 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				RecordingModeCheckbox.Checked = value;
+				Global.MovieSession.ReadOnly = !value;
 				if (RecordingModeCheckbox.Checked)
 				{
 					Global.MovieSession.Movie.SwitchToRecord();
@@ -158,6 +159,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RecordingModeCheckbox_MouseClick(object sender, MouseEventArgs e)
 		{
 			RecordingMode ^= true;
+			Tastudio.WasRecording = RecordingMode; // hard reset at manual click
 		}
 
 		private void RewindButton_MouseDown(object sender, MouseEventArgs e)

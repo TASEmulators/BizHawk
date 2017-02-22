@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 
 			e.DrawBackground();
 			e.DrawBorder();
-			e.Graphics.DrawImage(bitmap, e.Bounds.Left, e.Bounds.Top);
+			e.Graphics.DrawImage(bitmap, e.Bounds.Left, e.Bounds.Top, Width, DrawingHeight);
 
 			if (Padding > 0)
 				e.Graphics.DrawString(Text, Font, Brushes.Black, 

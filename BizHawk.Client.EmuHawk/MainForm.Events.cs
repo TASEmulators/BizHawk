@@ -2784,6 +2784,11 @@ namespace BizHawk.Client.EmuHawk
 			AutohideCursor(false);
 		}
 
+		public void MainForm_MouseWheel(object sender, MouseEventArgs e)
+		{
+			MouseWheelTracker += e.Delta;
+		}
+
 		public void MainForm_MouseMove(object sender, MouseEventArgs e)
 		{
 			AutohideCursor(false);

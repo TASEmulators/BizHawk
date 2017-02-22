@@ -153,6 +153,7 @@ namespace BizHawk.Client.EmuHawk
 		public void ClearGraphics()
 		{
 			_luaSurface.Clear();
+			DrawFinish();
 		}
 
 		[LuaMethodAttributes(

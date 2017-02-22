@@ -13,20 +13,15 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public void Reset()
 		{
-			sq_per_A = sq_per_B = sq_per_C = clock_A = clock_B = clock_C = 0x1000;
-			noise_per = noise_clock = 64;
-			env_per = 0x20000;
+			sq_per_A = sq_per_B = sq_per_C = clock_A = clock_B = clock_C = 0x1;
+			noise_per = noise_clock = 1;
+			env_per = 0x1;
+			DiscardSamples();
 		}
 
 		public void DiscardSamples()
 		{
-			
 			sample_count = 0;
-
-			for (int i = 0; i < 3733; i++)
-			{
-				audio_samples[i] = 0;
-			}
 		}
 
 		public void GetSamplesAsync(short[] samples)
@@ -54,17 +49,17 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			short[] ret = new short[735 * 2];
+			short[] ret = new short[736 * 2];
 			GetSamples(ret);
 			samples = ret;
-			nsamp = 735;
+			nsamp = 736;
 		}
 
 		public void GetSamples(short[] samples)
 		{
 			for (int i = 0; i < samples.Length / 2; i++)
 			{
-				samples[i * 2] = (short)(audio_samples[(int)Math.Floor(3.7904 * i)]);
+				samples[i * 2] = (short)(audio_samples[(int)Math.Floor(5.072*i)]);
 				samples[(i * 2) + 1] = samples[i * 2];
 			}
 		}
@@ -100,8 +95,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public int noise_per;
 		public int noise=0x1;
 
-		public Func<ushort, ushort> ReadMemory;
-		public Func<ushort, ushort, bool> WriteMemory;
+		public Func<ushort, bool, ushort> ReadMemory;
+		public Func<ushort, ushort, bool, bool> WriteMemory;
 
 		public void SyncState(Serializer ser)
 		{
@@ -130,7 +125,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ser.EndSection();
 		}
 
-		public ushort? ReadPSG(ushort addr)
+		public ushort? ReadPSG(ushort addr, bool peek)
 		{
 			if (addr >= 0x01F0 && addr <= 0x01FF)
 			{
@@ -144,31 +139,31 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			sq_per_A = (Register[0] & 0xFF) | (((Register[4] & 0xF) << 8));
 			if (sq_per_A == 0)
-				sq_per_A = 0x1000;
+				sq_per_A = 0x1;
 
 			sq_per_B = (Register[1] & 0xFF) | (((Register[5] & 0xF) << 8));
 			if (sq_per_B == 0)
-				sq_per_B = 0x1000;
+				sq_per_B = 0x1;
 
 			sq_per_C = (Register[2] & 0xFF) | (((Register[6] & 0xF) << 8));
 			if (sq_per_C == 0)
-				sq_per_C = 0x1000;
+				sq_per_C = 0x1;
 
 			env_per = (Register[3] & 0xFF) | (((Register[7] & 0xFF) << 8));
 			if (env_per == 0)
-				env_per = 0x20000;
+				env_per = 0x1;
 
-			A_on = Register[8].Bit(0);
-			B_on = Register[8].Bit(1);
-			C_on = Register[8].Bit(2);
-			A_noise = Register[8].Bit(3);
-			B_noise = Register[8].Bit(4);
-			C_noise = Register[8].Bit(5);
+			A_on = !Register[8].Bit(0);
+			B_on = !Register[8].Bit(1);
+			C_on = !Register[8].Bit(2);
+			A_noise = !Register[8].Bit(3);
+			B_noise = !Register[8].Bit(4);
+			C_noise = !Register[8].Bit(5);
 
 			noise_per = Register[9] & 0x1F;
 			if (noise_per == 0)
 			{
-				noise_per = 64;
+				noise_per = 1;
 			}
 
 			var shape_select = Register[10] & 0xF;
@@ -190,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			env_vol_C = (Register[13] >> 4) & 0x3;
 		}
 
-		public bool WritePSG(ushort addr, ushort value)
+		public bool WritePSG(ushort addr, ushort value, bool poke)
 		{
 			if (addr >= 0x01F0 && addr <= 0x01FF)
 			{
@@ -324,9 +319,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						clock_C = sq_per_C;
 					}
 
-					sound_out_A = (noise.Bit(0) | A_noise) & (A_on | A_up);
-					sound_out_B = (noise.Bit(0) | B_noise) & (B_on | B_up);
-					sound_out_C = (noise.Bit(0) | C_noise) & (C_on | C_up);
+					sound_out_A = (noise.Bit(0) & A_noise) | (A_on & A_up);
+					sound_out_B = (noise.Bit(0) & B_noise) | (B_on & B_up);
+					sound_out_C = (noise.Bit(0) & C_noise) | (C_on & C_up);
 
 					//now calculate the volume of each channel and add them together
 					if (env_vol_A == 0)
@@ -340,7 +335,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							shift_A = 0;
 						audio_samples[sample_count] = (short)(sound_out_A ? (volume_table[env_E]>>shift_A) : 0);
 					}
-
+					
 					if (env_vol_B == 0)
 					{
 						audio_samples[sample_count] += (short)(sound_out_B ? volume_table[vol_B] : 0);
@@ -352,7 +347,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							shift_B = 0;
 						audio_samples[sample_count] += (short)(sound_out_B ? (volume_table[env_E] >> shift_B) : 0);
 					}
-
+					
 					if (env_vol_C == 0)
 					{
 						audio_samples[sample_count] += (short)(sound_out_C ? volume_table[vol_C] : 0);
@@ -364,6 +359,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							shift_C = 0;
 						audio_samples[sample_count] += (short)(sound_out_C ? (volume_table[env_E] >> shift_C) : 0);
 					}
+					
 					sample_count++;
 				}
 			}

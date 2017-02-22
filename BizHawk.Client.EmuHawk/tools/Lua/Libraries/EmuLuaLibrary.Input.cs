@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"getmouse",
-			"Returns a lua table of the mouse X/Y coordinates and button states. Table keys are X, Y, Left, Middle, Right, XButton1, XButton2"
+			"Returns a lua table of the mouse X/Y coordinates and button states. Table keys are X, Y, Left, Middle, Right, XButton1, XButton2, Wheel."
 		)]
 		public LuaTable GetMouse()
 		{
@@ -48,6 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			buttons[MouseButtons.Right.ToString()] = (Control.MouseButtons & MouseButtons.Right) != 0;
 			buttons[MouseButtons.XButton1.ToString()] = (Control.MouseButtons & MouseButtons.XButton1) != 0;
 			buttons[MouseButtons.XButton2.ToString()] = (Control.MouseButtons & MouseButtons.XButton2) != 0;
+			buttons["Wheel"] = GlobalWin.MainForm.MouseWheelTracker;
 			return buttons;
 		}
 	}

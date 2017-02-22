@@ -351,6 +351,7 @@ namespace BizHawk.Client.EmuHawk
 						var ss = snes.GetSyncSettings();
 						ss.Profile = "Compatibility";
 						snes.PutSyncSettings(ss);
+						Mainform.RebootCore();
 					}
 					else if (result == DialogResult.Cancel)
 					{
@@ -456,11 +457,12 @@ namespace BizHawk.Client.EmuHawk
 					// todo: make a proper user editable list?
 					c.Name == "Power" ||
 					c.Name == "Reset" ||
-					c.Name.StartsWith("Tilt") ||
 					c.Name == "Light Sensor" ||
 					c.Name == "Open" ||
 					c.Name == "Close" ||
-					c.Name == "Disc Select"
+					c.Name == "Disc Select" ||
+					c.Name.StartsWith("Tilt") ||
+					c.Name.StartsWith("Key ")
 				);
 
 			foreach (var column in columnsToHide)
@@ -541,7 +543,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.MovieSession.Movie.Save();
 			Global.MovieSession.Movie = Global.MovieSession.Movie.ToTasMovie();
 			Global.MovieSession.Movie.Save();
-			Global.MovieSession.Movie.SwitchToRecord();
+			Global.MovieSession.Movie.SwitchToPlay();
 			Settings.RecentTas.Add(Global.MovieSession.Movie.Filename);
 		}
 
@@ -622,27 +624,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				if (movie.Filename.EndsWith(TasMovie.Extension))
-				{
-				
-				}
-				else if (movie.Filename.EndsWith(".bkm") || movie.Filename.EndsWith(".bk2")) // was loaded using "All Files" filter. todo: proper extention iteration
-				{
-					var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-					if (result1 == DialogResult.OK)
-					{
-						StartNewMovieWrapper(false, movie);
-						ConvertCurrentMovieToTasproj();
-						SetUpColumns();
-						return true;
-					}
-					return false;
-				}
-				else 
-				{
-					MessageBox.Show("This is not a BizHawk movie!", "Movie load error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return false;
-				}
 				result = StartNewMovieWrapper(false, movie);
 			}
 
@@ -667,6 +648,8 @@ namespace BizHawk.Client.EmuHawk
 				movie = CurrentTasMovie;
 			SetTasMovieCallbacks(movie as TasMovie);
 			bool result = Mainform.StartNewMovie(movie, record);
+			if (result)
+				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
 			TastudioPlayMode();
 			_initializing = false;
 
@@ -775,6 +758,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RefreshDialog(bool refreshTasView = true)
 		{
+			if (_exiting)
+				return;
+
 			if (refreshTasView)
 				RefreshTasView();
 
@@ -822,12 +808,12 @@ namespace BizHawk.Client.EmuHawk
 			//_autoRestoreFrame = null;
 		}
 
-		private void StartAtNearestFrameAndEmulate(int frame)
+		private void StartAtNearestFrameAndEmulate(int frame, bool fromLua, bool fromRewinding)
 		{
 			if (frame == Emulator.Frame)
 				return;
 
-			_wasRecording = CurrentTasMovie.IsRecording || _wasRecording;
+			_shouldUnpauseFromRewind = fromRewinding && !Mainform.EmulatorPaused;
 			TastudioPlayMode();
 			KeyValuePair<int, byte[]> closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
 			if (closestState.Value != null && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
@@ -835,12 +821,43 @@ namespace BizHawk.Client.EmuHawk
 				LoadState(closestState);
 			}
 
-			// frame == Emualtor.Frame when frame == 0
+			if (fromLua)
+			{
+				bool wasPaused = Mainform.EmulatorPaused; 
+				
+				//why not use this? because I'm not letting the form freely run. it all has to be under this loop.
+				//i could use this and then poll StepRunLoop_Core() repeatedly, but.. that's basically what I'm doing
+				//PauseOnFrame = frame;
+				
+				//can't re-enter lua while doing this
+				Mainform.SuppressLua = true;
+				while (Emulator.Frame != frame)
+					Mainform.SeekFrameAdvance();
+				Mainform.SuppressLua = false;
+
+				if(!wasPaused) Mainform.UnpauseEmulator();
+
+				//lua botting users will want to re-activate record mode automatically -- it should be like nothing ever happened
+				if (WasRecording)
+				{
+					TastudioRecordMode();
+				}
+
+				//now the next section won't happen since we're at the right spot
+			}
+
+			// frame == Emulator.Frame when frame == 0
 			if (frame > Emulator.Frame)
 			{
-				if (Mainform.EmulatorPaused || Mainform.IsSeeking) // make seek frame keep up with emulation on fast scrolls
+				if (Mainform.EmulatorPaused || Mainform.IsSeeking || fromRewinding) // make seek frame keep up with emulation on fast scrolls
 				{
 					StartSeeking(frame);
+				}
+				else
+				{
+					//GUI users may want to be protected from clobbering their video when skipping around...
+					//well, users who are rewinding arent. (that gets done through the seeking system in the call above)
+					//users who are clicking around.. I dont know.
 				}
 			}
 		}

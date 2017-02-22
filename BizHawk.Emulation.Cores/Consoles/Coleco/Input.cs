@@ -1,4 +1,5 @@
 ﻿using BizHawk.Emulation.Common;
+using System;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
@@ -30,7 +31,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		byte ReadController1()
 		{
 			_isLag = false;
-
+			
 			if (InputPortSelection == InputPortMode.Left)
 			{
 				byte retval = 0x7F;
@@ -45,7 +46,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			if (InputPortSelection == InputPortMode.Right)
 			{
 				byte retval = 0xF;
-
 				//                                   0x00;
 				if (Controller.IsPressed("P1 Key 8")) retval = 0x01;
 				if (Controller.IsPressed("P1 Key 4")) retval = 0x02;
@@ -66,6 +66,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				retval |= 0x30; // always set these bits
 				return retval;
 			}
+			
 
 			return 0x7F;
 		}
@@ -89,22 +90,21 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			if (InputPortSelection == InputPortMode.Right)
 			{
 				byte retval = 0xF;
-
 				//                                   0x00;
-				if (Controller.IsPressed("P2 Key8")) retval = 0x01;
-				if (Controller.IsPressed("P2 Key4")) retval = 0x02;
-				if (Controller.IsPressed("P2 Key5")) retval = 0x03;
+				if (Controller.IsPressed("P2 Key 8")) retval = 0x01;
+				if (Controller.IsPressed("P2 Key 4")) retval = 0x02;
+				if (Controller.IsPressed("P2 Key 5")) retval = 0x03;
 				//                                            0x04;
-				if (Controller.IsPressed("P2 Key7")) retval = 0x05;
+				if (Controller.IsPressed("P2 Key 7")) retval = 0x05;
 				if (Controller.IsPressed("P2 Pound")) retval = 0x06;
-				if (Controller.IsPressed("P2 Key2")) retval = 0x07;
+				if (Controller.IsPressed("P2 Key 2")) retval = 0x07;
 				//                                            0x08;
 				if (Controller.IsPressed("P2 Star")) retval = 0x09;
-				if (Controller.IsPressed("P2 Key0")) retval = 0x0A;
-				if (Controller.IsPressed("P2 Key9")) retval = 0x0B;
-				if (Controller.IsPressed("P2 Key3")) retval = 0x0C;
-				if (Controller.IsPressed("P2 Key1")) retval = 0x0D;
-				if (Controller.IsPressed("P2 Key6")) retval = 0x0E;
+				if (Controller.IsPressed("P2 Key 0")) retval = 0x0A;
+				if (Controller.IsPressed("P2 Key 9")) retval = 0x0B;
+				if (Controller.IsPressed("P2 Key 3")) retval = 0x0C;
+				if (Controller.IsPressed("P2 Key 1")) retval = 0x0D;
+				if (Controller.IsPressed("P2 Key 6")) retval = 0x0E;
 
 				if (Controller.IsPressed("P2 R") == false) retval |= 0x40;
 				retval |= 0x30; // always set these bits

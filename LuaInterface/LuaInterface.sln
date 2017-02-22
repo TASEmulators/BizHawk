@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lua51", "Lua\src\lua514.vcxproj", "{0A82CC4C-9A27-461C-8DB0-A65AC6393748}"
 EndProject
@@ -28,6 +28,7 @@ Global
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release-LUAPERKS|x64.ActiveCfg = Release-LUAPERKS|x64
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release-LUAPERKS|x64.Build.0 = Release-LUAPERKS|x64
 		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release-LUAPERKS|x86.ActiveCfg = Release-LUAPERKS|Win32
+		{0A82CC4C-9A27-461C-8DB0-A65AC6393748}.Release-LUAPERKS|x86.Build.0 = Release-LUAPERKS|Win32
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Debug|x64.ActiveCfg = Debug|x64
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Debug|x64.Build.0 = Debug|x64
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Debug|x86.ActiveCfg = Debug|x86
@@ -39,6 +40,7 @@ Global
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release-LUAPERKS|x64.ActiveCfg = Release-LUAPERKS|x64
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release-LUAPERKS|x64.Build.0 = Release-LUAPERKS|x64
 		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release-LUAPERKS|x86.ActiveCfg = Release-LUAPERKS|x86
+		{F55CABBB-4108-4A39-94E1-581FD46DC021}.Release-LUAPERKS|x86.Build.0 = Release-LUAPERKS|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

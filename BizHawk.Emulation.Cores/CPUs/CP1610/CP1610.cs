@@ -29,10 +29,10 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		public int TotalExecutedCycles;
 		public int PendingCycles;
 
-		public Func<ushort, ushort> ReadMemory;
-		public Func<ushort, ushort, bool> WriteMemory;
+		public Func<ushort, bool, ushort> ReadMemory;
+		public Func<ushort, ushort, bool, bool> WriteMemory;
 
-		private static bool Logging = true;
+		private static bool Logging = false;
 		private static readonly StreamWriter Log;
 
 		public void SyncState(Serializer ser)

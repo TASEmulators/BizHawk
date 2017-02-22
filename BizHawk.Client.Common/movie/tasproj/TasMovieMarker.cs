@@ -282,6 +282,11 @@ namespace BizHawk.Client.Common
 				.FirstOrDefault();
 		}
 
+		public int FindIndex(string markerName)
+		{
+			return this.FindIndex(m => m.Message == markerName);
+		}
+
 		public bool IsMarker(int frame)
 		{
 			return this.Any(m => m == frame);

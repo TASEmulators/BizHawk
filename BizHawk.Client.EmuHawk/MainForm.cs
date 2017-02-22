@@ -553,7 +553,7 @@ namespace BizHawk.Client.EmuHawk
 			// autohold/autofire must not be affected by the following inputs
 			Global.ActiveController.Overrides(Global.LuaAndAdaptor);
 
-			if (GlobalWin.Tools.Has<LuaConsole>())
+				if (GlobalWin.Tools.Has<LuaConsole>() && !SuppressLua)
 			{
 				GlobalWin.Tools.LuaConsole.ResumeScripts(false);
 			}
@@ -655,6 +655,11 @@ namespace BizHawk.Client.EmuHawk
 		public bool TurboFastForward = false;
 		public bool RestoreReadWriteOnStop = false;
 
+		//runloop won't exec lua
+		public bool SuppressLua;
+
+		public long MouseWheelTracker;
+
 		private int? _pauseOnFrame;
 		public int? PauseOnFrame // If set, upon completion of this frame, the client wil pause
 		{
@@ -666,7 +671,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (value == null) // TODO: make an Event handler instead, but the logic here is that after turbo seeking, tools will want to do a real update when the emulator finally pauses
 				{
-					bool skipScripts = !(Global.Config.TurboSeek && !Global.Config.RunLuaDuringTurbo);
+					bool skipScripts = !(Global.Config.TurboSeek && !Global.Config.RunLuaDuringTurbo && !SuppressLua);
 					GlobalWin.Tools.UpdateToolsBefore(skipScripts);
 					GlobalWin.Tools.UpdateToolsAfter(skipScripts);
 				}
@@ -1403,11 +1408,12 @@ namespace BizHawk.Client.EmuHawk
 		private bool _runloopFrameProgress;
 		private long _frameAdvanceTimestamp;
 		private long _frameRewindTimestamp;
+		private bool _frameRewindWasPaused;
 		private bool _runloopFrameadvance;
 		private bool _lastFastForwardingOrRewinding;
 		private bool _inResizeLoop;
 
-		private readonly double _fpsUpdatesPerSecond = 12.0;
+		private readonly double _fpsUpdatesPerSecond = 4.0;
 		private readonly double _fpsSmoothing = 8.0;
 		private double _lastFps;
 		private int _framesSinceLastFpsUpdate;
@@ -2034,7 +2040,7 @@ namespace BizHawk.Client.EmuHawk
 				if (VersionInfo.DeveloperBuild)
 				{
 					return FormatFilter(
-						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;*.int;%ARCH%",
+						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
 						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
 						"Disc Images", "*.cue;*.ccd;*.m3u",
 						"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
@@ -2051,7 +2057,7 @@ namespace BizHawk.Client.EmuHawk
 						"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
 						"Gameboy Advance", "*.gba;%ARCH%",
 						"Colecovision", "*.col;%ARCH%",
-						"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
+						"Intellivision", "*.int;*.bin;*.rom;%ARCH%",
 						"PlayStation", "*.cue;*.ccd;*.m3u",
 						"PSX Executables (experimental)", "*.exe",
 						"PSF Playstation Sound File", "*.psf;*.minipsf",
@@ -2064,7 +2070,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.rom;*.m3u;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
 					"Disc Images", "*.cue;*.ccd;*.m3u",
 					"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -2079,6 +2085,7 @@ namespace BizHawk.Client.EmuHawk
 					"Atari 7800", "*.a78;%ARCH%",
 					"Atari Lynx", "*.lnx;%ARCH%",
 					"Colecovision", "*.col;%ARCH%",
+					"Intellivision", "*.int;*.bin;*.rom;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
@@ -2730,6 +2737,13 @@ namespace BizHawk.Client.EmuHawk
 			StepRunLoop_Core(true);
 		}
 
+		public void SeekFrameAdvance()
+		{
+			PressFrameAdvance = true;
+			StepRunLoop_Core(true);
+			PressFrameAdvance = false;
+		}
+
 		public bool IsLagFrame
 		{
 			get
@@ -2820,7 +2834,7 @@ namespace BizHawk.Client.EmuHawk
 				Global.ClickyVirtualPadController.FrameTick();
 				Global.LuaAndAdaptor.FrameTick();
 
-				if (GlobalWin.Tools.Has<LuaConsole>())
+				if (GlobalWin.Tools.Has<LuaConsole>() && !SuppressLua)
 				{
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameBeforeEvent();
 				}
@@ -2888,7 +2902,7 @@ namespace BizHawk.Client.EmuHawk
 
 				PressFrameAdvance = false;
 
-				if (GlobalWin.Tools.Has<LuaConsole>())
+				if (GlobalWin.Tools.Has<LuaConsole>() && !SuppressLua)
 				{
 					GlobalWin.Tools.LuaConsole.LuaImp.CallFrameAfterEvent();
 				}
@@ -2899,7 +2913,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					UpdateToolsAfter();
+					UpdateToolsAfter(SuppressLua);
 				}
 
 				if (GlobalWin.Tools.IsLoaded<TAStudio>() &&
@@ -4144,12 +4158,24 @@ namespace BizHawk.Client.EmuHawk
 					{
 						isRewinding = true;
 						_frameRewindTimestamp = currentTimestamp;
+						_frameRewindWasPaused = EmulatorPaused;
 					}
 					else
 					{
 						double timestampDeltaMs = (double)(currentTimestamp - _frameRewindTimestamp) / Stopwatch.Frequency * 1000.0;
 						isRewinding = timestampDeltaMs >= Global.Config.FrameProgressDelayMs;
+
+						//clear this flag once we get out of the progress stage
+						if (isRewinding)
+							_frameRewindWasPaused = false;
+
+						//if we're freely running, there's no need for reverse frame progress semantics (that may be debateable though)
+						if (!EmulatorPaused) isRewinding = true;
+
+						if (_frameRewindWasPaused)
+							if (IsSeeking) isRewinding = false;
 					}
+
 
 					if (isRewinding)
 					{
