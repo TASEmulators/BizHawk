@@ -320,7 +320,7 @@ namespace BizHawk.Client.EmuHawk
 		[DllImport("kernel32.dll", SetLastError = true)]
 		static extern uint SetDllDirectory(string lpPathName);
 
-		static void WhackAllMOTWCrapp(string dllDir)
+		static void WhackAllMOTW(string dllDir)
 		{
 			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
 			while (todo.Count > 0)
