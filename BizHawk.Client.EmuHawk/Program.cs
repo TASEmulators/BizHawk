@@ -59,6 +59,9 @@ namespace BizHawk.Client.EmuHawk
 			// this will look in subdirectory "dll" to load pinvoked stuff
 			string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 			SetDllDirectory(dllDir);
+			
+			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
+			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 
 			//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
 			//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
@@ -66,9 +69,6 @@ namespace BizHawk.Client.EmuHawk
 			WhackAllMOTW(dllDir);
 
 			//We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
-
-			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
-			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 
 #endif
 		}
