@@ -66,11 +66,13 @@ void destroy_debugger()
 
 //]=-=-=-=-=-=-=-=-=-=-=-=-=[ Mise-a-Jour Debugger ]=-=-=-=-=-=-=-=-=-=-=-=-=[
 
-void update_debugger(uint32 pc, int bpt)
+void update_debugger(uint32 pc)
 // Update debugger state and display.
 // Should be called after each R4300 instruction
 // Checks for breakpoint hits on PC
 {
+    int bpt;
+
     if(run!=0) {//check if we hit a breakpoint
         bpt = check_breakpoints(pc);
         if( bpt!=-1 ) {
@@ -82,7 +84,7 @@ void update_debugger(uint32 pc, int bpt)
     }
 
     if(run!=2) {
-        DebuggerCallback(DEBUG_UI_UPDATE, bpt);  /* call front-end to notify user interface to update */
+        DebuggerCallback(DEBUG_UI_UPDATE, pc);  /* call front-end to notify user interface to update */
     }
     if(run==0) {
         // Emulation thread is blocked until a button is clicked.

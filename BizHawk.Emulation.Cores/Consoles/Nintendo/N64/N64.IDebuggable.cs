@@ -84,31 +84,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
 
-		public bool CanStep(StepType type)
-		{
-			switch(type)
-			{
-				case StepType.Into:
-					return false; // Implemented but disabled for now. Should be re-enabled once BizHawk supports mid-frame pausing.
-				case StepType.Out:
-					return false;
-				case StepType.Over:
-					return false;
-			}
+		public bool CanStep(StepType type) { return false; }
 
-			return false;
-		}
+		[FeatureNotImplemented]
+		public void Step(StepType type) { throw new NotImplementedException(); }
 
-		public void Step(StepType type)
-		{
-			switch(type)
-			{
-				case StepType.Into:
-					api.Step();
-					break;
-			}
-		}
-    
 		[FeatureNotImplemented]
 		public int TotalExecutedCycles
 		{
@@ -119,55 +99,65 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		private mupen64plusApi.MemoryCallback _writecb;
 		private mupen64plusApi.MemoryCallback _executecb;
 
-		private void SetBreakpointHandler()
+		private void RefreshMemoryCallbacks()
 		{
 			var mcs = MemoryCallbacks;
 
-			api.BreakpointHit += delegate(uint address, mupen64plusApi.BreakType type)
+			// we RefreshMemoryCallbacks() after the triggers in case the trigger turns itself off at that point
+			if (mcs.HasReads)
 			{
-				api.OnBreakpoint(new mupen64plusApi.BreakParams
+				_readcb = delegate(uint addr)
 				{
-					_type = type,
-					_addr = address,
-					_mcs = mcs
-				});
-			};
-		}
-
-		private void AddBreakpoint(IMemoryCallback callback)
-		{
-			switch(callback.Type)
-			{
-				case MemoryCallbackType.Read:
-					api.SetBreakpoint(mupen64plusApi.BreakType.Read, callback.Address);
-					break;
-
-				case MemoryCallbackType.Write:
-					api.SetBreakpoint(mupen64plusApi.BreakType.Write, callback.Address);
-					break;
-
-				case MemoryCallbackType.Execute:
-					api.SetBreakpoint(mupen64plusApi.BreakType.Execute, callback.Address);
-					break;
+					api.OnBreakpoint(new mupen64plusApi.BreakParams
+					{
+						_type = mupen64plusApi.BreakType.Read,
+						_addr = addr,
+						_mcs = mcs
+					});
+				};
 			}
-		}
-
-		private void RemoveBreakpoint(IMemoryCallback callback)
-		{
-			switch(callback.Type)
+			else
 			{
-				case MemoryCallbackType.Read:
-					api.RemoveBreakpoint(mupen64plusApi.BreakType.Read, callback.Address);
-					break;
-
-				case MemoryCallbackType.Write:
-					api.RemoveBreakpoint(mupen64plusApi.BreakType.Write, callback.Address);
-					break;
-
-				case MemoryCallbackType.Execute:
-					api.RemoveBreakpoint(mupen64plusApi.BreakType.Execute, callback.Address);
-					break;
+				_readcb = null;
 			}
+
+			if (mcs.HasWrites)
+			{
+				_writecb = delegate(uint addr)
+				{
+					api.OnBreakpoint(new mupen64plusApi.BreakParams
+					{
+						_type = mupen64plusApi.BreakType.Write,
+						_addr = addr,
+						_mcs = mcs
+					});
+				};
+			}
+			else
+			{
+				_writecb = null;
+			}
+
+			if (mcs.HasExecutes)
+			{
+				_executecb = delegate(uint addr)
+				{
+					api.OnBreakpoint(new mupen64plusApi.BreakParams
+					{
+						_type = mupen64plusApi.BreakType.Execute,
+						_addr = addr,
+						_mcs = mcs
+					});
+				};
+			}
+			else
+			{
+				_executecb = null;
+			}
+
+			api.setReadCallback(_readcb);
+			api.setWriteCallback(_writecb);
+			api.setExecuteCallback(_executecb);
 		}
 	}
 }
