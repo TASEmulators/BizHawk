@@ -6,7 +6,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private bool _suppressAskSave = false;
 
-		public bool WantsToControlSavestates { get { return true; } }
+		public bool NamedStatePending = false;
+
+		public bool WantsToControlSavestates { get { return !NamedStatePending; } }
 
 		public void SaveState()
 		{
