@@ -326,6 +326,7 @@
 			this.SnesOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColecoSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.ColecoSkipBiosMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.ColecoControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.N64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.N64PluginSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.N64ControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2912,7 +2913,7 @@
 			// ColecoSubMenu
 			// 
 			this.ColecoSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ColecoSkipBiosMenuItem});
+            this.ColecoSkipBiosMenuItem, this.ColecoControllerSettingsMenuItem});
 			this.ColecoSubMenu.Name = "ColecoSubMenu";
 			this.ColecoSubMenu.Size = new System.Drawing.Size(56, 19);
 			this.ColecoSubMenu.Text = "&Coleco";
@@ -2924,6 +2925,14 @@
 			this.ColecoSkipBiosMenuItem.Size = new System.Drawing.Size(253, 22);
 			this.ColecoSkipBiosMenuItem.Text = "&Skip BIOS intro (When Applicable)";
 			this.ColecoSkipBiosMenuItem.Click += new System.EventHandler(this.ColecoSkipBiosMenuItem_Click);
+			// 
+			// ColecoControllerSettingsMenuItem
+			// 
+			this.ColecoControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
+			this.ColecoControllerSettingsMenuItem.Name = "ColecoControllerSettingsMenuItem";
+			this.ColecoControllerSettingsMenuItem.Size = new System.Drawing.Size(181, 22);
+			this.ColecoControllerSettingsMenuItem.Text = "Controller Settings...";
+			this.ColecoControllerSettingsMenuItem.Click += new System.EventHandler(this.ColecoControllerSettingsMenuItem_Click);
 			// 
 			// N64SubMenu
 			// 
@@ -4077,6 +4086,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator28;
 		private System.Windows.Forms.ToolStripMenuItem ColecoSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem ColecoSkipBiosMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ColecoControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel LedLightStatusLabel;
 		private System.Windows.Forms.ToolStripMenuItem GBASubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GbaGpuViewerMenuItem;

@@ -2195,6 +2195,11 @@ namespace BizHawk.Client.EmuHawk
 			PutCoreSyncSettings(ss);
 		}
 
+		private void ColecoControllerSettingsMenuItem_Click(object sender, EventArgs e)
+		{
+			new ColecoControllerSettings().ShowDialog();
+		}
+
 		#endregion
 
 		#region N64
