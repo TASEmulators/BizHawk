@@ -879,6 +879,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ControllersMenuItem.Enabled = Emulator.ControllerDefinition.Any();
 			RewindOptionsMenuItem.Enabled = Emulator.HasSavestates();
+			WriteGameNameToFileMenuItem.Checked = Global.Config.WriteGameNameToFile;
 		}
 
 		private void FrameSkipMenuItem_DropDownOpened(object sender, EventArgs e)
