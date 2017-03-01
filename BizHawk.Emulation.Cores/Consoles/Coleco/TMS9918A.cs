@@ -5,6 +5,7 @@ using System.IO;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
@@ -19,6 +20,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		ushort VdpAddress;
 		byte VdpBuffer;
 		int TmsMode;
+
+		// interrupt control for quadrature reads
+		bool spin_on1, spin_on2;
 
 		bool Mode1Bit { get { return (Registers[1] & 16) > 0; } }
 		bool Mode2Bit { get { return (Registers[0] & 2) > 0; } }
@@ -50,12 +54,35 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 				if (scanLine == 192)
 				{
+					
 					InterruptPending = true;
+
 					if (EnableInterrupts)
 						Cpu.NonMaskableInterrupt = true;
 				}
 
 				Cpu.ExecuteCycles(228);
+
+				byte temp_ret1 = Deck.ReadPort1(Controller, true);
+				byte temp_ret2 = Deck.ReadPort2(Controller, true);
+
+				if (((temp_ret1.Bit(4) && !spin_on1) | ( temp_ret2.Bit(4) && !spin_on2)) && scanLine == 50)
+				{
+
+					if (EnableInterrupts)
+						Cpu.NonMaskableInterrupt = true;
+
+					if (temp_ret1.Bit(4) && !spin_on1)
+						spin_on1 = true;
+
+					if (temp_ret2.Bit(4) && !spin_on2)
+						spin_on2 = true;
+				}
+				if (!temp_ret1.Bit(4))
+					spin_on1 = false;
+				if (!temp_ret2.Bit(4))
+					spin_on2 = false;
+
 			}
 		}
 
@@ -437,9 +464,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
         }
 
 		Z80A Cpu;
-		public TMS9918A(Z80A cpu)
+		ColecoVisionControllerDeck Deck;
+		public IController Controller;
+		
+		public TMS9918A(Z80A cpu, ColecoVisionControllerDeck deck)
 		{
 			this.Cpu = cpu;
+			this.Deck = deck;
 		}
 
 		public int[] FrameBuffer = new int[256 * 192];

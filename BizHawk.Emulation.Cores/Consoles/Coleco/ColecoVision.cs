@@ -1,6 +1,7 @@
 ﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80;
+using System;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
@@ -11,7 +12,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		isReleased: true
 		)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
-	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, IStatable, ISettable<object, ColecoVision.ColecoSyncSettings>
+	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, IStatable, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
 	{
 		// ROM
 		public byte[] RomData;
@@ -21,7 +22,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		// Machine
 		public Z80A Cpu;
 		public TMS9918A VDP;
-		
+
 		public byte[] Ram = new byte[1024];
 		private readonly TraceBuffer Tracer = new TraceBuffer();
 
@@ -41,11 +42,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			Cpu.WriteHardware = WritePort;
 			Cpu.MemoryCallbacks = MemoryCallbacks;
 
-			VDP = new TMS9918A(Cpu);
-			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(VDP);
 			PSG = new SN76489();
 			_fakeSyncSound = new FakeSyncSound(PSG, 735);
 			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_fakeSyncSound);
+
+			ControllerDeck = new ColecoVisionControllerDeck(this._syncSettings.Port1, this._syncSettings.Port2);
+
+			VDP = new TMS9918A(Cpu, ControllerDeck);
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(VDP);
 
 			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
 			BiosRom = CoreComm.CoreFileProvider.GetFirmware("Coleco", "Bios", true, "Coleco BIOS file is required.");
@@ -61,9 +65,18 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			var serviceProvider = ServiceProvider as BasicServiceProvider;
 			serviceProvider.Register<IDisassemblable>(new Disassembler());
 			serviceProvider.Register<ITraceable>(Tracer);
+
+			VDP.Controller = Controller;
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+
+		public ControllerDefinition ControllerDefinition
+		{
+			get { return ControllerDeck.Definition; }
+		}
+		public ColecoVisionControllerDeck ControllerDeck { get; private set; }
+		public IController Controller { get; set; }
 
 		const ushort RamSizeMask = 0x03FF;
 
@@ -78,7 +91,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			{
 				Cpu.Logger = (s) => Tracer.Put(s);
 			}
-
+			VDP.Controller = Controller;
 			VDP.ExecuteFrame();
 			PSG.EndFrame(Cpu.TotalExecutedCycles);
 
