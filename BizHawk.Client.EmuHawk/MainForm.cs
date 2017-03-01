@@ -3475,7 +3475,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (Global.Config.WriteGameNameToFile)
 					{
-						System.IO.File.WriteAllText("gamename.txt", Global.Game.Name);
+						System.IO.File.WriteAllText("gamename.txt", Global.Game.CleanName);
 					}
 
 					if (Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
