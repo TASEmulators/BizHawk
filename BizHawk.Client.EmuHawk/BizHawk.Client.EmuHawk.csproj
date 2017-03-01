@@ -367,6 +367,12 @@
     <Compile Include="config\InputWidget.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="config\ColecoVision\ColecoControllerSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\ColecoVision\ColecoControllerSettings.Designer.cs">
+      <DependentUpon>ColecoControllerSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\INTV\IntvControllerSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -598,9 +604,7 @@
     <Compile Include="CustomControls\ViewportPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\VirtualListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="CustomControls\VirtualListView.cs" />
     <Compile Include="CustomControls\Win32.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\DisplaySurface.cs" />
@@ -1319,6 +1323,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\InputCompositeWidget.resx">
       <DependentUpon>InputCompositeWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ColecoVision\ColecoControllerSettings.resx">
+      <DependentUpon>ColecoControllerSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\INTV\IntvControllerSettings.resx">
       <DependentUpon>IntvControllerSettings.cs</DependentUpon>
