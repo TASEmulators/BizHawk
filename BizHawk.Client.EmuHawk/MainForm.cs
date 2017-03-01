@@ -1370,7 +1370,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool _runloopFrameProgress;
 		private long _frameAdvanceTimestamp;
 		private long _frameRewindTimestamp;
-		private bool _frameRewindWasPaused;
 		private bool _runloopFrameadvance;
 		private bool _lastFastForwardingOrRewinding;
 		private bool _inResizeLoop;
@@ -2002,7 +2001,7 @@ namespace BizHawk.Client.EmuHawk
 				if (VersionInfo.DeveloperBuild)
 				{
 					return FormatFilter(
-						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
+						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;*.int;%ARCH%",
 						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
 						"Disc Images", "*.cue;*.ccd;*.m3u",
 						"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
@@ -2019,7 +2018,7 @@ namespace BizHawk.Client.EmuHawk
 						"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
 						"Gameboy Advance", "*.gba;%ARCH%",
 						"Colecovision", "*.col;%ARCH%",
-						"Intellivision", "*.int;*.bin;*.rom;%ARCH%",
+						"Intellivision (very experimental)", "*.int;*.bin;*.rom;%ARCH%",
 						"PlayStation", "*.cue;*.ccd;*.m3u",
 						"PSX Executables (experimental)", "*.exe",
 						"PSF Playstation Sound File", "*.psf;*.minipsf",
@@ -2032,7 +2031,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.rom;*.m3u;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
 					"Disc Images", "*.cue;*.ccd;*.m3u",
 					"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -2047,7 +2046,6 @@ namespace BizHawk.Client.EmuHawk
 					"Atari 7800", "*.a78;%ARCH%",
 					"Atari Lynx", "*.lnx;%ARCH%",
 					"Colecovision", "*.col;%ARCH%",
-					"Intellivision", "*.int;*.bin;*.rom;%ARCH%",
 					"TI-83", "*.rom;%ARCH%",
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
@@ -3922,11 +3920,6 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			// allow named state export for tastudio, since it's safe, unlike loading one
-			// todo: make it not save laglog in that case
-			if (GlobalWin.Tools.IsLoaded<TAStudio>())
-				GlobalWin.Tools.TAStudio.NamedStatePending = true;
-
 			if (IsSlave && master.WantsToControlSavestates)
 			{
 				master.SaveStateAs();
@@ -3955,9 +3948,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SaveState(sfd.FileName, sfd.FileName, false);
 			}
-
-			if (GlobalWin.Tools.IsLoaded<TAStudio>())
-				GlobalWin.Tools.TAStudio.NamedStatePending = false;
 		}
 
 		private void LoadStateAs()
@@ -4130,24 +4120,12 @@ namespace BizHawk.Client.EmuHawk
 					{
 						isRewinding = true;
 						_frameRewindTimestamp = currentTimestamp;
-						_frameRewindWasPaused = EmulatorPaused;
 					}
 					else
 					{
 						double timestampDeltaMs = (double)(currentTimestamp - _frameRewindTimestamp) / Stopwatch.Frequency * 1000.0;
 						isRewinding = timestampDeltaMs >= Global.Config.FrameProgressDelayMs;
-
-						//clear this flag once we get out of the progress stage
-						if (isRewinding)
-							_frameRewindWasPaused = false;
-
-						//if we're freely running, there's no need for reverse frame progress semantics (that may be debateable though)
-						if (!EmulatorPaused) isRewinding = true;
-
-						if (_frameRewindWasPaused)
-							if (IsSeeking) isRewinding = false;
 					}
-
 
 					if (isRewinding)
 					{
