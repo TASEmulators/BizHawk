@@ -1,6 +1,7 @@
 ﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80;
+using BizHawk.Common.NumberExtensions;
 using System;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
@@ -48,7 +49,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			ControllerDeck = new ColecoVisionControllerDeck(this._syncSettings.Port1, this._syncSettings.Port2);
 
-			VDP = new TMS9918A(Cpu, ControllerDeck);
+			VDP = new TMS9918A(Cpu);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(VDP);
 
 			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
@@ -65,8 +66,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			var serviceProvider = ServiceProvider as BasicServiceProvider;
 			serviceProvider.Register<IDisassemblable>(new Disassembler());
 			serviceProvider.Register<ITraceable>(Tracer);
-
-			VDP.Controller = Controller;
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -91,8 +90,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			{
 				Cpu.Logger = (s) => Tracer.Put(s);
 			}
-			VDP.Controller = Controller;
-			VDP.ExecuteFrame();
+
+			byte temp_ret1 = ControllerDeck.ReadPort1(Controller, true);
+			byte temp_ret2 = ControllerDeck.ReadPort2(Controller, true);
+
+			VDP.ExecuteFrame(!temp_ret1.Bit(4), !temp_ret2.Bit(4));
 			PSG.EndFrame(Cpu.TotalExecutedCycles);
 
 			if (_isLag)

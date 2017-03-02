@@ -143,42 +143,24 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			if (left_mode)
 			{
-				byte retval = 0x7B;
+				byte retval = 0x4B;
 				
 				if (c.IsPressed(Definition.BoolButtons[0])) retval &= 0x3F;
-				/*
-				if (c.IsPressed(Definition.BoolButtons[1])) retval &= 0xF7;
-				if (c.IsPressed(Definition.BoolButtons[2])) retval &= 0xFB;
-				if (c.IsPressed(Definition.BoolButtons[3])) retval &= 0xFD;
-				if (c.IsPressed(Definition.BoolButtons[4])) retval &= 0xFE;
-				if (c.IsPressed(Definition.BoolButtons[5])) retval &= 0x7F;
-				if (c.IsPressed(Definition.BoolButtons[6])) retval &= 0xDF;
-				if (c.IsPressed(Definition.BoolButtons[7])) retval &= 0xEF;
-				*/
+
 				int x = (int)c.GetFloat(Definition.FloatControls[0]);
 				int y = (int)c.GetFloat(Definition.FloatControls[1]);
-				retval &= CalcDirection(x, y);
+				retval |= CalcDirection(x, y);
 				
-				//Console.WriteLine(retval);
 				return retval;
 			} else
 			{
-				byte retval = 0x7B;
+				byte retval = 0x4B;
 				if (c.IsPressed(Definition.BoolButtons[0])) retval &= 0x3F;
-				/*
-				if (c.IsPressed(Definition.BoolButtons[1])) retval &= 0xF7;
-				if (c.IsPressed(Definition.BoolButtons[2])) retval &= 0xFB;
-				if (c.IsPressed(Definition.BoolButtons[3])) retval &= 0xFD;
-				if (c.IsPressed(Definition.BoolButtons[4])) retval &= 0xFE;
-				if (c.IsPressed(Definition.BoolButtons[5])) retval &= 0x7F;
-				if (c.IsPressed(Definition.BoolButtons[6])) retval &= 0xDF;
-				if (c.IsPressed(Definition.BoolButtons[7])) retval &= 0xEF;
-				*/
+
 				int x = (int)c.GetFloat(Definition.FloatControls[0]);
 				int y = (int)c.GetFloat(Definition.FloatControls[1]);
-				retval &= CalcDirection(x, y);
+				retval |= CalcDirection(x, y);
 				
-				//Console.WriteLine(retval);
 				return retval;
 			}
 		}
@@ -190,7 +172,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private static readonly string[] BaseBoolDefinition =
 		{
-			"Pedal", "T1", "T2", "T3", "T4", "T5", "T6", "T7"
+			"Pedal"
 		};
 
 		// x and y are both assumed to be in [-127, 127]
@@ -199,41 +181,26 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private static byte CalcDirection(int x, int y)
 		{
 			y = -y; // vflip to match the arrangement of FloatControllerButtons
-
+			/*
 			// deadzone: if we're less than ? units from the origin, return no direction
 			if (x * x + y * y < Deadzone * Deadzone)
 			{
-				return 0x7F; // nothing pressed
+				return 0x0F; // nothing pressed
 			}
+			*/
+			if ((y >= 0 && y>=Math.Abs(x)))
+				return 0x3F;
+			if ((y < 0 && Math.Abs(y) >= Math.Abs(x)))
+				return 0x1F;
+			if ((x > 0 && Math.Abs(y) < x))
+				return 0x0F;
+			if ((x < 0 && Math.Abs(y) < Math.Abs(x)))
+				return 0x2F;
 
-			double t = Math.Atan2(y, x) * 8.0 / Math.PI;
-			int i = (int)Math.Round(t);
-			return FloatControllerButtons[i & 15];
+			Console.WriteLine("Error");
+			return 0x1F;
 		}
 
-		private const int Deadzone = 50;
-
-		private static byte[] FloatControllerButtons = new byte[]
-		{
-			0x6F, // E
-			0x4F, // ENE
-			0x4F, // NE
-			0x4F, // NNE
-
-			0x4F, // N
-			0x5F, // NNW
-			0x5F, // NW
-			0x5F, // WNW
-
-			0x5F, // W
-			0x7F, // WSW
-			0x7F, // SW
-			0x7F, // SSW
-
-			0x7F, // S
-			0x6F, // SSE
-			0x6F, // SE
-			0x6F, // ESE
-		};
+		//private const int Deadzone = 50;
 	}
 }
