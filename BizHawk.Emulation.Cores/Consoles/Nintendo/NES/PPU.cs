@@ -217,6 +217,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
             ser.Sync("Spr_zero_in_Range", ref sprite_zero_in_range);
 			ser.Sync("Is_even_cycle", ref is_even_cycle);
 			ser.Sync("soam_index", ref soam_index);
+			ser.Sync("install_2006", ref install_2006);
 
 			ser.Sync("ppu_open_bus", ref ppu_open_bus);
 			ser.Sync("double_2007_read", ref double_2007_read);
@@ -280,6 +281,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity
 			for (int i = 0; i < x; i++)
 			{
+				if (install_2006>0)
+				{
+					install_2006--;
+					if (install_2006==0)
+					{
+						ppur.install_latches();
+					}
+				}
+
 				ppur.status.cycle++;
                 is_even_cycle = !is_even_cycle;
 				//might not actually run a cpu cycle if there are none to be run right now

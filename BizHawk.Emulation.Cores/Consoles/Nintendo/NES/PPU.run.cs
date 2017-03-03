@@ -41,6 +41,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool reg_2001_color_disable_latch; // the value used here is taken 
 		public bool conflict_2006, ppu_was_on;
 
+		// installing vram address is delayed after second write to 2006, set this up here
+		public int install_2006;
+
 		struct TempOAM
 		{
 			public byte oam_y;

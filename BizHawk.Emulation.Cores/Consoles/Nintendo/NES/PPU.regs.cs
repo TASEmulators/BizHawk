@@ -497,7 +497,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ppur._vt &= 0x18;
 				ppur._vt |= (value >> 5);
 				ppur._ht = value & 31;
-				ppur.install_latches();
+
+				// testing indicates that this operation is delayed by 3 pixels
+				// ppur.install_latches();
+
+				install_2006 = 3;
+				
 				//nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
 				//normally the address isnt observed by the board till it gets clocked by a read or write.
 				//but maybe thats just because a ppu read/write shoves it on the address bus
