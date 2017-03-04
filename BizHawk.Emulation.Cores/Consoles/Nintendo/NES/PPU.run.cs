@@ -39,10 +39,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int spriteHeight;
 		public byte[] soam = new byte[512]; // in a real nes, this would only be 32, but we wish to allow more then 8 sprites per scanline
 		public bool reg_2001_color_disable_latch; // the value used here is taken 
-		public bool conflict_2006, ppu_was_on;
+		public bool ppu_was_on;
 
 		// installing vram address is delayed after second write to 2006, set this up here
 		public int install_2006;
+		public bool race_2006;
 
 		struct TempOAM
 		{
@@ -134,14 +135,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					
 					break;
 				case 7:
-					
+					race_2006 = false;
 					runppu(1);
+
 					//horizontal scroll clocked at cycle 3 and then
 					//vertical scroll at 256
 					if (ppu_was_on)
 					{
 						ppur.increment_hsc();
-						if (ppur.status.cycle == 256 && !conflict_2006)
+						if (ppur.status.cycle == 256 && !race_2006)
 							ppur.increment_vs();
 					}
 					ppu_was_on = false;
@@ -734,7 +736,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else
 					runppu(1);
 
-				conflict_2006 = false;
+				race_2006 = false;
 			} // scanline loop
 
 			ppur.status.sl = 241;

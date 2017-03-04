@@ -479,10 +479,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//VRAM address register (write)
 		void write_2006(byte value)
 		{
-			if (ppur.status.cycle==256)
-			{
-				conflict_2006 = true;
-			}
+
 			if (!vtoggle)
 			{
 				ppur._vt &= 0x07;
@@ -502,14 +499,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// ppur.install_latches();
 
 				install_2006 = 3;
-				
-				//nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
-				//normally the address isnt observed by the board till it gets clocked by a read or write.
-				//but maybe thats just because a ppu read/write shoves it on the address bus
-				//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests dont pass
-				//ONLY if the ppu is not rendering
-				if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
-					nes.Board.AddressPPU(ppur.get_2007access());
 			}
 
 			vtoggle ^= true;
