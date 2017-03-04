@@ -74,37 +74,37 @@ namespace BizHawk.Client.MultiHawk
 					return NesCartFile
 						.GetStream()
 						.ReadAllBytes();
-				};
-
-				Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
-
-				Input.Initialize(this.Handle);
-				InitControls();
-
-				// TODO
-				//CoreFileProvider.SyncCoreCommInputSignals();
-
-				Global.ActiveController = new Controller(NullController.Instance.Definition);
-				Global.AutoFireController = Global.AutofireNullControls;
-				Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
-
-				Closing += (o, e) =>
-				{
-					Global.MovieSession.Movie.Stop();
-
-					foreach (var ew in EmulatorWindows.ToList())
-					{
-						ew.ShutDown();
-					}
-
-					SaveConfig();
-				};
-
-				if (Global.Config.MainWndx != -1 && Global.Config.MainWndy != -1 && Global.Config.SaveWindowPosition)
-				{
-					Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 				}
 			};
+
+			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
+
+			Input.Initialize(this.Handle);
+			InitControls();
+
+			// TODO
+			//CoreFileProvider.SyncCoreCommInputSignals();
+
+			Global.ActiveController = new Controller(NullController.Instance.Definition);
+			Global.AutoFireController = Global.AutofireNullControls;
+			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
+
+			Closing += (o, e) =>
+			{
+				Global.MovieSession.Movie.Stop();
+
+				foreach (var ew in EmulatorWindows.ToList())
+				{
+					ew.ShutDown();
+				}
+
+				SaveConfig();
+			};
+
+			if (Global.Config.MainWndx != -1 && Global.Config.MainWndy != -1 && Global.Config.SaveWindowPosition)
+			{
+				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
+			}
 		}
 
 		// TODO: make this an actual property, set it when loading a Rom, and pass it dialogs, etc
