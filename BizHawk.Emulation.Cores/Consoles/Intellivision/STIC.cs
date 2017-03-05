@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 		}
 
-		public int VirtualWidth { get { return 176; } }
+		public int VirtualWidth { get { return 277; } }
 		public int BufferWidth { get { return 176; } }
 		public int VirtualHeight { get { return 208; } }
 		public int BufferHeight { get { return 208; } }
