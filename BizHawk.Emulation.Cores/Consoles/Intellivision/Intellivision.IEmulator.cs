@@ -111,6 +111,13 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			if (islag)
 				lagcount++;
+
+
+			if (Controller.IsPressed("Power"))
+				HardReset();
+
+			if (Controller.IsPressed("Reset"))
+				SoftReset();
 		}
 
 		private int _frame;

@@ -29,6 +29,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			this.SyncSettings = (IntvSyncSettings)SyncSettings ?? new IntvSyncSettings();
 
 			ControllerDeck = new IntellivisionControllerDeck(this.SyncSettings.Port1, this.SyncSettings.Port2);
+			ControllerDefinition.BoolButtons.Add("Power");
+			ControllerDefinition.BoolButtons.Add("Reset");
 
 			_cart = new Intellicart();
 			if (_cart.Parse(_rom) == -1)
@@ -141,6 +143,34 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			ushort port2 = ControllerDeck.ReadPort2(Controller);
 			_psg.Register[14] = (ushort)(0xFF - port2);
+		}
+
+		void HardReset()
+		{
+			_cpu.Reset();
+			_stic.Reset();
+			_psg.Reset();
+
+			Connect();
+
+			ScratchpadRam = new byte[240];
+			SystemRam = new ushort[352];
+
+			_cart = new Intellicart();
+			if (_cart.Parse(_rom) == -1)
+			{
+				_cart = new Cartridge();
+				_cart.Parse(_rom);
+			}
+		}
+
+		void SoftReset()
+		{
+			_cpu.Reset();
+			_stic.Reset();
+			_psg.Reset();
+
+			Connect();
 		}
 	}
 }

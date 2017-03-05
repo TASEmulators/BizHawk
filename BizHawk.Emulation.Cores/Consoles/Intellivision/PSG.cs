@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			for (int i=0;i<16;i++)
 			{
-				Register[i] = 0xFFFF;
+				Register[i] = 0x0000;
 			}
 			sync_psg_state();
 			DiscardSamples();

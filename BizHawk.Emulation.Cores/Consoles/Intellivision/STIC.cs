@@ -88,8 +88,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			for (int i=0;i<64;i++)
 			{
+				Register[i] = 0; 
 				write_reg(i, 0, false);
 			}
+
+			ColorSP = 0x0028;
 		}
 
 		public bool GetSr1()
