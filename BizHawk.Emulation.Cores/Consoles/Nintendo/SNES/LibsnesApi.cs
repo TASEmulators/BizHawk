@@ -211,7 +211,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			//bleck. this is a long so that it can be a 32/64bit pointer
 			public fixed long cdl_ptr[4];
-			public fixed uint cdl_size[4];
+			public fixed int cdl_size[4];
 
 			public CPURegs cpuregs;
 			public LayerEnables layerEnables;

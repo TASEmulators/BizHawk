@@ -87,19 +87,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void QUERY_set_trace_callback(snes_trace_t callback)
 		{
-			//TODO
-			//this.traceCallback = callback;
-			//WritePipeMessage(eMessage.eMessage_QUERY_enable_trace);
-			//bwPipe.Write(callback != null);
-			//bwPipe.Flush();
+			this.traceCallback = callback;
+			comm->value = (callback != null) ? 1u : 0u;
+			Message(eMessage.eMessage_QUERY_enable_trace);
 		}
 		public void QUERY_set_scanlineStart(snes_scanlineStart_t scanlineStart)
 		{
-			//TODO
-			//this.scanlineStart = scanlineStart;
-			//WritePipeMessage(eMessage.eMessage_QUERY_enable_scanline);
-			//bwPipe.Write(scanlineStart != null);
-			//bwPipe.Flush();
+			this.scanlineStart = scanlineStart;
+			comm->value = (scanlineStart != null) ? 1u : 0u;
+			Message(eMessage.eMessage_QUERY_enable_scanline);
 		}
 		public void QUERY_set_audio_sample(snes_audio_sample_t audio_sample)
 		{
@@ -134,36 +130,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void QUERY_set_cdl(ICodeDataLog cdl)
 		{
-			//TODO
-			//WritePipeMessage(eMessage.eMessage_QUERY_set_cdl);
-			//if (cdl == null)
-			//{
-			//  for(int i=0;i<4*2;i++)
-			//    WritePipePointer(IntPtr.Zero);
-			//}
-			//else
-			//{
-			//  WritePipePointer(cdl.GetPin("CARTROM"),false);
-			//  bwPipe.Write(cdl["CARTROM"].Length);
+			for (int i = 0; i < 4; i++)
+			{
+				comm->cdl_ptr[i] = 0;
+				comm->cdl_size[i] = 0;
+			}
 
-			//  if (cdl.Has("CARTRAM"))
-			//  {
-			//    WritePipePointer(cdl.GetPin("CARTRAM"), false);
-			//    bwPipe.Write(cdl["CARTRAM"].Length);
-			//  }
-			//  else
-			//  {
-			//    WritePipePointer(IntPtr.Zero);
-			//    WritePipePointer(IntPtr.Zero);
-			//  }
-				
-			//  WritePipePointer(cdl.GetPin("WRAM"));
-			//  bwPipe.Write(cdl["WRAM"].Length);
-				
-			//  WritePipePointer(cdl.GetPin("APURAM"), false);
-			//  bwPipe.Write(cdl["APURAM"].Length);
-			//  bwPipe.Flush();
-			//}
+			if (cdl != null)
+			{
+				comm->cdl_ptr[0] = cdl.GetPin("CARTROM").ToInt64();
+				comm->cdl_size[0] = cdl["CARTROM"].Length;
+				if (cdl.Has("CARTRAM"))
+				{
+					comm->cdl_ptr[1] = cdl.GetPin("CARTRAM").ToInt64();
+					comm->cdl_size[1] = cdl["CARTRAM"].Length;
+				}
+
+				comm->cdl_ptr[2] = cdl.GetPin("WRAM").ToInt64();
+				comm->cdl_size[2] = cdl["WRAM"].Length;
+
+				comm->cdl_ptr[2] = cdl.GetPin("APURAM").ToInt64();
+				comm->cdl_size[2] = cdl["APURAM"].Length;
+			}
+
+			Message(eMessage.eMessage_QUERY_set_cdl);
+
 		}
 		
 	}

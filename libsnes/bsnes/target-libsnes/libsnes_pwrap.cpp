@@ -156,7 +156,7 @@ struct CommStruct
 	int32 buf_size[2];
 
 	uint64 cdl_ptr[4];
-	uint32 cdl_size[4];
+	int32 cdl_size[4];
 
 	CPURegsComm cpuregs;
 	LayerEnablesComm layerEnables;
