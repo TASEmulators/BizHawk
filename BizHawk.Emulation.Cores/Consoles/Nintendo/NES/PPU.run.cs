@@ -127,12 +127,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 6:
 					ppu_addr_temp |= 8;
 					bgdata.pt_1 = ppubus_read(ppu_addr_temp, true, true);
-					runppu(1);
 					if (reg_2001.PPUON)
 					{
 						ppu_was_on = true;
 					}
-					
+					runppu(1);
 					break;
 				case 7:
 					race_2006 = false;
