@@ -15,8 +15,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 				case eMessage.eMessage_SIG_video_refresh:
 					{
-						int width = (int)comm->width;
-						int height = (int)comm->height;
+						int width = comm->width;
+						int height = comm->height;
 						if (video_refresh != null)
 						{
 							video_refresh((int*)comm->ptr, width, height);
@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					}
 			} //switch(msg)
 
-			Message(eMessage.eMessage_ResumeAfterBRK);
+			Message(eMessage.eMessage_Resume);
 			return true;
 		}
 	}

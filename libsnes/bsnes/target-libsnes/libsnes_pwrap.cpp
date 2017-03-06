@@ -16,28 +16,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <map>
 #include <string>
 #include <vector>
 
 extern SNES::Interface *iface;
 
 typedef uint8 u8;
-typedef int32 s32;
+typedef uint16 u16;
 typedef uint64 u64;
 typedef uint32 u32;
-typedef uint16 u16;
+
+typedef int32 s32;
 
 typedef void(*Action)();
-
 
 enum eMessage : int32
 {
 	eMessage_NotSet,
 
-	eMessage_ResumeAfterBRK,
-
-	eMessage_Shutdown,
+	eMessage_Resume,
 
 	eMessage_QUERY_FIRST,
 	eMessage_QUERY_get_memory_size,
@@ -148,14 +145,14 @@ struct CommStruct
 	void* ptr;
 	uint32 id, addr, value, size;
 	int32 port, device, index, slot;
-	uint32 width, height;
+	int32 width, height;
 	int32 scanline;
 
 	//always used in pairs
 	void* buf[2];
 	int32 buf_size[2];
 
-	uint64 cdl_ptr[4];
+	int64 cdl_ptr[4];
 	int32 cdl_size[4];
 
 	CPURegsComm cpuregs;
@@ -290,8 +287,6 @@ public:
 	std::string memtype;
 	HANDLE handle;
 };
-
-static std::map<void*,SharedMemoryBlock*> memHandleTable;
 
 void* snes_allocSharedMemory(const char* memtype, size_t amt)
 {
@@ -594,7 +589,7 @@ extern "C" dllexport void* __cdecl DllInit()
 
 extern "C" dllexport void __cdecl Message(eMessage msg)
 {
-	if (msg == eMessage_ResumeAfterBRK)
+	if (msg == eMessage_Resume)
 	{
 		cothread_t temp = co_emu_suspended;
 		co_emu_suspended = NULL;

@@ -202,7 +202,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public void* ptr;
 			public uint id, addr, value, size;
 			public int port, device, index, slot;
-			public uint width, height;
+			public int width, height;
 			public int scanline;
 
 			//this should always be used in pairs

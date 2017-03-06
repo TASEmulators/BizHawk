@@ -10,8 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			eMessage_NotSet,
 			
-			eMessage_ResumeAfterBRK,
-			eMessage_Shutdown,
+			eMessage_Resume,
 
 			eMessage_QUERY_FIRST,
 			eMessage_QUERY_get_memory_size,

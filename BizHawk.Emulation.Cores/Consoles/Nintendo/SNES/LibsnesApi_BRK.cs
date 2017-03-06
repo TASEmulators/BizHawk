@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			} //switch(msg)
 
-			Message(eMessage.eMessage_ResumeAfterBRK);
+			Message(eMessage.eMessage_Resume);
 			return true;
 		}
 	}
