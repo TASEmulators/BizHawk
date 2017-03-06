@@ -673,33 +673,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 						ppubus_read(ppur.get_ntread(), true, false);
 
-
-						for (int i = 0; i < garbage_todo; i++)
-						{
-							if (i == 0)
-							{
-								read_value = t_oam[s].oam_y;
-							}
-							else
-							{
-								read_value = t_oam[s].oam_ind;
-							}
-						}
-
 						ppubus_read(ppur.get_atread(), true, false); //at or nt?
-
-						read_value = t_oam[s].oam_attr;
-						read_value = t_oam[s].oam_x;
 
 						int addr = patternAddress;
 						t_oam[s].patterns_0 = ppubus_read(addr, true, false);
 
-						read_value = t_oam[s].oam_x;
-
 						addr += 8;
 						t_oam[s].patterns_1 = ppubus_read(addr, true, false);
-
-						read_value = t_oam[s].oam_x;
 
 						// hflip
 						if ((t_oam[s].oam_attr & 0x40) == 0)
