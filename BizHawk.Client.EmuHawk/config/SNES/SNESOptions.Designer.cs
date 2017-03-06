@@ -35,8 +35,6 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.rbAccuracy = new System.Windows.Forms.RadioButton();
 			this.rbPerformance = new System.Windows.Forms.RadioButton();
-			this.cbRingbuf = new System.Windows.Forms.CheckBox();
-			this.label1 = new System.Windows.Forms.Label();
 			this.cbDoubleSize = new System.Windows.Forms.CheckBox();
 			this.lblDoubleSize = new System.Windows.Forms.Label();
 			this.cbForceDeterminism = new System.Windows.Forms.CheckBox();
@@ -47,7 +45,7 @@
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(136, 344);
+			this.btnOk.Location = new System.Drawing.Point(136, 286);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 0;
@@ -59,7 +57,7 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(217, 344);
+			this.btnCancel.Location = new System.Drawing.Point(217, 286);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 1;
@@ -123,28 +121,10 @@
 			this.rbPerformance.Text = "Performance (only for casual gaming!)";
 			this.rbPerformance.UseVisualStyleBackColor = true;
 			// 
-			// cbRingbuf
-			// 
-			this.cbRingbuf.AutoSize = true;
-			this.cbRingbuf.Location = new System.Drawing.Point(19, 134);
-			this.cbRingbuf.Name = "cbRingbuf";
-			this.cbRingbuf.Size = new System.Drawing.Size(115, 17);
-			this.cbRingbuf.TabIndex = 4;
-			this.cbRingbuf.Text = "Use Ring Buffer IO";
-			this.cbRingbuf.UseVisualStyleBackColor = true;
-			// 
-			// label1
-			// 
-			this.label1.Location = new System.Drawing.Point(35, 154);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(254, 45);
-			this.label1.TabIndex = 5;
-			this.label1.Text = "Performance-affecting option; results differ for different users\' systems.";
-			// 
 			// cbDoubleSize
 			// 
 			this.cbDoubleSize.AutoSize = true;
-			this.cbDoubleSize.Location = new System.Drawing.Point(18, 189);
+			this.cbDoubleSize.Location = new System.Drawing.Point(18, 130);
 			this.cbDoubleSize.Name = "cbDoubleSize";
 			this.cbDoubleSize.Size = new System.Drawing.Size(178, 17);
 			this.cbDoubleSize.TabIndex = 6;
@@ -154,7 +134,7 @@
 			// 
 			// lblDoubleSize
 			// 
-			this.lblDoubleSize.Location = new System.Drawing.Point(36, 210);
+			this.lblDoubleSize.Location = new System.Drawing.Point(36, 151);
 			this.lblDoubleSize.Name = "lblDoubleSize";
 			this.lblDoubleSize.Size = new System.Drawing.Size(254, 57);
 			this.lblDoubleSize.TabIndex = 7;
@@ -165,7 +145,7 @@
 			// cbForceDeterminism
 			// 
 			this.cbForceDeterminism.AutoSize = true;
-			this.cbForceDeterminism.Location = new System.Drawing.Point(19, 271);
+			this.cbForceDeterminism.Location = new System.Drawing.Point(19, 212);
 			this.cbForceDeterminism.Name = "cbForceDeterminism";
 			this.cbForceDeterminism.Size = new System.Drawing.Size(113, 17);
 			this.cbForceDeterminism.TabIndex = 8;
@@ -175,7 +155,7 @@
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(38, 295);
+			this.label3.Location = new System.Drawing.Point(38, 236);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(251, 41);
 			this.label3.TabIndex = 9;
@@ -188,13 +168,11 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(304, 379);
+			this.ClientSize = new System.Drawing.Size(304, 321);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.cbForceDeterminism);
 			this.Controls.Add(this.lblDoubleSize);
 			this.Controls.Add(this.cbDoubleSize);
-			this.Controls.Add(this.label1);
-			this.Controls.Add(this.cbRingbuf);
 			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.btnCancel);
 			this.Controls.Add(this.btnOk);
@@ -220,8 +198,6 @@
 		private System.Windows.Forms.RadioButton rbCompatibility;
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.RadioButton rbPerformance;
-		private System.Windows.Forms.CheckBox cbRingbuf;
-		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.CheckBox cbDoubleSize;
 		private System.Windows.Forms.Label lblDoubleSize;
 		private System.Windows.Forms.RadioButton rbAccuracy;

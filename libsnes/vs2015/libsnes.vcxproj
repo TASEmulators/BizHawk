@@ -327,7 +327,7 @@
     <ClCompile Include="..\bsnes\gameboy\scheduler\scheduler.cpp" />
     <ClCompile Include="..\bsnes\gameboy\system\system.cpp" />
     <ClCompile Include="..\bsnes\gameboy\video\video.cpp" />
-    <ClCompile Include="..\bsnes\libco\x86.c" />
+    <ClCompile Include="..\bsnes\libco\sjlj-multi.c" />
     <ClCompile Include="..\bsnes\snes\alt\cpu\cpu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>

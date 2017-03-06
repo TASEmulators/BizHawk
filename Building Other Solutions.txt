@@ -26,30 +26,7 @@ yabause: Load yabause/src/libyabause/libyabause.sln; builds as VC++ (VC10).  Out
 
 libdarm: stock build from https://github.com/jbremer/darm.git   71a027e0ffb2171d01213c6ecc6da1c49e158398
 
-===========================================
-
-Here's a guide zeromus developed on 03-feb-2015 to assembly a mingw-w64 + msys capable of building bsnes and maybe other things. The motivation: mingw make stopped working at some point (maybe a windows update) and the compiler is old and has problems.
-
-Here's my reasoning for this approach:
-1. People tell me mingw-w64 is superior
-2. Mingw+msys or whatever will only install mingw
-3. mingw-w64 doesnt come with msys
-4. Therefore, we must 'upgrade' a mingw-w64 with msys. 
-
-Here's how:
-
-install an mingw-w64 toolchain. lets say its at C:\i686-4.9.2-posix-dwarf-rt_v3-rev1
-download mingw-get-setup.exe to C:\i686-4.9.2-posix-dwarf-rt_v3-rev1\mingw-get-setup.exe.
-Run it and install to C:\i686-4.9.2-posix-dwarf-rt_v3-rev1. Turn off the shortcuts, but leave on the GUI options. Install it and pick continue.
-Enable msys-base and pick installation > update catalogue. review changes and apply. then we'll be done. close, close, close.
-You now have C:\i686-4.9.2-posix-dwarf-rt_v3-rev1\msys\1.0\msys.bat
-run it, and run /postinstall/pi.sh
-enter y,y and then C:/i686-4.9.2-posix-dwarf-rt_v3-rev1/mingw32
-answer Y (is this step MISSING?)
-Now you've activated the mingw-w64 on this msys install.
-It will tell you "Oh joy" you dont have a better make.exe. Thats bullshit, their make.exe is terrible. In fact youll want a new one
-ln -s /mingw/bin/mingw32-make.exe /mingw/bin/make
-Now, with the way msys sets up its paths, youll be using that make by default
+libsnes: use libsnes/vs2015/libsnes.sln in vs2015
 
 =========================================
 

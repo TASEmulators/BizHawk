@@ -12,16 +12,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				default:
 					return false;
+
 				case eMessage.eMessage_SIG_video_refresh:
 					{
-						int width = brPipe.ReadInt32();
-						int height = brPipe.ReadInt32();
-						bwPipe.Write(0); //offset in mapped memory buffer
-						bwPipe.Flush();
-						brPipe.ReadBoolean(); //dummy synchronization
+						int width = (int)comm->width;
+						int height = (int)comm->height;
 						if (video_refresh != null)
 						{
-							video_refresh((int*)mmvaPtr, width, height);
+							video_refresh((int*)comm->ptr, width, height);
 						}
 						break;
 					}
@@ -29,35 +27,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					break;
 				case eMessage.eMessage_SIG_input_state:
 					{
-						int port = brPipe.ReadInt32();
-						int device = brPipe.ReadInt32();
-						int index = brPipe.ReadInt32();
-						int id = brPipe.ReadInt32();
-						ushort ret = 0;
+						int port = comm->port;
+						int device = comm->device;
+						int index = comm->index;
+						int id = (int)comm->id;
 						if (input_state != null)
-							ret = input_state(port, device, index, id);
-						bwPipe.Write(ret);
-						bwPipe.Flush();
+							comm->value = input_state(port, device, index, id);
 						break;
 					}
 				case eMessage.eMessage_SIG_input_notify:
 					{
-						int index = brPipe.ReadInt32();
 						if (input_notify != null)
-							input_notify(index);
+							input_notify(comm->index);
 						break;
 					}
 				case eMessage.eMessage_SIG_audio_flush:
 					{
-						int nsamples = brPipe.ReadInt32();
-						bwPipe.Write(0); //location to store audio buffer in
-						bwPipe.Flush();
-						brPipe.ReadInt32(); //dummy synchronization
+						uint nsamples = comm->size;
 
 						if (audio_sample != null)
 						{
-							ushort* audiobuffer = ((ushort*)mmvaPtr);
-							for (int i = 0; i < nsamples; )
+							ushort* audiobuffer = ((ushort*)comm->ptr);
+							for (uint i = 0; i < nsamples; )
 							{
 								ushort left = audiobuffer[i++];
 								ushort right = audiobuffer[i++];
@@ -65,32 +56,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 							}
 						}
 
-						bwPipe.Write(0); //dummy synchronization
-						bwPipe.Flush();
-						brPipe.ReadInt32();  //dummy synchronization
 						break;
 					}
 				case eMessage.eMessage_SIG_path_request:
 					{
-						int slot = brPipe.ReadInt32();
-						string hint = ReadPipeString();
+						int slot = comm->slot;
+						string hint = comm->GetAscii();
 						string ret = hint;
 						if (pathRequest != null)
-							hint = pathRequest(slot, hint);
-						WritePipeString(hint);
+						  hint = pathRequest(slot, hint);
+						SetAscii(hint);
 						break;
 					}
 				case eMessage.eMessage_SIG_trace_callback:
 					{
-						var trace = ReadPipeString();
 						if (traceCallback != null)
-							traceCallback(trace);
+							traceCallback(comm->GetAscii());
 						break;
 					}
 				case eMessage.eMessage_SIG_allocSharedMemory:
 					{
-						var name = ReadPipeString();
-						var size = brPipe.ReadInt32();
+						var name = comm->GetAscii();
+						var size = comm->size;
 
 						if (SharedMemoryBlocks.ContainsKey(name))
 						{
@@ -115,25 +102,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						{
 							smb = new SharedMemoryBlock();
 							smb.Name = name;
-							smb.Size = size;
+							smb.Size = (int)size;
 							smb.BlockName = InstanceName + smb.Name;
 							smb.Allocate();
 						}
 
+						comm->ptr = smb.Ptr;
 						SharedMemoryBlocks[smb.Name] = smb;
-						WritePipeString(smb.BlockName);
+						CopyString(smb.BlockName);
 						break;
 					}
 				case eMessage.eMessage_SIG_freeSharedMemory:
 					{
-						string name = ReadPipeString();
-						var smb = SharedMemoryBlocks[name];
-						DeallocatedMemoryBlocks[name] = smb;
-						SharedMemoryBlocks.Remove(name);
+						foreach (var block in SharedMemoryBlocks.Values)
+						{
+							if (block.Ptr == comm->ptr)
+							{
+								DeallocatedMemoryBlocks[block.Name] = block;
+								SharedMemoryBlocks.Remove(block.Name);
+								break;
+							}
+						}
 						break;
 					}
 			} //switch(msg)
-			
+
+			Message(eMessage.eMessage_ResumeAfterBRK);
 			return true;
 		}
 	}

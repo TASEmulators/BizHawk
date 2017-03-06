@@ -107,9 +107,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					rom_xml = null,
 					rom_data = sgbRomData,
 					rom_size = (uint)sgbRomData.Length,
-					dmg_xml = null,
 					dmg_data = romData,
-					dmg_size = (uint)romData.Length
 				};
 
 				if (!LoadCurrent())
@@ -143,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					throw new Exception("snes_load_cartridge_normal() failed");
 			}
 
-			if (api.QUERY_get_region() == LibsnesApi.SNES_REGION.NTSC)
+			if (api.Region == LibsnesApi.SNES_REGION.NTSC)
 			{
 				//similar to what aviout reports from snes9x and seems logical from bsnes first principles. bsnes uses that numerator (ntsc master clockrate) for sure.
 				CoreComm.VsyncNum = 21477272;
@@ -245,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			LibsnesApi.CpuRegs regs;
+			LibsnesApi.CPURegs regs;
 			api.QUERY_peek_cpu_regs(out regs);
 
 			bool fn = (regs.p & 0x80)!=0;
@@ -446,7 +444,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
-			api.SPECIAL_Resume();
 		}
 		void ExecHook(uint addr)
 		{
@@ -454,7 +451,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
-			api.SPECIAL_Resume();
 		}
 		void WriteHook(uint addr, byte val)
 		{
@@ -462,7 +458,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			//we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			//EDIT: for now, theres some IPC re-entrancy problem
 			//RefreshMemoryCallbacks();
-			api.SPECIAL_Resume();
 		}
 
 		LibsnesApi.snes_scanlineStart_t scanlineStart_cb;
@@ -481,9 +476,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public string rom_xml;
 			public byte[] rom_data;
 			public uint rom_size;
-			public string dmg_xml;
 			public byte[] dmg_data;
-			public uint dmg_size;
 		}
 
 		LoadParams CurrLoadParams;
@@ -493,9 +486,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			bool result = false;
 			if (CurrLoadParams.type == LoadParamType.Normal)
 				result = api.CMD_load_cartridge_normal(CurrLoadParams.xml_data, CurrLoadParams.rom_data);
-			else result = api.CMD_load_cartridge_super_game_boy(CurrLoadParams.rom_xml, CurrLoadParams.rom_data, CurrLoadParams.rom_size, CurrLoadParams.dmg_xml, CurrLoadParams.dmg_data, CurrLoadParams.dmg_size);
+			else result = api.CMD_load_cartridge_super_game_boy(CurrLoadParams.rom_xml, CurrLoadParams.rom_data, CurrLoadParams.rom_size, CurrLoadParams.dmg_data);
 
-			mapper = api.QUERY_get_mapper();
+			mapper = api.Mapper;
 
 			return result;
 		}
@@ -639,11 +632,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			api.MessageCounter = 0;
-
-			if(Settings.UseRingBuffer)
-				api.BeginBufferIO();
-
 			/* if the input poll callback is called, it will set this to false
 			 * this has to be done before we save the per-frame state in deterministic
 			 * mode, because in there, the core actually advances, and might advance
@@ -684,19 +672,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			bool powerSignal = Controller.IsPressed("Power");
 			if (powerSignal) api.CMD_power();
 
-			//too many messages
-			api.QUERY_set_layer_enable(0, 0, Settings.ShowBG1_0);
-			api.QUERY_set_layer_enable(0, 1, Settings.ShowBG1_1);
-			api.QUERY_set_layer_enable(1, 0, Settings.ShowBG2_0);
-			api.QUERY_set_layer_enable(1, 1, Settings.ShowBG2_1);
-			api.QUERY_set_layer_enable(2, 0, Settings.ShowBG3_0);
-			api.QUERY_set_layer_enable(2, 1, Settings.ShowBG3_1);
-			api.QUERY_set_layer_enable(3, 0, Settings.ShowBG4_0);
-			api.QUERY_set_layer_enable(3, 1, Settings.ShowBG4_1);
-			api.QUERY_set_layer_enable(4, 0, Settings.ShowOBJ_0);
-			api.QUERY_set_layer_enable(4, 1, Settings.ShowOBJ_1);
-			api.QUERY_set_layer_enable(4, 2, Settings.ShowOBJ_2);
-			api.QUERY_set_layer_enable(4, 3, Settings.ShowOBJ_3);
+			var enables = new LibsnesApi.LayerEnables();
+			enables.BG1_Prio0 = Settings.ShowBG1_0;
+			enables.BG1_Prio1 = Settings.ShowBG1_1;
+			enables.BG2_Prio0 = Settings.ShowBG2_0;
+			enables.BG2_Prio1 = Settings.ShowBG2_1;
+			enables.BG3_Prio0 = Settings.ShowBG3_0;
+			enables.BG3_Prio1 = Settings.ShowBG3_1;
+			enables.BG4_Prio0 = Settings.ShowBG4_0;
+			enables.BG4_Prio1 = Settings.ShowBG4_1;
+			enables.Obj_Prio0 = Settings.ShowOBJ_0;
+			enables.Obj_Prio1 = Settings.ShowOBJ_1;
+			enables.Obj_Prio2 = Settings.ShowOBJ_2;
+			enables.Obj_Prio3 = Settings.ShowOBJ_3;
+			api.SetLayerEnables(ref enables);
 
 			RefreshMemoryCallbacks(false);
 
@@ -704,16 +693,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			timeFrameCounter++;
 			api.CMD_run();
 
-			while (api.QUERY_HasMessage)
-				Console.WriteLine(api.QUERY_DequeueMessage());
+			//once upon a time we forwarded messages frmo bsnes here, by checking for queued text messages, but I don't think it's needed any longer
 
 			if (IsLagFrame)
 				LagCount++;
-
-			//diagnostics for IPC traffic
-			//Console.WriteLine(api.MessageCounter);
-
-			api.EndBufferIO();
 		}
 
 		void RefreshMemoryCallbacks(bool suppress)
@@ -728,7 +711,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			get
 			{
-				if (api.QUERY_get_region() == LibsnesApi.SNES_REGION.NTSC)
+				if (api.Region == LibsnesApi.SNES_REGION.NTSC)
 					return DisplayType.NTSC;
 				else
 					return DisplayType.PAL;
@@ -1351,7 +1334,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public bool ShowOBJ_2 = true;
 			public bool ShowOBJ_3 = true;
 
-			public bool UseRingBuffer = true;
 			public bool AlwaysDoubleSize = false;
 			public bool ForceDeterminism = true;
 			public string Palette = "BizHawk";
