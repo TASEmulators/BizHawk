@@ -103,7 +103,6 @@
     <Compile Include="IImportResolver.cs" />
     <Compile Include="IMonitor.cs" />
     <Compile Include="InstanceDll.cs" />
-    <Compile Include="IPC\IPCRingBuffer.cs" />
     <Compile Include="IPC\SharedMemoryBlock.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="MruStack.cs" />
