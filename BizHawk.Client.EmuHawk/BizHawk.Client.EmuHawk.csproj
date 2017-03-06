@@ -605,7 +605,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CustomControls\VirtualListView.cs">
-			<SubType>Component</SubType>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="CustomControls\Win32.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />

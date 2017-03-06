@@ -406,7 +406,7 @@
     <Compile Include="Consoles\Coleco\Input.cs" />
     <Compile Include="Consoles\Coleco\MemoryMap.cs" />
     <Compile Include="Consoles\Coleco\TMS9918A.cs" />
-		<Compile Include="Consoles\Coleco\ColecoControllerDeck.cs" />
+    <Compile Include="Consoles\Coleco\ColecoControllerDeck.cs" />
     <Compile Include="Consoles\Coleco\ColecoControllers.cs" />
     <Compile Include="Consoles\Intellivision\Cartridge.cs" />
     <Compile Include="Consoles\Intellivision\Controllers\IntellivisionControllerDeck.cs" />
