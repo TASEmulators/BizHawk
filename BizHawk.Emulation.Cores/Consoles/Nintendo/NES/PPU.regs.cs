@@ -424,7 +424,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
             {
                 if (ppur.status.sl < 241)
                 {
-                    if (ppur.status.cycle <= 64)
+					if (ppur.status.cycle <= 64)
                     {
                         ret = 0xFF; // during this time all reads return FF
                     }
@@ -449,7 +449,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
             else
             {
                 ret = OAM[reg_2003];
-            }
+			}
+
 			ppu_open_bus = ret;
 			ppu_open_bus_decay(1);
 			return ret;

@@ -22,15 +22,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public short[] xbuf = new short[256 * 240];
 
 		// values here are used in sprite evaluation
+		public int spr_true_count;
 		public bool sprite_eval_write;
 		public byte read_value;
 		public int soam_index;
 		public int soam_index_prev;
 		public int soam_m_index;
 		public int oam_index;
-		public int read_value_aux;
+		public byte read_value_aux;
 		public int soam_m_index_aux;
 		public int oam_index_aux;
+		public int soam_index_aux;
 		public bool is_even_cycle;
 		public bool sprite_zero_in_range = false;
 		public bool sprite_zero_go = false;
@@ -127,11 +129,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 6:
 					ppu_addr_temp |= 8;
 					bgdata.pt_1 = ppubus_read(ppu_addr_temp, true, true);
+
+					runppu(1);
 					if (reg_2001.PPUON)
 					{
 						ppu_was_on = true;
 					}
-					runppu(1);
 					break;
 				case 7:
 					race_2006 = false;
@@ -199,6 +202,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				ppur.status.sl = sl;
 
+				spr_true_count = 0;
 				soam_index = 0;
 				soam_m_index = 0;
 				soam_m_index_aux = 0;
@@ -253,7 +257,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								soam_index++;
 							}
 							if (ppur.status.cycle == 64)
+							{
 								soam_index = 0;
+							}
 
 							// otherwise, scan through OAM and test if sprites are in range
 							// if they are, they get copied to the secondary OAM 
@@ -261,70 +267,102 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							{
 								if (oam_index == 64)
 								{
+									oam_index = 0;
 									sprite_eval_write = false;
 								}
 
 								if (is_even_cycle && oam_index<64)
 								{
-									read_value = OAM[oam_index * 4 + soam_m_index];
-
-									if (oam_index_aux > 63)
-										oam_index_aux = 63;
-
-									read_value_aux = OAM[oam_index_aux * 4 + soam_m_index_aux];
+									if ((oam_index * 4 + soam_m_index) < 256)
+										read_value = OAM[oam_index * 4 + soam_m_index];
+									else
+										read_value = OAM[oam_index * 4 + soam_m_index - 256];
+								}
+								else if (!sprite_eval_write)
+								{
+									// if we don't write sprites anymore, just scan through the oam
+									read_value = soam[0];
+									oam_index++;
 								}
 								else if (sprite_eval_write)
 								{
-									if (soam_index >= 8)
-									{
-										// this code mirrors sprite overflow bug behaviour
-										// see http://wiki.nesdev.com/w/index.php/PPU_sprite_evaluation
-										if (yp >= read_value && yp < read_value + spriteHeight && reg_2001.PPUON)
-										{
-											Reg2002_objoverflow = true;
-										}
-										else
-										{
-											soam_m_index++;
-											oam_index++;
-											if (soam_m_index == 4)
-												soam_m_index = 0;
-
-										}
-
-									}
-
 									//look for sprites 
-									soam[soam_index * 4] = OAM[oam_index_aux * 4];
-									if (yp >= read_value_aux && yp < read_value_aux + spriteHeight && soam_m_index_aux == 0)
+									if (spr_true_count==0 && soam_index<8)
 									{
-										//a flag gets set if sprite zero is in range
-										if (oam_index_aux == 0)
-											sprite_zero_in_range = true;
-
-										soam_m_index_aux++;
-
-									}
-									else if (soam_m_index_aux > 0 && soam_m_index_aux < 4)
-									{
-										soam[soam_index * 4 + soam_m_index_aux] = OAM[oam_index_aux * 4 + soam_m_index_aux];
-										soam_m_index_aux++;
-										if (soam_m_index_aux == 4)
-										{
-											oam_index_aux++;
-											soam_index++;
-											soam_m_index_aux = 0;
-										}
-									}
-									else
-									{
-										oam_index_aux++;
+										soam[soam_index * 4] = read_value;
 									}
 
 									if (soam_index < 8)
 									{
-										soam_m_index = soam_m_index_aux;
-										oam_index = oam_index_aux;
+										if (yp >= read_value && yp < read_value + spriteHeight && spr_true_count == 0)
+										{
+											//a flag gets set if sprite zero is in range
+											if (oam_index == 0)
+												sprite_zero_in_range = true;
+
+											spr_true_count++;
+											soam_m_index++;
+										}
+										else if (spr_true_count > 0 && spr_true_count < 4)
+										{
+											soam[soam_index * 4 + soam_m_index] = read_value;
+
+											soam_m_index++;
+
+											spr_true_count++;
+											if (spr_true_count == 4)
+											{
+												oam_index++;
+												soam_index++;
+												if (soam_index == 8)
+													oam_index_aux = oam_index;
+
+												soam_m_index = 0;
+												spr_true_count = 0;
+											}
+										}
+										else
+										{
+											oam_index++;
+										}
+									}
+									else if (soam_index>=8)
+									{
+										if (yp >= read_value && yp < read_value + spriteHeight && reg_2001.PPUON)
+										{
+											Reg2002_objoverflow = true;
+										}
+
+										if (yp >= read_value && yp < read_value + spriteHeight && spr_true_count == 0)
+										{
+											spr_true_count++;
+											soam_m_index++;
+										}
+										else if (spr_true_count > 0 && spr_true_count < 4)
+										{
+											soam_m_index++;
+
+											spr_true_count++;
+											if (spr_true_count == 4)
+											{
+												oam_index++;
+												soam_index++;
+												soam_m_index = 0;
+												spr_true_count = 0;
+											}
+										}
+										else
+										{
+											oam_index++;
+											if (soam_index==8)
+											{
+												soam_m_index++; // glitchy increment
+												soam_m_index &= 3;
+											}
+												
+										}
+
+										read_value = soam[0]; //writes change to reads 
 									}
 
 								}
@@ -422,11 +460,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 									}
 								} //rasterpos in sprite range
 							} //oamcount loop
-							  /*
-							  if (reg_2001.color_disable)
-								  pixelcolor &= 0x30;
-							  xbuf[target] = PaletteAdjustPixel(pixelcolor);
-							  */
+							 
 							pipeline(pixelcolor, target, xt*32+xp);
 							target++;
 							
@@ -438,20 +472,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						Read_bgdata(ref bgdata[xt + 2]);
 
 				// normally only 8 sprites are allowed, but with a particular setting we can have more then that
-				// this extra bit is here because the actual loop doesn't have enough time to scann all sprites if there are more then 8
+				// this extra bit takes care of it quickly
+				soam_index_aux = 8;
+
 				if (nes.Settings.AllowMoreThanEightSprites)
 				{
 					while (oam_index_aux < 64)
 					{
 						//look for sprites 
-						soam[soam_index * 4] = OAM[oam_index_aux * 4];
+						soam[soam_index_aux * 4] = OAM[oam_index_aux * 4];
 						read_value_aux = OAM[oam_index_aux * 4];
 						if (yp >= read_value_aux && yp < read_value_aux + spriteHeight)
 						{
-							soam[soam_index * 4 + 1] = OAM[oam_index_aux * 4 + 1];
-							soam[soam_index * 4 + 2] = OAM[oam_index_aux * 4 + 2];
-							soam[soam_index * 4 + 3] = OAM[oam_index_aux * 4 + 3];
-							soam_index++;
+							soam[soam_index_aux * 4 + 1] = OAM[oam_index_aux * 4 + 1];
+							soam[soam_index_aux * 4 + 2] = OAM[oam_index_aux * 4 + 2];
+							soam[soam_index_aux * 4 + 3] = OAM[oam_index_aux * 4 + 3];
+							soam_index_aux++;
 							oam_index_aux++;
 						}
 						else
@@ -461,7 +497,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 
-				soam_index_prev = soam_index;
+				soam_index_prev = soam_index_aux;
 
 				if (soam_index_prev > 8 && !nes.Settings.AllowMoreThanEightSprites)
 					soam_index_prev = 8;
@@ -470,25 +506,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				spriteHeight = reg_2000.obj_size_16 ? 16 : 8;
 
-				// if there are less then 8 evaluated sprites, we still process 8 sprites
-				int bound;
-
-				if (soam_index_prev > 8)
-				{
-					bound = soam_index_prev;
-				}
-				else
-				{
-					bound = 8;
-				}
-
 				for (int s = 0; s < 8; s++)
 				{
-					//if this is a real sprite sprite, then it is not above the 8 sprite limit.
-					//this is how we support the no 8 sprite limit feature.
-					//not that at some point we may need a virtual CALL_PPUREAD which just peeks and doesnt increment any counters
-					//this could be handy for the debugging tools also
-					bool realSprite = (s < 8);
 					bool junksprite = (!reg_2001.PPUON);
 
 					t_oam[s].oam_y = soam[s * 4];
@@ -528,99 +547,96 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					{
 						if (sl == 0 && ppur.status.cycle == 304)
 						{
-							runppu(1);
+
 							read_value = t_oam[s].oam_y;
-							if (reg_2001.PPUON) ppur.install_latches();
 							runppu(1);
+							
+							if (reg_2001.PPUON) ppur.install_latches();
+
 							read_value = t_oam[s].oam_ind;
+							runppu(1);
+							
+
 							garbage_todo = 0;
 						}
 						if ((sl != 0) && ppur.status.cycle == 256)
 						{
+
+							read_value = t_oam[s].oam_y;
+
 							runppu(1);
+							
 							if (target<=61441 && target > 0 && s==0)
 							{
 								pipeline(0, target,256);
 								target++;
 							}
-							read_value = t_oam[s].oam_y;
+
 							//at 257: 3d world runner is ugly if we do this at 256
 							if (reg_2001.PPUON) ppur.install_h_latches();
+							read_value = t_oam[s].oam_ind;
 							runppu(1);
+							
 							if (target <= 61441 && target > 0 && s==0)
 							{
 								pipeline(0, target, 257);  //  last pipeline call option 1 of 2
 							}
-								
-							read_value = t_oam[s].oam_ind;
 							garbage_todo = 0;
 						}
 					}
 
-					if (realSprite)
+					for (int i = 0; i < garbage_todo; i++)
 					{
-						for (int i = 0; i < garbage_todo; i++)
-						{
-							runppu(1);
+						if (i==0)
+							read_value = t_oam[s].oam_y;
+						else
+							read_value = t_oam[s].oam_ind;
+								
+						runppu(1);
 							
-							if (i == 0)
+						if (i == 0)
+						{
+							if (target <= 61441 && target > 0 && s==0)
 							{
-								if (target <= 61441 && target > 0 && s==0)
-								{
-									pipeline(0, target,256);
-									target++;
-								}
-								read_value = t_oam[s].oam_y;
+								pipeline(0, target,256);
+								target++;
 							}
-							else
+						}
+						else
+						{
+							if (target <= 61441 && target > 0 && s==0)
 							{
-								if (target <= 61441 && target > 0 && s==0)
-								{
-									pipeline(0, target, 257);  //  last pipeline call option 2 of 2
-								}
-								read_value = t_oam[s].oam_ind;
+								pipeline(0, target, 257);  //  last pipeline call option 2 of 2
 							}
 						}
 					}
-
 
 					ppubus_read(ppur.get_atread(), true, true); //at or nt?
-					if (realSprite)
-					{
-						runppu(1);
-						read_value = t_oam[s].oam_attr;
-						runppu(1);
-						read_value = t_oam[s].oam_x;
-					}
 
-					// TODO - fake sprites should not come through ppubus_read but rather peek it
-					// (at least, they should not probe it with AddressPPU. maybe the difference between peek and read is not necessary)
+					read_value = t_oam[s].oam_attr;
+					runppu(1);
+
+					read_value = t_oam[s].oam_x;
+					runppu(1);
+
+					// if the PPU is off, we don't put anything on the bus
 					if (junksprite)
 					{
-						if (realSprite)
-						{
-							ppubus_read(patternAddress, true, false);
-							ppubus_read(patternAddress, true, false);
-							runppu(kFetchTime * 2);
-						}
+						ppubus_read(patternAddress, true, false);
+						ppubus_read(patternAddress, true, false);
+						runppu(kFetchTime * 2);
 					}
 					else
 					{
 						int addr = patternAddress;
 						t_oam[s].patterns_0 = ppubus_read(addr, true, true);
-						if (realSprite)
-						{
-							runppu(kFetchTime);
-							read_value = t_oam[s].oam_x;
-						}
+						read_value = t_oam[s].oam_x;
+						runppu(kFetchTime);
+
 						addr += 8;
 						t_oam[s].patterns_1 = ppubus_read(addr, true, true);
-						if (realSprite)
-						{
-							runppu(kFetchTime);
-							read_value = t_oam[s].oam_x;
-						}
-
+						read_value = t_oam[s].oam_x;
+						runppu(kFetchTime);
 
 						// hflip
 						if ((t_oam[s].oam_attr & 0x40) == 0)
@@ -629,14 +645,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							t_oam[s].patterns_1 = BitReverse.Byte8[t_oam[s].patterns_1];
 						}
 
+						// if the sprites attribute is 0xFF, then this indicates a non-existent sprite
+						// I think the logic here is that bits 2-4 in OAM are disabled, but soam is initialized with 0xFF
+						// so the only way a sprite could have an 0xFF attribute is if it is not in the scope of the scanline
+						if (t_oam[s].oam_attr==0xFF)
+						{
+							t_oam[s].patterns_0 = 0;
+							t_oam[s].patterns_1 = 0;
+						}
+
 					}
 
 				} // sprite pattern fetch loop
 
 				//now do the same for extra sprites, but without any cycles run
-				if (bound>8)
+				if (soam_index_aux>8)
 				{
-					for (int s = 8; s < bound; s++)
+					for (int s = 8; s < soam_index_aux; s++)
 					{
 						bool junksprite = (!reg_2001.PPUON);
 
@@ -668,9 +693,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						//so we just need the line offset for the second pattern
 						patternAddress += line & 7;
 
-						//garbage nametable fetches + scroll resets
-						int garbage_todo = 2;
-
 						ppubus_read(ppur.get_ntread(), true, false);
 
 						ppubus_read(ppur.get_atread(), true, false); //at or nt?
@@ -688,6 +710,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							t_oam[s].patterns_1 = BitReverse.Byte8[t_oam[s].patterns_1];
 						}
 
+						// if the sprites attribute is 0xFF, then this indicates a non-existent sprite
+						// I think the logic here is that bits 2-4 in OAM are disabled, but soam is initialized with 0xFF
+						// so the only way a sprite could have an 0xFF attribute is if it is not in the scope of the scanline
+						if (t_oam[s].oam_attr == 0xFF)
+						{
+							t_oam[s].patterns_0 = 0;
+							t_oam[s].patterns_1 = 0;
+						}
+
 					} // sprite pattern fetch loop
 
 				}
@@ -699,7 +730,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					Read_bgdata(ref bgdata[xt]);
 				}
-
 
 				// this sequence is tuned to pass 10-even_odd_timing.nes
 				runppu(kFetchTime);
@@ -724,7 +754,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			runppu(preNMIlines * kLineTime);
 
 		} //FrameAdvance
-
 
 		void FrameAdvance_ppudead()
 		{
