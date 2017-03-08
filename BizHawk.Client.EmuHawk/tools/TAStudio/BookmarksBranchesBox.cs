@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		private const string FrameColumnName = "FrameColumn";
 		private const string UserTextColumnName = "TextColumn";
 		private readonly PlatformFrameRates FrameRates = new PlatformFrameRates();
-		private ScreenshotPopup Screenshot = new ScreenshotPopup();
+		private ScreenshotForm Screenshot = new ScreenshotForm();
 		private TasMovie Movie { get { return Tastudio.CurrentTasMovie; } }
 		public TAStudio Tastudio { get; set; }
 
@@ -462,7 +462,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_MouseLeave(object sender, EventArgs e)
 		{
-			ScreenshotTooltip.Hide(this);
+			Screenshot.FadeOut();
 		}
 
 		private void BranchView_CellHovered(object sender, InputRoll.CellEventArgs e)
@@ -474,24 +474,25 @@ namespace BizHawk.Client.EmuHawk
 					BranchView.CurrentCell.RowIndex < Movie.BranchCount)
 				{
 					TasBranch branch = GetBranch(BranchView.CurrentCell.RowIndex.Value);
+					Point location = Location;
+					location.Offset(-Screenshot.Width, 0);
 					int width = Tastudio.VideoProvider.BufferWidth;
 					int height = Tastudio.VideoProvider.BufferHeight;
-					Screenshot.UpdateValues(branch, width, height,
+
+					Screenshot.UpdateValues(branch, PointToScreen(location), width, height,
 						(int)Graphics.FromHwnd(this.Handle).MeasureString(
 							branch.UserText, Screenshot.Font, width).Height);
 
-					Point location = Location;
-					location.Offset(-Screenshot.Width, 0);
-					ScreenshotTooltip.Show(" ", this, location);
+					Screenshot.FadeIn();
 				}
 				else
 				{
-					ScreenshotTooltip.Hide(this);
+					Screenshot.FadeOut();
 				}
 			}
 			else
 			{
-				ScreenshotTooltip.Hide(this);
+				Screenshot.FadeOut();
 			}
 		}
 
@@ -501,16 +502,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
 			}
-		}
-
-		private void Screenshot_Popup(object sender, PopupEventArgs e)
-		{
-			Screenshot.Popup(sender, e);
-		}
-
-		private void Screenshot_Draw(object sender, DrawToolTipEventArgs e)
-		{
-			Screenshot.Draw(sender, e);
 		}
 
 		#endregion
