@@ -443,15 +443,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
             {
                 if (ppur.status.sl < 241)
                 {
-					if (ppur.status.cycle < 64)
+					if (ppur.status.cycle <= 64)
                     {
                         ret = 0xFF; // during this time all reads return FF
                     }
-                    else if (ppur.status.cycle < 256)
+                    else if (ppur.status.cycle <= 256)
                     {
                         ret = read_value;
                     }
-                    else if (ppur.status.cycle < 320)
+                    else if (ppur.status.cycle <= 320)
                     {
                         ret = read_value;
                     }
