@@ -38,6 +38,34 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
+			"getrecording",
+			"returns whether or not TAStudio is in recording mode"
+		)]
+		public bool GetRecording()
+		{
+			return Tastudio.TasPlaybackBox.RecordingMode;
+		}
+
+		[LuaMethodAttributes(
+			"setrecording",
+			"sets the recording mode on/off depending on the parameter"
+		)]
+		public void SetRecording(bool val)
+		{
+			if (Tastudio.TasPlaybackBox.RecordingMode != val)
+				Tastudio.ToggleReadOnly();
+		}
+
+		[LuaMethodAttributes(
+			"togglerecording",
+			"toggles tastudio recording mode on/off depending on its current state"
+		)]
+		public void SetRecording()
+		{
+			Tastudio.ToggleReadOnly();
+		}
+
+		[LuaMethodAttributes(
 			"setbranchtext",
 			"adds the given message to the existing branch, or to the branch that will be created next if branch index is not specified"
 			)]
