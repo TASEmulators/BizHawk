@@ -46,6 +46,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// installing vram address is delayed after second write to 2006, set this up here
 		public int install_2006;
 		public bool race_2006;
+		public int install_2001;
+		public bool show_bg_new; //Show background
+		public bool show_obj_new; //Show sprites
 
 		struct TempOAM
 		{
@@ -132,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					
 					runppu(1);
-					if (reg_2001.PPUON)
+					if (PPUON)
 					{
 						ppu_was_on = true;
 					}
@@ -140,13 +143,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 7:
 
-					race_2006 = false;
 					runppu(1);
 					//horizontal scroll clocked at cycle 3 and then
 					//vertical scroll at 256
-					if (ppu_was_on)
+					if (PPUON)
 					{
-						ppur.increment_hsc();
+						if (!race_2006)
+							ppur.increment_hsc();
+
 						if (ppur.status.cycle == 256 && !race_2006)
 							ppur.increment_vs();
 					}
@@ -181,7 +185,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//Not sure if this is correct.  According to Matt Conte and my own tests, it is. Timing is probably off, though.
 			//NOTE:  Not having this here breaks a Super Donkey Kong game.
-			if (reg_2001.show_obj || reg_2001.show_bg) reg_2003 = 0;
+			if (PPUON) reg_2003 = 0;
 
 			//this was repeatedly finetuned from the fceux days thrugh the old cpu core and into the new one to pass 05-nmi_timing.nes
 			//note that there is still some leniency. for instance, 4,2 will pass in addition to 3,3
@@ -224,7 +228,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				// "If PPUADDR is not less then 8 when rendering starts, the first 8 fights in OAM and written to from 
 				// the current location off PPUADDR"
-				if (sl == 0 && reg_2001.PPUON && reg_2003 >= 8)
+				if (sl == 0 && PPUON && reg_2003 >= 8)
 				{
 					for (int i = 0; i < 8; i++)
 					{
@@ -252,7 +256,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						spriteHeight = reg_2000.obj_size_16 ? 16 : 8;
 
 						//check all the conditions that can cause things to render in these 8px
-						bool renderspritenow = reg_2001.show_obj && (xt > 0 || reg_2001.show_obj_leftmost);
+						bool renderspritenow = show_obj_new && (xt > 0 || reg_2001.show_obj_leftmost);
 						bool renderbgnow; 
 
 						for (int xp = 0; xp < 8; xp++, rasterpos++)
@@ -346,7 +350,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 									}
 									else if (soam_index>=8)
 									{
-										if (yp >= read_value && yp < read_value + spriteHeight && reg_2001.PPUON)
+										if (yp >= read_value && yp < read_value + spriteHeight && PPUON)
 										{
 											Reg2002_objoverflow = true;
 										}
@@ -393,12 +397,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 							//process the current clock's worth of bg data fetching
 							//this needs to be split into 8 pieces or else exact sprite 0 hitting wont work due to the cpu not running while the sprite renders below
-							if (reg_2001.show_obj || reg_2001.show_bg)
+							if (PPUON)
 								Read_bgdata(xp, ref bgdata[xt + 2]);
 							else
 								runppu(1);
 
-							renderbgnow =  reg_2001.show_bg && (xt > 0 || reg_2001.show_bg_leftmost);
+							renderbgnow =  show_bg_new && (xt > 0 || reg_2001.show_bg_leftmost);
 							//bg pos is different from raster pos due to its offsetability.
 							//so adjust for that here
 							int bgpos = rasterpos + ppur.fh;
@@ -410,7 +414,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							//according to qeed's doc, use palette 0 or $2006's value if it is & 0x3Fxx
 							//at one point I commented this out to fix bottom-left garbage in DW4. but it's needed for full_nes_palette. 
 							//solution is to only run when PPU is actually OFF (left-suppression doesnt count)
-							if (!reg_2001.show_bg && !reg_2001.show_obj)
+							if (!PPUON)
 							{
 								// if there's anything wrong with how we're doing this, someone please chime in
 								int addr = ppur.get_2007access();
@@ -465,7 +469,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 									//1. is it sprite#0?
 									//2. is the bg pixel nonzero?
 									//then, it is spritehit.
-									Reg2002_objhit |= (sprite_zero_go && s == 0 && pixel != 0 && rasterpos < 255 && reg_2001.show_bg && reg_2001.show_obj);
+									Reg2002_objhit |= (sprite_zero_go && s == 0 && pixel != 0 && rasterpos < 255 && show_bg_new && show_obj_new);
 
 									//priority handling, if in front of BG:
 									bool drawsprite = !(((t_oam[s].oam_attr & 0x20) != 0) && ((pixel & 3) != 0));
@@ -526,7 +530,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				for (int s = 0; s < 8; s++)
 				{
-					bool junksprite = (!reg_2001.PPUON);
+					bool junksprite = (!PPUON);
 
 					t_oam[s].oam_y = soam[s * 4];
 					t_oam[s].oam_ind = soam[s * 4 + 1];
@@ -561,7 +565,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 					ppubus_read(ppur.get_ntread(), true, true);
 
-					if (reg_2001.PPUON)
+					if (PPUON)
 					{
 						if (sl == 0 && ppur.status.cycle == 304)
 						{
@@ -569,7 +573,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							read_value = t_oam[s].oam_y;
 							runppu(1);
 							
-							if (reg_2001.PPUON) ppur.install_latches();
+							if (PPUON) ppur.install_latches();
 
 							read_value = t_oam[s].oam_ind;
 							runppu(1);
@@ -591,7 +595,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							}
 
 							//at 257: 3d world runner is ugly if we do this at 256
-							if (reg_2001.PPUON) ppur.install_h_latches();
+							if (PPUON) ppur.install_h_latches();
 							read_value = t_oam[s].oam_ind;
 							runppu(1);
 							
@@ -681,7 +685,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					for (int s = 8; s < soam_index_aux; s++)
 					{
-						bool junksprite = (!reg_2001.PPUON);
+						bool junksprite = (!PPUON);
 
 						t_oam[s].oam_y = soam[s * 4];
 						t_oam[s].oam_ind = soam[s * 4 + 1];
@@ -750,9 +754,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 
 				// this sequence is tuned to pass 10-even_odd_timing.nes
-				runppu(kFetchTime);
-				bool evenOddDestiny = (reg_2001.show_bg || reg_2001.show_obj);
-				runppu(kFetchTime);
+				runppu(1);
+				runppu(1);
+				runppu(1);
+				runppu(1);
+				bool evenOddDestiny = PPUON;
 
 				// After memory access 170, the PPU simply rests for 4 cycles (or the
 				// equivelant of half a memory access cycle) before repeating the whole
@@ -763,7 +769,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else
 					runppu(1);
 
-				race_2006 = false;
 			} // scanline loop
 
 			ppur.status.sl = 241;
@@ -795,7 +800,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (ppudead==2)
 			{
 			*/
-			runppu(241 * kLineTime-7*3);
+			runppu(241 * kLineTime - 3);// -8*3);
 			/*
 			} else
 			{

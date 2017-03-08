@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//when the ppu issues a write it goes through here and into the game board
 		public void ppubus_write(int addr, byte value)
 		{
-			if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
+			if (ppur.status.sl == 241 || !PPUON)
 				nes.Board.AddressPPU(addr);
 
 			nes.Board.WritePPU(addr, value);
@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte ppubus_read(int addr, bool ppu, bool addr_ppu)
 		{
 			//hardware doesnt touch the bus when the PPU is disabled
-			if (!reg_2001.PPUON && ppu)
+			if (!PPUON && ppu)
 				return 0xFF;
 
 			if (addr_ppu)
@@ -219,6 +219,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("soam_index", ref soam_index);
 			ser.Sync("install_2006", ref install_2006);
 			ser.Sync("race_2006", ref race_2006);
+			ser.Sync("install_2001", ref install_2001);
+			ser.Sync("show_bg_new", ref show_bg_new);
+			ser.Sync("show_obj_new", ref show_obj_new);
 
 			ser.Sync("ppu_open_bus", ref ppu_open_bus);
 			ser.Sync("double_2007_read", ref double_2007_read);
@@ -283,6 +286,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity
 			for (int i = 0; i < x; i++)
 			{
+				race_2006 = false;
 				if (install_2006>0)
 				{
 					install_2006--;
@@ -295,12 +299,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						//but maybe thats just because a ppu read/write shoves it on the address bus
 						//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests dont pass
 						//ONLY if the ppu is not rendering
-						if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
+						if (ppur.status.sl == 241 || !PPUON)
 							nes.Board.AddressPPU(ppur.get_2007access());
 
 						race_2006 = true;
 					}
 				}
+				if (install_2001 > 0)
+				{
+					install_2001--;
+					if (install_2001 == 0)
+					{
+						show_bg_new = reg_2001.show_bg;
+						show_obj_new = reg_2001.show_obj;
+					}
+				}
+
 
 				ppur.status.cycle++;
                 is_even_cycle = !is_even_cycle;

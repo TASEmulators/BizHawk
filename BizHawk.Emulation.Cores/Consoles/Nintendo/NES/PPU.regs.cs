@@ -27,8 +27,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public int intensity_lsl_6; //an optimization..
 
-			public bool PPUON { get { return show_bg || show_obj; } }
-
 			public byte Value
 			{
 				get
@@ -49,6 +47,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 		}
+
+		public bool PPUON { get { return show_bg_new || show_obj_new; } }
+
 
 		// this byte is used to simulate open bus reads and writes
 		// it should be modified by every read and write to a ppu register
@@ -345,6 +346,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			//printf("%04x:$%02x, %d\n",A,V,scanline);
 			reg_2001.Value = value;
+			install_2001 = 2;
 		}
 		byte read_2001() {return ppu_open_bus; }
 		byte peek_2001() {return ppu_open_bus; }
@@ -439,7 +441,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
         {
 			byte ret;
 			// behaviour depends on whether things are being rendered or not
-            if (reg_2001.show_bg || reg_2001.show_obj)
+            if (PPUON)
             {
                 if (ppur.status.sl < 241)
                 {
@@ -535,7 +537,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int addr = ppur.get_2007access();
 			if (ppuphase == PPUPHASE.BG)
 			{
-				if (reg_2001.show_bg)
+				if (show_bg_new)
 				{
 					addr = ppur.get_ntread();
 				}
@@ -564,10 +566,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			}
 
-			ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
+			ppur.increment2007(ppur.status.rendering && PPUON, reg_2000.vram_incr32 != 0);
 
 			//see comments in $2006
-			if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
+			if (ppur.status.sl == 241 || !PPUON)
 				nes.Board.AddressPPU(ppur.get_2007access()); 
 		}
 		byte read_2007()
@@ -588,10 +590,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bus_case = 1;
 			}
 
-			ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
+			ppur.increment2007(ppur.status.rendering && PPUON, reg_2000.vram_incr32 != 0);
 
 			//see comments in $2006
-			if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
+			if (ppur.status.sl == 241 || !PPUON)
 				nes.Board.AddressPPU(ppur.get_2007access());
 
 			// update open bus here

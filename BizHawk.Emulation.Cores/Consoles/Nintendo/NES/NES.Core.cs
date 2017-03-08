@@ -273,11 +273,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			SetupMemoryDomains();
 
-			//in this emulator, reset takes place instantaneously
-			cpu.PC = (ushort)(ReadMemory(0xFFFC) | (ReadMemory(0xFFFD) << 8));
-			cpu.P = 0x34;
-			cpu.S = 0xFD;
-
 			// some boards cannot have specific values in RAM upon initialization
 			// Let's hard code those cases here
 			// these will be defined through the gameDB exclusively for now.
