@@ -452,7 +452,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (BranchView.CurrentCell == null || !BranchView.CurrentCell.RowIndex.HasValue || BranchView.CurrentCell.Column == null)
 			{
-				//not sure if we need to explicitly hide the screenshot here as well
+				Screenshot.FadeOut();
 			}
 			else if (BranchView.CurrentCell.Column.Name == BranchNumberColumnName)
 			{
