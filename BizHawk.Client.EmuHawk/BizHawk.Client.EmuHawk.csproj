@@ -1088,7 +1088,12 @@
     <Compile Include="tools\TAStudio\PatternsForm.Designer.cs">
       <DependentUpon>PatternsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="tools\TAStudio\ScreenshotPopup.cs" />
+    <Compile Include="tools\TAStudio\ScreenshotForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\TAStudio\ScreenshotForm.Designer.cs">
+      <DependentUpon>ScreenshotForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\TAStudio\TAStudio.Callbacks.cs">
       <DependentUpon>TAStudio.cs</DependentUpon>
       <SubType>Form</SubType>
@@ -1605,6 +1610,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\PlaybackBox.resx">
       <DependentUpon>PlaybackBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="tools\TAStudio\ScreenshotForm.resx">
+      <DependentUpon>ScreenshotForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="tools\TAStudio\TAStudio.resx">
       <DependentUpon>TAStudio.cs</DependentUpon>
