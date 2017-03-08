@@ -70,12 +70,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">
-    <OutDir>..\..\output\dll</OutDir>
+    <OutDir>..\..\output\dll\</OutDir>
     <TargetName>libsneshawk-32-performance</TargetName>
     <IntDir>.obj\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">
-    <OutDir>..\..\output\dll</OutDir>
+    <OutDir>..\..\output\dll\</OutDir>
     <TargetName>libsneshawk-32-compatibility</TargetName>
     <IntDir>.obj\$(Configuration)\</IntDir>
   </PropertyGroup>
