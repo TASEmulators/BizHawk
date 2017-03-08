@@ -202,6 +202,7 @@ namespace BizHawk.Client.EmuHawk
 			RemoveBranchContextMenuItem.Enabled =
 			LoadBranchContextMenuItem.Enabled =
 			EditBranchTextContextMenuItem.Enabled =
+			JumpToBranchContextMenuItem.Enabled = 
 				SelectedBranch != null;
 		}
 
@@ -240,6 +241,16 @@ namespace BizHawk.Client.EmuHawk
 				int index = BranchView.SelectedRows.First();
 				EditBranchTextPopUp(index);
 				GlobalWin.OSD.AddMessage("Edited branch " + index.ToString());
+			}
+		}
+
+		private void JumpToBranchToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (SelectedBranch != null)
+			{
+				int index = BranchView.SelectedRows.First();
+				TasBranch branch = Movie.GetBranch(index);
+				Tastudio.GoToFrame(branch.Frame);
 			}
 		}
 
@@ -418,9 +429,9 @@ namespace BizHawk.Client.EmuHawk
 		private void BranchView_MouseDown(object sender, MouseEventArgs e)
 		{
 			UpdateBranchButton.Enabled =
-			RemoveBranchButton.Enabled =
 			LoadBranchButton.Enabled =
 			EditBranchTextButton.Enabled =
+			JumpToBranchButton.Enabled = 
 				SelectedBranch != null;
 
 			BranchesContextMenu.Close();
