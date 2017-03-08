@@ -532,7 +532,7 @@ const Action kHandlers_CMD[] = {
 	snes_unload_cartridge,
 };
 
-void(*kHandlers_QUERY[])() = {
+const Action kHandlers_QUERY[] = {
 	QUERY_get_memory_size, //eMessage_QUERY_get_memory_size TODO - grab during bootup (for all possible memdomains)
 	QUERY_peek,
 	QUERY_poke,
