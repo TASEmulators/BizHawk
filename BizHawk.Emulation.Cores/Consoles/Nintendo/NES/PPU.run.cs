@@ -130,16 +130,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ppu_addr_temp |= 8;
 					bgdata.pt_1 = ppubus_read(ppu_addr_temp, true, true);
 
+					
 					runppu(1);
 					if (reg_2001.PPUON)
 					{
 						ppu_was_on = true;
 					}
+
 					break;
 				case 7:
+
 					race_2006 = false;
 					runppu(1);
-
 					//horizontal scroll clocked at cycle 3 and then
 					//vertical scroll at 256
 					if (ppu_was_on)
@@ -148,6 +150,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (ppur.status.cycle == 256 && !race_2006)
 							ppur.increment_vs();
 					}
+
 					ppu_was_on = false;
 					break;
 			} //switch(cycle)
@@ -219,6 +222,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				yp = sl - 1;
 				ppuphase = PPUPHASE.BG;
 
+				// "If PPUADDR is not less then 8 when rendering starts, the first 8 fights in OAM and written to from 
+				// the current location off PPUADDR"
+				if (sl == 0 && reg_2001.PPUON && reg_2003 >= 8)
+				{
+					for (int i = 0; i < 8; i++)
+					{
+						OAM[i] = OAM[reg_2003 & 0xF8 + i];
+					}
+				}
+
 				if (NTViewCallback != null && yp == NTViewCallback.Scanline) NTViewCallback.Callback();
 				if (PPUViewCallback != null && yp == PPUViewCallback.Scanline) PPUViewCallback.Callback();
 
@@ -259,37 +272,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							if (ppur.status.cycle == 64)
 							{
 								soam_index = 0;
+								oam_index = 0;// reg_2003;
 							}
 
 							// otherwise, scan through OAM and test if sprites are in range
 							// if they are, they get copied to the secondary OAM 
 							if (ppur.status.cycle >= 64)
 							{
-								if (oam_index == 64)
+								if (oam_index >= 256)
 								{
 									oam_index = 0;
 									sprite_eval_write = false;
 								}
 
-								if (is_even_cycle && oam_index<64)
+								if (is_even_cycle && oam_index<256)
 								{
-									if ((oam_index * 4 + soam_m_index) < 256)
-										read_value = OAM[oam_index * 4 + soam_m_index];
+									if ((oam_index + soam_m_index) < 256)
+										read_value = OAM[oam_index + soam_m_index];
 									else
-										read_value = OAM[oam_index * 4 + soam_m_index - 256];
+										read_value = OAM[oam_index + soam_m_index - 256];
 								}
 								else if (!sprite_eval_write)
 								{
 									// if we don't write sprites anymore, just scan through the oam
 									read_value = soam[0];
-									oam_index++;
+									oam_index+=4;
 								}
 								else if (sprite_eval_write)
 								{
 									//look for sprites 
 									if (spr_true_count==0 && soam_index<8)
 									{
-										soam[soam_index * 4] = read_value;
+										soam[soam_index*4] = read_value;
 									}
 
 									if (soam_index < 8)
@@ -297,7 +311,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 										if (yp >= read_value && yp < read_value + spriteHeight && spr_true_count == 0)
 										{
 											//a flag gets set if sprite zero is in range
-											if (oam_index == 0)
+											if (oam_index == 0)//reg_2003)
 												sprite_zero_in_range = true;
 
 											spr_true_count++;
@@ -312,10 +326,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 											spr_true_count++;
 											if (spr_true_count == 4)
 											{
-												oam_index++;
+												oam_index+=4;
 												soam_index++;
 												if (soam_index == 8)
-													oam_index_aux = oam_index;
+												{
+													// oam_index could be pathologically misaligned at this point, so we have to find the next 
+													// nearest actual sprite to work on >8 sprites per scanline option
+													oam_index_aux = (oam_index%4)*4;
+												}
 
 												soam_m_index = 0;
 												spr_true_count = 0;
@@ -323,7 +341,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 										}
 										else
 										{
-											oam_index++;
+											oam_index+=4;
 										}
 									}
 									else if (soam_index>=8)
@@ -345,7 +363,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 											spr_true_count++;
 											if (spr_true_count == 4)
 											{
-												oam_index++;
+												oam_index+=4;
 												soam_index++;
 												soam_m_index = 0;
 												spr_true_count = 0;
@@ -353,7 +371,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 										}
 										else
 										{
-											oam_index++;
+											oam_index+=4;
 											if (soam_index==8)
 											{
 												soam_m_index++; // glitchy increment

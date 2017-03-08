@@ -223,6 +223,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("ppu_open_bus", ref ppu_open_bus);
 			ser.Sync("double_2007_read", ref double_2007_read);
 			ser.Sync("ppu_open_bus_decay_timer", ref ppu_open_bus_decay_timer, false);
+			ser.Sync("glitchy_reads_2003", ref glitchy_reads_2003, false);
 
 			ser.Sync("OAM", ref OAM, false);
 			ser.Sync("PALRAM", ref PALRAM, false);

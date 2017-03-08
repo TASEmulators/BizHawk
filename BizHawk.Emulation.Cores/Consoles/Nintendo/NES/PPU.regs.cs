@@ -55,6 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte ppu_open_bus=0;
 		public int double_2007_read; // emulates a hardware bug of back to back 2007 reads
 		public int[] ppu_open_bus_decay_timer = new int[8];
+		public byte[] glitchy_reads_2003 = new byte[8];
 
 		public struct PPUSTATUS
 		{
@@ -400,10 +401,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		//OAM ADDRESS (write)
-		void write_2003(byte value)
+		void write_2003(int addr, byte value)
 		{
-			//just record the oam buffer write target
-			reg_2003 = value;
+			if (region == PPU.Region.NTSC)
+			{
+				// in NTSC this does several glitchy things to corrupt OAM
+				// commented out for now until better understood
+				byte temp = (byte)(reg_2003 & 0xF8);
+				byte temp_2 = (byte)(addr >> 16 & 0xF8);
+				/*
+				for (int i=0;i<8;i++)
+				{
+					glitchy_reads_2003[i] = OAM[temp + i];
+					//OAM[temp_2 + i] = glitchy_reads_2003[i];
+				}
+				*/
+				reg_2003 = value;
+			}
+			else
+			{
+				// in PAL, just record the oam buffer write target
+				reg_2003 = value;
+			}
 		}
 		byte read_2003() { return ppu_open_bus; }
 		byte peek_2003() { return ppu_open_bus; }
@@ -424,15 +443,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
             {
                 if (ppur.status.sl < 241)
                 {
-					if (ppur.status.cycle <= 64)
+					if (ppur.status.cycle < 64)
                     {
                         ret = 0xFF; // during this time all reads return FF
                     }
-                    else if (ppur.status.cycle <= 256)
+                    else if (ppur.status.cycle < 256)
                     {
                         ret = read_value;
                     }
-                    else if (ppur.status.cycle <= 320)
+                    else if (ppur.status.cycle < 320)
                     {
                         ret = read_value;
                     }
@@ -669,7 +688,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			PPUGenLatch = value;
 			ppu_open_bus = value;
 
-			switch (addr)
+			switch (addr & 0x07)
 			{
 				case 0:
 					if (nes._isVS2c05>0)
@@ -684,7 +703,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						write_2001(value);
 					break;
 				case 2: write_2002(value); break;
-				case 3: write_2003(value); break;
+				case 3: write_2003(addr, value); break;
 				case 4: write_2004(value); break;
 				case 5: write_2005(value); break;
 				case 6: write_2006(value); break;

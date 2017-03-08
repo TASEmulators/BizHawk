@@ -796,7 +796,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else if (addr < 0x4000)
 			{
-				ppu.WriteReg((addr & 0x07), value);
+				ppu.WriteReg(addr, value);
 			}
 			else if (addr < 0x4020)
 			{

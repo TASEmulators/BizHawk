@@ -224,7 +224,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public virtual void WriteReg2xxx(int addr, byte value)
 			{
-				NES.ppu.WriteReg(addr & 7, value);
+				NES.ppu.WriteReg(addr, value);
 			}
 
 			public virtual void WritePPU(int addr, byte value)
