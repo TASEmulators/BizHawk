@@ -23,12 +23,12 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			A = 0;
 			X = 0;
 			Y = 0;
-			P = 0;
+			P = 0x20; // 5th bit always set
 			S = 0;
 			PC = 0;
 			TotalExecutedCycles = 0;
 			mi = 0;
-			opcode = 256;
+			opcode = VOP_RESET;
 			iflag_pending = true;
 			RDY = true;
 		}
