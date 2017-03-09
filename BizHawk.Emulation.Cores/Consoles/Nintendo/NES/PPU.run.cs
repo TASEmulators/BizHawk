@@ -756,9 +756,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// this sequence is tuned to pass 10-even_odd_timing.nes
 				runppu(1);
 				runppu(1);
-				runppu(1);
-				runppu(1);
 				bool evenOddDestiny = PPUON;
+				runppu(1);
+				runppu(1);
 
 				// After memory access 170, the PPU simply rests for 4 cycles (or the
 				// equivelant of half a memory access cycle) before repeating the whole
@@ -800,7 +800,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (ppudead==2)
 			{
 			*/
-			runppu(241 * kLineTime - 3);// -8*3);
+			runppu(241 * kLineTime+3);// -8*3);
 			/*
 			} else
 			{
