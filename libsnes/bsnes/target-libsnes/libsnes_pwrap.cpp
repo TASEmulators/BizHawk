@@ -281,13 +281,6 @@ void snes_scanlineStart(int line)
 	BREAK(eMessage_BRK_scanlineStart);
 }
 
-class SharedMemoryBlock
-{
-public:
-	std::string memtype;
-	HANDLE handle;
-};
-
 void* snes_allocSharedMemory(const char* memtype, size_t amt)
 {
 	//its important that this happen before the message marshaling because allocation/free attempts can happen before the marshaling is setup (or at shutdown time, in case of errors?)
@@ -526,8 +519,6 @@ const Action kHandlers_CMD[] = {
 	CMD_unserialize,
 	CMD_LoadCartridgeNormal,
 	CMD_LoadCartridgeSGB,
-	snes_term,
-	snes_unload_cartridge,
 	snes_term,
 	snes_unload_cartridge,
 };
