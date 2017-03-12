@@ -341,6 +341,8 @@ namespace BizHawk.Client.Common
 			int oldLength = InputLogLength;
 			ChangeLog.AddGeneralUndo(oldLength, oldLength + numFrames - 1);
 
+			Global.MovieSession.MovieControllerAdapter.LatchSticky();
+
 			var lg = LogGeneratorInstance();
             lg.SetSource(Global.MovieOutputHardpoint); // account for autohold. needs autohold pattern to be already recorded in the current frame
 
