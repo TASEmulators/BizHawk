@@ -43,9 +43,9 @@
 			// 
 			// PlaybackGroupBox
 			// 
-			this.PlaybackGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-			| System.Windows.Forms.AnchorStyles.Left)
-			| System.Windows.Forms.AnchorStyles.Right)));
+			this.PlaybackGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.PlaybackGroupBox.Controls.Add(this.RecordingModeCheckbox);
 			this.PlaybackGroupBox.Controls.Add(this.AutoRestoreCheckbox);
 			this.PlaybackGroupBox.Controls.Add(this.TurboSeekCheckbox);
@@ -67,7 +67,7 @@
 			this.RecordingModeCheckbox.AutoSize = true;
 			this.RecordingModeCheckbox.Location = new System.Drawing.Point(10, 85);
 			this.RecordingModeCheckbox.Name = "RecordingModeCheckbox";
-			this.RecordingModeCheckbox.Size = new System.Drawing.Size(134, 21);
+			this.RecordingModeCheckbox.Size = new System.Drawing.Size(104, 17);
 			this.RecordingModeCheckbox.TabIndex = 9;
 			this.RecordingModeCheckbox.Text = "Recording mode";
 			this.RecordingModeCheckbox.UseVisualStyleBackColor = true;
@@ -78,7 +78,7 @@
 			this.AutoRestoreCheckbox.AutoSize = true;
 			this.AutoRestoreCheckbox.Location = new System.Drawing.Point(10, 64);
 			this.AutoRestoreCheckbox.Name = "AutoRestoreCheckbox";
-			this.AutoRestoreCheckbox.Size = new System.Drawing.Size(188, 21);
+			this.AutoRestoreCheckbox.Size = new System.Drawing.Size(141, 17);
 			this.AutoRestoreCheckbox.TabIndex = 8;
 			this.AutoRestoreCheckbox.Text = "Auto-restore last position";
 			this.AutoRestoreCheckbox.UseVisualStyleBackColor = true;
@@ -87,9 +87,9 @@
 			// TurboSeekCheckbox
 			// 
 			this.TurboSeekCheckbox.AutoSize = true;
-			this.TurboSeekCheckbox.Location = new System.Drawing.Point(131, 43);
+			this.TurboSeekCheckbox.Location = new System.Drawing.Point(117, 43);
 			this.TurboSeekCheckbox.Name = "TurboSeekCheckbox";
-			this.TurboSeekCheckbox.Size = new System.Drawing.Size(102, 21);
+			this.TurboSeekCheckbox.Size = new System.Drawing.Size(80, 17);
 			this.TurboSeekCheckbox.TabIndex = 6;
 			this.TurboSeekCheckbox.Text = "Turbo seek";
 			this.TurboSeekCheckbox.UseVisualStyleBackColor = true;
@@ -100,7 +100,7 @@
 			this.FollowCursorCheckbox.AutoSize = true;
 			this.FollowCursorCheckbox.Location = new System.Drawing.Point(10, 43);
 			this.FollowCursorCheckbox.Name = "FollowCursorCheckbox";
-			this.FollowCursorCheckbox.Size = new System.Drawing.Size(115, 21);
+			this.FollowCursorCheckbox.Size = new System.Drawing.Size(89, 17);
 			this.FollowCursorCheckbox.TabIndex = 5;
 			this.FollowCursorCheckbox.Text = "Follow Cursor";
 			this.FollowCursorCheckbox.UseVisualStyleBackColor = true;

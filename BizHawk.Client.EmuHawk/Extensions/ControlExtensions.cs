@@ -176,7 +176,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 		public static DialogResult ShowHawkDialog(this CommonDialog form)
 		{
 			GlobalWin.Sound.StopSound();
-			var result = form.ShowDialog();
+			var result = form.ShowDialog(new Form() { TopMost = true });
 			GlobalWin.Sound.StartSound();
 			return result;
 		}
