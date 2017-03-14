@@ -16,22 +16,19 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class BookmarksBranchesBox : UserControl
 	{
+		public TAStudio Tastudio { get; set; }
 		private const string BranchNumberColumnName = "BranchNumberColumn";
 		private const string FrameColumnName = "FrameColumn";
 		private const string UserTextColumnName = "TextColumn";
 		private readonly PlatformFrameRates FrameRates = new PlatformFrameRates();
 		private ScreenshotForm Screenshot = new ScreenshotForm();
 		private TasMovie Movie { get { return Tastudio.CurrentTasMovie; } }
-		public TAStudio Tastudio { get; set; }
-
+		public TasBranch BackupBranch;
+		private enum BranchUndo { Load, Update, Text, Remove, None }
+		private BranchUndo _branchUndo = BranchUndo.None;
 		public int HoverInterval {
 			get { return BranchView.HoverInterval; }
 			set { BranchView.HoverInterval = value; }
-		}
-
-		private TasBranch GetBranch(int id)
-		{
-			return Tastudio.CurrentTasMovie.GetBranch(id);
 		}
 
 		public BookmarksBranchesBox()
@@ -124,6 +121,11 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Actions
+
+		private TasBranch GetBranch(int index)
+		{
+			return Tastudio.CurrentTasMovie.GetBranch(index);
+		}
 
 		public void Branch()
 		{
@@ -221,6 +223,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadBranchToolStripMenuItem_Click(object sender, EventArgs e)
 		{
+			BackupBranch = CreateBranch();
+
+			var currentHashes = Movie.Branches.Select(b => b.UniqueIdentifier.GetHashCode()).ToList();
+			do BackupBranch.UniqueIdentifier = Guid.NewGuid();
+			while (currentHashes.Contains(BackupBranch.UniqueIdentifier.GetHashCode()));
+
+			UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
+			UndoBranchToolStripMenuItem.Text = "Undo Branch Load";
+			toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Load");
+			_branchUndo = BranchUndo.Load;
+
 			LoadSelectedBranch();
 		}
 
@@ -229,6 +242,13 @@ namespace BizHawk.Client.EmuHawk
 			if (SelectedBranch != null)
 			{
 				Movie.CurrentBranch = BranchView.SelectedRows.First();
+
+				BackupBranch = SelectedBranch;
+				UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
+				UndoBranchToolStripMenuItem.Text = "Undo Branch Update";
+				toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Update");
+				_branchUndo = BranchUndo.Update;
+
 				UpdateBranch(SelectedBranch);
 				GlobalWin.OSD.AddMessage("Saved branch " + Movie.CurrentBranch.ToString());
 			}
@@ -239,6 +259,13 @@ namespace BizHawk.Client.EmuHawk
 			if (SelectedBranch != null)
 			{
 				int index = BranchView.SelectedRows.First();
+
+				BackupBranch = SelectedBranch;
+				UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
+				UndoBranchToolStripMenuItem.Text = "Undo Branch Text Edit";
+				toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Text Edit");
+				_branchUndo = BranchUndo.Text;
+
 				EditBranchTextPopUp(index);
 				GlobalWin.OSD.AddMessage("Edited branch " + index.ToString());
 			}
@@ -268,6 +295,12 @@ namespace BizHawk.Client.EmuHawk
 					Movie.CurrentBranch--;
 				}
 
+				BackupBranch = SelectedBranch;
+				UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
+				UndoBranchToolStripMenuItem.Text = "Undo Branch Removal";
+				toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Removal");
+				_branchUndo = BranchUndo.Remove;
+
 				Movie.RemoveBranch(SelectedBranch);
 				BranchView.RowCount = Movie.BranchCount;
 
@@ -281,6 +314,33 @@ namespace BizHawk.Client.EmuHawk
 				Tastudio.RefreshDialog();
 				GlobalWin.OSD.AddMessage("Removed branch " + index.ToString());
 			}
+		}
+
+		private void UndoBranchToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if (_branchUndo == BranchUndo.Load)
+			{
+				LoadBranch(BackupBranch);
+				GlobalWin.OSD.AddMessage("Branch Load canceled");
+			}
+			else if (_branchUndo == BranchUndo.Update)
+			{
+				Movie.UpdateBranch(Movie.GetBranch(BackupBranch.UniqueIdentifier), BackupBranch);
+				GlobalWin.OSD.AddMessage("Branch Update canceled");
+			}
+			else if (_branchUndo == BranchUndo.Text)
+			{
+				Movie.GetBranch(BackupBranch.UniqueIdentifier).UserText = BackupBranch.UserText;
+			}
+			else if (_branchUndo == BranchUndo.Remove)
+			{
+				Movie.AddBranch(BackupBranch);
+				BranchView.RowCount = Movie.BranchCount;
+				GlobalWin.OSD.AddMessage("Branch Removal canceled");
+			}
+			UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = false;
+			BranchView.Refresh();
+			Tastudio.RefreshDialog();
 		}
 
 		public void AddBranchExternal()
@@ -430,7 +490,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			UpdateBranchButton.Enabled =
 			LoadBranchButton.Enabled =
-			EditBranchTextButton.Enabled =
 			JumpToBranchButton.Enabled = 
 				SelectedBranch != null;
 
@@ -456,7 +515,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			LoadSelectedBranch();
+			LoadBranchToolStripMenuItem_Click(null, null);
 		}
 
 		private void BranchView_MouseMove(object sender, MouseEventArgs e)
@@ -476,7 +535,15 @@ namespace BizHawk.Client.EmuHawk
 			Screenshot.FadeOut();
 		}
 
-		private void BranchView_CellHovered(object sender, InputRoll.CellEventArgs e)
+		private void BranchView_CellDropped(object sender, InputRoll.CellEventArgs e)
+		{
+			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex.Value < Movie.BranchCount)
+			{
+				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
+			}
+		}
+
+		private void BranchView_PointedCellChanged(object sender, InputRoll.CellEventArgs e)
 		{
 			if (e.NewCell != null && e.NewCell.RowIndex.HasValue && e.NewCell.Column != null && e.NewCell.RowIndex < Movie.BranchCount)
 			{
@@ -504,14 +571,6 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				Screenshot.FadeOut();
-			}
-		}
-
-		private void BranchView_CellDropped(object sender, InputRoll.CellEventArgs e)
-		{
-			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex.Value < Movie.BranchCount)
-			{
-				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
 			}
 		}
 
