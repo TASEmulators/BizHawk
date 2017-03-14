@@ -20,12 +20,12 @@ namespace BizHawk.Client.EmuHawk
 		private Timer _showTimer = new Timer();
 		private Timer _hideTimer = new Timer();
 		public TasBranch Branch { get; set; }
-		public Font Font;
+		new public Font Font;
 		public FontStyle FontStyle;
 		public int FontSize;
 		public int DrawingHeight;
-		public int Padding;
-		public string Text;
+		new public int Padding;
+		new public string Text;
 
 		public ScreenshotForm()
 		{
@@ -79,6 +79,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Padding > 0)
 				Padding += 2;
 			Height = DrawingHeight + Padding;
+			Refresh();
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
