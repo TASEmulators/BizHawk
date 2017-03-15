@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Movie.CurrentBranch = BranchView.SelectedRows.First();
 
-				BackupBranch = SelectedBranch;
+				BackupBranch = SelectedBranch.Clone();
 				UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
 				UndoBranchToolStripMenuItem.Text = "Undo Branch Update";
 				toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Update");
@@ -259,15 +259,19 @@ namespace BizHawk.Client.EmuHawk
 			if (SelectedBranch != null)
 			{
 				int index = BranchView.SelectedRows.First();
+				string oldText = SelectedBranch.UserText;
 
-				BackupBranch = SelectedBranch;
-				UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
-				UndoBranchToolStripMenuItem.Text = "Undo Branch Text Edit";
-				toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Text Edit");
-				_branchUndo = BranchUndo.Text;
+				if (EditBranchTextPopUp(index))
+				{
+					BackupBranch = SelectedBranch.Clone();
+					BackupBranch.UserText = oldText;
+					UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
+					UndoBranchToolStripMenuItem.Text = "Undo Branch Text Edit";
+					toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Text Edit");
+					_branchUndo = BranchUndo.Text;
 
-				EditBranchTextPopUp(index);
-				GlobalWin.OSD.AddMessage("Edited branch " + index.ToString());
+					GlobalWin.OSD.AddMessage("Edited branch " + index.ToString());
+				}
 			}
 		}
 
@@ -295,7 +299,7 @@ namespace BizHawk.Client.EmuHawk
 					Movie.CurrentBranch--;
 				}
 
-				BackupBranch = SelectedBranch;
+				BackupBranch = SelectedBranch.Clone();
 				UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
 				UndoBranchToolStripMenuItem.Text = "Undo Branch Removal";
 				toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Removal");
@@ -331,6 +335,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (_branchUndo == BranchUndo.Text)
 			{
 				Movie.GetBranch(BackupBranch.UniqueIdentifier).UserText = BackupBranch.UserText;
+				GlobalWin.OSD.AddMessage("Branch Text Edit canceled");
 			}
 			else if (_branchUndo == BranchUndo.Remove)
 			{
@@ -459,11 +464,11 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.Refresh();
 		}
 
-		public void EditBranchTextPopUp(int index)
+		public bool EditBranchTextPopUp(int index)
 		{
 			TasBranch branch = Movie.GetBranch(index);
 			if (branch == null)
-				return;
+				return false;
 
 			InputPrompt i = new InputPrompt
 			{
@@ -474,12 +479,13 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			var result = i.ShowHawkDialog();
-
 			if (result == DialogResult.OK)
 			{
 				branch.UserText = i.PromptText;
 				UpdateValues();
+				return true;
 			}
+			return false;
 		}
 
 		#endregion
