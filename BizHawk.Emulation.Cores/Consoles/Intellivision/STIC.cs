@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 		}
 
-		public int VirtualWidth { get { return 176; } }
+		public int VirtualWidth { get { return 277; } }
 		public int BufferWidth { get { return 176; } }
 		public int VirtualHeight { get { return 208; } }
 		public int BufferHeight { get { return 208; } }
@@ -88,8 +88,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			for (int i=0;i<64;i++)
 			{
+				Register[i] = 0; 
 				write_reg(i, 0, false);
 			}
+
+			ColorSP = 0x0028;
 		}
 
 		public bool GetSr1()

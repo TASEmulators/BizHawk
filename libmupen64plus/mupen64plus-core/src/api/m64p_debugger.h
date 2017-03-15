@@ -39,9 +39,9 @@ extern "C" {
  * UI, this function may be called with NULL pointers in order to disable the
  * callbacks. 
  */
-typedef m64p_error (*ptr_DebugSetCallbacks)(void (*)(void), void (*)(unsigned int), void (*)(void));
+typedef m64p_error (*ptr_DebugSetCallbacks)(void (*)(void), void (*)(int), void (*)(void));
 #if defined(M64P_CORE_PROTOTYPES)
-EXPORT m64p_error CALL DebugSetCallbacks(void (*)(void), void (*)(unsigned int), void (*)(void));
+EXPORT m64p_error CALL DebugSetCallbacks(void (*)(void), void (*)(int), void (*)(void));
 #endif
 
 /* DebugSetCoreCompare()

@@ -77,6 +77,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				Register[register] = 0;
 			}
 			RegisterPC = RESET;
+			PendingCycles = 0;
 		}
 
 		public bool GetBusAk()

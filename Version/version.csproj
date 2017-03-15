@@ -72,6 +72,9 @@
     <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' AND Exists('/Library/Frameworks/Mono.framework')">/Library/Frameworks/Mono.framework/Commands/mono "$(ProjectDir)..\Build\BizHawk.Build.Tool.exe" GIT_REV --wc "$(ProjectDir).." --template "$(ProjectDir)svnrev_template" --out "$(ProjectDir)svnrev.cs"</PreBuildEvent>
     <PreBuildEvent Condition=" '$(OS)' != 'Windows_NT' AND !Exists('/Library/Frameworks/Mono.framework')">mono "$(ProjectDir)..\Build\BizHawk.Build.Tool.exe" GIT_REV --wc "$(ProjectDir).." --template "$(ProjectDir)svnrev_template" --out "$(ProjectDir)svnrev.cs"</PreBuildEvent>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="dummy.cs" />
+  </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

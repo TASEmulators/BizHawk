@@ -237,8 +237,7 @@ namespace BizHawk.Client.Common
 					switch (_comparisonType)
 					{
 						default:
-						case COMPARISONTYPE.NONE: // This should never happen, but it's here just in case
-							break;
+						case COMPARISONTYPE.NONE: // This should never happen, but it's here just in case.  adelikat: And yet it does! Cheat Code converter doesn't do this.  Changing this to default to equal since 99.9999% of all cheats are going to be equals
 						case COMPARISONTYPE.EQUAL:
 							if (_compare.Value == _watch.ValueNoFreeze) 
 							{

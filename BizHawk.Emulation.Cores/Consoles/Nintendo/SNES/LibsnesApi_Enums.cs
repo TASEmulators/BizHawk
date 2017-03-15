@@ -10,24 +10,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			eMessage_NotSet,
 			
-			eMessage_SetBuffer,
-			eMessage_BeginBufferIO,
-			eMessage_EndBufferIO,
-			eMessage_ResumeAfterBRK,
-			eMessage_Shutdown,
+			eMessage_Resume,
 
-			eMessage_QUERY_library_id,
-			eMessage_QUERY_library_revision_major,
-			eMessage_QUERY_library_revision_minor,
-			eMessage_QUERY_get_region,
-			eMessage_QUERY_get_mapper,
+			eMessage_QUERY_FIRST,
 			eMessage_QUERY_get_memory_size,
-			eMessage_QUERY_get_memory_data, //note: this function isnt used and hasnt been tested in a while
 			eMessage_QUERY_peek,
 			eMessage_QUERY_poke,
 			eMessage_QUERY_serialize_size,
-			eMessage_QUERY_poll_message,
-			eMessage_QUERY_dequeue_message,
 			eMessage_QUERY_set_color_lut,
 			eMessage_QUERY_GetMemoryIdName,
 			eMessage_QUERY_state_hook_exec,
@@ -43,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_QUERY_peek_logical_register,
 			eMessage_QUERY_peek_cpu_regs,
 			eMessage_QUERY_set_cdl,
+			eMessage_QUERY_LAST,
 
 			eMessage_CMD_FIRST,
 			eMessage_CMD_init,
@@ -52,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_CMD_serialize,
 			eMessage_CMD_unserialize,
 			eMessage_CMD_load_cartridge_normal,
-			eMessage_CMD_load_cartridge_super_game_boy,
+			eMessage_CMD_load_cartridge_sgb,
 			eMessage_CMD_term,
 			eMessage_CMD_unload_cartridge,
 			eMessage_CMD_LAST,
@@ -76,6 +66,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_BRK_scanlineStart,
 		};
 
+		enum eStatus : int
+		{
+			eStatus_Idle,
+			eStatus_CMD,
+			eStatus_BRK
+		};
 
 		public enum SNES_REG : int
 		{
@@ -203,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			STROM = 10
 		}
 
-		public enum SNES_REGION : byte
+		public enum SNES_REGION : uint
 		{
 			NTSC = 0,
 			PAL = 1,

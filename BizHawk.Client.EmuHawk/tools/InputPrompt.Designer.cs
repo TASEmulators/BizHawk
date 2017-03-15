@@ -95,6 +95,7 @@
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Input Prompt";
+			this.TopMost = true;
 			this.Load += new System.EventHandler(this.InputPrompt_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();

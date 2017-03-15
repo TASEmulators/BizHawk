@@ -19,6 +19,8 @@ IF NOT EXIST %MSBUILDDIR%msbuild.exe goto MISSINGMSBUILD
 
 call "%MSBUILDDIR%msbuild.exe" ..\BizHawk.sln /p:Configuration=Release /p:Platform="x86" /t:rebuild
 
+@if errorlevel 1 goto MSBUILDFAILED
+
 rmdir /s /q temp
 del /s %NAME%
 cd ..\output
@@ -95,6 +97,10 @@ goto END
 :MISSINGMSBUILD
 @echo Missing msbuild.exe. can't make distro without that.
 goto END
+:MSBUILDFAILED
+@echo msbuild failed. Usual cause: user committed broken code.
+goto END
 :MISSINGGIT
 @echo missing git.exe. can't make distro without that.
 :END
+

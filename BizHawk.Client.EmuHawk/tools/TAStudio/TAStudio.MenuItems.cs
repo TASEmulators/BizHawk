@@ -108,6 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				_autosaveTimer.Stop();
+				GlobalWin.Sound.StopSound();
 				MessageStatusLabel.Text = "Saving...";
 				this.Cursor = Cursors.WaitCursor;
 				Update();
@@ -117,6 +118,7 @@ namespace BizHawk.Client.EmuHawk
 				MessageStatusLabel.Text = CurrentTasMovie.Name + " saved.";
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				this.Cursor = Cursors.Default;
+				GlobalWin.Sound.StartSound();
 			}
 		}
 
@@ -131,6 +133,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SaveAsTas(object sender, EventArgs e)
 		{
 			_autosaveTimer.Stop();
+			GlobalWin.Sound.StopSound();
 			ClearLeftMouseStates();
 			var filename = CurrentTasMovie.Filename;
 			if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
@@ -159,6 +162,7 @@ namespace BizHawk.Client.EmuHawk
 			// keep insisting
 			if (Settings.AutosaveInterval > 0)
 				_autosaveTimer.Start();
+			GlobalWin.Sound.StartSound();
 		}
 
 		// call this one from the menu only
@@ -179,6 +183,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				_autosaveTimer.Stop();
+				GlobalWin.Sound.StopSound();
 				MessageStatusLabel.Text = "Saving...";
 				this.Cursor = Cursors.WaitCursor;
 				Update();
@@ -188,6 +193,7 @@ namespace BizHawk.Client.EmuHawk
 				MessageStatusLabel.Text = "Backup .tasproj saved to \"Movie backups\" path.";
 				Settings.RecentTas.Add(CurrentTasMovie.Filename);
 				this.Cursor = Cursors.Default;
+				GlobalWin.Sound.StartSound();
 			}
 		}
 

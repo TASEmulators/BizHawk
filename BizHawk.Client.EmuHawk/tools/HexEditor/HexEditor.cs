@@ -1274,6 +1274,35 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void importAsBinaryToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			if(!_domain.CanPoke())
+			{
+				MessageBox.Show("This Memory Domain can't be Poked; so importing can't work");
+				return;
+			}
+
+			var sfd = new OpenFileDialog
+			{
+				Filter = "Binary (*.bin)|*.bin|Save Files (*.sav)|*.sav|All Files|*.*",
+				RestoreDirectory = true,
+			};
+
+			var result = sfd.ShowHawkDialog();
+			if(result != System.Windows.Forms.DialogResult.OK) return;
+			
+			var path = sfd.FileName;
+
+			using (var inf = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+			{
+				long todo = Math.Min(inf.Length, _domain.Size);
+				for (long i = 0; i < todo; i++)
+				{
+					_domain.PokeByte(i, (byte)inf.ReadByte());
+				}
+			}
+		}
+
 		private void SaveAsTextMenuItem_Click(object sender, EventArgs e)
 		{
 			var path = GetSaveFileFromUser();
@@ -2346,6 +2375,7 @@ namespace BizHawk.Client.EmuHawk
 			MessageBox.Show(str);
 
 		}
+
 
 	}
 } 

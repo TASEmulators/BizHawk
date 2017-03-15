@@ -41,12 +41,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			{
 				ServiceProvider = new BasicServiceProvider(this);
 				CoreComm = comm;
-
+				
 				Context = QN.qn_new();
 				if (Context == IntPtr.Zero)
 					throw new InvalidOperationException("qn_new() returned NULL");
 				try
 				{
+
+					file = fix_ines_header(file);
 					unsafe
 					{
 						fixed (byte* p = file)
@@ -55,6 +57,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 							LibQuickNES.ThrowStringError(QN.qn_loadines(Context, file, file.Length));
 						}
 					}
+
+					
 
 					InitSaveRamBuff();
 					InitSaveStateBuff();
@@ -321,6 +325,30 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			if (Context == IntPtr.Zero)
 				throw new ObjectDisposedException(GetType().Name);
+		}
+
+		// Fix some incorrect ines header entries that QuickNES uses to load games.
+		// we need to do this from the raw file since QuickNES hasn't had time to process it yet.
+		byte[] fix_ines_header(byte[] file)
+		{
+			string sha1 = BizHawk.Common.BufferExtensions.BufferExtensions.HashSHA1(file);
+			bool log_it = false;
+
+			Console.WriteLine(sha1);
+			if (sha1== "93010514AA1300499ABC8F145D6ABCDBF3084090") // Ms. Pac Man (Tengen) [!]
+			{
+				file[6] &= 0xFE;
+				log_it = true;
+			}
+
+			if (log_it)
+			{
+				Console.WriteLine("iNES header error detected, adjusting settings...");
+				Console.WriteLine(sha1);
+			}
+
+			return file;
+
 		}
 
 		#region Blacklist

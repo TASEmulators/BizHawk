@@ -27,8 +27,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public int intensity_lsl_6; //an optimization..
 
-			public bool PPUON { get { return show_bg || show_obj; } }
-
 			public byte Value
 			{
 				get
@@ -50,11 +48,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
+		public bool PPUON { get { return show_bg_new || show_obj_new; } }
+
+
 		// this byte is used to simulate open bus reads and writes
 		// it should be modified by every read and write to a ppu register
 		public byte ppu_open_bus=0;
 		public int double_2007_read; // emulates a hardware bug of back to back 2007 reads
 		public int[] ppu_open_bus_decay_timer = new int[8];
+		public byte[] glitchy_reads_2003 = new byte[8];
 
 		public struct PPUSTATUS
 		{
@@ -344,6 +346,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			//printf("%04x:$%02x, %d\n",A,V,scanline);
 			reg_2001.Value = value;
+			install_2001 = 1;
 		}
 		byte read_2001() {return ppu_open_bus; }
 		byte peek_2001() {return ppu_open_bus; }
@@ -400,10 +403,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		//OAM ADDRESS (write)
-		void write_2003(byte value)
+		void write_2003(int addr, byte value)
 		{
-			//just record the oam buffer write target
-			reg_2003 = value;
+			if (region == PPU.Region.NTSC)
+			{
+				// in NTSC this does several glitchy things to corrupt OAM
+				// commented out for now until better understood
+				byte temp = (byte)(reg_2003 & 0xF8);
+				byte temp_2 = (byte)(addr >> 16 & 0xF8);
+				/*
+				for (int i=0;i<8;i++)
+				{
+					glitchy_reads_2003[i] = OAM[temp + i];
+					//OAM[temp_2 + i] = glitchy_reads_2003[i];
+				}
+				*/
+				reg_2003 = value;
+			}
+			else
+			{
+				// in PAL, just record the oam buffer write target
+				reg_2003 = value;
+			}
 		}
 		byte read_2003() { return ppu_open_bus; }
 		byte peek_2003() { return ppu_open_bus; }
@@ -420,19 +441,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
         {
 			byte ret;
 			// behaviour depends on whether things are being rendered or not
-            if (reg_2001.show_bg || reg_2001.show_obj)
+            if (PPUON)
             {
                 if (ppur.status.sl < 241)
                 {
-                    if (ppur.status.cycle < 64)
+					if (ppur.status.cycle <= 64)
                     {
                         ret = 0xFF; // during this time all reads return FF
                     }
-                    else if (ppur.status.cycle < 256)
+                    else if (ppur.status.cycle <= 256)
                     {
                         ret = read_value;
                     }
-                    else if (ppur.status.cycle < 320)
+                    else if (ppur.status.cycle <= 320)
                     {
                         ret = read_value;
                     }
@@ -449,7 +470,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
             else
             {
                 ret = OAM[reg_2003];
-            }
+			}
+
 			ppu_open_bus = ret;
 			ppu_open_bus_decay(1);
 			return ret;
@@ -479,10 +501,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//VRAM address register (write)
 		void write_2006(byte value)
 		{
-			if (ppur.status.cycle==256)
-			{
-				conflict_2006 = true;
-			}
+
 			if (!vtoggle)
 			{
 				ppur._vt &= 0x07;
@@ -497,14 +516,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ppur._vt &= 0x18;
 				ppur._vt |= (value >> 5);
 				ppur._ht = value & 31;
-				ppur.install_latches();
-				//nes.LogLine("addr wrote vt = {0}, ht = {1}", ppur._vt, ppur._ht);
-				//normally the address isnt observed by the board till it gets clocked by a read or write.
-				//but maybe thats just because a ppu read/write shoves it on the address bus
-				//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests dont pass
-				//ONLY if the ppu is not rendering
-				if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
-					nes.Board.AddressPPU(ppur.get_2007access());
+
+				// testing indicates that this operation is delayed by 3 pixels
+				// ppur.install_latches();
+
+				install_2006 = 3;
 			}
 
 			vtoggle ^= true;
@@ -521,7 +537,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int addr = ppur.get_2007access();
 			if (ppuphase == PPUPHASE.BG)
 			{
-				if (reg_2001.show_bg)
+				if (show_bg_new)
 				{
 					addr = ppur.get_ntread();
 				}
@@ -550,10 +566,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			}
 
-			ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
+			ppur.increment2007(ppur.status.rendering && PPUON, reg_2000.vram_incr32 != 0);
 
 			//see comments in $2006
-			if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
+			if (ppur.status.sl == 241 || !PPUON)
 				nes.Board.AddressPPU(ppur.get_2007access()); 
 		}
 		byte read_2007()
@@ -574,10 +590,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				bus_case = 1;
 			}
 
-			ppur.increment2007(ppur.status.rendering && reg_2001.PPUON, reg_2000.vram_incr32 != 0);
+			ppur.increment2007(ppur.status.rendering && PPUON, reg_2000.vram_incr32 != 0);
 
 			//see comments in $2006
-			if (ppur.status.sl == 241 || (!reg_2001.show_obj && !reg_2001.show_bg))
+			if (ppur.status.sl == 241 || !PPUON)
 				nes.Board.AddressPPU(ppur.get_2007access());
 
 			// update open bus here
@@ -674,7 +690,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			PPUGenLatch = value;
 			ppu_open_bus = value;
 
-			switch (addr)
+			switch (addr & 0x07)
 			{
 				case 0:
 					if (nes._isVS2c05>0)
@@ -689,7 +705,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						write_2001(value);
 					break;
 				case 2: write_2002(value); break;
-				case 3: write_2003(value); break;
+				case 3: write_2003(addr, value); break;
 				case 4: write_2004(value); break;
 				case 5: write_2005(value); break;
 				case 6: write_2006(value); break;

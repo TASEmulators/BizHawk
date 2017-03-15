@@ -3962,6 +3962,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			// allow named state export for tastudio, since it's safe, unlike loading one
+			// todo: make it not save laglog in that case
+			if (GlobalWin.Tools.IsLoaded<TAStudio>())
+				GlobalWin.Tools.TAStudio.NamedStatePending = true;
+
 			if (IsSlave && master.WantsToControlSavestates)
 			{
 				master.SaveStateAs();
@@ -3988,6 +3993,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SaveState(sfd.FileName, sfd.FileName, false);
 			}
+
+			if (GlobalWin.Tools.IsLoaded<TAStudio>())
+				GlobalWin.Tools.TAStudio.NamedStatePending = false;
 		}
 
 		private void LoadStateAs()

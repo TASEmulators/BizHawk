@@ -21,7 +21,6 @@ namespace BizHawk.Client.EmuHawk
 			var ss = ((LibsnesCore)Global.Emulator).GetSyncSettings();
 			var dlg = new SNESOptions
 			{
-				UseRingBuffer = s.UseRingBuffer,
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
 				ForceDeterminism = s.ForceDeterminism,
 				Profile = ss.Profile
@@ -30,7 +29,6 @@ namespace BizHawk.Client.EmuHawk
 			var result = dlg.ShowDialog(owner);
 			if (result == DialogResult.OK)
 			{
-				s.UseRingBuffer = dlg.UseRingBuffer;
 				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
 				s.ForceDeterminism = dlg.ForceDeterminism;
 				ss.Profile = dlg.Profile;
@@ -60,12 +58,6 @@ namespace BizHawk.Client.EmuHawk
 				rbPerformance.Checked = (value == "Performance");
 				rbAccuracy.Checked = (value == "Accuracy");
 			}
-		}
-
-		public bool UseRingBuffer
-		{
-			get { return cbRingbuf.Checked; }
-			set { cbRingbuf.Checked = value; }
 		}
 
 		public bool AlwaysDoubleSize

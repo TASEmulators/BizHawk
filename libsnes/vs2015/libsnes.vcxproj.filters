@@ -566,7 +566,7 @@
     <ClCompile Include="..\bsnes\snes\dsp\counter.cpp">
       <Filter>snes\dsp</Filter>
     </ClCompile>
-    <ClCompile Include="..\bsnes\libco\x86.c">
+    <ClCompile Include="..\bsnes\libco\sjlj-multi.c">
       <Filter>libco</Filter>
     </ClCompile>
   </ItemGroup>

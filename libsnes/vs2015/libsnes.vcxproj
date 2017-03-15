@@ -70,12 +70,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Performance|Win32'">
-    <OutDir>..\..\output\dll</OutDir>
+    <OutDir>..\..\output\dll\</OutDir>
     <TargetName>libsneshawk-32-performance</TargetName>
     <IntDir>.obj\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">
-    <OutDir>..\..\output\dll</OutDir>
+    <OutDir>..\..\output\dll\</OutDir>
     <TargetName>libsneshawk-32-compatibility</TargetName>
     <IntDir>.obj\$(Configuration)\</IntDir>
   </PropertyGroup>
@@ -327,7 +327,7 @@
     <ClCompile Include="..\bsnes\gameboy\scheduler\scheduler.cpp" />
     <ClCompile Include="..\bsnes\gameboy\system\system.cpp" />
     <ClCompile Include="..\bsnes\gameboy\video\video.cpp" />
-    <ClCompile Include="..\bsnes\libco\x86.c" />
+    <ClCompile Include="..\bsnes\libco\sjlj-multi.c" />
     <ClCompile Include="..\bsnes\snes\alt\cpu\cpu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>

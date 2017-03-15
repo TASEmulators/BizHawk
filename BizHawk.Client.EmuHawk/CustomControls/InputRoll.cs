@@ -1680,7 +1680,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// Bool that indicates if CurrentCell is a Column Cell.
 		/// </summary>
-		private bool IsHoveringOnColumnCell
+		public bool IsHoveringOnColumnCell
 		{
 			get
 			{
@@ -1761,7 +1761,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (!(IsPaintDown || RightButtonHeld) && newCell.RowIndex == -1)
+			if (!(IsPaintDown || RightButtonHeld) && newCell.RowIndex <= -1) // -2 if we're entering from the top
 				newCell.RowIndex = null;
 
 			return newCell;

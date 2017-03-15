@@ -857,6 +857,9 @@ namespace BizHawk.Client.Common
 
 		public void UpdateBranch(int index)
 		{
+			if (index == -1) // backup branch is outsider
+				return;
+
 			int branchHash = _movie.BranchHashByIndex(index);
 
 			// RemoveBranch
@@ -899,6 +902,9 @@ namespace BizHawk.Client.Common
 
 		public void LoadBranch(int index)
 		{
+			if (index == -1) // backup branch is outsider
+				return;
+
 			int branchHash = _movie.BranchHashByIndex(index);
 
 			//Invalidate(0); // Not a good way of doing it?

@@ -55,7 +55,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			InputCallbacks = new InputCallbackSystem();
-			_memorycallbacks.ActiveChanged += RefreshMemoryCallbacks;
+
+			_memorycallbacks.CallbackAdded += AddBreakpoint;
+			_memorycallbacks.CallbackRemoved += RemoveBreakpoint;
 
 			int SaveType = 0;
 			if (game.OptionValue("SaveType") == "EEPROM_16K")
@@ -150,9 +152,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_RSP, rsp);
 
 			InitMemoryDomains();
-			RefreshMemoryCallbacks();
 			if (_syncSettings.Core != N64SyncSettings.CoreType.Dynarec)
+			{
 				ConnectTracer();
+				SetBreakpointHandler();
+			}
 
 			api.AsyncExecuteEmulator();
 
@@ -226,8 +230,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			IsVIFrame = false;
-
-			RefreshMemoryCallbacks();
 
 			if (Tracer != null && Tracer.Enabled)
 			{

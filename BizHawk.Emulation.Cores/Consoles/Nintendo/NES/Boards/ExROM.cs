@@ -263,7 +263,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (NES.ppu.reg_2000.obj_size_16
 				//zero 03-aug-2014 - added this to fix Uchuu Keibitai SDF. The game reads NT entries from CHR rom while PPU is disabled.
 				//obviously we have enormous numbers of bugs springing from our terrible emulation of ppu-disabled states, but this does the job for fixing this one
-				&& NES.ppu.reg_2001.show_obj 
+				&& NES.ppu.show_obj_new 
 				)
 			{
 				if (NES.ppu.ppuphase == PPU.PPUPHASE.OBJ)
@@ -702,7 +702,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			int sl = NES.ppu.ppur.status.sl + 1;
 
-			if (!NES.ppu.reg_2001.PPUON || sl >= 241)
+			if (!NES.ppu.PPUON || sl >= 241)
 			{
 				// whenever rendering is off for any reason (vblank or forced disable
 				// the irq counter resets, as well as the inframe flag (easily verifiable from software)
