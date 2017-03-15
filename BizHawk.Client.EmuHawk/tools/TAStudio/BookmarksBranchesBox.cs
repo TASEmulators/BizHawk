@@ -478,7 +478,10 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = branch.UserText
 			};
 
-			var result = i.ShowHawkDialog();
+			var point = Cursor.Position;
+			point.Offset(i.Width / -2, i.Height / -2);
+
+			var result = i.ShowHawkDialog(position: point);
 			if (result == DialogResult.OK)
 			{
 				branch.UserText = i.PromptText;
