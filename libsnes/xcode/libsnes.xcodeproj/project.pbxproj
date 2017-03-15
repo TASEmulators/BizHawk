@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9E183BA41E78D970000D5746 /* x86.c in Sources */ = {isa = PBXBuildFile; fileRef = 9E183BA21E78D945000D5746 /* x86.c */; };
+		9E183BA51E78D970000D5746 /* x86.c in Sources */ = {isa = PBXBuildFile; fileRef = 9E183BA21E78D945000D5746 /* x86.c */; };
 		9E8EC4EE1C2B57FB00D5577D /* base.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E8EC4ED1C2B57FB00D5577D /* base.cpp */; };
 		9E8EC4EF1C2B57FD00D5577D /* base.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 9E81C7001B3CF5D900B0C884 /* base.hpp */; };
 		9E8EC4F01C2B57FE00D5577D /* base.hpp in Headers */ = {isa = PBXBuildFile; fileRef = 9E81C7001B3CF5D900B0C884 /* base.hpp */; };
@@ -15,8 +17,6 @@
 		9E8EC4F31C2B59D600D5577D /* smp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C8BD1B3CF5D900B0C884 /* smp.cpp */; };
 		9E8EC4F71C2B5A5900D5577D /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E8EC4F61C2B5A5900D5577D /* core.cpp */; };
 		9E8EC4F81C2B5A6400D5577D /* core.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E8EC4F61C2B5A5900D5577D /* core.cpp */; };
-		9EE26BCD1C2A57D4002A2034 /* x86.c in Sources */ = {isa = PBXBuildFile; fileRef = 9EEE15E71B55F7ED00CE1F1A /* x86.c */; };
-		9EE26BCE1C2A57D5002A2034 /* x86.c in Sources */ = {isa = PBXBuildFile; fileRef = 9EEE15E71B55F7ED00CE1F1A /* x86.c */; };
 		9EE26BCF1C2A57DD002A2034 /* apu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7031B3CF5D900B0C884 /* apu.cpp */; };
 		9EE26BD01C2A57DD002A2034 /* apu.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7031B3CF5D900B0C884 /* apu.cpp */; };
 		9EE26BD11C2A57E1002A2034 /* cartridge.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E81C7161B3CF5D900B0C884 /* cartridge.cpp */; };
@@ -96,6 +96,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9E183B9F1E78D8AD000D5746 /* sjlj-multi.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = "sjlj-multi.c"; path = "../bsnes/libco/sjlj-multi.c"; sourceTree = "<group>"; };
+		9E183BA21E78D945000D5746 /* x86.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = x86.c; path = ../bsnes/libco/x86.c; sourceTree = "<group>"; };
 		9E81C7001B3CF5D900B0C884 /* base.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = base.hpp; sourceTree = "<group>"; };
 		9E81C7031B3CF5D900B0C884 /* apu.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = apu.cpp; sourceTree = "<group>"; };
 		9E81C7041B3CF5D900B0C884 /* apu.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = apu.hpp; sourceTree = "<group>"; };
@@ -150,7 +152,6 @@
 		9E8EC4F61C2B5A5900D5577D /* core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = core.cpp; path = core/core.cpp; sourceTree = "<group>"; };
 		9EE26BC11C2A57BC002A2034 /* libsnes-compatibility.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libsnes-compatibility.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 		9EE26BC91C2A57CE002A2034 /* libsnes-performance.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libsnes-performance.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
-		9EEE15E71B55F7ED00CE1F1A /* x86.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = x86.c; path = ../bsnes/libco/x86.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -631,7 +632,8 @@
 		9EEE15E61B55F7E200CE1F1A /* libco */ = {
 			isa = PBXGroup;
 			children = (
-				9EEE15E71B55F7ED00CE1F1A /* x86.c */,
+				9E183BA21E78D945000D5746 /* x86.c */,
+				9E183B9F1E78D8AD000D5746 /* sjlj-multi.c */,
 			);
 			name = libco;
 			sourceTree = "<group>";
@@ -698,7 +700,7 @@
 		9E81C6F01B3CF4C100B0C884 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0800;
 				ORGANIZATIONNAME = bizhawk;
 				TargetAttributes = {
 					9EE26BC01C2A57BC002A2034 = {
@@ -732,6 +734,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E183BA41E78D970000D5746 /* x86.c in Sources */,
 				9EE26BCF1C2A57DD002A2034 /* apu.cpp in Sources */,
 				9EE26C051C2A587D002A2034 /* srtc.cpp in Sources */,
 				9EE26BE11C2A5804002A2034 /* video.cpp in Sources */,
@@ -742,7 +745,6 @@
 				9EE26C111C2A58CC002A2034 /* interface.cpp in Sources */,
 				9EE26BF51C2A5860002A2034 /* link.cpp in Sources */,
 				9E8EC4F21C2B59AE00D5577D /* cpu.cpp in Sources */,
-				9EE26BCD1C2A57D4002A2034 /* x86.c in Sources */,
 				9EE26BE91C2A5844002A2034 /* cartridge.cpp in Sources */,
 				9EE26BE41C2A580D002A2034 /* dsp.cpp in Sources */,
 				9EE26BD91C2A57F5002A2034 /* lcd.cpp in Sources */,
@@ -781,6 +783,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9E183BA51E78D970000D5746 /* x86.c in Sources */,
 				9EE26C161C2A58EB002A2034 /* system.cpp in Sources */,
 				9EE26BF21C2A585A002A2034 /* hitachidsp.cpp in Sources */,
 				9EE26BE81C2A581B002A2034 /* smp.cpp in Sources */,
@@ -798,7 +801,6 @@
 				9EE26BFC1C2A586A002A2034 /* nss.cpp in Sources */,
 				9EE26C101C2A58C3002A2034 /* core.cpp in Sources */,
 				9EE26C041C2A587A002A2034 /* spc7110.cpp in Sources */,
-				9EE26BCE1C2A57D5002A2034 /* x86.c in Sources */,
 				9EE26C081C2A5898002A2034 /* sufamiturbo.cpp in Sources */,
 				9EE26C141C2A58D1002A2034 /* memory.cpp in Sources */,
 				9E8EC4F81C2B5A6400D5577D /* core.cpp in Sources */,
@@ -843,8 +845,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
@@ -893,8 +897,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;

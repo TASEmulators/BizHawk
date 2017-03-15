@@ -112,7 +112,7 @@ void snes_init(void);
 void snes_term(void);
 void snes_power(void);
 void snes_reset(void);
-void snes_run(void);
+static void snes_run(void);
 
 unsigned snes_serialize_size(void);
 bool snes_serialize(uint8_t *data, unsigned size);

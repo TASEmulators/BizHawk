@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		//todo - collect all memory block names whenever a memory block is alloc/dealloced. that way we avoid the overhead when using them for gui stuff (gfx debugger, hex editor)
 
 
-		InstanceDll instanceDll;
+		IInstanceDll instanceDll;
 		string InstanceName;
 
 		[DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
@@ -56,7 +56,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			var pipeName = InstanceName;
 
+#if WINDOWS
 			instanceDll = new InstanceDll(dllPath);
+#else
+			//Todo: This is not very nice if someone wants to add Linux in the future. Check for macOS instead.
+			instanceDll = new InstanceDylib(dllPath.Replace(".dll",".dylib"));
+#endif
 			var dllinit = (DllInit)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("DllInit"), typeof(DllInit));
 			Message = (MessageApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("Message"), typeof(MessageApi));
 			CopyBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("CopyBuffer"), typeof(BufferApi));

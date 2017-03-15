@@ -4,7 +4,9 @@
 //sig: core->frontend: "core signal" a synchronous operation called from the emulation process which the frontend should handle immediately without issuing any calls into the core
 //brk: core->frontend: "core break" the emulation process has suspended. the frontend is free to do whatever it wishes.
 
+#if WINDOWS
 #include <Windows.h>
+#endif
 
 #define LIBSNES_IMPORT
 #include "snes/snes.hpp"
@@ -285,7 +287,11 @@ class SharedMemoryBlock
 {
 public:
 	std::string memtype;
+#if WINDOWS
 	HANDLE handle;
+#else
+    int handle;
+#endif
 };
 
 void* snes_allocSharedMemory(const char* memtype, size_t amt)
@@ -573,10 +579,12 @@ void new_emuthread()
 //------------------------------------------------
 //DLL INTERFACE
 
+#if WINDOWS
 BOOL WINAPI DllMain(_In_ HINSTANCE hinstDLL, _In_ DWORD     fdwReason, _In_ LPVOID    lpvReserved)
 {
 	return TRUE;
 }
+#endif
 
 extern "C" dllexport void* __cdecl DllInit()
 {
