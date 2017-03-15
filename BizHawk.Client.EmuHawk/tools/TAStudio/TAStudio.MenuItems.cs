@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						LoadFile(new FileInfo(ofd.FileName));
 					}
-					else if (ofd.FileName.EndsWith(".bkm") || ofd.FileName.EndsWith(".bk2")) // was loaded using "All Files" filter. todo: proper extention iteration
+					else if (ofd.FileName.EndsWith(".bkm") || ofd.FileName.EndsWith(".bk2")) // todo: proper extention iteration
 					{
 						Mainform.StartNewMovie(MovieService.Get(ofd.FileName), false);
 

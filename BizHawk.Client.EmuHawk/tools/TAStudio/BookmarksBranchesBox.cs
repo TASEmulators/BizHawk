@@ -26,6 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		public TasBranch BackupBranch;
 		private enum BranchUndo { Load, Update, Text, Remove, None }
 		private BranchUndo _branchUndo = BranchUndo.None;
+		private int LongestBranchText = 0;
 		public int HoverInterval {
 			get { return BranchView.HoverInterval; }
 			set { BranchView.HoverInterval = value; }
@@ -243,7 +244,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Movie.CurrentBranch = BranchView.SelectedRows.First();
 
-				BackupBranch = SelectedBranch;
+				BackupBranch = SelectedBranch.Clone();
 				UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
 				UndoBranchToolStripMenuItem.Text = "Undo Branch Update";
 				toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Update");
@@ -259,15 +260,19 @@ namespace BizHawk.Client.EmuHawk
 			if (SelectedBranch != null)
 			{
 				int index = BranchView.SelectedRows.First();
+				string oldText = SelectedBranch.UserText;
 
-				BackupBranch = SelectedBranch;
-				UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
-				UndoBranchToolStripMenuItem.Text = "Undo Branch Text Edit";
-				toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Text Edit");
-				_branchUndo = BranchUndo.Text;
+				if (EditBranchTextPopUp(index))
+				{
+					BackupBranch = SelectedBranch.Clone();
+					BackupBranch.UserText = oldText;
+					UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
+					UndoBranchToolStripMenuItem.Text = "Undo Branch Text Edit";
+					toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Text Edit");
+					_branchUndo = BranchUndo.Text;
 
-				EditBranchTextPopUp(index);
-				GlobalWin.OSD.AddMessage("Edited branch " + index.ToString());
+					GlobalWin.OSD.AddMessage("Edited branch " + index.ToString());
+				}
 			}
 		}
 
@@ -295,7 +300,7 @@ namespace BizHawk.Client.EmuHawk
 					Movie.CurrentBranch--;
 				}
 
-				BackupBranch = SelectedBranch;
+				BackupBranch = SelectedBranch.Clone();
 				UndoBranchToolStripMenuItem.Enabled = UndoBranchButton.Enabled = true;
 				UndoBranchToolStripMenuItem.Text = "Undo Branch Removal";
 				toolTip1.SetToolTip(UndoBranchButton, "Undo Branch Removal");
@@ -331,6 +336,7 @@ namespace BizHawk.Client.EmuHawk
 			else if (_branchUndo == BranchUndo.Text)
 			{
 				Movie.GetBranch(BackupBranch.UniqueIdentifier).UserText = BackupBranch.UserText;
+				GlobalWin.OSD.AddMessage("Branch Text Edit canceled");
 			}
 			else if (_branchUndo == BranchUndo.Remove)
 			{
@@ -459,11 +465,37 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.Refresh();
 		}
 
-		public void EditBranchTextPopUp(int index)
+		public void UpdateTextColumnWidth()
+		{
+			int temp = 0;
+			foreach (TasBranch b in Movie.Branches)
+			{
+				if (string.IsNullOrEmpty(b.UserText))
+					continue;
+
+				if (temp < b.UserText.Length)
+					temp = b.UserText.Length;
+			}
+			LongestBranchText = temp;
+
+			int textWidth = LongestBranchText * 12 + 14; // sorry for magic numbers. see TAStudio.SetUpColumns()
+			InputRoll.RollColumn column = BranchView.AllColumns.Where(c => c.Name == UserTextColumnName).SingleOrDefault();
+
+			if (textWidth < 90)
+				textWidth = 90;
+
+			if (column.Width != textWidth)
+			{
+				column.Width = textWidth;
+				BranchView.AllColumns.ColumnsChanged();
+			}
+		}
+
+		public bool EditBranchTextPopUp(int index)
 		{
 			TasBranch branch = Movie.GetBranch(index);
 			if (branch == null)
-				return;
+				return false;
 
 			InputPrompt i = new InputPrompt
 			{
@@ -473,13 +505,18 @@ namespace BizHawk.Client.EmuHawk
 				InitialValue = branch.UserText
 			};
 
-			var result = i.ShowHawkDialog();
+			var point = Cursor.Position;
+			point.Offset(i.Width / -2, i.Height / -2);
 
+			var result = i.ShowHawkDialog(position: point);
 			if (result == DialogResult.OK)
 			{
 				branch.UserText = i.PromptText;
+				UpdateTextColumnWidth();
 				UpdateValues();
+				return true;
 			}
+			return false;
 		}
 
 		#endregion

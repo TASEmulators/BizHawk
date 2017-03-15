@@ -20,6 +20,11 @@ namespace BizHawk.Client.Common
 		public TasMovieMarkerList Markers { get; set; }
 		public Guid UniqueIdentifier { get; set; }
 		public string UserText { get; set; }
+
+		public TasBranch Clone()
+		{
+			return (TasBranch)MemberwiseClone();
+		}
 	}
 
 	public class TasBranchCollection : List<TasBranch>
@@ -187,7 +192,6 @@ namespace BizHawk.Client.Common
 						}
 					}
 				});
-
 
 				bl.GetLump(nusertext, false, delegate(TextReader tr)
 				{

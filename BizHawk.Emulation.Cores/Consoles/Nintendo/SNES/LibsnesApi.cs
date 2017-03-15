@@ -74,8 +74,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			instanceDll.Dispose();
 
-			foreach (var smb in DeallocatedMemoryBlocks.Values)
-				smb.Dispose();
+			foreach (var smb in DeallocatedMemoryBlocks.Values) smb.Dispose();
+			foreach (var smb in SharedMemoryBlocks.Values) smb.Dispose();
+			SharedMemoryBlocks.Clear();
 			DeallocatedMemoryBlocks.Clear();
 		}
 

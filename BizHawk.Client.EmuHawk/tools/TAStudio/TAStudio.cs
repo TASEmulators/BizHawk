@@ -449,7 +449,7 @@ namespace BizHawk.Client.EmuHawk
 					type = InputRoll.RollColumn.InputType.Boolean;
 					digits = kvp.Value.Length;
 				}
-				AddColumn(kvp.Key, kvp.Value, (digits * 6) + 14, type);
+				AddColumn(kvp.Key, kvp.Value, (digits * 6) + 14, type); // magic numbers reused in EditBranchTextPopUp()
 			}
 
 			var columnsToHide = TasView.AllColumns
@@ -578,6 +578,7 @@ namespace BizHawk.Client.EmuHawk
 
 			CurrentTasMovie.PropertyChanged += new PropertyChangedEventHandler(this.TasMovie_OnPropertyChanged);
 			CurrentTasMovie.CurrentBranch = CurrentTasMovie.Session.CurrentBranch;
+			BookMarkControl.UpdateTextColumnWidth();
 			
 			// clear all selections
 			TasView.DeselectAll();
@@ -644,13 +645,19 @@ namespace BizHawk.Client.EmuHawk
 		private bool StartNewMovieWrapper(bool record, IMovie movie = null)
 		{
 			_initializing = true;
+
 			if (movie == null)
 				movie = CurrentTasMovie;
+
 			SetTasMovieCallbacks(movie as TasMovie);
+
 			bool result = Mainform.StartNewMovie(movie, record);
 			if (result)
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
+
 			TastudioPlayMode();
+			BookMarkControl.UpdateTextColumnWidth();
+
 			_initializing = false;
 
 			return result;
