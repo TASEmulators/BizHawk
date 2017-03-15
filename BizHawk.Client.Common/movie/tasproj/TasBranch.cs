@@ -193,7 +193,6 @@ namespace BizHawk.Client.Common
 					}
 				});
 
-
 				bl.GetLump(nusertext, false, delegate(TextReader tr)
 				{
 					string line;

@@ -26,6 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		public TasBranch BackupBranch;
 		private enum BranchUndo { Load, Update, Text, Remove, None }
 		private BranchUndo _branchUndo = BranchUndo.None;
+		private int LongestBranchText = 0;
 		public int HoverInterval {
 			get { return BranchView.HoverInterval; }
 			set { BranchView.HoverInterval = value; }
@@ -464,6 +465,32 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.Refresh();
 		}
 
+		public void UpdateTextColumnWidth()
+		{
+			int temp = 0;
+			foreach (TasBranch b in Movie.Branches)
+			{
+				if (string.IsNullOrEmpty(b.UserText))
+					continue;
+
+				if (temp < b.UserText.Length)
+					temp = b.UserText.Length;
+			}
+			LongestBranchText = temp;
+
+			int textWidth = LongestBranchText * 12 + 14; // sorry for magic numbers. see TAStudio.SetUpColumns()
+			InputRoll.RollColumn column = BranchView.AllColumns.Where(c => c.Name == UserTextColumnName).SingleOrDefault();
+
+			if (textWidth < 90)
+				textWidth = 90;
+
+			if (column.Width != textWidth)
+			{
+				column.Width = textWidth;
+				BranchView.AllColumns.ColumnsChanged();
+			}
+		}
+
 		public bool EditBranchTextPopUp(int index)
 		{
 			TasBranch branch = Movie.GetBranch(index);
@@ -485,6 +512,7 @@ namespace BizHawk.Client.EmuHawk
 			if (result == DialogResult.OK)
 			{
 				branch.UserText = i.PromptText;
+				UpdateTextColumnWidth();
 				UpdateValues();
 				return true;
 			}
