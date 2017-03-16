@@ -3386,6 +3386,8 @@ namespace BizHawk.Client.EmuHawk
 		// Still needs a good bit of refactoring
 		public bool LoadRom(string path, LoadRomArgs args)
 		{
+			path = HawkFile.Util_ResolveLink(path);
+
 			//default args
 			if (args == null) args = new LoadRomArgs();
 
