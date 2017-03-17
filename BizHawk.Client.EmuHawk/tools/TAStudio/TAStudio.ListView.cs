@@ -33,9 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			_floatEditRow = value;
 			TasView.suspendHotkeys = FloatEditingMode;
 		} }
-		public bool FloatEditingMode { get {
-			return _floatEditRow != -1;
-		} }
+		public bool FloatEditingMode { get { return _floatEditRow != -1; } }
 		private List<int> _extraFloatRows = new List<int>();
 
 		// Right-click dragging
@@ -45,16 +43,13 @@ namespace BizHawk.Client.EmuHawk
 		private int _rightClickLastFrame = -1;
 		private bool _rightClickShift, _rightClickControl, _rightClickAlt;
 		private bool _leftButtonHeld = false;
-		private bool mouseButtonHeld { get {
-			return _rightClickFrame != -1 || _leftButtonHeld;
-		} }
+		private bool mouseButtonHeld { get { return _rightClickFrame != -1 || _leftButtonHeld; } }
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
 		private bool? _autoRestorePaused = null;
 		private int? _seekStartFrame = null;
 		private bool _shouldUnpauseFromRewind = false;
 		private Emulation.Common.ControllerDefinition controllerType { get {
-			return Global.MovieSession.MovieControllerAdapter.Definition;
-		} }
+			return Global.MovieSession.MovieControllerAdapter.Definition; } }
 		public bool WasRecording = false;
 		public AutoPatternBool[] BoolPatterns;
 		public AutoPatternFloat[] FloatPatterns;

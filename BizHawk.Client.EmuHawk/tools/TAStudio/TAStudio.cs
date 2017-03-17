@@ -20,43 +20,31 @@ namespace BizHawk.Client.EmuHawk
 	public partial class TAStudio : ToolFormBase, IToolFormAutoConfig, IControlMainform
 	{
 		// TODO: UI flow that conveniently allows to start from savestate
+		public TasMovie CurrentTasMovie { get { return Global.MovieSession.Movie as TasMovie; } }
+		public MainForm Mainform { get { return GlobalWin.MainForm; } }
+		public bool IsInMenuLoop { get; private set; }
+		public string statesPath { get {
+			return PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null); } }
+		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
 		private const string CursorColumnName = "CursorColumn";
 		private const string FrameColumnName = "FrameColumn";
-		private BackgroundWorker _saveBackgroundWorker;
 		private BackgroundWorker _seekBackgroundWorker;
 		private MovieEndAction _originalEndAction; // The movie end behavior selected by the user (that is overridden by TAStudio)
 		private UndoHistoryForm _undoForm;
-		private Timer _autosaveTimer = new Timer();
-		private readonly List<TasClipboardEntry> _tasClipboard = new List<TasClipboardEntry>();
-		private Dictionary<string, string> GenerateColumnNames()
-		{
-			var lg = Global.MovieSession.LogGeneratorInstance();
-			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
-			return (lg as Bk2LogEntryGenerator).Map();
-		}
-
-		public bool IsInMenuLoop { get; private set; }
-
-		public string statesPath
-		{
-			get { return PathManager.MakeAbsolutePath(Global.Config.PathEntries["Global", "TAStudio states"].Path, null); }
-		}
-
-		public TasMovie CurrentTasMovie
-		{
-			get { return Global.MovieSession.Movie as TasMovie; }
-		}
-
-		public MainForm Mainform
-		{
-			get { return GlobalWin.MainForm; }
-		}
+		private Timer _autosaveTimer;
 
 		/// <summary>
 		/// Separates "restore last position" logic from seeking caused by navigation.
 		/// TASEditor never kills LastPositionFrame, and it only pauses on it, if it hasn't been greenzoned beforehand and middle mouse button was pressed.
 		/// </summary>
 		public int LastPositionFrame { get; set; }
+
+		private Dictionary<string, string> GenerateColumnNames()
+		{
+			var lg = Global.MovieSession.LogGeneratorInstance();
+			lg.SetSource(Global.MovieSession.MovieControllerAdapter);
+			return (lg as Bk2LogEntryGenerator).Map();
+		}
 
 		[ConfigPersist]
 		public TAStudioSettings Settings { get; set; }
@@ -118,12 +106,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Settings = new TAStudioSettings();
 			InitializeComponent();
+			InitializeSeekWorker();
 
 			// TODO: show this at all times or hide it when saving is done?
 			this.SavingProgressBar.Visible = false;
-
-			InitializeSaveWorker();
-			InitializeSeekWorker();
 
 			WantsToControlStopMovie = true;
 			WantsToControlRestartMovie = true;
@@ -163,40 +149,6 @@ namespace BizHawk.Client.EmuHawk
 				else
 					SaveTas(sender, e);
 			}
-		}
-
-		private void InitializeSaveWorker()
-		{
-			if (_saveBackgroundWorker != null)
-			{
-				_saveBackgroundWorker.Dispose();
-				_saveBackgroundWorker = null; // Idk if this line is even useful.
-			}
-
-			_saveBackgroundWorker = new BackgroundWorker();
-			_saveBackgroundWorker.WorkerReportsProgress = true;
-			_saveBackgroundWorker.DoWork += (s, e) =>
-			{
-				this.Invoke(() => this.MessageStatusLabel.Text = "Saving " + Path.GetFileName(CurrentTasMovie.Filename) + "...");
-				this.Invoke(() => this.SavingProgressBar.Visible = true);
-				CurrentTasMovie.Save();
-			};
-
-			_saveBackgroundWorker.ProgressChanged += (s, e) =>
-			{
-				SavingProgressBar.Value = e.ProgressPercentage;
-			};
-
-			_saveBackgroundWorker.RunWorkerCompleted += (s, e) =>
-			{
-				this.Invoke(() => this.MessageStatusLabel.Text = Path.GetFileName(CurrentTasMovie.Filename) + " saved.");
-				this.Invoke(() => this.SavingProgressBar.Visible = false);
-
-				InitializeSaveWorker(); // Required, or it will error when trying to report progress again.
-			};
-
-			if (CurrentTasMovie != null) // Again required. TasMovie has a separate reference.
-				CurrentTasMovie.NewBGWorker(_saveBackgroundWorker);
 		}
 
 		private void InitializeSeekWorker()
@@ -282,6 +234,7 @@ namespace BizHawk.Client.EmuHawk
 			TasView.SeekingCutoffInterval = Settings.SeekingCutoffInterval;
 			BookMarkControl.HoverInterval = Settings.BranchCellHoverInterval;
 
+			_autosaveTimer = new Timer(components);
 			_autosaveTimer.Tick += AutosaveTimerEventProcessor;
 			if (Settings.AutosaveInterval > 0)
 			{
@@ -315,8 +268,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				BranchesMarkersSplit.SplitterDistance = Settings.BranchMarkerSplitDistance;
 			}
-
-			////////////////
 
 			RefreshDialog();
 			_initialized = true;
@@ -555,7 +506,7 @@ namespace BizHawk.Client.EmuHawk
 				return false;
 			}
 
-			TasMovie newMovie = new TasMovie(startsFromSavestate, _saveBackgroundWorker);
+			TasMovie newMovie = new TasMovie(startsFromSavestate, _seekBackgroundWorker);
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			newMovie.Filename = file.FullName;
 
@@ -593,7 +544,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (AskSaveChanges())
 			{
-				Global.MovieSession.Movie = new TasMovie(false, _saveBackgroundWorker);
+				Global.MovieSession.Movie = new TasMovie(false, _seekBackgroundWorker);
 				var stateManager = (Global.MovieSession.Movie as TasMovie).TasStateManager;
 				stateManager.MountWriteAccess();
 				stateManager.InvalidateCallback = GreenzoneInvalidated;
