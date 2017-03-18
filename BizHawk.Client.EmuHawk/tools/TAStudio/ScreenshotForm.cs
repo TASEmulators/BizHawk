@@ -19,11 +19,15 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private Timer _showTimer = new Timer();
 		private Timer _hideTimer = new Timer();
+		private int _widthCap = 320;
+		private int _heightCap = 240;
+		private int _interval = 40;
+		private double _alphaStep = 0.125;
 		public TasBranch Branch { get; set; }
-		new public Font Font;
 		public FontStyle FontStyle;
 		public int FontSize;
 		public int DrawingHeight;
+		new public Font Font;
 		new public int Padding;
 		new public string Text;
 
@@ -31,26 +35,26 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 
-			Width = 320;
-			Height = 240;
+			Width = _widthCap;
+			Height = _heightCap;
 			FontSize = 10;
 			FontStyle = FontStyle.Regular;
 			Font = new Font(FontFamily.GenericMonospace, FontSize, FontStyle);
 			DrawingHeight = 0;
 			Padding = 0;
 			Opacity = 0;
-			
-			_showTimer.Interval = 1;
+
+			_showTimer.Interval = _interval;
 			_showTimer.Tick += new EventHandler((sender, e) =>
 			{
-				if ((Opacity += 0.05d) >= 1)
+				if ((Opacity += _alphaStep) >= 1)
 					_showTimer.Stop();
 			});
 
-			_hideTimer.Interval = 1;
+			_hideTimer.Interval = _interval;
 			_hideTimer.Tick += new EventHandler((sender, e) =>
 			{
-				if ((Opacity -= 0.05d) <= 0)
+				if ((Opacity -= _alphaStep) <= 0)
 				{
 					_hideTimer.Stop();
 					Hide();
@@ -69,10 +73,10 @@ namespace BizHawk.Client.EmuHawk
 
 			// Set the screenshot to "1x" resolution of the core
 			// cores like n64 and psx are going to still have sizes too big for the control, so cap them
-			if (Width > 320)
+			if (Width > _widthCap)
 			{
-				double ratio = 320.0 / (double)Width;
-				Width = 320;
+				double ratio = (double)_widthCap / (double)Width;
+				Width = _widthCap;
 				DrawingHeight = (int)((double)(DrawingHeight) * ratio);
 			}
 
@@ -110,11 +114,13 @@ namespace BizHawk.Client.EmuHawk
 			_hideTimer.Start();
 		}
 
+		// avoid stealing focus
 		protected override bool ShowWithoutActivation
 		{
 			get { return true; }
 		}
 
+		// but still appear topmost
 		private const int WS_EX_TOPMOST = 0x00000008;
 		protected override CreateParams CreateParams
 		{
