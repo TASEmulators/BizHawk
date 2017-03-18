@@ -17,8 +17,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ScreenshotForm : Form
 	{
-		private Timer _showTimer;
-		private Timer _hideTimer;
+		private Timer _showTimer = new Timer();
+		private Timer _hideTimer = new Timer();
 		public TasBranch Branch { get; set; }
 		new public Font Font;
 		public FontStyle FontStyle;
@@ -30,9 +30,6 @@ namespace BizHawk.Client.EmuHawk
 		public ScreenshotForm()
 		{
 			InitializeComponent();
-
-			_showTimer = new Timer(components);
-			_hideTimer = new Timer(components);
 
 			Width = 320;
 			Height = 240;
