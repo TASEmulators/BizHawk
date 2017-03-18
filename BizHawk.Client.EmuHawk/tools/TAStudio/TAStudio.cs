@@ -604,10 +604,12 @@ namespace BizHawk.Client.EmuHawk
 
 			bool result = Mainform.StartNewMovie(movie, record);
 			if (result)
+			{
 				CurrentTasMovie.TasStateManager.Capture(); // Capture frame 0 always.
+				BookMarkControl.UpdateTextColumnWidth();
+			}
 
-			TastudioPlayMode();
-			BookMarkControl.UpdateTextColumnWidth();
+			TastudioPlayMode();			
 
 			_initializing = false;
 
