@@ -2724,7 +2724,6 @@ namespace BizHawk.Client.EmuHawk
 			var runFrame = false;
 			_runloopFrameadvance = false;
 			var currentTimestamp = Stopwatch.GetTimestamp();
-			var suppressCaptureRewind = false;
 
 			double frameAdvanceTimestampDeltaMs = (double)(currentTimestamp - _frameAdvanceTimestamp) / Stopwatch.Frequency * 1000.0;
 			bool frameProgressTimeElapsed = frameAdvanceTimestampDeltaMs >= Global.Config.FrameProgressDelayMs;
@@ -2772,8 +2771,8 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
-			bool isRewinding = suppressCaptureRewind = Rewind(ref runFrame, currentTimestamp);
-			
+			bool isRewinding = Rewind(ref runFrame, currentTimestamp);
+
 			float atten = 0;
 
 			if (runFrame || force)
@@ -2814,7 +2813,7 @@ namespace BizHawk.Client.EmuHawk
 
 				UpdateFpsDisplay(currentTimestamp, isRewinding, isFastForwarding);
 
-				CaptureRewind(suppressCaptureRewind);
+				CaptureRewind(isRewinding);
 
 				// Set volume, if enabled
 				if (Global.Config.SoundEnabledNormal)
@@ -3503,8 +3502,6 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					Global.Rewinder.ResetRewindBuffer();
-
 					if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
 					{
 						Emulator.CoreComm.RomStatusDetails = string.Format(
@@ -3560,7 +3557,8 @@ namespace BizHawk.Client.EmuHawk
 					SetMainformMovieInfo();
 					CurrentlyOpenRomArgs = args;
 
-					Global.Rewinder.CaptureRewindState();
+					Global.Rewinder.Initialize();
+					Global.Rewinder.Capture();
 
 					Global.StickyXORAdapter.ClearStickies();
 					Global.StickyXORAdapter.ClearStickyFloats();
@@ -3695,7 +3693,7 @@ namespace BizHawk.Client.EmuHawk
 
 				GlobalWin.Tools.Restart();
 				RewireSound();
-				Global.Rewinder.ResetRewindBuffer();
+				Global.Rewinder.Clear();
 				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
 				HandlePlatformMenus();
 				_stateSlots.Clear();
@@ -3736,7 +3734,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ClearRewindData()
 		{
-			Global.Rewinder.ResetRewindBuffer();
+			Global.Rewinder.Clear();
 		}
 
 		#endregion
@@ -4116,7 +4114,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (!suppressCaptureRewind && Global.Rewinder.RewindActive)
 			{
-				Global.Rewinder.CaptureRewindState();
+				Global.Rewinder.Capture();
 			}
 		}
 
