@@ -456,7 +456,7 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 
 		public bool BinarySaveStatesPreferred { get { return false; } }
 
-		MemoryDomainList memoryDomains;
+		//MemoryDomainList memoryDomains;
 
 		void SetupMemoryDomains()
 		{
