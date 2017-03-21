@@ -445,6 +445,8 @@ namespace BizHawk.Common
 		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
 		static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
 
+		//warning: youll have to copy this into the main assembly for your exes in order to run it when booting.
+		//I only put this for use here by external cores
 		public static void RemoveMOTW(string path)
 		{
 			DeleteFileW(path + ":Zone.Identifier");
