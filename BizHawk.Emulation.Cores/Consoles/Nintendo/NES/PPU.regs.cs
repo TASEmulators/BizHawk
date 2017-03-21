@@ -346,7 +346,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			//printf("%04x:$%02x, %d\n",A,V,scanline);
 			reg_2001.Value = value;
-			install_2001 = 1;
+			install_2001 = 2;
 		}
 		byte read_2001() {return ppu_open_bus; }
 		byte peek_2001() {return ppu_open_bus; }

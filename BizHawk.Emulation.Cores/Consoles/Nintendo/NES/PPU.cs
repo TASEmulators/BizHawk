@@ -306,13 +306,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 
-
-
-				ppur.status.cycle++;
-                is_even_cycle = !is_even_cycle;
-				//might not actually run a cpu cycle if there are none to be run right now
-				nes.RunCpuOne();
-
 				if (install_2001 > 0)
 				{
 					install_2001--;
@@ -322,6 +315,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						show_obj_new = reg_2001.show_obj;
 					}
 				}
+
+				ppur.status.cycle++;
+                is_even_cycle = !is_even_cycle;
+				//might not actually run a cpu cycle if there are none to be run right now
+				nes.RunCpuOne();
 
 				if (Reg2002_vblank_active_pending)
 				{
