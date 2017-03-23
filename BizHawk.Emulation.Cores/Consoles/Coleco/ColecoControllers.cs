@@ -12,15 +12,19 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	/// <summary>
 	/// Represents a controller plugged into a controller port on the intellivision
 	/// </summary>
+	/// 
 	public interface IPort
 	{
-		byte Read(IController c, bool left_mode);
+		byte Read(IController c, bool left_mode, int wheel);
+
+		int Update_Wheel(IController c, int wheel);
 
 		ControllerDefinition Definition { get; }
 
 		void SyncState(Serializer ser);
 
 		int PortNum { get; }
+
 	}
 
 	[DisplayName("Unplugged Controller")]
@@ -35,7 +39,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			};
 		}
 
-		public byte Read(IController c, bool left_mode)
+		public byte Read(IController c, bool left_mode, int wheel)
 		{
 			return 0; // needs checking
 		}
@@ -48,6 +52,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		}
 
 		public int PortNum { get; private set; }
+
+		public int Update_Wheel(IController c, int wheel)
+		{
+			return 0;
+		}
 	}
 
 	[DisplayName("ColecoVision Basic Controller")]
@@ -66,7 +75,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public int PortNum { get; private set; }
 
-		public byte Read(IController c, bool left_mode)
+		public byte Read(IController c, bool left_mode, int wheel)
 		{
 			if (left_mode)
 			{
@@ -117,6 +126,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			"Key 0", "Key 1", "Key 2", "Key 3", "Key 4", "Key 5",
 			"Key 6", "Key 7", "Key 8", "Key 9", "Pound", "Star"
 		};
+
+		public int Update_Wheel(IController c, int wheel)
+		{
+			return 0;
+		}
 	}
 
 	[DisplayName("Turbo Controller")]
@@ -139,7 +153,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public ControllerDefinition Definition { get; private set; }
 
-		public byte Read(IController c, bool left_mode)
+		public byte Read(IController c, bool left_mode, int wheel)
 		{
 			if (left_mode)
 			{
@@ -202,5 +216,129 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		}
 
 		//private const int Deadzone = 50;
+
+		public int Update_Wheel(IController c, int wheel)
+		{
+			return 0;
+		}
+	}
+
+	[DisplayName("Super Action Controller")]
+	public class ColecoSuperActionController : IPort
+	{
+		public ColecoSuperActionController(int portNum)
+		{
+			PortNum = portNum;
+			Definition = new ControllerDefinition
+			{
+				BoolButtons = BaseBoolDefinition
+				.Select(b => "P" + PortNum + " " + b)
+				.ToList(),
+				FloatControls = { "P" + PortNum + " Disc X"},
+				FloatRanges = { new[] { -127.0f, 0, 127.0f }}
+			};
+		}
+
+		public int wheel_state { get; set; }
+
+		public int PortNum { get; private set; }
+
+		public ControllerDefinition Definition { get; private set; }
+
+		public byte Read(IController c, bool left_mode, int wheel)
+		{
+			if (left_mode)
+			{
+				byte retval = 0x4F;
+				if (c.IsPressed(Definition.BoolButtons[0])) retval &= 0xFE;
+				if (c.IsPressed(Definition.BoolButtons[1])) retval &= 0xFD;
+				if (c.IsPressed(Definition.BoolButtons[2])) retval &= 0xFB;
+				if (c.IsPressed(Definition.BoolButtons[3])) retval &= 0xF7;
+				if (c.IsPressed(Definition.BoolButtons[4])) retval &= 0x3F;
+
+				retval |= CalcDirection(wheel);
+
+				return retval;
+			}
+			else
+			{
+				byte retval = 0xF;
+				//                                   0x00;
+				if (c.IsPressed(Definition.BoolButtons[14])) retval = 0x01;
+				if (c.IsPressed(Definition.BoolButtons[10])) retval = 0x02;
+				if (c.IsPressed(Definition.BoolButtons[11])) retval = 0x03;
+				//                                             0x04;
+				if (c.IsPressed(Definition.BoolButtons[13])) retval = 0x05;
+				if (c.IsPressed(Definition.BoolButtons[16])) retval = 0x06;
+				if (c.IsPressed(Definition.BoolButtons[8])) retval = 0x07;
+				//                                             0x08;
+				if (c.IsPressed(Definition.BoolButtons[17])) retval = 0x09;
+				if (c.IsPressed(Definition.BoolButtons[6])) retval = 0x0A;
+				if (c.IsPressed(Definition.BoolButtons[15])) retval = 0x0B;
+				if (c.IsPressed(Definition.BoolButtons[9])) retval = 0x0C;
+				if (c.IsPressed(Definition.BoolButtons[7])) retval = 0x0D;
+				if (c.IsPressed(Definition.BoolButtons[12])) retval = 0x0E;
+
+				// extra buttons for SAC
+				if (c.IsPressed(Definition.BoolButtons[18])) retval = 0x04;
+				if (c.IsPressed(Definition.BoolButtons[19])) retval = 0x08;
+
+				if (c.IsPressed(Definition.BoolButtons[5]) == false) retval |= 0x40;
+				retval |= 0x30; // always set these bits
+				return retval;
+			}
+		}
+
+		public void SyncState(Serializer ser)
+		{
+			// nothing to do
+		}
+
+		private static readonly string[] BaseBoolDefinition =
+		{
+			"Up", "Right", "Down", "Left", "Yellow", "Red",
+			"Key 0", "Key 1", "Key 2", "Key 3", "Key 4", "Key 5",
+			"Key 6", "Key 7", "Key 8", "Key 9", "Pound", "Star",
+			"Purple", "Blue"
+		};
+
+		// positive x represents spinning to the right, negative spinning to the left
+		private static byte CalcDirection(int wheel)
+		{
+			byte retval = 0;
+
+			if (wheel >= 0 && wheel < 90)
+				retval = 0x30;
+			if (wheel >= 90 && wheel < 180)
+				retval = 0x10;
+			if (wheel >= 180 && wheel < 270)
+				retval = 0x00;
+			if (wheel >= 270 && wheel <= 360)
+				retval = 0x20;
+
+
+			//Console.WriteLine(retval);
+
+			return retval;
+		}
+
+		//private const int Deadzone = 50;
+
+		public int Update_Wheel(IController c, int wheel)
+		{
+			int x = (int)c.GetFloat(Definition.FloatControls[0]);
+
+			int diff = x >> 1;
+
+			wheel += diff;
+
+			if (wheel >= 360)
+				wheel = wheel - 360;
+
+			if (wheel < 0)
+				wheel = wheel + 360;
+
+			return wheel;
+		}
 	}
 }

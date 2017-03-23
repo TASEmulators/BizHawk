@@ -91,10 +91,21 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				Cpu.Logger = (s) => Tracer.Put(s);
 			}
 
-			byte temp_ret1 = ControllerDeck.ReadPort1(Controller, true);
-			byte temp_ret2 = ControllerDeck.ReadPort2(Controller, true);
+			byte temp_ret1 = ControllerDeck.ReadPort1(Controller, true, false);
+			byte temp_ret2 = ControllerDeck.ReadPort2(Controller, true, false);
 
-			VDP.ExecuteFrame(!temp_ret1.Bit(4), !temp_ret2.Bit(4));
+			/*
+			if (!temp_ret1.Bit(4) && prev_1)
+				Int_pending = true;
+
+			if (!temp_ret2.Bit(4) && prev_2)
+				Int_pending = true;
+			*/
+
+			bool Int_pending = (!temp_ret1.Bit(4)) | (!temp_ret2.Bit(4));
+
+			VDP.ExecuteFrame(Int_pending);
+
 			PSG.EndFrame(Cpu.TotalExecutedCycles);
 
 			if (_isLag)

@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		int TmsPatternNameTableBase;
 		int TmsSpriteAttributeBase;
 
-		public void ExecuteFrame(bool spin1_I, bool spin2_I)
+		public void ExecuteFrame(bool Int_pending)
 		{
 			for (int scanLine = 0; scanLine < 262; scanLine++)
 			{
@@ -60,10 +60,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 				
 				Cpu.Interrupt = false;
-				if ((spin1_I | spin2_I) && scanLine == 50)
+				if (Int_pending)
 				{
 					if (EnableInterrupts)
+					{
 						Cpu.Interrupt = true;
+						Int_pending = false;
+					}
 				}
 
 			}

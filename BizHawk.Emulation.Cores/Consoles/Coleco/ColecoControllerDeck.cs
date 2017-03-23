@@ -41,14 +41,21 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			Definition.FloatRanges.AddRange(Port2.Definition.FloatRanges);
 		}
 
-		public byte ReadPort1(IController c, bool left_mode)
+		public int wheel1;
+		public int wheel2;
+
+		public byte ReadPort1(IController c, bool left_mode, bool update_wheel)
 		{
-			return Port1.Read(c, left_mode);
+			if (update_wheel)
+				wheel1 = Port1.Update_Wheel(c, wheel1);
+			return Port1.Read(c, left_mode, wheel1);
 		}
 
-		public byte ReadPort2(IController c, bool left_mode)
+		public byte ReadPort2(IController c, bool left_mode, bool update_wheel)
 		{
-			return Port2.Read(c, left_mode);
+			if (update_wheel)
+				wheel2 = Port2.Update_Wheel(c, wheel2);
+			return Port2.Read(c, left_mode, wheel2);
 		}
 
 		public ControllerDefinition Definition { get; private set; }
@@ -56,10 +63,12 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("Port1");
+			ser.Sync("Wheel 1", ref wheel1);
 			Port1.SyncState(ser);
 			ser.EndSection();
 
 			ser.BeginSection("Port2");
+			ser.Sync("Wheel 2", ref wheel2);
 			Port2.SyncState(ser);
 			ser.EndSection();
 		}
