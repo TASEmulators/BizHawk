@@ -195,21 +195,15 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private static byte CalcDirection(int x, int y)
 		{
 			y = -y; // vflip to match the arrangement of FloatControllerButtons
-			/*
-			// deadzone: if we're less than ? units from the origin, return no direction
-			if (x * x + y * y < Deadzone * Deadzone)
-			{
-				return 0x0F; // nothing pressed
-			}
-			*/
-			if ((y >= 0 && y>=Math.Abs(x)))
-				return 0x3F;
-			if ((y < 0 && Math.Abs(y) >= Math.Abs(x)))
-				return 0x1F;
-			if ((x > 0 && Math.Abs(y) < x))
-				return 0x0F;
-			if ((x < 0 && Math.Abs(y) < Math.Abs(x)))
-				return 0x2F;
+
+			if (y >= 0 && x > 0)
+				return 0x10;
+			if (y >= 0 && x <= 0)
+				return 0x30;
+			if (y < 0 && x <= 0)
+				return 0x20;
+			if (y < 0 && x > 0)
+				return 0x00;
 
 			Console.WriteLine("Error");
 			return 0x1F;
@@ -235,7 +229,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
 				FloatControls = { "P" + PortNum + " Disc X"},
-				FloatRanges = { new[] { -127.0f, 0, 127.0f }}
+				FloatRanges = { new[] { -360.0f, 0, 360.0f }}
 			};
 		}
 
@@ -307,17 +301,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			byte retval = 0;
 
-			if (wheel >= 0 && wheel < 90)
-				retval = 0x30;
-			if (wheel >= 90 && wheel < 180)
-				retval = 0x10;
-			if (wheel >= 180 && wheel < 270)
+			if (wheel >= 0 && wheel < 180)
 				retval = 0x00;
-			if (wheel >= 270 && wheel <= 360)
+			if (wheel >= 180 && wheel < 360)
+				retval = 0x10;
+			if (wheel <0 && wheel > -180)
 				retval = 0x20;
-
-
-			//Console.WriteLine(retval);
+			if (wheel <= -180 && wheel >-360)
+				retval = 0x30;
 
 			return retval;
 		}
@@ -328,14 +319,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			int x = (int)c.GetFloat(Definition.FloatControls[0]);
 
-			int diff = x >> 1;
+			int diff = -x;
 
 			wheel += diff;
 
 			if (wheel >= 360)
 				wheel = wheel - 360;
 
-			if (wheel < 0)
+			if (wheel <= -360)
 				wheel = wheel + 360;
 
 			return wheel;

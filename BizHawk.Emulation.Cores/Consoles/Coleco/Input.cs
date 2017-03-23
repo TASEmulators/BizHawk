@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			byte retval;
 			if (InputPortSelection == InputPortMode.Left)
 			{
-				retval = ControllerDeck.ReadPort1(Controller, true, true);
+				retval = ControllerDeck.ReadPort1(Controller, true, false);
 				return retval;
 			}
 
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			byte retval;
 			if (InputPortSelection == InputPortMode.Left)
 			{
-				retval = ControllerDeck.ReadPort2(Controller, true, true);
+				retval = ControllerDeck.ReadPort2(Controller, true, false);
 				return retval;
 			}
 

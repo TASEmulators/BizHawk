@@ -60,13 +60,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 				
 				Cpu.Interrupt = false;
-				if (Int_pending)
+				if (Int_pending && scanLine==50)
 				{
 					if (EnableInterrupts)
 					{
 						Cpu.Interrupt = true;
 						Int_pending = false;
-					}
+					} 
 				}
 
 			}
