@@ -3142,8 +3142,9 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					_currentSoundProvider.SetSyncMode(SyncSoundMode.Sync);
-					_aviSoundInputAsync = new MetaspuAsync(_currentSoundProvider, ESynchMethod.ESynchMethod_V);
-				}					
+					double msPerFrame = 1000.0 * Emulator.CoreComm.VsyncDen / Emulator.CoreComm.VsyncNum;
+					_aviSoundInputAsync = new SyncToAsyncProvider(_currentSoundProvider, msPerFrame + 10.0);
+				}
 			}
 			_dumpProxy = new SimpleSyncSoundProvider();
 			RewireSound();
