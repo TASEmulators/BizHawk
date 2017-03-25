@@ -3142,7 +3142,7 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					_currentSoundProvider.SetSyncMode(SyncSoundMode.Sync);
-					_aviSoundInputAsync = new SyncToAsyncProvider(_currentSoundProvider, 10.0);
+					_aviSoundInputAsync = new SyncToAsyncProvider(_currentSoundProvider);
 				}
 			}
 			_dumpProxy = new SimpleSyncSoundProvider();
