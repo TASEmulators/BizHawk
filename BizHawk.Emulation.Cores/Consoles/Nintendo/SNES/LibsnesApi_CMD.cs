@@ -77,7 +77,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			string xml = rom_xml==null?null:System.Text.Encoding.ASCII.GetString(rom_xml);
 			fixed (char* xmlcp = xml)
 			{
-				comm->str = (sbyte*)xmlcp;
+				if (xml != null)
+				{
+					comm->str = (sbyte*)xmlcp;
+				}
+				else
+				{
+					//Fix for mono, somehow null becomes 0xC as xmlcp.
+					comm->str = (sbyte*)0;
+				}
 				SetBytes(rom_data);
 				Message(eMessage.eMessage_CMD_load_cartridge_normal);
 				WaitForCMD();

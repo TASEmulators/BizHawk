@@ -9,11 +9,7 @@ namespace BizHawk.Common
 		public InstanceDylib(string dylibPath)
 		{
 			//copy the dll to a temp directory
-#if WINDOWS
-			var path = TempFileCleaner.GetTempFilename(string.Format("{0}", Path.GetFileNameWithoutExtension(dylibPath)),".dll",false);
-#else
 			var path = TempFileCleaner.GetTempFilename(string.Format("{0}", Path.GetFileNameWithoutExtension(dylibPath)), ".dylib", false);
-#endif
 			using (var stream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.ReadWrite | FileShare.Delete, 4 * 1024, FileOptions.None))
 			using (var sdll = File.OpenRead(dylibPath))
 				sdll.CopyTo(stream);
