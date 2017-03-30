@@ -46,9 +46,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			//(concept pioneered for snes)
 
 			bool dotDouble = (gpheight == 448); //todo: pal?
+			bool lineDouble = false;
 
 			vwidth = gpwidth;
 			vheight = gpheight;
+
+			if (_settings.AlwaysDoubleSize)
+			{
+				dotDouble = true;
+				if (gpheight == 224 || gpheight == 240)
+				{
+					lineDouble = true;
+					vheight *= 2;
+				}
+			}
 
 			if (_settings.PadScreen320 && vwidth == 256)
 				vwidth = 320;
@@ -65,6 +76,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			if (dotDouble)
 				xskip = 2;
 
+			int lines = lineDouble ? 2: 1;
+
 			for (int D = 0; D < xskip; D++)
 			{
 				int rinc = (gppitch / 4) - gpwidth;
@@ -75,20 +88,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 					for (int j = 0; j < gpheight; j++)
 					{
-						for (int i = 0; i < xpad; i++)
+						int* ppsrc = psrc;
+						for (int L = 0; L < lines; L++)
 						{
-							*pdst = unchecked((int)0xff000000);
-							pdst += xskip;
-						}
-						for (int i = 0; i < gpwidth; i++)
-						{
-							*pdst = *psrc++;// | unchecked((int)0xff000000);
-							pdst += xskip;
-						}
-						for (int i = 0; i < xpad2; i++)
-						{
-							*pdst = unchecked((int)0xff000000);
-							pdst += xskip;
+							int* pppsrc = ppsrc;
+							for (int i = 0; i < xpad; i++)
+							{
+								*pdst = unchecked((int)0xff000000);
+								pdst += xskip;
+							}
+							for (int i = 0; i < gpwidth; i++)
+							{
+								*pdst = *pppsrc++;// | unchecked((int)0xff000000);
+								pdst += xskip;
+							}
+							for (int i = 0; i < xpad2; i++)
+							{
+								*pdst = unchecked((int)0xff000000);
+								pdst += xskip;
+							}
+							psrc = pppsrc;
 						}
 						psrc += rinc;
 					}

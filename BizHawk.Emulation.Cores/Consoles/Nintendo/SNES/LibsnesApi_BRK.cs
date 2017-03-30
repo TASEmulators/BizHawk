@@ -15,21 +15,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 				case eMessage.eMessage_BRK_hook_exec:
 					{
-						var addr = brPipe.ReadInt32();
-						ExecHook((uint)addr);
+						ExecHook(comm->addr);
 						break;
 					}
 				case eMessage.eMessage_BRK_hook_read:
 					{
-						var addr = brPipe.ReadInt32();
-						ReadHook((uint)addr);
+						ReadHook(comm->addr);
 						break;
 					}
 				case eMessage.eMessage_BRK_hook_write:
 					{
-						var addr = brPipe.ReadInt32();
-						var value = brPipe.ReadByte();
-						WriteHook((uint)addr, value);
+						WriteHook(comm->addr, (byte)comm->value);
 						break;
 					}
 
@@ -40,13 +36,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					break;
 
 				case eMessage.eMessage_BRK_scanlineStart:
-					int line = brPipe.ReadInt32();
 					if (scanlineStart != null)
-						scanlineStart(line);
-					SPECIAL_Resume();
+						scanlineStart(comm->scanline);
 					break;
 
 			} //switch(msg)
+
+			Message(eMessage.eMessage_Resume);
 			return true;
 		}
 	}

@@ -10,6 +10,8 @@ namespace BizHawk.Client.Common
 
 		void LatchFromSource(IController source);
 
+		void LatchSticky();
+
 		void SetControllersAsMnemonic(string mnemonic);
 	}
 }

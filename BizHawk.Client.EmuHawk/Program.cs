@@ -59,14 +59,16 @@ namespace BizHawk.Client.EmuHawk
 			// this will look in subdirectory "dll" to load pinvoked stuff
 			string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 			SetDllDirectory(dllDir);
+			
+			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
+			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 
 			//but before we even try doing that, whack the MOTW from everything in that directory (thats a dll)
 			//otherwise, some people will have crashes at boot-up due to .net security disliking MOTW.
 			//some people are getting MOTW through a combination of browser used to download bizhawk, and program used to dearchive it
 			WhackAllMOTW(dllDir);
 
-			//in case assembly resolution fails, such as if we moved them into the dll subdiretory, this event handler can reroute to them
-			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+			//We need to do it here too... otherwise people get exceptions when externaltools we distribute try to startup
 
 #endif
 		}
@@ -320,7 +322,8 @@ namespace BizHawk.Client.EmuHawk
 
 		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
 		static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
-		static void RemoveMOTW(string path)
+
+		public static void RemoveMOTW(string path)
 		{
 			DeleteFileW(path + ":Zone.Identifier");
 		}

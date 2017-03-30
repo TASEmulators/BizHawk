@@ -262,6 +262,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					settings.Wndx = form.Location.X;
 					settings.Wndy = form.Location.Y;
+					if (settings.Wndx < 0) settings.Wndx = 0;
+					if (settings.Wndy < 0) settings.Wndy = 0;
 					settings.Width = form.Right - form.Left; // why not form.Size.Width?
 					settings.Height = form.Bottom - form.Top;
 				}

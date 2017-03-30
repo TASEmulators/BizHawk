@@ -32,6 +32,9 @@ namespace BizHawk.Client.EmuHawk
 		private const int MinResamplingDistanceSamples = 3;
 
 		private Queue<short> _buffer = new Queue<short>();
+		private bool _standaloneMode;
+		private int _targetExtraSamples;
+		private int _maxSamplesDeficit;
 
 		private Queue<int> _extraCountHistory = new Queue<int>();
 		private Queue<int> _outputCountHistory = new Queue<int>();
@@ -48,17 +51,37 @@ namespace BizHawk.Client.EmuHawk
 		private short[] _resampleBuffer = new short[0];
 		private double _resampleLengthRoundingError;
 
-		public SoundOutputProvider()
+		public SoundOutputProvider(bool standaloneMode = false)
 		{
+			_standaloneMode = standaloneMode;
+			if (_standaloneMode)
+			{
+				const double targetExtraMs = 10.0;
+				_targetExtraSamples = (int)Math.Ceiling(targetExtraMs * SampleRate / 1000.0);
+			}
+			ResetBuffer();
 		}
 
-		public int MaxSamplesDeficit { get; set; }
+		public int MaxSamplesDeficit
+		{
+			get { return _maxSamplesDeficit; }
+			set
+			{
+				if (_standaloneMode) throw new InvalidOperationException();
+				_maxSamplesDeficit = value;
+			}
+		}
+
+		private int EffectiveMaxSamplesDeficit
+		{
+			get { return _maxSamplesDeficit + _targetExtraSamples; }
+		}
 
 		public ISoundProvider BaseSoundProvider { get; set; }
 
 		public void DiscardSamples()
 		{
-			_buffer.Clear();
+			ResetBuffer();
 			_extraCountHistory.Clear();
 			_outputCountHistory.Clear();
 			_hardCorrectionHistory.Clear();
@@ -73,6 +96,15 @@ namespace BizHawk.Client.EmuHawk
 			if (BaseSoundProvider != null)
 			{
 				BaseSoundProvider.DiscardSamples();
+			}
+		}
+
+		private void ResetBuffer()
+		{
+			_buffer.Clear();
+			for (int i = 0; i < _targetExtraSamples * ChannelCount; i++)
+			{
+				_buffer.Enqueue(0);
 			}
 		}
 
@@ -91,7 +123,23 @@ namespace BizHawk.Client.EmuHawk
 			get { return SampleRate / Global.Emulator.CoreComm.VsyncRate; }
 		}
 
+		public void GetSamples(short[] samples)
+		{
+			if (!_standaloneMode) throw new InvalidOperationException();
+			int returnSampleCount = samples.Length / ChannelCount;
+			GetSamples(returnSampleCount);
+			GetSamplesFromBuffer(samples, returnSampleCount);
+		}
+
 		public void GetSamples(int idealSampleCount, out short[] samples, out int sampleCount)
+		{
+			if (_standaloneMode) throw new InvalidOperationException();
+			sampleCount = GetSamples(idealSampleCount);
+			samples = GetOutputBuffer(sampleCount);
+			GetSamplesFromBuffer(samples, sampleCount);
+		}
+
+		private int GetSamples(int idealSampleCount)
 		{
 			double scaleFactor = 1.0;
 
@@ -108,9 +156,9 @@ namespace BizHawk.Client.EmuHawk
 			GetSamplesFromBase(ref scaleFactor);
 
 			int bufferSampleCount = _buffer.Count / ChannelCount;
-			int extraSampleCount = bufferSampleCount - idealSampleCount;
+			int extraSampleCount = bufferSampleCount - _targetExtraSamples - idealSampleCount;
 			int maxSamplesDeficit = _extraCountHistory.Count >= UsableHistoryLength ?
-				MaxSamplesDeficit : Math.Min(StartupMaxSamplesSurplusDeficit, MaxSamplesDeficit);
+				EffectiveMaxSamplesDeficit : Math.Min(StartupMaxSamplesSurplusDeficit, EffectiveMaxSamplesDeficit);
 			int maxSamplesSurplus = _extraCountHistory.Count >= UsableHistoryLength ?
 				MaxSamplesSurplus : Math.Min(StartupMaxSamplesSurplusDeficit, MaxSamplesSurplus);
 			bool hardCorrected = false;
@@ -137,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			bufferSampleCount = _buffer.Count / ChannelCount;
-			extraSampleCount = bufferSampleCount - idealSampleCount;
+			extraSampleCount = bufferSampleCount - _targetExtraSamples - idealSampleCount;
 
 			int outputSampleCount = Math.Min(idealSampleCount, bufferSampleCount);
 
@@ -154,9 +202,7 @@ namespace BizHawk.Client.EmuHawk
 					scaleFactor);
 			}
 
-			sampleCount = outputSampleCount;
-			samples = GetOutputBuffer(sampleCount);
-			GetSamplesFromBuffer(samples, sampleCount);
+			return outputSampleCount;
 		}
 
 		private void GetSamplesFromBase(ref double scaleFactor)

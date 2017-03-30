@@ -14,7 +14,6 @@ namespace BizHawk.Client.EmuHawk
 	public class EmuLuaLibrary
 	{
 		private readonly Dictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
-		private readonly LuaConsole _caller;
 
 		private Lua _lua = new Lua();
 		private Lua _currThread;
@@ -44,12 +43,11 @@ namespace BizHawk.Client.EmuHawk
 			get { return (GuiLuaLibrary)Libraries[typeof(GuiLuaLibrary)]; }
 		}
 
-		public EmuLuaLibrary(LuaConsole passed, IEmulatorServiceProvider serviceProvider)
+		public EmuLuaLibrary(IEmulatorServiceProvider serviceProvider)
 			: this()
 		{
 			LuaWait = new AutoResetEvent(false);
 			Docs.Clear();
-			_caller = passed.Get();
 
 			// Register lua libraries
 			var libs = Assembly

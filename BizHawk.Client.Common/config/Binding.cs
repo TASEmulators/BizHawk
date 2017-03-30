@@ -254,7 +254,9 @@ namespace BizHawk.Client.Common
 						Bind("Analog", "X Up Large", toolTip: "For Virtual Pad"),
 						Bind("Analog", "X Down Small", toolTip: "For Virtual Pad"),
 						Bind("Analog", "X Down Large", toolTip: "For Virtual Pad"),
-			
+
+						Bind("Tools", "Toggle All Cheats"),
+
 					};
 
 					//set ordinals based on order in list

@@ -144,6 +144,17 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
+		/// latches sticky buttons from Global.AutofireStickyXORAdapter
+		/// </summary>
+		public void LatchSticky()
+		{
+			foreach (var button in Definition.BoolButtons)
+			{
+				MyBoolButtons[button] = Global.AutofireStickyXORAdapter.IsSticky(button);
+			}
+		}
+
+		/// <summary>
 		/// latches all buttons from the supplied mnemonic string
 		/// </summary>
 		public void SetControllersAsMnemonic(string mnemonic)

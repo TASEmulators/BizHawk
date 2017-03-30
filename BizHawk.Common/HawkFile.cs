@@ -530,6 +530,16 @@ namespace BizHawk.Common
 
 			return string.Format("{0}|{1}", root, member);
 		}
+
+		public static IEnumerable<string> Util_ResolveLinks(IEnumerable<string> paths)
+		{
+			return paths.Select(f => Win32PInvokes.ResolveShortcut(f));
+		}
+
+		public static string Util_ResolveLink(string path)
+		{
+			return Win32PInvokes.ResolveShortcut(path);
+		}
 	} 
 
 	/// <summary>

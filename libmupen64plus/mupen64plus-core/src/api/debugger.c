@@ -44,7 +44,7 @@ extern unsigned int op; /* this is in r4300/pure_interp.c */
 
 /* local variables */
 static void (*callback_ui_init)(void) = NULL;
-static void (*callback_ui_update)(unsigned int) = NULL;
+static void (*callback_ui_update)(int) = NULL;
 static void (*callback_ui_vi)(void) = NULL;
 
 static void (*callback_core_compare)(unsigned int) = NULL;
@@ -52,7 +52,7 @@ static void (*callback_core_data_sync)(int, void *) = NULL;
 
 /* global Functions for use by the Core */
 
-void DebuggerCallback(eDbgCallbackType type, unsigned int param)
+void DebuggerCallback(eDbgCallbackType type, int param)
 {
     if (type == DEBUG_UI_INIT)
     {
@@ -92,7 +92,7 @@ EXPORT m64p_error CALL DebugSetCoreCompare(void (*dbg_core_compare)(unsigned int
     return M64ERR_SUCCESS;
 }
  
-EXPORT m64p_error CALL DebugSetCallbacks(void (*dbg_frontend_init)(void), void (*dbg_frontend_update)(unsigned int pc), void (*dbg_frontend_vi)(void))
+EXPORT m64p_error CALL DebugSetCallbacks(void (*dbg_frontend_init)(void), void (*dbg_frontend_update)(int bpt), void (*dbg_frontend_vi)(void))
 {
 #ifdef DBG
     callback_ui_init = dbg_frontend_init;
@@ -273,7 +273,7 @@ EXPORT int CALL MemGetSize(m64p_dbg_memptr_type mem_ptr_type)
 			return rom_size;
         default:
             DebugMessage(M64MSG_ERROR, "Bug: MemGetSize() called with invalid m64p_dbg_memptr_type");
-            return NULL;
+            return 0;
     }
 }
 
@@ -411,7 +411,9 @@ EXPORT int CALL DebugBreakpointCommand(m64p_dbg_bkp_command command, unsigned in
         case M64P_BKP_CMD_ADD_ADDR:
             return add_breakpoint(index);
         case M64P_BKP_CMD_ADD_STRUCT:
-            return add_breakpoint_struct((breakpoint *) ptr);
+			return add_breakpoint_struct((breakpoint *) ptr);
+        case M64P_BKP_CMD_GET_STRUCT:
+            return get_breakpoint_struct(index, (breakpoint *)ptr);
         case M64P_BKP_CMD_REPLACE:
             replace_breakpoint_num(index, (breakpoint *) ptr);
             return 0;

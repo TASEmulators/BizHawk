@@ -8,90 +8,92 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		public bool CMD_serialize(IntPtr data, int size)
 		{
-			WritePipeMessage(eMessage.eMessage_CMD_serialize);
-			bwPipe.Write(size);
-			bwPipe.Write(0); //mapped memory location to serialize to
-			bwPipe.Flush();
-			WaitForCompletion(); //serialize/unserialize can cause traces to get called (because serialize can cause execution?)
-			bool ret = brPipe.ReadInt32() != 0;
-			if (ret)
-			{
-				CopyMemory(data.ToPointer(), mmvaPtr, (ulong)size);
-			}
+			comm->buf0 = data.ToPointer();
+			comm->buf_size0 = size;
+			Message(eMessage.eMessage_CMD_serialize);
+			WaitForCMD();
+			bool ret = comm->GetBool();
 			return ret;
+		}
+
+		void WaitForCMD()
+		{
+			for (; ; )
+			{
+				if (comm->status == eStatus.eStatus_Idle)
+					break;
+				if (Handle_SIG(comm->reason)) continue;
+				if (Handle_BRK(comm->reason)) continue;
+			}
 		}
 
 		public bool CMD_unserialize(IntPtr data, int size)
 		{
-			WritePipeMessage(eMessage.eMessage_CMD_unserialize);
-			CopyMemory(mmvaPtr, data.ToPointer(), (ulong)size);
-			bwPipe.Write(size);
-			bwPipe.Write(0); //mapped memory location to serialize from
-			bwPipe.Flush();
-			WaitForCompletion(); //serialize/unserialize can cause traces to get called (because serialize can cause execution?)
-			bool ret = brPipe.ReadInt32() != 0;
+			comm->buf0 = data.ToPointer();
+			comm->buf_size0 = size;
+			Message(eMessage.eMessage_CMD_unserialize);
+			WaitForCMD();
+			bool ret = comm->GetBool();
 			return ret;
 		}
 
 		public void CMD_init()
 		{
-			WritePipeMessage(eMessage.eMessage_CMD_init);
-			WaitForCompletion();
+			Message(eMessage.eMessage_CMD_init);
+			WaitForCMD();
 		}
 		public void CMD_power()
 		{
-			WritePipeMessage(eMessage.eMessage_CMD_power);
-			WaitForCompletion();
+			Message(eMessage.eMessage_CMD_power);
+			WaitForCMD();
 		}
 		public void CMD_reset()
 		{
-			WritePipeMessage(eMessage.eMessage_CMD_reset);
-			WaitForCompletion();
+			Message(eMessage.eMessage_CMD_reset);
+			WaitForCMD();
 		}
 
-		/// <summary>
-		/// This is a high-level run command. It runs for one frame (right now) and blocks until the frame is done.
-		/// If any BRK is received, it will be handled before returning from this function.
-		/// </summary>
 		public void CMD_run()
 		{
-			WritePipeMessage(eMessage.eMessage_CMD_run);
-			WaitForCompletion();
+			Message(eMessage.eMessage_CMD_run);
+			WaitForCMD();
 		}
 
-		public bool CMD_load_cartridge_super_game_boy(string rom_xml, byte[] rom_data, uint rom_size, string dmg_xml, byte[] dmg_data, uint dmg_size)
+		public bool CMD_load_cartridge_super_game_boy(string rom_xml, byte[] rom_data, uint rom_size, byte[] dmg_data)
 		{
-			WritePipeMessage(eMessage.eMessage_CMD_load_cartridge_super_game_boy);
-			WritePipeString(rom_xml ?? "");
-			WritePipeBlob(rom_data);
-			WritePipeString(rom_xml ?? "");
-			WritePipeBlob(dmg_data);
-			//not a very obvious order.. because we do tons of work immediately after the last param goes down and need to answer messages
-			WaitForCompletion();
-			bool ret = brPipe.ReadInt32() != 0;
-			return ret;
+			fixed (char* xmlcp = rom_xml)
+			{
+				comm->str = (sbyte*)xmlcp;
+				SetBytes(rom_data);
+				SetBytes2(dmg_data);
+				Message(eMessage.eMessage_CMD_load_cartridge_sgb);
+				WaitForCMD();
+				return comm->GetBool();
+			}
 		}
 
 		public bool CMD_load_cartridge_normal(byte[] rom_xml, byte[] rom_data)
 		{
-			WritePipeMessage(eMessage.eMessage_CMD_load_cartridge_normal);
-			WritePipeBlob(rom_xml ?? new byte[0]);
-			WritePipeBlob(rom_data ?? new byte[0]);
-			//not a very obvious order.. because we do tons of work immediately after the last param goes down and need to answer messages
-			WaitForCompletion();
-			bool ret = brPipe.ReadInt32() != 0;
-			return ret;
+			string xml = rom_xml==null?null:System.Text.Encoding.ASCII.GetString(rom_xml);
+			fixed (char* xmlcp = xml)
+			{
+				comm->str = (sbyte*)xmlcp;
+				SetBytes(rom_data);
+				Message(eMessage.eMessage_CMD_load_cartridge_normal);
+				WaitForCMD();
+				return comm->GetBool();
+			}
 		}
 
 		public void CMD_term()
 		{
-			WritePipeMessage(eMessage.eMessage_CMD_term);
-			WaitForCompletion();
+			Message(eMessage.eMessage_CMD_term);
+			WaitForCMD();
 		}
 		public void CMD_unload_cartridge()
 		{
-			WritePipeMessage(eMessage.eMessage_CMD_unload_cartridge);
-			WaitForCompletion();
+			Message(eMessage.eMessage_CMD_unload_cartridge);
+			WaitForCMD();
 		}
 
 	}

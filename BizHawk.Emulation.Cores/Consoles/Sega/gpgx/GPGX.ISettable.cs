@@ -137,10 +137,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[JsonIgnore]
 			private bool _PadScreen320;
 
+			[DeepEqualsIgnore]
+			[JsonIgnore]
+			private bool _AlwaysDoubleSize;
+
 			[DisplayName("Pad screen to 320")]
-			[Description("Set to True to pads the screen out to be 320 when in 256 wide video modes")]
+			[Description("Set to True to pad the screen out to be 320 when in 256 wide video modes")]
 			[DefaultValue(false)]
 			public bool PadScreen320 { get { return _PadScreen320; } set { _PadScreen320 = value; } }
+
+			[DisplayName("Always double-size")]
+			[Description("Set to True to convert the video to high-resolution mode even when it's low resolution so that the window doesn't change size between game modes")]
+			[DefaultValue(false)]
+			public bool AlwaysDoubleSize { get { return _AlwaysDoubleSize; } set { _AlwaysDoubleSize = value; } }
 
 			[DisplayName("Audio Filter")]
 			[DefaultValue(LibGPGX.InitSettings.FilterType.LowPass)]

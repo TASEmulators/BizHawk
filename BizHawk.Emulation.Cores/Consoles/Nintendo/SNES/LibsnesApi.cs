@@ -22,34 +22,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		//        this is a lot of work, but it will be some decent speedups. who wouldve ever thought to make an emulator this way? I will, from now on...
 		//todo - use a reader/writer ring buffer for communication instead of pipe
 		//todo - when exe wrapper is fully baked, put it into mingw so we can just have libsneshawk.exe without a separate dll. it hardly needs any debugging presently, it should be easy to maintain.
-		
+
 		//space optimizations to deploy later (only if people complain about so many files)
 		//todo - put executables in zipfiles and search for them there; dearchive to a .cache folder. check timestamps to know when to freshen. this is weird.....
 
 		//speedups to deploy later:
-		//todo - convey rom data faster than pipe blob (use shared memory) (WARNING: right now our general purpose shared memory is only 1MB. maybe wait until ring buffer IPC)
-		//todo - collapse input messages to one IPC operation. right now theres like 30 of them
 		//todo - collect all memory block names whenever a memory block is alloc/dealloced. that way we avoid the overhead when using them for gui stuff (gfx debugger, hex editor)
 
 
 		InstanceDll instanceDll;
 		string InstanceName;
-		NamedPipeServerStream pipe;
-		BinaryWriter bwPipe;
-		BinaryReader brPipe;
-		MemoryMappedFile mmf;
-		MemoryMappedViewAccessor mmva;
-		byte* mmvaPtr;
-		IPCRingBuffer rbuf, wbuf;
-		IPCRingBufferStream rbufstr, wbufstr;
-		SwitcherStream rstream, wstream;
-		bool bufio;
 
 		[DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
 		public static unsafe extern void* CopyMemory(void* dest, void* src, ulong count);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate void DllInit(string ipcname);
+		delegate CommStruct* DllInit();
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void MessageApi(eMessage msg);
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		delegate void BufferApi(int id, void* ptr, int size);
+
+		CommStruct* comm;
+		MessageApi Message;
+		BufferApi CopyBuffer; //TODO: consider making private and wrapping
+		BufferApi SetBuffer; //TODO: consider making private and wrapping
 
 		public LibsnesApi(string dllPath)
 		{
@@ -57,146 +56,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			var pipeName = InstanceName;
 
-			mmf = MemoryMappedFile.CreateNew(pipeName, 1024 * 1024);
-			mmva = mmf.CreateViewAccessor();
-			mmva.SafeMemoryMappedViewHandle.AcquirePointer(ref mmvaPtr);
-
-			pipe = new NamedPipeServerStream(pipeName, PipeDirection.InOut, 1, PipeTransmissionMode.Byte, PipeOptions.None, 1024 * 1024, 1024);
-
 			instanceDll = new InstanceDll(dllPath);
 			var dllinit = (DllInit)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("DllInit"), typeof(DllInit));
-			dllinit(pipeName);
+			Message = (MessageApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("Message"), typeof(MessageApi));
+			CopyBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("CopyBuffer"), typeof(BufferApi));
+			SetBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("SetBuffer"), typeof(BufferApi));
 
-			//TODO - start a thread to wait for process to exit and gracefully handle errors? how about the pipe?
-
-			pipe.WaitForConnection();
-
-			rbuf = new IPCRingBuffer();
-			wbuf = new IPCRingBuffer();
-			rbuf.Allocate(1024);
-			wbuf.Allocate(1024);
-			rbufstr = new IPCRingBufferStream(rbuf);
-			wbufstr = new IPCRingBufferStream(wbuf);
-
-			rstream = new SwitcherStream();
-			wstream = new SwitcherStream();
-
-			rstream.SetCurrStream(pipe);
-			wstream.SetCurrStream(pipe);
-
-			brPipe = new BinaryReader(rstream);
-			bwPipe = new BinaryWriter(wstream);
-
-			WritePipeMessage(eMessage.eMessage_SetBuffer);
-			bwPipe.Write(1);
-			WritePipeString(rbuf.Id);
-			WritePipeMessage(eMessage.eMessage_SetBuffer);
-			bwPipe.Write(0);
-			WritePipeString(wbuf.Id);
-			bwPipe.Flush();
+			comm = dllinit();
 		}
 
 		public void Dispose()
 		{
-			WritePipeMessage(eMessage.eMessage_Shutdown);
-			WaitForCompletion();
 			instanceDll.Dispose();
 
-			pipe.Dispose();
-			mmva.Dispose();
-			mmf.Dispose();
-			rbuf.Dispose();
-			wbuf.Dispose();
-			foreach (var smb in DeallocatedMemoryBlocks.Values)
-				smb.Dispose();
+			foreach (var smb in DeallocatedMemoryBlocks.Values) smb.Dispose();
+			foreach (var smb in SharedMemoryBlocks.Values) smb.Dispose();
+			SharedMemoryBlocks.Clear();
 			DeallocatedMemoryBlocks.Clear();
 		}
 
-		public void BeginBufferIO()
+		public void CopyString(string str)
 		{
-			bufio = true;
-			WritePipeMessage(eMessage.eMessage_BeginBufferIO);
-			rstream.SetCurrStream(rbufstr);
-			wstream.SetCurrStream(wbufstr);
+			fixed (char* cp = str)
+				CopyBuffer(0, cp, str.Length + 1);
 		}
 
-		public void EndBufferIO()
+		public void CopyBytes(byte[] bytes)
 		{
-			if(!bufio) return;
-			bufio = false;
-			WritePipeMessage(eMessage.eMessage_EndBufferIO);
-			rstream.SetCurrStream(pipe);
-			wstream.SetCurrStream(pipe);
+			fixed (byte* bp = bytes)
+				CopyBuffer(0, bp, bytes.Length);
 		}
 
-		void WritePipeString(string str)
+		public void SetAscii(string str)
 		{
-			WritePipeBlob(System.Text.Encoding.ASCII.GetBytes(str));
+			fixed (char* cp = str)
+				SetBuffer(0, cp, str.Length + 1);
 		}
 
-		byte[] ReadPipeBlob()
+		public void SetBytes(byte[] bytes)
 		{
-			int len = brPipe.ReadInt32();
-			var ret = new byte[len];
-			brPipe.Read(ret, 0, len);
-			return ret;
+			fixed (byte* bp = bytes)
+				SetBuffer(0, bp, bytes.Length);
 		}
-
-		void WritePipeBlob(byte[] blob)
+		public void SetBytes2(byte[] bytes)
 		{
-			bwPipe.Write(blob.Length);
-			bwPipe.Write(blob);
-			bwPipe.Flush();
+			fixed (byte* bp = bytes)
+				SetBuffer(1, bp, bytes.Length);
 		}
-
-		public int MessageCounter;
-
-		void WritePipeInt(int n)
-		{
-		}
-
-		void WritePipePointer(IntPtr ptr, bool flush = true)
-		{
-			bwPipe.Write(ptr.ToInt32());
-			if(flush) bwPipe.Flush();
-		}
-
-		void WritePipeMessage(eMessage msg)
-		{
-			if(!bufio) MessageCounter++;
-			//Console.WriteLine("write pipe message: " + msg);
-			bwPipe.Write((int)msg);
-			bwPipe.Flush();
-		}
-
-		eMessage ReadPipeMessage()
-		{
-			return (eMessage)brPipe.ReadInt32();
-		}
-
-		string ReadPipeString()
-		{
-			int len = brPipe.ReadInt32();
-			var bytes = brPipe.ReadBytes(len);
-			return System.Text.ASCIIEncoding.ASCII.GetString(bytes);
-		}
-
-		void WaitForCompletion()
-		{
-			for (; ; )
-			{
-				var msg = ReadPipeMessage();
-				if (!bufio) MessageCounter++;
-				//Console.WriteLine("read pipe message: " + msg);
-
-				if (msg == eMessage.eMessage_BRK_Complete)
-					return;
-
-				//this approach is slower than having one big case. but, its easier to manage. once the code is stable, someone could clean it up (probably creating a delegate table would be best)
-				if (Handle_SIG(msg)) continue;
-				if (Handle_BRK(msg)) continue;
-			}
-		} 
 
 		public Action<uint> ReadHook, ExecHook;
 		public Action<uint, byte> WriteHook;
@@ -243,9 +149,98 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public delegate string snes_path_request_t(int slot, string hint);
 		public delegate void snes_trace_t(string msg);
 
-		public void SPECIAL_Resume()
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct CPURegs
 		{
-			WritePipeMessage(eMessage.eMessage_ResumeAfterBRK);
+			public uint pc;
+			public ushort a, x, y, z, s, d, vector; //7x
+			public byte p, nothing;
+			public uint aa, rd;
+			public byte sp, dp, db, mdr;
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		public struct LayerEnables
+		{
+			byte _BG1_Prio0, _BG1_Prio1;
+			byte _BG2_Prio0, _BG2_Prio1;
+			byte _BG3_Prio0, _BG3_Prio1;
+			byte _BG4_Prio0, _BG4_Prio1;
+			byte _Obj_Prio0, _Obj_Prio1, _Obj_Prio2, _Obj_Prio3;
+
+			public bool BG1_Prio0 { get { return _BG1_Prio0 != 0; } set { _BG1_Prio0 = (byte)(value ? 1 : 0); } }
+			public bool BG1_Prio1 { get { return _BG1_Prio1 != 0; } set { _BG1_Prio1 = (byte)(value ? 1 : 0); } }
+			public bool BG2_Prio0 { get { return _BG2_Prio0 != 0; } set { _BG2_Prio0 = (byte)(value ? 1 : 0); } }
+			public bool BG2_Prio1 { get { return _BG2_Prio1 != 0; } set { _BG2_Prio1 = (byte)(value ? 1 : 0); } }
+			public bool BG3_Prio0 { get { return _BG3_Prio0 != 0; } set { _BG3_Prio0 = (byte)(value ? 1 : 0); } }
+			public bool BG3_Prio1 { get { return _BG3_Prio1 != 0; } set { _BG3_Prio1 = (byte)(value ? 1 : 0); } }
+			public bool BG4_Prio0 { get { return _BG4_Prio0 != 0; } set { _BG4_Prio0 = (byte)(value ? 1 : 0); } }
+			public bool BG4_Prio1 { get { return _BG4_Prio1 != 0; } set { _BG4_Prio1 = (byte)(value ? 1 : 0); } }
+			
+			public bool Obj_Prio0 { get { return _Obj_Prio0 != 0; } set { _Obj_Prio0 = (byte)(value ? 1 : 0); } }
+			public bool Obj_Prio1 { get { return _Obj_Prio1 != 0; } set { _Obj_Prio1 = (byte)(value ? 1 : 0); } }
+			public bool Obj_Prio2 { get { return _Obj_Prio2 != 0; } set { _Obj_Prio2 = (byte)(value ? 1 : 0); } }
+			public bool Obj_Prio3 { get { return _Obj_Prio3 != 0; } set { _Obj_Prio3 = (byte)(value ? 1 : 0); } }
+		}
+
+		[StructLayout(LayoutKind.Sequential)]
+		struct CommStruct
+		{
+			//the cmd being executed
+			public eMessage cmd;
+
+			//the status of the core
+			public eStatus status;
+
+			//the SIG or BRK that the core is halted in
+			public eMessage reason;
+
+			//flexible in/out parameters
+			//these are all "overloaded" a little so it isn't clear what's used for what in for any particular message..
+			//but I think it will beat having to have some kind of extremely verbose custom layouts for every message
+			public sbyte* str;
+			public void* ptr;
+			public uint id, addr, value, size;
+			public int port, device, index, slot;
+			public int width, height;
+			public int scanline;
+
+			//this should always be used in pairs
+			public void* buf0, buf1;
+			public int buf_size0, buf_size1;
+
+			//bleck. this is a long so that it can be a 32/64bit pointer
+			public fixed long cdl_ptr[4];
+			public fixed int cdl_size[4];
+
+			public CPURegs cpuregs;
+			public LayerEnables layerEnables;
+
+			//static configuration-type information which can be grabbed off the core at any time without even needing a QUERY command
+			public SNES_REGION region;
+			public SNES_MAPPER mapper;
+
+			//utilities
+			//TODO: make internal, wrap on the API instead of the comm
+			public unsafe string GetAscii() { return _getAscii(str); }
+			public bool GetBool() { return value != 0; }
+
+			private unsafe string _getAscii(sbyte* ptr) {
+				int len = 0;
+				sbyte* junko = (sbyte*)ptr;
+				while(junko[len] != 0) len++;
+
+				return new string((sbyte*)str, 0, len, System.Text.Encoding.ASCII);
+			}
+		}
+
+		public SNES_REGION Region { get { return comm->region; } }
+		public SNES_MAPPER Mapper { get { return comm->mapper; } }
+		public void SetLayerEnables(ref LayerEnables enables)
+		{
+			comm->layerEnables = enables;
+			QUERY_set_layer_enable();
 		}
 	}
 

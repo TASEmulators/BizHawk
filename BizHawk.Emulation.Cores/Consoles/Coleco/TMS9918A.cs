@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -42,20 +41,34 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		int TmsPatternNameTableBase;
 		int TmsSpriteAttributeBase;
 
-		public void ExecuteFrame()
+		public void ExecuteFrame(bool Int_pending)
 		{
 			for (int scanLine = 0; scanLine < 262; scanLine++)
 			{
 				RenderScanline(scanLine);
-
+				
 				if (scanLine == 192)
 				{
+					
 					InterruptPending = true;
+
 					if (EnableInterrupts)
 						Cpu.NonMaskableInterrupt = true;
 				}
 
 				Cpu.ExecuteCycles(228);
+
+				
+				Cpu.Interrupt = false;
+				if (Int_pending && scanLine==50)
+				{
+					if (EnableInterrupts)
+					{
+						Cpu.Interrupt = true;
+						Int_pending = false;
+					} 
+				}
+
 			}
 		}
 
@@ -437,6 +450,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
         }
 
 		Z80A Cpu;
+
 		public TMS9918A(Z80A cpu)
 		{
 			this.Cpu = cpu;

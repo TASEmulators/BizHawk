@@ -106,6 +106,7 @@ namespace BizHawk.Client.Common
 
 		public void Add(string str)
 		{
+			stream.Position = stream.Length;
 			Offsets.Add(stream.Position);
 			bw.Write(str);
 			bw.Flush();
@@ -135,6 +136,7 @@ namespace BizHawk.Client.Common
 
 		public void Insert(int index, string val)
 		{
+			stream.Position = stream.Length;
 			Offsets.Insert(index, stream.Position);
 			bw.Write(val);
 			bw.Flush();

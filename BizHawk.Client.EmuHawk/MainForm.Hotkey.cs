@@ -1,4 +1,6 @@
-﻿using BizHawk.Client.Common;
+﻿using System.Linq;
+
+using BizHawk.Client.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.EmuHawk
@@ -320,6 +322,22 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Cheats":
 					GlobalWin.Tools.Load<Cheats>();
+					break;
+				case "Toggle All Cheats":
+					if (Global.CheatList.Any())
+					{
+						string type = " (mixed)";
+						if (Global.CheatList.All(c => c.Enabled))
+						{
+							type = " (off)";
+						}
+						else if (Global.CheatList.All(c => !c.Enabled))
+						{
+							type = " (on)";
+						}
+						Global.CheatList.ToList().ForEach(x => x.Toggle());
+						GlobalWin.OSD.AddMessage("Cheats toggled" + type);
+					}
 					break;
 				case "TAStudio":
 					GlobalWin.Tools.Load<TAStudio>();
