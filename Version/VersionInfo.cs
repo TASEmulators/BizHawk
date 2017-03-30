@@ -3,9 +3,9 @@ using System.IO;
 
 static class VersionInfo
 {
-	public const string MAINVERSION = "1.12.0"; // Use numbers only or the new version notification won't work
+	public const string MAINVERSION = "1.12.1"; // Use numbers only or the new version notification won't work
 
-	public static readonly string RELEASEDATE = "February 17, 2017";
+	public static readonly string RELEASEDATE = "April 2, 2017";
 	public static readonly bool DeveloperBuild = false;
 
 	public static readonly string HomePage = "http://tasvideos.org/BizHawk.html";
