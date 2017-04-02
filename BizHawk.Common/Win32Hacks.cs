@@ -168,8 +168,16 @@ namespace BizHawk.Common
 		//http://stackoverflow.com/questions/139010/how-to-resolve-a-lnk-in-c-sharp
 		public static string ResolveShortcut(string filename)
 		{
-			if (Path.GetExtension(filename).ToLowerInvariant() != ".lnk")
+			// archive internal files are never shortcuts (and choke when analyzing any further)
+			if (filename.Contains("|"))
+			{
 				return filename;
+			}
+
+			if (Path.GetExtension(filename).ToLowerInvariant() != ".lnk")
+			{
+				return filename;
+			}
 
 			PInvokes.ShellLink link = new PInvokes.ShellLink();
 			((PInvokes.IPersistFile)link).Load(filename, PInvokes.STGM_READ);
