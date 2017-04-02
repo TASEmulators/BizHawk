@@ -57,26 +57,6 @@ namespace BizHawk.Client.Common
 			get { return Global.Config.RewindEnabledLarge || Global.Config.RewindEnabledMedium || Global.Config.RewindEnabledSmall; }
 		}
 
-		public void Capture()
-		{
-			if (!IsRewindEnabledAtAll || !Global.Emulator.HasSavestates())
-			{
-				return;
-			}
-
-			if (_rewindThread == null)
-			{
-				Initialize();
-			}
-
-			if (_rewindThread == null || Global.Emulator.Frame % _rewindFrequency != 0)
-			{
-				return;
-			}
-
-			_rewindThread.Capture(Global.Emulator.AsStatable().SaveStateBinary());
-		}
-
 		public void Initialize()
 		{
 			Clear();
@@ -118,46 +98,6 @@ namespace BizHawk.Client.Common
 				_rewindBuffer = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, capacity, BufferManage);
 
 				_rewindThread = new RewindThreader(CaptureInternal, RewindInternal, Global.Config.Rewind_IsThreaded);
-			}
-		}
-
-		public bool Rewind(int frames)
-		{
-			if (!Global.Emulator.HasSavestates() || _rewindThread == null)
-			{
-				return false;
-			}
-
-			_rewindThread.Rewind(frames);
-
-			return _lastRewindLoadedState;
-		}
-
-		private void RewindInternal(int frames)
-		{
-			_lastRewindLoadedState = false;
-
-			for (int i = 0; i < frames; i++)
-			{
-				if (_rewindBuffer.Count <= 1 || (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.InputLogLength == 0))
-				{
-					break;
-				}
-
-				LoadPreviousState();
-				_lastRewindLoadedState = true;
-			}
-		}
-
-		private void CaptureInternal(byte[] coreSavestate)
-		{
-			if (_rewindDeltaEnable)
-			{
-				CaptureStateDelta(coreSavestate);
-			}
-			else
-			{
-				CaptureStateNonDelta(coreSavestate);
 			}
 		}
 
@@ -251,6 +191,38 @@ namespace BizHawk.Client.Common
 			{
 				_rewindBufferBacking = inbuf;
 				return null;
+			}
+		}
+
+		public void Capture()
+		{
+			if (!IsRewindEnabledAtAll || !Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (_rewindThread == null)
+			{
+				Initialize();
+			}
+
+			if (_rewindThread == null || Global.Emulator.Frame % _rewindFrequency != 0)
+			{
+				return;
+			}
+
+			_rewindThread.Capture(Global.Emulator.AsStatable().SaveStateBinary());
+		}
+
+		private void CaptureInternal(byte[] coreSavestate)
+		{
+			if (_rewindDeltaEnable)
+			{
+				CaptureStateDelta(coreSavestate);
+			}
+			else
+			{
+				CaptureStateNonDelta(coreSavestate);
 			}
 		}
 
@@ -350,6 +322,34 @@ namespace BizHawk.Client.Common
 			_rewindBuffer.Push(new ArraySegment<byte>(_deltaBuffer, 0, index));
 
 			UpdateLastState(currentState);
+		}
+
+		public bool Rewind(int frames)
+		{
+			if (!Global.Emulator.HasSavestates() || _rewindThread == null)
+			{
+				return false;
+			}
+
+			_rewindThread.Rewind(frames);
+
+			return _lastRewindLoadedState;
+		}
+
+		private void RewindInternal(int frames)
+		{
+			_lastRewindLoadedState = false;
+
+			for (int i = 0; i < frames; i++)
+			{
+				if (_rewindBuffer.Count <= 1 || (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.InputLogLength == 0))
+				{
+					break;
+				}
+
+				LoadPreviousState();
+				_lastRewindLoadedState = true;
+			}
 		}
 
 		private MemoryStream GetPreviousStateMemoryStream()
