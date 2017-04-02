@@ -15,6 +15,7 @@ namespace BizHawk.Client.Common
 		private byte[] _lastState;
 		private int _rewindFrequency = 1;
 		private bool _rewindDeltaEnable;
+		private bool _lastRewindLoadedState;
 		private byte[] _deltaBuffer = new byte[0];
 
 		public Rewinder()
@@ -30,20 +31,15 @@ namespace BizHawk.Client.Common
 		{
 			get { return _rewindBuffer != null ? _rewindBuffer.FullnessRatio : 0; }
 		}
-		
+
 		public int Count
 		{
 			get { return _rewindBuffer != null ? _rewindBuffer.Count : 0; }
 		}
-		
-		public long Size 
+
+		public long Size
 		{
 			get { return _rewindBuffer != null ? _rewindBuffer.Size : 0; }
-		}
-		
-		public int BufferCount
-		{
-			get { return _rewindBuffer != null ? _rewindBuffer.Count : 0; }
 		}
 
 		public bool HasBuffer
@@ -125,26 +121,31 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Rewind(int frames)
+		public bool Rewind(int frames)
 		{
 			if (!Global.Emulator.HasSavestates() || _rewindThread == null)
 			{
-				return;
+				return false;
 			}
 
 			_rewindThread.Rewind(frames);
+
+			return _lastRewindLoadedState;
 		}
 
 		private void RewindInternal(int frames)
 		{
+			_lastRewindLoadedState = false;
+
 			for (int i = 0; i < frames; i++)
 			{
-				if (_rewindBuffer.Count == 0 || (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.InputLogLength == 0))
+				if (_rewindBuffer.Count <= 1 || (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.InputLogLength == 0))
 				{
-					return;
+					break;
 				}
 
 				LoadPreviousState();
+				_lastRewindLoadedState = true;
 			}
 		}
 
@@ -351,19 +352,27 @@ namespace BizHawk.Client.Common
 			UpdateLastState(currentState);
 		}
 
+		private MemoryStream GetPreviousStateMemoryStream()
+		{
+			if (_rewindDeltaEnable)
+			{
+				return _rewindBuffer.PopMemoryStream();
+			}
+			else
+			{
+				_rewindBuffer.Pop();
+				return _rewindBuffer.PeekMemoryStream();
+			}
+		}
+
 		private void LoadPreviousState()
 		{
-			using (var reader = new BinaryReader(_rewindBuffer.PopMemoryStream()))
+			using (var reader = new BinaryReader(GetPreviousStateMemoryStream()))
 			{
 				byte[] buf = ((MemoryStream)reader.BaseStream).GetBuffer();
-				var fullState = reader.ReadByte() == 1;
+				bool fullState = reader.ReadByte() == 1;
 				if (_rewindDeltaEnable)
 				{
-					using (var lastStateReader = new BinaryReader(new MemoryStream(_lastState)))
-					{
-						Global.Emulator.AsStatable().LoadStateBinary(lastStateReader);
-					}
-
 					if (fullState)
 					{
 						UpdateLastState(buf, 1, buf.Length - 1);
@@ -383,6 +392,11 @@ namespace BizHawk.Client.Common
 							Buffer.BlockCopy(buf, index, _lastState, offset, length);
 							index += length;
 						}
+					}
+
+					using (var lastStateReader = new BinaryReader(new MemoryStream(_lastState)))
+					{
+						Global.Emulator.AsStatable().LoadStateBinary(lastStateReader);
 					}
 				}
 				else

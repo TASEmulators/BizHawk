@@ -4186,8 +4186,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (isRewinding)
 				{
-					Global.Rewinder.Rewind(1);
-					runFrame = Global.Rewinder.Count != 0;
+					runFrame = Global.Rewinder.Rewind(1);
 				}
 			}
 			else
