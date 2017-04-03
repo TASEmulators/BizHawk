@@ -132,6 +132,7 @@ namespace BizHawk.Client.Common
 						Bind("General", "Open ROM", "Ctrl+O"),
 						Bind("General", "Close ROM", "Ctrl+W"),
 						Bind("General", "Load Last ROM"),
+						Bind("General", "Flush SRAM", "Ctrl+S"),
 						Bind("General", "Display FPS"),
 						Bind("General", "Frame Counter"),
 						Bind("General", "Lag Counter"),

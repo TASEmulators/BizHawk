@@ -2178,6 +2178,11 @@ namespace BizHawk.Client.EmuHawk
 			SaveRam();
 		}
 
+		private void SaveRAMSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			this.FlushSaveRAMMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save SRAM"].Bindings;
+		}
+
 		#endregion
 
 		#region Coleco
