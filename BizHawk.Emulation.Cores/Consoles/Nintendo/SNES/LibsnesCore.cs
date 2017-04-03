@@ -429,6 +429,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		string GetDllPath()
 		{
 			var exename = "libsneshawk-32-" + CurrentProfile.ToLower() + ".dll";
+			if (OpenTK.Configuration.RunningOnMacOS)
+			{
+				exename = exename.Replace(".dll", ".dylib");
+			}
 
 			string dllPath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), exename);
 

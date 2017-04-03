@@ -54,14 +54,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			InstanceName = "libsneshawk_" + Guid.NewGuid().ToString();
 
-			var pipeName = InstanceName;
+			if (OpenTK.Configuration.RunningOnMacOS) 
+			{
+				instanceDll = new InstanceDylib(dllPath.Replace(".dll", ".dylib"));
+			}
+			else
+			{
+				instanceDll = new InstanceDll(dllPath);
+			}
 
-#if WINDOWS
-			instanceDll = new InstanceDll(dllPath);
-#else
-			//Todo: This is not very nice if someone wants to add Linux in the future. Check for macOS instead.
-			instanceDll = new InstanceDylib(dllPath.Replace(".dll",".dylib"));
-#endif
 			var dllinit = (DllInit)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("DllInit"), typeof(DllInit));
 			Message = (MessageApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("Message"), typeof(MessageApi));
 			CopyBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("CopyBuffer"), typeof(BufferApi));

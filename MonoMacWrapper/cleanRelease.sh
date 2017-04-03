@@ -44,6 +44,8 @@ rm dll/octoshock.dll
 rm dll/openal32.dll
 rm dll/mgba.dll
 rm dll/Virtu.dll
-rm dll/gpgx.elf
+rm gpgx.elf
 rm dll/cgc.exe
 rm dll/libdarm.dll
+chmod +x dll/cgc_osx
+chmod +x dll/ffmpeg_osx
