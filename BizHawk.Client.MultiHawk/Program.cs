@@ -168,9 +168,9 @@ namespace BizHawk.Client.MultiHawk
 				var di = todo.Dequeue();
 				foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
 				foreach (var fi in di.GetFiles("*.dll"))
-					Win32Hacks.RemoveMOTW(fi.FullName);
+					RemoveMOTW(fi.FullName);
 				foreach (var fi in di.GetFiles("*.exe"))
-					Win32Hacks.RemoveMOTW(fi.FullName);
+					RemoveMOTW(fi.FullName);
 			}
 
 		}

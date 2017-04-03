@@ -326,6 +326,14 @@ namespace BizHawk.Client.EmuHawk
 		[DllImport("kernel32.dll", SetLastError = true)]
 		static extern uint SetDllDirectory(string lpPathName);
 
+		[DllImport("kernel32.dll", EntryPoint = "DeleteFileW", SetLastError = true, CharSet = CharSet.Unicode, ExactSpelling = true)]
+		static extern bool DeleteFileW([MarshalAs(UnmanagedType.LPWStr)]string lpFileName);
+
+		public static void RemoveMOTW(string path)
+		{
+			DeleteFileW(path + ":Zone.Identifier");
+		}
+
 		static void WhackAllMOTW(string dllDir)
 		{
 			var todo = new Queue<DirectoryInfo>(new[] { new DirectoryInfo(dllDir) });
@@ -334,9 +342,9 @@ namespace BizHawk.Client.EmuHawk
 				var di = todo.Dequeue();
 				foreach (var disub in di.GetDirectories()) todo.Enqueue(disub);
 				foreach (var fi in di.GetFiles("*.dll"))
-					Win32Hacks.RemoveMOTW(fi.FullName);
+					RemoveMOTW(fi.FullName);
 				foreach (var fi in di.GetFiles("*.exe"))
-					Win32Hacks.RemoveMOTW(fi.FullName);
+					RemoveMOTW(fi.FullName);
 			}
 
 		}

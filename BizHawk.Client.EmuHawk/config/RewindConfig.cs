@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 			PutRewindSetting(ref Global.Config.Rewind_LargeStateSize, (int)LargeStateUpDown.Value * 1024);
 			if (TriggerRewindSettingsReload)
 			{
-				Global.Rewinder.DoRewindSettings();
+				Global.Rewinder.Initialize();
 			}
 
 			// These settings are not used by DoRewindSettings

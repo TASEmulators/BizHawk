@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Calculators;
@@ -165,7 +167,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		private void ProcessFileList(string[] fileList, ref Dictionary<LoadOrdering, List<FileInformation>> sortedFiles, string archive = null)
+		private void ProcessFileList(IEnumerable<string> fileList, ref Dictionary<LoadOrdering, List<FileInformation>> sortedFiles, string archive = null)
 		{
 			foreach (string file in fileList)
 			{
@@ -288,7 +290,7 @@ namespace BizHawk.Client.EmuHawk
 				sortedFiles.Add(value, new List<FileInformation>());
 			}
 
-			ProcessFileList(filePaths, ref sortedFiles, null);
+			ProcessFileList(HawkFile.Util_ResolveLinks(filePaths), ref sortedFiles, null);
 
 			// For each of the different types of item, if there are no items of that type, skip them.
 			// If there is exactly one of that type of item, load it.

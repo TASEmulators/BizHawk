@@ -2,7 +2,6 @@
 using System.IO;
 
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
@@ -14,9 +13,9 @@ namespace BizHawk.Client.Common
 		private long? _overrideMemoryLimit;
 		private RewindThreader _rewindThread;
 		private byte[] _lastState;
-		private bool _rewindImpossible;
 		private int _rewindFrequency = 1;
 		private bool _rewindDeltaEnable;
+		private bool _lastRewindLoadedState;
 		private byte[] _deltaBuffer = new byte[0];
 
 		public Rewinder()
@@ -25,27 +24,22 @@ namespace BizHawk.Client.Common
 		}
 
 		public Action<string> MessageCallback { get; set; }
+
 		public bool RewindActive { get; set; }
 
-		// TODO: make RewindBuf never be null
 		public float FullnessRatio
 		{
-			get { return _rewindBuffer.FullnessRatio; }
+			get { return _rewindBuffer != null ? _rewindBuffer.FullnessRatio : 0; }
 		}
-		
+
 		public int Count
 		{
 			get { return _rewindBuffer != null ? _rewindBuffer.Count : 0; }
 		}
-		
-		public long Size 
+
+		public long Size
 		{
 			get { return _rewindBuffer != null ? _rewindBuffer.Size : 0; }
-		}
-		
-		public int BufferCount
-		{
-			get { return _rewindBuffer != null ? _rewindBuffer.Count : 0; }
 		}
 
 		public bool HasBuffer
@@ -58,43 +52,56 @@ namespace BizHawk.Client.Common
 			get { return _rewindFrequency; }
 		}
 
-		bool IsRewindEnabledAtAll
+		private bool IsRewindEnabledAtAll
 		{
-			get
-			{
-				if (!Global.Config.RewindEnabledLarge && !Global.Config.RewindEnabledMedium && !Global.Config.RewindEnabledSmall)
-					return false;
-				else return true;
-			}
+			get { return Global.Config.RewindEnabledLarge || Global.Config.RewindEnabledMedium || Global.Config.RewindEnabledSmall; }
 		}
 
-		// TOOD: this should not be parameterless?! It is only possible due to passing a static context in
-		public void CaptureRewindState()
+		public void Initialize()
 		{
-			if (!IsRewindEnabledAtAll)
-				return;
+			Clear();
 
 			if (Global.Emulator.HasSavestates())
 			{
-				if (_rewindImpossible)
-				{
-					return;
-				}
+				// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
+				_lastState = (byte[])Global.Emulator.AsStatable().SaveStateBinary().Clone();
 
-				if (_lastState == null)
+				if (_lastState.Length >= Global.Config.Rewind_LargeStateSize)
 				{
-					DoRewindSettings();
+					SetRewindParams(Global.Config.RewindEnabledLarge, Global.Config.RewindFrequencyLarge);
 				}
+				else if (_lastState.Length >= Global.Config.Rewind_MediumStateSize)
+				{
+					SetRewindParams(Global.Config.RewindEnabledMedium, Global.Config.RewindFrequencyMedium);
+				}
+				else
+				{
+					SetRewindParams(Global.Config.RewindEnabledSmall, Global.Config.RewindFrequencySmall);
+				}
+			}
+			else
+			{
+				SetRewindParams(false, 1);
+			}
 
-				// log a frame
-				if (_lastState != null && Global.Emulator.Frame % _rewindFrequency == 0)
-				{
-					_rewindThread.Capture(Global.Emulator.AsStatable().SaveStateBinary());
-				}
+			_rewindDeltaEnable = Global.Config.Rewind_UseDelta;
+
+			if (!RewindActive || !_rewindDeltaEnable)
+			{
+				_lastState = null;
+			}
+
+			if (RewindActive)
+			{
+				var capacity = Global.Config.Rewind_BufferSize * (long)1024 * 1024;
+
+				_rewindBuffer = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, capacity, BufferManage);
+
+				_rewindThread = new RewindThreader(CaptureInternal, RewindInternal, Global.Config.Rewind_IsThreaded);
 			}
 		}
 
-		public void DoRewindSettings()
+		public void Clear()
 		{
 			if (_rewindThread != null)
 			{
@@ -102,103 +109,12 @@ namespace BizHawk.Client.Common
 				_rewindThread = null;
 			}
 
-			if (Global.Emulator.HasSavestates())
-			{
-				// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
-				_lastState = (byte[])Global.Emulator.AsStatable().SaveStateBinary().Clone();
-
-				int state_size;
-				if (_lastState.Length >= Global.Config.Rewind_LargeStateSize)
-				{
-					SetRewindParams(Global.Config.RewindEnabledLarge, Global.Config.RewindFrequencyLarge);
-					state_size = 3;
-				}
-				else if (_lastState.Length >= Global.Config.Rewind_MediumStateSize)
-				{
-					SetRewindParams(Global.Config.RewindEnabledMedium, Global.Config.RewindFrequencyMedium);
-					state_size = 2;
-				}
-				else
-				{
-					SetRewindParams(Global.Config.RewindEnabledSmall, Global.Config.RewindFrequencySmall);
-					state_size = 1;
-				}
-
-				var rewind_enabled = false;
-				if (state_size == 1)
-				{
-					rewind_enabled = Global.Config.RewindEnabledSmall;
-				}
-				else if (state_size == 2)
-				{
-					rewind_enabled = Global.Config.RewindEnabledMedium;
-				}
-				else if (state_size == 3)
-				{
-					rewind_enabled = Global.Config.RewindEnabledLarge;
-				}
-
-				_rewindDeltaEnable = Global.Config.Rewind_UseDelta;
-
-				if (rewind_enabled)
-				{
-					var capacity = Global.Config.Rewind_BufferSize * (long)1024 * 1024;
-
-					if (_rewindBuffer != null)
-					{
-						_rewindBuffer.Dispose();
-					}
-
-					_rewindBuffer = new StreamBlobDatabase(Global.Config.Rewind_OnDisk, capacity, BufferManage);
-
-					_rewindThread = new RewindThreader(this, Global.Config.Rewind_IsThreaded);
-				}
-			}
-		}
-
-		public void Rewind(int frames)
-		{
-			if (Global.Emulator.HasSavestates() && _rewindThread != null)
-			{
-				_rewindThread.Rewind(frames);
-			}
-		}
-
-		// TODO remove me
-		public void _RunRewind(int frames)
-		{
-			for (int i = 0; i < frames; i++)
-			{
-				if (_rewindBuffer.Count == 0 || (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.InputLogLength == 0))
-				{
-					return;
-				}
-
-				RewindOne();
-			}
-		}
-
-		// TODO: only run by RewindThreader, refactor
-		public void RunCapture(byte[] coreSavestate)
-		{
-			if (_rewindDeltaEnable)
-			{
-				CaptureRewindStateDelta(coreSavestate);
-			}
-			else
-			{
-				CaptureRewindStateNonDelta(coreSavestate);
-			}
-		}
-
-		public void ResetRewindBuffer()
-		{
 			if (_rewindBuffer != null)
 			{
-				_rewindBuffer.Clear();
+				_rewindBuffer.Dispose();
+				_rewindBuffer = null;
 			}
 
-			_rewindImpossible = false;
 			_lastState = null;
 		}
 
@@ -224,11 +140,6 @@ namespace BizHawk.Client.Common
 
 			RewindActive = enabled;
 			_rewindFrequency = frequency;
-
-			if (!RewindActive)
-			{
-				_lastState = null;
-			}
 		}
 
 		private byte[] BufferManage(byte[] inbuf, ref long size, bool allocate)
@@ -283,7 +194,39 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private void CaptureRewindStateNonDelta(byte[] state)
+		public void Capture()
+		{
+			if (!IsRewindEnabledAtAll || !Global.Emulator.HasSavestates())
+			{
+				return;
+			}
+
+			if (_rewindThread == null)
+			{
+				Initialize();
+			}
+
+			if (_rewindThread == null || Global.Emulator.Frame % _rewindFrequency != 0)
+			{
+				return;
+			}
+
+			_rewindThread.Capture(Global.Emulator.AsStatable().SaveStateBinary());
+		}
+
+		private void CaptureInternal(byte[] coreSavestate)
+		{
+			if (_rewindDeltaEnable)
+			{
+				CaptureStateDelta(coreSavestate);
+			}
+			else
+			{
+				CaptureStateNonDelta(coreSavestate);
+			}
+		}
+
+		private void CaptureStateNonDelta(byte[] state)
 		{
 			long offset = _rewindBuffer.Enqueue(0, state.Length + 1);
 			var stream = _rewindBuffer.Stream;
@@ -308,12 +251,12 @@ namespace BizHawk.Client.Common
 			UpdateLastState(state, 0, state.Length);
 		}
 
-		private unsafe void CaptureRewindStateDelta(byte[] currentState)
+		private unsafe void CaptureStateDelta(byte[] currentState)
 		{
 			// in case the state sizes mismatch, capture a full state rather than trying to do anything clever
 			if (currentState.Length != _lastState.Length)
 			{
-				CaptureRewindStateNonDelta(_lastState);
+				CaptureStateNonDelta(_lastState);
 				UpdateLastState(currentState);
 				return;
 			}
@@ -356,7 +299,7 @@ namespace BizHawk.Client.Common
 					if (index + length + maxHeaderSize >= stateLength)
 					{
 						// If the delta ends up being larger than the full state, capture the full state instead
-						CaptureRewindStateNonDelta(_lastState);
+						CaptureStateNonDelta(_lastState);
 						UpdateLastState(currentState);
 						return;
 					}
@@ -381,46 +324,91 @@ namespace BizHawk.Client.Common
 			UpdateLastState(currentState);
 		}
 
-		private void RewindOne()
+		public bool Rewind(int frames)
 		{
-			if (!Global.Emulator.HasSavestates()) return;
-
-			var ms = _rewindBuffer.PopMemoryStream();
-			byte[] buf = ms.GetBuffer();
-			var reader = new BinaryReader(ms);
-			var fullstate = reader.ReadBoolean();
-			if (fullstate)
+			if (!Global.Emulator.HasSavestates() || _rewindThread == null)
 			{
-				if (_rewindDeltaEnable)
+				return false;
+			}
+
+			_rewindThread.Rewind(frames);
+
+			return _lastRewindLoadedState;
+		}
+
+		private void RewindInternal(int frames)
+		{
+			_lastRewindLoadedState = false;
+
+			for (int i = 0; i < frames; i++)
+			{
+				if (_rewindBuffer.Count <= 1 || (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.InputLogLength == 0))
 				{
-					UpdateLastState(buf, 1, buf.Length - 1);
+					break;
 				}
 
-				Global.Emulator.AsStatable().LoadStateBinary(reader);
+				LoadPreviousState();
+				_lastRewindLoadedState = true;
+			}
+		}
+
+		private MemoryStream GetPreviousStateMemoryStream()
+		{
+			if (_rewindDeltaEnable)
+			{
+				return _rewindBuffer.PopMemoryStream();
 			}
 			else
 			{
-				var output = new MemoryStream(_lastState);
-				int index = 1;
-				int offset = 0;
-
-				while (index < buf.Length)
-				{
-					int offsetDelta = (int)VLInteger.ReadUnsigned(buf, ref index);
-					int length = (int)VLInteger.ReadUnsigned(buf, ref index);
-
-					offset += offsetDelta;
-
-					output.Position = offset;
-					output.Write(buf, index, length);
-					index += length;
-				}
-
-				output.Position = 0;
-				Global.Emulator.AsStatable().LoadStateBinary(new BinaryReader(output));
-				output.Close();
+				_rewindBuffer.Pop();
+				return _rewindBuffer.PeekMemoryStream();
 			}
-			reader.Close();
+		}
+
+		private void LoadPreviousState()
+		{
+			using (var reader = new BinaryReader(GetPreviousStateMemoryStream()))
+			{
+				byte[] buf = ((MemoryStream)reader.BaseStream).GetBuffer();
+				bool fullState = reader.ReadByte() == 1;
+				if (_rewindDeltaEnable)
+				{
+					if (fullState)
+					{
+						UpdateLastState(buf, 1, buf.Length - 1);
+					}
+					else
+					{
+						int index = 1;
+						int offset = 0;
+
+						while (index < buf.Length)
+						{
+							int offsetDelta = (int)VLInteger.ReadUnsigned(buf, ref index);
+							int length = (int)VLInteger.ReadUnsigned(buf, ref index);
+
+							offset += offsetDelta;
+
+							Buffer.BlockCopy(buf, index, _lastState, offset, length);
+							index += length;
+						}
+					}
+
+					using (var lastStateReader = new BinaryReader(new MemoryStream(_lastState)))
+					{
+						Global.Emulator.AsStatable().LoadStateBinary(lastStateReader);
+					}
+				}
+				else
+				{
+					if (!fullState)
+					{
+						throw new InvalidOperationException();
+					}
+
+					Global.Emulator.AsStatable().LoadStateBinary(reader);
+				}
+			}
 		}
 	}
 }

@@ -732,6 +732,7 @@
     <Compile Include="Sound\Output\XAudio2SoundOutput.cs" />
     <Compile Include="Sound\Sound.cs" />
     <Compile Include="Sound\Utilities\BufferedAsync.cs" />
+    <Compile Include="Sound\Utilities\SyncToAsyncProvider.cs" />
     <Compile Include="Sound\Utilities\SoundOutputProvider.cs" />
     <Compile Include="Throttle.cs" />
     <Compile Include="ToolAttributes.cs" />
