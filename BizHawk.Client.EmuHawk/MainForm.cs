@@ -3558,7 +3558,6 @@ namespace BizHawk.Client.EmuHawk
 					CurrentlyOpenRomArgs = args;
 
 					Global.Rewinder.Initialize();
-					Global.Rewinder.Capture();
 
 					Global.StickyXORAdapter.ClearStickies();
 					Global.StickyXORAdapter.ClearStickyFloats();
