@@ -253,12 +253,16 @@ namespace BizHawk.Client.Common
 
 		private unsafe void CaptureStateDelta(byte[] currentState)
 		{
-			// in case the state sizes mismatch, capture a full state rather than trying to do anything clever
+			// Keep in mind that everything captured here is intended to be played back in
+			// reverse. The goal is, given the current state, how to get back to the previous
+			// state. That's why the data portion of the delta comes from the previous state,
+			// and also why the previous state is used if we have to bail out and capture the
+			// full state instead.
+
 			if (currentState.Length != _lastState.Length)
 			{
-				CaptureStateNonDelta(_lastState);
-				UpdateLastState(currentState);
-				return;
+				// If the state sizes mismatch, capture a full state rather than trying to do anything clever
+				goto CaptureFullState;
 			}
 
 			int index = 0;
@@ -299,9 +303,7 @@ namespace BizHawk.Client.Common
 					if (index + length + maxHeaderSize >= stateLength)
 					{
 						// If the delta ends up being larger than the full state, capture the full state instead
-						CaptureStateNonDelta(_lastState);
-						UpdateLastState(currentState);
-						return;
+						goto CaptureFullState;
 					}
 
 					// Offset Delta
@@ -321,6 +323,11 @@ namespace BizHawk.Client.Common
 
 			_rewindBuffer.Push(new ArraySegment<byte>(_deltaBuffer, 0, index));
 
+			UpdateLastState(currentState);
+			return;
+
+		CaptureFullState:
+			CaptureStateNonDelta(_lastState);
 			UpdateLastState(currentState);
 		}
 
@@ -342,6 +349,16 @@ namespace BizHawk.Client.Common
 
 			for (int i = 0; i < frames; i++)
 			{
+				// Always leave the first item in the rewind buffer. For full states, once there's
+				// one item remaining, we've already gone back as far as possible because the code
+				// to load the previous state has already peeked at the first item after removing
+				// the second item. We want to hold on to the first item anyway since it's a copy
+				// of the current state (see comment in the following method). For deltas, since
+				// each one records how to get back to the previous state, once we've gone back to
+				// the second item, it's already resulted in the first state being loaded. The
+				// first item is actually a junk delta that records how to get from the first
+				// captured state to the "previous" state, which in this case is the one that was
+				// grabbed during rewinder initialization.
 				if (_rewindBuffer.Count <= 1 || (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.InputLogLength == 0))
 				{
 					break;
@@ -356,13 +373,23 @@ namespace BizHawk.Client.Common
 		{
 			if (_rewindDeltaEnable)
 			{
+				// When capturing deltas, the most recent state is stored in _lastState, and the
+				// last item in the rewind buffer gets us back to the previous state.
 				return _rewindBuffer.PopMemoryStream();
 			}
 			else
 			{
+				// When capturing full states, the last item in the rewind buffer is the most
+				// recent state, so we need to get the item before it.
 				_rewindBuffer.Pop();
 				return _rewindBuffer.PeekMemoryStream();
 			}
+
+			// Note that in both cases, after loading the state, we still have a copy of it
+			// either in _lastState or as the last item in the rewind buffer. This is good
+			// because once we resume capturing, the first capture doesn't happen until
+			// stepping forward to the following frame, which would result in a gap if we
+			// didn't still have a copy of the current state here.
 		}
 
 		private void LoadPreviousState()
