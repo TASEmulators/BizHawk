@@ -8,9 +8,11 @@ namespace BizHawk.Client.Common
 {
 	public class Rewinder
 	{
+		private const int MaxByteArraySize = 0x7FFFFFC7; // .NET won't let us allocate more than this in one array
+
 		private StreamBlobDatabase _rewindBuffer;
 		private byte[] _rewindBufferBacking;
-		private long? _overrideMemoryLimit;
+		private long _memoryLimit = MaxByteArraySize;
 		private RewindThreader _rewindThread;
 		private byte[] _lastState;
 		private int _rewindFrequency = 1;
@@ -63,14 +65,13 @@ namespace BizHawk.Client.Common
 
 			if (Global.Emulator.HasSavestates())
 			{
-				// This is the first frame. Capture the state, and put it in LastState for future deltas to be compared against.
-				_lastState = (byte[])Global.Emulator.AsStatable().SaveStateBinary().Clone();
+				int stateSize = Global.Emulator.AsStatable().SaveStateBinary().Length;
 
-				if (_lastState.Length >= Global.Config.Rewind_LargeStateSize)
+				if (stateSize >= Global.Config.Rewind_LargeStateSize)
 				{
 					SetRewindParams(Global.Config.RewindEnabledLarge, Global.Config.RewindFrequencyLarge);
 				}
-				else if (_lastState.Length >= Global.Config.Rewind_MediumStateSize)
+				else if (stateSize >= Global.Config.Rewind_MediumStateSize)
 				{
 					SetRewindParams(Global.Config.RewindEnabledMedium, Global.Config.RewindFrequencyMedium);
 				}
@@ -85,11 +86,6 @@ namespace BizHawk.Client.Common
 			}
 
 			_rewindDeltaEnable = Global.Config.Rewind_UseDelta;
-
-			if (!RewindActive || !_rewindDeltaEnable)
-			{
-				_lastState = null;
-			}
 
 			if (RewindActive)
 			{
@@ -115,7 +111,7 @@ namespace BizHawk.Client.Common
 				_rewindBuffer = null;
 			}
 
-			_lastState = null;
+			_lastState = new byte[0];
 		}
 
 		private void DoMessage(string message)
@@ -144,54 +140,42 @@ namespace BizHawk.Client.Common
 
 		private byte[] BufferManage(byte[] inbuf, ref long size, bool allocate)
 		{
-			if (allocate)
-			{
-				const int MaxByteArraySize = 0x7FFFFFC7;
-				if (size > MaxByteArraySize)
-				{
-					// .NET won't let us allocate more than this in one array
-					size = MaxByteArraySize;
-				}
-
-				if (_overrideMemoryLimit != null)
-				{
-					size = Math.Min(_overrideMemoryLimit.Value, size);
-				}
-
-				// if we have an appropriate buffer free, return it
-				if (_rewindBufferBacking != null)
-				{
-					if (_rewindBufferBacking.LongLength == size)
-					{
-						var buf = _rewindBufferBacking;
-						_rewindBufferBacking = null;
-						return buf;
-					}
-
-					_rewindBufferBacking = null;
-				}
-
-				// otherwise, allocate it
-				do
-				{
-					try
-					{
-						return new byte[size];
-					}
-					catch (OutOfMemoryException)
-					{
-						size /= 2;
-						_overrideMemoryLimit = size;
-					}
-				}
-				while (size > 1);
-				throw new OutOfMemoryException();
-			}
-			else
+			if (!allocate)
 			{
 				_rewindBufferBacking = inbuf;
 				return null;
 			}
+
+			size = Math.Min(size, _memoryLimit);
+
+			// if we have an appropriate buffer free, return it
+			if (_rewindBufferBacking != null)
+			{
+				var buf = _rewindBufferBacking;
+
+				_rewindBufferBacking = null;
+
+				if (buf.LongLength == size)
+				{
+					return buf;
+				}
+			}
+
+			// otherwise, allocate it
+			do
+			{
+				try
+				{
+					return new byte[size];
+				}
+				catch (OutOfMemoryException)
+				{
+					size /= 2;
+					_memoryLimit = size;
+				}
+			}
+			while (size > 1);
+			throw new OutOfMemoryException();
 		}
 
 		public void Capture()
@@ -356,9 +340,7 @@ namespace BizHawk.Client.Common
 				// of the current state (see comment in the following method). For deltas, since
 				// each one records how to get back to the previous state, once we've gone back to
 				// the second item, it's already resulted in the first state being loaded. The
-				// first item is actually a junk delta that records how to get from the first
-				// captured state to the "previous" state, which in this case is the one that was
-				// grabbed during rewinder initialization.
+				// first item is just a junk entry with the initial value of _lastState (0 bytes).
 				if (_rewindBuffer.Count <= 1 || (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie.InputLogLength == 0))
 				{
 					break;
