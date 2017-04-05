@@ -74,6 +74,7 @@ L rd.h = op_readlong(vectorN + 1);
 void CPUcore::op_stp() {
   while(regs.wai = true) {
 L   op_io();
+	scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
   }
 }
 
@@ -81,6 +82,7 @@ void CPUcore::op_wai() {
   regs.wai = true;
   while(regs.wai) {
 L   op_io();
+	scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
   }
   op_io();
 }
