@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				_mAllocatedBuffer = _mBufferManage(null, ref capacity, true);
+				_mAllocatedBuffer = _mBufferManage(null, ref _mCapacity, true);
 				_mStream = new MemoryStream(_mAllocatedBuffer);
 			}
 		}
