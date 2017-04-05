@@ -544,15 +544,17 @@ namespace BizHawk.Client.EmuHawk
 			Color? backcolor = null,
 			int? fontsize = null,
 			string fontfamily = null,
-			string fontstyle = null)
+			string fontstyle = null,
+            string horizalign = null,
+            string vertalign = null)
 		{
-			DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle);
+			DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 		}
 
 		[LuaMethodAttributes(
 			"drawText",
-			"Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class. The fontsize default is 12. The default font style. Font style options are regular, bold, italic, strikethrough, underline"
-		)]
+            "Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates."
+        )]
 		public void DrawText(
 			int x,
 			int y,
@@ -561,7 +563,9 @@ namespace BizHawk.Client.EmuHawk
 			Color? backcolor = null,
 			int? fontsize = null,
 			string fontfamily = null,
-			string fontstyle = null)
+			string fontstyle = null,
+            string horizalign = null,
+            string vertalign = null)
 		{
 			using (var g = GetGraphics())
 			{
@@ -596,13 +600,42 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					StringFormat f = new StringFormat(StringFormat.GenericTypographic)
-					{
-						FormatFlags = StringFormatFlags.MeasureTrailingSpaces
-					};
-					var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
+                    // The text isn't written out using GenericTypographic, so measuring it using GenericTypographic seemed to make it worse.
+                    // And writing it out with GenericTypographic just made it uglier. :p
+                    StringFormat f = new StringFormat(StringFormat.GenericDefault);
+                    var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
 					Size sizeOfText = g.MeasureString(message, font, 0, f).ToSize();
-					Rectangle rect = new Rectangle(new Point(x, y), sizeOfText);
+                    if (horizalign != null)
+                    {
+                        switch (horizalign.ToLower())
+                        {
+                            default:
+                            case "left":
+                                break;
+                            case "center":
+                                x -= sizeOfText.Width / 2;
+                                break;
+                            case "right":
+                                x -= sizeOfText.Width;
+                                break;
+                        }
+                    }
+                    if (vertalign != null)
+                    {
+                        switch (vertalign.ToLower())
+                        {
+                            default:
+                            case "bottom":
+                                break;
+                            case "middle":
+                                y -= sizeOfText.Height / 2;
+                                break;
+                            case "top":
+                                y -= sizeOfText.Height;
+                                break;
+                        }
+                    }
+                    Rectangle rect = new Rectangle(new Point(x, y), sizeOfText);
 					g.FillRectangle(GetBrush(backcolor ?? DefaultTextBackground.Value), rect);
 					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 					g.DrawString(message, font, GetBrush(forecolor ?? DefaultForeground), x, y);
