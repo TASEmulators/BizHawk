@@ -21,9 +21,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			else
 				_cpu.TraceCallback = null;
 
-			//reset the count of audio samples
-			_psg.sample_count = 0;
-
 			_frame++;
 			stic_row = -1;
 			// read the controller state here for now
