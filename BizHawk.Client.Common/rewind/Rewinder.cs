@@ -149,16 +149,11 @@ namespace BizHawk.Client.Common
 			size = Math.Min(size, _memoryLimit);
 
 			// if we have an appropriate buffer free, return it
-			if (_rewindBufferBacking != null)
+			var buf = _rewindBufferBacking;
+			_rewindBufferBacking = null;
+			if (buf != null && buf.LongLength == size)
 			{
-				var buf = _rewindBufferBacking;
-
-				_rewindBufferBacking = null;
-
-				if (buf.LongLength == size)
-				{
-					return buf;
-				}
+				return buf;
 			}
 
 			// otherwise, allocate it
