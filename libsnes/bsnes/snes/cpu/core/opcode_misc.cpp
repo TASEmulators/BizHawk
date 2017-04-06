@@ -78,7 +78,6 @@ void CPUcore::op_stp() {
   while(regs.wai = true) {
 L   op_io();
 	scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
-	if (scheduler.exit_reason.value == Scheduler::ExitReason::SynchronizeEvent) return;
 SKIP: ;
 	}
 	regs.hang = HangType::None;
@@ -92,7 +91,6 @@ void CPUcore::op_wai() {
   while(regs.wai) {
 L   op_io();
 	scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
-	if(scheduler.exit_reason.value == Scheduler::ExitReason::SynchronizeEvent) return;
 	SKIP: ;
 	}
 	regs.hang = HangType::None;

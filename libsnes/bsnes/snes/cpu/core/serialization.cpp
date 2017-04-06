@@ -25,7 +25,10 @@ void CPUcore::core_serialize(serializer &s) {
   s.integer(regs.wai);
   s.integer(regs.mdr);
   s.integer(regs.vector);
-	s.integer((unsigned)regs.hang);
+
+	unsigned junk = (unsigned)regs.hang;
+	s.integer(junk);
+	regs.hang = (HangType)junk;
 
   s.integer(aa.d);
   s.integer(rd.d);
