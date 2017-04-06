@@ -72,7 +72,9 @@ void CPU::enter() {
       op_irq();
     }
 
-    op_step();
+		if(regs.hang == HangType::Wait) this->op_wai();
+		else if (regs.hang == HangType::Stop) this->op_stp();
+		else op_step();
   }
 }
 
