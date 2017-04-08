@@ -1592,7 +1592,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveRam()
+		public void SaveRam()
 		{
 			if (Emulator.HasSaveRam())
 			{

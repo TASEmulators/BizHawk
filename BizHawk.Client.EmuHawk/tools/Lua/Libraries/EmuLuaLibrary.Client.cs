@@ -533,5 +533,14 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.DisplayMessages = value;
 		}
+
+		[LuaMethodAttributes(
+			"saveram",
+			"flushes save ram to disk"
+			)]
+		public void SaveRam()
+		{
+			GlobalWin.MainForm.SaveRam();
+		}
 	}
 }
