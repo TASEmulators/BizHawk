@@ -231,9 +231,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Sound = null;
 				}
 				GlobalWin.GL.Dispose();
-#if WINDOWS
-				GamePad.CloseAll();
-#endif
+				Input.Cleanup();
 			}
 			else
 			{ // Display error message windows
@@ -305,9 +303,7 @@ namespace BizHawk.Client.EmuHawk
 						GlobalWin.Sound = null;
 					}
 					GlobalWin.GL.Dispose();
-#if WINDOWS
-					GamePad.CloseAll();
-#endif
+					Input.Cleanup();
 				}
 			}
 

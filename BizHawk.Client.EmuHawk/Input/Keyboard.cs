@@ -6,50 +6,68 @@ namespace BizHawk.Client.EmuHawk
 {
 	public static class KeyInput
 	{
-		private static DirectInput dinput;
-		private static Keyboard keyboard;
-		private static KeyboardState state = new KeyboardState();
+		private static readonly object _syncObj = new object();
+		private static readonly List<KeyEvent> _eventList = new List<KeyEvent>();
+		private static DirectInput _dinput;
+		private static Keyboard _keyboard;
 
 		public static void Initialize()
 		{
-			if (dinput == null)
-				dinput = new DirectInput();
+			lock (_syncObj)
+			{
+				Cleanup();
 
-			if (keyboard == null || keyboard.Disposed)
-				keyboard = new Keyboard(dinput);
-			keyboard.SetCooperativeLevel(GlobalWin.MainForm.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
-			keyboard.Properties.BufferSize = 8;
+				_dinput = new DirectInput();
+
+				_keyboard = new Keyboard(_dinput);
+				_keyboard.SetCooperativeLevel(GlobalWin.MainForm.Handle, CooperativeLevel.Background | CooperativeLevel.Nonexclusive);
+				_keyboard.Properties.BufferSize = 8;
+			}
 		}
 
-		static List<KeyEvent> EmptyList = new List<KeyEvent>();
-		static List<KeyEvent> EventList = new List<KeyEvent>();
+		public static void Cleanup()
+		{
+			lock (_syncObj)
+			{
+				if (_keyboard != null)
+				{
+					_keyboard.Dispose();
+					_keyboard = null;
+				}
+
+				if (_dinput != null)
+				{
+					_dinput.Dispose();
+					_dinput = null;
+				}
+			}
+		}
 
 		public static IEnumerable<KeyEvent> Update()
 		{
-			EventList.Clear();
-
-			if (keyboard.Acquire().IsFailure)
-				return EmptyList;
-			if (keyboard.Poll().IsFailure)
-				return EmptyList;
-
-			for (; ; )
+			lock (_syncObj)
 			{
-				var events = keyboard.GetBufferedData();
-				if (Result.Last.IsFailure)
-					return EventList;
-				if (events.Count == 0)
-					break;
-				foreach (var e in events)
-				{
-					foreach (var k in e.PressedKeys)
-						EventList.Add(new KeyEvent { Key = k, Pressed = true });
-					foreach (var k in e.ReleasedKeys)
-						EventList.Add(new KeyEvent { Key = k, Pressed = false });
-				}
-			}
+				_eventList.Clear();
 
-			return EventList;
+				if (_keyboard == null || _keyboard.Acquire().IsFailure || _keyboard.Poll().IsFailure)
+					return _eventList;
+
+				for (; ; )
+				{
+					var events = _keyboard.GetBufferedData();
+					if (Result.Last.IsFailure || events.Count == 0)
+						break;
+					foreach (var e in events)
+					{
+						foreach (var k in e.PressedKeys)
+							_eventList.Add(new KeyEvent { Key = k, Pressed = true });
+						foreach (var k in e.ReleasedKeys)
+							_eventList.Add(new KeyEvent { Key = k, Pressed = false });
+					}
+				}
+
+				return _eventList;
+			}
 		}
 
 		public struct KeyEvent
@@ -57,6 +75,5 @@ namespace BizHawk.Client.EmuHawk
 			public Key Key;
 			public bool Pressed;
 		}
-
 	}
 }
