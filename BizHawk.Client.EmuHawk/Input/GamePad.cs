@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					joystick.Acquire();
 
-					GamePad p = new GamePad(device.InstanceName, device.InstanceGuid, joystick);
+					GamePad p = new GamePad(device.InstanceName, device.InstanceGuid, joystick, _devices.Count);
 					_devices.Add(p);
 				}
 			}
@@ -90,11 +90,12 @@ namespace BizHawk.Client.EmuHawk
 		readonly Joystick joystick;
 		JoystickState state = new JoystickState();
 
-		GamePad(string name, Guid guid, Joystick joystick)
+		GamePad(string name, Guid guid, Joystick joystick, int index)
 		{
 			this.name = name;
 			this.guid = guid;
 			this.joystick = joystick;
+			PlayerNumber = index + 1;
 			Update();
 			InitializeCallbacks();
 		}
@@ -134,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public string Name { get { return name; } }
 		public Guid Guid { get { return guid; } }
-
+		public int PlayerNumber { get; private set; }
 
 		public string ButtonName(int index)
 		{

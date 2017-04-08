@@ -348,7 +348,7 @@ namespace BizHawk.Client.EmuHawk
 						//analyze xinput
 						foreach (var pad in GamePad360.EnumerateDevices())
 						{
-							string xname = "X" + (pad.PlayerNumber) + " ";
+							string xname = "X" + pad.PlayerNumber + " ";
 							for (int b = 0; b < pad.NumButtons; b++)
 								HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
 							foreach (var sv in pad.GetFloats())
@@ -362,11 +362,9 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						//analyze joysticks
-						foreach (var item in GamePad.EnumerateDevices().Select((n, i) => new { Device = n, Index = i }))
+						foreach (var pad in GamePad.EnumerateDevices())
 						{
-							var pad = item.Device;
-							string jname = "J" + (item.Index + 1) + " ";
-
+							string jname = "J" + pad.PlayerNumber + " ";
 							for (int b = 0; b < pad.NumButtons; b++)
 								HandleButton(jname + pad.ButtonName(b), pad.Pressed(b));
 							foreach (var sv in pad.GetFloats())

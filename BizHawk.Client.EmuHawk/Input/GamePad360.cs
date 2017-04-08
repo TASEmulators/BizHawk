@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static readonly object _syncObj = new object();
 		private static readonly List<GamePad360> _devices = new List<GamePad360>();
-		private static readonly bool _isAvailable = IsAvailable();
+		private static readonly bool _isAvailable;
 
 		[DllImport("kernel32", SetLastError = true, EntryPoint = "GetProcAddress")]
 		static extern IntPtr GetProcAddressOrdinal(IntPtr hModule, IntPtr procName);
@@ -42,7 +42,7 @@ namespace BizHawk.Client.EmuHawk
 			public XINPUT_GAMEPAD Gamepad;
 		}
 
-		private static bool IsAvailable()
+		static GamePad360()
 		{
 			try
 			{
@@ -68,12 +68,10 @@ namespace BizHawk.Client.EmuHawk
 					//don't remove this code. it's important to catch errors on systems with broken xinput installs.
 					//(probably, checking for the library was adequate, but lets not get rid of this anyway)
 					var test = new SlimDX.XInput.Controller(UserIndex.One).IsConnected;
-					return true;
+					_isAvailable = true;
 				}
 			}
 			catch { }
-
-			return false;
 		}
 
 		public static void Initialize()
