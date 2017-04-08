@@ -89,7 +89,6 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		void ResetDevice()
 		{
-			devBB.Dispose();
 			ResetHandlers.Reset();
 			for (; ; )
 			{
@@ -109,7 +108,6 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 				System.Threading.Thread.Sleep(100);
 			}
 			ResetHandlers.Restore();
-			devBB = dev.GetBackBuffer(0, 0);
 		}
 
 		public void CreateDevice()
@@ -126,12 +124,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			
 			flags |= CreateFlags.FpuPreserve;
 			dev = new Device(d3d, 0, DeviceType.Hardware, pp.DeviceWindowHandle, flags, pp);
-			devBB = dev.GetBackBuffer(0, 0);
 		}
 
 		void IDisposable.Dispose()
 		{
-			devBB.Dispose();
 			ResetHandlers.Reset();
 			DestroyDevice();
 			d3d.Dispose();
@@ -824,13 +820,15 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			dev.SetRenderTarget(0, surface);
 			surface.Dispose();
 		}
-		Surface devBB;
+
 		public void EndControl(GLControlWrapper_SlimDX9 control)
 		{
 			if (control != _CurrentControl)
 				throw new InvalidOperationException();
 
-			dev.SetRenderTarget(0, devBB);
+			var surface = _CurrentControl.SwapChain.GetBackBuffer(0);
+			dev.SetRenderTarget(0, surface);
+			surface.Dispose();
 
 			_CurrentControl = null;
 		}
