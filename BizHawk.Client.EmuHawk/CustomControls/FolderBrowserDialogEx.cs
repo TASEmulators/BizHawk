@@ -77,7 +77,7 @@ namespace BizHawk.Client.EmuHawk
 				case 1:
 					{
 						IntPtr str = Marshal.StringToHGlobalUni(SelectedPath);
-						Win32.SendMessage(hwnd, (0x400 + 103), 1, str.ToInt32());
+						Win32.SendMessage(hwnd, (0x400 + 103), (IntPtr)1, str);
 						Marshal.FreeHGlobal(str);
 						break;
 					}

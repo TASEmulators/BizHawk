@@ -360,15 +360,13 @@ namespace BizHawk.Client.EmuHawk
 				ret.codec = Win32.decode_mmioFOURCC(opts.fccHandler);
 				ret.Format = new byte[opts.cbFormat];
 				ret.Parms = new byte[opts.cbParms];
-				if(opts.lpFormat != 0) Marshal.Copy(new IntPtr(opts.lpFormat), ret.Format, 0, opts.cbFormat);
-				if (opts.lpParms != 0) Marshal.Copy(new IntPtr(opts.lpParms), ret.Parms, 0, opts.cbParms);
-
+				if (opts.lpFormat != IntPtr.Zero) Marshal.Copy(opts.lpFormat, ret.Format, 0, opts.cbFormat);
+				if (opts.lpParms != IntPtr.Zero) Marshal.Copy(opts.lpParms, ret.Parms, 0, opts.cbParms);
 				return ret;
 			}
 
-
 			[DllImport("kernel32.dll", SetLastError = true)]
-			public static extern bool HeapFree(IntPtr hHeap, uint dwFlags, int lpMem);
+			public static extern bool HeapFree(IntPtr hHeap, uint dwFlags, IntPtr lpMem);
 			[DllImport("kernel32.dll", SetLastError = true)]
 			public static extern IntPtr GetProcessHeap();
 			[DllImport("kernel32.dll", SetLastError = false)]
@@ -377,25 +375,24 @@ namespace BizHawk.Client.EmuHawk
 			public static void DeallocateAVICOMPRESSOPTIONS(ref Win32.AVICOMPRESSOPTIONS opts)
 			{
 				//test: increase stability by never freeing anything, ever
-				//if (opts.lpParms != 0) CodecToken.HeapFree(CodecToken.GetProcessHeap(), 0, opts.lpParms);
-				//if (opts.lpFormat != 0) CodecToken.HeapFree(CodecToken.GetProcessHeap(), 0, opts.lpFormat);
-				opts.lpParms = 0;
-				opts.lpFormat = 0;
+				//if (opts.lpParms != IntPtr.Zero) CodecToken.HeapFree(CodecToken.GetProcessHeap(), 0, opts.lpParms);
+				//if (opts.lpFormat != IntPtr.Zero) CodecToken.HeapFree(CodecToken.GetProcessHeap(), 0, opts.lpFormat);
+				opts.lpParms = IntPtr.Zero;
+				opts.lpFormat = IntPtr.Zero;
 			}
-
 
 			public void AllocateToAVICOMPRESSOPTIONS(ref Win32.AVICOMPRESSOPTIONS opts)
 			{
 				opts = comprOptions;
 				if (opts.cbParms != 0)
 				{
-					opts.lpParms = HeapAlloc(GetProcessHeap(), 0, opts.cbParms).ToInt32();
-					Marshal.Copy(Parms, 0, new IntPtr(opts.lpParms), opts.cbParms);
+					opts.lpParms = HeapAlloc(GetProcessHeap(), 0, opts.cbParms);
+					Marshal.Copy(Parms, 0, opts.lpParms, opts.cbParms);
 				}
 				if (opts.cbFormat != 0)
 				{
-					opts.lpFormat = HeapAlloc(GetProcessHeap(), 0, opts.cbFormat).ToInt32();
-					Marshal.Copy(Format, 0, new IntPtr(opts.lpFormat), opts.cbFormat);
+					opts.lpFormat = HeapAlloc(GetProcessHeap(), 0, opts.cbFormat);
+					Marshal.Copy(Format, 0, opts.lpFormat, opts.cbFormat);
 				}
 			}
 		
