@@ -107,6 +107,11 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var f in ShaderChainFrugalizers)
 				if (f != null)
 					f.Dispose();
+			foreach (var s in new [] { ShaderChain_hq2x, ShaderChain_scanlines, ShaderChain_bicubic, ShaderChain_user })
+				if (s != null)
+					s.Dispose();
+			TheOneFont.Dispose();
+			Renderer.Dispose();
 		}
 
 		//rendering resources:

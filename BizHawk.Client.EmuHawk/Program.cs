@@ -181,6 +181,7 @@ namespace BizHawk.Client.EmuHawk
 					Renderer = new BizHawk.Bizware.BizwareGL.GuiRenderer(GlobalWin.GL);
 				else
 					Renderer = new BizHawk.Bizware.BizwareGL.Drivers.GdiPlus.GDIPlusGuiRenderer((BizHawk.Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus)GlobalWin.GL);
+				Renderer.Dispose();
 			}
 			catch(Exception ex)
 			{

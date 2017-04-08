@@ -131,6 +131,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		void IDisposable.Dispose()
 		{
+			devBB.Dispose();
 			ResetHandlers.Reset();
 			DestroyDevice();
 			d3d.Dispose();
@@ -163,7 +164,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			tw.Texture.Dispose();
 		}
 
-		class ShaderWrapper : IDisposable
+		class ShaderWrapper // Disposable fields cleaned up by Internal_FreeShader
 		{
 			public d3d9.ShaderBytecode bytecode;
 			public d3d9.VertexShader vs;
@@ -171,15 +172,6 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			public Shader IGLShader;
 			public Dictionary<string, string> MapCodeToNative;
 			public Dictionary<string, string> MapNativeToCode;
-
-			public void Dispose()
-			{
-				vs.Dispose();
-				vs = null;
-				ps.Dispose();
-				bytecode.Dispose();
-				bytecode = null;
-			}
 		}
 
 		public Shader CreateFragmentShader(bool cg, string source, string entry, bool required)
@@ -527,6 +519,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		{
 			var pw = pipeline.Opaque as PipelineWrapper;
 
+			pw.VertexDeclaration.Dispose();
 			pw.FragmentShader.IGLShader.Release();
 			pw.VertexShader.IGLShader.Release();
 		}
@@ -548,7 +541,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			public int SamplerIndex;
 		}
 
-		class PipelineWrapper
+		class PipelineWrapper // Disposable fields cleaned up in FreePipeline
 		{
 			public d3d9.VertexDeclaration VertexDeclaration;
 			public ShaderWrapper VertexShader, FragmentShader;

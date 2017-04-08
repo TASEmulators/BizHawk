@@ -79,7 +79,10 @@ namespace BizHawk.Client.EmuHawk.Filters
 
 		public void Dispose()
 		{
-			//todo
+			if (_isDisposed) return;
+			foreach (var s in Shaders)
+				s.Dispose();
+			_isDisposed = true;
 		}
 
 		/// <summary>
@@ -92,6 +95,8 @@ namespace BizHawk.Client.EmuHawk.Filters
 		public readonly RetroShaderPreset Preset;
 		public readonly RetroShader[] Shaders;
 		public readonly RetroShaderPreset.ShaderPass[] Passes;
+
+		private bool _isDisposed;
 	}
 
 	public class RetroShaderPreset
