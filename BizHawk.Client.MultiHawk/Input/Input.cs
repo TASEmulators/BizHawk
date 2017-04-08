@@ -337,10 +337,9 @@ namespace BizHawk.Client.MultiHawk
 						//FloatValues.Clear();
 
 						//analyze xinput
-						for (int i = 0; i < BizHawk.Client.EmuHawk.GamePad360.Devices.Count; i++)
+						foreach (var pad in BizHawk.Client.EmuHawk.GamePad360.EnumerateDevices())
 						{
-							var pad = BizHawk.Client.EmuHawk.GamePad360.Devices[i];
-							string xname = "X" + (i + 1) + " ";
+							string xname = "X" + pad.PlayerNumber + " ";
 							for (int b = 0; b < pad.NumButtons; b++)
 								HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
 							foreach (var sv in pad.GetFloats())
