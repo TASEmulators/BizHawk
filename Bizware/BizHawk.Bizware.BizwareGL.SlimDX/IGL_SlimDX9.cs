@@ -541,7 +541,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			public int SamplerIndex;
 		}
 
-		class PipelineWrapper // Disposable fields cleaned up in FreePipeline
+		class PipelineWrapper // Disposable fields cleaned up by FreePipeline
 		{
 			public d3d9.VertexDeclaration VertexDeclaration;
 			public ShaderWrapper VertexShader, FragmentShader;
