@@ -225,6 +225,15 @@ namespace BizHawk.Client.EmuHawk
 						GlobalWin.ExitCode = mf.ProgramRunLoop();
 					}
 				}
+				if (GlobalWin.Sound != null)
+				{
+					GlobalWin.Sound.Dispose();
+					GlobalWin.Sound = null;
+				}
+				GlobalWin.GL.Dispose();
+#if WINDOWS
+				GamePad.CloseAll();
+#endif
 			}
 			else
 			{ // Display error message windows
@@ -288,7 +297,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					new ExceptionBox(e).ShowDialog();
 				}
-#if WINDOWS
 				finally
 				{
 					if (GlobalWin.Sound != null)
@@ -297,9 +305,10 @@ namespace BizHawk.Client.EmuHawk
 						GlobalWin.Sound = null;
 					}
 					GlobalWin.GL.Dispose();
+#if WINDOWS
 					GamePad.CloseAll();
-				}
 #endif
+				}
 			}
 
 			//cleanup:
