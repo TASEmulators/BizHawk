@@ -37,9 +37,9 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 		protected override void Dispose(bool disposing)
 		{
-			base.Dispose(disposing);
+			sdx.FreeControlSwapChain(this);
 
-			//if(MyBufferedGraphics != null)
+			base.Dispose(disposing);
 		}
 
 		IGL_SlimDX9 sdx;
