@@ -205,6 +205,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public int port, device, index, slot;
 			public int width, height;
 			public int scanline;
+			public fixed int inports[2];
 
 			//this should always be used in pairs
 			public void* buf0, buf1;
@@ -241,6 +242,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			comm->layerEnables = enables;
 			QUERY_set_layer_enable();
+		}
+
+		public void SetInputPortBeforeInit(int port, SNES_INPUT_PORT type)
+		{
+			comm->inports[port] = (int)type;
 		}
 	}
 

@@ -66,6 +66,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			ScanlineHookManager = new MyScanlineHookManager(this);
 
+			//TODO: set correct port inputs from sync settings
+			api.SetInputPortBeforeInit(0, LibsnesApi.SNES_INPUT_PORT.Joypad);
+			api.SetInputPortBeforeInit(1, LibsnesApi.SNES_INPUT_PORT.Joypad);
+
 			api.CMD_init();
 
 			api.QUERY_set_video_refresh(snes_video_refresh);

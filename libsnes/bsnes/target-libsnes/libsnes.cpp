@@ -263,9 +263,6 @@ void snes_init(void) {
   
   //zero 26-aug-2013 - yup. still more
   reconstruct(&GameBoy::cpu); GameBoy::cpu.initialize();
-  
-  SNES::input.connect(SNES::Controller::Port1, SNES::Input::Device::Joypad);
-  SNES::input.connect(SNES::Controller::Port2, SNES::Input::Device::Joypad);
 }
 
 void snes_term(void) {

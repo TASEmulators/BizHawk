@@ -147,6 +147,7 @@ struct CommStruct
 	int32 port, device, index, slot;
 	int32 width, height;
 	int32 scanline;
+	SNES::Input::Device inports[2];
 
 	//always used in pairs
 	void* buf[2];
@@ -373,6 +374,14 @@ void CMD_LoadCartridgeSGB()
 		Analyze();
 }
 
+void CMD_init()
+{
+	snes_init();
+
+	SNES::input.connect(SNES::Controller::Port1, comm.inports[0]);
+	SNES::input.connect(SNES::Controller::Port2, comm.inports[1]);
+}
+
 void CMD_serialize()
 {
 	int size = comm.buf_size[0];
@@ -511,7 +520,7 @@ void QUERY_serialize_size() {
 }
 
 const Action kHandlers_CMD[] = {
-	snes_init,
+	CMD_init,
 	snes_power,
 	snes_reset,
 	snes_run,
