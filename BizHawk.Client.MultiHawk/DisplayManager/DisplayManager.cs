@@ -14,6 +14,7 @@ using BizHawk.Client.EmuHawk.FilterManager;
 using BizHawk.Bizware.BizwareGL;
 
 using OpenTK;
+using BizHawk.Bizware.BizwareGL.Drivers.SlimDX;
 using BizHawk.Bizware.BizwareGL.Drivers.GdiPlus;
 
 namespace BizHawk.Client.MultiHawk
@@ -27,7 +28,7 @@ namespace BizHawk.Client.MultiHawk
 	{
 		class DisplayManagerRenderTargetProvider : IRenderTargetProvider
 		{
-			DisplayManagerRenderTargetProvider(Func<Size, RenderTarget> callback) { Callback = callback; }
+			public DisplayManagerRenderTargetProvider(Func<Size, RenderTarget> callback) { Callback = callback; }
 			Func<Size, RenderTarget> Callback;
 			RenderTarget IRenderTargetProvider.Get(Size size)
 			{
@@ -38,10 +39,10 @@ namespace BizHawk.Client.MultiHawk
 		public DisplayManager(PresentationPanel presentationPanel, IGL gl, GLManager glManager)
 		{
 			GL = gl;
+			GLManager = glManager;
 			this.presentationPanel = presentationPanel;
 			GraphicsControl = this.presentationPanel.GraphicsControl;
-			CR_GraphicsControl = glManager.GetContextForGraphicsControl(GraphicsControl);
-			_glManager = glManager;
+			CR_GraphicsControl = GLManager.GetContextForGraphicsControl(GraphicsControl);
 
 			//it's sort of important for these to be initialized to something nonzero
 			currEmuWidth = currEmuHeight = 1;
@@ -53,7 +54,7 @@ namespace BizHawk.Client.MultiHawk
 			else
 				Renderer = new GDIPlusGuiRenderer((BizHawk.Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus)GL);
 
-			VideoTextureFrugalizer = new BizHawk.Client.EmuHawk.TextureFrugalizer(GL);
+			VideoTextureFrugalizer = new TextureFrugalizer(GL);
 
 			ShaderChainFrugalizers = new RenderTargetFrugalizer[16]; //hacky hardcoded limit.. need some other way to manage these
 			for (int i = 0; i < 16; i++)
@@ -76,12 +77,13 @@ namespace BizHawk.Client.MultiHawk
 			foreach (var f in ShaderChainFrugalizers)
 				if (f != null)
 					f.Dispose();
+			Renderer.Dispose();
 		}
 
 		//rendering resources:
-		public IGL GL;
+		IGL GL;
+		GLManager GLManager;
 		IGuiRenderer Renderer;
-		private GLManager _glManager;
 
 		//layer resources
 		PresentationPanel presentationPanel; //well, its the final layer's target, at least
@@ -91,14 +93,29 @@ namespace BizHawk.Client.MultiHawk
 
 		/// <summary>
 		/// these variables will track the dimensions of the last frame's (or the next frame? this is confusing) emulator native output size
+		/// THIS IS OLD JUNK. I should get rid of it, I think. complex results from the last filter ingestion should be saved instead.
 		/// </summary>
 		int currEmuWidth, currEmuHeight;
 
-		BizHawk.Client.EmuHawk.TextureFrugalizer VideoTextureFrugalizer;
-		Dictionary<string, BizHawk.Client.EmuHawk.TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, BizHawk.Client.EmuHawk.TextureFrugalizer>();
+		/// <summary>
+		/// additional pixels added at the unscaled level for the use of lua drawing. essentially increases the input video provider dimensions
+		/// </summary>
+		public System.Windows.Forms.Padding GameExtraPadding;
+
+		/// <summary>
+		/// additional pixels added at the native level for the use of lua drawing. essentially just gets tacked onto the final calculated window sizes.
+		/// </summary>
+		public System.Windows.Forms.Padding ClientExtraPadding;
+
+		/// <summary>
+		/// custom fonts that don't need to be installed on the user side
+		/// </summary>
+		public System.Drawing.Text.PrivateFontCollection CustomFonts = new System.Drawing.Text.PrivateFontCollection();
+
+		TextureFrugalizer VideoTextureFrugalizer;
+		Dictionary<string, TextureFrugalizer> LuaSurfaceFrugalizers = new Dictionary<string, TextureFrugalizer>();
 		RenderTargetFrugalizer[] ShaderChainFrugalizers;
-		
-		BizHawk.Client.EmuHawk.Filters.RetroShaderChain ShaderChain_user;
+		EmuHawk.Filters.RetroShaderChain ShaderChain_user;
 
 		public void RefreshUserShader()
 		{
@@ -108,22 +125,43 @@ namespace BizHawk.Client.MultiHawk
 			{
 				var fi = new FileInfo(Global.Config.DispUserFilterPath);
 				using (var stream = fi.OpenRead())
-					ShaderChain_user = new BizHawk.Client.EmuHawk.Filters.RetroShaderChain(GL, new BizHawk.Client.EmuHawk.Filters.RetroShaderPreset(stream), Path.GetDirectoryName(Global.Config.DispUserFilterPath));
+					ShaderChain_user = new EmuHawk.Filters.RetroShaderChain(GL, new EmuHawk.Filters.RetroShaderPreset(stream), Path.GetDirectoryName(Global.Config.DispUserFilterPath));
 			}
+		}
+
+		System.Windows.Forms.Padding CalculateCompleteContentPadding(bool user, bool source)
+		{
+			var padding = new System.Windows.Forms.Padding();
+
+			if(user)
+				padding += GameExtraPadding;
+
+			//an experimental feature
+			if(source)
+				if (Global.Emulator is BizHawk.Emulation.Cores.Sony.PSX.Octoshock)
+				{
+					var psx = Global.Emulator as BizHawk.Emulation.Cores.Sony.PSX.Octoshock;
+					var core_padding = psx.VideoProvider_Padding;
+					padding.Left += core_padding.Width / 2;
+					padding.Right += core_padding.Width - core_padding.Width / 2;
+					padding.Top += core_padding.Height / 2;
+					padding.Bottom += core_padding.Height - core_padding.Height / 2;
+				}
+
+			return padding;
 		}
 
 		FilterProgram BuildDefaultChain(Size chain_insize, Size chain_outsize, bool includeOSD)
 		{
 			//select user special FX shader chain
 			Dictionary<string, object> selectedChainProperties = new Dictionary<string, object>();
-			BizHawk.Client.EmuHawk.Filters.RetroShaderChain selectedChain = null;
-
+			EmuHawk.Filters.RetroShaderChain selectedChain = null;
 			if (Global.Config.TargetDisplayFilter == 3 && ShaderChain_user != null && ShaderChain_user.Available)
 				selectedChain = ShaderChain_user;
 
-			BizHawk.Client.EmuHawk.Filters.FinalPresentation fPresent = new BizHawk.Client.EmuHawk.Filters.FinalPresentation(chain_outsize);
-			BizHawk.Client.EmuHawk.Filters.SourceImage fInput = new BizHawk.Client.EmuHawk.Filters.SourceImage(chain_insize);
-			BizHawk.Client.EmuHawk.Filters.OSD fOSD = new BizHawk.Client.EmuHawk.Filters.OSD();
+			EmuHawk.Filters.FinalPresentation fPresent = new EmuHawk.Filters.FinalPresentation(chain_outsize);
+			EmuHawk.Filters.SourceImage fInput = new EmuHawk.Filters.SourceImage(chain_insize);
+			EmuHawk.Filters.OSD fOSD = new EmuHawk.Filters.OSD();
 			fOSD.RenderCallback = () =>
 			{
 				if (!includeOSD)
@@ -139,29 +177,47 @@ namespace BizHawk.Client.MultiHawk
 			//add the first filter, encompassing output from the emulator core
 			chain.AddFilter(fInput, "input");
 
-			//choose final filter
-			BizHawk.Client.EmuHawk.Filters.FinalPresentation.eFilterOption finalFilter = BizHawk.Client.EmuHawk.Filters.FinalPresentation.eFilterOption.None;
-			if (Global.Config.DispFinalFilter == 1) finalFilter = BizHawk.Client.EmuHawk.Filters.FinalPresentation.eFilterOption.Bilinear;
-			if (Global.Config.DispFinalFilter == 2) finalFilter = BizHawk.Client.EmuHawk.Filters.FinalPresentation.eFilterOption.Bicubic;
+			//if a non-zero padding is required, add a filter to allow for that
+			//note, we have two sources of padding right now.. one can come from the videoprovider and one from the user.
+			//we're combining these now and just using black, for sake of being lean, despite the discussion below:
+			//keep in mind, the videoprovider design in principle might call for another color.
+			//we havent really been using this very hard, but users will probably want black there (they could fill it to another color if needed tho)
+			var padding = CalculateCompleteContentPadding(true,true);
+			if (padding.Vertical != 0 || padding.Horizontal != 0)
+			{
+				//TODO - add another filter just for this, its cumbersome to use final presentation... I think. but maybe theres enough similarities to justify it.
+				Size size = chain_insize;
+				size.Width += padding.Horizontal;
+				size.Height += padding.Vertical;
+				EmuHawk.Filters.FinalPresentation fPadding = new EmuHawk.Filters.FinalPresentation(size);
+				chain.AddFilter(fPadding, "padding");
+				fPadding.GuiRenderer = Renderer;
+				fPadding.GL = GL;
+				fPadding.Config_PadOnly = true;
+				fPadding.Padding = padding;
+			}
 
+			if (Global.Config.DispPrescale != 1)
+			{
+				EmuHawk.Filters.PrescaleFilter fPrescale = new EmuHawk.Filters.PrescaleFilter() { Scale = Global.Config.DispPrescale };
+				chain.AddFilter(fPrescale, "user_prescale");
+			}
+
+			//AutoPrescale makes no sense for a None final filter
+			if (Global.Config.DispAutoPrescale && Global.Config.DispFinalFilter != (int)EmuHawk.Filters.FinalPresentation.eFilterOption.None)
+			{
+				var apf = new EmuHawk.Filters.AutoPrescaleFilter();
+				chain.AddFilter(apf, "auto_prescale");
+			}
+
+			//choose final filter
+			EmuHawk.Filters.FinalPresentation.eFilterOption finalFilter = EmuHawk.Filters.FinalPresentation.eFilterOption.None;
 			fPresent.FilterOption = finalFilter;
 
-			//add final presentation 
+			//add final presentation
 			chain.AddFilter(fPresent, "presentation");
 
 			return chain;
-		}
-
-		void AppendRetroShaderChain(FilterProgram program, string name, BizHawk.Client.EmuHawk.Filters.RetroShaderChain retroChain, Dictionary<string, object> properties)
-		{
-			for (int i = 0; i < retroChain.Passes.Length; i++)
-			{
-				var pass = retroChain.Passes[i];
-				var rsp = new BizHawk.Client.EmuHawk.Filters.RetroShaderPass(retroChain, i);
-				string fname = string.Format("{0}[{1}]", name, i);
-				program.AddFilter(rsp, fname);
-				rsp.Parameters = properties;
-			}
 		}
 
 		/// <summary>
@@ -169,20 +225,44 @@ namespace BizHawk.Client.MultiHawk
 		/// Then it will stuff it into the bound PresentationPanel.
 		/// ---
 		/// If the int[] is size=1, then it contains an openGL texture ID (and the size should be as specified from videoProvider)
-		/// Don't worry about the case where the frontend isnt using opengl; it isnt supported yet, and it will be my responsibility to deal with anyway
+		/// Don't worry about the case where the frontend isnt using opengl; DisplayManager deals with it
 		/// </summary>
 		public void UpdateSource(IVideoProvider videoProvider)
 		{
+			bool displayNothing = Global.Config.DispSpeedupFeatures == 0;
 			var job = new JobInfo
 			{
 				videoProvider = videoProvider,
-				simulate = false,
+				simulate = displayNothing,
 				chain_outsize = GraphicsControl.Size,
-				includeOSD = true
+				includeOSD = true,
 			};
 			UpdateSourceInternal(job);
 		}
 
+		public BitmapBuffer RenderVideoProvider(IVideoProvider videoProvider)
+		{
+			//TODO - we might need to gather more Global.Config.DispXXX properties here, so they can be overridden
+			var targetSize = new Size(videoProvider.BufferWidth, videoProvider.BufferHeight);
+			var padding = CalculateCompleteContentPadding(true,true);
+			targetSize.Width += padding.Horizontal;
+			targetSize.Height += padding.Vertical;
+
+			var job = new JobInfo
+			{
+				videoProvider = videoProvider,
+				simulate = false,
+				chain_outsize = targetSize,
+				offscreen = true,
+				includeOSD = false
+			};
+			UpdateSourceInternal(job);
+			return job.offscreenBB;
+		}
+
+		/// <summary>
+		/// Does the entire display process to an offscreen buffer, suitable for a 'client' screenshot.
+		/// </summary>
 		public BitmapBuffer RenderOffscreen(IVideoProvider videoProvider, bool includeOSD)
 		{
 			var job = new JobInfo
@@ -195,7 +275,7 @@ namespace BizHawk.Client.MultiHawk
 			};
 			UpdateSourceInternal(job);
 			return job.offscreenBB;
-		}		
+		}
 
 		class FakeVideoProvider : IVideoProvider
 		{
@@ -209,15 +289,35 @@ namespace BizHawk.Client.MultiHawk
 			public int BackgroundColor { get; set; }
 		}
 
+		void FixRatio(float x, float y, int inw, int inh, out int outw, out int outh)
+		{
+			float ratio = x / y;
+			if (ratio <= 1)
+			{
+				//taller. weird. expand height.
+				outw = inw;
+				outh = (int)((float)inw / ratio);
+			}
+			else
+			{
+				//wider. normal. expand width.
+				outw = (int)((float)inh * ratio);
+				outh = inh;
+			}
+		}
+
 		/// <summary>
 		/// Attempts to calculate a good client size with the given zoom factor, considering the user's DisplayManager preferences
+		/// TODO - this needs to be redone with a concept different from zoom factor.
+		/// basically, each increment of a 'zoomlike' factor should definitely increase the viewable area somehow, even if it isnt strictly by an entire zoom level.
 		/// </summary>
 		public Size CalculateClientSize(IVideoProvider videoProvider, int zoom)
 		{
 			bool ar_active = Global.Config.DispFixAspectRatio;
 			bool ar_system = Global.Config.DispManagerAR == Config.EDispManagerAR.System;
 			bool ar_custom = Global.Config.DispManagerAR == Config.EDispManagerAR.Custom;
-			bool ar_correct = ar_system || ar_custom;
+			bool ar_customRatio = Global.Config.DispManagerAR == Config.EDispManagerAR.CustomRatio;
+			bool ar_correct = ar_system || ar_custom || ar_customRatio;
 			bool ar_unity = !ar_correct;
 			bool ar_integer = Global.Config.DispFixScaleInteger;
 
@@ -231,6 +331,19 @@ namespace BizHawk.Client.MultiHawk
 				virtualWidth = Global.Config.DispCustomUserARWidth;
 				virtualHeight = Global.Config.DispCustomUserARHeight;
 			}
+
+			if (ar_customRatio)
+			{
+				FixRatio(Global.Config.DispCustomUserARX, Global.Config.DispCustomUserARY, videoProvider.BufferWidth, videoProvider.BufferHeight, out virtualWidth, out virtualHeight);
+			}
+
+			var padding = CalculateCompleteContentPadding(true, false);
+			virtualWidth += padding.Horizontal;
+			virtualHeight += padding.Vertical;
+
+			padding = CalculateCompleteContentPadding(true, true);
+			bufferWidth += padding.Horizontal;
+			bufferHeight += padding.Vertical;
 
 			//Console.WriteLine("DISPZOOM " + zoom); //test
 
@@ -249,6 +362,7 @@ namespace BizHawk.Client.MultiHawk
 				{
 					if (ar_integer)
 					{
+						//ALERT COPYPASTE LAUNDROMAT
 						Vector2 VS = new Vector2(virtualWidth, virtualHeight);
 						Vector2 BS = new Vector2(bufferWidth, bufferHeight);
 						Vector2 AR = Vector2.Divide(VS, BS);
@@ -256,7 +370,7 @@ namespace BizHawk.Client.MultiHawk
 
 						//this would malfunction for AR <= 0.5 or AR >= 2.0
 						//EDIT - in fact, we have AR like that coming from PSX, sometimes, so maybe we should solve this better
-						Vector2 PS = new Vector2(1, 1); 
+						Vector2 PS = new Vector2(1, 1);
 
 						//here's how we define zooming, in this case:
 						//make sure each step is an increment of zoom for at least one of the dimensions (or maybe both of them)
@@ -266,7 +380,7 @@ namespace BizHawk.Client.MultiHawk
 						for (int i = 1; i < zoom;i++)
 						{
 							//would not be good to run this per frame, but it seems to only run when the resolution changes, etc.
-							Vector2[] trials = new [] {
+							Vector2[] trials = new[] {
 								PS + new Vector2(1, 0),
 								PS + new Vector2(0, 1),
 								PS + new Vector2(1, 1)
@@ -281,7 +395,7 @@ namespace BizHawk.Client.MultiHawk
 								//II.
 								//Vector2 calc = Vector2.Multiply(trials[t], VS);
 								//float test_ar = calc.X / calc.Y;
-								
+
 								//not clear which approach is superior
 								float deviation_linear = Math.Abs(test_ar - target_par);
 								float deviation_geom = test_ar / target_par;
@@ -322,6 +436,9 @@ namespace BizHawk.Client.MultiHawk
 				chain_outsize = new Size(bufferWidth * zoom, bufferHeight * zoom);
 			}
 
+			chain_outsize.Width += ClientExtraPadding.Horizontal;
+			chain_outsize.Height += ClientExtraPadding.Vertical;
+
 			var job = new JobInfo
 			{
 				videoProvider = fvp,
@@ -347,12 +464,24 @@ namespace BizHawk.Client.MultiHawk
 
 		FilterProgram UpdateSourceInternal(JobInfo job)
 		{
-			_glManager.Activate(CR_GraphicsControl);
+			if (job.chain_outsize.Width == 0 || job.chain_outsize.Height == 0)
+			{
+				//this has to be a NOP, because lots of stuff will malfunction on a 0-sized viewport
+				return null;
+			}
+
+			//no drawing actually happens. it's important not to begin drawing on a control
+			if (!job.simulate && !job.offscreen)
+			{
+				GLManager.Activate(CR_GraphicsControl);
+			}
 
 			IVideoProvider videoProvider = job.videoProvider;
 			bool simulate = job.simulate;
 			Size chain_outsize = job.chain_outsize;
-			
+
+			//simulate = true;
+
 			int vw = videoProvider.BufferWidth;
 			int vh = videoProvider.BufferHeight;
 
@@ -368,7 +497,15 @@ namespace BizHawk.Client.MultiHawk
 					vw = Global.Config.DispCustomUserARWidth;
 					vh = Global.Config.DispCustomUserARHeight;
 				}
+				if (Global.Config.DispManagerAR == Config.EDispManagerAR.CustomRatio)
+				{
+					FixRatio(Global.Config.DispCustomUserARX, Global.Config.DispCustomUserARY, videoProvider.BufferWidth, videoProvider.BufferHeight, out vw, out vh);
+				}
 			}
+
+			var padding = CalculateCompleteContentPadding(true,false);
+			vw += padding.Horizontal;
+			vh += padding.Vertical;
 
 			int[] videoBuffer = videoProvider.GetVideoBuffer();
 
@@ -376,31 +513,28 @@ namespace BizHawk.Client.MultiHawk
 			int bufferHeight = videoProvider.BufferHeight;
 			bool isGlTextureId = videoBuffer.Length == 1;
 
-			//TODO - need to do some work here for GDI+ to repair gl texture ID importing
 			BitmapBuffer bb = null;
 			Texture2d videoTexture = null;
 			if (!simulate)
 			{
 				if (isGlTextureId)
 				{
+					//FYI: this is a million years from happening on n64, since it's all geriatric non-FBO code
+					//is it workable for saturn?
 					videoTexture = GL.WrapGLTexture2d(new IntPtr(videoBuffer[0]), bufferWidth, bufferHeight);
 				}
 				else
 				{
 					//wrap the videoprovider data in a BitmapBuffer (no point to refactoring that many IVideoProviders)
 					bb = new BitmapBuffer(bufferWidth, bufferHeight, videoBuffer);
+					bb.DiscardAlpha();
 
 					//now, acquire the data sent from the videoProvider into a texture
 					videoTexture = VideoTextureFrugalizer.Get(bb);
-					GL.SetTextureWrapMode(videoTexture, true);
-				}
 
-				//TEST (to be removed once we have an actual example of bring in a texture ID from opengl emu core):
-				//if (!isGlTextureId)
-				//{
-				//  videoBuffer = new int[1] { videoTexture.Id.ToInt32() };
-				//  goto TESTEROO;
-				//}
+					//lets not use this. lets define BizwareGL to make clamp by default (TBD: check opengl)
+					//GL.SetTextureWrapMode(videoTexture, true);
+				}
 			}
 
 			//record the size of what we received, since lua and stuff is gonna want to draw onto it
@@ -415,15 +549,21 @@ namespace BizHawk.Client.MultiHawk
 			filterProgram.GL = GL;
 
 			//setup the source image filter
-			BizHawk.Client.EmuHawk.Filters.SourceImage fInput = filterProgram["input"] as BizHawk.Client.EmuHawk.Filters.SourceImage;
+			EmuHawk.Filters.SourceImage fInput = filterProgram["input"] as EmuHawk.Filters.SourceImage;
 			fInput.Texture = videoTexture;
-			
+
 			//setup the final presentation filter
-			BizHawk.Client.EmuHawk.Filters.FinalPresentation fPresent = filterProgram["presentation"] as BizHawk.Client.EmuHawk.Filters.FinalPresentation;
+			EmuHawk.Filters.FinalPresentation fPresent = filterProgram["presentation"] as EmuHawk.Filters.FinalPresentation;
 			fPresent.VirtualTextureSize = new Size(vw, vh);
 			fPresent.TextureSize = new Size(bufferWidth, bufferHeight);
 			fPresent.BackgroundColor = videoProvider.BackgroundColor;
 			fPresent.GuiRenderer = Renderer;
+			fPresent.Flip = isGlTextureId;
+			fPresent.Config_FixAspectRatio = Global.Config.DispFixAspectRatio;
+			fPresent.Config_FixScaleInteger = Global.Config.DispFixScaleInteger;
+			fPresent.Padding = ClientExtraPadding;
+			fPresent.AutoPrescale = Global.Config.DispAutoPrescale;
+
 			fPresent.GL = GL;
 
 			filterProgram.Compile("default", chain_insize, chain_outsize, !job.offscreen);
@@ -445,15 +585,67 @@ namespace BizHawk.Client.MultiHawk
 
 		void UpdateSourceDrawingWork(JobInfo job)
 		{
+			bool vsync = false;
+			bool alternateVsync = false;
+			//only used by alternate vsync
+			IGL_SlimDX9 dx9 = null;
+
+			if (!job.offscreen)
+			{
+				//apply the vsync setting (should probably try to avoid repeating this)
+				vsync = Global.Config.VSyncThrottle || Global.Config.VSync;
+
+				//ok, now this is a bit undesireable.
+				//maybe the user wants vsync, but not vsync throttle.
+				//this makes sense... but we dont have the infrastructure to support it now (we'd have to enable triple buffering or something like that)
+				//so what we're gonna do is disable vsync no matter what if throttling is off, and maybe nobody will notice.
+				//update 26-mar-2016: this upsets me. When fastforwarding and skipping frames, vsync should still work. But I'm not changing it yet
+				if (Global.DisableSecondaryThrottling)
+					vsync = false;
+
+				//for now, it's assumed that the presentation panel is the main window, but that may not always be true
+				if (vsync && Global.Config.DispAlternateVsync && Global.Config.VSyncThrottle)
+				{
+					dx9 = GL as IGL_SlimDX9;
+					if (dx9 != null)
+					{
+						alternateVsync = true;
+						//unset normal vsync if we've chosen the alternate vsync
+						vsync = false;
+					}
+				}
+
+				//TODO - whats so hard about triple buffering anyway? just enable it always, and change api to SetVsync(enable,throttle)
+				//maybe even SetVsync(enable,throttlemethod) or just SetVsync(enable,throttle,advanced)
+
+				if (LastVsyncSetting != vsync || LastVsyncSettingGraphicsControl != presentationPanel.GraphicsControl)
+				{
+					if (LastVsyncSetting == null && vsync)
+					{
+						// Workaround for vsync not taking effect at startup (Intel graphics related?)
+						presentationPanel.GraphicsControl.SetVsync(false);
+					}
+					presentationPanel.GraphicsControl.SetVsync(vsync);
+					LastVsyncSettingGraphicsControl = presentationPanel.GraphicsControl;
+					LastVsyncSetting = vsync;
+				}
+			}
+
 			//begin rendering on this context
 			//should this have been done earlier?
 			//do i need to check this on an intel video card to see if running excessively is a problem? (it used to be in the FinalTarget command below, shouldnt be a problem)
-			//GraphicsControl.Begin();
+			//GraphicsControl.Begin(); //CRITICAL POINT for yabause+GL
+
+			//TODO - auto-create and age these (and dispose when old)
+			int rtCounter = 0;
+
+			CurrentFilterProgram.RenderTargetProvider = new DisplayManagerRenderTargetProvider((size) => ShaderChainFrugalizers[rtCounter++].Get(size));
+
+			GL.BeginScene();
 
 			//run filter chain
 			Texture2d texCurr = null;
 			RenderTarget rtCurr = null;
-			int rtCounter = 0;
 			bool inFinalTarget = false;
 			foreach (var step in CurrentFilterProgram.Program)
 			{
@@ -496,37 +688,25 @@ namespace BizHawk.Client.MultiHawk
 				}
 			}
 
+			GL.EndScene();
+
 			if (job.offscreen)
 			{
 				job.offscreenBB = rtCurr.Texture2d.Resolve();
+				job.offscreenBB.DiscardAlpha();
 			}
 			else
 			{
 				Debug.Assert(inFinalTarget);
-				//apply the vsync setting (should probably try to avoid repeating this)
-				bool vsync = Global.Config.VSyncThrottle || Global.Config.VSync;
 
-				//ok, now this is a bit undesireable.
-				//maybe the user wants vsync, but not vsync throttle.
-				//this makes sense... but we dont have the infrastructure to support it now (we'd have to enable triple buffering or something like that)
-				//so what we're gonna do is disable vsync no matter what if throttling is off, and maybe nobody will notice.
-				if (Global.DisableSecondaryThrottling)
-					vsync = false;
-
-				if (LastVsyncSetting != vsync || LastVsyncSettingGraphicsControl != presentationPanel.GraphicsControl)
-				{
-					if (LastVsyncSetting == null && vsync)
-					{
-						// Workaround for vsync not taking effect at startup (Intel graphics related?)
-						presentationPanel.GraphicsControl.SetVsync(false);
-					}
-					presentationPanel.GraphicsControl.SetVsync(vsync);
-					LastVsyncSettingGraphicsControl = presentationPanel.GraphicsControl;
-					LastVsyncSetting = vsync;
-				}
+				//wait for vsync to begin
+				if (alternateVsync) dx9.AlternateVsyncPass(0);
 
 				//present and conclude drawing
 				presentationPanel.GraphicsControl.SwapBuffers();
+
+				//wait for vsync to end
+				if (alternateVsync) dx9.AlternateVsyncPass(1);
 
 				//nope. dont do this. workaround for slow context switching on intel GPUs. just switch to another context when necessary before doing anything
 				//presentationPanel.GraphicsControl.End();
@@ -536,5 +716,4 @@ namespace BizHawk.Client.MultiHawk
 		bool? LastVsyncSetting;
 		GraphicsControl LastVsyncSettingGraphicsControl;
 	}
-
 }
