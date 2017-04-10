@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
 using System.Reflection;
@@ -200,8 +201,8 @@ namespace BizHawk.Client.EmuHawk
 			string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
 			SetDllDirectory(dllDir);
 
-			if (System.Diagnostics.Debugger.IsAttached)
-			{ // Let the debugger handle errors
+			try
+			{
 #if WINDOWS
 				if (Global.Config.SingleInstanceMode)
 				{
@@ -223,9 +224,32 @@ namespace BizHawk.Client.EmuHawk
 						mf.Show();
 						mf.Text = title;
 
-						GlobalWin.ExitCode = mf.ProgramRunLoop();
+						try
+						{
+							GlobalWin.ExitCode = mf.ProgramRunLoop();
+						}
+						catch (Exception e) when (!Debugger.IsAttached && !VersionInfo.DeveloperBuild && Global.MovieSession.Movie.IsActive)
+						{
+							var result = MessageBox.Show(
+								"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
+								"Fatal error: " + e.GetType().Name,
+								MessageBoxButtons.YesNo,
+								MessageBoxIcon.Exclamation
+								);
+							if (result == DialogResult.Yes)
+							{
+								Global.MovieSession.Movie.Save();
+							}
+						}
 					}
 				}
+			}
+			catch (Exception e) when (!Debugger.IsAttached)
+			{
+				new ExceptionBox(e).ShowDialog();
+			}
+			finally
+			{
 				if (GlobalWin.Sound != null)
 				{
 					GlobalWin.Sound.Dispose();
@@ -233,79 +257,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 				GlobalWin.GL.Dispose();
 				Input.Cleanup();
-			}
-			else
-			{ // Display error message windows
-				try
-				{
-#if WINDOWS
-					if (Global.Config.SingleInstanceMode)
-					{
-						try
-						{
-							new SingleInstanceController(args).Run(args);
-						}
-						catch (ObjectDisposedException)
-						{
-							/*Eat it, MainForm disposed itself and Run attempts to dispose of itself.  Eventually we would want to figure out a way to prevent that, but in the meantime it is harmless, so just eat the error*/
-						}
-					}
-					else
-#endif
-					{
-						using (var mf = new MainForm(args))
-						{
-							var title = mf.Text;
-							mf.Show();
-							mf.Text = title;
-
-							if (System.Diagnostics.Debugger.IsAttached)
-							{
-								GlobalWin.ExitCode = mf.ProgramRunLoop();
-							}
-							else
-							{
-								try
-								{
-									GlobalWin.ExitCode = mf.ProgramRunLoop();
-								}
-								catch (Exception e)
-								{
-#if WINDOWS
-									if (!VersionInfo.DeveloperBuild && Global.MovieSession.Movie.IsActive)
-									{
-										var result = MessageBox.Show(
-											"EmuHawk has thrown a fatal exception and is about to close.\nA movie has been detected. Would you like to try to save?\n(Note: Depending on what caused this error, this may or may not succeed)",
-											"Fatal error: " + e.GetType().Name,
-											MessageBoxButtons.YesNo,
-											MessageBoxIcon.Exclamation
-											);
-										if (result == DialogResult.Yes)
-										{
-											Global.MovieSession.Movie.Save();
-										}
-									}
-#endif
-									throw;
-								}
-							}
-						}
-					}
-				}
-				catch (Exception e)
-				{
-					new ExceptionBox(e).ShowDialog();
-				}
-				finally
-				{
-					if (GlobalWin.Sound != null)
-					{
-						GlobalWin.Sound.Dispose();
-						GlobalWin.Sound = null;
-					}
-					GlobalWin.GL.Dispose();
-					Input.Cleanup();
-				}
 			}
 
 			//cleanup:
