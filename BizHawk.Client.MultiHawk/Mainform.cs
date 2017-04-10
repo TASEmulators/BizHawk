@@ -372,6 +372,7 @@ namespace BizHawk.Client.MultiHawk
 				if (EmulatorWindows.Count == 1)
 				{
 					Emulator = ew.Emulator;
+					ViewSubMenu.Enabled = true;
 				}
 
 				_inputManager.SyncControls();
@@ -1289,6 +1290,7 @@ namespace BizHawk.Client.MultiHawk
 				else
 				{
 					Emulator = null;
+					ViewSubMenu.Enabled = false;
 				}
 			}
 		}

@@ -218,6 +218,7 @@
             this._2xMenuItem,
             this._3xMenuItem,
             this._4xMenuItem});
+			this.ViewSubMenu.Enabled = false;
 			this.ViewSubMenu.Name = "ViewSubMenu";
 			this.ViewSubMenu.Size = new System.Drawing.Size(44, 20);
 			this.ViewSubMenu.Text = "&View";
