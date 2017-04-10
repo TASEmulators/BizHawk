@@ -31,17 +31,17 @@ namespace BizHawk.Client.Common
 
 		public float FullnessRatio
 		{
-			get { return _rewindBuffer != null ? _rewindBuffer.FullnessRatio : 0; }
+			get { return _rewindBuffer?.FullnessRatio ?? 0; }
 		}
 
 		public int Count
 		{
-			get { return _rewindBuffer != null ? _rewindBuffer.Count : 0; }
+			get { return _rewindBuffer?.Count ?? 0; }
 		}
 
 		public long Size
 		{
-			get { return _rewindBuffer != null ? _rewindBuffer.Size : 0; }
+			get { return _rewindBuffer?.Size ?? 0; }
 		}
 
 		public bool HasBuffer
@@ -116,10 +116,7 @@ namespace BizHawk.Client.Common
 
 		private void DoMessage(string message)
 		{
-			if (MessageCallback != null)
-			{
-				MessageCallback(message);
-			}
+			MessageCallback?.Invoke(message);
 		}
 
 		private void SetRewindParams(bool enabled, int frequency)

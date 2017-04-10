@@ -134,9 +134,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void OnCheckComplete()
 		{
-			CheckComplete(null, EventArgs.Empty);
+			CheckComplete?.Invoke(null, EventArgs.Empty);
 		}
 
-		public static event EventHandler CheckComplete = delegate { };
+		public static event EventHandler CheckComplete;
 	}
 }
