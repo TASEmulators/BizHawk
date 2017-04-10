@@ -39,50 +39,48 @@ namespace BizHawk.Client.Common
 				.Append(X).Append(" ")
 				.Append(Y).Append(" ")
 				.Append(Duration).Append(" ")
-				.Append(string.Format("{0:X8}", Color)).Append(" ")
+				.Append($"{Color:X8}").Append(" ")
 				.Append(Message);
 
 			return sb.ToString();
 		}
 
 		public string ToSubRip(int index, double fps, bool addcolortag)
-        {
-            var sb = new StringBuilder();
+		{
+			var sb = new StringBuilder();
 
-            sb.Append(index.ToString());
-            sb.Append("\r\n");
+			sb.Append(index.ToString());
+			sb.Append("\r\n");
 
-            // Frame timing
-            double start = (double)Frame;
-            double end = (double)(Frame + Duration);
+			// Frame timing
+			double start = (double)Frame;
+			double end = (double)(Frame + Duration);
 
-            int startTime = (int)(start * 1000 / fps);
-            int endTime = (int)(end * 1000 / fps);
+			int startTime = (int)(start * 1000 / fps);
+			int endTime = (int)(end * 1000 / fps);
 
-            var startString = string.Format(
-                "{0:d2}:{1:d2}:{2:d2},{3:d3}",
-                startTime / 3600000,
-                (startTime / 60000) % 60,
-                (startTime / 1000) % 60,
-                startTime % 1000
-                );
+			var startString = string.Format(
+				"{0:d2}:{1:d2}:{2:d2},{3:d3}",
+				startTime / 3600000,
+				(startTime / 60000) % 60,
+				(startTime / 1000) % 60,
+				startTime % 1000);
 
-            var endString = string.Format(
-                "{0:d2}:{1:d2}:{2:d2},{3:d3}",
-                endTime / 3600000,
-                (endTime / 60000) % 60,
-                (endTime / 1000) % 60,
-                endTime % 1000
-                );
+			var endString = string.Format(
+				"{0:d2}:{1:d2}:{2:d2},{3:d3}",
+				endTime / 3600000,
+				(endTime / 60000) % 60,
+				(endTime / 1000) % 60,
+				endTime % 1000);
 
-            sb.Append(startString);
-            sb.Append(" --> ");
-            sb.Append(endString);
-            sb.Append("\r\n");
+			sb.Append(startString);
+			sb.Append(" --> ");
+			sb.Append(endString);
+			sb.Append("\r\n");
 
-            // TODO: Positioning
+			// TODO: Positioning
 
-            // Color tag open
+			// Color tag open
 			if (addcolortag)
 			{
 				uint rgb = (Color & 0x00FFFFFF);
@@ -91,20 +89,21 @@ namespace BizHawk.Client.Common
 				sb.Append("\">");
 			}
 
-            // Message text
-            sb.Append(Message.Trim());
+			// Message text
+			sb.Append(Message.Trim());
 
-            // Color tag closeaddcolortag
+			// Color tag closeaddcolortag
 			if (addcolortag)
 			{
 				sb.Append("</font>");
 			}
+
 			sb.Append("\r\n");
 
-            // Seperator
-            sb.Append("\r\n");
+			// Seperator
+			sb.Append("\r\n");
 
-            return sb.ToString();
+			return sb.ToString();
         }
 	}
 }

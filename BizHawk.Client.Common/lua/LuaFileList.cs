@@ -118,12 +118,9 @@ namespace BizHawk.Client.Common
 				ForEach(lua => Global.Config.RecentLua.Add(lua.Path));
 
 				_filename = path;
-				if (LoadCallback != null)
-				{
-					LoadCallback();
-				}
+			    LoadCallback?.Invoke();
 
-				return true;
+			    return true;
 			}
 			
 			return false;

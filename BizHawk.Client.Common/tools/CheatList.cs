@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -20,12 +21,9 @@ namespace BizHawk.Client.Common
 		public delegate void CheatListEventHandler(object sender, CheatListEventArgs e);
 		public event CheatListEventHandler Changed;
 
-		public int Count
-		{
-			get { return _cheatList.Count; }
-		}
+		public int Count => _cheatList.Count;
 
-		public int CheatCount
+	    public int CheatCount
 		{
 			get { return _cheatList.Count(x => !x.IsSeparator); }
 		}
@@ -52,19 +50,13 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string CurrentFileName
-		{
-			get { return _currentFileName; }
-		}
+		public string CurrentFileName => _currentFileName;
 
-		public bool IsReadOnly { get { return false; } }
+	    public bool IsReadOnly => false;
 
-		public Cheat this[int index]
-		{
-			get { return _cheatList[index]; }
-		}
+	    public Cheat this[int index] => _cheatList[index];
 
-		public Cheat this[MemoryDomain domain, long address]
+	    public Cheat this[MemoryDomain domain, long address]
 		{
 			get
 			{
@@ -77,7 +69,7 @@ namespace BizHawk.Client.Common
 			return _cheatList.GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
 			return GetEnumerator();
 		}
@@ -116,7 +108,6 @@ namespace BizHawk.Client.Common
 				Save();
 			}
 
-			
 			_cheatList.Clear();
 			_currentFileName = string.Empty;
 			Changes = false;
@@ -154,7 +145,7 @@ namespace BizHawk.Client.Common
 			c.Changed += CheatChanged;
 			if (_cheatList.Any(x => x.Domain == c.Domain && x.Address == c.Address))
 			{
-				_cheatList.FirstOrDefault(x => x.Domain == c.Domain && x.Address == c.Address).Enable();
+				_cheatList.First(x => x.Domain == c.Domain && x.Address == c.Address).Enable();
 			}
 			else
 			{
@@ -168,7 +159,9 @@ namespace BizHawk.Client.Common
 		{
 			int index = _cheatList.IndexOf(oldCheat);
 			if (index == -1)
+			{
 				return false;
+			}
 
 			_cheatList[index] = newCheat;
 			Changes = true;
@@ -290,7 +283,7 @@ namespace BizHawk.Client.Common
 		/// Returns the value of a given cheat, or a partial value of a multi-byte cheat
 		/// Note that address + size MUST NOT exceed the range of the cheat or undefined behavior will occur
 		/// </summary>
-		/// <param name="addr">The starting address for which you will get the number of bytes
+		/// <param name="addr">The starting address for which you will get the number of bytes</param>
 		/// <param name="size">The number of bytes of the cheat to return</param>
 		/// <returns>The value, or null if it can't resolve the address with a given cheat</returns>
 		public int? GetCheatValue(MemoryDomain domain, long addr, WatchSize size)
@@ -390,14 +383,14 @@ namespace BizHawk.Client.Common
 							sb
 								.Append(cheat.AddressStr).Append('\t')
 								.Append(cheat.ValueStr).Append('\t')
-								.Append(cheat.Compare.HasValue ? cheat.Compare.Value.ToString() : "N").Append('\t')
+								.Append(cheat.Compare?.ToString() ?? "N").Append('\t')
 								.Append(cheat.Domain != null ? cheat.Domain.Name : string.Empty).Append('\t')
 								.Append(cheat.Enabled ? '1' : '0').Append('\t')
 								.Append(cheat.Name).Append('\t')
 								.Append(cheat.SizeAsChar).Append('\t')
 								.Append(cheat.TypeAsChar).Append('\t')
 								.Append((cheat.BigEndian ?? false) ? '1' : '0').Append('\t')
-								.Append(cheat.ComparisonType.ToString()).Append('\t')
+								.Append(cheat.ComparisonType).Append('\t')
 								.AppendLine();
 						}
 					}
@@ -488,7 +481,7 @@ namespace BizHawk.Client.Common
 							{
 								if(!Enum.TryParse<Cheat.COMPARISONTYPE>(vals[9], out comparisonType))
 								{
-									continue; //Not sure if this is the best answer, could just resort to ==
+									continue; // Not sure if this is the best answer, could just resort to ==
 								}
 							}
 
@@ -496,9 +489,9 @@ namespace BizHawk.Client.Common
 								domain,
 								address,
 								size,
-								type,								
+								type,
 								bigendian,
-                                name);
+								name);
 
 							Add(new Cheat(watch, value, compare, !Global.Config.DisableCheatsOnLoad && enabled, comparisonType));
 						}
@@ -714,11 +707,7 @@ namespace BizHawk.Client.Common
 
 		private void CheatChanged(object sender)
 		{
-			if (Changed != null)
-			{
-				Changed(this, new CheatListEventArgs(sender as Cheat));
-			}
-
+			Changed?.Invoke(this, new CheatListEventArgs(sender as Cheat));
 			_changes = true;
 		}
 

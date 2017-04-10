@@ -113,8 +113,8 @@ namespace BizHawk.Client.Common
 				subs = subs.OrderBy(s => s.Frame).ThenByDescending(s => s.Y).ToList();
 			}
 
-            foreach (var subtitle in subs)
-                sb.Append(subtitle.ToSubRip(index++, fps, AddColorTag));
+			foreach (var subtitle in subs)
+				sb.Append(subtitle.ToSubRip(index++, fps, AddColorTag));
 
             return sb.ToString();
         }

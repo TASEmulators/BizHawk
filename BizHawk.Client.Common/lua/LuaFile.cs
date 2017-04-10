@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace BizHawk.Client.Common
+﻿namespace BizHawk.Client.Common
 {
 	public class LuaFile
 	{

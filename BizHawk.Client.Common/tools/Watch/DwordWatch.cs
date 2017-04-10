@@ -1,11 +1,11 @@
-﻿using BizHawk.Common.NumberExtensions;
-using BizHawk.Common.StringExtensions;
-using BizHawk.Emulation.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
+
+using BizHawk.Common.NumberExtensions;
+using BizHawk.Common.StringExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -40,14 +40,15 @@ namespace BizHawk.Client.Common
 		{
 			if (value == 0)
 			{
-				this._value = GetDWord();
+				_value = GetDWord();
 			}
 			else
 			{
-				this._value = value;
+				_value = value;
 			}
-			this._previous = previous;
-			this._changecount = changeCount;
+
+			_previous = previous;
+			_changecount = changeCount;
 		}
 
 		#endregion
@@ -76,7 +77,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Get a list a <see cref="DisplayType"/> that can be used for this <see cref="DWordWatch"/>
 		/// </summary>
-		/// <returns>An enumartion that contains all valid <see cref="DisplayType"/></returns>
+		/// <returns>An enumeration that contains all valid <see cref="DisplayType"/></returns>
 		public override IEnumerable<DisplayType> AvailableTypes()
 		{
 			return ValidTypes;
@@ -238,9 +239,9 @@ namespace BizHawk.Client.Common
 				case DisplayType.Hex:
 					return val.ToHexString(8);
 				case DisplayType.FixedPoint_20_12:
-					return string.Format("{0:0.######}", val / 4096.0);
+					return $"{val / 4096.0:0.######}";
 				case DisplayType.FixedPoint_16_16:
-					return string.Format("{0:0.######}", val / 65536.0);
+					return $"{val / 65536.0:0.######}";
 				case DisplayType.Float:
 					var bytes = BitConverter.GetBytes(val);
 					var _float = BitConverter.ToSingle(bytes, 0);
@@ -259,82 +260,40 @@ namespace BizHawk.Client.Common
 		/// Get a string representation of difference
 		/// between current value and the previous one
 		/// </summary>
-		public override string Diff
-		{
-			get
-			{
-				return FormatValue(_previous - _value);
-			}
-		}
+		public override string Diff => FormatValue(_previous - _value);
 
-		/// <summary>
+	    /// <summary>
 		/// Get the maximum possible value
 		/// </summary>
-		public override uint MaxValue
-		{
-			get
-			{
-				return uint.MaxValue;
-			}
-		}
+		public override uint MaxValue => uint.MaxValue;
 
-		/// <summary>
+	    /// <summary>
 		/// Get the current value
 		/// </summary>
-		public override int Value
-		{
-			get
-			{
-				return (int)GetDWord();
-			}
-		}
+		public override int Value => (int)GetDWord();
 
-		/// <summary>
+	    /// <summary>
 		/// Gets the current value
 		/// but with stuff I don't understand
 		/// </summary>
-		public override int ValueNoFreeze
-		{
-			get
-			{
-				return (int)GetDWord(true);
-			}
-		}
+		public override int ValueNoFreeze => (int)GetDWord(true);
 
-		/// <summary>
+	    /// <summary>
 		/// Get a string representation of the current value
 		/// </summary>
-		public override string ValueString
-		{
-			get
-			{
-				return FormatValue(GetDWord());
-			}
-		}
+		public override string ValueString => FormatValue(GetDWord());
 
-		/// <summary>
+	    /// <summary>
 		/// Get the previous value
 		/// </summary>
-		public override int Previous
-		{
-			get
-			{
-				return (int)_previous;
-			}
-		}
+		public override int Previous => (int)_previous;
 
-		/// <summary>
+	    /// <summary>
 		/// Get a string representation of the previous value
 		/// </summary>
-		public override string PreviousStr
-		{
-			get
-			{
-				return FormatValue(_previous);
-			}
-		}
+		public override string PreviousStr => FormatValue(_previous);
 
-		#endregion Implements
+	    #endregion Implements
 
 		#endregion
 	}
