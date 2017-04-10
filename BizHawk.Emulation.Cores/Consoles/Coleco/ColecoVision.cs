@@ -2,7 +2,6 @@
 using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80;
 using BizHawk.Common.NumberExtensions;
-using System;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
@@ -16,13 +15,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, IStatable, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
 	{
 		// ROM
-		public byte[] RomData;
-		public int RomLength;
-		public byte[] BiosRom;
+		private byte[] RomData;
+		private int RomLength;
+		private byte[] BiosRom;
 
 		// Machine
-		public Z80A Cpu;
-		public TMS9918A VDP;
+		private Z80A Cpu;
+		private TMS9918A VDP;
 
 		public byte[] Ram = new byte[1024];
 		private readonly TraceBuffer Tracer = new TraceBuffer();
@@ -36,18 +35,20 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			_syncSettings = (ColecoSyncSettings)SyncSettings ?? new ColecoSyncSettings();
 			bool skipbios = _syncSettings.SkipBiosIntro;
 
-			Cpu = new Z80A();
-			Cpu.ReadMemory = ReadMemory;
-			Cpu.WriteMemory = WriteMemory;
-			Cpu.ReadHardware = ReadPort;
-			Cpu.WriteHardware = WritePort;
-			Cpu.MemoryCallbacks = MemoryCallbacks;
+			Cpu = new Z80A
+			{
+				ReadMemory = ReadMemory,
+				WriteMemory = WriteMemory,
+				ReadHardware = ReadPort,
+				WriteHardware = WritePort,
+				MemoryCallbacks = MemoryCallbacks
+			};
 
-			PSG = new SN76489();
+		    PSG = new SN76489();
 			_fakeSyncSound = new FakeSyncSound(PSG, 735);
 			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_fakeSyncSound);
 
-			ControllerDeck = new ColecoVisionControllerDeck(this._syncSettings.Port1, this._syncSettings.Port2);
+			ControllerDeck = new ColecoVisionControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
 			VDP = new TMS9918A(Cpu);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(VDP);
@@ -57,9 +58,12 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			// gamedb can overwrite the syncsettings; this is ok
 			if (game["NoSkip"])
+			{
 				skipbios = false;
+			}
+
 			LoadRom(rom, skipbios);
-			this.game = game;
+			_game = game;
 			SetupMemoryDomains();
 
 			Tracer.Header = Cpu.TraceHeader;
@@ -68,16 +72,18 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			serviceProvider.Register<ITraceable>(Tracer);
 		}
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		public ControllerDefinition ControllerDefinition
 		{
 			get { return ControllerDeck.Definition; }
 		}
-		public ColecoVisionControllerDeck ControllerDeck { get; private set; }
+
+		public ColecoVisionControllerDeck ControllerDeck { get; }
+
 		public IController Controller { get; set; }
 
-		const ushort RamSizeMask = 0x03FF;
+		private const ushort RamSizeMask = 0x03FF;
 
 		public void FrameAdvance(bool render, bool renderSound)
 		{
@@ -106,7 +112,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		void LoadRom(byte[] rom, bool skipbios)
+		private void LoadRom(byte[] rom, bool skipbios)
 		{
 			RomData = new byte[0x8000];
 			for (int i = 0; i < 0x8000; i++)
@@ -120,28 +126,34 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		byte ReadPort(ushort port)
+		private byte ReadPort(ushort port)
 		{
 			port &= 0xFF;
 
 			if (port >= 0xA0 && port < 0xC0)
 			{
 				if ((port & 1) == 0)
+				{
 					return VDP.ReadData();
+				}
+
 				return VDP.ReadVdpStatus();
 			}
 
 			if (port >= 0xE0)
 			{
 				if ((port & 1) == 0)
+				{
 					return ReadController1();
+				}
+
 				return ReadController2();
 			}
 
 			return 0xFF;
 		}
 
-		void WritePort(ushort port, byte value)
+		private void WritePort(ushort port, byte value)
 		{
 			port &= 0xFF;
 
@@ -173,9 +185,10 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		public bool DeterministicEmulation { get { return true; } }
+		public bool DeterministicEmulation => true;
 
-		public void Dispose() { }
+	    public void Dispose() { }
+
 		public void ResetCounters()
 		{
 			Frame = 0;
@@ -183,9 +196,10 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			_isLag = false;
 		}
 
-		public string SystemId { get { return "Coleco"; } }
-		public GameInfo game;
-		public CoreComm CoreComm { get; private set; }
-		public string BoardName { get { return null; } }
+		public string SystemId => "Coleco";
+
+		private GameInfo _game;
+		public CoreComm CoreComm { get; }
+		public string BoardName => null;
 	}
 }

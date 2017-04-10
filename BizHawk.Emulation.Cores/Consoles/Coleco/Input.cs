@@ -1,7 +1,4 @@
-﻿using BizHawk.Emulation.Common;
-using System;
-
-namespace BizHawk.Emulation.Cores.ColecoVision
+﻿namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public partial class ColecoVision
 	{
@@ -25,7 +22,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public enum InputPortMode { Left, Right }
 		InputPortMode InputPortSelection;
 
-		byte ReadController1()
+		private byte ReadController1()
 		{
 			_isLag = false;
 			byte retval;
@@ -43,8 +40,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			return 0x7F;
 		}
 
-
-		byte ReadController2()
+		private byte ReadController2()
 		{
 			_isLag = false;
 			byte retval;
@@ -63,6 +59,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		}
 
 		public int Frame { get { return frame; } set { frame = value; } }
-		int frame;
+		private int frame;
 	}
 }

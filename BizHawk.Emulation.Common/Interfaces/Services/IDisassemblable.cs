@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Common
 	/// <summary>
 	/// This service provides the means to generate disassembly by the core for a given cpu and memory domain
 	/// Tools such the debugger use this, but also lua scripting, and tools like trace logging and code data logging can make use of this tool
-	/// If unavailable the debugger tool will still be avilable but disable the disassembly window but still be available if the IDebuggable service is available
+	/// If unavailable the debugger tool will still be available but disable the disassembly window but still be available if the IDebuggable service is available
 	/// </summary>
 	public interface IDisassemblable : IEmulatorService
 	{

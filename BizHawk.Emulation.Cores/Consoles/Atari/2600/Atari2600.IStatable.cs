@@ -7,12 +7,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	public partial class Atari2600 : IStatable
 	{
-		public bool BinarySaveStatesPreferred
-		{
-			get { return false; }
-		}
+		public bool BinarySaveStatesPreferred => false;
 
-		public void SaveStateText(TextWriter writer)
+	    public void SaveStateText(TextWriter writer)
 		{
 			SyncState(Serializer.CreateTextWriter(writer));
 		}

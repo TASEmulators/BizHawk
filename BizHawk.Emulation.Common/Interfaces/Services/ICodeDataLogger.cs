@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Common
 	public interface ICodeDataLog : IDictionary<string, byte[]>
 	{
 		/// <summary>
-		/// Pins the managed arrays. Not that we expect them to be allocated, but in case we do, seeing thish ere will remind us to check for the pin condition and abort
+		/// Pins the managed arrays. Not that we expect them to be allocated, but in case we do, seeing this here will remind us to check for the pin condition and abort
 		/// </summary>
 		void Pin();
 

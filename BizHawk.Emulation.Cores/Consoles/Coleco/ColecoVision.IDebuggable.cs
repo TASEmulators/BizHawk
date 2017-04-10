@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
-
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public partial class ColecoVision : IDebuggable
@@ -121,16 +120,16 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks { get; }
 
-		public bool CanStep(StepType type) { return false; }
+		public bool CanStep(StepType type) => false;
 
-		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
+	    [FeatureNotImplemented]
+		public void Step(StepType type)
+	    {
+	        throw new NotImplementedException();
+	    }
 
-		public int TotalExecutedCycles
-		{
-			get { return Cpu.TotalExecutedCycles; }
-		}
+		public int TotalExecutedCycles => Cpu.TotalExecutedCycles;
 	}
 }

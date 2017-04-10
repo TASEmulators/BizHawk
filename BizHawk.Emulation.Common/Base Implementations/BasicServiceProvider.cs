@@ -48,8 +48,6 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// the core can call this to register an additional service
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="provider"></param>
 		public void Register<T>(T provider) 
 			where T : IEmulatorService
 		{

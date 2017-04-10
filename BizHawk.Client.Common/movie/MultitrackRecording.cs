@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
@@ -11,11 +10,11 @@ namespace BizHawk.Client.Common
 		}
 
 		public bool IsActive { get; set; }
-		public int CurrentPlayer{ get; set; }
-		public bool RecordAll { get; set; }
+		public int CurrentPlayer{ get; private set; }
+		public bool RecordAll { get; private set; }
 
 		/// <summary>
-		/// A user friendly multitrack status
+		/// A user friendly multi-track status
 		/// </summary>
 		public string Status
 		{
@@ -94,14 +93,11 @@ namespace BizHawk.Client.Common
 		public int PlayerSource { get; set; }
 		public int PlayerTargetMask { get; set; }
 
-		public ControllerDefinition Definition { get { return Source.Definition; } }
+		public ControllerDefinition Definition => Source.Definition;
 
-		public bool this[string button]
-		{
-			get { return IsPressed(button); }
-		}
+	    public bool this[string button] => IsPressed(button);
 
-		public bool IsPressed(string button)
+	    public bool IsPressed(string button)
 		{
 			return Source.IsPressed(RemapButtonName(button));
 		}
@@ -129,7 +125,7 @@ namespace BizHawk.Client.Common
 
 			// Ok, this looks like a normal `P1 Button` type thing. we can handle it
 			// Were we supposed to replace this one?
-			int foundPlayerMask = (1 << bnp.PlayerNum);
+			int foundPlayerMask = 1 << bnp.PlayerNum;
 			if ((PlayerTargetMask & foundPlayerMask) == 0)
 			{
 				return button;
@@ -163,14 +159,12 @@ namespace BizHawk.Client.Common
 			{
 				return null;
 			}
-			else
+
+			return new ButtonNameParser
 			{
-				return new ButtonNameParser
-				{
-					PlayerNum = player,
-					ButtonPart = button.Substring(parts[0].Length + 1)
-				};
-			}
+				PlayerNum = player,
+				ButtonPart = button.Substring(parts[0].Length + 1)
+			};
 		}
 
 		public int PlayerNum { get; set; }
@@ -178,7 +172,7 @@ namespace BizHawk.Client.Common
 
 		public override string ToString()
 		{
-			return string.Format("P{0} {1}", PlayerNum, ButtonPart);
+			return $"P{PlayerNum} {ButtonPart}";
 		}
 	}
 }

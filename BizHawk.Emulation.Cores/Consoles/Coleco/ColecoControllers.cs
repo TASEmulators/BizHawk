@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
@@ -12,7 +11,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	/// <summary>
 	/// Represents a controller plugged into a controller port on the intellivision
 	/// </summary>
-	/// 
 	public interface IPort
 	{
 		byte Read(IController c, bool left_mode, int wheel);
@@ -24,7 +22,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		void SyncState(Serializer ser);
 
 		int PortNum { get; }
-
 	}
 
 	[DisplayName("Unplugged Controller")]

@@ -17,8 +17,11 @@ namespace BizHawk.Emulation.Common
 
 		public ITraceSink Sink { get; set; }
 
-		public bool Enabled { get { return Sink != null; } }
+		public bool Enabled => Sink != null;
 
-		public void Put(TraceInfo info) { Sink.Put(info); }
+		public void Put(TraceInfo info)
+		{
+			Sink.Put(info);
+		}
 	}
 }

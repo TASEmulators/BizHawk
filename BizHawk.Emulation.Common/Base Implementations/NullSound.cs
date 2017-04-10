@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		/// <param name="spf"></param>
 		public NullSound(int spf)
-			:this()
+			: this()
 		{
 			_spfNumerator = spf;
 			_spfDenominator = 1;	

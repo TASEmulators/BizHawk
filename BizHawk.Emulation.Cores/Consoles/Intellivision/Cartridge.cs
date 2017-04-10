@@ -1,7 +1,8 @@
-﻿using BizHawk.Common;
+﻿using System;
+
+using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
-using System;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
@@ -64,15 +65,17 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			switch (mapper)
 			{
 				case 0:
-					if (addr>=0x5000 && addr<=0x6FFF)
+					if (addr >= 0x5000 && addr <= 0x6FFF)
 					{
-						return Data[addr-0x5000];
+						return Data[addr - 0x5000];
 					}
-					else if (addr>=0xD000 && addr<=0xDFFF)
+
+					if (addr >= 0xD000 && addr <= 0xDFFF)
 					{
 						return Data[addr - 0xB000];
 					}
-					else if (addr>=0xF000 && addr<=0xFFFF)
+
+					if (addr >= 0xF000 && addr <= 0xFFFF)
 					{
 						return Data[addr - 0xC000];
 					}
@@ -83,7 +86,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						return Data[addr - 0x5000];
 					}
-					else if (addr >= 0xD000 && addr <= 0xFFFF)
+
+					if (addr >= 0xD000 && addr <= 0xFFFF)
 					{
 						return Data[addr - 0xB000];
 					}
@@ -94,11 +98,13 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						return Data[addr - 0x5000];
 					}
-					else if (addr >= 0x9000 && addr <= 0xBFFF)
+
+					if (addr >= 0x9000 && addr <= 0xBFFF)
 					{
 						return Data[addr - 0x7000];
 					}
-					else if (addr >= 0xD000 && addr <= 0xDFFF)
+
+					if (addr >= 0xD000 && addr <= 0xDFFF)
 					{
 						return Data[addr - 0x8000];
 					}
@@ -109,15 +115,18 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						return Data[addr - 0x5000];
 					}
-					else if (addr >= 0x9000 && addr <= 0xAFFF)
+
+					if (addr >= 0x9000 && addr <= 0xAFFF)
 					{
 						return Data[addr - 0x7000];
 					}
-					else if (addr >= 0xD000 && addr <= 0xDFFF)
+
+					if (addr >= 0xD000 && addr <= 0xDFFF)
 					{
 						return Data[addr - 0x9000];
 					}
-					else if (addr >= 0xF000 && addr <= 0xFFFF)
+
+					if (addr >= 0xF000 && addr <= 0xFFFF)
 					{
 						return Data[addr - 0xA000];
 					}
@@ -128,7 +137,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						return Data[addr - 0x5000];
 					}
-					else if (addr >= 0xD000 && addr <= 0xD3FF)
+
+					if (addr >= 0xD000 && addr <= 0xD3FF)
 					{
 						return Cart_Ram[addr - 0xD000];
 					}
@@ -139,7 +149,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						return Data[addr - 0x5000];
 					}
-					else if (addr >= 0x9000 && addr <= 0xBFFF)
+
+					if (addr >= 0x9000 && addr <= 0xBFFF)
 					{
 						return Data[addr - 0x6000];
 					}
@@ -175,19 +186,23 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						return Data[addr - 0x5000];
 					}
-					else if (addr >= 0x9000 && addr <= 0xAFFF)
+
+					if (addr >= 0x9000 && addr <= 0xAFFF)
 					{
 						return Data[addr - 0x7000];
 					}
-					else if (addr >= 0xD000 && addr <= 0xDFFF)
+
+					if (addr >= 0xD000 && addr <= 0xDFFF)
 					{
 						return Data[addr - 0x9000];
 					}
-					else if (addr >= 0xF000 && addr <= 0xFFFF)
+
+					if (addr >= 0xF000 && addr <= 0xFFFF)
 					{
 						return Data[addr - 0xA000];
 					}
-					else if (addr >= 0x8800 && addr <= 0x8FFF)
+
+					if (addr >= 0x8800 && addr <= 0x8FFF)
 					{
 						return Cart_Ram[addr - 0x8800];
 					}
@@ -198,11 +213,13 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						return Data[addr - 0x5000];
 					}
-					else if (addr >= 0x8800 && addr <= 0xB7FF)
+
+					if (addr >= 0x8800 && addr <= 0xB7FF)
 					{
 						return Data[addr - 0x6800];
 					}
-					else if (addr >= 0xD000 && addr <= 0xFFFF)
+
+					if (addr >= 0xD000 && addr <= 0xFFFF)
 					{
 						return Data[addr - 0x8000];
 					}
@@ -232,6 +249,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 					break;
 			}
+
 			return false;
 		}
 	}

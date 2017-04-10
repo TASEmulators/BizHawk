@@ -1,6 +1,4 @@
-﻿using System;
-using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components;
+﻿using BizHawk.Emulation.Cores.Components;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
