@@ -977,7 +977,7 @@ namespace BizHawk.Client.EmuHawk
 		public void TakeScreenshot(string path)
 		{
 			var fi = new FileInfo(path);
-			if (fi.Directory != null && fi.Directory.Exists == false)
+			if (fi.Directory != null && !fi.Directory.Exists)
 			{
 				fi.Directory.Create();
 			}
@@ -1025,7 +1025,7 @@ namespace BizHawk.Client.EmuHawk
 				PresentationPanel.Resized = true;
 
 				// Is window off the screen at this size?
-				if (area.Contains(Bounds) == false)
+				if (!area.Contains(Bounds))
 				{
 					if (Bounds.Right > area.Right) // Window is off the right edge
 					{
@@ -1079,7 +1079,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 			}
 
-			if (_inFullscreen == false)
+			if (!_inFullscreen)
 			{
 				SuspendLayout();
 #if WINDOWS
@@ -1418,49 +1418,47 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetWindowText()
 		{
-			string str = string.Empty;
+			string str = "";
 
 			if (_inResizeLoop)
 			{
 				var size = PresentationPanel.NativeSize;
 				float AR = (float)size.Width / size.Height;
-				str = str + string.Format("({0}x{1})={2} - ", size.Width, size.Height, AR);
+				str += $"({size.Width}x{size.Height})={AR} - ";
 			}
 
 			//we need to display FPS somewhere, in this case
 			if (Global.Config.DispSpeedupFeatures == 0)
 			{
-				str = str + string.Format("({0:0} fps) -", _lastFps);
+				str += $"({_lastFps:0} fps) - ";
 			}
 
 			if (!string.IsNullOrEmpty(VersionInfo.CustomBuildString))
+			{
 				str += VersionInfo.CustomBuildString + " ";
-
-			if (Emulator.IsNull())
-			{
-				str = str + "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
 			}
-			else
-			{
-				str = str + Global.SystemInfo.DisplayName;
 
-				if (VersionInfo.DeveloperBuild)
-				{
-					str += " (interim)";
-				}
+			str += Emulator.IsNull() ? "BizHawk" : Global.SystemInfo.DisplayName;
+
+			if (VersionInfo.DeveloperBuild)
+			{
+				str += " (interim)";
+			}
+
+			if (!Emulator.IsNull())
+			{
+				str += " - " + Global.Game.Name;
 
 				if (Global.MovieSession.Movie.IsActive)
 				{
-					str = str + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
-				}
-				else
-				{
-					str = str + " - " + Global.Game.Name;
+					str += " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
 				}
 			}
 
 			if (!Global.Config.DispChrome_CaptionWindowed || _chromeless)
+			{
 				str = "";
+			}
 
 			Text = str;
 		}
@@ -1598,7 +1596,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var path = PathManager.SaveRamPath(Global.Game);
 				var f = new FileInfo(path);
-				if (f.Directory != null && f.Directory.Exists == false)
+				if (f.Directory != null && !f.Directory.Exists)
 				{
 					f.Directory.Create();
 				}
@@ -1934,7 +1932,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int slot = Global.Config.SaveSlot;
 			string emptypart = _stateSlots.HasSlot(slot) ? "" : " (empty)";
-			string message = string.Format("Slot {0}{1} selected.", slot, emptypart);
+			string message = $"Slot {slot}{emptypart} selected.";
 			GlobalWin.OSD.AddMessage(message);
 		}
 
@@ -2931,7 +2929,7 @@ namespace BizHawk.Client.EmuHawk
 			_framesSinceLastFpsUpdate = 0;
 			_timestampLastFpsUpdate = currentTimestamp;
 
-			var fps_string = string.Format("{0:0} fps", _lastFps);
+			var fps_string = $"{_lastFps:0} fps";
 			if (isRewinding)
 			{
 				fps_string += IsTurboing || isFastForwarding ?
@@ -3010,7 +3008,7 @@ namespace BizHawk.Client.EmuHawk
 			if (aw == null)
 			{
 				GlobalWin.OSD.AddMessage(
-					unattended ? string.Format("Couldn't start video writer \"{0}\"", videowritername) : "A/V capture canceled.");
+					unattended ? $"Couldn't start video writer \"{videowritername}\"" : "A/V capture canceled.");
 
 				return;
 			}
@@ -3832,7 +3830,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
-			if (File.Exists(path) == false)
+			if (!File.Exists(path))
 			{
 				GlobalWin.OSD.AddMessage("Unable to load " + quickSlotName + ".State");
 
@@ -3897,7 +3895,7 @@ namespace BizHawk.Client.EmuHawk
 			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
 
 			var file = new FileInfo(path);
-			if (file.Directory != null && file.Directory.Exists == false)
+			if (file.Directory != null && !file.Directory.Exists)
 			{
 				file.Directory.Create();
 			}
@@ -3935,7 +3933,7 @@ namespace BizHawk.Client.EmuHawk
 			var path = PathManager.GetSaveStatePath(Global.Game);
 
 			var file = new FileInfo(path);
-			if (file.Directory != null && file.Directory.Exists == false)
+			if (file.Directory != null && !file.Directory.Exists)
 			{
 				file.Directory.Create();
 			}
@@ -3985,7 +3983,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (File.Exists(ofd.FileName) == false)
+			if (!File.Exists(ofd.FileName))
 			{
 				return;
 			}
@@ -4230,8 +4228,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void coreToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == true;
-			nesHawkToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == false;
+			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES;
+			nesHawkToolStripMenuItem.Checked = !Global.Config.NES_InQuickNES;
 		}
 
 		private void allowGameDBCoreOverridesToolStripMenuItem_Click(object sender, EventArgs e)

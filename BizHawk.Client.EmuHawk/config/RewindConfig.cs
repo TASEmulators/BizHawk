@@ -2,7 +2,6 @@
 using System.Windows.Forms;
 using System.Drawing;
 
-using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
@@ -109,10 +108,9 @@ namespace BizHawk.Client.EmuHawk
 
 			StateSizeLabel.Text = FormatKB(_stateSize);
 
-			SmallLabel1.Text = "Small savestates (less than " + (_mediumStateSize / 1024) + "KB)";
-			MediumLabel1.Text = "Medium savestates (" + (_mediumStateSize / 1024)
-				+ " - " + (_largeStateSize / 1024) + "KB)";
-			LargeLabel1.Text = "Large savestates (" + (_largeStateSize / 1024) + "KB or more)";
+			SmallLabel1.Text = $"Small savestates (less than {_mediumStateSize / 1024}KB)";
+			MediumLabel1.Text = $"Medium savestates ({_mediumStateSize / 1024} - {_largeStateSize / 1024}KB)";
+			LargeLabel1.Text = $"Large savestates ({_largeStateSize / 1024}KB or more)";
 
 			if (_stateSize >= _largeStateSize)
 			{
@@ -323,8 +321,6 @@ namespace BizHawk.Client.EmuHawk
 			buffer_size *= 1024 * 1024;
 			var est_frames = buffer_size / avg_state_size;
 
-
-
 			long est_frequency = 0;
 			switch (_stateSizeCategory)
 			{
@@ -369,11 +365,6 @@ namespace BizHawk.Client.EmuHawk
 		private void LargeSavestateNumeric_ValueChanged(object sender, EventArgs e)
 		{
 			CalculateEstimates();
-		}
-
-		private void trackBar1_ValueChanged(object sender, EventArgs e)
-		{
-
 		}
 
 		private void nudCompression_ValueChanged(object sender, EventArgs e)
