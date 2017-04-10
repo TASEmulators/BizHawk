@@ -107,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		static List<string> StringChunkSplit(string s, int len)
 		{
-			if (len == 0) throw new ArgumentException("Invalid len", "len");
+			if (len == 0) throw new ArgumentException("Invalid len", nameof(len));
 
 			int numChunks = (s.Length + len - 1) / len;
 			List<string> output = new List<string>(numChunks);

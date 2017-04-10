@@ -523,7 +523,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 			else
 			{
-				throw new ArgumentOutOfRangeException("line", "line must be in [0, 153]");
+				throw new ArgumentOutOfRangeException(nameof(line), "line must be in [0, 153]");
 			}
 		}
 

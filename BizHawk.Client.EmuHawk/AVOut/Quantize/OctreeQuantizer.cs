@@ -51,10 +51,10 @@ namespace BizHawk.Client.EmuHawk
 					: base(false)
         {
             if (maxColors > 255)
-                throw new ArgumentOutOfRangeException("maxColors", maxColors, "The number of colors should be less than 256");
+                throw new ArgumentOutOfRangeException(nameof(maxColors), maxColors, "The number of colors should be less than 256");
 
             if ((maxColorBits < 1) |(maxColorBits > 8))
-                throw new ArgumentOutOfRangeException("maxColorBits", maxColorBits, "This should be between 1 and 8");
+                throw new ArgumentOutOfRangeException(nameof(maxColorBits), maxColorBits, "This should be between 1 and 8");
 
             _octree = new Octree(maxColorBits);
             _maxColors = maxColors;

@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (provider == null)
 			{
-				throw new ArgumentNullException("provider");
+				throw new ArgumentNullException(nameof(provider));
 			}
 
 			Services[typeof(T)] = provider;

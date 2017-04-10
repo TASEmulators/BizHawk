@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Common
 			if ((ulong)addr < (ulong)Size)
 				return ((byte*)Data)[addr];
 			else
-				throw new ArgumentOutOfRangeException("addr");
+				throw new ArgumentOutOfRangeException(nameof(addr));
 		}
 
 		public override void PokeByte(long addr, byte val)
@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Common
 				if ((ulong)addr < (ulong)Size)
 					((byte*)Data)[addr] = val;
 				else
-					throw new ArgumentOutOfRangeException("addr");
+					throw new ArgumentOutOfRangeException(nameof(addr));
 			}
 		}
 
@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Common
 			if ((ulong)addr < (ulong)Size)
 				return ((byte*)Data)[addr ^ 1];
 			else
-				throw new ArgumentOutOfRangeException("addr");
+				throw new ArgumentOutOfRangeException(nameof(addr));
 		}
 
 		public override void PokeByte(long addr, byte val)
@@ -118,7 +118,7 @@ namespace BizHawk.Emulation.Common
 				if ((ulong)addr < (ulong)Size)
 					((byte*)Data)[addr ^ 1] = val;
 				else
-					throw new ArgumentOutOfRangeException("addr");
+					throw new ArgumentOutOfRangeException(nameof(addr));
 			}
 		}
 

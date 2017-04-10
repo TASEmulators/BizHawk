@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Common
 			}
 			else if (bitSize > 64 || bitSize == 0)
 			{
-				throw new System.ArgumentOutOfRangeException("bitSize", "BitSize must be in 1..64");
+				throw new System.ArgumentOutOfRangeException(nameof(bitSize), "BitSize must be in 1..64");
 			}
 			else
 			{

@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				throw new ArgumentException(string.Format("DisplayType {0} is invalid for this type of Watch", type.ToString()), "type");
+				throw new ArgumentException(string.Format("DisplayType {0} is invalid for this type of Watch", type.ToString()), nameof(type));
 			}
 		}
 
