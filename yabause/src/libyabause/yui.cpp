@@ -1,10 +1,15 @@
 //bizhawk
 #define HEADLESS
 
+#if _WINDOWS
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 #include <gl/GL.h>
 #include "../windows/glext.h"
+#else
+#include <OpenGL/gl3.h>
+#include <OpenGL/glext.h>
+#endif
 
 extern "C" {
 #include "../cs0.h"
@@ -19,7 +24,11 @@ extern "C" {
 
 void (*inputcallback)(void) = NULL;
 
+#if _WINDOWS
 extern "C" __declspec(dllexport) void libyabause_setinputcallback(void (*cb)(void))
+#else
+extern "C" void libyabause_setinputcallback(void (*cb)(void))
+#endif
 {
 	inputcallback = cb;
 }
@@ -82,7 +91,9 @@ NULL
 /* If Yabause encounters any fatal errors, it sends the error text to this function */
 void YuiErrorMsg(const char *string)
 {
+#if _WINDOWS
 	MessageBoxA(NULL, string, "Yabooze dun goofed", 0);
+#endif
 }
 
 
@@ -91,6 +102,7 @@ int green_size;
 int blue_size;
 int depth_size;
 
+#if _WINDOWS
 PFNGLGENFRAMEBUFFERSPROC glGenFramebuffers;
 PFNGLDELETEFRAMEBUFFERSPROC glDeleteFramebuffers;
 PFNGLGENRENDERBUFFERSPROC glGenRenderbuffers;
@@ -100,9 +112,11 @@ PFNGLBINDRENDERBUFFERPROC glBindRenderbuffer;
 PFNGLRENDERBUFFERSTORAGEPROC glRenderbufferStorage;
 PFNGLFRAMEBUFFERRENDERBUFFERPROC glFramebufferRenderbuffer;
 PFNGLCHECKFRAMEBUFFERSTATUSPROC glCheckFramebufferStatus;
+#endif
 
 int LoadExtensions()
 {
+#if _WINDOWS
    glBindRenderbuffer = (PFNGLBINDRENDERBUFFERPROC)wglGetProcAddress("glBindRenderbufferEXT");
    if( glBindRenderbuffer == NULL ) return 0;
    glDeleteRenderbuffers = (PFNGLDELETERENDERBUFFERSPROC)wglGetProcAddress("glDeleteRenderbuffersEXT");
@@ -121,7 +135,8 @@ int LoadExtensions()
    if( glCheckFramebufferStatus == NULL ) return 0;
    glFramebufferRenderbuffer = (PFNGLFRAMEBUFFERRENDERBUFFERPROC)wglGetProcAddress("glFramebufferRenderbufferEXT");
    if( glFramebufferRenderbuffer == NULL ) return 0;
-
+#endif
+    
    return 1;
 }
 
@@ -204,20 +219,25 @@ int YuiSetVideoMode(int width, int height, int bpp, int fullscreen)
 }
 
 int usinggl = 0;
+#if _WINDOWS
 HWND glWND;
 HDC glDC;
 HGLRC glRC;
+#endif
 
 void KillGLContext()
 {
-	wglMakeCurrent(NULL, NULL); 
+#if WINDOWS
+	wglMakeCurrent(NULL, NULL);
 	wglDeleteContext(glRC);
 	ReleaseDC(glWND, glDC);
 	DestroyWindow(glWND);
+#endif
 }
 
 int StartGLContext()
 {
+#if WINDOWS
 	PIXELFORMATDESCRIPTOR pfd;
 	memset(&pfd,0, sizeof(PIXELFORMATDESCRIPTOR));
 	pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
@@ -266,6 +286,7 @@ int StartGLContext()
 		DestroyWindow(glWND);
 		return 0;
 	}
+#endif
 	return 1;
 }
 
@@ -355,52 +376,92 @@ extern "C" void DRV_AviSoundUpdate(void* soundData, int soundLen)
 }
 
 // must hold at least 704x512 pixels
+#if WINDOWS
 extern "C" __declspec(dllexport) void libyabause_setvidbuff(u32 *buff)
+#else
+extern "C" void libyabause_setvidbuff(u32 *buff)
+#endif
 {
 	vidbuff = buff;
 }
 
+#if WINDOWS
 extern "C" __declspec(dllexport) void libyabause_setsndbuff(s16 *buff)
+#else
+extern "C" void libyabause_setsndbuff(s16 *buff)
+#endif
 {
 	sndbuff = buff;
 }
 
+#if WINDOWS
 extern "C" __declspec(dllexport) void libyabause_softreset()
+#else
+extern "C" void libyabause_softreset()
+#endif
 {
 	YabauseResetButton();
 }
 
+#if WINDOWS
 extern "C" __declspec(dllexport) void libyabause_hardreset()
+#else
+extern "C" void libyabause_hardreset()
+#endif
 {
 	YabauseReset();
 }
 
+#if WINDOWS
 extern "C" __declspec(dllexport) int libyabause_loadstate(const char *fn)
+#else
+extern "C" int libyabause_loadstate(const char *fn)
+#endif
 {
 	return !YabLoadState(fn);
 }
 
+#if WINDOWS
 extern "C" __declspec(dllexport) int libyabause_savestate(const char *fn)
+#else
+extern "C" int libyabause_savestate(const char *fn)
+#endif
 {
 	return !YabSaveState(fn);
 }
 
+#if WINDOWS
 extern "C" __declspec(dllexport) int libyabause_savesaveram(const char *fn)
+#else
+extern "C" int libyabause_savesaveram(const char *fn)
+#endif
 {
 	return !T123Save(BupRam, 0x10000, 1, fn);
 }
 
+#if WINDOWS
 extern "C" __declspec(dllexport) int libyabause_loadsaveram(const char *fn)
+#else
+extern "C" int libyabause_loadsaveram(const char *fn)
+#endif
 {
 	return !T123Load(BupRam, 0x10000, 1, fn);
 }
 
+#if WINDOWS
 extern "C" __declspec(dllexport) int libyabause_saveramodified()
+#else
+extern "C" int libyabause_saveramodified()
+#endif
 {
 	return BupRamWritten;
 }
 
+#if WINDOWS
 extern "C" __declspec(dllexport) void libyabause_clearsaveram()
+#else
+extern "C" void libyabause_clearsaveram()
+#endif
 {
 	FormatBackupRam(BupRam, 0x10000);
 }
@@ -426,7 +487,11 @@ memoryarea normmemareas[] =
 	{NULL, NULL, 0}
 };
 
+#if WINDOWS
 extern "C" __declspec(dllexport) memoryarea *libyabause_getmemoryareas()
+#else
+extern "C" memoryarea *libyabause_getmemoryareas()
+#endif
 {
 	normmemareas[0].data = BiosRom;
 	normmemareas[1].data = BupRam;
@@ -440,7 +505,11 @@ extern "C" __declspec(dllexport) memoryarea *libyabause_getmemoryareas()
 	return &normmemareas[0];
 }
 
+#if WINDOWS
 extern "C" __declspec(dllexport) int libyabause_frameadvance(int *w, int *h, int *nsamp)
+#else
+extern "C" int libyabause_frameadvance(int *w, int *h, int *nsamp)
+#endif
 {
 	LagFrameFlag = 1;
 	sndbuffpos = 0;
@@ -459,7 +528,11 @@ extern "C" __declspec(dllexport) int libyabause_frameadvance(int *w, int *h, int
 	return LagFrameFlag;
 }
 
+#if WINDOWS
 extern "C" __declspec(dllexport) void libyabause_deinit()
+#else
+extern "C" void libyabause_deinit()
+#endif
 {
 	PerPortReset();
 	YabauseDeInit();
@@ -475,7 +548,11 @@ extern "C" __declspec(dllexport) void libyabause_deinit()
 	}
 }
 
+#if WINDOWS
 extern "C" __declspec(dllexport) void libyabause_setpads(u8 p11, u8 p12, u8 p21, u8 p22)
+#else
+extern "C" void libyabause_setpads(u8 p11, u8 p12, u8 p21, u8 p22)
+#endif
 {
 	ctrl1->padbits[0] = p11;
 	ctrl1->padbits[1] = p12;
@@ -485,13 +562,21 @@ extern "C" __declspec(dllexport) void libyabause_setpads(u8 p11, u8 p12, u8 p21,
 
 int glnativefactor = 0;
 
+#if WINDOWS
 extern "C" __declspec(dllexport) void libyabause_glresize(int w, int h)
+#else
+extern "C" void libyabause_glresize(int w, int h)
+#endif
 {
 	if (usinggl && !glnativefactor)
 		VIDCore->Resize(w, h, 0);
 }
 
+#if WINDOWS
 extern "C" __declspec(dllexport) void libyabause_glsetnativefactor(int n)
+#else
+extern "C" void libyabause_glsetnativefactor(int n)
+#endif
 {
 	if (!usinggl)
 		return;
@@ -516,7 +601,11 @@ void vdp2newhook(u16 v)
 	}
 }
 
+#if WINDOWS
 extern "C" __declspec(dllexport) int libyabause_init
+#else
+extern "C" int libyabause_init
+#endif
 (
 	CDInterface *_CD,
 	const char *biosfn,

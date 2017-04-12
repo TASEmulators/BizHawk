@@ -196,7 +196,7 @@ GLAPI void APIENTRY glActiveTexturedmy (GLenum texture){}
 #define IS_ZERO(a) ( (a) < EPS && (a) > -EPS)
 
 // AXB = |A||B|sin
-INLINE float cross2d( float veca[2], float vecb[2] )
+static INLINE float cross2d( float veca[2], float vecb[2] )
 {
    return (veca[0]*vecb[1])-(vecb[0]*veca[1]);
 }
