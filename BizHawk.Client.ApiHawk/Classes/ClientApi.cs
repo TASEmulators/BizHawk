@@ -430,6 +430,9 @@ namespace BizHawk.Client.ApiHawk
 							return SystemInfo.DualGB;
 						}
 
+					case "Libretro":
+						return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert("SNES"));
+
 					default:
 						return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert(Global.Emulator.SystemId));
 				}

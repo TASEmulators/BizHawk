@@ -432,6 +432,8 @@
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
+			this.toolStripSeparator35 = new System.Windows.Forms.ToolStripSeparator();
+			this.WriteGameNameToFileMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -1432,6 +1434,8 @@
             this.SpeedSkipSubMenu,
             this.KeyPrioritySubMenu,
             this.CoresSubMenu,
+            this.toolStripSeparator35,
+            this.WriteGameNameToFileMenuItem,
             this.toolStripSeparator10,
             this.SaveConfigMenuItem,
             this.SaveConfigAsMenuItem,
@@ -3824,6 +3828,18 @@
 			this.timerMouseIdle.Interval = 2000;
 			this.timerMouseIdle.Tick += new System.EventHandler(this.timerMouseIdle_Tick);
 			// 
+			// toolStripSeparator35
+			// 
+			this.toolStripSeparator35.Name = "toolStripSeparator35";
+			this.toolStripSeparator35.Size = new System.Drawing.Size(198, 6);
+			// 
+			// toolStripMenuItem18
+			// 
+			this.WriteGameNameToFileMenuItem.Name = "toolStripMenuItem18";
+			this.WriteGameNameToFileMenuItem.Size = new System.Drawing.Size(201, 22);
+			this.WriteGameNameToFileMenuItem.Text = "Write game name to file";
+			this.WriteGameNameToFileMenuItem.Click += new System.EventHandler(this.WriteGameNameToFileMenuItem_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -4267,5 +4283,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripMenuItem16;
 		private System.Windows.Forms.ToolStripMenuItem IntvSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem IntVControllerSettingsMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator35;
+		private System.Windows.Forms.ToolStripMenuItem WriteGameNameToFileMenuItem;
 	}
 }

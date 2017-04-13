@@ -21,6 +21,18 @@ namespace BizHawk.Emulation.Common
 		public bool NotInDatabase = true;
 		public string FirmwareHash;
 		public string ForcedCore;
+		public string LibretroCore;
+
+		public string CleanName {
+			get {
+				int idx = Name.IndexOfAny( new char[] { '(', '{', '[' } );
+				if (idx > -1) {
+					return Name.Substring( 0, idx ).Trim();
+				} else {
+					return Name.Trim();
+				}
+			}
+		}
 
 		Dictionary<string, string> Options = new Dictionary<string, string>();
 
