@@ -2,6 +2,7 @@
 using System.Drawing;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.GBA;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -12,9 +13,67 @@ namespace BizHawk.Client.EmuHawk
 		{
 			yield return StandardController();
 			yield return ConsoleButtons();
+
+			if (core is MGBAHawk)
+			{
+				yield return TiltControls();
+			}
 		}
 
-		public static PadSchema StandardController()
+		private static PadSchema TiltControls()
+		{
+			return new PadSchema
+			{
+				DisplayName = "Tilt Controls",
+				IsConsole = false,
+				DefaultSize = new Size(256, 240),
+				MaxSize = new Size(256, 326),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "Tilt X",
+						DisplayName = "Tilt X",
+						Location = new Point(10, 15),
+						Type = PadSchema.PadInputType.FloatSingle,
+						TargetSize = new Size(226, 69),
+						MinValue = short.MinValue,
+						MaxValue = short.MaxValue
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "Tilt Y",
+						DisplayName = "Tilt Y",
+						Location = new Point(10, 94),
+						Type = PadSchema.PadInputType.FloatSingle,
+						TargetSize = new Size(226, 69),
+						MinValue = short.MinValue,
+						MaxValue = short.MaxValue
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "Tilt Z",
+						DisplayName = "Tilt Z",
+						Location = new Point(10, 173),
+						Type = PadSchema.PadInputType.FloatSingle,
+						TargetSize = new Size(226, 69),
+						MinValue = short.MinValue,
+						MaxValue = short.MaxValue
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "Light Sensor",
+						DisplayName = "Light Sensor",
+						Location = new Point(10, 252),
+						Type = PadSchema.PadInputType.FloatSingle,
+						TargetSize = new Size(226, 69),
+						MaxValue = byte.MaxValue
+					}
+				}
+			};
+		}
+
+		private static PadSchema StandardController()
 		{
 			return new PadSchema
 			{
