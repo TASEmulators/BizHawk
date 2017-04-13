@@ -33,7 +33,7 @@ namespace BizHawk.Common.CollectionExtensions
 				}
 			}
 
-			//did we find it exactly?
+			// did we find it exactly?
 			if (min == max && keySelector(list[min]).CompareTo(key) == 0)
 			{
 				return min;
@@ -41,8 +41,7 @@ namespace BizHawk.Common.CollectionExtensions
 
 			mid = min;
 
-			//we didnt find it. return something corresponding to lower_bound semantics
-
+			// we didnt find it. return something corresponding to lower_bound semantics
 			if (mid == list.Count)
 			{
 				return max; // had to go all the way to max before giving up; lower bound is max
@@ -87,6 +86,7 @@ namespace BizHawk.Common.CollectionExtensions
 					return midItem;
 				}
 			}
+
 			if (min == max &&
 				keySelector(list[min]).CompareTo(key) == 0)
 			{
@@ -99,13 +99,13 @@ namespace BizHawk.Common.CollectionExtensions
 		public static byte[] ToByteArray(this IEnumerable<bool> list)
 		{
 			var bits = new BitArray(list.ToArray());
-			byte [] bytes = new byte[bits.Length / 8 + ( bits.Length % 8 == 0 ? 0 : 1 )];
+			byte[] bytes = new byte[(bits.Length / 8) + (bits.Length % 8 == 0 ? 0 : 1)];
 			bits.CopyTo(bytes, 0);
 			return bytes;
 		}
 
 		/// <summary>
-		/// Converts any byte array into a bit array represented as a list of bools
+		/// Converts any byte array into a bit array represented as a list of booleans
 		/// </summary>
 		public static IEnumerable<bool> ToBools(this byte[] bytes)
 		{
@@ -115,7 +115,5 @@ namespace BizHawk.Common.CollectionExtensions
 
 			return bools;
 		}
-
-		
 	}
 }

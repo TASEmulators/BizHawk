@@ -12,9 +12,9 @@
 			Clear();
 		}
 
-		public int Count { get { return _count; } }
+		public int Count => _count;
 
-		public void Clear()
+	    public void Clear()
 		{
 			_head = 0;
 			_count = 0;

@@ -8,16 +8,16 @@ namespace BizHawk.Common
 	{
 		public InstanceDll(string dllPath)
 		{
-			//copy the dll to a temp directory
+			// copy the dll to a temp directory
 			var path = TempFileCleaner.GetTempFilename(string.Format("{0}", Path.GetFileNameWithoutExtension(dllPath)),".dll",false);
 			using (var stream = new FileStream(path, FileMode.Create, System.Security.AccessControl.FileSystemRights.FullControl, FileShare.ReadWrite | FileShare.Delete, 4 * 1024, FileOptions.None))
 			using (var sdll = File.OpenRead(dllPath))
 				sdll.CopyTo(stream);
 
-			//try to locate dlls in the current directory (for libretro cores)
-			//this isnt foolproof but its a little better than nothing
-			//setting PWD temporarily doesnt work. that'd be ideal since it supposedly gets searched early on,
-			//but i guess not with SetDllDirectory in effect
+			// try to locate dlls in the current directory (for libretro cores)
+			// this isnt foolproof but its a little better than nothing
+			// setting PWD temporarily doesnt work. that'd be ideal since it supposedly gets searched early on,
+			// but i guess not with SetDllDirectory in effect
 			var envpath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Process);
 			try
 			{
@@ -46,10 +46,13 @@ namespace BizHawk.Common
 
 		[DllImport("kernel32.dll", SetLastError = true)]
 		static extern IntPtr LoadLibrary(string dllToLoad);
+
 		[DllImport("kernel32.dll", SetLastError = true)]
 		static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hReservedNull, LoadLibraryFlags dwFlags);
+
 		[DllImport("kernel32.dll")]
 		static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+
 		[DllImport("kernel32.dll")]
 		static extern bool FreeLibrary(IntPtr hModule);
 
@@ -72,6 +75,6 @@ namespace BizHawk.Common
 			}
 		}
 
-		IntPtr _hModule;
+		private IntPtr _hModule;
 	}
 }

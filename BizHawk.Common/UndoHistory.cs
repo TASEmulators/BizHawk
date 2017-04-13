@@ -8,7 +8,7 @@ namespace BizHawk.Common
 		private List<List<T>> _history = new List<List<T>>();
 		private int _curPos; // 1-based
 
-		public int MaxUndoLevels { get; set; }
+		public int MaxUndoLevels { get; }
 
 		public UndoHistory(bool enabled)
 		{
@@ -22,24 +22,15 @@ namespace BizHawk.Common
 			Enabled = enabled;
 		}
 
-		public bool Enabled { get; private set; }
+		public bool Enabled { get; }
 
-		public bool CanUndo
-		{
-			get { return Enabled && _curPos > 1; }
-		}
+		public bool CanUndo => Enabled && _curPos > 1;
 
-		public bool CanRedo
-		{
-			get { return Enabled && _curPos < _history.Count; }
-		}
+	    public bool CanRedo => Enabled && _curPos < _history.Count;
 
-		public bool HasHistory
-		{
-			get { return Enabled && _history.Any(); }
-		}
+	    public bool HasHistory => Enabled && _history.Any();
 
-		public void Clear()
+	    public void Clear()
 		{
 			_history = new List<List<T>>();
 			_curPos = 0;

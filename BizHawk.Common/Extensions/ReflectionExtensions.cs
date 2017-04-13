@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
@@ -19,7 +18,6 @@ namespace BizHawk.Common.ReflectionExtensions
 			return type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic)
 				.Where(p => p.GetCustomAttributes(attributeType, false).Length > 0);
 		}
-
 
 		/// <summary>
 		/// Gets the description attribute from an object
@@ -63,7 +61,6 @@ namespace BizHawk.Common.ReflectionExtensions
 		/// <summary>
 		/// Gets the description attribute from a type
 		/// </summary>
-		/// <returns></returns>
 		public static string Description(this Type type)
 		{
 			var descriptions = (DescriptionAttribute[])
@@ -87,7 +84,11 @@ namespace BizHawk.Common.ReflectionExtensions
 		public static T GetEnumFromDescription<T>(this string description)
 		{
 			var type = typeof(T);
-			if (!type.IsEnum) throw new InvalidOperationException();
+			if (!type.IsEnum)
+			{
+				throw new InvalidOperationException();
+			}
+
 			foreach (var field in type.GetFields())
 			{
 				var attribute = Attribute.GetCustomAttribute(field,
@@ -114,7 +115,7 @@ namespace BizHawk.Common.ReflectionExtensions
 		/// <summary>
 		/// Takes an object and determines if it has methodName as a public method
 		/// </summary>
-		/// <returns>Returns whether or not the obj both contains the method name and the method is public</returns>
+		/// <returns>Returns whether or not the object both contains the method name and the method is public</returns>
 		public static bool HasExposedMethod(this object obj, string methodName)
 		{
 			var method = obj.GetType().GetMethod(methodName);
@@ -172,7 +173,6 @@ namespace BizHawk.Common.ReflectionExtensions
 		/// <summary>
 		/// Takes an enum Type and generates a list of strings from the description attributes
 		/// </summary>
-		/// <returns></returns>
 		public static IEnumerable<string> GetEnumDescriptions(this Type type)
 		{
 			var vals = Enum.GetValues(type);
@@ -188,13 +188,17 @@ namespace BizHawk.Common.ReflectionExtensions
 			return (T)o.GetType().GetCustomAttributes(typeof(T), false)[0];
 		}
 
-		/// <summary>
-		/// where the fields begin relative to the address an object references points to
-		/// </summary>
-		public static IntPtr ManagedFieldStart { get { return _managedfieldstart; } }
+	    /// <summary>
+	    /// where the fields begin relative to the address an object references points to
+	    /// </summary>
+		public static IntPtr ManagedFieldStart => _managedfieldstart;
 
 		[StructLayout(LayoutKind.Explicit)]
-		private class Junkus { [FieldOffset(0)]public IntPtr s; }
+		private class Junkus
+		{
+			[FieldOffset(0)]
+			public IntPtr s;
+		}
 
 		static IntPtr _managedfieldstart = GetManagedOffset(typeof(Junkus).GetField("s"));
 
@@ -202,7 +206,6 @@ namespace BizHawk.Common.ReflectionExtensions
 		/// the address of a field relative to the address an object reference of that type points to.  this function is very expensive to call.
 		/// </summary>
 		/// <param name="field"></param>
-		/// <returns></returns>
 		public static IntPtr GetManagedOffset(this FieldInfo field)
 		{
 			Type type = field.DeclaringType;
@@ -234,13 +237,13 @@ namespace BizHawk.Common.ReflectionExtensions
 		public static bool ThrowsError(this MethodInfo info)
 		{
 			var il = info.GetMethodBody().GetILAsByteArray();
-			return (il[il.Length - 1] == 0x7A);
+			return il[il.Length - 1] == 0x7A;
 		}
 
 		public static bool IsEmpty(this MethodInfo info)
 		{
 			var il = info.GetMethodBody().GetILAsByteArray();
-			return (il.Length == 1 && il[0] == 0x2A);
+			return il.Length == 1 && il[0] == 0x2A;
 		}
 	}
 }
