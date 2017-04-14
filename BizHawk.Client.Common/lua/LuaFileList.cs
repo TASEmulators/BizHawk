@@ -105,10 +105,9 @@ namespace BizHawk.Client.Common
 
 							Add(new LuaFile(scriptPath)
 							{
-								State = (
-										!Global.Config.DisableLuaScriptsOnLoad 
-										&& line.Substring(0, 1) == "1"
-									) ? LuaFile.RunState.Running : LuaFile.RunState.Disabled
+								State = !Global.Config.DisableLuaScriptsOnLoad && line.Substring(0, 1) == "1"
+									 ? LuaFile.RunState.Running
+									 : LuaFile.RunState.Disabled
 							});
 						}
 					}

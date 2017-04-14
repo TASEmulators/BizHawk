@@ -9,11 +9,11 @@ namespace BizHawk.Client.Common
 			get
 			{
 				var key = button
-					.Replace("P1 ", "")
-					.Replace("P2 ", "")
-					.Replace("P3 ", "")
-					.Replace("P4 ", "")
-					.Replace("Key ", "");
+					.Replace("P1 ", string.Empty)
+					.Replace("P2 ", string.Empty)
+					.Replace("P3 ", string.Empty)
+					.Replace("P4 ", string.Empty)
+					.Replace("Key ", string.Empty);
 
 				if (SystemOverrides.ContainsKey(Global.Emulator.SystemId) && SystemOverrides[Global.Emulator.SystemId].ContainsKey(key))
 				{

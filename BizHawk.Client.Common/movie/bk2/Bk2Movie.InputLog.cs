@@ -77,9 +77,10 @@ namespace BizHawk.Client.Common
 					{
 						break;
 					}
-						// in BK2, this is part of the input log, and not involved with the core state at all
-						// accordingly, this case (for special neshawk format frame numbers) is irrelevant
-						// probably
+
+					// in BK2, this is part of the input log, and not involved with the core state at all
+					// accordingly, this case (for special neshawk format frame numbers) is irrelevant
+					// probably
 					else if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
 					{
 						var strs = line.Split('x');
@@ -317,7 +318,7 @@ namespace BizHawk.Client.Common
 		/// If the log key differs from the system's, it will be coverted
 		/// </summary>
 		/// <param name="line">a log entry line of text from the input log</param>
-		/// /// <param name="logKey">a log entry line of text from the input log</param>
+		/// <param name="logKey">a log entry line of text from the input log</param>
 		private string ConvertLogEntryFromFile(string line, string logKey)
 		{
 			var adapter = new Bk2LogEntryGenerator(logKey).MovieControllerAdapter;

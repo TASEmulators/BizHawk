@@ -16,13 +16,13 @@ namespace BizHawk.Client.Common
 		protected WorkingDictionary<string, bool> Buttons = new WorkingDictionary<string, bool>();
 		protected WorkingDictionary<string, float> Floats = new WorkingDictionary<string, float>();
 
-		public virtual void Clear()
+		public void Clear()
 		{
 			Buttons = new WorkingDictionary<string, bool>();
 			Floats = new WorkingDictionary<string, float>();
 		}
 
-		public virtual bool this[string button]
+		public bool this[string button]
 		{
 			get { return Buttons[button]; }
 			set { Buttons[button] = value; }
@@ -43,7 +43,7 @@ namespace BizHawk.Client.Common
 			return Buttons;
 		}
 
-		public virtual void LatchFrom(IController source)
+		public void LatchFrom(IController source)
 		{
 			foreach (var button in source.Definition.BoolButtons)
 			{

@@ -1,8 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using BizHawk.Emulation.Common;
-using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
@@ -19,15 +19,9 @@ namespace BizHawk.Client.Common
 			_logKey = logKey;
 		}
 
-		public IMovieController MovieControllerAdapter
-		{
-			get
-			{
-				return new Bk2ControllerAdapter(_logKey);
-			}
-		}
+		public IMovieController MovieControllerAdapter => new Bk2ControllerAdapter(_logKey);
 
-		#region ILogEntryGenerator Implementation
+	    #region ILogEntryGenerator Implementation
 
 		public void SetSource(IController source)
 		{
@@ -39,23 +33,11 @@ namespace BizHawk.Client.Common
 			return CreateLogEntry(forInputDisplay: true);
 		}
 
-		public bool IsEmpty
-		{
-			get
-			{
-				return EmptyEntry == GenerateLogEntry();
-			}
-		}
+		public bool IsEmpty => EmptyEntry == GenerateLogEntry();
 
-		public string EmptyEntry
-		{
-			get
-			{
-				return CreateLogEntry(createEmpty: true);
-			}
-		}
+	    public string EmptyEntry => CreateLogEntry(createEmpty: true);
 
-		public string GenerateLogEntry()
+	    public string GenerateLogEntry()
 		{
 			return CreateLogEntry();
 		}
@@ -107,7 +89,9 @@ namespace BizHawk.Client.Common
 			var sb = new StringBuilder();
 
 			if (!forInputDisplay)
+			{
 				sb.Append('|');
+			}
 
 			foreach (var group in _source.Definition.ControlsOrdered)
 			{
@@ -131,9 +115,13 @@ namespace BizHawk.Client.Common
 							}
 
 							if (forInputDisplay && val == mid)
+							{
 								sb.Append("      ");
+							}
 							else
+							{
 								sb.Append(val.ToString().PadLeft(5, ' ')).Append(',');
+							}
 						}
 						else if (_source.Definition.BoolButtons.Contains(button))
 						{
@@ -149,7 +137,9 @@ namespace BizHawk.Client.Common
 					}
 
 					if (!forInputDisplay)
+					{
 						sb.Append('|');
+					}
 				}
 			}
 

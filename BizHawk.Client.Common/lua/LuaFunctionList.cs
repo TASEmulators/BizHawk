@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
@@ -40,8 +39,8 @@ namespace BizHawk.Client.Common
 
 			if (Global.Emulator.MemoryCallbacksAvailable())
 			{
-				var cbSys = Global.Emulator.AsDebuggable().MemoryCallbacks;
-				cbSys.RemoveAll(this.Select(x => x.Callback));
+				var memoryCallbacks = Global.Emulator.AsDebuggable().MemoryCallbacks;
+				memoryCallbacks.RemoveAll(this.Select(x => x.Callback));
 			}
 
 			Clear();

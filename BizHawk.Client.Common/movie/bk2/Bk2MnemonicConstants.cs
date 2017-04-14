@@ -8,9 +8,11 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var key = button.Replace("Key ", "");
+				var key = button.Replace("Key ", string.Empty);
 				if (key.StartsWith("P") && key.Length > 1 && key[1] >= '0' && key[1] <= '9')
+				{
 					key = key.Substring(3);
+				}
 
 				if (SystemOverrides.ContainsKey(Global.Emulator.SystemId) && SystemOverrides[Global.Emulator.SystemId].ContainsKey(key))
 				{

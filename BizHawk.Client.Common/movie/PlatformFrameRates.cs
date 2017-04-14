@@ -50,7 +50,7 @@ namespace BizHawk.Client.Common
 				{ "A78", 59.9227510135505 },
 				{ "Coleco", 59.9227510135505 },
 
-				//according to http://problemkaputt.de/psx-spx.htm
+				// according to http://problemkaputt.de/psx-spx.htm
 				{ "PSX", 44100.0*768*11/7/263/3413 }, // 59.292862562
 				{ "PSX_PAL", 44100.0*768*11/7/314/3406 }, // 49.7645593576
 
@@ -59,7 +59,6 @@ namespace BizHawk.Client.Common
 				{ "C64_NTSC_OLD", NTSC_CARRIER*2/7/262/64 },
 				{ "C64_DREAN", PAL_N_CARRIER*2/7/312/65 },
 				{ "INTV", 59.92 }
-
 
 				// according to ryphecha, using
 				// clocks[2] = { 53.693182e06, 53.203425e06 }; //ntsc console, pal console

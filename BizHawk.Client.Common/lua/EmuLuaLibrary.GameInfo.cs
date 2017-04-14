@@ -15,9 +15,9 @@ namespace BizHawk.Client.Common
 		public GameInfoLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
-		public override string Name { get { return "gameinfo"; } }
+		public override string Name => "gameinfo";
 
-		[LuaMethodAttributes(
+	    [LuaMethodAttributes(
 			"getromname",
 			"returns the path of the currently loaded rom, if a rom is loaded"
 		)]
@@ -93,7 +93,7 @@ namespace BizHawk.Client.Common
 		)]
 		public string GetBoardType()
 		{
-			return Emulator.BoardName ?? "";
+			return Emulator.BoardName ?? string.Empty;
 		}
 
 		[LuaMethodAttributes(

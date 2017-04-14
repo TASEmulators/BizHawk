@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 			}
 
 			var backupName = Filename;
-			backupName = backupName.Insert(Filename.LastIndexOf("."), string.Format(".{0:yyyy-MM-dd HH.mm.ss}", DateTime.Now));
+			backupName = backupName.Insert(Filename.LastIndexOf("."), $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}");
 			backupName = Path.Combine(Global.Config.PathEntries["Global", "Movie backups"].Path, Path.GetFileName(backupName));
 
 			var directory_info = new FileInfo(backupName).Directory;
@@ -107,8 +107,11 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
+
 			if (Header.SavestateBinaryBase64Blob != null)
+			{
 				BinarySavestate = Convert.FromBase64String(Header.SavestateBinaryBase64Blob);
+			}
 
 			Loaded = true;
 			_changes = false;
@@ -138,9 +141,9 @@ namespace BizHawk.Client.Common
 			// No using block because we're sharing the stream and need to give it back undisposed.
 			var sr = new StreamReader(hawkFile.GetStream());
 
-			for (; ; )
+			for (;;)
 			{
-				//read to first space (key/value delimeter), or pipe, or EOF
+				// read to first space (key/value delimeter), or pipe, or EOF
 				int first = sr.Read();
 
 				if (first == -1)
@@ -148,16 +151,16 @@ namespace BizHawk.Client.Common
 					break;
 				} // EOF
 
-				if (first == '|') //pipe: begin input log
+				if (first == '|') // pipe: begin input log
 				{
-					//NOTE - this code is a bit convoluted due to its predating the basic outline of the parser which was upgraded in may 2014
+					// NOTE - this code is a bit convoluted due to its predating the basic outline of the parser which was upgraded in may 2014
 					var line = '|' + sr.ReadLine();
 
-					//how many bytes are left, total?
+					// how many bytes are left, total?
 					long remain = sr.BaseStream.Length - sr.BaseStream.Position;
 
-					//try to find out whether we use \r\n or \n
-					//but only look for 1K characters.
+					// try to find out whether we use \r\n or \n
+					// but only look for 1K characters.
 					bool usesR = false;
 					for (int i = 0; i < 1024; i++)
 					{
@@ -173,19 +176,22 @@ namespace BizHawk.Client.Common
 							break;
 					}
 
-					int lineLen = line.Length + 1; //account for \n
-					if (usesR) lineLen++; //account for \r
+					int lineLen = line.Length + 1; // account for \n
+					if (usesR)
+					{
+						lineLen++; // account for \r
+					}
 
-					_preloadFramecount = (int)(remain / lineLen); //length is remaining bytes / length per line
-					_preloadFramecount++; //account for the current line
+					_preloadFramecount = (int)(remain / lineLen); // length is remaining bytes / length per line
+					_preloadFramecount++; // account for the current line
 					break;
 				}
 				else
 				{
-					//a header line. finish reading key token, to make sure it isn't one of the FORBIDDEN keys
+					// a header line. finish reading key token, to make sure it isn't one of the FORBIDDEN keys
 					var sbLine = new StringBuilder();
 					sbLine.Append((char)first);
-					for (; ; )
+					for (;;)
 					{
 						int c = sr.Read();
 						if (c == -1) break;
@@ -196,21 +202,22 @@ namespace BizHawk.Client.Common
 
 					var line = sbLine.ToString();
 
-					//ignore these suckers, theyre way too big for preloading. seriously, we will get out of memory errors.
+					// ignore these suckers, theyre way too big for preloading. seriously, we will get out of memory errors.
 					var skip = line == HeaderKeys.SAVESTATEBINARYBASE64BLOB;
 
 					if (skip)
 					{
-						//skip remainder of the line
+						// skip remainder of the line
 						sr.DiscardBufferedData();
 						var stream = sr.BaseStream;
-						for (; ; )
+						for (;;)
 						{
 							int c = stream.ReadByte();
 							if (c == -1) break;
 							if (c == '\n') break;
 						}
-						//proceed to next line
+
+						// proceed to next line
 						continue;
 					}
 
@@ -236,10 +243,9 @@ namespace BizHawk.Client.Common
 
 		private void Write(string fn)
 		{
-			if (BinarySavestate != null)
-				Header.SavestateBinaryBase64Blob = Convert.ToBase64String(BinarySavestate);
-			else
-				Header.SavestateBinaryBase64Blob = null;
+			Header.SavestateBinaryBase64Blob = BinarySavestate != null
+				? Convert.ToBase64String(BinarySavestate)
+				: null;
 
 			using (var fs = new FileStream(fn, FileMode.Create, FileAccess.Write, FileShare.Read))
 			{

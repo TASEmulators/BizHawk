@@ -19,9 +19,9 @@ namespace BizHawk.Client.EmuHawk
 		public UserDataLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
-		public override string Name { get { return "userdata"; } }
+		public override string Name => "userdata";
 
-		[LuaMethodAttributes(
+	    [LuaMethodAttributes(
 			"set",
 			"adds or updates the data with the given key with the given value"
 		)]

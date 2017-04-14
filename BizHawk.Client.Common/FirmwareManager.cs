@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 			public string Hash { get; set; }
 		}
 
-		public List<FirmwareEventArgs> RecentlyServed { get; private set; }
+		public List<FirmwareEventArgs> RecentlyServed { get; }
 
 		public class ResolutionInfo
 		{
@@ -53,12 +53,10 @@ namespace BizHawk.Client.Common
 
 		public ResolutionInfo Resolve(FirmwareDatabase.FirmwareRecord record, bool forbidScan = false)
 		{
-			//purpose of forbidScan: sometimes this is called from a loop in Scan(). we dont want to repeatedly DoScanAndResolve in that case, its already been done.
-
+			// purpose of forbidScan: sometimes this is called from a loop in Scan(). we dont want to repeatedly DoScanAndResolve in that case, its already been done.
 			bool first = true;
 
 		RETRY:
-
 			ResolutionInfo resolved;
 			_resolutionDictionary.TryGetValue(record, out resolved);
 
@@ -66,7 +64,10 @@ namespace BizHawk.Client.Common
 			// NOTE: this could result in bad performance in some cases if the scanning happens repeatedly..
 			if (resolved == null && first)
 			{
-				if(!forbidScan) DoScanAndResolve();
+				if (!forbidScan)
+				{
+					DoScanAndResolve();
+				}
 				first = false;
 				goto RETRY;
 			}
@@ -78,14 +79,19 @@ namespace BizHawk.Client.Common
 		public string Request(string sysId, string firmwareId)
 		{
 			var resolved = Resolve(sysId, firmwareId);
-			if (resolved == null) return null;
+			if (resolved == null)
+			{
+				return null;
+			}
+
 			RecentlyServed.Add(new FirmwareEventArgs
-					{
-						SystemId = sysId,
-						FirmwareId = firmwareId,
-						Hash = resolved.Hash,
-						Size = resolved.Size
-					});
+			{
+				SystemId = sysId,
+				FirmwareId = firmwareId,
+				Hash = resolved.Hash,
+				Size = resolved.Size
+			});
+
 			return resolved.FilePath;
 		}
 
@@ -119,12 +125,14 @@ namespace BizHawk.Client.Common
 
 		public void DoScanAndResolve()
 		{
-			//build a list of file sizes. Only those will be checked during scanning
+			// build a list of file sizes. Only those will be checked during scanning
 			HashSet<long> sizes = new HashSet<long>();
 			foreach (var ff in FirmwareDatabase.FirmwareFiles)
+			{
 				sizes.Add(ff.size);
+			}
 
-			using(var reader = new RealFirmwareReader())
+			using (var reader = new RealFirmwareReader())
 			{
 				// build a list of files under the global firmwares path, and build a hash for each of them while we're at it
 				var todo = new Queue<DirectoryInfo>();
@@ -135,7 +143,9 @@ namespace BizHawk.Client.Common
 					var di = todo.Dequeue();
 
 					if (!di.Exists)
+					{
 						continue;
+					}
 
 					// we're going to allow recursing into subdirectories, now. its been verified to work OK
 					foreach (var disub in di.GetDirectories())
@@ -145,8 +155,10 @@ namespace BizHawk.Client.Common
 				
 					foreach (var fi in di.GetFiles())
 					{
-						if(sizes.Contains(fi.Length))
+						if (sizes.Contains(fi.Length))
+						{
 							reader.Read(fi);
+						}
 					}
 				}
 
@@ -203,6 +215,7 @@ namespace BizHawk.Client.Common
 							ri = new ResolutionInfo();
 							_resolutionDictionary[fr] = ri;
 						}
+
 						ri.UserSpecified = true;
 						ri.KnownFirmwareFile = null;
 						ri.FilePath = userSpec;
@@ -239,11 +252,8 @@ namespace BizHawk.Client.Common
 							}
 						}
 					}
-
-				} //foreach(firmware record)
-			} //using(new RealFirmwareReader())
-		} //DoScanAndResolve()
-
-	} //class FirmwareManager
-
-} //namespace
+				} // foreach(firmware record)
+			} // using(new RealFirmwareReader())
+		} // DoScanAndResolve()
+	} // class FirmwareManager
+} // namespace

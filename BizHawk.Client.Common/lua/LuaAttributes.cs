@@ -11,8 +11,8 @@ namespace BizHawk.Client.Common
 			Description = description;
 		}
 
-		public string Name { get; set; }
-		public string Description { get; set; }
+		public string Name { get; }
+		public string Description { get; }
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
@@ -23,6 +23,6 @@ namespace BizHawk.Client.Common
 			Released = released;
 		}
 
-		public bool Released { get; set; }
+		public bool Released { get; }
 	}
 }

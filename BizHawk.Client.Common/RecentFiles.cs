@@ -9,8 +9,13 @@ namespace BizHawk.Client.Common
 	[JsonObject]
 	public class RecentFiles : IEnumerable
 	{
-		private List<string> recentlist;
-		public RecentFiles() : this(8) { }
+		private readonly List<string> recentlist;
+
+		public RecentFiles()
+			: this(8)
+		{
+		}
+
 		public RecentFiles(int max)
 		{
 			recentlist = new List<string>();
@@ -26,27 +31,15 @@ namespace BizHawk.Client.Common
 		public bool Frozen { get; set; }
 
 		[JsonIgnore]
-		public bool Empty
-		{
-			get { return !recentlist.Any(); }
-		}
+		public bool Empty => !recentlist.Any();
 
-		[JsonIgnore]
-		public int Count
-		{
-			get { return recentlist.Count; }
-		}
+	    [JsonIgnore]
+		public int Count => recentlist.Count;
 
-		[JsonIgnore]
-		public string MostRecent
-		{
-			get
-			{
-				return recentlist.Any() ? recentlist[0] : string.Empty;
-			}
-		}
+	    [JsonIgnore]
+		public string MostRecent => recentlist.Any() ? recentlist[0] : string.Empty;
 
-		public string this[int index]
+	    public string this[int index]
 		{
 			get
 			{

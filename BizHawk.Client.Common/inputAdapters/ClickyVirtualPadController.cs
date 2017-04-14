@@ -69,5 +69,4 @@ namespace BizHawk.Client.Common
 
 		private readonly HashSet<string> _pressed = new HashSet<string>();
 	}
-
 }

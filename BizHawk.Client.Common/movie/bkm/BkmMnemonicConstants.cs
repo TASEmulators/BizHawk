@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 			{
 				"Gameboy Controller", new Dictionary<string, string>
 				{
-					{"Up", "U"}, {"Down", "D"}, {"Left", "L"}, {"Right", "R"}, {"Select", "s"}, {"Start", "S"}, {"B", "B"}, {"A", "A"}
+					{ "Up", "U" }, { "Down", "D" }, { "Left", "L" }, { "Right", "R" }, { "Select", "s" }, { "Start", "S" }, { "B", "B" }, { "A", "A" }
 				}
 			},
 			{

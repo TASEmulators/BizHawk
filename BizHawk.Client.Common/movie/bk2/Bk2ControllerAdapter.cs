@@ -30,7 +30,7 @@ namespace BizHawk.Client.Common
 			{
 				var groups = _logKey.Split(new[] { "#" }, StringSplitOptions.RemoveEmptyEntries);
 				var controls = groups
-					.Select(@group => @group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList())
+					.Select(group => group.Split(new[] { "|" }, StringSplitOptions.RemoveEmptyEntries).ToList())
 					.ToList();
 
 				_type.ControlsFromLog = controls;
@@ -162,7 +162,7 @@ namespace BizHawk.Client.Common
 			if (!string.IsNullOrWhiteSpace(mnemonic))
 			{
 				var def = Global.Emulator.ControllerDefinition;
-				var trimmed = mnemonic.Replace("|", "");
+				var trimmed = mnemonic.Replace("|", string.Empty);
 				var buttons = Definition.ControlsOrdered.SelectMany(x => x).ToList();
 				var iterator = 0;
 
@@ -177,7 +177,7 @@ namespace BizHawk.Client.Common
 					{
 						var temp = trimmed.Substring(iterator, 5);
 						var val = int.Parse(temp.Trim());
-						this.MyFloatControls[key] = val;
+						MyFloatControls[key] = val;
 
 						iterator += 6;
 					}
