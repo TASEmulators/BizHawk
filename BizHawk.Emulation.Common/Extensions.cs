@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using BizHawk.Common.ReflectionExtensions;
 using System.Runtime.CompilerServices;
 
 namespace BizHawk.Emulation.Common.IEmulatorExtensions
@@ -37,8 +36,6 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 		/// <summary>
 		/// Returns the core's VideoProvider, or a suitable dummy provider
 		/// </summary>
-		/// <param name="core"></param>
-		/// <returns></returns>
 		public static IVideoProvider AsVideoProviderOrDefault(this IEmulator core)
 		{
 			return core.ServiceProvider.GetService<IVideoProvider>()
@@ -67,10 +64,8 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 		/// </summary>
 		public static ISoundProvider AsSoundProviderOrDefault(this IEmulator core)
 		{
-			var ret = core.ServiceProvider.GetService<ISoundProvider>();
-			if (ret == null)
-				ret = CachedNullSoundProviders.GetValue(core, e => new NullSound(e.CoreComm.VsyncNum, e.CoreComm.VsyncDen));
-			return ret;
+			return core.ServiceProvider.GetService<ISoundProvider>()
+				?? CachedNullSoundProviders.GetValue(core, e => new NullSound(e.CoreComm.VsyncNum, e.CoreComm.VsyncDen));
 		}
 
 		public static bool HasMemoryDomains(this IEmulator core)
@@ -268,8 +263,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 				return false;
 			}
 			
-			//once upon a time, we did a try { poke(peek) } here, but that was before Writable was added. the poke(peek) is not acceptable. If there are further problems, make sure Writable is correct.
-
+			// once upon a time, we did a try { poke(peek) } here, but that was before Writable was added. the poke(peek) is not acceptable. If there are further problems, make sure Writable is correct.
 			return true;
 		}
 

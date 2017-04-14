@@ -66,7 +66,9 @@ namespace BizHawk.Emulation.Common
 			for (int i = 0; i < cbs.Count; i++)
 			{
 				if (!cbs[i].Address.HasValue || cbs[i].Address == (addr & cbs[i].AddressMask))
+				{
 					cbs[i].Callback();
+				}
 			}
 		}
 
@@ -94,22 +96,13 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public bool HasReads
-		{
-			get { return _hasReads; }
-		}
+		public bool HasReads => _hasReads;
 
-		public bool HasWrites
-		{
-			get { return _hasWrites; }
-		}
+	    public bool HasWrites => _hasWrites;
 
-		public bool HasExecutes
-		{
-			get { return _hasExecutes; }
-		}
+	    public bool HasExecutes => _hasExecutes;
 
-		private void UpdateHasVariables()
+	    private void UpdateHasVariables()
 		{
 			_hasReads = Reads.Count > 0;
 			_hasWrites = Writes.Count > 0;
@@ -122,14 +115,20 @@ namespace BizHawk.Emulation.Common
 			var writesToRemove = Writes.Where(imc => imc.Callback == action).ToList();
 			var execsToRemove = Execs.Where(imc => imc.Callback == action).ToList();
 
-			foreach(var read in readsToRemove)
+			foreach (var read in readsToRemove)
+			{
 				Reads.Remove(read);
+			}
 
-			foreach(var write in writesToRemove)
+			foreach (var write in writesToRemove)
+			{
 				Writes.Remove(write);
+			}
 
-			foreach(var exec in execsToRemove)
+			foreach (var exec in execsToRemove)
+			{
 				Execs.Remove(exec);
+			}
 
 			UpdateHasVariables();
 
@@ -142,7 +141,10 @@ namespace BizHawk.Emulation.Common
 			{
 				bool newEmpty = !HasReads && !HasWrites && !HasExecutes;
 				if (newEmpty != _empty)
+				{
 					Changes();
+				}
+
 				_empty = newEmpty;
 			}
 		}
@@ -154,11 +156,15 @@ namespace BizHawk.Emulation.Common
 			{
 				changed |= RemoveInternal(action) > 0;
 			}
+
 			if (changed)
 			{
 				bool newEmpty = !HasReads && !HasWrites && !HasExecutes;
 				if (newEmpty != _empty)
+				{
 					Changes();
+				}
+
 				_empty = newEmpty;
 			}
 
@@ -168,17 +174,26 @@ namespace BizHawk.Emulation.Common
 		public void Clear()
 		{
 			// Remove one-by-one to avoid NotifyCollectionChangedAction.Reset events.
-			for(int i = (Reads.Count - 1); i >= 0; i--)
+			for (int i = Reads.Count - 1; i >= 0; i--)
+			{
 				Reads.RemoveAt(i);
+			}
 
-			for(int i = (Reads.Count - 1); i >= 0; i--)
+			for (int i = Reads.Count - 1; i >= 0; i--)
+			{
 				Writes.RemoveAt(i);
+			}
 
-			for(int i = (Reads.Count - 1); i >= 0; i--)
+			for (int i = Reads.Count - 1; i >= 0; i--)
+			{
 				Execs.RemoveAt(i);
+			}
 
 			if (!_empty)
+			{
 				Changes();
+			}
+
 			_empty = true;
 
 			UpdateHasVariables();
@@ -195,10 +210,7 @@ namespace BizHawk.Emulation.Common
 
 		private void Changes()
 		{
-			if (ActiveChanged != null)
-			{
-				ActiveChanged();
-			}
+		    ActiveChanged?.Invoke();
 		}
 
 		public void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -208,19 +220,13 @@ namespace BizHawk.Emulation.Common
 				case NotifyCollectionChangedAction.Add:
 					foreach(IMemoryCallback callback in args.NewItems)
 					{
-						if(CallbackAdded != null)
-						{
-							CallbackAdded(callback);
-						}
+					    CallbackAdded?.Invoke(callback);
 					}
 					break;
 				case NotifyCollectionChangedAction.Remove:
 					foreach(IMemoryCallback callback in args.OldItems)
 					{
-						if(CallbackRemoved != null)
-						{
-							CallbackRemoved(callback);
-						}
+					    CallbackRemoved?.Invoke(callback);
 					}
 					break;
 			}
@@ -276,13 +282,13 @@ namespace BizHawk.Emulation.Common
 			Name = name;
 			Callback = callback;
 			Address = address;
-			AddressMask = (mask.HasValue ? mask : 0xFFFFFFFF);
+			AddressMask = mask ?? 0xFFFFFFFF;
 		}
 
-		public MemoryCallbackType Type { get; private set; }
-		public string Name { get; private set; }
-		public Action Callback { get; private set; }
-		public uint? Address { get; private set; }
-		public uint? AddressMask { get; private set; }
+		public MemoryCallbackType Type { get; }
+		public string Name { get; }
+		public Action Callback { get; }
+		public uint? Address { get; }
+		public uint? AddressMask { get; }
 	}
 }

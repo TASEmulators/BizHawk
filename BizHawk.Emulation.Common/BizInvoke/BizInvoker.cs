@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.InteropServices;
+
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common.BizInvoke
@@ -24,9 +24,11 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			{
 				var ret = Activator.CreateInstance(ImplType);
 				foreach (var f in Hooks)
+				{
 					f(ret, dll);
-				if (ConnectMonitor != null)
-					ConnectMonitor(ret, monitor);
+				}
+
+				ConnectMonitor?.Invoke(ret, monitor);
 				return ret;
 			}
 		}
@@ -40,6 +42,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 		/// the assembly that all proxies are placed in
 		/// </summary>
 		private static readonly AssemblyBuilder ImplAssemblyBuilder;
+
 		/// <summary>
 		/// the module that all proxies are placed in
 		/// </summary>
@@ -68,8 +71,12 @@ namespace BizHawk.Emulation.Common.BizInvoke
 					Impls.Add(baseType, impl);
 				}
 			}
+
 			if (impl.ConnectMonitor != null)
+			{
 				throw new InvalidOperationException("Class was previously proxied with a monitor!");
+			}
+
 			return (T)impl.Create(dll, null);
 		}
 
@@ -86,22 +93,33 @@ namespace BizHawk.Emulation.Common.BizInvoke
 					Impls.Add(baseType, impl);
 				}
 			}
+
 			if (impl.ConnectMonitor == null)
+			{
 				throw new InvalidOperationException("Class was previously proxied without a monitor!");
+			}
+
 			return (T)impl.Create(dll, monitor);
 		}
 
 		private static InvokerImpl CreateProxy(Type baseType, bool monitor)
 		{
 			if (baseType.IsSealed)
+			{
 				throw new InvalidOperationException("Can't proxy a sealed type");
+			}
+
 			if (!baseType.IsPublic)
+			{
 				// the proxy type will be in a new assembly, so public is required here
 				throw new InvalidOperationException("Type must be public");
+			}
 
 			var baseConstructor = baseType.GetConstructor(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, Type.EmptyTypes, null);
 			if (baseConstructor == null)
+			{
 				throw new InvalidOperationException("Base type must have a zero arg constructor");
+			}
 
 			var baseMethods = baseType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
 				.Select(m => new
@@ -113,7 +131,9 @@ namespace BizHawk.Emulation.Common.BizInvoke
 				.ToList();
 
 			if (baseMethods.Count == 0)
+			{
 				throw new InvalidOperationException("Couldn't find any [BizImport] methods to proxy");
+			}
 
 			{
 				var uo = baseMethods.FirstOrDefault(a => !a.Info.IsVirtual || a.Info.IsFinal);
@@ -288,6 +308,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 				// arg 0 is this, so + 1
 				nativeParamTypes.Add(EmitParamterLoad(il, i + 1, paramTypes[i]));
 			}
+
 			il.Emit(OpCodes.Ldarg_0);
 			il.Emit(OpCodes.Ldfld, field);
 			il.EmitCalli(OpCodes.Calli, nativeCall, returnType, nativeParamTypes.ToArray());
@@ -452,13 +473,9 @@ namespace BizHawk.Emulation.Common.BizInvoke
 	[AttributeUsage(AttributeTargets.Method)]
 	public class BizImportAttribute : Attribute
 	{
-		public CallingConvention CallingConvention
-		{
-			get { return _callingConvention; }
-		}
-		private readonly CallingConvention _callingConvention;
+		public CallingConvention CallingConvention { get; }
 
-		/// <summary>
+	    /// <summary>
 		/// name of entry point; if not given, the method's name is used
 		/// </summary>
 		public string EntryPoint { get; set; }
@@ -469,12 +486,11 @@ namespace BizHawk.Emulation.Common.BizInvoke
 		public bool Compatibility { get; set; }
 
 		/// <summary>
-		/// 
 		/// </summary>
 		/// <param name="c">unmanaged calling convention</param>
 		public BizImportAttribute(CallingConvention c)
 		{
-			_callingConvention = c;
+			CallingConvention = c;
 		}
 	}
 }

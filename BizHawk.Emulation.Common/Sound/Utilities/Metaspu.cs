@@ -34,17 +34,11 @@ namespace BizHawk.Emulation.Common
 			buffer.clear();
 		}
 
-		public bool CanProvideAsync
-		{
-			get { return true; }
-		}
+		public bool CanProvideAsync => true;
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Async; }
-		}
+	    public SyncSoundMode SyncMode => SyncSoundMode.Async;
 
-		public void SetSyncMode(SyncSoundMode mode)
+	    public void SetSyncMode(SyncSoundMode mode)
 		{
 			if (mode != SyncSoundMode.Async)
 			{
@@ -64,7 +58,7 @@ namespace BizHawk.Emulation.Common
 		void enqueue_sample(short left, short right);
 		void clear();
 
-		//returns the number of samples actually supplied, which may not match the number requested
+		// returns the number of samples actually supplied, which may not match the number requested
 		// ^^ what the hell is that supposed to mean.
 		// the entire point of an ISynchronzingAudioBuffer
 		// is to provide exact amounts of output samples,
@@ -134,7 +128,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		//returns the number of samples actually supplied, which may not match the number requested
+		// returns the number of samples actually supplied, which may not match the number requested
 		public int output_samples(short[] buf, int samples_requested)
 		{
 			int ctr = 0;
@@ -253,6 +247,7 @@ namespace BizHawk.Emulation.Common
 						size--;
 					}
 				}
+
 				left = curr[0];
 				right = curr[1];
 			}
@@ -267,7 +262,7 @@ namespace BizHawk.Emulation.Common
 			public ssamp(short ll, short rr) { l = ll; r = rr; }
 		};
 
-		List<ssamp> sampleQueue = new List<ssamp>();
+	    readonly List<ssamp> sampleQueue = new List<ssamp>();
 
 		// returns values going between 0 and y-1 in a saw wave pattern, based on x
 		static int pingpong(int x, int y)

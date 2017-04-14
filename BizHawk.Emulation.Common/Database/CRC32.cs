@@ -1,5 +1,5 @@
-﻿//we could get a little list of crcs from here and make it clear which crc this class was for, and expose others
-//http://www.ross.net/crc/download/crc_v3.txt
+﻿// we could get a little list of crcs from here and make it clear which crc this class was for, and expose others
+// http://www.ross.net/crc/download/crc_v3.txt
 
 namespace BizHawk.Emulation.Common
 {
@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Common
 					else
 						crc >>= 1;
 				}
+
 				CRC32Table[i] = crc;
 			}
 		}
@@ -31,9 +32,8 @@ namespace BizHawk.Emulation.Common
 			uint Result = 0xFFFFFFFF;
 			foreach (var b in data)
 				Result = (((Result) >> 8) ^ CRC32Table[b ^ ((Result) & 0xFF)]);
+
 			return (int) ~Result;
 		}
 	}
-
-	
 }

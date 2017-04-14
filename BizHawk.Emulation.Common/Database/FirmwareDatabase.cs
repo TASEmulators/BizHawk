@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Common
 	{
 		static FirmwareDatabase()
 		{
-			//FDS has two OK variants  (http://tcrf.net/Family_Computer_Disk_System)
+			// FDS has two OK variants  (http://tcrf.net/Family_Computer_Disk_System)
 			var fds_nintendo = File("57FE1BDEE955BB48D357E463CCBF129496930B62", 8192, "disksys-nintendo.rom", "Bios (Nintendo)");
 			var fds_twinfc = File("E4E41472C454F928E53EB10E0509BF7D1146ECC1", 8192, "disksys-nintendo.rom", "Bios (TwinFC)");
 			Firmware("NES", "Bios_FDS", "Bios");

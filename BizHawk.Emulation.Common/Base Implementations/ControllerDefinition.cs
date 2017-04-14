@@ -65,12 +65,18 @@ namespace BizHawk.Emulation.Common
 
 		public void ApplyAxisConstraints(string constraintClass, IDictionary<string, float> floatButtons)
 		{
-			if (AxisConstraints == null) return;
+			if (AxisConstraints == null)
+			{
+				return;
+			}
 
 			foreach (var constraint in AxisConstraints)
 			{
 				if (constraint.Class != constraintClass)
+				{
 					continue;
+				}
+
 				switch (constraint.Type)
 				{
 					case AxisConstraintType.Circular:

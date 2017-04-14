@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="ITraceable"/> 
 	/// <seealso cref="IDebuggable"/> 
 	/// <seealso cref="IMemoryDomains"/> 
-	/// /// <seealso cref="IDisassemblable"/> 
+	/// <seealso cref="IDisassemblable"/> 
 	public abstract class CallbackBasedTraceBuffer : ITraceable
 	{
 		public CallbackBasedTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler)
@@ -50,12 +50,9 @@ namespace BizHawk.Emulation.Common
 
 		private ITraceSink _sink;
 
-		public bool Enabled
-		{
-			get { return Sink != null; }
-		}
+		public bool Enabled => Sink != null;
 
-		public void Put(TraceInfo info)
+	    public void Put(TraceInfo info)
 		{
 			Sink.Put(info);
 		}
@@ -87,27 +84,15 @@ namespace BizHawk.Emulation.Common
 				Callback = callback;
 			}
 
-			public MemoryCallbackType Type
-			{
-				get { return MemoryCallbackType.Execute; }
-			}
+			public MemoryCallbackType Type => MemoryCallbackType.Execute;
 
-			public string Name
-			{
-				get { return "Trace Logging"; }
-			}
+		    public string Name => "Trace Logging";
 
-			public Action Callback { get; private set; }
+		    public Action Callback { get; }
 
-			public uint? Address
-			{
-				get { return null; }
-			}
+			public uint? Address => null;
 
-			public uint? AddressMask
-			{
-				get { return null; }
-			}
+			public uint? AddressMask => null;
 		}
 	}
 }

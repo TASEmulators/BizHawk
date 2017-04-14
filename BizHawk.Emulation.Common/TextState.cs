@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 
@@ -29,6 +27,7 @@ namespace BizHawk.Emulation.Common
 			{
 				return Data.Count > 0;
 			}
+
 			public bool ShouldSerializeObjects()
 			{
 				return Objects.Count > 0;
@@ -39,6 +38,7 @@ namespace BizHawk.Emulation.Common
 
 		[JsonIgnore]
 		Stack<Node> Nodes;
+
 		[JsonIgnore]
 		Node Current { get { return Nodes.Peek(); } }
 
@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.Common
 			Marshal.Copy(data, d, 0, length);
 			Current.Data.Add(name, d); // will except for us if the key is already present
 		}
+
 		public void Load(IntPtr data, int length, string name)
 		{
 			byte[] d = Current.Data[name];
@@ -61,17 +62,20 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException();
 			Marshal.Copy(d, 0, data, length);
 		}
+
 		public void EnterSectionSave(string name)
 		{
 			Node next = new Node();
 			Current.Objects.Add(name, next);
 			Nodes.Push(next);
 		}
+
 		public void EnterSectionLoad(string name)
 		{
 			Node next = Current.Objects[name];
 			Nodes.Push(next);
 		}
+
 		public void EnterSection(string name)
 		{
 			// works for either save or load, but as a consequence cannot report intelligent
@@ -85,6 +89,7 @@ namespace BizHawk.Emulation.Common
 			}
 			Nodes.Push(next);
 		}
+
 		public void ExitSection(string name)
 		{
 			Node last = Nodes.Pop();
@@ -105,6 +110,7 @@ namespace BizHawk.Emulation.Common
 				ExitSection = new TextStateFPtrs.SectionFunction(ExitSection)
 			};
 		}
+
 		public TextStateFPtrs GetFunctionPointersLoad()
 		{
 			return new TextStateFPtrs
@@ -116,6 +122,7 @@ namespace BizHawk.Emulation.Common
 			};
 		}
 	}
+
 	[StructLayout(LayoutKind.Sequential)]
 	public struct TextStateFPtrs
 	{
@@ -129,6 +136,4 @@ namespace BizHawk.Emulation.Common
 		public SectionFunction EnterSection;
 		public SectionFunction ExitSection;
 	}
-
-
 }

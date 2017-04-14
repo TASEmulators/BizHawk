@@ -29,21 +29,26 @@ namespace BizHawk.Emulation.Common
 
 		#region IEmulator
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition
-		{
-			get { return NullController.Instance.Definition; }
-		}
+		public ControllerDefinition ControllerDefinition => NullController.Instance.Definition;
 
-		public IController Controller { get; set; }
+	    public IController Controller { get; set; }
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			if (render == false) return;
+			if (render == false)
+			{
+				return;
+			}
+
 			if (!_settings.SnowyDisplay)
 			{
-				if (_frameBufferClear) return;
+				if (_frameBufferClear)
+				{
+					return;
+				}
+
 				_frameBufferClear = true;
 				Array.Clear(FrameBuffer, 0, 256 * 192);
 				return;
@@ -69,22 +74,24 @@ namespace BizHawk.Emulation.Common
 			Frame++;
 		}
 
-		public int Frame { get; set; }
+		public int Frame { get; private set; }
 
-		public string SystemId { get { return "NULL"; } }
+		public string SystemId => "NULL";
 
-		public bool DeterministicEmulation { get { return true; } }
+	    public bool DeterministicEmulation => true;
 
-		public void ResetCounters()
+	    public void ResetCounters()
 		{
 			Frame = 0;
 		}
 
-		public string BoardName { get { return null; } }
+		public string BoardName => null;
 
-		public CoreComm CoreComm { get; private set; }
+	    public CoreComm CoreComm { get; }
 
-		public void Dispose() { }
+		public void Dispose()
+		{
+		}
 
 		#endregion
 
@@ -95,32 +102,17 @@ namespace BizHawk.Emulation.Common
 			return FrameBuffer;
 		}
 
-		public int VirtualWidth
-		{
-			get { return 256; }
-		}
+		public int VirtualWidth => 256;
 
-		public int VirtualHeight
-		{
-			get { return 192; }
-		}
+	    public int VirtualHeight => 192;
 
-		public int BufferWidth
-		{
-			get { return 256; }
-		}
+	    public int BufferWidth => 256;
 
-		public int BufferHeight
-		{
-			get { return 192; }
-		}
+	    public int BufferHeight => 192;
 
-		public int BackgroundColor
-		{
-			get { return 0; }
-		}
+	    public int BackgroundColor => 0;
 
-		#endregion
+	    #endregion
 
 		#region ISoundProvider
 
@@ -166,12 +158,9 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public bool CanProvideAsync
-		{
-			get { return true; }
-		}
+		public bool CanProvideAsync => true;
 
-		public SyncSoundMode SyncMode { get; private set; }
+	    public SyncSoundMode SyncMode { get; private set; }
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
