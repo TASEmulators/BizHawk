@@ -67,8 +67,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			ScanlineHookManager = new MyScanlineHookManager(this);
 
 			//TODO: set correct port inputs from sync settings
-			api.SetInputPortBeforeInit(0, LibsnesApi.SNES_INPUT_PORT.Joypad);
-			api.SetInputPortBeforeInit(1, LibsnesApi.SNES_INPUT_PORT.Joypad);
+			_controllerDeck = new LibsnesControllerDeck(LibsnesControllerDeck.ControllerType.Gamepad,
+				LibsnesControllerDeck.ControllerType.Gamepad);
+			_controllerDeck.NativeInit(api);
 
 			api.CMD_init();
 
@@ -226,6 +227,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 
 		public bool IsSGB { get; private set; }
+
+		private LibsnesControllerDeck _controllerDeck;
 
 		/// <summary>disable all external callbacks.  the front end should not even know the core is frame advancing</summary>
 		bool nocallbacks = false;
@@ -507,39 +510,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// <returns>for regular controllers, one bit D0 of button status.  for other controls, varying ranges depending on id</returns>
 		ushort snes_input_state(int port, int device, int index, int id)
 		{
-			// as this is implemented right now, only P1 and P2 normal controllers work
-
-			// port = 0, oninputpoll = 2: left port was strobed
-			// port = 1, oninputpoll = 3: right port was strobed
-
-			// InputCallbacks.Call();
-			//Console.WriteLine("{0} {1} {2} {3}", port, device, index, id);
-
-			string key = "P" + (1 + port) + " ";
-			if ((LibsnesApi.SNES_DEVICE)device == LibsnesApi.SNES_DEVICE.JOYPAD)
-			{
-				switch ((LibsnesApi.SNES_DEVICE_ID)id)
-				{
-					case LibsnesApi.SNES_DEVICE_ID.JOYPAD_A: key += "A"; break;
-					case LibsnesApi.SNES_DEVICE_ID.JOYPAD_B: key += "B"; break;
-					case LibsnesApi.SNES_DEVICE_ID.JOYPAD_X: key += "X"; break;
-					case LibsnesApi.SNES_DEVICE_ID.JOYPAD_Y: key += "Y"; break;
-					case LibsnesApi.SNES_DEVICE_ID.JOYPAD_UP: key += "Up"; break;
-					case LibsnesApi.SNES_DEVICE_ID.JOYPAD_DOWN: key += "Down"; break;
-					case LibsnesApi.SNES_DEVICE_ID.JOYPAD_LEFT: key += "Left"; break;
-					case LibsnesApi.SNES_DEVICE_ID.JOYPAD_RIGHT: key += "Right"; break;
-					case LibsnesApi.SNES_DEVICE_ID.JOYPAD_L: key += "L"; break;
-					case LibsnesApi.SNES_DEVICE_ID.JOYPAD_R: key += "R"; break;
-					case LibsnesApi.SNES_DEVICE_ID.JOYPAD_SELECT: key += "Select"; break;
-					case LibsnesApi.SNES_DEVICE_ID.JOYPAD_START: key += "Start"; break;
-					default: return 0;
-				}
-
-				return (ushort)(Controller.IsPressed(key) ? 1 : 0);
-			}
-
-			return 0;
-
+			return _controllerDeck.CoreInputState(Controller, port, device, index, id);
 		}
 
 		void snes_input_poll()

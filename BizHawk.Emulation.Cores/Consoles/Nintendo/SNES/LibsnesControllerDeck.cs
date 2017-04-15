@@ -39,6 +39,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			List<ControlDefUnMerger> tmp;
 			Definition = ControllerDefinitionMerger.GetMerged(_ports.Select(p => p.Definition), out tmp);
 			_mergers = tmp.ToArray();
+
+			// add buttons that the core itself will handle
+			Definition.BoolButtons.Add("Reset");
+			Definition.BoolButtons.Add("Power");
+			Definition.Name = "SNES Controller";
 		}
 
 		public void NativeInit(LibsnesApi api)
@@ -115,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 	}
 
-	public class SnesMultitapController: ILibsnesController
+	public class SnesMultitapController : ILibsnesController
 	{
 		public LibsnesApi.SNES_INPUT_PORT PortType { get; } = LibsnesApi.SNES_INPUT_PORT.Multitap;
 
