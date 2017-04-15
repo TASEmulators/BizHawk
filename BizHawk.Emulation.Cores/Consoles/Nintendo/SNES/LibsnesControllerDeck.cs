@@ -165,9 +165,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			"R"
 		};
 
+		private static int ButtonOrder(string btn)
+		{
+			var order = new Dictionary<string, int>
+			{
+				["Up"] = 0,
+				["Down"] = 1,
+				["Left"] = 2,
+				["Right"] = 3,
+
+				["Select"] = 4,
+				["Start"] = 5,
+
+				["Y"] = 6,
+				["B"] = 7,
+
+				["X"] = 8,
+				["A"] = 9,
+
+				["L"] = 10,
+				["R"] = 11
+			};
+
+			return order[btn];
+		}
+
 		private static readonly ControllerDefinition _definition = new ControllerDefinition
 		{
-			BoolButtons = Enumerable.Range(0, 4).SelectMany(i => Buttons.Select(b => i + b)).ToList()
+			BoolButtons = Enumerable.Range(0, 4)
+			.SelectMany(i => Buttons
+				.OrderBy(ButtonOrder)
+				.Select(b => i + b))
+			.ToList()
 		};
 
 		public ControllerDefinition Definition { get; } = _definition;
