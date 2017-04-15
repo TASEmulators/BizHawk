@@ -906,6 +906,7 @@
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_Enums.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_QUERY.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_SIG.cs" />
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesControllerDeck.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.cs" />
     <Compile Include="Consoles\Nintendo\SNES\SnesColors.cs" />
     <Compile Include="Consoles\Nintendo\SNES\SNESGraphicsDecoder.cs" />
