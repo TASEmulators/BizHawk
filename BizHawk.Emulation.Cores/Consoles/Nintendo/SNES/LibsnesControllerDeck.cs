@@ -103,9 +103,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			"0R"
 		};
 
+		private static int ButtonOrder(string btn)
+		{
+			var order = new Dictionary<string, int>
+			{
+				["0Up"] = 0,
+				["0Down"] = 1,
+				["0Left"] = 2,
+				["0Right"] = 3,
+
+				["0Select"] = 4,
+				["0Start"] = 5,
+
+				["0Y"] = 6,
+				["0B"] = 7,
+
+				["0X"] = 8,
+				["0A"] = 9,
+				
+				["0L"] = 10,
+				["0R"] = 11
+			};
+
+			return order[btn];
+		}
+
 		private static readonly ControllerDefinition _definition = new ControllerDefinition
 		{
-			BoolButtons = Buttons.ToList()
+			BoolButtons = Buttons.OrderBy(ButtonOrder).ToList()
 		};
 
 		public ControllerDefinition Definition { get; } = _definition;
