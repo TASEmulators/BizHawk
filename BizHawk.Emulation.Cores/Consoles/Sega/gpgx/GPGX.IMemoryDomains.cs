@@ -53,15 +53,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				delegate (long addr)
 				{
 					var a = (uint)addr;
-					//if (a >= 0x1000000)
-						//throw new ArgumentOutOfRangeException();
+					if (a >= 0x1000000)
+						throw new ArgumentOutOfRangeException();
 					return LibGPGX.gpgx_peek_m68k_bus(a);
 				},
 				delegate (long addr, byte val)
 				{
 					var a = (uint)addr;
-					//if (a >= 0x1000000)
-						//throw new ArgumentOutOfRangeException();
+					if (a >= 0x1000000)
+						throw new ArgumentOutOfRangeException();
 					LibGPGX.gpgx_write_m68k_bus(a, val);
 				}, 2);
 
