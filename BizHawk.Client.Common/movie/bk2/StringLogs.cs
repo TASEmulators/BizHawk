@@ -104,7 +104,7 @@ namespace BizHawk.Client.Common
 
 		public int Count => Offsets.Count;
 
-	    public void Clear()
+		public void Clear()
 		{
 			stream.SetLength(0);
 			Offsets.Clear();

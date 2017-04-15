@@ -262,38 +262,38 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public override string Diff => FormatValue(_previous - _value);
 
-	    /// <summary>
+		/// <summary>
 		/// Get the maximum possible value
 		/// </summary>
 		public override uint MaxValue => uint.MaxValue;
 
-	    /// <summary>
+		/// <summary>
 		/// Get the current value
 		/// </summary>
 		public override int Value => (int)GetDWord();
 
-	    /// <summary>
+		/// <summary>
 		/// Gets the current value
 		/// but with stuff I don't understand
 		/// </summary>
 		public override int ValueNoFreeze => (int)GetDWord(true);
 
-	    /// <summary>
+		/// <summary>
 		/// Get a string representation of the current value
 		/// </summary>
 		public override string ValueString => FormatValue(GetDWord());
 
-	    /// <summary>
+		/// <summary>
 		/// Get the previous value
 		/// </summary>
 		public override int Previous => (int)_previous;
 
-	    /// <summary>
+		/// <summary>
 		/// Get a string representation of the previous value
 		/// </summary>
 		public override string PreviousStr => FormatValue(_previous);
 
-	    #endregion Implements
+		#endregion Implements
 
 		#endregion
 	}

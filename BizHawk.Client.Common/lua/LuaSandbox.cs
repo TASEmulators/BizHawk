@@ -92,7 +92,7 @@ namespace BizHawk.Client.Common
 			{
 				Console.WriteLine(ex);
 				Logger(ex.ToString());
-			    exceptionCallback?.Invoke();
+				exceptionCallback?.Invoke();
 			}
 			finally
 			{

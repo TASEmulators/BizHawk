@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 	{
 		public ControllerDefinition Definition => Source.Definition;
 
-	    public bool IsPressed(string button)
+		public bool IsPressed(string button)
 		{
 			return Source.StickyIsInEffect(button)
 				|| SourceStickyOr.StickyIsInEffect(button);
@@ -55,7 +55,7 @@ namespace BizHawk.Client.Common
 
 		public ControllerDefinition Definition => Source.Definition;
 
-	    public bool IsPressed(string button)
+		public bool IsPressed(string button)
 		{
 			var source = Source.IsPressed(button);
 			source ^= stickySet.Contains(button);
@@ -282,7 +282,7 @@ namespace BizHawk.Client.Common
 
 		public HashSet<string> CurrentStickies => new HashSet<string>(_boolPatterns.Keys);
 
-	    public void ClearStickies()
+		public void ClearStickies()
 		{
 			_boolPatterns.Clear();
 			_floatPatterns.Clear();

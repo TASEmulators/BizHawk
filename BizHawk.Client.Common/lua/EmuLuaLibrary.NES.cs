@@ -31,14 +31,14 @@ namespace BizHawk.Client.Common
 
 		private bool NESAvailable => _neshawk != null || _quicknes != null;
 
-	    private bool HasMemoryDOmains => _memoryDomains != null;
+		private bool HasMemoryDOmains => _memoryDomains != null;
 
-	    public NesLuaLibrary(Lua lua, Action<string> logOutputCallback)
+		public NesLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
 		public override string Name => "nes";
 
-	    [LuaMethodAttributes(
+		[LuaMethodAttributes(
 			"addgamegenie",
 			"Adds the specified game genie code. If an NES game is not currently loaded or the code is not a valid game genie code, this will have no effect"
 		)]

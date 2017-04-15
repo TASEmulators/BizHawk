@@ -475,7 +475,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 	{
 		public CallingConvention CallingConvention { get; }
 
-	    /// <summary>
+		/// <summary>
 		/// name of entry point; if not given, the method's name is used
 		/// </summary>
 		public string EntryPoint { get; set; }

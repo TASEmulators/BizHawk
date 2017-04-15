@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 
 		public int Count => _cheatList.Count;
 
-	    public int CheatCount
+		public int CheatCount
 		{
 			get { return _cheatList.Count(x => !x.IsSeparator); }
 		}
@@ -52,11 +52,11 @@ namespace BizHawk.Client.Common
 
 		public string CurrentFileName => _currentFileName;
 
-	    public bool IsReadOnly => false;
+		public bool IsReadOnly => false;
 
-	    public Cheat this[int index] => _cheatList[index];
+		public Cheat this[int index] => _cheatList[index];
 
-	    public Cheat this[MemoryDomain domain, long address]
+		public Cheat this[MemoryDomain domain, long address]
 		{
 			get
 			{

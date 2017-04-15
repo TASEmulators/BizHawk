@@ -14,7 +14,7 @@
 
 		public bool this[string button] => false;
 
-	    public bool IsPressed(string button)
+		public bool IsPressed(string button)
 		{
 			return false;
 		}

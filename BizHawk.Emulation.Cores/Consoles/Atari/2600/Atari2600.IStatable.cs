@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		public bool BinarySaveStatesPreferred => false;
 
-	    public void SaveStateText(TextWriter writer)
+		public void SaveStateText(TextWriter writer)
 		{
 			SyncState(Serializer.CreateTextWriter(writer));
 		}

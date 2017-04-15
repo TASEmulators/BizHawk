@@ -26,13 +26,13 @@ namespace BizHawk.Common
 
 		public override bool CanRead => _currStream.CanRead;
 
-	    public override bool CanSeek => _currStream.CanSeek;
+		public override bool CanSeek => _currStream.CanSeek;
 
-	    public override bool CanWrite => _currStream.CanWrite;
+		public override bool CanWrite => _currStream.CanWrite;
 
-	    public override long Length => _currStream.Length;
+		public override long Length => _currStream.Length;
 
-	    public override long Position
+		public override long Position
 		{
 			get
 			{

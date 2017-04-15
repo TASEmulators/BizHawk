@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "event";
 
-	    #region Events Library Helpers
+		#region Events Library Helpers
 
 		public void CallExitEvent(Lua thread)
 		{

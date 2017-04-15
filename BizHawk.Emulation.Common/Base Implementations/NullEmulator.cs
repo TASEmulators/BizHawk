@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Common
 
 		public ControllerDefinition ControllerDefinition => NullController.Instance.Definition;
 
-	    public IController Controller { get; set; }
+		public IController Controller { get; set; }
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
@@ -78,16 +78,16 @@ namespace BizHawk.Emulation.Common
 
 		public string SystemId => "NULL";
 
-	    public bool DeterministicEmulation => true;
+		public bool DeterministicEmulation => true;
 
-	    public void ResetCounters()
+		public void ResetCounters()
 		{
 			Frame = 0;
 		}
 
 		public string BoardName => null;
 
-	    public CoreComm CoreComm { get; }
+		public CoreComm CoreComm { get; }
 
 		public void Dispose()
 		{
@@ -104,15 +104,15 @@ namespace BizHawk.Emulation.Common
 
 		public int VirtualWidth => 256;
 
-	    public int VirtualHeight => 192;
+		public int VirtualHeight => 192;
 
-	    public int BufferWidth => 256;
+		public int BufferWidth => 256;
 
-	    public int BufferHeight => 192;
+		public int BufferHeight => 192;
 
-	    public int BackgroundColor => 0;
+		public int BackgroundColor => 0;
 
-	    #endregion
+		#endregion
 
 		#region ISoundProvider
 
@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Common
 
 		public bool CanProvideAsync => true;
 
-	    public SyncSoundMode SyncMode { get; private set; }
+		public SyncSoundMode SyncMode { get; private set; }
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{

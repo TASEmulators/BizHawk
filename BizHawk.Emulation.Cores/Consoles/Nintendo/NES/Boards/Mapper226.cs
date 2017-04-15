@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (prg_mode == false)
 			{				
-                return ROM[baseAddr + (( ((prg_page >> 1) & prg_mask_32k) << 15) + (addr & 0x7FFF))];
+				return ROM[baseAddr + (( ((prg_page >> 1) & prg_mask_32k) << 15) + (addr & 0x7FFF))];
 			}
 			else
 			{

@@ -510,9 +510,9 @@ namespace BizHawk.Client.Common
 
 		public bool CanUndo => _keepHistory && _history.CanUndo;
 
-	    public bool CanRedo => _keepHistory && _history.CanRedo;
+		public bool CanRedo => _keepHistory && _history.CanRedo;
 
-	    public void ClearHistory()
+		public void ClearHistory()
 		{
 			_history.Clear();
 		}
@@ -945,7 +945,7 @@ namespace BizHawk.Client.Common
 
 			public long Previous => _previous;
 
-		    public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
+			public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
 			{
 				_previous = domain.PeekByte(Address % domain.Size);
 			}
@@ -986,7 +986,7 @@ namespace BizHawk.Client.Common
 
 			public long Previous => _previous;
 
-		    public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
+			public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
 			{
 				_previous = domain.PeekUint(Address, bigendian);
 			}
@@ -1013,9 +1013,9 @@ namespace BizHawk.Client.Common
 
 			public long Previous => _previous;
 
-		    public int ChangeCount => _changecount;
+			public int ChangeCount => _changecount;
 
-		    public void Update(PreviousType type, MemoryDomain domain, bool bigendian)
+			public void Update(PreviousType type, MemoryDomain domain, bool bigendian)
 			{
 				var value = domain.PeekByte(Address % domain.Size);
 
@@ -1068,9 +1068,9 @@ namespace BizHawk.Client.Common
 
 			public long Previous => _previous;
 
-		    public int ChangeCount => _changecount;
+			public int ChangeCount => _changecount;
 
-		    public void Update(PreviousType type, MemoryDomain domain, bool bigendian)
+			public void Update(PreviousType type, MemoryDomain domain, bool bigendian)
 			{
 				var value = domain.PeekUshort(Address % domain.Size, bigendian);
 				if (value != Previous)

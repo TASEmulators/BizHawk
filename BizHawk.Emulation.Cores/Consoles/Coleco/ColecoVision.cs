@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				MemoryCallbacks = MemoryCallbacks
 			};
 
-		    PSG = new SN76489();
+			PSG = new SN76489();
 			_fakeSyncSound = new FakeSyncSound(PSG, 735);
 			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_fakeSyncSound);
 
@@ -187,7 +187,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public bool DeterministicEmulation => true;
 
-	    public void Dispose() { }
+		public void Dispose() { }
 
 		public void ResetCounters()
 		{

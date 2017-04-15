@@ -33,13 +33,13 @@ namespace BizHawk.Client.Common
 		[JsonIgnore]
 		public bool Empty => !recentlist.Any();
 
-	    [JsonIgnore]
+		[JsonIgnore]
 		public int Count => recentlist.Count;
 
-	    [JsonIgnore]
+		[JsonIgnore]
 		public string MostRecent => recentlist.Any() ? recentlist[0] : string.Empty;
 
-	    public string this[int index]
+		public string this[int index]
 		{
 			get
 			{

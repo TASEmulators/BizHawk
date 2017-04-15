@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "emu";
 
-	    [LuaMethodAttributes(
+		[LuaMethodAttributes(
 			"displayvsync",
 			"Sets the display vsync property of the emulator"
 		)]

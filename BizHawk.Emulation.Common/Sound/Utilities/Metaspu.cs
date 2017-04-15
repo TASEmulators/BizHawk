@@ -36,9 +36,9 @@ namespace BizHawk.Emulation.Common
 
 		public bool CanProvideAsync => true;
 
-	    public SyncSoundMode SyncMode => SyncSoundMode.Async;
+		public SyncSoundMode SyncMode => SyncSoundMode.Async;
 
-	    public void SetSyncMode(SyncSoundMode mode)
+		public void SetSyncMode(SyncSoundMode mode)
 		{
 			if (mode != SyncSoundMode.Async)
 			{
@@ -262,7 +262,7 @@ namespace BizHawk.Emulation.Common
 			public ssamp(short ll, short rr) { l = ll; r = rr; }
 		};
 
-	    readonly List<ssamp> sampleQueue = new List<ssamp>();
+		readonly List<ssamp> sampleQueue = new List<ssamp>();
 
 		// returns values going between 0 and y-1 in a saw wave pattern, based on x
 		static int pingpong(int x, int y)

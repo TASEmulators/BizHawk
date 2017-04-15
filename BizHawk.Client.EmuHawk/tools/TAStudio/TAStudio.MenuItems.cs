@@ -698,7 +698,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveMarkersMenuItem_Click(object sender, EventArgs e)
 		{
 			IEnumerable<TasMovieMarker> markers = CurrentTasMovie.Markers.Where(m => TasView.SelectedRows.Contains(m.Frame));
-            foreach (TasMovieMarker m in markers.ToList())
+			foreach (TasMovieMarker m in markers.ToList())
 			{
 				CurrentTasMovie.Markers.Remove(m);
 			}
@@ -1072,31 +1072,31 @@ namespace BizHawk.Client.EmuHawk
 		private void scrollToCenterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "center";
-        }
+		}
 
-        private void DenoteStatesWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings.DenoteStatesWithIcons = DenoteStatesWithIconsToolStripMenuItem.Checked;
-            RefreshDialog();
-        }
+		private void DenoteStatesWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.DenoteStatesWithIcons = DenoteStatesWithIconsToolStripMenuItem.Checked;
+			RefreshDialog();
+		}
 
-        private void DenoteStatesWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings.DenoteStatesWithBGColor = DenoteStatesWithBGColorToolStripMenuItem.Checked;
-            RefreshDialog();
-        }
+		private void DenoteStatesWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.DenoteStatesWithBGColor = DenoteStatesWithBGColorToolStripMenuItem.Checked;
+			RefreshDialog();
+		}
 
-        private void DenoteMarkersWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings.DenoteMarkersWithIcons = DenoteMarkersWithIconsToolStripMenuItem.Checked;
-            RefreshDialog();
-        }
+		private void DenoteMarkersWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.DenoteMarkersWithIcons = DenoteMarkersWithIconsToolStripMenuItem.Checked;
+			RefreshDialog();
+		}
 
-        private void DenoteMarkersWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings.DenoteMarkersWithBGColor = DenoteMarkersWithBGColorToolStripMenuItem.Checked;
-            RefreshDialog();
-        }
+		private void DenoteMarkersWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.DenoteMarkersWithBGColor = DenoteMarkersWithBGColorToolStripMenuItem.Checked;
+			RefreshDialog();
+		}
 
 		private void wheelScrollSpeedToolStripMenuItem_Click(object sender, EventArgs e)
 		{

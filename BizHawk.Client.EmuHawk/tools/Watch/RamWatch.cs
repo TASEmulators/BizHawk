@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool UpdateBefore => false;
 
-	    #region API
+		#region API
 
 		public void AddWatch(Watch watch)
 		{
@@ -391,15 +391,15 @@ namespace BizHawk.Client.EmuHawk
 
 			if (SelectedWatches.Any())
 			{
-			    foreach (var sw in SelectedWatches)
-			    {
-			        if (sw.Domain != SelectedWatches.First().Domain)
-			        {
-			            throw new InvalidOperationException("Can't edit multiple watches on varying memorydomains");
-			        }
-			    }
+				foreach (var sw in SelectedWatches)
+				{
+					if (sw.Domain != SelectedWatches.First().Domain)
+					{
+						throw new InvalidOperationException("Can't edit multiple watches on varying memorydomains");
+					}
+				}
 
-			    var we = new WatchEditor
+				var we = new WatchEditor
 				{
 					InitialLocation = this.ChildPointToScreen(WatchListView),
 					MemoryDomains = _memoryDomains

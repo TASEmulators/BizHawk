@@ -9,13 +9,13 @@ namespace BizHawk.Client.Common
 
 		public bool IsActive => _mode != Moviemode.Inactive;
 
-	    public bool IsPlaying => _mode == Moviemode.Play || _mode == Moviemode.Finished;
+		public bool IsPlaying => _mode == Moviemode.Play || _mode == Moviemode.Finished;
 
-	    public bool IsRecording => _mode == Moviemode.Record;
+		public bool IsRecording => _mode == Moviemode.Record;
 
-	    public bool IsFinished => _mode == Moviemode.Finished;
+		public bool IsFinished => _mode == Moviemode.Finished;
 
-	    public virtual void StartNewRecording()
+		public virtual void StartNewRecording()
 		{
 			_mode = Moviemode.Record;
 			if (Global.Config.EnableBackupMovies && MakeBackup && _log.Any())

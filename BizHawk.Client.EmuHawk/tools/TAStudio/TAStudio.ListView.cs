@@ -174,13 +174,13 @@ namespace BizHawk.Client.EmuHawk
 				offsetY = 1;
 
 				if (CurrentTasMovie.Markers.IsMarker(index) && Settings.DenoteMarkersWithIcons)
-                    bitmap = icon_marker;
+					bitmap = icon_marker;
 				else if (record.HasState && Settings.DenoteStatesWithIcons)
 				{
-                    if (record.Lagged.HasValue && record.Lagged.Value)
-                        bitmap = icon_anchor_lag;
-                    else
-                        bitmap = icon_anchor;
+					if (record.Lagged.HasValue && record.Lagged.Value)
+						bitmap = icon_anchor_lag;
+					else
+						bitmap = icon_anchor;
 				}
 			}
 		}
@@ -196,10 +196,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			string columnName = column.Name;
-            
+			
 			if (columnName == CursorColumnName)
-                color = Color.FromArgb(0xFEFFFF);
-            
+				color = Color.FromArgb(0xFEFFFF);
+			
 			if (columnName == FrameColumnName)
 			{
 				if (Emulator.Frame != index && CurrentTasMovie.Markers.IsMarker(index) && Settings.DenoteMarkersWithBGColor)
@@ -234,13 +234,13 @@ namespace BizHawk.Client.EmuHawk
 			else if (record.Lagged.HasValue)
 			{
 				if (!record.HasState && Settings.DenoteStatesWithBGColor)
-                    color = record.Lagged.Value ?
-                        LagZone_InputLog :
-                        GreenZone_InputLog;
-                else
-				    color = record.Lagged.Value ?
-					    LagZone_InputLog_Stated :
-                        GreenZone_InputLog_Stated;
+					color = record.Lagged.Value ?
+						LagZone_InputLog :
+						GreenZone_InputLog;
+				else
+					color = record.Lagged.Value ?
+						LagZone_InputLog_Stated :
+						GreenZone_InputLog_Stated;
 			}
 			else if (record.WasLagged.HasValue)
 			{
@@ -757,10 +757,10 @@ namespace BizHawk.Client.EmuHawk
 				e.NewCell == null || e.NewCell.RowIndex == null || e.NewCell.Column == null)
 			{
 				return;
-            }
+			}
 
-            // skip rerecord counting on drawing entirely, mouse down is enough
-            // avoid introducing another global
+			// skip rerecord counting on drawing entirely, mouse down is enough
+			// avoid introducing another global
 			bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
 			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
 
@@ -914,8 +914,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			else if (TasView.IsPaintDown && e.NewCell.RowIndex.HasValue && !string.IsNullOrEmpty(_startFloatDrawColumn))
-            {
-                Global.MovieSession.Movie.IsCountingRerecords = false;
+			{
+				Global.MovieSession.Movie.IsCountingRerecords = false;
 
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
@@ -941,7 +941,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-            Global.MovieSession.Movie.IsCountingRerecords = wasCountingRerecords;
+			Global.MovieSession.Movie.IsCountingRerecords = wasCountingRerecords;
 
 			if (mouseButtonHeld)
 			{

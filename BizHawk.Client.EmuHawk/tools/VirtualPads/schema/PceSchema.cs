@@ -5,10 +5,10 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-    [SchemaAttributes("PCECD")]
-    public class PceCdSchema : PceSchema { }
+	[SchemaAttributes("PCECD")]
+	public class PceCdSchema : PceSchema { }
 
-    [SchemaAttributes("PCE")]
+	[SchemaAttributes("PCE")]
 	public class PceSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)

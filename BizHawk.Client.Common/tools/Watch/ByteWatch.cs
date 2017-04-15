@@ -252,29 +252,29 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public override uint MaxValue => byte.MaxValue;
 
-	    /// <summary>
+		/// <summary>
 		/// Get the current value
 		/// </summary>
 		public override int Value => GetByte();
 
-	    /// <summary>
+		/// <summary>
 		/// Gets the current value
 		/// but with stuff I don't understand
 		/// </summary>
 		/// <remarks>zero 15-nov-2015 - bypass LIAR LOGIC, see fdc9ea2aa922876d20ba897fb76909bf75fa6c92 https://github.com/TASVideos/BizHawk/issues/326 </remarks>
 		public override int ValueNoFreeze => GetByte(true);
 
-	    /// <summary>
+		/// <summary>
 		/// Get a string representation of the current value
 		/// </summary>
 		public override string ValueString => FormatValue(GetByte());
 
-	    /// <summary>
+		/// <summary>
 		/// Get the previous value
 		/// </summary>
 		public override int Previous => _previous;
 
-	    /// <summary>
+		/// <summary>
 		/// Get a string representation of the previous value
 		/// </summary>
 		public override string PreviousStr => FormatValue(_previous);

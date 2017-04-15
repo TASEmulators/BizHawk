@@ -344,10 +344,10 @@ namespace BizHawk.Client.Common
 			Global.MovieSession.MovieControllerAdapter.LatchSticky();
 
 			var lg = LogGeneratorInstance();
-            lg.SetSource(Global.MovieOutputHardpoint); // account for autohold. needs autohold pattern to be already recorded in the current frame
+			lg.SetSource(Global.MovieOutputHardpoint); // account for autohold. needs autohold pattern to be already recorded in the current frame
 
 			for (int i = 0; i < numFrames; i++)
-                _log.Add(lg.GenerateLogEntry());
+				_log.Add(lg.GenerateLogEntry());
 
 			Changes = true;
 

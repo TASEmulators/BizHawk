@@ -19,13 +19,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public byte HMoveDelayCnt;
 			public byte HMoveCnt;
 
-            public int test_count_p0;
-            public int test_count_p1;
-            public int test_count_m0;
-            public int test_count_m1;
-            public int test_count_b;
+			public int test_count_p0;
+			public int test_count_p1;
+			public int test_count_m0;
+			public int test_count_m1;
+			public int test_count_b;
 
-            public byte Player0Cnt;
+			public byte Player0Cnt;
 			public byte Player1Cnt;
 			public byte Missile0Cnt;
 			public byte Missile1Cnt;
@@ -49,12 +49,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				ser.Sync("missile0Cnt", ref Missile0Cnt);
 				ser.Sync("missile1Cnt", ref Missile1Cnt);
 				ser.Sync("Test_count_p0", ref test_count_p0);
-                ser.Sync("Test_count_p1", ref test_count_p1);
-                ser.Sync("Test_count_m0", ref test_count_m0);
-                ser.Sync("Test_count_m1", ref test_count_m1);
-                ser.Sync("Test_count_b", ref test_count_b);
-                ser.Sync("ballCnt", ref BallCnt);
-                ser.EndSection();
+				ser.Sync("Test_count_p1", ref test_count_p1);
+				ser.Sync("Test_count_m0", ref test_count_m0);
+				ser.Sync("Test_count_m1", ref test_count_m1);
+				ser.Sync("Test_count_b", ref test_count_b);
+				ser.Sync("ballCnt", ref BallCnt);
+				ser.EndSection();
 			}
 		}
 	}

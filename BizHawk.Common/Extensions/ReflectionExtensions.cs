@@ -188,9 +188,9 @@ namespace BizHawk.Common.ReflectionExtensions
 			return (T)o.GetType().GetCustomAttributes(typeof(T), false)[0];
 		}
 
-	    /// <summary>
-	    /// where the fields begin relative to the address an object references points to
-	    /// </summary>
+		/// <summary>
+		/// where the fields begin relative to the address an object references points to
+		/// </summary>
 		public static IntPtr ManagedFieldStart => _managedfieldstart;
 
 		[StructLayout(LayoutKind.Explicit)]

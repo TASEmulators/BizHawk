@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 
 		public IMovieController MovieControllerAdapter => new Bk2ControllerAdapter(_logKey);
 
-	    #region ILogEntryGenerator Implementation
+		#region ILogEntryGenerator Implementation
 
 		public void SetSource(IController source)
 		{
@@ -35,9 +35,9 @@ namespace BizHawk.Client.Common
 
 		public bool IsEmpty => EmptyEntry == GenerateLogEntry();
 
-	    public string EmptyEntry => CreateLogEntry(createEmpty: true);
+		public string EmptyEntry => CreateLogEntry(createEmpty: true);
 
-	    public string GenerateLogEntry()
+		public string GenerateLogEntry()
 		{
 			return CreateLogEntry();
 		}

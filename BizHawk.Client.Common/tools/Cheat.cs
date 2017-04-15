@@ -63,33 +63,33 @@ namespace BizHawk.Client.Common
 
 		public static Cheat Separator => new Cheat(SeparatorWatch.Instance, 0, null, false);
 
-	    public bool IsSeparator => _watch.IsSeparator;
+		public bool IsSeparator => _watch.IsSeparator;
 
-	    public bool Enabled => !IsSeparator && _enabled;
+		public bool Enabled => !IsSeparator && _enabled;
 
-	    public long? Address => _watch.Address;
+		public long? Address => _watch.Address;
 
-	    public int? Value => IsSeparator ? (int?)null : _val;
+		public int? Value => IsSeparator ? (int?)null : _val;
 
-	    public bool? BigEndian => IsSeparator ? (bool?)null : _watch.BigEndian;
+		public bool? BigEndian => IsSeparator ? (bool?)null : _watch.BigEndian;
 
-	    public int? Compare => _compare.HasValue && !IsSeparator ? _compare : null;
+		public int? Compare => _compare.HasValue && !IsSeparator ? _compare : null;
 
-	    public MemoryDomain Domain => _watch.Domain;
+		public MemoryDomain Domain => _watch.Domain;
 
-	    public WatchSize Size => _watch.Size;
+		public WatchSize Size => _watch.Size;
 
-	    public char SizeAsChar => _watch.SizeAsChar;
+		public char SizeAsChar => _watch.SizeAsChar;
 
-	    public DisplayType Type => _watch.Type;
+		public DisplayType Type => _watch.Type;
 
-	    public char TypeAsChar => _watch.TypeAsChar;
+		public char TypeAsChar => _watch.TypeAsChar;
 
-	    public string Name => IsSeparator ? string.Empty : _watch.Notes;
+		public string Name => IsSeparator ? string.Empty : _watch.Notes;
 
-	    public string AddressStr => _watch.AddressString;
+		public string AddressStr => _watch.AddressString;
 
-	    public string ValueStr
+		public string ValueStr
 		{
 			get
 			{
@@ -134,7 +134,7 @@ namespace BizHawk.Client.Common
 
 		public COMPARISONTYPE ComparisonType => _comparisonType;
 
-	    public void Enable(bool handleChange = true)
+		public void Enable(bool handleChange = true)
 		{
 			if (!IsSeparator)
 			{
@@ -354,7 +354,7 @@ namespace BizHawk.Client.Common
 
 		private void Changes()
 		{
-		    Changed?.Invoke(this);
+			Changed?.Invoke(this);
 		}
 
 		public override bool Equals(object obj)

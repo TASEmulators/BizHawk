@@ -184,31 +184,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-        #region ALL SAVESTATEABLE STATE GOES HERE
+		#region ALL SAVESTATEABLE STATE GOES HERE
 
-        /// <summary>
-        /// internal gambatte state
-        /// </summary>
-        internal IntPtr GambatteState = IntPtr.Zero;
+		/// <summary>
+		/// internal gambatte state
+		/// </summary>
+		internal IntPtr GambatteState = IntPtr.Zero;
 
-        public int Frame { get; set; }
-        public int LagCount { get; set; }
-        public bool IsLagFrame { get; set; }
+		public int Frame { get; set; }
+		public int LagCount { get; set; }
+		public bool IsLagFrame { get; set; }
 
-        // all cycle counts are relative to a 2*1024*1024 mhz refclock
+		// all cycle counts are relative to a 2*1024*1024 mhz refclock
 
-        /// <summary>
-        /// total cycles actually executed
-        /// </summary>
-        private ulong _cycleCount = 0;
+		/// <summary>
+		/// total cycles actually executed
+		/// </summary>
+		private ulong _cycleCount = 0;
 
-        /// <summary>
-        /// number of extra cycles we overran in the last frame
-        /// </summary>
-        private uint frameOverflow = 0;
-        public ulong CycleCount { get { return _cycleCount; } }
+		/// <summary>
+		/// number of extra cycles we overran in the last frame
+		/// </summary>
+		private uint frameOverflow = 0;
+		public ulong CycleCount { get { return _cycleCount; } }
 
-        #endregion
+		#endregion
 
 		#region controller
 

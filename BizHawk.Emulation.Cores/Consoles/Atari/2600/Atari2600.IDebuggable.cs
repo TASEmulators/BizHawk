@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int TotalExecutedCycles => Cpu.TotalExecutedCycles;
 
-	    private void StepInto()
+		private void StepInto()
 		{
 			do
 			{

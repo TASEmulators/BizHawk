@@ -279,7 +279,7 @@ namespace BizHawk.Client.Common
 
 		private string ControlType => Definition.Name;
 
-	    private void SetGBAControllersAsMnemonic(string mnemonic)
+		private void SetGBAControllersAsMnemonic(string mnemonic)
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
 			MyBoolButtons.Clear();

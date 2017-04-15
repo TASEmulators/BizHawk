@@ -124,11 +124,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public bool CanStep(StepType type) => false;
 
-	    [FeatureNotImplemented]
+		[FeatureNotImplemented]
 		public void Step(StepType type)
-	    {
-	        throw new NotImplementedException();
-	    }
+		{
+			throw new NotImplementedException();
+		}
 
 		public int TotalExecutedCycles => Cpu.TotalExecutedCycles;
 	}

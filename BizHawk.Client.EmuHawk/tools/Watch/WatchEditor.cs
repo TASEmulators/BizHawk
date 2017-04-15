@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 					foreach(DisplayType t in ByteWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
-                    }
+					}
 					break;
 				case 1:
 					foreach (DisplayType t in WordWatch.ValidTypes)
@@ -313,7 +313,7 @@ namespace BizHawk.Client.EmuHawk
 						_watchList[i].Type,						
 						_watchList[i].BigEndian,
 						_watchList[i].Notes
-                    );
+					);
 				}
 			}
 

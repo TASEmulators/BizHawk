@@ -296,7 +296,7 @@ namespace BizHawk.Client.Common
 		public void GetCoreState(Action<BinaryReader, long> callbackBinary, Action<TextReader> callbackText)
 		{
 			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary)
-			    && !GetLump(BinaryStateLump.CorestateText, false, callbackText))
+				&& !GetLump(BinaryStateLump.CorestateText, false, callbackText))
 			{
 				throw new Exception("Couldn't find Binary or Text savestate");
 			}

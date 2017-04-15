@@ -205,7 +205,7 @@ namespace BizHawk.Client.Common
 
 		public bool IsEmpty => EmptyEntry == GenerateLogEntry();
 
-	    public string EmptyEntry
+		public string EmptyEntry
 		{
 			get
 			{
@@ -256,7 +256,7 @@ namespace BizHawk.Client.Common
 
 		public IMovieController MovieControllerAdapter => new BkmControllerAdapter();
 
-	    #region Privates
+		#region Privates
 
 		private bool IsBasePressed(string name)
 		{

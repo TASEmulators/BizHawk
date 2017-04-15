@@ -60,57 +60,57 @@ namespace BizHawk.Common
 		/// </summary>
 		public bool Exists => _exists;
 
-	    /// <summary>
+		/// <summary>
 		/// Gets the directory containing the root
 		/// </summary>
 		public string Directory => Path.GetDirectoryName(_rootPath);
 
-	    /// <summary>
+		/// <summary>
 		/// Gets a value indicating whether this instance is bound
 		/// </summary>
 		public bool IsBound => _boundStream != null;
 
-	    /// <summary>
+		/// <summary>
 		/// returns the complete canonical full path ("c:\path\to\archive|member") of the bound file
 		/// </summary>
 		public string CanonicalFullPath => MakeCanonicalName(_rootPath, _memberPath);
 
-	    /// <summary>
+		/// <summary>
 		/// returns the complete canonical name ("archive|member") of the bound file
 		/// </summary>
 		public string CanonicalName => MakeCanonicalName(Path.GetFileName(_rootPath), _memberPath);
 
-	    /// <summary>
+		/// <summary>
 		/// returns the virtual name of the bound file (disregarding the archive)
 		/// </summary>
 		public string Name => GetBoundNameFromCanonical(MakeCanonicalName(_rootPath, _memberPath));
 
-	    /// <summary>
+		/// <summary>
 		/// returns the complete full path of the bound file, excluding the archive member portion
 		/// </summary>
 		public string FullPathWithoutMember => _rootPath;
 
-	    /// <summary>
+		/// <summary>
 		/// returns the member path part of the bound file
 		/// </summary>
 		public string ArchiveMemberPath => _memberPath;
 
-	    /// <summary>
+		/// <summary>
 		/// returns the extension of Name
 		/// </summary>
 		public string Extension => Path.GetExtension(Name).ToUpper();
 
-	    /// <summary>
+		/// <summary>
 		/// Indicates whether this file is an archive
 		/// </summary>
 		public bool IsArchive => _isArchive;
 
-	    /// <summary>
+		/// <summary>
 		/// Indicates whether the file is an archive member (IsArchive && IsBound[to member])
 		/// </summary>
 		public bool IsArchiveMember => IsArchive && IsBound;
 
-	    public IList<HawkFileArchiveItem> ArchiveItems
+		public IList<HawkFileArchiveItem> ArchiveItems
 		{
 			get
 			{

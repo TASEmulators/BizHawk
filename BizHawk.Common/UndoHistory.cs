@@ -26,11 +26,11 @@ namespace BizHawk.Common
 
 		public bool CanUndo => Enabled && _curPos > 1;
 
-	    public bool CanRedo => Enabled && _curPos < _history.Count;
+		public bool CanRedo => Enabled && _curPos < _history.Count;
 
-	    public bool HasHistory => Enabled && _history.Any();
+		public bool HasHistory => Enabled && _history.Any();
 
-	    public void Clear()
+		public void Clear()
 		{
 			_history = new List<List<T>>();
 			_curPos = 0;

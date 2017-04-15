@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public ControllerDefinition ControllerDefinition => ControllerDeck.Definition;
 
-	    public IController Controller { get; set; }
+		public IController Controller { get; set; }
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
@@ -126,14 +126,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public int Frame => _frame;
 
-	    public string SystemId => "INTV";
+		public string SystemId => "INTV";
 
-	    public bool DeterministicEmulation => true;
+		public bool DeterministicEmulation => true;
 
-	    [FeatureNotImplemented]
+		[FeatureNotImplemented]
 		public string BoardName => null;
 
-	    public void ResetCounters()
+		public void ResetCounters()
 		{
 			_frame = 0;
 			lagcount = 0;

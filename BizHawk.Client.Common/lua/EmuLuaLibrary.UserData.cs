@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override string Name => "userdata";
 
-	    [LuaMethodAttributes(
+		[LuaMethodAttributes(
 			"set",
 			"adds or updates the data with the given key with the given value"
 		)]

@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Common
 
 		public bool Enabled => Sink != null;
 
-	    public void Put(TraceInfo info)
+		public void Put(TraceInfo info)
 		{
 			Sink.Put(info);
 		}
@@ -86,9 +86,9 @@ namespace BizHawk.Emulation.Common
 
 			public MemoryCallbackType Type => MemoryCallbackType.Execute;
 
-		    public string Name => "Trace Logging";
+			public string Name => "Trace Logging";
 
-		    public Action Callback { get; }
+			public Action Callback { get; }
 
 			public uint? Address => null;
 

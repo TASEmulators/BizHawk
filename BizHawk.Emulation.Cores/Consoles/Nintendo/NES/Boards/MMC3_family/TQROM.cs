@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 				return base.ReadPPU(addr);
-        }
+		}
 
 		public override void WritePPU(int addr, byte value)
 		{

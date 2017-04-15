@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Common.Base_Implementations
 
 		public bool CanProvideAsync => false;
 
-	    public void SetSyncMode(SyncSoundMode mode)
+		public void SetSyncMode(SyncSoundMode mode)
 		{
 			if (mode != SyncSoundMode.Sync)
 			{
@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Common.Base_Implementations
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
-	    /// <summary>
+		/// <summary>
 		/// Add samples to be output.  no queueing; must be drained every frame
 		/// </summary>
 		/// <param name="samples"></param>

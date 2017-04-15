@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "memorysavestate";
 
-	    private readonly Dictionary<Guid, byte[]> MemorySavestates = new Dictionary<Guid, byte[]>();
+		private readonly Dictionary<Guid, byte[]> MemorySavestates = new Dictionary<Guid, byte[]>();
 
 		[RequiredService]
 		private IStatable _statableCore { get; set; }

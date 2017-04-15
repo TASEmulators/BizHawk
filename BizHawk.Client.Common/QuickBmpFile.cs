@@ -207,18 +207,18 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public class LoadedBMP : IVideoProvider
 		{
-		    public int[] VideoBuffer { get; set; }
+			public int[] VideoBuffer { get; set; }
 
-		    public int[] GetVideoBuffer()
-		    {
-		        return VideoBuffer;
-		    }
+			public int[] GetVideoBuffer()
+			{
+				return VideoBuffer;
+			}
 
-		    public int VirtualWidth => BufferWidth;
+			public int VirtualWidth => BufferWidth;
 
-		    public int VirtualHeight => BufferHeight;
+			public int VirtualHeight => BufferHeight;
 
-		    public int BufferWidth { get; set; }
+			public int BufferWidth { get; set; }
 			public int BufferHeight { get; set; }
 			public int BackgroundColor => unchecked((int)0xff000000);
 		}

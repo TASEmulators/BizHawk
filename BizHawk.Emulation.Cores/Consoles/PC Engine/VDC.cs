@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				if (RegisterLatch == BYR)
 					BackgroundY = Registers[BYR] & 0x1FF;
 
-                RegisterCommit(RegisterLatch, msbComplete: false);
+				RegisterCommit(RegisterLatch, msbComplete: false);
 			}
 			else if (port == MSB)
 			{
@@ -139,11 +139,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			switch (register)
 			{
 				case MARR: // Memory Address Read Register
-                    if (!msbComplete) break;
+					if (!msbComplete) break;
 					ReadBuffer = VRAM[Registers[MARR] & 0x7FFF];
 					break;
 				case VWR: // VRAM Write Register
-                    if (!msbComplete) break;
+					if (!msbComplete) break;
 					if (Registers[MAWR] < VramSize) // Several games attempt to write past the end of VRAM
 					{
 						VRAM[Registers[MAWR]] = Registers[VWR];
@@ -176,11 +176,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						FrameBuffer = new int[FramePitch * FrameHeight];
 					break;
 				case LENR: // Initiate DMA transfer
-                    if (!msbComplete) break;
+					if (!msbComplete) break;
 					DmaRequested = true;
 					break;
 				case SATB:
-                    if (!msbComplete) break;
+					if (!msbComplete) break;
 					SatDmaRequested = true;
 					break;
 			}

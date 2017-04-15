@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 
 		public virtual string PreferredExtension => Extension;
 
-	    public const string Extension = "bk2";
+		public const string Extension = "bk2";
 
 		public virtual bool Changes { get; protected set; }
 		public bool IsCountingRerecords { get; set; }
@@ -73,7 +73,7 @@ namespace BizHawk.Client.Common
 
 		public int InputLogLength => _log.Count;
 
-	    #region Log Editing
+		#region Log Editing
 
 		public void AppendFrame(IController source)
 		{

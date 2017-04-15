@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	{
 		public bool BinarySaveStatesPreferred => false;
 
-	    public void SaveStateBinary(BinaryWriter bw)
+		public void SaveStateBinary(BinaryWriter bw)
 		{
 			SyncState(Serializer.CreateBinaryWriter(bw));
 		}

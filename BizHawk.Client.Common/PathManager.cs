@@ -23,9 +23,9 @@ namespace BizHawk.Client.Common
 			return path;
 		}
 
-	    /// <summary>
-	    /// Makes a path relative to the %exe% directory
-	    /// </summary>
+		/// <summary>
+		/// Makes a path relative to the %exe% directory
+		/// </summary>
 		public static string MakeProgramRelativePath(string path)
 		{
 			return MakeAbsolutePath("%exe%/" + path, null);

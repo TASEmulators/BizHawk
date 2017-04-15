@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "snes";
 
-	    private LibsnesCore.SnesSettings GetSettings()
+		private LibsnesCore.SnesSettings GetSettings()
 		{
 			if (Snes != null)
 			{

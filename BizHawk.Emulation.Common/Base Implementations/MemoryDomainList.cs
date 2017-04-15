@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Common
 		{
 			var d1 = dest as T;
 			var s1 = src as T;
-		    if (d1 != null && s1 != null)
+			if (d1 != null && s1 != null)
 			{
 				func(d1, s1);
 			}

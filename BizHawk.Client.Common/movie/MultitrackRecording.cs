@@ -95,9 +95,9 @@ namespace BizHawk.Client.Common
 
 		public ControllerDefinition Definition => Source.Definition;
 
-	    public bool this[string button] => IsPressed(button);
+		public bool this[string button] => IsPressed(button);
 
-	    public bool IsPressed(string button)
+		public bool IsPressed(string button)
 		{
 			return Source.IsPressed(RemapButtonName(button));
 		}

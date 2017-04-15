@@ -1647,76 +1647,76 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		#endregion
 
 		public void SyncState(Serializer ser)
-        {
-            ser.BeginSection("TIA");
-            _ball.SyncState(ser);
-            _hmove.SyncState(ser);
-            ser.Sync("hsyncCnt", ref _hsyncCnt);
+		{
+			ser.BeginSection("TIA");
+			_ball.SyncState(ser);
+			_hmove.SyncState(ser);
+			ser.Sync("hsyncCnt", ref _hsyncCnt);
 
-            // add everything to the state 
-            ser.Sync("Bus_State", ref bus_state);
+			// add everything to the state 
+			ser.Sync("Bus_State", ref bus_state);
 
-            ser.Sync("PF0_up",ref pf0_update);
-            ser.Sync("PF1_up", ref pf1_update);
-            ser.Sync("PF2_up", ref pf2_update);
-            ser.Sync("PF0_upper", ref pf0_updater);
-            ser.Sync("PF1_upper", ref pf1_updater);
-            ser.Sync("PF2_upper", ref pf2_updater);
-            ser.Sync("PF0_delay", ref pf0_delay_clock);
-            ser.Sync("PF1_delay", ref pf1_delay_clock);
-            ser.Sync("PF2_delay", ref pf2_delay_clock);
-            ser.Sync("PF0_max", ref pf0_max_delay);
-            ser.Sync("PF1_max", ref pf1_max_delay);
-            ser.Sync("PF2_max", ref pf2_max_delay);
+			ser.Sync("PF0_up",ref pf0_update);
+			ser.Sync("PF1_up", ref pf1_update);
+			ser.Sync("PF2_up", ref pf2_update);
+			ser.Sync("PF0_upper", ref pf0_updater);
+			ser.Sync("PF1_upper", ref pf1_updater);
+			ser.Sync("PF2_upper", ref pf2_updater);
+			ser.Sync("PF0_delay", ref pf0_delay_clock);
+			ser.Sync("PF1_delay", ref pf1_delay_clock);
+			ser.Sync("PF2_delay", ref pf2_delay_clock);
+			ser.Sync("PF0_max", ref pf0_max_delay);
+			ser.Sync("PF1_max", ref pf1_max_delay);
+			ser.Sync("PF2_max", ref pf2_max_delay);
 
-            ser.Sync("Enam0_delay", ref enam0_delay);
-            ser.Sync("Enam1_delay", ref enam1_delay);
-            ser.Sync("Enab_delay", ref enamb_delay);
-            ser.Sync("Enam0_val", ref enam0_val);
-            ser.Sync("Enam1_val", ref enam1_val);
-            ser.Sync("Enab_val", ref enamb_val);
+			ser.Sync("Enam0_delay", ref enam0_delay);
+			ser.Sync("Enam1_delay", ref enam1_delay);
+			ser.Sync("Enab_delay", ref enamb_delay);
+			ser.Sync("Enam0_val", ref enam0_val);
+			ser.Sync("Enam1_val", ref enam1_val);
+			ser.Sync("Enab_val", ref enamb_val);
 
-            ser.Sync("P0_stuff", ref p0_stuff);
-            ser.Sync("P1_stuff", ref p1_stuff);
-            ser.Sync("M0_stuff", ref m0_stuff);
-            ser.Sync("M1_stuf", ref m1_stuff);
-            ser.Sync("b_stuff", ref b_stuff);
+			ser.Sync("P0_stuff", ref p0_stuff);
+			ser.Sync("P1_stuff", ref p1_stuff);
+			ser.Sync("M0_stuff", ref m0_stuff);
+			ser.Sync("M1_stuf", ref m1_stuff);
+			ser.Sync("b_stuff", ref b_stuff);
 
-            ser.Sync("hmp0_delay", ref HMP0_delay);
-            ser.Sync("hmp0_val", ref HMP0_val);
-            ser.Sync("hmp1_delay", ref HMP1_delay);
-            ser.Sync("hmp1_val", ref HMP1_val);
+			ser.Sync("hmp0_delay", ref HMP0_delay);
+			ser.Sync("hmp0_val", ref HMP0_val);
+			ser.Sync("hmp1_delay", ref HMP1_delay);
+			ser.Sync("hmp1_val", ref HMP1_val);
 
-            ser.Sync("PRG0_delay", ref prg0_delay);
-            ser.Sync("PRG1_delay", ref prg1_delay);
-            ser.Sync("PRG0_val", ref prg0_val);
-            ser.Sync("PRG1_val", ref prg1_val);
+			ser.Sync("PRG0_delay", ref prg0_delay);
+			ser.Sync("PRG1_delay", ref prg1_delay);
+			ser.Sync("PRG0_val", ref prg0_val);
+			ser.Sync("PRG1_val", ref prg1_val);
 
-            ser.Sync("Ticks", ref do_ticks);
+			ser.Sync("Ticks", ref do_ticks);
 
-            ser.Sync("VBlankDelay", ref vblank_delay);
-            ser.Sync("VBlankValue", ref vblank_value);
+			ser.Sync("VBlankDelay", ref vblank_delay);
+			ser.Sync("VBlankValue", ref vblank_value);
 
-            // some of these things weren't in the state because they weren't needed if
-            // states were always taken at frame boundaries
-            ser.Sync("capChargeStart", ref _capChargeStart);
-            ser.Sync("capCharging", ref _capCharging);
-            ser.Sync("vblankEnabled", ref _vblankEnabled);
-            ser.Sync("vsyncEnabled", ref _vsyncEnabled);
-            ser.Sync("CurrentScanLine", ref _CurrentScanLine);
-            ser.Sync("scanlinebuffer", ref _scanlinebuffer, false);
-            ser.Sync("AudioClocks", ref _audioClocks);
-            ser.Sync("FrameStartCycles", ref frameStartCycles);
-            ser.Sync("FrameEndCycles", ref frameEndCycles);
+			// some of these things weren't in the state because they weren't needed if
+			// states were always taken at frame boundaries
+			ser.Sync("capChargeStart", ref _capChargeStart);
+			ser.Sync("capCharging", ref _capCharging);
+			ser.Sync("vblankEnabled", ref _vblankEnabled);
+			ser.Sync("vsyncEnabled", ref _vsyncEnabled);
+			ser.Sync("CurrentScanLine", ref _CurrentScanLine);
+			ser.Sync("scanlinebuffer", ref _scanlinebuffer, false);
+			ser.Sync("AudioClocks", ref _audioClocks);
+			ser.Sync("FrameStartCycles", ref frameStartCycles);
+			ser.Sync("FrameEndCycles", ref frameEndCycles);
 
-            ser.BeginSection("Player0");
-            _player0.SyncState(ser);
-            ser.EndSection();
-            ser.BeginSection("Player1");
-            _player1.SyncState(ser);
-            ser.EndSection();
-            _playField.SyncState(ser);
-            ser.EndSection();
-        }
-    }
+			ser.BeginSection("Player0");
+			_player0.SyncState(ser);
+			ser.EndSection();
+			ser.BeginSection("Player1");
+			_player1.SyncState(ser);
+			ser.EndSection();
+			_playField.SyncState(ser);
+			ser.EndSection();
+		}
+	}
 }

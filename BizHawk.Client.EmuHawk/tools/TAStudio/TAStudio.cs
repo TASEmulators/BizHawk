@@ -68,11 +68,11 @@ namespace BizHawk.Client.EmuHawk
 				AutosaveAsBackupFile = false;
 				BackupPerFileSave = false;
 				SingleClickFloatEdit = false;
-                // default to taseditor fashion
-                DenoteStatesWithIcons = false;
-                DenoteStatesWithBGColor = true;
-                DenoteMarkersWithIcons = false;
-                DenoteMarkersWithBGColor = true;
+				// default to taseditor fashion
+				DenoteStatesWithIcons = false;
+				DenoteStatesWithBGColor = true;
+				DenoteMarkersWithIcons = false;
+				DenoteMarkersWithBGColor = true;
 			}
 
 			public RecentFiles RecentTas { get; set; }
@@ -83,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			public bool EmptyMarkers { get; set; }
 			public int ScrollSpeed { get; set; }
 			public bool FollowCursorAlwaysScroll { get; set; }
-            public string FollowCursorScrollMethod { get; set; }
+			public string FollowCursorScrollMethod { get; set; }
 			public int BranchCellHoverInterval { get; set; }
 			public int SeekingCutoffInterval { get; set; }
 			public bool AutoRestoreOnMouseUpOnly { get; set; }
@@ -92,10 +92,10 @@ namespace BizHawk.Client.EmuHawk
 			public bool AutosaveAsBackupFile { get; set; }
 			public bool BackupPerFileSave { get; set; }
 			public bool SingleClickFloatEdit { get; set; }
-            public bool DenoteStatesWithIcons { get; set; }
-            public bool DenoteStatesWithBGColor { get; set; }
-            public bool DenoteMarkersWithIcons { get; set; }
-            public bool DenoteMarkersWithBGColor { get; set; }
+			public bool DenoteStatesWithIcons { get; set; }
+			public bool DenoteStatesWithBGColor { get; set; }
+			public bool DenoteMarkersWithIcons { get; set; }
+			public bool DenoteMarkersWithBGColor { get; set; }
 			public int MainVerticalSplitDistance { get; set; }
 			public int BranchMarkerSplitDistance { get; set; }
 		}

@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "mainmemory";
 
-	    protected override MemoryDomain Domain
+		protected override MemoryDomain Domain
 		{
 			get
 			{

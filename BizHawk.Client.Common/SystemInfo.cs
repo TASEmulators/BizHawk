@@ -316,21 +316,21 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public JoypadButton AvailableButtons => _AvailableButtons;
 
-	    /// <summary>
+		/// <summary>
 		/// Gets the sytem name as <see cref="string"/>
 		/// </summary>
 		public string DisplayName => _DisplayName;
 
-	    /// <summary>
+		/// <summary>
 		/// Gets the maximum amount of controller allowed for this system
 		/// </summary>
 		public int MaxControllers => _MaxControllers;
 
-	    /// <summary>
+		/// <summary>
 		/// Gets core used for this system as <see cref="CoreSystem"/> enum
 		/// </summary>
 		public CoreSystem System => _System;
 
-	    #endregion
+		#endregion
 	}
 }

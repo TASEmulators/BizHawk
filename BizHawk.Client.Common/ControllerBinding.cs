@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 
 		public ControllerDefinition Definition => _type;
 
-	    public bool IsPressed(string button)
+		public bool IsPressed(string button)
 		{
 			return _buttons[button];
 		}

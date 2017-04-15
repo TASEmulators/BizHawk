@@ -125,14 +125,14 @@ namespace BizHawk.Client.EmuHawk
 		// ********************************** Instance Members **********************************
 
 		readonly Controller controller;
-        uint index0;
+		uint index0;
 		XINPUT_STATE state;
 
-        public int PlayerNumber { get { return (int)index0 + 1; } }
+		public int PlayerNumber { get { return (int)index0 + 1; } }
 
 		GamePad360(uint index0, Controller c)
 		{
-            this.index0 = index0;
+			this.index0 = index0;
 			controller = c;
 			InitializeButtons();
 			Update();

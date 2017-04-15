@@ -73,9 +73,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public string SystemId => "A26";
 
-	    public string BoardName => _mapper.GetType().Name;
+		public string BoardName => _mapper.GetType().Name;
 
-	    public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; private set; }
 
 		public ControllerDefinition ControllerDefinition { get { return Atari2600ControllerDefinition; } }
 

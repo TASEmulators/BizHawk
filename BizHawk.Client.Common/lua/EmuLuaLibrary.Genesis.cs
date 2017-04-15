@@ -20,7 +20,7 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "genesis";
 
-	    private GPGX.GPGXSettings GetSettings()
+		private GPGX.GPGXSettings GetSettings()
 		{
 			if (Genesis != null)
 			{
@@ -32,7 +32,7 @@ namespace BizHawk.Client.Common
 
 		private void PutSettings(GPGX.GPGXSettings settings)
 		{
-		    Genesis?.PutSettings(settings);
+			Genesis?.PutSettings(settings);
 		}
 
 		[LuaMethodAttributes(

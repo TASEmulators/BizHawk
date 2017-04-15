@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Common
 
 		public bool CanProvideAsync => true;
 
-	    public SyncSoundMode SyncMode { get; private set; }
+		public SyncSoundMode SyncMode { get; private set; }
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{

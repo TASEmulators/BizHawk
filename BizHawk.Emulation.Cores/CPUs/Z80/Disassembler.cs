@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 
 		readonly static string[] mnemonics = new string[]
 		{
-		  	"NOP", "LD BC, nn", "LD (BC), A", "INC BC", //0x04
+			"NOP", "LD BC, nn", "LD (BC), A", "INC BC", //0x04
 			"INC B", "DEC B", "LD B, n", "RLCA", //0x08
 			"EX AF, AF'", "ADD HL, BC", "LD A, (BC)", "DEC BC", //0x0C
 			"INC C", "DEC C", "LD C, n", "RRCA", //0x10

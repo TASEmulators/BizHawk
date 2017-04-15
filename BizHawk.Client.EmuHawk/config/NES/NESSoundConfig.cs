@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 		private void Cancel_Click(object sender, EventArgs e)
 		{
 			// restore previous value
-            _nes.PutSettings(_oldSettings);
+			_nes.PutSettings(_oldSettings);
 			Close();
 		}
 
@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			label6.Text = trackBar1.Value.ToString();
 			_settings.Square1 = trackBar1.Value;
-            _nes.PutSettings(_settings);
+			_nes.PutSettings(_settings);
 		}
 
 		private void trackBar2_ValueChanged(object sender, EventArgs e)

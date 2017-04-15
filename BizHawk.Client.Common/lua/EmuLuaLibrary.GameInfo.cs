@@ -17,7 +17,7 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "gameinfo";
 
-	    [LuaMethodAttributes(
+		[LuaMethodAttributes(
 			"getromname",
 			"returns the path of the currently loaded rom, if a rom is loaded"
 		)]

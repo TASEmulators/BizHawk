@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 
 		private void DoMessageCallback(string message)
 		{
-		    MessageCallback?.Invoke(message);
+			MessageCallback?.Invoke(message);
 		}
 
 		// TODO: reconsider the need for exposing these;
@@ -636,7 +636,7 @@ namespace BizHawk.Client.Common
 									nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
 									game = new GameInfo
 									{
-									    Name = Path.GetFileNameWithoutExtension(file.Name),
+										Name = Path.GetFileNameWithoutExtension(file.Name),
 										System = "PSX"
 									};
 									break;

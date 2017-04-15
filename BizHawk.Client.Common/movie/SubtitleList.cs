@@ -74,9 +74,9 @@ namespace BizHawk.Client.Common
 			});
 		}
 
-        public string ToSubRip(double fps)
-        {
-            int index = 1;
+		public string ToSubRip(double fps)
+		{
+			int index = 1;
 			var sb = new StringBuilder();
 			List<Subtitle> subs = new List<Subtitle>();
 			foreach (var subtitle in this)
@@ -116,7 +116,7 @@ namespace BizHawk.Client.Common
 			foreach (var subtitle in subs)
 				sb.Append(subtitle.ToSubRip(index++, fps, AddColorTag));
 
-            return sb.ToString();
-        }
+			return sb.ToString();
+		}
 	}
 }

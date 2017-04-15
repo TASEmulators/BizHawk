@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "joypad";
 
-	    [LuaMethodAttributes(
+		[LuaMethodAttributes(
 			"get",
 			"returns a lua table of the controller buttons pressed. If supplied, it will only return a table of buttons for the given controller"
 		)]

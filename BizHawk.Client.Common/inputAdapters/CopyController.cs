@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	{
 		public ControllerDefinition Definition => Curr.Definition;
 
-	    public bool IsPressed(string button)
+		public bool IsPressed(string button)
 		{
 			return Curr.IsPressed(button);
 		}

@@ -655,7 +655,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetSize(WatchSize size)
 		{
 			_settings.Size = size;
-            SpecificValueBox.ByteSize = size;
+			SpecificValueBox.ByteSize = size;
 			if (!string.IsNullOrEmpty(SpecificAddressBox.Text))
 			{
 				SpecificAddressBox.Text = "0";

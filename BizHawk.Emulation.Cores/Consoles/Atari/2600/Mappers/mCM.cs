@@ -184,8 +184,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private bool _disableRam = true;
 		private bool _writeMode = false;
 		private int _column = 0;
-        public bool _func_key = false;
-        public bool _shift_key = false;
+		public bool _func_key = false;
+		public bool _shift_key = false;
 
 		public override void Dispose()
 		{
@@ -214,59 +214,59 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("column", ref _column);
 			ser.Sync("disableRam", ref _disableRam);
 			ser.Sync("writeMode", ref _writeMode);
-            ser.Sync("FuncKey", ref _func_key);
-            ser.Sync("ShiftKey", ref _shift_key);
+			ser.Sync("FuncKey", ref _func_key);
+			ser.Sync("ShiftKey", ref _shift_key);
 
-            base.SyncState(ser);
+			base.SyncState(ser);
 		}
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
 
-            // A unique feature of the keyboard is that it changes the operation of inputs 0-3 
-            // by holding them high in the no-button-pressed state.
-            // However exposing this behaviour to the rest of the system would be overly cunmbersome
-            // so instead we bypass these cases here
+			// A unique feature of the keyboard is that it changes the operation of inputs 0-3 
+			// by holding them high in the no-button-pressed state.
+			// However exposing this behaviour to the rest of the system would be overly cunmbersome
+			// so instead we bypass these cases here
 
 
-            if ((addr & 0x000F) == 8 && (addr & 0x1080)==0 && addr<1000)
-            {
-                // if func key pressed
-                if (_func_key == true)
-                {
-                    return 0x80;
-                }
-                else
-                {
-                    return 0;
-                }
-
-            }
-            else if ((addr & 0x000F) == 9 && (addr & 0x1080) == 0 && addr < 1000)
-            {
-                return 0x80;
-            }
-            else if ((addr & 0x000F) == 0xA && (addr & 0x1080) == 0 && addr < 1000)
-            {
-                return 0x80;
-            }
-            else if ((addr & 0x000F) == 0xB && (addr & 0x1080) == 0 && addr < 1000)
-            {
-                // if shift key pressed
-                if (_shift_key == true)
-                {
-                    return 0x80;
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-            else if (addr < 0x1000)
+			if ((addr & 0x000F) == 8 && (addr & 0x1080)==0 && addr<1000)
 			{
-                return base.ReadMemory(addr);
-            }
-                
+				// if func key pressed
+				if (_func_key == true)
+				{
+					return 0x80;
+				}
+				else
+				{
+					return 0;
+				}
+
+			}
+			else if ((addr & 0x000F) == 9 && (addr & 0x1080) == 0 && addr < 1000)
+			{
+				return 0x80;
+			}
+			else if ((addr & 0x000F) == 0xA && (addr & 0x1080) == 0 && addr < 1000)
+			{
+				return 0x80;
+			}
+			else if ((addr & 0x000F) == 0xB && (addr & 0x1080) == 0 && addr < 1000)
+			{
+				// if shift key pressed
+				if (_shift_key == true)
+				{
+					return 0x80;
+				}
+				else
+				{
+					return 0;
+				}
+			}
+			else if (addr < 0x1000)
+			{
+				return base.ReadMemory(addr);
+			}
+				
 
 
 			// Lower 2K is always the first 2K of the ROM bank
@@ -282,21 +282,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				return _ram[addr & 0x7FF];
 			}
 
-            // Attempting to read while in write mode
-            throw new NotTestedException();
+			// Attempting to read while in write mode
+			throw new NotTestedException();
 		}
 
-        public override byte ReadMemory(ushort addr)
-        {
-            return ReadMem(addr, false);
-        }
+		public override byte ReadMemory(ushort addr)
+		{
+			return ReadMem(addr, false);
+		}
 
-        public override byte PeekMemory(ushort addr)
+		public override byte PeekMemory(ushort addr)
 		{
 			return ReadMem(addr,true);
 		}
 
-        private void WriteMem(ushort addr, byte value, bool poke)
+		private void WriteMem(ushort addr, byte value, bool poke)
 		{
 			//Mimicking the 6532 logic for accesing port A, for testing
 			var isPortA = false;
@@ -346,9 +346,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 				_bank4K = value & 0x03;
 
-                //D6 = 1 -> increase key column (0 to 9)
-                //D5 = 1 -> reset key column to 0 (if D4 = 0)
-                if (bit5  && !bit4)
+				//D6 = 1 -> increase key column (0 to 9)
+				//D5 = 1 -> reset key column to 0 (if D4 = 0)
+				if (bit5  && !bit4)
 				{
 					_column = 0;
 				}
@@ -366,20 +366,20 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					_ram[addr & 0x7FF] = value;
 				}
 			}
-            if (addr<0x1000) {
-                base.WriteMemory(addr, value);
-            }
+			if (addr<0x1000) {
+				base.WriteMemory(addr, value);
+			}
 			
 		}
 
-        public override void WriteMemory(ushort addr, byte value)
-        {
-            WriteMem(addr, value, false);          
-        }
+		public override void WriteMemory(ushort addr, byte value)
+		{
+			WriteMem(addr, value, false);          
+		}
 
-        public override void PokeMemory(ushort addr, byte value)
-        {
-            WriteMem(addr, value, true);
-        }
-    }
+		public override void PokeMemory(ushort addr, byte value)
+		{
+			WriteMem(addr, value, true);
+		}
+	}
 }

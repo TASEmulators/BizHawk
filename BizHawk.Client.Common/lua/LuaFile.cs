@@ -46,7 +46,7 @@
 
 		public static LuaFile SeparatorInstance => new LuaFile(true);
 
-	    public void Stop()
+		public void Stop()
 		{
 			State = RunState.Disabled;
 			Thread = null;

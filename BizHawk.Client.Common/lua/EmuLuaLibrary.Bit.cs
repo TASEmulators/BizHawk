@@ -16,7 +16,7 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "bit";
 
-	    [LuaMethodAttributes(
+		[LuaMethodAttributes(
 			"band",
 			"Bitwise AND of 'val' against 'amt'"
 		)]

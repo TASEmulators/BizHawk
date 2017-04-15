@@ -138,9 +138,9 @@ namespace BizHawk.Emulation.Common
 
 		public SyncSoundMode SyncMode => _soundProvider.SyncMode;
 
-	    public bool CanProvideAsync => _soundProvider.CanProvideAsync;
+		public bool CanProvideAsync => _soundProvider.CanProvideAsync;
 
-	    public void SetSyncMode(SyncSoundMode mode)
+		public void SetSyncMode(SyncSoundMode mode)
 		{
 			_soundProvider.SetSyncMode(mode);
 		}

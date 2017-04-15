@@ -182,11 +182,11 @@ __Types and notation__
 
 		public MethodInfo Method => _method;
 
-	    public string Name => _luaAttributes.Name;
+		public string Name => _luaAttributes.Name;
 
-	    public string Description => _luaAttributes.Description;
+		public string Description => _luaAttributes.Description;
 
-	    private string _paramterList = null;
+		private string _paramterList = null;
 
 		public string ParameterList
 		{

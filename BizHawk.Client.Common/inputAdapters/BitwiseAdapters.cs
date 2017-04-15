@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 	{
 		public ControllerDefinition Definition => Source.Definition;
 
-	    public bool IsPressed(string button)
+		public bool IsPressed(string button)
 		{
 			if (Source != null && SourceAnd != null)
 			{
@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 	{
 		public ControllerDefinition Definition => Source.Definition;
 
-	    public bool IsPressed(string button)
+		public bool IsPressed(string button)
 		{
 			return (Source?.IsPressed(button) ?? false)
 					| (SourceOr?.IsPressed(button) ?? false);

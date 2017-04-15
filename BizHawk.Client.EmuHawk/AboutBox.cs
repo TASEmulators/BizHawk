@@ -160,8 +160,8 @@ namespace BizHawk.Client.EmuHawk
 			0,0,0,0,0,0,0,0,0,0,
 			0,0,0,0};
 
-        private void AboutBox_Load(object sender, EventArgs e)
-        {
+		private void AboutBox_Load(object sender, EventArgs e)
+		{
 #if DEBUG
 					Text = "BizHawk Developer Build (DEBUG MODE) GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH;
 #else

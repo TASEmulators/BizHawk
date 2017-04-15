@@ -92,7 +92,7 @@ namespace BizHawk.Client.Common
 
 				// in the case of trying to deserialize nothing, tne will be nothing
 				// we want to return nothing
-			    return tne?.o;
+				return tne?.o;
 			}
 		}
 

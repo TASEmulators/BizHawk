@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "movie";
 
-	    [LuaMethodAttributes(
+		[LuaMethodAttributes(
 			"startsfromsavestate",
 			"Returns whether or not the movie is a savestate-anchored movie"
 		)]

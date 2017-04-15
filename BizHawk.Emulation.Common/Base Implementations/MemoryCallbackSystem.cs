@@ -98,11 +98,11 @@ namespace BizHawk.Emulation.Common
 
 		public bool HasReads => _hasReads;
 
-	    public bool HasWrites => _hasWrites;
+		public bool HasWrites => _hasWrites;
 
-	    public bool HasExecutes => _hasExecutes;
+		public bool HasExecutes => _hasExecutes;
 
-	    private void UpdateHasVariables()
+		private void UpdateHasVariables()
 		{
 			_hasReads = Reads.Count > 0;
 			_hasWrites = Writes.Count > 0;
@@ -210,7 +210,7 @@ namespace BizHawk.Emulation.Common
 
 		private void Changes()
 		{
-		    ActiveChanged?.Invoke();
+			ActiveChanged?.Invoke();
 		}
 
 		public void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
@@ -220,13 +220,13 @@ namespace BizHawk.Emulation.Common
 				case NotifyCollectionChangedAction.Add:
 					foreach(IMemoryCallback callback in args.NewItems)
 					{
-					    CallbackAdded?.Invoke(callback);
+						CallbackAdded?.Invoke(callback);
 					}
 					break;
 				case NotifyCollectionChangedAction.Remove:
 					foreach(IMemoryCallback callback in args.OldItems)
 					{
-					    CallbackRemoved?.Invoke(callback);
+						CallbackRemoved?.Invoke(callback);
 					}
 					break;
 			}

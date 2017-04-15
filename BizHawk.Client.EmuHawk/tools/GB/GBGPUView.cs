@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 		// other emulators use "vivid color" modes, such as:
 		// r' = 8.25r
 		// g' = 8.25g
-	    // b' = 8.25b
+		// b' = 8.25b
 
 		// gambatte doesn't modify these memory locations unless you reconstruct, so we can store
 		private IntPtr _vram;

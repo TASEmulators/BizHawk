@@ -126,7 +126,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-	    private static string ResolveToolsPath(string subPath)
+		private static string ResolveToolsPath(string subPath)
 		{
 			if (Path.IsPathRooted(subPath))
 			{
@@ -166,7 +166,7 @@ namespace BizHawk.Client.Common
 		// this one is special
 		public string GlobalBaseFragment => Global.Config.PathEntries["Global", "Base"].Path;
 
-	    public static List<PathEntry> DefaultValues => new List<PathEntry>
+		public static List<PathEntry> DefaultValues => new List<PathEntry>
 		{
 			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "Base", Path = ".", Ordinal = 1 },
 			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "ROM", Path = ".", Ordinal = 2 },

@@ -36,7 +36,7 @@ namespace BizHawk.Client.Common
 
 		public string PreferredExtension => Extension;
 
-	    public const string Extension = "bkm";
+		public const string Extension = "bkm";
 
 		public BkmHeader Header { get; }
 		public string Filename { get; set; }
@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 		
 		public int InputLogLength => _log.Count;
 
-	    public double FrameCount
+		public double FrameCount
 		{
 			get
 			{

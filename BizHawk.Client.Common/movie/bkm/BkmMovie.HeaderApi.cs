@@ -6,11 +6,11 @@ namespace BizHawk.Client.Common
 	{
 		public IDictionary<string, string> HeaderEntries => Header;
 
-	    public SubtitleList Subtitles => Header.Subtitles;
+		public SubtitleList Subtitles => Header.Subtitles;
 
-	    public IList<string> Comments => Header.Comments;
+		public IList<string> Comments => Header.Comments;
 
-	    public string SyncSettingsJson
+		public string SyncSettingsJson
 		{
 			get { return Header[HeaderKeys.SYNCSETTINGS]; }
 			set { Header[HeaderKeys.SYNCSETTINGS] = value; }
