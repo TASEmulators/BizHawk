@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	[JsonObject]
 	public class RecentFiles : IEnumerable
 	{
-		private readonly List<string> recentlist;
+		private List<string> recentlist;
 
 		public RecentFiles()
 			: this(8)
