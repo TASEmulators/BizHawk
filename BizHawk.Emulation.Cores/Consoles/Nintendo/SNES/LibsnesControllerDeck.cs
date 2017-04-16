@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Unplugged,
 			Gamepad,
 			Multitap,
+			Mouse,
 			Payload
 		}
 
@@ -24,6 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				case ControllerType.Gamepad: return new SnesController();
 				case ControllerType.Multitap: return new SnesMultitapController();
 				case ControllerType.Payload: return new SnesPayloadController();
+				case ControllerType.Mouse: return new SnesMouseController();
 				default: throw new InvalidOperationException();
 			}
 		}
@@ -239,6 +241,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public ushort GetState(IController controller, int index, int id)
 		{
 			return 0;
+		}
+	}
+
+	public class SnesMouseController : ILibsnesController
+	{
+		public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.Mouse;
+
+		private static readonly ControllerDefinition _definition = new ControllerDefinition
+		{
+			BoolButtons = new List<string>
+			{
+				"0Left",
+				"0Right"
+			},
+			FloatControls = // should be in [0..700000]
+			{
+				"0X",
+				"0Y"
+			},
+			FloatRanges =
+			{
+				// what is the center point supposed to be here?
+				new[] { -127f, 0.0f, 128f },
+				new[] { -127f, 0.0f, 128f },
+				new[] { -127f, 0.0f, 128f },
+				new[] { -127f, 0.0f, 128f }
+			}
+		};
+
+		public ControllerDefinition Definition => _definition;
+
+		public ushort GetState(IController controller, int index, int id)
+		{
+			switch (id)
+			{
+				default:
+					return 0;
+				case 0:
+					return (ushort)controller.GetFloat("0X");
+				case 1:
+					return (ushort)controller.GetFloat("0Y");
+				case 2:
+					return (ushort)(controller.IsPressed("0Left") ? 1 : 0);
+				case 3:
+					return (ushort)(controller.IsPressed("0Right") ? 1 : 0);
+					
+			}
 		}
 	}
 }
