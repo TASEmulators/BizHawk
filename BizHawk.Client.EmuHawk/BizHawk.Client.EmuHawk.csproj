@@ -506,6 +506,12 @@
     <Compile Include="config\SMS\SMSGraphicsConfig.Designer.cs">
       <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\SNES\SNESControllerConfig.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\SNES\SNESControllerConfig.Designer.cs">
+      <DependentUpon>SNESControllerConfig.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\SNES\SNESOptions.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -604,9 +610,7 @@
     <Compile Include="CustomControls\ViewportPanel.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="CustomControls\VirtualListView.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="CustomControls\VirtualListView.cs" />
     <Compile Include="CustomControls\Win32.cs" />
     <Compile Include="DisplayManager\DisplayManager.cs" />
     <Compile Include="DisplayManager\DisplaySurface.cs" />
@@ -1397,6 +1401,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\SMS\SMSGraphicsConfig.resx">
       <DependentUpon>SMSGraphicsConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\SNES\SNESControllerConfig.resx">
+      <DependentUpon>SNESControllerConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\SNES\SNESOptions.resx">
       <DependentUpon>SNESOptions.cs</DependentUpon>

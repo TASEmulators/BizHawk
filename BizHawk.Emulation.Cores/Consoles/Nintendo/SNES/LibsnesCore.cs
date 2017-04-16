@@ -66,7 +66,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			ScanlineHookManager = new MyScanlineHookManager(this);
 
-			//TODO: set correct port inputs from sync settings
 			_controllerDeck = new LibsnesControllerDeck(this.SyncSettings.LeftPort,
 				this.SyncSettings.RightPort);
 			_controllerDeck.NativeInit(api);
@@ -1260,7 +1259,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 
 		SnesSettings Settings;
-		SnesSyncSettings SyncSettings;
+		public SnesSyncSettings SyncSettings;
 
 		public SnesSettings GetSettings() { return Settings.Clone(); }
 		public SnesSyncSettings GetSyncSettings() { return SyncSettings.Clone(); }
@@ -1274,7 +1273,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 		public bool PutSyncSettings(SnesSyncSettings o)
 		{
-			bool ret = o.Profile != SyncSettings.Profile;
+			bool ret = o.Profile != SyncSettings.Profile
+				|| o.LeftPort != SyncSettings.LeftPort
+				|| o.RightPort != SyncSettings.RightPort;
+
 			SyncSettings = o;
 			return ret;
 		}

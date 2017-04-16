@@ -4221,6 +4221,11 @@ namespace BizHawk.Client.EmuHawk
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
+		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
+		{
+			new SNESControllerSettings().ShowDialog();
+		}
+
 		private void CreateMultigameFileMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<MultiDiskBundler>();
