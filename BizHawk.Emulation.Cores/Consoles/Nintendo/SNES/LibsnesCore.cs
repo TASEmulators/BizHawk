@@ -507,7 +507,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// <param name="index">meaningless for most controllers.  for multitap, 0-3 for which multitap controller</param>
 		/// <param name="id">button ID enum; in the case of a regular controller, this corresponds to shift register position</param>
 		/// <returns>for regular controllers, one bit D0 of button status.  for other controls, varying ranges depending on id</returns>
-		ushort snes_input_state(int port, int device, int index, int id)
+		short snes_input_state(int port, int device, int index, int id)
 		{
 			return _controllerDeck.CoreInputState(Controller, port, device, index, id);
 		}

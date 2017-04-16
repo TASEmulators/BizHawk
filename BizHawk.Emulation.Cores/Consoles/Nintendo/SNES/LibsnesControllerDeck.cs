@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		public ushort CoreInputState(IController controller, int port, int device, int index, int id)
+		public short CoreInputState(IController controller, int port, int device, int index, int id)
 		{
 			return _ports[port].GetState(_mergers[port].UnMerge(controller), index, id);
 		}
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// <param name="index">libsnes specific value, sometimes multitap number</param>
 		/// <param name="id">libsnes specific value, sometimes button number</param>
 		/// <returns></returns>
-		ushort GetState(IController controller, int index, int id);
+		short GetState(IController controller, int index, int id);
 
 		ControllerDefinition Definition { get; }
 
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 				["0X"] = 8,
 				["0A"] = 9,
-				
+
 				["0L"] = 10,
 				["0R"] = 11
 			};
@@ -137,13 +137,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public ControllerDefinition Definition { get; } = _definition;
 
-		public ushort GetState(IController controller, int index, int id)
+		public short GetState(IController controller, int index, int id)
 		{
 			if (id >= 12)
 			{
 				return 0;
 			}
-			return (ushort)(controller.IsPressed(Buttons[id]) ? 1 : 0);
+			return (short)(controller.IsPressed(Buttons[id]) ? 1 : 0);
 		}
 	}
 
@@ -203,13 +203,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public ControllerDefinition Definition { get; } = _definition;
 
-		public ushort GetState(IController controller, int index, int id)
+		public short GetState(IController controller, int index, int id)
 		{
 			if (id >= 12)
 			{
 				return 0;
 			}
-			return (ushort)(controller.IsPressed(index + Buttons[id]) ? 1 : 0);
+			return (short)(controller.IsPressed(index + Buttons[id]) ? 1 : 0);
 		}
 	}
 
@@ -224,9 +224,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public ControllerDefinition Definition { get; } = _definition;
 
-		public ushort GetState(IController controller, int index, int id)
+		public short GetState(IController controller, int index, int id)
 		{
-			return (ushort)(controller.IsPressed("0B" + (index << 4 & 16 | id)) ? 1 : 0);
+			return (short)(controller.IsPressed("0B" + (index << 4 & 16 | id)) ? 1 : 0);
 		}
 	}
 
@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public ControllerDefinition Definition { get; } = _definition;
 
-		public ushort GetState(IController controller, int index, int id)
+		public short GetState(IController controller, int index, int id)
 		{
 			return 0;
 		}
@@ -255,38 +255,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				"0Left",
 				"0Right"
 			},
-			FloatControls = // should be in [0..700000]
+			FloatControls =
 			{
 				"0X",
 				"0Y"
 			},
 			FloatRanges =
 			{
-				// what is the center point supposed to be here?
-				new[] { -127f, 0.0f, 128f },
-				new[] { -127f, 0.0f, 128f },
-				new[] { -127f, 0.0f, 128f },
-				new[] { -127f, 0.0f, 128f }
+				new[] { -127f, 0f, 127f },
+				new[] { -127f, 0f, 127f }
 			}
 		};
 
 		public ControllerDefinition Definition => _definition;
 
-		public ushort GetState(IController controller, int index, int id)
+		public short GetState(IController controller, int index, int id)
 		{
 			switch (id)
 			{
 				default:
 					return 0;
 				case 0:
-					return (ushort)controller.GetFloat("0X");
+					return (short)controller.GetFloat("0X");
 				case 1:
-					return (ushort)controller.GetFloat("0Y");
+					return (short)controller.GetFloat("0Y");
 				case 2:
-					return (ushort)(controller.IsPressed("0Left") ? 1 : 0);
+					return (short)(controller.IsPressed("0Left") ? 1 : 0);
 				case 3:
-					return (ushort)(controller.IsPressed("0Right") ? 1 : 0);
-					
+					return (short)(controller.IsPressed("0Right") ? 1 : 0);
 			}
 		}
 	}

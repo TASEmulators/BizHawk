@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						int index = comm->index;
 						int id = (int)comm->id;
 						if (input_state != null)
-							comm->value = input_state(port, device, index, id);
+							comm->value = (uint)input_state(port, device, index, id);
 						break;
 					}
 				case eMessage.eMessage_SIG_input_notify:
