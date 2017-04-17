@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void OK_Click(object sender, EventArgs e)
+		private void Ok_Click(object sender, EventArgs e)
 		{
 			Sub.Frame = (int)FrameNumeric.Value;
 			Sub.Message = Message.Text;

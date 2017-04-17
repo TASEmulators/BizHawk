@@ -111,6 +111,7 @@ namespace BizHawk.Client.EmuHawk
 							movieToRecord.TextSavestate = sw.ToString();
 						}
 					}
+
 					// TODO: do we want to support optionally not saving this?
 					if (true)
 					{
@@ -169,8 +170,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (movieDirException is IOException ||
 						movieDirException is UnauthorizedAccessException ||
-						movieDirException is PathTooLongException
-					)
+						movieDirException is PathTooLongException)
 				{
 					//TO DO : Pass error to user?
 				}
