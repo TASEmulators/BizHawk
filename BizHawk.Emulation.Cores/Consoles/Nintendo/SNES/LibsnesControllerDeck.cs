@@ -252,8 +252,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			BoolButtons = new List<string>
 			{
-				"0Left",
-				"0Right"
+				"0Mouse Left",
+				"0Mouse Right"
 			},
 			FloatControls =
 			{
@@ -280,9 +280,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				case 1:
 					return (short)controller.GetFloat("0Y");
 				case 2:
-					return (short)(controller.IsPressed("0Left") ? 1 : 0);
+					return (short)(controller.IsPressed("0Mouse Left") ? 1 : 0);
 				case 3:
-					return (short)(controller.IsPressed("0Right") ? 1 : 0);
+					return (short)(controller.IsPressed("0Mouse Right") ? 1 : 0);
 			}
 		}
 	}
