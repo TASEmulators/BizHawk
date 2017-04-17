@@ -5,7 +5,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80;
 
 // http://www.ticalc.org/pub/text/calcinfo/
-
 namespace BizHawk.Emulation.Cores.Calculators
 {
 	[CoreAttributes(
@@ -21,8 +20,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 		public TI83(CoreComm comm, GameInfo game, byte[] rom, object Settings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-			InputCallbacks = new InputCallbackSystem();
-			MemoryCallbacks = new MemoryCallbackSystem();
 			PutSettings((TI83Settings)Settings ?? new TI83Settings());
 
 			CoreComm = comm;
@@ -57,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			serviceProvider.Register<IDisassemblable>(new Disassembler());
 		}
 
-		private readonly ITraceable Tracer;
+		private readonly TraceBuffer Tracer;
 
 		// hardware
 		private const ushort RamSizeMask = 0x7FFF;
@@ -83,24 +80,23 @@ namespace BizHawk.Emulation.Cores.Calculators
 		private ushort _startPC;
 
 		// Link Cable
-		public TI83LinkPort LinkPort { get; private set; }
+		public TI83LinkPort LinkPort { get; }
 
 		internal bool LinkActive;
 		internal int LinkOutput, LinkInput;
 
-		internal int LinkState
-		{
-			get { return (LinkOutput | LinkInput) ^ 3; }
-		}
+		internal int LinkState => (LinkOutput | LinkInput) ^ 3;
 
 		private static readonly ControllerDefinition TI83Controller =
 			new ControllerDefinition
 			{
 				Name = "TI83 Controller",
-				BoolButtons = { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9","DOT",
-					"ON","ENTER",
-					"DOWN","LEFT","UP","RIGHT",
-					"PLUS","MINUS","MULTIPLY","DIVIDE",
+				BoolButtons =
+				{
+					"0", "1", "2", "3", "4", "5", "6", "7", "8", "9","DOT",
+					"ON", "ENTER",
+					"DOWN", "LEFT", "UP", "RIGHT",
+					"PLUS", "MINUS", "MULTIPLY", "DIVIDE",
 					"CLEAR", "EXP", "DASH", "PARACLOSE", "TAN", "VARS", "PARAOPEN",
 					"COS", "PRGM", "STAT", "COMMA", "SIN", "MATRIX", "X",
 					"STO", "LN", "LOG", "SQUARED", "NEG1", "MATH", "ALPHA",
@@ -112,14 +108,14 @@ namespace BizHawk.Emulation.Cores.Calculators
 		{
 			byte ret;
 			int romPage = _romPageLow3Bits | (_romPageHighBit << 3);
-			//Console.WriteLine("read memory: {0:X4}", addr);
+
 			if (addr < 0x4000)
 			{
-				ret = Rom[addr]; //ROM zero-page
+				ret = Rom[addr]; // ROM zero-page
 			}
 			else if (addr < 0x8000)
 			{
-				ret = Rom[romPage * 0x4000 + addr - 0x4000]; //other rom page
+				ret = Rom[(romPage * 0x4000) + addr - 0x4000]; // other rom page
 			}
 			else
 			{
@@ -133,11 +129,11 @@ namespace BizHawk.Emulation.Cores.Calculators
 		{
 			if (addr < 0x4000)
 			{
-				return; //ROM zero-page
+				return; // ROM zero-page
 			}
 			else if (addr < 0x8000)
 			{
-				return; //other rom page
+				return; // other rom page
 			}
 			else
 			{
@@ -149,35 +145,38 @@ namespace BizHawk.Emulation.Cores.Calculators
 		{
 			switch (addr)
 			{
-				case 0: //PORT_LINK
+				case 0: // PORT_LINK
 					_romPageHighBit = (value >> 4) & 1;
 					LinkOutput = value & 3;
 
 					if (LinkActive)
 					{
-						//Prevent rom calls from disturbing link port activity
+						// Prevent rom calls from disturbing link port activity
 						if (LinkActive && Cpu.RegisterPC < 0x4000)
+						{
 							return;
+						}
 
 						LinkPort.Update();
 					}
+
 					break;
-				case 1: //PORT_KEYBOARD:
+				case 1: // PORT_KEYBOARD:
 					_lagged = false;
 					_keyboardMask = value;
 					//Console.WriteLine("write PORT_KEYBOARD {0:X2}",value);
 					break;
-				case 2: //PORT_ROMPAGE
+				case 2: // PORT_ROMPAGE
 					_romPageLow3Bits = value & 0x7;
 					break;
-				case 3: //PORT_STATUS
+				case 3: // PORT_STATUS
 					_maskOn = (byte)(value & 1);
 					break;
-				case 16: //PORT_DISPCTRL
+				case 16: // PORT_DISPCTRL
 					//Console.WriteLine("write PORT_DISPCTRL {0}",value);
 					WriteDispCtrl(value);
 					break;
-				case 17: //PORT_DISPDATA
+				case 17: // PORT_DISPDATA
 					//Console.WriteLine("write PORT_DISPDATA {0}",value);
 					WriteDispData(value);
 					break;
@@ -188,17 +187,17 @@ namespace BizHawk.Emulation.Cores.Calculators
 		{
 			switch (addr)
 			{
-				case 0: //PORT_LINK
+				case 0: // PORT_LINK
 					LinkPort.Update();
 					return (byte)((_romPageHighBit << 4) | (LinkState << 2) | LinkOutput);
-				case 1: //PORT_KEYBOARD:
+				case 1: // PORT_KEYBOARD:
 					//Console.WriteLine("read PORT_KEYBOARD");
 					return ReadKeyboard();
-				case 2: //PORT_ROMPAGE
+				case 2: // PORT_ROMPAGE
 					return (byte)_romPageLow3Bits;
-				case 3: //PORT_STATUS
+				case 3: // PORT_STATUS
 					{
-						//Console.WriteLine("read PORT_STATUS");
+						// Console.WriteLine("read PORT_STATUS");
 						// Bits:
 						// 0   - Set if ON key is down and ON key is trapped
 						// 1   - Update things (keyboard etc)
@@ -210,15 +209,15 @@ namespace BizHawk.Emulation.Cores.Calculators
 						return (byte)((Controller.IsPressed("ON") ? _maskOn : 8) | (LinkActive ? 0 : 2));
 					}
 
-				case 4: //PORT_INTCTRL
+				case 4: // PORT_INTCTRL
 					//Console.WriteLine("read PORT_INTCTRL");
 					return 0xFF;
 
-				case 16: //PORT_DISPCTRL
+				case 16: // PORT_DISPCTRL
 					//Console.WriteLine("read DISPCTRL");
 					break;
 
-				case 17: //PORT_DISPDATA
+				case 17: // PORT_DISPDATA
 					return ReadDispData();
 			}
 			return 0xFF;
@@ -238,6 +237,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				if (Controller.IsPressed("RIGHT")) ret ^= 4;
 				if (Controller.IsPressed("UP")) ret ^= 8;
 			}
+
 			if ((_keyboardMask & 2) == 0)
 			{
 				if (Controller.IsPressed("ENTER")) ret ^= 1;
@@ -248,6 +248,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				if (Controller.IsPressed("EXP")) ret ^= 32;
 				if (Controller.IsPressed("CLEAR")) ret ^= 64;
 			}
+
 			if ((_keyboardMask & 4) == 0)
 			{
 				if (Controller.IsPressed("DASH")) ret ^= 1;
@@ -258,6 +259,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				if (Controller.IsPressed("TAN")) ret ^= 32;
 				if (Controller.IsPressed("VARS")) ret ^= 64;
 			}
+
 			if ((_keyboardMask & 8) == 0)
 			{
 				if (Controller.IsPressed("DOT")) ret ^= 1;
@@ -269,6 +271,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				if (Controller.IsPressed("PRGM")) ret ^= 64;
 				if (Controller.IsPressed("STAT")) ret ^= 128;
 			}
+
 			if ((_keyboardMask & 16) == 0)
 			{
 				if (Controller.IsPressed("0")) ret ^= 1;
@@ -313,13 +316,13 @@ namespace BizHawk.Emulation.Cores.Calculators
 			if (_cursorMoved)
 			{
 				_cursorMoved = false;
-				return 0x00; //not accurate this should be stale data or something
+				return 0x00; // not accurate this should be stale data or something
 			}
 
 			byte ret;
 			if (_displayMode == 1)
 			{
-				ret = _vram[_displayY * 12 + _displayX];
+				ret = _vram[(_displayY * 12) + _displayX];
 			}
 			else
 			{
@@ -349,8 +352,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 				{
 					int shift = column & 7;
 					int mask = ~(252 >> shift);
-					int Data = value << 2;
-					_vram[offset] = (byte)(_vram[offset] & mask | (Data >> shift));
+					int data = value << 2;
+					_vram[offset] = (byte)(_vram[offset] & mask | (data >> shift));
 					if (shift > 2 && offset < 0x2ff)
 					{
 						offset++;
@@ -358,7 +361,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 						shift = 8 - shift;
 
 						mask = ~(252 << shift);
-						_vram[offset] = (byte)(_vram[offset] & mask | (Data << shift));
+						_vram[offset] = (byte)(_vram[offset] & mask | (data << shift));
 					}
 				}
 			}
@@ -376,7 +379,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				case 3: _displayX++; break;
 			}
 
-			_displayX &= 0xF; //0xF or 0x1F? dunno
+			_displayX &= 0xF; // 0xF or 0x1F? dunno
 			_displayY &= 0x3F;
 		}
 
@@ -392,7 +395,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			}
 			else if ((value & 0xC0) == 0x40)
 			{
-				//hardware scroll
+				// hardware scroll
 			}
 			else if ((value & 0xE0) == 0x20)
 			{
@@ -406,7 +409,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			}
 			else if ((value & 0xC0) == 0xC0)
 			{
-				//contrast
+				// contrast
 			}
 			else if (value == 2)
 			{
@@ -421,7 +424,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		private void IRQCallback()
 		{
-			//Console.WriteLine("IRQ with vec {0} and cpu.InterruptMode {1}", cpu.RegisterI, cpu.InterruptMode);
+			// Console.WriteLine("IRQ with vec {0} and cpu.InterruptMode {1}", cpu.RegisterI, cpu.InterruptMode);
 			Cpu.Interrupt = false;
 		}
 
@@ -436,7 +439,10 @@ namespace BizHawk.Emulation.Cores.Calculators
 			Cpu.Reset();
 			_ram = new byte[0x8000];
 			for (int i = 0; i < 0x8000; i++)
+			{
 				_ram[i] = 0xFF;
+			}
+
 			Cpu.RegisterPC = _startPC;
 
 			Cpu.IFF1 = false;

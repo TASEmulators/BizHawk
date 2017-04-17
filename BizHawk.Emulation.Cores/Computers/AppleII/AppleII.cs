@@ -51,8 +51,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			
 			_machine.BizInitialize();
 
-			//make a writeable memory stream cloned from the rom.
-			//for junk.dsk the .dsk is important because it determines the format from that
+			// make a writeable memory stream cloned from the rom.
+			// for junk.dsk the .dsk is important because it determines the format from that
 			InitDisk();
 
 			ser.Register<ITraceable>(Tracer);
@@ -64,14 +64,13 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			PutSettings(settings ?? new Settings());
 		}
 
-
-		public List<GameInfo> GameInfoSet { get; private set; }
+		private List<GameInfo> GameInfoSet { get; set; }
 		private readonly List<byte[]> RomSet = new List<byte[]>();
 
 		public int CurrentDisk { get; private set; }
-		public int DiskCount { get { return RomSet.Count; } }
+		public int DiskCount => RomSet.Count;
 
-		private ITraceable Tracer { get; set; }
+		private ITraceable Tracer { get; }
 
 		public void SetDisk(int discNum)
 		{
@@ -106,8 +105,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		{
 			_disk1 = RomSet[CurrentDisk];
 
-			//make a writeable memory stream cloned from the rom.
-			//for junk.dsk the .dsk is important because it determines the format from that
+			// make a writeable memory stream cloned from the rom.
+			// for junk.dsk the .dsk is important because it determines the format from that
 			_machine.BootDiskII.Drives[0].InsertDisk("junk.dsk", (byte[])_disk1.Clone(), false);
 		}
 

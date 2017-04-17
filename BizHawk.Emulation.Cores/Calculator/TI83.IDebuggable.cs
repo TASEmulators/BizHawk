@@ -120,16 +120,19 @@ namespace BizHawk.Emulation.Cores.Calculators
 			}
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks { get; }
 
 		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
-
-		public bool CanStep(StepType type) { return false; }
-
-		public int TotalExecutedCycles
+		public void Step(StepType type)
 		{
-			get { return Cpu.TotalExecutedCycles; }
+			throw new NotImplementedException();
 		}
+
+		public bool CanStep(StepType type)
+		{
+			return false;
+		}
+
+		public int TotalExecutedCycles => Cpu.TotalExecutedCycles;
 	}
 }
