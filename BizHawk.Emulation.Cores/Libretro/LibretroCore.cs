@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public LibretroCore(CoreComm nextComm, string corePath)
 		{
-			//TODO: codepath just for inrospection (lighter weight; no speex, no controls, etc.)
+			//TODO: codepath just for introspection (lighter weight; no speex, no controls, etc.)
 
 			ServiceProvider = new BasicServiceProvider(this);
 			_SyncSettings = new SyncSettings();
@@ -45,12 +45,17 @@ namespace BizHawk.Emulation.Cores.Libretro
 			//I dont even know for sure what paths I should use until... (what?)
 
 
-			//not sure about each of these.. but we'll be doing things different than retroarch.
-			//i think this may play better with our model [although we might could use a different save directory]
-			api.CopyAscii(LibretroApi.BufId.SystemDirectory, Path.GetDirectoryName(corePath));
-			api.CopyAscii(LibretroApi.BufId.SaveDirectory, Path.GetDirectoryName(corePath));
-			api.CopyAscii(LibretroApi.BufId.CoreDirectory, Path.GetDirectoryName(corePath));
-			api.CopyAscii(LibretroApi.BufId.CoreAssetsDirectory, Path.GetDirectoryName(corePath));
+			//not sure about each of these.. but we may be doing things different than retroarch.
+			//I wish I could initialize these with placeholders during a separate introspection codepath..
+			string SystemDirectory = CoreComm.CoreFileProvider.GetRetroSystemPath();
+			string SaveDirectory = CoreComm.CoreFileProvider.GetRetroSaveRAMDirectory();
+			string CoreDirectory = Path.GetDirectoryName(corePath);
+			string CoreAssetsDirectory = Path.GetDirectoryName(corePath);
+
+			api.CopyAscii(LibretroApi.BufId.SystemDirectory, SystemDirectory);
+			api.CopyAscii(LibretroApi.BufId.SaveDirectory, SaveDirectory);
+			api.CopyAscii(LibretroApi.BufId.CoreDirectory, CoreDirectory);
+			api.CopyAscii(LibretroApi.BufId.CoreAssetsDirectory, CoreAssetsDirectory);
 
 			api.CMD_SetEnvironment();
 
@@ -244,26 +249,51 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public bool DeterministicEmulation { get { return false; } }
 		public string BoardName { get; private set; }
 
-		public bool SaveRamModified
-		{
-			get
-			{
-				//TODO
-				return false;
-			}
-		}
+	#region ISaveRam
+		//TODO - terrible things will happen if this changes at runtime
+
+		byte[] saverambuff = new byte[0];
 
 		public byte[] CloneSaveRam()
 		{
-			//TODO
-			return new byte[] { };
-		}
+			var mem = api.QUERY_GetMemory(LibretroApi.RETRO_MEMORY.SAVE_RAM);
+			var buf = new byte[mem.Item2];
 
+			Marshal.Copy(mem.Item1, buf, 0, mem.Item2);
+			return buf;
+		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			//TODO
+			var mem = api.QUERY_GetMemory(LibretroApi.RETRO_MEMORY.SAVE_RAM);
+
+			//bail if the size is 0
+			if (mem.Item2 == 0)
+				return;
+
+			Marshal.Copy(data, 0, mem.Item1, mem.Item2);
 		}
+
+		public bool SaveRamModified
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				//if we dont have saveram, it isnt modified. otherwise, assume it is
+				var mem = api.QUERY_GetMemory(LibretroApi.RETRO_MEMORY.SAVE_RAM);
+				
+				//bail if the size is 0
+				if (mem.Item2 == 0)
+					return false;
+
+				return true;
+			}
+
+			[FeatureNotImplemented]
+			set { throw new NotImplementedException(); }
+		}
+
+		#endregion
 
 		public void ResetCounters()
 		{

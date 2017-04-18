@@ -1193,6 +1193,7 @@
     <Compile Include="Libretro\LibretroApi_BRK.cs" />
     <Compile Include="Libretro\LibretroApi_Delegates.cs" />
     <Compile Include="Libretro\LibretroApi_Enums.cs" />
+    <Compile Include="Libretro\LibretroApi_QUERY.cs" />
     <Compile Include="Libretro\LibretroApi_SIG.cs" />
     <Compile Include="Libretro\LibretroApi_Structs.cs" />
     <Compile Include="Libretro\LibretroCore.cs" />

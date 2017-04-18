@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			Resume,
 
 			QUERY_FIRST,
+			QUERY_GetMemory,
 			QUERY_LAST,
 
 			CMD_FIRST,
@@ -31,6 +32,16 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 			BRK_InputState,
 		};
+
+
+		public enum RETRO_MEMORY
+		{
+			SAVE_RAM = 0,
+			RTC = 1,
+			SYSTEM_RAM = 2,
+			VIDEO_RAM = 3,
+		};
+
 
 		public enum RETRO_DEVICE
 		{

@@ -78,6 +78,7 @@ enum eMessage : s32
 	Resume,
 
 	QUERY_FIRST,
+	QUERY_GetMemory,
 	QUERY_LAST,
 
 	CMD_FIRST,
@@ -740,6 +741,12 @@ void cmd_SetEnvironment()
 	comm.funs.retro_set_environment(retro_environment);
 }
 
+void query_GetMemory()
+{
+	comm.buf_size[BufId::Param0] = comm.funs.retro_get_memory_size(comm.value);
+	comm.buf[BufId::Param0] = comm.funs.retro_get_memory_data(comm.value);
+}
+
 const Action kHandlers_CMD[] = {
 	cmd_SetEnvironment,
 	cmd_LoadNoGame,
@@ -753,7 +760,7 @@ const Action kHandlers_CMD[] = {
 };
 
 const Action kHandlers_QUERY[] = {
-	nullptr
+	query_GetMemory,
 };
 
 //------------------------------------------------
