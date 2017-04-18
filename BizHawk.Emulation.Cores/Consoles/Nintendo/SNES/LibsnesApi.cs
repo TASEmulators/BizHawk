@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Pipes;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.IO.MemoryMappedFiles;
 
 using BizHawk.Common;
 
@@ -12,24 +10,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public unsafe partial class LibsnesApi : IDisposable
 	{
-		//this wouldve been the ideal situation to learn protocol buffers, but since the number of messages here is so limited, it took less time to roll it by hand.
-		//todo - could optimize a lot of the apis once we decide to commit to this. will we? then we wont be able to debug bsnes as well
-		//        well, we could refactor it a lot and let the debuggable static dll version be the one that does annoying workarounds
-		//todo - more intelligent use of buffers to avoid so many copies (especially framebuffer from bsnes? supply framebuffer to-be-used to libsnes? same for audiobuffer)
-		//todo - refactor to use a smarter set of pipe reader and pipe writer classes
-		//todo - combine messages / tracecallbacks into one system with a channel number enum additionally
-		//todo - consider refactoring bsnes to allocate memory blocks through the interface, and set ours up to allocate from a large arena of shared memory.
-		//        this is a lot of work, but it will be some decent speedups. who wouldve ever thought to make an emulator this way? I will, from now on...
-		//todo - use a reader/writer ring buffer for communication instead of pipe
-		//todo - when exe wrapper is fully baked, put it into mingw so we can just have libsneshawk.exe without a separate dll. it hardly needs any debugging presently, it should be easy to maintain.
-
-		//space optimizations to deploy later (only if people complain about so many files)
-		//todo - put executables in zipfiles and search for them there; dearchive to a .cache folder. check timestamps to know when to freshen. this is weird.....
-
-		//speedups to deploy later:
-		//todo - collect all memory block names whenever a memory block is alloc/dealloced. that way we avoid the overhead when using them for gui stuff (gfx debugger, hex editor)
-
-
 		InstanceDll instanceDll;
 		string InstanceName;
 
@@ -37,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public static unsafe extern void* CopyMemory(void* dest, void* src, ulong count);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate CommStruct* DllInit();
+		delegate IntPtr DllInit();
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate void MessageApi(eMessage msg);
@@ -53,16 +33,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public LibsnesApi(string dllPath)
 		{
 			InstanceName = "libsneshawk_" + Guid.NewGuid().ToString();
-
-			var pipeName = InstanceName;
-
 			instanceDll = new InstanceDll(dllPath);
 			var dllinit = (DllInit)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("DllInit"), typeof(DllInit));
 			Message = (MessageApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("Message"), typeof(MessageApi));
 			CopyBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("CopyBuffer"), typeof(BufferApi));
 			SetBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("SetBuffer"), typeof(BufferApi));
 
-			comm = dllinit();
+			comm = (CommStruct*)dllinit().ToPointer();
 		}
 
 		public void Dispose()
