@@ -2490,7 +2490,7 @@ namespace BizHawk.Client.EmuHawk
 				address = add.ToString("X6");
 				value = val.ToString("X4");
 				//Game Geneie, modifies the "ROM" which is why it says, "MD CART"
-				var watch = Watch.GenerateWatch(MemoryDomains["MD CART"], long.Parse(address, NumberStyles.HexNumber), WatchSize.Word, Common.DisplayType.Hex, true, txtDescription.Text);
+				var watch = Watch.GenerateWatch(MemoryDomains["M68K BUS"], long.Parse(address, NumberStyles.HexNumber), WatchSize.Word, Common.DisplayType.Hex, true, txtDescription.Text);
 				//Add Cheat
 				Global.CheatList.Add(new Cheat(watch, val));
 			}
