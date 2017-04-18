@@ -70,3 +70,4 @@ ExternalCoreProjects/Virtu/bin/*.*
 /psx/octoshock/bizhawk/*.opendb
 
 **/StyleCop.Cache
+libsnes/vs2015/libsnes.VC.db
