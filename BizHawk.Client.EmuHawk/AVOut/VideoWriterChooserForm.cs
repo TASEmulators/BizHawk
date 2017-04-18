@@ -1,10 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -16,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	/// </summary>
 	public partial class VideoWriterChooserForm : Form
 	{
-		VideoWriterChooserForm()
+		private VideoWriterChooserForm()
 		{
 			InitializeComponent();
 
@@ -32,14 +27,19 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			lblSize.Text = string.Format("Size:\r\n{0}x{1}", CaptureWidth, CaptureHeight);
+			lblSize.Text = $"Size:\r\n{CaptureWidth}x{CaptureHeight}";
 
 			if (CaptureWidth % 4 != 0 || CaptureHeight % 4 != 0)
+			{
 				lblResolutionWarning.Visible = true;
-			else lblResolutionWarning.Visible = false;
+			}
+			else
+			{
+				lblResolutionWarning.Visible = false;
+			}
 		}
 
-		int CaptureWidth, CaptureHeight;
+		private int CaptureWidth, CaptureHeight;
 
 		/// <summary>
 		/// chose an IVideoWriter
@@ -49,27 +49,32 @@ namespace BizHawk.Client.EmuHawk
 		/// <returns>user choice, or null on Cancel\Close\invalid</returns>
 		public static IVideoWriter DoVideoWriterChoserDlg(IEnumerable<VideoWriterInfo> list, IWin32Window owner, out int resizew, out int resizeh, out bool pad, out bool audiosync)
 		{
-			VideoWriterChooserForm dlg = new VideoWriterChooserForm();
-
-			dlg.labelDescriptionBody.Text = "";
-
+			VideoWriterChooserForm dlg = new VideoWriterChooserForm
 			{
-				int idx = 0;
-				int idx_select = -1;
-				dlg.listBox1.BeginUpdate();
-				foreach (var vw in list)
+				labelDescriptionBody = { Text = string.Empty }
+			};
+
+			int idx = 0;
+			int idx_select = -1;
+			dlg.listBox1.BeginUpdate();
+			foreach (var vw in list)
+			{
+				dlg.listBox1.Items.Add(vw);
+				if (vw.Attribs.ShortName == Global.Config.VideoWriter)
 				{
-					dlg.listBox1.Items.Add(vw);
-					if (vw.Attribs.ShortName == Global.Config.VideoWriter)
-						idx_select = idx;
-					idx++;
+					idx_select = idx;
 				}
-				dlg.listBox1.SelectedIndex = idx_select;
-				dlg.listBox1.EndUpdate();
+
+				idx++;
 			}
 
+			dlg.listBox1.SelectedIndex = idx_select;
+			dlg.listBox1.EndUpdate();
+
 			foreach (Control c in dlg.panelSizeSelect.Controls)
+			{
 				c.Enabled = false;
+			}
 
 			DialogResult result = dlg.ShowDialog(owner);
 
@@ -106,16 +111,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (listBox1.SelectedIndex != -1)
-				labelDescriptionBody.Text = ((VideoWriterInfo)listBox1.SelectedItem).Attribs.Description;
-			else
-				labelDescriptionBody.Text = "";
+			labelDescriptionBody.Text = listBox1.SelectedIndex != -1
+				? ((VideoWriterInfo)listBox1.SelectedItem).Attribs.Description
+				: string.Empty;
 		}
 
 		private void checkBoxResize_CheckedChanged(object sender, EventArgs e)
 		{
 			foreach (Control c in panelSizeSelect.Controls)
+			{
 				c.Enabled = checkBoxResize.Checked;
+			}
 		}
 
 		private void buttonAuto_Click(object sender, EventArgs e)
@@ -134,14 +140,12 @@ namespace BizHawk.Client.EmuHawk
 					{
 						MessageBox.Show(this, "Size must be positive!");
 						DialogResult = DialogResult.None;
-						return;
 					}
 				}
 				catch (FormatException)
 				{
 					MessageBox.Show(this, "Size must be numeric!");
 					DialogResult = DialogResult.None;
-					return;
 				}
 			}
 		}

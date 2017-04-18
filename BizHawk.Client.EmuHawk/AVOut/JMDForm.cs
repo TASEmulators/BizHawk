@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
@@ -31,15 +25,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void threadsBar_Scroll(object sender, EventArgs e)
 		{
-			threadTop.Text = String.Format("Number of compression threads: {0}", threadsBar.Value);
+			threadTop.Text = $"Number of compression threads: {threadsBar.Value}";
 		}
 
 		private void compressionBar_Scroll(object sender, EventArgs e)
 		{
-			if (compressionBar.Value == compressionBar.Minimum)
-				compressionTop.Text = "Compression Level: NONE";
-			else
-				compressionTop.Text = String.Format("Compression Level: {0}", compressionBar.Value);
+			compressionTop.Text = compressionBar.Value == compressionBar.Minimum
+				? "Compression Level: NONE"
+				: $"Compression Level: {compressionBar.Value}";
 		}
 
 		/// <summary>
@@ -64,10 +57,10 @@ namespace BizHawk.Client.EmuHawk
 			j.compressionBar.Value = complevel;
 			j.threadsBar_Scroll(null, null);
 			j.compressionBar_Scroll(null, null);
-			j.threadLeft.Text = String.Format("{0}", tmin);
-			j.threadRight.Text = String.Format("{0}", tmax);
-			j.compressionLeft.Text = String.Format("{0}", cmin);
-			j.compressionRight.Text = String.Format("{0}", cmax);
+			j.threadLeft.Text = $"{tmin}";
+			j.threadRight.Text = $"{tmax}";
+			j.compressionLeft.Text = $"{cmin}";
+			j.compressionRight.Text = $"{cmax}";
 
 			DialogResult d = j.ShowDialog(hwnd);
 
@@ -76,9 +69,11 @@ namespace BizHawk.Client.EmuHawk
 
 			j.Dispose();
 			if (d == DialogResult.OK)
+			{
 				return true;
-			else
-				return false;
+			}
+			
+			return false;
 		}
 
 

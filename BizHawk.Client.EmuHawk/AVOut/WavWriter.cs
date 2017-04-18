@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
 
@@ -19,6 +18,7 @@ namespace BizHawk.Client.EmuHawk
 		/// underlying file being written to
 		/// </summary>
 		BinaryWriter file;
+
 		/// <summary>
 		/// sequence of files to write to (split on 32 bit limit)
 		/// </summary>
@@ -28,6 +28,7 @@ namespace BizHawk.Client.EmuHawk
 		/// samplerate in HZ
 		/// </summary>
 		int samplerate;
+
 		/// <summary>
 		/// number of audio channels
 		/// </summary>
@@ -46,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// write riff headers to current file
 		/// </summary>
-		void writeheaders()
+		private void writeheaders()
 		{
 			file.Write(Encoding.ASCII.GetBytes("RIFF")); // ChunkID
 			file.Write((uint)0); // ChunkSize
@@ -68,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// seek back to beginning of file and fix header sizes (if possible)
 		/// </summary>
-		void finalizeheaders()
+		private void finalizeheaders()
 		{
 			if (numbytes + 36 >= 0x100000000)
 				// passed 4G limit, nothing to be done
@@ -88,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// close current underlying stream
 		/// </summary>
-		void closecurrent()
+		private void closecurrent()
 		{
 			if (file != null)
 			{
@@ -96,13 +97,15 @@ namespace BizHawk.Client.EmuHawk
 				file.Close();
 				file.Dispose();
 			}
+
 			file = null;
 		}
+
 		/// <summary>
 		/// open a new underlying stream
 		/// </summary>
 		/// <param name="next"></param>
-		void opencurrent(Stream next)
+		private void opencurrent(Stream next)
 		{
 			file = new BinaryWriter(next, Encoding.ASCII);
 			numbytes = 0;
@@ -150,10 +153,12 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// checks sampling rate, number of channels for validity
 		/// </summary>
-		void checkargs()
+		private void checkargs()
 		{
 			if (samplerate < 1 || numchannels < 1)
+			{
 				throw new ArgumentException("Bad samplerate/numchannels");
+			}
 		}
 
 		/// <summary>
@@ -186,9 +191,13 @@ namespace BizHawk.Client.EmuHawk
 			this.numchannels = numchannels;
 			checkargs();
 			filechain = ss;
+
 			// advance to first
 			if (!filechain.MoveNext())
+			{
 				throw new ArgumentException("Iterator was empty!");
+			}
+
 			opencurrent(ss.Current);
 		}
 	}
@@ -205,13 +214,15 @@ namespace BizHawk.Client.EmuHawk
 		public void SetVideoParameters(int width, int height) { }
 		public void SetFrame(int frame) { }
 
-		public bool UsesAudio { get { return true; } }
-		public bool UsesVideo { get { return false; } }
+		public bool UsesAudio => true;
 
-		class WavWriterVToken : IDisposable
+		public bool UsesVideo => false;
+
+		private class WavWriterVToken : IDisposable
 		{
 			public void Dispose() { }
 		}
+
 		public IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd)
 		{
 			// don't care
@@ -223,7 +234,9 @@ namespace BizHawk.Client.EmuHawk
 			this.sampleRate = sampleRate;
 			this.channels = channels;
 			if (bits != 16)
+			{
 				throw new ArgumentException("Only support 16bit audio!");
+			}
 		}
 
 		public void SetMetaData(string gameName, string authors, ulong lengthMS, ulong rerecords)
@@ -233,20 +246,17 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Dispose()
 		{
-			if (wavwriter != null)
-				wavwriter.Dispose();
+			wavwriter?.Dispose();
 		}
 
-		WavWriter wavwriter = null;
-		int sampleRate = 0;
-		int channels = 0;
+		private WavWriter wavwriter = null;
+		private int sampleRate = 0;
+		private int channels = 0;
 
 		/// <summary>
 		/// create a simple wav stream iterator
 		/// </summary>
-		/// <param name="template"></param>
-		/// <returns></returns>
-		static IEnumerator<Stream> CreateStreamIterator(string template)
+		private static IEnumerator<Stream> CreateStreamIterator(string template)
 		{
 			string dir = Path.GetDirectoryName(template);
 			string baseName = Path.GetFileNameWithoutExtension(template);

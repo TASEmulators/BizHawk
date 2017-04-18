@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Text;
+
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using ICSharpCode.SharpZipLib.Zip.Compression;
 
@@ -62,10 +61,12 @@ namespace BizHawk.Client.EmuHawk
 		/// stores compression parameters
 		/// </summary>
 		CodecToken token;
+
 		/// <summary>
 		/// fps numerator, constant
 		/// </summary>
 		int fpsnum;
+
 		/// <summary>
 		/// fps denominator, constant
 		/// </summary>
@@ -75,10 +76,12 @@ namespace BizHawk.Client.EmuHawk
 		/// audio samplerate, constant
 		/// </summary>
 		int audiosamplerate;
+
 		/// <summary>
 		/// audio number of channels, constant; 1 or 2 only
 		/// </summary>
 		int audiochannels;
+
 		/// <summary>
 		/// audio bits per sample, constant; only 16 supported
 		/// </summary>
@@ -112,6 +115,7 @@ namespace BizHawk.Client.EmuHawk
 			/// </summary>
 			public UInt64 rerecords;
 		}
+
 		/// <summary>
 		/// represents the metadata for the active movie (if applicable)
 		/// </summary>
@@ -138,10 +142,12 @@ namespace BizHawk.Client.EmuHawk
 			/// current timestamp position
 			/// </summary>
 			UInt64 timestampoff;
+
 			/// <summary>
 			/// total number of video frames written
 			/// </summary>
 			UInt64 totalframes;
+
 			/// <summary>
 			/// total number of sample pairs written
 			/// </summary>
@@ -151,14 +157,17 @@ namespace BizHawk.Client.EmuHawk
 			/// fps of the video stream is fpsnum/fpsden
 			/// </summary>
 			int fpsnum;
+
 			/// <summary>
 			/// fps of the video stream is fpsnum/fpsden
 			/// </summary>
 			int fpsden;
+
 			/// <summary>
 			/// audio samplerate in hz
 			/// </summary>
 			int audiosamplerate;
+
 			/// <summary>
 			/// true if input will be stereo; mono otherwise
 			/// output stream is always stereo
@@ -172,7 +181,9 @@ namespace BizHawk.Client.EmuHawk
 			public JMDfile(Stream f, int fpsnum, int fpsden, int audiosamplerate, bool stereo)
 			{
 				if (!f.CanWrite)
+				{
 					throw new ArgumentException("Stream must be writable!");
+				}
 
 				this.f = f;
 				this.fpsnum = fpsnum;
@@ -323,10 +334,13 @@ namespace BizHawk.Client.EmuHawk
 			/// encoding is similar to MIDI
 			/// </summary>
 			/// <param name="v"></param>
-			void writeVar(int v)
+			private void writeVar(int v)
 			{
 				if (v < 0)
+				{
 					throw new ArgumentException("length cannot be less than 0!");
+				}
+
 				writeVar((UInt64)v);
 			}
 
@@ -355,7 +369,10 @@ namespace BizHawk.Client.EmuHawk
 			void writeActual(JMDPacket j)
 			{
 				if (j.timestamp < timestampoff)
+				{
 					throw new ArithmeticException("JMD Timestamp problem?");
+				}
+
 				UInt64 timestampout = j.timestamp - timestampoff;
 				while (timestampout > 0xffffffff)
 				{
@@ -453,6 +470,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 						break;
 				}
+
 				astorage.Enqueue(j);
 			}
 

@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -22,42 +16,29 @@ namespace BizHawk.Client.EmuHawk
 		public class FormatPreset : IDisposable
 		{
 			/// <summary>
-			/// name for listbox
+			/// Gets the name for the listbox
 			/// </summary>
-			public string name;
-			/// <summary>
-			/// long human readable description
-			/// </summary>
-			public string desc;
-			/// <summary>
-			/// actual portion of ffmpeg commandline
-			/// </summary>
-			public string commandline;
-			public override string ToString()
-			{
-				return name;
-			}
-			/// <summary>
-			/// can be edited
-			/// </summary>
-			public bool custom = false;
+			public string Name { get; }
 
 			/// <summary>
-			/// default file extension
+			/// Gets the long human readable description
 			/// </summary>
-			public string defaultext;
+			public string Desc { get; }
 
-			FormatPreset(string name, string desc, string commandline, bool custom, string defaultext)
-			{
-				this.name = name;
-				this.desc = desc;
-				this.custom = custom;
-				if (custom)
-					this.commandline = Global.Config.FFmpegCustomCommand;
-				else
-					this.commandline = commandline;
-				this.defaultext = defaultext;
-			}
+			/// <summary>
+			/// Gets the actual portion of the ffmpeg commandline
+			/// </summary>
+			public string Commandline { get; set; }
+
+			/// <summary>
+			/// Gets a value indicating whether or not it can be edited
+			/// </summary>
+			public bool Custom { get; }
+
+			/// <summary>
+			/// Gets the default file extension
+			/// </summary>
+			public string Defaultext { get; }
 
 			/// <summary>
 			/// get a list of canned presets
@@ -65,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			/// <returns></returns>
 			public static FormatPreset[] GetPresets()
 			{
-				return new FormatPreset[]
+				return new[]
 				{
 					new FormatPreset("Uncompressed AVI", "AVI file with uncompressed audio and video.  Very large.", "-c:a pcm_s16le -c:v rawvideo -f avi", false, "avi"),
 					new FormatPreset("Xvid", "AVI file with xvid video and mp3 audio.", "-c:a libmp3lame -c:v libxvid -f avi", false, "avi"),
@@ -84,7 +65,6 @@ namespace BizHawk.Client.EmuHawk
 			/// <summary>
 			/// get the default format preset (from config files)
 			/// </summary>
-			/// <returns></returns>
 			public static FormatPreset GetDefaultPreset()
 			{
 				FormatPreset[] fps = GetPresets();
@@ -93,42 +73,61 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (fp.ToString() == Global.Config.FFmpegFormat)
 					{
-						if (fp.custom)
+						if (fp.Custom)
+						{
 							return fp;
+						}
 					}
 				}
+
 				// default to xvid?
 				return fps[1];
+			}
+
+			public override string ToString()
+			{
+				return Name;
 			}
 
 			public void Dispose()
 			{
 			}
+
+			private FormatPreset(string name, string desc, string commandline, bool custom, string defaultext)
+			{
+				Name = name;
+				Desc = desc;
+				Custom = custom;
+
+				Commandline = Custom
+					? Global.Config.FFmpegCustomCommand
+					: commandline;
+
+				Defaultext = defaultext;
+			}
 		}
 
-		public FFmpegWriterForm()
+		private FFmpegWriterForm()
 		{
 			InitializeComponent();
 		}
 
-		private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+		private void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			if (listBox1.SelectedIndex != -1)
 			{
-				FormatPreset f = (FormatPreset)listBox1.SelectedItem;
+				var f = (FormatPreset)listBox1.SelectedItem;
 
-				label5.Text = "Extension: " + f.defaultext;
-				label3.Text = f.desc;
-				textBox1.Text = f.commandline;
-				textBox1.ReadOnly = !f.custom;
+				label5.Text = "Extension: " + f.Defaultext;
+				label3.Text = f.Desc;
+				textBox1.Text = f.Commandline;
+				textBox1.ReadOnly = !f.Custom;
 			}
 		}
 
 		/// <summary>
-		/// return a formatpreset corresponding to the user's choice
+		/// return a FormatPreset corresponding to the user's choice
 		/// </summary>
-		/// <param name="owner"></param>
-		/// <returns></returns>
 		public static FormatPreset DoFFmpegWriterDlg(IWin32Window owner)
 		{
 			FFmpegWriterForm dlg = new FFmpegWriterForm();
@@ -136,24 +135,28 @@ namespace BizHawk.Client.EmuHawk
 
 			int i = dlg.listBox1.FindStringExact(Global.Config.FFmpegFormat);
 			if (i != ListBox.NoMatches)
+			{
 				dlg.listBox1.SelectedIndex = i;
-
+			}
 
 			DialogResult result = dlg.ShowDialog(owner);
 
 			FormatPreset ret;
 			if (result != DialogResult.OK || dlg.listBox1.SelectedIndex == -1)
+			{
 				ret = null;
+			}
 			else
 			{
 				ret = (FormatPreset)dlg.listBox1.SelectedItem;
 				Global.Config.FFmpegFormat = ret.ToString();
-				if (ret.custom)
+				if (ret.Custom)
 				{
-					ret.commandline = dlg.textBox1.Text;
+					ret.Commandline = dlg.textBox1.Text;
 					Global.Config.FFmpegCustomCommand = dlg.textBox1.Text;
 				}
 			}
+
 			dlg.Dispose();
 			return ret;
 		}
