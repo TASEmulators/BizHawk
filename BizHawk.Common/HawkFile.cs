@@ -81,7 +81,8 @@ namespace BizHawk.Common
 		public string CanonicalName => MakeCanonicalName(Path.GetFileName(_rootPath), _memberPath);
 
 		/// <summary>
-		/// returns the virtual name of the bound file (disregarding the archive)
+		/// returns the virtual name of the bound file (disregarding the archive).
+		/// Useful as a basic content identifier.
 		/// </summary>
 		public string Name => GetBoundNameFromCanonical(MakeCanonicalName(_rootPath, _memberPath));
 
