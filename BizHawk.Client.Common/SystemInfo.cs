@@ -46,6 +46,11 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Apple II
 		/// </summary
+		public static SystemInfo Libretro { get; } = new SystemInfo("Libretro", CoreSystem.Libretro, 1);
+
+		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for Apple II
+		/// </summary
 		public static SystemInfo AppleII { get; } = new SystemInfo("Apple II", CoreSystem.AppleII, 1);
 
 		/// <summary>

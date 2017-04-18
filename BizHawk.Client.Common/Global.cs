@@ -145,6 +145,8 @@ namespace BizHawk.Client.Common
 						return SystemInfo.PSX;
 					case "AppleII":
 						return SystemInfo.AppleII;
+					case "Libretro":
+						return SystemInfo.Libretro;
 				}
 			}
 		}
