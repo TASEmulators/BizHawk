@@ -61,6 +61,8 @@ namespace BizHawk.Common
 			return GetProcAddress(_hModule, procName);
 		}
 
+		public IntPtr HModule { get { return _hModule; } }
+
 		IntPtr IImportResolver.Resolve(string entryPoint)
 		{
 			return GetProcAddress(entryPoint);
