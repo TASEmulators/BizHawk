@@ -241,15 +241,21 @@ namespace BizHawk.Client.Common
 				goto CaptureFullState;
 			}
 
+			if(currentState.Length == 0)
+			{
+				//handle empty states as a "full" (empty) state
+				goto CaptureFullState;
+			}
+
 			int index = 0;
 			int stateLength = Math.Min(currentState.Length, _lastState.Length);
 			bool inChangeSequence = false;
 			int changeSequenceStartOffset = 0;
 			int lastChangeSequenceStartOffset = 0;
 
-			if (_deltaBuffer.Length < stateLength)
+			if (_deltaBuffer.Length < stateLength + 1)
 			{
-				_deltaBuffer = new byte[stateLength];
+				_deltaBuffer = new byte[stateLength + 1];
 			}
 
 			_deltaBuffer[index++] = 0; // Full state = false (i.e. delta)
