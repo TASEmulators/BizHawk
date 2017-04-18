@@ -6,6 +6,7 @@ using System.Linq;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
+using BizHawk.Emulation.Cores.Libretro;
 using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Computers.AppleII;
@@ -234,7 +235,7 @@ namespace BizHawk.Client.Common
 					{
 						string codePathPart = Path.GetFileNameWithoutExtension(nextComm.LaunchLibretroCore);
 
-						var retro = new LibRetroEmulator(nextComm, nextComm.LaunchLibretroCore);
+						var retro = new LibretroCore(nextComm, nextComm.LaunchLibretroCore);
 						nextEmulator = retro;
 
 						// kind of dirty.. we need to stash this, and then we can unstash it in a moment, in case the core doesnt fail
@@ -296,7 +297,7 @@ namespace BizHawk.Client.Common
 									ret = HandleArchiveBinding(file);
 									if (ret)
 									{
-										ret = retro.LoadData(file.ReadAllBytes());
+										ret = retro.LoadData(file.ReadAllBytes(), file.Name);
 									}
 								}
 							}
