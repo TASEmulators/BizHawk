@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Common.StringExtensions;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
-using System.Linq;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -13,14 +13,13 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private WatchSize _size = WatchSize.Byte;
 		private DisplayType _type = DisplayType.Hex;
-		private bool _nullable = true;
 
 		public WatchValueBox()
 		{
 			CharacterCasing = CharacterCasing.Upper;
 		}
 
-		public bool Nullable { get { return _nullable; } set { _nullable = value; } }
+		public bool Nullable { get; set; } = true;
 
 		public WatchSize ByteSize
 		{
@@ -42,15 +41,15 @@ namespace BizHawk.Client.EmuHawk
 					switch (value)
 					{
 						case WatchSize.Byte:
-							isTypeCompatible = ByteWatch.ValidTypes.Where(t => t == _type).Any();
+							isTypeCompatible = ByteWatch.ValidTypes.Any(t => t == _type);
 							break;
 
 						case WatchSize.Word:
-							isTypeCompatible = WordWatch.ValidTypes.Where(t => t == _type).Any();
+							isTypeCompatible = WordWatch.ValidTypes.Any(t => t == _type);
 							break;
 
 						case WatchSize.DWord:
-							isTypeCompatible = DWordWatch.ValidTypes.Where(t => t == _type).Any();
+							isTypeCompatible = DWordWatch.ValidTypes.Any(t => t == _type);
 							break;
 					}
 
@@ -131,39 +130,21 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private double Max12_4
-		{
-			get { return MaxUnsignedInt / 16.0; }
-		}
+		private double Max12_4 => MaxUnsignedInt / 16.0;
 
-		private double Max20_12
-		{
-			get { return MaxUnsignedInt / 4096.0; }
-		}
+		private double Max20_12 => MaxUnsignedInt / 4096.0;
 
-		private double Max16_16
-		{
-			get { return MaxUnsignedInt / 65536.0; }
-		}
+		private double Max16_16 => MaxUnsignedInt / 65536.0;
 
-		private static double _12_4_Unit
-		{
-			get { return 1 / 16.0; }
-		}
+		private static double _12_4_Unit => 1 / 16.0;
 
-		private static double _20_12_Unit
-		{
-			get { return 1 / 4096.0; }
-		}
+		private static double _20_12_Unit => 1 / 4096.0;
 
-		private static double _16_16_Unit
-		{
-			get { return 1 / 65536.0; }
-		}
+		private static double _16_16_Unit => 1 / 65536.0;
 
 		public override void ResetText()
 		{
-			if (_nullable)
+			if (Nullable)
 			{
 				Text = string.Empty;
 			}
@@ -689,7 +670,10 @@ namespace BizHawk.Client.EmuHawk
 					if (Text.IsFloat())
 					{
 						if (Text == "-" || Text == ".")
+						{
 							return 0;
+						}
+
 						float val = float.Parse(Text);
 						var bytes = BitConverter.GetBytes(val);
 						return BitConverter.ToInt32(bytes, 0);
