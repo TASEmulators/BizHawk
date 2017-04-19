@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.Common
 		bool Has(string blockname);
 
 		/// <summary>
+		/// Gets or sets a value indicating whether the status is active.
 		/// This is just a hook, if needed, to readily suspend logging, without having to rewire the core
 		/// </summary>
 		bool Active { get; set; }

@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Common
 		/// VERY IMPORTANT: changes to the object returned by this function SHOULD NOT have any effect on emulation
 		/// (unless the object is later passed to PutSettings)
 		/// </summary>
-		/// <returns>a json-serializable object</returns>
+		/// <returns>a JSON serializable object</returns>
 		TSettings GetSettings();
 
 		/// <summary>
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Common
 		/// VERY IMPORTANT: changes to the object returned by this function MUST NOT have any effect on emulation
 		/// (unless the object is later passed to PutSyncSettings)
 		/// </summary>
-		/// <returns>a json-serializable object</returns>
+		/// <returns>a JSON serializable object</returns>
 		TSync GetSyncSettings();
 
 		/// <summary>
