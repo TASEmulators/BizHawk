@@ -233,7 +233,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				_core = core;
 			}
 
-			public override void OnHooksChanged()
+			protected override void OnHooksChanged()
 			{
 				_core.OnScanlineHooksChanged();
 			}
@@ -668,50 +668,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				return buttons[name];
 			}
-		}
-	}
-
-	public class ScanlineHookManager
-	{
-		public void Register(object tag, Action<int> callback)
-		{
-			var rr = new RegistrationRecord
-			{
-				tag = tag,
-				callback = callback
-			};
-
-			Unregister(tag);
-			records.Add(rr);
-			OnHooksChanged();
-		}
-
-		public int HookCount => records.Count;
-
-		public virtual void OnHooksChanged()
-		{
-		}
-
-		public void Unregister(object tag)
-		{
-			records.RemoveAll(r => r.tag == tag);
-		}
-
-		public void HandleScanline(int scanline)
-		{
-			foreach (var rr in records)
-			{
-				rr.callback(scanline);
-			}
-		}
-
-		private readonly List<RegistrationRecord> records = new List<RegistrationRecord>();
-
-		private class RegistrationRecord
-		{
-			public object tag;
-			public int scanline = 0;
-			public Action<int> callback;
 		}
 	}
 }
