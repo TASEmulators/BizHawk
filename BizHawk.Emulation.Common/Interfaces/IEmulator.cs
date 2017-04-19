@@ -10,14 +10,15 @@ namespace BizHawk.Emulation.Common
 	public interface IEmulator : IEmulatorService, IDisposable
 	{
 		/// <summary>
-		/// The intended mechanism to get services from a core
+		/// Gets the service provider.
+		/// This is the intended mechanism to get services from a core
 		/// Retrieves an IEmulatorService from the core, 
 		/// if the core does not have the type specified, it will return null
 		/// </summary>
 		IEmulatorServiceProvider ServiceProvider { get; }
 
 		/// <summary>
-		/// Defines all the possible inputs and types that the core can receive
+		/// Gets the definition that defines all the possible inputs and types that the core can receive
 		/// By design this should not change during the lifetime of the instance of the core
 		/// To change the definition, a new instance should be created
 		/// </summary>
@@ -39,17 +40,18 @@ namespace BizHawk.Emulation.Common
 		void FrameAdvance(bool render, bool rendersound = true);
 
 		/// <summary>
-		/// The frame count
+		/// Gets the current frame count
 		/// </summary>
 		int Frame { get; }
 
 		/// <summary>
-		/// The unique Id of the platform currently being emulated, for instance "NES"
+		/// Gets the unique Id of the platform currently being emulated, for instance "NES"
 		/// </summary>
 		string SystemId { get; }
 
 		/// <summary>
-		/// This flag is a contract with the client.  
+		/// Gets a value indicating whether the core is in deterministic mode.
+		/// This flag is a contract with the client.
 		/// If true, the core agrees to behave in a completely deterministic manner,
 		/// Features like movie recording depend on this.
 		/// It is the client's responsibility to manage this flag.
@@ -59,7 +61,7 @@ namespace BizHawk.Emulation.Common
 		bool DeterministicEmulation { get; }
 
 		/// <summary>
-		/// identifying information about a "mapper" or similar capability.  null if no such useful distinction can be drawn
+		/// Gets the identifying information about a "mapper" or similar capability.  null if no such useful distinction can be drawn
 		/// </summary>
 		string BoardName { get; }
 
@@ -69,7 +71,7 @@ namespace BizHawk.Emulation.Common
 		void ResetCounters();
 
 		/// <summary>
-		/// the corecomm module in use by this core.
+		/// Gets the core communications module in use by this core.
 		/// </summary>
 		/// <seealso cref="BizHawk.Emulation.Common.CoreComm" /> 
 		CoreComm CoreComm { get; }

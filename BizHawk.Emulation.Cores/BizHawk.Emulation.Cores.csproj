@@ -905,6 +905,9 @@
       <DependentUpon>LibsnesCore.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.IDebuggable.cs">
+      <DependentUpon>LibsnesCore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.IEmulator.cs">
         <DependentUpon>LibsnesCore.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.IInputPollable.cs">

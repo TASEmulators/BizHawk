@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			SetupMemoryDomains(romData, sgbRomData);
 
-			DeterministicEmulation = deterministicEmulation;
+			// DeterministicEmulation = deterministicEmulation; // Note we don't respect the value coming in and force it instead
 			if (DeterministicEmulation) // save frame-0 savestate now
 			{
 				MemoryStream ms = new MemoryStream();
@@ -173,8 +173,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				_savestatebuff = ms.ToArray();
 			}
 		}
-
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
 		private GameInfo _game;
 
@@ -199,21 +197,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// <summary>disable all external callbacks.  the front end should not even know the core is frame advancing</summary>
 		bool nocallbacks = false;
 
-		bool disposed = false;
-		public void Dispose()
-		{
-			if (disposed) return;
-			disposed = true;
-
-			api.CMD_unload_cartridge();
-			api.CMD_term();
-
-			resampler.Dispose();
-			api.Dispose();
-
-			if (_currCdl != null) _currCdl.Unpin();
-		}
-
 		public ITraceable Tracer { get; private set; }
 
 		public class MyScanlineHookManager : ScanlineHookManager
@@ -230,10 +213,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
+		bool _disposed = false;
+
 		public MyScanlineHookManager ScanlineHookManager;
 		void OnScanlineHooksChanged()
 		{
-			if (disposed) return;
+			if (_disposed) return;
 			if (ScanlineHookManager.HookCount == 0) api.QUERY_set_scanlineStart(null);
 			else api.QUERY_set_scanlineStart(scanlineStart_cb);
 		}
@@ -507,75 +492,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		public void FrameAdvance(bool render, bool rendersound)
-		{
-			/* if the input poll callback is called, it will set this to false
-			 * this has to be done before we save the per-frame state in deterministic
-			 * mode, because in there, the core actually advances, and might advance
-			 * through the point in time where IsLagFrame gets set to false.  makes sense?
-			 */
-
-			IsLagFrame = true;
-
-			if (!nocallbacks && Tracer.Enabled)
-				api.QUERY_set_trace_callback(tracecb);
-			else
-				api.QUERY_set_trace_callback(null);
-
-			// for deterministic emulation, save the state we're going to use before frame advance
-			// don't do this during nocallbacks though, since it's already been done
-			if (!nocallbacks && DeterministicEmulation)
-			{
-				MemoryStream ms = new MemoryStream();
-				BinaryWriter bw = new BinaryWriter(ms);
-				bw.Write(CoreSaveState());
-				bw.Write(false); // not framezero
-				SnesSaveController ssc = new SnesSaveController();
-				ssc.CopyFrom(Controller);
-				ssc.Serialize(bw);
-				bw.Close();
-				_savestatebuff = ms.ToArray();
-			}
-
-			// speedup when sound rendering is not needed
-			if (!rendersound)
-				api.QUERY_set_audio_sample(null);
-			else
-				api.QUERY_set_audio_sample(soundcb);
-
-			bool resetSignal = Controller.IsPressed("Reset");
-			if (resetSignal) api.CMD_reset();
-
-			bool powerSignal = Controller.IsPressed("Power");
-			if (powerSignal) api.CMD_power();
-
-			var enables = new LibsnesApi.LayerEnables();
-			enables.BG1_Prio0 = _settings.ShowBG1_0;
-			enables.BG1_Prio1 = _settings.ShowBG1_1;
-			enables.BG2_Prio0 = _settings.ShowBG2_0;
-			enables.BG2_Prio1 = _settings.ShowBG2_1;
-			enables.BG3_Prio0 = _settings.ShowBG3_0;
-			enables.BG3_Prio1 = _settings.ShowBG3_1;
-			enables.BG4_Prio0 = _settings.ShowBG4_0;
-			enables.BG4_Prio1 = _settings.ShowBG4_1;
-			enables.Obj_Prio0 = _settings.ShowOBJ_0;
-			enables.Obj_Prio1 = _settings.ShowOBJ_1;
-			enables.Obj_Prio2 = _settings.ShowOBJ_2;
-			enables.Obj_Prio3 = _settings.ShowOBJ_3;
-			api.SetLayerEnables(ref enables);
-
-			RefreshMemoryCallbacks(false);
-
-			//apparently this is one frame?
-			timeFrameCounter++;
-			api.CMD_run();
-
-			//once upon a time we forwarded messages frmo bsnes here, by checking for queued text messages, but I don't think it's needed any longer
-
-			if (IsLagFrame)
-				LagCount++;
-		}
-
 		void RefreshMemoryCallbacks(bool suppress)
 		{
 			var mcs = MemoryCallbacks;
@@ -584,34 +500,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			api.QUERY_set_state_hook_write(!suppress && mcs.HasWrites);
 		}
 
-		public ControllerDefinition ControllerDefinition { get { return _controllerDeck.Definition; } }
-		IController controller;
-		public IController Controller
-		{
-			get { return controller; }
-			set { controller = value; }
-		}
-
-		int timeFrameCounter;
-		public int Frame { get { return timeFrameCounter; } set { timeFrameCounter = value; } }
-		
-		public string SystemId { get; private set; }
-
-		public string BoardName { get; private set; }
-
-		// adelikat: Nasty hack to force new business logic.  Compatibility (and Accuracy when fully supported) will ALWAYS be in deterministic mode,
-		// a consequence is a permanent performance hit to the compatibility core
-		// Perormance will NEVER be in deterministic mode (and the client side logic will prohibit movie recording on it)
-		// feos: Nasty hack to a nasty hack. Allow user disable it with a strong warning.
-		public bool DeterministicEmulation
-		{
-			get
-			{
-				return _settings.ForceDeterminism &&
-				(CurrentProfile == "Compatibility" || CurrentProfile == "Accuracy");
-			}
-			private set {  /* Do nothing */ }
-		}
+		private int _timeFrameCounter;
 
 		//public byte[] snes_get_memory_data_read(LibsnesApi.SNES_MEMORY id)
 		//{
@@ -620,13 +509,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		//  var ret = api.snes_get_memory_data(id);
 		//  return ret;
 		//}
-
-		public void ResetCounters()
-		{
-			timeFrameCounter = 0;
-			LagCount = 0;
-			IsLagFrame = false;
-		}
 
 		#region savestates
 
@@ -729,13 +611,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		
-
-
-
 		#endregion
-
-		public CoreComm CoreComm { get; private set; }
 
 		// works for WRAM, garbage for anything else
 		static int? FakeBusMap(int addr)
