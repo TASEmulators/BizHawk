@@ -901,8 +901,23 @@
     <Compile Include="Consoles\Nintendo\SNES9X\LibSnes9x.cs" />
     <Compile Include="Consoles\Nintendo\SNES9X\Snes9x.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi.cs" />
-    <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.ISettable.cs">
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.ICodeDataLogger.cs">
+      <DependentUpon>LibsnesCore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.IDebuggable.cs">
         <DependentUpon>LibsnesCore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.IInputPollable.cs">
+      <DependentUpon>LibsnesCore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.IRegionable.cs">
+      <DependentUpon>LibsnesCore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.ISaveRam.cs">
+      <DependentUpon>LibsnesCore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.ISettable.cs">
+      <DependentUpon>LibsnesCore.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_BRK.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_CMD.cs" />
@@ -911,6 +926,12 @@
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_SIG.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesControllerDeck.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.cs" />
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.IStatable.cs">
+      <DependentUpon>LibsnesCore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.IVideoProvider.cs">
+      <DependentUpon>LibsnesCore.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\SNES\SnesColors.cs" />
     <Compile Include="Consoles\Nintendo\SNES\SNESGraphicsDecoder.cs" />
     <Compile Include="Consoles\PC Engine\ADPCM.cs" />

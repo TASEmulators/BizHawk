@@ -1,19 +1,17 @@
-//TODO - add serializer (?)
+// TODO - add serializer (?)
 
-//http://wiki.superfamicom.org/snes/show/Backgrounds
+// http://wiki.superfamicom.org/snes/show/Backgrounds
 
-//TODO 
-//libsnes needs to be modified to support multiple instances - THIS IS NECESSARY - or else loading one game and then another breaks things
+// TODO 
+// libsnes needs to be modified to support multiple instances - THIS IS NECESSARY - or else loading one game and then another breaks things
 // edit - this is a lot of work
-//wrap dll code around some kind of library-accessing interface so that it doesnt malfunction if the dll is unavailablecd
+// wrap dll code around some kind of library-accessing interface so that it doesnt malfunction if the dll is unavailablecd
 
 using System;
 using System.Linq;
 using System.Xml;
-using System.Xml.Linq;
 using System.IO;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
@@ -36,7 +34,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-			MemoryCallbacks = new MemoryCallbackSystem();
 			Tracer = new TraceBuffer
 			{
 				Header = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, DB, flags (NVMXDIZC), V, H)"
@@ -173,39 +170,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				// hack: write fake dummy controller info
 				bw.Write(new byte[536]);
 				bw.Close();
-				savestatebuff = ms.ToArray();
+				_savestatebuff = ms.ToArray();
 			}
-		}
-
-		ICodeDataLog currCdl;
-
-		public void SetCDL(ICodeDataLog cdl)
-		{
-			if(currCdl != null) currCdl.Unpin();
-			currCdl = cdl;
-			if(currCdl != null) currCdl.Pin();
-			
-			//set it no matter what. if its null, the cdl will be unhooked from libsnes internally
-			api.QUERY_set_cdl(currCdl);
-		}
-
-		public void NewCDL(ICodeDataLog cdl)
-		{
-			cdl["CARTROM"] = new byte[MemoryDomains["CARTROM"].Size];
-
-			if (MemoryDomains.Has("CARTRAM"))
-				cdl["CARTRAM"] = new byte[MemoryDomains["CARTRAM"].Size];
-
-			cdl["WRAM"] = new byte[MemoryDomains["WRAM"].Size];
-			cdl["APURAM"] = new byte[MemoryDomains["APURAM"].Size];
-
-			cdl.SubType = "SNES";
-			cdl.SubVer = 0;			
-		}
-
-		public void DisassembleCDL(Stream s, ICodeDataLog cdl)
-		{
-			//not supported yet
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -245,75 +211,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			resampler.Dispose();
 			api.Dispose();
 
-			if (currCdl != null) currCdl.Unpin();
+			if (_currCdl != null) _currCdl.Unpin();
 		}
-
-		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
-		{
-			LibsnesApi.CPURegs regs;
-			api.QUERY_peek_cpu_regs(out regs);
-
-			bool fn = (regs.p & 0x80)!=0;
-			bool fv = (regs.p & 0x40)!=0;
-			bool fm = (regs.p & 0x20)!=0;
-			bool fx = (regs.p & 0x10)!=0;
-			bool fd = (regs.p & 0x08)!=0;
-			bool fi = (regs.p & 0x04)!=0;
-			bool fz = (regs.p & 0x02)!=0;
-			bool fc = (regs.p & 0x01)!=0;
-			
-			return new Dictionary<string, RegisterValue>
-			{
-				{ "PC", regs.pc },
-				{ "A", regs.a },
-				{ "X", regs.x },
-				{ "Y", regs.y },
-				{ "Z", regs.z },
-				{ "S", regs.s },
-				{ "D", regs.d },
-				{ "Vector", regs.vector },
-				{ "P", regs.p },
-				{ "AA", regs.aa },
-				{ "RD", regs.rd },
-				{ "SP", regs.sp },
-				{ "DP", regs.dp },
-				{ "DB", regs.db },
-				{ "MDR", regs.mdr },
-				{ "Flag N", fn },
-				{ "Flag V", fv },
-				{ "Flag M", fm },
-				{ "Flag X", fx },
-				{ "Flag D", fd },
-				{ "Flag I", fi },
-				{ "Flag Z", fz },
-				{ "Flag C", fc },
-			};
-		}
-
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
-
-		// TODO: optimize managed to unmanaged using the ActiveChanged event
-		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
 
 		public ITraceable Tracer { get; private set; }
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
-
-		public bool CanStep(StepType type) { return false; }
-
-		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
-
-		[FeatureNotImplemented]
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		[FeatureNotImplemented]
-		public int TotalExecutedCycles
-		{
-			get { throw new NotImplementedException(); }
-		}
 
 		public class MyScanlineHookManager : ScanlineHookManager
 		{
@@ -328,6 +229,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				core.OnScanlineHooksChanged();
 			}
 		}
+
 		public MyScanlineHookManager ScanlineHookManager;
 		void OnScanlineHooksChanged()
 		{
@@ -534,15 +436,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			bool doubleSize = _settings.AlwaysDoubleSize;
 			bool lineDouble = doubleSize, dotDouble = doubleSize;
 
-			vidWidth = width;
-			vidHeight = height;
+			_videoWidth = width;
+			_videoHeight = height;
 
 			int yskip = 1, xskip = 1;
 
 			//if we are in high-res mode, we get double width. so, lets double the height here to keep it square.
 			if (width == 512)
 			{
-				vidHeight *= 2;
+				_videoHeight *= 2;
 				yskip = 2;
 
 				lineDouble = true;
@@ -551,7 +453,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 			else if (lineDouble)
 			{
-				vidHeight *= 2;
+				_videoHeight *= 2;
 				yskip = 2;
 			}
 
@@ -570,18 +472,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				lineDouble = false;
 				srcPitch = 512;
 				yskip = 1;
-				vidHeight = height;
+				_videoHeight = height;
 			}
 
 			if (dotDouble)
 			{
-				vidWidth *= 2;
+				_videoWidth *= 2;
 				xskip = 2;
 			}
 
-			int size = vidWidth * vidHeight;
-			if (vidBuffer.Length != size)
-				vidBuffer = new int[size];
+			int size = _videoWidth * _videoHeight;
+			if (_videoBuffer.Length != size)
+				_videoBuffer = new int[size];
 
 			for (int j = 0; j < 2; j++)
 			{
@@ -592,14 +494,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					//potentially do this twice, if we need to line double
 					if (i == 1 && !lineDouble) break;
 
-					int bonus = i * vidWidth + xbonus;
+					int bonus = i * _videoWidth + xbonus;
 					for (int y = 0; y < height; y++)
 						for (int x = 0; x < width; x++)
 						{
 							int si = y * srcPitch + x + srcStart;
-							int di = y * vidWidth * yskip + x * xskip + bonus;
+							int di = y * _videoWidth * yskip + x * xskip + bonus;
 							int rgb = data[si];
-							vidBuffer[di] = rgb;
+							_videoBuffer[di] = rgb;
 						}
 				}
 			}
@@ -632,7 +534,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				ssc.CopyFrom(Controller);
 				ssc.Serialize(bw);
 				bw.Close();
-				savestatebuff = ms.ToArray();
+				_savestatebuff = ms.ToArray();
 			}
 
 			// speedup when sound rendering is not needed
@@ -682,28 +584,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			api.QUERY_set_state_hook_write(!suppress && mcs.HasWrites);
 		}
 
-		public DisplayType Region
-		{
-			get
-			{
-				if (api.Region == LibsnesApi.SNES_REGION.NTSC)
-					return DisplayType.NTSC;
-				else
-					return DisplayType.PAL;
-			}
-		}
-
-		//video provider
-		int IVideoProvider.BackgroundColor { get { return 0; } }
-		int[] IVideoProvider.GetVideoBuffer() { return vidBuffer; }
-		int IVideoProvider.VirtualWidth { get { return (int)(vidWidth * 1.146); } }
-		public int VirtualHeight { get { return vidHeight; } }
-		int IVideoProvider.BufferWidth { get { return vidWidth; } }
-		int IVideoProvider.BufferHeight { get { return vidHeight; } }
-
-		int[] vidBuffer = new int[256 * 224];
-		int vidWidth = 256, vidHeight = 224;
-
 		public ControllerDefinition ControllerDefinition { get { return _controllerDeck.Definition; } }
 		IController controller;
 		public IController Controller
@@ -714,8 +594,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		int timeFrameCounter;
 		public int Frame { get { return timeFrameCounter; } set { timeFrameCounter = value; } }
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get; set; }
+		
 		public string SystemId { get; private set; }
 
 		public string BoardName { get; private set; }
@@ -734,28 +613,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			private set {  /* Do nothing */ }
 		}
 
-		public bool SaveRamModified
-		{
-			get
-			{
-				return api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM) != 0 || api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.SGB_CARTRAM) != 0;
-			}
-		}
-
-		public byte[] CloneSaveRam()
-		{
-			byte* buf = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
-			var size = api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
-			if (buf == null)
-			{
-				buf = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
-				size = api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
-			}
-			var ret = new byte[size];
-			Marshal.Copy((IntPtr)buf, ret, 0, size);
-			return ret;
-		}
-
 		//public byte[] snes_get_memory_data_read(LibsnesApi.SNES_MEMORY id)
 		//{
 		//  var size = (int)api.snes_get_memory_size(id);
@@ -763,20 +620,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		//  var ret = api.snes_get_memory_data(id);
 		//  return ret;
 		//}
-
-		public void StoreSaveRam(byte[] data)
-		{
-			byte* buf = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
-			var size = api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
-			if (buf == null)
-			{
-				buf = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
-				size = api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
-			}
-			if (size == 0) return;
-			if (size != data.Length) throw new InvalidOperationException("Somehow, we got a mismatch between saveram size and what bsnes says the saveram size is");
-			Marshal.Copy(data, 0, (IntPtr)buf, size);
-		}
 
 		public void ResetCounters()
 		{
@@ -886,133 +729,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-
-		public void SaveStateText(TextWriter writer)
-		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHexFast(writer);
-			writer.WriteLine("Frame {0}", Frame); // we don't parse this, it's only for the client to use
-			writer.WriteLine("Profile {0}", CurrentProfile);
-		}
-		public void LoadStateText(TextReader reader)
-		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHexFast(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-			reader.ReadLine(); // Frame #
-			var profile = reader.ReadLine().Split(' ')[1];
-			ValidateLoadstateProfile(profile);
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			if (!DeterministicEmulation)
-				writer.Write(CoreSaveState());
-			else
-				writer.Write(savestatebuff);
-
-			// other variables
-			writer.Write(IsLagFrame);
-			writer.Write(LagCount);
-			writer.Write(Frame);
-			writer.Write(CurrentProfile);
-
-			writer.Flush();
-		}
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			int size = api.QUERY_serialize_size();
-			byte[] buf = reader.ReadBytes(size);
-			CoreLoadState(buf);
-
-			if (DeterministicEmulation) // deserialize controller and fast-foward now
-			{
-				// reconstruct savestatebuff at the same time to avoid a costly core serialize
-				MemoryStream ms = new MemoryStream();
-				BinaryWriter bw = new BinaryWriter(ms);
-				bw.Write(buf);
-				bool framezero = reader.ReadBoolean();
-				bw.Write(framezero);
-				if (!framezero)
-				{
-					SnesSaveController ssc = new SnesSaveController(ControllerDefinition);
-					ssc.DeSerialize(reader);
-					IController tmp = this.Controller;
-					this.Controller = ssc;
-					nocallbacks = true;
-					FrameAdvance(false, false);
-					nocallbacks = false;
-					this.Controller = tmp;
-					ssc.Serialize(bw);
-				}
-				else // hack: dummy controller info
-				{
-					bw.Write(reader.ReadBytes(536));
-				}
-				bw.Close();
-				savestatebuff = ms.ToArray();
-			}
-
-			// other variables
-			IsLagFrame = reader.ReadBoolean();
-			LagCount = reader.ReadInt32();
-			Frame = reader.ReadInt32();
-			var profile = reader.ReadString();
-			ValidateLoadstateProfile(profile);
-		}
-
-		void ValidateLoadstateProfile(string profile)
-		{
-			if (profile != CurrentProfile)
-			{
-				throw new InvalidOperationException(string.Format("You've attempted to load a savestate made using a different SNES profile ({0}) than your current configuration ({1}). We COULD automatically switch for you, but we havent done that yet. This error is to make sure you know that this isnt going to work right now.", profile, CurrentProfile));
-			}
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			return ms.ToArray();
-		}
-
-		public bool BinarySaveStatesPreferred { get { return true; } }
-
-		/// <summary>
-		/// handle the unmanaged part of loadstating
-		/// </summary>
-		void CoreLoadState(byte[] data)
-		{
-			int size = api.QUERY_serialize_size();
-			if (data.Length != size)
-				throw new Exception("Libsnes internal savestate size mismatch!");
-			api.CMD_init();
-			//zero 01-sep-2014 - this approach isn't being used anymore, it's too slow!
-			//LoadCurrent(); //need to make sure chip roms are reloaded
-			fixed (byte* pbuf = &data[0])
-				api.CMD_unserialize(new IntPtr(pbuf), size);
-		}
+		
 
 
-		/// <summary>
-		/// handle the unmanaged part of savestating
-		/// </summary>
-		byte[] CoreSaveState()
-		{
-			int size = api.QUERY_serialize_size();
-			byte[] buf = new byte[size];
-			fixed (byte* pbuf = &buf[0])
-				api.CMD_serialize(new IntPtr(pbuf), size);
-			return buf;
-		}
-
-		/// <summary>
-		/// most recent internal savestate, for deterministic mode ONLY
-		/// </summary>
-		byte[] savestatebuff;
 
 		#endregion
 
