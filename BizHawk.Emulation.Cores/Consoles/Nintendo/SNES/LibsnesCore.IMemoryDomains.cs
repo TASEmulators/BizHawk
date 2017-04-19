@@ -10,6 +10,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		private readonly List<MemoryDomain> _memoryDomainList = new List<MemoryDomain>();
 		private IMemoryDomains _memoryDomains;
+		private LibsnesApi.SNES_MAPPER? _mapper = null;
+
+		// works for WRAM, garbage for anything else
+		private static int? FakeBusMap(int addr)
+		{
+			addr &= 0xffffff;
+			int bank = addr >> 16;
+			if (bank == 0x7e || bank == 0x7f)
+			{
+				return addr & 0x1ffff;
+			}
+
+			bank &= 0x7f;
+			int low = addr & 0xffff;
+			if (bank < 0x40 && low < 0x2000)
+			{
+				return low;
+			}
+
+			return null;
+		}
 
 		private void SetupMemoryDomains(byte[] romData, byte[] sgbRomData)
 		{
@@ -150,6 +171,95 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						blockptr[a.Value] = val;
 				}, wordSize: 2);
 			_memoryDomainList.Add(md);
+		}
+
+		// works for ROM, garbage for anything else
+		private byte FakeBusRead(int addr)
+		{
+			addr &= 0xffffff;
+			int bank = addr >> 16;
+			int low = addr & 0xffff;
+
+			if (!_mapper.HasValue)
+			{
+				return 0;
+			}
+
+			switch (_mapper)
+			{
+				case LibsnesApi.SNES_MAPPER.LOROM:
+					if (low >= 0x8000)
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+
+					break;
+				case LibsnesApi.SNES_MAPPER.EXLOROM:
+					if ((bank >= 0x40 && bank <= 0x7f) || low >= 0x8000)
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+
+					break;
+				case LibsnesApi.SNES_MAPPER.HIROM:
+				case LibsnesApi.SNES_MAPPER.EXHIROM:
+					if ((bank >= 0x40 && bank <= 0x7f) || bank >= 0xc0 || low >= 0x8000)
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+
+					break;
+				case LibsnesApi.SNES_MAPPER.SUPERFXROM:
+					if ((bank >= 0x40 && bank <= 0x5f) || (bank >= 0xc0 && bank <= 0xdf) ||
+						(low >= 0x8000 && ((bank >= 0x00 && bank <= 0x3f) || (bank >= 0x80 && bank <= 0xbf))))
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+
+					break;
+				case LibsnesApi.SNES_MAPPER.SA1ROM:
+					if (bank >= 0xc0 || (low >= 0x8000 && ((bank >= 0x00 && bank <= 0x3f) || (bank >= 0x80 && bank <= 0xbf))))
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+
+					break;
+				case LibsnesApi.SNES_MAPPER.BSCLOROM:
+					if (low >= 0x8000 && ((bank >= 0x00 && bank <= 0x3f) || (bank >= 0x80 && bank <= 0xbf)))
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+
+					break;
+				case LibsnesApi.SNES_MAPPER.BSCHIROM:
+					if ((bank >= 0x40 && bank <= 0x5f) || (bank >= 0xc0 && bank <= 0xdf) ||
+						(low >= 0x8000 && ((bank >= 0x00 && bank <= 0x1f) || (bank >= 0x80 && bank <= 0x9f))))
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+
+					break;
+				case LibsnesApi.SNES_MAPPER.BSXROM:
+					if ((bank >= 0x40 && bank <= 0x7f) || bank >= 0xc0 ||
+						(low >= 0x8000 && ((bank >= 0x00 && bank <= 0x3f) || (bank >= 0x80 && bank <= 0xbf))) ||
+						(low >= 0x6000 && low <= 0x7fff && (bank >= 0x20 && bank <= 0x3f)))
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+
+					break;
+				case LibsnesApi.SNES_MAPPER.STROM:
+					if (low >= 0x8000 && ((bank >= 0x00 && bank <= 0x5f) || (bank >= 0x80 && bank <= 0xdf)))
+					{
+						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+					}
+
+					break;
+				default:
+					throw new InvalidOperationException($"Unknown mapper: {_mapper}");
+			}
+
+			return 0;
 		}
 	}
 }

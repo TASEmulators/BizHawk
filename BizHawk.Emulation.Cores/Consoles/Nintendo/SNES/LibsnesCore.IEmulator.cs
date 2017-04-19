@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			IsLagFrame = true;
 
-			if (!nocallbacks && Tracer.Enabled)
+			if (!nocallbacks && _tracer.Enabled)
 			{
 				api.QUERY_set_trace_callback(tracecb);
 			}
