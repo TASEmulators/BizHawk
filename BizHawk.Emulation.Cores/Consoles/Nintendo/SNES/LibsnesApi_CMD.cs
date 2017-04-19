@@ -8,8 +8,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		public bool CMD_serialize(IntPtr data, int size)
 		{
-			comm->buf0 = data.ToPointer();
-			comm->buf_size0 = size;
+			comm->buf[0] = (uint)data.ToInt32();
+			comm->buf_size[0] = size;
 			Message(eMessage.eMessage_CMD_serialize);
 			WaitForCMD();
 			bool ret = comm->GetBool();
@@ -29,8 +29,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public bool CMD_unserialize(IntPtr data, int size)
 		{
-			comm->buf0 = data.ToPointer();
-			comm->buf_size0 = size;
+			comm->buf[0] = (uint)data.ToInt32();
+			comm->buf_size[0] = size;
 			Message(eMessage.eMessage_CMD_unserialize);
 			WaitForCMD();
 			bool ret = comm->GetBool();
@@ -61,28 +61,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public bool CMD_load_cartridge_super_game_boy(string rom_xml, byte[] rom_data, uint rom_size, byte[] dmg_data)
 		{
-			fixed (char* xmlcp = rom_xml)
-			{
-				comm->str = (sbyte*)xmlcp;
-				SetBytes(rom_data);
-				SetBytes2(dmg_data);
-				Message(eMessage.eMessage_CMD_load_cartridge_sgb);
-				WaitForCMD();
-				return comm->GetBool();
-			}
+			SetAscii(0, rom_xml, () =>
+				 SetBytes(1, rom_data, () =>
+					 SetBytes(2, dmg_data, () =>
+					 {
+						 Message(eMessage.eMessage_CMD_load_cartridge_sgb);
+						 WaitForCMD();
+					 })
+				 )
+			);
+			return comm->GetBool();
 		}
 
 		public bool CMD_load_cartridge_normal(byte[] rom_xml, byte[] rom_data)
 		{
 			string xml = rom_xml==null?null:System.Text.Encoding.ASCII.GetString(rom_xml);
-			fixed (char* xmlcp = xml)
-			{
-				comm->str = (sbyte*)xmlcp;
-				SetBytes(rom_data);
-				Message(eMessage.eMessage_CMD_load_cartridge_normal);
-				WaitForCMD();
-				return comm->GetBool();
-			}
+			SetAscii(0, xml??"", () =>
+				SetBytes(1, rom_data, () => {
+					Message(eMessage.eMessage_CMD_load_cartridge_normal);
+					WaitForCMD();
+				})
+			);
+			return comm->GetBool();
 		}
 
 		public void CMD_term()

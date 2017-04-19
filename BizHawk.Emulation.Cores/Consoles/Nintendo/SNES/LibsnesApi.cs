@@ -27,8 +27,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		CommStruct* comm;
 		MessageApi Message;
-		BufferApi CopyBuffer; //TODO: consider making private and wrapping
-		BufferApi SetBuffer; //TODO: consider making private and wrapping
+		BufferApi _copyBuffer; //TODO: consider making private and wrapping
+		BufferApi _setBuffer; //TODO: consider making private and wrapping
 
 		public LibsnesApi(string dllPath)
 		{
@@ -36,8 +36,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			instanceDll = new InstanceDll(dllPath);
 			var dllinit = (DllInit)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("DllInit"), typeof(DllInit));
 			Message = (MessageApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("Message"), typeof(MessageApi));
-			CopyBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("CopyBuffer"), typeof(BufferApi));
-			SetBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("SetBuffer"), typeof(BufferApi));
+			_copyBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("CopyBuffer"), typeof(BufferApi));
+			_setBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("SetBuffer"), typeof(BufferApi));
 
 			comm = (CommStruct*)dllinit().ToPointer();
 		}
@@ -52,33 +52,50 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			DeallocatedMemoryBlocks.Clear();
 		}
 
-		public void CopyString(string str)
+		/// <summary>
+		/// Copy an ascii string into libretro. It keeps the copy.
+		/// </summary>
+		public void CopyAscii(int id, string str)
 		{
-			fixed (char* cp = str)
-				CopyBuffer(0, cp, str.Length + 1);
+			fixed (byte* cp = System.Text.Encoding.ASCII.GetBytes(str+"\0"))
+				_copyBuffer(id, cp, str.Length + 1);
 		}
 
-		public void CopyBytes(byte[] bytes)
+		/// <summary>
+		/// Copy a buffer into libretro. It keeps the copy.
+		/// </summary>
+		public void CopyBytes(int id, byte[] bytes)
 		{
 			fixed (byte* bp = bytes)
-				CopyBuffer(0, bp, bytes.Length);
+				_copyBuffer(id, bp, bytes.Length);
 		}
 
-		public void SetAscii(string str)
+		/// <summary>
+		/// Locks a buffer and sets it into libretro. You must pass a delegate to be executed while that buffer is locked.
+		/// This is meant to be used for avoiding a memcpy for large roms (which the core is then just going to memcpy again on its own)
+		/// The memcpy has to happen at some point (libretro semantics specify [not literally, the docs dont say] that the core should finish using the buffer before its init returns)
+		/// but this limits it to once.
+		/// Moreover, this keeps the c++ side from having to free strings when they're no longer used (and memory management is trickier there, so we try to avoid it)
+		/// </summary>
+		public void SetBytes(int id, byte[] bytes, Action andThen)
 		{
-			fixed (char* cp = str)
-				SetBuffer(0, cp, str.Length + 1);
+			fixed (byte* bp = bytes)
+			{
+				_setBuffer(id, bp, bytes.Length);
+				andThen();
+			}
 		}
 
-		public void SetBytes(byte[] bytes)
+		/// <summary>
+		/// see SetBytes
+		/// </summary>
+		public void SetAscii(int id, string str, Action andThen)
 		{
-			fixed (byte* bp = bytes)
-				SetBuffer(0, bp, bytes.Length);
-		}
-		public void SetBytes2(byte[] bytes)
-		{
-			fixed (byte* bp = bytes)
-				SetBuffer(1, bp, bytes.Length);
+			fixed (byte* cp = System.Text.Encoding.ASCII.GetBytes(str+"\0"))
+			{
+				_setBuffer(id, cp, str.Length + 1);
+				andThen();
+			}
 		}
 
 		public Action<uint> ReadHook, ExecHook;
@@ -127,7 +144,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public delegate void snes_trace_t(string msg);
 
 
-		[StructLayout(LayoutKind.Sequential)]
 		public struct CPURegs
 		{
 			public uint pc;
@@ -137,7 +153,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public byte sp, dp, db, mdr;
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
 		public struct LayerEnables
 		{
 			byte _BG1_Prio0, _BG1_Prio1;
@@ -161,7 +176,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public bool Obj_Prio3 { get { return _Obj_Prio3 != 0; } set { _Obj_Prio3 = (byte)(value ? 1 : 0); } }
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
 		struct CommStruct
 		{
 			//the cmd being executed
@@ -185,8 +199,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public fixed int inports[2];
 
 			//this should always be used in pairs
-			public void* buf0, buf1;
-			public int buf_size0, buf_size1;
+			public fixed uint buf[3]; //ACTUALLY A POINTER but can't marshal it :(
+			public fixed int buf_size[3];
 
 			//bleck. this is a long so that it can be a 32/64bit pointer
 			public fixed long cdl_ptr[4];

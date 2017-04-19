@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						string ret = hint;
 						if (pathRequest != null)
 						  hint = pathRequest(slot, hint);
-						SetAscii(hint);
+						CopyAscii(0, hint);
 						break;
 					}
 				case eMessage.eMessage_SIG_trace_callback:
@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 						comm->ptr = smb.Ptr;
 						SharedMemoryBlocks[smb.Name] = smb;
-						CopyString(smb.BlockName);
+						CopyAscii(0, smb.BlockName);
 						break;
 					}
 				case eMessage.eMessage_SIG_freeSharedMemory:
