@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Xml;
 using System.IO;
-using System.Collections.Generic;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
@@ -133,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 					// bsnes wont inspect the xml to load the necessary sfc file.
 					// so, we have to do that here and pass it in as the romData :/
-					if (_romxml["cartridge"] != null && _romxml["cartridge"]["rom"] != null)
+					if (_romxml["cartridge"]?["rom"] != null)
 					{
 						romData = File.ReadAllBytes(CoreComm.CoreFileProvider.PathSubfile(_romxml["cartridge"]["rom"].Attributes["name"].Value));
 					}
@@ -144,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				}
 
 				SystemId = "SNES";
-				_currLoadParams = new LoadParams()
+				_currLoadParams = new LoadParams
 				{
 					type = LoadParamType.Normal,
 					xml_data = xmlData,
@@ -165,7 +164,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 			else
 			{
-				//http://forums.nesdev.com/viewtopic.php?t=5367&start=19
+				// http://forums.nesdev.com/viewtopic.php?t=5367&start=19
 				CoreComm.VsyncNum = 21281370;
 				CoreComm.VsyncDen = 4 * 341 * 312;
 			}
@@ -246,14 +245,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				return;
 			}
 
-			if (ScanlineHookManager.HookCount == 0)
-			{
-				Api.QUERY_set_scanlineStart(null);
-			}
-			else
-			{
-				Api.QUERY_set_scanlineStart(_scanlineStartCb);
-			}
+			Api.QUERY_set_scanlineStart(ScanlineHookManager.HookCount == 0 ? null : _scanlineStartCb);
 		}
 
 		private void snes_scanlineStart(int line)
@@ -270,10 +262,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (isMsu1Rom || isMsu1Pcm)
 			{
 				// well, check if we have an msu-1 xml
-				if (_romxml != null && _romxml["cartridge"] != null && _romxml["cartridge"]["msu1"] != null)
+				if (_romxml?["cartridge"]?["msu1"] != null)
 				{
 					var msu1 = _romxml["cartridge"]["msu1"];
-					if (isMsu1Rom && msu1["rom"].Attributes["name"] != null)
+					if (isMsu1Rom && msu1["rom"]?.Attributes["name"] != null)
 					{
 						return CoreComm.CoreFileProvider.PathSubfile(msu1["rom"].Attributes["name"].Value);
 					}
@@ -282,7 +274,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					{
 						// return @"D:\roms\snes\SuperRoadBlaster\SuperRoadBlaster-1.pcm";
 						// return "";
-						int wantsTrackNumber = int.Parse(hint.Replace("track-", "").Replace(".pcm", ""));
+						int wantsTrackNumber = int.Parse(hint.Replace("track-", string.Empty).Replace(".pcm", string.Empty));
 						wantsTrackNumber++;
 						string wantsTrackString = wantsTrackNumber.ToString();
 						foreach (var child in msu1.ChildNodes.Cast<XmlNode>())
@@ -300,26 +292,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 
 			// not MSU-1.  ok.
-			string firmwareID;
+			string firmwareId;
 
 			switch (hint)
 			{
-				case "cx4.rom": firmwareID = "CX4"; break;
-				case "dsp1.rom": firmwareID = "DSP1"; break;
-				case "dsp1b.rom": firmwareID = "DSP1b"; break;
-				case "dsp2.rom": firmwareID = "DSP2"; break;
-				case "dsp3.rom": firmwareID = "DSP3"; break;
-				case "dsp4.rom": firmwareID = "DSP4"; break;
-				case "st010.rom": firmwareID = "ST010"; break;
-				case "st011.rom": firmwareID = "ST011"; break;
-				case "st018.rom": firmwareID = "ST018"; break;
+				case "cx4.rom": firmwareId = "CX4"; break;
+				case "dsp1.rom": firmwareId = "DSP1"; break;
+				case "dsp1b.rom": firmwareId = "DSP1b"; break;
+				case "dsp2.rom": firmwareId = "DSP2"; break;
+				case "dsp3.rom": firmwareId = "DSP3"; break;
+				case "dsp4.rom": firmwareId = "DSP4"; break;
+				case "st010.rom": firmwareId = "ST010"; break;
+				case "st011.rom": firmwareId = "ST011"; break;
+				case "st018.rom": firmwareId = "ST018"; break;
 				default:
 					CoreComm.ShowMessage($"Unrecognized SNES firmware request \"{hint}\".");
 					return string.Empty;
 			}
 
 			// build romfilename
-			string test = CoreComm.CoreFileProvider.GetFirmwarePath("SNES", firmwareID, false, "Game may function incorrectly without the requested firmware.");
+			string test = CoreComm.CoreFileProvider.GetFirmwarePath("SNES", firmwareId, false, "Game may function incorrectly without the requested firmware.");
 
 			// we need to return something to bsnes
 			test = test ?? string.Empty;
@@ -525,7 +517,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					{
 						for (int x = 0; x < width; x++)
 						{
-							int si = y * srcPitch + x + srcStart;
+							int si = (y * srcPitch) + x + srcStart;
 							int di = y * _videoWidth * yskip + x * xskip + bonus;
 							int rgb = data[si];
 							_videoBuffer[di] = rgb;
@@ -572,27 +564,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public class SnesSaveController : IController
 		{
 			// this is all rather general, so perhaps should be moved out of LibsnesCore
-
-			ControllerDefinition def;
+			ControllerDefinition _def;
 
 			public SnesSaveController()
 			{
-				this.def = null;
+				_def = null;
 			}
 
 			public SnesSaveController(ControllerDefinition def)
 			{
-				this.def = def;
+				_def = def;
 			}
 
-			WorkingDictionary<string, float> buttons = new WorkingDictionary<string, float>();
+			private readonly WorkingDictionary<string, float> buttons = new WorkingDictionary<string, float>();
 
 			/// <summary>
 			/// invalid until CopyFrom has been called
 			/// </summary>
 			public ControllerDefinition Definition
 			{
-				get { return def; }
+				get { return _def; }
 			}
 
 			public void Serialize(BinaryWriter b)
@@ -626,14 +617,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			/// </summary>
 			public void CopyFrom(IController source)
 			{
-				this.def = source.Definition;
+				this._def = source.Definition;
 				buttons.Clear();
-				foreach (var k in def.BoolButtons)
+				foreach (var k in _def.BoolButtons)
 				{
 					buttons.Add(k, source.IsPressed(k) ? 1.0f : 0);
 				}
 
-				foreach (var k in def.FloatControls)
+				foreach (var k in _def.FloatControls)
 				{
 					if (buttons.Keys.Contains(k))
 					{
