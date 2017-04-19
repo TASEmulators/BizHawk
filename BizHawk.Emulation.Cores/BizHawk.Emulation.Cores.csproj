@@ -901,6 +901,9 @@
     <Compile Include="Consoles\Nintendo\SNES9X\LibSnes9x.cs" />
     <Compile Include="Consoles\Nintendo\SNES9X\Snes9x.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi.cs" />
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.ISettable.cs">
+        <DependentUpon>LibsnesCore.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_BRK.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_CMD.cs" />
     <Compile Include="Consoles\Nintendo\SNES\LibsnesApi_Enums.cs" />

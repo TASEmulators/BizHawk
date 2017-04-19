@@ -1,13 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
+
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
+
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class SNESControllerSettings : Form
@@ -21,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNESControllerSettings_Load(object sender, EventArgs e)
 		{
-			_syncSettings = (Global.Emulator as LibsnesCore).SyncSettings.Clone();
+			_syncSettings = ((LibsnesCore)Global.Emulator).GetSyncSettings().Clone();
 			Port1ComboBox.PopulateFromEnum<LibsnesControllerDeck.ControllerType>(_syncSettings.LeftPort);
 			Port2ComboBox.PopulateFromEnum<LibsnesControllerDeck.ControllerType>(_syncSettings.RightPort);
 		}

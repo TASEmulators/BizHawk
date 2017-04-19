@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		portedUrl: "http://byuu.org/"
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public unsafe class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
+	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
@@ -56,8 +56,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				game.FirmwareHash = sgbRomData.HashSHA1();
 			}
 
-			this.Settings = (SnesSettings)Settings ?? new SnesSettings();
-			this.SyncSettings = (SnesSyncSettings)SyncSettings ?? new SnesSyncSettings();
+			_settings = (SnesSettings)Settings ?? new SnesSettings();
+			_syncSettings = (SnesSyncSettings)SyncSettings ?? new SnesSyncSettings();
 
 			api = new LibsnesApi(GetDllPath());
 			api.ReadHook = ReadHook;
@@ -66,8 +66,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			ScanlineHookManager = new MyScanlineHookManager(this);
 
-			_controllerDeck = new LibsnesControllerDeck(this.SyncSettings.LeftPort,
-				this.SyncSettings.RightPort);
+			_controllerDeck = new LibsnesControllerDeck(
+				_syncSettings.LeftPort,
+				_syncSettings.RightPort);
 			_controllerDeck.NativeInit(api);
 			
 			api.CMD_init();
@@ -221,7 +222,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					return "Compatibility";
 				}
 
-				return SyncSettings.Profile;
+				return _syncSettings.Profile;
 			}
 		}
 
@@ -530,7 +531,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void snes_video_refresh(int* data, int width, int height)
 		{
-			bool doubleSize = Settings.AlwaysDoubleSize;
+			bool doubleSize = _settings.AlwaysDoubleSize;
 			bool lineDouble = doubleSize, dotDouble = doubleSize;
 
 			vidWidth = width;
@@ -647,18 +648,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (powerSignal) api.CMD_power();
 
 			var enables = new LibsnesApi.LayerEnables();
-			enables.BG1_Prio0 = Settings.ShowBG1_0;
-			enables.BG1_Prio1 = Settings.ShowBG1_1;
-			enables.BG2_Prio0 = Settings.ShowBG2_0;
-			enables.BG2_Prio1 = Settings.ShowBG2_1;
-			enables.BG3_Prio0 = Settings.ShowBG3_0;
-			enables.BG3_Prio1 = Settings.ShowBG3_1;
-			enables.BG4_Prio0 = Settings.ShowBG4_0;
-			enables.BG4_Prio1 = Settings.ShowBG4_1;
-			enables.Obj_Prio0 = Settings.ShowOBJ_0;
-			enables.Obj_Prio1 = Settings.ShowOBJ_1;
-			enables.Obj_Prio2 = Settings.ShowOBJ_2;
-			enables.Obj_Prio3 = Settings.ShowOBJ_3;
+			enables.BG1_Prio0 = _settings.ShowBG1_0;
+			enables.BG1_Prio1 = _settings.ShowBG1_1;
+			enables.BG2_Prio0 = _settings.ShowBG2_0;
+			enables.BG2_Prio1 = _settings.ShowBG2_1;
+			enables.BG3_Prio0 = _settings.ShowBG3_0;
+			enables.BG3_Prio1 = _settings.ShowBG3_1;
+			enables.BG4_Prio0 = _settings.ShowBG4_0;
+			enables.BG4_Prio1 = _settings.ShowBG4_1;
+			enables.Obj_Prio0 = _settings.ShowOBJ_0;
+			enables.Obj_Prio1 = _settings.ShowOBJ_1;
+			enables.Obj_Prio2 = _settings.ShowOBJ_2;
+			enables.Obj_Prio3 = _settings.ShowOBJ_3;
 			api.SetLayerEnables(ref enables);
 
 			RefreshMemoryCallbacks(false);
@@ -727,7 +728,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			get
 			{
-				return Settings.ForceDeterminism &&
+				return _settings.ForceDeterminism &&
 				(CurrentProfile == "Compatibility" || CurrentProfile == "Accuracy");
 			}
 			private set {  /* Do nothing */ }
@@ -1254,69 +1255,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		void RefreshPalette()
 		{
-			SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), Settings.Palette, false));
+			SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), _settings.Palette, false));
 
-		}
-
-		SnesSettings Settings;
-		public SnesSyncSettings SyncSettings;
-
-		public SnesSettings GetSettings() { return Settings.Clone(); }
-		public SnesSyncSettings GetSyncSettings() { return SyncSettings.Clone(); }
-		public bool PutSettings(SnesSettings o)
-		{
-			bool refreshneeded = o.Palette != Settings.Palette;
-			Settings = o;
-			if (refreshneeded)
-				RefreshPalette();
-			return false;
-		}
-		public bool PutSyncSettings(SnesSyncSettings o)
-		{
-			bool ret = o.Profile != SyncSettings.Profile
-				|| o.LeftPort != SyncSettings.LeftPort
-				|| o.RightPort != SyncSettings.RightPort;
-
-			SyncSettings = o;
-			return ret;
-		}
-
-		public class SnesSettings
-		{
-			public bool ShowBG1_0 = true;
-			public bool ShowBG2_0 = true;
-			public bool ShowBG3_0 = true;
-			public bool ShowBG4_0 = true;
-			public bool ShowBG1_1 = true;
-			public bool ShowBG2_1 = true;
-			public bool ShowBG3_1 = true;
-			public bool ShowBG4_1 = true;
-			public bool ShowOBJ_0 = true;
-			public bool ShowOBJ_1 = true;
-			public bool ShowOBJ_2 = true;
-			public bool ShowOBJ_3 = true;
-
-			public bool AlwaysDoubleSize = false;
-			public bool ForceDeterminism = true;
-			public string Palette = "BizHawk";
-
-			public SnesSettings Clone()
-			{
-				return (SnesSettings)MemberwiseClone();
-			}
-		}
-
-		public class SnesSyncSettings
-		{
-			public string Profile = "Performance"; // "Accuracy", and "Compatibility" are the other choicec, todo: make this an enum
-
-			public LibsnesControllerDeck.ControllerType LeftPort { get; set; } = LibsnesControllerDeck.ControllerType.Gamepad;
-			public LibsnesControllerDeck.ControllerType RightPort { get; set; } = LibsnesControllerDeck.ControllerType.Gamepad;
-
-			public SnesSyncSettings Clone()
-			{
-				return (SnesSyncSettings)MemberwiseClone();
-			}
 		}
 	}
 
