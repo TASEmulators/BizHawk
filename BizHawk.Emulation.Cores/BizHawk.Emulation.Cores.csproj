@@ -908,10 +908,13 @@
       <DependentUpon>LibsnesCore.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.IEmulator.cs">
-        <DependentUpon>LibsnesCore.cs</DependentUpon>
+      <DependentUpon>LibsnesCore.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.IInputPollable.cs">
       <DependentUpon>LibsnesCore.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.IMemoryDomains.cs">
+        <DependentUpon>LibsnesCore.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\SNES\LibsnesCore.IRegionable.cs">
       <DependentUpon>LibsnesCore.cs</DependentUpon>
