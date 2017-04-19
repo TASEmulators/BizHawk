@@ -141,6 +141,7 @@
     <Compile Include="Interfaces\Services\ITraceable.cs" />
     <Compile Include="Interfaces\Services\IVideoProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SaveController.cs" />
     <Compile Include="ServiceAttributes.cs" />
     <Compile Include="ServiceInjector.cs" />
     <Compile Include="Sound\Utilities\BlipBuffer.cs" />

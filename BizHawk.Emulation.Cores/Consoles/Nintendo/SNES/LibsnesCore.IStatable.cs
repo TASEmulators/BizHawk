@@ -58,7 +58,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				bw.Write(framezero);
 				if (!framezero)
 				{
-					var ssc = new SnesSaveController(ControllerDefinition);
+					var ssc = new SaveController(ControllerDefinition);
 					ssc.DeSerialize(reader);
 					IController tmp = Controller;
 					Controller = ssc;

@@ -3,7 +3,6 @@ using System.Linq;
 using System.Xml;
 using System.IO;
 
-using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.W65816;
@@ -556,109 +555,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private void RefreshPalette()
 		{
 			SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), _settings.Palette, false));
-		}
-
-		/// <summary>
-		/// can freeze a copy of a controller input set and serialize\deserialize it
-		/// </summary>
-		public class SnesSaveController : IController
-		{
-			// this is all rather general, so perhaps should be moved out of LibsnesCore
-			ControllerDefinition _def;
-
-			public SnesSaveController()
-			{
-				_def = null;
-			}
-
-			public SnesSaveController(ControllerDefinition def)
-			{
-				_def = def;
-			}
-
-			private readonly WorkingDictionary<string, float> buttons = new WorkingDictionary<string, float>();
-
-			/// <summary>
-			/// invalid until CopyFrom has been called
-			/// </summary>
-			public ControllerDefinition Definition
-			{
-				get { return _def; }
-			}
-
-			public void Serialize(BinaryWriter b)
-			{
-				b.Write(buttons.Keys.Count);
-				foreach (var k in buttons.Keys)
-				{
-					b.Write(k);
-					b.Write(buttons[k]);
-				}
-			}
-
-			/// <summary>
-			/// no checking to see if the deserialized controls match any definition
-			/// </summary>
-			/// <param name="b"></param>
-			public void DeSerialize(BinaryReader b)
-			{
-				buttons.Clear();
-				int numbuttons = b.ReadInt32();
-				for (int i = 0; i < numbuttons; i++)
-				{
-					string k = b.ReadString();
-					float v = b.ReadSingle();
-					buttons.Add(k, v);
-				}
-			}
-
-			/// <summary>
-			/// this controller's definition changes to that of source
-			/// </summary>
-			public void CopyFrom(IController source)
-			{
-				this._def = source.Definition;
-				buttons.Clear();
-				foreach (var k in _def.BoolButtons)
-				{
-					buttons.Add(k, source.IsPressed(k) ? 1.0f : 0);
-				}
-
-				foreach (var k in _def.FloatControls)
-				{
-					if (buttons.Keys.Contains(k))
-					{
-						throw new Exception("name collision between bool and float lists!");
-					}
-
-					buttons.Add(k, source.GetFloat(k));
-				}
-			}
-
-			public void Clear()
-			{
-				buttons.Clear();
-			}
-
-			public void Set(string button)
-			{
-				buttons[button] = 1.0f;
-			}
-
-			public bool this[string button]
-			{
-				get { return buttons[button] != 0; }
-			}
-
-			public bool IsPressed(string button)
-			{
-				return buttons[button] != 0;
-			}
-
-			public float GetFloat(string name)
-			{
-				return buttons[name];
-			}
 		}
 	}
 }

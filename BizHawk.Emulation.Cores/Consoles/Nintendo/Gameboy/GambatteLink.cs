@@ -73,8 +73,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		const int SampPerFrame = 35112;
 
-		LibsnesCore.SnesSaveController LCont = new LibsnesCore.SnesSaveController(Gameboy.GbController);
-		LibsnesCore.SnesSaveController RCont = new LibsnesCore.SnesSaveController(Gameboy.GbController);
+		SaveController LCont = new SaveController(Gameboy.GbController);
+		SaveController RCont = new SaveController(Gameboy.GbController);
 
 		public bool IsCGBMode(bool right)
 		{
