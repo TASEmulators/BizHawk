@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			get
 			{
-				if (api.Region == LibsnesApi.SNES_REGION.NTSC)
+				if (Api.Region == LibsnesApi.SNES_REGION.NTSC)
 				{
 					return DisplayType.NTSC;
 				}

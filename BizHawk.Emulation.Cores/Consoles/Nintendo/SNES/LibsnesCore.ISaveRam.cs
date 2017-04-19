@@ -8,17 +8,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	public unsafe partial class LibsnesCore : ISaveRam
 	{
 		public bool SaveRamModified =>
-			api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM) != 0
-			|| api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.SGB_CARTRAM) != 0;
+			Api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM) != 0
+			|| Api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.SGB_CARTRAM) != 0;
 
 		public byte[] CloneSaveRam()
 		{
-			byte* buf = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
-			var size = api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
+			byte* buf = Api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
+			var size = Api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
 			if (buf == null)
 			{
-				buf = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
-				size = api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
+				buf = Api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
+				size = Api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
 			}
 
 			var ret = new byte[size];
@@ -28,12 +28,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void StoreSaveRam(byte[] data)
 		{
-			byte* buf = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
-			var size = api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
+			byte* buf = Api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
+			var size = Api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
 			if (buf == null)
 			{
-				buf = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
-				size = api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
+				buf = Api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
+				size = Api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
 			}
 
 			if (size == 0)

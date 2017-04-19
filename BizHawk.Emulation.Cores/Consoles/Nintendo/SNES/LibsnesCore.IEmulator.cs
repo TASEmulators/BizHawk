@@ -22,18 +22,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			IsLagFrame = true;
 
-			if (!nocallbacks && _tracer.Enabled)
+			if (!_nocallbacks && _tracer.Enabled)
 			{
-				api.QUERY_set_trace_callback(tracecb);
+				Api.QUERY_set_trace_callback(_tracecb);
 			}
 			else
 			{
-				api.QUERY_set_trace_callback(null);
+				Api.QUERY_set_trace_callback(null);
 			}
 
 			// for deterministic emulation, save the state we're going to use before frame advance
 			// don't do this during nocallbacks though, since it's already been done
-			if (!nocallbacks && DeterministicEmulation)
+			if (!_nocallbacks && DeterministicEmulation)
 			{
 				var ms = new MemoryStream();
 				var bw = new BinaryWriter(ms);
@@ -47,18 +47,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 
 			// speedup when sound rendering is not needed
-			api.QUERY_set_audio_sample(rendersound ? soundcb : null);
+			Api.QUERY_set_audio_sample(rendersound ? _soundcb : null);
 
 			bool resetSignal = Controller.IsPressed("Reset");
 			if (resetSignal)
 			{
-				api.CMD_reset();
+				Api.CMD_reset();
 			}
 
 			bool powerSignal = Controller.IsPressed("Power");
 			if (powerSignal)
 			{
-				api.CMD_power();
+				Api.CMD_power();
 			}
 
 			var enables = new LibsnesApi.LayerEnables
@@ -77,13 +77,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Obj_Prio3 = _settings.ShowOBJ_3
 			};
 
-			api.SetLayerEnables(ref enables);
+			Api.SetLayerEnables(ref enables);
 
 			RefreshMemoryCallbacks(false);
 
 			// apparently this is one frame?
 			_timeFrameCounter++;
-			api.CMD_run();
+			Api.CMD_run();
 
 			// once upon a time we forwarded messages frmo bsnes here, by checking for queued text messages, but I don't think it's needed any longer
 			if (IsLagFrame)
@@ -128,11 +128,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			_disposed = true;
 
-			api.CMD_unload_cartridge();
-			api.CMD_term();
+			Api.CMD_unload_cartridge();
+			Api.CMD_term();
 
-			resampler.Dispose();
-			api.Dispose();
+			_resampler.Dispose();
+			Api.Dispose();
 
 			_currCdl?.Unpin();
 		}

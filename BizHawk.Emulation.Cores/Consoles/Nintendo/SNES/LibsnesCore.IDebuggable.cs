@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			LibsnesApi.CPURegs regs;
-			api.QUERY_peek_cpu_regs(out regs);
+			Api.QUERY_peek_cpu_regs(out regs);
 
 			bool fn = (regs.p & 0x80) != 0;
 			bool fv = (regs.p & 0x40) != 0;

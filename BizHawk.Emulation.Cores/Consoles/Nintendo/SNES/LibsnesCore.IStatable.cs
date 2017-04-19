@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			int size = api.QUERY_serialize_size();
+			int size = Api.QUERY_serialize_size();
 			byte[] buf = reader.ReadBytes(size);
 			CoreLoadState(buf);
 
@@ -62,9 +62,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					ssc.DeSerialize(reader);
 					IController tmp = Controller;
 					Controller = ssc;
-					nocallbacks = true;
+					_nocallbacks = true;
 					FrameAdvance(false, false);
-					nocallbacks = false;
+					_nocallbacks = false;
 					Controller = tmp;
 					ssc.Serialize(bw);
 				}
@@ -97,28 +97,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		// handle the unmanaged part of loadstating
 		private void CoreLoadState(byte[] data)
 		{
-			int size = api.QUERY_serialize_size();
+			int size = Api.QUERY_serialize_size();
 			if (data.Length != size)
 			{
 				throw new Exception("Libsnes internal savestate size mismatch!");
 			}
 
-			api.CMD_init();
+			Api.CMD_init();
 
 			// zero 01-sep-2014 - this approach isn't being used anymore, it's too slow!
 			// LoadCurrent(); //need to make sure chip roms are reloaded
 			fixed (byte* pbuf = &data[0])
-				api.CMD_unserialize(new IntPtr(pbuf), size);
+				Api.CMD_unserialize(new IntPtr(pbuf), size);
 		}
 
 
 		// handle the unmanaged part of savestating
 		private byte[] CoreSaveState()
 		{
-			int size = api.QUERY_serialize_size();
+			int size = Api.QUERY_serialize_size();
 			byte[] buf = new byte[size];
 			fixed (byte* pbuf = &buf[0])
-				api.CMD_serialize(new IntPtr(pbuf), size);
+				Api.CMD_serialize(new IntPtr(pbuf), size);
 			return buf;
 		}
 

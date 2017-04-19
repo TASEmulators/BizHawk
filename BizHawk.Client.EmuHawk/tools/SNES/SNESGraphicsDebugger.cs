@@ -660,8 +660,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			//wtf to do? now we need an api all the time
 			if (currentSnesCore != null)
-				return new SNESGraphicsDecoder(currentSnesCore.api, currentSnesCore.CurrPalette);
-			else return new SNESGraphicsDecoder(currentSnesCore.api, SnesColors.ColorType.BizHawk);
+				return new SNESGraphicsDecoder(currentSnesCore.Api, currentSnesCore.CurrPalette);
+			else return new SNESGraphicsDecoder(currentSnesCore.Api, SnesColors.ColorType.BizHawk);
 		}
 
 		void RenderPalette()

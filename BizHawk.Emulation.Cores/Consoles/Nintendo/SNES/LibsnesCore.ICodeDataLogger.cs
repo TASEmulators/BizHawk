@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_currCdl?.Pin();
 
 			// set it no matter what. if its null, the cdl will be unhooked from libsnes internally
-			api.QUERY_set_cdl(_currCdl);
+			Api.QUERY_set_cdl(_currCdl);
 		}
 
 		public void NewCDL(ICodeDataLog cdl)

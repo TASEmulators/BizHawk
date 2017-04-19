@@ -71,8 +71,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						"System Bus",
 						0x1000000,
 						MemoryDomain.Endian.Little,
-						addr => api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr),
-						(addr, val) => api.QUERY_poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val), wordSize: 2));
+						addr => Api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr),
+						(addr, val) => Api.QUERY_poke(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr, val), wordSize: 2));
 				}
 				else
 				{
@@ -87,7 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private unsafe void MakeMemoryDomain(string name, LibsnesApi.SNES_MEMORY id, MemoryDomain.Endian endian, int byteSize = 1)
 		{
-			int size = api.QUERY_get_memory_size(id);
+			int size = Api.QUERY_get_memory_size(id);
 			int mask = size - 1;
 			bool pow2 = Util.IsPowerOfTwo(size);
 
@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				return;
 			}
 
-			byte* blockptr = api.QUERY_get_memory_data(id);
+			byte* blockptr = Api.QUERY_get_memory_data(id);
 
 			MemoryDomain md;
 
@@ -145,13 +145,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private unsafe void MakeFakeBus()
 		{
-			int size = api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.WRAM);
+			int size = Api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.WRAM);
 			if (size != 0x20000)
 			{
 				throw new InvalidOperationException();
 			}
 
-			byte* blockptr = api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.WRAM);
+			byte* blockptr = Api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.WRAM);
 
 			var md = new MemoryDomainDelegate("System Bus", 0x1000000, MemoryDomain.Endian.Little,
 				addr =>
@@ -190,14 +190,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				case LibsnesApi.SNES_MAPPER.LOROM:
 					if (low >= 0x8000)
 					{
-						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+						return Api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
 					}
 
 					break;
 				case LibsnesApi.SNES_MAPPER.EXLOROM:
 					if ((bank >= 0x40 && bank <= 0x7f) || low >= 0x8000)
 					{
-						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+						return Api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
 					}
 
 					break;
@@ -205,7 +205,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				case LibsnesApi.SNES_MAPPER.EXHIROM:
 					if ((bank >= 0x40 && bank <= 0x7f) || bank >= 0xc0 || low >= 0x8000)
 					{
-						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+						return Api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
 					}
 
 					break;
@@ -213,21 +213,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					if ((bank >= 0x40 && bank <= 0x5f) || (bank >= 0xc0 && bank <= 0xdf) ||
 						(low >= 0x8000 && ((bank >= 0x00 && bank <= 0x3f) || (bank >= 0x80 && bank <= 0xbf))))
 					{
-						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+						return Api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
 					}
 
 					break;
 				case LibsnesApi.SNES_MAPPER.SA1ROM:
 					if (bank >= 0xc0 || (low >= 0x8000 && ((bank >= 0x00 && bank <= 0x3f) || (bank >= 0x80 && bank <= 0xbf))))
 					{
-						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+						return Api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
 					}
 
 					break;
 				case LibsnesApi.SNES_MAPPER.BSCLOROM:
 					if (low >= 0x8000 && ((bank >= 0x00 && bank <= 0x3f) || (bank >= 0x80 && bank <= 0xbf)))
 					{
-						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+						return Api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
 					}
 
 					break;
@@ -235,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					if ((bank >= 0x40 && bank <= 0x5f) || (bank >= 0xc0 && bank <= 0xdf) ||
 						(low >= 0x8000 && ((bank >= 0x00 && bank <= 0x1f) || (bank >= 0x80 && bank <= 0x9f))))
 					{
-						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+						return Api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
 					}
 
 					break;
@@ -244,14 +244,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						(low >= 0x8000 && ((bank >= 0x00 && bank <= 0x3f) || (bank >= 0x80 && bank <= 0xbf))) ||
 						(low >= 0x6000 && low <= 0x7fff && (bank >= 0x20 && bank <= 0x3f)))
 					{
-						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+						return Api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
 					}
 
 					break;
 				case LibsnesApi.SNES_MAPPER.STROM:
 					if (low >= 0x8000 && ((bank >= 0x00 && bank <= 0x5f) || (bank >= 0x80 && bank <= 0xdf)))
 					{
-						return api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
+						return Api.QUERY_peek(LibsnesApi.SNES_MEMORY.SYSBUS, (uint)addr);
 					}
 
 					break;

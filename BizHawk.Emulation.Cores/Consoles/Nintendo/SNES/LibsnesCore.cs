@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_settings = (SnesSettings)Settings ?? new SnesSettings();
 			_syncSettings = (SnesSyncSettings)SyncSettings ?? new SnesSyncSettings();
 
-			api = new LibsnesApi(GetDllPath())
+			Api = new LibsnesApi(GetDllPath())
 			{
 				ReadHook = ReadHook,
 				ExecHook = ExecHook,
@@ -73,27 +73,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_controllerDeck = new LibsnesControllerDeck(
 				_syncSettings.LeftPort,
 				_syncSettings.RightPort);
-			_controllerDeck.NativeInit(api);
+			_controllerDeck.NativeInit(Api);
 			
-			api.CMD_init();
+			Api.CMD_init();
 
-			api.QUERY_set_video_refresh(snes_video_refresh);
-			api.QUERY_set_input_poll(snes_input_poll);
-			api.QUERY_set_input_state(snes_input_state);
-			api.QUERY_set_input_notify(snes_input_notify);
-			api.QUERY_set_path_request(snes_path_request);
+			Api.QUERY_set_video_refresh(snes_video_refresh);
+			Api.QUERY_set_input_poll(snes_input_poll);
+			Api.QUERY_set_input_state(snes_input_state);
+			Api.QUERY_set_input_notify(snes_input_notify);
+			Api.QUERY_set_path_request(snes_path_request);
 
-			scanlineStart_cb = new LibsnesApi.snes_scanlineStart_t(snes_scanlineStart);
-			tracecb = new LibsnesApi.snes_trace_t(snes_trace);
+			_scanlineStartCb = new LibsnesApi.snes_scanlineStart_t(snes_scanlineStart);
+			_tracecb = new LibsnesApi.snes_trace_t(snes_trace);
 
-			soundcb = new LibsnesApi.snes_audio_sample_t(snes_audio_sample);
-			api.QUERY_set_audio_sample(soundcb);
+			_soundcb = new LibsnesApi.snes_audio_sample_t(snes_audio_sample);
+			Api.QUERY_set_audio_sample(_soundcb);
 
 			RefreshPalette();
 
 			// start up audio resampler
 			InitAudio();
-			ser.Register<ISoundProvider>(resampler);
+			ser.Register<ISoundProvider>(_resampler);
 
 			// strip header
 			if ((romData?.Length & 0x7FFF) == 512)
@@ -103,13 +103,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				romData = newData;
 			}
 
-		    if (game["SGB"])
+			if (game["SGB"])
 			{
 				IsSGB = true;
 				SystemId = "SNES";
 				BoardName = "SGB";
 
-				CurrLoadParams = new LoadParams()
+				_currLoadParams = new LoadParams()
 				{
 					type = LoadParamType.SuperGameBoy,
 					rom_xml = null,
@@ -128,14 +128,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				// we may need to get some information out of the cart, even during the following bootup/load process
 				if (xmlData != null)
 				{
-					romxml = new XmlDocument();
-					romxml.Load(new MemoryStream(xmlData));
+					_romxml = new XmlDocument();
+					_romxml.Load(new MemoryStream(xmlData));
 
 					// bsnes wont inspect the xml to load the necessary sfc file.
 					// so, we have to do that here and pass it in as the romData :/
-					if (romxml["cartridge"] != null && romxml["cartridge"]["rom"] != null)
+					if (_romxml["cartridge"] != null && _romxml["cartridge"]["rom"] != null)
 					{
-						romData = File.ReadAllBytes(CoreComm.CoreFileProvider.PathSubfile(romxml["cartridge"]["rom"].Attributes["name"].Value));
+						romData = File.ReadAllBytes(CoreComm.CoreFileProvider.PathSubfile(_romxml["cartridge"]["rom"].Attributes["name"].Value));
 					}
 					else
 					{
@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				}
 
 				SystemId = "SNES";
-				CurrLoadParams = new LoadParams()
+				_currLoadParams = new LoadParams()
 				{
 					type = LoadParamType.Normal,
 					xml_data = xmlData,
@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				}
 			}
 
-			if (api.Region == LibsnesApi.SNES_REGION.NTSC)
+			if (Api.Region == LibsnesApi.SNES_REGION.NTSC)
 			{
 				// similar to what aviout reports from snes9x and seems logical from bsnes first principles. bsnes uses that numerator (ntsc master clockrate) for sure.
 				CoreComm.VsyncNum = 21477272;
@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				CoreComm.VsyncDen = 4 * 341 * 312;
 			}
 
-			api.CMD_power();
+			Api.CMD_power();
 
 			SetupMemoryDomains(romData, sgbRomData);
 
@@ -188,7 +188,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		private GameInfo _game;
+		private readonly GameInfo _game;
+		private readonly LibsnesControllerDeck _controllerDeck;
+		private readonly ITraceable _tracer;
+		private readonly XmlDocument _romxml;
+		private readonly LibsnesApi.snes_scanlineStart_t _scanlineStartCb;
+		private readonly LibsnesApi.snes_trace_t _tracecb;
+		private readonly LibsnesApi.snes_audio_sample_t _soundcb;
+
+		private LoadParams _currLoadParams;
+		private SpeexResampler _resampler;
+		private int _timeFrameCounter;
+		private bool _nocallbacks; // disable all external callbacks.  the front end should not even know the core is frame advancing
+		private bool _disposed;
+
+		public bool IsSGB { get; }
 
 		public string CurrentProfile
 		{
@@ -204,38 +218,42 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		public bool IsSGB { get; }
+		public LibsnesApi Api { get; }
 
-		private LibsnesControllerDeck _controllerDeck;
+		public SnesColors.ColorType CurrPalette { get; private set; }
 
-		/// <summary>disable all external callbacks.  the front end should not even know the core is frame advancing</summary>
-		private bool nocallbacks = false;
-
-	    private readonly ITraceable _tracer;
+		public MyScanlineHookManager ScanlineHookManager { get; }
 
 		public class MyScanlineHookManager : ScanlineHookManager
 		{
+			private readonly LibsnesCore _core;
+
 			public MyScanlineHookManager(LibsnesCore core)
 			{
-				this.core = core;
+				_core = core;
 			}
-
-			LibsnesCore core;
 
 			public override void OnHooksChanged()
 			{
-				core.OnScanlineHooksChanged();
+				_core.OnScanlineHooksChanged();
 			}
 		}
 
-		private bool _disposed = false;
-
-		public MyScanlineHookManager ScanlineHookManager;
 		private void OnScanlineHooksChanged()
 		{
-			if (_disposed) return;
-			if (ScanlineHookManager.HookCount == 0) api.QUERY_set_scanlineStart(null);
-			else api.QUERY_set_scanlineStart(scanlineStart_cb);
+			if (_disposed)
+			{
+				return;
+			}
+
+			if (ScanlineHookManager.HookCount == 0)
+			{
+				Api.QUERY_set_scanlineStart(null);
+			}
+			else
+			{
+				Api.QUERY_set_scanlineStart(_scanlineStartCb);
+			}
 		}
 
 		private void snes_scanlineStart(int line)
@@ -247,20 +265,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			// every rom requests msu1.rom... why? who knows.
 			// also handle msu-1 pcm files here
-			bool is_msu1_rom = hint == "msu1.rom";
-			bool is_msu1_pcm = Path.GetExtension(hint).ToLower() == ".pcm";
-			if (is_msu1_rom || is_msu1_pcm)
+			bool isMsu1Rom = hint == "msu1.rom";
+			bool isMsu1Pcm = Path.GetExtension(hint).ToLower() == ".pcm";
+			if (isMsu1Rom || isMsu1Pcm)
 			{
 				// well, check if we have an msu-1 xml
-				if (romxml != null && romxml["cartridge"] != null && romxml["cartridge"]["msu1"] != null)
+				if (_romxml != null && _romxml["cartridge"] != null && _romxml["cartridge"]["msu1"] != null)
 				{
-					var msu1 = romxml["cartridge"]["msu1"];
-					if (is_msu1_rom && msu1["rom"].Attributes["name"] != null)
+					var msu1 = _romxml["cartridge"]["msu1"];
+					if (isMsu1Rom && msu1["rom"].Attributes["name"] != null)
 					{
 						return CoreComm.CoreFileProvider.PathSubfile(msu1["rom"].Attributes["name"].Value);
 					}
 
-					if (is_msu1_pcm)
+					if (isMsu1Pcm)
 					{
 						// return @"D:\roms\snes\SuperRoadBlaster\SuperRoadBlaster-1.pcm";
 						// return "";
@@ -326,18 +344,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			});
 		}
 
-		public SnesColors.ColorType CurrPalette { get; private set; }
-
-		public void SetPalette(SnesColors.ColorType pal)
+		private void SetPalette(SnesColors.ColorType pal)
 		{
 			CurrPalette = pal;
 			int[] tmp = SnesColors.GetLUT(pal);
 			fixed (int* p = &tmp[0])
-				api.QUERY_set_color_lut((IntPtr)p);
+				Api.QUERY_set_color_lut((IntPtr)p);
 		}
-
-		public LibsnesApi api;
-		private XmlDocument romxml;
 
 		private string GetDllPath()
 		{
@@ -353,7 +366,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return dllPath;
 		}
 
-		void ReadHook(uint addr)
+		private void ReadHook(uint addr)
 		{
 			MemoryCallbacks.CallReads(addr);
 			// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
@@ -377,10 +390,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// RefreshMemoryCallbacks();
 		}
 
-		private LibsnesApi.snes_scanlineStart_t scanlineStart_cb;
-		private LibsnesApi.snes_trace_t tracecb;
-		private LibsnesApi.snes_audio_sample_t soundcb;
-
 		private enum LoadParamType
 		{
 			Normal, SuperGameBoy
@@ -397,15 +406,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public byte[] dmg_data;
 		}
 
-		private LoadParams CurrLoadParams;
-
 		private bool LoadCurrent()
 		{
-			bool result = CurrLoadParams.type == LoadParamType.Normal
-				? api.CMD_load_cartridge_normal(CurrLoadParams.xml_data, CurrLoadParams.rom_data)
-				: api.CMD_load_cartridge_super_game_boy(CurrLoadParams.rom_xml, CurrLoadParams.rom_data, CurrLoadParams.rom_size, CurrLoadParams.dmg_data);
+			bool result = _currLoadParams.type == LoadParamType.Normal
+				? Api.CMD_load_cartridge_normal(_currLoadParams.xml_data, _currLoadParams.rom_data)
+				: Api.CMD_load_cartridge_super_game_boy(_currLoadParams.rom_xml, _currLoadParams.rom_data, _currLoadParams.rom_size, _currLoadParams.dmg_data);
 
-			_mapper = api.Mapper;
+			_mapper = Api.Mapper;
 
 			return result;
 		}
@@ -435,7 +442,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// 0: signifies latch bit going to 0.  should be reported as oninputpoll
 			// 1: signifies latch bit going to 1.  should be reported as oninputpoll
 			if (index >= 0x4000)
+			{
 				IsLagFrame = false;
+			}
 		}
 
 		private void snes_video_refresh(int* data, int width, int height)
@@ -511,8 +520,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						break;
 					}
 
-					int bonus = i * _videoWidth + xbonus;
+					int bonus = (i * _videoWidth) + xbonus;
 					for (int y = 0; y < height; y++)
+					{
 						for (int x = 0; x < width; x++)
 						{
 							int si = y * srcPitch + x + srcStart;
@@ -520,6 +530,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 							int rgb = data[si];
 							_videoBuffer[di] = rgb;
 						}
+					}
 				}
 			}
 		}
@@ -527,12 +538,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private void RefreshMemoryCallbacks(bool suppress)
 		{
 			var mcs = MemoryCallbacks;
-			api.QUERY_set_state_hook_exec(!suppress && mcs.HasExecutes);
-			api.QUERY_set_state_hook_read(!suppress && mcs.HasReads);
-			api.QUERY_set_state_hook_write(!suppress && mcs.HasWrites);
+			Api.QUERY_set_state_hook_exec(!suppress && mcs.HasExecutes);
+			Api.QUERY_set_state_hook_read(!suppress && mcs.HasReads);
+			Api.QUERY_set_state_hook_write(!suppress && mcs.HasWrites);
 		}
-
-		private int _timeFrameCounter;
 
 		//public byte[] snes_get_memory_data_read(LibsnesApi.SNES_MEMORY id)
 		//{
@@ -541,6 +550,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		//  var ret = api.snes_get_memory_data(id);
 		//  return ret;
 		//}
+
+		private void InitAudio()
+		{
+			_resampler = new SpeexResampler(6, 64081, 88200, 32041, 44100);
+		}
+
+		private void snes_audio_sample(ushort left, ushort right)
+		{
+			_resampler.EnqueueSample((short)left, (short)right);
+		}
+
+		private void RefreshPalette()
+		{
+			SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), _settings.Palette, false));
+		}
 
 		/// <summary>
 		/// can freeze a copy of a controller input set and serialize\deserialize it
@@ -561,7 +585,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				this.def = def;
 			}
 
-			WorkingDictionary<string, float> buttons = new WorkingDictionary<string,float>();
+			WorkingDictionary<string, float> buttons = new WorkingDictionary<string, float>();
 
 			/// <summary>
 			/// invalid until CopyFrom has been called
@@ -596,7 +620,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					buttons.Add(k, v);
 				}
 			}
-			
+
 			/// <summary>
 			/// this controller's definition changes to that of source
 			/// </summary>
@@ -629,7 +653,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				buttons[button] = 1.0f;
 			}
-			
+
 			public bool this[string button]
 			{
 				get { return buttons[button] != 0; }
@@ -644,23 +668,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				return buttons[name];
 			}
-		}
-
-		private SpeexResampler resampler;
-
-		private void InitAudio()
-		{
-			resampler = new SpeexResampler(6, 64081, 88200, 32041, 44100);
-		}
-
-		private void snes_audio_sample(ushort left, ushort right)
-		{
-			resampler.EnqueueSample((short)left, (short)right);
-		}
-
-		private void RefreshPalette()
-		{
-			SetPalette((SnesColors.ColorType)Enum.Parse(typeof(SnesColors.ColorType), _settings.Palette, false));
 		}
 	}
 
