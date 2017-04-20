@@ -297,5 +297,14 @@ namespace BizHawk.Client.EmuHawk
 				};
 			}
 		}
+
+		[LuaMethodAttributes(
+			"togglepause",
+			"Toggles the current pause state"
+		)]
+		public static void TogglePause()
+		{
+			GlobalWin.MainForm.TogglePause();
+		}
 	}
 }
