@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Common
 		private readonly object[] _tmp1 = new object[1];
 		private readonly object[] _tmp0 = new object[0];
 
-	    private readonly MethodInfo _gets;
+		private readonly MethodInfo _gets;
 		private readonly MethodInfo _puts;
 		private readonly MethodInfo _getss;
 		private readonly MethodInfo _putss;

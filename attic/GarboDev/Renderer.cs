@@ -65,7 +65,7 @@
             //Array.Copy(this.back, this.front, this.front.Length);
 
             //return this.front;
-			return this.back;
+            return this.back;
         }
 
         public void RenderLine(int line)

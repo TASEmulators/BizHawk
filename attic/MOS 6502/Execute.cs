@@ -227,9 +227,9 @@ namespace BizHawk.Emulation.CPUs.M6502
                         //handle I flag differently. sort of a sloppy way to do the job, but it does finish it off.
                         value8 = ReadMemory((ushort)(++S + 0x100));
                         if ((value8 & 0x04) != 0 && !FlagI)
-                        	SEI_Pending = true;
+                            SEI_Pending = true;
                         if ((value8 & 0x04) == 0 && FlagI)
-                        	CLI_Pending = true;
+                            CLI_Pending = true;
                         value8 &= unchecked((byte)~0x04);
                         P &= 0x04;
                         P |= value8;

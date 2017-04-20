@@ -473,9 +473,9 @@ namespace BizHawk.Common
 					case 'f':   // double
 						o = GetDouble(n, fetcher());
 						w = FormatNumber( ( flagGroupThousands ? "n" : "f" ), flagAlternate,
-						        fieldLength, fieldPrecision, flagLeft2Right,
-						        flagPositiveSign, flagPositiveSpace,
-						        paddingCharacter, o );
+										fieldLength, fieldPrecision, flagLeft2Right,
+										flagPositiveSign, flagPositiveSpace,
+										paddingCharacter, o );
 						defaultParamIx++;
 						break;
 					#endregion
@@ -483,9 +483,9 @@ namespace BizHawk.Common
 					case 'e':   // double / exponent
 						o = GetDouble(n, fetcher());
 						w = FormatNumber( "e", flagAlternate,
-						        fieldLength, fieldPrecision, flagLeft2Right,
-						        flagPositiveSign, flagPositiveSpace,
-						        paddingCharacter, o );
+										fieldLength, fieldPrecision, flagLeft2Right,
+										flagPositiveSign, flagPositiveSpace,
+										paddingCharacter, o );
 						defaultParamIx++;
 						break;
 					#endregion

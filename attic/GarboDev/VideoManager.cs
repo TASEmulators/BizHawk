@@ -104,14 +104,14 @@ namespace GarboDev
             }
         }
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="processor"></param>
-		/// <returns>true if end of frame</returns>
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="processor"></param>
+        /// <returns>true if end of frame</returns>
         public bool LeaveHBlank(Arm7Processor processor)
         {
-			bool ret = false;
+            bool ret = false;
             ushort dispstat = Memory.ReadU16(this.memory.IORam, Memory.DISPSTAT);
             dispstat &= 0xFFF9;
             Memory.WriteU16(this.memory.IORam, Memory.DISPSTAT, dispstat);
@@ -132,7 +132,7 @@ namespace GarboDev
             if (this.curLine == 160)
             {
                 this.EnterVBlank(processor);
-				ret = true;
+                ret = true;
             }
             else if (this.curLine == 0)
             {
@@ -150,7 +150,7 @@ namespace GarboDev
                     processor.RequestIrq(2);
                 }
             }
-			return ret;
+            return ret;
         }
 
         public void RenderLine()

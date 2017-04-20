@@ -99,7 +99,7 @@
 
         public const uint HALTCNT = 0x300;
 
-		private const uint biosRamMask = 0x3FFF;
+        private const uint biosRamMask = 0x3FFF;
         private const uint ewRamMask = 0x3FFFF;
         private const uint iwRamMask = 0x7FFF;
         private const uint ioRegMask = 0x4FF;

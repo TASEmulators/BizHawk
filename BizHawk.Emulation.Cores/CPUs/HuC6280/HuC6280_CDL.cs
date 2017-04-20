@@ -9,61 +9,61 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 {
 	public partial class HuC6280
 	{
-	  public void DisassembleCDL(Stream s, ICodeDataLog cdl, IMemoryDomains mem)
-	  {
-	    var w = new StreamWriter(s);
-	    w.WriteLine("; Bizhawk CDL Disassembly");
-	    w.WriteLine();
-	    foreach (var kvp in cdl)
-	    {
-	      w.WriteLine(".\"{0}\" size=0x{1:x8}", kvp.Key, kvp.Value.Length);
+		public void DisassembleCDL(Stream s, ICodeDataLog cdl, IMemoryDomains mem)
+		{
+			var w = new StreamWriter(s);
+			w.WriteLine("; Bizhawk CDL Disassembly");
+			w.WriteLine();
+			foreach (var kvp in cdl)
+			{
+				w.WriteLine(".\"{0}\" size=0x{1:x8}", kvp.Key, kvp.Value.Length);
 
-	      byte[] cd = kvp.Value;
-	      var md = mem[kvp.Key];
+				byte[] cd = kvp.Value;
+				var md = mem[kvp.Key];
 
-	      for (int i = 0; i < kvp.Value.Length; i++)
-	      {
-	        if ((kvp.Value[i] & (byte)HuC6280.CDLUsage.Code) != 0)
-	        {
-	          int unused;
-	          string dis = HuC6280.DisassembleExt(
-	            0,
-	            out unused,
-	            delegate(ushort addr)
-	            {
-	              return md.PeekByte(addr + i);
-	            },
-	            delegate(ushort addr)
-	            {
-	              return md.PeekUshort(addr + i, false);
-	            }
-	          );
-	          w.WriteLine("0x{0:x8}: {1}", i, dis);
-	        }
-	      }
-	      w.WriteLine();
-	    }
-	    w.WriteLine("; EOF");
-	    w.Flush();
-	  }
+				for (int i = 0; i < kvp.Value.Length; i++)
+				{
+					if ((kvp.Value[i] & (byte)HuC6280.CDLUsage.Code) != 0)
+					{
+						int unused;
+						string dis = HuC6280.DisassembleExt(
+							0,
+							out unused,
+							delegate(ushort addr)
+							{
+								return md.PeekByte(addr + i);
+							},
+							delegate(ushort addr)
+							{
+								return md.PeekUshort(addr + i, false);
+							}
+						);
+						w.WriteLine("0x{0:x8}: {1}", i, dis);
+					}
+				}
+				w.WriteLine();
+			}
+			w.WriteLine("; EOF");
+			w.Flush();
+		}
 
-	  private static Dictionary<string, int> SizesFromHuMap(IEnumerable<HuC6280.MemMapping> mm)
-	  {
-	    Dictionary<string, int> sizes = new Dictionary<string, int>();
-	    foreach (var m in mm)
-	    {
-	      if (!sizes.ContainsKey(m.Name) || m.MaxOffs >= sizes[m.Name])
-	        sizes[m.Name] = m.MaxOffs;
-	    }
+		private static Dictionary<string, int> SizesFromHuMap(IEnumerable<HuC6280.MemMapping> mm)
+		{
+			Dictionary<string, int> sizes = new Dictionary<string, int>();
+			foreach (var m in mm)
+			{
+				if (!sizes.ContainsKey(m.Name) || m.MaxOffs >= sizes[m.Name])
+				sizes[m.Name] = m.MaxOffs;
+			}
 
-	    List<string> keys = new List<string>(sizes.Keys);
-	    foreach (var key in keys)
-	    {
-	      // becase we were looking at offsets, and each bank is 8192 big, we need to add that size
-	      sizes[key] += 8192;
-	    }
-	    return sizes;
-	  }
+			List<string> keys = new List<string>(sizes.Keys);
+			foreach (var key in keys)
+			{
+				// becase we were looking at offsets, and each bank is 8192 big, we need to add that size
+				sizes[key] += 8192;
+			}
+			return sizes;
+		}
 	}
 
 	public partial class HuC6280

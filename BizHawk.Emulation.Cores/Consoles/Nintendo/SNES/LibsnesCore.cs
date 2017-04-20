@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
-		    ServiceProvider = ser;
+			ServiceProvider = ser;
 
 			_tracer = new TraceBuffer
 			{

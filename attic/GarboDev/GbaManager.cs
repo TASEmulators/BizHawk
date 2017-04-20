@@ -280,11 +280,11 @@ namespace GarboDev
 
 				this.arm7.Execute(cycleStep);
 #if ARM_DEBUG
-                            if (this.arm7.BreakpointHit)
-                            {
-                                this.waitingToHalt = true;
-                                Monitor.Wait(this);
-                            }
+				if (this.arm7.BreakpointHit)
+				{
+					this.waitingToHalt = true;
+					Monitor.Wait(this);
+				}
 #endif
 				vramCycles -= cycleStep;
 				this.arm7.FireIrq();
