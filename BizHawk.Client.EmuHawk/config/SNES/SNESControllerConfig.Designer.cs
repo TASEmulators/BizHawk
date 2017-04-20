@@ -36,12 +36,18 @@
             this.label4 = new System.Windows.Forms.Label();
             this.Port2ComboBox = new System.Windows.Forms.ComboBox();
             this.Port1ComboBox = new System.Windows.Forms.ComboBox();
+            this.MouseSpeedLabel1 = new System.Windows.Forms.Label();
+            this.LimitMouseSpeedCheckBox = new System.Windows.Forms.CheckBox();
+            this.MouseSpeedLabel2 = new System.Windows.Forms.Label();
+            this.MouseSpeedLabel3 = new System.Windows.Forms.Label();
+            this.MouseNagLabel1 = new System.Windows.Forms.Label();
+            this.MouseNagLabel2 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // OkBtn
             // 
             this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OkBtn.Location = new System.Drawing.Point(170, 249);
+            this.OkBtn.Location = new System.Drawing.Point(170, 264);
             this.OkBtn.Name = "OkBtn";
             this.OkBtn.Size = new System.Drawing.Size(60, 23);
             this.OkBtn.TabIndex = 4;
@@ -53,7 +59,7 @@
             // 
             this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelBtn.Location = new System.Drawing.Point(236, 249);
+            this.CancelBtn.Location = new System.Drawing.Point(236, 264);
             this.CancelBtn.Name = "CancelBtn";
             this.CancelBtn.Size = new System.Drawing.Size(60, 23);
             this.CancelBtn.TabIndex = 5;
@@ -98,6 +104,7 @@
             this.Port2ComboBox.Name = "Port2ComboBox";
             this.Port2ComboBox.Size = new System.Drawing.Size(284, 21);
             this.Port2ComboBox.TabIndex = 20;
+            this.Port2ComboBox.SelectedIndexChanged += new System.EventHandler(this.PortComboBox_SelectedIndexChanged);
             // 
             // Port1ComboBox
             // 
@@ -109,6 +116,62 @@
             this.Port1ComboBox.Name = "Port1ComboBox";
             this.Port1ComboBox.Size = new System.Drawing.Size(284, 21);
             this.Port1ComboBox.TabIndex = 19;
+            this.Port1ComboBox.SelectedIndexChanged += new System.EventHandler(this.PortComboBox_SelectedIndexChanged);
+            // 
+            // MouseSpeedLabel1
+            // 
+            this.MouseSpeedLabel1.AutoSize = true;
+            this.MouseSpeedLabel1.Location = new System.Drawing.Point(12, 195);
+            this.MouseSpeedLabel1.Name = "MouseSpeedLabel1";
+            this.MouseSpeedLabel1.Size = new System.Drawing.Size(191, 13);
+            this.MouseSpeedLabel1.TabIndex = 23;
+            this.MouseSpeedLabel1.Text = "For casual play this should be checked";
+            // 
+            // LimitMouseSpeedCheckBox
+            // 
+            this.LimitMouseSpeedCheckBox.AutoSize = true;
+            this.LimitMouseSpeedCheckBox.Location = new System.Drawing.Point(15, 175);
+            this.LimitMouseSpeedCheckBox.Name = "LimitMouseSpeedCheckBox";
+            this.LimitMouseSpeedCheckBox.Size = new System.Drawing.Size(116, 17);
+            this.LimitMouseSpeedCheckBox.TabIndex = 24;
+            this.LimitMouseSpeedCheckBox.Text = "Limit Mouse Speed";
+            this.LimitMouseSpeedCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // MouseSpeedLabel2
+            // 
+            this.MouseSpeedLabel2.AutoSize = true;
+            this.MouseSpeedLabel2.Location = new System.Drawing.Point(12, 208);
+            this.MouseSpeedLabel2.Name = "MouseSpeedLabel2";
+            this.MouseSpeedLabel2.Size = new System.Drawing.Size(229, 13);
+            this.MouseSpeedLabel2.TabIndex = 25;
+            this.MouseSpeedLabel2.Text = "The full range of values are rather unusuable in";
+            // 
+            // MouseSpeedLabel3
+            // 
+            this.MouseSpeedLabel3.AutoSize = true;
+            this.MouseSpeedLabel3.Location = new System.Drawing.Point(12, 221);
+            this.MouseSpeedLabel3.Name = "MouseSpeedLabel3";
+            this.MouseSpeedLabel3.Size = new System.Drawing.Size(246, 13);
+            this.MouseSpeedLabel3.TabIndex = 26;
+            this.MouseSpeedLabel3.Text = "normal situations, but good if you need total control";
+            // 
+            // MouseNagLabel1
+            // 
+            this.MouseNagLabel1.AutoSize = true;
+            this.MouseNagLabel1.Location = new System.Drawing.Point(12, 135);
+            this.MouseNagLabel1.Name = "MouseNagLabel1";
+            this.MouseNagLabel1.Size = new System.Drawing.Size(280, 13);
+            this.MouseNagLabel1.TabIndex = 27;
+            this.MouseNagLabel1.Text = "*Note: mouse controls should be bound to an analog stick";
+            // 
+            // MouseNagLabel2
+            // 
+            this.MouseNagLabel2.AutoSize = true;
+            this.MouseNagLabel2.Location = new System.Drawing.Point(45, 148);
+            this.MouseNagLabel2.Name = "MouseNagLabel2";
+            this.MouseNagLabel2.Size = new System.Drawing.Size(74, 13);
+            this.MouseNagLabel2.TabIndex = 28;
+            this.MouseNagLabel2.Text = "not the mouse";
             // 
             // SNESControllerSettings
             // 
@@ -116,7 +179,13 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelBtn;
-            this.ClientSize = new System.Drawing.Size(308, 284);
+            this.ClientSize = new System.Drawing.Size(308, 299);
+            this.Controls.Add(this.MouseNagLabel2);
+            this.Controls.Add(this.MouseNagLabel1);
+            this.Controls.Add(this.MouseSpeedLabel3);
+            this.Controls.Add(this.MouseSpeedLabel2);
+            this.Controls.Add(this.LimitMouseSpeedCheckBox);
+            this.Controls.Add(this.MouseSpeedLabel1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.Port2ComboBox);
@@ -143,5 +212,11 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.ComboBox Port2ComboBox;
 		private System.Windows.Forms.ComboBox Port1ComboBox;
+		private System.Windows.Forms.Label MouseSpeedLabel1;
+		private System.Windows.Forms.CheckBox LimitMouseSpeedCheckBox;
+		private System.Windows.Forms.Label MouseSpeedLabel2;
+		private System.Windows.Forms.Label MouseSpeedLabel3;
+		private System.Windows.Forms.Label MouseNagLabel1;
+		private System.Windows.Forms.Label MouseNagLabel2;
 	}
 }

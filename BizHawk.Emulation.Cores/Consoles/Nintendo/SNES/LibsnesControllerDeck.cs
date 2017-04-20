@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using BizHawk.Emulation.Common;
-
+using BizHawk.Common.NumberExtensions;
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public class LibsnesControllerDeck
@@ -17,16 +17,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Payload
 		}
 
-		private static ILibsnesController Factory(ControllerType t)
+		private static ILibsnesController Factory(ControllerType t, LibsnesCore.SnesSyncSettings ss)
 		{
 			switch (t)
 			{
-				case ControllerType.Unplugged: return new SnesUnpluggedController();
-				case ControllerType.Gamepad: return new SnesController();
-				case ControllerType.Multitap: return new SnesMultitapController();
-				case ControllerType.Payload: return new SnesPayloadController();
-				case ControllerType.Mouse: return new SnesMouseController();
-				default: throw new InvalidOperationException();
+				case ControllerType.Unplugged:
+					return new SnesUnpluggedController();
+				case ControllerType.Gamepad:
+					return new SnesController();
+				case ControllerType.Multitap:
+					return new SnesMultitapController();
+				case ControllerType.Payload:
+					return new SnesPayloadController();
+				case ControllerType.Mouse:
+					return new SnesMouseController
+					{
+						LimitMouseSpeed = ss.LimitMouseSpeed
+					};
+				default:
+					throw new InvalidOperationException();
 			}
 		}
 
@@ -35,9 +44,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public ControllerDefinition Definition { get; private set; }
 
-		public LibsnesControllerDeck(ControllerType left, ControllerType right)
+		public LibsnesControllerDeck(LibsnesCore.SnesSyncSettings ss)
 		{
-			_ports = new[] { Factory(left), Factory(right) };
+			_ports = new[]
+			{
+				Factory(ss.LeftPort, ss),
+				Factory(ss.RightPort, ss)
+			};
+
 			List<ControlDefUnMerger> tmp;
 			Definition = ControllerDefinitionMerger.GetMerged(_ports.Select(p => p.Definition), out tmp);
 			_mergers = tmp.ToArray();
@@ -269,6 +283,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public ControllerDefinition Definition => _definition;
 
+		public bool LimitMouseSpeed { get; set; } = true;
+
 		public short GetState(IController controller, int index, int id)
 		{
 			switch (id)
@@ -276,9 +292,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				default:
 					return 0;
 				case 0:
-					return (short)controller.GetFloat("0X");
+					var x = (int)controller.GetFloat("0X");
+					if (LimitMouseSpeed)
+					{
+						x = x.Clamp(-10, 10);
+					}
+
+					return (short)x;
 				case 1:
-					return (short)controller.GetFloat("0Y");
+					var y = (int)controller.GetFloat("0Y");
+					if (LimitMouseSpeed)
+					{
+						y = y.Clamp(-10, 10);
+					}
+
+					return (short)y;
 				case 2:
 					return (short)(controller.IsPressed("0Mouse Left") ? 1 : 0);
 				case 3:

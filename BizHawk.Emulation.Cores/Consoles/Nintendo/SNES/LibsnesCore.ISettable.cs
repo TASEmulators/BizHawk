@@ -30,7 +30,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			bool ret = o.Profile != _syncSettings.Profile
 				|| o.LeftPort != _syncSettings.LeftPort
-				|| o.RightPort != _syncSettings.RightPort;
+				|| o.RightPort != _syncSettings.RightPort
+				|| o.LimitMouseSpeed != _syncSettings.LimitMouseSpeed;
 
 			_syncSettings = o;
 			return ret;
@@ -70,6 +71,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			public LibsnesControllerDeck.ControllerType LeftPort { get; set; } = LibsnesControllerDeck.ControllerType.Gamepad;
 			public LibsnesControllerDeck.ControllerType RightPort { get; set; } = LibsnesControllerDeck.ControllerType.Gamepad;
+
+			public bool LimitMouseSpeed { get; set; } = true;
 
 			public SnesSyncSettings Clone()
 			{

@@ -68,9 +68,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			ScanlineHookManager = new MyScanlineHookManager(this);
 
-			_controllerDeck = new LibsnesControllerDeck(
-				_syncSettings.LeftPort,
-				_syncSettings.RightPort);
+			_controllerDeck = new LibsnesControllerDeck(_syncSettings);
 			_controllerDeck.NativeInit(Api);
 			
 			Api.CMD_init();
