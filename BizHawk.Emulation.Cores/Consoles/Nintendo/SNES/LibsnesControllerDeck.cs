@@ -275,8 +275,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			},
 			FloatControls =
 			{
-				"0X",
-				"0Y"
+				"0Mouse X",
+				"0Mouse Y"
 			},
 			FloatRanges =
 			{
@@ -296,7 +296,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				default:
 					return 0;
 				case 0:
-					var x = (int)controller.GetFloat("0X");
+					var x = (int)controller.GetFloat("0Mouse X");
 					if (LimitAnalogChangeSensitivity)
 					{
 						x = x.Clamp(-10, 10);
@@ -304,7 +304,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 					return (short)x;
 				case 1:
-					var y = (int)controller.GetFloat("0Y");
+					var y = (int)controller.GetFloat("0Mouse Y");
 					if (LimitAnalogChangeSensitivity)
 					{
 						y = y.Clamp(-10, 10);
@@ -334,13 +334,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			},
 			FloatControls =
 			{
-				"0X",
-				"0Y"
+				"0Scope X",
+				"0Scope Y"
 			},
 			FloatRanges =
 			{
-                // problem: when you're in 240 line mode, the limit on Y needs to be 240.
-                // when you're in 224 mode, it needs to be 224.  perhaps the deck needs to account for this...
+				// problem: when you're in 240 line mode, the limit on Y needs to be 240.
+				// when you're in 224 mode, it needs to be 224.  perhaps the deck needs to account for this...
 				new[] { 0f, 128f, 256f },
 				new[] { 0f, 0f, 240f }
 			}
@@ -355,10 +355,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				default:
 					return 0;
 				case 0:
-					var x = (int)controller.GetFloat("0X");
+					var x = (int)controller.GetFloat("0Scope X");
 					return (short)x;
 				case 1:
-					var y = (int)controller.GetFloat("0Y");
+					var y = (int)controller.GetFloat("0Scope Y");
 					return (short)y;
 				case 2:
 					return (short)(controller.IsPressed("0Trigger") ? 1 : 0);
