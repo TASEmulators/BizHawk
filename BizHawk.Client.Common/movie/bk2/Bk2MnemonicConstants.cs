@@ -147,6 +147,14 @@ namespace BizHawk.Client.Common
 					}
 				},
 				{
+					"SNES",
+					new Dictionary<string, char>
+					{
+						{ "Cursor", 'c' },
+						{ "Turbo",  't' }
+					}
+				},
+				{
 					"TI83",
 					new Dictionary<string, char>
 					{

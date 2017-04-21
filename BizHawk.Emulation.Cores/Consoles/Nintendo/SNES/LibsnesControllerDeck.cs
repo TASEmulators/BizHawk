@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
+
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public class LibsnesControllerDeck
@@ -14,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Gamepad,
 			Multitap,
 			Mouse,
+			SuperScope,
 			Payload
 		}
 
@@ -32,7 +34,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				case ControllerType.Mouse:
 					return new SnesMouseController
 					{
-						LimitMouseSpeed = ss.LimitMouseSpeed
+						LimitAnalogChangeSensitivity = ss.LimitAnalogChangeSensitivity
+					};
+				case ControllerType.SuperScope:
+					return new SnesSuperScopeController
+					{
+						LimitAnalogChangeSensitivity = ss.LimitAnalogChangeSensitivity
 					};
 				default:
 					throw new InvalidOperationException();
@@ -283,7 +290,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public ControllerDefinition Definition => _definition;
 
-		public bool LimitMouseSpeed { get; set; } = true;
+		public bool LimitAnalogChangeSensitivity { get; set; } = true;
 
 		public short GetState(IController controller, int index, int id)
 		{
@@ -293,7 +300,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					return 0;
 				case 0:
 					var x = (int)controller.GetFloat("0X");
-					if (LimitMouseSpeed)
+					if (LimitAnalogChangeSensitivity)
 					{
 						x = x.Clamp(-10, 10);
 					}
@@ -301,7 +308,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					return (short)x;
 				case 1:
 					var y = (int)controller.GetFloat("0Y");
-					if (LimitMouseSpeed)
+					if (LimitAnalogChangeSensitivity)
 					{
 						y = y.Clamp(-10, 10);
 					}
@@ -311,6 +318,69 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					return (short)(controller.IsPressed("0Mouse Left") ? 1 : 0);
 				case 3:
 					return (short)(controller.IsPressed("0Mouse Right") ? 1 : 0);
+			}
+		}
+	}
+
+	public class SnesSuperScopeController : ILibsnesController
+	{
+		public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.SuperScope;
+
+		private static readonly ControllerDefinition _definition = new ControllerDefinition
+		{
+			BoolButtons = new List<string>
+			{
+				"0Trigger",
+				"0Cursor",
+				"0Turbo",
+				"0Pause"
+			},
+			FloatControls =
+			{
+				"0X",
+				"0Y"
+			},
+			FloatRanges =
+			{
+				new[] { -10, 0f, 10f },
+				new[] { -10f, 0f, 10f }
+			}
+		};
+
+		public ControllerDefinition Definition => _definition;
+
+		public bool LimitAnalogChangeSensitivity { get; set; } = true;
+
+		public short GetState(IController controller, int index, int id)
+		{
+			switch (id)
+			{
+				default:
+					return 0;
+				case 0:
+					var x = (int)controller.GetFloat("0X");
+					if (LimitAnalogChangeSensitivity)
+					{
+						x = x.Clamp(-10, 10);
+					}
+
+					return (short)x;
+				case 1:
+					var y = (int)controller.GetFloat("0Y");
+					if (LimitAnalogChangeSensitivity)
+					{
+						y = y.Clamp(-10, 10);
+					}
+
+					return (short)y;
+				case 2:
+					return (short)(controller.IsPressed("0Trigger") ? 1 : 0);
+				case 3:
+					return (short)(controller.IsPressed("0Cursor") ? 1 : 0);
+				case 4:
+					return (short)(controller.IsPressed("0Turbo") ? 1 : 0);
+				case 5:
+					return (short)(controller.IsPressed("0Pause") ? 1 : 0);
 			}
 		}
 	}

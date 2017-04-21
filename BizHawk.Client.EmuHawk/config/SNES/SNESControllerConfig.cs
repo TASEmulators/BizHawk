@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_syncSettings = ((LibsnesCore)Global.Emulator).GetSyncSettings().Clone();
 
-			LimitMouseSpeedCheckBox.Checked = _syncSettings.LimitMouseSpeed;
+			LimitAnalogChangeCheckBox.Checked = _syncSettings.LimitAnalogChangeSensitivity;
 
 			_supressDropdownChangeEvents = true;
 			Port1ComboBox.PopulateFromEnum<LibsnesControllerDeck.ControllerType>(_syncSettings.LeftPort);
@@ -34,13 +34,13 @@ namespace BizHawk.Client.EmuHawk
 			bool changed =
 				_syncSettings.LeftPort.ToString() != Port1ComboBox.SelectedItem.ToString()
 				|| _syncSettings.RightPort.ToString() != Port2ComboBox.SelectedItem.ToString()
-				|| _syncSettings.LimitMouseSpeed != LimitMouseSpeedCheckBox.Checked;
+				|| _syncSettings.LimitAnalogChangeSensitivity != LimitAnalogChangeCheckBox.Checked;
 
 			if (changed)
 			{
 				_syncSettings.LeftPort = (LibsnesControllerDeck.ControllerType)Enum.Parse(typeof(LibsnesControllerDeck.ControllerType), Port1ComboBox.SelectedItem.ToString());
 				_syncSettings.RightPort = (LibsnesControllerDeck.ControllerType)Enum.Parse(typeof(LibsnesControllerDeck.ControllerType), Port2ComboBox.SelectedItem.ToString());
-				_syncSettings.LimitMouseSpeed = LimitMouseSpeedCheckBox.Checked;
+				_syncSettings.LimitAnalogChangeSensitivity = LimitAnalogChangeCheckBox.Checked;
 
 				GlobalWin.MainForm.PutCoreSyncSettings(_syncSettings);
 			}
@@ -62,15 +62,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var leftPort = (LibsnesControllerDeck.ControllerType)Enum.Parse(typeof(LibsnesControllerDeck.ControllerType), Port1ComboBox.SelectedItem.ToString());
 				var rightPort = (LibsnesControllerDeck.ControllerType)Enum.Parse(typeof(LibsnesControllerDeck.ControllerType), Port2ComboBox.SelectedItem.ToString());
-				ToggleMouseSection(leftPort == LibsnesControllerDeck.ControllerType.Mouse
-					|| rightPort == LibsnesControllerDeck.ControllerType.Mouse);
+				ToggleMouseSection(
+					leftPort == LibsnesControllerDeck.ControllerType.Mouse || leftPort == LibsnesControllerDeck.ControllerType.SuperScope
+					|| rightPort == LibsnesControllerDeck.ControllerType.Mouse || rightPort == LibsnesControllerDeck.ControllerType.SuperScope);
 			}
-
 		}
 
 		private void ToggleMouseSection(bool show)
 		{
-			LimitMouseSpeedCheckBox.Visible =
+			LimitAnalogChangeCheckBox.Visible =
 				MouseSpeedLabel1.Visible =
 				MouseSpeedLabel2.Visible =
 				MouseSpeedLabel3.Visible =

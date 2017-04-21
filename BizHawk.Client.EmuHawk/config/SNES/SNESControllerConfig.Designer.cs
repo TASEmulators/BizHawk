@@ -37,7 +37,7 @@
             this.Port2ComboBox = new System.Windows.Forms.ComboBox();
             this.Port1ComboBox = new System.Windows.Forms.ComboBox();
             this.MouseSpeedLabel1 = new System.Windows.Forms.Label();
-            this.LimitMouseSpeedCheckBox = new System.Windows.Forms.CheckBox();
+            this.LimitAnalogChangeCheckBox = new System.Windows.Forms.CheckBox();
             this.MouseSpeedLabel2 = new System.Windows.Forms.Label();
             this.MouseSpeedLabel3 = new System.Windows.Forms.Label();
             this.MouseNagLabel1 = new System.Windows.Forms.Label();
@@ -127,15 +127,15 @@
             this.MouseSpeedLabel1.TabIndex = 23;
             this.MouseSpeedLabel1.Text = "For casual play this should be checked";
             // 
-            // LimitMouseSpeedCheckBox
+            // LimitAnalogChangeCheckBox
             // 
-            this.LimitMouseSpeedCheckBox.AutoSize = true;
-            this.LimitMouseSpeedCheckBox.Location = new System.Drawing.Point(15, 175);
-            this.LimitMouseSpeedCheckBox.Name = "LimitMouseSpeedCheckBox";
-            this.LimitMouseSpeedCheckBox.Size = new System.Drawing.Size(116, 17);
-            this.LimitMouseSpeedCheckBox.TabIndex = 24;
-            this.LimitMouseSpeedCheckBox.Text = "Limit Mouse Speed";
-            this.LimitMouseSpeedCheckBox.UseVisualStyleBackColor = true;
+            this.LimitAnalogChangeCheckBox.AutoSize = true;
+            this.LimitAnalogChangeCheckBox.Location = new System.Drawing.Point(15, 175);
+            this.LimitAnalogChangeCheckBox.Name = "LimitAnalogChangeCheckBox";
+            this.LimitAnalogChangeCheckBox.Size = new System.Drawing.Size(173, 17);
+            this.LimitAnalogChangeCheckBox.TabIndex = 24;
+            this.LimitAnalogChangeCheckBox.Text = "Limit Analog Change Sensitivity";
+            this.LimitAnalogChangeCheckBox.UseVisualStyleBackColor = true;
             // 
             // MouseSpeedLabel2
             // 
@@ -160,18 +160,18 @@
             this.MouseNagLabel1.AutoSize = true;
             this.MouseNagLabel1.Location = new System.Drawing.Point(12, 135);
             this.MouseNagLabel1.Name = "MouseNagLabel1";
-            this.MouseNagLabel1.Size = new System.Drawing.Size(280, 13);
+            this.MouseNagLabel1.Size = new System.Drawing.Size(273, 13);
             this.MouseNagLabel1.TabIndex = 27;
-            this.MouseNagLabel1.Text = "*Note: mouse controls should be bound to an analog stick";
+            this.MouseNagLabel1.Text = "*Note: mouse and scope controls should be bound to an";
             // 
             // MouseNagLabel2
             // 
             this.MouseNagLabel2.AutoSize = true;
             this.MouseNagLabel2.Location = new System.Drawing.Point(45, 148);
             this.MouseNagLabel2.Name = "MouseNagLabel2";
-            this.MouseNagLabel2.Size = new System.Drawing.Size(74, 13);
+            this.MouseNagLabel2.Size = new System.Drawing.Size(134, 13);
             this.MouseNagLabel2.TabIndex = 28;
-            this.MouseNagLabel2.Text = "not the mouse";
+            this.MouseNagLabel2.Text = "analog stick not the mouse";
             // 
             // SNESControllerSettings
             // 
@@ -184,7 +184,7 @@
             this.Controls.Add(this.MouseNagLabel1);
             this.Controls.Add(this.MouseSpeedLabel3);
             this.Controls.Add(this.MouseSpeedLabel2);
-            this.Controls.Add(this.LimitMouseSpeedCheckBox);
+            this.Controls.Add(this.LimitAnalogChangeCheckBox);
             this.Controls.Add(this.MouseSpeedLabel1);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -213,7 +213,7 @@
 		private System.Windows.Forms.ComboBox Port2ComboBox;
 		private System.Windows.Forms.ComboBox Port1ComboBox;
 		private System.Windows.Forms.Label MouseSpeedLabel1;
-		private System.Windows.Forms.CheckBox LimitMouseSpeedCheckBox;
+		private System.Windows.Forms.CheckBox LimitAnalogChangeCheckBox;
 		private System.Windows.Forms.Label MouseSpeedLabel2;
 		private System.Windows.Forms.Label MouseSpeedLabel3;
 		private System.Windows.Forms.Label MouseNagLabel1;
