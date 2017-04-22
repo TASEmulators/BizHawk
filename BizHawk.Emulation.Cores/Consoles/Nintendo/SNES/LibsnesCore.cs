@@ -177,8 +177,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				var bw = new BinaryWriter(ms);
 				bw.Write(CoreSaveState());
 				bw.Write(true); // framezero, so no controller follows and don't frameadvance on load
-				// hack: write fake dummy controller info
-				bw.Write(new byte[536]);
 				bw.Close();
 				_savestatebuff = ms.ToArray();
 			}

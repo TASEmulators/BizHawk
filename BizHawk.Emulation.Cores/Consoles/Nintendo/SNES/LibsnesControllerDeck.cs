@@ -219,6 +219,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			.SelectMany(i => Buttons
 				.OrderBy(ButtonOrder)
 				.Select(b => i + b))
+			.Concat(new[] { "0Toggle Multitap" })
 			.ToList()
 		};
 
@@ -226,6 +227,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public short GetState(IController controller, int index, int id)
 		{
+			if (id == 16)
+			{
+				return (short)(controller.IsPressed("0Toggle Multitap") ? 1 : 0);
+			}
 			if (id >= 12)
 			{
 				return 0;
