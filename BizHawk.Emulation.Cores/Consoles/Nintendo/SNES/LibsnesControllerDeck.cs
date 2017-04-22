@@ -384,17 +384,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			BoolButtons = new List<string>
 			{
 				"0Trigger",
-				"0Start"
+				"0Start",
+				"1Trigger",
+				"1Start"
 			},
 			FloatControls =
 			{
 				"0Justifier X",
-				"0Justifier Y"
+				"0Justifier Y",
+				"1Justifier X",
+				"1Justifier Y",
 			},
 			FloatRanges =
 			{
 				// problem: when you're in 240 line mode, the limit on Y needs to be 240.
 				// when you're in 224 mode, it needs to be 224.  perhaps the deck needs to account for this...
+				new[] { 0f, 128f, 256f },
+				new[] { 0f, 0f, 240f },
 				new[] { 0f, 128f, 256f },
 				new[] { 0f, 0f, 240f }
 			}
@@ -409,15 +415,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				default:
 					return 0;
 				case 0:
-					var x = (int)controller.GetFloat("0Justifier X");
+					var x = (int)controller.GetFloat(index + "Justifier X");
 					return (short)x;
 				case 1:
-					var y = (int)controller.GetFloat("0Justifier Y");
+					var y = (int)controller.GetFloat(index + "Justifier Y");
 					return (short)y;
 				case 2:
-					return (short)(controller.IsPressed("0Trigger") ? 1 : 0);
+					return (short)(controller.IsPressed(index + "Trigger") ? 1 : 0);
 				case 3:
-					return (short)(controller.IsPressed("0Start") ? 1 : 0);
+					return (short)(controller.IsPressed(index + "Start") ? 1 : 0);
 			}
 		}
 	}
