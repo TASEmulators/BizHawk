@@ -44,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				try
 				{
 
-					file = fix_ines_header(file);
+					file = FixInesHeader(file);
 					unsafe
 					{
 						fixed (byte* p = file)
@@ -319,32 +319,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		// Fix some incorrect ines header entries that QuickNES uses to load games.
 		// we need to do this from the raw file since QuickNES hasn't had time to process it yet.
-		byte[] fix_ines_header(byte[] file)
+		byte[] FixInesHeader(byte[] file)
 		{
 			string sha1 = BizHawk.Common.BufferExtensions.BufferExtensions.HashSHA1(file);
-			bool log_it = false;
+			bool didSomething = false;
 
 			Console.WriteLine(sha1);
 			if (sha1== "93010514AA1300499ABC8F145D6ABCDBF3084090") // Ms. Pac Man (Tengen) [!]
 			{
 				file[6] &= 0xFE;
-				log_it = true;
+				didSomething = true;
 			}
 
-			if (log_it)
+			if (didSomething)
 			{
 				Console.WriteLine("iNES header error detected, adjusting settings...");
 				Console.WriteLine(sha1);
 			}
 
 			return file;
-
 		}
 
 		#region Blacklist
 
 		// These games are known to not work in quicknes but quicknes thinks it can run them, bail out if one of these is loaded
-		private readonly string[] HashBlackList = new []
+		private static readonly HashSet<string> HashBlackList = new HashSet<string>
 		{
 			"E39CA4477D3B96E1CE3A1C61D8055187EA5F1784", // Bill and Ted's Excellent Adventure
 			"E8BC7E6BAE7032D571152F6834516535C34C68F0", // Bill and Ted's Excellent Adventure bad dump
