@@ -16,6 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Multitap,
 			Mouse,
 			SuperScope,
+			Justifier,
 			Payload
 		}
 
@@ -37,7 +38,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						LimitAnalogChangeSensitivity = ss.LimitAnalogChangeSensitivity
 					};
 				case ControllerType.SuperScope:
-                    return new SnesSuperScopeController();
+					return new SnesSuperScopeController();
+				case ControllerType.Justifier:
+					return new SnesJustifierController();
 				default:
 					throw new InvalidOperationException();
 			}
@@ -368,6 +371,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					return (short)(controller.IsPressed("0Turbo") ? 1 : 0);
 				case 5:
 					return (short)(controller.IsPressed("0Pause") ? 1 : 0);
+			}
+		}
+	}
+
+	public class SnesJustifierController : ILibsnesController
+	{
+		public LibsnesApi.SNES_INPUT_PORT PortType => LibsnesApi.SNES_INPUT_PORT.Justifier;
+
+		private static readonly ControllerDefinition _definition = new ControllerDefinition
+		{
+			BoolButtons = new List<string>
+			{
+				"0Trigger",
+				"0Start"
+			},
+			FloatControls =
+			{
+				"0Justifier X",
+				"0Justifier Y"
+			},
+			FloatRanges =
+			{
+				// problem: when you're in 240 line mode, the limit on Y needs to be 240.
+				// when you're in 224 mode, it needs to be 224.  perhaps the deck needs to account for this...
+				new[] { 0f, 128f, 256f },
+				new[] { 0f, 0f, 240f }
+			}
+		};
+
+		public ControllerDefinition Definition => _definition;
+
+		public short GetState(IController controller, int index, int id)
+		{
+			switch (id)
+			{
+				default:
+					return 0;
+				case 0:
+					var x = (int)controller.GetFloat("0Justifier X");
+					return (short)x;
+				case 1:
+					var y = (int)controller.GetFloat("0Justifier Y");
+					return (short)y;
+				case 2:
+					return (short)(controller.IsPressed("0Trigger") ? 1 : 0);
+				case 3:
+					return (short)(controller.IsPressed("0Start") ? 1 : 0);
 			}
 		}
 	}

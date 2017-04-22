@@ -29,8 +29,7 @@ void Justifier::enter() {
     if(next < prev && chained) {
       int nx2 = interface()->inputPoll(port, Input::Device::Justifiers, 1, (unsigned)Input::JustifierID::X);
       int ny2 = interface()->inputPoll(port, Input::Device::Justifiers, 1, (unsigned)Input::JustifierID::Y);
-      nx2 += player2.x;
-      ny2 += player2.y;
+
       player2.x = max(-16, min(256 + 16, nx2));
       player2.y = max(-16, min(240 + 16, ny2));
     }
