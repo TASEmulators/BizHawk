@@ -2,6 +2,7 @@
 using System.Drawing;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -10,15 +11,60 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			for (var i = 0; i < core.ControllerDefinition.PlayerCount; i++)
+			var syncsettings = ((LibsnesCore)core).GetSyncSettings();
+
+			var ports = new[]
 			{
-				yield return StandardController(i + 1);
+				syncsettings.LeftPort,
+				syncsettings.RightPort
+			};
+
+			int offset = 0;
+			for (int i = 0; i < 2; i++)
+			{
+				int playerNum = i + offset + 1;
+				switch (ports[i])
+				{
+					default:
+					case LibsnesControllerDeck.ControllerType.Unplugged:
+						offset -= 1;
+						break;
+					case LibsnesControllerDeck.ControllerType.Gamepad:
+						yield return StandardController(playerNum);
+						break;
+					case LibsnesControllerDeck.ControllerType.Multitap:
+						for (int j = 0; j < 4; j++)
+						{
+							yield return StandardController(playerNum + j);
+							
+						}
+
+						offset += 3;
+						break;
+					case LibsnesControllerDeck.ControllerType.Mouse:
+						yield return Mouse(playerNum);
+						break;
+					case LibsnesControllerDeck.ControllerType.SuperScope:
+						yield return SuperScope(playerNum);
+						break;
+					case LibsnesControllerDeck.ControllerType.Justifier:
+						for (int j = 0; j < 2; j++)
+						{
+							yield return Justifier(playerNum);
+							offset += j;
+						}
+
+						break;
+					case LibsnesControllerDeck.ControllerType.Payload:
+						yield return Payload(playerNum);
+						break;
+				}
 			}
 
 			yield return ConsoleButtons();
 		}
 
-		private static PadSchema StandardController(int controller)
+		private static PadSchema StandardController(int controller, int rowOffset = 0)
 		{
 			return new PadSchema
 			{
@@ -119,6 +165,178 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			};
+		}
+
+		private static PadSchema Mouse(int controller)
+		{
+			return new PadSchema
+			{
+				IsConsole = false,
+				DefaultSize = new Size(345, 225),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Mouse X",
+						MinValue = -128,
+						MidValue = 0,
+						MaxValue = 127,
+						MinValueSec = 127,
+						MidValueSec = 0,
+						MaxValueSec = -128,
+						DisplayName = "",
+						Location = new Point(6, 14),
+						Type = PadSchema.PadInputType.AnalogStick
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Mouse Left",
+						DisplayName = "Left",
+						Location = new Point(275, 15),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Mouse Right",
+						DisplayName = "Right",
+						Location = new Point(275, 45),
+						Type = PadSchema.PadInputType.Boolean
+					}
+				}
+			};
+		}
+
+		private static PadSchema SuperScope(int controller)
+		{
+			return new PadSchema
+			{
+				DisplayName = "Superscope",
+				IsConsole = false,
+				DefaultSize = new Size(356, 290),
+				MaxSize = new Size(356, 290),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Scope X",
+						Location = new Point(14, 17),
+						Type = PadSchema.PadInputType.TargetedPair,
+						TargetSize = new Size(256, 240),
+						SecondaryNames = new []
+						{
+							"P" + controller + " Scope Y",
+						}
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Trigger",
+						DisplayName = "Trigger",
+						Location = new Point(284, 17),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Cursor",
+						DisplayName = "Cursor",
+						Location = new Point(284, 47),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Turbo",
+						DisplayName = "Turbo",
+						Location = new Point(284, 77),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Pause",
+						DisplayName = "Pause",
+						Location = new Point(284, 107),
+						Type = PadSchema.PadInputType.Boolean
+					}
+				}
+			};
+		}
+
+		private static PadSchema Justifier(int controller)
+		{
+			return new PadSchema
+			{
+				DisplayName = "Justifier",
+				IsConsole = false,
+				DefaultSize = new Size(356, 290),
+				MaxSize = new Size(356, 290),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Justifier X",
+						Location = new Point(14, 17),
+						Type = PadSchema.PadInputType.TargetedPair,
+						TargetSize = new Size(256, 240),
+						SecondaryNames = new []
+						{
+							"P" + controller + " Justifier Y",
+						}
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Trigger",
+						DisplayName = "Trigger",
+						Location = new Point(284, 17),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Start",
+						DisplayName = "Start",
+						Location = new Point(284, 47),
+						Type = PadSchema.PadInputType.Boolean
+					}
+				}
+			};
+		}
+
+		private static PadSchema Payload(int controller)
+		{
+			return new PadSchema
+			{
+				DisplayName = "Payload",
+				IsConsole = false,
+				DefaultSize = new Size(460, 85),
+				Buttons = PayLoadButtons(controller)
+			};
+		}
+
+		private static IEnumerable<PadSchema.ButtonScema> PayLoadButtons(int controller)
+		{
+			int startX = 5;
+			int startY = 15;
+			int buttonSpacingX = 28;
+			int buttonSpacingY = 30;
+
+			for (int i = 0; i < 16; i++)
+			{
+				yield return new PadSchema.ButtonScema
+				{
+					Name = "P" + controller + " B" + i,
+					DisplayName = i.ToString(),
+					Location = new Point(startX + (i * buttonSpacingX), startY),
+					Type = PadSchema.PadInputType.Boolean
+				};
+			}
+
+			for (int i = 0; i < 16; i++)
+			{
+				yield return new PadSchema.ButtonScema
+				{
+					Name = "P" + controller + " B" + (i + 16),
+					DisplayName = (i + 16).ToString(),
+					Location = new Point(startX + (i * buttonSpacingX), startY + buttonSpacingY),
+					Type = PadSchema.PadInputType.Boolean
+				};
+			}
 		}
 
 		private static PadSchema ConsoleButtons()
