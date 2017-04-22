@@ -45,16 +45,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				{
 
 					file = FixInesHeader(file);
-					unsafe
-					{
-						fixed (byte* p = file)
-						{
-							Console.WriteLine((IntPtr)p);
-							LibQuickNES.ThrowStringError(QN.qn_loadines(Context, file, file.Length));
-						}
-					}
-
-					
+					LibQuickNES.ThrowStringError(QN.qn_loadines(Context, file, file.Length));
 
 					InitSaveRamBuff();
 					InitSaveStateBuff();
