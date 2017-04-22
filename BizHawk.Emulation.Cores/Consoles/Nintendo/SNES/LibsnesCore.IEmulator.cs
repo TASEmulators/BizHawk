@@ -100,7 +100,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public string SystemId { get; }
 
-		public bool DeterministicEmulation => true;
+		// adelikat: Nasty hack to force new business logic.  Compatibility (and Accuracy when fully supported) will ALWAYS be in deterministic mode,
+		// a consequence is a permanent performance hit to the compatibility core
+		// Perormance will NEVER be in deterministic mode (and the client side logic will prohibit movie recording on it)
+		// feos: Nasty hack to a nasty hack. Allow user disable it with a strong warning.
+		public bool DeterministicEmulation =>
+			_settings.ForceDeterminism
+			&& (CurrentProfile == "Compatibility" || CurrentProfile == "Accuracy");
 
 		public string BoardName { get; }
 
