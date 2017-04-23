@@ -129,5 +129,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern void BizSetSoundMask(IntPtr ctx, Sounds mask);
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void BizGetRegisters(IntPtr ctx, int[] dest);
 	}
 }

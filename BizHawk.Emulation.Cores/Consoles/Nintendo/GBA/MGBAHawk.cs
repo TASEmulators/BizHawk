@@ -13,7 +13,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	[CoreAttributes("mGBA", "endrift", true, true, "0.5.0", "https://mgba.io/", false)]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IRegionable))]
 	public class MGBAHawk : IEmulator, IVideoProvider, ISoundProvider, IGBAGPUViewable,
-		ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>
+		ISaveRam, IStatable, IInputPollable, ISettable<MGBAHawk.Settings, MGBAHawk.SyncSettings>,
+		IDebuggable
 	{
 		private IntPtr _core;
 		private byte[] _saveScratch = new byte[262144];
@@ -233,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#region IMemoryDomains
 
-		unsafe byte PeekWRAM(IntPtr xwram, long addr) { return ((byte*)xwram)[addr];}
+		unsafe byte PeekWRAM(IntPtr xwram, long addr) { return ((byte*)xwram)[addr]; }
 		unsafe void PokeWRAM(IntPtr xwram, long addr, byte value) { ((byte*)xwram)[addr] = value; }
 
 		void WireMemoryDomainPointers()
@@ -254,7 +255,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			// special combined ram memory domain
 
 			_cwram.Peek =
-				delegate(long addr)
+				delegate (long addr)
 				{
 					if (addr < 0 || addr >= (256 + 32) * 1024)
 						throw new IndexOutOfRangeException();
@@ -264,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 						return PeekWRAM(s.wram, addr);
 				};
 			_cwram.Poke =
-				delegate(long addr, byte val)
+				delegate (long addr, byte val)
 				{
 					if (addr < 0 || addr >= (256 + 32) * 1024)
 						throw new IndexOutOfRangeException();
@@ -383,6 +384,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		#endregion
 
+		#region IStatable
+
 		private byte[] _savebuff = new byte[0];
 		private byte[] _savebuff2 = new byte[13];
 
@@ -464,6 +467,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return _savebuff2;
 		}
 
+		#endregion
+
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
 
@@ -483,6 +488,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			long increment = Frame * 4389L >> 18;
 			return basetime + increment;
 		}
+
+		#region ISettable
 
 		public Settings GetSettings()
 		{
@@ -608,5 +615,76 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				return (SyncSettings)MemberwiseClone();
 			}
 		}
+
+		#endregion
+
+		#region IDebuggable
+
+		public IMemoryCallbackSystem MemoryCallbacks
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		public int TotalExecutedCycles
+		{
+			get
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		private static readonly string[] RegisterNames =
+		{
+			"R0",
+			"R1",
+			"R2",
+			"R3",
+			"R4",
+			"R5",
+			"R6",
+			"R7",
+			"R8",
+			"R9",
+			"R10",
+			"R11",
+			"R12",
+			"R13",
+			"R14",
+			"R15",
+			"CPSR",
+			"SPSR"
+		};
+
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
+		{
+			var values = new int[RegisterNames.Length];
+			LibmGBA.BizGetRegisters(_core, values);
+			var ret = new Dictionary<string, RegisterValue>();
+			for (var i = 0; i < RegisterNames.Length; i++)
+			{
+				ret[RegisterNames[i]] = new RegisterValue(values[i]);
+			}
+			return ret;
+		}
+
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
+		public bool CanStep(StepType type)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void Step(StepType type)
+		{
+			throw new NotImplementedException();
+		}
+
+		#endregion
 	}
 }
