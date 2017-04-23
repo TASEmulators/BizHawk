@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				["R4"] = _cpu.Register[4],
 				["R5"] = _cpu.Register[5],
 				["R6"] = _cpu.Register[6],
-				["R7"] = _cpu.Register[7],
+				["PC"] = _cpu.Register[7],
 
 				["FlagS"] = _cpu.FlagS ? 1 : 0,
 				["FlagC"] = _cpu.FlagC ? 1 : 0,
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				case "R6":
 					_cpu.Register[6] = (ushort)value;
 					break;
-				case "R7":
+				case "PC":
 					_cpu.Register[7] = (ushort)value;
 					break;
 

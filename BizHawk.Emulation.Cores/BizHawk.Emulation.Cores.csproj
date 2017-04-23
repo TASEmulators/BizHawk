@@ -413,6 +413,9 @@
     <Compile Include="Consoles\Intellivision\ICart.cs" />
     <Compile Include="Consoles\Intellivision\Intellicart.cs" />
     <Compile Include="Consoles\Intellivision\Intellivision.IDebuggable.cs">
+      <DependentUpon>Intellivision.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Intellivision\Intellivision.IDisassemblable.cs">
         <DependentUpon>Intellivision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Intellivision\Intellivision.IInputPollable.cs">
