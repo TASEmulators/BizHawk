@@ -75,7 +75,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			RomData = rom;
 
 			if (RomData.Length % BankSize != 0)
+			{
 				Array.Resize(ref RomData, ((RomData.Length / BankSize) + 1) * BankSize);
+			}
+
 			RomBanks = (byte)(RomData.Length / BankSize);
 
 			Region = DetermineDisplayType(SyncSettings.DisplayType, game.Region);
@@ -84,13 +87,20 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Region = DisplayType.PAL;
 				CoreComm.Notify("Display was forced to PAL mode for game compatibility.");
 			}
-			if (IsGameGear) 
+
+			if (IsGameGear)
+			{
 				Region = DisplayType.NTSC; // all game gears run at 60hz/NTSC mode
+			}
+
 			CoreComm.VsyncNum = Region == DisplayType.NTSC ? 60 : 50;
 			CoreComm.VsyncDen = 1;
 
 			RegionStr = SyncSettings.ConsoleRegion;
-			if (RegionStr == "Auto") RegionStr = DetermineRegion(game.Region);
+			if (RegionStr == "Auto")
+			{
+				RegionStr = DetermineRegion(game.Region);
+			}
 
 			if (game["Japan"] && RegionStr != "Japan")
 			{
@@ -99,18 +109,22 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 
 			if ((game.NotInDatabase || game["FM"]) && SyncSettings.EnableFM && !IsGameGear)
+			{
 				HasYM2413 = true;
+			}
 
 			if (Controller == null)
 			{
 				Controller = NullController.Instance;
 			}
 
-			Cpu = new Z80A();
-			Cpu.RegisterSP = 0xDFF0;
-			Cpu.ReadHardware = ReadPort;
-			Cpu.WriteHardware = WritePort;
-			Cpu.MemoryCallbacks = MemoryCallbacks;
+			Cpu = new Z80A
+			{
+				RegisterSP = 0xDFF0,
+				ReadHardware = ReadPort,
+				WriteHardware = WritePort,
+				MemoryCallbacks = MemoryCallbacks
+			};
 
 			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, Region);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(Vdp);
@@ -118,7 +132,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			YM2413 = new YM2413();
 			SoundMixer = new SoundMixer(YM2413, PSG);
 			if (HasYM2413 && game["WhenFMDisablePSG"])
+			{
 				SoundMixer.DisableSource(PSG);
+			}
+
 			ActiveSoundProvider = HasYM2413 ? (IAsyncSoundProvider)SoundMixer : PSG;
 			_fakeSyncSound = new FakeSyncSound(ActiveSoundProvider, 735);
 			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_fakeSyncSound);
@@ -148,6 +165,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				{
 					ForceStereoByte = byte.Parse(game.OptionValue("StereoByte"));
 				}
+
 				PSG.StereoPanning = ForceStereoByte;
 			}
 
