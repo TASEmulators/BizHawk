@@ -41,7 +41,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			_cpu = new CP1610
 			{
 				ReadMemory = ReadMemory,
-				WriteMemory = WriteMemory
+				WriteMemory = WriteMemory,
+				MemoryCallbacks = MemoryCallbacks
 			};
 			_cpu.Reset();
 

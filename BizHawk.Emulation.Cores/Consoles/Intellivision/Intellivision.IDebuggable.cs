@@ -82,8 +82,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 		}
 
-		[FeatureNotImplemented]
-		public IMemoryCallbackSystem MemoryCallbacks { get { throw new NotImplementedException(); } }
+		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem();
 
 		public bool CanStep(StepType type)
 		{

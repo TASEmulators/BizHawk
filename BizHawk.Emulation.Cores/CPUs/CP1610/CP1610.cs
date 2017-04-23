@@ -25,6 +25,27 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		}
 
 		public Action<TraceInfo> TraceCallback;
+		public IMemoryCallbackSystem MemoryCallbacks { get; set; }
+
+		public ushort ReadMemoryWrapper(ushort addr, bool peek)
+		{
+			if (MemoryCallbacks != null && !peek)
+			{
+				MemoryCallbacks.CallReads(addr);
+			}
+
+			return ReadMemory(addr, peek);
+		}
+
+		public void WriteMemoryWrapper(ushort addr, ushort value, bool poke)
+		{
+			if (MemoryCallbacks != null && !poke)
+			{
+				MemoryCallbacks.CallWrites(addr);
+			}
+
+			WriteMemory(addr, value, poke);
+		}
 
 		public int TotalExecutedCycles;
 		public int PendingCycles;
