@@ -30,6 +30,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				Name = "Intellivision Controller",
 				BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
+					.Concat(new[]
+					{
+						"Power",
+						"Reset"
+					})
 					.ToList()
 			};
 

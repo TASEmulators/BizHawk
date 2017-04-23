@@ -30,8 +30,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			_syncSettings = (IntvSyncSettings)SyncSettings ?? new IntvSyncSettings();
 
 			ControllerDeck = new IntellivisionControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
-			ControllerDefinition.BoolButtons.Add("Power");
-			ControllerDefinition.BoolButtons.Add("Reset");
 
 			_cart = new Intellicart();
 			if (_cart.Parse(_rom) == -1)
