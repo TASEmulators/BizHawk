@@ -29,12 +29,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (biosfile.Length != 16 * 1024)
 				throw new ArgumentException("BIOS file is not exactly 16K!");
 
-			LibVBANext.FrontEndSettings FES = new LibVBANext.FrontEndSettings();
-			FES.saveType = (LibVBANext.FrontEndSettings.SaveType)game.GetInt("saveType", 0);
-			FES.flashSize = (LibVBANext.FrontEndSettings.FlashSize)game.GetInt("flashSize", 0x10000);
-			FES.enableRtc = game.GetInt("rtcEnabled", 0) != 0;
-			FES.mirroringEnable = game.GetInt("mirroringEnabled", 0) != 0;
-
+			var FES = new LibVBANext.FrontEndSettings
+			{
+				saveType = (LibVBANext.FrontEndSettings.SaveType)game.GetInt("saveType", 0),
+				flashSize = (LibVBANext.FrontEndSettings.FlashSize)game.GetInt("flashSize", 0x10000),
+				enableRtc = game.GetInt("rtcEnabled", 0) != 0,
+				mirroringEnable = game.GetInt("mirroringEnabled", 0) != 0
+			};
 			Console.WriteLine("GameDB loaded settings: saveType={0}, flashSize={1}, rtcEnabled={2}, mirroringEnabled={3}",
 				FES.saveType, FES.flashSize, FES.enableRtc, FES.mirroringEnable);
 
