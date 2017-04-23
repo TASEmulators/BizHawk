@@ -205,6 +205,7 @@
 			{
 				return (ushort)core;
 			}
+
 			return UNMAPPED;
 		}
 
@@ -268,6 +269,7 @@
 							GraphicsRam[addr - 0x3800] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else if (addr <= 0x3BFF)
@@ -277,6 +279,7 @@
 							GraphicsRam[addr - 0x3A00] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else if (addr <= 0x3DFF)
@@ -286,6 +289,7 @@
 							GraphicsRam[addr - 0x3C00] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else
@@ -295,6 +299,7 @@
 							GraphicsRam[addr - 0x3E00] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 				case 0x7000:
@@ -310,6 +315,7 @@
 							GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else if (addr <= 0x7BFF)
@@ -319,6 +325,7 @@
 							GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else if (addr <= 0x7DFF)
@@ -328,6 +335,7 @@
 							GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else
@@ -337,6 +345,7 @@
 							GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 				case 0x9000:
@@ -397,6 +406,7 @@
 							GraphicsRam[addr - 0xF800] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else if (addr <= 0xFBFF)
@@ -406,6 +416,7 @@
 							GraphicsRam[addr - 0xFA00] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else if (addr <= 0xFDFF)
@@ -415,6 +426,7 @@
 							GraphicsRam[addr - 0xFC00] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else
@@ -424,6 +436,7 @@
 							GraphicsRam[addr - 0xFE00] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 			}

@@ -10,29 +10,29 @@ namespace BizHawk.Emulation.Cores.Intellivision
 	{
 		public IntvSettings GetSettings()
 		{
-			return Settings.Clone();
+			return _settings.Clone();
 		}
 
 		public IntvSyncSettings GetSyncSettings()
 		{
-			return SyncSettings.Clone();
+			return _syncSettings.Clone();
 		}
 
 		public bool PutSettings(IntvSettings o)
 		{
-			Settings = o;
+			_settings = o;
 			return false;
 		}
 
 		public bool PutSyncSettings(IntvSyncSettings o)
 		{
-			bool ret = IntvSyncSettings.NeedsReboot(SyncSettings, o);
-			SyncSettings = o;
+			bool ret = IntvSyncSettings.NeedsReboot(_syncSettings, o);
+			_syncSettings = o;
 			return ret;
 		}
 
-		public IntvSettings Settings = new IntvSettings();
-		public IntvSyncSettings SyncSettings = new IntvSyncSettings();
+		private IntvSettings _settings = new IntvSettings();
+		private IntvSyncSettings _syncSettings = new IntvSyncSettings();
 
 		public class IntvSettings
 		{

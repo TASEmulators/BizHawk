@@ -16,9 +16,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			var intv = core as Intellivision;
-			var port1 = intv.SyncSettings.Port1;
-			var port2 = intv.SyncSettings.Port2;
+			var intvSyncSettings = ((Intellivision)core).GetSyncSettings().Clone();
+			var port1 = intvSyncSettings.Port1;
+			var port2 = intvSyncSettings.Port2;
 
 			if (port1 == StandardControllerName)
 			{

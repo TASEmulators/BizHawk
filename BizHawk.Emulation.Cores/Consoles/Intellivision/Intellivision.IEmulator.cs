@@ -12,9 +12,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
-			if (Tracer.Enabled)
+			if (_tracer.Enabled)
 			{
-				_cpu.TraceCallback = (s) => Tracer.Put(s);
+				_cpu.TraceCallback = (s) => _tracer.Put(s);
 			}
 			else
 			{
@@ -22,10 +22,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 
 			_frame++;
-			stic_row = -1;
+			_sticRow = -1;
 
 			// read the controller state here for now
-			get_controller_state();
+			GetControllerState();
 
 			// this timer tracks cycles stolen by the STIC during the visible part of the frame, quite a large number of them actually
 			int delay_cycles = 700; 
@@ -63,14 +63,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					delay_cycles = -1;
 					delay_timer = 110;
 					_stic.ToggleSr2();
-					if (stic_row >= 0)
+					if (_sticRow >= 0)
 					{
 						_stic.in_vb_2 = true;
-						_stic.Background(stic_row);
+						_stic.Background(_sticRow);
 						_stic.in_vb_2 = false;
 					}
 
-					stic_row++;
+					_sticRow++;
 				}
 				Connect();
 			}

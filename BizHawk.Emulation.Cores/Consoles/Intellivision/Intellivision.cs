@@ -11,22 +11,24 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		isPorted: false,
 		isReleased: true
 		)]
-	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
+	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight), typeof(IRegionable))]
 	public sealed partial class Intellivision : IEmulator, IStatable, IInputPollable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
 	{
 		[CoreConstructor("INTV")]
 		public Intellivision(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
 		{
-			ServiceProvider = new BasicServiceProvider(this);
+			var ser = new BasicServiceProvider(this);
+			ServiceProvider = ser;
+
 			CoreComm = comm;
 
 			_rom = rom;
 			_gameInfo = game;
 
-			this.Settings = (IntvSettings)Settings ?? new IntvSettings();
-			this.SyncSettings = (IntvSyncSettings)SyncSettings ?? new IntvSyncSettings();
+			_settings = (IntvSettings)Settings ?? new IntvSettings();
+			_syncSettings = (IntvSyncSettings)SyncSettings ?? new IntvSyncSettings();
 
-			ControllerDeck = new IntellivisionControllerDeck(this.SyncSettings.Port1, this.SyncSettings.Port2);
+			ControllerDeck = new IntellivisionControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 			ControllerDefinition.BoolButtons.Add("Power");
 			ControllerDefinition.BoolButtons.Add("Reset");
 
@@ -37,48 +39,53 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				_cart.Parse(_rom);
 			}
 
-			_cpu = new CP1610();
-			_cpu.ReadMemory = ReadMemory;
-			_cpu.WriteMemory = WriteMemory;
+			_cpu = new CP1610
+			{
+				ReadMemory = ReadMemory,
+				WriteMemory = WriteMemory
+			};
 			_cpu.Reset();
 
-			_stic = new STIC();
-			_stic.ReadMemory = ReadMemory;
-			_stic.WriteMemory = WriteMemory;
+			_stic = new STIC
+			{
+				ReadMemory = ReadMemory,
+				WriteMemory = WriteMemory
+			};
 			_stic.Reset();
-			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(_stic);
 
-			_psg = new PSG();
+			_psg = new PSG
+			{
+				ReadMemory = ReadMemory,
+				WriteMemory = WriteMemory
+			};
 			_psg.Reset();
-			_psg.ReadMemory = ReadMemory;
-			_psg.WriteMemory = WriteMemory;
-			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_psg);
+
+			ser.Register<IVideoProvider>(_stic);
+			ser.Register<ISoundProvider>(_psg);
 
 			Connect();
 
 			LoadExecutiveRom(CoreComm.CoreFileProvider.GetFirmware("INTV", "EROM", true, "Executive ROM is required."));
 			LoadGraphicsRom(CoreComm.CoreFileProvider.GetFirmware("INTV", "GROM", true, "Graphics ROM is required."));
 
-			Tracer = new TraceBuffer { Header = _cpu.TraceHeader };
-			(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
+			_tracer = new TraceBuffer { Header = _cpu.TraceHeader };
+			ser.Register<ITraceable>(_tracer);
 
 			SetupMemoryDomains();
 		}
 
 		public IntellivisionControllerDeck ControllerDeck { get; private set; }
 
-		private ITraceable Tracer { get; set; }
+		private readonly byte[] _rom;
+		private readonly GameInfo _gameInfo;
+		private readonly ITraceable _tracer;
+		private readonly CP1610 _cpu;
+		private readonly STIC _stic;
+		private readonly PSG _psg;
 
-		private byte[] _rom;
-		private GameInfo _gameInfo;
-
-		private CP1610 _cpu;
 		private ICart _cart;
-		private STIC _stic;
-		private PSG _psg;
-
 		private int _frame;
-		private int stic_row;
+		private int _sticRow;
 
 		public void Connect()
 		{
@@ -95,6 +102,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 
 			int index = 0;
+
 			// Combine every two bytes into a word.
 			while (index + 1 < erom.Length)
 			{
@@ -112,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			GraphicsRom = grom;
 		}
 
-		public void get_controller_state()
+		private void GetControllerState()
 		{
 			InputCallbacks.Call();
 
@@ -123,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			_psg.Register[14] = (ushort)(0xFF - port2);
 		}
 
-		void HardReset()
+		private void HardReset()
 		{
 			_cpu.Reset();
 			_stic.Reset();
@@ -142,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 		}
 
-		void SoftReset()
+		private void SoftReset()
 		{
 			_cpu.Reset();
 			_stic.Reset();
