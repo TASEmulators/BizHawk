@@ -9,5 +9,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		bool WriteCart(ushort addr, ushort value, bool poke);
 
 		void SyncState(Serializer ser);
+
+		string BoardName { get; }
 	}
 }

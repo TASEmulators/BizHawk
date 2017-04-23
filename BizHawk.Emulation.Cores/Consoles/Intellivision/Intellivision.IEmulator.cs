@@ -125,8 +125,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public bool DeterministicEmulation => true;
 
-		[FeatureNotImplemented]
-		public string BoardName => null;
+		public string BoardName => _cart.BoardName;
 
 		public void ResetCounters()
 		{

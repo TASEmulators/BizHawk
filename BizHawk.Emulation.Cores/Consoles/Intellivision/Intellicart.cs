@@ -5,6 +5,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed class Intellicart : ICart
 	{
+		public string BoardName => $"Intellicart";
+
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("Cart");

@@ -14,7 +14,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		// There are 10 mappers Intellivision games use (not counting intellicart which is handled seperately)
 		// we will pick the mapper from the game DB and default to 0
-		private int mapper = 0; 
+		private int mapper = 0;
+
+		public string BoardName => $"Mapper {mapper}";
 
 		public void SyncState(Serializer ser)
 		{
