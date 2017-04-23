@@ -20,12 +20,12 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				["R6"] = _cpu.Register[6],
 				["PC"] = _cpu.Register[7],
 
-				["FlagS"] = _cpu.FlagS ? 1 : 0,
-				["FlagC"] = _cpu.FlagC ? 1 : 0,
-				["FlagZ"] = _cpu.FlagZ ? 1 : 0,
-				["FlagO"] = _cpu.FlagO ? 1 : 0,
-				["FlagI"] = _cpu.FlagI ? 1 : 0,
-				["FlagD"] = _cpu.FlagD ? 1 : 0,
+				["FlagS"] = _cpu.FlagS,
+				["FlagC"] = _cpu.FlagC,
+				["FlagZ"] = _cpu.FlagZ,
+				["FlagO"] = _cpu.FlagO,
+				["FlagI"] = _cpu.FlagI,
+				["FlagD"] = _cpu.FlagD
 			};
 		}
 
