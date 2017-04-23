@@ -331,13 +331,34 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (columnName != CursorColumnName) // TODO: what about float?
 				{
-					foreach (var index in TasView.SelectedRows)
-					{
-						CurrentTasMovie.ToggleBoolState(index, columnName);
-						_triggerAutoRestore = true;
-					}
-					JumpToGreenzone();
+					int frame = TasView.SelectedRows.FirstOrDefault();
+					string buttonName = TasView.CurrentCell.Column.Name;
 
+					if (Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.Contains(buttonName))
+					{
+						bool state = !CurrentTasMovie.BoolIsPressed(frame, buttonName);
+						foreach (var index in TasView.SelectedRows)
+						{
+							CurrentTasMovie.SetBoolState(index, buttonName, state);
+						}
+					}
+					else
+					{
+						float state = CurrentTasMovie.GetFloatState(frame, buttonName);
+						Emulation.Common.ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
+							[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(columnName)];
+
+						if (state != range.Mid)
+							state = range.Mid;
+
+						foreach (var index in TasView.SelectedRows)
+						{
+							CurrentTasMovie.SetFloatState(index, buttonName, state);
+						}
+					}
+
+					_triggerAutoRestore = true;
+					JumpToGreenzone();
 					RefreshDialog();
 				}
 			}
