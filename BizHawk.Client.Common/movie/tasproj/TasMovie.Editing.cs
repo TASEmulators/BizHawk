@@ -114,6 +114,7 @@ namespace BizHawk.Client.Common
 				ChangeLog.EndBatch();
 		}
 
+		// TODO: consider making this IEnumerable<int> instead of forcing the collection to be an array
 		public void RemoveFrames(int[] frames)
 		{
 			if (frames.Any())

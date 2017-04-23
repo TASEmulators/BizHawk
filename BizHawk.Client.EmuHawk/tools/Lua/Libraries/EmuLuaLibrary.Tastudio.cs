@@ -297,5 +297,64 @@ namespace BizHawk.Client.EmuHawk
 				};
 			}
 		}
+
+		[LuaMethodAttributes(
+			"getselection",
+			"gets the currently selected frames"
+		)]
+		public LuaTable GetSelection()
+		{
+			LuaTable table = Lua.NewTable();
+
+			if (Engaged())
+			{
+				var selection = Tastudio.GetSelection();
+
+				foreach (var row in selection)
+				{
+					table[row] = row;
+				}
+			}
+
+			return table;
+		}
+
+		[LuaMethodAttributes(
+			"insertframes",
+			"inserts the given number of blank frames at the given insertion frame"
+		)]
+		public void InsertNumFrames(int insertionFrame, int numberOfFrames)
+		{
+			if (Engaged())
+			{
+				if (insertionFrame < Tastudio.CurrentTasMovie.InputLogLength)
+				{
+					Tastudio.InsertNumFrames(insertionFrame, numberOfFrames);
+				}
+				else
+				{
+					Log(insertionFrame.ToString() + " is out of range");
+				}
+			}
+		}
+
+		[LuaMethodAttributes(
+			"deleteframes",
+			"deletes the given number of blank frames beginning at the given frame"
+		)]
+		public void DeleteFrames(int beginningFrame, int numberOfFrames)
+		{
+			if (Engaged())
+			{
+				if (beginningFrame < Tastudio.CurrentTasMovie.InputLogLength)
+				{
+					Tastudio.DeleteFrames(beginningFrame, numberOfFrames);
+				}
+				else
+				{
+					Log(beginningFrame.ToString() + " is out of range");
+				}
+			}
+		}
 	}
 }

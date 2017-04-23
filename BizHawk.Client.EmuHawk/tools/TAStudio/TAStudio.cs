@@ -716,6 +716,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public IEnumerable<int> GetSelection()
+		{
+			return TasView.SelectedRows;
+		}
+
 		public void RefreshDialog(bool refreshTasView = true)
 		{
 			if (_exiting)
@@ -883,6 +888,47 @@ namespace BizHawk.Client.EmuHawk
 
 				_triggerAutoRestore = false;
 				_autoRestorePaused = null;
+			}
+		}
+
+		public void InsertNumFrames(int insertionFrame, int numberOfFrames)
+		{
+			if (insertionFrame < CurrentTasMovie.InputLogLength)
+			{
+				bool needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
+
+				CurrentTasMovie.InsertEmptyFrame(insertionFrame, numberOfFrames);
+
+				if (needsToRollback)
+				{
+					GoToLastEmulatedFrameIfNecessary(insertionFrame);
+					DoAutoRestore();
+				}
+				else
+				{
+					RefreshDialog();
+				}
+			}
+		}
+
+		public void DeleteFrames(int beginningFrame, int numberofFrames)
+		{
+			if (beginningFrame < CurrentTasMovie.InputLogLength)
+			{
+				int[] framesToRemove = Enumerable.Range(beginningFrame, numberofFrames).ToArray();
+				CurrentTasMovie.RemoveFrames(framesToRemove);
+				SetSplicer();
+
+				var needsToRollback = beginningFrame < Emulator.Frame;
+				if (needsToRollback)
+				{
+					GoToLastEmulatedFrameIfNecessary(beginningFrame);
+					DoAutoRestore();
+				}
+				else
+				{
+					RefreshDialog();
+				}
 			}
 		}
 
