@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			_cpu.PendingCycles = 14934 - 3791 + _cpu.GetPendingCycles();
 			_stic.Sr1 = true;
-			islag = true;
+			_islag = true;
 
 			bool active_display = _stic.active_display;
 
@@ -108,8 +108,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 			_stic.in_vb_2 = false;
 
-			if (islag)
-				lagcount++;
+			if (_islag)
+				_lagcount++;
 
 
 			if (Controller.IsPressed("Power"))
@@ -118,11 +118,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			if (Controller.IsPressed("Reset"))
 				SoftReset();
 		}
-
-		private int _frame;
-		public bool islag;
-		public int lagcount;
-		private int stic_row;
 
 		public int Frame => _frame;
 
@@ -136,14 +131,13 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public void ResetCounters()
 		{
 			_frame = 0;
-			lagcount = 0;
+			_lagcount = 0;
 		}
 
 		public CoreComm CoreComm { get; }
 
 		public void Dispose()
 		{
-
 		}
 	}
 }

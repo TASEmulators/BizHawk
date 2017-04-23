@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BizHawk.Emulation.Cores.Intellivision
+﻿namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed partial class Intellivision
 	{
@@ -44,13 +42,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						if (addr==0x01FE)
 						{
 							if (!peek)
-								islag = false;
-							return _psg.Register[14];			
+								_islag = false;
+							return _psg.Register[14];
 						}
+
 						if (addr == 0x01FF)
 						{
 							if (!peek)
-								islag = false;
+								_islag = false;
 							return _psg.Register[15];
 						}
 						break;

@@ -8,10 +8,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public partial class Intellivision : IStatable
 	{
-		public bool BinarySaveStatesPreferred
-		{
-			get { return true; }
-		}
+		public bool BinarySaveStatesPreferred => true;
 
 		public void SaveStateText(TextWriter writer)
 		{
@@ -37,8 +34,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public byte[] SaveStateBinary()
 		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
+			var ms = new MemoryStream();
+			var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 			return ms.ToArray();
@@ -57,8 +54,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ser.Sync("ExecutiveRom", ref ExecutiveRom, false);
 			ser.Sync("GraphicsRom", ref GraphicsRom, false);
 			ser.Sync("GraphicsRam", ref GraphicsRam, false);
-			ser.Sync("islag", ref islag);
-			ser.Sync("lagcount", ref lagcount);
+			ser.Sync("islag", ref _islag);
+			ser.Sync("lagcount", ref _lagcount);
 
 			_cpu.SyncState(ser);
 			_stic.SyncState(ser);

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.CP1610;
@@ -58,8 +56,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			Connect();
 
-			//_cpu.LogData();
-
 			LoadExecutiveRom(CoreComm.CoreFileProvider.GetFirmware("INTV", "EROM", true, "Executive ROM is required."));
 			LoadGraphicsRom(CoreComm.CoreFileProvider.GetFirmware("INTV", "GROM", true, "Graphics ROM is required."));
 
@@ -73,27 +69,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		private ITraceable Tracer { get; set; }
 
-		public int LagCount
-		{
-			get {return lagcount;}
-
-			set{}
-		}
-
-		public bool IsLagFrame
-		{
-			get {return islag;}
-
-			set {}
-		}
-
-		public IInputCallbackSystem InputCallbacks
-		{
-			get { return _inputCallbacks; }
-		}
-
-		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
-
 		private byte[] _rom;
 		private GameInfo _gameInfo;
 
@@ -101,6 +76,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		private ICart _cart;
 		private STIC _stic;
 		private PSG _psg;
+
+		private int _frame;
+		private int stic_row;
 
 		public void Connect()
 		{
