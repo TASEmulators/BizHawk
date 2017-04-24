@@ -15,7 +15,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	{
 		// ROM
 		private byte[] RomData;
-		private int RomLength;
 		private byte[] BiosRom;
 
 		// Machine
