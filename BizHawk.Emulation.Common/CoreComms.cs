@@ -11,10 +11,10 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IEmulator" />
 	public class CoreComm
 	{
-		public CoreComm(Action<string> showMessage, Action<string> NotifyMessage)
+		public CoreComm(Action<string> showMessage, Action<string> notifyMessage)
 		{
 			ShowMessage = showMessage;
-			Notify = NotifyMessage;
+			Notify = notifyMessage;
 		}
 
 		public ICoreFileProvider CoreFileProvider;
@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public Action<string> Notify { get; private set; }
 
-		public Func<int,int,bool,object> RequestGLContext;
+		public Func<int, int, bool, object> RequestGLContext;
 		public Action<object> ReleaseGLContext;
 		public Action<object> ActivateGLContext;
 		public Action DeactivateGLContext; // this shouldnt be necessary.. frontend should be changing context before it does anything.. but for now..

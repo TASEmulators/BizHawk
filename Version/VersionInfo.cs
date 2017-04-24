@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 
 static class VersionInfo
@@ -17,9 +16,9 @@ static class VersionInfo
 
 	static VersionInfo()
 	{
-		string path = Path.Combine(GetExeDirectoryAbsolute(),"dll");
-		path = Path.Combine(path,"custombuild.txt");
-		if(File.Exists(path))
+		string path = Path.Combine(GetExeDirectoryAbsolute(), "dll");
+		path = Path.Combine(path, "custombuild.txt");
+		if (File.Exists(path))
 		{
 			var lines = File.ReadAllLines(path);
 			if (lines.Length > 0)

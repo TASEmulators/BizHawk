@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public class SpeexResampler : IDisposable, ISoundProvider
 	{
-		static class LibSpeexDSP
+		private static class LibSpeexDSP
 		{
 			public const int QUALITY_MAX = 10;
 			public const int QUALITY_MIN = 0;
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Common
 				INVALID_ARG = 3,
 				PTR_OVERLAP = 4,
 				MAX_ERROR
-			};
+			}
 
 			/// <summary>
 			/// Create a new resampler with integer input and output rates.
@@ -281,7 +281,7 @@ namespace BizHawk.Emulation.Common
 		/// throw an exception based on error state
 		/// </summary>
 		/// <param name="e"></param>
-		static void CheckError(LibSpeexDSP.RESAMPLER_ERR e)
+		private static void CheckError(LibSpeexDSP.RESAMPLER_ERR e)
 		{
 			switch (e)
 			{
@@ -299,7 +299,6 @@ namespace BizHawk.Emulation.Common
 		}
 
 		/// <summary>
-		/// 
 		/// </summary>
 		/// <param name="quality">0 to 10</param>
 		/// <param name="rationum">numerator of srate change ratio (inrate / outrate)</param>
@@ -311,13 +310,17 @@ namespace BizHawk.Emulation.Common
 		public SpeexResampler(int quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer = null, ISoundProvider input = null)
 		{
 			if (drainer != null && input != null)
+			{
 				throw new ArgumentException("Can't autofetch without being an ISyncSoundProvider?");
+			}
 
 			LibSpeexDSP.RESAMPLER_ERR err = LibSpeexDSP.RESAMPLER_ERR.SUCCESS;
 			st = LibSpeexDSP.speex_resampler_init_frac(2, rationum, ratioden, sratein, srateout, quality, ref err);
 
 			if (st == IntPtr.Zero)
+			{
 				throw new Exception("LibSpeexDSP returned null!");
+			}
 
 			CheckError(err);
 
@@ -349,7 +352,9 @@ namespace BizHawk.Emulation.Common
 			inbuf[inbufpos++] = right;
 
 			if (inbufpos == inbuf.Length)
+			{
 				Flush();
+			}
 		}
 
 		/// <summary>
@@ -369,7 +374,9 @@ namespace BizHawk.Emulation.Common
 				numused += shortstocopy / 2;
 
 				if (inbufpos == inbuf.Length)
+				{
 					Flush();
+				}
 			}
 		}
 
@@ -386,9 +393,11 @@ namespace BizHawk.Emulation.Common
 			LibSpeexDSP.speex_resampler_process_interleaved_int(st, inbuf, ref inal, outbuf, ref outal);
 
 			// reset inbuf
-
 			if (inal != inbufpos / 2)
+			{
 				throw new Exception("Speexresampler didn't eat the whole array?");
+			}
+
 			inbufpos = 0;
 
 			//Buffer.BlockCopy(inbuf, (int)inal * 2 * sizeof(short), inbuf, 0, inbufpos - (int)inal * 2);
@@ -413,7 +422,7 @@ namespace BizHawk.Emulation.Common
 			Dispose();
 		}
 
-		void InternalDrain(short[] buf, int nsamp)
+		private void InternalDrain(short[] buf, int nsamp)
 		{
 			if (outbuf2pos + nsamp * 2 > outbuf2.Length)
 			{
@@ -421,6 +430,7 @@ namespace BizHawk.Emulation.Common
 				Buffer.BlockCopy(outbuf2, 0, newbuf, 0, outbuf2pos * sizeof(short));
 				outbuf2 = newbuf;
 			}
+
 			Buffer.BlockCopy(buf, 0, outbuf2, outbuf2pos * sizeof(short), nsamp * 2 * sizeof(short));
 			outbuf2pos += nsamp * 2;
 		}
@@ -434,6 +444,7 @@ namespace BizHawk.Emulation.Common
 				input.GetSamplesSync(out sampin, out nsampin);
 				EnqueueSamples(sampin, nsampin);
 			}
+
 			Flush();
 			nsamp = outbuf2pos / 2;
 			samples = outbuf2;
@@ -445,15 +456,9 @@ namespace BizHawk.Emulation.Common
 			outbuf2pos = 0;
 		}
 
-		public bool CanProvideAsync
-		{
-			get { return false; }
-		}
+		public bool CanProvideAsync => false;
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesAsync(short[] samples)
 		{

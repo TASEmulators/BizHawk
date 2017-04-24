@@ -24,6 +24,6 @@
 			return 0f;
 		}
 
-		public static NullController Instance = new NullController();
+		public static readonly NullController Instance = new NullController();
 	}
 }

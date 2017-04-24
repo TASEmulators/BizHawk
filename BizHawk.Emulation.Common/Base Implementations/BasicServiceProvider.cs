@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IEmulatorServiceProvider"/> 
 	public class BasicServiceProvider : IEmulatorServiceProvider
 	{
-		private Dictionary<Type, object> Services = new Dictionary<Type, object>();
+		private readonly Dictionary<Type, object> Services = new Dictionary<Type, object>();
 
 		public BasicServiceProvider(IEmulator core)
 		{

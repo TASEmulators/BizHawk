@@ -31,37 +31,37 @@ namespace BizHawk.Emulation.Common
 		}
 
 		/// <summary>
-		/// The name of the controller definition
+		/// Gets or sets the name of the controller definition
 		/// </summary>
 		public string Name { get; set; }
 
 		/// <summary>
-		/// A list of all button types that have a boolean (on/off) value
+		/// Gets or sets a list of all button types that have a boolean (on/off) value
 		/// </summary>
 		public List<string> BoolButtons { get; set; }
 
 		/// <summary>
-		/// A list of all non-boolean types, that can be represented by a numerical value (such as analog controls, stylus coordinates, etc
+		/// Gets a list of all non-boolean types, that can be represented by a numerical value (such as analog controls, stylus coordinates, etc
 		/// </summary>
-		public List<string> FloatControls { get; private set; }
+		public List<string> FloatControls { get; }
 
 		/// <summary>
-		/// A list of all float ranges for each float control (must be one to one with FloatControls)
+		/// Gets a list of all float ranges for each float control (must be one to one with FloatControls)
 		/// FloatRanges include the min/max/default values
 		/// </summary>
-		public List<FloatRange> FloatRanges { get; private set; }
+		public List<FloatRange> FloatRanges { get; }
 
 		/// <summary>
-		/// Axis contraints apply artificial contraints to float values
-		/// For instance, a N64 controller's analog range is actually larger than the amount allowed by the plastic that artificially contrains it to lower values
-		/// Axis contraints provide a way to technically allow the full range but have a user option to contrain down to typical values that a real control would have
+		/// Gets the axis constraints that apply artificial constraints to float values
+		/// For instance, a N64 controller's analog range is actually larger than the amount allowed by the plastic that artificially constrains it to lower values
+		/// Axis constraints provide a way to technically allow the full range but have a user option to constrain down to typical values that a real control would have
 		/// </summary>
-		public List<AxisConstraint> AxisConstraints { get; private set; }
+		public List<AxisConstraint> AxisConstraints { get; }
 
 		/// <summary>
-		/// A means of categorizing controls in various controller display and config screens
+		/// Gets the category labels. These labels provide a means of categorizing controls in various controller display and config screens
 		/// </summary>
-		public Dictionary<string, string> CategoryLabels { get; private set; }
+		public Dictionary<string, string> CategoryLabels { get; }
 
 		public void ApplyAxisConstraints(string constraintClass, IDictionary<string, float> floatButtons)
 		{
@@ -93,6 +93,7 @@ namespace BizHawk.Emulation.Common
 								xval *= ratio;
 								yval *= ratio;
 							}
+
 							floatButtons[xaxis] = (float)xval;
 							floatButtons[yaxis] = (float)yval;
 							break;
@@ -214,5 +215,4 @@ namespace BizHawk.Emulation.Common
 			return BoolButtons.Any() || FloatControls.Any();
 		}
 	}
-
 }

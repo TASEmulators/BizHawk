@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Emulation.Common
 {
-	public enum SyncSoundMode { Sync, Async };
+	public enum SyncSoundMode { Sync, Async }
 
 	/// <summary>
 	/// This service provides the ability to output sound from the client,

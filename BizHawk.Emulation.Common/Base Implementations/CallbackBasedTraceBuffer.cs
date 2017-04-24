@@ -63,6 +63,7 @@ namespace BizHawk.Emulation.Common
 			{
 				return _sink;
 			}
+
 			set
 			{
 				_sink = value;

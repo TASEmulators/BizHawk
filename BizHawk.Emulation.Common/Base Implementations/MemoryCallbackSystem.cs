@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Common
 		private bool _hasWrites;
 		private bool _hasExecutes;
 
-		public bool ExecuteCallbacksAvailable { get; set; }
+		public bool ExecuteCallbacksAvailable { get; }
 
 		public void Add(IMemoryCallback callback)
 		{
@@ -215,19 +215,21 @@ namespace BizHawk.Emulation.Common
 
 		public void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
 		{
-			switch(args.Action)
+			switch (args.Action)
 			{
 				case NotifyCollectionChangedAction.Add:
-					foreach(IMemoryCallback callback in args.NewItems)
+					foreach (IMemoryCallback callback in args.NewItems)
 					{
 						CallbackAdded?.Invoke(callback);
 					}
+
 					break;
 				case NotifyCollectionChangedAction.Remove:
-					foreach(IMemoryCallback callback in args.OldItems)
+					foreach (IMemoryCallback callback in args.OldItems)
 					{
 						CallbackRemoved?.Invoke(callback);
 					}
+
 					break;
 			}
 		}

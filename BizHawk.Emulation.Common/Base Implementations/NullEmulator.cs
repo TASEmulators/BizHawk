@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Common
 		private bool _frameBufferClear = true;
 
 		private bool _xmas;
-		private Pleg _pleg;
+		private readonly Pleg _pleg;
 
 		private NullEmulatorSettings _settings;
 
@@ -356,9 +356,7 @@ namespace BizHawk.Emulation.Common
 				return;
 			}
 
-			var s = new SinMan(1500, n);
-			s.c = c;
-			s.n = n;
+			var s = new SinMan(1500, n) { c = c, n = n };
 			SinMen.Add(s);
 		}
 
@@ -378,6 +376,7 @@ namespace BizHawk.Emulation.Common
 					ret += s.Next();
 				}
 			}
+
 			if (ret > 32767) ret = 32767;
 			if (ret < -32767) ret = -32767;
 			return (short)ret;
@@ -432,10 +431,7 @@ namespace BizHawk.Emulation.Common
 
 		public bool fading = false;
 
-		public bool Done
-		{
-			get { return amp < 2.0; }
-		}
+		public bool Done => amp < 2.0;
 
 		static double GetFreq(int note)
 		{
@@ -447,9 +443,15 @@ namespace BizHawk.Emulation.Common
 			short result = (short)(Math.Sin(theta) * amp);
 			theta += freq * Math.PI / 22050.0;
 			if (theta >= Math.PI * 2.0)
+			{
 				theta -= Math.PI * 2.0;
+			}
+
 			if (fading)
+			{
 				amp *= 0.87;
+			}
+
 			return result;
 		}
 

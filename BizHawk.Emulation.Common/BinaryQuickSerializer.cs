@@ -23,13 +23,18 @@ namespace BizHawk.Emulation.Common
 		{
 			var caller = e as MethodCallExpression;
 			if (caller == null)
+			{
 				throw new ArgumentException("Expression must be a method call");
+			}
+
 			return caller.Method;
 		}
+
 		private static MethodInfo Method(Expression<Action> f)
 		{
 			return FromExpression(f.Body);
 		}
+
 		private static MethodInfo Method<T>(Expression<Action<T>> f)
 		{
 			return FromExpression(f.Body);
@@ -39,14 +44,17 @@ namespace BizHawk.Emulation.Common
 
 		#region read and write handlers for individual fields
 
-		private static Dictionary<Type, MethodInfo> readhandlers = new Dictionary<Type, MethodInfo>();
-		private static Dictionary<Type, MethodInfo> writehandlers = new Dictionary<Type, MethodInfo>();
+		private static readonly Dictionary<Type, MethodInfo> readhandlers = new Dictionary<Type, MethodInfo>();
+		private static readonly Dictionary<Type, MethodInfo> writehandlers = new Dictionary<Type, MethodInfo>();
 
 		private static void AddR<T>(Expression<Action<BinaryReader>> f)
 		{
 			var method = Method(f);
 			if (!typeof(T).IsAssignableFrom(method.ReturnType))
+			{
 				throw new InvalidOperationException("Type mismatch");
+			}
+
 			readhandlers.Add(typeof(T), method);
 		}
 
@@ -54,7 +62,10 @@ namespace BizHawk.Emulation.Common
 		{
 			var method = Method(f);
 			if (!method.GetParameters()[0].ParameterType.IsAssignableFrom(typeof(T)))
+			{
 				throw new InvalidOperationException("Type mismatch");
+			}
+
 			writehandlers.Add(typeof(T), Method(f));
 		}
 
@@ -125,12 +136,17 @@ namespace BizHawk.Emulation.Common
 					il.Emit(OpCodes.Ldarg_1);
 					MethodInfo m;
 					if (!readhandlers.TryGetValue(field.FieldType, out m))
+					{
 						throw new InvalidOperationException("(R) Can't handle nested type " + field.FieldType);
+					}
+
 					il.Emit(OpCodes.Callvirt, m);
 					il.Emit(OpCodes.Stfld, field);
 				}
+
 				il.Emit(OpCodes.Ret);
 			}
+
 			{
 				var il = wmeth.GetILGenerator();
 				var target = il.DeclareLocal(t);
@@ -145,9 +161,13 @@ namespace BizHawk.Emulation.Common
 					il.Emit(OpCodes.Ldfld, field);
 					MethodInfo m;
 					if (!writehandlers.TryGetValue(field.FieldType, out m))
+					{
 						throw new InvalidOperationException("(W) Can't handle nested type " + field.FieldType);
+					}
+
 					il.Emit(OpCodes.Callvirt, m);
 				}
+
 				il.Emit(OpCodes.Ret);
 			}
 
@@ -161,7 +181,7 @@ namespace BizHawk.Emulation.Common
 
 		#endregion
 
-		private static IDictionary<Type, SerializationFactory> serializers =
+		private static readonly IDictionary<Type, SerializationFactory> serializers =
 			new ConcurrentDictionary<Type, SerializationFactory>();
 
 		private static SerializationFactory GetFactory(Type t)
@@ -172,6 +192,7 @@ namespace BizHawk.Emulation.Common
 				f = CreateFactory(t);
 				serializers[t] = f;
 			}
+
 			return f;
 		}
 

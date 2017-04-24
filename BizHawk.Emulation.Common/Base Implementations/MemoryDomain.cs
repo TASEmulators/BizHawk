@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Common
 		/// <param name="data">must remain valid as long as the MemoryDomain exists!</param>
 		/// <param name="writable">if false, writes will be ignored</param>
 		[Obsolete]
-		public unsafe static MemoryDomain FromIntPtr(string name, long size, Endian endian, IntPtr data, bool writable = true, int wordSize = 1)
+		public static unsafe MemoryDomain FromIntPtr(string name, long size, Endian endian, IntPtr data, bool writable = true, int wordSize = 1)
 		{
 			return new MemoryDomainIntPtr(name, endian, data, size, writable, wordSize);
 		}
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Common
 		/// <param name="data">must remain valid as long as the MemoryDomain exists!</param>
 		/// <param name="writable">if false, writes will be ignored</param>
 		[Obsolete]
-		public unsafe static MemoryDomain FromIntPtrSwap16(string name, long size, Endian endian, IntPtr data, bool writable = true)
+		public static unsafe MemoryDomain FromIntPtrSwap16(string name, long size, Endian endian, IntPtr data, bool writable = true)
 		{
 			return new MemoryDomainIntPtrSwap16(name, endian, data, size, writable);
 		}
@@ -69,9 +69,9 @@ namespace BizHawk.Emulation.Common
 			{
 				default:
 				case Endian.Big:
-					return (ushort)((PeekByte(addr) << 8) | (PeekByte(addr + 1)));
+					return (ushort)((PeekByte(addr) << 8) | PeekByte(addr + 1));
 				case Endian.Little:
-					return (ushort)((PeekByte(addr)) | (PeekByte(addr + 1) << 8));
+					return (ushort)(PeekByte(addr) | (PeekByte(addr + 1) << 8));
 			}
 		}
 
@@ -102,10 +102,10 @@ namespace BizHawk.Emulation.Common
 				default:
 				case Endian.Big:
 					PokeByte(addr + 0, (byte)(val >> 8));
-					PokeByte(addr + 1, (byte)(val));
+					PokeByte(addr + 1, (byte)val);
 					break;
 				case Endian.Little:
-					PokeByte(addr + 0, (byte)(val));
+					PokeByte(addr + 0, (byte)val);
 					PokeByte(addr + 1, (byte)(val >> 8));
 					break;
 			}
@@ -121,10 +121,10 @@ namespace BizHawk.Emulation.Common
 					PokeByte(addr + 0, (byte)(val >> 24));
 					PokeByte(addr + 1, (byte)(val >> 16));
 					PokeByte(addr + 2, (byte)(val >> 8));
-					PokeByte(addr + 3, (byte)(val));
+					PokeByte(addr + 3, (byte)val);
 					break;
 				case Endian.Little:
-					PokeByte(addr + 0, (byte)(val));
+					PokeByte(addr + 0, (byte)val);
 					PokeByte(addr + 1, (byte)(val >> 8));
 					PokeByte(addr + 2, (byte)(val >> 16));
 					PokeByte(addr + 3, (byte)(val >> 24));

@@ -6,30 +6,31 @@ namespace BizHawk.Emulation.Common
 {
 	public sealed class Equalizer
 	{
-		double lowFilter;
-		double lowFilterPole0;
-		double lowFilterPole1;
-		double lowFilterPole2;
-		double lowFilterPole3;
+		private double lowFilter;
+		private double lowFilterPole0;
+		private double lowFilterPole1;
+		private double lowFilterPole2;
+		private double lowFilterPole3;
 
-		double highFilter;
-		double highFilterPole0;
-		double highFilterPole1;
-		double highFilterPole2;
-		double highFilterPole3;
+		private double highFilter;
+		private double highFilterPole0;
+		private double highFilterPole1;
+		private double highFilterPole2;
+		private double highFilterPole3;
 
-		double sampleDataMinus1;
-		double sampleDataMinus2;
-		double sampleDataMinus3;
+		private double sampleDataMinus1;
+		private double sampleDataMinus2;
+		private double sampleDataMinus3;
 
-		double lowGain;
-		double midGain;
-		double highGain;
+		private double lowGain;
+		private double midGain;
+		private double highGain;
 
-		const double sampleRate = 44100.0;
-		const double verySmallAmount = (1.0 / 4294967295.0);
+		private const double sampleRate = 44100.0;
+		private const double verySmallAmount = 1.0 / 4294967295.0;
 
-		double lowfreq;
+		private double lowfreq;
+
 		public double LowFreqCutoff
 		{
 			get { return lowfreq; }
@@ -40,7 +41,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		double highfreq;
+		private double highfreq;
 		public double HighFreqCutoff
 		{
 			get { return highfreq; }
@@ -89,7 +90,9 @@ namespace BizHawk.Emulation.Common
 		public void Equalize(short[] samples)
 		{
 			for (int i = 0; i < samples.Length; i++)
+			{
 				samples[i] = EqualizeSample(samples[i]);
+			}
 		}
 	}
 }

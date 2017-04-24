@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Common
 			Option("NES", "Bios_FDS", fds_nintendo);
 			Option("NES", "Bios_FDS", fds_twinfc);
 
-			FirmwareAndOption("973E10840DB683CF3FAF61BD443090786B3A9F04", 262144, "SNES", "Rom_SGB", "sgb.sfc", "Super GameBoy Rom"); //World (Rev B) ?
+			FirmwareAndOption("973E10840DB683CF3FAF61BD443090786B3A9F04", 262144, "SNES", "Rom_SGB", "sgb.sfc", "Super GameBoy Rom"); // World (Rev B) ?
 			FirmwareAndOption("A002F4EFBA42775A31185D443F3ED1790B0E949A", 3072, "SNES", "CX4", "cx4.rom", "CX4 Rom");
 			FirmwareAndOption("188D471FEFEA71EB53F0EE7064697FF0971B1014", 8192, "SNES", "DSP1", "dsp1.rom", "DSP1 Rom");
 			FirmwareAndOption("78B724811F5F18D8C67669D9390397EB1A47A5E2", 8192, "SNES", "DSP1b", "dsp1b.rom", "DSP1b Rom");
@@ -53,8 +53,8 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("AB16F56989B27D89BABE5F89C5A8CB3DA71A82F0", 16384, "C64", "Drive1541", "drive-1541.bin", "1541 Disk Drive Rom");
 			FirmwareAndOption("D3B78C3DBAC55F5199F33F3FE0036439811F7FB3", 16384, "C64", "Drive1541II", "drive-1541ii.bin", "1541-II Disk Drive Rom");
 
-			//for saturn, we think any bios region can pretty much run any iso
-			//so, we're going to lay this out carefully so that we choose things in a sensible order, but prefer the correct region
+			// for saturn, we think any bios region can pretty much run any iso
+			// so, we're going to lay this out carefully so that we choose things in a sensible order, but prefer the correct region
 			var ss_100_j = File("2B8CB4F87580683EB4D760E4ED210813D667F0A2", 524288, "saturn-1.00-(J).bin", "Bios v1.00 (J)");
 			var ss_100_ue = File("FAA8EA183A6D7BBE5D4E03BB1332519800D3FBC3", 524288, "saturn-1.00-(U+E).bin", "Bios v1.00 (U+E)");
 			var ss_100a_ue = File("3BB41FEB82838AB9A35601AC666DE5AACFD17A58", 524288, "saturn-1.00a-(U+E).bin", "Bios v1.00a (U+E)"); //?? is this size correct?
@@ -75,14 +75,14 @@ namespace BizHawk.Emulation.Common
 			Option("SAT", "E", ss_100_j);
 			Option("SAT", "E", ss_101_j);
 
-			var ti83_102 = File("CE08F6A808701FC6672230A790167EE485157561", 262144, "ti83_102.rom", "TI-83 Rom v1.02"); //?? is this size correct?
-			var ti83_103 = File("8399E384804D8D29866CAA4C8763D7A61946A467", 262144, "ti83_103.rom", "TI-83 Rom v1.03"); //?? is this size correct?
-			var ti83_104 = File("33877FF637DC5F4C5388799FD7E2159B48E72893", 262144, "ti83_104.rom", "TI-83 Rom v1.04"); //?? is this size correct?
-			var ti83_106 = File("3D65C2A1B771CE8E5E5A0476EC1AA9C9CDC0E833", 262144, "ti83_106.rom", "TI-83 Rom v1.06"); //?? is this size correct?
-			var ti83_107 = File("EF66DAD3E7B2B6A86F326765E7DFD7D1A308AD8F", 262144, "ti83_107.rom", "TI-83 Rom v1.07"); //formerly the 1.?? recommended one
-			var ti83_108 = File("9C74F0B61655E9E160E92164DB472AD7EE02B0F8", 262144, "ti83_108.rom", "TI-83 Rom v1.08"); //?? is this size correct?
-			var ti83p_103 = File("37EAEEB9FB5C18FB494E322B75070E80CC4D858E", 262144, "ti83p_103b.rom", "TI-83 Plus Rom v1.03"); //?? is this size correct?
-			var ti83p_112 = File("6615DF5554076B6B81BD128BF847D2FF046E556B", 262144, "ti83p_112.rom", "TI-83 Plus Rom v1.12"); //?? is this size correct?
+			var ti83_102 = File("CE08F6A808701FC6672230A790167EE485157561", 262144, "ti83_102.rom", "TI-83 Rom v1.02"); // ?? is this size correct?
+			var ti83_103 = File("8399E384804D8D29866CAA4C8763D7A61946A467", 262144, "ti83_103.rom", "TI-83 Rom v1.03"); // ?? is this size correct?
+			var ti83_104 = File("33877FF637DC5F4C5388799FD7E2159B48E72893", 262144, "ti83_104.rom", "TI-83 Rom v1.04"); // ?? is this size correct?
+			var ti83_106 = File("3D65C2A1B771CE8E5E5A0476EC1AA9C9CDC0E833", 262144, "ti83_106.rom", "TI-83 Rom v1.06"); // ?? is this size correct?
+			var ti83_107 = File("EF66DAD3E7B2B6A86F326765E7DFD7D1A308AD8F", 262144, "ti83_107.rom", "TI-83 Rom v1.07"); // formerly the 1.?? recommended one
+			var ti83_108 = File("9C74F0B61655E9E160E92164DB472AD7EE02B0F8", 262144, "ti83_108.rom", "TI-83 Rom v1.08"); // ?? is this size correct?
+			var ti83p_103 = File("37EAEEB9FB5C18FB494E322B75070E80CC4D858E", 262144, "ti83p_103b.rom", "TI-83 Plus Rom v1.03"); // ?? is this size correct?
+			var ti83p_112 = File("6615DF5554076B6B81BD128BF847D2FF046E556B", 262144, "ti83p_112.rom", "TI-83 Plus Rom v1.12"); // ?? is this size correct?
 
 			Firmware("TI83", "Rom", "TI-83 Rom");
 			Option("TI83", "Rom", ti83_102);
@@ -97,7 +97,7 @@ namespace BizHawk.Emulation.Common
 			// mega cd
 			var eu_mcd1_9210 = File("f891e0ea651e2232af0c5c4cb46a0cae2ee8f356", 131072, "eu_mcd1_9210.bin", "Mega CD EU (9210)");
 			var eu_mcd2_9303 = File("7063192ae9f6b696c5b81bc8f0a9fe6f0c400e58", 131072, "eu_mcd2_9303.bin", "Mega CD EU (9303)");
-			var eu_mcd2_9306 = File("523b3125fb0ac094e16aa072bc6ccdca22e520e5", 131072, "eu_mcd2_9306.bin", "Mega CD EU (9310)"); //?? is this size correct?
+			var eu_mcd2_9306 = File("523b3125fb0ac094e16aa072bc6ccdca22e520e5", 131072, "eu_mcd2_9306.bin", "Mega CD EU (9310)"); // ?? is this size correct?
 			var jp_mcd1_9111 = File("4846f448160059a7da0215a5df12ca160f26dd69", 131072, "jp_mcd1_9111.bin", "Mega CD JP (9111)");
 			var jp_mcd1_9112 = File("e4193c6ae44c3cea002707d2a88f1fbcced664de", 131072, "jp_mcd1_9112.bin", "Mega CD JP (9112)");
 			var us_scd1_9210 = File("f4f315adcef9b8feb0364c21ab7f0eaf5457f3ed", 131072, "us_scd1_9210.bin", "Sega CD US (9210)");
@@ -127,12 +127,12 @@ namespace BizHawk.Emulation.Common
 			Option("SMS", "Export", sms_m404);
 			Option("SMS", "Japan", sms_jp_21);
 
-			//PSX
-			//http://forum.fobby.net/index.php?t=msg&goto=2763 [f]
-			//http://www.psxdev.net/forum/viewtopic.php?f=69&t=56 [p]
-			//https://en.wikipedia.org/wiki/PlayStation_models#Comparison_of_models [w]
-			//https://github.com/petrockblog/RetroPie-Setup/wiki/PCSX-Core-Playstation-1 [g] 
-			//http://redump.org/datfile/psx-bios/ also
+			// PSX
+			// http://forum.fobby.net/index.php?t=msg&goto=2763 [f]
+			// http://www.psxdev.net/forum/viewtopic.php?f=69&t=56 [p]
+			// https://en.wikipedia.org/wiki/PlayStation_models#Comparison_of_models [w]
+			// https://github.com/petrockblog/RetroPie-Setup/wiki/PCSX-Core-Playstation-1 [g] 
+			// http://redump.org/datfile/psx-bios/ also
 			var ps_10j = File("343883A7B555646DA8CEE54AADD2795B6E7DD070", 524288, "ps-10j.bin", "PSX BIOS (Version 1.0 J)", "Used on SCPH-1000, DTL-H1000 [g]. This is Rev for A hardware [w].");
 			var ps_11j = File("B06F4A861F74270BE819AA2A07DB8D0563A7CC4E", 524288, "ps-11j.bin", "PSX BIOS (Version 1.1 01/22/95)", "Used on SCPH-3000, DTL-H1000H [g]. This is for Rev B hardware [w].");
 			var ps_20a = File("649895EFD79D14790EABB362E94EB0622093DFB9", 524288, "ps-20a.bin", "PSX BIOS (Version 2.0 05/07/95 A)", "Used on DTL-H1001 [g]. This is for Rev B hardware [w].");
@@ -141,15 +141,15 @@ namespace BizHawk.Emulation.Common
 			var ps_21a = File("CA7AF30B50D9756CBD764640126C454CFF658479", 524288, "ps-21a.bin", "PSX BIOS (Version 2.1 07/17/95 A)", "Used on DTL-H1101 [g]. This is for Rev B hardware, presumably.");
 			var ps_21e = File("76CF6B1B2A7C571A6AD07F2BAC0DB6CD8F71E2CC", 524288, "ps-21e.bin", "PSX BIOS (Version 2.1 07/17/95 E)", "Used on SCPH-1002, DTL-H1102 [g]. This is for Rev B hardware [w].");
 			var ps_22j = File("FFA7F9A7FB19D773A0C3985A541C8E5623D2C30D", 524288, "ps-22j.bin", "PSX BIOS (Version 2.2 12/04/95 J)", "Used on SCPH-5000, DTL-H1200, DTL-H3000 [g]. This is for Rev C hardware [w].");
-			var ps_22j_bad = File("E340DB2696274DDA5FDC25E434A914DB71E8B02B", 524288, "ps-22j-bad.bin", "BAD DUMP OF SCPH-5000. Found on [p]."); //BAD!!
-			var ps_22j_bad2 = File("81622ACE63E25696A5D884692E554D350DDF57A6", 526083, "ps-22j-bad2.bin", "PSX BIOS (Version 2.2 12/04/95 J", "BAD DUMP OF SCPH-5000."); //BAD!
+			var ps_22j_bad = File("E340DB2696274DDA5FDC25E434A914DB71E8B02B", 524288, "ps-22j-bad.bin", "BAD DUMP OF SCPH-5000. Found on [p]."); // BAD!!
+			var ps_22j_bad2 = File("81622ACE63E25696A5D884692E554D350DDF57A6", 526083, "ps-22j-bad2.bin", "PSX BIOS (Version 2.2 12/04/95 J", "BAD DUMP OF SCPH-5000."); // BAD!
 			var ps_22a = File("10155D8D6E6E832D6EA66DB9BC098321FB5E8EBF", 524288, "ps-22a.bin", "PSX BIOS (Version 2.2 12/04/95 A)", "Used on SCPH-1001, DTL-H1201, DTL-H3001 [g]. This is for Rev C hardware [w].");
 			var ps_22e = File("B6A11579CAEF3875504FCF3831B8E3922746DF2C", 524288, "ps-22e.bin", "PSX BIOS (Version 2.2 12/04/95 E)", "Used on SCPH-1002, DTL-H1202, DTL-H3002 [g]. This is for Rev C hardware [w].");
 			var ps_22d = File("73107D468FC7CB1D2C5B18B269715DD889ECEF06", 524288, "ps-22d.bin", "PSX BIOS (Version 2.2 03/06/96 D)", "Used on DTL-H1100 [g]. This is for Rev C hardware, presumably.");
 			var ps_30j = File("B05DEF971D8EC59F346F2D9AC21FB742E3EB6917", 524288, "ps-30j.bin", "PSX BIOS (Version 3.0 09/09/96 J)", "Used on SCPH-5500 [g]. This is for Rev C hardware [w]. Recommended for (J) [f].");
 			var ps_30a = File("0555C6FAE8906F3F09BAF5988F00E55F88E9F30B", 524288, "ps-30a.bin", "PSX BIOS (Version 3.0 11/18/96 A)", "Used on SCPH-5501, SCPH-5503, SCPH-7003 [g]. This is for Rev C hardware [w]. Recommended for (U) [f].");
 			var ps_30e = File("F6BC2D1F5EB6593DE7D089C425AC681D6FFFD3F0", 524288, "ps-30e.bin", "PSX BIOS (Version 3.0 01/06/97 E)", "Used on SCPH-5502, SCPH-5552 [g]. This is for Rev C hardware [w]. Recommended for (E) [f].");
-			var ps_30e_bad = File("F8DE9325FC36FCFA4B29124D291C9251094F2E54", 524288, "ps-30e-bad.bin", "BAD DUMP OF SCPH-5502. Found on [p]."); //BAD!
+			var ps_30e_bad = File("F8DE9325FC36FCFA4B29124D291C9251094F2E54", 524288, "ps-30e-bad.bin", "BAD DUMP OF SCPH-5502. Found on [p]."); // BAD!
 			var ps_40j = File("77B10118D21AC7FFA9B35F9C4FD814DA240EB3E9", 524288, "ps-40j.bin", "PSX BIOS (Version 4.0 08/18/97 J)", "Used on SCPH-7000, SCPH-7500, SCPH-9000 [g]. This is for Rev C hardware [w].");
 			var ps_41a = File("14DF4F6C1E367CE097C11DEAE21566B4FE5647A9", 524288, "ps-41a.bin", "PSX BIOS (Version 4.1 12/16/97 A)", "Used on SCPH-7001, SCPH-7501, SCPH-7503, SCPH-9001, SCPH-9003, SCPH-9903 [g]. This is for Rev C hardware [w].");
 			var ps_41e = File("8D5DE56A79954F29E9006929BA3FED9B6A418C1D", 524288, "ps-41e.bin", "PSX BIOS (Version 4.1 12/16/97 E)", "Used on SCPH-7002, SCPH-7502, SCPH-9002 [g]. This is for Rev C hardware [w].");
@@ -168,12 +168,12 @@ namespace BizHawk.Emulation.Common
 			Option("PSX", "U", ps_30a);
 			Option("PSX", "J", ps_30j);
 			Option("PSX", "E", ps_30e);
-			//in general, alternates arent allowed.. their quality isnt known.
-			//we have this comment from fobby.net: "SCPH7502 works fine for European games" (TBD)
-			//however, we're sticking with the 3.0 series.
-			//please note: 2.1 or 2.2 would be a better choice, as the dates are the same and the bioses are more likely to matching in terms of entrypoints and such.
-			//but 3.0 is what mednafen used
 
+			// in general, alternates arent allowed.. their quality isnt known.
+			// we have this comment from fobby.net: "SCPH7502 works fine for European games" (TBD)
+			// however, we're sticking with the 3.0 series.
+			// please note: 2.1 or 2.2 would be a better choice, as the dates are the same and the bioses are more likely to matching in terms of entrypoints and such.
+			// but 3.0 is what mednafen used
 			Option("PSX", "J", ps_10j, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "J", ps_11j, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "U", ps_20a, FirmwareOptionStatus.Unacceptable);
@@ -204,8 +204,8 @@ namespace BizHawk.Emulation.Common
 			Option("AppleII", "DiskII", appleII_DiskII, FirmwareOptionStatus.Acceptable);
 		}
 
-		//adds a defined firmware ID to the database
-		static void Firmware(string systemId, string id, string descr)
+		// adds a defined firmware ID to the database
+		private static void Firmware(string systemId, string id, string descr)
 		{
 			var fr = new FirmwareRecord
 				{
@@ -217,8 +217,8 @@ namespace BizHawk.Emulation.Common
 			FirmwareRecords.Add(fr);
 		}
 
-		//adds an acceptable option for a firmware ID to the database
-		static FirmwareOption Option(string hash, long size, string systemId, string id, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
+		// adds an acceptable option for a firmware ID to the database
+		private static FirmwareOption Option(string hash, long size, string systemId, string id, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 		{
 			var fo = new FirmwareOption
 				{
@@ -231,24 +231,31 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareOptions.Add(fo);
 			
-			//first option is automatically ideal
+			// first option is automatically ideal
 			if (FirmwareOptions.Count == 1 && fo.status == FirmwareOptionStatus.Acceptable)
+			{
 				fo.status = FirmwareOptionStatus.Ideal;
+			}
 			
 			return fo;
 		}
 
-		//adds an acceptable option for a firmware ID to the database
-		static FirmwareOption Option(string systemId, string id, FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
+		// adds an acceptable option for a firmware ID to the database
+		private static FirmwareOption Option(string systemId, string id, FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 		{
 			var fo = Option(ff.hash, ff.size, systemId, id, status);
-			//make sure this goes in as bad
-			if(ff.bad) fo.status = FirmwareOptionStatus.Bad;
+
+			// make sure this goes in as bad
+			if (ff.bad)
+			{
+				fo.status = FirmwareOptionStatus.Bad;
+			}
+
 			return fo;
 		}
 
-		//defines a firmware file
-		static FirmwareFile File(string hash, long size, string recommendedName, string descr, string additionalInfo = "")
+		// defines a firmware file
+		private static FirmwareFile File(string hash, long size, string recommendedName, string descr, string additionalInfo = "")
 		{
 			string hashfix = hash.ToUpperInvariant();
 
@@ -265,8 +272,8 @@ namespace BizHawk.Emulation.Common
 			return ff;
 		}
 
-		//adds a defined firmware ID and one file and option
-		static void FirmwareAndOption(string hash, long size, string systemId, string id, string name, string descr)
+		// adds a defined firmware ID and one file and option
+		private static void FirmwareAndOption(string hash, long size, string systemId, string id, string name, string descr)
 		{
 			Firmware(systemId, id, descr);
 			File(hash, size, name, descr, "");
@@ -274,9 +281,9 @@ namespace BizHawk.Emulation.Common
 		}
 
 
-		public static List<FirmwareRecord> FirmwareRecords = new List<FirmwareRecord>();
-		public static List<FirmwareOption> FirmwareOptions = new List<FirmwareOption>();
-		public static List<FirmwareFile> FirmwareFiles = new List<FirmwareFile>();
+		public static readonly List<FirmwareRecord> FirmwareRecords = new List<FirmwareRecord>();
+		public static readonly List<FirmwareOption> FirmwareOptions = new List<FirmwareOption>();
+		public static readonly List<FirmwareFile> FirmwareFiles = new List<FirmwareFile>();
 
 		public static Dictionary<string, FirmwareFile> FirmwareFilesByHash = new Dictionary<string, FirmwareFile>();
 
@@ -295,7 +302,7 @@ namespace BizHawk.Emulation.Common
 			public string systemId;
 			public string firmwareId;
 			public string descr;
-			public string ConfigKey { get { return string.Format("{0}+{1}", systemId, firmwareId); } }
+			public string ConfigKey => $"{systemId}+{firmwareId}";
 		}
 
 		public enum FirmwareOptionStatus
@@ -311,7 +318,7 @@ namespace BizHawk.Emulation.Common
 			public long size;
 			public FirmwareOptionStatus status;
 			public bool IsAcceptableOrIdeal { get { return status == FirmwareOptionStatus.Ideal || status == FirmwareOptionStatus.Acceptable; } }
-			public string ConfigKey { get { return string.Format("{0}+{1}", systemId, firmwareId); } }
+			public string ConfigKey => $"{systemId}+{firmwareId}";
 		}
 
 
@@ -325,6 +332,5 @@ namespace BizHawk.Emulation.Common
 
 			return found.FirstOrDefault();
 		}
-
-	} //static class FirmwareDatabase
+	} // static class FirmwareDatabase
 }

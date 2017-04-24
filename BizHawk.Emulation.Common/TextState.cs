@@ -18,8 +18,8 @@ namespace BizHawk.Emulation.Common
 
 		public class Node
 		{
-			public Dictionary<string, byte[]> Data = new Dictionary<string, byte[]>();
-			public Dictionary<string, Node> Objects = new Dictionary<string, Node>();
+			public readonly Dictionary<string, byte[]> Data = new Dictionary<string, byte[]>();
+			public readonly Dictionary<string, Node> Objects = new Dictionary<string, Node>();
 
 			// methods named "ShouldSerialize*" are detected and dynamically invoked by JSON.NET
 			// if they return false during serialization, the field/prop is omitted from the created json
@@ -34,15 +34,15 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public Node Root = new Node();
+		public readonly Node Root = new Node();
 
 		[JsonIgnore]
 		Stack<Node> Nodes;
 
 		[JsonIgnore]
-		Node Current { get { return Nodes.Peek(); } }
+		private Node Current => Nodes.Peek();
 
-		public void Prepare()
+	    public void Prepare()
 		{
 			Nodes = new Stack<Node>();
 			Nodes.Push(Root);
@@ -59,7 +59,10 @@ namespace BizHawk.Emulation.Common
 		{
 			byte[] d = Current.Data[name];
 			if (length != d.Length)
+			{
 				throw new InvalidOperationException();
+			}
+
 			Marshal.Copy(d, 0, data, length);
 		}
 
@@ -87,6 +90,7 @@ namespace BizHawk.Emulation.Common
 				next = new Node();
 				Current.Objects.Add(name, next);
 			}
+
 			Nodes.Push(next);
 		}
 
@@ -94,7 +98,9 @@ namespace BizHawk.Emulation.Common
 		{
 			Node last = Nodes.Pop();
 			if (Current.Objects[name] != last)
+			{
 				throw new InvalidOperationException();
+			}
 		}
 
 		// other data besides the core

@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace BizHawk.Emulation.Common
+﻿namespace BizHawk.Emulation.Common
 {
 	public interface ITraceSink
 	{
@@ -32,7 +30,7 @@ namespace BizHawk.Emulation.Common
 
 		//void Put(TraceInfo content);
 
-		//that's right, we can only have one sink.
+		// that's right, we can only have one sink.
 		//a sink can route to two other sinks if it has to, though
 		ITraceSink Sink { get; set; }
 
