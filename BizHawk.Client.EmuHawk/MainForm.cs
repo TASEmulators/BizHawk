@@ -113,7 +113,6 @@ namespace BizHawk.Client.EmuHawk
 				ModeChangedCallback = SetMainformMovieInfo
 			};
 
-			new AutoResetEvent(false);
 			Icon = Properties.Resources.logo;
 			InitializeComponent();
 			Global.Game = GameInfo.NullInstance;
