@@ -60,14 +60,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			get { throw new NotImplementedException(); }
 		}
 
-		public bool CanStep(StepType type) { return false; }
+		public bool CanStep(StepType type)
+		{
+			return false;
+		}
 
 		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
-
-		public int TotalExecutedCycles
+		public void Step(StepType type)
 		{
-			get { return (int)theMachine.CPU.Clock; }
+			throw new NotImplementedException();
 		}
+
+		public int TotalExecutedCycles => (int)theMachine.CPU.Clock;
 	}
 }

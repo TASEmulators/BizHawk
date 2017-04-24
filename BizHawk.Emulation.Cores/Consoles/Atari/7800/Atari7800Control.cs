@@ -7,37 +7,42 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 {
 	public class Atari7800Control
 	{
-		public static ControllerDefinition Joystick = new ControllerDefinition
+		private static readonly ControllerDefinition Joystick = new ControllerDefinition
 		{
 			Name = "Atari 7800 Joystick Controller",
 			BoolButtons =
 			{
 				// hard reset, not passed to EMU7800
 				"Power",
+
 				// on the console
 				"Reset",
 				"Select",
 				"BW", // should be "Color"??
 				"Left Difficulty", // better not put P# on these as they might not correspond to player numbers
 				"Right Difficulty",
+
 				// ports
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Trigger",
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Trigger"
 			}
 		};
-		public static ControllerDefinition Paddles = new ControllerDefinition
+
+		private static readonly ControllerDefinition Paddles = new ControllerDefinition
 		{
 			Name = "Atari 7800 Paddle Controller",
 			BoolButtons = 
 			{
 				// hard reset, not passed to EMU7800
 				"Power",
+
 				// on the console
 				"Reset",
 				"Select",
 				"BW", // should be "Color"??
 				"Left Difficulty", // better not put P# on these as they might not correspond to player numbers
 				"Right Difficulty",
+
 				// ports
 				"P1 Trigger",
 				"P2 Trigger",
@@ -54,25 +59,28 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			FloatRanges =
 			{
 				// what is the center point supposed to be here?
-				new[] {0.0f, 0.0f, 700000.0f},
-				new[] {0.0f, 0.0f, 700000.0f},
-				new[] {0.0f, 0.0f, 700000.0f},
-				new[] {0.0f, 0.0f, 700000.0f}
+				new[] { 0.0f, 0.0f, 700000.0f },
+				new[] { 0.0f, 0.0f, 700000.0f },
+				new[] { 0.0f, 0.0f, 700000.0f },
+				new[] { 0.0f, 0.0f, 700000.0f }
 			}
 		};
-		public static ControllerDefinition Keypad = new ControllerDefinition
+
+		private static readonly ControllerDefinition Keypad = new ControllerDefinition
 		{
 			Name = "Atari 7800 Keypad Controller",
 			BoolButtons = 
 			{
 				// hard reset, not passed to EMU7800
 				"Power",
+
 				// on the console
 				"Reset",
 				"Select",
 				"BW", // should be "Color"??
 				"Toggle Left Difficulty", // better not put P# on these as they might not correspond to player numbers
 				"Toggle Right Difficulty",
+
 				// ports
 				"P1 Keypad1", "P1 Keypad2", "P1 Keypad3", 
 				"P1 Keypad4", "P1 Keypad5", "P1 Keypad6", 
@@ -92,19 +100,22 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				"P4 KeypadA", "P4 Keypad0", "P4 KeypadP"
 			}
 		};
-		public static ControllerDefinition Driving = new ControllerDefinition
+
+		private static readonly ControllerDefinition Driving = new ControllerDefinition
 		{
 			Name = "Atari 7800 Driving Controller",
 			BoolButtons = 
 			{
 				// hard reset, not passed to EMU7800
 				"Power",
+
 				// on the console
 				"Reset",
 				"Select",
 				"BW", // should be "Color"??
 				"Toggle Left Difficulty", // better not put P# on these as they might not correspond to player numbers
 				"Toggle Right Difficulty",
+
 				// ports
 				"P1 Trigger",
 				"P2 Trigger"
@@ -116,59 +127,68 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			},
 			FloatRanges =
 			{
-				new[] {0.0f, 0.0f, 3.0f},
-				new[] {0.0f, 0.0f, 3.0f},
-				new[] {0.0f, 0.0f, 3.0f}
+				new[] { 0.0f, 0.0f, 3.0f },
+				new[] { 0.0f, 0.0f, 3.0f },
+				new[] { 0.0f, 0.0f, 3.0f }
 			}
 		};
-		public static ControllerDefinition BoosterGrip = new ControllerDefinition
+
+		private static readonly ControllerDefinition BoosterGrip = new ControllerDefinition
 		{
 			Name = "Atari 7800 Booster Grip Controller",
 			BoolButtons = 
 			{
 				// hard reset, not passed to EMU7800
 				"Power",
+
 				// on the console
 				"Reset",
 				"Select",
 				"BW", // should be "Color"??
 				"Toggle Left Difficulty", // better not put P# on these as they might not correspond to player numbers
 				"Toggle Right Difficulty",
+
 				// ports
 				// NB: as referenced by the emu, p1t2 = p1t2, p1t3 = p2t2, p2t2 = p3t2, p2t3 = p4t2
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Trigger", "P1 Trigger 2", "P1 Trigger 3",
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Trigger", "P2 Trigger 2", "P2 Trigger 3"
 			}
 		};
-		public static ControllerDefinition ProLineJoystick = new ControllerDefinition
+
+		private static readonly ControllerDefinition ProLineJoystick = new ControllerDefinition
 		{
 			Name = "Atari 7800 ProLine Joystick Controller",
 			BoolButtons =
 			{
 				// hard reset, not passed to EMU7800
 				"Power",
+
 				// on the console
 				"Reset",
 				"Select",
 				"Pause",
 				"Toggle Left Difficulty", // better not put P# on these as they might not correspond to player numbers
 				"Toggle Right Difficulty",
+
 				// ports
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Trigger", "P1 Trigger 2",
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Trigger", "P2 Trigger 2"
 			}
 		};
-		public static ControllerDefinition Lightgun = new ControllerDefinition
+
+		private static readonly ControllerDefinition Lightgun = new ControllerDefinition
 		{
 			Name = "Atari 7800 Light Gun Controller",
 			BoolButtons =
 			{
 				// hard reset, not passed to EMU7800
 				"Power",
+
 				// on the console
 				"Reset",
 				"Select",
 				"Pause",
+
 				// ports
 				"P1 Trigger",
 				"P2 Trigger"
@@ -181,29 +201,30 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			FloatRanges =
 			{
 				// how many scanlines are there again??
-				new[] {0.0f, 0.0f, 240.0f},
-				new[] {0.0f, 0.0f, 319.0f},
-				new[] {0.0f, 0.0f, 240.0f},
-				new[] {0.0f, 0.0f, 319.0f}
+				new[] { 0.0f, 0.0f, 240.0f },
+				new[] { 0.0f, 0.0f, 319.0f },
+				new[] { 0.0f, 0.0f, 240.0f },
+				new[] { 0.0f, 0.0f, 319.0f }
 			}
 		};
 
-		struct ControlAdapter
+		private struct ControlAdapter
 		{
-			public ControllerDefinition Type;
-			public Controller Left;
-			public Controller Right;
-			public Action<IController, InputState> Convert;
-			public ControlAdapter(ControllerDefinition Type, Controller Left, Controller Right, Action<IController, InputState> Convert)
+			public readonly ControllerDefinition Type;
+			public readonly Controller Left;
+			public readonly Controller Right;
+			public readonly Action<IController, InputState> Convert;
+
+			public ControlAdapter(ControllerDefinition type, Controller left, Controller right, Action<IController, InputState> convert)
 			{
-				this.Type = Type;
-				this.Left = Left;
-				this.Right = Right;
-				this.Convert = Convert;
+				Type = type;
+				Left = left;
+				Right = right;
+				Convert = convert;
 			}
 		}
 
-		static readonly ControlAdapter[] Adapters = new[]
+		private static readonly ControlAdapter[] Adapters =
 		{
 			new ControlAdapter(Joystick, Controller.Joystick, Controller.Joystick, ConvertJoystick),
 			new ControlAdapter(Paddles, Controller.Paddles, Controller.Paddles, ConvertPaddles),
@@ -214,37 +235,54 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			new ControlAdapter(Lightgun, Controller.Lightgun, Controller.Lightgun, ConvertLightgun),
 		};
 
-		static void ConvertConsoleButtons(IController c, InputState s)
+		private static void ConvertConsoleButtons(IController c, InputState s)
 		{
 			s.RaiseInput(0, MachineInput.Reset, c.IsPressed("Reset"));
 			s.RaiseInput(0, MachineInput.Select, c.IsPressed("Select"));
 			s.RaiseInput(0, MachineInput.Color, c.IsPressed("BW"));
-			if (c.IsPressed("Toggle Left Difficulty")) { s.RaiseInput(0, MachineInput.LeftDifficulty, c.IsPressed("Toggle Left Difficulty")); }
-			if (c.IsPressed("Toggle Right Difficulty")) { s.RaiseInput(0, MachineInput.RightDifficulty, c.IsPressed("Toggle Right Difficulty")); }
+			if (c.IsPressed("Toggle Left Difficulty"))
+			{
+				s.RaiseInput(0, MachineInput.LeftDifficulty, c.IsPressed("Toggle Left Difficulty"));
+			}
+
+			if (c.IsPressed("Toggle Right Difficulty"))
+			{
+				s.RaiseInput(0, MachineInput.RightDifficulty, c.IsPressed("Toggle Right Difficulty"));
+			}
 		}
-		static void ConvertConsoleButtons7800(IController c, InputState s)
+
+		private static void ConvertConsoleButtons7800(IController c, InputState s)
 		{
 			s.RaiseInput(0, MachineInput.Reset, c.IsPressed("Reset"));
 			s.RaiseInput(0, MachineInput.Select, c.IsPressed("Select"));
 			s.RaiseInput(0, MachineInput.Color, c.IsPressed("Pause"));
-			if (c.IsPressed("Toggle Left Difficulty")) { s.RaiseInput(0, MachineInput.LeftDifficulty, c.IsPressed("Toggle Left Difficulty")); }
-			if (c.IsPressed("Toggle Right Difficulty")) { s.RaiseInput(0, MachineInput.RightDifficulty, c.IsPressed("Toggle Right Difficulty")); }
+			if (c.IsPressed("Toggle Left Difficulty"))
+			{
+				s.RaiseInput(0, MachineInput.LeftDifficulty, c.IsPressed("Toggle Left Difficulty"));
+			}
+
+			if (c.IsPressed("Toggle Right Difficulty"))
+			{
+				s.RaiseInput(0, MachineInput.RightDifficulty, c.IsPressed("Toggle Right Difficulty"));
+			}
 		}
-		static void ConvertDirections(IController c, InputState s, int p)
+
+		private static void ConvertDirections(IController c, InputState s, int p)
 		{
-			string ps = string.Format("P{0} ", p + 1);
+			string ps = $"P{p + 1} ";
 			s.RaiseInput(p, MachineInput.Up, c.IsPressed(ps + "Up"));
 			s.RaiseInput(p, MachineInput.Down, c.IsPressed(ps + "Down"));
 			s.RaiseInput(p, MachineInput.Left, c.IsPressed(ps + "Left"));
 			s.RaiseInput(p, MachineInput.Right, c.IsPressed(ps + "Right"));
 		}
-		static void ConvertTrigger(IController c, InputState s, int p)
+
+		private static void ConvertTrigger(IController c, InputState s, int p)
 		{
-			string ps = string.Format("P{0} ", p + 1);
+			string ps = $"P{p + 1} ";
 			s.RaiseInput(p, MachineInput.Fire, c.IsPressed(ps + "Trigger"));
 		}
 
-		static void ConvertJoystick(IController c, InputState s)
+		private static void ConvertJoystick(IController c, InputState s)
 		{
 			s.ClearControllerInput();
 			ConvertConsoleButtons(c, s);
@@ -253,24 +291,26 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			ConvertTrigger(c, s, 0);
 			ConvertTrigger(c, s, 1);
 		}
-		static void ConvertPaddles(IController c, InputState s)
+
+		private static void ConvertPaddles(IController c, InputState s)
 		{
 			s.ClearControllerInput();
 			ConvertConsoleButtons(c, s);
 			for (int i = 0; i < 4; i++)
 			{
-				string ps = string.Format("P{0} ", i + 1);
+				string ps = $"P{i + 1} ";
 				ConvertTrigger(c, s, i);
 				s.RaisePaddleInput(i, 700000, (int)c.GetFloat(ps + "Trigger"));
 			}
 		}
-		static void ConvertKeypad(IController c, InputState s)
+
+		private static void ConvertKeypad(IController c, InputState s)
 		{
 			s.ClearControllerInput();
 			ConvertConsoleButtons(c, s);
 			for (int i = 0; i < 4; i++)
 			{
-				string ps = string.Format("P{0} ", i + 1);
+				string ps = $"P{i + 1} ";
 				s.RaiseInput(i, MachineInput.NumPad1, c.IsPressed(ps + "Keypad1"));
 				s.RaiseInput(i, MachineInput.NumPad2, c.IsPressed(ps + "Keypad2"));
 				s.RaiseInput(i, MachineInput.NumPad3, c.IsPressed(ps + "Keypad3"));
@@ -285,28 +325,32 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				s.RaiseInput(i, MachineInput.NumPadHash, c.IsPressed(ps + "KeypadP"));
 			}
 		}
-		static MachineInput[] drvlut = new[]
+
+		private static readonly MachineInput[] Drvlut =
 		{
 			MachineInput.Driving0,
 			MachineInput.Driving1,
 			MachineInput.Driving2,
 			MachineInput.Driving3
 		};
-		static void ConvertDriving(IController c, InputState s)
+
+		private static void ConvertDriving(IController c, InputState s)
 		{
 			s.ClearControllerInput();
 			ConvertConsoleButtons(c, s);
 			ConvertTrigger(c, s, 0);
 			ConvertTrigger(c, s, 1);
-			s.RaiseInput(0, drvlut[(int)c.GetFloat("P1 Driving")], true);
-			s.RaiseInput(1, drvlut[(int)c.GetFloat("P2 Driving")], true);
+			s.RaiseInput(0, Drvlut[(int)c.GetFloat("P1 Driving")], true);
+			s.RaiseInput(1, Drvlut[(int)c.GetFloat("P2 Driving")], true);
 		}
-		static void ConvertBoosterGrip(IController c, InputState s)
+
+		private static void ConvertBoosterGrip(IController c, InputState s)
 		{
 			s.ClearControllerInput();
 			ConvertConsoleButtons(c, s);
 			ConvertDirections(c, s, 0);
 			ConvertDirections(c, s, 1);
+
 			// weird mapping is intentional
 			s.RaiseInput(0, MachineInput.Fire, c.IsPressed("P1 Trigger"));
 			s.RaiseInput(0, MachineInput.Fire2, c.IsPressed("P1 Trigger 2"));
@@ -315,7 +359,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			s.RaiseInput(2, MachineInput.Fire2, c.IsPressed("P2 Trigger 2"));
 			s.RaiseInput(3, MachineInput.Fire2, c.IsPressed("P2 Trigger 3"));
 		}
-		static void ConvertProLineJoystick(IController c, InputState s)
+
+		private static void ConvertProLineJoystick(IController c, InputState s)
 		{
 			s.ClearControllerInput();
 			ConvertConsoleButtons7800(c, s);
@@ -326,7 +371,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			s.RaiseInput(1, MachineInput.Fire, c.IsPressed("P2 Trigger"));
 			s.RaiseInput(1, MachineInput.Fire2, c.IsPressed("P2 Trigger 2"));
 		}
-		static void ConvertLightgun(IController c, InputState s)
+
+		private static void ConvertLightgun(IController c, InputState s)
 		{
 			s.ClearControllerInput();
 			ConvertConsoleButtons7800(c, s);
@@ -354,7 +400,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 					return;
 				}
 			}
-			throw new Exception(string.Format("Couldn't connect Atari 7800 controls \"{0}\" and \"{1}\"", l.ToString(), r.ToString()));
+
+			throw new Exception($"Couldn't connect Atari 7800 controls \"{l}\" and \"{r}\"");
 		}
 	}
 }
