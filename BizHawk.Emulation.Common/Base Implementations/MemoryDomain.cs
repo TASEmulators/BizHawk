@@ -35,17 +35,6 @@ namespace BizHawk.Emulation.Common
 			return new MemoryDomainByteArray(name, endian, data, writable, wordSize);
 		}
 
-		/// <summary>
-		/// create a memorydomain that references an unmanaged memory block with 16 bit swaps
-		/// </summary>
-		/// <param name="data">must remain valid as long as the MemoryDomain exists!</param>
-		/// <param name="writable">if false, writes will be ignored</param>
-		[Obsolete]
-		public static unsafe MemoryDomain FromIntPtrSwap16(string name, long size, Endian endian, IntPtr data, bool writable = true)
-		{
-			return new MemoryDomainIntPtrSwap16(name, endian, data, size, writable);
-		}
-
 		public override string ToString()
 		{
 			return Name;

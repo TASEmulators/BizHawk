@@ -45,8 +45,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				{
 					// TODO: are the Z80 domains really Swap16 in the core?  Check this
 					//var byteSize = name.Contains("Z80") ? 1 : 2;
-					mm.Add(MemoryDomain.FromIntPtrSwap16(name, size,
-						MemoryDomain.Endian.Big, area, name != "MD CART" && name != "CD BOOT ROM"));
+					mm.Add(new MemoryDomainIntPtrSwap16(name, MemoryDomain.Endian.Big, area, size, name != "MD CART" && name != "CD BOOT ROM"));
 				}
 			}
 			var m68Bus = new MemoryDomainDelegate("M68K BUS", 0x1000000, MemoryDomain.Endian.Big,
