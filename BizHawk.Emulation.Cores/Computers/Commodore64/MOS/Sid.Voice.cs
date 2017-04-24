@@ -9,34 +9,34 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Sid
 	{
-	    private sealed class Voice
+		private sealed class Voice
 		{
-		    private int _accBits;
-		    private int _accNext;
-		    private int _accumulator;
-		    private bool _controlTestPrev;
-		    private int _controlWavePrev;
-		    private int _delay;
-		    private int _floatOutputTtl;
-		    private int _frequency;
-		    private bool _msbRising;
-		    private int _noise;
-		    private int _noNoise;
-		    private int _noNoiseOrNoise;
-		    private int _noPulse;
-		    private int _output;
-		    private int _pulse;
-		    private int _pulseWidth;
-		    private bool _ringMod;
-		    private int _ringMsbMask;
-		    private int _shiftRegister;
-		    private int _shiftRegisterReset;
-		    private bool _sync;
-		    private bool _test;
-		    [SaveState.DoNotSave] private int[] _wave;
-		    private int _waveform;
-		    private int _waveformIndex;
-            [SaveState.DoNotSave] private readonly int[][] _waveTable;
+			private int _accBits;
+			private int _accNext;
+			private int _accumulator;
+			private bool _controlTestPrev;
+			private int _controlWavePrev;
+			private int _delay;
+			private int _floatOutputTtl;
+			private int _frequency;
+			private bool _msbRising;
+			private int _noise;
+			private int _noNoise;
+			private int _noNoiseOrNoise;
+			private int _noPulse;
+			private int _output;
+			private int _pulse;
+			private int _pulseWidth;
+			private bool _ringMod;
+			private int _ringMsbMask;
+			private int _shiftRegister;
+			private int _shiftRegisterReset;
+			private bool _sync;
+			private bool _test;
+			[SaveState.DoNotSave] private int[] _wave;
+			private int _waveform;
+			private int _waveformIndex;
+			[SaveState.DoNotSave] private readonly int[][] _waveTable;
 
 			public Voice(int[][] newWaveTable)
 			{
@@ -304,8 +304,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			public void SyncState(Serializer ser)
 			{
 				SaveState.SyncObject(ser, this);
-                _wave = _waveTable[_waveform & 0x07];
-            }
+				_wave = _waveTable[_waveform & 0x07];
+			}
 		}
 
 	}

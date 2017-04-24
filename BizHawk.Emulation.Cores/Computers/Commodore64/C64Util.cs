@@ -21,11 +21,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public static string ToHex(int n, int charsmin)
 		{
-            var result = new StringBuilder(string.Empty);
+			var result = new StringBuilder(string.Empty);
 
-            while (n > 0 || charsmin > 0)
+			while (n > 0 || charsmin > 0)
 			{
-                result.Insert(0, "0123456789ABCDEF".Substring(n & 0xF, 1));
+				result.Insert(0, "0123456789ABCDEF".Substring(n & 0xF, 1));
 				n >>= 4;
 				if (charsmin > 0)
 					charsmin--;

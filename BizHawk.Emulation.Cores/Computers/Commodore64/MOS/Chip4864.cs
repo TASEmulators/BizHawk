@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 	public sealed class Chip4864
 	{
-	    private int[] _ram;
+		private int[] _ram;
 
 		public Chip4864()
 		{

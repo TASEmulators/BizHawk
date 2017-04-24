@@ -19,10 +19,10 @@
 			switch (addr)
 			{
 				case 0x1E:
-                    _spriteSpriteCollisionClearPending = true;
-                    return ReadRegister(addr);
-                case 0x1F:
-			        _spriteBackgroundCollisionClearPending = true;
+					_spriteSpriteCollisionClearPending = true;
+					return ReadRegister(addr);
+				case 0x1F:
+					_spriteBackgroundCollisionClearPending = true;
 					return ReadRegister(addr);
 				default:
 					return ReadRegister(addr);
@@ -53,20 +53,20 @@
 					return _sprites[addr >> 1].Y & 0xFF;
 				case 0x10:
 					return ((_sprite0.X >> 8) & 0x01) |
-					         ((_sprite1.X >> 7) & 0x02) |
-					         ((_sprite2.X >> 6) & 0x04) |
-					         ((_sprite3.X >> 5) & 0x08) |
-					         ((_sprite4.X >> 4) & 0x10) |
-					         ((_sprite5.X >> 3) & 0x20) |
-					         ((_sprite6.X >> 2) & 0x40) |
-					         ((_sprite7.X >> 1) & 0x80);
+							 ((_sprite1.X >> 7) & 0x02) |
+							 ((_sprite2.X >> 6) & 0x04) |
+							 ((_sprite3.X >> 5) & 0x08) |
+							 ((_sprite4.X >> 4) & 0x10) |
+							 ((_sprite5.X >> 3) & 0x20) |
+							 ((_sprite6.X >> 2) & 0x40) |
+							 ((_sprite7.X >> 1) & 0x80);
 				case 0x11:
 					return (_yScroll & 0x7) |
-					         (_rowSelect ? 0x08 : 0x00) |
-					         (_displayEnable ? 0x10 : 0x00) |
-					         (_bitmapMode ? 0x20 : 0x00) |
-					         (_extraColorMode ? 0x40 : 0x00) |
-					         ((_rasterLine & 0x100) >> 1);
+							 (_rowSelect ? 0x08 : 0x00) |
+							 (_displayEnable ? 0x10 : 0x00) |
+							 (_bitmapMode ? 0x20 : 0x00) |
+							 (_extraColorMode ? 0x40 : 0x00) |
+							 ((_rasterLine & 0x100) >> 1);
 				case 0x12:
 					return _rasterLine & 0xFF;
 				case 0x13:
@@ -75,99 +75,99 @@
 					return _lightPenY & 0xFF;
 				case 0x15:
 					return (_sprite0.Enable ? 0x01 : 0x00) |
-					         (_sprite1.Enable ? 0x02 : 0x00) |
-					         (_sprite2.Enable ? 0x04 : 0x00) |
-					         (_sprite3.Enable ? 0x08 : 0x00) |
-					         (_sprite4.Enable ? 0x10 : 0x00) |
-					         (_sprite5.Enable ? 0x20 : 0x00) |
-					         (_sprite6.Enable ? 0x40 : 0x00) |
-					         (_sprite7.Enable ? 0x80 : 0x00);
+							 (_sprite1.Enable ? 0x02 : 0x00) |
+							 (_sprite2.Enable ? 0x04 : 0x00) |
+							 (_sprite3.Enable ? 0x08 : 0x00) |
+							 (_sprite4.Enable ? 0x10 : 0x00) |
+							 (_sprite5.Enable ? 0x20 : 0x00) |
+							 (_sprite6.Enable ? 0x40 : 0x00) |
+							 (_sprite7.Enable ? 0x80 : 0x00);
 				case 0x16:
 					return 0xC0 | (_xScroll & 0x7) |
-					          (_columnSelect ? 0x08 : 0x00) |
-					          (_multicolorMode ? 0x10 : 0x00);
+							  (_columnSelect ? 0x08 : 0x00) |
+							  (_multicolorMode ? 0x10 : 0x00);
 				case 0x17:
 					return (_sprite0.YExpand ? 0x01 : 0x00) |
-					         (_sprite1.YExpand ? 0x02 : 0x00) |
-					         (_sprite2.YExpand ? 0x04 : 0x00) |
-					         (_sprite3.YExpand ? 0x08 : 0x00) |
-					         (_sprite4.YExpand ? 0x10 : 0x00) |
-					         (_sprite5.YExpand ? 0x20 : 0x00) |
-					         (_sprite6.YExpand ? 0x40 : 0x00) |
-					         (_sprite7.YExpand ? 0x80 : 0x00);
+							 (_sprite1.YExpand ? 0x02 : 0x00) |
+							 (_sprite2.YExpand ? 0x04 : 0x00) |
+							 (_sprite3.YExpand ? 0x08 : 0x00) |
+							 (_sprite4.YExpand ? 0x10 : 0x00) |
+							 (_sprite5.YExpand ? 0x20 : 0x00) |
+							 (_sprite6.YExpand ? 0x40 : 0x00) |
+							 (_sprite7.YExpand ? 0x80 : 0x00);
 				case 0x18:
 					return 0x01 | ((_pointerVm & 0x3C00) >> 6) |
-					          ((_pointerCb & 0x7) << 1);
+							  ((_pointerCb & 0x7) << 1);
 				case 0x19:
 					return 0x70 | (_intRaster ? 0x01 : 0x00) |
-					          (_intSpriteDataCollision ? 0x02 : 0x00) |
-					          (_intSpriteCollision ? 0x04 : 0x00) |
-					          (_intLightPen ? 0x08 : 0x00) |
-					          (_pinIrq ? 0x00 : 0x80);
+							  (_intSpriteDataCollision ? 0x02 : 0x00) |
+							  (_intSpriteCollision ? 0x04 : 0x00) |
+							  (_intLightPen ? 0x08 : 0x00) |
+							  (_pinIrq ? 0x00 : 0x80);
 				case 0x1A:
 					return 0xF0 | (_enableIntRaster ? 0x01 : 0x00) |
-					          (_enableIntSpriteDataCollision ? 0x02 : 0x00) |
-					          (_enableIntSpriteCollision ? 0x04 : 0x00) |
-					          (_enableIntLightPen ? 0x08 : 0x00);
+							  (_enableIntSpriteDataCollision ? 0x02 : 0x00) |
+							  (_enableIntSpriteCollision ? 0x04 : 0x00) |
+							  (_enableIntLightPen ? 0x08 : 0x00);
 				case 0x1B:
 					return (_sprite0.Priority ? 0x01 : 0x00) |
-					         (_sprite1.Priority ? 0x02 : 0x00) |
-					         (_sprite2.Priority ? 0x04 : 0x00) |
-					         (_sprite3.Priority ? 0x08 : 0x00) |
-					         (_sprite4.Priority ? 0x10 : 0x00) |
-					         (_sprite5.Priority ? 0x20 : 0x00) |
-					         (_sprite6.Priority ? 0x40 : 0x00) |
-					         (_sprite7.Priority ? 0x80 : 0x00);
+							 (_sprite1.Priority ? 0x02 : 0x00) |
+							 (_sprite2.Priority ? 0x04 : 0x00) |
+							 (_sprite3.Priority ? 0x08 : 0x00) |
+							 (_sprite4.Priority ? 0x10 : 0x00) |
+							 (_sprite5.Priority ? 0x20 : 0x00) |
+							 (_sprite6.Priority ? 0x40 : 0x00) |
+							 (_sprite7.Priority ? 0x80 : 0x00);
 				case 0x1C:
 					return (_sprite0.Multicolor ? 0x01 : 0x00) |
-					         (_sprite1.Multicolor ? 0x02 : 0x00) |
-					         (_sprite2.Multicolor ? 0x04 : 0x00) |
-					         (_sprite3.Multicolor ? 0x08 : 0x00) |
-					         (_sprite4.Multicolor ? 0x10 : 0x00) |
-					         (_sprite5.Multicolor ? 0x20 : 0x00) |
-					         (_sprite6.Multicolor ? 0x40 : 0x00) |
-					         (_sprite7.Multicolor ? 0x80 : 0x00);
+							 (_sprite1.Multicolor ? 0x02 : 0x00) |
+							 (_sprite2.Multicolor ? 0x04 : 0x00) |
+							 (_sprite3.Multicolor ? 0x08 : 0x00) |
+							 (_sprite4.Multicolor ? 0x10 : 0x00) |
+							 (_sprite5.Multicolor ? 0x20 : 0x00) |
+							 (_sprite6.Multicolor ? 0x40 : 0x00) |
+							 (_sprite7.Multicolor ? 0x80 : 0x00);
 				case 0x1D:
 					return (_sprite0.XExpand ? 0x01 : 0x00) |
-					         (_sprite1.XExpand ? 0x02 : 0x00) |
-					         (_sprite2.XExpand ? 0x04 : 0x00) |
-					         (_sprite3.XExpand ? 0x08 : 0x00) |
-					         (_sprite4.XExpand ? 0x10 : 0x00) |
-					         (_sprite5.XExpand ? 0x20 : 0x00) |
-					         (_sprite6.XExpand ? 0x40 : 0x00) |
-					         (_sprite7.XExpand ? 0x80 : 0x00);
+							 (_sprite1.XExpand ? 0x02 : 0x00) |
+							 (_sprite2.XExpand ? 0x04 : 0x00) |
+							 (_sprite3.XExpand ? 0x08 : 0x00) |
+							 (_sprite4.XExpand ? 0x10 : 0x00) |
+							 (_sprite5.XExpand ? 0x20 : 0x00) |
+							 (_sprite6.XExpand ? 0x40 : 0x00) |
+							 (_sprite7.XExpand ? 0x80 : 0x00);
 				case 0x1E:
 					return (_sprite0.CollideSprite ? 0x01 : 0x00) |
-					         (_sprite1.CollideSprite ? 0x02 : 0x00) |
-					         (_sprite2.CollideSprite ? 0x04 : 0x00) |
-					         (_sprite3.CollideSprite ? 0x08 : 0x00) |
-					         (_sprite4.CollideSprite ? 0x10 : 0x00) |
-					         (_sprite5.CollideSprite ? 0x20 : 0x00) |
-					         (_sprite6.CollideSprite ? 0x40 : 0x00) |
-					         (_sprite7.CollideSprite ? 0x80 : 0x00);
+							 (_sprite1.CollideSprite ? 0x02 : 0x00) |
+							 (_sprite2.CollideSprite ? 0x04 : 0x00) |
+							 (_sprite3.CollideSprite ? 0x08 : 0x00) |
+							 (_sprite4.CollideSprite ? 0x10 : 0x00) |
+							 (_sprite5.CollideSprite ? 0x20 : 0x00) |
+							 (_sprite6.CollideSprite ? 0x40 : 0x00) |
+							 (_sprite7.CollideSprite ? 0x80 : 0x00);
 				case 0x1F:
 					return (_sprite0.CollideData ? 0x01 : 0x00) |
-					         (_sprite1.CollideData ? 0x02 : 0x00) |
-					         (_sprite2.CollideData ? 0x04 : 0x00) |
-					         (_sprite3.CollideData ? 0x08 : 0x00) |
-					         (_sprite4.CollideData ? 0x10 : 0x00) |
-					         (_sprite5.CollideData ? 0x20 : 0x00) |
-					         (_sprite6.CollideData ? 0x40 : 0x00) |
-					         (_sprite7.CollideData ? 0x80 : 0x00);
+							 (_sprite1.CollideData ? 0x02 : 0x00) |
+							 (_sprite2.CollideData ? 0x04 : 0x00) |
+							 (_sprite3.CollideData ? 0x08 : 0x00) |
+							 (_sprite4.CollideData ? 0x10 : 0x00) |
+							 (_sprite5.CollideData ? 0x20 : 0x00) |
+							 (_sprite6.CollideData ? 0x40 : 0x00) |
+							 (_sprite7.CollideData ? 0x80 : 0x00);
 				case 0x20:
 					return 0xF0 | _borderColor & 0x0F;
 				case 0x21:
-                    return 0xF0 | _backgroundColor0 & 0x0F;
+					return 0xF0 | _backgroundColor0 & 0x0F;
 				case 0x22:
-                    return 0xF0 | _backgroundColor1 & 0x0F;
+					return 0xF0 | _backgroundColor1 & 0x0F;
 				case 0x23:
-                    return 0xF0 | _backgroundColor2 & 0x0F;
+					return 0xF0 | _backgroundColor2 & 0x0F;
 				case 0x24:
-                    return 0xF0 | _backgroundColor3 & 0x0F;
+					return 0xF0 | _backgroundColor3 & 0x0F;
 				case 0x25:
-                    return 0xF0 | _spriteMulticolor0 & 0x0F;
+					return 0xF0 | _spriteMulticolor0 & 0x0F;
 				case 0x26:
-                    return 0xF0 | _spriteMulticolor1 & 0x0F;
+					return 0xF0 | _spriteMulticolor1 & 0x0F;
 				case 0x27:
 				case 0x28:
 				case 0x29:
@@ -177,8 +177,8 @@
 				case 0x2D:
 				case 0x2E:
 					return 0xF0 | _sprites[addr - 0x27].Color & 0xF;
-                default:
-			        return 0xFF;
+				default:
+					return 0xFF;
 			}
 		}
 
@@ -187,21 +187,21 @@
 			addr &= 0x3F;
 			switch (addr)
 			{
-                case 0x17:
-                    // vic-ii addendum rule 7
-			        foreach (var spr in _sprites)
-			        {
-			            if ((val & 1) == 0 && !spr.YCrunch)
-			            {
-			                if (_parseIsSprCrunch)
-			                {
-			                    spr.Mc = (0x2a & spr.Mcbase & spr.Mc) | (0x15 & (spr.Mcbase | spr.Mc));
-			                }
-			                spr.YCrunch = true;
-			            }
-			        }
-                    WriteRegister(addr, val);
-                    break;
+				case 0x17:
+					// vic-ii addendum rule 7
+					foreach (var spr in _sprites)
+					{
+						if ((val & 1) == 0 && !spr.YCrunch)
+						{
+							if (_parseIsSprCrunch)
+							{
+								spr.Mc = (0x2a & spr.Mcbase & spr.Mc) | (0x15 & (spr.Mcbase | spr.Mc));
+							}
+							spr.YCrunch = true;
+						}
+					}
+					WriteRegister(addr, val);
+					break;
 				case 0x19:
 					// interrupts are cleared by writing a 1
 					if ((val & 0x01) != 0)
