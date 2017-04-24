@@ -291,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private void WriteMem(ushort addr, byte value, bool poke)
 		{
 			// Mimicking the 6532 logic for accesing port A, for testing
-			var isPortA = false;
+			////var isPortA = false; // adelikat: Commented out this variable to remove a warning.  Should this be deleted or is this supposed to be actually used?
 
 			if ((addr & 0x0200) == 0) // If the RS bit is not set, this is a ram write
 			{
@@ -314,7 +314,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						if (addr != 640 && addr >= 0x280) // register addresses are only above 0x280
 						{
 							// Write Output reg A
-							isPortA = true;
+							////isPortA = true;
 						}
 					}
 				}
