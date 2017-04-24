@@ -10,37 +10,37 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		"Virtu",
 		"fool",
 		isPorted: true,
-		isReleased: true
-		)]
+		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IRegionable))]
 	public partial class AppleII : IEmulator, ISoundProvider, IVideoProvider, IStatable, IDriveLight
 	{
+		static AppleII()
+		{
+			AppleIIController = new ControllerDefinition { Name = "Apple IIe Keyboard" };
+			AppleIIController.BoolButtons.AddRange(RealButtons);
+			AppleIIController.BoolButtons.AddRange(ExtraButtons);
+		}
+
 		public AppleII(CoreComm comm, IEnumerable<GameInfo> gameInfoSet, IEnumerable<byte[]> romSet, Settings settings)
 			: this(comm, gameInfoSet.First(), romSet.First(), settings)
 		{
-			GameInfoSet = gameInfoSet.ToList();
-			RomSet = romSet.ToList();
+			_romSet = romSet.ToList();
 		}
 
 		[CoreConstructor("AppleII")]
 		public AppleII(CoreComm comm, GameInfo game, byte[] rom, Settings settings)
 		{
-			GameInfoSet = new List<GameInfo>();
-
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 			CoreComm = comm;
 
-			Tracer = new TraceBuffer
+			_tracer = new TraceBuffer
 			{
 				Header = "6502: PC, opcode, register (A, X, Y, P, SP, Cy), flags (NVTBDIZC)"
 			};
 
-			MemoryCallbacks = new MemoryCallbackSystem();
-			InputCallbacks = new InputCallbackSystem();
-
 			_disk1 = rom;
-			RomSet.Add(rom);
+			_romSet.Add(rom);
 
 			_appleIIRom = comm.CoreFileProvider.GetFirmware(
 				SystemId, "AppleIIe", true, "The Apple IIe BIOS firmware is required");
@@ -55,22 +55,27 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			// for junk.dsk the .dsk is important because it determines the format from that
 			InitDisk();
 
-			ser.Register<ITraceable>(Tracer);
+			ser.Register<ITraceable>(_tracer);
 
-			setCallbacks();
+			SetCallbacks();
 
 			InitSaveStates();
 			SetupMemoryDomains();
 			PutSettings(settings ?? new Settings());
 		}
 
-		private List<GameInfo> GameInfoSet { get; set; }
-		private readonly List<byte[]> RomSet = new List<byte[]>();
+		private static readonly ControllerDefinition AppleIIController;
+
+		private readonly List<byte[]> _romSet = new List<byte[]>();
+		private readonly ITraceable _tracer;
+
+		private Machine _machine;
+		private byte[] _disk1;
+		private readonly byte[] _appleIIRom;
+		private readonly byte[] _diskIIRom;
 
 		public int CurrentDisk { get; private set; }
-		public int DiskCount => RomSet.Count;
-
-		private ITraceable Tracer { get; }
+		public int DiskCount => _romSet.Count;
 
 		public void SetDisk(int discNum)
 		{
@@ -81,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		private void IncrementDisk()
 		{
 			CurrentDisk++;
-			if (CurrentDisk >= RomSet.Count)
+			if (CurrentDisk >= _romSet.Count)
 			{
 				CurrentDisk = 0;
 			}
@@ -94,28 +99,20 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			CurrentDisk--;
 			if (CurrentDisk < 0)
 			{
-				CurrentDisk = RomSet.Count - 1;
+				CurrentDisk = _romSet.Count - 1;
 			}
 
 			InitDisk();
 		}
 
-
 		private void InitDisk()
 		{
-			_disk1 = RomSet[CurrentDisk];
+			_disk1 = _romSet[CurrentDisk];
 
 			// make a writeable memory stream cloned from the rom.
 			// for junk.dsk the .dsk is important because it determines the format from that
 			_machine.BootDiskII.Drives[0].InsertDisk("junk.dsk", (byte[])_disk1.Clone(), false);
 		}
-
-		private Machine _machine;
-		private byte[] _disk1;
-		private readonly byte[] _appleIIRom;
-		private readonly byte[] _diskIIRom;
-
-		private static readonly ControllerDefinition AppleIIController;
 
 		private static readonly List<string> RealButtons = new List<string>(Keyboard.GetKeyNames()
 			.Where(k => k != "White Apple") // Hack because these buttons aren't wired up yet
@@ -128,22 +125,15 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			"Next Disk",
 		};
 
-		static AppleII()
-		{
-			AppleIIController = new ControllerDefinition { Name = "Apple IIe Keyboard" };
-			AppleIIController.BoolButtons.AddRange(RealButtons);
-			AppleIIController.BoolButtons.AddRange(ExtraButtons);
-		}
+		public bool DriveLightEnabled => true;
+		public bool DriveLightOn => _machine.DriveLight;
 
-		public bool DriveLightEnabled { get { return true; } }
-		public bool DriveLightOn { get { return _machine.DriveLight; } }
-
-		private bool _nextPressed = false;
-		private bool _prevPressed = false;
+		private bool _nextPressed;
+		private bool _prevPressed;
 
 		private void TracerWrapper(string[] content)
 		{
-			Tracer.Put(new TraceInfo
+			_tracer.Put(new TraceInfo
 			{
 				Disassembly = content[0],
 				RegisterInfo = content[1]
@@ -152,9 +142,9 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void FrameAdv(bool render, bool rendersound)
 		{
-			if (Tracer.Enabled)
+			if (_tracer.Enabled)
 			{
-				_machine.Cpu.TraceCallback = (s) => TracerWrapper(s);
+				_machine.Cpu.TraceCallback = TracerWrapper;
 			}
 			else
 			{
@@ -191,13 +181,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			Frame++;
 		}
 
-		private void setCallbacks()
+		private void SetCallbacks()
 		{
 			_machine.Memory.ReadCallback = MemoryCallbacks.CallReads;
 			_machine.Memory.WriteCallback = MemoryCallbacks.CallWrites;
 			_machine.Memory.ExecuteCallback = MemoryCallbacks.CallExecutes;
 			_machine.Memory.InputCallback = InputCallbacks.Call;
 		}
-
 	}
 }

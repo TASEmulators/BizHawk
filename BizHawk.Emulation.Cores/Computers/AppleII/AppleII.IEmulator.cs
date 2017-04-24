@@ -4,33 +4,24 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
 	public partial class AppleII : IEmulator
 	{
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition
-		{
-			get { return AppleIIController; }
-		}
+		public ControllerDefinition ControllerDefinition => AppleIIController;
 
 		public IController Controller { get; set; }
 
-		public int Frame { get; set; }
+		public int Frame { get; private set; }
 
-		public string SystemId
-		{
-			get { return "AppleII"; }
-		}
+		public string SystemId => "AppleII";
 
-		public bool DeterministicEmulation
-		{
-			get { return true; }
-		}
+		public bool DeterministicEmulation => true;
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			FrameAdv(render, rendersound);
 		}
 
-		public string BoardName { get { return null; } }
+		public string BoardName => null;
 
 		public void ResetCounters()
 		{
@@ -39,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			IsLagFrame = false;
 		}
 
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 
 		public void Dispose()
 		{
