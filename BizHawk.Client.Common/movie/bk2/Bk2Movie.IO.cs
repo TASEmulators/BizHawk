@@ -70,51 +70,43 @@ namespace BizHawk.Client.Common
 					}
 				});
 
-				if (bl.HasLump(BinaryStateLump.Comments))
+				bl.GetLump(BinaryStateLump.Comments, false, delegate(TextReader tr)
 				{
-					bl.GetLump(BinaryStateLump.Comments, true, delegate(TextReader tr)
+					string line;
+					while ((line = tr.ReadLine()) != null)
 					{
-						string line;
-						while ((line = tr.ReadLine()) != null)
+						if (!string.IsNullOrWhiteSpace(line))
 						{
-							if (!string.IsNullOrWhiteSpace(line))
-							{
-								Comments.Add(line);
-							}
+							Comments.Add(line);
 						}
-					});
-				}
+					}
+				});
 
-				if (bl.HasLump(BinaryStateLump.Subtitles))
+				bl.GetLump(BinaryStateLump.Subtitles, false, delegate(TextReader tr)
 				{
-					bl.GetLump(BinaryStateLump.Subtitles, true, delegate(TextReader tr)
+					string line;
+					while ((line = tr.ReadLine()) != null)
 					{
-						string line;
-						while ((line = tr.ReadLine()) != null)
+						if (!string.IsNullOrWhiteSpace(line))
 						{
-							if (!string.IsNullOrWhiteSpace(line))
-							{
-								Subtitles.AddFromString(line);
-							}
+							Subtitles.AddFromString(line);
 						}
-						Subtitles.Sort();
-					});
-				}
+					}
 
-				if (bl.HasLump(BinaryStateLump.SyncSettings))
+					Subtitles.Sort();
+				});
+
+				bl.GetLump(BinaryStateLump.SyncSettings, false, delegate(TextReader tr)
 				{
-					bl.GetLump(BinaryStateLump.SyncSettings, true, delegate(TextReader tr)
+					string line;
+					while ((line = tr.ReadLine()) != null)
 					{
-						string line;
-						while ((line = tr.ReadLine()) != null)
+						if (!string.IsNullOrWhiteSpace(line))
 						{
-							if (!string.IsNullOrWhiteSpace(line))
-							{
-								_syncSettingsJson = line;
-							}
+							_syncSettingsJson = line;
 						}
-					});
-				}
+					}
+				});
 
 				bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
 				{

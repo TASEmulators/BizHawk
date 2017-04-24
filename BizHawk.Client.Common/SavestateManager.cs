@@ -173,30 +173,29 @@ namespace BizHawk.Client.Common
 
 					bl.GetLump(BinaryStateLump.Framebuffer, false, PopulateFramebuffer);
 
-					if (bl.HasLump(BinaryStateLump.UserData))
+					string userData = string.Empty;
+					bl.GetLump(BinaryStateLump.UserData, false, delegate(TextReader tr)
 					{
-						string userData = string.Empty;
-						bl.GetLump(BinaryStateLump.UserData, false, delegate(TextReader tr)
+						string line;
+						while ((line = tr.ReadLine()) != null)
 						{
-							string line;
-							while ((line = tr.ReadLine()) != null)
+							if (!string.IsNullOrWhiteSpace(line))
 							{
-								if (!string.IsNullOrWhiteSpace(line))
-								{
-									userData = line;
-								}
+								userData = line;
 							}
-						});
+						}
+					});
 
+					if (!string.IsNullOrWhiteSpace(userData))
+					{
 						Global.UserBag = (Dictionary<string, object>)ConfigService.LoadWithType(userData);
 					}
 
-					if (bl.HasLump(BinaryStateLump.LagLog)
-						&& Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
+					if (Global.MovieSession.Movie.IsActive && Global.MovieSession.Movie is TasMovie)
 					{
 						bl.GetLump(BinaryStateLump.LagLog, false, delegate(BinaryReader br, long length)
 						{
-							(Global.MovieSession.Movie as TasMovie).TasLagLog.Load(br);
+							((TasMovie)Global.MovieSession.Movie).TasLagLog.Load(br);
 						});
 					}
 				}
