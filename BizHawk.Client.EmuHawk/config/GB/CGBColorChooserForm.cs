@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 		CGBColorChooserForm()
 		{
 			InitializeComponent();
-			bmpView1.ChangeBitmapSize(bmpView1.Size);
+			bmpView1.ChangeBitmapSize(new Size(256, 128));
 		}
 
 		void LoadType(Gameboy.GambatteSettings s)
