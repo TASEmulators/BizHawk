@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			if (ser.IsReader)
 			{
 				theMachine = MachineBase.Deserialize(new BinaryReader(new MemoryStream(core, false)));
-				avProvider.ConnectToMachine(theMachine, GameInfo);
+				_avProvider.ConnectToMachine(theMachine, GameInfo);
 			}
 		}
 	}

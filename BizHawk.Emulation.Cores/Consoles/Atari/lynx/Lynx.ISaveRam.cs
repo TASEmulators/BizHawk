@@ -12,7 +12,10 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			int size;
 			IntPtr data;
 			if (!LibLynx.GetSaveRamPtr(Core, out size, out data))
+			{
 				return null;
+			}
+
 			byte[] ret = new byte[size];
 			Marshal.Copy(data, ret, 0, size);
 			return ret;
@@ -23,9 +26,15 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			int size;
 			IntPtr data;
 			if (!LibLynx.GetSaveRamPtr(Core, out size, out data))
+			{
 				throw new InvalidOperationException();
+			}
+
 			if (size != srcdata.Length)
+			{
 				throw new ArgumentOutOfRangeException();
+			}
+
 			Marshal.Copy(srcdata, 0, data, size);
 		}
 

@@ -45,8 +45,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, string GameDBfn)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(avProvider);
-			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(avProvider);
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(_avProvider);
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_avProvider);
 
 			CoreComm = comm;
 			byte[] highscoreBIOS = comm.CoreFileProvider.GetFirmware("A78", "Bios_HSC", false, "Some functions may not work without the high score BIOS.");
@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			}
 
 			ControlAdapter.Convert(Controller, theMachine.InputState);
-			theMachine.ComputeNextFrame(avProvider.framebuffer);
+			theMachine.ComputeNextFrame(_avProvider.Framebuffer);
 
 			_islag = theMachine.InputState.Lagged;
 
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				_lagcount++;
 			}
 
-			avProvider.FillFrameBuffer();
+			_avProvider.FillFrameBuffer();
 		}
 
 		public CoreComm CoreComm { get; }
@@ -134,10 +134,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 		public void Dispose()
 		{
-			if (avProvider != null)
+			if (_avProvider != null)
 			{
-				avProvider.Dispose();
-				avProvider = null;
+				_avProvider.Dispose();
+				_avProvider = null;
 			}
 		}
 
@@ -148,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			_islag = false;
 		}
 
-		public Atari7800Control ControlAdapter;
+		public Atari7800Control ControlAdapter { get; private set; }
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 		public IController Controller { get; set; }
@@ -177,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			}
 		}
 
-		private bool _pal;
+		private readonly bool _pal;
 		public DisplayType Region => _pal ? DisplayType.PAL : DisplayType.NTSC;
 
 		private void HardReset()
@@ -207,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			ControlAdapter = new Atari7800Control(theMachine);
 			ControllerDefinition = ControlAdapter.ControlType;
 
-			avProvider.ConnectToMachine(theMachine, GameInfo);
+			_avProvider.ConnectToMachine(theMachine, GameInfo);
 
 			// to sync exactly with audio as this emulator creates and times it, the frame rate should be exactly 60:1 or 50:1
 			CoreComm.VsyncNum = theMachine.FrameHZ;
@@ -218,16 +218,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 		#region audio\video
 
-		private MyAVProvider avProvider = new MyAVProvider();
+		private MyAVProvider _avProvider = new MyAVProvider();
 
 		private class MyAVProvider : IVideoProvider, ISoundProvider, IDisposable
 		{
-			public FrameBuffer framebuffer { get; private set; }
+			public FrameBuffer Framebuffer { get; private set; }
 			public void ConnectToMachine(MachineBase m, EMU7800.Win.GameProgram g)
 			{
-				framebuffer = m.CreateFrameBuffer();
-				BufferWidth = framebuffer.VisiblePitch;
-				BufferHeight = framebuffer.Scanlines;
+				Framebuffer = m.CreateFrameBuffer();
+				BufferWidth = Framebuffer.VisiblePitch;
+				BufferHeight = Framebuffer.Scanlines;
 				vidbuffer = new int[BufferWidth * BufferHeight];
 
 				uint newsamplerate = (uint)m.SoundSampleFrequency;
@@ -261,7 +261,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			{
 				unsafe
 				{
-					fixed (byte* src_ = framebuffer.VideoBuffer)
+					fixed (byte* src_ = Framebuffer.VideoBuffer)
 					fixed (int* dst_ = vidbuffer)
 					fixed (int* pal = palette)
 					{
@@ -292,10 +292,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 			public void GetSamplesSync(out short[] samples, out int nsamp)
 			{
-				int nsampin = framebuffer.SoundBufferByteLength;
+				int nsampin = Framebuffer.SoundBufferByteLength;
 				unsafe
 				{
-					fixed (byte* src = framebuffer.SoundBuffer)
+					fixed (byte* src = Framebuffer.SoundBuffer)
 					{
 						for (int i = 0; i < nsampin; i++)
 						{
