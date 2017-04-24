@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Globalization;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -10,36 +9,35 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	public sealed class TMS9918A : IVideoProvider
 	{
 		public byte[] VRAM = new byte[0x4000];
-		byte[] Registers = new byte[8];
-		byte StatusByte;
+		private byte[] Registers = new byte[8];
+		private byte StatusByte;
 
-		bool VdpWaitingForLatchByte = true;
-		byte VdpLatch;
-		ushort VdpAddress;
-		byte VdpBuffer;
-		int TmsMode;
+		private bool VdpWaitingForLatchByte = true;
+		private byte VdpLatch;
+		private ushort VdpAddress;
+		private byte VdpBuffer;
+		private int TmsMode;
 
-		bool Mode1Bit { get { return (Registers[1] & 16) > 0; } }
-		bool Mode2Bit { get { return (Registers[0] & 2) > 0; } }
-		bool Mode3Bit { get { return (Registers[1] & 8) > 0; } }
+		private bool Mode1Bit => (Registers[1] & 16) > 0;
+		private bool Mode2Bit => (Registers[0] & 2) > 0;
+		private bool Mode3Bit => (Registers[1] & 8) > 0;
+		private bool EnableDoubledSprites => (Registers[1] & 1) > 0;
+		private bool EnableLargeSprites => (Registers[1] & 2) > 0;
+		private bool EnableInterrupts => (Registers[1] & 32) > 0;
+		private bool DisplayOn => (Registers[1] & 64) > 0;
+		private bool Mode16k => (Registers[1] & 128) > 0;
 
-		bool EnableDoubledSprites { get { return (Registers[1] & 1) > 0; } }
-		bool EnableLargeSprites { get { return (Registers[1] & 2) > 0; } }
-		bool EnableInterrupts { get { return (Registers[1] & 32) > 0; } }
-		bool DisplayOn { get { return (Registers[1] & 64) > 0; } }
-		bool Mode16k { get { return (Registers[1] & 128) > 0; } }
-
-		bool InterruptPending
+		private bool InterruptPending
 		{
 			get { return (StatusByte & 0x80) != 0; }
 			set { StatusByte = (byte)((StatusByte & ~0x02) | (value ? 0x80 : 0x00)); }
 		}
 
-		int ColorTableBase;
-		int PatternGeneratorBase;
-		int SpritePatternGeneratorBase;
-		int TmsPatternNameTableBase;
-		int TmsSpriteAttributeBase;
+		private int ColorTableBase;
+		private int PatternGeneratorBase;
+		private int SpritePatternGeneratorBase;
+		private int TmsPatternNameTableBase;
+		private int TmsSpriteAttributeBase;
 
 		public void ExecuteFrame(bool Int_pending)
 		{
@@ -58,7 +56,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 				Cpu.ExecuteCycles(228);
 
-				
 				Cpu.Interrupt = false;
 				if (Int_pending && scanLine==50)
 				{
@@ -68,7 +65,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 						Int_pending = false;
 					} 
 				}
-
 			}
 		}
 
@@ -165,7 +161,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			return value;
 		}
 
-		void CheckVideoMode()
+		private void CheckVideoMode()
 		{
 			if (Mode1Bit) TmsMode = 1;
 			else if (Mode2Bit) TmsMode = 2;
@@ -176,7 +172,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				throw new Exception("TMS video mode 1! please tell vecna which game uses this!");
 		}
 
-		void RenderScanline(int scanLine)
+		private void RenderScanline(int scanLine)
 		{
 			if (scanLine >= 192)
 				return;
@@ -199,7 +195,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			// This may seem silly but if I ever implement mode 1, sprites are not rendered in that.
 		}
 
-		void RenderBackgroundM0(int scanLine)
+		private void RenderBackgroundM0(int scanLine)
 		{
 			if (DisplayOn == false)
 			{
@@ -271,7 +267,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		void RenderBackgroundM3(int scanLine)
+		private void RenderBackgroundM3(int scanLine)
 		{
 			if (DisplayOn == false)
 			{
@@ -306,18 +302,22 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		byte[] ScanlinePriorityBuffer = new byte[256];
-		byte[] SpriteCollisionBuffer = new byte[256];
+		private readonly byte[] ScanlinePriorityBuffer = new byte[256];
+		private readonly byte[] SpriteCollisionBuffer = new byte[256];
 
-		void RenderTmsSprites(int scanLine)
+		private void RenderTmsSprites(int scanLine)
 		{
 			if (EnableDoubledSprites == false)
+			{
 				RenderTmsSpritesStandard(scanLine);
+			}
 			else
+			{
 				RenderTmsSpritesDouble(scanLine);
+			}
 		}
 
-		void RenderTmsSpritesStandard(int scanLine)
+		private void RenderTmsSpritesStandard(int scanLine)
 		{
 			if (DisplayOn == false) return;
 
@@ -384,7 +384,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		void RenderTmsSpritesDouble(int scanLine)
+		private void RenderTmsSpritesDouble(int scanLine)
 		{
 			if (DisplayOn == false) return;
 
@@ -449,23 +449,23 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		Z80A Cpu;
+		private readonly Z80A Cpu;
 
 		public TMS9918A(Z80A cpu)
 		{
-			this.Cpu = cpu;
+			Cpu = cpu;
 		}
 
-		public int[] FrameBuffer = new int[256 * 192];
+		public readonly int[] FrameBuffer = new int[256 * 192];
 		public int[] GetVideoBuffer() { return FrameBuffer; }
 
-		public int VirtualWidth { get { return 293; } }
-		public int VirtualHeight { get { return 192; } }
-		public int BufferWidth { get { return 256; } }
-		public int BufferHeight { get { return 192; } }
-		public int BackgroundColor { get { return 0; } }
+		public int VirtualWidth => 293;
+		public int VirtualHeight => 192;
+		public int BufferWidth => 256;
+		public int BufferHeight => 192;
+		public int BackgroundColor => 0;
 
-		int[] PaletteTMS9918 = new int[] 
+		private readonly int[] PaletteTMS9918 =
 		{
 			unchecked((int)0xFF000000),
 			unchecked((int)0xFF000000),
@@ -498,8 +498,12 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.EndSection();
 
 			if (ser.IsReader)
+			{
 				for (int i = 0; i < Registers.Length; i++)
+				{
 					WriteRegister(i, Registers[i]);
+				}
+			}
 		}
 	}
 }

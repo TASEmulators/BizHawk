@@ -97,20 +97,20 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				CoreComm.VsyncNum = 16000000; // 16.00 mhz refclock
 				CoreComm.VsyncDen = 16 * 105 * 159;
 
-				savebuff = new byte[LibLynx.BinStateSize(Core)];
-				savebuff2 = new byte[savebuff.Length + 13];
+				_savebuff = new byte[LibLynx.BinStateSize(Core)];
+				_savebuff2 = new byte[_savebuff.Length + 13];
 
 				int rot = game.OptionPresent("rotate") ? int.Parse(game.OptionValue("rotate")) : 0;
 				LibLynx.SetRotation(Core, rot);
 				if ((rot & 1) != 0)
 				{
-					BufferWidth = HEIGHT;
-					BufferHeight = WIDTH;
+					BufferWidth = Height;
+					BufferHeight = Width;
 				}
 				else
 				{
-					BufferWidth = WIDTH;
-					BufferHeight = HEIGHT;
+					BufferWidth = Width;
+					BufferHeight = Height;
 				}
 				SetupMemoryDomains();
 			}
@@ -131,9 +131,9 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				LibLynx.Reset(Core);
 			}
 
-			int samples = soundbuff.Length;
-			IsLagFrame = LibLynx.Advance(Core, GetButtons(), videobuff, soundbuff, ref samples);
-			numsamp = samples / 2; // sound provider wants number of sample pairs
+			int samples = _soundbuff.Length;
+			IsLagFrame = LibLynx.Advance(Core, GetButtons(), _videobuff, _soundbuff, ref samples);
+			_numsamp = samples / 2; // sound provider wants number of sample pairs
 			if (IsLagFrame)
 			{
 				LagCount++;

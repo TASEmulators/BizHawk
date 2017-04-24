@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => ControllerDeck.Definition;
+		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
 		public IController Controller { get; set; }
 
@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		{
 			if (_tracer.Enabled)
 			{
-				_cpu.TraceCallback = (s) => _tracer.Put(s);
+				_cpu.TraceCallback = s => _tracer.Put(s);
 			}
 			else
 			{
@@ -28,14 +28,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			GetControllerState();
 
 			// this timer tracks cycles stolen by the STIC during the visible part of the frame, quite a large number of them actually
-			int delay_cycles = 700; 
-			int delay_timer = -1;
+			int delayCycles = 700; 
+			int delayTimer = -1;
 
 			_cpu.PendingCycles = 14934 - 3791 + _cpu.GetPendingCycles();
 			_stic.Sr1 = true;
 			_islag = true;
 
-			bool active_display = _stic.active_display;
+			bool activeDisplay = _stic.active_display;
 
 			// also at the start of every frame the color stack is reset
 			_stic.ColorSP = 0x0028;
@@ -45,23 +45,25 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				int cycles = _cpu.Execute();
 				_psg.generate_sound(cycles);
 
-				if (delay_cycles>=0 && active_display)
-					delay_cycles += cycles;
-
-				if (delay_timer> 0 && active_display)
+				if (delayCycles >= 0 && activeDisplay)
 				{
-					delay_timer -= cycles;
-					if (delay_timer<=0)
+					delayCycles += cycles;
+				}
+
+				if (delayTimer > 0 && activeDisplay)
+				{
+					delayTimer -= cycles;
+					if (delayTimer <= 0)
 					{
 						_stic.ToggleSr2();
-						delay_cycles = 0;
+						delayCycles = 0;
 					}
 				}
 
-				if (delay_cycles >= 750 && active_display)
+				if (delayCycles >= 750 && activeDisplay)
 				{
-					delay_cycles = -1;
-					delay_timer = 110;
+					delayCycles = -1;
+					delayTimer = 110;
 					_stic.ToggleSr2();
 					if (_sticRow >= 0)
 					{
@@ -72,6 +74,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 					_sticRow++;
 				}
+
 				Connect();
 			}
 
@@ -106,17 +109,23 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				_psg.generate_sound(cycles);
 				Connect();
 			}
+
 			_stic.in_vb_2 = false;
 
 			if (_islag)
+			{
 				_lagcount++;
-
+			}
 
 			if (Controller.IsPressed("Power"))
+			{
 				HardReset();
+			}
 
 			if (Controller.IsPressed("Reset"))
+			{
 				SoftReset();
+			}
 		}
 
 		public int Frame => _frame;

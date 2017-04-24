@@ -9,8 +9,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		"ColecoHawk",
 		"Vecna",
 		isPorted: false,
-		isReleased: true
-		)]
+		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
 	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, IStatable, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
 	{
@@ -23,7 +22,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private Z80A Cpu;
 		private TMS9918A VDP;
 
-		public byte[] Ram = new byte[1024];
+		private byte[] Ram = new byte[1024];
 		private readonly TraceBuffer Tracer = new TraceBuffer();
 
 		[CoreConstructor("Coleco")]
@@ -74,12 +73,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition
-		{
-			get { return ControllerDeck.Definition; }
-		}
+		public ControllerDefinition ControllerDefinition => ControllerDeck.Definition;
 
-		public ColecoVisionControllerDeck ControllerDeck { get; }
+		private readonly ColecoVisionControllerDeck ControllerDeck;
 
 		public IController Controller { get; set; }
 
@@ -97,12 +93,12 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				Cpu.Logger = (s) => Tracer.Put(s);
 			}
 
-			byte temp_ret1 = ControllerDeck.ReadPort1(Controller, true, true);
-			byte temp_ret2 = ControllerDeck.ReadPort2(Controller, true, true);
+			byte tempRet1 = ControllerDeck.ReadPort1(Controller, true, true);
+			byte tempRet2 = ControllerDeck.ReadPort2(Controller, true, true);
 
-			bool Int_pending = (!temp_ret1.Bit(4)) | (!temp_ret2.Bit(4));
+			bool intPending = (!tempRet1.Bit(4)) | (!tempRet2.Bit(4));
 
-			VDP.ExecuteFrame(Int_pending);
+			VDP.ExecuteFrame(intPending);
 
 			PSG.EndFrame(Cpu.TotalExecutedCycles);
 
@@ -116,7 +112,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			RomData = new byte[0x8000];
 			for (int i = 0; i < 0x8000; i++)
+			{
 				RomData[i] = rom[i % rom.Length];
+			}
 
 			// hack to skip colecovision title screen
 			if (skipbios)
@@ -160,9 +158,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			if (port >= 0xA0 && port <= 0xBF)
 			{
 				if ((port & 1) == 0)
+				{
 					VDP.WriteVdpData(value);
+				}
 				else
+				{
 					VDP.WriteVdpControl(value);
+				}
+
 				return;
 			}
 
@@ -187,7 +190,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public bool DeterministicEmulation => true;
 
-		public void Dispose() { }
+		public void Dispose()
+		{
+		}
 
 		public void ResetCounters()
 		{

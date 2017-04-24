@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		private readonly IPort Port1;
 		private readonly IPort Port2;
 
-		private static Dictionary<string, Type> _controllerTypes = null;
+		private static Dictionary<string, Type> _controllerTypes;
 
 		public static Dictionary<string, Type> ValidControllerTypes
 		{
@@ -90,10 +90,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 		}
 
-		public static string DefaultControllerName
-		{
-			get { return typeof(FakeAnalogController).DisplayName(); }
-		}
+		public static string DefaultControllerName => typeof(FakeAnalogController).DisplayName();
 	}
 
 }

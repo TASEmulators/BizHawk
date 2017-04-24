@@ -8,7 +8,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		{
 			get
 			{
-				return _lagcount; }
+				return _lagcount;
+			}
 
 			set
 			{

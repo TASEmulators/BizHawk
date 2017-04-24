@@ -9,8 +9,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		"IntelliHawk",
 		"BrandonE, Alyosha",
 		isPorted: false,
-		isReleased: true
-		)]
+		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight), typeof(IRegionable))]
 	public sealed partial class Intellivision : IEmulator, IStatable, IInputPollable, IDisassemblable,
 		IDebuggable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
@@ -24,12 +23,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			CoreComm = comm;
 
 			_rom = rom;
-			_gameInfo = game;
 
 			_settings = (IntvSettings)Settings ?? new IntvSettings();
 			_syncSettings = (IntvSyncSettings)SyncSettings ?? new IntvSyncSettings();
 
-			ControllerDeck = new IntellivisionControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
+			_controllerDeck = new IntellivisionControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
 			_cart = new Intellicart();
 			if (_cart.Parse(_rom) == -1)
@@ -74,10 +72,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			SetupMemoryDomains();
 		}
 
-		public IntellivisionControllerDeck ControllerDeck { get; private set; }
+		private readonly IntellivisionControllerDeck _controllerDeck;
 
 		private readonly byte[] _rom;
-		private readonly GameInfo _gameInfo;
 		private readonly ITraceable _tracer;
 		private readonly CP1610 _cpu;
 		private readonly STIC _stic;
@@ -87,14 +84,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		private int _frame;
 		private int _sticRow;
 
-		public void Connect()
+		private void Connect()
 		{
 			_cpu.SetIntRM(_stic.GetSr1());
 			_cpu.SetBusRq(_stic.GetSr2());
 			_stic.SetSst(_cpu.GetBusAk());
 		}
 
-		public void LoadExecutiveRom(byte[] erom)
+		private void LoadExecutiveRom(byte[] erom)
 		{
 			if (erom.Length != 8192)
 			{
@@ -110,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 		}
 
-		public void LoadGraphicsRom(byte[] grom)
+		private void LoadGraphicsRom(byte[] grom)
 		{
 			if (grom.Length != 2048)
 			{
@@ -124,10 +121,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		{
 			InputCallbacks.Call();
 
-			ushort port1 = ControllerDeck.ReadPort1(Controller);
+			ushort port1 = _controllerDeck.ReadPort1(Controller);
 			_psg.Register[15] = (ushort)(0xFF - port1);
 
-			ushort port2 = ControllerDeck.ReadPort2(Controller);
+			ushort port2 = _controllerDeck.ReadPort2(Controller);
 			_psg.Register[14] = (ushort)(0xFF - port2);
 		}
 

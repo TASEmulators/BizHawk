@@ -8,48 +8,51 @@ namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed class Cartridge : ICart
 	{
-		private ushort[] Data = new ushort[56320];
+		private readonly ushort[] Data = new ushort[56320];
 
 		private ushort[] Cart_Ram = new ushort[0x800];
 
 		// There are 10 mappers Intellivision games use (not counting intellicart which is handled seperately)
 		// we will pick the mapper from the game DB and default to 0
-		private int mapper = 0;
+		private int _mapper = 0;
 
-		public string BoardName => $"Mapper {mapper}";
+		public string BoardName => $"Mapper {_mapper}";
 
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("Cart");
 
-			ser.Sync("mapper", ref mapper);
+			ser.Sync("mapper", ref _mapper);
 			ser.Sync("Cart_Ram", ref Cart_Ram, false);
 
 			ser.EndSection();
 		}
 
-		public int Parse(byte[] Rom)
+		public int Parse(byte[] rom)
 		{
 			// Combine every two bytes into a word.
 			int index = 0;
 
-			while (index + 1 < Rom.Length)
+			while (index + 1 < rom.Length)
 			{
-				Data[(index / 2)] = (ushort)((Rom[index++] << 8) | Rom[index++]);
+				Data[(index / 2)] = (ushort)((rom[index++] << 8) | rom[index++]);
 			}
 
 			// look up hash in gamedb to see what mapper to use
 			// if none found default is zero
 			string hash_sha1 = null;
 			string s_mapper = null;
-			hash_sha1 = "sha1:" + Rom.HashSHA1(16, Rom.Length - 16);
+			hash_sha1 = "sha1:" + rom.HashSHA1(16, rom.Length - 16);
 
 			var gi = Database.CheckDatabase(hash_sha1);
 			if (gi != null)
 			{
 				var dict = gi.GetOptionsDict();
 				if (!dict.ContainsKey("board"))
+				{
 					throw new Exception("INTV gamedb entries must have a board identifier!");
+				}
+
 				s_mapper = dict["board"];
 			}
 			else
@@ -57,14 +60,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				s_mapper = "0";
 			}
 
-			int.TryParse(s_mapper, out mapper);
+			int.TryParse(s_mapper, out _mapper);
 
-			return Rom.Length;
+			return rom.Length;
 		}
 
 		public ushort? ReadCart(ushort addr, bool peek)
 		{
-			switch (mapper)
+			switch (_mapper)
 			{
 				case 0:
 					if (addr >= 0x5000 && addr <= 0x6FFF)
@@ -228,13 +231,12 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					break;
 			}
 
-
 			return null;
 		}
 
 		public bool WriteCart(ushort addr, ushort value, bool poke)
 		{
-			switch (mapper)
+			switch (_mapper)
 			{
 				case 4:
 					if (addr >= 0xD000 && addr <= 0xD3FF)

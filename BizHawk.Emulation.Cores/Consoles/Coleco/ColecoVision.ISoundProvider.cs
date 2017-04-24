@@ -5,6 +5,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	public partial class ColecoVision
 	{
 		private SN76489 PSG;
-		private FakeSyncSound _fakeSyncSound; 
+		private readonly FakeSyncSound _fakeSyncSound; 
 	}
 }

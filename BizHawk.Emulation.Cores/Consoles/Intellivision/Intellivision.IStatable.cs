@@ -3,7 +3,6 @@
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-
 namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public partial class Intellivision : IStatable
@@ -61,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			_stic.SyncState(ser);
 			_psg.SyncState(ser);
 			_cart.SyncState(ser);
-			ControllerDeck.SyncState(ser);
+			_controllerDeck.SyncState(ser);
 
 			ser.EndSection();
 		}
