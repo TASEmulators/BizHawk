@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public MemoryDomain GetExRAM()
 		{
-			return MemoryDomain.FromByteArray("ExRAM", MemoryDomain.Endian.Little, EXRAM);
+			return new MemoryDomainByteArray("ExRAM", MemoryDomain.Endian.Little, EXRAM, true, 1);
 		}
 
 		/// <summary>

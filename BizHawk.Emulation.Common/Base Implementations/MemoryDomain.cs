@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BizHawk.Emulation.Common
+﻿namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// A memory region and the functionality to read/write from it
@@ -24,16 +22,6 @@ namespace BizHawk.Emulation.Common
 		public abstract byte PeekByte(long addr);
 
 		public abstract void PokeByte(long addr, byte val);
-
-		/// <summary>
-		/// creates a memorydomain that references a managed byte array
-		/// </summary>
-		/// <param name="writable">if false, writes will be ignored</param>
-		[Obsolete]
-		public static MemoryDomain FromByteArray(string name, Endian endian, byte[] data, bool writable = true, int wordSize = 1)
-		{
-			return new MemoryDomainByteArray(name, endian, data, writable, wordSize);
-		}
 
 		public override string ToString()
 		{

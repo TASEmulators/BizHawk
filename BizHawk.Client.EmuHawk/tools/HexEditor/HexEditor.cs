@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart()
 		{
 			_rom = GetRomBytes();
-			_romDomain = MemoryDomain.FromByteArray("File on Disk", MemoryDomain.Endian.Little, _rom);
+			_romDomain = new MemoryDomainByteArray("File on Disk", MemoryDomain.Endian.Little, _rom, true, 1);
 
 			if (_domain.Name == _romDomain.Name)
 			{
