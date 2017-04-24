@@ -44,19 +44,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				else
 				{
 					// TODO: are the Z80 domains really Swap16 in the core?  Check this
-					mm.Add(new MemoryDomainIntPtrSwap16(name, MemoryDomain.Endian.Big, area, size, true));
+					mm.Add(new MemoryDomainIntPtrSwap16(name, MemoryDomain.Endian.Big, area, size, name != "MD CART" && name != "CD BOOT ROM"));
 				}
 			}
-
 			var m68Bus = new MemoryDomainDelegate("M68K BUS", 0x1000000, MemoryDomain.Endian.Big,
-				delegate(long addr)
+				delegate (long addr)
 				{
 					var a = (uint)addr;
 					if (a >= 0x1000000)
 						throw new ArgumentOutOfRangeException();
 					return Core.gpgx_peek_m68k_bus(a);
 				},
-				delegate(long addr, byte val)
+				delegate (long addr, byte val)
 				{
 					var a = (uint)addr;
 					if (a >= 0x1000000)
@@ -67,14 +66,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 			mm.Add(m68Bus);
 
 			var s68Bus = new MemoryDomainDelegate("S68K BUS", 0x1000000, MemoryDomain.Endian.Big,
-				delegate(long addr)
+				delegate (long addr)
 				{
 					var a = (uint)addr;
 					if (a >= 0x1000000)
 						throw new ArgumentOutOfRangeException();
 					return Core.gpgx_peek_s68k_bus(a);
 				},
-				delegate(long addr, byte val)
+				delegate (long addr, byte val)
 				{
 					var a = (uint)addr;
 					if (a >= 0x1000000)
