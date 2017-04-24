@@ -11,8 +11,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		"Atari2600Hawk",
 		"Micro500, adelikat, natt",
 		isPorted: false,
-		isReleased: true
-		)]
+		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
 	public partial class Atari2600 : IEmulator, IStatable, IDebuggable, IInputPollable,
 		IRegionable, ICreateGameDBEntries, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
@@ -64,18 +63,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Register<ISoundProvider>(_dcfilter);
 		}
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public DisplayType Region
-		{
-			get { return _pal ? DisplayType.PAL : Common.DisplayType.NTSC; }
-		}
+		public DisplayType Region => _pal ? DisplayType.PAL : DisplayType.NTSC;
 
 		public string SystemId => "A26";
 
 		public string BoardName => _mapper.GetType().Name;
 
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 
 		public ControllerDefinition ControllerDefinition { get { return Atari2600ControllerDefinition; } }
 
@@ -117,7 +113,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_islag = false;
 		}
 
-		public void Dispose() { }
+		public void Dispose()
+		{
+		}
 
 		private static bool DetectPal(GameInfo game, byte[] rom)
 		{

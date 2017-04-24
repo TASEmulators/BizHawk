@@ -15,31 +15,30 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public byte Collisions;
 
 			// Resp commands do not trigger start signals for main copies. We need to model this
-			public int Draw_To;
-			public byte ScanCnt;
-			public bool ScanCntInit;
-			public int Start_Signal;
-			public int Signal_Reached;
+			private int Draw_To;
+			private byte ScanCnt;
+			private bool ScanCntInit;
+			private int Start_Signal;
+			private int Signal_Reached;
 
 			public bool Tick()
 			{
 				var result = false;
 
-				if (ScanCntInit==true)
+				if (ScanCntInit == true)
 				{
 					if (ScanCnt < (1 << Size) && Enabled && !ResetToPlayer)
 					{
 						result = true;
 						ScanCnt++;
 						
-					} else
+					}
+					else
 					{
 						ScanCntInit = false;
 					}
 
 				}
-
-
 
 				/*
 				// At hPosCnt == 0, start drawing the missile, if enabled
@@ -122,8 +121,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// Counter loops at 160 
 				HPosCnt %= 160;
 
-				//our goal here is to send a start signal 4 clocks before drawing begins. The properly emulates
-				//drawing on a real TIA
+				// our goal here is to send a start signal 4 clocks before drawing begins. The properly emulates
+				// drawing on a real TIA
 				if (HPosCnt == 156 || HPosCnt == 12 || HPosCnt == 28 || HPosCnt == 60)
 				{
 					Start_Signal = HPosCnt;

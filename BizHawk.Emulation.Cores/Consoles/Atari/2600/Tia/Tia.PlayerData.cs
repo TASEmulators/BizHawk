@@ -21,8 +21,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public byte Collisions;
 
 			// Resp commands do not trigger start signals for main copies. We need to model this
-			public int Start_Signal;
-			public int Signal_Reached;
+			private int Start_Signal;
+			private int Signal_Reached;
 
 			public bool Tick()
 			{
@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 				// At counter position 0 we should initalize the scan counter. 
 				// Note that for double and quad sized players that the scan counter is not started immediately.
-				if (Start_Signal==160)
+				if (Start_Signal == 160)
 				{
 					ScanCnt = 0;
 					Start_Signal++;
@@ -156,11 +156,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// Counter loops at 160 
 				HPosCnt %= 160;
 
-				//our goal here is to send a start signal 4 clocks before drawing begins. This properly emulates
-				//drawing on a real TIA
-				if (HPosCnt==156 || HPosCnt==12 || HPosCnt==28 || HPosCnt==60)
+				// our goal here is to send a start signal 4 clocks before drawing begins. This properly emulates
+				// drawing on a real TIA
+				if (HPosCnt == 156 || HPosCnt == 12 || HPosCnt == 28 || HPosCnt == 60)
 				{
-					Start_Signal = HPosCnt-1;
+					Start_Signal = HPosCnt - 1;
 					Signal_Reached = HPosCnt + 5;
 				}
 
@@ -168,6 +168,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					Start_Signal++;
 				}
+
 				return result;
 			}
 

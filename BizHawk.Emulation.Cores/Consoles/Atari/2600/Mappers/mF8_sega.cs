@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 	internal class mF8_sega : MapperBase
 	{
-		private int _bank4K=1;
+		private int _bank4K = 1;
 
 		public override void SyncState(Serializer ser)
 		{

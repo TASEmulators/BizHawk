@@ -225,6 +225,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	 */
 	internal class mDPC : MapperBase
 	{
+		// Table for computing the input bit of the random number generator's
+		// shift register (it's the NOT of the EOR of four bits)
+		private readonly byte[] _randomInputBits = { 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1 };
+
 		private IntBuffer _counters = new IntBuffer(8);
 		private ByteBuffer _tops = new ByteBuffer(8);
 		private ByteBuffer _flags = new ByteBuffer(8);
@@ -237,17 +241,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private float _fractionalClocks; // Fractional DPC music OSC clocks unused during the last update
 
 		private byte[] _dspData;
-		public byte[] DspData
-		{
-			get
-			{
-				return _dspData ?? (_dspData = Core.Rom.Skip(8192).Take(2048).ToArray());
-			}
-		}
-
-		// Table for computing the input bit of the random number generator's
-		// shift register (it's the NOT of the EOR of four bits)
-		private readonly byte[] _randomInputBits = { 1, 0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1, 0, 0, 1 };
+		public byte[] DspData => _dspData ?? (_dspData = Core.Rom.Skip(8192).Take(2048).ToArray());
 
 		public override void Dispose()
 		{

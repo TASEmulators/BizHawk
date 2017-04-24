@@ -9,10 +9,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	internal class mSB : MapperBase
 	{
 		private int _bank4K;
-		private int myStartBank
-		{
-			get { return (Core.Rom.Length >> 12) - 1; }
-		}
+		private int myStartBank => (Core.Rom.Length >> 12) - 1;
+
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);

@@ -29,13 +29,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private float _fractionalClocks; // Fractional DPC music OSC clocks unused during the last update
 
 		private byte[] _dspData;
-		public byte[] DspData
-		{
-			get
-			{
-				return _dspData ?? (_dspData = Core.Rom.Skip(8192).Take(2048).ToArray());
-			}
-		}
+		public byte[] DspData => _dspData ?? (_dspData = Core.Rom.Skip(8192).Take(2048).ToArray());
 
 		// Table for computing the input bit of the random number generator's
 		// shift register (it's the NOT of the EOR of four bits)
