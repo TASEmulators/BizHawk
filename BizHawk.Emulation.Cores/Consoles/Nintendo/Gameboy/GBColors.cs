@@ -64,10 +64,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		// "gameboy colors" mode on older versions of VBA
-		static int gbGetValue(int min, int max, int v)
+		private static int gbGetValue(int min, int max, int v)
 		{
 			return (int)(min + (float)(max - min) * (2.0 * (v / 31.0) - (v / 31.0) * (v / 31.0)));
 		}
+
 		public static Triple OldVBAColor(Triple c)
 		{
 			Triple ret;
@@ -102,10 +103,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		// possibly represents a GBA screen, more or less
 		// but probably not (black point?)
-		static int GBAGamma(int input)
+		private static int GBAGamma(int input)
 		{
 			return (int)Math.Round(Math.Pow(input / 31.0, 3.5 / 2.2) * 255.0);
 		}
+
 		public static Triple GBAColor(Triple c)
 		{
 			Triple ret;
@@ -144,6 +146,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				case ColorType.vbabgbold: f = OldVBAColor; break;
 				case ColorType.gba: f = GBAColor; break;
 			}
+
 			int i = 0;
 			for (int b = 0; b < 32; b++)
 				for (int g = 0; g < 32; g++)

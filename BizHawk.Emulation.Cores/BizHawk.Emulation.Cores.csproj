@@ -448,7 +448,7 @@
       <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IEmulator.cs">
-        <DependentUpon>Gambatte.cs</DependentUpon>
+      <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IMemoryDomains.cs">
       <DependentUpon>Gambatte.cs</DependentUpon>
@@ -478,6 +478,9 @@
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IDebuggable.cs">
       <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IEmulator.cs">
+        <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IInputPollable.cs">
       <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
@@ -495,6 +498,9 @@
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IVideoProvider.cs">
       <DependentUpon>GambatteLink.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GamebatteLink.ISoundProvider.cs">
+        <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GBColors.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GBDisassembler.cs" />

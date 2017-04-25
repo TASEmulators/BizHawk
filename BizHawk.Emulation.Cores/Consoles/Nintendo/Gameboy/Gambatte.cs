@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				TimeCallback = new LibGambatte.RTCCallback(GetCurrentTime);
 				LibGambatte.gambatte_setrtccallback(GambatteState, TimeCallback);
 
-				CDCallback = new LibGambatte.CDCallback(CDCallbackProc);
+				_cdCallback = new LibGambatte.CDCallback(CDCallbackProc);
 
 				NewSaveCoreSetBuff();
 			}
@@ -291,14 +291,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			if (Tracer.Enabled)
 			{
-				tracecb = MakeTrace;
+				_tracecb = MakeTrace;
 			}
 			else
 			{
-				tracecb = null;
+				_tracecb = null;
 			}
 
-			LibGambatte.gambatte_settracecallback(GambatteState, tracecb);
+			LibGambatte.gambatte_settracecallback(GambatteState, _tracecb);
 
 			LibGambatte.gambatte_setlayers(GambatteState, (_settings.DisplayBG ? 1 : 0) | (_settings.DisplayOBJ ? 2 : 0) | (_settings.DisplayWindow ? 4 : 0 ) );
 		}
