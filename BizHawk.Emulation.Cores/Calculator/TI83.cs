@@ -11,8 +11,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		"TI83Hawk",
 		"zeromus",
 		isPorted: false,
-		isReleased: true
-		)]
+		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISoundProvider), typeof(ISaveRam), typeof(IRegionable), typeof(IDriveLight))]
 	public partial class TI83 : IEmulator, IVideoProvider, IStatable, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
 	{
@@ -37,7 +36,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 			// different calculators (different revisions?) have different initPC. we track this in the game database by rom hash
 			// if( *(unsigned long *)(m_pRom + 0x6ce) == 0x04D3163E ) m_Regs.PC.W = 0x6ce; //KNOWN
 			// else if( *(unsigned long *)(m_pRom + 0x6f6) == 0x04D3163E ) m_Regs.PC.W = 0x6f6; //UNKNOWN
-
 			if (game["initPC"])
 			{
 				_startPC = ushort.Parse(game.OptionValue("initPC"), NumberStyles.HexNumber);

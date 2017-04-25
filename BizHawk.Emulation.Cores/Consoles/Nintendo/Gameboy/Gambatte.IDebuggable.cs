@@ -15,16 +15,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			return new Dictionary<string, RegisterValue>
 			{
-				{ "PC", (ushort)(data[(int)LibGambatte.RegIndicies.PC] & 0xffff) },
-				{ "SP", (ushort)(data[(int)LibGambatte.RegIndicies.SP] & 0xffff) },
-				{ "A", (byte)(data[(int)LibGambatte.RegIndicies.A] & 0xff) },
-				{ "B", (byte)(data[(int)LibGambatte.RegIndicies.B] & 0xff) },
-				{ "C", (byte)(data[(int)LibGambatte.RegIndicies.C] & 0xff) },
-				{ "D", (byte)(data[(int)LibGambatte.RegIndicies.D] & 0xff) },
-				{ "E", (byte)(data[(int)LibGambatte.RegIndicies.E] & 0xff) },
-				{ "F", (byte)(data[(int)LibGambatte.RegIndicies.F] & 0xff) },
-				{ "H", (byte)(data[(int)LibGambatte.RegIndicies.H] & 0xff) },
-				{ "L", (byte)(data[(int)LibGambatte.RegIndicies.L] & 0xff) }
+				["PC"] = (ushort)(data[(int)LibGambatte.RegIndicies.PC] & 0xffff),
+				["SP"] = (ushort)(data[(int)LibGambatte.RegIndicies.SP] & 0xffff),
+				["A"] = (byte)(data[(int)LibGambatte.RegIndicies.A] & 0xff),
+				["B"] = (byte)(data[(int)LibGambatte.RegIndicies.B] & 0xff),
+				["C"] = (byte)(data[(int)LibGambatte.RegIndicies.C] & 0xff),
+				["D"] = (byte)(data[(int)LibGambatte.RegIndicies.D] & 0xff),
+				["E"] = (byte)(data[(int)LibGambatte.RegIndicies.E] & 0xff),
+				["F"] = (byte)(data[(int)LibGambatte.RegIndicies.F] & 0xff),
+				["H"] = (byte)(data[(int)LibGambatte.RegIndicies.H] & 0xff),
+				["L"] = (byte)(data[(int)LibGambatte.RegIndicies.L] & 0xff)
 			};
 		}
 

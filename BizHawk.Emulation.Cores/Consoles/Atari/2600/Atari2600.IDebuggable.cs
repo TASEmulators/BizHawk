@@ -11,21 +11,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			return new Dictionary<string, RegisterValue>
 			{
-				{ "A", Cpu.A },
-				{ "X", Cpu.X },
-				{ "Y", Cpu.Y },
-				{ "S", Cpu.S },
-				{ "PC", Cpu.PC },
+				["A"] = Cpu.A,
+				["X"] = Cpu.X,
+				["Y"] = Cpu.Y,
+				["S"] = Cpu.S,
+				["PC"] = Cpu.PC,
 
-				{ "Flag C", Cpu.FlagC },
-				{ "Flag Z", Cpu.FlagZ },
-				{ "Flag I", Cpu.FlagI },
-				{ "Flag D", Cpu.FlagD },
+				["Flag C"] = Cpu.FlagC,
+				["Flag Z"] = Cpu.FlagZ,
+				["Flag I"] = Cpu.FlagI,
+				["Flag D"] = Cpu.FlagD,
 
-				{ "Flag B", Cpu.FlagB },
-				{ "Flag V", Cpu.FlagV },
-				{ "Flag N", Cpu.FlagN },
-				{ "Flag T", Cpu.FlagT }
+				["Flag B"] = Cpu.FlagB,
+				["Flag V"] = Cpu.FlagV,
+				["Flag N"] = Cpu.FlagN,
+				["Flag T"] = Cpu.FlagT
 			};
 		}
 

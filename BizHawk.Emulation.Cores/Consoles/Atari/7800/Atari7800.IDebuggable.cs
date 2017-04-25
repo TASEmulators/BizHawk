@@ -11,19 +11,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		{
 			return new Dictionary<string, RegisterValue>
 			{
-				{ "A", theMachine.CPU.A },
-				{ "P", theMachine.CPU.P },
-				{ "PC", theMachine.CPU.PC },
-				{ "S", theMachine.CPU.S },
-				{ "X", theMachine.CPU.X },
-				{ "Y", theMachine.CPU.Y },
-				{ "Flag B", theMachine.CPU.fB },
-				{ "Flag C", theMachine.CPU.fC },
-				{ "Flag D", theMachine.CPU.fD },
-				{ "Flag I", theMachine.CPU.fI },
-				{ "Flag N", theMachine.CPU.fN },
-				{ "Flag V", theMachine.CPU.fV },
-				{ "Flag Z", theMachine.CPU.fZ }
+				["A"] = theMachine.CPU.A,
+				["P"] = theMachine.CPU.P,
+				["PC"] = theMachine.CPU.PC,
+				["S"] = theMachine.CPU.S,
+				["X"] = theMachine.CPU.X,
+				["Y"] = theMachine.CPU.Y,
+				["Flag B"] = theMachine.CPU.fB,
+				["Flag C"] = theMachine.CPU.fC,
+				["Flag D"] = theMachine.CPU.fD,
+				["Flag I"] = theMachine.CPU.fI,
+				["Flag N"] = theMachine.CPU.fN,
+				["Flag V"] = theMachine.CPU.fV,
+				["Flag Z"] = theMachine.CPU.fZ
 			};
 		}
 
