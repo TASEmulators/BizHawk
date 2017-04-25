@@ -23,7 +23,6 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// merge some controller definitions for different ports, and such.  i promise to fully document this tomorrow
 		/// </summary>
-		/// <returns></returns>
 		public static ControllerDefinition GetMerged(IEnumerable<ControllerDefinition> controllers, out List<ControlDefUnMerger> unmergers)
 		{
 			ControllerDefinition ret = new ControllerDefinition();
