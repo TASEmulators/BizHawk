@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Text;
-
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
@@ -13,14 +12,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			int len = LibmGBA.BizGetSaveRam(_core, _saveScratch, _saveScratch.Length);
 			if (len == _saveScratch.Length)
+			{
 				throw new InvalidOperationException("Save buffer not long enough");
+			}
+
 			if (len == 0)
+			{
 				return null;
+			}
 
 			var ret = new byte[len];
 			Array.Copy(_saveScratch, ret, len);
 			return ret;
 		}
+
+		public void StoreSaveRam(byte[] data)
+		{
+			if (data.Take(8).SequenceEqual(Encoding.ASCII.GetBytes("GBABATT\0")))
+			{
+				data = LegacyFix(data);
+			}
+
+			LibmGBA.BizPutSaveRam(_core, data, data.Length);
+		}
+
+		public bool SaveRamModified => LibmGBA.BizGetSaveRam(_core, _saveScratch, _saveScratch.Length) > 0;
 
 		private static byte[] LegacyFix(byte[] saveram)
 		{
@@ -31,32 +47,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			int eepromsize = br.ReadInt32();
 			byte[] flash = br.ReadBytes(flashSize);
 			byte[] eeprom = br.ReadBytes(eepromsize);
+
 			if (flash.Length == 0)
+			{
 				return eeprom;
-			else if (eeprom.Length == 0)
+			}
+
+			if (eeprom.Length == 0)
+			{
 				return flash;
-			else
-			{
-				// well, isn't this a sticky situation!
-				return flash; // woops
 			}
-		}
 
-		public void StoreSaveRam(byte[] data)
-		{
-			if (data.Take(8).SequenceEqual(Encoding.ASCII.GetBytes("GBABATT\0")))
-			{
-				data = LegacyFix(data);
-			}
-			LibmGBA.BizPutSaveRam(_core, data, data.Length);
-		}
-
-		public bool SaveRamModified
-		{
-			get
-			{
-				return LibmGBA.BizGetSaveRam(_core, _saveScratch, _saveScratch.Length) > 0;
-			}
+			// well, isn't this a sticky situation!
+			return flash; // woops
 		}
 	}
 }

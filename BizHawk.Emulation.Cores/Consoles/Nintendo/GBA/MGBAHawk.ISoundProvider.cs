@@ -5,23 +5,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public partial class MGBAHawk : ISoundProvider
 	{
-		private readonly short[] soundbuff = new short[2048];
-		private int nsamp;
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			nsamp = this.nsamp;
-			samples = soundbuff;
-			DiscardSamples();
-		}
-		public void DiscardSamples()
-		{
-			nsamp = 0;
-		}
+		private readonly short[] _soundbuff = new short[2048];
+		private int _nsamp;
 
-		public bool CanProvideAsync
-		{
-			get { return false; }
-		}
+		public bool CanProvideAsync => false;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -31,14 +18,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			}
 		}
 
-		public SyncSoundMode SyncMode
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			get { return SyncSoundMode.Sync; }
+			nsamp = _nsamp;
+			samples = _soundbuff;
+			DiscardSamples();
 		}
 
 		public void GetSamplesAsync(short[] samples)
 		{
 			throw new InvalidOperationException("Async mode is not supported.");
+		}
+
+		public void DiscardSamples()
+		{
+			_nsamp = 0;
 		}
 	}
 }

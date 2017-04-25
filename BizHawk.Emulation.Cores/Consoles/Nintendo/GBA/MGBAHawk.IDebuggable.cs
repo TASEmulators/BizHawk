@@ -7,20 +7,46 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public partial class MGBAHawk : IDebuggable
 	{
-		public IMemoryCallbackSystem MemoryCallbacks
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
-			get
+			var values = new int[RegisterNames.Length];
+			LibmGBA.BizGetRegisters(_core, values);
+			var ret = new Dictionary<string, RegisterValue>();
+			for (var i = 0; i < RegisterNames.Length; i++)
 			{
-				throw new NotImplementedException();
+				ret[RegisterNames[i]] = new RegisterValue(values[i]);
 			}
+
+			return ret;
 		}
 
+		[FeatureNotImplemented]
+		public void SetCpuRegister(string register, int value)
+		{
+			throw new NotImplementedException();
+		}
+
+		[FeatureNotImplemented]
+		public IMemoryCallbackSystem MemoryCallbacks
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public bool CanStep(StepType type)
+		{
+			return false;
+		}
+
+		[FeatureNotImplemented]
+		public void Step(StepType type)
+		{
+			throw new NotImplementedException();
+		}
+
+		[FeatureNotImplemented]
 		public int TotalExecutedCycles
 		{
-			get
-			{
-				throw new NotImplementedException();
-			}
+			get { throw new NotImplementedException(); }
 		}
 
 		private static readonly string[] RegisterNames =
@@ -44,32 +70,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			"CPSR",
 			"SPSR"
 		};
-
-		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
-		{
-			var values = new int[RegisterNames.Length];
-			LibmGBA.BizGetRegisters(_core, values);
-			var ret = new Dictionary<string, RegisterValue>();
-			for (var i = 0; i < RegisterNames.Length; i++)
-			{
-				ret[RegisterNames[i]] = new RegisterValue(values[i]);
-			}
-			return ret;
-		}
-
-		public void SetCpuRegister(string register, int value)
-		{
-			throw new NotImplementedException();
-		}
-
-		public bool CanStep(StepType type)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void Step(StepType type)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }
