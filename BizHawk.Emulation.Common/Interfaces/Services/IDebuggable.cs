@@ -121,7 +121,6 @@ namespace BizHawk.Emulation.Common
 			BitSize = 64;
 		}
 
-
 		public static implicit operator RegisterValue(bool val)
 		{
 			return new RegisterValue(val);

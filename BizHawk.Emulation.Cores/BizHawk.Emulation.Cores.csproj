@@ -479,7 +479,7 @@
       <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IEmulator.cs">
-        <DependentUpon>GambatteLink.cs</DependentUpon>
+      <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IInputPollable.cs">
       <DependentUpon>GambatteLink.cs</DependentUpon>
@@ -500,7 +500,7 @@
       <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GamebatteLink.ISoundProvider.cs">
-        <DependentUpon>GambatteLink.cs</DependentUpon>
+      <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GBColors.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GBDisassembler.cs" />
@@ -511,6 +511,30 @@
     <Compile Include="Consoles\Nintendo\GBA\LibmGBA.cs" />
     <Compile Include="Consoles\Nintendo\GBA\LibVBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.cs" />
+    <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.IDebuggable.cs">
+        <DependentUpon>MGBAHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.IInputPollable.cs">
+        <DependentUpon>MGBAHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.IMemoryDomains.cs">
+        <DependentUpon>MGBAHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.ISaveRam.cs">
+        <DependentUpon>MGBAHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.ISettable.cs">
+        <DependentUpon>MGBAHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.ISoundProvider.cs">
+        <DependentUpon>MGBAHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.IStatable.cs">
+        <DependentUpon>MGBAHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.IVideoProvider.cs">
+        <DependentUpon>MGBAHawk.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\VBANext.IDebuggable.cs">
       <DependentUpon>VBANext.cs</DependentUpon>
