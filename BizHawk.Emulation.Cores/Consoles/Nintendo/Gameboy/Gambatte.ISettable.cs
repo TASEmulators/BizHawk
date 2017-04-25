@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
+
 using Newtonsoft.Json;
 
 using BizHawk.Common;
@@ -20,9 +19,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			_settings = o;
 			if (IsCGBMode())
+			{
 				SetCGBColors(_settings.CGBColors);
+			}
 			else
+			{
 				ChangeDMGColors(_settings.GBPalette);
+			}
+
 			return false;
 		}
 
@@ -43,12 +47,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public class GambatteSettings
 		{
-			private static readonly int[] DefaultPalette = new[]
-				{
-					10798341, 8956165, 1922333, 337157,
-					10798341, 8956165, 1922333, 337157,
-					10798341, 8956165, 1922333, 337157
-				};
+			private static readonly int[] DefaultPalette =
+			{
+				10798341, 8956165, 1922333, 337157,
+				10798341, 8956165, 1922333, 337157,
+				10798341, 8956165, 1922333, 337157
+			};
 
 			public int[] GBPalette;
 			public GBColors.ColorType CGBColors;
@@ -106,20 +110,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 
 			[JsonIgnore]
-			int _RTCInitialTime;
+			private int _RTCInitialTime;
 
 			[DisplayName("Equal Length Frames")]
 			[Description("When false, emulation frames sync to vblank.  Only useful for high level TASing.")]
 			[DefaultValue(true)]
 			public bool EqualLengthFrames
 			{
-				get { return _EqualLengthFrames; }
-				set { _EqualLengthFrames = value; }
+				get { return _equalLengthFrames; }
+				set { _equalLengthFrames = value; }
 			}
 
 			[JsonIgnore]
 			[DeepEqualsIgnore]
-			private bool _EqualLengthFrames;
+			private bool _equalLengthFrames;
 
 			public GambatteSyncSettings()
 			{

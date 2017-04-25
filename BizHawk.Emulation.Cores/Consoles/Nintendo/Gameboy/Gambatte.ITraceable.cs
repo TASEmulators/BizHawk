@@ -7,8 +7,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class Gameboy
 	{
-		private ITraceable Tracer { get; set; }
-		private LibGambatte.TraceCallback tracecb;
+		private ITraceable Tracer { get; }
+		private LibGambatte.TraceCallback _tracecb;
 
 		private void MakeTrace(IntPtr _s)
 		{
@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			{
 				Disassembly =
 					NewDisassembler
-						.Disassemble((ushort)s[1], (addr) => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused)
+						.Disassemble((ushort)s[1], addr => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused)
 						.PadRight(36),
 				RegisterInfo =
 					string.Format(
@@ -38,8 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					s[10] & 0xff,
 					s[11] != 0 ? "skip" : "",
 					s[12] & 0xff,
-					s[13] & 0xff
-				)
+					s[13] & 0xff)
 			});
 		}
 	}

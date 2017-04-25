@@ -5,20 +5,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class Gameboy : ISoundProvider
 	{
-		public bool CanProvideAsync
-		{
-			get { return false; }
-		}
+		public bool CanProvideAsync => false;
 
 		public void DiscardSamples()
 		{
-			soundoutbuffcontains = 0;
+			_soundoutbuffcontains = 0;
 		}
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			samples = soundoutbuff;
-			nsamp = soundoutbuffcontains;
+			samples = _soundoutbuff;
+			nsamp = _soundoutbuffcontains;
 		}
 
 		public void SetSyncMode(SyncSoundMode mode)
@@ -29,95 +26,90 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesAsync(short[] samples)
 		{
 			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
-		internal bool Muted
-		{
-			get { return _settings.Muted; }
-		}
+		internal bool Muted => _settings.Muted;
 
 		// sample pairs before resampling
-		private short[] soundbuff = new short[(35112 + 2064) * 2];
+		private readonly short[] _soundbuff = new short[(35112 + 2064) * 2];
 
-		private int soundoutbuffcontains = 0;
+		private int _soundoutbuffcontains = 0;
 
-		private short[] soundoutbuff = new short[2048];
+		private readonly short[] _soundoutbuff = new short[2048];
 
-		private int latchL = 0;
-		private int latchR = 0;
+		private int _latchL = 0;
+		private int _latchR = 0;
 
-		private BlipBuffer blipL, blipR;
-		private uint blipAccumulate;
+		private BlipBuffer _blipL, _blipR;
+		private uint _blipAccumulate;
 
 		private void ProcessSound(int nsamp)
 		{
 			for (uint i = 0; i < nsamp; i++)
 			{
-				int curr = soundbuff[i * 2];
+				int curr = _soundbuff[i * 2];
 
-				if (curr != latchL)
+				if (curr != _latchL)
 				{
-					int diff = latchL - curr;
-					latchL = curr;
-					blipL.AddDelta(blipAccumulate, diff);
+					int diff = _latchL - curr;
+					_latchL = curr;
+					_blipL.AddDelta(_blipAccumulate, diff);
 				}
 
-				curr = soundbuff[i * 2 + 1];
+				curr = _soundbuff[(i * 2) + 1];
 
-				if (curr != latchR)
+				if (curr != _latchR)
 				{
-					int diff = latchR - curr;
-					latchR = curr;
-					blipR.AddDelta(blipAccumulate, diff);
+					int diff = _latchR - curr;
+					_latchR = curr;
+					_blipR.AddDelta(_blipAccumulate, diff);
 				}
 
-				blipAccumulate++;
+				_blipAccumulate++;
 			}
 		}
 
 		private void ProcessSoundEnd()
 		{
-			blipL.EndFrame(blipAccumulate);
-			blipR.EndFrame(blipAccumulate);
-			blipAccumulate = 0;
+			_blipL.EndFrame(_blipAccumulate);
+			_blipR.EndFrame(_blipAccumulate);
+			_blipAccumulate = 0;
 
-			soundoutbuffcontains = blipL.SamplesAvailable();
-			if (soundoutbuffcontains != blipR.SamplesAvailable())
+			_soundoutbuffcontains = _blipL.SamplesAvailable();
+			if (_soundoutbuffcontains != _blipR.SamplesAvailable())
 			{
 				throw new InvalidOperationException("Audio processing error");
 			}
 
-			blipL.ReadSamplesLeft(soundoutbuff, soundoutbuffcontains);
-			blipR.ReadSamplesRight(soundoutbuff, soundoutbuffcontains);
+			_blipL.ReadSamplesLeft(_soundoutbuff, _soundoutbuffcontains);
+			_blipR.ReadSamplesRight(_soundoutbuff, _soundoutbuffcontains);
 		}
 
 		private void InitSound()
 		{
-			blipL = new BlipBuffer(1024);
-			blipL.SetRates(TICKSPERSECOND, 44100);
-			blipR = new BlipBuffer(1024);
-			blipR.SetRates(TICKSPERSECOND, 44100);
+			_blipL = new BlipBuffer(1024);
+			_blipL.SetRates(TICKSPERSECOND, 44100);
+			_blipR = new BlipBuffer(1024);
+			_blipR.SetRates(TICKSPERSECOND, 44100);
 		}
 
 		private void DisposeSound()
 		{
-			if (blipL != null)
+			if (_blipL != null)
 			{
-				blipL.Dispose();
-				blipL = null;
+				_blipL.Dispose();
+				_blipL = null;
 			}
-			if (blipR != null)
+
+			if (_blipR != null)
 			{
-				blipR.Dispose();
-				blipR = null;
+				_blipR.Dispose();
+				_blipR = null;
 			}
 		}
 	}
