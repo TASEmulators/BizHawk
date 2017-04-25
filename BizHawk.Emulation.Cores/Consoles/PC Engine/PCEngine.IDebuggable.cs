@@ -33,16 +33,19 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			throw new NotImplementedException();
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks { get; }
 
-		public bool CanStep(StepType type) { return false; }
+		public bool CanStep(StepType type)
+		{
+			return false;
+		}
 
 		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
-
-		public int TotalExecutedCycles
+		public void Step(StepType type)
 		{
-			get { return (int)Cpu.TotalExecutedCycles; }
+			throw new NotImplementedException();
 		}
+
+		public int TotalExecutedCycles => (int)Cpu.TotalExecutedCycles;
 	}
 }

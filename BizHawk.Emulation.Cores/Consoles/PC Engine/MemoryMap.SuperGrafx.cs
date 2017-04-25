@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			return 0xFF;
 		}
 
-		void WriteMemorySGX(int addr, byte value)
+		private void WriteMemorySGX(int addr, byte value)
 		{
 			if (addr >= 0x1F0000 && addr < 0x1F8000) // write RAM.
 				Ram[addr & 0x7FFF] = value;

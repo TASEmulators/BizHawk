@@ -15,8 +15,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		"PCEHawk",
 		"Vecna",
 		isPorted: false,
-		isReleased: true
-		)]
+		isReleased: true)]
 	public sealed partial class PCEngine : IEmulator, ISaveRam, IStatable, IInputPollable,
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight, ICodeDataLogger
 	{
@@ -39,6 +38,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					Type = NecSystemType.SuperGrafx;
 					break;
 			}
+
 			this.Settings = (PCESettings)Settings ?? new PCESettings();
 			_syncSettings = (PCESyncSettings)syncSettings ?? new PCESyncSettings();
 			Init(game, rom);
@@ -73,8 +73,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 			else if (biosInfo["BIOS"] == false)
 			{
-				//zeromus says: someone please write a note about how this could possibly happen.
-				//it seems like this is a relic of using gameDB for storing whether something is a bios? firmwareDB should be handling it now.
+				// zeromus says: someone please write a note about how this could possibly happen.
+				// it seems like this is a relic of using gameDB for storing whether something is a bios? firmwareDB should be handling it now.
 				CoreComm.ShowMessage(
 					"The PCE-CD System Card you have selected is not a BIOS image. You may have selected the wrong rom. FYI-Please report this to developers, I don't think this error message should happen.");
 			}
@@ -94,6 +94,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			game.FirmwareHash = rom.HashSHA1();
 
 			Init(game, rom);
+
 			// the default RomStatusDetails don't do anything with Disc
 			CoreComm.RomStatusDetails = string.Format("{0}\r\nDisk partial hash:{1}", game.Name, new DiscSystem.DiscHasher(disc).OldHash());
 			SetControllerButtons();
@@ -117,9 +118,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		internal CDAudio CDAudio;
 		private SoundMixer SoundMixer;
 
-		private bool TurboGrafx { get { return Type == NecSystemType.TurboGrafx; } }
-		private bool SuperGrafx { get { return Type == NecSystemType.SuperGrafx; } }
-		private bool TurboCD { get { return Type == NecSystemType.TurboCD; } }
+		private bool TurboGrafx => Type == NecSystemType.TurboGrafx;
+		private bool SuperGrafx => Type == NecSystemType.SuperGrafx;
+		private bool TurboCD => Type == NecSystemType.TurboCD;
 
 		// BRAM
 		private bool BramEnabled = false;
@@ -136,7 +137,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		// 21,477,270  Machine clocks / sec
 		//  7,159,090  Cpu cycles / sec
-
 		private ITraceable Tracer { get; set; }
 
 		private void Init(GameInfo game, byte[] rom)
@@ -148,7 +148,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			PSG = new HuC6280PSG();
 			SCSI = new ScsiCDBus(this, disc);
 
-			Cpu.Logger = (s) => Tracer.Put(s);
+			Cpu.Logger = s => Tracer.Put(s);
 
 			if (TurboGrafx)
 			{
@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Cpu.ReadMemory21 = ReadMemory;
 				Cpu.WriteMemory21 = WriteMemory;
 				Cpu.WriteVDC = VDC1.WriteVDC;
-				soundProvider = new FakeSyncSound(PSG, 735);
+				_soundProvider = new FakeSyncSound(PSG, 735);
 				CDAudio = new CDAudio(null, 0);
 			}
 
@@ -168,7 +168,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Cpu.ReadMemory21 = ReadMemorySGX;
 				Cpu.WriteMemory21 = WriteMemorySGX;
 				Cpu.WriteVDC = VDC1.WriteVDC;
-				soundProvider = new FakeSyncSound(PSG, 735);
+				_soundProvider = new FakeSyncSound(PSG, 735);
 				CDAudio = new CDAudio(null, 0);
 			}
 
@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				SetCDAudioCallback();
 				PSG.MaxVolume = short.MaxValue * 3 / 4;
 				SoundMixer = new SoundMixer(PSG, CDAudio, ADPCM);
-				soundProvider = new FakeSyncSound(SoundMixer, 735);
+				_soundProvider = new FakeSyncSound(SoundMixer, 735);
 				Cpu.ThinkAction = (cycles) => { SCSI.Think(); ADPCM.Think(cycles); };
 			}
 
@@ -207,11 +207,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Cpu.WriteMemory21 = WriteMemorySF2;
 				RomData = rom;
 				RomLength = RomData.Length;
+
 				// user request: current value of the SF2MapperLatch on the tracelogger
 				Cpu.Logger = (s) => Tracer.Put(new TraceInfo
 				{
-					Disassembly = string.Format("{0:X1}:{1}", SF2MapperLatch, s),
-					RegisterInfo = ""
+					Disassembly = $"{SF2MapperLatch:X1}:{s}",
+					RegisterInfo = string.Empty
 				});
 			}
 			else
@@ -232,7 +233,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 
 			if (game["SuperSysCard"])
+			{
 				SuperRam = new byte[0x30000];
+			}
 
 			if (game["ArcadeCard"])
 			{
@@ -240,7 +243,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				ArcadeCard = true;
 				ArcadeCardRewindHack = Settings.ArcadeCardRewindHack;
 				for (int i = 0; i < 4; i++)
+				{
 					ArcadePage[i] = new ArcadeCardPage();
+				}
 			}
 
 			if (game["PopulousSRAM"])
@@ -252,17 +257,30 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			// the gamedb can force sprite limit on, ignoring settings
 			if (game["ForceSpriteLimit"] || game.NotInDatabase)
+			{
 				ForceSpriteLimit = true;
+			}
 
 			if (game["CdVol"])
+			{
 				CDAudio.MaxVolume = int.Parse(game.OptionValue("CdVol"));
+			}
+
 			if (game["PsgVol"])
+			{
 				PSG.MaxVolume = int.Parse(game.OptionValue("PsgVol"));
+			}
+
 			if (game["AdpcmVol"])
+			{
 				ADPCM.MaxVolume = int.Parse(game.OptionValue("AdpcmVol"));
+			}
+
 			// the gamedb can also force equalizevolumes on
 			if (TurboCD && (Settings.EqualizeVolume || game["EqualizeVolumes"] || game.NotInDatabase))
+			{
 				SoundMixer.EqualizeVolumes();
+			}
 
 			// Ok, yes, HBlankPeriod's only purpose is game-specific hax.
 			// 1) At least they're not coded directly into the emulator, but instead data-driven.
@@ -272,14 +290,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			//    The proper fix is cycle-accurate/bus-accurate timing. That isn't coming to the C# 
 			//    version of this core. Let's just acknolwedge that the timing is imperfect and fix
 			//    it in the least intrusive and most honest way we can.
-
 			if (game["HBlankPeriod"])
+			{
 				VDC1.HBlankCycles = game.GetIntValue("HBlankPeriod");
+			}
 
 			// This is also a hack. Proper multi-res/TV emulation will be a native-code core feature.
-
 			if (game["MultiResHack"])
+			{
 				VDC1.MultiResHack = game.GetIntValue("MultiResHack");
+			}
 
 			Cpu.ResetPC();
 
@@ -289,19 +309,21 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IDisassemblable>(Cpu);
 			ser.Register<IVideoProvider>((IVideoProvider)VPC ?? VDC1);
-			ser.Register<ISoundProvider>(soundProvider);
+			ser.Register<ISoundProvider>(_soundProvider);
 			SetupMemoryDomains();
 		}
 
-		private int frame;
+		private int _frame;
 
 		private static Dictionary<string, int> SizesFromHuMap(IEnumerable<HuC6280.MemMapping> mm)
 		{
 			Dictionary<string, int> sizes = new Dictionary<string, int>();
 			foreach (var m in mm)
 			{
-			if (!sizes.ContainsKey(m.Name) || m.MaxOffs >= sizes[m.Name])
-				sizes[m.Name] = m.MaxOffs;
+				if (!sizes.ContainsKey(m.Name) || m.MaxOffs >= sizes[m.Name])
+				{
+					sizes[m.Name] = m.MaxOffs;
+				}
 			}
 
 			var keys = new List<string>(sizes.Keys);
@@ -310,6 +332,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				// becase we were looking at offsets, and each bank is 8192 big, we need to add that size
 				sizes[key] += 8192;
 			}
+
 			return sizes;
 		}
 
@@ -318,10 +341,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			bool spriteLimit = ForceSpriteLimit | Settings.SpriteLimit;
 			VDC1.PerformSpriteLimit = spriteLimit;
 			if (VDC2 != null)
+			{
 				VDC2.PerformSpriteLimit = spriteLimit;
+			}
 		}
 
-		private ISoundProvider soundProvider;
+		private ISoundProvider _soundProvider;
 
 		private string Region { get; set; }
 	}

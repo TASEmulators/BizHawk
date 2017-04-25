@@ -7,9 +7,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		// The Populous HuCard is the only traditional HuCard to have battery-backed saveRAM
 		// built into it. There is 32k of save-RAM mapped at pages $40 - $44.
 
-		byte[] PopulousRAM;
+		private byte[] PopulousRAM;
 
-		byte ReadMemoryPopulous(int addr)
+		private byte ReadMemoryPopulous(int addr)
 		{
 			if (addr >= 0x80000 && addr < 0x88000)
 				return PopulousRAM[addr & 0x7FFF];
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			return 0xFF;
 		}
 
-		void WriteMemoryPopulous(int addr, byte value)
+		private void WriteMemoryPopulous(int addr, byte value)
 		{
 			if (addr >= 0x1F0000 && addr < 0x1F8000) // write RAM.
 				Ram[addr & 0x1FFF] = value;

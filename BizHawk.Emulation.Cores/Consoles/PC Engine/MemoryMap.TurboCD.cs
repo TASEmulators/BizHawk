@@ -4,7 +4,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public partial class PCEngine
 	{
-		byte ReadMemoryCD(int addr)
+		private byte ReadMemoryCD(int addr)
 		{
 			if (addr < 0x80000) // read ROM
 				return RomData[addr % RomLength];
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			return 0xFF;
 		}
 
-		void WriteMemoryCD(int addr, byte value)
+		private void WriteMemoryCD(int addr, byte value)
 		{
 			if (addr >= 0x1F0000 && addr < 0x1F8000) // write RAM.
 				Ram[addr & 0x1FFF] = value;

@@ -267,7 +267,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			return value;
 		}
 
-		void DecodeAdpcmSample()
+		private void DecodeAdpcmSample()
 		{
 			byte sample = ReadNibble();
 			bool positive = (sample & 8) == 0;
@@ -279,7 +279,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			playingSample = AddClamped(playingSample, adjustment, 0, 4095);
 		}
 
-		void AdpcmEmitSample()
+		private void AdpcmEmitSample()
 		{
 			if (AdpcmIsPlaying == false)
 				SoundProvider.Buffer.enqueue_sample(0, 0);

@@ -78,6 +78,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				{
 					ret.Controllers[i].IsConnected = Controllers[i].IsConnected;
 				}
+
 				return ret;
 			}
 
@@ -91,8 +92,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				for (int i = 0; i < x.Controllers.Length; i++)
 				{
 					if (x.Controllers[i].IsConnected != y.Controllers[i].IsConnected)
+					{
 						return true;
+					}
 				}
+
 				return false;
 			}
 		}

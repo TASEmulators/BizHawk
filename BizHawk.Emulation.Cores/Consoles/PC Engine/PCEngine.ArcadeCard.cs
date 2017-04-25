@@ -1,20 +1,17 @@
-﻿using System;
-using System.IO;
-using System.Globalization;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
 	partial class PCEngine
 	{
-		bool ArcadeCard, ArcadeCardRewindHack;
-		int ShiftRegister;
-		byte ShiftAmount;
-		byte RotateAmount;
-		ArcadeCardPage[] ArcadePage = new ArcadeCardPage[4];
+		private bool ArcadeCard, ArcadeCardRewindHack;
+		private int ShiftRegister;
+		private byte ShiftAmount;
+		private byte RotateAmount;
 
-		class ArcadeCardPage
+		private readonly ArcadeCardPage[] ArcadePage = new ArcadeCardPage[4];
+
+		private class ArcadeCardPage
 		{
 			public byte Control;
 			public int Base;
@@ -49,9 +46,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		void WriteArcadeCard(int addr, byte value)
+		private void WriteArcadeCard(int addr, byte value)
 		{
-			if (ArcadeCard == false) return;
+			if (ArcadeCard == false)
+			{
+				return;
+			}
+
 			var page = ArcadePage[(addr >> 4) & 3];
 			switch (addr & 0x0F)
 			{
@@ -111,7 +112,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		byte ReadArcadeCard(int addr)
+		private byte ReadArcadeCard(int addr)
 		{
 			if (ArcadeCard == false) return 0xFF;
 			var page = ArcadePage[(addr >> 4) & 3];
@@ -132,6 +133,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				case 9: return (byte)(page.Control >> 0);
 				case 10: return 0;
 			}
+
 			return 0xFF;
 		}
 
@@ -143,7 +145,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			ser.Sync("RotateAmount", ref RotateAmount);
 
 			if (ArcadeCardRewindHack == false || ser.IsText)
+			{
 				ser.Sync("ArcadeRAM", ref ArcadeRam, false);
+			}
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -155,6 +159,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				ser.Sync("IncrementValue", ref ArcadePage[i].IncrementValue);
 				ser.EndSection();
 			}
+
 			ser.EndSection();
 		}
 	}
