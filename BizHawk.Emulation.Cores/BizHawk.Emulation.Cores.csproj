@@ -416,7 +416,7 @@
       <DependentUpon>Intellivision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Intellivision\Intellivision.IDisassemblable.cs">
-        <DependentUpon>Intellivision.cs</DependentUpon>
+      <DependentUpon>Intellivision.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Intellivision\Intellivision.IInputPollable.cs">
       <DependentUpon>Intellivision.cs</DependentUpon>
@@ -446,6 +446,9 @@
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IDebuggable.cs">
       <DependentUpon>Gambatte.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IEmulator.cs">
+        <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IMemoryDomains.cs">
       <DependentUpon>Gambatte.cs</DependentUpon>
