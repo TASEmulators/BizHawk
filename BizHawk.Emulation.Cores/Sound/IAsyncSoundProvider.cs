@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Components
 		{
 			Array.Clear(pullBuffer, 0, 1470);
 			source.GetSamples(pullBuffer);
-			Buffer.enqueue_samples(pullBuffer, 735);
+			Buffer.EnqueueSamples(pullBuffer, 735);
 		}
 
 		public bool CanProvideAsync
@@ -127,12 +127,12 @@ namespace BizHawk.Emulation.Cores.Components
 
 		public void GetSamplesAsync(short[] samples)
 		{
-			Buffer.output_samples(samples, samples.Length / 2);
+			Buffer.OutputSamples(samples, samples.Length / 2);
 		}
 
 		public void DiscardSamples()
 		{
-			Buffer.clear();
+			Buffer.Clear();
 		}
 	}
 }

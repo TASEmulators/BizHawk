@@ -282,7 +282,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		private void AdpcmEmitSample()
 		{
 			if (AdpcmIsPlaying == false)
-				SoundProvider.Buffer.enqueue_sample(0, 0);
+				SoundProvider.Buffer.EnqueueSample(0, 0);
 			else
 			{
 				if (nextSampleTimer <= 0)
@@ -302,7 +302,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				}
 
 				short adjustedSample = (short)((playingSample - 2048) * MaxVolume / 2048);
-				SoundProvider.Buffer.enqueue_sample(adjustedSample, adjustedSample);
+				SoundProvider.Buffer.EnqueueSample(adjustedSample, adjustedSample);
 			}
 		}
 

@@ -9,29 +9,29 @@ namespace BizHawk.Emulation.Common
 	// Sound Refactor TODO: rename me to MetaspuAsyncSoundProvider
 	public class MetaspuAsync : ISoundProvider
 	{
-		private readonly ISynchronizingAudioBuffer buffer;
-		private readonly ISoundProvider input;
+		private readonly ISynchronizingAudioBuffer _buffer;
+		private readonly ISoundProvider _input;
 
 		public MetaspuAsync(ISoundProvider input, ESynchMethod method)
 		{
 			input.SetSyncMode(SyncSoundMode.Sync);
-			buffer = Metaspu.metaspu_construct(method);
-			this.input = input;
+			_buffer = Metaspu.metaspu_construct(method);
+			_input = input;
 		}
 
 		public void GetSamplesAsync(short[] samples)
 		{
 			short[] sampin;
 			int numsamp;
-			input.GetSamplesSync(out sampin, out numsamp);
-			buffer.enqueue_samples(sampin, numsamp);
-			buffer.output_samples(samples, samples.Length / 2);
+			_input.GetSamplesSync(out sampin, out numsamp);
+			_buffer.EnqueueSamples(sampin, numsamp);
+			_buffer.OutputSamples(samples, samples.Length / 2);
 		}
 
 		public void DiscardSamples()
 		{
-			input.DiscardSamples();
-			buffer.clear();
+			_input.DiscardSamples();
+			_buffer.Clear();
 		}
 
 		public bool CanProvideAsync => true;
@@ -54,16 +54,16 @@ namespace BizHawk.Emulation.Common
 
 	public interface ISynchronizingAudioBuffer
 	{
-		void enqueue_samples(short[] buf, int samples_provided);
-		void enqueue_sample(short left, short right);
-		void clear();
+		void EnqueueSamples(short[] buf, int samplesProvided);
+		void EnqueueSample(short left, short right);
+		void Clear();
 
 		// returns the number of samples actually supplied, which may not match the number requested
 		// ^^ what the hell is that supposed to mean.
 		// the entire point of an ISynchronzingAudioBuffer
 		// is to provide exact amounts of output samples,
 		// even when the input provided varies....
-		int output_samples(short[] buf, int samples_requested);
+		int OutputSamples(short[] buf, int samplesRequested);
 	}
 
 	public enum ESynchMethod
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Common
 		}
 	}
 
-	class ZeromusSynchronizer : ISynchronizingAudioBuffer
+	internal class ZeromusSynchronizer : ISynchronizingAudioBuffer
 	{
 		public ZeromusSynchronizer()
 		{
@@ -105,19 +105,19 @@ namespace BizHawk.Emulation.Common
 		}
 
 		//adjustobuf(200,1000)
-		bool mixqueue_go;
+		private bool mixqueue_go;
 
-		public void clear()
+		public void Clear()
 		{
 			adjustobuf.clear();
 		}
 
-		public void enqueue_sample(short left, short right)
+		public void EnqueueSample(short left, short right)
 		{
 			adjustobuf.enqueue(left, right);
 		}
 
-		public void enqueue_samples(short[] buf, int samples_provided)
+		public void EnqueueSamples(short[] buf, int samples_provided)
 		{
 			int ctr = 0;
 			for (int i = 0; i < samples_provided; i++)
@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Common
 		}
 
 		// returns the number of samples actually supplied, which may not match the number requested
-		public int output_samples(short[] buf, int samples_requested)
+		public int OutputSamples(short[] buf, int samples_requested)
 		{
 			int ctr = 0;
 			int done = 0;
@@ -318,7 +318,7 @@ namespace BizHawk.Emulation.Common
 			return new ssamp((short)lrv, (short)rrv);
 		}
 
-		public void clear()
+		public void Clear()
 		{
 			sampleQueue.Clear();
 		}
@@ -357,7 +357,7 @@ namespace BizHawk.Emulation.Common
 			return value;
 		}
 
-		public void enqueue_samples(short[] buf, int samples_provided)
+		public void EnqueueSamples(short[] buf, int samples_provided)
 		{
 			int cursor = 0;
 			for (int i = 0; i < samples_provided; i++)
@@ -367,12 +367,12 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public void enqueue_sample(short left, short right)
+		public void EnqueueSample(short left, short right)
 		{
 			sampleQueue.Add(new ssamp(left, right));
 		}
 
-		public int output_samples(short[] buf, int samples_requested)
+		public int OutputSamples(short[] buf, int samples_requested)
 		{
 			Console.WriteLine("{0} {1}", samples_requested, sampleQueue.Count); //add this line
 
@@ -588,9 +588,7 @@ namespace BizHawk.Emulation.Common
 						// zero 08-nov-2010: did i do this right?
 						return audiosize;
 					}
-
 				} // end normal speed
-
 			} // end if there is any work to do
 			else
 			{
@@ -618,19 +616,20 @@ namespace BizHawk.Emulation.Common
 		// If it underflows beyond that threshhold, it will give up and output silence.
 		// Since it has done this, it will go ahead and generate some excess silence in order
 		// to restock its excess buffer.
-
 		private struct Sample
 		{
-			public short left, right;
-			public Sample(short l, short r)
+			public readonly short Left;
+			public readonly short Right;
+
+			public Sample(short left, short right)
 			{
-				left = l;
-				right = r;
+				Left = left;
+				Right = right;
 			}
 		}
 
-		private Queue<Sample> buffer;
-		private Sample[] resampleBuffer;
+		private readonly Queue<Sample> buffer;
+		private readonly Sample[] resampleBuffer;
 		
 		private const int SamplesInOneFrame = 735;
 		private const int MaxExcessSamples = 2048;
@@ -647,18 +646,18 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public void enqueue_samples(short[] buf, int samples_provided)
+		public void EnqueueSamples(short[] buf, int samples_provided)
 		{
 			int ctr = 0;
 			for (int i = 0; i < samples_provided; i++)
 			{
 				short left = buf[ctr++];
 				short right = buf[ctr++];
-				enqueue_sample(left, right);
+				EnqueueSample(left, right);
 			}
 		}
 
-		public void enqueue_sample(short left, short right)
+		public void EnqueueSample(short left, short right)
 		{
 			if (buffer.Count >= MaxExcessSamples - 1)
 			{
@@ -669,12 +668,12 @@ namespace BizHawk.Emulation.Common
 			buffer.Enqueue(new Sample(left, right));
 		}
 
-		public void clear()
+		public void Clear()
 		{
 			buffer.Clear();
 		}
 
-		public int output_samples(short[] buf, int samples_requested)
+		public int OutputSamples(short[] buf, int samples_requested)
 		{
 			if (samples_requested > buffer.Count)
 			{
@@ -691,8 +690,8 @@ namespace BizHawk.Emulation.Common
 					for (int i = 0; i < samples_requested; i++)
 					{
 						Sample sample = resampleBuffer[i * samples_available / samples_requested];
-						buf[index++] += sample.left;
-						buf[index++] += sample.right;
+						buf[index++] += sample.Left;
+						buf[index++] += sample.Right;
 					}
 				}
 				else
@@ -709,8 +708,8 @@ namespace BizHawk.Emulation.Common
 				for (int i = 0; i < samples_requested && buffer.Count > 0; i++)
 				{
 					Sample sample = buffer.Dequeue();
-					buf[index++] += sample.left;
-					buf[index++] += sample.right;
+					buf[index++] += sample.Left;
+					buf[index++] += sample.Right;
 				}
 			}
 
