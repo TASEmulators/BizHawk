@@ -79,8 +79,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				GameCode = Encoding.ASCII.GetString(file, 0xac, 4);
 				Console.WriteLine("Game code \"{0}\"", GameCode);
 
-				savebuff = new byte[LibVBANext.BinStateSize(Core)];
-				savebuff2 = new byte[savebuff.Length + 13];
+				_savebuff = new byte[LibVBANext.BinStateSize(Core)];
+				_savebuff2 = new byte[_savebuff.Length + 13];
 				InitMemoryDomains();
 				InitRegisters();
 				InitCallbacks();
@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			SyncTraceCallback();
 
-			IsLagFrame = LibVBANext.FrameAdvance(Core, GetButtons(Controller), videobuff, soundbuff, out numsamp, videopalette);
+			IsLagFrame = LibVBANext.FrameAdvance(Core, GetButtons(Controller), _videobuff, _soundbuff, out _numsamp, _videopalette);
 
 			if (IsLagFrame)
 				LagCount++;
