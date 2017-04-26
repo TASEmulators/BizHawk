@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Common
 
 	public static class Database
 	{
-		private static readonly Dictionary<string, CompactGameInfo> db = new Dictionary<string, CompactGameInfo>();
+		private static readonly Dictionary<string, CompactGameInfo> DB = new Dictionary<string, CompactGameInfo>();
 
 		private static string RemoveHashType(string hash)
 		{
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Common
 		{
 			CompactGameInfo cgi;
 			var hash_notype = RemoveHashType(hash);
-			db.TryGetValue(hash_notype, out cgi);
+			DB.TryGetValue(hash_notype, out cgi);
 			if (cgi == null)
 			{
 				Console.WriteLine("DB: hash " + hash + " not in game database.");
@@ -114,14 +114,8 @@ namespace BizHawk.Emulation.Common
 				.Append('\t')
 				.Append(gameInfo.MetaData)
 				.Append(Environment.NewLine);
-			try
-			{
-				File.AppendAllText(path, sb.ToString());
-			}
-			catch (Exception ex)
-			{
-				string blah = ex.ToString();
-			}
+
+			File.AppendAllText(path, sb.ToString());
 		}
 
 		public static void LoadDatabase(string path)
@@ -194,12 +188,12 @@ namespace BizHawk.Emulation.Common
 						game.Region = items.Length >= 7 ? items[6] : string.Empty;
 						game.ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : string.Empty;
 
-						if (db.ContainsKey(game.Hash))
+						if (DB.ContainsKey(game.Hash))
 						{
-							Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, db[game.Hash].Name);
+							Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, DB[game.Hash].Name);
 						}
 
-						db[game.Hash] = game;
+						DB[game.Hash] = game;
 					}
 					catch
 					{
@@ -213,19 +207,19 @@ namespace BizHawk.Emulation.Common
 		{
 			CompactGameInfo cgi;
 			var hash = $"{CRC32.Calculate(romData):X8}";
-			if (db.TryGetValue(hash, out cgi))
+			if (DB.TryGetValue(hash, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
 			hash = romData.HashMD5();
-			if (db.TryGetValue(hash, out cgi))
+			if (DB.TryGetValue(hash, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
 			hash = romData.HashSHA1();
-			if (db.TryGetValue(hash, out cgi))
+			if (DB.TryGetValue(hash, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
