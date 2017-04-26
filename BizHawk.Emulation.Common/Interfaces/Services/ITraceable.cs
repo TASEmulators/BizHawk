@@ -11,30 +11,20 @@
 	/// </summary>
 	public interface ITraceable : IEmulatorService
 	{
-		//bool Enabled { get; set; }
-
 		/// <summary>
 		/// Gets the header that would be used by a trace logger
 		/// </summary>
-		string Header { get; set; }
+		string Header { get; }
 
 		/// <summary>
-		/// The current log of cpu instructions
+		/// Sets the sink
+		/// that's right, we can only have one sink.
+		/// a sink can route to two other sinks if it has to, though
 		/// </summary>
-		//IEnumerable<TraceInfo> Contents { get; }
+		ITraceSink Sink { set; }
 
 		/// <summary>
-		/// Takes the current log of cpu instructions, when doing so, it will clear the contents from the buffer
-		/// </summary>
-		//IEnumerable<TraceInfo> TakeContents();
-
-		//void Put(TraceInfo content);
-
-		// that's right, we can only have one sink.
-		//a sink can route to two other sinks if it has to, though
-		ITraceSink Sink { get; set; }
-
-		/// <summary>
+		/// Gets a value indicating whether racing is enabled
 		/// This is defined as equivalent to Sink != null
 		/// It's put here because it's such a common operation to check whether it's enabled, and it's not nice to write Sink != null all over
 		/// </summary>
