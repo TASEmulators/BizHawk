@@ -14,6 +14,7 @@ class InputDevice_DualAnalog : public InputDevice
 
  virtual void Power(void);
  virtual void UpdateInput(const void *data);
+ virtual void SyncState(bool isReader, EW::NewState *ns);
 
  //
  //
@@ -74,6 +75,24 @@ void InputDevice_DualAnalog::Power(void)
  transmit_count = 0;
 }
 
+void InputDevice_DualAnalog::SyncState(bool isReader, EW::NewState *ns)
+{
+	NSS(joystick_mode);
+	NSS(dtr);
+
+	NSS(buttons);
+	NSS(axes);
+
+	NSS(command_phase);
+	NSS(bitpos);
+	NSS(receive_buffer);
+
+	NSS(command);
+
+	NSS(transmit_buffer);
+	NSS(transmit_pos);
+	NSS(transmit_count);
+}
 
 void InputDevice_DualAnalog::UpdateInput(const void *data)
 {
