@@ -655,9 +655,13 @@ static void LoadHandler(eMessage msg)
 	comm.funs.retro_init();
 
 	retro_game_info rgi;
+	retro_game_info* rgiptr = &rgi;
 	memset(&rgi,0,sizeof(rgi));
 	
-	if (msg == eMessage::CMD_LoadNoGame) {}
+	if (msg == eMessage::CMD_LoadNoGame)
+	{
+		rgiptr = nullptr;
+	}
 	else
 	{
 		rgi.path = (const char*)comm.buf[BufId::Param0];
@@ -668,7 +672,7 @@ static void LoadHandler(eMessage msg)
 		}
 	}
 
-	comm.funs.retro_load_game(&rgi);
+	comm.funs.retro_load_game(rgiptr);
 
 	//Can be called only after retro_load_game() has successfully completed.
 	comm.funs.retro_get_system_av_info(&comm.env.retro_system_av_info);
