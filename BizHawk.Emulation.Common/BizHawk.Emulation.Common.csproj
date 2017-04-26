@@ -146,7 +146,6 @@
     <Compile Include="ServiceInjector.cs" />
     <Compile Include="Sound\Utilities\BlipBuffer.cs" />
     <Compile Include="Sound\Utilities\DCFilter.cs" />
-    <Compile Include="Sound\Utilities\Equalizer.cs" />
     <Compile Include="Sound\Utilities\ISynchronizingAudioBuffer.cs" />
     <Compile Include="Sound\Utilities\Metaspu.cs" />
     <Compile Include="Sound\Utilities\SpeexResampler.cs" />
