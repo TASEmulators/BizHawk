@@ -16,13 +16,11 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// produces a path that contains emulation related DLL and exe files
 		/// </summary>
-		/// <returns></returns>
 		string DllPath();
 
 		/// <summary>
 		/// produces a path that contains saveram... because libretro cores need it
 		/// </summary>
-		/// <returns></returns>
 		string GetRetroSaveRAMDirectory();
 
 		/// <summary>

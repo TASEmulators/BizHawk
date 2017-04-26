@@ -20,7 +20,8 @@ namespace BizHawk.Emulation.Common
 		}
 
 		/// <summary>
-		/// create a NullSound that provides an exact number of audio samples per call when in sync mode
+		/// Initializes a new instance of the <see cref="NullSound"/> class
+		/// that provides an exact number of audio samples per call when in sync mode
 		/// </summary>
 		public NullSound(int spf)
 			: this()
@@ -30,7 +31,8 @@ namespace BizHawk.Emulation.Common
 		}
 
 		/// <summary>
-		/// create a NullSound that exactly matches a given framerate when in sync mode
+		/// Initializes a new instance of the <see cref="NullSound"/> class
+		/// that exactly matches a given framerate when in sync mode
 		/// </summary>
 		public NullSound(long fpsNum, long fpsDen)
 		{

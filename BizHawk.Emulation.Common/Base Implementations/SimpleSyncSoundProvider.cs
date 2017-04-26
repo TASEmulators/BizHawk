@@ -25,8 +25,6 @@ namespace BizHawk.Emulation.Common.Base_Implementations
 		/// <summary>
 		/// Add samples to be output.  no queueing; must be drained every frame
 		/// </summary>
-		/// <param name="samples"></param>
-		/// <param name="nsamp"></param>
 		public void PutSamples(short[] samples, int nsamp)
 		{
 			if (_nsamp != 0)

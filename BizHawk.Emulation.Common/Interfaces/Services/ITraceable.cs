@@ -14,7 +14,7 @@
 		//bool Enabled { get; set; }
 
 		/// <summary>
-		/// The header that would be used by a trace logger
+		/// Gets the header that would be used by a trace logger
 		/// </summary>
 		string Header { get; set; }
 

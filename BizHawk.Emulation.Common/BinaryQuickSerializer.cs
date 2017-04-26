@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Common
 		private static SerializationFactory CreateFactory(Type t)
 		{
 			var fields = DeepEquality.GetAllFields(t)
-				//.OrderBy(fi => (int)fi.GetManagedOffset()) // [StructLayout.Sequential] doesn't work with this
+				////.OrderBy(fi => (int)fi.GetManagedOffset()) // [StructLayout.Sequential] doesn't work with this
 				.OrderBy(fi => (int)Marshal.OffsetOf(t, fi.Name))
 				.ToList();
 

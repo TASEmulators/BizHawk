@@ -344,8 +344,6 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// add a sample to the queue
 		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
 		public void EnqueueSample(short left, short right)
 		{
 			inbuf[inbufpos++] = left;

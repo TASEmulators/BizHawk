@@ -18,22 +18,22 @@ namespace BizHawk.Emulation.Common
 		 */
 
 		/// <summary>
-		/// Specifies whether or not Execute callbacks are available for this this implementation
+		/// Gets a value indicating whether or not Execute callbacks are available for this this implementation
 		/// </summary>
 		bool ExecuteCallbacksAvailable { get; }
 
 		/// <summary>
-		/// Returns whether or not there are currently any read hooks
+		/// Gets a value indicating whether or not there are currently any read hooks
 		/// </summary>
 		bool HasReads { get; }
 
 		/// <summary>
-		/// Returns whether or not there are currently any write hooks
+		/// Gets a value indicating whether or not there are currently any write hooks
 		/// </summary>
 		bool HasWrites { get; }
 
 		/// <summary>
-		/// Returns whether or not there are currently any execute hooks
+		/// Gets a value indicating whether or not there are currently any execute hooks
 		/// </summary>
 		bool HasExecutes { get; }
 
@@ -45,17 +45,17 @@ namespace BizHawk.Emulation.Common
 		void Add(IMemoryCallback callback);
 
 		/// <summary>
-		/// Executes all Read callbacks for the given addr
+		/// Executes all Read callbacks for the given address
 		/// </summary>
 		void CallReads(uint addr);
 
 		/// <summary>
-		/// Executes all Write callbacks for the given addr
+		/// Executes all Write callbacks for the given address
 		/// </summary>
 		void CallWrites(uint addr);
 
 		/// <summary>
-		/// Executes all Execute callbacks for the given addr
+		/// Executes all Execute callbacks for the given address
 		/// </summary>
 		void CallExecutes(uint addr);
 
