@@ -31,6 +31,7 @@
 
 #include "input/dualshock.h"
 #include "input/dualanalog.h"
+#include "input/negcon.h"
 #include "input/gamepad.h"
 #include "input/memcard.h"
 
@@ -1093,6 +1094,7 @@ struct {
 		case ePeripheralType_Pad: name = "gamepad"; break;
 		case ePeripheralType_DualShock: name = "dualshock"; break;
 		case ePeripheralType_DualAnalog: name = "dualanalog"; break;
+		case ePeripheralType_NegCon: name = "negcon"; break;
 		default:
 			return SHOCK_ERROR;
 		}
@@ -1140,6 +1142,14 @@ struct {
 				return ret;
 				break;
 			}
+		case ePeripheralType_NegCon:
+		{
+			IO_NegCon* io_negcon = (IO_NegCon*)buf;
+			if (io_negcon->active) ret = SHOCK_TRUE;
+			if (clear) io_negcon->active = 0;
+			return ret;
+			break;
+		}
 
 		case ePeripheralType_None:
 			return SHOCK_NOCANDO;
@@ -1188,6 +1198,17 @@ struct {
 				io_dualanalog->right_y = right_y;
 				io_dualanalog->left_x = left_x;
 				io_dualanalog->left_y = left_y;
+				return SHOCK_OK;
+			}
+		case ePeripheralType_NegCon:
+			{
+				IO_NegCon* io_negcon = (IO_NegCon*)buf;
+				io_negcon->buttons[0] = (buttons >> 0) & 0xFF;
+				io_negcon->buttons[1] = (buttons >> 8) & 0xFF;
+				io_negcon->twist = left_x;
+				io_negcon->anabuttons[0] = left_y;
+				io_negcon->anabuttons[1] = right_x;
+				io_negcon->anabuttons[2] = right_y;
 				return SHOCK_OK;
 			}
 		
