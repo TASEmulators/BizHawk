@@ -1,6 +1,4 @@
-﻿//garbage
-
-namespace BizHawk.Emulation.Common
+﻿namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// A generic implementation of ITraceable that can be used by any core

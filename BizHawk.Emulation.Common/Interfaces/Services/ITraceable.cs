@@ -6,7 +6,7 @@
 	}
 
 	/// <summary>
-	/// This service allows the core to dump a cpu trace to the client
+	/// This service allows the core to dump a CPU trace to the client
 	/// If available the Trace Logger tool will be available on the client
 	/// </summary>
 	public interface ITraceable : IEmulatorService
