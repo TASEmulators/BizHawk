@@ -31,6 +31,7 @@ namespace BizHawk.Client.EmuHawk
 				combo.Items.Add("Gamepad");
 				combo.Items.Add("Dual Shock");
 				combo.Items.Add("Dual Analog");
+				combo.Items.Add("neGcon");
 				combo.SelectedIndex = 0;
 			}
 
@@ -55,6 +56,7 @@ namespace BizHawk.Client.EmuHawk
 				if (user.Devices8[i] == OctoshockDll.ePeripheralType.Pad) combo.SelectedIndex = 1;
 				if (user.Devices8[i] == OctoshockDll.ePeripheralType.DualShock) combo.SelectedIndex = 2;
 				if (user.Devices8[i] == OctoshockDll.ePeripheralType.DualAnalog) combo.SelectedIndex = 3;
+				if (user.Devices8[i] == OctoshockDll.ePeripheralType.NegCon) combo.SelectedIndex = 4;
 			}
 		}
 
@@ -76,6 +78,7 @@ namespace BizHawk.Client.EmuHawk
 				if (combo.SelectedIndex == 1) uc.Devices8[i] = OctoshockDll.ePeripheralType.Pad;
 				if (combo.SelectedIndex == 2) uc.Devices8[i] = OctoshockDll.ePeripheralType.DualShock;
 				if (combo.SelectedIndex == 3) uc.Devices8[i] = OctoshockDll.ePeripheralType.DualAnalog;
+				if (combo.SelectedIndex == 4) uc.Devices8[i] = OctoshockDll.ePeripheralType.NegCon;
 			}
 
 			return uc;

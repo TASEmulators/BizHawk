@@ -74,6 +74,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			DualShock = 2, //SCPH-1200
 			DualAnalog = 3, //SCPH-1180
 
+			NegCon = 4,
+
 			Multitap = 10,
 		};
 
@@ -221,6 +223,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Peripheral_SetPadInput(IntPtr psx, int address, uint buttons, byte left_x, byte left_y, byte right_x, byte right_y);
+
+		[DllImport(dd, CallingConvention = cc)]
+		public static extern int shock_Peripheral_SetNegconInput(IntPtr psx, int address, uint buttons, byte twist, byte analog1, byte analog2, byte analogL);
 
 		[DllImport(dd, CallingConvention = cc)]
 		public static extern int shock_Peripheral_MemcardTransact(IntPtr psx, int address, ref ShockMemcardTransaction transaction);

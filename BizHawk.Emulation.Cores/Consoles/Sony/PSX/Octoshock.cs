@@ -46,44 +46,75 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			for (int i = 0; i < cfg.NumPlayers; i++)
 			{
 				int pnum = i + 1;
-				definition.BoolButtons.AddRange(new[]
-				{
-						"P" + pnum + " Up",
-						"P" + pnum + " Down",
-						"P" + pnum + " Left",
-						"P" + pnum + " Right",
-						"P" + pnum + " Select",
-						"P" + pnum + " Start",
-						"P" + pnum + " Square",
-						"P" + pnum + " Triangle",
-						"P" + pnum + " Circle",
-						"P" + pnum + " Cross",
-						"P" + pnum + " L1",
-						"P" + pnum + " R1",
-						"P" + pnum + " L2",
-						"P" + pnum + " R2",
-					});
 
 				var type = cfg.DevicesPlayer[i];
-
-				if (type == OctoshockDll.ePeripheralType.DualShock || type == OctoshockDll.ePeripheralType.DualAnalog)
+				if (type == OctoshockDll.ePeripheralType.NegCon)
 				{
-					definition.BoolButtons.Add("P" + pnum + " L3");
-					definition.BoolButtons.Add("P" + pnum + " R3");
-					definition.BoolButtons.Add("P" + pnum + " MODE");
+					definition.BoolButtons.AddRange(new[]
+					{
+							"P" + pnum + " Up",
+							"P" + pnum + " Down",
+							"P" + pnum + " Left",
+							"P" + pnum + " Right",
+							"P" + pnum + " Start",
+							"P" + pnum + " R",
+							"P" + pnum + " B",
+							"P" + pnum + " A",
+					});
 
 					definition.FloatControls.AddRange(new[]
+						{
+								"P" + pnum + " Twist",
+								"P" + pnum + " 1",
+								"P" + pnum + " 2",
+								"P" + pnum + " L"
+							});
+
+						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+				}
+				else
+				{
+					definition.BoolButtons.AddRange(new[]
 					{
-							"P" + pnum + " LStick X",
-							"P" + pnum + " LStick Y",
-							"P" + pnum + " RStick X",
-							"P" + pnum + " RStick Y"
+							"P" + pnum + " Up",
+							"P" + pnum + " Down",
+							"P" + pnum + " Left",
+							"P" + pnum + " Right",
+							"P" + pnum + " Select",
+							"P" + pnum + " Start",
+							"P" + pnum + " Square",
+							"P" + pnum + " Triangle",
+							"P" + pnum + " Circle",
+							"P" + pnum + " Cross",
+							"P" + pnum + " L1",
+							"P" + pnum + " R1",
+							"P" + pnum + " L2",
+							"P" + pnum + " R2",
 						});
 
-					definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-					definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
-					definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
-					definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+
+					if (type == OctoshockDll.ePeripheralType.DualShock || type == OctoshockDll.ePeripheralType.DualAnalog)
+					{
+						definition.BoolButtons.Add("P" + pnum + " L3");
+						definition.BoolButtons.Add("P" + pnum + " R3");
+						definition.BoolButtons.Add("P" + pnum + " MODE");
+
+						definition.FloatControls.AddRange(new[]
+						{
+								"P" + pnum + " LStick X",
+								"P" + pnum + " LStick Y",
+								"P" + pnum + " RStick X",
+								"P" + pnum + " RStick Y"
+							});
+
+						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+						definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+						definition.FloatRanges.Add(new[] { 0.0f, 128.0f, 255.0f });
+						definition.FloatRanges.Add(new[] { 255.0f, 128.0f, 0.0f });
+					}
 				}
 			}
 
@@ -435,35 +466,59 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				uint buttons = 0;
 				string pstring = "P" + fioCfg.PlayerAssignments[slot] + " ";
 
-				if (Controller.IsPressed(pstring + "Select")) buttons |= 1;
-				if (Controller.IsPressed(pstring + "Start")) buttons |= 8;
-				if (Controller.IsPressed(pstring + "Up")) buttons |= 16;
-				if (Controller.IsPressed(pstring + "Right")) buttons |= 32;
-				if (Controller.IsPressed(pstring + "Down")) buttons |= 64;
-				if (Controller.IsPressed(pstring + "Left")) buttons |= 128;
-				if (Controller.IsPressed(pstring + "L2")) buttons |= 256;
-				if (Controller.IsPressed(pstring + "R2")) buttons |= 512;
-				if (Controller.IsPressed(pstring + "L1")) buttons |= 1024;
-				if (Controller.IsPressed(pstring + "R1")) buttons |= 2048;
-				if (Controller.IsPressed(pstring + "Triangle")) buttons |= 4096;
-				if (Controller.IsPressed(pstring + "Circle")) buttons |= 8192;
-				if (Controller.IsPressed(pstring + "Cross")) buttons |= 16384;
-				if (Controller.IsPressed(pstring + "Square")) buttons |= 32768;
-
-				byte left_x = 0, left_y = 0, right_x = 0, right_y = 0;
-				if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualShock || fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualAnalog)
+				if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.NegCon)
 				{
-					if (Controller.IsPressed(pstring + "L3")) buttons |= 2;
-					if (Controller.IsPressed(pstring + "R3")) buttons |= 4;
-					if (Controller.IsPressed(pstring + "MODE")) buttons |= 65536;
+					//1,2,4 skipped (would be Select, L3, R3 on other pads)
+					if (Controller.IsPressed(pstring + "Start")) buttons |= 8;
+					if (Controller.IsPressed(pstring + "Up")) buttons |= 16;
+					if (Controller.IsPressed(pstring + "Right")) buttons |= 32;
+					if (Controller.IsPressed(pstring + "Down")) buttons |= 64;
+					if (Controller.IsPressed(pstring + "Left")) buttons |= 128;
+					//256,512,1024 skipped (would be L2, R2, L1 on other pads)
+					if (Controller.IsPressed(pstring + "R")) buttons |= 2048;
+					if (Controller.IsPressed(pstring + "B")) buttons |= 4096;
+					if (Controller.IsPressed(pstring + "A")) buttons |= 8192;
 
-					left_x = (byte)Controller.GetFloat(pstring + "LStick X");
-					left_y = (byte)Controller.GetFloat(pstring + "LStick Y");
-					right_x = (byte)Controller.GetFloat(pstring + "RStick X");
-					right_y = (byte)Controller.GetFloat(pstring + "RStick Y");
+					byte twist = (byte)Controller.GetFloat(pstring + "Twist");
+					byte analog1 = (byte)Controller.GetFloat(pstring + "1");
+					byte analog2 = (byte)Controller.GetFloat(pstring + "2");
+					byte analogL = (byte)Controller.GetFloat(pstring + "L");
+
+					OctoshockDll.shock_Peripheral_SetPadInput(psx, portNum, buttons, twist, analog1, analog2, analogL);
+				}
+				else
+				{
+					if (Controller.IsPressed(pstring + "Select")) buttons |= 1;
+					if (Controller.IsPressed(pstring + "Start")) buttons |= 8;
+					if (Controller.IsPressed(pstring + "Up")) buttons |= 16;
+					if (Controller.IsPressed(pstring + "Right")) buttons |= 32;
+					if (Controller.IsPressed(pstring + "Down")) buttons |= 64;
+					if (Controller.IsPressed(pstring + "Left")) buttons |= 128;
+					if (Controller.IsPressed(pstring + "L2")) buttons |= 256;
+					if (Controller.IsPressed(pstring + "R2")) buttons |= 512;
+					if (Controller.IsPressed(pstring + "L1")) buttons |= 1024;
+					if (Controller.IsPressed(pstring + "R1")) buttons |= 2048;
+					if (Controller.IsPressed(pstring + "Triangle")) buttons |= 4096;
+					if (Controller.IsPressed(pstring + "Circle")) buttons |= 8192;
+					if (Controller.IsPressed(pstring + "Cross")) buttons |= 16384;
+					if (Controller.IsPressed(pstring + "Square")) buttons |= 32768;
+
+					byte left_x = 0, left_y = 0, right_x = 0, right_y = 0;
+					if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualShock || fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualAnalog)
+					{
+						if (Controller.IsPressed(pstring + "L3")) buttons |= 2;
+						if (Controller.IsPressed(pstring + "R3")) buttons |= 4;
+						if (Controller.IsPressed(pstring + "MODE")) buttons |= 65536;
+
+						left_x = (byte)Controller.GetFloat(pstring + "LStick X");
+						left_y = (byte)Controller.GetFloat(pstring + "LStick Y");
+						right_x = (byte)Controller.GetFloat(pstring + "RStick X");
+						right_y = (byte)Controller.GetFloat(pstring + "RStick Y");
+					}
+
+					OctoshockDll.shock_Peripheral_SetPadInput(psx, portNum, buttons, left_x, left_y, right_x, right_y);
 				}
 
-				OctoshockDll.shock_Peripheral_SetPadInput(psx, portNum, buttons, left_x, left_y, right_x, right_y);
 				portNum <<= 1;
 			}
 		}
