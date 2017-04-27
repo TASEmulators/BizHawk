@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Common
 			/// <param name="in_rate">Input sampling rate rounded to the nearest integer (in Hz).</param>
 			/// <param name="out_rate">Output sampling rate rounded to the nearest integer (in Hz).</param>
 			/// <param name="quality">Resampling quality between 0 and 10, where 0 has poor quality and 10 has very high quality.</param>
-			/// <param name="err"></param>
+			/// <param name="err">The error state</param>
 			/// <returns>Newly created resampler state</returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern IntPtr speex_resampler_init_frac(uint nb_channels, uint ratio_num, uint ratio_den, uint in_rate, uint out_rate, int quality, ref RESAMPLER_ERR err);
@@ -161,7 +161,6 @@ namespace BizHawk.Emulation.Common
 			/// </summary>
 			/// <param name="st">Resampler state</param>
 			/// <param name="quality">Resampling quality between 0 and 10, where 0 has poor quality and 10 has very high quality.</param>
-			/// <returns></returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern RESAMPLER_ERR speex_resampler_set_quality(IntPtr st, int quality);
 

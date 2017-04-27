@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Sets the controller instance that the core will use for input.
 		/// Tee <seealso cref="IController"/> provided by the client must provide the buttons specified the buttons
-		/// defined by the <seealso cref="=ControllerDefinition"/> provided by the core
+		/// defined by the <seealso cref="ControllerDefinition"/> provided by the core
 		/// </summary>
 		IController Controller { set; }
 

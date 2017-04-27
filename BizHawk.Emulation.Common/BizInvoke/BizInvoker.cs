@@ -553,6 +553,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 		public bool Compatibility { get; set; }
 
 		/// <summary>
+		/// Initializes a new instance of the <see cref="BizImportAttribute"/> class. 
 		/// </summary>
 		/// <param name="c">unmanaged calling convention</param>
 		public BizImportAttribute(CallingConvention c)

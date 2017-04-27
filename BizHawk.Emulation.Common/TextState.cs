@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Common
 		public readonly Node Root = new Node();
 
 		[JsonIgnore]
-		Stack<Node> Nodes;
+		private Stack<Node> Nodes;
 
 		[JsonIgnore]
 		private Node Current => Nodes.Peek();

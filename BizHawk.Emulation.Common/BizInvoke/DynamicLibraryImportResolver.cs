@@ -18,7 +18,9 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			_p = Libdl.dlopen(dllName, Libdl.RTLD_NOW);
 #endif
 			if (_p == IntPtr.Zero)
+			{
 				throw new InvalidOperationException("LoadLibrary returned NULL");
+			}
 		}
 
 		public IntPtr Resolve(string entryPoint)

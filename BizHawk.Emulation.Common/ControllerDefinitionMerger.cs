@@ -58,42 +58,43 @@ namespace BizHawk.Emulation.Common
 
 	public class ControlDefUnMerger
 	{
-		private readonly Dictionary<string, string> Remaps;
+		private readonly Dictionary<string, string> _remaps;
 
 		public ControlDefUnMerger(Dictionary<string, string> remaps)
 		{
-			Remaps = remaps;
+			_remaps = remaps;
 		}
 
 		private class DummyController : IController
 		{
-			private readonly IController src;
-			private readonly Dictionary<string, string> remaps;
+			private readonly IController _src;
+			private readonly Dictionary<string, string> _remaps;
 
 			public DummyController(IController src, Dictionary<string, string> remaps)
 			{
-				this.src = src;
-				this.remaps = remaps;
+				_src = src;
+				_remaps = remaps;
 			}
 
-			public ControllerDefinition Definition { get { throw new NotImplementedException(); } }
-
-			public bool this[string button] => IsPressed(button);
+			public ControllerDefinition Definition
+			{
+				get { throw new NotImplementedException(); }
+			}
 
 			public bool IsPressed(string button)
 			{
-				return src.IsPressed(remaps[button]);
+				return _src.IsPressed(_remaps[button]);
 			}
 
 			public float GetFloat(string name)
 			{
-				return src.GetFloat(remaps[name]);
+				return _src.GetFloat(_remaps[name]);
 			}
 		}
 
 		public IController UnMerge(IController c)
 		{
-			return new DummyController(c, Remaps);
+			return new DummyController(c, _remaps);
 		}
 	}
 }
