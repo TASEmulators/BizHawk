@@ -90,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Components
 		public ISynchronizingAudioBuffer Buffer { get; }
 
 		public MetaspuSoundProvider()
-			: this(ESynchMethod.ESynchMethod_V)
+			: this(ESynchMethod.Vecna)
 		{
 		}
 
