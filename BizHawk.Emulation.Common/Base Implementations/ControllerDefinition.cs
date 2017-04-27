@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace BizHawk.Emulation.Common
 {
@@ -190,23 +191,28 @@ namespace BizHawk.Emulation.Common
 			return player;
 		}
 
+		private static readonly Regex PlayerRegex = new Regex("^P(\\d) ");
+
 		// TODO: a more respectable logic here, and possibly per core implementation
 		public int PlayerCount
 		{
 			get
 			{
-				var list = FloatControls.Union(BoolButtons).ToList();
-				if (list.Any(b => b.StartsWith("P8"))) { return 8; }
-				if (list.Any(b => b.StartsWith("P7"))) { return 7; }
-				if (list.Any(b => b.StartsWith("P6"))) { return 6; }
-				if (list.Any(b => b.StartsWith("P5"))) { return 5; }
-				if (list.Any(b => b.StartsWith("P4"))) { return 4; }
-				if (list.Any(b => b.StartsWith("P3"))) { return 3; }
-				if (list.Any(b => b.StartsWith("P2"))) { return 2; }
-				if (list.Any(b => b.StartsWith("P1"))) { return 1; }
+				var allNames = FloatControls.Concat(BoolButtons).ToList();
+				var player = allNames
+					.Select(s => PlayerRegex.Match(s).Groups[1])
+					.Where(group => group.Success)
+					.Select(group => group.Value[0] - '0')
+					.DefaultIfEmpty(0)
+					.Max();
+
+				if (player > 0)
+				{
+					return player;
+				}
 
 				// Hack for things like gameboy/ti-83 as opposed to genesis with no controllers plugged in
-				if (list.Any(b => b.StartsWith("Up")))
+				if (allNames.Any(b => b.StartsWith("Up")))
 				{
 					return 1;
 				} 
