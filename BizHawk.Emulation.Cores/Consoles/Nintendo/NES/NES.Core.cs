@@ -332,17 +332,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (_isVS)
 			{
-				if (controller.IsPressed("Service Switch"))
+				if (Controller.IsPressed("Service Switch"))
 					VS_service = 1;
 				else
 					VS_service = 0;
 
-				if (controller.IsPressed("Insert Coin P1"))
+				if (Controller.IsPressed("Insert Coin P1"))
 					VS_coin_inserted |= 1;
 				else
 					VS_coin_inserted &= 2;
 
-				if (controller.IsPressed("Insert Coin P2"))
+				if (Controller.IsPressed("Insert Coin P2"))
 					VS_coin_inserted |= 2;
 				else
 					VS_coin_inserted &= 1;

@@ -819,7 +819,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }

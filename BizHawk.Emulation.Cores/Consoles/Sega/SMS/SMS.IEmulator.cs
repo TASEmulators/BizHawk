@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{

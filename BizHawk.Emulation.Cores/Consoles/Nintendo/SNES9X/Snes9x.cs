@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			get { return NullController.Instance.Definition; }
 		}
 
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 
 		#endregion
 

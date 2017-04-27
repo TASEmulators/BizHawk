@@ -25,10 +25,11 @@ namespace BizHawk.Emulation.Common
 		ControllerDefinition ControllerDefinition { get; }
 
 		/// <summary>
-		/// Provides controller instance information to the core, such as what buttons are currently pressed
-		/// Note that the client is responsible for setting this property and updating its state
+		/// Sets the controller instance that the core will use for input.
+		/// Tee <seealso cref="IController"/> provided by the client must provide the buttons specified the buttons
+		/// defined by the <seealso cref="=ControllerDefinition"/> provided by the core
 		/// </summary>
-		IController Controller { get; set; }
+		IController Controller { set; }
 
 		/// <summary>
 		/// Runs the emulator core for 1 frame

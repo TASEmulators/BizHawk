@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public ControllerDefinition ControllerDefinition { get { return Atari2600ControllerDefinition; } }
 
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 
 		public int Frame { get { return _frame; } set { _frame = value; } }
 

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{

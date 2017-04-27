@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		public Atari7800Control ControlAdapter { get; private set; }
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 
 
 		private class ConsoleLogger : ILogger

@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 
 		// TODO: use render and rendersound
 		public void FrameAdvance(bool render, bool rendersound = true)

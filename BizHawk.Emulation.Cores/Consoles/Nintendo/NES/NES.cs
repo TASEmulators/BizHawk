@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			this.SyncSettings = (NESSyncSettings)SyncSettings ?? new NESSyncSettings();
 			this.ControllerSettings = this.SyncSettings.Controls;
 			CoreComm = comm;
-			
+
 			MemoryCallbacks = new MemoryCallbackSystem();
 			BootGodDB.Initialize();
 			videoProvider = new MyVideoProvider(this);
@@ -64,14 +64,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				PickVSPalette(cart);
 			}
 
-			
+
 			ser.Register<IDisassemblable>(cpu);
 
 			Tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(videoProvider);
 			ser.Register<ISoundProvider>(magicSoundProvider);
-			
+
 			if (Board is BANDAI_FCG_1)
 			{
 				var reader = (Board as BANDAI_FCG_1).reader;
@@ -354,15 +354,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
-		IController controller;
-		public IController Controller
-		{
-			get { return controller; }
-			set { controller = value; }
-		}
+		public IController Controller { private get; set; }
 
-		int _frame;
-
+		private int _frame;
 		public int Frame { get { return _frame; } set { _frame = value; } }
 
 		public void ResetCounters()

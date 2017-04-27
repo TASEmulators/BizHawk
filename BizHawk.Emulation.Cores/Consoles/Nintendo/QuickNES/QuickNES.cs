@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		#region Controller
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 
 		void SetControllerDefinition()
 		{

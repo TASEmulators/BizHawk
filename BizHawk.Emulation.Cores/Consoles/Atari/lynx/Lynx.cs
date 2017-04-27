@@ -175,7 +175,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		};
 
 		public ControllerDefinition ControllerDefinition { get { return LynxTroller; } }
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 
 		private LibLynx.Buttons GetButtons()
 		{

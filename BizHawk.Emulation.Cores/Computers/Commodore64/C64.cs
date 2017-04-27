@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		[SaveState.DoNotSave]
 		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
 		[SaveState.DoNotSave]
-		public IController Controller { get { return _board.Controller; } set { _board.Controller = value; } }
+		public IController Controller { private get { return _board.Controller; } set { _board.Controller = value; } }
 		[SaveState.DoNotSave]
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public ControllerDefinition ControllerDefinition => AppleIIController;
 
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 
 		public int Frame { get; private set; }
 

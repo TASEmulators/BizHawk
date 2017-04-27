@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private readonly ColecoVisionControllerDeck ControllerDeck;
 
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 
 		private const ushort RamSizeMask = 0x03FF;
 

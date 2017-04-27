@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			get { return TI83Controller; }
 		}
 
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{

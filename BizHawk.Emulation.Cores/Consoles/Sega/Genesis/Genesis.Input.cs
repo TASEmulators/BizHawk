@@ -15,6 +15,6 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		};
 
 		public ControllerDefinition ControllerDefinition { get { return GenesisController; } }
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 	}
 }

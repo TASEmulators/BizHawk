@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public ControllerDefinition ControllerDefinition => PCEngineController;
 
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 
 		public void FrameAdvance(bool render, bool rendersound)
 		{

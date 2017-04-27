@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		};
 
 		public ControllerDefinition ControllerDefinition { get { return PSPController; } }
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 		public bool DeterministicEmulation { get { return true; } }
 		public string SystemId { get { return "PSP"; } }
 		public CoreComm CoreComm { get; private set; }

@@ -37,12 +37,12 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				"P2 B",
 				"P2 A",
 
-				"Power",				
+				"Power",
 				"Rotate"
 			}
 		};
 		public ControllerDefinition ControllerDefinition { get { return WonderSwanController; } }
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 
 		BizSwan.Buttons GetButtons()
 		{

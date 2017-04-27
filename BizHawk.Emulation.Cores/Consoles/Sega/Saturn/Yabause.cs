@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			get { return SaturnController; }
 		}
 
-		public IController Controller { get; set; }
+		public IController Controller { private get; set; }
 
 		public bool GLMode { get; private set; }
 
