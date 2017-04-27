@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Common
 	/// This object facilitates communications between client and core
 	/// and is used by the IEmulator interface
 	/// The primary use is to provide a client => core communication, such as providing client-side callbacks for a core to use
-	/// Any communications that can be described as purely a Core -> Client system, should be provided as an IEmulatorService instead
+	/// Any communications that can be described as purely a Core -> Client system, should be provided as an <seealso cref="IEmulatorService"/> instead
 	/// </summary>
 	/// <seealso cref="IEmulator" />
 	public class CoreComm
@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Common
 			Notify = notifyMessage;
 		}
 
-		public ICoreFileProvider CoreFileProvider;
+		public ICoreFileProvider CoreFileProvider { get; set; }
 
 		public double VsyncRate => VsyncNum / (double)VsyncDen;
 
@@ -25,31 +25,32 @@ namespace BizHawk.Emulation.Common
 		public int VsyncDen = 1;
 
 		// a core should set these if you wish to provide rom status information yourself. otherwise it will be calculated by the frontend in a way you may not like, using RomGame-related concepts.
-		public string RomStatusAnnotation;
-		public string RomStatusDetails;
+		public string RomStatusAnnotation { get; set; }
+		public string RomStatusDetails { get; set; }
 
-		public int ScreenLogicalOffsetX, ScreenLogicalOffsetY;
+		public int ScreenLogicalOffsetX { get; set; }
+		public int ScreenLogicalOffsetY { get; set; }
 
 		// size hint to a/v out resizer.  this probably belongs in VideoProvider?  but it's somewhat different than VirtualWidth...
-		public int NominalWidth = 640;
-		public int NominalHeight = 480;
+		public int NominalWidth { get; set; } = 640;
+		public int NominalHeight { get; set; } = 480;
 
 		// I know we want to get rid of CoreComm, but while it's still here, I'll use it for this
-		public string LaunchLibretroCore;
+		public string LaunchLibretroCore { get; set; }
 
 		/// <summary>
-		/// show a message.  reasonably annoying (dialog box), shouldn't be used most of the time
+		/// Gets a message to show. reasonably annoying (dialog box), shouldn't be used most of the time
 		/// </summary>
 		public Action<string> ShowMessage { get; private set; }
 
 		/// <summary>
-		/// show a message.  less annoying (OSD message). Should be used for ignorable helpful messages
+		/// Gets a message to show. less annoying (OSD message). Should be used for ignorable helpful messages
 		/// </summary>
 		public Action<string> Notify { get; private set; }
 
-		public Func<int, int, bool, object> RequestGLContext;
-		public Action<object> ReleaseGLContext;
-		public Action<object> ActivateGLContext;
-		public Action DeactivateGLContext; // this shouldnt be necessary.. frontend should be changing context before it does anything.. but for now..
+		public Func<int, int, bool, object> RequestGLContext { get; set; }
+		public Action<object> ReleaseGLContext { get; set; }
+		public Action<object> ActivateGLContext { get; set; }
+		public Action DeactivateGLContext { get; set; } // this shouldnt be necessary.. frontend should be changing context before it does anything.. but for now..
 	}
 }
