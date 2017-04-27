@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
+// ReSharper disable StyleCop.SA1300
+// ReSharper disable InconsistentNaming
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
@@ -10,8 +12,7 @@ namespace BizHawk.Emulation.Common
 	{
 		// this is transitional only.  if the band-limited synthesis idea works out, i'll
 		// make a managed MIT implementation
-
-		static class BlipBufDll
+		private static class BlipBufDll
 		{
 			/** Creates new buffer that can hold at most sample_count samples. Sets rates
 			so that there are blip_max_ratio clocks per sample. Returns pointer to new
@@ -26,7 +27,7 @@ namespace BizHawk.Emulation.Common
 
 			/** Maximum clock_rate/sample_rate ratio. For a given sample_rate,
 			clock_rate must not be greater than sample_rate*blip_max_ratio. */
-			public const int blip_max_ratio = 1 << 20;
+			public const int BlipMaxRatio = 1 << 20;
 
 			/** Clears entire buffer. Afterwards, blip_samples_avail() == 0. */
 			[DllImport("blip_buf.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -46,7 +47,7 @@ namespace BizHawk.Emulation.Common
 			public static extern int blip_clocks_needed(IntPtr context, int sample_count);
 
 			/** Maximum number of samples that can be generated from one time frame. */
-			public const int blip_max_frame = 4000;
+			public const int BlipMaxFrame = 4000;
 
 			/** Makes input clocks before clock_duration available for reading as output
 			samples. Also begins new time frame at clock_duration, so that clock time 0 in
@@ -74,13 +75,15 @@ namespace BizHawk.Emulation.Common
 			public static extern void blip_delete(IntPtr context);
 		}
 
-		private IntPtr context;
+		private IntPtr _context;
 
-		public BlipBuffer(int sample_count)
+		public BlipBuffer(int sampleCount)
 		{
-			context = BlipBufDll.blip_new(sample_count);
-			if (context == IntPtr.Zero)
+			_context = BlipBufDll.blip_new(sampleCount);
+			if (_context == IntPtr.Zero)
+			{
 				throw new Exception("blip_new returned NULL!");
+			}
 		}
 
 		~BlipBuffer()
@@ -90,78 +93,85 @@ namespace BizHawk.Emulation.Common
 
 		public void Dispose()
 		{
-			if (context != IntPtr.Zero)
+			if (_context != IntPtr.Zero)
 			{
-				BlipBufDll.blip_delete(context);
-				context = IntPtr.Zero;
+				BlipBufDll.blip_delete(_context);
+				_context = IntPtr.Zero;
 				GC.SuppressFinalize(this);
 			}
 		}
 
-		public void SetRates(double clock_rate, double sample_rate)
+		public void SetRates(double clockRate, double sampleRate)
 		{
-			BlipBufDll.blip_set_rates(context, clock_rate, sample_rate);
+			BlipBufDll.blip_set_rates(_context, clockRate, sampleRate);
 		}
 
-		public const int MaxRatio = BlipBufDll.blip_max_ratio;
+		public const int MaxRatio = BlipBufDll.BlipMaxRatio;
 
 		public void Clear()
 		{
-			BlipBufDll.blip_clear(context);
+			BlipBufDll.blip_clear(_context);
 		}
 
-
-		public void AddDelta(uint clock_time, int delta)
+		public void AddDelta(uint clockTime, int delta)
 		{
-			BlipBufDll.blip_add_delta(context, clock_time, delta);
+			BlipBufDll.blip_add_delta(_context, clockTime, delta);
 		}
 
-		public void AddDeltaFast(uint clock_time, int delta)
+		public void AddDeltaFast(uint clockTime, int delta)
 		{
-			BlipBufDll.blip_add_delta_fast(context, clock_time, delta);
+			BlipBufDll.blip_add_delta_fast(_context, clockTime, delta);
 		}
 
-		public int ClocksNeeded(int sample_count)
+		public int ClocksNeeded(int sampleCount)
 		{
-			return BlipBufDll.blip_clocks_needed(context, sample_count);
+			return BlipBufDll.blip_clocks_needed(_context, sampleCount);
 		}
 
-		public const int MaxFrame = BlipBufDll.blip_max_frame;
+		public const int MaxFrame = BlipBufDll.BlipMaxFrame;
 
-		public void EndFrame(uint clock_duration)
+		public void EndFrame(uint clockDuration)
 		{
-			BlipBufDll.blip_end_frame(context, clock_duration);
+			BlipBufDll.blip_end_frame(_context, clockDuration);
 		}
 
 		public int SamplesAvailable()
 		{
-			return BlipBufDll.blip_samples_avail(context);
+			return BlipBufDll.blip_samples_avail(_context);
 		}
 
 		public int ReadSamples(short[] output, int count, bool stereo)
 		{
 			if (output.Length < count * (stereo ? 2 : 1))
+			{
 				throw new ArgumentOutOfRangeException();
-			return BlipBufDll.blip_read_samples(context, output, count, stereo ? 1 : 0);
+			}
+
+			return BlipBufDll.blip_read_samples(_context, output, count, stereo ? 1 : 0);
 		}
 
 		public int ReadSamplesLeft(short[] output, int count)
 		{
 			if (output.Length < count * 2)
+			{
 				throw new ArgumentOutOfRangeException();
-			return BlipBufDll.blip_read_samples(context, output, count, 1);
+			}
+
+			return BlipBufDll.blip_read_samples(_context, output, count, 1);
 		}
 
 		public int ReadSamplesRight(short[] output, int count)
 		{
 			if (output.Length < count * 2)
+			{
 				throw new ArgumentOutOfRangeException();
+			}
+
 			unsafe
 			{
 				fixed (short* s = &output[1])
-					return BlipBufDll.blip_read_samples(context, new IntPtr(s), count, 1);
+					return BlipBufDll.blip_read_samples(_context, new IntPtr(s), count, 1);
 			}
 		}
-
 	}
 }
