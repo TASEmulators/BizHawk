@@ -764,7 +764,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (fromrom)
 			{
 				case NESSyncSettings.Region.Dendy:
-					_display_type = Common.DisplayType.DENDY;
+					_display_type = Common.DisplayType.Dendy;
 					break;
 				case NESSyncSettings.Region.NTSC:
 					_display_type = Common.DisplayType.NTSC;

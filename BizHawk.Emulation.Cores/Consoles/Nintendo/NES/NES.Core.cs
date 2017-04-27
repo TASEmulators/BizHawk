@@ -226,14 +226,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					cpu_sequence = cpu_sequence_NTSC;
 					break;
 				// this is in bootgod, but not used at all
-				case Common.DisplayType.DENDY:
+				case Common.DisplayType.Dendy:
 					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.Dendy;
 					CoreComm.VsyncNum = 50;
 					CoreComm.VsyncDen = 1;
 					cpuclockrate = 1773448;
 					cpu_sequence = cpu_sequence_NTSC;
-					_display_type = DisplayType.DENDY;
+					_display_type = DisplayType.Dendy;
 					break;
 				default:
 					throw new Exception("Unknown displaytype!");

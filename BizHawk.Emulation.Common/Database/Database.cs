@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Common
 				case RomStatus.Overdump:
 					sb.Append("O");
 					break;
-				case RomStatus.BIOS:
+				case RomStatus.Bios:
 					sb.Append("I");
 					break;
 				case RomStatus.Homebrew:
@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Common
 								game.Status = RomStatus.Overdump;
 								break;
 							case "I":
-								game.Status = RomStatus.BIOS;
+								game.Status = RomStatus.Bios;
 								break;
 							case "D":
 								game.Status = RomStatus.Homebrew;
