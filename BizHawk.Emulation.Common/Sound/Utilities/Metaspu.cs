@@ -2,6 +2,24 @@
 
 namespace BizHawk.Emulation.Common
 {
+	public static class Metaspu
+	{
+		public static ISynchronizingAudioBuffer MetaspuConstruct(ESynchMethod method)
+		{
+			switch (method)
+			{
+				case ESynchMethod.ESynchMethod_Z:
+					return new ZeromusSynchronizer();
+				case ESynchMethod.ESynchMethod_N:
+					return new NitsujaSynchronizer();
+				case ESynchMethod.ESynchMethod_V:
+					return new VecnaSynchronizer();
+				default:
+					return new NitsujaSynchronizer();
+			}
+		}
+	}
+
 	/// <summary>
 	/// uses Metaspu to provide async sound to an ISoundProvider that does not provide its own async implementation
 	/// </summary>
@@ -57,23 +75,5 @@ namespace BizHawk.Emulation.Common
 		ESynchMethod_Z, // zero's
 		////ESynchMethod_P, //PCSX2 spu2-x //ohno! not available yet in c#
 		ESynchMethod_V // vecna
-	}
-
-	public static class Metaspu
-	{
-		public static ISynchronizingAudioBuffer MetaspuConstruct(ESynchMethod method)
-		{
-			switch (method)
-			{
-				case ESynchMethod.ESynchMethod_Z:
-					return new ZeromusSynchronizer();
-				case ESynchMethod.ESynchMethod_N:
-					return new NitsujaSynchronizer();
-				case ESynchMethod.ESynchMethod_V:
-					return new VecnaSynchronizer();
-				default:
-					return new NitsujaSynchronizer();
-			}
-		}
 	}
 }

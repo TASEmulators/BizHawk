@@ -46,6 +46,7 @@ namespace BizHawk.Emulation.Common
 			{
 				return _cpu;
 			}
+
 			set
 			{
 				if (!AvailableCpus.Contains(value))

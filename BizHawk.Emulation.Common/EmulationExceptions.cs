@@ -38,7 +38,6 @@ namespace BizHawk.Emulation.Common
 		public SavestateSizeMismatchException(string message)
 			: base(message)
 		{
-
 		}
 	}
 }

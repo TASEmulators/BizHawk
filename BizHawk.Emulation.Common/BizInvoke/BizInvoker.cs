@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 		}
 
 		/// <summary>
-		/// dictionary of all generated proxy implementations and their basetypes
+		/// dictionary of all generated proxy implementations and their base types
 		/// </summary>
 		private static readonly IDictionary<Type, InvokerImpl> Impls = new Dictionary<Type, InvokerImpl>();
 
@@ -543,12 +543,12 @@ namespace BizHawk.Emulation.Common.BizInvoke
 		public CallingConvention CallingConvention { get; }
 
 		/// <summary>
-		/// name of entry point; if not given, the method's name is used
+		/// Gets or sets the name of entry point; if not given, the method's name is used
 		/// </summary>
 		public string EntryPoint { get; set; }
 
 		/// <summary>
-		/// Use a slower interop that supports more argument types
+		/// Gets or sets a value indicating whether or not to use a slower interop that supports more argument types
 		/// </summary>
 		public bool Compatibility { get; set; }
 

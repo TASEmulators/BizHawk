@@ -1,7 +1,7 @@
 ﻿namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// DisplayType, used in IEmulator
+	/// DisplayType, used in <seealso cref="IEmulator"/>
 	/// </summary>
 	public enum DisplayType
 	{

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// This is a property of IDebuggable, and defines the means by which a client
+	/// This is a property of <seealso cref="IDebuggable"/>, and defines the means by which a client
 	/// gets and sets memory callbacks in the core.  A memory callback should fire any time memory is
 	/// read/written/executed by the core, and depends on the type specified by the callback
 	/// </summary>

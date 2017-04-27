@@ -30,32 +30,29 @@ namespace BizHawk.Emulation.Common
 
 		string GetGameBasePath();
 
-
 		#region EmuLoadHelper api
 
 		/// <summary>
 		/// get path to a firmware
 		/// </summary>
-		/// <param name="sysID"></param>
-		/// <param name="firmwareID"></param>
-		/// <param name="required">if true, result is guaranteed to be valid; else null is possible if not foun</param>
+		/// <param name="sysId">The system id</param>
+		/// <param name="firmwareId">The firmware id</param>
+		/// <param name="required">if true, result is guaranteed to be valid; else null is possible if not found</param>
 		/// <param name="msg">message to show if fail to get</param>
-		/// <returns></returns>
 		[Obsolete]
-		string GetFirmwarePath(string sysID, string firmwareID, bool required, string msg = null);
+		string GetFirmwarePath(string sysId, string firmwareId, bool required, string msg = null);
 
 		/// <summary>
 		/// Get a firmware as a byte array
 		/// </summary>
-		/// <param name="sysID">the core systemID</param>
-		/// <param name="firmwareID">the firmware id</param>
+		/// <param name="sysId">the core systemID</param>
+		/// <param name="firmwareId">the firmware id</param>
 		/// <param name="required">if true, result is guaranteed to be valid; else null is possible if not found</param>
 		/// <param name="msg">message to show if fail to get</param>
-		byte[] GetFirmware(string sysID, string firmwareID, bool required, string msg = null);
+		byte[] GetFirmware(string sysId, string firmwareId, bool required, string msg = null);
 
-		byte[] GetFirmwareWithGameInfo(string sysID, string firmwareID, bool required, out GameInfo gi, string msg = null);
+		byte[] GetFirmwareWithGameInfo(string sysId, string firmwareId, bool required, out GameInfo gi, string msg = null);
 
 		#endregion
-
 	}
 }
