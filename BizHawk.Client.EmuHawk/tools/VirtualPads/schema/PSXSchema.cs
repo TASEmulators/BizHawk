@@ -12,16 +12,26 @@ namespace BizHawk.Client.EmuHawk
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
 			var psx = ((Octoshock)core);
-			var settings = (Octoshock.SyncSettings)psx.GetSyncSettings();
+			var settings = psx.GetSyncSettings();
 
 			var fioConfig = settings.FIOConfig.ToLogical();
 			for (int i = 0; i < 2; i++)
 			{
 				int pnum = i + 1;
 				if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualAnalog || fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualShock)
+				{
 					yield return DualShockController(pnum);
+				}
+
 				if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.Pad)
+				{
 					yield return GamePadController(pnum);
+				}
+
+				if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.NegCon)
+				{
+					yield return NeGcon(pnum);
+				}
 			}
 
 			yield return ConsoleButtons(psx);
@@ -299,6 +309,51 @@ namespace BizHawk.Client.EmuHawk
 						Name = "P" + controller + " Select",
 						DisplayName = "s",
 						Location = new Point(90, 67),
+						Type = PadSchema.PadInputType.Boolean
+					},
+				}
+			};
+		}
+
+		private static PadSchema NeGcon(int controller)
+		{
+			return new PadSchema
+			{
+				IsConsole = false,
+				DefaultSize = new Size(240, 115),
+				DisplayName = "NeGcon Player" + controller,
+				Buttons = new[]
+				{
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Up",
+						DisplayName = "",
+						Icon = Properties.Resources.BlueUp,
+						Location = new Point(37, 55),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Down",
+						DisplayName = "",
+						Icon = Properties.Resources.BlueDown,
+						Location = new Point(37, 76),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Left",
+						DisplayName = "",
+						Icon = Properties.Resources.Back,
+						Location = new Point(16, 67),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Right",
+						DisplayName = "",
+						Icon = Properties.Resources.Forward,
+						Location = new Point(58, 67),
 						Type = PadSchema.PadInputType.Boolean
 					},
 				}
