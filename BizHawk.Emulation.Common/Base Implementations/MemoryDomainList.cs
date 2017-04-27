@@ -110,6 +110,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// big hacks
 		/// </summary>
+		/// <typeparam name="T">The memory domain type to merge</typeparam>
 		private static void TryMerge<T>(MemoryDomain dest, MemoryDomain src, Action<T, T> func)
 			where T : MemoryDomain
 		{

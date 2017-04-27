@@ -242,8 +242,8 @@ namespace BizHawk.Emulation.Common
 			int outNum = end - cur;
 			int denom = end - start;
 
-			int lrv = ((int)lhs.L * outNum + (int)rhs.L * inNum) / denom;
-			int rrv = ((int)lhs.R * outNum + (int)rhs.R * inNum) / denom;
+			int lrv = ((lhs.L * outNum) + (rhs.L * inNum)) / denom;
+			int rrv = ((lhs.R * outNum) + (rhs.R * inNum)) / denom;
 
 			return new Ssamp((short)lrv, (short)rrv);
 		}

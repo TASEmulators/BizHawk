@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 		/// <summary>
 		/// get an implementation proxy for an interop class
 		/// </summary>
+		/// <typeparam name="T">The class type that represents the DLL</typeparam>
 		public static T GetInvoker<T>(IImportResolver dll)
 			where T : class
 		{
