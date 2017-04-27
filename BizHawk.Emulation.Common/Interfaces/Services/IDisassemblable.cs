@@ -34,11 +34,11 @@ namespace BizHawk.Emulation.Common
 	}
 
 	/// <summary>
-	/// does santiy checking on Cpu parameters
+	/// does sanity checking on CPU parameters
 	/// </summary>
 	public abstract class VerifiedDisassembler : IDisassemblable
 	{
-		protected string _cpu;
+		private string _cpu;
 
 		public virtual string Cpu
 		{
