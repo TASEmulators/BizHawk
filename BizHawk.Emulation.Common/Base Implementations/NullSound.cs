@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Common
 	{
 		private readonly long _spfNumerator;
 		private readonly long _spfDenominator;
-		private long _remainder = 0;
+		private long _remainder;
 		private short[] _buff = new short[0];
 
 		private NullSound()
@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Common
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="NullSound"/> class
-		/// that exactly matches a given framerate when in sync mode
+		/// that exactly matches a given frame rate when in sync mode
 		/// </summary>
 		public NullSound(long fpsNum, long fpsDen)
 		{

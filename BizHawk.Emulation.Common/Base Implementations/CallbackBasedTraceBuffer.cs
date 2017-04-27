@@ -6,8 +6,8 @@ using BizHawk.Emulation.Common.IEmulatorExtensions;
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// An implementation of ITraceable that is implementation using only methods
-	/// from IDebuggable, IMemoryDomains, and IDisassemblable
+	/// An implementation of <seealso cref="ITraceable"/> that is implementation using only methods
+	/// from <seealso cref="IDebuggable"/>, <seealso cref="IMemoryDomains"/>, and <seealso cref="IDisassemblable"/>
 	/// Useful for ported cores that have these hooks but no trace logging hook,
 	/// This allows for a traceable implementation without the need for additional API
 	/// Note that this technique will always be significantly slower than a direct implementation
@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IDisassemblable"/> 
 	public abstract class CallbackBasedTraceBuffer : ITraceable
 	{
-		public CallbackBasedTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler)
+		protected CallbackBasedTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler)
 		{
 			if (!debuggableCore.MemoryCallbacksAvailable())
 			{
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Common
 
 		protected readonly List<TraceInfo> Buffer = new List<TraceInfo>();
 
-		public abstract void TraceFromCallback();
+		protected abstract void TraceFromCallback();
 
 		private ITraceSink _sink;
 
@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Common
 
 		public ITraceSink Sink
 		{
-			get
+			private get
 			{
 				return _sink;
 			}
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public string Header { get; set; }
+		public string Header { get; protected set; }
 
 		public class TracingMemoryCallback : IMemoryCallback
 		{

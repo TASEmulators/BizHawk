@@ -13,7 +13,7 @@
 
 		public string Header { get; set; }
 
-		public ITraceSink Sink { get; set; }
+		public ITraceSink Sink { private get; set; }
 
 		public bool Enabled => Sink != null;
 

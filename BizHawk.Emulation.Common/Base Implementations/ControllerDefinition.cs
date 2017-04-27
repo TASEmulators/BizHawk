@@ -86,7 +86,7 @@ namespace BizHawk.Emulation.Common
 							float range = (float)constraint.Params[2];
 							double xval = floatButtons[xaxis];
 							double yval = floatButtons[yaxis];
-							double length = Math.Sqrt(xval * xval + yval * yval);
+							double length = Math.Sqrt((xval * xval) + (yval * yval));
 							if (length > range)
 							{
 								double ratio = range / length;
@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Common
 		}
 
 		/// <summary>
-		/// Puts the controls in a logical order such as by controller number,
+		/// Gets a list of controls put in a logical order such as by controller number,
 		/// This is a default implementation that should work most of the time
 		/// </summary>
 		public virtual IEnumerable<IEnumerable<string>> ControlsOrdered
@@ -170,9 +170,9 @@ namespace BizHawk.Emulation.Common
 					ret[i] = new List<string>();
 				}
 
-				for (int i = 0; i < list.Count; i++)
+				foreach (string btn in list)
 				{
-					ret[PlayerNumber(list[i])].Add(list[i]);
+					ret[PlayerNumber(btn)].Add(btn);
 				}
 
 				return ret;
