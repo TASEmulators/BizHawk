@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Common
 				}
 
 				_frameBufferClear = true;
-				Array.Clear(FrameBuffer, 0, 256 * 192);
+				Array.Clear(_frameBuffer, 0, 256 * 192);
 				return;
 			}
 
@@ -59,15 +59,15 @@ namespace BizHawk.Emulation.Common
 			{
 				for (int i = 0; i < 256 * 192; i++)
 				{
-					byte b = (byte)Rand.Next();
-					FrameBuffer[i] = Colors.ARGB(b, (byte)(255 - b), 0, 255);
+					byte b = (byte)_rand.Next();
+					_frameBuffer[i] = Colors.ARGB(b, (byte)(255 - b), 0, 255);
 				}
 			}
 			else
 			{
 				for (int i = 0; i < 256 * 192; i++)
 				{
-					FrameBuffer[i] = Colors.Luminosity((byte)Rand.Next());
+					_frameBuffer[i] = Colors.Luminosity((byte)_rand.Next());
 				}
 			}
 
@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Common
 
 		public int[] GetVideoBuffer()
 		{
-			return FrameBuffer;
+			return _frameBuffer;
 		}
 
 		public int VirtualWidth => 256;
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Common
 			}
 
 			nsamp = 735;
-			samples = SampleBuffer;
+			samples = _sampleBuffer;
 			if (!_settings.SnowyDisplay)
 			{
 				return;
@@ -194,9 +194,9 @@ namespace BizHawk.Emulation.Common
 
 		#endregion
 
-		private readonly int[] FrameBuffer = new int[256 * 192];
-		private readonly short[] SampleBuffer = new short[735 * 2];
-		private readonly Random Rand = new Random();
+		private readonly int[] _frameBuffer = new int[256 * 192];
+		private readonly short[] _sampleBuffer = new short[735 * 2];
+		private readonly Random _rand = new Random();
 
 		private bool _frameBufferClear = true;
 
@@ -256,11 +256,10 @@ namespace BizHawk.Emulation.Common
 		private int _sample2;
 		private int _delta;
 
-		private int _idx = 0;
-		private bool _top = false;
+		private int _idx;
+		private bool _top;
 
-		private int _samplectr = 0;
-		
+		private int _samplectr;
 
 		public short Next()
 		{
@@ -340,8 +339,8 @@ namespace BizHawk.Emulation.Common
 		private readonly List<string> _lines = new List<string>();
 		private readonly Bell _bell = new Bell();
 
-		private int _lineIdx = 0;
-		private int _deadtime = 0;
+		private int _lineIdx;
+		private int _deadtime;
 
 		public Pleg()
 		{
@@ -360,9 +359,9 @@ namespace BizHawk.Emulation.Common
 		{
 			foreach (var s in _sinMen)
 			{
-				if (s.c == c && s.n == n && !s.fading)
+				if (s.C == c && s.N == n && !s.Fading)
 				{
-					s.fading = true;
+					s.Fading = true;
 				}
 			}
 		}
@@ -374,7 +373,7 @@ namespace BizHawk.Emulation.Common
 				return;
 			}
 
-			var s = new SinMan(1500, n) { c = c, n = n };
+			var s = new SinMan(1500, n) { C = c, N = n };
 			_sinMen.Add(s);
 		}
 
@@ -456,16 +455,23 @@ namespace BizHawk.Emulation.Common
 
 	internal class SinMan
 	{
-		public int c;
-		public int n;
+		private readonly double _freq;
 
-		double theta;
-		double freq;
-		double amp;
+		private double _theta;
+		private double _amp;
 
-		public bool fading = false;
+		public SinMan(int amp, int note)
+		{
+			_amp = amp;
+			_freq = GetFreq(note);
+		}
 
-		public bool Done => amp < 2.0;
+		public int C { get; set; }
+		public int N { get; set; }
+
+		public bool Fading { get; set; }
+
+		public bool Done => _amp < 2.0;
 
 		private static double GetFreq(int note)
 		{
@@ -474,25 +480,19 @@ namespace BizHawk.Emulation.Common
 
 		public short Next()
 		{
-			short result = (short)(Math.Sin(theta) * amp);
-			theta += freq * Math.PI / 22050.0;
-			if (theta >= Math.PI * 2.0)
+			short result = (short)(Math.Sin(_theta) * _amp);
+			_theta += _freq * Math.PI / 22050.0;
+			if (_theta >= Math.PI * 2.0)
 			{
-				theta -= Math.PI * 2.0;
+				_theta -= Math.PI * 2.0;
 			}
 
-			if (fading)
+			if (Fading)
 			{
-				amp *= 0.87;
+				_amp *= 0.87;
 			}
 
 			return result;
-		}
-
-		public SinMan(int amp, int note)
-		{
-			this.amp = amp;
-			this.freq = GetFreq(note);
 		}
 	}
 
