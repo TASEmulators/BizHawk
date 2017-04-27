@@ -53,8 +53,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return AutoCheckEnabled &&
 					LatestVersion != IgnoreVersion &&
-					ParseVersion(VersionInfo.MAINVERSION) != 0 && // Avoid notifying if current version string is invalid
-					ParseVersion(LatestVersion) > ParseVersion(VersionInfo.MAINVERSION);
+					ParseVersion(VersionInfo.Mainversion) != 0 && // Avoid notifying if current version string is invalid
+					ParseVersion(LatestVersion) > ParseVersion(VersionInfo.Mainversion);
 			}
 		}
 

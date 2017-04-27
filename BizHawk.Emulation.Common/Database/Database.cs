@@ -8,17 +8,6 @@ using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.Common
 {
-	public class CompactGameInfo
-	{
-		public string Name { get; set; }
-		public string System { get; set; }
-		public string MetaData { get; set; }
-		public string Hash { get; set; }
-		public string Region { get; set; }
-		public RomStatus Status { get; set; }
-		public string ForcedCore { get; set; }
-	}
-
 	public static class Database
 	{
 		private static readonly Dictionary<string, CompactGameInfo> DB = new Dictionary<string, CompactGameInfo>();
@@ -42,8 +31,8 @@ namespace BizHawk.Emulation.Common
 		public static GameInfo CheckDatabase(string hash)
 		{
 			CompactGameInfo cgi;
-			var hash_notype = RemoveHashType(hash);
-			DB.TryGetValue(hash_notype, out cgi);
+			var hashNotype = RemoveHashType(hash);
+			DB.TryGetValue(hashNotype, out cgi);
 			if (cgi == null)
 			{
 				Console.WriteLine("DB: hash " + hash + " not in game database.");
@@ -237,7 +226,7 @@ namespace BizHawk.Emulation.Common
 				CRC32.Calculate(romData),
 				System.Security.Cryptography.MD5.Create().ComputeHash(romData).BytesToHexString());
 
-			var ext = Path.GetExtension(fileName).ToUpperInvariant();
+			var ext = Path.GetExtension(fileName)?.ToUpperInvariant();
 
 			switch (ext)
 			{
@@ -344,15 +333,26 @@ namespace BizHawk.Emulation.Common
 					break;
 			}
 
-			game.Name = Path.GetFileNameWithoutExtension(fileName).Replace('_', ' ');
+			game.Name = Path.GetFileNameWithoutExtension(fileName)?.Replace('_', ' ');
 
 			// If filename is all-caps, then attempt to proper-case the title.
-			if (game.Name == game.Name.ToUpperInvariant())
+			if (!string.IsNullOrWhiteSpace(game.Name) && game.Name == game.Name.ToUpperInvariant())
 			{
 				game.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(game.Name.ToLower());
 			}
 
 			return game;
 		}
+	}
+
+	public class CompactGameInfo
+	{
+		public string Name { get; set; }
+		public string System { get; set; }
+		public string MetaData { get; set; }
+		public string Hash { get; set; }
+		public string Region { get; set; }
+		public RomStatus Status { get; set; }
+		public string ForcedCore { get; set; }
 	}
 }

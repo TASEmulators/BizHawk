@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BizBox_Load(object sender, EventArgs e)
 		{
-			string mainversion = VersionInfo.MAINVERSION;
+			string mainversion = VersionInfo.Mainversion;
 			if (IntPtr.Size == 8)
 				mainversion += " (x64)";
 			if (VersionInfo.DeveloperBuild)

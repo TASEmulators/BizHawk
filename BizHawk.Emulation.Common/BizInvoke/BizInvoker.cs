@@ -311,14 +311,22 @@ namespace BizHawk.Emulation.Common.BizInvoke
 			var nativeParamTypes = new List<Type>();
 			var returnType = baseMethod.ReturnType;
 			if (returnType != typeof(void) && !returnType.IsPrimitive)
+			{
 				throw new InvalidOperationException("Only primitive return types are supported");
+			}
 
 			// define a field on the type to hold the entry pointer
-			var field = type.DefineField("EntryPtrField" + baseMethod.Name, typeof(IntPtr),
+			var field = type.DefineField(
+				"EntryPtrField" + baseMethod.Name,
+				typeof(IntPtr),
 				FieldAttributes.Public);
 
-			var method = type.DefineMethod(baseMethod.Name, MethodAttributes.Virtual | MethodAttributes.Public,
-				CallingConventions.HasThis, returnType, paramTypes);
+			var method = type.DefineMethod(
+				baseMethod.Name,
+				MethodAttributes.Virtual | MethodAttributes.Public,
+				CallingConventions.HasThis,
+				returnType,
+				paramTypes);
 
 
 			var il = method.GetILGenerator();

@@ -53,8 +53,8 @@ namespace BizHawk.Emulation.Common
 			// so, we're going to lay this out carefully so that we choose things in a sensible order, but prefer the correct region
 			var ss_100_j = File("2B8CB4F87580683EB4D760E4ED210813D667F0A2", 524288, "saturn-1.00-(J).bin", "Bios v1.00 (J)");
 			var ss_100_ue = File("FAA8EA183A6D7BBE5D4E03BB1332519800D3FBC3", 524288, "saturn-1.00-(U+E).bin", "Bios v1.00 (U+E)");
-			var ss_100a_ue = File("3BB41FEB82838AB9A35601AC666DE5AACFD17A58", 524288, "saturn-1.00a-(U+E).bin", "Bios v1.00a (U+E)"); //?? is this size correct?
-			var ss_101_j = File("DF94C5B4D47EB3CC404D88B33A8FDA237EAF4720", 524288, "saturn-1.01-(J).bin", "Bios v1.01 (J)"); //?? is this size correct?
+			var ss_100a_ue = File("3BB41FEB82838AB9A35601AC666DE5AACFD17A58", 524288, "saturn-1.00a-(U+E).bin", "Bios v1.00a (U+E)"); // ?? is this size correct?
+			var ss_101_j = File("DF94C5B4D47EB3CC404D88B33A8FDA237EAF4720", 524288, "saturn-1.01-(J).bin", "Bios v1.01 (J)"); // ?? is this size correct?
 			Firmware("SAT", "J", "Bios (J)");
 			Option("SAT", "J", ss_100_j);
 			Option("SAT", "J", ss_101_j);
@@ -113,8 +113,8 @@ namespace BizHawk.Emulation.Common
 			// SMS
 			var sms_us_13 = File("C315672807D8DDB8D91443729405C766DD95CAE7", 8192, "sms_us_1.3.sms", "SMS BIOS 1.3 (USA, Europe)");
 			var sms_jp_21 = File("A8C1B39A2E41137835EDA6A5DE6D46DD9FADBAF2", 8192, "sms_jp_2.1.sms", "SMS BIOS 2.1 (Japan)");
-			var sms_us_1b = File("29091FF60EF4C22B1EE17AA21E0E75BAC6B36474", 8192, "sms_us_1.0b.sms", "SMS BIOS 1.0 (USA) (Proto)"); //?? is this size correct?
-			var sms_m404 = File("4A06C8E66261611DCE0305217C42138B71331701", 8192, "sms_m404.sms", "SMS BIOS (USA) (M404) (Proto)"); //?? is this size correct?
+			var sms_us_1b = File("29091FF60EF4C22B1EE17AA21E0E75BAC6B36474", 8192, "sms_us_1.0b.sms", "SMS BIOS 1.0 (USA) (Proto)"); // ?? is this size correct?
+			var sms_m404 = File("4A06C8E66261611DCE0305217C42138B71331701", 8192, "sms_m404.sms", "SMS BIOS (USA) (M404) (Proto)"); // ?? is this size correct?
 
 			Firmware("SMS", "Export", "SMS Bios (USA/Export)");
 			Firmware("SMS", "Japan", "SMS Bios (Japan)");
