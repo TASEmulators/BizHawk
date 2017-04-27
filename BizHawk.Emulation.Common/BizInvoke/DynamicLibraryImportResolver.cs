@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
+
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Common.BizInvoke
@@ -61,8 +59,10 @@ namespace BizHawk.Emulation.Common.BizInvoke
 		{
 			[DllImport("kernel32.dll")]
 			public static extern IntPtr LoadLibrary(string dllToLoad);
+
 			[DllImport("kernel32.dll")]
 			public static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+
 			[DllImport("kernel32.dll")]
 			public static extern bool FreeLibrary(IntPtr hModule);
 		}

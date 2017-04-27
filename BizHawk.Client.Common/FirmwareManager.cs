@@ -129,7 +129,7 @@ namespace BizHawk.Client.Common
 			HashSet<long> sizes = new HashSet<long>();
 			foreach (var ff in FirmwareDatabase.FirmwareFiles)
 			{
-				sizes.Add(ff.size);
+				sizes.Add(ff.Size);
 			}
 
 			using (var reader = new RealFirmwareReader())
@@ -172,13 +172,13 @@ namespace BizHawk.Client.Common
 					var fr1 = fr;
 					var options =
 						from fo in FirmwareDatabase.FirmwareOptions
-						where fo.systemId == fr1.systemId && fo.firmwareId == fr1.firmwareId && fo.IsAcceptableOrIdeal
+						where fo.SystemId == fr1.SystemId && fo.FirmwareId == fr1.FirmwareId && fo.IsAcceptableOrIdeal
 						select fo;
 
 					// try each option
 					foreach (var fo in options)
 					{
-						var hash = fo.hash;
+						var hash = fo.Hash;
 
 						// did we find this firmware?
 						if (reader.dict.ContainsKey(hash))
@@ -189,7 +189,7 @@ namespace BizHawk.Client.Common
 									FilePath = reader.dict[hash].FileInfo.FullName,
 									KnownFirmwareFile = FirmwareDatabase.FirmwareFilesByHash[hash],
 									Hash = hash,
-									Size = fo.size
+									Size = fo.Size
 								};
 							_resolutionDictionary[fr] = ri;
 							goto DONE_FIRMWARE;
@@ -243,7 +243,7 @@ namespace BizHawk.Client.Common
 							// if the known firmware file is for a different firmware, flag it so we can show a warning
 							var option =
 								(from fo in FirmwareDatabase.FirmwareOptions
-								 where fo.hash == rff.Hash && fo.ConfigKey != fr.ConfigKey
+								 where fo.Hash == rff.Hash && fo.ConfigKey != fr.ConfigKey
 								 select fr).FirstOrDefault();
 
 							if (option != null)

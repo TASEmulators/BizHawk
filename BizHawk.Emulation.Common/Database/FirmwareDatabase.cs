@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
@@ -9,11 +8,11 @@ namespace BizHawk.Emulation.Common
 		static FirmwareDatabase()
 		{
 			// FDS has two OK variants  (http://tcrf.net/Family_Computer_Disk_System)
-			var fds_nintendo = File("57FE1BDEE955BB48D357E463CCBF129496930B62", 8192, "disksys-nintendo.rom", "Bios (Nintendo)");
-			var fds_twinfc = File("E4E41472C454F928E53EB10E0509BF7D1146ECC1", 8192, "disksys-nintendo.rom", "Bios (TwinFC)");
+			var fdsNintendo = File("57FE1BDEE955BB48D357E463CCBF129496930B62", 8192, "disksys-nintendo.rom", "Bios (Nintendo)");
+			var fdsTwinfc = File("E4E41472C454F928E53EB10E0509BF7D1146ECC1", 8192, "disksys-nintendo.rom", "Bios (TwinFC)");
 			Firmware("NES", "Bios_FDS", "Bios");
-			Option("NES", "Bios_FDS", fds_nintendo);
-			Option("NES", "Bios_FDS", fds_twinfc);
+			Option("NES", "Bios_FDS", fdsNintendo);
+			Option("NES", "Bios_FDS", fdsTwinfc);
 
 			FirmwareAndOption("973E10840DB683CF3FAF61BD443090786B3A9F04", 262144, "SNES", "Rom_SGB", "sgb.sfc", "Super GameBoy Rom"); // World (Rev B) ?
 			FirmwareAndOption("A002F4EFBA42775A31185D443F3ED1790B0E949A", 3072, "SNES", "CX4", "cx4.rom", "CX4 Rom");
@@ -31,19 +30,16 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("A3AF676991391A6DD716C79022D4947206B78164", 4096, "A78", "Bios_HSC", "7800highscore.bin", "Highscore Bios");
 			FirmwareAndOption("45BEDC4CBDEAC66C7DF59E9E599195C778D86A92", 8192, "Coleco", "Bios", "ColecoBios.bin", "Bios");
 
-			{
-				var GBA_JDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "gbabios.rom", "Bios (J Debug)");
-				var GBA_Normal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "gbabios.rom", "Bios (World)");
-				Firmware("GBA", "Bios", "Bios");
-				Option("GBA", "Bios", GBA_Normal);
-				Option("GBA", "Bios", GBA_JDebug);
-			}
+			var gbaNormal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "gbabios.rom", "Bios (World)");
+			var gbaJDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "gbabios.rom", "Bios (J Debug)");
+			Firmware("GBA", "Bios", "Bios");
+			Option("GBA", "Bios", gbaNormal);
+			Option("GBA", "Bios", gbaJDebug);
 
 			FirmwareAndOption("E4ED47FAE31693E016B081C6BDA48DA5B70D7CCB", 512, "Lynx", "Boot", "lynxboot.img", "Boot Rom");
 
-
-			//FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", "NDS", "Bios_Arm7", "biosnds7.rom", "ARM7 Bios");
-			//FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", "NDS", "Bios_Arm9", "biosnds9.rom", "ARM9 Bios");
+			////FirmwareAndOption("24F67BDEA115A2C847C8813A262502EE1607B7DF", "NDS", "Bios_Arm7", "biosnds7.rom", "ARM7 Bios");
+			////FirmwareAndOption("BFAAC75F101C135E32E2AAF541DE6B1BE4C8C62D", "NDS", "Bios_Arm9", "biosnds9.rom", "ARM9 Bios");
 			FirmwareAndOption("5A65B922B562CB1F57DAB51B73151283F0E20C7A", 8192, "INTV", "EROM", "erom.bin", "Executive Rom");
 			FirmwareAndOption("F9608BB4AD1CFE3640D02844C7AD8E0BCD974917", 2048, "INTV", "GROM", "grom.bin", "Graphics Rom");
 
@@ -159,7 +155,7 @@ namespace BizHawk.Emulation.Common
 			var psone_r5e = File("DBC7339E5D85827C095764FC077B41F78FD2ECAE", 524288, "psone-45e.bin", "PSX BIOS (Version 4.5 05/25/00 E)", "Used on PSone SCPH-102 [g]. This is for Rev C PSone hardware [w].");
 			var ps2_50j = File("D7D6BE084F51354BC951D8FA2D8D912AA70ABC5E", 4194304, "ps2-50j.bin", "PSX BIOS (Version 5.0 10/27/00 J)", "Found on a PS2 [p].");
 
-			ps_22j_bad.bad = ps_22j_bad2.bad = ps_30e_bad.bad = true;
+			ps_22j_bad.Bad = ps_22j_bad2.Bad = ps_30e_bad.Bad = true;
 
 			Firmware("PSX", "U", "BIOS (U)");
 			Firmware("PSX", "J", "BIOS (J)");
@@ -197,11 +193,11 @@ namespace BizHawk.Emulation.Common
 
 			Firmware("AppleII", "AppleIIe", "AppleIIe.rom");
 			var appleII_AppleIIe = File("B8EA90ABE135A0031065E01697C4A3A20D51198B", 16384, "AppleIIe.rom", "Apple II e");
-			Option("AppleII", "AppleIIe", appleII_AppleIIe, FirmwareOptionStatus.Acceptable);
+			Option("AppleII", "AppleIIe", appleII_AppleIIe);
 
 			Firmware("AppleII", "DiskII", "DiskII.rom");
 			var appleII_DiskII = File("D4181C9F046AAFC3FB326B381BAAC809D9E38D16", 256, "DiskII.rom", "Disk II");
-			Option("AppleII", "DiskII", appleII_DiskII, FirmwareOptionStatus.Acceptable);
+			Option("AppleII", "DiskII", appleII_DiskII);
 		}
 
 		// adds a defined firmware ID to the database
@@ -209,9 +205,9 @@ namespace BizHawk.Emulation.Common
 		{
 			var fr = new FirmwareRecord
 				{
-					systemId = systemId,
-					firmwareId = id,
-					descr = descr
+					SystemId = systemId,
+					FirmwareId = id,
+					Descr = descr
 				};
 
 			FirmwareRecords.Add(fr);
@@ -222,19 +218,19 @@ namespace BizHawk.Emulation.Common
 		{
 			var fo = new FirmwareOption
 				{
-					systemId = systemId,
-					firmwareId = id,
-					hash = hash,
-					status = status,
-					size = size
+					SystemId = systemId,
+					FirmwareId = id,
+					Hash = hash,
+					Status = status,
+					Size = size
 				};
 
 			FirmwareOptions.Add(fo);
 			
 			// first option is automatically ideal
-			if (FirmwareOptions.Count == 1 && fo.status == FirmwareOptionStatus.Acceptable)
+			if (FirmwareOptions.Count == 1 && fo.Status == FirmwareOptionStatus.Acceptable)
 			{
-				fo.status = FirmwareOptionStatus.Ideal;
+				fo.Status = FirmwareOptionStatus.Ideal;
 			}
 			
 			return fo;
@@ -243,12 +239,12 @@ namespace BizHawk.Emulation.Common
 		// adds an acceptable option for a firmware ID to the database
 		private static FirmwareOption Option(string systemId, string id, FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 		{
-			var fo = Option(ff.hash, ff.size, systemId, id, status);
+			var fo = Option(ff.Hash, ff.Size, systemId, id, status);
 
 			// make sure this goes in as bad
-			if (ff.bad)
+			if (ff.Bad)
 			{
-				fo.status = FirmwareOptionStatus.Bad;
+				fo.Status = FirmwareOptionStatus.Bad;
 			}
 
 			return fo;
@@ -261,11 +257,11 @@ namespace BizHawk.Emulation.Common
 
 			var ff = new FirmwareFile
 				{
-					hash = hashfix,
-					size = size,
-					recommendedName = recommendedName,
-					descr = descr,
-					info = additionalInfo
+					Hash = hashfix,
+					Size = size,
+					RecommendedName = recommendedName,
+					Description = descr,
+					Info = additionalInfo
 				};
 			FirmwareFiles.Add(ff);
 			FirmwareFilesByHash[hashfix] = ff;
@@ -276,33 +272,33 @@ namespace BizHawk.Emulation.Common
 		private static void FirmwareAndOption(string hash, long size, string systemId, string id, string name, string descr)
 		{
 			Firmware(systemId, id, descr);
-			File(hash, size, name, descr, "");
+			File(hash, size, name, descr, string.Empty);
 			Option(hash, size, systemId, id);
 		}
-
 
 		public static readonly List<FirmwareRecord> FirmwareRecords = new List<FirmwareRecord>();
 		public static readonly List<FirmwareOption> FirmwareOptions = new List<FirmwareOption>();
 		public static readonly List<FirmwareFile> FirmwareFiles = new List<FirmwareFile>();
 
-		public static Dictionary<string, FirmwareFile> FirmwareFilesByHash = new Dictionary<string, FirmwareFile>();
+		public static readonly Dictionary<string, FirmwareFile> FirmwareFilesByHash = new Dictionary<string, FirmwareFile>();
 
 		public class FirmwareFile
 		{
-			public string hash;
-			public long size;
-			public string recommendedName;
-			public string descr;
-			public string info;
-			public bool bad;
+			public string Hash { get; set; }
+			public long Size { get; set; }
+			public string RecommendedName { get; set; }
+			public string Description { get; set; }
+			public string Info { get; set; }
+			public bool Bad { get; set; }
 		}
 
 		public class FirmwareRecord
 		{
-			public string systemId;
-			public string firmwareId;
-			public string descr;
-			public string ConfigKey => $"{systemId}+{firmwareId}";
+			public string SystemId { get; set; }
+			public string FirmwareId { get; set; }
+			public string Descr { get; set; }
+
+			public string ConfigKey => $"{SystemId}+{FirmwareId}";
 		}
 
 		public enum FirmwareOptionStatus
@@ -312,23 +308,23 @@ namespace BizHawk.Emulation.Common
 
 		public class FirmwareOption
 		{
-			public string systemId;
-			public string firmwareId;
-			public string hash;
-			public long size;
-			public FirmwareOptionStatus status;
-			public bool IsAcceptableOrIdeal { get { return status == FirmwareOptionStatus.Ideal || status == FirmwareOptionStatus.Acceptable; } }
-			public string ConfigKey => $"{systemId}+{firmwareId}";
-		}
+			public string SystemId { get; set; }
+			public string FirmwareId { get; set; }
+			public string Hash { get; set; }
+			public long Size { get; set; }
+			public FirmwareOptionStatus Status { get; set; }
 
+			public bool IsAcceptableOrIdeal => Status == FirmwareOptionStatus.Ideal || Status == FirmwareOptionStatus.Acceptable;
+			public string ConfigKey => $"{SystemId}+{FirmwareId}";
+		}
 
 		public static FirmwareRecord LookupFirmwareRecord(string sysId, string firmwareId)
 		{
 			var found =
-				(from fr in FirmwareRecords
-				 where fr.firmwareId == firmwareId
-				 && fr.systemId == sysId
-				 select fr);
+				from fr in FirmwareRecords
+				 where fr.FirmwareId == firmwareId
+				 && fr.SystemId == sysId
+				 select fr;
 
 			return found.FirstOrDefault();
 		}
