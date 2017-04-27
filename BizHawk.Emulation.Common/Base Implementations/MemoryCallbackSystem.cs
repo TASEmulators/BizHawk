@@ -18,14 +18,14 @@ namespace BizHawk.Emulation.Common
 		{
 			ExecuteCallbacksAvailable = true;
 
-			Reads.CollectionChanged += OnCollectionChanged;
-			Writes.CollectionChanged += OnCollectionChanged;
-			Execs.CollectionChanged += OnCollectionChanged;
+			_reads.CollectionChanged += OnCollectionChanged;
+			_writes.CollectionChanged += OnCollectionChanged;
+			_execs.CollectionChanged += OnCollectionChanged;
 		}
 
-		private readonly ObservableCollection<IMemoryCallback> Reads = new ObservableCollection<IMemoryCallback>();
-		private readonly ObservableCollection<IMemoryCallback> Writes = new ObservableCollection<IMemoryCallback>();
-		private readonly ObservableCollection<IMemoryCallback> Execs = new ObservableCollection<IMemoryCallback>();
+		private readonly ObservableCollection<IMemoryCallback> _reads = new ObservableCollection<IMemoryCallback>();
+		private readonly ObservableCollection<IMemoryCallback> _writes = new ObservableCollection<IMemoryCallback>();
+		private readonly ObservableCollection<IMemoryCallback> _execs = new ObservableCollection<IMemoryCallback>();
 
 		private bool _empty = true;
 
@@ -40,15 +40,15 @@ namespace BizHawk.Emulation.Common
 			switch (callback.Type)
 			{
 				case MemoryCallbackType.Execute:
-					Execs.Add(callback);
+					_execs.Add(callback);
 					_hasExecutes = true;
 					break;
 				case MemoryCallbackType.Read:
-					Reads.Add(callback);
+					_reads.Add(callback);
 					_hasReads = true;
 					break;
 				case MemoryCallbackType.Write:
-					Writes.Add(callback);
+					_writes.Add(callback);
 					_hasWrites = true;
 					break;
 			}
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (_hasReads)
 			{
-				Call(Reads, addr);
+				Call(_reads, addr);
 			}
 		}
 
@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (_hasWrites)
 			{
-				Call(Writes, addr);
+				Call(_writes, addr);
 			}
 		}
 
@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if (_hasExecutes)
 			{
-				Call(Execs, addr);
+				Call(_execs, addr);
 			}
 		}
 
@@ -104,30 +104,30 @@ namespace BizHawk.Emulation.Common
 
 		private void UpdateHasVariables()
 		{
-			_hasReads = Reads.Count > 0;
-			_hasWrites = Writes.Count > 0;
-			_hasExecutes = Execs.Count > 0;
+			_hasReads = _reads.Count > 0;
+			_hasWrites = _writes.Count > 0;
+			_hasExecutes = _execs.Count > 0;
 		}
 
 		private int RemoveInternal(Action action)
 		{
-			var readsToRemove = Reads.Where(imc => imc.Callback == action).ToList();
-			var writesToRemove = Writes.Where(imc => imc.Callback == action).ToList();
-			var execsToRemove = Execs.Where(imc => imc.Callback == action).ToList();
+			var readsToRemove = _reads.Where(imc => imc.Callback == action).ToList();
+			var writesToRemove = _writes.Where(imc => imc.Callback == action).ToList();
+			var execsToRemove = _execs.Where(imc => imc.Callback == action).ToList();
 
 			foreach (var read in readsToRemove)
 			{
-				Reads.Remove(read);
+				_reads.Remove(read);
 			}
 
 			foreach (var write in writesToRemove)
 			{
-				Writes.Remove(write);
+				_writes.Remove(write);
 			}
 
 			foreach (var exec in execsToRemove)
 			{
-				Execs.Remove(exec);
+				_execs.Remove(exec);
 			}
 
 			UpdateHasVariables();
@@ -174,19 +174,19 @@ namespace BizHawk.Emulation.Common
 		public void Clear()
 		{
 			// Remove one-by-one to avoid NotifyCollectionChangedAction.Reset events.
-			for (int i = Reads.Count - 1; i >= 0; i--)
+			for (int i = _reads.Count - 1; i >= 0; i--)
 			{
-				Reads.RemoveAt(i);
+				_reads.RemoveAt(i);
 			}
 
-			for (int i = Reads.Count - 1; i >= 0; i--)
+			for (int i = _reads.Count - 1; i >= 0; i--)
 			{
-				Writes.RemoveAt(i);
+				_writes.RemoveAt(i);
 			}
 
-			for (int i = Reads.Count - 1; i >= 0; i--)
+			for (int i = _reads.Count - 1; i >= 0; i--)
 			{
-				Execs.RemoveAt(i);
+				_execs.RemoveAt(i);
 			}
 
 			if (!_empty)
@@ -236,17 +236,17 @@ namespace BizHawk.Emulation.Common
 
 		public IEnumerator<IMemoryCallback> GetEnumerator()
 		{
-			foreach (var imc in Reads)
+			foreach (var imc in _reads)
 			{
 				yield return imc;
 			}
 
-			foreach (var imc in Writes)
+			foreach (var imc in _writes)
 			{
 				yield return imc;
 			}
 
-			foreach (var imc in Execs)
+			foreach (var imc in _execs)
 			{
 				yield return imc;
 			}
@@ -254,17 +254,17 @@ namespace BizHawk.Emulation.Common
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			foreach (var imc in Reads)
+			foreach (var imc in _reads)
 			{
 				yield return imc;
 			}
 
-			foreach (var imc in Writes)
+			foreach (var imc in _writes)
 			{
 				yield return imc;
 			}
 
-			foreach (var imc in Execs)
+			foreach (var imc in _execs)
 			{
 				yield return imc;
 			}

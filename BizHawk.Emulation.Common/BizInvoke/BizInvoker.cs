@@ -220,6 +220,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 					p.SetCustomAttribute(GetAttributeBuilder(a));
 				}
 			}
+
 			{
 				var p = delegateInvoke.DefineParameter(0, ParameterAttributes.Retval, baseMethod.ReturnParameter.Name);
 				foreach (var a in baseMethod.ReturnParameter.GetCustomAttributes(false))
@@ -327,7 +328,6 @@ namespace BizHawk.Emulation.Common.BizInvoke
 				CallingConventions.HasThis,
 				returnType,
 				paramTypes);
-
 
 			var il = method.GetILGenerator();
 
@@ -466,6 +466,7 @@ namespace BizHawk.Emulation.Common.BizInvoke
 				{
 					throw new InvalidOperationException("Multidimensional arrays are not supported!");
 				}
+
 				if (type.Name.Contains('*'))
 				{
 					throw new InvalidOperationException("Only 0-based 1-dimensional arrays are supported!");

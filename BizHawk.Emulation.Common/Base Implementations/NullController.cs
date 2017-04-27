@@ -12,8 +12,6 @@
 			Name = "Null Controller"
 		};
 
-		public bool this[string button] => false;
-
 		public bool IsPressed(string button)
 		{
 			return false;

@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Common.Base_Implementations
 	public class SimpleSyncSoundProvider : ISoundProvider
 	{
 		private short[] _buffer = new short[0];
-		private int _nsamp = 0;
+		private int _nsamp;
 
 		public bool CanProvideAsync => false;
 

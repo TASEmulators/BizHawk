@@ -259,7 +259,7 @@ namespace BizHawk.Emulation.Common
 
 		// for sync
 		private short[] _outbuf2 = new short[16];
-		private int _outbuf2pos = 0;
+		private int _outbuf2pos;
 
 		// in buffer position in samples (not sample pairs)
 		private int _inbufpos;

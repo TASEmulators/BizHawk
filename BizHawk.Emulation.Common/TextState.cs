@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Common
 		}
 
 		// other data besides the core
-		public T ExtraData;
+		public readonly T ExtraData;
 
 		public TextStateFPtrs GetFunctionPointersSave()
 		{
