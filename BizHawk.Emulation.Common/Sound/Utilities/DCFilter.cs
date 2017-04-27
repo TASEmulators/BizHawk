@@ -71,14 +71,14 @@ namespace BizHawk.Emulation.Common
 		{
 			for (int i = 0; i < length; i += 2)
 			{
-				int L = samplesin[i] << 12;
-				int R = samplesin[i + 1] << 12;
+				int l = samplesin[i] << 12;
+				int r = samplesin[i + 1] << 12;
 				_accumL -= _accumL >> _depth;
 				_accumR -= _accumR >> _depth;
-				_accumL += L - _latchL;
-				_accumR += R - _latchR;
-				_latchL = L;
-				_latchR = R;
+				_accumL += l - _latchL;
+				_accumR += r - _latchR;
+				_latchL = l;
+				_latchR = r;
 
 				int bigL = _accumL >> 12;
 				int bigR = _accumR >> 12;
