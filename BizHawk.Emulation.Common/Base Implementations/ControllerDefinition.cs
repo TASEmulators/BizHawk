@@ -193,7 +193,6 @@ namespace BizHawk.Emulation.Common
 
 		private static readonly Regex PlayerRegex = new Regex("^P(\\d) ");
 
-		// TODO: a more respectable logic here, and possibly per core implementation
 		public int PlayerCount
 		{
 			get
