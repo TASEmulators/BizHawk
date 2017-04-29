@@ -172,17 +172,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			//try creating a GUI Renderer. If that doesn't succeed. we fallback
-			//TODO - need a factory for the GUI Renderer, I hate pasting this code
 			try
 			{
-				BizHawk.Bizware.BizwareGL.IGuiRenderer Renderer;
-				if (GlobalWin.GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)
-					Renderer = new BizHawk.Bizware.BizwareGL.GuiRenderer(GlobalWin.GL);
-				else if (GlobalWin.GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
-					Renderer = new BizHawk.Bizware.BizwareGL.GuiRenderer(GlobalWin.GL);
-				else
-					Renderer = new BizHawk.Bizware.BizwareGL.Drivers.GdiPlus.GDIPlusGuiRenderer((BizHawk.Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus)GlobalWin.GL);
-				Renderer.Dispose();
+				using (GlobalWin.GL.CreateRenderer()) { }
 			}
 			catch(Exception ex)
 			{

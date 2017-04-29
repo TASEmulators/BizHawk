@@ -47,12 +47,7 @@ namespace BizHawk.Client.MultiHawk
 			//it's sort of important for these to be initialized to something nonzero
 			currEmuWidth = currEmuHeight = 1;
 
-			if (GL is BizHawk.Bizware.BizwareGL.Drivers.OpenTK.IGL_TK)
-				Renderer = new GuiRenderer(GL);
-			else if (GL is BizHawk.Bizware.BizwareGL.Drivers.SlimDX.IGL_SlimDX9)
-				Renderer = new GuiRenderer(GL);
-			else
-				Renderer = new GDIPlusGuiRenderer((BizHawk.Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus)GL);
+			Renderer = GL.CreateRenderer();
 
 			VideoTextureFrugalizer = new TextureFrugalizer(GL);
 
