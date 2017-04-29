@@ -145,6 +145,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
     </Link>
+    <PostBuildEvent>
+      <Command>upx -9 $(TargetPath)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">
     <ClCompile>
@@ -170,6 +173,9 @@
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
     </Link>
+    <PostBuildEvent>
+      <Command>upx -9 $(TargetPath)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\bsnes\base\base.hpp" />
@@ -327,7 +333,7 @@
     <ClCompile Include="..\bsnes\gameboy\scheduler\scheduler.cpp" />
     <ClCompile Include="..\bsnes\gameboy\system\system.cpp" />
     <ClCompile Include="..\bsnes\gameboy\video\video.cpp" />
-    <ClCompile Include="..\bsnes\libco\x86.c" />
+    <ClCompile Include="..\bsnes\libco\sjlj-multi.c" />
     <ClCompile Include="..\bsnes\snes\alt\cpu\cpu.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug-Compatibility|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release-Compatibility|Win32'">true</ExcludedFromBuild>
