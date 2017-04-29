@@ -34,6 +34,7 @@
 #include "input/negcon.h"
 #include "input/gamepad.h"
 #include "input/memcard.h"
+#include "input/multitap.h"
 
 
 #include <stdarg.h>
@@ -1050,13 +1051,34 @@ struct ShockPeripheral
 {
 	ePeripheralType type;
 	u8 buffer[32]; //must be larger than 16+3+1 or thereabouts because the dualshock writes some rumble data into it. bleck, ill fix it later
+	//TODO: test for multitap. does it need to be as large as 4 of whatever the single largest port would be?
+	//well, it must manage its own stuff.. its not like we feed in external data, right?
+	InputDevice* device;
 };
+
+static int addressToPortNum(int address)
+{
+	int portnum = SHOCK_INVALID_ADDRESS;
+	//WHY did I choose 1 indexed? I dunno, let's roll with it
+	if (address == 0x01) portnum = 0;
+	else if (address == 0x02) portnum = 1;
+	else if (address == 0x11) portnum = 2;
+	else if (address == 0x21) portnum = 3;
+	else if (address == 0x31) portnum = 4;
+	else if (address == 0x41) portnum = 5;
+	else if (address == 0x12) portnum = 6;
+	else if (address == 0x22) portnum = 7;
+	else if (address == 0x32) portnum = 8;
+	else if (address == 0x42) portnum = 9;
+	return portnum;
+}
 
 struct {
 
-	//This is kind of redundant with the frontIO code, and should be merged with it eventually, when the configurability gets more advanced
+	//"This is kind of redundant with the frontIO code, and should be merged with it eventually, when the configurability gets more advanced"
+	//I dunno.
 
-	ShockPeripheral ports[2];
+	ShockPeripheral ports[10];
 
 	void Initialize()
 	{
@@ -1067,13 +1089,12 @@ struct {
 		}
 	}
 
+	//TODO: "Take care to call ->Power() only if the device actually changed."
+	//(like, is this about savestates? seems silly"
 	s32 Connect(s32 address, s32 type)
 	{
-		//check the port address
-		int portnum = address&0x0F;
-		if(portnum != 1 && portnum != 2)
-			return SHOCK_INVALID_ADDRESS;
-		portnum--;
+		int portnum = addressToPortNum(address);
+		if(portnum == SHOCK_INVALID_ADDRESS) return SHOCK_INVALID_ADDRESS;
 
 		//check whats already there
 		if(ports[portnum].type == ePeripheralType_None && type == ePeripheralType_None) return SHOCK_OK; //NOP
@@ -1083,35 +1104,50 @@ struct {
 		if(type == ePeripheralType_None) {
 			ports[portnum].type = ePeripheralType_None;
 			memset(ports[portnum].buffer,0,sizeof(ports[portnum].buffer));
-			FIO->SetInput(portnum, "none", ports[portnum].buffer);
-			return SHOCK_OK;
+			
+			//fall through to setup a nonexistent `next` for disconnecting, instead of returning now
 		}
 
 		//connecting:
-		const char* name = NULL;
+		InputDevice* next = nullptr;
 		switch(type)
 		{
-		case ePeripheralType_Pad: name = "gamepad"; break;
-		case ePeripheralType_DualShock: name = "dualshock"; break;
-		case ePeripheralType_DualAnalog: name = "dualanalog"; break;
-		case ePeripheralType_NegCon: name = "negcon"; break;
+		case ePeripheralType_Pad: next = Device_Gamepad_Create(); break;
+		case ePeripheralType_DualShock: next = Device_DualShock_Create(); break;
+		case ePeripheralType_DualAnalog: next = Device_DualAnalog_Create(false); break;
+		case ePeripheralType_Multitap: next = new InputDevice_Multitap(); break;
+		case ePeripheralType_NegCon: next = Device_neGcon_Create(); break;
+		case ePeripheralType_None: next = new InputDevice(); break; //dummy
+			break;
 		default:
 			return SHOCK_ERROR;
 		}
 		ports[portnum].type = (ePeripheralType)type;
+		ports[portnum].device = next;
 		memset(ports[portnum].buffer,0,sizeof(ports[portnum].buffer));
-		FIO->SetInput(portnum, name, ports[portnum].buffer);
+
+		if (portnum == 0 || portnum == 1)
+		{
+			FIO->Ports[portnum] = next;
+			FIO->PortData[portnum] = ports[portnum].buffer;
+		}
+		else {
+			//must be multitap child device
+			int portidx = (address & 0xF) - 1;
+			int subidx = (address >> 4) - 1;
+			auto tap = (InputDevice_Multitap*)FIO->Ports[portidx];
+			auto mcdummy = new InputDevice();
+			//next->
+			tap->SetSubDevice(subidx, next, mcdummy);
+		}
 
 		return SHOCK_OK;
 	}
 
 	s32 PollActive(s32 address, bool clear)
 	{
-		//check the port address
-		int portnum = address&0x0F;
-		if(portnum != 1 && portnum != 2)
-			return SHOCK_INVALID_ADDRESS;
-		portnum--;
+		int portnum = addressToPortNum(address);
+		if (portnum == SHOCK_INVALID_ADDRESS) return SHOCK_INVALID_ADDRESS;
 
 		s32 ret = SHOCK_FALSE;
 
@@ -1161,11 +1197,8 @@ struct {
 
 	s32 SetPadInput(s32 address, u32 buttons, u8 left_x, u8 left_y, u8 right_x, u8 right_y)
 	{
-		//check the port address
-		int portnum = address&0x0F;
-		if(portnum != 1 && portnum != 2)
-			return SHOCK_INVALID_ADDRESS;
-		portnum--;
+		int portnum = addressToPortNum(address);
+		if (portnum == SHOCK_INVALID_ADDRESS) return SHOCK_INVALID_ADDRESS;
 
 		u8* buf = ports[portnum].buffer;
 		switch(ports[portnum].type)
@@ -1219,11 +1252,8 @@ struct {
 
 	s32 MemcardTransact(s32 address, ShockMemcardTransaction* transaction)
 	{
-		//check the port address
-		int portnum = address&1;
-		if(portnum != 1 && portnum != 2)
-			return SHOCK_INVALID_ADDRESS;
-		portnum--;
+		int portnum = addressToPortNum(address);
+		if (portnum == SHOCK_INVALID_ADDRESS) return SHOCK_INVALID_ADDRESS;
 
 		//TODO - once we get flexible here, do some extra condition checks.. whether memcards exist, etc. much like devices.
 		switch(transaction->transaction)
@@ -1258,6 +1288,18 @@ struct {
 
 			default:
 				return SHOCK_ERROR;
+		}
+	}
+
+	void UpdateInput()
+	{
+		for(int i=0;i<10;i++)
+		{
+			for(int i=0;i<ARRAY_SIZE(ports);i++)
+			{
+				if(ports[i].device)
+					ports[i].device->UpdateInput(ports[i].buffer);
+			}
 		}
 	}
 
@@ -1367,7 +1409,7 @@ EW_EXPORT s32 shock_PowerOn(void* psx)
 {
 	if(s_ShockState.power) return SHOCK_NOCANDO;
 
-	s_ShockState.power = true;	
+	s_ShockState.power = true;
 	PSX_Power(true);
 
 	return SHOCK_OK;
@@ -1427,7 +1469,7 @@ EW_EXPORT s32 shock_Step(void* psx, eShockStep step)
 
 	//-------------------------
 
-	FIO->UpdateInput();
+	s_ShockPeripheralState.UpdateInput();
 	
 	//GPU->StartFrame(psf_loader ? NULL : espec); //a reminder that when we do psf, we will be telling the gpu not to draw
 	GPU->StartFrame(&espec);

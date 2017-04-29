@@ -77,7 +77,7 @@ class FrontIO
  void GPULineHook(const pscpu_timestamp_t timestamp, const pscpu_timestamp_t line_timestamp, bool vsync, uint32 *pixels, const MDFN_PixelFormat* const format, const unsigned width, const unsigned pix_clock_offset, const unsigned pix_clock, const unsigned pix_clock_divider);
 
  void UpdateInput(void);
- void SetInput(unsigned int port, const char *type, void *ptr);
+ void SetInput(unsigned int port, unsigned int multiport, const char *type, void *ptr);
  void SetCrosshairsColor(unsigned port, uint32 color);
 
  uint64 GetMemcardDirtyCount(unsigned int which);
@@ -88,7 +88,7 @@ class FrontIO
  InputDevice *MCPorts[2];
  InputDevice *DummyDevice;
 
- private:
+ //private:
 
  void DoDSRIRQ(void);
  void CheckStartStopPending(pscpu_timestamp_t timestamp, bool skip_event_set = false);
@@ -99,8 +99,8 @@ class FrontIO
  //OLD
  //bool emulate_memcards[8];
  //void MapDevicesToPorts(void);
- //bool emulate_multitap[2];
- //InputDevice_Multitap *DevicesTap[2];
+ bool emulate_multitap[2];
+ InputDevice_Multitap *DevicesTap[2];
  //InputDevice *Devices[8];
  //void *DeviceData[8];
  //InputDevice *DevicesMC[8];

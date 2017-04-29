@@ -97,14 +97,22 @@ InputDevice_Multitap::InputDevice_Multitap()
 {
  for(int i = 0; i < 4; i++)
  {
-  pad_devices[i] = NULL;
-  mc_devices[i] = NULL;
+	 //dummies
+  pad_devices[i] = new InputDevice();
+  mc_devices[i] = new InputDevice();
  }
  Power();
 }
 
 InputDevice_Multitap::~InputDevice_Multitap()
 {
+	for (int i = 0; i < 4; i++)
+	{
+		delete pad_devices[i];
+		delete mc_devices[i];
+		pad_devices[i] = NULL;
+		mc_devices[i] = NULL;
+	}
 }
 
 void InputDevice_Multitap::SetSubDevice(unsigned int sub_index, InputDevice *device, InputDevice *mc_device)
@@ -112,6 +120,9 @@ void InputDevice_Multitap::SetSubDevice(unsigned int sub_index, InputDevice *dev
  assert(sub_index < 4);
 
  //printf("%d\n", sub_index);
+
+ delete pad_devices[sub_index];
+ delete mc_devices[sub_index];
 
  pad_devices[sub_index] = device;
  mc_devices[sub_index] = mc_device;

@@ -409,9 +409,26 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			SetControllerButtons();
 
 			var fioCfg = _SyncSettings.FIOConfig;
-			if(fioCfg.Devices8[0] != OctoshockDll.ePeripheralType.None)
+			if (fioCfg.Multitaps[0])
+			{
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x01, OctoshockDll.ePeripheralType.Multitap);
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x11, fioCfg.Devices8[0]);
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x21, fioCfg.Devices8[1]);
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x31, fioCfg.Devices8[2]);
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x41, fioCfg.Devices8[3]);
+			}
+			else
 				OctoshockDll.shock_Peripheral_Connect(psx, 0x01, fioCfg.Devices8[0]);
-			if (fioCfg.Devices8[4] != OctoshockDll.ePeripheralType.None)
+
+			if (fioCfg.Multitaps[1])
+			{
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x02, OctoshockDll.ePeripheralType.Multitap);
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x12, fioCfg.Devices8[4]);
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x22, fioCfg.Devices8[5]);
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x32, fioCfg.Devices8[6]);
+				OctoshockDll.shock_Peripheral_Connect(psx, 0x42, fioCfg.Devices8[7]);
+			}
+			else
 				OctoshockDll.shock_Peripheral_Connect(psx, 0x02, fioCfg.Devices8[4]);
 
 			var memcardTransaction = new OctoshockDll.ShockMemcardTransaction()
@@ -456,9 +473,11 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			var fioCfg = _SyncSettings.FIOConfig.ToLogical();
 
-			int portNum = 0x01;
-			foreach (int slot in new[] { 0, 4 })
+			for(int port=0;port<2;port++)
+			for(int multiport=0;multiport<4;multiport++)
 			{
+				int portNum = (port+1) + ((multiport+1) << 4);
+				int slot = port * 4 + multiport;
 				//no input to set
 				if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.None)
 					continue;
@@ -518,8 +537,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 					OctoshockDll.shock_Peripheral_SetPadInput(psx, portNum, buttons, left_x, left_y, right_x, right_y);
 				}
-
-				portNum <<= 1;
 			}
 		}
 

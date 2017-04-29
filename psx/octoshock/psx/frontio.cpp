@@ -135,6 +135,8 @@ FrontIO::FrontIO()
 		Ports[i] = new InputDevice();
 		PortData[i] = NULL;
 		MCPorts[i] = new InputDevice();
+		emulate_multitap[i] = false;
+		DevicesTap[i] = new InputDevice_Multitap();
 	}
 } 
 
@@ -145,6 +147,7 @@ FrontIO::~FrontIO()
 	{
 		delete Ports[i];
 		delete MCPorts[i];
+		delete DevicesTap[i];
 	}
 	delete DummyDevice;
 }
@@ -573,16 +576,8 @@ void FrontIO::Reset(bool powering_up)
  istatus = false;
 }
 
-void FrontIO::UpdateInput(void)
-{
-	for(int i=0;i<2;i++)
-	{
-		if(Ports[i] != NULL) Ports[i]->UpdateInput(PortData[i]);
-	}
-}
-
 // Take care to call ->Power() only if the device actually changed.
-void FrontIO::SetInput(unsigned int port, const char *type, void *ptr)
+void FrontIO::SetInput(unsigned int port, unsigned int multiport, const char *type, void *ptr)
 {
 	//clean up the old device
 	delete Ports[port];
@@ -604,6 +599,8 @@ void FrontIO::SetInput(unsigned int port, const char *type, void *ptr)
   Ports[port] = Device_GunCon_Create();
  else if(!strcmp(type, "justifier"))
   Ports[port] = Device_Justifier_Create();
+ else if (!strcmp(type, "multitap"))
+	 Ports[port] = new InputDevice_Multitap();
  else
   Ports[port] = new InputDevice();
 
