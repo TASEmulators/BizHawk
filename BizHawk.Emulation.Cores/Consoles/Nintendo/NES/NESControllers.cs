@@ -19,6 +19,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	#region interfaces and such
 
 	/// <summary>
+	/// callback type for PPU to tell if there's light for a lightgun to detect
+	/// </summary>
+	/// <param name="x">x coordinate on screen</param>
+	/// <param name="y">y coordinate on screen</param>
+	/// <returns>true if there is light</returns>
+	public delegate bool LightgunDelegate(int x, int y);
+
+	/// <summary>
 	/// stores information about the strobe lines controlled by $4016
 	/// </summary>
 	public struct StrobeInfo
@@ -137,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		ControlDefUnMerger RightU;
 		ControllerDefinition Definition;
 
-		public NesDeck(INesPort Left, INesPort Right, Func<int, int, bool> PPUCallback)
+		public NesDeck(INesPort Left, INesPort Right, LightgunDelegate PPUCallback)
 		{
 			this.Left = Left;
 			this.Right = Right;
@@ -547,7 +555,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	// Dummy interface to indicate zapper behavior, used as a means of type checking for zapper functionality
 	public interface IZapper
 	{
-		Func<int, int, bool> PPUCallback { get; set; }
+		LightgunDelegate PPUCallback { get; set; }
 	}
 
 	public class Zapper : INesPort, IFamicomExpansion, IZapper
@@ -555,7 +563,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// returns true if light was detected at the ppu coordinates specified
 		/// </summary>
-		public Func<int, int, bool> PPUCallback { get; set; }
+		public LightgunDelegate PPUCallback { get; set; }
 
 		static ControllerDefinition Definition = new ControllerDefinition
 		{
@@ -605,7 +613,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		/// <summary>
 		/// returns true if light was detected at the ppu coordinates specified
 		/// </summary
-		public Func<int, int, bool> PPUCallback { get; set; }
+		public LightgunDelegate PPUCallback { get; set; }
 
 		bool resetting = false;
 		uint latchedvalue = 0;
@@ -684,7 +692,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		ControllerDefinition Definition;
 
-		public FamicomDeck(IFamicomExpansion ExpSlot, Func<int, int, bool> PPUCallback)
+		public FamicomDeck(IFamicomExpansion ExpSlot, LightgunDelegate PPUCallback)
 		{
 			Player3 = ExpSlot;
 			List<ControlDefUnMerger> cdum;
@@ -1224,7 +1232,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			return (NESControlSettings)MemberwiseClone();
 		}
 
-		public IControllerDeck Instantiate(Func<int, int, bool> PPUCallback)
+		public IControllerDeck Instantiate(LightgunDelegate PPUCallback)
 		{
 			if (Famicom)
 			{
