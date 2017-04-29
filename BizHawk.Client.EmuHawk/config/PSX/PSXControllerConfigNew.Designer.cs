@@ -61,7 +61,6 @@
             this.combo_2_1 = new System.Windows.Forms.ComboBox();
             this.cbMemcard_2 = new System.Windows.Forms.CheckBox();
             this.cbMultitap_2 = new System.Windows.Forms.CheckBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -417,15 +416,6 @@
             this.cbMultitap_2.UseVisualStyleBackColor = true;
             this.cbMultitap_2.CheckedChanged += new System.EventHandler(this.cb_changed);
             // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(13, 172);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(177, 13);
-            this.label1.TabIndex = 14;
-            this.label1.Text = "Sorry, multitap not supported just yet";
-            // 
             // PSXControllerConfigNew
             // 
             this.AcceptButton = this.btnOK;
@@ -433,7 +423,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(586, 201);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnOK);
@@ -451,7 +440,6 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
 		}
 
@@ -489,6 +477,5 @@
 		private System.Windows.Forms.ComboBox combo_2_1;
 		private System.Windows.Forms.CheckBox cbMemcard_2;
 		private System.Windows.Forms.CheckBox cbMultitap_2;
-		private System.Windows.Forms.Label label1;
 	}
 }
