@@ -260,9 +260,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			if (NES.ppu.reg_2000.obj_size_16)
 			{
-				if (NES.ppu.ppuphase == PPU.PPUPHASE.OBJ && NES.ppu.show_obj_new)
+				bool isPattern = NES.ppu.PPUON;
+				if (NES.ppu.ppuphase == PPU.PPUPHASE.OBJ && isPattern)
 					bank_1k = a_banks_1k[bank_1k];
-				else if (NES.ppu.ppuphase == PPU.PPUPHASE.BG && NES.ppu.show_bg_new)
+				else if (NES.ppu.ppuphase == PPU.PPUPHASE.BG && isPattern)
 					bank_1k = b_banks_1k[bank_1k];
 				else
 				{
