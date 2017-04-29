@@ -19,10 +19,10 @@ namespace BizHawk.Client.EmuHawk
 		public Size DefaultSize { get; set; }
 		public Size? MaxSize { get; set; }
 		public bool IsConsole { get; set; }
-		public IEnumerable<ButtonScema> Buttons { get; set; }
+		public IEnumerable<ButtonSchema> Buttons { get; set; }
 		public string DisplayName { get; set; } // The name of the pad itself, presumably will be displayed by the given pad time if supplied
 
-		public class ButtonScema
+		public class ButtonSchema
 		{
 			public string Name { get; set; }
 			public string DisplayName { get; set; }
@@ -42,6 +42,4 @@ namespace BizHawk.Client.EmuHawk
 			public Orientation Orientation { get; set; } // For Single Flaot controls
 		}
 	}
-
-
 }
