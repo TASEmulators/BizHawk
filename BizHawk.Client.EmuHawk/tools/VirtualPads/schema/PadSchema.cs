@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -37,6 +38,8 @@ namespace BizHawk.Client.EmuHawk
 			public int MidValueSec { get; set; }
 			public int MinValueSec { get; set; }
 			public object OwnerEmulator { get; set; }
+
+			public Orientation Orientation { get; set; } // For Single Flaot controls
 		}
 	}
 

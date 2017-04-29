@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sony.PSX;
@@ -320,7 +321,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				IsConsole = false,
-				DefaultSize = new Size(240, 115),
+				DefaultSize = new Size(343, 195),
 				DisplayName = "NeGcon Player" + controller,
 				Buttons = new[]
 				{
@@ -329,7 +330,7 @@ namespace BizHawk.Client.EmuHawk
 						Name = "P" + controller + " Up",
 						DisplayName = "",
 						Icon = Properties.Resources.BlueUp,
-						Location = new Point(37, 55),
+						Location = new Point(36, 83),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
@@ -337,7 +338,7 @@ namespace BizHawk.Client.EmuHawk
 						Name = "P" + controller + " Down",
 						DisplayName = "",
 						Icon = Properties.Resources.BlueDown,
-						Location = new Point(37, 76),
+						Location = new Point(36, 104),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
@@ -345,7 +346,7 @@ namespace BizHawk.Client.EmuHawk
 						Name = "P" + controller + " Left",
 						DisplayName = "",
 						Icon = Properties.Resources.Back,
-						Location = new Point(16, 67),
+						Location = new Point(15, 95),
 						Type = PadSchema.PadInputType.Boolean
 					},
 					new PadSchema.ButtonScema
@@ -353,8 +354,80 @@ namespace BizHawk.Client.EmuHawk
 						Name = "P" + controller + " Right",
 						DisplayName = "",
 						Icon = Properties.Resources.Forward,
-						Location = new Point(58, 67),
+						Location = new Point(57, 95),
 						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Start",
+						DisplayName = "S",
+						Location = new Point(78, 118),
+						Type = PadSchema.PadInputType.Boolean
+					},
+
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " B",
+						DisplayName = "B",
+						Location = new Point(278, 38),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " A",
+						DisplayName = "A",
+						Location = new Point(308, 55),
+						Type = PadSchema.PadInputType.Boolean
+					},
+
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " R",
+						DisplayName = "R",
+						Location = new Point(308, 15),
+						Type = PadSchema.PadInputType.Boolean
+					},
+
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " L",
+						DisplayName = "L",
+						Location = new Point(5, 15),
+						Type = PadSchema.PadInputType.FloatSingle,
+						TargetSize = new Size(128, 55),
+						MinValue = 0,
+						MaxValue = 255,
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " Twist",
+						DisplayName = "Twist",
+						Location = new Point(125, 15),
+						Type = PadSchema.PadInputType.FloatSingle,
+						TargetSize = new Size(64, 178),
+						MinValue = 0,
+						MaxValue = 255,
+						Orientation = Orientation.Vertical
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " 2",
+						DisplayName = "II",
+						Location = new Point(180, 60),
+						Type = PadSchema.PadInputType.FloatSingle,
+						TargetSize = new Size(128, 55),
+						MinValue = 0,
+						MaxValue = 255,
+					},
+					new PadSchema.ButtonScema
+					{
+						Name = "P" + controller + " 1",
+						DisplayName = "I",
+						Location = new Point(220, 120),
+						Type = PadSchema.PadInputType.FloatSingle,
+						TargetSize = new Size(128, 55),
+						MinValue = 0,
+						MaxValue = 255,
 					},
 				}
 			};
