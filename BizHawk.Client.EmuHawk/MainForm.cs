@@ -2832,17 +2832,15 @@ namespace BizHawk.Client.EmuHawk
 						atten = 0;
 					}
 				}
-				
+
 				Global.MovieSession.HandleMovieOnFrameLoop();
 
 				//why not skip audio if the user doesnt want sound
-				bool renderSound = Global.Config.SoundEnabled && !IsTurboing;
-				renderSound |= (_currAviWriter != null && _currAviWriter.UsesAudio);
+				bool renderSound = (Global.Config.SoundEnabled && !IsTurboing) || (_currAviWriter?.UsesAudio ?? false);
 				if (!renderSound) atten = 0;
 
-				bool render = !_throttle.skipnextframe || (_currAviWriter != null && _currAviWriter.UsesVideo);
+				bool render = !_throttle.skipnextframe || (_currAviWriter?.UsesVideo ?? false);
 				Emulator.FrameAdvance(render, renderSound);
-
 
 				Global.MovieSession.HandleMovieAfterFrameLoop();
 
@@ -3741,20 +3739,22 @@ namespace BizHawk.Client.EmuHawk
 		#region Tool Control API
 
 		// TODO: move me
-		public IControlMainform master { get; private set; }
+		public IControlMainform Master { get; private set; }
+
+		private bool IsSlave => Master != null;
+
+		private bool IsSavestateSlave => IsSlave && Master.WantsToControlSavestates;
+
+		private bool IsRewindSlave => IsSlave && Master.WantsToControlRewind;
 
 		public void RelinquishControl(IControlMainform master)
 		{
-			this.master = master;
+			Master = master;
 		}
-
-		private bool IsSlave => master != null;
-
-		private bool IsRewindSlave => IsSlave && master.WantsToControlRewind;
 
 		public void TakeBackControl()
 		{
-			master = null;
+			Master = null;
 		}
 
 		private int SlotToInt(string slot)
@@ -3769,9 +3769,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (IsSlave && master.WantsToControlSavestates)
+			if (IsSavestateSlave)
 			{
-				master.LoadState();
+				Master.LoadState();
 				return;
 			}
 
@@ -3829,9 +3829,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (IsSlave && master.WantsToControlSavestates)
+			if (IsSavestateSlave)
 			{
-				master.LoadQuickSave(SlotToInt(quickSlotName));
+				Master.LoadQuickSave(SlotToInt(quickSlotName));
 				return;
 			}
 
@@ -3853,9 +3853,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (IsSlave && master.WantsToControlSavestates)
+			if (IsSavestateSlave)
 			{
-				master.SaveState();
+				Master.SaveState();
 				return;
 			}
 
@@ -3892,9 +3892,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (IsSlave && master.WantsToControlSavestates)
+			if (IsSavestateSlave)
 			{
-				master.SaveQuickSave(SlotToInt(quickSlotName));
+				Master.SaveQuickSave(SlotToInt(quickSlotName));
 				return;
 			}
 
@@ -3930,9 +3930,9 @@ namespace BizHawk.Client.EmuHawk
 			if (GlobalWin.Tools.IsLoaded<TAStudio>())
 				GlobalWin.Tools.TAStudio.NamedStatePending = true;
 
-			if (IsSlave && master.WantsToControlSavestates)
+			if (IsSavestateSlave)
 			{
-				master.SaveStateAs();
+				Master.SaveStateAs();
 				return;
 			}
 
@@ -3970,9 +3970,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (IsSlave && master.WantsToControlSavestates)
+			if (IsSavestateSlave)
 			{
-				master.LoadStateAs();
+				Master.LoadStateAs();
 				return;
 			}
 
@@ -4001,9 +4001,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator.HasSavestates())
 			{
-				if (IsSlave && master.WantsToControlSavestates)
+				if (IsSavestateSlave)
 				{
-					master.SelectSlot(slot);
+					Master.SelectSlot(slot);
 					return;
 				}
 
@@ -4017,9 +4017,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator.HasSavestates())
 			{
-				if (IsSlave && master.WantsToControlSavestates)
+				if (IsSavestateSlave)
 				{
-					master.PreviousSlot();
+					Master.PreviousSlot();
 					return;
 				}
 
@@ -4045,9 +4045,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator.HasSavestates())
 			{
-				if (IsSlave && master.WantsToControlSavestates)
+				if (IsSavestateSlave)
 				{
-					master.NextSlot();
+					Master.NextSlot();
 					return;
 				}
 
@@ -4071,9 +4071,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleReadOnly()
 		{
-			if (IsSlave && master.WantsToControlReadOnly)
+			if (IsSlave && Master.WantsToControlReadOnly)
 			{
-				master.ToggleReadOnly();
+				Master.ToggleReadOnly();
 			}
 			else
 			{
@@ -4091,9 +4091,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StopMovie(bool saveChanges = true)
 		{
-			if (IsSlave && master.WantsToControlStopMovie)
+			if (IsSlave && Master.WantsToControlStopMovie)
 			{
-				master.StopMovie(!saveChanges);
+				Master.StopMovie(!saveChanges);
 			}
 			else
 			{
@@ -4108,12 +4108,11 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "Gameboy Advance Settings");
 		}
 
-
 		private void CaptureRewind(bool suppressCaptureRewind)
 		{
 			if (IsRewindSlave)
 			{
-				master.CaptureRewind();
+				Master.CaptureRewind();
 			}
 			else if (!suppressCaptureRewind && Global.Rewinder.RewindActive)
 			{
@@ -4153,11 +4152,10 @@ namespace BizHawk.Client.EmuHawk
 							if (IsSeeking) isRewinding = false;
 					}
 
-
 					if (isRewinding)
 					{
 						runFrame = true; // TODO: the master should be deciding this!
-						master.Rewind();
+						Master.Rewind();
 					}
 				}
 				else
