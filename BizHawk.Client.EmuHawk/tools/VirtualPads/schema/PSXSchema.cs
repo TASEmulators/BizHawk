@@ -16,8 +16,13 @@ namespace BizHawk.Client.EmuHawk
 			var settings = psx.GetSyncSettings();
 
 			var fioConfig = settings.FIOConfig.ToLogical();
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < fioConfig.DevicesPlayer.Length; i++)
 			{
+				if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.None)
+				{
+					continue;
+				}
+
 				int pnum = i + 1;
 				if (fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualAnalog || fioConfig.DevicesPlayer[i] == OctoshockDll.ePeripheralType.DualShock)
 				{
