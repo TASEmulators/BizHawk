@@ -15,53 +15,31 @@ namespace BizHawk.Client.Common
 		private long _memoryLimit = MaxByteArraySize;
 		private RewindThreader _rewindThread;
 		private byte[] _lastState;
-		private int _rewindFrequency = 1;
 		private bool _rewindDeltaEnable;
 		private bool _lastRewindLoadedState;
 		private byte[] _deltaBuffer = new byte[0];
 
-		public Rewinder()
-		{
-			RewindActive = true;
-		}
-
 		public Action<string> MessageCallback { get; set; }
 
-		public bool RewindActive { get; set; }
+		public bool RewindActive => RewindEnabled && !SuspendRewind;
 
-		public float FullnessRatio
-		{
-			get { return _rewindBuffer?.FullnessRatio ?? 0; }
-		}
+		private bool RewindEnabled { get; set; }
 
-		public int Count
-		{
-			get { return _rewindBuffer?.Count ?? 0; }
-		}
+		public bool SuspendRewind { get; set; }
 
-		public long Size
-		{
-			get { return _rewindBuffer?.Size ?? 0; }
-		}
+		public float FullnessRatio => _rewindBuffer?.FullnessRatio ?? 0;
 
-		public bool HasBuffer
-		{
-			get { return _rewindBuffer != null; }
-		}
+		public int Count => _rewindBuffer?.Count ?? 0;
 
-		public int RewindFrequency
-		{
-			get { return _rewindFrequency; }
-		}
+		public long Size => _rewindBuffer?.Size ?? 0;
 
-		private bool IsRewindEnabledAtAll
-		{
-			get { return Global.Config.RewindEnabledLarge || Global.Config.RewindEnabledMedium || Global.Config.RewindEnabledSmall; }
-		}
+		public bool HasBuffer => _rewindBuffer != null;
+
+		public int RewindFrequency { get; private set; }
 
 		public void Initialize()
 		{
-			Clear();
+			Uninitialize();
 
 			if (Global.Emulator.HasSavestates())
 			{
@@ -97,8 +75,10 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public void Clear()
+		public void Uninitialize()
 		{
+			Clear();
+
 			if (_rewindThread != null)
 			{
 				_rewindThread.Dispose();
@@ -111,6 +91,17 @@ namespace BizHawk.Client.Common
 				_rewindBuffer = null;
 			}
 
+			RewindEnabled = false;
+			RewindFrequency = 0;
+		}
+
+		public void Clear()
+		{
+			if (_rewindBuffer != null)
+			{
+				_rewindBuffer.Clear();
+			}
+
 			_lastState = new byte[0];
 		}
 
@@ -121,18 +112,14 @@ namespace BizHawk.Client.Common
 
 		private void SetRewindParams(bool enabled, int frequency)
 		{
-			if (RewindActive != enabled)
-			{
-				DoMessage("Rewind " + (enabled ? "Enabled" : "Disabled"));
-			}
-
-			if (_rewindFrequency != frequency && enabled)
+			DoMessage("Rewind " + (enabled ? "enabled" : "disabled"));
+			if (enabled)
 			{
 				DoMessage("Rewind frequency set to " + frequency);
 			}
 
-			RewindActive = enabled;
-			_rewindFrequency = frequency;
+			RewindEnabled = enabled;
+			RewindFrequency = frequency;
 		}
 
 		private byte[] BufferManage(byte[] inbuf, ref long size, bool allocate)
@@ -172,7 +159,7 @@ namespace BizHawk.Client.Common
 
 		public void Capture()
 		{
-			if (!IsRewindEnabledAtAll || !Global.Emulator.HasSavestates())
+			if (!RewindActive)
 			{
 				return;
 			}
@@ -182,7 +169,7 @@ namespace BizHawk.Client.Common
 				Initialize();
 			}
 
-			if (_rewindThread == null || Global.Emulator.Frame % _rewindFrequency != 0)
+			if (_rewindThread == null || Global.Emulator.Frame % RewindFrequency != 0)
 			{
 				return;
 			}
@@ -315,7 +302,7 @@ namespace BizHawk.Client.Common
 
 		public bool Rewind(int frames)
 		{
-			if (!Global.Emulator.HasSavestates() || _rewindThread == null)
+			if (!RewindActive || _rewindThread == null)
 			{
 				return false;
 			}

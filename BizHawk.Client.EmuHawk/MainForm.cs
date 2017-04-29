@@ -3700,7 +3700,7 @@ namespace BizHawk.Client.EmuHawk
 
 				GlobalWin.Tools.Restart();
 				RewireSound();
-				Global.Rewinder.Clear();
+				Global.Rewinder.Uninitialize();
 				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
 				HandlePlatformMenus();
 				_stateSlots.Clear();
@@ -3727,16 +3727,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void EnableRewind(bool enabled)
 		{
-			if (enabled)
-			{
-				Global.Rewinder.RewindActive = true;
-				GlobalWin.OSD.AddMessage("Rewind enabled");
-			}
-			else
-			{
-				Global.Rewinder.RewindActive = false;
-				GlobalWin.OSD.AddMessage("Rewind suspended");
-			}
+			Global.Rewinder.SuspendRewind = !enabled;
+			GlobalWin.OSD.AddMessage("Rewind " + (enabled ? "enabled" : "suspended"));
 		}
 
 		public void ClearRewindData()
