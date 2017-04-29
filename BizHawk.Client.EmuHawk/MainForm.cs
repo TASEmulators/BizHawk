@@ -2768,7 +2768,8 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
-			bool isRewinding = Rewind(ref runFrame, currentTimestamp);
+			bool returnToRecording;
+			bool isRewinding = Rewind(ref runFrame, currentTimestamp, out returnToRecording);
 
 			float atten = 0;
 
@@ -2844,6 +2845,16 @@ namespace BizHawk.Client.EmuHawk
 
 
 				Global.MovieSession.HandleMovieAfterFrameLoop();
+
+				if (returnToRecording)
+				{
+					Global.MovieSession.Movie.SwitchToRecord();
+				}
+
+				if (isRewinding && !IsRewindSlave && Global.MovieSession.Movie.IsRecording)
+				{
+					Global.MovieSession.Movie.Truncate(Global.Emulator.Frame);
+				}
 
 				Global.CheatList.Pulse();
 
@@ -3745,10 +3756,9 @@ namespace BizHawk.Client.EmuHawk
 			this.master = master;
 		}
 
-		private bool IsSlave
-		{
-			get { return master != null; }
-		}
+		private bool IsSlave => master != null;
+
+		private bool IsRewindSlave => IsSlave && master.WantsToControlRewind;
 
 		public void TakeBackControl()
 		{
@@ -3794,6 +3804,11 @@ namespace BizHawk.Client.EmuHawk
 				UpdateToolsAfter(fromLua);
 				UpdateToolsLoadstate();
 				Global.AutoFireController.ClearStarts();
+
+				if (!IsRewindSlave && Global.MovieSession.Movie.IsActive)
+				{
+					ClearRewindData();
+				}
 
 				if (!supressOSD)
 				{
@@ -4104,7 +4119,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CaptureRewind(bool suppressCaptureRewind)
 		{
-			if (IsSlave && master.WantsToControlRewind)
+			if (IsRewindSlave)
 			{
 				master.CaptureRewind();
 			}
@@ -4114,11 +4129,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool Rewind(ref bool runFrame, long currentTimestamp)
+		private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
 		{
 			var isRewinding = false;
 
-			if (IsSlave && master.WantsToControlRewind)
+			returnToRecording = false;
+
+			if (IsRewindSlave)
 			{
 				if (Global.ClientControls["Rewind"] || PressRewind)
 				{
@@ -4159,8 +4176,7 @@ namespace BizHawk.Client.EmuHawk
 				return isRewinding;
 			}
 
-			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind)
-				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recording movie!
+			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind))
 			{
 				if (EmulatorPaused)
 				{
@@ -4183,6 +4199,12 @@ namespace BizHawk.Client.EmuHawk
 				if (isRewinding)
 				{
 					runFrame = Global.Rewinder.Rewind(1);
+
+					if (runFrame && Global.MovieSession.Movie.IsRecording)
+					{
+						Global.MovieSession.Movie.SwitchToPlay();
+						returnToRecording = true;
+					}
 				}
 			}
 			else
