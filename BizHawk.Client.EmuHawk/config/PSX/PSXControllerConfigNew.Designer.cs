@@ -69,7 +69,6 @@
             // cbMultitap_1
             // 
             this.cbMultitap_1.AutoSize = true;
-            this.cbMultitap_1.Enabled = false;
             this.cbMultitap_1.Location = new System.Drawing.Point(18, 43);
             this.cbMultitap_1.Name = "cbMultitap_1";
             this.cbMultitap_1.Size = new System.Drawing.Size(63, 17);
@@ -410,7 +409,6 @@
             // cbMultitap_2
             // 
             this.cbMultitap_2.AutoSize = true;
-            this.cbMultitap_2.Enabled = false;
             this.cbMultitap_2.Location = new System.Drawing.Point(18, 43);
             this.cbMultitap_2.Name = "cbMultitap_2";
             this.cbMultitap_2.Size = new System.Drawing.Size(63, 17);

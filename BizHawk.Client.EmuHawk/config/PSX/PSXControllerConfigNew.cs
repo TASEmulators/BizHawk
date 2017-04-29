@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk.WinFormExtensions;
-using BizHawk.Common.ReflectionExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -62,7 +53,7 @@ namespace BizHawk.Client.EmuHawk
 
 		OctoshockFIOConfigUser UserConfigFromGui()
 		{
-			OctoshockFIOConfigUser uc = new OctoshockFIOConfigUser();
+			var uc = new OctoshockFIOConfigUser();
 
 			uc.Memcards[0] = cbMemcard_1.Checked;
 			uc.Memcards[1] = cbMemcard_2.Checked;
