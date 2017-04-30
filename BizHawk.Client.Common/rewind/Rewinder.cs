@@ -47,21 +47,24 @@ namespace BizHawk.Client.Common
 
 				if (stateSize >= Global.Config.Rewind_LargeStateSize)
 				{
-					SetRewindParams(Global.Config.RewindEnabledLarge, Global.Config.RewindFrequencyLarge);
+					RewindEnabled = Global.Config.RewindEnabledLarge;
+					RewindFrequency = Global.Config.RewindFrequencyLarge;
 				}
 				else if (stateSize >= Global.Config.Rewind_MediumStateSize)
 				{
-					SetRewindParams(Global.Config.RewindEnabledMedium, Global.Config.RewindFrequencyMedium);
+					RewindEnabled = Global.Config.RewindEnabledMedium;
+					RewindFrequency = Global.Config.RewindFrequencyMedium;
 				}
 				else
 				{
-					SetRewindParams(Global.Config.RewindEnabledSmall, Global.Config.RewindFrequencySmall);
+					RewindEnabled = Global.Config.RewindEnabledSmall;
+					RewindFrequency = Global.Config.RewindFrequencySmall;
 				}
 			}
-			else
-			{
-				SetRewindParams(false, 1);
-			}
+
+			DoMessage(RewindEnabled ?
+				$"Rewind enabled, frequency: {RewindFrequency}" :
+				"Rewind disabled");
 
 			_rewindDeltaEnable = Global.Config.Rewind_UseDelta;
 
@@ -108,18 +111,6 @@ namespace BizHawk.Client.Common
 		private void DoMessage(string message)
 		{
 			MessageCallback?.Invoke(message);
-		}
-
-		private void SetRewindParams(bool enabled, int frequency)
-		{
-			DoMessage("Rewind " + (enabled ? "enabled" : "disabled"));
-			if (enabled)
-			{
-				DoMessage("Rewind frequency set to " + frequency);
-			}
-
-			RewindEnabled = enabled;
-			RewindFrequency = frequency;
 		}
 
 		private byte[] BufferManage(byte[] inbuf, ref long size, bool allocate)
