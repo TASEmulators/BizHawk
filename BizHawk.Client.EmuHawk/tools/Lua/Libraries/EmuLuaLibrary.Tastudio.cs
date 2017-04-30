@@ -208,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"onqueryitembg",
-			"called during the background draw event of the tastudio listview"
+			"called during the background draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)"
 		)]
 		public void OnQueryItemBg(LuaFunction luaf)
 		{
@@ -231,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"onqueryitemtext",
-			"called during the text draw event of the tastudio listview"
+			"called during the text draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)"
 		)]
 		public void OnQueryItemText(LuaFunction luaf)
 		{
@@ -256,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"onqueryitemicon",
-			"called during the icon draw event of the tastudio listview"
+			"called during the icon draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)"
 		)]
 		public void OnQueryItemIcon(LuaFunction luaf)
 		{
