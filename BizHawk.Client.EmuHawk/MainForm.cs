@@ -1370,7 +1370,7 @@ namespace BizHawk.Client.EmuHawk
 		private long _frameAdvanceTimestamp;
 		private long _frameRewindTimestamp;
 		private bool _frameRewindWasPaused;
-		private bool _runloopFrameadvance;
+		private bool _runloopFrameAdvance;
 		private bool _lastFastForwardingOrRewinding;
 		private bool _inResizeLoop;
 
@@ -2684,8 +2684,8 @@ namespace BizHawk.Client.EmuHawk
 		private void StepRunLoop_Throttle()
 		{
 			SyncThrottle();
-			_throttle.signal_frameAdvance = _runloopFrameadvance;
-			_throttle.signal_continuousframeAdvancing = _runloopFrameProgress;
+			_throttle.signal_frameAdvance = _runloopFrameAdvance;
+			_throttle.signal_continuousFrameAdvancing = _runloopFrameProgress;
 
 			_throttle.Step(true, -1);
 		}
@@ -2719,7 +2719,7 @@ namespace BizHawk.Client.EmuHawk
 		private void StepRunLoop_Core(bool force = false)
 		{
 			var runFrame = false;
-			_runloopFrameadvance = false;
+			_runloopFrameAdvance = false;
 			var currentTimestamp = Stopwatch.GetTimestamp();
 
 			double frameAdvanceTimestampDeltaMs = (double)(currentTimestamp - _frameAdvanceTimestamp) / Stopwatch.Frequency * 1000.0;
@@ -2732,7 +2732,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance)
 			{
-				_runloopFrameadvance = true;
+				_runloopFrameAdvance = true;
 				// handle the initial trigger of a frame advance
 				if (_frameAdvanceTimestamp == 0)
 				{
@@ -2827,7 +2827,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					// Mute if using Frame Advance/Frame Progress
-					if (_runloopFrameadvance && Global.Config.MuteFrameAdvance)
+					if (_runloopFrameAdvance && Global.Config.MuteFrameAdvance)
 					{
 						atten = 0;
 					}
@@ -2839,7 +2839,7 @@ namespace BizHawk.Client.EmuHawk
 				bool renderSound = (Global.Config.SoundEnabled && !IsTurboing) || (_currAviWriter?.UsesAudio ?? false);
 				if (!renderSound) atten = 0;
 
-				bool render = !_throttle.skipnextframe || (_currAviWriter?.UsesVideo ?? false);
+				bool render = !_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false);
 				Emulator.FrameAdvance(render, renderSound);
 
 				Global.MovieSession.HandleMovieAfterFrameLoop();
