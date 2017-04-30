@@ -152,6 +152,7 @@ namespace BizHawk.Client.Common
 					{
 						{ "Cursor", 'c' },
 						{ "Turbo",  't' },
+						{ "Toggle Multitap", 't' },
 
 						{ "B0", '0' },
 						{ "B1", '1' },
