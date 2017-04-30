@@ -473,69 +473,79 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		{
 			var fioCfg = _SyncSettings.FIOConfig.ToLogical();
 
-			for(int port=0;port<2;port++)
-			for(int multiport=0;multiport<4;multiport++)
+			for (int port = 0; port < 2; port++)
 			{
-				int portNum = (port+1) + ((multiport+1) << 4);
-				int slot = port * 4 + multiport;
-				//no input to set
-				if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.None)
-					continue;
-
-				uint buttons = 0;
-				string pstring = "P" + fioCfg.PlayerAssignments[slot] + " ";
-
-				if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.NegCon)
+				for (int multiport = 0; multiport < 4; multiport++)
 				{
-					//1,2,4 skipped (would be Select, L3, R3 on other pads)
-					if (Controller.IsPressed(pstring + "Start")) buttons |= 8;
-					if (Controller.IsPressed(pstring + "Up")) buttons |= 16;
-					if (Controller.IsPressed(pstring + "Right")) buttons |= 32;
-					if (Controller.IsPressed(pstring + "Down")) buttons |= 64;
-					if (Controller.IsPressed(pstring + "Left")) buttons |= 128;
-					//256,512,1024 skipped (would be L2, R2, L1 on other pads)
-					if (Controller.IsPressed(pstring + "R")) buttons |= 2048;
-					if (Controller.IsPressed(pstring + "B")) buttons |= 4096;
-					if (Controller.IsPressed(pstring + "A")) buttons |= 8192;
+					//note: I would not say this port addressing scheme has been completely successful
+					//however, it may be because i was constantly constrained by having to adapt it to mednafen.. i dont know.
 
-					byte twist = (byte)Controller.GetFloat(pstring + "Twist");
-					byte analog1 = (byte)Controller.GetFloat(pstring + "1");
-					byte analog2 = (byte)Controller.GetFloat(pstring + "2");
-					byte analogL = (byte)Controller.GetFloat(pstring + "L");
+					int portNum = (port + 1) + ((multiport + 1) << 4);
+					int slot = port * 4 + multiport;
+					
+					//no input to set
+					if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.None)
+						continue;
 
-					OctoshockDll.shock_Peripheral_SetPadInput(psx, portNum, buttons, twist, analog1, analog2, analogL);
-				}
-				else
-				{
-					if (Controller.IsPressed(pstring + "Select")) buttons |= 1;
-					if (Controller.IsPressed(pstring + "Start")) buttons |= 8;
-					if (Controller.IsPressed(pstring + "Up")) buttons |= 16;
-					if (Controller.IsPressed(pstring + "Right")) buttons |= 32;
-					if (Controller.IsPressed(pstring + "Down")) buttons |= 64;
-					if (Controller.IsPressed(pstring + "Left")) buttons |= 128;
-					if (Controller.IsPressed(pstring + "L2")) buttons |= 256;
-					if (Controller.IsPressed(pstring + "R2")) buttons |= 512;
-					if (Controller.IsPressed(pstring + "L1")) buttons |= 1024;
-					if (Controller.IsPressed(pstring + "R1")) buttons |= 2048;
-					if (Controller.IsPressed(pstring + "Triangle")) buttons |= 4096;
-					if (Controller.IsPressed(pstring + "Circle")) buttons |= 8192;
-					if (Controller.IsPressed(pstring + "Cross")) buttons |= 16384;
-					if (Controller.IsPressed(pstring + "Square")) buttons |= 32768;
+					//address differently if it isn't multitap
+					if (!fioCfg.Multitaps[port])
+						portNum = port + 1;
 
-					byte left_x = 0, left_y = 0, right_x = 0, right_y = 0;
-					if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualShock || fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualAnalog)
+					uint buttons = 0;
+					string pstring = "P" + fioCfg.PlayerAssignments[slot] + " ";
+
+					if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.NegCon)
 					{
-						if (Controller.IsPressed(pstring + "L3")) buttons |= 2;
-						if (Controller.IsPressed(pstring + "R3")) buttons |= 4;
-						if (Controller.IsPressed(pstring + "MODE")) buttons |= 65536;
+						//1,2,4 skipped (would be Select, L3, R3 on other pads)
+						if (Controller.IsPressed(pstring + "Start")) buttons |= 8;
+						if (Controller.IsPressed(pstring + "Up")) buttons |= 16;
+						if (Controller.IsPressed(pstring + "Right")) buttons |= 32;
+						if (Controller.IsPressed(pstring + "Down")) buttons |= 64;
+						if (Controller.IsPressed(pstring + "Left")) buttons |= 128;
+						//256,512,1024 skipped (would be L2, R2, L1 on other pads)
+						if (Controller.IsPressed(pstring + "R")) buttons |= 2048;
+						if (Controller.IsPressed(pstring + "B")) buttons |= 4096;
+						if (Controller.IsPressed(pstring + "A")) buttons |= 8192;
 
-						left_x = (byte)Controller.GetFloat(pstring + "LStick X");
-						left_y = (byte)Controller.GetFloat(pstring + "LStick Y");
-						right_x = (byte)Controller.GetFloat(pstring + "RStick X");
-						right_y = (byte)Controller.GetFloat(pstring + "RStick Y");
+						byte twist = (byte)Controller.GetFloat(pstring + "Twist");
+						byte analog1 = (byte)Controller.GetFloat(pstring + "1");
+						byte analog2 = (byte)Controller.GetFloat(pstring + "2");
+						byte analogL = (byte)Controller.GetFloat(pstring + "L");
+
+						OctoshockDll.shock_Peripheral_SetPadInput(psx, portNum, buttons, twist, analog1, analog2, analogL);
 					}
+					else
+					{
+						if (Controller.IsPressed(pstring + "Select")) buttons |= 1;
+						if (Controller.IsPressed(pstring + "Start")) buttons |= 8;
+						if (Controller.IsPressed(pstring + "Up")) buttons |= 16;
+						if (Controller.IsPressed(pstring + "Right")) buttons |= 32;
+						if (Controller.IsPressed(pstring + "Down")) buttons |= 64;
+						if (Controller.IsPressed(pstring + "Left")) buttons |= 128;
+						if (Controller.IsPressed(pstring + "L2")) buttons |= 256;
+						if (Controller.IsPressed(pstring + "R2")) buttons |= 512;
+						if (Controller.IsPressed(pstring + "L1")) buttons |= 1024;
+						if (Controller.IsPressed(pstring + "R1")) buttons |= 2048;
+						if (Controller.IsPressed(pstring + "Triangle")) buttons |= 4096;
+						if (Controller.IsPressed(pstring + "Circle")) buttons |= 8192;
+						if (Controller.IsPressed(pstring + "Cross")) buttons |= 16384;
+						if (Controller.IsPressed(pstring + "Square")) buttons |= 32768;
 
-					OctoshockDll.shock_Peripheral_SetPadInput(psx, portNum, buttons, left_x, left_y, right_x, right_y);
+						byte left_x = 0, left_y = 0, right_x = 0, right_y = 0;
+						if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualShock || fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualAnalog)
+						{
+							if (Controller.IsPressed(pstring + "L3")) buttons |= 2;
+							if (Controller.IsPressed(pstring + "R3")) buttons |= 4;
+							if (Controller.IsPressed(pstring + "MODE")) buttons |= 65536;
+
+							left_x = (byte)Controller.GetFloat(pstring + "LStick X");
+							left_y = (byte)Controller.GetFloat(pstring + "LStick Y");
+							right_x = (byte)Controller.GetFloat(pstring + "RStick X");
+							right_y = (byte)Controller.GetFloat(pstring + "RStick Y");
+						}
+
+						OctoshockDll.shock_Peripheral_SetPadInput(psx, portNum, buttons, left_x, left_y, right_x, right_y);
+					}
 				}
 			}
 		}
