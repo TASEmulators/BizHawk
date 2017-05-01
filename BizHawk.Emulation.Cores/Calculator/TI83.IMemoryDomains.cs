@@ -8,8 +8,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 {
 	public partial class TI83
 	{
-		private IMemoryDomains _memoryDomains;
 		private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
+		private IMemoryDomains _memoryDomains;
 		private bool _memoryDomainsInit = false;
 
 		private void SetupMemoryDomains()
@@ -21,13 +21,13 @@ namespace BizHawk.Emulation.Cores.Calculators
 				{
 					if (addr < 0 || addr >= 65536)
 						throw new ArgumentOutOfRangeException();
-					return Cpu.ReadMemory((ushort)addr);
+					return _cpu.ReadMemory((ushort)addr);
 				},
 				(addr, value) =>
 				{
 					if (addr < 0 || addr >= 65536)
 						throw new ArgumentOutOfRangeException();
-					Cpu.WriteMemory((ushort)addr, value);
+					_cpu.WriteMemory((ushort)addr, value);
 				}, 1);
 
 			domains.Add(systemBusDomain);

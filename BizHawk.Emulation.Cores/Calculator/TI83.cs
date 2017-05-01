@@ -18,19 +18,20 @@ namespace BizHawk.Emulation.Cores.Calculators
 		[CoreConstructor("TI83")]
 		public TI83(CoreComm comm, GameInfo game, byte[] rom, object Settings)
 		{
-			ServiceProvider = new BasicServiceProvider(this);
+			var ser = new BasicServiceProvider(this);
+			ServiceProvider = ser;
 			PutSettings((TI83Settings)Settings ?? new TI83Settings());
 
 			CoreComm = comm;
-			Cpu.ReadMemory = ReadMemory;
-			Cpu.WriteMemory = WriteMemory;
-			Cpu.ReadHardware = ReadHardware;
-			Cpu.WriteHardware = WriteHardware;
-			Cpu.IRQCallback = IRQCallback;
-			Cpu.NMICallback = NMICallback;
-			Cpu.MemoryCallbacks = MemoryCallbacks;
+			_cpu.ReadMemory = ReadMemory;
+			_cpu.WriteMemory = WriteMemory;
+			_cpu.ReadHardware = ReadHardware;
+			_cpu.WriteHardware = WriteHardware;
+			_cpu.IRQCallback = IRQCallback;
+			_cpu.NMICallback = NMICallback;
+			_cpu.MemoryCallbacks = MemoryCallbacks;
 
-			Rom = rom;
+			_rom = rom;
 			LinkPort = new TI83LinkPort(this);
 
 			// different calculators (different revisions?) have different initPC. we track this in the game database by rom hash
@@ -44,21 +45,19 @@ namespace BizHawk.Emulation.Cores.Calculators
 			HardReset();
 			SetupMemoryDomains();
 
-			Tracer = new TraceBuffer { Header = Cpu.TraceHeader };
+			_tracer = new TraceBuffer { Header = _cpu.TraceHeader };
 
-			var serviceProvider = ServiceProvider as BasicServiceProvider;
-
-			serviceProvider.Register<ITraceable>(Tracer);
-			serviceProvider.Register<IDisassemblable>(new Disassembler());
+			ser.Register<ITraceable>(_tracer);
+			ser.Register<IDisassemblable>(new Disassembler());
 		}
 
-		private readonly TraceBuffer Tracer;
+		private readonly TraceBuffer _tracer;
 
-		// hardware
-		private const ushort RamSizeMask = 0x7FFF;
+		private readonly Z80A _cpu = new Z80A();
+		private readonly byte[] _rom;
 
-		private readonly Z80A Cpu = new Z80A();
-		private readonly byte[] Rom;
+		// configuration
+		private readonly ushort _startPC;
 
 		private IController _controller;
 
@@ -76,16 +75,16 @@ namespace BizHawk.Emulation.Cores.Calculators
 		private bool _cursorMoved;
 		private int _frame;
 
-		// configuration
-		private ushort _startPC;
-
 		// Link Cable
 		public TI83LinkPort LinkPort { get; }
 
-		internal bool LinkActive;
-		internal int LinkOutput, LinkInput;
+		private int _linkOutput;
 
-		internal int LinkState => (LinkOutput | LinkInput) ^ 3;
+		internal int LinkOutput => _linkOutput;
+		internal bool LinkActive { private get; set; }
+		internal int LinkInput { private get; set; }
+
+		internal int LinkState => (_linkOutput | LinkInput) ^ 3;
 
 		private static readonly ControllerDefinition TI83Controller =
 			new ControllerDefinition
@@ -93,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				Name = "TI83 Controller",
 				BoolButtons =
 				{
-					"0", "1", "2", "3", "4", "5", "6", "7", "8", "9","DOT",
+					"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "DOT",
 					"ON", "ENTER",
 					"DOWN", "LEFT", "UP", "RIGHT",
 					"PLUS", "MINUS", "MULTIPLY", "DIVIDE",
@@ -111,11 +110,11 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 			if (addr < 0x4000)
 			{
-				ret = Rom[addr]; // ROM zero-page
+				ret = _rom[addr]; // ROM zero-page
 			}
 			else if (addr < 0x8000)
 			{
-				ret = Rom[(romPage * 0x4000) + addr - 0x4000]; // other rom page
+				ret = _rom[(romPage * 0x4000) + addr - 0x4000]; // other rom page
 			}
 			else
 			{
@@ -129,11 +128,11 @@ namespace BizHawk.Emulation.Cores.Calculators
 		{
 			if (addr < 0x4000)
 			{
-				return; // ROM zero-page
+				// ROM zero-page
 			}
 			else if (addr < 0x8000)
 			{
-				return; // other rom page
+				// other rom page
 			}
 			else
 			{
@@ -147,12 +146,12 @@ namespace BizHawk.Emulation.Cores.Calculators
 			{
 				case 0: // PORT_LINK
 					_romPageHighBit = (value >> 4) & 1;
-					LinkOutput = value & 3;
+					_linkOutput = value & 3;
 
 					if (LinkActive)
 					{
 						// Prevent rom calls from disturbing link port activity
-						if (LinkActive && Cpu.RegisterPC < 0x4000)
+						if (LinkActive && _cpu.RegisterPC < 0x4000)
 						{
 							return;
 						}
@@ -164,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				case 1: // PORT_KEYBOARD:
 					_lagged = false;
 					_keyboardMask = value;
-					//Console.WriteLine("write PORT_KEYBOARD {0:X2}",value);
+					////Console.WriteLine("write PORT_KEYBOARD {0:X2}",value);
 					break;
 				case 2: // PORT_ROMPAGE
 					_romPageLow3Bits = value & 0x7;
@@ -173,11 +172,11 @@ namespace BizHawk.Emulation.Cores.Calculators
 					_maskOn = (byte)(value & 1);
 					break;
 				case 16: // PORT_DISPCTRL
-					//Console.WriteLine("write PORT_DISPCTRL {0}",value);
+						 ////Console.WriteLine("write PORT_DISPCTRL {0}",value);
 					WriteDispCtrl(value);
 					break;
 				case 17: // PORT_DISPDATA
-					//Console.WriteLine("write PORT_DISPDATA {0}",value);
+						 ////Console.WriteLine("write PORT_DISPDATA {0}",value);
 					WriteDispData(value);
 					break;
 			}
@@ -191,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 					LinkPort.Update();
 					return (byte)((_romPageHighBit << 4) | (LinkState << 2) | LinkOutput);
 				case 1: // PORT_KEYBOARD:
-					//Console.WriteLine("read PORT_KEYBOARD");
+						////Console.WriteLine("read PORT_KEYBOARD");
 					return ReadKeyboard();
 				case 2: // PORT_ROMPAGE
 					return (byte)_romPageLow3Bits;
@@ -204,32 +203,33 @@ namespace BizHawk.Emulation.Cores.Calculators
 						// 2   - Unknown, but used
 						// 3   - Set if ON key is up
 						// 4-7 - Unknown
-						//if (onPressed && maskOn) ret |= 1;
-						//if (!onPressed) ret |= 0x8;
-						return (byte)((_controller.IsPressed("ON") ? _maskOn : 8) | (LinkActive ? 0 : 2));
+						////if (onPressed && maskOn) ret |= 1;
+						////if (!onPressed) ret |= 0x8;
+						return (byte)((Controller.IsPressed("ON") ? _maskOn : 8) | (LinkActive ? 0 : 2));
 					}
 
 				case 4: // PORT_INTCTRL
-					//Console.WriteLine("read PORT_INTCTRL");
+						////Console.WriteLine("read PORT_INTCTRL");
 					return 0xFF;
 
 				case 16: // PORT_DISPCTRL
-					//Console.WriteLine("read DISPCTRL");
+						 ////Console.WriteLine("read DISPCTRL");
 					break;
 
 				case 17: // PORT_DISPDATA
 					return ReadDispData();
 			}
+
 			return 0xFF;
 		}
 
 		private byte ReadKeyboard()
 		{
 			InputCallbacks.Call();
-			//ref TI-9X
 
+			// ref TI-9X
 			int ret = 0xFF;
-			//Console.WriteLine("keyboardMask: {0:X2}",keyboardMask);
+			////Console.WriteLine("keyboardMask: {0:X2}",keyboardMask);
 			if ((_keyboardMask & 1) == 0)
 			{
 				if (_controller.IsPressed("DOWN")) ret ^= 1;
@@ -326,7 +326,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			else
 			{
 				int column = 6 * (int)_displayX;
-				int offset = (int)_displayY * 12 + (column >> 3);
+				int offset = (int)(_displayY * 12) + (column >> 3);
 				int shift = 10 - (column & 7);
 				ret = (byte)(((_vram[offset] << 8) | _vram[offset + 1]) >> shift);
 			}
@@ -340,13 +340,13 @@ namespace BizHawk.Emulation.Cores.Calculators
 			int offset;
 			if (_displayMode == 1)
 			{
-				offset = (int)_displayY * 12 + (int)_displayX;
+				offset = (int)(_displayY * 12) + (int)_displayX;
 				_vram[offset] = value;
 			}
 			else
 			{
 				int column = 6 * (int)_displayX;
-				offset = (int)_displayY * 12 + (column >> 3);
+				offset = (int)(_displayY * 12) + (column >> 3);
 				if (offset < 0x300)
 				{
 					int shift = column & 7;
@@ -372,10 +372,18 @@ namespace BizHawk.Emulation.Cores.Calculators
 		{
 			switch (_displayMove)
 			{
-				case 0: _displayY--; break;
-				case 1: _displayY++; break;
-				case 2: _displayX--; break;
-				case 3: _displayX++; break;
+				case 0:
+					_displayY--;
+					break;
+				case 1:
+					_displayY++;
+					break;
+				case 2:
+					_displayX--;
+					break;
+				case 3:
+					_displayX++;
+					break;
 			}
 
 			_displayX &= 0xF; // 0xF or 0x1F? dunno
@@ -416,37 +424,34 @@ namespace BizHawk.Emulation.Cores.Calculators
 			else if (value == 3)
 			{
 			}
-			else
-			{
-			}
 		}
 
 		private void IRQCallback()
 		{
 			// Console.WriteLine("IRQ with vec {0} and cpu.InterruptMode {1}", cpu.RegisterI, cpu.InterruptMode);
-			Cpu.Interrupt = false;
+			_cpu.Interrupt = false;
 		}
 
 		private void NMICallback()
 		{
 			Console.WriteLine("NMI");
-			Cpu.NonMaskableInterrupt = false;
+			_cpu.NonMaskableInterrupt = false;
 		}
 
 		private void HardReset()
 		{
-			Cpu.Reset();
+			_cpu.Reset();
 			_ram = new byte[0x8000];
 			for (int i = 0; i < 0x8000; i++)
 			{
 				_ram[i] = 0xFF;
 			}
 
-			Cpu.RegisterPC = _startPC;
+			_cpu.RegisterPC = _startPC;
 
-			Cpu.IFF1 = false;
-			Cpu.IFF2 = false;
-			Cpu.InterruptMode = 2;
+			_cpu.IFF1 = false;
+			_cpu.IFF2 = false;
+			_cpu.InterruptMode = 2;
 
 			_maskOn = 1;
 			_romPageHighBit = 0;
