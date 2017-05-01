@@ -6,11 +6,29 @@ namespace BizHawk.Emulation.Cores.Libretro
 {
 	unsafe partial class LibretroApi
 	{
-		public Tuple<IntPtr,int> QUERY_GetMemory(RETRO_MEMORY mem)
+		bool Handle_SIG(eMessage msg)
 		{
-			comm->value = (uint)mem;
-			Message(eMessage.QUERY_GetMemory);
-			return Tuple.Create(new IntPtr(comm->buf[(int)BufId.Param0]), comm->buf_size[(int)BufId.Param0]);
+			//I know, ive done this two completely different ways
+			//both ways are sloppy glue, anyway
+			//I havent decided on the final architecture yet
+
+			switch (msg)
+			{
+				case eMessage.SIG_InputState:
+					comm->value = (uint)core.CB_InputState(comm->port, comm->device, comm->index, comm->id);
+					break;
+
+				case eMessage.SIG_VideoUpdate:
+					core.SIG_VideoUpdate();
+					break;
+
+				default:
+					return false;
+			
+			} //switch(msg)
+
+			Message(eMessage.Resume);
+			return true;
 		}
 	}
 }

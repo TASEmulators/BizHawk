@@ -196,6 +196,11 @@ namespace BizHawk.Emulation.Cores.Libretro
 			}
 		}
 
+		public void SIG_VideoUpdate()
+		{
+			SetVideoBuffer(api.comm->env.fb_width, api.comm->env.fb_height);
+		}
+
 		int IVideoProvider.BufferWidth { get { return vidWidth; } }
 		int IVideoProvider.BufferHeight { get { return vidHeight; } }
 

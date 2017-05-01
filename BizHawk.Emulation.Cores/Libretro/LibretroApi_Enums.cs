@@ -28,9 +28,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 			CMD_Unserialize,
 			CMD_LAST,
 
+			SIG_InputState,
 			SIG_VideoUpdate,
-
-			BRK_InputState,
 		};
 
 

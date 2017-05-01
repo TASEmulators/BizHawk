@@ -93,9 +93,8 @@ enum eMessage : s32
 	CMD_Unserialize,
 	CMD_LAST,
 
+	SIG_InputState,
 	SIG_VideoUpdate,
-
-	BRK_InputState,
 };
 
 enum eStatus : s32
@@ -558,11 +557,11 @@ void retro_video_refresh(const void *data, unsigned width, unsigned height, size
 
 	comm.env.fb_width = (s32)width;
 	comm.env.fb_height = (s32)height;
+	//stash pitch if needed
 
 	//notify c# of these new settings and let it allocate a buffer suitable for receiving the output (so we can work directly into c#'s int[])
 	//c# can read the settings right out of the comm env
-	//NOPE: not needed. for now, anyway. may want to notify later
-	//BREAK(eMessage::SIG_VideoUpdate);
+	BREAK(eMessage::SIG_VideoUpdate);
 
 
 	////if (BufferWidth != width) BufferWidth = (int)width;
@@ -639,7 +638,7 @@ s16 retro_input_state(unsigned port, unsigned device, unsigned index, unsigned i
 	comm.index = index;
 	comm.id = id;
 	
-	BREAK(eMessage::BRK_InputState);
+	BREAK(eMessage::SIG_InputState);
 
 	return (s16)comm.value;
 }

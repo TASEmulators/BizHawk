@@ -10,10 +10,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			switch (msg)
 			{
-				case eMessage.BRK_InputState:
-					comm->value = (uint)core.CB_InputState(comm->port, comm->device, comm->index, comm->id);
-					break;
-
 				default:
 					return false;
 
