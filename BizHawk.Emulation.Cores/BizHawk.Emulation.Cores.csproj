@@ -512,28 +512,28 @@
     <Compile Include="Consoles\Nintendo\GBA\LibVBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.cs" />
     <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.IDebuggable.cs">
-        <DependentUpon>MGBAHawk.cs</DependentUpon>
+      <DependentUpon>MGBAHawk.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.IInputPollable.cs">
-        <DependentUpon>MGBAHawk.cs</DependentUpon>
+      <DependentUpon>MGBAHawk.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.IMemoryDomains.cs">
-        <DependentUpon>MGBAHawk.cs</DependentUpon>
+      <DependentUpon>MGBAHawk.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.ISaveRam.cs">
-        <DependentUpon>MGBAHawk.cs</DependentUpon>
+      <DependentUpon>MGBAHawk.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.ISettable.cs">
-        <DependentUpon>MGBAHawk.cs</DependentUpon>
+      <DependentUpon>MGBAHawk.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.ISoundProvider.cs">
-        <DependentUpon>MGBAHawk.cs</DependentUpon>
+      <DependentUpon>MGBAHawk.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.IStatable.cs">
-        <DependentUpon>MGBAHawk.cs</DependentUpon>
+      <DependentUpon>MGBAHawk.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\MGBAHawk.IVideoProvider.cs">
-        <DependentUpon>MGBAHawk.cs</DependentUpon>
+      <DependentUpon>MGBAHawk.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBANext.cs" />
     <Compile Include="Consoles\Nintendo\GBA\VBANext.IDebuggable.cs">
@@ -1001,12 +1001,6 @@
     </Compile>
     <Compile Include="Consoles\PC Engine\PCEngine.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\ScsiCDBus.cs" />
-    <Compile Include="Consoles\Sega\Genesis\Cart\EEPROM.cs" />
-    <Compile Include="Consoles\Sega\Genesis\Cart\RomHeader.cs" />
-    <Compile Include="Consoles\Sega\Genesis\Cart\SaveRAM.cs" />
-    <Compile Include="Consoles\Sega\Genesis\Genesis.Input.cs" />
-    <Compile Include="Consoles\Sega\Genesis\Genesis.IO.cs" />
-    <Compile Include="Consoles\Sega\Genesis\Native68000\Musashi.cs" />
     <Compile Include="Consoles\Sega\gpgx64\GPGX.ISoundProvider.cs">
       <DependentUpon>GPGX.cs</DependentUpon>
     </Compile>
@@ -1259,12 +1253,6 @@
     <Compile Include="Libretro\LibretroCore_InputCallbacks.cs" />
     <Compile Include="MemoryBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Consoles\Sega\Genesis\Genesis.cs" />
-    <Compile Include="Consoles\Sega\Genesis\GenVDP.cs" />
-    <Compile Include="Consoles\Sega\Genesis\GenVDP.DMA.cs" />
-    <Compile Include="Consoles\Sega\Genesis\GenVDP.Render.cs" />
-    <Compile Include="Consoles\Sega\Genesis\MemoryMap.68000.cs" />
-    <Compile Include="Consoles\Sega\Genesis\MemoryMap.Z80.cs" />
     <Compile Include="Sound\CDAudio.cs" />
     <Compile Include="Sound\HuC6280PSG.cs" />
     <Compile Include="Sound\IAsyncSoundProvider.cs" />
@@ -1282,7 +1270,6 @@
     <Content Include="Consoles\Nintendo\NES\Docs\sunsoft.txt" />
     <Content Include="Consoles\Nintendo\NES\Docs\sxrom_notes.txt" />
     <Content Include="Consoles\PC Engine\Compat.txt" />
-    <Content Include="Consoles\Sega\Genesis\Compat.txt" />
     <Content Include="Consoles\Sega\SMS\Compat.txt" />
     <Content Include="Notes.txt" />
   </ItemGroup>
