@@ -299,7 +299,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public bool IsLagFrame { get; set; }
 		public string SystemId { get { return "Libretro"; } }
 		public bool DeterministicEmulation { get { return false; } }
-		public string BoardName { get; private set; }
 
 	#region ISaveRam
 		//TODO - terrible things will happen if this changes at runtime
