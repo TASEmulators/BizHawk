@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.BizInvoke;
+using BizHawk.Common.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {

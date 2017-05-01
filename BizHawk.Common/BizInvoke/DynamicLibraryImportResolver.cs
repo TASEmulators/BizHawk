@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Common.BizInvoke
+namespace BizHawk.Common.BizInvoke
 {
 	public class DynamicLibraryImportResolver : IImportResolver, IDisposable
 	{

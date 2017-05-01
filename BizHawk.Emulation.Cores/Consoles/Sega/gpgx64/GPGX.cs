@@ -1,10 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
 
+using BizHawk.Common.BizInvoke;
 using BizHawk.Emulation.Common;
-using BizHawk.Common;
-using System.IO;
-using BizHawk.Emulation.Common.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 {
