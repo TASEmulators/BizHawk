@@ -87,6 +87,7 @@
       <Link>VersionInfo.cs</Link>
     </Compile>
     <Compile Include="AWEMemoryStream.cs" />
+    <Compile Include="BinaryQuickSerializer.cs" />
     <Compile Include="Bit.cs" />
     <Compile Include="BitReverse.cs" />
     <Compile Include="Buffer.cs" />
