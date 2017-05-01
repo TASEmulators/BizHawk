@@ -95,6 +95,8 @@ enum eMessage : s32
 
 	SIG_InputState,
 	SIG_VideoUpdate,
+	SIG_Sample,
+	SIG_SampleBatch,
 };
 
 enum eStatus : s32
@@ -622,10 +624,15 @@ void retro_video_refresh(const void *data, unsigned width, unsigned height, size
 
 void retro_audio_sample(s16 left, s16 right)
 {
+	s16 samples[] = {left,right};
+	comm.SetBuffer(BufId::Param0,(void*)&samples,4); 
+	BREAK(SIG_Sample);
 }
 size_t retro_audio_sample_batch(const s16 *data, size_t frames)
 {
-	return 0;
+	comm.SetBuffer(BufId::Param0, (void*)data, frames*4);
+	BREAK(SIG_SampleBatch);
+	return frames;
 }
 void retro_input_poll()
 {

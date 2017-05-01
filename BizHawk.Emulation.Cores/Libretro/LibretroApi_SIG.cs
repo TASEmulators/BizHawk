@@ -22,6 +22,20 @@ namespace BizHawk.Emulation.Cores.Libretro
 					core.SIG_VideoUpdate();
 					break;
 
+				case eMessage.SIG_Sample:
+					{
+						short* samples = (short*)comm->buf[(int)BufId.Param0];
+						core.retro_audio_sample(samples[0], samples[1]);
+					}
+					break;
+
+				case eMessage.SIG_SampleBatch:
+					{
+						void* samples = (void*)comm->buf[(int)BufId.Param0];
+						core.retro_audio_sample_batch(samples, comm->buf_size[(int)BufId.Param0]/4);
+					}
+					break;
+
 				default:
 					return false;
 			

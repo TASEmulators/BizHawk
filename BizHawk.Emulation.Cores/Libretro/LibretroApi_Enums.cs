@@ -30,6 +30,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 			SIG_InputState,
 			SIG_VideoUpdate,
+			SIG_Sample,
+			SIG_SampleBatch,
 		};
 
 

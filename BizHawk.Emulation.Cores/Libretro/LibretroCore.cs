@@ -86,6 +86,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 				vidBufferHandle.Free();
 		}
 
+		public CoreComm CoreComm { get; private set; }
+
 		public RetroDescription Description { get; private set; }
 
 		public bool LoadData(byte[] data, string id)
@@ -124,6 +126,13 @@ namespace BizHawk.Emulation.Cores.Libretro
 			//UPDATE: well, they wrote in the docs that they CANT. they can ask the frontend if it's supported. (we wont support it unless we have to)
 			savebuff = new byte[api.comm->env.retro_serialize_size];
 			savebuff2 = new byte[savebuff.Length + 13];
+
+			// TODO: more precise
+			CoreComm.VsyncNum = (int)(10000000 * api.comm->env.retro_system_av_info.timing.fps);
+			CoreComm.VsyncDen = 10000000;
+
+			SetupResampler(api.comm->env.retro_system_av_info.timing.fps, api.comm->env.retro_system_av_info.timing.sample_rate);
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(resampler);
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
@@ -203,6 +212,44 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		int IVideoProvider.BufferWidth { get { return vidWidth; } }
 		int IVideoProvider.BufferHeight { get { return vidHeight; } }
+
+		#region ISoundProvider
+
+		SpeexResampler resampler;
+
+		short[] sampbuff = new short[0];
+
+		// debug
+		int nsamprecv = 0;
+
+		void SetupResampler(double fps, double sps)
+		{
+			Console.WriteLine("FPS {0} SPS {1}", fps, sps);
+
+			// todo: more precise?
+			uint spsnum = (uint)sps * 1000;
+			uint spsden = (uint)1000;
+
+			resampler = new SpeexResampler(5, 44100 * spsden, spsnum, (uint)sps, 44100, null, null);
+		}
+
+		//TODO: handle these in c++ (queue there and blast after frameadvance to c#)
+		public void retro_audio_sample(short left, short right)
+		{
+			resampler.EnqueueSample(left, right);
+			nsamprecv++;
+		}
+
+		public void retro_audio_sample_batch(void* data, int frames)
+		{
+			if (sampbuff.Length < frames * 2)
+				sampbuff = new short[frames * 2];
+			Marshal.Copy(new IntPtr(data), sampbuff, 0, (int)(frames * 2));
+			resampler.EnqueueSamples(sampbuff, (int)frames);
+			nsamprecv += (int)frames;
+		}
+
+		#endregion
 
 		public static ControllerDefinition CreateControllerDefinition(SyncSettings syncSettings)
 		{
@@ -364,19 +411,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		#endregion
 
-		public CoreComm CoreComm { get; private set; }
-
-		SpeexResampler resampler;
-
-		void InitAudio()
-		{
-			resampler = new SpeexResampler(6, 64081, 88200, 32041, 44100);
-		}
-
-		void snes_audio_sample(ushort left, ushort right)
-		{
-			resampler.EnqueueSample((short)left, (short)right);
-		}
 
 	} //class
 

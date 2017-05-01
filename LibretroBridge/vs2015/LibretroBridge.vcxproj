@@ -156,6 +156,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalOptions>/pdbaltpath:%_PDB% %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <PostBuildEvent>
+      <Command>..\..\dist\upx -9 $(TargetPath)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
