@@ -317,8 +317,6 @@ namespace BizHawk.Emulation.Cores.Sega.Genesis
 		public bool DeterministicEmulation { get { return true; } }
 		public string SystemId { get { return "GEN"; } }
 
-		public string BoardName { get { return null; } }
-
 		public void SaveStateText(TextWriter writer)
 		{
 			var buf = new byte[141501 + SaveRAM.Length];

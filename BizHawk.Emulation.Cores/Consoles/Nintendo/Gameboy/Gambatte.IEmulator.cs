@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	public partial class Gameboy : IEmulator
+	public partial class Gameboy : IEmulator, IBoardInfo
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 

@@ -129,7 +129,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			IsLagFrame = false;
 		}
 
-		public string BoardName { get { return null; } }
 		/// <summary>
 		/// set in the ROM internal header
 		/// </summary>

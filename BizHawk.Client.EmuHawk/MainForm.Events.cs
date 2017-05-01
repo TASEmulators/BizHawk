@@ -1495,7 +1495,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			FDSControlsMenuItem.Enabled = Emulator.BoardName == "FDS";
+			var boardName = Emulator.HasBoardInfo() ? Emulator.AsBoardInfo().BoardName : null;
+			FDSControlsMenuItem.Enabled = boardName == "FDS";
 
 			VSControlsMenuItem.Enabled =
 			VSSettingsMenuItem.Enabled =
@@ -1514,7 +1515,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FdsControlsMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			FdsEjectDiskMenuItem.Enabled = Emulator.BoardName == "FDS";
+			var boardName = Emulator.HasBoardInfo() ? Emulator.AsBoardInfo().BoardName : null;
+			FdsEjectDiskMenuItem.Enabled = boardName == "FDS";
 
 			while (FDSControlsMenuItem.DropDownItems.Count > 1)
 			{

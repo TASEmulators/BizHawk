@@ -55,7 +55,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		public string SystemId { get { return "SNES"; } }
 		public bool DeterministicEmulation { get { return true; } }
-		public string BoardName { get { return null; } }
 		public CoreComm CoreComm { get; private set; }
 
 		#region IVideoProvider

@@ -3517,9 +3517,9 @@ namespace BizHawk.Client.EmuHawk
 							loader.Rom.RomData.HashMD5());
 					}
 
-					if (Emulator.BoardName != null)
+					if (Emulator.HasBoardInfo())
 					{
-						Console.WriteLine("Core reported BoardID: \"{0}\"", Emulator.BoardName);
+						Console.WriteLine("Core reported BoardID: \"{0}\"", Emulator.AsBoardInfo().BoardName);
 					}
 
 					// restarts the lua console if a different rom is loaded.

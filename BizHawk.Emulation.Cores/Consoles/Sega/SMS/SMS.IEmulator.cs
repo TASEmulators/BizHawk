@@ -67,8 +67,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public bool DeterministicEmulation { get { return true; } }
 
-		public string BoardName { get { return null; } }
-
 		public void ResetCounters()
 		{
 			Frame = 0;

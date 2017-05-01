@@ -110,8 +110,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public bool DeterministicEmulation { get; }
 
-		public string BoardName => null;
-
 		public void ResetCounters()
 		{
 			Frame = 0;

@@ -285,9 +285,9 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				movie.GameName = "NULL";
 			}
 
-			if (Global.Emulator.BoardName != null)
+			if (Global.Emulator.HasBoardInfo())
 			{
-				movie.BoardName = Global.Emulator.BoardName;
+				movie.BoardName = Global.Emulator.AsBoardInfo().BoardName;
 			}
 
 			if (Global.Emulator.HasRegions())

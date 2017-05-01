@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		isReleased: true
 		)]
 	public partial class NES : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
-		ISettable<NES.NESSettings, NES.NESSyncSettings>
+		IBoardInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>
 	{
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;

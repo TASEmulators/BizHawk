@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
-	public sealed partial class Intellivision : IEmulator
+	public sealed partial class Intellivision : IEmulator, IBoardInfo
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
@@ -134,8 +134,6 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public bool DeterministicEmulation => true;
 
-		public string BoardName => _cart.BoardName;
-
 		public void ResetCounters()
 		{
 			_frame = 0;
@@ -147,5 +145,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public void Dispose()
 		{
 		}
+
+		// IBoardInfo
+		public string BoardName => _cart.BoardName;
 	}
 }

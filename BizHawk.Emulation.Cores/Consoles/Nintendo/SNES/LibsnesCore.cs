@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				IsSGB = true;
 				SystemId = "SNES";
-				BoardName = "SGB";
+				ser.Register<IBoardInfo>(new SGBBoardInfo());
 
 				_currLoadParams = new LoadParams()
 				{
@@ -197,6 +197,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private bool _disposed;
 
 		public bool IsSGB { get; }
+
+		private class SGBBoardInfo : IBoardInfo
+		{
+			public string BoardName => "SGB";
+		}
 
 		public string CurrentProfile
 		{

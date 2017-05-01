@@ -302,8 +302,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		public string SystemId { get { return "SAT"; } }
 		public bool DeterministicEmulation { get { return true; } }
 
-		public string BoardName { get { return null; } }
-
 		public void ResetCounters()
 		{
 			Frame = 0;

@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		"zeromus",
 		isPorted: false,
 		isReleased: true)]
-	[ServiceNotApplicable(typeof(ISoundProvider), typeof(ISaveRam), typeof(IRegionable), typeof(IDriveLight))]
+	[ServiceNotApplicable(typeof(ISoundProvider), typeof(ISaveRam), typeof(IRegionable), typeof(IDriveLight), typeof(IBoardInfo))]
 	public partial class TI83 : IEmulator, IVideoProvider, IStatable, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
 	{
 		[CoreConstructor("TI83")]

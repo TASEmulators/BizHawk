@@ -52,8 +52,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public bool DeterministicEmulation => true;
 
-		public string BoardName => null;
-
 		public void ResetCounters()
 		{
 			// this should just be a public setter instead of a new method.

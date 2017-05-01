@@ -153,8 +153,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			IsLagFrame = false;
 		}
 
-		public string BoardName => null;
-
 		public CoreComm CoreComm { get; }
 
 		public void Dispose()

@@ -44,8 +44,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		public string SystemId { get { return "PSP"; } }
 		public CoreComm CoreComm { get; private set; }
 
-		public string BoardName { get { return null; } }
-
 		PPSSPPDll.LogCB logcallback = null;
 		Queue<string> debugmsgs = new Queue<string>();
 		PPSSPPDll.Input input = new PPSSPPDll.Input();

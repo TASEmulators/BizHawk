@@ -327,6 +327,21 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return core.ServiceProvider.GetService<ICreateGameDBEntries>();
 		}
 
+		public static bool HasBoardInfo(this IEmulator core)
+		{
+			if (core == null)
+			{
+				return false;
+			}
+
+			return core.ServiceProvider.HasService<IBoardInfo>();
+		}
+
+		public static IBoardInfo AsBoardInfo(this IEmulator core)
+		{
+			return core.ServiceProvider.GetService<IBoardInfo>();
+		}
+
 		// TODO: a better place for these
 		public static bool IsImplemented(this MethodInfo info)
 		{

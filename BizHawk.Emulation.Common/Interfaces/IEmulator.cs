@@ -62,11 +62,6 @@ namespace BizHawk.Emulation.Common
 		bool DeterministicEmulation { get; }
 
 		/// <summary>
-		/// Gets the identifying information about a "mapper" or similar capability.  null if no such useful distinction can be drawn
-		/// </summary>
-		string BoardName { get; }
-
-		/// <summary>
 		/// Resets the Frame and Lag counters, and any other similar counters a core might implement
 		/// </summary>
 		void ResetCounters();
@@ -77,4 +72,5 @@ namespace BizHawk.Emulation.Common
 		/// <seealso cref="BizHawk.Emulation.Common.CoreComm" /> 
 		CoreComm CoreComm { get; }
 	}
+
 }

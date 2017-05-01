@@ -141,8 +141,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			ControllerDefinition = CreateControllerDefinition(_SyncSettings);
 		}
 
-		public string BoardName { get { return null; } }
-
 		private int[] frameBuffer = new int[0];
 		private Random rand = new Random();
 		public CoreComm CoreComm { get; private set; }

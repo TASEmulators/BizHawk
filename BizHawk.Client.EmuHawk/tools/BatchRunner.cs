@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 				current.GI = ldr.Game;
 				current.CoreType = emu.GetType();
 				emu.Controller = new Controller(emu.ControllerDefinition);
-				current.BoardName = emu.BoardName;
+				current.BoardName = emu.HasBoardInfo() ? emu.AsBoardInfo().BoardName : null;
 				// hack
 				if (emu is Emulation.Cores.Nintendo.GBA.VBANext)
 				{

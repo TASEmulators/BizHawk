@@ -3,7 +3,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	public partial class GambatteLink : IEmulator
+	public partial class GambatteLink : IEmulator, IBoardInfo
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 

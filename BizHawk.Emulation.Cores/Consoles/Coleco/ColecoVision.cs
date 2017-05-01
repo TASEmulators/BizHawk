@@ -204,6 +204,5 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private GameInfo _game;
 		public CoreComm CoreComm { get; }
-		public string BoardName => null;
 	}
 }

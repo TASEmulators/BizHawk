@@ -99,8 +99,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 		public GameInfo game;
 
-		public string BoardName => null;
-
 		public void FrameAdvance(bool render, bool rendersound)
 		{
 			_frame++;

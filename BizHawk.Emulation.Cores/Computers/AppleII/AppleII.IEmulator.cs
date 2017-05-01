@@ -21,8 +21,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			FrameAdv(render, rendersound);
 		}
 
-		public string BoardName => null;
-
 		public void ResetCounters()
 		{
 			Frame = 0;

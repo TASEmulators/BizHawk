@@ -132,8 +132,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public CoreComm CoreComm { get; private set; }
 		[SaveState.DoNotSave]
 		public string SystemId { get { return "C64"; } }
-		[SaveState.DoNotSave]
-		public string BoardName { get { return null; } }
 		[SaveState.SaveWithName("DeterministicEmulation")]
 		public bool DeterministicEmulation { get; set; }
 		[SaveState.SaveWithName("Frame")]

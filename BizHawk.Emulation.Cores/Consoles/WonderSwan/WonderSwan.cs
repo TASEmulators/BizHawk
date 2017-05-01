@@ -105,7 +105,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		public string SystemId { get { return "WSWAN"; } }
 		public bool DeterministicEmulation { get; private set; }
-		public string BoardName { get { return null; } }
 
 		#region Debugging
 

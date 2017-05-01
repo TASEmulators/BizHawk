@@ -62,11 +62,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			get { return true; }
 		}
 
-		public string BoardName
-		{
-			get { return null; }
-		}
-
 		public void ResetCounters()
 		{
 			Frame = 0;

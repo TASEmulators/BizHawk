@@ -108,8 +108,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_settings.ForceDeterminism
 			&& (CurrentProfile == "Compatibility" || CurrentProfile == "Accuracy");
 
-		public string BoardName { get; }
-
 		public void ResetCounters()
 		{
 			_timeFrameCounter = 0;

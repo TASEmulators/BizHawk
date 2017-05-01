@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
-	public partial class Atari2600 : IEmulator, IStatable, IDebuggable, IInputPollable,
+	public partial class Atari2600 : IEmulator, IStatable, IDebuggable, IInputPollable, IBoardInfo,
 		IRegionable, ICreateGameDBEntries, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
 		private readonly GameInfo _game;
@@ -69,8 +69,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public string SystemId => "A26";
 
-		public string BoardName => _mapper.GetType().Name;
-
 		public CoreComm CoreComm { get; }
 
 		public ControllerDefinition ControllerDefinition { get { return Atari2600ControllerDefinition; } }
@@ -105,6 +103,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				Status = RomStatus.Unknown
 			};
 		}
+
+		// IBoardInfo
+		public string BoardName => _mapper.GetType().Name;
 
 		public void ResetCounters()
 		{
