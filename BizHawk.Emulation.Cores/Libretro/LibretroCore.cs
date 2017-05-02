@@ -233,7 +233,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			uint spsnum = (uint)sps * 1000;
 			uint spsden = (uint)1000;
 
-			resampler = new SpeexResampler(5, 44100 * spsden, spsnum, (uint)sps, 44100, null, null);
+			resampler = new SpeexResampler(SpeexResampler.Quality.QUALITY_DESKTOP, 44100 * spsden, spsnum, (uint)sps, 44100, null, null);
 		}
 
 		//TODO: handle these in c++ (queue there and blast after frameadvance to c#)

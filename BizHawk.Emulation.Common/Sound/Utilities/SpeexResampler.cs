@@ -19,14 +19,20 @@ namespace BizHawk.Emulation.Common
 		// TODO: this size is roughly based on how big you can make the buffer before the snes resampling (32040.5 -> 44100) gets screwed up
 		private readonly short[] _inbuf = new short[512]; // [8192]; // [512];
 
+		/// <summary>
+		/// quality of the resampler.  values other than those listed are valid, provided they are between MIN and MAX
+		/// </summary>
+		public enum Quality : int
+		{
+			QUALITY_MAX = 10,
+			QUALITY_MIN = 0,
+			QUALITY_DEFAULT = 4,
+			QUALITY_VOIP = 3,
+			QUALITY_DESKTOP = 5,
+		}
+
 		private static class LibSpeexDSP
 		{
-			public const int QUALITY_MAX = 10;
-			public const int QUALITY_MIN = 0;
-			public const int QUALITY_DEFAULT = 4;
-			public const int QUALITY_VOIP = 3;
-			public const int QUALITY_DESKTOP = 5;
-
 			public enum RESAMPLER_ERR
 			{
 				SUCCESS = 0,
@@ -47,7 +53,7 @@ namespace BizHawk.Emulation.Common
 			/// <param name="err">The error state</param>
 			/// <returns>Newly created resampler state</returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
-			public static extern IntPtr speex_resampler_init(uint nb_channels, uint in_rate, uint out_rate, int quality, ref RESAMPLER_ERR err);
+			public static extern IntPtr speex_resampler_init(uint nb_channels, uint in_rate, uint out_rate, Quality quality, ref RESAMPLER_ERR err);
 
 			/// <summary>
 			/// Create a new resampler with fractional input/output rates. The sampling
@@ -63,7 +69,7 @@ namespace BizHawk.Emulation.Common
 			/// <param name="err">The error state</param>
 			/// <returns>Newly created resampler state</returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
-			public static extern IntPtr speex_resampler_init_frac(uint nb_channels, uint ratio_num, uint ratio_den, uint in_rate, uint out_rate, int quality, ref RESAMPLER_ERR err);
+			public static extern IntPtr speex_resampler_init_frac(uint nb_channels, uint ratio_num, uint ratio_den, uint in_rate, uint out_rate, Quality quality, ref RESAMPLER_ERR err);
 
 			/// <summary>
 			/// Destroy a resampler state.
@@ -162,7 +168,7 @@ namespace BizHawk.Emulation.Common
 			/// <param name="st">Resampler state</param>
 			/// <param name="quality">Resampling quality between 0 and 10, where 0 has poor quality and 10 has very high quality.</param>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
-			public static extern RESAMPLER_ERR speex_resampler_set_quality(IntPtr st, int quality);
+			public static extern RESAMPLER_ERR speex_resampler_set_quality(IntPtr st, Quality quality);
 
 			/// <summary>
 			/// Get the conversion quality.
@@ -170,7 +176,7 @@ namespace BizHawk.Emulation.Common
 			/// <param name="st">Resampler state</param>
 			/// <param name="quality">Resampling quality between 0 and 10, where 0 has poor quality and 10 has very high quality.</param>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
-			public static extern void speex_resampler_get_quality(IntPtr st, ref int quality);
+			public static extern void speex_resampler_get_quality(IntPtr st, ref Quality quality);
 
 			/// <summary>
 			/// Set (change) the input stride.
@@ -294,7 +300,7 @@ namespace BizHawk.Emulation.Common
 		/// <param name="srateout">sampling rate out, rounded to nearest hz</param>
 		/// <param name="drainer">function which accepts output as produced. if null, act as an <seealso cref="ISoundProvider"/></param>
 		/// <param name="input">source to take input from when output is requested. if null, no auto-fetching</param>
-		public SpeexResampler(int quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer = null, ISoundProvider input = null)
+		public SpeexResampler(Quality quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer = null, ISoundProvider input = null)
 		{
 			if (drainer != null && input != null)
 			{

@@ -546,7 +546,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void InitAudio()
 		{
-			_resampler = new SpeexResampler(6, 64081, 88200, 32041, 44100);
+			_resampler = new SpeexResampler((SpeexResampler.Quality)6, 64081, 88200, 32041, 44100);
 		}
 
 		private void snes_audio_sample(ushort left, ushort right)

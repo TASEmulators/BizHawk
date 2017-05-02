@@ -232,7 +232,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 					// really shouldn't happen (after init), but if it does, we're ready
 					if (resampler != null)
 						resampler.Dispose();
-					resampler = new SpeexResampler(3, newsamplerate, 44100, newsamplerate, 44100, null, null);
+					resampler = new SpeexResampler((SpeexResampler.Quality)3, newsamplerate, 44100, newsamplerate, 44100, null, null);
 					samplerate = newsamplerate;
 					dcfilter = new DCFilter(256);
 				}

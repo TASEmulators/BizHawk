@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			this.api = new mupen64plusAudioApi(core);
 
 			_samplingRate = api.GetSamplingRate();
-			Resampler = new SpeexResampler(6, SamplingRate, 44100,
+			Resampler = new SpeexResampler((SpeexResampler.Quality)6, SamplingRate, 44100,
 				SamplingRate, 44100);
 
 			coreAPI = core;
