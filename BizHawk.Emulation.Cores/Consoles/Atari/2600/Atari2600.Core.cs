@@ -1,6 +1,5 @@
 ﻿using System;
 
-using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.BufferExtensions;
 
@@ -290,11 +289,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_lagcount = 0;
 			Cpu = new MOS6502X
 			{
-				ReadMemory = this.ReadMemory,
-				WriteMemory = this.WriteMemory,
-				PeekMemory = this.PeekMemory,
-				DummyReadMemory = this.ReadMemory,
-				OnExecFetch = this.ExecFetch
+				ReadMemory = ReadMemory,
+				WriteMemory = WriteMemory,
+				PeekMemory = PeekMemory,
+				DummyReadMemory = ReadMemory,
+				OnExecFetch = ExecFetch
 			};
 
 			if (_game["PAL"])
@@ -312,7 +311,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			// dcfilter coefficent is from real observed hardware behavior: a latched "1" will fully decay by ~170 or so tia sound cycles
 			_tia = new TIA(this, _pal, Settings.SECAMColors, CoreComm.VsyncRate > 55.0 ? 735 : 882);
-			_tia.GetFrameRate(out CoreComm.VsyncNum, out CoreComm.VsyncDen);
+
+			int vsyncNum, vsyncDen;
+			_tia.GetFrameRate(out vsyncNum, out vsyncDen);
+
+			CoreComm.VsyncNum = vsyncNum;
+			CoreComm.VsyncDen = vsyncDen;
 
 			_dcfilter = new DCFilter(_tia, 256);
 
@@ -347,11 +351,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			Cpu = new MOS6502X
 			{
-				ReadMemory = this.ReadMemory,
-				WriteMemory = this.WriteMemory,
-				PeekMemory = this.PeekMemory,
-				DummyReadMemory = this.ReadMemory,
-				OnExecFetch = this.ExecFetch
+				ReadMemory = ReadMemory,
+				WriteMemory = WriteMemory,
+				PeekMemory = PeekMemory,
+				DummyReadMemory = ReadMemory,
+				OnExecFetch = ExecFetch
 			};
 
 			_tia.Reset();
