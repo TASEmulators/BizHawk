@@ -68,5 +68,4 @@ namespace BizHawk.Emulation.Common
 		/// <seealso cref="BizHawk.Emulation.Common.CoreComm" /> 
 		CoreComm CoreComm { get; }
 	}
-
 }

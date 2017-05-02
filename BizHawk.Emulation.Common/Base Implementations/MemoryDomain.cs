@@ -7,7 +7,10 @@
 	/// <seealso cref="IMemoryDomains" />
 	public abstract class MemoryDomain
 	{
-		public enum Endian { Big, Little, Unknown }
+		public enum Endian
+		{
+			Big, Little, Unknown
+		}
 
 		public string Name { get; protected set; }
 

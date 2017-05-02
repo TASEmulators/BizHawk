@@ -88,5 +88,8 @@ namespace BizHawk.Emulation.Common
 		uint? AddressMask { get; }
 	}
 
-	public enum MemoryCallbackType { Read, Write, Execute }
+	public enum MemoryCallbackType
+	{
+		Read, Write, Execute
+	}
 }
