@@ -205,7 +205,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 						// 4-7 - Unknown
 						////if (onPressed && maskOn) ret |= 1;
 						////if (!onPressed) ret |= 0x8;
-						return (byte)((Controller.IsPressed("ON") ? _maskOn : 8) | (LinkActive ? 0 : 2));
+						return (byte)((_controller.IsPressed("ON") ? _maskOn : 8) | (LinkActive ? 0 : 2));
 					}
 
 				case 4: // PORT_INTCTRL
