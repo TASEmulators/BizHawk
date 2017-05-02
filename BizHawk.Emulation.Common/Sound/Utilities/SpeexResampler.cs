@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Common
 			/// <summary>
 			/// Set (change) the input/output sampling rates and resampling ratio (fractional values in Hz supported).
 			/// </summary>
-			/// <param name="st">esampler state</param>
+			/// <param name="st">resampler state</param>
 			/// <param name="ratio_num">Numerator of the sampling rate ratio</param>
 			/// <param name="ratio_den">Denominator of the sampling rate ratio</param>
 			/// <param name="in_rate">Input sampling rate rounded to the nearest integer (in Hz).</param>
@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Common
 			*/
 
 			/// <summary>
-			/// Make sure that the first samples to go out of the resamplers don't have
+			/// Make sure that the first samples to go out of the resampler don't have
 			/// leading zeros. This is only useful before starting to use a newly created
 			/// resampler. It is recommended to use that when resampling an audio file, as
 			/// it will generate a file with the same length. For real-time processing,
