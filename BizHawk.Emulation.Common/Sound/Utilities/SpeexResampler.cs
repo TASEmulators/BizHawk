@@ -21,6 +21,12 @@ namespace BizHawk.Emulation.Common
 
 		private static class LibSpeexDSP
 		{
+			public const int QUALITY_MAX = 10;
+			public const int QUALITY_MIN = 0;
+			public const int QUALITY_DEFAULT = 4;
+			public const int QUALITY_VOIP = 3;
+			public const int QUALITY_DESKTOP = 5;
+
 			public enum RESAMPLER_ERR
 			{
 				SUCCESS = 0,
