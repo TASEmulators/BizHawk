@@ -11,11 +11,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public ControllerDefinition ControllerDefinition => GbController;
 
-		public IController Controller { get; set; }
-
-		public void FrameAdvance(bool render, bool rendersound)
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
-			FrameAdvancePrep();
+			FrameAdvancePrep(controller);
 			if (_syncSettings.EqualLengthFrames)
 			{
 				while (true)

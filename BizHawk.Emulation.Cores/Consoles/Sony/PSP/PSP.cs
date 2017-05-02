@@ -39,7 +39,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		};
 
 		public ControllerDefinition ControllerDefinition { get { return PSPController; } }
-		public IController Controller { private get; set; }
 		public bool DeterministicEmulation { get { return true; } }
 		public string SystemId { get { return "PSP"; } }
 		public CoreComm CoreComm { get; private set; }
@@ -106,10 +105,9 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			}
 		}
 
-		private void UpdateInput()
+		private void UpdateInput(IController c)
 		{
 			PPSSPPDll.Buttons b = 0;
-			var c = Controller;
 			if (c.IsPressed("Up")) b |= PPSSPPDll.Buttons.UP;
 			if (c.IsPressed("Down")) b |= PPSSPPDll.Buttons.DOWN;
 			if (c.IsPressed("Left")) b |= PPSSPPDll.Buttons.LEFT;
@@ -136,10 +134,10 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		}
 
 
-		public void FrameAdvance(bool render, bool rendersound = true)
+		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
-			UpdateInput();
+			UpdateInput(controller);
 			PPSSPPDll.BizAdvance(screenbuffer, input);
 
 			// problem 1: audio can be 48khz, if a particular core parameter is set.  we're not accounting for that.

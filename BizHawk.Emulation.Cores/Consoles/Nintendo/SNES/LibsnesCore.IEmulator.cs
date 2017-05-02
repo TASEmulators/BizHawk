@@ -10,10 +10,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
-		public IController Controller { private get; set; }
-
-		public void FrameAdvance(bool render, bool rendersound)
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
+			_controller = controller;
+
 			/* if the input poll callback is called, it will set this to false
 			 * this has to be done before we save the per-frame state in deterministic
 			 * mode, because in there, the core actually advances, and might advance
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				bw.Write(CoreSaveState());
 				bw.Write(false); // not framezero
 				var ssc = new SaveController();
-				ssc.CopyFrom(Controller);
+				ssc.CopyFrom(controller);
 				ssc.Serialize(bw);
 				bw.Close();
 				_savestatebuff = ms.ToArray();
@@ -49,13 +49,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			// speedup when sound rendering is not needed
 			Api.QUERY_set_audio_sample(rendersound ? _soundcb : null);
 
-			bool resetSignal = Controller.IsPressed("Reset");
+			bool resetSignal = controller.IsPressed("Reset");
 			if (resetSignal)
 			{
 				Api.CMD_reset();
 			}
 
-			bool powerSignal = Controller.IsPressed("Power");
+			bool powerSignal = controller.IsPressed("Power");
 			if (powerSignal)
 			{
 				Api.CMD_power();

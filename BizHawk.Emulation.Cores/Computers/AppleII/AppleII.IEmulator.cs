@@ -8,17 +8,15 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public ControllerDefinition ControllerDefinition => AppleIIController;
 
-		public IController Controller { private get; set; }
-
 		public int Frame { get; private set; }
 
 		public string SystemId => "AppleII";
 
 		public bool DeterministicEmulation => true;
 
-		public void FrameAdvance(bool render, bool rendersound)
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
-			FrameAdv(render, rendersound);
+			FrameAdv(controller, render, rendersound);
 		}
 
 		public void ResetCounters()

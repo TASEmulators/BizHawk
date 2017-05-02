@@ -68,17 +68,17 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 			}
 		}
 
-		public void FrameAdvance(bool render, bool rendersound = true)
+		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
 			IsLagFrame = true;
 
-			if (Controller.IsPressed("Power"))
+			if (controller.IsPressed("Power"))
 				BizSwan.bizswan_reset(Core);
 
 			bool rotate = false;
 			int soundbuffsize = sbuff.Length;
-			IsLagFrame = BizSwan.bizswan_advance(Core, GetButtons(), !render, vbuff, sbuff, ref soundbuffsize, ref rotate);
+			IsLagFrame = BizSwan.bizswan_advance(Core, GetButtons(controller), !render, vbuff, sbuff, ref soundbuffsize, ref rotate);
 			if (soundbuffsize == sbuff.Length)
 				throw new Exception();
 			sbuffcontains = soundbuffsize;

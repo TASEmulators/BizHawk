@@ -46,6 +46,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public bool IsSG1000 { get; set; }
 
 		private bool HasYM2413 = false;
+		private IController _controller;
 
 		private int frame = 0;
 		
@@ -111,11 +112,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if ((game.NotInDatabase || game["FM"]) && SyncSettings.EnableFM && !IsGameGear)
 			{
 				HasYM2413 = true;
-			}
-
-			if (Controller == null)
-			{
-				Controller = NullController.Instance;
 			}
 
 			Cpu = new Z80A

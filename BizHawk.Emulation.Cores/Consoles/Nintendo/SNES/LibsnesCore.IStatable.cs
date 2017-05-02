@@ -60,12 +60,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				{
 					var ssc = new SaveController(ControllerDefinition);
 					ssc.DeSerialize(reader);
-					IController tmp = Controller;
-					Controller = ssc;
+					IController tmp = _controller;
+					_controller = ssc;
 					_nocallbacks = true;
-					FrameAdvance(false, false);
+					FrameAdvance(ssc, false, false);
 					_nocallbacks = false;
-					Controller = tmp;
+					_controller = tmp;
 					ssc.Serialize(bw);
 				}
 				else // hack: dummy controller info

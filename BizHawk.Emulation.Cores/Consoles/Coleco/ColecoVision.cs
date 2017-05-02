@@ -76,12 +76,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private readonly ColecoVisionControllerDeck ControllerDeck;
 
-		public IController Controller { private get; set; }
-
 		private const ushort RamSizeMask = 0x03FF;
 
-		public void FrameAdvance(bool render, bool renderSound)
+		private IController _controller;
+
+		public void FrameAdvance(IController controller, bool render, bool renderSound)
 		{
+			_controller = controller;
 			Cpu.Debug = Tracer.Enabled;
 			Frame++;
 			_isLag = true;
@@ -92,8 +93,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				Cpu.Logger = (s) => Tracer.Put(s);
 			}
 
-			byte tempRet1 = ControllerDeck.ReadPort1(Controller, true, true);
-			byte tempRet2 = ControllerDeck.ReadPort2(Controller, true, true);
+			byte tempRet1 = ControllerDeck.ReadPort1(controller, true, true);
+			byte tempRet2 = ControllerDeck.ReadPort2(controller, true, true);
 
 			bool intPending = (!tempRet1.Bit(4)) | (!tempRet2.Bit(4));
 

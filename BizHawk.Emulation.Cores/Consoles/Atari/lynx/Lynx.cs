@@ -123,16 +123,16 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public void FrameAdvance(bool render, bool rendersound = true)
+		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
-			if (Controller.IsPressed("Power"))
+			if (controller.IsPressed("Power"))
 			{
 				LibLynx.Reset(Core);
 			}
 
 			int samples = _soundbuff.Length;
-			IsLagFrame = LibLynx.Advance(Core, GetButtons(), _videobuff, _soundbuff, ref samples);
+			IsLagFrame = LibLynx.Advance(Core, GetButtons(controller), _videobuff, _soundbuff, ref samples);
 			_numsamp = samples / 2; // sound provider wants number of sample pairs
 			if (IsLagFrame)
 			{
@@ -173,20 +173,19 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		};
 
 		public ControllerDefinition ControllerDefinition { get { return LynxTroller; } }
-		public IController Controller { private get; set; }
 
-		private LibLynx.Buttons GetButtons()
+		private LibLynx.Buttons GetButtons(IController controller)
 		{
 			LibLynx.Buttons ret = 0;
-			if (Controller.IsPressed("A")) ret |= LibLynx.Buttons.A;
-			if (Controller.IsPressed("B")) ret |= LibLynx.Buttons.B;
-			if (Controller.IsPressed("Up")) ret |= LibLynx.Buttons.Up;
-			if (Controller.IsPressed("Down")) ret |= LibLynx.Buttons.Down;
-			if (Controller.IsPressed("Left")) ret |= LibLynx.Buttons.Left;
-			if (Controller.IsPressed("Right")) ret |= LibLynx.Buttons.Right;
-			if (Controller.IsPressed("Pause")) ret |= LibLynx.Buttons.Pause;
-			if (Controller.IsPressed("Option 1")) ret |= LibLynx.Buttons.Option_1;
-			if (Controller.IsPressed("Option 2")) ret |= LibLynx.Buttons.Option_2;
+			if (controller.IsPressed("A")) ret |= LibLynx.Buttons.A;
+			if (controller.IsPressed("B")) ret |= LibLynx.Buttons.B;
+			if (controller.IsPressed("Up")) ret |= LibLynx.Buttons.Up;
+			if (controller.IsPressed("Down")) ret |= LibLynx.Buttons.Down;
+			if (controller.IsPressed("Left")) ret |= LibLynx.Buttons.Left;
+			if (controller.IsPressed("Right")) ret |= LibLynx.Buttons.Right;
+			if (controller.IsPressed("Pause")) ret |= LibLynx.Buttons.Pause;
+			if (controller.IsPressed("Option 1")) ret |= LibLynx.Buttons.Option_1;
+			if (controller.IsPressed("Option 2")) ret |= LibLynx.Buttons.Option_2;
 
 			return ret;
 		}

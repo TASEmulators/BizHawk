@@ -2840,7 +2840,7 @@ namespace BizHawk.Client.EmuHawk
 				if (!renderSound) atten = 0;
 
 				bool render = !_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false);
-				Emulator.FrameAdvance(render, renderSound);
+				Emulator.FrameAdvance(Global.ControllerOutput, render, renderSound);
 
 				Global.MovieSession.HandleMovieAfterFrameLoop();
 

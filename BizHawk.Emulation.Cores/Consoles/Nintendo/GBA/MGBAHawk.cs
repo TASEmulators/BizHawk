@@ -70,12 +70,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public ControllerDefinition ControllerDefinition => GBA.GBAController;
 
-		public IController Controller { get; set; }
-
-		public void FrameAdvance(bool render, bool rendersound = true)
+		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
-			if (Controller.IsPressed("Power"))
+			if (controller.IsPressed("Power"))
 			{
 				LibmGBA.BizReset(_core);
 
@@ -85,15 +83,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			IsLagFrame = LibmGBA.BizAdvance(
 				_core,
-				VBANext.GetButtons(Controller),
+				VBANext.GetButtons(controller),
 				_videobuff,
 				ref _nsamp,
 				_soundbuff,
 				RTCTime(),
-				(short)Controller.GetFloat("Tilt X"),
-				(short)Controller.GetFloat("Tilt Y"),
-				(short)Controller.GetFloat("Tilt Z"),
-				(byte)(255 - Controller.GetFloat("Light Sensor")));
+				(short)controller.GetFloat("Tilt X"),
+				(short)controller.GetFloat("Tilt Y"),
+				(short)controller.GetFloat("Tilt Z"),
+				(byte)(255 - controller.GetFloat("Light Sensor")));
 
 			if (IsLagFrame)
 			{

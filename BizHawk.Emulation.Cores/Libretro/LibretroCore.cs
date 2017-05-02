@@ -157,8 +157,11 @@ namespace BizHawk.Emulation.Cores.Libretro
 		[FeatureNotImplemented]
 		public int TotalExecutedCycles { get { throw new NotImplementedException(); } }
 
-		public void FrameAdvance(bool render, bool rendersound)
+		private IController _controller;
+
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
+			_controller = controller;
 			api.CMD_Run();
 		}
 
@@ -291,7 +294,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 		}
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
-		public IController Controller { get; set; }
 
 		int timeFrameCounter;
 		public int Frame { get { return timeFrameCounter; } set { timeFrameCounter = value; } }

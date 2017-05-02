@@ -11,10 +11,9 @@ namespace BizHawk.Emulation.Cores.Calculators
 			get { return TI83Controller; }
 		}
 
-		public IController Controller { private get; set; }
-
-		public void FrameAdvance(bool render, bool rendersound)
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
+			_controller = controller;
 			_lagged = true;
 
 			Cpu.Debug = Tracer.Enabled;
@@ -25,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			//I eyeballed this speed
 			for (int i = 0; i < 5; i++)
 			{
-				_onPressed = Controller.IsPressed("ON");
+				_onPressed = controller.IsPressed("ON");
 
 				//and this was derived from other emus
 				Cpu.ExecuteCycles(10000);

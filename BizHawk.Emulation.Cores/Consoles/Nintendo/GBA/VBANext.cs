@@ -97,16 +97,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public void FrameAdvance(bool render, bool rendersound = true)
+		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
 
-			if (Controller.IsPressed("Power"))
+			if (controller.IsPressed("Power"))
 				LibVBANext.Reset(Core);
 
 			SyncTraceCallback();
 
-			IsLagFrame = LibVBANext.FrameAdvance(Core, GetButtons(Controller), _videobuff, _soundbuff, out _numsamp, _videopalette);
+			IsLagFrame = LibVBANext.FrameAdvance(Core, GetButtons(controller), _videobuff, _soundbuff, out _numsamp, _videopalette);
 
 			if (IsLagFrame)
 				LagCount++;
@@ -205,7 +205,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		#region Controller
 
 		public ControllerDefinition ControllerDefinition { get { return GBA.GBAController; } }
-		public IController Controller { get; set; }
 
 		public static LibVBANext.Buttons GetButtons(IController c)
 		{

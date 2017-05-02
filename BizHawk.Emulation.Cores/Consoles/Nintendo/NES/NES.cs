@@ -354,8 +354,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
-		public IController Controller { private get; set; }
-
 		private int _frame;
 		public int Frame { get { return _frame; } set { _frame = value; } }
 

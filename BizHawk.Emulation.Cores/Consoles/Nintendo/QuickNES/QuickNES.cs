@@ -112,7 +112,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		#region Controller
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
-		public IController Controller { private get; set; }
 
 		void SetControllerDefinition()
 		{
@@ -155,43 +154,43 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private static PadEnt[] PadP1 = GetPadList(1);
 		private static PadEnt[] PadP2 = GetPadList(2);
 
-		private int GetPad(IEnumerable<PadEnt> buttons)
+		private int GetPad(IController controller, IEnumerable<PadEnt> buttons)
 		{
 			int ret = 0;
 			foreach (var b in buttons)
 			{
-				if (Controller.IsPressed(b.Name))
+				if (controller.IsPressed(b.Name))
 					ret |= b.Mask;
 			}
 			return ret;
 		}
 
-		void SetPads(out int j1, out int j2)
+		void SetPads(IController controller, out int j1, out int j2)
 		{
 			if (_syncSettings.LeftPortConnected)
-				j1 = GetPad(PadP1) | unchecked((int)0xffffff00);
+				j1 = GetPad(controller, PadP1) | unchecked((int)0xffffff00);
 			else
 				j1 = 0;
 			if (_syncSettings.RightPortConnected)
-				j2 = GetPad(_syncSettings.LeftPortConnected ? PadP2 : PadP1) | unchecked((int)0xffffff00);
+				j2 = GetPad(controller, _syncSettings.LeftPortConnected ? PadP2 : PadP1) | unchecked((int)0xffffff00);
 			else
 				j2 = 0;
 		}
 
 		#endregion
 
-		public void FrameAdvance(bool render, bool rendersound = true)
+		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			CheckDisposed();
 			using (FP.Save())
 			{
-				if (Controller.IsPressed("Power"))
+				if (controller.IsPressed("Power"))
 					QN.qn_reset(Context, true);
-				if (Controller.IsPressed("Reset"))
+				if (controller.IsPressed("Reset"))
 					QN.qn_reset(Context, false);
 
 				int j1, j2;
-				SetPads(out j1, out j2);
+				SetPads(controller, out j1, out j2);
 
 				if (Tracer.Enabled)
 					QN.qn_set_tracecb(Context, _tracecb);

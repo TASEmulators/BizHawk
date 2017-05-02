@@ -19,8 +19,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			get { return NullController.Instance.Definition; }
 		}
 
-		public IController Controller { private get; set; }
-
 		#endregion
 
 		public void Dispose()
@@ -39,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public void FrameAdvance(bool render, bool rendersound = true)
+		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
 

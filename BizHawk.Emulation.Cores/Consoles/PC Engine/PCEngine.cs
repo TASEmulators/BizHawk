@@ -113,6 +113,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		private VPC VPC;
 		private ScsiCDBus SCSI;
 		private ADPCM ADPCM;
+		private IController _controller;
 
 		public HuC6280PSG PSG;
 		internal CDAudio CDAudio;
@@ -141,7 +142,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private void Init(GameInfo game, byte[] rom)
 		{
-			Controller = NullController.Instance;
 			Cpu = new HuC6280(MemoryCallbacks);
 			VCE = new VCE();
 			VDC1 = new VDC(this, Cpu, VCE);

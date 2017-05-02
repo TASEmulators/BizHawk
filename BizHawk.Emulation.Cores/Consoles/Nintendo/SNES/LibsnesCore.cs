@@ -190,6 +190,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private readonly LibsnesApi.snes_trace_t _tracecb;
 		private readonly LibsnesApi.snes_audio_sample_t _soundcb;
 
+		private IController _controller;
 		private LoadParams _currLoadParams;
 		private SpeexResampler _resampler;
 		private int _timeFrameCounter;
@@ -418,7 +419,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// <returns>for regular controllers, one bit D0 of button status.  for other controls, varying ranges depending on id</returns>
 		private short snes_input_state(int port, int device, int index, int id)
 		{
-			return _controllerDeck.CoreInputState(Controller, port, device, index, id);
+			return _controllerDeck.CoreInputState(_controller, port, device, index, id);
 		}
 
 		private void snes_input_poll()

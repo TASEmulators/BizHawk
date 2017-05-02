@@ -26,8 +26,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			LibGambatte.gambatte_linkstatus(L.GambatteState, 259);
 			LibGambatte.gambatte_linkstatus(R.GambatteState, 259);
 
-			L.Controller = LCont;
-			R.Controller = RCont;
 			L.ConnectInputCallbackSystem(_inputCallbacks);
 			R.ConnectInputCallbackSystem(_inputCallbacks);
 			L.ConnectMemoryCallbackSystem(_memorycallbacks);

@@ -139,8 +139,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		[SaveState.DoNotSave]
 		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
-		[SaveState.DoNotSave]
-		public IController Controller { private get { return _board.Controller; } set { _board.Controller = value; } }
+
 		[SaveState.DoNotSave]
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
@@ -153,8 +152,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		}
 
 		// process frame
-		public void FrameAdvance(bool render, bool rendersound)
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
+			_board.Controller = controller;
 			do
 			{
 				DoCycle();

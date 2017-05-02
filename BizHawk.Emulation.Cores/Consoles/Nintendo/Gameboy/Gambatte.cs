@@ -257,34 +257,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_inputCallbacks = ics;
 		}
 
-		internal void FrameAdvancePrep()
+		internal void FrameAdvancePrep(IController controller)
 		{
 			Frame++;
 
 			// update our local copy of the controller data
 			CurrentButtons = 0;
 
-			if (Controller.IsPressed("Up"))
+			if (controller.IsPressed("Up"))
 				CurrentButtons |= LibGambatte.Buttons.UP;
-			if (Controller.IsPressed("Down"))
+			if (controller.IsPressed("Down"))
 				CurrentButtons |= LibGambatte.Buttons.DOWN;
-			if (Controller.IsPressed("Left"))
+			if (controller.IsPressed("Left"))
 				CurrentButtons |= LibGambatte.Buttons.LEFT;
-			if (Controller.IsPressed("Right"))
+			if (controller.IsPressed("Right"))
 				CurrentButtons |= LibGambatte.Buttons.RIGHT;
-			if (Controller.IsPressed("A"))
+			if (controller.IsPressed("A"))
 				CurrentButtons |= LibGambatte.Buttons.A;
-			if (Controller.IsPressed("B"))
+			if (controller.IsPressed("B"))
 				CurrentButtons |= LibGambatte.Buttons.B;
-			if (Controller.IsPressed("Select"))
+			if (controller.IsPressed("Select"))
 				CurrentButtons |= LibGambatte.Buttons.SELECT;
-			if (Controller.IsPressed("Start"))
+			if (controller.IsPressed("Start"))
 				CurrentButtons |= LibGambatte.Buttons.START;
 
 			// the controller callback will set this to false if it actually gets called during the frame
 			IsLagFrame = true;
 
-			if (Controller.IsPressed("Power"))
+			if (controller.IsPressed("Power"))
 			{
 				LibGambatte.gambatte_reset(GambatteState, GetCurrentTime());
 			}

@@ -74,18 +74,18 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				_lagged = false;
 				if (SEL == false) // return buttons
 				{
-					if (Controller.IsPressed("P" + player + " B1")) value &= 0xFE;
-					if (Controller.IsPressed("P" + player + " B2")) value &= 0xFD;
-					if (Controller.IsPressed("P" + player + " Select")) value &= 0xFB;
-					if (Controller.IsPressed("P" + player + " Run")) value &= 0xF7;
+					if (_controller.IsPressed("P" + player + " B1")) value &= 0xFE;
+					if (_controller.IsPressed("P" + player + " B2")) value &= 0xFD;
+					if (_controller.IsPressed("P" + player + " Select")) value &= 0xFB;
+					if (_controller.IsPressed("P" + player + " Run")) value &= 0xF7;
 				}
 				else
 				{
 					//return directions
-					if (Controller.IsPressed("P" + player + " Up")) value &= 0xFE;
-					if (Controller.IsPressed("P" + player + " Right")) value &= 0xFD;
-					if (Controller.IsPressed("P" + player + " Down")) value &= 0xFB;
-					if (Controller.IsPressed("P" + player + " Left")) value &= 0xF7;
+					if (_controller.IsPressed("P" + player + " Up")) value &= 0xFE;
+					if (_controller.IsPressed("P" + player + " Right")) value &= 0xFD;
+					if (_controller.IsPressed("P" + player + " Down")) value &= 0xFB;
+					if (_controller.IsPressed("P" + player + " Left")) value &= 0xF7;
 				}
 			}
 

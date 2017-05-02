@@ -117,14 +117,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			GraphicsRom = grom;
 		}
 
-		private void GetControllerState()
+		private void GetControllerState(IController controller)
 		{
 			InputCallbacks.Call();
 
-			ushort port1 = _controllerDeck.ReadPort1(Controller);
+			ushort port1 = _controllerDeck.ReadPort1(controller);
 			_psg.Register[15] = (ushort)(0xFF - port1);
 
-			ushort port2 = _controllerDeck.ReadPort2(Controller);
+			ushort port2 = _controllerDeck.ReadPort2(controller);
 			_psg.Register[14] = (ushort)(0xFF - port2);
 		}
 

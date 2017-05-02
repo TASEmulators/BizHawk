@@ -227,8 +227,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			RunThreadAction(() => { _pendingThreadTerminate = true; });
 		}
 
-		public void FrameAdvance(bool render, bool rendersound)
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
+			_inputProvider.Controller = controller;
+
 			IsVIFrame = false;
 
 			if (Tracer != null && Tracer.Enabled)
@@ -242,12 +244,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			_audioProvider.RenderSound = rendersound;
 
-			if (Controller.IsPressed("Reset"))
+			if (controller.IsPressed("Reset"))
 			{
 				api.soft_reset();
 			}
 
-			if (Controller.IsPressed("Power"))
+			if (controller.IsPressed("Power"))
 			{
 				api.hard_reset();
 			}
@@ -272,12 +274,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public ControllerDefinition ControllerDefinition
 		{
 			get { return _inputProvider.ControllerDefinition; }
-		}
-
-		public IController Controller
-		{
-			get { return _inputProvider.Controller; }
-			set { _inputProvider.Controller = value; }
 		}
 
 		public void ResetCounters()

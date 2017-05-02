@@ -99,18 +99,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 		public GameInfo game;
 
-		public void FrameAdvance(bool render, bool rendersound)
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_frame++;
 
-			if (Controller.IsPressed("Power"))
+			if (controller.IsPressed("Power"))
 			{
 				// it seems that theMachine.Reset() doesn't clear ram, etc
 				// this should leave hsram intact but clear most other things
 				HardReset();
 			}
 
-			ControlAdapter.Convert(Controller, theMachine.InputState);
+			ControlAdapter.Convert(controller, theMachine.InputState);
 			theMachine.ComputeNextFrame(_avProvider.Framebuffer);
 
 			_islag = theMachine.InputState.Lagged;
@@ -149,8 +149,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		public Atari7800Control ControlAdapter { get; private set; }
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
-		public IController Controller { private get; set; }
-
 
 		private class ConsoleLogger : ILogger
 		{

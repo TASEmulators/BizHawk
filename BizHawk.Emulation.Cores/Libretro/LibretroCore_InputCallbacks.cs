@@ -30,9 +30,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 					{
 						switch ((LibretroApi.RETRO_DEVICE_ID_POINTER)id)
 						{
-							case LibretroApi.RETRO_DEVICE_ID_POINTER.X: return (short)Controller.GetFloat("Pointer X");
-							case LibretroApi.RETRO_DEVICE_ID_POINTER.Y: return (short)Controller.GetFloat("Pointer Y");
-							case LibretroApi.RETRO_DEVICE_ID_POINTER.PRESSED: return (short)(Controller.IsPressed("Pointer Pressed") ? 1 : 0);
+							case LibretroApi.RETRO_DEVICE_ID_POINTER.X: return (short)_controller.GetFloat("Pointer X");
+							case LibretroApi.RETRO_DEVICE_ID_POINTER.Y: return (short)_controller.GetFloat("Pointer Y");
+							case LibretroApi.RETRO_DEVICE_ID_POINTER.PRESSED: return (short)(_controller.IsPressed("Pointer Pressed") ? 1 : 0);
 						}
 						return 0;
 					}
@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 							case LibretroApi.RETRO_KEY.UNDO: button = "Undo"; break;
 						}
 
-						return (short)(Controller.IsPressed("Key " + button) ? 1 : 0);
+						return (short)(_controller.IsPressed("Key " + button) ? 1 : 0);
 					}
 
 				case LibretroApi.RETRO_DEVICE.JOYPAD:
@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		private bool GetButton(uint pnum, string type, string button)
 		{
 			string key = string.Format("P{0} {1} {2}", pnum, type, button);
-			bool b = Controller.IsPressed(key);
+			bool b = _controller.IsPressed(key);
 			if (b == true)
 			{
 				return true; //debugging placeholder

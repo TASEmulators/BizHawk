@@ -9,16 +9,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public ControllerDefinition ControllerDefinition => DualGbController;
 
-		public IController Controller { get; set; }
-
-		public void FrameAdvance(bool render, bool rendersound = true)
+		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			LCont.Clear();
 			RCont.Clear();
 
 			foreach (var s in DualGbController.BoolButtons)
 			{
-				if (Controller.IsPressed(s))
+				if (controller.IsPressed(s))
 				{
 					if (s.Contains("P1 "))
 					{
@@ -31,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				}
 			}
 
-			bool cablediscosignalNew = Controller.IsPressed("Toggle Cable");
+			bool cablediscosignalNew = controller.IsPressed("Toggle Cable");
 			if (cablediscosignalNew && !_cablediscosignal)
 			{
 				_cableconnected ^= true;
@@ -42,8 +40,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_cablediscosignal = cablediscosignalNew;
 
 			Frame++;
-			L.FrameAdvancePrep();
-			R.FrameAdvancePrep();
+			L.FrameAdvancePrep(controller);
+			R.FrameAdvancePrep(controller);
 
 			unsafe
 			{

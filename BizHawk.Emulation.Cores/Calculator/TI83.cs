@@ -60,6 +60,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 		private readonly Z80A Cpu = new Z80A();
 		private readonly byte[] Rom;
 
+		private IController _controller;
+
 		private byte[] _ram;
 		private byte[] _vram = new byte[0x300];
 		private int _romPageLow3Bits;
@@ -204,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 						// 4-7 - Unknown
 						//if (onPressed && maskOn) ret |= 1;
 						//if (!onPressed) ret |= 0x8;
-						return (byte)((Controller.IsPressed("ON") ? _maskOn : 8) | (LinkActive ? 0 : 2));
+						return (byte)((_controller.IsPressed("ON") ? _maskOn : 8) | (LinkActive ? 0 : 2));
 					}
 
 				case 4: // PORT_INTCTRL
@@ -230,80 +232,79 @@ namespace BizHawk.Emulation.Cores.Calculators
 			//Console.WriteLine("keyboardMask: {0:X2}",keyboardMask);
 			if ((_keyboardMask & 1) == 0)
 			{
-				if (Controller.IsPressed("DOWN")) ret ^= 1;
-				if (Controller.IsPressed("LEFT")) ret ^= 2;
-				if (Controller.IsPressed("RIGHT")) ret ^= 4;
-				if (Controller.IsPressed("UP")) ret ^= 8;
+				if (_controller.IsPressed("DOWN")) ret ^= 1;
+				if (_controller.IsPressed("LEFT")) ret ^= 2;
+				if (_controller.IsPressed("RIGHT")) ret ^= 4;
+				if (_controller.IsPressed("UP")) ret ^= 8;
 			}
 
 			if ((_keyboardMask & 2) == 0)
 			{
-				if (Controller.IsPressed("ENTER")) ret ^= 1;
-				if (Controller.IsPressed("PLUS")) ret ^= 2;
-				if (Controller.IsPressed("MINUS")) ret ^= 4;
-				if (Controller.IsPressed("MULTIPLY")) ret ^= 8;
-				if (Controller.IsPressed("DIVIDE")) ret ^= 16;
-				if (Controller.IsPressed("EXP")) ret ^= 32;
-				if (Controller.IsPressed("CLEAR")) ret ^= 64;
+				if (_controller.IsPressed("ENTER")) ret ^= 1;
+				if (_controller.IsPressed("PLUS")) ret ^= 2;
+				if (_controller.IsPressed("MINUS")) ret ^= 4;
+				if (_controller.IsPressed("MULTIPLY")) ret ^= 8;
+				if (_controller.IsPressed("DIVIDE")) ret ^= 16;
+				if (_controller.IsPressed("EXP")) ret ^= 32;
+				if (_controller.IsPressed("CLEAR")) ret ^= 64;
 			}
 
 			if ((_keyboardMask & 4) == 0)
 			{
-				if (Controller.IsPressed("DASH")) ret ^= 1;
-				if (Controller.IsPressed("3")) ret ^= 2;
-				if (Controller.IsPressed("6")) ret ^= 4;
-				if (Controller.IsPressed("9")) ret ^= 8;
-				if (Controller.IsPressed("PARACLOSE")) ret ^= 16;
-				if (Controller.IsPressed("TAN")) ret ^= 32;
-				if (Controller.IsPressed("VARS")) ret ^= 64;
+				if (_controller.IsPressed("DASH")) ret ^= 1;
+				if (_controller.IsPressed("3")) ret ^= 2;
+				if (_controller.IsPressed("6")) ret ^= 4;
+				if (_controller.IsPressed("9")) ret ^= 8;
+				if (_controller.IsPressed("PARACLOSE")) ret ^= 16;
+				if (_controller.IsPressed("TAN")) ret ^= 32;
+				if (_controller.IsPressed("VARS")) ret ^= 64;
 			}
 
 			if ((_keyboardMask & 8) == 0)
 			{
-				if (Controller.IsPressed("DOT")) ret ^= 1;
-				if (Controller.IsPressed("2")) ret ^= 2;
-				if (Controller.IsPressed("5")) ret ^= 4;
-				if (Controller.IsPressed("8")) ret ^= 8;
-				if (Controller.IsPressed("PARAOPEN")) ret ^= 16;
-				if (Controller.IsPressed("COS")) ret ^= 32;
-				if (Controller.IsPressed("PRGM")) ret ^= 64;
-				if (Controller.IsPressed("STAT")) ret ^= 128;
+				if (_controller.IsPressed("DOT")) ret ^= 1;
+				if (_controller.IsPressed("2")) ret ^= 2;
+				if (_controller.IsPressed("5")) ret ^= 4;
+				if (_controller.IsPressed("8")) ret ^= 8;
+				if (_controller.IsPressed("PARAOPEN")) ret ^= 16;
+				if (_controller.IsPressed("COS")) ret ^= 32;
+				if (_controller.IsPressed("PRGM")) ret ^= 64;
+				if (_controller.IsPressed("STAT")) ret ^= 128;
 			}
 
 			if ((_keyboardMask & 16) == 0)
 			{
-				if (Controller.IsPressed("0")) ret ^= 1;
-				if (Controller.IsPressed("1")) ret ^= 2;
-				if (Controller.IsPressed("4")) ret ^= 4;
-				if (Controller.IsPressed("7")) ret ^= 8;
-				if (Controller.IsPressed("COMMA")) ret ^= 16;
-				if (Controller.IsPressed("SIN")) ret ^= 32;
-				if (Controller.IsPressed("MATRIX")) ret ^= 64;
-				if (Controller.IsPressed("X")) ret ^= 128;
+				if (_controller.IsPressed("0")) ret ^= 1;
+				if (_controller.IsPressed("1")) ret ^= 2;
+				if (_controller.IsPressed("4")) ret ^= 4;
+				if (_controller.IsPressed("7")) ret ^= 8;
+				if (_controller.IsPressed("COMMA")) ret ^= 16;
+				if (_controller.IsPressed("SIN")) ret ^= 32;
+				if (_controller.IsPressed("MATRIX")) ret ^= 64;
+				if (_controller.IsPressed("X")) ret ^= 128;
 			}
 
 			if ((_keyboardMask & 32) == 0)
 			{
-				if (Controller.IsPressed("STO")) ret ^= 2;
-				if (Controller.IsPressed("LN")) ret ^= 4;
-				if (Controller.IsPressed("LOG")) ret ^= 8;
-				if (Controller.IsPressed("SQUARED")) ret ^= 16;
-				if (Controller.IsPressed("NEG1")) ret ^= 32;
-				if (Controller.IsPressed("MATH"))
-					ret ^= 64;
-				if (Controller.IsPressed("ALPHA")) ret ^= 128;
+				if (_controller.IsPressed("STO")) ret ^= 2;
+				if (_controller.IsPressed("LN")) ret ^= 4;
+				if (_controller.IsPressed("LOG")) ret ^= 8;
+				if (_controller.IsPressed("SQUARED")) ret ^= 16;
+				if (_controller.IsPressed("NEG1")) ret ^= 32;
+				if (_controller.IsPressed("MATH")) ret ^= 64;
+				if (_controller.IsPressed("ALPHA")) ret ^= 128;
 			}
 
 			if ((_keyboardMask & 64) == 0)
 			{
-				if (Controller.IsPressed("GRAPH")) ret ^= 1;
-				if (Controller.IsPressed("TRACE")) ret ^= 2;
-				if (Controller.IsPressed("ZOOM")) ret ^= 4;
-				if (Controller.IsPressed("WINDOW")) ret ^= 8;
-				if (Controller.IsPressed("Y")) ret ^= 16;
-				if (Controller.IsPressed("2ND")) ret ^= 32;
-				if (Controller.IsPressed("MODE")) ret ^= 64;
-				if (Controller.IsPressed("DEL")) ret ^= 128;
+				if (_controller.IsPressed("GRAPH")) ret ^= 1;
+				if (_controller.IsPressed("TRACE")) ret ^= 2;
+				if (_controller.IsPressed("ZOOM")) ret ^= 4;
+				if (_controller.IsPressed("WINDOW")) ret ^= 8;
+				if (_controller.IsPressed("Y")) ret ^= 16;
+				if (_controller.IsPressed("2ND")) ret ^= 32;
+				if (_controller.IsPressed("MODE")) ret ^= 64;
+				if (_controller.IsPressed("DEL")) ret ^= 128;
 			}
 
 			return (byte)ret;

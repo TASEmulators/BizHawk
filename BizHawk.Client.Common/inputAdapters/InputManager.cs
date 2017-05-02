@@ -21,7 +21,6 @@ namespace BizHawk.Client.Common
 			Global.MovieInputSourceAdapter.Source = Global.MultitrackRewiringAdapter;
 			Global.ControllerOutput.Source = Global.MovieOutputHardpoint;
 
-			Global.Emulator.Controller = Global.ControllerOutput;
 			Global.MovieSession.MovieControllerAdapter.Definition = Global.MovieInputSourceAdapter.Definition;
 
 			// connect the movie session before MovieOutputHardpoint if it is doing anything

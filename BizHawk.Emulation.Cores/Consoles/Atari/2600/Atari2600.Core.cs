@@ -365,8 +365,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Cpu.S = 0xFD;
 		}
 
-		public void FrameAdvance(bool render, bool rendersound)
+		private IController _controller;
+
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
+			_controller = controller;
 			StartFrameCond();
 			while (_tia.LineCount < _tia.NominalNumScanlines)
 				Cycle();
@@ -392,27 +395,27 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				_frame++;
 				_islag = true;
 
-				if (Controller.IsPressed("Power"))
+				if (_controller.IsPressed("Power"))
 				{
 					HardReset();
 				}
 
-				if (Controller.IsPressed("Toggle Left Difficulty") && !_leftDifficultySwitchHeld)
+				if (_controller.IsPressed("Toggle Left Difficulty") && !_leftDifficultySwitchHeld)
 				{
 					_leftDifficultySwitchPressed ^= true;
 					_leftDifficultySwitchHeld = true;
 				}
-				else if (!Controller.IsPressed("Toggle Left Difficulty"))
+				else if (!_controller.IsPressed("Toggle Left Difficulty"))
 				{
 					_leftDifficultySwitchHeld = false;
 				}
 
-				if (Controller.IsPressed("Toggle Right Difficulty") && !_rightDifficultySwitchHeld)
+				if (_controller.IsPressed("Toggle Right Difficulty") && !_rightDifficultySwitchHeld)
 				{
 					_rightDifficultySwitchPressed ^= true;
 					_rightDifficultySwitchHeld = true;
 				}
-				else if (!Controller.IsPressed("Toggle Right Difficulty"))
+				else if (!_controller.IsPressed("Toggle Right Difficulty"))
 				{
 					_rightDifficultySwitchHeld = false;
 				}
@@ -453,11 +456,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			InputCallbacks.Call();
 			byte value = 0xFF;
 
-			if (Controller.IsPressed("P1 Up")) { value &= 0xEF; }
-			if (Controller.IsPressed("P1 Down")) { value &= 0xDF; }
-			if (Controller.IsPressed("P1 Left")) { value &= 0xBF; }
-			if (Controller.IsPressed("P1 Right")) { value &= 0x7F; }
-			if (Controller.IsPressed("P1 Button")) { value &= 0xF7; }
+			if (_controller.IsPressed("P1 Up")) { value &= 0xEF; }
+			if (_controller.IsPressed("P1 Down")) { value &= 0xDF; }
+			if (_controller.IsPressed("P1 Left")) { value &= 0xBF; }
+			if (_controller.IsPressed("P1 Right")) { value &= 0x7F; }
+			if (_controller.IsPressed("P1 Button")) { value &= 0xF7; }
 
 			if (!peek)
 			{
@@ -472,11 +475,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			InputCallbacks.Call();
 			byte value = 0xFF;
 
-			if (Controller.IsPressed("P2 Up")) { value &= 0xEF; }
-			if (Controller.IsPressed("P2 Down")) { value &= 0xDF; }
-			if (Controller.IsPressed("P2 Left")) { value &= 0xBF; }
-			if (Controller.IsPressed("P2 Right")) { value &= 0x7F; }
-			if (Controller.IsPressed("P2 Button")) { value &= 0xF7; }
+			if (_controller.IsPressed("P2 Up")) { value &= 0xEF; }
+			if (_controller.IsPressed("P2 Down")) { value &= 0xDF; }
+			if (_controller.IsPressed("P2 Left")) { value &= 0xBF; }
+			if (_controller.IsPressed("P2 Right")) { value &= 0x7F; }
+			if (_controller.IsPressed("P2 Button")) { value &= 0xF7; }
 
 			if (!peek)
 			{
@@ -489,8 +492,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		internal byte ReadConsoleSwitches(bool peek)
 		{
 			byte value = 0xFF;
-			bool select = Controller.IsPressed("Select");
-			bool reset = Controller.IsPressed("Reset");
+			bool select = _controller.IsPressed("Select");
+			bool reset = _controller.IsPressed("Reset");
 
 			if (reset) { value &= 0xFE; }
 			if (select) { value &= 0xFD; }

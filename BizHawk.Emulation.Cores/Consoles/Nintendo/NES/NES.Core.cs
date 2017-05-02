@@ -291,10 +291,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		}
 
+		private IController _controller;
+
 		bool resetSignal;
 		bool hardResetSignal;
-		public void FrameAdvance(bool render, bool rendersound)
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
+			_controller = controller;
+
 			if (Tracer.Enabled)
 				cpu.TraceCallback = (s) => Tracer.Put(s);
 			else
@@ -317,32 +321,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//if (resetSignal)
 			//Controller.UnpressButton("Reset");   TODO fix this
-			resetSignal = Controller.IsPressed("Reset");
-			hardResetSignal = Controller.IsPressed("Power");
+			resetSignal = controller.IsPressed("Reset");
+			hardResetSignal = controller.IsPressed("Power");
 
 			if (Board is FDS)
 			{
 				var b = Board as FDS;
-				if (Controller.IsPressed("FDS Eject"))
+				if (controller.IsPressed("FDS Eject"))
 					b.Eject();
 				for (int i = 0; i < b.NumSides; i++)
-					if (Controller.IsPressed("FDS Insert " + i))
+					if (controller.IsPressed("FDS Insert " + i))
 						b.InsertSide(i);
 			}
 
 			if (_isVS)
 			{
-				if (Controller.IsPressed("Service Switch"))
+				if (controller.IsPressed("Service Switch"))
 					VS_service = 1;
 				else
 					VS_service = 0;
 
-				if (Controller.IsPressed("Insert Coin P1"))
+				if (controller.IsPressed("Insert Coin P1"))
 					VS_coin_inserted |= 1;
 				else
 					VS_coin_inserted &= 2;
 
-				if (Controller.IsPressed("Insert Coin P2"))
+				if (controller.IsPressed("Insert Coin P2"))
 					VS_coin_inserted |= 2;
 				else
 					VS_coin_inserted &= 1;
@@ -698,7 +702,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		void write_joyport(byte value)
 		{
 			var si = new StrobeInfo(latched4016, value);
-			ControllerDeck.Strobe(si, Controller);
+			ControllerDeck.Strobe(si, _controller);
 			latched4016 = value;
 		}
 
@@ -710,11 +714,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (_isVS)
 			{
 				// for whatever reason, in VS left and right controller have swapped regs
-				ret = addr == 0x4017 ? ControllerDeck.ReadA(Controller) : ControllerDeck.ReadB(Controller);
+				ret = addr == 0x4017 ? ControllerDeck.ReadA(_controller) : ControllerDeck.ReadB(_controller);
 			}
 			else
 			{
-				ret = addr == 0x4016 ? ControllerDeck.ReadA(Controller) : ControllerDeck.ReadB(Controller);
+				ret = addr == 0x4016 ? ControllerDeck.ReadA(_controller) : ControllerDeck.ReadB(_controller);
 			}
 			
 			ret &= 0x1f;

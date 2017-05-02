@@ -495,51 +495,51 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 					if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.NegCon)
 					{
 						//1,2,4 skipped (would be Select, L3, R3 on other pads)
-						if (Controller.IsPressed(pstring + "Start")) buttons |= 8;
-						if (Controller.IsPressed(pstring + "Up")) buttons |= 16;
-						if (Controller.IsPressed(pstring + "Right")) buttons |= 32;
-						if (Controller.IsPressed(pstring + "Down")) buttons |= 64;
-						if (Controller.IsPressed(pstring + "Left")) buttons |= 128;
+						if (_controller.IsPressed(pstring + "Start")) buttons |= 8;
+						if (_controller.IsPressed(pstring + "Up")) buttons |= 16;
+						if (_controller.IsPressed(pstring + "Right")) buttons |= 32;
+						if (_controller.IsPressed(pstring + "Down")) buttons |= 64;
+						if (_controller.IsPressed(pstring + "Left")) buttons |= 128;
 						//256,512,1024 skipped (would be L2, R2, L1 on other pads)
-						if (Controller.IsPressed(pstring + "R")) buttons |= 2048;
-						if (Controller.IsPressed(pstring + "B")) buttons |= 4096;
-						if (Controller.IsPressed(pstring + "A")) buttons |= 8192;
+						if (_controller.IsPressed(pstring + "R")) buttons |= 2048;
+						if (_controller.IsPressed(pstring + "B")) buttons |= 4096;
+						if (_controller.IsPressed(pstring + "A")) buttons |= 8192;
 
-						byte twist = (byte)Controller.GetFloat(pstring + "Twist");
-						byte analog1 = (byte)Controller.GetFloat(pstring + "1");
-						byte analog2 = (byte)Controller.GetFloat(pstring + "2");
-						byte analogL = (byte)Controller.GetFloat(pstring + "L");
+						byte twist = (byte)_controller.GetFloat(pstring + "Twist");
+						byte analog1 = (byte)_controller.GetFloat(pstring + "1");
+						byte analog2 = (byte)_controller.GetFloat(pstring + "2");
+						byte analogL = (byte)_controller.GetFloat(pstring + "L");
 
 						OctoshockDll.shock_Peripheral_SetPadInput(psx, portNum, buttons, twist, analog1, analog2, analogL);
 					}
 					else
 					{
-						if (Controller.IsPressed(pstring + "Select")) buttons |= 1;
-						if (Controller.IsPressed(pstring + "Start")) buttons |= 8;
-						if (Controller.IsPressed(pstring + "Up")) buttons |= 16;
-						if (Controller.IsPressed(pstring + "Right")) buttons |= 32;
-						if (Controller.IsPressed(pstring + "Down")) buttons |= 64;
-						if (Controller.IsPressed(pstring + "Left")) buttons |= 128;
-						if (Controller.IsPressed(pstring + "L2")) buttons |= 256;
-						if (Controller.IsPressed(pstring + "R2")) buttons |= 512;
-						if (Controller.IsPressed(pstring + "L1")) buttons |= 1024;
-						if (Controller.IsPressed(pstring + "R1")) buttons |= 2048;
-						if (Controller.IsPressed(pstring + "Triangle")) buttons |= 4096;
-						if (Controller.IsPressed(pstring + "Circle")) buttons |= 8192;
-						if (Controller.IsPressed(pstring + "Cross")) buttons |= 16384;
-						if (Controller.IsPressed(pstring + "Square")) buttons |= 32768;
+						if (_controller.IsPressed(pstring + "Select")) buttons |= 1;
+						if (_controller.IsPressed(pstring + "Start")) buttons |= 8;
+						if (_controller.IsPressed(pstring + "Up")) buttons |= 16;
+						if (_controller.IsPressed(pstring + "Right")) buttons |= 32;
+						if (_controller.IsPressed(pstring + "Down")) buttons |= 64;
+						if (_controller.IsPressed(pstring + "Left")) buttons |= 128;
+						if (_controller.IsPressed(pstring + "L2")) buttons |= 256;
+						if (_controller.IsPressed(pstring + "R2")) buttons |= 512;
+						if (_controller.IsPressed(pstring + "L1")) buttons |= 1024;
+						if (_controller.IsPressed(pstring + "R1")) buttons |= 2048;
+						if (_controller.IsPressed(pstring + "Triangle")) buttons |= 4096;
+						if (_controller.IsPressed(pstring + "Circle")) buttons |= 8192;
+						if (_controller.IsPressed(pstring + "Cross")) buttons |= 16384;
+						if (_controller.IsPressed(pstring + "Square")) buttons |= 32768;
 
 						byte left_x = 0, left_y = 0, right_x = 0, right_y = 0;
 						if (fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualShock || fioCfg.Devices8[slot] == OctoshockDll.ePeripheralType.DualAnalog)
 						{
-							if (Controller.IsPressed(pstring + "L3")) buttons |= 2;
-							if (Controller.IsPressed(pstring + "R3")) buttons |= 4;
-							if (Controller.IsPressed(pstring + "MODE")) buttons |= 65536;
+							if (_controller.IsPressed(pstring + "L3")) buttons |= 2;
+							if (_controller.IsPressed(pstring + "R3")) buttons |= 4;
+							if (_controller.IsPressed(pstring + "MODE")) buttons |= 65536;
 
-							left_x = (byte)Controller.GetFloat(pstring + "LStick X");
-							left_y = (byte)Controller.GetFloat(pstring + "LStick Y");
-							right_x = (byte)Controller.GetFloat(pstring + "RStick X");
-							right_y = (byte)Controller.GetFloat(pstring + "RStick Y");
+							left_x = (byte)_controller.GetFloat(pstring + "LStick X");
+							left_y = (byte)_controller.GetFloat(pstring + "LStick Y");
+							right_x = (byte)_controller.GetFloat(pstring + "RStick X");
+							right_y = (byte)_controller.GetFloat(pstring + "RStick Y");
 						}
 
 						OctoshockDll.shock_Peripheral_SetPadInput(psx, portNum, buttons, left_x, left_y, right_x, right_y);
@@ -692,7 +692,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			//if tray open is requested, and valid, apply it
 			//in the first frame, go ahead and open it up so we have a chance to put a disc in it
-			if (Controller.IsPressed("Open") && !CurrentTrayOpen || Frame == 0)
+			if (_controller.IsPressed("Open") && !CurrentTrayOpen || Frame == 0)
 			{
 				OctoshockDll.shock_OpenTray(psx);
 				CurrentTrayOpen = true;
@@ -700,7 +700,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			//change the disc if needed, and valid
 			//also if frame is 0, we need to set a disc no matter what
-			int requestedDisc = (int)Controller.GetFloat("Disc Select");
+			int requestedDisc = (int)_controller.GetFloat("Disc Select");
 			if (requestedDisc != CurrentDiscIndexMounted && CurrentTrayOpen
 				|| Frame == 0
 				)
@@ -728,22 +728,25 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			}
 
 			//if tray close is requested, and valid, apply it.
-			if (Controller.IsPressed("Close") && CurrentTrayOpen)
+			if (_controller.IsPressed("Close") && CurrentTrayOpen)
 			{
 				OctoshockDll.shock_CloseTray(psx);
 				CurrentTrayOpen = false;
 			}
 
 			//if frame is 0 and user has made no preference, close the tray
-			if (!Controller.IsPressed("Close") && !Controller.IsPressed("Open") && Frame == 0 && CurrentTrayOpen)
+			if (!_controller.IsPressed("Close") && !_controller.IsPressed("Open") && Frame == 0 && CurrentTrayOpen)
 			{
 				OctoshockDll.shock_CloseTray(psx);
 				CurrentTrayOpen = false;
 			}
 		}
 
-		public void FrameAdvance(bool render, bool rendersound)
+		private IController _controller;
+
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
+			_controller = controller;
 			FrameAdvance_PrepDiscState();
 
 			//clear drive light. itll get set to light up by sector-reading callbacks
@@ -780,7 +783,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 				OctoshockDll.shock_SetTraceCallback(psx, IntPtr.Zero, null);
 
 			//apply soft reset if needed
-			if (Controller.IsPressed("Reset"))
+			if (_controller.IsPressed("Reset"))
 				OctoshockDll.shock_SoftReset(psx);
 
 			//------------------------
@@ -844,7 +847,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		}
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
-		public IController Controller { private get; set; }
 
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }

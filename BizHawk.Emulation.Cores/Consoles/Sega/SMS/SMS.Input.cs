@@ -31,15 +31,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			_lagged = false;
 			byte value = 0xFF;
 
-			if (Controller.IsPressed("P1 Up")) value &= 0xFE;
-			if (Controller.IsPressed("P1 Down")) value &= 0xFD;
-			if (Controller.IsPressed("P1 Left")) value &= 0xFB;
-			if (Controller.IsPressed("P1 Right")) value &= 0xF7;
-			if (Controller.IsPressed("P1 B1")) value &= 0xEF;
-			if (Controller.IsPressed("P1 B2")) value &= 0xDF;
+			if (_controller.IsPressed("P1 Up")) value &= 0xFE;
+			if (_controller.IsPressed("P1 Down")) value &= 0xFD;
+			if (_controller.IsPressed("P1 Left")) value &= 0xFB;
+			if (_controller.IsPressed("P1 Right")) value &= 0xF7;
+			if (_controller.IsPressed("P1 B1")) value &= 0xEF;
+			if (_controller.IsPressed("P1 B2")) value &= 0xDF;
 
-			if (Controller.IsPressed("P2 Up")) value &= 0xBF;
-			if (Controller.IsPressed("P2 Down")) value &= 0x7F;
+			if (_controller.IsPressed("P2 Up")) value &= 0xBF;
+			if (_controller.IsPressed("P2 Down")) value &= 0x7F;
 
 			return value;
 		}
@@ -50,12 +50,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			_lagged = false;
 			byte value = 0xFF;
 
-			if (Controller.IsPressed("P2 Left")) value &= 0xFE;
-			if (Controller.IsPressed("P2 Right")) value &= 0xFD;
-			if (Controller.IsPressed("P2 B1")) value &= 0xFB;
-			if (Controller.IsPressed("P2 B2")) value &= 0xF7;
+			if (_controller.IsPressed("P2 Left")) value &= 0xFE;
+			if (_controller.IsPressed("P2 Right")) value &= 0xFD;
+			if (_controller.IsPressed("P2 B1")) value &= 0xFB;
+			if (_controller.IsPressed("P2 B2")) value &= 0xF7;
 
-			if (Controller.IsPressed("Reset")) value &= 0xEF;
+			if (_controller.IsPressed("Reset")) value &= 0xEF;
 
 			if ((Port3F & 0x0F) == 5)
 			{
@@ -83,8 +83,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 
 			byte value = 0xFF;
-			if ((Controller.IsPressed("Pause") && !IsGameGear) ||
-				(Controller.IsPressed("P1 Start") && IsGameGear))
+			if ((_controller.IsPressed("Pause") && !IsGameGear) ||
+				(_controller.IsPressed("P1 Start") && IsGameGear))
 			{
 				value ^= 0x80;
 			}

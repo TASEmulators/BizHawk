@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			});
 		}
 
-		private void FrameAdv(bool render, bool rendersound)
+		private void FrameAdv(IController controller, bool render, bool rendersound)
 		{
 			if (_tracer.Enabled)
 			{
@@ -151,28 +151,28 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				_machine.Cpu.TraceCallback = null;
 			}
 
-			if (Controller.IsPressed("Next Disk") && !_nextPressed)
+			if (controller.IsPressed("Next Disk") && !_nextPressed)
 			{
 				_nextPressed = true;
 				IncrementDisk();
 			}
-			else if (Controller.IsPressed("Previous Disk") && !_prevPressed)
+			else if (controller.IsPressed("Previous Disk") && !_prevPressed)
 			{
 				_prevPressed = true;
 				DecrementDisk();
 			}
 
-			if (!Controller.IsPressed("Next Disk"))
+			if (!controller.IsPressed("Next Disk"))
 			{
 				_nextPressed = false;
 			}
 
-			if (!Controller.IsPressed("Previous Disk"))
+			if (!controller.IsPressed("Previous Disk"))
 			{
 				_prevPressed = false;
 			}
 
-			_machine.BizFrameAdvance(RealButtons.Where(b => Controller.IsPressed(b)));
+			_machine.BizFrameAdvance(RealButtons.Where(b => controller.IsPressed(b)));
 			if (IsLagFrame)
 			{
 				LagCount++;

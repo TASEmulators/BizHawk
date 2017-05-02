@@ -33,9 +33,7 @@ namespace BizHawk.Emulation.Common
 
 		public ControllerDefinition ControllerDefinition => NullController.Instance.Definition;
 
-		public IController Controller { get; set; }
-
-		public void FrameAdvance(bool render, bool rendersound)
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			if (render == false)
 			{

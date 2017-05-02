@@ -73,8 +73,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public ControllerDefinition ControllerDefinition { get { return Atari2600ControllerDefinition; } }
 
-		public IController Controller { private get; set; }
-
 		public int Frame { get { return _frame; } set { _frame = value; } }
 
 		public bool DeterministicEmulation { get; set; }
@@ -132,12 +130,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			using (Atari2600 emu = new Atari2600(new CoreComm(null, null), newgame, rom, null, null))
 			{
-				emu.Controller = new NullController();
-
 				List<int> framecounts = new List<int>();
 				emu._tia.FrameEndCallBack = (i) => framecounts.Add(i);
 				for (int i = 0; i < 71; i++) // run for 71 * 262 lines, since we're in NTSC mode
-					emu.FrameAdvance(false, false);
+				{
+					emu.FrameAdvance(NullController.Instance, false, false);
+				}
+
 				int numpal = framecounts.Count((i) => i > 287);
 				bool pal = numpal >= 25;
 				Console.WriteLine("PAL Detection: {0} lines, {1}", numpal, pal);
