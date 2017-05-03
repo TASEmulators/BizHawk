@@ -4,25 +4,13 @@ using System.IO;
 using System.Text;
 using System.Threading;
 
-using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.Common
 {
-	public class CompactGameInfo
-	{
-		public string Name { get; set; }
-		public string System { get; set; }
-		public string MetaData { get; set; }
-		public string Hash { get; set; }
-		public string Region { get; set; }
-		public RomStatus Status { get; set; }
-		public string ForcedCore { get; set; }
-	}
-
 	public static class Database
 	{
-		private static readonly Dictionary<string, CompactGameInfo> db = new Dictionary<string, CompactGameInfo>();
+		private static readonly Dictionary<string, CompactGameInfo> DB = new Dictionary<string, CompactGameInfo>();
 
 		private static string RemoveHashType(string hash)
 		{
@@ -43,8 +31,8 @@ namespace BizHawk.Emulation.Common
 		public static GameInfo CheckDatabase(string hash)
 		{
 			CompactGameInfo cgi;
-			var hash_notype = RemoveHashType(hash);
-			db.TryGetValue(hash_notype, out cgi);
+			var hashNotype = RemoveHashType(hash);
+			DB.TryGetValue(hashNotype, out cgi);
 			if (cgi == null)
 			{
 				Console.WriteLine("DB: hash " + hash + " not in game database.");
@@ -93,7 +81,7 @@ namespace BizHawk.Emulation.Common
 				case RomStatus.Overdump:
 					sb.Append("O");
 					break;
-				case RomStatus.BIOS:
+				case RomStatus.Bios:
 					sb.Append("I");
 					break;
 				case RomStatus.Homebrew:
@@ -115,14 +103,8 @@ namespace BizHawk.Emulation.Common
 				.Append('\t')
 				.Append(gameInfo.MetaData)
 				.Append(Environment.NewLine);
-			try
-			{
-				File.AppendAllText(path, sb.ToString());
-			}
-			catch (Exception ex)
-			{
-				string blah = ex.ToString();
-			}
+
+			File.AppendAllText(path, sb.ToString());
 		}
 
 		public static void LoadDatabase(string path)
@@ -173,7 +155,7 @@ namespace BizHawk.Emulation.Common
 								game.Status = RomStatus.Overdump;
 								break;
 							case "I":
-								game.Status = RomStatus.BIOS;
+								game.Status = RomStatus.Bios;
 								break;
 							case "D":
 								game.Status = RomStatus.Homebrew;
@@ -195,12 +177,12 @@ namespace BizHawk.Emulation.Common
 						game.Region = items.Length >= 7 ? items[6] : string.Empty;
 						game.ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : string.Empty;
 
-						if (db.ContainsKey(game.Hash))
+						if (DB.ContainsKey(game.Hash))
 						{
-							Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, db[game.Hash].Name);
+							Console.WriteLine("gamedb: Multiple hash entries {0}, duplicate detected on \"{1}\" and \"{2}\"", game.Hash, game.Name, DB[game.Hash].Name);
 						}
 
-						db[game.Hash] = game;
+						DB[game.Hash] = game;
 					}
 					catch
 					{
@@ -213,20 +195,20 @@ namespace BizHawk.Emulation.Common
 		public static GameInfo GetGameInfo(byte[] romData, string fileName)
 		{
 			CompactGameInfo cgi;
-			var hash = string.Format("{0:X8}", CRC32.Calculate(romData));
-			if (db.TryGetValue(hash, out cgi))
+			var hash = $"{CRC32.Calculate(romData):X8}";
+			if (DB.TryGetValue(hash, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
 			hash = romData.HashMD5();
-			if (db.TryGetValue(hash, out cgi))
+			if (DB.TryGetValue(hash, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
 
 			hash = romData.HashSHA1();
-			if (db.TryGetValue(hash, out cgi))
+			if (DB.TryGetValue(hash, out cgi))
 			{
 				return new GameInfo(cgi);
 			}
@@ -244,7 +226,7 @@ namespace BizHawk.Emulation.Common
 				CRC32.Calculate(romData),
 				System.Security.Cryptography.MD5.Create().ComputeHash(romData).BytesToHexString());
 
-			var ext = Path.GetExtension(fileName).ToUpperInvariant();
+			var ext = Path.GetExtension(fileName)?.ToUpperInvariant();
 
 			switch (ext)
 			{
@@ -351,15 +333,26 @@ namespace BizHawk.Emulation.Common
 					break;
 			}
 
-			game.Name = Path.GetFileNameWithoutExtension(fileName).Replace('_', ' ');
+			game.Name = Path.GetFileNameWithoutExtension(fileName)?.Replace('_', ' ');
 
 			// If filename is all-caps, then attempt to proper-case the title.
-			if (game.Name == game.Name.ToUpperInvariant())
+			if (!string.IsNullOrWhiteSpace(game.Name) && game.Name == game.Name.ToUpperInvariant())
 			{
 				game.Name = Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(game.Name.ToLower());
 			}
 
 			return game;
 		}
+	}
+
+	public class CompactGameInfo
+	{
+		public string Name { get; set; }
+		public string System { get; set; }
+		public string MetaData { get; set; }
+		public string Hash { get; set; }
+		public string Region { get; set; }
+		public RomStatus Status { get; set; }
+		public string ForcedCore { get; set; }
 	}
 }

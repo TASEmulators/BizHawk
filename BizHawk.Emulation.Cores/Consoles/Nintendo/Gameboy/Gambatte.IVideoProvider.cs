@@ -1,44 +1,25 @@
-﻿using System;
-using BizHawk.Emulation.Common;
-
-namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
+﻿namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class Gameboy
 	{
 		/// <summary>
 		/// stored image of most recent frame
 		/// </summary>
-		private int[] VideoBuffer = new int[160 * 144];
+		private readonly int[] VideoBuffer = new int[160 * 144];
 
 		public int[] GetVideoBuffer()
 		{
 			return VideoBuffer;
 		}
 
-		public int VirtualWidth
-		{
-			// only sgb changes this, which we don't emulate here
-			get { return 160; }
-		}
+		public int VirtualWidth => 160; // only sgb changes this, which we don't emulate here
 
-		public int VirtualHeight
-		{
-			get { return 144; }
-		}
+		public int VirtualHeight => 144;
 
-		public int BufferWidth
-		{
-			get { return 160; }
-		}
+		public int BufferWidth => 160;
 
-		public int BufferHeight
-		{
-			get { return 144; }
-		}
+		public int BufferHeight => 144;
 
-		public int BackgroundColor
-		{
-			get { return 0; }
-		}
+		public int BackgroundColor => 0;
 	}
 }

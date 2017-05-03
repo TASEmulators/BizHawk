@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.Components.Z80GB;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -13,15 +12,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			get { yield return "Z80GB"; }
 		}
 
-		public override string PCRegisterName
-		{
-			get { return "PC"; }
-		}
+		public override string PCRegisterName => "PC";
 
 		public override string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
 			ushort tmp;
-			string ret = Common.Components.Z80GB.NewDisassembler.Disassemble((ushort)addr, (a) => m.PeekByte(a), out tmp);
+			string ret = NewDisassembler.Disassemble((ushort)addr, a => m.PeekByte(a), out tmp);
 			length = tmp;
 			return ret;
 		}

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
+﻿using System.Collections.Generic;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.Saturn
@@ -16,9 +13,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			var nmds = LibYabause.libyabause_getmemoryareas_ex();
 			foreach (var nmd in nmds)
 			{
-				int l = nmd.length;
-				IntPtr d = nmd.data;
-				ret.Add(MemoryDomain.FromIntPtr(nmd.name, nmd.length, MemoryDomain.Endian.Little, nmd.data, true, 4));
+				ret.Add(new MemoryDomainIntPtr(nmd.name, MemoryDomain.Endian.Little, nmd.data, nmd.length, true, 4));
 			}
 
 			// main memory is in position 2

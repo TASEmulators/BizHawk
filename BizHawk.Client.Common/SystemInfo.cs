@@ -5,7 +5,7 @@ namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// This class holds logic for System information.
-	/// That means specifiactions about a system that BizHawk emulate
+	/// That means specifications about a system that BizHawk emulates
 	/// </summary>
 	public sealed class SystemInfo
 	{
@@ -14,52 +14,11 @@ namespace BizHawk.Client.Common
 		private const JoypadButton UpDownLeftRight = JoypadButton.Up | JoypadButton.Down | JoypadButton.Left | JoypadButton.Right;
 		private const JoypadButton StandardButtons = JoypadButton.A | JoypadButton.B | JoypadButton.Start | JoypadButton.Select | UpDownLeftRight;
 
-		private static readonly List<SystemInfo> allSystemInfos;
-
-		private string _DisplayName;
-		private CoreSystem _System;
-		private JoypadButton _AvailableButtons;
-		private int _MaxControllers;
+		private static readonly List<SystemInfo> _allSystemInfos = new List<SystemInfo>();
 
 		#endregion
 
 		#region cTor(s)
-
-		/// <summary>
-		/// Global initialization stuff
-		/// </summary>
-		/// <remarks>DO NOT CHANGE List order because properties depends on it (and it is hardcoded)</remarks>
-		static SystemInfo()
-		{
-			allSystemInfos = new List<SystemInfo>(26);
-
-			allSystemInfos.Add(new SystemInfo(string.Empty));
-			allSystemInfos.Add(new SystemInfo("NES", CoreSystem.NES, 2, StandardButtons));
-			allSystemInfos.Add(new SystemInfo("Intellivision", CoreSystem.Intellivision, 2));
-			allSystemInfos.Add(new SystemInfo("Sega Master System", CoreSystem.MasterSystem, 2, UpDownLeftRight | JoypadButton.B1 | JoypadButton.B2));
-			allSystemInfos.Add(new SystemInfo("SG-1000", CoreSystem.MasterSystem, 1));
-			allSystemInfos.Add(new SystemInfo("Game Gear", CoreSystem.MasterSystem, 1, UpDownLeftRight | JoypadButton.B1 | JoypadButton.B2));
-			allSystemInfos.Add(new SystemInfo("TurboGrafx-16", CoreSystem.PCEngine, 1));
-			allSystemInfos.Add(new SystemInfo("TurboGrafx - 16(CD)", CoreSystem.PCEngine, 1));
-			allSystemInfos.Add(new SystemInfo("SuperGrafx", CoreSystem.PCEngine, 1));
-			allSystemInfos.Add(new SystemInfo("Genesis", CoreSystem.Genesis, 2, UpDownLeftRight | JoypadButton.A | JoypadButton.B | JoypadButton.C | JoypadButton.X | JoypadButton.Y | JoypadButton.Z));
-			allSystemInfos.Add(new SystemInfo("TI - 83", CoreSystem.TI83, 1));
-			allSystemInfos.Add(new SystemInfo("SNES", CoreSystem.SNES, 8, StandardButtons | JoypadButton.X | JoypadButton.Y | JoypadButton.L | JoypadButton.R));
-			allSystemInfos.Add(new SystemInfo("GB", CoreSystem.GameBoy, 1, StandardButtons));
-			allSystemInfos.Add(new SystemInfo("Gameboy Color", CoreSystem.GameBoy, 1, StandardButtons)); //13 (0 based)
-			allSystemInfos.Add(new SystemInfo("Atari 2600", CoreSystem.Atari2600, 1));
-			allSystemInfos.Add(new SystemInfo("Atari 7800", CoreSystem.Atari7800, 1));
-			allSystemInfos.Add(new SystemInfo("Commodore 64", CoreSystem.Commodore64, 1));
-			allSystemInfos.Add(new SystemInfo("ColecoVision", CoreSystem.ColecoVision, 1));
-			allSystemInfos.Add(new SystemInfo("Gameboy Advance", CoreSystem.GameBoyAdvance, 1, StandardButtons | JoypadButton.L | JoypadButton.R));
-			allSystemInfos.Add(new SystemInfo("Nintendo 64", CoreSystem.Nintendo64, 4, StandardButtons ^ JoypadButton.Select | JoypadButton.Z | JoypadButton.CUp | JoypadButton.CDown | JoypadButton.CLeft | JoypadButton.CRight | JoypadButton.AnalogStick | JoypadButton.L | JoypadButton.R));
-			allSystemInfos.Add(new SystemInfo("Saturn", CoreSystem.Saturn, 2, UpDownLeftRight | JoypadButton.A | JoypadButton.B | JoypadButton.C | JoypadButton.X | JoypadButton.Y | JoypadButton.Z));
-			allSystemInfos.Add(new SystemInfo("Game Boy Link", CoreSystem.DualGameBoy, 2, StandardButtons));
-			allSystemInfos.Add(new SystemInfo("WonderSwan", CoreSystem.WonderSwan, 1));
-			allSystemInfos.Add(new SystemInfo("Lynx", CoreSystem.Lynx, 1));
-			allSystemInfos.Add(new SystemInfo("PlayStation", CoreSystem.Playstation, 2));
-			allSystemInfos.Add(new SystemInfo("Apple II", CoreSystem.AppleII, 1));
-		}
 
 		/// <summary>
 		/// Initialize a new instance of <see cref="SystemInfo"/>
@@ -68,348 +27,157 @@ namespace BizHawk.Client.Common
 		/// <param name="system">A <see cref="CoreSystem"/> that specify what core is used</param>
 		/// <param name="maxControllers">Maximum controller allowed by this system</param>
 		/// <param name="availableButtons">Which buttons are available (i.e. are actually on the controller) for this system</param>
-		private SystemInfo(string displayName, CoreSystem system, int maxControllers, JoypadButton availableButtons)
+		private SystemInfo(string displayName, CoreSystem system, int maxControllers, JoypadButton availableButtons = 0)
 		{
-			_DisplayName = displayName;
-			_System = system;
-			_MaxControllers = maxControllers;
-			_AvailableButtons = availableButtons;
+			DisplayName = displayName;
+			System = system;
+			MaxControllers = maxControllers;
+			AvailableButtons = availableButtons;
+
+			_allSystemInfos.Add(this);
 		}
-
-		/// <summary>
-		/// Initialize a new instance of <see cref="SystemInfo"/>
-		/// </summary>
-		/// <param name="displayName">A <see cref="string"/> that specify how the system name is displayed</param>
-		/// <param name="system">A <see cref="CoreSystem"/> that specify what core is used</param>
-		/// <param name="maxControllers">Maximum controller allowed by this system</param>
-		private SystemInfo(string displayName, CoreSystem system, int maxControllers)
-			: this(displayName, system, maxControllers, 0)
-		{ }
-
-		/// <summary>
-		/// Initialize a new instance of <see cref="SystemInfo"/>
-		/// </summary>
-		/// <param name="displayName">A <see cref="string"/> that specify how the system name is displayed</param>
-		private SystemInfo(string displayName)
-			: this(displayName, CoreSystem.Null, 0, 0)
-		{ }
 
 		#endregion
 
-		#region Methods		
+		#region Methods
 
 		#region Get SystemInfo
+
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Apple II
 		/// </summary
-		public static SystemInfo AppleII
-		{
-			get
-			{
-				return allSystemInfos[25];
-			}
-		}
+		public static SystemInfo Libretro { get; } = new SystemInfo("Libretro", CoreSystem.Libretro, 1);
 
+		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for Apple II
+		/// </summary
+		public static SystemInfo AppleII { get; } = new SystemInfo("Apple II", CoreSystem.AppleII, 1);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Atari 2600
 		/// </summary
-		public static SystemInfo Atari2600
-		{
-			get
-			{
-				return allSystemInfos[14];
-			}
-		}
-
+		public static SystemInfo Atari2600 { get; } = new SystemInfo("Atari 2600", CoreSystem.Atari2600, 1);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Atari 7800
 		/// </summary>
-		public static SystemInfo Atari7800
-		{
-			get
-			{
-				return allSystemInfos[15];
-			}
-		}
-
+		public static SystemInfo Atari7800 { get; } = new SystemInfo("Atari 7800", CoreSystem.Atari7800, 1);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Commodore 64
 		/// </summary>
-		public static SystemInfo C64
-		{
-			get
-			{
-				return allSystemInfos[16];
-			}
-		}
-
+		public static SystemInfo C64 { get; } = new SystemInfo("Commodore 64", CoreSystem.Commodore64, 1);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Coleco Vision
 		/// </summary>
-		public static SystemInfo Coleco
-		{
-			get
-			{
-				return allSystemInfos[17];
-			}
-		}
-
+		public static SystemInfo Coleco { get; } = new SystemInfo("ColecoVision", CoreSystem.ColecoVision, 1);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Dual Gameboy
 		/// </summary>
-		public static SystemInfo DualGB
-		{
-			get
-			{
-				return allSystemInfos[21];
-			}
-		}
-
+		public static SystemInfo DualGB { get; } = new SystemInfo("Game Boy Link", CoreSystem.DualGameBoy, 2, StandardButtons);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Gameboy
 		/// </summary>
-		public static SystemInfo GB
-		{
-			get
-			{
-				return allSystemInfos[12];
-			}
-		}
-
+		public static SystemInfo GB { get; } = new SystemInfo("GB", CoreSystem.GameBoy, 1, StandardButtons);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Gameboy Advance
 		/// </summary>
-		public static SystemInfo GBA
-		{
-			get
-			{
-				return allSystemInfos[18];
-			}
-		}
-
+		public static SystemInfo GBA { get; } = new SystemInfo("Gameboy Advance", CoreSystem.GameBoyAdvance, 1, StandardButtons | JoypadButton.L | JoypadButton.R);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Gameboy Color
 		/// </summary>
-		public static SystemInfo GBC
-		{
-			get
-			{
-				return allSystemInfos[13];
-			}
-		}
-
+		public static SystemInfo GBC { get; } = new SystemInfo("Gameboy Color", CoreSystem.GameBoy, 1, StandardButtons);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Genesis
 		/// </summary>
-		public static SystemInfo Genesis
-		{
-			get
-			{
-				return allSystemInfos[9];
-			}
-		}
-
+		public static SystemInfo Genesis { get; } = new SystemInfo("Genesis", CoreSystem.Genesis, 2, UpDownLeftRight | JoypadButton.A | JoypadButton.B | JoypadButton.C | JoypadButton.X | JoypadButton.Y | JoypadButton.Z);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Game Gear
 		/// </summary>
-		public static SystemInfo GG
-		{
-			get
-			{
-				return allSystemInfos[5];
-			}
-		}
-
+		public static SystemInfo GG { get; } = new SystemInfo("Game Gear", CoreSystem.MasterSystem, 1, UpDownLeftRight | JoypadButton.B1 | JoypadButton.B2);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Intellivision
 		/// </summary>
-		public static SystemInfo Intellivision
-		{
-			get
-			{
-				return allSystemInfos[2];
-			}
-		}
-
+		public static SystemInfo Intellivision { get; } = new SystemInfo("Intellivision", CoreSystem.Intellivision, 2);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Lynx
 		/// </summary>
-		public static SystemInfo Lynx
-		{
-			get
-			{
-				return allSystemInfos[23];
-			}
-		}
-
+		public static SystemInfo Lynx { get; } = new SystemInfo("Lynx", CoreSystem.Lynx, 1);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for NES
 		/// </summary>
-		public static SystemInfo Nes
-		{
-			get
-			{
-				return allSystemInfos[1];
-			}
-		}
-
+		public static SystemInfo Nes { get; } = new SystemInfo("NES", CoreSystem.NES, 2, StandardButtons);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Nintendo 64
 		/// </summary>
-		public static SystemInfo N64
-		{
-			get
-			{
-				return allSystemInfos[19];
-			}
-		}
-
+		public static SystemInfo N64 { get; } = new SystemInfo("Nintendo 64", CoreSystem.Nintendo64, 4, StandardButtons ^ JoypadButton.Select | JoypadButton.Z | JoypadButton.CUp | JoypadButton.CDown | JoypadButton.CLeft | JoypadButton.CRight | JoypadButton.AnalogStick | JoypadButton.L | JoypadButton.R);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Null (i.e. nothing is emulated) emulator
 		/// </summary>
-		public static SystemInfo Null
-		{
-			get
-			{
-				return allSystemInfos[0];
-			}
-		}
-
+		public static SystemInfo Null { get; } = new SystemInfo(string.Empty, CoreSystem.Null, 0);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for PCEngine (TurboGrafx-16)
 		/// </summary>
-		public static SystemInfo PCE
-		{
-			get
-			{
-				return allSystemInfos[6];
-			}
-		}
-
+		public static SystemInfo PCE { get; } = new SystemInfo("TurboGrafx-16", CoreSystem.PCEngine, 1);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for PCEngine (TurboGrafx-16) + CD
 		/// </summary>
-		public static SystemInfo PCECD
-		{
-			get
-			{
-				return allSystemInfos[7];
-			}
-		}
-
+		public static SystemInfo PCECD { get; } = new SystemInfo("TurboGrafx - 16(CD)", CoreSystem.PCEngine, 1);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for PlayStation
 		/// </summary>
-		public static SystemInfo PSX
-		{
-			get
-			{
-				return allSystemInfos[24];
-			}
-		}
-
+		public static SystemInfo PSX { get; } = new SystemInfo("PlayStation", CoreSystem.Playstation, 2);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Sega Saturn
 		/// </summary>
-		public static SystemInfo Saturn
-		{
-			get
-			{
-				return allSystemInfos[20];
-			}
-		}
-
+		public static SystemInfo Saturn { get; } = new SystemInfo("Saturn", CoreSystem.Saturn, 2, UpDownLeftRight | JoypadButton.A | JoypadButton.B | JoypadButton.C | JoypadButton.X | JoypadButton.Y | JoypadButton.Z);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for SG-1000 (Sega Game 1000)
 		/// </summary>
-		public static SystemInfo SG
-		{
-			get
-			{
-				return allSystemInfos[4];
-			}
-		}
-
-
+		public static SystemInfo SG { get; } = new SystemInfo("SG-1000", CoreSystem.MasterSystem, 1);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for PCEngine (Supergraph FX)
 		/// </summary>
-		public static SystemInfo SGX
-		{
-			get
-			{
-				return allSystemInfos[8];
-			}
-		}
-
+		public static SystemInfo SGX { get; } = new SystemInfo("SuperGrafx", CoreSystem.PCEngine, 1);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Sega Master System
 		/// </summary>
-		public static SystemInfo SMS
-		{
-			get
-			{
-				return allSystemInfos[3];
-			}
-		}
-
+		public static SystemInfo SMS { get; } = new SystemInfo("Sega Master System", CoreSystem.MasterSystem, 2, UpDownLeftRight | JoypadButton.B1 | JoypadButton.B2);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for SNES
 		/// </summary>
-		public static SystemInfo SNES
-		{
-			get
-			{
-				return allSystemInfos[11];
-			}
-		}
-
+		public static SystemInfo SNES { get; } = new SystemInfo("SNES", CoreSystem.SNES, 8, StandardButtons | JoypadButton.X | JoypadButton.Y | JoypadButton.L | JoypadButton.R);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for TI-83
 		/// </summary>
-		public static SystemInfo TI83
-		{
-			get
-			{
-				return allSystemInfos[10];
-			}
-		}
-
+		public static SystemInfo TI83 { get; } = new SystemInfo("TI - 83", CoreSystem.TI83, 1);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for TI-83
 		/// </summary>
-		public static SystemInfo WonderSwan
-		{
-			get
-			{
-				return allSystemInfos[22];
-			}
-		}
+		public static SystemInfo WonderSwan { get; } = new SystemInfo("WonderSwan", CoreSystem.WonderSwan, 1);
+
 		#endregion Get SystemInfo
 
 		/// <summary>
@@ -419,7 +187,7 @@ namespace BizHawk.Client.Common
 		/// <returns>Mathing <see cref="SystemInfo"/></returns>
 		public static SystemInfo FindByCoreSystem(CoreSystem system)
 		{
-			return allSystemInfos.Find(s => s._System == system);
+			return _allSystemInfos.Find(s => s.System == system);
 		}
 
 		/// <summary>
@@ -433,10 +201,8 @@ namespace BizHawk.Client.Common
 			{
 				return this == (SystemInfo)obj;
 			}
-			else
-			{
-				return base.Equals(obj);
-			}
+
+			return base.Equals(obj);
 		}
 
 		/// <summary>
@@ -455,9 +221,8 @@ namespace BizHawk.Client.Common
 		/// <returns></returns>
 		public override string ToString()
 		{
-			return _DisplayName;
+			return DisplayName;
 		}
-
 
 		/// <summary>
 		/// Determine if two <see cref="SystemInfo"/> are equals.
@@ -490,47 +255,22 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets <see cref="JoypadButton"/> available for this system
 		/// </summary>
-		public JoypadButton AvailableButtons
-		{
-			get
-			{
-				return _AvailableButtons;
-			}
-		}
+		public JoypadButton AvailableButtons { get; }
 
 		/// <summary>
 		/// Gets the sytem name as <see cref="string"/>
 		/// </summary>
-		public string DisplayName
-		{
-			get
-			{
-				return _DisplayName;
-			}
-		}
-
+		public string DisplayName { get; }
 
 		/// <summary>
 		/// Gets the maximum amount of controller allowed for this system
 		/// </summary>
-		public int MaxControllers
-		{
-			get
-			{
-				return _MaxControllers;
-			}
-		}
+		public int MaxControllers { get; }
 
 		/// <summary>
 		/// Gets core used for this system as <see cref="CoreSystem"/> enum
 		/// </summary>
-		public CoreSystem System
-		{
-			get
-			{
-				return _System;
-			}
-		}
+		public CoreSystem System { get; }
 
 		#endregion
 	}

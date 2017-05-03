@@ -110,7 +110,8 @@ namespace BizHawk.Client.EmuHawk
 							Location = UIHelper.Scale(button.Location),
 							Size = UIHelper.Scale(button.TargetSize),
 							MinValue = button.MinValue,
-							MaxValue = button.MaxValue
+							MaxValue = button.MaxValue,
+							Orientation = button.Orientation
 						});
 						break;
 					case PadSchema.PadInputType.DiscManager:

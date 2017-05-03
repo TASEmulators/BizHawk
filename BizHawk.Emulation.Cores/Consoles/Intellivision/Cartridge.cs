@@ -1,52 +1,58 @@
-﻿using BizHawk.Common;
+﻿using System;
+
+using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
-using System;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed class Cartridge : ICart
 	{
-		private ushort[] Data = new ushort[56320];
+		private readonly ushort[] Data = new ushort[56320];
 
 		private ushort[] Cart_Ram = new ushort[0x800];
 
 		// There are 10 mappers Intellivision games use (not counting intellicart which is handled seperately)
 		// we will pick the mapper from the game DB and default to 0
-		private int mapper = 0; 
+		private int _mapper = 0;
+
+		public string BoardName => $"Mapper {_mapper}";
 
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("Cart");
 
-			ser.Sync("mapper", ref mapper);
+			ser.Sync("mapper", ref _mapper);
 			ser.Sync("Cart_Ram", ref Cart_Ram, false);
 
 			ser.EndSection();
 		}
 
-		public int Parse(byte[] Rom)
+		public int Parse(byte[] rom)
 		{
 			// Combine every two bytes into a word.
 			int index = 0;
 
-			while (index + 1 < Rom.Length)
+			while (index + 1 < rom.Length)
 			{
-				Data[(index / 2)] = (ushort)((Rom[index++] << 8) | Rom[index++]);
+				Data[(index / 2)] = (ushort)((rom[index++] << 8) | rom[index++]);
 			}
 
 			// look up hash in gamedb to see what mapper to use
 			// if none found default is zero
 			string hash_sha1 = null;
 			string s_mapper = null;
-			hash_sha1 = "sha1:" + Rom.HashSHA1(16, Rom.Length - 16);
+			hash_sha1 = "sha1:" + rom.HashSHA1(16, rom.Length - 16);
 
 			var gi = Database.CheckDatabase(hash_sha1);
 			if (gi != null)
 			{
 				var dict = gi.GetOptionsDict();
 				if (!dict.ContainsKey("board"))
+				{
 					throw new Exception("INTV gamedb entries must have a board identifier!");
+				}
+
 				s_mapper = dict["board"];
 			}
 			else
@@ -54,25 +60,27 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				s_mapper = "0";
 			}
 
-			int.TryParse(s_mapper, out mapper);
+			int.TryParse(s_mapper, out _mapper);
 
-			return Rom.Length;
+			return rom.Length;
 		}
 
 		public ushort? ReadCart(ushort addr, bool peek)
 		{
-			switch (mapper)
+			switch (_mapper)
 			{
 				case 0:
-					if (addr>=0x5000 && addr<=0x6FFF)
+					if (addr >= 0x5000 && addr <= 0x6FFF)
 					{
-						return Data[addr-0x5000];
+						return Data[addr - 0x5000];
 					}
-					else if (addr>=0xD000 && addr<=0xDFFF)
+
+					if (addr >= 0xD000 && addr <= 0xDFFF)
 					{
 						return Data[addr - 0xB000];
 					}
-					else if (addr>=0xF000 && addr<=0xFFFF)
+
+					if (addr >= 0xF000 && addr <= 0xFFFF)
 					{
 						return Data[addr - 0xC000];
 					}
@@ -83,7 +91,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						return Data[addr - 0x5000];
 					}
-					else if (addr >= 0xD000 && addr <= 0xFFFF)
+
+					if (addr >= 0xD000 && addr <= 0xFFFF)
 					{
 						return Data[addr - 0xB000];
 					}
@@ -94,11 +103,13 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						return Data[addr - 0x5000];
 					}
-					else if (addr >= 0x9000 && addr <= 0xBFFF)
+
+					if (addr >= 0x9000 && addr <= 0xBFFF)
 					{
 						return Data[addr - 0x7000];
 					}
-					else if (addr >= 0xD000 && addr <= 0xDFFF)
+
+					if (addr >= 0xD000 && addr <= 0xDFFF)
 					{
 						return Data[addr - 0x8000];
 					}
@@ -109,15 +120,18 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						return Data[addr - 0x5000];
 					}
-					else if (addr >= 0x9000 && addr <= 0xAFFF)
+
+					if (addr >= 0x9000 && addr <= 0xAFFF)
 					{
 						return Data[addr - 0x7000];
 					}
-					else if (addr >= 0xD000 && addr <= 0xDFFF)
+
+					if (addr >= 0xD000 && addr <= 0xDFFF)
 					{
 						return Data[addr - 0x9000];
 					}
-					else if (addr >= 0xF000 && addr <= 0xFFFF)
+
+					if (addr >= 0xF000 && addr <= 0xFFFF)
 					{
 						return Data[addr - 0xA000];
 					}
@@ -128,7 +142,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						return Data[addr - 0x5000];
 					}
-					else if (addr >= 0xD000 && addr <= 0xD3FF)
+
+					if (addr >= 0xD000 && addr <= 0xD3FF)
 					{
 						return Cart_Ram[addr - 0xD000];
 					}
@@ -139,7 +154,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						return Data[addr - 0x5000];
 					}
-					else if (addr >= 0x9000 && addr <= 0xBFFF)
+
+					if (addr >= 0x9000 && addr <= 0xBFFF)
 					{
 						return Data[addr - 0x6000];
 					}
@@ -175,19 +191,23 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						return Data[addr - 0x5000];
 					}
-					else if (addr >= 0x9000 && addr <= 0xAFFF)
+
+					if (addr >= 0x9000 && addr <= 0xAFFF)
 					{
 						return Data[addr - 0x7000];
 					}
-					else if (addr >= 0xD000 && addr <= 0xDFFF)
+
+					if (addr >= 0xD000 && addr <= 0xDFFF)
 					{
 						return Data[addr - 0x9000];
 					}
-					else if (addr >= 0xF000 && addr <= 0xFFFF)
+
+					if (addr >= 0xF000 && addr <= 0xFFFF)
 					{
 						return Data[addr - 0xA000];
 					}
-					else if (addr >= 0x8800 && addr <= 0x8FFF)
+
+					if (addr >= 0x8800 && addr <= 0x8FFF)
 					{
 						return Cart_Ram[addr - 0x8800];
 					}
@@ -198,24 +218,25 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					{
 						return Data[addr - 0x5000];
 					}
-					else if (addr >= 0x8800 && addr <= 0xB7FF)
+
+					if (addr >= 0x8800 && addr <= 0xB7FF)
 					{
 						return Data[addr - 0x6800];
 					}
-					else if (addr >= 0xD000 && addr <= 0xFFFF)
+
+					if (addr >= 0xD000 && addr <= 0xFFFF)
 					{
 						return Data[addr - 0x8000];
 					}
 					break;
 			}
 
-
 			return null;
 		}
 
 		public bool WriteCart(ushort addr, ushort value, bool poke)
 		{
-			switch (mapper)
+			switch (_mapper)
 			{
 				case 4:
 					if (addr >= 0xD000 && addr <= 0xD3FF)
@@ -232,6 +253,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 					break;
 			}
+
 			return false;
 		}
 	}

@@ -28,7 +28,6 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("Dual Gameboy Controller", Properties.Resources.GBController);
 
 			ControllerImages.Add("SMS Controller", Properties.Resources.SMSController);
-			ControllerImages.Add("Genesis 3-Button Controller", Properties.Resources.GENController);
 			ControllerImages.Add("GPGX Genesis Controller", Properties.Resources.GENController);
 			ControllerImages.Add("Saturn Controller", Properties.Resources.SaturnController);
 

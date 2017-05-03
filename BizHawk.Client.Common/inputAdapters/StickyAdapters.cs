@@ -17,10 +17,7 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class StickyOrAdapter : IController
 	{
-		public ControllerDefinition Definition
-		{
-			get { return Source.Definition; }
-		}
+		public ControllerDefinition Definition => Source.Definition;
 
 		public bool IsPressed(string button)
 		{
@@ -56,10 +53,7 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public ControllerDefinition Definition
-		{
-			get { return Source.Definition; }
-		}
+		public ControllerDefinition Definition => Source.Definition;
 
 		public bool IsPressed(string button)
 		{
@@ -137,13 +131,7 @@ namespace BizHawk.Client.Common
 			return stickySet.Contains(button);
 		}
 
-		public HashSet<string> CurrentStickies
-		{
-			get
-			{
-				return stickySet;
-			}
-		}
+		public HashSet<string> CurrentStickies => stickySet;
 
 		public void ClearStickies()
 		{
@@ -229,12 +217,13 @@ namespace BizHawk.Client.Common
 			Off = Global.Config.AutofireOff < 1 ? 0 : Global.Config.AutofireOff;
 		}
 
-		private WorkingDictionary<string, AutoPatternBool> _boolPatterns = new WorkingDictionary<string, AutoPatternBool>();
-		private WorkingDictionary<string, AutoPatternFloat> _floatPatterns = new WorkingDictionary<string, AutoPatternFloat>();
+		private readonly WorkingDictionary<string, AutoPatternBool> _boolPatterns = new WorkingDictionary<string, AutoPatternBool>();
+		private readonly WorkingDictionary<string, AutoPatternFloat> _floatPatterns = new WorkingDictionary<string, AutoPatternFloat>();
 
 		public AutoFireStickyXorAdapter()
 		{
-			On = 1; Off = 1;
+			On = 1;
+			Off = 1;
 		}
 
 		public IController Source { get; set; }
@@ -246,7 +235,10 @@ namespace BizHawk.Client.Common
 			if (value.HasValue)
 			{
 				if (pattern == null)
+				{
 					pattern = new AutoPatternFloat(value.Value, On, 0, Off);
+				}
+
 				_floatPatterns[name] = pattern;
 			}
 			else
@@ -265,7 +257,10 @@ namespace BizHawk.Client.Common
 			if (isSticky)
 			{
 				if (pattern == null)
+				{
 					pattern = new AutoPatternBool(On, Off);
+				}
+
 				_boolPatterns[button] = pattern;
 			}
 			else
@@ -285,13 +280,7 @@ namespace BizHawk.Client.Common
 			return _boolPatterns.ContainsKey(button) || _floatPatterns.ContainsKey(button);
 		}
 
-		public HashSet<string> CurrentStickies
-		{
-			get
-			{
-				return new HashSet<string>(_boolPatterns.Keys);
-			}
-		}
+		public HashSet<string> CurrentStickies => new HashSet<string>(_boolPatterns.Keys);
 
 		public void ClearStickies()
 		{
@@ -302,9 +291,14 @@ namespace BizHawk.Client.Common
 		public void IncrementLoops(bool lagged)
 		{
 			for (int i = 0; i < _boolPatterns.Count; i++)
+			{
 				_boolPatterns.ElementAt(i).Value.GetNextValue(lagged);
+			}
+
 			for (int i = 0; i < _floatPatterns.Count; i++)
+			{
 				_floatPatterns.ElementAt(i).Value.GetNextValue(lagged);
+			}
 		}
 
 		private List<string> _justPressed = new List<string>();
@@ -313,10 +307,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var button in buttons.Where(button => !_justPressed.Contains(button)))
 			{
-				if (_boolPatterns.ContainsKey(button))
-					SetSticky(button, false);
-				else
-					SetSticky(button, true);
+				SetSticky(button, !_boolPatterns.ContainsKey(button));
 			}
 
 			_justPressed = buttons;

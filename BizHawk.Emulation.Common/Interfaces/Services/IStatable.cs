@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Common
 	public interface IStatable : IEmulatorService
 	{
 		/// <summary>
-		/// true if the core would rather give a binary savestate than a text one.  both must function regardless
+		/// Gets a value indicating whether the core would rather give a binary savestate than a text one. Both must function regardless
 		/// </summary>
 		bool BinarySaveStatesPreferred { get; }
 

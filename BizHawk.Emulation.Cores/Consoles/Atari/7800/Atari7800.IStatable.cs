@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 {
 	public partial class Atari7800 : IStatable
 	{
-		public bool BinarySaveStatesPreferred { get { return true; } }
+		public bool BinarySaveStatesPreferred => true;
 
 		public void SaveStateText(TextWriter writer)
 		{
@@ -59,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			if (ser.IsReader)
 			{
 				theMachine = MachineBase.Deserialize(new BinaryReader(new MemoryStream(core, false)));
-				avProvider.ConnectToMachine(theMachine, GameInfo);
+				_avProvider.ConnectToMachine(theMachine, GameInfo);
 			}
 		}
 	}

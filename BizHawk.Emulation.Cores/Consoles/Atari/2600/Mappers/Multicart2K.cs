@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using BizHawk.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {

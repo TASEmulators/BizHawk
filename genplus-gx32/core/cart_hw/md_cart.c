@@ -2,7 +2,7 @@
  *  Genesis Plus
  *  Mega Drive cartridge hardware support
  *
- *  Copyright (C) 2007-2013  Eke-Eke (Genesis Plus GX)
+ *  Copyright (C) 2007-2017  Eke-Eke (Genesis Plus GX)
  *
  *  Many cartridge protections were initially documented by Haze
  *  (http://haze.mameworld.info/)
@@ -393,17 +393,6 @@ void md_cart_init(void)
   if (strstr(rominfo.international,"Virtua Racing"))
   {
     svp_init();
-
-    m68k.memory_map[0x30].base    = svp->dram;
-    m68k.memory_map[0x30].read16  = NULL;
-    m68k.memory_map[0x30].write16 = svp_write_dram;
-
-    m68k.memory_map[0x31].base    = svp->dram + 0x10000;
-    m68k.memory_map[0x31].read16  = NULL;
-    m68k.memory_map[0x31].write16 = svp_write_dram;
-
-    m68k.memory_map[0x39].read16  = svp_read_cell_1;
-    m68k.memory_map[0x3a].read16  = svp_read_cell_2;
   }
 
   /**********************************************
@@ -723,7 +712,7 @@ void md_cart_reset(int hard_reset)
       m68k.memory_map[i].base = cart.rom + ((i<<16) & cart.mask);
     }
   }
-  
+
   /* SVP chip */
   if (svp)
   {
@@ -927,20 +916,59 @@ static void mapper_sega_w(uint32 data)
 */
 static void mapper_ssf2_w(uint32 address, uint32 data)
 {
-  /* 8 x 512k banks */
-  address = (address << 2) & 0x38;
-  
-  /* bank 0 remains unchanged */
-  if (address)
-  {
-    uint32 i;
-    uint8 *src = cart.rom + (data << 19);
+	/* 8 x 512k banks */
+	address = (address << 2) & 0x38;
 
-    for (i=0; i<8; i++)
-    {
-      m68k.memory_map[address++].base = src + (i<<16);
-    }
-  }
+	/* bank 0 remains unchanged */
+	if (address)
+	{
+		uint32 i;
+		uint8 *src = cart.rom + (data << 19);
+
+		for (i = 0; i<8; i++)
+		{
+			m68k.memory_map[address++].base = src + (i << 16);
+		}
+	}
+	else // emulate turning on SRAM 
+	{
+		if (data & 1)
+		{
+			if (sram.on)
+			{
+				/* Backup RAM mapped to $200000-$20ffff (normally mirrored up to $3fffff but this breaks Sonic Megamix and no game need it) */
+				cart.hw.bankshift = m68k.memory_map[0x20].base;
+				m68k.memory_map[0x20].base = sram.sram;
+				m68k.memory_map[0x20].read8 = sram_read_byte;
+				m68k.memory_map[0x20].read16 = sram_read_word;
+				zbank_memory_map[0x20].read = sram_read_byte;
+
+				/* Backup RAM write protection */
+				if (data & 2)
+				{
+					m68k.memory_map[0x20].write8 = m68k_unused_8_w;
+					m68k.memory_map[0x20].write16 = m68k_unused_16_w;
+					zbank_memory_map[0x20].write = zbank_unused_w;
+				}
+				else
+				{
+					m68k.memory_map[0x20].write8 = sram_write_byte;
+					m68k.memory_map[0x20].write16 = sram_write_word;
+					zbank_memory_map[0x20].write = sram_write_byte;
+				}
+			}
+		}
+		else 
+		{
+			// automatically turn off writing to SRAM if SRAM is not visible
+			m68k.memory_map[0x20].write8 = m68k_unused_8_w;
+			m68k.memory_map[0x20].write16 = m68k_unused_16_w;
+			zbank_memory_map[0x20].write = zbank_unused_w;
+
+			// put the ROM data back in the memory map
+			m68k.memory_map[0x20].base = cart.hw.bankshift;
+		}
+	}
 }
 
 /* 

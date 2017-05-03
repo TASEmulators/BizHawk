@@ -24,11 +24,13 @@ namespace BizHawk.Common
 		/// </summary>
 		public bool DenySeekHack = false;
 
-		public override bool CanRead { get { return _currStream.CanRead; } }
-		public override bool CanSeek { get { return _currStream.CanSeek; } }
-		public override bool CanWrite { get { return _currStream.CanWrite; } }
+		public override bool CanRead => _currStream.CanRead;
 
-		public override long Length { get { return _currStream.Length; } }
+		public override bool CanSeek => _currStream.CanSeek;
+
+		public override bool CanWrite => _currStream.CanWrite;
+
+		public override long Length => _currStream.Length;
 
 		public override long Position
 		{
@@ -41,9 +43,14 @@ namespace BizHawk.Common
 			{
 				if (DenySeekHack)
 				{
-					if (value == 0) return;
-					else throw new InvalidOperationException("Cannot set position to non-zero in a SwitcherStream with DenySeekHack=true");
+					if (value == 0)
+					{
+						return;
+					}
+
+					throw new InvalidOperationException("Cannot set position to non-zero in a SwitcherStream with DenySeekHack=true");
 				}
+
 				_currStream.Position = value;
 			}
 		}
@@ -67,9 +74,14 @@ namespace BizHawk.Common
 		{
 			if (DenySeekHack)
 			{
-				if (offset == 0 && origin == SeekOrigin.Begin) return 0;
-				else throw new InvalidOperationException("Cannot call Seek with non-zero offset or non-Begin origin in a SwitcherStream with DenySeekHack=true");
+				if (offset == 0 && origin == SeekOrigin.Begin)
+				{
+					return 0;
+				}
+
+				throw new InvalidOperationException("Cannot call Seek with non-zero offset or non-Begin origin in a SwitcherStream with DenySeekHack=true");
 			}
+
 			return _currStream.Seek(offset, origin);
 		}
 

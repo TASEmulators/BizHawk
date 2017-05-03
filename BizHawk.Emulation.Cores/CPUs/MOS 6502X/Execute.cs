@@ -944,8 +944,8 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-                ReadMemory((ushort)ea);
-                if (alu_temp.Bit(8))
+				ReadMemory((ushort)ea);
+				if (alu_temp.Bit(8))
 					ea = (ushort)(ea + 0x100);
 				
 			}
@@ -1095,7 +1095,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		void IndIdx_RMW_Stage8()
 		{
 			WriteMemory((ushort)ea, (byte)alu_temp);
-        }
+		}
 		void RelBranch_Stage2_BVS()
 		{
 			branch_taken = FlagV == true;
@@ -1155,59 +1155,59 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		}
 		void RelBranch_Stage3()
 		{
-            rdy_freeze = !RDY;
-		    if (RDY)
-		    {
-                FetchDummy();
-                alu_temp = (byte)PC + (int)(sbyte)opcode2;
-                PC &= 0xFF00;
-                PC |= (ushort)((alu_temp & 0xFF));
-                if (alu_temp.Bit(8))
-                {
-                    //we need to carry the add, and then we'll be ready to fetch the next instruction
-                    opcode = VOP_RelativeStuff2;
-                    mi = -1;
-                }
-                else
-                {
-                    //to pass cpu_interrupts_v2/5-branch_delays_irq we need to handle a quirk here
-                    //if we decide to interrupt in the next cycle, this condition will cause it to get deferred by one instruction
-                    if (!interrupt_pending)
-                        branch_irq_hack = true;
-                }
-            }
-        }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy();
+				alu_temp = (byte)PC + (int)(sbyte)opcode2;
+				PC &= 0xFF00;
+				PC |= (ushort)((alu_temp & 0xFF));
+				if (alu_temp.Bit(8))
+				{
+					//we need to carry the add, and then we'll be ready to fetch the next instruction
+					opcode = VOP_RelativeStuff2;
+					mi = -1;
+				}
+				else
+				{
+					//to pass cpu_interrupts_v2/5-branch_delays_irq we need to handle a quirk here
+					//if we decide to interrupt in the next cycle, this condition will cause it to get deferred by one instruction
+					if (!interrupt_pending)
+						branch_irq_hack = true;
+				}
+			}
+		}
 		void RelBranch_Stage4()
 		{
-            rdy_freeze = !RDY;
-		    if (RDY)
-		    {
-                FetchDummy();
-                if (alu_temp.Bit(31))
-                    PC = (ushort)(PC - 0x100);
-                else PC = (ushort)(PC + 0x100);
-            }
-        }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy();
+				if (alu_temp.Bit(31))
+					PC = (ushort)(PC - 0x100);
+				else PC = (ushort)(PC + 0x100);
+			}
+		}
 		void NOP()
 		{
-            rdy_freeze = !RDY;
-        }
-        void DecS()
+			rdy_freeze = !RDY;
+		}
+		void DecS()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                S--;
-            }
-        }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				S--;
+			}
+		}
 		void IncS()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-            {
-                S++;
-            }
-        }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				S++;
+			}
+		}
 		void JSR()
 		{
 			rdy_freeze = !RDY;
@@ -2058,50 +2058,50 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		}
 		void Imp_ASL_A()
 		{
-            rdy_freeze = !RDY;
-		    if (RDY)
-		    {
-                FetchDummy();
-                FlagC = (A & 0x80) != 0;
-                A = (byte)(A << 1);
-                NZ_A();
-            }
-        }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy();
+				FlagC = (A & 0x80) != 0;
+				A = (byte)(A << 1);
+				NZ_A();
+			}
+		}
 		void Imp_ROL_A()
 		{
-            rdy_freeze = !RDY;
-		    if (RDY)
-		    {
-                FetchDummy();
-                temp8 = A;
-                A = (byte)((A << 1) | (P & 1));
-                FlagC = (temp8 & 0x80) != 0;
-                NZ_A();
-            }
-        }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy();
+				temp8 = A;
+				A = (byte)((A << 1) | (P & 1));
+				FlagC = (temp8 & 0x80) != 0;
+				NZ_A();
+			}
+		}
 		void Imp_ROR_A()
 		{
-            rdy_freeze = !RDY;
-		    if (RDY)
-		    {
-                FetchDummy();
-                temp8 = A;
-                A = (byte)((A >> 1) | ((P & 1) << 7));
-                FlagC = (temp8 & 1) != 0;
-                NZ_A();
-            }
-        }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy();
+				temp8 = A;
+				A = (byte)((A >> 1) | ((P & 1) << 7));
+				FlagC = (temp8 & 1) != 0;
+				NZ_A();
+			}
+		}
 		void Imp_LSR_A()
 		{
-            rdy_freeze = !RDY;
-            if (RDY)
-		    {
-                FetchDummy();
-                FlagC = (A & 1) != 0;
-                A = (byte)(A >> 1);
-                NZ_A();
-            }
-        }
+			rdy_freeze = !RDY;
+			if (RDY)
+			{
+				FetchDummy();
+				FlagC = (A & 1) != 0;
+				A = (byte)(A >> 1);
+				NZ_A();
+			}
+		}
 		void JMP_abs()
 		{
 			rdy_freeze = !RDY;
@@ -2275,9 +2275,9 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			rdy_freeze = !RDY;
 			if (RDY)
 			{
-                //bleh.. redundant code to make sure we dont clobber alu_temp before using it to decide whether to change ea
+				//bleh.. redundant code to make sure we dont clobber alu_temp before using it to decide whether to change ea
 
-                if (alu_temp.Bit(8))
+				if (alu_temp.Bit(8))
 				{
 					alu_temp = ReadMemory((ushort)ea);
 					ea = (ushort)(ea + 0x100);
@@ -2307,10 +2307,10 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 		}
 		void AbsIdx_WRITE_Stage5_ERROR()
 		{
-            S = (byte)(X & A);
-            WriteMemory((ushort)ea, (byte)(S & (opcode3+1)));
+			S = (byte)(X & A);
+			WriteMemory((ushort)ea, (byte)(S & (opcode3+1)));
 
-        }
+		}
 		void AbsIdx_RMW_Stage5()
 		{
 			rdy_freeze = !RDY;
@@ -2529,11 +2529,11 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			if (RDY)
 			{
 				alu_temp = ReadMemory((ushort)ea);
-                S &= (byte)alu_temp;
-                X = S;
-                A = S;
-                P = (byte)((P & 0x7D) | TableNZ[S]);
-            }
+				S &= (byte)alu_temp;
+				X = S;
+				A = S;
+				P = (byte)((P & 0x7D) | TableNZ[S]);
+			}
 
 		}
 		void AbsInd_JMP_Stage4()
@@ -2967,9 +2967,9 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public void ExecuteOne()
 		{
-            // total cycles now incraments every time a cycle is called to accurately count during RDY
-            TotalExecutedCycles++;
-            if (!rdy_freeze)
+			// total cycles now incraments every time a cycle is called to accurately count during RDY
+			TotalExecutedCycles++;
+			if (!rdy_freeze)
 			{
 				
 

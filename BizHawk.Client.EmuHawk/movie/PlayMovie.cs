@@ -90,7 +90,6 @@ namespace BizHawk.Client.EmuHawk
 				var index = IsDuplicateOf(filename);
 				if (!index.HasValue)
 				{
-					//System.Diagnostics.Stopwatch watch = new System.Diagnostics.Stopwatch(); watch.Start();
 					#if !WINDOWS
 					file.Unbind(); //Mono can't handle file sharing, must only be open once.
 					#endif
@@ -99,10 +98,14 @@ namespace BizHawk.Client.EmuHawk
 					{
 						return null;
 					}
-					//watch.Stop(); Console.WriteLine("[{0}] {1}",watch.ElapsedMilliseconds,Path.GetFileName(filename));
 					
 					lock (_movieList)
 					{
+					// need to check IsDuplicateOf within the lock
+					if (index.HasValue)
+					{
+						return index;
+					}
 						_movieList.Add(movie);
 						index = _movieList.Count - 1;
 					}
@@ -116,7 +119,6 @@ namespace BizHawk.Client.EmuHawk
 
 				return index;
 			}
-
 		}
 
 		private int? IsDuplicateOf(string filename)
@@ -231,7 +233,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			HighlightMovie(mostRecent);
-			return;
 		}
 
 		private void HighlightMovie(int index)
@@ -262,27 +263,33 @@ namespace BizHawk.Client.EmuHawk
 			{
 				string dp = dpTodo.Dequeue();
 				
-				//enqueue subdirectories if appropriate
+				// enqueue subdirectories if appropriate
 				if (Global.Config.PlayMovie_IncludeSubdir)
-					foreach(var subdir in Directory.GetDirectories(dp))
+				{
+					foreach (var subdir in Directory.GetDirectories(dp))
+					{
 						dpTodo.Enqueue(subdir);
+					}
+				}
 
-				//add movies
+				// add movies
 				fpTodo.AddRange(Directory.GetFiles(dp, "*." + MovieService.DefaultExtension));
 				fpTodo.AddRange(Directory.GetFiles(dp, "*." + TasMovie.Extension));
 			}
 
-			//in parallel, scan each movie
-			Parallel.For(0, fpTodo.Count, (i) =>
-			//for(int i=0;i<fpTodo.Count;i++)
+			// in parallel, scan each movie
+			Parallel.For(0, fpTodo.Count, i =>
 			{
 				var file = fpTodo[i];
-				lock(ordinals) ordinals[file] = i;
-				AddMovieToList(file, force: false);
-			}
-			);
+				lock (ordinals)
+				{
+					ordinals[file] = i;
+				}
 
-			//sort by the ordinal key to maintain relatively stable results when rescanning
+				AddMovieToList(file, force: false);
+			});
+
+			// sort by the ordinal key to maintain relatively stable results when rescanning
 			_movieList.Sort((a, b) => ordinals[a.Filename].CompareTo(ordinals[b.Filename]));
 
 			RefreshMovieList();

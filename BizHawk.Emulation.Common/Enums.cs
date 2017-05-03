@@ -1,14 +1,24 @@
 ﻿namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// DisplayType, used in IEmulator
+	/// DisplayType, used in <seealso cref="IEmulator"/>
 	/// </summary>
-	public enum DisplayType { NTSC, PAL, DENDY }
+	public enum DisplayType
+	{
+		NTSC,
+		PAL,
+		Dendy
+	}
 
 	/// <summary>
-	/// The type/increment of stepping in the Step method of IDebuggable
+	/// The type/increment of stepping in the Step method of <seealso cref="IDebuggable"/>
 	/// </summary>
-	public enum StepType { Into, Out, Over }
+	public enum StepType
+	{
+		Into,
+		Out,
+		Over
+	}
 
 	/// <summary>
 	/// In the game database, the status of the rom found in the database
@@ -21,7 +31,7 @@
 		TranslatedRom,
 		Hack,
 		Unknown,
-		BIOS,
+		Bios,
 		Overdump,
 		NotInDatabase
 	}

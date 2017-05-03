@@ -72,16 +72,28 @@ L rd.h = op_readlong(vectorN + 1);
 }
 
 void CPUcore::op_stp() {
+	if(regs.hang == HangType::Stop)
+		goto SKIP;
+	regs.hang = HangType::Stop;
   while(regs.wai = true) {
 L   op_io();
-  }
+	scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
+SKIP: ;
+	}
+	regs.hang = HangType::None;
 }
 
 void CPUcore::op_wai() {
+	if (regs.hang == HangType::Wait)
+		goto SKIP;
   regs.wai = true;
+	regs.hang = HangType::Wait;
   while(regs.wai) {
 L   op_io();
-  }
+	scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
+	SKIP: ;
+	}
+	regs.hang = HangType::None;
   op_io();
 }
 

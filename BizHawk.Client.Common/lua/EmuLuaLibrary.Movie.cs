@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 			: base(lua, logOutputCallback) { }
 
 
-		public override string Name { get { return "movie"; } }
+		public override string Name => "movie";
 
 		[LuaMethodAttributes(
 			"startsfromsavestate",
@@ -177,7 +177,9 @@ namespace BizHawk.Client.Common
 		public void Save(string filename = "")
 		{
 			if (!Global.MovieSession.Movie.IsActive)
+			{
 				return;
+			}
 
 			if (!string.IsNullOrEmpty(filename))
 			{
@@ -185,11 +187,13 @@ namespace BizHawk.Client.Common
 				var test = new FileInfo(filename);
 				if (test.Exists)
 				{
-					Log(string.Format("File {0} already exists, will not overwrite", filename));
+					Log($"File {filename} already exists, will not overwrite");
 					return;
 				}
+
 				Global.MovieSession.Movie.Filename = filename;
 			}
+
 			Global.MovieSession.Movie.Save();
 		}
 
@@ -210,10 +214,12 @@ namespace BizHawk.Client.Common
 		{
 			// Lua numbers are always double, integer precision holds up
 			// to 53 bits, so throw an error if it's bigger than that.
-			const double precisionLimit = 9007199254740992d;
+			const double PrecisionLimit = 9007199254740992d;
 
-			if (count > precisionLimit)
+			if (count > PrecisionLimit)
+			{
 				throw new Exception("Rerecord count exceeds Lua integer precision.");
+			}
 
 			Global.MovieSession.Movie.Rerecords = (ulong)count;
 		}

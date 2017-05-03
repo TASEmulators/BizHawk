@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -23,12 +22,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public byte[] Registers = { 0x11, 0x11, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
-		public int Window1Width { get { return ((Registers[3] & 3) << 8) | Registers[2]; } }
-		public int Window2Width { get { return ((Registers[5] & 3) << 8) | Registers[4]; } }
-		public int PriorityModeSlot0 { get { return Registers[0] & 0x0F; } }
-		public int PriorityModeSlot1 { get { return (Registers[0] >> 4) & 0x0F; } }
-		public int PriorityModeSlot2 { get { return Registers[1] & 0x0F; } }
-		public int PriorityModeSlot3 { get { return (Registers[1] >> 4) & 0x0F; } }
+		public int Window1Width => ((Registers[3] & 3) << 8) | Registers[2];
+		public int Window2Width => ((Registers[5] & 3) << 8) | Registers[4];
+		public int PriorityModeSlot0 => Registers[0] & 0x0F;
+		public int PriorityModeSlot1 => (Registers[0] >> 4) & 0x0F;
+		public int PriorityModeSlot2 => Registers[1] & 0x0F;
+		public int PriorityModeSlot3 => (Registers[1] >> 4) & 0x0F;
 
 		public VPC(PCEngine pce, VDC vdc1, VDC vdc2, VCE vce, HuC6280 cpu)
 		{
@@ -107,8 +106,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		int FrameWidth;
 		int[] FrameBuffer;
 
-		byte[] PriorityBuffer = new byte[512];
-		byte[] InterSpritePriorityBuffer = new byte[512];
+		private readonly byte[] PriorityBuffer = new byte[512];
+		private readonly byte[] InterSpritePriorityBuffer = new byte[512];
 
 		public void ExecFrame(bool render)
 		{
@@ -188,6 +187,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						VDC2.BackgroundY++;
 						VDC2.BackgroundY &= 0x01FF;
 					}
+
 					if (render) RenderScanLine();
 				}
 
@@ -236,7 +236,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		void RenderScanLine()
+		private void RenderScanLine()
 		{
 			if (VDC1.ActiveLine >= FrameHeight)
 				return;
@@ -260,7 +260,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		void InitializeScanLine(int scanline)
+		private void InitializeScanLine(int scanline)
 		{
 			// Clear priority buffer
 			Array.Clear(PriorityBuffer, 0, FrameWidth);
@@ -270,7 +270,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				FrameBuffer[(scanline * FrameWidth) + i] = VCE.Palette[256];
 		}
 
-		unsafe void RenderBackgroundScanline(VDC vdc, byte priority, bool show)
+		private unsafe void RenderBackgroundScanline(VDC vdc, byte priority, bool show)
 		{
 			if (vdc.BackgroundEnabled == false)
 				return;
@@ -339,9 +339,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		static byte[] heightTable = { 16, 32, 64, 64 };
+		private static readonly byte[] heightTable = { 16, 32, 64, 64 };
 
-		void RenderSpritesScanline(VDC vdc, byte lowPriority, byte highPriority, bool show)
+		private void RenderSpritesScanline(VDC vdc, byte lowPriority, byte highPriority, bool show)
 		{
 			if (vdc.SpritesEnabled == false)
 				return;
@@ -517,12 +517,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		public int[] GetVideoBuffer() { return FrameBuffer; }
+		// IVideoProvider implementation
+		public int[] GetVideoBuffer()
+		{
+			return FrameBuffer;
+		}
 
-		public int VirtualWidth { get { return FrameWidth; } }
-		public int VirtualHeight { get { return FrameHeight; } }
-		public int BufferWidth { get { return FrameWidth; } }
-		public int BufferHeight { get { return FrameHeight; } }
-		public int BackgroundColor { get { return VCE.Palette[0]; } }
+		public int VirtualWidth => FrameWidth;
+		public int VirtualHeight => FrameHeight;
+		public int BufferWidth => FrameWidth;
+		public int BufferHeight => FrameHeight;
+		public int BackgroundColor => VCE.Palette[0];
 	}
 }

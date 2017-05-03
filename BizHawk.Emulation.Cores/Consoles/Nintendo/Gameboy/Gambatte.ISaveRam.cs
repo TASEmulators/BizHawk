@@ -10,9 +10,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			get
 			{
 				if (LibGambatte.gambatte_savesavedatalength(GambatteState) == 0)
+				{
 					return false;
-				else
-					return true; // need to wire more stuff into the core to actually know this
+				}
+
+				return true; // need to wire more stuff into the core to actually know this
 			}
 		}
 
@@ -26,8 +28,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				LibGambatte.gambatte_savesavedata(GambatteState, ret);
 				return ret;
 			}
-			else
-				return new byte[0];
+
+			return new byte[0];
 		}
 
 		public void StoreSaveRam(byte[] data)
@@ -46,6 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					data = FixRTC(data, 40);
 					break;
 			}
+
 			LibGambatte.gambatte_loadsavedata(GambatteState, data);
 		}
 

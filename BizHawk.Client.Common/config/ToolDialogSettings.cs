@@ -33,7 +33,11 @@ namespace BizHawk.Client.Common
 		[JsonIgnore]
 		public int? Wndx
 		{
-			get { return _wndx; }
+			get
+			{
+				return _wndx;
+			}
+
 			set
 			{
 				if (value != -32000)
@@ -47,7 +51,11 @@ namespace BizHawk.Client.Common
 		[JsonIgnore]
 		public int? Wndy
 		{
-			get { return _wndy; }
+			get
+			{
+				return _wndy;
+			}
+
 			set
 			{
 				if (value != -32000)

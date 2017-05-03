@@ -208,7 +208,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"onqueryitembg",
-			"called during the background draw event of the tastudio listview"
+			"called during the background draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)"
 		)]
 		public void OnQueryItemBg(LuaFunction luaf)
 		{
@@ -231,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"onqueryitemtext",
-			"called during the text draw event of the tastudio listview"
+			"called during the text draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)"
 		)]
 		public void OnQueryItemText(LuaFunction luaf)
 		{
@@ -256,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"onqueryitemicon",
-			"called during the icon draw event of the tastudio listview"
+			"called during the icon draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)"
 		)]
 		public void OnQueryItemIcon(LuaFunction luaf)
 		{
@@ -295,6 +295,65 @@ namespace BizHawk.Client.EmuHawk
 				{
 					luaf.Call(index);
 				};
+			}
+		}
+
+		[LuaMethodAttributes(
+			"getselection",
+			"gets the currently selected frames"
+		)]
+		public LuaTable GetSelection()
+		{
+			LuaTable table = Lua.NewTable();
+
+			if (Engaged())
+			{
+				var selection = Tastudio.GetSelection();
+
+				foreach (var row in selection)
+				{
+					table[row] = row;
+				}
+			}
+
+			return table;
+		}
+
+		[LuaMethodAttributes(
+			"insertframes",
+			"inserts the given number of blank frames at the given insertion frame"
+		)]
+		public void InsertNumFrames(int insertionFrame, int numberOfFrames)
+		{
+			if (Engaged())
+			{
+				if (insertionFrame < Tastudio.CurrentTasMovie.InputLogLength)
+				{
+					Tastudio.InsertNumFrames(insertionFrame, numberOfFrames);
+				}
+				else
+				{
+					Log(insertionFrame.ToString() + " is out of range");
+				}
+			}
+		}
+
+		[LuaMethodAttributes(
+			"deleteframes",
+			"deletes the given number of blank frames beginning at the given frame"
+		)]
+		public void DeleteFrames(int beginningFrame, int numberOfFrames)
+		{
+			if (Engaged())
+			{
+				if (beginningFrame < Tastudio.CurrentTasMovie.InputLogLength)
+				{
+					Tastudio.DeleteFrames(beginningFrame, numberOfFrames);
+				}
+				else
+				{
+					Log(beginningFrame.ToString() + " is out of range");
+				}
 			}
 		}
 	}

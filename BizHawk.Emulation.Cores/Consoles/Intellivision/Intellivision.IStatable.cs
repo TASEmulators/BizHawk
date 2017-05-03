@@ -3,15 +3,11 @@
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
-
 namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public partial class Intellivision : IStatable
 	{
-		public bool BinarySaveStatesPreferred
-		{
-			get { return true; }
-		}
+		public bool BinarySaveStatesPreferred => true;
 
 		public void SaveStateText(TextWriter writer)
 		{
@@ -37,8 +33,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		public byte[] SaveStateBinary()
 		{
-			MemoryStream ms = new MemoryStream();
-			BinaryWriter bw = new BinaryWriter(ms);
+			var ms = new MemoryStream();
+			var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
 			return ms.ToArray();
@@ -50,21 +46,21 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			ser.BeginSection("Intellivision");
 			ser.Sync("version", ref version);
 			ser.Sync("Frame", ref _frame);
-			ser.Sync("stic_row", ref stic_row);
+			ser.Sync("stic_row", ref _sticRow);
 
 			ser.Sync("ScratchpadRam", ref ScratchpadRam, false);
 			ser.Sync("SystemRam", ref SystemRam, false);
 			ser.Sync("ExecutiveRom", ref ExecutiveRom, false);
 			ser.Sync("GraphicsRom", ref GraphicsRom, false);
 			ser.Sync("GraphicsRam", ref GraphicsRam, false);
-			ser.Sync("islag", ref islag);
-			ser.Sync("lagcount", ref lagcount);
+			ser.Sync("islag", ref _islag);
+			ser.Sync("lagcount", ref _lagcount);
 
 			_cpu.SyncState(ser);
 			_stic.SyncState(ser);
 			_psg.SyncState(ser);
 			_cart.SyncState(ser);
-			ControllerDeck.SyncState(ser);
+			_controllerDeck.SyncState(ser);
 
 			ser.EndSection();
 		}

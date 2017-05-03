@@ -29,14 +29,14 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		private IMemoryDomains _memoryDomains { get; set; }
 
-		private bool NESAvailable { get { return _neshawk != null || _quicknes != null; } }
+		private bool NESAvailable => _neshawk != null || _quicknes != null;
 
-		private bool HasMemoryDOmains {  get { return _memoryDomains != null; } }
+		private bool HasMemoryDOmains => _memoryDomains != null;
 
 		public NesLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
-		public override string Name { get { return "nes"; } }
+		public override string Name => "nes";
 
 		[LuaMethodAttributes(
 			"addgamegenie",
@@ -72,6 +72,7 @@ namespace BizHawk.Client.Common
 			{
 				return _quicknes.GetSettings().NumSprites != 8;
 			}
+
 			if (_neshawk != null)
 			{
 				return _neshawk.GetSettings().AllowMoreThanEightSprites;
@@ -210,7 +211,6 @@ namespace BizHawk.Client.Common
 				var s = _quicknes.GetSettings();
 				s.NumSprites = allow ? 64 : 8;
 				_quicknes.PutSettings(s);
-
 			}
 		}
 

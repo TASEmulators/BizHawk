@@ -4,6 +4,8 @@ struct Multitap : Controller {
   Multitap(bool port);
   void serialize(serializer& s);
 private:
+	bool connected;
+	bool toggleConnectedInput;
   bool latched;
   unsigned counter1;
   unsigned counter2;

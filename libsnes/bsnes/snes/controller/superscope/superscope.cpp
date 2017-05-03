@@ -30,8 +30,6 @@ void SuperScope::enter() {
       //Vcounter wrapped back to zero; update cursor coordinates for start of new frame
       int nx = interface()->inputPoll(port, Input::Device::SuperScope, 0, (unsigned)Input::SuperScopeID::X);
       int ny = interface()->inputPoll(port, Input::Device::SuperScope, 0, (unsigned)Input::SuperScopeID::Y);
-      nx += x;
-      ny += y;
       x = max(-16, min(256 + 16, nx));
       y = max(-16, min(240 + 16, ny));
       offscreen = (x < 0 || y < 0 || x >= 256 || y >= (ppu.overscan() ? 240 : 225));

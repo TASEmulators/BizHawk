@@ -163,6 +163,7 @@
 			// 
 			// MiscButton
 			// 
+			this.MiscButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.MiscButton.Location = new System.Drawing.Point(526, 436);
 			this.MiscButton.Menu = this.clearBtnContextMenu;
 			this.MiscButton.Name = "MiscButton";

@@ -162,8 +162,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				current.GI = ldr.Game;
 				current.CoreType = emu.GetType();
-				emu.Controller = new Controller(emu.ControllerDefinition);
-				current.BoardName = emu.BoardName;
+				var controller = new Controller(emu.ControllerDefinition);
+				current.BoardName = emu.HasBoardInfo() ? emu.AsBoardInfo().BoardName : null;
 				// hack
 				if (emu is Emulation.Cores.Nintendo.GBA.VBANext)
 				{
@@ -179,7 +179,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						int nsamp;
 						short[] samp;
-						emu.FrameAdvance(true, true);
+						emu.FrameAdvance(controller, true, true);
 						
 						// some cores really really really like it if you drain their audio every frame
 						if (emu.HasSoundProvider())

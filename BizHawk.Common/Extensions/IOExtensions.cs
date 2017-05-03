@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -25,7 +24,7 @@ namespace BizHawk.Common.IOExtensions
 		}
 
 		// Read bytes from a BinaryReader and translate them into the UTF-8 string they represent.
-		//WHAT? WHY IS THIS NAMED ASCII BUT USING UTF8
+		// WHAT? WHY IS THIS NAMED ASCII BUT USING UTF8
 		public static string ReadStringFixedAscii(this BinaryReader r, int bytes)
 		{
 			var read = new byte[bytes];
@@ -35,26 +34,30 @@ namespace BizHawk.Common.IOExtensions
 
 		public static string ReadStringUtf8NullTerminated(this BinaryReader br)
 		{
-			MemoryStream ms = new MemoryStream();
-			for (; ; )
+			var ms = new MemoryStream();
+			for (;;)
 			{
 				var b = br.ReadByte();
 				if (b == 0)
-					return System.Text.Encoding.UTF8.GetString(ms.ToArray());
+				{
+					return Encoding.UTF8.GetString(ms.ToArray());
+				}
+
 				ms.WriteByte(b);
 			}
 		}
 
 		public static void CopyTo(this Stream src, Stream dest)
 		{
-			int size = (src.CanSeek) ? Math.Min((int)(src.Length - src.Position), 0x2000) : 0x2000;
+			int size = src.CanSeek ? Math.Min((int)(src.Length - src.Position), 0x2000) : 0x2000;
 			byte[] buffer = new byte[size];
 			int n;
 			do
 			{
 				n = src.Read(buffer, 0, buffer.Length);
 				dest.Write(buffer, 0, n);
-			} while (n != 0);
+			}
+			while (n != 0);
 		}
 
 		public static void CopyTo(this MemoryStream src, Stream dest)

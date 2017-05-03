@@ -9,143 +9,143 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
 	public abstract partial class CartridgeDevice : IDriveLight
 	{
-	    public Func<int> ReadOpenBus; 
+		public Func<int> ReadOpenBus;
 
 		public static CartridgeDevice Load(byte[] crtFile)
 		{
-		    using (var mem = new MemoryStream(crtFile))
-		    {
-                var reader = new BinaryReader(mem);
+			using (var mem = new MemoryStream(crtFile))
+			{
+				var reader = new BinaryReader(mem);
 
-                if (new string(reader.ReadChars(16)) != "C64 CARTRIDGE   ")
-                {
-                    return null;
-                }
+				if (new string(reader.ReadChars(16)) != "C64 CARTRIDGE   ")
+				{
+					return null;
+				}
 
-                var chipAddress = new List<int>();
-                var chipBank = new List<int>();
-                var chipData = new List<int[]>();
-                var chipType = new List<int>();
+				var chipAddress = new List<int>();
+				var chipBank = new List<int>();
+				var chipData = new List<int[]>();
+				var chipType = new List<int>();
 
-                var headerLength = ReadCRTInt(reader);
-                var version = ReadCRTShort(reader);
-                var mapper = ReadCRTShort(reader);
-                var exrom = reader.ReadByte() != 0;
-                var game = reader.ReadByte() != 0;
+				var headerLength = ReadCRTInt(reader);
+				var version = ReadCRTShort(reader);
+				var mapper = ReadCRTShort(reader);
+				var exrom = reader.ReadByte() != 0;
+				var game = reader.ReadByte() != 0;
 
-                // reserved
-                reader.ReadBytes(6);
+				// reserved
+				reader.ReadBytes(6);
 
-                // cartridge name
-                reader.ReadBytes(0x20);
+				// cartridge name
+				reader.ReadBytes(0x20);
 
-                // skip extra header bytes
-                if (headerLength > 0x40)
-                {
-                    reader.ReadBytes(headerLength - 0x40);
-                }
+				// skip extra header bytes
+				if (headerLength > 0x40)
+				{
+					reader.ReadBytes(headerLength - 0x40);
+				}
 
-                // read chips
-                while (reader.PeekChar() >= 0)
-                {
-                    if (new string(reader.ReadChars(4)) != "CHIP")
-                    {
-                        break;
-                    }
+				// read chips
+				while (reader.PeekChar() >= 0)
+				{
+					if (new string(reader.ReadChars(4)) != "CHIP")
+					{
+						break;
+					}
 
-                    var chipLength = ReadCRTInt(reader);
-                    chipType.Add(ReadCRTShort(reader));
-                    chipBank.Add(ReadCRTShort(reader));
-                    chipAddress.Add(ReadCRTShort(reader));
-                    var chipDataLength = ReadCRTShort(reader);
-                    chipData.Add(reader.ReadBytes(chipDataLength).Select(x => (int)x).ToArray());
-                    chipLength -= chipDataLength + 0x10;
-                    if (chipLength > 0)
-                        reader.ReadBytes(chipLength);
-                }
+					var chipLength = ReadCRTInt(reader);
+					chipType.Add(ReadCRTShort(reader));
+					chipBank.Add(ReadCRTShort(reader));
+					chipAddress.Add(ReadCRTShort(reader));
+					var chipDataLength = ReadCRTShort(reader);
+					chipData.Add(reader.ReadBytes(chipDataLength).Select(x => (int)x).ToArray());
+					chipLength -= chipDataLength + 0x10;
+					if (chipLength > 0)
+						reader.ReadBytes(chipLength);
+				}
 
-                if (chipData.Count <= 0)
-                {
-                    return null;
-                }
+				if (chipData.Count <= 0)
+				{
+					return null;
+				}
 
-                CartridgeDevice result;
-                switch (mapper)
-                {
-                    case 0x0000:    // Standard Cartridge
-                        result = new Mapper0000(chipAddress, chipData, game, exrom);
-                        break;
-                    case 0x0001:    // Action Replay (4.2 and up)
-                        result = new Mapper0001(chipAddress, chipBank, chipData);
-                        break;
-                    case 0x0005:    // Ocean
-                        result = new Mapper0005(chipAddress, chipBank, chipData);
-                        break;
-                    case 0x000A:    // Epyx FastLoad
-                        result = new Mapper000A(chipData);
-                        break;
-                    case 0x000B:    // Westermann Learning
-                        result = new Mapper000B(chipAddress, chipData);
-                        break;
-                    case 0x000F:    // C64 Game System / System 3
-                        result = new Mapper000F(chipAddress, chipBank, chipData);
-                        break;
-                    case 0x0011:    // Dinamic
-                        result = new Mapper0011(chipAddress, chipBank, chipData);
-                        break;
-                    case 0x0012:    // Zaxxon / Super Zaxxon
-                        result = new Mapper0012(chipAddress, chipBank, chipData);
-                        break;
-                    case 0x0013:    // Domark
-                        result = new Mapper0013(chipAddress, chipBank, chipData);
-                        break;
-                    case 0x0020:    // EasyFlash
-                        result = new Mapper0020(chipAddress, chipBank, chipData);
-                        break;
-                    case 0x002B:    // Prophet 64
-                        result = new Mapper002B(chipAddress, chipBank, chipData);
-                        break;
-                    default:
-                        throw new Exception("This cartridge file uses an unrecognized mapper: " + mapper);
-                }
-                result.HardReset();
+				CartridgeDevice result;
+				switch (mapper)
+				{
+					case 0x0000:    // Standard Cartridge
+						result = new Mapper0000(chipAddress, chipData, game, exrom);
+						break;
+					case 0x0001:    // Action Replay (4.2 and up)
+						result = new Mapper0001(chipAddress, chipBank, chipData);
+						break;
+					case 0x0005:    // Ocean
+						result = new Mapper0005(chipAddress, chipBank, chipData);
+						break;
+					case 0x000A:    // Epyx FastLoad
+						result = new Mapper000A(chipData);
+						break;
+					case 0x000B:    // Westermann Learning
+						result = new Mapper000B(chipAddress, chipData);
+						break;
+					case 0x000F:    // C64 Game System / System 3
+						result = new Mapper000F(chipAddress, chipBank, chipData);
+						break;
+					case 0x0011:    // Dinamic
+						result = new Mapper0011(chipAddress, chipBank, chipData);
+						break;
+					case 0x0012:    // Zaxxon / Super Zaxxon
+						result = new Mapper0012(chipAddress, chipBank, chipData);
+						break;
+					case 0x0013:    // Domark
+						result = new Mapper0013(chipAddress, chipBank, chipData);
+						break;
+					case 0x0020:    // EasyFlash
+						result = new Mapper0020(chipAddress, chipBank, chipData);
+						break;
+					case 0x002B:    // Prophet 64
+						result = new Mapper002B(chipAddress, chipBank, chipData);
+						break;
+					default:
+						throw new Exception("This cartridge file uses an unrecognized mapper: " + mapper);
+				}
+				result.HardReset();
 
-                return result;
-            }
-        }
+				return result;
+			}
+		}
 
 		private static int ReadCRTShort(BinaryReader reader)
 		{
-		    return (reader.ReadByte() << 8) |
-                reader.ReadByte();
+			return (reader.ReadByte() << 8) |
+				reader.ReadByte();
 		}
 
 		private static int ReadCRTInt(BinaryReader reader)
 		{
 			return (reader.ReadByte() << 24) |
-                (reader.ReadByte() << 16) |
-                (reader.ReadByte() << 8) |
-                reader.ReadByte();
+				(reader.ReadByte() << 16) |
+				(reader.ReadByte() << 8) |
+				reader.ReadByte();
 		}
 
-        [SaveState.SaveWithName("ExRom")]
+		[SaveState.SaveWithName("ExRom")]
 		protected bool pinExRom;
-        [SaveState.SaveWithName("Game")]
-        protected bool pinGame;
-        [SaveState.SaveWithName("IRQ")]
-        protected bool pinIRQ;
-        [SaveState.SaveWithName("NMI")]
-        protected bool pinNMI;
-        [SaveState.SaveWithName("Reset")]
-        protected bool pinReset;
-        [SaveState.DoNotSave]
-        protected bool validCartridge;
+		[SaveState.SaveWithName("Game")]
+		protected bool pinGame;
+		[SaveState.SaveWithName("IRQ")]
+		protected bool pinIRQ;
+		[SaveState.SaveWithName("NMI")]
+		protected bool pinNMI;
+		[SaveState.SaveWithName("Reset")]
+		protected bool pinReset;
+		[SaveState.DoNotSave]
+		protected bool validCartridge;
 
 		public virtual void ExecutePhase()
 		{
 		}
 
-        [SaveState.DoNotSave]
+		[SaveState.DoNotSave]
 		public bool ExRom
 		{
 			get
@@ -154,8 +154,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-        [SaveState.DoNotSave]
-        public bool Game
+		[SaveState.DoNotSave]
+		public bool Game
 		{
 			get
 			{
@@ -170,8 +170,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			pinReset = true;
 		}
 
-        [SaveState.DoNotSave]
-        public bool IRQ
+		[SaveState.DoNotSave]
+		public bool IRQ
 		{
 			get
 			{
@@ -179,8 +179,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-        [SaveState.DoNotSave]
-        public bool NMI
+		[SaveState.DoNotSave]
+		public bool NMI
 		{
 			get
 			{
@@ -244,8 +244,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			return ReadOpenBus();
 		}
 
-        [SaveState.DoNotSave]
-        public bool Reset
+		[SaveState.DoNotSave]
+		public bool Reset
 		{
 			get
 			{
@@ -258,8 +258,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			SaveState.SyncObject(ser, this);
 		}
 
-        [SaveState.DoNotSave]
-        public bool Valid
+		[SaveState.DoNotSave]
+		public bool Valid
 		{
 			get
 			{
@@ -283,7 +283,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 		}
 
-	    public bool DriveLightEnabled { get; protected set; }
-	    public bool DriveLightOn { get; protected set; }
+		public bool DriveLightEnabled { get; protected set; }
+		public bool DriveLightOn { get; protected set; }
 	}
 }

@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(194, 90),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "Up",
 						DisplayName = "",
@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(14, 12),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "Down",
 						DisplayName = "",
@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(14, 56),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "Left",
 						DisplayName = "",
@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(2, 34),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "Right",
 						DisplayName = "",
@@ -54,35 +54,35 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(24, 34),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "B",
 						DisplayName = "B",
 						Location = new Point(130, 62),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "A",
 						DisplayName = "A",
 						Location = new Point(154, 62),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "Option 1",
 						DisplayName = "1",
 						Location = new Point(100, 12),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "Option 2",
 						DisplayName = "2",
 						Location = new Point(100, 62),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "Pause",
 						DisplayName = "Pause",

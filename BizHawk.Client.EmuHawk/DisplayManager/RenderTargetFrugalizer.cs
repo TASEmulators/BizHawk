@@ -1,10 +1,6 @@
 using System;
 using System.Collections.Generic;
 
-using BizHawk.Common;
-using BizHawk.Emulation.Common;
-using BizHawk.Client.Common;
-
 using BizHawk.Bizware.BizwareGL;
 
 namespace BizHawk.Client.EmuHawk
@@ -13,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 	/// Recycles a pair of temporary render targets, as long as the dimensions match.
 	/// When the dimensions dont match, a new one will be allocated
 	/// </summary>
-	class RenderTargetFrugalizer : IDisposable
+	public class RenderTargetFrugalizer : IDisposable
 	{
 		public RenderTargetFrugalizer(IGL gl)
 		{

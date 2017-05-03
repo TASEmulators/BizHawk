@@ -1,17 +1,20 @@
 ﻿namespace BizHawk.Emulation.Common
 {
-	public enum SyncSoundMode { Sync, Async };
+	public enum SyncSoundMode
+	{
+		Sync, Async
+	}
 
 	/// <summary>
 	/// This service provides the ability to output sound from the client,
-	/// If available the client will provide sound ouput
+	/// If available the client will provide sound output
 	/// If unavailable the client will fallback to a default sound implementation
 	/// that generates empty samples (silence)
 	/// </summary>
 	public interface ISoundProvider : IEmulatorService
 	{
 		/// <summary>
-		/// Returns true if a core can provide Async sound
+		/// Gets a value indicating whether a core can provide Async sound
 		/// </summary>
 		bool CanProvideAsync { get; }
 
@@ -25,21 +28,20 @@
 		void SetSyncMode(SyncSoundMode mode);
 
 		/// <summary>
-		/// Reports which mode the sound provider is currently in
+		/// Gets which mode the sound provider is currently in
 		/// </summary>
 		SyncSoundMode SyncMode { get; }
 
 		/// <summary>
-		/// Provides samples in syncmode
+		/// Provides samples in sync mode
 		/// If the core is not in sync mode, this should throw an InvalidOperationException
 		/// </summary>
 		void GetSamplesSync(out short[] samples, out int nsamp);
 
 		/// <summary>
 		/// Provides samples in async mode
-		/// If the core is not in async mode, this shoudl throw an InvalidOperationException
+		/// If the core is not in async mode, this should throw an InvalidOperationException
 		/// </summary>
-		/// <param name="samples"></param>
 		void GetSamplesAsync(short[] samples);
 
 		/// <summary>

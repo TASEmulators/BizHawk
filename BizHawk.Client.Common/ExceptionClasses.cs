@@ -6,7 +6,6 @@ namespace BizHawk.Client.Common
 	{
 		public MoviePlatformMismatchException(string message) : base(message)
 		{
-
 		}
 	}
 }

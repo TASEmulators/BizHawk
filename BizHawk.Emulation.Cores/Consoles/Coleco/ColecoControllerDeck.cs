@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 
 using BizHawk.Common;
@@ -24,7 +23,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 
 			Port1 = (IPort)Activator.CreateInstance(ValidControllerTypes[controller1Name], 1);
-			Port2 = (IPort)Activator.CreateInstance(ValidControllerTypes[controller2Name], 2); ;
+			Port2 = (IPort)Activator.CreateInstance(ValidControllerTypes[controller2Name], 2);
 
 			Definition = new ControllerDefinition
 			{
@@ -41,24 +40,30 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			Definition.FloatRanges.AddRange(Port2.Definition.FloatRanges);
 		}
 
-		public int wheel1;
-		public int wheel2;
+		private int wheel1;
+		private int wheel2;
 
 		public byte ReadPort1(IController c, bool left_mode, bool update_wheel)
 		{
 			if (update_wheel)
+			{
 				wheel1 = Port1.Update_Wheel(c, wheel1);
+			}
+
 			return Port1.Read(c, left_mode, wheel1);
 		}
 
 		public byte ReadPort2(IController c, bool left_mode, bool update_wheel)
 		{
 			if (update_wheel)
+			{
 				wheel2 = Port2.Update_Wheel(c, wheel2);
+			}
+
 			return Port2.Read(c, left_mode, wheel2);
 		}
 
-		public ControllerDefinition Definition { get; private set; }
+		public ControllerDefinition Definition { get; }
 
 		public void SyncState(Serializer ser)
 		{
@@ -95,10 +100,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		public static string DefaultControllerName
-		{
-			get { return typeof(StandardController).DisplayName(); }
-		}
+		public static string DefaultControllerName => typeof(StandardController).DisplayName();
 	}
 
 }

@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 	// TODO we can adjust this to have Think take the number of cycles and not require
 	// a reference to Cpu.TotalExecutedCycles
 	// which incidentally would allow us to put it back to an int from a long if we wanted to
-
 	public sealed class ScsiCDBus
 	{
 		const int STATUS_GOOD = 0;
@@ -40,6 +39,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				bsy = value;
 			}
 		}
+
 		public bool SEL
 		{
 			get { return sel; }
@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				sel = value;
 			}
 		}
+
 		public bool CD // CONTROL = true, DATA = false
 		{
 			get { return cd; }
@@ -58,6 +59,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				cd = value;
 			}
 		}
+
 		public bool IO // INPUT = true, OUTPUT = false
 		{
 			get { return io; }
@@ -67,6 +69,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				io = value;
 			}
 		}
+
 		public bool MSG
 		{
 			get { return msg; }
@@ -76,6 +79,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				msg = value;
 			}
 		}
+
 		public bool REQ
 		{
 			get { return req; }
@@ -85,6 +89,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				req = value;
 			}
 		}
+
 		public bool ACK
 		{
 			get { return ack; }
@@ -94,6 +99,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				ack = value;
 			}
 		}
+
 		public bool ATN
 		{
 			get { return atn; }
@@ -103,6 +109,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				atn = value;
 			}
 		}
+
 		public bool RST
 		{
 			get { return rst; }
@@ -112,6 +119,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				rst = value;
 			}
 		}
+
 		public byte DataBits;
 
 		const byte BusPhase_BusFree = 0;
@@ -143,12 +151,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		// ******** Resources ********
 
-		PCEngine pce;
+		private PCEngine pce;
 		public Disc disc;
-		DiscSectorReader DiscSectorReader;
-		SubchannelQ subchannelQ;
-		int audioStartLBA;
-		int audioEndLBA;
+		private DiscSectorReader DiscSectorReader;
+		private SubchannelQ subchannelQ;
+		private int audioStartLBA;
+		private int audioEndLBA;
 
 		public ScsiCDBus(PCEngine pce, Disc disc)
 		{
@@ -173,7 +181,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				if (DataIn.Count == 0)
 				{
 					// read in a sector and shove it in the queue
-					DiscSystem.DiscSectorReader dsr = new DiscSectorReader(disc); //TODO - cache reader
+					DiscSystem.DiscSectorReader dsr = new DiscSectorReader(disc); // TODO - cache reader
 					dsr.ReadLBA_2048(CurrentReadingSector, DataIn.GetBuffer(), 0);
 					DataIn.SignalBufferFilled(2048);
 					CurrentReadingSector++;
@@ -187,15 +195,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					// but lets get some basic functionality before we go crazy.
 					//  Idunno, maybe they do come in a sector at a time.
 
-					//note to vecna: maybe not at the sector level, but at a level > 1 sample and <= 1 sector, samples come out in blocks
-					//due to the way they are jumbled up (seriously, like put into a blender) for error correction purposes. 
-					//we may as well assume that the cd audio decoding magic works at the level of one sector, but it isnt one sample.
+					// note to vecna: maybe not at the sector level, but at a level > 1 sample and <= 1 sector, samples come out in blocks
+					// due to the way they are jumbled up (seriously, like put into a blender) for error correction purposes. 
+					// we may as well assume that the cd audio decoding magic works at the level of one sector, but it isnt one sample.
 
 					if (SectorsLeftToRead == 0)
 					{
 						DataReadInProgress = false;
 						DataTransferWasDone = true;
 					}
+
 					SetPhase(BusPhase_DataIn);
 				}
 			}
@@ -226,7 +235,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			} while (signalsChanged || busPhaseChanged);
 		}
 
-		void ResetDevice()
+		private void ResetDevice()
 		{
 			CD = false;
 			IO = false;
@@ -243,7 +252,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			pce.CDAudio.Stop();
 		}
 
-		void ThinkCommandPhase()
+		private void ThinkCommandPhase()
 		{
 			if (REQ && ACK)
 			{
@@ -266,7 +275,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		void ThinkDataInPhase()
+		private void ThinkDataInPhase()
 		{
 			if (REQ && ACK)
 			{
@@ -295,13 +304,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		void ThinkDataOutPhase()
+		private void ThinkDataOutPhase()
 		{
 			Console.WriteLine("*********** DATA OUT PHASE, DOES THIS HAPPEN? ****************");
 			SetPhase(BusPhase_BusFree);
 		}
 
-		void ThinkMessageInPhase()
+		private void ThinkMessageInPhase()
 		{
 			if (REQ && ACK)
 			{
@@ -316,19 +325,20 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		void ThinkMessageOutPhase()
+		private void ThinkMessageOutPhase()
 		{
 			Console.WriteLine("******* IN MESSAGE OUT PHASE. DOES THIS EVER HAPPEN? ********");
 			SetPhase(BusPhase_BusFree);
 		}
 
-		void ThinkStatusPhase()
+		private void ThinkStatusPhase()
 		{
 			if (REQ && ACK)
 			{
 				REQ = false;
 				StatusCompleted = true;
 			}
+
 			if (!REQ && !ACK && StatusCompleted)
 			{
 				StatusCompleted = false;
@@ -338,7 +348,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		}
 
 		// returns true if command completed, false if more data bytes needed
-		bool CheckCommandBuffer()
+		private bool CheckCommandBuffer()
 		{
 			switch (CommandBuffer[0])
 			{
@@ -385,7 +395,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			return false;
 		}
 
-		void CommandRead()
+		private void CommandRead()
 		{
 			int sector = (CommandBuffer[1] & 0x1f) << 16;
 			sector |= CommandBuffer[2] << 8;
@@ -403,7 +413,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			pce.CDAudio.Stop();
 		}
 
-		void CommandAudioStartPos()
+		private void CommandAudioStartPos()
 		{
 			switch (CommandBuffer[9] & 0xC0)
 			{
@@ -438,7 +448,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			pce.IntDataTransferComplete = true;
 		}
 
-		void CommandAudioEndPos()
+		private void CommandAudioEndPos()
 		{
 			switch (CommandBuffer[9] & 0xC0)
 			{
@@ -486,13 +496,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			SetStatusMessage(STATUS_GOOD, 0);
 		}
 
-		void CommandPause()
+		private void CommandPause()
 		{
 			pce.CDAudio.Stop();
 			SetStatusMessage(STATUS_GOOD, 0);
 		}
 
-		void CommandReadSubcodeQ()
+		private void CommandReadSubcodeQ()
 		{
 			bool playing = pce.CDAudio.Mode != CDAudio.CDAudioMode_Stopped;
 			int sectorNum = playing ? pce.CDAudio.CurrentSector : CurrentReadingSector;
@@ -507,7 +517,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 
 			DiscSectorReader.ReadLBA_SubQ(sectorNum, out subchannelQ);
-			DataIn.Enqueue(subchannelQ.q_status); //status (control and q-mode; control is useful to know if it's a data or audio track)
+			DataIn.Enqueue(subchannelQ.q_status); // status (control and q-mode; control is useful to know if it's a data or audio track)
 			DataIn.Enqueue(subchannelQ.q_tno.BCDValue);    // track //zero 03-jul-2015 - did I adapt this right>
 			DataIn.Enqueue(subchannelQ.q_index.BCDValue);  // index //zero 03-jul-2015 - did I adapt this right>
 			DataIn.Enqueue(subchannelQ.min.BCDValue);    // M(rel)
@@ -520,7 +530,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			SetPhase(BusPhase_DataIn);
 		}
 
-		void CommandReadTOC()
+		private void CommandReadTOC()
 		{
 			switch (CommandBuffer[1])
 			{
@@ -534,7 +544,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					}
 				case 1: // return total disc length in minutes/seconds/frames
 					{
-						//zero 07-jul-2015 - I may have broken this
+						// zero 07-jul-2015 - I may have broken this
 						int totalLbaLength = disc.Session1.LeadoutLBA;
 
 						byte m, s, f;
@@ -583,7 +593,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		void SetStatusMessage(byte status, byte message)
+		private void SetStatusMessage(byte status, byte message)
 		{
 			MessageValue = message;
 			StatusCompleted = false;
@@ -592,10 +602,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			SetPhase(BusPhase_Status);
 		}
 
-		void SetPhase(byte phase)
+		private void SetPhase(byte phase)
 		{
 			if (Phase == phase)
+			{
 				return;
+			}
 
 			Phase = phase;
 			busPhaseChanged = true;

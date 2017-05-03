@@ -1,3 +1,5 @@
+enum class HangType: unsigned { None, Wait, Stop };
+
 struct flag_t {
   bool n, v, m, x, d, i, z, c;
 
@@ -73,11 +75,14 @@ struct regs_t {
 
   bool irq;       //IRQ pin (0 = low, 1 = trigger)
   bool wai;       //raised during wai, cleared after interrupt triggered
+
   uint8 mdr;      //memory data register
   uint16 vector;  //interrupt vector address
 
+	HangType hang;
+
   regs_t():
-  a(r[0]), x(r[1]), y(r[2]), z(r[3]), s(r[4]), d(r[5]), db(0), e(false), irq(false), wai(false), mdr(0), vector(0) {
+  a(r[0]), x(r[1]), y(r[2]), z(r[3]), s(r[4]), d(r[5]), db(0), e(false), irq(false), wai(false), mdr(0), vector(0), hang(HangType::None) {
     z = 0;
   }
 };

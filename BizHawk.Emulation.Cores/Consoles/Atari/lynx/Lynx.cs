@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.IO;
-using System.Runtime.InteropServices;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
@@ -15,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight), typeof(IRegionable))]
 	public partial class Lynx : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable
 	{
-		IntPtr Core;
+		private IntPtr Core;
 
 		[CoreConstructor("Lynx")]
 		public Lynx(byte[] file, GameInfo game, CoreComm comm)
@@ -25,7 +20,9 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("Lynx", "Boot", true, "Boot rom is required");
 			if (bios.Length != 512)
+			{
 				throw new MissingFirmwareException("Lynx Bootrom must be 512 bytes!");
+			}
 
 			int pagesize0 = 0;
 			int pagesize1 = 0;
@@ -45,7 +42,9 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				ms.Position = 6;
 				string bs93 = Encoding.ASCII.GetString(br.ReadBytes(6));
 				if (bs93 == "BS93")
+				{
 					throw new InvalidOperationException("Unsupported BS93 Lynx ram image");
+				}
 
 				if (header == "LYNX" && (ver & 255) == 1)
 				{
@@ -63,7 +62,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 					Console.WriteLine("No Handy-Lynx header found!  Assuming raw rom image.");
 					realfile = file;
 				}
-
 			}
 
 			if (game.OptionPresent("pagesize0"))
@@ -99,20 +97,20 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				CoreComm.VsyncNum = 16000000; // 16.00 mhz refclock
 				CoreComm.VsyncDen = 16 * 105 * 159;
 
-				savebuff = new byte[LibLynx.BinStateSize(Core)];
-				savebuff2 = new byte[savebuff.Length + 13];
+				_savebuff = new byte[LibLynx.BinStateSize(Core)];
+				_savebuff2 = new byte[_savebuff.Length + 13];
 
 				int rot = game.OptionPresent("rotate") ? int.Parse(game.OptionValue("rotate")) : 0;
 				LibLynx.SetRotation(Core, rot);
 				if ((rot & 1) != 0)
 				{
-					BufferWidth = HEIGHT;
-					BufferHeight = WIDTH;
+					BufferWidth = Height;
+					BufferHeight = Width;
 				}
 				else
 				{
-					BufferWidth = WIDTH;
-					BufferHeight = HEIGHT;
+					BufferWidth = Width;
+					BufferHeight = Height;
 				}
 				SetupMemoryDomains();
 			}
@@ -123,28 +121,30 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			}
 		}
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public void FrameAdvance(bool render, bool rendersound = true)
+		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
-			if (Controller.IsPressed("Power"))
+			if (controller.IsPressed("Power"))
 			{
 				LibLynx.Reset(Core);
 			}
 
-			int samples = soundbuff.Length;
-			IsLagFrame = LibLynx.Advance(Core, GetButtons(), videobuff, soundbuff, ref samples);
-			numsamp = samples / 2; // sound provider wants number of sample pairs
+			int samples = _soundbuff.Length;
+			IsLagFrame = LibLynx.Advance(Core, GetButtons(controller), _videobuff, _soundbuff, ref samples);
+			_numsamp = samples / 2; // sound provider wants number of sample pairs
 			if (IsLagFrame)
+			{
 				LagCount++;
+			}
 		}
 
 		public int Frame { get; private set; }
 
-		public string SystemId { get { return "Lynx"; } }
+		public string SystemId => "Lynx";
 
-		public bool DeterministicEmulation { get { return true; } }
+		public bool DeterministicEmulation => true;
 
 		public void ResetCounters()
 		{
@@ -153,9 +153,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			IsLagFrame = false;
 		}
 
-		public string BoardName { get { return null; } }
-
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 
 		public void Dispose()
 		{
@@ -175,20 +173,19 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 		};
 
 		public ControllerDefinition ControllerDefinition { get { return LynxTroller; } }
-		public IController Controller { get; set; }
 
-		LibLynx.Buttons GetButtons()
+		private LibLynx.Buttons GetButtons(IController controller)
 		{
 			LibLynx.Buttons ret = 0;
-			if (Controller.IsPressed("A")) ret |= LibLynx.Buttons.A;
-			if (Controller.IsPressed("B")) ret |= LibLynx.Buttons.B;
-			if (Controller.IsPressed("Up")) ret |= LibLynx.Buttons.Up;
-			if (Controller.IsPressed("Down")) ret |= LibLynx.Buttons.Down;
-			if (Controller.IsPressed("Left")) ret |= LibLynx.Buttons.Left;
-			if (Controller.IsPressed("Right")) ret |= LibLynx.Buttons.Right;
-			if (Controller.IsPressed("Pause")) ret |= LibLynx.Buttons.Pause;
-			if (Controller.IsPressed("Option 1")) ret |= LibLynx.Buttons.Option_1;
-			if (Controller.IsPressed("Option 2")) ret |= LibLynx.Buttons.Option_2;
+			if (controller.IsPressed("A")) ret |= LibLynx.Buttons.A;
+			if (controller.IsPressed("B")) ret |= LibLynx.Buttons.B;
+			if (controller.IsPressed("Up")) ret |= LibLynx.Buttons.Up;
+			if (controller.IsPressed("Down")) ret |= LibLynx.Buttons.Down;
+			if (controller.IsPressed("Left")) ret |= LibLynx.Buttons.Left;
+			if (controller.IsPressed("Right")) ret |= LibLynx.Buttons.Right;
+			if (controller.IsPressed("Pause")) ret |= LibLynx.Buttons.Pause;
+			if (controller.IsPressed("Option 1")) ret |= LibLynx.Buttons.Option_1;
+			if (controller.IsPressed("Option 2")) ret |= LibLynx.Buttons.Option_2;
 
 			return ret;
 		}

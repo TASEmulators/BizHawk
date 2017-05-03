@@ -66,7 +66,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			// 2 maskrom: (POT + POT) size rom, high address lines ignored, one chip enabled in first 512K,
 			//   second chip enabled in second 512K
 			// this means that for the one case of 384K, there's not a mirror of everything contiguous starting from org 0
-
 			if (RomLength == 640 * 1024) // 384K has been preprocessed up to 640K, including some dummy areas
 			{
 				for (int i = 0x20; i < 0x40; i++)

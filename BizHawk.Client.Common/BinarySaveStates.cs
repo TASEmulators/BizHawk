@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 
 using ICSharpCode.SharpZipLib.Zip;
-//using Ionic.Zip;
 
 namespace BizHawk.Client.Common
 {
@@ -232,13 +231,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[Obsolete]
-		public bool HasLump(BinaryStateLump lump)
-		{
-			ZipEntry e;
-			return _entriesbyname.TryGetValue(lump.ReadName, out e);
-		}
-
 		/// <summary>
 		/// Gets a lump
 		/// </summary>
@@ -297,7 +289,7 @@ namespace BizHawk.Client.Common
 		public void GetCoreState(Action<BinaryReader, long> callbackBinary, Action<TextReader> callbackText)
 		{
 			if (!GetLump(BinaryStateLump.Corestate, false, callbackBinary)
-			    && !GetLump(BinaryStateLump.CorestateText, false, callbackText))
+				&& !GetLump(BinaryStateLump.CorestateText, false, callbackText))
 			{
 				throw new Exception("Couldn't find Binary or Text savestate");
 			}

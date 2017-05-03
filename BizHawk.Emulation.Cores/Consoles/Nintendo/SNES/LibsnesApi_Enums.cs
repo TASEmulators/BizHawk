@@ -73,6 +73,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eStatus_BRK
 		};
 
+		public enum SNES_INPUT_PORT : int
+		{
+			None,
+			Joypad,
+			Multitap,
+			Mouse,
+			SuperScope,
+			Justifier,
+			Justifiers,
+			USART
+		}
+
 		public enum SNES_REG : int
 		{
 			//$2105

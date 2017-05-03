@@ -164,7 +164,7 @@ namespace BizHawk.Client.EmuHawk
 		public void Restart()
 		{
 			_rom = GetRomBytes();
-			_romDomain = MemoryDomain.FromByteArray("File on Disk", MemoryDomain.Endian.Little, _rom);
+			_romDomain = new MemoryDomainByteArray("File on Disk", MemoryDomain.Endian.Little, _rom, true, 1);
 
 			if (_domain.Name == _romDomain.Name)
 			{
@@ -756,7 +756,7 @@ namespace BizHawk.Client.EmuHawk
 				default:
 				case 1:										
 					return Watch.GenerateWatch(_domain, address, WatchSize.Byte, Client.Common.DisplayType.Hex, BigEndian, string.Empty);
-                case 2:
+				case 2:
 					return Watch.GenerateWatch(_domain, address, WatchSize.Word, Client.Common.DisplayType.Hex, BigEndian, string.Empty);
 				case 4:
 					return Watch.GenerateWatch(_domain, address, WatchSize.DWord, Client.Common.DisplayType.Hex, BigEndian, string.Empty);

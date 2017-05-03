@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using BizHawk.Emulation.Common;
-using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
-	partial class AppleII : ISettable<AppleII.Settings, object>
+	public partial class AppleII : ISettable<AppleII.Settings, object>
 	{
 		private Settings _settings;
 
@@ -23,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			}
 		}
 
-		public AppleII.Settings GetSettings()
+		public Settings GetSettings()
 		{
 			return _settings.Clone();
 		}
@@ -33,12 +29,12 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			return null;
 		}
 
-		public bool PutSettings(AppleII.Settings o)
+		public bool PutSettings(Settings o)
 		{
 			_settings = o;
 			_machine.Video.IsMonochrome = _settings.Monochrome;
 
-			setCallbacks();
+			SetCallbacks();
 
 			return false;
 		}

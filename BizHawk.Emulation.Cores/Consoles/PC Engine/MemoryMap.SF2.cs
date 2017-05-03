@@ -6,13 +6,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 	{
 		// Street Fighter 2 was a 20-megabit HuCard. The PCE has a maximum 8-megabit addressable ROM space.
 		// Therefore SF2 had a special mapper to make this work.
-
-		byte SF2MapperLatch;
+		private byte SF2MapperLatch;
 
 		// when true, every mapper register write is propogated to the vtable that the CDL uses
-		bool SF2UpdateCDLMappings = false;
+		private bool SF2UpdateCDLMappings = false;
 
-		byte ReadMemorySF2(int addr)
+		private byte ReadMemorySF2(int addr)
 		{
 			if (addr < 0x7FFFF) // read ROM
 				return RomData[addr];
@@ -40,7 +39,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			return 0xFF;
 		}
 
-		void WriteMemorySF2(int addr, byte value)
+		private void WriteMemorySF2(int addr, byte value)
 		{
 			if ((addr & 0x1FFC) == 0x1FF0)
 			{

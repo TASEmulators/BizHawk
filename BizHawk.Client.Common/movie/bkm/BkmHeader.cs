@@ -17,8 +17,8 @@ namespace BizHawk.Client.Common
 			this[HeaderKeys.RERECORDS] = "0";
 		}
 
-		public List<string> Comments { get; private set; }
-		public SubtitleList Subtitles { get; private set; }
+		public List<string> Comments { get; }
+		public SubtitleList Subtitles { get; }
 
 		public string SavestateBinaryBase64Blob
 		{

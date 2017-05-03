@@ -19,20 +19,25 @@ void SA1::enter() {
       scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
     }
 
-    if(mmio.sa1_rdyb || mmio.sa1_resb) {
-      //SA-1 co-processor is asleep
-      tick();
-      synchronize_cpu();
-      continue;
-    }
+		if (regs.hang == HangType::Wait) this->op_wai();
+		else if (regs.hang == HangType::Stop) this->op_stp();
+		else
+		{
+			if(mmio.sa1_rdyb || mmio.sa1_resb) {
+				//SA-1 co-processor is asleep
+				tick();
+				synchronize_cpu();
+				continue;
+			}
 
-    if(status.interrupt_pending) {
-      status.interrupt_pending = false;
-      op_irq();
-      continue;
-    }
+			if(status.interrupt_pending) {
+				status.interrupt_pending = false;
+				op_irq();
+				continue;
+			}
 
-    (this->*opcode_table[op_readpc()])();
+			(this->*opcode_table[op_readpc()])();
+		}
   }
 }
 

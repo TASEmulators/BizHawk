@@ -113,7 +113,6 @@ namespace BizHawk.Client.EmuHawk
 				ModeChangedCallback = SetMainformMovieInfo
 			};
 
-			new AutoResetEvent(false);
 			Icon = Properties.Resources.logo;
 			InitializeComponent();
 			Global.Game = GameInfo.NullInstance;
@@ -1015,7 +1014,7 @@ namespace BizHawk.Client.EmuHawk
 		public void TakeScreenshot(string path)
 		{
 			var fi = new FileInfo(path);
-			if (fi.Directory != null && fi.Directory.Exists == false)
+			if (fi.Directory != null && !fi.Directory.Exists)
 			{
 				fi.Directory.Create();
 			}
@@ -1063,7 +1062,7 @@ namespace BizHawk.Client.EmuHawk
 				PresentationPanel.Resized = true;
 
 				// Is window off the screen at this size?
-				if (area.Contains(Bounds) == false)
+				if (!area.Contains(Bounds))
 				{
 					if (Bounds.Right > area.Right) // Window is off the right edge
 					{
@@ -1117,7 +1116,7 @@ namespace BizHawk.Client.EmuHawk
 					return;
 			}
 
-			if (_inFullscreen == false)
+			if (!_inFullscreen)
 			{
 				SuspendLayout();
 #if WINDOWS
@@ -1409,7 +1408,7 @@ namespace BizHawk.Client.EmuHawk
 		private long _frameAdvanceTimestamp;
 		private long _frameRewindTimestamp;
 		private bool _frameRewindWasPaused;
-		private bool _runloopFrameadvance;
+		private bool _runloopFrameAdvance;
 		private bool _lastFastForwardingOrRewinding;
 		private bool _inResizeLoop;
 
@@ -1456,49 +1455,47 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetWindowText()
 		{
-			string str = string.Empty;
+			string str = "";
 
 			if (_inResizeLoop)
 			{
 				var size = PresentationPanel.NativeSize;
 				float AR = (float)size.Width / size.Height;
-				str = str + string.Format("({0}x{1})={2} - ", size.Width, size.Height, AR);
+				str += $"({size.Width}x{size.Height})={AR} - ";
 			}
 
 			//we need to display FPS somewhere, in this case
 			if (Global.Config.DispSpeedupFeatures == 0)
 			{
-				str = str + string.Format("({0:0} fps) -", _lastFps);
+				str += $"({_lastFps:0} fps) - ";
 			}
 
 			if (!string.IsNullOrEmpty(VersionInfo.CustomBuildString))
+			{
 				str += VersionInfo.CustomBuildString + " ";
-
-			if (Emulator.IsNull())
-			{
-				str = str + "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
 			}
-			else
-			{
-				str = str + Global.SystemInfo.DisplayName;
 
-				if (VersionInfo.DeveloperBuild)
-				{
-					str += " (interim)";
-				}
+			str += Emulator.IsNull() ? "BizHawk" : Global.SystemInfo.DisplayName;
+
+			if (VersionInfo.DeveloperBuild)
+			{
+				str += " (interim)";
+			}
+
+			if (!Emulator.IsNull())
+			{
+				str += " - " + Global.Game.Name;
 
 				if (Global.MovieSession.Movie.IsActive)
 				{
-					str = str + " - " + Global.Game.Name + " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
-				}
-				else
-				{
-					str = str + " - " + Global.Game.Name;
+					str += " - " + Path.GetFileName(Global.MovieSession.Movie.Filename);
 				}
 			}
 
 			if (!Global.Config.DispChrome_CaptionWindowed || _chromeless)
+			{
 				str = "";
+			}
 
 			Text = str;
 		}
@@ -1630,13 +1627,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SaveRam()
+		public void SaveRam()
 		{
 			if (Emulator.HasSaveRam())
 			{
 				var path = PathManager.SaveRamPath(Global.Game);
 				var f = new FileInfo(path);
-				if (f.Directory != null && f.Directory.Exists == false)
+				if (f.Directory != null && !f.Directory.Exists)
 				{
 					f.Directory.Create();
 				}
@@ -1972,7 +1969,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int slot = Global.Config.SaveSlot;
 			string emptypart = _stateSlots.HasSlot(slot) ? "" : " (empty)";
-			string message = string.Format("Slot {0}{1} selected.", slot, emptypart);
+			string message = $"Slot {slot}{emptypart} selected.";
 			GlobalWin.OSD.AddMessage(message);
 		}
 
@@ -2725,8 +2722,8 @@ namespace BizHawk.Client.EmuHawk
 		private void StepRunLoop_Throttle()
 		{
 			SyncThrottle();
-			_throttle.signal_frameAdvance = _runloopFrameadvance;
-			_throttle.signal_continuousframeAdvancing = _runloopFrameProgress;
+			_throttle.signal_frameAdvance = _runloopFrameAdvance;
+			_throttle.signal_continuousFrameAdvancing = _runloopFrameProgress;
 
 			_throttle.Step(true, -1);
 		}
@@ -2760,7 +2757,7 @@ namespace BizHawk.Client.EmuHawk
 		private void StepRunLoop_Core(bool force = false)
 		{
 			var runFrame = false;
-			_runloopFrameadvance = false;
+			_runloopFrameAdvance = false;
 			var currentTimestamp = Stopwatch.GetTimestamp();
 
 			double frameAdvanceTimestampDeltaMs = (double)(currentTimestamp - _frameAdvanceTimestamp) / Stopwatch.Frequency * 1000.0;
@@ -2773,7 +2770,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.ClientControls["Frame Advance"] || PressFrameAdvance || HoldFrameAdvance)
 			{
-				_runloopFrameadvance = true;
+				_runloopFrameAdvance = true;
 				// handle the initial trigger of a frame advance
 				if (_frameAdvanceTimestamp == 0)
 				{
@@ -2809,7 +2806,8 @@ namespace BizHawk.Client.EmuHawk
 				runFrame = true;
 			}
 
-			bool isRewinding = Rewind(ref runFrame, currentTimestamp);
+			bool returnToRecording;
+			bool isRewinding = Rewind(ref runFrame, currentTimestamp, out returnToRecording);
 
 			float atten = 0;
 
@@ -2867,24 +2865,32 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					// Mute if using Frame Advance/Frame Progress
-					if (_runloopFrameadvance && Global.Config.MuteFrameAdvance)
+					if (_runloopFrameAdvance && Global.Config.MuteFrameAdvance)
 					{
 						atten = 0;
 					}
 				}
-				
+
 				Global.MovieSession.HandleMovieOnFrameLoop();
 
 				//why not skip audio if the user doesnt want sound
-				bool renderSound = Global.Config.SoundEnabled && !IsTurboing;
-				renderSound |= (_currAviWriter != null && _currAviWriter.UsesAudio);
+				bool renderSound = (Global.Config.SoundEnabled && !IsTurboing) || (_currAviWriter?.UsesAudio ?? false);
 				if (!renderSound) atten = 0;
 
-				bool render = !_throttle.skipnextframe || (_currAviWriter != null && _currAviWriter.UsesVideo);
-				Emulator.FrameAdvance(render, renderSound);
-
+				bool render = !_throttle.skipNextFrame || (_currAviWriter?.UsesVideo ?? false);
+				Emulator.FrameAdvance(Global.ControllerOutput, render, renderSound);
 
 				Global.MovieSession.HandleMovieAfterFrameLoop();
+
+				if (returnToRecording)
+				{
+					Global.MovieSession.Movie.SwitchToRecord();
+				}
+
+				if (isRewinding && !IsRewindSlave && Global.MovieSession.Movie.IsRecording)
+				{
+					Global.MovieSession.Movie.Truncate(Global.Emulator.Frame);
+				}
 
 				Global.CheatList.Pulse();
 
@@ -2969,7 +2975,7 @@ namespace BizHawk.Client.EmuHawk
 			_framesSinceLastFpsUpdate = 0;
 			_timestampLastFpsUpdate = currentTimestamp;
 
-			var fps_string = string.Format("{0:0} fps", _lastFps);
+			var fps_string = $"{_lastFps:0} fps";
 			if (isRewinding)
 			{
 				fps_string += IsTurboing || isFastForwarding ?
@@ -3048,7 +3054,7 @@ namespace BizHawk.Client.EmuHawk
 			if (aw == null)
 			{
 				GlobalWin.OSD.AddMessage(
-					unattended ? string.Format("Couldn't start video writer \"{0}\"", videowritername) : "A/V capture canceled.");
+					unattended ? $"Couldn't start video writer \"{videowritername}\"" : "A/V capture canceled.");
 
 				return;
 			}
@@ -3549,9 +3555,9 @@ namespace BizHawk.Client.EmuHawk
 							loader.Rom.RomData.HashMD5());
 					}
 
-					if (Emulator.BoardName != null)
+					if (Emulator.HasBoardInfo())
 					{
-						Console.WriteLine("Core reported BoardID: \"{0}\"", Emulator.BoardName);
+						Console.WriteLine("Core reported BoardID: \"{0}\"", Emulator.AsBoardInfo().BoardName);
 					}
 
 					// restarts the lua console if a different rom is loaded.
@@ -3598,7 +3604,6 @@ namespace BizHawk.Client.EmuHawk
 					CurrentlyOpenRomArgs = args;
 
 					Global.Rewinder.Initialize();
-					Global.Rewinder.Capture();
 
 					Global.StickyXORAdapter.ClearStickies();
 					Global.StickyXORAdapter.ClearStickyFloats();
@@ -3733,7 +3738,7 @@ namespace BizHawk.Client.EmuHawk
 
 				GlobalWin.Tools.Restart();
 				RewireSound();
-				Global.Rewinder.Clear();
+				Global.Rewinder.Uninitialize();
 				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
 				HandlePlatformMenus();
 				_stateSlots.Clear();
@@ -3760,16 +3765,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void EnableRewind(bool enabled)
 		{
-			if (enabled)
-			{
-				Global.Rewinder.RewindActive = true;
-				GlobalWin.OSD.AddMessage("Rewind enabled");
-			}
-			else
-			{
-				Global.Rewinder.RewindActive = false;
-				GlobalWin.OSD.AddMessage("Rewind suspended");
-			}
+			Global.Rewinder.SuspendRewind = !enabled;
+			GlobalWin.OSD.AddMessage("Rewind " + (enabled ? "enabled" : "suspended"));
 		}
 
 		public void ClearRewindData()
@@ -3782,21 +3779,22 @@ namespace BizHawk.Client.EmuHawk
 		#region Tool Control API
 
 		// TODO: move me
-		public IControlMainform master { get; private set; }
+		public IControlMainform Master { get; private set; }
+
+		private bool IsSlave => Master != null;
+
+		private bool IsSavestateSlave => IsSlave && Master.WantsToControlSavestates;
+
+		private bool IsRewindSlave => IsSlave && Master.WantsToControlRewind;
 
 		public void RelinquishControl(IControlMainform master)
 		{
-			this.master = master;
-		}
-
-		private bool IsSlave
-		{
-			get { return master != null; }
+			Master = master;
 		}
 
 		public void TakeBackControl()
 		{
-			master = null;
+			Master = null;
 		}
 
 		private int SlotToInt(string slot)
@@ -3811,9 +3809,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (IsSlave && master.WantsToControlSavestates)
+			if (IsSavestateSlave)
 			{
-				master.LoadState();
+				Master.LoadState();
 				return;
 			}
 
@@ -3838,6 +3836,11 @@ namespace BizHawk.Client.EmuHawk
 				UpdateToolsAfter(fromLua);
 				UpdateToolsLoadstate();
 				Global.AutoFireController.ClearStarts();
+
+				if (!IsRewindSlave && Global.MovieSession.Movie.IsActive)
+				{
+					ClearRewindData();
+				}
 
 				if (!supressOSD)
 				{
@@ -3866,14 +3869,14 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (IsSlave && master.WantsToControlSavestates)
+			if (IsSavestateSlave)
 			{
-				master.LoadQuickSave(SlotToInt(quickSlotName));
+				Master.LoadQuickSave(SlotToInt(quickSlotName));
 				return;
 			}
 
 			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
-			if (File.Exists(path) == false)
+			if (!File.Exists(path))
 			{
 				GlobalWin.OSD.AddMessage("Unable to load " + quickSlotName + ".State");
 
@@ -3890,9 +3893,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (IsSlave && master.WantsToControlSavestates)
+			if (IsSavestateSlave)
 			{
-				master.SaveState();
+				Master.SaveState();
 				return;
 			}
 
@@ -3929,16 +3932,16 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (IsSlave && master.WantsToControlSavestates)
+			if (IsSavestateSlave)
 			{
-				master.SaveQuickSave(SlotToInt(quickSlotName));
+				Master.SaveQuickSave(SlotToInt(quickSlotName));
 				return;
 			}
 
 			var path = PathManager.SaveStatePrefix(Global.Game) + "." + quickSlotName + ".State";
 
 			var file = new FileInfo(path);
-			if (file.Directory != null && file.Directory.Exists == false)
+			if (file.Directory != null && !file.Directory.Exists)
 			{
 				file.Directory.Create();
 			}
@@ -3967,16 +3970,16 @@ namespace BizHawk.Client.EmuHawk
 			if (GlobalWin.Tools.IsLoaded<TAStudio>())
 				GlobalWin.Tools.TAStudio.NamedStatePending = true;
 
-			if (IsSlave && master.WantsToControlSavestates)
+			if (IsSavestateSlave)
 			{
-				master.SaveStateAs();
+				Master.SaveStateAs();
 				return;
 			}
 
 			var path = PathManager.GetSaveStatePath(Global.Game);
 
 			var file = new FileInfo(path);
-			if (file.Directory != null && file.Directory.Exists == false)
+			if (file.Directory != null && !file.Directory.Exists)
 			{
 				file.Directory.Create();
 			}
@@ -4005,9 +4008,9 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (IsSlave && master.WantsToControlSavestates)
+			if (IsSavestateSlave)
 			{
-				master.LoadStateAs();
+				Master.LoadStateAs();
 				return;
 			}
 
@@ -4022,7 +4025,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (File.Exists(ofd.FileName) == false)
+			if (!File.Exists(ofd.FileName))
 			{
 				return;
 			}
@@ -4034,9 +4037,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator.HasSavestates())
 			{
-				if (IsSlave && master.WantsToControlSavestates)
+				if (IsSavestateSlave)
 				{
-					master.SelectSlot(slot);
+					Master.SelectSlot(slot);
 					return;
 				}
 
@@ -4050,9 +4053,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator.HasSavestates())
 			{
-				if (IsSlave && master.WantsToControlSavestates)
+				if (IsSavestateSlave)
 				{
-					master.PreviousSlot();
+					Master.PreviousSlot();
 					return;
 				}
 
@@ -4078,9 +4081,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator.HasSavestates())
 			{
-				if (IsSlave && master.WantsToControlSavestates)
+				if (IsSavestateSlave)
 				{
-					master.NextSlot();
+					Master.NextSlot();
 					return;
 				}
 
@@ -4104,9 +4107,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ToggleReadOnly()
 		{
-			if (IsSlave && master.WantsToControlReadOnly)
+			if (IsSlave && Master.WantsToControlReadOnly)
 			{
-				master.ToggleReadOnly();
+				Master.ToggleReadOnly();
 			}
 			else
 			{
@@ -4124,9 +4127,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void StopMovie(bool saveChanges = true)
 		{
-			if (IsSlave && master.WantsToControlStopMovie)
+			if (IsSlave && Master.WantsToControlStopMovie)
 			{
-				master.StopMovie(!saveChanges);
+				Master.StopMovie(!saveChanges);
 			}
 			else
 			{
@@ -4141,12 +4144,11 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "Gameboy Advance Settings");
 		}
 
-
 		private void CaptureRewind(bool suppressCaptureRewind)
 		{
-			if (IsSlave && master.WantsToControlRewind)
+			if (IsRewindSlave)
 			{
-				master.CaptureRewind();
+				Master.CaptureRewind();
 			}
 			else if (!suppressCaptureRewind && Global.Rewinder.RewindActive)
 			{
@@ -4154,11 +4156,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool Rewind(ref bool runFrame, long currentTimestamp)
+		private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
 		{
 			var isRewinding = false;
 
-			if (IsSlave && master.WantsToControlRewind)
+			returnToRecording = false;
+
+			if (IsRewindSlave)
 			{
 				if (Global.ClientControls["Rewind"] || PressRewind)
 				{
@@ -4184,11 +4188,10 @@ namespace BizHawk.Client.EmuHawk
 							if (IsSeeking) isRewinding = false;
 					}
 
-
 					if (isRewinding)
 					{
 						runFrame = true; // TODO: the master should be deciding this!
-						master.Rewind();
+						Master.Rewind();
 					}
 				}
 				else
@@ -4199,8 +4202,7 @@ namespace BizHawk.Client.EmuHawk
 				return isRewinding;
 			}
 
-			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind)
-				&& !Global.MovieSession.Movie.IsRecording) // Rewind isn't "bulletproof" and can desync a recording movie!
+			if (Global.Rewinder.RewindActive && (Global.ClientControls["Rewind"] || PressRewind))
 			{
 				if (EmulatorPaused)
 				{
@@ -4223,6 +4225,12 @@ namespace BizHawk.Client.EmuHawk
 				if (isRewinding)
 				{
 					runFrame = Global.Rewinder.Rewind(1);
+
+					if (runFrame && Global.MovieSession.Movie.IsRecording)
+					{
+						Global.MovieSession.Movie.SwitchToPlay();
+						returnToRecording = true;
+					}
 				}
 			}
 			else
@@ -4260,6 +4268,11 @@ namespace BizHawk.Client.EmuHawk
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
 
+		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
+		{
+			new SNESControllerSettings().ShowDialog();
+		}
+
 		private void CreateMultigameFileMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<MultiDiskBundler>();
@@ -4267,8 +4280,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void coreToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == true;
-			nesHawkToolStripMenuItem.Checked = Global.Config.NES_InQuickNES == false;
+			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES;
+			nesHawkToolStripMenuItem.Checked = !Global.Config.NES_InQuickNES;
 		}
 
 		private void allowGameDBCoreOverridesToolStripMenuItem_Click(object sender, EventArgs e)

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using BizHawk.Emulation.Common;
 
@@ -16,28 +15,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			var s = new LibVBANext.MemoryAreas();
 			var l = MemoryDomain.Endian.Little;
 			LibVBANext.GetMemoryAreas(Core, s);
-			mm.Add(MemoryDomain.FromIntPtr("IWRAM", 32 * 1024, l, s.iwram, true, 4));
-			mm.Add(MemoryDomain.FromIntPtr("EWRAM", 256 * 1024, l, s.ewram, true, 4));
-			mm.Add(MemoryDomain.FromIntPtr("BIOS", 16 * 1024, l, s.bios, false, 4));
-			mm.Add(MemoryDomain.FromIntPtr("PALRAM", 1024, l, s.palram, false, 4));
-			mm.Add(MemoryDomain.FromIntPtr("VRAM", 96 * 1024, l, s.vram, true, 4));
-			mm.Add(MemoryDomain.FromIntPtr("OAM", 1024, l, s.oam, true, 4));
-			mm.Add(MemoryDomain.FromIntPtr("ROM", 32 * 1024 * 1024, l, s.rom, true, 4));
-			mm.Add(MemoryDomain.FromIntPtr("SRAM", s.sram_size, l, s.sram, true, 4));
+
+			mm.Add(new MemoryDomainIntPtr("IWRAM", l, s.iwram, 32 * 1024, true, 4));
+			mm.Add(new MemoryDomainIntPtr("EWRAM", l, s.ewram, 256 * 1024, true, 4));
+			mm.Add(new MemoryDomainIntPtr("BIOS", l, s.bios, 16 * 1024, false, 4));
+			mm.Add(new MemoryDomainIntPtr("PALRAM", l, s.palram, 1024, false, 4));
+			mm.Add(new MemoryDomainIntPtr("VRAM", l, s.vram, 96 * 1024, true, 4));
+			mm.Add(new MemoryDomainIntPtr("OAM", l, s.oam, 1024, true, 4));
+
+			mm.Add(new MemoryDomainIntPtr("ROM", l, s.rom, 32 * 1024 * 1024, true, 4));
+
+			mm.Add(new MemoryDomainIntPtr("SRAM", l, s.sram, s.sram_size, true, 4));
 
 			mm.Add(new MemoryDomainDelegate("System Bus", 0x10000000, l,
 				delegate(long addr)
 				{
 					if (addr < 0 || addr >= 0x10000000)
+					{
 						throw new ArgumentOutOfRangeException();
+					}
+
 					return LibVBANext.SystemBusRead(Core, (int)addr);
 				},
 				delegate(long addr, byte val)
 				{
 					if (addr < 0 || addr >= 0x10000000)
+					{
 						throw new ArgumentOutOfRangeException();
+					}
+
 					LibVBANext.SystemBusWrite(Core, (int)addr, val);
 				}, 4));
+
 			// special combined ram memory domain
 			{
 				var ew = mm[1];

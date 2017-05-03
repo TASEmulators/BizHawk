@@ -3,14 +3,11 @@
 namespace BizHawk.Client.Common
 {
 	/// <summary>
-	/// Just copies source to sink, or returns whatever a NullController would if it is disconnected. useful for immovable hardpoints.
+	/// Just copies source to sink, or returns whatever a NullController would if it is disconnected. useful for immovable hard-points.
 	/// </summary>
 	public class CopyControllerAdapter : IController
 	{
-		public ControllerDefinition Definition
-		{
-			get { return Curr.Definition; }
-		}
+		public ControllerDefinition Definition => Curr.Definition;
 
 		public bool IsPressed(string button)
 		{
@@ -24,14 +21,6 @@ namespace BizHawk.Client.Common
 
 		public IController Source { get; set; }
 
-		private IController Curr
-		{
-			get
-			{
-				return Source == null
-					? NullController.Instance
-					: Source;
-			}
-		}
+		private IController Curr => Source ?? NullController.Instance;
 	}
 }

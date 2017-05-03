@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 			}
 
 			// header verified, loop over patch entries
-			uint EOF = ('E' * 0x10000 + 'O' * 0x100 + 'F');
+			uint eof = ('E' * 0x10000) + ('O' * 0x100) + 'F';
 
 			var ret = new MemoryStream(rom.Length);
 			ret.Write(rom, 0, rom.Length);
@@ -29,8 +29,11 @@ namespace BizHawk.Client.Common
 			while (true)
 			{
 				uint offset = Read24(patch);
-				if (offset == EOF)
+				if (offset == eof)
+				{
 					return ret.ToArray();
+				}
+
 				ushort size = Read16(patch);
 
 				ret.Seek(offset, SeekOrigin.Begin);
@@ -56,17 +59,17 @@ namespace BizHawk.Client.Common
 
 		private static ushort Read16(Stream patch)
 		{
-			int Upper = patch.ReadByte();
-			int Lower = patch.ReadByte();
-			return (ushort)(Upper * 0x100 + Lower);
+			int upper = patch.ReadByte();
+			int lower = patch.ReadByte();
+			return (ushort)((upper * 0x100) + lower);
 		}
 
 		private static uint Read24(Stream patch)
 		{
-			int Upper = patch.ReadByte();
-			int Middle = patch.ReadByte();
-			int Lower = patch.ReadByte();
-			return (uint)(Upper * 0x10000 + Middle * 0x100 + Lower);
+			int upper = patch.ReadByte();
+			int middle = patch.ReadByte();
+			int lower = patch.ReadByte();
+			return (uint)((upper * 0x10000) + (middle * 0x100) + lower);
 		}
 	}
 }

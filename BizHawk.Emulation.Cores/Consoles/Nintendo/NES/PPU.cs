@@ -211,10 +211,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("VRAMBuffer", ref VRAMBuffer);
 			ser.Sync("ppu_addr_temp", ref ppu_addr_temp);
 
-            ser.Sync("Read_Value", ref read_value);
-            ser.Sync("Prev_soam_index", ref soam_index_prev);
-            ser.Sync("Spr_Zero_Go", ref sprite_zero_go);
-            ser.Sync("Spr_zero_in_Range", ref sprite_zero_in_range);
+			ser.Sync("Read_Value", ref read_value);
+			ser.Sync("Prev_soam_index", ref soam_index_prev);
+			ser.Sync("Spr_Zero_Go", ref sprite_zero_go);
+			ser.Sync("Spr_zero_in_Range", ref sprite_zero_in_range);
 			ser.Sync("Is_even_cycle", ref is_even_cycle);
 			ser.Sync("soam_index", ref soam_index);
 			ser.Sync("install_2006", ref install_2006);
@@ -317,7 +317,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 
 				ppur.status.cycle++;
-                is_even_cycle = !is_even_cycle;
+				is_even_cycle = !is_even_cycle;
 				//might not actually run a cpu cycle if there are none to be run right now
 				nes.RunCpuOne();
 

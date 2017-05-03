@@ -14,7 +14,7 @@
 			return (uint)((Byte8[v & 0xff] << 24) |
 					(Byte8[(v >> 8) & 0xff] << 16) |
 					(Byte8[(v >> 16) & 0xff] << 8) |
-					(Byte8[(v >> 24) & 0xff]));
+					Byte8[(v >> 24) & 0xff]);
 		}
 
 		private static void MakeByte8()

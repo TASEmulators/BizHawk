@@ -149,10 +149,11 @@ struct CommStruct
 	int32 port, device, index, slot;
 	int32 width, height;
 	int32 scanline;
+	SNES::Input::Device inports[2];
 
 	//always used in pairs
-	void* buf[2];
-	int32 buf_size[2];
+	void* buf[3];
+	int32 buf_size[3];
 
 	int64 cdl_ptr[4];
 	int32 cdl_size[4];
@@ -168,11 +169,7 @@ struct CommStruct
 
 	//private stuff
 	void* privbuf[2]; //TODO remember to tidy this..
-	void SetString(const char* str)
-	{
-		if (privbuf[0]) free(privbuf[0]);
-		buf[0] = privbuf[0] = strdup(str);
-	}
+
 	void CopyBuffer(int id, void* ptr, int32 size)
 	{
 		if (privbuf[id]) free(privbuf[id]);
@@ -183,12 +180,11 @@ struct CommStruct
 
 	void SetBuffer(int id, void* ptr, int32 size)
 	{
+		if (privbuf[id]) free(privbuf[id]);
+		privbuf[id] = nullptr;
 		buf[id] = ptr;
 		buf_size[id] = size;
 	}
-
-	struct {
-	} strings;
 
 
 } comm;
@@ -203,7 +199,8 @@ uint16_t audiobuffer[AUDIOBUFFER_SIZE];
 int audiobuffer_idx = 0;
 Action CMD_cb;
 
-void BREAK(eMessage msg) {
+void BREAK(eMessage msg)
+{
 	comm.status = eStatus_BRK;
 	comm.reason = msg;
 	co_emu_suspended = co_active();
@@ -274,7 +271,7 @@ const char* snes_path_request(int slot, const char* hint)
 	comm.slot = slot;
 	comm.str= (char *)hint;
 	BREAK(eMessage_SIG_path_request);
-	return (const char*)comm.buf;
+	return (const char*)comm.buf[0];
 }
 
 void snes_scanlineStart(int line)
@@ -363,7 +360,9 @@ static void Analyze()
 
 void CMD_LoadCartridgeNormal()
 {
-	bool ret = snes_load_cartridge_normal(comm.str, (const uint8_t*)comm.buf[0], comm.buf_size[0]);
+	const char* xml = (const char*)comm.buf[0];
+	if(!xml[0]) xml = nullptr;
+	bool ret = snes_load_cartridge_normal(xml, (const uint8_t*)comm.buf[1], comm.buf_size[1]);
 	comm.value = ret?1:0;
 
 	if(ret)
@@ -372,14 +371,22 @@ void CMD_LoadCartridgeNormal()
 
 void CMD_LoadCartridgeSGB()
 {
-	bool ret = snes_load_cartridge_super_game_boy(comm.str, (const u8*)comm.buf[0], comm.buf_size[0], nullptr, (const u8*)comm.buf[1], comm.buf_size[1]);
+	bool ret = snes_load_cartridge_super_game_boy((const char*)comm.buf[0], (const u8*)comm.buf[1], comm.buf_size[1], nullptr, (const u8*)comm.buf[2], comm.buf_size[2]);
 	comm.value = ret ? 1 : 0;
 
 	if(ret)
 		Analyze();
 }
 
-void CMD_serialize()
+void CMD_init()
+{
+	snes_init();
+
+	SNES::input.connect(SNES::Controller::Port1, comm.inports[0]);
+	SNES::input.connect(SNES::Controller::Port2, comm.inports[1]);
+}
+
+void CMD_Serialize()
 {
 	int size = comm.buf_size[0];
 	char* buf = (char*)comm.buf[0];
@@ -387,7 +394,7 @@ void CMD_serialize()
 	comm.value = ret ? 1 : 0;
 }
 
-void CMD_unserialize()
+void CMD_Unserialize()
 {
 	int size = comm.buf_size[0];
 	char* buf = (char*)comm.buf[0];
@@ -395,7 +402,7 @@ void CMD_unserialize()
 	comm.value = ret ? 1 : 0;
 }
 
-static void snes_run()
+static void CMD_Run()
 {
 	do_SIG_audio_flush();
 
@@ -517,12 +524,12 @@ void QUERY_serialize_size() {
 }
 
 const Action kHandlers_CMD[] = {
-	snes_init,
+	CMD_init,
 	snes_power,
 	snes_reset,
-	snes_run,
-	CMD_serialize,
-	CMD_unserialize,
+	CMD_Run,
+	CMD_Serialize,
+	CMD_Unserialize,
 	CMD_LoadCartridgeNormal,
 	CMD_LoadCartridgeSGB,
 	snes_term,
@@ -579,6 +586,8 @@ BOOL WINAPI DllMain(_In_ HINSTANCE hinstDLL, _In_ DWORD     fdwReason, _In_ LPVO
 
 extern "C" dllexport void* __cdecl DllInit()
 {
+	memset(&comm,0,sizeof(comm));
+
 	//make a coroutine thread to run the emulation in. we'll switch back to this cothread when communicating with the frontend
 	co_control = co_active();
 	co_emu = co_create(65536 * sizeof(void*), new_emuthread);

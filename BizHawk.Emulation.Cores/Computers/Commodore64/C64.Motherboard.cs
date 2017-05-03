@@ -15,36 +15,36 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	/// </summary>
 	public sealed partial class Motherboard
 	{
-        // chips
-        public readonly Chip23128 BasicRom;
-        public readonly Chip23128 CharRom;
-        public readonly Cia Cia0;
-        public readonly Cia Cia1;
-        public readonly Chip2114 ColorRam;
-        public readonly Chip6510 Cpu;
-        public readonly Chip23128 KernalRom;
-        public readonly Chip90611401 Pla;
-        public readonly Chip4864 Ram;
-        public readonly Sid Sid;
-        public readonly Vic Vic;
+		// chips
+		public readonly Chip23128 BasicRom;
+		public readonly Chip23128 CharRom;
+		public readonly Cia Cia0;
+		public readonly Cia Cia1;
+		public readonly Chip2114 ColorRam;
+		public readonly Chip6510 Cpu;
+		public readonly Chip23128 KernalRom;
+		public readonly Chip90611401 Pla;
+		public readonly Chip4864 Ram;
+		public readonly Sid Sid;
+		public readonly Vic Vic;
 
-        // ports
-        public readonly CartridgePort CartPort;
-        public readonly CassettePort Cassette;
-        public IController Controller;
-        public readonly SerialPort Serial;
-	    public readonly TapeDrive TapeDrive;
-        public readonly UserPort User;
+		// ports
+		public readonly CartridgePort CartPort;
+		public readonly CassettePort Cassette;
+		public IController Controller;
+		public readonly SerialPort Serial;
+		public readonly TapeDrive TapeDrive;
+		public readonly UserPort User;
 
-        // devices
-        public readonly Drive1541 DiskDrive;
+		// devices
+		public readonly Drive1541 DiskDrive;
 
-        // state
-        //public int address;
-        public int Bus;
-        public bool InputRead;
-        public bool Irq;
-        public bool Nmi;
+		// state
+		//public int address;
+		public int Bus;
+		public bool InputRead;
+		public bool Irq;
+		public bool Nmi;
 
 		private readonly C64 _c64;
 
@@ -58,115 +58,115 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				case C64.VicType.Pal:
 					clockNum = 17734475;
 					clockDen = 18;
-			        break;
+					break;
 				case C64.VicType.Ntsc:
-			        clockNum = 14318181;
-			        clockDen = 14;
-			        break;
+					clockNum = 14318181;
+					clockDen = 14;
+					break;
 				case C64.VicType.NtscOld:
 					clockNum = 11250000;
 					clockDen = 11;
-			        break;
+					break;
 				case C64.VicType.Drean:
 					clockNum = 14328225;
 					clockDen = 14;
-			        break;
+					break;
 				default:
 					throw new System.Exception();
 			}
 			CartPort = new CartridgePort();
 			Cassette = new CassettePort();
-            ColorRam = new Chip2114();
+			ColorRam = new Chip2114();
 			Cpu = new Chip6510();
 			Pla = new Chip90611401();
 			Ram = new Chip4864();
 			Serial = new SerialPort();
 
-		    switch (sidType)
-		    {
-		        case C64.SidType.OldR2:
-		            Sid = Chip6581R2.Create(44100, clockNum, clockDen);
-		            break;
-                case C64.SidType.OldR3:
-                    Sid = Chip6581R3.Create(44100, clockNum, clockDen);
-                    break;
-                case C64.SidType.OldR4AR:
-                    Sid = Chip6581R4AR.Create(44100, clockNum, clockDen);
-                    break;
-                case C64.SidType.NewR5:
-                    Sid = Chip8580R5.Create(44100, clockNum, clockDen);
-                    break;
-            }
+			switch (sidType)
+			{
+				case C64.SidType.OldR2:
+					Sid = Chip6581R2.Create(44100, clockNum, clockDen);
+					break;
+				case C64.SidType.OldR3:
+					Sid = Chip6581R3.Create(44100, clockNum, clockDen);
+					break;
+				case C64.SidType.OldR4AR:
+					Sid = Chip6581R4AR.Create(44100, clockNum, clockDen);
+					break;
+				case C64.SidType.NewR5:
+					Sid = Chip8580R5.Create(44100, clockNum, clockDen);
+					break;
+			}
 
 			switch (initRegion)
 			{
 				case C64.VicType.Ntsc:
-                    Vic = Chip6567R8.Create(borderType);
-                    Cia0 = Chip6526.Create(C64.CiaType.Ntsc,  Input_ReadKeyboard, Input_ReadJoysticks);
-                    Cia1 = Chip6526.Create(C64.CiaType.Ntsc, Cia1_ReadPortA);
-                    break;
+					Vic = Chip6567R8.Create(borderType);
+					Cia0 = Chip6526.Create(C64.CiaType.Ntsc, Input_ReadKeyboard, Input_ReadJoysticks);
+					Cia1 = Chip6526.Create(C64.CiaType.Ntsc, Cia1_ReadPortA);
+					break;
 				case C64.VicType.Pal:
-                    Vic = Chip6569.Create(borderType);
-                    Cia0 = Chip6526.Create(C64.CiaType.Pal, Input_ReadKeyboard, Input_ReadJoysticks);
-                    Cia1 = Chip6526.Create(C64.CiaType.Pal, Cia1_ReadPortA);
-                    break;
-                case C64.VicType.NtscOld:
-                    Vic = Chip6567R56A.Create(borderType);
-                    Cia0 = Chip6526.Create(C64.CiaType.NtscRevA, Input_ReadKeyboard, Input_ReadJoysticks);
-                    Cia1 = Chip6526.Create(C64.CiaType.NtscRevA, Cia1_ReadPortA);
-			        break;
-                case C64.VicType.Drean:
-                    Vic = Chip6572.Create(borderType);
-                    Cia0 = Chip6526.Create(C64.CiaType.Pal, Input_ReadKeyboard, Input_ReadJoysticks);
-                    Cia1 = Chip6526.Create(C64.CiaType.Pal, Cia1_ReadPortA);
-                    break;
+					Vic = Chip6569.Create(borderType);
+					Cia0 = Chip6526.Create(C64.CiaType.Pal, Input_ReadKeyboard, Input_ReadJoysticks);
+					Cia1 = Chip6526.Create(C64.CiaType.Pal, Cia1_ReadPortA);
+					break;
+				case C64.VicType.NtscOld:
+					Vic = Chip6567R56A.Create(borderType);
+					Cia0 = Chip6526.Create(C64.CiaType.NtscRevA, Input_ReadKeyboard, Input_ReadJoysticks);
+					Cia1 = Chip6526.Create(C64.CiaType.NtscRevA, Cia1_ReadPortA);
+					break;
+				case C64.VicType.Drean:
+					Vic = Chip6572.Create(borderType);
+					Cia0 = Chip6526.Create(C64.CiaType.Pal, Input_ReadKeyboard, Input_ReadJoysticks);
+					Cia1 = Chip6526.Create(C64.CiaType.Pal, Cia1_ReadPortA);
+					break;
 			}
 			User = new UserPort();
 
-		    ClockNumerator = clockNum;
-		    ClockDenominator = clockDen;
+			ClockNumerator = clockNum;
+			ClockDenominator = clockDen;
 
-            // Initialize disk drive
-		    switch (diskDriveType)
-		    {
-		        case C64.DiskDriveType.Commodore1541:
-                case C64.DiskDriveType.Commodore1541II:
-                    DiskDrive = new Drive1541(ClockNumerator, ClockDenominator);
-                    Serial.Connect(DiskDrive);
-		            break;
-		    }
+			// Initialize disk drive
+			switch (diskDriveType)
+			{
+				case C64.DiskDriveType.Commodore1541:
+				case C64.DiskDriveType.Commodore1541II:
+					DiskDrive = new Drive1541(ClockNumerator, ClockDenominator);
+					Serial.Connect(DiskDrive);
+					break;
+			}
 
-            // Initialize tape drive
-		    switch (tapeDriveType)
-		    {
-		        case C64.TapeDriveType.Commodore1530:
-                    TapeDrive = new TapeDrive();
-                    Cassette.Connect(TapeDrive);
-		            break;
-		    }
+			// Initialize tape drive
+			switch (tapeDriveType)
+			{
+				case C64.TapeDriveType.Commodore1530:
+					TapeDrive = new TapeDrive();
+					Cassette.Connect(TapeDrive);
+					break;
+			}
 
-            BasicRom = new Chip23128();
-            CharRom = new Chip23128();
-            KernalRom = new Chip23128();
+			BasicRom = new Chip23128();
+			CharRom = new Chip23128();
+			KernalRom = new Chip23128();
 		}
 
-        [SaveState.DoNotSave] public int ClockNumerator { get; private set; }
-        [SaveState.DoNotSave] public int ClockDenominator { get; private set; }
+		[SaveState.DoNotSave] public int ClockNumerator { get; private set; }
+		[SaveState.DoNotSave] public int ClockDenominator { get; private set; }
 
 		// -----------------------------------------
 
 		public void Execute()
 		{
-		    _vicBank = (0x3 - ((Cia1.PrA | ~Cia1.DdrA) & 0x3)) << 14;
+			_vicBank = (0x3 - ((Cia1.PrA | ~Cia1.DdrA) & 0x3)) << 14;
 
-            Vic.ExecutePhase();
-            CartPort.ExecutePhase();
-            Cassette.ExecutePhase();
-            Serial.ExecutePhase();
-            Sid.ExecutePhase();
-            Cia0.ExecutePhase();
-            Cia1.ExecutePhase();
-            Cpu.ExecutePhase();
+			Vic.ExecutePhase();
+			CartPort.ExecutePhase();
+			Cassette.ExecutePhase();
+			Serial.ExecutePhase();
+			Sid.ExecutePhase();
+			Cia0.ExecutePhase();
+			Cia1.ExecutePhase();
+			Cpu.ExecutePhase();
 		}
 
 		public void Flush()
@@ -190,19 +190,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Vic.HardReset();
 			User.HardReset();
 			Cassette.HardReset();
-            Serial.HardReset();
-            Cpu.HardReset();
-            CartPort.HardReset();
-        }
+			Serial.HardReset();
+			Cpu.HardReset();
+			CartPort.HardReset();
+		}
 
-        public void Init()
-        {
-            CartPort.ReadOpenBus = ReadOpenBus;
+		public void Init()
+		{
+			CartPort.ReadOpenBus = ReadOpenBus;
 
-            Cassette.ReadDataOutput = CassPort_ReadDataOutput;
-            Cassette.ReadMotor = CassPort_ReadMotor;
+			Cassette.ReadDataOutput = CassPort_ReadDataOutput;
+			Cassette.ReadMotor = CassPort_ReadMotor;
 
-            Cia0.ReadFlag = Cassette.ReadDataInputBuffer;
+			Cia0.ReadFlag = Cassette.ReadDataInputBuffer;
 
 			Cpu.PeekMemory = Pla.Peek;
 			Cpu.PokeMemory = Pla.Poke;
@@ -215,7 +215,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Cpu.WriteMemory = Pla.Write;
 			Cpu.WriteMemoryPort = Cpu_WriteMemoryPort;
 
-            Pla.PeekBasicRom = BasicRom.Peek;
+			Pla.PeekBasicRom = BasicRom.Peek;
 			Pla.PeekCartridgeHi = CartPort.PeekHiRom;
 			Pla.PeekCartridgeLo = CartPort.PeekLoRom;
 			Pla.PeekCharRom = CharRom.Peek;
@@ -276,13 +276,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Sid.ReadPotX = Sid_ReadPotX;
 			Sid.ReadPotY = Sid_ReadPotY;
 
-            Vic.ReadMemory = Vic_ReadMemory;
+			Vic.ReadMemory = Vic_ReadMemory;
 			Vic.ReadColorRam = ColorRam.Read;
 		}
 
 		public void SyncState(Serializer ser)
 		{
-            SaveState.SyncObject(ser, this);
-        }
-    }
+			SaveState.SyncObject(ser, this);
+		}
+	}
 }

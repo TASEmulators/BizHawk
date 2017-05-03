@@ -18,7 +18,10 @@ namespace BizHawk.Common
 		public void Dispose()
 		{
 			foreach (var h in HGlobals)
+			{
 				Marshal.FreeHGlobal(h);
+			}
+
 			HGlobals.Clear();
 		}
 	}

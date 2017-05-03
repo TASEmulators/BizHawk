@@ -426,7 +426,7 @@ namespace BizHawk.Client.EmuHawk
 		void DebugCallback()
 		{
 			//fpulse = fCPU/(16*(t+1)) (where fCPU is 1.789773 MHz for NTSC, 1.662607 MHz for PAL, and 1.773448 MHz for Dendy)
-	    //ftriangle = fCPU/(32*(tval + 1))
+			//ftriangle = fCPU/(32*(tval + 1))
 
 			var apu = nes.apu;
 			

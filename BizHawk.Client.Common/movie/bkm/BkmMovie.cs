@@ -18,8 +18,7 @@ namespace BizHawk.Client.Common
 
 		public BkmMovie()
 		{
-			Header = new BkmHeader();
-			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v0.0.1";
+			Header = new BkmHeader { [HeaderKeys.MOVIEVERSION] = "BizHawk v0.0.1" };
 			Filename = string.Empty;
 			_preloadFramecount = 0;
 
@@ -35,18 +34,16 @@ namespace BizHawk.Client.Common
 			return new BkmLogEntryGenerator();
 		}
 
-		public string PreferredExtension { get { return Extension; } }
+		public string PreferredExtension => Extension;
+
 		public const string Extension = "bkm";
 
-		public BkmHeader Header { get; private set; }
+		public BkmHeader Header { get; }
 		public string Filename { get; set; }
 		public bool IsCountingRerecords { get; set; }
 		public bool Loaded { get; private set; }
 		
-		public int InputLogLength
-		{
-			get { return _log.Count; }
-		}
+		public int InputLogLength => _log.Count;
 
 		public double FrameCount
 		{
@@ -66,10 +63,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public bool Changes
-		{
-			get { return _changes; }
-		}
+		public bool Changes => _changes;
 
 		#endregion
 
@@ -79,7 +73,6 @@ namespace BizHawk.Client.Common
 		{
 			if (frame < FrameCount && frame >= 0)
 			{
-
 				int getframe;
 
 				if (_loopOffset.HasValue)

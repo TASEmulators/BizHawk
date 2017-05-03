@@ -9,14 +9,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
-		public IController Controller { get; set; }
-
 		// TODO: use render and rendersound
-		public void FrameAdvance(bool render, bool rendersound = true)
+		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
-			if (Controller.IsPressed("Reset"))
+			if (controller.IsPressed("Reset"))
 				Core.gpgx_reset(false);
-			if (Controller.IsPressed("Power"))
+			if (controller.IsPressed("Power"))
 				Core.gpgx_reset(true);
 
 			// this shouldn't be needed, as nothing has changed
@@ -25,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 			ControlConverter.ScreenWidth = vwidth;
 			ControlConverter.ScreenHeight = vheight;
-			ControlConverter.Convert(Controller, input);
+			ControlConverter.Convert(controller, input);
 
 			if (!Core.gpgx_put_control(input, inputsize))
 				throw new Exception("gpgx_put_control() failed!");
@@ -55,11 +53,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 		public bool DeterministicEmulation
 		{
 			get { return true; }
-		}
-
-		public string BoardName
-		{
-			get { return null; }
 		}
 
 		public void ResetCounters()

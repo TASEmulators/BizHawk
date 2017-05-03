@@ -71,7 +71,7 @@ namespace BizHawk.Common.NumberExtensions
 		/// </summary>
 		public static int NumHexDigits(this long i)
 		{
-			//now this is a bit of a trick. if it was less than 0, it mustve been >= 0x80000000 and so takes all 8 digits
+			// now this is a bit of a trick. if it was less than 0, it mustve been >= 0x80000000 and so takes all 8 digits
 			if (i < 0)
 			{
 				return 8;
@@ -105,11 +105,11 @@ namespace BizHawk.Common.NumberExtensions
 		/// </summary>
 		public static int Mod(this int a, int b)
 		{
-			return a - (b * (int)System.Math.Floor((float)a / b));
+			return a - (b * (int)Math.Floor((float)a / b));
 		}
 
 		/// <summary>
-		/// Force the value to be stricly between min and max (both exclued)
+		/// Force the value to be strictly between min and max (both exclued)
 		/// </summary>
 		/// <typeparam name="T">Anything that implements <see cref="IComparable{T}"/></typeparam>
 		/// <param name="val">Value that will be clamped</param>
@@ -118,18 +118,17 @@ namespace BizHawk.Common.NumberExtensions
 		/// <returns>The value if strictly between min and max; otherwise min (or max depending of what is passed)</returns>
 		public static T Clamp<T>(this T val, T min, T max) where T : IComparable<T>
 		{
-			if(val.CompareTo(min) < 0)
+			if (val.CompareTo(min) < 0)
 			{
 				return min;
 			}
-			else if(val.CompareTo(max) > 0)
+
+			if (val.CompareTo(max) > 0)
 			{
 				return max;
 			}
-			else
-			{
-				return val;
-			}
+
+			return val;
 		}
 	}
 }

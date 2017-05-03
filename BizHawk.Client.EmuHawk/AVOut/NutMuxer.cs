@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 		static void WriteVarU(int v, Stream stream)
 		{
 			if (v < 0)
-				throw new ArgumentOutOfRangeException("v", "unsigned must be non-negative");
+				throw new ArgumentOutOfRangeException(nameof(v), "unsigned must be non-negative");
 			WriteVarU((ulong)v, stream);
 		}
 
@@ -116,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 		static void WriteVarU(long v, Stream stream)
 		{
 			if (v < 0)
-				throw new ArgumentOutOfRangeException("v", "unsigned must be non-negative");
+				throw new ArgumentOutOfRangeException(nameof(v), "unsigned must be non-negative");
 			WriteVarU((ulong)v, stream);
 		}
 
@@ -260,20 +260,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 
-			public override bool CanRead
-			{
-				get { return false; }
-			}
+			public override bool CanRead => false;
 
-			public override bool CanSeek
-			{
-				get { return false; }
-			}
+			public override bool CanSeek => false;
 
-			public override bool CanWrite
-			{
-				get { return true; }
-			}
+			public override bool CanWrite => true;
 
 			/// <summary>
 			/// write data out to underlying stream, including header, footer, checksums
@@ -286,7 +277,10 @@ namespace BizHawk.Client.EmuHawk
 				WriteBE64((ulong)startcode, header);
 				WriteVarU(data.Length + 4, header); // +4 for checksum
 				if (data.Length > 4092)
+				{
 					WriteBE32(NutCRC32(header.ToArray()), header);
+				}
+
 				var tmp = header.ToArray();
 				underlying.Write(tmp, 0, tmp.Length);
 
@@ -517,7 +511,6 @@ namespace BizHawk.Client.EmuHawk
 			ReusableBufferPool<byte> _pool;
 
 			/// <summary>
-			/// 
 			/// </summary>
 			/// <param name="payload">frame data</param>
 			/// <param name="payloadlen">actual length of frame data</param>
@@ -698,7 +691,6 @@ namespace BizHawk.Client.EmuHawk
 				WriteAudioFrame(new short[0]);
 
 			// flush any remaining queued packets
-
 			while (audioqueue.Count > 0 && videoqueue.Count > 0)
 			{
 				if (audioqueue.Peek() <= videoqueue.Peek())

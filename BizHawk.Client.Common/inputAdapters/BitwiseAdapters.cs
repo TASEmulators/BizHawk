@@ -4,10 +4,7 @@ namespace BizHawk.Client.Common
 {
 	public class AndAdapter : IController
 	{
-		public ControllerDefinition Definition
-		{
-			get { return Source.Definition; }
-		}
+		public ControllerDefinition Definition => Source.Definition;
 
 		public bool IsPressed(string button)
 		{
@@ -32,15 +29,12 @@ namespace BizHawk.Client.Common
 
 	public class ORAdapter : IController
 	{
-		public ControllerDefinition Definition
-		{
-			get { return Source.Definition; }
-		}
+		public ControllerDefinition Definition => Source.Definition;
 
 		public bool IsPressed(string button)
 		{
-			return (Source != null ? Source.IsPressed(button) : false)
-					| (SourceOr != null ? SourceOr.IsPressed(button) : false);
+			return (Source?.IsPressed(button) ?? false)
+					| (SourceOr?.IsPressed(button) ?? false);
 		}
 
 		// pass floats solely from the original source

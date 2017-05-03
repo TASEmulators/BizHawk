@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BizHawk.Emulation.Cores.Intellivision
+﻿namespace BizHawk.Emulation.Cores.Intellivision
 {
 	public sealed partial class Intellivision
 	{
@@ -44,13 +42,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						if (addr==0x01FE)
 						{
 							if (!peek)
-								islag = false;
-							return _psg.Register[14];			
+								_islag = false;
+							return _psg.Register[14];
 						}
+
 						if (addr == 0x01FF)
 						{
 							if (!peek)
-								islag = false;
+								_islag = false;
 							return _psg.Register[15];
 						}
 						break;
@@ -206,6 +205,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			{
 				return (ushort)core;
 			}
+
 			return UNMAPPED;
 		}
 
@@ -269,6 +269,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							GraphicsRam[addr - 0x3800] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else if (addr <= 0x3BFF)
@@ -278,6 +279,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							GraphicsRam[addr - 0x3A00] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else if (addr <= 0x3DFF)
@@ -287,6 +289,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							GraphicsRam[addr - 0x3C00] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else
@@ -296,6 +299,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							GraphicsRam[addr - 0x3E00] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 				case 0x7000:
@@ -311,6 +315,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else if (addr <= 0x7BFF)
@@ -320,6 +325,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else if (addr <= 0x7DFF)
@@ -329,6 +335,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else
@@ -338,6 +345,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							GraphicsRam[addr & 0x01FF] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 				case 0x9000:
@@ -398,6 +406,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							GraphicsRam[addr - 0xF800] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else if (addr <= 0xFBFF)
@@ -407,6 +416,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							GraphicsRam[addr - 0xFA00] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else if (addr <= 0xFDFF)
@@ -416,6 +426,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							GraphicsRam[addr - 0xFC00] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 					else
@@ -425,6 +436,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							GraphicsRam[addr - 0xFE00] = (byte)(value & 0x00FF);
 							return true;
 						}
+
 						return false;
 					}
 			}

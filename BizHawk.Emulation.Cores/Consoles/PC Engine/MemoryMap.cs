@@ -4,9 +4,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public partial class PCEngine
 	{
-		byte IOBuffer;
+		private byte IOBuffer;
 
-		byte ReadMemory(int addr)
+		private byte ReadMemory(int addr)
 		{
 			if (addr < 0xFFFFF) // read ROM
 				return RomData[addr % RomLength];
@@ -41,11 +41,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			return 0xFF;
 		}
 
-		void WriteMemory(int addr, byte value)
+		private void WriteMemory(int addr, byte value)
 		{
 			if (addr >= 0x1F0000 && addr < 0x1F8000) // write RAM.
+			{
 				Ram[addr & 0x1FFF] = value;
-
+			}
 			else if (addr >= 0x1FE000) // hardware page.
 			{
 				if (addr < 0x1FE400) VDC1.WriteVDC(addr, value);
@@ -60,8 +61,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				else if (addr >= 0x1FF800) { WriteCD(addr, value); }
 				else Log.Error("MEM", "unhandled hardware write [{0:X6}] : {1:X2}", addr, value);
 			}
-
-			else if (addr >= 0x1EE000 && addr <= 0x1EE7FF)   // BRAM
+			else if (addr >= 0x1EE000 && addr <= 0x1EE7FF) // BRAM
 			{
 				if (BramEnabled && BramLocked == false)
 				{
@@ -69,9 +69,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					SaveRamModified = true;
 				}
 			}
-
 			else
+			{
 				Log.Error("MEM", "UNHANDLED WRITE: {0:X6}:{1:X2}", addr, value);
+			}
 
 			//CoreComm.MemoryCallbackSystem.CallWrite((uint)addr);
 		}

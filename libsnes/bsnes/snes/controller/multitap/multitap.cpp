@@ -1,8 +1,10 @@
 #ifdef CONTROLLER_CPP
 
 uint2 Multitap::data() {
-  if(latched) return 2;  //multitap detection
-  unsigned index, port1, port2;
+	if (latched)
+		return connected ? 2 : 0;
+
+	unsigned index, port1, port2;
 
   if(iobit()) {
     index = counter1;
@@ -25,6 +27,12 @@ uint2 Multitap::data() {
 
 void Multitap::latch(bool data) {
   if(latched == data) return;
+  bool newtoggleConnectedInput = interface()->inputPoll(port, Input::Device::Multitap, 0, 16);
+  if (newtoggleConnectedInput > toggleConnectedInput)
+	  connected ^= true;
+  toggleConnectedInput = newtoggleConnectedInput;
+
+
   latched = data;
   counter1 = 0;
   counter2 = 0;
@@ -37,11 +45,15 @@ void Multitap::serialize(serializer& s) {
   block[0] = latched ? 1 : 0;
   block[1] = counter1;
   block[2] = counter2;
+  block[3] = connected;
+  block[4] = toggleConnectedInput;
   s.array(block, Controller::SaveSize);
   if(s.mode() == nall::serializer::Load) {
     latched = (block[0] != 0);
     counter1 = block[1];
     counter2 = block[2];
+	connected = block[3];
+	toggleConnectedInput = block[4];
   }
 }
 
@@ -50,6 +62,8 @@ Multitap::Multitap(bool port) : Controller(port) {
   latched = 0;
   counter1 = 0;
   counter2 = 0;
+  connected = true;
+  toggleConnectedInput = false;
 }
 
 #endif

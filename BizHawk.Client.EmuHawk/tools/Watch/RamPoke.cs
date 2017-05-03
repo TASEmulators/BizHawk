@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: don't use textboxes as labels
 		private List<Watch> _watchList = new List<Watch>();
 
-		public Point InitialLocation = new Point(0, 0);
+		public Point InitialLocation { get; set; } = new Point(0, 0);
 
 		public RamPoke()
 		{
@@ -104,10 +104,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var success = _watchList.All(watch => watch.Poke(ValueBox.Text));
 
-			if (ParentTool != null)
-			{
-				ParentTool.UpdateValues();
-			}
+			ParentTool?.UpdateValues();
 
 			if (success)
 			{

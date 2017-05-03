@@ -7,10 +7,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 {
 	public sealed partial class PCEngine : IStatable
 	{
-		public bool BinarySaveStatesPreferred
-		{
-			get { return false; }
-		}
+		public bool BinarySaveStatesPreferred => false;
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
@@ -94,7 +91,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			ser.Sync("CdIoPorts", ref CdIoPorts, false);
 			ser.Sync("BramLocked", ref BramLocked);
 
-			ser.Sync("Frame", ref frame);
+			ser.Sync("Frame", ref _frame);
 			ser.Sync("Lag", ref _lagCount);
 			ser.Sync("IsLag", ref _isLag);
 			if (Cpu.ReadMemory21 == ReadMemorySF2)

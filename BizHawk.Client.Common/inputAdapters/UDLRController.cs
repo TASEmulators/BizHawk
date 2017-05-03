@@ -11,15 +11,10 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class UD_LR_ControllerAdapter : IController
 	{
-		public ControllerDefinition Definition
-		{
-			get { return Source.Definition; }
-		}
+		public ControllerDefinition Definition => Source.Definition;
 
 		public bool IsPressed(string button)
 		{
-			bool PriorityUD_LR = !Global.Config.AllowUD_LR && !Global.Config.ForbidUD_LR; // implied by neither of the others being set (left as non-enum for back-compatibility)
-
 			if (Global.Config.AllowUD_LR)
 			{
 				return Source.IsPressed(button);
@@ -27,10 +22,8 @@ namespace BizHawk.Client.Common
 
 			string prefix;
 
-			//" C " is for N64 "P1 C Up" and the like, which should not be subject to mutexing
-
-			//regarding the unpressing and UDLR logic...... don't think about it. don't question it. don't look at it.
-
+			// " C " is for N64 "P1 C Up" and the like, which should not be subject to mutexing
+			// regarding the unpressing and UDLR logic...... don't think about it. don't question it. don't look at it.
 			if (button.Contains("Down") && !button.Contains(" C "))
 			{
 				if (!Source.IsPressed(button))

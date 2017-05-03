@@ -5,40 +5,40 @@ using System.Collections.Generic;
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// This service provides the means to generate disassembly by the core for a given cpu and memory domain
-	/// Tools such the debugger use this, but also lua scripting, and tools like trace logging and code data logging can make use of this tool
-	/// If unavailable the debugger tool will still be avilable but disable the disassembly window but still be available if the IDebuggable service is available
+	/// This service provides the means to generate disassembly by the core for a given CPU and memory domain
+	/// Tools such the debugger use this, but also LUA scripting, and tools like trace logging and code data logging can make use of this tool
+	/// If unavailable the debugger tool will still be available but disable the disassembly window but still be available if the <seealso cref="IDebuggable"/> service is available
 	/// </summary>
 	public interface IDisassemblable : IEmulatorService
 	{
 		/// <summary>
-		/// Gets or sets the Cpu that will be used to disassemble
-		/// Only values returned from AvailableCpus will be supported when Set
+		/// Gets or sets the CPUS that will be used to disassemble
+		/// Only values returned from <seealso cref="AvailableCpus"/> will be supported when Set
 		/// </summary>
 		string Cpu { get; set; }
 
 		/// <summary>
-		/// Returns the name of the Program Counter Register for the current Cpu
+		/// Gets the name of the Program Counter Register for the current CPU
 		/// </summary>
 		string PCRegisterName { get; }
 
 		/// <summary>
-		/// Gets a list of Cpus that can be used when setting the Cpu property
+		/// Gets a list of CPUs that can be used when setting the CPU property
 		/// </summary>
 		IEnumerable<string> AvailableCpus { get; }
 
 		/// <summary>
-		/// returns a disassembly starting at addr lasting for length, using the given domain
+		/// Returns a disassembly starting at address lasting for length, using the given domain
 		/// </summary>
 		string Disassemble(MemoryDomain m, uint addr, out int length);
 	}
 
 	/// <summary>
-	/// does santiy checking on Cpu parameters
+	/// does sanity checking on CPU parameters
 	/// </summary>
 	public abstract class VerifiedDisassembler : IDisassemblable
 	{
-		protected string _cpu;
+		private string _cpu;
 
 		public virtual string Cpu
 		{
@@ -46,6 +46,7 @@ namespace BizHawk.Emulation.Common
 			{
 				return _cpu;
 			}
+
 			set
 			{
 				if (!AvailableCpus.Contains(value))
@@ -63,7 +64,7 @@ namespace BizHawk.Emulation.Common
 
 		public abstract string Disassemble(MemoryDomain m, uint addr, out int length);
 
-		public VerifiedDisassembler()
+		protected VerifiedDisassembler()
 		{
 			_cpu = AvailableCpus.First();
 		}

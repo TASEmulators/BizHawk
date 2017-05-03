@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public int Read(int addr)
 		{
 			addr &= 0x1F;
-            var result = 0x00;
+			var result = 0x00;
 			switch (addr)
 			{
 				case 0x19:
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		private int ReadRegister(int addr)
 		{
-            var result = 0x00;
+			var result = 0x00;
 
 			switch (addr)
 			{
@@ -46,18 +46,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0x03: result = _voice0.PulseWidthHi; break;
 				case 0x04:
 					result = (_envelope0.Gate ? 0x01 : 0x00) |
-					         (_voice0.Sync ? 0x02 : 0x00) |
-					         (_voice0.RingMod ? 0x04 : 0x00) |
-					         (_voice0.Test ? 0x08 : 0x00) |
-					         (_voice0.Waveform << 4);
+							 (_voice0.Sync ? 0x02 : 0x00) |
+							 (_voice0.RingMod ? 0x04 : 0x00) |
+							 (_voice0.Test ? 0x08 : 0x00) |
+							 (_voice0.Waveform << 4);
 					break;
 				case 0x05:
 					result = (_envelope0.Attack << 4) |
-					         _envelope0.Decay;
+							 _envelope0.Decay;
 					break;
 				case 0x06:
 					result = (_envelope0.Sustain << 4) |
-					         _envelope0.Release;
+							 _envelope0.Release;
 					break;
 				case 0x07: result = _voice1.FrequencyLo; break;
 				case 0x08: result = _voice1.FrequencyHi; break;
@@ -65,18 +65,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0x0A: result = _voice1.PulseWidthHi; break;
 				case 0x0B:
 					result = (_envelope1.Gate ? 0x01 : 0x00) |
-					         (_voice1.Sync ? 0x02 : 0x00) |
-					         (_voice1.RingMod ? 0x04 : 0x00) |
-					         (_voice1.Test ? 0x08 : 0x00) |
-					         (_voice1.Waveform << 4);
+							 (_voice1.Sync ? 0x02 : 0x00) |
+							 (_voice1.RingMod ? 0x04 : 0x00) |
+							 (_voice1.Test ? 0x08 : 0x00) |
+							 (_voice1.Waveform << 4);
 					break;
 				case 0x0C:
 					result = (_envelope1.Attack << 4) |
-					         _envelope1.Decay;
+							 _envelope1.Decay;
 					break;
 				case 0x0D:
 					result = (_envelope1.Sustain << 4) |
-					         _envelope1.Release;
+							 _envelope1.Release;
 					break;
 				case 0x0E: result = _voice2.FrequencyLo; break;
 				case 0x0F: result = _voice2.FrequencyHi; break;
@@ -84,33 +84,33 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0x11: result = _voice2.PulseWidthHi; break;
 				case 0x12:
 					result = (_envelope2.Gate ? 0x01 : 0x00) |
-					         (_voice2.Sync ? 0x02 : 0x00) |
-					         (_voice2.RingMod ? 0x04 : 0x00) |
-					         (_voice2.Test ? 0x08 : 0x00) |
-					         (_voice2.Waveform << 4);
+							 (_voice2.Sync ? 0x02 : 0x00) |
+							 (_voice2.RingMod ? 0x04 : 0x00) |
+							 (_voice2.Test ? 0x08 : 0x00) |
+							 (_voice2.Waveform << 4);
 					break;
 				case 0x13:
 					result = (_envelope2.Attack << 4) |
-					         _envelope2.Decay;
+							 _envelope2.Decay;
 					break;
 				case 0x14:
 					result = (_envelope2.Sustain << 4) |
-					         _envelope2.Release;
+							 _envelope2.Release;
 					break;
 				case 0x15: result = _filterFrequency & 0x7; break;
 				case 0x16: result = (_filterFrequency >> 3) & 0xFF; break;
 				case 0x17:
 					result = (_filterEnable[0] ? 0x01 : 0x00) |
-					         (_filterEnable[1] ? 0x02 : 0x00) |
-					         (_filterEnable[2] ? 0x04 : 0x00) |
-					         (_filterResonance << 4);
+							 (_filterEnable[1] ? 0x02 : 0x00) |
+							 (_filterEnable[2] ? 0x04 : 0x00) |
+							 (_filterResonance << 4);
 					break;
 				case 0x18:
 					result = _volume |
-					         (_filterSelectLoPass ? 0x10 : 0x00) |
-					         (_filterSelectBandPass ? 0x20 : 0x00) |
-					         (_filterSelectHiPass ? 0x40 : 0x00) |
-					         (_disableVoice3 ? 0x80 : 0x00);
+							 (_filterSelectLoPass ? 0x10 : 0x00) |
+							 (_filterSelectBandPass ? 0x20 : 0x00) |
+							 (_filterSelectHiPass ? 0x40 : 0x00) |
+							 (_disableVoice3 ? 0x80 : 0x00);
 					break;
 				case 0x19: result = _potX; break;
 				case 0x1A: result = _potY; break;

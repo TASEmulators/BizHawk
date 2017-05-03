@@ -8,9 +8,11 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var key = button.Replace("Key ", "");
+				var key = button.Replace("Key ", string.Empty);
 				if (key.StartsWith("P") && key.Length > 1 && key[1] >= '0' && key[1] <= '9')
+				{
 					key = key.Substring(3);
+				}
 
 				if (SystemOverrides.ContainsKey(Global.Emulator.SystemId) && SystemOverrides[Global.Emulator.SystemId].ContainsKey(key))
 				{
@@ -142,6 +144,50 @@ namespace BizHawk.Client.Common
 						{ "PP12", 'C' },
 						{ "Click", 'C' },
 						{ "Touch", 'T' },
+					}
+				},
+				{
+					"SNES",
+					new Dictionary<string, char>
+					{
+						{ "Cursor", 'c' },
+						{ "Turbo",  't' },
+						{ "Toggle Multitap", 't' },
+
+						{ "B0", '0' },
+						{ "B1", '1' },
+						{ "B2", '2' },
+						{ "B3", '3' },
+						{ "B4", '4' },
+						{ "B5", '5' },
+						{ "B6", '6' },
+						{ "B7", '7' },
+						{ "B8", '8' },
+						{ "B9", '9' },
+						{ "B10", 'a' },
+
+						{ "B11", 'b' },
+						{ "B12", 'c' },
+						{ "B13", 'd' },
+						{ "B14", 'e' },
+						{ "B15", 'f' },
+						{ "B16", 'g' },
+						{ "B17", 'h' },
+						{ "B18", 'i' },
+						{ "B19", 'j' },
+						{ "B20", 'k' },
+
+						{ "B21", 'l' },
+						{ "B22", 'm' },
+						{ "B23", 'n' },
+						{ "B24", 'o' },
+						{ "B25", 'p' },
+						{ "B26", 'q' },
+						{ "B27", 'r' },
+						{ "B28", 's' },
+						{ "B29", 't' },
+						{ "B30", 'u' },
+						{ "B31", 'v' }
 					}
 				},
 				{

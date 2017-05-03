@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			// Hack: Saving a state on frame 0 has been shown to not be sync stable. Advance past that frame to avoid the problem.
 			// Advancing 2 frames was chosen to deal with a problem with the dynamic recompiler. The dynarec seems to take 2 frames to set 
 			// things up correctly. If a state is loaded on frames 0 or 1 mupen tries to access null pointers and the emulator crashes, so instead
- 			// advance past both to again avoid the problem.
+			// advance past both to again avoid the problem.
 			api.frame_advance();
 			api.frame_advance();
 
@@ -227,8 +227,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			RunThreadAction(() => { _pendingThreadTerminate = true; });
 		}
 
-		public void FrameAdvance(bool render, bool rendersound)
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
+			_inputProvider.Controller = controller;
+
 			IsVIFrame = false;
 
 			if (Tracer != null && Tracer.Enabled)
@@ -242,12 +244,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			_audioProvider.RenderSound = rendersound;
 
-			if (Controller.IsPressed("Reset"))
+			if (controller.IsPressed("Reset"))
 			{
 				api.soft_reset();
 			}
 
-			if (Controller.IsPressed("Power"))
+			if (controller.IsPressed("Power"))
 			{
 				api.hard_reset();
 			}
@@ -265,8 +267,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 		public string SystemId { get { return "N64"; } }
 
-		public string BoardName { get { return null; } }
-
 		public CoreComm CoreComm { get; private set; }
 
 		public DisplayType Region { get { return _display_type; } }
@@ -274,12 +274,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public ControllerDefinition ControllerDefinition
 		{
 			get { return _inputProvider.ControllerDefinition; }
-		}
-
-		public IController Controller
-		{
-			get { return _inputProvider.Controller; }
-			set { _inputProvider.Controller = value; }
 		}
 
 		public void ResetCounters()

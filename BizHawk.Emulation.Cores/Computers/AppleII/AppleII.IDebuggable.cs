@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using BizHawk.Emulation.Common;
 
@@ -20,26 +19,10 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 					reg.Key,
 					reg.Key.Contains("Flag")
 						? reg.Value > 0
-						: getRegisterValue(reg));
+						: GetRegisterValue(reg));
 			}
 
 			return dic;
-		}
-
-		private RegisterValue getRegisterValue(KeyValuePair<string, int> reg)
-		{
-			switch (reg.Key)
-			{
-				case "A":
-				case "X":
-				case "Y":
-				case "S":
-					return (byte)reg.Value;
-				case "PC":
-					return (ushort)reg.Value;
-				default:
-					return reg.Value;
-			}
 		}
 
 		public void SetCpuRegister(string register, int value)
@@ -90,6 +73,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			}
 		}
 
+		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem();
+
 		public bool CanStep(StepType type)
 		{
 			switch (type)
@@ -102,7 +87,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 					return false;
 			}
 		}
-
 
 		public void Step(StepType type) 
 		{
@@ -120,17 +104,34 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			}
 		}
 
-		public int TotalExecutedCycles
+		public int TotalExecutedCycles => (int)_machine.Cpu.Cycles;
+
+		private RegisterValue GetRegisterValue(KeyValuePair<string, int> reg)
 		{
-			get { return (int)_machine.Cpu.Cycles; }
+			switch (reg.Key)
+			{
+				case "A":
+				case "X":
+				case "Y":
+				case "S":
+					return (byte)reg.Value;
+				case "PC":
+					return (ushort)reg.Value;
+				default:
+					return reg.Value;
+			}
 		}
 
 		private void StepInto()
 		{
-			if (Tracer.Enabled)
-				_machine.Cpu.TraceCallback = (s) => TracerWrapper(s);
+			if (_tracer.Enabled)
+			{
+				_machine.Cpu.TraceCallback = TracerWrapper;
+			}
 			else
+			{
 				_machine.Cpu.TraceCallback = null;
+			}
 
 			var machineInVblank = _machine.Video.IsVBlank;
 
@@ -153,9 +154,9 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		{
 			var instruction = _machine.Memory.Read(_machine.Cpu.RPC);
 
-			if (instruction == JSR)
+			if (instruction == Jsr)
 			{
-				var destination = _machine.Cpu.RPC + JSRSize;
+				var destination = _machine.Cpu.RPC + JsrSize;
 				while (_machine.Cpu.RPC != destination)
 				{
 					StepInto();
@@ -171,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		{
 			var instr = _machine.Memory.Read(_machine.Cpu.RPC);
 
-			JSRCount = instr == JSR ? 1 : 0;
+			_jsrCount = instr == Jsr ? 1 : 0;
 
 			var bailOutFrame = Frame + 1;
 
@@ -179,21 +180,21 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			{
 				StepInto();
 				instr = _machine.Memory.Read(_machine.Cpu.RPC);
-				if (instr == JSR)
+				if (instr == Jsr)
 				{
-					JSRCount++;
+					_jsrCount++;
 				}
-				else if (instr == RTS && JSRCount <= 0)
+				else if (instr == Rts && _jsrCount <= 0)
 				{
 					StepInto();
-					JSRCount = 0;
+					_jsrCount = 0;
 					break;
 				}
-				else if (instr == RTS)
+				else if (instr == Rts)
 				{
-					JSRCount--;
+					_jsrCount--;
 				}
-				else //Emergency Bailout Logic
+				else // Emergency Bailout Logic
 				{
 					if (Frame == bailOutFrame)
 					{
@@ -203,13 +204,10 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			}
 		}
 
-		private int JSRCount = 0;
+		private int _jsrCount;
 
-		private const byte JSR = 0x20;
-		private const byte RTS = 0x60;
-
-		private const byte JSRSize = 3;
-
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+		private const byte Jsr = 0x20;
+		private const byte Rts = 0x60;
+		private const byte JsrSize = 3;
 	}
 }

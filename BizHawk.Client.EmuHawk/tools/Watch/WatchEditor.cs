@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 					if (_watchList.Count > 1)
 					{
 						NotesBox.Enabled = false;
-						NotesBox.Text = String.Empty;
+						NotesBox.Text = string.Empty;
 
 						AddressBox.Enabled = false;
 						AddressBox.Text = _watchList.Select(a => a.AddressString).Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 					Text = "New Watch";
 					break;
 				case Mode.Edit:
-					Text = "Edit Watch" + (_watchList.Count > 1 ? "es" : "");
+					Text = "Edit Watch" + (_watchList.Count > 1 ? "es" : string.Empty);
 					break;
 				case Mode.Duplicate:
 					Text = "Duplicate Watch";
@@ -163,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 					foreach(DisplayType t in ByteWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
-                    }
+					}
 					break;
 				case 1:
 					foreach (DisplayType t in WordWatch.ValidTypes)
@@ -179,10 +179,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
-			if (DisplayTypeDropDown.Items.Contains(oldType))
-				DisplayTypeDropDown.SelectedItem = oldType;
-			else
-				DisplayTypeDropDown.SelectedItem = DisplayTypeDropDown.Items[0];
+			DisplayTypeDropDown.SelectedItem = DisplayTypeDropDown.Items.Contains(oldType)
+				? oldType
+				: DisplayTypeDropDown.Items[0];
 		}
 
 		private void SetBigEndianCheckBox()
@@ -310,10 +309,9 @@ namespace BizHawk.Client.EmuHawk
 						_watchList[i].Domain,
 						_watchList.Count == 1 ? AddressBox.ToRawInt() ?? 0 : _watchList[i].Address,
 						size,
-						_watchList[i].Type,						
+						_watchList[i].Type,
 						_watchList[i].BigEndian,
-						_watchList[i].Notes
-                    );
+						_watchList[i].Notes);
 				}
 			}
 

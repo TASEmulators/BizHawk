@@ -11,19 +11,19 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			return new Dictionary<string, RegisterValue>
 			{
-				{ "A", Cpu.A },
-				{ "X", Cpu.X },
-				{ "Y", Cpu.Y },
-				{ "PC", Cpu.PC },
-				{ "S", Cpu.S },
-				{ "MPR-0", Cpu.MPR[0] },
-				{ "MPR-1", Cpu.MPR[1] },
-				{ "MPR-2", Cpu.MPR[2] },
-				{ "MPR-3", Cpu.MPR[3] },
-				{ "MPR-4", Cpu.MPR[4] },
-				{ "MPR-5", Cpu.MPR[5] },
-				{ "MPR-6", Cpu.MPR[6] },
-				{ "MPR-7", Cpu.MPR[7] }
+				["A"] = Cpu.A,
+				["X"] = Cpu.X,
+				["Y"] = Cpu.Y,
+				["PC"] = Cpu.PC,
+				["S"] = Cpu.S,
+				["MPR-0"] = Cpu.MPR[0],
+				["MPR-1"] = Cpu.MPR[1],
+				["MPR-2"] = Cpu.MPR[2],
+				["MPR-3"] = Cpu.MPR[3],
+				["MPR-4"] = Cpu.MPR[4],
+				["MPR-5"] = Cpu.MPR[5],
+				["MPR-6"] = Cpu.MPR[6],
+				["MPR-7"] = Cpu.MPR[7]
 			};
 		}
 
@@ -33,16 +33,19 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			throw new NotImplementedException();
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks { get; }
 
-		public bool CanStep(StepType type) { return false; }
+		public bool CanStep(StepType type)
+		{
+			return false;
+		}
 
 		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
-
-		public int TotalExecutedCycles
+		public void Step(StepType type)
 		{
-			get { return (int)Cpu.TotalExecutedCycles; }
+			throw new NotImplementedException();
 		}
+
+		public int TotalExecutedCycles => (int)Cpu.TotalExecutedCycles;
 	}
 }

@@ -1,32 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
+
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
-using BizHawk.Emulation.Cores.Atari.Atari2600;
+using BizHawk.Emulation.Cores.Libretro;
 using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
-using BizHawk.Emulation.Cores.ColecoVision;
+using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
-using GPGX64=BizHawk.Emulation.Cores.Consoles.Sega.gpgx64;
-using BizHawk.Emulation.Cores.Intellivision;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Nintendo.GBA;
-using BizHawk.Emulation.Cores.Nintendo.N64;
-using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.DiscSystem;
-using BizHawk.Emulation.Cores.WonderSwan;
-using BizHawk.Emulation.Cores.Computers.AppleII;
+
+using GPGX64 = BizHawk.Emulation.Cores.Consoles.Sega.gpgx64;
 
 namespace BizHawk.Client.Common
 {
@@ -50,25 +44,15 @@ namespace BizHawk.Client.Common
 		private object GetCoreSettings(Type t)
 		{
 			var e = new SettingsLoadArgs(t);
-			if (OnLoadSettings != null)
-			{
-				OnLoadSettings(this, e);
-			}
+			OnLoadSettings?.Invoke(this, e);
 			return e.Settings;
 		}
+
 		private object GetCoreSyncSettings(Type t)
 		{
 			var e = new SettingsLoadArgs(t);
-			if (OnLoadSyncSettings != null)
-			{
-				OnLoadSyncSettings(this, e);
-			}
+			OnLoadSyncSettings?.Invoke(this, e);
 			return e.Settings;
-		}
-
-		public RomLoader()
-		{
-
 		}
 
 		// For not throwing errors but simply outputing information to the screen
@@ -76,10 +60,7 @@ namespace BizHawk.Client.Common
 
 		private void DoMessageCallback(string message)
 		{
-			if (MessageCallback != null)
-			{
-				MessageCallback(message);
-			}
+			MessageCallback?.Invoke(message);
 		}
 
 		// TODO: reconsider the need for exposing these;
@@ -138,11 +119,13 @@ namespace BizHawk.Client.Common
 		public Func<RomGame, string> ChoosePlatform { get; set; }
 
 		// in case we get sent back through the picker more than once, use the same choice the second time
-		int? previouschoice;
+		private int? previouschoice;
 		private int? HandleArchive(HawkFile file)
 		{
 			if (previouschoice.HasValue)
+			{
 				return previouschoice;
+			}
 
 			if (ChooseArchive != null)
 			{
@@ -153,21 +136,15 @@ namespace BizHawk.Client.Common
 			return null;
 		}
 
-		//May want to phase out this method in favor of the overload with more paramaters
+		// May want to phase out this method in favor of the overload with more paramaters
 		private void DoLoadErrorCallback(string message, string systemId, LoadErrorType type = LoadErrorType.Unknown)
 		{
-			if (OnLoadError != null)
-			{
-				OnLoadError(this, new RomErrorArgs(message, systemId, type));
-			}
+			OnLoadError?.Invoke(this, new RomErrorArgs(message, systemId, type));
 		}
 
 		private void DoLoadErrorCallback(string message, string systemId, string path, bool det, LoadErrorType type = LoadErrorType.Unknown)
 		{
-			if (OnLoadError != null)
-			{
-				OnLoadError(this, new RomErrorArgs(message, systemId, path, det, type));
-			}
+			OnLoadError?.Invoke(this, new RomErrorArgs(message, systemId, path, det, type));
 		}
 
 		private bool PreferredPlatformIsDefined(string extension)
@@ -180,9 +157,9 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public bool AsLibretro;
+		public bool AsLibretro { get; set; }
 
-		bool HandleArchiveBinding(HawkFile file)
+		private bool HandleArchiveBinding(HawkFile file)
 		{
 			var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA" };
 
@@ -216,7 +193,7 @@ namespace BizHawk.Client.Common
 		{
 			if (recursiveCount > 1) // hack to stop recursive calls from endlessly rerunning if we can't load it
 			{
-				DoLoadErrorCallback("Failed multiple attempts to load ROM.", "");
+				DoLoadErrorCallback("Failed multiple attempts to load ROM.", string.Empty);
 				return false;
 			}
 
@@ -230,7 +207,7 @@ namespace BizHawk.Client.Common
 			using (var file = new HawkFile())
 			{
 
-				//only try mounting a file if a filename was given
+				// only try mounting a file if a filename was given
 				if (!string.IsNullOrEmpty(path))
 				{
 					// lets not use this unless we need to
@@ -258,20 +235,20 @@ namespace BizHawk.Client.Common
 					{
 						string codePathPart = Path.GetFileNameWithoutExtension(nextComm.LaunchLibretroCore);
 
-						var retro = new LibRetroEmulator(nextComm, nextComm.LaunchLibretroCore);
+						var retro = new LibretroCore(nextComm, nextComm.LaunchLibretroCore);
 						nextEmulator = retro;
 
-						//kind of dirty.. we need to stash this, and then we can unstash it in a moment, in case the core doesnt fail
+						// kind of dirty.. we need to stash this, and then we can unstash it in a moment, in case the core doesnt fail
 						var oldGame = Global.Game;
 
 						if (retro.Description.SupportsNoGame && string.IsNullOrEmpty(path))
 						{
-							//must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
-							//game name == name of core
+							// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
+							// game name == name of core
 							var gameName = codePathPart;
 							Global.Game = game = new GameInfo { Name = gameName, System = "Libretro" };
 
-							//if we are allowed to run NoGame and we dont have a game, boot up the core that way
+							// if we are allowed to run NoGame and we dont have a game, boot up the core that way
 							bool ret = retro.LoadNoGame();
 
 							Global.Game = oldGame;
@@ -287,32 +264,41 @@ namespace BizHawk.Client.Common
 						{
 							bool ret;
 
-							//must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
-							//game name == name of core + extensionless_game_filename
+							// must be done before LoadNoGame (which triggers retro_init and the paths to be consumed by the core)
+							// game name == name of core + extensionless_game_filename
 							var gameName = Path.Combine(codePathPart, Path.GetFileNameWithoutExtension(file.Name));
 							Global.Game = game = new GameInfo { Name = gameName, System = "Libretro" };
 
-							//if the core requires an archive file, then try passing the filename of the archive
-							//(but do we ever need to actually load the contents of the archive file into ram?)
+							// if the core requires an archive file, then try passing the filename of the archive
+							// (but do we ever need to actually load the contents of the archive file into ram?)
 							if (retro.Description.NeedsArchives)
 							{
 								if (file.IsArchiveMember)
+								{
 									throw new InvalidOperationException("Should not have bound file member for libretro block_extract core");
+								}
+
 								ret = retro.LoadPath(file.FullPathWithoutMember);
 							}
 							else
 							{
-								//otherwise load the data or pass the filename, as requested. but..
+								// otherwise load the data or pass the filename, as requested. but..
 								if (retro.Description.NeedsRomAsPath && file.IsArchiveMember)
+								{
 									throw new InvalidOperationException("Cannot pass archive member to libretro needs_fullpath core");
+								}
 
 								if (retro.Description.NeedsRomAsPath)
+								{
 									ret = retro.LoadPath(file.FullPathWithoutMember);
+								}
 								else
 								{
 									ret = HandleArchiveBinding(file);
 									if (ret)
-										ret = retro.LoadData(file.ReadAllBytes());
+									{
+										ret = retro.LoadData(file.ReadAllBytes(), file.Name);
+									}
 								}
 							}
 
@@ -325,31 +311,39 @@ namespace BizHawk.Client.Common
 								return false;
 							}
 						}
-
-
 					}
 					else
 					{
-						//if not libretro:
-						
-						//do extension checknig
+						// if not libretro:
+						// do extension checknig
 						ext = file.Extension.ToLowerInvariant();
 
-						//do the archive binding we had to skip
+						// do the archive binding we had to skip
 						if (!HandleArchiveBinding(file))
+						{
 							return false;
+						}
 					}
 
-					if (string.IsNullOrEmpty(ext)) { }
+					if (string.IsNullOrEmpty(ext))
+					{
+
+					}
 					else if (ext == ".m3u")
 					{
-						//HACK ZONE - currently only psx supports m3u
+						// HACK ZONE - currently only psx supports m3u
 						M3U_File m3u;
-						using(var sr = new StreamReader(path))
+						using (var sr = new StreamReader(path))
+						{
 							m3u = M3U_File.Read(sr);
-						if(m3u.Entries.Count == 0)
+						}
+
+						if (m3u.Entries.Count == 0)
+						{
 							throw new InvalidOperationException("Can't load an empty M3U");
-						//load discs for all the m3u
+						}
+
+						// load discs for all the m3u
 						m3u.Rebase(Path.GetDirectoryName(path));
 						List<Disc> discs = new List<Disc>();
 						List<string> discNames = new List<string>();
@@ -367,15 +361,19 @@ namespace BizHawk.Client.Common
 
 							if (discMountJob.OUT_SlowLoadAborted)
 							{
-								DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
+								DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", string.Empty, LoadErrorType.DiscError);
 								return false;
 							}
 
 							if (discMountJob.OUT_ErrorLevel)
+							{
 								throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+							}
 
-							if(disc == null)
+							if (disc == null)
+							{
 								throw new InvalidOperationException("Can't load one of the files specified in the M3U");
+							}
 
 							var discName = Path.GetFileNameWithoutExtension(discPath);
 							discNames.Add(discName);
@@ -388,7 +386,9 @@ namespace BizHawk.Client.Common
 								string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
 								game = Database.CheckDatabase(discHash);
 								if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
+								{
 									sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
+								}
 								else
 								{
 									sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}",discHash);
@@ -402,13 +402,17 @@ namespace BizHawk.Client.Common
 							{
 								sw.WriteLine("Not a PSX disc");
 							}
+
 							sw.WriteLine("-------------------------");
 						}
 
 						nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 						nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
-						game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name) };
-						game.System = "PSX";
+						game = new GameInfo
+						{
+							Name = Path.GetFileNameWithoutExtension(file.Name),
+							System = "PSX"
+						};
 					}
 					else if (ext == ".iso" || ext == ".cue" || ext == ".ccd")
 					{
@@ -420,27 +424,33 @@ namespace BizHawk.Client.Common
 						string discHash = null;
 
 						//--- load the disc in a context which will let us abort if it's going to take too long
-						var discMountJob = new DiscMountJob { IN_FromPath = path };
-						discMountJob.IN_SlowLoadAbortThreshold = 8;
+						var discMountJob = new DiscMountJob { IN_FromPath = path, IN_SlowLoadAbortThreshold = 8 };
 						discMountJob.Run();
 
 						if (discMountJob.OUT_SlowLoadAborted)
 						{
-							DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
+							DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", string.Empty, LoadErrorType.DiscError);
 							return false;
 						}
 
 						if (discMountJob.OUT_ErrorLevel)
+						{
 							throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+						}
 
 						var disc = discMountJob.OUT_Disc;
-						//-----------
-						
-						//TODO - use more sophisticated IDer
+
+						// -----------
+						// TODO - use more sophisticated IDer
 						var discType = new DiscIdentifier(disc).DetectDiscType();
 						if (discType == DiscType.SonyPSX)
+						{
 							discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
-						else discHash = new DiscHasher(disc).OldHash();
+						}
+						else
+						{
+							discHash = new DiscHasher(disc).OldHash();
+						}
 
 						game = Database.CheckDatabase(discHash);
 						if (game == null)
@@ -493,9 +503,11 @@ namespace BizHawk.Client.Common
 								nextEmulator = new PSP(nextComm, file.Name);
 								break;
 							case "PSX":
-								nextEmulator = new Octoshock(nextComm, new List<Disc>(new[]{disc}), new List<string>(new[]{Path.GetFileNameWithoutExtension(path)}), null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
+								nextEmulator = new Octoshock(nextComm, new List<Disc>(new[] { disc }), new List<string>(new[] { Path.GetFileNameWithoutExtension(path) }), null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 								if (game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
+								{
 									nextEmulator.CoreComm.RomStatusDetails = "Disc could not be identified as known-good. Look for a better rip.";
+								}
 								else
 								{
 									StringWriter sw = new StringWriter();
@@ -554,10 +566,9 @@ namespace BizHawk.Client.Common
 								case "C64":
 									nextEmulator = new C64(
 										nextComm,
-                                        xmlGame.Assets.Select(a => a.Value),
+										xmlGame.Assets.Select(a => a.Value),
 										(C64.C64Settings)GetCoreSettings<C64>(),
-										(C64.C64SyncSettings)GetCoreSyncSettings<C64>()
-									);
+										(C64.C64SyncSettings)GetCoreSyncSettings<C64>());
 									break;
 								case "PSX":
 									var entries = xmlGame.AssetFullPaths;
@@ -570,8 +581,7 @@ namespace BizHawk.Client.Common
 										string discPath = e;
 
 										//--- load the disc in a context which will let us abort if it's going to take too long
-										var discMountJob = new DiscMountJob { IN_FromPath = discPath };
-										discMountJob.IN_SlowLoadAbortThreshold = 8;
+										var discMountJob = new DiscMountJob { IN_FromPath = discPath, IN_SlowLoadAbortThreshold = 8 };
 										discMountJob.Run();
 										disc = discMountJob.OUT_Disc;
 
@@ -582,10 +592,14 @@ namespace BizHawk.Client.Common
 										}
 
 										if (discMountJob.OUT_ErrorLevel)
+										{
 											throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+										}
 
 										if (disc == null)
+										{
 											throw new InvalidOperationException("Can't load one of the files specified in the M3U");
+										}
 
 										var discName = Path.GetFileNameWithoutExtension(discPath);
 										discNames.Add(discName);
@@ -598,7 +612,9 @@ namespace BizHawk.Client.Common
 											string discHash = new DiscHasher(disc).Calculate_PSX_BizIDHash().ToString("X8");
 											game = Database.CheckDatabase(discHash);
 											if (game == null || game.IsRomStatusBad() || game.Status == RomStatus.NotInDatabase)
+											{
 												sw.WriteLine("Disc could not be identified as known-good. Look for a better rip.");
+											}
 											else
 											{
 												sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
@@ -612,15 +628,18 @@ namespace BizHawk.Client.Common
 										{
 											sw.WriteLine("Not a PSX disc");
 										}
+
 										sw.WriteLine("-------------------------");
 									}
 
 									// todo: copy pasta from PSX .cue section
 									nextEmulator = new Octoshock(nextComm, discs, discNames, null, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 									nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
-									game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name) };
-									game.System = "PSX";
-
+									game = new GameInfo
+									{
+										Name = Path.GetFileNameWithoutExtension(file.Name),
+										System = "PSX"
+									};
 									break;
 								default:
 									return false;
@@ -672,11 +691,15 @@ namespace BizHawk.Client.Common
 					{
 						rom = new RomGame(file);
 
-						//hacky for now
+						// hacky for now
 						if (file.Extension.ToLowerInvariant() == ".exe")
+						{
 							rom.GameInfo.System = "PSX";
+						}
 						else if (file.Extension.ToLowerInvariant() == ".nsf")
+						{
 							rom.GameInfo.System = "NES";
+						}
 
 
 						if (string.IsNullOrEmpty(rom.GameInfo.System))
@@ -753,16 +776,24 @@ namespace BizHawk.Client.Common
 								break;
 							case "NES":
 								{
-									//apply main spur-of-the-moment switcheroo as lowest priority
+									// apply main spur-of-the-moment switcheroo as lowest priority
 									string preference = "neshawk";
-									if(Global.Config.NES_InQuickNES) preference = "quicknes";
+									if (Global.Config.NES_InQuickNES)
+									{
+										preference = "quicknes";
+									}
 
-									//if user has saw fit to override in gamedb, apply that
+									// if user has saw fit to override in gamedb, apply that
 									if (Global.Config.CoreForcingViaGameDB && !string.IsNullOrEmpty(game.ForcedCore))
+									{
 										preference = game.ForcedCore;
+									}
 
-									//but only neshawk is accurate
-									if (forceAccurateCore) preference = "neshawk";
+									// but only neshawk is accurate
+									if (forceAccurateCore)
+									{
+										preference = "neshawk";
+									}
 
 									if (preference == "neshawk")
 									{
@@ -809,7 +840,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = c64;
 								break;
 							case "GBA":
-								//core = CoreInventory.Instance["GBA", "Meteor"];
+								// core = CoreInventory.Instance["GBA", "Meteor"];
 								if (Global.Config.GBA_UsemGBA)
 								{
 									core = CoreInventory.Instance["GBA", "mGBA"];
@@ -825,10 +856,15 @@ namespace BizHawk.Client.Common
 								break;
 							case "GEN":
 								// discard "Genplus-gx64", auto-added due to implementing IEmulator // HUH?
-								//core = CoreInventory.Instance["GEN", "Genplus-gx"];
+								// core = CoreInventory.Instance["GEN", "Genplus-gx"];
 								if (Environment.Is64BitProcess)
+								{
 									core = CoreInventory.Instance["GEN", "Genplus-gx64"];
-								else core = CoreInventory.Instance["GEN", "Genplus-gx"];
+								}
+								else
+								{
+									core = CoreInventory.Instance["GEN", "Genplus-gx"];
+								}
 								break;
 						}
 
@@ -845,6 +881,7 @@ namespace BizHawk.Client.Common
 						{
 							DoLoadErrorCallback("No core could load the rom.", null);
 						}
+
 						return false;
 					}
 				}
@@ -859,7 +896,9 @@ namespace BizHawk.Client.Common
 					// all of the specific exceptions we're trying to catch here aren't expected to have inner exceptions,
 					// so drill down in case we got a TargetInvocationException or something like that
 					while (ex.InnerException != null)
+					{
 						ex = ex.InnerException;
+					}
 
 					// Specific hack here, as we get more cores of the same system, this isn't scalable
 					if (ex is UnsupportedGameException)

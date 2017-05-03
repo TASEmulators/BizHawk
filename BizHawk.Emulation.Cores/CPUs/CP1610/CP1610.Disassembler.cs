@@ -11,7 +11,7 @@
 			ushort addr, offset;
 			int decle2, decle3, cond, ext;
 			string result = "";
-			int opcode = ReadMemory(pc, false) & 0x3FF;
+			int opcode = ReadMemory(pc, true) & 0x3FF;
 			switch (opcode)
 			{
 				case 0x000:
@@ -24,8 +24,8 @@
 					return "DIS";
 				case 0x004:
 					// 0000:0000:0000:0100    0000:00rr:aaaa:aaff    0000:00aa:aaaa:aaaa
-					decle2 = ReadMemory((ushort)(pc + 1), false);
-					decle3 = ReadMemory((ushort)(pc + 2), false);
+					decle2 = ReadMemory((ushort)(pc + 1), true);
+					decle3 = ReadMemory((ushort)(pc + 2), true);
 					// rr indicates the register into which to store the return address
 					dest = (byte)(((decle2 >> 8) & 0x3) + 4);
 					// aaaaaaaaaaaaaaaa indicates the address to where the CP1610 should Jump
@@ -733,7 +733,7 @@
 				case 0x23D:
 				case 0x23E:
 				case 0x23F:
-					offset = ReadMemory((ushort)(pc + 1), false);
+					offset = ReadMemory((ushort)(pc + 1), true);
 					cond = opcode & 0xF;
 					ext = opcode & 0x10;
 					if (ext != 0)
@@ -818,7 +818,7 @@
 				case 0x246:
 				case 0x247:
 					src = (byte)(opcode & 0x7);
-					addr = ReadMemory((ushort)(pc + 1), false);
+					addr = ReadMemory((ushort)(pc + 1), true);
 					addrToAdvance = 2;
 					return string.Format("MVO R{0:d}, ${1:X4}", src, addr);
 				case 0x248:
@@ -889,7 +889,7 @@
 				case 0x286:
 				case 0x287:
 					dest = (byte)(opcode & 0x7);
-					addr = ReadMemory((ushort)(pc + 1), false);
+					addr = ReadMemory((ushort)(pc + 1), true);
 					addrToAdvance = 2;
 					return string.Format("MVI R{0:d}, ${1:X4}", dest, addr);
 				case 0x288:
@@ -960,7 +960,7 @@
 				case 0x2C6:
 				case 0x2C7:
 					dest = (byte)(opcode & 0x7);
-					addr = ReadMemory((ushort)(pc + 1), false);
+					addr = ReadMemory((ushort)(pc + 1), true);
 					addrToAdvance = 2;
 					return string.Format("ADD R{0:d}, ${1:X4}", dest, addr);
 				case 0x2C8:
@@ -1031,7 +1031,7 @@
 				case 0x306:
 				case 0x307:
 					mem = (byte)(opcode & 0x7);
-					addr = ReadMemory((ushort)(pc + 1), false);
+					addr = ReadMemory((ushort)(pc + 1), true);
 					addrToAdvance = 2;
 					return string.Format("SUB R{0:d}, ${1:X4}", mem, addr);
 				case 0x308:
@@ -1102,7 +1102,7 @@
 				case 0x346:
 				case 0x347:
 					mem = (byte)(opcode & 0x7);
-					addr = ReadMemory((ushort)(pc + 1), false);
+					addr = ReadMemory((ushort)(pc + 1), true);
 					addrToAdvance = 2;
 					return string.Format("CMP R{0:d}, ${1:X4}", mem, addr);
 				case 0x348:
@@ -1173,7 +1173,7 @@
 				case 0x386:
 				case 0x387:
 					mem = (byte)(opcode & 0x7);
-					addr = ReadMemory((ushort)(pc + 1), false);
+					addr = ReadMemory((ushort)(pc + 1), true);
 					addrToAdvance = 2;
 					return string.Format("AND R{0:d}, ${1:X4}", mem, addr);
 				case 0x388:
@@ -1244,7 +1244,7 @@
 				case 0x3C6:
 				case 0x3C7:
 					mem = (byte)(opcode & 0x7);
-					addr = ReadMemory((ushort)(pc + 1), false);
+					addr = ReadMemory((ushort)(pc + 1), true);
 					addrToAdvance = 2;
 					return string.Format("XOR R{0:d}, ${1:X4}", mem, addr);
 				case 0x3C8:

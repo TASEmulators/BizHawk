@@ -2,13 +2,13 @@
 
 namespace BizHawk.Emulation.Cores.Calculators
 {
-	public partial class TI83  : IVideoProvider
+	public partial class TI83 : IVideoProvider
 	{
-		public int VirtualWidth{ get { return 96; } }
-		public int VirtualHeight { get { return 64; } }
-		public int BufferWidth { get { return 96; } }
-		public int BufferHeight { get { return 64; } }
-		public int BackgroundColor { get { return 0; } }
+		public int VirtualWidth => 96;
+		public int VirtualHeight => 64;
+		public int BufferWidth => 96;
+		public int BufferHeight => 64;
+		public int BackgroundColor => 0;
 
 		public int[] GetVideoBuffer()
 		{
@@ -19,19 +19,21 @@ namespace BizHawk.Emulation.Cores.Calculators
 			{
 				for (int x = 0; x < 96; x++)
 				{
-					int offset = y * 96 + x;
+					int offset = (y * 96) + x;
 					int bufbyte = offset >> 3;
 					int bufbit = offset & 7;
-					int bit = ((_vram[bufbyte] >> (7 - bufbit)) & 1);
+					int bit = (_vram[bufbyte] >> (7 - bufbit)) & 1;
 					if (bit == 0)
 					{
-						unchecked { pixels[i++] = (int)Settings.BGColor; }
+						unchecked
+						{
+							pixels[i++] = (int)Settings.BGColor;
+						}
 					}
 					else
 					{
 						pixels[i++] = (int)Settings.ForeColor;
 					}
-
 				}
 			}
 

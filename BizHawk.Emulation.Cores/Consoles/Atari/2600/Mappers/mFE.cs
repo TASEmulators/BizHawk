@@ -1,6 +1,4 @@
-﻿using BizHawk.Common;
-
-namespace BizHawk.Emulation.Cores.Atari.Atari2600
+﻿namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	/*
 	FE (Activision special)

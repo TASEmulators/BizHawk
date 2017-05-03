@@ -88,15 +88,15 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 			}
 			if (!FlagD)
 			{
-				value = ReadMemory(Register[mem], false);
+				value = ReadMemoryWrapper(Register[mem], false);
 			}
 			else
 			{
 				// Double Byte Data.
-				value = (ushort)(ReadMemory(Register[mem], false) & 0xFF);
+				value = (ushort)(ReadMemoryWrapper(Register[mem], false) & 0xFF);
 				if (mem >= 4)
 					Register[mem]++;
-				value |= (ushort)(ReadMemory(Register[mem], false) << 8);
+				value |= (ushort)(ReadMemoryWrapper(Register[mem], false) << 8);
 			}
 			// Auto-increment the memory register if it does so on write.
 			if (mem >= 0x4 && mem != 0x6)
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 
 		public void Indirect_Set(byte mem, byte src)
 		{
-			WriteMemory(Register[mem], Register[src], false);
+			WriteMemoryWrapper(Register[mem], Register[src], false);
 			// Auto-increment the memory register if it does so on read.
 			if (mem >= 0x4)
 			{
@@ -178,16 +178,23 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				Log.WriteLine(Disassemble(RegisterPC, out addrToAdvance));
 				Log.Flush();
 			}
+
 			byte dest, src, mem;
 			ushort dest_value, src_value, mem_read, addr, addr_read, offset;
 			int decle2, decle3, result = 0, twos, status_word, lower, sign, cond, ext;
 			//int ones, carry;
 			bool branch = false;
 			bool FlagD_prev = FlagD;
-			opcode = ReadMemory(RegisterPC++, false) & 0x3FF;
+			opcode = ReadMemoryWrapper(RegisterPC++, false) & 0x3FF;
 
 			if (TraceCallback != null)
 				TraceCallback(CP1610State());
+
+			if (MemoryCallbacks != null)
+			{
+				MemoryCallbacks.CallExecutes(RegisterPC);
+			}
+
 			switch (opcode)
 			{
 				case 0x000: // HLT
@@ -209,8 +216,8 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					break;
 				case 0x004: // J, JE, JD, JSR, JSRE, JSRD
 					// 0000:0000:0000:0100    0000:00rr:aaaa:aaff    0000:00aa:aaaa:aaaa
-					decle2 = ReadMemory(RegisterPC++, false);
-					decle3 = ReadMemory(RegisterPC++, false);
+					decle2 = ReadMemoryWrapper(RegisterPC++, false);
+					decle3 = ReadMemoryWrapper(RegisterPC++, false);
 					// rr indicates the register into which to store the return address
 					dest = (byte)(((decle2 >> 8) & 0x3) + 4);
 					// aaaaaaaaaaaaaaaa indicates the address to where the CP1610 should Jump
@@ -310,18 +317,18 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x026:
 				case 0x027:
 					dest = (byte)(opcode & 0x7);
-                    dest_value = Register[dest];
-                    var ones = (dest_value ^ 0xFFFF);
-                    result = ones + 1;
-                    Calc_FlagC(result);
-                    Calc_FlagO_Add(ones, 1, result);
-                    result &= 0xFFFF;
-                    Calc_FlagS(result);
-                    Calc_FlagZ(result);
-                    Register[dest] = (ushort)result;
-                    cycles = 6;
-                    Interruptible = true;
-                    break;
+					dest_value = Register[dest];
+					var ones = (dest_value ^ 0xFFFF);
+					result = ones + 1;
+					Calc_FlagC(result);
+					Calc_FlagO_Add(ones, 1, result);
+					result &= 0xFFFF;
+					Calc_FlagS(result);
+					Calc_FlagZ(result);
+					Register[dest] = (ushort)result;
+					cycles = 6;
+					Interruptible = true;
+					break;
 				// ADCR
 				case 0x028:
 				case 0x029:
@@ -332,18 +339,18 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x02E:
 				case 0x02F:
 					dest = (byte)(opcode & 0x7);
-                    dest_value = Register[dest];
-                    var carry = FlagC ? 1 : 0;
-                    result = dest_value + carry;
-                    Calc_FlagC(result);
-                    Calc_FlagO_Add(dest_value, carry, result);
-                    result &= 0xFFFF;
-                    Calc_FlagS(result);
-                    Calc_FlagZ(result);
-                    Register[dest] = (ushort)result;
-                    cycles = 6;
-                    Interruptible = true;
-                    break;
+					dest_value = Register[dest];
+					var carry = FlagC ? 1 : 0;
+					result = dest_value + carry;
+					Calc_FlagC(result);
+					Calc_FlagO_Add(dest_value, carry, result);
+					result &= 0xFFFF;
+					Calc_FlagS(result);
+					Calc_FlagZ(result);
+					Register[dest] = (ushort)result;
+					cycles = 6;
+					Interruptible = true;
+					break;
 				// GSWD
 				case 0x030:
 				case 0x031:
@@ -1008,15 +1015,15 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x1BD:
 				case 0x1BE:
 				case 0x1BF:
-                    src = (byte)((opcode >> 3) & 0x7);
-                    dest = (byte)(opcode & 0x7);
-                    result = Register[dest] & Register[src];
-                    Calc_FlagS(result);
-                    Calc_FlagZ(result);
-                    Register[dest] = (ushort)result;
-                    cycles = 6;
-                    Interruptible = true;
-                    break;
+					src = (byte)((opcode >> 3) & 0x7);
+					dest = (byte)(opcode & 0x7);
+					result = Register[dest] & Register[src];
+					Calc_FlagS(result);
+					Calc_FlagZ(result);
+					Register[dest] = (ushort)result;
+					cycles = 6;
+					Interruptible = true;
+					break;
 				// XORR
 				case 0x1C0:
 				case 0x1C1:
@@ -1159,7 +1166,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x23D:
 				case 0x23E:
 				case 0x23F:
-					offset = ReadMemory(RegisterPC++, false);
+					offset = ReadMemoryWrapper(RegisterPC++, false);
 					cond = opcode & 0xF;
 					ext = opcode & 0x10;
 					// BEXT
@@ -1261,8 +1268,8 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x246:
 				case 0x247:
 					src = (byte)(opcode & 0x7);
-					addr = ReadMemory(RegisterPC++, false);
-					WriteMemory(addr, Register[src], false);
+					addr = ReadMemoryWrapper(RegisterPC++, false);
+					WriteMemoryWrapper(addr, Register[src], false);
 					cycles = 11;
 					Interruptible = false;
 					break;
@@ -1339,8 +1346,8 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x286:
 				case 0x287:
 					dest = (byte)(opcode & 0x7);
-					addr = ReadMemory(RegisterPC++, false);
-					Register[dest] = ReadMemory(addr, false);
+					addr = ReadMemoryWrapper(RegisterPC++, false);
+					Register[dest] = ReadMemoryWrapper(addr, false);
 					cycles = 10;
 					Interruptible = true;
 					break;
@@ -1417,9 +1424,9 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x2C6:
 				case 0x2C7:
 					dest = (byte)(opcode & 0x7);
-					addr = ReadMemory(RegisterPC++, false);
+					addr = ReadMemoryWrapper(RegisterPC++, false);
 					dest_value = Register[dest];
-					addr_read = ReadMemory(addr, false);
+					addr_read = ReadMemoryWrapper(addr, false);
 					result = dest_value + addr_read;
 					Calc_FlagC(result);
 					Calc_FlagO_Add(dest_value, addr_read, result);
@@ -1510,21 +1517,21 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x305:
 				case 0x306:
 				case 0x307:
-                    dest = (byte)(opcode & 0x7);
-                    addr = ReadMemory(RegisterPC++, false);
-                    dest_value = Register[dest];
-                    addr_read = ReadMemory(addr, false);
-                    twos = (0xFFFF ^ addr_read) + 1;
-                    result = dest_value + twos;
-                    Calc_FlagC(result);
+					dest = (byte)(opcode & 0x7);
+					addr = ReadMemoryWrapper(RegisterPC++, false);
+					dest_value = Register[dest];
+					addr_read = ReadMemoryWrapper(addr, false);
+					twos = (0xFFFF ^ addr_read) + 1;
+					result = dest_value + twos;
+					Calc_FlagC(result);
 					Calc_FlagO_Add(dest_value, twos, result);
 					result &= 0xFFFF;
-                    Calc_FlagS(result);
-                    Calc_FlagZ(result);
-                    Register[dest] = (ushort)result;
-                    cycles = 10;
-                    Interruptible = true;
-                    break;
+					Calc_FlagS(result);
+					Calc_FlagZ(result);
+					Register[dest] = (ushort)result;
+					cycles = 10;
+					Interruptible = true;
+					break;
 				// SUB@
 				case 0x308:
 				case 0x309:
@@ -1607,9 +1614,9 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x346:
 				case 0x347:
 					dest = (byte)(opcode & 0x7);
-					addr = ReadMemory(RegisterPC++, false);
+					addr = ReadMemoryWrapper(RegisterPC++, false);
 					dest_value = Register[dest];
-					addr_read = ReadMemory(addr, false);
+					addr_read = ReadMemoryWrapper(addr, false);
 					twos = (0xFFFF ^ addr_read) + 1;
 					result = dest_value + twos;
 					Calc_FlagC(result);
@@ -1701,16 +1708,16 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x386:
 				case 0x387:
 					dest = (byte)(opcode & 0x7);
-                    addr = ReadMemory(RegisterPC++, false);
-                    dest_value = Register[dest];
-                    addr_read = ReadMemory(addr, false);
-                    result = dest_value & addr_read;
-                    Calc_FlagS(result);
-                    Calc_FlagZ(result);
-                    Register[dest] = (ushort)result;
-                    cycles = 10;
-                    Interruptible = true;
-                    break;
+					addr = ReadMemoryWrapper(RegisterPC++, false);
+					dest_value = Register[dest];
+					addr_read = ReadMemoryWrapper(addr, false);
+					result = dest_value & addr_read;
+					Calc_FlagS(result);
+					Calc_FlagZ(result);
+					Register[dest] = (ushort)result;
+					cycles = 10;
+					Interruptible = true;
+					break;
 				// AND@
 				case 0x388:
 				case 0x389:
@@ -1787,17 +1794,17 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 				case 0x3C5:
 				case 0x3C6:
 				case 0x3C7:
-                    dest = (byte)(opcode & 0x7);
-                    addr = ReadMemory(RegisterPC++, false);
-                    dest_value = Register[dest];
-                    addr_read = ReadMemory(addr, false);
-                    result = dest_value ^ addr_read;
-                    Calc_FlagS(result);
-                    Calc_FlagZ(result);
-                    Register[dest] = (ushort)result;
-                    cycles = 10;
-                    Interruptible = true;
-                    break;
+					dest = (byte)(opcode & 0x7);
+					addr = ReadMemoryWrapper(RegisterPC++, false);
+					dest_value = Register[dest];
+					addr_read = ReadMemoryWrapper(addr, false);
+					result = dest_value ^ addr_read;
+					Calc_FlagS(result);
+					Calc_FlagZ(result);
+					Register[dest] = (ushort)result;
+					cycles = 10;
+					Interruptible = true;
+					break;
 				// XOR@
 				case 0x3C8:
 				case 0x3C9:

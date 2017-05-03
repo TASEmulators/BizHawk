@@ -28,6 +28,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Implementation checking
 
+		// TODO: be cachey with checks that depend on catching exceptions
 		private bool CanUseMemoryCallbacks
 		{
 			get

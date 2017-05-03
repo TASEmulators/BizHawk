@@ -2,16 +2,16 @@
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-    /*
+	/*
 	F8 Sega
 	-----
 
 	Apparently some of Sega's games have banks that are physically flipped, so even though this game uses a common mapper, the initial bank that gets pointed to is incorrect.
 	*/
 
-    internal class mF8_sega : MapperBase
+	internal class mF8_sega : MapperBase
 	{
-		private int _bank4K=1;
+		private int _bank4K = 1;
 
 		public override void SyncState(Serializer ser)
 		{

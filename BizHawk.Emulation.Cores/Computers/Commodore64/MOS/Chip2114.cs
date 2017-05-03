@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 	public sealed class Chip2114
 	{
-	    private int[] _ram = new int[0x400];
+		private int[] _ram = new int[0x400];
 
 		public Chip2114()
 		{
@@ -15,10 +15,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void HardReset()
 		{
-		    for (var i = 0; i < 0x400; i++)
-		    {
-		        _ram[i] = 0x0;
-		    }
+			for (var i = 0; i < 0x400; i++)
+			{
+				_ram[i] = 0x0;
+			}
 		}
 
 		public int Peek(int addr)

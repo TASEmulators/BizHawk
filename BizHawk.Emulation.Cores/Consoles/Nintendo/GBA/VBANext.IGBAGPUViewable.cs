@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
@@ -25,8 +21,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		{
 			if (scanline < 0 || scanline > 227)
 			{
-				throw new ArgumentOutOfRangeException("scanline", "Scanline must be in [0, 227]!");
+				throw new ArgumentOutOfRangeException(nameof(scanline), "Scanline must be in [0, 227]!");
 			}
+
 			if (callback == null)
 			{
 				scanlinecb = null;

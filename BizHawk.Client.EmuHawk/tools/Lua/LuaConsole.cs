@@ -225,7 +225,7 @@ namespace BizHawk.Client.EmuHawk
 			watcher.Changed += new FileSystemEventHandler(OnChanged);
 
 			_watches.Add(watcher);
-        }
+		}
 
 		private void OnChanged(object source, FileSystemEventArgs e)
 		{
@@ -632,7 +632,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			AddFileWatches();
-        }
+		}
 
 		public bool AskSaveChanges()
 		{
@@ -1077,7 +1077,7 @@ namespace BizHawk.Client.EmuHawk
 			if (Global.Config.LuaReloadOnScriptFileChange)
 			{
 				AddFileWatches();
-            }
+			}
 			else
 			{
 				_watches.Clear();

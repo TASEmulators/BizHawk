@@ -29,12 +29,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (biosfile.Length != 16 * 1024)
 				throw new ArgumentException("BIOS file is not exactly 16K!");
 
-			LibVBANext.FrontEndSettings FES = new LibVBANext.FrontEndSettings();
-			FES.saveType = (LibVBANext.FrontEndSettings.SaveType)game.GetInt("saveType", 0);
-			FES.flashSize = (LibVBANext.FrontEndSettings.FlashSize)game.GetInt("flashSize", 0x10000);
-			FES.enableRtc = game.GetInt("rtcEnabled", 0) != 0;
-			FES.mirroringEnable = game.GetInt("mirroringEnabled", 0) != 0;
-
+			var FES = new LibVBANext.FrontEndSettings
+			{
+				saveType = (LibVBANext.FrontEndSettings.SaveType)game.GetInt("saveType", 0),
+				flashSize = (LibVBANext.FrontEndSettings.FlashSize)game.GetInt("flashSize", 0x10000),
+				enableRtc = game.GetInt("rtcEnabled", 0) != 0,
+				mirroringEnable = game.GetInt("mirroringEnabled", 0) != 0
+			};
 			Console.WriteLine("GameDB loaded settings: saveType={0}, flashSize={1}, rtcEnabled={2}, mirroringEnabled={3}",
 				FES.saveType, FES.flashSize, FES.enableRtc, FES.mirroringEnable);
 
@@ -78,8 +79,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				GameCode = Encoding.ASCII.GetString(file, 0xac, 4);
 				Console.WriteLine("Game code \"{0}\"", GameCode);
 
-				savebuff = new byte[LibVBANext.BinStateSize(Core)];
-				savebuff2 = new byte[savebuff.Length + 13];
+				_savebuff = new byte[LibVBANext.BinStateSize(Core)];
+				_savebuff2 = new byte[_savebuff.Length + 13];
 				InitMemoryDomains();
 				InitRegisters();
 				InitCallbacks();
@@ -96,16 +97,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public void FrameAdvance(bool render, bool rendersound = true)
+		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			Frame++;
 
-			if (Controller.IsPressed("Power"))
+			if (controller.IsPressed("Power"))
 				LibVBANext.Reset(Core);
 
 			SyncTraceCallback();
 
-			IsLagFrame = LibVBANext.FrameAdvance(Core, GetButtons(Controller), videobuff, soundbuff, out numsamp, videopalette);
+			IsLagFrame = LibVBANext.FrameAdvance(Core, GetButtons(controller), _videobuff, _soundbuff, out _numsamp, _videopalette);
 
 			if (IsLagFrame)
 				LagCount++;
@@ -128,7 +129,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			IsLagFrame = false;
 		}
 
-		public string BoardName { get { return null; } }
 		/// <summary>
 		/// set in the ROM internal header
 		/// </summary>
@@ -205,7 +205,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		#region Controller
 
 		public ControllerDefinition ControllerDefinition { get { return GBA.GBAController; } }
-		public IController Controller { get; set; }
 
 		public static LibVBANext.Buttons GetButtons(IController c)
 		{

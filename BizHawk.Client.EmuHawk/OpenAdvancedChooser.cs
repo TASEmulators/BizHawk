@@ -9,6 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Cores;
+using BizHawk.Emulation.Cores.Libretro;
 using BizHawk.Client.Common;
 
 //these match strings from OpenAdvance. should we make them constants in there?
@@ -55,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 				RefreshLibretroCore(false);
 		}
 
-		LibRetroEmulator.RetroDescription CurrentDescription;
+		RetroDescription CurrentDescription;
 		void RefreshLibretroCore(bool bootstrap)
 		{
 			txtLibretroCore.Text = "";
@@ -72,10 +73,14 @@ namespace BizHawk.Client.EmuHawk
 			//scan the current libretro core to see if it can be launched with NoGame,and other stuff
 			try
 			{
-				//a stub corecomm. to reinforce that this won't touch the frontend at all!
-				//LibRetroEmulator should be able to survive having this stub corecomm
+				//OLD COMMENTS:
+				////a stub corecomm. to reinforce that this won't touch the frontend at all!
+				////LibRetroEmulator should be able to survive having this stub corecomm
+				//NEW COMMENTS:
+				//nope, we need to navigate to the dll path. this was a bad idea anyway. so many dlls get loaded, something to resolve them is needed
 				var coreComm = new BizHawk.Emulation.Common.CoreComm(null, null);
-				using (var retro = new LibRetroEmulator(coreComm, core))
+				CoreFileProvider.SyncCoreCommInputSignals(coreComm);
+				using (var retro = new LibretroCore(coreComm, core))
 				{
 					btnLibretroLaunchGame.Enabled = true;
 					if (retro.Description.SupportsNoGame)
@@ -108,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach(var ext in CurrentDescription.ValidExtensions.Split('|'))
 				sw.Write("*.{0};",ext);
 			var filter = sw.ToString();
-			filter = filter.Substring(0,filter.Length-1);
+			filter = filter.Substring(0,filter.Length-1); //remove last semicolon
 			List<string> args = new List<string>();
 			args.Add("Rom Files");
 			if (!CurrentDescription.NeedsArchives)

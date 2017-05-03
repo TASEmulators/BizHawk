@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
+// ReSharper disable StyleCop.SA1300
+// ReSharper disable InconsistentNaming
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
@@ -8,14 +10,29 @@ namespace BizHawk.Emulation.Common
 	/// </summary>
 	public class SpeexResampler : IDisposable, ISoundProvider
 	{
-		static class LibSpeexDSP
-		{
-			public const int QUALITY_MAX = 10;
-			public const int QUALITY_MIN = 0;
-			public const int QUALITY_DEFAULT = 4;
-			public const int QUALITY_VOIP = 3;
-			public const int QUALITY_DESKTOP = 5;
+		// to accept an ISyncSoundProvder input
+		private readonly ISoundProvider _input;
 
+		// function to call to dispatch output
+		private readonly Action<short[], int> _drainer;
+
+		// TODO: this size is roughly based on how big you can make the buffer before the snes resampling (32040.5 -> 44100) gets screwed up
+		private readonly short[] _inbuf = new short[512]; // [8192]; // [512];
+
+		/// <summary>
+		/// quality of the resampler.  values other than those listed are valid, provided they are between MIN and MAX
+		/// </summary>
+		public enum Quality : int
+		{
+			QUALITY_MAX = 10,
+			QUALITY_MIN = 0,
+			QUALITY_DEFAULT = 4,
+			QUALITY_VOIP = 3,
+			QUALITY_DESKTOP = 5,
+		}
+
+		private static class LibSpeexDSP
+		{
 			public enum RESAMPLER_ERR
 			{
 				SUCCESS = 0,
@@ -24,7 +41,7 @@ namespace BizHawk.Emulation.Common
 				INVALID_ARG = 3,
 				PTR_OVERLAP = 4,
 				MAX_ERROR
-			};
+			}
 
 #if WINDOWS
 			/// <summary>
@@ -34,10 +51,10 @@ namespace BizHawk.Emulation.Common
 			/// <param name="in_rate">Input sampling rate (integer number of Hz).</param>
 			/// <param name="out_rate">Output sampling rate (integer number of Hz).</param>
 			/// <param name="quality">Resampling quality between 0 and 10, where 0 has poor quality and 10 has very high quality.</param>
-			/// <param name="err"></param>
+			/// <param name="err">The error state</param>
 			/// <returns>Newly created resampler state</returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
-			public static extern IntPtr speex_resampler_init(uint nb_channels, uint in_rate, uint out_rate, int quality, ref RESAMPLER_ERR err);
+			public static extern IntPtr speex_resampler_init(uint nb_channels, uint in_rate, uint out_rate, Quality quality, ref RESAMPLER_ERR err);
 
 			/// <summary>
 			/// Create a new resampler with fractional input/output rates. The sampling
@@ -50,10 +67,10 @@ namespace BizHawk.Emulation.Common
 			/// <param name="in_rate">Input sampling rate rounded to the nearest integer (in Hz).</param>
 			/// <param name="out_rate">Output sampling rate rounded to the nearest integer (in Hz).</param>
 			/// <param name="quality">Resampling quality between 0 and 10, where 0 has poor quality and 10 has very high quality.</param>
-			/// <param name="err"></param>
+			/// <param name="err">The error state</param>
 			/// <returns>Newly created resampler state</returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
-			public static extern IntPtr speex_resampler_init_frac(uint nb_channels, uint ratio_num, uint ratio_den, uint in_rate, uint out_rate, int quality, ref RESAMPLER_ERR err);
+			public static extern IntPtr speex_resampler_init_frac(uint nb_channels, uint ratio_num, uint ratio_den, uint in_rate, uint out_rate, Quality quality, ref RESAMPLER_ERR err);
 
 			/// <summary>
 			/// Destroy a resampler state.
@@ -71,7 +88,6 @@ namespace BizHawk.Emulation.Common
 			/// <param name="in_len">Number of input samples in the input buffer. Returns the number of samples processed</param>
 			/// <param name="outp">Output buffer</param>
 			/// <param name="out_len">Size of the output buffer. Returns the number of samples written</param>
-			/// <returns></returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern RESAMPLER_ERR speex_resampler_process_float(IntPtr st, uint channel_index, float[] inp, ref uint in_len, float[] outp, ref uint out_len);
 
@@ -84,7 +100,6 @@ namespace BizHawk.Emulation.Common
 			/// <param name="in_len">Number of input samples in the input buffer. Returns the number of samples processed</param>
 			/// <param name="outp">Output buffer</param>
 			/// <param name="out_len">Size of the output buffer. Returns the number of samples written</param>
-			/// <returns></returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern RESAMPLER_ERR speex_resampler_process_int(IntPtr st, uint channel_index, short[] inp, ref uint in_len, short[] outp, ref uint out_len);
 
@@ -96,7 +111,6 @@ namespace BizHawk.Emulation.Common
 			/// <param name="in_len">Number of input samples in the input buffer. Returns the number of samples processed. This is all per-channel.</param>
 			/// <param name="outp">Output buffer</param>
 			/// <param name="out_len">Size of the output buffer. Returns the number of samples written. This is all per-channel.</param>
-			/// <returns></returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern RESAMPLER_ERR speex_resampler_process_interleaved_float(IntPtr st, float[] inp, ref uint in_len, float[] outp, ref uint out_len);
 
@@ -108,7 +122,6 @@ namespace BizHawk.Emulation.Common
 			/// <param name="in_len">Number of input samples in the input buffer. Returns the number of samples processed. This is all per-channel.</param>
 			/// <param name="outp">Output buffer</param>
 			/// <param name="out_len">Size of the output buffer. Returns the number of samples written. This is all per-channel.</param>
-			/// <returns></returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern RESAMPLER_ERR speex_resampler_process_interleaved_int(IntPtr st, short[] inp, ref uint in_len, short[] outp, ref uint out_len);
 
@@ -118,7 +131,6 @@ namespace BizHawk.Emulation.Common
 			/// <param name="st">Resampler state</param>
 			/// <param name="in_rate">Input sampling rate (integer number of Hz).</param>
 			/// <param name="out_rate">Output sampling rate (integer number of Hz).</param>
-			/// <returns></returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern RESAMPLER_ERR speex_resampler_set_rate(IntPtr st, uint in_rate, uint out_rate);
 
@@ -134,12 +146,11 @@ namespace BizHawk.Emulation.Common
 			/// <summary>
 			/// Set (change) the input/output sampling rates and resampling ratio (fractional values in Hz supported).
 			/// </summary>
-			/// <param name="st">esampler state</param>
+			/// <param name="st">resampler state</param>
 			/// <param name="ratio_num">Numerator of the sampling rate ratio</param>
 			/// <param name="ratio_den">Denominator of the sampling rate ratio</param>
 			/// <param name="in_rate">Input sampling rate rounded to the nearest integer (in Hz).</param>
 			/// <param name="out_rate">Output sampling rate rounded to the nearest integer (in Hz).</param>
-			/// <returns></returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern RESAMPLER_ERR speex_resampler_set_rate_frac(IntPtr st, uint ratio_num, uint ratio_den, uint in_rate, uint out_rate);
 
@@ -157,9 +168,8 @@ namespace BizHawk.Emulation.Common
 			/// </summary>
 			/// <param name="st">Resampler state</param>
 			/// <param name="quality">Resampling quality between 0 and 10, where 0 has poor quality and 10 has very high quality.</param>
-			/// <returns></returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
-			public static extern RESAMPLER_ERR speex_resampler_set_quality(IntPtr st, int quality);
+			public static extern RESAMPLER_ERR speex_resampler_set_quality(IntPtr st, Quality quality);
 
 			/// <summary>
 			/// Get the conversion quality.
@@ -167,7 +177,7 @@ namespace BizHawk.Emulation.Common
 			/// <param name="st">Resampler state</param>
 			/// <param name="quality">Resampling quality between 0 and 10, where 0 has poor quality and 10 has very high quality.</param>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
-			public static extern void speex_resampler_get_quality(IntPtr st, ref int quality);
+			public static extern void speex_resampler_get_quality(IntPtr st, ref Quality quality);
 
 			/// <summary>
 			/// Set (change) the input stride.
@@ -222,7 +232,7 @@ namespace BizHawk.Emulation.Common
 			*/
 
 			/// <summary>
-			/// Make sure that the first samples to go out of the resamplers don't have
+			/// Make sure that the first samples to go out of the resampler don't have
 			/// leading zeros. This is only useful before starting to use a newly created
 			/// resampler. It is recommended to use that when resampling an audio file, as
 			/// it will generate a file with the same length. For real-time processing,
@@ -230,7 +240,6 @@ namespace BizHawk.Emulation.Common
 			/// is the same for the first frame).
 			/// </summary>
 			/// <param name="st">Resampler state</param>
-			/// <returns></returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern RESAMPLER_ERR speex_resampler_skip_zeroes(IntPtr st);
 
@@ -238,7 +247,6 @@ namespace BizHawk.Emulation.Common
 			/// Reset a resampler so a new (unrelated) stream can be processed.
 			/// </summary>
 			/// <param name="st">Resampler state</param>
-			/// <returns></returns>
 			[DllImport("libspeexdsp.dll", CallingConvention = CallingConvention.Cdecl)]
 			public static extern RESAMPLER_ERR speex_resampler_reset_mem(IntPtr st);
 
@@ -252,41 +260,25 @@ namespace BizHawk.Emulation.Common
 #endif
 		}
 
-		/// <summary>
-		/// opaque pointer to state
-		/// </summary>
-		private IntPtr st = IntPtr.Zero;
+		// opaque pointer to state
+		private IntPtr _st = IntPtr.Zero;
 
-		/// <summary>
-		/// function to call to dispatch output
-		/// </summary>
-		private readonly Action<short[], int> drainer;
-
-		// TODO: this size is roughly based on how big you can make the buffer before the snes resampling (32040.5 -> 44100) gets screwed up
-		private short[] inbuf = new short[512]; //[8192]; // [512];
-
-		private short[] outbuf;
+		private short[] _outbuf;
 
 		// for sync
-		private short[] outbuf2 = new short[16];
-		private int outbuf2pos = 0;
+		private short[] _outbuf2 = new short[16];
+		private int _outbuf2pos;
 
-		// to accept an ISyncSoundProvder input
-		private readonly ISoundProvider input;
+		// in buffer position in samples (not sample pairs)
+		private int _inbufpos;
 
 		/// <summary>
-		/// in buffer position in samples (not sample pairs)
-		/// </summary>
-		private int inbufpos = 0;
-
 		uint srcRate;
 		uint dstRate;
 
-		/// <summary>
 		/// throw an exception based on error state
 		/// </summary>
-		/// <param name="e"></param>
-		static void CheckError(LibSpeexDSP.RESAMPLER_ERR e)
+		private static void CheckError(LibSpeexDSP.RESAMPLER_ERR e)
 		{
 			switch (e)
 			{
@@ -304,67 +296,71 @@ namespace BizHawk.Emulation.Common
 		}
 
 		/// <summary>
-		/// 
+		/// Initializes a new instance of the <see cref="SpeexResampler"/> class
 		/// </summary>
 		/// <param name="quality">0 to 10</param>
-		/// <param name="rationum">numerator of srate change ratio (inrate / outrate)</param>
-		/// <param name="ratioden">demonenator of srate change ratio (inrate / outrate)</param>
+		/// <param name="rationum">numerator of sample rate change ratio (inrate / outrate)</param>
+		/// <param name="ratioden">denominator of sample rate change ratio (inrate / outrate)</param>
 		/// <param name="sratein">sampling rate in, rounded to nearest hz</param>
 		/// <param name="srateout">sampling rate out, rounded to nearest hz</param>
-		/// <param name="drainer">function which accepts output as produced. if null, act as an ISyncSoundProvider</param>
-		/// <param name="input">source to take input from when output is requested. if null, no autofetching</param>
-		public SpeexResampler(int quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer = null, ISoundProvider input = null)
+		/// <param name="drainer">function which accepts output as produced. if null, act as an <seealso cref="ISoundProvider"/></param>
+		/// <param name="input">source to take input from when output is requested. if null, no auto-fetching</param>
+		public SpeexResampler(Quality quality, uint rationum, uint ratioden, uint sratein, uint srateout, Action<short[], int> drainer = null, ISoundProvider input = null)
 		{
 #if WINDOWS
 			if (drainer != null && input != null)
+			{
 				throw new ArgumentException("Can't autofetch without being an ISyncSoundProvider?");
+			}
 
 			LibSpeexDSP.RESAMPLER_ERR err = LibSpeexDSP.RESAMPLER_ERR.SUCCESS;
-			st = LibSpeexDSP.speex_resampler_init_frac(2, rationum, ratioden, sratein, srateout, quality, ref err);
+			_st = LibSpeexDSP.speex_resampler_init_frac(2, rationum, ratioden, sratein, srateout, quality, ref err);
 
-			if (st == IntPtr.Zero)
+			if (_st == IntPtr.Zero)
+			{
 				throw new Exception("LibSpeexDSP returned null!");
+			}
 
 			CheckError(err);
 #endif
 
-			this.drainer = drainer ?? InternalDrain;
-			this.input = input;
+			_drainer = drainer ?? InternalDrain;
+			_input = input;
 
-			outbuf = new short[inbuf.Length * ratioden / rationum / 2 * 2 + 128];
+			_outbuf = new short[(_inbuf.Length * ratioden / rationum / 2 * 2) + 128];
 
 			srcRate = rationum;
 			dstRate = ratioden;
 		}
 
 		/// <summary>change sampling rate on the fly</summary>
-		/// <param name="rationum">numerator of srate change ratio (inrate / outrate)</param>
-		/// <param name="ratioden">demonenator of srate change ratio (inrate / outrate)</param>
+		/// <param name="rationum">numerator of sample rate change ratio (inrate / outrate)</param>
+		/// <param name="ratioden">denominator of sample rate change ratio (inrate / outrate)</param>
 		/// <param name="sratein">sampling rate in, rounded to nearest hz</param>
 		/// <param name="srateout">sampling rate out, rounded to nearest hz</param>
 		public void ChangeRate(uint rationum, uint ratioden, uint sratein, uint srateout)
 		{
 #if WINDOWS
-			CheckError(LibSpeexDSP.speex_resampler_set_rate_frac(st, rationum, ratioden, sratein, srateout));
+			CheckError(LibSpeexDSP.speex_resampler_set_rate_frac(_st, rationum, ratioden, sratein, srateout));
+			_outbuf = new short[(_inbuf.Length * ratioden / rationum / 2 * 2) + 128];
 #else
 			srcRate = rationum;
 			dstRate = ratioden;
 #endif
-			outbuf = new short[inbuf.Length * ratioden / rationum / 2 * 2 + 128];
 		}
 
 		/// <summary>
 		/// add a sample to the queue
 		/// </summary>
-		/// <param name="left"></param>
-		/// <param name="right"></param>
 		public void EnqueueSample(short left, short right)
 		{
-			inbuf[inbufpos++] = left;
-			inbuf[inbufpos++] = right;
+			_inbuf[_inbufpos++] = left;
+			_inbuf[_inbufpos++] = right;
 
-			if (inbufpos == inbuf.Length)
+			if (_inbufpos == _inbuf.Length)
+			{
 				Flush();
+			}
 		}
 
 		/// <summary>
@@ -377,76 +373,79 @@ namespace BizHawk.Emulation.Common
 			int numused = 0;
 			while (numused < nsamp)
 			{
-				int shortstocopy = Math.Min(inbuf.Length - inbufpos, (nsamp - numused) * 2);
+				int shortstocopy = Math.Min(_inbuf.Length - _inbufpos, (nsamp - numused) * 2);
 
-				Buffer.BlockCopy(userbuf, numused * 2 * sizeof(short), inbuf, inbufpos * sizeof(short), shortstocopy * sizeof(short));
-				inbufpos += shortstocopy;
+				Buffer.BlockCopy(userbuf, numused * 2 * sizeof(short), _inbuf, _inbufpos * sizeof(short), shortstocopy * sizeof(short));
+				_inbufpos += shortstocopy;
 				numused += shortstocopy / 2;
 
-				if (inbufpos == inbuf.Length)
+				if (_inbufpos == _inbuf.Length)
+				{
 					Flush();
+				}
 			}
 		}
-
 
 		/// <summary>
 		/// flush as many input samples as possible, generating output samples right now
 		/// </summary>
 		public void Flush()
 		{
-			uint inal = (uint)inbufpos / 2;
+			uint inal = (uint)_inbufpos / 2;
 #if WINDOWS
-			uint outal = (uint)outbuf.Length / 2;
+			uint outal = (uint)_outbuf.Length / 2;
 
-			LibSpeexDSP.speex_resampler_process_interleaved_int(st, inbuf, ref inal, outbuf, ref outal);
+			LibSpeexDSP.speex_resampler_process_interleaved_int(_st, _inbuf, ref inal, _outbuf, ref outal);
 
 			// reset inbuf
-
-			if (inal != inbufpos / 2)
+			if (inal != _inbufpos / 2)
+			{
 				throw new Exception("Speexresampler didn't eat the whole array?");
-			inbufpos = 0;
+			}
 
-			//Buffer.BlockCopy(inbuf, (int)inal * 2 * sizeof(short), inbuf, 0, inbufpos - (int)inal * 2);
-			//inbufpos -= (int)inal * 2;
+			_inbufpos = 0;
+
+			////Buffer.BlockCopy(inbuf, (int)inal * 2 * sizeof(short), inbuf, 0, inbufpos - (int)inal * 2);
+			////inbufpos -= (int)inal * 2;
 
 			// dispatch outbuf
-			drainer(outbuf, (int)outal);
+			_drainer(_outbuf, (int)outal);
 #else
 			uint incr = (uint)(((ulong)(srcRate)*(1<<16))/dstRate);
 			uint destLoc = 0;
 			short sample0, sample1, newsample;
 			ulong inputPoint = 0;
-			while (destLoc < outbuf.Length) {
+			while (destLoc < _outbuf.Length) {
 				uint offset = (uint)((inputPoint>>16) * 2);
 				uint fraction = (uint)(inputPoint & 0xffff);
-				if(offset+3>=inbufpos) break; //End of input samples
+				if(offset+3>=_inbufpos) break; //End of input samples
 
-				sample0 = inbuf[offset];
-				sample1 = inbuf[offset + 2];
+				sample0 = _inbuf[offset];
+				sample1 = _inbuf[offset + 2];
 				newsample = (short)(sample0 + (((sample1 - sample0) * fraction) >> 16)); 
-				outbuf[destLoc++] = newsample;
+				_outbuf[destLoc++] = newsample;
 
-				sample0 = inbuf[offset + 1];
-				sample1 = inbuf[offset + 3];
+				sample0 = _inbuf[offset + 1];
+				sample1 = _inbuf[offset + 3];
 				newsample = (short)(sample0 + (((sample1 - sample0) * fraction) >> 16)); 
-				outbuf[destLoc++] = newsample;
+				_outbuf[destLoc++] = newsample;
 
 				inputPoint += incr;
 			}
-			Buffer.BlockCopy(inbuf, (int)inal * 2 * sizeof(short), inbuf, 0, inbufpos - (int)inal * 2);
-			inbufpos -= (int)inal * 2;
+			Buffer.BlockCopy(_inbuf, (int)inal * 2 * sizeof(short), _inbuf, 0, _inbufpos - (int)inal * 2);
+			_inbufpos -= (int)inal * 2;
 
-			drainer(outbuf, (int)destLoc/2);
+			_drainer(_outbuf, (int)destLoc/2);
 #endif
 		}
 
 		public void Dispose()
 		{
 #if WINDOWS
-			if (st != IntPtr.Zero)
+			if (_st != IntPtr.Zero)
 			{
-				LibSpeexDSP.speex_resampler_destroy(st);
-				st = IntPtr.Zero;
+				LibSpeexDSP.speex_resampler_destroy(_st);
+				_st = IntPtr.Zero;
 				GC.SuppressFinalize(this);
 			}
 #endif
@@ -457,47 +456,43 @@ namespace BizHawk.Emulation.Common
 			Dispose();
 		}
 
-		void InternalDrain(short[] buf, int nsamp)
+		private void InternalDrain(short[] buf, int nsamp)
 		{
-			if (outbuf2pos + nsamp * 2 > outbuf2.Length)
+			if (_outbuf2pos + (nsamp * 2) > _outbuf2.Length)
 			{
-				short[] newbuf = new short[outbuf2pos + nsamp * 2];
-				Buffer.BlockCopy(outbuf2, 0, newbuf, 0, outbuf2pos * sizeof(short));
-				outbuf2 = newbuf;
+				short[] newbuf = new short[_outbuf2pos + (nsamp * 2)];
+				Buffer.BlockCopy(_outbuf2, 0, newbuf, 0, _outbuf2pos * sizeof(short));
+				_outbuf2 = newbuf;
 			}
-			Buffer.BlockCopy(buf, 0, outbuf2, outbuf2pos * sizeof(short), nsamp * 2 * sizeof(short));
-			outbuf2pos += nsamp * 2;
+
+			Buffer.BlockCopy(buf, 0, _outbuf2, _outbuf2pos * sizeof(short), nsamp * 2 * sizeof(short));
+			_outbuf2pos += nsamp * 2;
 		}
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			if (input != null)
+			if (_input != null)
 			{
 				short[] sampin;
 				int nsampin;
-				input.GetSamplesSync(out sampin, out nsampin);
+				_input.GetSamplesSync(out sampin, out nsampin);
 				EnqueueSamples(sampin, nsampin);
 			}
+
 			Flush();
-			nsamp = outbuf2pos / 2;
-			samples = outbuf2;
-			outbuf2pos = 0;
+			nsamp = _outbuf2pos / 2;
+			samples = _outbuf2;
+			_outbuf2pos = 0;
 		}
 
 		public void DiscardSamples()
 		{
-			outbuf2pos = 0;
+			_outbuf2pos = 0;
 		}
 
-		public bool CanProvideAsync
-		{
-			get { return false; }
-		}
+		public bool CanProvideAsync => false;
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesAsync(short[] samples)
 		{
@@ -513,4 +508,3 @@ namespace BizHawk.Emulation.Common
 		}
 	}
 }
-

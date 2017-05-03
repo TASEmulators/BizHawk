@@ -139,9 +139,9 @@ namespace BizHawk.Client.EmuHawk
 				lvi.UseItemStyleForSubItems = false;
 				lvi.ImageIndex = idUnsure;
 				lvi.ToolTipText = null;
-				lvi.SubItems.Add(fr.systemId);
-				lvi.SubItems.Add(fr.firmwareId);
-				lvi.SubItems.Add(fr.descr);
+				lvi.SubItems.Add(fr.SystemId);
+				lvi.SubItems.Add(fr.FirmwareId);
+				lvi.SubItems.Add(fr.Descr);
 				lvi.SubItems.Add(""); //resolved with
 				lvi.SubItems.Add(""); //location
 				lvi.SubItems.Add(""); //size
@@ -151,16 +151,16 @@ namespace BizHawk.Client.EmuHawk
 				lvFirmwares.Items.Add(lvi);
 
 				//build the groups in the listview as we go:
-				if (!groups.ContainsKey(fr.systemId))
+				if (!groups.ContainsKey(fr.SystemId))
 				{
 					string name;
-					if (!SystemGroupNames.TryGetValue(fr.systemId, out name))
+					if (!SystemGroupNames.TryGetValue(fr.SystemId, out name))
 						name = "FIX ME (FirmwaresConfig.cs)";
-					lvFirmwares.Groups.Add(fr.systemId, name);
+					lvFirmwares.Groups.Add(fr.SystemId, name);
 					var lvg = lvFirmwares.Groups[lvFirmwares.Groups.Count - 1];
-					groups[fr.systemId] = lvg;
+					groups[fr.SystemId] = lvg;
 				}
-				lvi.Group = groups[fr.systemId];
+				lvi.Group = groups[fr.SystemId];
 			}
 
 			//now that we have some items in the listview, we can size some columns to sensible widths
@@ -262,7 +262,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						lvi.ImageIndex = idOk;
 						lvi.ToolTipText = "Good!";
-						lvi.SubItems[4].Text = ri.KnownFirmwareFile.descr;
+						lvi.SubItems[4].Text = ri.KnownFirmwareFile.Description;
 					}
 
 					//bolden the item if necessary
@@ -314,7 +314,7 @@ namespace BizHawk.Client.EmuHawk
 				if (ri.KnownFirmwareFile == null) continue;
 				if (ri.UserSpecified) continue;
 
-				string fpTarget = PathManager.StandardFirmwareName(ri.KnownFirmwareFile.recommendedName);
+				string fpTarget = PathManager.StandardFirmwareName(ri.KnownFirmwareFile.RecommendedName);
 				string fpSource = ri.FilePath;
 
 				try
@@ -395,11 +395,11 @@ namespace BizHawk.Client.EmuHawk
 			//get all options for this firmware (in order)
 			var options =
 				from fo in FirmwareDatabase.FirmwareOptions
-				where fo.systemId == fr.systemId && fo.firmwareId == fr.firmwareId
+				where fo.SystemId == fr.SystemId && fo.FirmwareId == fr.FirmwareId
 				select fo;
 
 			FirmwaresConfigInfo fciDialog = new FirmwaresConfigInfo();
-			fciDialog.lblFirmware.Text = string.Format("{0} : {1} ({2})", fr.systemId, fr.firmwareId, fr.descr);
+			fciDialog.lblFirmware.Text = string.Format("{0} : {1} ({2})", fr.SystemId, fr.FirmwareId, fr.Descr);
 			foreach (var o in options)
 			{
 				ListViewItem olvi = new ListViewItem();
@@ -407,24 +407,24 @@ namespace BizHawk.Client.EmuHawk
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
-				var ff = FirmwareDatabase.FirmwareFilesByHash[o.hash];
-				if (o.status == FirmwareDatabase.FirmwareOptionStatus.Ideal)
+				var ff = FirmwareDatabase.FirmwareFilesByHash[o.Hash];
+				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Ideal)
 					olvi.ImageIndex = FirmwaresConfigInfo.idIdeal;
-				if (o.status == FirmwareDatabase.FirmwareOptionStatus.Acceptable)
+				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Acceptable)
 					olvi.ImageIndex = FirmwaresConfigInfo.idAcceptable;
-				if (o.status == FirmwareDatabase.FirmwareOptionStatus.Unacceptable)
+				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Unacceptable)
 					olvi.ImageIndex = FirmwaresConfigInfo.idUnacceptable;
-				if (o.status == FirmwareDatabase.FirmwareOptionStatus.Bad)
+				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Bad)
 					olvi.ImageIndex = FirmwaresConfigInfo.idBad;
-				olvi.SubItems[0].Text = ff.size.ToString();
+				olvi.SubItems[0].Text = ff.Size.ToString();
 				olvi.SubItems[0].Font = this.Font; //why doesnt this work?
-				olvi.SubItems[1].Text = "sha1:" + o.hash;
+				olvi.SubItems[1].Text = "sha1:" + o.Hash;
 				olvi.SubItems[1].Font = fixedFont;
-				olvi.SubItems[2].Text = ff.recommendedName;
+				olvi.SubItems[2].Text = ff.RecommendedName;
 				olvi.SubItems[2].Font = this.Font; //why doesnt this work?
-				olvi.SubItems[3].Text = ff.descr;
+				olvi.SubItems[3].Text = ff.Description;
 				olvi.SubItems[3].Font = this.Font; //why doesnt this work?
-				olvi.SubItems[4].Text = ff.info;
+				olvi.SubItems[4].Text = ff.Info;
 				olvi.SubItems[4].Font = this.Font; //why doesnt this work?
 				fciDialog.lvOptions.Items.Add(olvi);
 			}

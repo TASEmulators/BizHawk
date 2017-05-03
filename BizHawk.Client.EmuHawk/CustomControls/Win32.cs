@@ -311,9 +311,9 @@ namespace BizHawk.Client.EmuHawk
 			public int dwQuality;
 			public int dwBytesPerSecond;
 			public int dwFlags;
-			public int lpFormat;
+			public IntPtr lpFormat;
 			public int cbFormat;
-			public int lpParms;
+			public IntPtr lpParms;
 			public int cbParms;
 			public int dwInterleaveEvery;
 		}
@@ -472,7 +472,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto)]
-		public static extern int SendMessage(IntPtr hWnd, int msg, int wParam, int lParam);
+		public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
 		[DllImport("Kernel32.dll", EntryPoint = "RtlZeroMemory", SetLastError = false)]
 		public static extern void ZeroMemory(IntPtr dest, uint size);

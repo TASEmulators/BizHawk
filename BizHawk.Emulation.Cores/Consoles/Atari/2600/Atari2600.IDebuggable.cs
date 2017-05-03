@@ -11,21 +11,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			return new Dictionary<string, RegisterValue>
 			{
-				{ "A", Cpu.A },
-				{ "X", Cpu.X },
-				{ "Y", Cpu.Y },
-				{ "S", Cpu.S },
-				{ "PC", Cpu.PC },
+				["A"] = Cpu.A,
+				["X"] = Cpu.X,
+				["Y"] = Cpu.Y,
+				["S"] = Cpu.S,
+				["PC"] = Cpu.PC,
 
-				{ "Flag C", Cpu.FlagC },
-				{ "Flag Z", Cpu.FlagZ },
-				{ "Flag I", Cpu.FlagI },
-				{ "Flag D", Cpu.FlagD },
+				["Flag C"] = Cpu.FlagC,
+				["Flag Z"] = Cpu.FlagZ,
+				["Flag I"] = Cpu.FlagI,
+				["Flag D"] = Cpu.FlagD,
 
-				{ "Flag B", Cpu.FlagB },
-				{ "Flag V", Cpu.FlagV },
-				{ "Flag N", Cpu.FlagN },
-				{ "Flag T", Cpu.FlagT }
+				["Flag B"] = Cpu.FlagB,
+				["Flag V"] = Cpu.FlagV,
+				["Flag N"] = Cpu.FlagN,
+				["Flag T"] = Cpu.FlagT
 			};
 		}
 
@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem();
 
 		public bool CanStep(StepType type)
 		{
@@ -88,10 +88,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public int TotalExecutedCycles
-		{
-			get { return Cpu.TotalExecutedCycles; }
-		}
+		public int TotalExecutedCycles => Cpu.TotalExecutedCycles;
 
 		private void StepInto()
 		{
@@ -108,7 +105,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (instruction == JSR)
 			{
 				var destination = Cpu.PC + opsize[JSR];
-				while(Cpu.PC != destination)
+				while (Cpu.PC != destination)
 				{
 					StepInto();
 				}
@@ -159,8 +156,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private const byte JSR = 0x20;
 		private const byte RTS = 0x60;
 
-		//the opsize table is used to quickly grab the instruction sizes (in bytes)
-		private readonly byte[] opsize = new byte[]
+		// the opsize table is used to quickly grab the instruction sizes (in bytes)
+		private readonly byte[] opsize =
 		{
 		/*0x00*/	1,2,0,0,0,2,2,0,1,2,1,0,0,3,3,0,
 		/*0x10*/	2,2,0,0,0,2,2,0,1,3,0,0,0,3,3,0,
@@ -193,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		//  7 = Absolute,X
 		//  8 = Zero Page,Y
 		*/
-		private readonly byte[] optype = new byte[]
+		private readonly byte[] optype =
 		{
 		/*0x00*/	0,1,0,0,0,2,2,0,0,0,0,0,0,3,3,0,
 		/*0x10*/	0,4,0,0,0,5,5,0,0,6,0,0,0,7,7,0,

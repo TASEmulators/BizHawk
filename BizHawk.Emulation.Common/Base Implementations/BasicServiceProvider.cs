@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IEmulatorServiceProvider"/> 
 	public class BasicServiceProvider : IEmulatorServiceProvider
 	{
-		private Dictionary<Type, object> Services = new Dictionary<Type, object>();
+		private readonly Dictionary<Type, object> _services = new Dictionary<Type, object>();
 
 		public BasicServiceProvider(IEmulator core)
 		{
@@ -22,9 +22,7 @@ namespace BizHawk.Emulation.Common
 			// this removes the possibility of automagically picking up a service in a nested class, (find the type, then
 			// find the field), but we're going to keep such logic out of the basic provider.  anything the passed
 			// core doesn't implement directly needs to be added with Register()
-
 			// this also fully allows services that are not IEmulatorService
-
 			Type coreType = core.GetType();
 
 			var services = coreType.GetInterfaces()
@@ -33,14 +31,14 @@ namespace BizHawk.Emulation.Common
 
 			foreach (Type service in services)
 			{
-				Services.Add(service, core);
+				_services.Add(service, core);
 			}
 
 			// add the actual instantiated type and any types in the hierarchy
 			// except for object because that would be dumb (or would it?)
 			while (coreType != typeof(object))
 			{
-				Services.Add(coreType, core);
+				_services.Add(coreType, core);
 				coreType = coreType.BaseType;
 			}
 		}
@@ -48,17 +46,16 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// the core can call this to register an additional service
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="provider"></param>
+		/// <typeparam name="T">The <seealso cref="IEmulatorService"/> to register</typeparam>
 		public void Register<T>(T provider) 
 			where T : IEmulatorService
 		{
 			if (provider == null)
 			{
-				throw new ArgumentNullException("provider");
+				throw new ArgumentNullException(nameof(provider));
 			}
 
-			Services[typeof(T)] = provider;
+			_services[typeof(T)] = provider;
 		}
 
 		public T GetService<T>()
@@ -70,7 +67,7 @@ namespace BizHawk.Emulation.Common
 		public object GetService(Type t)
 		{
 			object service;
-			if (Services.TryGetValue(t, out service))
+			if (_services.TryGetValue(t, out service))
 			{
 				return service;
 			}
@@ -86,14 +83,14 @@ namespace BizHawk.Emulation.Common
 
 		public bool HasService(Type t)
 		{
-			return Services.ContainsKey(t);
+			return _services.ContainsKey(t);
 		}
 
 		public IEnumerable<Type> AvailableServices
 		{
 			get
 			{
-				return Services.Select(d => d.Key);
+				return _services.Select(d => d.Key);
 			}
 		}
 	}

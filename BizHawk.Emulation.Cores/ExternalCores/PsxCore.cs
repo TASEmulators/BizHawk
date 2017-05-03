@@ -92,7 +92,7 @@ namespace BizHawk
 		public byte[] SaveStateBinary() { return new byte[1]; }
 		public void GetSamples(short[] samples) { }
 		public void DiscardSamples() { }
-        public int MaxVolume { get; set; }
+		public int MaxVolume { get; set; }
 		private IList<MemoryDomain> memoryDomains;
 		public IList<MemoryDomain> MemoryDomains { get { return memoryDomains; } }
 		public MemoryDomain MainMemory { get { return memoryDomains[0]; } }

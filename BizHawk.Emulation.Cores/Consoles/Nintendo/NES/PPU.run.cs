@@ -1,7 +1,5 @@
 ﻿//http://nesdev.parodius.com/bbs/viewtopic.php?p=4571&sid=db4c7e35316cc5d734606dd02f11dccb
 
-//todo - read http://wiki.nesdev.com/w/index.php/PPU_sprite_priority
-
 //TODO - correctly emulate PPU OFF state
 
 using BizHawk.Common;
@@ -499,7 +497,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				if (nes.Settings.AllowMoreThanEightSprites)
 				{
-					while (oam_index_aux < 64)
+					while (oam_index_aux < 64 && soam_index_aux<64)
 					{
 						//look for sprites 
 						soam[soam_index_aux * 4] = OAM[oam_index_aux * 4];
@@ -679,14 +677,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 
 				} // sprite pattern fetch loop
-
+				
 				//now do the same for extra sprites, but without any cycles run
 				if (soam_index_aux>8)
 				{
 					for (int s = 8; s < soam_index_aux; s++)
 					{
-						bool junksprite = (!PPUON);
-
 						t_oam[s].oam_y = soam[s * 4];
 						t_oam[s].oam_ind = soam[s * 4 + 1];
 						t_oam[s].oam_attr = soam[s * 4 + 2];
@@ -789,31 +785,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//register before around a full frame, but no games
 			//should write to those regs during that time, it needs
 			//to wait for vblank
-			/*
-			if (ppudead < 2)
-			{
-				ppur.status.sl = 241;
-				runppu(1);
-				Reg2002_vblank_active = true;
-				runppu(5);
-				runppu(postNMIlines * kLineTime - 6);
-				ppur.status.sl = 0;
-				clear_2002();
-			}
-			
-			if (ppudead==2)
-			{
-			*/
-			runppu(241 * kLineTime+3);// -8*3);
-			/*
-			} else
-			{
-				runppu(241 * kLineTime);
-				runppu(preNMIlines * kLineTime);
-				idleSynch ^= true;
-			}
-			*/
 
+			runppu(241 * kLineTime+3);// -8*3);
 			ppudead--;
 		}
 	}

@@ -76,32 +76,32 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 		private static byte[] ConvertSectorToGcr(byte[] source, byte sectorNo, byte trackNo, byte formatA, byte formatB, out int bitsWritten)
 		{
-		    using (var mem = new MemoryStream())
-		    {
-                var writer = new BinaryWriter(mem);
-                var headerChecksum = (byte)(sectorNo ^ trackNo ^ formatA ^ formatB);
+			using (var mem = new MemoryStream())
+			{
+				var writer = new BinaryWriter(mem);
+				var headerChecksum = (byte)(sectorNo ^ trackNo ^ formatA ^ formatB);
 
-                // assemble written data for GCR encoding
-                var writtenData = new byte[260];
-                Array.Copy(source, 0, writtenData, 1, 256);
-                writtenData[0] = 0x07;
-                writtenData[0x101] = Checksum(source);
-                writtenData[0x102] = 0x00;
-                writtenData[0x103] = 0x00;
+				// assemble written data for GCR encoding
+				var writtenData = new byte[260];
+				Array.Copy(source, 0, writtenData, 1, 256);
+				writtenData[0] = 0x07;
+				writtenData[0x101] = Checksum(source);
+				writtenData[0x102] = 0x00;
+				writtenData[0x103] = 0x00;
 
-                writer.Write(new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }); // sync
-                writer.Write(EncodeGcr(new byte[] { 0x08, headerChecksum, sectorNo, trackNo, formatA, formatB, 0x0F, 0x0F })); // header
-                writer.Write(new byte[] { 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55 }); // gap
-                writer.Write(new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }); // sync
-                writer.Write(EncodeGcr(writtenData)); // data
-                writer.Write(new byte[] { 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55 }); // gap
+				writer.Write(new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }); // sync
+				writer.Write(EncodeGcr(new byte[] { 0x08, headerChecksum, sectorNo, trackNo, formatA, formatB, 0x0F, 0x0F })); // header
+				writer.Write(new byte[] { 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55 }); // gap
+				writer.Write(new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF }); // sync
+				writer.Write(EncodeGcr(writtenData)); // data
+				writer.Write(new byte[] { 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55 }); // gap
 
-                bitsWritten = (int)mem.Length * 8;
+				bitsWritten = (int)mem.Length * 8;
 
-                writer.Flush();
-                return mem.ToArray();
-            }
-        }
+				writer.Flush();
+				return mem.ToArray();
+			}
+		}
 
 		private static byte[] EncodeGcr(byte[] source)
 		{
@@ -109,101 +109,101 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			var gcr = new int[8];
 			var data = new byte[4];
 			var count = source.Length;
-		    using (var mem = new MemoryStream())
-		    {
-                var writer = new BinaryWriter(mem);
+			using (var mem = new MemoryStream())
+			{
+				var writer = new BinaryWriter(mem);
 
-                for (var i = 0; i < count; i += 4)
-                {
-                    Array.Copy(source, i, data, 0, 4);
-                    gcr[0] = GcrEncodeTable[data[0] >> 4];
-                    gcr[1] = GcrEncodeTable[data[0] & 0xF];
-                    gcr[2] = GcrEncodeTable[data[1] >> 4];
-                    gcr[3] = GcrEncodeTable[data[1] & 0xF];
-                    gcr[4] = GcrEncodeTable[data[2] >> 4];
-                    gcr[5] = GcrEncodeTable[data[2] & 0xF];
-                    gcr[6] = GcrEncodeTable[data[3] >> 4];
-                    gcr[7] = GcrEncodeTable[data[3] & 0xF];
+				for (var i = 0; i < count; i += 4)
+				{
+					Array.Copy(source, i, data, 0, 4);
+					gcr[0] = GcrEncodeTable[data[0] >> 4];
+					gcr[1] = GcrEncodeTable[data[0] & 0xF];
+					gcr[2] = GcrEncodeTable[data[1] >> 4];
+					gcr[3] = GcrEncodeTable[data[1] & 0xF];
+					gcr[4] = GcrEncodeTable[data[2] >> 4];
+					gcr[5] = GcrEncodeTable[data[2] & 0xF];
+					gcr[6] = GcrEncodeTable[data[3] >> 4];
+					gcr[7] = GcrEncodeTable[data[3] & 0xF];
 
-                    // -------- -------- -------- -------- --------
-                    // 00000111 11222223 33334444 45555566 66677777
+					// -------- -------- -------- -------- --------
+					// 00000111 11222223 33334444 45555566 66677777
 
-                    var outputValue = (gcr[0] << 3) | (gcr[1] >> 2);
-                    writer.Write((byte)(outputValue & 0xFF));
-                    outputValue = (gcr[1] << 6) | (gcr[2] << 1) | (gcr[3] >> 4);
-                    writer.Write((byte)(outputValue & 0xFF));
-                    outputValue = (gcr[3] << 4) | (gcr[4] >> 1);
-                    writer.Write((byte)(outputValue & 0xFF));
-                    outputValue = (gcr[4] << 7) | (gcr[5] << 2) | (gcr[6] >> 3);
-                    writer.Write((byte)(outputValue & 0xFF));
-                    outputValue = (gcr[6] << 5) | (gcr[7]);
-                    writer.Write((byte)(outputValue & 0xFF));
-                }
-                writer.Flush();
-                return mem.ToArray();
-            }
-        }
+					var outputValue = (gcr[0] << 3) | (gcr[1] >> 2);
+					writer.Write((byte)(outputValue & 0xFF));
+					outputValue = (gcr[1] << 6) | (gcr[2] << 1) | (gcr[3] >> 4);
+					writer.Write((byte)(outputValue & 0xFF));
+					outputValue = (gcr[3] << 4) | (gcr[4] >> 1);
+					writer.Write((byte)(outputValue & 0xFF));
+					outputValue = (gcr[4] << 7) | (gcr[5] << 2) | (gcr[6] >> 3);
+					writer.Write((byte)(outputValue & 0xFF));
+					outputValue = (gcr[6] << 5) | (gcr[7]);
+					writer.Write((byte)(outputValue & 0xFF));
+				}
+				writer.Flush();
+				return mem.ToArray();
+			}
+		}
 
 		public static Disk Read(byte[] source)
 		{
-		    using (var mem = new MemoryStream(source))
-		    {
-                var reader = new BinaryReader(mem);
-                var trackDatas = new List<byte[]>();
-                var trackLengths = new List<int>();
-                var trackNumbers = new List<int>();
-                var trackDensities = new List<int>();
-                int trackCount;
+			using (var mem = new MemoryStream(source))
+			{
+				var reader = new BinaryReader(mem);
+				var trackDatas = new List<byte[]>();
+				var trackLengths = new List<int>();
+				var trackNumbers = new List<int>();
+				var trackDensities = new List<int>();
+				int trackCount;
 
-                switch (source.Length)
-                {
-                    case 174848: // 35 tracks no errors
-                        trackCount = 35;
-                        break;
-                    case 175531: // 35 tracks with errors
-                        trackCount = 35;
-                        break;
-                    case 196608: // 40 tracks no errors
-                        trackCount = 40;
-                        break;
-                    case 197376: // 40 tracks with errors
-                        trackCount = 40;
-                        break;
-                    default:
-                        throw new Exception("Not able to identify capacity of the D64 file.");
-                }
+				switch (source.Length)
+				{
+					case 174848: // 35 tracks no errors
+						trackCount = 35;
+						break;
+					case 175531: // 35 tracks with errors
+						trackCount = 35;
+						break;
+					case 196608: // 40 tracks no errors
+						trackCount = 40;
+						break;
+					case 197376: // 40 tracks with errors
+						trackCount = 40;
+						break;
+					default:
+						throw new Exception("Not able to identify capacity of the D64 file.");
+				}
 
-                for (var i = 0; i < trackCount; i++)
-                {
-                    var sectors = SectorsPerTrack[i];
-                    var trackLengthBits = 0;
-                    using (var trackMem = new MemoryStream())
-                    {
-                        for (var j = 0; j < sectors; j++)
-                        {
-                            int bitsWritten;
-                            var sectorData = reader.ReadBytes(256);
-                            var diskData = ConvertSectorToGcr(sectorData, (byte)j, (byte)(i + 1), 0xA0, 0xA0, out bitsWritten);
-                            trackMem.Write(diskData, 0, diskData.Length);
-                            trackLengthBits += bitsWritten;
-                        }
-                        var density = DensityTable[i];
+				for (var i = 0; i < trackCount; i++)
+				{
+					var sectors = SectorsPerTrack[i];
+					var trackLengthBits = 0;
+					using (var trackMem = new MemoryStream())
+					{
+						for (var j = 0; j < sectors; j++)
+						{
+							int bitsWritten;
+							var sectorData = reader.ReadBytes(256);
+							var diskData = ConvertSectorToGcr(sectorData, (byte)j, (byte)(i + 1), 0xA0, 0xA0, out bitsWritten);
+							trackMem.Write(diskData, 0, diskData.Length);
+							trackLengthBits += bitsWritten;
+						}
+						var density = DensityTable[i];
 
-                        // we pad the tracks with extra gap bytes to meet MNIB standards
-                        while (trackMem.Length < StandardTrackLengthBytes[density])
-                        {
-                            trackMem.WriteByte(0x55);
-                        }
+						// we pad the tracks with extra gap bytes to meet MNIB standards
+						while (trackMem.Length < StandardTrackLengthBytes[density])
+						{
+							trackMem.WriteByte(0x55);
+						}
 
-                        trackDatas.Add(trackMem.ToArray());
-                        trackLengths.Add(trackLengthBits);
-                        trackNumbers.Add(i * 2);
-                        trackDensities.Add(DensityTable[i]);
-                    }
-                }
+						trackDatas.Add(trackMem.ToArray());
+						trackLengths.Add(trackLengthBits);
+						trackNumbers.Add(i * 2);
+						trackDensities.Add(DensityTable[i]);
+					}
+				}
 
-                return new Disk(trackDatas, trackNumbers, trackDensities, 84);
-            }
-        }
+				return new Disk(trackDatas, trackNumbers, trackDensities, 84);
+			}
+		}
 	}
 }

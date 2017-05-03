@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		isReleased: true
 		)]
 	public partial class NES : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
-		ISettable<NES.NESSettings, NES.NESSyncSettings>
+		IBoardInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>
 	{
 		static readonly bool USE_DATABASE = true;
 		public RomStatus RomStatus;
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			this.SyncSettings = (NESSyncSettings)SyncSettings ?? new NESSyncSettings();
 			this.ControllerSettings = this.SyncSettings.Controls;
 			CoreComm = comm;
-			
+
 			MemoryCallbacks = new MemoryCallbackSystem();
 			BootGodDB.Initialize();
 			videoProvider = new MyVideoProvider(this);
@@ -64,14 +64,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				PickVSPalette(cart);
 			}
 
-			
+
 			ser.Register<IDisassemblable>(cpu);
 
 			Tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(Tracer);
 			ser.Register<IVideoProvider>(videoProvider);
 			ser.Register<ISoundProvider>(magicSoundProvider);
-			
+
 			if (Board is BANDAI_FCG_1)
 			{
 				var reader = (Board as BANDAI_FCG_1).reader;
@@ -354,15 +354,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
-		IController controller;
-		public IController Controller
-		{
-			get { return controller; }
-			set { controller = value; }
-		}
-
-		int _frame;
-
+		private int _frame;
 		public int Frame { get { return _frame; } set { _frame = value; } }
 
 		public void ResetCounters()
@@ -770,7 +762,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			switch (fromrom)
 			{
 				case NESSyncSettings.Region.Dendy:
-					_display_type = Common.DisplayType.DENDY;
+					_display_type = Common.DisplayType.Dendy;
 					break;
 				case NESSyncSettings.Region.NTSC:
 					_display_type = Common.DisplayType.NTSC;

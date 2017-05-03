@@ -163,7 +163,7 @@ namespace BizHawk.Client.Common
 
 			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[_controlType]; player++)
 			{
-				var prefix = String.Empty;
+				var prefix = string.Empty;
 				if (_controlType != "Gameboy Controller" && _controlType != "TI83 Controller")
 				{
 					prefix = "P" + player + " ";
@@ -199,17 +199,11 @@ namespace BizHawk.Client.Common
 		{
 			return GenerateLogEntry()
 				.Replace(".", " ")
-				.Replace("|", "")
+				.Replace("|", string.Empty)
 				.Replace(" 000, 000", "         ");
 		}
 
-		public bool IsEmpty
-		{
-			get
-			{
-				return EmptyEntry == GenerateLogEntry();
-			}
-		}
+		public bool IsEmpty => EmptyEntry == GenerateLogEntry();
 
 		public string EmptyEntry
 		{
@@ -260,13 +254,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public IMovieController MovieControllerAdapter
-		{
-			get
-			{
-				return new BkmControllerAdapter();
-			}
-		}
+		public IMovieController MovieControllerAdapter => new BkmControllerAdapter();
 
 		#region Privates
 
@@ -511,7 +499,7 @@ namespace BizHawk.Client.Common
 							input.Append(' ');
 						}
 
-						input.Append(String.Format("{0:000}", val)).Append(',');
+						input.Append($"{val:000}").Append(',');
 					}
 
 					input.Remove(input.Length - 1, 1);

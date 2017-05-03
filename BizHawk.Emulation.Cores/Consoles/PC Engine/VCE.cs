@@ -1,8 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
@@ -14,7 +10,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public int[] Palette = new int[512];
 		public byte CR;
 
-		public int NumberOfScanlines { get { return ((CR & 4) != 0) ? 263 : 262; } }
+		public int NumberOfScanlines => (CR & 4) != 0 ? 263 : 262;
 
 		public void WriteVCE(int port, byte value)
 		{
@@ -64,7 +60,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		static readonly byte[] PalConvert = { 0, 36, 72, 109, 145, 182, 218, 255 };
+		private static readonly byte[] PalConvert = { 0, 36, 72, 109, 145, 182, 218, 255 };
 
 		public void PrecomputePalette(int slot)
 		{
@@ -83,8 +79,12 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			ser.EndSection();
 
 			if (ser.IsReader)
+			{
 				for (int i = 0; i < VceData.Length; i++)
+				{
 					PrecomputePalette(i);
+				}
+			}
 		}
 	}
 }

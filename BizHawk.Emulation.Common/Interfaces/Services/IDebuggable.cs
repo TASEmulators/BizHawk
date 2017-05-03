@@ -3,8 +3,8 @@
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// This service manages debugging capabilities from the core to the client.  Tools such as the debugger make use of this, as well as lua scripting
-	/// This service specifically manages getting/setting cpu registers, managing breakpoints, and stepping through cpu instructions
+	/// This service manages debugging capabilities from the core to the client.  Tools such as the debugger make use of this, as well as LUA scripting
+	/// This service specifically manages getting/setting CPU registers, managing breakpoints, and stepping through CPU instructions
 	/// Providing a disassembly is managed by another service, these are aspects outside of the disassembler that are essential to debugging tools
 	/// Tools like the debugger will gracefully degrade based on the availability of each component of this service,
 	/// it is expected that any of these features will throw a NotImplementedException if not implemented, and the client will manage accordingly
@@ -12,17 +12,17 @@ namespace BizHawk.Emulation.Common
 	public interface IDebuggable : IEmulatorService
 	{
 		/// <summary>
-		/// Returns a list of Cpu registers and their current state
+		/// Returns a list of CPU registers and their current state
 		/// </summary>
 		IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters();
 
 		/// <summary>
-		/// Sets a given Cpu register to the given value
+		/// Sets a given CPU register to the given value
 		/// </summary>
 		void SetCpuRegister(string register, int value);
 
 		/// <summary>
-		/// A memory callback implementation that manages memory callback functionality
+		/// Gets a memory callback implementation that manages memory callback functionality
 		/// </summary>
 		IMemoryCallbackSystem MemoryCallbacks { get; }
 
@@ -38,8 +38,8 @@ namespace BizHawk.Emulation.Common
 		void Step(StepType type);
 
 		/// <summary>
-		/// Total number of cpu cycles since the beginning of the core's lifecycle
-		/// Note that the cpu in this case is the "main" cpu, for some cores that may be somewhat subjective
+		/// Gets the total number of CPU cycles since the beginning of the core's lifecycle
+		/// Note that the CPU in this case is the "main" CPU, for some cores that may be somewhat subjective
 		/// </summary>
 		int TotalExecutedCycles { get; } // TODO: this should probably be a long, but most cores were using int, oh well
 	}
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Common
 			}
 			else if (bitSize > 64 || bitSize == 0)
 			{
-				throw new System.ArgumentOutOfRangeException("bitSize", "BitSize must be in 1..64");
+				throw new System.ArgumentOutOfRangeException(nameof(bitSize), "BitSize must be in 1..64");
 			}
 			else
 			{
@@ -120,7 +120,6 @@ namespace BizHawk.Emulation.Common
 			Value = (ulong)val;
 			BitSize = 64;
 		}
-
 
 		public static implicit operator RegisterValue(bool val)
 		{

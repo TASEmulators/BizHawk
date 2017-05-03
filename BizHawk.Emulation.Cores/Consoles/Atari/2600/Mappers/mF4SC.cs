@@ -11,15 +11,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private int _bank4k;
 		private ByteBuffer _ram = new ByteBuffer(128);
 
-		public override bool HasCartRam
-		{
-			get { return true; }
-		}
+		public override bool HasCartRam => true;
 
-		public override ByteBuffer CartRam
-		{
-			get { return _ram; }
-		}
+		public override ByteBuffer CartRam => _ram;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -58,7 +52,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				_ram[(addr & 0x7F)] = 0xFF; // Reading from the write port triggers an unwanted write of open bus
 				return 0xFF; // 0xFF is used for deterministic emulation, in reality it would be a random value based on pins being high or low
 			}
-			else if (addr < 0x1100)
+
+			if (addr < 0x1100)
 			{
 				return _ram[(addr & 0x7F)];
 			}

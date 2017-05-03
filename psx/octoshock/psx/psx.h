@@ -170,6 +170,7 @@ enum ePeripheralType
 	ePeripheralType_Pad = 1, //SCPH-1080
 	ePeripheralType_DualShock = 2, //SCPH-1200
 	ePeripheralType_DualAnalog = 3, //SCPH-1180
+	ePeripheralType_NegCon = 4,
 
 	ePeripheralType_Multitap = 10,
 };

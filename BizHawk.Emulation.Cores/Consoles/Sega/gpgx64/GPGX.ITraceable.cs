@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				Header = "M68K: PC, machine code, mnemonic, operands, registers (D0-D7, A0-A7, SR, USP), flags (XNZVC)";
 			}
 
-			public override void TraceFromCallback()
+			protected override void TraceFromCallback()
 			{
 				var regs = DebuggableCore.GetCpuFlagsAndRegisters();
 				uint pc = (uint)regs["M68K PC"].Value;

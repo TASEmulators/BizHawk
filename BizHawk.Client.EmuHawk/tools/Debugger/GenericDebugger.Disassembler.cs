@@ -37,7 +37,10 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdatePC()
 		{
-			currentDisassemblerAddress = (uint)PCRegister.Value;
+			if (CanDisassemble)
+			{
+				currentDisassemblerAddress = (uint)PCRegister.Value;
+			}
 		}
 
 		private void UpdateDisassembler()

@@ -11,41 +11,17 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class Throttle
 	{
-		int lastskiprate;
-		int framestoskip;
-		int framesskipped;
-		public bool skipnextframe;
+		int lastSkipRate;
+		int framesToSkip;
+		int framesSkipped;
+		public bool skipNextFrame;
 
 		//if the emulator is paused then we dont need to behave as if unthrottled
 		public bool signal_paused;
 		public bool signal_frameAdvance;
 		public bool signal_unthrottle;
-		public bool signal_continuousframeAdvancing; //continuousframeAdvancing
+		public bool signal_continuousFrameAdvancing;
 		public bool signal_overrideSecondaryThrottle;
-
-		public int cfg_frameskiprate
-		{
-			get
-			{
-				return Global.Config.FrameSkip;
-			}
-		}
-
-		public bool cfg_frameLimit
-		{
-			get
-			{
-				return Global.Config.ClockThrottle;
-			}
-		}
-
-		public bool cfg_autoframeskipenab
-		{
-			get
-			{
-				return Global.Config.AutoMinimizeSkipping;
-			}
-		}
 
 		public void Step(bool allowSleep, int forceFrameSkip)
 		{
@@ -56,12 +32,12 @@ namespace BizHawk.Client.EmuHawk
 
 			//if we're paused, none of this should happen. just clean out our state and dont skip
 			//notably, if we're frame-advancing, we should be paused.
-			if (signal_paused && !signal_continuousframeAdvancing)
+			if (signal_paused && !signal_continuousFrameAdvancing)
 			{
-				//Console.WriteLine("THE THING: {0} {1}", signal_paused ,signal_continuousframeAdvancing);
-				skipnextframe = false;
-				framesskipped = 0;
-				framestoskip = 0;
+				//Console.WriteLine("THE THING: {0} {1}", signal_paused ,signal_continuousFrameAdvancing);
+				skipNextFrame = false;
+				framesSkipped = 0;
+				framesToSkip = 0;
 
 				//keep from burning CPU
 				Thread.Sleep(10);
@@ -76,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			////continuous run: affected by frameskips and throttles
 			////so continuous and free are the same?
 
-			//bool continuous_run = signal_continuousframeAdvancing;
+			//bool continuous_run = signal_continuousFrameAdvancing;
 			//bool unthrottled_run = signal_unthrottle;
 			//bool free_run = !continuous_run && !unthrottled_run;
 
@@ -87,72 +63,69 @@ namespace BizHawk.Client.EmuHawk
 			//  do_skip = true;
 			//else throw new InvalidOperationException();
 
-			int skipRate = (forceFrameSkip < 0) ? cfg_frameskiprate : forceFrameSkip;
+			int skipRate = (forceFrameSkip < 0) ? Global.Config.FrameSkip : forceFrameSkip;
 			int ffSkipRate = (forceFrameSkip < 0) ? 3 : forceFrameSkip;
 
-			if (lastskiprate != skipRate)
+			if (lastSkipRate != skipRate)
 			{
-				lastskiprate = skipRate;
-				framestoskip = 0; // otherwise switches to lower frameskip rates will lag behind
+				lastSkipRate = skipRate;
+				framesToSkip = 0; // otherwise switches to lower frameskip rates will lag behind
 			}
 
-			if (!skipnextframe || forceFrameSkip == 0 || (signal_continuousframeAdvancing && !signal_unthrottle))
+			if (!skipNextFrame || forceFrameSkip == 0 || (signal_continuousFrameAdvancing && !signal_unthrottle))
 			{
-				framesskipped = 0;
+				framesSkipped = 0;
 
-				if (signal_continuousframeAdvancing)
+				if (signal_continuousFrameAdvancing)
 				{
 					//dont ever skip frames when continuous frame advancing. it's meant for precision work.
 					//but we DO need to throttle
-					if(Global.Config.ClockThrottle)
+					if (Global.Config.ClockThrottle)
 						extraThrottle = true;
 				}
 				else
 				{
-					if (framestoskip > 0)
-						skipnextframe = true;
+					if (framesToSkip > 0)
+						skipNextFrame = true;
 				}
 			}
 			else
 			{
-				framestoskip--;
+				framesToSkip--;
 
-				if (framestoskip < 1)
-					skipnextframe = false;
-				else
-				  skipnextframe = true;
+				skipNextFrame = framesToSkip > 0;
 
-				framesskipped++;
+				framesSkipped++;
 			}
 
 			if (signal_unthrottle)
 			{
-				if (framesskipped < ffSkipRate)
+				if (framesSkipped < ffSkipRate)
 				{
-					skipnextframe = true;
-					framestoskip = 1;
+					skipNextFrame = true;
+					framesToSkip = 1;
 				}
-				if (framestoskip < 1)
-					framestoskip += ffSkipRate;
+				if (framesToSkip < 1)
+					framesToSkip += ffSkipRate;
 			}
-			else if ((extraThrottle || signal_paused || /*autoframeskipenab && frameskiprate ||*/ cfg_frameLimit || signal_overrideSecondaryThrottle) && allowSleep)
+			else if ((extraThrottle || signal_paused || Global.Config.ClockThrottle || signal_overrideSecondaryThrottle) && allowSleep)
 			{
 				SpeedThrottle(signal_paused);
 			}
 
-			if (cfg_autoframeskipenab && cfg_frameskiprate != 0)
+			if (Global.Config.AutoMinimizeSkipping && Global.Config.FrameSkip != 0)
 			{
-				if (!signal_continuousframeAdvancing)
+				if (!signal_continuousFrameAdvancing)
 				{
 					AutoFrameSkip_NextFrame();
-					if (framestoskip < 1)
-						framestoskip += AutoFrameSkip_GetSkipAmount(0, skipRate);
+					if (framesToSkip < 1)
+						framesToSkip += AutoFrameSkip_GetSkipAmount(0, skipRate);
 				}
 			}
 			else
 			{
-				if (framestoskip < 1)
-					framestoskip += skipRate;
+				if (framesToSkip < 1)
+					framesToSkip += skipRate;
 			}
 		}
 

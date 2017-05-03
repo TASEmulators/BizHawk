@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using SlimDX.XInput;
 
 #pragma warning disable 169
@@ -13,9 +12,9 @@ namespace BizHawk.Client.EmuHawk
 	{
 		// ********************************** Static interface **********************************
 
-		public static List<GamePad360> Devices = new List<GamePad360>();
-
-		static bool IsAvailable;
+		private static readonly object _syncObj = new object();
+		private static readonly List<GamePad360> _devices = new List<GamePad360>();
+		private static readonly bool _isAvailable;
 
 		[DllImport("kernel32", SetLastError = true, EntryPoint = "GetProcAddress")]
 		static extern IntPtr GetProcAddressOrdinal(IntPtr hModule, IntPtr procName);
@@ -43,9 +42,8 @@ namespace BizHawk.Client.EmuHawk
 			public XINPUT_GAMEPAD Gamepad;
 		}
 
-		public static void Initialize()
+		static GamePad360()
 		{
-			IsAvailable = false;
 			try
 			{
 				//some users wont even have xinput installed. in order to avoid spurious exceptions and possible instability, check for the library first
@@ -70,48 +68,71 @@ namespace BizHawk.Client.EmuHawk
 					//don't remove this code. it's important to catch errors on systems with broken xinput installs.
 					//(probably, checking for the library was adequate, but lets not get rid of this anyway)
 					var test = new SlimDX.XInput.Controller(UserIndex.One).IsConnected;
-					IsAvailable = true;
+					_isAvailable = true;
 				}
-
 			}
 			catch { }
+		}
 
-			if (!IsAvailable) return;
+		public static void Initialize()
+		{
+			lock (_syncObj)
+			{
+				_devices.Clear();
 
-			//now, at this point, slimdx may be using one xinput, and we may be using another
-			//i'm not sure how slimdx picks its dll to bind to.
-			//i'm not sure how troublesome this will be
-			//maybe we should get rid of slimdx for this altogether
+				if (!_isAvailable)
+					return;
 
-			var c1 = new Controller(UserIndex.One);
-			var c2 = new Controller(UserIndex.Two);
-			var c3 = new Controller(UserIndex.Three);
-			var c4 = new Controller(UserIndex.Four);
+				//now, at this point, slimdx may be using one xinput, and we may be using another
+				//i'm not sure how slimdx picks its dll to bind to.
+				//i'm not sure how troublesome this will be
+				//maybe we should get rid of slimdx for this altogether
 
-			if (c1.IsConnected) Devices.Add(new GamePad360(0,c1));
-			if (c2.IsConnected) Devices.Add(new GamePad360(1,c2));
-			if (c3.IsConnected) Devices.Add(new GamePad360(2,c3));
-			if (c4.IsConnected) Devices.Add(new GamePad360(3,c4));
+				var c1 = new Controller(UserIndex.One);
+				var c2 = new Controller(UserIndex.Two);
+				var c3 = new Controller(UserIndex.Three);
+				var c4 = new Controller(UserIndex.Four);
+
+				if (c1.IsConnected) _devices.Add(new GamePad360(0, c1));
+				if (c2.IsConnected) _devices.Add(new GamePad360(1, c2));
+				if (c3.IsConnected) _devices.Add(new GamePad360(2, c3));
+				if (c4.IsConnected) _devices.Add(new GamePad360(3, c4));
+			}
+		}
+
+		public static IEnumerable<GamePad360> EnumerateDevices()
+		{
+			lock (_syncObj)
+			{
+				foreach (var device in _devices)
+				{
+					yield return device;
+				}
+			}
 		}
 
 		public static void UpdateAll()
 		{
-			if(IsAvailable)
-				foreach (var device in Devices.ToList())
+			lock (_syncObj)
+			{
+				foreach (var device in _devices)
+				{
 					device.Update();
+				}
+			}
 		}
 
 		// ********************************** Instance Members **********************************
 
 		readonly Controller controller;
-        uint index0;
+		uint index0;
 		XINPUT_STATE state;
 
-        public int PlayerNumber { get { return (int)index0 + 1; } }
+		public int PlayerNumber { get { return (int)index0 + 1; } }
 
 		GamePad360(uint index0, Controller c)
 		{
-            this.index0 = index0;
+			this.index0 = index0;
 			controller = c;
 			InitializeButtons();
 			Update();

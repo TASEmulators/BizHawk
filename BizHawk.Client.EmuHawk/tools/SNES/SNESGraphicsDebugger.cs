@@ -660,8 +660,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			//wtf to do? now we need an api all the time
 			if (currentSnesCore != null)
-				return new SNESGraphicsDecoder(currentSnesCore.api, currentSnesCore.CurrPalette);
-			else return new SNESGraphicsDecoder(currentSnesCore.api, SnesColors.ColorType.BizHawk);
+				return new SNESGraphicsDecoder(currentSnesCore.Api, currentSnesCore.CurrPalette);
+			else return new SNESGraphicsDecoder(currentSnesCore.Api, SnesColors.ColorType.BizHawk);
 		}
 
 		void RenderPalette()
@@ -892,7 +892,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			groupFreeze.SuspendLayout();
 
-			Win32.SendMessage(groupFreeze.Handle, 11, 0, 0); //WM_SETREDRAW false
+			Win32.SendMessage(groupFreeze.Handle, 11, (IntPtr)0, IntPtr.Zero); //WM_SETREDRAW false
 
 			var tp = tabctrlDetails.SelectedTab;
 
@@ -912,7 +912,7 @@ namespace BizHawk.Client.EmuHawk
 			
 			groupFreeze.ResumeLayout();
 
-			Win32.SendMessage(groupFreeze.Handle, 11, 1, 0); //WM_SETREDRAW true
+			Win32.SendMessage(groupFreeze.Handle, 11, (IntPtr)1, IntPtr.Zero); //WM_SETREDRAW true
 			groupFreeze.Refresh();
 		}
 

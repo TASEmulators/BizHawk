@@ -6,15 +6,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public ControllerDefinition ControllerDefinition
-		{
-			get { return PCEngineController; }
-		}
+		public ControllerDefinition ControllerDefinition => PCEngineController;
 
-		public IController Controller { get; set; }
-
-		public void FrameAdvance(bool render, bool rendersound)
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
+			_controller = controller;
 			_lagged = true;
 			DriveLightOn = false;
 			Frame++;
@@ -47,21 +43,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public int Frame
 		{
-			get { return frame; }
-			set { frame = value; }
+			get { return _frame; }
+			set { _frame = value; }
 		}
 
-		public string SystemId { get; private set; }
+		public string SystemId { get; }
 
-		public bool DeterministicEmulation
-		{
-			get { return true; }
-		}
-
-		public string BoardName
-		{
-			get { return null; }
-		}
+		public bool DeterministicEmulation => true;
 
 		public void ResetCounters()
 		{
@@ -71,14 +59,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			_isLag = false;
 		}
 
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 
 		public void Dispose()
 		{
-			if (disc != null)
-			{
-				disc.Dispose();
-			}
+			disc?.Dispose();
 		}
 	}
 }

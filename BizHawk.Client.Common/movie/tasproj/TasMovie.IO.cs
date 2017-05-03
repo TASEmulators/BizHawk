@@ -188,13 +188,10 @@ namespace BizHawk.Client.Common
 				}
 
 				// TasMovie enhanced information
-				if (bl.HasLump(BinaryStateLump.LagLog))
+				bl.GetLump(BinaryStateLump.LagLog, false, delegate(BinaryReader br, long length)
 				{
-					bl.GetLump(BinaryStateLump.LagLog, false, delegate(BinaryReader br, long length)
-					{
-						LagLog.Load(br);
-					});
-				}
+					LagLog.Load(br);
+				});
 
 				bl.GetLump(BinaryStateLump.StateHistorySettings, false, delegate(TextReader tr)
 				{
@@ -213,10 +210,10 @@ namespace BizHawk.Client.Common
 					}
 				});
 
-				if (GetClientSettingsOnLoad != null && bl.HasLump(BinaryStateLump.ClientSettings))
+				if (GetClientSettingsOnLoad != null)
 				{
 					string clientSettings = string.Empty;
-					bl.GetLump(BinaryStateLump.ClientSettings, true, delegate(TextReader tr)
+					bl.GetLump(BinaryStateLump.ClientSettings, false, delegate(TextReader tr)
 					{
 						string line;
 						while ((line = tr.ReadLine()) != null)
@@ -228,29 +225,29 @@ namespace BizHawk.Client.Common
 						}
 					});
 
-					GetClientSettingsOnLoad(clientSettings);
-				}
-
-				if (bl.HasLump(BinaryStateLump.VerificationLog))
-				{
-					bl.GetLump(BinaryStateLump.VerificationLog, true, delegate(TextReader tr)
+					if (!string.IsNullOrWhiteSpace(clientSettings))
 					{
-						VerificationLog.Clear();
-						while (true)
-						{
-							var line = tr.ReadLine();
-							if (string.IsNullOrEmpty(line))
-							{
-								break;
-							}
-
-							if (line.StartsWith("|"))
-							{
-								VerificationLog.Add(line);
-							}
-						}
-					});
+						GetClientSettingsOnLoad(clientSettings);
+					}
 				}
+
+				bl.GetLump(BinaryStateLump.VerificationLog, false, delegate(TextReader tr)
+				{
+					VerificationLog.Clear();
+					while (true)
+					{
+						var line = tr.ReadLine();
+						if (string.IsNullOrEmpty(line))
+						{
+							break;
+						}
+
+						if (line.StartsWith("|"))
+						{
+							VerificationLog.Add(line);
+						}
+					}
+				});
 
 				Branches.Load(bl, this);
 				if (StateManager.Settings.BranchStatesInTasproj)

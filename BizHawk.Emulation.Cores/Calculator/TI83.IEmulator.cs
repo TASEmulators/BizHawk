@@ -4,32 +4,30 @@ namespace BizHawk.Emulation.Cores.Calculators
 {
 	public partial class TI83 : IEmulator
 	{
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition
+		public ControllerDefinition ControllerDefinition => TI83Controller;
+
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
-			get { return TI83Controller; }
-		}
-
-		public IController Controller { get; set; }
-
-		public void FrameAdvance(bool render, bool rendersound)
-		{
+			_controller = controller;
 			_lagged = true;
 
-			Cpu.Debug = Tracer.Enabled;
+			_cpu.Debug = _tracer.Enabled;
 
-			if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
-				Cpu.Logger = (s) => Tracer.Put(s);
+			if (_cpu.Debug && _cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
+			{
+				_cpu.Logger = s => _tracer.Put(s);
+			}
 
-			//I eyeballed this speed
+			// I eyeballed this speed
 			for (int i = 0; i < 5; i++)
 			{
-				_onPressed = Controller.IsPressed("ON");
+				_onPressed = controller.IsPressed("ON");
 
-				//and this was derived from other emus
-				Cpu.ExecuteCycles(10000);
-				Cpu.Interrupt = true;
+				// and this was derived from other emus
+				_cpu.ExecuteCycles(10000);
+				_cpu.Interrupt = true;
 			}
 
 			Frame++;
@@ -45,24 +43,24 @@ namespace BizHawk.Emulation.Cores.Calculators
 		public int Frame
 		{
 			get { return _frame; }
-			set { _frame = value; }
+			private set { _frame = value; }
 		}
 
-		public string SystemId { get { return "TI83"; } }
+		public string SystemId => "TI83";
 
-		public bool DeterministicEmulation { get { return true; } }
+	    public bool DeterministicEmulation => true;
 
-		public string BoardName { get { return null; } }
-
-		public void ResetCounters()
+	    public void ResetCounters()
 		{
 			Frame = 0;
 			_lagCount = 0;
 			_isLag = false;
 		}
 
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 
-		public void Dispose() { }
+		public void Dispose()
+		{
+		}
 	}
 }

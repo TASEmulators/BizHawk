@@ -4,11 +4,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 {
 	// This rendering code is only used for TurboGrafx/TurboCD Mode.
 	// In SuperGrafx mode, separate rendering functions in the VPC class are used.
-
 	public partial class VDC
 	{
 		/* There are many line-counters here. Here is a breakdown of what they each are:
-        
+
 		 + ScanLine is the current NTSC scanline. It has a range from 0 to 262.
 		 + ActiveLine is the current offset into the framebuffer. 0 is the first
 		   line of active display, and the last value will be BufferHeight-1.
@@ -26,8 +25,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public int HBlankCycles = 79;
 		public bool PerformSpriteLimit;
 
-		byte[] PriorityBuffer = new byte[512];
-		byte[] InterSpritePriorityBuffer = new byte[512];
+		private readonly byte[] PriorityBuffer = new byte[512];
+		private readonly byte[] InterSpritePriorityBuffer = new byte[512];
 
 		public void ExecFrame(bool render)
 		{
@@ -69,6 +68,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						BackgroundY++;
 						BackgroundY &= 0x01FF;
 					}
+
 					if (render) RenderScanLine();
 				}
 
@@ -112,9 +112,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			RenderSpritesScanline(pce.Settings.ShowOBJ1);
 		}
 
-		Action<bool> RenderBackgroundScanline;
+		private readonly Action<bool> RenderBackgroundScanline;
 
-		unsafe void RenderBackgroundScanlineUnsafe(bool show)
+		private unsafe void RenderBackgroundScanlineUnsafe(bool show)
 		{
 			Array.Clear(PriorityBuffer, 0, FrameWidth);
 
@@ -127,6 +127,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					for (int i = 0; i < FrameWidth; i++)
 						*dst++ = p;
 				}
+
 				return;
 			}
 
@@ -193,7 +194,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		void RenderBackgroundScanlineSafe(bool show)
+		private void RenderBackgroundScanlineSafe(bool show)
 		{
 			Array.Clear(PriorityBuffer, 0, FrameWidth);
 
@@ -233,12 +234,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		byte[] heightTable = { 16, 32, 64, 64 };
+		private readonly byte[] heightTable = { 16, 32, 64, 64 };
 
 		public void RenderSpritesScanline(bool show)
 		{
 			if (SpritesEnabled == false)
+			{
 				return;
+			}
 
 			Array.Clear(InterSpritePriorityBuffer, 0, FrameWidth);
 			bool Sprite4ColorMode = Sprite4ColorModeEnabled;
@@ -343,6 +346,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						}
 					}
 				}
+
 				if (hflip == false)
 				{
 					if (x + width > 0 && y + height > 0)
@@ -419,17 +423,21 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		int FramePitch = 256;
-		int FrameWidth = 256;
-		int FrameHeight = 240;
-		int[] FrameBuffer = new int[256 * 240];
+		private int FramePitch = 256;
+		private int FrameWidth = 256;
+		private int FrameHeight = 240;
+		private int[] FrameBuffer = new int[256 * 240];
 
-		public int[] GetVideoBuffer() { return FrameBuffer; }
+		// IVideoProvider implementation
+		public int[] GetVideoBuffer()
+		{
+			return FrameBuffer;
+		}
 
-		public int VirtualWidth { get { return FramePitch; } }
-		public int VirtualHeight { get { return FrameHeight; } }
-		public int BufferWidth { get { return FramePitch; } }
-		public int BufferHeight { get { return FrameHeight; } }
-		public int BackgroundColor { get { return vce.Palette[256]; } }
+		public int VirtualWidth => FramePitch;
+		public int VirtualHeight => FrameHeight;
+		public int BufferWidth => FramePitch;
+		public int BufferHeight => FrameHeight;
+		public int BackgroundColor => vce.Palette[256];
 	}
 }

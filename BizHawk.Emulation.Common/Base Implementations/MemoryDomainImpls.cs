@@ -7,8 +7,24 @@ namespace BizHawk.Emulation.Common
 		private Func<long, byte> _peek;
 		private Action<long, byte> _poke;
 
-		public Func<long, byte> Peek { get { return _peek; } set { _peek = value; } }
-		public Action<long, byte> Poke { get { return _poke; } set { _poke = value; Writable = value != null; } }
+		public Func<long, byte> Peek
+		{
+			get { return _peek; } set { _peek = value; }
+		}
+
+		public Action<long, byte> Poke
+		{
+			get
+			{
+				return _poke;
+			}
+
+			set
+			{
+				_poke = value;
+				Writable = value != null;
+			}
+		}
 
 		public override byte PeekByte(long addr)
 		{
@@ -17,8 +33,7 @@ namespace BizHawk.Emulation.Common
 
 		public override void PokeByte(long addr, byte val)
 		{
-			if (_poke != null)
-				_poke(addr, val);
+			_poke?.Invoke(addr, val);
 		}
 
 		public MemoryDomainDelegate(string name, long size, Endian endian, Func<long, byte> peek, Action<long, byte> poke, int wordSize)
@@ -37,7 +52,19 @@ namespace BizHawk.Emulation.Common
 	{
 		private byte[] _data;
 
-		public byte[] Data { get { return _data; } set { _data = value; Size = _data.LongLength; } }
+		public byte[] Data
+		{
+			get
+			{
+				return _data;
+			}
+
+			set
+			{
+				_data = value;
+				Size = _data.LongLength;
+			}
+		}
 
 		public override byte PeekByte(long addr)
 		{
@@ -47,7 +74,9 @@ namespace BizHawk.Emulation.Common
 		public override void PokeByte(long addr, byte val)
 		{
 			if (Writable)
+			{
 				Data[addr] = val;
+			}
 		}
 
 		public MemoryDomainByteArray(string name, Endian endian, byte[] data, bool writable, int wordSize)
@@ -67,9 +96,11 @@ namespace BizHawk.Emulation.Common
 		public override byte PeekByte(long addr)
 		{
 			if ((ulong)addr < (ulong)Size)
+			{
 				return ((byte*)Data)[addr];
-			else
-				throw new ArgumentOutOfRangeException("addr");
+			}
+
+			throw new ArgumentOutOfRangeException(nameof(addr));
 		}
 
 		public override void PokeByte(long addr, byte val)
@@ -77,9 +108,13 @@ namespace BizHawk.Emulation.Common
 			if (Writable)
 			{
 				if ((ulong)addr < (ulong)Size)
+				{
 					((byte*)Data)[addr] = val;
+				}
 				else
-					throw new ArgumentOutOfRangeException("addr");
+				{
+					throw new ArgumentOutOfRangeException(nameof(addr));
+				}
 			}
 		}
 
@@ -106,9 +141,11 @@ namespace BizHawk.Emulation.Common
 		public override byte PeekByte(long addr)
 		{
 			if ((ulong)addr < (ulong)Size)
+			{
 				return ((byte*)Data)[addr ^ 1];
-			else
-				throw new ArgumentOutOfRangeException("addr");
+			}
+
+			throw new ArgumentOutOfRangeException(nameof(addr));
 		}
 
 		public override void PokeByte(long addr, byte val)
@@ -116,9 +153,13 @@ namespace BizHawk.Emulation.Common
 			if (Writable)
 			{
 				if ((ulong)addr < (ulong)Size)
+				{
 					((byte*)Data)[addr ^ 1] = val;
+				}
 				else
-					throw new ArgumentOutOfRangeException("addr");
+				{
+					throw new ArgumentOutOfRangeException(nameof(addr));
+				}
 			}
 		}
 

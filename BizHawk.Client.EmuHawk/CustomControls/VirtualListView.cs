@@ -498,10 +498,10 @@ namespace BizHawk.Client.EmuHawk
 
 			// Send the message to the control window.
 				Win32.SendMessage(
-			this.Handle,
-			(int)ListViewMessages.LVM_SETITEMSTATE,
-			index,
-			ptrItem.ToInt32());
+					this.Handle,
+					(int)ListViewMessages.LVM_SETITEMSTATE,
+					(IntPtr)index,
+					ptrItem);
 			} 
 			catch (Exception ex) 
 			{
@@ -527,8 +527,8 @@ namespace BizHawk.Client.EmuHawk
 			Win32.SendMessage(
 			this.Handle,
 			(int)ListViewMessages.LVM_SETITEMCOUNT,
-				this._itemCount,
-			0);
+				(IntPtr)this._itemCount,
+				IntPtr.Zero);
 			#endif
 			this.VirtualListSize = _itemCount;
 		}
@@ -778,7 +778,7 @@ namespace BizHawk.Client.EmuHawk
 			lvhti.Point.X = x;
 			lvhti.Point.Y = y;
 			Marshal.StructureToPtr(lvhti, ptrlvhti, true);
-			int z = Win32.SendMessage(this.Handle, (int)ListViewMessages.LVM_HITTEST, 0, ptrlvhti.ToInt32());
+			int z = (int)Win32.SendMessage(this.Handle, (int)ListViewMessages.LVM_HITTEST, (IntPtr)0, ptrlvhti);
 			Marshal.PtrToStructure(ptrlvhti, lvhti);
 			return z;
 		}
@@ -786,8 +786,9 @@ namespace BizHawk.Client.EmuHawk
 		public void ensureVisible(int index) 
 		{
 			#if WINDOWS
-			Win32.SendMessage(Handle, (int)ListViewMessages.LVM_ENSUREVISIBLE, index, 1);
+			Win32.SendMessage(Handle, (int)ListViewMessages.LVM_ENSUREVISIBLE, (IntPtr)index, (IntPtr)1);
 			#endif
+			this.VirtualListSize = _itemCount;
 		}
 
 		public void ensureVisible() 

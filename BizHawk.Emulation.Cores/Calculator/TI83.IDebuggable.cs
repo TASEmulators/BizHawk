@@ -12,36 +12,36 @@ namespace BizHawk.Emulation.Cores.Calculators
 		{
 			return new Dictionary<string, RegisterValue>
 			{
-				{ "A", Cpu.RegisterA },
-				{ "AF", Cpu.RegisterAF },
-				{ "B", Cpu.RegisterB },
-				{ "BC", Cpu.RegisterBC },
-				{ "C", Cpu.RegisterC },
-				{ "D", Cpu.RegisterD },
-				{ "DE", Cpu.RegisterDE },
-				{ "E", Cpu.RegisterE },
-				{ "F", Cpu.RegisterF },
-				{ "H", Cpu.RegisterH },
-				{ "HL", Cpu.RegisterHL },
-				{ "I", Cpu.RegisterI },
-				{ "IX", Cpu.RegisterIX },
-				{ "IY", Cpu.RegisterIY },
-				{ "L", Cpu.RegisterL },
-				{ "PC", Cpu.RegisterPC },
-				{ "R", Cpu.RegisterR },
-				{ "Shadow AF", Cpu.RegisterShadowAF },
-				{ "Shadow BC", Cpu.RegisterShadowBC },
-				{ "Shadow DE", Cpu.RegisterShadowDE },
-				{ "Shadow HL", Cpu.RegisterShadowHL },
-				{ "SP", Cpu.RegisterSP },
-				{ "Flag C", Cpu.RegisterF.Bit(0) },
-				{ "Flag N", Cpu.RegisterF.Bit(1) },
-				{ "Flag P/V", Cpu.RegisterF.Bit(2) },
-				{ "Flag 3rd", Cpu.RegisterF.Bit(3) },
-				{ "Flag H", Cpu.RegisterF.Bit(4) },
-				{ "Flag 5th", Cpu.RegisterF.Bit(5) },
-				{ "Flag Z", Cpu.RegisterF.Bit(6) },
-				{ "Flag S", Cpu.RegisterF.Bit(7) }
+				["A"] = _cpu.RegisterA,
+				["AF"] = _cpu.RegisterAF,
+				["B"] = _cpu.RegisterB,
+				["BC"] = _cpu.RegisterBC,
+				["C"] = _cpu.RegisterC,
+				["D"] = _cpu.RegisterD,
+				["DE"] = _cpu.RegisterDE,
+				["E"] = _cpu.RegisterE,
+				["F"] = _cpu.RegisterF,
+				["H"] = _cpu.RegisterH,
+				["HL"] = _cpu.RegisterHL,
+				["I"] = _cpu.RegisterI,
+				["IX"] = _cpu.RegisterIX,
+				["IY"] = _cpu.RegisterIY,
+				["L"] = _cpu.RegisterL,
+				["PC"] = _cpu.RegisterPC,
+				["R"] = _cpu.RegisterR,
+				["Shadow AF"] = _cpu.RegisterShadowAF,
+				["Shadow BC"] = _cpu.RegisterShadowBC,
+				["Shadow DE"] = _cpu.RegisterShadowDE,
+				["Shadow HL"] = _cpu.RegisterShadowHL,
+				["SP"] = _cpu.RegisterSP,
+				["Flag C"] = _cpu.RegisterF.Bit(0),
+				["Flag N"] = _cpu.RegisterF.Bit(1),
+				["Flag P/V"] = _cpu.RegisterF.Bit(2),
+				["Flag 3rd"] = _cpu.RegisterF.Bit(3),
+				["Flag H"] = _cpu.RegisterF.Bit(4),
+				["Flag 5th"] = _cpu.RegisterF.Bit(5),
+				["Flag Z"] = _cpu.RegisterF.Bit(6),
+				["Flag S"] = _cpu.RegisterF.Bit(7)
 			};
 		}
 
@@ -52,84 +52,87 @@ namespace BizHawk.Emulation.Cores.Calculators
 				default:
 					throw new InvalidOperationException();
 				case "A":
-					Cpu.RegisterA = (byte)value;
+					_cpu.RegisterA = (byte)value;
 					break;
 				case "AF":
-					Cpu.RegisterAF = (byte)value;
+					_cpu.RegisterAF = (byte)value;
 					break;
 				case "B":
-					Cpu.RegisterB = (byte)value;
+					_cpu.RegisterB = (byte)value;
 					break;
 				case "BC":
-					Cpu.RegisterBC = (byte)value;
+					_cpu.RegisterBC = (byte)value;
 					break;
 				case "C":
-					Cpu.RegisterC = (byte)value;
+					_cpu.RegisterC = (byte)value;
 					break;
 				case "D":
-					Cpu.RegisterD = (byte)value;
+					_cpu.RegisterD = (byte)value;
 					break;
 				case "DE":
-					Cpu.RegisterDE = (byte)value;
+					_cpu.RegisterDE = (byte)value;
 					break;
 				case "E":
-					Cpu.RegisterE = (byte)value;
+					_cpu.RegisterE = (byte)value;
 					break;
 				case "F":
-					Cpu.RegisterF = (byte)value;
+					_cpu.RegisterF = (byte)value;
 					break;
 				case "H":
-					Cpu.RegisterH = (byte)value;
+					_cpu.RegisterH = (byte)value;
 					break;
 				case "HL":
-					Cpu.RegisterHL = (byte)value;
+					_cpu.RegisterHL = (byte)value;
 					break;
 				case "I":
-					Cpu.RegisterI = (byte)value;
+					_cpu.RegisterI = (byte)value;
 					break;
 				case "IX":
-					Cpu.RegisterIX = (byte)value;
+					_cpu.RegisterIX = (byte)value;
 					break;
 				case "IY":
-					Cpu.RegisterIY = (byte)value;
+					_cpu.RegisterIY = (byte)value;
 					break;
 				case "L":
-					Cpu.RegisterL = (byte)value;
+					_cpu.RegisterL = (byte)value;
 					break;
 				case "PC":
-					Cpu.RegisterPC = (ushort)value;
+					_cpu.RegisterPC = (ushort)value;
 					break;
 				case "R":
-					Cpu.RegisterR = (byte)value;
+					_cpu.RegisterR = (byte)value;
 					break;
 				case "Shadow AF":
-					Cpu.RegisterShadowAF = (byte)value;
+					_cpu.RegisterShadowAF = (byte)value;
 					break;
 				case "Shadow BC":
-					Cpu.RegisterShadowBC = (byte)value;
+					_cpu.RegisterShadowBC = (byte)value;
 					break;
 				case "Shadow DE":
-					Cpu.RegisterShadowDE = (byte)value;
+					_cpu.RegisterShadowDE = (byte)value;
 					break;
 				case "Shadow HL":
-					Cpu.RegisterShadowHL = (byte)value;
+					_cpu.RegisterShadowHL = (byte)value;
 					break;
 				case "SP":
-					Cpu.RegisterSP = (byte)value;
+					_cpu.RegisterSP = (byte)value;
 					break;
 			}
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem();
 
 		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
-
-		public bool CanStep(StepType type) { return false; }
-
-		public int TotalExecutedCycles
+		public void Step(StepType type)
 		{
-			get { return Cpu.TotalExecutedCycles; }
+			throw new NotImplementedException();
 		}
+
+		public bool CanStep(StepType type)
+		{
+			return false;
+		}
+
+		public int TotalExecutedCycles => _cpu.TotalExecutedCycles;
 	}
 }

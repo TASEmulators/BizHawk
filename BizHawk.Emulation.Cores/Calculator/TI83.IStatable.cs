@@ -9,10 +9,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 	{
 		private byte[] _stateBuffer;
 
-		public bool BinarySaveStatesPreferred
-		{
-			get { return false; }
-		}
+		public bool BinarySaveStatesPreferred => false;
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
@@ -58,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		private void SyncState(Serializer ser)
 		{
 			ser.BeginSection("TI83");
-			Cpu.SyncState(ser);
+			_cpu.SyncState(ser);
 			ser.Sync("RAM", ref _ram, false);
 			ser.Sync("romPageLow3Bits", ref _romPageLow3Bits);
 			ser.Sync("romPageHighBit", ref _romPageHighBit);
@@ -70,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			ser.Sync("maskOn", ref _maskOn);
 			ser.Sync("onPressed", ref _onPressed);
 			ser.Sync("keyboardMask", ref _keyboardMask);
-			ser.Sync("m_LinkOutput", ref LinkOutput);
+			ser.Sync("m_LinkOutput", ref _linkOutput);
 			ser.Sync("VRAM", ref _vram, false);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("LagCount", ref _lagCount);
