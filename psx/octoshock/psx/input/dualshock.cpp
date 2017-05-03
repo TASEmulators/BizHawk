@@ -194,6 +194,8 @@ void InputDevice_DualShock::CheckManualAnaModeChange(void)
 
 void InputDevice_DualShock::Power(void)
 {
+	amct_enabled = false; //for octoshock, this function isn't supported
+
  combo_anatoggle_counter = -2;
  lastts = 0;
  //
