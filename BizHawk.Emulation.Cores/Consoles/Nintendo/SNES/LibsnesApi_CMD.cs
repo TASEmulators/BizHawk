@@ -62,13 +62,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public bool CMD_load_cartridge_super_game_boy(string rom_xml, byte[] rom_data, uint rom_size, byte[] dmg_data)
 		{
 			SetAscii(0, rom_xml, () =>
-				 SetBytes(1, rom_data, () =>
-					 SetBytes(2, dmg_data, () =>
-					 {
-						 Message(eMessage.eMessage_CMD_load_cartridge_sgb);
-						 WaitForCMD();
-					 })
-				 )
+				SetBytes(1, rom_data, () =>
+					SetBytes(2, dmg_data, () =>
+					{
+						Message(eMessage.eMessage_CMD_load_cartridge_sgb);
+						WaitForCMD();
+					})
+				)
 			);
 			return comm->GetBool();
 		}
@@ -77,11 +77,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			string xml = rom_xml == null ? null : System.Text.Encoding.ASCII.GetString(rom_xml);
 			SetAscii(0, xml ?? "", () =>
-				  SetBytes(1, rom_data, () =>
-				  {
-					  Message(eMessage.eMessage_CMD_load_cartridge_normal);
-					  WaitForCMD();
-				  })
+				SetBytes(1, rom_data, () =>
+				{
+					Message(eMessage.eMessage_CMD_load_cartridge_normal);
+					WaitForCMD();
+				})
 			);
 			return comm->GetBool();
 		}

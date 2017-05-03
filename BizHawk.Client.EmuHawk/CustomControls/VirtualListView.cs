@@ -556,9 +556,9 @@ namespace BizHawk.Client.EmuHawk
 						catch (Exception e)
 						{
 							Debug.WriteLine("Failed to copy text name from client: " + e, "VirtualListView.OnDispInfoNotice");
+						}
 					}
 				}
-			}
 			}
 
 			if ((info.Item.Mask & (uint)ListViewItemMask.LVIF_IMAGE) > 0)
@@ -597,7 +597,7 @@ namespace BizHawk.Client.EmuHawk
 				case (int)CustomDrawDrawStageFlags.CDDS_ITEMPREPAINT:
 				case (int)CustomDrawDrawStageFlags.CDDS_PREPAINT:
 					m.Result = new IntPtr((int)CustomDrawReturnFlags.CDRF_NOTIFYSUBITEMDRAW);
-			break;
+					break;
 				case (int)CustomDrawDrawStageFlags.CDDS_SUBITEMPREPAINT:
 					if (QueryItemBkColor != null)
 					{
@@ -605,14 +605,14 @@ namespace BizHawk.Client.EmuHawk
 						QueryItemBkColor(cd.Nmcd.dwItemSpec, cd.SubItem, ref color);
 						cd.ClearTextBackground = (color.B << 16) | (color.G << 8) | color.R;
 						Marshal.StructureToPtr(cd, m.LParam, false);
-			}
+					}
 
 					m.Result = new IntPtr((int)CustomDrawReturnFlags.CDRF_DODEFAULT);
-			break;
+					break;
 			}
 			#endif
 		}
-
+		
 		/// <summary>
 		/// Event to be fired whenever the control scrolls
 		/// </summary>
@@ -643,32 +643,32 @@ namespace BizHawk.Client.EmuHawk
 			var messageProcessed = false;
 			switch (m.Msg)
 			{
-		case (int)WindowsMessage.WM_REFLECT + (int)WindowsMessage.WM_NOTIFY:
+				case (int)WindowsMessage.WM_REFLECT + (int)WindowsMessage.WM_NOTIFY:
 					var nm1 = (NmHdr)m.GetLParam(typeof(NmHdr));
 					switch (nm1.Code)
 					{
-		case (int)Notices.NM_CUSTOMDRAW:
-		OnCustomDrawNotice(ref m);
-		messageProcessed = true;
+						case (int)Notices.NM_CUSTOMDRAW:
+							OnCustomDrawNotice(ref m);
+							messageProcessed = true;
 
 							if (QueryItemBkColor == null || !UseCustomBackground)
 							{
 								m.Result = (IntPtr)0;
 							}
 
-		break;
-		case (int)ListViewNotices.LVN_GETDISPINFOW:
-		OnDispInfoNotice(ref m, false);
-		messageProcessed = true;
-		break;
-		case (int)ListViewNotices.LVN_BEGINDRAG:
-		OnBeginItemDrag(MouseButtons.Left, ref m);
-		messageProcessed = true;
-		break;
-		case (int)ListViewNotices.LVN_BEGINRDRAG:
-		OnBeginItemDrag(MouseButtons.Right, ref m);
-		messageProcessed = true;
-		break;
+							break;
+						case (int)ListViewNotices.LVN_GETDISPINFOW:
+							OnDispInfoNotice(ref m, false);
+							messageProcessed = true;
+							break;
+						case (int)ListViewNotices.LVN_BEGINDRAG:
+							OnBeginItemDrag(MouseButtons.Left, ref m);
+							messageProcessed = true;
+							break;
+						case (int)ListViewNotices.LVN_BEGINRDRAG:
+							OnBeginItemDrag(MouseButtons.Right, ref m);
+							messageProcessed = true;
+							break;
 					}
 
 					break;
@@ -676,27 +676,27 @@ namespace BizHawk.Client.EmuHawk
 					// http://stackoverflow.com/questions/1851620/handling-scroll-event-on-listview-in-c-sharp
 					OnScroll(new ScrollEventArgs((ScrollEventType)(m.WParam.ToInt32() & 0xffff), m.WParam.ToInt32()));
 					break;
-		case (int)WindowsMessage.WM_ERASEBKGND:
-		if (BlazingFast)
-		{
-		messageProcessed = true;
-		m.Result = new IntPtr(1);
-		}
+				case (int)WindowsMessage.WM_ERASEBKGND:
+					if (BlazingFast)
+					{
+						messageProcessed = true;
+						m.Result = new IntPtr(1);
+					}
 
-		break;
-		}
+					break;
+			}
 			
 			if (!messageProcessed) 
 			{
 				try 
 				{
-		base.WndProc(ref m);
+					base.WndProc(ref m);
 				}
 				catch (Exception ex)
 				{
-		Trace.WriteLine(string.Format("Message {0} caused an exception: {1}", m, ex.Message));
-		}
-		}
+					Trace.WriteLine(string.Format("Message {0} caused an exception: {1}", m, ex.Message));
+				}
+			}
 		}
 		#else
 		public int VScrollPos

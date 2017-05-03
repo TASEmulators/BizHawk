@@ -187,42 +187,42 @@ namespace BizHawk.Client.EmuHawk
 				//What System are we running?
 				switch (Emulator.SystemId)
 				{
-				case "GB":
-					GB();
-					break;
-				case "GBA":
-					GBA();
-					break;
-				case "GEN":
-					GEN();
-					break;
-				case "N64":
-					//This determies what kind of Code we have
-					testo = SingleCheat.Remove(2, 11);
-					N64();
-					break;
-				case "NES":
-					NES();
-					break;
-				case "PSX":
-					//This determies what kind of Code we have
-					testo = SingleCheat.Remove(2, 11);
-					PSX();
-					break;
-				case "SAT":
-					//This determies what kind of Code we have
-					testo = SingleCheat.Remove(2, 11);
-					SAT();
-					break;
-				case "SMS":
-					SMS();
-					break;
-				case "SNES":
-					SNES();
-					break;
-				default:
-					//This should NEVER happen
-					break;
+					case "GB":
+						GB();
+						break;
+					case "GBA":
+						GBA();
+						break;
+					case "GEN":
+						GEN();
+						break;
+					case "N64":
+						//This determies what kind of Code we have
+						testo = SingleCheat.Remove(2, 11);
+						N64();
+						break;
+					case "NES":
+						NES();
+						break;
+					case "PSX":
+						//This determies what kind of Code we have
+						testo = SingleCheat.Remove(2, 11);
+						PSX();
+						break;
+					case "SAT":
+						//This determies what kind of Code we have
+						testo = SingleCheat.Remove(2, 11);
+						SAT();
+						break;
+					case "SMS":
+						SMS();
+						break;
+					case "SNES":
+						SNES();
+						break;
+					default:
+						//This should NEVER happen
+						break;
 				}
 			}
 			//We did the lines.  Let's clear.
@@ -333,15 +333,15 @@ namespace BizHawk.Client.EmuHawk
 				//Let's make sure we start with zero.  We have a good length, and a good starting zero, we should be good.  Hopefully.
 				switch (testo)
 				{
-				//Is this 00 or 01?
-				case "00":
-				case "01":
-					//Good.
-					break;
-				default:
-					//No.
-					MessageBox.Show("All GameShark Codes for GameBoy need to start with 00 or 01", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
+					//Is this 00 or 01?
+					case "00":
+					case "01":
+						//Good.
+						break;
+					default:
+						//No.
+						MessageBox.Show("All GameShark Codes for GameBoy need to start with 00 or 01", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return;
 				}
 				//Sample Input for GB/GBC:
 				//010FF6C1
@@ -2515,30 +2515,30 @@ namespace BizHawk.Client.EmuHawk
 				parseString = SingleCheat.Remove(0, 2);
 				switch (SingleCheat.Length)
 				{
-				case 9:
-					//Sample Code of 1-Byte:
-					//FFF761:64
-					//Becomes:
-					//Address: F761
-					//Value: 64
-					RAMAddress = parseString.Remove(4, 3);
-					RAMValue = parseString.Remove(0, 5);
-					byteSize = 1;
-					break;
-				case 11:
-					//Sample Code of 2-Byte:
-					//FFF761:6411
-					//Becomes:
-					//Address: F761
-					//Value: 6411
-					RAMAddress = parseString.Remove(4, 5);
-					RAMValue = parseString.Remove(0, 5);
-					byteSize = 2;
-					break;
-				default:
-					//We could have checked above but here is fine, since it's a quick check due to one of three possibilities.
-					MessageBox.Show("All Genesis Action Replay/Pro Action Replay Codes need to be either 9 or 11 characters in length", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-					return;
+					case 9:
+						//Sample Code of 1-Byte:
+						//FFF761:64
+						//Becomes:
+						//Address: F761
+						//Value: 64
+						RAMAddress = parseString.Remove(4, 3);
+						RAMValue = parseString.Remove(0, 5);
+						byteSize = 1;
+						break;
+					case 11:
+						//Sample Code of 2-Byte:
+						//FFF761:6411
+						//Becomes:
+						//Address: F761
+						//Value: 6411
+						RAMAddress = parseString.Remove(4, 5);
+						RAMValue = parseString.Remove(0, 5);
+						byteSize = 2;
+						break;
+					default:
+						//We could have checked above but here is fine, since it's a quick check due to one of three possibilities.
+						MessageBox.Show("All Genesis Action Replay/Pro Action Replay Codes need to be either 9 or 11 characters in length", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return;
 				}
 				//Try and add.
 				try
@@ -2583,75 +2583,75 @@ namespace BizHawk.Client.EmuHawk
 			//I need to determine if this is a Byte or Word.
 			switch (testo)
 			{
-			//80 and 81 are the most common, so let's not get all worried.
-			case "80":
-				//Byte
-				byteSize = 8;
-				break;
-			case "81":
-				//Word
-				byteSize = 16;
-				break;
+				//80 and 81 are the most common, so let's not get all worried.
+				case "80":
+					//Byte
+					byteSize = 8;
+					break;
+				case "81":
+					//Word
+					byteSize = 16;
+					break;
 				//Case A0 and A1 means "Write to Uncached address.
-			case "A0":
-				//Byte
-				byteSize = 8;
-				break;
-			case "A1":
-				//Word
-				byteSize = 16;
-				break;
+				case "A0":
+					//Byte
+					byteSize = 8;
+					break;
+				case "A1":
+					//Word
+					byteSize = 16;
+					break;
 				//Do we support the GameShark Button?  No.  But these cheats, can be toggled.  Which "Counts"
 				//<Ocean_Prince> Consequences be damned!
-			case "88":
-				//Byte
-				byteSize = 8;
-				break;
-			case "89":
-				//Word
-				byteSize = 16;
-				break;
+				case "88":
+					//Byte
+					byteSize = 8;
+					break;
+				case "89":
+					//Word
+					byteSize = 16;
+					break;
 				//These are compare Address X to Value Y, then apply Value B to Address A
 				//This is not supported, yet
 				//TODO: When BizHawk supports a compare RAM Address's value is true then apply a value to another address, make it a thing.
-			case "D0":
+				case "D0":
 				//Byte
-			case "D1":
+				case "D1":
 				//Word
-			case "D2":
+				case "D2":
 				//Byte
-			case "D3":
-				//Word
-				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
+				case "D3":
+					//Word
+					MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					return;
 				//These codes are for Disabling the Expansion Pak.  that's a bad thing?  Assuming bad codes, until told otherwise.
-			case "EE":
-			case "DD":
-			case "CC":
-				MessageBox.Show("The code you entered is for Disabling the Expansion Pak.  This is not allowed by this tool.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
+				case "EE":
+				case "DD":
+				case "CC":
+					MessageBox.Show("The code you entered is for Disabling the Expansion Pak.  This is not allowed by this tool.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					return;
 				//Enable Code
 				//Not Necessary?  Think so?
-			case "DE":
+				case "DE":
 				//Single Write ON-Boot code.
 				//Not Necessary?  Think so?
-			case "F0":
-			case "F1":
-			case "2A":
-			case "3C":
-			case "FF":
-				MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
+				case "F0":
+				case "F1":
+				case "2A":
+				case "3C":
+				case "FF":
+					MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					return;
 				//TODO: Make Patch Code (5000XXYY) work.
-			case "50":
-				//Word?
-				MessageBox.Show("The code you entered is not supported by this tool.  Please Submit the Game's Name, Cheat/Code and Purpose to the BizHawk forums.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
+				case "50":
+					//Word?
+					MessageBox.Show("The code you entered is not supported by this tool.  Please Submit the Game's Name, Cheat/Code and Purpose to the BizHawk forums.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					return;
 				//I hope this isn't a thing.
-			default:
-				MessageBox.Show("The GameShark code entered is not a recognized format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				//Leave this Method, before someone gets hurt.
-				return;
+				default:
+					MessageBox.Show("The GameShark code entered is not a recognized format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					//Leave this Method, before someone gets hurt.
+					return;
 			}
 			//Now to get clever.
 			//Sample Input for N64:
@@ -2835,62 +2835,62 @@ namespace BizHawk.Client.EmuHawk
 			//I need to determine if this is a Byte or Word.
 			switch (testo)
 			{
-			//30 80 Cheats mean, "Write, don't care otherwise."
-			case "30":
-				byteSize = 8;
-				break;
-			case "80":
-				byteSize = 16;
-				break;
+				//30 80 Cheats mean, "Write, don't care otherwise."
+				case "30":
+					byteSize = 8;
+					break;
+				case "80":
+					byteSize = 16;
+					break;
 				//When value hits YYYY, make the next cheat go off
-			case "E0":
+				case "E0":
 				//E0 byteSize = 8;
-			case "E1":
+				case "E1":
 				//E1 byteSize = 8;
-			case "E2":
+				case "E2":
 				//E2 byteSize = 8;
-			case "D0":
+				case "D0":
 				//D0 byteSize = 16;
-			case "D1":
+				case "D1":
 				//D1 byteSize = 16;
-			case "D2":
+				case "D2":
 				//D2 byteSize = 16;
-			case "D3":
+				case "D3":
 				//D3 byteSize = 16;
-			case "D4":
+				case "D4":
 				//D4 byteSize = 16;
-			case "D5":
+				case "D5":
 				//D5 byteSize = 16;
-			case "D6":
+				case "D6":
 				//D6 byteSize = 16;
 
 				//Increment/Decrement Codes
-			case "10":
+				case "10":
 				//10 byteSize = 16;
-			case "11":
+				case "11":
 				//11 byteSize = 16;
-			case "20":
+				case "20":
 				//20 byteSize = 8
-			case "21":
-				//21 byteSize = 8
-				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			case "C0":
-			case "C1":
+				case "21":
+					//21 byteSize = 8
+					MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					return;
+				case "C0":
+				case "C1":
 				//Slow-Mo
-			case "40":
-				MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			case "C2":
-			case "50":
-				//Word?
-				MessageBox.Show("The code you entered is not supported by this tool.  Please Submit the Game's Name, Cheat/Code and Purpose to the BizHawk forums.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
+				case "40":
+					MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					return;
+				case "C2":
+				case "50":
+					//Word?
+					MessageBox.Show("The code you entered is not supported by this tool.  Please Submit the Game's Name, Cheat/Code and Purpose to the BizHawk forums.", "Tool Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					return;
 				//Something wrong with their input.
-			default:
-				MessageBox.Show("The GameShark code entered is not a recognized format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				//Leave this Method, before someone gets hurt.
-				return;
+				default:
+					MessageBox.Show("The GameShark code entered is not a recognized format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					//Leave this Method, before someone gets hurt.
+					return;
 			}
 			//Sample Input for PSX:
 			//800D10BA 0009
@@ -2947,25 +2947,25 @@ namespace BizHawk.Client.EmuHawk
 			testo = testo.Remove(1, 1);
 			switch (testo)
 			{
-			case "1":
-				byteSize = 16;
-				break;
-			case "3":
-				byteSize = 8;
-				break;
+				case "1":
+					byteSize = 16;
+					break;
+				case "3":
+					byteSize = 8;
+					break;
 				//0 writes once.
-			case "0":
+				case "0":
 				//D is RAM Equal To Activator, do Next Value
-			case "D":
-				MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			case "F":
-				MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
-				return;
-			default:
-				MessageBox.Show("The GameShark code entered is not a recognized format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				//Leave this Method, before someone gets hurt.
-				return;
+				case "D":
+					MessageBox.Show("The code you entered is not supported by BizHawk.", "Emulator Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					return;
+				case "F":
+					MessageBox.Show("The code you entered is not needed by Bizhawk.", "Input Error", MessageBoxButtons.OK, MessageBoxIcon.Information);
+					return;
+				default:
+					MessageBox.Show("The GameShark code entered is not a recognized format.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					//Leave this Method, before someone gets hurt.
+					return;
 			}
 			//Sample Input for Saturn:
 			//160949FC 0090

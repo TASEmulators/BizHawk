@@ -984,7 +984,6 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage("Screenshot (client) saved to clipboard.");
 		}
 
-
 		public void TakeScreenshot()
 		{
 			string fmt = "{0}.{1:yyyy-MM-dd HH.mm.ss}{2}.png";

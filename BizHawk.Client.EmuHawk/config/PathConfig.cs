@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 			if (tab != null)
 			{
 				PathTabControl.SelectTab(tab);
-		}
+			}
 		}
 
 		private TabPage FindTabByName(string name)
@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								MessageBox.Show("C-C-C-Combo Breaker!", "Nice try, but");
 								return;
-					}
+							}
 
 							var f = new FirmwaresConfig { TargetSystem = "Global" };
 							f.ShowDialog(this);
