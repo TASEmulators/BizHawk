@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 	//They work but feel bad
 
 	//Verify all wording in the error reports
-	
+
 
 	[ToolAttributes(released: true, supportedSystems: new[] { "GB", "GBA", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" })]
 	public partial class GameShark : Form, IToolForm, IToolFormAutoConfig
@@ -80,24 +80,24 @@ namespace BizHawk.Client.EmuHawk
 		};
 		//This only applies to the NES
 		private readonly Dictionary<char, int> _NESgameGenieTable = new Dictionary<char, int>
-			{
-				{ 'A', 0 },  // 0000
-				{ 'P', 1 },  // 0001
-				{ 'Z', 2 },  // 0010
-				{ 'L', 3 },  // 0011
-				{ 'G', 4 },  // 0100
-				{ 'I', 5 },  // 0101
-				{ 'T', 6 },  // 0110
-				{ 'Y', 7 },  // 0111
-				{ 'E', 8 },  // 1000
-				{ 'O', 9 },  // 1001
-				{ 'X', 10 }, // 1010
-				{ 'U', 11 }, // 1011
-				{ 'K', 12 }, // 1100
-				{ 'S', 13 }, // 1101
-				{ 'V', 14 }, // 1110
-				{ 'N', 15 }, // 1111
-			};
+		{
+			{ 'A', 0 },  // 0000
+			{ 'P', 1 },  // 0001
+			{ 'Z', 2 },  // 0010
+			{ 'L', 3 },  // 0011
+			{ 'G', 4 },  // 0100
+			{ 'I', 5 },  // 0101
+			{ 'T', 6 },  // 0110
+			{ 'Y', 7 },  // 0111
+			{ 'E', 8 },  // 1000
+			{ 'O', 9 },  // 1001
+			{ 'X', 10 }, // 1010
+			{ 'U', 11 }, // 1011
+			{ 'K', 12 }, // 1100
+			{ 'S', 13 }, // 1101
+			{ 'V', 14 }, // 1110
+			{ 'N', 15 }, // 1111
+		};
 		// including transposition
 		// Code: D F 4 7 0 9 1 5 6 B C 8 A 2 3 E
 		// Hex:  0 1 2 3 4 5 6 7 8 9 A B C D E F
@@ -148,7 +148,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void FastUpdate()
 		{
-			
+
 		}
 
 		public void Restart()
@@ -160,7 +160,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			
+
 		}
 
 		//My Variables
