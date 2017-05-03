@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePRG(int addr, byte value)
 		{
-			chr = ((value & 3) & chr_mask);
+			chr = ((value & 7) & chr_mask);
 			prg = (((value>>4) & 3) & prg_mask);
 		}
 
