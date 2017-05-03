@@ -135,6 +135,14 @@ namespace BizHawk.Client.EmuHawk
 			Instance = new Input();
 		}
 
+		public static void Cleanup()
+		{
+#if WINDOWS
+			KeyInput.Cleanup();
+			GamePad.Cleanup();
+#endif
+		}
+
 		public enum InputEventType
 		{
 			Press, Release
@@ -338,10 +346,9 @@ namespace BizHawk.Client.EmuHawk
 						//FloatValues.Clear();
 
 						//analyze xinput
-						for (int i = 0; i < GamePad360.Devices.Count; i++)
+						foreach (var pad in GamePad360.EnumerateDevices())
 						{
-							var pad = GamePad360.Devices[i];
-							string xname = "X" + (pad.PlayerNumber) + " ";
+							string xname = "X" + pad.PlayerNumber + " ";
 							for (int b = 0; b < pad.NumButtons; b++)
 								HandleButton(xname + pad.ButtonName(b), pad.Pressed(b));
 							foreach (var sv in pad.GetFloats())
@@ -355,11 +362,9 @@ namespace BizHawk.Client.EmuHawk
 						}
 
 						//analyze joysticks
-						for (int i = 0; i < GamePad.Devices.Count; i++)
+						foreach (var pad in GamePad.EnumerateDevices())
 						{
-							var pad = GamePad.Devices[i];
-							string jname = "J" + (i + 1) + " ";
-
+							string jname = "J" + pad.PlayerNumber + " ";
 							for (int b = 0; b < pad.NumButtons; b++)
 								HandleButton(jname + pad.ButtonName(b), pad.Pressed(b));
 							foreach (var sv in pad.GetFloats())

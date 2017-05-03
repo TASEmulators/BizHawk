@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using System.Globalization;
 
 using BizHawk.Client.Common;
-using System.IO;
-using System.Text;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class EditSubtitlesForm : Form
 	{
-		public bool ReadOnly;
+		public bool ReadOnly { get; set; }
 		private IMovie _selectedMovie;
 
 		public EditSubtitlesForm()
@@ -23,9 +22,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (ReadOnly)
 			{
-				//Set all columns to read only
-				for (int x = 0; x < SubGrid.Columns.Count; x++)
-					SubGrid.Columns[x].ReadOnly = true;
+				// Set all columns to read only
+				for (int i = 0; i < SubGrid.Columns.Count; i++)
+				{
+					SubGrid.Columns[i].ReadOnly = true;
+				}
+
 				Text = "View Subtitles";
 			}
 
@@ -49,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 			MessageBox.Show(error, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
-		private void OK_Click(object sender, EventArgs e)
+		private void Ok_Click(object sender, EventArgs e)
 		{
 			if (!ReadOnly)
 			{
@@ -102,7 +104,7 @@ namespace BizHawk.Client.EmuHawk
 				c = SubGrid.Rows[x].Cells[3];
 				c.Value = s.Duration;
 				c = SubGrid.Rows[x].Cells[4];
-				c.Value = String.Format("{0:X8}", s.Color);
+				c.Value = string.Format("{0:X8}", s.Color);
 				c.Style.BackColor = Color.FromArgb((int)s.Color);
 				c = SubGrid.Rows[x].Cells[5];
 				c.Value = s.Message;
@@ -111,7 +113,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ChangeRow(Subtitle s, int index)
 		{
-			if (index >= SubGrid.Rows.Count) return;
+			if (index >= SubGrid.Rows.Count)
+			{
+				return;
+			}
+
 			var c = SubGrid.Rows[index].Cells[0];
 			c.Value = s.Frame;
 			c = SubGrid.Rows[index].Cells[1];
@@ -121,7 +127,7 @@ namespace BizHawk.Client.EmuHawk
 			c = SubGrid.Rows[index].Cells[3];
 			c.Value = s.Duration;
 			c = SubGrid.Rows[index].Cells[4];
-			c.Value = String.Format("{0:X8}", s.Color);
+			c.Value = string.Format("{0:X8}", s.Color);
 			c.Style.BackColor = Color.FromArgb((int)s.Color);
 			c = SubGrid.Rows[index].Cells[5];
 			c.Value = s.Message;
@@ -134,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 			var s = new Subtitle();
 			var c = SubGrid.Rows[index].Cells[0];
 
-			//Empty catch because it should default to subtitle default value
+			// Empty catch because it should default to subtitle default value
 			try { s.Frame = int.Parse(c.Value.ToString()); }
 			catch { }
 			c = SubGrid.Rows[index].Cells[1];
@@ -159,9 +165,17 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SubGrid_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if (ReadOnly) return;
+			if (ReadOnly)
+			{
+				return;
+			}
+
 			var c = SubGrid.SelectedRows;
-			if (c.Count == 0) return;
+			if (c.Count == 0)
+			{
+				return;
+			}
+
 			var s = new SubtitleMaker {Sub = GetRow(c[0].Index)};
 			if (s.ShowDialog() == DialogResult.OK)
 			{
@@ -169,54 +183,56 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-        private void Export_Click(object sender, EventArgs e)
-        {
-            // Get file to save as
-            var form = new SaveFileDialog();
-            form.AddExtension = true;
-            form.Filter = "SubRip Files (*.srt)|*.srt|All files (*.*)|*.*";
+		private void Export_Click(object sender, EventArgs e)
+		{
+			// Get file to save as
+			var form = new SaveFileDialog
+			{
+				AddExtension = true,
+				Filter = "SubRip Files (*.srt)|*.srt|All files (*.*)|*.*"
+			};
 
-            var result = form.ShowDialog();
-            var fileName = form.FileName;
+			var result = form.ShowDialog();
+			var fileName = form.FileName;
 
-            form.Dispose();
+			form.Dispose();
 
-            if (result != System.Windows.Forms.DialogResult.OK)
-                return;
+			if (result != DialogResult.OK)
+			{
+				return;
+			}
 
-            // Fetch fps
-            var system = _selectedMovie.HeaderEntries[HeaderKeys.PLATFORM];
-            var pal = _selectedMovie.HeaderEntries.ContainsKey(HeaderKeys.PAL)
-                && _selectedMovie.HeaderEntries[HeaderKeys.PAL] == "1";
-            var pfr = new PlatformFrameRates();
-            double fps = 1;
+			// Fetch fps
+			var system = _selectedMovie.HeaderEntries[HeaderKeys.PLATFORM];
+			var pal = _selectedMovie.HeaderEntries.ContainsKey(HeaderKeys.PAL)
+				&& _selectedMovie.HeaderEntries[HeaderKeys.PAL] == "1";
+			var pfr = new PlatformFrameRates();
+			double fps = 1;
 
-            try
-            {
-                fps = pfr[system, pal];
-            }
-            catch
-            {
-                MessageBox.Show(
-                    "Could not determine movie fps, export failed.",
-                    "Error",
-                    MessageBoxButtons.OK,
-                    MessageBoxIcon.Error
-                    );
+			try
+			{
+				fps = pfr[system, pal];
+			}
+			catch
+			{
+				MessageBox.Show(
+					"Could not determine movie fps, export failed.",
+					"Error",
+					MessageBoxButtons.OK,
+					MessageBoxIcon.Error);
 
-                return;
-            }
+				return;
+			}
 
-            // Create string and write to file
-            var str = _selectedMovie.Subtitles.ToSubRip(fps);
-            File.WriteAllText(fileName, str);
+			// Create string and write to file
+			var str = _selectedMovie.Subtitles.ToSubRip(fps);
+			File.WriteAllText(fileName, str);
 
-            // Display success
-            MessageBox.Show(
-                string.Format("Subtitles succesfully exported to {0}.", fileName),
-                "Success"
-                );
-        }
+			// Display success
+			MessageBox.Show(
+				string.Format("Subtitles succesfully exported to {0}.", fileName),
+				"Success");
+		}
 
 		private void SubGrid_DefaultValuesNeeded(object sender, DataGridViewRowEventArgs e)
 		{

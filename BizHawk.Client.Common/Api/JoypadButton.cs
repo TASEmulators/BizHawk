@@ -7,7 +7,7 @@ namespace BizHawk.Client.ApiHawk
 	/// for all existing controllers
 	/// </summary>
 	[Flags]
-	public enum JoypadButton : int
+	public enum JoypadButton
 	{
 		A = 1,
 		B = 2,
@@ -28,6 +28,7 @@ namespace BizHawk.Client.ApiHawk
 		/// Master system Button 1
 		/// </summary>
 		B1 = 16384,
+
 		/// <summary>
 		/// Master system Button 1
 		/// </summary>
@@ -37,18 +38,22 @@ namespace BizHawk.Client.ApiHawk
 		/// N64 C up
 		/// </summary>
 		CUp = 65536,
+
 		/// <summary>
 		/// N64 C down
 		/// </summary>
 		CDown = 131072,
+
 		/// <summary>
 		/// N64 C Left
 		/// </summary>
 		CLeft = 262144,
+
 		/// <summary>
 		/// N64 C Right
 		/// </summary>
 		CRight = 524288,
+
 		/// <summary>
 		/// N64 Analog stick
 		/// </summary>

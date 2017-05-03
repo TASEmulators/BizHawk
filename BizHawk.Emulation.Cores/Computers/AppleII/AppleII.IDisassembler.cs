@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
@@ -15,15 +13,13 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			{
 				return "6502";
 			}
+
 			set
 			{
 			}
 		}
 
-		public string PCRegisterName
-		{
-			get { return "PC"; }
-		}
+		public string PCRegisterName => "PC";
 
 		public IEnumerable<string> AvailableCpus
 		{
@@ -32,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
-			return MOS6502X.Disassemble((ushort)addr, out length, (a) => m.PeekByte(a));
+			return MOS6502X.Disassemble((ushort)addr, out length, a => m.PeekByte(a));
 		}
 	}
 }

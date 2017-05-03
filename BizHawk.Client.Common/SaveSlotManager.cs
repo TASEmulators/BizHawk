@@ -30,8 +30,7 @@ namespace BizHawk.Client.Common
 			for (int i = 0; i < 10; i++)
 			{
 				var file = new FileInfo(
-					PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + i + ".State"
-				);
+					PathManager.SaveStatePrefix(Global.Game) + "." + "QuickSave" + i + ".State");
 				if (file.Directory != null && file.Directory.Exists == false)
 				{
 					file.Directory.Create();

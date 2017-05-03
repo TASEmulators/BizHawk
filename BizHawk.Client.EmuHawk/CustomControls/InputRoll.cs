@@ -1071,7 +1071,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (ModifierKeys == Keys.Alt)
 					{
-                        // do marker drag here
+						// do marker drag here
 					}
 					else if (ModifierKeys == Keys.Shift)
 					{

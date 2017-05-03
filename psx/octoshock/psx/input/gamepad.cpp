@@ -14,6 +14,7 @@ class InputDevice_Gamepad : public InputDevice
 
  virtual void Power(void);
  virtual void UpdateInput(const void *data);
+ virtual void SyncState(bool isReader, EW::NewState *ns);
 
  //
  //
@@ -72,6 +73,22 @@ void InputDevice_Gamepad::Power(void)
  transmit_count = 0;
 }
 
+void InputDevice_Gamepad::SyncState(bool isReader, EW::NewState *ns)
+{
+	NSS(dtr);
+
+	NSS(buttons);
+
+	NSS(command_phase);
+	NSS(bitpos);
+	NSS(receive_buffer);
+
+	NSS(command);
+
+	NSS(transmit_buffer);
+	NSS(transmit_pos);
+	NSS(transmit_count);
+}
 
 void InputDevice_Gamepad::UpdateInput(const void *data)
 {

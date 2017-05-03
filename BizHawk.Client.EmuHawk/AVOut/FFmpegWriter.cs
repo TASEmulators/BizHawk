@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Diagnostics;
+using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
@@ -12,166 +14,172 @@ namespace BizHawk.Client.EmuHawk
 	/// uses pipes to launch an external ffmpeg process and encode
 	/// </summary>
 	[VideoWriter("ffmpeg", "FFmpeg writer", "Uses an external FFMPEG process to encode video and audio.  Various formats supported.  Splits on resolution change.")]
-	class FFmpegWriter : IVideoWriter
+	public class FFmpegWriter : IVideoWriter
 	{
 		/// <summary>
 		/// handle to external ffmpeg process
 		/// </summary>
-		Process ffmpeg;
+		private Process _ffmpeg;
 
 		/// <summary>
 		/// the commandline actually sent to ffmpeg; for informative purposes
 		/// </summary>
-		string commandline;
+		private string _commandline;
 
 		/// <summary>
 		/// current file segment (for multires)
 		/// </summary>
-		int segment;
+		private int _segment;
 
 		/// <summary>
 		/// base filename before segment number is attached
 		/// </summary>
-		string baseName;
+		private string _baseName;
 
 		/// <summary>
 		/// recent lines in ffmpeg's stderr, for informative purposes
 		/// </summary>
-		Queue<string> stderr;
+		private Queue<string> _stderr;
 
 		/// <summary>
 		/// number of lines of stderr to buffer
 		/// </summary>
-		const int consolebuffer = 5;
+		private const int Consolebuffer = 5;
 
 		/// <summary>
 		/// muxer handle for the current segment
 		/// </summary>
-		NutMuxer muxer;
+		private NutMuxer _muxer;
 
 		/// <summary>
 		/// codec token in use
 		/// </summary>
-		FFmpegWriterForm.FormatPreset token;
+		private FFmpegWriterForm.FormatPreset _token;
 
 		/// <summary>
 		/// file extension actually used
 		/// </summary>
-		string ext;
+		private string _ext;
 
-		public void SetFrame(int frame) { }
+		public void SetFrame(int frame)
+		{
+		}
 
 		public void OpenFile(string baseName)
 		{
-			this.baseName = System.IO.Path.Combine(
-				System.IO.Path.GetDirectoryName(baseName),
-				System.IO.Path.GetFileNameWithoutExtension(baseName));
+			_baseName = Path.Combine(
+				Path.GetDirectoryName(baseName),
+				Path.GetFileNameWithoutExtension(baseName));
 
-			ext = System.IO.Path.GetExtension(baseName);
+			_ext = Path.GetExtension(baseName);
 
-			segment = 0;
+			_segment = 0;
 			OpenFileSegment();
 		}
 		
 		/// <summary>
 		/// starts an ffmpeg process and sets up associated sockets
 		/// </summary>
-		void OpenFileSegment()
+		private void OpenFileSegment()
 		{
 			try
 			{
-				ffmpeg = new Process();
+				_ffmpeg = new Process();
 #if WINDOWS
-				ffmpeg.StartInfo.FileName = System.IO.Path.Combine(PathManager.GetDllDirectory(), "ffmpeg.exe");
+				_ffmpeg.StartInfo.FileName = Path.Combine(PathManager.GetDllDirectory(), "ffmpeg.exe");
 #else
 				ffmpeg.StartInfo.FileName = "ffmpeg"; // expecting native version to be in path
 #endif
 
-				string filename = String.Format("{0}_{1,4:D4}{2}", baseName, segment, ext);
-				ffmpeg.StartInfo.Arguments = String.Format("-y -f nut -i - {1} \"{0}\"", filename, token.commandline);
-				ffmpeg.StartInfo.CreateNoWindow = true;
+				string filename = $"{_baseName}_{_segment,4:D4}{_ext}";
+				_ffmpeg.StartInfo.Arguments = string.Format("-y -f nut -i - {1} \"{0}\"", filename, _token.Commandline);
+				_ffmpeg.StartInfo.CreateNoWindow = true;
 
 				// ffmpeg sends informative display to stderr, and nothing to stdout
-				ffmpeg.StartInfo.RedirectStandardError = true;
-				ffmpeg.StartInfo.RedirectStandardInput = true;
-				ffmpeg.StartInfo.UseShellExecute = false;
+				_ffmpeg.StartInfo.RedirectStandardError = true;
+				_ffmpeg.StartInfo.RedirectStandardInput = true;
+				_ffmpeg.StartInfo.UseShellExecute = false;
 
-				commandline = "ffmpeg " + ffmpeg.StartInfo.Arguments;
+				_commandline = "ffmpeg " + _ffmpeg.StartInfo.Arguments;
 
-				ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(StderrHandler);
+				_ffmpeg.ErrorDataReceived += new DataReceivedEventHandler(StderrHandler);
 
-				stderr = new Queue<string>(consolebuffer);
+				_stderr = new Queue<string>(Consolebuffer);
 
-				ffmpeg.Start();
+				_ffmpeg.Start();
 			}
 			catch
 			{
-				ffmpeg.Dispose();
-				ffmpeg = null;
+				_ffmpeg.Dispose();
+				_ffmpeg = null;
 				throw;
 			}
-			ffmpeg.BeginErrorReadLine();
 
-			muxer = new NutMuxer(width, height, fpsnum, fpsden, sampleRate, channels, ffmpeg.StandardInput.BaseStream);
+			_ffmpeg.BeginErrorReadLine();
+
+			_muxer = new NutMuxer(width, height, fpsnum, fpsden, sampleRate, channels, _ffmpeg.StandardInput.BaseStream);
 		}
 
 		/// <summary>
 		/// saves stderr lines from ffmpeg in a short queue
 		/// </summary>
-		/// <param name="p"></param>
-		/// <param name="line"></param>
-		void StderrHandler(object p, DataReceivedEventArgs line)
+		private void StderrHandler(object p, DataReceivedEventArgs line)
 		{
-			if (!String.IsNullOrEmpty(line.Data))
+			if (!string.IsNullOrEmpty(line.Data))
 			{
-				if (stderr.Count == consolebuffer)
-					stderr.Dequeue();
-				stderr.Enqueue(line.Data + "\n");
+				if (_stderr.Count == Consolebuffer)
+				{
+					_stderr.Dequeue();
+				}
+
+				_stderr.Enqueue(line.Data + "\n");
 			}
 		}
 
 		/// <summary>
 		/// finishes an ffmpeg process
 		/// </summary>
-		void CloseFileSegment()
+		private void CloseFileSegment()
 		{
-			muxer.Finish();
+			_muxer.Finish();
 			//ffmpeg.StandardInput.Close();
 
 			// how long should we wait here?
-			ffmpeg.WaitForExit(20000);
-			ffmpeg.Dispose();
-			ffmpeg = null;
-			stderr = null;
-			commandline = null;
-			muxer = null;
+			_ffmpeg.WaitForExit(20000);
+			_ffmpeg.Dispose();
+			_ffmpeg = null;
+			_stderr = null;
+			_commandline = null;
+			_muxer = null;
 		}
 
 
 		public void CloseFile()
 		{
 			CloseFileSegment();
-			baseName = null;
+			_baseName = null;
 		}
 
 		/// <summary>
 		/// returns a string containing the commandline sent to ffmpeg and recent console (stderr) output
 		/// </summary>
 		/// <returns></returns>
-		string ffmpeg_geterror()
+		private string ffmpeg_geterror()
 		{
-			if (ffmpeg.StartInfo.RedirectStandardError)
+			if (_ffmpeg.StartInfo.RedirectStandardError)
 			{
-				ffmpeg.CancelErrorRead();
+				_ffmpeg.CancelErrorRead();
 			}
-			StringBuilder s = new StringBuilder();
-			s.Append(commandline);
+
+			var s = new StringBuilder();
+			s.Append(_commandline);
 			s.Append('\n');
-			while (stderr.Count > 0)
+			while (_stderr.Count > 0)
 			{
-				var foo = stderr.Dequeue();
+				var foo = _stderr.Dequeue();
 				s.Append(foo);
 			}
+
 			return s.ToString();
 		}
 
@@ -179,19 +187,23 @@ namespace BizHawk.Client.EmuHawk
 		public void AddFrame(IVideoProvider source)
 		{
 			if (source.BufferWidth != width || source.BufferHeight != height)
+			{
 				SetVideoParameters(source.BufferWidth, source.BufferHeight);
+			}
 
-			if (ffmpeg.HasExited)
+			if (_ffmpeg.HasExited)
+			{
 				throw new Exception("unexpected ffmpeg death:\n" + ffmpeg_geterror());
+			}
 
 			var video = source.GetVideoBuffer();
 			try
 			{
-				muxer.WriteVideoFrame(video);
+				_muxer.WriteVideoFrame(video);
 			}
 			catch
 			{
-				System.Windows.Forms.MessageBox.Show("Exception! ffmpeg history:\n" + ffmpeg_geterror());
+				MessageBox.Show("Exception! ffmpeg history:\n" + ffmpeg_geterror());
 				throw;
 			}
 
@@ -199,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 			//ffmpeg.StandardInput.BaseStream.Write(b, 0, b.Length);
 		}
 
-		public IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd)
+		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd)
 		{
 			return FFmpegWriterForm.DoFFmpegWriterDlg(hwnd);
 		}
@@ -207,15 +219,19 @@ namespace BizHawk.Client.EmuHawk
 		public void SetVideoCodecToken(IDisposable token)
 		{
 			if (token is FFmpegWriterForm.FormatPreset)
-				this.token = (FFmpegWriterForm.FormatPreset)token;
+			{
+				_token = (FFmpegWriterForm.FormatPreset)token;
+			}
 			else
+			{
 				throw new ArgumentException("FFmpegWriter can only take its own codec tokens!");
+			}
 		}
 
 		/// <summary>
 		/// video params
 		/// </summary>
-		int fpsnum, fpsden, width, height, sampleRate, channels;
+		private int fpsnum, fpsden, width, height, sampleRate, channels;
 
 		public void SetMovieParameters(int fpsnum, int fpsden)
 		{
@@ -231,10 +247,10 @@ namespace BizHawk.Client.EmuHawk
 			/* ffmpeg theoretically supports variable resolution videos, but in practice that's not handled very well.
 			 * so we start a new segment.
 			 */
-			if (ffmpeg != null)
+			if (_ffmpeg != null)
 			{
 				CloseFileSegment();
-				segment++;
+				_segment++;
 				OpenFileSegment();
 			}
 		}
@@ -248,27 +264,32 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Dispose()
 		{
-			if (ffmpeg != null)
+			if (_ffmpeg != null)
+			{
 				CloseFile();
+			}
 		}
-
 
 		public void AddSamples(short[] samples)
 		{
-			if (ffmpeg.HasExited)
+			if (_ffmpeg.HasExited)
+			{
 				throw new Exception("unexpected ffmpeg death:\n" + ffmpeg_geterror());
+			}
+
 			if (samples.Length == 0)
 			{
 				// has special meaning for the muxer, so don't pass on
 				return;
 			}
+
 			try
 			{
-				muxer.WriteAudioFrame(samples);
+				_muxer.WriteAudioFrame(samples);
 			}
 			catch
 			{
-				System.Windows.Forms.MessageBox.Show("Exception! ffmpeg history:\n" + ffmpeg_geterror());
+				MessageBox.Show("Exception! ffmpeg history:\n" + ffmpeg_geterror());
 				throw;
 			}
 		}
@@ -276,7 +297,10 @@ namespace BizHawk.Client.EmuHawk
 		public void SetAudioParameters(int sampleRate, int channels, int bits)
 		{
 			if (bits != 16)
-				throw new ArgumentOutOfRangeException("bits", "Sampling depth must be 16 bits!");
+			{
+				throw new ArgumentOutOfRangeException(nameof(bits), "Sampling depth must be 16 bits!");
+			}
+
 			this.sampleRate = sampleRate;
 			this.channels = channels;
 		}
@@ -284,15 +308,16 @@ namespace BizHawk.Client.EmuHawk
 		public string DesiredExtension()
 		{
 			// this needs to interface with the codec token
-			return token.defaultext;
+			return _token.Defaultext;
 		}
 
 		public void SetDefaultVideoCodecToken()
 		{
-			token = FFmpegWriterForm.FormatPreset.GetDefaultPreset();
+			_token = FFmpegWriterForm.FormatPreset.GetDefaultPreset();
 		}
 
-		public bool UsesAudio { get { return true; } }
-		public bool UsesVideo { get { return true; } }
+		public bool UsesAudio => true;
+
+		public bool UsesVideo => true;
 	}
 }

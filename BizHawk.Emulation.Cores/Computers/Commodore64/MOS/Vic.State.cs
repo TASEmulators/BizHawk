@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _baCount;
 		private bool _badline;
 		private bool _badlineEnable;
-	    private bool _bitmapMode;
+		private bool _bitmapMode;
 		private int _borderB;
 		private bool _borderCheckLEnable;
 		private bool _borderCheckREnable;
@@ -36,19 +36,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _dataG;
 		private bool _displayEnable;
 		private int _displayC;
-	    private bool _enableIntLightPen;
+		private bool _enableIntLightPen;
 		private bool _enableIntRaster;
 		private bool _enableIntSpriteCollision;
 		private bool _enableIntSpriteDataCollision;
 		private bool _extraColorMode;
-        private bool _extraColorModeBuffer;
-        [SaveState.DoNotSave] private bool _hblank;
+		private bool _extraColorModeBuffer;
+		[SaveState.DoNotSave] private bool _hblank;
 		private bool _idle;
 		private bool _intLightPen;
 		private bool _intRaster;
 		private bool _intSpriteCollision;
 		private bool _intSpriteDataCollision;
-	    private int _lightPenX;
+		private int _lightPenX;
 		private int _lightPenY;
 		private bool _multicolorMode;
 		private bool _pinAec = true;
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _pointerCb;
 		private int _pointerVm;
 		private int _rasterInterruptLine;
-	    private bool _rasterInterruptTriggered;
+		private bool _rasterInterruptTriggered;
 		private int _rasterLine;
 		private int _rasterX;
 		private bool _rasterXHold;
@@ -65,23 +65,23 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _refreshCounter;
 		private bool _renderEnabled;
 		private bool _rowSelect;
-        private bool _spriteBackgroundCollisionClearPending;
-        private bool _spriteSpriteCollisionClearPending;
-        private int _spriteMulticolor0;
-	    private int _spriteMulticolor1;
-	    [SaveState.DoNotSave] private readonly Sprite _sprite0;
-        [SaveState.DoNotSave] private readonly Sprite _sprite1;
-        [SaveState.DoNotSave] private readonly Sprite _sprite2;
-        [SaveState.DoNotSave] private readonly Sprite _sprite3;
-        [SaveState.DoNotSave] private readonly Sprite _sprite4;
-        [SaveState.DoNotSave] private readonly Sprite _sprite5;
-        [SaveState.DoNotSave] private readonly Sprite _sprite6;
-        [SaveState.DoNotSave] private readonly Sprite _sprite7;
-        private readonly Sprite[] _sprites;
+		private bool _spriteBackgroundCollisionClearPending;
+		private bool _spriteSpriteCollisionClearPending;
+		private int _spriteMulticolor0;
+		private int _spriteMulticolor1;
+		[SaveState.DoNotSave] private readonly Sprite _sprite0;
+		[SaveState.DoNotSave] private readonly Sprite _sprite1;
+		[SaveState.DoNotSave] private readonly Sprite _sprite2;
+		[SaveState.DoNotSave] private readonly Sprite _sprite3;
+		[SaveState.DoNotSave] private readonly Sprite _sprite4;
+		[SaveState.DoNotSave] private readonly Sprite _sprite5;
+		[SaveState.DoNotSave] private readonly Sprite _sprite6;
+		[SaveState.DoNotSave] private readonly Sprite _sprite7;
+		private readonly Sprite[] _sprites;
 		private int _sr;
 		[SaveState.DoNotSave] private bool _vblank;
 		[SaveState.DoNotSave] private int _vblankEnd;
-        [SaveState.DoNotSave] private int _vblankStart;
+		[SaveState.DoNotSave] private int _vblankStart;
 		private int _vc;
 		private int _vcbase;
 		private int _vmli;
@@ -132,9 +132,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_rc = 7;
 			_refreshCounter = 0xFF;
 			_rowSelect = false;
-            _spriteBackgroundCollisionClearPending = false;
-            _spriteSpriteCollisionClearPending = false;
-            _spriteMulticolor0 = 0;
+			_spriteBackgroundCollisionClearPending = false;
+			_spriteSpriteCollisionClearPending = false;
+			_spriteMulticolor0 = 0;
 			_spriteMulticolor1 = 0;
 			_sr = 0;
 			_vc = 0;
@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_vmli = 0;
 			_xScroll = 0;
 			_yScroll = 0;
-		    _cycle = 0;
+			_cycle = 0;
 
 			// reset sprites
 			for (var i = 0; i < 8; i++)
@@ -156,21 +156,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 
 			_pixBuffer = new int[PixBufferSize];
-            _pixBorderBuffer = new int[PixBorderBufferSize];
-		    _pixBufferIndex = 0;
-            _pixBufferBorderIndex = 0;
-            UpdateBorder();
+			_pixBorderBuffer = new int[PixBorderBufferSize];
+			_pixBufferIndex = 0;
+			_pixBufferBorderIndex = 0;
+			UpdateBorder();
 		}
 
 		public void SyncState(Serializer ser)
 		{
 			SaveState.SyncObject(ser, this);
-		    if (ser.IsReader)
-		    {
-                UpdateBorder();
-                UpdatePins();
-                UpdateVideoMode();
-            }
-        }
+			if (ser.IsReader)
+			{
+				UpdateBorder();
+				UpdatePins();
+				UpdateVideoMode();
+			}
+		}
 	}
 }

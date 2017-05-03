@@ -39,10 +39,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public class C64Settings
 		{
-            [DisplayName("Border type")]
-            [Description("Select how to show the border area")]
-            [DefaultValue(BorderType.SmallProportional)]
-            public BorderType BorderType { get; set; }
+			[DisplayName("Border type")]
+			[Description("Select how to show the border area")]
+			[DefaultValue(BorderType.SmallProportional)]
+			public BorderType BorderType { get; set; }
 
 			public C64Settings Clone()
 			{
@@ -62,22 +62,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			[DefaultValue(VicType.Pal)]
 			public VicType VicType { get; set; }
 
-            [DisplayName("SID type")]
-            [Description("Set the type of sound chip to use")]
-            [DefaultValue(SidType.OldR2)]
-            public SidType SidType { get; set; }
+			[DisplayName("SID type")]
+			[Description("Set the type of sound chip to use")]
+			[DefaultValue(SidType.OldR2)]
+			public SidType SidType { get; set; }
 
-            [DisplayName("Tape drive type")]
-            [Description("Set the type of tape drive attached")]
-            [DefaultValue(TapeDriveType.None)]
-            public TapeDriveType TapeDriveType { get; set; }
+			[DisplayName("Tape drive type")]
+			[Description("Set the type of tape drive attached")]
+			[DefaultValue(TapeDriveType.None)]
+			public TapeDriveType TapeDriveType { get; set; }
 
-            [DisplayName("Disk drive type")]
-            [Description("Set the type of disk drive attached")]
-            [DefaultValue(DiskDriveType.None)]
-            public DiskDriveType DiskDriveType { get; set; }
+			[DisplayName("Disk drive type")]
+			[Description("Set the type of disk drive attached")]
+			[DefaultValue(DiskDriveType.None)]
+			public DiskDriveType DiskDriveType { get; set; }
 
-            public C64SyncSettings Clone()
+			public C64SyncSettings Clone()
 			{
 				return (C64SyncSettings)MemberwiseClone();
 			}
@@ -93,29 +93,29 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Pal, Ntsc, NtscOld, Drean
 		}
 
-	    public enum CiaType
-	    {
-	        Pal, Ntsc, PalRevA, NtscRevA
-	    }
+		public enum CiaType
+		{
+			Pal, Ntsc, PalRevA, NtscRevA
+		}
 
-	    public enum BorderType
-	    {
-	        SmallProportional, SmallFixed, Normal, Full
-	    }
+		public enum BorderType
+		{
+			SmallProportional, SmallFixed, Normal, Full
+		}
 
-	    public enum SidType
-	    {
-	        OldR2, OldR3, OldR4AR, NewR5
-	    }
+		public enum SidType
+		{
+			OldR2, OldR3, OldR4AR, NewR5
+		}
 
-	    public enum TapeDriveType
-	    {
-	        None, Commodore1530
-	    }
+		public enum TapeDriveType
+		{
+			None, Commodore1530
+		}
 
-	    public enum DiskDriveType
-	    {
-	        None, Commodore1541, Commodore1541II
-	    }
+		public enum DiskDriveType
+		{
+			None, Commodore1541, Commodore1541II
+		}
 	}
 }

@@ -6,19 +6,16 @@ namespace BizHawk.Client.Common
 	public class NamedLuaFunction
 	{
 		private readonly LuaFunction _function;
-		private readonly string _name;
-		private readonly string _event;
-		private readonly Action _action;
 
 		public NamedLuaFunction(LuaFunction function, string theevent, Action<string> logCallback, Lua lua, string name = null)
 		{
 			_function = function;
-			_name = name ?? "Anonymous";
-			_event = theevent;
+			Name = name ?? "Anonymous";
+			Event = theevent;
 			Lua = lua;
 			Guid = Guid.NewGuid();
 
-			_action = delegate
+			Callback = delegate
 			{
 				try
 				{
@@ -28,7 +25,7 @@ namespace BizHawk.Client.Common
 				{
 					logCallback(
 						"error running function attached by the event " +
-						_event +
+						Event +
 						"\nError message: " +
 						ex.Message);
 				}
@@ -37,26 +34,18 @@ namespace BizHawk.Client.Common
 
 		public Guid Guid { get; private set; }
 
-		public string Name
-		{
-			get { return _name; }
-		}
+		public string Name { get; }
 
-		public Lua Lua { get; private set; }
+		public Lua Lua { get; }
 
-		public string Event
-		{
-			get { return _event; }
-		}
+		public string Event { get; }
 
-		public Action Callback
-		{
-			get { return _action; }
-		}
+		public Action Callback { get; }
 
 		public void Call(string name = null)
 		{
-			LuaSandbox.Sandbox(Lua, () => {
+			LuaSandbox.Sandbox(Lua, () =>
+			{
 				_function.Call(name);
 			});
 		}

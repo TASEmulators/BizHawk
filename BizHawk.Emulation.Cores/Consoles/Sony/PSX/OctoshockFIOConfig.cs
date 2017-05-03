@@ -58,15 +58,29 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 
 			int id = 1;
 
-			if (userConfig.Devices8[0] == OctoshockDll.ePeripheralType.None) PlayerAssignments[0] = -1; else PlayerAssignments[0] = id++;
-			if (userConfig.Devices8[1] == OctoshockDll.ePeripheralType.None || !userConfig.Multitaps[0]) PlayerAssignments[1] = -1; else PlayerAssignments[1] = id++;
-			if (userConfig.Devices8[2] == OctoshockDll.ePeripheralType.None || !userConfig.Multitaps[0]) PlayerAssignments[2] = -1; else PlayerAssignments[2] = id++;
-			if (userConfig.Devices8[3] == OctoshockDll.ePeripheralType.None || !userConfig.Multitaps[0]) PlayerAssignments[3] = -1; else PlayerAssignments[3] = id++;
+			//TODO: separate sense of connect/disconnect. If we do that, then we need to make the assignments stable, here
+			//and put logic in the core's SetInput instead
+			if (!userConfig.Multitaps[0]) Devices8[1] = Devices8[2] = Devices8[3] = OctoshockDll.ePeripheralType.None;
+			if (!userConfig.Multitaps[1]) Devices8[5] = Devices8[6] = Devices8[7] = OctoshockDll.ePeripheralType.None;
 
-			if (userConfig.Devices8[4] == OctoshockDll.ePeripheralType.None) PlayerAssignments[4] = -1; else PlayerAssignments[4] = id++;
-			if (userConfig.Devices8[5] == OctoshockDll.ePeripheralType.None || !userConfig.Multitaps[1]) PlayerAssignments[5] = -1; else PlayerAssignments[5] = id++;
-			if (userConfig.Devices8[6] == OctoshockDll.ePeripheralType.None || !userConfig.Multitaps[1]) PlayerAssignments[6] = -1; else PlayerAssignments[6] = id++;
-			if (userConfig.Devices8[7] == OctoshockDll.ePeripheralType.None || !userConfig.Multitaps[1]) PlayerAssignments[7] = -1; else PlayerAssignments[7] = id++;
+			//OLD LOGIC
+			//if (userConfig.Devices8[0] == OctoshockDll.ePeripheralType.None) PlayerAssignments[0] = -1; else PlayerAssignments[0] = id++;
+			//if (userConfig.Devices8[1] == OctoshockDll.ePeripheralType.None || !userConfig.Multitaps[0]) PlayerAssignments[1] = -1; else PlayerAssignments[1] = id++;
+			//if (userConfig.Devices8[2] == OctoshockDll.ePeripheralType.None || !userConfig.Multitaps[0]) PlayerAssignments[2] = -1; else PlayerAssignments[2] = id++;
+			//if (userConfig.Devices8[3] == OctoshockDll.ePeripheralType.None || !userConfig.Multitaps[0]) PlayerAssignments[3] = -1; else PlayerAssignments[3] = id++;
+			//if (userConfig.Devices8[4] == OctoshockDll.ePeripheralType.None) PlayerAssignments[4] = -1; else PlayerAssignments[4] = id++;
+			//if (userConfig.Devices8[5] == OctoshockDll.ePeripheralType.None || !userConfig.Multitaps[1]) PlayerAssignments[5] = -1; else PlayerAssignments[5] = id++;
+			//if (userConfig.Devices8[6] == OctoshockDll.ePeripheralType.None || !userConfig.Multitaps[1]) PlayerAssignments[6] = -1; else PlayerAssignments[6] = id++;
+			//if (userConfig.Devices8[7] == OctoshockDll.ePeripheralType.None || !userConfig.Multitaps[1]) PlayerAssignments[7] = -1; else PlayerAssignments[7] = id++;
+
+			if (Devices8[0] == OctoshockDll.ePeripheralType.None) PlayerAssignments[0] = -1; else PlayerAssignments[0] = id++;
+			if (Devices8[1] == OctoshockDll.ePeripheralType.None) PlayerAssignments[1] = -1; else PlayerAssignments[1] = id++;
+			if (Devices8[2] == OctoshockDll.ePeripheralType.None) PlayerAssignments[2] = -1; else PlayerAssignments[2] = id++;
+			if (Devices8[3] == OctoshockDll.ePeripheralType.None) PlayerAssignments[3] = -1; else PlayerAssignments[3] = id++;
+			if (Devices8[4] == OctoshockDll.ePeripheralType.None) PlayerAssignments[4] = -1; else PlayerAssignments[4] = id++;
+			if (Devices8[5] == OctoshockDll.ePeripheralType.None) PlayerAssignments[5] = -1; else PlayerAssignments[5] = id++;
+			if (Devices8[6] == OctoshockDll.ePeripheralType.None) PlayerAssignments[6] = -1; else PlayerAssignments[6] = id++;
+			if (Devices8[7] == OctoshockDll.ePeripheralType.None) PlayerAssignments[7] = -1; else PlayerAssignments[7] = id++;
 
 			NumPlayers = id - 1;
 

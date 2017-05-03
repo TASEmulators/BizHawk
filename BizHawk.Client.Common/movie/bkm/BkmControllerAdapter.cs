@@ -236,7 +236,7 @@ namespace BizHawk.Client.Common
 				{
 					return;
 				}
-				string prefix = "";
+				string prefix = string.Empty;
 				if (ControlType != "Gameboy Controller" && ControlType != "TI83 Controller")
 				{
 					prefix = "P" + player + " ";
@@ -277,7 +277,7 @@ namespace BizHawk.Client.Common
 			MyFloatControls[name] = state;
 		}
 
-		private string ControlType { get { return Definition.Name; } }
+		private string ControlType => Definition.Name;
 
 		private void SetGBAControllersAsMnemonic(string mnemonic)
 		{

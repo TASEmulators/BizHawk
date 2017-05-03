@@ -103,7 +103,7 @@ namespace BizHawk.Client.EmuHawk
 			_lastWriteTime = 0;
 			_lastWriteCursor = 0;
 
-			_deviceBuffer.Play(0, SlimDX.DirectSound.PlayFlags.Looping);
+			_deviceBuffer.Play(0, PlayFlags.Looping);
 		}
 
 		public void StopSound()

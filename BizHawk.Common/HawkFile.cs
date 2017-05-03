@@ -58,57 +58,58 @@ namespace BizHawk.Common
 		/// Gets a value indicating whether a bound file exists. if there is no bound file, it can't exist.
 		/// NOTE: this isn't set until the file is Opened. Not too great...
 		/// </summary>
-		public bool Exists { get { return _exists; } }
+		public bool Exists => _exists;
 
 		/// <summary>
 		/// Gets the directory containing the root
 		/// </summary>
-		public string Directory { get { return Path.GetDirectoryName(_rootPath); } }
+		public string Directory => Path.GetDirectoryName(_rootPath);
 
 		/// <summary>
 		/// Gets a value indicating whether this instance is bound
 		/// </summary>
-		public bool IsBound { get { return _boundStream != null; } }
+		public bool IsBound => _boundStream != null;
 
 		/// <summary>
 		/// returns the complete canonical full path ("c:\path\to\archive|member") of the bound file
 		/// </summary>
-		public string CanonicalFullPath { get { return MakeCanonicalName(_rootPath, _memberPath); } }
+		public string CanonicalFullPath => MakeCanonicalName(_rootPath, _memberPath);
 
 		/// <summary>
 		/// returns the complete canonical name ("archive|member") of the bound file
 		/// </summary>
-		public string CanonicalName { get { return MakeCanonicalName(Path.GetFileName(_rootPath), _memberPath); } }
+		public string CanonicalName => MakeCanonicalName(Path.GetFileName(_rootPath), _memberPath);
 
 		/// <summary>
-		/// returns the virtual name of the bound file (disregarding the archive)
+		/// returns the virtual name of the bound file (disregarding the archive).
+		/// Useful as a basic content identifier.
 		/// </summary>
-		public string Name { get { return GetBoundNameFromCanonical(MakeCanonicalName(_rootPath, _memberPath)); } }
+		public string Name => GetBoundNameFromCanonical(MakeCanonicalName(_rootPath, _memberPath));
 
 		/// <summary>
 		/// returns the complete full path of the bound file, excluding the archive member portion
 		/// </summary>
-		public string FullPathWithoutMember { get { return _rootPath; } }
+		public string FullPathWithoutMember => _rootPath;
 
 		/// <summary>
 		/// returns the member path part of the bound file
 		/// </summary>
-		public string ArchiveMemberPath { get { return _memberPath; } }
+		public string ArchiveMemberPath => _memberPath;
 
 		/// <summary>
 		/// returns the extension of Name
 		/// </summary>
-		public string Extension { get { return Path.GetExtension(Name).ToUpper(); } }
+		public string Extension => Path.GetExtension(Name).ToUpper();
 
 		/// <summary>
 		/// Indicates whether this file is an archive
 		/// </summary>
-		public bool IsArchive { get { return _isArchive; } }
+		public bool IsArchive => _isArchive;
 
 		/// <summary>
 		/// Indicates whether the file is an archive member (IsArchive && IsBound[to member])
 		/// </summary>
-		public bool IsArchiveMember { get { return IsArchive && IsBound; } }
+		public bool IsArchiveMember => IsArchive && IsBound;
 
 		public IList<HawkFileArchiveItem> ArchiveItems
 		{
@@ -202,7 +203,8 @@ namespace BizHawk.Common
 				var parts = path.Split('|');
 				path = parts[0];
 				_memberPath = parts[1];
-				//we're gonna assume, on parsing, that this is 
+
+				// we're gonna assume, on parsing, that this is 
 				_isArchive = true;
 			}
 			_rootPath = path;
@@ -479,15 +481,8 @@ namespace BizHawk.Common
 		{
 			Unbind();
 
-			if (_extractor != null)
-			{
-				_extractor.Dispose();
-			}
-
-			if (_rootStream != null)
-			{
-				_rootStream.Dispose();
-			}
+			_extractor?.Dispose();
+			_rootStream?.Dispose();
 
 			_extractor = null;
 			_rootStream = null;
@@ -496,7 +491,7 @@ namespace BizHawk.Common
 		/// <summary>
 		/// is the supplied path a canonical name including an archive?
 		/// </summary>
-		static bool IsCanonicalArchivePath(string path)
+		private static bool IsCanonicalArchivePath(string path)
 		{
 			return path.IndexOf('|') != -1;
 		}
@@ -528,7 +523,7 @@ namespace BizHawk.Common
 				return root;
 			}
 
-			return string.Format("{0}|{1}", root, member);
+			return $"{root}|{member}";
 		}
 
 		public static IEnumerable<string> Util_ResolveLinks(IEnumerable<string> paths)

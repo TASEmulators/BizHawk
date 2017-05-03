@@ -10,46 +10,45 @@ namespace BizHawk.Emulation.Common
 	public interface IEmulator : IEmulatorService, IDisposable
 	{
 		/// <summary>
-		/// The intended mechanism to get services from a core
+		/// Gets the service provider.
+		/// This is the intended mechanism to get services from a core
 		/// Retrieves an IEmulatorService from the core, 
 		/// if the core does not have the type specified, it will return null
 		/// </summary>
 		IEmulatorServiceProvider ServiceProvider { get; }
 
 		/// <summary>
-		/// Defines all the possible inputs and types that the core can receive
+		/// Gets the definition that defines all the possible inputs and types that the core can receive
 		/// By design this should not change during the lifetime of the instance of the core
 		/// To change the definition, a new instance should be created
 		/// </summary>
 		ControllerDefinition ControllerDefinition { get; }
 
 		/// <summary>
-		/// Provides controller instance information to the core, such as what buttons are currently pressed
-		/// Note that the client is responsible for setting this property and updating its state
-		/// </summary>
-		IController Controller { get; set; }
-
-		/// <summary>
 		/// Runs the emulator core for 1 frame
 		/// note that (some?) cores expect you to call SoundProvider.GetSamples() after each FrameAdvance()
-		/// please do this, even when rendersound = false
+		/// please do this, even when <seealso cref="rendersound"/> = false
+		/// <param name="controller">The <seealso cref="IController"/> instance that the core will use for input.
+		/// The <seealso cref="IController"/> provided by the client must provide the buttons specified by the core through the <seealso cref="ControllerDefinition"/> property
+		/// </param>
 		/// <param name="render">Whether or not to render video, cores will pass false here in cases such as frame skipping</param>
 		/// <param name="rendersound">Whether or not to render audio, cores will pass here false here in cases such as fast forwarding where bypassing sound may improve speed</param>
 		/// </summary>
-		void FrameAdvance(bool render, bool rendersound = true);
+		void FrameAdvance(IController controller, bool render, bool rendersound = true);
 
 		/// <summary>
-		/// The frame count
+		/// Gets the current frame count
 		/// </summary>
 		int Frame { get; }
 
 		/// <summary>
-		/// The unique Id of the platform currently being emulated, for instance "NES"
+		/// Gets the unique Id of the platform currently being emulated, for instance "NES"
 		/// </summary>
 		string SystemId { get; }
 
 		/// <summary>
-		/// This flag is a contract with the client.  
+		/// Gets a value indicating whether the core is in deterministic mode.
+		/// This flag is a contract with the client.
 		/// If true, the core agrees to behave in a completely deterministic manner,
 		/// Features like movie recording depend on this.
 		/// It is the client's responsibility to manage this flag.
@@ -59,17 +58,12 @@ namespace BizHawk.Emulation.Common
 		bool DeterministicEmulation { get; }
 
 		/// <summary>
-		/// identifying information about a "mapper" or similar capability.  null if no such useful distinction can be drawn
-		/// </summary>
-		string BoardName { get; }
-
-		/// <summary>
 		/// Resets the Frame and Lag counters, and any other similar counters a core might implement
 		/// </summary>
 		void ResetCounters();
 
 		/// <summary>
-		/// the corecomm module in use by this core.
+		/// Gets the core communications module in use by this core.
 		/// </summary>
 		/// <seealso cref="BizHawk.Emulation.Common.CoreComm" /> 
 		CoreComm CoreComm { get; }

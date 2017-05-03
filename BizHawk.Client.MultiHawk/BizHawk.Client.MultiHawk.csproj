@@ -104,15 +104,12 @@
       <DependentUpon>RecordMovie.cs</DependentUpon>
     </Compile>
     <Compile Include="DisplayManager\DisplayManager.cs" />
-    <Compile Include="DisplayManager\RenderTargetFrugalizer.cs" />
     <Compile Include="EmulatorWindow.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="EmulatorWindow.Designer.cs">
       <DependentUpon>EmulatorWindow.cs</DependentUpon>
     </Compile>
-    <Compile Include="Extensions\ControlExtensions.cs" />
-    <Compile Include="Extensions\CoreExtensions.cs" />
     <Compile Include="GlobalWin.cs" />
     <Compile Include="InputManager.cs" />
     <Compile Include="Input\GamePad.cs" />

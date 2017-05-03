@@ -215,10 +215,10 @@ namespace BizHawk.Emulation.Cores
 		public Stream GetStream(ulong start, ulong length, bool writer)
 		{
 			if (start < Start)
-				throw new ArgumentOutOfRangeException("start");
+				throw new ArgumentOutOfRangeException(nameof(start));
 
 			if (start + length > End)
-				throw new ArgumentOutOfRangeException("length");
+				throw new ArgumentOutOfRangeException(nameof(length));
 
 			return new MemoryViewStream(!writer, writer, (long)start, (long)length, this);
 		}
@@ -232,7 +232,7 @@ namespace BizHawk.Emulation.Cores
 				case Protection.R: p = Kernel32.MemoryProtection.READONLY; break;
 				case Protection.RW: p = Kernel32.MemoryProtection.READWRITE; break;
 				case Protection.RX: p = Kernel32.MemoryProtection.EXECUTE_READ; break;
-				default: throw new ArgumentOutOfRangeException("prot");
+				default: throw new ArgumentOutOfRangeException(nameof(prot));
 			}
 			return p;
 		}

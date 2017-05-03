@@ -26,13 +26,15 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 
 	public class IGL_SlimDX9 : IGL
 	{
+		const int D3DERR_DEVICELOST = -2005530520;
+		const int D3DERR_DEVICENOTRESET = -2005530519;
+
 		static Direct3D d3d;
 		internal Device dev;
 		INativeWindow OffscreenNativeWindow;
 
 		//rendering state
 		IntPtr _pVertexData;
-		RenderTarget _CurrRenderTarget;
 		Pipeline _CurrPipeline;
 		GLControlWrapper_SlimDX9 _CurrentControl;
 
@@ -87,16 +89,16 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			};
 		}
 
-		void ResetDevice()
+		void ResetDevice(GLControlWrapper_SlimDX9 control)
 		{
-			devBB.Dispose();
-			ResetHandlers.Reset();
+			SuspendRenderTargets();
+			FreeControlSwapChain(control);
 			for (; ; )
 			{
 				var result = dev.TestCooperativeLevel();
 				if (result.IsSuccess)
 					break;
-				if (result.Code == -2005530519) // D3DERR_DEVICENOTRESET
+				if (result.Code == D3DERR_DEVICENOTRESET)
 				{
 					try
 					{
@@ -108,8 +110,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 				}
 				System.Threading.Thread.Sleep(100);
 			}
-			ResetHandlers.Restore();
-			devBB = dev.GetBackBuffer(0, 0);
+			RefreshControlSwapChain(control);
+			ResumeRenderTargets();
 		}
 
 		public void CreateDevice()
@@ -126,12 +128,10 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			
 			flags |= CreateFlags.FpuPreserve;
 			dev = new Device(d3d, 0, DeviceType.Hardware, pp.DeviceWindowHandle, flags, pp);
-			devBB = dev.GetBackBuffer(0, 0);
 		}
 
 		void IDisposable.Dispose()
 		{
-			ResetHandlers.Reset();
 			DestroyDevice();
 			d3d.Dispose();
 		}
@@ -163,7 +163,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			tw.Texture.Dispose();
 		}
 
-		class ShaderWrapper : IDisposable
+		class ShaderWrapper // Disposable fields cleaned up by Internal_FreeShader
 		{
 			public d3d9.ShaderBytecode bytecode;
 			public d3d9.VertexShader vs;
@@ -171,15 +171,6 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			public Shader IGLShader;
 			public Dictionary<string, string> MapCodeToNative;
 			public Dictionary<string, string> MapNativeToCode;
-
-			public void Dispose()
-			{
-				vs.Dispose();
-				vs = null;
-				ps.Dispose();
-				bytecode.Dispose();
-				bytecode = null;
-			}
 		}
 
 		public Shader CreateFragmentShader(bool cg, string source, string entry, bool required)
@@ -527,6 +518,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 		{
 			var pw = pipeline.Opaque as PipelineWrapper;
 
+			pw.VertexDeclaration.Dispose();
 			pw.FragmentShader.IGLShader.Release();
 			pw.VertexShader.IGLShader.Release();
 		}
@@ -548,7 +540,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			public int SamplerIndex;
 		}
 
-		class PipelineWrapper
+		class PipelineWrapper // Disposable fields cleaned up by FreePipeline
 		{
 			public d3d9.VertexDeclaration VertexDeclaration;
 			public ShaderWrapper VertexShader, FragmentShader;
@@ -831,13 +823,15 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			dev.SetRenderTarget(0, surface);
 			surface.Dispose();
 		}
-		Surface devBB;
+
 		public void EndControl(GLControlWrapper_SlimDX9 control)
 		{
 			if (control != _CurrentControl)
 				throw new InvalidOperationException();
 
-			dev.SetRenderTarget(0, devBB);
+			var surface = _CurrentControl.SwapChain.GetBackBuffer(0);
+			dev.SetRenderTarget(0, surface);
+			surface.Dispose();
 
 			_CurrentControl = null;
 		}
@@ -853,55 +847,56 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			}
 			catch(d3d9.Direct3D9Exception ex)
 			{
-				if (ex.ResultCode.Name == "D3DERR_DEVICELOST")
-					ResetDevice();
+				if (ex.ResultCode.Code == D3DERR_DEVICELOST)
+					ResetDevice(control);
 			}
 		}
 
-		
+		HashSet<RenderTarget> _renderTargets = new HashSet<RenderTarget>();
+
 		public void FreeRenderTarget(RenderTarget rt)
-		{
-			//not needed 1st pass ??
-			//int id = rt.Id.ToInt32();
-			//var rtw = ResourceIDs.Lookup[id] as RenderTargetWrapper;
-			//rtw.Target.Dispose();
-			//ResourceIDs.Free(rt.Id);
-		}
-
-		public RenderTarget CreateRenderTarget(int w, int h)
-		{
-			var d3dtex = new d3d9.Texture(dev, w, h, 1, d3d9.Usage.RenderTarget, d3d9.Format.A8R8G8B8, d3d9.Pool.Default);
-			var tw = new TextureWrapper() { Texture = d3dtex };
-			var tex = new Texture2d(this, tw, w, h);
-			RenderTarget rt = new RenderTarget(this, tw, tex);
-
-			ResetHandlers.Add(rt, "RenderTarget", () => ResetRenderTarget(rt), () => RestoreRenderTarget(rt));
-			return rt;
-		}
-
-		void ResetRenderTarget(RenderTarget rt)
 		{
 			var tw = rt.Texture2d.Opaque as TextureWrapper;
 			tw.Texture.Dispose();
 			tw.Texture = null;
+			_renderTargets.Remove(rt);
 		}
 
-		void RestoreRenderTarget(RenderTarget rt)
+		public RenderTarget CreateRenderTarget(int w, int h)
 		{
-			var tw = rt.Texture2d.Opaque as TextureWrapper;
-			int w = rt.Texture2d.IntWidth;
-			int h = rt.Texture2d.IntHeight;
-			var d3dtex = new d3d9.Texture(dev, w, h, 1, d3d9.Usage.RenderTarget, d3d9.Format.A8R8G8B8, d3d9.Pool.Default);
-			tw.Texture = d3dtex;
-			//i know it's weird, we have to re-add ourselves to the list
-			//bad design..
-			ResetHandlers.Add(rt, "RenderTarget", () => ResetRenderTarget(rt), () => RestoreRenderTarget(rt));
+			var tw = new TextureWrapper() { Texture = CreateRenderTargetTexture(w, h) };
+			var tex = new Texture2d(this, tw, w, h);
+			var rt = new RenderTarget(this, tw, tex);
+			_renderTargets.Add(rt);
+			return rt;
+		}
+
+		d3d9.Texture CreateRenderTargetTexture(int w, int h)
+		{
+			return new d3d9.Texture(dev, w, h, 1, d3d9.Usage.RenderTarget, d3d9.Format.A8R8G8B8, d3d9.Pool.Default);
+		}
+
+		void SuspendRenderTargets()
+		{
+			foreach (var rt in _renderTargets)
+			{
+				var tw = rt.Opaque as TextureWrapper;
+				tw.Texture.Dispose();
+				tw.Texture = null;
+			}
+		}
+
+		void ResumeRenderTargets()
+		{
+			foreach (var rt in _renderTargets)
+			{
+				var tw = rt.Opaque as TextureWrapper;
+				tw.Texture = CreateRenderTargetTexture(rt.Texture2d.IntWidth, rt.Texture2d.IntHeight);
+			}
 		}
 
 		public void BindRenderTarget(RenderTarget rt)
 		{
-			_CurrRenderTarget = rt;
-
 			if (rt == null)
 			{
 				//this dispose is needed for correct device resets, I have no idea why
@@ -920,15 +915,19 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			dev.DepthStencilSurface = null;
 		}
 
-		public void RefreshControlSwapChain(GLControlWrapper_SlimDX9 control)
+		public void FreeControlSwapChain(GLControlWrapper_SlimDX9 control)
 		{
 			if (control.SwapChain != null)
 			{
 				control.SwapChain.Dispose();
 				control.SwapChain = null;
 			}
-			ResetHandlers.Remove(control, "SwapChain");
-			
+		}
+
+		public void RefreshControlSwapChain(GLControlWrapper_SlimDX9 control)
+		{
+			FreeControlSwapChain(control);
+
 			var pp = new PresentParameters
 			{
 				BackBufferWidth = Math.Max(8,control.ClientSize.Width),
@@ -941,70 +940,7 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			};
 
 			control.SwapChain = new SwapChain(dev, pp);
-			ResetHandlers.Add(control, "SwapChain", () =>
-				{
-					control.SwapChain.Dispose(); 
-					control.SwapChain = null;
-				},
-				() => RefreshControlSwapChain(control));
 		}
-
-		DeviceLostHandler ResetHandlers = new DeviceLostHandler();
-
-		class DeviceLostHandler
-		{
-			class ResetHandlerKey
-			{
-				public string Label;
-				public object Object;
-				public override int GetHashCode()
-				{
-					return Label.GetHashCode() ^ Object.GetHashCode();
-				}
-				public override bool Equals(object obj)
-				{
-					if (obj == null) return false;
-					var key = obj as ResetHandlerKey;
-					return key.Label == Label && key.Object == Object;
-				}
-			}
-
-			class HandlerSet
-			{
-				public Action Reset, Restore;
-			}
-
-			Dictionary<ResetHandlerKey, HandlerSet> Handlers = new Dictionary<ResetHandlerKey, HandlerSet>();
-
-			public void Add(object o, string label, Action reset, Action restore)
-			{
-				ResetHandlerKey hkey = new ResetHandlerKey() { Object = o, Label = label };
-				Handlers[hkey] = new HandlerSet { Reset = reset, Restore = restore };
-			}
-
-			public void Remove(object o, string label)
-			{
-				ResetHandlerKey hkey = new ResetHandlerKey() { Object = o, Label = label };
-				if(Handlers.ContainsKey(hkey))
-					Handlers.Remove(hkey);
-			}
-
-			public void Reset()
-			{
-				foreach (var handler in Handlers)
-					handler.Value.Reset();
-			}
-
-			public void Restore()
-			{
-				var todo = Handlers.ToArray();
-				Handlers.Clear();
-				foreach (var item in todo)
-					item.Value.Restore();
-			}
-		}
-
-
 
 		public IGraphicsControl Internal_CreateGraphicsControl()
 		{

@@ -104,10 +104,8 @@
     <Compile Include="Base Implementations\NullVideo.cs" />
     <Compile Include="Base Implementations\SimpleSyncSoundProvider.cs" />
     <Compile Include="Base Implementations\TraceBuffer.cs" />
-    <Compile Include="BinaryQuickSerializer.cs" />
-    <Compile Include="BizInvoke\BizInvoker.cs" />
-    <Compile Include="BizInvoke\DynamicLibraryImportResolver.cs" />
     <Compile Include="Base Implementations\CodeDataLog.cs" />
+    <Compile Include="ControllerDefinitionMerger.cs" />
     <Compile Include="CoreAttributes.cs" />
     <Compile Include="CoreComms.cs" />
     <Compile Include="Database\CRC32.cs" />
@@ -124,6 +122,7 @@
     <Compile Include="Interfaces\IInputCallbackSystem.cs" />
     <Compile Include="Interfaces\IMemoryCallbackSystem.cs" />
     <Compile Include="Interfaces\IEmulatorServiceProvider.cs" />
+    <Compile Include="Interfaces\Services\IBoardInfo.cs" />
     <Compile Include="Interfaces\Services\ICreateGameDBEntries.cs" />
     <Compile Include="Interfaces\Services\ISoundProvider.cs" />
     <Compile Include="Interfaces\Services\ICodeDataLogger.cs" />
@@ -140,11 +139,12 @@
     <Compile Include="Interfaces\Services\ITraceable.cs" />
     <Compile Include="Interfaces\Services\IVideoProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SaveController.cs" />
     <Compile Include="ServiceAttributes.cs" />
     <Compile Include="ServiceInjector.cs" />
     <Compile Include="Sound\Utilities\BlipBuffer.cs" />
     <Compile Include="Sound\Utilities\DCFilter.cs" />
-    <Compile Include="Sound\Utilities\Equalizer.cs" />
+    <Compile Include="Sound\Utilities\ISynchronizingAudioBuffer.cs" />
     <Compile Include="Sound\Utilities\Metaspu.cs" />
     <Compile Include="Sound\Utilities\SpeexResampler.cs" />
     <Compile Include="Sound\Utilities\Waves.cs" />

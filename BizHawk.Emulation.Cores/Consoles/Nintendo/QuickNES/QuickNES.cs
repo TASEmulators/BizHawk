@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.BizInvoke;
+using BizHawk.Common.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		portedUrl: "https://github.com/kode54/QuickNES"
 		)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable,
+	public partial class QuickNES : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IInputPollable, IBoardInfo,
 		IStatable, IDebuggable, ISettable<QuickNES.QuickNESSettings, QuickNES.QuickNESSyncSettings>, Cores.Nintendo.NES.INESPPUViewable
 	{
 		static readonly LibQuickNES QN;
@@ -44,17 +44,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 				try
 				{
 
-					file = fix_ines_header(file);
-					unsafe
-					{
-						fixed (byte* p = file)
-						{
-							Console.WriteLine((IntPtr)p);
-							LibQuickNES.ThrowStringError(QN.qn_loadines(Context, file, file.Length));
-						}
-					}
-
-					
+					file = FixInesHeader(file);
+					LibQuickNES.ThrowStringError(QN.qn_loadines(Context, file, file.Length));
 
 					InitSaveRamBuff();
 					InitSaveStateBuff();
@@ -121,7 +112,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		#region Controller
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
-		public IController Controller { get; set; }
 
 		void SetControllerDefinition()
 		{
@@ -164,43 +154,43 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		private static PadEnt[] PadP1 = GetPadList(1);
 		private static PadEnt[] PadP2 = GetPadList(2);
 
-		private int GetPad(IEnumerable<PadEnt> buttons)
+		private int GetPad(IController controller, IEnumerable<PadEnt> buttons)
 		{
 			int ret = 0;
 			foreach (var b in buttons)
 			{
-				if (Controller.IsPressed(b.Name))
+				if (controller.IsPressed(b.Name))
 					ret |= b.Mask;
 			}
 			return ret;
 		}
 
-		void SetPads(out int j1, out int j2)
+		void SetPads(IController controller, out int j1, out int j2)
 		{
 			if (_syncSettings.LeftPortConnected)
-				j1 = GetPad(PadP1) | unchecked((int)0xffffff00);
+				j1 = GetPad(controller, PadP1) | unchecked((int)0xffffff00);
 			else
 				j1 = 0;
 			if (_syncSettings.RightPortConnected)
-				j2 = GetPad(_syncSettings.LeftPortConnected ? PadP2 : PadP1) | unchecked((int)0xffffff00);
+				j2 = GetPad(controller, _syncSettings.LeftPortConnected ? PadP2 : PadP1) | unchecked((int)0xffffff00);
 			else
 				j2 = 0;
 		}
 
 		#endregion
 
-		public void FrameAdvance(bool render, bool rendersound = true)
+		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			CheckDisposed();
 			using (FP.Save())
 			{
-				if (Controller.IsPressed("Power"))
+				if (controller.IsPressed("Power"))
 					QN.qn_reset(Context, true);
-				if (Controller.IsPressed("Reset"))
+				if (controller.IsPressed("Reset"))
 					QN.qn_reset(Context, false);
 
 				int j1, j2;
-				SetPads(out j1, out j2);
+				SetPads(controller, out j1, out j2);
 
 				if (Tracer.Enabled)
 					QN.qn_set_tracecb(Context, _tracecb);
@@ -319,32 +309,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 		// Fix some incorrect ines header entries that QuickNES uses to load games.
 		// we need to do this from the raw file since QuickNES hasn't had time to process it yet.
-		byte[] fix_ines_header(byte[] file)
+		byte[] FixInesHeader(byte[] file)
 		{
 			string sha1 = BizHawk.Common.BufferExtensions.BufferExtensions.HashSHA1(file);
-			bool log_it = false;
+			bool didSomething = false;
 
 			Console.WriteLine(sha1);
 			if (sha1== "93010514AA1300499ABC8F145D6ABCDBF3084090") // Ms. Pac Man (Tengen) [!]
 			{
 				file[6] &= 0xFE;
-				log_it = true;
+				didSomething = true;
 			}
 
-			if (log_it)
+			if (didSomething)
 			{
 				Console.WriteLine("iNES header error detected, adjusting settings...");
 				Console.WriteLine(sha1);
 			}
 
 			return file;
-
 		}
 
 		#region Blacklist
 
 		// These games are known to not work in quicknes but quicknes thinks it can run them, bail out if one of these is loaded
-		private readonly string[] HashBlackList = new []
+		private static readonly HashSet<string> HashBlackList = new HashSet<string>
 		{
 			"E39CA4477D3B96E1CE3A1C61D8055187EA5F1784", // Bill and Ted's Excellent Adventure
 			"E8BC7E6BAE7032D571152F6834516535C34C68F0", // Bill and Ted's Excellent Adventure bad dump

@@ -224,6 +224,7 @@
 			// 
 			// label1
 			// 
+			this.label1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(442, 550);
 			this.label1.Name = "label1";
@@ -233,6 +234,7 @@
 			// 
 			// rbUDLRForbid
 			// 
+			this.rbUDLRForbid.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.rbUDLRForbid.AutoSize = true;
 			this.rbUDLRForbid.Location = new System.Drawing.Point(559, 548);
 			this.rbUDLRForbid.Name = "rbUDLRForbid";
@@ -244,6 +246,7 @@
 			// 
 			// rbUDLRPriority
 			// 
+			this.rbUDLRPriority.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.rbUDLRPriority.AutoSize = true;
 			this.rbUDLRPriority.Location = new System.Drawing.Point(622, 548);
 			this.rbUDLRPriority.Name = "rbUDLRPriority";
@@ -255,6 +258,7 @@
 			// 
 			// rbUDLRAllow
 			// 
+			this.rbUDLRAllow.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
 			this.rbUDLRAllow.AutoSize = true;
 			this.rbUDLRAllow.Location = new System.Drawing.Point(503, 548);
 			this.rbUDLRAllow.Name = "rbUDLRAllow";

@@ -167,8 +167,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			get { return SaturnController; }
 		}
 
-		public IController Controller { get; set; }
-
 		public bool GLMode { get; private set; }
 
 		public void SetGLRes(int factor, int width, int height)
@@ -203,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 				LibYabause.libyabause_glresize(width, height);
 		}
 
-		public void FrameAdvance(bool render, bool rendersound = true)
+		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			int w, h, nsamp;
 
@@ -214,64 +212,64 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 			LibYabause.Buttons1 p21 = (LibYabause.Buttons1)0xff;
 			LibYabause.Buttons2 p22 = (LibYabause.Buttons2)0xff;
 
-			if (Controller.IsPressed("P1 A"))
+			if (controller.IsPressed("P1 A"))
 				p11 &= ~LibYabause.Buttons1.A;
-			if (Controller.IsPressed("P1 B"))
+			if (controller.IsPressed("P1 B"))
 				p11 &= ~LibYabause.Buttons1.B;
-			if (Controller.IsPressed("P1 C"))
+			if (controller.IsPressed("P1 C"))
 				p11 &= ~LibYabause.Buttons1.C;
-			if (Controller.IsPressed("P1 Start"))
+			if (controller.IsPressed("P1 Start"))
 				p11 &= ~LibYabause.Buttons1.S;
-			if (Controller.IsPressed("P1 Left"))
+			if (controller.IsPressed("P1 Left"))
 				p11 &= ~LibYabause.Buttons1.L;
-			if (Controller.IsPressed("P1 Right"))
+			if (controller.IsPressed("P1 Right"))
 				p11 &= ~LibYabause.Buttons1.R;
-			if (Controller.IsPressed("P1 Up"))
+			if (controller.IsPressed("P1 Up"))
 				p11 &= ~LibYabause.Buttons1.U;
-			if (Controller.IsPressed("P1 Down"))
+			if (controller.IsPressed("P1 Down"))
 				p11 &= ~LibYabause.Buttons1.D;
-			if (Controller.IsPressed("P1 L"))
+			if (controller.IsPressed("P1 L"))
 				p12 &= ~LibYabause.Buttons2.L;
-			if (Controller.IsPressed("P1 R"))
+			if (controller.IsPressed("P1 R"))
 				p12 &= ~LibYabause.Buttons2.R;
-			if (Controller.IsPressed("P1 X"))
+			if (controller.IsPressed("P1 X"))
 				p12 &= ~LibYabause.Buttons2.X;
-			if (Controller.IsPressed("P1 Y"))
+			if (controller.IsPressed("P1 Y"))
 				p12 &= ~LibYabause.Buttons2.Y;
-			if (Controller.IsPressed("P1 Z"))
+			if (controller.IsPressed("P1 Z"))
 				p12 &= ~LibYabause.Buttons2.Z;
 
-			if (Controller.IsPressed("P2 A"))
+			if (controller.IsPressed("P2 A"))
 				p21 &= ~LibYabause.Buttons1.A;
-			if (Controller.IsPressed("P2 B"))
+			if (controller.IsPressed("P2 B"))
 				p21 &= ~LibYabause.Buttons1.B;
-			if (Controller.IsPressed("P2 C"))
+			if (controller.IsPressed("P2 C"))
 				p21 &= ~LibYabause.Buttons1.C;
-			if (Controller.IsPressed("P2 Start"))
+			if (controller.IsPressed("P2 Start"))
 				p21 &= ~LibYabause.Buttons1.S;
-			if (Controller.IsPressed("P2 Left"))
+			if (controller.IsPressed("P2 Left"))
 				p21 &= ~LibYabause.Buttons1.L;
-			if (Controller.IsPressed("P2 Right"))
+			if (controller.IsPressed("P2 Right"))
 				p21 &= ~LibYabause.Buttons1.R;
-			if (Controller.IsPressed("P2 Up"))
+			if (controller.IsPressed("P2 Up"))
 				p21 &= ~LibYabause.Buttons1.U;
-			if (Controller.IsPressed("P2 Down"))
+			if (controller.IsPressed("P2 Down"))
 				p21 &= ~LibYabause.Buttons1.D;
-			if (Controller.IsPressed("P2 L"))
+			if (controller.IsPressed("P2 L"))
 				p22 &= ~LibYabause.Buttons2.L;
-			if (Controller.IsPressed("P2 R"))
+			if (controller.IsPressed("P2 R"))
 				p22 &= ~LibYabause.Buttons2.R;
-			if (Controller.IsPressed("P2 X"))
+			if (controller.IsPressed("P2 X"))
 				p22 &= ~LibYabause.Buttons2.X;
-			if (Controller.IsPressed("P2 Y"))
+			if (controller.IsPressed("P2 Y"))
 				p22 &= ~LibYabause.Buttons2.Y;
-			if (Controller.IsPressed("P2 Z"))
+			if (controller.IsPressed("P2 Z"))
 				p22 &= ~LibYabause.Buttons2.Z;
 
 
-			if (Controller.IsPressed("Reset"))
+			if (controller.IsPressed("Reset"))
 				LibYabause.libyabause_softreset();
-			if (Controller.IsPressed("Power"))
+			if (controller.IsPressed("Power"))
 				LibYabause.libyabause_hardreset();
 
 			LibYabause.libyabause_setpads(p11, p12, p21, p22);
@@ -301,8 +299,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 
 		public string SystemId { get { return "SAT"; } }
 		public bool DeterministicEmulation { get { return true; } }
-
-		public string BoardName { get { return null; } }
 
 		public void ResetCounters()
 		{

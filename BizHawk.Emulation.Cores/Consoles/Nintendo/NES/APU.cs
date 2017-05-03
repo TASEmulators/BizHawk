@@ -38,6 +38,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			this.nes = nes;
 			dmc = new DMCUnit(this, pal);
+			if (pal)
+			{
+				sequencer_lut = sequencer_lut_pal;
+			}
+			else
+			{
+				sequencer_lut = sequencer_lut_ntsc;
+			}
+			
 			noise = new NoiseUnit(this, pal);
 			triangle = new TriangleUnit(this);
 			pulse[0] = new PulseUnit(this, 0);
@@ -1048,12 +1057,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 
 		//these figures are not valid for PAL. they must be recalculated with nintendulator's values above
-		static int[][] sequencer_lut = new int[][]{
+
+		int[][] sequencer_lut = new int[2][];
+
+		static int[][] sequencer_lut_ntsc = new int[][]{
 			new int[]{7457,14913,22371,29830},
 			new int[]{7457,14913,22371,29830,37282}
 		};
 
-		
+		static int[][] sequencer_lut_pal = new int[][]{
+			new int[]{8313,16627,24939,33254},
+			new int[]{8313,16627,24939,33254,41566}
+		};
+
+
 		void sequencer_write_tick(byte val)
 		{
 			if (seq_tick>0)
@@ -1076,7 +1093,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		void sequencer_tick()
 		{
 			sequencer_counter++;
-			if (sequencer_mode==0 && sequencer_counter==29829)
+			if (sequencer_mode == 0 && sequencer_counter == sequencer_lut[0][3]-1)
 			{
 				if (sequencer_irq_inhibit==0)
 				{
@@ -1086,12 +1103,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					
 				HalfFrame();
 			}
-			if (sequencer_mode == 0 && sequencer_counter == 29828 && sequencer_irq_inhibit == 0)
+			if (sequencer_mode == 0 && sequencer_counter == sequencer_lut[0][3] - 2 && sequencer_irq_inhibit == 0)
 			{
 				//sequencer_irq_assert = 2;
 				sequencer_irq_flag = true;
 			}
-			if (sequencer_mode == 1 && sequencer_counter == 37281)
+			if (sequencer_mode == 1 && sequencer_counter == sequencer_lut[1][4] - 1)
 			{
 				HalfFrame();
 			}
@@ -1324,9 +1341,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// timer reload shouldn't happen if length clock and write happen simultaneously
 				// I'm not sure if we can avoid this by simply processing the sequencer first
 				// but at the moment that would break everything, so this is good enough for now
-				if (sequencer_counter==14912 || 
-					(sequencer_counter == 29828 && sequencer_mode==0) ||
-					(sequencer_counter == 37280 && sequencer_mode == 1))
+				if (sequencer_counter == (sequencer_lut[0][1] - 1) || 
+					(sequencer_counter == sequencer_lut[0][3] - 2 && sequencer_mode==0) ||
+					(sequencer_counter == sequencer_lut[1][4] - 2 && sequencer_mode == 1))
 				{
 					len_clock_active = true;
 				}

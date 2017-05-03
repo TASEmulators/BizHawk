@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 using System.Drawing;
 
@@ -18,102 +15,130 @@ namespace BizHawk.Client.EmuHawk
 			private int _frameskip, _framedelay;
 
 			/// <summary>
-			/// how many frames to skip for each frame deposited
+			/// Gets how many frames to skip for each frame deposited
 			/// </summary>
-			public int frameskip
+			public int Frameskip
 			{
-				get { return _frameskip; }
+				get
+				{
+					return _frameskip;
+				}
+
 				private set
 				{
 					if (value < 0)
+					{
 						_frameskip = 0;
+					}
 					else if (value > 999)
+					{
 						_frameskip = 999;
+					}
 					else
+					{
 						_frameskip = value;
+					}
 				}
 			}
 
 			/// <summary>
 			/// how long to delay between each gif frame (units of 10ms, -1 = auto)
 			/// </summary>
-			public int framedelay
+			public int FrameDelay
 			{
-				get { return _framedelay; }
+				get
+				{
+					return _framedelay;
+				}
+
 				private set
 				{
 					if (value < -1)
+					{
 						_framedelay = -1;
+					}
 					else if (value > 100)
+					{
 						_framedelay = 100;
+					}
 					else
+					{
 						_framedelay = value;
+					}
 				}
-			}
-
-			public void Dispose() { }
-
-			public GifToken(int frameskip, int framedelay)
-			{
-				this.frameskip = frameskip;
-				this.framedelay = framedelay;
 			}
 
 			public static GifToken LoadFromConfig()
 			{
-				GifToken ret = new GifToken(0, 0);
-				ret.frameskip = Global.Config.GifWriterFrameskip;
-				ret.framedelay = Global.Config.GifWriterDelay;
-				return ret;
+				return new GifToken(0, 0)
+				{
+					Frameskip = Global.Config.GifWriterFrameskip,
+					FrameDelay = Global.Config.GifWriterDelay
+				};
+			}
+
+			public void Dispose()
+			{
+			}
+
+			private GifToken(int frameskip, int framedelay)
+			{
+				Frameskip = frameskip;
+				FrameDelay = framedelay;
 			}
 		}
-		GifToken token;
+
+		private GifToken _token;
 
 		public void SetVideoCodecToken(IDisposable token)
 		{
 			if (token is GifToken)
 			{
-				this.token = (GifToken)token;
+				_token = (GifToken)token;
 				CalcDelay();
 			}
 			else
+			{
 				throw new ArgumentException("GifWriter only takes its own tokens!");
+			}
 		}
 
 		public void SetDefaultVideoCodecToken()
 		{
-			token = GifToken.LoadFromConfig();
+			_token = GifToken.LoadFromConfig();
 			CalcDelay();
 		}
 
 		/// <summary>
 		/// true if the first frame has been written to the file; false otherwise
 		/// </summary>
-		bool firstdone = false;
+		private bool firstdone = false;
 
 		/// <summary>
 		/// the underlying stream we're writing to
 		/// </summary>
-		Stream f;
+		private Stream f;
 
 		/// <summary>
 		/// a final byte we must write before closing the stream
 		/// </summary>
-		byte lastbyte;
+		private byte lastbyte;
 
 		/// <summary>
 		/// keep track of skippable frames
 		/// </summary>
-		int skipindex = 0;
+		private int skipindex = 0;
 
-		int fpsnum = 1, fpsden = 1;
+		private int fpsnum = 1, fpsden = 1;
 
-		public void SetFrame(int frame) { }
+		public void SetFrame(int frame)
+		{
+		}
 
 		public void OpenFile(string baseName)
 		{
 			f = new FileStream(baseName, FileMode.OpenOrCreate, FileAccess.Write);
-			skipindex = token.frameskip;
+			skipindex = _token.Frameskip;
 		}
 
 		public void CloseFile()
@@ -125,22 +150,24 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// precooked gif header
 		/// </summary>
-		static byte[] GifAnimation = {33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0};
+		static byte[] GifAnimation = { 33, 255, 11, 78, 69, 84, 83, 67, 65, 80, 69, 50, 46, 48, 3, 1, 0, 0, 0 };
+
 		/// <summary>
 		/// little endian frame length in 10ms units
 		/// </summary>
 		byte[] Delay = {100, 0};
+
 		public void AddFrame(IVideoProvider source)
 		{
-			if (skipindex == token.frameskip)
+			if (skipindex == _token.Frameskip)
+			{
 				skipindex = 0;
+			}
 			else
 			{
 				skipindex++;
 				return; // skip this frame
 			}
-
-
 
 			using (var bmp = new Bitmap(source.BufferWidth, source.BufferHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb))
 			{
@@ -160,6 +187,7 @@ namespace BizHawk.Client.EmuHawk
 						f.Write(b, 0, 13);
 						f.Write(GifAnimation, 0, GifAnimation.Length);
 					}
+
 					b[785] = Delay[0];
 					b[786] = Delay[1];
 					b[798] = (byte)(b[798] | 0x87);
@@ -182,15 +210,23 @@ namespace BizHawk.Client.EmuHawk
 			return GifWriterForm.DoTokenForm(hwnd);
 		}
 
-		void CalcDelay()
+		private void CalcDelay()
 		{
-			if (token == null)
+			if (_token == null)
+			{
 				return;
+			}
+
 			int delay;
-			if (token.framedelay == -1)
-				delay = (100 * fpsden * (token.frameskip + 1) + (fpsnum / 2)) / fpsnum;
+			if (_token.FrameDelay == -1)
+			{
+				delay = (100 * fpsden * (_token.Frameskip + 1) + (fpsnum / 2)) / fpsnum;
+			}
 			else
-				delay = token.framedelay;
+			{
+				delay = _token.FrameDelay;
+			}
+
 			Delay[0] = (byte)(delay & 0xff);
 			Delay[1] = (byte)(delay >> 8 & 0xff);
 		}
@@ -232,7 +268,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool UsesAudio { get { return false; } }
-		public bool UsesVideo { get { return true; } }
+		public bool UsesAudio => false;
+
+		public bool UsesVideo => true;
 	}
 }

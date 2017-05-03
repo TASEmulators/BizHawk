@@ -65,7 +65,7 @@ namespace Cyotek.Drawing.BitmapFont
       string[] lines;
 
       if (string.IsNullOrEmpty(fileName))
-        throw new ArgumentNullException("fileName", "File name not specified");
+        throw new ArgumentNullException(nameof(fileName), "File name not specified");
       else if (!File.Exists(fileName))
         throw new FileNotFoundException(string.Format("Cannot find file '{0}'", fileName), fileName);
 

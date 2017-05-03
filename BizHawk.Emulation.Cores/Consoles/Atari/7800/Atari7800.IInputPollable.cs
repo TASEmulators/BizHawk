@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			set { _islag = value; }
 		}
 
-		public IInputCallbackSystem InputCallbacks { get; private set; }
+		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
 		private bool _islag = true;
 		private int _lagcount;

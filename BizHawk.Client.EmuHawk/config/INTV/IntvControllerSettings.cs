@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
-			_syncSettings = (Global.Emulator as Intellivision).SyncSettings.Clone();
+			_syncSettings = (Global.Emulator as Intellivision).GetSyncSettings().Clone();
 
 			var possibleControllers = IntellivisionControllerDeck.ValidControllerTypes.Select(t => t.Key);
 

@@ -373,7 +373,7 @@ namespace BizHawk.Client.MultiHawk
 
 		public void FrameAdvance()
 		{
-			Emulator.FrameAdvance(true);
+			Emulator.FrameAdvance(Global.ControllerOutput, true);
 		}
 
 		public void SaveRam()

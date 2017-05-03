@@ -2,10 +2,10 @@
 {
 	public enum ToolFormUpdateType
 	{
-		//reserved
+		// reserved
 		Legacy, LegacyFast,
 
-		//reserved concept: we can run other events through here (should probably rename then)
+		// reserved concept: we can run other events through here (should probably rename then)
 		Reset,
 
 		/// <summary>
@@ -60,7 +60,7 @@
 		/// </summary>
 		bool UpdateBefore { get; }
 
-		//Necessary winform calls
+		// Necessary winform calls
 		bool Focus();
 		bool ContainsFocus { get; }
 		void Show();
@@ -69,4 +69,3 @@
 		bool IsHandleCreated { get; }
 	}
 }
-	

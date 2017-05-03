@@ -12,25 +12,28 @@
 		/// </summary>
 		public AutoPatternBool()
 		{
-			Pattern = new bool[] { true };
+			Pattern = new[] { true };
 		}
+
 		/// <summary>
-		/// Simple on/off pattern.
+		/// Initializes a new instance of the <see cref="AutoPatternBool"/> class. 
+		/// A simple on/off pattern.
 		/// </summary>
-		/// <param name="on"></param>
-		/// <param name="off"></param>
-		public AutoPatternBool(int on, int off, bool skip_lag = true, int offset = 0, int loop = 0)
+		public AutoPatternBool(int on, int off, bool skipLag = true, int offset = 0, int loop = 0)
 		{
-			SkipsLag = skip_lag;
+			SkipsLag = skipLag;
 			_index = offset;
 			Pattern = new bool[on + off];
 			Loop = loop;
 			for (int i = 0; i < on; i++)
+			{
 				Pattern[i] = true;
+			}
 		}
-		public AutoPatternBool(bool[] pattern, bool skip_lag = true, int offset = 0, int loop = 0)
+
+		public AutoPatternBool(bool[] pattern, bool skipLag = true, int offset = 0, int loop = 0)
 		{
-			SkipsLag = skip_lag;
+			SkipsLag = skipLag;
 			Pattern = pattern;
 			_index = offset;
 			Loop = loop;
@@ -39,7 +42,6 @@
 		/// <summary>
 		/// Gets the next value and increments index.
 		/// </summary>
-		/// <returns></returns>
 		public bool GetNextValue(bool isLag = false)
 		{
 			bool ret = Pattern[_index];
@@ -47,7 +49,9 @@
 			{
 				_index++;
 				if (_index == Pattern.Length)
+				{
 					_index = Loop;
+				}
 			}
 
 			return ret;
@@ -56,12 +60,15 @@
 		/// <summary>
 		/// Gets the next value without incrementing index.
 		/// </summary>
-		/// <returns></returns>
 		public bool PeekNextValue()
-		{ return Pattern[_index]; }
+		{
+			return Pattern[_index];
+		}
 
 		public void Reset()
-		{ _index = 0; }
+		{
+			_index = 0;
+		}
 	}
 
 	public class AutoPatternFloat
@@ -72,12 +79,14 @@
 		private int _index;
 
 		/// <summary>
+		/// Initializes a new instance of the <see cref="AutoPatternFloat"/> class. 
 		/// Defaults to 0.
 		/// </summary>
 		public AutoPatternFloat()
 		{
-			Pattern = new float[] { 0f };
+			Pattern = new[] { 0f };
 		}
+
 		/// <summary>
 		/// Sinple on/off pattern, using the given values as on/off.
 		/// </summary>
@@ -88,10 +97,16 @@
 			Loop = loop;
 			Pattern = new float[on + off];
 			for (int i = 0; i < on; i++)
+			{
 				Pattern[i] = valueOn;
+			}
+
 			for (int i = on; i < Pattern.Length; i++)
+			{
 				Pattern[i] = valueOff;
+			}
 		}
+
 		public AutoPatternFloat(float[] pattern, bool skip_lag = true, int offset = 0, int loop = 0)
 		{
 			SkipsLag = skip_lag;
@@ -103,7 +118,6 @@
 		/// <summary>
 		/// Gets the next value and increments index.
 		/// </summary>
-		/// <returns></returns>
 		public float GetNextValue(bool isLag = false)
 		{
 			float ret = Pattern[_index];
@@ -111,7 +125,9 @@
 			{
 				_index++;
 				if (_index == Pattern.Length)
+				{
 					_index = Loop;
+				}
 			}
 
 			return ret;
@@ -120,11 +136,14 @@
 		/// <summary>
 		/// Gets the next value without incrementing index.
 		/// </summary>
-		/// <returns></returns>
 		public float PeekNextValue()
-		{ return Pattern[_index]; }
+		{
+			return Pattern[_index];
+		}
 
 		public void Reset()
-		{ _index = 0; }
+		{
+			_index = 0;
+		}
 	}
 }

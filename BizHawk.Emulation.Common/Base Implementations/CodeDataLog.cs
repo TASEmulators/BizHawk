@@ -22,14 +22,14 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public void Pin()
 		{
-			if (Pins.Count != 0)
+			if (_pins.Count != 0)
 			{
 				throw new InvalidOperationException("incremental astrological examination");
 			}
 
 			foreach (var kvp in this)
 			{
-				Pins[kvp.Key] = GCHandle.Alloc(kvp.Value, GCHandleType.Pinned);
+				_pins[kvp.Key] = GCHandle.Alloc(kvp.Value, GCHandleType.Pinned);
 			}
 		}
 
@@ -38,12 +38,12 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public void Unpin()
 		{
-			foreach (var pin in Pins.Values)
+			foreach (var pin in _pins.Values)
 			{
 				pin.Free();
 			}
 
-			Pins.Clear();
+			_pins.Clear();
 		}
 
 		/// <summary>
@@ -51,13 +51,13 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public IntPtr GetPin(string key)
 		{
-			return Pins[key].AddrOfPinnedObject();
+			return _pins[key].AddrOfPinnedObject();
 		}
 
 		/// <summary>
 		/// Pinned managed arrays
 		/// </summary>
-		private readonly Dictionary<string, GCHandle> Pins = new Dictionary<string, GCHandle>();
+		private readonly Dictionary<string, GCHandle> _pins = new Dictionary<string, GCHandle>();
 
 		/// <summary>
 		/// Whether the CDL is tracking a block with the given name
@@ -146,10 +146,10 @@ namespace BizHawk.Emulation.Common
 
 		public void Save(Stream s)
 		{
-			_Save(s, true);
+			SaveInternal(s, true);
 		}
 		
-		private Dictionary<string, long> _Save(Stream s, bool forReal)
+		private Dictionary<string, long> SaveInternal(Stream s, bool forReal)
 		{
 			var ret = new Dictionary<string, long>();
 			var w = new BinaryWriter(s);
@@ -184,7 +184,7 @@ namespace BizHawk.Emulation.Common
 
 		public Dictionary<string, long> GetBlockMap()
 		{
-			return _Save(new MemoryStream(), false);
+			return SaveInternal(new MemoryStream(), false);
 		}
 
 		public void Load(Stream s)

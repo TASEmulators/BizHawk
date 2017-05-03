@@ -136,8 +136,7 @@ namespace BizHawk.Common
 			int IsDirty();
 
 			[PreserveSig]
-			void Load([In, MarshalAs(UnmanagedType.LPWStr)]
-    string pszFileName, uint dwMode);
+			void Load([In, MarshalAs(UnmanagedType.LPWStr)]string pszFileName, uint dwMode);
 
 			[PreserveSig]
 			void Save([In, MarshalAs(UnmanagedType.LPWStr)] string pszFileName,

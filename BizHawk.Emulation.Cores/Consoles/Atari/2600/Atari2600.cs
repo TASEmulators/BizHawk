@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
-using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
@@ -13,25 +11,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		"Atari2600Hawk",
 		"Micro500, adelikat, natt",
 		isPorted: false,
-		isReleased: true
-		)]
+		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
-	public partial class Atari2600 : IEmulator, IStatable, IDebuggable, IInputPollable,
+	public partial class Atari2600 : IEmulator, IStatable, IDebuggable, IInputPollable, IBoardInfo,
 		IRegionable, ICreateGameDBEntries, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
 		private readonly GameInfo _game;
 		private int _frame;
 
-		private ITraceable Tracer { get; set; }
+		private ITraceable Tracer { get; }
 
 		[CoreConstructor("A26")]
 		public Atari2600(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-
-			MemoryCallbacks = new MemoryCallbackSystem();
-			InputCallbacks = new InputCallbackSystem();
 
 			Ram = new byte[128];
 			CoreComm = comm;
@@ -69,22 +63,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Register<ISoundProvider>(_dcfilter);
 		}
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public DisplayType Region
-		{
-			get { return _pal ? DisplayType.PAL : Common.DisplayType.NTSC; }
-		}
+		public DisplayType Region => _pal ? DisplayType.PAL : DisplayType.NTSC;
 
-		public string SystemId { get { return "A26"; } }
+		public string SystemId => "A26";
 
-		public string BoardName { get { return _mapper.GetType().Name; } }
-
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 
 		public ControllerDefinition ControllerDefinition { get { return Atari2600ControllerDefinition; } }
-
-		public IController Controller { get; set; }
 
 		public int Frame { get { return _frame; } set { _frame = value; } }
 
@@ -115,6 +102,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			};
 		}
 
+		// IBoardInfo
+		public string BoardName => _mapper.GetType().Name;
+
 		public void ResetCounters()
 		{
 			_frame = 0;
@@ -122,7 +112,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_islag = false;
 		}
 
-		public void Dispose() { }
+		public void Dispose()
+		{
+		}
 
 		private static bool DetectPal(GameInfo game, byte[] rom)
 		{
@@ -138,12 +130,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			using (Atari2600 emu = new Atari2600(new CoreComm(null, null), newgame, rom, null, null))
 			{
-				emu.Controller = new NullController();
-
 				List<int> framecounts = new List<int>();
 				emu._tia.FrameEndCallBack = (i) => framecounts.Add(i);
 				for (int i = 0; i < 71; i++) // run for 71 * 262 lines, since we're in NTSC mode
-					emu.FrameAdvance(false, false);
+				{
+					emu.FrameAdvance(NullController.Instance, false, false);
+				}
+
 				int numpal = framecounts.Count((i) => i > 287);
 				bool pal = numpal >= 25;
 				Console.WriteLine("PAL Detection: {0} lines, {1}", numpal, pal);

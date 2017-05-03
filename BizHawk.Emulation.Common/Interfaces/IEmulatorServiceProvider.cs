@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// This interface defines the mechanism by which clients can retrive IEmulatorServices
+	/// This interface defines the mechanism by which clients can retrieve <seealso cref="IEmulatorService" />
 	/// from an IEmulator implementation
 	/// An implementation should collect all available IEmulatorService instances.
 	/// This interface defines only the client interaction.  This interface does not specify the means
@@ -18,6 +18,7 @@ namespace BizHawk.Emulation.Common
 		/// <summary>
 		/// Returns whether or not T is available
 		/// </summary>
+		/// <typeparam name="T">The <seealso cref="IEmulatorService" /> to check</typeparam>
 		bool HasService<T>() where T : IEmulatorService;
 		
 		/// <summary>
@@ -29,6 +30,7 @@ namespace BizHawk.Emulation.Common
 		/// Returns an instance of T if T is available
 		/// Else returns null
 		/// </summary>
+		/// <typeparam name="T">The requested <seealso cref="IEmulatorService" /></typeparam>
 		T GetService<T>() where T : IEmulatorService;
 
 		/// <summary>
@@ -38,7 +40,7 @@ namespace BizHawk.Emulation.Common
 		object GetService(Type t);
 
 		/// <summary>
-		/// A list of all currently registered services available to be retrieved
+		/// Gets a list of all currently registered services available to be retrieved
 		/// </summary>
 		IEnumerable<Type> AvailableServices { get; }
 	}

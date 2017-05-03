@@ -15,20 +15,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	Example games:
 		Magicard
 	 */
-
-	internal class mCV: MapperBase
+	internal class mCV : MapperBase
 	{
 		private ByteBuffer _ram = new ByteBuffer(1024);
 
-		public override bool HasCartRam
-		{
-			get { return true; }
-		}
+		public override bool HasCartRam => true;
 
-		public override ByteBuffer CartRam
-		{
-			get { return _ram; }
-		}
+		public override ByteBuffer CartRam => _ram;
 
 		public override void SyncState(Serializer ser)
 		{
@@ -44,8 +37,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public override void Dispose()
 		{
-			base.Dispose();
 			_ram.Dispose();
+			base.Dispose();
 		}
 
 		public override byte ReadMemory(ushort addr)

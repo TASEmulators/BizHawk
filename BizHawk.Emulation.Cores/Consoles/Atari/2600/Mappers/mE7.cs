@@ -60,15 +60,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_ram.Dispose();
 		}
 
-		public override bool HasCartRam
-		{
-			get { return true; }
-		}
+		public override bool HasCartRam => true;
 
-		public override ByteBuffer CartRam
-		{
-			get { return _ram; }
-		}
+		public override ByteBuffer CartRam => _ram;
 
 		private byte ReadMem(ushort addr, bool peek)
 		{
@@ -100,12 +94,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (addr < 0x1900) // Ram 1 Write port
 			{
 				return _ram[RamBank1Offset + (_rambank1Toggle * 0x100) + (addr & 0xFF)] = 0xFF; // Reading from the 256b write port @1800 riggers an unwanted write
-				
 			}
 			
 			if (addr < 0x1A00) // Ram 1 Read port
 			{
-				return _ram[(RamBank1Offset + _rambank1Toggle * 0x100) + (addr & 0xFF)];
+				return _ram[RamBank1Offset + (_rambank1Toggle * 0x100) + (addr & 0xFF)];
 			}
 			
 			if (addr < 0x2000)

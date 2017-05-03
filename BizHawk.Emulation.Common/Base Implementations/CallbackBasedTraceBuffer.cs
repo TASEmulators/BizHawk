@@ -6,8 +6,8 @@ using BizHawk.Emulation.Common.IEmulatorExtensions;
 namespace BizHawk.Emulation.Common
 {
 	/// <summary>
-	/// An implementation of ITraceable that is implementation using only methods
-	/// from IDebuggable, IMemoryDomains, and IDisassemblable
+	/// An implementation of <seealso cref="ITraceable"/> that is implementation using only methods
+	/// from <seealso cref="IDebuggable"/>, <seealso cref="IMemoryDomains"/>, and <seealso cref="IDisassemblable"/>
 	/// Useful for ported cores that have these hooks but no trace logging hook,
 	/// This allows for a traceable implementation without the need for additional API
 	/// Note that this technique will always be significantly slower than a direct implementation
@@ -15,10 +15,10 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="ITraceable"/> 
 	/// <seealso cref="IDebuggable"/> 
 	/// <seealso cref="IMemoryDomains"/> 
-	/// /// <seealso cref="IDisassemblable"/> 
+	/// <seealso cref="IDisassemblable"/> 
 	public abstract class CallbackBasedTraceBuffer : ITraceable
 	{
-		public CallbackBasedTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler)
+		protected CallbackBasedTraceBuffer(IDebuggable debuggableCore, IMemoryDomains memoryDomains, IDisassemblable disassembler)
 		{
 			if (!debuggableCore.MemoryCallbacksAvailable())
 			{
@@ -46,14 +46,11 @@ namespace BizHawk.Emulation.Common
 
 		protected readonly List<TraceInfo> Buffer = new List<TraceInfo>();
 
-		public abstract void TraceFromCallback();
+		protected abstract void TraceFromCallback();
 
 		private ITraceSink _sink;
 
-		public bool Enabled
-		{
-			get { return Sink != null; }
-		}
+		public bool Enabled => Sink != null;
 
 		public void Put(TraceInfo info)
 		{
@@ -62,10 +59,11 @@ namespace BizHawk.Emulation.Common
 
 		public ITraceSink Sink
 		{
-			get
+			private get
 			{
 				return _sink;
 			}
+
 			set
 			{
 				_sink = value;
@@ -78,7 +76,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public string Header { get; set; }
+		public string Header { get; protected set; }
 
 		public class TracingMemoryCallback : IMemoryCallback
 		{
@@ -87,27 +85,15 @@ namespace BizHawk.Emulation.Common
 				Callback = callback;
 			}
 
-			public MemoryCallbackType Type
-			{
-				get { return MemoryCallbackType.Execute; }
-			}
+			public MemoryCallbackType Type => MemoryCallbackType.Execute;
 
-			public string Name
-			{
-				get { return "Trace Logging"; }
-			}
+			public string Name => "Trace Logging";
 
-			public Action Callback { get; private set; }
+			public Action Callback { get; }
 
-			public uint? Address
-			{
-				get { return null; }
-			}
+			public uint? Address => null;
 
-			public uint? AddressMask
-			{
-				get { return null; }
-			}
+			public uint? AddressMask => null;
 		}
 	}
 }

@@ -1,10 +1,12 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System;
 using System.IO;
-using System;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+
+using BizHawk.Emulation.Common;
+
 using Jellyfish.Virtu;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
+using Newtonsoft.Json.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
@@ -17,8 +19,9 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				return objectType == typeof(Machine);
 			}
 
-			public override bool CanRead { get { return true; } }
-			public override bool CanWrite { get { return false; } }
+			public override bool CanRead => true;
+
+			public override bool CanWrite => false;
 
 			public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
 			{
@@ -32,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			}
 		}
 
-		public bool BinarySaveStatesPreferred { get { return true; } }
+		public bool BinarySaveStatesPreferred => true;
 
 		private void SerializeEverything(JsonWriter w)
 		{
@@ -57,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void DeserializeEverything(JsonReader r)
 		{
-			var o = (OtherData)ser.Deserialize(r, typeof(OtherData));
+			var o = (OtherData)_ser.Deserialize(r, typeof(OtherData));
 			Frame = o.Frame;
 			LagCount = o.LagCount;
 			IsLagFrame = o.IsLagFrame;
@@ -65,6 +68,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			_machine = o.Core;
 			_prevPressed = o.PreviousDiskPressed;
 			_nextPressed = o.NextDiskPressed;
+
 			// since _machine was replaced, we need to reload settings from frontend
 			PutSettings(_settings);
 		}
@@ -82,10 +86,10 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 		private void InitSaveStates()
 		{
-			ser.Converters.Add(new CoreConverter());
+			_ser.Converters.Add(new CoreConverter());
 		}
 
-		private JsonSerializer ser = new JsonSerializer();
+		private readonly JsonSerializer _ser = new JsonSerializer();
 
 		public void SaveStateText(TextWriter writer)
 		{

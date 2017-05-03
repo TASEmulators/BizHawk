@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
 	public partial class QuickNES
 	{
-		unsafe void InitMemoryDomains()
+		private unsafe void InitMemoryDomains()
 		{
 			List<MemoryDomain> mm = new List<MemoryDomain>();
 			for (int i = 0; ; i++)
@@ -23,12 +23,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 
 				if (data != IntPtr.Zero && size > 0 && name != IntPtr.Zero)
 				{
-					mm.Add(MemoryDomain.FromIntPtr(Marshal.PtrToStringAnsi(name), size, MemoryDomain.Endian.Little, data, writable));
+					mm.Add(new MemoryDomainIntPtr(Marshal.PtrToStringAnsi(name), MemoryDomain.Endian.Little, data, size, writable, 1));
 				}
 			}
+
 			// add system bus
-			mm.Add(new MemoryDomainDelegate
-			(
+			mm.Add(new MemoryDomainDelegate(
 				"System Bus",
 				0x10000,
 				MemoryDomain.Endian.Unknown,
@@ -49,8 +49,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					}
 
 					QN.qn_poke_prgbus(Context, (int)addr, val);
-				}, 1
-			));
+				}, 1));
 
 			_memoryDomains = new MemoryDomainList(mm);
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(_memoryDomains);

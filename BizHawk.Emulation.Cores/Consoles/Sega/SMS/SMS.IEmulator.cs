@@ -19,10 +19,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 
-		public IController Controller { get; set; }
-
-		public void FrameAdvance(bool render, bool rendersound)
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
+			_controller = controller;
 			_lagged = true;
 			Frame++;
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
@@ -39,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			if (IsGameGear == false)
 			{
-				Cpu.NonMaskableInterrupt = Controller.IsPressed("Pause");
+				Cpu.NonMaskableInterrupt = controller.IsPressed("Pause");
 			}
 
 			if (IsGame3D && Settings.Fix3D)
@@ -66,8 +65,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public string SystemId { get { return "SMS"; } }
 
 		public bool DeterministicEmulation { get { return true; } }
-
-		public string BoardName { get { return null; } }
 
 		public void ResetCounters()
 		{

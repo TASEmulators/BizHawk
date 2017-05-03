@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	[Description("A library exposing standard .NET string methods")]
 	public sealed class StringLuaLibrary : LuaLibraryBase
 	{
-		public override string Name { get { return "bizstring"; } }
+		public override string Name => "bizstring";
 
 		public StringLuaLibrary(Lua lua)
 			: base(lua) { }
@@ -23,7 +23,7 @@ namespace BizHawk.Client.Common
 		)]
 		public static string Hex(long num)
 		{
-			var hex = string.Format("{0:X}", num);
+			var hex = $"{num:X}";
 			if (hex.Length == 1)
 			{
 				hex = "0" + hex;

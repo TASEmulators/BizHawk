@@ -7,20 +7,10 @@
 	/// <seealso cref="IController" />
 	public class NullController : IController
 	{
-		private static readonly ControllerDefinition _definition = new ControllerDefinition
+		public ControllerDefinition Definition => new ControllerDefinition
 		{
 			Name = "Null Controller"
 		};
-
-		public ControllerDefinition Definition
-		{
-			get { return _definition; }
-		}
-
-		public bool this[string button]
-		{
-			get { return false; }
-		}
 
 		public bool IsPressed(string button)
 		{
@@ -32,6 +22,6 @@
 			return 0f;
 		}
 
-		public static NullController Instance = new NullController();
+		public static readonly NullController Instance = new NullController();
 	}
 }

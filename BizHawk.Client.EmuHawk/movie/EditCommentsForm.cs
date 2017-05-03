@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void OK_Click(object sender, EventArgs e)
+		private void Ok_Click(object sender, EventArgs e)
 		{
 			Save();
 			Close();
@@ -88,24 +88,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SortColumn(DataGridViewColumn e)
 		{
-			ListSortDirection _direction;
-			DataGridViewColumn _column = e;
-			if (_lastHeaderClicked != _column.Name)
+			DataGridViewColumn column = e;
+			if (_lastHeaderClicked != column.Name)
 			{
 				_sortReverse = false;
 			}
 
-			if (!_sortReverse)
-			{
-				_direction = ListSortDirection.Ascending;
-			}
-			else
-			{
-				_direction = ListSortDirection.Descending;
-			}
+			var direction = !_sortReverse
+				? ListSortDirection.Ascending
+				: ListSortDirection.Descending;
 
-			CommentGrid.Sort(_column, _direction);
-			_lastHeaderClicked = _column.Name;
+			CommentGrid.Sort(column, direction);
+			_lastHeaderClicked = column.Name;
 			_sortReverse = !_sortReverse;
 			CommentGrid.Refresh();
 		}

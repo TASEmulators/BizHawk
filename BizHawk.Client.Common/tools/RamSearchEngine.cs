@@ -5,7 +5,6 @@ using System.Linq;
 using BizHawk.Common;
 using BizHawk.Common.CollectionExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -509,15 +508,9 @@ namespace BizHawk.Client.Common
 			set { _keepHistory = value; }
 		}
 
-		public bool CanUndo
-		{
-			get { return _keepHistory && _history.CanUndo; }
-		}
+		public bool CanUndo => _keepHistory && _history.CanUndo;
 
-		public bool CanRedo
-		{
-			get { return _keepHistory && _history.CanRedo; }
-		}
+		public bool CanRedo => _keepHistory && _history.CanRedo;
 
 		public void ClearHistory()
 		{
@@ -608,8 +601,7 @@ namespace BizHawk.Client.Common
 							long val = SignExtendAsNeeded(GetValue(x.Address));
 							long prev = SignExtendAsNeeded(x.Previous);
 							return (val + _differentBy.Value == prev) || (val - _differentBy.Value == prev);
-						}
-						);
+						});
 					}
 					else
 					{
@@ -872,7 +864,11 @@ namespace BizHawk.Client.Common
 
 		private long SignExtendAsNeeded(long val)
 		{
-			if (_settings.Type != DisplayType.Signed) return val;
+			if (_settings.Type != DisplayType.Signed)
+			{
+				return val;
+			}
+
 			switch (_settings.Size)
 			{
 				default:
@@ -887,7 +883,7 @@ namespace BizHawk.Client.Common
 
 		private long GetValue(long addr)
 		{
-			//do not return sign extended variables from here.
+			// do not return sign extended variables from here.
 			switch (_settings.Size)
 			{
 				default:
@@ -924,7 +920,7 @@ namespace BizHawk.Client.Common
 		public interface IMiniWatch
 		{
 			long Address { get; }
-			long Previous { get; } //do not store sign extended variables in here.
+			long Previous { get; } // do not store sign extended variables in here.
 			void SetPreviousToCurrent(MemoryDomain domain, bool bigendian);
 		}
 
@@ -947,10 +943,7 @@ namespace BizHawk.Client.Common
 				_previous = domain.PeekByte(Address % domain.Size);
 			}
 
-			public long Previous
-			{
-				get { return _previous; }
-			}
+			public long Previous => _previous;
 
 			public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
 			{
@@ -991,10 +984,7 @@ namespace BizHawk.Client.Common
 				_previous = domain.PeekUint(Address % domain.Size, bigEndian);
 			}
 
-			public long Previous
-			{
-				get { return _previous; }
-			}
+			public long Previous => _previous;
 
 			public void SetPreviousToCurrent(MemoryDomain domain, bool bigendian)
 			{
@@ -1021,15 +1011,9 @@ namespace BizHawk.Client.Common
 				_previous = _prevFrame = domain.PeekByte(Address % domain.Size);
 			}
 
-			public long Previous
-			{
-				get { return _previous; }
-			}
+			public long Previous => _previous;
 
-			public int ChangeCount
-			{
-				get { return _changecount; }
-			}
+			public int ChangeCount => _changecount;
 
 			public void Update(PreviousType type, MemoryDomain domain, bool bigendian)
 			{
@@ -1082,15 +1066,9 @@ namespace BizHawk.Client.Common
 				_previous = _prevFrame = domain.PeekUshort(Address % domain.Size, bigendian);
 			}
 
-			public long Previous
-			{
-				get { return _previous; }
-			}
+			public long Previous => _previous;
 
-			public int ChangeCount
-			{
-				get { return _changecount; }
-			}
+			public int ChangeCount => _changecount;
 
 			public void Update(PreviousType type, MemoryDomain domain, bool bigendian)
 			{
@@ -1110,7 +1088,9 @@ namespace BizHawk.Client.Common
 						break;
 					case PreviousType.LastChange:
 						if (_prevFrame != value)
+						{
 							_previous = _prevFrame;
+						}
 						break;
 				}
 

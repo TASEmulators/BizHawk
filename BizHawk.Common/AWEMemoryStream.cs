@@ -49,10 +49,10 @@ namespace BizHawk.Common
 
 		public AWEMemoryStream()
 		{
-			//bootstrap the datastructures
+			// bootstrap the datastructures
 			Position = 0;
 
-			//allocate the window (address space that we'll allocate physical pages into)
+			// allocate the window (address space that we'll allocate physical pages into)
 			mWindow = VirtualAlloc(IntPtr.Zero, new IntPtr(kBlockSize), AllocationType.RESERVE | AllocationType.PHYSICAL, MemoryProtection.READWRITE);
 		}
 
@@ -420,12 +420,12 @@ namespace BizHawk.Common
 
 			public bool Map(IntPtr targetWindow)
 			{
-				//note: unmapping previous mapping seems unnecessary
+				// note: unmapping previous mapping seems unnecessary
 
 				if (pageList == null)
 					return false;
 
-				//map the desired physical pages 
+				// map the desired physical pages 
 				fixed (byte* pPageList = &pageList[0])
 				{
 					bool bResult = MapUserPhysicalPages(targetWindow, NumPages, new IntPtr(pPageList));

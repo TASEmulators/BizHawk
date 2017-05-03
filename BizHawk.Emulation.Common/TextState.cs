@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
 using Newtonsoft.Json;
 
@@ -20,8 +18,8 @@ namespace BizHawk.Emulation.Common
 
 		public class Node
 		{
-			public Dictionary<string, byte[]> Data = new Dictionary<string, byte[]>();
-			public Dictionary<string, Node> Objects = new Dictionary<string, Node>();
+			public readonly Dictionary<string, byte[]> Data = new Dictionary<string, byte[]>();
+			public readonly Dictionary<string, Node> Objects = new Dictionary<string, Node>();
 
 			// methods named "ShouldSerialize*" are detected and dynamically invoked by JSON.NET
 			// if they return false during serialization, the field/prop is omitted from the created json
@@ -29,20 +27,22 @@ namespace BizHawk.Emulation.Common
 			{
 				return Data.Count > 0;
 			}
+
 			public bool ShouldSerializeObjects()
 			{
 				return Objects.Count > 0;
 			}
 		}
 
-		public Node Root = new Node();
+		public readonly Node Root = new Node();
 
 		[JsonIgnore]
-		Stack<Node> Nodes;
-		[JsonIgnore]
-		Node Current { get { return Nodes.Peek(); } }
+		private Stack<Node> Nodes;
 
-		public void Prepare()
+		[JsonIgnore]
+		private Node Current => Nodes.Peek();
+
+	    public void Prepare()
 		{
 			Nodes = new Stack<Node>();
 			Nodes.Push(Root);
@@ -54,24 +54,31 @@ namespace BizHawk.Emulation.Common
 			Marshal.Copy(data, d, 0, length);
 			Current.Data.Add(name, d); // will except for us if the key is already present
 		}
+
 		public void Load(IntPtr data, int length, string name)
 		{
 			byte[] d = Current.Data[name];
 			if (length != d.Length)
+			{
 				throw new InvalidOperationException();
+			}
+
 			Marshal.Copy(d, 0, data, length);
 		}
+
 		public void EnterSectionSave(string name)
 		{
 			Node next = new Node();
 			Current.Objects.Add(name, next);
 			Nodes.Push(next);
 		}
+
 		public void EnterSectionLoad(string name)
 		{
 			Node next = Current.Objects[name];
 			Nodes.Push(next);
 		}
+
 		public void EnterSection(string name)
 		{
 			// works for either save or load, but as a consequence cannot report intelligent
@@ -83,17 +90,21 @@ namespace BizHawk.Emulation.Common
 				next = new Node();
 				Current.Objects.Add(name, next);
 			}
+
 			Nodes.Push(next);
 		}
+
 		public void ExitSection(string name)
 		{
 			Node last = Nodes.Pop();
 			if (Current.Objects[name] != last)
+			{
 				throw new InvalidOperationException();
+			}
 		}
 
 		// other data besides the core
-		public T ExtraData;
+		public readonly T ExtraData;
 
 		public TextStateFPtrs GetFunctionPointersSave()
 		{
@@ -105,6 +116,7 @@ namespace BizHawk.Emulation.Common
 				ExitSection = new TextStateFPtrs.SectionFunction(ExitSection)
 			};
 		}
+
 		public TextStateFPtrs GetFunctionPointersLoad()
 		{
 			return new TextStateFPtrs
@@ -116,6 +128,7 @@ namespace BizHawk.Emulation.Common
 			};
 		}
 	}
+
 	[StructLayout(LayoutKind.Sequential)]
 	public struct TextStateFPtrs
 	{
@@ -129,6 +142,4 @@ namespace BizHawk.Emulation.Common
 		public SectionFunction EnterSection;
 		public SectionFunction ExitSection;
 	}
-
-
 }

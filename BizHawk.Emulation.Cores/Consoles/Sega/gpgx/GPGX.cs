@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		)]
 	public partial class GPGX : IEmulator, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
-    {
+	{
 		static GPGX AttachedCore = null;
 
 		DiscSystem.Disc CD;

@@ -15,13 +15,19 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				(addr) =>
 				{
 					if (addr < 0 || addr >= 0xC000)
+					{
 						throw new ArgumentOutOfRangeException();
+					}
+
 					return (byte)_machine.Memory.Peek((int)addr);
 				},
 				(addr, value) =>
 				{
 					if (addr < 0 || addr >= 0xC000)
+					{
 						throw new ArgumentOutOfRangeException();
+					}
+
 					_machine.Memory.Write((int)addr, value);
 				}, 1);
 
@@ -31,13 +37,19 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				(addr) =>
 				{
 					if (addr < 0 || addr >= 65536)
+					{
 						throw new ArgumentOutOfRangeException();
+					}
+
 					return (byte)_machine.Memory.Peek((int)addr);
 				},
 				(addr, value) =>
 				{
 					if (addr < 0 || addr >= 65536)
+					{
 						throw new ArgumentOutOfRangeException();
+					}
+
 					_machine.Memory.Write((int)addr, value);
 				}, 1);
 

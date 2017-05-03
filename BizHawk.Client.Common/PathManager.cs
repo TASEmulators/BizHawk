@@ -3,7 +3,6 @@ using System.Linq;
 using System.IO;
 using System.Reflection;
 
-using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
@@ -25,27 +24,26 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Makes a path relative to the %exe% dir
+		/// Makes a path relative to the %exe% directory
 		/// </summary>
-		public static string MakeProgramRelativePath(string path) { return MakeAbsolutePath("%exe%/" + path, null); }
+		public static string MakeProgramRelativePath(string path)
+		{
+			return MakeAbsolutePath("%exe%/" + path, null);
+		}
 
-		public static string GetDllDirectory() { return Path.Combine(GetExeDirectoryAbsolute(), "dll"); }
+		public static string GetDllDirectory()
+		{
+			return Path.Combine(GetExeDirectoryAbsolute(), "dll");
+		}
 
 		/// <summary>
 		/// The location of the default INI file
 		/// </summary>
-		public static string DefaultIniPath
-		{
-			get
-			{
-				return MakeProgramRelativePath("config.ini");
-			}
-		}
+		public static string DefaultIniPath => MakeProgramRelativePath("config.ini");
 
 		/// <summary>
 		/// Gets absolute base as derived from EXE
 		/// </summary>
-		/// <returns></returns>
 		public static string GetBasePathAbsolute()
 		{
 			if (Global.Config.PathEntries.GlobalBaseFragment.Length < 1) // If empty, then EXE path
@@ -105,7 +103,6 @@ namespace BizHawk.Client.Common
 			}
 
 			// This function translates relative path and special identifiers in absolute paths
-
 			if (path.Length < 1)
 			{
 				return GetBasePathAbsolute();
@@ -183,7 +180,7 @@ namespace BizHawk.Client.Common
 				int z = workingpath.HowMany("\\");
 				if (y >= z)
 				{
-					//Return drive letter only, working path must be absolute?
+					// Return drive letter only, working path must be absolute?
 				}
 
 				return string.Empty;
@@ -259,7 +256,7 @@ namespace BizHawk.Client.Common
 			var filesystemSafeName = game.Name
 				.Replace("|", "+")
 				.Replace(":", " -") // adelikat - Path.GetFileName scraps everything to the left of a colon unfortunately, so we need this hack here
-				.Replace("\"", ""); // adelikat - Ivan Ironman Stewart's Super Off-Road has quotes in game name
+				.Replace("\"", string.Empty); // adelikat - Ivan Ironman Stewart's Super Off-Road has quotes in game name
 
 			// zero 06-nov-2015 - regarding the below, i changed my mind. for libretro i want subdirectories here.
 			var filesystemDir = Path.GetDirectoryName(filesystemSafeName);
@@ -297,10 +294,10 @@ namespace BizHawk.Client.Common
 
 		public static string RetroSaveRAMDirectory(GameInfo game)
 		{
-			//hijinx here to get the core name out of the game name
+			// hijinx here to get the core name out of the game name
 			var name = FilesystemSafeName(game);
 			name = Path.GetDirectoryName(name);
-			if (name == "") name = FilesystemSafeName(game);
+			if (name == string.Empty) name = FilesystemSafeName(game);
 
 			if (Global.MovieSession.Movie.IsActive)
 			{
@@ -316,10 +313,13 @@ namespace BizHawk.Client.Common
 
 		public static string RetroSystemPath(GameInfo game)
 		{
-			//hijinx here to get the core name out of the game name
+			// hijinx here to get the core name out of the game name
 			var name = FilesystemSafeName(game);
 			name = Path.GetDirectoryName(name);
-			if(name == "") name = FilesystemSafeName(game);
+			if (name == string.Empty)
+			{
+				name = FilesystemSafeName(game);
+			}
 
 			var pathEntry = Global.Config.PathEntries[game.System, "System"] ??
 							Global.Config.PathEntries[game.System, "Base"];
@@ -403,9 +403,6 @@ namespace BizHawk.Client.Common
 		/// Takes an absolute path and attempts to convert it to a relative, based on the system, 
 		/// or global base if no system is supplied, if it is not a subfolder of the base, it will return the path unaltered
 		/// </summary>
-		/// <param name="absolutePath"></param>
-		/// <param name="system"></param>
-		/// <returns></returns>
 		public static string TryMakeRelative(string absolutePath, string system = null)
 		{
 			var parentPath = string.IsNullOrWhiteSpace(system) ?
@@ -430,8 +427,8 @@ namespace BizHawk.Client.Common
 			return absolutePath;
 		}
 
-		//http://stackoverflow.com/questions/3525775/how-to-check-if-directory-1-is-a-subdirectory-of-dir2-and-vice-versa
-		public static bool IsSubfolder(string parentPath, string childPath)
+		// http://stackoverflow.com/questions/3525775/how-to-check-if-directory-1-is-a-subdirectory-of-dir2-and-vice-versa
+		private static bool IsSubfolder(string parentPath, string childPath)
 		{
 			var parentUri = new Uri(parentPath);
 
@@ -454,14 +451,12 @@ namespace BizHawk.Client.Common
 		/// Don't only valid system ids to system ID, pathType is ROM, Screenshot, etc
 		/// Returns the desired path, if does not exist, returns platform base, else it returns base
 		/// </summary>
-		/// <param name="pathType"></param>
-		/// <param name="systemID"></param>
-		public static PathEntry GetPathEntryWithFallback(string pathType, string systemID)
+		private static PathEntry GetPathEntryWithFallback(string pathType, string systemId)
 		{
-			var entry = Global.Config.PathEntries[systemID, pathType];
+			var entry = Global.Config.PathEntries[systemId, pathType];
 			if (entry == null)
 			{
-				entry = Global.Config.PathEntries[systemID, "Base"];
+				entry = Global.Config.PathEntries[systemId, "Base"];
 			}
 
 			if (entry == null)

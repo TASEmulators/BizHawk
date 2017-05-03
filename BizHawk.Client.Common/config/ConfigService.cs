@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 {
 	public static class ConfigService
 	{
-		static JsonSerializer Serializer;
+		private static JsonSerializer Serializer;
 
 		static ConfigService()
 		{
@@ -39,11 +39,13 @@ namespace BizHawk.Client.Common
 			{
 				var file = new FileInfo(filepath);
 				if (file.Exists)
+				{
 					using (var reader = file.OpenText())
 					{
 						var r = new JsonTextReader(reader);
 						config = (T)Serializer.Deserialize(r, typeof(T));
 					}
+				}
 			}
 			catch (Exception ex)
 			{
@@ -51,7 +53,9 @@ namespace BizHawk.Client.Common
 			}
 
 			if (config == null)
+			{
 				return new T();
+			}
 
 			return config;
 		}
@@ -74,7 +78,6 @@ namespace BizHawk.Client.Common
 		}
 
 		// movie 1.0 header stuff
-
 		private class TypeNameEncapsulator
 		{
 			public object o;
@@ -86,12 +89,10 @@ namespace BizHawk.Client.Common
 			using (JsonTextReader jr = new JsonTextReader(tr))
 			{
 				TypeNameEncapsulator tne = (TypeNameEncapsulator)Serializer.Deserialize(jr, typeof(TypeNameEncapsulator));
+
 				// in the case of trying to deserialize nothing, tne will be nothing
 				// we want to return nothing
-				if (tne != null)
-					return tne.o;
-				else
-					return null;
+				return tne?.o;
 			}
 		}
 

@@ -71,8 +71,7 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\References\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Ionic.Zip">
@@ -150,6 +149,7 @@
     <Compile Include="ControllerBinding.cs" />
     <Compile Include="CoreFileProvider.cs" />
     <Compile Include="ExceptionClasses.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="FirmwareManager.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="inputAdapters\AutoPattern.cs" />
@@ -316,6 +316,10 @@
     <ProjectReference Include="..\BizHawk.Emulation.DiscSystem\BizHawk.Emulation.DiscSystem.csproj">
       <Project>{f51946ea-827f-4d82-b841-1f2f6d060312}</Project>
       <Name>BizHawk.Emulation.DiscSystem</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.GdiPlus\BizHawk.Bizware.BizwareGL.GdiPlus.csproj">
+      <Project>{337ca23e-65e7-44e1-9411-97ee08bb8116}</Project>
+      <Name>BizHawk.Bizware.BizwareGL.GdiPlus</Name>
     </ProjectReference>
     <ProjectReference Include="..\Bizware\BizHawk.Bizware.BizwareGL.OpenTK\BizHawk.Bizware.BizwareGL.OpenTK.csproj">
       <Project>{5160CFB1-5389-47C1-B7F6-8A0DC97641EE}</Project>

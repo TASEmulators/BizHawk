@@ -778,12 +778,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							{
 								field.SetValue(board, Convert.ChangeType(Value, field.FieldType));
 							}
-							catch (Exception e)
+							catch (Exception e) when (e is InvalidCastException || e is FormatException || e is OverflowException)
 							{
-								if (e is InvalidCastException || e is FormatException || e is OverflowException)
-									throw new InvalidDataException("Auto Mapper Properties were in a bad format!", e);
-								else
-									throw;
+								throw new InvalidDataException("Auto Mapper Properties were in a bad format!", e);
 							}
 						}
 						break;

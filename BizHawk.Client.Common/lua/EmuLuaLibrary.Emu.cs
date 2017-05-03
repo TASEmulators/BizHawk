@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
@@ -46,7 +43,7 @@ namespace BizHawk.Client.Common
 		public EmulatorLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
-		public override string Name { get { return "emu"; } }
+		public override string Name => "emu";
 
 		[LuaMethodAttributes(
 			"displayvsync",
@@ -157,9 +154,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				Log(string.Format(
-					"Error: {0} does not yet implement getregisters()",
-					Emulator.Attributes().CoreName));
+				Log($"Error: {Emulator.Attributes().CoreName} does not yet implement getregisters()");
 			}
 
 			return table;
@@ -182,9 +177,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				Log(string.Format(
-					"Error: {0} does not yet implement setregister()",
-					Emulator.Attributes().CoreName));
+				Log($"Error: {Emulator.Attributes().CoreName} does not yet implement setregister()");
 			}
 		}
 
@@ -232,11 +225,9 @@ namespace BizHawk.Client.Common
 			{
 				return InputPollableCore.IsLagFrame;
 			}
-			else
-			{
-				Log(string.Format("Can not get lag information, {0} does not implement IInputPollable", Emulator.Attributes().CoreName));
-				return false;
-			}
+
+			Log($"Can not get lag information, {Emulator.Attributes().CoreName} does not implement IInputPollable");
+			return false;
 		}
 
 		[LuaMethodAttributes(
@@ -251,7 +242,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				Log(string.Format("Can not set lag information, {0} does not implement IInputPollable", Emulator.Attributes().CoreName));
+				Log($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement IInputPollable");
 			}
 		}
 
@@ -265,11 +256,9 @@ namespace BizHawk.Client.Common
 			{
 				return InputPollableCore.LagCount;
 			}
-			else
-			{
-				Log(string.Format("Can not get lag information, {0} does not implement IInputPollable", Emulator.Attributes().CoreName));
-				return 0;
-			}
+
+			Log($"Can not get lag information, {Emulator.Attributes().CoreName} does not implement IInputPollable");
+			return 0;
 		}
 
 		[LuaMethodAttributes(
@@ -326,12 +315,18 @@ namespace BizHawk.Client.Common
 			{
 				var quicknes = Emulator as QuickNES;
 				var s = quicknes.GetSettings();
+
 				// this core doesn't support disabling BG
 				bool showsp = GetSetting(0, luaParam);
 				if (showsp && s.NumSprites == 0)
+				{
 					s.NumSprites = 8;
+				}
 				else if (!showsp && s.NumSprites > 0)
+				{
 					s.NumSprites = 0;
+				}
+
 				quicknes.PutSettings(s);
 			}
 			else if (Emulator is PCEngine)

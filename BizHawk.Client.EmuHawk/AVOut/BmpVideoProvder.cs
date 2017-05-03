@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
 
 using BizHawk.Emulation.Common;
@@ -9,63 +6,48 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Client.EmuHawk
 {
 	/// <summary>
-	/// an IVideoProvder wrapping a Bitmap
+	/// an IVideoProvider wrapping a Bitmap
 	/// </summary>
 	public class BmpVideoProvider : IVideoProvider, IDisposable
 	{
-		Bitmap bmp;
+		private Bitmap _bmp;
+
 		public BmpVideoProvider(Bitmap bmp)
 		{
-			this.bmp = bmp;
+			_bmp = bmp;
 		}
 
 		public void Dispose()
 		{
-			if (bmp != null)
+			if (_bmp != null)
 			{
-				bmp.Dispose();
-				bmp = null;
+				_bmp.Dispose();
+				_bmp = null;
 			}
 		}
 
 		public int[] GetVideoBuffer()
 		{
 			// is there a faster way to do this?
-			var data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			var data = _bmp.LockBits(new Rectangle(0, 0, _bmp.Width, _bmp.Height), System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-			int[] ret = new int[bmp.Width * bmp.Height];
+			int[] ret = new int[_bmp.Width * _bmp.Height];
 
 			// won't work if stride is messed up
-			System.Runtime.InteropServices.Marshal.Copy(data.Scan0, ret, 0, bmp.Width * bmp.Height);
-			bmp.UnlockBits(data);
+			System.Runtime.InteropServices.Marshal.Copy(data.Scan0, ret, 0, _bmp.Width * _bmp.Height);
+			_bmp.UnlockBits(data);
 			return ret;
 		}
 
-		public int VirtualWidth
-		{
-			// todo: Bitmap actually has size metric data; use it
-			get { return bmp.Width; }
-		}
+		public int VirtualWidth => _bmp.Width;
 
-		public int VirtualHeight
-		{
-			// todo: Bitmap actually has size metric data; use it
-			get { return bmp.Height; }
-		}
+		// todo: Bitmap actually has size metric data; use it
+		public int VirtualHeight => _bmp.Height;
 
-		public int BufferWidth
-		{
-			get { return bmp.Width; }
-		}
+		public int BufferWidth => _bmp.Width;
 
-		public int BufferHeight
-		{
-			get { return bmp.Height; }
-		}
+		public int BufferHeight => _bmp.Height;
 
-		public int BackgroundColor
-		{
-			get { return 0; }
-		}
+		public int BackgroundColor => 0;
 	}
 }

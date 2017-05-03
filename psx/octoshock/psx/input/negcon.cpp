@@ -31,6 +31,7 @@ class InputDevice_neGcon final : public InputDevice
 
  virtual void Power(void) override;
  virtual void UpdateInput(const void *data) override;
+ virtual void SyncState(bool isReader, EW::NewState *ns) override;
 
  //
  //
@@ -40,6 +41,9 @@ class InputDevice_neGcon final : public InputDevice
  virtual bool Clock(bool TxD, int32 &dsr_pulse_delay) override;
 
  private:
+
+	//non-serialized state
+	IO_NegCon* io;
 
  bool dtr;
 
@@ -91,57 +95,42 @@ void InputDevice_neGcon::Power(void)
  transmit_pos = 0;
  transmit_count = 0;
 }
-//
-//void InputDevice_neGcon::StateAction(StateMem* sm, const unsigned load, const bool data_only, const char* sname_prefix)
-//{
-// SFORMAT StateRegs[] =
-// {
-//  SFVAR(dtr),
-//
-//  SFARRAY(buttons, sizeof(buttons)),
-//  SFVAR(twist),
-//  SFARRAY(anabuttons, sizeof(anabuttons)),
-//
-//  SFVAR(command_phase),
-//  SFVAR(bitpos),
-//  SFVAR(receive_buffer),
-//
-//  SFVAR(command),
-//
-//  SFARRAY(transmit_buffer, sizeof(transmit_buffer)),
-//  SFVAR(transmit_pos),
-//  SFVAR(transmit_count),
-//
-//  SFEND
-// };
-// char section_name[32];
-// trio_snprintf(section_name, sizeof(section_name), "%s_neGcon", sname_prefix);
-//
-// if(!MDFNSS_StateAction(sm, load, data_only, StateRegs, section_name, true) && load)
-//  Power();
-// else if(load)
-// {
-//  if((transmit_pos + transmit_count) > sizeof(transmit_buffer))
-//  {
-//   transmit_pos = 0;
-//   transmit_count = 0;
-//  }
-// }
-//}
 
+void InputDevice_neGcon::SyncState(bool isReader, EW::NewState *ns)
+{
+	NSS(dtr);
+
+	NSS(buttons);
+	NSS(twist);
+	NSS(anabuttons);
+
+	NSS(command_phase);
+	NSS(bitpos);
+	NSS(receive_buffer);
+
+	NSS(command);
+
+	NSS(transmit_buffer);
+	NSS(transmit_pos);
+	NSS(transmit_count);
+}
 
 void InputDevice_neGcon::UpdateInput(const void *data)
 {
- uint8 *d8 = (uint8 *)data;
+	io = (IO_NegCon*)data;
 
- buttons[0] = d8[0];
- buttons[1] = d8[1];
+ buttons[0] = io->buttons[0];
+ buttons[1] = io->buttons[1];
 
- twist = ((32768 + MDFN_de16lsb<false>((const uint8 *)data + 2) - (((int32)MDFN_de16lsb<false>((const uint8 *)data + 4) * 32768 + 16383) / 32767)) * 255 + 32767) / 65535;
+ twist = io->twist; //((32768 + MDFN_de16lsb<false>((const uint8 *)data + 2) - (((int32)MDFN_de16lsb<false>((const uint8 *)data + 4) * 32768 + 16383) / 32767)) * 255 + 32767) / 65535;
 
- anabuttons[0] = (MDFN_de16lsb<false>((const uint8 *)data + 6) * 255 + 16383) / 32767; 
- anabuttons[1] = (MDFN_de16lsb<false>((const uint8 *)data + 8) * 255 + 16383) / 32767;
- anabuttons[2] = (MDFN_de16lsb<false>((const uint8 *)data + 10) * 255 + 16383) / 32767;
+ anabuttons[0] = io->anabuttons[0];
+ anabuttons[1] = io->anabuttons[1];
+ anabuttons[2] = io->anabuttons[2];
+
+ //anabuttons[0] = (MDFN_de16lsb<false>((const uint8 *)data + 6) * 255 + 16383) / 32767; 
+ //anabuttons[1] = (MDFN_de16lsb<false>((const uint8 *)data + 8) * 255 + 16383) / 32767;
+ //anabuttons[2] = (MDFN_de16lsb<false>((const uint8 *)data + 10) * 255 + 16383) / 32767;
 
  //printf("%02x %02x %02x %02x\n", twist, anabuttons[0], anabuttons[1], anabuttons[2]);
 }

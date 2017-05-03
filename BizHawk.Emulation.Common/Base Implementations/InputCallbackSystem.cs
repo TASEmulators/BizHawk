@@ -19,6 +19,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
+		// TODO: these just happen to be all the add/remove methods the client uses, to be thorough the others should be overriden as well
 		public void RemoveAll(IEnumerable<Action> actions)
 		{
 			var hadAny = this.Any();
@@ -53,8 +54,6 @@ namespace BizHawk.Emulation.Common
 			return result;
 		}
 
-		// TODO: these just happen to be all the add/remove methods the client uses, to be thorough the others should be overriden as well
-
 		public delegate void ActiveChangedEventHandler();
 		public event ActiveChangedEventHandler ActiveChanged;
 
@@ -62,10 +61,7 @@ namespace BizHawk.Emulation.Common
 		{
 			if ((hadAny && !hasAny) || (!hadAny && hasAny))
 			{
-				if (ActiveChanged != null)
-				{
-					ActiveChanged();
-				}
+				ActiveChanged?.Invoke();
 			}
 		}
 	}

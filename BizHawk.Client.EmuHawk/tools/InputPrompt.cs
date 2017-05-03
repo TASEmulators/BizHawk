@@ -31,6 +31,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return PromptLabel.Text;
 			}
+
 			set
 			{
 				PromptLabel.Text = value ?? string.Empty;

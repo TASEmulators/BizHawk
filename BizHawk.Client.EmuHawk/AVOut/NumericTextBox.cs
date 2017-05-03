@@ -56,10 +56,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public int IntValue { get { return Int32.Parse(this.Text); } }
-		public decimal DecimalValue { get { return Decimal.Parse(this.Text); } }
-		public bool AllowSpace { set; get; }
-		public bool AllowDecimal { set; get; }
-		public bool AllowNegative { set; get; }
+		public int IntValue => int.Parse(Text);
+
+		public decimal DecimalValue => decimal.Parse(Text);
+
+		public bool AllowSpace { get; set; }
+
+		public bool AllowDecimal { get; set; }
+
+		public bool AllowNegative { get; set; }
 	}
 }

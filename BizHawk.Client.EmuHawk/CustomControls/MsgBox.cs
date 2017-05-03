@@ -136,7 +136,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		public void SetButtons(string[] names, DialogResult[] results, int def)
 		{
 			if (names == null)
-				throw new ArgumentNullException("names", "Button Text is null");
+				throw new ArgumentNullException(nameof(names), "Button Text is null");
 
 			int count = names.Length;
 

@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json;
 
 using BizHawk.Emulation.Common;
@@ -10,10 +8,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
 	public partial class VBANext : IStatable
 	{
-		public bool BinarySaveStatesPreferred
-		{
-			get { return true; }
-		}
+		public bool BinarySaveStatesPreferred => true;
 
 		public void SaveStateText(TextWriter writer)
 		{
@@ -26,6 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			s.ExtraData.Frame = Frame;
 
 			ser.Serialize(writer, s);
+
 			// write extra copy of stuff we don't use
 			writer.WriteLine();
 			writer.WriteLine("Frame {0}", Frame);
@@ -46,10 +42,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			if (!LibVBANext.BinStateSave(Core, savebuff, savebuff.Length))
+			if (!LibVBANext.BinStateSave(Core, _savebuff, _savebuff.Length))
 				throw new InvalidOperationException("Core's BinStateSave() returned false!");
-			writer.Write(savebuff.Length);
-			writer.Write(savebuff);
+			writer.Write(_savebuff.Length);
+			writer.Write(_savebuff);
 
 			// other variables
 			writer.Write(IsLagFrame);
@@ -60,10 +56,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
-			if (length != savebuff.Length)
+			if (length != _savebuff.Length)
 				throw new InvalidOperationException("Save buffer size mismatch!");
-			reader.Read(savebuff, 0, length);
-			if (!LibVBANext.BinStateLoad(Core, savebuff, savebuff.Length))
+			reader.Read(_savebuff, 0, length);
+			if (!LibVBANext.BinStateLoad(Core, _savebuff, _savebuff.Length))
 				throw new InvalidOperationException("Core's BinStateLoad() returned false!");
 
 			// other variables
@@ -74,19 +70,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		public byte[] SaveStateBinary()
 		{
-			var ms = new MemoryStream(savebuff2, true);
+			var ms = new MemoryStream(_savebuff2, true);
 			var bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
-			if (ms.Position != savebuff2.Length)
+			if (ms.Position != _savebuff2.Length)
 				throw new InvalidOperationException();
 			ms.Close();
-			return savebuff2;
+			return _savebuff2;
 		}
 
-		private JsonSerializer ser = new JsonSerializer() { Formatting = Formatting.Indented };
-		private byte[] savebuff;
-		private byte[] savebuff2;
+		private JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
+		private readonly byte[] _savebuff;
+		private readonly byte[] _savebuff2;
 
 		private class TextStateData
 		{

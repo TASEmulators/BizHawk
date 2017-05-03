@@ -134,9 +134,9 @@ namespace BizHawk.Client.EmuHawk
 
 		public void RestartMovie()
 		{
-			if (IsSlave && master.WantsToControlRestartMovie)
+			if (IsSlave && Master.WantsToControlRestartMovie)
 			{
-				master.RestartMovie();
+				Master.RestartMovie();
 			}
 			else
 			{

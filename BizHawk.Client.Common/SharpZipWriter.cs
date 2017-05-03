@@ -1,47 +1,49 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 
 using ICSharpCode.SharpZipLib.Zip;
-using System.IO;
 
 namespace BizHawk.Client.Common
 {
 	public class SharpZipWriter : IZipWriter
 	{
-		private ZipOutputStream z;
-		private int level;
+		private readonly int _level;
+		private ZipOutputStream _zipOutputStream;
 
 		public SharpZipWriter(string path, int compressionlevel)
 		{
-			level = compressionlevel;
-			z = new ZipOutputStream(new FileStream(path, FileMode.Create, FileAccess.Write))
+			_level = compressionlevel;
+			_zipOutputStream = new ZipOutputStream(new FileStream(path, FileMode.Create, FileAccess.Write))
 			{
 				IsStreamOwner = true,
 				UseZip64 = UseZip64.Off
 			};
-			z.SetLevel(level);
+			_zipOutputStream.SetLevel(_level);
 		}
 
 		public void WriteItem(string name, Action<Stream> callback)
 		{
 			var e = new ZipEntry(name);
-			if (level == 0)
+			if (_level == 0)
+			{
 				e.CompressionMethod = CompressionMethod.Stored;
+			}
 			else
+			{
 				e.CompressionMethod = CompressionMethod.Deflated;
-			z.PutNextEntry(e);
-			callback(z);
-			z.CloseEntry();		
+			}
+
+			_zipOutputStream.PutNextEntry(e);
+			callback(_zipOutputStream);
+			_zipOutputStream.CloseEntry();
 		}
 
 		public void Dispose()
 		{
-			if (z != null)
+			if (_zipOutputStream != null)
 			{
-				z.Dispose();
-				z = null;
+				_zipOutputStream.Dispose();
+				_zipOutputStream = null;
 			}
 		}
 	}

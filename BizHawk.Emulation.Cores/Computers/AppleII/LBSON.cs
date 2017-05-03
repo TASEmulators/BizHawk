@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System.IO;
-using Newtonsoft.Json.Linq;
+
+using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
 	// barebones classes for writing and reading a simple bson-like format, used to gain a bit of speed in Apple II savestates
-
 	internal enum LBTOK : byte
 	{
 		Null,
@@ -38,61 +33,75 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 	public class LBR : JsonReader
 	{
-		public LBR(BinaryReader r)
+		private readonly BinaryReader _r;
+		private object _v;
+		private JsonToken _t;
+
+		public LBR(BinaryReader reader)
 		{
-			this.r = r;
+			_r = reader;
 		}
-		private BinaryReader r;
+
 		public override void Close()
 		{
 		}
+
 		// as best as I can tell, the serializers refer to depth, but don't actually need to work except when doing certain error recovery
-		public override int Depth { get { return 0; } }
-		public override string Path { get { throw new NotImplementedException(); } }
-		public override Type ValueType { get { return v != null ? v.GetType() : null; } }
-		public override JsonToken TokenType { get { return t; } }
-		public override object Value { get { return v; } }
-		private object v;
-		private JsonToken t;
+		public override int Depth => 0;
+
+		public override string Path
+		{
+			get { throw new NotImplementedException(); }
+		}
+
+		public override Type ValueType => _v?.GetType();
+
+		public override JsonToken TokenType => _t;
+
+		public override object Value => _v;
 
 		public override bool Read()
 		{
-			LBTOK l = (LBTOK)r.ReadByte();
+			LBTOK l = (LBTOK)_r.ReadByte();
 			switch (l)
 			{
-				case LBTOK.StartArray: t = JsonToken.StartArray; v = null; break;
-				case LBTOK.EndArray: t = JsonToken.EndArray; v = null; break;
-				case LBTOK.StartObject: t = JsonToken.StartObject; v = null; break;
-				case LBTOK.EndObject: t = JsonToken.EndObject; v = null; break;
-				case LBTOK.Null: t = JsonToken.Null; v = null; break;
-				case LBTOK.False: t = JsonToken.Boolean; v = false; break;
-				case LBTOK.True: t = JsonToken.Boolean; v = true; break;
-				case LBTOK.Property: t = JsonToken.PropertyName; v = r.ReadString(); break;
-				case LBTOK.Undefined: t = JsonToken.Undefined; v = null; break;
-				case LBTOK.S8: t = JsonToken.Integer; v = r.ReadSByte(); break;
-				case LBTOK.U8: t = JsonToken.Integer; v = r.ReadByte(); break;
-				case LBTOK.S16: t = JsonToken.Integer; v = r.ReadInt16(); break;
-				case LBTOK.U16: t = JsonToken.Integer; v = r.ReadUInt16(); break;
-				case LBTOK.S32: t = JsonToken.Integer; v = r.ReadInt32(); break;
-				case LBTOK.U32: t = JsonToken.Integer; v = r.ReadUInt32(); break;
-				case LBTOK.S64: t = JsonToken.Integer; v = r.ReadInt64(); break;
-				case LBTOK.U64: t = JsonToken.Integer; v = r.ReadUInt64(); break;
-				case LBTOK.String: t = JsonToken.String; v = r.ReadString(); break;
-				case LBTOK.F32: t = JsonToken.Float; v = r.ReadSingle(); break;
-				case LBTOK.F64: t = JsonToken.Float; v = r.ReadDouble(); break;
-				case LBTOK.ByteArray: t = JsonToken.Bytes; v = r.ReadBytes(r.ReadInt32()); break;
+				case LBTOK.StartArray: _t = JsonToken.StartArray; _v = null; break;
+				case LBTOK.EndArray: _t = JsonToken.EndArray; _v = null; break;
+				case LBTOK.StartObject: _t = JsonToken.StartObject; _v = null; break;
+				case LBTOK.EndObject: _t = JsonToken.EndObject; _v = null; break;
+				case LBTOK.Null: _t = JsonToken.Null; _v = null; break;
+				case LBTOK.False: _t = JsonToken.Boolean; _v = false; break;
+				case LBTOK.True: _t = JsonToken.Boolean; _v = true; break;
+				case LBTOK.Property: _t = JsonToken.PropertyName; _v = _r.ReadString(); break;
+				case LBTOK.Undefined: _t = JsonToken.Undefined; _v = null; break;
+				case LBTOK.S8: _t = JsonToken.Integer; _v = _r.ReadSByte(); break;
+				case LBTOK.U8: _t = JsonToken.Integer; _v = _r.ReadByte(); break;
+				case LBTOK.S16: _t = JsonToken.Integer; _v = _r.ReadInt16(); break;
+				case LBTOK.U16: _t = JsonToken.Integer; _v = _r.ReadUInt16(); break;
+				case LBTOK.S32: _t = JsonToken.Integer; _v = _r.ReadInt32(); break;
+				case LBTOK.U32: _t = JsonToken.Integer; _v = _r.ReadUInt32(); break;
+				case LBTOK.S64: _t = JsonToken.Integer; _v = _r.ReadInt64(); break;
+				case LBTOK.U64: _t = JsonToken.Integer; _v = _r.ReadUInt64(); break;
+				case LBTOK.String: _t = JsonToken.String; _v = _r.ReadString(); break;
+				case LBTOK.F32: _t = JsonToken.Float; _v = _r.ReadSingle(); break;
+				case LBTOK.F64: _t = JsonToken.Float; _v = _r.ReadDouble(); break;
+				case LBTOK.ByteArray: _t = JsonToken.Bytes; _v = _r.ReadBytes(_r.ReadInt32()); break;
 
 				default:
 					throw new InvalidOperationException();
 			}
+
 			return true;
 		}
 
 		public override byte[] ReadAsBytes()
 		{
-			if (!Read() || t != JsonToken.Bytes)
+			if (!Read() || _t != JsonToken.Bytes)
+			{
 				return null;
-			return (byte[])v;
+			}
+
+			return (byte[])_v;
 		}
 
 		public override DateTime? ReadAsDateTime()
@@ -114,21 +123,25 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		{
 			// TODO: speed this up if needed
 			if (!Read())
+			{
 				return null;
+			}
 
-			switch (t)
+			switch (_t)
 			{
 				case JsonToken.Null:
 					return null;
 				case JsonToken.Integer:
 				case JsonToken.Float:
-					return Convert.ToInt32(v);
+					return Convert.ToInt32(_v);
 				case JsonToken.String:
 					int i;
-					if (int.TryParse(v.ToString(), out i))
+					if (int.TryParse(_v.ToString(), out i))
+					{
 						return i;
-					else
-						return null;
+					}
+
+					return null;
 				default:
 					return null;
 			}
@@ -137,9 +150,11 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		public override string ReadAsString()
 		{
 			if (!Read())
+			{
 				return null;
+			}
 
-			switch (t)
+			switch (_t)
 			{
 				case JsonToken.Null:
 					return null;
@@ -147,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				case JsonToken.Integer:
 				case JsonToken.Boolean:
 				case JsonToken.String:
-					return v.ToString();
+					return _v.ToString();
 				default:
 					return null;
 			}
@@ -156,6 +171,8 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 
 	public class LBW : JsonWriter
 	{
+		private readonly BinaryWriter w;
+
 		private void WT(LBTOK t)
 		{
 			w.Write((byte)t);
@@ -165,7 +182,6 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		{
 			this.w = w;
 		}
-		private BinaryWriter w;
 
 		public override void Flush()
 		{
@@ -223,5 +239,4 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		public override void WriteValue(TimeSpan value) { throw new NotImplementedException(); }
 		public override void WriteValue(Uri value) { throw new NotImplementedException(); }
 	}
-
 }

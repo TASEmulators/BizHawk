@@ -183,12 +183,12 @@ namespace BizHawk.Client.EmuHawk
             }
         }
 
-				int ClampToByte(int val)
-				{
-					if (val < 0) return 0;
-					else if (val > 255) return 255;
-					else return val;
-				}
+        int ClampToByte(int val)
+        {
+            if (val < 0) return 0;
+            else if (val > 255) return 255;
+            else return val;
+        }
 
         /// <summary>
         /// Execute a second pass through the bitmap
@@ -249,26 +249,26 @@ namespace BizHawk.Client.EmuHawk
                         // Quantize the pixel
                         int srcPixel = *pSourcePixel;
 
-												int srcR = srcPixel & 0xFF; //not
-												int srcG = (srcPixel>>8) & 0xFF; //a
-												int srcB = (srcPixel>>16) & 0xFF; //mistake
-												int srcA = (srcPixel >> 24) & 0xFF;
+                        int srcR = srcPixel & 0xFF; //not
+                        int srcG = (srcPixel>>8) & 0xFF; //a
+                        int srcB = (srcPixel>>16) & 0xFF; //mistake
+                        int srcA = (srcPixel >> 24) & 0xFF;
 
                         int targetB = ClampToByte(srcB - ((errorThisRowB[col] * weight) / 8));
                         int targetG = ClampToByte(srcG - ((errorThisRowG[col] * weight) / 8));
                         int targetR = ClampToByte(srcR - ((errorThisRowR[col] * weight) / 8));
                         int targetA = srcA;
 
-											int target = (targetA<<24)|(targetB<<16)|(targetG<<8)|targetR;
+                        int target = (targetA<<24)|(targetB<<16)|(targetG<<8)|targetR;
 
                         byte pixelValue = QuantizePixel(target);
                         *pDestinationPixel = pixelValue;
 
-												int actual = pallete[pixelValue].ToArgb();
+                        int actual = pallete[pixelValue].ToArgb();
 
-												int actualR = actual & 0xFF;
-												int actualG = (actual >> 8) & 0xFF;
-												int actualB = (actual >> 16) & 0xFF;
+                        int actualR = actual & 0xFF;
+                        int actualG = (actual >> 8) & 0xFF;
+                        int actualB = (actual >> 16) & 0xFF;
                         int errorR = actualR - targetR;
                         int errorG = actualG - targetG;
                         int errorB = actualB - targetB; 

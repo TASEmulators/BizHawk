@@ -12,28 +12,32 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			get { return (CdIoPorts[3] & 0x04) != 0; }
 			set { CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x04) | (value ? 0x04 : 0x00)); }
 		}
+
 		public bool IntStop // INTSTOP
 		{
 			get { return (CdIoPorts[3] & 0x08) != 0; }
 			set { CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x08) | (value ? 0x8 : 0x00)); }
 		}
+
 		public bool IntSubchannel // INTSUB
 		{
 			get { return (CdIoPorts[3] & 0x10) != 0; }
 			set { CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x10) | (value ? 0x10 : 0x00)); }
 		}
+
 		public bool IntDataTransferComplete // INTM
 		{
 			get { return (CdIoPorts[3] & 0x20) != 0; }
 			set { CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x20) | (value ? 0x20 : 0x00)); }
 		}
+
 		public bool IntDataTransferReady // INTD
 		{
 			get { return (CdIoPorts[3] & 0x40) != 0; }
 			set { CdIoPorts[3] = (byte)((CdIoPorts[3] & ~0x40) | (value ? 0x40 : 0x00)); }
 		}
 
-		void SetCDAudioCallback()
+		private void SetCDAudioCallback()
 		{
 			CDAudio.CallbackAction = () =>
 				{
@@ -43,7 +47,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				};
 		}
 
-		void WriteCD(int addr, byte value)
+		private void WriteCD(int addr, byte value)
 		{
 			if (!TurboCD && !BramEnabled)
 				return; // flee if no turboCD hooked up
@@ -68,7 +72,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 				case 0x1802: // ACK and Interrupt Control
 					CdIoPorts[2] = value;
-					SCSI.ACK = ((value & 0x80) != 0);
+					SCSI.ACK = (value & 0x80) != 0;
 
 					SCSI.Think();
 					RefreshIRQ2();
@@ -76,7 +80,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 				case 0x1804: // CD Reset Command
 					CdIoPorts[4] = value;
-					SCSI.RST = ((value & 0x02) != 0);
+					SCSI.RST = (value & 0x02) != 0;
 					SCSI.Think();
 					if (SCSI.RST)
 					{
@@ -192,7 +196,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public byte ReadCD(int addr)
 		{
 			if (!TurboCD && !BramEnabled)
-				return 0xFF; //bail if no TurboCD.
+				return 0xFF; // bail if no TurboCD.
 			if (!TurboCD && addr != 0x1FF803) // only allow access to $1803 unless full TurboCD mode.
 				return 0xFF;
 
@@ -307,7 +311,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public void RefreshIRQ2()
 		{
 			int mask = CdIoPorts[2] & CdIoPorts[3] & 0x7C;
-			Cpu.IRQ2Assert = (mask != 0);
+			Cpu.IRQ2Assert = mask != 0;
 		}
 	}
 }

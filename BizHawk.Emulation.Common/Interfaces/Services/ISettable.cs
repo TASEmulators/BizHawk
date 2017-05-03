@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Common
 {
 	/// <summary>
 	/// This service provides mechanism for the client to set sync and non-sync related settings to the core
-	/// Settings are settings that can changge during the lifetime of the core and do not affect potential movie sync
+	/// Settings are settings that can change during the lifetime of the core and do not affect potential movie sync
 	/// Sync Settings do not change during the lifetime of the core and affect movie sync
 	/// If available, Sync settings are stored in movie files and automatically applied when the movie is loaded
 	/// If this service is available the client can provide UI for the user to manage these settings
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Common
 		/// VERY IMPORTANT: changes to the object returned by this function SHOULD NOT have any effect on emulation
 		/// (unless the object is later passed to PutSettings)
 		/// </summary>
-		/// <returns>a json-serializable object</returns>
+		/// <returns>a JSON serializable object</returns>
 		TSettings GetSettings();
 
 		/// <summary>
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Common
 		/// VERY IMPORTANT: changes to the object returned by this function MUST NOT have any effect on emulation
 		/// (unless the object is later passed to PutSyncSettings)
 		/// </summary>
-		/// <returns>a json-serializable object</returns>
+		/// <returns>a JSON serializable object</returns>
 		TSync GetSyncSettings();
 
 		/// <summary>
@@ -59,10 +59,10 @@ namespace BizHawk.Emulation.Common
 	{
 		public SettingsAdapter(IEmulator e)
 		{
-			emu = e;
+			_emu = e;
 
 			Type impl = e.GetType().GetInterfaces()
-				.Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ISettable<,>)).FirstOrDefault();
+				.FirstOrDefault(t => t.IsGenericType && t.GetGenericTypeDefinition() == typeof(ISettable<,>));
 			if (impl == null)
 			{
 				HasSettings = false;
@@ -71,39 +71,37 @@ namespace BizHawk.Emulation.Common
 			else
 			{
 				var tt = impl.GetGenericArguments();
-				settingtype = tt[0];
-				synctype = tt[1];
+				var settingtype = tt[0];
+				var synctype = tt[1];
 				HasSettings = settingtype != typeof(object); // object is used for a placeholder where an emu doesn't have both s and ss
 				HasSyncSettings = synctype != typeof(object);
 
 				if (HasSettings)
 				{
-					gets = impl.GetMethod("GetSettings");
-					puts = impl.GetMethod("PutSettings");
+					_gets = impl.GetMethod("GetSettings");
+					_puts = impl.GetMethod("PutSettings");
 				}
+
 				if (HasSyncSettings)
 				{
-					getss = impl.GetMethod("GetSyncSettings");
-					putss = impl.GetMethod("PutSyncSettings");
+					_getss = impl.GetMethod("GetSyncSettings");
+					_putss = impl.GetMethod("PutSyncSettings");
 				}
 			}
 		}
 
-		private IEmulator emu;
+		private readonly IEmulator _emu;
 
-		public bool HasSettings { get; private set; }
-		public bool HasSyncSettings { get; private set; }
+		public bool HasSettings { get; }
+		public bool HasSyncSettings { get; }
 
-		private object[] tmp1 = new object[1];
-		private object[] tmp0 = new object[0];
+		private readonly object[] _tmp1 = new object[1];
+		private readonly object[] _tmp0 = new object[0];
 
-		private Type settingtype;
-		private Type synctype;
-
-		private MethodInfo gets;
-		private MethodInfo puts;
-		private MethodInfo getss;
-		private MethodInfo putss;
+		private readonly MethodInfo _gets;
+		private readonly MethodInfo _puts;
+		private readonly MethodInfo _getss;
+		private readonly MethodInfo _putss;
 
 		public object GetSettings()
 		{
@@ -112,7 +110,7 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException();
 			}
 
-			return gets.Invoke(emu, tmp0);
+			return _gets.Invoke(_emu, _tmp0);
 		}
 
 		public object GetSyncSettings()
@@ -122,7 +120,7 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException();
 			}
 
-			return (getss.Invoke(emu, tmp0));
+			return _getss.Invoke(_emu, _tmp0);
 		}
 
 		public bool PutSettings(object o)
@@ -132,8 +130,8 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException();
 			}
 
-			tmp1[0] = o;
-			return (bool)puts.Invoke(emu, tmp1);
+			_tmp1[0] = o;
+			return (bool)_puts.Invoke(_emu, _tmp1);
 		}
 
 		public bool PutSyncSettings(object o)
@@ -143,10 +141,8 @@ namespace BizHawk.Emulation.Common
 				throw new InvalidOperationException();
 			}
 
-			tmp1[0] = o;
-			return (bool)putss.Invoke(emu, tmp1);
+			_tmp1[0] = o;
+			return (bool)_putss.Invoke(_emu, _tmp1);
 		}
 	}
-
-	
 }

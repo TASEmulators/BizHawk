@@ -19,12 +19,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				IsLagFrame = IsLagFrame,
 				LagCount = LagCount,
 				Frame = Frame,
-				overflowL = overflowL,
-				overflowR = overflowR,
-				LatchL = LatchL,
-				LatchR = LatchR,
-				cableconnected = cableconnected,
-				cablediscosignal = cablediscosignal
+				overflowL = _overflowL,
+				overflowR = _overflowR,
+				LatchL = _latchLeft,
+				LatchR = _latchRight,
+				cableconnected = _cableconnected,
+				cablediscosignal = _cablediscosignal
 			};
 			ser.Serialize(writer, s);
 			// write extra copy of stuff we don't use
@@ -41,12 +41,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			IsLagFrame = s.IsLagFrame;
 			LagCount = s.LagCount;
 			Frame = s.Frame;
-			overflowL = s.overflowL;
-			overflowR = s.overflowR;
-			LatchL = s.LatchL;
-			LatchR = s.LatchR;
-			cableconnected = s.cableconnected;
-			cablediscosignal = s.cablediscosignal;
+			_overflowL = s.overflowL;
+			_overflowR = s.overflowR;
+			_latchLeft = s.LatchL;
+			_latchRight = s.LatchR;
+			_cableconnected = s.cableconnected;
+			_cablediscosignal = s.cablediscosignal;
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
@@ -57,12 +57,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
-			writer.Write(overflowL);
-			writer.Write(overflowR);
-			writer.Write(LatchL);
-			writer.Write(LatchR);
-			writer.Write(cableconnected);
-			writer.Write(cablediscosignal);
+			writer.Write(_overflowL);
+			writer.Write(_overflowR);
+			writer.Write(_latchLeft);
+			writer.Write(_latchRight);
+			writer.Write(_cableconnected);
+			writer.Write(_cablediscosignal);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -73,12 +73,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
-			overflowL = reader.ReadInt32();
-			overflowR = reader.ReadInt32();
-			LatchL = reader.ReadInt32();
-			LatchR = reader.ReadInt32();
-			cableconnected = reader.ReadBoolean();
-			cablediscosignal = reader.ReadBoolean();
+			_overflowL = reader.ReadInt32();
+			_overflowR = reader.ReadInt32();
+			_latchLeft = reader.ReadInt32();
+			_latchRight = reader.ReadInt32();
+			_cableconnected = reader.ReadBoolean();
+			_cablediscosignal = reader.ReadBoolean();
 		}
 
 		public byte[] SaveStateBinary()

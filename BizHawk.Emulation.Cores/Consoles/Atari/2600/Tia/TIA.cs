@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		#region palette
 
-		const int BackColor = unchecked((int)0xff000000);
+		private const int BackColor = unchecked((int)0xff000000);
 
 		static TIA()
 		{
@@ -230,22 +230,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		// in all cases, the TIA has 228 clocks per scanline
 		// the NTSC TIA has a clock rate of 3579575hz
 		// the PAL/SECAM TIA has a clock rate of 3546894hz
-
 		private bool _pal;
 
-		public int NominalNumScanlines
-		{
-			get
-			{
-				return _pal ? 312 : 262;
-			}
-		}
+		public int NominalNumScanlines => _pal ? 312 : 262;
 
 		public void GetFrameRate(out int num, out int den)
 		{
 			// TODO when sound timing is made exact:
 			// NTSC refclock is actually 315 / 88 mhz
-			//3546895
+			// 3546895
 
 			int clockrate = _pal ? 3546895 : 3579545;
 			int clocksperframe = 228 * NominalNumScanlines;
@@ -347,20 +340,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_palette = _pal ? secam ? SECAMPalette : PALPalette : NTSCPalette;
 		}
 
-		public int CurrentScanLine
-		{
-			get { return _CurrentScanLine; }
-		}
+		public int CurrentScanLine => _CurrentScanLine;
 
-		public bool IsVBlank
-		{
-			get { return _vblankEnabled; }
-		}
+		public bool IsVBlank => _vblankEnabled;
 
-		public bool IsVSync
-		{
-			get { return _vsyncEnabled; }
-		}
+		public bool IsVSync => _vsyncEnabled;
 
 		/// <summary>
 		/// a count of lines emulated; incremented by the TIA but not used by it
@@ -382,19 +366,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					return 320;
 				}
 
-				return 275; //  275 comes from NTSC specs and the actual pixel clock of a 2600 TIA
+				return 275; // 275 comes from NTSC specs and the actual pixel clock of a 2600 TIA
 			}
 		}
 
-		public int VirtualHeight
-		{
-			get { return BufferHeight; }
-		}
+		public int VirtualHeight => BufferHeight;
 
-		public int BufferWidth
-		{
-			get { return ScreenWidth; }
-		}
+		public int BufferWidth => ScreenWidth;
 
 		public int BufferHeight
 		{
@@ -407,10 +385,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public int BackgroundColor
-		{
-			get { return _core.Settings.BackgroundColor.ToArgb(); }
-		}
+		public int BackgroundColor => _core.Settings.BackgroundColor.ToArgb();
 
 		public int[] GetVideoBuffer()
 		{
@@ -493,12 +468,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					_vblankEnabled = (vblank_value & 0x02) != 0;
 					vblank_delay = 0;
 				}
-
 			}
 
-
-
-			//delay latch to new playfield register
+			// delay latch to new playfield register
 			if (pf0_updater == true)
 			{
 				pf0_delay_clock++;
@@ -527,7 +499,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 			}
 
-			//delay latch to missile enable
+			// delay latch to missile enable
 			if (enam0_delay > 0)
 			{
 				enam0_delay++;
@@ -536,7 +508,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					enam0_delay = 0;
 					_player0.Missile.Enabled = enam0_val;
 				}
-
 			}
 
 			if (enam1_delay > 0)
@@ -547,7 +518,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					enam1_delay = 0;
 					_player1.Missile.Enabled = enam1_val;
 				}
-
 			}
 
 			// delay latch to ball enable
@@ -559,7 +529,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					enamb_delay = 0;
 					_ball.Enabled = enamb_val;
 				}
-
 			}
 
 			// delay latch to player graphics registers
@@ -572,7 +541,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					_player0.Grp = prg0_val;
 					_player1.Dgrp = _player1.Grp;
 				}
-
 			}
 
 			if (prg1_delay > 0)
@@ -587,7 +555,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					// TODO: Find a game that uses this functionality and test it
 					_ball.Denabled = _ball.Enabled;
 				}
-
 			}
 
 			// HMP write delay
@@ -615,7 +582,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			if (_hsyncCnt <= 0)
 			{
 				_core.Cpu.RDY = true;
-
 			}
 
 			// Assume we're on the left side of the screen for now
@@ -653,7 +619,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				{
 					collisions |= CXPF;
 				}
-
 
 				// ---- Player 0 ----
 				collisions |= _player0.Tick() ? CXP0 : (byte)0x00;
@@ -749,9 +714,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 				if (_playField.Priority && (collisions & CXPF) != 0 && _core.Settings.ShowPlayfield)
 				{
-
 					pixelColor = _palette[_playField.PfColor];
-
 				}
 
 				// Handle vblank
@@ -799,18 +762,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 			}
 
-
-
-
-
 			// Handle HMOVE
 			if (_hmove.HMoveEnabled)
 			{
-
 				if (_hmove.DecCntEnabled)
 				{
-
-
 					// Actually do stuff only evey 4 pulses
 					if (_hmove.HMoveCnt == 0)
 					{
@@ -1032,7 +988,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 			}
 
-
 			// do the audio sampling
 			if (_hsyncCnt == 36 || _hsyncCnt == 148)
 			{
@@ -1195,9 +1150,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				mask = 0x7f;
 			}
 
-			//some bits of the databus will be undriven when a read call is made. Our goal here is to sort out what
+			// some bits of the databus will be undriven when a read call is made. Our goal here is to sort out what
 			// happens to the undriven pins. Most of the time, they will be in whatever state they were when previously
-			//assigned in some other bus access, so let's go with that. 
+			// assigned in some other bus access, so let's go with that. 
 			coll += (byte)(mask & bus_state);
 
 			if (!peek) bus_state = (int)coll;
@@ -1626,15 +1581,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			throw new NotSupportedException("Async is not available");
 		}
 
-		public bool CanProvideAsync
-		{
-			get { return false; }
-		}
+		public bool CanProvideAsync => false;
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -1647,76 +1596,76 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		#endregion
 
 		public void SyncState(Serializer ser)
-        {
-            ser.BeginSection("TIA");
-            _ball.SyncState(ser);
-            _hmove.SyncState(ser);
-            ser.Sync("hsyncCnt", ref _hsyncCnt);
+		{
+			ser.BeginSection("TIA");
+			_ball.SyncState(ser);
+			_hmove.SyncState(ser);
+			ser.Sync("hsyncCnt", ref _hsyncCnt);
 
-            // add everything to the state 
-            ser.Sync("Bus_State", ref bus_state);
+			// add everything to the state 
+			ser.Sync("Bus_State", ref bus_state);
 
-            ser.Sync("PF0_up",ref pf0_update);
-            ser.Sync("PF1_up", ref pf1_update);
-            ser.Sync("PF2_up", ref pf2_update);
-            ser.Sync("PF0_upper", ref pf0_updater);
-            ser.Sync("PF1_upper", ref pf1_updater);
-            ser.Sync("PF2_upper", ref pf2_updater);
-            ser.Sync("PF0_delay", ref pf0_delay_clock);
-            ser.Sync("PF1_delay", ref pf1_delay_clock);
-            ser.Sync("PF2_delay", ref pf2_delay_clock);
-            ser.Sync("PF0_max", ref pf0_max_delay);
-            ser.Sync("PF1_max", ref pf1_max_delay);
-            ser.Sync("PF2_max", ref pf2_max_delay);
+			ser.Sync("PF0_up",ref pf0_update);
+			ser.Sync("PF1_up", ref pf1_update);
+			ser.Sync("PF2_up", ref pf2_update);
+			ser.Sync("PF0_upper", ref pf0_updater);
+			ser.Sync("PF1_upper", ref pf1_updater);
+			ser.Sync("PF2_upper", ref pf2_updater);
+			ser.Sync("PF0_delay", ref pf0_delay_clock);
+			ser.Sync("PF1_delay", ref pf1_delay_clock);
+			ser.Sync("PF2_delay", ref pf2_delay_clock);
+			ser.Sync("PF0_max", ref pf0_max_delay);
+			ser.Sync("PF1_max", ref pf1_max_delay);
+			ser.Sync("PF2_max", ref pf2_max_delay);
 
-            ser.Sync("Enam0_delay", ref enam0_delay);
-            ser.Sync("Enam1_delay", ref enam1_delay);
-            ser.Sync("Enab_delay", ref enamb_delay);
-            ser.Sync("Enam0_val", ref enam0_val);
-            ser.Sync("Enam1_val", ref enam1_val);
-            ser.Sync("Enab_val", ref enamb_val);
+			ser.Sync("Enam0_delay", ref enam0_delay);
+			ser.Sync("Enam1_delay", ref enam1_delay);
+			ser.Sync("Enab_delay", ref enamb_delay);
+			ser.Sync("Enam0_val", ref enam0_val);
+			ser.Sync("Enam1_val", ref enam1_val);
+			ser.Sync("Enab_val", ref enamb_val);
 
-            ser.Sync("P0_stuff", ref p0_stuff);
-            ser.Sync("P1_stuff", ref p1_stuff);
-            ser.Sync("M0_stuff", ref m0_stuff);
-            ser.Sync("M1_stuf", ref m1_stuff);
-            ser.Sync("b_stuff", ref b_stuff);
+			ser.Sync("P0_stuff", ref p0_stuff);
+			ser.Sync("P1_stuff", ref p1_stuff);
+			ser.Sync("M0_stuff", ref m0_stuff);
+			ser.Sync("M1_stuf", ref m1_stuff);
+			ser.Sync("b_stuff", ref b_stuff);
 
-            ser.Sync("hmp0_delay", ref HMP0_delay);
-            ser.Sync("hmp0_val", ref HMP0_val);
-            ser.Sync("hmp1_delay", ref HMP1_delay);
-            ser.Sync("hmp1_val", ref HMP1_val);
+			ser.Sync("hmp0_delay", ref HMP0_delay);
+			ser.Sync("hmp0_val", ref HMP0_val);
+			ser.Sync("hmp1_delay", ref HMP1_delay);
+			ser.Sync("hmp1_val", ref HMP1_val);
 
-            ser.Sync("PRG0_delay", ref prg0_delay);
-            ser.Sync("PRG1_delay", ref prg1_delay);
-            ser.Sync("PRG0_val", ref prg0_val);
-            ser.Sync("PRG1_val", ref prg1_val);
+			ser.Sync("PRG0_delay", ref prg0_delay);
+			ser.Sync("PRG1_delay", ref prg1_delay);
+			ser.Sync("PRG0_val", ref prg0_val);
+			ser.Sync("PRG1_val", ref prg1_val);
 
-            ser.Sync("Ticks", ref do_ticks);
+			ser.Sync("Ticks", ref do_ticks);
 
-            ser.Sync("VBlankDelay", ref vblank_delay);
-            ser.Sync("VBlankValue", ref vblank_value);
+			ser.Sync("VBlankDelay", ref vblank_delay);
+			ser.Sync("VBlankValue", ref vblank_value);
 
-            // some of these things weren't in the state because they weren't needed if
-            // states were always taken at frame boundaries
-            ser.Sync("capChargeStart", ref _capChargeStart);
-            ser.Sync("capCharging", ref _capCharging);
-            ser.Sync("vblankEnabled", ref _vblankEnabled);
-            ser.Sync("vsyncEnabled", ref _vsyncEnabled);
-            ser.Sync("CurrentScanLine", ref _CurrentScanLine);
-            ser.Sync("scanlinebuffer", ref _scanlinebuffer, false);
-            ser.Sync("AudioClocks", ref _audioClocks);
-            ser.Sync("FrameStartCycles", ref frameStartCycles);
-            ser.Sync("FrameEndCycles", ref frameEndCycles);
+			// some of these things weren't in the state because they weren't needed if
+			// states were always taken at frame boundaries
+			ser.Sync("capChargeStart", ref _capChargeStart);
+			ser.Sync("capCharging", ref _capCharging);
+			ser.Sync("vblankEnabled", ref _vblankEnabled);
+			ser.Sync("vsyncEnabled", ref _vsyncEnabled);
+			ser.Sync("CurrentScanLine", ref _CurrentScanLine);
+			ser.Sync("scanlinebuffer", ref _scanlinebuffer, false);
+			ser.Sync("AudioClocks", ref _audioClocks);
+			ser.Sync("FrameStartCycles", ref frameStartCycles);
+			ser.Sync("FrameEndCycles", ref frameEndCycles);
 
-            ser.BeginSection("Player0");
-            _player0.SyncState(ser);
-            ser.EndSection();
-            ser.BeginSection("Player1");
-            _player1.SyncState(ser);
-            ser.EndSection();
-            _playField.SyncState(ser);
-            ser.EndSection();
-        }
-    }
+			ser.BeginSection("Player0");
+			_player0.SyncState(ser);
+			ser.EndSection();
+			ser.BeginSection("Player1");
+			_player1.SyncState(ser);
+			ser.EndSection();
+			_playField.SyncState(ser);
+			ser.EndSection();
+		}
+	}
 }

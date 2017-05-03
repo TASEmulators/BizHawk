@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 			
 		}
 
-		public override string Name { get { return "memory"; } }
+		public override string Name => "memory";
 
 		protected override MemoryDomain Domain
 		{
@@ -34,21 +34,16 @@ namespace BizHawk.Client.Common
 				{
 					if (_currentMemoryDomain == null)
 					{
-						if (MemoryDomainCore.HasSystemBus)
-						{
-							_currentMemoryDomain = MemoryDomainCore.SystemBus;
-						}
-						else
-						{
-							_currentMemoryDomain = MemoryDomainCore.MainMemory;
-						}
+						_currentMemoryDomain = MemoryDomainCore.HasSystemBus
+							? MemoryDomainCore.SystemBus
+							: MemoryDomainCore.MainMemory;
 					}
 
 					return _currentMemoryDomain;
 				}
 				else
 				{
-					var error = string.Format("Error: {0} does not implement memory domains", Emulator.Attributes().CoreName);
+					var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
 					Log(error);
 					throw new NotImplementedException(error);
 				}
@@ -120,14 +115,14 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					Log(string.Format("Unable to find domain: {0}", domain));
+					Log($"Unable to find domain: {domain}");
 					return false;
 				}
 
 			}
 			catch // Just in case
 			{
-				Log(string.Format("Unable to find domain: {0}", domain));
+				Log($"Unable to find domain: {domain}");
 			}
 
 			return false;

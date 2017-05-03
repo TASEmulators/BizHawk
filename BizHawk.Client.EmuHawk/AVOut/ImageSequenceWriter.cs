@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 
-using BizHawk.Common.IOExtensions;
+using BizHawk.Bizware.BizwareGL;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -13,8 +13,8 @@ namespace BizHawk.Client.EmuHawk
 	[VideoWriter("imagesequence", "Image sequence writer", "Writes a sequence of 24bpp PNG or JPG files (default compression quality)")]
 	public class ImageSequenceWriter : IDisposable, IVideoWriter
 	{
-		string BaseName;
-		int Frame;
+		private string _baseName;
+		private int _frame;
 
 		public void SetVideoCodecToken(IDisposable token)
 		{
@@ -24,12 +24,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 		}
 
-		public bool UsesAudio { get { return false; } }
-		public bool UsesVideo { get { return true; } }
+		public bool UsesAudio => false;
+
+		public bool UsesVideo => true;
 
 		public void OpenFile(string baseName)
 		{
-			BaseName = baseName;
+			_baseName = baseName;
 		}
 
 		public void CloseFile()
@@ -38,36 +39,43 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetFrame(int frame)
 		{
-			//eh? this gets ditched somehow
+			// eh? this gets ditched somehow
 		}
 
 		public void AddFrame(IVideoProvider source)
 		{
-			string ext = Path.GetExtension(BaseName);
-			string name = Path.GetFileNameWithoutExtension(BaseName) + "_" + Frame.ToString();
+			string ext = Path.GetExtension(_baseName);
+			string name = Path.GetFileNameWithoutExtension(_baseName) + "_" + _frame;
 			name += ext;
-			name = Path.Combine(Path.GetDirectoryName(BaseName), name);
-			BizHawk.Bizware.BizwareGL.BitmapBuffer bb = new Bizware.BizwareGL.BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
+			name = Path.Combine(Path.GetDirectoryName(_baseName), name);
+			BitmapBuffer bb = new BitmapBuffer(source.BufferWidth, source.BufferHeight, source.GetVideoBuffer());
 			using (var bmp = bb.ToSysdrawingBitmap())
 			{
 				if (ext.ToUpper() == ".PNG")
+				{
 					bmp.Save(name, System.Drawing.Imaging.ImageFormat.Png);
+				}
 				else if (ext.ToUpper() == ".JPG")
+				{
 					bmp.Save(name, System.Drawing.Imaging.ImageFormat.Jpeg);
+				}
 			}
-			Frame++;
+
+			_frame++;
 		}
 
 		public void AddSamples(short[] samples)
 		{
 		}
 
-		class CodecToken : IDisposable
+		private class CodecToken : IDisposable
 		{
-			public void Dispose() { }
+			public void Dispose()
+			{
+			}
 		}
 
-		public IDisposable AcquireVideoCodecToken(System.Windows.Forms.IWin32Window hwnd)
+		public IDisposable AcquireVideoCodecToken(IWin32Window hwnd)
 		{
 			return new CodecToken();
 		}

@@ -2,6 +2,7 @@
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common.InputAdapterExtensions;
+
 namespace BizHawk.Client.Common
 {
 	public static class InputManager
@@ -20,7 +21,6 @@ namespace BizHawk.Client.Common
 			Global.MovieInputSourceAdapter.Source = Global.MultitrackRewiringAdapter;
 			Global.ControllerOutput.Source = Global.MovieOutputHardpoint;
 
-			Global.Emulator.Controller = Global.ControllerOutput;
 			Global.MovieSession.MovieControllerAdapter.Definition = Global.MovieInputSourceAdapter.Definition;
 
 			// connect the movie session before MovieOutputHardpoint if it is doing anything

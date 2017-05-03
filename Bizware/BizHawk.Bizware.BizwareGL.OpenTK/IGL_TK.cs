@@ -354,7 +354,8 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 
 		public void Internal_FreeShader(Shader shader)
 		{
-			GL.DeleteShader((int)shader.Opaque);
+			var sw = shader.Opaque as ShaderWrapper;
+			GL.DeleteShader(sw.sid);
 		}
 
 		public void BindPipeline(Pipeline pipeline)

@@ -1,40 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
-    public partial class Lynx : IVideoProvider
-    {
-        private const int WIDTH = 160;
-        private const int HEIGHT = 102;
+	public partial class Lynx : IVideoProvider
+	{
+		private const int Width = 160;
+		private const int Height = 102;
 
-        private int[] videobuff = new int[WIDTH * HEIGHT];
+		private readonly int[] _videobuff = new int[Width * Height];
 
-        public int[] GetVideoBuffer()
-        {
-            return videobuff;
-        }
+		public int[] GetVideoBuffer()
+		{
+			return _videobuff;
+		}
 
-        public int VirtualWidth
-        {
-            get { return BufferWidth; }
-        }
+		public int VirtualWidth => BufferWidth;
 
-        public int VirtualHeight
-        {
-            get { return BufferHeight; }
-        }
+		public int VirtualHeight => BufferHeight;
 
-        public int BufferWidth { get; private set; }
+		public int BufferWidth { get; }
 
-        public int BufferHeight { get; private set; }
+		public int BufferHeight { get; }
 
-        public int BackgroundColor
-        {
-            get { return unchecked((int)0xff000000); }
-        }
-    }
+		public int BackgroundColor => unchecked((int)0xff000000);
+	}
 }

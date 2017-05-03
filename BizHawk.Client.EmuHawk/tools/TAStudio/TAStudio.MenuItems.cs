@@ -561,7 +561,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (TasView.AnyRowsSelected)
 			{
-				var wasPaused = Mainform.EmulatorPaused;
 				var needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 				var rollBackFrame = TasView.FirstSelectedIndex.Value;
 				if (rollBackFrame >= CurrentTasMovie.InputLogLength)
@@ -633,25 +632,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void InsertNumFramesMenuItem_Click(object sender, EventArgs e)
 		{
-			bool wasPaused = Mainform.EmulatorPaused;
 			int insertionFrame = TasView.AnyRowsSelected ? TasView.FirstSelectedIndex.Value : 0;
-			bool needsToRollback = TasView.FirstSelectedIndex < Emulator.Frame;
 
 			FramesPrompt framesPrompt = new FramesPrompt();
 			DialogResult result = framesPrompt.ShowDialog();
 			if (result == DialogResult.OK)
 			{
-				CurrentTasMovie.InsertEmptyFrame(insertionFrame, framesPrompt.Frames);
-			}
-
-			if (needsToRollback)
-			{
-				GoToLastEmulatedFrameIfNecessary(insertionFrame);
-				DoAutoRestore();
-			}
-			else
-			{
-				RefreshDialog();
+				InsertNumFrames(insertionFrame, framesPrompt.Frames);
 			}
 		}
 
@@ -698,7 +685,7 @@ namespace BizHawk.Client.EmuHawk
 		private void RemoveMarkersMenuItem_Click(object sender, EventArgs e)
 		{
 			IEnumerable<TasMovieMarker> markers = CurrentTasMovie.Markers.Where(m => TasView.SelectedRows.Contains(m.Frame));
-            foreach (TasMovieMarker m in markers.ToList())
+			foreach (TasMovieMarker m in markers.ToList())
 			{
 				CurrentTasMovie.Markers.Remove(m);
 			}
@@ -1072,31 +1059,31 @@ namespace BizHawk.Client.EmuHawk
 		private void scrollToCenterToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			TasView.ScrollMethod = Settings.FollowCursorScrollMethod = "center";
-        }
+		}
 
-        private void DenoteStatesWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings.DenoteStatesWithIcons = DenoteStatesWithIconsToolStripMenuItem.Checked;
-            RefreshDialog();
-        }
+		private void DenoteStatesWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.DenoteStatesWithIcons = DenoteStatesWithIconsToolStripMenuItem.Checked;
+			RefreshDialog();
+		}
 
-        private void DenoteStatesWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings.DenoteStatesWithBGColor = DenoteStatesWithBGColorToolStripMenuItem.Checked;
-            RefreshDialog();
-        }
+		private void DenoteStatesWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.DenoteStatesWithBGColor = DenoteStatesWithBGColorToolStripMenuItem.Checked;
+			RefreshDialog();
+		}
 
-        private void DenoteMarkersWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings.DenoteMarkersWithIcons = DenoteMarkersWithIconsToolStripMenuItem.Checked;
-            RefreshDialog();
-        }
+		private void DenoteMarkersWithIconsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.DenoteMarkersWithIcons = DenoteMarkersWithIconsToolStripMenuItem.Checked;
+			RefreshDialog();
+		}
 
-        private void DenoteMarkersWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Settings.DenoteMarkersWithBGColor = DenoteMarkersWithBGColorToolStripMenuItem.Checked;
-            RefreshDialog();
-        }
+		private void DenoteMarkersWithBGColorToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.DenoteMarkersWithBGColor = DenoteMarkersWithBGColorToolStripMenuItem.Checked;
+			RefreshDialog();
+		}
 
 		private void wheelScrollSpeedToolStripMenuItem_Click(object sender, EventArgs e)
 		{

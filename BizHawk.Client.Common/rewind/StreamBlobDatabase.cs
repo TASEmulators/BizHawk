@@ -34,7 +34,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				_mAllocatedBuffer = _mBufferManage(null, ref capacity, true);
+				_mAllocatedBuffer = _mBufferManage(null, ref _mCapacity, true);
 				_mStream = new MemoryStream(_mAllocatedBuffer);
 			}
 		}
@@ -95,12 +95,20 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public MemoryStream PopMemoryStream()
 		{
-			var item = Pop();
+			return CreateMemoryStream(Pop());
+		}
+
+		public MemoryStream PeekMemoryStream()
+		{
+			return CreateMemoryStream(Peek());
+		}
+
+		private MemoryStream CreateMemoryStream(ListItem item)
+		{
 			var buf = new byte[item.Length];
 			_mStream.Position = item.Index;
 			_mStream.Read(buf, 0, item.Length);
-			var ret = new MemoryStream(buf, 0, item.Length, false, true);
-			return ret;
+			return new MemoryStream(buf, 0, item.Length, false, true);
 		}
 
 		public long Enqueue(int timestamp, int amount)
@@ -197,6 +205,16 @@ namespace BizHawk.Client.Common
 			_mHead = nextHead ?? _mBookmarks.Last;
 
 			return ret;
+		}
+
+		public ListItem Peek()
+		{
+			if (_mHead == null)
+			{
+				throw new InvalidOperationException("Attempted to peek from an empty data structure");
+			}
+
+			return _mHead.Value;
 		}
 
 		public ListItem Dequeue()

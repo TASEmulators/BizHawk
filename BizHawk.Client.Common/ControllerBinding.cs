@@ -19,10 +19,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public ControllerDefinition Definition
-		{
-			get { return _type; }
-		}
+		public ControllerDefinition Definition => _type;
 
 		public bool IsPressed(string button)
 		{
@@ -105,11 +102,11 @@ namespace BizHawk.Client.Common
 						}
 					}
 
-					//zero 09-mar-2015 - not sure if adding + 1 here is correct.. but... maybe?
+					// zero 09-mar-2015 - not sure if adding + 1 here is correct.. but... maybe?
 					var output = (input * multiplier + 10000.0f) * (range.Max - range.Min + 1) / 20000.0f + range.Min;
 
-					//zero 09-mar-2015 - at this point, we should only have integers, since thats all 100% of consoles ever see
-					//if this becomes a problem we can add flags to the range and update GUIs to be able to display floats
+					// zero 09-mar-2015 - at this point, we should only have integers, since thats all 100% of consoles ever see
+					// if this becomes a problem we can add flags to the range and update GUIs to be able to display floats
 					output = (int)output;
 
 					float lbound = Math.Min(range.Min, range.Max);
@@ -160,7 +157,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			//it's not sure where this should happen, so for backwards compatibility.. do it every time
+			// it's not sure where this should happen, so for backwards compatibility.. do it every time
 			NormalizeFloats(controller);
 		}
 
@@ -288,7 +285,10 @@ namespace BizHawk.Client.Common
 			_buttonStarts.Clear();
 		}
 
-		public float GetFloat(string name) { throw new NotImplementedException(); }
+		public float GetFloat(string name)
+		{
+			throw new NotImplementedException();
+		}
 
 		// look for bindings which are activated by the supplied physical button.
 		public List<string> SearchBindings(string button)
@@ -304,9 +304,9 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var kvp in _bindings)
 			{
-				foreach (var bound_button in kvp.Value)
+				foreach (var boundBtn in kvp.Value)
 				{
-					if (_buttons[kvp.Key] == false && controller.IsPressed(bound_button))
+					if (_buttons[kvp.Key] == false && controller.IsPressed(boundBtn))
 					{
 						_buttonStarts[kvp.Key] = _emulator.Frame;
 					}

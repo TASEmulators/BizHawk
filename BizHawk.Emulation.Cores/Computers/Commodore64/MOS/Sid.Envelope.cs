@@ -9,42 +9,42 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Sid
 	{
-	    private sealed class Envelope
+		private sealed class Envelope
 		{
-		    [SaveState.DoNotSave] private const int StateAttack = 0;
-		    [SaveState.DoNotSave] private const int StateDecay = 1;
-		    [SaveState.DoNotSave] private const int StateRelease = 2;
+			[SaveState.DoNotSave] private const int StateAttack = 0;
+			[SaveState.DoNotSave] private const int StateDecay = 1;
+			[SaveState.DoNotSave] private const int StateRelease = 2;
 
-		    private int _attack;
-		    private int _decay;
-		    private bool _delay;
-		    private int _envCounter;
-		    private int _expCounter;
-		    private int _expPeriod;
-		    private bool _freeze;
-		    private int _lfsr;
-		    private bool _gate;
-		    private int _rate;
-		    private int _release;
-		    private int _state;
-		    private int _sustain;
+			private int _attack;
+			private int _decay;
+			private bool _delay;
+			private int _envCounter;
+			private int _expCounter;
+			private int _expPeriod;
+			private bool _freeze;
+			private int _lfsr;
+			private bool _gate;
+			private int _rate;
+			private int _release;
+			private int _state;
+			private int _sustain;
 
-		    private static readonly int[] AdsrTable = {
+			private static readonly int[] AdsrTable = {
 				0x7F00, 0x0006, 0x003C, 0x0330,
 				0x20C0, 0x6755, 0x3800, 0x500E,
 				0x1212, 0x0222, 0x1848, 0x59B8,
 				0x3840, 0x77E2, 0x7625, 0x0A93
 			};
 
-		    private static readonly int[] ExpCounterTable = {
+			private static readonly int[] ExpCounterTable = {
 				0xFF, 0x5D, 0x36, 0x1A, 0x0E, 0x06, 0x00
 			};
 
-		    private static readonly int[] ExpPeriodTable = {
+			private static readonly int[] ExpPeriodTable = {
 				0x01, 0x02, 0x04, 0x08, 0x10, 0x1E, 0x01
 			};
 
-		    private static readonly int[] SustainTable = {
+			private static readonly int[] SustainTable = {
 				0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
 				0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF
 			};
@@ -73,43 +73,43 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 				if (_state != StateAttack && ++_expCounter != _expPeriod)
 				{
-				    return;
+					return;
 				}
 
 				_expCounter = 0;
 				if (_freeze)
-				    return;
+					return;
 
 				switch (_state)
 				{
-				    case StateAttack:
-				        _envCounter++;
-				        if (_envCounter == 0xFF)
-				        {
-				            _state = StateDecay;
-				            _rate = AdsrTable[_decay];
-				        }
-				        break;
-				    case StateDecay:
-				        if (_envCounter == SustainTable[_sustain])
-				        {
-				            return;
-				        }
-				        if (_expPeriod != 1)
-				        {
-				            _delay = false;
-				            return;
-				        }
-				        _envCounter--;
-				        break;
-				    case StateRelease:
-				        if (_expPeriod != 1)
-				        {
-				            _delay = false;
-				            return;
-				        }
-				        _envCounter--;
-				        break;
+					case StateAttack:
+						_envCounter++;
+						if (_envCounter == 0xFF)
+						{
+							_state = StateDecay;
+							_rate = AdsrTable[_decay];
+						}
+						break;
+					case StateDecay:
+						if (_envCounter == SustainTable[_sustain])
+						{
+							return;
+						}
+						if (_expPeriod != 1)
+						{
+							_delay = false;
+							return;
+						}
+						_envCounter--;
+						break;
+					case StateRelease:
+						if (_expPeriod != 1)
+						{
+							_delay = false;
+							return;
+						}
+						_envCounter--;
+						break;
 				}
 				_envCounter &= 0xFF;
 				UpdateExpCounter();

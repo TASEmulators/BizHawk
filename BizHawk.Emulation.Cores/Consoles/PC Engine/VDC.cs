@@ -1,21 +1,16 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.H6280;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
 	// HuC6270 Video Display Controller
-
 	public sealed partial class VDC : IVideoProvider
 	{
 		public ushort[] VRAM = new ushort[0x8000];
 		public ushort[] SpriteAttributeTable = new ushort[256];
-		public byte[] PatternBuffer = new byte[0x20000];
-		public byte[] SpriteBuffer = new byte[0x20000];
+		public readonly byte[] PatternBuffer = new byte[0x20000];
+		public readonly byte[] SpriteBuffer = new byte[0x20000];
 		public byte RegisterLatch;
 		public ushort[] Registers = new ushort[0x20];
 		public ushort ReadBuffer;
@@ -35,49 +30,49 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					case 2: return 64;
 					case 3: return 128;
 				}
+
 				return 1;
 			}
 		}
 
-		public bool BackgroundEnabled { get { return (Registers[CR] & 0x80) != 0; } }
-		public bool SpritesEnabled { get { return (Registers[CR] & 0x40) != 0; } }
-		public bool VBlankInterruptEnabled { get { return (Registers[CR] & 0x08) != 0; } }
-		public bool RasterCompareInterruptEnabled { get { return (Registers[CR] & 0x04) != 0; } }
-		public bool SpriteOverflowInterruptEnabled { get { return (Registers[CR] & 0x02) != 0; } }
-		public bool SpriteCollisionInterruptEnabled { get { return (Registers[CR] & 0x01) != 0; } }
-		public bool Sprite4ColorModeEnabled { get { return (Registers[MWR] & 0x0C) == 4; } }
+		public bool BackgroundEnabled => (Registers[CR] & 0x80) != 0;
+		public bool SpritesEnabled => (Registers[CR] & 0x40) != 0;
+		public bool VBlankInterruptEnabled => (Registers[CR] & 0x08) != 0;
+		public bool RasterCompareInterruptEnabled => (Registers[CR] & 0x04) != 0;
+		public bool SpriteOverflowInterruptEnabled => (Registers[CR] & 0x02) != 0;
+		public bool SpriteCollisionInterruptEnabled => (Registers[CR] & 0x01) != 0;
+		public bool Sprite4ColorModeEnabled => (Registers[MWR] & 0x0C) == 4;
 
 		public int BatWidth { get { switch ((Registers[MWR] >> 4) & 3) { case 0: return 32; case 1: return 64; default: return 128; } } }
-		public int BatHeight { get { return ((Registers[MWR] & 0x40) == 0) ? 32 : 64; } }
+		public int BatHeight => (Registers[MWR] & 0x40) == 0 ? 32 : 64;
 
-		public int RequestedFrameWidth { get { return ((Registers[HDR] & 0x3F) + 1) * 8; } }
-		public int RequestedFrameHeight { get { return ((Registers[VDW] & 0x1FF) + 1); } }
+		public int RequestedFrameWidth => ((Registers[HDR] & 0x3F) + 1) * 8;
+		public int RequestedFrameHeight => (Registers[VDW] & 0x1FF) + 1;
+		public int DisplayStartLine => (Registers[VPR] >> 8) + (Registers[VPR] & 0x1F);
 
-		public int DisplayStartLine { get { return (Registers[VPR] >> 8) + (Registers[VPR] & 0x1F); } }
+		private const int MAWR = 0;  // Memory Address Write Register
+		private const int MARR = 1;  // Memory Address Read Register
+		private const int VRR  = 2;  // VRAM Read Register
+		private const int VWR  = 2;  // VRAM Write Register
+		private const int CR   = 5;  // Control Register
+		private const int RCR  = 6;  // Raster Compare Register
+		private const int BXR  = 7;  // Background X-scroll Register
+		private const int BYR  = 8;  // Background Y-scroll Register
+		private const int MWR  = 9;  // Memory-access Width Register
+		private const int HSR  = 10; // Horizontal Sync Register
+		private const int HDR  = 11; // Horizontal Display Register
+		private const int VPR  = 12; // Vertical synchronous register
+		private const int VDW  = 13; // Vertical display register
+		private const int VCR  = 14; // Vertical display END position register;
+		private const int DCR  = 15; // DMA Control Register
+		private const int SOUR = 16; // Source address for DMA
+		private const int DESR = 17; // Destination address for DMA
+		private const int LENR = 18; // Length of DMA transfer. Writing this will initiate DMA.
+		private const int SATB = 19; // Sprite Attribute Table base location in VRAM
 
-		const int MAWR = 0;  // Memory Address Write Register
-		const int MARR = 1;  // Memory Address Read Register
-		const int VRR  = 2;  // VRAM Read Register
-		const int VWR  = 2;  // VRAM Write Register
-		const int CR   = 5;  // Control Register
-		const int RCR  = 6;  // Raster Compare Register
-		const int BXR  = 7;  // Background X-scroll Register
-		const int BYR  = 8;  // Background Y-scroll Register
-		const int MWR  = 9;  // Memory-access Width Register
-		const int HSR  = 10; // Horizontal Sync Register
-		const int HDR  = 11; // Horizontal Display Register
-		const int VPR  = 12; // Vertical synchronous register
-		const int VDW  = 13; // Vertical display register
-		const int VCR  = 14; // Vertical display END position register;
-		const int DCR  = 15; // DMA Control Register
-		const int SOUR = 16; // Source address for DMA
-		const int DESR = 17; // Destination address for DMA
-		const int LENR = 18; // Length of DMA transfer. Writing this will initiate DMA.
-		const int SATB = 19; // Sprite Attribute Table base location in VRAM
-
-		const int RegisterSelect = 0;
-		const int LSB = 2;
-		const int MSB = 3;
+		private const int RegisterSelect = 0;
+		private const int LSB = 2;
+		private const int MSB = 3;
 
 		public const byte StatusVerticalBlanking = 0x20;
 		public const byte StatusVramVramDmaComplete = 0x10;
@@ -88,9 +83,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		const int VramSize = 0x8000;
 
-		PCEngine pce;
-		HuC6280 cpu;
-		VCE vce;
+		private readonly PCEngine pce;
+		private readonly HuC6280 cpu;
+		private readonly VCE vce;
 
 		public int MultiResHack = 0;
 
@@ -124,7 +119,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				if (RegisterLatch == BYR)
 					BackgroundY = Registers[BYR] & 0x1FF;
 
-                RegisterCommit(RegisterLatch, msbComplete: false);
+				RegisterCommit(RegisterLatch, msbComplete: false);
 			}
 			else if (port == MSB)
 			{
@@ -134,16 +129,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		void RegisterCommit(int register, bool msbComplete)
+		private void RegisterCommit(int register, bool msbComplete)
 		{
 			switch (register)
 			{
 				case MARR: // Memory Address Read Register
-                    if (!msbComplete) break;
+					if (!msbComplete) break;
 					ReadBuffer = VRAM[Registers[MARR] & 0x7FFF];
 					break;
 				case VWR: // VRAM Write Register
-                    if (!msbComplete) break;
+					if (!msbComplete) break;
 					if (Registers[MAWR] < VramSize) // Several games attempt to write past the end of VRAM
 					{
 						VRAM[Registers[MAWR]] = Registers[VWR];
@@ -176,11 +171,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						FrameBuffer = new int[FramePitch * FrameHeight];
 					break;
 				case LENR: // Initiate DMA transfer
-                    if (!msbComplete) break;
+					if (!msbComplete) break;
 					DmaRequested = true;
 					break;
 				case SATB:
-                    if (!msbComplete) break;
+					if (!msbComplete) break;
 					SatDmaRequested = true;
 					break;
 			}
@@ -210,8 +205,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						Registers[MARR] += IncrementWidth;
 						ReadBuffer = VRAM[Registers[MARR] & 0x7FFF];
 					}
+
 					return retval;
 			}
+
 			return 0;
 		}
 
@@ -264,8 +261,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public void UpdatePatternData(ushort addr)
 		{
-			int tileNo = (addr >> 4);
-			int tileLineOffset = (addr & 0x7);
+			int tileNo = addr >> 4;
+			int tileLineOffset = addr & 0x7;
 
 			int bitplane01 = VRAM[(tileNo * 16) + tileLineOffset];
 			int bitplane23 = VRAM[(tileNo * 16) + tileLineOffset + 8];

@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Common
 	public interface ICodeDataLog : IDictionary<string, byte[]>
 	{
 		/// <summary>
-		/// Pins the managed arrays. Not that we expect them to be allocated, but in case we do, seeing thish ere will remind us to check for the pin condition and abort
+		/// Pins the managed arrays. Not that we expect them to be allocated, but in case we do, seeing this here will remind us to check for the pin condition and abort
 		/// </summary>
 		void Pin();
 
@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.Common
 		bool Has(string blockname);
 
 		/// <summary>
+		/// Gets or sets a value indicating whether the status is active.
 		/// This is just a hook, if needed, to readily suspend logging, without having to rewire the core
 		/// </summary>
 		bool Active { get; set; }

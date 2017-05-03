@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.IO;
 
 using Ionic.Zip;
-using System.IO;
 
 namespace BizHawk.Client.Common
 {
@@ -28,9 +25,14 @@ namespace BizHawk.Client.Common
 		{
 			var e = z.PutNextEntry(name);
 			if (level == 0)
+			{
 				e.CompressionMethod = CompressionMethod.None;
+			}
 			else
+			{
 				e.CompressionMethod = CompressionMethod.Deflate;
+			}
+
 			callback(z);
 			// there is no CloseEntry() call
 		}

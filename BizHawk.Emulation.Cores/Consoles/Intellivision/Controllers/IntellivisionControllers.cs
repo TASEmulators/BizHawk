@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 
 using BizHawk.Common;
-using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Intellivision
@@ -40,14 +39,14 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return 0;
 		}
 
-		public ControllerDefinition Definition { get; private set; }
+		public ControllerDefinition Definition { get; }
 
 		public void SyncState(Serializer ser)
 		{
 			// Do nothing
 		}
 
-		public int PortNum { get; private set; }
+		public int PortNum { get; }
 	}
 
 	[DisplayName("Standard Controller")]
@@ -64,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			};
 		}
 
-		public int PortNum { get; private set; }
+		public int PortNum { get; }
 
 		public byte Read(IController c)
 		{
@@ -80,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return result;
 		}
 
-		public ControllerDefinition Definition { get; private set; }
+		public ControllerDefinition Definition { get; }
 
 
 		public void SyncState(Serializer ser)
@@ -93,11 +92,12 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			"L", "R", "Top",
 			"Key 0", "Key 1", "Key 2", "Key 3", "Key 4", "Key 5",
 			"Key 6", "Key 7", "Key 8", "Key 9", "Enter", "Clear",
-			"N", "NNE", "NE", "ENE","E", "ESE", "SE", "SSE",
-			"S", "SSW", "SW", "WSW","W", "WNW", "NW", "NNW",
+			"N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE",
+			"S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW",
 		};
 
-		private static byte[] HandControllerButtons = new byte[] {
+		private static byte[] HandControllerButtons =
+		{
 			0x60, // OUTPUT_ACTION_BUTTON_BOTTOM_LEFT
 			0xC0, // OUTPUT_ACTION_BUTTON_BOTTOM_RIGHT
 			0xA0, // OUTPUT_ACTION_BUTTON_TOP
@@ -149,9 +149,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			};
 		}
 
-		public int PortNum { get; private set; }
+		public int PortNum { get; }
 
-		public ControllerDefinition Definition { get; private set; }
+		public ControllerDefinition Definition { get; }
 
 		public byte Read(IController c)
 		{
@@ -183,7 +183,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			"Key 6", "Key 7", "Key 8", "Key 9", "Enter", "Clear"
 		};
 
-		private static byte[] BoolControllerButtons = new byte[]
+		private static byte[] BoolControllerButtons =
 		{
 			0x60, // OUTPUT_ACTION_BUTTON_BOTTOM_LEFT
 			0xC0, // OUTPUT_ACTION_BUTTON_BOTTOM_RIGHT
@@ -210,7 +210,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			y = -y; // vflip to match the arrangement of FloatControllerButtons
 
 			// deadzone: if we're less than ? units from the origin, return no direction
-			if (x * x + y * y < Deadzone * Deadzone)
+			if ((x * x) + (y * y) < Deadzone * Deadzone)
 			{
 				return 0; // nothing pressed
 			}
@@ -223,7 +223,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 		private const int Deadzone = 50;
 
-		private static byte[] FloatControllerButtons = new byte[]
+		private static byte[] FloatControllerButtons =
 		{
 			0x02, // E
 			0x06, // ENE

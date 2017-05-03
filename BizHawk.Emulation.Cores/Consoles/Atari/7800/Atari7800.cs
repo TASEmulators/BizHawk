@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 
-using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using EMU7800.Core;
 
@@ -14,33 +12,42 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		isPorted: true,
 		isReleased: true,
 		portedVersion: "v1.5",
-		portedUrl: "http://emu7800.sourceforge.net/"
-		)]
+		portedUrl: "http://emu7800.sourceforge.net/")]
 	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight))]
 	public partial class Atari7800 : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable
 	{
 		// TODO:
 		// some things don't work when you try to plug in a 2600 game
-
 		static Atari7800()
 		{
 			// add alpha bits to palette tables
 			for (int i = 0; i < TIATables.NTSCPalette.Length; i++)
+			{
 				TIATables.NTSCPalette[i] |= unchecked((int)0xff000000);
+			}
+
 			for (int i = 0; i < TIATables.PALPalette.Length; i++)
+			{
 				TIATables.PALPalette[i] |= unchecked((int)0xff000000);
+			}
+
 			for (int i = 0; i < MariaTables.NTSCPalette.Length; i++)
+			{
 				MariaTables.NTSCPalette[i] |= unchecked((int)0xff000000);
+			}
+
 			for (int i = 0; i < MariaTables.PALPalette.Length; i++)
+			{
 				MariaTables.PALPalette[i] |= unchecked((int)0xff000000);
+			}
 		}
 
 		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, string GameDBfn)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(avProvider);
-			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(avProvider);
-			InputCallbacks = new InputCallbackSystem();
+			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(_avProvider);
+			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_avProvider);
+
 			CoreComm = comm;
 			byte[] highscoreBIOS = comm.CoreFileProvider.GetFirmware("A78", "Bios_HSC", false, "Some functions may not work without the high score BIOS.");
 			byte[] pal_bios = comm.CoreFileProvider.GetFirmware("A78", "Bios_PAL", false, "The game will not run if the correct region BIOS is not available.");
@@ -58,6 +65,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				Buffer.BlockCopy(rom, 128, newrom, 0, newrom.Length);
 				rom = newrom;
 			}
+
 			GameInfo = EMU7800.Win.GameProgramLibrary.EMU7800DB.TryRecognizeRom(rom);
 			CoreComm.RomStatusDetails = GameInfo.ToString();
 			Console.WriteLine("Rom Determiniation from 7800DB:");
@@ -79,32 +87,31 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public byte[] rom;
-		public byte[] hsbios;
-		public byte[] bios;
-		Cart cart;
-		MachineBase theMachine;
-		EMU7800.Win.GameProgram GameInfo;
-		public byte[] hsram = new byte[2048];
+		private readonly byte[] rom;
+		public readonly byte[] hsbios;
+		public readonly byte[] bios;
+		private Cart cart;
+		private MachineBase theMachine;
+		private readonly EMU7800.Win.GameProgram GameInfo;
+		public readonly byte[] hsram = new byte[2048];
 
-		public string SystemId { get { return "A78"; } } // TODO 2600?
+		public string SystemId => "A78"; // TODO 2600?
+
 		public GameInfo game;
 
-		public string BoardName { get { return null; } }
-
-		public void FrameAdvance(bool render, bool rendersound)
+		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_frame++;
 
-			if (Controller.IsPressed("Power"))
+			if (controller.IsPressed("Power"))
 			{
 				// it seems that theMachine.Reset() doesn't clear ram, etc
 				// this should leave hsram intact but clear most other things
 				HardReset();
 			}
 
-			ControlAdapter.Convert(Controller, theMachine.InputState);
-			theMachine.ComputeNextFrame(avProvider.framebuffer);
+			ControlAdapter.Convert(controller, theMachine.InputState);
+			theMachine.ComputeNextFrame(_avProvider.Framebuffer);
 
 			_islag = theMachine.InputState.Lagged;
 
@@ -113,22 +120,22 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				_lagcount++;
 			}
 
-			avProvider.FillFrameBuffer();
-
+			_avProvider.FillFrameBuffer();
 		}
 
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 		public bool DeterministicEmulation { get; set; }
 
-		public int Frame { get { return _frame; } set { _frame = value; } }
+		public int Frame => _frame;
+
 		private int _frame = 0;
 
 		public void Dispose()
 		{
-			if (avProvider != null)
+			if (_avProvider != null)
 			{
-				avProvider.Dispose();
-				avProvider = null;
+				_avProvider.Dispose();
+				_avProvider = null;
 			}
 		}
 
@@ -139,13 +146,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			_islag = false;
 		}
 
-		public Atari7800Control ControlAdapter;
+		public Atari7800Control ControlAdapter { get; private set; }
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
-		public IController Controller { get; set; }
 
-
-		class ConsoleLogger : ILogger
+		private class ConsoleLogger : ILogger
 		{
 			public void WriteLine(string format, params object[] args)
 			{
@@ -168,13 +173,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			}
 		}
 
-		private bool _pal;
-		public DisplayType Region
-		{
-			get { return _pal ? DisplayType.PAL : DisplayType.NTSC; }
-		}
+		private readonly bool _pal;
+		public DisplayType Region => _pal ? DisplayType.PAL : DisplayType.NTSC;
 
-		void HardReset()
+		private void HardReset()
 		{
 			cart = Cart.Create(rom, GameInfo.CartType);
 			ILogger logger = new ConsoleLogger();
@@ -201,7 +203,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			ControlAdapter = new Atari7800Control(theMachine);
 			ControllerDefinition = ControlAdapter.ControlType;
 
-			avProvider.ConnectToMachine(theMachine, GameInfo);
+			_avProvider.ConnectToMachine(theMachine, GameInfo);
+
 			// to sync exactly with audio as this emulator creates and times it, the frame rate should be exactly 60:1 or 50:1
 			CoreComm.VsyncNum = theMachine.FrameHZ;
 			CoreComm.VsyncDen = 1;
@@ -211,16 +214,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 		#region audio\video
 
-		MyAVProvider avProvider = new MyAVProvider();
+		private MyAVProvider _avProvider = new MyAVProvider();
 
-		class MyAVProvider : IVideoProvider, ISoundProvider, IDisposable
+		private class MyAVProvider : IVideoProvider, ISoundProvider, IDisposable
 		{
-			public FrameBuffer framebuffer { get; private set; }
+			public FrameBuffer Framebuffer { get; private set; }
 			public void ConnectToMachine(MachineBase m, EMU7800.Win.GameProgram g)
 			{
-				framebuffer = m.CreateFrameBuffer();
-				BufferWidth = framebuffer.VisiblePitch;
-				BufferHeight = framebuffer.Scanlines;
+				Framebuffer = m.CreateFrameBuffer();
+				BufferWidth = Framebuffer.VisiblePitch;
+				BufferHeight = Framebuffer.Scanlines;
 				vidbuffer = new int[BufferWidth * BufferHeight];
 
 				uint newsamplerate = (uint)m.SoundSampleFrequency;
@@ -229,10 +232,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 					// really shouldn't happen (after init), but if it does, we're ready
 					if (resampler != null)
 						resampler.Dispose();
-					resampler = new SpeexResampler(3, newsamplerate, 44100, newsamplerate, 44100, null, null);
+					resampler = new SpeexResampler((SpeexResampler.Quality)3, newsamplerate, 44100, newsamplerate, 44100, null, null);
 					samplerate = newsamplerate;
 					dcfilter = new DCFilter(256);
 				}
+
 				if (g.MachineType == MachineType.A2600PAL)
 					palette = TIATables.PALPalette;
 				else if (g.MachineType == MachineType.A7800PAL)
@@ -243,17 +247,17 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 					palette = MariaTables.NTSCPalette;
 			}
 
-			uint samplerate;
-			int[] vidbuffer;
-			SpeexResampler resampler;
-			DCFilter dcfilter;
-			int[] palette;
+			private uint samplerate;
+			private int[] vidbuffer;
+			private SpeexResampler resampler;
+			private DCFilter dcfilter;
+			private int[] palette;
 
 			public void FillFrameBuffer()
 			{
 				unsafe
 				{
-					fixed (byte* src_ = framebuffer.VideoBuffer)
+					fixed (byte* src_ = Framebuffer.VideoBuffer)
 					fixed (int* dst_ = vidbuffer)
 					fixed (int* pal = palette)
 					{
@@ -272,25 +276,22 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				return vidbuffer;
 			}
 
-			public int VirtualWidth { get { return 275; } }
-			public int VirtualHeight { get { return BufferHeight; } }
+			public int VirtualWidth => 275;
+			public int VirtualHeight => BufferHeight;
 			public int BufferWidth { get; private set; }
 			public int BufferHeight { get; private set; }
-			public int BackgroundColor { get { return unchecked((int)0xff000000); } }
+			public int BackgroundColor => unchecked((int)0xff000000);
 
 			#region ISoundProvider
 
-			public bool CanProvideAsync
-			{
-				get { return false; }
-			}
+			public bool CanProvideAsync => false;
 
 			public void GetSamplesSync(out short[] samples, out int nsamp)
 			{
-				int nsampin = framebuffer.SoundBufferByteLength;
+				int nsampin = Framebuffer.SoundBufferByteLength;
 				unsafe
 				{
-					fixed (byte* src = framebuffer.SoundBuffer)
+					fixed (byte* src = Framebuffer.SoundBuffer)
 					{
 						for (int i = 0; i < nsampin; i++)
 						{
@@ -306,10 +307,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				dcfilter.PushThroughSamples(samples, nsamp * 2);
 			}
 
-			public SyncSoundMode SyncMode
-			{
-				get { return SyncSoundMode.Sync; }
-			}
+			public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 			public void SetSyncMode(SyncSoundMode mode)
 			{
@@ -326,8 +324,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 			public void DiscardSamples()
 			{
-				if (resampler != null)
-					resampler.DiscardSamples();
+				resampler?.DiscardSamples();
 			}
 
 			#endregion

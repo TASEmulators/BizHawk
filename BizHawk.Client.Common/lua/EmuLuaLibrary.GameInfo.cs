@@ -1,5 +1,6 @@
 ﻿using System;
 using LuaInterface;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -9,13 +10,16 @@ namespace BizHawk.Client.Common
 		[RequiredService]
 		public IEmulator Emulator { get; set; }
 
+		[OptionalService]
+		public IBoardInfo BoardInfo { get; set; }
+
 		public GameInfoLuaLibrary(Lua lua)
 			: base(lua) { }
 
 		public GameInfoLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
-		public override string Name { get { return "gameinfo"; } }
+		public override string Name => "gameinfo";
 
 		[LuaMethodAttributes(
 			"getromname",
@@ -93,7 +97,7 @@ namespace BizHawk.Client.Common
 		)]
 		public string GetBoardType()
 		{
-			return Emulator.BoardName ?? "";
+			return BoardInfo?.BoardName ?? string.Empty;
 		}
 
 		[LuaMethodAttributes(

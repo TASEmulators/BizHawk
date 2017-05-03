@@ -54,7 +54,7 @@ namespace HuC6280
 				return;
 			}
 
-            w.WriteLine("\t\t\t\tcase 0x{0:X2}: // {1}", opcode, op);
+			w.WriteLine("\t\t\t\tcase 0x{0:X2}: // {1}", opcode, op);
 
 			w.WriteLine("\t\t\t\t\tMarkCode(PC, {0});", op.Size);
 

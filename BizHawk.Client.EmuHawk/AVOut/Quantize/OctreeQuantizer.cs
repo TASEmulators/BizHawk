@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
     /// <summary>
     /// Quantize using an Octree
     /// </summary>
-	unsafe class OctreeQuantizer : Quantizer
+    unsafe class OctreeQuantizer : Quantizer
     {
         /// <summary>
         /// Stores the tree
@@ -48,13 +48,13 @@ namespace BizHawk.Client.EmuHawk
         /// <param name="maxColors">The maximum number of colors to return</param>
         /// <param name="maxColorBits">The number of significant bits</param>
         public OctreeQuantizer(int maxColors, int maxColorBits) 
-					: base(false)
+            : base(false)
         {
             if (maxColors > 255)
-                throw new ArgumentOutOfRangeException("maxColors", maxColors, "The number of colors should be less than 256");
+                throw new ArgumentOutOfRangeException(nameof(maxColors), maxColors, "The number of colors should be less than 256");
 
             if ((maxColorBits < 1) |(maxColorBits > 8))
-                throw new ArgumentOutOfRangeException("maxColorBits", maxColorBits, "This should be between 1 and 8");
+                throw new ArgumentOutOfRangeException(nameof(maxColorBits), maxColorBits, "This should be between 1 and 8");
 
             _octree = new Octree(maxColorBits);
             _maxColors = maxColors;
@@ -78,12 +78,12 @@ namespace BizHawk.Client.EmuHawk
         /// </summary>
         /// <param name="pixel">The pixel to quantize</param>
         /// <returns>The quantized value</returns>
-				protected override byte QuantizePixel(int pixel)
+        protected override byte QuantizePixel(int pixel)
         {
             byte paletteIndex = (byte)_maxColors;    // The color at [_maxColors] is set to transparent
 
             // Get the palette index if this non-transparent
-						int a = (pixel>>24)&0xFF;
+            int a = (pixel>>24)&0xFF;
 
 #if HANDLE_TRANSPARENCY
             if (a > 0)
@@ -92,7 +92,7 @@ namespace BizHawk.Client.EmuHawk
                 paletteIndex = (byte)_octree.GetPaletteIndex(pixel);
             }
 
-						return paletteIndex;
+            return paletteIndex;
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace BizHawk.Client.EmuHawk
         /// </summary>
         /// <param name="original">Any old palette, this is overrwritten</param>
         /// <returns>The new color palette</returns>
-				protected override ColorPalette GetPalette(ColorPalette original)
+        protected override ColorPalette GetPalette(ColorPalette original)
         {
             // First off convert the octree to _maxColors colors
             List<Color> palette = _octree.Palletize(_maxColors - 1);
@@ -170,7 +170,7 @@ namespace BizHawk.Client.EmuHawk
                 }
                 else
                 {
-									_previousColor = pixel;
+                    _previousColor = pixel;
                     _root.AddColor(pixel, _maxColorBits, 0, this);
                 }
             }
@@ -282,7 +282,7 @@ namespace BizHawk.Client.EmuHawk
                         this.paletteTable = new PaletteTable(this._palette);
                     }
 
-										ret = this.paletteTable.FindClosestPaletteIndex(Color.FromArgb(pixel));
+                    ret = this.paletteTable.FindClosestPaletteIndex(Color.FromArgb(pixel));
                 }
 
                 return ret;
@@ -381,9 +381,9 @@ namespace BizHawk.Client.EmuHawk
                     {
                         // Go to the next level down in the tree
                         int shift = 7 - level;
-												int b = pixel & 0xFF;
-												int g = (pixel >> 8) & 0xFF;
-												int r = (pixel >> 16) & 0xFF;
+                        int b = pixel & 0xFF;
+                        int g = (pixel >> 8) & 0xFF;
+                        int r = (pixel >> 16) & 0xFF;
                         int index = ((r & mask[level]) >> (shift - 2)) |
                                     ((g & mask[level]) >> (shift - 1)) |
                                     ((b & mask[level]) >> (shift));
@@ -504,9 +504,9 @@ namespace BizHawk.Client.EmuHawk
                     if (!_leaf)
                     {
                         int shift = 7 - level;
-												int b = pixel & 0xFF;
-												int g = (pixel >> 8) & 0xFF;
-												int r = (pixel >> 16) & 0xFF;
+                        int b = pixel & 0xFF;
+                        int g = (pixel >> 8) & 0xFF;
+                        int r = (pixel >> 16) & 0xFF;
                         int index = ((r & mask[level]) >> (shift - 2)) |
                                     ((g & mask[level]) >> (shift - 1)) |
                                     ((b & mask[level]) >> (shift));
@@ -530,12 +530,12 @@ namespace BizHawk.Client.EmuHawk
                 public void Increment(int pixel)
                 {
                     ++_pixelCount;
-										int b = pixel&0xFF;
-										int g = (pixel>>8) & 0xFF;
-										int r = (pixel >> 16) & 0xFF;
-										_red += r;
-										_green += g;
-										_blue += b;
+                    int b = pixel&0xFF;
+                    int g = (pixel>>8) & 0xFF;
+                    int r = (pixel >> 16) & 0xFF;
+                    _red += r;
+                    _green += g;
+                    _blue += b;
                 }
 
                 /// <summary>

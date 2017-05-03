@@ -169,12 +169,12 @@ namespace BizHawk.Client.EmuHawk
 					lvi[4] = string.Format("of {0} Bytes", kvp.Value.Length);
 				for (int i = 0; i < 8; i++)
 				{
-				  if (tsbViewStyle.SelectedIndex == 0)
-				    lvi[5 + i] = string.Format("{0:0.00}%", totals[i] / (float)kvp.Value.Length * 100f);
-				  if (tsbViewStyle.SelectedIndex == 1)
-				    lvi[5 + i] = string.Format("{0}", totals[i]);
-				  if (tsbViewStyle.SelectedIndex == 2)
-				    lvi[5 + i] = string.Format("{0:0.00}", totals[i] / 1024.0f);
+					if (tsbViewStyle.SelectedIndex == 0)
+						lvi[5 + i] = string.Format("{0:0.00}%", totals[i] / (float)kvp.Value.Length * 100f);
+					if (tsbViewStyle.SelectedIndex == 1)
+						lvi[5 + i] = string.Format("{0}", totals[i]);
+					if (tsbViewStyle.SelectedIndex == 2)
+						lvi[5 + i] = string.Format("{0:0.00}", totals[i] / 1024.0f);
 				}
 
 			}

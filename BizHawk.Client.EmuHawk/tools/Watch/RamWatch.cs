@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _defaultHeight;
 		private string _sortedColumn = string.Empty;
 		private bool _sortReverse;
-		private bool _paused = false;
+		private bool _paused;
 
 		[RequiredService]
 		private IMemoryDomains _memoryDomains { get; set; }
@@ -34,28 +34,6 @@ namespace BizHawk.Client.EmuHawk
 
 		[OptionalService]
 		private IDebuggable _debuggable { get; set; }
-
-		[ConfigPersist]
-		public RamWatchSettings Settings { get; set; }
-
-		public class RamWatchSettings : ToolDialogSettings
-		{
-			public RamWatchSettings()
-			{
-				Columns = new ColumnList
-				{
-					new Column { Name = WatchList.ADDRESS, Visible = true, Index = 0, Width = 60 },
-					new Column { Name = WatchList.VALUE, Visible = true, Index = 1, Width = 59 },
-					new Column { Name = WatchList.PREV, Visible = false, Index = 2, Width = 59 },
-					new Column { Name = WatchList.CHANGES, Visible = true, Index = 3, Width = 55 },
-					new Column { Name = WatchList.DIFF, Visible = false, Index = 4, Width = 59 },
-					new Column { Name = WatchList.DOMAIN, Visible = true, Index = 5, Width = 55 },
-					new Column { Name = WatchList.NOTES, Visible = true, Index = 6, Width = 128 },
-				};
-			}
-
-			public ColumnList Columns { get; set; }
-		}
 
 		public RamWatch()
 		{
@@ -81,10 +59,29 @@ namespace BizHawk.Client.EmuHawk
 			_sortReverse = false;
 		}
 
-		private IEnumerable<int> SelectedIndices
+		[ConfigPersist]
+		public RamWatchSettings Settings { get; set; }
+
+		public class RamWatchSettings : ToolDialogSettings
 		{
-			get { return WatchListView.SelectedIndices.Cast<int>(); }
+			public RamWatchSettings()
+			{
+				Columns = new ColumnList
+				{
+					new Column { Name = WatchList.ADDRESS, Visible = true, Index = 0, Width = 60 },
+					new Column { Name = WatchList.VALUE, Visible = true, Index = 1, Width = 59 },
+					new Column { Name = WatchList.PREV, Visible = false, Index = 2, Width = 59 },
+					new Column { Name = WatchList.CHANGES, Visible = true, Index = 3, Width = 55 },
+					new Column { Name = WatchList.DIFF, Visible = false, Index = 4, Width = 59 },
+					new Column { Name = WatchList.DOMAIN, Visible = true, Index = 5, Width = 55 },
+					new Column { Name = WatchList.NOTES, Visible = true, Index = 6, Width = 128 },
+				};
+			}
+
+			public ColumnList Columns { get; }
 		}
+
+		private IEnumerable<int> SelectedIndices => WatchListView.SelectedIndices.Cast<int>();
 
 		private IEnumerable<Watch> SelectedItems
 		{
@@ -96,8 +93,6 @@ namespace BizHawk.Client.EmuHawk
 			get { return SelectedItems.Where(x => !x.IsSeparator); }
 		}
 
-		#region Properties
-
 		public IEnumerable<Watch> Watches
 		{
 			get
@@ -106,12 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool UpdateBefore
-		{
-			get { return false; }
-		}
-
-		#endregion
+		public bool UpdateBefore => false;
 
 		#region API
 
@@ -159,16 +149,16 @@ namespace BizHawk.Client.EmuHawk
 
 		public void LoadFileFromRecent(string path)
 		{
-			var ask_result = true;
+			var askResult = true;
 			if (_watches.Changes)
 			{
-				ask_result = AskSaveChanges();
+				askResult = AskSaveChanges();
 			}
 
-			if (ask_result)
+			if (askResult)
 			{
-				var load_result = _watches.Load(path, append: false);
-				if (!load_result)
+				var loadResult = _watches.Load(path, append: false);
+				if (!loadResult)
 				{
 					Global.Config.RecentWatches.HandleLoadError(path);
 				}
@@ -219,8 +209,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_watches != null
 				&& !string.IsNullOrWhiteSpace(_watches.CurrentFileName)
 				&& _watches.All(w => w.Domain == null || _memoryDomains.Select(m => m.Name).Contains(w.Domain.Name))
-				&& (Global.Config.RecentWatches.AutoLoad || (IsHandleCreated || !IsDisposed))
-				)
+				&& (Global.Config.RecentWatches.AutoLoad || (IsHandleCreated || !IsDisposed)))
 			{
 				_watches.RefreshDomains(_memoryDomains);
 				_watches.Reload();
@@ -233,7 +222,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void NewUpdate(ToolFormUpdateType type) { }
+		public void NewUpdate(ToolFormUpdateType type)
+		{
+		}
 
 		public void UpdateValues()
 		{
@@ -262,8 +253,7 @@ namespace BizHawk.Client.EmuHawk
 							Global.Config.DispRamWatchy + (i * 14),
 							Color.Black,
 							frozen ? Color.Cyan : Color.White,
-							0
-						);
+							0);
 					}
 				}
 
@@ -332,8 +322,7 @@ namespace BizHawk.Client.EmuHawk
 							Global.Config.DispRamWatchy + (i * 14),
 							Color.Black,
 							frozen ? Color.Cyan : Color.White,
-							0
-						);
+							0);
 					}
 				}
 			}
@@ -402,8 +391,12 @@ namespace BizHawk.Client.EmuHawk
 			if (SelectedWatches.Any())
 			{
 				foreach (var sw in SelectedWatches)
+				{
 					if (sw.Domain != SelectedWatches.First().Domain)
+					{
 						throw new InvalidOperationException("Can't edit multiple watches on varying memorydomains");
+					}
+				}
 
 				var we = new WatchEditor
 				{
@@ -711,7 +704,7 @@ namespace BizHawk.Client.EmuHawk
 			PauseMenuItem.Text = _paused ? "Unpause" : "Pause";
 		}
 
-		private MemoryDomain _currentDomain = null;
+		private MemoryDomain _currentDomain;
 
 		private MemoryDomain CurrentDomain
 		{
@@ -776,7 +769,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (SelectedWatches.Any())
 			{
-				RamPoke poke = new RamPoke
+				var poke = new RamPoke
 				{
 					InitialLocation = this.ChildPointToScreen(WatchListView)
 				};
@@ -962,8 +955,7 @@ namespace BizHawk.Client.EmuHawk
 			RamWatchMenu.Items.Remove(
 				RamWatchMenu.Items
 					.OfType<ToolStripMenuItem>()
-					.First(x => x.Name == "GeneratedColumnsSubMenu")
-			);
+					.First(x => x.Name == "GeneratedColumnsSubMenu"));
 
 			RamWatchMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
 
@@ -1042,7 +1034,7 @@ namespace BizHawk.Client.EmuHawk
 				SelectedWatches.Any() &&
 				_debuggable != null &&
 				_debuggable.MemoryCallbacksAvailable() &&
-				SelectedWatches.All(w => w.Domain.Name == (_memoryDomains != null ? _memoryDomains.SystemBus.Name : ""));
+				SelectedWatches.All(w => w.Domain.Name == (_memoryDomains != null ? _memoryDomains.SystemBus.Name : string.Empty));
 
 			PokeContextMenuItem.Enabled =
 				FreezeContextMenuItem.Visible =
@@ -1168,7 +1160,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ErrorIconButton_Click(object sender, EventArgs e)
 		{
 			var items = _watches
-				.Where(watch => (watch.Address) >= watch.Domain.Size)
+				.Where(watch => watch.Address >= watch.Domain.Size)
 				.ToList();
 
 			foreach (var item in items)

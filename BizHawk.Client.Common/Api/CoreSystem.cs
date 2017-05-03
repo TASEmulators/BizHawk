@@ -3,7 +3,7 @@
 	/// <summary>
 	/// Enumeration of each system emulated by BizHawk
 	/// </summary>
-	public enum CoreSystem : int
+	public enum CoreSystem
 	{
 		Null = 0,
 		TI83,

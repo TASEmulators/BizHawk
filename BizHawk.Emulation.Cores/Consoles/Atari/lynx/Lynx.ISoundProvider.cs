@@ -5,18 +5,15 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 {
 	public partial class Lynx : ISoundProvider
 	{
-		private short[] soundbuff = new short[2048];
-		private int numsamp;
+		private readonly short[] _soundbuff = new short[2048];
+		private int _numsamp;
 
-		public bool CanProvideAsync
-		{
-			get { return false; }
-		}
+		public bool CanProvideAsync => false;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			samples = soundbuff;
-			nsamp = numsamp;
+			samples = _soundbuff;
+			nsamp = _numsamp;
 		}
 
 		public void DiscardSamples()
@@ -32,10 +29,7 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			}
 		}
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void GetSamplesAsync(short[] samples)
 		{

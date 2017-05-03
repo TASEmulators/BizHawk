@@ -5,10 +5,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
 	public partial class AppleII : ISoundProvider
 	{
-		public bool CanProvideAsync
-		{
-			get { return false; }
-		}
+		public bool CanProvideAsync => false;
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
@@ -20,10 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			_machine.Speaker.AudioService.Clear();
 		}
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{

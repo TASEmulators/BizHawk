@@ -25,10 +25,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			if (Settings == null || Settings.SECAMColors != o.SECAMColors)
 			{
-				if (_tia != null)
-				{
-					_tia.SetSECAM(o.SECAMColors);
-				}
+				_tia?.SetSECAM(o.SECAMColors);
 			}
 
 			Settings = o;
@@ -104,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			[DefaultValue(24)]
 			public int NTSCTopLine
 			{
-				get { return this._ntscTopLine; }
+				get { return _ntscTopLine; }
 				set { _ntscTopLine = Math.Min(64, Math.Max(value, 0)); }
 			}
 
@@ -122,8 +119,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			[DefaultValue(24)]
 			public int PALTopLine
 			{
-				get { return this._palTopLine; }
-				set { this._palTopLine = Math.Min(64, Math.Max(value, 0)); }
+				get { return _palTopLine; }
+				set { _palTopLine = Math.Min(64, Math.Max(value, 0)); }
 			}
 
 			[DisplayName("PAL Bottom Line")]
@@ -131,8 +128,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			[DefaultValue(296)]
 			public int PALBottomLine
 			{
-				get { return this._palBottomLine; }
-				set { this._palBottomLine = Math.Min(310, Math.Max(value, 192)); }
+				get { return _palBottomLine; }
+				set { _palBottomLine = Math.Min(310, Math.Max(value, 192)); }
 			}
 
 			[DisplayName("Background Color")]

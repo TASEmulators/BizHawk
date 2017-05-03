@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 
 using BizHawk.Common;
@@ -24,13 +23,18 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 
 			Port1 = (IPort)Activator.CreateInstance(ValidControllerTypes[controller1Name], 1);
-			Port2 = (IPort)Activator.CreateInstance(ValidControllerTypes[controller2Name], 2); ;
+			Port2 = (IPort)Activator.CreateInstance(ValidControllerTypes[controller2Name], 2);
 
 			Definition = new ControllerDefinition
 			{
 				Name = "Intellivision Controller",
 				BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
+					.Concat(new[]
+					{
+						"Power",
+						"Reset"
+					})
 					.ToList()
 			};
 
@@ -51,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			return Port2.Read(c);
 		}
 
-		public ControllerDefinition Definition { get; private set; }
+		public ControllerDefinition Definition { get; }
 
 		public void SyncState(Serializer ser)
 		{
@@ -67,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		private readonly IPort Port1;
 		private readonly IPort Port2;
 
-		private static Dictionary<string, Type> _controllerTypes = null;
+		private static Dictionary<string, Type> _controllerTypes;
 
 		public static Dictionary<string, Type> ValidControllerTypes
 		{
@@ -86,10 +90,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			}
 		}
 
-		public static string DefaultControllerName
-		{
-			get { return typeof(FakeAnalogController).DisplayName(); }
-		}
+		public static string DefaultControllerName => typeof(FakeAnalogController).DisplayName();
 	}
 
 }

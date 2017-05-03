@@ -11,7 +11,7 @@ namespace BizHawk.Client.Common
 		public JoypadLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
-		public override string Name { get { return "joypad"; } }
+		public override string Name => "joypad";
 
 		[LuaMethodAttributes(
 			"get",
@@ -109,7 +109,7 @@ namespace BizHawk.Client.Common
 					bool? theValue;
 					var theValueStr = buttons[button].ToString();
 
-					if (!String.IsNullOrWhiteSpace(theValueStr))
+					if (!string.IsNullOrWhiteSpace(theValueStr))
 					{
 						if (theValueStr.ToLower() == "false")
 						{
@@ -175,11 +175,13 @@ namespace BizHawk.Client.Common
 					var theValueStr = controls[name].ToString();
 					float? theValue = null;
 
-					if (!String.IsNullOrWhiteSpace(theValueStr))
+					if (!string.IsNullOrWhiteSpace(theValueStr))
 					{
 						float f;
 						if (float.TryParse(theValueStr, out f))
+						{
 							theValue = f;
+						}
 					}
 
 					if (controller == null)
@@ -190,7 +192,6 @@ namespace BizHawk.Client.Common
 					{
 						Global.StickyXORAdapter.SetFloat("P" + controller + " " + name, theValue);
 					}
-
 				}
 			}
 			catch { /*Eat it*/ }

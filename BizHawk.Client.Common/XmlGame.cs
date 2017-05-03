@@ -21,9 +21,9 @@ namespace BizHawk.Client.Common
 		}
 
 		public XmlDocument Xml { get; set; }
-		public GameInfo GI { get; set; }
-		public IList<KeyValuePair<string, byte[]>> Assets { get; set; }
-		public IList<string> AssetFullPaths { get; set; } // TODO: Hack work around, to avoid having to refactor Assets into a object array, should be refactored!
+		public GameInfo GI { get; }
+		public IList<KeyValuePair<string, byte[]>> Assets { get; }
+		public IList<string> AssetFullPaths { get; } // TODO: Hack work around, to avoid having to refactor Assets into a object array, should be refactored!
 
 		public static XmlGame Create(HawkFile f)
 		{
@@ -38,15 +38,15 @@ namespace BizHawk.Client.Common
 				}
 
 				var ret = new XmlGame
+				{
+					GI =
 					{
-						GI =
-							{
-								System = y.Attributes["System"].Value,
-								Name = y.Attributes["Name"].Value,
-								Status = RomStatus.Unknown
-							},
-						Xml = x
-					};
+						System = y.Attributes["System"].Value,
+						Name = y.Attributes["Name"].Value,
+						Status = RomStatus.Unknown
+					},
+					Xml = x
+				};
 				string fullpath = string.Empty;
 
 				var n = y.SelectSingleNode("./LoadAssets");
@@ -100,8 +100,6 @@ namespace BizHawk.Client.Common
 										data = File.ReadAllBytes(fullpath.Split('|').First());
 									}
 								}
-
-								
 							}
 							catch
 							{

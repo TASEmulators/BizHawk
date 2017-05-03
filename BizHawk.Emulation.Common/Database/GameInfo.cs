@@ -13,18 +13,20 @@ namespace BizHawk.Emulation.Common
 			return Status == RomStatus.BadDump || Status == RomStatus.Overdump;
 		}
 
-		public string Name;
-		public string System;
-		public string Hash;
-		public string Region;
-		public RomStatus Status = RomStatus.NotInDatabase;
-		public bool NotInDatabase = true;
-		public string FirmwareHash;
-		public string ForcedCore;
+		public string Name { get; set; }
+		public string System { get; set; }
+		public string Hash { get; set; }
+		public string Region { get; set; }
+		public RomStatus Status { get; set; } = RomStatus.NotInDatabase;
+		public bool NotInDatabase { get; set; } = true;
+		public string FirmwareHash { get; set; }
+		public string ForcedCore { get; private set; }
 
-		Dictionary<string, string> Options = new Dictionary<string, string>();
+		private Dictionary<string, string> Options { get; set; } = new Dictionary<string, string>();
 
-		public GameInfo() { }
+		public GameInfo()
+		{
+		}
 
 		public GameInfo Clone()
 		{
@@ -33,27 +35,18 @@ namespace BizHawk.Emulation.Common
 			return ret;
 		}
 
-		public static GameInfo NullInstance
+		public static GameInfo NullInstance => new GameInfo
 		{
-			get
-			{
-				return new GameInfo
-				{
-					Name = "Null",
-					System = "NULL",
-					Hash = "",
-					Region = "",
-					Status = RomStatus.GoodDump,
-					ForcedCore = "",
-					NotInDatabase = false
-				};
-			}
-		}
+			Name = "Null",
+			System = "NULL",
+			Hash = string.Empty,
+			Region = string.Empty,
+			Status = RomStatus.GoodDump,
+			ForcedCore = string.Empty,
+			NotInDatabase = false
+		};
 
-		public bool IsNullInstance
-		{
-			get { return System == "NULL"; }
-		}
+		public bool IsNullInstance => System == "NULL";
 
 		internal GameInfo(CompactGameInfo cgi)
 		{
@@ -82,10 +75,7 @@ namespace BizHawk.Emulation.Common
 			Options.Remove(option);
 		}
 
-		public bool this[string option]
-		{
-			get { return Options.ContainsKey(option); }
-		}
+		public bool this[string option] => Options.ContainsKey(option);
 
 		public bool OptionPresent(string option)
 		{
@@ -95,7 +85,10 @@ namespace BizHawk.Emulation.Common
 		public string OptionValue(string option)
 		{
 			if (Options.ContainsKey(option))
+			{
 				return Options[option];
+			}
+
 			return null;
 		}
 
@@ -114,25 +107,37 @@ namespace BizHawk.Emulation.Common
 			return int.Parse(Options[option], NumberStyles.HexNumber);
 		}
 
+		/// <summary>
+		/// /// Gets a boolean value from the database
+		/// </summary>
 		/// <param name="parameter">The option to look up</param>
 		/// <param name="defaultVal">The value to return if the option is invalid or doesn't exist</param>
-		/// <returns> The bool value from the database if present, otherwise the given default value</returns>
+		/// <returns> The boolean value from the database if present, otherwise the given default value</returns>
 		public bool GetBool(string parameter, bool defaultVal)
 		{
 			if (OptionPresent(parameter) && OptionValue(parameter) == "true")
+			{
 				return true;
-			else if (OptionPresent(parameter) && OptionValue(parameter) == "false")
+			}
+
+			if (OptionPresent(parameter) && OptionValue(parameter) == "false")
+			{
 				return false;
-			else
-				return defaultVal;
+			}
+			
+			return defaultVal;
 		}
 
+		/// <summary>
+		/// /// Gets an integer value from the database
+		/// </summary>
 		/// <param name="parameter">The option to look up</param>
 		/// <param name="defaultVal">The value to return if the option is invalid or doesn't exist</param>
-		/// <returns> The int value from the database if present, otherwise the given default value</returns>
+		/// <returns> The integer value from the database if present, otherwise the given default value</returns>
 		public int GetInt(string parameter, int defaultVal)
 		{
 			if (OptionPresent(parameter))
+			{
 				try
 				{
 					return int.Parse(OptionValue(parameter));
@@ -141,24 +146,27 @@ namespace BizHawk.Emulation.Common
 				{
 					return defaultVal;
 				}
-			else
-				return defaultVal;
+			}
+
+			return defaultVal;
 		}
 
 		public ICollection<string> GetOptions()
 		{
 			return Options.Keys;
-
 		}
+
 		public IDictionary<string, string> GetOptionsDict()
 		{
 			return new ReadOnlyDictionary<string, string>(Options);
 		}
 
-		void ParseOptionsDictionary(string metaData)
+		private void ParseOptionsDictionary(string metaData)
 		{
 			if (string.IsNullOrEmpty(metaData))
+			{
 				return;
+			}
 
 			var options = metaData.Split(';').Where(opt => string.IsNullOrEmpty(opt) == false).ToArray();
 
@@ -166,7 +174,7 @@ namespace BizHawk.Emulation.Common
 			{
 				var parts = opt.Split('=');
 				var key = parts[0];
-				var value = parts.Length > 1 ? parts[1] : "";
+				var value = parts.Length > 1 ? parts[1] : string.Empty;
 				Options[key] = value;
 			}
 		}

@@ -25,8 +25,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// 5 bit shift register
 			private int sr5 = 0x1f;
 
-            // 9 bit shift register
-            private int sr9 = 0x1ff;
+			// 9 bit shift register
+			private int sr9 = 0x1ff;
 
 			// 3 state counter
 			private int sr3 = 2;
@@ -87,11 +87,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			private bool Run9()
 			{
-                bool ret = (sr9 & 1) != 0;
-                bool c = ((sr9 & 1) != 0) ^ ((sr9 & 16) != 0);
-                sr9 = (sr9 >> 1) | (c ? 256 : 0);
-                return ret;
-            }
+				bool ret = (sr9 & 1) != 0;
+				bool c = ((sr9 & 1) != 0) ^ ((sr9 & 16) != 0);
+				sr9 = (sr9 >> 1) | (c ? 256 : 0);
+				return ret;
+			}
 
 			/// <summary>
 			/// call me approx 31k times a second
@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 							Run4();
 							on = Run1();
 							break;
-                            
+							
 						case 0x06:
 						case 0x0a:
 							Run5();
@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 						case 0x09:
 							on = Run5();
 							break;
-                            
+							
 						case 0x08:
 							on = Run9();
 							break;
@@ -203,8 +203,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				ser.Sync("sr3", ref sr3);
 				ser.Sync("sr4", ref sr4);
 				ser.Sync("sr5", ref sr5);
-                ser.Sync("sr9", ref sr9);
-                ser.Sync("freqcnt", ref freqcnt);
+				ser.Sync("sr9", ref sr9);
+				ser.Sync("freqcnt", ref freqcnt);
 				ser.Sync("on", ref on);
 			}
 		}

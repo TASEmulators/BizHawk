@@ -17,6 +17,7 @@ namespace EMU7800.Core
 		public RAM6116 RAM2 { get; protected set; }
 		public Bios7800 BIOS { get; private set; }
 		public HSC7800 HSC { get; private set; }
+		public bool using_bios=true;
 
         #endregion
 
@@ -25,6 +26,7 @@ namespace EMU7800.Core
             if (BIOS == null)
                 return;
             Mem.Map((ushort)(0x10000 - BIOS.Size), BIOS.Size, BIOS);
+			using_bios = true;
         }
 
         public void SwapOutBIOS()
@@ -32,6 +34,7 @@ namespace EMU7800.Core
             if (BIOS == null)
                 return;
             Mem.Map((ushort)(0x10000 - BIOS.Size), BIOS.Size, Cart);
+			using_bios = false;
         }
 
         public override void Reset()
@@ -210,6 +213,13 @@ namespace EMU7800.Core
 
             Cart = input.ReadCart(this);
             Mem.Map(0x4000, 0xc000, Cart);
+
+			using_bios = input.ReadBoolean();
+
+			if (using_bios && BIOS != null)
+			{
+				Mem.Map((ushort)(0x10000 - BIOS.Size), BIOS.Size, BIOS);
+			}
         }
 
         public override void GetObjectData(SerializationContext output)
@@ -226,6 +236,7 @@ namespace EMU7800.Core
             output.WriteOptional(BIOS);
             output.WriteOptional(HSC);
             output.Write(Cart);
+			output.Write(using_bios);
         }
 
         #endregion

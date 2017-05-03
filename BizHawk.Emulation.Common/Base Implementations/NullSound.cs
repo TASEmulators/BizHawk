@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Common
 	{
 		private readonly long _spfNumerator;
 		private readonly long _spfDenominator;
-		private long _remainder = 0;
+		private long _remainder;
 		private short[] _buff = new short[0];
 
 		private NullSound()
@@ -20,54 +20,52 @@ namespace BizHawk.Emulation.Common
 		}
 
 		/// <summary>
-		/// create a NullSound that provides an exact number of audio samples per call when in sync mode
+		/// Initializes a new instance of the <see cref="NullSound"/> class
+		/// that provides an exact number of audio samples per call when in sync mode
 		/// </summary>
-		/// <param name="spf"></param>
 		public NullSound(int spf)
-			:this()
+			: this()
 		{
 			_spfNumerator = spf;
 			_spfDenominator = 1;	
 		}
 
 		/// <summary>
-		/// create a NullSound that exactly matches a given framerate when in sync mode
+		/// Initializes a new instance of the <see cref="NullSound"/> class
+		/// that exactly matches a given frame rate when in sync mode
 		/// </summary>
-		/// <param name="fpsNum"></param>
-		/// <param name="fpsDen"></param>
 		public NullSound(long fpsNum, long fpsDen)
 		{
 			_spfNumerator = fpsDen * 44100;
 			_spfDenominator = fpsNum;
 		}
 
-		public bool CanProvideAsync
-		{
-			get { return true; }
-		}
+		public bool CanProvideAsync => true;
 
-		public SyncSoundMode SyncMode
-		{
-			get;
-			private set;
-		}
+		public SyncSoundMode SyncMode { get; private set; }
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			if (SyncMode != SyncSoundMode.Sync)
+			{
 				throw new InvalidOperationException("Wrong sound mode");
+			}
 
 			int s = (int)((_spfNumerator + _remainder) / _spfDenominator);
 			_remainder = (_spfNumerator + _remainder) % _spfDenominator;
 
 			if (_buff.Length < s * 2)
+			{
 				_buff = new short[s * 2];
+			}
 
 			samples = _buff;
 			nsamp = s;
 		}
 
-		public void DiscardSamples() { }
+		public void DiscardSamples()
+		{
+		}
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -77,7 +75,10 @@ namespace BizHawk.Emulation.Common
 		public void GetSamplesAsync(short[] samples)
 		{
 			if (SyncMode != SyncSoundMode.Async)
+			{
 				throw new InvalidOperationException("Wrong sound mode");
+			}
+
 			Array.Clear(samples, 0, samples.Length);
 		}
 	}

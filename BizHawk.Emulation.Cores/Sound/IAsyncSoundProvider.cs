@@ -15,24 +15,25 @@ namespace BizHawk.Emulation.Cores.Components
 
 	/// <summary>
 	/// TODO: this is a shim for now, and needs to go away
-	/// turns an IAsyncSoundPRovider into a full ISoundProvider
+	/// turns an <seealso cref="IAsyncSoundProvider"/> into a full ISoundProvider
 	/// This is used in cores that have an async only sound implementation
 	/// better is implement a sync sound option in those cores without the need for 
-	/// this class or an IAsyncSoundPRovider interface
+	/// this class or an IAsyncSoundProvider interface
 	/// </summary>
 	internal class FakeSyncSound : ISoundProvider
 	{
-		private readonly IAsyncSoundProvider source;
-		private readonly int spf;
+		private readonly IAsyncSoundProvider _source;
+		private readonly int _spf;
+
 		/// <summary>
-		/// 
+		/// Initializes a new instance of the <see cref="FakeSyncSound"/> class. 
 		/// </summary>
-		/// <param name="source"></param>
+		/// <param name="source">The async sound provider</param>
 		/// <param name="spf">number of sample pairs to request and provide on each GetSamples() call</param>
 		public FakeSyncSound(IAsyncSoundProvider source, int spf)
 		{
-			this.source = source;
-			this.spf = spf;
+			_source = source;
+			_spf = spf;
 			SyncMode = SyncSoundMode.Sync;
 		}
 
@@ -43,15 +44,15 @@ namespace BizHawk.Emulation.Cores.Components
 				throw new InvalidOperationException("Must be in sync mode to call a sync method");
 			}
 
-			short[] ret = new short[spf * 2];
-			source.GetSamples(ret);
+			short[] ret = new short[_spf * 2];
+			_source.GetSamples(ret);
 			samples = ret;
-			nsamp = spf;
+			nsamp = _spf;
 		}
 
 		public void DiscardSamples()
 		{
-			source.DiscardSamples();
+			_source.DiscardSamples();
 		}
 
 		public void GetSamplesAsync(short[] samples)
@@ -61,13 +62,10 @@ namespace BizHawk.Emulation.Cores.Components
 				throw new InvalidOperationException("Must be in async mode to call an async method");
 			}
 
-			source.GetSamples(samples);
+			_source.GetSamples(samples);
 		}
 
-		public bool CanProvideAsync
-		{
-			get { return true; }
-		}
+		public bool CanProvideAsync => true;
 
 		public SyncSoundMode SyncMode { get; private set; }
 
@@ -82,35 +80,30 @@ namespace BizHawk.Emulation.Cores.Components
 	// and is only used by legacy sound implementations
 	internal class MetaspuSoundProvider : ISoundProvider
 	{
+		private readonly short[] _pullBuffer = new short[1470];
+
 		public MetaspuSoundProvider(ESynchMethod method)
 		{
-			Buffer = Metaspu.metaspu_construct(method);
+			Buffer = Metaspu.MetaspuConstruct(method);
 		}
 
-		public ISynchronizingAudioBuffer Buffer { get; set; }
-		private readonly short[] pullBuffer = new short[1470];
+		public ISynchronizingAudioBuffer Buffer { get; }
 
 		public MetaspuSoundProvider()
-			: this(ESynchMethod.ESynchMethod_V)
+			: this(ESynchMethod.Vecna)
 		{
 		}
 
 		public void PullSamples(IAsyncSoundProvider source)
 		{
-			Array.Clear(pullBuffer, 0, 1470);
-			source.GetSamples(pullBuffer);
-			Buffer.enqueue_samples(pullBuffer, 735);
+			Array.Clear(_pullBuffer, 0, 1470);
+			source.GetSamples(_pullBuffer);
+			Buffer.EnqueueSamples(_pullBuffer, 735);
 		}
 
-		public bool CanProvideAsync
-		{
-			get { return true; }
-		}
+		public bool CanProvideAsync => true;
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Async; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Async;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -127,12 +120,12 @@ namespace BizHawk.Emulation.Cores.Components
 
 		public void GetSamplesAsync(short[] samples)
 		{
-			Buffer.output_samples(samples, samples.Length / 2);
+			Buffer.OutputSamples(samples, samples.Length / 2);
 		}
 
 		public void DiscardSamples()
 		{
-			Buffer.clear();
+			Buffer.Clear();
 		}
 	}
 }

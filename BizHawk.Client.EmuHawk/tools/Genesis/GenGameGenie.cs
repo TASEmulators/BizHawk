@@ -317,7 +317,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var watch = Watch.GenerateWatch(
-				MemoryDomains["MD CART"],
+				MemoryDomains["M68K BUS"],
 				address,
 				WatchSize.Word,
 				Client.Common.DisplayType.Hex,

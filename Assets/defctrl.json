@@ -200,42 +200,12 @@
       "P1 A": "X, J1 B3, X1 B",
       "P1 L": "W, J1 B5, X1 LeftShoulder",
       "P1 R": "E, J1 B6, X1 RightShoulder",
-      "P2 Up": "",
-      "P2 Down": "",
-      "P2 Left": "",
-      "P2 Right": "",
-      "P2 Select": "",
-      "P2 Start": "",
-      "P2 Y": "",
-      "P2 X": "",
-      "P2 B": "",
-      "P2 A": "",
-      "P2 L": "",
-      "P2 R": "",
-      "P3 Up": "",
-      "P3 Down": "",
-      "P3 Left": "",
-      "P3 Right": "",
-      "P3 Select": "",
-      "P3 Start": "",
-      "P3 Y": "",
-      "P3 X": "",
-      "P3 B": "",
-      "P3 A": "",
-      "P3 L": "",
-      "P3 R": "",
-      "P4 Up": "",
-      "P4 Down": "",
-      "P4 Left": "",
-      "P4 Right": "",
-      "P4 Select": "",
-      "P4 Start": "",
-      "P4 Y": "",
-      "P4 X": "",
-      "P4 B": "",
-      "P4 A": "",
-      "P4 L": "",
-      "P4 R": ""
+      "P1 Mouse Left": "Z, J1 B1, X1 X",
+      "P1 Mouse Right": "X, J1 B2, X1 A",
+      "P2 Trigger": "Z, J1 B1, X1 X",
+      "P2 Cursor": "X, J1 B2, X1 A",
+      "P2 Turbo": "A, J1 B3 X1 Y",
+      "P2 Pause": "S, J1 B4 X1 B"
     },
     "Nintento 64 Controller": {
       "P1 A Up": "UpArrow, J1 POV1U",
@@ -1297,6 +1267,28 @@
       },
       "P1 Pointer Y": {
         "Value": "",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      }
+    },
+    "SNES Controller": {
+      "P1 Mouse X": {
+        "Value": "X1 LeftThumbX",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 Mouse Y": {
+        "Value": "X1 LeftThumbY",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P2 Scope X": {
+        "Value": "WMouse X",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P2 Scope Y": {
+        "Value": "WMouse Y",
         "Mult": 1.0,
         "Deadzone": 0.1
       }

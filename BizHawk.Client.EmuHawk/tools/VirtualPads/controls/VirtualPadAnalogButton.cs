@@ -153,7 +153,31 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		void UpdateTickFrequency()
+		public Orientation Orientation
+		{
+			get
+			{
+				return AnalogTrackBar.Orientation;
+			}
+
+			set
+			{
+				AnalogTrackBar.Orientation = value;
+				if (value == Orientation.Horizontal)
+				{
+					AnalogTrackBar.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+					AnalogTrackBar.Size = new Size(Size.Width - 15, Size.Height - 15);
+				}
+				else if (value == Orientation.Vertical)
+				{
+					AnalogTrackBar.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Bottom;
+					AnalogTrackBar.Size = new Size(Size.Width - 15, Size.Height - 30);
+					ValueLabel.Top = Size.Height / 2;
+				}
+			}
+		}
+
+		private void UpdateTickFrequency()
 		{
 			if (AnalogTrackBar == null) return;
 			//try to base it on the width, lets make a tick every 10 pixels at the minimum

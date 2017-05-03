@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
-
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public partial class ColecoVision : IDebuggable
@@ -13,36 +12,36 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			return new Dictionary<string, RegisterValue>
 			{
-				{ "A", Cpu.RegisterA },
-				{ "AF", Cpu.RegisterAF },
-				{ "B", Cpu.RegisterB },
-				{ "BC", Cpu.RegisterBC },
-				{ "C", Cpu.RegisterC },
-				{ "D", Cpu.RegisterD },
-				{ "DE", Cpu.RegisterDE },
-				{ "E", Cpu.RegisterE },
-				{ "F", Cpu.RegisterF },
-				{ "H", Cpu.RegisterH },
-				{ "HL", Cpu.RegisterHL },
-				{ "I", Cpu.RegisterI },
-				{ "IX", Cpu.RegisterIX },
-				{ "IY", Cpu.RegisterIY },
-				{ "L", Cpu.RegisterL },
-				{ "PC", Cpu.RegisterPC },
-				{ "R", Cpu.RegisterR },
-				{ "Shadow AF", Cpu.RegisterShadowAF },
-				{ "Shadow BC", Cpu.RegisterShadowBC },
-				{ "Shadow DE", Cpu.RegisterShadowDE },
-				{ "Shadow HL", Cpu.RegisterShadowHL },
-				{ "SP", Cpu.RegisterSP },
-				{ "Flag C", Cpu.RegisterF.Bit(0) },
-				{ "Flag N", Cpu.RegisterF.Bit(1) },
-				{ "Flag P/V", Cpu.RegisterF.Bit(2) },
-				{ "Flag 3rd", Cpu.RegisterF.Bit(3) },
-				{ "Flag H", Cpu.RegisterF.Bit(4) },
-				{ "Flag 5th", Cpu.RegisterF.Bit(5) },
-				{ "Flag Z", Cpu.RegisterF.Bit(6) },
-				{ "Flag S", Cpu.RegisterF.Bit(7) }
+				["A"] = Cpu.RegisterA,
+				["AF"] = Cpu.RegisterAF,
+				["B"] = Cpu.RegisterB,
+				["BC"] = Cpu.RegisterBC,
+				["C"] = Cpu.RegisterC,
+				["D"] = Cpu.RegisterD,
+				["DE"] = Cpu.RegisterDE,
+				["E"] = Cpu.RegisterE,
+				["F"] = Cpu.RegisterF,
+				["H"] = Cpu.RegisterH,
+				["HL"] = Cpu.RegisterHL,
+				["I"] = Cpu.RegisterI,
+				["IX"] = Cpu.RegisterIX,
+				["IY"] = Cpu.RegisterIY,
+				["L"] = Cpu.RegisterL,
+				["PC"] = Cpu.RegisterPC,
+				["R"] = Cpu.RegisterR,
+				["Shadow AF"] = Cpu.RegisterShadowAF,
+				["Shadow BC"] = Cpu.RegisterShadowBC,
+				["Shadow DE"] = Cpu.RegisterShadowDE,
+				["Shadow HL"] = Cpu.RegisterShadowHL,
+				["SP"] = Cpu.RegisterSP,
+				["Flag C"] = Cpu.RegisterF.Bit(0),
+				["Flag N"] = Cpu.RegisterF.Bit(1),
+				["Flag P/V"] = Cpu.RegisterF.Bit(2),
+				["Flag 3rd"] = Cpu.RegisterF.Bit(3),
+				["Flag H"] = Cpu.RegisterF.Bit(4),
+				["Flag 5th"] = Cpu.RegisterF.Bit(5),
+				["Flag Z"] = Cpu.RegisterF.Bit(6),
+				["Flag S"] = Cpu.RegisterF.Bit(7)
 			};
 		}
 
@@ -121,16 +120,16 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks { get; }
 
-		public bool CanStep(StepType type) { return false; }
+		public bool CanStep(StepType type) => false;
 
 		[FeatureNotImplemented]
-		public void Step(StepType type) { throw new NotImplementedException(); }
-
-		public int TotalExecutedCycles
+		public void Step(StepType type)
 		{
-			get { return Cpu.TotalExecutedCycles; }
+			throw new NotImplementedException();
 		}
+
+		public int TotalExecutedCycles => Cpu.TotalExecutedCycles;
 	}
 }

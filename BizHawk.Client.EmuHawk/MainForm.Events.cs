@@ -1495,7 +1495,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			FDSControlsMenuItem.Enabled = Emulator.BoardName == "FDS";
+			var boardName = Emulator.HasBoardInfo() ? Emulator.AsBoardInfo().BoardName : null;
+			FDSControlsMenuItem.Enabled = boardName == "FDS";
 
 			VSControlsMenuItem.Enabled =
 			VSSettingsMenuItem.Enabled =
@@ -1514,7 +1515,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FdsControlsMenuItem_DropDownOpened(object sender, EventArgs e)
 		{
-			FdsEjectDiskMenuItem.Enabled = Emulator.BoardName == "FDS";
+			var boardName = Emulator.HasBoardInfo() ? Emulator.AsBoardInfo().BoardName : null;
+			FdsEjectDiskMenuItem.Enabled = boardName == "FDS";
 
 			while (FDSControlsMenuItem.DropDownItems.Count > 1)
 			{
@@ -2176,6 +2178,11 @@ namespace BizHawk.Client.EmuHawk
 		private void FlushSaveRAMMenuItem_Click(object sender, EventArgs e)
 		{
 			SaveRam();
+		}
+
+		private void SaveRAMSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			this.FlushSaveRAMMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save SRAM"].Bindings;
 		}
 
 		#endregion

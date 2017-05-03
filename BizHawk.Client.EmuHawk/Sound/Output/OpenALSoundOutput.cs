@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 				currentSamplesPlayed = 0;
 			}
 			int samplesAwaitingPlayback = _currentSamplesQueued - currentSamplesPlayed;
-			int samplesNeeded = (int)Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
+			int samplesNeeded = Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
 			if (isInitializing || detectedUnderrun)
 			{
 				_sound.HandleInitializationOrUnderrun(detectedUnderrun, ref samplesNeeded);

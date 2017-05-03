@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 				MaxSize = new Size(174, 74),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "P" + controller + " Up",
 						DisplayName = "",
@@ -33,7 +33,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(23, 15),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "P" + controller + " Down",
 						DisplayName = "",
@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(23, 36),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "P" + controller + " Left",
 						DisplayName = "",
@@ -49,7 +49,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(2, 24),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "P" + controller + " Right",
 						DisplayName = "",
@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(44, 24),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "P" + controller + " Button",
 						DisplayName = "B",
@@ -77,21 +77,21 @@ namespace BizHawk.Client.EmuHawk
 				DefaultSize = new Size(160, 50),
 				Buttons = new[]
 				{
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "Select",
 						DisplayName = "Select",
 						Location = new Point(10, 15),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "Reset",
 						DisplayName = "Reset",
 						Location = new Point(60, 15),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					new PadSchema.ButtonScema
+					new PadSchema.ButtonSchema
 					{
 						Name = "Power",
 						DisplayName = "Power",

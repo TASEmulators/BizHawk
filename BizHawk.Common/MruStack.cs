@@ -12,7 +12,7 @@
 			Clear();
 		}
 
-		public int Count { get { return _count; } }
+		public int Count => _count;
 
 		public void Clear()
 		{

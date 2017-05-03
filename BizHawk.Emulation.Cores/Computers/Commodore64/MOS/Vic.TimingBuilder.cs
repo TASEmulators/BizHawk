@@ -8,24 +8,24 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Vic
 	{
-	    [SaveState.DoNotSave] private const int BorderLeft38 = 0x023;
-	    [SaveState.DoNotSave] private const int BorderLeft40 = 0x01C;
-	    [SaveState.DoNotSave] private const int BorderRight38 = 0x153;
-	    [SaveState.DoNotSave] private const int BorderRight40 = 0x15C;
-        [SaveState.DoNotSave] private const int BorderTop25 = 0x033;
-        [SaveState.DoNotSave] private const int BorderTop24 = 0x037;
-        [SaveState.DoNotSave] private const int BorderBottom25 = 0x0FB;
-        [SaveState.DoNotSave] private const int BorderBottom24 = 0x0F7;
-        [SaveState.DoNotSave] private const int FirstDmaLine = 0x030;
-        [SaveState.DoNotSave] private const int LastDmaLine = 0x0F7;
+		[SaveState.DoNotSave] private const int BorderLeft38 = 0x023;
+		[SaveState.DoNotSave] private const int BorderLeft40 = 0x01C;
+		[SaveState.DoNotSave] private const int BorderRight38 = 0x153;
+		[SaveState.DoNotSave] private const int BorderRight40 = 0x15C;
+		[SaveState.DoNotSave] private const int BorderTop25 = 0x033;
+		[SaveState.DoNotSave] private const int BorderTop24 = 0x037;
+		[SaveState.DoNotSave] private const int BorderBottom25 = 0x0FB;
+		[SaveState.DoNotSave] private const int BorderBottom24 = 0x0F7;
+		[SaveState.DoNotSave] private const int FirstDmaLine = 0x030;
+		[SaveState.DoNotSave] private const int LastDmaLine = 0x0F7;
 
-        // The special actions taken by the Vic are in the same order and interval on all chips, just different offsets.
-        [SaveState.DoNotSave]
-        private static readonly int[] TimingBuilderCycle14Act = {
+		// The special actions taken by the Vic are in the same order and interval on all chips, just different offsets.
+		[SaveState.DoNotSave]
+		private static readonly int[] TimingBuilderCycle14Act = {
 			PipelineUpdateVc, 0,
 			PipelineSpriteCrunch, 0,
 			PipelineUpdateMcBase, 0,
-        };
+		};
 
 		// This builds a table of special actions to take on each half-cycle. Cycle14 is the X-raster position where
 		// pre-display operations happen, and Cycle55 is the X-raster position where post-display operations happen.
@@ -59,15 +59,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				if (timing[i] == (BorderRight40 & 0xFFC))
 					result[i] |= PipelineBorderRight1;
 
-                // right side timing
-			    if (timing[i] == 0x0158)
-			        result[i] |= PipelineSpriteExpansion;
-			    if (timing[i] == 0x0168)
-			        result[i] |= PipelineUpdateRc;
-			    if (timing[i] == sprite0Ba || timing[i] == sprite0Ba + 8)
-			        result[i] |= PipelineSpriteDma;
-			    if (timing[i] == sprDisp)
-			        result[i] |= PipelineSpriteDisplay;
+				// right side timing
+				if (timing[i] == 0x0158)
+					result[i] |= PipelineSpriteExpansion;
+				if (timing[i] == 0x0168)
+					result[i] |= PipelineUpdateRc;
+				if (timing[i] == sprite0Ba || timing[i] == sprite0Ba + 8)
+					result[i] |= PipelineSpriteDma;
+				if (timing[i] == sprDisp)
+					result[i] |= PipelineSpriteDisplay;
 
 			}
 
@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			var length = timing.Length;
 			var result = new int[length];
-		    var index = -1;
+			var index = -1;
 			var refreshCounter = 0;
 			var spriteActive = false;
 			var spriteIndex = 0;
@@ -160,11 +160,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			for (var i = 0; i < length; i++)
 			{
-                result[i++] = FetchTypeIdle;
-                result[i] = FetchTypeNone;
-            }
+				result[i++] = FetchTypeIdle;
+				result[i] = FetchTypeNone;
+			}
 
-            while (true)
+			while (true)
 			{
 				index++;
 				if (index >= length)
@@ -213,14 +213,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		}
 
 		// This uses the vBlank values to determine the height of the visible screen.
-	    private static int TimingBuilder_ScreenHeight(int vblankStart, int vblankEnd, int lines)
+		private static int TimingBuilder_ScreenHeight(int vblankStart, int vblankEnd, int lines)
 		{
-            if (vblankStart < 0 || vblankEnd < 0)
-            {
-                return lines;
-            }
+			if (vblankStart < 0 || vblankEnd < 0)
+			{
+				return lines;
+			}
 
-            var offset = vblankEnd;
+			var offset = vblankEnd;
 			var result = 0;
 			while (true)
 			{
@@ -234,12 +234,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		}
 
 		// This uses the hBlank values to determine the width of the visible screen.
-	    private static int TimingBuilder_ScreenWidth(IList<int> timing, int hblankStart, int hblankEnd)
+		private static int TimingBuilder_ScreenWidth(IList<int> timing, int hblankStart, int hblankEnd)
 		{
-	        if (hblankStart < 0 || hblankEnd < 0)
-	        {
-	            return timing.Count * 4;
-	        }
+			if (hblankStart < 0 || hblankEnd < 0)
+			{
+				return timing.Count * 4;
+			}
 
 			var length = timing.Count;
 			var result = 0;

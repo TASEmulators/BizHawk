@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
@@ -55,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// adds audio samples to the stream
 		/// no attempt is made to sync this to the video
-		/// reccomendation: try not to have the size or pacing of the audio chunks be too "weird"
+		/// recommendation: try not to have the size or pacing of the audio chunks be too "weird"
 		/// </summary>
 		void AddSamples(short[] samples);
 
@@ -78,8 +77,6 @@ namespace BizHawk.Client.EmuHawk
 		/// can be changed in future
 		/// should always match IVideoProvider
 		/// </summary>
-		/// <param name="width"></param>
-		/// <param name="height"></param>
 		void SetVideoParameters(int width, int height);
 
 		/// <summary>
@@ -134,15 +131,15 @@ namespace BizHawk.Client.EmuHawk
 	[AttributeUsage(AttributeTargets.Class)]
 	public class VideoWriterAttribute : Attribute
 	{
-		public string ShortName { get; private set; }
-		public string Name { get; private set; }
-		public string Description { get; private set; }
+		public string ShortName { get; }
+		public string Name { get; }
+		public string Description { get; }
 
-		public VideoWriterAttribute(string ShortName, string Name, string Description)
+		public VideoWriterAttribute(string shortName, string name, string description)
 		{
-			this.ShortName = ShortName;
-			this.Name = Name;
-			this.Description = Description;
+			ShortName = shortName;
+			Name = name;
+			Description = description;
 		}
 	}
 
@@ -153,18 +150,18 @@ namespace BizHawk.Client.EmuHawk
 
 	public class VideoWriterInfo
 	{
-		public VideoWriterAttribute Attribs { get; private set; }
-		private Type type;
+		public VideoWriterAttribute Attribs { get; }
+		private Type _type;
 
-		public VideoWriterInfo(VideoWriterAttribute Attribs, Type type)
+		public VideoWriterInfo(VideoWriterAttribute attribs, Type type)
 		{
-			this.type = type;
-			this.Attribs = Attribs;
+			_type = type;
+			Attribs = attribs;
 		}
 
 		public IVideoWriter Create()
 		{
-			return (IVideoWriter)Activator.CreateInstance(type);
+			return (IVideoWriter)Activator.CreateInstance(_type);
 		}
 
 		public override string ToString()
@@ -203,15 +200,15 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// find an IVideoWriter by its short name
 		/// </summary>
-		/// <param name="name"></param>
-		/// <returns></returns>
 		public static IVideoWriter GetVideoWriter(string name)
 		{
 			VideoWriterInfo ret;
 			if (vws.TryGetValue(name, out ret))
+			{
 				return ret.Create();
-			else
-				return null;
+			}
+
+			return null;
 		}
 	}
 }

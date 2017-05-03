@@ -1,40 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Newtonsoft.Json;
 
 using BizHawk.Emulation.Common;
-
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
 	public partial class Gameboy : IStatable
 	{
-		public bool BinarySaveStatesPreferred { get { return true; } }
+		public bool BinarySaveStatesPreferred => true;
 
-		public void SaveStateText(System.IO.TextWriter writer)
+		public void SaveStateText(TextWriter writer)
 		{
 			var s = SaveState();
 			ser.Serialize(writer, s);
+
 			// write extra copy of stuff we don't use
 			writer.WriteLine();
 			writer.WriteLine("Frame {0}", Frame);
 		}
 
-		public void LoadStateText(System.IO.TextReader reader)
+		public void LoadStateText(TextReader reader)
 		{
 			var s = (TextState<TextStateData>)ser.Deserialize(reader, typeof(TextState<TextStateData>));
 			LoadState(s);
 		}
 
-		public void SaveStateBinary(System.IO.BinaryWriter writer)
+		public void SaveStateBinary(BinaryWriter writer)
 		{
-			if (!LibGambatte.gambatte_newstatesave(GambatteState, savebuff, savebuff.Length))
+			if (!LibGambatte.gambatte_newstatesave(GambatteState, _savebuff, _savebuff.Length))
+			{
 				throw new Exception("gambatte_newstatesave() returned false");
+			}
 
-			writer.Write(savebuff.Length);
-			writer.Write(savebuff);
+			writer.Write(_savebuff.Length);
+			writer.Write(_savebuff);
 
 			// other variables
 			writer.Write(IsLagFrame);
@@ -44,16 +44,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			writer.Write(_cycleCount);
 		}
 
-		public void LoadStateBinary(System.IO.BinaryReader reader)
+		public void LoadStateBinary(BinaryReader reader)
 		{
 			int length = reader.ReadInt32();
-			if (length != savebuff.Length)
+			if (length != _savebuff.Length)
+			{
 				throw new InvalidOperationException("Savestate buffer size mismatch!");
+			}
 
-			reader.Read(savebuff, 0, savebuff.Length);
+			reader.Read(_savebuff, 0, _savebuff.Length);
 
-			if (!LibGambatte.gambatte_newstateload(GambatteState, savebuff, savebuff.Length))
+			if (!LibGambatte.gambatte_newstateload(GambatteState, _savebuff, _savebuff.Length))
+			{
 				throw new Exception("gambatte_newstateload() returned false");
+			}
 
 			// other variables
 			IsLagFrame = reader.ReadBoolean();
@@ -65,26 +69,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public byte[] SaveStateBinary()
 		{
-			MemoryStream ms = new MemoryStream(savebuff2);
+			MemoryStream ms = new MemoryStream(_savebuff2);
 			BinaryWriter bw = new BinaryWriter(ms);
 			SaveStateBinary(bw);
 			bw.Flush();
-			if (ms.Position != savebuff2.Length)
+			if (ms.Position != _savebuff2.Length)
+			{
 				throw new InvalidOperationException();
+			}
+
 			ms.Close();
-			return savebuff2;
+			return _savebuff2;
 		}
 
-		private byte[] savebuff;
-		private byte[] savebuff2;
+		private byte[] _savebuff;
+		private byte[] _savebuff2;
 
 		private void NewSaveCoreSetBuff()
 		{
-			savebuff = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
-			savebuff2 = new byte[savebuff.Length + 4 + 21];
+			_savebuff = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
+			_savebuff2 = new byte[_savebuff.Length + 4 + 21];
 		}
 
-		private JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
+		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
 
 		// other data in the text state besides core
 		internal class TextStateData

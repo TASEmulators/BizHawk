@@ -29,23 +29,23 @@ namespace BizHawk.Client.Common
 
 		public static AutofireController AutofireNullControls;
 
-		//the movie will be spliced inbetween these if it is present
+		// the movie will be spliced inbetween these if it is present
 		public static CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
 		public static CopyControllerAdapter MovieOutputHardpoint = new CopyControllerAdapter();
 		public static MultitrackRewiringControllerAdapter MultitrackRewiringAdapter = new MultitrackRewiringControllerAdapter();
 
-		//dont take my word for it, since the final word is actually in RewireInputChain, but here is a guide...
-		//user -> Input -> ActiveController -> UDLR -> StickyXORPlayerInputAdapter -> TurboAdapter(TBD) -> Lua(?TBD?) -> ..
-		//.. -> MultitrackRewiringControllerAdapter -> MovieInputSourceAdapter -> (MovieSession) -> MovieOutputAdapter -> ControllerOutput(1) -> Game
-		//(1)->Input Display
+		// dont take my word for it, since the final word is actually in RewireInputChain, but here is a guide...
+		// user -> Input -> ActiveController -> UDLR -> StickyXORPlayerInputAdapter -> TurboAdapter(TBD) -> Lua(?TBD?) -> ..
+		// .. -> MultitrackRewiringControllerAdapter -> MovieInputSourceAdapter -> (MovieSession) -> MovieOutputAdapter -> ControllerOutput(1) -> Game
+		// (1)->Input Display
 
-		//the original source controller, bound to the user, sort of the "input" port for the chain, i think
+		// the original source controller, bound to the user, sort of the "input" port for the chain, i think
 		public static Controller ActiveController;
 
 		//rapid fire version on the user controller, has its own key bindings and is OR'ed against ActiveController
 		public static AutofireController AutoFireController;
 
-		//the "output" port for the controller chain.
+		// the "output" port for the controller chain.
 		public static CopyControllerAdapter ControllerOutput = new CopyControllerAdapter();
 
 		public static UD_LR_ControllerAdapter UD_LR_ControllerAdapter = new UD_LR_ControllerAdapter();
@@ -95,7 +95,8 @@ namespace BizHawk.Client.Common
 						{
 							return SystemInfo.GG;
 						}
-						else if ((Emulator as SMS).IsSG1000)
+
+						if ((Emulator as SMS).IsSG1000)
 						{
 							return SystemInfo.SG;
 						}
@@ -144,6 +145,8 @@ namespace BizHawk.Client.Common
 						return SystemInfo.PSX;
 					case "AppleII":
 						return SystemInfo.AppleII;
+					case "Libretro":
+						return SystemInfo.Libretro;
 				}
 			}
 		}
