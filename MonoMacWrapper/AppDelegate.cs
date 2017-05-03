@@ -85,9 +85,12 @@ namespace MonoMacWrapper
 
 				_mainWinForm.MainMenuStrip.Visible = false; //Hide the real one, since it's been extracted
 				_mainWinForm.Text = title;
-				//Timer assumes 60hz display. Note that timers are not very accurate, and I should really use CVDisplayLink to sync with the monitor.
-				//For the moment this is a decent solution because everything runs smoothly and I believe OpenGL has its own syncronized render thread anyway.
-				_masterTimer = NSTimer.CreateRepeatingTimer(0.01666666666667, MacRunLoop);
+				//Timer assumes 60hz display. Note that timers are not very accurate, and I should really be doing this a different way.
+				//Can't use CVDisplayLink, because that just notifies us of when we need to push video to the display.
+				//Both macOS and WinForms need to share the run loop, and this solution produces the most responsive compromise allowing
+				//them both to coexist. There seem to be frames occasionally dropped that the WinForms UI doesn't know about because
+				//I can set Frameskip to 0 with VSync enabled and the game execution is still full speed.
+				_masterTimer = NSTimer.CreateRepeatingTimer(1.0/60.0, MacRunLoop);
 				NSRunLoop.Current.AddTimer(_masterTimer, NSRunLoopMode.Common);
 			}
 			catch (Exception e) 
