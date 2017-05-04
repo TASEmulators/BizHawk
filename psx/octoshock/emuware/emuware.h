@@ -121,7 +121,11 @@ char (*BLAHBLAHBLAH( UNALIGNED T (&)[N] ))[N];
 
 #ifdef EW_EXPORT
 #undef EW_EXPORT
+#if WINDOWS
 #define EW_EXPORT extern "C" __declspec(dllexport)
+#else
+#define EW_EXPORT extern "C"
+#endif
 #else
 #define EW_EXPORT extern "C" __declspec(dllimport)
 #endif
