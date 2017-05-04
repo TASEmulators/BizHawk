@@ -97,11 +97,14 @@
             // 
             // txtLibretroCore
             // 
+            this.txtLibretroCore.AllowDrop = true;
             this.txtLibretroCore.Location = new System.Drawing.Point(81, 23);
             this.txtLibretroCore.Name = "txtLibretroCore";
             this.txtLibretroCore.ReadOnly = true;
             this.txtLibretroCore.Size = new System.Drawing.Size(314, 20);
             this.txtLibretroCore.TabIndex = 6;
+            this.txtLibretroCore.DragDrop += new System.Windows.Forms.DragEventHandler(this.txtLibretroCore_DragDrop);
+            this.txtLibretroCore.DragEnter += new System.Windows.Forms.DragEventHandler(this.txtLibretroCore_DragEnter);
             // 
             // btnLibretroLaunchGame
             // 

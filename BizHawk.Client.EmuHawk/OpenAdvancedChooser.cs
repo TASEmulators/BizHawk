@@ -130,22 +130,44 @@ namespace BizHawk.Client.EmuHawk
 			SuggestedExtensionFilter = filter;
 
 			Result = Command.RetroLaunchGame;
-			DialogResult = System.Windows.Forms.DialogResult.OK;
+			DialogResult =  DialogResult.OK;
 			Close();
 		}
 
 		private void btnClassicLaunchGame_Click(object sender, EventArgs e)
 		{
 			Result = Command.ClassicLaunchGame;
-			DialogResult = System.Windows.Forms.DialogResult.OK;
+			DialogResult = DialogResult.OK;
 			Close();
 		}
 
 		private void btnLibretroLaunchNoGame_Click(object sender, EventArgs e)
 		{
 			Result = Command.RetroLaunchNoGame;
-			DialogResult = System.Windows.Forms.DialogResult.OK;
+			DialogResult = DialogResult.OK;
 			Close();
+		}
+
+		private void txtLibretroCore_DragEnter(object sender, DragEventArgs e)
+		{
+			if (e.Data.GetDataPresent(DataFormats.FileDrop))
+			{
+				var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+				if (Path.GetExtension(filePaths[0]).ToUpper() == ".DLL")
+				{
+					e.Effect = DragDropEffects.Copy;
+					return;
+				}
+			}
+
+			e.Effect = DragDropEffects.None;
+		}
+
+		private void txtLibretroCore_DragDrop(object sender, DragEventArgs e)
+		{
+			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			Global.Config.LibretroCore = filePaths[0];
+			RefreshLibretroCore(false);
 		}
 	}
 }
