@@ -163,6 +163,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			_controller = controller;
 			api.CMD_Run();
+			timeFrameCounter++;
 		}
 
 		GCHandle vidBufferHandle;
