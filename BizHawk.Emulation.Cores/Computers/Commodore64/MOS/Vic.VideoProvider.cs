@@ -70,5 +70,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		[SaveState.DoNotSave]
 		public int VirtualHeight { get; private set; }
+
+		[SaveState.DoNotSave]
+		public int VsyncNum => CyclesPerFrame;
+
+		[SaveState.DoNotSave]
+		public int VsyncDen => CyclesPerSecond;
 	}
 }

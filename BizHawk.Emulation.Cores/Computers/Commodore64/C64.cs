@@ -244,10 +244,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_board = new Motherboard(this, initRegion, borderType, sidType, tapeDriveType, diskDriveType);
 			InitRoms(diskDriveType);
 			_board.Init();
-
-			// configure video
-			CoreComm.VsyncDen = _board.Vic.CyclesPerFrame;
-			CoreComm.VsyncNum = _board.Vic.CyclesPerSecond;
 		}
 
 		private void InitMedia()

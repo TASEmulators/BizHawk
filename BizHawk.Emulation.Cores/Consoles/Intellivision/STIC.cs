@@ -82,6 +82,24 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		public int BufferHeight => 208;
 		public int BackgroundColor => 0;
 
+		public int VsyncNum
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				return NullVideo.DefaultVsyncNum;
+			}
+		}
+
+		public int VsyncDen
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				return NullVideo.DefaultVsyncDen;
+			}
+		}
+
 		public void Reset()
 		{
 			Sr1 = true;

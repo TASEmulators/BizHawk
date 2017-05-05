@@ -38,9 +38,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 				if (!BizSwan.bizswan_load(Core, file, file.Length, ref ss, ref rotate))
 					throw new InvalidOperationException("bizswan_load() returned FALSE!");
 
-				CoreComm.VsyncNum = 3072000; // master CPU clock, also pixel clock
-				CoreComm.VsyncDen = (144 + 15) * (224 + 32); // 144 vislines, 15 vblank lines; 224 vispixels, 32 hblank pixels
-
 				InitISaveRam();
 
 				InitVideo(rotate);
@@ -215,6 +212,9 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
+
+		public int VsyncNum => 3072000; // master CPU clock, also pixel clock
+		public int VsyncDen => (144 + 15) * (224 + 32); // 144 vislines, 15 vblank lines; 224 vispixels, 32 hblank pixels
 
 		#endregion
 	}

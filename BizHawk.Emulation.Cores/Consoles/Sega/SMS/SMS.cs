@@ -94,9 +94,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Region = DisplayType.NTSC; // all game gears run at 60hz/NTSC mode
 			}
 
-			CoreComm.VsyncNum = Region == DisplayType.NTSC ? 60 : 50;
-			CoreComm.VsyncDen = 1;
-
 			RegionStr = SyncSettings.ConsoleRegion;
 			if (RegionStr == "Auto")
 			{

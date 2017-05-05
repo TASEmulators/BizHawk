@@ -310,13 +310,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 
 			// dcfilter coefficent is from real observed hardware behavior: a latched "1" will fully decay by ~170 or so tia sound cycles
-			_tia = new TIA(this, _pal, Settings.SECAMColors, CoreComm.VsyncRate > 55.0 ? 735 : 882);
-
-			int vsyncNum, vsyncDen;
-			_tia.GetFrameRate(out vsyncNum, out vsyncDen);
-
-			CoreComm.VsyncNum = vsyncNum;
-			CoreComm.VsyncDen = vsyncDen;
+			_tia = new TIA(this, _pal, Settings.SECAMColors);
 
 			_dcfilter = new DCFilter(_tia, 256);
 

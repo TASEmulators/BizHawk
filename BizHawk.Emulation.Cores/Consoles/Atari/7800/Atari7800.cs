@@ -205,10 +205,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 			_avProvider.ConnectToMachine(theMachine, GameInfo);
 
-			// to sync exactly with audio as this emulator creates and times it, the frame rate should be exactly 60:1 or 50:1
-			CoreComm.VsyncNum = theMachine.FrameHZ;
-			CoreComm.VsyncDen = 1;
-
 			SetupMemoryDomains(hsc7800);
 		}
 
@@ -218,9 +214,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 		private class MyAVProvider : IVideoProvider, ISoundProvider, IDisposable
 		{
+			// to sync exactly with audio as this emulator creates and times it, the frame rate should be exactly 60:1 or 50:1
+			private int _frameHz;
+
 			public FrameBuffer Framebuffer { get; private set; }
 			public void ConnectToMachine(MachineBase m, EMU7800.Win.GameProgram g)
 			{
+				_frameHz = m.FrameHZ;
 				Framebuffer = m.CreateFrameBuffer();
 				BufferWidth = Framebuffer.VisiblePitch;
 				BufferHeight = Framebuffer.Scanlines;
@@ -281,6 +281,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			public int BufferWidth { get; private set; }
 			public int BufferHeight { get; private set; }
 			public int BackgroundColor => unchecked((int)0xff000000);
+			public int VsyncNum => _frameHz;
+			public int VsyncDen => 1;
 
 			#region ISoundProvider
 

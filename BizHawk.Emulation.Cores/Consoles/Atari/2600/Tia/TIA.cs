@@ -14,6 +14,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private const int BackColor = unchecked((int)0xff000000);
 
+		private int _vsyncNum, _vsyncDen;
+
 		static TIA()
 		{
 			// add alpha to palette entries
@@ -234,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int NominalNumScanlines => _pal ? 312 : 262;
 
-		public void GetFrameRate(out int num, out int den)
+		private void CalcFrameRate()
 		{
 			// TODO when sound timing is made exact:
 			// NTSC refclock is actually 315 / 88 mhz
@@ -243,8 +245,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			int clockrate = _pal ? 3546895 : 3579545;
 			int clocksperframe = 228 * NominalNumScanlines;
 			int gcd = (int)BigInteger.GreatestCommonDivisor(clockrate, clocksperframe);
-			num = clockrate / gcd;
-			den = clocksperframe / gcd;
+			_vsyncNum = clockrate / gcd;
+			_vsyncDen = clocksperframe / gcd;
 		}
 
 		private const int ScreenWidth = 160;
@@ -325,14 +327,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		//public byte[] current_audio_register = new byte[6];
 		public short[] _local_audio_cycles = new short[2000];
 
-		public TIA(Atari2600 core, bool pal, bool secam, int spf)
+		public TIA(Atari2600 core, bool pal, bool secam)
 		{
 			_core = core;
 			_player0.ScanCnt = 8;
 			_player1.ScanCnt = 8;
 			_pal = pal;
 			SetSECAM(secam);
-			_spf = spf;
+			
+
+			CalcFrameRate();
+
+			_spf = _vsyncNum / (double)_vsyncDen > 55.0 ? 735 : 882;
 		}
 
 		public void SetSECAM(bool secam)
@@ -386,6 +392,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 
 		public int BackgroundColor => _core.Settings.BackgroundColor.ToArgb();
+
+		public int VsyncNum => _vsyncNum;
+
+		public int VsyncDen => _vsyncDen;
 
 		public int[] GetVideoBuffer()
 		{

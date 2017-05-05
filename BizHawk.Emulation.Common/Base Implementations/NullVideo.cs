@@ -17,6 +17,8 @@
 		public static int DefaultWidth { get; } = 256;
 		public static int DefaultHeight { get; } = 192;
 		public static int DefaultBackgroundColor { get; } = 0;
+		public static int DefaultVsyncNum { get; } = 60;
+		public static int DefaultVsyncDen { get; } = 1;
 
 		public int VirtualWidth => DefaultWidth;
 
@@ -27,5 +29,9 @@
 		public int BufferHeight => DefaultHeight;
 
 		public int BackgroundColor => DefaultBackgroundColor;
+
+		public int VsyncNum => DefaultVsyncNum;
+
+		public int VsyncDen => DefaultVsyncDen;
 	}
 }

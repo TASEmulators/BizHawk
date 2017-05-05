@@ -346,6 +346,24 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
+		public int VsyncNum
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				return NullVideo.DefaultVsyncNum;
+			}
+		}
+
+		public int VsyncDen
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				return NullVideo.DefaultVsyncDen;
+			}
+		}
+
 		#endregion
 
 		#region ISyncSoundProvider

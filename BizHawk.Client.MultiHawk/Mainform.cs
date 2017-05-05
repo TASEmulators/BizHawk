@@ -956,7 +956,7 @@ namespace BizHawk.Client.MultiHawk
 			Global.DisableSecondaryThrottling = /*_unthrottled || TODO */ turbo || fastForward;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
-			_throttle.SetCoreFps(EmulatorWindows.Master.Emulator.CoreComm.VsyncRate);
+			_throttle.SetCoreFps(EmulatorWindows.Master.Emulator.VsyncRate());
 			_throttle.signal_paused = EmulatorPaused;
 			_throttle.signal_unthrottle = /*_unthrottled || TODO */ turbo;
 			_throttle.signal_overrideSecondaryThrottle = fastForward && (Global.Config.SoundThrottle || Global.Config.VSyncThrottle || Global.Config.VSync);

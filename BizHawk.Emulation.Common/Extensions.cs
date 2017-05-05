@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 		public static ISoundProvider AsSoundProviderOrDefault(this IEmulator core)
 		{
 			return core.ServiceProvider.GetService<ISoundProvider>()
-				?? CachedNullSoundProviders.GetValue(core, e => new NullSound(e.CoreComm.VsyncNum, e.CoreComm.VsyncDen));
+				?? CachedNullSoundProviders.GetValue(core, e => new NullSound(core.VsyncNum(), core.VsyncDen()));
 		}
 
 		public static bool HasMemoryDomains(this IEmulator core)
@@ -262,7 +262,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			{
 				return false;
 			}
-			
+
 			// once upon a time, we did a try { poke(peek) } here, but that was before Writable was added. the poke(peek) is not acceptable. If there are further problems, make sure Writable is correct.
 			return true;
 		}
@@ -340,6 +340,31 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 		public static IBoardInfo AsBoardInfo(this IEmulator core)
 		{
 			return core.ServiceProvider.GetService<IBoardInfo>();
+		}
+
+		public static int VsyncNum(this IEmulator core)
+		{
+			if (core != null && core.HasVideoProvider())
+			{
+				//return core.AsVideoProvider().VsyncNum
+			}
+
+			return 60;
+		}
+
+		public static int VsyncDen(this IEmulator core)
+		{
+			if (core != null && core.HasVideoProvider())
+			{
+				//return core.AsVideoProvider().VsyncDen
+			}
+
+			return 1;
+		}
+
+		public static int VsyncRate(this IEmulator core)
+		{
+			return core.VsyncNum() / core.VsyncDen();
 		}
 
 		// TODO: a better place for these

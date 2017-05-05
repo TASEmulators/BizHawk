@@ -49,5 +49,15 @@ namespace BizHawk.Client.EmuHawk
 		public int BufferHeight => _bmp.Height;
 
 		public int BackgroundColor => 0;
+
+		public int VsyncNum
+		{
+			get { throw new InvalidOperationException(); }
+		}
+
+		public int VsyncDen
+		{
+			get { throw new InvalidOperationException(); }
+		}
 	}
 }

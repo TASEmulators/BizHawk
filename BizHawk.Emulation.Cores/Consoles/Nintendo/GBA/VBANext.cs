@@ -71,8 +71,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				};
 				ser.Register<ITraceable>(Tracer);
 
-				CoreComm.VsyncNum = 262144;
-				CoreComm.VsyncDen = 4389;
 				CoreComm.NominalWidth = 240;
 				CoreComm.NominalHeight = 160;
 

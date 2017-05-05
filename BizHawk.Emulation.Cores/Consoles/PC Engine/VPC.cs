@@ -528,5 +528,23 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public int BufferWidth => FrameWidth;
 		public int BufferHeight => FrameHeight;
 		public int BackgroundColor => VCE.Palette[0];
+
+		public int VsyncNum
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				return NullVideo.DefaultVsyncNum;
+			}
+		}
+
+		public int VsyncDen
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				return NullVideo.DefaultVsyncDen;
+			}
+		}
 	}
 }

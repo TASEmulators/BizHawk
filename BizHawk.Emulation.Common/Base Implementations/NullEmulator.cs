@@ -110,6 +110,10 @@ namespace BizHawk.Emulation.Common
 
 		public int BackgroundColor => NullVideo.DefaultBackgroundColor;
 
+		public int VsyncNum => NullVideo.DefaultVsyncNum;
+
+		public int VsyncDen => NullVideo.DefaultVsyncDen;
+
 		#endregion
 
 		#region ISoundProvider

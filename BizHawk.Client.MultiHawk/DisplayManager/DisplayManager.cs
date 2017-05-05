@@ -282,6 +282,16 @@ namespace BizHawk.Client.MultiHawk
 			public int BufferWidth { get; set; }
 			public int BufferHeight { get; set; }
 			public int BackgroundColor { get; set; }
+
+			public int VsyncNum
+			{
+				get { throw new InvalidOperationException(); }
+			}
+
+			public int VsyncDen
+			{
+				get { throw new InvalidOperationException(); }
+			}
 		}
 
 		void FixRatio(float x, float y, int inw, int inh, out int outw, out int outh)

@@ -1861,7 +1861,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.DisableSecondaryThrottling = _unthrottled || turbo || fastForward || rewind;
 
 			// realtime throttle is never going to be so exact that using a double here is wrong
-			_throttle.SetCoreFps(Emulator.CoreComm.VsyncRate);
+			_throttle.SetCoreFps(Emulator.VsyncRate());
 			_throttle.signal_paused = EmulatorPaused;
 			_throttle.signal_unthrottle = _unthrottled || turbo;
 			//zero 26-mar-2016 - vsync and vsync throttle here both is odd, but see comments elsewhere about triple buffering
@@ -3034,7 +3034,7 @@ namespace BizHawk.Client.EmuHawk
 					aw = new AudioStretcher(aw);
 				}
 
-				aw.SetMovieParameters(Emulator.CoreComm.VsyncNum, Emulator.CoreComm.VsyncDen);
+				aw.SetMovieParameters(Emulator.VsyncNum(), Emulator.VsyncDen());
 				if (_avwriterResizew > 0 && _avwriterResizeh > 0)
 				{
 					aw.SetVideoParameters(_avwriterResizew, _avwriterResizeh);

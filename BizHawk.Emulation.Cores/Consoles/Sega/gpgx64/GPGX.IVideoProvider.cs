@@ -17,6 +17,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
+		public int VsyncNum { get; }
+
+		public int VsyncDen { get; }
+
 		private int[] vidbuff = new int[0];
 		private int vwidth;
 		private int vheight;

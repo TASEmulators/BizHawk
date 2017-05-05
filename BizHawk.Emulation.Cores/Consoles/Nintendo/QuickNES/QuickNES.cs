@@ -56,8 +56,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 					string mappername = Marshal.PtrToStringAnsi(QN.qn_get_mapper(Context, ref mapper));
 					Console.WriteLine("QuickNES: Booted with Mapper #{0} \"{1}\"", mapper, mappername);
 					BoardName = mappername;
-					CoreComm.VsyncNum = 39375000;
-					CoreComm.VsyncDen = 655171;
 					PutSettings((QuickNESSettings)Settings ?? new QuickNESSettings());
 
 					_syncSettings = (QuickNESSyncSettings)SyncSettings ?? new QuickNESSyncSettings();

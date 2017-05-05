@@ -83,8 +83,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			if (!good)
 				throw new Exception("PPSSPP Init failed!");
 
-			CoreComm.VsyncDen = 1;
-			CoreComm.VsyncNum = 60;
 			CoreComm.RomStatusDetails = "It puts the scythe in the chicken or it gets the abyss again!";
 
 			attachedcore = this;
@@ -172,6 +170,24 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		public int BufferWidth { get { return screenwidth; } }
 		public int BufferHeight { get { return screenheight; } }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
+
+		public int VsyncNum
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				return NullVideo.DefaultVsyncNum;
+			}
+		}
+
+		public int VsyncDen
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				return NullVideo.DefaultVsyncDen;
+			}
+		}
 
 		readonly short[] audiobuffer = new short[2048 * 2];
 		int nsampavail = 0;

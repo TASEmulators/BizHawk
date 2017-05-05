@@ -221,6 +221,16 @@ namespace BizHawk.Client.Common
 			public int BufferWidth { get; set; }
 			public int BufferHeight { get; set; }
 			public int BackgroundColor => unchecked((int)0xff000000);
+
+			public int VsyncNum
+			{
+				get { throw new InvalidOperationException(); }
+			}
+
+			public int VsyncDen
+			{
+				get { throw new InvalidOperationException(); }
+			}
 		}
 
 		public static unsafe bool Load(IVideoProvider v, Stream s)

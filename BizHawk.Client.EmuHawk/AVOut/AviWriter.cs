@@ -112,6 +112,8 @@ namespace BizHawk.Client.EmuHawk
 			public int BufferWidth { get; }
 			public int BufferHeight { get; }
 			public int BackgroundColor { get; }
+			public int VsyncNum { get; }
+			public int VsyncDen { get; }
 			public VideoCopy(IVideoProvider c)
 			{
 				_vb = (int[])c.GetVideoBuffer().Clone();
@@ -120,6 +122,8 @@ namespace BizHawk.Client.EmuHawk
 				BackgroundColor = c.BackgroundColor;
 				VirtualWidth = c.VirtualWidth;
 				VirtualHeight = c.VirtualHeight;
+				VsyncNum = c.VsyncNum;
+				VsyncDen = c.VsyncDen;
 			}
 
 			public int[] GetVideoBuffer()
@@ -127,7 +131,6 @@ namespace BizHawk.Client.EmuHawk
 				return _vb;
 			}
 		}
-
 
 		/// <summary>
 		/// opens an avi file for recording with the supplied enumerator used to name files.

@@ -104,8 +104,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			InitMemoryCallbacks();
 			CoreComm = comm;
 
-			comm.VsyncNum = 262144;
-			comm.VsyncDen = 4389;
 			comm.RomStatusAnnotation = null;
 			comm.RomStatusDetails = null;
 			comm.NominalWidth = 160;

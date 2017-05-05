@@ -31,8 +31,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			L.ConnectMemoryCallbackSystem(_memorycallbacks);
 			R.ConnectMemoryCallbackSystem(_memorycallbacks);
 
-			comm.VsyncNum = L.CoreComm.VsyncNum;
-			comm.VsyncDen = L.CoreComm.VsyncDen;
 			comm.RomStatusAnnotation = null;
 			comm.RomStatusDetails = "LEFT:\r\n" + L.CoreComm.RomStatusDetails + "RIGHT:\r\n" + R.CoreComm.RomStatusDetails;
 			comm.NominalWidth = L.CoreComm.NominalWidth + R.CoreComm.NominalWidth;

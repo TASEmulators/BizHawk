@@ -103,17 +103,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 					_display_type = DisplayType.NTSC;
 					break;
 			}
-			switch (Region)
-			{
-				case DisplayType.NTSC:
-					comm.VsyncNum = 60000;
-					comm.VsyncDen = 1001;
-					break;
-				default:
-					comm.VsyncNum = 50;
-					comm.VsyncDen = 1;
-					break;
-			}
 
 			StartThreadLoop();
 
@@ -133,6 +122,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_inputProvider = new N64Input(this.AsInputPollable(), api, comm, this._syncSettings.Controllers);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(_videoProvider);
 			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_audioProvider.Resampler);
+
+			switch (Region)
+			{
+				case DisplayType.NTSC:
+					_videoProvider.VsyncNum = 60000;
+					_videoProvider.VsyncDen = 1001;
+					break;
+				default:
+					_videoProvider.VsyncNum = 50;
+					_videoProvider.VsyncDen = 1;
+					break;
+			}
 
 			string rsp;
 			switch (_syncSettings.Rsp)

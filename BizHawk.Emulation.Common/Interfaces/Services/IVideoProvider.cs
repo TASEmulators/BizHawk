@@ -45,6 +45,16 @@
 		int BufferHeight { get; }
 
 		/// <summary>
+		/// Gets the vsync Numerator. Combined with the <seealso cref="VsyncDen"/> can be used to calculate a precise vsync rate.
+		/// </summary>
+		int VsyncNum { get; }
+
+		/// <summary>
+		/// Gets the vsync Denominator. Combined with the <seealso cref="VsyncDen"/> can be used to calculate a precise vsync rate.
+		/// </summary>
+		int VsyncDen { get; }
+
+		/// <summary>
 		/// Gets the default color when no other color is applied
 		/// Often cores will set this to something other than black
 		/// to show that the core is in fact loaded and frames are rendering

@@ -19,11 +19,6 @@ namespace BizHawk.Emulation.Common
 
 		public ICoreFileProvider CoreFileProvider { get; set; }
 
-		public double VsyncRate => VsyncNum / (double)VsyncDen;
-
-		public int VsyncNum { get; set; } = 60;
-		public int VsyncDen { get; set; } = 1;
-
 		// a core should set these if you wish to provide rom status information yourself. otherwise it will be calculated by the frontend in a way you may not like, using RomGame-related concepts.
 		public string RomStatusAnnotation { get; set; }
 		public string RomStatusDetails { get; set; }

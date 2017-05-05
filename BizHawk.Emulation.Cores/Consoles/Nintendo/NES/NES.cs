@@ -337,6 +337,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
+			public int VsyncNum => emu.VsyncNum;
+			public int VsyncDen => emu.VsyncDen;
 		}
 
 		MyVideoProvider videoProvider;

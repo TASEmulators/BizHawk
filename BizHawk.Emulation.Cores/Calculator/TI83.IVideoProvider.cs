@@ -9,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 		public int BufferWidth => 96;
 		public int BufferHeight => 64;
 		public int BackgroundColor => 0;
+		public int VsyncNum => NullVideo.DefaultVsyncNum;
+		public int VsyncDen => NullVideo.DefaultVsyncDen;
 
 		public int[] GetVideoBuffer()
 		{

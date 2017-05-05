@@ -94,9 +94,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			Core = LibLynx.Create(realfile, realfile.Length, bios, bios.Length, pagesize0, pagesize1, false);
 			try
 			{
-				CoreComm.VsyncNum = 16000000; // 16.00 mhz refclock
-				CoreComm.VsyncDen = 16 * 105 * 159;
-
 				_savebuff = new byte[LibLynx.BinStateSize(Core)];
 				_savebuff2 = new byte[_savebuff.Length + 13];
 
