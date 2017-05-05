@@ -188,6 +188,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				"Reset",
 				"Select",
 				"Pause",
+				"Left Difficulty", // better not put P# on these as they might not correspond to player numbers
+				"Right Difficulty",
 
 				// ports
 				"P1 Trigger",
