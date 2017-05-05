@@ -358,6 +358,9 @@
     <Compile Include="Consoles\Atari\7800\Atari7800.IDebuggable.cs">
       <DependentUpon>Atari7800.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Atari\7800\Atari7800.IEmulator.cs">
+        <DependentUpon>Atari7800.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Atari\7800\Atari7800.IInputPollable.cs">
       <DependentUpon>Atari7800.cs</DependentUpon>
     </Compile>

@@ -11,19 +11,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 		{
 			return new Dictionary<string, RegisterValue>
 			{
-				["A"] = theMachine.CPU.A,
-				["P"] = theMachine.CPU.P,
-				["PC"] = theMachine.CPU.PC,
-				["S"] = theMachine.CPU.S,
-				["X"] = theMachine.CPU.X,
-				["Y"] = theMachine.CPU.Y,
-				["Flag B"] = theMachine.CPU.fB,
-				["Flag C"] = theMachine.CPU.fC,
-				["Flag D"] = theMachine.CPU.fD,
-				["Flag I"] = theMachine.CPU.fI,
-				["Flag N"] = theMachine.CPU.fN,
-				["Flag V"] = theMachine.CPU.fV,
-				["Flag Z"] = theMachine.CPU.fZ
+				["A"] = _theMachine.CPU.A,
+				["P"] = _theMachine.CPU.P,
+				["PC"] = _theMachine.CPU.PC,
+				["S"] = _theMachine.CPU.S,
+				["X"] = _theMachine.CPU.X,
+				["Y"] = _theMachine.CPU.Y,
+				["Flag B"] = _theMachine.CPU.fB,
+				["Flag C"] = _theMachine.CPU.fC,
+				["Flag D"] = _theMachine.CPU.fD,
+				["Flag I"] = _theMachine.CPU.fI,
+				["Flag N"] = _theMachine.CPU.fN,
+				["Flag V"] = _theMachine.CPU.fV,
+				["Flag Z"] = _theMachine.CPU.fZ
 			};
 		}
 
@@ -34,22 +34,22 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				default:
 					throw new InvalidOperationException();
 				case "A":
-					theMachine.CPU.A = (byte)value;
+					_theMachine.CPU.A = (byte)value;
 					break;
 				case "P":
-					theMachine.CPU.P = (byte)value;
+					_theMachine.CPU.P = (byte)value;
 					break;
 				case "PC":
-					theMachine.CPU.PC = (ushort)value;
+					_theMachine.CPU.PC = (ushort)value;
 					break;
 				case "S":
-					theMachine.CPU.S = (byte)value;
+					_theMachine.CPU.S = (byte)value;
 					break;
 				case "X":
-					theMachine.CPU.X = (byte)value;
+					_theMachine.CPU.X = (byte)value;
 					break;
 				case "Y":
-					theMachine.CPU.Y = (byte)value;
+					_theMachine.CPU.Y = (byte)value;
 					break;
 			}
 		}
@@ -71,6 +71,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			throw new NotImplementedException();
 		}
 
-		public int TotalExecutedCycles => (int)theMachine.CPU.Clock;
+		public int TotalExecutedCycles => (int)_theMachine.CPU.Clock;
 	}
 }
