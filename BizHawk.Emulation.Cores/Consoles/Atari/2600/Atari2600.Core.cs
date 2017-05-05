@@ -69,11 +69,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if ((addr & 0x1080) == 0x0080)
 			{
-				_tia.bus_state = _m6532.ReadMemory(addr, false);
+				_tia.BusState = _m6532.ReadMemory(addr, false);
 				return _m6532.ReadMemory(addr, false);
 			}
 
-			_tia.bus_state = Rom[addr & 0x0FFF];
+			_tia.BusState = Rom[addr & 0x0FFF];
 			return Rom[addr & 0x0FFF];
 		}
 
@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		internal void BaseWriteMemory(ushort addr, byte value)
 		{
-			_tia.bus_state = value;
+			_tia.BusState = value;
 			if (addr != _lastAddress)
 			{
 				DistinctAccessCount++;
@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			_mapper.Bit13 = addr.Bit(13);
 			var temp = _mapper.ReadMemory((ushort)(addr & 0x1FFF));
-			_tia.bus_state = temp;
+			_tia.BusState = temp;
 			MemoryCallbacks.CallReads(addr);
 
 			return temp;

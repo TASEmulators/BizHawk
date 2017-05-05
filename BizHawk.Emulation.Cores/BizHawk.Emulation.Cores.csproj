@@ -291,7 +291,7 @@
       <DependentUpon>Atari2600.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\2600\Atari2600.IEmulator.cs">
-        <DependentUpon>Atari2600.cs</DependentUpon>
+      <DependentUpon>Atari2600.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\2600\Atari2600.IInputPollable.cs">
       <DependentUpon>Atari2600.cs</DependentUpon>
@@ -347,9 +347,13 @@
     <Compile Include="Consoles\Atari\2600\Tia\Tia.BallData.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\TIA.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\Tia.HMoveData.cs" />
+    <Compile Include="Consoles\Atari\2600\Tia\Tia.ISoundProvider.cs" />
+    <Compile Include="Consoles\Atari\2600\Tia\Tia.IVideoProvider.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\Tia.MissleData.cs" />
+    <Compile Include="Consoles\Atari\2600\Tia\Tia.Palette.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\Tia.PlayerData.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\Tia.PlayfieldData.cs" />
+    <Compile Include="Consoles\Atari\2600\Tia\Tia.SyncState.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.IDebuggable.cs">
       <DependentUpon>Atari7800.cs</DependentUpon>

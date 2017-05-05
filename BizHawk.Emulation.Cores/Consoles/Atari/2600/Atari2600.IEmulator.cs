@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if (rendersound == false)
 			{
-				_tia._audioClocks = 0; // we need this here since the async sound provider won't check in this case
+				_tia.AudioClocks = 0; // we need this here since the async sound provider won't check in this case
 			}
 
 			FinishFrameCond();

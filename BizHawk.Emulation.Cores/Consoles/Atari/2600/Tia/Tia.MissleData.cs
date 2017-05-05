@@ -15,29 +15,27 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			public byte Collisions;
 
 			// Resp commands do not trigger start signals for main copies. We need to model this
-			private int Draw_To;
-			private byte ScanCnt;
-			private bool ScanCntInit;
-			private int Start_Signal;
-			private int Signal_Reached;
+			private int _drawTo;
+			private byte _scanCnt;
+			private bool _scanCntInit;
+			private int _startSignal;
+			private int _signalReached;
 
 			public bool Tick()
 			{
 				var result = false;
 
-				if (ScanCntInit == true)
+				if (_scanCntInit)
 				{
-					if (ScanCnt < (1 << Size) && Enabled && !ResetToPlayer)
+					if (_scanCnt < 1 << Size && Enabled && !ResetToPlayer)
 					{
 						result = true;
-						ScanCnt++;
-						
+						_scanCnt++;
 					}
 					else
 					{
-						ScanCntInit = false;
+						_scanCntInit = false;
 					}
-
 				}
 
 				/*
@@ -87,32 +85,32 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					}
 				}*/
 
-				if (Start_Signal == 160)
+				if (_startSignal == 160)
 				{
-					ScanCnt = 0;
-					Start_Signal++;
-					ScanCntInit = true;
+					_scanCnt = 0;
+					_startSignal++;
+					_scanCntInit = true;
 				}
 
-				if (Start_Signal == 16 && ((Number & 0x07) == 0x01 || ((Number & 0x07) == 0x03)))
+				if (_startSignal == 16 && ((Number & 0x07) == 0x01 || ((Number & 0x07) == 0x03)))
 				{
-					ScanCnt = 0;
-					Start_Signal++;
-					ScanCntInit = true;
+					_scanCnt = 0;
+					_startSignal++;
+					_scanCntInit = true;
 				}
 
-				if (Start_Signal == 32 && ((Number & 0x07) == 0x02 || ((Number & 0x07) == 0x03) || ((Number & 0x07) == 0x06)))
+				if (_startSignal == 32 && ((Number & 0x07) == 0x02 || ((Number & 0x07) == 0x03) || ((Number & 0x07) == 0x06)))
 				{
-					ScanCnt = 0;
-					Start_Signal++;
-					ScanCntInit = true;
+					_scanCnt = 0;
+					_startSignal++;
+					_scanCntInit = true;
 				}
 
-				if (Start_Signal == 64 && ((Number & 0x07) == 0x04 || ((Number & 0x07) == 0x06)))
+				if (_startSignal == 64 && ((Number & 0x07) == 0x04 || ((Number & 0x07) == 0x06)))
 				{
-					ScanCnt = 0;
-					Start_Signal++;
-					ScanCntInit = true;
+					_scanCnt = 0;
+					_startSignal++;
+					_scanCntInit = true;
 				}
 
 				// Increment the counter
@@ -125,13 +123,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// drawing on a real TIA
 				if (HPosCnt == 156 || HPosCnt == 12 || HPosCnt == 28 || HPosCnt == 60)
 				{
-					Start_Signal = HPosCnt;
-					Signal_Reached = HPosCnt + 5;
+					_startSignal = HPosCnt;
+					_signalReached = HPosCnt + 5;
 				}
 
-				if (Start_Signal < Signal_Reached)
+				if (_startSignal < _signalReached)
 				{
-					Start_Signal++;
+					_startSignal++;
 				}
 
 				return result;
@@ -147,11 +145,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				ser.Sync("number", ref Number);
 				ser.Sync("HM", ref Hm);
 				ser.Sync("collisions", ref Collisions);
-				ser.Sync("start_signal", ref Start_Signal);
-				ser.Sync("signal_reached", ref Signal_Reached);
-				ser.Sync("draw_to", ref Draw_To);
-				ser.Sync("scanCnt", ref ScanCnt);
-				ser.Sync("scanCntInit", ref ScanCntInit);
+				ser.Sync("start_signal", ref _startSignal);
+				ser.Sync("signal_reached", ref _signalReached);
+				ser.Sync("draw_to", ref _drawTo);
+				ser.Sync("scanCnt", ref _scanCnt);
+				ser.Sync("scanCntInit", ref _scanCntInit);
 				ser.EndSection();
 			}
 		}
