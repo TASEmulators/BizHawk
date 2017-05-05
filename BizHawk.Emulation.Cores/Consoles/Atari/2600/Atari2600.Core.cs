@@ -14,6 +14,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private DCFilter _dcfilter;
 		private MapperBase _mapper;
 
+		private readonly GameInfo _game;
+		private int _frame;
+
 		internal byte[] Ram;
 
 		internal byte[] Rom { get; private set; }
@@ -31,6 +34,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private bool _leftDifficultySwitchHeld = false;
 		private bool _rightDifficultySwitchHeld = false;
 
+		private static readonly ControllerDefinition Atari2600ControllerDefinition = new ControllerDefinition
+		{
+			Name = "Atari 2600 Basic Controller",
+			BoolButtons =
+			{
+				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button",
+				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button",
+				"Reset", "Select", "Power", "Toggle Left Difficulty", "Toggle Right Difficulty"
+			}
+		};
 
 		internal byte BaseReadMemory(ushort addr)
 		{
@@ -364,17 +377,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 
 		private IController _controller;
-
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
-		{
-			_controller = controller;
-			StartFrameCond();
-			while (_tia.LineCount < _tia.NominalNumScanlines)
-				Cycle();
-			if (rendersound==false)
-				_tia._audioClocks = 0; // we need this here since the async sound provider won't check in this case
-			FinishFrameCond();
-		}
 
 		private void VFrameAdvance() // advance up to 500 lines looking for end of video frame
 			// after vsync falling edge, continues to end of next line

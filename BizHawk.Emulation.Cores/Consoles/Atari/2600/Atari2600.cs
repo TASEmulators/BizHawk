@@ -9,18 +9,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	[CoreAttributes(
 		"Atari2600Hawk",
-		"Micro500, adelikat, natt",
+		"Micro500, Alyosha, adelikat, natt",
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
 	public partial class Atari2600 : IEmulator, IStatable, IDebuggable, IInputPollable, IBoardInfo,
 		IRegionable, ICreateGameDBEntries, ISettable<Atari2600.A2600Settings, Atari2600.A2600SyncSettings>
 	{
-		private readonly GameInfo _game;
-		private int _frame;
-
-		private ITraceable Tracer { get; }
-
 		[CoreConstructor("A26")]
 		public Atari2600(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
@@ -63,30 +58,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Register<ISoundProvider>(_dcfilter);
 		}
 
-		public IEmulatorServiceProvider ServiceProvider { get; }
-
+		// IRegionable
 		public DisplayType Region => _pal ? DisplayType.PAL : DisplayType.NTSC;
 
-		public string SystemId => "A26";
-
-		public CoreComm CoreComm { get; }
-
-		public ControllerDefinition ControllerDefinition { get { return Atari2600ControllerDefinition; } }
-
-		public int Frame { get { return _frame; } set { _frame = value; } }
-
-		public bool DeterministicEmulation { get; set; }
-
-		public static readonly ControllerDefinition Atari2600ControllerDefinition = new ControllerDefinition
-		{
-			Name = "Atari 2600 Basic Controller",
-			BoolButtons =
-			{
-				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button", 
-				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button", 
-				"Reset", "Select", "Power", "Toggle Left Difficulty", "Toggle Right Difficulty"
-			}
-		};
+		// ITraceable
+		private ITraceable Tracer { get; }
 
 		// ICreateGameDBEntries
 		public CompactGameInfo GenerateGameDbEntry()
@@ -105,25 +81,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		// IBoardInfo
 		public string BoardName => _mapper.GetType().Name;
 
-		public void ResetCounters()
-		{
-			_frame = 0;
-			_lagcount = 0;
-			_islag = false;
-		}
-
-		public void Dispose()
-		{
-		}
-
 		private static bool DetectPal(GameInfo game, byte[] rom)
 		{
 			// force NTSC mode for the new core we instantiate
 			var newgame = game.Clone();
 			if (newgame["PAL"])
+			{
 				newgame.RemoveOption("PAL");
+			}
+
 			if (!newgame["NTSC"])
+			{
 				newgame.AddOption("NTSC");
+			}
 
 			// give the emu a minimal of input\output connections so it doesn't crash
 			var comm = new CoreComm(null, null);
