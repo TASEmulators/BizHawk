@@ -362,9 +362,9 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return 1;
 		}
 
-		public static int VsyncRate(this IEmulator core)
+		public static double VsyncRate(this IEmulator core)
 		{
-			return core.VsyncNumerator() / core.VsyncDenominator();
+			return core.VsyncNumerator() / (double)core.VsyncDenominator();
 		}
 
 		// TODO: a better place for these
