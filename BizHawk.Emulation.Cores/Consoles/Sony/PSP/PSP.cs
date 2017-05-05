@@ -171,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		public int BufferHeight { get { return screenheight; } }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
-		public int VsyncNum
+		public int VsyncNumerator
 		{
 			[FeatureNotImplemented]
 			get
@@ -180,7 +180,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 			}
 		}
 
-		public int VsyncDen
+		public int VsyncDenominator
 		{
 			[FeatureNotImplemented]
 			get

@@ -22,8 +22,8 @@
 
 		public int BackgroundColor => 0;
 
-		public int VsyncNum => 262144;
+		public int VsyncNumerator => 262144;
 
-		public int VsyncDen => 4389;
+		public int VsyncDenominator => 4389;
 	}
 }

@@ -3034,7 +3034,7 @@ namespace BizHawk.Client.EmuHawk
 					aw = new AudioStretcher(aw);
 				}
 
-				aw.SetMovieParameters(Emulator.VsyncNum(), Emulator.VsyncDen());
+				aw.SetMovieParameters(Emulator.VsyncNumerator(), Emulator.VsyncDenominator());
 				if (_avwriterResizew > 0 && _avwriterResizeh > 0)
 				{
 					aw.SetVideoParameters(_avwriterResizew, _avwriterResizeh);

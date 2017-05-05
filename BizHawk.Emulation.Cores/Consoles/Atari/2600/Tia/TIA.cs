@@ -393,9 +393,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int BackgroundColor => _core.Settings.BackgroundColor.ToArgb();
 
-		public int VsyncNum => _vsyncNum;
+		public int VsyncNumerator => _vsyncNum;
 
-		public int VsyncDen => _vsyncDen;
+		public int VsyncDenominator => _vsyncDen;
 
 		public int[] GetVideoBuffer()
 		{

@@ -417,12 +417,12 @@ namespace BizHawk.Client.EmuHawk
 			public int BufferHeight { get; set; }
 			public int BackgroundColor { get; set; }
 
-			public int VsyncNum
+			public int VsyncNumerator
 			{
 				get { throw new InvalidOperationException(); }
 			}
 
-			public int VsyncDen
+			public int VsyncDenominator
 			{
 				get { throw new InvalidOperationException(); }
 			}

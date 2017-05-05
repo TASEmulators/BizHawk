@@ -222,12 +222,12 @@ namespace BizHawk.Client.Common
 			public int BufferHeight { get; set; }
 			public int BackgroundColor => unchecked((int)0xff000000);
 
-			public int VsyncNum
+			public int VsyncNumerator
 			{
 				get { throw new InvalidOperationException(); }
 			}
 
-			public int VsyncDen
+			public int VsyncDenominator
 			{
 				get { throw new InvalidOperationException(); }
 			}

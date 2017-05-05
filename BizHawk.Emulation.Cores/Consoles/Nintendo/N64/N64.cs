@@ -126,12 +126,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			switch (Region)
 			{
 				case DisplayType.NTSC:
-					_videoProvider.VsyncNum = 60000;
-					_videoProvider.VsyncDen = 1001;
+					_videoProvider.VsyncNumerator = 60000;
+					_videoProvider.VsyncDenominator = 1001;
 					break;
 				default:
-					_videoProvider.VsyncNum = 50;
-					_videoProvider.VsyncDen = 1;
+					_videoProvider.VsyncNumerator = 50;
+					_videoProvider.VsyncDenominator = 1;
 					break;
 			}
 

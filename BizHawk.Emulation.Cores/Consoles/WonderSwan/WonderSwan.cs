@@ -213,8 +213,8 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
-		public int VsyncNum => 3072000; // master CPU clock, also pixel clock
-		public int VsyncDen => (144 + 15) * (224 + 32); // 144 vislines, 15 vblank lines; 224 vispixels, 32 hblank pixels
+		public int VsyncNumerator => 3072000; // master CPU clock, also pixel clock
+		public int VsyncDenominator => (144 + 15) * (224 + 32); // 144 vislines, 15 vblank lines; 224 vispixels, 32 hblank pixels
 
 		#endregion
 	}

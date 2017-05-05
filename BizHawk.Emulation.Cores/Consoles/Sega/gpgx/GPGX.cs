@@ -126,9 +126,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					int fpsnum = 60;
 					int fpsden = 1;
 					LibGPGX.gpgx_get_fps(ref fpsnum, ref fpsden);
-					VsyncNum = fpsnum;
-					VsyncDen = fpsden;
-					Region = VsyncNum / VsyncDen > 55 ? DisplayType.NTSC : DisplayType.PAL;
+					VsyncNumerator = fpsnum;
+					VsyncDenominator = fpsden;
+					Region = VsyncNumerator / VsyncDenominator > 55 ? DisplayType.NTSC : DisplayType.PAL;
 				}
 
 				// compute state size

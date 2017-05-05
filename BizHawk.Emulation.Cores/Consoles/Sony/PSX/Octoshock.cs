@@ -331,14 +331,14 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			int VidClock_d = CpuClock_d * 7;
 			if (SystemRegion == OctoshockDll.eRegion.EU)
 			{
-				VsyncNum = VidClock_n;
-				VsyncDen = VidClock_d * 314 * 3406;
+				VsyncNumerator = VidClock_n;
+				VsyncDenominator = VidClock_d * 314 * 3406;
 				SystemVidStandard = OctoshockDll.eVidStandard.PAL;
 			}
 			else
 			{
-				VsyncNum = VidClock_n;
-				VsyncDen = VidClock_d * 263 * 3413;
+				VsyncNumerator = VidClock_n;
+				VsyncDenominator = VidClock_d * 263 * 3413;
 				SystemVidStandard = OctoshockDll.eVidStandard.NTSC;
 			}
 
@@ -868,8 +868,8 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return 0; } }
-		public int VsyncNum { get; private set; }
-		public int VsyncDen { get; private set; }
+		public int VsyncNumerator { get; private set; }
+		public int VsyncDenominator { get; private set; }
 
 		public System.Drawing.Size VideoProvider_Padding { get; private set; }
 

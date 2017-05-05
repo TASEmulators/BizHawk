@@ -53,12 +53,12 @@ namespace BizHawk.Client.Common
 			get { return 0; }
 		}
 
-		public int VsyncNum
+		public int VsyncNumerator
 		{
 			get { throw new InvalidOperationException(); }
 		}
 
-		public int VsyncDen
+		public int VsyncDenominator
 		{
 			get { throw new InvalidOperationException(); }
 		}

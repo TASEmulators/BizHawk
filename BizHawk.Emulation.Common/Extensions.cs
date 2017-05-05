@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 		public static ISoundProvider AsSoundProviderOrDefault(this IEmulator core)
 		{
 			return core.ServiceProvider.GetService<ISoundProvider>()
-				?? CachedNullSoundProviders.GetValue(core, e => new NullSound(core.VsyncNum(), core.VsyncDen()));
+				?? CachedNullSoundProviders.GetValue(core, e => new NullSound(core.VsyncNumerator(), core.VsyncDenominator()));
 		}
 
 		public static bool HasMemoryDomains(this IEmulator core)
@@ -342,21 +342,21 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 			return core.ServiceProvider.GetService<IBoardInfo>();
 		}
 
-		public static int VsyncNum(this IEmulator core)
+		public static int VsyncNumerator(this IEmulator core)
 		{
 			if (core != null && core.HasVideoProvider())
 			{
-				//return core.AsVideoProvider().VsyncNum
+				return core.AsVideoProvider().VsyncNumerator;
 			}
 
 			return 60;
 		}
 
-		public static int VsyncDen(this IEmulator core)
+		public static int VsyncDenominator(this IEmulator core)
 		{
 			if (core != null && core.HasVideoProvider())
 			{
-				//return core.AsVideoProvider().VsyncDen
+				return core.AsVideoProvider().VsyncDenominator;
 			}
 
 			return 1;
@@ -364,7 +364,7 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 
 		public static int VsyncRate(this IEmulator core)
 		{
-			return core.VsyncNum() / core.VsyncDen();
+			return core.VsyncNumerator() / core.VsyncDenominator();
 		}
 
 		// TODO: a better place for these

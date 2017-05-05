@@ -529,7 +529,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public int BufferHeight => FrameHeight;
 		public int BackgroundColor => VCE.Palette[0];
 
-		public int VsyncNum
+		public int VsyncNumerator
 		{
 			[FeatureNotImplemented]
 			get
@@ -538,7 +538,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		public int VsyncDen
+		public int VsyncDenominator
 		{
 			[FeatureNotImplemented]
 			get

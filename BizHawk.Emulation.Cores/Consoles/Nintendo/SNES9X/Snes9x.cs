@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		public int BufferHeight { get { return 224; } }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
-		public int VsyncNum
+		public int VsyncNumerator
 		{
 			[FeatureNotImplemented]
 			get
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			}
 		}
 
-		public int VsyncDen
+		public int VsyncDenominator
 		{
 			[FeatureNotImplemented]
 			get

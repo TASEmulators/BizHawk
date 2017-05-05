@@ -45,14 +45,14 @@
 		int BufferHeight { get; }
 
 		/// <summary>
-		/// Gets the vsync Numerator. Combined with the <seealso cref="VsyncDen"/> can be used to calculate a precise vsync rate.
+		/// Gets the vsync Numerator. Combined with the <seealso cref="VsyncDenominator"/> can be used to calculate a precise vsync rate.
 		/// </summary>
-		int VsyncNum { get; }
+		int VsyncNumerator { get; }
 
 		/// <summary>
-		/// Gets the vsync Denominator. Combined with the <seealso cref="VsyncDen"/> can be used to calculate a precise vsync rate.
+		/// Gets the vsync Denominator. Combined with the <seealso cref="VsyncNumerator"/> can be used to calculate a precise vsync rate.
 		/// </summary>
-		int VsyncDen { get; }
+		int VsyncDenominator { get; }
 
 		/// <summary>
 		/// Gets the default color when no other color is applied

@@ -18,9 +18,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public int BackgroundColor => unchecked((int)0xff000000);
 
 
-		public int VsyncNum => 262144;
+		public int VsyncNumerator => 262144;
 
-		public int VsyncDen => 4389;
+		public int VsyncDenominator => 4389;
 
 		private readonly int[] _videobuff = new int[240 * 160];
 	}

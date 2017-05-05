@@ -19,9 +19,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return _videobuff;
 		}
 
-		public int VsyncNum => 262144;
+		public int VsyncNumerator => 262144;
 
-		public int VsyncDen => 4389;
+		public int VsyncDenominator => 4389;
 
 		private readonly int[] _videobuff = new int[240 * 160];
 		private readonly int[] _videopalette = new int[65536];

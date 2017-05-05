@@ -10,9 +10,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public int BufferWidth { get { return 320; } }
 		public int BufferHeight { get { return 144; } }
 
-		public int VsyncNum => L.VsyncNum;
+		public int VsyncNumerator => L.VsyncNumerator;
 
-		public int VsyncDen => L.VsyncDen;
+		public int VsyncDenominator => L.VsyncDenominator;
 
 		public int BackgroundColor
 		{

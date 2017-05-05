@@ -19,8 +19,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return _videoBuffer;
 		}
 
-		public int VsyncNum { get; }
-		public int VsyncDen { get; }
+		public int VsyncNumerator { get; }
+		public int VsyncDenominator { get; }
 
 		private int[] _videoBuffer = new int[256 * 224];
 		private int _videoWidth = 256;

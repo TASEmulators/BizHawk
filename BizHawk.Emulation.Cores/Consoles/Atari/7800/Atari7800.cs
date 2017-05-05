@@ -281,8 +281,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			public int BufferWidth { get; private set; }
 			public int BufferHeight { get; private set; }
 			public int BackgroundColor => unchecked((int)0xff000000);
-			public int VsyncNum => _frameHz;
-			public int VsyncDen => 1;
+			public int VsyncNumerator => _frameHz;
+			public int VsyncDenominator => 1;
 
 			#region ISoundProvider
 

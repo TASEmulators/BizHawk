@@ -30,8 +30,8 @@
 
 		public int BackgroundColor => DefaultBackgroundColor;
 
-		public int VsyncNum => DefaultVsyncNum;
+		public int VsyncNumerator => DefaultVsyncNum;
 
-		public int VsyncDen => DefaultVsyncDen;
+		public int VsyncDenominator => DefaultVsyncDen;
 	}
 }

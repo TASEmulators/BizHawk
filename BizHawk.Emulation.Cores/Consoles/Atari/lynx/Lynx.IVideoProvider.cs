@@ -24,8 +24,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 		public int BackgroundColor => unchecked((int)0xff000000);
 
-		public int VsyncNum => 16000000; // 16.00 mhz refclock
+		public int VsyncNumerator => 16000000; // 16.00 mhz refclock
 
-		public int VsyncDen => 16 * 105 * 159;
+		public int VsyncDenominator => 16 * 105 * 159;
 	}
 }

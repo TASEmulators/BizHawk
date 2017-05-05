@@ -465,7 +465,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public int BufferHeight => 192;
 		public int BackgroundColor => 0;
 
-		public int VsyncNum
+		public int VsyncNumerator
 		{
 			[FeatureNotImplemented]
 			get
@@ -474,7 +474,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		public int VsyncDen
+		public int VsyncDenominator
 		{
 			[FeatureNotImplemented]
 			get
