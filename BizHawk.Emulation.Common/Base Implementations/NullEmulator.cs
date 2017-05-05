@@ -192,7 +192,7 @@ namespace BizHawk.Emulation.Common
 
 		#endregion
 
-		private readonly int[] _frameBuffer = new int[256 * 192];
+		private readonly int[] _frameBuffer = new int[NullVideo.DefaultWidth * NullVideo.DefaultHeight];
 		private readonly short[] _sampleBuffer = new short[735 * 2];
 		private readonly Random _rand = new Random();
 
