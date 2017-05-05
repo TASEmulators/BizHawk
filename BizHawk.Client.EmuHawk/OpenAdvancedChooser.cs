@@ -99,10 +99,12 @@ namespace BizHawk.Client.EmuHawk
 						Console.WriteLine(v);
 				}
 			}
-			catch
+			catch (Exception ex)
 			{
 				if (!bootstrap)
-					MessageBox.Show("Couldn't load the selected Libretro core for analysis. It won't be available.");
+				{
+					MessageBox.Show("Couldn't load the selected Libretro core for analysis. It won't be available.\n\nError:\n\n" + ex.ToString());
+				}
 			}
 		}
 
