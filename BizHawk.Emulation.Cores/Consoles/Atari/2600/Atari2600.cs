@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
 
-			Ram = new byte[128];
+			_ram = new byte[128];
 			CoreComm = comm;
 			Settings = (A2600Settings)settings ?? new A2600Settings();
 			SyncSettings = (A2600SyncSettings)syncSettings ?? new A2600SyncSettings();

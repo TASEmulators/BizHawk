@@ -10,30 +10,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	public partial class Atari2600
 	{
-		private TIA _tia;
-		private DCFilter _dcfilter;
-		private MapperBase _mapper;
-
-		private readonly GameInfo _game;
-		private int _frame;
-
-		internal byte[] Ram;
-
-		internal byte[] Rom { get; private set; }
-		internal MOS6502X Cpu { get; private set; }
-		internal M6532 M6532 { get; private set; }
-
-		internal int LastAddress;
-		internal int DistinctAccessCount;
-
-		private bool _frameStartPending = true;
-
-		private bool _leftDifficultySwitchPressed = false;
-		private bool _rightDifficultySwitchPressed = false;
-
-		private bool _leftDifficultySwitchHeld = false;
-		private bool _rightDifficultySwitchHeld = false;
-
 		private static readonly ControllerDefinition Atari2600ControllerDefinition = new ControllerDefinition
 		{
 			Name = "Atari 2600 Basic Controller",
@@ -45,6 +21,44 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		};
 
+		private readonly GameInfo _game;
+
+		private TIA _tia;
+		private M6532 _m6532;
+		private DCFilter _dcfilter;
+		private MapperBase _mapper;
+		private byte[] _ram;
+
+		private IController _controller;
+		private int _frame;
+		private int _lastAddress;
+		private bool _frameStartPending = true;
+
+		private bool _leftDifficultySwitchPressed;
+		private bool _rightDifficultySwitchPressed;
+
+		private bool _leftDifficultySwitchHeld;
+		private bool _rightDifficultySwitchHeld;
+
+		internal MOS6502X Cpu { get; private set; }
+		internal byte[] Ram => _ram;
+		internal byte[] Rom { get; }
+		internal int DistinctAccessCount { get; private set; }
+
+		private static MapperBase SetMultiCartMapper(int romLength, int gameTotal)
+		{
+			switch (romLength / gameTotal)
+			{
+				case 1024 * 2: // 2K
+					return new Multicart2K(gameTotal);
+				default:
+				case 1024 * 4: // 4K
+					return new Multicart4K(gameTotal);
+				case 1024 * 8: // 8K
+					return new Multicart8K(gameTotal);
+			}
+		}
+
 		internal byte BaseReadMemory(ushort addr)
 		{
 			addr = (ushort)(addr & 0x1FFF);
@@ -55,8 +69,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if ((addr & 0x1080) == 0x0080)
 			{
-				_tia.bus_state = M6532.ReadMemory(addr, false);
-				return M6532.ReadMemory(addr, false);
+				_tia.bus_state = _m6532.ReadMemory(addr, false);
+				return _m6532.ReadMemory(addr, false);
 			}
 
 			_tia.bus_state = Rom[addr & 0x0FFF];
@@ -73,18 +87,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			if ((addr & 0x1080) == 0x0080)
 			{
-				return M6532.ReadMemory(addr, true);
+				return _m6532.ReadMemory(addr, true);
 			}
+
 			return Rom[addr & 0x0FFF];
 		}
 
 		internal void BaseWriteMemory(ushort addr, byte value)
 		{
 			_tia.bus_state = value;
-			if (addr != LastAddress)
+			if (addr != _lastAddress)
 			{
 				DistinctAccessCount++;
-				LastAddress = addr;
+				_lastAddress = addr;
 			}
 
 			addr = (ushort)(addr & 0x1FFF);
@@ -94,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if ((addr & 0x1080) == 0x0080)
 			{
-				M6532.WriteMemory(addr, value);
+				_m6532.WriteMemory(addr, value);
 			}
 			else
 			{
@@ -111,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 			else if ((addr & 0x1080) == 0x0080)
 			{
-				M6532.WriteMemory(addr, value);
+				_m6532.WriteMemory(addr, value);
 			}
 			else
 			{
@@ -119,12 +134,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		internal byte ReadMemory(ushort addr)
+		private byte ReadMemory(ushort addr)
 		{
-			if (addr != LastAddress)
+			if (addr != _lastAddress)
 			{
 				DistinctAccessCount++;
-				LastAddress = addr;
+				_lastAddress = addr;
 			}
 
 			_mapper.Bit13 = addr.Bit(13);
@@ -135,18 +150,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return temp;
 		}
 
-		internal byte PeekMemory(ushort addr)
+		private byte PeekMemory(ushort addr)
 		{
 			var temp = _mapper.PeekMemory((ushort)(addr & 0x1FFF));
 			return temp;
 		}
 
-		internal void WriteMemory(ushort addr, byte value)
+		private void WriteMemory(ushort addr, byte value)
 		{
-			if (addr != LastAddress)
+			if (addr != _lastAddress)
 			{
 				DistinctAccessCount++;
-				LastAddress = addr;
+				_lastAddress = addr;
 			}
 
 			_mapper.WriteMemory((ushort)(addr & 0x1FFF), value);
@@ -162,20 +177,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private void ExecFetch(ushort addr)
 		{
 			MemoryCallbacks.CallExecutes(addr);
-		}
-
-		private static MapperBase SetMultiCartMapper(int romLength, int gameTotal)
-		{
-			switch (romLength / gameTotal)
-			{
-				case 1024 * 2: // 2K
-					return new Multicart2K(gameTotal);
-				default:
-				case 1024 * 4: // 4K
-					return new Multicart4K(gameTotal);
-				case 1024 * 8: // 8K
-					return new Multicart8K(gameTotal);
-			}
 		}
 
 		private void RebootCore()
@@ -327,21 +328,14 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			_dcfilter = new DCFilter(_tia, 256);
 
-			M6532 = new M6532(this);
+			_m6532 = new M6532(this);
 
 			// Set up the system state here. for instance..
 			// Read from the reset vector for where to start
 			Cpu.PC = (ushort)(ReadMemory(0x1FFC) + (ReadMemory(0x1FFD) << 8)); // set the initial PC
 
 			// Show mapper class on romstatusdetails
-			CoreComm.RomStatusDetails =
-				string.Format(
-					"{0}\r\nSHA1:{1}\r\nMD5:{2}\r\nMapper Impl \"{3}\"",
-					this._game.Name,
-					Rom.HashSHA1(),
-					Rom.HashMD5(),
-					_mapper.GetType());
-
+			CoreComm.RomStatusDetails = $"{this._game.Name}\r\nSHA1:{Rom.HashSHA1()}\r\nMD5:{Rom.HashMD5()}\r\nMapper Impl \"{_mapper.GetType()}\"";
 
 			// as it turns out, the stack pointer cannot be set to 0 for some games as they do not initilize it themselves. 
 			// some documentation seems to indicate it should beset to FD, but currently there is no documentation of the 6532 
@@ -353,7 +347,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private void HardReset()
 		{
-			Ram = new byte[128];
+			_ram = new byte[128];
 			_mapper.HardReset();
 
 			Cpu = new MOS6502X
@@ -367,7 +361,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			_tia.Reset();
 
-			M6532 = new M6532(this);
+			_m6532 = new M6532(this);
 			Cpu.PC = (ushort)(ReadMemory(0x1FFC) + (ReadMemory(0x1FFD) << 8)); // set the initial PC
 
 			// as it turns out, the stack pointer cannot be set to 0 for some games as they do not initilize it themselves. 
@@ -376,15 +370,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			Cpu.S = 0xFD;
 		}
 
-		private IController _controller;
-
 		private void VFrameAdvance() // advance up to 500 lines looking for end of video frame
 			// after vsync falling edge, continues to end of next line
 		{
 			bool frameend = false;
 			_tia.FrameEndCallBack = (n) => frameend = true;
 			for (int i = 0; i < 500 && !frameend; i++)
+			{
 				ScanlineAdvance();
+			}
+
 			_tia.FrameEndCallBack = null;
 		}
 
@@ -431,7 +426,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				_tia.CompleteAudioFrame();
 				if (_islag)
+				{
 					_lagcount++;
+				}
+
 				_tia.LineCount = 0;
 				_frameStartPending = true;
 			}
@@ -442,11 +440,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_tia.Execute(1);
 			_tia.Execute(1);
 			_tia.Execute(1);
-			M6532.Timer.Tick();
+			_m6532.Timer.Tick();
 			if (Tracer.Enabled)
 			{
 				Tracer.Put(Cpu.TraceState());
 			}
+
 			Cpu.ExecuteOne();
 			_mapper.ClockCpu();
 		}
