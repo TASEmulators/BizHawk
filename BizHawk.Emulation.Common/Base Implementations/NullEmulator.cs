@@ -100,15 +100,15 @@ namespace BizHawk.Emulation.Common
 			return _frameBuffer;
 		}
 
-		public int VirtualWidth => 256;
+		public int VirtualWidth => NullVideo.DefaultWidth;
 
-		public int VirtualHeight => 192;
+		public int VirtualHeight => NullVideo.DefaultHeight;
 
-		public int BufferWidth => 256;
+		public int BufferWidth => NullVideo.DefaultWidth;
 
-		public int BufferHeight => 192;
+		public int BufferHeight => NullVideo.DefaultHeight;
 
-		public int BackgroundColor => 0;
+		public int BackgroundColor => NullVideo.DefaultBackgroundColor;
 
 		#endregion
 
