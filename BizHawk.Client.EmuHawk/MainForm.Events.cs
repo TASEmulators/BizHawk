@@ -2181,12 +2181,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FlushSaveRAMMenuItem_Click(object sender, EventArgs e)
 		{
-			SaveRam();
+			FlushSaveRAM();
 		}
 
-		private void SaveRAMSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void FlushSaveRAMSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			this.FlushSaveRAMMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save SRAM"].Bindings;
+			this.FlushSaveRAMMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Flush SRAM"].Bindings;
 		}
 
 		#endregion

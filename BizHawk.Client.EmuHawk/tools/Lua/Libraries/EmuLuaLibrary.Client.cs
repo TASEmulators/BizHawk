@@ -540,7 +540,7 @@ namespace BizHawk.Client.EmuHawk
 			)]
 		public void SaveRam()
 		{
-			GlobalWin.MainForm.SaveRam();
+			GlobalWin.MainForm.FlushSaveRAM();
 		}
 	}
 }

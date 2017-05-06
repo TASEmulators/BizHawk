@@ -895,7 +895,7 @@
             this.SaveRAMSubMenu.Name = "SaveRAMSubMenu";
             this.SaveRAMSubMenu.Size = new System.Drawing.Size(159, 22);
             this.SaveRAMSubMenu.Text = "Save &RAM";
-            this.SaveRAMSubMenu.DropDownOpened += new System.EventHandler(this.SaveRAMSubMenu_DropDownOpened);
+            this.SaveRAMSubMenu.DropDownOpened += new System.EventHandler(this.FlushSaveRAMSubMenu_DropDownOpened);
             // 
             // FlushSaveRAMMenuItem
             // 

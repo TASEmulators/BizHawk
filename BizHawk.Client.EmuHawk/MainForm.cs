@@ -1589,7 +1589,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SaveRam()
+		public void FlushSaveRAM()
 		{
 			if (Emulator.HasSaveRam())
 			{
@@ -3658,7 +3658,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Emulator.HasSaveRam() && Emulator.AsSaveRam().SaveRamModified)
 			{
-				SaveRam();
+				FlushSaveRAM();
 			}
 
 			StopAv();
