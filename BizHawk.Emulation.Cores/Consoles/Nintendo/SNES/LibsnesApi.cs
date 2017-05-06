@@ -104,6 +104,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public enum eCDLog_AddrType
 		{
 			CARTROM, CARTRAM, WRAM, APURAM,
+			SGB_CARTROM, SGB_CARTRAM, SGB_WRAM, SGB_HRAM,
 			NUM
 		};
 
