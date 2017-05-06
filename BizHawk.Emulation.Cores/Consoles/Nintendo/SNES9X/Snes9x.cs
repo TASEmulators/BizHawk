@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
@@ -12,6 +7,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public class Snes9x : IEmulator, IVideoProvider, ISoundProvider
 	{
+		[CoreConstructor("SNES")]
+		public Snes9x(CoreComm comm, byte[] rom)
+		{
+			if (!LibSnes9x.debug_init(rom, rom.Length))
+				throw new Exception();
+
+			ServiceProvider = new BasicServiceProvider(this);
+			CoreComm = comm;
+		}
+
 		#region controller
 
 		public ControllerDefinition ControllerDefinition
@@ -23,16 +28,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		public void Dispose()
 		{
-		}
-
-		[CoreConstructor("SNES")]
-		public Snes9x(CoreComm comm, byte[] rom)
-		{
-			if (!LibSnes9x.debug_init(rom, rom.Length))
-				throw new Exception();
-
-			ServiceProvider = new BasicServiceProvider(this);
-			CoreComm = comm;
 		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }

@@ -10,16 +10,40 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		"hrydgard",
 		isPorted: true,
 		isReleased: false,
-		singleInstance: true
-		)]
+		singleInstance: true)]
 	public class PSP : IEmulator, IVideoProvider, ISoundProvider
 	{
+		public PSP(CoreComm comm, string isopath)
+		{
+			ServiceProvider = new BasicServiceProvider(this);
+			if (attachedcore != null)
+			{
+				attachedcore.Dispose();
+				attachedcore = null;
+			}
+			CoreComm = comm;
+
+			glcontext = CoreComm.RequestGLContext(3, 0, true);
+			CoreComm.ActivateGLContext(glcontext);
+
+			logcallback = new PPSSPPDll.LogCB(LogCallbackFunc);
+
+			bool good = PPSSPPDll.BizInit(isopath, logcallback);
+			LogFlush();
+			if (!good)
+				throw new Exception("PPSSPP Init failed!");
+
+			CoreComm.RomStatusDetails = "It puts the scythe in the chicken or it gets the abyss again!";
+
+			attachedcore = this;
+		}
+
 		public static readonly ControllerDefinition PSPController = new ControllerDefinition
 		{
 			Name = "PSP Controller",
 			BoolButtons =
-			{					
-				"Up", "Down", "Left", "Right", "Select", "Start", "L", "R", "Square", "Triangle", "Circle", "Cross", 
+			{
+				"Up", "Down", "Left", "Right", "Select", "Start", "L", "R", "Square", "Triangle", "Circle", "Cross",
 				"Menu", "Back",
 				"Power"
 			},
@@ -62,31 +86,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSP
 		bool disposed = false;
 		static PSP attachedcore = null;
 		object glcontext;
-
-		public PSP(CoreComm comm, string isopath)
-		{
-			ServiceProvider = new BasicServiceProvider(this);
-			if (attachedcore != null)
-			{
-				attachedcore.Dispose();
-				attachedcore = null;
-			}
-			CoreComm = comm;
-
-			glcontext = CoreComm.RequestGLContext(3, 0, true);
-			CoreComm.ActivateGLContext(glcontext);
-
-			logcallback = new PPSSPPDll.LogCB(LogCallbackFunc);
-
-			bool good = PPSSPPDll.BizInit(isopath, logcallback);
-			LogFlush();
-			if (!good)
-				throw new Exception("PPSSPP Init failed!");
-
-			CoreComm.RomStatusDetails = "It puts the scythe in the chicken or it gets the abyss again!";
-
-			attachedcore = this;
-		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 

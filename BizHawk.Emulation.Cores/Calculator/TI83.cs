@@ -16,11 +16,11 @@ namespace BizHawk.Emulation.Cores.Calculators
 	public partial class TI83 : IEmulator, IVideoProvider, IStatable, IDebuggable, IInputPollable, ISettable<TI83.TI83Settings, object>
 	{
 		[CoreConstructor("TI83")]
-		public TI83(CoreComm comm, GameInfo game, byte[] rom, object Settings)
+		public TI83(CoreComm comm, GameInfo game, byte[] rom, object settings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			PutSettings((TI83Settings)Settings ?? new TI83Settings());
+			PutSettings((TI83Settings)settings ?? new TI83Settings());
 
 			CoreComm = comm;
 			_cpu.ReadMemory = ReadMemory;

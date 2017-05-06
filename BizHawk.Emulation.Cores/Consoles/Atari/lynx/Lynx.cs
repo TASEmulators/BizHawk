@@ -10,8 +10,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight), typeof(IRegionable))]
 	public partial class Lynx : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable
 	{
-		private IntPtr Core;
-
 		[CoreConstructor("Lynx")]
 		public Lynx(byte[] file, GameInfo game, CoreComm comm)
 		{
@@ -117,6 +115,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				throw;
 			}
 		}
+
+		private IntPtr Core;
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
 

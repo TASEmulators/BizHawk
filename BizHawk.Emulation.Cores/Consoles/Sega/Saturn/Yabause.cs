@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Runtime.InteropServices;
-using System.IO;
-using System.ComponentModel;
 
-using BizHawk.Common;
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.DiscSystem;
-
-using Newtonsoft.Json;
 
 namespace BizHawk.Emulation.Cores.Sega.Saturn
 {
@@ -22,16 +13,44 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		isReleased: true,
 		portedVersion: "9.12",
 		portedUrl: "http://yabause.org",
-		singleInstance: true
-		)]
+		singleInstance: true)]
 	public partial class Yabause : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable,
 		ISettable<object, Yabause.SaturnSyncSettings>, IDriveLight
 	{
+		public Yabause(CoreComm coreComm, Disc cd, object syncSettings)
+		{
+			ServiceProvider = new BasicServiceProvider(this);
+			byte[] bios = coreComm.CoreFileProvider.GetFirmware("SAT", "J", true, "Saturn BIOS is required.");
+			coreComm.RomStatusDetails = string.Format("Disk partial hash:{0}", new DiscHasher(cd).OldHash());
+			CoreComm = coreComm;
+			CD = cd;
+			DiscSectorReader = new DiscSectorReader(cd);
+
+			SyncSettings = (SaturnSyncSettings)syncSettings ?? new SaturnSyncSettings();
+
+			if (SyncSettings.UseGL && glContext == null)
+			{
+				glContext = coreComm.RequestGLContext(2,0,false);
+			}
+
+			ResetCounters();
+
+			ActivateGL();
+			Init(bios);
+
+			InputCallbackH = new LibYabause.InputCallback(() => InputCallbacks.Call());
+			LibYabause.libyabause_setinputcallback(InputCallbackH);
+			ConnectTracer();
+			DriveLightEnabled = true;
+
+			DeactivateGL();
+		}
+
 		public static ControllerDefinition SaturnController = new ControllerDefinition
 		{
 			Name = "Saturn Controller",
 			BoolButtons =
-			{	
+			{
 				"Power", "Reset",
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Start", "P1 A", "P1 B", "P1 C", "P1 X", "P1 Y", "P1 Z", "P1 L", "P1 R",
 				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Start", "P2 A", "P2 B", "P2 C", "P2 X", "P2 Y", "P2 Z", "P2 L", "P2 R",
@@ -55,35 +74,6 @@ namespace BizHawk.Emulation.Cores.Sega.Saturn
 		LibYabause.CDInterface.ReadAheadFAD ReadAheadFADH;
 
 		LibYabause.InputCallback InputCallbackH;
-
-		public Yabause(CoreComm CoreComm, DiscSystem.Disc CD, object syncSettings)
-		{
-			ServiceProvider = new BasicServiceProvider(this);
-			byte[] bios = CoreComm.CoreFileProvider.GetFirmware("SAT", "J", true, "Saturn BIOS is required.");
-			CoreComm.RomStatusDetails = string.Format("Disk partial hash:{0}", new DiscSystem.DiscHasher(CD).OldHash());
-			this.CoreComm = CoreComm;
-			this.CD = CD;
-			DiscSectorReader = new DiscSystem.DiscSectorReader(CD);
-
-			SyncSettings = (SaturnSyncSettings)syncSettings ?? new SaturnSyncSettings();
-
-			if (this.SyncSettings.UseGL && glContext == null)
-			{
-				glContext = CoreComm.RequestGLContext(2,0,false);
-			}
-
-			ResetCounters();
-
-			ActivateGL();
-			Init(bios);
-
-			InputCallbackH = new LibYabause.InputCallback(() => InputCallbacks.Call());
-			LibYabause.libyabause_setinputcallback(InputCallbackH);
-			ConnectTracer();
-			DriveLightEnabled = true;
-
-			DeactivateGL();
-		}
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 

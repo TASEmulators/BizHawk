@@ -19,6 +19,104 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	public partial class Gameboy : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable, ICodeDataLogger,
 		IBoardInfo, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>
 	{
+		[CoreConstructor("GB", "GBC")]
+		public Gameboy(CoreComm comm, GameInfo game, byte[] file, object settings, object syncSettings, bool deterministic)
+		{
+			var ser = new BasicServiceProvider(this);
+			ser.Register<IDisassemblable>(new GBDisassembler());
+			ServiceProvider = ser;
+			Tracer = new TraceBuffer
+			{
+				Header = "Z80: PC, opcode, registers (A, B, C, D, E, F, H, L, LY, SP, CY)"
+			};
+			ser.Register<ITraceable>(Tracer);
+			InitMemoryCallbacks();
+			CoreComm = comm;
+
+			comm.RomStatusAnnotation = null;
+			comm.RomStatusDetails = null;
+			comm.NominalWidth = 160;
+			comm.NominalHeight = 144;
+
+			ThrowExceptionForBadRom(file);
+			BoardName = MapperName(file);
+
+			DeterministicEmulation = deterministic;
+
+			GambatteState = LibGambatte.gambatte_create();
+
+			if (GambatteState == IntPtr.Zero)
+			{
+				throw new InvalidOperationException("gambatte_create() returned null???");
+			}
+
+			try
+			{
+				_syncSettings = (GambatteSyncSettings)syncSettings ?? new GambatteSyncSettings();
+
+				// copy over non-loadflag syncsettings now; they won't take effect if changed later
+				zerotime = (uint)_syncSettings.RTCInitialTime;
+
+				real_rtc_time = !DeterministicEmulation && _syncSettings.RealTimeRTC;
+
+				LibGambatte.LoadFlags flags = 0;
+
+				if (_syncSettings.ForceDMG)
+				{
+					flags |= LibGambatte.LoadFlags.FORCE_DMG;
+				}
+
+				if (_syncSettings.GBACGB)
+				{
+					flags |= LibGambatte.LoadFlags.GBA_CGB;
+				}
+
+				if (_syncSettings.MulticartCompat)
+				{
+					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
+				}
+
+				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, GetCurrentTime(), flags) != 0)
+				{
+					throw new InvalidOperationException("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
+				}
+
+				// set real default colors (before anyone mucks with them at all)
+				PutSettings((GambatteSettings)settings ?? new GambatteSettings());
+
+				InitSound();
+
+				Frame = 0;
+				LagCount = 0;
+				IsLagFrame = false;
+
+				InputCallback = new LibGambatte.InputGetter(ControllerCallback);
+
+				LibGambatte.gambatte_setinputgetter(GambatteState, InputCallback);
+
+				InitMemoryDomains();
+
+				CoreComm.RomStatusDetails = $"{game.Name}\r\nSHA1:{file.HashSHA1()}\r\nMD5:{file.HashMD5()}\r\n";
+
+				byte[] buff = new byte[32];
+				LibGambatte.gambatte_romtitle(GambatteState, buff);
+				string romname = System.Text.Encoding.ASCII.GetString(buff);
+				Console.WriteLine("Core reported rom name: {0}", romname);
+
+				TimeCallback = new LibGambatte.RTCCallback(GetCurrentTime);
+				LibGambatte.gambatte_setrtccallback(GambatteState, TimeCallback);
+
+				_cdCallback = new LibGambatte.CDCallback(CDCallbackProc);
+
+				NewSaveCoreSetBuff();
+			}
+			catch
+			{
+				Dispose();
+				throw;
+			}
+		}
+
 		/// <summary>
 		/// the nominal length of one frame
 		/// </summary>
@@ -89,104 +187,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		}
 
 		#endregion
-
-		[CoreConstructor("GB", "GBC")]
-		public Gameboy(CoreComm comm, GameInfo game, byte[] file, object Settings, object SyncSettings, bool deterministic)
-		{
-			var ser = new BasicServiceProvider(this);
-			ser.Register<IDisassemblable>(new GBDisassembler());
-			ServiceProvider = ser;
-			Tracer = new TraceBuffer
-			{
-				Header = "Z80: PC, opcode, registers (A, B, C, D, E, F, H, L, LY, SP, CY)"
-			};
-			ser.Register<ITraceable>(Tracer);
-			InitMemoryCallbacks();
-			CoreComm = comm;
-
-			comm.RomStatusAnnotation = null;
-			comm.RomStatusDetails = null;
-			comm.NominalWidth = 160;
-			comm.NominalHeight = 144;
-
-			ThrowExceptionForBadRom(file);
-			BoardName = MapperName(file);
-
-			DeterministicEmulation = deterministic;
-
-			GambatteState = LibGambatte.gambatte_create();
-
-			if (GambatteState == IntPtr.Zero)
-			{
-				throw new InvalidOperationException("gambatte_create() returned null???");
-			}
-
-			try
-			{
-				_syncSettings = (GambatteSyncSettings)SyncSettings ?? new GambatteSyncSettings();
-
-				// copy over non-loadflag syncsettings now; they won't take effect if changed later
-				zerotime = (uint)_syncSettings.RTCInitialTime;
-
-				real_rtc_time = !DeterministicEmulation && _syncSettings.RealTimeRTC;
-
-				LibGambatte.LoadFlags flags = 0;
-
-				if (_syncSettings.ForceDMG)
-				{
-					flags |= LibGambatte.LoadFlags.FORCE_DMG;
-				}
-
-				if (_syncSettings.GBACGB)
-				{
-					flags |= LibGambatte.LoadFlags.GBA_CGB;
-				}
-
-				if (_syncSettings.MulticartCompat)
-				{
-					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
-				}
-
-				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, GetCurrentTime(), flags) != 0)
-				{
-					throw new InvalidOperationException("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
-				}
-
-				// set real default colors (before anyone mucks with them at all)
-				PutSettings((GambatteSettings)Settings ?? new GambatteSettings());
-
-				InitSound();
-
-				Frame = 0;
-				LagCount = 0;
-				IsLagFrame = false;
-
-				InputCallback = new LibGambatte.InputGetter(ControllerCallback);
-
-				LibGambatte.gambatte_setinputgetter(GambatteState, InputCallback);
-
-				InitMemoryDomains();
-
-				CoreComm.RomStatusDetails = $"{game.Name}\r\nSHA1:{file.HashSHA1()}\r\nMD5:{file.HashMD5()}\r\n";
-
-				byte[] buff = new byte[32];
-				LibGambatte.gambatte_romtitle(GambatteState, buff);
-				string romname = System.Text.Encoding.ASCII.GetString(buff);
-				Console.WriteLine("Core reported rom name: {0}", romname);
-
-				TimeCallback = new LibGambatte.RTCCallback(GetCurrentTime);
-				LibGambatte.gambatte_setrtccallback(GambatteState, TimeCallback);
-
-				_cdCallback = new LibGambatte.CDCallback(CDCallbackProc);
-
-				NewSaveCoreSetBuff();
-			}
-			catch
-			{
-				Dispose();
-				throw;
-			}
-		}
 
 		#region ALL SAVESTATEABLE STATE GOES HERE
 

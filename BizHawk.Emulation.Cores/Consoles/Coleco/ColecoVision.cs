@@ -13,24 +13,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	[ServiceNotApplicable(typeof(ISaveRam), typeof(IDriveLight))]
 	public sealed partial class ColecoVision : IEmulator, IDebuggable, IInputPollable, IStatable, ISettable<ColecoVision.ColecoSettings, ColecoVision.ColecoSyncSettings>
 	{
-		// ROM
-		private byte[] RomData;
-		private byte[] BiosRom;
-
-		// Machine
-		private Z80A Cpu;
-		private TMS9918A VDP;
-
-		private byte[] Ram = new byte[1024];
-		private readonly TraceBuffer Tracer = new TraceBuffer();
-
 		[CoreConstructor("Coleco")]
-		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, object SyncSettings)
+		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, object syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm = comm;
-			_syncSettings = (ColecoSyncSettings)SyncSettings ?? new ColecoSyncSettings();
+			_syncSettings = (ColecoSyncSettings)syncSettings ?? new ColecoSyncSettings();
 			bool skipbios = _syncSettings.SkipBiosIntro;
 
 			Cpu = new Z80A
@@ -69,6 +58,17 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			serviceProvider.Register<IDisassemblable>(new Disassembler());
 			serviceProvider.Register<ITraceable>(Tracer);
 		}
+
+		// ROM
+		private byte[] RomData;
+		private byte[] BiosRom;
+
+		// Machine
+		private Z80A Cpu;
+		private TMS9918A VDP;
+
+		private byte[] Ram = new byte[1024];
+		private readonly TraceBuffer Tracer = new TraceBuffer();
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
 

@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			}
 		}
 
-		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, string GameDBfn)
+		public Atari7800(CoreComm comm, GameInfo game, byte[] rom, string gameDbFn)
 		{
 			var ser = new BasicServiceProvider(this);
 			ser.Register<IVideoProvider>(_avProvider);
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 			if (GameProgramLibrary.EMU7800DB == null)
 			{
-				GameProgramLibrary.EMU7800DB = new GameProgramLibrary(new StreamReader(GameDBfn));
+				GameProgramLibrary.EMU7800DB = new GameProgramLibrary(new StreamReader(gameDbFn));
 			}
 
 			if (rom.Length % 1024 == 128)

@@ -20,9 +20,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		IDebuggable, ISettable<PCEngine.PCESettings, PCEngine.PCESyncSettings>, IDriveLight, ICodeDataLogger
 	{
 		[CoreConstructor("PCE", "SGX")]
-		public PCEngine(CoreComm comm, GameInfo game, byte[] rom, object Settings, object syncSettings)
+		public PCEngine(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
-
 			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm = comm;
 
@@ -39,7 +38,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					break;
 			}
 
-			this.Settings = (PCESettings)Settings ?? new PCESettings();
+			Settings = (PCESettings)settings ?? new PCESettings();
 			_syncSettings = (PCESyncSettings)syncSettings ?? new PCESyncSettings();
 			Init(game, rom);
 			SetControllerButtons();

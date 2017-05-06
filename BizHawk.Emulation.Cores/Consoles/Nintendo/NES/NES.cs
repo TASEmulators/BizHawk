@@ -2,11 +2,8 @@
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using System.Reflection;
 
-using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
-
 using BizHawk.Emulation.Common;
 
 //TODO - redo all timekeeping in terms of master clock
@@ -16,16 +13,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		"NesHawk",
 		"zeromus, natt, alyosha, adelikat",
 		isPorted: false,
-		isReleased: true
-		)]
+		isReleased: true)]
 	public partial class NES : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
 		IBoardInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>
 	{
-		static readonly bool USE_DATABASE = true;
-		public RomStatus RomStatus;
-
 		[CoreConstructor("NES")]
-		public NES(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
+		public NES(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
@@ -39,8 +32,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				fdsbios = tmp;
 			}
 
-			this.SyncSettings = (NESSyncSettings)SyncSettings ?? new NESSyncSettings();
-			this.ControllerSettings = this.SyncSettings.Controls;
+			SyncSettings = (NESSyncSettings)syncSettings ?? new NESSyncSettings();
+			ControllerSettings = SyncSettings.Controls;
 			CoreComm = comm;
 
 			MemoryCallbacks = new MemoryCallbackSystem();
@@ -55,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// expects this to be set.
 				RomStatus = game.Status;
 			}
-			PutSettings((NESSettings)Settings ?? new NESSettings());
+			PutSettings((NESSettings)settings ?? new NESSettings());
 
 			// we need to put this here because the line directly above will overwrite palette intialization anywhere else
 			// TODO: What if settings are later loaded?
@@ -80,6 +73,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ser.Register<DatachBarcode>(reader);
 			}
 		}
+
+		static readonly bool USE_DATABASE = true;
+		public RomStatus RomStatus;
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
