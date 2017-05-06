@@ -97,7 +97,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			RenderBackgroundScanline = RenderBackgroundScanlineUnsafe;
 
 			Registers[HSR] = 0x00FF;
-			Registers[HDR] = 0x00FF;
+			Registers[HDR] = 0x001F;
+			Registers[VDW] = 0x01FF;
 			Registers[VPR] = 0xFFFF;
 			Registers[VCR] = 0xFFFF;
 			ReadBuffer = 0xFFFF;
