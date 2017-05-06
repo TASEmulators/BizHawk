@@ -35,7 +35,7 @@
 			MapMemory = MapMemoryKR;
 			RomBank0 = 0;
 			RomBank1 = 1;
-			RomBank2 = 0;
+			RomBank2 = 2;
 		}
 
 		// ======================================================================
