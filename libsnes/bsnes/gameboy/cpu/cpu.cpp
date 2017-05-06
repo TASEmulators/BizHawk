@@ -24,7 +24,9 @@ void CPU::main() {
 
     if(trace) print(disassemble(r[PC]), "\n");
     interrupt_test();
+		cdlInfo.currFlags = eCDLog_Flags_ExecFirst;
     uint8 opcode = op_read(r[PC]++);
+		cdlInfo.currFlags = eCDLog_Flags_CPUData;
     (this->*opcode_table[opcode])();
   }
 }

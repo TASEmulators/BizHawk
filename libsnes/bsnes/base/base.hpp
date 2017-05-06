@@ -58,6 +58,7 @@ template<typename R, typename... P> struct hook<R (P...)> {
 enum eCDLog_AddrType
 {
 	eCDLog_AddrType_CARTROM, eCDLog_AddrType_CARTRAM, eCDLog_AddrType_WRAM, eCDLog_AddrType_APURAM,
+	eCDLog_AddrType_SGB_CARTROM, eCDLog_AddrType_SGB_CARTRAM, eCDLog_AddrType_SGB_WRAM, eCDLog_AddrType_SGB_HRAM,
 	eCDLog_AddrType_NUM
 };
 

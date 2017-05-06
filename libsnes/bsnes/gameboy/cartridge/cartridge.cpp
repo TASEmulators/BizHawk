@@ -77,6 +77,7 @@ void Cartridge::unload() {
 
 uint8 Cartridge::rom_read(unsigned addr) {
   if(addr >= romsize) addr %= romsize;
+	cdlInfo.set(eCDLog_AddrType_SGB_CARTROM, addr);
   return romdata[addr];
 }
 
@@ -88,6 +89,7 @@ void Cartridge::rom_write(unsigned addr, uint8 data) {
 uint8 Cartridge::ram_read(unsigned addr) {
   if(ramsize == 0) return 0x00;
   if(addr >= ramsize) addr %= ramsize;
+	cdlInfo.set(eCDLog_AddrType_SGB_CARTRAM, addr);
   return ramdata[addr];
 }
 
