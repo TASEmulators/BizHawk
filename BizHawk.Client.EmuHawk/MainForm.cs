@@ -1615,8 +1615,10 @@ namespace BizHawk.Client.EmuHawk
 
 				var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
 				var saveram = Emulator.AsSaveRam().CloneSaveRam();
-
-				writer.Write(saveram, 0, saveram.Length);
+				
+				if (saveram != null)
+					writer.Write(saveram, 0, saveram.Length);
+					
 				writer.Close();
 			}
 		}
