@@ -112,7 +112,8 @@ namespace BizHawk.Client.Common
 				{ "Toggle Right Difficulty", 'r' },
 
 				{ "Open", 'O' },
-				{ "Close", 'C' }
+				{ "Close", 'C' },
+				{ "Pedal", 'P' }
 			};
 
 		private readonly Dictionary<string, Dictionary<string, char>> SystemOverrides = new Dictionary<string, Dictionary<string, char>>
@@ -348,6 +349,16 @@ namespace BizHawk.Client.Common
 						{ "WNW", 'w' },
 						{ "NW", '\\' },
 						{ "NNW", 'n' }
+					}
+				},
+				{
+					"Coleco",
+					new Dictionary<string, char>
+					{
+						{ "Yellow", 'Y' },
+						{ "Red", 'R' },
+						{ "Blue", 'B' },
+						{ "Purple", 'P' }
 					}
 				}
 			};
