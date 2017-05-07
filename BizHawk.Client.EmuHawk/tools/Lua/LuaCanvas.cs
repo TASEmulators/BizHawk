@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
+
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
+	[Description("Represents a canvas object returned by the gui.createcanvas() method")]
 	public partial class LuaCanvas : Form
 	{
 		private Graphics graphics;
@@ -22,21 +20,27 @@ namespace BizHawk.Client.EmuHawk
 			graphics = Graphics.FromImage(pictureBox.Image);
 		}
 
+		[LuaMethodAttributes("SetTitle", "Sets the canvas window title")]
 		public void SetTitle(string title)
 		{
-			this.Text = title;
+			Text = title;
 		}
 
+		[LuaMethodAttributes("Clear", "Clears the canvas")]
 		public void Clear(Color color)
 		{
 			graphics.Clear(color);
 		}
 
+		[LuaMethodAttributes("Refresh", "Redraws the canvas")]
 		public new void Refresh()
 		{
 			pictureBox.Refresh();
 		}
 
+		[LuaMethodAttributes(
+			"DrawRectangle",
+			"Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color")]
 		public void DrawRectangle(int x, int y, int width, int height, Color? outline = null, Color? fill = null)
 		{
 			if (fill.HasValue)
@@ -49,6 +53,9 @@ namespace BizHawk.Client.EmuHawk
 			graphics.DrawRectangle(pen, x, y, width, height);
 		}
 
+		[LuaMethodAttributes(
+			"DrawText",
+			"Draws the given message at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates.")]
 		public void DrawText(int x, int y, string message, Color? color = null, int? fontsize = null, string fontfamily = null, string fontstyle = null)
 		{
 			var family = FontFamily.GenericMonospace;

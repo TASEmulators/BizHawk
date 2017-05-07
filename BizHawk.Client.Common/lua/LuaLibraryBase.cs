@@ -65,8 +65,8 @@ namespace BizHawk.Client.Common
 			var luaAttr = typeof(LuaMethodAttributes);
 
 			var methods = GetType()
-							.GetMethods()
-							.Where(m => m.GetCustomAttributes(luaAttr, false).Any());
+				.GetMethods()
+				.Where(m => m.GetCustomAttributes(luaAttr, false).Any());
 
 			foreach (var method in methods)
 			{

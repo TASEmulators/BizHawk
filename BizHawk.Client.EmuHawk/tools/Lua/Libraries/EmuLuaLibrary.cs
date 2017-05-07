@@ -1,13 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 
-using BizHawk.Client.Common;
 using LuaInterface;
-using System.Reflection;
-using System.Collections.Generic;
+
+using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
-using System.IO;
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -90,6 +92,22 @@ namespace BizHawk.Client.EmuHawk
 
 			EmulatorLuaLibrary.FrameAdvanceCallback = Frameadvance;
 			EmulatorLuaLibrary.YieldCallback = EmuYield;
+
+			// Add LuaCanvas to Docs
+			Type luaCanvas = typeof(LuaCanvas);
+			var luaAttr = typeof(LuaMethodAttributes);
+
+			var methods = luaCanvas
+				.GetMethods()
+				.Where(m => m.GetCustomAttributes(typeof(LuaMethodAttributes), false).Any());
+
+			foreach (var method in methods)
+			{
+				var luaMethodAttr = method.GetCustomAttributes(luaAttr, false).First() as LuaMethodAttributes;
+				var luaName = "(Canvas)." + luaMethodAttr.Name;
+
+				Docs.Add(new LibraryFunction(nameof(LuaCanvas), luaCanvas.Description(), method));
+			}
 		}
 
 		public void Restart(IEmulatorServiceProvider newServiceProvider)
