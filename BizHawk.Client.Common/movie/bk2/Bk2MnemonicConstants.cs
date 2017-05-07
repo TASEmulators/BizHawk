@@ -88,6 +88,8 @@ namespace BizHawk.Client.Common
 				{ "Fire", 'F' },
 				{ "Lightgun Trigger", 'T' },
 				{ "Lightgun Start", 'S' },
+				{ "Lightgun B", 'B' },
+				{ "Lightgun C", 'C' },
 				{ "Microphone", 'M' },
 
 				{ "Star", '*' },
