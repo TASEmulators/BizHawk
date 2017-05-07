@@ -319,6 +319,7 @@
             this.SnesObj2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SnesObj3MenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SnesObj4MenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SNESControllerConfigurationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
             this.SnesGfxDebuggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SnesGBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -432,7 +433,7 @@
             this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-            this.SNESControllerConfigurationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator35 = new System.Windows.Forms.ToolStripSeparator();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -2879,6 +2880,14 @@
             this.SnesObj4MenuItem.Text = "OBJ 4";
             this.SnesObj4MenuItem.Click += new System.EventHandler(this.SnesObj4MenuItem_Click);
             // 
+            // SNESControllerConfigurationMenuItem
+            // 
+            this.SNESControllerConfigurationMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
+            this.SNESControllerConfigurationMenuItem.Name = "SNESControllerConfigurationMenuItem";
+            this.SNESControllerConfigurationMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.SNESControllerConfigurationMenuItem.Text = "Controller Configuration";
+            this.SNESControllerConfigurationMenuItem.Click += new System.EventHandler(this.SNESControllerConfigurationMenuItem_Click);
+            // 
             // toolStripSeparator18
             // 
             this.toolStripSeparator18.Name = "toolStripSeparator18";
@@ -2916,8 +2925,9 @@
             // ColecoSubMenu
             // 
             this.ColecoSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ColecoSkipBiosMenuItem,
-            this.ColecoControllerSettingsMenuItem});
+            this.ColecoControllerSettingsMenuItem,
+            this.toolStripSeparator35,
+            this.ColecoSkipBiosMenuItem});
             this.ColecoSubMenu.Name = "ColecoSubMenu";
             this.ColecoSubMenu.Size = new System.Drawing.Size(56, 19);
             this.ColecoSubMenu.Text = "&Coleco";
@@ -2935,7 +2945,7 @@
             this.ColecoControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
             this.ColecoControllerSettingsMenuItem.Name = "ColecoControllerSettingsMenuItem";
             this.ColecoControllerSettingsMenuItem.Size = new System.Drawing.Size(253, 22);
-            this.ColecoControllerSettingsMenuItem.Text = "Controller Settings...";
+            this.ColecoControllerSettingsMenuItem.Text = "&Controller Settings...";
             this.ColecoControllerSettingsMenuItem.Click += new System.EventHandler(this.ColecoControllerSettingsMenuItem_Click);
             // 
             // N64SubMenu
@@ -3827,13 +3837,10 @@
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.timerMouseIdle_Tick);
             // 
-            // SNESControllerConfigurationMenuItem
+            // toolStripSeparator35
             // 
-            this.SNESControllerConfigurationMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
-            this.SNESControllerConfigurationMenuItem.Name = "SNESControllerConfigurationMenuItem";
-            this.SNESControllerConfigurationMenuItem.Size = new System.Drawing.Size(233, 22);
-            this.SNESControllerConfigurationMenuItem.Text = "Controller Configuration";
-            this.SNESControllerConfigurationMenuItem.Click += new System.EventHandler(this.SNESControllerConfigurationMenuItem_Click);
+            this.toolStripSeparator35.Name = "toolStripSeparator35";
+            this.toolStripSeparator35.Size = new System.Drawing.Size(250, 6);
             // 
             // MainForm
             // 
@@ -4279,5 +4286,6 @@
 		private System.Windows.Forms.ToolStripMenuItem IntvSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem IntVControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SNESControllerConfigurationMenuItem;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator35;
 	}
 }
