@@ -15,13 +15,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		[CoreConstructor("Coleco")]
 		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, object syncSettings)
 		{
-			ServiceProvider = new BasicServiceProvider(this);
+			var ser = new BasicServiceProvider(this);
 			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm = comm;
 			_syncSettings = (ColecoSyncSettings)syncSettings ?? new ColecoSyncSettings();
 			bool skipbios = _syncSettings.SkipBiosIntro;
 
-			Cpu = new Z80A
+			_cpu = new Z80A
 			{
 				ReadMemory = ReadMemory,
 				WriteMemory = WriteMemory,
@@ -32,15 +32,15 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			PSG = new SN76489();
 			_fakeSyncSound = new FakeSyncSound(PSG, 735);
-			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_fakeSyncSound);
+			ser.Register<ISoundProvider>(_fakeSyncSound);
 
 			ControllerDeck = new ColecoVisionControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
-			VDP = new TMS9918A(Cpu);
-			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(VDP);
+			_vdp = new TMS9918A(_cpu);
+			ser.Register<IVideoProvider>(_vdp);
 
 			// TODO: hack to allow bios-less operation would be nice, no idea if its feasible
-			BiosRom = CoreComm.CoreFileProvider.GetFirmware("Coleco", "Bios", true, "Coleco BIOS file is required.");
+			_biosRom = CoreComm.CoreFileProvider.GetFirmware("Coleco", "Bios", true, "Coleco BIOS file is required.");
 
 			// gamedb can overwrite the syncsettings; this is ok
 			if (game["NoSkip"])
@@ -49,45 +49,47 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 
 			LoadRom(rom, skipbios);
-			_game = game;
 			SetupMemoryDomains();
 
-			Tracer.Header = Cpu.TraceHeader;
-			var serviceProvider = ServiceProvider as BasicServiceProvider;
-			serviceProvider.Register<IDisassemblable>(new Disassembler());
-			serviceProvider.Register<ITraceable>(Tracer);
+			_tracer.Header = _cpu.TraceHeader;
+			ser.Register<IDisassemblable>(new Disassembler());
+			ser.Register<ITraceable>(_tracer);
+
+		    ServiceProvider = ser;
 		}
 
-		// ROM
-		private byte[] RomData;
-		private byte[] BiosRom;
+		private readonly Z80A _cpu;
+		private readonly TMS9918A _vdp;
+		private readonly byte[] _biosRom;
+		private readonly TraceBuffer _tracer = new TraceBuffer();
 
-		// Machine
-		private Z80A Cpu;
-		private TMS9918A VDP;
-
-		private byte[] Ram = new byte[1024];
-		private readonly TraceBuffer Tracer = new TraceBuffer();
-
-		public ColecoVisionControllerDeck ControllerDeck { get; private set; }
-
-		private const ushort RamSizeMask = 0x03FF;
-
+		private byte[] _romData;
+		private byte[] _ram = new byte[1024];
+		private int _frame;
 		private IController _controller;
+
+		private enum InputPortMode
+		{
+			Left, Right
+		}
+
+		private InputPortMode _inputPortSelection;
+
+		public ColecoVisionControllerDeck ControllerDeck { get; }
 
 		private void LoadRom(byte[] rom, bool skipbios)
 		{
-			RomData = new byte[0x8000];
+			_romData = new byte[0x8000];
 			for (int i = 0; i < 0x8000; i++)
 			{
-				RomData[i] = rom[i % rom.Length];
+				_romData[i] = rom[i % rom.Length];
 			}
 
 			// hack to skip colecovision title screen
 			if (skipbios)
 			{
-				RomData[0] = 0x55;
-				RomData[1] = 0xAA;
+				_romData[0] = 0x55;
+				_romData[1] = 0xAA;
 			}
 		}
 
@@ -99,10 +101,10 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			{
 				if ((port & 1) == 0)
 				{
-					return VDP.ReadData();
+					return _vdp.ReadData();
 				}
 
-				return VDP.ReadVdpStatus();
+				return _vdp.ReadVdpStatus();
 			}
 
 			if (port >= 0xE0)
@@ -126,11 +128,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			{
 				if ((port & 1) == 0)
 				{
-					VDP.WriteVdpData(value);
+					_vdp.WriteVdpData(value);
 				}
 				else
 				{
-					VDP.WriteVdpControl(value);
+					_vdp.WriteVdpControl(value);
 				}
 
 				return;
@@ -138,43 +140,38 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			if (port >= 0x80 && port <= 0x9F)
 			{
-				InputPortSelection = InputPortMode.Right;
+				_inputPortSelection = InputPortMode.Right;
 				return;
 			}
 
 			if (port >= 0xC0 && port <= 0xDF)
 			{
-				InputPortSelection = InputPortMode.Left;
+				_inputPortSelection = InputPortMode.Left;
 				return;
 			}
 
 			if (port >= 0xE0)
 			{
-				PSG.WritePsgData(value, Cpu.TotalExecutedCycles);
-				return;
+				PSG.WritePsgData(value, _cpu.TotalExecutedCycles);
 			}
 		}
-
-		private GameInfo _game;
-
-		public enum InputPortMode { Left, Right }
-		private InputPortMode InputPortSelection;
 
 		private byte ReadController1()
 		{
 			_isLag = false;
 			byte retval;
-			if (InputPortSelection == InputPortMode.Left)
+			if (_inputPortSelection == InputPortMode.Left)
 			{
 				retval = ControllerDeck.ReadPort1(_controller, true, false);
 				return retval;
 			}
 
-			if (InputPortSelection == InputPortMode.Right)
+			if (_inputPortSelection == InputPortMode.Right)
 			{
 				retval = ControllerDeck.ReadPort1(_controller, false, false);
 				return retval;
 			}
+
 			return 0x7F;
 		}
 
@@ -182,52 +179,50 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			_isLag = false;
 			byte retval;
-			if (InputPortSelection == InputPortMode.Left)
+			if (_inputPortSelection == InputPortMode.Left)
 			{
 				retval = ControllerDeck.ReadPort2(_controller, true, false);
 				return retval;
 			}
 
-			if (InputPortSelection == InputPortMode.Right)
+			if (_inputPortSelection == InputPortMode.Right)
 			{
 				retval = ControllerDeck.ReadPort2(_controller, false, false);
 				return retval;
 			}
+
 			return 0x7F;
 		}
 
-		private int frame;
-
-		public byte ReadMemory(ushort addr)
+		private byte ReadMemory(ushort addr)
 		{
 			if (addr >= 0x8000)
 			{
-				return RomData[addr & 0x7FFF];
+				return _romData[addr & 0x7FFF];
 			}
 
 			if (addr >= 0x6000)
 			{
-				return Ram[addr & 1023];
+				return _ram[addr & 1023];
 			}
 
 			if (addr < 0x2000)
 			{
-				return BiosRom[addr];
+				return _biosRom[addr];
 			}
 
-			//Console.WriteLine("Unhandled read at {0:X4}", addr);
+			////Console.WriteLine("Unhandled read at {0:X4}", addr);
 			return 0xFF;
 		}
 
-		public void WriteMemory(ushort addr, byte value)
+		private void WriteMemory(ushort addr, byte value)
 		{
 			if (addr >= 0x6000 && addr < 0x8000)
 			{
-				Ram[addr & 1023] = value;
-				return;
+				_ram[addr & 1023] = value;
 			}
 
-			//Console.WriteLine("Unhandled write at {0:X4}:{1:X2}", addr, value);
+			////Console.WriteLine("Unhandled write at {0:X4}:{1:X2}", addr, value);
 		}
 	}
 }

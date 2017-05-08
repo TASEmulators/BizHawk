@@ -12,14 +12,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public void FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			_controller = controller;
-			Cpu.Debug = Tracer.Enabled;
-			frame++;
+			_cpu.Debug = _tracer.Enabled;
+			_frame++;
 			_isLag = true;
-			PSG.BeginFrame(Cpu.TotalExecutedCycles);
+			PSG.BeginFrame(_cpu.TotalExecutedCycles);
 
-			if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
+			if (_cpu.Debug && _cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
 			{
-				Cpu.Logger = (s) => Tracer.Put(s);
+				_cpu.Logger = (s) => _tracer.Put(s);
 			}
 
 			byte tempRet1 = ControllerDeck.ReadPort1(controller, true, true);
@@ -27,9 +27,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			bool intPending = (!tempRet1.Bit(4)) | (!tempRet2.Bit(4));
 
-			VDP.ExecuteFrame(intPending);
+			_vdp.ExecuteFrame(intPending);
 
-			PSG.EndFrame(Cpu.TotalExecutedCycles);
+			PSG.EndFrame(_cpu.TotalExecutedCycles);
 
 			if (_isLag)
 			{
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		public int Frame => frame;
+		public int Frame => _frame;
 
 		public string SystemId => "Coleco";
 
@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public void ResetCounters()
 		{
-			frame = 0;
+			_frame = 0;
 			_lagCount = 0;
 			_isLag = false;
 		}
