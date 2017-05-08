@@ -193,9 +193,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private bool HasYM2413 = false;
 		private IController _controller;
 
-		private int frame = 0;
-
-		public int Frame { get { return frame; } set { frame = value; } }
+		private int _frame = 0;
 
 		private byte Port01 = 0xFF;
 		private byte Port02 = 0xFF;
