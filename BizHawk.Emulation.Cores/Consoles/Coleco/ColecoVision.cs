@@ -1,7 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80;
-using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
@@ -70,43 +69,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private byte[] Ram = new byte[1024];
 		private readonly TraceBuffer Tracer = new TraceBuffer();
 
-		public IEmulatorServiceProvider ServiceProvider { get; }
-
-		public ControllerDefinition ControllerDefinition => ControllerDeck.Definition;
-
 		public ColecoVisionControllerDeck ControllerDeck { get; private set; }
 
 		private const ushort RamSizeMask = 0x03FF;
 
 		private IController _controller;
-
-		public void FrameAdvance(IController controller, bool render, bool renderSound)
-		{
-			_controller = controller;
-			Cpu.Debug = Tracer.Enabled;
-			Frame++;
-			_isLag = true;
-			PSG.BeginFrame(Cpu.TotalExecutedCycles);
-
-			if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
-			{
-				Cpu.Logger = (s) => Tracer.Put(s);
-			}
-
-			byte tempRet1 = ControllerDeck.ReadPort1(controller, true, true);
-			byte tempRet2 = ControllerDeck.ReadPort2(controller, true, true);
-
-			bool intPending = (!tempRet1.Bit(4)) | (!tempRet2.Bit(4));
-
-			VDP.ExecuteFrame(intPending);
-
-			PSG.EndFrame(Cpu.TotalExecutedCycles);
-
-			if (_isLag)
-			{
-				_lagCount++;
-			}
-		}
 
 		private void LoadRom(byte[] rom, bool skipbios)
 		{
@@ -188,22 +155,47 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		public bool DeterministicEmulation => true;
-
-		public void Dispose()
-		{
-		}
-
-		public void ResetCounters()
-		{
-			Frame = 0;
-			_lagCount = 0;
-			_isLag = false;
-		}
-
-		public string SystemId => "Coleco";
-
 		private GameInfo _game;
-		public CoreComm CoreComm { get; }
+
+		public enum InputPortMode { Left, Right }
+		private InputPortMode InputPortSelection;
+
+		private byte ReadController1()
+		{
+			_isLag = false;
+			byte retval;
+			if (InputPortSelection == InputPortMode.Left)
+			{
+				retval = ControllerDeck.ReadPort1(_controller, true, false);
+				return retval;
+			}
+
+			if (InputPortSelection == InputPortMode.Right)
+			{
+				retval = ControllerDeck.ReadPort1(_controller, false, false);
+				return retval;
+			}
+			return 0x7F;
+		}
+
+		private byte ReadController2()
+		{
+			_isLag = false;
+			byte retval;
+			if (InputPortSelection == InputPortMode.Left)
+			{
+				retval = ControllerDeck.ReadPort2(_controller, true, false);
+				return retval;
+			}
+
+			if (InputPortSelection == InputPortMode.Right)
+			{
+				retval = ControllerDeck.ReadPort2(_controller, false, false);
+				return retval;
+			}
+			return 0x7F;
+		}
+
+		private int frame;
 	}
 }
