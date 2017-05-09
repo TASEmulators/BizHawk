@@ -42,10 +42,7 @@ namespace BizHawk.Client.Common
 		/// <summary>don't do this</summary>
 		public void ForceType(ControllerDefinition newtype) { _type = newtype; }
 
-		public bool this[string button]
-		{
-			get { return IsPressed(button); }
-		}
+		public bool this[string button] => IsPressed(button);
 
 		public bool AnyPressed
 		{
@@ -63,7 +60,7 @@ namespace BizHawk.Client.Common
 		// Looks for bindings which are activated by the supplied physical button.
 		public List<string> SearchBindings(string button)
 		{
-			return (from kvp in _bindings from bound_button in kvp.Value where bound_button == button select kvp.Key).ToList();
+			return (from kvp in _bindings from boundButton in kvp.Value where boundButton == button select kvp.Key).ToList();
 		}
 
 		// Searches bindings for the controller and returns true if this binding is mapped somewhere in this controller
@@ -235,13 +232,7 @@ namespace BizHawk.Client.Common
 			return (from key in _bindings from binding in key.Value select new KeyValuePair<string, string>(binding, key.Key)).ToList();
 		}
 
-		public List<string> PressedButtons
-		{
-			get
-			{
-				return (from button in _buttons where button.Value select button.Key).ToList();
-			}
-		}
+		public List<string> PressedButtons => (from button in _buttons where button.Value select button.Key).ToList();
 	}
 
 	public class AutofireController : IController
@@ -267,7 +258,7 @@ namespace BizHawk.Client.Common
 		public int On { get; set; }
 		public int Off { get; set; }
 
-		public ControllerDefinition Definition { get { return _type; } }
+		public ControllerDefinition Definition => _type;
 
 		public bool IsPressed(string button)
 		{
@@ -364,12 +355,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public List<string> PressedButtons
-		{
-			get
-			{
-				return (from button in _buttons where button.Value select button.Key).ToList();
-			}
-		}
+		public List<string> PressedButtons => (from button in _buttons where button.Value select button.Key).ToList();
 	}
 }

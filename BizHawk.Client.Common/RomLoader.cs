@@ -26,7 +26,10 @@ namespace BizHawk.Client.Common
 {
 	public class RomLoader
 	{
-		public enum LoadErrorType { Unknown, MissingFirmware, XML, DiscError }
+		public enum LoadErrorType
+		{
+			Unknown, MissingFirmware, XML, DiscError
+		}
 
 		// helper methods for the settings events
 		private object GetCoreSettings<T>()

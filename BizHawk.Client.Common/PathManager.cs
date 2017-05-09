@@ -222,14 +222,14 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public static string GetRomsPath(string sysID)
+		public static string GetRomsPath(string sysId)
 		{
 			if (Global.Config.UseRecentForROMs)
 			{
 				return Environment.SpecialFolder.Recent.ToString();
 			}
 
-			var path = Global.Config.PathEntries[sysID, "ROM"];
+			var path = Global.Config.PathEntries[sysId, "ROM"];
 
 			if (path == null || !PathIsSet(path.Path))
 			{
@@ -241,7 +241,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			return MakeAbsolutePath(path.Path, sysID);
+			return MakeAbsolutePath(path.Path, sysId);
 		}
 
 		public static string RemoveInvalidFileSystemChars(string name)
@@ -297,7 +297,10 @@ namespace BizHawk.Client.Common
 			// hijinx here to get the core name out of the game name
 			var name = FilesystemSafeName(game);
 			name = Path.GetDirectoryName(name);
-			if (name == string.Empty) name = FilesystemSafeName(game);
+			if (name == string.Empty)
+			{
+				name = FilesystemSafeName(game);
+			}
 
 			if (Global.MovieSession.Movie.IsActive)
 			{
@@ -309,7 +312,6 @@ namespace BizHawk.Client.Common
 
 			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
 		}
-
 
 		public static string RetroSystemPath(GameInfo game)
 		{
@@ -385,7 +387,7 @@ namespace BizHawk.Client.Common
 
 		public static string GetPathType(string system, string type)
 		{
-			var path = PathManager.GetPathEntryWithFallback(type, system).Path;
+			var path = GetPathEntryWithFallback(type, system).Path;
 			return MakeAbsolutePath(path, system);
 		}
 

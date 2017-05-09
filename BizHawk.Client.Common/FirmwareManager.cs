@@ -45,7 +45,6 @@ namespace BizHawk.Client.Common
 			RecentlyServed = new List<FirmwareEventArgs>();
 		}
 
-
 		public ResolutionInfo Resolve(string sysId, string firmwareId)
 		{
 			return Resolve(FirmwareDatabase.LookupFirmwareRecord(sysId, firmwareId));
@@ -68,6 +67,7 @@ namespace BizHawk.Client.Common
 				{
 					DoScanAndResolve();
 				}
+
 				first = false;
 				goto RETRY;
 			}
