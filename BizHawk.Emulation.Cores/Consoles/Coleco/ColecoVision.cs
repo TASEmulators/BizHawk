@@ -16,6 +16,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public ColecoVision(CoreComm comm, GameInfo game, byte[] rom, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
+			ServiceProvider = ser;
 			MemoryCallbacks = new MemoryCallbackSystem();
 			CoreComm = comm;
 			_syncSettings = (ColecoSyncSettings)syncSettings ?? new ColecoSyncSettings();
@@ -54,8 +55,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			_tracer.Header = _cpu.TraceHeader;
 			ser.Register<IDisassemblable>(new Disassembler());
 			ser.Register<ITraceable>(_tracer);
-
-		    ServiceProvider = ser;
 		}
 
 		private readonly Z80A _cpu;
