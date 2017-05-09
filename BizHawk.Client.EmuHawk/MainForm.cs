@@ -3669,6 +3669,8 @@ namespace BizHawk.Client.EmuHawk
 				StopMovie(true);
 			}
 
+			Global.Rewinder.Uninitialize();
+
 			if (GlobalWin.Tools.IsLoaded<TraceLogger>())
 				GlobalWin.Tools.Get<TraceLogger>().Restart();
 
@@ -3700,7 +3702,6 @@ namespace BizHawk.Client.EmuHawk
 
 				GlobalWin.Tools.Restart();
 				RewireSound();
-				Global.Rewinder.Uninitialize();
 				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
 				HandlePlatformMenus();
 				_stateSlots.Clear();
