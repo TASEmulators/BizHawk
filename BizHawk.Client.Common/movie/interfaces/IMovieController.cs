@@ -2,7 +2,7 @@
 
 namespace BizHawk.Client.Common
 {
-	public interface IMovieController: IController
+	public interface IMovieController : IController
 	{
 		new ControllerDefinition Definition { get; set; }
 

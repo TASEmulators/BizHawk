@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 		/// <returns>A brand new <see cref="Watch"/></returns>
 		public static Watch FromString(string line, IMemoryDomains domains)
 		{
-			string[] parts = line.Split(new char[] { '\t' }, 6);
+			string[] parts = line.Split(new[] { '\t' }, 6);
 
 			if (parts.Length < 6)
 			{
@@ -114,24 +114,24 @@ namespace BizHawk.Client.Common
 
 				return null;
 			}
+
 			long address;
 
 			if (long.TryParse(parts[0], NumberStyles.HexNumber, CultureInfo.CurrentCulture, out address))
 			{
-				WatchSize size = Watch.SizeFromChar(parts[1][0]);
-				DisplayType type = Watch.DisplayTypeFromChar(parts[2][0]);
+				WatchSize size = SizeFromChar(parts[1][0]);
+				DisplayType type = DisplayTypeFromChar(parts[2][0]);
 				bool bigEndian = parts[3] == "0" ? false : true;
 				MemoryDomain domain = domains[parts[4]];
 				string notes = parts[5].Trim(new char[] { '\r', '\n' });
 
-				return Watch.GenerateWatch(
+				return GenerateWatch(
 					domain,
 					address,
 					size,
 					type,
 					bigEndian,
-					notes
-					);
+					notes);
 			}
 			else
 			{
@@ -346,81 +346,84 @@ namespace BizHawk.Client.Common
 		{
 			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
 			{
-				//LIAR logic				
+				// LIAR logic
 				return Global.CheatList.GetByteValue(_domain, _address) ?? 0;
 			}
-			else
+			
+			if (_domain.Size == 0)
 			{
-				if (_domain.Size == 0)
-				{
-					return _domain.PeekByte(_address);
-				}
-				else
-				{
-					return _domain.PeekByte(_address % _domain.Size);
-				}
+				return _domain.PeekByte(_address);
 			}
+
+			return _domain.PeekByte(_address % _domain.Size);
 		}
 
 		protected ushort GetWord(bool bypassFreeze = false)
 		{
 			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
 			{
-				//LIAR logic
+				// LIAR logic
 				return (ushort)(Global.CheatList.GetCheatValue(_domain, _address, WatchSize.Word) ?? 0);
 			}
-			else
+
+			if (_domain.Size == 0)
 			{
-				if (_domain.Size == 0)
-				{
-					return _domain.PeekUshort(_address, _bigEndian);
-				}
-				else
-				{
-					return _domain.PeekUshort(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
-				}
+				return _domain.PeekUshort(_address, _bigEndian);
 			}
+
+			return _domain.PeekUshort(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
 		}
 
 		protected uint GetDWord(bool bypassFreeze = false)
 		{
 			if (!bypassFreeze && Global.CheatList.IsActive(_domain, _address))
 			{
-				//LIAR logic
+				// LIAR logic
 				return (uint)(Global.CheatList.GetCheatValue(_domain, _address, WatchSize.DWord) ?? 0);
 			}
-			else
+
+			if (_domain.Size == 0)
 			{
-				if (_domain.Size == 0)
-				{
-					return _domain.PeekUint(_address, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
-				}
-				else
-				{
-					return _domain.PeekUint(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
-				}
+				return _domain.PeekUint(_address, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
 			}
+
+			return _domain.PeekUint(_address % _domain.Size, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
 		}
 
 		protected void PokeByte(byte val)
 		{
 			if (_domain.Size == 0)
+			{
 				_domain.PokeByte(_address, val);
-			else _domain.PokeByte(_address % _domain.Size, val);
+			}
+			else
+			{
+				_domain.PokeByte(_address % _domain.Size, val);
+			}
 		}
 
 		protected void PokeWord(ushort val)
 		{
 			if (_domain.Size == 0)
+			{
 				_domain.PokeUshort(_address, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
-			else _domain.PokeUshort(_address % _domain.Size, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			}
+			else
+			{
+				_domain.PokeUshort(_address % _domain.Size, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			}
 		}
 
 		protected void PokeDWord(uint val)
 		{
 			if (_domain.Size == 0)
+			{
 				_domain.PokeUint(_address, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
-			else _domain.PokeUint(_address % _domain.Size, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			}
+			else
+			{
+				_domain.PokeUint(_address % _domain.Size, val, _bigEndian); // TODO: % size stil lisn't correct since it could be the last byte of the domain
+			}
 		}
 
 		#endregion Protected
@@ -521,14 +524,12 @@ namespace BizHawk.Client.Common
 				return Equals((Watch)obj);
 			}
 
-			else if (obj is Cheat)
+			if (obj is Cheat)
 			{
 				return Equals((Cheat)obj);
 			}
-			else
-			{
-				return base.Equals(obj);
-			}
+
+			return base.Equals(obj);
 		}
 
 		/// <summary>
@@ -557,14 +558,7 @@ namespace BizHawk.Client.Common
 		/// <returns>A <see cref="string"/> representation of the current <see cref="Watch"/></returns>
 		public override string ToString()
 		{
-			return string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}"
-				, Domain == null && Address == 0 ? "0" : Address.ToHexString((Domain.Size - 1).NumHexDigits())
-				, SizeAsChar
-				, TypeAsChar
-				, Convert.ToInt32(BigEndian)
-				, DomainName
-				, Notes.Trim('\r', '\n')
-				);
+			return $"{(Domain == null && Address == 0 ? "0" : Address.ToHexString((Domain.Size - 1).NumHexDigits()))}\t{SizeAsChar}\t{TypeAsChar}\t{Convert.ToInt32(BigEndian)}\t{DomainName}\t{Notes.Trim('\r', '\n')}";
 		}
 
 		/// <summary>
@@ -574,7 +568,7 @@ namespace BizHawk.Client.Common
 		/// <returns>A well formatted string representation</returns>
 		public virtual string ToDisplayString()
 		{
-			return string.Format("{0}: {1}", Notes, ValueString);
+			return $"{Notes}: {ValueString}";
 		}
 
 		#endregion
@@ -634,13 +628,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the address in the <see cref="MemoryDomain"/>
 		/// </summary>
-		public long Address
-		{
-			get
-			{
-				return _address;
-			}
-		}
+		public long Address => _address;
 
 		/// <summary>
 		/// Gets the format tha should be used by string.Format()
@@ -661,13 +649,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the address in the <see cref="MemoryDomain"/> formatted as string
 		/// </summary>
-		public string AddressString
-		{
-			get
-			{
-				return _address.ToString(AddressFormatStr);
-			}
-		}
+		public string AddressString => _address.ToString(AddressFormatStr);
 
 		/// <summary>
 		/// Gets or sets the endianess of current <see cref="Watch"/>
@@ -688,16 +670,10 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the number of time tha value of current <see cref="Watch"/> has changed
 		/// </summary>
-		public int ChangeCount
-		{
-			get
-			{
-				return _changecount;
-			}
-		}
+		public int ChangeCount => _changecount;
 
 		/// <summary>
-		/// Gets or set the way current <see cref="Watch"/> is displayed
+		/// Gets or sets the way current <see cref="Watch"/> is displayed
 		/// </summary>
 		/// <exception cref="ArgumentException">Occurs when a <see cref="DisplayType"/> is incompatible with the <see cref="WatchSize"/></exception>
 		public DisplayType Type
@@ -730,7 +706,7 @@ namespace BizHawk.Client.Common
 			}
 			internal set
 			{
-				if (value != null &&_domain.Name == value.Name)
+				if (value != null && _domain.Name == value.Name)
 				{
 					_domain = value;
 				}
@@ -811,7 +787,7 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
-		//TODO: Replace all the following stuff by implementing ISerializable
+		// TODO: Replace all the following stuff by implementing ISerializable
 		public static string DisplayTypeToString(DisplayType type)
 		{
 			switch (type)

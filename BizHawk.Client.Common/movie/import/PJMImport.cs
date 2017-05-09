@@ -1,17 +1,17 @@
 ﻿using BizHawk.Emulation.Cores.Sony.PSX;
-using Newtonsoft.Json;
 using System;
 using System.IO;
+
+using Newtonsoft.Json;
 
 namespace BizHawk.Client.Common
 {
 	[ImportExtension(".pjm")]
-	public class PJMImport : MovieImporter
+	public class PjmImport : MovieImporter
 	{
 		protected override void RunImport()
 		{
 			Bk2Movie movie = Result.Movie;
-			MiscHeaderInfo info;
 
 			movie.HeaderEntries[HeaderKeys.PLATFORM] = "PSX";
 
@@ -19,17 +19,17 @@ namespace BizHawk.Client.Common
 			{
 				using (var br = new BinaryReader(fs))
 				{
-					info = parseHeader(movie, "PJM ", br);
+					var info = ParseHeader(movie, "PJM ", br);
 
 					fs.Seek(info.controllerDataOffset, SeekOrigin.Begin);
 
 					if (info.binaryFormat)
 					{
-						parseBinaryInputLog(br, movie, info);
+						ParseBinaryInputLog(br, movie, info);
 					}
 					else
 					{
-						parseTextInputLog(br, movie, info);
+						ParseTextInputLog(br, movie, info);
 					}
 				}
 			}
@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 			movie.Save();
 		}
 
-		protected MiscHeaderInfo parseHeader(Bk2Movie movie, string expectedMagic, BinaryReader br)
+		protected MiscHeaderInfo ParseHeader(Bk2Movie movie, string expectedMagic, BinaryReader br)
 		{
 			var info = new MiscHeaderInfo();
 
@@ -48,10 +48,10 @@ namespace BizHawk.Client.Common
 				return info;
 			}
 
-			UInt32 movieVersionNumber = br.ReadUInt32();
+			uint movieVersionNumber = br.ReadUInt32();
 			if (movieVersionNumber != 2)
 			{
-				Result.Warnings.Add(String.Format("Unexpected movie version: got {0}, expecting 2", movieVersionNumber));
+				Result.Warnings.Add($"Unexpected movie version: got {movieVersionNumber}, expecting 2");
 			}
 
 			// 008: UInt32 emulator version.
@@ -63,26 +63,32 @@ namespace BizHawk.Client.Common
 			{
 				Result.Errors.Add("Movie starts from savestate; this is currently unsupported.");
 			}
+
 			if ((flags & 0x04) != 0)
 			{
 				movie.HeaderEntries[HeaderKeys.PAL] = "1";
 			}
+
 			if ((flags & 0x08) != 0)
 			{
 				Result.Errors.Add("Movie contains embedded memory cards; this is currently unsupported.");
 			}
+
 			if ((flags & 0x10) != 0)
 			{
 				Result.Errors.Add("Movie contains embedded cheat list; this is currently unsupported.");
 			}
+
 			if ((flags & 0x20) != 0 || (flags2 & 0x06) != 0)
 			{
 				Result.Errors.Add("Movie relies on emulator hacks; this is currently unsupported.");
 			}
+
 			if ((flags & 0x40) != 0)
 			{
 				info.binaryFormat = false;
 			}
+
 			if ((flags & 0x80) != 0 || (flags2 & 0x01) != 0)
 			{
 				Result.Errors.Add("Movie uses multitap; this is currently unsupported.");
@@ -127,14 +133,23 @@ namespace BizHawk.Client.Common
 					return info;
 			}
 
-			Octoshock.SyncSettings syncsettings = new Octoshock.SyncSettings();
-			syncsettings.FIOConfig.Devices8 = 
-				new[] { 
-					info.player1Type,
-					OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None,
-					info.player2Type,
-					OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None
-				};
+			var syncsettings = new Octoshock.SyncSettings
+			{
+				FIOConfig =
+				{
+					Devices8 = new[]
+					{
+						info.player1Type,
+						OctoshockDll.ePeripheralType.None,
+						OctoshockDll.ePeripheralType.None,
+						OctoshockDll.ePeripheralType.None,
+						info.player2Type,
+						OctoshockDll.ePeripheralType.None,
+						OctoshockDll.ePeripheralType.None,
+						OctoshockDll.ePeripheralType.None
+					}
+				}
+			};
 
 			// Annoying kludge to force the json serializer to serialize the type name for "o" object.
 			// For just the "o" object to have type information, it must be cast to a superclass such
@@ -147,7 +162,7 @@ namespace BizHawk.Client.Common
 			movie.SyncSettingsJson = JsonConvert.SerializeObject(new { o = (object)syncsettings }, jsonSettings);
 
 			info.frameCount = br.ReadUInt32();
-			UInt32 rerecordCount = br.ReadUInt32();
+			uint rerecordCount = br.ReadUInt32();
 			movie.HeaderEntries[HeaderKeys.RERECORDS] = rerecordCount.ToString();
 
 			// 018: UInt32 savestateOffset
@@ -158,12 +173,11 @@ namespace BizHawk.Client.Common
 			// 028: UInt32 cdRomIdOffset
 			// Source format is just the first up-to-8 alphanumeric characters of the CD label, 
 			// so not so useful.
-
 			br.ReadBytes(20);
 
 			info.controllerDataOffset = br.ReadUInt32();
 
-			UInt32 authorNameLength = br.ReadUInt32();
+			uint authorNameLength = br.ReadUInt32();
 			char[] authorName = br.ReadChars((int)authorNameLength);
 
 			movie.HeaderEntries[HeaderKeys.AUTHOR] = new string(authorName);
@@ -172,21 +186,24 @@ namespace BizHawk.Client.Common
 			return info;
 		}
 
-		protected void parseBinaryInputLog(BinaryReader br, Bk2Movie movie, MiscHeaderInfo info)
+		protected void ParseBinaryInputLog(BinaryReader br, Bk2Movie movie, MiscHeaderInfo info)
 		{
 			Octoshock.SyncSettings settings = new Octoshock.SyncSettings();
 			SimpleController controllers = new SimpleController();
-			settings.FIOConfig.Devices8 =
-				new[] { 
-					info.player1Type,
-					OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None,
-					info.player2Type,
-					OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None
-				};
+			settings.FIOConfig.Devices8 = new[]
+			{ 
+				info.player1Type,
+				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None,
+				info.player2Type,
+				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None
+			};
 			controllers.Definition = Octoshock.CreateControllerDefinition(settings);
 
-			string[] buttons = { "Select", "L3", "R3", "Start", "Up", "Right", "Down", "Left",
-									"L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"};
+			string[] buttons =
+			{
+				"Select", "L3", "R3", "Start", "Up", "Right", "Down", "Left",
+				"L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"
+			};
 
 			bool isCdTrayOpen = false;
 			int cdNumber = 1;
@@ -195,7 +212,7 @@ namespace BizHawk.Client.Common
 			{
 				if (info.player1Type != OctoshockDll.ePeripheralType.None)
 				{
-					UInt16 controllerState = br.ReadUInt16();
+					ushort controllerState = br.ReadUInt16();
 
 					// As L3 and R3 don't exist on a standard gamepad, handle them separately later.  Unfortunately
 					// due to the layout, we handle select separately too first.
@@ -203,7 +220,7 @@ namespace BizHawk.Client.Common
 
 					for (int button = 3; button < buttons.Length; button++)
 					{
-						controllers["P1 " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
+						controllers["P1 " + buttons[button]] = ((controllerState >> button) & 0x1) != 0;
 						if (((controllerState >> button) & 0x1) != 0 && button > 15)
 						{
 							continue;
@@ -225,10 +242,10 @@ namespace BizHawk.Client.Common
 
 				if (info.player2Type != OctoshockDll.ePeripheralType.None)
 				{
-					UInt16 controllerState = br.ReadUInt16();
+					ushort controllerState = br.ReadUInt16();
 					for (int button = 0; button < buttons.Length; button++)
 					{
-						controllers["P2 " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
+						controllers["P2 " + buttons[button]] = ((controllerState >> button) & 0x1) != 0;
 						if (((controllerState >> button) & 0x1) != 0 && button > 15)
 						{
 							continue;
@@ -279,21 +296,24 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected void parseTextInputLog(BinaryReader br, Bk2Movie movie, MiscHeaderInfo info)
+		protected void ParseTextInputLog(BinaryReader br, Bk2Movie movie, MiscHeaderInfo info)
 		{
 			Octoshock.SyncSettings settings = new Octoshock.SyncSettings();
 			SimpleController controllers = new SimpleController();
-			settings.FIOConfig.Devices8 =
-				new[] { 
-					info.player1Type,
-					OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None,
-					info.player2Type,
-					OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None,OctoshockDll.ePeripheralType.None
-				};
+			settings.FIOConfig.Devices8 = new[]
+			{
+				info.player1Type,
+				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None,
+				info.player2Type,
+				OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None, OctoshockDll.ePeripheralType.None
+			};
 			controllers.Definition = Octoshock.CreateControllerDefinition(settings);
 
-			string[] buttons = { "Select", "L3", "R3", "Start", "Up", "Right", "Down", "Left",
-			                     "L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"};
+			string[] buttons =
+			{
+				"Select", "L3", "R3", "Start", "Up", "Right", "Down", "Left",
+				"L2", "R2", "L1", "R1", "Triangle", "Circle", "Cross", "Square"
+			};
 
 			bool isCdTrayOpen = false;
 			int cdNumber = 1;

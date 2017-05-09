@@ -135,7 +135,7 @@ namespace BizHawk.Client.Common
 			string superhack = null;
 			if (target.CoreFileProvider != null && target.CoreFileProvider is CoreFileProvider)
 			{
-				superhack = ((CoreFileProvider)target.CoreFileProvider ).SubfileDirectory;
+				superhack = ((CoreFileProvider)target.CoreFileProvider).SubfileDirectory;
 			}
 
 			var cfp = new CoreFileProvider(target.ShowMessage) { SubfileDirectory = superhack };

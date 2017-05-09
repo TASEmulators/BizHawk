@@ -90,10 +90,12 @@ namespace BizHawk.Client.Common
 				int lastframe = 0;
 				subs = subs.OrderBy(s => s.Frame).ThenBy(s => s.Y).ToList();
 
-				for (int i = 0; ; i++)
+				for (int i = 0;; i++)
 				{
-					if (i == subs.Count()) // we're modifying it
+					if (i == subs.Count) // we're modifying it
+					{
 						break;
+					}
 
 					subs[i].Message = subs[i].Message.Trim();
 

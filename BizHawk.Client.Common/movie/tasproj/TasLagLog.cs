@@ -118,8 +118,8 @@ namespace BizHawk.Client.Common
 		{
 			LagLog.Clear();
 			WasLag.Clear();
-			//if (br.BaseStream.Length > 0)
-			//{ BaseStream.Length does not return the expected value.
+			////if (br.BaseStream.Length > 0)
+			////{ BaseStream.Length does not return the expected value.
 			int formatVersion = br.ReadByte();
 			if (formatVersion == 0)
 			{
@@ -141,10 +141,13 @@ namespace BizHawk.Client.Common
 					LagLog.Add(br.ReadBoolean());
 					WasLag.Add(br.ReadBoolean());
 				}
+
 				for (int i = length; i < lenWas; i++)
+				{
 					WasLag.Add(br.ReadBoolean());
+				}
 			}
-			//}
+			////}
 		}
 
 		public bool? History(int frame)
@@ -152,7 +155,9 @@ namespace BizHawk.Client.Common
 			if (frame < WasLag.Count)
 			{
 				if (frame < 0)
+				{
 					return null;
+				}
 
 				return WasLag[frame];
 			}
@@ -165,18 +170,21 @@ namespace BizHawk.Client.Common
 			get
 			{
 				if (LagLog.Count == 0)
+				{
 					return 0;
+				}
+
 				return LagLog.Count - 1;
 			}
 		}
 
 		public TasLagLog Clone()
 		{
-			var log = new TasLagLog();
-			log.LagLog = LagLog.ToList();
-			log.WasLag = WasLag.ToList();
-
-			return log;
+			return new TasLagLog
+			{
+				LagLog = LagLog.ToList(),
+				WasLag = WasLag.ToList()
+			};
 		}
 
 		public void FromLagLog(TasLagLog log)

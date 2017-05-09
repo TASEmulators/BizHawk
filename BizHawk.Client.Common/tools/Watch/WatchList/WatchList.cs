@@ -328,13 +328,15 @@ namespace BizHawk.Client.Common
 			Parallel.ForEach<Watch>(_watchList, watch =>
 			{
 				if (watch.IsSeparator)
+				{
 					return;
+				}
+
 				watch.Domain = core[watch.Domain.Name];
 				watch.ResetPrevious();
 				watch.Update();
 				watch.ClearChangeCount();
-			}
-			);
+			});
 		}
 
 		/// <summary>

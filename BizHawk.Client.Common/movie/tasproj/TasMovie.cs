@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 		public const string DefaultProjectName = "default";
 		public BackgroundWorker _progressReportWorker = null;
 		public bool LastPositionStable = true;
-		public string NewBranchText = "";
+		public string NewBranchText = string.Empty;
 		public readonly IStringLog VerificationLog = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 		public readonly TasBranchCollection Branches = new TasBranchCollection();
 		public readonly TasSession Session;
@@ -36,13 +36,20 @@ namespace BizHawk.Client.Common
 		public int LastValidFrame { get { return LagLog.LastValidFrame; } }
 		public override string PreferredExtension { get { return Extension; } }
 		public TasStateManager TasStateManager { get { return StateManager; } }
-		public TasMovieRecord this[int index] { get { return new TasMovieRecord {
-			// State = StateManager[index],
-			HasState = StateManager.HasState(index),
-			LogEntry = GetInputLogEntry(index),
-			Lagged = LagLog[index + 1],
-			WasLagged = LagLog.History(index + 1)
-		}; } }
+		public TasMovieRecord this[int index]
+		{
+			get
+			{
+				return new TasMovieRecord
+				{
+					// State = StateManager[index],
+					HasState = StateManager.HasState(index),
+					LogEntry = GetInputLogEntry(index),
+					Lagged = LagLog[index + 1],
+					WasLagged = LagLog.History(index + 1)
+				};
+			}
+		}
 
 		public TasMovie(string path, bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
 			: base(path)
@@ -347,7 +354,7 @@ namespace BizHawk.Client.Common
 				_log.Clear();
 				_log.AddRange(newLog);
 			}
-			else //Multitrack mode
+			else // Multitrack mode
 			{
 				// TODO: consider TimelineBranchFrame here, my thinking is that there's never a scenario to invalidate state/lag data during multitrack
 				var i = 0;
@@ -499,7 +506,7 @@ namespace BizHawk.Client.Common
 
 			if (_log != null) _log.Dispose();
 			_log = branch.InputLog.Clone();
-			//_changes = true;
+			////_changes = true;
 
 			// if there are branch states, they will be loaded anyway
 			// but if there's none, or only *after* divergent point, don't invalidate the entire movie anymore
@@ -514,7 +521,7 @@ namespace BizHawk.Client.Common
 			StateManager.LoadBranch(Branches.IndexOf(branch));
 			StateManager.SetState(branch.Frame, branch.CoreData);
 
-			//ChangeLog = branch.ChangeLog;
+			////ChangeLog = branch.ChangeLog;
 			if (BindMarkersToInput) // pretty critical not to erase them
 				Markers = branch.Markers;
 

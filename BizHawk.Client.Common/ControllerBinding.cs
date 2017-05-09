@@ -160,7 +160,7 @@ namespace BizHawk.Client.Common
 
 		public void ApplyAxisConstraints(string constraintClass)
 		{
-			_type.ApplyAxisConstraints(constraintClass,_floatButtons);
+			_type.ApplyAxisConstraints(constraintClass, _floatButtons);
 		}
 
 		/// <summary>

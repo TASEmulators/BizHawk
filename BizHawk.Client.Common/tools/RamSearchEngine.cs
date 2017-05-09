@@ -10,10 +10,17 @@ namespace BizHawk.Client.Common
 {
 	public class RamSearchEngine
 	{
-		public enum ComparisonOperator { Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual, DifferentBy }
-		public enum Compare { Previous, SpecificValue, SpecificAddress, Changes, Difference }
+		public enum ComparisonOperator
+		{
+			Equal, GreaterThan, GreaterThanEqual, LessThan, LessThanEqual, NotEqual, DifferentBy
+		}
 
-		private int? _differentBy; //zero 07-sep-2014 - this isnt ideal. but dont bother changing it (to a long, for instance) until it can support floats. maybe store it as a double here.
+		public enum Compare
+		{
+			Previous, SpecificValue, SpecificAddress, Changes, Difference
+		}
+
+		private int? _differentBy; // zero 07-sep-2014 - this isnt ideal. but dont bother changing it (to a long, for instance) until it can support floats. maybe store it as a double here.
 
 		private Compare _compareTo = Compare.Previous;
 		private long? _compareValue;
@@ -144,8 +151,7 @@ namespace BizHawk.Client.Common
 						string.Empty,
 						0,
 						_watchList[index].Previous,
-						(_watchList[index] as IMiniWatchDetails).ChangeCount
-					);
+						(_watchList[index] as IMiniWatchDetails).ChangeCount);
 				}
 				else
 				{
@@ -158,8 +164,7 @@ namespace BizHawk.Client.Common
 						string.Empty,
 						0,
 						_watchList[index].Previous,
-						0
-					);
+						0);
 				}
 			}
 		}
@@ -673,16 +678,12 @@ namespace BizHawk.Client.Common
 								=> (SignExtendAsNeeded(GetValue(x.Address)) + _differentBy.Value == _compareValue.Value)
 								|| (SignExtendAsNeeded(GetValue(x.Address)) - _differentBy.Value == _compareValue.Value));
 						}
-						else
-						{
-							throw new InvalidOperationException();
-						}
+
+						throw new InvalidOperationException();
 				}
 			}
-			else
-			{
-				throw new InvalidOperationException();
-			}
+
+			throw new InvalidOperationException();
 		}
 
 		private IEnumerable<IMiniWatch> CompareSpecificAddress(IEnumerable<IMiniWatch> watchList)
@@ -709,16 +710,12 @@ namespace BizHawk.Client.Common
 						{
 							return watchList.Where(x => (x.Address + _differentBy.Value == _compareValue.Value) || (x.Address - _differentBy.Value == _compareValue.Value));
 						}
-						else
-						{
-							throw new InvalidOperationException();
-						}
+
+						throw new InvalidOperationException();
 				}
 			}
-			else
-			{
-				throw new InvalidOperationException();
-			}
+
+			throw new InvalidOperationException();
 		}
 
 		private IEnumerable<IMiniWatch> CompareChanges(IEnumerable<IMiniWatch> watchList)
@@ -766,16 +763,12 @@ namespace BizHawk.Client.Common
 								.Where(x => (x.ChangeCount + _differentBy.Value == _compareValue.Value) || (x.ChangeCount - _differentBy.Value == _compareValue.Value))
 								.Cast<IMiniWatch>();
 						}
-						else
-						{
-							throw new InvalidOperationException();
-						}
+
+						throw new InvalidOperationException();
 				}
 			}
-			else
-			{
-				throw new InvalidCastException();
-			}
+
+			throw new InvalidCastException();
 		}
 
 		private IEnumerable<IMiniWatch> CompareDifference(IEnumerable<IMiniWatch> watchList)
@@ -840,16 +833,12 @@ namespace BizHawk.Client.Common
 								=> (SignExtendAsNeeded(GetValue(x.Address)) - SignExtendAsNeeded(x.Previous) + _differentBy.Value == _compareValue)
 								|| (SignExtendAsNeeded(GetValue(x.Address)) - SignExtendAsNeeded(x.Previous) - _differentBy.Value == _compareValue));
 						}
-						else
-						{
-							throw new InvalidOperationException();
-						}
+
+						throw new InvalidOperationException();
 				}
 			}
-			else
-			{
-				throw new InvalidCastException();
-			}
+
+			throw new InvalidCastException();
 		}
 
 		#endregion
@@ -975,7 +964,7 @@ namespace BizHawk.Client.Common
 
 		public sealed class MiniDWordWatch : IMiniWatch
 		{
-			public long Address { get; private set; }
+			public long Address { get; }
 			private uint _previous;
 
 			public MiniDWordWatch(MemoryDomain domain, long addr, bool bigEndian)
@@ -994,7 +983,7 @@ namespace BizHawk.Client.Common
 
 		private sealed class MiniByteWatchDetailed : IMiniWatch, IMiniWatchDetails
 		{
-			public long Address { get; private set; }
+			public long Address { get; }
 
 			private byte _previous;
 			private byte _prevFrame;
@@ -1034,7 +1023,10 @@ namespace BizHawk.Client.Common
 						break;
 					case PreviousType.LastChange:
 						if (_prevFrame != value)
+						{
 							_previous = _prevFrame;
+						}
+
 						break;
 				}
 
@@ -1049,7 +1041,7 @@ namespace BizHawk.Client.Common
 
 		private sealed class MiniWordWatchDetailed : IMiniWatch, IMiniWatchDetails
 		{
-			public long Address { get; private set; }
+			public long Address { get; }
 
 			private ushort _previous;
 			private ushort _prevFrame;
@@ -1105,7 +1097,7 @@ namespace BizHawk.Client.Common
 
 		public sealed class MiniDWordWatchDetailed : IMiniWatch, IMiniWatchDetails
 		{
-			public long Address { get; private set; }
+			public long Address { get; }
 
 			private uint _previous;
 			private uint _prevFrame;
@@ -1122,15 +1114,9 @@ namespace BizHawk.Client.Common
 				_previous = _prevFrame = domain.PeekUint(Address % domain.Size, bigendian);
 			}
 
-			public long Previous
-			{
-				get { return (int)_previous; }
-			}
+			public long Previous => (int)_previous;
 
-			public int ChangeCount
-			{
-				get { return _changecount; }
-			}
+			public int ChangeCount => _changecount;
 
 			public void Update(PreviousType type, MemoryDomain domain, bool bigendian)
 			{
@@ -1150,7 +1136,10 @@ namespace BizHawk.Client.Common
 						break;
 					case PreviousType.LastChange:
 						if (_prevFrame != value)
+						{
 							_previous = _prevFrame;
+						}
+
 						break;
 				}
 
@@ -1180,7 +1169,10 @@ namespace BizHawk.Client.Common
 			}
 
 			/*Require restart*/
-			public enum SearchMode { Fast, Detailed }
+			public enum SearchMode
+			{
+				Fast, Detailed
+			}
 
 			public SearchMode Mode { get; set; }
 			public MemoryDomain Domain { get; set; }

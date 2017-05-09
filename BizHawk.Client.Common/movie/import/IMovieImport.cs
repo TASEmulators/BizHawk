@@ -61,8 +61,7 @@ namespace BizHawk.Client.Common
 		{
 			// Case-insensitive search.
 			int x = line.ToLower().LastIndexOf(
-				headerName.ToLower()
-			) + headerName.Length;
+				headerName.ToLower()) + headerName.Length;
 			string str = line.Substring(x + 1, line.Length - x - 1);
 			return str.Trim();
 		}

@@ -212,7 +212,7 @@ namespace BizHawk.Client.Common
 
 		#endregion Implements
 
-		//TODO: Implements IFormattable
+		// TODO: Implements IFormattable
 		public string FormatValue(ushort val)
 		{
 			switch (Type)

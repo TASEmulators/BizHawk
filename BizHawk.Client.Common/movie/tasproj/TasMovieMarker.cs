@@ -93,7 +93,7 @@ namespace BizHawk.Client.Common
 		{
 			if (CollectionChanged != null)
 			{
-				//TODO Allow different types
+				// TODO Allow different types
 				CollectionChanged.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 			}
 		}

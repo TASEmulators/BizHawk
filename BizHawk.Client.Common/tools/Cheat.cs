@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 			LESS_THAN,
 			LESS_THAN_OR_EQUAL,
 			NOT_EQUAL
-		};
+		}
 
 		private readonly Watch _watch;
 		private int? _compare;

@@ -72,7 +72,7 @@ namespace BizHawk.Client.Common
 
 		public void ResolveWithDefaults()
 		{
-			//TODO - this method is potentially disastrously O(N^2) slow due to linear search nested in loop
+			// TODO - this method is potentially disastrously O(N^2) slow due to linear search nested in loop
 
 			// Add missing entries
 			foreach (Binding default_binding in DefaultValues)

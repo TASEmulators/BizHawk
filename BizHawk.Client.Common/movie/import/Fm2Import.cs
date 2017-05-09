@@ -46,8 +46,7 @@ namespace BizHawk.Client.Common
 					else if (line.ToLower().StartsWith("emuversion"))
 					{
 						Result.Movie.Comments.Add(
-							string.Format("{0} {1} version {2}", EMULATIONORIGIN, emulator, ParseHeader(line, "emuVersion"))
-						);
+							string.Format("{0} {1} version {2}", EMULATIONORIGIN, emulator, ParseHeader(line, "emuVersion")));
 					}
 					else if (line.ToLower().StartsWith("version"))
 					{
@@ -96,7 +95,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.ToLower().StartsWith("guid"))
 					{
-						continue; //We no longer care to keep this info
+						continue; // We no longer care to keep this info
 					}
 					else if (line.ToLower().StartsWith("startsfromsavestate"))
 					{
@@ -113,7 +112,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.ToLower().StartsWith("fourscore"))
 					{
-						bool fourscore = (ParseHeader(line, "fourscore") == "1");
+						bool fourscore = ParseHeader(line, "fourscore") == "1";
 						if (fourscore)
 						{
 							// TODO: set controller config sync settings

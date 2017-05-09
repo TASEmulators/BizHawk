@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 
 using LuaInterface;
-using BizHawk.Common;
-using BizHawk.Emulation.Common;
+
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -23,8 +20,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"set",
-			"adds or updates the data with the given key with the given value"
-		)]
+			"adds or updates the data with the given key with the given value")]
 		public void Set(string name, object value)
 		{
 			Global.UserBag[name] = value;
@@ -32,8 +28,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"get",
-			"gets the data with the given key, if the key does not exist it will return nil"
-		)]
+			"gets the data with the given key, if the key does not exist it will return nil")]
 		public object Get(string key)
 		{
 			if (Global.UserBag.ContainsKey(key))
@@ -46,8 +41,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"clear",
-			"clears all user data"
-		)]
+			"clears all user data")]
 		public void Clear()
 		{
 			Global.UserBag.Clear();
@@ -55,8 +49,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"remove",
-			"remove the data with the given key. Returns true if the element is successfully found and removed; otherwise, false."
-		)]
+			"remove the data with the given key. Returns true if the element is successfully found and removed; otherwise, false.")]
 		public bool Remove(string key)
 		{
 			return Global.UserBag.Remove(key);
@@ -64,8 +57,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"containskey",
-			"returns whether or not there is an entry for the given key"
-		)]
+			"returns whether or not there is an entry for the given key")]
 		public bool ContainsKey(string key)
 		{
 			return Global.UserBag.ContainsKey(key);

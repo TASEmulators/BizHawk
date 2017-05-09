@@ -153,7 +153,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var item in collection)
 			{
-				Insert(index++,item);
+				Insert(index++, item);
 			}
 		}
 

@@ -43,15 +43,15 @@ namespace BizHawk.Client.Common
 			if (currDirSpeedHack == path)
 				return true;
 
-			//WARNING: setting the current directory is SLOW!!! security checks for some reason.
-			//so we're bypassing it with windows hacks
+			// WARNING: setting the current directory is SLOW!!! security checks for some reason.
+			// so we're bypassing it with windows hacks
 			#if WINDOWS
 				fixed (byte* pstr = &System.Text.Encoding.Unicode.GetBytes(target + "\0")[0])
 					return SetCurrentDirectoryW(pstr);
 			#else
-				if(System.IO.Directory.Exists(CurrentDirectory)) //race condition for great justice
+				if (System.IO.Directory.Exists(CurrentDirectory)) // race condition for great justice
 				{
-					Environment.CurrentDirectory = CurrentDirectory; //thats right, you can't set a directory as current that doesnt exist because .net's got to do SENSELESS SLOW-ASS SECURITY CHECKS on it and it can't do that on a NONEXISTENT DIRECTORY
+					Environment.CurrentDirectory = CurrentDirectory; // thats right, you can't set a directory as current that doesnt exist because .net's got to do SENSELESS SLOW-ASS SECURITY CHECKS on it and it can't do that on a NONEXISTENT DIRECTORY
 					return true;
 				}
 				else return false;
@@ -60,10 +60,10 @@ namespace BizHawk.Client.Common
 
 		string CoolGetCurrentDirectory()
 		{
-			//GUESS WHAT!
-			//.NET DOES A SECURITY CHECK ON THE DIRECTORY WE JUST RETRIEVED
-			//AS IF ASKING FOR THE CURRENT DIRECTORY IS EQUIVALENT TO TRYING TO ACCESS IT
-			//SCREW YOU
+			// GUESS WHAT!
+			// .NET DOES A SECURITY CHECK ON THE DIRECTORY WE JUST RETRIEVED
+			// AS IF ASKING FOR THE CURRENT DIRECTORY IS EQUIVALENT TO TRYING TO ACCESS IT
+			// SCREW YOU
 			#if WINDOWS
 				var buf = new byte[32768];
 				fixed(byte* pBuf = &buf[0])

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
@@ -13,16 +12,14 @@ namespace BizHawk.Client.Common
 		/// Initialize a new separator instance
 		/// </summary>
 		internal SeparatorWatch()
-			:base(null, 0, WatchSize.Separator, DisplayType.Separator, true, string.Empty)
-		{ }
+			: base(null, 0, WatchSize.Separator, DisplayType.Separator, true, string.Empty)
+		{
+		}
 
 		/// <summary>
 		/// Gets the separator instance
 		/// </summary>
-		public static SeparatorWatch Instance
-		{
-			get { return new SeparatorWatch(); }
-		}
+		public static SeparatorWatch Instance => new SeparatorWatch();
 
 		/// <summary>
 		/// Get the appropriate DisplayType
@@ -38,42 +35,27 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override int Value
-		{
-			get { return 0; }
-		}
+		public override int Value => 0;
 
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override int ValueNoFreeze
-		{
-			get { return 0; }
-		}
+		public override int ValueNoFreeze => 0;
 
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override int Previous
-		{
-			get { return 0; }
-		}
+		public override int Previous => 0;
 
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override string ValueString
-		{
-			get { return string.Empty; }
-		}
+		public override string ValueString => string.Empty;
 
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override string PreviousStr
-		{
-			get { return string.Empty; }
-		}
+		public override string PreviousStr => string.Empty;
 
 		/// <summary>
 		/// TTransform the current instance into a displayable (short representation) string
@@ -98,26 +80,24 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public override void ResetPrevious()
 		{
-			return;
 		}
 
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override string Diff { get { return string.Empty; } }
+		public override string Diff => string.Empty;
 
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override uint MaxValue
+		public override uint MaxValue => 0;
+
+		/// <summary>
+		/// Ignore that stuff
+		/// </summary>
+		public override void Update()
 		{
-			get { return 0; }
 		}
-
-		/// <summary>
-		/// Ignore that stuff
-		/// </summary>
-		public override void Update() { return; }
 
 		#endregion
 	}

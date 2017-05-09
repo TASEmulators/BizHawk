@@ -4,7 +4,11 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
-		protected enum Moviemode { Inactive, Play, Record, Finished }
+		protected enum Moviemode
+		{
+			Inactive, Play, Record, Finished
+		}
+
 		protected Moviemode _mode = Moviemode.Inactive;
 
 		public bool IsActive => _mode != Moviemode.Inactive;

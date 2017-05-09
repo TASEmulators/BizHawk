@@ -85,6 +85,6 @@ namespace BizHawk.Client.Common
 		public string TextSavestate { get; set; }
 		public byte[] BinarySavestate { get; set; }
 		public int[] SavestateFramebuffer { get { return null; } set { } } // eat and ignore framebuffers
-		public byte[] SaveRam { get { return null; } set {  } } // Bkm does not support Saveram anchored movies
+		public byte[] SaveRam { get { return null; } set { } } // Bkm does not support Saveram anchored movies
 	}
 }

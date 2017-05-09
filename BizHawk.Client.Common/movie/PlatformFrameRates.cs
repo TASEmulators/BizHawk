@@ -10,9 +10,9 @@ namespace BizHawk.Client.Common
 		// are we collecting them anywhere else? for avi-writing code perhaps?
 
 		// just some constants, according to specs
-		private static readonly double PAL_CARRIER = 15625 * 283.75 + 25;	   //  4.43361875 MHz
-		private static readonly double NTSC_CARRIER = 4500000 * 227.5 / 286;   //  3.579545454... MHz
-		private static readonly double PAL_N_CARRIER = 15625 * 229.25 + 25;		// 3.58205625 MHz
+		private static readonly double PAL_CARRIER = 15625 * 283.75 + 25; // 4.43361875 MHz
+		private static readonly double NTSC_CARRIER = 4500000 * 227.5 / 286; // 3.579545454... MHz
+		private static readonly double PAL_N_CARRIER = 15625 * 229.25 + 25; // 3.58205625 MHz
 
 		private static readonly Dictionary<string, double> _rates = new Dictionary<string, double>
 			{
@@ -34,13 +34,14 @@ namespace BizHawk.Client.Common
 				{ "SG_PAL", (3546893 / 313.0 / 228.0) }, // 49.7014320946
 				{ "NGP", (6144000.0 / (515 * 198)) }, // 60.2530155928
 				{ "VBOY", (20000000.0 / (259 * 384 * 4)) },  // 50.2734877735
-				{ "Lynx", 16000000.0 / ( 16 * 105 * 159 ) }, // 59.89817310572028
+				{ "Lynx", 16000000.0 / (16 * 105 * 159) }, // 59.89817310572028
 				{ "WSWAN", (3072000.0 / (159 * 256)) }, // 75.4716981132
 				{ "GB", 262144.0 / 4389.0 }, // 59.7275005696
 				{ "GBC", 262144.0 / 4389.0 }, // 59.7275005696
 				{ "GBA", 262144.0 / 4389.0 }, // 59.7275005696 
 				{ "GEN", 53693175 / (3420.0 * 262) },
 				{ "GEN_PAL", 53203424 / (3420.0 * 313) },
+
 				// while the number of scanlines per frame is software controlled and variable, we
 				// enforce exactly 262 (NTSC) 312 (PAL) per reference time frame
 				{ "A26", 315000000.0 / 88.0 / 262.0 / 228.0 }, // 59.922751013550531429197560173856
@@ -51,13 +52,13 @@ namespace BizHawk.Client.Common
 				{ "Coleco", 59.9227510135505 },
 
 				// according to http://problemkaputt.de/psx-spx.htm
-				{ "PSX", 44100.0*768*11/7/263/3413 }, // 59.292862562
-				{ "PSX_PAL", 44100.0*768*11/7/314/3406 }, // 49.7645593576
+				{ "PSX", 44100.0 * 768 * 11 / 7 / 263 / 3413 }, // 59.292862562
+				{ "PSX_PAL", 44100.0 * 768 * 11 / 7 / 314 / 3406 }, // 49.7645593576
 
-				{ "C64_PAL", PAL_CARRIER*2/9/312/63 },
-				{ "C64_NTSC", NTSC_CARRIER*2/7/263/65 },
-				{ "C64_NTSC_OLD", NTSC_CARRIER*2/7/262/64 },
-				{ "C64_DREAN", PAL_N_CARRIER*2/7/312/65 },
+				{ "C64_PAL", PAL_CARRIER * 2 / 9 / 312 / 63 },
+				{ "C64_NTSC", NTSC_CARRIER * 2 / 7 / 263 / 65 },
+				{ "C64_NTSC_OLD", NTSC_CARRIER * 2 / 7 / 262 / 64 },
+				{ "C64_DREAN", PAL_N_CARRIER * 2 / 7 / 312 / 65 },
 				{ "INTV", 59.92 }
 
 				// according to ryphecha, using

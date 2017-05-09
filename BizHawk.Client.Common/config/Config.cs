@@ -4,6 +4,10 @@ using System.Drawing;
 
 using BizHawk.Emulation.Common;
 
+// ReSharper disable FieldCanBeMadeReadOnly.Global
+// ReSharper disable InconsistentNaming
+// ReSharper disable StyleCop.SA1310
+// ReSharper disable StyleCop.SA1401
 namespace BizHawk.Client.Common
 {
 	public class Config
@@ -38,10 +42,10 @@ namespace BizHawk.Client.Common
 		// Core preference for generic file extension, key: file extension, value: a systemID or empty if no preference
 		public Dictionary<string, string> PreferredPlatformsForExtensions = new Dictionary<string, string>
 		{
-			{ ".bin", "" },
-			{ ".rom", "" },
-			{ ".iso", "" },
-			{ ".img", "" },
+			{ ".bin", string.Empty },
+			{ ".rom", string.Empty },
+			{ ".iso", string.Empty },
+			{ ".img", string.Empty },
 		};
 
 		// Path Settings ************************************/
@@ -83,8 +87,8 @@ namespace BizHawk.Client.Common
 
 		public int TargetScanlineFilterIntensity = 128; // choose between 0 and 256
 		public int TargetDisplayFilter = 0;
-		public int DispFinalFilter = 0; //None
-		public string DispUserFilterPath = "";
+		public int DispFinalFilter = 0; // None
+		public string DispUserFilterPath = string.Empty;
 		public RecentFiles RecentRoms = new RecentFiles(10);
 		public RecentFiles RecentRomSessions = new RecentFiles(8); // Only used for MultiHawk
 		public bool PauseWhenMenuActivated = true;
@@ -115,7 +119,7 @@ namespace BizHawk.Client.Common
 		public int AutofireOn = 1;
 		public int AutofireOff = 1;
 		public bool AutofireLagFrames = true;
-		public int SaveSlot = 0; //currently selected savestate slot
+		public int SaveSlot = 0; // currently selected savestate slot
 		public bool AutoLoadLastSaveSlot = false;
 		public bool WIN32_CONSOLE = true;
 		public bool SkipLagFrame = false;
@@ -125,33 +129,50 @@ namespace BizHawk.Client.Common
 		public bool FirstBoot = true;
 		public bool Update_AutoCheckEnabled = false;
 		public DateTime? Update_LastCheckTimeUTC = null;
-		public string Update_LatestVersion = "";
-		public string Update_IgnoreVersion = "";
+		public string Update_LatestVersion = string.Empty;
+		public string Update_IgnoreVersion = string.Empty;
 		public bool CDLAutoSave = true, CDLAutoStart = true;
 
-		//public bool TurboSeek = true; // When PauseOnFrame is set, this will decide whether the client goes into turbo mode or not
+		////public bool TurboSeek = true; // When PauseOnFrame is set, this will decide whether the client goes into turbo mode or not
 
 		private bool _turboSeek;
 		public bool TurboSeek
 		{
-			get { return _turboSeek; }
+			get
+			{
+				return _turboSeek;
+			}
+
 			set
 			{
 				_turboSeek = value;
 			}
 		}
 
-		public enum EDispMethod { OpenGL, GdiPlus, SlimDX9 };
+		public enum EDispMethod
+		{
+			OpenGL, GdiPlus, SlimDX9
+		}
 
-		public enum ESoundOutputMethod { DirectSound, XAudio2, OpenAL, Dummy };
+		public enum ESoundOutputMethod
+		{
+			DirectSound, XAudio2, OpenAL, Dummy
+		}
 
-		public enum EDispManagerAR { None, System, 
-			//actually, custom SIZE (fixme on major release)
+		public enum EDispManagerAR
+		{
+			None,
+			System, 
+
+			// actually, custom SIZE (fixme on major release)
 			Custom, 
 			CustomRatio
-		};
+		}
 
-		public enum SaveStateTypeE { Default, Binary, Text };
+		public enum SaveStateTypeE
+		{
+			Default, Binary, Text
+		}
 
 		public MovieEndAction MovieEndAction = MovieEndAction.Finish;
 
@@ -187,9 +208,9 @@ namespace BizHawk.Client.Common
 		public int RewindFrequencySmall = 1;
 		public int RewindFrequencyMedium = 4;
 		public int RewindFrequencyLarge = 60;
-		public int Rewind_MediumStateSize = 262144; //256kb
-		public int Rewind_LargeStateSize = 1048576; //1mb
-		public int Rewind_BufferSize = 128; //in mb
+		public int Rewind_MediumStateSize = 262144; // 256kb
+		public int Rewind_LargeStateSize = 1048576; // 1mb
+		public int Rewind_BufferSize = 128; // in mb
 		public bool Rewind_OnDisk = false;
 		public bool Rewind_IsThreaded = Environment.ProcessorCount > 1;
 		public int RewindSpeedMultiplier = 1;
@@ -198,8 +219,8 @@ namespace BizHawk.Client.Common
 		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
 		public const int DefaultSaveStateCompressionLevelNormal = 0;
 		public int SaveStateCompressionLevelNormal = DefaultSaveStateCompressionLevelNormal;
-		public const int DefaultSaveStateCompressionLevelRewind = 0;//this isnt actually used yet 
-		public int SaveStateCompressionLevelRewind = DefaultSaveStateCompressionLevelRewind;//this isnt actually used yet 
+		public const int DefaultSaveStateCompressionLevelRewind = 0; // this isnt actually used yet 
+		public int SaveStateCompressionLevelRewind = DefaultSaveStateCompressionLevelRewind; // this isnt actually used yet 
 		public int MovieCompressionLevel = 2;
 
 		/// <summary>
@@ -265,7 +286,6 @@ namespace BizHawk.Client.Common
 		public bool DispAutoPrescale = true;
 		public int DispSpeedupFeatures = 2;
 
-
 		public int DispFPSx = DefaultMessageOptions.DispFPSx;
 		public int DispFPSy = DefaultMessageOptions.DispFPSy;
 		public int DispFrameCx = DefaultMessageOptions.DispFrameCx;
@@ -302,7 +322,7 @@ namespace BizHawk.Client.Common
 		
 		public int DispPrescale = 1;
 
-		//warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.
+		// warning: we dont even want to deal with changing this at runtime. but we want it changed here for config purposes. so dont check this variable. check in GlobalWin or something like that.
 		public EDispMethod DispMethod = EDispMethod.SlimDX9;
 
 		public int DispChrome_FrameWindowed = 2;
@@ -316,10 +336,11 @@ namespace BizHawk.Client.Common
 
 		public EDispManagerAR DispManagerAR = EDispManagerAR.System;
 
-		//these are misnomers. they're actually a fixed size (fixme on major release)
+		// these are misnomers. they're actually a fixed size (fixme on major release)
 		public int DispCustomUserARWidth = -1;
 		public int DispCustomUserARHeight = -1;
-		//these are more like the actual AR ratio (i.e. 4:3) (fixme on major release)
+
+		// these are more like the actual AR ratio (i.e. 4:3) (fixme on major release)
 		public float DispCustomUserARX = -1;
 		public float DispCustomUserARY = -1;
 
@@ -336,7 +357,7 @@ namespace BizHawk.Client.Common
 		public int SoundVolume = 100; // Range 0-100
 		public int SoundVolumeRWFF = 50; // Range 0-100
 		public bool SoundThrottle = false;
-		public string SoundDevice = "";
+		public string SoundDevice = string.Empty;
 		public int SoundBufferSizeMs = 100;
 
 		// Log Window
@@ -369,12 +390,12 @@ namespace BizHawk.Client.Common
 		public Color HexHighlightFreezeColor = Color.Violet;
 
 		// Video dumping settings
-		public string VideoWriter = "";
+		public string VideoWriter = string.Empty;
 		public int JMDCompression = 3;
 		public int JMDThreads = 3;
-		public string FFmpegFormat = "";
+		public string FFmpegFormat = string.Empty;
 		public string FFmpegCustomCommand = "-c:a foo -c:v bar -f baz";
-		public string AVICodecToken = "";
+		public string AVICodecToken = string.Empty;
 		public int GifWriterFrameskip = 3;
 		public int GifWriterDelay = -1;
 
@@ -470,11 +491,11 @@ namespace BizHawk.Client.Common
 		public bool VBAStyleMovieLoadState = false;
 		public bool MoviePlaybackPokeMode = false;
 
-		//Play Movie Dialog
+		// Play Movie Dialog
 		public bool PlayMovie_IncludeSubdir = false;
 		public bool PlayMovie_MatchHash = true;
 
-		//TI83
+		// TI83
 		public ToolDialogSettings TI83KeypadSettings = new ToolDialogSettings();
 		public bool TI83autoloadKeyPad = true;
 		public bool TI83ToolTips = true;
@@ -489,15 +510,18 @@ namespace BizHawk.Client.Common
 		{
 			/// <summary>the physical stick that we're bound to</summary>
 			public string Value;
+
 			/// <summary>sensitivity and flip</summary>
 			public float Mult;
+
 			/// <summary>portion of axis to ignore</summary>
 			public float Deadzone;
-			public AnalogBind(string Value, float Mult, float Deadzone)
+
+			public AnalogBind(string value, float mult, float deadzone)
 			{
-				this.Value = Value;
-				this.Mult = Mult;
-				this.Deadzone = Deadzone;
+				Value = value;
+				Mult = mult;
+				Deadzone = deadzone;
 			}
 		}
 

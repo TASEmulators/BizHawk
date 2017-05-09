@@ -100,10 +100,9 @@ namespace BizHawk.Client.Common
 
 		public void Dispose()
 		{
+			// States and BranchStates don't need cleaning because they would only contain an ndbdatabase entry which was demolished by the below
 			if (ndbdatabase != null)
 				ndbdatabase.Dispose();
-
-			//States and BranchStates don't need cleaning because they would only contain an ndbdatabase entry which was demolished by the above
 		}
 
 		/// <summary>
@@ -395,7 +394,7 @@ namespace BizHawk.Client.Common
 				if (BranchStates[frame][branch].IsOnDisk)
 					BranchStates[frame][branch].Dispose();
 				else
-					//Used -= (ulong)BranchStates[frame][branch].Length;
+					////Used -= (ulong)BranchStates[frame][branch].Length;
 				BranchStates[frame].RemoveAt(BranchStates[frame].IndexOfKey(branch));
 
 				if (BranchStates[frame].Count == 0)
@@ -598,7 +597,7 @@ namespace BizHawk.Client.Common
 				bw.Write(kvp.Key);
 				bw.Write(kvp.Value.Length);
 				bw.Write(kvp.Value.State);
-				//_movie.ReportProgress(100d / States.Count * i);
+				////_movie.ReportProgress(100d / States.Count * i);
 			}
 		}
 
@@ -613,11 +612,12 @@ namespace BizHawk.Client.Common
 					int frame = br.ReadInt32();
 					int len = br.ReadInt32();
 					byte[] data = br.ReadBytes(len);
+
 					// whether we should allow state removal check here is an interesting question
 					// nothing was edited yet, so it might make sense to show the project untouched first
 					SetState(frame, data);
-					//States.Add(frame, data);
-					//Used += len;
+					////States.Add(frame, data);
+					////Used += len;
 				}
 			}
 			catch (EndOfStreamException) { }
@@ -673,11 +673,10 @@ namespace BizHawk.Client.Common
 
 		// Map:
 		// 4 bytes - total savestate count
-		//[Foreach state]
+		// [Foreach state]
 		// 4 bytes - frame
 		// 4 bytes - length of savestate
 		// 0 - n savestate
-
 		private ulong _used;
 		private ulong Used
 		{
@@ -907,7 +906,7 @@ namespace BizHawk.Client.Common
 
 			int branchHash = _movie.BranchHashByIndex(index);
 
-			//Invalidate(0); // Not a good way of doing it?
+			////Invalidate(0); // Not a good way of doing it?
 
 			foreach (KeyValuePair<int, SortedList<int, StateManagerState>> kvp in BranchStates)
 			{

@@ -327,8 +327,8 @@ namespace BizHawk.Client.Common
 		{
 			_zip = new IonicZipWriter(path, notamovie ? Global.Config.SaveStateCompressionLevelNormal
 				: Global.Config.MovieCompressionLevel);
-			//_zip = new SharpZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
-			//_zip = new SevenZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
+			////_zip = new SharpZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
+			////_zip = new SevenZipWriter(path, Global.Config.SaveStateCompressionLevelNormal);
 
 			if (notamovie)
 			{

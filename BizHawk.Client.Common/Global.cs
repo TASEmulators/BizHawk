@@ -42,7 +42,7 @@ namespace BizHawk.Client.Common
 		// the original source controller, bound to the user, sort of the "input" port for the chain, i think
 		public static Controller ActiveController;
 
-		//rapid fire version on the user controller, has its own key bindings and is OR'ed against ActiveController
+		// rapid fire version on the user controller, has its own key bindings and is OR'ed against ActiveController
 		public static AutofireController AutoFireController;
 
 		// the "output" port for the controller chain.
@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				switch(Emulator.SystemId)
+				switch (Emulator.SystemId)
 				{ 
 					default:
 					case "NULL":

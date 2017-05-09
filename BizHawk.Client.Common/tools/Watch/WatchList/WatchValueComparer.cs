@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 			/// If they are equals, comapraison will done one the address and next on size
 			/// </summary>
 			/// <param name="x">First <see cref="Watch"/></param>
-			///<param name="y">Second <see cref="Watch"/></param>
+			/// <param name="y">Second <see cref="Watch"/></param>
 			/// <returns>0 for equality, 1 if x comes first; -1 if y comes first</returns>
 			public int Compare(Watch x, Watch y)
 			{

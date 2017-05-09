@@ -394,7 +394,7 @@ namespace BizHawk.Client.Common
 								}
 								else
 								{
-									sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}",discHash);
+									sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
 									sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
 									sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
 									sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
@@ -686,7 +686,7 @@ namespace BizHawk.Client.Common
 						nextEmulator = new Octoshock(nextComm, psf, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 						nextEmulator.CoreComm.RomStatusDetails = "It's a PSF, what do you want. Oh, tags maybe?";
 
-						//total garbage, this
+						// total garbage, this
 						rom = new RomGame(file);
 						game = rom.GameInfo;
 					}

@@ -87,7 +87,7 @@ namespace BizHawk.Client.Common
 					b.LagLog.Save(bw);
 				});
 
-				bs.PutLump(nmarkers, delegate (TextWriter tw)
+				bs.PutLump(nmarkers, delegate(TextWriter tw)
 				{
 					tw.WriteLine(b.Markers.ToString());
 				});
@@ -181,7 +181,7 @@ namespace BizHawk.Client.Common
 				});
 
 				b.Markers = new TasMovieMarkerList(movie);
-				bl.GetLump(nmarkers, false, delegate (TextReader tr)
+				bl.GetLump(nmarkers, false, delegate(TextReader tr)
 				{
 					string line;
 					while ((line = tr.ReadLine()) != null)

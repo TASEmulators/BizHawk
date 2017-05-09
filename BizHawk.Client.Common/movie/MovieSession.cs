@@ -8,8 +8,6 @@ using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 
-using BizHawk.Client.Common;
-
 namespace BizHawk.Client.Common
 {
 	public enum MovieEndAction { Stop, Pause, Record, Finish }
@@ -36,7 +34,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public MultitrackRecorder MultiTrack { get; private set; }
-		public IMovieController MovieControllerAdapter{ get; set; }
+		public IMovieController MovieControllerAdapter { get; set; }
 
 		public IMovie Movie { get; set; }
 		public bool ReadOnly { get; set; }
@@ -98,10 +96,7 @@ namespace BizHawk.Client.Common
 
 		private void Output(string message)
 		{
-			if (MessageCallback != null)
-			{
-				MessageCallback(message);
-			}
+			MessageCallback?.Invoke(message);
 		}
 
 		public void LatchMultitrackPlayerInput(IController playerSource, MultitrackRewiringControllerAdapter rewiredSource)
@@ -139,7 +134,9 @@ namespace BizHawk.Client.Common
 
 			// adelikat: TODO: this is likely the source of frame 0 TAStudio bugs, I think the intent is to check if the movie is 0 length?
 			if (Global.Emulator.Frame == 0) // Hacky
+			{
 				HandleMovieAfterFrameLoop(); // Frame 0 needs to be handled.
+			}
 
 			if (input == null)
 			{
@@ -157,7 +154,7 @@ namespace BizHawk.Client.Common
 		private void HandlePlaybackEnd()
 		{
 			// TODO: mainform callback to update on mode change
-			switch(Global.Config.MovieEndAction)
+			switch (Global.Config.MovieEndAction)
 			{
 				case MovieEndAction.Stop:
 					Movie.Stop();
@@ -340,7 +337,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		//TODO: maybe someone who understands more about what's going on here could rename these step1 and step2 into something more descriptive
+		// TODO: maybe someone who understands more about what's going on here could rename these step1 and step2 into something more descriptive
 		public bool HandleMovieLoadState_HackyStep2(TextReader reader)
 		{
 			if (!Movie.IsActive)
@@ -348,21 +345,17 @@ namespace BizHawk.Client.Common
 				return true;
 			}
 
-
 			if (ReadOnly)
 			{
-
 			}
 			else
 			{
-
 				string errorMsg;
 
 				//// fixme: this is evil (it causes crashes in binary states because InflaterInputStream can't have its position set, even to zero.
-				//((StreamReader)reader).BaseStream.Position = 0;
-				//((StreamReader)reader).DiscardBufferedData();
-				//edit: zero 18-apr-2014 - this was solved by HackyStep1 and HackyStep2, so that the zip stream can be re-acquired instead of needing its position reset
-
+				////((StreamReader)reader).BaseStream.Position = 0;
+				////((StreamReader)reader).DiscardBufferedData();
+				// edit: zero 18-apr-2014 - this was solved by HackyStep1 and HackyStep2, so that the zip stream can be re-acquired instead of needing its position reset
 				var result = Movie.ExtractInputLog(reader, out errorMsg);
 				if (!result)
 				{
@@ -377,7 +370,10 @@ namespace BizHawk.Client.Common
 		public bool HandleMovieLoadState(TextReader reader)
 		{
 			if (!HandleMovieLoadState_HackyStep1(reader))
+			{
 				return false;
+			}
+
 			return HandleMovieLoadState_HackyStep2(reader);
 		}
 
@@ -388,10 +384,9 @@ namespace BizHawk.Client.Common
 				return true;
 			}
 
-			string errorMsg;
-
 			if (ReadOnly)
 			{
+				string errorMsg;
 				var result = Movie.CheckTimeLines(reader, out errorMsg);
 				if (!result)
 				{
@@ -418,7 +413,6 @@ namespace BizHawk.Client.Common
 				{
 					Movie.SwitchToRecord();
 				}
-
 			}
 
 			return true;
@@ -481,19 +475,16 @@ namespace BizHawk.Client.Common
 				if (movie.SystemID != emulator.SystemId)
 				{
 					throw new MoviePlatformMismatchException(
-						string.Format(
-						"Movie system Id ({0}) does not match the currently loaded platform ({1}), unable to load",
-						movie.SystemID,
-						emulator.SystemId));
+						$"Movie system Id ({movie.SystemID}) does not match the currently loaded platform ({emulator.SystemId}), unable to load");
 				}
 			}
 
 			// TODO: Delete this, this save is utterly useless.
 			// Movie was saved immediately before calling QueeuNewMovie. (StartNewMovie)
-			//if (Movie.IsActive && !string.IsNullOrEmpty(Movie.Filename))
-			//{
-			//	Movie.Save();
-			//}
+			////if (Movie.IsActive && !string.IsNullOrEmpty(Movie.Filename))
+			////{
+			////	Movie.Save();
+			////}
 
 			// Note: this populates MovieControllerAdapter's Type with the approparite controller
 			// Don't set it to a movie instance of the adapter or you will lose the definition!

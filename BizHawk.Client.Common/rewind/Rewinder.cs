@@ -212,16 +212,15 @@ namespace BizHawk.Client.Common
 			// state. That's why the data portion of the delta comes from the previous state,
 			// and also why the previous state is used if we have to bail out and capture the
 			// full state instead.
-
 			if (currentState.Length != _lastState.Length)
 			{
 				// If the state sizes mismatch, capture a full state rather than trying to do anything clever
 				goto CaptureFullState;
 			}
 
-			if(currentState.Length == 0)
+			if (currentState.Length == 0)
 			{
-				//handle empty states as a "full" (empty) state
+				// handle empty states as a "full" (empty) state
 				goto CaptureFullState;
 			}
 

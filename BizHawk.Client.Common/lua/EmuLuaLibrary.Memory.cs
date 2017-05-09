@@ -53,9 +53,7 @@ namespace BizHawk.Client.Common
 		#region Unique Library Methods
 
 		[LuaMethodAttributes(
-			"getmemorydomainlist",
-			"Returns a string of the memory domains for the loaded platform core. List will be a single string delimited by line feeds"
-		)]
+			"getmemorydomainlist", "Returns a string of the memory domains for the loaded platform core. List will be a single string delimited by line feeds")]
 		public LuaTable GetMemoryDomainList()
 		{
 			var table = Lua.NewTable();
@@ -71,39 +69,33 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
-			"getmemorydomainsize",
-			"Returns the number of bytes of the specified memory domain. If no domain is specified, or the specified domain doesn't exist, returns the current domain size"
-		)]
+			"getmemorydomainsize", "Returns the number of bytes of the specified memory domain. If no domain is specified, or the specified domain doesn't exist, returns the current domain size")]
 		public uint GetMemoryDomainSize(string name = "")
 		{
 			if (string.IsNullOrEmpty(name))
+			{
 				return (uint)Domain.Size;
-			else
-				return (uint)DomainList[VerifyMemoryDomain(name)].Size;
+			}
+
+			return (uint)DomainList[VerifyMemoryDomain(name)].Size;
 		}
 
 		[LuaMethodAttributes(
-			"getcurrentmemorydomain",
-			"Returns a string name of the current memory domain selected by Lua. The default is Main memory"
-		)]
+			"getcurrentmemorydomain", "Returns a string name of the current memory domain selected by Lua. The default is Main memory")]
 		public string GetCurrentMemoryDomain()
 		{
 			return Domain.Name;
 		}
 
 		[LuaMethodAttributes(
-			"getcurrentmemorydomainsize",
-			"Returns the number of bytes of the current memory domain selected by Lua. The default is Main memory"
-		)]
+			"getcurrentmemorydomainsize", "Returns the number of bytes of the current memory domain selected by Lua. The default is Main memory")]
 		public uint GetCurrentMemoryDomainSize()
 		{
 			return (uint)Domain.Size;
 		}
 
 		[LuaMethodAttributes(
-			"usememorydomain",
-			"Attempts to set the current memory domain to the given domain. If the name does not match a valid memory domain, the function returns false, else it returns true"
-		)]
+			"usememorydomain", "Attempts to set the current memory domain to the given domain. If the name does not match a valid memory domain, the function returns false, else it returns true")]
 		public bool UseMemoryDomain(string domain)
 		{
 			try
@@ -113,12 +105,9 @@ namespace BizHawk.Client.Common
 					_currentMemoryDomain = DomainList[domain];
 					return true;
 				}
-				else
-				{
-					Log($"Unable to find domain: {domain}");
-					return false;
-				}
 
+				Log($"Unable to find domain: {domain}");
+				return false;
 			}
 			catch // Just in case
 			{
@@ -132,55 +121,37 @@ namespace BizHawk.Client.Common
 
 		#region Common Special and Legacy Methods
 
-		[LuaMethodAttributes(
-			"readbyte",
-			"gets the value from the given address as an unsigned byte"
-		)]
+		[LuaMethodAttributes("readbyte", "gets the value from the given address as an unsigned byte")]
 		public uint ReadByte(int addr, string domain = null)
 		{
 			return ReadUnsignedByte(addr, domain);
 		}
 
-		[LuaMethodAttributes(
-			"writebyte",
-			"Writes the given value to the given address as an unsigned byte"
-		)]
+		[LuaMethodAttributes("writebyte", "Writes the given value to the given address as an unsigned byte")]
 		public void WriteByte(int addr, uint value, string domain = null)
 		{
 			WriteUnsignedByte(addr, value, domain);
 		}
 
-		[LuaMethodAttributes(
-			"readbyterange",
-			"Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key)."
-		)]
+		[LuaMethodAttributes("readbyterange", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key).")]
 		public new LuaTable ReadByteRange(int addr, int length, string domain = null)
 		{
 			return base.ReadByteRange(addr, length, domain);
 		}
 
-		[LuaMethodAttributes(
-			"writebyterange",
-			"Writes the given values to the given addresses as unsigned bytes"
-		)]
+		[LuaMethodAttributes("writebyterange", "Writes the given values to the given addresses as unsigned bytes")]
 		public new void WriteByteRange(LuaTable memoryblock, string domain = null)
 		{
 			base.WriteByteRange(memoryblock, domain);
 		}
 
-		[LuaMethodAttributes(
-			"readfloat",
-			"Reads the given address as a 32-bit float value from the main memory domain with th e given endian"
-		)]
+		[LuaMethodAttributes("readfloat", "Reads the given address as a 32-bit float value from the main memory domain with th e given endian")]
 		public new float ReadFloat(int addr, bool bigendian, string domain = null)
 		{
 			return base.ReadFloat(addr, bigendian, domain);
 		}
 
-		[LuaMethodAttributes(
-			"writefloat",
-			"Writes the given 32-bit float value to the given address and endian"
-		)]
+		[LuaMethodAttributes("writefloat", "Writes the given 32-bit float value to the given address and endian")]
 		public new void WriteFloat(int addr, double value, bool bigendian, string domain = null)
 		{
 			base.WriteFloat(addr, value, bigendian, domain);

@@ -152,7 +152,7 @@ namespace BizHawk.Client.Common
 
 		CLEANUP:
 			// while the head impinges on tail items, discard them
-			for (; ; )
+			for (;;)
 			{
 				if (_mTail == null)
 				{
@@ -172,9 +172,9 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			//one final check: in case we clobbered from the tail to make room and ended up after the capacity, we need to try again
-			//this has to be done this way, because we need one cleanup pass to purge all the tail items before the capacity; 
-			//and then again to purge tail items impinged by this new item at the beginning
+			// one final check: in case we clobbered from the tail to make room and ended up after the capacity, we need to try again
+			// this has to be done this way, because we need one cleanup pass to purge all the tail items before the capacity; 
+			// and then again to purge tail items impinged by this new item at the beginning
 			if (_mHead.Value.EndExclusive > _mCapacity)
 			{
 				var temp = _mHead.Previous;
@@ -248,7 +248,7 @@ namespace BizHawk.Client.Common
 
 			int ts = _mTail.Value.Timestamp;
 			LinkedListNode<ListItem> curr = _mTail;
-			for (; ; )
+			for (;;)
 			{
 				if (curr == null)
 				{
@@ -313,7 +313,7 @@ namespace BizHawk.Client.Common
 			Random r = new Random(0);
 			byte[] temp = new byte[1024];
 			int trials = 0;
-			for (; ; )
+			for (;;)
 			{
 				int len = r.Next(1024) + 1;
 				if (r.Next(100) == 0)

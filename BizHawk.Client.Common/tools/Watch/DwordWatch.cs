@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 		#region cTor(s)
 
 		/// <summary>
-		/// Inialize a new instance of <see cref="DWordWatch"/>
+		/// Initialize a new instance of <see cref="DWordWatch"/>
 		/// </summary>
 		/// <param name="domain"><see cref="MemoryDomain"/> where you want to track</param>
 		/// <param name="address">The address you want to track</param>
@@ -56,7 +56,7 @@ namespace BizHawk.Client.Common
 		#region Methods
 
 		/// <summary>
-		/// Enumerate wich <see cref="DisplayType"/> are valid for a <see cref="DWordWatch"/>
+		/// Gets a list of <see cref="DisplayType"/> for a <see cref="DWordWatch"/>
 		/// </summary>
 		public static IEnumerable<DisplayType> ValidTypes
 		{
@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common
 		#region Implements
 
 		/// <summary>
-		/// Get a list a <see cref="DisplayType"/> that can be used for this <see cref="DWordWatch"/>
+		/// Get a list of <see cref="DisplayType"/> that can be used for a <see cref="DWordWatch"/>
 		/// </summary>
 		/// <returns>An enumeration that contains all valid <see cref="DisplayType"/></returns>
 		public override IEnumerable<DisplayType> AvailableTypes()
@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common
 		/// at the current <see cref="Watch"/> address
 		/// </summary>
 		/// <param name="value">Value to set</param>
-		/// <returns>True if value successfully sets; othewise, false</returns>
+		/// <returns>True if value successfully sets; otherwise, false</returns>
 		public override bool Poke(string value)
 		{
 			try
@@ -226,7 +226,7 @@ namespace BizHawk.Client.Common
 
 		#endregion Implements
 
-		//TODO: Implements IFormattable
+		// TODO: Implements IFormattable
 		public string FormatValue(uint val)
 		{
 			switch (Type)
@@ -245,7 +245,7 @@ namespace BizHawk.Client.Common
 				case DisplayType.Float:
 					var bytes = BitConverter.GetBytes(val);
 					var _float = BitConverter.ToSingle(bytes, 0);
-					//return string.Format("{0:0.######}", _float);
+					////return string.Format("{0:0.######}", _float);
 					return _float.ToString(); // adelikat: decided that we like sci notation instead of spooky rounding
 			}
 		}

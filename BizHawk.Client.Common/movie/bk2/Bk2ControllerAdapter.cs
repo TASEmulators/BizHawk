@@ -14,8 +14,7 @@ namespace BizHawk.Client.Common
 		private readonly WorkingDictionary<string, float> MyFloatControls = new WorkingDictionary<string, float>();
 
 		public Bk2ControllerAdapter()
-		{
-		
+		{		
 		}
 
 		public Bk2ControllerAdapter(string key)

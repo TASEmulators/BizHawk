@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 		/// based on their note
 		/// </summary>
 		private sealed class WatchNoteComparer
-			:WatchEqualityComparer,
+			: WatchEqualityComparer,
 			IComparer<Watch>
 		{
 			/// <summary>
