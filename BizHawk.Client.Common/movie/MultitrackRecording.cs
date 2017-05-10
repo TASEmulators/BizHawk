@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 			{
 				if (!IsActive)
 				{
-					return string.Empty;
+					return "";
 				}
 
 				if (RecordAll)

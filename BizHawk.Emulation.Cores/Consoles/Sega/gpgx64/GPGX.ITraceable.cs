@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 						{
 							sb.Append(
 								string.Format("{0}:{1} ",
-								r.Key.Replace("M68K", string.Empty).Trim(),
+								r.Key.Replace("M68K", "").Trim(),
 								r.Value.Value.ToHexString(r.Value.BitSize / 4)));
 						}
 					}

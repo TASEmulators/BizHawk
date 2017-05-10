@@ -261,7 +261,7 @@ namespace BizHawk.Common
 			Regex r = new Regex( @"\%(\d*\$)?([\'\#\-\+ ]*)(\d*)(?:\.(\d+))?([hl])?([dioxXucsfeEgGpn%])" );
 			//"%[parameter][flags][width][.precision][length]type"
 			Match m = null;
-			string w = String.Empty;
+			string w = "";
 			int defaultParamIx = 0;
 			int paramIx;
 			object o = null;
@@ -392,7 +392,7 @@ namespace BizHawk.Common
 				#endregion
 
 				// convert value parameters to a string depending on the formatSpecifier
-				w = String.Empty;
+				w = "";
 				switch ( formatSpecifier )
 				{
 					#region % - character
@@ -454,7 +454,7 @@ namespace BizHawk.Common
 					#endregion
 					#region s - string
 					case 's':   // string
-						string t = "{0" + ( fieldLength != int.MinValue ? "," + ( flagLeft2Right ? "-" : String.Empty ) + fieldLength.ToString() : String.Empty ) + ":s}";
+						string t = "{0" + ( fieldLength != int.MinValue ? "," + ( flagLeft2Right ? "-" : "" ) + fieldLength.ToString() : "" ) + ":s}";
 						if (n == IntPtr.Zero)
 							w = "(null)";
 						else w = Marshal.PtrToStringAnsi(n);
@@ -535,7 +535,7 @@ namespace BizHawk.Common
 						break;
 					#endregion
 					default:
-						w = String.Empty;
+						w = "";
 						defaultParamIx++;
 						break;
 				}
@@ -562,12 +562,12 @@ namespace BizHawk.Common
 											bool Left2Right,
 											char Padding, object Value )
 		{
-			string w = String.Empty;
+			string w = "";
 			string lengthFormat = "{0" + ( FieldLength != int.MinValue ?
 											"," + ( Left2Right ?
 													"-" :
-													String.Empty ) + FieldLength.ToString() :
-											String.Empty ) + "}";
+													"" ) + FieldLength.ToString() :
+											"" ) + "}";
 
 			if ( IsNumericType( Value ) )
 			{
@@ -597,15 +597,15 @@ namespace BizHawk.Common
 											bool Left2Right,
 											char Padding, object Value )
 		{
-			string w = String.Empty;
+			string w = "";
 			string lengthFormat = "{0" + ( FieldLength != int.MinValue ?
 											"," + ( Left2Right ?
 													"-" :
-													String.Empty ) + FieldLength.ToString() :
-											String.Empty ) + "}";
+													"" ) + FieldLength.ToString() :
+											"" ) + "}";
 			string numberFormat = "{0:" + NativeFormat + ( FieldPrecision != int.MinValue ?
 											FieldPrecision.ToString() :
-											String.Empty ) + "}";
+											"" ) + "}";
 
 			if ( IsNumericType( Value ) )
 			{
@@ -636,12 +636,12 @@ namespace BizHawk.Common
 											bool PositiveSign, bool PositiveSpace,
 											char Padding, object Value )
 		{
-			string w = String.Empty;
+			string w = "";
 			string lengthFormat = "{0" + ( FieldLength != int.MinValue ?
 											"," + ( Left2Right ?
 													"-" :
-													String.Empty ) + FieldLength.ToString() :
-											String.Empty ) + "}";
+													"" ) + FieldLength.ToString() :
+											"" ) + "}";
 			string numberFormat = "{0:" + NativeFormat + ( FieldPrecision != int.MinValue ?
 											FieldPrecision.ToString() :
 											"0" ) + "}";
@@ -654,7 +654,7 @@ namespace BizHawk.Common
 				{
 					if ( IsPositive( Value, true ) )
 						w = ( PositiveSign ?
-								"+" : ( PositiveSpace ? " " : String.Empty ) ) + w;
+								"+" : ( PositiveSpace ? " " : "" ) ) + w;
 					w = String.Format( lengthFormat, w );
 				}
 				else
@@ -667,7 +667,7 @@ namespace BizHawk.Common
 						w = ( PositiveSign ?
 								"+" : ( PositiveSpace ?
 										" " : ( FieldLength != int.MinValue ?
-												Padding.ToString() : String.Empty ) ) ) + w;
+												Padding.ToString() : "" ) ) ) + w;
 					else
 						w = "-" + w;
 				}

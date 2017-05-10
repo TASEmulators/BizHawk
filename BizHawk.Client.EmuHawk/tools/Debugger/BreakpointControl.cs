@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk.tools.Debugger
 
 		private void BreakPointView_QueryItemText(int index, int column, out string text)
 		{
-			text = string.Empty;
+			text = "";
 			switch (column)
 			{
 				case 0:

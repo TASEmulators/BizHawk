@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 
 		public string PathSubfile(string fname)
 		{
-			return Path.Combine(SubfileDirectory ?? string.Empty, fname);
+			return Path.Combine(SubfileDirectory ?? "", fname);
 		}
 
 		public string DllPath()

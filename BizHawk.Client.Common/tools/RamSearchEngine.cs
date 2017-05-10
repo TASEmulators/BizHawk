@@ -148,7 +148,7 @@ namespace BizHawk.Client.Common
 						_settings.Size,
 						_settings.Type,
 						_settings.BigEndian,
-						string.Empty,
+						"",
 						0,
 						_watchList[index].Previous,
 						(_watchList[index] as IMiniWatchDetails).ChangeCount);
@@ -161,7 +161,7 @@ namespace BizHawk.Client.Common
 						_settings.Size,
 						_settings.Type,
 						_settings.BigEndian,
-						string.Empty,
+						"",
 						0,
 						_watchList[index].Previous,
 						0);

@@ -1172,7 +1172,7 @@ namespace BizHawk.Common
 
 		private sealed class Section : Dictionary<string, Section>
 		{
-			public string Name = string.Empty;
+			public string Name = "";
 			public readonly Dictionary<string, string> Items = new Dictionary<string, string>();
 		}
 

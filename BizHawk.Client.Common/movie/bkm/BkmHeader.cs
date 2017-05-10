@@ -11,9 +11,9 @@ namespace BizHawk.Client.Common
 			Subtitles = new SubtitleList();
 
 			this[HeaderKeys.EMULATIONVERSION] = VersionInfo.GetEmuVersion();
-			this[HeaderKeys.PLATFORM] = Global.Emulator != null ? Global.Emulator.SystemId : string.Empty;
-			this[HeaderKeys.GAMENAME] = string.Empty;
-			this[HeaderKeys.AUTHOR] = string.Empty;
+			this[HeaderKeys.PLATFORM] = Global.Emulator != null ? Global.Emulator.SystemId : "";
+			this[HeaderKeys.GAMENAME] = "";
+			this[HeaderKeys.AUTHOR] = "";
 			this[HeaderKeys.RERECORDS] = "0";
 		}
 
@@ -97,7 +97,7 @@ namespace BizHawk.Client.Common
 					return this[HeaderKeys.GAMENAME];
 				}
 				
-				return string.Empty;
+				return "";
 			}
 
 			set
@@ -115,7 +115,7 @@ namespace BizHawk.Client.Common
 					return this[HeaderKeys.PLATFORM];
 				}
 				
-				return string.Empty;
+				return "";
 			}
 
 			set
@@ -128,7 +128,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return this.ContainsKey(key) ? base[key] : string.Empty;
+				return this.ContainsKey(key) ? base[key] : "";
 			}
 
 			set

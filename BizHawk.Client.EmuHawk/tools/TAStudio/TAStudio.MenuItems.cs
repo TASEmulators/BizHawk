@@ -50,7 +50,7 @@ namespace BizHawk.Client.EmuHawk
 				var filename = CurrentTasMovie.Filename;
 				if (string.IsNullOrWhiteSpace(filename) || filename == DefaultTasProjName())
 				{
-					filename = string.Empty;
+					filename = "";
 				}
 
 				// need to be fancy here, so call the ofd constructor directly instead of helper

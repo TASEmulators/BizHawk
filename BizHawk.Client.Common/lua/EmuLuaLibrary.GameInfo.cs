@@ -27,10 +27,10 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Game != null)
 			{
-				return Global.Game.Name ?? string.Empty;
+				return Global.Game.Name ?? "";
 			}
 
-			return string.Empty;
+			return "";
 		}
 
 		[LuaMethodAttributes(
@@ -39,10 +39,10 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Game != null)
 			{
-				return Global.Game.Hash ?? string.Empty;
+				return Global.Game.Hash ?? "";
 			}
 
-			return string.Empty;
+			return "";
 		}
 
 		[LuaMethodAttributes(
@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 				return Global.Game.Status.ToString();
 			}
 
-			return string.Empty;
+			return "";
 		}
 
 		[LuaMethodAttributes(
@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common
 			"getboardtype", "returns identifying information about the 'mapper' or similar capability used for this game.  empty if no such useful distinction can be drawn")]
 		public string GetBoardType()
 		{
-			return BoardInfo?.BoardName ?? string.Empty;
+			return BoardInfo?.BoardName ?? "";
 		}
 
 		[LuaMethodAttributes(

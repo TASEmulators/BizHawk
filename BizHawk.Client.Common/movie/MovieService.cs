@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 
 		public static bool IsValidMovieExtension(string ext)
 		{
-			if (MovieExtensions.Contains(ext.ToLower().Replace(".", string.Empty)))
+			if (MovieExtensions.Contains(ext.ToLower().Replace(".", "")))
 			{
 				return true;
 			}

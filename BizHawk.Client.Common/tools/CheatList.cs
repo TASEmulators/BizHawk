@@ -14,8 +14,8 @@ namespace BizHawk.Client.Common
 	public class CheatCollection : ICollection<Cheat>
 	{
 		private List<Cheat> _cheatList = new List<Cheat>();
-		private string _currentFileName = string.Empty;
-		private string _defaultFileName = string.Empty;
+		private string _currentFileName = "";
+		private string _defaultFileName = "";
 		private bool _changes;
 
 		public delegate void CheatListEventHandler(object sender, CheatListEventArgs e);
@@ -109,7 +109,7 @@ namespace BizHawk.Client.Common
 			}
 
 			_cheatList.Clear();
-			_currentFileName = string.Empty;
+			_currentFileName = "";
 			Changes = false;
 		}
 
@@ -384,7 +384,7 @@ namespace BizHawk.Client.Common
 								.Append(cheat.AddressStr).Append('\t')
 								.Append(cheat.ValueStr).Append('\t')
 								.Append(cheat.Compare?.ToString() ?? "N").Append('\t')
-								.Append(cheat.Domain != null ? cheat.Domain.Name : string.Empty).Append('\t')
+								.Append(cheat.Domain != null ? cheat.Domain.Name : "").Append('\t')
 								.Append(cheat.Enabled ? '1' : '0').Append('\t')
 								.Append(cheat.Name).Append('\t')
 								.Append(cheat.SizeAsChar).Append('\t')

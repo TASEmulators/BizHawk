@@ -4,7 +4,7 @@ namespace BizHawk.Client.Common
 {
 	public class NESGameGenieDecoder
 	{
-		private readonly string _code = string.Empty;
+		private readonly string _code = "";
 
 		private readonly Dictionary<char, int> _gameGenieTable = new Dictionary<char, int>
 			{
@@ -134,7 +134,7 @@ namespace BizHawk.Client.Common
 			_value = value;
 			_compare = compare;
 
-			GameGenieCode = string.Empty;
+			GameGenieCode = "";
 		}
 
 		public string GameGenieCode { get; private set; }

@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 		private readonly Bk2FloatConstants FloatLookup = new Bk2FloatConstants();
 
 		private IController _source;
-		private readonly string _logKey = string.Empty;
+		private readonly string _logKey = "";
 
 		public Bk2LogEntryGenerator(string logKey)
 		{

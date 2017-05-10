@@ -126,7 +126,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Null (i.e. nothing is emulated) emulator
 		/// </summary>
-		public static SystemInfo Null { get; } = new SystemInfo(string.Empty, CoreSystem.Null, 0);
+		public static SystemInfo Null { get; } = new SystemInfo("", CoreSystem.Null, 0);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for PCEngine (TurboGrafx-16)

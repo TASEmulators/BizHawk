@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	{
 		public static string ToBinary(int n, int charsmin)
 		{
-			var result = new StringBuilder(string.Empty);
+			var result = new StringBuilder("");
 
 			while (n > 0 || charsmin > 0)
 			{
@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public static string ToHex(int n, int charsmin)
 		{
-			var result = new StringBuilder(string.Empty);
+			var result = new StringBuilder("");
 
 			while (n > 0 || charsmin > 0)
 			{

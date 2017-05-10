@@ -12,7 +12,7 @@ namespace BizHawk.Client.Common
 		/// Initialize a new separator instance
 		/// </summary>
 		internal SeparatorWatch()
-			: base(null, 0, WatchSize.Separator, DisplayType.Separator, true, string.Empty)
+			: base(null, 0, WatchSize.Separator, DisplayType.Separator, true, "")
 		{
 		}
 
@@ -50,12 +50,12 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override string ValueString => string.Empty;
+		public override string ValueString => "";
 
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override string PreviousStr => string.Empty;
+		public override string PreviousStr => "";
 
 		/// <summary>
 		/// TTransform the current instance into a displayable (short representation) string
@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Ignore that stuff
 		/// </summary>
-		public override string Diff => string.Empty;
+		public override string Diff => "";
 
 		/// <summary>
 		/// Ignore that stuff

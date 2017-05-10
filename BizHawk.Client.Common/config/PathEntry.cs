@@ -177,10 +177,10 @@ namespace BizHawk.Client.Common
 			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "Tools", Path = Path.Combine(".", "Tools"), Ordinal = 7 },
 			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "Lua", Path = Path.Combine(".", "Lua"), Ordinal = 8 },
 			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "Watch (.wch)", Path = Path.Combine(".", "."), Ordinal = 9 },
-			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "Debug Logs", Path = Path.Combine(".", string.Empty), Ordinal = 10 },
+			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "Debug Logs", Path = Path.Combine(".", ""), Ordinal = 10 },
 			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "Macros", Path = Path.Combine(".", "Movies", "Macros"), Ordinal = 11 },
 			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "TAStudio states", Path = Path.Combine(".", "Movies", "TAStudio states"), Ordinal = 12 },
-			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "Multi-Disk Bundles", Path = Path.Combine(".", string.Empty), Ordinal = 13 },
+			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "Multi-Disk Bundles", Path = Path.Combine(".", ""), Ordinal = 13 },
 			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "External Tools", Path = Path.Combine(".", "ExternalTools"), Ordinal = 14 },
 
 			new PathEntry { System = "INTV", SystemDisplayName = "Intellivision", Type = "Base", Path = Path.Combine(".", "Intellivision"), Ordinal = 0 },

@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class VirtualPadAnalogButton : UserControl, IVirtualPadControl
 	{
-		private string _displayName = string.Empty;
+		private string _displayName = "";
 		private int _maxValue, _minValue;
 		private bool _programmaticallyChangingValue;
 		private bool _readonly;
@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				_displayName = value ?? string.Empty;
+				_displayName = value ?? "";
 				if (DisplayNameLabel != null)
 				{
 					DisplayNameLabel.Text = _displayName;

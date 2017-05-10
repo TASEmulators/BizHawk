@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _defaultWidth;
 		private int _defaultHeight;
-		private string _sortedColumn = string.Empty;
+		private string _sortedColumn = "";
 		private bool _sortReverse;
 
 		public Cheats()
@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			CheatListView.QueryItemBkColor += CheatListView_QueryItemBkColor;
 			CheatListView.VirtualMode = true;
 
-			_sortedColumn = string.Empty;
+			_sortedColumn = "";
 			_sortReverse = false;
 		}
 
@@ -110,7 +110,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MessageLabel.Text = saved 
 				? Path.GetFileName(Global.CheatList.CurrentFileName) + " saved."
-				: Path.GetFileName(Global.CheatList.CurrentFileName) + (Global.CheatList.Changes ? " *" : string.Empty);
+				: Path.GetFileName(Global.CheatList.CurrentFileName) + (Global.CheatList.Changes ? " *" : "");
 		}
 
 		public bool AskSaveChanges()
@@ -234,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheatListView_QueryItemText(int index, int column, out string text)
 		{
-			text = string.Empty;
+			text = "";
 			if (index >= Global.CheatList.Count || Global.CheatList[index].IsSeparator)
 			{
 				return;
@@ -257,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 					text = Global.CheatList[index].CompareStr;
 					break;
 				case ON:
-					text = Global.CheatList[index].Enabled ? "*" : string.Empty;
+					text = Global.CheatList[index].Enabled ? "*" : "";
 					break;
 				case DOMAIN:
 					text = Global.CheatList[index].Domain.Name;

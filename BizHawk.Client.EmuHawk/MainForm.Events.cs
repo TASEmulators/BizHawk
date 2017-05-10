@@ -2905,7 +2905,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			var ext = Path.GetExtension(filePaths[0]) ?? string.Empty;
+			var ext = Path.GetExtension(filePaths[0]) ?? "";
 			if (ext.ToUpper() == ".LUASES")
 			{
 				OpenLuaConsole();

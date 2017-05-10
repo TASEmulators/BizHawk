@@ -13,8 +13,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public MovieDetails()
 		{
-			Keys = string.Empty;
-			Values = string.Empty;
+			Keys = "";
+			Values = "";
 			BackgroundColor = Color.White;
 		}
 	}

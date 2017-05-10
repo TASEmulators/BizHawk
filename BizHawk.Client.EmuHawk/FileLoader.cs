@@ -171,7 +171,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (string file in fileList)
 			{
-				var ext = Path.GetExtension(file).ToUpper() ?? String.Empty;
+				var ext = Path.GetExtension(file).ToUpper() ?? "";
 				FileInformation fileInformation = new FileInformation(Path.GetDirectoryName(file), Path.GetFileName(file), archive);
 
 				switch (ext)

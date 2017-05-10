@@ -42,10 +42,10 @@ namespace BizHawk.Client.Common
 		// Core preference for generic file extension, key: file extension, value: a systemID or empty if no preference
 		public Dictionary<string, string> PreferredPlatformsForExtensions = new Dictionary<string, string>
 		{
-			{ ".bin", string.Empty },
-			{ ".rom", string.Empty },
-			{ ".iso", string.Empty },
-			{ ".img", string.Empty },
+			{ ".bin", "" },
+			{ ".rom", "" },
+			{ ".iso", "" },
+			{ ".img", "" },
 		};
 
 		// Path Settings ************************************/
@@ -88,7 +88,7 @@ namespace BizHawk.Client.Common
 		public int TargetScanlineFilterIntensity = 128; // choose between 0 and 256
 		public int TargetDisplayFilter = 0;
 		public int DispFinalFilter = 0; // None
-		public string DispUserFilterPath = string.Empty;
+		public string DispUserFilterPath = "";
 		public RecentFiles RecentRoms = new RecentFiles(10);
 		public RecentFiles RecentRomSessions = new RecentFiles(8); // Only used for MultiHawk
 		public bool PauseWhenMenuActivated = true;
@@ -129,8 +129,8 @@ namespace BizHawk.Client.Common
 		public bool FirstBoot = true;
 		public bool Update_AutoCheckEnabled = false;
 		public DateTime? Update_LastCheckTimeUTC = null;
-		public string Update_LatestVersion = string.Empty;
-		public string Update_IgnoreVersion = string.Empty;
+		public string Update_LatestVersion = "";
+		public string Update_IgnoreVersion = "";
 		public bool CDLAutoSave = true, CDLAutoStart = true;
 
 		////public bool TurboSeek = true; // When PauseOnFrame is set, this will decide whether the client goes into turbo mode or not
@@ -357,7 +357,7 @@ namespace BizHawk.Client.Common
 		public int SoundVolume = 100; // Range 0-100
 		public int SoundVolumeRWFF = 50; // Range 0-100
 		public bool SoundThrottle = false;
-		public string SoundDevice = string.Empty;
+		public string SoundDevice = "";
 		public int SoundBufferSizeMs = 100;
 
 		// Log Window
@@ -390,12 +390,12 @@ namespace BizHawk.Client.Common
 		public Color HexHighlightFreezeColor = Color.Violet;
 
 		// Video dumping settings
-		public string VideoWriter = string.Empty;
+		public string VideoWriter = "";
 		public int JMDCompression = 3;
 		public int JMDThreads = 3;
-		public string FFmpegFormat = string.Empty;
+		public string FFmpegFormat = "";
 		public string FFmpegCustomCommand = "-c:a foo -c:v bar -f baz";
-		public string AVICodecToken = string.Empty;
+		public string AVICodecToken = "";
 		public int GifWriterFrameskip = 3;
 		public int GifWriterDelay = -1;
 

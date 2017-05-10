@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 		public T Load<T>(bool focus = true)
 			where T : class, IToolForm
 		{
-			return Load<T>(string.Empty, focus);
+			return Load<T>("", focus);
 		}
 
 		/// <summary>

@@ -85,7 +85,7 @@ namespace BizHawk.Client.Common
 
 		public char TypeAsChar => _watch.TypeAsChar;
 
-		public string Name => IsSeparator ? string.Empty : _watch.Notes;
+		public string Name => IsSeparator ? "" : _watch.Notes;
 
 		public string AddressStr => _watch.AddressString;
 
@@ -97,7 +97,7 @@ namespace BizHawk.Client.Common
 				{
 					default:
 					case WatchSize.Separator:
-						return string.Empty;
+						return "";
 					case WatchSize.Byte:
 						return (_watch as ByteWatch).FormatValue((byte)_val);
 					case WatchSize.Word:
@@ -118,7 +118,7 @@ namespace BizHawk.Client.Common
 					{
 						default:
 						case WatchSize.Separator:
-							return string.Empty;
+							return "";
 						case WatchSize.Byte:
 							return (_watch as ByteWatch).FormatValue((byte)_compare.Value);
 						case WatchSize.Word:
@@ -128,7 +128,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 				
-				return string.Empty;
+				return "";
 			}
 		}
 

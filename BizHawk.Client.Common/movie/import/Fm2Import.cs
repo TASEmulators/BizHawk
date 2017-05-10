@@ -25,7 +25,7 @@ namespace BizHawk.Client.Common
 				{
 					lineNum++;
 
-					if (line == string.Empty)
+					if (line == "")
 					{
 						continue;
 					}

@@ -92,7 +92,7 @@ namespace BizHawk.Client.ApiHawk
 					BizHawkExternalToolAttribute attribute = (BizHawkExternalToolAttribute)attributes[0];
 					item = new ToolStripMenuItem(attribute.Name);
 					item.ToolTipText = attribute.Description;
-					if (attribute.IconResourceName != string.Empty)
+					if (attribute.IconResourceName != "")
 					{
 						Stream s = externalToolFile.GetManifestResourceStream(string.Format("{0}.{1}", externalToolFile.GetName().Name, attribute.IconResourceName));
 						if (s != null)

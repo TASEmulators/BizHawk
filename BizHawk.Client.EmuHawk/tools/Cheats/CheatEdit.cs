@@ -79,14 +79,14 @@ namespace BizHawk.Client.EmuHawk
 
 			ValueHexIndLabel.Text =
 				CompareHexIndLabel.Text =
-				_cheat.Type == DisplayType.Hex ? HexInd : string.Empty;
+				_cheat.Type == DisplayType.Hex ? HexInd : "";
 
 			BigEndianCheckBox.Checked = _cheat.BigEndian.Value;
 
 			NameBox.Text = _cheat.Name;
 			AddressBox.Text = _cheat.AddressStr;
 			ValueBox.Text = _cheat.ValueStr;
-			CompareBox.Text = _cheat.Compare.HasValue ? _cheat.CompareStr : String.Empty;
+			CompareBox.Text = _cheat.Compare.HasValue ? _cheat.CompareStr : "";
 
 			if (_cheat.ComparisonType.Equals(Cheat.COMPARISONTYPE.NONE))
 			{
@@ -101,7 +101,7 @@ namespace BizHawk.Client.EmuHawk
 			CheckFormState();
 			if (!_cheat.Compare.HasValue)
 			{
-				CompareBox.Text = String.Empty; // Necessary hack until WatchValueBox.ToRawInt() becomes nullable
+				CompareBox.Text = ""; // Necessary hack until WatchValueBox.ToRawInt() becomes nullable
 			}
 
 			_loading = false;
@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 			SetSizeSelected(WatchSize.Byte);
 			PopulateTypeDropdown();
 
-			NameBox.Text = string.Empty;
+			NameBox.Text = "";
 
 			if (MemoryDomains != null)
 			{
@@ -140,7 +140,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTypeSelected(DisplayType.Hex);
 
 			CheckFormState();
-			CompareBox.Text = string.Empty; // TODO: A needed hack until WatchValueBox.ToRawInt() becomes nullable
+			CompareBox.Text = ""; // TODO: A needed hack until WatchValueBox.ToRawInt() becomes nullable
 			_loading = false;
 		}
 

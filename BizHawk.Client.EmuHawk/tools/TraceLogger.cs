@@ -86,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TraceView_QueryItemText(int index, int column, out string text)
 		{
-			text = string.Empty;
+			text = "";
 			if (index < _instructions.Count)
 			{
 				switch (column)

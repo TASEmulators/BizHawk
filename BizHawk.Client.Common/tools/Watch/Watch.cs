@@ -197,7 +197,7 @@ namespace BizHawk.Client.Common
 		/// <returns>New <see cref="Watch"/> instance. True type is depending of size parameter</returns>
 		public static Watch GenerateWatch(MemoryDomain domain, long address, WatchSize size, DisplayType type, bool bigEndian)
 		{
-			return GenerateWatch(domain, address, size, type, bigEndian, string.Empty, 0, 0, 0);
+			return GenerateWatch(domain, address, size, type, bigEndian, "", 0, 0, 0);
 		}
 
 		#region Operators
@@ -642,7 +642,7 @@ namespace BizHawk.Client.Common
 					return "X" + (_domain.Size - 1).NumHexDigits();
 				}
 
-				return string.Empty;
+				return "";
 			}
 		}
 
@@ -731,7 +731,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					return string.Empty;
+					return "";
 				}
 			}
 		}

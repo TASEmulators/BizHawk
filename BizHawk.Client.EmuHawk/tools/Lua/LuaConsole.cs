@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Settings = new LuaConsoleSettings();
 			_sortReverse = false;
-			_lastColumnSorted = string.Empty;
+			_lastColumnSorted = "";
 			_luaList = new LuaFileList
 			{
 				ChangedCallback = SessionChangedCallback,
@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (LuaAlreadyInSession(processedPath) == false)
 			{
-				var luaFile = new LuaFile(string.Empty, processedPath);
+				var luaFile = new LuaFile("", processedPath);
 
 				_luaList.Add(luaFile);
 				LuaListView.ItemCount = _luaList.Count;
@@ -336,7 +336,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SessionChangedCallback()
 		{
 			OutputMessages.Text =
-				(_luaList.Changes ? "* " : string.Empty) +
+				(_luaList.Changes ? "* " : "") +
 				Path.GetFileName(_luaList.Filename);
 		}
 
@@ -378,7 +378,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LuaListView_QueryItemText(int index, int column, out string text)
 		{
-			text = string.Empty;
+			text = "";
 			if (column == 0)
 			{
 				text = Path.GetFileNameWithoutExtension(_luaList[index].Path); // TODO: how about allow the user to name scripts?
@@ -393,7 +393,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (path.StartsWith(".\\"))
 			{
-				return path.Replace(".\\", string.Empty);
+				return path.Replace(".\\", "");
 			}
 
 			return path;
@@ -427,7 +427,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateNumberOfScripts()
 		{
-			var message = string.Empty;
+			var message = "";
 			var total = SelectedFiles.Count();
 			var active = _luaList.Count(file => file.Enabled);
 			var paused = _luaList.Count(file => file.Enabled && file.Paused);
@@ -482,7 +482,7 @@ namespace BizHawk.Client.EmuHawk
 
 			OutputBox.Invoke(() =>
 			{
-				OutputBox.Text = string.Empty;
+				OutputBox.Text = "";
 				OutputBox.Refresh();
 			});
 		}
@@ -1302,7 +1302,7 @@ namespace BizHawk.Client.EmuHawk
 			for (var i = 0; i < _luaList.Count; i++)
 			{
 				_luaList[i] = luaListTemp[i];
-				_luaList[i].Name = string.Empty;
+				_luaList[i].Name = "";
 			}
 
 			UpdateDialog();

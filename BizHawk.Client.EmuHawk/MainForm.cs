@@ -1198,7 +1198,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				CheatStatusButton.ToolTipText = string.Empty;
+				CheatStatusButton.ToolTipText = "";
 				CheatStatusButton.Image = Properties.Resources.Blank;
 				CheatStatusButton.Visible = false;
 			}
@@ -1485,7 +1485,7 @@ namespace BizHawk.Client.EmuHawk
 		public void UpdateDumpIcon()
 		{
 			DumpStatusButton.Image = Properties.Resources.Blank;
-			DumpStatusButton.ToolTipText = string.Empty;
+			DumpStatusButton.ToolTipText = "";
 
 			if (Emulator.IsNull())
 			{
@@ -1641,7 +1641,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void HandlePlatformMenus()
 		{
-			var system = string.Empty;
+			var system = "";
 			if (!Global.Game.IsNullInstance)
 			{
 				//New Code
@@ -1835,7 +1835,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PauseStatusButton.Image = Properties.Resources.Blank;
 				PauseStatusButton.Visible = false;
-				PauseStatusButton.ToolTipText = string.Empty;
+				PauseStatusButton.ToolTipText = "";
 			}
 		}
 
@@ -2676,7 +2676,7 @@ namespace BizHawk.Client.EmuHawk
 
 			CoreNameStatusBarButton.Text = Emulator.DisplayName();
 			CoreNameStatusBarButton.Image = Emulator.Icon();
-			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : string.Empty;
+			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : "";
 		}
 
 		#endregion
@@ -3170,7 +3170,7 @@ namespace BizHawk.Client.EmuHawk
 			_currAviWriter = null;
 			GlobalWin.OSD.AddMessage("A/V capture aborted");
 			AVIStatusLabel.Image = Properties.Resources.Blank;
-			AVIStatusLabel.ToolTipText = string.Empty;
+			AVIStatusLabel.ToolTipText = "";
 			AVIStatusLabel.Visible = false;
 			_aviSoundInputAsync = null;
 			_dumpProxy = null; // return to normal sound output
@@ -3191,7 +3191,7 @@ namespace BizHawk.Client.EmuHawk
 			_currAviWriter = null;
 			GlobalWin.OSD.AddMessage("A/V capture stopped");
 			AVIStatusLabel.Image = Properties.Resources.Blank;
-			AVIStatusLabel.ToolTipText = string.Empty;
+			AVIStatusLabel.ToolTipText = "";
 			AVIStatusLabel.Visible = false;
 			_aviSoundInputAsync = null;
 			_dumpProxy = null; // return to normal sound output
@@ -3702,7 +3702,7 @@ namespace BizHawk.Client.EmuHawk
 
 				GlobalWin.Tools.Restart();
 				RewireSound();
-				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : string.Empty);
+				Text = "BizHawk" + (VersionInfo.DeveloperBuild ? " (interim) " : "");
 				HandlePlatformMenus();
 				_stateSlots.Clear();
 				UpdateDumpIcon();

@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static void SetText(Control control, string caption)
 		{
-			control.Text = caption ?? string.Empty;
+			control.Text = caption ?? "";
 		}
 
 		#endregion
@@ -263,7 +263,7 @@ namespace BizHawk.Client.EmuHawk
 				ConsoleLuaLibrary.Log(ex.Message);
 			}
 
-			return string.Empty;
+			return "";
 		}
 
 		[LuaMethodAttributes(
@@ -301,7 +301,7 @@ namespace BizHawk.Client.EmuHawk
 				ConsoleLuaLibrary.Log(ex.Message);
 			}
 
-			return string.Empty;
+			return "";
 		}
 
 		[LuaMethodAttributes(
@@ -442,7 +442,7 @@ namespace BizHawk.Client.EmuHawk
 				return openFileDialog1.FileName;
 			}
 			
-			return string.Empty;
+			return "";
 		}
 
 		[LuaMethodAttributes(

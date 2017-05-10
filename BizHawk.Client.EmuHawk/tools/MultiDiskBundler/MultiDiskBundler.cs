@@ -236,7 +236,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private static string ConvertToTag(string name)
 		{
-			return new Regex("[^A-Za-z0-9]").Replace(name, string.Empty);
+			return new Regex("[^A-Za-z0-9]").Replace(name, "");
 		}
 
 		private void NameBox_TextChanged(object sender, EventArgs e)
@@ -246,7 +246,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BrowseBtn_Click(object sender, EventArgs e)
 		{
-			string filename = string.Empty;
+			string filename = "";
 			string initialDirectory = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MultiDiskBundlesFragment, "Global_NULL");
 
 			if (!Global.Game.IsNullInstance)

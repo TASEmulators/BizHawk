@@ -38,7 +38,7 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="name">Tool's name</param>
 		/// <param name="description">Small description about the tool itself</param>
 		public BizHawkExternalToolAttribute(string name, string description)
-			: this(name, description, string.Empty)
+			: this(name, description, "")
 		{ }
 
 		/// <summary>
@@ -46,7 +46,7 @@ namespace BizHawk.Client.ApiHawk
 		/// </summary>
 		/// <param name="name">Tool's name</param>
 		public BizHawkExternalToolAttribute(string name)
-			:this(name, string.Empty, string.Empty)
+			:this(name, "", "")
 		{}
 
 		#endregion

@@ -282,12 +282,12 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearDetails()
 		{
 			DetailsBox.Text = "Details";
-			AddressLabel.Text = string.Empty;
-			ValueLabel.Text = string.Empty;
-			Value2Label.Text = string.Empty;
-			Value3Label.Text = string.Empty;
-			Value4Label.Text = string.Empty;
-			Value5Label.Text = string.Empty;
+			AddressLabel.Text = "";
+			ValueLabel.Text = "";
+			Value2Label.Text = "";
+			Value3Label.Text = "";
+			Value4Label.Text = "";
+			Value5Label.Text = "";
 			ZoomBox.Image = _zoomBoxDefaultImage;
 		}
 

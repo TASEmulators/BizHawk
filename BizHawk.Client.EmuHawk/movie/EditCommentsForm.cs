@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		public EditCommentsForm()
 		{
 			InitializeComponent();
-			_lastHeaderClicked = string.Empty;
+			_lastHeaderClicked = "";
 			_sortReverse = false;
 		}
 

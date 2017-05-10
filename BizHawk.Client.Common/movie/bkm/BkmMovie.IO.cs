@@ -77,7 +77,7 @@ namespace BizHawk.Client.Common
 
 				while ((line = sr.ReadLine()) != null)
 				{
-					if (line == string.Empty)
+					if (line == "")
 					{
 						continue;
 					}

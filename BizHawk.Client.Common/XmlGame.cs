@@ -47,7 +47,7 @@ namespace BizHawk.Client.Common
 					},
 					Xml = x
 				};
-				string fullpath = string.Empty;
+				string fullpath = "";
 
 				var n = y.SelectSingleNode("./LoadAssets");
 				if (n != null)
@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common
 						else
 						{
 							// relative path
-							fullpath = Path.GetDirectoryName(f.CanonicalFullPath.Split('|').First()) ?? string.Empty;
+							fullpath = Path.GetDirectoryName(f.CanonicalFullPath.Split('|').First()) ?? "";
 							fullpath = Path.Combine(fullpath, filename.Split('|').First());
 							try
 							{

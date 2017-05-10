@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 {
 	public class Bk2ControllerAdapter : IMovieController
 	{
-		private readonly string _logKey = string.Empty;
+		private readonly string _logKey = "";
 		private readonly WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();
 		private readonly WorkingDictionary<string, float> MyFloatControls = new WorkingDictionary<string, float>();
 
@@ -161,7 +161,7 @@ namespace BizHawk.Client.Common
 			if (!string.IsNullOrWhiteSpace(mnemonic))
 			{
 				var def = Global.Emulator.ControllerDefinition;
-				var trimmed = mnemonic.Replace("|", string.Empty);
+				var trimmed = mnemonic.Replace("|", "");
 				var buttons = Definition.ControlsOrdered.SelectMany(x => x).ToList();
 				var iterator = 0;
 

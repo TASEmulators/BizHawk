@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FunctionView_QueryItemText(int index, int column, out string text)
 		{
-			text = string.Empty;
+			text = "";
 
 			try
 			{

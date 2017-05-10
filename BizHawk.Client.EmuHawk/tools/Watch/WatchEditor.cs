@@ -81,7 +81,7 @@ namespace BizHawk.Client.EmuHawk
 					if (_watchList.Count > 1)
 					{
 						NotesBox.Enabled = false;
-						NotesBox.Text = string.Empty;
+						NotesBox.Text = "";
 
 						AddressBox.Enabled = false;
 						AddressBox.Text = _watchList.Select(a => a.AddressString).Aggregate((addrStr, nextStr) => addrStr + ("," + nextStr));
@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 					Text = "New Watch";
 					break;
 				case Mode.Edit:
-					Text = "Edit Watch" + (_watchList.Count > 1 ? "es" : string.Empty);
+					Text = "Edit Watch" + (_watchList.Count > 1 ? "es" : "");
 					break;
 				case Mode.Duplicate:
 					Text = "Duplicate Watch";

@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 					var subparts = subtitleStr.Split(' ');
 
 					// Unfortunately I made the file format space delminated so this hack is necessary to get the message
-					var message = string.Empty;
+					var message = "";
 					for (var i = 6; i < subparts.Length; i++)
 					{
 						message += subparts[i] + ' ';

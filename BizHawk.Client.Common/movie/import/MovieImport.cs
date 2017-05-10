@@ -69,9 +69,9 @@ namespace BizHawk.Client.Common
 		// Attempt to import another type of movie file into a movie object.
 		public static Bk2Movie ImportFile(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = string.Empty;
-			warningMsg = string.Empty;
-			string ext = path != null ? Path.GetExtension(path).ToUpper() : string.Empty;
+			errorMsg = "";
+			warningMsg = "";
+			string ext = path != null ? Path.GetExtension(path).ToUpper() : "";
 
 			if (UsesLegacyImporter(ext))
 			{
@@ -133,8 +133,8 @@ namespace BizHawk.Client.Common
 
 		private static BkmMovie LegacyImportFile(string ext, string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = string.Empty;
-			warningMsg = string.Empty;
+			errorMsg = "";
+			warningMsg = "";
 
 			BkmMovie m = new BkmMovie();
 
@@ -261,8 +261,8 @@ namespace BizHawk.Client.Common
 		private static BkmMovie ImportTextFrame(string line, int lineNum, BkmMovie m, string path, string platform, ref string warningMsg)
 		{
 			string[] buttons = { };
-			var controller = string.Empty;
-			var ext = path != null ? Path.GetExtension(path).ToUpper() : string.Empty;
+			var controller = "";
+			var ext = path != null ? Path.GetExtension(path).ToUpper() : "";
 			switch (ext)
 			{
 				case ".FM2":
@@ -327,7 +327,7 @@ namespace BizHawk.Client.Common
 							break;
 					}
 
-					if (warningMsg != string.Empty)
+					if (warningMsg != "")
 					{
 						warningMsg = "Unable to import " + warningMsg + " command on line " + lineNum + ".";
 					}
@@ -339,7 +339,7 @@ namespace BizHawk.Client.Common
 				char[] off = { '.', ' ', '\t', '\n', '\r' };
 				if (flags.Length == 0 || off.Contains(flags[0]))
 				{
-					if (warningMsg == string.Empty)
+					if (warningMsg == "")
 					{
 						warningMsg = "Unable to import subframe.";
 					}
@@ -351,7 +351,7 @@ namespace BizHawk.Client.Common
 				flags = SingleSpaces(flags.Substring(2));
 				if (reset && ((flags.Length >= 2 && flags[1] != '0') || (flags.Length >= 4 && flags[3] != '0')))
 				{
-					if (warningMsg == string.Empty)
+					if (warningMsg == "")
 					{
 						warningMsg = "Unable to import delayed reset.";
 					}
@@ -384,7 +384,7 @@ namespace BizHawk.Client.Common
 				// Gameboy doesn't currently have a prefix saying which player the input is for.
 				if (controllers.Definition.Name == "Gameboy Controller")
 				{
-					prefix = string.Empty;
+					prefix = "";
 				}
 
 				// Only count lines with that have the right number of buttons and are for valid players.
@@ -418,7 +418,7 @@ namespace BizHawk.Client.Common
 				// Concatenate the frame and message with default values for the additional fields.
 				string frame;
 				string length;
-				string ext = path != null ? Path.GetExtension(path).ToUpper() : string.Empty;
+				string ext = path != null ? Path.GetExtension(path).ToUpper() : "";
 
 				if (ext != ".LSMV")
 				{
@@ -441,12 +441,12 @@ namespace BizHawk.Client.Common
 		// Import a text-based movie format. This works for .FM2, .MC2, and .YMV.
 		private static BkmMovie ImportText(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = string.Empty;
+			errorMsg = warningMsg = "";
 			var m = new BkmMovie(path);
 			var file = new FileInfo(path);
 			var sr = file.OpenText();
-			var emulator = string.Empty;
-			var platform = string.Empty;
+			var emulator = "";
+			var platform = "";
 			switch (Path.GetExtension(path).ToUpper())
 			{
 				case ".FM2":
@@ -468,14 +468,14 @@ namespace BizHawk.Client.Common
 			while ((line = sr.ReadLine()) != null)
 			{
 				lineNum++;
-				if (line == string.Empty)
+				if (line == "")
 				{
 					continue;
 				}
 				else if (line[0] == '|')
 				{
 					m = ImportTextFrame(line, lineNum, m, path, platform, ref warningMsg);
-					if (errorMsg != string.Empty)
+					if (errorMsg != "")
 					{
 						sr.Close();
 						return null;
@@ -637,7 +637,7 @@ namespace BizHawk.Client.Common
 		// FCM file format: http://code.google.com/p/fceu/wiki/FCM
 		private static BkmMovie ImportFCM(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = string.Empty;
+			errorMsg = warningMsg = "";
 			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
@@ -805,7 +805,7 @@ namespace BizHawk.Client.Common
 
 					// bbbbb:
 					controllers["Reset"] = command == 1;
-					if (warningMsg == string.Empty)
+					if (warningMsg == "")
 					{
 						switch (command)
 						{
@@ -845,7 +845,7 @@ namespace BizHawk.Client.Common
 								break;
 						}
 
-						if (warningMsg != string.Empty)
+						if (warningMsg != "")
 						{
 							warningMsg = "Unable to import " + warningMsg + " command at frame " + frame + ".";
 						}
@@ -919,7 +919,7 @@ namespace BizHawk.Client.Common
 		// FMV file format: http://tasvideos.org/FMV.html
 		private static BkmMovie ImportFmv(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = string.Empty;
+			errorMsg = warningMsg = "";
 			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
@@ -1078,7 +1078,7 @@ namespace BizHawk.Client.Common
 		// GMV file format: http://code.google.com/p/gens-rerecording/wiki/GMV
 		private static BkmMovie ImportGMV(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = string.Empty;
+			errorMsg = warningMsg = "";
 			var m = new BkmMovie(path);
 			var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			var r = new BinaryReader(fs);
@@ -1220,7 +1220,7 @@ namespace BizHawk.Client.Common
 		// LSMV file format: http://tasvideos.org/Lsnes/Movieformat.html
 		private static BkmMovie ImportLSMV(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = string.Empty;
+			errorMsg = warningMsg = "";
 			var m = new BkmMovie(path);
 			var hf = new HawkFile(path);
 
@@ -1238,8 +1238,8 @@ namespace BizHawk.Client.Common
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string authors = Encoding.UTF8.GetString(stream.ReadAllBytes());
-					string author_list = string.Empty;
-					string author_last = string.Empty;
+					string author_list = "";
+					string author_last = "";
 					using (var reader = new StringReader(authors))
 					{
 						string line;
@@ -1248,9 +1248,9 @@ namespace BizHawk.Client.Common
 						while ((line = reader.ReadLine()) != null)
 						{
 							string author = line.Trim();
-							if (author != string.Empty)
+							if (author != "")
 							{
-								if (author_last != string.Empty)
+								if (author_last != "")
 								{
 									author_list += author_last + ", ";
 								}
@@ -1260,12 +1260,12 @@ namespace BizHawk.Client.Common
 						}
 					}
 
-					if (author_list != string.Empty)
+					if (author_list != "")
 					{
 						author_list += "and ";
 					}
 
-					if (author_last != string.Empty)
+					if (author_last != "")
 					{
 						author_list += author_last;
 					}
@@ -1329,7 +1329,7 @@ namespace BizHawk.Client.Common
 						string line;
 						while ((line = reader.ReadLine()) != null)
 						{
-							if (line == string.Empty)
+							if (line == "")
 							{
 								continue;
 							}
@@ -1348,7 +1348,7 @@ namespace BizHawk.Client.Common
 							}
 
 							m = ImportTextFrame(line, lineNum, m, path, platform, ref warningMsg);
-							if (errorMsg != string.Empty)
+							if (errorMsg != "")
 							{
 								hf.Unbind();
 								return null;
@@ -1487,7 +1487,7 @@ namespace BizHawk.Client.Common
 		*/
 		private static BkmMovie ImportMCM(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = string.Empty;
+			errorMsg = warningMsg = "";
 			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
@@ -1609,12 +1609,12 @@ namespace BizHawk.Client.Common
 					ushort controllerState = r.ReadByte();
 					for (int button = 0; button < buttons.Length; button++)
 					{
-						string prefix = platform == "lynx" ? string.Empty : "P" + player + " "; // hack
+						string prefix = platform == "lynx" ? "" : "P" + player + " "; // hack
 						controllers[prefix + buttons[button]] = ((controllerState >> button) & 0x1) != 0;
 					}
 				}
 				r.ReadByte();
-				if (platform == "nes" && warningMsg == string.Empty)
+				if (platform == "nes" && warningMsg == "")
 				{
 					warningMsg = "Control commands are not properly supported.";
 				}
@@ -1636,7 +1636,7 @@ namespace BizHawk.Client.Common
 		// MMV file format: http://tasvideos.org/MMV.html
 		private static BkmMovie ImportMMV(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = string.Empty;
+			errorMsg = warningMsg = "";
 			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
@@ -1769,7 +1769,7 @@ namespace BizHawk.Client.Common
 		// NMV file format: http://tasvideos.org/NMV.html
 		private static BkmMovie ImportNMV(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = string.Empty;
+			errorMsg = warningMsg = "";
 			var m = new BkmMovie(path);
 			var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			var r = new BinaryReader(fs);
@@ -1866,7 +1866,7 @@ namespace BizHawk.Client.Common
 					masks[controller - 1] = types[controller - 1] == 1;
 
 					// Get the first unsupported controller warning message that arises.
-					if (warningMsg == string.Empty)
+					if (warningMsg == "")
 					{
 						switch (types[controller - 1])
 						{
@@ -1892,7 +1892,7 @@ namespace BizHawk.Client.Common
 								break;
 						}
 
-						if (warningMsg != string.Empty)
+						if (warningMsg != "")
 						{
 							warningMsg = warningMsg + " is not properly supported.";
 						}
@@ -1919,7 +1919,7 @@ namespace BizHawk.Client.Common
 				"Unconnected", "Famicom 4-player adapter", "Famicom Arkanoid paddle", "Family Basic Keyboard",
 				"Alternate keyboard layout", "Family Trainer", "Oeka Kids writing tablet"
 			};
-			if (expansion != 0 && warningMsg == string.Empty)
+			if (expansion != 0 && warningMsg == "")
 			{
 				warningMsg = "Expansion port is not properly supported. This movie uses " + expansions[expansion] + ".";
 			}
@@ -2005,7 +2005,7 @@ namespace BizHawk.Client.Common
 							controllers["P" + player + " " + buttons[button]] = ((controllerState >> button) & 0x1) != 0;
 						}
 					}
-					else if (warningMsg == string.Empty)
+					else if (warningMsg == "")
 					{
 						warningMsg = "Extra input is not properly supported.";
 					}
@@ -2021,7 +2021,7 @@ namespace BizHawk.Client.Common
 
 		private static BkmMovie ImportSmv(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = string.Empty;
+			errorMsg = warningMsg = "";
 			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
@@ -2170,7 +2170,7 @@ namespace BizHawk.Client.Common
 			*/
 			byte[] metadata = r.ReadBytes((int)(savestateOffset - extraRomInfo - ((version != "1.43") ? 0x40 : 0x20)));
 			string author = NullTerminated(Encoding.Unicode.GetString(metadata).Trim());
-			if (author != string.Empty)
+			if (author != "")
 			{
 				m.Header[HeaderKeys.AUTHOR] = author;
 			}
@@ -2244,7 +2244,7 @@ namespace BizHawk.Client.Common
 					*/
 					if (version != "1.43" && player <= controllerTypes.Length)
 					{
-						var peripheral = string.Empty;
+						var peripheral = "";
 						switch (controllerTypes[player - 1])
 						{
 							case 0: // NONE
@@ -2272,7 +2272,7 @@ namespace BizHawk.Client.Common
 								break;
 						}
 
-						if (peripheral != string.Empty && warningMsg == string.Empty)
+						if (peripheral != "" && warningMsg == "")
 						{
 							warningMsg = "Unable to import " + peripheral + ".";
 						}
@@ -2287,7 +2287,7 @@ namespace BizHawk.Client.Common
 								((controllerState >> button) & 0x1) != 0;
 						}
 					}
-					else if (warningMsg == string.Empty)
+					else if (warningMsg == "")
 					{
 						warningMsg = "Controller " + player + " not supported.";
 					}
@@ -2314,7 +2314,7 @@ namespace BizHawk.Client.Common
 		// VBM file format: http://code.google.com/p/vba-rerecording/wiki/VBM
 		private static BkmMovie ImportVbm(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = string.Empty;
+			errorMsg = warningMsg = "";
 			var m = new BkmMovie(path);
 			var fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			var r = new BinaryReader(fs);
@@ -2585,7 +2585,7 @@ namespace BizHawk.Client.Common
 				}
 
 				// TODO: Handle the other buttons.
-				if (warningMsg == string.Empty)
+				if (warningMsg == "")
 				{
 					for (int button = 0; button < other.Length; button++)
 					{
@@ -2617,7 +2617,7 @@ namespace BizHawk.Client.Common
 		// VMV file format: http://tasvideos.org/VMV.html
 		private static BkmMovie ImportVmv(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = string.Empty;
+			errorMsg = warningMsg = "";
 			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
@@ -2768,7 +2768,7 @@ namespace BizHawk.Client.Common
 						if (controllerState == 0xF0)
 						{
 							ushort command = r.ReadUInt16();
-							string commandName = string.Empty;
+							string commandName = "";
 							if ((command & 0xFF00) == 0)
 							{
 								switch (command & 0x00FF)
@@ -2815,7 +2815,7 @@ namespace BizHawk.Client.Common
 								commandName = "NESCMD_EXCONTROLLER, " + (command & 0xFF00);
 							}
 
-							if (commandName != string.Empty && warningMsg == string.Empty)
+							if (commandName != "" && warningMsg == "")
 							{
 								warningMsg = "Unable to run command \"" + commandName + "\".";
 							}
@@ -2825,7 +2825,7 @@ namespace BizHawk.Client.Common
 							uint dwdata = r.ReadUInt32();
 
 							// TODO: Make a clearer warning message.
-							if (warningMsg == string.Empty)
+							if (warningMsg == "")
 							{
 								warningMsg = "Unable to run SetSyncExData(" + dwdata + ").";
 							}
@@ -2857,7 +2857,7 @@ namespace BizHawk.Client.Common
 		// ZMV file format: http://tasvideos.org/ZMV.html
 		private static BkmMovie ImportZmv(string path, out string errorMsg, out string warningMsg)
 		{
-			errorMsg = warningMsg = string.Empty;
+			errorMsg = warningMsg = "";
 			BkmMovie m = new BkmMovie(path);
 			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read);
 			BinaryReader r = new BinaryReader(fs);
@@ -2925,7 +2925,7 @@ namespace BizHawk.Client.Common
 				 bit 0: super scope in second port
 			*/
 			byte controllerFlags = r.ReadByte();
-			string peripheral = string.Empty;
+			string peripheral = "";
 			bool superScope = (controllerFlags & 0x1) != 0;
 			if (superScope)
 			{
@@ -2934,19 +2934,19 @@ namespace BizHawk.Client.Common
 
 			controllerFlags >>= 1;
 			bool secondMouse = (controllerFlags & 0x1) != 0;
-			if (secondMouse && peripheral == string.Empty)
+			if (secondMouse && peripheral == "")
 			{
 				peripheral = "Second Mouse";
 			}
 
 			controllerFlags >>= 1;
 			bool firstMouse = (controllerFlags & 0x1) != 0;
-			if (firstMouse && peripheral == string.Empty)
+			if (firstMouse && peripheral == "")
 			{
 				peripheral = "First Mouse";
 			}
 
-			if (peripheral != string.Empty)
+			if (peripheral != "")
 			{
 				warningMsg = "Unable to import " + peripheral + ".";
 			}
@@ -3159,7 +3159,7 @@ namespace BizHawk.Client.Common
 									}
 								}
 							}
-							else if (warningMsg == string.Empty)
+							else if (warningMsg == "")
 							{
 								warningMsg = "Controller " + player + " not supported.";
 							}

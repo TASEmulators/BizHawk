@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 			Subtitles = new SubtitleList();
 			Comments = new List<string>();
 
-			Filename = string.Empty;
+			Filename = "";
 			IsCountingRerecords = true;
 			_mode = Moviemode.Inactive;
 			MakeBackup = true;

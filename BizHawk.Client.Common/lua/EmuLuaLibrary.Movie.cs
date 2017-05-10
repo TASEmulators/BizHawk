@@ -84,7 +84,7 @@ namespace BizHawk.Client.Common
 				return lg.GenerateLogEntry();
 			}
 
-			return string.Empty;
+			return "";
 		}
 
 		[LuaMethodAttributes(

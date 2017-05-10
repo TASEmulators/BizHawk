@@ -75,7 +75,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var key = systemId + (pal ? "_PAL" : string.Empty);
+				var key = systemId + (pal ? "_PAL" : "");
 				if (_rates.ContainsKey(key))
 				{
 					return _rates[key];

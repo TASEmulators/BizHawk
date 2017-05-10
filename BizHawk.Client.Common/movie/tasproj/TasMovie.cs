@@ -18,7 +18,7 @@ namespace BizHawk.Client.Common
 		public const string DefaultProjectName = "default";
 		public BackgroundWorker _progressReportWorker = null;
 		public bool LastPositionStable = true;
-		public string NewBranchText = string.Empty;
+		public string NewBranchText = "";
 		public readonly IStringLog VerificationLog = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 		public readonly TasBranchCollection Branches = new TasBranchCollection();
 		public readonly TasSession Session;
@@ -194,7 +194,7 @@ namespace BizHawk.Client.Common
 			{
 				return adapter.IsPressed(buttonName) ?
 					Mnemonics[buttonName].ToString() :
-					string.Empty;
+					"";
 			}
 
 			if (adapter.Definition.FloatControls.Contains(buttonName))
@@ -287,7 +287,7 @@ namespace BizHawk.Client.Common
 		// TODO: this is 99% copy pasting of bad code
 		public override bool ExtractInputLog(TextReader reader, out string errorMessage)
 		{
-			errorMessage = string.Empty;
+			errorMessage = "";
 			int? stateFrame = null;
 
 			var newLog = new List<string>();

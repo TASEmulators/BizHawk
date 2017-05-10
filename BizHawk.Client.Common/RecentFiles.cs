@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 		public int Count => recentlist.Count;
 
 		[JsonIgnore]
-		public string MostRecent => recentlist.Any() ? recentlist[0] : string.Empty;
+		public string MostRecent => recentlist.Any() ? recentlist[0] : "";
 
 		public string this[int index]
 		{
@@ -48,7 +48,7 @@ namespace BizHawk.Client.Common
 					return recentlist[index];
 				}
 
-				return string.Empty;
+				return "";
 			}
 		}
 

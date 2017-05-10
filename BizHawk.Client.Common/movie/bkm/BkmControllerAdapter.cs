@@ -236,7 +236,7 @@ namespace BizHawk.Client.Common
 				{
 					return;
 				}
-				string prefix = string.Empty;
+				string prefix = "";
 				if (ControlType != "Gameboy Controller" && ControlType != "TI83 Controller")
 				{
 					prefix = "P" + player + " ";

@@ -96,7 +96,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			
-			return string.Empty;
+			return "";
 		}
 
 		[LuaMethodAttributes(

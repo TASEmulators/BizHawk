@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 	{
 		public Subtitle()
 		{
-			Message = string.Empty;
+			Message = "";
 			X = 0;
 			Y = 0;
 			Duration = 120;

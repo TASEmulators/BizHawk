@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			var selectedValue = SelectedRadio != null ? SelectedRadio.Text : string.Empty;
+			var selectedValue = SelectedRadio != null ? SelectedRadio.Text : "";
 			PlatformChoice = AvailableSystems.FirstOrDefault(x => x.FullName == selectedValue).SystemId;
 
 			if (AlwaysCheckbox.Checked)

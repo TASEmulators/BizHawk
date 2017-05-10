@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				var key = button.Replace("Key ", string.Empty);
+				var key = button.Replace("Key ", "");
 				if (key.StartsWith("P") && key.Length > 1 && key[1] >= '0' && key[1] <= '9')
 				{
 					key = key.Substring(3);

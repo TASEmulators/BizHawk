@@ -211,7 +211,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Cpu.Logger = (s) => Tracer.Put(new TraceInfo
 				{
 					Disassembly = $"{SF2MapperLatch:X1}:{s}",
-					RegisterInfo = string.Empty
+					RegisterInfo = ""
 				});
 			}
 			else

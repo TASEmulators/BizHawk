@@ -173,7 +173,7 @@ namespace BizHawk.Client.Common
 
 					bl.GetLump(BinaryStateLump.Framebuffer, false, PopulateFramebuffer);
 
-					string userData = string.Empty;
+					string userData = "";
 					bl.GetLump(BinaryStateLump.UserData, false, delegate(TextReader tr)
 					{
 						string line;
@@ -226,7 +226,7 @@ namespace BizHawk.Client.Common
 								break;
 							}
 							
-							if (str.Trim() == string.Empty)
+							if (str.Trim() == "")
 							{
 								continue;
 							}

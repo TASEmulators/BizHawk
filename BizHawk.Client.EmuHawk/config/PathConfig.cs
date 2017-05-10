@@ -134,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 
 					var btn = new Button
 					{
-						Text = string.Empty,
+						Text = "",
 						Image = Properties.Resources.OpenFile,
 						Location = new Point(widgetOffset, _y + buttonOffsetY),
 						Size = new Size(buttonWidth, buttonHeight),
@@ -158,7 +158,7 @@ namespace BizHawk.Client.EmuHawk
 						var firmwareButton = new Button
 						{
 							Name = "Global",
-							Text = String.Empty,
+							Text = "",
 							Image = Properties.Resources.Help,
 							Location = new Point(UIHelper.ScaleX(115), _y + buttonOffsetY),
 							Size = new Size(buttonWidth, buttonHeight),

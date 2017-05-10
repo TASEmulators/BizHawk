@@ -314,7 +314,7 @@ namespace Cyotek.Drawing.BitmapFont
     {
       string result;
 
-      result = string.Empty;
+      result = "";
       name = name.ToLowerInvariant();
 
       foreach (string part in parts)

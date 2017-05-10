@@ -152,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 			// maps to|     Value     |i|j|k|l|q|r|s|t|o|p|a|b|c|d|u|v|w|x|e|f|g|h|m|n|
 			// order  |     Value     |a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|
 			char[] letters = { 'D', 'F', '4', '7', '0', '9', '1', '5', '6', 'B', 'C', '8', 'A', '2', '3', 'E' };
-			var code = string.Empty;
+			var code = "";
 			int[] num = { 0, 0, 0, 0, 0, 0, 0, 0 };
 			num[0] = (val & 0xF0) >> 4;
 			num[1] = val & 0x0F;
@@ -176,9 +176,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearButton_Click(object sender, EventArgs e)
 		{
-			AddressBox.Text = string.Empty;
-			ValueBox.Text = string.Empty;
-			GGCodeMaskBox.Text = string.Empty;
+			AddressBox.Text = "";
+			ValueBox.Text = "";
+			GGCodeMaskBox.Text = "";
 			addcheatbt.Enabled = false;
 		}
 
@@ -235,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 				_processing = true;
 				if (Regex.IsMatch(AddressBox.Text, @"[^a-fA-F0-9]"))
 				{
-					AddressBox.Text = Regex.Replace(AddressBox.Text, @"[^a-fA-F0-9]", string.Empty);
+					AddressBox.Text = Regex.Replace(AddressBox.Text, @"[^a-fA-F0-9]", "");
 				}
 
 				if (!string.IsNullOrEmpty(AddressBox.Text) || !string.IsNullOrEmpty(ValueBox.Text))
@@ -256,7 +256,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					GGCodeMaskBox.Text = string.Empty;
+					GGCodeMaskBox.Text = "";
 					addcheatbt.Enabled = false;
 				}
 
@@ -273,7 +273,7 @@ namespace BizHawk.Client.EmuHawk
 				// remove invalid character when pasted
 				if (Regex.IsMatch(ValueBox.Text, @"[^a-fA-F0-9]"))
 				{
-					ValueBox.Text = Regex.Replace(ValueBox.Text, @"[^a-fA-F0-9]", string.Empty);
+					ValueBox.Text = Regex.Replace(ValueBox.Text, @"[^a-fA-F0-9]", "");
 				}
 
 				if ((AddressBox.Text.Length > 0) || (ValueBox.Text.Length > 0))
@@ -294,7 +294,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					GGCodeMaskBox.Text = string.Empty;
+					GGCodeMaskBox.Text = "";
 					addcheatbt.Enabled = false;
 				}
 
@@ -311,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 				// insert REGEX Remove non HEXA char
 				if (Regex.IsMatch(GGCodeMaskBox.Text, @"[^a-fA-F0-9]"))
 				{
-					GGCodeMaskBox.Text = Regex.Replace(GGCodeMaskBox.Text, @"[^a-fA-F0-9]", string.Empty);
+					GGCodeMaskBox.Text = Regex.Replace(GGCodeMaskBox.Text, @"[^a-fA-F0-9]", "");
 				}
 
 				if (GGCodeMaskBox.Text.Length > 0)
@@ -324,8 +324,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					AddressBox.Text = string.Empty;
-					ValueBox.Text = string.Empty;
+					AddressBox.Text = "";
+					ValueBox.Text = "";
 					addcheatbt.Enabled = false;
 				}
 
@@ -337,7 +337,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (GGCodeMaskBox.Text.Length < 8)
 			{
-				var code = string.Empty;
+				var code = "";
 				if (sender == B0) code = "0";
 				if (sender == B1) code = "1";
 				if (sender == B2) code = "2";

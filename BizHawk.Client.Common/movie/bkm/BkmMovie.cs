@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 		public BkmMovie()
 		{
 			Header = new BkmHeader { [HeaderKeys.MOVIEVERSION] = "BizHawk v0.0.1" };
-			Filename = string.Empty;
+			Filename = "";
 			_preloadFramecount = 0;
 
 			IsCountingRerecords = true;

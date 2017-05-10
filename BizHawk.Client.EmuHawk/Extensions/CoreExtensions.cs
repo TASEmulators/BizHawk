@@ -74,7 +74,7 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 		{
 			var attributes = core.Attributes();
 
-			var str = (!attributes.Released ? "(Experimental) " : string.Empty) +
+			var str = (!attributes.Released ? "(Experimental) " : "") +
 				attributes.CoreName;
 
 			if (core is LibsnesCore)

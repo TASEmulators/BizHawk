@@ -135,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ret = new TreeNode
 			{
-				Text = ci.CoreName + (ci.Released ? string.Empty : " (UNRELEASED)"),
+				Text = ci.CoreName + (ci.Released ? "" : " (UNRELEASED)"),
 				ForeColor = ci.Released ? Color.Black : Color.DarkGray
 			};
 
@@ -255,7 +255,7 @@ namespace BizHawk.Client.EmuHawk
 					string img = "Unknown";
 					var coreNode = new TreeNode
 					{
-						Text = t.CoreAttributes.CoreName + (t.CoreAttributes.Released ? string.Empty : " (UNRELEASED)"),
+						Text = t.CoreAttributes.CoreName + (t.CoreAttributes.Released ? "" : " (UNRELEASED)"),
 						ForeColor = t.CoreAttributes.Released ? Color.Black : Color.DarkGray,
 						ImageKey = img,
 						SelectedImageKey = img,

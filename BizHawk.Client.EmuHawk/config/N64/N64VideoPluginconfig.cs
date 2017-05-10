@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 											"1380 x 768"
 										};
 
-		private string previousPluginSelection = string.Empty;
+		private string previousPluginSelection = "";
 		private bool programmaticallyChangingPluginComboBox = false;
 
 		public N64VideoPluginconfig()

@@ -232,7 +232,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				string diff = string.Empty;
+				string diff = "";
 				int diffVal = _value - _previous;
 				if (diffVal > 0)
 				{

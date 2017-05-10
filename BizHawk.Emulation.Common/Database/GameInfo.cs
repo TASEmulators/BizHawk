@@ -39,10 +39,10 @@ namespace BizHawk.Emulation.Common
 		{
 			Name = "Null",
 			System = "NULL",
-			Hash = string.Empty,
-			Region = string.Empty,
+			Hash = "",
+			Region = "",
 			Status = RomStatus.GoodDump,
-			ForcedCore = string.Empty,
+			ForcedCore = "",
 			NotInDatabase = false
 		};
 
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Common
 
 		public void AddOption(string option)
 		{
-			Options[option] = string.Empty;
+			Options[option] = "";
 		}
 
 		public void AddOption(string option, string param)
@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.Common
 			{
 				var parts = opt.Split('=');
 				var key = parts[0];
-				var value = parts.Length > 1 ? parts[1] : string.Empty;
+				var value = parts.Length > 1 ? parts[1] : "";
 				Options[key] = value;
 			}
 		}

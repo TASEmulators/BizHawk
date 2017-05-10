@@ -183,7 +183,7 @@ namespace BizHawk.Client.Common
 					// Return drive letter only, working path must be absolute?
 				}
 
-				return string.Empty;
+				return "";
 			}
 
 			return path;
@@ -248,7 +248,7 @@ namespace BizHawk.Client.Common
 		{
 			var newStr = name;
 			var chars = Path.GetInvalidFileNameChars();
-			return chars.Aggregate(newStr, (current, c) => current.Replace(c.ToString(), string.Empty));
+			return chars.Aggregate(newStr, (current, c) => current.Replace(c.ToString(), ""));
 		}
 
 		public static string FilesystemSafeName(GameInfo game)
@@ -256,7 +256,7 @@ namespace BizHawk.Client.Common
 			var filesystemSafeName = game.Name
 				.Replace("|", "+")
 				.Replace(":", " -") // adelikat - Path.GetFileName scraps everything to the left of a colon unfortunately, so we need this hack here
-				.Replace("\"", string.Empty); // adelikat - Ivan Ironman Stewart's Super Off-Road has quotes in game name
+				.Replace("\"", ""); // adelikat - Ivan Ironman Stewart's Super Off-Road has quotes in game name
 
 			// zero 06-nov-2015 - regarding the below, i changed my mind. for libretro i want subdirectories here.
 			var filesystemDir = Path.GetDirectoryName(filesystemSafeName);
@@ -297,7 +297,7 @@ namespace BizHawk.Client.Common
 			// hijinx here to get the core name out of the game name
 			var name = FilesystemSafeName(game);
 			name = Path.GetDirectoryName(name);
-			if (name == string.Empty)
+			if (name == "")
 			{
 				name = FilesystemSafeName(game);
 			}
@@ -318,7 +318,7 @@ namespace BizHawk.Client.Common
 			// hijinx here to get the core name out of the game name
 			var name = FilesystemSafeName(game);
 			name = Path.GetDirectoryName(name);
-			if (name == string.Empty)
+			if (name == "")
 			{
 				name = FilesystemSafeName(game);
 			}

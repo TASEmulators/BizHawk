@@ -15,7 +15,7 @@ namespace BizHawk.Client.Common
 			{
 				if (method.IsPublic)
 				{
-					table[method.Name] = lua.RegisterFunction(string.Empty, obj, method);
+					table[method.Name] = lua.RegisterFunction("", obj, method);
 				}
 			}
 

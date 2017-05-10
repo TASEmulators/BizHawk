@@ -380,7 +380,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetUpColumns()
 		{
 			TasView.AllColumns.Clear();
-			AddColumn(CursorColumnName, string.Empty, 18);
+			AddColumn(CursorColumnName, "", 18);
 			AddColumn(FrameColumnName, "Frame#", 68);
 
 			var columnNames = GenerateColumnNames();

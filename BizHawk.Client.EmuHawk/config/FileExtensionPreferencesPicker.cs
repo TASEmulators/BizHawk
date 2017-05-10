@@ -35,7 +35,7 @@ namespace BizHawk.Client.EmuHawk
 						.FirstOrDefault(x => x.SystemId == PlatformDropdown.SelectedItem.ToString()).FullName;
 				}
 
-				return string.Empty;
+				return "";
 			}
 		}
 
@@ -56,7 +56,7 @@ namespace BizHawk.Client.EmuHawk
 
 				foreach (var val in dispVals)
 				{
-					yield return AvailableSystems.FirstOrDefault(x => x.FullName == val).SystemId ?? string.Empty;
+					yield return AvailableSystems.FirstOrDefault(x => x.FullName == val).SystemId ?? "";
 				}
 			}
 		}
@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 
 				var selectedItem = PlatformDropdown.Items
 					.OfType<string>()
-					.FirstOrDefault(item => item == (selectedSystem != null ? selectedSystem.FullName : string.Empty));
+					.FirstOrDefault(item => item == (selectedSystem != null ? selectedSystem.FullName : ""));
 
 				if (selectedItem != null)
 				{

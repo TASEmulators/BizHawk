@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	public partial class Bk2Movie
 	{
 		protected IStringLog _log;
-		protected string LogKey = string.Empty;
+		protected string LogKey = "";
 
 		public string GetInputLog()
 		{
@@ -52,12 +52,12 @@ namespace BizHawk.Client.Common
 				return _log[getframe];
 			}
 
-			return string.Empty;
+			return "";
 		}
 
 		public virtual bool ExtractInputLog(TextReader reader, out string errorMessage)
 		{
-			errorMessage = string.Empty;
+			errorMessage = "";
 			int? stateFrame = null;
 
 			// We are in record mode so replace the movie log with the one from the savestate
@@ -201,7 +201,7 @@ namespace BizHawk.Client.Common
 		public bool CheckTimeLines(TextReader reader, out string errorMessage)
 		{
 			// This function will compare the movie data to the savestate movie data to see if they match
-			errorMessage = string.Empty;
+			errorMessage = "";
 			var newLog = new List<string>();
 			var stateFrame = 0;
 			while (true)
@@ -212,7 +212,7 @@ namespace BizHawk.Client.Common
 					break;
 				}
 
-				if (line.Trim() == string.Empty)
+				if (line.Trim() == "")
 				{
 					continue;
 				}

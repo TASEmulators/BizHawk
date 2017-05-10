@@ -4,7 +4,7 @@
 	{
 		public LuaFile(string path)
 		{
-			Name = string.Empty;
+			Name = "";
 			Path = path;
 			State = RunState.Running;
 			FrameWaiting = false;
@@ -23,8 +23,8 @@
 		public LuaFile(bool isSeparator)
 		{
 			IsSeparator = isSeparator;
-			Name = string.Empty;
-			Path = string.Empty;
+			Name = "";
+			Path = "";
 			State = RunState.Disabled;
 		}
 

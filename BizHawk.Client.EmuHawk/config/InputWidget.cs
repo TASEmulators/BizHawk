@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Timer _timer = new Timer();
 		private readonly List<string> _bindings = new List<string>();
 	
-		private string _wasPressed = string.Empty;
+		private string _wasPressed = "";
 
 		public InputCompositeWidget CompositeWidget;
 
@@ -109,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 		public void EraseMappings()
 		{
 			ClearBindings();
-			Text = string.Empty;
+			Text = "";
 		}
 
 		/// <summary>
@@ -185,7 +185,7 @@ namespace BizHawk.Client.EmuHawk
 				base.OnKeyUp(e);
 			}
 
-			_wasPressed = string.Empty;
+			_wasPressed = "";
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)

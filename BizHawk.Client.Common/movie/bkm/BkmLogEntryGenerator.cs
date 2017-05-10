@@ -163,7 +163,7 @@ namespace BizHawk.Client.Common
 
 			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[_controlType]; player++)
 			{
-				var prefix = string.Empty;
+				var prefix = "";
 				if (_controlType != "Gameboy Controller" && _controlType != "TI83 Controller")
 				{
 					prefix = "P" + player + " ";
@@ -199,7 +199,7 @@ namespace BizHawk.Client.Common
 		{
 			return GenerateLogEntry()
 				.Replace(".", " ")
-				.Replace("|", string.Empty)
+				.Replace("|", "")
 				.Replace(" 000, 000", "         ");
 		}
 

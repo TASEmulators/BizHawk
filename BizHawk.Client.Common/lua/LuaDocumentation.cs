@@ -158,7 +158,7 @@ __Types and notation__
 
 		public string ToNotepadPlusPlusAutoComplete()
 		{
-			return string.Empty; // TODO
+			return ""; // TODO
 		}
 	}
 
@@ -228,10 +228,10 @@ __Types and notation__
 		private string TypeCleanup(string str)
 		{
 			return str
-				.Replace("System", string.Empty)
-				.Replace(" ", string.Empty)
-				.Replace(".", string.Empty)
-				.Replace("LuaInterface", string.Empty)
+				.Replace("System", "")
+				.Replace(" ", "")
+				.Replace(".", "")
+				.Replace("LuaInterface", "")
 				.Replace("Object[]", "object[] ")
 				.Replace("Object", "object ")
 				.Replace("Nullable`1[Boolean]", "bool? ")

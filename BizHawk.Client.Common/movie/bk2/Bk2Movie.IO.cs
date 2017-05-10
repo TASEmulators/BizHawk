@@ -110,7 +110,7 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
 				{
-					var errorMessage = string.Empty;
+					var errorMessage = "";
 					IsCountingRerecords = false;
 					ExtractInputLog(tr, out errorMessage);
 					IsCountingRerecords = true;
@@ -214,7 +214,7 @@ namespace BizHawk.Client.Common
 			_log.Clear();
 			Subtitles.Clear();
 			Comments.Clear();
-			_syncSettingsJson = string.Empty;
+			_syncSettingsJson = "";
 			TextSavestate = null;
 			BinarySavestate = null;
 		}

@@ -42,7 +42,7 @@ namespace BizHawk.Client.Common
 		private IMemoryDomains _memoryDomains;
 
 		private List<Watch> _watchList = new List<Watch>(0);
-		private string _currentFilename = string.Empty;
+		private string _currentFilename = "";
 		private string _systemid;
 
 		#endregion
@@ -86,7 +86,7 @@ namespace BizHawk.Client.Common
 		{
 			_watchList.Clear();
 			Changes = false;
-			_currentFilename = string.Empty;
+			_currentFilename = "";
 		}
 
 		/// <summary>

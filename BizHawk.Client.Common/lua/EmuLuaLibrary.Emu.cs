@@ -340,7 +340,7 @@ namespace BizHawk.Client.Common
 				return RegionableCore.Region.ToString();
 			}
 
-			return string.Empty;
+			return "";
 		}
 	}
 }

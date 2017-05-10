@@ -72,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public static void Write(params object[] outputs)
 		{
-			LogWithSeparator(string.Empty, string.Empty, outputs);
+			LogWithSeparator("", "", outputs);
 		}
 
 		// Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable

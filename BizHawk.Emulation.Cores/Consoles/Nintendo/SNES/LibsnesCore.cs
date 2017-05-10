@@ -275,7 +275,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					{
 						// return @"D:\roms\snes\SuperRoadBlaster\SuperRoadBlaster-1.pcm";
 						// return "";
-						int wantsTrackNumber = int.Parse(hint.Replace("track-", string.Empty).Replace(".pcm", string.Empty));
+						int wantsTrackNumber = int.Parse(hint.Replace("track-", "").Replace(".pcm", ""));
 						wantsTrackNumber++;
 						string wantsTrackString = wantsTrackNumber.ToString();
 						foreach (var child in msu1.ChildNodes.Cast<XmlNode>())
@@ -289,7 +289,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				}
 
 				// not found.. what to do? (every rom will get here when msu1.rom is requested)
-				return string.Empty;
+				return "";
 			}
 
 			// not MSU-1.  ok.
@@ -308,14 +308,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				case "st018.rom": firmwareId = "ST018"; break;
 				default:
 					CoreComm.ShowMessage($"Unrecognized SNES firmware request \"{hint}\".");
-					return string.Empty;
+					return "";
 			}
 
 			// build romfilename
 			string test = CoreComm.CoreFileProvider.GetFirmwarePath("SNES", firmwareId, false, "Game may function incorrectly without the requested firmware.");
 
 			// we need to return something to bsnes
-			test = test ?? string.Empty;
+			test = test ?? "";
 
 			Console.WriteLine("Served libsnes request for firmware \"{0}\" with \"{1}\"", hint, test);
 
