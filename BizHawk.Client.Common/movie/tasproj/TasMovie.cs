@@ -447,7 +447,7 @@ namespace BizHawk.Client.Common
 
 		public TasBranch GetBranch(Guid id)
 		{
-			TasBranch branch = Branches.Where(b => b.UniqueIdentifier == id).SingleOrDefault();
+			TasBranch branch = Branches.SingleOrDefault(b => b.UniqueIdentifier == id);
 			if (branch != null)
 				return branch;
 			else
@@ -464,7 +464,7 @@ namespace BizHawk.Client.Common
 
 		public int BranchIndexByHash(int hash)
 		{
-			TasBranch branch = Branches.Where(b => b.UniqueIdentifier.GetHashCode() == hash).SingleOrDefault();
+			TasBranch branch = Branches.SingleOrDefault(b => b.UniqueIdentifier.GetHashCode() == hash);
 			if (branch == null)
 				return -1;
 			return Branches.IndexOf(branch);
