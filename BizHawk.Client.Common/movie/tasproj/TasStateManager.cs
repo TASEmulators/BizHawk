@@ -428,7 +428,7 @@ namespace BizHawk.Client.Common
 					BranchStates[frame][branch].Dispose();
 				else
 					////Used -= (ulong)BranchStates[frame][branch].Length;
-				BranchStates[frame].RemoveAt(BranchStates[frame].IndexOfKey(branch));
+				BranchStates[frame].RemoveAt(BranchStates[frame].IndexOfKey(branch)); // <adelikat> - feos, this runs only on hte else condition, I'm pretty sure this isn't intended? Check changeset a7b3668506ba62c40fd455bf36d919b4c5d92bf8
 
 				if (BranchStates[frame].Count == 0)
 				{
