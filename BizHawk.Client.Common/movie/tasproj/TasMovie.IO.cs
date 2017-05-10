@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-
-using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
-using BizHawk.Common.IOExtensions;
-using System.Diagnostics;
-using System.ComponentModel;
 
 namespace BizHawk.Client.Common
 {

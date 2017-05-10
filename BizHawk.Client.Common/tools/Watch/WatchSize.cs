@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Client.Common
+﻿namespace BizHawk.Client.Common
 {
 	/// <summary>
 	/// This enum specify the size of a <see cref="Watch"/>
