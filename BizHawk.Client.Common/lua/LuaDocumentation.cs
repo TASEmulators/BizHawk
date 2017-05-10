@@ -8,9 +8,6 @@ namespace BizHawk.Client.Common
 {
 	public class LuaDocumentation : List<LibraryFunction>
 	{
-		public LuaDocumentation()
-			: base() { }
-
 		public string ToTASVideosWikiMarkup()
 		{
 			var sb = new StringBuilder();

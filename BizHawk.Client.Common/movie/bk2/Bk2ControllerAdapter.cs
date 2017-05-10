@@ -169,7 +169,7 @@ namespace BizHawk.Client.Common
 				{
 					if (def.BoolButtons.Contains(key))
 					{
-						this.MyBoolButtons[key] = trimmed[iterator] != '.';
+						MyBoolButtons[key] = trimmed[iterator] != '.';
 						iterator++;
 					}
 					else if (def.FloatControls.Contains(key))

@@ -289,7 +289,7 @@ namespace BizHawk.Client.Common
 
 				if ((controlState & 0xFC) != 0)
 				{
-					Result.Warnings.Add("Ignored toggle hack flag on frame " + frame.ToString());
+					Result.Warnings.Add("Ignored toggle hack flag on frame " + frame);
 				}
 
 				movie.AppendFrame(controllers);
@@ -422,7 +422,7 @@ namespace BizHawk.Client.Common
 
 				if ((controlState & 0xFC) != 0)
 				{
-					Result.Warnings.Add("Ignored toggle hack flag on frame " + frame.ToString());
+					Result.Warnings.Add("Ignored toggle hack flag on frame " + frame);
 				}
 
 				// Each controller is terminated with a pipeline.

@@ -379,7 +379,7 @@ namespace BizHawk.Client.Common
 
 			if (Global.Emulator.Frame < _log.Count) // Don't stay in recording mode? Fixes TAStudio recording after paint inserting.
 			{
-				this.SwitchToPlay();
+				SwitchToPlay();
 			}
 		}
 
@@ -409,7 +409,7 @@ namespace BizHawk.Client.Common
 
 			if (Global.Emulator.Frame < _log.Count) // Don't stay in recording mode? Fixes TAStudio recording after paint inserting.
 			{
-				this.SwitchToPlay();
+				SwitchToPlay();
 			}
 		}
 

@@ -128,7 +128,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return this.ContainsKey(key) ? base[key] : "";
+				return ContainsKey(key) ? base[key] : "";
 			}
 
 			set
@@ -176,7 +176,7 @@ namespace BizHawk.Client.Common
 			{
 				var splitLine = line.Split(new[] { ' ' }, 2);
 
-				if (HeaderKeys.Contains(splitLine[0]) && !this.ContainsKey(splitLine[0]))
+				if (HeaderKeys.Contains(splitLine[0]) && !ContainsKey(splitLine[0]))
 				{
 					Add(splitLine[0], splitLine[1]);
 				}

@@ -40,14 +40,14 @@ namespace BizHawk.Client.Common
 		{
 			if (value == 0)
 			{
-				this._value = GetWord();
+				_value = GetWord();
 			}
 			else
 			{
-				this._value = value;
+				_value = value;
 			}
-			this._previous = previous;
-			this._changecount = changeCount;
+			_previous = previous;
+			_changecount = changeCount;
 		}
 
 		#endregion

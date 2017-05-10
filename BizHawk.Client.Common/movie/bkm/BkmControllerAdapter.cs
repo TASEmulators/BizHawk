@@ -264,7 +264,7 @@ namespace BizHawk.Client.Common
 
 		private bool IsGenesis6Button()
 		{
-			return this.Definition.BoolButtons.Contains("P1 X");
+			return Definition.BoolButtons.Contains("P1 X");
 		}
 
 		private void Force(string button, bool state)

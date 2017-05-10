@@ -48,18 +48,16 @@ namespace BizHawk.Client.Common
 		{
 			if (IsDiplayTypeAvailable(type))
 			{
-				this._domain = domain;
-				this._address = address;
-				this._size = size;
-				this._type = type;
-				this._bigEndian = bigEndian;
-				this._notes = note;
-				return;
-
+				_domain = domain;
+				_address = address;
+				_size = size;
+				_type = type;
+				_bigEndian = bigEndian;
+				_notes = note;
 			}
 			else
 			{
-				throw new ArgumentException(string.Format("DisplayType {0} is invalid for this type of Watch", type.ToString()), nameof(type));
+				throw new ArgumentException(string.Format("DisplayType {0} is invalid for this type of Watch", type), nameof(type));
 			}
 		}
 
@@ -67,7 +65,7 @@ namespace BizHawk.Client.Common
 
 		#region Methods
 
-		#region Static		
+		#region Static
 
 		/// <summary>
 		/// Generate sa <see cref="Watch"/> from a given string
@@ -214,14 +212,13 @@ namespace BizHawk.Client.Common
 			{
 				return false;
 			}
-			else if (object.ReferenceEquals(a, b))
+
+			if (object.ReferenceEquals(a, b))
 			{
 				return true;
 			}
-			else
-			{
-				return a.Equals(b);
-			}
+
+			return a.Equals(b);
 		}
 
 		/// <summary>
@@ -236,14 +233,13 @@ namespace BizHawk.Client.Common
 			{
 				return false;
 			}
-			else if (object.ReferenceEquals(a, b))
+
+			if (object.ReferenceEquals(a, b))
 			{
 				return true;
 			}
-			else
-			{
-				return a.Equals(b);
-			}
+
+			return a.Equals(b);
 		}
 
 		/// <summary>
@@ -451,9 +447,9 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				return this._domain == other._domain &&
-				this._address == other._address &&
-				this._size == other._size;
+				return _domain == other._domain &&
+				_address == other._address &&
+				_size == other._size;
 			}
 		}
 
@@ -469,9 +465,9 @@ namespace BizHawk.Client.Common
 		public bool Equals(Cheat other)
 		{
 			return !object.ReferenceEquals(other, null) &&
-					this._domain == other.Domain &&
-					this._address == other.Address &&
-					this._size == other.Size;
+					_domain == other.Domain &&
+					_address == other.Address &&
+					_size == other.Size;
 		}
 
 		#endregion IEquatable<Cheat>
@@ -487,27 +483,27 @@ namespace BizHawk.Client.Common
 		/// <exception cref="InvalidOperationException">Occurs when you try to compare two <see cref="Watch"/> throughout different <see cref="MemoryDomain"/></exception>
 		public int CompareTo(Watch other)
 		{
-			if (this._domain != other._domain)
+			if (_domain != other._domain)
 			{
 				throw new InvalidOperationException("Watch cannot be compared through different domain");
 			}
 
-			if (this.Equals(other))
+			if (Equals(other))
 			{
 				return 0;
 			}
-			else if (object.ReferenceEquals(other, null))
+
+			if (object.ReferenceEquals(other, null))
 			{
 				return 1;
 			}
-			else if (_address.Equals(other._address))
+
+			if (_address.Equals(other._address))
 			{
 				return ((int)_size).CompareTo((int)other._size);
 			}
-			else
-			{
-				return _address.CompareTo(other._address);
-			}
+
+			return _address.CompareTo(other._address);
 		}
 
 		#endregion IComparable<Watch>
@@ -538,7 +534,7 @@ namespace BizHawk.Client.Common
 		/// <returns><see cref="int"/> that can serves as a unique representation of current Watch</returns>
 		public override int GetHashCode()
 		{
-			return this.Domain.GetHashCode() + (int)(this.Address);
+			return Domain.GetHashCode() + (int)(Address);
 		}
 
 		/// <summary>
@@ -690,7 +686,7 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					throw new ArgumentException(string.Format("DisplayType {0} is invalid for this type of Watch", value.ToString()));
+					throw new ArgumentException(string.Format("DisplayType {0} is invalid for this type of Watch", value));
 				}
 			}
 		}
@@ -704,6 +700,7 @@ namespace BizHawk.Client.Common
 			{
 				return _domain;
 			}
+
 			internal set
 			{
 				if (value != null && _domain.Name == value.Name)

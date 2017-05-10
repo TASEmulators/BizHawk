@@ -24,7 +24,7 @@ namespace BizHawk.Client.Common
 		public override string ToString()
 		{
 			var sb = new StringBuilder();
-			this.Sort();
+			Sort();
 			ForEach(subtitle => sb.AppendLine(subtitle.ToString()));
 			return sb.ToString();
 		}
@@ -67,7 +67,7 @@ namespace BizHawk.Client.Common
 
 		public new void Sort()
 		{
-			this.Sort((x, y) =>
+			Sort((x, y) =>
 			{
 				int result = x.Frame.CompareTo(y.Frame);
 				return result != 0 ? result : x.Y.CompareTo(y.Y);

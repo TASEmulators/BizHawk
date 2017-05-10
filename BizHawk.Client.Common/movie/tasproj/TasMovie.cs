@@ -224,11 +224,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public override IController GetInputState(int frame)
-		{
-			return base.GetInputState(frame);
-		}
-
 		public void GreenzoneCurrentFrame()
 		{
 			if (Global.Emulator.Frame > LastValidFrame)

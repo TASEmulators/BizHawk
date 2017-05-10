@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 
 		public override int GetHashCode()
 		{
-			return this.Frame.GetHashCode();
+			return Frame.GetHashCode();
 		}
 
 		public override bool Equals(object obj)
@@ -50,7 +50,7 @@ namespace BizHawk.Client.Common
 			}
 			else if (obj is TasMovieMarker)
 			{
-				return this.Frame == (obj as TasMovieMarker).Frame;
+				return Frame == (obj as TasMovieMarker).Frame;
 			}
 			else
 			{
@@ -81,7 +81,7 @@ namespace BizHawk.Client.Common
 		public TasMovieMarkerList DeepClone()
 		{
 			TasMovieMarkerList ret = new TasMovieMarkerList(_movie);
-			for (int i = 0; i < this.Count; i++)
+			for (int i = 0; i < Count; i++)
 				ret.Add(new TasMovieMarker(this[i].Frame, this[i].Message));
 
 			return ret;
@@ -133,7 +133,7 @@ namespace BizHawk.Client.Common
 				if (!fromHistory)
 					_movie.ChangeLog.AddMarkerChange(item);
 				base.Add(item);
-				this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
+				Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
 				OnListChanged(NotifyCollectionChangedAction.Add);
 			}
 		}
@@ -165,7 +165,7 @@ namespace BizHawk.Client.Common
 			if (!fromHistory)
 				_movie.ChangeLog.AddMarkerChange(item);
 			base.Insert(index, item);
-			this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
+			Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
 			OnListChanged(NotifyCollectionChangedAction.Add);
 		}
 
@@ -178,7 +178,7 @@ namespace BizHawk.Client.Common
 				_movie.ChangeLog.EndBatch();
 
 			base.InsertRange(index, collection);
-			this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
+			Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
 			OnListChanged(NotifyCollectionChangedAction.Add);
 		}
 
@@ -284,7 +284,7 @@ namespace BizHawk.Client.Common
 
 		public int FindIndex(string markerName)
 		{
-			return this.FindIndex(m => m.Message == markerName);
+			return FindIndex(m => m.Message == markerName);
 		}
 
 		public bool IsMarker(int frame)

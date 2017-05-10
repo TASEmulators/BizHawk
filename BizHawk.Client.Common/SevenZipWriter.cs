@@ -200,7 +200,7 @@ namespace BizHawk.Client.Common
 				private long _total; // bytes written so far
 				public WStream(RangBuffer r)
 				{
-					this._r = r;
+					_r = r;
 				}
 
 				public override int Read(byte[] buffer, int offset, int count)
@@ -260,7 +260,7 @@ namespace BizHawk.Client.Common
 				private long _total; // bytes read so far
 				public RStream(RangBuffer r)
 				{
-					this._r = r;
+					_r = r;
 				}
 
 				public override int Read(byte[] buffer, int offset, int count)
