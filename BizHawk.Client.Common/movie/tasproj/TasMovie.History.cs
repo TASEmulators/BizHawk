@@ -141,8 +141,10 @@ namespace BizHawk.Client.Common
 
 			RecordingBatch = false;
 
-			if (!batch.Where(a => a.GetType() != typeof(MovieActionMarker)).Any())
+			if (batch.All(a => a.GetType() == typeof(MovieActionMarker)))
+			{
 				return Movie.InputLogLength;
+			}
 
 			return PreviousUndoFrame;
 		}
@@ -163,8 +165,10 @@ namespace BizHawk.Client.Common
 
 			RecordingBatch = false;
 
-			if (!batch.Where(a => a.GetType() != typeof(MovieActionMarker)).Any())
+			if (batch.All(a => a.GetType() == typeof(MovieActionMarker)))
+			{
 				return Movie.InputLogLength;
+			}
 
 			return PreviousRedoFrame;
 		}

@@ -545,7 +545,7 @@ namespace BizHawk.Client.Common
 		/// <returns></returns>
 		public bool IsDiplayTypeAvailable(DisplayType type)
 		{
-			return AvailableTypes().Where<DisplayType>(d => d == type).Any<DisplayType>();
+			return AvailableTypes().Any(d => d == type);
 		}
 
 		/// <summary>
