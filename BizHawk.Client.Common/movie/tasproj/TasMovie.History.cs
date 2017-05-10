@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 {
 	public class TasMovieChangeLog
 	{
-		List<List<IMovieAction>> History;
+		private readonly List<List<IMovieAction>> History;
 		public List<string> Names;
 		public int UndoIndex = -1;
 		int _maxSteps = 100;
@@ -173,17 +173,19 @@ namespace BizHawk.Client.Common
 			return PreviousRedoFrame;
 		}
 
-		public bool CanUndo { get { return UndoIndex > -1; } }
-		public bool CanRedo { get { return UndoIndex < History.Count - 1; } }
+		public bool CanUndo => UndoIndex > -1;
+		public bool CanRedo => UndoIndex < History.Count - 1;
 
 		public string NextUndoStepName
 		{
 			get
 			{
 				if (Names.Count == 0 || UndoIndex < 0)
+				{
 					return null;
-				else
-					return Names[UndoIndex];
+				}
+
+				return Names[UndoIndex];
 			}
 		}
 
@@ -192,10 +194,14 @@ namespace BizHawk.Client.Common
 			get
 			{
 				if (UndoIndex == History.Count - 1)
+				{
 					return Movie.InputLogLength;
+				}
 
 				if (History[UndoIndex + 1].Count == 0)
+				{
 					return Movie.InputLogLength;
+				}
 
 				return History[UndoIndex + 1].Min(a => a.FirstFrame);
 			}
@@ -206,24 +212,32 @@ namespace BizHawk.Client.Common
 			get
 			{
 				if (UndoIndex == -1)
+				{
 					return Movie.InputLogLength;
+				}
 
 				if (History[UndoIndex].Count == 0)
+				{
 					return Movie.InputLogLength;
+				}
 
 				return History[UndoIndex].Min(a => a.FirstFrame);
 			}
 		}
 
-		#region "Change History"
+		#region Change History
 
 		private bool AddMovieAction(string name)
 		{
 			if (UndoIndex + 1 != History.Count)
+			{
 				TruncateLog(UndoIndex + 1);
+			}
 
 			if (name == "")
+			{
 				name = "Undo step " + _totalSteps;
+			}
 
 			bool ret = false;
 			if (!RecordingBatch)
@@ -234,7 +248,9 @@ namespace BizHawk.Client.Common
 				_totalSteps += 1;
 
 				if (History.Count <= MaxSteps)
+				{
 					UndoIndex += 1;
+				}
 				else
 				{
 					History.RemoveAt(0);
@@ -312,10 +328,11 @@ namespace BizHawk.Client.Common
 				History.Last().Add(new MovieActionBindInput(Movie, frame, isDelete));
 			}
 		}
+
 		#endregion
 	}
 
-	#region "Classes"
+	#region Classes
 
 	public interface IMovieAction
 	{
@@ -328,12 +345,14 @@ namespace BizHawk.Client.Common
 
 	public class MovieAction : IMovieAction
 	{
-		public int FirstFrame { get; private set; }
-		public int LastFrame { get; private set; }
+		public int FirstFrame { get; }
+		public int LastFrame { get; }
+
 		private int undoLength;
 		private int redoLength;
-		private int length
-		{ get { return LastFrame - FirstFrame + 1; } }
+
+		private int length => LastFrame - FirstFrame + 1;
+
 		private List<string> oldLog;
 		private List<string> newLog;
 		private bool bindMarkers;
@@ -346,7 +365,9 @@ namespace BizHawk.Client.Common
 			undoLength = Math.Min(LastFrame + 1, movie.InputLogLength) - FirstFrame;
 
 			for (int i = 0; i < undoLength; i++)
+			{
 				oldLog.Add(movie.GetLogEntries()[FirstFrame + i]);
+			}
 
 			bindMarkers = movie.BindMarkersToInput;
 		}
@@ -356,7 +377,9 @@ namespace BizHawk.Client.Common
 			redoLength = Math.Min(LastFrame + 1, movie.InputLogLength) - FirstFrame;
 			newLog = new List<string>();
 			for (int i = 0; i < redoLength; i++)
+			{
 				newLog.Add(movie.GetLogEntries()[FirstFrame + i]);
+			}
 		}
 
 		public void Undo(TasMovie movie)
@@ -400,8 +423,8 @@ namespace BizHawk.Client.Common
 
 	public class MovieActionMarker : IMovieAction
 	{
-		public int FirstFrame { get; private set; }
-		public int LastFrame { get; private set; }
+		public int FirstFrame { get; }
+		public int LastFrame { get; }
 
 		private string oldMessage;
 		private string newMessage;

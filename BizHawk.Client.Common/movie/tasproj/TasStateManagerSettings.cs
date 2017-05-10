@@ -81,24 +81,18 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		[JsonIgnore]
 		[Browsable(false)]
-		public ulong CapTotal
-		{
-			get { return (ulong)(Capacitymb + DiskCapacitymb) * 1024UL * 1024UL; }
-		}
+		public ulong CapTotal => (ulong)(Capacitymb + DiskCapacitymb) * 1024UL * 1024UL;
 
 		/// <summary>
 		/// The memory state capacity in bytes.
 		/// </summary>
 		[JsonIgnore]
 		[Browsable(false)]
-		public ulong Cap
-		{
-			get { return (ulong)Capacitymb * 1024UL * 1024UL; }
-		}
+		public ulong Cap => (ulong)Capacitymb * 1024UL * 1024UL;
 
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 
 			sb.AppendLine(DiskSaveCapacitymb.ToString());
 			sb.AppendLine(Capacitymb.ToString());
@@ -116,7 +110,7 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
-					string[] lines = settings.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+					string[] lines = settings.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 					Capacitymb = int.Parse(lines[1]);
 					int refCapacity;
 
@@ -150,7 +144,7 @@ namespace BizHawk.Client.Common
 					else
 						StateGap = 4;
 				}
-				catch (Exception)
+				catch (Exception) // TODO: this is bad
 				{
 					// "GreenZoneSettings inconsistent, ignoring"
 					// if we don't catch it, the project won't load

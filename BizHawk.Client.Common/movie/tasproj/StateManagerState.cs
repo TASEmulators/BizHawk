@@ -4,30 +4,30 @@ using System.IO;
 namespace BizHawk.Client.Common
 {
 	/// <summary>
-	/// Represents a savestate in the TasStateManager
+	/// Represents a savestate in the <seealso cref="TasStateManager"/>
 	/// </summary>
 	internal class StateManagerState : IDisposable
 	{
 		private static long _stateId = 0;
-		private TasStateManager _manager;
+		private readonly TasStateManager _manager;
+		private readonly long _id;
 
 		private byte[] _state;
-		private long _id;
 
-		public int Frame { get; set; }
-
-		public void Write(BinaryWriter w)
-		{
-			w.Write(Frame);
-			w.Write(_state.Length);
-			w.Write(_state);
-		}
+		public int Frame { get; }
 
 		public static StateManagerState Read(BinaryReader r, TasStateManager m)
 		{
 			int frame = r.ReadInt32();
 			byte[] data = r.ReadBytes(r.ReadInt32());
 			return new StateManagerState(m, data, frame);
+		}
+
+		public void Write(BinaryWriter w)
+		{
+			w.Write(Frame);
+			w.Write(_state.Length);
+			w.Write(_state);
 		}
 
 		public byte[] State
@@ -41,6 +41,7 @@ namespace BizHawk.Client.Common
 
 				return _manager.ndbdatabase.FetchAll(_id.ToString());
 			}
+
 			set
 			{
 				if (_state != null)
@@ -54,17 +55,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public int Length
-		{
-			get { return State.Length; }
-		}
+		public int Length => State.Length;
 
-		public bool IsOnDisk
-		{
-			get { return _state == null; }
-		}
+	    public bool IsOnDisk => _state == null;
 
-		public StateManagerState(TasStateManager manager, byte[] state, int frame)
+	    public StateManagerState(TasStateManager manager, byte[] state, int frame)
 		{
 			_manager = manager;
 			_state = state;
@@ -104,7 +99,9 @@ namespace BizHawk.Client.Common
 		public void Dispose()
 		{
 			if (!IsOnDisk)
+			{
 				return;
+			}
 
 			_manager.ndbdatabase.Release(_id.ToString());
 		}

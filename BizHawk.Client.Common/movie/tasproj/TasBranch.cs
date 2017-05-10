@@ -34,7 +34,10 @@ namespace BizHawk.Client.Common
 			{
 				var currentHashes = this.Select(b => b.UniqueIdentifier.GetHashCode()).ToList();
 
-				do item.UniqueIdentifier = Guid.NewGuid();
+				do
+				{
+					item.UniqueIdentifier = Guid.NewGuid();
+				}
 				while (currentHashes.Contains(item.UniqueIdentifier.GetHashCode()));
 			}
 
@@ -57,9 +60,9 @@ namespace BizHawk.Client.Common
 					// if this header needs more stuff in it, handle it sensibly
 					tw.WriteLine(JsonConvert.SerializeObject(new
 					{
-						Frame = b.Frame,
-						TimeStamp = b.TimeStamp,
-						UniqueIdentifier = b.UniqueIdentifier
+						b.Frame,
+						b.TimeStamp,
+						b.UniqueIdentifier
 					}));
 				});
 
@@ -72,7 +75,9 @@ namespace BizHawk.Client.Common
 				{
 					int todo = b.InputLog.Count;
 					for (int i = 0; i < todo; i++)
+					{
 						tw.WriteLine(b.InputLog[i]);
+					}
 				});
 
 				bs.PutLump(nframebuffer, delegate(Stream s)

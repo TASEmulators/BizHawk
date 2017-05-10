@@ -20,11 +20,14 @@ namespace BizHawk.Client.Common
 				if (frame < LagLog.Count)
 				{
 					if (frame < 0)
+					{
 						return null;
-					else
-						return LagLog[frame];
+					}
+
+					return LagLog[frame];
 				}
-				else if (frame == Global.Emulator.Frame && frame == LagLog.Count)
+
+				if (frame == Global.Emulator.Frame && frame == LagLog.Count)
 				{
 					// LagLog[frame] = Global.Emulator.AsInputPollable().IsLagFrame; // Note: Side effects!
 					return Global.Emulator.AsInputPollable().IsLagFrame;
@@ -40,7 +43,8 @@ namespace BizHawk.Client.Common
 					LagLog.RemoveAt(frame);
 					return;
 				}
-				else if (frame < 0)
+
+				if (frame < 0)
 				{
 					return; // Nothing to do
 				}
@@ -85,6 +89,7 @@ namespace BizHawk.Client.Common
 				LagLog.RemoveRange(frame + 1, LagLog.Count - frame - 1);
 				return true;
 			}
+
 			return false;
 		}
 
@@ -92,10 +97,15 @@ namespace BizHawk.Client.Common
 		{
 			WasLag.RemoveAt(frame);
 		}
+
 		public void InsertHistoryAt(int frame, bool isLag)
-		{ // LagLog was invalidated when the frame was inserted
+		{
+			// LagLog was invalidated when the frame was inserted
 			if (frame <= LagLog.Count)
+			{
 				LagLog.Insert(frame, isLag);
+			}
+
 			WasLag.Insert(frame, isLag);
 		}
 
@@ -109,8 +119,11 @@ namespace BizHawk.Client.Common
 				bw.Write(LagLog[i]);
 				bw.Write(WasLag[i]);
 			}
+
 			for (int i = LagLog.Count; i < WasLag.Count; i++)
+			{
 				bw.Write(WasLag[i]);
+			}
 		}
 
 		public void Load(BinaryReader br)

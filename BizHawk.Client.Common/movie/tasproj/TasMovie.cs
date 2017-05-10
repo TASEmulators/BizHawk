@@ -30,26 +30,22 @@ namespace BizHawk.Client.Common
 		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
 		public int CurrentBranch { get; set; }
-		public int BranchCount { get { return Branches.Count; } }
-		public int LastValidFrame { get { return LagLog.LastValidFrame; } }
-		public override string PreferredExtension { get { return Extension; } }
-		public TasStateManager TasStateManager { get { return StateManager; } }
-		public TasMovieRecord this[int index]
-		{
-			get
-			{
-				return new TasMovieRecord
-				{
-					// State = StateManager[index],
-					HasState = StateManager.HasState(index),
-					LogEntry = GetInputLogEntry(index),
-					Lagged = LagLog[index + 1],
-					WasLagged = LagLog.History(index + 1)
-				};
-			}
-		}
 
-		public TasMovie(string path, bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
+		public int BranchCount => Branches.Count;
+		public int LastValidFrame => LagLog.LastValidFrame;
+		public override string PreferredExtension => Extension;
+		public TasStateManager TasStateManager => StateManager;
+
+		public TasMovieRecord this[int index] => new TasMovieRecord
+		{
+			// State = StateManager[index],
+			HasState = StateManager.HasState(index),
+			LogEntry = GetInputLogEntry(index),
+			Lagged = LagLog[index + 1],
+			WasLagged = LagLog.History(index + 1)
+		};
+
+	    public TasMovie(string path, bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
 			: base(path)
 		{
 			// TODO: how to call the default constructor AND the base(path) constructor?  And is base(path) calling base() ?
@@ -71,7 +67,6 @@ namespace BizHawk.Client.Common
 		}
 
 		public TasMovie(bool startsFromSavestate = false, BackgroundWorker progressReportWorker = null)
-			: base()
 		{
 			_progressReportWorker = progressReportWorker;
 			if (!Global.Emulator.HasSavestates())
@@ -98,11 +93,11 @@ namespace BizHawk.Client.Common
 		public void ReportProgress(double percent)
 		{
 			if (percent > 100d)
-				return;
-			if (_progressReportWorker != null)
 			{
-				_progressReportWorker.ReportProgress((int)percent);
+				return;
 			}
+
+			_progressReportWorker?.ReportProgress((int)percent);
 		}
 
 		// TODO: use LogGenerators rather than string comparisons
@@ -156,7 +151,7 @@ namespace BizHawk.Client.Common
 
 			if (anyInvalidated && Global.MovieSession.Movie.IsCountingRerecords)
 			{
-				base.Rerecords++;
+				Rerecords++;
 			}
 		}
 
@@ -190,9 +185,9 @@ namespace BizHawk.Client.Common
 		{
 			if (adapter.Definition.BoolButtons.Contains(buttonName))
 			{
-				return adapter.IsPressed(buttonName) ?
-					Mnemonics[buttonName].ToString() :
-					"";
+				return adapter.IsPressed(buttonName)
+					? Mnemonics[buttonName].ToString()
+					: "";
 			}
 
 			if (adapter.Definition.FloatControls.Contains(buttonName))
@@ -284,6 +279,7 @@ namespace BizHawk.Client.Common
 			int? stateFrame = null;
 
 			var newLog = new List<string>();
+
 			// We are in record mode so replace the movie log with the one from the savestate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
@@ -303,7 +299,8 @@ namespace BizHawk.Client.Common
 					{
 						break;
 					}
-					else if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
+
+					if (line.Contains("Frame 0x")) // NES stores frame count in hex, yay
 					{
 						var strs = line.Split('x');
 						try
@@ -340,6 +337,7 @@ namespace BizHawk.Client.Common
 						{
 							TimelineBranchFrame = counter;
 						}
+
 						counter++;
 					}
 				}
@@ -440,42 +438,51 @@ namespace BizHawk.Client.Common
 		public TasBranch GetBranch(int index)
 		{
 			if (index >= Branches.Count || index < 0)
+			{
 				return null;
-			else
-				return Branches[index];
+			}
+
+			return Branches[index];
 		}
 
 		public TasBranch GetBranch(Guid id)
 		{
-			TasBranch branch = Branches.SingleOrDefault(b => b.UniqueIdentifier == id);
-			if (branch != null)
-				return branch;
-			else
-				return null;
+			return Branches.SingleOrDefault(b => b.UniqueIdentifier == id);
 		}
 
 		public int BranchHashByIndex(int index)
 		{
 			if (index >= Branches.Count)
+			{
 				return -1;
-			else
-				return Branches[index].UniqueIdentifier.GetHashCode();
+			}
+
+			return Branches[index].UniqueIdentifier.GetHashCode();
 		}
 
 		public int BranchIndexByHash(int hash)
 		{
 			TasBranch branch = Branches.SingleOrDefault(b => b.UniqueIdentifier.GetHashCode() == hash);
 			if (branch == null)
+			{
 				return -1;
+			}
+
 			return Branches.IndexOf(branch);
 		}
 
 		public int BranchIndexByFrame(int frame)
 		{
-			TasBranch branch = Branches.Where(b => b.Frame == frame)
-				.OrderByDescending(b => b.TimeStamp).FirstOrDefault();
+			TasBranch branch = Branches
+				.Where(b => b.Frame == frame)
+				.OrderByDescending(b => b.TimeStamp)
+				.FirstOrDefault();
+
 			if (branch == null)
+			{
 				return -1;
+			}
+
 			return Branches.IndexOf(branch);
 		}
 
@@ -497,7 +504,7 @@ namespace BizHawk.Client.Common
 		{
 			int? divergentPoint = DivergentPoint(_log, branch.InputLog);
 
-			if (_log != null) _log.Dispose();
+			_log?.Dispose();
 			_log = branch.InputLog.Clone();
 			////_changes = true;
 
@@ -509,14 +516,18 @@ namespace BizHawk.Client.Common
 				LagLog.FromLagLog(branch.LagLog); // don't truncate LagLog if the branch's one is shorter, but input is the same
 			}
 			else
+			{
 				StateManager.Invalidate(branch.InputLog.Count);
+			}
 
 			StateManager.LoadBranch(Branches.IndexOf(branch));
 			StateManager.SetState(branch.Frame, branch.CoreData);
 
 			////ChangeLog = branch.ChangeLog;
 			if (BindMarkersToInput) // pretty critical not to erase them
+			{
 				Markers = branch.Markers;
+			}
 
 			Changes = true;
 		}
@@ -526,7 +537,10 @@ namespace BizHawk.Client.Common
 			int index = Branches.IndexOf(old);
 			newBranch.UniqueIdentifier = old.UniqueIdentifier;
 			if (newBranch.UserText == "")
+			{
 				newBranch.UserText = old.UserText;
+			}
+
 			Branches[index] = newBranch;
 			TasStateManager.UpdateBranch(index);
 			Changes = true;
@@ -537,7 +551,9 @@ namespace BizHawk.Client.Common
 			TasBranch branch = Branches[b1];
 
 			if (b2 >= Branches.Count)
+			{
 				b2 = Branches.Count - 1;
+			}
 
 			Branches.Remove(branch);
 			Branches.Insert(b2, branch);
@@ -553,7 +569,11 @@ namespace BizHawk.Client.Common
 		private bool _changes;
 		public override bool Changes
 		{
-			get { return _changes; }
+			get
+			{
+				return _changes;
+			}
+
 			protected set
 			{
 				if (_changes != value)
@@ -567,14 +587,11 @@ namespace BizHawk.Client.Common
 		// This event is Raised only when Changes is TOGGLED.
 		private void OnPropertyChanged(string propertyName)
 		{
-			if (PropertyChanged != null)
-			{
-				// Raising the event when FirstName or LastName property value changed
-				PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
-			}
+			// Raising the event when FirstName or LastName property value changed
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
 
-		void Markers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		private void Markers_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
 		{
 			Changes = true;
 		}

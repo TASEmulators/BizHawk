@@ -17,25 +17,16 @@ namespace BizHawk.Client.Common
 	public class TasStateManager : IDisposable
 	{
 		// TODO: pass this in, and find a solution to a stale reference (this is instantiated BEFORE a new core instance is made, making this one stale if it is simply set in the constructor
-		private IStatable Core
-		{
-			get
-			{
-				return Global.Emulator.AsStatable();
-			}
-		}
+		private IStatable Core => Global.Emulator.AsStatable();
 
 		public Action<int> InvalidateCallback { get; set; }
 
 		private void CallInvalidateCallback(int index)
 		{
-			if (InvalidateCallback != null)
-			{
-				InvalidateCallback(index);
-			}
+			InvalidateCallback?.Invoke(index);
 		}
 
-		private List<StateManagerState> lowPriorityStates = new List<StateManagerState>();
+		private readonly List<StateManagerState> lowPriorityStates = new List<StateManagerState>();
 		internal NDBDatabase ndbdatabase;
 		private Guid guid = Guid.NewGuid();
 		private SortedList<int, StateManagerState> States = new SortedList<int, StateManagerState>();
@@ -53,7 +44,7 @@ namespace BizHawk.Client.Common
 		private readonly TasMovie _movie;
 		private ulong _expectedStateSize = 0;
 
-		private int _minFrequency = VersionInfo.DeveloperBuild ? 2 : 1;
+		private readonly int _minFrequency = VersionInfo.DeveloperBuild ? 2 : 1;
 		private const int _maxFrequency = 16;
 
 		private int StateFrequency
@@ -101,8 +92,7 @@ namespace BizHawk.Client.Common
 		public void Dispose()
 		{
 			// States and BranchStates don't need cleaning because they would only contain an ndbdatabase entry which was demolished by the below
-			if (ndbdatabase != null)
-				ndbdatabase.Dispose();
+			ndbdatabase?.Dispose();
 		}
 
 		/// <summary>
@@ -111,7 +101,9 @@ namespace BizHawk.Client.Common
 		public void MountWriteAccess()
 		{
 			if (_isMountedForWrite)
+			{
 				return;
+			}
 
 			_isMountedForWrite = true;
 
@@ -127,7 +119,10 @@ namespace BizHawk.Client.Common
 			States = new SortedList<int, StateManagerState>(limit);
 
 			if (_expectedStateSize > int.MaxValue)
+			{
 				throw new InvalidOperationException();
+			}
+
 			ndbdatabase = new NDBDatabase(statePath, Settings.DiskCapacitymb * 1024 * 1024, (int)_expectedStateSize);
 		}
 
@@ -157,7 +152,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private List<StateManagerState> accessed;
+		private readonly List<StateManagerState> accessed;
 
 		public byte[] InitialState
 		{
@@ -244,18 +239,26 @@ namespace BizHawk.Client.Common
 
 			int i = 0;
 			int markerSkips = maxStates / 2;
+
 			// lowPrioritySates (e.g. states with only lag frames between them)
 			do
 			{
 				if (lowPriorityStates.Count > i)
+				{
 					shouldRemove = findState(lowPriorityStates[i]);
+				}
 				else
+				{
 					break;
+				}
 
 				// Keep marker states
 				markerSkips--;
 				if (markerSkips < 0)
+				{
 					shouldRemove.X = -1;
+				}
+
 				i++;
 			} while (StateIsMarker(shouldRemove.X, shouldRemove.Y) && markerSkips > -1 || shouldRemove.X == 0);
 
@@ -267,14 +270,21 @@ namespace BizHawk.Client.Common
 				do
 				{
 					if (accessed.Count > i)
+					{
 						shouldRemove = findState(accessed[i]);
+					}
 					else
+					{
 						break;
+					}
 
 					// Keep marker states
 					markerSkips--;
 					if (markerSkips < 0)
+					{
 						shouldRemove.X = -1;
+					}
+
 					i++;
 				} while (StateIsMarker(shouldRemove.X, shouldRemove.Y) && markerSkips > -1 || shouldRemove.X == 0);
 			}
@@ -283,7 +293,7 @@ namespace BizHawk.Client.Common
 			{
 				if (BranchStates.Any() && !Settings.EraseBranchStatesFirst)
 				{
-					var kvp = BranchStates.Count() > 1 ? BranchStates.ElementAt(1) : BranchStates.ElementAt(0);
+					var kvp = BranchStates.Count > 1 ? BranchStates.ElementAt(1) : BranchStates.ElementAt(0);
 					shouldRemove.X = kvp.Key;
 					shouldRemove.Y = kvp.Value.Keys[0];
 				}
@@ -301,17 +311,21 @@ namespace BizHawk.Client.Common
 		private bool StateIsMarker(int frame, int branch)
 		{
 			if (frame == -1)
+			{
 				return false;
+			}
 
 			if (branch == -1)
-				return _movie.Markers.IsMarker(States[frame].Frame + 1);
-			else
 			{
-				if (_movie.GetBranch(_movie.BranchIndexByHash(branch)).Markers == null)
-					return _movie.Markers.IsMarker(States[frame].Frame + 1);
-				else
-					return _movie.GetBranch(branch).Markers.Any(m => m.Frame + 1 == frame);
+				return _movie.Markers.IsMarker(States[frame].Frame + 1);
 			}
+
+			if (_movie.GetBranch(_movie.BranchIndexByHash(branch)).Markers == null)
+			{
+				return _movie.Markers.IsMarker(States[frame].Frame + 1);
+			}
+
+			return _movie.GetBranch(branch).Markers.Any(m => m.Frame + 1 == frame);
 		}
 
 		private bool AllLag(int from, int upTo)
@@ -320,13 +334,17 @@ namespace BizHawk.Client.Common
 			{
 				upTo = Global.Emulator.Frame - 1;
 				if (!Global.Emulator.AsInputPollable().IsLagFrame)
+				{
 					return false;
+				}
 			}
 
 			for (int i = from; i < upTo; i++)
 			{
 				if (_movie[i].Lagged == false)
+				{
 					return false;
+				}
 			}
 
 			return true;
@@ -347,12 +365,17 @@ namespace BizHawk.Client.Common
 		internal void SetState(int frame, byte[] state, bool skipRemoval = true)
 		{
 			if (!skipRemoval) // skipRemoval: false only when capturing new states
+			{
 				MaybeRemoveStates(); // Remove before adding so this state won't be removed.
+			}
 
 			if (States.ContainsKey(frame))
 			{
 				if (stateHasDuplicate(frame, -1) != -2)
+				{
 					Used += (ulong)state.Length;
+				}
+
 				States[frame].State = state;
 			}
 			else
@@ -373,9 +396,13 @@ namespace BizHawk.Client.Common
 		private void RemoveState(int frame, int branch = -1)
 		{
 			if (branch == -1)
+			{
 				accessed.Remove(States[frame]);
+			}
 			else if (accessed.Contains(BranchStates[frame][branch]) && !Settings.EraseBranchStatesFirst)
+			{
 				accessed.Remove(BranchStates[frame][branch]);
+			}
 
 			StateManagerState state;
 			bool hasDuplicate = stateHasDuplicate(frame, branch) != -2;
@@ -383,14 +410,20 @@ namespace BizHawk.Client.Common
 			{
 				state = States[frame];
 				if (States[frame].IsOnDisk)
+				{
 					States[frame].Dispose();
+				}
 				else
+				{
 					Used -= (ulong)States[frame].Length;
+				}
+
 				States.RemoveAt(States.IndexOfKey(frame));
 			}
 			else
 			{
 				state = BranchStates[frame][branch];
+
 				if (BranchStates[frame][branch].IsOnDisk)
 					BranchStates[frame][branch].Dispose();
 				else
@@ -398,17 +431,23 @@ namespace BizHawk.Client.Common
 				BranchStates[frame].RemoveAt(BranchStates[frame].IndexOfKey(branch));
 
 				if (BranchStates[frame].Count == 0)
+				{
 					BranchStates.Remove(frame);
+				}
 			}
 
 			if (!hasDuplicate)
+			{
 				lowPriorityStates.Remove(state);
+			}
 		}
 
 		private void StateAccessed(int frame)
 		{
 			if (frame == 0 && _movie.StartsFromSavestate)
+			{
 				return;
+			}
 
 			StateManagerState state = States[frame];
 			bool removed = accessed.Remove(state);
@@ -417,12 +456,17 @@ namespace BizHawk.Client.Common
 			if (States[frame].IsOnDisk)
 			{
 				if (!States[accessed[0].Frame].IsOnDisk)
+				{
 					MoveStateToDisk(accessed[0].Frame);
+				}
+
 				MoveStateToMemory(frame);
 			}
 
 			if (!removed && accessed.Count > maxStates)
+			{
 				accessed.RemoveAt(0);
+			}
 		}
 
 		public bool HasState(int frame)
@@ -454,8 +498,10 @@ namespace BizHawk.Client.Common
 
 				anyInvalidated = statesToRemove.Any();
 
-				foreach (KeyValuePair<int, StateManagerState> state in statesToRemove)
+				foreach (var state in statesToRemove)
+				{
 					RemoveState(state.Key);
+				}
 
 				CallInvalidateCallback(frame);
 			}
@@ -466,13 +512,12 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Clears all state information
 		/// </summary>
-		/// 
 		public void Clear()
 		{
 			States.Clear();
 			accessed.Clear();
 			Used = 0;
-			clearDiskStates();
+			ClearDiskStates();
 		}
 
 		public void ClearStateHistory()
@@ -488,14 +533,13 @@ namespace BizHawk.Client.Common
 				SetState(0, power.State);
 				Used = (ulong)power.State.Length;
 
-				clearDiskStates();
+				ClearDiskStates();
 			}
 		}
 
-		private void clearDiskStates()
+		private void ClearDiskStates()
 		{
-			if (ndbdatabase != null)
-				ndbdatabase.Clear();
+			ndbdatabase?.Clear();
 		}
 
 		/// <summary>
@@ -518,7 +562,9 @@ namespace BizHawk.Client.Common
 			}
 
 			if (Used > Settings.Cap)
+			{
 				MaybeRemoveStates();
+			}
 		}
 
 		private List<int> ExcludeStates()
@@ -656,11 +702,12 @@ namespace BizHawk.Client.Common
 						list.Add(key2, state);
 						c2--;
 					}
+
 					BranchStates.Add(key, list);
 					c--;
 				}
 			}
-			catch (EndOfStreamException) { }
+			catch (EndOfStreamException) { } // Bad!
 		}
 
 
@@ -684,12 +731,18 @@ namespace BizHawk.Client.Common
 			{
 				return _used;
 			}
+
 			set
 			{
+				// TODO: Shouldn't we throw an exception? Debug.Fail only runs in debug mode?
 				if (value > 0xf000000000000000)
+				{
 					System.Diagnostics.Debug.Fail("ulong Used underfow!");
+				}
 				else
+				{
 					_used = value;
+				}
 			}
 		}
 
@@ -697,18 +750,16 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (ndbdatabase == null) return 0;
-				else return (ulong)ndbdatabase.Consumed;
+				if (ndbdatabase == null)
+				{
+					return 0;
+				}
+
+				return (ulong)ndbdatabase.Consumed;
 			}
 		}
 
-		public int StateCount
-		{
-			get
-			{
-				return States.Count;
-			}
-		}
+		public int StateCount => States.Count;
 
 		public bool Any()
 		{
@@ -746,7 +797,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		#region "Branches"
+		#region Branches
 
 		private SortedList<int, SortedList<int, StateManagerState>> BranchStates = new SortedList<int, SortedList<int, StateManagerState>>();
 
@@ -764,16 +815,24 @@ namespace BizHawk.Client.Common
 			else
 			{
 				if (!BranchStates[frame].ContainsKey(branchHash))
+				{
 					return -2;
+				}
+
 				stateToMatch = BranchStates[frame][branchHash];
+
 				// Check the current branch for duplicate.
 				if (States.ContainsKey(frame) && States[frame] == stateToMatch)
+				{
 					return -1;
+				}
 			}
 
 			// Check if there are any branch states for the given frame.
 			if (!BranchStates.ContainsKey(frame) || BranchStates[frame] == null || branchHash == -1)
+			{
 				return -2;
+			}
 
 			// Loop through branch states for the given frame.
 			SortedList<int, StateManagerState> stateList = BranchStates[frame];
@@ -781,10 +840,14 @@ namespace BizHawk.Client.Common
 			{
 				// Don't check the branch containing the state to match.
 				if (i == _movie.BranchIndexByHash(branchHash))
+				{
 					continue;
+				}
 
 				if (stateList.Values[i] == stateToMatch)
+				{
 					return i;
+				}
 			}
 
 			return -2; // No match.
@@ -801,8 +864,11 @@ namespace BizHawk.Client.Common
 					int index = BranchStates[s.Frame].Values.IndexOf(s);
 					ret.Y = BranchStates[s.Frame].Keys.ElementAt(index);
 				}
+
 				if (ret.Y == -1)
+				{
 					return new Point(-1, -2);
+				}
 			}
 
 			return ret;
@@ -815,7 +881,9 @@ namespace BizHawk.Client.Common
 			foreach (KeyValuePair<int, StateManagerState> kvp in States)
 			{
 				if (!BranchStates.ContainsKey(kvp.Key))
+				{
 					BranchStates.Add(kvp.Key, new SortedList<int, StateManagerState>());
+				}
 
 				SortedList<int, StateManagerState> stateList = BranchStates[kvp.Key];
 
@@ -824,6 +892,7 @@ namespace BizHawk.Client.Common
 					stateList = new SortedList<int, StateManagerState>();
 					BranchStates[kvp.Key] = stateList;
 				}
+
 				stateList.Add(branchHash, kvp.Value);
 				// We aren't creating any new states, just adding a reference to an already-existing one; so Used doesn't need to be updated.
 			}
@@ -837,7 +906,10 @@ namespace BizHawk.Client.Common
 			{
 				SortedList<int, StateManagerState> stateList = kvp.Value;
 				if (stateList == null)
+				{
 					continue;
+				}
+
 				/*
 				if (stateList.ContainsKey(branchHash))
 				{
@@ -850,14 +922,18 @@ namespace BizHawk.Client.Common
 				*/
 				stateList.Remove(branchHash);
 				if (stateList.Count == 0)
+				{
 					BranchStates.Remove(kvp.Key);
+				}
 			}
 		}
 
 		public void UpdateBranch(int index)
 		{
 			if (index == -1) // backup branch is outsider
+			{
 				return;
+			}
 
 			int branchHash = _movie.BranchHashByIndex(index);
 
@@ -866,7 +942,10 @@ namespace BizHawk.Client.Common
 			{
 				SortedList<int, StateManagerState> stateList = kvp.Value;
 				if (stateList == null)
+				{
 					continue;
+				}
+
 				/*
 				if (stateList.ContainsKey(branchHash))
 				{
@@ -879,14 +958,18 @@ namespace BizHawk.Client.Common
 				*/
 				stateList.Remove(branchHash);
 				if (stateList.Count == 0)
+				{
 					BranchStates.Remove(kvp.Key);
+				}
 			}
 
 			// AddBranch
 			foreach (KeyValuePair<int, StateManagerState> kvp in States)
 			{
 				if (!BranchStates.ContainsKey(kvp.Key))
+				{
 					BranchStates.Add(kvp.Key, new SortedList<int, StateManagerState>());
+				}
 
 				SortedList<int, StateManagerState> stateList = BranchStates[kvp.Key];
 
@@ -895,6 +978,7 @@ namespace BizHawk.Client.Common
 					stateList = new SortedList<int, StateManagerState>();
 					BranchStates[kvp.Key] = stateList;
 				}
+
 				stateList.Add(branchHash, kvp.Value);
 			}
 		}
@@ -902,7 +986,9 @@ namespace BizHawk.Client.Common
 		public void LoadBranch(int index)
 		{
 			if (index == -1) // backup branch is outsider
+			{
 				return;
+			}
 
 			int branchHash = _movie.BranchHashByIndex(index);
 
@@ -911,10 +997,14 @@ namespace BizHawk.Client.Common
 			foreach (KeyValuePair<int, SortedList<int, StateManagerState>> kvp in BranchStates)
 			{
 				if (kvp.Key == 0 && States.ContainsKey(0))
+				{
 					continue; // TODO: It might be a better idea to just not put state 0 in BranchStates.
+				}
 
 				if (kvp.Value.ContainsKey(branchHash))
+				{
 					SetState(kvp.Key, kvp.Value[branchHash].State);
+				}
 			}
 		}
 
