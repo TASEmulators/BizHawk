@@ -133,8 +133,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public string SystemId { get { return "C64"; } }
 		[SaveState.SaveWithName("DeterministicEmulation")]
 		public bool DeterministicEmulation { get; set; }
+
 		[SaveState.SaveWithName("Frame")]
-		public int Frame { get; set; }
+		private int _frame;
+
+		[SaveState.DoNotSave]
+		public int Frame => _frame;
 
 		[SaveState.DoNotSave]
 		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
@@ -144,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void ResetCounters()
 		{
-			Frame = 0;
+			_frame = 0;
 			LagCount = 0;
 			IsLagFrame = false;
 			_frameCycles = 0;
@@ -193,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			if (IsLagFrame)
 				LagCount++;
 			_frameCycles -= _cyclesPerFrame;
-			Frame++;
+			_frame++;
 		}
 
 		private byte[] GetFirmware(int length, params string[] names)
