@@ -287,7 +287,6 @@ namespace BizHawk.Client.EmuHawk
 						switch (value)
 						{
 							case LoadOrdering.ROM:
-								MessageBox.Show("hi");
 								_LoadRom(filename, fileInformation.ArchiveName);
 								break;
 							case LoadOrdering.STATE:
