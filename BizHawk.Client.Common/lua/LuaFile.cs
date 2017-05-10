@@ -49,6 +49,7 @@
 		public void Stop()
 		{
 			State = RunState.Disabled;
+			Thread.GetTable("keepalives")[Thread] = null;
 			Thread = null;
 		}
 

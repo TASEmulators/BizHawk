@@ -23,6 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		public EmuLuaLibrary()
 		{
 			Docs = new LuaDocumentation();
+			_lua["keepalives"] = _lua.NewTable();
 		}
 
 		private FormsLuaLibrary FormsLibrary
@@ -172,14 +173,16 @@ namespace BizHawk.Client.EmuHawk
 			var content = File.ReadAllText(file);
 			var main = lua.LoadString(content, "main");
 			lua.Push(main); // push main function on to stack for subsequent resuming
+			_lua.GetTable("keepalives")[lua] = 1;
+			_lua.Pop();
 			return lua;
 		}
 
 		public void ExecuteString(string command)
 		{
 			_currThread = _lua.NewThread();
-
 			_currThread.DoString(command);
+			_lua.Pop();
 		}
 
 		public ResumeResult ResumeScript(Lua script)
