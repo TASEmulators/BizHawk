@@ -41,7 +41,24 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// This is the list from MainForm->RomFilter()'s non-developer build.  It needs to be kept up-to-date when new cores are added.
-		private readonly string[] _knownROMExtensions = { ".NES", ".FDS", ".UNF", ".SMS", ".GG", ".SG", ".GB", ".GBC", ".GBA", ".PCE", ".SGX", ".BIN", ".SMD", ".GEN", ".MD", ".SMC", ".SFC", ".A26", ".A78", ".LNX", ".COL", ".ROM", ".M3U", ".CUE", ".CCD", ".SGB", ".Z64", ".V64", ".N64", ".WS", ".WSC", ".XML", ".DSK", ".DO", ".PO", ".PSF", ".MINIPSF", ".NSF" };
+		// adelikat: This is annoying and bad. Maybe we could generate RomFilter from this property?
+		private string[] KnownRomExtensions
+		{
+			get
+			{
+				if (VersionInfo.DeveloperBuild)
+				{
+					return new[]
+					{
+						".NES", ".FDS", ".UNF", ".SMS", ".GG", ".SG", ".GB", ".GBC", ".GBA", ".PCE", ".SGX", ".BIN", ".SMD", ".GEN", ".MD", ".SMC", ".SFC", ".A26", ".A78", ".LNX", ".COL", ".ROM", ".M3U", ".CUE", ".CCD", ".SGB", ".Z64", ".V64", ".N64", ".WS", ".WSC", ".XML", ".DSK", ".DO", ".PO", ".PSF", ".MINIPSF", ".NSF",
+						".EXE", ".PRG", ".D64", "*G64", ".CRT", ".TAP"
+				};
+				}
+
+				return new[] { ".NES", ".FDS", ".UNF", ".SMS", ".GG", ".SG", ".GB", ".GBC", ".GBA", ".PCE", ".SGX", ".BIN", ".SMD", ".GEN", ".MD", ".SMC", ".SFC", ".A26", ".A78", ".LNX", ".COL", ".ROM", ".M3U", ".CUE", ".CCD", ".SGB", ".Z64", ".V64", ".N64", ".WS", ".WSC", ".XML", ".DSK", ".DO", ".PO", ".PSF", ".MINIPSF", ".NSF" };
+			}
+		}
+
 		private readonly string[] _nonArchive = { ".ISO", ".CUE", ".CCD" };
 
 		#region Loaders
@@ -174,13 +191,19 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					default:
 						if (MovieService.IsValidMovieExtension(ext))
-							sortedFiles[LoadOrdering.MOVIEFILE].Add(fileInformation);
-						else if (MovieImport.IsValidMovieExtension(ext))
-							sortedFiles[LoadOrdering.LEGACYMOVIEFILE].Add(fileInformation);
-						else if (_knownROMExtensions.Contains(ext))
 						{
-							if (String.IsNullOrEmpty(archive) || !_nonArchive.Contains(ext))
+							sortedFiles[LoadOrdering.MOVIEFILE].Add(fileInformation);
+						}
+						else if (MovieImport.IsValidMovieExtension(ext))
+						{
+							sortedFiles[LoadOrdering.LEGACYMOVIEFILE].Add(fileInformation);
+						}
+						else if (KnownRomExtensions.Contains(ext))
+						{
+							if (string.IsNullOrEmpty(archive) || !_nonArchive.Contains(ext))
+							{
 								sortedFiles[LoadOrdering.ROM].Add(fileInformation);
+							}
 						}
 						else
 						{
