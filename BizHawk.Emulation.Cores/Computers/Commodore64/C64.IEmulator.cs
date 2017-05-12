@@ -32,8 +32,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public void ResetCounters()
 		{
 			_frame = 0;
-			LagCount = 0;
-			IsLagFrame = false;
+			_lagCount = 0;
+			_isLagFrame = false;
 			_frameCycles = 0;
 		}
 

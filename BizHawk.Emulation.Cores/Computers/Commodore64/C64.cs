@@ -60,6 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			get
 			{
+				return SaveState.InspectProperties(this);
 				if (_board.CartPort.IsConnected)
 				{
 					return _board.CartPort.CartridgeType;
@@ -135,10 +136,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 
 			_board.Flush();
-			IsLagFrame = !_board.InputRead;
+			_isLagFrame = !_board.InputRead;
 
-			if (IsLagFrame)
-				LagCount++;
+			if (_isLagFrame)
+			{
+				_lagCount++;
+			}
+
 			_frameCycles -= _cyclesPerFrame;
 			_frame++;
 		}

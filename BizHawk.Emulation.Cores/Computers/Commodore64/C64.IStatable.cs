@@ -31,19 +31,25 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public byte[] SaveStateBinary()
 		{
-		    using (var ms = new MemoryStream())
-		    {
-                var bw = new BinaryWriter(ms);
-                SaveStateBinary(bw);
-                bw.Flush();
-                return ms.ToArray();
-            }
-        }
+			using (var ms = new MemoryStream())
+			{
+				var bw = new BinaryWriter(ms);
+				SaveStateBinary(bw);
+				bw.Flush();
+				return ms.ToArray();
+			}
+		}
 
 		private void SyncState(Serializer ser)
 		{
 			ser.BeginSection("core");
-			SaveState.SyncObject(ser, this);
+			ser.Sync("_frameCycles", ref _frameCycles);
+			ser.Sync("Frame", ref _frame);
+			ser.Sync("IsLagFrame", ref _isLagFrame);
+			ser.Sync("LagCount", ref _lagCount);
+			ser.BeginSection("Board");
+			SaveState.SyncObject(ser, _board);
+			ser.EndSection();
 			ser.EndSection();
 		}
 	}
