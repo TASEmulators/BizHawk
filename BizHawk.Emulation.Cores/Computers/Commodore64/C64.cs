@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		"SaxxonPike",
 		isPorted: false,
 		isReleased: false)]
-	public sealed partial class C64 : IEmulator, IRegionable
+	public sealed partial class C64 : IEmulator, IRegionable, IBoardInfo
 	{
 		public C64(CoreComm comm, IEnumerable<byte[]> roms, object settings, object syncSettings)
 		{
@@ -52,6 +52,31 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			ser.Register<IVideoProvider>(_board.Vic);
 			ser.Register<IDriveLight>(this);
+		}
+
+		// IBoardInfo
+		[SaveState.DoNotSave]
+		public string BoardName
+		{
+			get
+			{
+				if (_board.CartPort.IsConnected)
+				{
+					return _board.CartPort.CartridgeType;
+				}
+
+				if (_board.TapeDrive != null)
+				{
+					return "Tape Drive";
+				}
+
+				if (_board.DiskDrive != null)
+				{
+					return "Disk Drive"; // TODO: drive types?
+				}
+
+				return "";
+			}
 		}
 
 		// IRegionable
