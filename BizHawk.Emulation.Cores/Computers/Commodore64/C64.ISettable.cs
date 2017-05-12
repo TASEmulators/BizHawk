@@ -1,11 +1,5 @@
-﻿using BizHawk.Emulation.Common;
-
-using Newtonsoft.Json;
-
-using System;
-using System.ComponentModel;
-using System.Drawing;
-
+﻿using System.ComponentModel;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {

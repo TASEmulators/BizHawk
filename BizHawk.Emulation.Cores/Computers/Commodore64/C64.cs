@@ -13,7 +13,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		"SaxxonPike",
 		isPorted: false,
 		isReleased: false)]
-	[ServiceNotApplicable(typeof(ISettable<,>))]
 	public sealed partial class C64 : IEmulator, IRegionable
 	{
 		public C64(CoreComm comm, IEnumerable<byte[]> roms, object settings, object syncSettings)
