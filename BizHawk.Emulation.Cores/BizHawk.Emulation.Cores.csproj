@@ -209,7 +209,6 @@
     <Compile Include="Computers\Commodore64\C64.Motherboard.cs" />
     <Compile Include="Computers\Commodore64\C64.MotherboardInterface.cs" />
     <Compile Include="Computers\Commodore64\C64Format.cs" />
-    <Compile Include="Computers\Commodore64\C64Util.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0000.cs" />
     <Compile Include="Computers\Commodore64\C64.Input.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0001.cs" />
