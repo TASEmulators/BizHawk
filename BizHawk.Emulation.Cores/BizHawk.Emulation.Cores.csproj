@@ -192,9 +192,14 @@
     <Compile Include="Computers\Commodore64\C64.IDebuggable.cs">
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
-    <Compile Include="Computers\Commodore64\C64.IDisassemblable.cs" />
+    <Compile Include="Computers\Commodore64\C64.IDisassemblable.cs">
+      <DependentUpon>C64.cs</DependentUpon>
+    </Compile>
     <Compile Include="Computers\Commodore64\C64.IDriveLight.cs">
       <DependentUpon>C64.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\Commodore64\C64.IEmulator.cs">
+        <DependentUpon>C64.cs</DependentUpon>
     </Compile>
     <Compile Include="Computers\Commodore64\C64.IInputPollable.cs">
       <DependentUpon>C64.cs</DependentUpon>

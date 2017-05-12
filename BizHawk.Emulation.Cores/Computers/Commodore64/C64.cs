@@ -15,8 +15,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	[ServiceNotApplicable(typeof(ISettable<,>))]
 	public sealed partial class C64 : IEmulator, IRegionable
 	{
-		#region Ctor
-
 		public C64(CoreComm comm, IEnumerable<byte[]> roms, object settings, object syncSettings)
 		{
 			PutSyncSettings((C64SyncSettings)syncSettings ?? new C64SyncSettings());
@@ -51,13 +49,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				((BasicServiceProvider)ServiceProvider).Register<ISoundProvider>(_soundProvider);
 			}
 
-			DeterministicEmulation = true;
-
 			((BasicServiceProvider)ServiceProvider).Register<IVideoProvider>(_board.Vic);
 			((BasicServiceProvider)ServiceProvider).Register<IDriveLight>(this);
 		}
-
-		#endregion
 
 		#region Internals
 
@@ -92,87 +86,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private int _frameCycles;
 
-		#endregion
-
-		#region IDisposable
-
-		public void Dispose()
-		{
-			if (_board != null)
-			{
-				if (_board.TapeDrive != null)
-				{
-					_board.TapeDrive.RemoveMedia();
-				}
-				if (_board.DiskDrive != null)
-				{
-					_board.DiskDrive.RemoveMedia();
-				}
-				_board = null;
-			}
-		}
-
-		#endregion
-
-		#region IRegionable
-
-		[SaveState.DoNotSave]
-		public DisplayType Region
-		{
-			get;
-			private set;
-		}
-
-		#endregion
-
-		#region IEmulator
-
-		[SaveState.DoNotSave]
-		public CoreComm CoreComm { get; private set; }
-		[SaveState.DoNotSave]
-		public string SystemId { get { return "C64"; } }
-		[SaveState.SaveWithName("DeterministicEmulation")]
-		public bool DeterministicEmulation { get; set; }
-
 		[SaveState.SaveWithName("Frame")]
 		private int _frame;
 
-		[SaveState.DoNotSave]
-		public int Frame => _frame;
-
-		[SaveState.DoNotSave]
-		public ControllerDefinition ControllerDefinition { get { return C64ControllerDefinition; } }
-
-		[SaveState.DoNotSave]
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
-
-		public void ResetCounters()
-		{
-			_frame = 0;
-			LagCount = 0;
-			IsLagFrame = false;
-			_frameCycles = 0;
-		}
-
-		// process frame
-		public void FrameAdvance(IController controller, bool render, bool rendersound)
-		{
-			_board.Controller = controller;
-			do
-			{
-				DoCycle();
-			}
-			while (_frameCycles != 0);
-		}
-
 		#endregion
 
-		#region ISoundProvider
+		// IRegionable
+		[SaveState.DoNotSave]
+		public DisplayType Region { get; private set; }
 
 		[SaveState.DoNotSave]
-		public ISoundProvider _soundProvider { get; private set; }
-
-		#endregion
+		private ISoundProvider _soundProvider;
 
 		private void DoCycle()
 		{

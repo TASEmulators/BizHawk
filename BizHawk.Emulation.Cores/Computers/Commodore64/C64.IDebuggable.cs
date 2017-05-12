@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
@@ -23,44 +23,47 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_selectedDebuggable = GetAvailableDebuggables().First();
 		}
 
-		IDictionary<string, RegisterValue> IDebuggable.GetCpuFlagsAndRegisters()
+		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
 		{
 			if (_selectedDebuggable == null)
 			{
 				SetDefaultDebuggable();
 			}
+
 			return _selectedDebuggable.GetCpuFlagsAndRegisters();
 		}
 
-		void IDebuggable.SetCpuRegister(string register, int value)
+		public void SetCpuRegister(string register, int value)
 		{
 			if (_selectedDebuggable == null)
 			{
 				SetDefaultDebuggable();
 			}
+
 			_selectedDebuggable.SetCpuRegister(register, value);
 		}
 
-		bool IDebuggable.CanStep(StepType type)
+		public bool CanStep(StepType type)
 		{
 			if (_selectedDebuggable == null)
 			{
 				SetDefaultDebuggable();
 			}
+
 			return _selectedDebuggable.CanStep(type);
 		}
 
 
-		void IDebuggable.Step(StepType type)
+		public void Step(StepType type)
 		{
 			if (_selectedDebuggable == null)
 			{
 				SetDefaultDebuggable();
 			}
+
 			_selectedDebuggable.Step(type);
 		}
 
-		[FeatureNotImplemented]
 		public int TotalExecutedCycles
 		{
 			get { return _selectedDebuggable.TotalExecutedCycles; }
@@ -70,6 +73,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private readonly IMemoryCallbackSystem _memoryCallbacks;
 
 		[SaveState.DoNotSave]
-		IMemoryCallbackSystem IDebuggable.MemoryCallbacks { get { return _memoryCallbacks; } }
+		IMemoryCallbackSystem IDebuggable.MemoryCallbacks => _memoryCallbacks;
 	}
 }
