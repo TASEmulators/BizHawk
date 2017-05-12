@@ -34,6 +34,9 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		public IRegionable RegionableCore { get; set; }
 
+		[OptionalService]
+		public IBoardInfo BoardInfo { get; set; }
+
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
 
@@ -338,6 +341,17 @@ namespace BizHawk.Client.Common
 			if (RegionableCore != null)
 			{
 				return RegionableCore.Region.ToString();
+			}
+
+			return "";
+		}
+
+		[LuaMethodAttributes("getboardname", "returns (if available) the board name of the loaded ROM")]
+		public string GetBoardName()
+		{
+			if (BoardInfo != null)
+			{
+				return BoardInfo.BoardName;
 			}
 
 			return "";
