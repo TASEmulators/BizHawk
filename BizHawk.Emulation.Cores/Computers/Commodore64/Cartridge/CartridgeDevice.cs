@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
-	public abstract partial class CartridgeDevice : IDriveLight
+	public abstract class CartridgeDevice : IDriveLight
 	{
 		public Func<int> ReadOpenBus;
 
