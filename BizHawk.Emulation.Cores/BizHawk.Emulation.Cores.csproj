@@ -199,7 +199,7 @@
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
     <Compile Include="Computers\Commodore64\C64.IEmulator.cs">
-        <DependentUpon>C64.cs</DependentUpon>
+      <DependentUpon>C64.cs</DependentUpon>
     </Compile>
     <Compile Include="Computers\Commodore64\C64.IInputPollable.cs">
       <DependentUpon>C64.cs</DependentUpon>
@@ -215,7 +215,7 @@
     <Compile Include="Computers\Commodore64\C64.MotherboardInterface.cs" />
     <Compile Include="Computers\Commodore64\C64Format.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0000.cs" />
-    <Compile Include="Computers\Commodore64\C64.Input.cs" />
+    <Compile Include="Computers\Commodore64\C64.MotherboardInput.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0001.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0005.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper000A.cs" />
