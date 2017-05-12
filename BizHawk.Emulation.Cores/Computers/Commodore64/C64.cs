@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
@@ -20,7 +21,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			PutSyncSettings((C64SyncSettings)syncSettings ?? new C64SyncSettings());
 			PutSettings((C64Settings)settings ?? new C64Settings());
 
-			ServiceProvider = new BasicServiceProvider(this);
+			var ser = new BasicServiceProvider(this);
+			ServiceProvider = ser;
 			InputCallbacks = new InputCallbackSystem();
 
 			CoreComm = comm;
@@ -46,20 +48,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			if (_board.Sid != null)
 			{
 				_soundProvider = new DCFilter(_board.Sid, 512);
-				((BasicServiceProvider)ServiceProvider).Register<ISoundProvider>(_soundProvider);
+				ser.Register<ISoundProvider>(_soundProvider);
 			}
 
-			((BasicServiceProvider)ServiceProvider).Register<IVideoProvider>(_board.Vic);
-			((BasicServiceProvider)ServiceProvider).Register<IDriveLight>(this);
+			ser.Register<IVideoProvider>(_board.Vic);
+			ser.Register<IDriveLight>(this);
 		}
 
-		#region Internals
+		// IRegionable
+		[SaveState.DoNotSave]
+		public DisplayType Region { get; private set; }
 
 		[SaveState.DoNotSave]
 		private readonly int _cyclesPerFrame;
-
-		[SaveState.DoNotSave]
-		public GameInfo Game;
 
 		[SaveState.DoNotSave]
 		public IEnumerable<byte[]> Roms { get; private set; }
@@ -88,12 +89,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		[SaveState.SaveWithName("Frame")]
 		private int _frame;
-
-		#endregion
-
-		// IRegionable
-		[SaveState.DoNotSave]
-		public DisplayType Region { get; private set; }
 
 		[SaveState.DoNotSave]
 		private ISoundProvider _soundProvider;
@@ -249,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		public void HardReset()
+		private void HardReset()
 		{
 			InitMedia();
 			_board.HardReset();
