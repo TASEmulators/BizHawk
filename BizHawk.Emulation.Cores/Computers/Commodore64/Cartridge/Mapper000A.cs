@@ -17,7 +17,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		[SaveState.DoNotSave]
 		private const int RESET_CAPACITOR_CYCLES = 512;
 
-		[SaveState.SaveWithName("CapacitorCycles")]
 		private int _capacitorCycles;
 
 		[SaveState.DoNotSave]

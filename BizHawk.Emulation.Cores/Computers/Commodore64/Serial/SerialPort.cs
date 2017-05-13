@@ -14,10 +14,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		[SaveState.DoNotSave]
 		public Func<bool> ReadMasterData = () => true;
 
-		[SaveState.SaveWithName("Device")]
 		private SerialPortDevice _device;
 
-		[SaveState.SaveWithName("Connected")]
 		private bool _connected;
 
 		public void HardReset()

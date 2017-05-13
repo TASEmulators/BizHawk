@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
 	public sealed partial class Drive1541
 	{
-		[SaveState.SaveWithName("OverflowFlagDelayShiftRegister")]
 		private int _overflowFlagDelaySr;
 
 		private byte CpuPeek(ushort addr)

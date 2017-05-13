@@ -11,16 +11,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 		}
 
-		public class SaveWithName : Attribute
-		{
-			public string Name { get; set; }
-
-			public SaveWithName(string name)
-			{
-				Name = name;
-			}
-		}
-
 		private static int[] GetDelta(IList<int> source, IList<int> data)
 		{
 			var length = Math.Min(source.Count, data.Count);

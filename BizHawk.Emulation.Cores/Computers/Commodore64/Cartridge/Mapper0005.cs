@@ -13,10 +13,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		[SaveState.DoNotSave]
 		private readonly int[][] _banksB = new int[0][]; // A000
 
-		[SaveState.SaveWithName("BankMask")]
 		private int _bankMask;
 
-		[SaveState.SaveWithName("BankNumber")]
 		private int _bankNumber;
 
 		[SaveState.DoNotSave]

@@ -15,10 +15,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		[SaveState.DoNotSave]
 		private readonly int[] _rom;
 
-		[SaveState.SaveWithName("RomOffset")]
 		private int _romOffset;
 
-		[SaveState.SaveWithName("RomEnabled")]
 		private bool _romEnabled;
 
 		public Mapper002B(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData)

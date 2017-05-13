@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		[SaveState.DoNotSave] private int[][] _tracks;
 		[SaveState.DoNotSave] private readonly int[] _originalMedia;
 		[SaveState.DoNotSave] public bool Valid;
-		[SaveState.SaveWithName("DiskIsWriteProtected")] public bool WriteProtected;
+		public bool WriteProtected;
 
 		/// <summary>
 		/// Create a blank, unformatted disk.

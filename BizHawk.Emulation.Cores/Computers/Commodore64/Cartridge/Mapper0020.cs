@@ -24,7 +24,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	// We emulate having the AM29F040 chip.
 	internal sealed class Mapper0020 : CartridgeDevice
 	{
-		[SaveState.SaveWithName("BankOffset")]
 		private int _bankOffset = 63 << 13;
 
 		[SaveState.DoNotSave]
@@ -39,25 +38,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		[SaveState.DoNotSave]
 		private readonly int[] _originalMediaB; // A000
 
-		[SaveState.SaveWithName("BoardLed")]
 		private bool _boardLed;
 
-		[SaveState.SaveWithName("Jumper")]
 		private bool _jumper = false;
 
-		[SaveState.SaveWithName("StateBits")]
 		private int _stateBits;
 
-		[SaveState.SaveWithName("RAM")]
 		private int[] _ram = new int[256];
 
-		[SaveState.SaveWithName("CommandLatch55")]
 		private bool _commandLatch55;
-
-		[SaveState.SaveWithName("CommandLatchAA")]
 		private bool _commandLatchAa;
 
-		[SaveState.SaveWithName("InternalROMState")]
 		private int _internalRomState;
 
 		public Mapper0020(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData)

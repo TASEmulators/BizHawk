@@ -9,13 +9,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		[SaveState.DoNotSave]
 		private readonly int[] _romA;
 
-		[SaveState.SaveWithName("RomMaskA")]
 		private int _romAMask;
 
 		[SaveState.DoNotSave]
 		private readonly int[] _romB;
 
-		[SaveState.SaveWithName("RomMaskB")]
 		private int _romBMask;
 
 		// standard cartridge mapper (Commodore)

@@ -7,11 +7,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
 	internal sealed class Mapper0001 : CartridgeDevice
 	{
-		[SaveState.SaveWithName("RAM")] private int[] _ram = new int[0x2000];
-		[SaveState.SaveWithName("RAMEnabled")] private bool _ramEnabled;
-		[SaveState.DoNotSave] private readonly int[] _rom = new int[0x8000];
-		[SaveState.SaveWithName("ROMOffset")] private int _romOffset;
-		[SaveState.SaveWithName("CartEnabled")] private bool _cartEnabled;
+		private int[] _ram = new int[0x2000];
+		private bool _ramEnabled;
+
+		[SaveState.DoNotSave]
+		private readonly int[] _rom = new int[0x8000];
+
+		private int _romOffset;
+		private bool _cartEnabled;
 
 		public Mapper0001(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData)
 		{

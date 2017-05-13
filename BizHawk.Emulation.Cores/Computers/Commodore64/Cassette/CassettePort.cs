@@ -10,10 +10,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 		[SaveState.DoNotSave]
 		public Func<bool> ReadMotor = () => true;
 
-		[SaveState.SaveWithName("Device")]
 		private CassettePortDevice _device;
 
-		[SaveState.SaveWithName("Connected")]
 		private bool _connected;
 
 		public void HardReset()

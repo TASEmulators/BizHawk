@@ -16,13 +16,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		[SaveState.DoNotSave]
 		private readonly int[][] _banks; // 8000
 
-		[SaveState.SaveWithName("BankMask")]
 		private int _bankMask;
 
-		[SaveState.SaveWithName("BankNumber")]
 		private int _bankNumber;
 
-		[SaveState.SaveWithName("CurrentBank")]
 		private int[] _currentBank;
 
 		public Mapper000F(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData)

@@ -128,19 +128,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 				reader.ReadByte();
 		}
 
-		[SaveState.SaveWithName("ExRom")]
 		protected bool pinExRom;
 
-		[SaveState.SaveWithName("Game")]
 		protected bool pinGame;
 
-		[SaveState.SaveWithName("IRQ")]
 		protected bool pinIRQ;
 
-		[SaveState.SaveWithName("NMI")]
 		protected bool pinNMI;
 
-		[SaveState.SaveWithName("Reset")]
 		protected bool pinReset;
 
 		[SaveState.DoNotSave]

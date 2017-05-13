@@ -34,100 +34,56 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		[SaveState.DoNotSave] private const int ACR_T1_CONTROL_INTERRUPT_ON_LOAD_AND_ONESHOT_PB7 = 0x80;
 		[SaveState.DoNotSave] private const int ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS_AND_OUTPUT_ON_PB7 = 0xC0;
 
-		[SaveState.SaveWithName("PortOutputA")]
 		private int _pra;
-		[SaveState.SaveWithName("PortDirectionA")]
 		private int _ddra;
-		[SaveState.SaveWithName("PortOutputB")]
 		private int _prb;
-		[SaveState.SaveWithName("PortDirectionB")]
 		private int _ddrb;
-		[SaveState.SaveWithName("Timer1Counter")]
 		private int _t1C;
-		[SaveState.SaveWithName("Timer1Latch")]
 		private int _t1L;
-		[SaveState.SaveWithName("Timer2Counter")]
 		private int _t2C;
-		[SaveState.SaveWithName("Timer2Latch")]
 		private int _t2L;
-		[SaveState.SaveWithName("ShiftRegister")]
 		private int _sr;
-		[SaveState.SaveWithName("AuxiliaryControlRegister")]
 		private int _acr;
-		[SaveState.SaveWithName("PeripheralControlRegister")]
 		private int _pcr;
-		[SaveState.SaveWithName("InterruptFlagRegister")]
 		private int _ifr;
-		[SaveState.SaveWithName("InterruptEnableRegister")]
 		private int _ier;
-		[SaveState.SaveWithName("Port")]
 		private readonly IPort _port;
 
-		[SaveState.SaveWithName("PortLatchA")]
 		private int _paLatch;
-		[SaveState.SaveWithName("PortLatchB")]
 		private int _pbLatch;
 
-		[SaveState.SaveWithName("CA1InterruptControl")]
 		private int _pcrCa1IntControl;
-		[SaveState.SaveWithName("CA2Control")]
 		private int _pcrCa2Control;
-		[SaveState.SaveWithName("CB1InterruptControl")]
 		private int _pcrCb1IntControl;
-		[SaveState.SaveWithName("CB2Control")]
 		private int _pcrCb2Control;
-		[SaveState.SaveWithName("PortLatchEnableA")]
 		private bool _acrPaLatchEnable;
-		[SaveState.SaveWithName("PortLatchEnableB")]
 		private bool _acrPbLatchEnable;
-		[SaveState.SaveWithName("ShiftRegisterControl")]
 		private int _acrSrControl;
-		[SaveState.SaveWithName("Timer1Control")]
 		private int _acrT1Control;
-		[SaveState.SaveWithName("Timer2Control")]
 		private int _acrT2Control;
 
-		[SaveState.SaveWithName("PreviousCA1")]
 		private bool _ca1L;
-		[SaveState.SaveWithName("PreviousCA2")]
 		private bool _ca2L;
-		[SaveState.SaveWithName("PreviousCB1")]
 		private bool _cb1L;
-		[SaveState.SaveWithName("PreviousCB2")]
 		private bool _cb2L;
-		[SaveState.SaveWithName("PreviousPB6")]
 		private bool _pb6L;
 
-		[SaveState.SaveWithName("ResetCa2NextClock")]
 		private bool _resetCa2NextClock;
-		[SaveState.SaveWithName("ResetCb2NextClock")]
 		private bool _resetCb2NextClock;
 
-		[SaveState.SaveWithName("HandshakeCa2NextClock")]
 		private bool _handshakeCa2NextClock;
-		[SaveState.SaveWithName("HandshakeCb2NextClock")]
 		private bool _handshakeCb2NextClock;
 
-		[SaveState.SaveWithName("CA1")]
 		public bool Ca1;
-		[SaveState.SaveWithName("CA2")]
 		public bool Ca2;
-		[SaveState.SaveWithName("CB1")]
 		public bool Cb1;
-		[SaveState.SaveWithName("CB2")]
 		public bool Cb2;
-		[SaveState.SaveWithName("PB6")]
 		private bool _pb6;
 
-		[SaveState.SaveWithName("InterruptNextClock")]
 		private int _interruptNextClock;
-		[SaveState.SaveWithName("T1Loaded")]
 		private bool _t1CLoaded;
-		[SaveState.SaveWithName("T2Loaded")]
 		private bool _t2CLoaded;
-		[SaveState.SaveWithName("T1Delayed")]
 		private int _t1Delayed;
-		[SaveState.SaveWithName("T2Delayed")]
 		private int _t2Delayed;
 
 		public Via()

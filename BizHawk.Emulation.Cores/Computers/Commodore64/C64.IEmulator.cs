@@ -26,7 +26,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		[SaveState.DoNotSave]
 		public string SystemId { get { return "C64"; } }
 
-		[SaveState.SaveWithName("DeterministicEmulation")]
 		public bool DeterministicEmulation => true;
 
 		public void ResetCounters()

@@ -106,12 +106,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		};
 
-		[SaveState.SaveWithName("Board")]
 		private Motherboard _board;
 
 		private int _frameCycles;
 
-		[SaveState.SaveWithName("Frame")]
 		private int _frame;
 
 		[SaveState.DoNotSave]

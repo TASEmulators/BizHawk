@@ -13,10 +13,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		[SaveState.DoNotSave]
 		private readonly int[][] _bankHigh;
 
-		[SaveState.SaveWithName("BankHighSelected")]
 		private int[] _bankHighSelected;
 
-		[SaveState.SaveWithName("BankIndex")]
 		private int _bankIndex;
 
 		// Zaxxon and Super Zaxxon cartridges

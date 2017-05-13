@@ -11,13 +11,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 	    [SaveState.DoNotSave] private readonly int _start;
         [SaveState.DoNotSave] private readonly int _end;
 
-        [SaveState.SaveWithName("Position")]
 	    private int _pos;
 
-        [SaveState.SaveWithName("Cycle")]
         private int _cycle;
 
-        [SaveState.SaveWithName("Data")]
         private bool _data;
 
 		public Tape(byte version, byte[] tapeData, int start, int end)
