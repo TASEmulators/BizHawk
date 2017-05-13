@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Cassette;
@@ -294,7 +292,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			ColorRam.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("Cpu"); SaveState.SyncObject(ser, Cpu); ser.EndSection();
+			ser.BeginSection("Cpu");
+			Cpu.SyncState(ser);
+			ser.EndSection();
+
 			ser.BeginSection("KernalRom"); SaveState.SyncObject(ser, KernalRom); ser.EndSection();
 			ser.BeginSection("Pla"); SaveState.SyncObject(ser, Pla); ser.EndSection();
 			ser.BeginSection("Ram"); SaveState.SyncObject(ser, Ram); ser.EndSection();

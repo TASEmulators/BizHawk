@@ -36,5 +36,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			return _rom[addr & 0x3FFF];
 		}
+
+		public void SyncState(Serializer ser)
+		{
+			SaveState.SyncObject(ser, this);
+		}
 	}
 }

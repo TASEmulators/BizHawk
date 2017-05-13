@@ -222,7 +222,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			_cpu.SyncState(ser);
+			ser.Sync("_pinNmiLast", ref _pinNmiLast);
+
+			ser.BeginSection("_port");
+			_port.SyncState(ser);
+			ser.EndSection();
+
+			ser.Sync("_thisNmi", ref _thisNmi);
+			ser.Sync("LagCycles", ref LagCycles);
 		}
 
 		public void Write(int addr, int val)
