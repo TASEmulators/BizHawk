@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		[SaveState.SaveWithName("InterruptEnableRegister")]
 		private int _ier;
 		[SaveState.SaveWithName("Port")]
-		private readonly Port _port;
+		private readonly IPort _port;
 
 		[SaveState.SaveWithName("PortLatchA")]
 		private int _paLatch;
@@ -421,7 +421,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync("InterruptEnableRegister", ref _ier);
 
 			ser.BeginSection("Port");
-			_port.SyncState(ser); // TODO
+			_port.SyncState(ser);
 			ser.EndSection();
 
 			
