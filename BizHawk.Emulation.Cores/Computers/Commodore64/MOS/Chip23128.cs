@@ -1,5 +1,4 @@
 ﻿using System;
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
@@ -35,11 +34,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public int Read(int addr)
 		{
 			return _rom[addr & 0x3FFF];
-		}
-
-		public void SyncState(Serializer ser)
-		{
-			SaveState.SyncObject(ser, this);
 		}
 	}
 }

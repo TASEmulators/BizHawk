@@ -296,7 +296,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Cpu.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("KernalRom"); SaveState.SyncObject(ser, KernalRom); ser.EndSection();
 			ser.BeginSection("Pla"); SaveState.SyncObject(ser, Pla); ser.EndSection();
 			ser.BeginSection("Ram"); SaveState.SyncObject(ser, Ram); ser.EndSection();
 			ser.BeginSection("Sid"); SaveState.SyncObject(ser, Sid); ser.EndSection();
