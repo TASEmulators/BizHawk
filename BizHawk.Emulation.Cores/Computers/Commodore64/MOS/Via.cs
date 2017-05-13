@@ -406,7 +406,55 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.Sync("PortOutputA", ref _pra);
+			ser.Sync("PortDirectionA", ref _ddra);
+			ser.Sync("PortOutputB", ref _prb);
+			ser.Sync("PortDirectionB", ref _ddrb);
+			ser.Sync("Timer1Counter", ref _t1C);
+			ser.Sync("Timer1Latch", ref _t1L);
+			ser.Sync("Timer2Counter", ref _t2C);
+			ser.Sync("Timer2Latch", ref _t2L);
+			ser.Sync("ShiftRegister", ref _sr);
+			ser.Sync("AuxiliaryControlRegister", ref _acr);
+			ser.Sync("PeripheralControlRegister", ref _pcr);
+			ser.Sync("InterruptFlagRegister", ref _ifr);
+			ser.Sync("InterruptEnableRegister", ref _ier);
+
+			ser.BeginSection("Port");
+			_port.SyncState(ser); // TODO
+			ser.EndSection();
+
+			
+			ser.Sync("PortLatchA", ref _paLatch);
+			ser.Sync("PortLatchB", ref _pbLatch);
+			ser.Sync("CA1InterruptControl", ref _pcrCa1IntControl);
+			ser.Sync("CA2Control", ref _pcrCa2Control);
+			ser.Sync("CB1InterruptControl", ref _pcrCb1IntControl);
+			ser.Sync("CB2Control", ref _pcrCb2Control);
+			ser.Sync("PortLatchEnableA", ref _acrPaLatchEnable);
+			ser.Sync("PortLatchEnableB", ref _acrPbLatchEnable);
+			ser.Sync("ShiftRegisterControl", ref _acrSrControl);
+			ser.Sync("Timer1Control", ref _acrT1Control);
+			ser.Sync("Timer2Control", ref _acrT2Control);
+			ser.Sync("PreviousCA1", ref _ca1L);
+			ser.Sync("PreviousCA2", ref _ca2L);
+			ser.Sync("PreviousCB1", ref _cb1L);
+			ser.Sync("PreviousCB2", ref _cb2L);
+			ser.Sync("PreviousPB6", ref _pb6L);
+			ser.Sync("ResetCa2NextClock", ref _resetCa2NextClock);
+			ser.Sync("ResetCb2NextClock", ref _resetCb2NextClock);
+			ser.Sync("HandshakeCa2NextClock", ref _handshakeCa2NextClock);
+			ser.Sync("HandshakeCb2NextClock", ref _handshakeCb2NextClock);
+			ser.Sync("CA1", ref Ca1);
+			ser.Sync("CA2", ref Ca2);
+			ser.Sync("CB1", ref Cb1);
+			ser.Sync("CB2", ref Cb2);
+			ser.Sync("PB6", ref _pb6);
+			ser.Sync("InterruptNextClock", ref _interruptNextClock);
+			ser.Sync("T1Loaded", ref _t1CLoaded);
+			ser.Sync("T2Loaded", ref _t2CLoaded);
+			ser.Sync("T1Delayed", ref _t1Delayed);
+			ser.Sync("T2Delayed", ref _t2Delayed);
 		}
 	}
 }

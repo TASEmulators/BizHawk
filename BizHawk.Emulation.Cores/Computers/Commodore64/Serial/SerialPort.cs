@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Computers.Commodore64.Cassette;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
@@ -19,6 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
 		[SaveState.SaveWithName("Device")]
 		private SerialPortDevice _device;
+
 		[SaveState.SaveWithName("Connected")]
 		private bool _connected;
 
@@ -63,7 +61,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			_device?.SyncState(ser);
+			ser.Sync("Connected", ref _connected);
 		}
 
 		public void Connect(SerialPortDevice device)
