@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 
 		public override void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			_tape.SyncState(ser);
 		}
 
 		public void Insert(Tape tape)

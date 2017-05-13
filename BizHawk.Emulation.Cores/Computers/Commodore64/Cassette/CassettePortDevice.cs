@@ -28,9 +28,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 			return true;
 		}
 
-		public virtual void SyncState(Serializer ser)
-		{
-			SaveState.SyncObject(ser, this);
-		}
+		public abstract void SyncState(Serializer ser);
 	}
 }

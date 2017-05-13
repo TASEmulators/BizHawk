@@ -13,8 +13,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
         [SaveState.SaveWithName("Position")]
 	    private int _pos;
+
         [SaveState.SaveWithName("Cycle")]
         private int _cycle;
+
         [SaveState.SaveWithName("Data")]
         private bool _data;
 
@@ -97,7 +99,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.Sync("Position", ref _pos);
+			ser.Sync("Cycle", ref _cycle);
+			ser.Sync("Data", ref _data);
 		}
 	}
 }

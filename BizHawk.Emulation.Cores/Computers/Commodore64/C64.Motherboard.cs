@@ -319,7 +319,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				ser.EndSection();
 			}
 
-			ser.BeginSection("Cassette"); SaveState.SyncObject(ser, Cassette); ser.EndSection();
+			ser.BeginSection("Cassette");
+			Cassette.SyncState(ser);
+			ser.EndSection();
 
 			ser.BeginSection("Serial"); SaveState.SyncObject(ser, Serial); ser.EndSection();
 			ser.BeginSection("TapeDrive"); SaveState.SyncObject(ser, TapeDrive); ser.EndSection(); // TODO: only if tape
