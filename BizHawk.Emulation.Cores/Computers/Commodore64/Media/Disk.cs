@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
@@ -162,6 +162,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 		public void SyncState(Serializer ser)
 		{
+			ser.Sync("WriteProtected", ref WriteProtected);
+
 			if (ser.IsReader)
 			{
 				var mediaState = new int[_originalMedia.Length];
@@ -173,7 +175,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				var mediaState = SerializeTracks(_tracks);
 				SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
 			}
-			SaveState.SyncObject(ser, this);
 		}
 	}
 }
