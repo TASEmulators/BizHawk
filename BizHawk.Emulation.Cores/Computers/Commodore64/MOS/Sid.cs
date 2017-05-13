@@ -184,7 +184,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync("_envelopeOutput1", ref _envelopeOutput1);
 			ser.Sync("_envelopeOutput2", ref _envelopeOutput2);
 
-			ser.BeginSection("Envelopes"); SaveState.SyncObject(ser, _envelopes); ser.EndSection();
+			for (int i = 0; i < _envelopes.Length; i++)
+			{
+				ser.BeginSection("Envelope" + i);
+				_envelopes[i].SyncState(ser);
+				ser.EndSection();
+			}
 
 			ser.Sync("_filterEnable", ref _filterEnable, useNull: false);
 			ser.Sync("_filterFrequency", ref _filterFrequency);
@@ -201,7 +206,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync("_voiceOutput1", ref _voiceOutput1);
 			ser.Sync("_voiceOutput2", ref _voiceOutput2);
 
-			ser.BeginSection("Voices"); SaveState.SyncObject(ser, _voices); ser.EndSection();
+			for (int i = 0; i < _voices.Length; i++)
+			{
+				ser.BeginSection("Voice" + i);
+				_voices[i].SyncState(ser);
+				ser.EndSection();
+			}
+
 			ser.Sync("_volume", ref _volume);
 		}
 	}
