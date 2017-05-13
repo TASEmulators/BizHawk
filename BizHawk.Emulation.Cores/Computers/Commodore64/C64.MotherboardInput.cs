@@ -2,8 +2,8 @@
 {
 	public sealed partial class Motherboard
 	{
-		private readonly bool[] _joystickPressed = new bool[10];
-		private readonly bool[] _keyboardPressed = new bool[64];
+		private bool[] _joystickPressed = new bool[10];
+		private bool[] _keyboardPressed = new bool[64];
 
 		private static readonly string[][] JoystickMatrix = {
 			new[] {"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button"},

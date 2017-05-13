@@ -502,7 +502,56 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.Sync("DelayedInterrupts", ref DelayedInterrupts);
+			ser.Sync("_pra", ref _pra);
+			ser.Sync("_prb", ref _prb);
+			ser.Sync("_ddra", ref _ddra);
+			ser.Sync("_ddrb", ref _ddrb);
+			ser.Sync("_ta", ref _ta);
+			ser.Sync("_tb", ref _tb);
+			ser.Sync("_latcha", ref _latcha);
+			ser.Sync("_latchb", ref _latchb);
+			ser.Sync("_tod10Ths", ref _tod10Ths);
+			ser.Sync("_todSec", ref _todSec);
+			ser.Sync("_todMin", ref _todMin);
+			ser.Sync("_todHr", ref _todHr);
+			ser.Sync("_latch10Ths", ref _latch10Ths);
+			ser.Sync("_latchSec", ref _latchSec);
+			ser.Sync("_latchMin", ref _latchMin);
+			ser.Sync("_latchHr", ref _latchHr);
+			ser.Sync("_alm10Ths", ref _alm10Ths);
+			ser.Sync("_almSec", ref _almSec);
+			ser.Sync("_almMin", ref _almMin);
+			ser.Sync("_almHr", ref _almHr);
+			ser.Sync("_sdr", ref _sdr);
+			ser.Sync("_icr", ref _icr);
+			ser.Sync("_cra", ref _cra);
+			ser.Sync("_crb", ref _crb);
+			ser.Sync("_intMask", ref _intMask);
+			ser.Sync("_todLatch", ref _todLatch);
+			ser.Sync("_taCntPhi2", ref _taCntPhi2);
+			ser.Sync("_taCntCnt", ref _taCntCnt);
+			ser.Sync("_tbCntPhi2", ref _tbCntPhi2);
+			ser.Sync("_tbCntTa", ref _tbCntTa);
+			ser.Sync("_tbCntCnt", ref _tbCntCnt);
+			ser.Sync("_taIrqNextCycle", ref _taIrqNextCycle);
+			ser.Sync("_taPrb6NegativeNextCycle", ref _taPrb6NegativeNextCycle);
+			ser.Sync("_tbIrqNextCycle", ref _tbIrqNextCycle);
+			ser.Sync("_tbPrb7NegativeNextCycle", ref _tbPrb7NegativeNextCycle);
+			ser.Sync("_hasNewCra", ref _hasNewCra);
+			ser.Sync("_hasNewCrb", ref _hasNewCrb);
+			ser.SyncEnum("_taState", ref _taState);
+			ser.SyncEnum("_tbState", ref _tbState);
+			ser.Sync("_newCra", ref _newCra);
+			ser.Sync("_newCrb", ref _newCrb);
+			ser.Sync("_flagLatch", ref _flagLatch);
+
+			ser.BeginSection("Port");
+			_port.SyncState(ser);
+			ser.EndSection();
+
+			ser.Sync("_todCounter", ref _todCounter);
+			//SaveState.SyncObject(ser, this);
 		}
 	}
 }

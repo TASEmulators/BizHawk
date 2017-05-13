@@ -282,7 +282,38 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.BeginSection("Cia0");
+			Cia0.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("Cia1"); SaveState.SyncObject(ser, Cia1); ser.EndSection();
+			ser.BeginSection("ColorRam"); SaveState.SyncObject(ser, ColorRam); ser.EndSection();
+			ser.BeginSection("Cpu"); SaveState.SyncObject(ser, Cpu); ser.EndSection();
+			ser.BeginSection("KernalRom"); SaveState.SyncObject(ser, KernalRom); ser.EndSection();
+			ser.BeginSection("Pla"); SaveState.SyncObject(ser, Pla); ser.EndSection();
+			ser.BeginSection("Ram"); SaveState.SyncObject(ser, Ram); ser.EndSection();
+			ser.BeginSection("Sid"); SaveState.SyncObject(ser, Sid); ser.EndSection();
+			ser.BeginSection("Vic"); SaveState.SyncObject(ser, Vic); ser.EndSection();
+			ser.BeginSection("CartPort"); SaveState.SyncObject(ser, CartPort); ser.EndSection(); // TODO: only if cart
+			ser.BeginSection("Cassette"); SaveState.SyncObject(ser, Cassette); ser.EndSection();
+
+			ser.BeginSection("Serial"); SaveState.SyncObject(ser, Serial); ser.EndSection();
+			ser.BeginSection("TapeDrive"); SaveState.SyncObject(ser, TapeDrive); ser.EndSection(); // TODO: only if tape
+			ser.BeginSection("User"); SaveState.SyncObject(ser, User); ser.EndSection();
+			ser.BeginSection("DiskDrive"); SaveState.SyncObject(ser, DiskDrive); ser.EndSection(); // TODO: only if disk
+
+			ser.Sync("Bus", ref Bus);
+			ser.Sync("InputRead", ref InputRead);
+			ser.Sync("Irq", ref Irq);
+			ser.Sync("Nmi", ref Nmi);
+
+			ser.Sync("_lastReadVicAddress", ref _lastReadVicAddress);
+			ser.Sync("_lastReadVicData", ref _lastReadVicData);
+			ser.Sync("_vicBank", ref _vicBank);
+
+			ser.Sync("_joystickPressed", ref _joystickPressed, useNull: false);
+			ser.Sync("_keyboardPressed", ref _keyboardPressed, useNull: false);
+			ser.Sync("_restorePressed", ref _restorePressed);
 		}
 	}
 }
