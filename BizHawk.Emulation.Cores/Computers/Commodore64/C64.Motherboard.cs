@@ -286,8 +286,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Cia0.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("Cia1"); SaveState.SyncObject(ser, Cia1); ser.EndSection();
-			ser.BeginSection("ColorRam"); SaveState.SyncObject(ser, ColorRam); ser.EndSection();
+			ser.BeginSection("Cia1");
+			Cia1.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("ColorRam");
+			ColorRam.SyncState(ser);
+			ser.EndSection();
+
 			ser.BeginSection("Cpu"); SaveState.SyncObject(ser, Cpu); ser.EndSection();
 			ser.BeginSection("KernalRom"); SaveState.SyncObject(ser, KernalRom); ser.EndSection();
 			ser.BeginSection("Pla"); SaveState.SyncObject(ser, Pla); ser.EndSection();
