@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		private int[] _ram = new int[0x2000];
 		private bool _ramEnabled;
 
-		[SaveState.DoNotSave]
 		private readonly int[] _rom = new int[0x8000];
 
 		private int _romOffset;

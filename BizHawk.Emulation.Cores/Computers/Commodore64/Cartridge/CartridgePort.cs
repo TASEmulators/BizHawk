@@ -17,7 +17,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			Disconnect();
 		}
 
-		[SaveState.DoNotSave]
 		internal string CartridgeType => _cartridgeDevice.GetType().Name;
 
 		// ------------------------------------------

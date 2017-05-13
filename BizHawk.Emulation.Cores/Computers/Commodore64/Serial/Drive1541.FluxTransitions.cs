@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
+﻿using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
 	public sealed partial class Drive1541
 	{
-		[SaveState.DoNotSave]
 		private const long LEHMER_RNG_PRIME = 48271;
+
 		private int _diskDensityCounter; // density .. 16
 		private int _diskSupplementaryCounter; // 0 .. 16
 		private bool _diskFluxReversalDetected;

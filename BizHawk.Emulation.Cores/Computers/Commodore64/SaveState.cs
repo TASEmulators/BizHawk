@@ -7,10 +7,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	internal static class SaveState
 	{
-		public class DoNotSave : Attribute
-		{
-		}
-
 		private static int[] GetDelta(IList<int> source, IList<int> data)
 		{
 			var length = Math.Min(source.Count, data.Count);

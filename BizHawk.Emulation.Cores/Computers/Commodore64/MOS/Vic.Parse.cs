@@ -32,15 +32,15 @@
 		private const int AddressMaskEc = 0x39FF;
 		private const int AddressMaskRefresh = 0x3F00;
 
-		[SaveState.DoNotSave] private int _parseAddr;
-		[SaveState.DoNotSave] private int _parseCycleBaSprite0;
-		[SaveState.DoNotSave] private int _parseCycleBaSprite1;
-		[SaveState.DoNotSave] private int _parseCycleBaSprite2;
-		[SaveState.DoNotSave] private int _parseCycleFetchSpriteIndex;
-		[SaveState.DoNotSave] private int _parseFetch;
-		[SaveState.DoNotSave] private int _parseFetchType;
-		[SaveState.DoNotSave] private int _parseBa;
-		[SaveState.DoNotSave] private int _parseAct;
+		private int _parseAddr;
+		private int _parseCycleBaSprite0;
+		private int _parseCycleBaSprite1;
+		private int _parseCycleBaSprite2;
+		private int _parseCycleFetchSpriteIndex;
+		private int _parseFetch;
+		private int _parseFetchType;
+		private int _parseBa;
+		private int _parseAct;
 		private bool _parseIsSprCrunch;
 
 		private void ParseCycle()

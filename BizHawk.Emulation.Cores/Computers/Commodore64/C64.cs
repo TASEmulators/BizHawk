@@ -55,7 +55,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		}
 
 		// IBoardInfo
-		[SaveState.DoNotSave]
 		public string BoardName
 		{
 			get
@@ -80,16 +79,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		}
 
 		// IRegionable
-		[SaveState.DoNotSave]
 		public DisplayType Region { get; private set; }
 
-		[SaveState.DoNotSave]
 		private readonly int _cyclesPerFrame;
 
-		[SaveState.DoNotSave]
 		public IEnumerable<byte[]> Roms { get; private set; }
 
-		[SaveState.DoNotSave]
 		private static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
 		{
 			Name = "Commodore 64 Controller",
@@ -112,7 +107,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private int _frame;
 
-		[SaveState.DoNotSave]
 		private ISoundProvider _soundProvider;
 
 		private void DoCycle()

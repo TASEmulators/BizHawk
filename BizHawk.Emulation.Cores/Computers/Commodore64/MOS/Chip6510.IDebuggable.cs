@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
@@ -144,21 +143,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		[SaveState.DoNotSave]
 		private int _jsrCount;
-		[SaveState.DoNotSave]
+
 		private const byte Jsr = 0x20;
-		[SaveState.DoNotSave]
 		private const byte Rti = 0x40;
-		[SaveState.DoNotSave]
 		private const byte Rts = 0x60;
 
-		[SaveState.DoNotSave]
 		private const byte JsrSize = 3;
 
-		[SaveState.DoNotSave] private IMemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem();
+		private IMemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem();
 
-		[SaveState.DoNotSave]
 		IMemoryCallbackSystem IDebuggable.MemoryCallbacks { get { return _memoryCallbacks; } }
 	}
 }

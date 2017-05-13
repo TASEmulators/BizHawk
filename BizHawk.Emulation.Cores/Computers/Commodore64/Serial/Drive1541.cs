@@ -31,13 +31,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		private int _cpuClockNum;
 		private int _ratioDifference;
 		private int _driveLightOffTime;
-		[SaveState.DoNotSave]
 		private int[] _trackImageData = new int[1];
-		[SaveState.DoNotSave]
 		public Func<int> ReadIec = () => 0xFF;
-		[SaveState.DoNotSave]
 		public Action DebuggerStep;
-		[SaveState.DoNotSave]
 		public readonly Chip23128 DriveRom;
 
 		public Drive1541(int clockNum, int clockDen)

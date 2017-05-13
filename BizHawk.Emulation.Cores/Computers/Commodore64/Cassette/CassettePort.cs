@@ -5,9 +5,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 {
 	public sealed class CassettePort
 	{
-		[SaveState.DoNotSave]
 		public Func<bool> ReadDataOutput = () => true;
-		[SaveState.DoNotSave]
 		public Func<bool> ReadMotor = () => true;
 
 		private CassettePortDevice _device;

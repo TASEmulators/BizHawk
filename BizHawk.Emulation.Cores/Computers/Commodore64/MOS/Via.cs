@@ -9,30 +9,30 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Via
 	{
-		[SaveState.DoNotSave] private const int PCR_INT_CONTROL_NEGATIVE_EDGE = 0x00;
-		[SaveState.DoNotSave] private const int PCR_INT_CONTROL_POSITIVE_EDGE = 0x01;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_INPUT_NEGATIVE_ACTIVE_EDGE = 0x00;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE = 0x02;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_INPUT_POSITIVE_ACTIVE_EDGE = 0x04;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE = 0x06;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_HANDSHAKE_OUTPUT = 0x08;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_PULSE_OUTPUT = 0x0A;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_LOW_OUTPUT = 0x0C;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_HIGH_OUTPUT = 0x0E;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_DISABLED = 0x00;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_SHIFT_IN_T2_ONCE = 0x04;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_SHIFT_IN_PHI2 = 0x08;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_SHIFT_IN_CLOCK = 0x0C;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_SHIFT_OUT_T2 = 0x10;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_SHIFT_OUT_T2_ONCE = 0x14;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_SHIFT_OUT_PHI2 = 0x18;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_SHIFT_OUT_CLOCK = 0x1C;
-		[SaveState.DoNotSave] private const int ACR_T2_CONTROL_TIMED = 0x00;
-		[SaveState.DoNotSave] private const int ACR_T2_CONTROL_COUNT_ON_PB6 = 0x20;
-		[SaveState.DoNotSave] private const int ACR_T1_CONTROL_INTERRUPT_ON_LOAD = 0x00;
-		[SaveState.DoNotSave] private const int ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS = 0x40;
-		[SaveState.DoNotSave] private const int ACR_T1_CONTROL_INTERRUPT_ON_LOAD_AND_ONESHOT_PB7 = 0x80;
-		[SaveState.DoNotSave] private const int ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS_AND_OUTPUT_ON_PB7 = 0xC0;
+		private const int PCR_INT_CONTROL_NEGATIVE_EDGE = 0x00;
+		private const int PCR_INT_CONTROL_POSITIVE_EDGE = 0x01;
+		private const int PCR_CONTROL_INPUT_NEGATIVE_ACTIVE_EDGE = 0x00;
+		private const int PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE = 0x02;
+		private const int PCR_CONTROL_INPUT_POSITIVE_ACTIVE_EDGE = 0x04;
+		private const int PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE = 0x06;
+		private const int PCR_CONTROL_HANDSHAKE_OUTPUT = 0x08;
+		private const int PCR_CONTROL_PULSE_OUTPUT = 0x0A;
+		private const int PCR_CONTROL_LOW_OUTPUT = 0x0C;
+		private const int PCR_CONTROL_HIGH_OUTPUT = 0x0E;
+		private const int ACR_SR_CONTROL_DISABLED = 0x00;
+		private const int ACR_SR_CONTROL_SHIFT_IN_T2_ONCE = 0x04;
+		private const int ACR_SR_CONTROL_SHIFT_IN_PHI2 = 0x08;
+		private const int ACR_SR_CONTROL_SHIFT_IN_CLOCK = 0x0C;
+		private const int ACR_SR_CONTROL_SHIFT_OUT_T2 = 0x10;
+		private const int ACR_SR_CONTROL_SHIFT_OUT_T2_ONCE = 0x14;
+		private const int ACR_SR_CONTROL_SHIFT_OUT_PHI2 = 0x18;
+		private const int ACR_SR_CONTROL_SHIFT_OUT_CLOCK = 0x1C;
+		private const int ACR_T2_CONTROL_TIMED = 0x00;
+		private const int ACR_T2_CONTROL_COUNT_ON_PB6 = 0x20;
+		private const int ACR_T1_CONTROL_INTERRUPT_ON_LOAD = 0x00;
+		private const int ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS = 0x40;
+		private const int ACR_T1_CONTROL_INTERRUPT_ON_LOAD_AND_ONESHOT_PB7 = 0x80;
+		private const int ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS_AND_OUTPUT_ON_PB7 = 0xC0;
 
 		private int _pra;
 		private int _ddra;
@@ -102,7 +102,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_ca1L = true;
 		}
 
-		[SaveState.DoNotSave]
 		public bool Irq
 		{
 			get { return (_ifr & 0x80) == 0; }

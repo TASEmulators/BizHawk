@@ -138,14 +138,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		protected bool pinReset;
 
-		[SaveState.DoNotSave]
 		protected bool validCartridge;
 
 		public virtual void ExecutePhase()
 		{
 		}
 
-		[SaveState.DoNotSave]
 		public bool ExRom
 		{
 			get
@@ -154,7 +152,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-		[SaveState.DoNotSave]
 		public bool Game
 		{
 			get
@@ -170,7 +167,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			pinReset = true;
 		}
 
-		[SaveState.DoNotSave]
 		public bool IRQ
 		{
 			get
@@ -179,7 +175,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-		[SaveState.DoNotSave]
 		public bool NMI
 		{
 			get
@@ -244,7 +239,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			return ReadOpenBus();
 		}
 
-		[SaveState.DoNotSave]
 		public bool Reset
 		{
 			get
@@ -267,7 +261,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			ser.Sync("_driveLightOn", ref _driveLightOn);
 		}
 
-		[SaveState.DoNotSave]
 		public bool Valid
 		{
 			get

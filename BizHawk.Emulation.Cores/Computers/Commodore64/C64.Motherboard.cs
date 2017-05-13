@@ -148,8 +148,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			KernalRom = new Chip23128();
 		}
 
-		[SaveState.DoNotSave] public int ClockNumerator { get; private set; }
-		[SaveState.DoNotSave] public int ClockDenominator { get; private set; }
+		public int ClockNumerator { get; private set; }
+		public int ClockDenominator { get; private set; }
 
 		// -----------------------------------------
 

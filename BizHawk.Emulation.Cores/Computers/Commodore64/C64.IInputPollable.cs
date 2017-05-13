@@ -16,7 +16,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			set { _lagCount = value; }
 		}
 
-		[SaveState.DoNotSave]
 		public IInputCallbackSystem InputCallbacks { get; private set; }
 
 		private bool _isLagFrame;

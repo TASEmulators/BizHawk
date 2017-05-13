@@ -12,11 +12,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	// Thanks to VICE team for the info: http://vice-emu.sourceforge.net/vice_15.html
 	internal class Mapper002B : CartridgeDevice
 	{
-		[SaveState.DoNotSave]
 		private readonly int[] _rom;
 
 		private int _romOffset;
-
 		private bool _romEnabled;
 
 		public Mapper002B(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData)

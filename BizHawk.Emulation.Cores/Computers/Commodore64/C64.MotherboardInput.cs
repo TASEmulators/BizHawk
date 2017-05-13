@@ -21,7 +21,7 @@
 			new[] { "Key 1", "Key Left Arrow", "Key Control", "Key 2", "Key Space", "Key Commodore", "Key Q", "Key Run/Stop" }
 		};
 
-		[SaveState.DoNotSave] int _pollIndex;
+		private int _pollIndex;
 		private bool _restorePressed;
 
 		public void PollInput()

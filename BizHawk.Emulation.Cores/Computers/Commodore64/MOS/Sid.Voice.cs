@@ -28,10 +28,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			private int _shiftRegisterReset;
 			private bool _sync;
 			private bool _test;
-			[SaveState.DoNotSave] private int[] _wave;
+			private int[] _wave;
 			private int _waveform;
 			private int _waveformIndex;
-			[SaveState.DoNotSave] private readonly int[][] _waveTable;
+			private readonly int[][] _waveTable;
 
 			public Voice(int[][] newWaveTable)
 			{

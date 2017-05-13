@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Via
 	{
@@ -226,49 +221,41 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		[SaveState.DoNotSave]
 		public int DdrA
 		{
 			get { return _ddra; }
 		}
 
-		[SaveState.DoNotSave]
 		public int DdrB
 		{
 			get { return _ddrb; }
 		}
 
-		[SaveState.DoNotSave]
 		public int PrA
 		{
 			get { return _pra; }
 		}
 
-		[SaveState.DoNotSave]
 		public int PrB
 		{
 			get { return _prb; }
 		}
 
-		[SaveState.DoNotSave]
 		public int EffectivePrA
 		{
 			get { return _pra | ~_ddra; }
 		}
 
-		[SaveState.DoNotSave]
 		public int EffectivePrB
 		{
 			get { return _prb | ~_ddrb; }
 		}
 
-		[SaveState.DoNotSave]
 		public int ActualPrA
 		{
 			get { return _acrPaLatchEnable ? _paLatch : _port.ReadPra(_pra, _ddra); }
 		}
 
-		[SaveState.DoNotSave]
 		public int ActualPrB
 		{
 			get { return _acrPbLatchEnable ? _pbLatch : _port.ReadPrb(_prb, _ddrb); }

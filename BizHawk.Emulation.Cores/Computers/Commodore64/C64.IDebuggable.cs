@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public partial class C64 : IDebuggable
 	{
-		[SaveState.DoNotSave] private IDebuggable _selectedDebuggable;
+		private IDebuggable _selectedDebuggable;
 
 		private IEnumerable<IDebuggable> GetAvailableDebuggables()
 		{
@@ -69,10 +69,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			get { return _selectedDebuggable.TotalExecutedCycles; }
 		}
 
-		[SaveState.DoNotSave]
 		private readonly IMemoryCallbackSystem _memoryCallbacks;
 
-		[SaveState.DoNotSave]
 		IMemoryCallbackSystem IDebuggable.MemoryCallbacks => _memoryCallbacks;
 	}
 }

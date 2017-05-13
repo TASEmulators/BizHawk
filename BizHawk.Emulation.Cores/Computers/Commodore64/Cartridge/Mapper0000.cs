@@ -6,14 +6,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
 	internal sealed class Mapper0000 : CartridgeDevice
 	{
-		[SaveState.DoNotSave]
 		private readonly int[] _romA;
-
 		private int _romAMask;
 
-		[SaveState.DoNotSave]
 		private readonly int[] _romB;
-
 		private int _romBMask;
 
 		// standard cartridge mapper (Commodore)

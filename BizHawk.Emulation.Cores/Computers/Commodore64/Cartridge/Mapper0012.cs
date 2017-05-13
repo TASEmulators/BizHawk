@@ -7,10 +7,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
 	internal sealed class Mapper0012 : CartridgeDevice
 	{
-		[SaveState.DoNotSave]
 		private readonly int[] _bankMain;
 
-		[SaveState.DoNotSave]
 		private readonly int[][] _bankHigh;
 
 		private int[] _bankHighSelected;

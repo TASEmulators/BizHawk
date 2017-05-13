@@ -7,12 +7,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
 	public sealed class Disk
 	{
-		[SaveState.DoNotSave] public const int FluxBitsPerEntry = 32;
-		[SaveState.DoNotSave] public const int FluxBitsPerTrack = 16000000 / 5;
-		[SaveState.DoNotSave] public const int FluxEntriesPerTrack = FluxBitsPerTrack / FluxBitsPerEntry;
-		[SaveState.DoNotSave] private int[][] _tracks;
-		[SaveState.DoNotSave] private readonly int[] _originalMedia;
-		[SaveState.DoNotSave] public bool Valid;
+		public const int FluxBitsPerEntry = 32;
+		public const int FluxBitsPerTrack = 16000000 / 5;
+		public const int FluxEntriesPerTrack = FluxBitsPerTrack / FluxBitsPerEntry;
+		private int[][] _tracks;
+		private readonly int[] _originalMedia;
+		public bool Valid;
 		public bool WriteProtected;
 
 		/// <summary>

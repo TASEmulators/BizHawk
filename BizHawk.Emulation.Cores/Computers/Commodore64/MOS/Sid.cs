@@ -29,9 +29,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _envelopeOutput1;
 		private int _envelopeOutput2;
 		private readonly Envelope[] _envelopes;
-		[SaveState.DoNotSave] private readonly Envelope _envelope0;
-		[SaveState.DoNotSave] private readonly Envelope _envelope1;
-		[SaveState.DoNotSave] private readonly Envelope _envelope2;
+		private readonly Envelope _envelope0;
+		private readonly Envelope _envelope1;
+		private readonly Envelope _envelope2;
 		private bool[] _filterEnable;
 		private int _filterFrequency;
 		private int _filterResonance;
@@ -39,8 +39,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private bool _filterSelectLoPass;
 		private bool _filterSelectHiPass;
 		private int _mixer;
-		[SaveState.DoNotSave] private readonly short[] _outputBuffer;
-		[SaveState.DoNotSave] private int _outputBufferIndex;
+		private readonly short[] _outputBuffer;
+		private int _outputBufferIndex;
 		private int _potCounter;
 		private int _potX;
 		private int _potY;
@@ -49,18 +49,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _voiceOutput1;
 		private int _voiceOutput2;
 		private readonly Voice[] _voices;
-		[SaveState.DoNotSave] private readonly Voice _voice0;
-		[SaveState.DoNotSave] private readonly Voice _voice1;
-		[SaveState.DoNotSave] private readonly Voice _voice2;
+		private readonly Voice _voice0;
+		private readonly Voice _voice1;
+		private readonly Voice _voice2;
 		private int _volume;
 
 		public Func<int> ReadPotX;
 		public Func<int> ReadPotY;
 
-		[SaveState.DoNotSave] private readonly int _cpuCyclesNum;
-		[SaveState.DoNotSave] private int _sampleCyclesNum;
-		[SaveState.DoNotSave] private readonly int _sampleCyclesDen;
-		[SaveState.DoNotSave] private readonly int _sampleRate;
+		private readonly int _cpuCyclesNum;
+		private int _sampleCyclesNum;
+		private readonly int _sampleCyclesDen;
+		private readonly int _sampleRate;
 
 		public Sid(int[][] newWaveformTable, int sampleRate, int cyclesNum, int cyclesDen)
 		{

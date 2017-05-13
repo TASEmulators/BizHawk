@@ -6,10 +6,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
 	public class Tape
 	{
-        [SaveState.DoNotSave] private readonly byte[] _tapeData;
-		[SaveState.DoNotSave] private readonly byte _version;
-	    [SaveState.DoNotSave] private readonly int _start;
-        [SaveState.DoNotSave] private readonly int _end;
+        private readonly byte[] _tapeData;
+		private readonly byte _version;
+	    private readonly int _start;
+        private readonly int _end;
 
 	    private int _pos;
 

@@ -28,10 +28,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		private sealed class JoystickKeyboardPort : IPort
 		{
-			[SaveState.DoNotSave] private int _ret;
-			[SaveState.DoNotSave] private int _tst;
-			[SaveState.DoNotSave] private readonly Func<bool[]> _readJoyData;
-			[SaveState.DoNotSave] private readonly Func<bool[]> _readKeyData;
+			private int _ret;
+			private int _tst;
+			private readonly Func<bool[]> _readJoyData;
+			private readonly Func<bool[]> _readKeyData;
 
 			public JoystickKeyboardPort(Func<bool[]> readJoyData, Func<bool[]> readKeyData)
 			{

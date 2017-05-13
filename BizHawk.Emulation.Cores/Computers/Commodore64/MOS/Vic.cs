@@ -30,20 +30,20 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public bool ReadBa() { return _pinBa; }
 		public bool ReadIrq() { return _pinIrq; }
 
-		[SaveState.DoNotSave] private readonly int _cyclesPerSec;
-		[SaveState.DoNotSave] private readonly int[] _rasterXPipeline;
-		[SaveState.DoNotSave] private readonly int[] _fetchPipeline;
-		[SaveState.DoNotSave] private readonly int[] _baPipeline;
-		[SaveState.DoNotSave] private readonly int[] _actPipeline;
-		[SaveState.DoNotSave] private readonly int _totalCycles;
-		[SaveState.DoNotSave] private readonly int _totalLines;
+		private readonly int _cyclesPerSec;
+		private readonly int[] _rasterXPipeline;
+		private readonly int[] _fetchPipeline;
+		private readonly int[] _baPipeline;
+		private readonly int[] _actPipeline;
+		private readonly int _totalCycles;
+		private readonly int _totalLines;
 
 		private int _cyclesExecuted;
-		[SaveState.DoNotSave] private int _hblankStartCheckXRaster;
-		[SaveState.DoNotSave] private int _hblankEndCheckXRaster;
+		private int _hblankStartCheckXRaster;
+		private int _hblankEndCheckXRaster;
 
-		[SaveState.DoNotSave] private int _pixelRatioNum;
-		[SaveState.DoNotSave] private int _pixelRatioDen;
+		private int _pixelRatioNum;
+		private int _pixelRatioDen;
 
 		public Vic(int newCycles, int newLines, IList<int[]> newPipeline, int newCyclesPerSec, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd, C64.BorderType borderType, int pixelRatioNum, int pixelRatioDen)
 		{

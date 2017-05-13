@@ -4,10 +4,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public sealed partial class C64 : IEmulator
 	{
-		[SaveState.DoNotSave]
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		[SaveState.DoNotSave]
 		public ControllerDefinition ControllerDefinition => C64ControllerDefinition;
 
 		public void FrameAdvance(IController controller, bool render, bool rendersound)
@@ -20,10 +18,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			while (_frameCycles != 0);
 		}
 
-		[SaveState.DoNotSave]
 		public int Frame => _frame;
 
-		[SaveState.DoNotSave]
 		public string SystemId { get { return "C64"; } }
 
 		public bool DeterministicEmulation => true;
@@ -36,7 +32,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_frameCycles = 0;
 		}
 
-		[SaveState.DoNotSave]
 		public CoreComm CoreComm { get; private set; }
 
 		public void Dispose()

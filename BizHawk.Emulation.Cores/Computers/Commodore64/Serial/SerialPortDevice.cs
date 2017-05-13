@@ -5,13 +5,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
 	public abstract class SerialPortDevice
 	{
-		[SaveState.DoNotSave]
 		public Func<bool> ReadMasterAtn = () => true;
-
-		[SaveState.DoNotSave]
 		public Func<bool> ReadMasterClk = () => true;
-
-		[SaveState.DoNotSave]
 		public Func<bool> ReadMasterData = () => true;
 
 		public virtual void ExecutePhase()

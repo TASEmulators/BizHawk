@@ -13,11 +13,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	// to DE01.
 	internal class Mapper000F : CartridgeDevice
 	{
-		[SaveState.DoNotSave]
 		private readonly int[][] _banks; // 8000
 
 		private int _bankMask;
-
 		private int _bankNumber;
 
 		private int[] _currentBank;

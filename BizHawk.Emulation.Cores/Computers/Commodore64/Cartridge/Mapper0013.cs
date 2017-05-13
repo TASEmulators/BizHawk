@@ -14,14 +14,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	// ROM in 8000-9FFF.
 	internal sealed class Mapper0013 : CartridgeDevice
 	{
-		[SaveState.DoNotSave]
 		private readonly int[][] _banks; // 8000
 
 		private int _bankMask;
-
 		private int _bankNumber;
 
-		[SaveState.DoNotSave]
 		private int[] _currentBank;
 
 		private bool _romEnable;

@@ -14,12 +14,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	internal class Mapper000A : CartridgeDevice
 	{
 		// This constant differs depending on whose research you reference. TODO: Verify.
-		[SaveState.DoNotSave]
 		private const int RESET_CAPACITOR_CYCLES = 512;
 
 		private int _capacitorCycles;
 
-		[SaveState.DoNotSave]
 		private readonly int[] _rom;
 
 		public Mapper000A(IList<int[]> newData)

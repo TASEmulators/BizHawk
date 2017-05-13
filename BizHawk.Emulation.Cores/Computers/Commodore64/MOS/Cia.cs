@@ -71,14 +71,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _newCra;
 		private int _newCrb;
 		private bool _flagLatch;
-		[SaveState.DoNotSave] private bool _flagInput;
-		[SaveState.DoNotSave] private bool _taUnderflow;
+		private bool _flagInput;
+		private bool _taUnderflow;
 
 		private readonly IPort _port;
-		[SaveState.DoNotSave] private int _todlo;
-		[SaveState.DoNotSave] private int _todhi;
-		[SaveState.DoNotSave] private readonly int _todNum;
-		[SaveState.DoNotSave] private readonly int _todDen;
+		private int _todlo;
+		private int _todhi;
+		private readonly int _todNum;
+		private readonly int _todDen;
 		private int _todCounter;
 
 		private Cia(int todNum, int todDen)
