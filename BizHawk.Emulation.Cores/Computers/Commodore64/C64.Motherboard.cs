@@ -296,7 +296,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Cpu.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("Pla"); SaveState.SyncObject(ser, Pla); ser.EndSection();
+			ser.BeginSection("Pla");
+			Pla.SyncState(ser);
+			ser.EndSection();
+
 			ser.BeginSection("Ram"); SaveState.SyncObject(ser, Ram); ser.EndSection();
 			ser.BeginSection("Sid"); SaveState.SyncObject(ser, Sid); ser.EndSection();
 			ser.BeginSection("Vic"); SaveState.SyncObject(ser, Vic); ser.EndSection();
