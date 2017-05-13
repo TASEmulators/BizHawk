@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public sealed partial class C64 : IStatable
 	{
-		public bool BinarySaveStatesPreferred { get { return false; } }
+		public bool BinarySaveStatesPreferred => true;
 
 		public void LoadStateBinary(BinaryReader br)
 		{

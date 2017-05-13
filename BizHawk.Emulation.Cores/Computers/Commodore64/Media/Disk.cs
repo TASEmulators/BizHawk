@@ -164,17 +164,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		{
 			ser.Sync("WriteProtected", ref WriteProtected);
 
-			if (ser.IsReader)
-			{
-				var mediaState = new int[_originalMedia.Length];
-				SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
-				_tracks = DeserializeTracks(mediaState);
-			}
-			else if (ser.IsWriter)
-			{
-				var mediaState = SerializeTracks(_tracks);
-				SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
-			}
+			// Currently nothing actually writes to _tracks and so it is always the same as _originalMedia
+			// So commenting out this (very slow) code for now
+			// If/when disk writing is implemented, Disk.cs should implement ISaveRam as a means of file storage of the new disk state
+			// And this code needs to be rethought to be reasonably performant
+			//if (ser.IsReader)
+			//{
+			//	var mediaState = new int[_originalMedia.Length];
+			//	SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
+			//	_tracks = DeserializeTracks(mediaState);
+			//}
+			//else if (ser.IsWriter)
+			//{
+			//	var mediaState = SerializeTracks(_tracks);
+			//	SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
+			//}
 		}
 	}
 }
