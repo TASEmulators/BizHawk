@@ -60,7 +60,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			get
 			{
-				return SaveState.InspectProperties(_board.Cia0);
 				if (_board.CartPort.IsConnected)
 				{
 					return _board.CartPort.CartridgeType;
