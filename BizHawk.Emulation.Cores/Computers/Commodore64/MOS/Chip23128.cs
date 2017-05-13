@@ -5,7 +5,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	// ROM chips
 	public sealed class Chip23128
 	{
-		[SaveState.DoNotSave] private readonly int[] _rom;
+		private readonly int[] _rom;
 
 		public Chip23128()
 		{
