@@ -304,7 +304,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Ram.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("Sid"); SaveState.SyncObject(ser, Sid); ser.EndSection();
+			ser.BeginSection("Sid");
+			Sid.SyncState(ser);
+			ser.EndSection();
+
 			ser.BeginSection("Vic"); SaveState.SyncObject(ser, Vic); ser.EndSection();
 			ser.BeginSection("CartPort"); SaveState.SyncObject(ser, CartPort); ser.EndSection(); // TODO: only if cart
 			ser.BeginSection("Cassette"); SaveState.SyncObject(ser, Cassette); ser.EndSection();

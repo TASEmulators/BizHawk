@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		[SaveState.DoNotSave] private readonly Envelope _envelope0;
 		[SaveState.DoNotSave] private readonly Envelope _envelope1;
 		[SaveState.DoNotSave] private readonly Envelope _envelope2;
-		private readonly bool[] _filterEnable;
+		private bool[] _filterEnable;
 		private int _filterFrequency;
 		private int _filterResonance;
 		private bool _filterSelectBandPass;
@@ -178,7 +178,31 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.Sync("_cachedCycles", ref _cachedCycles);
+			ser.Sync("_disableVoice3", ref _disableVoice3);
+			ser.Sync("_envelopeOutput0", ref _envelopeOutput0);
+			ser.Sync("_envelopeOutput1", ref _envelopeOutput1);
+			ser.Sync("_envelopeOutput2", ref _envelopeOutput2);
+
+			ser.BeginSection("Envelopes"); SaveState.SyncObject(ser, _envelopes); ser.EndSection();
+
+			ser.Sync("_filterEnable", ref _filterEnable, useNull: false);
+			ser.Sync("_filterFrequency", ref _filterFrequency);
+			ser.Sync("_filterResonance", ref _filterResonance);
+			ser.Sync("_filterSelectBandPass", ref _filterSelectBandPass);
+			ser.Sync("_filterSelectLoPass", ref _filterSelectLoPass);
+			ser.Sync("_filterSelectHiPass", ref _filterSelectHiPass);
+			ser.Sync("_mixer", ref _mixer);
+			ser.Sync("_potCounter", ref _potCounter);
+			ser.Sync("_potX", ref _potX);
+			ser.Sync("_potY", ref _potY);
+			ser.Sync("_sample", ref _sample);
+			ser.Sync("_voiceOutput0", ref _voiceOutput0);
+			ser.Sync("_voiceOutput1", ref _voiceOutput1);
+			ser.Sync("_voiceOutput2", ref _voiceOutput2);
+
+			ser.BeginSection("Voices"); SaveState.SyncObject(ser, _voices); ser.EndSection();
+			ser.Sync("_volume", ref _volume);
 		}
 	}
 }
