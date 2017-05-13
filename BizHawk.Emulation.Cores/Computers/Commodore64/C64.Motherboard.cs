@@ -334,7 +334,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				ser.EndSection();
 			}
 
-			ser.BeginSection("User"); SaveState.SyncObject(ser, User); ser.EndSection();
+			ser.BeginSection("User");
+			User.SyncState(ser);
+			ser.EndSection();
 
 			if (DiskDrive != null) // TODO: a disk object is already in a nested class, is it the same reference? do we need this?
 			{

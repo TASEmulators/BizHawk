@@ -41,9 +41,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.User
 			return true;
 		}
 
-		public void SyncState(Serializer ser)
-		{
-			SaveState.SyncObject(ser, this);
-		}
+		public abstract void SyncState(Serializer ser);
 	}
 }
