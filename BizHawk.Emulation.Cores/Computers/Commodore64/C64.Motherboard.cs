@@ -327,9 +327,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Serial.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("TapeDrive"); SaveState.SyncObject(ser, TapeDrive); ser.EndSection(); // TODO: only if tape
+			if (TapeDrive != null) // TODO: a tape object is already in a nested class, is it the same reference? do we need this?
+			{
+				ser.BeginSection("TapeDrive");
+				TapeDrive.SyncState(ser);
+				ser.EndSection();
+			}
+
 			ser.BeginSection("User"); SaveState.SyncObject(ser, User); ser.EndSection();
-			ser.BeginSection("DiskDrive"); SaveState.SyncObject(ser, DiskDrive); ser.EndSection(); // TODO: only if disk
+
+			if (DiskDrive != null) // TODO: a disk object is already in a nested class, is it the same reference? do we need this?
+			{
+				ser.BeginSection("DiskDrive");
+				DiskDrive.SyncState(ser);
+				ser.EndSection();
+			}
 
 			ser.Sync("Bus", ref Bus);
 			ser.Sync("InputRead", ref InputRead);

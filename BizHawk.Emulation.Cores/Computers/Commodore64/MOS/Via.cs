@@ -424,7 +424,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_port.SyncState(ser);
 			ser.EndSection();
 
-			
 			ser.Sync("PortLatchA", ref _paLatch);
 			ser.Sync("PortLatchB", ref _pbLatch);
 			ser.Sync("CA1InterruptControl", ref _pcrCa1IntControl);
