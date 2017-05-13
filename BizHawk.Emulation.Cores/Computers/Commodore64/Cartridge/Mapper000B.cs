@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
 	// Westermann Learning mapper.
@@ -28,6 +30,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 			Array.Copy(newData[0], _rom, Math.Min(newData[0].Length, 0x4000));
 			validCartridge = true;
+		}
+
+		protected override void SyncStateInternal(Serializer ser)
+		{
+			// Nothing to save
 		}
 
 		public override int Peek8000(int addr)

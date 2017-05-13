@@ -132,7 +132,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.Sync("_connected", ref _connected);
+
+			ser.BeginSection("CartridgeDevice");
+			_cartridgeDevice.SyncState(ser);
+			ser.EndSection();
 		}
 
 		public bool DriveLightEnabled { get { return _connected && _cartridgeDevice.DriveLightEnabled; } }

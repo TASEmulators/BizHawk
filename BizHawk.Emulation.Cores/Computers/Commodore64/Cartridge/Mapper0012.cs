@@ -9,10 +9,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	{
 		[SaveState.DoNotSave]
 		private readonly int[] _bankMain;
+
 		[SaveState.DoNotSave]
 		private readonly int[][] _bankHigh;
+
 		[SaveState.SaveWithName("BankHighSelected")]
 		private int[] _bankHighSelected;
+
 		[SaveState.SaveWithName("BankIndex")]
 		private int _bankIndex;
 
@@ -49,6 +52,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			pinExRom = false;
 			pinGame = false;
 
+		}
+
+		protected override void SyncStateInternal(Serializer ser)
+		{
+			ser.Sync("BankHighSelected", ref _bankHighSelected, useNull: false);
+			ser.Sync("BankIndex", ref _bankIndex);
 		}
 
 		public override int Peek8000(int addr)

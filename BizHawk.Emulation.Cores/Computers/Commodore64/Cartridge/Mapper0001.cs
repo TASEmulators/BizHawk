@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
 	internal sealed class Mapper0001 : CartridgeDevice
 	{
-		[SaveState.SaveWithName("RAM")] private readonly int[] _ram = new int[0x2000];
+		[SaveState.SaveWithName("RAM")] private int[] _ram = new int[0x2000];
 		[SaveState.SaveWithName("RAMEnabled")] private bool _ramEnabled;
 		[SaveState.DoNotSave] private readonly int[] _rom = new int[0x8000];
 		[SaveState.SaveWithName("ROMOffset")] private int _romOffset;
@@ -22,6 +24,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 			_romOffset = 0;
 			_cartEnabled = true;
+		}
+
+		protected override void SyncStateInternal(Serializer ser)
+		{
+			ser.Sync("RAM", ref _ram, useNull: false);
+			ser.Sync("RAMEnabled", ref _ramEnabled);
+			ser.Sync("ROMOffset", ref _romOffset);
+			ser.Sync("CartEnabled", ref _cartEnabled);
 		}
 
 		public override void HardReset()

@@ -16,12 +16,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	{
 		[SaveState.DoNotSave]
 		private readonly int[][] _banks; // 8000
+
 		[SaveState.SaveWithName("BankMask")]
-		private readonly int _bankMask;
+		private int _bankMask;
+
 		[SaveState.SaveWithName("BankNumber")]
 		private int _bankNumber;
+
 		[SaveState.DoNotSave]
 		private int[] _currentBank;
+
 		[SaveState.SaveWithName("ROMEnable")]
 		private bool _romEnable;
 
@@ -70,6 +74,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 
 			BankSet(0);
+		}
+
+		protected override void SyncStateInternal(Serializer ser)
+		{
+			ser.Sync("BankMask", ref _bankMask);
+			ser.Sync("BankNumber", ref _bankNumber);
+			ser.Sync("ROMEnable", ref _romEnable);
 		}
 
 		private void BankSet(int index)

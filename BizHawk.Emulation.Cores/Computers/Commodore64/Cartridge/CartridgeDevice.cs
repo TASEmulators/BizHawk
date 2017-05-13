@@ -130,14 +130,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		[SaveState.SaveWithName("ExRom")]
 		protected bool pinExRom;
+
 		[SaveState.SaveWithName("Game")]
 		protected bool pinGame;
+
 		[SaveState.SaveWithName("IRQ")]
 		protected bool pinIRQ;
+
 		[SaveState.SaveWithName("NMI")]
 		protected bool pinNMI;
+
 		[SaveState.SaveWithName("Reset")]
 		protected bool pinReset;
+
 		[SaveState.DoNotSave]
 		protected bool validCartridge;
 
@@ -253,9 +258,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
+		protected abstract void SyncStateInternal(Serializer ser);
+
 		public virtual void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.Sync("pinExRom", ref pinExRom);
+			ser.Sync("pinGame", ref pinGame);
+			ser.Sync("pinIRQ", ref pinIRQ);
+			ser.Sync("pinNMI", ref pinNMI);
+			ser.Sync("pinReset", ref pinReset);
+
+			ser.Sync("_driveLightEnabled", ref _driveLightEnabled);
+			ser.Sync("_driveLightOn", ref _driveLightOn);
 		}
 
 		[SaveState.DoNotSave]
@@ -283,7 +297,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 		}
 
-		public bool DriveLightEnabled { get; protected set; }
-		public bool DriveLightOn { get; protected set; }
+		private bool _driveLightEnabled;
+		private bool _driveLightOn;
+
+		public bool DriveLightEnabled
+		{
+			get { return _driveLightEnabled; }
+			protected set { _driveLightEnabled = value; }
+		}
+
+		public bool DriveLightOn
+		{
+			get { return _driveLightOn; }
+			protected set { _driveLightOn = value; }
+		}
 	}
 }

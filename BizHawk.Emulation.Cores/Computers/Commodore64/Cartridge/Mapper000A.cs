@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
 	// Epyx Fastload. Uppermost page is always visible at DFxx.
@@ -17,6 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		[SaveState.SaveWithName("CapacitorCycles")]
 		private int _capacitorCycles;
+
 		[SaveState.DoNotSave]
 		private readonly int[] _rom;
 
@@ -25,6 +28,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			_rom = new int[0x2000];
 			Array.Copy(newData.First(), _rom, 0x2000);
 			pinGame = true;
+		}
+
+		protected override void SyncStateInternal(Serializer ser)
+		{
+			ser.Sync("CapacitorCycles", ref _capacitorCycles);
 		}
 
 		public override void ExecutePhase()

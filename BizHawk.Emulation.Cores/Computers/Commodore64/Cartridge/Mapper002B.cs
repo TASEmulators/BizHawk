@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
 	// Prophet 64 cartridge. Because we can.
@@ -12,8 +14,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	{
 		[SaveState.DoNotSave]
 		private readonly int[] _rom;
+
 		[SaveState.SaveWithName("RomOffset")]
 		private int _romOffset;
+
 		[SaveState.SaveWithName("RomEnabled")]
 		private bool _romEnabled;
 
@@ -31,6 +35,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 					Array.Copy(newData[i], 0, _rom, newBanks[i] * 0x2000, 0x2000);
 				}
 			}
+		}
+
+		protected override void SyncStateInternal(Serializer ser)
+		{
+			ser.Sync("RomOffset", ref _romOffset);
+			ser.Sync("RomEnabled", ref _romEnabled);
 		}
 
 		public override void HardReset()

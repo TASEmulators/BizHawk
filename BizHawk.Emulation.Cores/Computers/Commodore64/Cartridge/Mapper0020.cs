@@ -26,26 +26,37 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	{
 		[SaveState.SaveWithName("BankOffset")]
 		private int _bankOffset = 63 << 13;
+
 		[SaveState.DoNotSave]
 		private int[] _banksA = new int[64 << 13]; // 8000
+
 		[SaveState.DoNotSave]
 		private int[] _banksB = new int[64 << 13]; // A000
+
 		[SaveState.DoNotSave]
 		private readonly int[] _originalMediaA; // 8000
+
 		[SaveState.DoNotSave]
 		private readonly int[] _originalMediaB; // A000
+
 		[SaveState.SaveWithName("BoardLed")]
 		private bool _boardLed;
+
 		[SaveState.SaveWithName("Jumper")]
 		private bool _jumper = false;
+
 		[SaveState.SaveWithName("StateBits")]
 		private int _stateBits;
+
 		[SaveState.SaveWithName("RAM")]
-		private readonly int[] _ram = new int[256];
+		private int[] _ram = new int[256];
+
 		[SaveState.SaveWithName("CommandLatch55")]
 		private bool _commandLatch55;
+
 		[SaveState.SaveWithName("CommandLatchAA")]
 		private bool _commandLatchAa;
+
 		[SaveState.SaveWithName("InternalROMState")]
 		private int _internalRomState;
 
@@ -92,6 +103,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			// back up original media
 			_originalMediaA = _banksA.Select(d => d).ToArray();
 			_originalMediaB = _banksB.Select(d => d).ToArray();
+		}
+
+		protected override void SyncStateInternal(Serializer ser)
+		{
+			ser.Sync("BankOffset", ref _bankOffset);
+			ser.Sync("BoardLed", ref _boardLed);
+			ser.Sync("Jumper", ref _jumper);
+			ser.Sync("StateBits", ref _stateBits);
+			ser.Sync("RAM", ref _ram, useNull: false);
+			ser.Sync("CommandLatch55", ref _commandLatchAa);
+			ser.Sync("CommandLatchAA", ref _commandLatchAa);
+			ser.Sync("InternalROMState", ref _internalRomState);
 		}
 
 		private void BankSet(int index)

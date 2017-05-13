@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
@@ -7,12 +8,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	{
 		[SaveState.DoNotSave]
 		private readonly int[] _romA;
+
 		[SaveState.SaveWithName("RomMaskA")]
-		private readonly int _romAMask;
+		private int _romAMask;
+
 		[SaveState.DoNotSave]
 		private readonly int[] _romB;
+
 		[SaveState.SaveWithName("RomMaskB")]
-		private readonly int _romBMask;
+		private int _romBMask;
 
 		// standard cartridge mapper (Commodore)
 		// note that this format also covers Ultimax carts
@@ -75,6 +79,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 					_romB = newData[i];
 				}
 			}
+		}
+
+		protected override void SyncStateInternal(Serializer ser)
+		{
+			ser.Sync("RomMaskA", ref _romAMask);
+			ser.Sync("RomMaskB", ref _romBMask);
 		}
 
 		public override int Peek8000(int addr)

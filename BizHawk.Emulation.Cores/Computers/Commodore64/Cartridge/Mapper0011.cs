@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
@@ -12,6 +13,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			: base(newAddresses, newBanks, newData)
 		{
 			// required to pass information to base class
+		}
+
+		protected override void SyncStateInternal(Serializer ser)
+		{
+			// Nothing to save
 		}
 
 		public override void PokeDE00(int addr, int val)

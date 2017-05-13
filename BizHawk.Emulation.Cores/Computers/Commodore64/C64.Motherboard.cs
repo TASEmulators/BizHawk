@@ -312,7 +312,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			Vic.SyncState(ser);
 			ser.EndSection();
 
-			ser.BeginSection("CartPort"); SaveState.SyncObject(ser, CartPort); ser.EndSection(); // TODO: only if cart
+			if (CartPort.IsConnected)
+			{
+				ser.BeginSection("CartPort");
+				CartPort.SyncState(ser);
+				ser.EndSection();
+			}
+
 			ser.BeginSection("Cassette"); SaveState.SyncObject(ser, Cassette); ser.EndSection();
 
 			ser.BeginSection("Serial"); SaveState.SyncObject(ser, Serial); ser.EndSection();
