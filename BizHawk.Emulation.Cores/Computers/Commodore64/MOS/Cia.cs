@@ -74,7 +74,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		[SaveState.DoNotSave] private bool _flagInput;
 		[SaveState.DoNotSave] private bool _taUnderflow;
 
-		private readonly Port _port;
+		private readonly IPort _port;
 		[SaveState.DoNotSave] private int _todlo;
 		[SaveState.DoNotSave] private int _todhi;
 		[SaveState.DoNotSave] private readonly int _todNum;
@@ -546,12 +546,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			ser.Sync("_newCrb", ref _newCrb);
 			ser.Sync("_flagLatch", ref _flagLatch);
 
-			ser.BeginSection("Port");
-			_port.SyncState(ser);
-			ser.EndSection();
-
 			ser.Sync("_todCounter", ref _todCounter);
-			//SaveState.SyncObject(ser, this);
 		}
 	}
 }
