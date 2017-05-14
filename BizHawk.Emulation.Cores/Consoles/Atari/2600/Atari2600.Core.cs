@@ -368,6 +368,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// some documentation seems to indicate it should beset to FD, but currently there is no documentation of the 6532 
 			// executing a reset sequence at power on, but it's needed so let's hard code it for now
 			Cpu.S = 0xFD;
+			
+			SetupMemoryDomains();
 		}
 
 		private void VFrameAdvance() // advance up to 500 lines looking for end of video frame
