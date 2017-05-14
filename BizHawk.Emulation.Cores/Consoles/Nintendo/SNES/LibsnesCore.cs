@@ -323,18 +323,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return test;
 		}
 
-		private void snes_trace(string msg)
+		private void snes_trace(uint which, string msg)
 		{
 			// TODO: get them out of the core split up and remove this hackery
-			string splitStr = "A:";
+			const string splitStr = "A:";
 
-			var split = msg.Split(new[] {splitStr }, 2, StringSplitOptions.None);
-
-			_tracer.Put(new TraceInfo
+			if (which == (uint)LibsnesApi.eTRACE.CPU)
 			{
-				Disassembly = split[0].PadRight(34),
-				RegisterInfo = splitStr + split[1]
-			});
+				var split = msg.Split(new[] { splitStr }, 2, StringSplitOptions.None);
+
+				_tracer.Put(new TraceInfo
+				{
+					Disassembly = split[0].PadRight(34),
+					RegisterInfo = splitStr + split[1]
+				});
+			}
+			else if (which == (uint)LibsnesApi.eTRACE.SMP)
+			{
+				int idx = msg.IndexOf("YA:");
+				string dis = msg.Substring(0,idx).TrimEnd();
+				string regs = msg.Substring(idx);
+				_tracer.Put(new TraceInfo
+				{
+					Disassembly = dis,
+					RegisterInfo = regs
+				});
+			}
+			else if (which == (uint)LibsnesApi.eTRACE.GB)
+			{
+				int idx = msg.IndexOf("AF:");
+				string dis = msg.Substring(0,idx).TrimEnd();
+				string regs = msg.Substring(idx);
+				_tracer.Put(new TraceInfo
+				{
+					Disassembly = dis,
+					RegisterInfo = regs
+				});
+			}
 		}
 
 		private void SetPalette(SnesColors.ColorType pal)

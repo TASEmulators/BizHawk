@@ -108,6 +108,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			NUM
 		};
 
+		public enum eTRACE : uint
+		{
+			CPU = 0,
+			SMP = 1,
+			GB = 2
+		}
+
 		public enum eCDLog_Flags
 		{
 			ExecFirst = 0x01,
@@ -142,7 +149,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public delegate void snes_audio_sample_t(ushort left, ushort right);
 		public delegate void snes_scanlineStart_t(int line);
 		public delegate string snes_path_request_t(int slot, string hint);
-		public delegate void snes_trace_t(string msg);
+		public delegate void snes_trace_t(uint which, string msg);
 
 
 		public struct CPURegs

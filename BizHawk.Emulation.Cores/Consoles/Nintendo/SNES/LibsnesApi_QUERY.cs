@@ -85,10 +85,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Message(eMessage.eMessage_QUERY_state_hook_write);
 		}
 
-		public void QUERY_set_trace_callback(snes_trace_t callback)
+		public void QUERY_set_trace_callback(int mask, snes_trace_t callback)
 		{
 			this.traceCallback = callback;
-			comm->value = (callback != null) ? 1u : 0u;
+			comm->value = (uint)mask;
 			Message(eMessage.eMessage_QUERY_enable_trace);
 		}
 		public void QUERY_set_scanlineStart(snes_scanlineStart_t scanlineStart)
