@@ -91,12 +91,12 @@ void CPU::enter() {
 void CPU::op_step() {
   debugger.op_exec(regs.pc.d);
 
-  if (interface()->wanttrace)
+  if (interface()->wanttrace & TRACE_CPU_MASK)
   {
     char tmp[512];
-	disassemble_opcode(tmp, regs.pc.d);
-	tmp[511] = 0;
-    interface()->cpuTrace(tmp);
+		disassemble_opcode(tmp, regs.pc.d);
+		tmp[511] = 0;
+    interface()->cpuTrace(TRACE_CPU, tmp);
   }
 
   (this->*opcode_table[op_readpcfirst()])();

@@ -21,8 +21,13 @@ void CPU::main() {
       scheduler.sync = Scheduler::SynchronizeMode::All;
       scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
     }
-
-    if(trace) print(disassemble(r[PC]), "\n");
+		
+		if(SNES::interface()->wanttrace & TRACE_GB_MASK)
+		{
+			auto disasm = disassemble(r[PC]);
+			SNES::interface()->cpuTrace(TRACE_GB, (const char*)disasm);
+		}
+    //if(trace) print(disassemble(r[PC]), "\n");
     interrupt_test();
 		cdlInfo.currFlags = eCDLog_Flags_ExecFirst;
     uint8 opcode = op_read(r[PC]++);
