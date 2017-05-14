@@ -217,8 +217,15 @@ namespace BizHawk.Client.EmuHawk
 							bool executable = false;
 							var archiveHandler = new SevenZipSharpArchiveHandler();
 
-							if (String.IsNullOrEmpty(archive) && archiveHandler.CheckSignature(file, out offset, out executable))
+							if (string.IsNullOrEmpty(archive) && archiveHandler.CheckSignature(file, out offset, out executable))
+							{
 								sortedFiles[LoadOrdering.ROM].Add(fileInformation);
+							}
+							else
+							{
+								// adelikat: adding this hack to restore the default behavior that unrecognized files are treated like roms
+								sortedFiles[LoadOrdering.ROM].Add(fileInformation);
+							}
 
 							/*
 							 * This is where handling archives would go.
