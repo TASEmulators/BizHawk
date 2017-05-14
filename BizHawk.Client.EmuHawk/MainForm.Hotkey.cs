@@ -124,6 +124,9 @@ namespace BizHawk.Client.EmuHawk
 					Global.Config.SkipLagFrame ^= true;
 					GlobalWin.OSD.AddMessage("Skip Lag Frames toggled " + (Global.Config.SkipLagFrame ? "On" : "Off"));
 					break;
+				case "Toggle Key Priority":
+					ToggleKeyPriority();
+					break;
 
 				// Save States
 				case "Save State 0": 

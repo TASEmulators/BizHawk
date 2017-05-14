@@ -2679,6 +2679,31 @@ namespace BizHawk.Client.EmuHawk
 			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : "";
 		}
 
+		private void ToggleKeyPriority()
+		{
+			Global.Config.Input_Hotkey_OverrideOptions++;
+			if (Global.Config.Input_Hotkey_OverrideOptions > 2)
+			{
+				Global.Config.Input_Hotkey_OverrideOptions = 0;
+			}
+
+			UpdateKeyPriorityIcon();
+			switch (Global.Config.Input_Hotkey_OverrideOptions)
+			{
+				default:
+					break;
+				case 0:
+					GlobalWin.OSD.AddMessage("Key priority set to Both Hotkey and Input");
+					break;
+				case 1:
+					GlobalWin.OSD.AddMessage("Key priority set to Input over Hotkey");
+					break;
+				case 2:
+					GlobalWin.OSD.AddMessage("Key priority set to Gamepad");
+					break;
+			}
+		}
+
 		#endregion
 
 		#region Frame Loop
