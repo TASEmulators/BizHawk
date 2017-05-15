@@ -527,5 +527,22 @@ namespace BizHawk.Client.EmuHawk
 
 			return true;
 		}
+
+		// Determines if the value is a hotkey  that would be handled outside of the CheckHotkey method
+		private bool IsInternalHotkey(string trigger)
+		{
+			switch (trigger)
+			{
+				default:
+					return false;
+				case "Autohold":
+				case "Autofire":
+				case "Frame Advance":
+				case "Turbo":
+				case "Rewind":
+				case "Fast Forward":
+					return true;
+			}
+		}
 	}
 }

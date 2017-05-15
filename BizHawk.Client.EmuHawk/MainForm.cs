@@ -850,7 +850,12 @@ namespace BizHawk.Client.EmuHawk
 						if (!handled)
 						{
 							HotkeyCoalescer.Receive(ie);
-							conInput.Receive(ie);
+
+							// Check for hotkeys that may not be handled through Checkhotkey() method, reject controller input mapped to these
+							if (!triggers.Any(trigger => IsInternalHotkey(trigger)))
+							{
+								conInput.Receive(ie);
+							}
 						}
 
 						break;
