@@ -56,6 +56,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			ser.Register<IVideoProvider>(_board.Vic);
 			ser.Register<IDriveLight>(this);
+
+			_tracer = new TraceBuffer { Header = _board.Cpu.TraceHeader };
+			ser.Register<ITraceable>(_tracer);
 		}
 
 		// Currently we will require at least one rom.  If multiple they MUST be all the same media type in the same format
@@ -135,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private int _frameCycles;
 
 		private int _frame;
-
+		private ITraceable _tracer;
 		// Disk stuff
 
 		private bool _nextPressed;

@@ -1,6 +1,7 @@
 ﻿using System;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
@@ -44,6 +45,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			// perform hard reset
 			HardReset();
+		}
+
+		public string TraceHeader
+		{
+			get { return "6510: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR)"; }
+		}
+
+		public Action<TraceInfo> TraceCallback
+		{
+			get { return _cpu.TraceCallback; }
+			set { _cpu.TraceCallback = value; }
 		}
 
 		public void SetOverflow()

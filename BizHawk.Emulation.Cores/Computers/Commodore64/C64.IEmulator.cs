@@ -12,6 +12,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			_board.Controller = controller;
 
+
+			if (_tracer.Enabled)
+			{
+				_board.Cpu.TraceCallback = s => _tracer.Put(s);
+			}
+			else
+			{
+				_board.Cpu.TraceCallback = null;
+			}
+
 			if (controller.IsPressed("Next Disk") && !_nextPressed)
 			{
 				_nextPressed = true;
