@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public int Read(int addr)
 		{
 			addr &= 0x1F;
-			var result = 0x00;
+			var result = _databus;
 			switch (addr)
 			{
 				case 0x19:
@@ -124,6 +124,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public void Write(int addr, int val)
 		{
 			addr &= 0x1F;
+			_databus = val;
 			switch (addr)
 			{
 				case 0x19:
