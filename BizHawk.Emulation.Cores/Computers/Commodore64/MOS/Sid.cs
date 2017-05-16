@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
         */
 
 		// ------------------------------------
-
+		public int _databus;
 		private int _cachedCycles;
 		private bool _disableVoice3;
 		private int _envelopeOutput0;
@@ -178,6 +178,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
+			ser.Sync("_databus", ref _databus);
 			ser.Sync("_cachedCycles", ref _cachedCycles);
 			ser.Sync("_disableVoice3", ref _disableVoice3);
 			ser.Sync("_envelopeOutput0", ref _envelopeOutput0);
