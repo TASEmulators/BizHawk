@@ -326,8 +326,9 @@
             this.SnesGameGenieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SnesOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ColecoSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.ColecoSkipBiosMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ColecoControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator35 = new System.Windows.Forms.ToolStripSeparator();
+            this.ColecoSkipBiosMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.N64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.N64PluginSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.N64ControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -351,6 +352,7 @@
             this.toolStripSeparator31 = new System.Windows.Forms.ToolStripSeparator();
             this.settingsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.C64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.C64DisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.C64SettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.IntvSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.IntVControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -433,7 +435,7 @@
             this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-            this.toolStripSeparator35 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripSeparator36 = new System.Windows.Forms.ToolStripSeparator();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -2933,13 +2935,6 @@
             this.ColecoSubMenu.Text = "&Coleco";
             this.ColecoSubMenu.DropDownOpened += new System.EventHandler(this.ColecoSubMenu_DropDownOpened);
             // 
-            // ColecoSkipBiosMenuItem
-            // 
-            this.ColecoSkipBiosMenuItem.Name = "ColecoSkipBiosMenuItem";
-            this.ColecoSkipBiosMenuItem.Size = new System.Drawing.Size(253, 22);
-            this.ColecoSkipBiosMenuItem.Text = "&Skip BIOS intro (When Applicable)";
-            this.ColecoSkipBiosMenuItem.Click += new System.EventHandler(this.ColecoSkipBiosMenuItem_Click);
-            // 
             // ColecoControllerSettingsMenuItem
             // 
             this.ColecoControllerSettingsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.GameController;
@@ -2947,6 +2942,18 @@
             this.ColecoControllerSettingsMenuItem.Size = new System.Drawing.Size(253, 22);
             this.ColecoControllerSettingsMenuItem.Text = "&Controller Settings...";
             this.ColecoControllerSettingsMenuItem.Click += new System.EventHandler(this.ColecoControllerSettingsMenuItem_Click);
+            // 
+            // toolStripSeparator35
+            // 
+            this.toolStripSeparator35.Name = "toolStripSeparator35";
+            this.toolStripSeparator35.Size = new System.Drawing.Size(250, 6);
+            // 
+            // ColecoSkipBiosMenuItem
+            // 
+            this.ColecoSkipBiosMenuItem.Name = "ColecoSkipBiosMenuItem";
+            this.ColecoSkipBiosMenuItem.Size = new System.Drawing.Size(253, 22);
+            this.ColecoSkipBiosMenuItem.Text = "&Skip BIOS intro (When Applicable)";
+            this.ColecoSkipBiosMenuItem.Click += new System.EventHandler(this.ColecoSkipBiosMenuItem_Click);
             // 
             // N64SubMenu
             // 
@@ -3101,34 +3108,45 @@
             this.AppleDisksSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator31});
             this.AppleDisksSubMenu.Name = "AppleDisksSubMenu";
-            this.AppleDisksSubMenu.Size = new System.Drawing.Size(125, 22);
+            this.AppleDisksSubMenu.Size = new System.Drawing.Size(152, 22);
             this.AppleDisksSubMenu.Text = "Disks";
             this.AppleDisksSubMenu.DropDownOpened += new System.EventHandler(this.AppleDisksSubMenu_DropDownOpened);
             // 
             // toolStripSeparator31
             // 
             this.toolStripSeparator31.Name = "toolStripSeparator31";
-            this.toolStripSeparator31.Size = new System.Drawing.Size(57, 6);
+            this.toolStripSeparator31.Size = new System.Drawing.Size(149, 6);
             // 
             // settingsToolStripMenuItem1
             // 
             this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
-            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(125, 22);
+            this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.settingsToolStripMenuItem1.Text = "&Settings...";
             this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.settingsToolStripMenuItem1_Click_1);
             // 
             // C64SubMenu
             // 
             this.C64SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.C64DisksSubMenu,
             this.C64SettingsMenuItem});
             this.C64SubMenu.Name = "C64SubMenu";
             this.C64SubMenu.Size = new System.Drawing.Size(39, 19);
             this.C64SubMenu.Text = "&C64";
+            this.C64SubMenu.DropDownOpened += new System.EventHandler(this.C64SubMenu_DropDownOpened);
+            // 
+            // C64DisksSubMenu
+            // 
+            this.C64DisksSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSeparator36});
+            this.C64DisksSubMenu.Name = "C64DisksSubMenu";
+            this.C64DisksSubMenu.Size = new System.Drawing.Size(152, 22);
+            this.C64DisksSubMenu.Text = "Disks";
+            this.C64DisksSubMenu.DropDownOpened += new System.EventHandler(this.C64DisksSubMenu_DropDownOpened);
             // 
             // C64SettingsMenuItem
             // 
             this.C64SettingsMenuItem.Name = "C64SettingsMenuItem";
-            this.C64SettingsMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.C64SettingsMenuItem.Size = new System.Drawing.Size(152, 22);
             this.C64SettingsMenuItem.Text = "&Settings...";
             this.C64SettingsMenuItem.Click += new System.EventHandler(this.C64SettingsMenuItem_Click);
             // 
@@ -3837,10 +3855,10 @@
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.timerMouseIdle_Tick);
             // 
-            // toolStripSeparator35
+            // toolStripSeparator36
             // 
-            this.toolStripSeparator35.Name = "toolStripSeparator35";
-            this.toolStripSeparator35.Size = new System.Drawing.Size(250, 6);
+            this.toolStripSeparator36.Name = "toolStripSeparator36";
+            this.toolStripSeparator36.Size = new System.Drawing.Size(149, 6);
             // 
             // MainForm
             // 
@@ -4287,5 +4305,7 @@
 		private System.Windows.Forms.ToolStripMenuItem IntVControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SNESControllerConfigurationMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator35;
+		private System.Windows.Forms.ToolStripMenuItem C64DisksSubMenu;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator36;
 	}
 }

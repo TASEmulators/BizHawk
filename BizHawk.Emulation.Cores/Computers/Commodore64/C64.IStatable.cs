@@ -47,6 +47,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLagFrame", ref _isLagFrame);
 			ser.Sync("LagCount", ref _lagCount);
+			ser.Sync("CurrentDisk", ref _currentDisk);
+			ser.Sync("PreviousDiskPressed", ref _prevPressed);
+			ser.Sync("NextDiskPressed", ref _nextPressed);
 			ser.BeginSection("Board");
 			_board.SyncState(ser);
 			ser.EndSection();

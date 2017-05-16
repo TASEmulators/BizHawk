@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	{
 		public C64(CoreComm comm, IEnumerable<byte[]> roms, object settings, object syncSettings)
 		{
+
 			PutSyncSettings((C64SyncSettings)syncSettings ?? new C64SyncSettings());
 			PutSettings((C64Settings)settings ?? new C64Settings());
 
@@ -25,7 +26,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			InputCallbacks = new InputCallbackSystem();
 
 			CoreComm = comm;
-			Roms = roms;
+			Roms = roms?.ToList() ?? new List<byte[]>();
+			_currentDisk = 0;
+			RomSanityCheck();
+
 			Init(SyncSettings.VicType, Settings.BorderType, SyncSettings.SidType, SyncSettings.TapeDriveType, SyncSettings.DiskDriveType);
 			_cyclesPerFrame = _board.Vic.CyclesPerFrame;
 			SetupMemoryDomains(_board.DiskDrive != null);
@@ -52,6 +56,30 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			ser.Register<IVideoProvider>(_board.Vic);
 			ser.Register<IDriveLight>(this);
+		}
+
+		// Currently we will require at least one rom.  If multiple they MUST be all the same media type in the same format
+		// Given a good enough use case we could in theory expand those requirements, but for now we need a sanity check
+		private void RomSanityCheck()
+		{
+			if (Roms.Count == 0)
+			{
+				throw new NotSupportedException("Currently, a Rom is required to run this core.");
+			}
+
+			var formats = Roms.Select(rom => C64FormatFinder.GetFormat(rom));
+
+			HashSet<C64Format> uniqueFormats = new HashSet<C64Format>();
+
+			foreach (var format in formats)
+			{
+				uniqueFormats.Add(format);
+			}
+
+			if (uniqueFormats.Count > 1)
+			{
+				throw new NotSupportedException("Currently Roms must all be of the same type.");
+			}
 		}
 
 		// IBoardInfo
@@ -83,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private readonly int _cyclesPerFrame;
 
-		public IEnumerable<byte[]> Roms { get; private set; }
+		private List<byte[]> Roms = new List<byte[]>();
 
 		private static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
 		{
@@ -97,7 +125,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				"Key Run/Stop", "Key Lck", "Key A", "Key S", "Key D", "Key F", "Key G", "Key H", "Key J", "Key K", "Key L", "Key Colon", "Key Semicolon", "Key Equal", "Key Return",
 				"Key Commodore", "Key Left Shift", "Key Z", "Key X", "Key C", "Key V", "Key B", "Key N", "Key M", "Key Comma", "Key Period", "Key Slash", "Key Right Shift", "Key Cursor Up/Down", "Key Cursor Left/Right",
 				"Key Space",
-				"Key F1", "Key F3", "Key F5", "Key F7"
+				"Key F1", "Key F3", "Key F5", "Key F7",
+				"Previous Disk", "Next Disk"
 			}
 		};
 
@@ -106,6 +135,52 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private int _frameCycles;
 
 		private int _frame;
+
+		// Disk stuff
+
+		private bool _nextPressed;
+		private bool _prevPressed;
+		private int _currentDisk;
+		public int CurrentDisk => _currentDisk;
+		public int DiskCount => Roms.Count;
+
+		private void IncrementDisk()
+		{
+			_currentDisk++;
+			if (CurrentDisk >= Roms.Count)
+			{
+				_currentDisk = 0;
+			}
+
+			InitDisk();
+		}
+
+		private void DecrementDisk()
+		{
+			_currentDisk--;
+			if (_currentDisk < 0)
+			{
+				_currentDisk = Roms.Count - 1;
+			}
+
+			InitDisk();
+		}
+
+		private void InitDisk()
+		{
+			InitMedia(Roms[_currentDisk]);
+		}
+
+		public void SetDisk(int discNum)
+		{
+			if (_currentDisk != discNum)
+			{
+				_currentDisk = discNum;
+				InitDisk();
+			}
+		}
+
+		/**********************************************/
 
 		private ISoundProvider _soundProvider;
 
@@ -149,37 +224,36 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private void Init(VicType initRegion, BorderType borderType, SidType sidType, TapeDriveType tapeDriveType, DiskDriveType diskDriveType)
 		{
 			// Force certain drive types to be available depending on ROM type
-			foreach (var rom in Roms)
+			var rom = Roms.First();
+
+			switch (C64FormatFinder.GetFormat(rom))
 			{
-				switch (C64FormatFinder.GetFormat(rom))
-				{
-					case C64Format.D64:
-					case C64Format.G64:
-					case C64Format.X64:
-						if (diskDriveType == DiskDriveType.None)
-							diskDriveType = DiskDriveType.Commodore1541;
-						break;
-					case C64Format.T64:
-					case C64Format.TAP:
-						if (tapeDriveType == TapeDriveType.None)
-						{
-							tapeDriveType = TapeDriveType.Commodore1530;
-						}
-						break;
-					case C64Format.CRT:
-						// Nothing required.
-						break;
-					case C64Format.Unknown:
-						if (rom.Length >= 0xFE00)
-						{
-							throw new Exception("The image format is not known, and too large to be used as a PRG.");
-						}
-						if (diskDriveType == DiskDriveType.None)
-							diskDriveType = DiskDriveType.Commodore1541;
-						break;
-					default:
-						throw new Exception("The image format is not yet supported by the Commodore 64 core.");
-				}
+				case C64Format.D64:
+				case C64Format.G64:
+				case C64Format.X64:
+					if (diskDriveType == DiskDriveType.None)
+						diskDriveType = DiskDriveType.Commodore1541;
+					break;
+				case C64Format.T64:
+				case C64Format.TAP:
+					if (tapeDriveType == TapeDriveType.None)
+					{
+						tapeDriveType = TapeDriveType.Commodore1530;
+					}
+					break;
+				case C64Format.CRT:
+					// Nothing required.
+					break;
+				case C64Format.Unknown:
+					if (rom.Length >= 0xFE00)
+					{
+						throw new Exception("The image format is not known, and too large to be used as a PRG.");
+					}
+					if (diskDriveType == DiskDriveType.None)
+						diskDriveType = DiskDriveType.Commodore1541;
+					break;
+				default:
+					throw new Exception("The image format is not yet supported by the Commodore 64 core.");
 			}
 
 			_board = new Motherboard(this, initRegion, borderType, sidType, tapeDriveType, diskDriveType);
@@ -187,62 +261,59 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_board.Init();
 		}
 
-		private void InitMedia()
+		private void InitMedia(byte[] rom)
 		{
-			foreach (var rom in Roms)
+			switch (C64FormatFinder.GetFormat(rom))
 			{
-				switch (C64FormatFinder.GetFormat(rom))
-				{
-					case C64Format.D64:
-						var d64 = D64.Read(rom);
-						if (d64 != null)
+				case C64Format.D64:
+					var d64 = D64.Read(rom);
+					if (d64 != null)
+					{
+						_board.DiskDrive.InsertMedia(d64);
+					}
+					break;
+				case C64Format.G64:
+					var g64 = G64.Read(rom);
+					if (g64 != null)
+					{
+						_board.DiskDrive.InsertMedia(g64);
+					}
+					break;
+				case C64Format.CRT:
+					var cart = CartridgeDevice.Load(rom);
+					if (cart != null)
+					{
+						_board.CartPort.Connect(cart);
+					}
+					break;
+				case C64Format.TAP:
+					var tape = Tape.Load(rom);
+					if (tape != null)
+					{
+						_board.TapeDrive.Insert(tape);
+					}
+					break;
+				case C64Format.Unknown:
+					var prgDisk = new DiskBuilder
+					{
+						Entries = new List<DiskBuilder.Entry>
 						{
-							_board.DiskDrive.InsertMedia(d64);
-						}
-						break;
-					case C64Format.G64:
-						var g64 = G64.Read(rom);
-						if (g64 != null)
-						{
-							_board.DiskDrive.InsertMedia(g64);
-						}
-						break;
-					case C64Format.CRT:
-						var cart = CartridgeDevice.Load(rom);
-						if (cart != null)
-						{
-							_board.CartPort.Connect(cart);
-						}
-						break;
-					case C64Format.TAP:
-						var tape = Tape.Load(rom);
-						if (tape != null)
-						{
-							_board.TapeDrive.Insert(tape);
-						}
-						break;
-					case C64Format.Unknown:
-						var prgDisk = new DiskBuilder
-						{
-							Entries = new List<DiskBuilder.Entry>
+							new DiskBuilder.Entry
 							{
-								new DiskBuilder.Entry
-								{
-									Closed = true,
-									Data = rom,
-									Locked = false,
-									Name = "PRG",
-									RecordLength = 0,
-									Type = DiskBuilder.FileType.Program
-								}
+								Closed = true,
+								Data = rom,
+								Locked = false,
+								Name = "PRG",
+								RecordLength = 0,
+								Type = DiskBuilder.FileType.Program
 							}
-						}.Build();
-						if (prgDisk != null)
-						{
-							_board.DiskDrive.InsertMedia(prgDisk);
 						}
-						break;
-				}
+					}.Build();
+					if (prgDisk != null)
+					{
+						_board.DiskDrive.InsertMedia(prgDisk);
+					}
+					break;
 			}
 		}
 
@@ -265,7 +336,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private void HardReset()
 		{
-			InitMedia();
+			InitMedia(Roms[_currentDisk]);
 			_board.HardReset();
 		}
 	}

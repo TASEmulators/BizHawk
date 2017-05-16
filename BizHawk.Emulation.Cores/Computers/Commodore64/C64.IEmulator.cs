@@ -11,6 +11,28 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_board.Controller = controller;
+
+			if (controller.IsPressed("Next Disk") && !_nextPressed)
+			{
+				_nextPressed = true;
+				IncrementDisk();
+			}
+			else if (controller.IsPressed("Previous Disk") && !_prevPressed)
+			{
+				_prevPressed = true;
+				DecrementDisk();
+			}
+
+			if (!controller.IsPressed("Next Disk"))
+			{
+				_nextPressed = false;
+			}
+
+			if (!controller.IsPressed("Previous Disk"))
+			{
+				_prevPressed = false;
+			}
+
 			do
 			{
 				DoCycle();

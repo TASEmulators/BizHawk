@@ -23,6 +23,7 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Client.ApiHawk;
+using BizHawk.Emulation.Cores.Computers.Commodore64;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -2387,6 +2388,41 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region C64
+
+		private void C64SubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			if (Emulator is C64)
+			{
+				C64DisksSubMenu.Enabled = (Emulator as C64).DiskCount > 1;
+			}
+		}
+
+		private void C64DisksSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			C64DisksSubMenu.DropDownItems.Clear();
+
+			if (Emulator is C64)
+			{
+				var c64 = Emulator as C64;
+				for (int i = 0; i < c64.DiskCount; i++)
+				{
+					var menuItem = new ToolStripMenuItem
+					{
+						Name = "Disk" + (i + 1),
+						Text = "Disk" + (i + 1),
+						Checked = c64.CurrentDisk == i
+					};
+
+					int dummy = i;
+					menuItem.Click += (o, ev) =>
+					{
+						c64.SetDisk(dummy);
+					};
+
+					C64DisksSubMenu.DropDownItems.Add(menuItem);
+				}
+			}
+		}
 
 		private void C64SettingsMenuItem_Click(object sender, EventArgs e)
 		{

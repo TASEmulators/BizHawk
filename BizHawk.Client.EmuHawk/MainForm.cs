@@ -2704,7 +2704,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.OSD.AddMessage("Key priority set to Input over Hotkey");
 					break;
 				case 2:
-					GlobalWin.OSD.AddMessage("Key priority set to Gamepad");
+					GlobalWin.OSD.AddMessage("Key priority set to Input");
 					break;
 			}
 		}
