@@ -1,9 +1,10 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System.Collections.Generic;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
-using System.Collections.Generic;
-
+// ReSharper disable StyleCop.SA1401
 namespace BizHawk.Client.Common
 {
 	public static class Global
@@ -23,7 +24,7 @@ namespace BizHawk.Client.Common
 		public static bool DisableSecondaryThrottling;
 
 		/// <summary>
-		/// The maximum number of millseconds the sound output buffer can go below full before causing a noticable sound interruption.
+		/// The maximum number of milliseconds the sound output buffer can go below full before causing a noticeable sound interruption.
 		/// </summary>
 		public static int SoundMaxBufferDeficitMs;
 

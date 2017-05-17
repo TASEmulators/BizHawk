@@ -308,11 +308,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		SevenZip.SevenZipCompressor svc;
+		private SevenZip.SevenZipCompressor svc;
 
-		bool first = true;
-		string path;
-		int compressionlevel;
+		private bool first = true;
+		private string path;
+		private int compressionlevel;
 
 		public SevenZipWriter(string path, int compressionlevel)
 		{
@@ -325,16 +325,28 @@ namespace BizHawk.Client.Common
 			switch (compressionlevel)
 			{
 				default:
-				case 0: svc.CompressionLevel = SevenZip.CompressionLevel.None; break;
+				case 0:
+					svc.CompressionLevel = SevenZip.CompressionLevel.None;
+					break;
 				case 1:
-				case 2: svc.CompressionLevel = SevenZip.CompressionLevel.Fast; break;
+				case 2:
+					svc.CompressionLevel = SevenZip.CompressionLevel.Fast;
+					break;
 				case 3:
-				case 4: svc.CompressionLevel = SevenZip.CompressionLevel.Low; break;
+				case 4:
+					svc.CompressionLevel = SevenZip.CompressionLevel.Low;
+					break;
 				case 5:
-				case 6: svc.CompressionLevel = SevenZip.CompressionLevel.Normal; break;
+				case 6:
+					svc.CompressionLevel = SevenZip.CompressionLevel.Normal;
+					break;
 				case 7:
-				case 8: svc.CompressionLevel = SevenZip.CompressionLevel.High; break;
-				case 9: svc.CompressionLevel = SevenZip.CompressionLevel.Ultra; break;
+				case 8:
+					svc.CompressionLevel = SevenZip.CompressionLevel.High;
+					break;
+				case 9:
+					svc.CompressionLevel = SevenZip.CompressionLevel.Ultra;
+					break;
 			}
 		}
 

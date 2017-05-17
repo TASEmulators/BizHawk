@@ -44,7 +44,6 @@ namespace BizHawk.Client.Common
 				{
 					_wndx = value;
 				}
-				
 			}
 		}
 
@@ -62,12 +61,11 @@ namespace BizHawk.Client.Common
 				{
 					_wndy = value;
 				}
-
 			}
 		}
 
 		/// <summary>
-		/// Represents the top left corner coordinate, if Wndx and Wndy form a valid point
+		/// Gets a value that represents the top left corner coordinate, if Wndx and Wndy form a valid point
 		/// Throws an InvalidOperationException if Wndx or Wndy is null
 		/// It is expected to check for this before using this property
 		/// </summary>

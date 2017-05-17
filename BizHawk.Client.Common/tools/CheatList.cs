@@ -283,6 +283,7 @@ namespace BizHawk.Client.Common
 		/// Returns the value of a given cheat, or a partial value of a multi-byte cheat
 		/// Note that address + size MUST NOT exceed the range of the cheat or undefined behavior will occur
 		/// </summary>
+		/// <param name="domain">The <seealso cref="MemoryDomain"/> to apply cheats to</param>
 		/// <param name="addr">The starting address for which you will get the number of bytes</param>
 		/// <param name="size">The number of bytes of the cheat to return</param>
 		/// <returns>The value, or null if it can't resolve the address with a given cheat</returns>

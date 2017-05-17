@@ -587,7 +587,7 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Gets or sets a value indicating the endianess of current <see cref="Watch"/>
-		/// True for big endian, flase for little endian
+		/// True for big endian, false for little endian
 		/// </summary>
 		public bool BigEndian { get; set; }
 

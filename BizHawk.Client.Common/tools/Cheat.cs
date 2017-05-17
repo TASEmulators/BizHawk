@@ -16,11 +16,10 @@ namespace BizHawk.Client.Common
 		}
 
 		private readonly Watch _watch;
+		private readonly COMPARISONTYPE _comparisonType;
 		private int? _compare;
 		private int _val;
 		private bool _enabled;
-		private readonly COMPARISONTYPE _comparisonType;
-		
 
 		public Cheat(Watch watch, int value, int? compare = null, bool enabled = true, COMPARISONTYPE comparisonType = COMPARISONTYPE.NONE)
 		{

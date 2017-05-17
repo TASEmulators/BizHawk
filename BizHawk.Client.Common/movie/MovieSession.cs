@@ -28,12 +28,9 @@ namespace BizHawk.Client.Common
 		public IMovie QueuedMovie { get; set; }
 
 		// This wrapper but the logic could change, don't make the client code understand these details
-		public bool MovieIsQueued
-		{
-			get { return QueuedMovie != null; }
-		}
+		public bool MovieIsQueued => QueuedMovie != null;
 
-		public MultitrackRecorder MultiTrack { get; private set; }
+		public MultitrackRecorder MultiTrack { get; }
 		public IMovieController MovieControllerAdapter { get; set; }
 
 		public IMovie Movie { get; set; }
@@ -54,7 +51,6 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Simply shortens the verbosity necessary otherwise
 		/// </summary>
-		/// <returns></returns>
 		public ILogEntryGenerator LogGeneratorInstance()
 		{
 			return Movie.LogGeneratorInstance();

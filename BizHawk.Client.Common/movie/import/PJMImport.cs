@@ -1,8 +1,9 @@
-﻿using BizHawk.Emulation.Cores.Sony.PSX;
-using System;
+﻿using System;
 using System.IO;
 
 using Newtonsoft.Json;
+
+using BizHawk.Emulation.Cores.Sony.PSX;
 
 namespace BizHawk.Client.Common
 {
@@ -435,8 +436,8 @@ namespace BizHawk.Client.Common
 		protected class MiscHeaderInfo
 		{
 			public bool binaryFormat = true;
-			public UInt32 controllerDataOffset;
-			public UInt32 frameCount;
+			public uint controllerDataOffset;
+			public uint frameCount;
 			public OctoshockDll.ePeripheralType player1Type;
 			public OctoshockDll.ePeripheralType player2Type;
 

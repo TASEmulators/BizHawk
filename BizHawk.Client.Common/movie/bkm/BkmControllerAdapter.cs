@@ -484,7 +484,7 @@ namespace BizHawk.Client.Common
 
 				foreach (string name in BkmMnemonicConstants.ANALOGS[ControlType].Keys)
 				{
-					Force("P" + player + " " + name, Int32.Parse(mnemonic.Substring(srcindex + start, 4)));
+					Force("P" + player + " " + name, int.Parse(mnemonic.Substring(srcindex + start, 4)));
 					start += 5;
 				}
 			}

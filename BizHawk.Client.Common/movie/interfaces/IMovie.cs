@@ -35,12 +35,12 @@ namespace BizHawk.Client.Common
 		int InputLogLength { get; }
 
 		/// <summary>
-		/// Returns the file extension for this implementation
+		/// Gets the file extension for the current <see cref="IMovie"/> implementation
 		/// </summary>
 		string PreferredExtension { get; }
 
 		/// <summary>
-		/// Sync Settings from the Core
+		/// Gets or sets the Sync Settings from the Core
 		/// </summary>
 		string SyncSettingsJson { get; set; }
 
@@ -74,7 +74,7 @@ namespace BizHawk.Client.Common
 		bool PreLoadHeaderAndLength(HawkFile hawkFile);
 		
 		/// <summary>
-		/// Returns header key value pairs stored in the movie file
+		/// Gets the header key value pairs stored in the movie file
 		/// </summary>
 		IDictionary<string, string> HeaderEntries { get; }
 
@@ -107,11 +107,11 @@ namespace BizHawk.Client.Common
 		void Save();
 		
 		/// <summary>
-		/// Extracts the current input log from the user.  
+		/// Extracts the current input log from the user.
 		/// This is provided as the means for putting the input log into savestates,
 		/// for the purpose of out of order savestate loading (known as "bullet-proof rerecording")
 		/// </summary>
-		/// <returns>returns a string represntation of the input log in its current state</returns>
+		/// <returns>returns a string representation of the input log in its current state</returns>
 		string GetInputLog();
 
 		/// <summary>
@@ -123,7 +123,6 @@ namespace BizHawk.Client.Common
 		/// Gets one frame from the input log.
 		/// </summary>
 		/// <param name="frame">The frame to get.</param>
-		/// <returns></returns>
 		string GetInputLogEntry(int frame);
 
 		/// <summary>
@@ -140,7 +139,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="reader">The reader containing the contents of the input log</param>
 		/// <param name="errorMessage">Returns an error message, if any</param>
-		/// <returns></returns>
 		bool ExtractInputLog(TextReader reader, out string errorMessage);
 
 		#endregion
@@ -209,7 +207,7 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Instructs the movie to remove all input from its input log after frame,
-		/// AFter truncating, frame will be the last frame of input in the movie's input log
+		/// After truncating, frame will be the last frame of input in the movie's input log
 		/// </summary>
 		/// <param name="frame">The frame at which to truncate</param>
 		void Truncate(int frame);

@@ -314,10 +314,10 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Takes a log entry from a line in an input log,
-		/// If the log key differs from the system's, it will be coverted
+		/// If the log key differs from the system's, it will be converted
 		/// </summary>
 		/// <param name="line">a log entry line of text from the input log</param>
-		/// <param name="logKey">a log entry line of text from the input log</param>
+		/// <param name="logKey">a key used to describe the mnemonic values and positions in the log</param>
 		private string ConvertLogEntryFromFile(string line, string logKey)
 		{
 			var adapter = new Bk2LogEntryGenerator(logKey).MovieControllerAdapter;

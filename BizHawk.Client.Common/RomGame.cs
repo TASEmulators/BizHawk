@@ -158,7 +158,6 @@ namespace BizHawk.Client.Common
 						// output[i + 3] = source[i];
 						// output[i + 1] = source[i + 2];
 						// output[i + 2] = source[i + 1];
-
 						byte temp = pSource[i];
 						pSource[i] = source[i + 3];
 						pSource[i + 3] = temp;
@@ -192,7 +191,10 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
-			catch (Exception) { } // No need for errors in patching to propagate.
+			catch (Exception)
+			{
+				// No need for errors in patching to propagate.
+			}
 		}
 	}
 }

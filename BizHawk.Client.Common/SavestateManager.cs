@@ -124,7 +124,9 @@ namespace BizHawk.Client.Common
 						buff[i] = j;
 					}
 				}
-				catch (EndOfStreamException) { }
+				catch (EndOfStreamException)
+				{
+				}
 			}
 		}
 

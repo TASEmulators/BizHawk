@@ -32,7 +32,6 @@ namespace BizHawk.Client.Common
 			return PathManager.SaveRamPath(Global.Game);
 		}
 
-
 		public string GetRetroSaveRAMDirectory()
 		{
 			return PathManager.RetroSaveRAMDirectory(Global.Game);

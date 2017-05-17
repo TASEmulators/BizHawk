@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Parses a Marker from a line of text
+		/// Initializes a new instance of the <see cref="TasMovieMarker"/> class from a line of text
 		/// </summary>
 		public TasMovieMarker(string line)
 		{

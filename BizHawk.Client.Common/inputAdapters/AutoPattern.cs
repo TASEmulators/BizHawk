@@ -7,9 +7,6 @@
 		public readonly int Loop = 0;
 		private int _index = 0;
 
-		/// <summary>
-		/// Autohold.
-		/// </summary>
 		public AutoPatternBool()
 		{
 			Pattern = new[] { true };

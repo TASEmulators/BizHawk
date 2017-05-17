@@ -666,7 +666,9 @@ namespace BizHawk.Client.Common
 					////Used += len;
 				}
 			}
-			catch (EndOfStreamException) { }
+			catch (EndOfStreamException)
+			{
+			}
 		}
 
 		public void SaveBranchStates(BinaryWriter bw)
@@ -707,7 +709,10 @@ namespace BizHawk.Client.Common
 					c--;
 				}
 			}
-			catch (EndOfStreamException) { } // Bad!
+			catch (EndOfStreamException)
+			{
+				// Bad!
+			}
 		}
 
 

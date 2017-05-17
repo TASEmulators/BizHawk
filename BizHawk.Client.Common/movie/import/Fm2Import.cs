@@ -28,7 +28,8 @@ namespace BizHawk.Client.Common
 					{
 						continue;
 					}
-					else if (line[0] == '|')
+
+					if (line[0] == '|')
 					{
 						// TODO: import a frame of input
 						// TODO: report any errors importing this frame and bail out if so
@@ -44,8 +45,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.ToLower().StartsWith("emuversion"))
 					{
-						Result.Movie.Comments.Add(
-							string.Format("{0} {1} version {2}", EMULATIONORIGIN, emulator, ParseHeader(line, "emuVersion")));
+						Result.Movie.Comments.Add($"{EMULATIONORIGIN} {emulator} version {ParseHeader(line, "emuVersion")}");
 					}
 					else if (line.ToLower().StartsWith("version"))
 					{

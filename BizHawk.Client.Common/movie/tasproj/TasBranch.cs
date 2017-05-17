@@ -132,7 +132,7 @@ namespace BizHawk.Client.Common
 					var header = (dynamic)JsonConvert.DeserializeObject(tr.ReadLine());
 					b.Frame = (int)header.Frame;
 
-					var timestamp = (dynamic)header.TimeStamp;
+					var timestamp = header.TimeStamp;
 
 					if (timestamp != null)
 					{
@@ -143,7 +143,7 @@ namespace BizHawk.Client.Common
 						b.TimeStamp = DateTime.Now;
 					}
 
-					var identifier = (dynamic)header.UniqueIdentifier;
+					var identifier = header.UniqueIdentifier;
 					if (identifier != null)
 					{
 						b.UniqueIdentifier = (Guid)identifier;
@@ -168,7 +168,9 @@ namespace BizHawk.Client.Common
 					b.InputLog = StringLogUtil.MakeStringLog();
 					string line;
 					while ((line = tr.ReadLine()) != null)
+					{
 						b.InputLog.Add(line);
+					}
 				});
 
 				bl.GetLump(nframebuffer, true, delegate(Stream s, long length)

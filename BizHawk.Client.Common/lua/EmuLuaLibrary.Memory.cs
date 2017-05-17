@@ -15,13 +15,11 @@ namespace BizHawk.Client.Common
 		public MemoryLuaLibrary(Lua lua)
 			: base(lua)
 		{
-			
 		}
 
 		public MemoryLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback)
 		{
-			
 		}
 
 		public override string Name => "memory";
@@ -41,12 +39,10 @@ namespace BizHawk.Client.Common
 
 					return _currentMemoryDomain;
 				}
-				else
-				{
-					var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
-					Log(error);
-					throw new NotImplementedException(error);
-				}
+
+				var error = $"Error: {Emulator.Attributes().CoreName} does not implement memory domains";
+				Log(error);
+				throw new NotImplementedException(error);
 			}
 		}
 

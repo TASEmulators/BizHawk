@@ -184,7 +184,10 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
-			catch { /*Eat it*/ }
+			catch
+			{
+				/*Eat it*/
+			}
 		}
 	}
 }
