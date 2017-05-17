@@ -86,11 +86,7 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				_ffmpeg = new Process();
-#if WINDOWS
 				_ffmpeg.StartInfo.FileName = FFMpeg.FFMpegPath;
-#else
-				_ffmpeg.StartInfo.FileName = "ffmpeg"; // expecting native version to be in path
-#endif
 
 				string filename = String.Format("{0}_{1,4:D4}{2}", _baseName, _segment, _ext);
 				_ffmpeg.StartInfo.Arguments = String.Format("-y -f nut -i - {1} \"{0}\"", filename, _token.Commandline);
