@@ -427,10 +427,11 @@ namespace BizHawk.Client.Common
 				state = BranchStates[frame][branch];
 
 				if (BranchStates[frame][branch].IsOnDisk)
+				{
 					BranchStates[frame][branch].Dispose();
-				else
-					////Used -= (ulong)BranchStates[frame][branch].Length;
-				BranchStates[frame].RemoveAt(BranchStates[frame].IndexOfKey(branch)); // <adelikat> - feos, this runs only on hte else condition, I'm pretty sure this isn't intended? Check changeset a7b3668506ba62c40fd455bf36d919b4c5d92bf8
+				}
+
+				BranchStates[frame].RemoveAt(BranchStates[frame].IndexOfKey(branch));
 
 				if (BranchStates[frame].Count == 0)
 				{
