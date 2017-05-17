@@ -2,22 +2,12 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace BizHawk.Client.Common
 {
 	public partial class BkmMovie
 	{
 		private readonly List<string> _log = new List<string>();
-
-		public string GetInputLog()
-		{
-			var sb = new StringBuilder();
-			var writer = new StringWriter(sb);
-			WriteInputLog(writer);
-			writer.Flush();
-			return sb.ToString();
-		}
 
 		public void WriteInputLog(TextWriter writer)
 		{

@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Text;
 
 namespace BizHawk.Client.Common
 {
@@ -9,15 +8,6 @@ namespace BizHawk.Client.Common
 	{
 		protected IStringLog _log;
 		protected string LogKey = "";
-
-		public string GetInputLog()
-		{
-			var sb = new StringBuilder();
-			var writer = new StringWriter(sb);
-			WriteInputLog(writer);
-			writer.Flush();
-			return sb.ToString();
-		}
 
 		public void WriteInputLog(TextWriter writer)
 		{

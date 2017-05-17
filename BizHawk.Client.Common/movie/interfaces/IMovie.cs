@@ -105,14 +105,6 @@ namespace BizHawk.Client.Common
 		/// Instructs the movie to save the current contents to Filename
 		/// </summary>
 		void Save();
-		
-		/// <summary>
-		/// Extracts the current input log from the user.
-		/// This is provided as the means for putting the input log into savestates,
-		/// for the purpose of out of order savestate loading (known as "bullet-proof rerecording")
-		/// </summary>
-		/// <returns>returns a string representation of the input log in its current state</returns>
-		string GetInputLog();
 
 		/// <summary>
 		/// Writes the input log directly to the stream, bypassing the need to load it all into ram as a string
