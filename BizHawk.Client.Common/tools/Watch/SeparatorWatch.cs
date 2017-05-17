@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	public sealed class SeparatorWatch : Watch
 	{
 		/// <summary>
-		/// Initialize a new separator instance
+		/// Initializes a new instance of the <see cref="SeparatorWatch"/> class.
 		/// </summary>
 		internal SeparatorWatch()
 			: base(null, 0, WatchSize.Separator, DisplayType.Separator, true, "")
@@ -29,8 +29,6 @@ namespace BizHawk.Client.Common
 		{
 			yield return DisplayType.Separator;
 		}
-
-		#region Stuff to ignore
 
 		/// <summary>
 		/// Ignore that stuff
@@ -98,7 +96,5 @@ namespace BizHawk.Client.Common
 		public override void Update()
 		{
 		}
-
-		#endregion
 	}
 }

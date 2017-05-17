@@ -14,17 +14,11 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public sealed class ByteWatch : Watch
 	{
-		#region Fields
-
 		private byte _previous;
 		private byte _value;
 
-		#endregion
-
-		#region cTor(s)
-
 		/// <summary>
-		/// Inialize a new instance of <see cref="ByteWatch"/>
+		/// Initializes a new instance of the <see cref="ByteWatch"/> class.
 		/// </summary>
 		/// <param name="domain"><see cref="MemoryDomain"/> where you want to track</param>
 		/// <param name="address">The address you want to track</param>
@@ -38,25 +32,13 @@ namespace BizHawk.Client.Common
 		internal ByteWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string note, byte value, byte previous, int changeCount)
 			: base(domain, address, WatchSize.Byte, type, bigEndian, note)
 		{
-			if (value == 0)
-			{
-				_value = GetByte();
-			}
-			else
-			{
-				_value = value;
-			}
-
+			_value = value == 0 ? GetByte() : value;
 			_previous = previous;
-			_changecount = changeCount;
+			ChangeCount = changeCount;
 		}
 
-		#endregion
-
-		#region Methods
-
 		/// <summary>
-		/// Enumerate which <see cref="DisplayType"/> are valid for a <see cref="ByteWatch"/>
+		/// Gets an enumeration of <see cref="DisplayType"/> that are valid for a <see cref="ByteWatch"/>
 		/// </summary>
 		public static IEnumerable<DisplayType> ValidTypes
 		{
@@ -69,12 +51,10 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		#region Implements
-
 		/// <summary>
 		/// Get a list a <see cref="DisplayType"/> that can be used for this <see cref="ByteWatch"/>
 		/// </summary>
-		/// <returns>An enumartion that contains all valid <see cref="DisplayType"/></returns>
+		/// <returns>An enumeration that contains all valid <see cref="DisplayType"/></returns>
 		public override IEnumerable<DisplayType> AvailableTypes()
 		{
 			return ValidTypes;
@@ -93,7 +73,7 @@ namespace BizHawk.Client.Common
 		/// at the current <see cref="Watch"/> address
 		/// </summary>
 		/// <param name="value">Value to set</param>
-		/// <returns>True if value successfully sets; othewise, false</returns>
+		/// <returns>True if value successfully sets; otherwise, false</returns>
 		public override bool Poke(string value)
 		{
 			try
@@ -147,9 +127,9 @@ namespace BizHawk.Client.Common
 						break;
 				}
 
-				if (Global.CheatList.Contains(Domain, _address))
+				if (Global.CheatList.Contains(Domain, Address))
 				{
-					var cheat = Global.CheatList.FirstOrDefault(c => c.Address == _address && c.Domain == Domain);
+					var cheat = Global.CheatList.FirstOrDefault(c => c.Address == Address && c.Domain == Domain);
 
 					if (cheat != (Cheat)null)
 					{
@@ -183,7 +163,7 @@ namespace BizHawk.Client.Common
 					if (_value != temp)
 					{
 						_previous = _value;
-						_changecount++;
+						ChangeCount++;
 					}
 
 					break;
@@ -192,14 +172,12 @@ namespace BizHawk.Client.Common
 					_value = GetByte();
 					if (_value != Previous)
 					{
-						_changecount++;
+						ChangeCount++;
 					}
 
 					break;
 			}
 		}
-
-		#endregion Implements
 
 		// TODO: Implements IFormattable
 		public string FormatValue(byte val)
@@ -217,12 +195,6 @@ namespace BizHawk.Client.Common
 					return Convert.ToString(val, 2).PadLeft(8, '0').Insert(4, " ");
 			}
 		}
-
-		#endregion
-
-		#region Properties
-
-		#region Implements
 
 		/// <summary>
 		/// Get a string representation of difference
@@ -278,9 +250,5 @@ namespace BizHawk.Client.Common
 		/// Get a string representation of the previous value
 		/// </summary>
 		public override string PreviousStr => FormatValue(_previous);
-
-		#endregion Implements
-
-		#endregion
 	}
 }

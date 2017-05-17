@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 	public sealed partial class WatchList
 	{
 		/// <summary>
-		/// Netsed private class that define how to compare two <see cref="Watch"/>
+		/// Nested private class that define how to compare two <see cref="Watch"/>
 		/// based on the number of changes
 		/// </summary>
 		private sealed class WatchChangeCountComparer

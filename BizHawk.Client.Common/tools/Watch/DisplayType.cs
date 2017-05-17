@@ -36,19 +36,19 @@
 		Binary,
 
 		/// <summary>
-		/// Display the value as fractionnal number. 12 before coma and 4 after
+		/// Display the value as fractional number. 12 before coma and 4 after
 		/// Used only by <see cref="WordWatch"/> as it is 16 bits length
 		/// </summary>
 		FixedPoint_12_4,
 
 		/// <summary>
-		/// Display the value as fractionnal number. 20 before coma and 12 after
+		/// Display the value as fractional number. 20 before coma and 12 after
 		/// Used only by <see cref="DWordWatch"/> as it is 32 bits length
 		/// </summary>
 		FixedPoint_20_12,
 
 		/// <summary>
-		/// Display the value as fractionnal number. 16 before coma and 16 after
+		/// Display the value as fractional number. 16 before coma and 16 after
 		/// Used only by <see cref="DWordWatch"/> as it is 32 bits length
 		/// </summary>
 		FixedPoint_16_16,

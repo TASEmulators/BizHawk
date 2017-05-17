@@ -14,17 +14,11 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public sealed class DWordWatch : Watch
 	{
-		#region Fields
-
 		private uint _value;
 		private uint _previous;
 
-		#endregion
-
-		#region cTor(s)
-
 		/// <summary>
-		/// Initialize a new instance of <see cref="DWordWatch"/>
+		/// Initializes a new instance of the <see cref="DWordWatch"/> class
 		/// </summary>
 		/// <param name="domain"><see cref="MemoryDomain"/> where you want to track</param>
 		/// <param name="address">The address you want to track</param>
@@ -38,22 +32,10 @@ namespace BizHawk.Client.Common
 		internal DWordWatch(MemoryDomain domain, long address, DisplayType type, bool bigEndian, string note, uint value, uint previous, int changeCount)
 			: base(domain, address, WatchSize.DWord, type, bigEndian, note)
 		{
-			if (value == 0)
-			{
-				_value = GetDWord();
-			}
-			else
-			{
-				_value = value;
-			}
-
+			_value = value == 0 ? GetDWord() : value;
 			_previous = previous;
-			_changecount = changeCount;
+			ChangeCount = changeCount;
 		}
-
-		#endregion
-
-		#region Methods
 
 		/// <summary>
 		/// Gets a list of <see cref="DisplayType"/> for a <see cref="DWordWatch"/>
@@ -71,8 +53,6 @@ namespace BizHawk.Client.Common
 				yield return DisplayType.Float;
 			}
 		}
-
-		#region Implements
 
 		/// <summary>
 		/// Get a list of <see cref="DisplayType"/> that can be used for a <see cref="DWordWatch"/>
@@ -173,9 +153,9 @@ namespace BizHawk.Client.Common
 						break;
 				}
 
-				if (Global.CheatList.Contains(Domain, _address))
+				if (Global.CheatList.Contains(Domain, Address))
 				{
-					var cheat = Global.CheatList.FirstOrDefault(c => c.Address == _address && c.Domain == Domain);
+					var cheat = Global.CheatList.FirstOrDefault(c => c.Address == Address && c.Domain == Domain);
 					if (cheat != (Cheat)null)
 					{
 						cheat.PokeValue((int)val);
@@ -208,7 +188,7 @@ namespace BizHawk.Client.Common
 					if (_value != temp)
 					{
 						_previous = _value;
-						_changecount++;
+						ChangeCount++;
 					}
 
 					break;
@@ -217,14 +197,12 @@ namespace BizHawk.Client.Common
 					_value = GetDWord();
 					if (_value != Previous)
 					{
-						_changecount++;
+						ChangeCount++;
 					}
 
 					break;
 			}
 		}
-
-		#endregion Implements
 
 		// TODO: Implements IFormattable
 		public string FormatValue(uint val)
@@ -245,16 +223,9 @@ namespace BizHawk.Client.Common
 				case DisplayType.Float:
 					var bytes = BitConverter.GetBytes(val);
 					var _float = BitConverter.ToSingle(bytes, 0);
-					////return string.Format("{0:0.######}", _float);
 					return _float.ToString(); // adelikat: decided that we like sci notation instead of spooky rounding
 			}
 		}
-
-		#endregion
-
-		#region Properties
-
-		#region Implements
 
 		/// <summary>
 		/// Get a string representation of difference
@@ -292,9 +263,5 @@ namespace BizHawk.Client.Common
 		/// Get a string representation of the previous value
 		/// </summary>
 		public override string PreviousStr => FormatValue(_previous);
-
-		#endregion Implements
-
-		#endregion
 	}
 }
