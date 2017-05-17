@@ -169,26 +169,25 @@ namespace BizHawk.Client.Common
 			{
 				return null;
 			}
+
 			if (blob[0] == '0' && (blob[1] == 'x' || blob[1] == 'X'))
 			{
 				// hex
 				return Util.HexStringToBytes(blob.Substring(2));
 			}
-			else
+
+			// base64
+			if (!blob.ToLower().StartsWith("base64:"))
 			{
-				// base64
-				if (!blob.ToLower().StartsWith("base64:"))
-				{
-					return null;
-				}
-				try
-				{
-					return Convert.FromBase64String(blob.Substring(7));
-				}
-				catch (FormatException)
-				{
-					return null;
-				}
+				return null;
+			}
+			try
+			{
+				return Convert.FromBase64String(blob.Substring(7));
+			}
+			catch (FormatException)
+			{
+				return null;
 			}
 		}
 	}

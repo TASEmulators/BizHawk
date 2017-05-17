@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 
 			if (!SourceFile.Exists)
 			{
-				Result.Errors.Add(string.Format("Could not find the file {0}", path));
+				Result.Errors.Add($"Could not find the file {path}");
 				return Result;
 			}
 
@@ -48,7 +48,6 @@ namespace BizHawk.Client.Common
 
 			return Result;
 		}
-
 
 		protected ImportResult Result = new ImportResult();
 
@@ -76,7 +75,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public IList<string> Warnings { get; private set; }
-		public IList<string> Errors { get; private set; }
+		public IList<string> Errors { get; }
 
 		public Bk2Movie Movie { get; set; }
 	}

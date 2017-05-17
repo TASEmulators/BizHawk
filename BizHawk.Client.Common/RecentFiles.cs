@@ -9,6 +9,7 @@ namespace BizHawk.Client.Common
 	[JsonObject]
 	public class RecentFiles : IEnumerable
 	{
+		// ReSharper disable once FieldCanBeMadeReadOnly.Local
 		private List<string> recentlist;
 
 		public RecentFiles()

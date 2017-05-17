@@ -242,6 +242,7 @@ namespace BizHawk.Client.Common
 			{
 				OnListChanged(NotifyCollectionChangedAction.Remove);
 			}
+
 			return removeCount;
 		}
 

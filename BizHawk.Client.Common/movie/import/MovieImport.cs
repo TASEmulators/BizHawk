@@ -53,7 +53,6 @@ namespace BizHawk.Client.Common
 			if (!string.IsNullOrWhiteSpace(warningMsg))
 			{
 				messageCallback(warningMsg);
-
 			}
 			else
 			{
@@ -96,8 +95,16 @@ namespace BizHawk.Client.Common
 			try
 			{
 				var result = importer.Import(path);
-				if (result.Errors.Count > 0) errorMsg = result.Errors.First();
-				if (result.Warnings.Count > 0) warningMsg = result.Warnings.First();
+				if (result.Errors.Count > 0)
+				{
+					errorMsg = result.Errors.First();
+				}
+
+				if (result.Warnings.Count > 0)
+				{
+					warningMsg = result.Warnings.First();
+				}
+
 				movie = result.Movie;
 			}
 			catch (Exception ex)
@@ -143,31 +150,31 @@ namespace BizHawk.Client.Common
 				switch (ext)
 				{
 					case ".FCM":
-						m = ImportFCM(path, out errorMsg, out warningMsg);
+						m = ImportFcm(path, out errorMsg, out warningMsg);
 						break;
 					case ".FM2":
-						m = ImportFM2(path, out errorMsg, out warningMsg);
+						m = ImportFm2(path, out errorMsg, out warningMsg);
 						break;
 					case ".FMV":
 						m = ImportFmv(path, out errorMsg, out warningMsg);
 						break;
 					case ".GMV":
-						m = ImportGMV(path, out errorMsg, out warningMsg);
+						m = ImportGmv(path, out errorMsg, out warningMsg);
 						break;
 					case ".LSMV":
-						m = ImportLSMV(path, out errorMsg, out warningMsg);
+						m = ImportLsmv(path, out errorMsg, out warningMsg);
 						break;
 					case ".MCM":
-						m = ImportMCM(path, out errorMsg, out warningMsg);
+						m = ImportMcm(path, out errorMsg, out warningMsg);
 						break;
 					case ".MC2":
-						m = ImportMC2(path, out errorMsg, out warningMsg);
+						m = ImportMc2(path, out errorMsg, out warningMsg);
 						break;
 					case ".MMV":
-						m = ImportMMV(path, out errorMsg, out warningMsg);
+						m = ImportMmv(path, out errorMsg, out warningMsg);
 						break;
 					case ".NMV":
-						m = ImportNMV(path, out errorMsg, out warningMsg);
+						m = ImportNmv(path, out errorMsg, out warningMsg);
 						break;
 					case ".SMV":
 						m = ImportSmv(path, out errorMsg, out warningMsg);
@@ -241,7 +248,7 @@ namespace BizHawk.Client.Common
 			emptyController["Reset"] = false;
 			emptyController["Power"] = false;
 
-			string[] buttons = new[] { "B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R" };
+			string[] buttons = { "B", "Y", "Select", "Start", "Up", "Down", "Left", "Right", "A", "X", "L", "R" };
 			string[] sections = line.Split('|');
 			for (int section = 2; section < sections.Length - 1; section++)
 			{
@@ -301,7 +308,7 @@ namespace BizHawk.Client.Common
 				controllers["Reset"] = sections[1][0] == '1';
 
 				// Get the first invalid command warning message that arises.
-				if (string.IsNullOrEmpty((warningMsg)))
+				if (string.IsNullOrEmpty(warningMsg))
 				{
 					switch (sections[1][0])
 					{
@@ -310,7 +317,7 @@ namespace BizHawk.Client.Common
 						case '1':
 							break;
 						case '2':
-							if (m.FrameCount != 0)
+							if ((int)m.FrameCount != 0)
 							{
 								warningMsg = "hard reset";
 							}
@@ -333,6 +340,7 @@ namespace BizHawk.Client.Common
 					}
 				}
 			}
+
 			if (ext == ".LSMV" && sections.Length != 0)
 			{
 				string flags = sections[0];
@@ -361,24 +369,26 @@ namespace BizHawk.Client.Common
 
 				controllers["Reset"] = reset;
 			}
+
 			/*
 			 Skip the first two sections of the split, which consist of everything before the starting | and the command.
 			 Do not use the section after the last |. In other words, get the sections for the players.
 			*/
 			int start = 2;
 			int end = sections.Length - 1;
-			int player_offset = -1;
+			int playerOffset = -1;
 			if (ext == ".LSMV")
 			{
 				// LSNES frames don't start or end with a |.
 				start--;
 				end++;
-				player_offset++;
+				playerOffset++;
 			}
+
 			for (int section = start; section < end; section++)
 			{
 				// The player number is one less than the section number for the reasons explained above.
-				int player = section + player_offset;
+				int player = section + playerOffset;
 				string prefix = "P" + player + " ";
 				
 				// Gameboy doesn't currently have a prefix saying which player the input is for.
@@ -390,7 +400,7 @@ namespace BizHawk.Client.Common
 				// Only count lines with that have the right number of buttons and are for valid players.
 				if (
 					sections[section].Length == buttons.Length &&
-					player <= BkmMnemonicConstants.PLAYERS[controllers.Definition.Name])
+					player <= BkmMnemonicConstants.Players[controllers.Definition.Name])
 				{
 					for (int button = 0; button < buttons.Length; button++)
 					{
@@ -462,6 +472,7 @@ namespace BizHawk.Client.Common
 					platform = "Sega Saturn";
 					break;
 			}
+
 			m.Header[HeaderKeys.PLATFORM] = platform;
 			int lineNum = 0;
 			string line;
@@ -472,7 +483,8 @@ namespace BizHawk.Client.Common
 				{
 					continue;
 				}
-				else if (line[0] == '|')
+
+				if (line[0] == '|')
 				{
 					m = ImportTextFrame(line, lineNum, m, path, platform, ref warningMsg);
 					if (errorMsg != "")
@@ -600,26 +612,26 @@ namespace BizHawk.Client.Common
 			{
 				return null;
 			}
+
 			if (blob[0] == '0' && (blob[1] == 'x' || blob[1] == 'X'))
 			{
 				// hex
 				return Util.HexStringToBytes(blob.Substring(2));
 			}
-			else
+
+			// base64
+			if (!blob.ToLower().StartsWith("base64:"))
 			{
-				// base64
-				if (!blob.ToLower().StartsWith("base64:"))
-				{
-					return null;
-				}
-				try
-				{
-					return Convert.FromBase64String(blob.Substring(7));
-				}
-				catch (FormatException)
-				{
-					return null;
-				}
+				return null;
+			}
+
+			try
+			{
+				return Convert.FromBase64String(blob.Substring(7));
+			}
+			catch (FormatException)
+			{
+				return null;
 			}
 		}
 
@@ -631,11 +643,12 @@ namespace BizHawk.Client.Common
 			{
 				str = str.Substring(0, pos);
 			}
+
 			return str;
 		}
 
 		// FCM file format: http://code.google.com/p/fceu/wiki/FCM
-		private static BkmMovie ImportFCM(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportFcm(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = "";
 			BkmMovie m = new BkmMovie(path);
@@ -661,6 +674,7 @@ namespace BizHawk.Client.Common
 				fs.Close();
 				return null;
 			}
+
 			m.Comments.Add(MOVIEORIGIN + " .FCM version " + version);
 
 			// 008 1-byte flags
@@ -785,6 +799,7 @@ namespace BizHawk.Client.Common
 				{
 					frames += r.ReadByte() * (int)Math.Pow(2, b * 8);
 				}
+
 				frame += frames;
 				while (frames > 0)
 				{
@@ -911,7 +926,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// FM2 file format: http://www.fceux.com/web/FM2.html
-		private static BkmMovie ImportFM2(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportFm2(string path, out string errorMsg, out string warningMsg)
 		{
 			return ImportText(path, out errorMsg, out warningMsg);
 		}
@@ -960,16 +975,15 @@ namespace BizHawk.Client.Common
 			else
 			{
 				fds = false;
-
 			}
 
 			m.Header[HeaderKeys.PLATFORM] = "NES";
 
 			// bit 6: uses controller 2
-			bool controller2 = (((flags >> 6) & 0x1) != 0);
+			bool controller2 = ((flags >> 6) & 0x1) != 0;
 
 			// bit 7: uses controller 1
-			bool controller1 = (((flags >> 7) & 0x1) != 0);
+			bool controller1 = ((flags >> 7) & 0x1) != 0;
 
 			// other bits: unknown, set to 0
 			// 006 4-byte little-endian unsigned int: unknown, set to 00000000
@@ -1058,7 +1072,7 @@ namespace BizHawk.Client.Common
 					{
 						for (int button = 0; button < buttons.Length; button++)
 						{
-							controllers["P" + player + " " + buttons[button]] = (((controllerState >> button) & 0x1) != 0);
+							controllers["P" + player + " " + buttons[button]] = ((controllerState >> button) & 0x1) != 0;
 						}
 					}
 					else
@@ -1076,7 +1090,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// GMV file format: http://code.google.com/p/gens-rerecording/wiki/GMV
-		private static BkmMovie ImportGMV(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportGmv(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = "";
 			var m = new BkmMovie(path);
@@ -1127,7 +1141,7 @@ namespace BizHawk.Client.Common
 			 second The file format has no means of identifying NTSC/"PAL", but the FPS can still be derived from the
 			 header.
 			*/
-			bool pal = (((flags >> 7) & 0x1) != 0);
+			bool pal = ((flags >> 7) & 0x1) != 0;
 			m.Header[HeaderKeys.PAL] = pal.ToString();
 
 			// bit 6: if "1", movie requires a savestate.
@@ -1218,7 +1232,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// LSMV file format: http://tasvideos.org/Lsnes/Movieformat.html
-		private static BkmMovie ImportLSMV(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportLsmv(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = "";
 			var m = new BkmMovie(path);
@@ -1230,6 +1244,7 @@ namespace BizHawk.Client.Common
 				errorMsg = "This is not an archive.";
 				return null;
 			}
+
 			string platform = "SNES";
 			foreach (var item in hf.ArchiveItems)
 			{
@@ -1238,8 +1253,8 @@ namespace BizHawk.Client.Common
 					hf.BindArchiveMember(item.Index);
 					var stream = hf.GetStream();
 					string authors = Encoding.UTF8.GetString(stream.ReadAllBytes());
-					string author_list = "";
-					string author_last = "";
+					string authorList = "";
+					string authorLast = "";
 					using (var reader = new StringReader(authors))
 					{
 						string line;
@@ -1250,27 +1265,27 @@ namespace BizHawk.Client.Common
 							string author = line.Trim();
 							if (author != "")
 							{
-								if (author_last != "")
+								if (authorLast != "")
 								{
-									author_list += author_last + ", ";
+									authorList += authorLast + ", ";
 								}
 
-								author_last = author;
+								authorLast = author;
 							}
 						}
 					}
 
-					if (author_list != "")
+					if (authorList != "")
 					{
-						author_list += "and ";
+						authorList += "and ";
 					}
 
-					if (author_last != "")
+					if (authorLast != "")
 					{
-						author_list += author_last;
+						authorList += authorLast;
 					}
 
-					m.Header[HeaderKeys.AUTHOR] = author_list;
+					m.Header[HeaderKeys.AUTHOR] = authorList;
 					hf.Unbind();
 				}
 				else if (item.Name == "coreversion")
@@ -1485,7 +1500,7 @@ namespace BizHawk.Client.Common
 		 MCM file format: http://code.google.com/p/mednafen-rr/wiki/MCM
 		 Mednafen-rr switched to MC2 from r261, so see r260 for details.
 		*/
-		private static BkmMovie ImportMCM(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportMcm(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = "";
 			BkmMovie m = new BkmMovie(path);
@@ -1523,37 +1538,35 @@ namespace BizHawk.Client.Common
 
 			// 070 uint32	 Re-record Count
 			uint rerecordCount = r.ReadUInt32();
-			m.Rerecords = (ulong)rerecordCount;
+			m.Rerecords = rerecordCount;
 
 			// 074 5-byte	 Console indicator (pce, ngp, pcfx, wswan)
 			string platform = NullTerminated(r.ReadStringFixedAscii(5));
 			Dictionary<string, Dictionary<string, object>> platforms = new Dictionary<string, Dictionary<string, object>>
 			{
+				// Normally, NES receives from 5 input ports, where the first 4 have a length of 1 byte, and the last has
+				// a length of 0. For the sake of simplicity, it is interpreted as 4 ports of 1 byte length for
+				// re-recording.
+				["nes"] = new Dictionary<string, object>
 				{
-					/*
-					 Normally, NES receives from 5 input ports, where the first 4 have a length of 1 byte, and the last has
-					 a length of 0. For the sake of simplicity, it is interpreted as 4 ports of 1 byte length for
-					 re-recording.
-					*/
-					"nes", new Dictionary<string, object>
-					{
-						{ "name", "NES" }, { "ports", 4 }, { "bytesPerPort", 1 },
-						{ "buttons", new[] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" } }
-					}
+					["name"] = "NES",
+					["ports"] = 4,
+					["bytesPerPort"] = 1,
+					["buttons"] = new[] { "A", "B", "Select", "Start", "Up", "Down", "Left", "Right" }
 				},
+				["pce"] = new Dictionary<string, object>
 				{
-					"pce", new Dictionary<string, object>
-					{
-						{ "name", "PC Engine" }, { "ports", 5 }, { "bytesPerPort", 2 },
-						{ "buttons", new[] { "B1", "B2", "Select", "Run", "Up", "Right", "Down", "Left" } }
-					}
+					["name"] = "PC Engine",
+					["ports"] = 5,
+					["bytesPerPort"] = 2,
+					["buttons"] = new[] { "B1", "B2", "Select", "Run", "Up", "Right", "Down", "Left" }
 				},
+				["lynx"] = new Dictionary<string, object>
 				{
-					"lynx", new Dictionary<string, object>
-					{
-						{ "name", "Lynx" }, { "ports", 2 }, { "bytesPerPort", 1 },
-						{ "buttons", new[] { "A", "B", "Up", "Down", "Left", "Right" }}
-					}
+					["name"] = "Lynx",
+					["ports"] = 2,
+					["bytesPerPort"] = 1,
+					["buttons"] = new[] { "A", "B", "Up", "Down", "Left", "Right" }
 				}
 			};
 			if (!platforms.ContainsKey(platform))
@@ -1606,6 +1619,7 @@ namespace BizHawk.Client.Common
 						// Discard the first byte.
 						r.ReadByte();
 					}
+
 					ushort controllerState = r.ReadByte();
 					for (int button = 0; button < buttons.Length; button++)
 					{
@@ -1613,6 +1627,7 @@ namespace BizHawk.Client.Common
 						controllers[prefix + buttons[button]] = ((controllerState >> button) & 0x1) != 0;
 					}
 				}
+
 				r.ReadByte();
 				if (platform == "nes" && warningMsg == "")
 				{
@@ -1628,13 +1643,13 @@ namespace BizHawk.Client.Common
 		}
 
 		// MC2 file format: http://code.google.com/p/pcejin/wiki/MC2
-		private static BkmMovie ImportMC2(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportMc2(string path, out string errorMsg, out string warningMsg)
 		{
 			return ImportText(path, out errorMsg, out warningMsg);
 		}
 
 		// MMV file format: http://tasvideos.org/MMV.html
-		private static BkmMovie ImportMMV(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportMmv(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = "";
 			BkmMovie m = new BkmMovie(path);
@@ -1695,7 +1710,7 @@ namespace BizHawk.Client.Common
 			m.Header[HeaderKeys.PAL] = pal.ToString();
 
 			// bit 2: Japan
-			bool japan = (((flags >> 2) & 0x1) != 0);
+			bool japan = ((flags >> 2) & 0x1) != 0;
 			m.Header[JAPAN] = japan.ToString();
 
 			// bit 3: Game Gear (version 1.16+)
@@ -1767,7 +1782,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// NMV file format: http://tasvideos.org/NMV.html
-		private static BkmMovie ImportNMV(string path, out string errorMsg, out string warningMsg)
+		private static BkmMovie ImportNmv(string path, out string errorMsg, out string warningMsg)
 		{
 			errorMsg = warningMsg = "";
 			var m = new BkmMovie(path);
@@ -1997,6 +2012,7 @@ namespace BizHawk.Client.Common
 					{
 						continue;
 					}
+
 					byte controllerState = r.ReadByte();
 					if (player != 5)
 					{
@@ -2035,6 +2051,7 @@ namespace BizHawk.Client.Common
 				fs.Close();
 				return null;
 			}
+
 			m.Header[HeaderKeys.PLATFORM] = "SNES";
 
 			// 004 4-byte little-endian unsigned int: version number
@@ -2057,6 +2074,7 @@ namespace BizHawk.Client.Common
 					fs.Close();
 					return null;
 			}
+
 			m.Comments.Add(EMULATIONORIGIN + " Snes9x version " + version);
 			m.Comments.Add(MOVIEORIGIN + " .SMV");
 			/*
@@ -2104,8 +2122,9 @@ namespace BizHawk.Client.Common
 			}
 
 			// bit 1: if "0", movie is NTSC (60 fps); if "1", movie is PAL (50 fps)
-			bool pal = (((movieFlags >> 1) & 0x1) != 0);
+			bool pal = ((movieFlags >> 1) & 0x1) != 0;
 			m.Header[HeaderKeys.PAL] = pal.ToString();
+
 			// other: reserved, set to 0
 			/*
 			 016 1-byte flags "sync options":
@@ -2279,7 +2298,7 @@ namespace BizHawk.Client.Common
 					}
 
 					ushort controllerState = (ushort)(((controllerState1 << 4) & 0x0F00) | controllerState2);
-					if (player <= BkmMnemonicConstants.PLAYERS[controllers.Definition.Name])
+					if (player <= BkmMnemonicConstants.Players[controllers.Definition.Name])
 					{
 						for (int button = 0; button < buttons.Length; button++)
 						{
@@ -2398,7 +2417,7 @@ namespace BizHawk.Client.Common
 			bool[] controllersUsed = new bool[4];
 			for (int controller = 1; controller <= controllersUsed.Length; controller++)
 			{
-				controllersUsed[controller - 1] = (((controllerFlags >> (controller - 1)) & 0x1) != 0);
+				controllersUsed[controller - 1] = ((controllerFlags >> (controller - 1)) & 0x1) != 0;
 			}
 
 			if (!controllersUsed[0])
@@ -2502,7 +2521,7 @@ namespace BizHawk.Client.Common
 			 032 2-byte little-endian unsigned short: the internal Checksum of the ROM used while recording, or a
 			 calculated CRC16 of the BIOS if GBA
 			*/
-			ushort checksum_crc16 = r.ReadUInt16();
+			ushort checksumCRC16 = r.ReadUInt16();
 			/*
 			 034 4-byte little-endian unsigned int: the Game Code of the ROM used while recording, or the Unit Code if not
 			 GBA
@@ -2510,12 +2529,12 @@ namespace BizHawk.Client.Common
 			uint gameCodeUnitCode = r.ReadUInt32();
 			if (platform == "GBA")
 			{
-				m.Header[CRC16] = checksum_crc16.ToString();
+				m.Header[CRC16] = checksumCRC16.ToString();
 				m.Header[GAMECODE] = gameCodeUnitCode.ToString();
 			}
 			else
 			{
-				m.Header[INTERNALCHECKSUM] = checksum_crc16.ToString();
+				m.Header[INTERNALCHECKSUM] = checksumCRC16.ToString();
 				m.Header[UNITCODE] = gameCodeUnitCode.ToString();
 			}
 
@@ -2534,14 +2553,10 @@ namespace BizHawk.Client.Common
 			m.Comments.Add(COMMENT + " " + movieDescription);
 			r.BaseStream.Position = firstFrameOffset;
 			SimpleController controllers = new SimpleController { Definition = new ControllerDefinition() };
-			if (platform != "GBA")
-			{
-				controllers.Definition.Name = "Gameboy Controller";
-			}
-			else
-			{
-				controllers.Definition.Name = "GBA Controller";
-			}
+			controllers.Definition.Name = platform != "GBA"
+				? "Gameboy Controller"
+				: "GBA Controller";
+
 			/*
 			 * 01 00 A
 			 * 02 00 B
@@ -2654,10 +2669,10 @@ namespace BizHawk.Client.Common
 			bool[] controllersUsed = new bool[4];
 			for (int controller = 1; controller <= controllersUsed.Length; controller++)
 			{
-				controllersUsed[controller - 1] = (((flags >> (controller - 1)) & 0x1) != 0);
+				controllersUsed[controller - 1] = ((flags >> (controller - 1)) & 0x1) != 0;
 			}
 
-			bool fourscore = (controllersUsed[2] || controllersUsed[3]);
+			bool fourscore = controllersUsed[2] || controllersUsed[3];
 			m.Header[HeaderKeys.FOURSCORE] = fourscore.ToString();
 			/*
 			 bit 6: 1=reset-based, 0=savestate-based (movie version <= 0x300 is always savestate-based)
@@ -2678,6 +2693,7 @@ namespace BizHawk.Client.Common
 			 becomes the controller data. TODO: Figure out what this means.
 			 Other bits: reserved, set to 0
 			*/
+
 			// 014 DWORD   Ext0;				   // ROM:program CRC  FDS:program ID
 			r.ReadBytes(4);
 
@@ -2705,7 +2721,7 @@ namespace BizHawk.Client.Common
 			r.ReadByte();
 
 			// 023 1-byte flag: 0=NTSC (60 Hz), 1="PAL" (50 Hz)
-			bool pal = (r.ReadByte() == 1);
+			bool pal = r.ReadByte() == 1;
 			m.Header[HeaderKeys.PAL] = pal.ToString();
 
 			// 024 8-bytes: reserved, set to 0
@@ -2978,8 +2994,9 @@ namespace BizHawk.Client.Common
 
 			// if "11", movie begins from power-on with SRAM clear
 			// bit 5: if "0", movie is NTSC (60 fps); if "1", movie is PAL (50 fps)
-			bool pal = (((movieFlags >> 5) & 0x1) != 0);
+			bool pal = ((movieFlags >> 5) & 0x1) != 0;
 			m.Header[HeaderKeys.PAL] = pal.ToString();
+
 			// other: reserved, set to 0
 			/*
 			 028 3-byte little-endian unsigned int: initial save state size, highest bit specifies compression, next 23
@@ -3037,7 +3054,8 @@ namespace BizHawk.Client.Common
 						m.AppendFrame(controllers);
 						controllers["Reset"] = false;
 					}
-					// TODO: Other commands.
+
+					/*TODO: Other commands.*/
 				}
 				else if (((flag >> 1) & 0x1) != 0)
 				{
@@ -3147,8 +3165,9 @@ namespace BizHawk.Client.Common
 									controllerState |= (uint)(controllerState2 << 12);
 								}
 							}
+
 							leftOver = !leftOver;
-							if (player <= BkmMnemonicConstants.PLAYERS[controllers.Definition.Name])
+							if (player <= BkmMnemonicConstants.Players[controllers.Definition.Name])
 							{
 								if (player != 2 || !superScope)
 								{

@@ -51,7 +51,6 @@ namespace BizHawk.Client.Common
 				CurrentThread = luaThread;
 			}
 		}
-		
 
 		protected void Log(object message)
 		{

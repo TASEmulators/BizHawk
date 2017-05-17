@@ -15,7 +15,6 @@ namespace BizHawk.Client.Common
 		private sealed class WatchValueDifferenceComparer
 			: WatchEqualityComparer, IComparer<Watch>
 		{
-
 			/// <summary>
 			/// Compares two <see cref="Watch"/> between them
 			/// and determines which one comes first.

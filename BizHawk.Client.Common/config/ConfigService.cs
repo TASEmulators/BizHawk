@@ -107,6 +107,5 @@ namespace BizHawk.Client.Common
 				return sw.ToString();
 			}
 		}
-
 	}
 }

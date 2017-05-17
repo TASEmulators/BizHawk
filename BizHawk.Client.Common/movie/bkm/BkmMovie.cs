@@ -4,7 +4,7 @@ namespace BizHawk.Client.Common
 {
 	public partial class BkmMovie : IMovie
 	{
-		private bool _makeBackup = true;
+		private bool _makeBackup;
 		private bool _changes;
 		private int? _loopOffset;
 

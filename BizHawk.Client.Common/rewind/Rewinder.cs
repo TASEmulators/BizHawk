@@ -197,6 +197,7 @@ namespace BizHawk.Client.Common
 			{
 				_lastState = new byte[length];
 			}
+
 			Buffer.BlockCopy(state, index, _lastState, 0, length);
 		}
 

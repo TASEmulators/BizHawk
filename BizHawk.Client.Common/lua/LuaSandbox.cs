@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 			CurrentDirectory = dir;
 		}
 
-		string CurrentDirectory;
+		private string CurrentDirectory;
 
 		#if WINDOWS
 		[DllImport("kernel32.dll", SetLastError = true)]
@@ -39,9 +39,14 @@ namespace BizHawk.Client.Common
 			// yeah I know, not the smoothest move to compare strings here, in case path normalization is happening at some point
 			// but you got any better ideas?
 			if (currDirSpeedHack == null)
+			{
 				currDirSpeedHack = CoolGetCurrentDirectory();
+			}
+
 			if (currDirSpeedHack == path)
+			{
 				return true;
+			}
 
 			// WARNING: setting the current directory is SLOW!!! security checks for some reason.
 			// so we're bypassing it with windows hacks
@@ -54,11 +59,14 @@ namespace BizHawk.Client.Common
 					Environment.CurrentDirectory = CurrentDirectory; // thats right, you can't set a directory as current that doesnt exist because .net's got to do SENSELESS SLOW-ASS SECURITY CHECKS on it and it can't do that on a NONEXISTENT DIRECTORY
 					return true;
 				}
-				else return false;
+				else
+				{
+					return false;
+				}
 			#endif
 		}
 
-		string CoolGetCurrentDirectory()
+		private string CoolGetCurrentDirectory()
 		{
 			// GUESS WHAT!
 			// .NET DOES A SECURITY CHECK ON THE DIRECTORY WE JUST RETRIEVED
@@ -76,7 +84,7 @@ namespace BizHawk.Client.Common
 			#endif
 		}
 
-		void Sandbox(Action callback, Action exceptionCallback)
+		private void Sandbox(Action callback, Action exceptionCallback)
 		{
 			string savedEnvironmentCurrDir = null;
 			try
@@ -84,7 +92,9 @@ namespace BizHawk.Client.Common
 				savedEnvironmentCurrDir = Environment.CurrentDirectory;
 
 				if (CurrentDirectory != null)
+				{
 					CoolSetCurrentDirectory(CurrentDirectory, savedEnvironmentCurrDir);
+				}
 
 				EnvironmentSandbox.Sandbox(callback);
 			}
@@ -97,7 +107,9 @@ namespace BizHawk.Client.Common
 			finally
 			{
 				if (CurrentDirectory != null)
+				{
 					CoolSetCurrentDirectory(savedEnvironmentCurrDir);
+				}
 			}
 		}
 
@@ -123,13 +135,13 @@ namespace BizHawk.Client.Common
 			{
 				LuaSandbox sandbox;
 				if (SandboxForThread.TryGetValue(thread, out sandbox))
-					return sandbox;
-				else
 				{
-					// for now: throw exception (I want to manually creating them)
-					// return CreateSandbox(thread);
-					throw new InvalidOperationException("HOARY GORILLA HIJINX");
+					return sandbox;
 				}
+				
+				// for now: throw exception (I want to manually creating them)
+				// return CreateSandbox(thread);
+				throw new InvalidOperationException("HOARY GORILLA HIJINX");
 			}
 		}
 

@@ -36,18 +36,18 @@ namespace BizHawk.Client.Common
 
 		public void CallExitEvent(Lua thread)
 		{
-			var exitCallbacks = _luaFunctions.Where(x => x.Lua == thread && x.Event == "OnExit");
+			var exitCallbacks = _luaFunctions.Where(l => l.Lua == thread && l.Event == "OnExit");
 			foreach (var exitCallback in exitCallbacks)
 			{
 				exitCallback.Call();
 			}
 		}
 
-		public LuaFunctionList RegisteredFunctions { get { return _luaFunctions; } }
+		public LuaFunctionList RegisteredFunctions => _luaFunctions;
 
 		public void CallSaveStateEvent(string name)
 		{
-			var lfs = _luaFunctions.Where(x => x.Event == "OnSavestateSave").ToList();
+			var lfs = _luaFunctions.Where(l => l.Event == "OnSavestateSave").ToList();
 			if (lfs.Any())
 			{
 				try
@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 
 		public void CallLoadStateEvent(string name)
 		{
-			var lfs = _luaFunctions.Where(x => x.Event == "OnSavestateLoad").ToList();
+			var lfs = _luaFunctions.Where(l => l.Event == "OnSavestateLoad").ToList();
 			if (lfs.Any())
 			{
 				try
@@ -91,7 +91,7 @@ namespace BizHawk.Client.Common
 
 		public void CallFrameBeforeEvent()
 		{
-			var lfs = _luaFunctions.Where(x => x.Event == "OnFrameStart").ToList();
+			var lfs = _luaFunctions.Where(l => l.Event == "OnFrameStart").ToList();
 			if (lfs.Any())
 			{
 				try
@@ -113,7 +113,7 @@ namespace BizHawk.Client.Common
 
 		public void CallFrameAfterEvent()
 		{
-			var lfs = _luaFunctions.Where(x => x.Event == "OnFrameEnd").ToList();
+			var lfs = _luaFunctions.Where(l => l.Event == "OnFrameEnd").ToList();
 			if (lfs.Any())
 			{
 				try
@@ -143,17 +143,18 @@ namespace BizHawk.Client.Common
 					return true;
 				}
 			}
+
 			return false;
 		}
 
 		private void LogMemoryCallbacksNotImplemented()
 		{
-			Log(string.Format("{0} does not implement memory callbacks", Emulator.Attributes().CoreName));
+			Log($"{Emulator.Attributes().CoreName} does not implement memory callbacks");
 		}
 
 		private void LogMemoryExecuteCallbacksNotImplemented()
 		{
-			Log(string.Format("{0} does not implement memory execute callbacks", Emulator.Attributes().CoreName));
+			Log($"{Emulator.Attributes().CoreName} does not implement memory execute callbacks");
 		}
 
 		#endregion

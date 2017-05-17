@@ -322,7 +322,6 @@ namespace BizHawk.Client.Common
 			sw.Flush();
 		}
 
-
 		public BinaryStateSaver(string path, bool notamovie = true) // notamovie is hack, really should have separate something
 		{
 			_zip = new IonicZipWriter(path, notamovie ? Global.Config.SaveStateCompressionLevelNormal : Global.Config.MovieCompressionLevel);

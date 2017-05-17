@@ -1083,6 +1083,7 @@ namespace BizHawk.Client.Common
 						{
 							_previous = _prevFrame;
 						}
+
 						break;
 				}
 

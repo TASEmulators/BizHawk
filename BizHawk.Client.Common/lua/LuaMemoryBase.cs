@@ -55,6 +55,7 @@ namespace BizHawk.Client.Common
 			{
 				Log($"Unable to find domain: {domain}, falling back to current");
 			}
+
 			return Domain.Name;
 		}
 

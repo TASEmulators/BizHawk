@@ -305,6 +305,7 @@ namespace BizHawk.Client.Common
 			test_rewindFellationBuf = inbuf;
 			return null;
 		}
+
 		static byte[] test_rewindFellationBuf;
 
 		private static void test(string[] args)
@@ -317,11 +318,17 @@ namespace BizHawk.Client.Common
 			{
 				int len = r.Next(1024) + 1;
 				if (r.Next(100) == 0)
+				{
 					len = 1024;
+				}
+
 				ArraySegment<byte> seg = new ArraySegment<byte>(temp, 0, len);
 				Console.WriteLine("{0} - {1}", trials, seg.Count);
 				if (seg.Count == 1024)
+				{
 					Console.Write("*************************");
+				}
+
 				trials++;
 				sbb.Push(seg);
 			}

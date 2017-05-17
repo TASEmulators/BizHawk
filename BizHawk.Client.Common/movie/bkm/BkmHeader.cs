@@ -106,7 +106,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public string SystemID
+		public string SystemId
 		{
 			get
 			{

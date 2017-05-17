@@ -12,7 +12,6 @@ namespace BizHawk.Client.Common
 		public MovieLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
-
 		public override string Name => "movie";
 
 		[LuaMethodAttributes(

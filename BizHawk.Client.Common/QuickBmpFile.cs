@@ -87,6 +87,7 @@ namespace BizHawk.Client.Common
 			{
 				Marshal.StructureToPtr(o, (IntPtr)p, false);
 			}
+
 			return ret;
 		}
 
@@ -152,6 +153,7 @@ namespace BizHawk.Client.Common
 				{
 					dp[i] = sp[i * in_w / w];
 				}
+
 				dp += w;
 			}
 		}
@@ -172,6 +174,7 @@ namespace BizHawk.Client.Common
 				{
 					dp[i] = sp[i * in_w / w];
 				}
+
 				dp += w;
 			}
 		}

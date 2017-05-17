@@ -277,6 +277,7 @@ namespace BizHawk.Client.Common
 					{
 						controllers["Open"] = true;
 					}
+
 					isCdTrayOpen = !isCdTrayOpen;
 				}
 				else
@@ -384,7 +385,6 @@ namespace BizHawk.Client.Common
 						string rightXRaw = new string(br.ReadChars(4)).Trim();
 						string rightYRaw = new string(br.ReadChars(4)).Trim();
 
-
 						Tuple<string, float> leftX = new Tuple<string, float>("P2 LStick X", float.Parse(leftXRaw));
 						Tuple<string, float> leftY = new Tuple<string, float>("P2 LStick Y", float.Parse(leftYRaw));
 						Tuple<string, float> rightX = new Tuple<string, float>("P2 RStick X", float.Parse(rightXRaw));
@@ -410,6 +410,7 @@ namespace BizHawk.Client.Common
 					{
 						controllers["Open"] = true;
 					}
+
 					isCdTrayOpen = !isCdTrayOpen;
 				}
 				else
@@ -443,6 +444,5 @@ namespace BizHawk.Client.Common
 
 			public bool parseSuccessful = false;
 		}
-
 	}
 }

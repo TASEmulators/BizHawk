@@ -123,6 +123,7 @@ namespace BizHawk.Client.Common
 					output[(page * 0x4000) + (i * 2) + 1] = source[(page * 0x4000) + 0x0000 + i];
 				}
 			}
+
 			return output;
 		}
 

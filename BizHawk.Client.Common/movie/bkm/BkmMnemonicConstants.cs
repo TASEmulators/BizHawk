@@ -5,7 +5,7 @@ namespace BizHawk.Client.Common
 {
 	public static class BkmMnemonicConstants
 	{
-		public static readonly Dictionary<string, Dictionary<string, string>> BUTTONS = new Dictionary<string, Dictionary<string, string>>
+		public static readonly Dictionary<string, Dictionary<string, string>> Buttons = new Dictionary<string, Dictionary<string, string>>
 		{
 			{
 				"Gameboy Controller", new Dictionary<string, string>
@@ -142,12 +142,12 @@ namespace BizHawk.Client.Common
 			}
 		};
 
-		public static readonly Dictionary<string, Dictionary<string, string>> ANALOGS = new Dictionary<string, Dictionary<string, string>>
+		public static readonly Dictionary<string, Dictionary<string, string>> Analogs = new Dictionary<string, Dictionary<string, string>>
 		{
 			{ "Nintento 64 Controller", new Dictionary<string, string> { { "X Axis", "X" }, { "Y Axis", "Y" } } }
 		};
 
-		public static readonly Dictionary<string, Dictionary<string, string>> COMMANDS = new Dictionary<string, Dictionary<string, string>>
+		public static readonly Dictionary<string, Dictionary<string, string>> Commands = new Dictionary<string, Dictionary<string, string>>
 		{
 			{ "Atari 2600 Basic Controller", new Dictionary<string, string> { { "Reset", "r" }, { "Select", "s" } } },
 			{ "Atari 7800 ProLine Joystick Controller", new Dictionary<string, string> { { "Reset", "r" }, { "Select", "s" } } },
@@ -165,7 +165,7 @@ namespace BizHawk.Client.Common
 			{ "GPGX 3-Button Controller", new Dictionary<string, string> { { "Power", "P" }, { "Reset", "r" } } }
 		};
 
-		public static readonly Dictionary<string, int> PLAYERS = new Dictionary<string, int>
+		public static readonly Dictionary<string, int> Players = new Dictionary<string, int>
 		{
 			{ "Gameboy Controller", 1 }, { "GBA Controller", 1 }, { "Genesis 3-Button Controller", 2 }, { "GPGX Genesis Controller", 2 }, { "NES Controller", 4 },
 			{ "SNES Controller", 4 }, { "PC Engine Controller", 5 }, { "SMS Controller", 2 }, { "TI83 Controller", 1 }, { "Atari 2600 Basic Controller", 2 }, { "Atari 7800 ProLine Joystick Controller", 2 },
@@ -175,7 +175,7 @@ namespace BizHawk.Client.Common
 
 		// just experimenting with different possibly more painful ways to handle mnemonics
 		// |P|UDLRsSBA|
-		public static readonly Tuple<string, char>[] DGBMnemonic =
+		public static readonly Tuple<string, char>[] DgbMnemonic =
 		{
 			new Tuple<string, char>(null, '|'),
 			new Tuple<string, char>("P1 Power", 'P'),
@@ -202,7 +202,7 @@ namespace BizHawk.Client.Common
 			new Tuple<string, char>(null, '|')
 		};
 
-		public static readonly Tuple<string, char>[] WSMnemonic =
+		public static readonly Tuple<string, char>[] WsMnemonic =
 		{
 			new Tuple<string, char>(null, '|'),
 			new Tuple<string, char>("P1 X1", '1'),

@@ -69,6 +69,7 @@ namespace BizHawk.Client.Common
 			{
 				savestateCopy = null;
 			}
+
 			if (savestateCopy == null)
 			{
 				savestateCopy = new byte[coreSavestate.Length];

@@ -18,10 +18,10 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			var directory_info = new FileInfo(Filename).Directory;
-			if (directory_info != null)
+			var directoryInfo = new FileInfo(Filename).Directory;
+			if (directoryInfo != null)
 			{
-				Directory.CreateDirectory(directory_info.FullName);
+				Directory.CreateDirectory(directoryInfo.FullName);
 			}
 
 			Write(Filename);
@@ -49,10 +49,10 @@ namespace BizHawk.Client.Common
 			backupName = backupName.Insert(Filename.LastIndexOf("."), $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}");
 			backupName = Path.Combine(Global.Config.PathEntries["Global", "Movie backups"].Path, Path.GetFileName(backupName));
 
-			var directory_info = new FileInfo(backupName).Directory;
-			if (directory_info != null)
+			var directoryInfo = new FileInfo(backupName).Directory;
+			if (directoryInfo != null)
 			{
-				Directory.CreateDirectory(directory_info.FullName);
+				Directory.CreateDirectory(directoryInfo.FullName);
 			}
 
 			Write(backupName);
@@ -166,14 +166,20 @@ namespace BizHawk.Client.Common
 					{
 						int c = sr.Read();
 						if (c == -1)
+						{
 							break;
+						}
+
 						if (c == '\r')
 						{
 							usesR = true;
 							break;
 						}
+
 						if (c == '\n')
+						{
 							break;
+						}
 					}
 
 					int lineLen = line.Length + 1; // account for \n
@@ -194,9 +200,11 @@ namespace BizHawk.Client.Common
 					for (;;)
 					{
 						int c = sr.Read();
-						if (c == -1) break;
-						if (c == '\n') break;
-						if (c == ' ') break;
+						if (c == -1 || c == '\n' || c == ' ')
+						{
+							break;
+						}
+						
 						sbLine.Append((char)c);
 					}
 
@@ -213,14 +221,15 @@ namespace BizHawk.Client.Common
 						for (;;)
 						{
 							int c = stream.ReadByte();
-							if (c == -1) break;
-							if (c == '\n') break;
+							if (c == -1 || c == '\n')
+							{
+								break;
+							}
 						}
 
 						// proceed to next line
 						continue;
 					}
-
 
 					var remainder = sr.ReadLine();
 					sbLine.Append(' ');

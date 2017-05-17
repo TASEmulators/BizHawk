@@ -57,23 +57,40 @@ namespace BizHawk.Client.Common
 
 				bool wasValue;
 				if (frame < LagLog.Count)
+				{
 					wasValue = LagLog[frame];
+				}
 				else if (frame == WasLag.Count)
+				{
 					wasValue = value.Value;
+				}
 				else
+				{
 					wasValue = WasLag[frame];
+				}
 
 				if (frame == WasLag.Count)
+				{
 					WasLag.Add(wasValue);
+				}
 				else
+				{
 					WasLag[frame] = wasValue;
+				}
 
 				if (frame != 0)
+				{
 					WasLag[frame - 1] = LagLog[frame - 1];
+				}
+
 				if (frame >= LagLog.Count)
+				{
 					LagLog.Add(value.Value);
+				}
 				else
+				{
 					LagLog[frame] = value.Value;
+				}
 			}
 		}
 

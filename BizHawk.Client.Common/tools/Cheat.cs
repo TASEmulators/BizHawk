@@ -196,38 +196,44 @@ namespace BizHawk.Client.Common
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
+
 							break;
 						case COMPARISONTYPE.GREATER_THAN:
 							if (_compare.Value > _watch.ValueNoFreeze) 
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
+
 							break;
 						case COMPARISONTYPE.GREATER_THAN_OR_EQUAL:
 							if (_compare.Value >= _watch.ValueNoFreeze)
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
+
 							break;
 						case COMPARISONTYPE.LESS_THAN:
 							if (_compare.Value < _watch.ValueNoFreeze) 
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
+
 							break;
 						case COMPARISONTYPE.LESS_THAN_OR_EQUAL:
 							if (_compare.Value <= _watch.ValueNoFreeze)
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
+
 							break;
 						case COMPARISONTYPE.NOT_EQUAL:
 							if (_compare.Value != _watch.ValueNoFreeze)
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
+
 							break;
-					}		
+					}
 				}
 				else
 				{

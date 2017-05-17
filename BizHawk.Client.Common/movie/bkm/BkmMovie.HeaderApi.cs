@@ -42,8 +42,8 @@ namespace BizHawk.Client.Common
 
 		public string SystemID
 		{
-			get { return Header.SystemID; }
-			set { Header.SystemID = value; }
+			get { return Header.SystemId; }
+			set { Header.SystemId = value; }
 		}
 
 		public string Hash

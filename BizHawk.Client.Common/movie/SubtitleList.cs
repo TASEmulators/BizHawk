@@ -80,7 +80,9 @@ namespace BizHawk.Client.Common
 			var sb = new StringBuilder();
 			List<Subtitle> subs = new List<Subtitle>();
 			foreach (var subtitle in this)
+			{
 				subs.Add(subtitle);
+			}
 
 			// absense of line wrap forces miltiline subtitle macros
 			// so we sort them just in case and optionally concat back to a single unit
@@ -116,7 +118,9 @@ namespace BizHawk.Client.Common
 			}
 
 			foreach (var subtitle in subs)
+			{
 				sb.Append(subtitle.ToSubRip(index++, fps, AddColorTag));
+			}
 
 			return sb.ToString();
 		}

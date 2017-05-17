@@ -67,15 +67,9 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private int maxStates
-		{
-			get { return (int)(Settings.Cap / _expectedStateSize) + (int)((ulong)Settings.DiskCapacitymb * 1024 * 1024 / _expectedStateSize); }
-		}
+		private int maxStates => (int)(Settings.Cap / _expectedStateSize) + (int)((ulong)Settings.DiskCapacitymb * 1024 * 1024 / _expectedStateSize);
 
-		private int _stateGap
-		{
-			get { return 1 << Settings.StateGap; }
-		}
+		private int _stateGap => 1 << Settings.StateGap;
 
 		public TasStateManager(TasMovie movie)
 		{
@@ -86,7 +80,9 @@ namespace BizHawk.Client.Common
 			accessed = new List<StateManagerState>();
 
 			if (_movie.StartsFromSavestate)
+			{
 				SetState(0, _movie.BinarySavestate);
+			}
 		}
 
 		public void Dispose()
@@ -215,7 +211,11 @@ namespace BizHawk.Client.Common
 			if (Used > Settings.Cap)
 			{
 				int lastMemState = -1;
-				do { lastMemState++; } while (States[accessed[lastMemState].Frame] == null);
+				do
+				{
+					lastMemState++;
+				}
+				while (States[accessed[lastMemState].Frame] == null);
 				MoveStateToDisk(accessed[lastMemState].Frame);
 			}
 		}
@@ -260,7 +260,8 @@ namespace BizHawk.Client.Common
 				}
 
 				i++;
-			} while (StateIsMarker(shouldRemove.X, shouldRemove.Y) && markerSkips > -1 || shouldRemove.X == 0);
+			}
+			while (StateIsMarker(shouldRemove.X, shouldRemove.Y) && markerSkips > -1 || shouldRemove.X == 0);
 
 			// by last accessed
 			markerSkips = maxStates / 2;
@@ -286,7 +287,8 @@ namespace BizHawk.Client.Common
 					}
 
 					i++;
-				} while (StateIsMarker(shouldRemove.X, shouldRemove.Y) && markerSkips > -1 || shouldRemove.X == 0);
+				}
+				while (StateIsMarker(shouldRemove.X, shouldRemove.Y) && markerSkips > -1 || shouldRemove.X == 0);
 			}
 
 			if (shouldRemove.X < 1) // only found marker states above
@@ -557,7 +559,12 @@ namespace BizHawk.Client.Common
 			int index = -1;
 			while (DiskUsed > (ulong)Settings.DiskCapacitymb * 1024uL * 1024uL)
 			{
-				do { index++; } while (!accessed[index].IsOnDisk);
+				do
+				{
+					index++;
+				}
+				while (!accessed[index].IsOnDisk);
+
 				accessed[index].MoveToRAM();
 			}
 
@@ -576,16 +583,22 @@ namespace BizHawk.Client.Common
 			// still leave marker states
 			for (int i = 1; i < States.Count; i++)
 			{
-				if (_movie.Markers.IsMarker(States.ElementAt(i).Key + 1) ||
-					States.ElementAt(i).Key % _stateGap == 0)
+				if (_movie.Markers.IsMarker(States.ElementAt(i).Key + 1)
+					|| States.ElementAt(i).Key % _stateGap == 0)
+				{
 					continue;
+				}
 
 				ret.Add(i);
 
 				if (States.ElementAt(i).Value.IsOnDisk)
+				{
 					saveUsed -= _expectedStateSize;
+				}
 				else
+				{
 					saveUsed -= (ulong)States.ElementAt(i).Value.Length;
+				}
 			}
 
 			// if the size is still too big, exclude states form the beginning
@@ -597,19 +610,27 @@ namespace BizHawk.Client.Common
 				{
 					index++;
 					if (index >= States.Count)
+					{
 						break;
+					}
 				}
 				while (_movie.Markers.IsMarker(States.ElementAt(index).Key + 1));
 
 				if (index >= States.Count)
+				{
 					break;
+				}
 
 				ret.Add(index);
 
 				if (States.ElementAt(index).Value.IsOnDisk)
+				{
 					saveUsed -= _expectedStateSize;
+				}
 				else
+				{
 					saveUsed -= (ulong)States.ElementAt(index).Value.Length;
+				}
 			}
 
 			// if there are enough markers to still be over the limit, remove marker frames
@@ -618,11 +639,18 @@ namespace BizHawk.Client.Common
 			{
 				index++;
 				if (!ret.Contains(index))
+				{
 					ret.Add(index);
+				}
+
 				if (States.ElementAt(index).Value.IsOnDisk)
+				{
 					saveUsed -= _expectedStateSize;
+				}
 				else
+				{
 					saveUsed -= (ulong)States.ElementAt(index).Value.Length;
+				}
 			}
 
 			return ret;
@@ -636,7 +664,9 @@ namespace BizHawk.Client.Common
 			for (int i = 0; i < States.Count; i++)
 			{
 				if (noSave.Contains(i))
+				{
 					continue;
+				}
 
 				StateAccessed(States.ElementAt(i).Key);
 				KeyValuePair<int, StateManagerState> kvp = States.ElementAt(i);
@@ -714,7 +744,6 @@ namespace BizHawk.Client.Common
 				// Bad!
 			}
 		}
-
 
 		public KeyValuePair<int, byte[]> GetStateClosestToFrame(int frame)
 		{
@@ -816,7 +845,9 @@ namespace BizHawk.Client.Common
 
 			// Get the state instance
 			if (branchHash == -1)
+			{
 				stateToMatch = States[frame];
+			}
 			else
 			{
 				if (!BranchStates[frame].ContainsKey(branchHash))

@@ -85,7 +85,7 @@
 		}
 
 		/// <summary>
-		/// Sinple on/off pattern, using the given values as on/off.
+		/// Simple on/off pattern, using the given values as on/off.
 		/// </summary>
 		public AutoPatternFloat(float valueOn, int on, float valueOff, int off, bool skip_lag = true, int offset = 0, int loop = 0)
 		{

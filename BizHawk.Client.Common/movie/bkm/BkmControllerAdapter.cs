@@ -13,12 +13,12 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(string button)
 		{
-			return MyBoolButtons[button];
+			return _myBoolButtons[button];
 		}
 
 		public float GetFloat(string name)
 		{
-			return MyFloatControls[name];
+			return _myFloatControls[name];
 		}
 
 		#endregion
@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 				}
 
 				var val = playerSource.IsPressed(button);
-				MyBoolButtons[button] = val;
+				_myBoolButtons[button] = val;
 			}
 		}
 
@@ -55,12 +55,12 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var button in Definition.BoolButtons)
 			{
-				MyBoolButtons[button] = source.IsPressed(button);
+				_myBoolButtons[button] = source.IsPressed(button);
 			}
 
 			foreach (var name in Definition.FloatControls)
 			{
-				MyFloatControls[name] = source.GetFloat(name);
+				_myFloatControls[name] = source.GetFloat(name);
 			}
 		}
 
@@ -71,7 +71,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var button in Definition.BoolButtons)
 			{
-				MyBoolButtons[button] = Global.AutofireStickyXORAdapter.IsSticky(button);
+				_myBoolButtons[button] = Global.AutofireStickyXORAdapter.IsSticky(button);
 			}
 		}
 
@@ -161,7 +161,7 @@ namespace BizHawk.Client.Common
 
 			var c = new MnemonicChecker(mnemonic);
 
-			MyBoolButtons.Clear();
+			_myBoolButtons.Clear();
 
 			int start = 3;
 			if (ControlType == "NES Controller")
@@ -207,50 +207,70 @@ namespace BizHawk.Client.Common
 					Force("Reset", true);
 				}
 			}
+
 			if (ControlType == "Gameboy Controller")
 			{
-				if (mnemonic.Length < 2) return;
+				if (mnemonic.Length < 2)
+				{
+					return;
+				}
+
 				Force("Power", mnemonic[1] != '.');
 			}
+
 			if (ControlType == "Genesis 3-Button Controller")
 			{
-				if (mnemonic.Length < 2) return;
+				if (mnemonic.Length < 2)
+				{
+					return;
+				}
+
 				Force("Reset", mnemonic[1] != '.');
 			}
+
 			if (ControlType == "SMS Controller" || ControlType == "TI83 Controller" || ControlType == "ColecoVision Basic Controller")
 			{
 				start = 1;
 			}
+
 			if (ControlType == "Atari 2600 Basic Controller")
 			{
-				if (mnemonic.Length < 2) return;
+				if (mnemonic.Length < 2)
+				{
+					return;
+				}
+
 				Force("Reset", mnemonic[1] != '.' && mnemonic[1] != '0');
 				Force("Select", mnemonic[2] != '.' && mnemonic[2] != '0');
 				start = 4;
 			}
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
+
+			for (int player = 1; player <= BkmMnemonicConstants.Players[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.Buttons[ControlType].Count + 1);
 				int ctr = start;
-				if (mnemonic.Length < srcindex + ctr + BkmMnemonicConstants.BUTTONS[ControlType].Count - 1)
+				if (mnemonic.Length < srcindex + ctr + BkmMnemonicConstants.Buttons[ControlType].Count - 1)
 				{
 					return;
 				}
+
 				string prefix = "";
 				if (ControlType != "Gameboy Controller" && ControlType != "TI83 Controller")
 				{
 					prefix = "P" + player + " ";
 				}
-				foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
+
+				foreach (string button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 				{
 					Force(prefix + button, c[srcindex + ctr++]);
 				}
 			}
+
 			if (ControlType == "SMS Controller")
 			{
-				int srcindex = BkmMnemonicConstants.PLAYERS[ControlType] * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
+				int srcindex = BkmMnemonicConstants.Players[ControlType] * (BkmMnemonicConstants.Buttons[ControlType].Count + 1);
 				int ctr = start;
-				foreach (var command in BkmMnemonicConstants.COMMANDS[ControlType].Keys)
+				foreach (var command in BkmMnemonicConstants.Commands[ControlType].Keys)
 				{
 					Force(command, c[srcindex + ctr++]);
 				}
@@ -259,8 +279,8 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
-		private readonly WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, float> MyFloatControls = new WorkingDictionary<string, float>();
+		private readonly WorkingDictionary<string, bool> _myBoolButtons = new WorkingDictionary<string, bool>();
+		private readonly WorkingDictionary<string, float> _myFloatControls = new WorkingDictionary<string, float>();
 
 		private bool IsGenesis6Button()
 		{
@@ -269,12 +289,12 @@ namespace BizHawk.Client.Common
 
 		private void Force(string button, bool state)
 		{
-			MyBoolButtons[button] = state;
+			_myBoolButtons[button] = state;
 		}
 
 		private void Force(string name, float state)
 		{
-			MyFloatControls[name] = state;
+			_myFloatControls[name] = state;
 		}
 
 		private string ControlType => Definition.Name;
@@ -282,17 +302,19 @@ namespace BizHawk.Client.Common
 		private void SetGBAControllersAsMnemonic(string mnemonic)
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
-			MyBoolButtons.Clear();
+			_myBoolButtons.Clear();
 			if (mnemonic.Length < 2)
 			{
 				return;
 			}
+
 			if (mnemonic[1] == 'P')
 			{
 				Force("Power", true);
 			}
+
 			int start = 3;
-			foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
+			foreach (string button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 			{
 				Force(button, c[start++]);
 			}
@@ -301,7 +323,7 @@ namespace BizHawk.Client.Common
 		private void SetGenesis6ControllersAsMnemonic(string mnemonic)
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
-			MyBoolButtons.Clear();
+			_myBoolButtons.Clear();
 
 			if (mnemonic.Length < 2)
 			{
@@ -322,17 +344,17 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.Buttons[ControlType].Count + 1);
 
-				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.BUTTONS[ControlType].Count - 1)
+				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.Buttons[ControlType].Count - 1)
 				{
 					return;
 				}
 
 				int start = 3;
-				foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (string button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
@@ -342,7 +364,7 @@ namespace BizHawk.Client.Common
 		private void SetGenesis3ControllersAsMnemonic(string mnemonic)
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
-			MyBoolButtons.Clear();
+			_myBoolButtons.Clear();
 
 			if (mnemonic.Length < 2)
 			{
@@ -363,17 +385,17 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS["GPGX 3-Button Controller"].Count + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.Buttons["GPGX 3-Button Controller"].Count + 1);
 
-				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.BUTTONS["GPGX 3-Button Controller"].Count - 1)
+				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.Buttons["GPGX 3-Button Controller"].Count - 1)
 				{
 					return;
 				}
 
 				int start = 3;
-				foreach (string button in BkmMnemonicConstants.BUTTONS["GPGX 3-Button Controller"].Keys)
+				foreach (string button in BkmMnemonicConstants.Buttons["GPGX 3-Button Controller"].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
@@ -383,7 +405,7 @@ namespace BizHawk.Client.Common
 		private void SetSNESControllersAsMnemonic(string mnemonic)
 		{
 			var c = new MnemonicChecker(mnemonic);
-			MyBoolButtons.Clear();
+			_myBoolButtons.Clear();
 
 			if (mnemonic.Length < 2)
 			{
@@ -399,17 +421,17 @@ namespace BizHawk.Client.Common
 				Force("Reset", true);
 			}
 
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.Buttons[ControlType].Count + 1);
 
-				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.BUTTONS[ControlType].Count - 1)
+				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.Buttons[ControlType].Count - 1)
 				{
 					return;
 				}
 
 				int start = 3;
-				foreach (var button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (var button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
@@ -419,7 +441,7 @@ namespace BizHawk.Client.Common
 		private void SetLynxControllersAsMnemonic(string mnemonic)
 		{
 			var c = new MnemonicChecker(mnemonic);
-			MyBoolButtons.Clear();
+			_myBoolButtons.Clear();
 
 			if (mnemonic.Length < 2)
 			{
@@ -431,17 +453,17 @@ namespace BizHawk.Client.Common
 				Force("Power", true);
 			}
 
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.Buttons[ControlType].Count + 1);
 
-				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.BUTTONS[ControlType].Count - 1)
+				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.Buttons[ControlType].Count - 1)
 				{
 					return;
 				}
 
 				int start = 3;
-				foreach (var button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (var button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 				{
 					Force(button, c[srcindex + start++]);
 				}
@@ -451,7 +473,7 @@ namespace BizHawk.Client.Common
 		private void SetN64ControllersAsMnemonic(string mnemonic)
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
-			MyBoolButtons.Clear();
+			_myBoolButtons.Clear();
 
 			if (mnemonic.Length < 2)
 			{
@@ -467,22 +489,22 @@ namespace BizHawk.Client.Common
 				Force("Reset", true);
 			}
 
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + BkmMnemonicConstants.ANALOGS[ControlType].Count * 4 + 1 + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.Buttons[ControlType].Count + BkmMnemonicConstants.Analogs[ControlType].Count * 4 + 1 + 1);
 
-				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.BUTTONS[ControlType].Count - 1)
+				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.Buttons[ControlType].Count - 1)
 				{
 					return;
 				}
 
 				int start = 3;
-				foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (string button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
 
-				foreach (string name in BkmMnemonicConstants.ANALOGS[ControlType].Keys)
+				foreach (string name in BkmMnemonicConstants.Analogs[ControlType].Keys)
 				{
 					Force("P" + player + " " + name, int.Parse(mnemonic.Substring(srcindex + start, 4)));
 					start += 5;
@@ -493,7 +515,7 @@ namespace BizHawk.Client.Common
 		private void SetSaturnControllersAsMnemonic(string mnemonic)
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
-			MyBoolButtons.Clear();
+			_myBoolButtons.Clear();
 
 			if (mnemonic.Length < 2)
 			{
@@ -509,17 +531,17 @@ namespace BizHawk.Client.Common
 				Force("Reset", true);
 			}
 
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.Buttons[ControlType].Count + 1);
 
-				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.BUTTONS[ControlType].Count - 1)
+				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.Buttons[ControlType].Count - 1)
 				{
 					return;
 				}
 
 				int start = 3;
-				foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (string button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
@@ -529,39 +551,43 @@ namespace BizHawk.Client.Common
 		private void SetAtari7800AsMnemonic(string mnemonic)
 		{
 			MnemonicChecker c = new MnemonicChecker(mnemonic);
-			MyBoolButtons.Clear();
+			_myBoolButtons.Clear();
 
 			if (mnemonic.Length < 5)
 			{
 				return;
 			}
+
 			if (mnemonic[1] == 'P')
 			{
 				Force("Power", true);
 			}
+
 			if (mnemonic[2] == 'r')
 			{
 				Force("Reset", true);
 			}
+
 			if (mnemonic[3] == 's')
 			{
 				Force("Select", true);
 			}
+
 			if (mnemonic[4] == 'p')
 			{
 				Force("Pause", true);
 			}
 
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.Buttons[ControlType].Count + 1);
 				int start = 6;
-				if (mnemonic.Length < srcindex + start + BkmMnemonicConstants.BUTTONS[ControlType].Count)
+				if (mnemonic.Length < srcindex + start + BkmMnemonicConstants.Buttons[ControlType].Count)
 				{
 					return;
 				}
 
-				foreach (string button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (string button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
@@ -571,10 +597,10 @@ namespace BizHawk.Client.Common
 		private void SetDualGameBoyControllerAsMnemonic(string mnemonic)
 		{
 			var checker = new MnemonicChecker(mnemonic);
-			MyBoolButtons.Clear();
-			for (int i = 0; i < BkmMnemonicConstants.DGBMnemonic.Length; i++)
+			_myBoolButtons.Clear();
+			for (int i = 0; i < BkmMnemonicConstants.DgbMnemonic.Length; i++)
 			{
-				var t = BkmMnemonicConstants.DGBMnemonic[i];
+				var t = BkmMnemonicConstants.DgbMnemonic[i];
 				if (t.Item1 != null)
 				{
 					Force(t.Item1, checker[i]);
@@ -585,10 +611,10 @@ namespace BizHawk.Client.Common
 		private void SetWonderSwanControllerAsMnemonic(string mnemonic)
 		{
 			var checker = new MnemonicChecker(mnemonic);
-			MyBoolButtons.Clear();
-			for (int i = 0; i < BkmMnemonicConstants.WSMnemonic.Length; i++)
+			_myBoolButtons.Clear();
+			for (int i = 0; i < BkmMnemonicConstants.WsMnemonic.Length; i++)
 			{
-				var t = BkmMnemonicConstants.WSMnemonic[i];
+				var t = BkmMnemonicConstants.WsMnemonic[i];
 				if (t.Item1 != null)
 				{
 					Force(t.Item1, checker[i]);
@@ -599,27 +625,26 @@ namespace BizHawk.Client.Common
 		private void SetC64ControllersAsMnemonic(string mnemonic)
 		{
 			var c = new MnemonicChecker(mnemonic);
-			MyBoolButtons.Clear();
+			_myBoolButtons.Clear();
 
-
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[ControlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (BkmMnemonicConstants.BUTTONS[ControlType].Count + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.Buttons[ControlType].Count + 1);
 
-				if (mnemonic.Length < srcindex + 1 + BkmMnemonicConstants.BUTTONS[ControlType].Count - 1)
+				if (mnemonic.Length < srcindex + 1 + BkmMnemonicConstants.Buttons[ControlType].Count - 1)
 				{
 					return;
 				}
 
 				int start = 1;
-				foreach (var button in BkmMnemonicConstants.BUTTONS[ControlType].Keys)
+				foreach (var button in BkmMnemonicConstants.Buttons[ControlType].Keys)
 				{
 					Force("P" + player + " " + button, c[srcindex + start++]);
 				}
 			}
 
 			int startk = 13;
-			foreach (string button in BkmMnemonicConstants.BUTTONS["Commodore 64 Keyboard"].Keys)
+			foreach (string button in BkmMnemonicConstants.Buttons["Commodore 64 Keyboard"].Keys)
 			{
 				Force(button, c[startk++]);
 			}

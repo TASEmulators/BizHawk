@@ -173,19 +173,18 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public ControllerDefinition Definition
-		{
-			get { return Source.Definition; }
-		}
+		public ControllerDefinition Definition => Source.Definition;
 
 		public bool IsPressed(string button)
 		{
 			var source = Source.IsPressed(button);
 			bool patternValue = false;
 			if (_boolPatterns.ContainsKey(button))
-			{ // I can't figure a way to determine right here if it should Peek or Get.
+			{
+				// I can't figure a way to determine right here if it should Peek or Get.
 				patternValue = _boolPatterns[button].PeekNextValue();
 			}
+
 			source ^= patternValue;
 
 			return source;

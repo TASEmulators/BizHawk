@@ -310,7 +310,6 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 						movie.HeaderEntries.Add(key, firmware.Hash);
 					}
 				}
-
 			}
 
 			if (Global.Emulator is Gameboy && (Global.Emulator as Gameboy).IsCGBMode())

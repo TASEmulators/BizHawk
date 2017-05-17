@@ -80,7 +80,9 @@ namespace BizHawk.Client.Common
 				MemoryDomain domain = MemoryDomains.SystemBus;
 
 				if (!string.IsNullOrEmpty(name))
+				{
 					domain = MemoryDomains[name];
+				}
 
 				var d = DisassemblableCore.Disassemble(domain, pc, out l);
 				return new { disasm = d, length = l };
@@ -113,10 +115,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-
-				Log(string.Format(
-					"Error: {0} does not yet implement getregister()",
-					Emulator.Attributes().CoreName));
+				Log($"Error: {Emulator.Attributes().CoreName} does not yet implement getregister()");
 				return 0;
 			}
 		}

@@ -66,7 +66,10 @@ namespace BizHawk.Client.Common
 		private static Binding Bind(string tabGroup, string displayName, string bindings = "", string defaultBinding = "", string toolTip = "")
 		{
 			if (string.IsNullOrEmpty(defaultBinding))
+			{
 				defaultBinding = bindings;
+			}
+
 			return new Binding { DisplayName = displayName, Bindings = bindings, TabGroup = tabGroup, DefaultBinding = defaultBinding, ToolTip = toolTip };
 		}
 
@@ -75,21 +78,21 @@ namespace BizHawk.Client.Common
 			// TODO - this method is potentially disastrously O(N^2) slow due to linear search nested in loop
 
 			// Add missing entries
-			foreach (Binding default_binding in DefaultValues)
+			foreach (Binding defaultBinding in DefaultValues)
 			{
-				var binding = Bindings.FirstOrDefault(x => x.DisplayName == default_binding.DisplayName);
+				var binding = Bindings.FirstOrDefault(x => x.DisplayName == defaultBinding.DisplayName);
 				if (binding == null)
 				{
-					Bindings.Add(default_binding);
+					Bindings.Add(defaultBinding);
 				}
 				else
 				{
 					// patch entries with updated settings (necessary because of TODO LARP
-					binding.Ordinal = default_binding.Ordinal;
-					binding.DefaultBinding = default_binding.DefaultBinding;
-					binding.TabGroup = default_binding.TabGroup;
-					binding.ToolTip = default_binding.ToolTip;
-					binding.Ordinal = default_binding.Ordinal;
+					binding.Ordinal = defaultBinding.Ordinal;
+					binding.DefaultBinding = defaultBinding.DefaultBinding;
+					binding.TabGroup = defaultBinding.TabGroup;
+					binding.ToolTip = defaultBinding.ToolTip;
+					binding.Ordinal = defaultBinding.Ordinal;
 				}
 			}
 

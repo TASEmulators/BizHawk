@@ -460,6 +460,7 @@ namespace BizHawk.Client.Common
 			{
 				movie.InsertEmptyFrame(FirstFrame, length - _undoLength);
 			}
+
 			if (_redoLength != length)
 			{
 				movie.RemoveFrames(FirstFrame, movie.InputLogLength - _redoLength);

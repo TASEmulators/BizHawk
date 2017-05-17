@@ -71,9 +71,14 @@ namespace BizHawk.Client.Common
 						int start = rpos;
 						int end = wpos;
 						if (end < start) // wrap
+						{
 							end = LEN;
+						}
+
 						if (end - start > count)
+						{
 							end = start + count;
+						}
 
 						int c = end - start;
 						if (c > 0)
@@ -95,6 +100,7 @@ namespace BizHawk.Client.Common
 						}
 					}
 				}
+
 				return ret;
 			}
 
@@ -145,9 +151,14 @@ namespace BizHawk.Client.Common
 						int start = wpos;
 						int end = (rpos - 1) & MASK;
 						if (end < start) // wrap
+						{
 							end = LEN;
+						}
+
 						if (end - start > count)
+						{
 							end = start + count;
+						}
 
 						int c = end - start;
 						if (c > 0)
@@ -169,6 +180,7 @@ namespace BizHawk.Client.Common
 						}
 					}
 				}
+
 				return ret;
 			}
 
@@ -183,9 +195,10 @@ namespace BizHawk.Client.Common
 
 			private class WStream : Stream
 			{
-				public override bool CanRead { get { return false; } }
-				public override bool CanSeek { get { return false; } }
-				public override bool CanWrite { get { return true; } }
+				public override bool CanRead => false;
+				public override bool CanSeek => false;
+				public override bool CanWrite => true;
+
 				public override void Flush() { }
 				public override long Length { get { throw new NotSupportedException(); } }
 				public override long Seek(long offset, SeekOrigin origin) { throw new NotSupportedException(); }
@@ -214,7 +227,9 @@ namespace BizHawk.Client.Common
 					int cnt = _r.Write(buffer, offset, count);
 					_total += cnt;
 					if (cnt < count)
+					{
 						throw new IOException("broken pipe");
+					}
 #else
 					int end = offset + count;
 					while (offset < end)
@@ -228,7 +243,9 @@ namespace BizHawk.Client.Common
 				public override void WriteByte(byte value)
 				{
 					if (!_r.WriteByte(value))
+					{
 						throw new IOException("broken pipe");
+					}
 				}
 
 				protected override void Dispose(bool disposing)
@@ -238,9 +255,11 @@ namespace BizHawk.Client.Common
 						_r.CloseWrite();
 						_r = null;
 					}
+
 					base.Dispose(disposing);
 				}
 			}
+
 			private class RStream : Stream
 			{
 				public override bool CanRead { get { return true; } }
@@ -303,6 +322,7 @@ namespace BizHawk.Client.Common
 						_r.CloseRead();
 						_r = null;
 					}
+
 					base.Dispose(disposing);
 				}
 			}
@@ -377,6 +397,7 @@ namespace BizHawk.Client.Common
 			{
 				r.W.Dispose();
 			}
+
 			task.Wait();
 		}
 

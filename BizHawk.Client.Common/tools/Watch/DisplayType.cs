@@ -54,7 +54,7 @@
 		FixedPoint_16_16,
 
 		/// <summary>
-		/// The traditionnal float type as in C++ <seealso cref="float"/>
+		/// The traditional float type as in C++ <seealso cref="float"/>
 		/// Used only by <see cref="DWordWatch"/> as it is 32 bits length
 		/// </summary>
 		Float

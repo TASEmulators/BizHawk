@@ -77,7 +77,9 @@ namespace BizHawk.Client.Common
 			}
 
 			if (!backup)
+			{
 				Changes = false;
+			}
 		}
 
 		public override bool Load(bool preload)
@@ -268,7 +270,9 @@ namespace BizHawk.Client.Common
 
 					// Movie should always have a state at frame 0.
 					if (!StartsFromSavestate && Global.Emulator.Frame == 0)
+					{
 						_stateManager.Capture();
+					}
 				}
 			}
 

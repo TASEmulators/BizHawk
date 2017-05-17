@@ -34,7 +34,11 @@ namespace BizHawk.Client.Common
 
 		public string Filename
 		{
-			get { return _filename; }
+			get
+			{
+				return _filename;
+			}
+
 			set
 			{
 				_filename = value;
