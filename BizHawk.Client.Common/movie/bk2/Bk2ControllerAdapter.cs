@@ -10,11 +10,11 @@ namespace BizHawk.Client.Common
 	public class Bk2ControllerAdapter : IMovieController
 	{
 		private readonly string _logKey = "";
-		private readonly WorkingDictionary<string, bool> MyBoolButtons = new WorkingDictionary<string, bool>();
-		private readonly WorkingDictionary<string, float> MyFloatControls = new WorkingDictionary<string, float>();
+		private readonly WorkingDictionary<string, bool> _myBoolButtons = new WorkingDictionary<string, bool>();
+		private readonly WorkingDictionary<string, float> _myFloatControls = new WorkingDictionary<string, float>();
 
 		public Bk2ControllerAdapter()
-		{		
+		{
 		}
 
 		public Bk2ControllerAdapter(string key)
@@ -41,14 +41,14 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return MyBoolButtons[button];
+				return _myBoolButtons[button];
 			}
 
 			set
 			{
-				if (MyBoolButtons.ContainsKey(button))
+				if (_myBoolButtons.ContainsKey(button))
 				{
-					MyBoolButtons[button] = value;
+					_myBoolButtons[button] = value;
 				}
 			}
 		}
@@ -57,12 +57,12 @@ namespace BizHawk.Client.Common
 
 		public bool IsPressed(string button)
 		{
-			return MyBoolButtons[button];
+			return _myBoolButtons[button];
 		}
 
 		public float GetFloat(string name)
 		{
-			return MyFloatControls[name];
+			return _myFloatControls[name];
 		}
 
 		#endregion
@@ -104,7 +104,7 @@ namespace BizHawk.Client.Common
 				}
 
 				var val = playerSource.IsPressed(button);
-				MyBoolButtons[button] = val;
+				_myBoolButtons[button] = val;
 			}
 
 			foreach (var button in Definition.FloatControls)
@@ -122,7 +122,7 @@ namespace BizHawk.Client.Common
 
 				var val = playerSource.GetFloat(button);
 
-				MyFloatControls[button] = val;
+				_myFloatControls[button] = val;
 			}
 		}
 
@@ -133,12 +133,12 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var button in Definition.BoolButtons)
 			{
-				MyBoolButtons[button] = source.IsPressed(button);
+				_myBoolButtons[button] = source.IsPressed(button);
 			}
 
 			foreach (var name in Definition.FloatControls)
 			{
-				MyFloatControls[name] = source.GetFloat(name);
+				_myFloatControls[name] = source.GetFloat(name);
 			}
 		}
 
@@ -149,7 +149,7 @@ namespace BizHawk.Client.Common
 		{
 			foreach (var button in Definition.BoolButtons)
 			{
-				MyBoolButtons[button] = Global.AutofireStickyXORAdapter.IsSticky(button);
+				_myBoolButtons[button] = Global.AutofireStickyXORAdapter.IsSticky(button);
 			}
 		}
 
@@ -169,14 +169,14 @@ namespace BizHawk.Client.Common
 				{
 					if (def.BoolButtons.Contains(key))
 					{
-						MyBoolButtons[key] = trimmed[iterator] != '.';
+						_myBoolButtons[key] = trimmed[iterator] != '.';
 						iterator++;
 					}
 					else if (def.FloatControls.Contains(key))
 					{
 						var temp = trimmed.Substring(iterator, 5);
 						var val = int.Parse(temp.Trim());
-						MyFloatControls[key] = val;
+						_myFloatControls[key] = val;
 
 						iterator += 6;
 					}
@@ -188,23 +188,21 @@ namespace BizHawk.Client.Common
 
 		public void SetFloat(string buttonName, float value)
 		{
-			MyFloatControls[buttonName] = value;
+			_myFloatControls[buttonName] = value;
 		}
 
 		public class Bk2ControllerDefinition : ControllerDefinition
 		{
 			public Bk2ControllerDefinition()
 			{
-
 			}
 
 			public Bk2ControllerDefinition(ControllerDefinition source)
 				: base(source)
 			{
-
 			}
 
-			public List<List<string>> ControlsFromLog = new List<List<string>>();
+			public List<List<string>> ControlsFromLog { private get; set; } = new List<List<string>>();
 
 			public override IEnumerable<IEnumerable<string>> ControlsOrdered
 			{

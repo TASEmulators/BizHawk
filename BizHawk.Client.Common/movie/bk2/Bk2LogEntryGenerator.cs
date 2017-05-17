@@ -11,8 +11,8 @@ namespace BizHawk.Client.Common
 		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
 		private readonly Bk2FloatConstants FloatLookup = new Bk2FloatConstants();
 
+		private readonly string _logKey;
 		private IController _source;
-		private readonly string _logKey = "";
 
 		public Bk2LogEntryGenerator(string logKey)
 		{

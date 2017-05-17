@@ -30,34 +30,34 @@ namespace BizHawk.Client.Common
 		}
 
 		private readonly Dictionary<string, string> BaseMnemonicLookupTable = new Dictionary<string, string>
-			{
-				{ "Zapper X", "zapX" },
-				{ "Zapper Y", "zapY" },
-				{ "Paddle", "Pad" },
-				{ "Pen", "Pen" },
-				{ "Mouse X", "mX" },
-				{ "Mouse Y", "mY" },
-				{ "Lightgun X", "lX" },
-				{ "Lightgun Y", "lY" },
-				{ "X Axis", "aX" },
-				{ "Y Axis", "aY" },
-				{ "LStick X", "lsX" },
-				{ "LStick Y", "lsY" },
-				{ "RStick X", "rsX" },
-				{ "RStick Y", "rsY" },
-				{ "Disc Select", "Disc" }
-			};
+		{
+			{ "Zapper X", "zapX" },
+			{ "Zapper Y", "zapY" },
+			{ "Paddle", "Pad" },
+			{ "Pen", "Pen" },
+			{ "Mouse X", "mX" },
+			{ "Mouse Y", "mY" },
+			{ "Lightgun X", "lX" },
+			{ "Lightgun Y", "lY" },
+			{ "X Axis", "aX" },
+			{ "Y Axis", "aY" },
+			{ "LStick X", "lsX" },
+			{ "LStick Y", "lsY" },
+			{ "RStick X", "rsX" },
+			{ "RStick Y", "rsY" },
+			{ "Disc Select", "Disc" }
+		};
 
 		private readonly Dictionary<string, Dictionary<string, string>> SystemOverrides = new Dictionary<string, Dictionary<string, string>>
+		{
 			{
+				"A78",
+				new Dictionary<string, string>
 				{
-					"A78",
-					new Dictionary<string, string>
-					{
-						{ "VPos", "X" },
-						{ "HPos", "Y" }
-					}
-				},
-			};
+					{ "VPos", "X" },
+					{ "HPos", "Y" }
+				}
+			},
+		};
 	}
 }

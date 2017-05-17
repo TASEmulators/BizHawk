@@ -42,7 +42,7 @@ namespace BizHawk.Client.Common
 		void CopyTo(int index, string[] array, int arrayIndex, int count);
 	}
 
-	class ListStringLog : List<string>, IStringLog
+	internal class ListStringLog : List<string>, IStringLog
 	{
 		public IStringLog Clone()
 		{
@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 	/// It should be faster than those alternatives, but wasteful of disk space.
 	/// It should also be easier to add new IList<string>-like methods than dealing with a database
 	/// </summary>
-	class StreamStringLog : IStringLog
+	internal class StreamStringLog : IStringLog
 	{
 		List<long> Offsets = new List<long>();
 		long cursor = 0;
@@ -165,7 +165,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		class Enumerator : IEnumerator<string>
+		private class Enumerator : IEnumerator<string>
 		{
 			public StreamStringLog log;
 			int index = -1;
