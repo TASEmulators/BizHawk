@@ -59,7 +59,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return Bindings.FirstOrDefault(x => x.DisplayName == index) ?? new Binding();
+				return Bindings.FirstOrDefault(b => b.DisplayName == index) ?? new Binding();
 			}
 		}
 
@@ -80,7 +80,7 @@ namespace BizHawk.Client.Common
 			// Add missing entries
 			foreach (Binding defaultBinding in DefaultValues)
 			{
-				var binding = Bindings.FirstOrDefault(x => x.DisplayName == defaultBinding.DisplayName);
+				var binding = Bindings.FirstOrDefault(b => b.DisplayName == defaultBinding.DisplayName);
 				if (binding == null)
 				{
 					Bindings.Add(defaultBinding);
@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			List<Binding> entriesToRemove = (from entry in Bindings let binding = DefaultValues.FirstOrDefault(x => x.DisplayName == entry.DisplayName) where binding == null select entry).ToList();
+			List<Binding> entriesToRemove = (from entry in Bindings let binding = DefaultValues.FirstOrDefault(b => b.DisplayName == entry.DisplayName) where binding == null select entry).ToList();
 
 			// Remove entries that no longer exist in defaults
 			foreach (Binding entry in entriesToRemove)
@@ -105,7 +105,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		static List<Binding> s_DefaultValues;
+		private static List<Binding> s_DefaultValues;
 
 		public static List<Binding> DefaultValues
 		{

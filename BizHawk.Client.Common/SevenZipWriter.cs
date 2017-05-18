@@ -339,8 +339,7 @@ namespace BizHawk.Client.Common
 			this.path = path;
 			this.compressionlevel = compressionlevel;
 
-			svc = new SevenZip.SevenZipCompressor();
-			svc.ArchiveFormat = SevenZip.OutArchiveFormat.Zip;
+			svc = new SevenZip.SevenZipCompressor { ArchiveFormat = SevenZip.OutArchiveFormat.Zip };
 
 			switch (compressionlevel)
 			{

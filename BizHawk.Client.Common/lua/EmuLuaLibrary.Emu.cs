@@ -89,9 +89,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				Log(string.Format(
-					"Error: {0} does not yet implement disassemble()",
-					Emulator.Attributes().CoreName));
+				Log($"Error: {Emulator.Attributes().CoreName} does not yet implement disassemble()");
 				return null;
 			}
 		}
@@ -178,9 +176,7 @@ namespace BizHawk.Client.Common
 			}
 			catch (NotImplementedException)
 			{
-				Log(string.Format(
-					"Error: {0} does not yet implement totalexecutedcycles()",
-					Emulator.Attributes().CoreName));
+				Log($"Error: {Emulator.Attributes().CoreName} does not yet implement totalexecutedcycles()");
 
 				return 0;
 			}
@@ -238,7 +234,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				Log(string.Format("Can not set lag information, {0} does not implement IInputPollable", Emulator.Attributes().CoreName));
+				Log($"Can not set lag information, {Emulator.Attributes().CoreName} does not implement IInputPollable");
 			}
 		}
 

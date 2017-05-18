@@ -132,7 +132,7 @@ namespace BizHawk.Client.Common
 		public static void SyncCoreCommInputSignals(CoreComm target)
 		{
 			string superhack = null;
-			if (target.CoreFileProvider != null && target.CoreFileProvider is CoreFileProvider)
+			if (target.CoreFileProvider is CoreFileProvider)
 			{
 				superhack = ((CoreFileProvider)target.CoreFileProvider).SubfileDirectory;
 			}

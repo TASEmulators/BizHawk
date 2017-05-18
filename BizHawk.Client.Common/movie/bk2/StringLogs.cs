@@ -58,7 +58,7 @@ namespace BizHawk.Client.Common
 	/// A dumb-ish IStringLog with storage on disk with no provision for recovering lost space, except upon Clear()
 	/// The purpose here is to avoid having too complicated buggy logic or a dependency on sqlite or such.
 	/// It should be faster than those alternatives, but wasteful of disk space.
-	/// It should also be easier to add new IList<string>-like methods than dealing with a database
+	/// It should also be easier to add new IList&lt;string&gt;-like methods than dealing with a database
 	/// </summary>
 	internal class StreamStringLog : IStringLog
 	{
@@ -132,6 +132,7 @@ namespace BizHawk.Client.Common
 				stream.Position = Offsets[index];
 				return br.ReadString();
 			}
+
 			set
 			{
 				stream.Position = stream.Length;
@@ -179,8 +180,10 @@ namespace BizHawk.Client.Common
 					index = log.Count;
 					return false;
 				}
+
 				return true;
 			}
+
 			void System.Collections.IEnumerator.Reset() { index = -1; }
 			
 			public void Dispose() { }

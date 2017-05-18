@@ -23,15 +23,10 @@ namespace BizHawk.Client.Common
 
 		public void WriteItem(string name, Action<Stream> callback)
 		{
-			var e = new ZipEntry(name);
-			if (_level == 0)
+			var e = new ZipEntry(name)
 			{
-				e.CompressionMethod = CompressionMethod.Stored;
-			}
-			else
-			{
-				e.CompressionMethod = CompressionMethod.Deflated;
-			}
+				CompressionMethod = _level == 0 ? CompressionMethod.Stored : CompressionMethod.Deflated
+			};
 
 			_zipOutputStream.PutNextEntry(e);
 			callback(_zipOutputStream);

@@ -181,6 +181,7 @@ namespace BizHawk.Client.Common
 			{
 				return null;
 			}
+
 			try
 			{
 				return Convert.FromBase64String(blob.Substring(7));

@@ -40,7 +40,7 @@ __Types and notation__
 ** A standard Lua table
 ");
 
-			foreach (var library in this.Select(x => new { Name = x.Library, Description = x.LibraryDescription }).Distinct())
+			foreach (var library in this.Select(lf => new { Name = lf.Library, Description = lf.LibraryDescription }).Distinct())
 			{
 				sb
 					.AppendFormat("%%TAB {0}%%", library.Name)
@@ -54,7 +54,7 @@ __Types and notation__
 						.AppendLine();
 				}
 
-				foreach (var func in this.Where(x => x.Library == library.Name))
+				foreach (var func in this.Where(lf => lf.Library == library.Name))
 				{
 					sb
 						.AppendFormat("__{0}.{1}__%%%", func.Library, func.Name)

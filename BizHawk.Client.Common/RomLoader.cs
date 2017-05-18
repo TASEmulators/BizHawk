@@ -355,8 +355,7 @@ namespace BizHawk.Client.Common
 							string discPath = e.Path;
 
 							//--- load the disc in a context which will let us abort if it's going to take too long
-							var discMountJob = new DiscMountJob { IN_FromPath = discPath };
-							discMountJob.IN_SlowLoadAbortThreshold = 8;
+							var discMountJob = new DiscMountJob { IN_FromPath = discPath, IN_SlowLoadAbortThreshold = 8 };
 							discMountJob.Run();
 							disc = discMountJob.OUT_Disc;
 

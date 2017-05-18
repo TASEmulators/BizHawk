@@ -12,12 +12,14 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class StreamBlobDatabase : IDisposable
 	{
-		private StreamBlobDatabaseBufferManager _mBufferManage;
+		private readonly StreamBlobDatabaseBufferManager _mBufferManage;
+		private readonly LinkedList<ListItem> _mBookmarks = new LinkedList<ListItem>();
+		private readonly long _mCapacity;
+
 		private byte[] _mAllocatedBuffer;
 		private Stream _mStream;
-		private LinkedList<ListItem> _mBookmarks = new LinkedList<ListItem>();
 		private LinkedListNode<ListItem> _mHead, _mTail;
-		private long _mCapacity, _mSize;
+		private long _mSize;
 
 		public StreamBlobDatabase(bool onDisk, long capacity, StreamBlobDatabaseBufferManager mBufferManage)
 		{
@@ -42,22 +44,22 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the amount of the buffer that's used
 		/// </summary>
-		public long Size { get { return _mSize; } }
+		public long Size => _mSize;
 
 		/// <summary>
 		/// Gets the current fullness ratio (Size/Capacity). Note that this wont reach 100% due to the buffer size not being a multiple of a fixed savestate size.
 		/// </summary>
-		public float FullnessRatio { get { return (float)((double)Size / (double)_mCapacity); } }
+		public float FullnessRatio => (float)((double)Size / (double)_mCapacity);
 
 		/// <summary>
 		/// Gets the number of frames stored here
 		/// </summary>
-		public int Count { get { return _mBookmarks.Count; } }
+		public int Count => _mBookmarks.Count;
 
 		/// <summary>
 		/// Gets the underlying stream to 
 		/// </summary>
-		public Stream Stream { get { return _mStream; } }
+		public Stream Stream => _mStream;
 
 		public void Dispose()
 		{
@@ -79,7 +81,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// The push and pop semantics are for historical reasons and not resemblence to normal definitions
+		/// The push and pop semantics are for historical reasons and not resemblance to normal definitions
 		/// </summary>
 		public void Push(ArraySegment<byte> seg)
 		{
@@ -91,7 +93,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// The push and pop semantics are for historical reasons and not resemblence to normal definitions
+		/// The push and pop semantics are for historical reasons and not resemblance to normal definitions
 		/// </summary>
 		public MemoryStream PopMemoryStream()
 		{
@@ -276,14 +278,11 @@ namespace BizHawk.Client.Common
 				Length = length;
 			}
 
-			public int Timestamp { get; private set; }
-			public long Index { get; private set; }
-			public int Length { get; private set; }
+			public int Timestamp { get; }
+			public long Index { get; }
+			public int Length { get; }
 			
-			public long EndExclusive
-			{
-				get { return Index + Length; }
-			}
+			public long EndExclusive => Index + Length;
 		}
 
 		private static byte[] test_BufferManage(byte[] inbuf, ref long size, bool allocate)
@@ -306,7 +305,7 @@ namespace BizHawk.Client.Common
 			return null;
 		}
 
-		static byte[] test_rewindFellationBuf;
+		private static byte[] test_rewindFellationBuf;
 
 		private static void test(string[] args)
 		{

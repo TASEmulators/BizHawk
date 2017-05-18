@@ -22,10 +22,11 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
+		/// Gets the queued movie
 		/// When initializing a movie, it will be stored here until Rom processes have been completed, then it will be moved to the Movie property
 		/// If an existing movie is still active, it will remain in the Movie property while the new movie is queued
 		/// </summary>
-		public IMovie QueuedMovie { get; set; }
+		public IMovie QueuedMovie { get; private set; }
 
 		// This wrapper but the logic could change, don't make the client code understand these details
 		public bool MovieIsQueued => QueuedMovie != null;
@@ -95,7 +96,7 @@ namespace BizHawk.Client.Common
 			MessageCallback?.Invoke(message);
 		}
 
-		public void LatchMultitrackPlayerInput(IController playerSource, MultitrackRewiringControllerAdapter rewiredSource)
+		private void LatchMultitrackPlayerInput(IController playerSource, MultitrackRewiringControllerAdapter rewiredSource)
 		{
 			if (MultiTrack.IsActive)
 			{
@@ -435,7 +436,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		// Movie Load Refactor TODO: a better name
 		/// <summary>
 		/// Sets the Movie property with the QueuedMovie, clears the queued movie, and starts the new movie
 		/// </summary>

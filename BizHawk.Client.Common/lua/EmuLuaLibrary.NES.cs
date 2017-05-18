@@ -174,7 +174,7 @@ namespace BizHawk.Client.Common
 			{
 				var decoder = new NESGameGenieDecoder(code);
 				Global.CheatList.RemoveRange(
-					Global.CheatList.Where(x => x.Address == decoder.Address));
+					Global.CheatList.Where(c => c.Address == decoder.Address));
 			}
 		}
 

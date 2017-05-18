@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 
 		public void StopAllScripts()
 		{
-			ForEach(x => x.State = LuaFile.RunState.Disabled);
+			ForEach(lf => lf.State = LuaFile.RunState.Disabled);
 		}
 
 		public new void Clear()

@@ -48,12 +48,12 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (_buttons.Any(x => x.Value))
+				if (_buttons.Any(b => b.Value))
 				{
 					return true;
 				}
 
-				return _floatButtons.Any(x => x.Value != 0);
+				return _floatButtons.Any(b => b.Value != 0);
 			}
 		}
 

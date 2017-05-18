@@ -230,7 +230,7 @@ namespace BizHawk.Client.Common
 
 			if (BranchStates.Any() && Settings.EraseBranchStatesFirst)
 			{
-				var kvp = BranchStates.Count() > 1 ? BranchStates.ElementAt(1) : BranchStates.ElementAt(0);
+				var kvp = BranchStates.Count > 1 ? BranchStates.ElementAt(1) : BranchStates.ElementAt(0);
 				shouldRemove.X = kvp.Key;
 				shouldRemove.Y = kvp.Value.Keys[0];
 
@@ -497,7 +497,7 @@ namespace BizHawk.Client.Common
 				}
 
 				List<KeyValuePair<int, StateManagerState>> statesToRemove =
-					States.Where(x => x.Key >= frame).ToList();
+					States.Where(s => s.Key >= frame).ToList();
 
 				anyInvalidated = statesToRemove.Any();
 
@@ -873,7 +873,7 @@ namespace BizHawk.Client.Common
 
 			// Loop through branch states for the given frame.
 			SortedList<int, StateManagerState> stateList = BranchStates[frame];
-			for (int i = 0; i < stateList.Count(); i++)
+			for (int i = 0; i < stateList.Count; i++)
 			{
 				// Don't check the branch containing the state to match.
 				if (i == _movie.BranchIndexByHash(branchHash))
@@ -930,8 +930,8 @@ namespace BizHawk.Client.Common
 					BranchStates[kvp.Key] = stateList;
 				}
 
-				stateList.Add(branchHash, kvp.Value);
 				// We aren't creating any new states, just adding a reference to an already-existing one; so Used doesn't need to be updated.
+				stateList.Add(branchHash, kvp.Value);
 			}
 		}
 

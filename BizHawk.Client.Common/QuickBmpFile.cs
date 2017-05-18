@@ -2,6 +2,7 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
@@ -267,19 +268,21 @@ namespace BizHawk.Client.Common
 			fixed (byte* srcp = src)
 			fixed (int* dstp = dst)
 			{
-				using (new BizHawk.Common.SimpleTime("Blit"))
-				Blit(new BMP
-				{
-					Data = (int*)srcp,
-					Width = in_w,
-					Height = in_h
-				},
-				new BMP
-				{
-					Data = dstp,
-					Width = v.BufferWidth,
-					Height = v.BufferHeight,
-				});
+				using (new SimpleTime("Blit"))
+				{ 
+					Blit(new BMP
+					{
+						Data = (int*)srcp,
+						Width = in_w,
+						Height = in_h
+					},
+					new BMP
+					{
+						Data = dstp,
+						Width = v.BufferWidth,
+						Height = v.BufferHeight,
+					});
+				}
 			}
 
 			return true;
@@ -311,19 +314,21 @@ namespace BizHawk.Client.Common
 			fixed (int* srcp = src)
 			fixed (byte* dstp = dst)
 			{
-				using (new BizHawk.Common.SimpleTime("Blit"))
-				Blit(new BMP
-				{
-					Data = srcp,
-					Width = v.BufferWidth,
-					Height = v.BufferHeight
-				},
-				new BMP
-				{
-					Data = (int*)dstp,
-					Width = w,
-					Height = h,
-				});
+				using (new SimpleTime("Blit"))
+				{ 
+					Blit(new BMP
+					{
+						Data = srcp,
+						Width = v.BufferWidth,
+						Height = v.BufferHeight
+					},
+					new BMP
+					{
+						Data = (int*)dstp,
+						Width = w,
+						Height = h,
+					});
+				}
 			}
 
 			s.Write(dst, 0, dst.Length);

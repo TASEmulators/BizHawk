@@ -100,11 +100,7 @@ namespace BizHawk.Client.Common
 
 		public void Clear()
 		{
-			if (_rewindBuffer != null)
-			{
-				_rewindBuffer.Clear();
-			}
-
+			_rewindBuffer?.Clear();
 			_lastState = new byte[0];
 		}
 

@@ -93,12 +93,8 @@ namespace BizHawk.Client.Common
 			foreach (var button in playerSource.Definition.BoolButtons)
 			{
 				var bnp = ButtonNameParser.Parse(button);
-				if (bnp == null)
-				{
-					continue;
-				}
 
-				if (bnp.PlayerNum != playerNum)
+				if (bnp?.PlayerNum != playerNum)
 				{
 					continue;
 				}
@@ -110,12 +106,8 @@ namespace BizHawk.Client.Common
 			foreach (var button in Definition.FloatControls)
 			{
 				var bnp = ButtonNameParser.Parse(button);
-				if (bnp == null)
-				{
-					continue;
-				}
 
-				if (bnp.PlayerNum != playerNum)
+				if (bnp?.PlayerNum != playerNum)
 				{
 					continue;
 				}
@@ -143,7 +135,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// latches sticky buttons from Global.AutofireStickyXORAdapter
+		/// latches sticky buttons from <see cref="Global.AutofireStickyXORAdapter"/>
 		/// </summary>
 		public void LatchSticky()
 		{
@@ -162,7 +154,7 @@ namespace BizHawk.Client.Common
 			{
 				var def = Global.Emulator.ControllerDefinition;
 				var trimmed = mnemonic.Replace("|", "");
-				var buttons = Definition.ControlsOrdered.SelectMany(x => x).ToList();
+				var buttons = Definition.ControlsOrdered.SelectMany(c => c).ToList();
 				var iterator = 0;
 
 				foreach (var key in buttons)

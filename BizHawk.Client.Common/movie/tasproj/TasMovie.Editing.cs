@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 {
 	public partial class TasMovie
 	{
-		public TasMovieChangeLog ChangeLog;
+		public TasMovieChangeLog ChangeLog { get; set; }
 
 		public override void RecordFrame(int frame, IController source)
 		{
@@ -136,7 +136,7 @@ namespace BizHawk.Client.Common
 				bool endBatch = ChangeLog.BeginNewBatch("Remove Multiple Frames", true);
 				ChangeLog.AddGeneralUndo(invalidateAfter, InputLogLength - 1);
 
-				foreach (var frame in frames.OrderByDescending(x => x)) // Removin them in reverse order allows us to remove by index;
+				foreach (var frame in frames.OrderByDescending(f => f)) // Removing them in reverse order allows us to remove by index;
 				{
 					if (frame < _log.Count)
 					{

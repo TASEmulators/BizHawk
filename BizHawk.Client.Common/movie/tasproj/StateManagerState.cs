@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	internal class StateManagerState : IDisposable
 	{
-		private static long _stateId = 0;
+		private static long _stateId;
 		private readonly TasStateManager _manager;
 		private readonly long _id;
 

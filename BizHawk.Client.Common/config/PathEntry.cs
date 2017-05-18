@@ -7,11 +7,11 @@ namespace BizHawk.Client.Common
 {
 	public class PathEntry
 	{
-		public string SystemDisplayName;
-		public string Type;
-		public string Path;
-		public string System;
-		public int Ordinal;
+		public string SystemDisplayName { get; set; }
+		public string Type { get; set; }
+		public string Path { get; set; }
+		public string System { get; set; }
+		public int Ordinal { get; set; }
 
 		public bool HasSystem(string systemID)
 		{
@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return Paths.FirstOrDefault(x => x.HasSystem(system) && x.Type == type) ?? TryGetDebugPath(system, type);
+				return Paths.FirstOrDefault(p => p.HasSystem(system) && p.Type == type) ?? TryGetDebugPath(system, type);
 			}
 		}
 
@@ -94,7 +94,7 @@ namespace BizHawk.Client.Common
 			// Add missing entries
 			foreach (PathEntry defaultpath in DefaultValues)
 			{
-				var path = Paths.FirstOrDefault(x => x.System == defaultpath.System && x.Type == defaultpath.Type);
+				var path = Paths.FirstOrDefault(p => p.System == defaultpath.System && p.Type == defaultpath.Type);
 				if (path == null)
 				{
 					Paths.Add(defaultpath);
@@ -106,7 +106,7 @@ namespace BizHawk.Client.Common
 			// Remove entries that no longer exist in defaults
 			foreach (PathEntry pathEntry in Paths)
 			{
-				var path = DefaultValues.FirstOrDefault(x => x.System == pathEntry.System && x.Type == pathEntry.Type);
+				var path = DefaultValues.FirstOrDefault(p => p.System == pathEntry.System && p.Type == pathEntry.Type);
 				if (path == null)
 				{
 					entriesToRemove.Add(pathEntry);
@@ -119,10 +119,10 @@ namespace BizHawk.Client.Common
 			}
 
 			// Add missing displaynames
-			var missingDisplayPaths = Paths.Where(x => x.SystemDisplayName == null).ToList();
+			var missingDisplayPaths = Paths.Where(p => p.SystemDisplayName == null).ToList();
 			foreach (PathEntry path in missingDisplayPaths)
 			{
-				path.SystemDisplayName = DefaultValues.FirstOrDefault(x => x.System == path.System).SystemDisplayName;
+				path.SystemDisplayName = DefaultValues.First(p => p.System == path.System).SystemDisplayName;
 			}
 		}
 

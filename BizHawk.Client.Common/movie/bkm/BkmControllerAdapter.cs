@@ -33,12 +33,8 @@ namespace BizHawk.Client.Common
 			foreach (var button in playerSource.Definition.BoolButtons)
 			{
 				var bnp = ButtonNameParser.Parse(button);
-				if (bnp == null)
-				{
-					continue;
-				}
 
-				if (bnp.PlayerNum != playerNum)
+				if (bnp?.PlayerNum != playerNum)
 				{
 					continue;
 				}

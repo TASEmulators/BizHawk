@@ -135,13 +135,10 @@ namespace BizHawk.Client.Common
 
 		private bool N64CoreTypeDynarec()
 		{
-			if (Emulator is N64)
+			if ((Emulator as N64)?.GetSyncSettings().Core == N64SyncSettings.CoreType.Dynarec)
 			{
-				if ((Emulator as N64).GetSyncSettings().Core == N64SyncSettings.CoreType.Dynarec)
-				{
-					Log("N64 Error: Memory callbacks are not implemented for Dynamic Recompiler core type\nUse Interpreter or Pure Interpreter\n");
-					return true;
-				}
+				Log("N64 Error: Memory callbacks are not implemented for Dynamic Recompiler core type\nUse Interpreter or Pure Interpreter\n");
+				return true;
 			}
 
 			return false;
@@ -204,7 +201,7 @@ namespace BizHawk.Client.Common
 
 		private void LogNotImplemented()
 		{
-			Log(string.Format("Error: {0} does not yet implement input polling callbacks"));
+			Log($"Error: {Emulator.Attributes().CoreName} does not yet implement input polling callbacks");
 		}
 
 		[LuaMethodAttributes(
