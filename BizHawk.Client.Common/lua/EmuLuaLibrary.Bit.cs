@@ -67,7 +67,7 @@ namespace BizHawk.Client.Common
 		[LuaMethodAttributes("arshift", "Arithmetic shift right of 'val' by 'amt' bits")]
 		public static int Arshift(int val, int amt)
 		{
-			return (int)(val >> amt);
+			return val >> amt;
 		}
 
 		[LuaMethodAttributes("check", "Returns result of bit 'pos' being set in 'num'")]

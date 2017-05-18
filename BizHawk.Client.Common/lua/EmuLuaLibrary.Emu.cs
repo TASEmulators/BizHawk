@@ -259,8 +259,8 @@ namespace BizHawk.Client.Common
 				// but this isn't any worse than the old system
 				var nes = Emulator as NES;
 				var s = nes.GetSettings();
-				s.DispSprites = (bool)luaParam[0];
-				s.DispBackground = (bool)luaParam[1];
+				s.DispSprites = luaParam[0];
+				s.DispBackground = luaParam[1];
 				nes.PutSettings(s);
 			}
 			else if (Emulator is QuickNES)

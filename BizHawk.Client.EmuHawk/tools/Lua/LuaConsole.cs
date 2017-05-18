@@ -26,7 +26,7 @@ namespace BizHawk.Client.EmuHawk
 		private readonly List<string> _consoleCommandHistory = new List<string>();
 		private int _consoleCommandHistoryIndex = -1;
 
-		public bool IsRebootingCore;
+		public bool IsRebootingCore { get; set; }
 
 		public ToolDialogSettings.ColumnList Columns { get; set; }
 
@@ -86,9 +86,9 @@ namespace BizHawk.Client.EmuHawk
 			LuaSandbox.DefaultLogger = ConsoleLog;
 		}
 
-		public EmuLuaLibrary LuaImp { get; set; }
+		public EmuLuaLibrary LuaImp { get; private set; }
 
-		public bool UpdateBefore { get { return true; } }
+		public bool UpdateBefore => true;
 
 		private IEnumerable<LuaFile> SelectedItems
 		{
@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 			// Do nothing
 		}
 
-		public void ConsoleLog(string message)
+		private void ConsoleLog(string message)
 		{
 			OutputBox.Text += message + Environment.NewLine + Environment.NewLine;
 			OutputBox.SelectionStart = OutputBox.Text.Length;
@@ -146,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (LuaImp != null && LuaImp.GuiLibrary != null && LuaImp.GuiLibrary.HasLuaSurface)
+			if (LuaImp?.GuiLibrary != null && LuaImp.GuiLibrary.HasLuaSurface)
 			{
 				LuaImp.GuiLibrary.DrawFinish();
 			}
@@ -157,10 +157,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				LuaImp.CallExitEvent(file.Thread);
 
-				var functions = LuaImp.RegisteredFunctions.Where(x => x.Lua == file.Thread).ToList();
+				var functions = LuaImp.RegisteredFunctions.Where(lf => lf.Lua == file.Thread).ToList();
 
 				foreach (var function in functions)
+				{
 					LuaImp.RegisteredFunctions.Remove(function);
+				}
 
 				UpdateRegisteredFunctionsDialog();
 
@@ -172,7 +174,8 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var file in runningScripts)
 			{
-				string pathToLoad = Path.IsPathRooted(file.Path) ? file.Path : PathManager.MakeProgramRelativePath(file.Path); //JUNIPIER SQUATCHBOX COMPLEX
+				string pathToLoad = ProcessPath(file.Path);
+
 				try
 				{
 					LuaSandbox.Sandbox(file.Thread, () =>
@@ -202,9 +205,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var item in _luaList)
 			{
 				var processedPath = PathManager.TryMakeRelative(item.Path);
-				string pathToLoad = Path.IsPathRooted(processedPath)
-					? processedPath
-					: PathManager.MakeProgramRelativePath(processedPath);
+				string pathToLoad = ProcessPath(processedPath);
 
 				CreateFileWatcher(pathToLoad);
 			}
@@ -222,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 
 			// TODO, Deleted and Renamed events
-			watcher.Changed += new FileSystemEventHandler(OnChanged);
+			watcher.Changed += OnChanged;
 
 			_watches.Add(watcher);
 		}
@@ -239,7 +240,7 @@ namespace BizHawk.Client.EmuHawk
 		public void LoadLuaFile(string path)
 		{
 			var processedPath = PathManager.TryMakeRelative(path);
-			string pathToLoad = Path.IsPathRooted(processedPath) ? processedPath : PathManager.MakeProgramRelativePath(processedPath); //JUNIPIER SQUATCHBOX COMPLEX
+			string pathToLoad = ProcessPath(processedPath);
 
 			if (LuaAlreadyInSession(processedPath) == false)
 			{
@@ -265,7 +266,6 @@ namespace BizHawk.Client.EmuHawk
 					}
 					catch (Exception e)
 					{
-
 						MessageBox.Show(e.ToString());
 					}
 				}
@@ -278,8 +278,6 @@ namespace BizHawk.Client.EmuHawk
 				{
 					CreateFileWatcher(processedPath);
 				}
-
-				//luaFile.Paused = false;
 			}
 			else
 			{
@@ -295,7 +293,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateDialog();
 		}
 
-		public void UpdateDialog()
+		private void UpdateDialog()
 		{
 			LuaListView.ItemCount = _luaList.Count;
 			LuaListView.Refresh();
@@ -303,7 +301,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateRegisteredFunctionsDialog();
 		}
 
-		public void RunLuaScripts()
+		private void RunLuaScripts()
 		{
 			foreach (var file in _luaList)
 			{
@@ -313,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						LuaSandbox.Sandbox(null, () =>
 						{
-							string pathToLoad = Path.IsPathRooted(file.Path) ? file.Path : PathManager.MakeProgramRelativePath(file.Path); //JUNIPIER SQUATCHBOX COMPLEX
+							string pathToLoad = ProcessPath(file.Path);
 							file.Thread = LuaImp.SpawnCoroutine(file.Path);
 							LuaSandbox.CreateSandbox(file.Thread, Path.GetDirectoryName(pathToLoad));
 						}, () =>
@@ -340,17 +338,29 @@ namespace BizHawk.Client.EmuHawk
 				Path.GetFileName(_luaList.Filename);
 		}
 
-
 		private void LuaListView_QueryItemImage(int item, int subItem, out int imageIndex)
 		{
 			imageIndex = -1;
-			if (subItem != 0) return;
-			if (_luaList[item].Paused) imageIndex = 2;
-			else if (_luaList[item].Enabled) imageIndex = 1;
-			else imageIndex = 0;
+			if (subItem != 0)
+			{
+				return;
+			}
+
+			if (_luaList[item].Paused)
+			{
+				imageIndex = 2;
+			}
+			else if (_luaList[item].Enabled)
+			{
+				imageIndex = 1;
+			}
+			else
+			{
+				imageIndex = 0;
+			}
 		}
 
-		void LuaListView_QueryItemIndent(int item, out int itemIndent)
+		private void LuaListView_QueryItemIndent(int item, out int itemIndent)
 		{
 			itemIndent = 0;
 		}
@@ -401,10 +411,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CloseLua()
 		{
-			if (LuaImp != null)
-			{
-				LuaImp.Close();
-			}
+			LuaImp?.Close();
 		}
 
 		private static FileInfo GetFileFromUser(string filter)
@@ -611,7 +618,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void LoadSessionFromRecent(string path)
+		private void LoadSessionFromRecent(string path)
 		{
 			var doload = true;
 			if (_luaList.Changes)
@@ -826,7 +833,10 @@ namespace BizHawk.Client.EmuHawk
 					{
 						LuaSandbox.Sandbox(null, () =>
 						{
-							string pathToLoad = Path.IsPathRooted(item.Path) ? item.Path : PathManager.MakeProgramRelativePath(item.Path); //JUNIPIER SQUATCHBOX COMPLEX
+							string pathToLoad = Path.IsPathRooted(item.Path)
+							? item.Path
+							: PathManager.MakeProgramRelativePath(item.Path);
+
 							item.Thread = LuaImp.SpawnCoroutine(pathToLoad);
 							LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(pathToLoad));
 						}, () =>
@@ -840,7 +850,6 @@ namespace BizHawk.Client.EmuHawk
 						GlobalWin.Tools.UpdateToolsAfter();
 						EndLuaDrawing();
 						StartLuaDrawing();
-
 					}
 					catch (IOException)
 					{
@@ -859,7 +868,7 @@ namespace BizHawk.Client.EmuHawk
 					foreach (var sitem in items)
 					{
 						var temp = sitem;
-						var functions = LuaImp.RegisteredFunctions.Where(x => x.Lua == temp.Thread).ToList();
+						var functions = LuaImp.RegisteredFunctions.Where(lf => lf.Lua == temp.Thread).ToList();
 						foreach (var function in functions)
 						{
 							LuaImp.RegisteredFunctions.Remove(function);
@@ -871,7 +880,9 @@ namespace BizHawk.Client.EmuHawk
 					LuaImp.CallExitEvent(item.Thread);
 					item.Stop();
 					if (Global.Config.RemoveRegisteredFunctionsOnToggle)
+					{
 						GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.ClearAll();
+					}
 				}
 			}
 
@@ -886,12 +897,18 @@ namespace BizHawk.Client.EmuHawk
 			UpdateDialog();
 		}
 
+		private string ProcessPath(string path)
+		{
+			return Path.IsPathRooted(path)
+				? path
+				: PathManager.MakeProgramRelativePath(path);
+		}
+
 		private void EditScriptMenuItem_Click(object sender, EventArgs e)
 		{
 			SelectedFiles.ToList().ForEach(file =>
 			{
-				// adelikat; copy/pasting from code above.  We need a method or something for this, there's probably other places we need this logic
-				string pathToLoad = Path.IsPathRooted(file.Path) ? file.Path : PathManager.MakeProgramRelativePath(file.Path); //JUNIPIER SQUATCHBOX COMPLEX
+				string pathToLoad = ProcessPath(file.Path);
 				System.Diagnostics.Process.Start(pathToLoad);
 			});
 		}
@@ -1269,33 +1286,21 @@ namespace BizHawk.Client.EmuHawk
 				var split = words[0].Split(Path.DirectorySeparatorChar);
 
 				luaListTemp.Add(_luaList[i]);
-				luaListTemp[i].Name = split[split.Count() - 1];
+				luaListTemp[i].Name = split[split.Length - 1];
 			}
 
 			// Script, Path
 			switch (columnToSort)
 			{
 				case "Script":
-					if (_sortReverse)
-					{
-						luaListTemp = luaListTemp.OrderByDescending(x => x.Name).ThenBy(x => x.Path).ToList();
-					}
-					else
-					{
-						luaListTemp = luaListTemp.OrderBy(x => x.Name).ThenBy(x => x.Path).ToList();
-					}
-
+					luaListTemp = _sortReverse
+						? luaListTemp.OrderByDescending(lf => lf.Name).ThenBy(lf => lf.Path).ToList()
+						: luaListTemp.OrderBy(lf => lf.Name).ThenBy(lf => lf.Path).ToList();
 					break;
 				case "Path":
-					if (_sortReverse)
-					{
-						luaListTemp = luaListTemp.OrderByDescending(x => x.Path).ThenBy(x => x.Name).ToList();
-					}
-					else
-					{
-						luaListTemp = luaListTemp.OrderBy(x => x.Path).ThenBy(x => x.Name).ToList();
-					}
-
+					luaListTemp = _sortReverse
+						? luaListTemp.OrderByDescending(lf => lf.Path).ThenBy(lf => lf.Name).ToList()
+						: luaListTemp.OrderBy(lf => lf.Path).ThenBy(lf => lf.Name).ToList();
 					break;
 			}
 
@@ -1333,7 +1338,7 @@ namespace BizHawk.Client.EmuHawk
 
 					LuaSandbox.Sandbox(null, () =>
 					{
-						LuaImp.ExecuteString(string.Format("console.log({0})", InputBox.Text));
+						LuaImp.ExecuteString($"console.log({InputBox.Text})");
 					}, () =>
 					{
 						LuaSandbox.Sandbox(null, () =>
@@ -1360,6 +1365,7 @@ namespace BizHawk.Client.EmuHawk
 					InputBox.Text = _consoleCommandHistory[_consoleCommandHistoryIndex];
 					InputBox.Select(InputBox.Text.Length, 0);
 				}
+
 				e.Handled = true;
 			}
 			else if (e.KeyCode == Keys.Down)
@@ -1375,11 +1381,12 @@ namespace BizHawk.Client.EmuHawk
 					InputBox.Text = _consoleCommandHistory[_consoleCommandHistoryIndex];
 					InputBox.Select(InputBox.Text.Length, 0);
 				}
+
 				e.Handled = true;
 			}
 			else if (e.KeyCode == Keys.Tab)
 			{
-				this.ProcessTabKey(false);
+				ProcessTabKey(false);
 				e.Handled = true;
 			}
 		}
