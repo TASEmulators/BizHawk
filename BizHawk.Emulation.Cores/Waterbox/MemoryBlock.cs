@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.IO;
 
-namespace BizHawk.Emulation.Cores
+namespace BizHawk.Emulation.Cores.Waterbox
 {
 	public static class Z
 	{

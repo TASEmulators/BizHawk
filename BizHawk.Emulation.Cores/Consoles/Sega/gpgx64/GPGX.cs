@@ -4,6 +4,7 @@ using System.Runtime.InteropServices;
 
 using BizHawk.Common.BizInvoke;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Waterbox;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 {

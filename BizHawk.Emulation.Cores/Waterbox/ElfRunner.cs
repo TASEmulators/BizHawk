@@ -13,9 +13,9 @@ using System.IO;
 using System.Collections.Concurrent;
 using System.Threading;
 
-namespace BizHawk.Emulation.Cores
+namespace BizHawk.Emulation.Cores.Waterbox
 {
-	public sealed class ElfRunner : IImportResolver, IDisposable, IMonitor
+	public sealed class ElfRunner : Swappable, IImportResolver, IDisposable
 	{
 		// TODO: a lot of things only work with our elves and aren't fully generalized
 
@@ -41,11 +41,6 @@ namespace BizHawk.Emulation.Cores
 		/// </summary>
 		private Heap _invisibleheap;
 
-		/// <summary>
-		/// _base.Start, or 0 if we were relocated and so don't need to be swapped
-		/// </summary>
-		private ulong _lockkey;
-
 		private long _loadoffset;
 		private Dictionary<string, SymbolEntry<long>> _symdict;
 		private List<SymbolEntry<long>> _symlist;
@@ -54,11 +49,6 @@ namespace BizHawk.Emulation.Cores
 		/// everything to clean up at dispose time
 		/// </summary>
 		private List<IDisposable> _disposeList = new List<IDisposable>();
-
-		/// <summary>
-		/// everything to swap in for context switches
-		/// </summary>
-		private List<MemoryBlock> _memoryBlocks = new List<MemoryBlock>();
 
 		private ulong GetHeapStart(ulong prevend)
 		{
@@ -72,7 +62,7 @@ namespace BizHawk.Emulation.Cores
 		{
 			using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
 			{
-				_elfhash = Hash(fs);
+				_elfhash = WaterboxUtils.Hash(fs);
 			}
 
 			// todo: hack up this baby to take Streams
@@ -87,12 +77,12 @@ namespace BizHawk.Emulation.Cores
 			{
 				_base = new MemoryBlock((ulong)(orig_end - orig_start));
 				_loadoffset = (long)_base.Start - orig_start;
-				_lockkey = 0;
+				Initialize(0);
 			}
 			else
 			{
-				_lockkey = (ulong)orig_start;
-				_base = new MemoryBlock(_lockkey, (ulong)(orig_end - orig_start));
+				Initialize((ulong)orig_start);
+				_base = new MemoryBlock((ulong)orig_start, (ulong)(orig_end - orig_start));
 				_loadoffset = 0;
 				Enter();
 			}
@@ -100,7 +90,7 @@ namespace BizHawk.Emulation.Cores
 			try
 			{
 				_disposeList.Add(_base);
-				_memoryBlocks.Add(_base);
+				AddMemoryBlock(_base);
 				_base.Activate();
 				_base.Protect(_base.Start, _base.Size, MemoryBlock.Protection.RW);
 
@@ -130,7 +120,7 @@ namespace BizHawk.Emulation.Cores
 					_heap.Memory.Activate();
 					end = _heap.Memory.End;
 					_disposeList.Add(_heap);
-					_memoryBlocks.Add(_heap.Memory);
+					AddMemoryBlock(_heap.Memory);
 				}
 
 				if (sealedheapsize > 0)
@@ -139,7 +129,7 @@ namespace BizHawk.Emulation.Cores
 					_sealedheap.Memory.Activate();
 					end = _sealedheap.Memory.End;
 					_disposeList.Add(_sealedheap);
-					_memoryBlocks.Add(_sealedheap.Memory);
+					AddMemoryBlock(_sealedheap.Memory);
 				}
 
 				if (invisibleheapsize > 0)
@@ -148,7 +138,7 @@ namespace BizHawk.Emulation.Cores
 					_invisibleheap.Memory.Activate();
 					end = _invisibleheap.Memory.End;
 					_disposeList.Add(_invisibleheap);
-					_memoryBlocks.Add(_invisibleheap.Memory);
+					AddMemoryBlock(_invisibleheap.Memory);
 				}
 
 				ConnectAllClibPatches();
@@ -306,7 +296,7 @@ namespace BizHawk.Emulation.Cores
 				foreach (var d in _disposeList)
 					d.Dispose();
 				_disposeList.Clear();
-				_memoryBlocks.Clear();
+				PurgeMemoryBlocks();
 				_base = null;
 				_heap = null;
 				_sealedheap = null;
@@ -425,67 +415,6 @@ namespace BizHawk.Emulation.Cores
 			}
 		}
 
-		/// <summary>
-		/// true if the IMonitor should be used for native calls
-		/// </summary>
-		public bool ShouldMonitor { get { return _lockkey != 0; } }
-
-		// any ElfRunner is assumed to conflict with any other ElfRunner at the same base address,
-		// but not any other starting address.  so don't put them too close together!
-
-		private class LockInfo
-		{
-			public object Sync;
-			public ElfRunner Loaded;
-		}
-
-		private static readonly ConcurrentDictionary<ulong, LockInfo> LockInfos = new ConcurrentDictionary<ulong, LockInfo>();
-
-		static ElfRunner()
-		{
-			LockInfos.GetOrAdd(0, new LockInfo()); // any errant attempt to lock when ShouldMonitor == false will result in NRE
-		}
-
-		/// <summary>
-		/// acquire lock and swap this into memory
-		/// </summary>
-		public void Enter()
-		{
-			var li = LockInfos.GetOrAdd(_lockkey, new LockInfo { Sync = new object() });
-			Monitor.Enter(li.Sync);
-			if (li.Loaded != this)
-			{
-				if (li.Loaded != null)
-					li.Loaded.DeactivateInternal();
-				li.Loaded = null;
-				ActivateInternal();
-				li.Loaded = this;
-			}
-		}
-
-		/// <summary>
-		/// release lock
-		/// </summary>
-		public void Exit()
-		{
-			var li = LockInfos.GetOrAdd(_lockkey, new LockInfo { Sync = new object() });
-			Monitor.Exit(li.Sync);
-		}
-
-		private void DeactivateInternal()
-		{
-			Console.WriteLine("ElfRunner DeactivateInternal {0}", GetHashCode());
-			foreach (var m in _memoryBlocks)
-				m.Deactivate();
-		}
-
-		private void ActivateInternal()
-		{
-			Console.WriteLine("ElfRunner ActivateInternal {0}", GetHashCode());
-			foreach (var m in _memoryBlocks)
-				m.Activate();
-		}
-
 		#region state
 
 		const ulong MAGIC = 0xb00b1e5b00b1e569;
@@ -533,7 +462,7 @@ namespace BizHawk.Emulation.Cores
 					if (sec.Size != len)
 						throw new InvalidOperationException("Unexpected section size for " + sec.Name);
 					var ms = _base.GetStream((ulong)(sec.LoadAddress + _loadoffset), (ulong)sec.Size, true);
-					CopySome(br.BaseStream, ms, len);
+					WaterboxUtils.CopySome(br.BaseStream, ms, len);
 				}
 
 				if (_heap != null) _heap.LoadStateBinary(br);
@@ -555,165 +484,12 @@ namespace BizHawk.Emulation.Cores
 
 		#region utils
 
-		private static void CopySome(Stream src, Stream dst, long len)
-		{
-			var buff = new byte[4096];
-			while (len > 0)
-			{
-				int r = src.Read(buff, 0, (int)Math.Min(len, 4096));
-				dst.Write(buff, 0, r);
-				len -= r;
-			}
-		}
-
-		private static byte[] Hash(byte[] data)
-		{
-			using (var h = SHA1.Create())
-			{
-				return h.ComputeHash(data);
-			}
-		}
-
-		private static byte[] Hash(Stream s)
-		{
-			using (var h = SHA1.Create())
-			{
-				return h.ComputeHash(s);
-			}
-		}
-
 		private byte[] HashSection(ulong ptr, ulong len)
 		{
 			using (var h = SHA1.Create())
 			{
 				var ms = _base.GetStream(ptr, len, false);
 				return h.ComputeHash(ms);
-			}
-		}
-
-		/// <summary>
-		/// a simple grow-only fixed max size heap
-		/// </summary>
-		private sealed class Heap : IDisposable
-		{
-			public MemoryBlock Memory { get; private set; }
-			/// <summary>
-			/// name, used in identifying errors
-			/// </summary>
-			public string Name { get; private set; }
-			/// <summary>
-			/// total number of bytes used
-			/// </summary>
-			public ulong Used { get; private set; }
-
-			/// <summary>
-			/// true if the heap has been sealed, preventing further changes
-			/// </summary>
-			public bool Sealed { get; private set; }
-
-			private byte[] _hash;
-
-			public Heap(ulong start, ulong size, string name)
-			{
-				Memory = new MemoryBlock(start, size);
-				Used = 0;
-				Name = name;
-			}
-
-			private void EnsureAlignment(int align)
-			{
-				if (align > 1)
-				{
-					ulong newused = ((Used - 1) | (ulong)(align - 1)) + 1;
-					if (newused > Memory.Size)
-					{
-						throw new InvalidOperationException(string.Format("Failed to meet alignment {0} on heap {1}", align, Name));
-					}
-					Used = newused;
-				}
-			}
-
-			public ulong Allocate(ulong size, int align)
-			{
-				if (Sealed)
-					throw new InvalidOperationException(string.Format("Attempt made to allocate from sealed heap {0}", Name));
-
-				EnsureAlignment(align);
-
-				ulong newused = Used + size;
-				if (newused > Memory.Size)
-				{
-					throw new InvalidOperationException(string.Format("Failed to allocate {0} bytes from heap {1}", size, Name));
-				}
-				ulong ret = Memory.Start + Used;
-				Memory.Protect(ret, newused - Used, MemoryBlock.Protection.RW);
-				Used = newused;
-				Console.WriteLine("Allocated {0} bytes on {1}", size, Name);
-				return ret;
-			}
-
-			public void Seal()
-			{
-				if (!Sealed)
-				{
-					Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
-					_hash = Hash(Memory.GetStream(Memory.Start, Used, false));
-					Sealed = true;
-				}
-				else
-				{
-					throw new InvalidOperationException(string.Format("Attempt to reseal heap {0}", Name));
-				}
-			}
-
-			public void SaveStateBinary(BinaryWriter bw)
-			{
-				bw.Write(Name);
-				bw.Write(Used);
-				if (!Sealed)
-				{
-					var ms = Memory.GetStream(Memory.Start, Used, false);
-					ms.CopyTo(bw.BaseStream);
-				}
-				else
-				{
-					bw.Write(_hash);
-				}
-			}
-
-			public void LoadStateBinary(BinaryReader br)
-			{
-				var name = br.ReadString();
-				if (name != Name)
-					throw new InvalidOperationException(string.Format("Name did not match for heap {0}", Name));
-				var used = br.ReadUInt64();
-				if (used > Memory.Size)
-					throw new InvalidOperationException(string.Format("Heap {0} used {1} larger than available {2}", Name, used, Memory.Size));
-				if (!Sealed)
-				{
-					Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.None);
-					Memory.Protect(Memory.Start, used, MemoryBlock.Protection.RW);
-					var ms = Memory.GetStream(Memory.Start, used, true);
-					CopySome(br.BaseStream, ms, (long)used);
-					Used = used;
-				}
-				else
-				{
-					var hash = br.ReadBytes(_hash.Length);
-					if (!hash.SequenceEqual(_hash))
-					{
-						throw new InvalidOperationException(string.Format("Hash did not match for heap {0}.  Is this the same rom?"));
-					}
-				}
-			}
-
-			public void Dispose()
-			{
-				if (Memory != null)
-				{
-					Memory.Dispose();
-					Memory = null;
-				}
 			}
 		}
 
