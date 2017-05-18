@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _sortReverse;
 		private string _lastColumnSorted;
 
-		private List<string> _consoleCommandHistory = new List<string>();
+		private readonly List<string> _consoleCommandHistory = new List<string>();
 		private int _consoleCommandHistoryIndex = -1;
 
 		public bool IsRebootingCore;
@@ -82,7 +82,7 @@ namespace BizHawk.Client.EmuHawk
 			LuaListView.QueryItemIndent += LuaListView_QueryItemIndent;
 			LuaListView.VirtualMode = true;
 
-			//this is bad, in case we ever have more than one gui part running lua.. not sure how much other badness there is like that
+			// this is bad, in case we ever have more than one gui part running lua.. not sure how much other badness there is like that
 			LuaSandbox.DefaultLogger = ConsoleLog;
 		}
 

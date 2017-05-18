@@ -7,22 +7,16 @@ namespace BizHawk.Client.Common
 {
 	public unsafe class LuaSandbox
 	{
-		protected static Action<string> Logger;
+		private static readonly System.Runtime.CompilerServices.ConditionalWeakTable<Lua, LuaSandbox> SandboxForThread = new System.Runtime.CompilerServices.ConditionalWeakTable<Lua, LuaSandbox>();
 
-		static System.Runtime.CompilerServices.ConditionalWeakTable<Lua, LuaSandbox> SandboxForThread = new System.Runtime.CompilerServices.ConditionalWeakTable<Lua, LuaSandbox>();
-		public static Action<string> DefaultLogger;
-
-		public void SetLogger(Action<string> logger)
-		{
-			Logger = logger;
-		}
+		public static Action<string> DefaultLogger { get; set; }
 
 		public void SetSandboxCurrentDirectory(string dir)
 		{
-			CurrentDirectory = dir;
+			_currentDirectory = dir;
 		}
 
-		private string CurrentDirectory;
+		private string _currentDirectory;
 
 		#if WINDOWS
 		[DllImport("kernel32.dll", SetLastError = true)]
@@ -31,9 +25,9 @@ namespace BizHawk.Client.Common
 		static extern uint GetCurrentDirectoryW(uint nBufferLength, byte* pBuffer);
 		#endif
 
-		bool CoolSetCurrentDirectory(string path, string currDirSpeedHack = null)
+		private bool CoolSetCurrentDirectory(string path, string currDirSpeedHack = null)
 		{
-			string target = CurrentDirectory + "\\";
+			string target = _currentDirectory + "\\";
 
 			// first we'll bypass it with a general hack: dont do any setting if the value's already there (even at the OS level, setting the directory can be slow)
 			// yeah I know, not the smoothest move to compare strings here, in case path normalization is happening at some point
@@ -91,9 +85,9 @@ namespace BizHawk.Client.Common
 			{
 				savedEnvironmentCurrDir = Environment.CurrentDirectory;
 
-				if (CurrentDirectory != null)
+				if (_currentDirectory != null)
 				{
-					CoolSetCurrentDirectory(CurrentDirectory, savedEnvironmentCurrDir);
+					CoolSetCurrentDirectory(_currentDirectory, savedEnvironmentCurrDir);
 				}
 
 				EnvironmentSandbox.Sandbox(callback);
@@ -101,12 +95,12 @@ namespace BizHawk.Client.Common
 			catch (LuaException ex)
 			{
 				Console.WriteLine(ex);
-				Logger(ex.ToString());
+				DefaultLogger(ex.ToString());
 				exceptionCallback?.Invoke();
 			}
 			finally
 			{
-				if (CurrentDirectory != null)
+				if (_currentDirectory != null)
 				{
 					CoolSetCurrentDirectory(savedEnvironmentCurrDir);
 				}
@@ -118,7 +112,6 @@ namespace BizHawk.Client.Common
 			var sandbox = new LuaSandbox();
 			SandboxForThread.Add(thread, sandbox);
 			sandbox.SetSandboxCurrentDirectory(initialDirectory);
-			sandbox.SetLogger(DefaultLogger);
 			return sandbox;
 		}
 
