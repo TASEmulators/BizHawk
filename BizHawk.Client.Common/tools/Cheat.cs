@@ -4,24 +4,24 @@ namespace BizHawk.Client.Common
 {
 	public class Cheat
 	{
-		public enum COMPARISONTYPE
+		public enum CompareType
 		{
-			NONE,
-			EQUAL,
-			GREATER_THAN,
-			GREATER_THAN_OR_EQUAL,
-			LESS_THAN,
-			LESS_THAN_OR_EQUAL,
-			NOT_EQUAL
+			None,
+			Equal,
+			GreaterThan,
+			GreaterThanOrEqual,
+			LessThan,
+			LessThanOrEqual,
+			NotEqual
 		}
 
 		private readonly Watch _watch;
-		private readonly COMPARISONTYPE _comparisonType;
+		private readonly CompareType _comparisonType;
 		private int? _compare;
 		private int _val;
 		private bool _enabled;
 
-		public Cheat(Watch watch, int value, int? compare = null, bool enabled = true, COMPARISONTYPE comparisonType = COMPARISONTYPE.NONE)
+		public Cheat(Watch watch, int value, int? compare = null, bool enabled = true, CompareType comparisonType = CompareType.None)
 		{
 			_enabled = enabled;
 			_watch = watch;
@@ -131,7 +131,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public COMPARISONTYPE ComparisonType => _comparisonType;
+		public CompareType ComparisonType => _comparisonType;
 
 		public void Enable(bool handleChange = true)
 		{
@@ -190,43 +190,43 @@ namespace BizHawk.Client.Common
 					switch (_comparisonType)
 					{
 						default:
-						case COMPARISONTYPE.NONE: // This should never happen, but it's here just in case.  adelikat: And yet it does! Cheat Code converter doesn't do this.  Changing this to default to equal since 99.9999% of all cheats are going to be equals
-						case COMPARISONTYPE.EQUAL:
+						case CompareType.None: // This should never happen, but it's here just in case.  adelikat: And yet it does! Cheat Code converter doesn't do this.  Changing this to default to equal since 99.9999% of all cheats are going to be equals
+						case CompareType.Equal:
 							if (_compare.Value == _watch.ValueNoFreeze) 
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 
 							break;
-						case COMPARISONTYPE.GREATER_THAN:
+						case CompareType.GreaterThan:
 							if (_compare.Value > _watch.ValueNoFreeze) 
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 
 							break;
-						case COMPARISONTYPE.GREATER_THAN_OR_EQUAL:
+						case CompareType.GreaterThanOrEqual:
 							if (_compare.Value >= _watch.ValueNoFreeze)
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 
 							break;
-						case COMPARISONTYPE.LESS_THAN:
+						case CompareType.LessThan:
 							if (_compare.Value < _watch.ValueNoFreeze) 
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 
 							break;
-						case COMPARISONTYPE.LESS_THAN_OR_EQUAL:
+						case CompareType.LessThanOrEqual:
 							if (_compare.Value <= _watch.ValueNoFreeze)
 							{
 								_watch.Poke(GetStringForPulse(_val));
 							}
 
 							break;
-						case COMPARISONTYPE.NOT_EQUAL:
+						case CompareType.NotEqual:
 							if (_compare.Value != _watch.ValueNoFreeze)
 							{
 								_watch.Poke(GetStringForPulse(_val));

@@ -445,7 +445,7 @@ namespace BizHawk.Client.Common
 							var size = WatchSize.Byte;
 							var type = DisplayType.Hex;
 							var bigendian = false;
-							Cheat.COMPARISONTYPE comparisonType = Cheat.COMPARISONTYPE.NONE;
+							Cheat.CompareType comparisonType = Cheat.CompareType.None;
 
 							if (s.Length < 6)
 							{
@@ -480,7 +480,7 @@ namespace BizHawk.Client.Common
 							// For backwards compatibility, don't assume these values exist
 							if (vals.Length > 9)
 							{
-								if (!Enum.TryParse<Cheat.COMPARISONTYPE>(vals[9], out comparisonType))
+								if (!Enum.TryParse<Cheat.CompareType>(vals[9], out comparisonType))
 								{
 									continue; // Not sure if this is the best answer, could just resort to ==
 								}
