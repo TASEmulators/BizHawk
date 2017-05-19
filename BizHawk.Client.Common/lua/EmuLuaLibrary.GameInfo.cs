@@ -7,11 +7,8 @@ namespace BizHawk.Client.Common
 {
 	public sealed class GameInfoLuaLibrary : LuaLibraryBase
 	{
-		[RequiredService]
-		public IEmulator Emulator { get; set; }
-
 		[OptionalService]
-		public IBoardInfo BoardInfo { get; set; }
+		private IBoardInfo BoardInfo { get; set; }
 
 		public GameInfoLuaLibrary(Lua lua)
 			: base(lua) { }

@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 	public sealed class GuiLuaLibrary : LuaLibraryBase
 	{
 		[RequiredService]
-		public IEmulator Emulator { get; set; }
+		private IEmulator Emulator { get; set; }
 
 		public GuiLuaLibrary(Lua lua)
 			: base(lua) { }

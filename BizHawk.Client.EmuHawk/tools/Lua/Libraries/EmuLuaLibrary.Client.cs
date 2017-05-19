@@ -15,10 +15,10 @@ namespace BizHawk.Client.EmuHawk
 	public sealed class EmuHawkLuaLibrary : LuaLibraryBase
 	{
 		[RequiredService]
-		public IEmulator Emulator { get; set; }
+		private IEmulator Emulator { get; set; }
 
 		[RequiredService]
-		public IVideoProvider VideoProvider { get; set; }
+		private IVideoProvider VideoProvider { get; set; }
 
 		private readonly Dictionary<int, string> _filterMappings = new Dictionary<int, string>
 			{

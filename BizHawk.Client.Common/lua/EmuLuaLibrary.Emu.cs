@@ -17,25 +17,25 @@ namespace BizHawk.Client.Common
 	public sealed class EmulatorLuaLibrary : LuaLibraryBase
 	{
 		[RequiredService]
-		public IEmulator Emulator { get; set; }
+		private IEmulator Emulator { get; set; }
 
 		[OptionalService]
-		public IDebuggable DebuggableCore { get; set; }
+		private IDebuggable DebuggableCore { get; set; }
 
 		[OptionalService]
-		public IDisassemblable DisassemblableCore { get; set; }
+		private IDisassemblable DisassemblableCore { get; set; }
 
 		[OptionalService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
 		[OptionalService]
-		public IInputPollable InputPollableCore { get; set; }
+		private IInputPollable InputPollableCore { get; set; }
 
 		[OptionalService]
-		public IRegionable RegionableCore { get; set; }
+		private IRegionable RegionableCore { get; set; }
 
 		[OptionalService]
-		public IBoardInfo BoardInfo { get; set; }
+		private IBoardInfo BoardInfo { get; set; }
 
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
