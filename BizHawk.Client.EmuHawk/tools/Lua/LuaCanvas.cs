@@ -221,6 +221,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var pen = new Pen(outline.HasValue ? outline.Value : Color.Black);
+			graphics.DrawPie(pen, x, y, width, height, startangle, sweepangle);
 		}
 
 		[LuaMethodAttributes(
