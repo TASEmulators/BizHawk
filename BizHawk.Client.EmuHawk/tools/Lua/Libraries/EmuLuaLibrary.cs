@@ -26,25 +26,13 @@ namespace BizHawk.Client.EmuHawk
 			_lua["keepalives"] = _lua.NewTable();
 		}
 
-		private FormsLuaLibrary FormsLibrary
-		{
-			get { return (FormsLuaLibrary)Libraries[typeof(FormsLuaLibrary)]; }
-		}
+		private FormsLuaLibrary FormsLibrary => (FormsLuaLibrary)Libraries[typeof(FormsLuaLibrary)];
 
-		private EventLuaLibrary EventsLibrary
-		{
-			get { return (EventLuaLibrary)Libraries[typeof(EventLuaLibrary)]; }
-		}
+		private EventLuaLibrary EventsLibrary => (EventLuaLibrary)Libraries[typeof(EventLuaLibrary)];
 
-		private EmulatorLuaLibrary EmulatorLuaLibrary
-		{
-			get { return (EmulatorLuaLibrary)Libraries[typeof(EmulatorLuaLibrary)]; }
-		}
+		private EmulatorLuaLibrary EmulatorLuaLibrary => (EmulatorLuaLibrary)Libraries[typeof(EmulatorLuaLibrary)];
 
-		public GuiLuaLibrary GuiLibrary
-		{
-			get { return (GuiLuaLibrary)Libraries[typeof(GuiLuaLibrary)]; }
-		}
+		public GuiLuaLibrary GuiLibrary => (GuiLuaLibrary)Libraries[typeof(GuiLuaLibrary)];
 
 		public EmuLuaLibrary(IEmulatorServiceProvider serviceProvider)
 			: this()
@@ -67,8 +55,7 @@ namespace BizHawk.Client.EmuHawk
 				.GetTypes()
 				.Where(t => typeof(LuaLibraryBase).IsAssignableFrom(t))
 				.Where(t => t.IsSealed)
-				.Where(t => ServiceInjector.IsAvailable(serviceProvider, t))
-			);
+				.Where(t => ServiceInjector.IsAvailable(serviceProvider, t)));
 
 			foreach (var lib in libs)
 			{
@@ -96,7 +83,6 @@ namespace BizHawk.Client.EmuHawk
 
 			// Add LuaCanvas to Docs
 			Type luaCanvas = typeof(LuaCanvas);
-			var luaAttr = typeof(LuaMethodAttributes);
 
 			var methods = luaCanvas
 				.GetMethods()
@@ -104,9 +90,6 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var method in methods)
 			{
-				var luaMethodAttr = method.GetCustomAttributes(luaAttr, false).First() as LuaMethodAttributes;
-				var luaName = "(Canvas)." + luaMethodAttr.Name;
-
 				Docs.Add(new LibraryFunction(nameof(LuaCanvas), luaCanvas.Description(), method));
 			}
 		}
@@ -119,15 +102,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public LuaDocumentation Docs { get; private set; }
+		public LuaDocumentation Docs { get; }
 		public bool IsRunning { get; set; }
 		public EventWaitHandle LuaWait { get; private set; }
 		public bool FrameAdvanceRequested { get; private set; }
 
-		public LuaFunctionList RegisteredFunctions
-		{
-			get { return EventsLibrary.RegisteredFunctions; }
-		}
+		public LuaFunctionList RegisteredFunctions => EventsLibrary.RegisteredFunctions;
 
 		public void WindowClosed(IntPtr handle)
 		{
@@ -196,7 +176,8 @@ namespace BizHawk.Client.EmuHawk
 				var execResult = script.Resume(0);
 
 				_lua.RunScheduledDisposes();
-				//not sure how this is going to work out, so do this too
+
+				// not sure how this is going to work out, so do this too
 				script.RunScheduledDisposes();
 
 				_currThread = null;

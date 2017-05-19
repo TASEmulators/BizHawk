@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using Newtonsoft.Json;
-
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -17,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool IsInstalled(TextEditors editor)
 		{
-			switch(editor)
+			switch (editor)
 			{
 				case TextEditors.Sublime2:
 					return IsSublimeInstalled();
@@ -43,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void InstallBizLua(TextEditors editor)
 		{
-			switch(editor)
+			switch (editor)
 			{
 				case TextEditors.Sublime2:
 					InstallBizLuaToSublime2();
@@ -56,10 +50,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		private string AppDataFolder
-		{
-			get { return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData); }
-		}
+		private string AppDataFolder => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
 		private bool IsSublimeInstalled()
 		{

@@ -21,12 +21,12 @@ namespace BizHawk.Client.EmuHawk
 		public GuiLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
-		private Color DefaultForeground = Color.White;
-		private Color? DefaultBackground = null;
-		private Color? DefaultTextBackground = Color.FromArgb(128, 0, 0, 0);
-		private int DefaultPixelFont = 1; // gens
+		private Color _defaultForeground = Color.White;
+		private Color? _defaultBackground;
+		private Color? _defaultTextBackground = Color.FromArgb(128, 0, 0, 0);
+		private int _defaultPixelFont = 1; // gens
 
-		public override string Name { get { return "gui"; } }
+		public override string Name => "gui";
 
 		#region Gui API
 
@@ -43,24 +43,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public bool SurfaceIsNull
-		{
-			get
-			{
-				return _luaSurface == null;
-			}
-		}
+		public bool SurfaceIsNull => _luaSurface == null;
 
 		[LuaMethodAttributes(
-			"DrawNew",
-			"Changes drawing target to the specified lua surface name. This may clobber any previous drawing to this surface (pass false if you don't want it to)"
-		)]
-		public void DrawNew(string name, bool? clear=true)
+			"DrawNew", "Changes drawing target to the specified lua surface name. This may clobber any previous drawing to this surface (pass false if you don't want it to)")]
+		public void DrawNew(string name, bool? clear = true)
 		{
 			try
 			{
 				DrawFinish();
-				_luaSurface = GlobalWin.DisplayManager.LockLuaSurface(name,clear??true);
+				_luaSurface = GlobalWin.DisplayManager.LockLuaSurface(name, clear ?? true);
 			}
 			catch (InvalidOperationException ex)
 			{
@@ -68,25 +60,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"DrawFinish",
-			"Finishes drawing to the current lua surface and causes it to get displayed."
-		)]
+		[LuaMethodAttributes("DrawFinish", "Finishes drawing to the current lua surface and causes it to get displayed.")]
 		public void DrawFinish()
 		{
-			if(_luaSurface != null)
+			if (_luaSurface != null)
+			{
 				GlobalWin.DisplayManager.UnlockLuaSurface(_luaSurface);
+			}
+
 			_luaSurface = null;
 		}
 
-		public bool HasLuaSurface
-		{
-			get { return _luaSurface != null; }
-		}
+		public bool HasLuaSurface => _luaSurface != null;
 
 		#endregion
 
 		#region Helpers
+		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
 
 		private readonly Dictionary<Color, SolidBrush> _solidBrushes = new Dictionary<Color, SolidBrush>();
 		private readonly Dictionary<Color, Pen> _pens = new Dictionary<Color, Pen>();
@@ -122,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var g = _luaSurface == null ? Graphics.FromImage(_nullGraphicsBitmap) : _luaSurface.GetGraphics();
 
-			//we don't like CoreComm, right? Someone should find a different way to do this then.
+			// we don't like CoreComm, right? Someone should find a different way to do this then.
 			var tx = Emulator.CoreComm.ScreenLogicalOffsetX;
 			var ty = Emulator.CoreComm.ScreenLogicalOffsetY;
 			if (tx != 0 || ty != 0)
@@ -137,89 +127,64 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		[LuaMethodAttributes(
-			"addmessage",
-			"Adds a message to the OSD's message area"
-		)]
+		[LuaMethodAttributes("addmessage", "Adds a message to the OSD's message area")]
 		public void AddMessage(string message)
 		{
 			GlobalWin.OSD.AddMessage(message);
 		}
 
-		[LuaMethodAttributes(
-			"clearGraphics",
-			"clears all lua drawn graphics from the screen"
-		)]
+		[LuaMethodAttributes("clearGraphics", "clears all lua drawn graphics from the screen")]
 		public void ClearGraphics()
 		{
 			_luaSurface.Clear();
 			DrawFinish();
 		}
 
-		[LuaMethodAttributes(
-			"cleartext",
-			"clears all text created by gui.text()"
-		)]
+		[LuaMethodAttributes("cleartext", "clears all text created by gui.text()")]
 		public static void ClearText()
 		{
 			GlobalWin.OSD.ClearGUIText();
 		}
 
-		[LuaMethodAttributes(
-			"defaultForeground",
-			"Sets the default foreground color to use in drawing methods, white by default"
-		)]
+		[LuaMethodAttributes("defaultForeground", "Sets the default foreground color to use in drawing methods, white by default")]
 		public void SetDefaultForegroundColor(Color color)
 		{
-			DefaultForeground = color;
+			_defaultForeground = color;
 		}
 
-		[LuaMethodAttributes(
-			"defaultBackground",
-			"Sets the default background color to use in drawing methods, transparent by default"
-		)]
+		[LuaMethodAttributes("defaultBackground", "Sets the default background color to use in drawing methods, transparent by default")]
 		public void SetDefaultBackgroundColor(Color color)
 		{
-			DefaultBackground = color;
+			_defaultBackground = color;
 		}
 
-		[LuaMethodAttributes(
-			"defaultTextBackground",
-			"Sets the default backgroiund color to use in text drawing methods, half-transparent black by default"
-		)]
+		[LuaMethodAttributes("defaultTextBackground", "Sets the default backgroiund color to use in text drawing methods, half-transparent black by default")]
 		public void SetDefaultTextBackground(Color color)
 		{
-			DefaultTextBackground = color;
+			_defaultTextBackground = color;
 		}
 
 		[LuaMethodAttributes(
-			"defaultPixelFont",
-			"Sets the default font to use in gui.pixelText(). Two font families are available, \"fceux\" and \"gens\" (or  \"0\" and \"1\" respectively), \"gens\" is used by default"
-		)]
+			"defaultPixelFont", "Sets the default font to use in gui.pixelText(). Two font families are available, \"fceux\" and \"gens\" (or  \"0\" and \"1\" respectively), \"gens\" is used by default")]
 		public void SetDefaultTextBackground(string fontfamily)
 		{
 			switch (fontfamily)
 			{
 				case "fceux":
 				case "0":
-					DefaultPixelFont = 0;
+					_defaultPixelFont = 0;
 					break;
 				case "gens":
 				case "1":
-					DefaultPixelFont = 1;
+					_defaultPixelFont = 1;
 					break;
 				default:
-					Log(string.Format("Unable to find font family: {0}", fontfamily));
+					Log($"Unable to find font family: {fontfamily}");
 					return;
 			}
 		}
 
-
-
-		[LuaMethodAttributes(
-			"drawBezier",
-			"Draws a Bezier curve using the table of coordinates provided in the given color"
-		)]
+		[LuaMethodAttributes("drawBezier", "Draws a Bezier curve using the table of coordinates provided in the given color")]
 		public void DrawBezier(LuaTable points, Color color)
 		{
 			using (var g = GetGraphics())
@@ -249,9 +214,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
-			"drawBox",
-			"Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height"
-		)]
+			"drawBox", "Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height")]
 		public void DrawBox(int x, int y, int x2, int y2, Color? line = null, Color? background = null)
 		{
 			using (var g = GetGraphics())
@@ -278,9 +241,9 @@ namespace BizHawk.Client.EmuHawk
 						y -= y2;
 					}
 
-					g.DrawRectangle(GetPen(line ?? DefaultForeground), x, y, x2, y2);
+					g.DrawRectangle(GetPen(line ?? _defaultForeground), x, y, x2, y2);
 
-					var bg = background ?? DefaultBackground;
+					var bg = background ?? _defaultBackground;
 					if (bg.HasValue)
 					{
 						g.FillRectangle(GetBrush(bg.Value), x + 1, y + 1, x2 - 1, y2 - 1);
@@ -295,23 +258,21 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
-			"drawEllipse",
-			"Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color"
-		)]
+			"drawEllipse", "Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color")]
 		public void DrawEllipse(int x, int y, int width, int height, Color? line = null, Color? background = null)
 		{
 			using (var g = GetGraphics())
 			{
 				try
 				{
-					var bg = background ?? DefaultBackground;
+					var bg = background ?? _defaultBackground;
 					if (bg.HasValue)
 					{
 						var brush = GetBrush(bg.Value);
 						g.FillEllipse(brush, x, y, width, height);
 					}
 
-					g.DrawEllipse(GetPen(line ?? DefaultForeground), x, y, width, height);
+					g.DrawEllipse(GetPen(line ?? _defaultForeground), x, y, width, height);
 				}
 				catch (Exception)
 				{
@@ -322,9 +283,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
-			"drawIcon",
-			"draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly"
-		)]
+			"drawIcon", "draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
 		public void DrawIcon(string path, int x, int y, int? width = null, int? height = null)
 		{
 			using (var g = GetGraphics())
@@ -350,12 +309,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private readonly Dictionary<string, Image> ImageCache = new Dictionary<string, Image>();
-
 		[LuaMethodAttributes(
-			"drawImage",
-			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly"
-		)]
+			"drawImage", "draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
 		public void DrawImage(string path, int x, int y, int? width = null, int? height = null)
 		{
 			if (!File.Exists(path))
@@ -367,14 +322,14 @@ namespace BizHawk.Client.EmuHawk
 			using (var g = GetGraphics())
 			{
 				Image img;
-				if (ImageCache.ContainsKey(path))
+				if (_imageCache.ContainsKey(path))
 				{
-					img = ImageCache[path];
+					img = _imageCache[path];
 				}
 				else
 				{
 					img = Image.FromFile(path);
-					ImageCache.Add(path, img);
+					_imageCache.Add(path, img);
 				}
 
 				g.DrawImage(img, x, y, width ?? img.Width, height ?? img.Height);
@@ -382,9 +337,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
-			"drawImageRegion",
-			"draws a given region of an image file from the given path at the given coordinate, and optionally with the given size"
-		)]
+			"drawImageRegion", "draws a given region of an image file from the given path at the given coordinate, and optionally with the given size")]
 		public void DrawImageRegion(string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null)
 		{
 			if (!File.Exists(path))
@@ -396,50 +349,40 @@ namespace BizHawk.Client.EmuHawk
 			using (var g = GetGraphics())
 			{
 				Image img;
-				if (ImageCache.ContainsKey(path))
+				if (_imageCache.ContainsKey(path))
 				{
-					img = ImageCache[path];
+					img = _imageCache[path];
 				}
 				else
 				{
 					img = Image.FromFile(path);
-					ImageCache.Add(path, img);
+					_imageCache.Add(path, img);
 				}
 
-				var dest_rect = new Rectangle(dest_x, dest_y, (dest_width ?? source_width), (dest_height ?? source_height));
+				var destRect = new Rectangle(dest_x, dest_y, dest_width ?? source_width, dest_height ?? source_height);
 
-				g.DrawImage(img, dest_rect, source_x, source_y, source_width, source_height, GraphicsUnit.Pixel);
+				g.DrawImage(img, destRect, source_x, source_y, source_width, source_height, GraphicsUnit.Pixel);
 			}
 		}
 
 		[LuaMethodAttributes(
-			"drawLine",
-			"Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)"
-		)]
+			"drawLine", "Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)")]
 		public void DrawLine(int x1, int y1, int x2, int y2, Color? color = null)
 		{
 			using (var g = GetGraphics())
 			{
-				g.DrawLine(GetPen(color ?? DefaultForeground), x1, y1, x2, y2);
+				g.DrawLine(GetPen(color ?? _defaultForeground), x1, y1, x2, y2);
 			}
 		}
 
-		[LuaMethodAttributes(
-			"drawAxis",
-			"Draws an axis of the specified size at the coordinate pair.)"
-		)]
-
+		[LuaMethodAttributes("drawAxis", "Draws an axis of the specified size at the coordinate pair.)")]
 		public void DrawAxis(int x, int y, int size, Color? color = null)
 		{
 			DrawLine(x + size, y, x - size, y, color);
 			DrawLine(x, y + size, x, y - size, color);
 		}
 
-
-		[LuaMethodAttributes(
-			"drawPie",
-			"draws a Pie shape at the given coordinates and the given width and height"
-		)]
+		[LuaMethodAttributes("drawPie", "draws a Pie shape at the given coordinates and the given width and height")]
 		public void DrawPie(
 			int x,
 			int y,
@@ -452,29 +395,26 @@ namespace BizHawk.Client.EmuHawk
 		{
 			using (var g = GetGraphics())
 			{
-				var bg = background ?? DefaultBackground;
+				var bg = background ?? _defaultBackground;
 				if (bg.HasValue)
 				{
 					var brush = GetBrush(bg.Value);
 					g.FillPie(brush, x, y, width, height, startangle, sweepangle);
 				}
 
-				g.DrawPie(GetPen(line ?? DefaultForeground), x + 1, y + 1, width - 1, height - 1, startangle, sweepangle);
-				
+				g.DrawPie(GetPen(line ?? _defaultForeground), x + 1, y + 1, width - 1, height - 1, startangle, sweepangle);
 			}
 		}
 
 		[LuaMethodAttributes(
-			"drawPixel",
-			"Draws a single pixel at the given coordinates in the given color. Color is optional (if not specified it will be drawn black)"
-		)]
+			"drawPixel", "Draws a single pixel at the given coordinates in the given color. Color is optional (if not specified it will be drawn black)")]
 		public void DrawPixel(int x, int y, Color? color = null)
 		{
 			using (var g = GetGraphics())
 			{
 				try
 				{
-					g.DrawLine(GetPen(color ?? DefaultForeground), x, y, x + 0.1F, y);
+					g.DrawLine(GetPen(color ?? _defaultForeground), x, y, x + 0.1F, y);
 				}
 				catch (Exception)
 				{
@@ -484,9 +424,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
-			"drawPolygon",
-			"Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). Line is the color of the polygon. Background is the optional fill color"
-		)]
+			"drawPolygon", "Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). Line is the color of the polygon. Background is the optional fill color")]
 		public void DrawPolygon(LuaTable points, Color? line = null, Color? background = null)
 		{
 			using (var g = GetGraphics())
@@ -501,8 +439,8 @@ namespace BizHawk.Client.EmuHawk
 						i++;
 					}
 
-					g.DrawPolygon(GetPen(line ?? DefaultForeground), pointsArr);
-					var bg = background ?? DefaultBackground;
+					g.DrawPolygon(GetPen(line ?? _defaultForeground), pointsArr);
+					var bg = background ?? _defaultBackground;
 					if (bg.HasValue)
 					{
 						g.FillPolygon(GetBrush(bg.Value), pointsArr);
@@ -516,15 +454,13 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
-			"drawRectangle",
-			"Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color"
-		)]
+			"drawRectangle", "Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color")]
 		public void DrawRectangle(int x, int y, int width, int height, Color? line = null, Color? background = null)
 		{
 			using (var g = GetGraphics())
 			{
-				g.DrawRectangle(GetPen(line ?? DefaultForeground), x, y, width, height);
-				var bg = background ?? DefaultBackground;
+				g.DrawRectangle(GetPen(line ?? _defaultForeground), x, y, width, height);
+				var bg = background ?? _defaultBackground;
 				if (bg.HasValue)
 				{
 					g.FillRectangle(GetBrush(bg.Value), x + 1, y + 1, width - 1, height - 1);
@@ -532,10 +468,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"drawString",
-			"Alias of gui.drawText()"
-		)]
+		[LuaMethodAttributes("drawString", "Alias of gui.drawText()")]
 		public void DrawString(
 			int x,
 			int y,
@@ -552,9 +485,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
-			"drawText",
-			"Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates."
-		)]
+			"drawText", "Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates.")]
 		public void DrawText(
 			int x,
 			int y,
@@ -602,7 +533,7 @@ namespace BizHawk.Client.EmuHawk
 
 					// The text isn't written out using GenericTypographic, so measuring it using GenericTypographic seemed to make it worse.
 					// And writing it out with GenericTypographic just made it uglier. :p
-					StringFormat f = new StringFormat(StringFormat.GenericDefault);
+					var f = new StringFormat(StringFormat.GenericDefault);
 					var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
 					Size sizeOfText = g.MeasureString(message, font, 0, f).ToSize();
 					if (horizalign != null)
@@ -620,6 +551,7 @@ namespace BizHawk.Client.EmuHawk
 								break;
 						}
 					}
+
 					if (vertalign != null)
 					{
 						switch (vertalign.ToLower())
@@ -635,10 +567,11 @@ namespace BizHawk.Client.EmuHawk
 								break;
 						}
 					}
+
 					Rectangle rect = new Rectangle(new Point(x, y), sizeOfText);
-					g.FillRectangle(GetBrush(backcolor ?? DefaultTextBackground.Value), rect);
+					g.FillRectangle(GetBrush(backcolor ?? _defaultTextBackground.Value), rect);
 					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-					g.DrawString(message, font, GetBrush(forecolor ?? DefaultForeground), x, y);
+					g.DrawString(message, font, GetBrush(forecolor ?? _defaultForeground), x, y);
 				}
 				catch (Exception)
 				{
@@ -649,8 +582,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"pixelText",
-			"Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. Two font families are available, \"fceux\" and \"gens\" (or  \"0\" and \"1\" respectively), both are monospace and have the same size as in the emulaors they've been taken from. If no font family is specified, it uses \"gens\" font, unless that's overridden via gui.defaultPixelFont()"
-		)]
+			"Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. Two font families are available, \"fceux\" and \"gens\" (or  \"0\" and \"1\" respectively), both are monospace and have the same size as in the emulaors they've been taken from. If no font family is specified, it uses \"gens\" font, unless that's overridden via gui.defaultPixelFont()")]
 		public void DrawText(
 			int x,
 			int y,
@@ -666,7 +598,7 @@ namespace BizHawk.Client.EmuHawk
 					var index = 0;
 					if (string.IsNullOrEmpty(fontfamily))
 					{
-						index = DefaultPixelFont;
+						index = _defaultPixelFont;
 					}
 					else
 					{
@@ -681,20 +613,21 @@ namespace BizHawk.Client.EmuHawk
 								index = 1;
 								break;
 							default:
-								Log(string.Format("Unable to find font family: {0}", fontfamily));
+								Log($"Unable to find font family: {fontfamily}");
 								return;
 						}
 					}
-					StringFormat f = new StringFormat(StringFormat.GenericTypographic)
+
+					var f = new StringFormat(StringFormat.GenericTypographic)
 					{
 						FormatFlags = StringFormatFlags.MeasureTrailingSpaces
 					};
 					var font = new Font(GlobalWin.DisplayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
 					Size sizeOfText = g.MeasureString(message, font, 0, f).ToSize();
-					Rectangle rect = new Rectangle(new Point(x, y), sizeOfText + new Size(1, 0));
-					g.FillRectangle(GetBrush(backcolor ?? DefaultTextBackground.Value), rect);
+					var rect = new Rectangle(new Point(x, y), sizeOfText + new Size(1, 0));
+					g.FillRectangle(GetBrush(backcolor ?? _defaultTextBackground.Value), rect);
 					g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-					g.DrawString(message, font, GetBrush(forecolor ?? DefaultForeground), x, y);
+					g.DrawString(message, font, GetBrush(forecolor ?? _defaultForeground), x, y);
 				}
 				catch (Exception)
 				{
@@ -704,9 +637,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
-			"text",
-			"Displays the given text on the screen at the given coordinates. Optional Foreground color. The optional anchor flag anchors the text to one of the four corners. Anchor flag parameters: topleft, topright, bottomleft, bottomright"
-		)]
+			"text", "Displays the given text on the screen at the given coordinates. Optional Foreground color. The optional anchor flag anchors the text to one of the four corners. Anchor flag parameters: topleft, topright, bottomleft, bottomright")]
 		public void Text(
 			int x,
 			int y,
@@ -747,10 +678,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddGUIText(message, x, y, Color.Black, forecolor ?? Color.White, a);
 		}
 
-		[LuaMethodAttributes(
-			"createcanvas",
-			"Creates a canvas of the given size."
-		)]
+		[LuaMethodAttributes("createcanvas", "Creates a canvas of the given size.")]
 		public LuaTable Text(int width, int height)
 		{
 			var canvas = new LuaCanvas(width, height);

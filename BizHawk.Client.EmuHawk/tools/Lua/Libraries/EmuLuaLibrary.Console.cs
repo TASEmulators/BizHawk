@@ -16,21 +16,15 @@ namespace BizHawk.Client.EmuHawk
 		public ConsoleLuaLibrary(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
-		public override string Name { get { return "console"; } }
+		public override string Name => "console";
 
-		[LuaMethodAttributes(
-			"clear",
-			"clears the output box of the Lua Console window"
-		)]
+		[LuaMethodAttributes("clear", "clears the output box of the Lua Console window")]
 		public static void Clear()
 		{
 			GlobalWin.Tools.LuaConsole.ClearOutputWindow();
 		}
 
-		[LuaMethodAttributes(
-			"getluafunctionslist",
-			"returns a list of implemented functions"
-		)]
+		[LuaMethodAttributes("getluafunctionslist", "returns a list of implemented functions")]
 		public static string GetLuaFunctionsList()
 		{
 			var list = new StringBuilder();
@@ -42,10 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			return list.ToString();
 		}
 
-		[LuaMethodAttributes(
-			"log",
-			"Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable"
-		)]
+		[LuaMethodAttributes("log", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
 		public static void Log(params object[] outputs)
 		{
 			LogWithSeparator("\t", "\n", outputs);
@@ -57,19 +48,13 @@ namespace BizHawk.Client.EmuHawk
 			Log(output);
 		}
 
-		[LuaMethodAttributes(
-			"writeline",
-			"Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable"
-		)]
+		[LuaMethodAttributes("writeline", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
 		public static void WriteLine(params object[] outputs)
 		{
 			LogWithSeparator("\n", "\n", outputs);
 		}
 
-		[LuaMethodAttributes(
-			"write",
-			"Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable"
-		)]
+		[LuaMethodAttributes("write", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
 		public static void Write(params object[] outputs)
 		{
 			LogWithSeparator("", "", outputs);
@@ -83,6 +68,7 @@ namespace BizHawk.Client.EmuHawk
 				GlobalWin.Tools.LuaConsole.WriteToOutputWindow("(no return)" + terminator);
 				return;
 			}
+
 			for (var outIndex = 0; outIndex < outputs.Length; outIndex++)
 			{
 				var output = outputs[outIndex];
@@ -135,6 +121,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 			}
+
 			GlobalWin.Tools.LuaConsole.WriteToOutputWindow(terminator);
 		}
 	}
