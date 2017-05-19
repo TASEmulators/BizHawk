@@ -285,15 +285,15 @@ namespace BizHawk.Client.Common
 			public long EndExclusive => Index + Length;
 		}
 
-		private static byte[] test_BufferManage(byte[] inbuf, ref long size, bool allocate)
+		private static byte[] Test_BufferManage(byte[] inbuf, ref long size, bool allocate)
 		{
 			if (allocate)
 			{
 				// if we have an appropriate buffer free, return it
-				if (test_rewindFellationBuf != null && test_rewindFellationBuf.LongLength == size)
+				if (testRewindFellationBuf != null && testRewindFellationBuf.LongLength == size)
 				{
-					var ret = test_rewindFellationBuf;
-					test_rewindFellationBuf = null;
+					var ret = testRewindFellationBuf;
+					testRewindFellationBuf = null;
 					return ret;
 				}
 
@@ -301,15 +301,15 @@ namespace BizHawk.Client.Common
 				return new byte[size];
 			}
 
-			test_rewindFellationBuf = inbuf;
+			testRewindFellationBuf = inbuf;
 			return null;
 		}
 
-		private static byte[] test_rewindFellationBuf;
+		private static byte[] testRewindFellationBuf;
 
-		private static void test(string[] args)
+		private static void Test(string[] args)
 		{
-			var sbb = new StreamBlobDatabase(false, 1024, test_BufferManage);
+			var sbb = new StreamBlobDatabase(false, 1024, Test_BufferManage);
 			Random r = new Random(0);
 			byte[] temp = new byte[1024];
 			int trials = 0;

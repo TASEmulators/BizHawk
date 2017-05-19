@@ -253,10 +253,10 @@ namespace BizHawk.Client.Common
 
 				if (thisByteMatches || i == stateLength - 1)
 				{
-					const int maxHeaderSize = 10;
+					const int MaxHeaderSize = 10;
 					int length = i - changeSequenceStartOffset + (thisByteMatches ? 0 : 1);
 
-					if (index + length + maxHeaderSize >= stateLength)
+					if (index + length + MaxHeaderSize >= stateLength)
 					{
 						// If the delta ends up being larger than the full state, capture the full state instead
 						goto CaptureFullState;

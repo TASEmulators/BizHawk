@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 					return _state;
 				}
 
-				return _manager.ndbdatabase.FetchAll(_id.ToString());
+				return _manager.NdbDatabase.FetchAll(_id.ToString());
 			}
 
 			set
@@ -80,7 +80,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			_manager.ndbdatabase.Store(_id.ToString(), _state, 0, _state.Length);
+			_manager.NdbDatabase.Store(_id.ToString(), _state, 0, _state.Length);
 			_state = null;
 		}
 
@@ -92,8 +92,8 @@ namespace BizHawk.Client.Common
 			}
 
 			string key = _id.ToString();
-			_state = _manager.ndbdatabase.FetchAll(key);
-			_manager.ndbdatabase.Release(key);
+			_state = _manager.NdbDatabase.FetchAll(key);
+			_manager.NdbDatabase.Release(key);
 		}
 
 		public void Dispose()
@@ -103,7 +103,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			_manager.ndbdatabase.Release(_id.ToString());
+			_manager.NdbDatabase.Release(_id.ToString());
 		}
 	}
 }

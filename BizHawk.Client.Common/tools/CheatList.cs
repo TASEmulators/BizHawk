@@ -13,6 +13,17 @@ namespace BizHawk.Client.Common
 {
 	public class CheatCollection : ICollection<Cheat>
 	{
+		private const string NameColumn = "NamesColumn";
+		private const string AddressColumn = "AddressColumn";
+		private const string ValueColumn = "ValueColumn";
+		private const string CompareColumn = "CompareColumn";
+		private const string OnColumn = "OnColumn";
+		private const string DomainColumn = "DomainColumn";
+		private const string SizeColumn = "SizeColumn";
+		private const string EndianColumn = "EndianColumn";
+		private const string TypeColumn = "DisplayTypeColumn";
+		private const string ComparisonType = "ComparisonTypeColumn";
+
 		private List<Cheat> _cheatList = new List<Cheat>();
 		private string _currentFileName = "";
 		private string _defaultFileName = "";
@@ -512,7 +523,7 @@ namespace BizHawk.Client.Common
 		{
 			switch (column)
 			{
-				case NAME:
+				case NameColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -529,7 +540,7 @@ namespace BizHawk.Client.Common
 					}
 
 					break;
-				case ADDRESS:
+				case AddressColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -546,7 +557,7 @@ namespace BizHawk.Client.Common
 					}
 
 					break;
-				case VALUE:
+				case ValueColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -565,7 +576,7 @@ namespace BizHawk.Client.Common
 					}
 
 					break;
-				case COMPARE:
+				case CompareColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -584,7 +595,7 @@ namespace BizHawk.Client.Common
 					}
 
 					break;
-				case ON:
+				case OnColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -603,7 +614,7 @@ namespace BizHawk.Client.Common
 					}
 
 					break;
-				case DOMAIN:
+				case DomainColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -622,7 +633,7 @@ namespace BizHawk.Client.Common
 					}
 
 					break;
-				case SIZE:
+				case SizeColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -641,7 +652,7 @@ namespace BizHawk.Client.Common
 					}
 
 					break;
-				case ENDIAN:
+				case EndianColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -660,7 +671,7 @@ namespace BizHawk.Client.Common
 					}
 
 					break;
-				case TYPE:
+				case TypeColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -679,7 +690,7 @@ namespace BizHawk.Client.Common
 					}
 
 					break;
-				case COMPARISONTYPE:
+				case ComparisonType:
 					if (reverse)
 					{
 						_cheatList = _cheatList
@@ -721,16 +732,5 @@ namespace BizHawk.Client.Common
 
 			public Cheat Cheat { get; private set; }
 		}
-
-		private const string NAME = "NamesColumn";
-		private const string ADDRESS = "AddressColumn";
-		private const string VALUE = "ValueColumn";
-		private const string COMPARE = "CompareColumn";
-		private const string ON = "OnColumn";
-		private const string DOMAIN = "DomainColumn";
-		private const string SIZE = "SizeColumn";
-		private const string ENDIAN = "EndianColumn";
-		private const string TYPE = "DisplayTypeColumn";
-		private const string COMPARISONTYPE = "ComparisonTypeColumn";
 	}
 }

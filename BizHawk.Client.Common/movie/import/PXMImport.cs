@@ -23,9 +23,9 @@ namespace BizHawk.Client.Common.Movie.Import
 				{
 					var info = ParseHeader(movie, "PXM ", br);
 
-					fs.Seek(info.controllerDataOffset, SeekOrigin.Begin);
+					fs.Seek(info.ControllerDataOffset, SeekOrigin.Begin);
 
-					if (info.binaryFormat)
+					if (info.BinaryFormat)
 					{
 						ParseBinaryInputLog(br, movie, info);
 					}

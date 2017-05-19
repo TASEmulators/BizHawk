@@ -206,7 +206,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Gets the haschode for current insance
+		/// Gets the haschode for current instance
 		/// </summary>
 		/// <returns>This instance hashcode</returns>
 		public override int GetHashCode()
@@ -241,7 +241,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="system1">First <see cref="SystemInfo"/></param>
 		/// <param name="system2">Second <see cref="SystemInfo"/></param>
-		/// <returns>True if both system are diferent; otherwise, false</returns>
+		/// <returns>True if both system are different; otherwise, false</returns>
 		public static bool operator !=(SystemInfo system1, SystemInfo system2)
 		{
 			return !(system1 == system2);

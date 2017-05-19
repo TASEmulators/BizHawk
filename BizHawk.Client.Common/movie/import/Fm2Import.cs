@@ -45,7 +45,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.ToLower().StartsWith("emuversion"))
 					{
-						Result.Movie.Comments.Add($"{EMULATIONORIGIN} {emulator} version {ParseHeader(line, "emuVersion")}");
+						Result.Movie.Comments.Add($"{Emulationorigin} {emulator} version {ParseHeader(line, "emuVersion")}");
 					}
 					else if (line.ToLower().StartsWith("version"))
 					{
@@ -57,7 +57,7 @@ namespace BizHawk.Client.Common
 						}
 						else
 						{
-							Result.Movie.Comments.Add(MOVIEORIGIN + " .fm2 version 3");
+							Result.Movie.Comments.Add(Movieorigin + " .fm2 version 3");
 						}
 					}
 					else if (line.ToLower().StartsWith("romfilename"))

@@ -487,7 +487,7 @@ namespace BizHawk.Client.Common
 
 			for (int player = 1; player <= BkmMnemonicConstants.Players[ControlType]; player++)
 			{
-				int srcindex = (player - 1) * (BkmMnemonicConstants.Buttons[ControlType].Count + BkmMnemonicConstants.Analogs[ControlType].Count * 4 + 1 + 1);
+				int srcindex = (player - 1) * (BkmMnemonicConstants.Buttons[ControlType].Count + (BkmMnemonicConstants.Analogs[ControlType].Count * 4) + 1 + 1);
 
 				if (mnemonic.Length < srcindex + 3 + BkmMnemonicConstants.Buttons[ControlType].Count - 1)
 				{

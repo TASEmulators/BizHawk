@@ -6,8 +6,6 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie : IMovie
 	{
-		protected bool MakeBackup = true;
-
 		public Bk2Movie(string filename)
 			: this()
 		{
@@ -22,13 +20,15 @@ namespace BizHawk.Client.Common
 
 			Filename = "";
 			IsCountingRerecords = true;
-			_mode = Moviemode.Inactive;
+			Mode = Moviemode.Inactive;
 			MakeBackup = true;
 
 			Header[HeaderKeys.MOVIEVERSION] = "BizHawk v2.0.0";
 
-			_log = StringLogUtil.MakeStringLog();
+			Log = StringLogUtil.MakeStringLog();
 		}
+
+		protected bool MakeBackup { get; set; }
 
 		private string _filename;
 
@@ -70,11 +70,11 @@ namespace BizHawk.Client.Common
 					return double.PositiveInfinity;
 				}
 
-				return _log.Count;
+				return Log.Count;
 			}
 		}
 
-		public int InputLogLength => _log.Count;
+		public int InputLogLength => Log.Count;
 
 		#region Log Editing
 
@@ -82,7 +82,7 @@ namespace BizHawk.Client.Common
 		{
 			var lg = LogGeneratorInstance();
 			lg.SetSource(source);
-			_log.Add(lg.GenerateLogEntry());
+			Log.Add(lg.GenerateLogEntry());
 			Changes = true;
 		}
 
@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 		{
 			if (Global.Config.VBAStyleMovieLoadState)
 			{
-				if (Global.Emulator.Frame < _log.Count)
+				if (Global.Emulator.Frame < Log.Count)
 				{
 					Truncate(Global.Emulator.Frame);
 				}
@@ -109,9 +109,9 @@ namespace BizHawk.Client.Common
 			// and it is weird for Truncate to possibly not truncate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
-				if (frame < _log.Count)
+				if (frame < Log.Count)
 				{
-					_log.RemoveRange(frame, _log.Count - frame);
+					Log.RemoveRange(frame, Log.Count - frame);
 					Changes = true;
 				}
 			}
@@ -125,13 +125,13 @@ namespace BizHawk.Client.Common
 
 				if (LoopOffset.HasValue)
 				{
-					if (frame < _log.Count)
+					if (frame < Log.Count)
 					{
 						getframe = frame;
 					}
 					else
 					{
-						getframe = ((frame - LoopOffset.Value) % (_log.Count - LoopOffset.Value)) + LoopOffset.Value;
+						getframe = ((frame - LoopOffset.Value) % (Log.Count - LoopOffset.Value)) + LoopOffset.Value;
 					}
 				}
 				else
@@ -144,7 +144,7 @@ namespace BizHawk.Client.Common
 					Definition = Global.MovieSession.MovieControllerAdapter.Definition
 				};
 
-				adapter.SetControllersAsMnemonic(_log[getframe]);
+				adapter.SetControllersAsMnemonic(Log[getframe]);
 				return adapter;
 			}
 
@@ -172,13 +172,13 @@ namespace BizHawk.Client.Common
 
 		protected void SetFrameAt(int frameNum, string frame)
 		{
-			if (_log.Count > frameNum)
+			if (Log.Count > frameNum)
 			{
-				_log[frameNum] = frame;
+				Log[frameNum] = frame;
 			}
 			else
 			{
-				_log.Add(frame);
+				Log.Add(frame);
 			}
 		}
 	}

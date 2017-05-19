@@ -31,7 +31,7 @@ namespace BizHawk.Client.Common
 
 		public TasLagLog TasLagLog => _lagLog;
 
-		public IStringLog InputLog => _log;
+		public IStringLog InputLog => Log;
 
 		public TasMovieMarkerList Markers { get; private set; }
 
@@ -139,12 +139,12 @@ namespace BizHawk.Client.Common
 
 		public override void SwitchToPlay()
 		{
-			_mode = Moviemode.Play;
+			Mode = Moviemode.Play;
 		}
 
 		public override void SwitchToRecord()
 		{
-			_mode = Moviemode.Record;
+			Mode = Moviemode.Record;
 		}
 
 		/// <summary>
@@ -250,18 +250,18 @@ namespace BizHawk.Client.Common
 
 		public void DeleteLogBefore(int frame)
 		{
-			if (frame < _log.Count)
+			if (frame < Log.Count)
 			{
-				_log.RemoveRange(0, frame);
+				Log.RemoveRange(0, frame);
 			}
 		}
 
 		public void CopyLog(IEnumerable<string> log)
 		{
-			_log.Clear();
+			Log.Clear();
 			foreach (var entry in log)
 			{
-				_log.Add(entry);
+				Log.Add(entry);
 			}
 		}
 
@@ -275,10 +275,10 @@ namespace BizHawk.Client.Common
 
 		public IStringLog GetLogEntries()
 		{
-			return _log;
+			return Log;
 		}
 
-		private int? TimelineBranchFrame = null;
+		private int? _timelineBranchFrame = null;
 
 		// TODO: this is 99% copy pasting of bad code
 		public override bool ExtractInputLog(TextReader reader, out string errorMessage)
@@ -291,9 +291,9 @@ namespace BizHawk.Client.Common
 			// We are in record mode so replace the movie log with the one from the savestate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
-				TimelineBranchFrame = null;
+				_timelineBranchFrame = null;
 
-				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Count != 0)
+				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Count != 0)
 				{
 					SaveBackup();
 					MakeBackup = false;
@@ -341,17 +341,17 @@ namespace BizHawk.Client.Common
 					else if (line[0] == '|')
 					{
 						newLog.Add(line);
-						if (!TimelineBranchFrame.HasValue && counter < _log.Count && line != _log[counter])
+						if (!_timelineBranchFrame.HasValue && counter < Log.Count && line != Log[counter])
 						{
-							TimelineBranchFrame = counter;
+							_timelineBranchFrame = counter;
 						}
 
 						counter++;
 					}
 				}
 
-				_log.Clear();
-				_log.AddRange(newLog);
+				Log.Clear();
+				Log.AddRange(newLog);
 			}
 			else // Multitrack mode
 			{
@@ -410,21 +410,21 @@ namespace BizHawk.Client.Common
 
 			var stateFramei = stateFrame ?? 0;
 
-			if (stateFramei > 0 && stateFramei < _log.Count)
+			if (stateFramei > 0 && stateFramei < Log.Count)
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
 					Truncate(stateFramei);
 				}
 			}
-			else if (stateFramei > _log.Count) // Post movie savestate
+			else if (stateFramei > Log.Count) // Post movie savestate
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
-					Truncate(_log.Count);
+					Truncate(Log.Count);
 				}
 
-				_mode = Moviemode.Finished;
+				Mode = Moviemode.Finished;
 			}
 
 			if (IsCountingRerecords)
@@ -432,10 +432,10 @@ namespace BizHawk.Client.Common
 				Rerecords++;
 			}
 
-			if (TimelineBranchFrame.HasValue)
+			if (_timelineBranchFrame.HasValue)
 			{
-				_lagLog.RemoveFrom(TimelineBranchFrame.Value);
-				TasStateManager.Invalidate(TimelineBranchFrame.Value);
+				_lagLog.RemoveFrom(_timelineBranchFrame.Value);
+				TasStateManager.Invalidate(_timelineBranchFrame.Value);
 			}
 
 			return true;
@@ -510,10 +510,10 @@ namespace BizHawk.Client.Common
 
 		public void LoadBranch(TasBranch branch)
 		{
-			int? divergentPoint = DivergentPoint(_log, branch.InputLog);
+			int? divergentPoint = DivergentPoint(Log, branch.InputLog);
 
-			_log?.Dispose();
-			_log = branch.InputLog.Clone();
+			Log?.Dispose();
+			Log = branch.InputLog.Clone();
 			////_changes = true;
 
 			// if there are branch states, they will be loaded anyway

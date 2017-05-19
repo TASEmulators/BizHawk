@@ -8,8 +8,8 @@ namespace BizHawk.Client.Common
 {
 	public class Bk2LogEntryGenerator : ILogEntryGenerator
 	{
-		private readonly Bk2MnemonicConstants Mnemonics = new Bk2MnemonicConstants();
-		private readonly Bk2FloatConstants FloatLookup = new Bk2FloatConstants();
+		private readonly Bk2MnemonicConstants _mnemonics = new Bk2MnemonicConstants();
+		private readonly Bk2FloatConstants _floatLookup = new Bk2FloatConstants();
 
 		private readonly string _logKey;
 		private IController _source;
@@ -72,11 +72,11 @@ namespace BizHawk.Client.Common
 				{
 					if (_source.Definition.BoolButtons.Contains(button))
 					{
-						dict.Add(button, Mnemonics[button].ToString());
+						dict.Add(button, _mnemonics[button].ToString());
 					}
 					else if (_source.Definition.FloatControls.Contains(button))
 					{
-						dict.Add(button, FloatLookup[button]);
+						dict.Add(button, _floatLookup[button]);
 					}
 				}
 			}
@@ -131,7 +131,7 @@ namespace BizHawk.Client.Common
 							}
 							else
 							{
-								sb.Append(_source.IsPressed(button) ? Mnemonics[button] : forInputDisplay ? ' ' : '.');
+								sb.Append(_source.IsPressed(button) ? _mnemonics[button] : forInputDisplay ? ' ' : '.');
 							}
 						}
 					}
