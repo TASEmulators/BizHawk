@@ -9,7 +9,7 @@ namespace BizHawk.Client.EmuHawk
 	[Description("Represents a canvas object returned by the gui.createcanvas() method")]
 	public partial class LuaCanvas : Form
 	{
-		private Graphics graphics;
+		private readonly Graphics _graphics;
 
 		public LuaCanvas(int width, int height)
 		{
@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 			pictureBox.Width = width;
 			pictureBox.Height = height;
 			pictureBox.Image = new Bitmap(width, height);
-			graphics = Graphics.FromImage(pictureBox.Image);
+			_graphics = Graphics.FromImage(pictureBox.Image);
 		}
 
 		[LuaMethodAttributes("SetTitle", "Sets the canvas window title")]
@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodAttributes("Clear", "Clears the canvas")]
 		public void Clear(Color color)
 		{
-			graphics.Clear(color);
+			_graphics.Clear(color);
 		}
 
 		[LuaMethodAttributes("Refresh", "Redraws the canvas")]
@@ -46,11 +46,11 @@ namespace BizHawk.Client.EmuHawk
 			if (fill.HasValue)
 			{
 				var brush = new SolidBrush(fill.Value);
-				graphics.FillRectangle(brush, x, y, width, height);
+				_graphics.FillRectangle(brush, x, y, width, height);
 			}
 
 			var pen = new Pen(outline.HasValue ? outline.Value : Color.Black);
-			graphics.DrawRectangle(pen, x, y, width, height);
+			_graphics.DrawRectangle(pen, x, y, width, height);
 		}
 
 		[LuaMethodAttributes(
@@ -88,8 +88,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
-			graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-			graphics.DrawString(message, font, new SolidBrush(color ?? Color.White), x, y);
+			_graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
+			_graphics.DrawString(message, font, new SolidBrush(color ?? Color.White), x, y);
 		}
 	}
 }

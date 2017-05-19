@@ -1,28 +1,25 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Forms;
 
 using BizHawk.Common.StringExtensions;
-using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	enum BoxType { All, Signed, Unsigned, Hex };
-	class LuaTextBox : TextBox
+	internal enum BoxType
+	{
+		All, Signed, Unsigned, Hex
+	}
+
+	internal class LuaTextBox : TextBox
 	{
 		private BoxType _boxType = BoxType.All;
 
 		public void SetType(BoxType type)
 		{
 			_boxType = type;
-			if (type != BoxType.All)
-			{
-				CharacterCasing = CharacterCasing.Upper;
-			}
-			else
-			{
-				CharacterCasing = CharacterCasing.Normal;
-			}
+			CharacterCasing = type != BoxType.All
+				? CharacterCasing.Upper
+				: CharacterCasing.Normal;
 		}
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
@@ -33,7 +30,6 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
-			
 			if (e.KeyCode == Keys.Up)
 			{
 				switch (_boxType)
@@ -76,7 +72,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Increment()
 		{
-			string text = String.IsNullOrWhiteSpace(Text) ? "0" : Text;
+			string text = string.IsNullOrWhiteSpace(Text) ? "0" : Text;
 			switch (_boxType)
 			{
 				case BoxType.Hex:
@@ -90,6 +86,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Text = "0";
 					}
+
 					break;
 				case BoxType.Signed:
 					var sval = int.Parse(text);
@@ -102,6 +99,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Text = "0";
 					}
+
 					break;
 				case BoxType.Unsigned:
 					var uval = uint.Parse(text);
@@ -114,13 +112,14 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Text = "0";
 					}
+
 					break;
 			}
 		}
 
 		private void Decrement()
 		{
-			string text = String.IsNullOrWhiteSpace(Text) ? "0" : Text;
+			string text = string.IsNullOrWhiteSpace(Text) ? "0" : Text;
 			switch (_boxType)
 			{
 				case BoxType.Hex:
@@ -130,6 +129,7 @@ namespace BizHawk.Client.EmuHawk
 						hval--;
 						Text = hval.ToString("X");
 					}
+
 					break;
 				case BoxType.Signed:
 					var sval = int.Parse(text);
@@ -143,27 +143,40 @@ namespace BizHawk.Client.EmuHawk
 						uval--;
 						Text = uval.ToString();
 					}
+
 					break;
 			}
 		}
 
 		private void SpecificValueBox_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if (e.KeyChar == '\b') return;
+			if (e.KeyChar == '\b')
+			{
+				return;
+			}
 
 			switch (_boxType)
 			{
 				case BoxType.Unsigned:
 					if (!e.KeyChar.IsUnsigned())
+					{
 						e.Handled = true;
+					}
+
 					break;
 				case BoxType.Signed:
 					if (!e.KeyChar.IsSigned())
+					{
 						e.Handled = true;
+					}
+
 					break;
 				case BoxType.Hex:
 					if (!e.KeyChar.IsHex())
+					{
 						e.Handled = true;
+					}
+
 					break;
 			}
 		}

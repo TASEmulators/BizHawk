@@ -1,47 +1,47 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using BizHawk.Client.Common;
+
 using LuaInterface;
+
+using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaWinform : Form
 	{
-		public List<LuaEvent> ControlEvents = new List<LuaEvent>();
+		public List<LuaEvent> ControlEvents { get; } = new List<LuaEvent>();
 
-		private string CurrentDirectory = Environment.CurrentDirectory;
-
-		Lua OwnerThread;
+		private readonly string _currentDirectory = Environment.CurrentDirectory;
+		private readonly Lua _ownerThread;
 
 		public LuaWinform(Lua ownerThread)
 		{
 			InitializeComponent();
-			OwnerThread = ownerThread;
+			_ownerThread = ownerThread;
 			StartPosition = FormStartPosition.CenterParent;
 			Closing += (o, e) => CloseThis();
 		}
 
 		private void LuaWinform_Load(object sender, EventArgs e)
 		{
-
 		}
 
-		public void CloseThis()
+		private void CloseThis()
 		{
 			GlobalWin.Tools.LuaConsole.LuaImp.WindowClosed(Handle);
 		}
 
 		public void DoLuaEvent(IntPtr handle)
 		{
-			LuaSandbox.Sandbox(OwnerThread, () =>
+			LuaSandbox.Sandbox(_ownerThread, () =>
 			{
-				Environment.CurrentDirectory = CurrentDirectory;
-				foreach (LuaEvent l_event in ControlEvents)
+				Environment.CurrentDirectory = _currentDirectory;
+				foreach (LuaEvent luaEvent in ControlEvents)
 				{
-					if (l_event.Control == handle)
+					if (luaEvent.Control == handle)
 					{
-						l_event.Event.Call();
+						luaEvent.Event.Call();
 					}
 				}
 			});
@@ -49,15 +49,14 @@ namespace BizHawk.Client.EmuHawk
 
 		public class LuaEvent
 		{
-			public LuaFunction Event;
-			public IntPtr Control;
-
-			public LuaEvent() { }
 			public LuaEvent(IntPtr handle, LuaFunction lfunction)
 			{
 				Event = lfunction;
 				Control = handle;
 			}
+
+			public LuaFunction Event { get; }
+			public IntPtr Control { get; }
 		}
 	}
 }
