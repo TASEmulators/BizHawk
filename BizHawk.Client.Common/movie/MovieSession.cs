@@ -40,12 +40,14 @@ namespace BizHawk.Client.Common
 		public Func<string, string, bool> AskYesNoCallback { get; set; }
 
 		/// <summary>
-		/// Required
+		/// Gets or sets a callback that allows the movie session to pause the emulator
+		/// This is Required!
 		/// </summary>
 		public Action PauseCallback { get; set; }
 
 		/// <summary>
-		/// Required
+		/// Gets or sets a callback that is invoked when the movie mode has changed
+		/// This is Required!
 		/// </summary>
 		public Action ModeChangedCallback { get; set; }
 
@@ -96,7 +98,7 @@ namespace BizHawk.Client.Common
 			MessageCallback?.Invoke(message);
 		}
 
-		private void LatchMultitrackPlayerInput(IController playerSource, MultitrackRewiringControllerAdapter rewiredSource)
+		private void LatchMultitrackPlayerInput(MultitrackRewiringControllerAdapter rewiredSource)
 		{
 			if (MultiTrack.IsActive)
 			{
@@ -297,7 +299,7 @@ namespace BizHawk.Client.Common
 			{
 				if (MultiTrack.IsActive)
 				{
-					LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringAdapter);
+					LatchMultitrackPlayerInput(Global.MultitrackRewiringAdapter);
 				}
 				else
 				{
@@ -475,13 +477,6 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			// TODO: Delete this, this save is utterly useless.
-			// Movie was saved immediately before calling QueeuNewMovie. (StartNewMovie)
-			////if (Movie.IsActive && !string.IsNullOrEmpty(Movie.Filename))
-			////{
-			////	Movie.Save();
-			////}
-
 			// Note: this populates MovieControllerAdapter's Type with the approparite controller
 			// Don't set it to a movie instance of the adapter or you will lose the definition!
 			InputManager.RewireInputChain();
@@ -513,7 +508,7 @@ namespace BizHawk.Client.Common
 					PreviousSNES_InSnes9x = Global.Config.SNES_InSnes9x;
 					Global.Config.SNES_InSnes9x = true;
 				}
-				else
+				else if (movie.Core == bsnesName)
 				{
 					PreviousSNES_InSnes9x = Global.Config.SNES_InSnes9x;
 					Global.Config.SNES_InSnes9x = false;
@@ -529,9 +524,9 @@ namespace BizHawk.Client.Common
 					PreviousGBA_UsemGBA = Global.Config.GBA_UsemGBA;
 					Global.Config.GBA_UsemGBA = true;
 				}
-				else
+				else if (movie.Core == vbaNextName)
 				{
-					PreviousSNES_InSnes9x = Global.Config.GBA_UsemGBA;
+					PreviousGBA_UsemGBA = Global.Config.GBA_UsemGBA;
 					Global.Config.GBA_UsemGBA = false;
 				}
 			}
