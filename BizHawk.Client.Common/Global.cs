@@ -28,8 +28,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static int SoundMaxBufferDeficitMs;
 
-		public static AutofireController AutofireNullControls;
-
 		// the movie will be spliced inbetween these if it is present
 		public static readonly CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
 		public static readonly CopyControllerAdapter MovieOutputHardpoint = new CopyControllerAdapter();

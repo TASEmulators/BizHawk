@@ -290,7 +290,7 @@ namespace BizHawk.Client.EmuHawk
 			CoreFileProvider.SyncCoreCommInputSignals(comm);
 			Emulator = new NullEmulator(comm, Global.Config.GetCoreSettings<NullEmulator>());
 			Global.ActiveController = new Controller(NullController.Instance.Definition);
-			Global.AutoFireController = Global.AutofireNullControls;
+			Global.AutoFireController = AutofireNullControls;
 			Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 			try { GlobalWin.Sound = new Sound(Handle); }
 			catch
@@ -1359,6 +1359,8 @@ namespace BizHawk.Client.EmuHawk
 		private IVideoWriter _currAviWriter;
 		private HashSet<int> _currAviWriterFrameList;
 
+		private AutofireController AutofireNullControls;
+
 		// Sound refator TODO: we can enforce async mode here with a property that gets/sets this but does an async check
 		private ISoundProvider _aviSoundInputAsync; // Note: This sound provider must be in async mode!
 
@@ -1779,7 +1781,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Global.ClientControls = controls;
-			Global.AutofireNullControls = new AutofireController(NullController.Instance.Definition, Emulator);
+			AutofireNullControls = new AutofireController(NullController.Instance.Definition, Emulator);
 
 		}
 
@@ -3710,7 +3712,7 @@ namespace BizHawk.Client.EmuHawk
 			CoreFileProvider.SyncCoreCommInputSignals(coreComm);
 			Emulator = new NullEmulator(coreComm, Global.Config.GetCoreSettings<NullEmulator>());
 			Global.ActiveController = new Controller(NullController.Instance.Definition);
-			Global.AutoFireController = Global.AutofireNullControls;
+			Global.AutoFireController = AutofireNullControls;
 			RewireSound();
 			RebootStatusBarIcon.Visible = false;
 			GameIsClosing = false;
