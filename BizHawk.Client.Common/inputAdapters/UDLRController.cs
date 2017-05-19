@@ -28,14 +28,14 @@ namespace BizHawk.Client.Common
 			{
 				if (!Source.IsPressed(button))
 				{
-					Unpresses.Remove(button);
+					_unpresses.Remove(button);
 				}
 
 				prefix = button.GetPrecedingString("Down");
 				string other = prefix + "Up";
 				if (Source.IsPressed(other))
 				{
-					if (Unpresses.Contains(button))
+					if (_unpresses.Contains(button))
 					{
 						return false;
 					}
@@ -45,11 +45,11 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 
-					Unpresses.Add(other);
+					_unpresses.Add(other);
 				}
 				else
 				{
-					Unpresses.Remove(button);
+					_unpresses.Remove(button);
 				}
 			}
 
@@ -57,14 +57,14 @@ namespace BizHawk.Client.Common
 			{
 				if (!Source.IsPressed(button))
 				{
-					Unpresses.Remove(button);
+					_unpresses.Remove(button);
 				}
 
 				prefix = button.GetPrecedingString("Up");
 				string other = prefix + "Down";
 				if (Source.IsPressed(other))
 				{
-					if (Unpresses.Contains(button))
+					if (_unpresses.Contains(button))
 					{
 						return false;
 					}
@@ -74,11 +74,11 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 
-					Unpresses.Add(other);
+					_unpresses.Add(other);
 				}
 				else
 				{
-					Unpresses.Remove(button);
+					_unpresses.Remove(button);
 				}
 			}
 
@@ -86,14 +86,14 @@ namespace BizHawk.Client.Common
 			{
 				if (!Source.IsPressed(button))
 				{
-					Unpresses.Remove(button);
+					_unpresses.Remove(button);
 				}
 
 				prefix = button.GetPrecedingString("Right");
 				string other = prefix + "Left";
 				if (Source.IsPressed(other))
 				{
-					if (Unpresses.Contains(button))
+					if (_unpresses.Contains(button))
 					{
 						return false;
 					}
@@ -103,11 +103,11 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 
-					Unpresses.Add(other);
+					_unpresses.Add(other);
 				}
 				else
 				{
-					Unpresses.Remove(button);
+					_unpresses.Remove(button);
 				}
 			}
 
@@ -115,14 +115,14 @@ namespace BizHawk.Client.Common
 			{
 				if (!Source.IsPressed(button))
 				{
-					Unpresses.Remove(button);
+					_unpresses.Remove(button);
 				}
 
 				prefix = button.GetPrecedingString("Left");
 				string other = prefix + "Right";
 				if (Source.IsPressed(other))
 				{
-					if (Unpresses.Contains(button))
+					if (_unpresses.Contains(button))
 					{
 						return false;
 					}
@@ -132,11 +132,11 @@ namespace BizHawk.Client.Common
 						return false;
 					}
 
-					Unpresses.Add(other);
+					_unpresses.Add(other);
 				}
 				else
 				{
-					Unpresses.Remove(button);
+					_unpresses.Remove(button);
 				}
 			}
 
@@ -149,7 +149,7 @@ namespace BizHawk.Client.Common
 			return Source.GetFloat(name);
 		}
 
-		private readonly HashSet<string> Unpresses = new HashSet<string>();
+		private readonly HashSet<string> _unpresses = new HashSet<string>();
 
 		public IController Source { get; set; }
 	}

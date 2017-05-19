@@ -2,11 +2,6 @@
 {
 	public class AutoPatternBool
 	{
-		public readonly bool SkipsLag = true;
-		public readonly bool[] Pattern;
-		public readonly int Loop = 0;
-		private int _index = 0;
-
 		public AutoPatternBool()
 		{
 			Pattern = new[] { true };
@@ -35,6 +30,12 @@
 			_index = offset;
 			Loop = loop;
 		}
+
+		private int _index;
+
+		public bool SkipsLag { get; } = true;
+		public bool[] Pattern { get; }
+		public int Loop { get; }
 
 		/// <summary>
 		/// Gets the next value and increments index.
@@ -70,11 +71,6 @@
 
 	public class AutoPatternFloat
 	{
-		public readonly bool SkipsLag = true;
-		public readonly float[] Pattern;
-		public readonly int Loop = 0;
-		private int _index;
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="AutoPatternFloat"/> class. 
 		/// Defaults to 0.
@@ -85,11 +81,12 @@
 		}
 
 		/// <summary>
+		/// Initializes a new instance of the <see cref="AutoPatternFloat"/> class. 
 		/// Simple on/off pattern, using the given values as on/off.
 		/// </summary>
-		public AutoPatternFloat(float valueOn, int on, float valueOff, int off, bool skip_lag = true, int offset = 0, int loop = 0)
+		public AutoPatternFloat(float valueOn, int on, float valueOff, int off, bool skipLag = true, int offset = 0, int loop = 0)
 		{
-			SkipsLag = skip_lag;
+			SkipsLag = skipLag;
 			_index = offset;
 			Loop = loop;
 			Pattern = new float[on + off];
@@ -104,13 +101,19 @@
 			}
 		}
 
-		public AutoPatternFloat(float[] pattern, bool skip_lag = true, int offset = 0, int loop = 0)
+		public AutoPatternFloat(float[] pattern, bool skipLag = true, int offset = 0, int loop = 0)
 		{
-			SkipsLag = skip_lag;
+			SkipsLag = skipLag;
 			Pattern = pattern;
 			_index = offset;
 			Loop = loop;
 		}
+
+		private int _index;
+
+		public bool SkipsLag { get; } = true;
+		public float[] Pattern { get; }
+		public int Loop { get; }
 
 		/// <summary>
 		/// Gets the next value and increments index.
