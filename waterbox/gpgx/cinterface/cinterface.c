@@ -713,3 +713,8 @@ GPGX_EX int gpgx_getregs(gpregister_t *regs)
 
 	return ret;
 }
+
+int main(void)
+{
+	_leave_main();
+}

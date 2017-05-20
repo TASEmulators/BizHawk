@@ -42,7 +42,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 			try
 			{
-				Elf = new ElfRunner(Path.Combine(comm.CoreFileProvider.DllPath(), "gpgx.elf"), 8 * 1024 * 1024, 36 * 1024 * 1024, 4 * 1024 * 1024);
+				Elf = new PeRunner(comm.CoreFileProvider.DllPath(), "gpgx.exe", 8 * 1024 * 1024, 36 * 1024 * 1024, 4 * 1024 * 1024);
+
 				if (Elf.ShouldMonitor)
 					Core = BizInvoker.GetInvoker<LibGPGX>(Elf, Elf);
 				else
@@ -152,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 		}
 
 		LibGPGX Core;
-		ElfRunner Elf;
+		PeRunner Elf;
 
 		DiscSystem.Disc CD;
 		DiscSystem.DiscSectorReader DiscSectorReader;

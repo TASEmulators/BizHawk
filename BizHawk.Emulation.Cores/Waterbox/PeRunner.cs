@@ -1,4 +1,5 @@
 ﻿using BizHawk.Common;
+using BizHawk.Common.BizInvoke;
 using BizHawk.Emulation.Common;
 using PeNet;
 using System;
@@ -12,7 +13,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 {
 	public class PeRunner : Swappable, IImportResolver, IBinaryStateable
 	{
-		public class PeWrapper : IImportResolver, IBinaryStateable, IDisposable
+		/// <summary>
+		/// manages one PE file within the the set of loaded PE files
+		/// </summary>
+		private class PeWrapper : IImportResolver, IBinaryStateable, IDisposable
 		{
 			public Dictionary<int, IntPtr> ExportsByOrdinal { get; } = new Dictionary<int, IntPtr>();
 			/// <summary>
@@ -36,6 +40,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public MemoryBlock Memory { get; private set; }
 
 			public IntPtr EntryPoint { get; private set; }
+
+			[UnmanagedFunctionPointer(CallingConvention.Winapi)]
+			private delegate bool DllEntry(IntPtr instance, int reason, IntPtr reserved);
+			[UnmanagedFunctionPointer(CallingConvention.Winapi)]
+			private delegate void ExeEntry();
+
+			public bool RunDllEntry()
+			{
+				var entryThunk = (DllEntry)Marshal.GetDelegateForFunctionPointer(EntryPoint, typeof(DllEntry));
+				return entryThunk(Z.US(Start), 1, IntPtr.Zero); // DLL_PROCESS_ATTACH
+			}
+			public void RunExeEntry()
+			{
+				var entryThunk = (ExeEntry)Marshal.GetDelegateForFunctionPointer(EntryPoint, typeof(ExeEntry));
+				entryThunk();
+			}
 
 			public PeWrapper(string moduleName, byte[] fileData)
 			{
@@ -89,22 +109,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				LoadOffset = (long)Start - (long)_pe.ImageNtHeaders.OptionalHeader.ImageBase;
 				Memory = new MemoryBlock(Start, Size);
 				Memory.Activate();
+				Memory.Protect(Start, Size, MemoryBlock.Protection.RW);
 
 				// copy headers
-				{
-					ulong length = _pe.ImageNtHeaders.OptionalHeader.SizeOfHeaders;
-					Memory.Protect(Start, length, MemoryBlock.Protection.RW);
-					Marshal.Copy(_fileData, 0, Z.US(Start), (int)length);
-				}
+				Marshal.Copy(_fileData, 0, Z.US(Start), (int)_pe.ImageNtHeaders.OptionalHeader.SizeOfHeaders);
 
 				// copy sections
 				foreach (var s in _pe.ImageSectionHeaders)
 				{
 					ulong start = Start + s.VirtualAddress;
 					ulong length = s.VirtualSize;
+					ulong datalength = Math.Min(s.VirtualSize, s.SizeOfRawData);
 
-					Marshal.Copy(_fileData, (int)s.PointerToRawData, Z.US(start), (int)s.SizeOfRawData);
-					WaterboxUtils.ZeroMemory(Z.US(start + s.SizeOfRawData), (long)(length - s.SizeOfRawData));
+					Marshal.Copy(_fileData, (int)s.PointerToRawData, Z.US(start), (int)datalength);
+					WaterboxUtils.ZeroMemory(Z.US(start + datalength), (long)(length - datalength));
 				}
 
 				// apply relocations
@@ -161,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						module = new Dictionary<string, IntPtr>();
 						ImportsByModule.Add(import.DLL, module);
 					}
-					module.Add(import.Name, Z.US(import.Thunk));
+					module.Add(import.Name, Z.US(Start + import.Thunk));
 				}
 			}
 
@@ -249,6 +267,186 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
+		/// <summary>
+		/// serves as a standin for libpsxscl.so
+		/// </summary>
+		private class Psx
+		{
+			private readonly PeRunner _parent;
+			private readonly List<Delegate> _traps = new List<Delegate>();
+
+			public Psx(PeRunner parent)
+			{
+				_parent = parent;
+			}
+
+			[StructLayout(LayoutKind.Sequential)]
+			public struct PsxContext
+			{
+				public int Size;
+				public int Options;
+				public IntPtr SyscallVtable;
+				public IntPtr LdsoVtable;
+				public IntPtr PsxVtable;
+				public uint SysIdx;
+				public uint LibcIdx;
+				public IntPtr PthreadSurrogate;
+				public IntPtr PthreadCreate;
+				public IntPtr DoGlobalCtors;
+				public IntPtr DoGlobalDtors;
+			}
+
+			private IntPtr CreateVtable(string moduleName, ICollection<string> entries)
+			{
+				var imports = _parent._exports[moduleName];
+				var ret = Z.US(_parent._sealedheap.Allocate((ulong)(entries.Count * IntPtr.Size), 16));
+				var pointers = entries.Select(e =>
+				{
+					var ptr = imports.Resolve(e);
+					if (ptr == IntPtr.Zero)
+					{
+						var s = string.Format("Trapped on unimplemented function {0}:{1}", moduleName, e);
+						Action del = () => { throw new InvalidOperationException(e); };
+						_traps.Add(del);
+						ptr = Marshal.GetFunctionPointerForDelegate(del);
+					}
+					return ptr;
+				}).ToArray();
+				Marshal.Copy(pointers, 0, ret, pointers.Length);
+				return ret;
+			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "__psx_init")]
+			public int PsxInit(ref int argc, ref IntPtr argv, ref IntPtr envp, [In, Out]ref PsxContext context)
+			{
+				{
+					// argc = 1, argv = ["foobar, NULL], envp = [NULL]
+					argc = 1;
+					var argArea = _parent._sealedheap.Allocate(32, 16);
+					argv = Z.US(argArea);
+					envp = Z.US(argArea + (uint)IntPtr.Size * 2);
+					Marshal.WriteIntPtr(Z.US(argArea), Z.US(argArea + 24));
+					Marshal.WriteInt64(Z.US(argArea + 24), 0x7261626f6f66);
+				}
+
+				context.SyscallVtable = CreateVtable("__syscalls", Enumerable.Range(0, 340).Select(i => "n" + i).ToList());
+				context.LdsoVtable = CreateVtable("__syscalls", new[] // ldso
+				{
+					"dladdr", "dlinfo", "dlsym", "dlopen", "dlclose", "dlerror", "reset_tls"
+				});
+				context.PsxVtable = CreateVtable("__syscalls", new[] // psx
+				{
+					"start_main", "convert_thread", "unmapself", "log_output"
+				});
+				var extraTable = CreateVtable("__syscalls", new[]
+				{
+					"pthread_surrogate", "pthread_create", "do_global_ctors", "do_global_dtors"
+				});
+				{
+					var tmp = new IntPtr[4];
+					Marshal.Copy(extraTable, tmp, 0, 4);
+					context.PthreadSurrogate = tmp[0];
+					context.PthreadCreate = tmp[1];
+					context.DoGlobalCtors = tmp[2];
+					context.DoGlobalDtors = tmp[3];
+				}
+
+				return 1;
+			}
+		}
+
+		/// <summary>
+		/// special emulator-functions
+		/// </summary>
+		private class Emu
+		{
+			private readonly PeRunner _parent;
+			public Emu(PeRunner parent)
+			{
+				_parent = parent;
+			}
+
+			public class EndOfMainException: Exception
+			{
+			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "alloc_sealed")]
+			public IntPtr AllocSealed(UIntPtr size)
+			{
+				return Z.US(_parent._sealedheap.Allocate((ulong)size, 16));
+			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "alloc_invisible")]
+			public IntPtr AllocInvisible(UIntPtr size)
+			{
+				return Z.US(_parent._invisibleheap.Allocate((ulong)size, 16));
+			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "_debug_puts")]
+			public void DebugPuts(IntPtr s)
+			{
+				Console.WriteLine("_debug_puts:" + Marshal.PtrToStringAnsi(s));
+			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "_leave_main")]
+			public void LeaveMain()
+			{
+				throw new EndOfMainException();
+			}
+		}
+
+		/// <summary>
+		/// syscall emulation layer, as well as a bit of other stuff
+		/// </summary>
+		private class Syscalls
+		{
+			private readonly PeRunner _parent;
+			public Syscalls(PeRunner parent)
+			{
+				_parent = parent;
+			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "log_output")]
+			public void DebugPuts(IntPtr s)
+			{
+				Console.WriteLine("_psx_log_output:" + Marshal.PtrToStringAnsi(s));
+			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n12")]
+			public UIntPtr Brk(UIntPtr _p)
+			{
+				// does MUSL use this?
+				var heap = _parent._heap;
+
+				var start = heap.Memory.Start;
+				var end = start + heap.Used;
+				var max = heap.Memory.End;
+
+				var p = (ulong)_p;
+
+				if (p < start || p > max)
+				{
+					// failure: return current break
+					return Z.UU(end);
+				}
+				else if (p > end)
+				{
+					// increase size of heap
+					heap.Allocate(p - end, 1);
+					return Z.UU(p);
+				}
+				else if (p < end)
+				{
+					throw new InvalidOperationException("We don't support shrinking heaps");
+				}
+				else
+				{
+					// no change
+					return Z.UU(end);
+				}
+			}
+		}
+
 		// usual starting address for the executable
 		private static readonly ulong CanonicalStart = 0x0000036f00000000;
 
@@ -282,26 +480,52 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		private Heap _invisibleheap;
 
+		/// <summary>
+		/// all loaded PE files
+		/// </summary>
 		private readonly List<PeWrapper> _modules = new List<PeWrapper>();
 
+		/// <summary>
+		/// anything at all that needs to be disposed on finish
+		/// </summary>
 		private readonly List<IDisposable> _disposeList = new List<IDisposable>();
 
+		/// <summary>
+		/// anything at all that needs its state saved and loaded
+		/// </summary>
 		private readonly List<IBinaryStateable> _savestateComponents = new List<IBinaryStateable>();
+
+		/// <summary>
+		/// all of the exports, including real PeWrapper ones and fake ones
+		/// </summary>
+		private readonly Dictionary<string, IImportResolver> _exports = new Dictionary<string, IImportResolver>();
+
+		private Psx _psx;
+		private Emu _emu;
+		private Syscalls _syscalls;
 
 		public PeRunner(string directory, string filename, ulong heapsize, ulong sealedheapsize, ulong invisibleheapsize)
 		{
+			Initialize(_nextStart);
 			Enter();
 			try
 			{
+				// load any predefined exports
+				_psx = new Psx(this);
+				_exports.Add("libpsxscl.so", BizExvoker.GetExvoker(_psx));
+				_emu = new Emu(this);
+				_exports.Add("libemuhost.so", BizExvoker.GetExvoker(_emu));
+				_syscalls = new Syscalls(this);
+				_exports.Add("__syscalls", BizExvoker.GetExvoker(_syscalls));
+
 				// load and connect all modules, starting with the executable
 				var todoModules = new Queue<string>();
 				todoModules.Enqueue(filename);
-				var loadedModules = new Dictionary<string, IImportResolver>();
 
 				while (todoModules.Count > 0)
 				{
 					var moduleName = todoModules.Dequeue();
-					if (!loadedModules.ContainsKey(moduleName))
+					if (!_exports.ContainsKey(moduleName))
 					{
 						var module = new PeWrapper(moduleName, File.ReadAllBytes(Path.Combine(directory, moduleName)));
 						module.Mount(_nextStart);
@@ -310,7 +534,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						_savestateComponents.Add(module);
 						_disposeList.Add(module);
 
-						loadedModules.Add(moduleName, module);
+						_exports.Add(moduleName, module);
 						_modules.Add(module);
 						foreach (var name in module.ImportsByModule.Keys)
 						{
@@ -323,7 +547,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					foreach (var name in module.ImportsByModule.Keys)
 					{
-						module.ConnectImports(name, loadedModules[name]);
+						module.ConnectImports(name, _exports[name]);
 					}
 				}
 				foreach (var module in _modules)
@@ -352,6 +576,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				AddMemoryBlock(_invisibleheap.Memory);
 				_savestateComponents.Add(_invisibleheap);
 				_disposeList.Add(_invisibleheap);
+
+				try
+				{
+					_modules[0].RunExeEntry();
+					throw new InvalidOperationException("main() returned!");
+				}
+				catch (Emu.EndOfMainException)
+				{ }
+				foreach (var m in _modules.Skip(1))
+				{
+					if (!m.RunDllEntry())
+						throw new InvalidOperationException("DllMain() returned false");
+				}
 			}
 			catch
 			{
@@ -368,6 +605,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			// modules[0] is always the main module
 			return _modules[0].Resolve(entryPoint);
+		}
+
+		public void Seal()
+		{
+			using (this.EnterExit())
+			{
+				_sealedheap.Seal();
+			}
 		}
 
 		public void SaveStateBinary(BinaryWriter bw)
@@ -406,6 +651,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_disposeList.Clear();
 				PurgeMemoryBlocks();
 				_modules.Clear();
+				_exports.Clear();
 				_heap = null;
 				_sealedheap = null;
 				_invisibleheap = null;
