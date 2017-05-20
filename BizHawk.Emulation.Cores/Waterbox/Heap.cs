@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BizHawk.Emulation.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	/// <summary>
 	/// a simple grow-only fixed max size heap
 	/// </summary>
-	internal sealed class Heap : IDisposable
+	internal sealed class Heap : IBinaryStateable, IDisposable
 	{
 		public MemoryBlock Memory { get; private set; }
 		/// <summary>

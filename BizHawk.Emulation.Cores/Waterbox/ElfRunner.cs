@@ -12,10 +12,11 @@ using System.Security.Cryptography;
 using System.IO;
 using System.Collections.Concurrent;
 using System.Threading;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	public sealed class ElfRunner : Swappable, IImportResolver, IDisposable
+	public sealed class ElfRunner : Swappable, IImportResolver, IBinaryStateable, IDisposable
 	{
 		// TODO: a lot of things only work with our elves and aren't fully generalized
 

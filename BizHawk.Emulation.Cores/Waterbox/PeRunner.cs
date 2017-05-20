@@ -1,18 +1,18 @@
 ﻿using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using PeNet;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	public class PeRunner
+	public class PeRunner : Swappable, IImportResolver, IBinaryStateable
 	{
-		private static readonly ulong CanonicalStart = 0x0000036f00000000;
-
-		public class PeWrapper : IImportResolver
+		public class PeWrapper : IImportResolver, IBinaryStateable, IDisposable
 		{
 			public Dictionary<int, IntPtr> ExportsByOrdinal { get; } = new Dictionary<int, IntPtr>();
 			/// <summary>
@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			private readonly byte[] _fileData;
 			private readonly PeFile _pe;
+			private readonly byte[] _fileHash;
 
 			public ulong Size { get; }
 			public ulong Start { get; private set; }
@@ -47,6 +48,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					throw new InvalidOperationException("Image not Big Enough");
 				}
+
+				_fileHash = WaterboxUtils.Hash(fileData);
 			}
 
 			/// <summary>
@@ -54,6 +57,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// </summary>
 			public void FinishMount()
 			{
+				Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
+
 				foreach (var s in _pe.ImageSectionHeaders)
 				{
 					ulong start = Start + s.VirtualAddress;
@@ -90,7 +95,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					ulong length = _pe.ImageNtHeaders.OptionalHeader.SizeOfHeaders;
 					Memory.Protect(Start, length, MemoryBlock.Protection.RW);
 					Marshal.Copy(_fileData, 0, Z.US(Start), (int)length);
-					Memory.Protect(Start, length, MemoryBlock.Protection.R);
 				}
 
 				// copy sections
@@ -99,7 +103,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					ulong start = Start + s.VirtualAddress;
 					ulong length = s.VirtualSize;
 
-					Memory.Protect(start, length, MemoryBlock.Protection.RW);
 					Marshal.Copy(_fileData, (int)s.PointerToRawData, Z.US(start), (int)s.SizeOfRawData);
 					WaterboxUtils.ZeroMemory(Z.US(start + s.SizeOfRawData), (long)(length - s.SizeOfRawData));
 				}
@@ -180,6 +183,233 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						Marshal.Copy(valueArray, 0, kvp.Value, 1);
 					}
 				}
+			}
+
+			private bool _disposed = false;
+
+			public void Dispose()
+			{
+				if (!_disposed)
+				{
+					Memory.Dispose();
+					Memory = null;
+					_disposed = true;
+				}
+			}
+
+			const ulong MAGIC = 0x420cccb1a2e17420;
+
+			public void SaveStateBinary(BinaryWriter bw)
+			{
+				bw.Write(MAGIC);
+				bw.Write(_fileHash);
+				bw.Write(Start);
+
+				foreach (var s in _pe.ImageSectionHeaders)
+				{
+					if ((s.Characteristics & (uint)Constants.SectionFlags.IMAGE_SCN_MEM_WRITE) == 0)
+						continue;
+
+					ulong start = Start + s.VirtualAddress;
+					ulong length = s.VirtualSize;
+
+					var ms = Memory.GetStream(start, length, false);
+					bw.Write(length);
+					ms.CopyTo(bw.BaseStream);
+				}
+			}
+
+			public void LoadStateBinary(BinaryReader br)
+			{
+				if (br.ReadUInt64() != MAGIC)
+					throw new InvalidOperationException("Magic not magic enough!");
+				if (!br.ReadBytes(_fileHash.Length).SequenceEqual(_fileHash))
+					throw new InvalidOperationException("Elf changed disguise!");
+				if (br.ReadUInt64() != Start)
+					throw new InvalidOperationException("Trickys elves moved on you!");
+
+				Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.RW);
+
+				foreach (var s in _pe.ImageSectionHeaders)
+				{
+					if ((s.Characteristics & (uint)Constants.SectionFlags.IMAGE_SCN_MEM_WRITE) == 0)
+						continue;
+
+					ulong start = Start + s.VirtualAddress;
+					ulong length = s.VirtualSize;
+
+					if (br.ReadUInt64() != length)
+						throw new InvalidOperationException("Unexpected section size for " + s.Name);
+
+					var ms = Memory.GetStream(start, length, true);
+					WaterboxUtils.CopySome(br.BaseStream, ms, (long)length);
+				}
+
+				FinishMount();
+			}
+		}
+
+		// usual starting address for the executable
+		private static readonly ulong CanonicalStart = 0x0000036f00000000;
+
+		/// <summary>
+		/// the next place where we can put a module or heap
+		/// </summary>
+		private ulong _nextStart = CanonicalStart;
+
+		/// <summary>
+		/// increment _nextStart after adding a module
+		/// </summary>
+		private void ComputeNextStart(ulong size)
+		{
+			_nextStart += size;
+			// align to 1MB, then increment 16MB
+			_nextStart = ((_nextStart - 1) | 0xfffff) + 0x1000001;
+		}
+
+		/// <summary>
+		/// standard malloc() heap
+		/// </summary>
+		private Heap _heap;
+
+		/// <summary>
+		/// sealed heap (writable only during init)
+		/// </summary>
+		private Heap _sealedheap;
+
+		/// <summary>
+		/// invisible heap (not savestated, use with care)
+		/// </summary>
+		private Heap _invisibleheap;
+
+		private readonly List<PeWrapper> _modules = new List<PeWrapper>();
+
+		private readonly List<IDisposable> _disposeList = new List<IDisposable>();
+
+		private readonly List<IBinaryStateable> _savestateComponents = new List<IBinaryStateable>();
+
+		public PeRunner(string directory, string filename, ulong heapsize, ulong sealedheapsize, ulong invisibleheapsize)
+		{
+			Enter();
+			try
+			{
+				// load and connect all modules, starting with the executable
+				var todoModules = new Queue<string>();
+				todoModules.Enqueue(filename);
+				var loadedModules = new Dictionary<string, IImportResolver>();
+
+				while (todoModules.Count > 0)
+				{
+					var moduleName = todoModules.Dequeue();
+					if (!loadedModules.ContainsKey(moduleName))
+					{
+						var module = new PeWrapper(moduleName, File.ReadAllBytes(Path.Combine(directory, moduleName)));
+						module.Mount(_nextStart);
+						ComputeNextStart(module.Size);
+						AddMemoryBlock(module.Memory);
+						_savestateComponents.Add(module);
+						_disposeList.Add(module);
+
+						loadedModules.Add(moduleName, module);
+						_modules.Add(module);
+						foreach (var name in module.ImportsByModule.Keys)
+						{
+							todoModules.Enqueue(name);
+						}
+					}
+				}
+
+				foreach (var module in _modules)
+				{
+					foreach (var name in module.ImportsByModule.Keys)
+					{
+						module.ConnectImports(name, loadedModules[name]);
+					}
+				}
+				foreach (var module in _modules)
+				{
+					module.FinishMount();
+				}
+
+				// load all heaps
+				_heap = new Heap(_nextStart, heapsize, "brk-heap");
+				_heap.Memory.Activate();
+				ComputeNextStart(heapsize);
+				AddMemoryBlock(_heap.Memory);
+				_savestateComponents.Add(_heap);
+				_disposeList.Add(_heap);
+
+				_sealedheap = new Heap(_nextStart, sealedheapsize, "sealed-heap");
+				_sealedheap.Memory.Activate();
+				ComputeNextStart(sealedheapsize);
+				AddMemoryBlock(_sealedheap.Memory);
+				_savestateComponents.Add(_sealedheap);
+				_disposeList.Add(_sealedheap);
+
+				_invisibleheap = new Heap(_nextStart, invisibleheapsize, "invisible-heap");
+				_invisibleheap.Memory.Activate();
+				ComputeNextStart(invisibleheapsize);
+				AddMemoryBlock(_invisibleheap.Memory);
+				_savestateComponents.Add(_invisibleheap);
+				_disposeList.Add(_invisibleheap);
+			}
+			catch
+			{
+				Dispose();
+				throw;
+			}
+			finally
+			{
+				Exit();
+			}
+		}
+
+		public IntPtr Resolve(string entryPoint)
+		{
+			// modules[0] is always the main module
+			return _modules[0].Resolve(entryPoint);
+		}
+
+		public void SaveStateBinary(BinaryWriter bw)
+		{
+			using (this.EnterExit())
+			{
+				bw.Write(_savestateComponents.Count);
+				foreach (var c in _savestateComponents)
+				{
+					c.SaveStateBinary(bw);
+				}
+			}
+		}
+
+		public void LoadStateBinary(BinaryReader br)
+		{
+			if (br.ReadInt32() != _savestateComponents.Count)
+				throw new InvalidOperationException("Internal savestate error");
+			using (this.EnterExit())
+			{
+				foreach (var c in _savestateComponents)
+				{
+					c.LoadStateBinary(br);
+				}
+			}
+		}
+
+		private bool _disposed = false;
+
+		public void Dispose()
+		{
+			if (!_disposed)
+			{
+				foreach (var d in _disposeList)
+					d.Dispose();
+				_disposeList.Clear();
+				PurgeMemoryBlocks();
+				_modules.Clear();
+				_heap = null;
+				_sealedheap = null;
+				_invisibleheap = null;
+				_disposed = true;
 			}
 		}
 	}
