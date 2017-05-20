@@ -1,4 +1,5 @@
-﻿using PeNet;
+﻿using BizHawk.Common;
+using PeNet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +12,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	{
 		private static readonly ulong CanonicalStart = 0x0000036f00000000;
 
-		public class PeWrapper
+		public class PeWrapper : IImportResolver
 		{
 			public Dictionary<int, IntPtr> ExportsByOrdinal { get; } = new Dictionary<int, IntPtr>();
 			/// <summary>
 			/// ordinal only exports will not show up in this list!
 			/// </summary>
 			public Dictionary<string, IntPtr> ExportsByName { get; } = new Dictionary<string, IntPtr>();
+
+			public Dictionary<string, Dictionary<string, IntPtr>> ImportsByModule { get; } = new Dictionary<string, Dictionary<string, IntPtr>>();
 
 			public string ModuleName { get; }
 
@@ -146,10 +149,36 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 
 				// collect information about imports
-				// NB: Hints are not the same as Ordinals.  Off by 1??
+				// NB: Hints are not the same as Ordinals
 				foreach (var import in _pe.ImportedFunctions)
 				{
-					
+					Dictionary<string, IntPtr> module;
+					if (!ImportsByModule.TryGetValue(import.DLL, out module))
+					{
+						module = new Dictionary<string, IntPtr>();
+						ImportsByModule.Add(import.DLL, module);
+					}
+					module.Add(import.Name, Z.US(import.Thunk));
+				}
+			}
+
+			public IntPtr Resolve(string entryPoint)
+			{
+				IntPtr ret;
+				ExportsByName.TryGetValue(entryPoint, out ret);
+				return ret;
+			}
+
+			public void ConnectImports(string moduleName, IImportResolver module)
+			{
+				Dictionary<string, IntPtr> imports;
+				if (ImportsByModule.TryGetValue(moduleName, out imports))
+				{
+					foreach (var kvp in imports)
+					{
+						var valueArray = new IntPtr[] { module.SafeResolve(kvp.Key) };
+						Marshal.Copy(valueArray, 0, kvp.Value, 1);
+					}
 				}
 			}
 		}

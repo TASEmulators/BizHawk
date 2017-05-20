@@ -12,6 +12,12 @@ namespace BizHawk.Common
 
 	public static class ImportResolverExtensions
 	{
+		/// <summary>
+		/// Resolve an entry point and throw an exception if that resolution is NULL
+		/// </summary>
+		/// <param name="dll"></param>
+		/// <param name="entryPoint"></param>
+		/// <returns></returns>
 		public static IntPtr SafeResolve(this IImportResolver dll, string entryPoint)
 		{
 			var ret = dll.Resolve(entryPoint);

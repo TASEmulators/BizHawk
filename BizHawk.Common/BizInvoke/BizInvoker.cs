@@ -46,13 +46,13 @@ namespace BizHawk.Common.BizInvoke
 		/// <summary>
 		/// the module that all proxies are placed in
 		/// </summary>
-		private static readonly ModuleBuilder ImplModuleBilder;
+		private static readonly ModuleBuilder ImplModuleBuilder;
 
 		static BizInvoker()
 		{
 			var aname = new AssemblyName("BizInvokeProxyAssembly");
 			ImplAssemblyBuilder = AppDomain.CurrentDomain.DefineDynamicAssembly(aname, AssemblyBuilderAccess.Run);
-			ImplModuleBilder = ImplAssemblyBuilder.DefineDynamicModule("BizInvokerModule");
+			ImplModuleBuilder = ImplAssemblyBuilder.DefineDynamicModule("BizInvokerModule");
 		}
 
 		/// <summary>
@@ -155,7 +155,7 @@ namespace BizHawk.Common.BizInvoke
 			// hooks that will be run on the created proxy object
 			var postCreateHooks = new List<Action<object, IImportResolver>>();
 
-			var type = ImplModuleBilder.DefineType("Bizhawk.BizInvokeProxy" + baseType.Name, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, baseType);
+			var type = ImplModuleBuilder.DefineType("Bizhawk.BizInvokeProxy" + baseType.Name, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, baseType);
 
 			var monitorField = monitor ? type.DefineField("MonitorField", typeof(IMonitor), FieldAttributes.Public) : null;
 
@@ -188,53 +188,13 @@ namespace BizHawk.Common.BizInvoke
 		/// </summary>
 		private static Action<object, IImportResolver> ImplementMethodDelegate(TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName, FieldInfo monitorField)
 		{
+			// create the delegate type
+			MethodBuilder delegateInvoke;
+			var delegateType = BizInvokeUtilities.CreateDelegateType(baseMethod, nativeCall, type, out delegateInvoke);
+
 			var paramInfos = baseMethod.GetParameters();
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
 			var returnType = baseMethod.ReturnType;
-
-			// create the delegate type
-			var delegateType = type.DefineNestedType(
-				"DelegateType" + baseMethod.Name,
-				TypeAttributes.Class | TypeAttributes.NestedPrivate | TypeAttributes.Sealed,
-				typeof(MulticastDelegate));
-
-			var delegateCtor = delegateType.DefineConstructor(
-				MethodAttributes.RTSpecialName | MethodAttributes.HideBySig | MethodAttributes.Public,
-				CallingConventions.Standard,
-				new[] { typeof(object), typeof(IntPtr) });
-
-			delegateCtor.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
-
-			var delegateInvoke = delegateType.DefineMethod(
-				"Invoke",
-				MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot | MethodAttributes.Virtual,
-				returnType,
-				paramTypes);
-
-			// we have to project all of the attributes from the baseMethod to the delegateInvoke
-			// so for something like [Out], the interop engine will see it and use it
-			for (int i = 0; i < paramInfos.Length; i++)
-			{
-				var p = delegateInvoke.DefineParameter(i + 1, ParameterAttributes.None, paramInfos[i].Name);
-				foreach (var a in paramInfos[i].GetCustomAttributes(false))
-				{
-					p.SetCustomAttribute(GetAttributeBuilder(a));
-				}
-			}
-
-			{
-				var p = delegateInvoke.DefineParameter(0, ParameterAttributes.Retval, baseMethod.ReturnParameter.Name);
-				foreach (var a in baseMethod.ReturnParameter.GetCustomAttributes(false))
-				{
-					p.SetCustomAttribute(GetAttributeBuilder(a));
-				}
-			}
-
-			delegateInvoke.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
-
-			// add the [UnmanagedFunctionPointer] to the delegate so interop will know how to call it
-			var attr = new CustomAttributeBuilder(typeof(UnmanagedFunctionPointerAttribute).GetConstructor(new[] { typeof(CallingConvention) }), new object[] { nativeCall });
-			delegateType.SetCustomAttribute(attr);
 
 			// define a field on the class to hold the delegate
 			var field = type.DefineField(
@@ -521,18 +481,6 @@ namespace BizHawk.Common.BizInvoke
 			}
 
 			throw new InvalidOperationException("Unrecognized parameter type!");
-		}
-
-		private static CustomAttributeBuilder GetAttributeBuilder(object o)
-		{
-			// anything more clever we can do here?
-			var t = o.GetType();
-			if (t == typeof(OutAttribute) || t == typeof(InAttribute))
-			{
-				return new CustomAttributeBuilder(t.GetConstructor(Type.EmptyTypes), new object[0]);
-			}
-
-			throw new InvalidOperationException("Unknown parameter attribute " + t.Name);
 		}
 	}
 
