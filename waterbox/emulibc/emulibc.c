@@ -4,4 +4,3 @@
 void *alloc_sealed(size_t size) { return NULL; }
 void *alloc_invisible(size_t size) { return NULL; }
 void _debug_puts(const char *s) { }
-void _leave_main(void) { }

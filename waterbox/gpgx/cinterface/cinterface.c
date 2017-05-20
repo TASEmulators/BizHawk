@@ -714,7 +714,8 @@ GPGX_EX int gpgx_getregs(gpregister_t *regs)
 	return ret;
 }
 
+// at the moment, this dummy is not called
 int main(void)
 {
-	_leave_main();
+	return 0;
 }

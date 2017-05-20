@@ -22,8 +22,4 @@ void *alloc_invisible(size_t size);
 // send a debug string somewhere, bypassing stdio
 void _debug_puts(const char *);
 
-// this might be used for something
-void _leave_main(void);
-
-
 #endif

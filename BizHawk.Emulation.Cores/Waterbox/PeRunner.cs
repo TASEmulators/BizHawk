@@ -267,6 +267,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
+		private  class EndOfMainException : Exception
+		{
+		}
+
 		/// <summary>
 		/// serves as a standin for libpsxscl.so
 		/// </summary>
@@ -306,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					if (ptr == IntPtr.Zero)
 					{
 						var s = string.Format("Trapped on unimplemented function {0}:{1}", moduleName, e);
-						Action del = () => { throw new InvalidOperationException(e); };
+						Action del = () => { throw new InvalidOperationException(s); };
 						_traps.Add(del);
 						ptr = Marshal.GetFunctionPointerForDelegate(del);
 					}
@@ -351,7 +355,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					context.DoGlobalDtors = tmp[3];
 				}
 
-				return 1;
+				return 0; // success
 			}
 		}
 
@@ -364,10 +368,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public Emu(PeRunner parent)
 			{
 				_parent = parent;
-			}
-
-			public class EndOfMainException: Exception
-			{
 			}
 
 			[BizExport(CallingConvention.Cdecl, EntryPoint = "alloc_sealed")]
@@ -386,12 +386,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public void DebugPuts(IntPtr s)
 			{
 				Console.WriteLine("_debug_puts:" + Marshal.PtrToStringAnsi(s));
-			}
-
-			[BizExport(CallingConvention.Cdecl, EntryPoint = "_leave_main")]
-			public void LeaveMain()
-			{
-				throw new EndOfMainException();
 			}
 		}
 
@@ -444,6 +438,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					// no change
 					return Z.UU(end);
 				}
+			}
+
+			// aka __psx_init_frame
+			// in midipix, this just sets up SEH and does not do anything that start_main does in MUSL normally
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "start_main")]
+			public int StartMain(IntPtr u0, int u1, IntPtr u2, IntPtr main)
+			{
+				// since we don't really need main, we can blow up here
+				throw new EndOfMainException();
 			}
 		}
 
@@ -582,7 +585,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					_modules[0].RunExeEntry();
 					throw new InvalidOperationException("main() returned!");
 				}
-				catch (Emu.EndOfMainException)
+				catch (EndOfMainException)
 				{ }
 				foreach (var m in _modules.Skip(1))
 				{
