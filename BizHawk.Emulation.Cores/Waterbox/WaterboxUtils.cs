@@ -42,5 +42,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
+		public static unsafe void ZeroMemory(IntPtr mem, long length)
+		{
+			byte* p = (byte*)mem;
+			byte* end = p + length;
+			while (p < end)
+			{
+				*p++ = 0;
+			}
+		}
 	}
 }
