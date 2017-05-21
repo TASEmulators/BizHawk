@@ -269,7 +269,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		private  class EndOfMainException : Exception
+		private class EndOfMainException : Exception
 		{
 		}
 
@@ -302,10 +302,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				public IntPtr DoGlobalDtors;
 			}
 
-			private IntPtr CreateVtable(string moduleName, ICollection<string> entries)
+			private void PopulateVtable(string moduleName, ICollection<string> entries, IntPtr table)
 			{
 				var imports = _parent._exports[moduleName];
-				var ret = Z.US(_parent._sealedheap.Allocate((ulong)(entries.Count * IntPtr.Size), 16));
 				var pointers = entries.Select(e =>
 				{
 					var ptr = imports.Resolve(e);
@@ -318,8 +317,34 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					}
 					return ptr;
 				}).ToArray();
-				Marshal.Copy(pointers, 0, ret, pointers.Length);
-				return ret;
+				Marshal.Copy(pointers, 0, table, pointers.Length);
+			}
+
+			/// <summary>
+			/// called by the PeRunner to reset pointers after a loadsave
+			/// </summary>
+			public void ReloadVtables()
+			{
+				_traps.Clear();
+
+				PopulateVtable("__syscalls", Enumerable.Range(0, 340).Select(i => "n" + i).ToList(), _syscallVtable);
+				PopulateVtable("__syscalls", new[] // ldso
+				{
+					"dladdr", "dlinfo", "dlsym", "dlopen", "dlclose", "dlerror", "reset_tls"
+				}, _ldsoVtable);
+				PopulateVtable("__syscalls", new[] // psx
+				{
+					"start_main", "convert_thread", "unmapself", "log_output"
+				}, _psxVtable);
+			}
+
+			private IntPtr _syscallVtable;
+			private IntPtr _ldsoVtable;
+			private IntPtr _psxVtable;
+
+			private IntPtr AllocVtable(int count)
+			{
+				return Z.US(_parent._invisibleheap.Allocate((ulong)(count * IntPtr.Size), 16));
 			}
 
 			[BizExport(CallingConvention.Cdecl, EntryPoint = "__psx_init")]
@@ -335,27 +360,24 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					Marshal.WriteInt64(Z.US(argArea + 24), 0x7261626f6f66);
 				}
 
-				context.SyscallVtable = CreateVtable("__syscalls", Enumerable.Range(0, 340).Select(i => "n" + i).ToList());
-				context.LdsoVtable = CreateVtable("__syscalls", new[] // ldso
-				{
-					"dladdr", "dlinfo", "dlsym", "dlopen", "dlclose", "dlerror", "reset_tls"
-				});
-				context.PsxVtable = CreateVtable("__syscalls", new[] // psx
-				{
-					"start_main", "convert_thread", "unmapself", "log_output"
-				});
-				var extraTable = CreateVtable("__syscalls", new[]
+				context.SyscallVtable = _syscallVtable = AllocVtable(340);
+				context.LdsoVtable = _ldsoVtable = AllocVtable(7);
+				context.PsxVtable = _psxVtable = AllocVtable(4);
+
+				ReloadVtables();
+
+				// TODO: we can't set these pointers 4 and preserve across session
+				// until we find out where they get saved to and add a way to reset them
+				/*var extraTable = CreateVtable("__syscalls", new[]
 				{
 					"pthread_surrogate", "pthread_create", "do_global_ctors", "do_global_dtors"
 				});
-				{
-					var tmp = new IntPtr[4];
-					Marshal.Copy(extraTable, tmp, 0, 4);
-					context.PthreadSurrogate = tmp[0];
-					context.PthreadCreate = tmp[1];
-					context.DoGlobalCtors = tmp[2];
-					context.DoGlobalDtors = tmp[3];
-				}
+				var tmp = new IntPtr[4];
+				Marshal.Copy(extraTable, tmp, 0, 4);
+				context.PthreadSurrogate = tmp[0];
+				context.PthreadCreate = tmp[1];
+				context.DoGlobalCtors = tmp[2];
+				context.DoGlobalDtors = tmp[3];*/
 
 				return 0; // success
 			}
@@ -655,6 +677,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					// Exvoker imports need to be reconnected
 					Console.WriteLine("Restoring PeRunner state from a different core...");
 					ConnectAllImports();
+					_psx.ReloadVtables();
 				}
 			}
 		}
