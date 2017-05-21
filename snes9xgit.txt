@@ -1,8 +1,0 @@
-In order to have snes9x in the right place, clone the git repo:
-
-https://github.com/nattthebear/snes9x
-
-Into a path directly under the location of this file, called:
-
-snes9xgit/
-
