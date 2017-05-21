@@ -42,12 +42,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 			try
 			{
-				Elf = new PeRunner(comm.CoreFileProvider.DllPath(), "gpgx.exe", 8 * 1024 * 1024, 36 * 1024 * 1024, 4 * 1024 * 1024);
+				_elf = new PeRunner(comm.CoreFileProvider.DllPath(), "gpgx.exe", 8 * 1024 * 1024, 36 * 1024 * 1024, 4 * 1024 * 1024);
 
-				if (Elf.ShouldMonitor)
-					Core = BizInvoker.GetInvoker<LibGPGX>(Elf, Elf);
+				if (_elf.ShouldMonitor)
+					Core = BizInvoker.GetInvoker<LibGPGX>(_elf, _elf);
 				else
-					Core = BizInvoker.GetInvoker<LibGPGX>(Elf);
+					Core = BizInvoker.GetInvoker<LibGPGX>(_elf);
 
 				_syncSettings = (GPGXSyncSettings)syncSettings ?? new GPGXSyncSettings();
 				_settings = (GPGXSettings)settings ?? new GPGXSettings();
@@ -121,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				SetControllerDefinition();
 
 				// pull the default video size from the core
-				UpdateVideoInitial();
+				UpdateVideo();
 
 				SetMemoryDomains();
 
@@ -143,7 +143,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				Tracer = new GPGXTraceBuffer(this, MemoryDomains, this);
 				(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 
-				Elf.Seal();
+				_elf.Seal();
 			}
 			catch
 			{
@@ -152,14 +152,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 			}
 		}
 
-		LibGPGX Core;
-		PeRunner Elf;
+		private LibGPGX Core;
+		private PeRunner _elf;
 
 		DiscSystem.Disc CD;
 		DiscSystem.DiscSectorReader DiscSectorReader;
 		byte[] romfile;
 
-		bool disposed = false;
+		private bool _disposed = false;
 
 		LibGPGX.load_archive_cb LoadCallback = null;
 
@@ -272,9 +272,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 			}
 			else
 			{
-				throw new Exception();
-				//Console.WriteLine("Couldn't satisfy firmware request {0} for unknown reasons", filename);
-				//return 0;
+				throw new InvalidOperationException("Unknown error processing firmware");
 			}
 
 		}
@@ -367,7 +365,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 			return (LibGPGX.INPUT_DEVICE[])input.dev.Clone();
 		}
 
-		public bool IsSegaCD { get { return CD != null; } }
+		public bool IsMegaCD { get { return CD != null; } }
 
 		public void UpdateVDPViewContext(LibGPGX.VDPView view)
 		{

@@ -81,7 +81,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 					Core.gpgx_write_s68k_bus(a, val);
 				}, 2);
 
-			if (IsSegaCD)
+			if (IsMegaCD)
 			{
 				mm.Add(s68Bus);
 			}

@@ -183,6 +183,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					}
 					module.Add(import.Name, Z.US(Start + import.Thunk));
 				}
+
+				Console.WriteLine($"Mounted `{ModuleName}` @{Start:x16}");
+				foreach (var s in _pe.ImageSectionHeaders.OrderBy(s => s.VirtualAddress))
+				{
+					var r = (s.Characteristics & (uint)Constants.SectionFlags.IMAGE_SCN_MEM_READ) != 0;
+					var w = (s.Characteristics & (uint)Constants.SectionFlags.IMAGE_SCN_MEM_WRITE) != 0;
+					var x = (s.Characteristics & (uint)Constants.SectionFlags.IMAGE_SCN_MEM_EXECUTE) != 0;
+					Console.WriteLine("  @{0:x16} {1}{2}{3} `{4}` {5} bytes",
+						Start + s.VirtualAddress,
+						r ? "R" : " ",
+						w ? "W" : " ",
+						x ? "X" : " ",
+						Encoding.ASCII.GetString(s.Name),
+						s.VirtualSize);
+				}
 			}
 
 			public IntPtr Resolve(string entryPoint)

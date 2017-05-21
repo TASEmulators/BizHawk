@@ -41,6 +41,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 		private unsafe void UpdateVideo()
 		{
+			if (Frame == 0)
+			{
+				UpdateVideoInitial();
+				return;
+			}
+
 			int gppitch, gpwidth, gpheight;
 			IntPtr src = IntPtr.Zero;
 
@@ -59,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				vidbuff = new int[vwidth * vheight];
 
 			int rinc = (gppitch / 4) - gpwidth;
-			fixed (int* pdst_ = &vidbuff[0])
+			fixed (int* pdst_ = vidbuff)
 			{
 				int* pdst = pdst_;
 				int* psrc = (int*)src;
@@ -69,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 					for (int i = 0; i < xpad; i++)
 						*pdst++ = unchecked((int)0xff000000);
 					for (int i = 0; i < gpwidth; i++)
-						*pdst++ = *psrc++;// | unchecked((int)0xff000000);
+						*pdst++ = *psrc++;;
 					for (int i = 0; i < xpad2; i++)
 						*pdst++ = unchecked((int)0xff000000);
 					psrc += rinc;
