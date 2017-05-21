@@ -3,18 +3,48 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Runtime.InteropServices;
+using BizHawk.Common.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
-	public class LibSnes9x
+	public abstract class LibSnes9x
 	{
-		const string DllName = "libbizsnes.dll";
+		[StructLayout(LayoutKind.Sequential)]
+		public class memory_area
+		{
+			public IntPtr ptr;
+			public int size;
+		};
+
+		[StructLayout(LayoutKind.Sequential)]
+		public class frame_info
+		{
+			public IntPtr ptr;
+			public int pitch;
+			public int width;
+			public int height;
+		};
+
+
 		const CallingConvention CC = CallingConvention.Cdecl;
 
-		[DllImport(DllName, CallingConvention = CC)]
-		public static extern bool debug_init(byte[] data, int length);
-
-		[DllImport(DllName, CallingConvention = CC)]
-		public static extern void debug_advance(int[] data);
+		[BizImport(CC)]
+		public abstract void biz_set_sound_channels(int channels);
+		[BizImport(CC)]
+		public abstract void biz_set_layers(int layers);
+		[BizImport(CC)]
+		public abstract void biz_soft_reset();
+		[BizImport(CC)]
+		public abstract void biz_set_port_devices(uint left, uint right);
+		[BizImport(CC)]
+		public abstract bool biz_load_rom(byte[] data, int size);
+		[BizImport(CC)]
+		public abstract bool biz_init();
+		[BizImport(CC)]
+		public abstract void biz_run([In, Out] frame_info frame);
+		[BizImport(CC)]
+		public abstract bool biz_is_ntsc();
+		[BizImport(CC, Compatibility = true)]
+		public abstract void biz_get_memory_area(int which, [In, Out] memory_area mem);
 	}
 }

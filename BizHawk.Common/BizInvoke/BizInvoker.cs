@@ -474,6 +474,18 @@ namespace BizHawk.Common.BizInvoke
 				return typeof(IntPtr);
 			}
 
+			if (type.IsClass)
+			{
+				// non ref of class can just be passed as pointer
+				var loc = il.DeclareLocal(type, true);
+				il.Emit(OpCodes.Ldarg, (short)idx);
+				il.Emit(OpCodes.Dup);
+				il.Emit(OpCodes.Stloc, loc);
+				il.Emit(OpCodes.Conv_I);
+
+				return typeof(IntPtr);
+			}
+
 			if (type.IsPrimitive || type.IsEnum)
 			{
 				il.Emit(OpCodes.Ldarg, (short)idx);

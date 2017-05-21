@@ -6,7 +6,7 @@ CCFLAGS:=-Icore -Iutil -Icore/m68k -Icore/z80 -Icore/input_hw \
 	-Wall -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast -Werror=implicit-function-declaration \
 	-std=c99 -fomit-frame-pointer -fvisibility=hidden \
 	-DLSB_FIRST -DUSE_32BPP_RENDERING -DINLINE=static\ __inline__ \
-	-O2#-mcmodel=large
+	-O3#-mcmodel=large
 
 TARGET = gpgx.exe
 

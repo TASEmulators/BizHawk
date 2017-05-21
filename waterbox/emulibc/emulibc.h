@@ -3,6 +3,10 @@
 
 #include <stddef.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // mark an entry point or callback pointer
 #define ECL_ENTRY
 // mark a visible symbol
@@ -21,5 +25,9 @@ void *alloc_invisible(size_t size);
 
 // send a debug string somewhere, bypassing stdio
 void _debug_puts(const char *);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
