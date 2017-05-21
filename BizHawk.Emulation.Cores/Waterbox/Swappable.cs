@@ -12,12 +12,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	/// represents an object that can be swapped in and out of memory to compete with other objects in the same memory
 	/// not suited for general purpose stuff
 	/// </summary>
-	public abstract class Swappable : IMonitor
+	public abstract class Swappable : IMonitor, IDisposable
 	{
 		/// <summary>
 		/// start address, or 0 if we don't need to be swapped
 		/// </summary>
 		private ulong _lockkey = 0;
+
+		/// <summary>
+		/// the the relevant lockinfo for this core
+		/// </summary>
+		private LockInfo _currentLockInfo;
 
 		/// <summary>
 		/// everything to swap in for context switches
@@ -37,6 +42,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		protected void Initialize(ulong lockkey)
 		{
 			_lockkey = lockkey;
+			if (lockkey != 0)
+			{
+				_currentLockInfo = LockInfos.GetOrAdd(_lockkey, new LockInfo { Sync = new object() });
+			}
 		}
 
 		/// <summary>
@@ -50,30 +59,38 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private class LockInfo
 		{
 			public object Sync;
-			public Swappable Loaded;
+			private WeakReference LoadedRef = new WeakReference(null);
+			public Swappable Loaded
+			{
+				get
+				{
+					// if somehow an object died without being disposed,
+					// the MemoryBlock finalizer will have unloaded the memory
+					// and so we can treat it as if no Swappable was attached
+					return (Swappable)LoadedRef.Target;
+				}
+				set
+				{
+					LoadedRef.Target = value;
+				}
+			}
 		}
 
 		private static readonly ConcurrentDictionary<ulong, LockInfo> LockInfos = new ConcurrentDictionary<ulong, LockInfo>();
-
-		static Swappable()
-		{
-			LockInfos.GetOrAdd(0, new LockInfo()); // any errant attempt to lock when ShouldMonitor == false will result in NRE
-		}
 
 		/// <summary>
 		/// acquire lock and swap this into memory
 		/// </summary>
 		public void Enter()
 		{
-			var li = LockInfos.GetOrAdd(_lockkey, new LockInfo { Sync = new object() });
-			Monitor.Enter(li.Sync);
-			if (li.Loaded != this)
+			Monitor.Enter(_currentLockInfo.Sync);
+			if (_currentLockInfo.Loaded != this)
 			{
-				if (li.Loaded != null)
-					li.Loaded.DeactivateInternal();
-				li.Loaded = null;
+				if (_currentLockInfo.Loaded != null)
+					_currentLockInfo.Loaded.DeactivateInternal();
+				_currentLockInfo.Loaded = null;
 				ActivateInternal();
-				li.Loaded = this;
+				_currentLockInfo.Loaded = this;
 			}
 		}
 
@@ -82,8 +99,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public void Exit()
 		{
-			var li = LockInfos.GetOrAdd(_lockkey, new LockInfo { Sync = new object() });
-			Monitor.Exit(li.Sync);
+			Monitor.Exit(_currentLockInfo.Sync);
 		}
 
 		private void DeactivateInternal()
@@ -100,5 +116,31 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				m.Activate();
 		}
 
+		private bool _disposed = false;
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!_disposed)
+			{
+				if (disposing)
+				{
+					lock (_currentLockInfo.Sync)
+					{
+						if (_currentLockInfo.Loaded == this)
+						{
+							DeactivateInternal();
+							_currentLockInfo.Loaded = null;
+						}
+						_currentLockInfo = null;
+					}
+				}
+				_disposed = true;
+			}
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+		}
 	}
 }

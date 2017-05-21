@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				entryThunk();
 			}
 
-			public PeWrapper(string moduleName, byte[] fileData)
+			public PeWrapper(string moduleName, byte[] fileData, ulong destAddress)
 			{
 				ModuleName = moduleName;
 				_fileData = fileData;
@@ -70,12 +70,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 
 				_fileHash = WaterboxUtils.Hash(fileData);
+				Mount(destAddress);
 			}
 
 			/// <summary>
-			/// set memory protections, finishing the Mount process
+			/// set memory protections.
 			/// </summary>
-			public void FinishMount()
+			private void ProtectMemory()
 			{
 				Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
 
@@ -103,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// load the PE into memory
 			/// </summary>
 			/// <param name="org">start address</param>
-			public void Mount(ulong org)
+			private void Mount(ulong org)
 			{
 				Start = org;
 				LoadOffset = (long)Start - (long)_pe.ImageNtHeaders.OptionalHeader.ImageBase;
@@ -159,6 +160,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						}
 					}
 				}
+				ProtectMemory();
 
 				// publish exports
 				EntryPoint = Z.US(Start + _pe.ImageNtHeaders.OptionalHeader.AddressOfEntryPoint);
@@ -263,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					WaterboxUtils.CopySome(br.BaseStream, ms, (long)length);
 				}
 
-				FinishMount();
+				ProtectMemory();
 			}
 		}
 
@@ -507,6 +509,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private Emu _emu;
 		private Syscalls _syscalls;
 
+		/// <summary>
+		/// timestamp of creation acts as a sort of "object id" in the savestate
+		/// </summary>
+		private readonly long _createstamp = WaterboxUtils.Timestamp();
+
 		public PeRunner(string directory, string filename, ulong heapsize, ulong sealedheapsize, ulong invisibleheapsize)
 		{
 			Initialize(_nextStart);
@@ -530,8 +537,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					var moduleName = todoModules.Dequeue();
 					if (!_exports.ContainsKey(moduleName))
 					{
-						var module = new PeWrapper(moduleName, File.ReadAllBytes(Path.Combine(directory, moduleName)));
-						module.Mount(_nextStart);
+						var module = new PeWrapper(moduleName, File.ReadAllBytes(Path.Combine(directory, moduleName)), _nextStart);
 						ComputeNextStart(module.Size);
 						AddMemoryBlock(module.Memory);
 						_savestateComponents.Add(module);
@@ -546,17 +552,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					}
 				}
 
-				foreach (var module in _modules)
-				{
-					foreach (var name in module.ImportsByModule.Keys)
-					{
-						module.ConnectImports(name, _exports[name]);
-					}
-				}
-				foreach (var module in _modules)
-				{
-					module.FinishMount();
-				}
+				ConnectAllImports();
 
 				// load all heaps
 				_heap = new Heap(_nextStart, heapsize, "brk-heap");
@@ -618,11 +614,23 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
+		private void ConnectAllImports()
+		{
+			foreach (var module in _modules)
+			{
+				foreach (var name in module.ImportsByModule.Keys)
+				{
+					module.ConnectImports(name, _exports[name]);
+				}
+			}
+		}
+
 		public void SaveStateBinary(BinaryWriter bw)
 		{
+			bw.Write(_createstamp);
+			bw.Write(_savestateComponents.Count);
 			using (this.EnterExit())
 			{
-				bw.Write(_savestateComponents.Count);
 				foreach (var c in _savestateComponents)
 				{
 					c.SaveStateBinary(bw);
@@ -632,6 +640,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public void LoadStateBinary(BinaryReader br)
 		{
+			var differentCore = br.ReadInt64() != _createstamp; // true if a different core instance created the state
 			if (br.ReadInt32() != _savestateComponents.Count)
 				throw new InvalidOperationException("Internal savestate error");
 			using (this.EnterExit())
@@ -640,14 +649,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					c.LoadStateBinary(br);
 				}
+				if (differentCore)
+				{
+					// if a different runtime instance than this one saved the state,
+					// Exvoker imports need to be reconnected
+					Console.WriteLine("Restoring PeRunner state from a different core...");
+					ConnectAllImports();
+				}
 			}
 		}
 
-		private bool _disposed = false;
-
-		public void Dispose()
+		protected override void Dispose(bool disposing)
 		{
-			if (!_disposed)
+			base.Dispose(disposing);
+			if (disposing)
 			{
 				foreach (var d in _disposeList)
 					d.Dispose();
@@ -658,7 +673,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_heap = null;
 				_sealedheap = null;
 				_invisibleheap = null;
-				_disposed = true;
 			}
 		}
 	}

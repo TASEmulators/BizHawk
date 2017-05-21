@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			Memory = new MemoryBlock(start, size);
 			Used = 0;
 			Name = name;
+			Console.WriteLine("Created heap `{1}` at {0:x16}:{2:x16}", start, name, start + size);
 		}
 
 		private void EnsureAlignment(int align)
@@ -118,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var hash = br.ReadBytes(_hash.Length);
 				if (!hash.SequenceEqual(_hash))
 				{
-					throw new InvalidOperationException(string.Format("Hash did not match for heap {0}.  Is this the same rom?"));
+					throw new InvalidOperationException(string.Format("Hash did not match for heap {0}.  Is this the same rom?", Name));
 				}
 			}
 		}

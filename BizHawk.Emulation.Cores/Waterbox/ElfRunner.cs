@@ -16,7 +16,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	public sealed class ElfRunner : Swappable, IImportResolver, IBinaryStateable, IDisposable
+	public sealed class ElfRunner : Swappable, IImportResolver, IBinaryStateable
 	{
 		// TODO: a lot of things only work with our elves and aren't fully generalized
 
@@ -265,13 +265,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_symlist = symbols.ToList();
 		}
 
-		public void Dispose()
-		{
-			// we don't need to activate to dispose
-			Dispose(true);
-			//GC.SuppressFinalize(this);
-		}
-
 		public void Seal()
 		{
 			Enter();
@@ -285,13 +278,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		//~ElfRunner()
-		//{
-		//	Dispose(false);
-		//}
-
-		private void Dispose(bool disposing)
+		protected override void Dispose(bool disposing)
 		{
+			base.Dispose(disposing);
 			if (disposing)
 			{
 				foreach (var d in _disposeList)
@@ -304,7 +293,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_invisibleheap = null;
 			}
 		}
-
 
 		#region clib monkeypatches
 

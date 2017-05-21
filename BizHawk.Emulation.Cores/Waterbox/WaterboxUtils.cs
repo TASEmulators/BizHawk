@@ -51,5 +51,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				*p++ = 0;
 			}
 		}
+
+		public static long Timestamp()
+		{
+			return DateTime.UtcNow.Ticks;
+		}
 	}
 }
