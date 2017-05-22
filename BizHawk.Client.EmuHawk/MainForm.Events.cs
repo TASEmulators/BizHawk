@@ -1304,7 +1304,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			Global.Config.ResolveDefaults();
-			GlobalWin.OSD.AddMessage("Config file loaded");
+			InitControls(); //rebind hotkeys
+			GlobalWin.OSD.AddMessage("Config file loaded: " + PathManager.DefaultIniPath);
 		}
 
 		private void LoadConfigFromMenuItem_Click(object sender, EventArgs e)
@@ -1322,7 +1323,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config = ConfigService.Load<Config>(ofd.FileName);
 				Global.Config.ResolveDefaults();
-				GlobalWin.OSD.AddMessage("Config file loaded");
+				InitControls(); //rebind hotkeys
+				GlobalWin.OSD.AddMessage("Config file loaded: " + ofd.FileName);
 			}
 		}
 
