@@ -15,24 +15,11 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class EmuLuaLibrary
 	{
-		private readonly Dictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
-
-		private Lua _lua = new Lua();
-		private Lua _currThread;
-
 		public EmuLuaLibrary()
 		{
 			Docs = new LuaDocumentation();
 			_lua["keepalives"] = _lua.NewTable();
 		}
-
-		private FormsLuaLibrary FormsLibrary => (FormsLuaLibrary)Libraries[typeof(FormsLuaLibrary)];
-
-		private EventLuaLibrary EventsLibrary => (EventLuaLibrary)Libraries[typeof(EventLuaLibrary)];
-
-		private EmulatorLuaLibrary EmulatorLuaLibrary => (EmulatorLuaLibrary)Libraries[typeof(EmulatorLuaLibrary)];
-
-		public GuiLuaLibrary GuiLibrary => (GuiLuaLibrary)Libraries[typeof(GuiLuaLibrary)];
 
 		public EmuLuaLibrary(IEmulatorServiceProvider serviceProvider)
 			: this()
@@ -93,6 +80,19 @@ namespace BizHawk.Client.EmuHawk
 				Docs.Add(new LibraryFunction(nameof(LuaCanvas), luaCanvas.Description(), method));
 			}
 		}
+
+		private readonly Dictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
+		public LuaFileList ScriptList { get; } = new LuaFileList();
+		private Lua _lua = new Lua();
+		private Lua _currThread;
+
+		private FormsLuaLibrary FormsLibrary => (FormsLuaLibrary)Libraries[typeof(FormsLuaLibrary)];
+
+		private EventLuaLibrary EventsLibrary => (EventLuaLibrary)Libraries[typeof(EventLuaLibrary)];
+
+		private EmulatorLuaLibrary EmulatorLuaLibrary => (EmulatorLuaLibrary)Libraries[typeof(EmulatorLuaLibrary)];
+
+		public GuiLuaLibrary GuiLibrary => (GuiLuaLibrary)Libraries[typeof(GuiLuaLibrary)];
 
 		public void Restart(IEmulatorServiceProvider newServiceProvider)
 		{
