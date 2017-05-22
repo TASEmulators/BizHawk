@@ -796,12 +796,24 @@ namespace BizHawk.Client.EmuHawk
 
 			switch (Global.Config.TargetZoomFactors[Emulator.SystemId])
 			{
-				case 1: x1MenuItem.Checked = true; break;
-				case 2: x2MenuItem.Checked = true; break;
-				case 3: x3MenuItem.Checked = true; break;
-				case 4: x4MenuItem.Checked = true; break;
-				case 5: x5MenuItem.Checked = true; break;
-				case 10: mzMenuItem.Checked = true; break;
+				case 1:
+					x1MenuItem.Checked = true;
+					break;
+				case 2:
+					x2MenuItem.Checked = true;
+					break;
+				case 3:
+					x3MenuItem.Checked = true;
+					break;
+				case 4:
+					x4MenuItem.Checked = true;
+					break;
+				case 5:
+					x5MenuItem.Checked = true;
+					break;
+				case 10:
+					mzMenuItem.Checked = true;
+					break;
 			}
 		}
 
@@ -988,7 +1000,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e is RomLoader.RomErrorArgs)
 			{
-				var args = e as RomLoader.RomErrorArgs;
+				var args = (RomLoader.RomErrorArgs)e;
 				var result = new FirmwaresConfig(true, args.RomPath).ShowDialog();
 				args.Retry = result == DialogResult.Retry;
 			}
@@ -1176,7 +1188,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateKeyPriorityIcon();
 		}
 
-		private void GBInSGBMenuItem_Click(object sender, EventArgs e)
+		private void GbInSgbMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_AsSGB ^= true;
 
@@ -1912,6 +1924,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadTIFileMenuItem_Click(object sender, EventArgs e)
 		{
+			var ti83 = (TI83)Emulator;
 			var ofd = new OpenFileDialog
 			{
 				InitialDirectory = PathManager.GetRomsPath(Emulator.SystemId),
@@ -1923,15 +1936,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try
 				{
-					(Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), true);
+					ti83.LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), true);
 				}
 				catch (IOException ex)
 				{
-					var Message = $"Invalid file format. Reason: {ex.Message} \nForce transfer? This may cause the calculator to crash.";
+					var message = $"Invalid file format. Reason: {ex.Message} \nForce transfer? This may cause the calculator to crash.";
 
-					if (MessageBox.Show(Message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
+					if (MessageBox.Show(message, "Upload Failed", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question) == DialogResult.Yes)
 					{
-						(Emulator as TI83).LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), false);
+						ti83.LinkPort.SendFileToCalc(File.OpenRead(ofd.FileName), false);
 					}
 				}
 			}
@@ -1939,14 +1952,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TI83PaletteMenuItem_Click(object sender, EventArgs e)
 		{
-			if (new TI83PaletteConfig().ShowDialog() == DialogResult.OK)
-			{
-				GlobalWin.OSD.AddMessage("Palette settings saved");
-			}
-			else
-			{
-				GlobalWin.OSD.AddMessage("Palette config aborted");
-			}
+			GlobalWin.OSD.AddMessage(new TI83PaletteConfig().ShowDialog() == DialogResult.OK
+				? "Palette settings saved"
+				: "Palette config aborted");
 		}
 
 		#endregion
@@ -1979,7 +1987,7 @@ namespace BizHawk.Client.EmuHawk
 			PutCoreSyncSettings(s);
 		}
 
-		private void GBAInCGBModeMenuItem_Click(object sender, EventArgs e)
+		private void GbaInCgbModeMenuItem_Click(object sender, EventArgs e)
 		{
 			var s = ((Gameboy)Emulator).GetSyncSettings();
 			s.GBACGB ^= true;
@@ -2006,12 +2014,12 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void LoadGBInSGBMenuItem_Click(object sender, EventArgs e)
+		private void LoadGbInSgbMenuItem_Click(object sender, EventArgs e)
 		{
-			SnesGBInSGBMenuItem_Click(sender, e);
+			SnesGbInSgbMenuItem_Click(sender, e);
 		}
 
-		private void GBGPUViewerMenuItem_Click(object sender, EventArgs e)
+		private void GbGpuViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<GBGPUView>();
 		}
@@ -2030,13 +2038,13 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<GBAGPUView>();
 		}
 
-		private void GBAmGBAMenuItem_Click(object sender, EventArgs e)
+		private void UsemGBAMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GBA_UsemGBA = true;
 			FlagNeedsReboot();
 		}
 
-		private void GBAVBANextMenuItem_Click(object sender, EventArgs e)
+		private void UseVbaNextMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GBA_UsemGBA = false;
 			FlagNeedsReboot();
@@ -2093,7 +2101,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNESSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			if ((Emulator as LibsnesCore).IsSGB)
+			if (((LibsnesCore)Emulator).IsSGB)
 			{
 				SnesGBInSGBMenuItem.Visible = true;
 				SnesGBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
@@ -2179,7 +2187,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<SNESGraphicsDebugger>();
 		}
 
-		private void SnesGBInSGBMenuItem_Click(object sender, EventArgs e)
+		private void SnesGbInSgbMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_AsSGB ^= true;
 			FlagNeedsReboot();
@@ -2233,8 +2241,8 @@ namespace BizHawk.Client.EmuHawk
 			var s = ((N64)Emulator).GetSettings();
 			MupenStyleLagMenuItem.Checked = s.UseMupenStyleLag;
 
-			N64ExpansionSlotMenuItem.Checked = (Emulator as N64).UsingExpansionSlot;
-			N64ExpansionSlotMenuItem.Enabled = !(Emulator as N64).IsOverridingUserExpansionSlotSetting;
+			N64ExpansionSlotMenuItem.Checked = ((N64)Emulator).UsingExpansionSlot;
+			N64ExpansionSlotMenuItem.Enabled = !((N64)Emulator).IsOverridingUserExpansionSlotSetting;
 		}
 
 		private void N64PluginSettingsMenuItem_Click(object sender, EventArgs e)
@@ -2323,7 +2331,7 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "Genesis Settings");
 		}
 
-		private void GenesisGameGenieECDC_Click(object sender, EventArgs e)
+		private void GenesisGameGenieEcDc_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<GenGameGenie>();
 		}
@@ -2360,7 +2368,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Emulator is AppleII)
 			{
-				var appleII = Emulator as AppleII;
+				var appleII = (AppleII)Emulator;
 				for (int i = 0; i < appleII.DiskCount; i++)
 				{
 					var menuItem = new ToolStripMenuItem
@@ -2389,7 +2397,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is C64)
 			{
-				C64DisksSubMenu.Enabled = (Emulator as C64).DiskCount > 1;
+				C64DisksSubMenu.Enabled = ((C64)Emulator).DiskCount > 1;
 			}
 		}
 
@@ -2399,7 +2407,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Emulator is C64)
 			{
-				var c64 = Emulator as C64;
+				var c64 = (C64)Emulator;
 				for (int i = 0; i < c64.DiskCount; i++)
 				{
 					var menuItem = new ToolStripMenuItem
@@ -2837,6 +2845,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					UnpauseEmulator();
 				}
+
 				_wasPaused = false;
 			}
 		}
@@ -2854,7 +2863,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void timerMouseIdle_Tick(object sender, EventArgs e)
+		private void TimerMouseIdle_Tick(object sender, EventArgs e)
 		{
 			if (_inFullscreen && Global.Config.DispChrome_Fullscreen_AutohideMouse)
 			{

@@ -211,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodAttributes("pause_av", "If currently capturing Audio/Video, this will suspend the record. Frames will not be captured into the AV until client.unpause_av() is called")]
 		public static void PauseAv()
 		{
-			GlobalWin.MainForm.PauseAVI = true;
+			GlobalWin.MainForm.PauseAvi = true;
 		}
 
 		[LuaMethodAttributes("reboot_core", "Reboots the currently loaded core")]
@@ -323,7 +323,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodAttributes("unpause_av", "If currently capturing Audio/Video this resumes capturing")]
 		public static void UnpauseAv()
 		{
-			GlobalWin.MainForm.PauseAVI = false;
+			GlobalWin.MainForm.PauseAvi = false;
 		}
 
 		[LuaMethodAttributes("xpos", "Returns the x value of the screen position where the client currently sits")]

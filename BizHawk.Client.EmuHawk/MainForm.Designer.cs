@@ -1809,7 +1809,7 @@
             this.GBInSGBMenuItem.Name = "GBInSGBMenuItem";
             this.GBInSGBMenuItem.Size = new System.Drawing.Size(239, 22);
             this.GBInSGBMenuItem.Text = "GB in SGB";
-            this.GBInSGBMenuItem.Click += new System.EventHandler(this.GBInSGBMenuItem_Click);
+            this.GBInSGBMenuItem.Click += new System.EventHandler(this.GbInSgbMenuItem_Click);
             // 
             // NesInQuickNESMenuItem
             // 
@@ -2678,7 +2678,7 @@
             this.LoadGBInSGBMenuItem.Name = "LoadGBInSGBMenuItem";
             this.LoadGBInSGBMenuItem.Size = new System.Drawing.Size(233, 22);
             this.LoadGBInSGBMenuItem.Text = "Load GB in SGB";
-            this.LoadGBInSGBMenuItem.Click += new System.EventHandler(this.LoadGBInSGBMenuItem_Click);
+            this.LoadGBInSGBMenuItem.Click += new System.EventHandler(this.LoadGbInSgbMenuItem_Click);
             // 
             // toolStripSeparator28
             // 
@@ -2690,7 +2690,7 @@
             this.GBGPUViewerMenuItem.Name = "GBGPUViewerMenuItem";
             this.GBGPUViewerMenuItem.Size = new System.Drawing.Size(233, 22);
             this.GBGPUViewerMenuItem.Text = "GPU Viewer";
-            this.GBGPUViewerMenuItem.Click += new System.EventHandler(this.GBGPUViewerMenuItem_Click);
+            this.GBGPUViewerMenuItem.Click += new System.EventHandler(this.GbGpuViewerMenuItem_Click);
             // 
             // GBGameGenieMenuItem
             // 
@@ -2725,14 +2725,14 @@
             this.GBAmGBAMenuItem.Name = "GBAmGBAMenuItem";
             this.GBAmGBAMenuItem.Size = new System.Drawing.Size(125, 22);
             this.GBAmGBAMenuItem.Text = "mGBA";
-            this.GBAmGBAMenuItem.Click += new System.EventHandler(this.GBAmGBAMenuItem_Click);
+            this.GBAmGBAMenuItem.Click += new System.EventHandler(this.UsemGBAMenuItem_Click);
             // 
             // GBAVBANextMenuItem
             // 
             this.GBAVBANextMenuItem.Name = "GBAVBANextMenuItem";
             this.GBAVBANextMenuItem.Size = new System.Drawing.Size(125, 22);
             this.GBAVBANextMenuItem.Text = "&VBA-Next";
-            this.GBAVBANextMenuItem.Click += new System.EventHandler(this.GBAVBANextMenuItem_Click);
+            this.GBAVBANextMenuItem.Click += new System.EventHandler(this.UseVbaNextMenuItem_Click);
             // 
             // GBAcoresettingsToolStripMenuItem1
             // 
@@ -2907,7 +2907,7 @@
             this.SnesGBInSGBMenuItem.Name = "SnesGBInSGBMenuItem";
             this.SnesGBInSGBMenuItem.Size = new System.Drawing.Size(233, 22);
             this.SnesGBInSGBMenuItem.Text = "Load GB in SGB";
-            this.SnesGBInSGBMenuItem.Click += new System.EventHandler(this.SnesGBInSGBMenuItem_Click);
+            this.SnesGBInSGBMenuItem.Click += new System.EventHandler(this.SnesGbInSgbMenuItem_Click);
             // 
             // SnesGameGenieMenuItem
             // 
@@ -3063,7 +3063,7 @@
             this.GenesisGameGenieECDC.Name = "GenesisGameGenieECDC";
             this.GenesisGameGenieECDC.Size = new System.Drawing.Size(233, 22);
             this.GenesisGameGenieECDC.Text = "&Game Genie Encoder/Decoder";
-            this.GenesisGameGenieECDC.Click += new System.EventHandler(this.GenesisGameGenieECDC_Click);
+            this.GenesisGameGenieECDC.Click += new System.EventHandler(this.GenesisGameGenieEcDc_Click);
             // 
             // toolStripSeparator26
             // 
@@ -3783,7 +3783,7 @@
             this.GBInSGBContextMenuItem.Name = "GBInSGBContextMenuItem";
             this.GBInSGBContextMenuItem.Size = new System.Drawing.Size(163, 22);
             this.GBInSGBContextMenuItem.Text = "GB in SGB";
-            this.GBInSGBContextMenuItem.Click += new System.EventHandler(this.GBInSGBMenuItem_Click);
+            this.GBInSGBContextMenuItem.Click += new System.EventHandler(this.GbInSgbMenuItem_Click);
             // 
             // NesInQuickNESContextMenuItem
             // 
@@ -3852,7 +3852,7 @@
             // 
             this.timerMouseIdle.Enabled = true;
             this.timerMouseIdle.Interval = 2000;
-            this.timerMouseIdle.Tick += new System.EventHandler(this.timerMouseIdle_Tick);
+            this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
             // 
             // toolStripSeparator36
             // 
