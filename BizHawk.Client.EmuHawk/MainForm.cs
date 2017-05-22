@@ -2709,11 +2709,6 @@ namespace BizHawk.Client.EmuHawk
 										 : "Background Input disabled");
 		}
 
-		private static void LimitFrameRateMessage()
-		{
-			GlobalWin.OSD.AddMessage(Global.Config.ClockThrottle ? "Framerate limiting on" : "Framerate limiting off");
-		}
-
 		private static void VsyncMessage()
 		{
 			GlobalWin.OSD.AddMessage(

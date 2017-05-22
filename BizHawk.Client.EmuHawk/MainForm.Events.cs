@@ -1980,40 +1980,6 @@ namespace BizHawk.Client.EmuHawk
 			config.GB.GBPrefs.DoGBPrefsDialog(this);
 		}
 
-		private void GBForceDMGMenuItem_Click(object sender, EventArgs e)
-		{
-			var s = ((Gameboy)Emulator).GetSyncSettings();
-			s.ForceDMG ^= true;
-			PutCoreSyncSettings(s);
-		}
-
-		private void GbaInCgbModeMenuItem_Click(object sender, EventArgs e)
-		{
-			var s = ((Gameboy)Emulator).GetSyncSettings();
-			s.GBACGB ^= true;
-			PutCoreSyncSettings(s);
-		}
-
-		private void GBMulticartCompatibilityMenuItem_Click(object sender, EventArgs e)
-		{
-			var s = ((Gameboy)Emulator).GetSyncSettings();
-			s.MulticartCompat ^= true;
-			PutCoreSyncSettings(s);
-		}
-
-		private void GBPaletteConfigMenuItem_Click(object sender, EventArgs e)
-		{
-			var gb = Emulator as Gameboy;
-			if (gb.IsCGBMode())
-			{
-				CGBColorChooserForm.DoCGBColorChooserFormDialog(this);
-			}
-			else
-			{
-				ColorChooserForm.DoColorChooserFormDialog(this);
-			}
-		}
-
 		private void LoadGbInSgbMenuItem_Click(object sender, EventArgs e)
 		{
 			SnesGbInSgbMenuItem_Click(sender, e);
