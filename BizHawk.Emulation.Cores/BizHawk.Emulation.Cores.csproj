@@ -213,6 +213,7 @@
     <Compile Include="Computers\Commodore64\C64.IStatable.cs">
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
+    <Compile Include="Computers\Commodore64\FFT.cs" />  
     <Compile Include="Computers\Commodore64\C64.Motherboard.cs" />
     <Compile Include="Computers\Commodore64\C64.MotherboardInterface.cs" />
     <Compile Include="Computers\Commodore64\C64Format.cs" />
@@ -220,7 +221,7 @@
     <Compile Include="Computers\Commodore64\C64.MotherboardInput.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0001.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0005.cs" />
-		<Compile Include="Computers\Commodore64\Cartridge\Mapper0008.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0008.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper000A.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper000B.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper000F.cs" />
