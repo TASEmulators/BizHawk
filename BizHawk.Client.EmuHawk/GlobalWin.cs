@@ -13,8 +13,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static IGL GL;
 
-		public static GLManager.ContextRef CR_GL;
-
 		/// <summary>
 		/// The IGL_TK to be used for specifically opengl operations (accessing textures from opengl-based cores)
 		/// </summary>
