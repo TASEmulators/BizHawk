@@ -418,19 +418,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			mmc3 = new MMC3(this, num_prg_banks);
 			SetMirrorType(EMirrorType.Vertical);
 		}
-
-		//used by a couple of boards for controlling nametable wiring with the mapper
-		protected int RewireNametable_TLSROM(int addr, int bitsel)
-		{
-			int bank_1k = mmc3.Get_CHRBank_1K(addr & 0x1FFF);
-			int nt = (bank_1k >> bitsel) & 1;
-			int ofs = addr & 0x3FF;
-			addr = 0x2000 + (nt << 10);
-			addr |= (ofs);
-			return addr;
-		}
-
 	}
-
-
 }
