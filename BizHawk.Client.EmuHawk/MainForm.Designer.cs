@@ -1613,7 +1613,7 @@
             this.miUnthrottled.Name = "miUnthrottled";
             this.miUnthrottled.Size = new System.Drawing.Size(202, 22);
             this.miUnthrottled.Text = "Unthrottled";
-            this.miUnthrottled.Click += new System.EventHandler(this.miUnthrottled_Click);
+            this.miUnthrottled.Click += new System.EventHandler(this.UnthrottledMenuItem_Click);
             // 
             // MinimizeSkippingMenuItem
             // 
@@ -1875,7 +1875,7 @@
             this.allowGameDBCoreOverridesToolStripMenuItem.Name = "allowGameDBCoreOverridesToolStripMenuItem";
             this.allowGameDBCoreOverridesToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
             this.allowGameDBCoreOverridesToolStripMenuItem.Text = "Follow GameDB Core Overrides";
-            this.allowGameDBCoreOverridesToolStripMenuItem.Click += new System.EventHandler(this.allowGameDBCoreOverridesToolStripMenuItem_Click);
+            this.allowGameDBCoreOverridesToolStripMenuItem.Click += new System.EventHandler(this.AllowGameDBCoreOverridesToolStripMenuItem_Click);
             // 
             // toolStripSeparator8
             // 
@@ -1895,7 +1895,7 @@
             this.setLibretroCoreToolStripMenuItem.Name = "setLibretroCoreToolStripMenuItem";
             this.setLibretroCoreToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
             this.setLibretroCoreToolStripMenuItem.Text = "Set Libretro Core";
-            this.setLibretroCoreToolStripMenuItem.Click += new System.EventHandler(this.setLibretroCoreToolStripMenuItem_Click);
+            this.setLibretroCoreToolStripMenuItem.Click += new System.EventHandler(this.SetLibretroCoreMenuItem_Click);
             // 
             // toolStripSeparator10
             // 
@@ -2079,7 +2079,7 @@
             this.gameSharkConverterToolStripMenuItem.Name = "gameSharkConverterToolStripMenuItem";
             this.gameSharkConverterToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.gameSharkConverterToolStripMenuItem.Text = "Cheat Code Converter";
-            this.gameSharkConverterToolStripMenuItem.Click += new System.EventHandler(this.gameSharkConverterToolStripMenuItem_Click);
+            this.gameSharkConverterToolStripMenuItem.Click += new System.EventHandler(this.CheatCodeConverterMenuItem_Click);
             // 
             // toolStripSeparator29
             // 
@@ -2092,7 +2092,7 @@
             this.MultiDiskBundlerFileMenuItem.Name = "MultiDiskBundlerFileMenuItem";
             this.MultiDiskBundlerFileMenuItem.Size = new System.Drawing.Size(191, 22);
             this.MultiDiskBundlerFileMenuItem.Text = "Multi-disk Bundler";
-            this.MultiDiskBundlerFileMenuItem.Click += new System.EventHandler(this.CreateMultigameFileMenuItem_Click);
+            this.MultiDiskBundlerFileMenuItem.Click += new System.EventHandler(this.MultidiskBundlerMenuItem_Click);
             // 
             // externalToolToolStripMenuItem
             // 
@@ -2115,7 +2115,7 @@
             this.batchRunnerToolStripMenuItem.Size = new System.Drawing.Size(191, 22);
             this.batchRunnerToolStripMenuItem.Text = "Batch Runner";
             this.batchRunnerToolStripMenuItem.Visible = false;
-            this.batchRunnerToolStripMenuItem.Click += new System.EventHandler(this.batchRunnerToolStripMenuItem_Click);
+            this.batchRunnerToolStripMenuItem.Click += new System.EventHandler(this.BatchRunnerToolStripMenuItem_Click);
             // 
             // ExperimentalToolsSubMenu
             // 
@@ -2172,7 +2172,7 @@
             this.coreToolStripMenuItem.Name = "coreToolStripMenuItem";
             this.coreToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
             this.coreToolStripMenuItem.Text = "&Core";
-            this.coreToolStripMenuItem.DropDownOpened += new System.EventHandler(this.coreToolStripMenuItem_DropDownOpened);
+            this.coreToolStripMenuItem.DropDownOpened += new System.EventHandler(this.CoreToolStripMenuItem_DropDownOpened);
             // 
             // quickNESToolStripMenuItem
             // 

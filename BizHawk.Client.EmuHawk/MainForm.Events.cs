@@ -234,6 +234,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void FlushSaveRAMSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			FlushSaveRAMMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Flush SRAM"].Bindings;
+		}
+
 		private void MovieSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FullMovieLoadstatesMenuItem.Enabled = !Global.MovieSession.MultiTrack.IsActive;
@@ -443,6 +448,11 @@ namespace BizHawk.Client.EmuHawk
 		private void LoadCurrentSlotMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
+		}
+
+		private void FlushSaveRAMMenuItem_Click(object sender, EventArgs e)
+		{
+			FlushSaveRAM();
 		}
 
 		private void ReadonlyMenuItem_Click(object sender, EventArgs e)
@@ -848,14 +858,9 @@ namespace BizHawk.Client.EmuHawk
 			SetStatusBar();
 		}
 
-		private void SetStatusBar()
+		private void DisplayMessagesMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!_inFullscreen)
-			{
-				MainStatusBar.Visible = Global.Config.DispChrome_StatusBarWindowed;
-				PerformLayout();
-				FrameBufferResized();
-			}
+			Global.Config.DisplayMessages ^= true;
 		}
 
 		private void DisplayLogWindowMenuItem_Click(object sender, EventArgs e)
@@ -948,6 +953,12 @@ namespace BizHawk.Client.EmuHawk
 					HkOverInputMenuItem.Checked = true;
 					break;
 			}
+		}
+
+		private void CoreToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+		{
+			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES;
+			nesHawkToolStripMenuItem.Checked = !Global.Config.NES_InQuickNES;
 		}
 
 		private void ControllersMenuItem_Click(object sender, EventArgs e)
@@ -1112,6 +1123,12 @@ namespace BizHawk.Client.EmuHawk
 			VsyncMessage();
 		}
 
+		private void UnthrottledMenuItem_Click(object sender, EventArgs e)
+		{
+			_unthrottled ^= true;
+			ThrottleMessage();
+		}
+
 		private void MinimizeSkippingMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.AutoMinimizeSkipping ^= true;
@@ -1244,9 +1261,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void AllowGameDBCoreOverridesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.CoreForcingViaGameDB ^= true;
+		}
+
 		private void N64VideoPluginSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			N64PluginSettingsMenuItem_Click(sender, e);
+		}
+
+		private void SetLibretroCoreMenuItem_Click(object sender, EventArgs e)
+		{
+			RunLibretroCoreChooser();
 		}
 
 		private void SaveConfigMenuItem_Click(object sender, EventArgs e)
@@ -1297,46 +1324,6 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.ResolveDefaults();
 				GlobalWin.OSD.AddMessage("Config file loaded");
 			}
-		}
-
-		private void miUnthrottled_Click(object sender, EventArgs e)
-		{
-			_unthrottled ^= true;
-			ThrottleMessage();
-		}
-
-		public bool RunLibretroCoreChooser()
-		{
-			var ofd = new OpenFileDialog();
-
-			if (Global.Config.LibretroCore != null)
-			{
-				ofd.FileName = Path.GetFileName(Global.Config.LibretroCore);
-				ofd.InitialDirectory = Path.GetDirectoryName(Global.Config.LibretroCore);
-			}
-			else
-			{
-				ofd.InitialDirectory = PathManager.GetPathType("Libretro", "Cores");
-				if (!Directory.Exists(ofd.InitialDirectory))
-				{
-					Directory.CreateDirectory(ofd.InitialDirectory);
-				}
-			}
-
-			ofd.RestoreDirectory = true;
-			ofd.Filter = "Libretro Cores (*.dll)|*.dll";
-
-			if (ofd.ShowDialog() == DialogResult.Cancel)
-				return false;
-
-			Global.Config.LibretroCore = ofd.FileName;
-
-			return true;
-		}
-
-		private void setLibretroCoreToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			RunLibretroCoreChooser();
 		}
 
 		#endregion
@@ -1407,11 +1394,6 @@ namespace BizHawk.Client.EmuHawk
 			NewHexEditorMenuItem.Enabled = GlobalWin.Tools.IsAvailable<NewHexEditor>();
 		}
 
-		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<AutoHawk>();
-		}
-
 		private void ToolBoxMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<ToolBox>();
@@ -1425,6 +1407,22 @@ namespace BizHawk.Client.EmuHawk
 		private void RamSearchMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<RamSearch>();
+		}
+
+		private void LuaConsoleMenuItem_Click(object sender, EventArgs e)
+		{
+			OpenLuaConsole();
+		}
+
+		private void TAStudioMenuItem_Click(object sender, EventArgs e)
+		{
+			if (!Emulator.CanPollInput())
+			{
+				MessageBox.Show("Current core does not support input polling. TAStudio can't be used.");
+				return;
+			}
+
+			GlobalWin.Tools.Load<TAStudio>();
 		}
 
 		private void HexEditorMenuItem_Click(object sender, EventArgs e)
@@ -1442,14 +1440,9 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<GenericDebugger>();
 		}
 
-		private void TAStudioMenuItem_Click(object sender, EventArgs e)
+		private void CodeDataLoggerMenuItem_Click(object sender, EventArgs e)
 		{
-			if (!Emulator.CanPollInput())
-			{
-				MessageBox.Show("Current core does not support input polling. TAStudio can't be used.");
-				return;
-			}
-			GlobalWin.Tools.Load<TAStudio>();
+			GlobalWin.Tools.Load<CDL>();
 		}
 
 		private void MacroToolMenuItem_Click(object sender, EventArgs e)
@@ -1462,19 +1455,34 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.Load<VirtualpadTool>();
 		}
 
+		private void BasicBotMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<BasicBot>();
+		}
+
 		private void CheatsMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<Cheats>();
 		}
 
-		private void LuaConsoleMenuItem_Click(object sender, EventArgs e)
+		private void CheatCodeConverterMenuItem_Click(object sender, EventArgs e)
 		{
-			OpenLuaConsole();
+			GlobalWin.Tools.Load<GameShark>();
 		}
 
-		private void batchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
+		private void MultidiskBundlerMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<MultiDiskBundler>();
+		}
+
+		private void BatchRunnerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new BatchRun().ShowDialog();
+		}
+
+		private void AutoHawkMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<AutoHawk>();
 		}
 
 		private void NewHexEditorMenuItem_Click(object sender, EventArgs e)
@@ -1686,11 +1694,6 @@ namespace BizHawk.Client.EmuHawk
 		private void PceSoundDebuggerToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<PCESoundDebugger>();
-		}
-
-		private void CodeDataLoggerMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<CDL>();
 		}
 
 		private void PCEAlwaysPerformSpriteLimitMenuItem_Click(object sender, EventArgs e)
@@ -2048,11 +2051,6 @@ namespace BizHawk.Client.EmuHawk
 
 		#region PSX
 
-		private void PSXHashDiscsToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			new PSXHashDiscs().ShowDialog();
-		}
-
 		private void PSXSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			PSXControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
@@ -2061,6 +2059,25 @@ namespace BizHawk.Client.EmuHawk
 		private void PSXControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
 			new PSXControllerConfigNew().ShowDialog();
+		}
+
+		private void PSXOptionsMenuItem_Click(object sender, EventArgs e)
+		{
+			var result = PSXOptions.DoSettingsDialog(this);
+			if (result == DialogResult.OK)
+			{
+				FrameBufferResized();
+			}
+		}
+
+		private void PSXDiscControlsMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<VirtualpadTool>().ScrollToPadSchema("Console");
+		}
+
+		private void PSXHashDiscsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new PSXHashDiscs().ShowDialog();
 		}
 
 		#endregion
@@ -2145,6 +2162,11 @@ namespace BizHawk.Client.EmuHawk
 			SNES_ToggleOBJ4();
 		}
 
+		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
+		{
+			new SNESControllerSettings().ShowDialog();
+		}
+
 		private void SnesGfxDebuggerMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<SNESGraphicsDebugger>();
@@ -2164,30 +2186,6 @@ namespace BizHawk.Client.EmuHawk
 		private void SnesOptionsMenuItem_Click(object sender, EventArgs e)
 		{
 			SNESOptions.DoSettingsDialog(this);
-		}
-
-		private void PSXOptionsMenuItem_Click(object sender, EventArgs e)
-		{
-			var result = PSXOptions.DoSettingsDialog(this);
-			if (result == DialogResult.OK)
-			{
-				FrameBufferResized();
-			}
-		}
-
-		private void PSXDiscControlsMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<VirtualpadTool>().ScrollToPadSchema("Console");
-		}
-
-		private void FlushSaveRAMMenuItem_Click(object sender, EventArgs e)
-		{
-			FlushSaveRAM();
-		}
-
-		private void FlushSaveRAMSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			this.FlushSaveRAMMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Flush SRAM"].Bindings;
 		}
 
 		#endregion
@@ -2442,6 +2440,11 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Help
 
+		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
+		}
+
 		private void OnlineHelpMenuItem_Click(object sender, EventArgs e)
 		{
 			System.Diagnostics.Process.Start("http://tasvideos.org/BizHawk.html");
@@ -2450,6 +2453,11 @@ namespace BizHawk.Client.EmuHawk
 		private void ForumsMenuItem_Click(object sender, EventArgs e)
 		{
 			System.Diagnostics.Process.Start("http://tasvideos.org/forum/viewforum.php?f=64");
+		}
+
+		private void FeaturesMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<CoreFeatureAnalysis>();
 		}
 
 		private void AboutMenuItem_Click(object sender, EventArgs e)

@@ -1348,6 +1348,35 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage(s.ShowOBJ_3 ? "OBJ 4 Layer On" : "OBJ 4 Layer Off");
 		}
 
+		public bool RunLibretroCoreChooser()
+		{
+			var ofd = new OpenFileDialog();
+
+			if (Global.Config.LibretroCore != null)
+			{
+				ofd.FileName = Path.GetFileName(Global.Config.LibretroCore);
+				ofd.InitialDirectory = Path.GetDirectoryName(Global.Config.LibretroCore);
+			}
+			else
+			{
+				ofd.InitialDirectory = PathManager.GetPathType("Libretro", "Cores");
+				if (!Directory.Exists(ofd.InitialDirectory))
+				{
+					Directory.CreateDirectory(ofd.InitialDirectory);
+				}
+			}
+
+			ofd.RestoreDirectory = true;
+			ofd.Filter = "Libretro Cores (*.dll)|*.dll";
+
+			if (ofd.ShowDialog() == DialogResult.Cancel)
+				return false;
+
+			Global.Config.LibretroCore = ofd.FileName;
+
+			return true;
+		}
+
 		#endregion
 
 		#region Private variables
@@ -1421,6 +1450,16 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Private methods
+
+		private void SetStatusBar()
+		{
+			if (!_inFullscreen)
+			{
+				MainStatusBar.Visible = Global.Config.DispChrome_StatusBarWindowed;
+				PerformLayout();
+				FrameBufferResized();
+			}
+		}
 
 		private void SetWindowText()
 		{
@@ -4241,51 +4280,5 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		#endregion
-
-		private void FeaturesMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<CoreFeatureAnalysis>();
-		}
-
-		private void BasicBotMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<BasicBot>();
-		}
-
-		private void DisplayMessagesMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.DisplayMessages ^= true;
-		}
-
-		private void gameSharkConverterToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<GameShark>();
-		}
-
-		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
-		}
-
-		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
-		{
-			new SNESControllerSettings().ShowDialog();
-		}
-
-		private void CreateMultigameFileMenuItem_Click(object sender, EventArgs e)
-		{
-			GlobalWin.Tools.Load<MultiDiskBundler>();
-		}
-
-		private void coreToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			quickNESToolStripMenuItem.Checked = Global.Config.NES_InQuickNES;
-			nesHawkToolStripMenuItem.Checked = !Global.Config.NES_InQuickNES;
-		}
-
-		private void allowGameDBCoreOverridesToolStripMenuItem_Click(object sender, EventArgs e)
-		{
-			Global.Config.CoreForcingViaGameDB ^= true;
-		}
 	}
 }
