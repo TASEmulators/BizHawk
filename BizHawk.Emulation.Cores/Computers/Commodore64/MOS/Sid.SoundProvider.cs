@@ -49,9 +49,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			Flush();
+
+			nsamp = _outputBufferIndex;
+
 			samples = _outputBuffer;
-			nsamp = _outputBufferIndex >> 1;
+			
 			_outputBufferIndex = 0;
+			last_index = 0;
 		}
+
 	}
 }
