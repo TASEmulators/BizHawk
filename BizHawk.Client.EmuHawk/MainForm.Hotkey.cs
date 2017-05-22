@@ -43,9 +43,11 @@ namespace BizHawk.Client.EmuHawk
 				case "Screen Raw to Clipboard":
 					// Ctrl+C clash. any tool that has such acc must check this.
 					// maybe check if mainform has focus instead?
-					if (GlobalWin.Tools.IsLoaded<TAStudio>())
-						if (GlobalWin.Tools.Get<TAStudio>().ContainsFocus)
-							break;
+					if (GlobalWin.Tools.IsLoaded<TAStudio>() && GlobalWin.Tools.Get<TAStudio>().ContainsFocus)
+					{
+						break;
+					}
+
 					TakeScreenshotToClipboard();
 					break;
 				case "Screen Client to Clipboard":
@@ -67,7 +69,7 @@ namespace BizHawk.Client.EmuHawk
 					FlushSaveRAM();
 					break;
 				case "Display FPS":
-					ToggleFPS();
+					ToggleFps();
 					break;
 				case "Frame Counter":
 					ToggleFrameCounter();
@@ -77,6 +79,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						ToggleLagCounter();
 					}
+
 					break;
 				case "Input Display":
 					ToggleInputDisplay();
@@ -341,9 +344,11 @@ namespace BizHawk.Client.EmuHawk
 						{
 							type = " (on)";
 						}
+
 						Global.CheatList.ToList().ForEach(x => x.Toggle());
 						GlobalWin.OSD.AddMessage("Cheats toggled" + type);
 					}
+
 					break;
 				case "TAStudio":
 					GlobalWin.Tools.Load<TAStudio>();
@@ -358,45 +363,93 @@ namespace BizHawk.Client.EmuHawk
 				// RAM Search
 				case "Do Search":
 					if (GlobalWin.Tools.IsLoaded<RamSearch>())
+					{
 						GlobalWin.Tools.RamSearch.DoSearch();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "New Search":
 					if (GlobalWin.Tools.IsLoaded<RamSearch>())
+					{
 						GlobalWin.Tools.RamSearch.NewSearch();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Previous Compare To":
 					if (GlobalWin.Tools.IsLoaded<RamSearch>())
+					{
 						GlobalWin.Tools.RamSearch.NextCompareTo(reverse: true);
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Next Compare To":
 					if (GlobalWin.Tools.IsLoaded<RamSearch>())
+					{
 						GlobalWin.Tools.RamSearch.NextCompareTo();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Previous Operator":
 					if (GlobalWin.Tools.IsLoaded<RamSearch>())
+					{
 						GlobalWin.Tools.RamSearch.NextOperator(reverse: true);
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Next Operator":
 					if (GlobalWin.Tools.IsLoaded<RamSearch>())
+					{
 						GlobalWin.Tools.RamSearch.NextOperator();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 
-				//TAStudio
+				// TAStudio
 				case "Add Branch":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						GlobalWin.Tools.TAStudio.AddBranchExternal();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Delete Branch":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						GlobalWin.Tools.TAStudio.RemoveBranchExtrenal();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Show Cursor":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
@@ -404,72 +457,154 @@ namespace BizHawk.Client.EmuHawk
 						GlobalWin.Tools.TAStudio.SetVisibleIndex();
 						GlobalWin.Tools.TAStudio.RefreshDialog();
 					}
-					else return false;
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Toggle Follow Cursor":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						GlobalWin.Tools.TAStudio.TasPlaybackBox.FollowCursor ^= true;
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Toggle Auto-Restore":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						GlobalWin.Tools.TAStudio.TasPlaybackBox.AutoRestore ^= true;
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Toggle Turbo Seek":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						GlobalWin.Tools.TAStudio.TasPlaybackBox.TurboSeek ^= true;
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Clear Frames":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						GlobalWin.Tools.TAStudio.ClearFramesExternal();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Insert Frame":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						GlobalWin.Tools.TAStudio.InsertFrameExternal();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Delete Frames":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						GlobalWin.Tools.TAStudio.DeleteFramesExternal();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Clone Frames":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						GlobalWin.Tools.TAStudio.CloneFramesExternal();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Analog Increment":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						GlobalWin.Tools.TAStudio.AnalogIncrementByOne();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Analog Decrement":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						GlobalWin.Tools.TAStudio.AnalogDecrementByOne();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Analog Incr. by 10":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						GlobalWin.Tools.TAStudio.AnalogIncrementByTen();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Analog Decr. by 10":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						GlobalWin.Tools.TAStudio.AnalogDecrementByTen();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Analog Maximum":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						GlobalWin.Tools.TAStudio.AnalogMax();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 				case "Analog Minimum":
 					if (GlobalWin.Tools.IsLoaded<TAStudio>())
+					{
 						GlobalWin.Tools.TAStudio.AnalogMin();
-					else return false;
+					}
+					else
+					{
+						return false;
+					}
+
 					break;
 
 				// SNES
@@ -506,10 +641,10 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.VirtualPad.BumpAnalogValue(null, Global.Config.Analog_LargeChange);
 					break;
 				case "Y Down Small":
-					GlobalWin.Tools.VirtualPad.BumpAnalogValue(null, -(Global.Config.Analog_SmallChange));
+					GlobalWin.Tools.VirtualPad.BumpAnalogValue(null, -Global.Config.Analog_SmallChange);
 					break;
 				case "Y Down Large":
-					GlobalWin.Tools.VirtualPad.BumpAnalogValue(null, -(Global.Config.Analog_LargeChange));
+					GlobalWin.Tools.VirtualPad.BumpAnalogValue(null, -Global.Config.Analog_LargeChange);
 					break;
 				case "X Up Small":
 					GlobalWin.Tools.VirtualPad.BumpAnalogValue(Global.Config.Analog_SmallChange, null);
@@ -518,10 +653,10 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.VirtualPad.BumpAnalogValue(Global.Config.Analog_LargeChange, null);
 					break;
 				case "X Down Small":
-					GlobalWin.Tools.VirtualPad.BumpAnalogValue(-(Global.Config.Analog_SmallChange), null);
+					GlobalWin.Tools.VirtualPad.BumpAnalogValue(-Global.Config.Analog_SmallChange, null);
 					break;
 				case "X Down Large":
-					GlobalWin.Tools.VirtualPad.BumpAnalogValue(-(Global.Config.Analog_LargeChange), null);
+					GlobalWin.Tools.VirtualPad.BumpAnalogValue(-Global.Config.Analog_LargeChange, null);
 					break;
 			}
 

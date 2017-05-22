@@ -1222,7 +1222,7 @@
             this.EmulationSubMenu.Name = "EmulationSubMenu";
             this.EmulationSubMenu.Size = new System.Drawing.Size(73, 19);
             this.EmulationSubMenu.Text = "&Emulation";
-            this.EmulationSubMenu.DropDownOpened += new System.EventHandler(this.emulationToolStripMenuItem_DropDownOpened);
+            this.EmulationSubMenu.DropDownOpened += new System.EventHandler(this.EmulationMenuItem_DropDownOpened);
             // 
             // PauseMenuItem
             // 
@@ -1354,7 +1354,7 @@
             this.DisplayFPSMenuItem.Name = "DisplayFPSMenuItem";
             this.DisplayFPSMenuItem.Size = new System.Drawing.Size(198, 22);
             this.DisplayFPSMenuItem.Text = "Display FPS";
-            this.DisplayFPSMenuItem.Click += new System.EventHandler(this.DisplayFPSMenuItem_Click);
+            this.DisplayFPSMenuItem.Click += new System.EventHandler(this.DisplayFpsMenuItem_Click);
             // 
             // DisplayFrameCounterMenuItem
             // 
@@ -1856,14 +1856,14 @@
             this.Coresnes9xMenuItem.Name = "Coresnes9xMenuItem";
             this.Coresnes9xMenuItem.Size = new System.Drawing.Size(177, 22);
             this.Coresnes9xMenuItem.Text = "Snes9x";
-            this.Coresnes9xMenuItem.Click += new System.EventHandler(this.Coresnes9xMenuItem_Click);
+            this.Coresnes9xMenuItem.Click += new System.EventHandler(this.CoreSnes9xMenuItem_Click);
             // 
             // gBAWithMGBAToolStripMenuItem
             // 
             this.gBAWithMGBAToolStripMenuItem.Name = "gBAWithMGBAToolStripMenuItem";
             this.gBAWithMGBAToolStripMenuItem.Size = new System.Drawing.Size(239, 22);
             this.gBAWithMGBAToolStripMenuItem.Text = "GBA with mGBA";
-            this.gBAWithMGBAToolStripMenuItem.Click += new System.EventHandler(this.gBAWithMGBAToolStripMenuItem_Click);
+            this.gBAWithMGBAToolStripMenuItem.Click += new System.EventHandler(this.GbaWithmGBAMenuItem_Click);
             // 
             // toolStripMenuItem16
             // 
@@ -2179,14 +2179,14 @@
             this.quickNESToolStripMenuItem.Name = "quickNESToolStripMenuItem";
             this.quickNESToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.quickNESToolStripMenuItem.Text = "&QuickNes";
-            this.quickNESToolStripMenuItem.Click += new System.EventHandler(this.quickNESToolStripMenuItem_Click);
+            this.quickNESToolStripMenuItem.Click += new System.EventHandler(this.QuickNesToolStripMenuItem_Click);
             // 
             // nesHawkToolStripMenuItem
             // 
             this.nesHawkToolStripMenuItem.Name = "nesHawkToolStripMenuItem";
             this.nesHawkToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.nesHawkToolStripMenuItem.Text = "&NesHawk";
-            this.nesHawkToolStripMenuItem.Click += new System.EventHandler(this.nesHawkToolStripMenuItem_Click);
+            this.nesHawkToolStripMenuItem.Click += new System.EventHandler(this.NesHawkToolStripMenuItem_Click);
             // 
             // toolStripSeparator34
             // 
@@ -2198,7 +2198,7 @@
             this.NESPPUViewerMenuItem.Name = "NESPPUViewerMenuItem";
             this.NESPPUViewerMenuItem.Size = new System.Drawing.Size(233, 22);
             this.NESPPUViewerMenuItem.Text = "&PPU Viewer";
-            this.NESPPUViewerMenuItem.Click += new System.EventHandler(this.NESPPUViewerMenuItem_Click);
+            this.NESPPUViewerMenuItem.Click += new System.EventHandler(this.NesPPUViewerMenuItem_Click);
             // 
             // NESNametableViewerMenuItem
             // 
@@ -2219,7 +2219,7 @@
             this.musicRipperToolStripMenuItem.Name = "musicRipperToolStripMenuItem";
             this.musicRipperToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
             this.musicRipperToolStripMenuItem.Text = "Music Ripper";
-            this.musicRipperToolStripMenuItem.Click += new System.EventHandler(this.musicRipperToolStripMenuItem_Click);
+            this.musicRipperToolStripMenuItem.Click += new System.EventHandler(this.MusicRipperMenuItem_Click);
             // 
             // toolStripSeparator17
             // 
@@ -2255,7 +2255,7 @@
             this.VSSettingsMenuItem.Name = "VSSettingsMenuItem";
             this.VSSettingsMenuItem.Size = new System.Drawing.Size(233, 22);
             this.VSSettingsMenuItem.Text = "VS Settings...";
-            this.VSSettingsMenuItem.Click += new System.EventHandler(this.VSSettingsMenuItem_Click);
+            this.VSSettingsMenuItem.Click += new System.EventHandler(this.VsSettingsMenuItem_Click);
             // 
             // MovieSettingsMenuItem
             // 
@@ -2300,28 +2300,28 @@
             this.VSInsertCoinP1MenuItem.Name = "VSInsertCoinP1MenuItem";
             this.VSInsertCoinP1MenuItem.Size = new System.Drawing.Size(149, 22);
             this.VSInsertCoinP1MenuItem.Text = "Insert Coin P1";
-            this.VSInsertCoinP1MenuItem.Click += new System.EventHandler(this.VSInsertCoinP1MenuItem_Click);
+            this.VSInsertCoinP1MenuItem.Click += new System.EventHandler(this.VsInsertCoinP1MenuItem_Click);
             // 
             // VSInsertCoinP2MenuItem
             // 
             this.VSInsertCoinP2MenuItem.Name = "VSInsertCoinP2MenuItem";
             this.VSInsertCoinP2MenuItem.Size = new System.Drawing.Size(149, 22);
             this.VSInsertCoinP2MenuItem.Text = "Insert Coin P2";
-            this.VSInsertCoinP2MenuItem.Click += new System.EventHandler(this.VSInsertCoinP2MenuItem_Click);
+            this.VSInsertCoinP2MenuItem.Click += new System.EventHandler(this.VsInsertCoinP2MenuItem_Click);
             // 
             // VSServiceSwitchMenuItem
             // 
             this.VSServiceSwitchMenuItem.Name = "VSServiceSwitchMenuItem";
             this.VSServiceSwitchMenuItem.Size = new System.Drawing.Size(149, 22);
             this.VSServiceSwitchMenuItem.Text = "Service Switch";
-            this.VSServiceSwitchMenuItem.Click += new System.EventHandler(this.VSServiceSwitchMenuItem_Click);
+            this.VSServiceSwitchMenuItem.Click += new System.EventHandler(this.VsServiceSwitchMenuItem_Click);
             // 
             // barcodeReaderToolStripMenuItem
             // 
             this.barcodeReaderToolStripMenuItem.Name = "barcodeReaderToolStripMenuItem";
             this.barcodeReaderToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
             this.barcodeReaderToolStripMenuItem.Text = "Barcode Reader";
-            this.barcodeReaderToolStripMenuItem.Click += new System.EventHandler(this.barcodeReaderToolStripMenuItem_Click);
+            this.barcodeReaderToolStripMenuItem.Click += new System.EventHandler(this.BarcodeReaderMenuItem_Click);
             // 
             // PCESubMenu
             // 
@@ -2355,7 +2355,7 @@
             this.PCEGraphicsSettingsMenuItem.Name = "PCEGraphicsSettingsMenuItem";
             this.PCEGraphicsSettingsMenuItem.Size = new System.Drawing.Size(258, 22);
             this.PCEGraphicsSettingsMenuItem.Text = "Graphics Settings";
-            this.PCEGraphicsSettingsMenuItem.Click += new System.EventHandler(this.PCEGraphicsSettingsMenuItem_Click);
+            this.PCEGraphicsSettingsMenuItem.Click += new System.EventHandler(this.PceGraphicsSettingsMenuItem_Click);
             // 
             // toolStripSeparator32
             // 
@@ -2367,7 +2367,7 @@
             this.PCEBGViewerMenuItem.Name = "PCEBGViewerMenuItem";
             this.PCEBGViewerMenuItem.Size = new System.Drawing.Size(258, 22);
             this.PCEBGViewerMenuItem.Text = "&BG Viewer";
-            this.PCEBGViewerMenuItem.Click += new System.EventHandler(this.PCEBGViewerMenuItem_Click);
+            this.PCEBGViewerMenuItem.Click += new System.EventHandler(this.PceBgViewerMenuItem_Click);
             // 
             // PCEtileViewerToolStripMenuItem
             // 
@@ -2381,7 +2381,7 @@
             this.PceSoundDebuggerToolStripMenuItem.Name = "PceSoundDebuggerToolStripMenuItem";
             this.PceSoundDebuggerToolStripMenuItem.Size = new System.Drawing.Size(258, 22);
             this.PceSoundDebuggerToolStripMenuItem.Text = "&Sound Debugger";
-            this.PceSoundDebuggerToolStripMenuItem.Click += new System.EventHandler(this.PceSoundDebuggerToolStripMenuItem_Click);
+            this.PceSoundDebuggerToolStripMenuItem.Click += new System.EventHandler(this.PceSoundDebuggerMenuItem_Click);
             // 
             // toolStripSeparator25
             // 
@@ -2505,14 +2505,14 @@
             this.SMSenableBIOSToolStripMenuItem.Name = "SMSenableBIOSToolStripMenuItem";
             this.SMSenableBIOSToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
             this.SMSenableBIOSToolStripMenuItem.Text = "Enable BIOS";
-            this.SMSenableBIOSToolStripMenuItem.Click += new System.EventHandler(this.SMS_BIOS_Click);
+            this.SMSenableBIOSToolStripMenuItem.Click += new System.EventHandler(this.SmsBiosMenuItem_Click);
             // 
             // SMSEnableFMChipMenuItem
             // 
             this.SMSEnableFMChipMenuItem.Name = "SMSEnableFMChipMenuItem";
             this.SMSEnableFMChipMenuItem.Size = new System.Drawing.Size(241, 22);
             this.SMSEnableFMChipMenuItem.Text = "&Enable FM Chip";
-            this.SMSEnableFMChipMenuItem.Click += new System.EventHandler(this.SMSEnableFMChipMenuItem_Click);
+            this.SMSEnableFMChipMenuItem.Click += new System.EventHandler(this.SmsEnableFmChipMenuItem_Click);
             // 
             // SMSOverclockMenuItem
             // 
@@ -2645,7 +2645,6 @@
             this.AtariSubMenu.Name = "AtariSubMenu";
             this.AtariSubMenu.Size = new System.Drawing.Size(44, 19);
             this.AtariSubMenu.Text = "&Atari";
-            this.AtariSubMenu.DropDownOpened += new System.EventHandler(this.AtariSubMenu_DropDownOpened);
             // 
             // AtariSettingsToolStripMenuItem
             // 
@@ -3039,7 +3038,7 @@
             this.DGBsettingsToolStripMenuItem.Name = "DGBsettingsToolStripMenuItem";
             this.DGBsettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.DGBsettingsToolStripMenuItem.Text = "Settings...";
-            this.DGBsettingsToolStripMenuItem.Click += new System.EventHandler(this.DGBsettingsToolStripMenuItem_Click);
+            this.DGBsettingsToolStripMenuItem.Click += new System.EventHandler(this.DgbSettingsMenuItem_Click);
             // 
             // GenesisSubMenu
             // 
@@ -3122,7 +3121,7 @@
             this.settingsToolStripMenuItem1.Name = "settingsToolStripMenuItem1";
             this.settingsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
             this.settingsToolStripMenuItem1.Text = "&Settings...";
-            this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.settingsToolStripMenuItem1_Click_1);
+            this.settingsToolStripMenuItem1.Click += new System.EventHandler(this.AppleIISettingsMenuItem_Click);
             // 
             // C64SubMenu
             // 
@@ -3835,7 +3834,7 @@
             this.ClearSRAMContextMenuItem.Name = "ClearSRAMContextMenuItem";
             this.ClearSRAMContextMenuItem.Size = new System.Drawing.Size(216, 22);
             this.ClearSRAMContextMenuItem.Text = "Close and Clear SRAM";
-            this.ClearSRAMContextMenuItem.Click += new System.EventHandler(this.ClearSRAMContextMenuItem_Click);
+            this.ClearSRAMContextMenuItem.Click += new System.EventHandler(this.ClearSramContextMenuItem_Click);
             // 
             // ShowMenuContextMenuSeparator
             // 
