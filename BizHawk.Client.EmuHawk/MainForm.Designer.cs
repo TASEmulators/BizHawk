@@ -3162,6 +3162,7 @@
 			this.IntvSubMenu.Name = "IntvSubMenu";
 			this.IntvSubMenu.Size = new System.Drawing.Size(39, 19);
 			this.IntvSubMenu.Text = "&Intv";
+			this.IntvSubMenu.DropDownOpened += new System.EventHandler(this.IntvSubMenu_DropDownOpened);
 			// 
 			// IntVControllerSettingsMenuItem
 			// 

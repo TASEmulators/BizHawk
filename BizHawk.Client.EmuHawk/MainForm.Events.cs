@@ -2076,6 +2076,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SnesGBInSGBMenuItem.Visible = false;
 			}
+
+			SNESControllerConfigurationMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
 		}
 
 		private void SNESDisplayMenuItem_DropDownOpened(object sender, EventArgs e)
@@ -2177,6 +2179,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ss = ((ColecoVision)Emulator).GetSyncSettings();
 			ColecoSkipBiosMenuItem.Checked = ss.SkipBiosIntro;
+			ColecoControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
 		}
 
 		private void ColecoSkipBiosMenuItem_Click(object sender, EventArgs e)
@@ -2402,6 +2405,11 @@ namespace BizHawk.Client.EmuHawk
 		#endregion
 
 		#region Intv
+
+		private void IntvSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			IntVControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+		}
 
 		private void IntVControllerSettingsMenuItem_Click(object sender, EventArgs e)
 		{
