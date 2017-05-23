@@ -650,7 +650,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!fromLua)
 				{
-					LuaConsole.StartLuaDrawing();
+					LuaConsole.LuaImp.StartLuaDrawing();
 				}
 			}
 
@@ -670,7 +670,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (!fromLua)
 				{
-					LuaConsole.EndLuaDrawing();
+					LuaConsole.LuaImp.EndLuaDrawing();
 				}
 			}
 		}
@@ -707,7 +707,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.RunLuaDuringTurbo && Has<LuaConsole>())
 			{
-				LuaConsole.EndLuaDrawing();
+				LuaConsole.LuaImp.EndLuaDrawing();
 			}
 		}
 

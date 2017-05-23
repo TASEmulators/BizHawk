@@ -549,22 +549,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void StartLuaDrawing()
-		{
-			if (LuaImp.ScriptList.Any() && LuaImp.GuiLibrary.SurfaceIsNull)
-			{
-				LuaImp.GuiLibrary.DrawNew("emu");
-			}
-		}
-
-		public void EndLuaDrawing()
-		{
-			if (LuaImp.ScriptList.Any())
-			{
-				LuaImp.GuiLibrary.DrawFinish();
-			}
-		}
-
 		public bool WaitOne(int timeout)
 		{
 			if (!IsHandleCreated || IsDisposed)
@@ -845,8 +829,8 @@ namespace BizHawk.Client.EmuHawk
 						// We want any gui.text messages from a script to immediately update even when paused
 						GlobalWin.OSD.ClearGUIText();
 						GlobalWin.Tools.UpdateToolsAfter();
-						EndLuaDrawing();
-						StartLuaDrawing();
+						LuaImp.EndLuaDrawing();
+						LuaImp.StartLuaDrawing();
 					}
 					catch (IOException)
 					{

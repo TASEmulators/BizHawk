@@ -102,6 +102,22 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public void StartLuaDrawing()
+		{
+			if (ScriptList.Any() && GuiLibrary.SurfaceIsNull)
+			{
+				GuiLibrary.DrawNew("emu");
+			}
+		}
+
+		public void EndLuaDrawing()
+		{
+			if (ScriptList.Any())
+			{
+				GuiLibrary.DrawFinish();
+			}
+		}
+
 		public LuaDocumentation Docs { get; }
 		public bool IsRunning { get; set; }
 		public EventWaitHandle LuaWait { get; private set; }
