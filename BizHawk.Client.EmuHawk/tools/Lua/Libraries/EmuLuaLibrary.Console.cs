@@ -21,7 +21,10 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodAttributes("clear", "clears the output box of the Lua Console window")]
 		public static void Clear()
 		{
-			GlobalWin.Tools.LuaConsole.ClearOutputWindow();
+			if (GlobalWin.Tools.Has<LuaConsole>())
+			{
+				GlobalWin.Tools.LuaConsole.ClearOutputWindow();
+			}
 		}
 
 		[LuaMethodAttributes("getluafunctionslist", "returns a list of implemented functions")]
@@ -39,19 +42,28 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodAttributes("log", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
 		public static void Log(params object[] outputs)
 		{
-			LogWithSeparator("\t", "\n", outputs);
+			if (GlobalWin.Tools.Has<LuaConsole>())
+			{
+				LogWithSeparator("\t", "\n", outputs);
+			}
 		}
 
 		//// Single param version is used by logOutputCallback of some libraries.
 		public static void LogOutput(object output)
 		{
-			Log(output);
+			if (GlobalWin.Tools.Has<LuaConsole>())
+			{
+				Log(output);
+			}
 		}
 
 		[LuaMethodAttributes("writeline", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
 		public static void WriteLine(params object[] outputs)
 		{
-			LogWithSeparator("\n", "\n", outputs);
+			if (GlobalWin.Tools.Has<LuaConsole>())
+			{
+				LogWithSeparator("\n", "\n", outputs);
+			}
 		}
 
 		[LuaMethodAttributes("write", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
@@ -63,6 +75,11 @@ namespace BizHawk.Client.EmuHawk
 		// Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable
 		private static void LogWithSeparator(string separator, string terminator, params object[] outputs)
 		{
+			if (!GlobalWin.Tools.Has<LuaConsole>())
+			{
+				return;
+			}
+
 			if (outputs == null)
 			{
 				GlobalWin.Tools.LuaConsole.WriteToOutputWindow("(no return)" + terminator);
