@@ -761,7 +761,7 @@ namespace BizHawk.Client.EmuHawk
 
 			SelectAllMenuItem.Enabled = LuaImp.ScriptList.Any();
 			StopAllScriptsMenuItem.Enabled = LuaImp.ScriptList.Any(script => script.Enabled);
-			RegisteredFunctionsMenuItem.Enabled = GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.Any();
+			RegisteredFunctionsMenuItem.Enabled = LuaImp.RegisteredFunctions.Any();
 		}
 
 		private void NewScriptMenuItem_Click(object sender, EventArgs e)
@@ -862,7 +862,7 @@ namespace BizHawk.Client.EmuHawk
 					item.Stop();
 					if (Global.Config.RemoveRegisteredFunctionsOnToggle)
 					{
-						GlobalWin.Tools.LuaConsole.LuaImp.RegisteredFunctions.ClearAll();
+						LuaImp.RegisteredFunctions.ClearAll();
 					}
 				}
 			}
