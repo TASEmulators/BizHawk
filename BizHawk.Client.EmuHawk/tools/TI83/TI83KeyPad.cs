@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
+
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Common;
@@ -39,9 +38,9 @@ namespace BizHawk.Client.EmuHawk
 		#region Public API
 
 		public bool AskSaveChanges() { return true; }
-		public bool UpdateBefore { get { return false; } }
+		public bool UpdateBefore => false;
 
-		public void NewUpdate(ToolFormUpdateType type) { }
+	    public void NewUpdate(ToolFormUpdateType type) { }
 
 		public void UpdateValues()
 		{

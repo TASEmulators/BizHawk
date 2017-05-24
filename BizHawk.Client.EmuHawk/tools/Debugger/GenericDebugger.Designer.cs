@@ -42,7 +42,7 @@
 			this.RegistersGroupBox = new System.Windows.Forms.GroupBox();
 			this.RegisterPanel = new BizHawk.Client.EmuHawk.RegisterBoxControl();
 			this.BreakpointsGroupBox = new System.Windows.Forms.GroupBox();
-			this.BreakPointControl1 = new BizHawk.Client.EmuHawk.tools.Debugger.BreakpointControl();
+			this.BreakPointControl1 = new BizHawk.Client.EmuHawk.BreakpointControl();
 			this.DisassemblerBox = new System.Windows.Forms.GroupBox();
 			this.ToPCBtn = new System.Windows.Forms.Button();
 			this.label1 = new System.Windows.Forms.Label();
@@ -409,7 +409,7 @@
 		private System.Windows.Forms.GroupBox RegistersGroupBox;
 		private RegisterBoxControl RegisterPanel;
 		private System.Windows.Forms.GroupBox BreakpointsGroupBox;
-		private tools.Debugger.BreakpointControl BreakPointControl1;
+		private BreakpointControl BreakPointControl1;
 		private System.Windows.Forms.GroupBox DisassemblerBox;
 		private VirtualListView DisassemblerView;
 		private System.Windows.Forms.ColumnHeader Address;

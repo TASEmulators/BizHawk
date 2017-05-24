@@ -121,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.RecentLuaSession.AutoLoad && !Global.Config.RecentLuaSession.Empty)
 			{
-					LoadSessionFromRecent(Global.Config.RecentLuaSession.MostRecent);
+				LoadSessionFromRecent(Global.Config.RecentLuaSession.MostRecent);
 			}
 			else if (Global.Config.RecentLua.AutoLoad)
 			{

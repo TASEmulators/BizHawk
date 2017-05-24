@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.EmuHawk.tools.Debugger
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class BreakpointControl
 	{

@@ -1,8 +1,7 @@
-﻿using BizHawk.Emulation.Common;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -34,6 +33,7 @@ namespace BizHawk.Client.EmuHawk
 				breakpoint.ReadOnly = false;
 				breakpoint.Active = false;
 			}
+
 			return base.Remove(b);
 		}
 
@@ -59,6 +59,7 @@ namespace BizHawk.Client.EmuHawk
 					removeCount++;
 				}
 			}
+
 			return removeCount;
 		}
 	}
@@ -106,11 +107,11 @@ namespace BizHawk.Client.EmuHawk
 			ReadOnly = readOnly;
 		}
 
-		public Action Callback { get; set; }
+		public Action Callback { get; }
 		public uint? Address { get; set; }
 		public uint? AddressMask { get; set; }
 		public MemoryCallbackType Type { get; set; }
-		public string Name { get; set; }
+		public string Name { get; }
 
 		internal bool ReadOnly { get; set; }
 

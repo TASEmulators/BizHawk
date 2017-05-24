@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -44,14 +43,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return FindBox.Text;
 			}
-			
-			
+
 			var bytes = GlobalWin.Tools.HexEditor.ConvertTextToBytes(FindBox.Text);
 
 			var bytestring = new StringBuilder();
 			foreach (var b in bytes)
 			{
-				bytestring.Append(string.Format("{0:X2}", b));
+				bytestring.Append($"{b:X2}");
 			}
 
 			return bytestring.ToString();
@@ -77,7 +75,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (HexRadio.Checked)
 			{
-
 				FindBox = new HexTextBox
 				{
 					CharacterCasing = CharacterCasing.Upper,
