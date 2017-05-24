@@ -6,7 +6,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Client.EmuHawk
 {
 	[SchemaAttributes("Lynx")]
-	public class LYNXSchema : IVirtualPadSchema
+	public class LynxSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 			//yield return ConsoleButtons();
 		}
 
-		public static PadSchema StandardController()
+		private static PadSchema StandardController()
 		{
 			return new PadSchema
 			{

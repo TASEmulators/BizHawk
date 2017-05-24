@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 			yield return ConsoleButtons();
 		}
 
-		public static PadSchema ThreeButtonController(int controller)
+		private static PadSchema ThreeButtonController(int controller)
 		{
 			return new PadSchema
 			{
@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		public static PadSchema SixButtonController(int controller)
+		private static PadSchema SixButtonController(int controller)
 		{
 			return new PadSchema
 			{
@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		public static PadSchema LightGun(int controller)
+		private static PadSchema LightGun(int controller)
 		{
 			return new PadSchema
 			{
@@ -229,7 +229,7 @@ namespace BizHawk.Client.EmuHawk
 						Type = PadSchema.PadInputType.TargetedPair,
 						MaxValue = 10000,
 						TargetSize = new Size(320, 240),
-						SecondaryNames = new []
+						SecondaryNames = new[]
 						{
 							"P" + controller + " Lightgun Y",
 						}
@@ -252,7 +252,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		public static PadSchema Mouse(int controller)
+		private static PadSchema Mouse(int controller)
 		{
 			return new PadSchema
 			{
@@ -268,7 +268,7 @@ namespace BizHawk.Client.EmuHawk
 						Type = PadSchema.PadInputType.AnalogStick,
 						MaxValue = 255,
 						TargetSize = new Size(520, 570),
-						SecondaryNames = new []
+						SecondaryNames = new[]
 						{
 							"P" + controller + " Mouse Y",
 						}
@@ -305,7 +305,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		public static PadSchema ConsoleButtons()
+		private static PadSchema ConsoleButtons()
 		{
 			return new PadSchema
 			{
@@ -332,7 +332,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		public static PadSchema Activator(int controller)
+		private static PadSchema Activator(int controller)
 		{
 			return new PadSchema
 			{
@@ -411,7 +411,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		public static PadSchema XE1AP(int controller)
+		private static PadSchema XE1AP(int controller)
 		{
 			return new PadSchema
 			{

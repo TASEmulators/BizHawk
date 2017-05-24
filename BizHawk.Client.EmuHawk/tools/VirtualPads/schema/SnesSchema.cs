@@ -36,7 +36,6 @@ namespace BizHawk.Client.EmuHawk
 						for (int j = 0; j < 4; j++)
 						{
 							yield return StandardController(playerNum + j);
-							
 						}
 
 						offset += 3;
@@ -118,8 +117,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(174, 10),
 						Type = PadSchema.PadInputType.Boolean
 					},
-					
-					
+
 					new PadSchema.ButtonSchema
 					{
 						Name = "P" + controller + " Select",
@@ -222,7 +220,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(14, 17),
 						Type = PadSchema.PadInputType.TargetedPair,
 						TargetSize = new Size(256, 240),
-						SecondaryNames = new []
+						SecondaryNames = new[]
 						{
 							"P" + controller + " Scope Y",
 						}
@@ -275,7 +273,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(14, 17),
 						Type = PadSchema.PadInputType.TargetedPair,
 						TargetSize = new Size(256, 240),
-						SecondaryNames = new []
+						SecondaryNames = new[]
 						{
 							"P" + controller + " Justifier Y",
 						}

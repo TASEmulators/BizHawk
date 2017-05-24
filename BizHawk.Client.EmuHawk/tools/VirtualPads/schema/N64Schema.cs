@@ -21,7 +21,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static PadSchema StandardController(int controller)
+		private static PadSchema StandardController(int controller)
 		{
 			return new PadSchema
 			{

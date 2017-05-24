@@ -10,9 +10,9 @@ namespace BizHawk.Client.EmuHawk
 	[SchemaAttributes("INTV")]
 	public class IntvSchema : IVirtualPadSchema
 	{
-		private string UnpluggedControllerName {  get { return typeof(UnpluggedController).DisplayName(); } }
-		private string StandardControllerName { get { return typeof(StandardController).DisplayName(); } }
-		private string AnalogControllerName {  get { return typeof(FakeAnalogController).DisplayName(); } }
+		private string UnpluggedControllerName => typeof(UnpluggedController).DisplayName();
+		private string StandardControllerName => typeof(StandardController).DisplayName();
+		private string AnalogControllerName => typeof(FakeAnalogController).DisplayName();
 
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{

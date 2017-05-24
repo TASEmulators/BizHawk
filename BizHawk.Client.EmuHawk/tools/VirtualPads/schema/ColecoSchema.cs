@@ -20,7 +20,8 @@ namespace BizHawk.Client.EmuHawk
 				{
 					break;
 				}
-				else if (ports[i] == typeof(StandardController))
+
+				if (ports[i] == typeof(StandardController))
 				{
 					yield return StandardController(i + 1);
 				}
@@ -181,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		public static PadSchema TurboController(int controller)
+		private static PadSchema TurboController(int controller)
 		{
 			return new PadSchema
 			{
@@ -213,7 +214,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		public static PadSchema SuperActionController(int controller)
+		private static PadSchema SuperActionController(int controller)
 		{
 			return new PadSchema
 			{
