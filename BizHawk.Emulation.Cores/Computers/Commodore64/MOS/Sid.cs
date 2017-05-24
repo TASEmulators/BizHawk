@@ -129,6 +129,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void Flush()
 		{
+
+
 			while (_cachedCycles > 0)
 			{
 				_cachedCycles--;
@@ -182,7 +184,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				else
 					temp_not_filtered += temp_v2;
 
-
 				_sampleCyclesNum += _sampleCyclesDen;
 				if (_sampleCyclesNum >= _cpuCyclesNum)
 				{
@@ -197,10 +198,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					}
 				}
 			}
-
 			//here we need to apply filtering to the samples and add them back to the buffer
-			filter_operator();
-
+			
+			if (_filterEnable[0] | _filterEnable[1] | _filterEnable[2])
+				if (filter_index >= 2)
+					filter_operator();
+			
 			for (int i = last_index; i < _outputBufferIndex; i++)
 			{
 				_mixer = _outputBuffer_not_filtered[i] + _outputBuffer_filtered[i-last_index];
@@ -226,49 +229,85 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			filter_index = 0;
 		}
 
-
 		public void filter_operator()
 		{
-			double loc_filterFrequency = ((_filterFrequency + 30) * 2000) / 0x7FF;
+			double loc_filterFrequency = (double)(_filterFrequency<<2);
+
 			double attenuation;
 
 			int nsamp = filter_index;
 
 			// pass the list of filtered samples to the FFT
-			// TODO
+			// but needs to be a power of 2, so find the next highest power of 2 and re-sample
+			int nsamp_2 = 2;
+			bool test = true;
+			while(test)
+			{
+				nsamp_2 *= 2;
+				if (nsamp_2>nsamp)
+				{
+					test = false;
+				}
+			}
+
+			fft = new RealFFT(nsamp_2);
+
+			double[] temp_buffer = new double[nsamp_2];
+
+			// linearly interpolate the original sample set into the new denser sample set
+			for (double i = 0; i < nsamp_2; i++)
+			{
+				temp_buffer[(int)i] = _outputBuffer_filtered[(int)Math.Floor((i / (nsamp_2-1) * (filter_index - 1)))];
+			}
+
+			// now we have everything we need to perform the FFT
+			fft.ComputeForward(temp_buffer);
 
 			// for each element in the frequency list, attenuate it according to the specs
-			//for (...
-			/*
-			// low pass filter
-			if (_filterSelectLoPass && current_voice_freq > loc_filterFrequency)
+			for (int i = 0; i < nsamp_2; i++)
 			{
-				//attenuated at 12db per octave
-				attenuation = Math.Log(current_voice_freq / loc_filterFrequency, 2);
-				//temp_voice = temp_voice - 12 * attenuation;
-				attenuation = 12 * attenuation;
-				temp_voice = temp_voice * Math.Pow(2, -attenuation/10);
+				double freq = i * ((double)(880*50)/filter_index);
+
+				// low pass filter
+				if (_filterSelectLoPass && freq > loc_filterFrequency)
+				{
+					//attenuated at 12db per octave
+					attenuation = Math.Log(freq / loc_filterFrequency, 2);
+					attenuation = 12 * attenuation;
+					temp_buffer[i] = temp_buffer[i] * Math.Pow(2, -attenuation / 10);
+				}
+
+				// High pass filter
+				if (_filterSelectHiPass && freq < _filterFrequency)
+				{
+					//attenuated at 12db per octave
+					attenuation = Math.Log(freq / _filterFrequency, 2);
+					attenuation = 12 * attenuation;
+					temp_buffer[i] = temp_buffer[i] * Math.Pow(2, -attenuation / 10);
+				}
+				
+				// Band pass filter
+				if (_filterSelectBandPass)
+				{
+					//attenuated at 6db per octave
+					attenuation = Math.Log(freq / _filterFrequency, 2);
+					temp_buffer[i] = temp_buffer[i] - 6 * Math.Abs(attenuation);
+				}
+				
 			}
 			
-			// High pass filter
-			if (_filterSelectHiPass && current_voice_freq < _filterFrequency)
-			{
-				//attenuated at 12db per octave
-				attenuation = Math.Log(current_voice_freq / _filterFrequency, 2);
-				//temp_voice = temp_voice - 12 * Math.Abs(attenuation);
-			}
-
-			// Band pass filter
-			if (_filterSelectBandPass)
-			{
-				//attenuated at 6db per octave
-				attenuation = Math.Log(current_voice_freq / _filterFrequency, 2);
-				//temp_voice = temp_voice - 6 * Math.Abs(attenuation);
-			}
-			*/
-
 			// now transform back into time space and reassemble the attenuated frequency components
-			// TODO
+			fft.ComputeReverse(temp_buffer);
+
+			//re-sample back down to the original number of samples
+			for (double i = 0; i < filter_index; i++)
+			{
+				_outputBuffer_filtered[(int)i] = (int)(temp_buffer[(int)Math.Floor((i / (filter_index-1) * (nsamp_2 - 1)))]/(nsamp/2));
+				if (loc_filterFrequency==0)
+				{
+					_outputBuffer_filtered[(int)i] = 0;
+				}
+			}
 
 		}
 		// ----------------------------------
