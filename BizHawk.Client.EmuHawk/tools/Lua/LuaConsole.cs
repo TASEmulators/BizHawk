@@ -166,7 +166,13 @@ namespace BizHawk.Client.EmuHawk
 				file.Stop();
 			}
 
+			var currentScripts = LuaImp?.ScriptList; // Temp fix for now
 			LuaImp = new EmuLuaLibrary(Emulator.ServiceProvider);
+			if (currentScripts != null)
+			{
+				LuaImp.ScriptList.AddRange(currentScripts);
+			}
+
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => a.Library + "." + a.Name).ToArray());
 
 			foreach (var file in runningScripts)
