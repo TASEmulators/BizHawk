@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				_floatEditRow = value;
-				TasView.suspendHotkeys = FloatEditingMode;
+				TasView.SuspendHotkeys = FloatEditingMode;
 			}
 		}
 
