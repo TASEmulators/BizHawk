@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
@@ -9,72 +10,72 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 	// 32 banks of 8KB.
 	// DFxx = status register, xxABBBBB. A=enable cart, B=bank
 	// Thanks to VICE team for the info: http://vice-emu.sourceforge.net/vice_15.html
-
-	public abstract partial class CartridgeDevice
+	internal class Mapper002B : CartridgeDevice
 	{
-		private class Mapper002B : CartridgeDevice
-		{
-			[SaveState.DoNotSave]
-			private readonly int[] _rom;
-			[SaveState.SaveWithName("RomOffset")]
-			private int _romOffset;
-			[SaveState.SaveWithName("RomEnabled")]
-			private bool _romEnabled;
+		private readonly int[] _rom;
 
-			public Mapper002B(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData)
+		private int _romOffset;
+		private bool _romEnabled;
+
+		public Mapper002B(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData)
+		{
+			pinExRom = false;
+			pinGame = true;
+			_rom = new int[0x40000];
+			Array.Copy(newData.First(), _rom, 0x2000);
+			pinGame = true;
+			for (var i = 0; i < newData.Count; i++)
 			{
-				pinExRom = false;
-				pinGame = true;
-				_rom = new int[0x40000];
-				Array.Copy(newData.First(), _rom, 0x2000);
-				pinGame = true;
-				for (var i = 0; i < newData.Count; i++)
+				if (newAddresses[i] == 0x8000)
 				{
-					if (newAddresses[i] == 0x8000)
-					{
-						Array.Copy(newData[i], 0, _rom, newBanks[i] * 0x2000, 0x2000);
-					}
+					Array.Copy(newData[i], 0, _rom, newBanks[i] * 0x2000, 0x2000);
 				}
 			}
+		}
 
-			public override void HardReset()
-			{
-				_romEnabled = true;
-				_romOffset = 0;
-			}
+		protected override void SyncStateInternal(Serializer ser)
+		{
+			ser.Sync("RomOffset", ref _romOffset);
+			ser.Sync("RomEnabled", ref _romEnabled);
+		}
 
-			public override int Peek8000(int addr)
-			{
-				return _romOffset | (addr & 0x1FFF);
-			}
+		public override void HardReset()
+		{
+			_romEnabled = true;
+			_romOffset = 0;
+		}
 
-			public override int PeekDF00(int addr)
-			{
-				// For debugging only. The processor does not see this.
-				return ((_romOffset >> 13) & 0x1F) | (_romEnabled ? 0x20 : 0x00);
-			}
+		public override int Peek8000(int addr)
+		{
+			return _romOffset | (addr & 0x1FFF);
+		}
 
-			public override void PokeDF00(int addr, int val)
-			{
-				_romOffset = (val & 0x1F) << 13;
-				_romEnabled = (val & 0x20) != 0;
-			}
+		public override int PeekDF00(int addr)
+		{
+			// For debugging only. The processor does not see this.
+			return ((_romOffset >> 13) & 0x1F) | (_romEnabled ? 0x20 : 0x00);
+		}
 
-			public override int Read8000(int addr)
-			{
-				return _romOffset | (addr & 0x1FFF);
-			}
+		public override void PokeDF00(int addr, int val)
+		{
+			_romOffset = (val & 0x1F) << 13;
+			_romEnabled = (val & 0x20) != 0;
+		}
 
-			public override int ReadDF00(int addr)
-			{
-				return 0x00;
-			}
+		public override int Read8000(int addr)
+		{
+			return _romOffset | (addr & 0x1FFF);
+		}
 
-			public override void WriteDF00(int addr, int val)
-			{
-				_romOffset = (val & 0x1F) << 13;
-				_romEnabled = (val & 0x20) != 0;
-			}
+		public override int ReadDF00(int addr)
+		{
+			return 0x00;
+		}
+
+		public override void WriteDF00(int addr, int val)
+		{
+			_romOffset = (val & 0x1F) << 13;
+			_romEnabled = (val & 0x20) != 0;
 		}
 	}
 }

@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _defaultWidth;
 		private int _defaultHeight;
-		private string _sortedColumn = string.Empty;
+		private string _sortedColumn = "";
 		private bool _sortReverse;
 		private bool _paused;
 
@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 
-			_sortedColumn = string.Empty;
+			_sortedColumn = "";
 			_sortReverse = false;
 		}
 
@@ -433,7 +433,7 @@ namespace BizHawk.Client.EmuHawk
 			switch (name)
 			{
 				default:
-					return string.Empty;
+					return "";
 				case WatchList.ADDRESS:
 					return _watches[index].AddressString;
 				case WatchList.VALUE:
@@ -485,7 +485,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateWatchCount();
 				UpdateStatusBar();
 				_sortReverse = false;
-				_sortedColumn = string.Empty;
+				_sortedColumn = "";
 
 				PokeAddressToolBarItem.Enabled =
 					FreezeAddressToolBarItem.Enabled =
@@ -540,7 +540,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void UpdateStatusBar(bool saved = false)
 		{
-			var message = string.Empty;
+			var message = "";
 			if (!string.IsNullOrWhiteSpace(_watches.CurrentFileName))
 			{
 				if (saved)
@@ -549,7 +549,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					message = Path.GetFileName(_watches.CurrentFileName) + (_watches.Changes ? " *" : string.Empty);
+					message = Path.GetFileName(_watches.CurrentFileName) + (_watches.Changes ? " *" : "");
 				}
 			}
 
@@ -589,7 +589,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void WatchListView_QueryItemText(int index, int column, out string text)
 		{
-			text = string.Empty;
+			text = "";
 
 			if (index >= _watches.Count || _watches[index].IsSeparator)
 			{
@@ -1034,7 +1034,7 @@ namespace BizHawk.Client.EmuHawk
 				SelectedWatches.Any() &&
 				_debuggable != null &&
 				_debuggable.MemoryCallbacksAvailable() &&
-				SelectedWatches.All(w => w.Domain.Name == (_memoryDomains != null ? _memoryDomains.SystemBus.Name : string.Empty));
+				SelectedWatches.All(w => w.Domain.Name == (_memoryDomains != null ? _memoryDomains.SystemBus.Name : ""));
 
 			PokeContextMenuItem.Enabled =
 				FreezeContextMenuItem.Visible =

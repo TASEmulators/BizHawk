@@ -25,8 +25,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					"PIA",
 					1024,
 					MemoryDomain.Endian.Little,
-					addr => M6532.ReadMemory((ushort)addr, true),
-					(addr, value) => M6532.WriteMemory((ushort)addr, value), 1),
+					addr => _m6532.ReadMemory((ushort)addr, true),
+					(addr, value) => _m6532.WriteMemory((ushort)addr, value), 1),
 				new MemoryDomainDelegate(
 					"System Bus",
 					65536,
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private void SyncAllByteArrayDomains()
 		{
-			SyncByteArrayDomain("Main RAM", Ram);
+			SyncByteArrayDomain("Main RAM", _ram);
 
 			if (_mapper is mDPC)
 			{

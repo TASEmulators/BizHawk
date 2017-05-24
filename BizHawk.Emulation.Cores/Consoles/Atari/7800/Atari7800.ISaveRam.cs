@@ -8,15 +8,15 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 	{
 		public byte[] CloneSaveRam()
 		{
-			return (byte[])hsram.Clone();
+			return (byte[])_hsram.Clone();
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			Buffer.BlockCopy(data, 0, hsram, 0, data.Length);
+			Buffer.BlockCopy(data, 0, _hsram, 0, data.Length);
 		}
 
-		public bool SaveRamModified => GameInfo.MachineType == MachineType.A7800PAL
-			|| GameInfo.MachineType == MachineType.A7800NTSC;
+		public bool SaveRamModified => _gameInfo.MachineType == MachineType.A7800PAL
+			|| _gameInfo.MachineType == MachineType.A7800NTSC;
 	}
 }

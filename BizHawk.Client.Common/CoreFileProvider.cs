@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 
 		public string PathSubfile(string fname)
 		{
-			return Path.Combine(SubfileDirectory ?? String.Empty, fname);
+			return Path.Combine(SubfileDirectory ?? "", fname);
 		}
 
 		public string DllPath()
@@ -31,7 +31,6 @@ namespace BizHawk.Client.Common
 		{
 			return PathManager.SaveRamPath(Global.Game);
 		}
-
 
 		public string GetRetroSaveRAMDirectory()
 		{
@@ -54,22 +53,20 @@ namespace BizHawk.Client.Common
 		{
 			if (required)
 			{
-				var fullmsg = String.Format(
-					"Couldn't find required firmware \"{0}:{1}\".  This is fatal{2}", sysID, firmwareID, msg != null ? ": " + msg : ".");
+				var fullmsg = $"Couldn't find required firmware \"{sysID}:{firmwareID}\".  This is fatal{(msg != null ? ": " + msg : ".")}";
 				throw new MissingFirmwareException(fullmsg);
 			}
 
 			if (msg != null)
 			{
-				var fullmsg = String.Format(
-					"Couldn't find firmware \"{0}:{1}\".  Will attempt to continue: {2}", sysID, firmwareID, msg);
+				var fullmsg = $"Couldn't find firmware \"{sysID}:{firmwareID}\".  Will attempt to continue: {msg}";
 				_showWarning(fullmsg);
 			}
 		}
 
-		public string GetFirmwarePath(string sysID, string firmwareID, bool required, string msg = null)
+		public string GetFirmwarePath(string sysId, string firmwareId, bool required, string msg = null)
 		{
-			var path = FirmwareManager.Request(sysID, firmwareID);
+			var path = FirmwareManager.Request(sysId, firmwareId);
 			if (path != null && !File.Exists(path))
 			{
 				path = null;
@@ -77,44 +74,46 @@ namespace BizHawk.Client.Common
 
 			if (path == null)
 			{
-				FirmwareWarn(sysID, firmwareID, required, msg);
+				FirmwareWarn(sysId, firmwareId, required, msg);
 			}
 
 			return path;
 		}
 
-		private byte[] GetFirmwareWithPath(string sysID, string firmwareID, bool required, string msg, out string path)
+		private byte[] GetFirmwareWithPath(string sysId, string firmwareId, bool required, string msg, out string path)
 		{
 			byte[] ret = null;
-			var path_ = GetFirmwarePath(sysID, firmwareID, required, msg);
+			var path_ = GetFirmwarePath(sysId, firmwareId, required, msg);
 			if (path_ != null && File.Exists(path_))
 			{
 				try
 				{
 					ret = File.ReadAllBytes(path_);
 				}
-				catch (IOException) { }
+				catch (IOException)
+				{
+				}
 			}
 
 			if (ret == null && path_ != null)
 			{
-				FirmwareWarn(sysID, firmwareID, required, msg);
+				FirmwareWarn(sysId, firmwareId, required, msg);
 			}
 
 			path = path_;
 			return ret;
 		}
 
-		public byte[] GetFirmware(string sysID, string firmwareID, bool required, string msg = null)
+		public byte[] GetFirmware(string sysId, string firmwareId, bool required, string msg = null)
 		{
 			string unused;
-			return GetFirmwareWithPath(sysID, firmwareID, required, msg, out unused);
+			return GetFirmwareWithPath(sysId, firmwareId, required, msg, out unused);
 		}
 
-		public byte[] GetFirmwareWithGameInfo(string sysID, string firmwareID, bool required, out GameInfo gi, string msg = null)
+		public byte[] GetFirmwareWithGameInfo(string sysId, string firmwareId, bool required, out GameInfo gi, string msg = null)
 		{
 			string path;
-			byte[] ret = GetFirmwareWithPath(sysID, firmwareID, required, msg, out path);
+			byte[] ret = GetFirmwareWithPath(sysId, firmwareId, required, msg, out path);
 			if (ret != null && path != null)
 			{
 				gi = Database.GetGameInfo(ret, path);
@@ -123,6 +122,7 @@ namespace BizHawk.Client.Common
 			{
 				gi = null;
 			}
+
 			return ret;
 		}
 
@@ -132,10 +132,12 @@ namespace BizHawk.Client.Common
 		public static void SyncCoreCommInputSignals(CoreComm target)
 		{
 			string superhack = null;
-			if (target.CoreFileProvider != null && target.CoreFileProvider is CoreFileProvider)
-				superhack = ((CoreFileProvider)target.CoreFileProvider ).SubfileDirectory;
-			var cfp = new CoreFileProvider(target.ShowMessage);
-			cfp.SubfileDirectory = superhack;
+			if (target.CoreFileProvider is CoreFileProvider)
+			{
+				superhack = ((CoreFileProvider)target.CoreFileProvider).SubfileDirectory;
+			}
+
+			var cfp = new CoreFileProvider(target.ShowMessage) { SubfileDirectory = superhack };
 			target.CoreFileProvider = cfp;
 			cfp.FirmwareManager = Global.FirmwareManager;
 		}

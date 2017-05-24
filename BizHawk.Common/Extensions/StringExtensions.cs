@@ -18,7 +18,7 @@ namespace BizHawk.Common.StringExtensions
 			
 			if (index == 0)
 			{
-				return string.Empty;
+				return "";
 			}
 
 			return str.Substring(0, index);
@@ -222,7 +222,7 @@ namespace BizHawk.Common.StringExtensions
 		{
 			if (string.IsNullOrWhiteSpace(raw))
 			{
-				return string.Empty;
+				return "";
 			}
 
 			var output = new StringBuilder();
@@ -245,7 +245,7 @@ namespace BizHawk.Common.StringExtensions
 		{
 			if (string.IsNullOrWhiteSpace(raw))
 			{
-				return string.Empty;
+				return "";
 			}
 
 			var output = new StringBuilder();
@@ -269,7 +269,7 @@ namespace BizHawk.Common.StringExtensions
 		{
 			if (string.IsNullOrWhiteSpace(raw))
 			{
-				return string.Empty;
+				return "";
 			}
 
 			var output = new StringBuilder();
@@ -299,7 +299,7 @@ namespace BizHawk.Common.StringExtensions
 		{
 			if (string.IsNullOrWhiteSpace(raw))
 			{
-				return string.Empty;
+				return "";
 			}
 
 			var output = new StringBuilder(raw.Length);
@@ -323,7 +323,7 @@ namespace BizHawk.Common.StringExtensions
 		{
 			if (string.IsNullOrWhiteSpace(raw))
 			{
-				return string.Empty;
+				return "";
 			}
 
 			var output = new StringBuilder();
@@ -358,7 +358,7 @@ namespace BizHawk.Common.StringExtensions
 		{
 			if (string.IsNullOrWhiteSpace(raw))
 			{
-				return string.Empty;
+				return "";
 			}
 
 			var output = new StringBuilder();

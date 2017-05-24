@@ -7,10 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using BizHawk.Common.NumberExtensions;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
-
 
 namespace BizHawk.Client.Common
 {
@@ -31,30 +29,27 @@ namespace BizHawk.Client.Common
 		public const string DOMAIN = "DomainColumn";
 		public const string NOTES = "NotesColumn";
 
-		private static readonly WatchDomainComparer domainComparer = new WatchDomainComparer();
-		private static readonly WatchAddressComparer addressComparer = new WatchAddressComparer();
-		private static readonly WatchValueComparer valueComparer = new WatchValueComparer();
-		private static readonly WatchPreviousValueComparer previousValueComparer = new WatchPreviousValueComparer();
-		private static readonly WatchValueDifferenceComparer valueDifferenceComparer = new WatchValueDifferenceComparer();
-		private static readonly WatchChangeCountComparer changeCountComparer = new WatchChangeCountComparer();
-		private static readonly WatchNoteComparer noteComparer = new WatchNoteComparer();
+		private static readonly WatchDomainComparer DomainComparer = new WatchDomainComparer();
+		private static readonly WatchAddressComparer AddressComparer = new WatchAddressComparer();
+		private static readonly WatchValueComparer ValueComparer = new WatchValueComparer();
+		private static readonly WatchPreviousValueComparer PreviousValueComparer = new WatchPreviousValueComparer();
+		private static readonly WatchValueDifferenceComparer ValueDifferenceComparer = new WatchValueDifferenceComparer();
+		private static readonly WatchChangeCountComparer ChangeCountComparer = new WatchChangeCountComparer();
+		private static readonly WatchNoteComparer NoteComparer = new WatchNoteComparer();
 
+		private readonly List<Watch> _watchList = new List<Watch>(0);
+		private readonly string _systemid;
 		private IMemoryDomains _memoryDomains;
-
-		private List<Watch> _watchList = new List<Watch>(0);
-		private string _currentFilename = string.Empty;
-		private string _systemid;
 
 		#endregion
 
 		#region cTor(s)
 
 		/// <summary>
-		/// Initialize a new instance of <see cref="WatchList"/> that will
-		/// contains a set of <see cref="Watch"/>
+		/// Initializes a new instance of the <see cref="WatchList"/> class
+		/// that will contains a set of <see cref="Watch"/>
 		/// </summary>
-		/// <param name="core">All available memomry domains</param>
-		/// <param name="domain">Domain you want to watch</param>
+		/// <param name="core">All available memory domains</param>
 		/// <param name="systemid">System identifier (NES, SNES, ...)</param>
 		public WatchList(IMemoryDomains core, string systemid)
 		{
@@ -86,7 +81,7 @@ namespace BizHawk.Client.Common
 		{
 			_watchList.Clear();
 			Changes = false;
-			_currentFilename = string.Empty;
+			CurrentFileName = "";
 		}
 
 		/// <summary>
@@ -94,7 +89,6 @@ namespace BizHawk.Client.Common
 		/// specified <see cref="Watch"/>
 		/// </summary>
 		/// <param name="watch">The object to</param>
-		/// <returns></returns>
 		public bool Contains(Watch watch)
 		{
 			return _watchList.Contains(watch);
@@ -189,7 +183,7 @@ namespace BizHawk.Client.Common
 			return GetEnumerator();
 		}
 
-		#endregion IEnumerable<Watch>		
+		#endregion IEnumerable<Watch>
 
 		/// <summary>
 		/// Add an existing collection of <see cref="Watch"/> into the current one
@@ -198,7 +192,7 @@ namespace BizHawk.Client.Common
 		/// <param name="watches"><see cref="IEnumerable{Watch}"/> of watch to merge</param>
 		public void AddRange(IEnumerable<Watch> watches)
 		{
-			Parallel.ForEach<Watch>(watches, watch =>
+			Parallel.ForEach(watches, watch =>
 			{
 				if (!_watchList.Contains(watch))
 				{
@@ -213,14 +207,14 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void ClearChangeCounts()
 		{
-			Parallel.ForEach<Watch>(_watchList, watch => watch.ClearChangeCount());
+			Parallel.ForEach(_watchList, watch => watch.ClearChangeCount());
 		}
 
 		/// <summary>
 		/// Sort the current list based on one of the constant
 		/// </summary>
 		/// <param name="column">Value that specify sorting base</param>
-		/// <param name="reverse">Value that define the ordering. Ascending (true) or desceding (false)</param>
+		/// <param name="reverse">Value that define the ordering. Ascending (true) or descending (false)</param>
 		public void OrderWatches(string column, bool reverse)
 		{
 			switch (column)
@@ -228,7 +222,7 @@ namespace BizHawk.Client.Common
 				case ADDRESS:
 					if (reverse)
 					{
-						_watchList.Sort(addressComparer);
+						_watchList.Sort(AddressComparer);
 						_watchList.Reverse();
 					}
 					else
@@ -241,12 +235,12 @@ namespace BizHawk.Client.Common
 				case VALUE:
 					if (reverse)
 					{
-						_watchList.Sort(valueComparer);
+						_watchList.Sort(ValueComparer);
 						_watchList.Reverse();
 					}
 					else
 					{
-						_watchList.Sort(valueComparer);
+						_watchList.Sort(ValueComparer);
 					}
 
 					break;
@@ -254,12 +248,12 @@ namespace BizHawk.Client.Common
 				case PREV:
 					if (reverse)
 					{
-						_watchList.Sort(previousValueComparer);
+						_watchList.Sort(PreviousValueComparer);
 						_watchList.Reverse();
 					}
 					else
 					{
-						_watchList.Sort(previousValueComparer);
+						_watchList.Sort(PreviousValueComparer);
 					}
 
 					break;
@@ -267,24 +261,25 @@ namespace BizHawk.Client.Common
 				case DIFF:
 					if (reverse)
 					{
-						_watchList.Sort(valueDifferenceComparer);
+						_watchList.Sort(ValueDifferenceComparer);
 						_watchList.Reverse();
 					}
 					else
 					{
-						_watchList.Sort(valueDifferenceComparer);
+						_watchList.Sort(ValueDifferenceComparer);
 					}
+
 					break;
 
 				case CHANGES:
 					if (reverse)
 					{
-						_watchList.Sort(changeCountComparer);
+						_watchList.Sort(ChangeCountComparer);
 						_watchList.Reverse();
 					}
 					else
 					{
-						_watchList.Sort(changeCountComparer);
+						_watchList.Sort(ChangeCountComparer);
 					}
 
 					break;
@@ -292,12 +287,12 @@ namespace BizHawk.Client.Common
 				case DOMAIN:
 					if (reverse)
 					{
-						_watchList.Sort(domainComparer);
+						_watchList.Sort(DomainComparer);
 						_watchList.Reverse();
 					}
 					else
 					{
-						_watchList.Sort(domainComparer);
+						_watchList.Sort(DomainComparer);
 					}
 
 					break;
@@ -305,12 +300,12 @@ namespace BizHawk.Client.Common
 				case NOTES:
 					if (reverse)
 					{
-						_watchList.Sort(noteComparer);
+						_watchList.Sort(NoteComparer);
 						_watchList.Reverse();
 					}
 					else
 					{
-						_watchList.Sort(noteComparer);
+						_watchList.Sort(NoteComparer);
 					}
 
 					break;
@@ -325,24 +320,26 @@ namespace BizHawk.Client.Common
 		public void RefreshDomains(IMemoryDomains core)
 		{
 			_memoryDomains = core;
-			Parallel.ForEach<Watch>(_watchList, watch =>
+			Parallel.ForEach(_watchList, watch =>
 			{
 				if (watch.IsSeparator)
+				{
 					return;
+				}
+
 				watch.Domain = core[watch.Domain.Name];
 				watch.ResetPrevious();
 				watch.Update();
 				watch.ClearChangeCount();
-			}
-			);
+			});
 		}
 
 		/// <summary>
-		/// Updates all <see cref="Watch"/> ine the current collection
+		/// Updates all <see cref="Watch"/> in the current collection
 		/// </summary>
 		public void UpdateValues()
 		{
-			Parallel.ForEach<Watch>(_watchList, watch =>
+			Parallel.ForEach(_watchList, watch =>
 			{
 				watch.Update();
 			});
@@ -357,25 +354,13 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the number of elements contained in this <see cref="WatchList"/>
 		/// </summary>
-		public int Count
-		{
-			get
-			{
-				return _watchList.Count;
-			}
-		}
+		public int Count => _watchList.Count;
 
 		/// <summary>
-		/// <see cref="WatchList"/> is alsways read-write
+		/// <see cref="WatchList"/> is always read-write
 		/// so this value will be always false
 		/// </summary>
-		public bool IsReadOnly
-		{
-			get
-			{
-				return false;
-			}
-		}
+		public bool IsReadOnly => false;
 
 		#endregion ICollection<Watch>
 
@@ -392,6 +377,7 @@ namespace BizHawk.Client.Common
 			{
 				return _watchList[index];
 			}
+
 			set
 			{
 				_watchList[index] = value;
@@ -401,24 +387,14 @@ namespace BizHawk.Client.Common
 		#endregion IList<Watch>
 
 		/// <summary>
-		/// Gets a value indicating if collection has changed or not
+		/// Gets or sets a value indicating whether the collection has changed or not
 		/// </summary>
 		public bool Changes { get; set; }
 
 		/// <summary>
 		/// Gets or sets current <see cref="WatchList"/>'s filename
 		/// </summary>
-		public string CurrentFileName
-		{
-			get
-			{
-				return _currentFilename;
-			}
-			set
-			{
-				_currentFilename = value;
-			}
-		}
+		public string CurrentFileName { get; set; }
 
 		/// <summary>
 		/// Gets the number of <see cref="Watch"/> that are not <see cref="SeparatorWatch"/>
@@ -427,7 +403,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return _watchList.Count<Watch>(watch => !watch.IsSeparator);
+				return _watchList.Count(watch => !watch.IsSeparator);
 			}
 		}
 
@@ -613,7 +589,7 @@ namespace BizHawk.Client.Common
 							notes));
 				}
 
-				_currentFilename = path;
+				CurrentFileName = path;
 			}
 
 			if (!append)

@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 		#region cTor(s)
 
 		/// <summary>
-		/// Initialize a new instance of <see cref="SystemInfo"/>
+		/// Initializes a new instance of the <see cref="SystemInfo"/> class
 		/// </summary>
 		/// <param name="displayName">A <see cref="string"/> that specify how the system name is displayed</param>
 		/// <param name="system">A <see cref="CoreSystem"/> that specify what core is used</param>
@@ -45,17 +45,17 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Apple II
-		/// </summary
+		/// </summary>
 		public static SystemInfo Libretro { get; } = new SystemInfo("Libretro", CoreSystem.Libretro, 1);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Apple II
-		/// </summary
+		/// </summary>
 		public static SystemInfo AppleII { get; } = new SystemInfo("Apple II", CoreSystem.AppleII, 1);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Atari 2600
-		/// </summary
+		/// </summary>
 		public static SystemInfo Atari2600 { get; } = new SystemInfo("Atari 2600", CoreSystem.Atari2600, 1);
 
 		/// <summary>
@@ -126,7 +126,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for Null (i.e. nothing is emulated) emulator
 		/// </summary>
-		public static SystemInfo Null { get; } = new SystemInfo(string.Empty, CoreSystem.Null, 0);
+		public static SystemInfo Null { get; } = new SystemInfo("", CoreSystem.Null, 0);
 
 		/// <summary>
 		/// Gets the <see cref="SystemInfo"/> instance for PCEngine (TurboGrafx-16)
@@ -184,7 +184,7 @@ namespace BizHawk.Client.Common
 		/// Get a <see cref="SystemInfo"/> by its <see cref="CoreSystem"/>
 		/// </summary>
 		/// <param name="system"><see cref="CoreSystem"/> you're looking for</param>
-		/// <returns>Mathing <see cref="SystemInfo"/></returns>
+		/// <returns><see cref="SystemInfo"/></returns>
 		public static SystemInfo FindByCoreSystem(CoreSystem system)
 		{
 			return _allSystemInfos.Find(s => s.System == system);
@@ -193,7 +193,7 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Determine if this <see cref="SystemInfo"/> is equal to specified <see cref="object"/>
 		/// </summary>
-		/// <param name="obj"><see cref="object"/> to comapre to</param>
+		/// <param name="obj"><see cref="object"/> to compare to</param>
 		/// <returns>True if object is equal to this instance; otherwise, false</returns>
 		public override bool Equals(object obj)
 		{
@@ -206,7 +206,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Gets the haschode for current insance
+		/// Gets the haschode for current instance
 		/// </summary>
 		/// <returns>This instance hashcode</returns>
 		public override int GetHashCode()
@@ -218,7 +218,6 @@ namespace BizHawk.Client.Common
 		/// Returns a <see cref="string"/> representation of current <see cref="SystemInfo"/>
 		/// In fact, return the same as DisplayName property
 		/// </summary>
-		/// <returns></returns>
 		public override string ToString()
 		{
 			return DisplayName;
@@ -242,7 +241,7 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		/// <param name="system1">First <see cref="SystemInfo"/></param>
 		/// <param name="system2">Second <see cref="SystemInfo"/></param>
-		/// <returns>True if both system are diferent; otherwise, false</returns>
+		/// <returns>True if both system are different; otherwise, false</returns>
 		public static bool operator !=(SystemInfo system1, SystemInfo system2)
 		{
 			return !(system1 == system2);
@@ -258,7 +257,7 @@ namespace BizHawk.Client.Common
 		public JoypadButton AvailableButtons { get; }
 
 		/// <summary>
-		/// Gets the sytem name as <see cref="string"/>
+		/// Gets the system name as <see cref="string"/>
 		/// </summary>
 		public string DisplayName { get; }
 

@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				case eMessage.eMessage_SIG_trace_callback:
 					{
 						if (traceCallback != null)
-							traceCallback(comm->GetAscii());
+							traceCallback(comm->value, comm->GetAscii());
 						break;
 					}
 				case eMessage.eMessage_SIG_allocSharedMemory:

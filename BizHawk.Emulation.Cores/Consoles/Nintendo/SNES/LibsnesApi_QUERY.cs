@@ -85,10 +85,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			Message(eMessage.eMessage_QUERY_state_hook_write);
 		}
 
-		public void QUERY_set_trace_callback(snes_trace_t callback)
+		public void QUERY_set_trace_callback(int mask, snes_trace_t callback)
 		{
 			this.traceCallback = callback;
-			comm->value = (callback != null) ? 1u : 0u;
+			comm->value = (uint)mask;
 			Message(eMessage.eMessage_QUERY_enable_trace);
 		}
 		public void QUERY_set_scanlineStart(snes_scanlineStart_t scanlineStart)
@@ -130,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void QUERY_set_cdl(ICodeDataLog cdl)
 		{
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < 8; i++)
 			{
 				comm->cdl_ptr[i] = 0;
 				comm->cdl_size[i] = 0;
@@ -149,12 +149,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				comm->cdl_ptr[2] = cdl.GetPin("WRAM").ToInt64();
 				comm->cdl_size[2] = cdl["WRAM"].Length;
 
-				comm->cdl_ptr[2] = cdl.GetPin("APURAM").ToInt64();
-				comm->cdl_size[2] = cdl["APURAM"].Length;
+				comm->cdl_ptr[3] = cdl.GetPin("APURAM").ToInt64();
+				comm->cdl_size[3] = cdl["APURAM"].Length;
+
+				if (cdl.Has("SGB_CARTROM"))
+				{
+					comm->cdl_ptr[4] = cdl.GetPin("SGB_CARTROM").ToInt64();
+					comm->cdl_size[4] = cdl["SGB_CARTROM"].Length;
+
+					if (cdl.Has("SGB_CARTRAM"))
+					{
+						comm->cdl_ptr[5] = cdl.GetPin("SGB_CARTRAM").ToInt64();
+						comm->cdl_size[5] = cdl["SGB_CARTRAM"].Length;
+					}
+
+					comm->cdl_ptr[6] = cdl.GetPin("SGB_WRAM").ToInt64();
+					comm->cdl_size[6] = cdl["SGB_WRAM"].Length;
+
+					comm->cdl_ptr[7] = cdl.GetPin("SGB_HRAM").ToInt64();
+					comm->cdl_size[7] = cdl["SGB_HRAM"].Length;
+				}
 			}
 
 			Message(eMessage.eMessage_QUERY_set_cdl);
-
 		}
 		
 	}

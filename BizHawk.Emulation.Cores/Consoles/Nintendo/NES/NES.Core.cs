@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte[] ram;
 		NESWatch[] sysbus_watch = new NESWatch[65536];
 		public byte[] CIRAM; //AKA nametables
-		string game_name = string.Empty; //friendly name exposed to user and used as filename base
+		string game_name = ""; //friendly name exposed to user and used as filename base
 		CartInfo cart; //the current cart prototype. should be moved into the board, perhaps
 		internal INESBoard Board; //the board hardware that is currently driving things
 		EDetectionOrigin origin = EDetectionOrigin.None;
@@ -211,8 +211,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case Common.DisplayType.PAL:
 					apu = new APU(this, apu, true);
 					ppu.region = PPU.Region.PAL;
-					CoreComm.VsyncNum = 50;
-					CoreComm.VsyncDen = 1;
+					VsyncNum = 50;
+					VsyncDen = 1;
 					cpuclockrate = 1662607;
 					cpu_sequence = cpu_sequence_PAL;
 					_display_type = DisplayType.PAL;
@@ -220,8 +220,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case Common.DisplayType.NTSC:
 					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.NTSC;
-					CoreComm.VsyncNum = 39375000;
-					CoreComm.VsyncDen = 655171;
+					VsyncNum = 39375000;
+					VsyncDen = 655171;
 					cpuclockrate = 1789773;
 					cpu_sequence = cpu_sequence_NTSC;
 					break;
@@ -229,8 +229,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case Common.DisplayType.Dendy:
 					apu = new APU(this, apu, false);
 					ppu.region = PPU.Region.Dendy;
-					CoreComm.VsyncNum = 50;
-					CoreComm.VsyncDen = 1;
+					VsyncNum = 50;
+					VsyncDen = 1;
 					cpuclockrate = 1773448;
 					cpu_sequence = cpu_sequence_NTSC;
 					_display_type = DisplayType.Dendy;
@@ -245,7 +245,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			// apu has some specific power up bahaviour that we will emulate here
 			apu.NESHardReset();
-
 
 			if (SyncSettings.InitialWRamStatePattern != null && SyncSettings.InitialWRamStatePattern.Any())
 			{
@@ -290,6 +289,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 		}
+
+		private int VsyncNum { get; set; }
+		private int VsyncDen { get; set; }
 
 		private IController _controller;
 

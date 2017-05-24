@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
 		{
-			text = string.Empty;
+			text = "";
 
 			if (index >= Movie.BranchCount)
 			{

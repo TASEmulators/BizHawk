@@ -13,8 +13,8 @@ namespace BizHawk.Client.EmuHawk
 	public partial class TAStudio
 	{
 		// Input Painting
-		private string _startBoolDrawColumn = string.Empty;
-		private string _startFloatDrawColumn = string.Empty;
+		private string _startBoolDrawColumn = "";
+		private string _startFloatDrawColumn = "";
 		private bool _boolPaintState;
 		private float _floatPaintState;
 		private float _floatBackupState;
@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _supressContextMenu;
 
 		// Editing analog input
-		private string _floatEditColumn = string.Empty;
+		private string _floatEditColumn = "";
 		private int _floatEditRow = -1;
 		private string _floatTypedValue;
 		private int _floatEditYPos = -1;
@@ -265,7 +265,7 @@ namespace BizHawk.Client.EmuHawk
 
 			try
 			{
-				text = string.Empty;
+				text = "";
 				var columnName = column.Name;
 
 				if (columnName == CursorColumnName)
@@ -302,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				text = string.Empty;
+				text = "";
 				MessageBox.Show("oops\n" + ex);
 			}
 		}
@@ -639,8 +639,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_startCursorDrag = false;
 			_startSelectionDrag = false;
-			_startBoolDrawColumn = string.Empty;
-			_startFloatDrawColumn = string.Empty;
+			_startBoolDrawColumn = "";
+			_startFloatDrawColumn = "";
 			TasView.ReleaseCurrentCell();
 			// Exit float editing if value was changed with cursor
 			if (FloatEditingMode && _floatPaintState != CurrentTasMovie.GetFloatState(_floatEditRow, _floatEditColumn))
@@ -756,7 +756,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (Settings.EmptyMarkers)
 						{
-							CurrentTasMovie.Markers.Add(TasView.CurrentCell.RowIndex.Value, string.Empty);
+							CurrentTasMovie.Markers.Add(TasView.CurrentCell.RowIndex.Value, "");
 							RefreshDialog();
 						}
 						else

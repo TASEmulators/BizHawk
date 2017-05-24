@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
@@ -33,10 +28,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			private int _shiftRegisterReset;
 			private bool _sync;
 			private bool _test;
-			[SaveState.DoNotSave] private int[] _wave;
+			private int[] _wave;
 			private int _waveform;
 			private int _waveformIndex;
-			[SaveState.DoNotSave] private readonly int[][] _waveTable;
+			private readonly int[][] _waveTable;
 
 			public Voice(int[][] newWaveTable)
 			{
@@ -303,7 +298,31 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public void SyncState(Serializer ser)
 			{
-				SaveState.SyncObject(ser, this);
+				ser.Sync("_accBits", ref _accBits);
+				ser.Sync("_accNext", ref _accNext);
+				ser.Sync("_accumulator", ref _accumulator);
+				ser.Sync("_controlTestPrev", ref _controlTestPrev);
+				ser.Sync("_controlWavePrev", ref _controlWavePrev);
+				ser.Sync("_delay", ref _delay);
+				ser.Sync("_floatOutputTtl", ref _floatOutputTtl);
+				ser.Sync("_frequency", ref _frequency);
+				ser.Sync("_msbRising", ref _msbRising);
+				ser.Sync("_noise", ref _noise);
+				ser.Sync("_noNoise", ref _noNoise);
+				ser.Sync("_noNoiseOrNoise", ref _noNoiseOrNoise);
+				ser.Sync("_noPulse", ref _noPulse);
+				ser.Sync("_output", ref _output);
+				ser.Sync("_pulse", ref _pulse);
+				ser.Sync("_pulseWidth", ref _pulseWidth);
+				ser.Sync("_ringMod", ref _ringMod);
+				ser.Sync("_ringMsbMask", ref _ringMsbMask);
+				ser.Sync("_shiftRegister", ref _shiftRegister);
+				ser.Sync("_shiftRegisterReset", ref _shiftRegisterReset);
+				ser.Sync("_sync", ref _sync);
+				ser.Sync("_test", ref _test);
+				ser.Sync("_waveform", ref _waveform);
+				ser.Sync("_waveformIndex", ref _waveformIndex);
+
 				_wave = _waveTable[_waveform & 0x07];
 			}
 		}

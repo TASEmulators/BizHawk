@@ -12,8 +12,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 	public partial class VBANext : IEmulator, IVideoProvider, ISoundProvider, IInputPollable,
 		IGBAGPUViewable, ISaveRam, IStatable, IDebuggable, ISettable<object, VBANext.SyncSettings>
 	{
-		IntPtr Core;
-
 		[CoreConstructor("GBA")]
 		public VBANext(byte[] file, CoreComm comm, GameInfo game, bool deterministic, object syncsettings)
 		{
@@ -71,8 +69,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				};
 				ser.Register<ITraceable>(Tracer);
 
-				CoreComm.VsyncNum = 262144;
-				CoreComm.VsyncDen = 4389;
 				CoreComm.NominalWidth = 240;
 				CoreComm.NominalHeight = 160;
 
@@ -94,6 +90,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 				throw;
 			}
 		}
+
+		IntPtr Core;
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 

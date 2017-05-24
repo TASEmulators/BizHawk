@@ -10,8 +10,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight), typeof(IRegionable))]
 	public partial class Lynx : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable
 	{
-		private IntPtr Core;
-
 		[CoreConstructor("Lynx")]
 		public Lynx(byte[] file, GameInfo game, CoreComm comm)
 		{
@@ -94,9 +92,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 			Core = LibLynx.Create(realfile, realfile.Length, bios, bios.Length, pagesize0, pagesize1, false);
 			try
 			{
-				CoreComm.VsyncNum = 16000000; // 16.00 mhz refclock
-				CoreComm.VsyncDen = 16 * 105 * 159;
-
 				_savebuff = new byte[LibLynx.BinStateSize(Core)];
 				_savebuff2 = new byte[_savebuff.Length + 13];
 
@@ -120,6 +115,8 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 				throw;
 			}
 		}
+
+		private IntPtr Core;
 
 		public IEmulatorServiceProvider ServiceProvider { get; }
 

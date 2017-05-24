@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			var domains = new List<MemoryDomain>();
 
 			var mainRamDomain = new MemoryDomainDelegate("Main Ram", 0xC000, MemoryDomain.Endian.Little,
-				(addr) =>
+				addr =>
 				{
 					if (addr < 0 || addr >= 0xC000)
 					{
@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			domains.Add(mainRamDomain);
 
 			var systemBusDomain = new MemoryDomainDelegate("System Bus", 0x10000, MemoryDomain.Endian.Little,
-				(addr) =>
+				addr =>
 				{
 					if (addr < 0 || addr >= 65536)
 					{

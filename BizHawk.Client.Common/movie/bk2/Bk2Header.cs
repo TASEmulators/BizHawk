@@ -9,7 +9,7 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return this.ContainsKey(key) ? base[key] : string.Empty;
+				return ContainsKey(key) ? base[key] : "";
 			}
 
 			set

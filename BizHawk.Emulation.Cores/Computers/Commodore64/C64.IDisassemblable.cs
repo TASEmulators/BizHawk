@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public partial class C64 : IDisassemblable
 	{
-		[SaveState.DoNotSave] private IDisassemblable _selectedDisassemblable;
+		private IDisassemblable _selectedDisassemblable;
 
 		private IEnumerable<IDisassemblable> GetAvailableDisassemblables()
 		{
@@ -23,7 +23,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_selectedDisassemblable = GetAvailableDisassemblables().First();
 		}
 
-		[SaveState.DoNotSave]
 		public string Cpu
 		{
 			get
@@ -45,7 +44,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		[SaveState.DoNotSave]
 		public string PCRegisterName
 		{
 			get
@@ -58,7 +56,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			}
 		}
 
-		[SaveState.DoNotSave]
 		public IEnumerable<string> AvailableCpus
 		{
 			get { return GetAvailableDisassemblables().SelectMany(d => d.AvailableCpus); }

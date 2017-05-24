@@ -63,6 +63,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			new CName("Lightgun Trigger", LibGPGX.INPUT_KEYS.INPUT_MENACER_TRIGGER),
 			new CName("Lightgun Start", LibGPGX.INPUT_KEYS.INPUT_MENACER_START),
+			new CName("Lightgun B", LibGPGX.INPUT_KEYS.INPUT_MENACER_B),
+			new CName("Lightgun C", LibGPGX.INPUT_KEYS.INPUT_MENACER_C)
 		};
 
 		static CName[] Activator = 

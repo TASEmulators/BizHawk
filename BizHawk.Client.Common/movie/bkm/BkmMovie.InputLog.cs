@@ -2,22 +2,12 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace BizHawk.Client.Common
 {
 	public partial class BkmMovie
 	{
 		private readonly List<string> _log = new List<string>();
-
-		public string GetInputLog()
-		{
-			var sb = new StringBuilder();
-			var writer = new StringWriter(sb);
-			WriteInputLog(writer);
-			writer.Flush();
-			return sb.ToString();
-		}
 
 		public void WriteInputLog(TextWriter writer)
 		{
@@ -38,12 +28,12 @@ namespace BizHawk.Client.Common
 				return _log[frame];
 			}
 
-			return string.Empty;
+			return "";
 		}
 
 		public bool ExtractInputLog(TextReader reader, out string errorMessage)
 		{
-			errorMessage = string.Empty;
+			errorMessage = "";
 			int? stateFrame = null;
 
 			// We are in record mode so replace the movie log with the one from the savestate
@@ -64,7 +54,7 @@ namespace BizHawk.Client.Common
 						break;
 					}
 
-					if (line.Trim() == string.Empty || line == "[Input]")
+					if (line.Trim() == "" || line == "[Input]")
 					{
 						continue;
 					}
@@ -117,7 +107,7 @@ namespace BizHawk.Client.Common
 						break;
 					}
 
-					if (line.Trim() == string.Empty || line == "[Input]")
+					if (line.Trim() == "" || line == "[Input]")
 					{
 						continue;
 					}
@@ -196,7 +186,7 @@ namespace BizHawk.Client.Common
 		public bool CheckTimeLines(TextReader reader, out string errorMessage)
 		{
 			// This function will compare the movie data to the savestate movie data to see if they match
-			errorMessage = string.Empty;
+			errorMessage = "";
 			var log = new List<string>();
 			var stateFrame = 0;
 			while (true)
@@ -207,7 +197,7 @@ namespace BizHawk.Client.Common
 					return false;
 				}
 
-				if (line.Trim() == string.Empty)
+				if (line.Trim() == "")
 				{
 					continue;
 				}

@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
-	public abstract partial class CartridgeDevice : IDriveLight
+	public abstract class CartridgeDevice : IDriveLight
 	{
 		public Func<int> ReadOpenBus;
 
@@ -81,6 +81,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 					case 0x0005:    // Ocean
 						result = new Mapper0005(chipAddress, chipBank, chipData);
 						break;
+					case 0x0008:    // SuperGame
+						result = new Mapper0008(chipData);
+						break;
 					case 0x000A:    // Epyx FastLoad
 						result = new Mapper000A(chipData);
 						break;
@@ -128,24 +131,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 				reader.ReadByte();
 		}
 
-		[SaveState.SaveWithName("ExRom")]
 		protected bool pinExRom;
-		[SaveState.SaveWithName("Game")]
+
 		protected bool pinGame;
-		[SaveState.SaveWithName("IRQ")]
+
 		protected bool pinIRQ;
-		[SaveState.SaveWithName("NMI")]
+
 		protected bool pinNMI;
-		[SaveState.SaveWithName("Reset")]
+
 		protected bool pinReset;
-		[SaveState.DoNotSave]
+
 		protected bool validCartridge;
 
 		public virtual void ExecutePhase()
 		{
 		}
 
-		[SaveState.DoNotSave]
 		public bool ExRom
 		{
 			get
@@ -154,7 +155,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-		[SaveState.DoNotSave]
 		public bool Game
 		{
 			get
@@ -170,7 +170,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			pinReset = true;
 		}
 
-		[SaveState.DoNotSave]
 		public bool IRQ
 		{
 			get
@@ -179,7 +178,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-		[SaveState.DoNotSave]
 		public bool NMI
 		{
 			get
@@ -244,7 +242,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			return ReadOpenBus();
 		}
 
-		[SaveState.DoNotSave]
 		public bool Reset
 		{
 			get
@@ -253,12 +250,20 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
+		protected abstract void SyncStateInternal(Serializer ser);
+
 		public virtual void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.Sync("pinExRom", ref pinExRom);
+			ser.Sync("pinGame", ref pinGame);
+			ser.Sync("pinIRQ", ref pinIRQ);
+			ser.Sync("pinNMI", ref pinNMI);
+			ser.Sync("pinReset", ref pinReset);
+
+			ser.Sync("_driveLightEnabled", ref _driveLightEnabled);
+			ser.Sync("_driveLightOn", ref _driveLightOn);
 		}
 
-		[SaveState.DoNotSave]
 		public bool Valid
 		{
 			get
@@ -283,7 +288,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 		}
 
-		public bool DriveLightEnabled { get; protected set; }
-		public bool DriveLightOn { get; protected set; }
+		private bool _driveLightEnabled;
+		private bool _driveLightOn;
+
+		public bool DriveLightEnabled
+		{
+			get { return _driveLightEnabled; }
+			protected set { _driveLightEnabled = value; }
+		}
+
+		public bool DriveLightOn
+		{
+			get { return _driveLightOn; }
+			protected set { _driveLightOn = value; }
+		}
 	}
 }

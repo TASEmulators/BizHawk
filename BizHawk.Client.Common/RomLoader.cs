@@ -26,7 +26,10 @@ namespace BizHawk.Client.Common
 {
 	public class RomLoader
 	{
-		public enum LoadErrorType { Unknown, MissingFirmware, XML, DiscError }
+		public enum LoadErrorType
+		{
+			Unknown, MissingFirmware, XML, DiscError
+		}
 
 		// helper methods for the settings events
 		private object GetCoreSettings<T>()
@@ -193,7 +196,7 @@ namespace BizHawk.Client.Common
 		{
 			if (recursiveCount > 1) // hack to stop recursive calls from endlessly rerunning if we can't load it
 			{
-				DoLoadErrorCallback("Failed multiple attempts to load ROM.", string.Empty);
+				DoLoadErrorCallback("Failed multiple attempts to load ROM.", "");
 				return false;
 			}
 
@@ -206,7 +209,6 @@ namespace BizHawk.Client.Common
 
 			using (var file = new HawkFile())
 			{
-
 				// only try mounting a file if a filename was given
 				if (!string.IsNullOrEmpty(path))
 				{
@@ -327,7 +329,6 @@ namespace BizHawk.Client.Common
 
 					if (string.IsNullOrEmpty(ext))
 					{
-
 					}
 					else if (ext == ".m3u")
 					{
@@ -354,14 +355,13 @@ namespace BizHawk.Client.Common
 							string discPath = e.Path;
 
 							//--- load the disc in a context which will let us abort if it's going to take too long
-							var discMountJob = new DiscMountJob { IN_FromPath = discPath };
-							discMountJob.IN_SlowLoadAbortThreshold = 8;
+							var discMountJob = new DiscMountJob { IN_FromPath = discPath, IN_SlowLoadAbortThreshold = 8 };
 							discMountJob.Run();
 							disc = discMountJob.OUT_Disc;
 
 							if (discMountJob.OUT_SlowLoadAborted)
 							{
-								DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", string.Empty, LoadErrorType.DiscError);
+								DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
 								return false;
 							}
 
@@ -391,7 +391,7 @@ namespace BizHawk.Client.Common
 								}
 								else
 								{
-									sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}",discHash);
+									sw.WriteLine("Disc was identified (99.99% confidently) as known good with disc id hash CRC32:{0:X8}", discHash);
 									sw.WriteLine("Nonetheless it could be an unrecognized romhack or patched version.");
 									sw.WriteLine("According to redump.org, the ideal hash for entire disc is: CRC32:{0:X8}", game.GetStringValue("dh"));
 									sw.WriteLine("The file you loaded hasn't been hashed entirely (it would take too long)");
@@ -429,7 +429,7 @@ namespace BizHawk.Client.Common
 
 						if (discMountJob.OUT_SlowLoadAborted)
 						{
-							DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", string.Empty, LoadErrorType.DiscError);
+							DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", "", LoadErrorType.DiscError);
 							return false;
 						}
 
@@ -495,6 +495,7 @@ namespace BizHawk.Client.Common
 									var genesis = new GPGX(nextComm, null, disc, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 									nextEmulator = genesis;
 								}
+
 								break;
 							case "SAT":
 								nextEmulator = new Yabause(nextComm, disc, GetCoreSyncSettings<Yabause>());
@@ -518,6 +519,7 @@ namespace BizHawk.Client.Common
 									sw.WriteLine("Compare it with the full hash calculated by the PSX menu's Hash Discs tool");
 									nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
 								}
+
 								break;
 							case "PCE":
 							case "PCECD":
@@ -651,7 +653,7 @@ namespace BizHawk.Client.Common
 							{
 								// need to get rid of this hack at some point
 								rom = new RomGame(file);
-								((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", string.Empty)); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
+								((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", "")); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 								byte[] romData = null;
 								byte[] xmlData = rom.FileData;
 
@@ -683,7 +685,7 @@ namespace BizHawk.Client.Common
 						nextEmulator = new Octoshock(nextComm, psf, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
 						nextEmulator.CoreComm.RomStatusDetails = "It's a PSF, what do you want. Oh, tags maybe?";
 
-						//total garbage, this
+						// total garbage, this
 						rom = new RomGame(file);
 						game = rom.GameInfo;
 					}
@@ -700,7 +702,6 @@ namespace BizHawk.Client.Common
 						{
 							rom.GameInfo.System = "NES";
 						}
-
 
 						if (string.IsNullOrEmpty(rom.GameInfo.System))
 						{
@@ -734,7 +735,6 @@ namespace BizHawk.Client.Common
 							isXml = true;
 						}
 
-
 						CoreInventory.Core core = null;
 
 						switch (game.System)
@@ -757,6 +757,7 @@ namespace BizHawk.Client.Common
 									ti83.LinkPort.SendFileToCalc(File.OpenRead(path), false);
 									nextEmulator = ti83;
 								}
+
 								break;
 							case "SNES":
 								if (Global.Config.SNES_InSnes9x && VersionInfo.DeveloperBuild)
@@ -766,7 +767,7 @@ namespace BizHawk.Client.Common
 								else
 								{
 									// need to get rid of this hack at some point
-									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", String.Empty)); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
+									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", "")); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 									var romData = isXml ? null : rom.FileData;
 									var xmlData = isXml ? rom.FileData : null;
 									var snes = new LibsnesCore(game, romData, Deterministic, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
@@ -804,6 +805,7 @@ namespace BizHawk.Client.Common
 										core = CoreInventory.Instance["NES", "QuickNes"];
 									}
 								}
+
 								break;
 
 							case "GB":
@@ -849,6 +851,7 @@ namespace BizHawk.Client.Common
 								{
 									core = CoreInventory.Instance["GBA", "VBA-Next"];
 								}
+
 								break;
 							case "PSX":
 								nextEmulator = new Octoshock(nextComm, null, null, rom.FileData, GetCoreSettings<Octoshock>(), GetCoreSyncSettings<Octoshock>());
@@ -865,6 +868,7 @@ namespace BizHawk.Client.Common
 								{
 									core = CoreInventory.Instance["GEN", "Genplus-gx"];
 								}
+
 								break;
 						}
 

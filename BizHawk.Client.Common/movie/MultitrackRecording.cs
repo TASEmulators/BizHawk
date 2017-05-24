@@ -10,11 +10,11 @@ namespace BizHawk.Client.Common
 		}
 
 		public bool IsActive { get; set; }
-		public int CurrentPlayer{ get; private set; }
+		public int CurrentPlayer { get; private set; }
 		public bool RecordAll { get; private set; }
 
 		/// <summary>
-		/// A user friendly multi-track status
+		/// Gets a user friendly multi-track status
 		/// </summary>
 		public string Status
 		{
@@ -22,7 +22,7 @@ namespace BizHawk.Client.Common
 			{
 				if (!IsActive)
 				{
-					return string.Empty;
+					return "";
 				}
 
 				if (RecordAll)

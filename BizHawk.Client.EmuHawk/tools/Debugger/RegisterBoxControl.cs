@@ -181,7 +181,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							try
 							{
-								if (t.Text != String.Empty)
+								if (t.Text != "")
 								{
 									Core.SetCpuRegister(t.Name, int.Parse(t.Text, System.Globalization.NumberStyles.HexNumber));
 								}		

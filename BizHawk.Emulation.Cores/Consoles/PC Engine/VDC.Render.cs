@@ -1,4 +1,5 @@
 ﻿using System;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
@@ -439,5 +440,23 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public int BufferWidth => FramePitch;
 		public int BufferHeight => FrameHeight;
 		public int BackgroundColor => vce.Palette[256];
+
+		public int VsyncNumerator
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				return NullVideo.DefaultVsyncNum;
+			}
+		}
+
+		public int VsyncDenominator
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				return NullVideo.DefaultVsyncDen;
+			}
+		}
 	}
 }

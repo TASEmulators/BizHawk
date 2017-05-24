@@ -159,7 +159,7 @@ namespace BizHawk.Client.MultiHawk
 								break;
 							}
 
-							if (str.Trim() == string.Empty)
+							if (str.Trim() == "")
 							{
 								continue;
 							}

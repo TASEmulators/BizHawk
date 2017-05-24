@@ -62,7 +62,7 @@ namespace BizHawk.Client.Common
 
 						using (new SimpleTime("Save Framebuffer"))
 						{
-							bs.PutLump(BinaryStateLump.Framebuffer, (s) => QuickBmpFile.Save(Global.Emulator.AsVideoProvider(), s, out_w, out_h));
+							bs.PutLump(BinaryStateLump.Framebuffer, s => QuickBmpFile.Save(Global.Emulator.AsVideoProvider(), s, out_w, out_h));
 						}
 					}
 				}
@@ -124,7 +124,9 @@ namespace BizHawk.Client.Common
 						buff[i] = j;
 					}
 				}
-				catch (EndOfStreamException) { }
+				catch (EndOfStreamException)
+				{
+				}
 			}
 		}
 
@@ -173,7 +175,7 @@ namespace BizHawk.Client.Common
 
 					bl.GetLump(BinaryStateLump.Framebuffer, false, PopulateFramebuffer);
 
-					string userData = string.Empty;
+					string userData = "";
 					bl.GetLump(BinaryStateLump.UserData, false, delegate(TextReader tr)
 					{
 						string line;
@@ -226,7 +228,7 @@ namespace BizHawk.Client.Common
 								break;
 							}
 							
-							if (str.Trim() == string.Empty)
+							if (str.Trim() == "")
 							{
 								continue;
 							}

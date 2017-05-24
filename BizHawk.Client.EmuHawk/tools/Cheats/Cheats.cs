@@ -10,26 +10,25 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
-using System.Diagnostics;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class Cheats : ToolFormBase, IToolForm
 	{
-		private const string NAME = "NamesColumn";
-		private const string ADDRESS = "AddressColumn";
-		private const string VALUE = "ValueColumn";
-		private const string COMPARE = "CompareColumn";
-		private const string ON = "OnColumn";
-		private const string DOMAIN = "DomainColumn";
-		private const string SIZE = "SizeColumn";
-		private const string ENDIAN = "EndianColumn";
-		private const string TYPE = "DisplayTypeColumn";
-		private const string COMPARISONTYPE = "ComparisonTypeColumn";
+		private const string NameColumn = "NamesColumn";
+		private const string AddressColumn = "AddressColumn";
+		private const string ValueColumn = "ValueColumn";
+		private const string CompareColumn = "CompareColumn";
+		private const string OnColumn = "OnColumn";
+		private const string DomainColumn = "DomainColumn";
+		private const string SizeColumn = "SizeColumn";
+		private const string EndianColumn = "EndianColumn";
+		private const string TypeColumn = "DisplayTypeColumn";
+		private const string ComparisonTypeColumn = "ComparisonTypeColumn";
 
 		private int _defaultWidth;
 		private int _defaultHeight;
-		private string _sortedColumn = string.Empty;
+		private string _sortedColumn;
 		private bool _sortReverse;
 
 		public Cheats()
@@ -46,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 			CheatListView.QueryItemBkColor += CheatListView_QueryItemBkColor;
 			CheatListView.VirtualMode = true;
 
-			_sortedColumn = string.Empty;
+			_sortedColumn = "";
 			_sortReverse = false;
 		}
 
@@ -56,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 		[ConfigPersist]
 		public CheatsSettings Settings { get; set; }
 
-		public bool UpdateBefore { get { return false; } }
+		public bool UpdateBefore => false;
 
 		public void NewUpdate(ToolFormUpdateType type) { }
 
@@ -87,7 +86,7 @@ namespace BizHawk.Client.EmuHawk
 				+ Global.CheatList.ActiveCount + " active";
 		}
 
-		public void LoadFileFromRecent(string path)
+		private void LoadFileFromRecent(string path)
 		{
 			var askResult = !Global.CheatList.Changes || AskSaveChanges();
 			if (askResult)
@@ -110,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			MessageLabel.Text = saved 
 				? Path.GetFileName(Global.CheatList.CurrentFileName) + " saved."
-				: Path.GetFileName(Global.CheatList.CurrentFileName) + (Global.CheatList.Changes ? " *" : string.Empty);
+				: Path.GetFileName(Global.CheatList.CurrentFileName) + (Global.CheatList.Changes ? " *" : "");
 		}
 
 		public bool AskSaveChanges()
@@ -194,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void SaveConfigSettings()
+		private void SaveConfigSettings()
 		{
 			SaveColumnInfo(CheatListView, Settings.Columns);
 
@@ -225,16 +224,9 @@ namespace BizHawk.Client.EmuHawk
 			LoadColumnInfo(CheatListView, Settings.Columns);
 		}
 
-		private void DoColumnToggle(string column)
-		{
-			Settings.Columns[column].Visible ^= true;
-			SaveColumnInfo(CheatListView, Settings.Columns);
-			LoadColumnInfo(CheatListView, Settings.Columns);
-		}
-
 		private void CheatListView_QueryItemText(int index, int column, out string text)
 		{
-			text = string.Empty;
+			text = "";
 			if (index >= Global.CheatList.Count || Global.CheatList[index].IsSeparator)
 			{
 				return;
@@ -244,44 +236,60 @@ namespace BizHawk.Client.EmuHawk
 
 			switch (columnName)
 			{
-				case NAME:
+				case NameColumn:
 					text = Global.CheatList[index].Name;
 					break;
-				case ADDRESS:
+				case AddressColumn:
 					text = Global.CheatList[index].AddressStr;
 					break;
-				case VALUE:
+				case ValueColumn:
 					text = Global.CheatList[index].ValueStr;
 					break;
-				case COMPARE:
+				case CompareColumn:
 					text = Global.CheatList[index].CompareStr;
 					break;
-				case ON:
-					text = Global.CheatList[index].Enabled ? "*" : string.Empty;
+				case OnColumn:
+					text = Global.CheatList[index].Enabled ? "*" : "";
 					break;
-				case DOMAIN:
+				case DomainColumn:
 					text = Global.CheatList[index].Domain.Name;
 					break;
-				case SIZE:
+				case SizeColumn:
 					text = Global.CheatList[index].Size.ToString();
 					break;
-				case ENDIAN:
+				case EndianColumn:
 					text = (Global.CheatList[index].BigEndian ?? false) ? "Big" : "Little";
 					break;
-				case TYPE:
+				case TypeColumn:
 					text = Watch.DisplayTypeToString(Global.CheatList[index].Type);
 					break;
-				case COMPARISONTYPE:
+				case ComparisonTypeColumn:
 					switch (Global.CheatList[index].ComparisonType)
 					{
-						case Cheat.COMPARISONTYPE.NONE                  : text = ""; break;
-						case Cheat.COMPARISONTYPE.EQUAL                 : text = "=";  break;
-						case Cheat.COMPARISONTYPE.GREATER_THAN          : text = ">";  break;
-						case Cheat.COMPARISONTYPE.GREATER_THAN_OR_EQUAL : text = ">="; break;
-						case Cheat.COMPARISONTYPE.LESS_THAN             : text = "<";  break;
-						case Cheat.COMPARISONTYPE.LESS_THAN_OR_EQUAL    : text = "<="; break;
-						case Cheat.COMPARISONTYPE.NOT_EQUAL             : text = "!="; break;
-						default                                         : text = ""; break;
+						case Cheat.CompareType.None:
+							text = "";
+							break;
+						case Cheat.CompareType.Equal:
+							text = "=";
+							break;
+						case Cheat.CompareType.GreaterThan:
+							text = ">";
+							break;
+						case Cheat.CompareType.GreaterThanOrEqual:
+							text = ">=";
+							break;
+						case Cheat.CompareType.LessThan:
+							text = "<";
+							break;
+						case Cheat.CompareType.LessThanOrEqual:
+							text = "<=";
+							break;
+						case Cheat.CompareType.NotEqual:
+							text = "!=";
+							break;
+						default:
+							text = "";
+							break;
 					}
 					
 					break;
@@ -303,10 +311,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private IEnumerable<int> SelectedIndices
-		{
-			get { return CheatListView.SelectedIndices.Cast<int>(); }
-		}
+		private IEnumerable<int> SelectedIndices => CheatListView.SelectedIndices.Cast<int>();
 
 		private IEnumerable<Cheat> SelectedItems
 		{
@@ -601,8 +606,7 @@ namespace BizHawk.Client.EmuHawk
 			CheatsMenu.Items.Remove(
 				CheatsMenu.Items
 					.OfType<ToolStripMenuItem>()
-					.First(x => x.Name == "GeneratedColumnsSubMenu")
-			);
+					.First(x => x.Name == "GeneratedColumnsSubMenu"));
 
 			CheatsMenu.Items.Add(Settings.Columns.GenerateColumnsMenu(ColumnToggleCallback));
 
@@ -718,16 +722,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Columns = new ColumnList
 				{
-					new Column { Name = NAME, Visible = true, Index = 0, Width = 128 },
-					new Column { Name = ADDRESS, Visible = true, Index = 1, Width = 60 },
-					new Column { Name = VALUE, Visible = true, Index = 2, Width = 59 },
-					new Column { Name = COMPARE, Visible = true, Index = 3, Width = 59 },
-					new Column { Name = COMPARISONTYPE, Visible = true, Index = 4, Width = 60 },
-					new Column { Name = ON, Visible = false, Index = 5, Width = 28 },
-					new Column { Name = DOMAIN, Visible = true, Index = 6, Width = 55 },
-					new Column { Name = SIZE, Visible = true, Index = 7, Width = 55 },
-					new Column { Name = ENDIAN, Visible = false, Index = 8, Width = 55 },
-					new Column { Name = TYPE, Visible = false, Index = 9, Width = 55 }
+					new Column { Name = NameColumn, Visible = true, Index = 0, Width = 128 },
+					new Column { Name = AddressColumn, Visible = true, Index = 1, Width = 60 },
+					new Column { Name = ValueColumn, Visible = true, Index = 2, Width = 59 },
+					new Column { Name = CompareColumn, Visible = true, Index = 3, Width = 59 },
+					new Column { Name = ComparisonTypeColumn, Visible = true, Index = 4, Width = 60 },
+					new Column { Name = OnColumn, Visible = false, Index = 5, Width = 28 },
+					new Column { Name = DomainColumn, Visible = true, Index = 6, Width = 55 },
+					new Column { Name = SizeColumn, Visible = true, Index = 7, Width = 55 },
+					new Column { Name = EndianColumn, Visible = false, Index = 8, Width = 55 },
+					new Column { Name = TypeColumn, Visible = false, Index = 9, Width = 55 }
 				};
 			}
 

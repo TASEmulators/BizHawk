@@ -1,8 +1,7 @@
 ﻿using System.IO;
 
-namespace BizHawk.Client.Common.movie.import
+namespace BizHawk.Client.Common.Movie.Import
 {
-
 	// PXM files are directly compatible with binary-format PJM files, with the only
 	// difference being fewer flags implemented in the header, hence just calling the
 	// base class methods via a subclass.
@@ -10,12 +9,11 @@ namespace BizHawk.Client.Common.movie.import
 	// However, the magic number/file signature is slightly different, requiring some
 	// refactoring to avoid PXM-specific code in the PJMImport class.
 	[ImportExtension(".pxm")]
-	class PXMImport : PJMImport
+	public class PxmImport : PjmImport
 	{
 		protected override void RunImport()
 		{
 			Bk2Movie movie = Result.Movie;
-			MiscHeaderInfo info;
 
 			movie.HeaderEntries[HeaderKeys.PLATFORM] = "PSX";
 
@@ -23,17 +21,17 @@ namespace BizHawk.Client.Common.movie.import
 			{
 				using (var br = new BinaryReader(fs))
 				{
-					info = parseHeader(movie, "PXM ", br);
+					var info = ParseHeader(movie, "PXM ", br);
 
-					fs.Seek(info.controllerDataOffset, SeekOrigin.Begin);
+					fs.Seek(info.ControllerDataOffset, SeekOrigin.Begin);
 
-					if (info.binaryFormat)
+					if (info.BinaryFormat)
 					{
-						parseBinaryInputLog(br, movie, info);
+						ParseBinaryInputLog(br, movie, info);
 					}
 					else
 					{
-						parseTextInputLog(br, movie, info);
+						ParseTextInputLog(br, movie, info);
 					}
 				}
 			}

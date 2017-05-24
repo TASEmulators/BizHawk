@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.Sync("_ram", ref _ram, useNull: false);
 		}
 
 		public void Write(int addr, int val)

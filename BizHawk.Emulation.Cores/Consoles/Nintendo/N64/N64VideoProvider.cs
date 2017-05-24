@@ -43,6 +43,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return 0; } }
+		public int VsyncNumerator { get; internal set; }
+		public int VsyncDenominator { get; internal set; }
 
 		/// <summary>
 		/// Fetches current frame buffer from mupen64

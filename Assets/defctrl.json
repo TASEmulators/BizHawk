@@ -798,7 +798,7 @@
       "Tab": "Tab",
       "Down": "DownArrow",
       "Up": "UpArrow",
-      "Return": "",
+      "Return": "Return",
       "Right": "RightArrow",
       "Escape": "",
       "Space": "Space",
@@ -852,9 +852,6 @@
       "Control": "RightControl",
       "Shift": "RightShift",
       "Caps Lock": "CapsLock",
-      "White Apple": "LeftAlt",
-      "Black Apple": "RightAlt",
-      "Reset": "",
       "Previous Disk": "",
       "Next Disk": ""
     }
@@ -1047,7 +1044,7 @@
       "Tab": "",
       "Down": "",
       "Up": "",
-      "Return": "",
+      "Return": "Return",
       "Right": "",
       "Escape": "",
       "Space": "",
@@ -1101,9 +1098,6 @@
       "Control": "",
       "Shift": "",
       "Caps Lock": "",
-      "White Apple": "",
-      "Black Apple": "",
-      "Reset": "",
       "Previous Disk": "",
       "Next Disk": ""
     }

@@ -16,10 +16,10 @@ namespace BizHawk.Client.Common
 		[OptionalService]
 		protected IMemoryDomains MemoryDomainCore { get; set; }
 
-		public LuaMemoryBase(Lua lua)
+		protected LuaMemoryBase(Lua lua)
 			: base(lua) { }
 
-		public LuaMemoryBase(Lua lua, Action<string> logOutputCallback)
+		protected LuaMemoryBase(Lua lua, Action<string> logOutputCallback)
 			: base(lua, logOutputCallback) { }
 
 		protected abstract MemoryDomain Domain { get; }
@@ -55,6 +55,7 @@ namespace BizHawk.Client.Common
 			{
 				Log($"Unable to find domain: {domain}, falling back to current");
 			}
+
 			return Domain.Name;
 		}
 

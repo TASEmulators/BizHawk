@@ -14,43 +14,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 		isReleased: true,
 		portedVersion: "r874",
 		portedUrl: "https://code.google.com/p/genplus-gx/",
-		singleInstance: false
-		)]
+		singleInstance: false)]
 	public partial class GPGX : IEmulator, IVideoProvider, ISaveRam, IStatable, IRegionable,
 		IInputPollable, IDebuggable, IDriveLight, ICodeDataLogger, IDisassemblable
 	{
-		LibGPGX Core;
-		ElfRunner Elf;
-
-		DiscSystem.Disc CD;
-		DiscSystem.DiscSectorReader DiscSectorReader;
-		byte[] romfile;
-
-		bool disposed = false;
-
-		LibGPGX.load_archive_cb LoadCallback = null;
-
-		LibGPGX.InputData input = new LibGPGX.InputData();
-
-		public enum ControlType
-		{
-			None,
-			OnePlayer,
-			Normal,
-			Xea1p,
-			Activator,
-			Teamplayer,
-			Wayplay,
-			Mouse
-		};
-
 		[CoreConstructor("GEN")]
-		public GPGX(CoreComm comm, byte[] file, object Settings, object SyncSettings)
-			: this(comm, file, null, Settings, SyncSettings)
+		public GPGX(CoreComm comm, byte[] file, object settings, object syncSettings)
+			: this(comm, file, null, settings, syncSettings)
 		{
 		}
 
-		public GPGX(CoreComm comm, byte[] rom, DiscSystem.Disc CD, object Settings, object SyncSettings)
+		public GPGX(CoreComm comm, byte[] rom, DiscSystem.Disc CD, object settings, object syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			// this can influence some things internally (autodetect romtype, etc)
@@ -73,8 +47,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				else
 					Core = BizInvoker.GetInvoker<LibGPGX>(Elf);
 
-				_syncSettings = (GPGXSyncSettings)SyncSettings ?? new GPGXSyncSettings();
-				_settings = (GPGXSettings)Settings ?? new GPGXSettings();
+				_syncSettings = (GPGXSyncSettings)syncSettings ?? new GPGXSyncSettings();
+				_settings = (GPGXSettings)settings ?? new GPGXSettings();
 
 				CoreComm = comm;
 
@@ -134,9 +108,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 					int fpsnum = 60;
 					int fpsden = 1;
 					Core.gpgx_get_fps(ref fpsnum, ref fpsden);
-					CoreComm.VsyncNum = fpsnum;
-					CoreComm.VsyncDen = fpsden;
-					Region = CoreComm.VsyncRate > 55 ? DisplayType.NTSC : DisplayType.PAL;
+					VsyncNumerator = fpsnum;
+					VsyncDenominator = fpsden;
+					Region = VsyncNumerator / VsyncDenominator > 55 ? DisplayType.NTSC : DisplayType.PAL;
 				}
 
 				// compute state size
@@ -175,6 +149,32 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				throw;
 			}
 		}
+
+		LibGPGX Core;
+		ElfRunner Elf;
+
+		DiscSystem.Disc CD;
+		DiscSystem.DiscSectorReader DiscSectorReader;
+		byte[] romfile;
+
+		bool disposed = false;
+
+		LibGPGX.load_archive_cb LoadCallback = null;
+
+		LibGPGX.InputData input = new LibGPGX.InputData();
+
+		public enum ControlType
+		{
+			None,
+			OnePlayer,
+			Normal,
+			Xea1p,
+			Activator,
+			Teamplayer,
+			Wayplay,
+			Mouse
+		};
+
 
 		/// <summary>
 		/// core callback for file loading

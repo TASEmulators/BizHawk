@@ -59,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 		private void CalculatePointedCell(int x, int y)
 		{
 			int? newRow;
-			string newColumn = String.Empty;
+			string newColumn = "";
 
 			var accumulator = 0;
 			foreach (ColumnHeader column in Columns)
@@ -120,7 +120,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnMouseLeave(EventArgs e)
 		{
-			_currentPointedCell.Column = String.Empty;
+			_currentPointedCell.Column = "";
 			_currentPointedCell.RowIndex = null;
 			IsPaintDown = false;
 			base.OnMouseLeave(e);

@@ -86,9 +86,9 @@ struct Interface : public SNES::Interface {
 		messages.push(text);
   }
   
-  void cpuTrace(const char *msg) {
+  void cpuTrace(uint32_t which, const char *msg) {
     if (ptrace)
-	  ptrace((const char *)msg);
+			ptrace(which, (const char *)msg);
   }
 
   string path(SNES::Cartridge::Slot slot, const string &hint)
@@ -762,16 +762,11 @@ void snes_set_backdropColor(int color)
 	iface->backdropColor = color;
 }
 
-void snes_set_trace_callback(snes_trace_t callback)
+void snes_set_trace_callback(uint32_t mask, snes_trace_t callback)
 {
-  if (callback)
-  {
-    iface->wanttrace = true;
-	iface->ptrace = callback;
-  }
-  else
-  {
-    iface->wanttrace = false;
-	iface->ptrace = 0;
-  }
+	iface->wanttrace = mask;
+	if (mask)
+		iface->ptrace = callback;
+	else
+		iface->ptrace = nullptr;
 }

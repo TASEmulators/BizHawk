@@ -13,9 +13,20 @@ namespace BizHawk.Client.Common
 {
 	public class CheatCollection : ICollection<Cheat>
 	{
+		private const string NameColumn = "NamesColumn";
+		private const string AddressColumn = "AddressColumn";
+		private const string ValueColumn = "ValueColumn";
+		private const string CompareColumn = "CompareColumn";
+		private const string OnColumn = "OnColumn";
+		private const string DomainColumn = "DomainColumn";
+		private const string SizeColumn = "SizeColumn";
+		private const string EndianColumn = "EndianColumn";
+		private const string TypeColumn = "DisplayTypeColumn";
+		private const string ComparisonType = "ComparisonTypeColumn";
+
 		private List<Cheat> _cheatList = new List<Cheat>();
-		private string _currentFileName = string.Empty;
-		private string _defaultFileName = string.Empty;
+		private string _currentFileName = "";
+		private string _defaultFileName = "";
 		private bool _changes;
 
 		public delegate void CheatListEventHandler(object sender, CheatListEventArgs e);
@@ -25,12 +36,12 @@ namespace BizHawk.Client.Common
 
 		public int CheatCount
 		{
-			get { return _cheatList.Count(x => !x.IsSeparator); }
+			get { return _cheatList.Count(c => !c.IsSeparator); }
 		}
 
 		public int ActiveCount
 		{
-			get { return _cheatList.Count(x => x.Enabled); }
+			get { return _cheatList.Count(c => c.Enabled); }
 		}
 
 		public bool Changes
@@ -109,7 +120,7 @@ namespace BizHawk.Client.Common
 			}
 
 			_cheatList.Clear();
-			_currentFileName = string.Empty;
+			_currentFileName = "";
 			Changes = false;
 		}
 
@@ -124,7 +135,7 @@ namespace BizHawk.Client.Common
 				cheat.Changed += CheatChanged;
 				if (Contains(cheat))
 				{
-					_cheatList.Remove(Global.CheatList.FirstOrDefault(x => x.Domain == cheat.Domain && x.Address == cheat.Address));
+					_cheatList.Remove(Global.CheatList.FirstOrDefault(c => c.Domain == cheat.Domain && c.Address == cheat.Address));
 				}
 
 				_cheatList.Add(cheat);
@@ -140,16 +151,16 @@ namespace BizHawk.Client.Common
 			Changes = true;
 		}
 
-		public void Insert(int index, Cheat c)
+		public void Insert(int index, Cheat cheat)
 		{
-			c.Changed += CheatChanged;
-			if (_cheatList.Any(x => x.Domain == c.Domain && x.Address == c.Address))
+			cheat.Changed += CheatChanged;
+			if (_cheatList.Any(c => c.Domain == cheat.Domain && c.Address == cheat.Address))
 			{
-				_cheatList.First(x => x.Domain == c.Domain && x.Address == c.Address).Enable();
+				_cheatList.First(c => c.Domain == cheat.Domain && c.Address == cheat.Address).Enable();
 			}
 			else
 			{
-				_cheatList.Insert(index, c);
+				_cheatList.Insert(index, cheat);
 			}
 
 			Changes = true;
@@ -169,9 +180,9 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		public bool Remove(Cheat c)
+		public bool Remove(Cheat cheat)
 		{
-			var result = _cheatList.Remove(c);
+			var result = _cheatList.Remove(cheat);
 			if (result)
 			{
 				Changes = true;
@@ -283,6 +294,7 @@ namespace BizHawk.Client.Common
 		/// Returns the value of a given cheat, or a partial value of a multi-byte cheat
 		/// Note that address + size MUST NOT exceed the range of the cheat or undefined behavior will occur
 		/// </summary>
+		/// <param name="domain">The <seealso cref="MemoryDomain"/> to apply cheats to</param>
 		/// <param name="addr">The starting address for which you will get the number of bytes</param>
 		/// <param name="size">The number of bytes of the cheat to return</param>
 		/// <returns>The value, or null if it can't resolve the address with a given cheat</returns>
@@ -384,7 +396,7 @@ namespace BizHawk.Client.Common
 								.Append(cheat.AddressStr).Append('\t')
 								.Append(cheat.ValueStr).Append('\t')
 								.Append(cheat.Compare?.ToString() ?? "N").Append('\t')
-								.Append(cheat.Domain != null ? cheat.Domain.Name : string.Empty).Append('\t')
+								.Append(cheat.Domain != null ? cheat.Domain.Name : "").Append('\t')
 								.Append(cheat.Enabled ? '1' : '0').Append('\t')
 								.Append(cheat.Name).Append('\t')
 								.Append(cheat.SizeAsChar).Append('\t')
@@ -444,7 +456,7 @@ namespace BizHawk.Client.Common
 							var size = WatchSize.Byte;
 							var type = DisplayType.Hex;
 							var bigendian = false;
-							Cheat.COMPARISONTYPE comparisonType = Cheat.COMPARISONTYPE.NONE;
+							Cheat.CompareType comparisonType = Cheat.CompareType.None;
 
 							if (s.Length < 6)
 							{
@@ -479,7 +491,7 @@ namespace BizHawk.Client.Common
 							// For backwards compatibility, don't assume these values exist
 							if (vals.Length > 9)
 							{
-								if(!Enum.TryParse<Cheat.COMPARISONTYPE>(vals[9], out comparisonType))
+								if (!Enum.TryParse<Cheat.CompareType>(vals[9], out comparisonType))
 								{
 									continue; // Not sure if this is the best answer, could just resort to ==
 								}
@@ -511,188 +523,188 @@ namespace BizHawk.Client.Common
 		{
 			switch (column)
 			{
-				case NAME:
+				case NameColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
-							.OrderByDescending(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderByDescending(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 					else
 					{
 						_cheatList = _cheatList
-							.OrderBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 
 					break;
-				case ADDRESS:
+				case AddressColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
-							.OrderByDescending(x => x.Address ?? 0)
-							.ThenBy(x => x.Name)
+							.OrderByDescending(c => c.Address ?? 0)
+							.ThenBy(c => c.Name)
 							.ToList();
 					}
 					else
 					{
 						_cheatList = _cheatList
-							.OrderBy(x => x.Address ?? 0)
-							.ThenBy(x => x.Name)
+							.OrderBy(c => c.Address ?? 0)
+							.ThenBy(c => c.Name)
 							.ToList();
 					}
 
 					break;
-				case VALUE:
+				case ValueColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
-							.OrderByDescending(x => x.Value ?? 0)
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderByDescending(c => c.Value ?? 0)
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 					else
 					{
 						_cheatList = _cheatList
-							.OrderBy(x => x.Value ?? 0)
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderBy(c => c.Value ?? 0)
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 
 					break;
-				case COMPARE:
+				case CompareColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
-							.OrderByDescending(x => x.Compare ?? 0)
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderByDescending(c => c.Compare ?? 0)
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 					else
 					{
 						_cheatList = _cheatList
-							.OrderBy(x => x.Compare ?? 0)
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderBy(c => c.Compare ?? 0)
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 
 					break;
-				case ON:
+				case OnColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
-							.OrderByDescending(x => x.Enabled)
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderByDescending(c => c.Enabled)
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 					else
 					{
 						_cheatList = _cheatList
-							.OrderBy(x => x.Enabled)
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderBy(c => c.Enabled)
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 
 					break;
-				case DOMAIN:
+				case DomainColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
-							.OrderByDescending(x => x.Domain)
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderByDescending(c => c.Domain)
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 					else
 					{
 						_cheatList = _cheatList
-							.OrderBy(x => x.Domain)
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderBy(c => c.Domain)
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 
 					break;
-				case SIZE:
+				case SizeColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
-							.OrderByDescending(x => ((int)x.Size))
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderByDescending(c => ((int)c.Size))
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 					else
 					{
 						_cheatList = _cheatList
-							.OrderBy(x => ((int)x.Size))
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderBy(c => ((int)c.Size))
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 
 					break;
-				case ENDIAN:
+				case EndianColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
-							.OrderByDescending(x => x.BigEndian)
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderByDescending(c => c.BigEndian)
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 					else
 					{
 						_cheatList = _cheatList
-							.OrderBy(x => x.BigEndian)
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderBy(c => c.BigEndian)
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 
 					break;
-				case TYPE:
+				case TypeColumn:
 					if (reverse)
 					{
 						_cheatList = _cheatList
-							.OrderByDescending(x => x.Type)
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderByDescending(c => c.Type)
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 					else
 					{
 						_cheatList = _cheatList
-							.OrderBy(x => x.Type)
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderBy(c => c.Type)
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 
 					break;
-				case COMPARISONTYPE:
+				case ComparisonType:
 					if (reverse)
 					{
 						_cheatList = _cheatList
-							.OrderByDescending(x => x.ComparisonType)
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderByDescending(c => c.ComparisonType)
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 					else
 					{
 						_cheatList = _cheatList
-							.OrderBy(x => x.ComparisonType)
-							.ThenBy(x => x.Name)
-							.ThenBy(x => x.Address ?? 0)
+							.OrderBy(c => c.ComparisonType)
+							.ThenBy(c => c.Name)
+							.ThenBy(c => c.Address ?? 0)
 							.ToList();
 					}
 
@@ -720,16 +732,5 @@ namespace BizHawk.Client.Common
 
 			public Cheat Cheat { get; private set; }
 		}
-
-		public const string NAME = "NamesColumn";
-		public const string ADDRESS = "AddressColumn";
-		public const string VALUE = "ValueColumn";
-		public const string COMPARE = "CompareColumn";
-		public const string ON = "OnColumn";
-		public const string DOMAIN = "DomainColumn";
-		public const string SIZE = "SizeColumn";
-		public const string ENDIAN = "EndianColumn";
-		public const string TYPE = "DisplayTypeColumn";
-		private const string COMPARISONTYPE = "ComparisonTypeColumn";
 	}
 }

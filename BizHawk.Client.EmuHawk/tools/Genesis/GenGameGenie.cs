@@ -177,10 +177,10 @@ namespace BizHawk.Client.EmuHawk
 				_processing = true;
 
 				// remove Invalid I O Q P if pasted
-				GGCodeMaskBox.Text = GGCodeMaskBox.Text.Replace("I", string.Empty);
-				GGCodeMaskBox.Text = GGCodeMaskBox.Text.Replace("O", string.Empty);
-				GGCodeMaskBox.Text = GGCodeMaskBox.Text.Replace("Q", string.Empty);
-				GGCodeMaskBox.Text = GGCodeMaskBox.Text.Replace("U", string.Empty);
+				GGCodeMaskBox.Text = GGCodeMaskBox.Text.Replace("I", "");
+				GGCodeMaskBox.Text = GGCodeMaskBox.Text.Replace("O", "");
+				GGCodeMaskBox.Text = GGCodeMaskBox.Text.Replace("Q", "");
+				GGCodeMaskBox.Text = GGCodeMaskBox.Text.Replace("U", "");
 
 				if (GGCodeMaskBox.Text.Length > 0)
 				{
@@ -193,8 +193,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					AddressBox.Text = string.Empty;
-					ValueBox.Text = string.Empty;
+					AddressBox.Text = "";
+					ValueBox.Text = "";
 					AddCheatButton.Enabled = false;
 				}
 
@@ -210,7 +210,7 @@ namespace BizHawk.Client.EmuHawk
 				_processing = true;
 				if (Regex.IsMatch(AddressBox.Text, @"[^a-fA-F0-9]"))
 				{
-					AddressBox.Text = Regex.Replace(AddressBox.Text, @"[^a-fA-F0-9]", string.Empty);
+					AddressBox.Text = Regex.Replace(AddressBox.Text, @"[^a-fA-F0-9]", "");
 				}
 
 				if ((AddressBox.Text.Length > 0) || (ValueBox.Text.Length > 0))
@@ -232,7 +232,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					GGCodeMaskBox.Text = string.Empty;
+					GGCodeMaskBox.Text = "";
 					AddCheatButton.Enabled = false;
 				}
 
@@ -249,7 +249,7 @@ namespace BizHawk.Client.EmuHawk
 				// remove invalid character when pasted
 				if (Regex.IsMatch(ValueBox.Text, @"[^a-fA-F0-9]"))
 				{
-					ValueBox.Text = Regex.Replace(ValueBox.Text, @"[^a-fA-F0-9]", string.Empty);
+					ValueBox.Text = Regex.Replace(ValueBox.Text, @"[^a-fA-F0-9]", "");
 				}
 
 				if ((AddressBox.Text.Length > 0) || (ValueBox.Text.Length > 0))
@@ -271,7 +271,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					GGCodeMaskBox.Text = string.Empty;
+					GGCodeMaskBox.Text = "";
 					AddCheatButton.Enabled = false;
 				}
 
@@ -281,9 +281,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ClearButton_Click(object sender, EventArgs e)
 		{
-			AddressBox.Text = string.Empty;
-			ValueBox.Text = string.Empty;
-			GGCodeMaskBox.Text = string.Empty;
+			AddressBox.Text = "";
+			ValueBox.Text = "";
+			GGCodeMaskBox.Text = "";
 			AddCheatButton.Enabled = false;
 		}
 

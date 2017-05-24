@@ -6,16 +6,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
 	public class Tape
 	{
-        [SaveState.DoNotSave] private readonly byte[] _tapeData;
-		[SaveState.DoNotSave] private readonly byte _version;
-	    [SaveState.DoNotSave] private readonly int _start;
-        [SaveState.DoNotSave] private readonly int _end;
+        private readonly byte[] _tapeData;
+		private readonly byte _version;
+	    private readonly int _start;
+        private readonly int _end;
 
-        [SaveState.SaveWithName("Position")]
 	    private int _pos;
-        [SaveState.SaveWithName("Cycle")]
+
         private int _cycle;
-        [SaveState.SaveWithName("Data")]
+
         private bool _data;
 
 		public Tape(byte version, byte[] tapeData, int start, int end)
@@ -97,7 +96,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.Sync("Position", ref _pos);
+			ser.Sync("Cycle", ref _cycle);
+			ser.Sync("Data", ref _data);
 		}
 	}
 }

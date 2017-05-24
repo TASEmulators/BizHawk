@@ -15,12 +15,12 @@ namespace BizHawk.Client.Common
 {
 	public class Binding
 	{
-		public string DisplayName;
-		public string Bindings;
-		public string DefaultBinding;
-		public string TabGroup;
-		public string ToolTip;
-		public int Ordinal = 0;
+		public string DisplayName { get; set; }
+		public string Bindings { get; set; }
+		public string DefaultBinding { get; set; }
+		public string TabGroup { get; set; }
+		public string ToolTip { get; set; }
+		public int Ordinal { get; set; }
 	}
 
 	[Newtonsoft.Json.JsonObject]
@@ -29,9 +29,9 @@ namespace BizHawk.Client.Common
 		public List<Binding> Bindings { get; }
 
 		[Newtonsoft.Json.JsonConstructor]
-		public BindingCollection(List<Binding> Bindings)
+		public BindingCollection(List<Binding> bindings)
 		{
-			this.Bindings = Bindings;
+			Bindings = bindings;
 		}
 
 		public BindingCollection()
@@ -59,41 +59,44 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				return Bindings.FirstOrDefault(x => x.DisplayName == index) ?? new Binding();
+				return Bindings.FirstOrDefault(b => b.DisplayName == index) ?? new Binding();
 			}
 		}
 
 		private static Binding Bind(string tabGroup, string displayName, string bindings = "", string defaultBinding = "", string toolTip = "")
 		{
 			if (string.IsNullOrEmpty(defaultBinding))
+			{
 				defaultBinding = bindings;
+			}
+
 			return new Binding { DisplayName = displayName, Bindings = bindings, TabGroup = tabGroup, DefaultBinding = defaultBinding, ToolTip = toolTip };
 		}
 
 		public void ResolveWithDefaults()
 		{
-			//TODO - this method is potentially disastrously O(N^2) slow due to linear search nested in loop
+			// TODO - this method is potentially disastrously O(N^2) slow due to linear search nested in loop
 
 			// Add missing entries
-			foreach (Binding default_binding in DefaultValues)
+			foreach (Binding defaultBinding in DefaultValues)
 			{
-				var binding = Bindings.FirstOrDefault(x => x.DisplayName == default_binding.DisplayName);
+				var binding = Bindings.FirstOrDefault(b => b.DisplayName == defaultBinding.DisplayName);
 				if (binding == null)
 				{
-					Bindings.Add(default_binding);
+					Bindings.Add(defaultBinding);
 				}
 				else
 				{
 					// patch entries with updated settings (necessary because of TODO LARP
-					binding.Ordinal = default_binding.Ordinal;
-					binding.DefaultBinding = default_binding.DefaultBinding;
-					binding.TabGroup = default_binding.TabGroup;
-					binding.ToolTip = default_binding.ToolTip;
-					binding.Ordinal = default_binding.Ordinal;
+					binding.Ordinal = defaultBinding.Ordinal;
+					binding.DefaultBinding = defaultBinding.DefaultBinding;
+					binding.TabGroup = defaultBinding.TabGroup;
+					binding.ToolTip = defaultBinding.ToolTip;
+					binding.Ordinal = defaultBinding.Ordinal;
 				}
 			}
 
-			List<Binding> entriesToRemove = (from entry in Bindings let binding = DefaultValues.FirstOrDefault(x => x.DisplayName == entry.DisplayName) where binding == null select entry).ToList();
+			List<Binding> entriesToRemove = (from entry in Bindings let binding = DefaultValues.FirstOrDefault(b => b.DisplayName == entry.DisplayName) where binding == null select entry).ToList();
 
 			// Remove entries that no longer exist in defaults
 			foreach (Binding entry in entriesToRemove)
@@ -102,15 +105,15 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		static List<Binding> s_DefaultValues;
+		private static List<Binding> _defaultValues;
 
 		public static List<Binding> DefaultValues
 		{
 			get
 			{
-				if (s_DefaultValues == null)
+				if (_defaultValues == null)
 				{
-					s_DefaultValues = new List<Binding>
+					_defaultValues = new List<Binding>
 					{
 						Bind("General", "Frame Advance", "F"),
 						Bind("General", "Rewind", "Shift+R, J1 B7, X1 LeftTrigger"),
@@ -129,7 +132,7 @@ namespace BizHawk.Client.Common
 						Bind("General", "Open ROM", "Ctrl+O"),
 						Bind("General", "Close ROM", "Ctrl+W"),
 						Bind("General", "Load Last ROM"),
-						Bind("General", "Flush SRAM", "Ctrl+S"),
+						Bind("General", "Flush SaveRAM", "Ctrl+S"),
 						Bind("General", "Display FPS"),
 						Bind("General", "Frame Counter"),
 						Bind("General", "Lag Counter"),
@@ -151,6 +154,7 @@ namespace BizHawk.Client.Common
 						Bind("General", "Screen Raw to Clipboard", "Ctrl+C"),
 						Bind("General", "Screen Client to Clipboard", "Ctrl+Shift+C"),
 						Bind("General", "Toggle Skip Lag Frame"),
+						Bind("General", "Toggle Key Priority"),
 
 						Bind("Save States", "Save State 0", "Shift+F10"),
 						Bind("Save States", "Save State 1", "Shift+F1"),
@@ -257,13 +261,13 @@ namespace BizHawk.Client.Common
 					};
 
 					// set ordinals based on order in list
-					for (int i = 0; i < s_DefaultValues.Count; i++)
+					for (int i = 0; i < _defaultValues.Count; i++)
 					{
-						s_DefaultValues[i].Ordinal = i;
+						_defaultValues[i].Ordinal = i;
 					}
 				} // if (s_DefaultValues == null)
 
-				return s_DefaultValues;
+				return _defaultValues;
 			}
 		}
 	}

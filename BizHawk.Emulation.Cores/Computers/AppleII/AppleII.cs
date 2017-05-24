@@ -172,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 				_prevPressed = false;
 			}
 
-			_machine.BizFrameAdvance(RealButtons.Where(b => controller.IsPressed(b)));
+			_machine.BizFrameAdvance(RealButtons.Where(controller.IsPressed));
 			if (IsLagFrame)
 			{
 				LagCount++;

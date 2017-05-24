@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
 	public sealed class Disk
 	{
-		[SaveState.DoNotSave] public const int FluxBitsPerEntry = 32;
-		[SaveState.DoNotSave] public const int FluxBitsPerTrack = 16000000 / 5;
-		[SaveState.DoNotSave] public const int FluxEntriesPerTrack = FluxBitsPerTrack / FluxBitsPerEntry;
-		[SaveState.DoNotSave] private int[][] _tracks;
-		[SaveState.DoNotSave] private readonly int[] _originalMedia;
-		[SaveState.DoNotSave] public bool Valid;
-		[SaveState.SaveWithName("DiskIsWriteProtected")] public bool WriteProtected;
+		public const int FluxBitsPerEntry = 32;
+		public const int FluxBitsPerTrack = 16000000 / 5;
+		public const int FluxEntriesPerTrack = FluxBitsPerTrack / FluxBitsPerEntry;
+		private int[][] _tracks;
+		private readonly int[] _originalMedia;
+		public bool Valid;
+		public bool WriteProtected;
 
 		/// <summary>
 		/// Create a blank, unformatted disk.
@@ -162,18 +162,23 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 		public void SyncState(Serializer ser)
 		{
-			if (ser.IsReader)
-			{
-				var mediaState = new int[_originalMedia.Length];
-				SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
-				_tracks = DeserializeTracks(mediaState);
-			}
-			else if (ser.IsWriter)
-			{
-				var mediaState = SerializeTracks(_tracks);
-				SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
-			}
-			SaveState.SyncObject(ser, this);
+			ser.Sync("WriteProtected", ref WriteProtected);
+
+			// Currently nothing actually writes to _tracks and so it is always the same as _originalMedia
+			// So commenting out this (very slow) code for now
+			// If/when disk writing is implemented, Disk.cs should implement ISaveRam as a means of file storage of the new disk state
+			// And this code needs to be rethought to be reasonably performant
+			//if (ser.IsReader)
+			//{
+			//	var mediaState = new int[_originalMedia.Length];
+			//	SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
+			//	_tracks = DeserializeTracks(mediaState);
+			//}
+			//else if (ser.IsWriter)
+			//{
+			//	var mediaState = SerializeTracks(_tracks);
+			//	SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
+			//}
 		}
 	}
 }

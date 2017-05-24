@@ -52,9 +52,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 				ServiceProvider = ser;
 				CoreComm = comm;
-
-				CoreComm.VsyncNum = 262144;
-				CoreComm.VsyncDen = 4389;
 				CoreComm.NominalWidth = 240;
 				CoreComm.NominalHeight = 160;
 				PutSettings(_settings);

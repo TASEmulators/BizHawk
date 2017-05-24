@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 	{
 		public Subtitle()
 		{
-			Message = string.Empty;
+			Message = "";
 			X = 0;
 			Y = 0;
 			Duration = 120;
@@ -83,7 +83,7 @@ namespace BizHawk.Client.Common
 			// Color tag open
 			if (addcolortag)
 			{
-				uint rgb = (Color & 0x00FFFFFF);
+				uint rgb = Color & 0x00FFFFFF;
 				sb.Append("<font color=\"#");
 				sb.Append(rgb.ToString("X6"));
 				sb.Append("\">");

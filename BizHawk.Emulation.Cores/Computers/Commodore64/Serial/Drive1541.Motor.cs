@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
 	public sealed partial class Drive1541
 	{
-		[SaveState.DoNotSave] private int _tempStep;
-		[SaveState.DoNotSave] private int _tempPrB1;
+		private int _tempStep;
+		private int _tempPrB1;
 
 		private void ExecuteMotor()
 		{

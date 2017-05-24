@@ -58,6 +58,11 @@ void SMP::enter() {
     }
 
     debugger.op_exec(regs.pc);
+		if(interface()->wanttrace & TRACE_SMP_MASK)
+		{
+			auto str = disassemble_opcode(regs.pc);
+			interface()->cpuTrace(TRACE_SMP, (const char*)str);
+		}
     op_step();
   }
 }

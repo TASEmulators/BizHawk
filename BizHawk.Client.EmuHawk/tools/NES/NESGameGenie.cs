@@ -129,7 +129,7 @@ namespace BizHawk.Client.EmuHawk
 			AddressBox.Text =
 				CompareBox.Text =
 				ValueBox.Text =
-				string.Empty;
+				"";
 
 			AddCheat.Enabled = false;
 		}
@@ -174,7 +174,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearButton_Click(object sender, EventArgs e)
 		{
 			ClearProperties();
-			GameGenieCode.Text = string.Empty;
+			GameGenieCode.Text = "";
 			Encoding.Checked = false;
 		}
 
@@ -231,7 +231,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (GameGenieCode.Text.Length < 8)
 			{
-				var code = string.Empty;
+				var code = "";
 				if (sender == A) code = "A";
 				if (sender == P) code += "P";
 				if (sender == Z) code += "Z";

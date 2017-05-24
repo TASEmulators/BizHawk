@@ -2,38 +2,38 @@
 {
 	public sealed partial class Vic
 	{
-		[SaveState.DoNotSave] private int _borderPixel;
-		[SaveState.DoNotSave] private int _bufferPixel;
-		[SaveState.DoNotSave] private int _ecmPixel;
-		[SaveState.DoNotSave] private int _pixel;
-		[SaveState.DoNotSave] private int _pixelCounter;
-		[SaveState.DoNotSave] private int _pixelData;
-		[SaveState.DoNotSave] private int _pixelOwner;
-		[SaveState.DoNotSave] private int _sprData;
-		[SaveState.DoNotSave] private int _sprIndex;
-		[SaveState.DoNotSave] private int _sprPixel;
+		private int _borderPixel;
+		private int _bufferPixel;
+		private int _ecmPixel;
+		private int _pixel;
+		private int _pixelCounter;
+		private int _pixelData;
+		private int _pixelOwner;
+		private int _sprData;
+		private int _sprIndex;
+		private int _sprPixel;
 		private int _srSync;
 		private int _srColorSync;
 		private int _srColorIndexLatch;
 		private int _videoMode;
 		private int _borderOnShiftReg;
 
-		[SaveState.DoNotSave] private const int VideoMode000 = 0;
-		[SaveState.DoNotSave] private const int VideoMode001 = 1;
-		[SaveState.DoNotSave] private const int VideoMode010 = 2;
-		[SaveState.DoNotSave] private const int VideoMode011 = 3;
-		[SaveState.DoNotSave] private const int VideoMode100 = 4;
-		[SaveState.DoNotSave] private const int VideoModeInvalid = -1;
+		private const int VideoMode000 = 0;
+		private const int VideoMode001 = 1;
+		private const int VideoMode010 = 2;
+		private const int VideoMode011 = 3;
+		private const int VideoMode100 = 4;
+		private const int VideoModeInvalid = -1;
 
-		[SaveState.DoNotSave] private const int SrMask1 = 0x20000;
-		[SaveState.DoNotSave] private const int SrMask2 = SrMask1 << 1;
-		[SaveState.DoNotSave] private const int SrMask3 = SrMask1 | SrMask2;
-		[SaveState.DoNotSave] private const int SrColorMask = 0x8000;
-		[SaveState.DoNotSave] private const int SrSpriteMask = SrSpriteMask2;
-		[SaveState.DoNotSave] private const int SrSpriteMask1 = 0x400000;
-		[SaveState.DoNotSave] private const int SrSpriteMask2 = SrSpriteMask1 << 1;
-		[SaveState.DoNotSave] private const int SrSpriteMask3 = SrSpriteMask1 | SrSpriteMask2;
-		[SaveState.DoNotSave] private const int SrSpriteMaskMc = SrSpriteMask3;
+		private const int SrMask1 = 0x20000;
+		private const int SrMask2 = SrMask1 << 1;
+		private const int SrMask3 = SrMask1 | SrMask2;
+		private const int SrColorMask = 0x8000;
+		private const int SrSpriteMask = SrSpriteMask2;
+		private const int SrSpriteMask1 = 0x400000;
+		private const int SrSpriteMask2 = SrSpriteMask1 << 1;
+		private const int SrSpriteMask3 = SrSpriteMask1 | SrSpriteMask2;
+		private const int SrSpriteMaskMc = SrSpriteMask3;
 
 		private void Render()
 		{

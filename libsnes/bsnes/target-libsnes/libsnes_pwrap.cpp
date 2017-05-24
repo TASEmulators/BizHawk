@@ -260,8 +260,9 @@ void snes_input_notify(int index)
 	BREAK(eMessage_SIG_input_notify);
 }
 
-void snes_trace(const char *msg)
+void snes_trace(uint32_t which, const char *msg)
 {
+	comm.value = which;
 	comm.str = (char*) msg;
 	BREAK(eMessage_SIG_trace_callback);
 }
@@ -462,9 +463,7 @@ void QUERY_state_hook_irq() {
 	SNES::cpu.debugger.op_irq = comm.value ? debug_op_irq : hook<void()>();
 }
 void QUERY_state_enable_trace() {
-	if (comm.value)
-		snes_set_trace_callback(snes_trace);
-	else snes_set_trace_callback(nullptr);
+	snes_set_trace_callback(comm.value, snes_trace);
 }
 void QUERY_state_enable_scanline() {
 	if (comm.value)

@@ -29,10 +29,10 @@ namespace BizHawk.Client.MultiHawk
 			MovieView.QueryItemText += MovieView_QueryItemText;
 			MovieView.VirtualMode = true;
 			_sortReverse = false;
-			_sortedCol = string.Empty;
+			_sortedCol = "";
 
 			_sortDetailsReverse = false;
-			_sortedDetailsCol = string.Empty;
+			_sortedDetailsCol = "";
 		}
 
 		private void PlayMovie_Load(object sender, EventArgs e)
@@ -46,7 +46,7 @@ namespace BizHawk.Client.MultiHawk
 
 		private void MovieView_QueryItemText(int index, int column, out string text)
 		{
-			text = string.Empty;
+			text = "";
 			if (column == 0) // File
 			{
 				text = Path.GetFileName(_movieList[index].Filename);
@@ -104,7 +104,7 @@ namespace BizHawk.Client.MultiHawk
 					}
 
 					_sortReverse = false;
-					_sortedCol = string.Empty;
+					_sortedCol = "";
 				}
 
 				return index;
@@ -153,7 +153,7 @@ namespace BizHawk.Client.MultiHawk
 		{
 			MovieView.Refresh();
 			MovieCount.Text = _movieList.Count + " movie"
-				+ (_movieList.Count != 1 ? "s" : string.Empty);
+				+ (_movieList.Count != 1 ? "s" : "");
 		}
 
 		private void PreHighlightMovie()
@@ -436,7 +436,7 @@ namespace BizHawk.Client.MultiHawk
 
 		private void MovieView_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			toolTip1.SetToolTip(DetailsView, string.Empty);
+			toolTip1.SetToolTip(DetailsView, "");
 			DetailsView.Items.Clear();
 			if (MovieView.SelectedIndices.Count < 1)
 			{

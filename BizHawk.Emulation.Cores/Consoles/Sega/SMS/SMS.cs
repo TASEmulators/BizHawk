@@ -21,47 +21,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		"SMSHawk",
 		"Vecna",
 		isPorted: false,
-		isReleased: true
-		)]
+		isReleased: true)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public sealed partial class SMS : IEmulator, ISaveRam, IStatable, IInputPollable, IRegionable,
 		IDebuggable, ISettable<SMS.SMSSettings, SMS.SMSSyncSettings>, ICodeDataLogger
 	{
-		// Constants
-		private const int BankSize = 16384;
-
-		// ROM
-		private byte[] RomData;
-		private byte RomBank0, RomBank1, RomBank2, RomBank3;
-		private byte RomBanks;
-		private byte[] BiosRom;
-
-		// Machine resources
-		private Z80A Cpu;
-		private byte[] SystemRam;
-		public VDP Vdp;
-		private SN76489 PSG;
-		private YM2413 YM2413;
-		public bool IsGameGear { get; set; }
-		public bool IsSG1000 { get; set; }
-
-		private bool HasYM2413 = false;
-		private IController _controller;
-
-		private int frame = 0;
-		
-		public int Frame { get { return frame; } set { frame = value; } }
-
-		private byte Port01 = 0xFF;
-		private byte Port02 = 0xFF;
-		private byte Port3E = 0xAF;
-		private byte Port3F = 0xFF;
-
-		private byte ForceStereoByte = 0xAD;
-		private bool IsGame3D = false;
-
-		public DisplayType Region { get; set; }
-
 		[CoreConstructor("SMS", "SG", "GG")]
 		public SMS(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
@@ -93,9 +57,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				Region = DisplayType.NTSC; // all game gears run at 60hz/NTSC mode
 			}
-
-			CoreComm.VsyncNum = Region == DisplayType.NTSC ? 60 : 50;
-			CoreComm.VsyncDen = 1;
 
 			RegionStr = SyncSettings.ConsoleRegion;
 			if (RegionStr == "Auto")
@@ -210,6 +171,40 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			serviceProvider.Register<IDisassemblable>(new Disassembler());
 			Vdp.ProcessOverscan();
 		}
+
+		// Constants
+		private const int BankSize = 16384;
+
+		// ROM
+		private byte[] RomData;
+		private byte RomBank0, RomBank1, RomBank2, RomBank3;
+		private byte RomBanks;
+		private byte[] BiosRom;
+
+		// Machine resources
+		private Z80A Cpu;
+		private byte[] SystemRam;
+		public VDP Vdp;
+		private SN76489 PSG;
+		private YM2413 YM2413;
+		public bool IsGameGear { get; set; }
+		public bool IsSG1000 { get; set; }
+
+		private bool HasYM2413 = false;
+		private IController _controller;
+
+		private int _frame = 0;
+
+		private byte Port01 = 0xFF;
+		private byte Port02 = 0xFF;
+		private byte Port3E = 0xAF;
+		private byte Port3F = 0xFF;
+
+		private byte ForceStereoByte = 0xAD;
+		private bool IsGame3D = false;
+
+		public DisplayType Region { get; set; }
+
 
 		private ITraceable Tracer { get; set; }
 

@@ -261,37 +261,31 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		[SaveState.DoNotSave]
 		public int DdrA
 		{
 			get { return _ddra; }
 		}
 
-		[SaveState.DoNotSave]
 		public int DdrB
 		{
 			get { return _ddrb; }
 		}
 
-		[SaveState.DoNotSave]
 		public int PrA
 		{
 			get { return _pra; }
 		}
 
-		[SaveState.DoNotSave]
 		public int PrB
 		{
 			get { return _prb; }
 		}
 
-		[SaveState.DoNotSave]
 		public int EffectivePrA
 		{
 			get { return _pra | ~_ddra; }
 		}
 
-		[SaveState.DoNotSave]
 		public int EffectivePrB
 		{
 			get { return _prb | ~_ddrb; }

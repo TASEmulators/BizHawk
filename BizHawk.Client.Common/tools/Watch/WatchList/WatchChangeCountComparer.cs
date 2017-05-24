@@ -9,17 +9,16 @@ namespace BizHawk.Client.Common
 	public sealed partial class WatchList
 	{
 		/// <summary>
-		/// Netsed private class that define how to compare two <see cref="Watch"/>
+		/// Nested private class that define how to compare two <see cref="Watch"/>
 		/// based on the number of changes
 		/// </summary>
 		private sealed class WatchChangeCountComparer
-			:WatchEqualityComparer
-			,IComparer<Watch>
+			: WatchEqualityComparer, IComparer<Watch>
 		{
 			/// <summary>
 			/// Compares two <see cref="Watch"/> between them
-			/// and determines wich one comes first.
-			/// If they are equals, comapraison will done one the address and next on size
+			/// and determines which one comes first.
+			/// If they are equals, comparison will done one the address and next on size
 			/// </summary>
 			/// <param name="x">First <see cref="Watch"/></param>
 			/// <param name="y">Second <see cref="Watch"/></param>
@@ -30,21 +29,18 @@ namespace BizHawk.Client.Common
 				{
 					return 0;
 				}
-				else if (x.ChangeCount.Equals(y.ChangeCount))
+
+				if (x.ChangeCount.Equals(y.ChangeCount))
 				{
 					if (x.Address.Equals(y.Address))
 					{
 						return x.Size.CompareTo(y.Size);
 					}
-					else
-					{
-						return x.Address.CompareTo(y.Address);
-					}
+
+					return x.Address.CompareTo(y.Address);
 				}
-				else
-				{
-					return x.ChangeCount.CompareTo(y.ChangeCount);
-				}
+
+				return x.ChangeCount.CompareTo(y.ChangeCount);
 			}
 		}
 	}

@@ -201,9 +201,9 @@ namespace BizHawk.Client.EmuHawk
 			IDictionary<string, Dictionary<string, string>> autofire,
 			IDictionary<string, Dictionary<string, Config.AnalogBind>> analog)
 		{
-			LoadToPanel(NormalControlsTab, _theDefinition.Name, _theDefinition.BoolButtons, _theDefinition.CategoryLabels, normal, string.Empty, CreateNormalPanel);
-			LoadToPanel(AutofireControlsTab, _theDefinition.Name, _theDefinition.BoolButtons, _theDefinition.CategoryLabels, autofire, string.Empty, CreateNormalPanel);
-			LoadToPanel(AnalogControlsTab, _theDefinition.Name, _theDefinition.FloatControls, _theDefinition.CategoryLabels, analog, new Config.AnalogBind(string.Empty, 1.0f, 0.1f), CreateAnalogPanel);
+			LoadToPanel(NormalControlsTab, _theDefinition.Name, _theDefinition.BoolButtons, _theDefinition.CategoryLabels, normal, "", CreateNormalPanel);
+			LoadToPanel(AutofireControlsTab, _theDefinition.Name, _theDefinition.BoolButtons, _theDefinition.CategoryLabels, autofire, "", CreateNormalPanel);
+			LoadToPanel(AnalogControlsTab, _theDefinition.Name, _theDefinition.FloatControls, _theDefinition.CategoryLabels, analog, new Config.AnalogBind("", 1.0f, 0.1f), CreateAnalogPanel);
 
 			if (AnalogControlsTab.Controls.Count == 0)
 			{

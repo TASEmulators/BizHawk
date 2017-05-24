@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 
 			set
 			{
-				PromptLabel.Text = value ?? string.Empty;
+				PromptLabel.Text = value ?? "";
 				Height += PromptLabel.Font.Height * Message.Count(x => x == '\n');
 			}
 		}
@@ -42,12 +42,12 @@ namespace BizHawk.Client.EmuHawk
 		public string InitialValue
 		{
 			get { return PromptBox.Text; }
-			set { PromptBox.Text = value ?? string.Empty; }
+			set { PromptBox.Text = value ?? ""; }
 		}
 
 		public string PromptText
 		{
-			get { return PromptBox.Text ?? string.Empty; }
+			get { return PromptBox.Text ?? ""; }
 		}
 
 		private void InputPrompt_Load(object sender, EventArgs e)

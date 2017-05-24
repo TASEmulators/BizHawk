@@ -3,9 +3,9 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using Emu = BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
+using Emu = BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -46,14 +46,9 @@ namespace BizHawk.Client.EmuHawk
 					.Select(d => d.ToString())
 					.ToArray());
 
-				if (MemoryDomains.HasSystemBus)
-				{
-					DomainDropDown.SelectedItem = MemoryDomains.SystemBus.ToString();
-				}
-				else
-				{
-					DomainDropDown.SelectedItem = MemoryDomains.MainMemory.ToString();
-				}
+				DomainDropDown.SelectedItem = MemoryDomains.HasSystemBus
+					? MemoryDomains.SystemBus.ToString()
+					: MemoryDomains.MainMemory.ToString();
 			}
 
 			SetFormToDefault();
@@ -79,29 +74,28 @@ namespace BizHawk.Client.EmuHawk
 
 			ValueHexIndLabel.Text =
 				CompareHexIndLabel.Text =
-				_cheat.Type == DisplayType.Hex ? HexInd : string.Empty;
+				_cheat.Type == DisplayType.Hex ? HexInd : "";
 
-			BigEndianCheckBox.Checked = _cheat.BigEndian.Value;
+			BigEndianCheckBox.Checked = _cheat.BigEndian ?? false;
 
 			NameBox.Text = _cheat.Name;
 			AddressBox.Text = _cheat.AddressStr;
 			ValueBox.Text = _cheat.ValueStr;
-			CompareBox.Text = _cheat.Compare.HasValue ? _cheat.CompareStr : String.Empty;
+			CompareBox.Text = _cheat.Compare.HasValue ? _cheat.CompareStr : "";
 
-			if (_cheat.ComparisonType.Equals(Cheat.COMPARISONTYPE.NONE))
+			if (_cheat.ComparisonType.Equals(Cheat.CompareType.None))
 			{
 				CompareTypeDropDown.SelectedIndex = 0;
 			}
 			else
 			{
-				CompareTypeDropDown.SelectedIndex = ((int)_cheat.ComparisonType - 1);
+				CompareTypeDropDown.SelectedIndex = (int)_cheat.ComparisonType - 1;
 			}
-			
 
 			CheckFormState();
 			if (!_cheat.Compare.HasValue)
 			{
-				CompareBox.Text = String.Empty; // Necessary hack until WatchValueBox.ToRawInt() becomes nullable
+				CompareBox.Text = ""; // Necessary hack until WatchValueBox.ToRawInt() becomes nullable
 			}
 
 			_loading = false;
@@ -113,7 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			SetSizeSelected(WatchSize.Byte);
 			PopulateTypeDropdown();
 
-			NameBox.Text = string.Empty;
+			NameBox.Text = "";
 
 			if (MemoryDomains != null)
 			{
@@ -140,7 +134,7 @@ namespace BizHawk.Client.EmuHawk
 			SetTypeSelected(DisplayType.Hex);
 
 			CheckFormState();
-			CompareBox.Text = string.Empty; // TODO: A needed hack until WatchValueBox.ToRawInt() becomes nullable
+			CompareBox.Text = ""; // TODO: A needed hack until WatchValueBox.ToRawInt() becomes nullable
 			_loading = false;
 		}
 
@@ -192,22 +186,25 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 0:
-					foreach(DisplayType t in ByteWatch.ValidTypes)
+					foreach (DisplayType t in ByteWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}
+
 					break;
 				case 1:
 					foreach (DisplayType t in WordWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}
+
 					break;
 				case 2:
 					foreach (DisplayType t in DWordWatch.ValidTypes)
 					{
 						DisplayTypeDropDown.Items.Add(Watch.DisplayTypeToString(t));
 					}
+
 					break;
 			}
 
@@ -216,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CheckFormState()
 		{
-			var valid = !String.IsNullOrWhiteSpace(AddressBox.Text) && !String.IsNullOrWhiteSpace(ValueBox.Text);
+			var valid = !string.IsNullOrWhiteSpace(AddressBox.Text) && !string.IsNullOrWhiteSpace(ValueBox.Text);
 			AddButton.Enabled = valid;
 			EditButton.Enabled = _editmode && valid;
 		}
@@ -265,18 +262,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddButton_Click(object sender, EventArgs e)
 		{
-			if (_addCallback != null)
-			{
-				_addCallback();
-			}
+			_addCallback?.Invoke();
 		}
 
 		private void EditButton_Click(object sender, EventArgs e)
 		{
-			if (_editCallback != null)
-			{
-				_editCallback();
-			}
+			_editCallback?.Invoke();
 		}
 
 		#endregion
@@ -304,16 +295,12 @@ namespace BizHawk.Client.EmuHawk
 			SetFormToDefault();
 		}
 
-		public Cheat OriginalCheat
-		{
-			get { return _cheat; }
-		}
+		public Cheat OriginalCheat => _cheat;
 
 		public Cheat GetCheat()
 		{
-			Cheat.COMPARISONTYPE comparisonType = Cheat.COMPARISONTYPE.NONE;
 			var domain = MemoryDomains[DomainDropDown.SelectedItem.ToString()];
-			var address = AddressBox.ToRawInt().Value;				
+			var address = AddressBox.ToRawInt().Value;
 			if (address < domain.Size)
 			{
 				var watch = Watch.GenerateWatch(
@@ -322,36 +309,47 @@ namespace BizHawk.Client.EmuHawk
 					GetCurrentSize(),
 					Watch.StringToDisplayType(DisplayTypeDropDown.SelectedItem.ToString()),
 					BigEndianCheckBox.Checked,
-					NameBox.Text
-				);
+					NameBox.Text);
 
+				Cheat.CompareType comparisonType;
 				switch (CompareTypeDropDown.SelectedItem.ToString())
 				{
-					case "": comparisonType = Cheat.COMPARISONTYPE.NONE; break;
-					case "=": comparisonType = Cheat.COMPARISONTYPE.EQUAL; break;
-					case ">": comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN; break;
-					case ">=": comparisonType = Cheat.COMPARISONTYPE.GREATER_THAN_OR_EQUAL; break;
-					case "<": comparisonType = Cheat.COMPARISONTYPE.LESS_THAN; break;
-					case "<=": comparisonType = Cheat.COMPARISONTYPE.LESS_THAN_OR_EQUAL; break;
-					case "!=": comparisonType = Cheat.COMPARISONTYPE.NOT_EQUAL; break;
-					default: comparisonType = Cheat.COMPARISONTYPE.NONE; break;
+					case "":
+						comparisonType = Cheat.CompareType.None;
+						break;
+					case "=":
+						comparisonType = Cheat.CompareType.Equal;
+						break;
+					case ">":
+						comparisonType = Cheat.CompareType.GreaterThan;
+						break;
+					case ">=":
+						comparisonType = Cheat.CompareType.GreaterThanOrEqual;
+						break;
+					case "<":
+						comparisonType = Cheat.CompareType.LessThan;
+						break;
+					case "<=":
+						comparisonType = Cheat.CompareType.LessThanOrEqual;
+						break;
+					case "!=":
+						comparisonType = Cheat.CompareType.NotEqual;
+						break;
+					default:
+						comparisonType = Cheat.CompareType.None;
+						break;
 				}
-
-				int? c = CompareBox.ToRawInt() == null ? null : (int?)CompareBox.ToRawInt().Value;
-
 
 				return new Cheat(
 					watch,
 					ValueBox.ToRawInt().Value,
 					CompareBox.ToRawInt() == null ? null : (int?)CompareBox.ToRawInt().Value,
 					true,
-					comparisonType
-				);
-					
+					comparisonType);
 			}
 			else
 			{
-				MessageBox.Show(address.ToString() + " is not a valid address for the domain " + domain.Name, "Index out of range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				MessageBox.Show(address + " is not a valid address for the domain " + domain.Name, "Index out of range", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return Cheat.Separator;
 			}
 		}
@@ -372,7 +370,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			WatchValueBox compareBox = (WatchValueBox)sender;
 
-			PopulateComparisonTypeBox(String.IsNullOrWhiteSpace(compareBox.Text));
+			PopulateComparisonTypeBox(string.IsNullOrWhiteSpace(compareBox.Text));
 		}
 
 		/// <summary>
@@ -381,30 +379,31 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="empty">True if drop down should be left empty</param>
 		private void PopulateComparisonTypeBox(bool empty = false)
 		{
-
 			// Don't need to do anything in this case
-			if(empty && this.CompareTypeDropDown.Items.Count == 1)
+			if (empty && CompareTypeDropDown.Items.Count == 1)
 			{
 				return;
 			}
 			
 			// Don't need to do anything in this case
-			if (!empty && this.CompareTypeDropDown.Items.Count == 6)
+			if (!empty && CompareTypeDropDown.Items.Count == 6)
 			{
 				return;
 			}
 
-			this.CompareTypeDropDown.Items.Clear();
+			CompareTypeDropDown.Items.Clear();
 
 			if (empty)
 			{
-				this.CompareTypeDropDown.Items.AddRange(new object[] {
+				CompareTypeDropDown.Items.AddRange(new object[]
+				{
 					""
 				});
 			}
 			else 
 			{
-				this.CompareTypeDropDown.Items.AddRange(new object[] {
+				CompareTypeDropDown.Items.AddRange(new object[]
+				{
 					"=",
 					">",
 					">=",
@@ -414,8 +413,7 @@ namespace BizHawk.Client.EmuHawk
 				});
 			}
 
-			this.CompareTypeDropDown.SelectedIndex = 0;
-
+			CompareTypeDropDown.SelectedIndex = 0;
 		}
 	}
 }

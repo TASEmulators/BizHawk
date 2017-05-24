@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
@@ -25,11 +24,12 @@ namespace BizHawk.Client.Common
 				{
 					lineNum++;
 
-					if (line == string.Empty)
+					if (line == "")
 					{
 						continue;
 					}
-					else if (line[0] == '|')
+
+					if (line[0] == '|')
 					{
 						// TODO: import a frame of input
 						// TODO: report any errors importing this frame and bail out if so
@@ -45,9 +45,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.ToLower().StartsWith("emuversion"))
 					{
-						Result.Movie.Comments.Add(
-							string.Format("{0} {1} version {2}", EMULATIONORIGIN, emulator, ParseHeader(line, "emuVersion"))
-						);
+						Result.Movie.Comments.Add($"{Emulationorigin} {emulator} version {ParseHeader(line, "emuVersion")}");
 					}
 					else if (line.ToLower().StartsWith("version"))
 					{
@@ -59,7 +57,7 @@ namespace BizHawk.Client.Common
 						}
 						else
 						{
-							Result.Movie.Comments.Add(MOVIEORIGIN + " .fm2 version 3");
+							Result.Movie.Comments.Add(Movieorigin + " .fm2 version 3");
 						}
 					}
 					else if (line.ToLower().StartsWith("romfilename"))
@@ -96,7 +94,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.ToLower().StartsWith("guid"))
 					{
-						continue; //We no longer care to keep this info
+						continue; // We no longer care to keep this info
 					}
 					else if (line.ToLower().StartsWith("startsfromsavestate"))
 					{
@@ -113,7 +111,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line.ToLower().StartsWith("fourscore"))
 					{
-						bool fourscore = (ParseHeader(line, "fourscore") == "1");
+						bool fourscore = ParseHeader(line, "fourscore") == "1";
 						if (fourscore)
 						{
 							// TODO: set controller config sync settings
@@ -171,26 +169,26 @@ namespace BizHawk.Client.Common
 			{
 				return null;
 			}
+
 			if (blob[0] == '0' && (blob[1] == 'x' || blob[1] == 'X'))
 			{
 				// hex
 				return Util.HexStringToBytes(blob.Substring(2));
 			}
-			else
+
+			// base64
+			if (!blob.ToLower().StartsWith("base64:"))
 			{
-				// base64
-				if (!blob.ToLower().StartsWith("base64:"))
-				{
-					return null;
-				}
-				try
-				{
-					return Convert.FromBase64String(blob.Substring(7));
-				}
-				catch (FormatException)
-				{
-					return null;
-				}
+				return null;
+			}
+
+			try
+			{
+				return Convert.FromBase64String(blob.Substring(7));
+			}
+			catch (FormatException)
+			{
+				return null;
 			}
 		}
 	}

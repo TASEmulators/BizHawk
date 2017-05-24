@@ -7,34 +7,32 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Sets the controller source used to generate an input log entry
 		/// </summary>
-		/// <param name="source"></param>
 		void SetSource(IController source);
 
 		/// <summary>
 		/// Generates an input log entry for the current state of Source
 		/// </summary>
-		/// <returns></returns>
 		string GenerateLogEntry();
 
 		/// <summary>
-		/// Generates a display friendly verion of the input log entry
+		/// Generates a display friendly version of the input log entry
 		/// </summary>
-		/// <returns></returns>
 		string GenerateInputDisplay();
 
 		/// <summary>
-		/// Returns whether or not the current controller state is "empty"
+		/// Gets a value indicating whether or not the current controller state is "empty"
 		/// </summary>
 		bool IsEmpty { get; }
 
 		/// <summary>
-		/// Returns an input log entry that is considered empty. (booleans will be false, floats will be 0)
+		/// Gets an input log entry that is considered empty. (booleans will be false, floats will be 0)
 		/// </summary>
 		string EmptyEntry { get; }
 
 		/// <summary>
-		/// Returns a movie controller adapter in the same state 
+		/// Gets a movie controller adapter in the same state as the log entry
 		/// </summary>
+		/// <seealso cref="IMovieController"/>
 		IMovieController MovieControllerAdapter { get; }
 	}
 }

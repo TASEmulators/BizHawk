@@ -1,43 +1,37 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Cia
 	{
-		private abstract class Port
+		private interface IPort
 		{
-			public abstract int ReadPra(int pra, int ddra, int prb, int ddrb);
-			public abstract int ReadPrb(int pra, int ddra, int prb, int ddrb);
+			int ReadPra(int pra, int ddra, int prb, int ddrb);
+			int ReadPrb(int pra, int ddra, int prb, int ddrb);
 
-			public void SyncState(Serializer ser)
-			{
-				SaveState.SyncObject(ser, this);
-			}
+			// If an IPort needs to save state we can do it with something like this:
+			// void SyncState(Serializer ser);
 		}
 
-		private sealed class DisconnectedPort : Port
+		private sealed class DisconnectedPort : IPort
 		{
-			public override int ReadPra(int pra, int ddra, int prb, int ddrb)
+			public int ReadPra(int pra, int ddra, int prb, int ddrb)
 			{
 				return (pra | ~ddra) & 0xFF;
 			}
 
-			public override int ReadPrb(int pra, int ddra, int prb, int ddrb)
+			public int ReadPrb(int pra, int ddra, int prb, int ddrb)
 			{
 				return (prb | ~ddrb) & 0xFF;
 			}
 		}
 
-		private sealed class JoystickKeyboardPort : Port
+		private sealed class JoystickKeyboardPort : IPort
 		{
-			[SaveState.DoNotSave] private int _ret;
-			[SaveState.DoNotSave] private int _tst;
-			[SaveState.DoNotSave] private readonly Func<bool[]> _readJoyData;
-			[SaveState.DoNotSave] private readonly Func<bool[]> _readKeyData;
+			private int _ret;
+			private int _tst;
+			private readonly Func<bool[]> _readJoyData;
+			private readonly Func<bool[]> _readKeyData;
 
 			public JoystickKeyboardPort(Func<bool[]> readJoyData, Func<bool[]> readKeyData)
 			{
@@ -112,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				return result;
 			}
 
-			public override int ReadPra(int pra, int ddra, int prb, int ddrb)
+			public int ReadPra(int pra, int ddra, int prb, int ddrb)
 			{
 				_ret = (pra | ~ddra) & 0xFF;
 				_tst = (prb | ~ddrb) & GetJoystick1();
@@ -120,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				return _ret & GetJoystick2();
 			}
 
-			public override int ReadPrb(int pra, int ddra, int prb, int ddrb)
+			public int ReadPrb(int pra, int ddra, int prb, int ddrb)
 			{
 				_ret = ~ddrb & 0xFF;
 				_tst = (pra | ~ddra) & GetJoystick2();
@@ -129,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		private sealed class IecPort : Port
+		private sealed class IecPort : IPort
 		{
 			private readonly Func<int> _readIec;
 
@@ -138,12 +132,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_readIec = readIec;
 			}
 
-			public override int ReadPra(int pra, int ddra, int prb, int ddrb)
+			public int ReadPra(int pra, int ddra, int prb, int ddrb)
 			{
 				return (pra & ddra) | (~ddra & _readIec());
 			}
 
-			public override int ReadPrb(int pra, int ddra, int prb, int ddrb)
+			public int ReadPrb(int pra, int ddra, int prb, int ddrb)
 			{
 				return (prb | ~ddrb) & 0xFF;
 			}

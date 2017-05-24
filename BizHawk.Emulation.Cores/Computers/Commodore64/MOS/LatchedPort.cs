@@ -39,7 +39,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.Sync("Direction", ref Direction);
+			ser.Sync("Latch", ref Latch);
 		}
 	}
 
@@ -79,7 +80,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.Sync("Direction", ref Direction);
+			ser.Sync("Latch", ref Latch);
 		}
 	}
 }

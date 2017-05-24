@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private long _row;
 		private long _addr;
-		private string _findStr = string.Empty;
+		private string _findStr = "";
 		private bool _mouseIsDown;
 		private byte[] _rom;
 		private MemoryDomain _romDomain;
@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 			// Do nothing
 		}
 
-		private string _lastRom = string.Empty;
+		private string _lastRom = "";
 
 		public void Restart()
 		{
@@ -234,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			long found = -1;
 
-			var search = value.Replace(" ", string.Empty).ToUpper();
+			var search = value.Replace(" ", "").ToUpper();
 			if (string.IsNullOrEmpty(search))
 			{
 				return;
@@ -290,7 +290,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			long found = -1;
 
-			var search = value.Replace(" ", string.Empty).ToUpper();
+			var search = value.Replace(" ", "").ToUpper();
 			if (string.IsNullOrEmpty(search))
 			{
 				return;
@@ -755,11 +755,11 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 1:										
-					return Watch.GenerateWatch(_domain, address, WatchSize.Byte, Client.Common.DisplayType.Hex, BigEndian, string.Empty);
+					return Watch.GenerateWatch(_domain, address, WatchSize.Byte, Client.Common.DisplayType.Hex, BigEndian, "");
 				case 2:
-					return Watch.GenerateWatch(_domain, address, WatchSize.Word, Client.Common.DisplayType.Hex, BigEndian, string.Empty);
+					return Watch.GenerateWatch(_domain, address, WatchSize.Word, Client.Common.DisplayType.Hex, BigEndian, "");
 				case 4:
-					return Watch.GenerateWatch(_domain, address, WatchSize.DWord, Client.Common.DisplayType.Hex, BigEndian, string.Empty);
+					return Watch.GenerateWatch(_domain, address, WatchSize.DWord, Client.Common.DisplayType.Hex, BigEndian, "");
 			}
 		}
 
@@ -910,7 +910,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var result = sfd.ShowHawkDialog();
 
-			return result == DialogResult.OK ? sfd.FileName : string.Empty;
+			return result == DialogResult.OK ? sfd.FileName : "";
 		}
 
 		private string GetSaveFileFromUser()
@@ -933,7 +933,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var result = sfd.ShowHawkDialog();
 
-			return result == DialogResult.OK ? sfd.FileName : string.Empty;
+			return result == DialogResult.OK ? sfd.FileName : "";
 		}
 
 		private void ResetScrollBar()
@@ -1069,7 +1069,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private string MakeNibbles()
 		{
-			var str = string.Empty;
+			var str = "";
 			for (var x = 0; x < (DataSize * 2); x++)
 			{
 				if (_nibbles[x] != 'G')
@@ -1181,7 +1181,7 @@ namespace BizHawk.Client.EmuHawk
 				return string.Format(_digitFormatString, MakeValue(address)).Trim();
 			}
 			
-			return string.Empty;
+			return "";
 		}
 
 		private string GetFindValues()
@@ -1192,7 +1192,7 @@ namespace BizHawk.Client.EmuHawk
 				return _secondaryHighlightedAddresses.Aggregate(values, (current, x) => current + ValueString(x));
 			}
 			
-			return string.Empty;
+			return "";
 		}
 
 		private void HighlightSecondaries(string value, long found)
@@ -2303,7 +2303,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						_secondaryHighlightedAddresses.Clear();
-						_findStr = string.Empty;
+						_findStr = "";
 						SetHighlighted(pointedAddress);
 					}
 

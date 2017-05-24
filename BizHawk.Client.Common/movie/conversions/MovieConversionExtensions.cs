@@ -144,8 +144,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				}
 			}
 
-			var tas = new TasMovie(newFilename, true);
-			tas.BinarySavestate = savestate;
+			var tas = new TasMovie(newFilename, true) { BinarySavestate = savestate };
 			tas.ClearLagLog();
 
 			var entries = old.GetLogEntries();
@@ -220,8 +219,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				}
 			}
 
-			var tas = new TasMovie(newFilename, true);
-			tas.SaveRam = saveRam;
+			var tas = new TasMovie(newFilename, true) { SaveRam = saveRam };
 			tas.TasStateManager.Clear();
 			tas.ClearLagLog();
 
@@ -310,7 +308,6 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 						movie.HeaderEntries.Add(key, firmware.Hash);
 					}
 				}
-
 			}
 
 			if (Global.Emulator is Gameboy && (Global.Emulator as Gameboy).IsCGBMode())

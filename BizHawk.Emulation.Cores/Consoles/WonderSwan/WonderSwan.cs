@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using BizHawk.Common;
+
 using BizHawk.Emulation.Common;
-using System.IO;
-using Newtonsoft.Json;
-using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.WonderSwan
 {
@@ -16,12 +12,12 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		IInputPollable, IDebuggable
 	{
 		[CoreConstructor("WSWAN")]
-		public WonderSwan(CoreComm comm, byte[] file, bool deterministic, object Settings, object SyncSettings)
+		public WonderSwan(CoreComm comm, byte[] file, bool deterministic, object settings, object syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
-			_Settings = (Settings)Settings ?? new Settings();
-			_SyncSettings = (SyncSettings)SyncSettings ?? new SyncSettings();
+			_Settings = (Settings)settings ?? new Settings();
+			_SyncSettings = (SyncSettings)syncSettings ?? new SyncSettings();
 			
 			DeterministicEmulation = deterministic; // when true, remember to force the RTC flag!
 			Core = BizSwan.bizswan_new();
@@ -37,9 +33,6 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 				if (!BizSwan.bizswan_load(Core, file, file.Length, ref ss, ref rotate))
 					throw new InvalidOperationException("bizswan_load() returned FALSE!");
-
-				CoreComm.VsyncNum = 3072000; // master CPU clock, also pixel clock
-				CoreComm.VsyncDen = (144 + 15) * (224 + 32); // 144 vislines, 15 vblank lines; 224 vispixels, 32 hblank pixels
 
 				InitISaveRam();
 
@@ -215,6 +208,9 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public int BufferWidth { get; private set; }
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
+
+		public int VsyncNumerator => 3072000; // master CPU clock, also pixel clock
+		public int VsyncDenominator => (144 + 15) * (224 + 32); // 144 vislines, 15 vblank lines; 224 vispixels, 32 hblank pixels
 
 		#endregion
 	}

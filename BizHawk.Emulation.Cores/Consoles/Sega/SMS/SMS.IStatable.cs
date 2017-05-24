@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				YM2413.SyncState(ser);
 			}
 
-			ser.Sync("Frame", ref frame);
+			ser.Sync("Frame", ref _frame);
 			ser.Sync("LagCount", ref _lagCount);
 			ser.Sync("IsLag", ref _isLag);
 

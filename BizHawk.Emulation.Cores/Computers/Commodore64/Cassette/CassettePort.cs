@@ -5,14 +5,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 {
 	public sealed class CassettePort
 	{
-		[SaveState.DoNotSave]
 		public Func<bool> ReadDataOutput = () => true;
-		[SaveState.DoNotSave]
 		public Func<bool> ReadMotor = () => true;
 
-		[SaveState.SaveWithName("Device")]
 		private CassettePortDevice _device;
-		[SaveState.SaveWithName("Connected")]
+
 		private bool _connected;
 
 		public void HardReset()
@@ -43,7 +40,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.Sync("Connected", ref _connected);
+			if (_device != null)
+			{
+				_device.SyncState(ser);
+			}
 		}
 
 		public void Connect(CassettePortDevice device)

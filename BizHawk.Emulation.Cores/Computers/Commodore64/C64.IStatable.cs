@@ -7,7 +7,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public sealed partial class C64 : IStatable
 	{
-		public bool BinarySaveStatesPreferred { get { return false; } }
+		public bool BinarySaveStatesPreferred => true;
 
 		public void LoadStateBinary(BinaryReader br)
 		{
@@ -31,19 +31,28 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public byte[] SaveStateBinary()
 		{
-		    using (var ms = new MemoryStream())
-		    {
-                var bw = new BinaryWriter(ms);
-                SaveStateBinary(bw);
-                bw.Flush();
-                return ms.ToArray();
-            }
-        }
+			using (var ms = new MemoryStream())
+			{
+				var bw = new BinaryWriter(ms);
+				SaveStateBinary(bw);
+				bw.Flush();
+				return ms.ToArray();
+			}
+		}
 
 		private void SyncState(Serializer ser)
 		{
 			ser.BeginSection("core");
-			SaveState.SyncObject(ser, this);
+			ser.Sync("_frameCycles", ref _frameCycles);
+			ser.Sync("Frame", ref _frame);
+			ser.Sync("IsLagFrame", ref _isLagFrame);
+			ser.Sync("LagCount", ref _lagCount);
+			ser.Sync("CurrentDisk", ref _currentDisk);
+			ser.Sync("PreviousDiskPressed", ref _prevPressed);
+			ser.Sync("NextDiskPressed", ref _nextPressed);
+			ser.BeginSection("Board");
+			_board.SyncState(ser);
+			ser.EndSection();
 			ser.EndSection();
 		}
 	}

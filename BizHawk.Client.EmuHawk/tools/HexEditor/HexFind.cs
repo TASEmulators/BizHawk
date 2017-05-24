@@ -19,7 +19,7 @@ namespace BizHawk.Client.EmuHawk
 		public string InitialValue
 		{
 			get { return FindBox.Text; }
-			set { FindBox.Text = value ?? string.Empty; }
+			set { FindBox.Text = value ?? ""; }
 		}
 
 		private void HexFind_Load(object sender, EventArgs e)
@@ -37,7 +37,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (string.IsNullOrWhiteSpace(FindBox.Text))
 			{
-				return string.Empty;
+				return "";
 			}
 			
 			if (HexRadio.Checked)

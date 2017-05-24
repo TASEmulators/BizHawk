@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Common
 {
 	[CoreAttributes("NullHawk", "", false, true)]
 	[ServiceNotApplicable(typeof(IStatable), typeof(ISaveRam), typeof(IDriveLight), typeof(ICodeDataLogger), typeof(IMemoryDomains),
-		typeof(IDebuggable), typeof(IDisassemblable), typeof(IInputPollable), typeof(IRegionable), typeof(ITraceable))]
+		typeof(IDebuggable), typeof(IDisassemblable), typeof(IInputPollable), typeof(IRegionable), typeof(ITraceable), typeof(IBoardInfo))]
 	public class NullEmulator : IEmulator, IVideoProvider, ISoundProvider, ISettable<NullEmulator.NullEmulatorSettings, object>
 	{
 		public NullEmulator(CoreComm comm, object settings)
@@ -100,15 +100,19 @@ namespace BizHawk.Emulation.Common
 			return _frameBuffer;
 		}
 
-		public int VirtualWidth => 256;
+		public int VirtualWidth => NullVideo.DefaultWidth;
 
-		public int VirtualHeight => 192;
+		public int VirtualHeight => NullVideo.DefaultHeight;
 
-		public int BufferWidth => 256;
+		public int BufferWidth => NullVideo.DefaultWidth;
 
-		public int BufferHeight => 192;
+		public int BufferHeight => NullVideo.DefaultHeight;
 
-		public int BackgroundColor => 0;
+		public int BackgroundColor => NullVideo.DefaultBackgroundColor;
+
+		public int VsyncNumerator => NullVideo.DefaultVsyncNum;
+
+		public int VsyncDenominator => NullVideo.DefaultVsyncDen;
 
 		#endregion
 
@@ -192,7 +196,7 @@ namespace BizHawk.Emulation.Common
 
 		#endregion
 
-		private readonly int[] _frameBuffer = new int[256 * 192];
+		private readonly int[] _frameBuffer = new int[NullVideo.DefaultWidth * NullVideo.DefaultHeight];
 		private readonly short[] _sampleBuffer = new short[735 * 2];
 		private readonly Random _rand = new Random();
 

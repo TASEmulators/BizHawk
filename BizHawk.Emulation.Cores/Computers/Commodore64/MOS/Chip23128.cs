@@ -1,12 +1,11 @@
 ﻿using System;
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// ROM chips
 	public sealed class Chip23128
 	{
-		[SaveState.DoNotSave] private readonly int[] _rom;
+		private readonly int[] _rom;
 
 		public Chip23128()
 		{
@@ -35,11 +34,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public int Read(int addr)
 		{
 			return _rom[addr & 0x3FFF];
-		}
-
-		public void SyncState(Serializer ser)
-		{
-			SaveState.SyncObject(ser, this);
 		}
 	}
 }

@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 	public partial class Bk2Movie
 	{
 		protected readonly Bk2Header Header = new Bk2Header();
-		private string _syncSettingsJson = string.Empty;
+		private string _syncSettingsJson = "";
 
 		public IDictionary<string, string> HeaderEntries => Header;
 
@@ -111,7 +111,7 @@ namespace BizHawk.Client.Common
 					return Header[HeaderKeys.GAMENAME];
 				}
 
-				return string.Empty;
+				return "";
 			}
 
 			set
@@ -133,7 +133,7 @@ namespace BizHawk.Client.Common
 					return Header[HeaderKeys.PLATFORM];
 				}
 
-				return string.Empty;
+				return "";
 			}
 
 			set

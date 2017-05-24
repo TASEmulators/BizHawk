@@ -18,41 +18,36 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "memorysavestate";
 
-		private readonly Dictionary<Guid, byte[]> MemorySavestates = new Dictionary<Guid, byte[]>();
-
 		[RequiredService]
-		private IStatable _statableCore { get; set; }
+		private IStatable StatableCore { get; set; }
+
+		private readonly Dictionary<Guid, byte[]> _memorySavestates = new Dictionary<Guid, byte[]>();
 
 		[LuaMethodAttributes(
-			"savecorestate",
-			"creates a core savestate and stores it in memory.  Note: a core savestate is only the raw data from the core, and not extras such as movie input logs, or framebuffers. Returns a unique identifer for the savestate"
-		)]
+			"savecorestate", "creates a core savestate and stores it in memory.  Note: a core savestate is only the raw data from the core, and not extras such as movie input logs, or framebuffers. Returns a unique identifer for the savestate")]
 		public string SaveCoreStateToMemory()
 		{
 			var guid = Guid.NewGuid();
-			var bytes = (byte[])_statableCore.SaveStateBinary().Clone();
+			var bytes = (byte[])StatableCore.SaveStateBinary().Clone();
 
-			MemorySavestates.Add(guid, bytes);
+			_memorySavestates.Add(guid, bytes);
 
 			return guid.ToString();
 		}
 
-		[LuaMethodAttributes(
-			"loadcorestate",
-			"loads an in memory state with the given identifier"
-		)]
+		[LuaMethodAttributes("loadcorestate", "loads an in memory state with the given identifier")]
 		public void LoadCoreStateFromMemory(string identifier)
 		{
 			var guid = new Guid(identifier);
 
 			try
 			{
-				var state = MemorySavestates[guid];
+				var state = _memorySavestates[guid];
 
 				using (var ms = new MemoryStream(state))
 				using (var br = new BinaryReader(ms))
 				{
-					_statableCore.LoadStateBinary(br);
+					StatableCore.LoadStateBinary(br);
 				}
 			}
 			catch
@@ -61,23 +56,17 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethodAttributes(
-			"removestate",
-			"removes the savestate with the given identifier from memory"
-		)]
+		[LuaMethodAttributes("removestate", "removes the savestate with the given identifier from memory")]
 		public void DeleteState(string identifier)
 		{
 			var guid = new Guid(identifier);
-			MemorySavestates.Remove(guid);
+			_memorySavestates.Remove(guid);
 		}
 
-		[LuaMethodAttributes(
-			"clearstatesfrommemory",
-			"clears all savestates stored in memory"
-		)]
+		[LuaMethodAttributes("clearstatesfrommemory", "clears all savestates stored in memory")]
 		public void ClearInMemoryStates()
 		{
-			MemorySavestates.Clear();
+			_memorySavestates.Clear();
 		}
 	}
 }

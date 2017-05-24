@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -192,8 +192,13 @@
     <Compile Include="Computers\Commodore64\C64.IDebuggable.cs">
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
-    <Compile Include="Computers\Commodore64\C64.IDisassemblable.cs" />
+    <Compile Include="Computers\Commodore64\C64.IDisassemblable.cs">
+      <DependentUpon>C64.cs</DependentUpon>
+    </Compile>
     <Compile Include="Computers\Commodore64\C64.IDriveLight.cs">
+      <DependentUpon>C64.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Computers\Commodore64\C64.IEmulator.cs">
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
     <Compile Include="Computers\Commodore64\C64.IInputPollable.cs">
@@ -202,18 +207,21 @@
     <Compile Include="Computers\Commodore64\C64.IMemoryDomains.cs">
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
-    <Compile Include="Computers\Commodore64\C64.ISettable.cs" />
+    <Compile Include="Computers\Commodore64\C64.ISettable.cs">
+        <DependentUpon>C64.cs</DependentUpon>
+    </Compile>
     <Compile Include="Computers\Commodore64\C64.IStatable.cs">
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
+    <Compile Include="Computers\Commodore64\FFT.cs" />  
     <Compile Include="Computers\Commodore64\C64.Motherboard.cs" />
     <Compile Include="Computers\Commodore64\C64.MotherboardInterface.cs" />
     <Compile Include="Computers\Commodore64\C64Format.cs" />
-    <Compile Include="Computers\Commodore64\C64Util.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0000.cs" />
-    <Compile Include="Computers\Commodore64\C64.Input.cs" />
+    <Compile Include="Computers\Commodore64\C64.MotherboardInput.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0001.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0005.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0008.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper000A.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper000B.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper000F.cs" />
@@ -290,6 +298,9 @@
     <Compile Include="Consoles\Atari\2600\Atari2600.IDebuggable.cs">
       <DependentUpon>Atari2600.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Atari\2600\Atari2600.IEmulator.cs">
+      <DependentUpon>Atari2600.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Atari\2600\Atari2600.IInputPollable.cs">
       <DependentUpon>Atari2600.cs</DependentUpon>
     </Compile>
@@ -344,11 +355,18 @@
     <Compile Include="Consoles\Atari\2600\Tia\Tia.BallData.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\TIA.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\Tia.HMoveData.cs" />
+    <Compile Include="Consoles\Atari\2600\Tia\Tia.ISoundProvider.cs" />
+    <Compile Include="Consoles\Atari\2600\Tia\Tia.IVideoProvider.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\Tia.MissleData.cs" />
+    <Compile Include="Consoles\Atari\2600\Tia\Tia.Palette.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\Tia.PlayerData.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\Tia.PlayfieldData.cs" />
+    <Compile Include="Consoles\Atari\2600\Tia\Tia.SyncState.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.IDebuggable.cs">
+      <DependentUpon>Atari7800.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\7800\Atari7800.IEmulator.cs">
       <DependentUpon>Atari7800.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\7800\Atari7800.IInputPollable.cs">
@@ -388,6 +406,9 @@
     <Compile Include="Consoles\Coleco\ColecoVision.IDebuggable.cs">
       <DependentUpon>ColecoVision.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Coleco\ColecoVision.IEmulator.cs">
+      <DependentUpon>ColecoVision.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Coleco\ColecoVision.IInputPollable.cs">
       <DependentUpon>ColecoVision.cs</DependentUpon>
     </Compile>
@@ -403,8 +424,6 @@
     <Compile Include="Consoles\Coleco\ColecoVision.ISoundProvider.cs">
       <DependentUpon>ColecoVision.cs</DependentUpon>
     </Compile>
-    <Compile Include="Consoles\Coleco\Input.cs" />
-    <Compile Include="Consoles\Coleco\MemoryMap.cs" />
     <Compile Include="Consoles\Coleco\TMS9918A.cs" />
     <Compile Include="Consoles\Coleco\ColecoControllerDeck.cs" />
     <Compile Include="Consoles\Coleco\ColecoControllers.cs" />
@@ -1108,6 +1127,9 @@
     <Compile Include="Consoles\Sega\Saturn\Yabause.IStatable.cs">
       <DependentUpon>Yabause.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Sega\Saturn\Yabause.ITraceable.cs">
+      <DependentUpon>Yabause.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Sega\SMS\SMS.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.ICodeDataLogger.cs">
       <DependentUpon>SMS.cs</DependentUpon>
@@ -1321,4 +1343,4 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-</Project>
+  </Project>

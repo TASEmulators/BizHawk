@@ -6,6 +6,9 @@ namespace BizHawk.Common
 {
 	public class InstanceDll : IDisposable, IInstanceDll, IImportResolver
 	{
+		[DllImport("kernel32.dll")]
+		public static extern UInt32 GetLastError();
+
 		public InstanceDll(string dllPath)
 		{
 			// copy the dll to a temp directory
@@ -24,6 +27,11 @@ namespace BizHawk.Common
 				string envpath_new = Path.GetDirectoryName(path) + ";" + envpath;
 				Environment.SetEnvironmentVariable("PATH", envpath_new, EnvironmentVariableTarget.Process);
 				_hModule = LoadLibrary(path); //consider using LoadLibraryEx instead of shenanigans?
+				if (_hModule == IntPtr.Zero)
+				{
+					var lastError = GetLastError();
+					throw new InvalidOperationException($"Failed to load plugin {path}, error code: 0x{lastError:X}");
+				}
 				var newfname = TempFileCleaner.RenameTempFilenameForDelete(path);
 				File.Move(path, newfname);
 			}

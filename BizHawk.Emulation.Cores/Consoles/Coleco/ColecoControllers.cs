@@ -13,9 +13,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	/// </summary>
 	public interface IPort
 	{
-		byte Read(IController c, bool left_mode, int wheel);
+		byte Read(IController c, bool leftMode, int wheel);
 
-		int Update_Wheel(IController c, int wheel);
+		int UpdateWheel(IController c, int wheel);
 
 		ControllerDefinition Definition { get; }
 
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public int PortNum { get; }
 
-		public int Update_Wheel(IController c, int wheel)
+		public int UpdateWheel(IController c, int wheel)
 		{
 			return 0;
 		}
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			"Key 6", "Key 7", "Key 8", "Key 9", "Pound", "Star"
 		};
 
-		public int Update_Wheel(IController c, int wheel)
+		public int UpdateWheel(IController c, int wheel)
 		{
 			return 0;
 		}
@@ -217,7 +217,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			return 0x1F;
 		}
 
-		public int Update_Wheel(IController c, int wheel)
+		public int UpdateWheel(IController c, int wheel)
 		{
 			return 0;
 		}
@@ -328,7 +328,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			return retval;
 		}
 
-		public int Update_Wheel(IController c, int wheel)
+		public int UpdateWheel(IController c, int wheel)
 		{
 			int x = (int)c.GetFloat(Definition.FloatControls[0]);
 

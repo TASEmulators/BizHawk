@@ -146,7 +146,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Nullable)
 			{
-				Text = string.Empty;
+				Text = "";
 			}
 			else
 			{
@@ -452,7 +452,7 @@ namespace BizHawk.Client.EmuHawk
 						var val = ToRawInt();
 						if (!val.HasValue)
 						{
-							Text = string.Empty;
+							Text = "";
 						}
 						else if (val == MinSignedInt)
 						{
@@ -725,7 +725,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				Text = string.Empty;
+				Text = "";
 			}
 		}
 	}

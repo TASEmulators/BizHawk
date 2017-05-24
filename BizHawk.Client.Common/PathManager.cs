@@ -197,7 +197,7 @@ namespace BizHawk.Client.Common
 					// Return drive letter only, working path must be absolute?
 				}
 
-				return string.Empty;
+				return "";
 			}
 
 			return path;
@@ -236,14 +236,14 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public static string GetRomsPath(string sysID)
+		public static string GetRomsPath(string sysId)
 		{
 			if (Global.Config.UseRecentForROMs)
 			{
 				return Environment.SpecialFolder.Recent.ToString();
 			}
 
-			var path = Global.Config.PathEntries[sysID, "ROM"];
+			var path = Global.Config.PathEntries[sysId, "ROM"];
 
 			if (path == null || !PathIsSet(path.Path))
 			{
@@ -255,14 +255,14 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			return MakeAbsolutePath(path.Path, sysID);
+			return MakeAbsolutePath(path.Path, sysId);
 		}
 
 		public static string RemoveInvalidFileSystemChars(string name)
 		{
 			var newStr = name;
 			var chars = Path.GetInvalidFileNameChars();
-			return chars.Aggregate(newStr, (current, c) => current.Replace(c.ToString(), string.Empty));
+			return chars.Aggregate(newStr, (current, c) => current.Replace(c.ToString(), ""));
 		}
 
 		public static string FilesystemSafeName(GameInfo game)
@@ -270,7 +270,7 @@ namespace BizHawk.Client.Common
 			var filesystemSafeName = game.Name
 				.Replace("|", "+")
 				.Replace(":", " -") // adelikat - Path.GetFileName scraps everything to the left of a colon unfortunately, so we need this hack here
-				.Replace("\"", string.Empty); // adelikat - Ivan Ironman Stewart's Super Off-Road has quotes in game name
+				.Replace("\"", ""); // adelikat - Ivan Ironman Stewart's Super Off-Road has quotes in game name
 
 			// zero 06-nov-2015 - regarding the below, i changed my mind. for libretro i want subdirectories here.
 			var filesystemDir = Path.GetDirectoryName(filesystemSafeName);
@@ -311,7 +311,10 @@ namespace BizHawk.Client.Common
 			// hijinx here to get the core name out of the game name
 			var name = FilesystemSafeName(game);
 			name = Path.GetDirectoryName(name);
-			if (name == string.Empty) name = FilesystemSafeName(game);
+			if (name == "")
+			{
+				name = FilesystemSafeName(game);
+			}
 
 			if (Global.MovieSession.Movie.IsActive)
 			{
@@ -324,13 +327,12 @@ namespace BizHawk.Client.Common
 			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name);
 		}
 
-
 		public static string RetroSystemPath(GameInfo game)
 		{
 			// hijinx here to get the core name out of the game name
 			var name = FilesystemSafeName(game);
 			name = Path.GetDirectoryName(name);
-			if (name == string.Empty)
+			if (name == "")
 			{
 				name = FilesystemSafeName(game);
 			}
@@ -399,7 +401,7 @@ namespace BizHawk.Client.Common
 
 		public static string GetPathType(string system, string type)
 		{
-			var path = PathManager.GetPathEntryWithFallback(type, system).Path;
+			var path = GetPathEntryWithFallback(type, system).Path;
 			return MakeAbsolutePath(path, system);
 		}
 

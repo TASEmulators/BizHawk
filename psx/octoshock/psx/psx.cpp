@@ -60,6 +60,15 @@ static bool PrevInterlaced;
 static Deinterlacer deint;
 static EmulateSpecStruct espec;
 
+template<typename T> inline void reconstruct(T* t) {
+	t->~T();
+	new(t) T();
+}
+template<typename T, typename A> inline void reconstruct(T* t, A a) {
+	t->~T();
+	new(t) T(a);
+}
+
 namespace MDFN_IEN_PSX
 {
 
@@ -1082,11 +1091,12 @@ struct {
 
 	void Initialize()
 	{
-		for(int i=0;i<2;i++)
+		for(int i=0;i<10;i++)
 		{
 			ports[i].type = ePeripheralType_None;
 			memset(ports[i].buffer,0,sizeof(ports[i].buffer));
 		}
+		reconstruct(FIO);
 	}
 
 	//TODO: "Take care to call ->Power() only if the device actually changed."

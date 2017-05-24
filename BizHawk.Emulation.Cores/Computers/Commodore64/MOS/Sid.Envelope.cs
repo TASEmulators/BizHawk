@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
@@ -11,9 +6,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	{
 		private sealed class Envelope
 		{
-			[SaveState.DoNotSave] private const int StateAttack = 0;
-			[SaveState.DoNotSave] private const int StateDecay = 1;
-			[SaveState.DoNotSave] private const int StateRelease = 2;
+			private const int StateAttack = 0;
+			private const int StateDecay = 1;
+			private const int StateRelease = 2;
 
 			private int _attack;
 			private int _decay;
@@ -239,7 +234,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public void SyncState(Serializer ser)
 			{
-				SaveState.SyncObject(ser, this);
+				ser.Sync("_attack", ref _attack);
+				ser.Sync("_decay", ref _decay);
+				ser.Sync("_delay", ref _delay);
+				ser.Sync("_envCounter", ref _envCounter);
+				ser.Sync("_expCounter", ref _expCounter);
+				ser.Sync("_expPeriod", ref _expPeriod);
+				ser.Sync("_freeze", ref _freeze);
+				ser.Sync("_lfsr", ref _lfsr);
+				ser.Sync("_gate", ref _gate);
+				ser.Sync("_rate", ref _rate);
+				ser.Sync("_release", ref _release);
+				ser.Sync("_state", ref _state);
+				ser.Sync("_sustain", ref _sustain);
 			}
 
 			// ------------------------------------

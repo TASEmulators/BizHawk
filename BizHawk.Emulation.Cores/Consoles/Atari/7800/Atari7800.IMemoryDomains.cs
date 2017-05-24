@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			if (_MemoryDomains == null)
 			{
 				_MemoryDomains = new List<MemoryDomain>();
-				if (theMachine is Machine7800)
+				if (_theMachine is Machine7800)
 				{
 					_MemoryDomains.Add(new MemoryDomainDelegate(
 						"RAM", 0x1000, MemoryDomain.Endian.Unknown,
@@ -31,10 +31,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 
 							if (addr < 0x800)
 							{
-								return ((Machine7800)theMachine).RAM1[(ushort)addr];
+								return ((Machine7800)_theMachine).RAM1[(ushort)addr];
 							}
 
-							return ((Machine7800)theMachine).RAM2[(ushort)addr];
+							return ((Machine7800)_theMachine).RAM2[(ushort)addr];
 						},
 
 						delegate(long addr, byte val)
@@ -45,25 +45,25 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 							}
 							else if (addr < 0x800)
 							{
-								((Machine7800)theMachine).RAM1[(ushort)(addr & 0x800)] = val;
+								((Machine7800)_theMachine).RAM1[(ushort)(addr & 0x800)] = val;
 							}
 							else
 							{
-								((Machine7800)theMachine).RAM2[(ushort)addr] = val;
+								((Machine7800)_theMachine).RAM2[(ushort)addr] = val;
 							}
 						}, 1));
 
 					_MemoryDomains.Add(new MemoryDomainByteArray(
 						"BIOS ROM", MemoryDomain.Endian.Unknown,
-						bios, false, 1));
+						_bios, false, 1));
 
 					if (hsc7800 != null)
 					{
 						_MemoryDomains.Add(new MemoryDomainByteArray(
-							"HSC ROM", MemoryDomain.Endian.Unknown, hsbios, false, 1));
+							"HSC ROM", MemoryDomain.Endian.Unknown, _hsbios, false, 1));
 
 						_MemoryDomains.Add(new MemoryDomainByteArray(
-							"HSC RAM", MemoryDomain.Endian.Unknown, hsram, true, 1));
+							"HSC RAM", MemoryDomain.Endian.Unknown, _hsram, true, 1));
 					}
 
 					_MemoryDomains.Add(new MemoryDomainDelegate(
@@ -72,13 +72,13 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 						{
 							if (addr < 0 || addr >= 0x10000)
 								throw new ArgumentOutOfRangeException();
-							return theMachine.Mem[(ushort)addr];
+							return _theMachine.Mem[(ushort)addr];
 						},
 						delegate(long addr, byte val)
 						{
 							if (addr < 0 || addr >= 0x10000)
 								throw new ArgumentOutOfRangeException();
-							theMachine.Mem[(ushort)addr] = val;
+							_theMachine.Mem[(ushort)addr] = val;
 						}, 1));
 				}
 				else // todo 2600?

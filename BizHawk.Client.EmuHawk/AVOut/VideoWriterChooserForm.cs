@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			VideoWriterChooserForm dlg = new VideoWriterChooserForm
 			{
-				labelDescriptionBody = { Text = string.Empty }
+				labelDescriptionBody = { Text = "" }
 			};
 
 			int idx = 0;
@@ -113,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			labelDescriptionBody.Text = listBox1.SelectedIndex != -1
 				? ((VideoWriterInfo)listBox1.SelectedItem).Attribs.Description
-				: string.Empty;
+				: "";
 		}
 
 		private void checkBoxResize_CheckedChanged(object sender, EventArgs e)

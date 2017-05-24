@@ -7,7 +7,9 @@ void CPU::op_xx() {
 }
 
 void CPU::op_cb() {
+	cdlInfo.currFlags = eCDLog_Flags_ExecOperand;
   uint8 opcode = op_read(r[PC]++);
+	cdlInfo.currFlags = eCDLog_Flags_CPUData;
   (this->*opcode_table_cb[opcode])();
 }
 

@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			if (ser.IsWriter)
 			{
 				var ms = new MemoryStream();
-				theMachine.Serialize(new BinaryWriter(ms));
+				_theMachine.Serialize(new BinaryWriter(ms));
 				ms.Close();
 				core = ms.ToArray();
 			}
@@ -58,8 +58,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 			ser.EndSection();
 			if (ser.IsReader)
 			{
-				theMachine = MachineBase.Deserialize(new BinaryReader(new MemoryStream(core, false)));
-				_avProvider.ConnectToMachine(theMachine, GameInfo);
+				_theMachine = MachineBase.Deserialize(new BinaryReader(new MemoryStream(core, false)));
+				_avProvider.ConnectToMachine(_theMachine, _gameInfo);
 			}
 		}
 	}

@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Vic
 	{
-		[SaveState.DoNotSave] private const int BorderLeft38 = 0x023;
-		[SaveState.DoNotSave] private const int BorderLeft40 = 0x01C;
-		[SaveState.DoNotSave] private const int BorderRight38 = 0x153;
-		[SaveState.DoNotSave] private const int BorderRight40 = 0x15C;
-		[SaveState.DoNotSave] private const int BorderTop25 = 0x033;
-		[SaveState.DoNotSave] private const int BorderTop24 = 0x037;
-		[SaveState.DoNotSave] private const int BorderBottom25 = 0x0FB;
-		[SaveState.DoNotSave] private const int BorderBottom24 = 0x0F7;
-		[SaveState.DoNotSave] private const int FirstDmaLine = 0x030;
-		[SaveState.DoNotSave] private const int LastDmaLine = 0x0F7;
+		private const int BorderLeft38 = 0x023;
+		private const int BorderLeft40 = 0x01C;
+		private const int BorderRight38 = 0x153;
+		private const int BorderRight40 = 0x15C;
+		private const int BorderTop25 = 0x033;
+		private const int BorderTop24 = 0x037;
+		private const int BorderBottom25 = 0x0FB;
+		private const int BorderBottom24 = 0x0F7;
+		private const int FirstDmaLine = 0x030;
+		private const int LastDmaLine = 0x0F7;
 
 		// The special actions taken by the Vic are in the same order and interval on all chips, just different offsets.
-		[SaveState.DoNotSave]
 		private static readonly int[] TimingBuilderCycle14Act = {
 			PipelineUpdateVc, 0,
 			PipelineSpriteCrunch, 0,

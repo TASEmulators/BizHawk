@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				SeekToBox.Nullable = true;
-				SeekToBox.Text = string.Empty;
+				SeekToBox.Text = "";
 			}
 
 			StepIntoMenuItem.Enabled = StepIntoBtn.Enabled = CanStepInto;

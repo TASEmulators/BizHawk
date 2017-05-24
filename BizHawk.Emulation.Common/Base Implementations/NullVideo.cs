@@ -14,14 +14,24 @@
 
 		public static NullVideo Instance { get; } = new NullVideo();
 
-		public int VirtualWidth => 256;
+		public static int DefaultWidth { get; } = 256;
+		public static int DefaultHeight { get; } = 192;
+		public static int DefaultBackgroundColor { get; } = 0;
+		public static int DefaultVsyncNum { get; } = 60;
+		public static int DefaultVsyncDen { get; } = 1;
 
-		public int VirtualHeight => 192;
+		public int VirtualWidth => DefaultWidth;
 
-		public int BufferWidth => 256;
+		public int VirtualHeight => DefaultHeight;
 
-		public int BufferHeight => 192;
+		public int BufferWidth => DefaultWidth;
 
-		public int BackgroundColor => 0;
+		public int BufferHeight => DefaultHeight;
+
+		public int BackgroundColor => DefaultBackgroundColor;
+
+		public int VsyncNumerator => DefaultVsyncNum;
+
+		public int VsyncDenominator => DefaultVsyncDen;
 	}
 }
