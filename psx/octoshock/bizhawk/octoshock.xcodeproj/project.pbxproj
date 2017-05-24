@@ -80,11 +80,11 @@
 		9E11BEB31A41204F00CC7F6B /* surface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E11BE4F1A41204F00CC7F6B /* surface.cpp */; };
 		9E11BEB41A41204F00CC7F6B /* surface.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BE501A41204F00CC7F6B /* surface.h */; };
 		9E11BEBA1A41215900CC7F6B /* SimpleFIFO.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E11BEB91A41215900CC7F6B /* SimpleFIFO.h */; };
-		9E2385EC1BD09B9600FACD59 /* crc32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2385E71BD09B9600FACD59 /* crc32.cpp */; settings = {ASSET_TAGS = (); }; };
-		9E2385ED1BD09B9600FACD59 /* galois.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2385E81BD09B9600FACD59 /* galois.cpp */; settings = {ASSET_TAGS = (); }; };
-		9E2385EE1BD09B9600FACD59 /* l-ec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2385E91BD09B9600FACD59 /* l-ec.cpp */; settings = {ASSET_TAGS = (); }; };
-		9E2385EF1BD09B9600FACD59 /* lec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2385EA1BD09B9600FACD59 /* lec.cpp */; settings = {ASSET_TAGS = (); }; };
-		9E2385F01BD09B9600FACD59 /* recover-raw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2385EB1BD09B9600FACD59 /* recover-raw.cpp */; settings = {ASSET_TAGS = (); }; };
+		9E2385EC1BD09B9600FACD59 /* crc32.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2385E71BD09B9600FACD59 /* crc32.cpp */; };
+		9E2385ED1BD09B9600FACD59 /* galois.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2385E81BD09B9600FACD59 /* galois.cpp */; };
+		9E2385EE1BD09B9600FACD59 /* l-ec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2385E91BD09B9600FACD59 /* l-ec.cpp */; };
+		9E2385EF1BD09B9600FACD59 /* lec.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2385EA1BD09B9600FACD59 /* lec.cpp */; };
+		9E2385F01BD09B9600FACD59 /* recover-raw.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9E2385EB1BD09B9600FACD59 /* recover-raw.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -388,7 +388,7 @@
 		9E11BDD71A411DA300CC7F6B /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0610;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = bizhawk;
 				TargetAttributes = {
 					9E11BDDE1A411DA300CC7F6B = {
@@ -473,7 +473,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -481,14 +481,17 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -525,7 +528,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -533,8 +536,10 @@
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
@@ -542,6 +547,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"_CRT_SECURE_NO_WARNINGS=1",
 					"EW_EXPORT=1",

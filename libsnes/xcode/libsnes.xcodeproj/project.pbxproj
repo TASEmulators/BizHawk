@@ -700,7 +700,7 @@
 		9E81C6F01B3CF4C100B0C884 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = bizhawk;
 				TargetAttributes = {
 					9EE26BC01C2A57BC002A2034 = {
