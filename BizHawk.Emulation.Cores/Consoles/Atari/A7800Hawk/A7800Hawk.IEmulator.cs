@@ -24,6 +24,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				_lagcount++;
 			}
 
+			maria.FrameAdvance();
+
 		}
 
 		public int Frame => _frame;
@@ -45,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		{
 			maria = null;
 			tia = null;
-
+			m6532 = null;
 		}
 	}
 }

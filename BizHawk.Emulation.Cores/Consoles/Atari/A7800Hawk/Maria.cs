@@ -25,6 +25,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;
 
+		//Maria related variables
+		public int cycle;
+
 		public void FrameAdvance()
 		{
 
@@ -32,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public void Reset()
 		{
-
+			cycle = 0;
 		}
 
 	}

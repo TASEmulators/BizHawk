@@ -14,6 +14,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight))]
 	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable
 	{
+		// this register selects between 2600 and 7800 mode in the A7800
+		// however, we already have a 2600 emulator so this core will only be loading A7800 games
+		// furthermore, the location of the register is in the same place as TIA registers (0x0-0x1F)
+		// any writes to this location before the register is 'locked' will go to the register and not the TIA
+		public byte A7800_control_register;
+
 		// memory domains
 		public byte[] TIA_regs = new byte[0x20];
 		public byte[] Maria_regs = new byte[0x20];
@@ -114,9 +120,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private void HardReset()
 		{
+			A7800_control_register = 0;
 
-
+			tia.Reset();
 			cpu.Reset();
+			maria.Reset();
+			m6532 = new M6532();
 		}
 
 		/*
