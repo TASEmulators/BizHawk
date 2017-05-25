@@ -45,6 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _outputBufferIndex;
 		private int last_index;
 		private int filter_index;
+		private int last_filtered_value;
 		private int _potCounter;
 		private int _potX;
 		private int _potY;
@@ -159,7 +160,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				int temp_v1 = (_voiceOutput1 * _envelopeOutput1);
 				int temp_v2 = (_voiceOutput2 * _envelopeOutput2);
 
-				int temp_filtered = 0;
+				int temp_filtered = 0;// 50000; // the filter has some DC bias in it
 				int temp_not_filtered = 0;
 
 				//note that voice 3 disable is relevent only if it is not going to the filter 
@@ -201,8 +202,20 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			//here we need to apply filtering to the samples and add them back to the buffer
 			
 			if (_filterEnable[0] | _filterEnable[1] | _filterEnable[2])
-				if (filter_index >= 2)
+				if (filter_index >= 16)
+				{
 					filter_operator();
+				}
+				else
+				{
+					// the length is too short for the FFT to reliably act on the output
+					// instead, clamp it to the previous output.
+					for (int i = 0; i < filter_index ; i++)
+					{
+						_outputBuffer_filtered[i] = last_filtered_value;
+					}
+				}
+					
 			
 			for (int i = last_index; i < _outputBufferIndex; i++)
 			{
@@ -226,12 +239,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 
 			last_index = _outputBufferIndex;
+
+			if (filter_index > 0)
+				last_filtered_value = _outputBuffer_filtered[filter_index - 1];
 			filter_index = 0;
 		}
 
 		public void filter_operator()
 		{
-			double loc_filterFrequency = (double)(_filterFrequency<<2);
+			double loc_filterFrequency = (double)(_filterFrequency << 2) + 500;
 
 			double attenuation;
 
@@ -259,14 +275,24 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 				temp_buffer[(int)i] = _outputBuffer_filtered[(int)Math.Floor((i / (nsamp_2-1) * (filter_index - 1)))];
 			}
+			/*
+			for (int i = 0; i< filter_index; i++)
+			{
+				Console.Write(_outputBuffer_filtered[(int)i]);
+				Console.Write(" ");
+			}
+
+			Console.WriteLine(" ");
+			Console.WriteLine("After");
+			*/
 
 			// now we have everything we need to perform the FFT
 			fft.ComputeForward(temp_buffer);
-
+			
 			// for each element in the frequency list, attenuate it according to the specs
 			for (int i = 0; i < nsamp_2; i++)
 			{
-				double freq = i * ((double)(880*50)/filter_index);
+				double freq = (i + 1) * ((double)(880*50)/filter_index);
 
 				// low pass filter
 				if (_filterSelectLoPass && freq > loc_filterFrequency)
@@ -291,7 +317,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				{
 					//attenuated at 6db per octave
 					attenuation = Math.Log(freq / _filterFrequency, 2);
-					temp_buffer[i] = temp_buffer[i] - 6 * Math.Abs(attenuation);
+					attenuation = 6 * attenuation;
+					temp_buffer[i] = temp_buffer[i] * Math.Pow(2, -Math.Abs(attenuation) / 10);
 				}
 				
 			}
@@ -302,12 +329,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			//re-sample back down to the original number of samples
 			for (double i = 0; i < filter_index; i++)
 			{
-				_outputBuffer_filtered[(int)i] = (int)(temp_buffer[(int)Math.Floor((i / (filter_index-1) * (nsamp_2 - 1)))]/(nsamp_2/2));
-				if (loc_filterFrequency==0)
+				_outputBuffer_filtered[(int)i] = (int)(temp_buffer[(int)Math.Ceiling((i / (filter_index - 1) * (nsamp_2 - 1)))]/(nsamp_2/2));
+				if (_outputBuffer_filtered[(int)i] < 0)
 				{
 					_outputBuffer_filtered[(int)i] = 0;
 				}
+
+				//Console.Write(_outputBuffer_filtered[(int)i]);
+				//Console.Write(" ");
 			}
+			//Console.WriteLine(" ");
+			//Console.WriteLine("Before");
 
 		}
 		// ----------------------------------
