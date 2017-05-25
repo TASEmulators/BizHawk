@@ -933,12 +933,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				return 0;
 			int idx = row * 8 + column * 4;
 
-			byte ret = 0;
+			byte ret = 0x1E;
 
-			if (c.IsPressed(Buttons[idx])) ret |= 16;
-			if (c.IsPressed(Buttons[idx + 1])) ret |= 8;
-			if (c.IsPressed(Buttons[idx + 2])) ret |= 4;
-			if (c.IsPressed(Buttons[idx + 3])) ret |= 2;
+			if (c.IsPressed(Buttons[idx])) ret &= 0x0E;
+			if (c.IsPressed(Buttons[idx + 1])) ret &= 0x16;
+			if (c.IsPressed(Buttons[idx + 2])) ret &= 0x1A;
+			if (c.IsPressed(Buttons[idx + 3])) ret &= 0x1C;
 
 			// nothing is clocked here
 			return ret;
