@@ -362,6 +362,35 @@
     <Compile Include="Consoles\Atari\2600\Tia\Tia.PlayerData.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\Tia.PlayfieldData.cs" />
     <Compile Include="Consoles\Atari\2600\Tia\Tia.SyncState.cs" />
+    <Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.cs" />
+    <Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.IDebuggable.cs">
+      <DependentUpon>A7800Hawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.IEmulator.cs">
+      <DependentUpon>A7800Hawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.IInputPollable.cs">
+      <DependentUpon>A7800Hawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.IMemoryDomains.cs">
+      <DependentUpon>A7800Hawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.IStatable.cs">
+      <DependentUpon>A7800Hawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.ISaveRam.cs">
+      <DependentUpon>A7800Hawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\A7800Hawk\MemoryMap.cs">
+      <DependentUpon>A7800Hawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\A7800Hawk\A7800HawkControl.cs" />
+    <Compile Include="Consoles\Atari\A7800Hawk\M6532.cs" />
+    <Compile Include="Consoles\Atari\A7800Hawk\Maria.cs" />
+    <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\Tia.Audio.cs" />
+    <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\TIA.cs" />
+    <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\Tia.ISoundProvider.cs" />
+    <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\Tia.SyncState.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.IDebuggable.cs">
       <DependentUpon>Atari7800.cs</DependentUpon>
