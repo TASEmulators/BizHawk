@@ -302,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			//re-sample back down to the original number of samples
 			for (double i = 0; i < filter_index; i++)
 			{
-				_outputBuffer_filtered[(int)i] = (int)(temp_buffer[(int)Math.Floor((i / (filter_index-1) * (nsamp_2 - 1)))]/(nsamp/2));
+				_outputBuffer_filtered[(int)i] = (int)(temp_buffer[(int)Math.Floor((i / (filter_index-1) * (nsamp_2 - 1)))]/(nsamp_2/2));
 				if (loc_filterFrequency==0)
 				{
 					_outputBuffer_filtered[(int)i] = 0;
