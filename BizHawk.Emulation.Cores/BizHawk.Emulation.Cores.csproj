@@ -373,8 +373,8 @@
     <Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.ISaveRam.cs">
       <DependentUpon>A7800Hawk.cs</DependentUpon>
     </Compile>
-	<Compile Include="Consoles\Atari\A7800Hawk\MemoryMap.cs">
-	  <DependentUpon>A7800Hawk.cs</DependentUpon>
+    <Compile Include="Consoles\Atari\A7800Hawk\MemoryMap.cs">
+      <DependentUpon>A7800Hawk.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\A7800Hawk\A7800HawkControl.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\M6532.cs" />
@@ -1346,7 +1346,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="Consoles\Atari\docs\stella.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech2.pdf" />
