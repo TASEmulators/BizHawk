@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
@@ -15,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		isReleased: false)]
 	public sealed partial class C64 : IEmulator, IRegionable, IBoardInfo
 	{
-		public C64(CoreComm comm, IEnumerable<byte[]> roms, object settings, object syncSettings)
+		public C64(CoreComm comm, IEnumerable<byte[]> roms, GameInfo game, object settings, object syncSettings)
 		{
 
 			PutSyncSettings((C64SyncSettings)syncSettings ?? new C64SyncSettings());
@@ -59,6 +60,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			_tracer = new TraceBuffer { Header = _board.Cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
+
+			if (_board.CartPort.IsConnected)
+			{
+				// There are no multi-cart cart games, so just hardcode .First()
+				CoreComm.RomStatusDetails = $"{game.Name}\r\nSHA1:{roms.First().HashSHA1()}\r\nMD5:{roms.First().HashMD5()}\r\nMapper Impl \"{_board.CartPort.CartridgeType}\"";
+			}
 		}
 
 		// Currently we will require at least one rom.  If multiple they MUST be all the same media type in the same format
