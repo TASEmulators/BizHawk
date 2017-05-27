@@ -482,6 +482,10 @@ namespace BizHawk.Common.BizInvoke
 				il.Emit(OpCodes.Dup);
 				il.Emit(OpCodes.Stloc, loc);
 				il.Emit(OpCodes.Conv_I);
+				// skip past the methodtable pointer to the first field
+				il.Emit(IntPtr.Size == 4 ? OpCodes.Ldc_I4_4 : OpCodes.Ldc_I4_8);
+				il.Emit(OpCodes.Conv_I);
+				il.Emit(OpCodes.Add);
 
 				return typeof(IntPtr);
 			}
