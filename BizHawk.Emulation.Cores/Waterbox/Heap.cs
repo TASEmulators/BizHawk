@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			ulong ret = Memory.Start + Used;
 			Memory.Protect(ret, newused - Used, MemoryBlock.Protection.RW);
 			Used = newused;
-			Console.WriteLine("Allocated {0} bytes on {1}", size, Name);
+			Console.WriteLine($"Allocated {size} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
 			return ret;
 		}
 

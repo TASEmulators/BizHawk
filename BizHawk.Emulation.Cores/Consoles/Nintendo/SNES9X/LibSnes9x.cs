@@ -19,10 +19,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		[StructLayout(LayoutKind.Sequential)]
 		public class frame_info
 		{
-			public IntPtr ptr;
-			public int pitch;
-			public int width;
-			public int height;
+			public IntPtr vptr;
+			public int vpitch;
+			public int vwidth;
+			public int vheight;
+			public IntPtr sptr;
+			public int slen;
 		};
 
 
@@ -44,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		public abstract void biz_run([In, Out] frame_info frame);
 		[BizImport(CC)]
 		public abstract bool biz_is_ntsc();
-		[BizImport(CC, Compatibility = true)]
+		[BizImport(CC)]
 		public abstract void biz_get_memory_area(int which, [In, Out] memory_area mem);
 	}
 }

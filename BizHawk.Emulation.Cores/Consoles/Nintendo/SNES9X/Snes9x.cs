@@ -2,6 +2,7 @@
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Common.BizInvoke;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
@@ -11,7 +12,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 	{
 		private LibSnes9x _core;
 		private PeRunner _exe;
-
 
 		[CoreConstructor("SNES")]
 		public Snes9x(CoreComm comm, byte[] rom)
@@ -23,10 +23,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			{
 				Path = comm.CoreFileProvider.DllPath(),
 				Filename = "snes9x.exe",
-				NormalHeapSizeKB = 32 * 1024,
-				SealedHeapSizeKB = 32 * 1024,
-				InvisibleHeapSizeKB = 32 * 1024,
-				SpecialHeapSizeKB = 1024
+				NormalHeapSizeKB = 1024,
+				SealedHeapSizeKB = 12 * 1024,
+				InvisibleHeapSizeKB = 6 * 1024,
+				SpecialHeapSizeKB = 64
 			});
 
 			try
@@ -39,6 +39,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				if (!_core.biz_load_rom(rom, rom.Length))
 				{
 					throw new InvalidOperationException("LoadRom() failed");
+				}
+
+				if (_core.biz_is_ntsc())
+				{
+					Console.WriteLine("NTSC rom loaded");
+					VsyncNumerator = 21477272;
+					VsyncDenominator = 357366;
+				}
+				else
+				{
+					Console.WriteLine("PAL rom loaded");
+					VsyncNumerator = 21281370;
+					VsyncDenominator = 425568;
 				}
 			}
 			catch
@@ -78,6 +91,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 			_core.biz_run(frame);
 			Blit(frame);
+			Sblit(frame);
 		}
 
 		public int Frame { get; private set; }
@@ -95,19 +109,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		private unsafe void Blit(LibSnes9x.frame_info frame)
 		{
-			BufferWidth = frame.width;
-			BufferHeight = frame.height;
+			BufferWidth = frame.vwidth;
+			BufferHeight = frame.vheight;
 
-			int vinc = frame.pitch / sizeof(ushort) - frame.width;
+			int vinc = frame.vpitch / sizeof(ushort) - frame.vwidth;
 
-			ushort* src = (ushort*)frame.ptr;
+			ushort* src = (ushort*)frame.vptr;
 			fixed (int* _dst = _vbuff)
 			{
 				byte* dst = (byte*)_dst;
 
-				for (int j = 0; j < frame.height; j++)
+				for (int j = 0; j < frame.vheight; j++)
 				{
-					for (int i = 0; i < frame.width; i++)
+					for (int i = 0; i < frame.vwidth; i++)
 					{
 						var c = *src++;
 
@@ -132,32 +146,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		public int VsyncNumerator
 		{
-			[FeatureNotImplemented]
-			get
-			{
-				return NullVideo.DefaultVsyncNum;
-			}
+			get;
 		}
 
 		public int VsyncDenominator
 		{
-			[FeatureNotImplemented]
-			get
-			{
-				return NullVideo.DefaultVsyncDen;
-			}
+			get;
 		}
 
 		#endregion
 
 		#region ISoundProvider
 
+		private void Sblit(LibSnes9x.frame_info frame)
+		{
+			Marshal.Copy(frame.sptr, _sbuff, 0, frame.slen * 2);
+			_nsamp = frame.slen;
+		}
+
+		private int _nsamp;
 		private short[] _sbuff = new short[2048];
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			samples = _sbuff;
-			nsamp = 735;
+			nsamp = _nsamp;
 		}
 
 		public void DiscardSamples()
