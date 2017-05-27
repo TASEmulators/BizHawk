@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			ser.Sync("SystemCpuClockNumerator", ref _cpuClockNum);
 			ser.Sync("SystemDriveCpuRatioDifference", ref _ratioDifference);
 			ser.Sync("DriveLightOffTime", ref _driveLightOffTime);
-			ser.Sync("TrackImageData", ref _trackImageData[1]);
+			ser.Sync("TrackImageData", ref _trackImageData, useNull: false);
 
 			ser.Sync("DiskDensityCounter", ref _diskDensityCounter);
 			ser.Sync("DiskSupplementaryCounter", ref _diskSupplementaryCounter);
