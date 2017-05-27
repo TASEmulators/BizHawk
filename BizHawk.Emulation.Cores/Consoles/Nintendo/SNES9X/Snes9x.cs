@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			BufferWidth = frame.width;
 			BufferHeight = frame.height;
 
-			int vinc = frame.pitch - frame.width;
+			int vinc = frame.pitch / sizeof(ushort) - frame.width;
 
 			ushort* src = (ushort*)frame.ptr;
 			fixed (int* _dst = _vbuff)
