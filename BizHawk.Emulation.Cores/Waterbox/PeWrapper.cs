@@ -292,6 +292,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			bw.Write(MAGIC);
 			bw.Write(_fileHash);
+			bw.Write(Memory.XorHash);
 			bw.Write(Start);
 
 			foreach (var s in _pe.ImageSectionHeaders)
@@ -302,7 +303,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				ulong start = Start + s.VirtualAddress;
 				ulong length = s.VirtualSize;
 
-				var ms = Memory.GetStream(start, length, false);
+				var ms = Memory.GetXorStream(start, length, false);
 				bw.Write(length);
 				ms.CopyTo(bw.BaseStream);
 			}
@@ -314,6 +315,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				throw new InvalidOperationException("Magic not magic enough!");
 			if (!br.ReadBytes(_fileHash.Length).SequenceEqual(_fileHash))
 				throw new InvalidOperationException("Elf changed disguise!");
+			if (!br.ReadBytes(Memory.XorHash.Length).SequenceEqual(Memory.XorHash))
+				throw new InvalidOperationException("Elf is super slippery!");
 			if (br.ReadUInt64() != Start)
 				throw new InvalidOperationException("Trickys elves moved on you!");
 
@@ -330,7 +333,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				if (br.ReadUInt64() != length)
 					throw new InvalidOperationException("Unexpected section size for " + s.Name);
 
-				var ms = Memory.GetStream(start, length, true);
+				var ms = Memory.GetXorStream(start, length, true);
 				WaterboxUtils.CopySome(br.BaseStream, ms, (long)length);
 			}
 

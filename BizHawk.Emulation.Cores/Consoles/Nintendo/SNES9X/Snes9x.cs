@@ -53,6 +53,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 					VsyncNumerator = 21281370;
 					VsyncDenominator = 425568;
 				}
+
+				_exe.Seal();
 			}
 			catch
 			{

@@ -89,7 +89,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			bw.Write(Used);
 			if (!Sealed)
 			{
-				var ms = Memory.GetStream(Memory.Start, Used, false);
+				bw.Write(Memory.XorHash);
+				var ms = Memory.GetXorStream(Memory.Start, Used, false);
 				ms.CopyTo(bw.BaseStream);
 			}
 			else
@@ -108,9 +109,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				throw new InvalidOperationException(string.Format("Heap {0} used {1} larger than available {2}", Name, used, Memory.Size));
 			if (!Sealed)
 			{
+				var hash = br.ReadBytes(Memory.XorHash.Length);
+				if (!hash.SequenceEqual(Memory.XorHash))
+				{
+					throw new InvalidOperationException(string.Format("Hash did not match for heap {0}.  Is this the same rom?", Name));
+				}
+
 				Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.None);
 				Memory.Protect(Memory.Start, used, MemoryBlock.Protection.RW);
-				var ms = Memory.GetStream(Memory.Start, used, true);
+				var ms = Memory.GetXorStream(Memory.Start, used, true);
 				WaterboxUtils.CopySome(br.BaseStream, ms, (long)used);
 				Used = used;
 			}

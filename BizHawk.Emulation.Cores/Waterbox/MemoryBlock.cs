@@ -7,6 +7,10 @@ using System.IO;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
+	// C# is annoying:  arithmetic operators for native ints are not exposed.
+	// So we store them as long/ulong instead in many places, and use these helpers
+	// to convert to IntPtr when needed
+
 	public static class Z
 	{
 		public static IntPtr US(ulong l)
@@ -47,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// system page size
 		/// </summary>
-		public static int PageSize { get; private set;} 
+		public static int PageSize { get; private set; }
 
 		/// <summary>
 		/// bitshift corresponding to PageSize
@@ -68,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 			PageMask = (ulong)(PageSize - 1);
 		}
-		
+
 		/// <summary>
 		/// true if addr is aligned
 		/// </summary>
@@ -120,6 +124,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// stores last set memory protection value for each page
 		/// </summary>
 		private readonly Protection[] _pageData;
+
+		/// <summary>
+		/// snapshot for XOR buffer
+		/// </summary>
+		private byte[] _snapshot;
+
+		public byte[] XorHash { get; private set; }
 
 		/// <summary>
 		/// get a page index within the block
@@ -216,11 +227,51 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			if (start < Start)
 				throw new ArgumentOutOfRangeException(nameof(start));
-
 			if (start + length > End)
 				throw new ArgumentOutOfRangeException(nameof(length));
 
 			return new MemoryViewStream(!writer, writer, (long)start, (long)length, this);
+		}
+
+		/// <summary>
+		/// get a stream that can be used to read or write from part of the block.
+		/// both reads and writes will be XORed against an earlier recorded snapshot
+		/// </summary>
+		public Stream GetXorStream(ulong start, ulong length, bool writer)
+		{
+			if (start < Start)
+				throw new ArgumentOutOfRangeException(nameof(start));
+			if (start + length > End)
+				throw new ArgumentOutOfRangeException(nameof(length));
+			if (_snapshot == null)
+				throw new InvalidOperationException("No snapshot taken!");
+
+			return new MemoryViewXorStream(!writer, writer, (long)start, (long)length, this, _snapshot, (long)(start - Start));
+		}
+
+		/// <summary>
+		/// take a snapshot of the entire memory block's contents, for use in GetXorStream
+		/// </summary>
+		public void SaveXorSnapshot()
+		{
+			if (_snapshot != null)
+				throw new InvalidOperationException("Snapshot already taken");
+			if (!Active)
+				throw new InvalidOperationException("Not active");
+
+			// temporarily switch the entire block to `R`: in case some areas are unreadable, we don't want
+			// that to complicate things
+			Kernel32.MemoryProtection old;
+			if (!Kernel32.VirtualProtect(Z.UU(Start), Z.UU(Size), Kernel32.MemoryProtection.READONLY, out old))
+				throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+
+			_snapshot = new byte[Size];
+			var ds = new MemoryStream(_snapshot, true);
+			var ss = GetStream(Start, Size, false);
+			ss.CopyTo(ds);
+			XorHash = WaterboxUtils.Hash(_snapshot);
+
+			ProtectAll();
 		}
 
 		private static Kernel32.MemoryProtection GetKernelMemoryProtectionValue(Protection prot)
@@ -338,24 +389,25 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public override long Length { get { return _length; } }
 
 			public override long Position
-			{ 
-				get { return _pos; } set 
+			{
+				get { return _pos; }
+				set
 				{
 					if (value < 0 || value > _length)
 						throw new ArgumentOutOfRangeException();
 					_pos = value;
-				} 
+				}
 			}
 
 			public override int Read(byte[] buffer, int offset, int count)
 			{
 				if (!_readable)
 					throw new InvalidOperationException();
-				if (count < 0 || count > buffer.Length)
+				if (count < 0 || count + offset > buffer.Length)
 					throw new ArgumentOutOfRangeException();
 				EnsureNotDisposed();
 				count = (int)Math.Min(count, _length - _pos);
-				Marshal.Copy(Z.SS(_ptr + _pos), buffer, 0, count);
+				Marshal.Copy(Z.SS(_ptr + _pos), buffer, offset, count);
 				_pos += count;
 				return count;
 			}
@@ -389,12 +441,70 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				if (!_writable)
 					throw new InvalidOperationException();
-				if (count < 0 || count > buffer.Length)
+				if (count < 0 || count + offset > buffer.Length)
+					throw new ArgumentOutOfRangeException();
+				if (count > _length - _pos)
 					throw new ArgumentOutOfRangeException();
 				EnsureNotDisposed();
-				count = (int)Math.Min(count, _length - _pos);
-				Marshal.Copy(buffer, 0, Z.SS(_ptr + _pos), count);
+				Marshal.Copy(buffer, offset, Z.SS(_ptr + _pos), count);
 				_pos += count;
+			}
+		}
+
+		private class MemoryViewXorStream : MemoryViewStream
+		{
+			public MemoryViewXorStream(bool readable, bool writable, long ptr, long length, MemoryBlock owner,
+				byte[] initial, long offset)
+				: base(readable, writable, ptr, length, owner)
+			{
+				_initial = initial;
+				_offset = (int)offset;
+			}
+
+			/// <summary>
+			/// the initial data to XOR against for both reading and writing
+			/// </summary>
+			private byte[] _initial;
+			/// <summary>
+			/// offset into the XOR data that this stream is representing
+			/// </summary>
+			private int _offset;
+
+			public override int Read(byte[] buffer, int offset, int count)
+			{
+				int pos = (int)Position;
+				count = base.Read(buffer, offset, count);
+				XorTransform(_initial, _offset + pos, buffer, offset, count);
+				return count;
+			}
+
+			public override void Write(byte[] buffer, int offset, int count)
+			{
+				int pos = (int)Position;
+				if (count < 0 || count + offset > buffer.Length)
+					throw new ArgumentOutOfRangeException();
+				if (count > Length - pos)
+					throw new ArgumentOutOfRangeException();
+				// is mutating the buffer passed to Stream.Write kosher?
+				XorTransform(_initial, _offset + pos, buffer, offset, count);
+				base.Write(buffer, offset, count);
+			}
+
+			private static unsafe void XorTransform(byte[] source, int sourceOffset, byte[] dest, int destOffset, int length)
+			{
+				// we don't do any bounds check because MemoryViewStream.Read and MemoryViewXorStream.Write already did it
+
+				// TODO: C compilers can make this pretty snappy, but can the C# jitter?  Or do we need intrinsics
+				fixed (byte* _s = source, _d = dest)
+				{
+					byte* s = _s + sourceOffset;
+					byte* d = _d + destOffset;
+					byte* sEnd = s + length;
+					while (s < sEnd)
+					{
+						*d++ ^= *s++;
+					}
+				}
 			}
 		}
 

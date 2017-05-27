@@ -520,6 +520,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private readonly List<PeWrapper> _modules = new List<PeWrapper>();
 
 		/// <summary>
+		/// all loaded heaps
+		/// </summary>
+		private readonly List<Heap> _heaps = new List<Heap>();
+
+		/// <summary>
 		/// anything at all that needs to be disposed on finish
 		/// </summary>
 		private readonly List<IDisposable> _disposeList = new List<IDisposable>();
@@ -553,6 +558,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (saveStated)
 				_savestateComponents.Add(heap);
 			_disposeList.Add(heap);
+			_heaps.Add(heap);
 			return heap;
 		}
 
@@ -663,6 +669,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			using (this.EnterExit())
 			{
 				_sealedheap.Seal();
+				foreach (var h in _heaps)
+					h.Memory.SaveXorSnapshot();
+				foreach (var pe in _modules)
+					pe.Memory.SaveXorSnapshot();
 			}
 		}
 
