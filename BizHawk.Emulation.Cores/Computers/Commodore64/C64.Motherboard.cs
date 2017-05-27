@@ -357,6 +357,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			ser.Sync("_joystickPressed", ref _joystickPressed, useNull: false);
 			ser.Sync("_keyboardPressed", ref _keyboardPressed, useNull: false);
 			ser.Sync("_restorePressed", ref _restorePressed);
+			ser.Sync("_pollIndex", ref _pollIndex);
 		}
 	}
 }
