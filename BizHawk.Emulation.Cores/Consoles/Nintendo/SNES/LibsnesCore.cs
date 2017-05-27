@@ -38,7 +38,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Header = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, DB, flags (NVMXDIZC), V, H)"
 			};
 
-			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(new W65816_DisassemblerService());
 
 			_game = game;
@@ -179,6 +178,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				bw.Write(true); // framezero, so no controller follows and don't frameadvance on load
 				bw.Close();
 				_savestatebuff = ms.ToArray();
+			}
+
+			if (CurrentProfile == "Compatibility")
+			{
+				ser.Register<ITraceable>(_tracer);
 			}
 		}
 
