@@ -842,7 +842,6 @@ namespace BizHawk.Client.Common
 								nextEmulator = c64;
 								break;
 							case "GBA":
-								// core = CoreInventory.Instance["GBA", "Meteor"];
 								if (Global.Config.GBA_UsemGBA)
 								{
 									core = CoreInventory.Instance["GBA", "mGBA"];

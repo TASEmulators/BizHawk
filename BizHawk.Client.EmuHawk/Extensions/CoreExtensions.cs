@@ -44,10 +44,6 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 			{
 				return Properties.Resources.emu7800;
 			}
-			else if (core is GBA)
-			{
-				return Properties.Resources.meteor;
-			}
 			else if (core is GPGX)
 			{
 				return Properties.Resources.genplus;
