@@ -72,6 +72,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				default:
 					throw new System.Exception();
 			}
+
 			CartPort = new CartridgePort();
 			Cassette = new CassettePort();
 			ColorRam = new Chip2114();

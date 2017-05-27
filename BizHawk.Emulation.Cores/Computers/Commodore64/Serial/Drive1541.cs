@@ -65,6 +65,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			ser.Sync("BitHistory", ref _bitHistory);
 			ser.Sync("BitsRemainingInLatchedByte", ref _bitsRemainingInLatchedByte);
 			ser.Sync("Sync", ref _sync);
+			ser.Sync("ByteReady", ref _byteReady);
 			ser.Sync("DriveCpuClockNumerator", ref _driveCpuClockNum);
 			ser.Sync("TrackNumber", ref _trackNumber);
 			ser.Sync("MotorEnabled", ref _motorEnabled);
@@ -89,6 +90,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			ser.Sync("SystemDriveCpuRatioDifference", ref _ratioDifference);
 			ser.Sync("DriveLightOffTime", ref _driveLightOffTime);
 			ser.Sync("TrackImageData", ref _trackImageData[1]);
+
 			ser.Sync("DiskDensityCounter", ref _diskDensityCounter);
 			ser.Sync("DiskSupplementaryCounter", ref _diskSupplementaryCounter);
 			ser.Sync("DiskFluxReversalDetected", ref _diskFluxReversalDetected);
