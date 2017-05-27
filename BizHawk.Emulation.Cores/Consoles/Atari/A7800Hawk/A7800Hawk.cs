@@ -42,6 +42,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public A7800Hawk(CoreComm comm, GameInfo game, byte[] rom, string gameDbFn)
 		{
 			var ser = new BasicServiceProvider(this);
+
+			maria = new Maria();
+			tia = new TIA();
+
 			ser.Register<IVideoProvider>(maria);
 			ser.Register<ISoundProvider>(tia);
 			ServiceProvider = ser;

@@ -7,6 +7,8 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
+using BizHawk.Emulation.Cores.Atari.A7800Hawk;
+using BizHawk.Emulation.Cores.Atari.Atari7800;
 
 namespace BizHawk.Client.Common
 {
@@ -463,6 +465,7 @@ namespace BizHawk.Client.Common
 		public bool? PreviousNES_InQuickNES { get; set; }
 		public bool? PreviousSNES_InSnes9x { get; set; }
 		public bool? PreviousGBA_UsemGBA { get; set; }
+		public bool? PreviousA78_UseEmu7800 { get; set; }
 
 		public void QueueNewMovie(IMovie movie, bool record, IEmulator emulator)
 		{
@@ -528,6 +531,22 @@ namespace BizHawk.Client.Common
 				{
 					PreviousGBA_UsemGBA = Global.Config.GBA_UsemGBA;
 					Global.Config.GBA_UsemGBA = false;
+				}
+			}
+			else if (!record && emulator.SystemId == "A78") // meh, copy pasta one more time, last time, I promise
+			{
+				var atari7800HawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(A7800Hawk), typeof(CoreAttributes))).CoreName;
+				var emu7800HawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(Atari7800), typeof(CoreAttributes))).CoreName;
+
+				if (movie.Core == atari7800HawkName)
+				{
+					PreviousA78_UseEmu7800 = Global.Config.A78_UseEmu7800;
+					Global.Config.A78_UseEmu7800 = true;
+				}
+				else if (movie.Core == emu7800HawkName)
+				{
+					PreviousA78_UseEmu7800 = Global.Config.A78_UseEmu7800;
+					Global.Config.A78_UseEmu7800 = false;
 				}
 			}
 

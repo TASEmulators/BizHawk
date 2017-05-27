@@ -5,9 +5,10 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Emulation.Cores.Atari.A7800Hawk;
+using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.ColecoVision;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
@@ -1213,6 +1214,7 @@ namespace BizHawk.Client.EmuHawk
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
 			gBAWithMGBAToolStripMenuItem.Checked = Global.Config.GBA_UsemGBA;
+			Atari7800WithEmu7800MenuItem.Checked = Global.Config.A78_UseEmu7800;
 			allowGameDBCoreOverridesToolStripMenuItem.Checked = Global.Config.CoreForcingViaGameDB;
 		}
 
@@ -1265,6 +1267,15 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.SNES_InSnes9x ^= true;
 
 			if (Emulator is Snes9x || Emulator is LibsnesCore)
+			{
+				FlagNeedsReboot();
+			}
+		}
+
+		private void Atari7800WithEmu7800MenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.A78_UseEmu7800 ^= true;
+			if (Emulator is A7800Hawk || Emulator is Atari7800)
 			{
 				FlagNeedsReboot();
 			}

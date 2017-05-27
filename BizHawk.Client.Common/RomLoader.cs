@@ -7,6 +7,7 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Libretro;
+using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Computers.AppleII;
@@ -835,7 +836,10 @@ namespace BizHawk.Client.Common
 								break;
 							case "A78":
 								var gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
-								nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath);
+
+								nextEmulator = Global.Config.A78_UseEmu7800
+									? nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath)
+									: nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gamedbpath);
 								break;
 							case "C64":
 								var c64 = new C64(nextComm, Enumerable.Repeat(rom.RomData, 1), GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());
