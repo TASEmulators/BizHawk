@@ -42,7 +42,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 			try
 			{
-				_elf = new PeRunner(comm.CoreFileProvider.DllPath(), "gpgx.exe", 8 * 1024 * 1024, 36 * 1024 * 1024, 4 * 1024 * 1024);
+				_elf = new PeRunner(new PeRunnerOptions
+				{
+					Path = comm.CoreFileProvider.DllPath(),
+					Filename = "gpgx.exe",
+					NormalHeapSizeKB = 8 * 1024,
+					SealedHeapSizeKB = 36 * 1024,
+					InvisibleHeapSizeKB = 4 * 1024,
+					SpecialHeapSizeKB = 64
+				});
 
 				if (_elf.ShouldMonitor)
 					Core = BizInvoker.GetInvoker<LibGPGX>(_elf, _elf);

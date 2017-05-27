@@ -11,6 +11,41 @@ using System.Text;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
+	public class PeRunnerOptions
+	{
+		// string directory, string filename, ulong heapsize, ulong sealedheapsize, ulong invisibleheapsize
+		/// <summary>
+		/// path which the main executable and all associated libraries should be found
+		/// </summary>
+		public string Path { get; set; }
+
+		/// <summary>
+		/// filename of the main executable; expected to be in Path
+		/// </summary>
+		public string Filename { get; set; }
+
+		/// <summary>
+		/// how large the normal heap should be.  it services sbrk calls
+		/// </summary>
+		public uint NormalHeapSizeKB { get; set; }
+
+		/// <summary>
+		/// how large the sealed heap should be.  it services special allocations that become readonly after init
+		/// </summary>
+		public uint SealedHeapSizeKB { get; set; }
+
+		/// <summary>
+		/// how large the invisible heap should be.  it services special allocations which are not savestated
+		/// </summary>
+		public uint InvisibleHeapSizeKB { get; set; }
+
+		/// <summary>
+		/// how large the special heap should be.  it is savestated, and contains ??
+		/// </summary>
+		public uint SpecialHeapSizeKB { get; set; }
+	}
+
+
 	public class PeRunner : Swappable, IImportResolver, IBinaryStateable
 	{
 		/// <summary>
@@ -41,12 +76,23 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			public IntPtr EntryPoint { get; private set; }
 
-			[UnmanagedFunctionPointer(CallingConvention.Winapi)]
+			/// <summary>
+			/// for midipix-built PEs, pointer to the construtors to run during init
+			/// </summary>
+			public IntPtr CtorList { get; private set; }
+			/// <summary>
+			/// for midipix-build PEs, pointer to the destructors to run during fini
+			/// </summary>
+			public IntPtr DtorList { get; private set; }
+
+			/*[UnmanagedFunctionPointer(CallingConvention.Winapi)]
 			private delegate bool DllEntry(IntPtr instance, int reason, IntPtr reserved);
 			[UnmanagedFunctionPointer(CallingConvention.Winapi)]
-			private delegate void ExeEntry();
+			private delegate void ExeEntry();*/
+			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			private delegate void GlobalCtor();
 
-			public bool RunDllEntry()
+			/*public bool RunDllEntry()
 			{
 				var entryThunk = (DllEntry)Marshal.GetDelegateForFunctionPointer(EntryPoint, typeof(DllEntry));
 				return entryThunk(Z.US(Start), 1, IntPtr.Zero); // DLL_PROCESS_ATTACH
@@ -55,6 +101,32 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				var entryThunk = (ExeEntry)Marshal.GetDelegateForFunctionPointer(EntryPoint, typeof(ExeEntry));
 				entryThunk();
+			}*/
+			public unsafe void RunGlobalCtors()
+			{
+				int did = 0;
+				if (CtorList != IntPtr.Zero)
+				{
+					IntPtr* p = (IntPtr*)CtorList;
+					IntPtr f;
+					while ((f = *++p) != IntPtr.Zero) // skip 0th dummy pointer
+					{
+						var ctorThunk = (GlobalCtor)Marshal.GetDelegateForFunctionPointer(f, typeof(GlobalCtor));
+						//Console.WriteLine(f);
+						//System.Diagnostics.Debugger.Break();
+						ctorThunk();
+						did++;
+					}
+				}
+
+				if (did > 0)
+				{
+					Console.WriteLine($"Did {did} global ctors for {ModuleName}");
+				}
+				else
+				{
+					Console.WriteLine($"Warn: no global ctors for {ModuleName}; possibly no C++?");
+				}
 			}
 
 			public PeWrapper(string moduleName, byte[] fileData, ulong destAddress)
@@ -127,6 +199,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 
 				// apply relocations
+				var n32 = 0;
+				var n64 = 0;
 				foreach (var rel in _pe.ImageRelocationDirectory)
 				{
 					foreach (var to in rel.TypeOffsets)
@@ -145,6 +219,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 									uint val = BitConverter.ToUInt32(tmp, 0);
 									tmp = BitConverter.GetBytes((uint)(val + LoadOffset));
 									Marshal.Copy(tmp, 0, Z.US(address), 4);
+									n32++;
 									break;
 								}
 
@@ -155,11 +230,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 									long val = BitConverter.ToInt64(tmp, 0);
 									tmp = BitConverter.GetBytes(val + LoadOffset);
 									Marshal.Copy(tmp, 0, Z.US(address), 8);
+									n64++;
 									break;
 								}
 						}
 					}
 				}
+				if (IntPtr.Size == 8 && n32 > 0)
+				{
+					// check mcmodel, etc
+					throw new InvalidOperationException("32 bit relocations found in 64 bit dll!  This will fail.");
+				}
+				Console.WriteLine($"Processed {n32} 32 bit and {n64} 64 bit relocations");
+
 				ProtectMemory();
 
 				// publish exports
@@ -182,6 +265,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						ImportsByModule.Add(import.DLL, module);
 					}
 					module.Add(import.Name, Z.US(Start + import.Thunk));
+				}
+
+				var midipix = _pe.ImageSectionHeaders.Where(s => s.Name.SequenceEqual(Encoding.ASCII.GetBytes(".midipix")))
+					.SingleOrDefault();
+				if (midipix != null)
+				{
+					var dataOffset = midipix.PointerToRawData;
+					CtorList = Z.SS(BitConverter.ToInt64(_fileData, (int)(dataOffset + 0x30)) + LoadOffset);
+					DtorList = Z.SS(BitConverter.ToInt64(_fileData, (int)(dataOffset + 0x38)) + LoadOffset);
 				}
 
 				Console.WriteLine($"Mounted `{ModuleName}` @{Start:x16}");
@@ -293,6 +385,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		private class Psx
 		{
+			private static IntPtr BEXLAND;
+			static Psx()
+			{
+				BEXLAND = Marshal.AllocHGlobal(16);
+			}
+
 			private readonly PeRunner _parent;
 			private readonly List<Delegate> _traps = new List<Delegate>();
 
@@ -326,9 +424,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					if (ptr == IntPtr.Zero)
 					{
 						var s = string.Format("Trapped on unimplemented function {0}:{1}", moduleName, e);
-						Action del = () => { throw new InvalidOperationException(s); };
+						Action del = () =>
+						{
+							Console.WriteLine(s);
+							System.Diagnostics.Debugger.Break(); // do not remove this until all unwindings are fixed
+							throw new InvalidOperationException(s);
+						};
 						_traps.Add(del);
 						ptr = Marshal.GetFunctionPointerForDelegate(del);
+						//ptr = BEXLAND;
 					}
 					return ptr;
 				}).ToArray();
@@ -349,8 +453,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}, _ldsoVtable);
 				PopulateVtable("__syscalls", new[] // psx
 				{
-					"start_main", "convert_thread", "unmapself", "log_output"
+					"start_main", "convert_thread", "unmapself", "log_output", "pthread_self"
 				}, _psxVtable);
+				/*unsafe
+                {
+                    var ptr = (IntPtr*)_psxVtable;
+                    Console.WriteLine("AWESOMES: " + ptr[0]);
+                }*/
 			}
 
 			private IntPtr _syscallVtable;
@@ -377,7 +486,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 				context.SyscallVtable = _syscallVtable = AllocVtable(340);
 				context.LdsoVtable = _ldsoVtable = AllocVtable(7);
-				context.PsxVtable = _psxVtable = AllocVtable(4);
+				context.PsxVtable = _psxVtable = AllocVtable(5);
 
 				ReloadVtables();
 
@@ -439,6 +548,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_parent = parent;
 			}
 
+			private IntPtr _pthreadSelf;
+
+			public void Init()
+			{
+				// as the inits are done in a defined order with a defined memory map,
+				// we don't need to savestate _pthreadSelf
+				_pthreadSelf = Z.US(_parent._specheap.Allocate(65536, 1));
+			}
+
 			[BizExport(CallingConvention.Cdecl, EntryPoint = "log_output")]
 			public void DebugPuts(IntPtr s)
 			{
@@ -479,14 +597,215 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 			}
 
-			// aka __psx_init_frame
-			// in midipix, this just sets up SEH and does not do anything that start_main does in MUSL normally
-			[BizExport(CallingConvention.Cdecl, EntryPoint = "start_main")]
-			public int StartMain(IntPtr u0, int u1, IntPtr u2, IntPtr main)
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n16")]
+			public int IoCtl(int fd, ulong req)
 			{
-				// since we don't really need main, we can blow up here
-				throw new EndOfMainException();
+				return 0; // sure it worked, honest
 			}
+
+			public struct Iovec
+			{
+				public IntPtr Base;
+				public ulong Length;
+			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n0")]
+			public long Read(int fd, IntPtr buff, ulong count)
+			{
+				return 0;
+			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n1")]
+			public long Write(int fd, IntPtr buff, ulong count)
+			{
+				return (long)count;
+			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n19")]
+			public unsafe long Readv(int fd, Iovec* iov, int iovcnt)
+			{
+				return 0;
+			}
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n20")]
+			public unsafe long Writev(int fd, Iovec* iov, int iovcnt)
+			{
+				long ret = 0;
+				for (int i = 0; i < iovcnt; i++)
+				{
+					ret += (long)iov[i].Length;
+				}
+				return ret;
+			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n2")]
+			public int Open(string path, int flags, int mode)
+			{
+				return -1;
+			}
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n3")]
+			public int Close(int fd)
+			{
+				return 0;
+			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n4")]
+			public int Stat(string path, IntPtr statbuf)
+			{
+				return -1;
+			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n5")]
+			public int Fstat(int fd, IntPtr statbuf)
+			{
+				return -1;
+			}
+
+			//[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			//private delegate int LibcStartMain(IntPtr main, int argc, IntPtr argv);
+
+			bool _firstTime = true;
+
+			// aka __psx_init_frame (it's used elsewhere for thread setup)
+			// in midipix, this just sets up a SEH frame and then calls musl's start_main
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "start_main")]
+			public unsafe int StartMain(IntPtr main, int argc, IntPtr argv, IntPtr libc_start_main)
+			{
+				//var del = (LibcStartMain)Marshal.GetDelegateForFunctionPointer(libc_start_main, typeof(LibcStartMain));
+				// this will init, and then call user main, and then call exit()
+				//del(main, argc, argv);
+				//int* foobar = stackalloc int[128];
+
+
+				// if we return from this, psx will then halt, so break out
+				//if (_firstTime)
+				//{
+					//_firstTime = false;
+					throw new EndOfMainException();
+				//}
+				//else
+				//{
+				//	return 0;
+				//}
+			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_self")]
+			public IntPtr PthreadSelf()
+			{
+				return _pthreadSelf;
+			}
+
+			/*[BizExport(CallingConvention.Cdecl, EntryPoint = "convert_thread")]
+            public void ConvertThread()
+            {
+
+            }*/
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n218")]
+			public long SetTidAddress(IntPtr address)
+			{
+				return 8675309;
+			}
+
+			[StructLayout(LayoutKind.Sequential)]
+			public class TimeSpec
+			{
+				public long Seconds;
+				public long NanoSeconds;
+			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n228")]
+			public int SysClockGetTime(int which, [In,Out] TimeSpec time)
+			{
+				time.Seconds = 1495889068;
+				time.NanoSeconds = 0;
+				return 0;
+			}
+		}
+
+		/// <summary>
+		/// libc.so functions that we want to redirect
+		/// </summary>
+		private class LibcPatch
+		{
+			private readonly PeRunner _parent;
+			public LibcPatch(PeRunner parent)
+			{
+				_parent = parent;
+			}
+
+
+			private bool _didOnce = false;
+			private readonly Dictionary<uint, IntPtr> _specificKeys = new Dictionary<uint, IntPtr>();
+			private uint _nextSpecificKey = 401;
+
+			[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+			public delegate void PthreadCallback();
+
+			// pthread stuff:
+			// since we don't allow multiple threads (for now), this is all pretty simple
+			/*
+            // int pthread_key_create(pthread_key_t *key, void (*destructor)(void*));
+            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_key_create")]
+            public int PthreadKeyCreate(ref uint key, PthreadCallback destructor)
+            {
+                key = _nextSpecificKey++;
+                _specificKeys.Add(key, IntPtr.Zero);
+                return 0;
+            }
+            // int pthread_key_delete(pthread_key_t key);
+            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_key_delete")]
+            public int PthreadKeyDelete(uint key)
+            {
+                _specificKeys.Remove(key);
+                return 0;
+            }
+            // int pthread_setspecific(pthread_key_t key, const void *value);
+            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_setspecific")]
+            public int PthreadSetSpecific(uint key, IntPtr value)
+            {
+                _specificKeys[key] = value;
+                return 0;
+            }
+            // void *pthread_getspecific(pthread_key_t key);
+            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_getspecific")]
+            public IntPtr PthreadGetSpecific(uint key)
+            {
+                IntPtr ret;
+                _specificKeys.TryGetValue(key, out ret);
+                return ret;
+            }
+
+            // int pthread_once(pthread_once_t* once_control, void (*init_routine)(void));
+            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_once")]
+            public int PthreadOnce(IntPtr control, PthreadCallback init)
+            {
+                if (!_didOnce)
+                {
+                    System.Diagnostics.Debugger.Break();
+                    _didOnce = true;
+                    init();
+                }
+                return 0;
+            }
+
+            // int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t* attr);
+            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_mutex_init")]
+            public int PthreadMutexInit(IntPtr mutex, IntPtr attr) { return 0; }
+            // int pthread_mutex_destroy(pthread_mutex_t* mutex);
+            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_mutex_destroy")]
+            public int PthreadMutexDestroy(IntPtr mutex) { return 0; }
+
+            // int pthread_mutex_lock(pthread_mutex_t* mutex);
+            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_mutex_lock")]
+            public int PthreadMutexLock(IntPtr mutex) { return 0; }
+            // int pthread_mutex_trylock(pthread_mutex_t* mutex);
+            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_mutex_trylock")]
+            public int PthreadMutexTryLock(IntPtr mutex) { return 0; }
+            // int pthread_mutex_unlock(pthread_mutex_t* mutex);
+            [BizExport(CallingConvention.Cdecl, EntryPoint = "pthread_mutex_unlock")]
+            public int PthreadMutexUnlock(IntPtr mutex) { return 0; }*/
+
+
 		}
 
 		// usual starting address for the executable
@@ -523,6 +842,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private Heap _invisibleheap;
 
 		/// <summary>
+		/// extra savestated heap
+		/// </summary>
+		private Heap _specheap;
+
+		/// <summary>
 		/// all loaded PE files
 		/// </summary>
 		private readonly List<PeWrapper> _modules = new List<PeWrapper>();
@@ -545,13 +869,29 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private Psx _psx;
 		private Emu _emu;
 		private Syscalls _syscalls;
+		private LibcPatch _libcpatch;
 
 		/// <summary>
 		/// timestamp of creation acts as a sort of "object id" in the savestate
 		/// </summary>
 		private readonly long _createstamp = WaterboxUtils.Timestamp();
 
-		public PeRunner(string directory, string filename, ulong heapsize, ulong sealedheapsize, ulong invisibleheapsize)
+		private Heap CreateHeapHelper(uint sizeKB, string name, bool saveStated)
+		{
+			var heap = new Heap(_nextStart, sizeKB * 1024, name);
+			heap.Memory.Activate();
+			ComputeNextStart(sizeKB * 1024);
+			AddMemoryBlock(heap.Memory);
+			if (saveStated)
+				_savestateComponents.Add(heap);
+			_disposeList.Add(heap);
+			return heap;
+		}
+
+		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+		private delegate void LibcEntryRoutineD(IntPtr appMain, IntPtr psxInit, int options);
+
+		public PeRunner(PeRunnerOptions opt)
 		{
 			Initialize(_nextStart);
 			Enter();
@@ -567,14 +907,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 				// load and connect all modules, starting with the executable
 				var todoModules = new Queue<string>();
-				todoModules.Enqueue(filename);
+				todoModules.Enqueue(opt.Filename);
 
 				while (todoModules.Count > 0)
 				{
 					var moduleName = todoModules.Dequeue();
 					if (!_exports.ContainsKey(moduleName))
 					{
-						var module = new PeWrapper(moduleName, File.ReadAllBytes(Path.Combine(directory, moduleName)), _nextStart);
+						var module = new PeWrapper(moduleName, File.ReadAllBytes(Path.Combine(opt.Path, moduleName)), _nextStart);
 						ComputeNextStart(module.Size);
 						AddMemoryBlock(module.Memory);
 						_savestateComponents.Add(module);
@@ -589,42 +929,49 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					}
 				}
 
+				_libcpatch = new LibcPatch(this);
+				_exports["libc.so"] = new PatchImportResolver(_exports["libc.so"], BizExvoker.GetExvoker(_libcpatch));
+
 				ConnectAllImports();
 
 				// load all heaps
-				_heap = new Heap(_nextStart, heapsize, "brk-heap");
-				_heap.Memory.Activate();
-				ComputeNextStart(heapsize);
-				AddMemoryBlock(_heap.Memory);
-				_savestateComponents.Add(_heap);
-				_disposeList.Add(_heap);
+				_heap = CreateHeapHelper(opt.NormalHeapSizeKB, "brk-heap", true);
+				_sealedheap = CreateHeapHelper(opt.SealedHeapSizeKB, "sealed-heap", true);
+				_invisibleheap = CreateHeapHelper(opt.InvisibleHeapSizeKB, "invisible-heap", false);
+				_specheap = CreateHeapHelper(opt.SpecialHeapSizeKB, "special-heap", true);
 
-				_sealedheap = new Heap(_nextStart, sealedheapsize, "sealed-heap");
-				_sealedheap.Memory.Activate();
-				ComputeNextStart(sealedheapsize);
-				AddMemoryBlock(_sealedheap.Memory);
-				_savestateComponents.Add(_sealedheap);
-				_disposeList.Add(_sealedheap);
+				_syscalls.Init();
 
-				_invisibleheap = new Heap(_nextStart, invisibleheapsize, "invisible-heap");
-				_invisibleheap.Memory.Activate();
-				ComputeNextStart(invisibleheapsize);
-				AddMemoryBlock(_invisibleheap.Memory);
-				_savestateComponents.Add(_invisibleheap);
-				_disposeList.Add(_invisibleheap);
+				//System.Diagnostics.Debugger.Break();
 
-				try
+				// run unmanaged init code
+				var libcEnter = _exports["libc.so"].SafeResolve("__libc_entry_routine");
+				var psxInit = _exports["libpsxscl.so"].SafeResolve("__psx_init");
+
+				var del = (LibcEntryRoutineD)Marshal.GetDelegateForFunctionPointer(libcEnter, typeof(LibcEntryRoutineD));
+				// the current mmglue code doesn't use the main pointer at all, and this just returns
+				del(IntPtr.Zero, psxInit, 0);
+
+				foreach (var m in _modules)
+				{
+					m.RunGlobalCtors();
+				}
+
+				/*try
 				{
 					_modules[0].RunExeEntry();
-					throw new InvalidOperationException("main() returned!");
+					//throw new InvalidOperationException("main() returned!");
 				}
-				catch (EndOfMainException)
-				{ }
+				catch //(EndOfMainException)
+				{
+				}
+				_modules[0].RunGlobalCtors();
 				foreach (var m in _modules.Skip(1))
 				{
 					if (!m.RunDllEntry())
 						throw new InvalidOperationException("DllMain() returned false");
-				}
+					m.RunGlobalCtors();
+				}*/
 			}
 			catch
 			{
@@ -711,6 +1058,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_heap = null;
 				_sealedheap = null;
 				_invisibleheap = null;
+				_specheap = null;
 			}
 		}
 	}

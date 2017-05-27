@@ -10,7 +10,7 @@ extern "C" {
 // mark an entry point or callback pointer
 #define ECL_ENTRY
 // mark a visible symbol
-#define ECL_EXPORT
+#define ECL_EXPORT __attribute__((visibility("default")))
 
 // allocate memory from the "sealed" pool.  this memory can never be freed,
 // and can only be allocated or written to during the init phase.  after that, the host

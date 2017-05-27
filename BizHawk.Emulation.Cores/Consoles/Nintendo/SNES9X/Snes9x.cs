@@ -19,12 +19,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 
-			_exe = new PeRunner(comm.CoreFileProvider.DllPath(), "snes9x.exe", 20 * 1024 * 1024, 65536, 65536);
+			_exe = new PeRunner(new PeRunnerOptions
+			{
+				Path = comm.CoreFileProvider.DllPath(),
+				Filename = "snes9x.exe",
+				NormalHeapSizeKB = 32 * 1024,
+				SealedHeapSizeKB = 32 * 1024,
+				InvisibleHeapSizeKB = 32 * 1024,
+				SpecialHeapSizeKB = 1024
+			});
+
 			try
 			{
 				_core = BizInvoker.GetInvoker<LibSnes9x>(_exe, _exe);
-				//Console.WriteLine(_exe.Resolve("biz_init"));
-				//System.Diagnostics.Debugger.Break();
 				if (!_core.biz_init())
 				{
 					throw new InvalidOperationException("Init() failed");
