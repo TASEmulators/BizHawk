@@ -1286,6 +1286,7 @@
     <Compile Include="Sound\YM2413.cs" />
     <Compile Include="Sound\YM2612.cs" />
     <Compile Include="Waterbox\PeRunner.cs" />
+    <Compile Include="Waterbox\PeWrapper.cs" />
     <Compile Include="Waterbox\Swappable.cs" />
     <Compile Include="Waterbox\WaterboxUtils.cs" />
   </ItemGroup>

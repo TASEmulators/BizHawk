@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				{
 					Path = comm.CoreFileProvider.DllPath(),
 					Filename = "gpgx.exe",
-					NormalHeapSizeKB = 8 * 1024,
+					NormalHeapSizeKB = 256,
 					SealedHeapSizeKB = 36 * 1024,
 					InvisibleHeapSizeKB = 4 * 1024,
 					SpecialHeapSizeKB = 64
