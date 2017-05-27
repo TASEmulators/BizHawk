@@ -21,7 +21,25 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public Dictionary<string, IntPtr> ExportsByName { get; } = new Dictionary<string, IntPtr>();
 
-		public Dictionary<string, Dictionary<string, IntPtr>> ImportsByModule { get; } = new Dictionary<string, Dictionary<string, IntPtr>>();
+		public Dictionary<string, Dictionary<string, IntPtr>> ImportsByModule { get; } = 
+			new Dictionary<string, Dictionary<string, IntPtr>>();
+
+		private class Section
+		{
+			public string Name { get; set; }
+			public ulong Start { get; set; }
+			public ulong Size { get; set; }
+			public bool W { get; set; }
+			public bool R { get; set; }
+			public bool X { get; set; }
+			public MemoryBlock.Protection Prot { get; set; }
+			public ulong DiskStart { get; set; }
+			public ulong DiskSize { get; set; }
+		}
+
+		private readonly Dictionary<string, Section> _sectionsByName = new Dictionary<string, Section>();
+		private readonly List<Section> _sections = new List<Section>();
+
 
 		public string ModuleName { get; }
 
@@ -97,6 +115,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_fileData = fileData;
 			_pe = new PeFile(fileData);
 			Size = _pe.ImageNtHeaders.OptionalHeader.SizeOfImage;
+			Start = destAddress;
 
 			if (Size < _pe.ImageSectionHeaders.Max(s => (ulong)s.VirtualSize + s.VirtualAddress))
 			{
@@ -104,15 +123,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 
 			_fileHash = WaterboxUtils.Hash(fileData);
-			Mount(destAddress);
-		}
-
-		/// <summary>
-		/// set memory protections.
-		/// </summary>
-		private void ProtectMemory()
-		{
-			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
 
 			foreach (var s in _pe.ImageSectionHeaders)
 			{
@@ -130,7 +140,38 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 				prot = x ? MemoryBlock.Protection.RX : w ? MemoryBlock.Protection.RW : MemoryBlock.Protection.R;
 
-				Memory.Protect(start, length, prot);
+				var section = new Section
+				{
+					// chop off possible null padding from name
+					Name = Encoding.ASCII.GetString(s.Name, 0,
+						(s.Name.Select((v, i) => new { v, i }).FirstOrDefault(a => a.v == 0) ?? new { v = (byte)0, i = s.Name.Length }).i),
+					Start = start,
+					Size = length,
+					R = r,
+					W = w,
+					X = x,
+					Prot = prot,
+					DiskStart = s.PointerToRawData,
+					DiskSize = s.SizeOfRawData
+				};
+
+				_sections.Add(section);
+				_sectionsByName.Add(section.Name, section);
+			}
+
+			Mount();
+		}
+
+		/// <summary>
+		/// set memory protections.
+		/// </summary>
+		private void ProtectMemory()
+		{
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
+
+			foreach (var s in _sections)
+			{
+				Memory.Protect(s.Start, s.Size, s.Prot);
 			}
 		}
 
@@ -138,9 +179,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// load the PE into memory
 		/// </summary>
 		/// <param name="org">start address</param>
-		private void Mount(ulong org)
+		private void Mount()
 		{
-			Start = org;
 			LoadOffset = (long)Start - (long)_pe.ImageNtHeaders.OptionalHeader.ImageBase;
 			Memory = new MemoryBlock(Start, Size);
 			Memory.Activate();
@@ -150,14 +190,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			Marshal.Copy(_fileData, 0, Z.US(Start), (int)_pe.ImageNtHeaders.OptionalHeader.SizeOfHeaders);
 
 			// copy sections
-			foreach (var s in _pe.ImageSectionHeaders)
+			foreach (var s in _sections)
 			{
-				ulong start = Start + s.VirtualAddress;
-				ulong length = s.VirtualSize;
-				ulong datalength = Math.Min(s.VirtualSize, s.SizeOfRawData);
-
-				Marshal.Copy(_fileData, (int)s.PointerToRawData, Z.US(start), (int)datalength);
-				WaterboxUtils.ZeroMemory(Z.US(start + datalength), (long)(length - datalength));
+				ulong datalength = Math.Min(s.Size, s.DiskSize);
+				Marshal.Copy(_fileData, (int)s.DiskStart, Z.US(s.Start), (int)datalength);
+				WaterboxUtils.ZeroMemory(Z.US(s.Start + datalength), (long)(s.Size - datalength));
 			}
 
 			// apply relocations
@@ -229,28 +266,24 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				module.Add(import.Name, Z.US(Start + import.Thunk));
 			}
 
-			var midipix = _pe.ImageSectionHeaders.Where(s => s.Name.SequenceEqual(Encoding.ASCII.GetBytes(".midipix")))
-				.SingleOrDefault();
-			if (midipix != null)
+			Section midipix;
+			if (_sectionsByName.TryGetValue(".midipix", out midipix))
 			{
-				var dataOffset = midipix.PointerToRawData;
+				var dataOffset = midipix.DiskStart;
 				CtorList = Z.SS(BitConverter.ToInt64(_fileData, (int)(dataOffset + 0x30)) + LoadOffset);
 				DtorList = Z.SS(BitConverter.ToInt64(_fileData, (int)(dataOffset + 0x38)) + LoadOffset);
 			}
 
 			Console.WriteLine($"Mounted `{ModuleName}` @{Start:x16}");
-			foreach (var s in _pe.ImageSectionHeaders.OrderBy(s => s.VirtualAddress))
+			foreach (var s in _sections.OrderBy(s => s.Start))
 			{
-				var r = (s.Characteristics & (uint)Constants.SectionFlags.IMAGE_SCN_MEM_READ) != 0;
-				var w = (s.Characteristics & (uint)Constants.SectionFlags.IMAGE_SCN_MEM_WRITE) != 0;
-				var x = (s.Characteristics & (uint)Constants.SectionFlags.IMAGE_SCN_MEM_EXECUTE) != 0;
 				Console.WriteLine("  @{0:x16} {1}{2}{3} `{4}` {5} bytes",
-					Start + s.VirtualAddress,
-					r ? "R" : " ",
-					w ? "W" : " ",
-					x ? "X" : " ",
-					Encoding.ASCII.GetString(s.Name),
-					s.VirtualSize);
+					s.Start,
+					s.R ? "R" : " ",
+					s.W ? "W" : " ",
+					s.X ? "X" : " ",
+					s.Name,
+					s.Size);
 			}
 		}
 
@@ -295,16 +328,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			bw.Write(Memory.XorHash);
 			bw.Write(Start);
 
-			foreach (var s in _pe.ImageSectionHeaders)
+			foreach (var s in _sections)
 			{
-				if ((s.Characteristics & (uint)Constants.SectionFlags.IMAGE_SCN_MEM_WRITE) == 0)
+				if (!s.W)
 					continue;
 
-				ulong start = Start + s.VirtualAddress;
-				ulong length = s.VirtualSize;
-
-				var ms = Memory.GetXorStream(start, length, false);
-				bw.Write(length);
+				var ms = Memory.GetXorStream(s.Start, s.Size, false);
+				bw.Write(s.Size);
 				ms.CopyTo(bw.BaseStream);
 			}
 		}
@@ -322,19 +352,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.RW);
 
-			foreach (var s in _pe.ImageSectionHeaders)
+			foreach (var s in _sections)
 			{
-				if ((s.Characteristics & (uint)Constants.SectionFlags.IMAGE_SCN_MEM_WRITE) == 0)
+				if (!s.W)
 					continue;
 
-				ulong start = Start + s.VirtualAddress;
-				ulong length = s.VirtualSize;
-
-				if (br.ReadUInt64() != length)
+				if (br.ReadUInt64() != s.Size)
 					throw new InvalidOperationException("Unexpected section size for " + s.Name);
 
-				var ms = Memory.GetXorStream(start, length, true);
-				WaterboxUtils.CopySome(br.BaseStream, ms, (long)length);
+				var ms = Memory.GetXorStream(s.Start, s.Size, true);
+				WaterboxUtils.CopySome(br.BaseStream, ms, (long)s.Size);
 			}
 
 			ProtectMemory();
