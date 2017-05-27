@@ -478,6 +478,12 @@ namespace BizHawk.Common.BizInvoke
 			{
 				// non ref of class can just be passed as pointer
 				var loc = il.DeclareLocal(type, true);
+				var end = il.DefineLabel();
+				var isNull = il.DefineLabel();
+
+				il.Emit(OpCodes.Ldarg, (short)idx);
+				il.Emit(OpCodes.Brfalse, isNull);
+
 				il.Emit(OpCodes.Ldarg, (short)idx);
 				il.Emit(OpCodes.Dup);
 				il.Emit(OpCodes.Stloc, loc);
@@ -486,6 +492,11 @@ namespace BizHawk.Common.BizInvoke
 				il.Emit(IntPtr.Size == 4 ? OpCodes.Ldc_I4_4 : OpCodes.Ldc_I4_8);
 				il.Emit(OpCodes.Conv_I);
 				il.Emit(OpCodes.Add);
+				il.Emit(OpCodes.Br, end);
+
+				il.MarkLabel(isNull);
+				LoadConstant(il, IntPtr.Zero);
+				il.MarkLabel(end);
 
 				return typeof(IntPtr);
 			}
