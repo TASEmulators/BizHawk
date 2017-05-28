@@ -15,9 +15,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	public abstract class Swappable : IMonitor, IDisposable
 	{
 		/// <summary>
-		/// start address, or 0 if we don't need to be swapped
+		/// start address
 		/// </summary>
-		private ulong _lockkey = 0;
+		private ulong _lockkey;
 
 		/// <summary>
 		/// the the relevant lockinfo for this core
@@ -42,16 +42,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		protected void Initialize(ulong lockkey)
 		{
 			_lockkey = lockkey;
-			if (lockkey != 0)
-			{
-				_currentLockInfo = LockInfos.GetOrAdd(_lockkey, new LockInfo { Sync = new object() });
-			}
+			if (lockkey == 0)
+				throw new NullReferenceException();
+			_currentLockInfo = LockInfos.GetOrAdd(_lockkey, new LockInfo { Sync = new object() });
 		}
-
-		/// <summary>
-		/// true if the IMonitor should be used for native calls
-		/// </summary>
-		public bool ShouldMonitor { get { return _lockkey != 0; } }
 
 		// any Swappable is assumed to conflict with any other Swappable at the same base address,
 		// but not any other starting address.  so don't put them too close together!

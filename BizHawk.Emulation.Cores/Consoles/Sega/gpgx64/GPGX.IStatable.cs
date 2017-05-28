@@ -62,9 +62,5 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 			ms.Close();
 			return ms.ToArray();
 		}
-
-		private void InitStateBuffers()
-		{
-		}
 	}
 }

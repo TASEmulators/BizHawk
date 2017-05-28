@@ -5,6 +5,7 @@ using System.Runtime.InteropServices;
 using BizHawk.Common.BizInvoke;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 {
@@ -40,8 +41,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				throw new InvalidOperationException("ROM too big!  Did you try to load a CD as a ROM?");
 			}
 
-			try
-			{
 				_elf = new PeRunner(new PeRunnerOptions
 				{
 					Path = comm.CoreFileProvider.DllPath(),
@@ -52,11 +51,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 					SpecialHeapSizeKB = 64
 				});
 
-				if (_elf.ShouldMonitor)
-					Core = BizInvoker.GetInvoker<LibGPGX>(_elf, _elf);
-				else
-					Core = BizInvoker.GetInvoker<LibGPGX>(_elf);
-
+				Core = BizInvoker.GetInvoker<LibGPGX>(_elf, _elf);
+			using (_elf.EnterExit())
+			{ 
 				_syncSettings = (GPGXSyncSettings)syncSettings ?? new GPGXSyncSettings();
 				_settings = (GPGXSettings)settings ?? new GPGXSettings();
 
@@ -110,7 +107,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 						break;
 				}
 
-
 				if (!Core.gpgx_init(romextension, LoadCallback, _syncSettings.UseSixButton, system_a, system_b, _syncSettings.Region, _settings.GetNativeSettings()))
 					throw new Exception("gpgx_init() failed");
 
@@ -130,10 +126,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				Core.gpgx_set_cdd_callback(null);
 				_elf.Seal();
 				Core.gpgx_set_cdd_callback(cd_callback_handle);
-
-
-				// compute state size
-				InitStateBuffers();
 
 				SetControllerDefinition();
 
@@ -159,11 +151,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 				Tracer = new GPGXTraceBuffer(this, MemoryDomains, this);
 				(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
-			}
-			catch
-			{
-				Dispose();
-				throw;
 			}
 		}
 
@@ -382,10 +369,46 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 		public bool IsMegaCD { get { return CD != null; } }
 
-		public void UpdateVDPViewContext(LibGPGX.VDPView view)
+		public class VDPView : IMonitor
 		{
-			Core.gpgx_get_vdp_view(view);
+			private readonly IMonitor _m;
+
+			public VDPView(LibGPGX.VDPView v, IMonitor m)
+			{
+				_m = m;
+				VRAM = v.VRAM;
+				PatternCache = v.PatternCache;
+				ColorCache = v.ColorCache;
+				NTA = v.NTA;
+				NTB = v.NTB;
+				NTW = v.NTW;
+			}
+
+			public IntPtr VRAM;
+			public IntPtr PatternCache;
+			public IntPtr ColorCache;
+			public LibGPGX.VDPNameTable NTA;
+			public LibGPGX.VDPNameTable NTB;
+			public LibGPGX.VDPNameTable NTW;
+
+
+			public void Enter()
+			{
+				_m.Enter();
+			}
+
+			public void Exit()
+			{
+				_m.Exit();
+			}
+		}
+
+		public VDPView UpdateVDPViewContext()
+		{
+			var v = new LibGPGX.VDPView();
+			Core.gpgx_get_vdp_view(v);
 			Core.gpgx_flush_vram(); // fully regenerate internal caches as needed
+			return new VDPView(v, _elf);
 		}
 
 		public DisplayType Region { get; private set; }

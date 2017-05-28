@@ -1,5 +1,6 @@
 ﻿using System;
 using BizHawk.Emulation.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 {
@@ -47,38 +48,41 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				return;
 			}
 
-			int gppitch, gpwidth, gpheight;
-			IntPtr src = IntPtr.Zero;
-
-			Core.gpgx_get_video(out gpwidth, out gpheight, out gppitch, ref src);
-
-			vwidth = gpwidth;
-			vheight = gpheight;
-
-			if (_settings.PadScreen320 && vwidth == 256)
-				vwidth = 320;
-
-			int xpad = (vwidth - gpwidth) / 2;
-			int xpad2 = vwidth - gpwidth - xpad;
-
-			if (vidbuff.Length < vwidth * vheight)
-				vidbuff = new int[vwidth * vheight];
-
-			int rinc = (gppitch / 4) - gpwidth;
-			fixed (int* pdst_ = vidbuff)
+			using (_elf.EnterExit())
 			{
-				int* pdst = pdst_;
-				int* psrc = (int*)src;
+				int gppitch, gpwidth, gpheight;
+				IntPtr src = IntPtr.Zero;
 
-				for (int j = 0; j < gpheight; j++)
+				Core.gpgx_get_video(out gpwidth, out gpheight, out gppitch, ref src);
+
+				vwidth = gpwidth;
+				vheight = gpheight;
+
+				if (_settings.PadScreen320 && vwidth == 256)
+					vwidth = 320;
+
+				int xpad = (vwidth - gpwidth) / 2;
+				int xpad2 = vwidth - gpwidth - xpad;
+
+				if (vidbuff.Length < vwidth * vheight)
+					vidbuff = new int[vwidth * vheight];
+
+				int rinc = (gppitch / 4) - gpwidth;
+				fixed (int* pdst_ = vidbuff)
 				{
-					for (int i = 0; i < xpad; i++)
-						*pdst++ = unchecked((int)0xff000000);
-					for (int i = 0; i < gpwidth; i++)
-						*pdst++ = *psrc++;;
-					for (int i = 0; i < xpad2; i++)
-						*pdst++ = unchecked((int)0xff000000);
-					psrc += rinc;
+					int* pdst = pdst_;
+					int* psrc = (int*)src;
+
+					for (int j = 0; j < gpheight; j++)
+					{
+						for (int i = 0; i < xpad; i++)
+							*pdst++ = unchecked((int)0xff000000);
+						for (int i = 0; i < gpwidth; i++)
+							*pdst++ = *psrc++; ;
+						for (int i = 0; i < xpad2; i++)
+							*pdst++ = unchecked((int)0xff000000);
+						psrc += rinc;
+					}
 				}
 			}
 		}
