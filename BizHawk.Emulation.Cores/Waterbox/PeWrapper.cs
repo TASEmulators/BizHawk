@@ -293,6 +293,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					s.Name,
 					s.Size);
 			}
+			Console.WriteLine("GDB Symbol Load:");
+			Console.WriteLine("add-sym {0} {1} -s .data {2} -s .bss {3}",
+				ModuleName,
+				_sectionsByName[".text"].Start,
+				_sectionsByName[".data"].Start,
+				_sectionsByName[".bss"].Start);
 		}
 
 		public IntPtr Resolve(string entryPoint)
