@@ -70,6 +70,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				_syncSettings = syncSettings;
 				InitControllers();
 				PutSettings(settings);
+				InitMemoryDomains();
 			}
 			catch
 			{
@@ -613,6 +614,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				// the controllerdefinition, and we're not ready for that
 				return !DeepEquality.DeepEquals(x, y);
 			}
+		}
+
+		#endregion
+
+		#region Memory Domains
+
+		private unsafe void InitMemoryDomains()
+		{
+			var native = new LibSnes9x.memory_area();
+			var domains = new List<MemoryDomain>();
+
+			var names = new[] { "CARTRAM", "CARTRAM B", "RTC", "WRAM", "VRAM" };
+			int index = 0;
+			foreach (var s in names)
+			{
+				_core.biz_get_memory_area(index++, native);
+				if (native.ptr != IntPtr.Zero && native.size > 0)
+				{
+					domains.Add(new MemoryDomainIntPtr(s, MemoryDomain.Endian.Little,
+						native.ptr, native.size, true, 2));
+				}
+			}
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(new MemoryDomainList(domains)
+			{
+				MainMemory = domains.Single(d => d.Name == "WRAM")
+			});
 		}
 
 		#endregion
