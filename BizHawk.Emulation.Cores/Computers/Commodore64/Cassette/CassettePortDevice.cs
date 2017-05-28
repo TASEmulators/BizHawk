@@ -27,5 +27,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 		}
 
 		public abstract void SyncState(Serializer ser);
+
+		// Exposed for memory domains, should not be used for actual emulation implementation
+		public abstract byte[] TapeDataDomain { get; }
 	}
 }

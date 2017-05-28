@@ -8,8 +8,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 	{
 		private IMemoryDomains _memoryDomains;
 
-		private void SetupMemoryDomains(bool diskDriveEnabled)
+		private void SetupMemoryDomains()
 		{
+			bool diskDriveEnabled = _board.DiskDrive != null;
+			bool tapeDriveEnabled = _board.TapeDrive != null;
+
 			var domains = new List<MemoryDomain>
 			{
 				C64MemoryDomainFactory.Create("System Bus", 0x10000, a => _board.Cpu.Peek(a), (a, v) => _board.Cpu.Poke(a, v)),
@@ -30,6 +33,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					C64MemoryDomainFactory.Create("1541 VIA1", 0x10, a => _board.DiskDrive.PeekVia1(a), (a, v) => _board.DiskDrive.PokeVia1(a, v))
 				});
 			}
+
+			if (tapeDriveEnabled)
+			{
+				domains.AddRange(new[]
+				{
+					C64MemoryDomainFactory.Create("Tape Data", _board.TapeDrive.TapeDataDomain.Length, a => _board.TapeDrive.TapeDataDomain[a], (a,v) => _board.TapeDrive.TapeDataDomain[a] = (byte)v)
+				});
+			}
+
 			_memoryDomains = new MemoryDomainList(domains);
 			((BasicServiceProvider)ServiceProvider).Register(_memoryDomains);
 		}

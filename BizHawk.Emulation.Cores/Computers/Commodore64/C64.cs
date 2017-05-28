@@ -32,9 +32,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			RomSanityCheck();
 
 			Init(SyncSettings.VicType, Settings.BorderType, SyncSettings.SidType, SyncSettings.TapeDriveType, SyncSettings.DiskDriveType);
-			_cyclesPerFrame = _board.Vic.CyclesPerFrame;
-			SetupMemoryDomains(_board.DiskDrive != null);
+			_cyclesPerFrame = _board.Vic.CyclesPerFrame;			
 			_memoryCallbacks = new MemoryCallbackSystem();
+
 			HardReset();
 
 			switch (SyncSettings.VicType)
@@ -66,6 +66,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				// There are no multi-cart cart games, so just hardcode .First()
 				CoreComm.RomStatusDetails = $"{game.Name}\r\nSHA1:{roms.First().HashSHA1()}\r\nMD5:{roms.First().HashMD5()}\r\nMapper Impl \"{_board.CartPort.CartridgeType}\"";
 			}
+
+			SetupMemoryDomains();
 		}
 
 		// Currently we will require at least one rom.  If multiple they MUST be all the same media type in the same format
