@@ -25,6 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			public int vheight;
 			public IntPtr sptr;
 			public int slen;
+			public int padread;
 		};
 
 		public enum LeftPortDevice : uint
@@ -42,6 +43,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			SuperScope = 4,
 			Justifier = 5
 		}
+
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void InputCallback();
 
 		const CallingConvention CC = CallingConvention.Cdecl;
 
@@ -67,5 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		public abstract void biz_get_memory_area(int which, [In, Out] memory_area mem);
 		[BizImport(CC)]
 		public abstract void biz_post_load_state();
+		[BizImport(CC)]
+		public abstract void biz_set_input_callback(InputCallback callback);
 	}
 }

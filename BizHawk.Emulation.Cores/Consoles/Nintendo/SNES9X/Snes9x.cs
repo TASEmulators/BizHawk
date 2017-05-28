@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public class Snes9x : IEmulator, IVideoProvider, ISoundProvider, IStatable,
 		ISettable<Snes9x.Settings, Snes9x.SyncSettings>,
-		ISaveRam
+		ISaveRam, IInputPollable
 	{
 		private LibSnes9x _core;
 		private PeRunner _exe;
@@ -71,6 +71,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			PutSettings(settings);
 			InitMemoryDomains();
 			InitSaveram();
+
+			_inputCallback = InputCallbacks.Call;
 		}
 
 		#region controller
@@ -301,6 +303,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
+			_core.biz_set_input_callback(InputCallbacks.Count > 0 ? _inputCallback : null);
+
 			if (controller.IsPressed("Power"))
 				_core.biz_hard_reset();
 			else if (controller.IsPressed("Reset"))
@@ -311,6 +315,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			LibSnes9x.frame_info frame = new LibSnes9x.frame_info();
 
 			_core.biz_run(frame, _inputState);
+			IsLagFrame = frame.padread == 0;
+			if (IsLagFrame)
+				LagCount++;
 			using (_exe.EnterExit())
 			{
 				Blit(frame);
@@ -444,9 +451,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		#endregion
 
-		// TODO
-		public int LagCount { get; private set; }
-		public bool IsLagFrame { get; private set; }
+		private LibSnes9x.InputCallback _inputCallback;
+
+		public int LagCount { get; set; }
+		public bool IsLagFrame { get; set; }
+
+		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
 		#region IStatable
 
@@ -479,6 +489,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			LagCount = reader.ReadInt32();
 			IsLagFrame = reader.ReadBoolean();
 			// any managed pointers that we sent to the core need to be resent now!
+			_core.biz_set_input_callback(null);
 
 			_core.biz_post_load_state();
 		}
