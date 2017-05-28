@@ -15,7 +15,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 	[CoreAttributes("Snes9x", "FIXME", true, false, "5e0319ab3ef9611250efb18255186d0dc0d7e125", "https://github.com/snes9xgit/snes9x", false)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public class Snes9x : IEmulator, IVideoProvider, ISoundProvider, IStatable,
-		ISettable<Snes9x.Settings, Snes9x.SyncSettings>
+		ISettable<Snes9x.Settings, Snes9x.SyncSettings>,
+		ISaveRam
 	{
 		private LibSnes9x _core;
 		private PeRunner _exe;
@@ -71,6 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				InitControllers();
 				PutSettings(settings);
 				InitMemoryDomains();
+				InitSaveram();
 			}
 			catch
 			{
@@ -334,6 +336,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		#region IVideoProvider
 
+		private static readonly int[] VirtualWidths = new[] { 293, 587, 587, 587 };  // 256 512 256 512
+		private static readonly int[] VirtualHeights = new[] { 224, 448, 448, 448 }; // 224 224 448 448
+
 		private unsafe void Blit(LibSnes9x.frame_info frame)
 		{
 			BufferWidth = frame.vwidth;
@@ -360,13 +365,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 					src += vinc;
 				}
 			}
+
+			VirtualHeight = BufferHeight;
+			VirtualWidth = BufferWidth;
+			if (VirtualHeight * 2 < VirtualWidth)
+				VirtualHeight *= 2;
+			if (VirtualHeight > 240)
+				VirtualWidth = 512;
+			VirtualWidth = (int)Math.Round(VirtualWidth * 1.146);
 		}
 
 		private int[] _vbuff = new int[512 * 480];
 		public int[] GetVideoBuffer() { return _vbuff; }
-		public int VirtualWidth
-		{ get { return (int)(BufferWidth * 1.146); ; } }
-		public int VirtualHeight { get { return BufferHeight; } }
+		public int VirtualWidth { get; private set; } = 293;
+		public int VirtualHeight { get; private set; } = 224;
 		public int BufferWidth { get; private set; } = 256;
 		public int BufferHeight { get; private set; } = 224;
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
@@ -640,6 +652,54 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			{
 				MainMemory = domains.Single(d => d.Name == "WRAM")
 			});
+		}
+
+		#endregion
+
+		#region ISaveRam
+
+		private void InitSaveram()
+		{
+			for (int i = 0; i < 2; i++) // SRAM A, SRAM B, RTC
+			{
+				var native = new LibSnes9x.memory_area();
+				_core.biz_get_memory_area(i, native);
+				if (native.ptr != IntPtr.Zero && native.size > 0)
+					_saveramMemoryAreas.Add(native);
+			}
+			_saveramSize = _saveramMemoryAreas.Sum(a => a.size);
+		}
+
+		private readonly List<LibSnes9x.memory_area> _saveramMemoryAreas = new List<LibSnes9x.memory_area>();
+
+		private int _saveramSize;
+
+		public bool SaveRamModified => _saveramSize > 0;
+
+		public byte[] CloneSaveRam()
+		{
+			var ret = new byte[_saveramSize];
+			var offset = 0;
+			foreach (var area in _saveramMemoryAreas)
+			{
+				Marshal.Copy(area.ptr, ret, offset, area.size);
+				offset += area.size;
+			}
+
+			return ret;
+		}
+
+		public void StoreSaveRam(byte[] data)
+		{
+			if (data.Length != _saveramSize)
+				throw new InvalidOperationException("Saveram size mismatch");
+
+			var offset = 0;
+			foreach (var area in _saveramMemoryAreas)
+			{
+				Marshal.Copy(data, offset, area.ptr, area.size);
+				offset += area.size;
+			}
 		}
 
 		#endregion
