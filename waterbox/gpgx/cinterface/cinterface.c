@@ -581,6 +581,8 @@ GPGX_EX int gpgx_init(const char *feromextension, ECL_ENTRY int (*feload_archive
 	update_viewport();
 	gpgx_clear_sram();
 
+	load_archive_cb = NULL; // don't hold onto load_archive_cb for longer than we need it for
+
 	return 1;
 }
 

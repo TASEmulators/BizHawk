@@ -155,6 +155,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				context.SyscallVtable = _syscallVtable = AllocVtable(340);
 				context.LdsoVtable = _ldsoVtable = AllocVtable(7);
 				context.PsxVtable = _psxVtable = AllocVtable(5);
+				// ctx comes from the native stack, where it could have any garbage in uninited fields
+				context.SysIdx = 0;
+				context.LibcIdx = 0;
+				context.DoGlobalCtors = IntPtr.Zero;
+				context.DoGlobalDtors = IntPtr.Zero;
 
 				ReloadVtables();
 
@@ -382,7 +387,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 
 			[BizExport(CallingConvention.Cdecl, EntryPoint = "n228")]
-			public int SysClockGetTime(int which, [In,Out] TimeSpec time)
+			public int SysClockGetTime(int which, [In, Out] TimeSpec time)
 			{
 				time.Seconds = 1495889068;
 				time.NanoSeconds = 0;
@@ -670,9 +675,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				_sealedheap.Seal();
 				foreach (var h in _heaps)
-					h.Memory.SaveXorSnapshot();
+				{
+					if (h != _invisibleheap) // TODO: if we have more non-savestated heaps, refine this hack
+						h.Memory.SaveXorSnapshot();
+				}
 				foreach (var pe in _modules)
-					pe.Memory.SaveXorSnapshot();
+				{
+					pe.SealImportsAndTakeXorSnapshot();
+				}
 			}
 		}
 

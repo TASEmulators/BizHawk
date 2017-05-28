@@ -123,6 +123,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 					Region = VsyncNumerator / VsyncDenominator > 55 ? DisplayType.NTSC : DisplayType.PAL;
 				}
 
+				// when we call Seal, ANY pointer passed from managed code must be 0.
+				// this is so the initial state is clean
+				// the only two pointers set so far are LoadCallback, which the core zeroed itself,
+				// and CdCallback
+				Core.gpgx_set_cdd_callback(null);
+				_elf.Seal();
+				Core.gpgx_set_cdd_callback(cd_callback_handle);
+
+
 				// compute state size
 				InitStateBuffers();
 
@@ -150,8 +159,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 				Tracer = new GPGXTraceBuffer(this, MemoryDomains, this);
 				(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
-
-				_elf.Seal();
 			}
 			catch
 			{

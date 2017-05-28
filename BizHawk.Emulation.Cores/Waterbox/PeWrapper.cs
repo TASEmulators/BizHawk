@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private readonly Dictionary<string, Section> _sectionsByName = new Dictionary<string, Section>();
 		private readonly List<Section> _sections = new List<Section>();
-
+		private Section _imports;
 
 		public string ModuleName { get; }
 
@@ -64,6 +64,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// for midipix-build PEs, pointer to the destructors to run during fini
 		/// </summary>
 		public IntPtr DtorList { get; private set; }
+
+		// true if the imports have been set to readonly
+		private bool _importsSealed = false;
 
 		/*[UnmanagedFunctionPointer(CallingConvention.Winapi)]
 		private delegate bool DllEntry(IntPtr instance, int reason, IntPtr reserved);
@@ -158,6 +161,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_sections.Add(section);
 				_sectionsByName.Add(section.Name, section);
 			}
+			_sectionsByName.TryGetValue(".idata", out _imports);
 
 			Mount();
 		}
@@ -263,7 +267,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					module = new Dictionary<string, IntPtr>();
 					ImportsByModule.Add(import.DLL, module);
 				}
-				module.Add(import.Name, Z.US(Start + import.Thunk));
+				var dest = Start + import.Thunk;
+				if (_imports == null || dest >= _imports.Start + _imports.Size || dest < _imports.Start)
+					throw new InvalidOperationException("Import record outside of .idata!");
+
+				module.Add(import.Name, Z.US(dest));
 			}
 
 			Section midipix;
@@ -296,6 +304,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public void ConnectImports(string moduleName, IImportResolver module)
 		{
+			// this is called once internally when bootstrapping, and externally
+			// when we need to restore a savestate from another run.  so imports might or might not be sealed
+
+			if (_importsSealed && _imports != null)
+				Memory.Protect(_imports.Start, _imports.Size, MemoryBlock.Protection.RW);
+
 			Dictionary<string, IntPtr> imports;
 			if (ImportsByModule.TryGetValue(moduleName, out imports))
 			{
@@ -305,6 +319,34 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					Marshal.Copy(valueArray, 0, kvp.Value, 1);
 				}
 			}
+
+			if (_importsSealed && _imports != null)
+				Memory.Protect(_imports.Start, _imports.Size, _imports.Prot);
+		}
+
+		public void SealImportsAndTakeXorSnapshot()
+		{
+			if (_importsSealed)
+				throw new InvalidOperationException("Imports already sealed!");
+
+			// save import values, then zero them all (for hash purposes), then take our snapshot, then load them again,
+			// then set the .idata area to read only
+			if (_imports != null)
+			{
+				var data = new byte[_imports.Size];
+				Marshal.Copy(Z.US(_imports.Start), data, 0, (int)_imports.Size);
+				WaterboxUtils.ZeroMemory(Z.US(_imports.Start), (long)_imports.Size);
+				Memory.SaveXorSnapshot();
+				Marshal.Copy(data, 0, Z.US(_imports.Start), (int)_imports.Size);
+				_imports.W = false;
+				Memory.Protect(_imports.Start, _imports.Size, _imports.Prot);
+			}
+			else
+			{
+				Memory.SaveXorSnapshot();
+			}
+
+			_importsSealed = true;
 		}
 
 		private bool _disposed = false;
@@ -323,6 +365,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
+			if (!_importsSealed)
+				throw new InvalidOperationException(".idata sections must be closed before saving state");
+
 			bw.Write(MAGIC);
 			bw.Write(_fileHash);
 			bw.Write(Memory.XorHash);
@@ -341,6 +386,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public void LoadStateBinary(BinaryReader br)
 		{
+			if (!_importsSealed)
+				throw new InvalidOperationException(".idata sections must be closed before loading state");
+
 			if (br.ReadUInt64() != MAGIC)
 				throw new InvalidOperationException("Magic not magic enough!");
 			if (!br.ReadBytes(_fileHash.Length).SequenceEqual(_fileHash))
