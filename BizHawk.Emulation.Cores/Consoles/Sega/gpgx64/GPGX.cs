@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				_elf = new PeRunner(new PeRunnerOptions
 				{
 					Path = comm.CoreFileProvider.DllPath(),
-					Filename = "gpgx.exe",
+					Filename = "gpgx.wbx",
 					NormalHeapSizeKB = 256,
 					SealedHeapSizeKB = 36 * 1024,
 					InvisibleHeapSizeKB = 4 * 1024,

@@ -6,9 +6,9 @@ CCFLAGS:=-Icore -Iutil -Icore/m68k -Icore/z80 -Icore/input_hw \
 	-Wall -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast -Werror=implicit-function-declaration \
 	-std=c99 -fomit-frame-pointer -fvisibility=hidden \
 	-DLSB_FIRST -DUSE_32BPP_RENDERING -DINLINE=static\ __inline__ \
-	-O3#-mcmodel=large
+	-O3 -flto
 
-TARGET = gpgx.exe
+TARGET = gpgx.wbx
 
 LDFLAGS = -Wl,--dynamicbase,--export-all-symbols
 
@@ -27,11 +27,15 @@ all: $(TARGET)
 
 .PHONY: clean all
 
-$(TARGET) : $(OBJS)
+$(TARGET).in: $(OBJS)
 	@$(CC) -o $@ $(LDFLAGS) $(CCFLAGS) $(OBJS) ../emulibc/libemuhost.so
+
+$(TARGET): $(TARGET).in
+	strip $< -o $@ -R /4 -R /14 -R /29 -R /41 -R /55 -R /67 -R /78 -R /89 -R /104
 
 clean:
 	rm -rf $(OBJ_DIR)
+	rm -f $(TARGET).in
 	rm -f $(TARGET)
 
 #install:
