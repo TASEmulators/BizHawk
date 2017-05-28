@@ -8,10 +8,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	public partial class A7800Hawk
 	{
-		public byte ReadMemory(int addr)
+		public byte ReadMemory(ushort addr)
 		{
-			addr &= 0xFFFF;
-
 			if (addr < 0x0400) {
 				if ((addr & 0xFF) < 0x20)
 				{
@@ -27,7 +25,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 				else if ((addr & 0xFF) < 0x40)
 				{
-					return Maria_regs[(addr & 0x3F) - 0x20];
+					if ((A7800_control_register & 0x2) > 0)
+					{
+						return Maria_regs[(addr & 0x3F) - 0x20];
+					}
+					else
+					{
+						return 0xFF;
+					}
 				}
 				else if (addr < 0x100)
 				{
@@ -75,10 +80,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 		}
 
-		public void WriteMemory(int addr, byte value)
+		public void WriteMemory(ushort addr, byte value)
 		{
-			addr &= 0xFFFF;
-
 			if (addr < 0x0400)
 			{
 				if ((addr & 0xFF) < 0x20)
@@ -95,7 +98,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 				else if ((addr & 0xFF) < 0x40)
 				{
-					Maria_regs[(addr & 0x3F) - 0x20] = value;
+					if ((A7800_control_register & 0x2) > 0)
+					{
+						Maria_regs[(addr & 0x3F) - 0x20] = value;
+					}
 				}
 				else if (addr < 0x100)
 				{

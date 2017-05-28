@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					1),
 				new MemoryDomainDelegate(
 					"Ram Block 0",
-					0xB,
+					0xB0,
 					MemoryDomain.Endian.Little,
 					addr => RAM[addr-0x840],
 					(addr, value) => RAM[addr-0x840] = value,
@@ -51,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				),
 				new MemoryDomainDelegate(
 					"Ram Block 1",
-					0xB,
+					0xB0,
 					MemoryDomain.Endian.Little,
 					addr => RAM[addr-0x940],
 					(addr, value) => RAM[addr-0x940] = value,
@@ -73,12 +73,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private byte PeekSystemBus(long addr)
 		{
-			return 0;
+			ushort addr2 = (ushort)(addr & 0xFFFF);
+			return ReadMemory(addr2);
 		}
 
 		private void PokeSystemBus(long addr, byte value)
 		{
-			
+			ushort addr2 = (ushort)(addr & 0xFFFF);
+			WriteMemory(addr2, value);
 		}
 	}
 }

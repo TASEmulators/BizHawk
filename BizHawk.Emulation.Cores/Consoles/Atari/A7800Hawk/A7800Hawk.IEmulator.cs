@@ -8,6 +8,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public ControllerDefinition ControllerDefinition { get; private set; }
 
+		//Maria related variables
+		public int cycle;
+		public int cpu_cycle;
+		public int scanline;
+
 		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_frame++;
@@ -24,7 +29,23 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				_lagcount++;
 			}
 
-			maria.FrameAdvance();
+			scanline = 0;
+
+			// actually execute the frame
+			while (scanline < 263)
+			{
+				maria.Execute(cycle, scanline);
+				cycle++;
+				cpu_cycle++;
+
+
+				if (cycle == 454)
+				{
+					scanline++;
+					cycle = 0;
+				}
+			}
+
 
 		}
 

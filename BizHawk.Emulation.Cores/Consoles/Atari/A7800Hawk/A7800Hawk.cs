@@ -50,6 +50,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Register<ISoundProvider>(tia);
 			ServiceProvider = ser;
 
+			maria = new Maria
+			{
+				ReadMemory = ReadMemory
+			};
+
 			CoreComm = comm;
 			byte[] highscoreBios = comm.CoreFileProvider.GetFirmware("A78", "Bios_HSC", false, "Some functions may not work without the high score BIOS.");
 			byte[] palBios = comm.CoreFileProvider.GetFirmware("A78", "Bios_PAL", false, "The game will not run if the correct region BIOS is not available.");
@@ -128,9 +133,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			tia.Reset();
 			cpu.Reset();
+			cpu.SetCallbacks(ReadMemory, ReadMemory, ReadMemory, WriteMemory);
+
 			maria.Reset();
 			m6532 = new M6532();
-		}
+
+			TIA_regs = new byte[0x20];
+			Maria_regs = new byte[0x20];
+			RAM = new byte[0x1000];
+			regs_6532 = new byte[0x80];
+	}
 
 		/*
 		 * MariaTables.cs
