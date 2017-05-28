@@ -1675,6 +1675,7 @@ namespace BizHawk.Client.EmuHawk
 			AppleSubMenu.Visible = false;
 			C64SubMenu.Visible = false;
 			IntvSubMenu.Visible = false;
+			sNESToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
@@ -1719,7 +1720,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "SNES":
 				case "SGB":
-					// TODO: fix SNES9x here
 					if (Emulator is LibsnesCore)
 					{
 						if ((Emulator as LibsnesCore).IsSGB)
@@ -1732,9 +1732,9 @@ namespace BizHawk.Client.EmuHawk
 						}
 						SNESSubMenu.Visible = true;
 					}
-					else
+					else if (Emulator is Emulation.Cores.Nintendo.SNES9X.Snes9x)
 					{
-						SNESSubMenu.Visible = false;
+						sNESToolStripMenuItem.Visible = true;
 					}
 					break;
 				case "Coleco":
@@ -4268,6 +4268,11 @@ namespace BizHawk.Client.EmuHawk
 		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
 		{
 			new SNESControllerSettings().ShowDialog();
+		}
+
+		private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Snes9x settings");
 		}
 
 		private void CreateMultigameFileMenuItem_Click(object sender, EventArgs e)

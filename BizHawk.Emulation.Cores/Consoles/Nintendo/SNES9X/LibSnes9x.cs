@@ -27,6 +27,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			public int slen;
 		};
 
+		public enum LeftPortDevice : uint
+		{
+			//None = 0, // something in the libretro spaghetti input goes wonky with None
+			Joypad = 1
+		}
+
+		public enum RightPortDevice : uint
+		{
+			//None = 0, // something in the libretro spaghetti input goes wonky with None
+			Joypad = 1,
+			Multitap = 2,
+			Mouse = 3,
+			SuperScope = 4,
+			Justifier = 5
+		}
 
 		const CallingConvention CC = CallingConvention.Cdecl;
 
@@ -39,13 +54,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		[BizImport(CC)]
 		public abstract void biz_hard_reset();
 		[BizImport(CC)]
-		public abstract void biz_set_port_devices(uint left, uint right);
+		public abstract void biz_set_port_devices(LeftPortDevice left, RightPortDevice right);
 		[BizImport(CC)]
 		public abstract bool biz_load_rom(byte[] data, int size);
 		[BizImport(CC)]
 		public abstract bool biz_init();
 		[BizImport(CC)]
-		public abstract void biz_run([In, Out] frame_info frame);
+		public abstract void biz_run([In, Out] frame_info frame, [In]short[] input);
 		[BizImport(CC)]
 		public abstract bool biz_is_ntsc();
 		[BizImport(CC)]

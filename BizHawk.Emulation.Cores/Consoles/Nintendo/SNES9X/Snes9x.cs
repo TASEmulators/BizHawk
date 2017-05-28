@@ -5,26 +5,33 @@ using BizHawk.Common.BizInvoke;
 using System.Runtime.InteropServices;
 using System.IO;
 using BizHawk.Common.BufferExtensions;
+using System.ComponentModel;
+using BizHawk.Common;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
 	[CoreAttributes("Snes9x", "FIXME", true, false, "5e0319ab3ef9611250efb18255186d0dc0d7e125", "https://github.com/snes9xgit/snes9x", false)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public class Snes9x : IEmulator, IVideoProvider, ISoundProvider, IStatable
+	public class Snes9x : IEmulator, IVideoProvider, ISoundProvider, IStatable,
+		ISettable<Snes9x.Settings, Snes9x.SyncSettings>
 	{
 		private LibSnes9x _core;
 		private PeRunner _exe;
 
 		[CoreConstructor("SNES")]
-		public Snes9x(CoreComm comm, byte[] rom)
+		public Snes9x(CoreComm comm, byte[] rom, Settings settings, SyncSettings syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
+			settings = settings ?? new Settings();
+			syncSettings = syncSettings ?? new SyncSettings();
 
 			_exe = new PeRunner(new PeRunnerOptions
 			{
 				Path = comm.CoreFileProvider.DllPath(),
-				Filename = "snes9x.exe",
+				Filename = "snes9x.wbx",
 				NormalHeapSizeKB = 1024,
 				SealedHeapSizeKB = 12 * 1024,
 				InvisibleHeapSizeKB = 6 * 1024,
@@ -57,6 +64,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 					VsyncDenominator = 425568;
 				}
 
+				_nsampTarget = (int)Math.Round(44100.0 * VsyncDenominator / VsyncNumerator);
+				_nsampWarn = (int)Math.Round(1.05 * 44100.0 * VsyncDenominator / VsyncNumerator);
+
+				_syncSettings = syncSettings;
+				InitControllers();
+				PutSettings(settings);
 			}
 			catch
 			{
@@ -67,10 +80,213 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		#region controller
 
-		public ControllerDefinition ControllerDefinition
+		private readonly short[] _inputState = new short[16 * 8];
+		private List<ControlDefUnMerger> _cdums;
+		private readonly List<IControlDevice> _controllers = new List<IControlDevice>();
+
+		private void InitControllers()
 		{
-			get { return NullController.Instance.Definition; }
+			_core.biz_set_port_devices(_syncSettings.LeftPort, _syncSettings.RightPort);
+
+			switch (_syncSettings.LeftPort)
+			{
+				case LibSnes9x.LeftPortDevice.Joypad:
+					_controllers.Add(new Joypad());
+					break;
+			}
+			switch (_syncSettings.RightPort)
+			{
+				case LibSnes9x.RightPortDevice.Joypad:
+					_controllers.Add(new Joypad());
+					break;
+				case LibSnes9x.RightPortDevice.Multitap:
+					_controllers.Add(new Joypad());
+					_controllers.Add(new Joypad());
+					_controllers.Add(new Joypad());
+					_controllers.Add(new Joypad());
+					break;
+				case LibSnes9x.RightPortDevice.Mouse:
+					_controllers.Add(new Mouse());
+					break;
+				case LibSnes9x.RightPortDevice.SuperScope:
+					_controllers.Add(new SuperScope());
+					break;
+				case LibSnes9x.RightPortDevice.Justifier:
+					_controllers.Add(new Justifier());
+					break;
+			}
+
+			ControllerDefinition = ControllerDefinitionMerger.GetMerged(
+				_controllers.Select(c => c.Definition), out _cdums);
+
+			// add buttons that the core itself will handle
+			ControllerDefinition.BoolButtons.Add("Reset");
+			ControllerDefinition.BoolButtons.Add("Power");
+			ControllerDefinition.Name = "SNES Controller";
 		}
+
+		private void UpdateControls(IController c)
+		{
+			Array.Clear(_inputState, 0, 16 * 8);
+			for (int i = 0, offset = 0; i < _controllers.Count; i++, offset += 16)
+			{
+				_controllers[i].ApplyState(_cdums[i].UnMerge(c), _inputState, offset);
+			}
+		}
+
+		private interface IControlDevice
+		{
+			ControllerDefinition Definition { get; }
+			void ApplyState(IController controller, short[] input, int offset);
+		}
+
+		private class Joypad : IControlDevice
+		{
+			private static readonly string[] Buttons =
+			{
+				"0B",
+				"0Y",
+				"0Select",
+				"0Start",
+				"0Up",
+				"0Down",
+				"0Left",
+				"0Right",
+				"0A",
+				"0X",
+				"0L",
+				"0R"
+			};
+
+			private static int ButtonOrder(string btn)
+			{
+				var order = new Dictionary<string, int>
+				{
+					["0Up"] = 0,
+					["0Down"] = 1,
+					["0Left"] = 2,
+					["0Right"] = 3,
+
+					["0Select"] = 4,
+					["0Start"] = 5,
+
+					["0Y"] = 6,
+					["0B"] = 7,
+
+					["0X"] = 8,
+					["0A"] = 9,
+
+					["0L"] = 10,
+					["0R"] = 11
+				};
+
+				return order[btn];
+			}
+
+			private static readonly ControllerDefinition _definition = new ControllerDefinition
+			{
+				BoolButtons = Buttons.OrderBy(ButtonOrder).ToList()
+			};
+
+			public ControllerDefinition Definition { get; } = _definition;
+
+			public void ApplyState(IController controller, short[] input, int offset)
+			{
+				for (int i = 0; i < Buttons.Length; i++)
+					input[offset + i] = (short)(controller.IsPressed(Buttons[i]) ? 1 : 0);
+			}
+		}
+
+		private abstract class Analog : IControlDevice
+		{
+			public abstract ControllerDefinition Definition { get; }
+
+			public void ApplyState(IController controller, short[] input, int offset)
+			{
+				foreach (var s in Definition.FloatControls)
+					input[offset++] = (short)(controller.GetFloat(s));
+				foreach (var s in Definition.BoolButtons)
+					input[offset++] = (short)(controller.IsPressed(s) ? 1 : 0);
+			}
+		}
+
+		private class Mouse : Analog
+		{
+			private static readonly ControllerDefinition _definition = new ControllerDefinition
+			{
+				BoolButtons = new List<string>
+				{
+					"0Mouse Left",
+					"0Mouse Right"
+				},
+				FloatControls =
+				{
+					"0Mouse X",
+					"0Mouse Y"
+				},
+				FloatRanges =
+				{
+					new[] { -127f, 0f, 127f },
+					new[] { -127f, 0f, 127f }
+				}
+			};
+
+			public override ControllerDefinition Definition => _definition;
+		}
+
+		private class SuperScope : Analog
+		{
+			private static readonly ControllerDefinition _definition = new ControllerDefinition
+			{
+				BoolButtons = new List<string>
+				{
+					"0Trigger",
+					"0Cursor",
+					"0Turbo",
+					"0Pause"
+				},
+				FloatControls =
+				{
+					"0Scope X",
+					"0Scope Y"
+				},
+				FloatRanges =
+				{
+					// snes9x is always in 224 mode
+					new[] { 0f, 128f, 256f },
+					new[] { 0f, 0f, 240f }
+				}
+			};
+
+			public override ControllerDefinition Definition => _definition;
+		}
+
+		private class Justifier : Analog
+		{
+			private static readonly ControllerDefinition _definition = new ControllerDefinition
+			{
+				BoolButtons = new List<string>
+				{
+					"0Trigger",
+					"0Start",
+				},
+				FloatControls =
+				{
+					"0Justifier X",
+					"0Justifier Y",
+				},
+				FloatRanges =
+				{
+					// snes9x is always in 224 mode
+					new[] { 0f, 128f, 256f },
+					new[] { 0f, 0f, 240f },
+				}
+			};
+
+			public override ControllerDefinition Definition => _definition;
+		}
+
+		public ControllerDefinition ControllerDefinition { get; private set; }
 
 		#endregion
 
@@ -90,10 +306,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
+			if (controller.IsPressed("Power"))
+				_core.biz_hard_reset();
+			else if (controller.IsPressed("Reset"))
+				_core.biz_soft_reset();
+
+			UpdateControls(controller);
 			Frame++;
 			LibSnes9x.frame_info frame = new LibSnes9x.frame_info();
 
-			_core.biz_run(frame);
+			_core.biz_run(frame, _inputState);
 			Blit(frame);
 			Sblit(frame);
 		}
@@ -166,10 +388,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		{
 			Marshal.Copy(frame.sptr, _sbuff, 0, frame.slen * 2);
 			_nsamp = frame.slen;
+			if (_nsamp > _nsampWarn)
+			{
+				Console.WriteLine($"Warn: Long frame! {_nsamp} > {_nsampTarget}");
+			}
 		}
 
+		private readonly int _nsampWarn;
+		private readonly int _nsampTarget;
+
 		private int _nsamp;
-		private short[] _sbuff = new short[2048];
+		private short[] _sbuff = new short[8192];
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
@@ -205,9 +434,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			throw new InvalidOperationException("Async mode is not supported.");
 		}
 
+		#endregion
+
 		// TODO
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get; set; }
+		public int LagCount { get; private set; }
+		public bool IsLagFrame { get; private set; }
+
+		#region IStatable
 
 		public bool BinarySaveStatesPreferred
 		{
@@ -259,6 +492,127 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			bw.Flush();
 			ms.Close();
 			return ms.ToArray();
+		}
+
+		#endregion
+
+		#region settings
+
+		private Settings _settings;
+		private SyncSettings _syncSettings;
+
+		public Settings GetSettings()
+		{
+			return _settings.Clone();
+		}
+
+		public SyncSettings GetSyncSettings()
+		{
+			return _syncSettings.Clone();
+		}
+
+		public bool PutSettings(Settings o)
+		{
+			_settings = o;
+			int s = 0;
+			if (o.PlaySound0) s |= 1;
+			if (o.PlaySound0) s |= 2;
+			if (o.PlaySound0) s |= 4;
+			if (o.PlaySound0) s |= 8;
+			if (o.PlaySound0) s |= 16;
+			if (o.PlaySound0) s |= 32;
+			if (o.PlaySound0) s |= 64;
+			if (o.PlaySound0) s |= 128;
+			_core.biz_set_sound_channels(s);
+			int l = 0;
+			if (o.ShowBg0) l |= 1;
+			if (o.ShowBg1) l |= 2;
+			if (o.ShowBg2) l |= 4;
+			if (o.ShowBg3) l |= 8;
+			if (o.ShowSprites) l |= 16;
+			if (o.ShowWindow) l |= 32;
+			if (o.ShowTransparency) l |= 64;
+			_core.biz_set_layers(l);
+
+			return false; // no reboot needed
+		}
+
+		public bool PutSyncSettings(SyncSettings o)
+		{
+			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
+			_syncSettings = o;
+			return ret;
+		}
+
+		public class Settings
+		{
+			[DefaultValue(true)]
+			public bool PlaySound0 { get; set; }
+			[DefaultValue(true)]
+			public bool PlaySound1 { get; set; }
+			[DefaultValue(true)]
+			public bool PlaySound2 { get; set; }
+			[DefaultValue(true)]
+			public bool PlaySound3 { get; set; }
+			[DefaultValue(true)]
+			public bool PlaySound4 { get; set; }
+			[DefaultValue(true)]
+			public bool PlaySound5 { get; set; }
+			[DefaultValue(true)]
+			public bool PlaySound6 { get; set; }
+			[DefaultValue(true)]
+			public bool PlaySound7 { get; set; }
+
+			[DefaultValue(true)]
+			public bool ShowBg0 { get; set; }
+			[DefaultValue(true)]
+			public bool ShowBg1 { get; set; }
+			[DefaultValue(true)]
+			public bool ShowBg2 { get; set; }
+			[DefaultValue(true)]
+			public bool ShowBg3 { get; set; }
+
+			[DefaultValue(true)]
+			public bool ShowSprites { get; set; }
+			[DefaultValue(true)]
+			public bool ShowWindow { get; set; }
+			[DefaultValue(true)]
+			public bool ShowTransparency { get; set; }
+
+			public Settings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
+			public Settings Clone()
+			{
+				return (Settings)MemberwiseClone();
+			}
+		}
+
+		public class SyncSettings
+		{
+			[DefaultValue(LibSnes9x.LeftPortDevice.Joypad)]
+			public LibSnes9x.LeftPortDevice LeftPort { get; set; }
+			[DefaultValue(LibSnes9x.RightPortDevice.Joypad)]
+			public LibSnes9x.RightPortDevice RightPort { get; set; }
+
+			public SyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
+			public SyncSettings Clone()
+			{
+				return (SyncSettings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
+			{
+				// the core can handle dynamic plugging and unplugging, but that changes
+				// the controllerdefinition, and we're not ready for that
+				return !DeepEquality.DeepEquals(x, y);
+			}
 		}
 
 		#endregion
