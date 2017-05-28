@@ -37,6 +37,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		[BizImport(CC)]
 		public abstract void biz_soft_reset();
 		[BizImport(CC)]
+		public abstract void biz_hard_reset();
+		[BizImport(CC)]
 		public abstract void biz_set_port_devices(uint left, uint right);
 		[BizImport(CC)]
 		public abstract bool biz_load_rom(byte[] data, int size);
@@ -48,5 +50,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		public abstract bool biz_is_ntsc();
 		[BizImport(CC)]
 		public abstract void biz_get_memory_area(int which, [In, Out] memory_area mem);
+		[BizImport(CC)]
+		public abstract void biz_post_load_state();
 	}
 }

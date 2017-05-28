@@ -3,12 +3,14 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Common.BizInvoke;
 using System.Runtime.InteropServices;
+using System.IO;
+using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
 	[CoreAttributes("Snes9x", "FIXME", true, false, "5e0319ab3ef9611250efb18255186d0dc0d7e125", "https://github.com/snes9xgit/snes9x", false)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public class Snes9x : IEmulator, IVideoProvider, ISoundProvider
+	public class Snes9x : IEmulator, IVideoProvider, ISoundProvider, IStatable
 	{
 		private LibSnes9x _core;
 		private PeRunner _exe;
@@ -40,6 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				{
 					throw new InvalidOperationException("LoadRom() failed");
 				}
+				_exe.Seal();
 
 				if (_core.biz_is_ntsc())
 				{
@@ -54,7 +57,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 					VsyncDenominator = 425568;
 				}
 
-				_exe.Seal();
 			}
 			catch
 			{
@@ -201,6 +203,62 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		public void GetSamplesAsync(short[] samples)
 		{
 			throw new InvalidOperationException("Async mode is not supported.");
+		}
+
+		// TODO
+		public int LagCount { get; set; }
+		public bool IsLagFrame { get; set; }
+
+		public bool BinarySaveStatesPreferred
+		{
+			get { return true; }
+		}
+
+		public void SaveStateText(TextWriter writer)
+		{
+			var temp = SaveStateBinary();
+			temp.SaveAsHexFast(writer);
+			// write extra copy of stuff we don't use
+			writer.WriteLine("Frame {0}", Frame);
+		}
+
+		public void LoadStateText(TextReader reader)
+		{
+			string hex = reader.ReadLine();
+			byte[] state = new byte[hex.Length / 2];
+			state.ReadFromHexFast(hex);
+			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
+		}
+
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			_exe.LoadStateBinary(reader);
+			// other variables
+			Frame = reader.ReadInt32();
+			LagCount = reader.ReadInt32();
+			IsLagFrame = reader.ReadBoolean();
+			// any managed pointers that we sent to the core need to be resent now!
+
+			_core.biz_post_load_state();
+		}
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			_exe.SaveStateBinary(writer);
+			// other variables
+			writer.Write(Frame);
+			writer.Write(LagCount);
+			writer.Write(IsLagFrame);
+		}
+
+		public byte[] SaveStateBinary()
+		{
+			var ms = new MemoryStream();
+			var bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			ms.Close();
+			return ms.ToArray();
 		}
 
 		#endregion

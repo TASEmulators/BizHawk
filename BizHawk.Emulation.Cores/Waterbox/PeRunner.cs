@@ -53,12 +53,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		private class Psx
 		{
-			private static IntPtr BEXLAND;
-			static Psx()
-			{
-				BEXLAND = Marshal.AllocHGlobal(16);
-			}
-
 			private readonly PeRunner _parent;
 			private readonly List<Delegate> _traps = new List<Delegate>();
 
@@ -95,12 +89,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						Action del = () =>
 						{
 							Console.WriteLine(s);
-							System.Diagnostics.Debugger.Break(); // do not remove this until all unwindings are fixed
 							throw new InvalidOperationException(s);
 						};
 						_traps.Add(del);
 						ptr = Marshal.GetFunctionPointerForDelegate(del);
-						//ptr = BEXLAND;
 					}
 					return ptr;
 				}).ToArray();
@@ -353,7 +345,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				//if (_firstTime)
 				//{
 				//_firstTime = false;
-				throw new InvalidOperationException("This shouldn' be called");
+				throw new InvalidOperationException("This shouldn't be called");
 				//}
 				//else
 				//{
