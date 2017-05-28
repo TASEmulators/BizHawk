@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 {
+	[CoreAttributes("Virtual Boyee", "???", true, false, "0.9.44.1", "https://mednafen.github.io/releases/", false)]
 	public class VirtualBoyee : IEmulator, IVideoProvider
 	{
 		private PeRunner _exe;
