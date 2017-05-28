@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BizHawk.Common;
+using System;
 
 namespace BizHawk.Emulation.Common
 {
@@ -131,6 +132,60 @@ namespace BizHawk.Emulation.Common
 			Size = size;
 			Writable = writable;
 			WordSize = wordSize;
+		}
+	}
+
+	public unsafe class MemoryDomainIntPtrMonitor : MemoryDomain
+	{
+		public IntPtr Data { get; set; }
+		private readonly IMonitor _monitor;
+
+		public override byte PeekByte(long addr)
+		{
+			if ((ulong)addr < (ulong)Size)
+			{
+				using (_monitor.EnterExit())
+				{
+					return ((byte*)Data)[addr];
+				}
+			}
+
+			throw new ArgumentOutOfRangeException(nameof(addr));
+		}
+
+		public override void PokeByte(long addr, byte val)
+		{
+			if (Writable)
+			{
+				if ((ulong)addr < (ulong)Size)
+				{
+					using (_monitor.EnterExit())
+					{
+						((byte*)Data)[addr] = val;
+					}
+				}
+				else
+				{
+					throw new ArgumentOutOfRangeException(nameof(addr));
+				}
+			}
+		}
+
+		public void SetSize(long size)
+		{
+			Size = size;
+		}
+
+		public MemoryDomainIntPtrMonitor(string name, Endian endian, IntPtr data, long size, bool writable, int wordSize,
+			IMonitor monitor)
+		{
+			Name = name;
+			EndianType = endian;
+			Data = data;
+			Size = size;
+			Writable = writable;
+			WordSize = wordSize;
+			_monitor = monitor;
 		}
 	}
 

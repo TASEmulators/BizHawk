@@ -39,46 +39,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				SpecialHeapSizeKB = 64
 			});
 
-			try
+			_core = BizInvoker.GetInvoker<LibSnes9x>(_exe, _exe);
+			if (!_core.biz_init())
 			{
-				_core = BizInvoker.GetInvoker<LibSnes9x>(_exe, _exe);
-				if (!_core.biz_init())
-				{
-					throw new InvalidOperationException("Init() failed");
-				}
-				if (!_core.biz_load_rom(rom, rom.Length))
-				{
-					throw new InvalidOperationException("LoadRom() failed");
-				}
-				_exe.Seal();
-
-				if (_core.biz_is_ntsc())
-				{
-					Console.WriteLine("NTSC rom loaded");
-					VsyncNumerator = 21477272;
-					VsyncDenominator = 357366;
-				}
-				else
-				{
-					Console.WriteLine("PAL rom loaded");
-					VsyncNumerator = 21281370;
-					VsyncDenominator = 425568;
-				}
-
-				_nsampTarget = (int)Math.Round(44100.0 * VsyncDenominator / VsyncNumerator);
-				_nsampWarn = (int)Math.Round(1.05 * 44100.0 * VsyncDenominator / VsyncNumerator);
-
-				_syncSettings = syncSettings;
-				InitControllers();
-				PutSettings(settings);
-				InitMemoryDomains();
-				InitSaveram();
+				throw new InvalidOperationException("Init() failed");
 			}
-			catch
+			if (!_core.biz_load_rom(rom, rom.Length))
 			{
-				Dispose();
-				throw;
+				throw new InvalidOperationException("LoadRom() failed");
 			}
+			_exe.Seal();
+
+			if (_core.biz_is_ntsc())
+			{
+				Console.WriteLine("NTSC rom loaded");
+				VsyncNumerator = 21477272;
+				VsyncDenominator = 357366;
+			}
+			else
+			{
+				Console.WriteLine("PAL rom loaded");
+				VsyncNumerator = 21281370;
+				VsyncDenominator = 425568;
+			}
+
+			_nsampTarget = (int)Math.Round(44100.0 * VsyncDenominator / VsyncNumerator);
+			_nsampWarn = (int)Math.Round(1.05 * 44100.0 * VsyncDenominator / VsyncNumerator);
+
+			_syncSettings = syncSettings;
+			InitControllers();
+			PutSettings(settings);
+			InitMemoryDomains();
+			InitSaveram();
 		}
 
 		#region controller
@@ -319,8 +311,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			LibSnes9x.frame_info frame = new LibSnes9x.frame_info();
 
 			_core.biz_run(frame, _inputState);
-			Blit(frame);
-			Sblit(frame);
+			using (_exe.EnterExit())
+			{
+				Blit(frame);
+				Sblit(frame);
+			}
 		}
 
 		public int Frame { get; private set; }
@@ -644,8 +639,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				_core.biz_get_memory_area(index++, native);
 				if (native.ptr != IntPtr.Zero && native.size > 0)
 				{
-					domains.Add(new MemoryDomainIntPtr(s, MemoryDomain.Endian.Little,
-						native.ptr, native.size, true, 2));
+					domains.Add(new MemoryDomainIntPtrMonitor(s, MemoryDomain.Endian.Little,
+						native.ptr, native.size, true, 2, _exe));
 				}
 			}
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(new MemoryDomainList(domains)
@@ -678,27 +673,31 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 		public byte[] CloneSaveRam()
 		{
-			var ret = new byte[_saveramSize];
-			var offset = 0;
-			foreach (var area in _saveramMemoryAreas)
+			using (_exe.EnterExit())
 			{
-				Marshal.Copy(area.ptr, ret, offset, area.size);
-				offset += area.size;
+				var ret = new byte[_saveramSize];
+				var offset = 0;
+				foreach (var area in _saveramMemoryAreas)
+				{
+					Marshal.Copy(area.ptr, ret, offset, area.size);
+					offset += area.size;
+				}
+				return ret;
 			}
-
-			return ret;
 		}
 
 		public void StoreSaveRam(byte[] data)
 		{
-			if (data.Length != _saveramSize)
-				throw new InvalidOperationException("Saveram size mismatch");
-
-			var offset = 0;
-			foreach (var area in _saveramMemoryAreas)
+			using (_exe.EnterExit())
 			{
-				Marshal.Copy(data, offset, area.ptr, area.size);
-				offset += area.size;
+				if (data.Length != _saveramSize)
+					throw new InvalidOperationException("Saveram size mismatch");
+				var offset = 0;
+				foreach (var area in _saveramMemoryAreas)
+				{
+					Marshal.Copy(data, offset, area.ptr, area.size);
+					offset += area.size;
+				}
 			}
 		}
 

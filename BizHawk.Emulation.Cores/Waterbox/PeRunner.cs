@@ -565,9 +565,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public PeRunner(PeRunnerOptions opt)
 		{
 			Initialize(_nextStart);
-			Enter();
-			try
-			{
+			using (this.EnterExit())
+			{ 
 				// load any predefined exports
 				_psx = new Psx(this);
 				_exports.Add("libpsxscl.so", BizExvoker.GetExvoker(_psx));
@@ -643,15 +642,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						throw new InvalidOperationException("DllMain() returned false");
 					m.RunGlobalCtors();
 				}*/
-			}
-			catch
-			{
-				Dispose();
-				throw;
-			}
-			finally
-			{
-				Exit();
 			}
 		}
 
