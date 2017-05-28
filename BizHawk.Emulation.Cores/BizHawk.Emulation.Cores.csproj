@@ -992,6 +992,8 @@
     <Compile Include="Consoles\Nintendo\SNES\ScanlineHookManager.cs" />
     <Compile Include="Consoles\Nintendo\SNES\SnesColors.cs" />
     <Compile Include="Consoles\Nintendo\SNES\SNESGraphicsDecoder.cs" />
+    <Compile Include="Consoles\Nintendo\VB\LibVirtualBoyee.cs" />
+    <Compile Include="Consoles\Nintendo\VB\VirtualBoyee.cs" />
     <Compile Include="Consoles\PC Engine\ADPCM.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.Populous.cs" />
