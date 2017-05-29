@@ -11,9 +11,10 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 {
-	[CoreAttributes("Virtual Boyee", "???", true, false, "0.9.44.1", 
+	[CoreAttributes("Virtual Boyee", "???", true, false, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
-	public class VirtualBoyee : IEmulator, IVideoProvider, ISoundProvider, IStatable
+	public class VirtualBoyee : IEmulator, IVideoProvider, ISoundProvider, IStatable,
+		IInputPollable
 	{
 		private PeRunner _exe;
 		private LibVirtualBoyee _boyee;
@@ -42,6 +43,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			}
 
 			_exe.Seal();
+
+			_inputCallback = InputCallbacks.Call;
 		}
 
 		private bool _disposed = false;
@@ -60,6 +63,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
+			_boyee.SetInputCallback(InputCallbacks.Count > 0 ? _inputCallback : null);
+
 			if (controller.IsPressed("Power"))
 				_boyee.HardReset();
 
@@ -78,20 +83,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 				BufferWidth = spec.DisplayRect.W;
 				BufferHeight = spec.DisplayRect.H;
 				_numSamples = spec.SoundBufSize;
+
+				Frame++;
+
+				IsLagFrame = spec.Lagged;
+				if (IsLagFrame)
+					LagCount++;
+
 			}
-
-			Frame++;
-
-			/*_core.biz_set_input_callback(InputCallbacks.Count > 0 ? _inputCallback : null);
-
-			UpdateControls(controller);
-			Frame++;
-			LibSnes9x.frame_info frame = new LibSnes9x.frame_info();
-
-			_core.biz_run(frame, _inputState);
-			IsLagFrame = frame.padread == 0;
-			if (IsLagFrame)
-				LagCount++;*/
 		}
 
 		public int Frame { get; private set; }
@@ -199,6 +198,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
 
+		private LibVirtualBoyee.InputCallback _inputCallback;
+
+		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
+
 		#region IStatable
 
 		public bool BinarySaveStatesPreferred
@@ -230,6 +233,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			LagCount = reader.ReadInt32();
 			IsLagFrame = reader.ReadBoolean();
 			// any managed pointers that we sent to the core need to be resent now!
+			_boyee.SetInputCallback(null);
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)

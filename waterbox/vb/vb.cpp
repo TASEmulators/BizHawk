@@ -25,6 +25,9 @@
 
 namespace MDFN_IEN_VB
 {
+static void (*input_callback)();
+static bool lagged;
+
 enum
 {
 	ANAGLYPH_PRESET_DISABLED = 0,
@@ -126,6 +129,9 @@ static MDFN_FASTCALL uint8 HWCTRL_Read(v810_timestamp_t &timestamp, uint32 A)
 	case 0x10:
 	case 0x14:
 	case 0x28:
+		lagged = false;
+		if (input_callback)
+			input_callback();
 		ret = VBINPUT_Read(timestamp, A);
 		break;
 	}
@@ -738,6 +744,7 @@ EXPORT void GetMemoryArea(int which, void **ptr, int *size)
 EXPORT void Emulate(EmulateSpecStruct *espec)
 {
 	v810_timestamp_t v810_timestamp;
+	lagged = true;
 
 	VBINPUT_Frame(&espec->Buttons);
 
@@ -753,6 +760,7 @@ EXPORT void Emulate(EmulateSpecStruct *espec)
 	VSU_CycleFix = (v810_timestamp + VSU_CycleFix) & 3;
 
 	espec->MasterCycles = v810_timestamp;
+	espec->Lagged = lagged;
 
 	TIMER_ResetTS();
 	VBINPUT_ResetTS();
@@ -766,6 +774,11 @@ EXPORT void Emulate(EmulateSpecStruct *espec)
 EXPORT void HardReset()
 {
 	VB_Power();
+}
+
+EXPORT void SetInputCallback(void (*callback)())
+{
+	input_callback = callback;
 }
 
 int main()

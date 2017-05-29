@@ -41,6 +41,9 @@ struct EmulateSpecStruct
 
 	// 0 UDLR SelectStartBA UDLR(right dpad) LtrigRtrig 13
 	int32 Buttons;
+
+	// set by core, true if lagged
+	int32 Lagged;
 };
 
 /*typedef struct
