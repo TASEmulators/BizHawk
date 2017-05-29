@@ -262,7 +262,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				if (!_rasterInterruptTriggered)
 				{
 					_rasterInterruptTriggered = true;
-					_intRaster = true;
+					// interrupt needs to be enabled to be set to true
+					if (_enableIntRaster)
+						_intRaster = true;
 				}
 			}
 
