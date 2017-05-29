@@ -369,34 +369,30 @@ namespace BizHawk.Client.EmuHawk
 					CurrentTasMovie.Markers.Add(TasView.LastSelectedIndex.Value, "");
 					RefreshDialog();
 				}
-				else if (columnName != CursorColumnName) // TODO: what about float?
+				else if (columnName != CursorColumnName)
 				{
 					int frame = TasView.SelectedRows.FirstOrDefault();
 					string buttonName = TasView.CurrentCell.Column.Name;
 
 					if (Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.Contains(buttonName))
 					{
-						bool state = !CurrentTasMovie.BoolIsPressed(frame, buttonName);
+						// nifty taseditor logic
+						bool allPressed = true;
 						foreach (var index in TasView.SelectedRows)
 						{
-							CurrentTasMovie.SetBoolState(index, buttonName, state);
+							if ((index == CurrentTasMovie.FrameCount) // last movie frame can't have input, but can be selected
+								|| (!CurrentTasMovie.BoolIsPressed(index, buttonName)))
+							{
+								allPressed = false;
+								break;
+							}
 						}
+						CurrentTasMovie.SetBoolStates(frame, TasView.SelectedRows.Count(), buttonName, !allPressed);
 					}
 					else
 					{
-						float state = CurrentTasMovie.GetFloatState(frame, buttonName);
-						ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
-							[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(columnName)];
-
-						if (state != range.Mid)
-						{
-							state = range.Mid;
-						}
-
-						foreach (var index in TasView.SelectedRows)
-						{
-							CurrentTasMovie.SetFloatState(index, buttonName, state);
-						}
+						// feos: there's no default value other than mid, and we can't go arbitrary here, so do nothing for now
+						// autohold is ignored for float input too for the same reasons: lack of demand + ambiguity
 					}
 
 					_triggerAutoRestore = true;
