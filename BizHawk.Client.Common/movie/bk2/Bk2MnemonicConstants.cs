@@ -331,6 +331,17 @@ namespace BizHawk.Client.Common
 				["Red"] = 'R',
 				["Blue"] = 'B',
 				["Purple"] = 'P'
+			},
+			["VB"] = new Dictionary<string, char>
+			{
+				["L_Up"] = 'U',
+				["L_Down"] = 'D',
+				["L_Left"] = 'L',
+				["L_Right"] = 'R',
+				["R_Up"] = 'u',
+				["R_Down"] = 'd',
+				["R_Left"] = 'l',
+				["R_Right"] = 'r',
 			}
 		};
 	}
