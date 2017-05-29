@@ -650,6 +650,7 @@ EXPORT int Load(const uint8 *rom, int length)
 	VIP_Set3DMode(VB3DMode, reverse, prescale, sbs_separation);
 
 	VIP_SetParallaxDisable(false);
+
 	{
 		auto presetColor = ANAGLYPH_PRESET_RED_BLUE;
 
@@ -668,14 +669,7 @@ EXPORT int Load(const uint8 *rom, int length)
 
 	VIP_SetLEDOnScale(1.75);
 
-	//MDFNGameInfo->fps = (int64)20000000 * 65536 * 256 / (259 * 384 * 4);
-
 	VB_Power();
-
-	/*MDFNGameInfo->nominal_width = 384;
-                MDFNGameInfo->nominal_height = 224;
-                MDFNGameInfo->fb_width = 384;
-                MDFNGameInfo->fb_height = 224;*/
 
 	/*switch (VB3DMode)
                 {

@@ -9,8 +9,9 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 {
-	[CoreAttributes("Virtual Boyee", "???", true, false, "0.9.44.1", "https://mednafen.github.io/releases/", false)]
-	public class VirtualBoyee : IEmulator, IVideoProvider
+	[CoreAttributes("Virtual Boyee", "???", true, false, "0.9.44.1", 
+		"https://mednafen.github.io/releases/", false)]
+	public class VirtualBoyee : IEmulator, IVideoProvider, ISoundProvider
 	{
 		private PeRunner _exe;
 		private LibVirtualBoyee _boyee;
@@ -56,32 +57,29 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
-			var scratch = new short[16384];
+			if (controller.IsPressed("Power"))
+				_boyee.HardReset();
 
-			fixed(int*vp = _videoBuffer)
-				fixed(short*sp = scratch)
+			fixed (int* vp = _videoBuffer)
+			fixed (short* sp = _soundBuffer)
 			{
 				var spec = new LibVirtualBoyee.EmulateSpec
 				{
 					Pixels = (IntPtr)vp,
 					SoundBuf = (IntPtr)sp,
-					SoundBufMaxSize = 8192
+					SoundBufMaxSize = _soundBuffer.Length / 2,
+					Buttons = GetButtons(controller)
 				};
 
 				_boyee.Emulate(spec);
-				VirtualWidth = BufferWidth = spec.DisplayRect.W;
-				VirtualWidth = BufferHeight = spec.DisplayRect.H;
-				Console.WriteLine(spec.SoundBufSize);
+				BufferWidth = spec.DisplayRect.W;
+				BufferHeight = spec.DisplayRect.H;
+				_numSamples = spec.SoundBufSize;
 			}
 
 			Frame++;
 
 			/*_core.biz_set_input_callback(InputCallbacks.Count > 0 ? _inputCallback : null);
-
-			if (controller.IsPressed("Power"))
-				_core.biz_hard_reset();
-			else if (controller.IsPressed("Reset"))
-				_core.biz_soft_reset();
 
 			UpdateControls(controller);
 			Frame++;
@@ -90,12 +88,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			_core.biz_run(frame, _inputState);
 			IsLagFrame = frame.padread == 0;
 			if (IsLagFrame)
-				LagCount++;
-			using (_exe.EnterExit())
-			{
-				Blit(frame);
-				Sblit(frame);
-			}*/
+				LagCount++;*/
 		}
 
 		public int Frame { get; private set; }
@@ -109,28 +102,93 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 		public bool DeterministicEmulation { get { return true; } }
 		public CoreComm CoreComm { get; private set; }
 
-		public ControllerDefinition ControllerDefinition => NullController.Instance.Definition;
+		#region Controller
+
+		private LibVirtualBoyee.Buttons GetButtons(IController c)
+		{
+			var ret = 0;
+			var val = 1;
+			foreach (var s in CoreButtons)
+			{
+				if (c.IsPressed(s))
+					ret |= val;
+				val <<= 1;
+			}
+			return (LibVirtualBoyee.Buttons)ret;
+		}
+
+		private static readonly string[] CoreButtons =
+		{
+			"A", "B", "R", "L",
+			"Up_R", "Right_R",
+			"Right", "Left", "Down", "Up",
+			"Start", "Select", "Left_R", "Down_R"
+		};
+
+		private static readonly ControllerDefinition VirtualBoyController = new ControllerDefinition
+		{
+			Name = "VirtualBoy Controller",
+			BoolButtons = CoreButtons.Concat(new[] { "Power" }).ToList()
+		};
+
+		public ControllerDefinition ControllerDefinition => VirtualBoyController;
+
+		#endregion
 
 		#region IVideoProvider
 
-		private int[] _videoBuffer = new int[256 * 192];
+		private int[] _videoBuffer = new int[1024 * 1024];
 
 		public int[] GetVideoBuffer()
 		{
 			return _videoBuffer;
 		}
 
-		public int VirtualWidth { get; private set; } = 256;
-		public int VirtualHeight { get; private set; } = 192;
+		public int VirtualWidth => BufferWidth;
+		public int VirtualHeight => BufferWidth;
 
-		public int BufferWidth { get; private set; } = 256;
-		public int BufferHeight { get; private set; } = 192;
+		public int BufferWidth { get; private set; } = 384;
+		public int BufferHeight { get; private set; } = 224;
 
-		public int VsyncNumerator { get; private set; } = 60;
+		public int VsyncNumerator { get; private set; } = 20000000;
 
-		public int VsyncDenominator { get; private set; } = 1;
+		public int VsyncDenominator { get; private set; } = 397824;
 
 		public int BackgroundColor => unchecked((int)0xff000000);
+
+		#endregion
+
+		#region ISoundProvider
+
+		private short[] _soundBuffer = new short[16384];
+		private int _numSamples;
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
+		{
+			samples = _soundBuffer;
+			nsamp = _numSamples;
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
+		}
+
+		public void DiscardSamples()
+		{
+		}
+
+		public bool CanProvideAsync => false;
+
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		#endregion
 	}

@@ -61,20 +61,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 		public enum Buttons : int
 		{
-			Up = 0x1,
-			Down = 0x2,
-			Left = 0x4,
-			Right = 0x8,
-			Select = 0x10,
-			Start = 0x20,
-			B = 0x40,
-			A = 0x80,
-			Up_R = 0x100,
+			Up = 0x200,
+			Down = 0x100,
+			Left = 0x80,
+			Right = 0x40,
+			Select = 0x800,
+			Start = 0x400,
+			B = 0x2,
+			A = 0x1,
+			Up_R = 0x10,
 			Down_R = 0x200,
-			Left_R = 0x400,
-			Right_R = 0x800,
-			L = 0x1000,
-			R = 0x2000
+			Left_R = 0x1000,
+			Right_R = 0x2000,
+			L = 0x8,
+			R = 0x4
 		}
 
 		[BizImport(CC)]
