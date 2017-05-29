@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		private int _bankNumber;
 		private bool _disabled;
-		private int _latchedval;
 
 		// Fun Play mapper
 		// bank switching is done from DE00
@@ -21,7 +20,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			pinExRom = exrom;
 
 			_disabled = false;
-			_latchedval = 0;
 
 			// load data into the banks from the list
 			for (var j = 0; j < 16; j++)
@@ -82,11 +80,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 					_disabled = true;
 				}
 			}
-		}
-
-		public override int ReadDF00(int addr)
-		{
-			return _latchedval;
 		}
 	}
 }
