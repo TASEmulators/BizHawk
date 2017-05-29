@@ -439,8 +439,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			return ret;
 		}
 
-
-
 		#endregion
 
 		#region ISaveRam
