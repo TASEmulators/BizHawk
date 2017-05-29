@@ -132,15 +132,36 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 		private static readonly string[] CoreButtons =
 		{
 			"A", "B", "R", "L",
-			"Up_R", "Right_R",
-			"Right", "Left", "Down", "Up",
-			"Start", "Select", "Left_R", "Down_R"
+			"R_Up", "R_Right",
+			"L_Right", "L_Left", "L_Down", "L_Up",
+			"Start", "Select", "R_Left", "R_Down"
+		};
+
+		private static Dictionary<string, int> _buttonOrdinals = new Dictionary<string, int>
+		{
+			["L_Up"] = 1,
+			["L_Down"] = 2,
+			["L_Left"] = 3,
+			["L_Right"] = 4,
+			["R_Up"] = 5,
+			["R_Down"] = 6,
+			["R_Left"] = 7,
+			["R_Right"] = 8,
+			["A"] = 9,
+			["B"] = 10,
+			["R"] = 11,
+			["L"] = 12,
+			["Select"] = 13,
+			["Start"] = 14
 		};
 
 		private static readonly ControllerDefinition VirtualBoyController = new ControllerDefinition
 		{
 			Name = "VirtualBoy Controller",
-			BoolButtons = CoreButtons.Concat(new[] { "Power" }).ToList()
+			BoolButtons = CoreButtons
+				.OrderBy(b => _buttonOrdinals[b])
+				.Concat(new[] { "Power" })
+				.ToList()
 		};
 
 		public ControllerDefinition ControllerDefinition => VirtualBoyController;
