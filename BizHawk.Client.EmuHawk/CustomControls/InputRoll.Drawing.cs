@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DrawColumnDrag(PaintEventArgs e)
 		{
-			if (_columnDown != null && _currentX.HasValue && _currentY.HasValue && IsHoveringOnColumnCell)
+			if (_columnDown != null && _columnDownMoved && _currentX.HasValue && _currentY.HasValue && IsHoveringOnColumnCell)
 			{
 				int x1 = _currentX.Value - (_columnDown.Width.Value / 2);
 				int y1 = _currentY.Value - (CellHeight / 2);
