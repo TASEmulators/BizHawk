@@ -142,7 +142,6 @@ class V810
 
 	// Pass TRUE for vb_mode if we're emulating a VB-specific enhanced V810 CPU core
 	bool Init(V810_Emu_Mode mode, bool vb_mode) MDFN_COLD;
-	void Kill(void) MDFN_COLD;
 
 	void SetInt(int level);
 
@@ -156,7 +155,7 @@ class V810
 	void SetIOWriteHandlers(void MDFN_FASTCALL (*write8)(v810_timestamp_t &, uint32, uint8), void MDFN_FASTCALL (*write16)(v810_timestamp_t &, uint32, uint16), void MDFN_FASTCALL (*write32)(v810_timestamp_t &, uint32, uint32)) MDFN_COLD;
 
 	// Length specifies the number of bytes to map in, at each location specified by addresses[] (for mirroring)
-	uint8 *SetFastMap(uint32 addresses[], uint32 length, unsigned int num_addresses, const char *name) MDFN_COLD;
+	uint8 *SetFastMap(void *(*allocator)(size_t size), uint32 addresses[], uint32 length, unsigned int num_addresses, const char *name) MDFN_COLD;
 
 	INLINE void ResetTS(v810_timestamp_t new_base_timestamp)
 	{
@@ -295,8 +294,7 @@ class V810
 	uint32 dst_cache;
 	bool have_src_cache, have_dst_cache;
 
-	uint8 *FastMap[(1ULL << 32) / V810_FAST_MAP_PSIZE];
-	std::vector<std::unique_ptr<uint8[]>> FastMapAllocList;
+	uint8** FastMap;
 
 	// For CacheDump and CacheRestore
 	void CacheOpMemStore(v810_timestamp_t &timestamp, uint32 A, uint32 V);

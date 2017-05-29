@@ -19,7 +19,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public string Name { get; private set; }
 
-		public byte[] XorHash { get; private set; }
+		/// <summary>
+		/// total number of bytes allocated
+		/// </summary>
+		public ulong Used { get; private set; }
 
 		/// <summary>
 		/// get a page index within the block
@@ -39,9 +42,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private class Bin
 		{
+			/// <summary>
+			/// first page# in this bin, inclusive
+			/// </summary>
 			public int StartPage;
+			/// <summary>
+			/// numbe of pages in this bin
+			/// </summary>
 			public int PageCount;
+			/// <summary>
+			/// first page# not in this bin
+			/// </summary>
+			public int EndPage => StartPage + PageCount;
 			public MemoryBlock.Protection Protection;
+			/// <summary>
+			/// true if not mapped (we distinguish between PROT_NONE and not mapped)
+			/// </summary>
 			public bool Free
 			{
 				get
@@ -77,6 +93,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					return false;
 				}
+			}
+
+			/// <summary>
+			/// activate the protection specified by this block
+			/// </summary>
+			public void ApplyProtection(MemoryBlock m)
+			{
+				var prot = Free ? MemoryBlock.Protection.None : Protection;
+				var start = ((ulong)StartPage << WaterboxUtils.PageShift) + m.Start;
+				var length = (ulong)PageCount << WaterboxUtils.PageShift;
+				m.Protect(start, length, prot);
 			}
 		}
 
@@ -153,19 +180,30 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			best.Protection = prot;
 
 			var ret = GetStartAddr(best.StartPage);
-			Memory.Protect(ret, ((ulong)numPages) << WaterboxUtils.PageShift, prot);
+			var totalSize = ((ulong)numPages) << WaterboxUtils.PageShift;
+			Memory.Protect(ret, totalSize, prot);
+			Used += totalSize;
+			Console.WriteLine($"Allocated {totalSize} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
 			return ret;
 		}
 
 		public ulong Remap(ulong start, ulong oldSize, ulong newSize, bool canMove)
 		{
+			// TODO: what is the expected behavior when everything requested for remap is allocated,
+			// but with different protections?
+
 			if (start < Memory.Start || start + oldSize > Memory.End)
 				return 0;
 
 			var oldStartPage = GetPage(start);
 			var oldStartBin = GetBinForStartPage(oldStartPage);
 			if (oldSize == 0 && canMove)
-				return Map(newSize, oldStartBin.Protection);
+			{
+				if (oldStartBin.Free)
+					return 0;
+				else
+					return Map(newSize, oldStartBin.Protection);
+			}
 
 			var oldNumPages = WaterboxUtils.PagesNeeded(oldSize);
 			var oldEndPage = oldStartPage + oldNumPages;
@@ -181,14 +219,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				// increase size
 				// the only way this will work in place is if all of the remaining space is free
 				Bin nextBin;
-				if (oldEndBin.StartPage + oldEndBin.PageCount == oldEndPage // if end bin is too bag, space after that is used by something else
+				if (oldEndBin.EndPage == oldEndPage // if end bin is too bag, space after that is used by something else
 					&& (nextBin = oldEndBin.Next) != null // can't go off the edge
 					&& nextBin.Free
-					&& nextBin.StartPage + nextBin.PageCount >= newEndPage)
+					&& nextBin.EndPage >= newEndPage)
 				{
 					nextBin.Protection = oldStartBin.Protection;
 					if (nextBin.Cleave(newEndPage - nextBin.StartPage))
 						nextBin.Next.Free = true;
+
+					nextBin.ApplyProtection(Memory);
+
+					var oldTotalSize = ((ulong)oldNumPages) << WaterboxUtils.PageShift;
+					var newTotalSize = ((ulong)newNumPages) << WaterboxUtils.PageShift;
+					Used += newTotalSize;
+					Used -= oldTotalSize;
+					Console.WriteLine($"Reallocated from {oldTotalSize} bytes to {newTotalSize} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
 					return start;
 				}
 				// could not increase in place, so move
@@ -270,17 +316,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				freeBin.Free = true;
 			}
 			MemoryBlock.Protection lastEaten = MemoryBlock.Protection.None;
-			while (freeBin.StartPage + freeBin.PageCount < endPage)
+			while (freeBin.EndPage < endPage)
 			{
 				freeBin.PageCount += freeBin.Next.PageCount;
 				lastEaten = freeBin.Next.Protection;
 				freeBin.Next = freeBin.Next.Next;
 			}
-			if (freeBin.Cleave(freeBin.StartPage + freeBin.PageCount - endPage))
+			if (freeBin.Cleave(freeBin.EndPage - endPage))
 			{
 				freeBin.Next.Protection = lastEaten;
 			}
-			Memory.Protect(GetStartAddr(startPage), ((ulong)numPages) << WaterboxUtils.PageShift, MemoryBlock.Protection.None);
+			freeBin.ApplyProtection(Memory);
+
+			var totalSize = ((ulong)numPages) << WaterboxUtils.PageShift;
+			Used -= totalSize;
+			Console.WriteLine($"Freed {totalSize} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
 		}
 
 		public void Dispose()
@@ -292,12 +342,76 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		public void SaveStateBinary(BinaryWriter writer)
+		public void SaveStateBinary(BinaryWriter bw)
 		{
+			bw.Write(Name);
+			bw.Write(Memory.Size);
+			bw.Write(Used);
+			bw.Write(Memory.XorHash);
+			var bin = _root;
+			do
+			{
+				bw.Write(bin.PageCount);
+				bw.Write((byte)bin.Protection);
+				if (!bin.Free)
+				{
+					var start = GetStartAddr(bin.StartPage);
+					var length = (ulong)bin.PageCount << WaterboxUtils.PageShift;
+					if (bin.Protection == MemoryBlock.Protection.None)
+						Memory.Protect(start, length, MemoryBlock.Protection.R);
+					Memory.GetXorStream(start, length, false).CopyTo(bw.BaseStream);
+					if (bin.Protection == MemoryBlock.Protection.None)
+						Memory.Protect(start, length, MemoryBlock.Protection.None);
+				}
+				bin = bin.Next;
+			} while (bin != null);
+			bw.Write(-1);
 		}
 
-		public void LoadStateBinary(BinaryReader reader)
+		public void LoadStateBinary(BinaryReader br)
 		{
+			var name = br.ReadString();
+			if (name != Name)
+				throw new InvalidOperationException(string.Format("Name did not match for mapheap {0}", Name));
+			var size = br.ReadUInt64();
+			if (size != Memory.Size)
+				throw new InvalidOperationException(string.Format("Size did not match for mapheap {0}", Name));
+			var used = br.ReadUInt64();
+			var hash = br.ReadBytes(Memory.XorHash.Length);
+			if (!hash.SequenceEqual(Memory.XorHash))
+				throw new InvalidOperationException(string.Format("Hash did not match for mapheap {0}.  Is this the same rom?", Name));
+
+			Used = 0;
+
+			int startPage = 0;
+			int pageCount;
+			Bin scratch = new Bin(), curr = scratch;
+			while ((pageCount = br.ReadInt32()) != -1)
+			{
+				var next = new Bin
+				{
+					StartPage = startPage,
+					PageCount = pageCount,
+					Protection = (MemoryBlock.Protection)br.ReadByte()
+				};
+				startPage += pageCount;
+				if (!next.Free)
+				{
+					var start = GetStartAddr(next.StartPage);
+					var length = (ulong)pageCount << WaterboxUtils.PageShift;
+					Memory.Protect(start, length, MemoryBlock.Protection.RW);
+					WaterboxUtils.CopySome(br.BaseStream, Memory.GetXorStream(start, length, true), (long)length);
+					Used += length;
+				}
+				next.ApplyProtection(Memory);
+				curr.Next = next;
+				curr = next;
+			}
+
+			if (used != Used)
+				throw new InvalidOperationException(string.Format("Inernal error loading mapheap {0}", Name));
+
+			_root = scratch.Next;
 		}
 	}
 }

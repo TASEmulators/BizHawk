@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			if (!Sealed)
 			{
-				Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
+				Memory.Protect(Memory.Start, Used, MemoryBlock.Protection.R);
 				_hash = WaterboxUtils.Hash(Memory.GetStream(Memory.Start, Used, false));
 				Sealed = true;
 			}

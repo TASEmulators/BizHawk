@@ -1,8 +1,10 @@
 ﻿using BizHawk.Common.BizInvoke;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 {
 	[CoreAttributes("Virtual Boyee", "???", true, false, "0.9.44.1", 
 		"https://mednafen.github.io/releases/", false)]
-	public class VirtualBoyee : IEmulator, IVideoProvider, ISoundProvider
+	public class VirtualBoyee : IEmulator, IVideoProvider, ISoundProvider, IStatable
 	{
 		private PeRunner _exe;
 		private LibVirtualBoyee _boyee;
@@ -26,11 +28,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			{
 				Path = comm.CoreFileProvider.DllPath(),
 				Filename = "vb.wbx",
-				NormalHeapSizeKB = 4 * 1024,
-				SealedHeapSizeKB = 12 * 1024,
-				InvisibleHeapSizeKB = 6 * 1024,
-				SpecialHeapSizeKB = 64,
-				MmapHeapSizeKB = 16 * 1024
+				SbrkHeapSizeKB = 256,
+				SealedHeapSizeKB = 4 * 1024,
+				InvisibleHeapSizeKB = 256,
+				PlainHeapSizeKB = 256
 			});
 
 			_boyee = BizInvoker.GetInvoker<LibVirtualBoyee>(_exe, _exe);
@@ -39,6 +40,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			{
 				throw new InvalidOperationException("Core rejected the rom");
 			}
+
+			_exe.Seal();
 		}
 
 		private bool _disposed = false;
@@ -189,6 +192,64 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 		public bool CanProvideAsync => false;
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
+
+		#endregion
+
+		// TODO
+		public int LagCount { get; set; }
+		public bool IsLagFrame { get; set; }
+
+		#region IStatable
+
+		public bool BinarySaveStatesPreferred
+		{
+			get { return true; }
+		}
+
+		public void SaveStateText(TextWriter writer)
+		{
+			var temp = SaveStateBinary();
+			temp.SaveAsHexFast(writer);
+			// write extra copy of stuff we don't use
+			writer.WriteLine("Frame {0}", Frame);
+		}
+
+		public void LoadStateText(TextReader reader)
+		{
+			string hex = reader.ReadLine();
+			byte[] state = new byte[hex.Length / 2];
+			state.ReadFromHexFast(hex);
+			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
+		}
+
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			_exe.LoadStateBinary(reader);
+			// other variables
+			Frame = reader.ReadInt32();
+			LagCount = reader.ReadInt32();
+			IsLagFrame = reader.ReadBoolean();
+			// any managed pointers that we sent to the core need to be resent now!
+		}
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			_exe.SaveStateBinary(writer);
+			// other variables
+			writer.Write(Frame);
+			writer.Write(LagCount);
+			writer.Write(IsLagFrame);
+		}
+
+		public byte[] SaveStateBinary()
+		{
+			var ms = new MemoryStream();
+			var bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			ms.Close();
+			return ms.ToArray();
+		}
 
 		#endregion
 	}

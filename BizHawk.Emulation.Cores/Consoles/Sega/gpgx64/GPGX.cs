@@ -45,10 +45,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				{
 					Path = comm.CoreFileProvider.DllPath(),
 					Filename = "gpgx.wbx",
-					NormalHeapSizeKB = 256,
+					SbrkHeapSizeKB = 256,
 					SealedHeapSizeKB = 36 * 1024,
 					InvisibleHeapSizeKB = 4 * 1024,
-					SpecialHeapSizeKB = 64
+					PlainHeapSizeKB = 64
 				});
 
 				Core = BizInvoker.GetInvoker<LibGPGX>(_elf, _elf);

@@ -374,10 +374,6 @@ void VIP_Init(void)
 	VidSettingsDirty = true;
 }
 
-void VIP_Kill(void)
-{
-}
-
 void VIP_Power(void)
 {
 	Repeat = 0;

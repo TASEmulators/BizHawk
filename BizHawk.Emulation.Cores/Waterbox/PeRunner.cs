@@ -28,25 +28,25 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// how large the normal heap should be.  it services sbrk calls
 		/// can be 0, but sbrk calls will crash.
 		/// </summary>
-		public uint NormalHeapSizeKB { get; set; }
+		public uint SbrkHeapSizeKB { get; set; }
 
 		/// <summary>
 		/// how large the sealed heap should be.  it services special allocations that become readonly after init
-		/// Must be > 0 and at least large enough to store argv and envp
+		/// Must be > 0 and at least large enough to store argv and envp, and any alloc_sealed() calls
 		/// </summary>
 		public uint SealedHeapSizeKB { get; set; }
 
 		/// <summary>
 		/// how large the invisible heap should be.  it services special allocations which are not savestated
-		/// Must be > 0 and at least large enough for the internal vtables
+		/// Must be > 0 and at least large enough for the internal vtables, and any alloc_invisible() calls
 		/// </summary>
 		public uint InvisibleHeapSizeKB { get; set; }
 
 		/// <summary>
-		/// how large the special heap should be.  it is savestated, and contains ??
-		/// Must be > 0 and at least large enough for the internal pthread structure
+		/// how large the "plain" heap should be.  it is savestated, and contains
+		/// Must be > 0 and at least large enough for the internal pthread structure, and any alloc_plain() calls
 		/// </summary>
-		public uint SpecialHeapSizeKB { get; set; }
+		public uint PlainHeapSizeKB { get; set; }
 
 		/// <summary>
 		/// how large the mmap heap should be.  it is savestated.
@@ -205,6 +205,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				return Z.US(_parent._invisibleheap.Allocate((ulong)size, 16));
 			}
 
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "alloc_plain")]
+			public IntPtr AllocPlain(UIntPtr size)
+			{
+				return Z.US(_parent._plainheap.Allocate((ulong)size, 16));
+			}
+
 			[BizExport(CallingConvention.Cdecl, EntryPoint = "_debug_puts")]
 			public void DebugPuts(IntPtr s)
 			{
@@ -229,7 +235,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				// as the inits are done in a defined order with a defined memory map,
 				// we don't need to savestate _pthreadSelf
-				_pthreadSelf = Z.US(_parent._specheap.Allocate(65536, 1));
+				_pthreadSelf = Z.US(_parent._plainheap.Allocate(65536, 1));
 			}
 
 			[BizExport(CallingConvention.Cdecl, EntryPoint = "log_output")]
@@ -241,7 +247,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			[BizExport(CallingConvention.Cdecl, EntryPoint = "n12")]
 			public UIntPtr Brk(UIntPtr _p)
 			{
-				// does MUSL use this?
 				var heap = _parent._heap;
 
 				var start = heap.Memory.Start;
@@ -570,7 +575,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// extra savestated heap
 		/// </summary>
-		private Heap _specheap;
+		private Heap _plainheap;
 
 		/// <summary>
 		/// memory map emulation
@@ -678,10 +683,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				ConnectAllImports();
 
 				// load all heaps
-				_heap = CreateHeapHelper(opt.NormalHeapSizeKB, "brk-heap", true);
+				_heap = CreateHeapHelper(opt.SbrkHeapSizeKB, "brk-heap", true);
 				_sealedheap = CreateHeapHelper(opt.SealedHeapSizeKB, "sealed-heap", true);
 				_invisibleheap = CreateHeapHelper(opt.InvisibleHeapSizeKB, "invisible-heap", false);
-				_specheap = CreateHeapHelper(opt.SpecialHeapSizeKB, "special-heap", true);
+				_plainheap = CreateHeapHelper(opt.PlainHeapSizeKB, "plain-heap", true);
 
 				if (opt.MmapHeapSizeKB != 0)
 				{
@@ -695,7 +700,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 				_syscalls.Init();
 
-				//System.Diagnostics.Debugger.Break();
+				if (System.Diagnostics.Debugger.IsAttached)
+				{
+					Console.WriteLine("About to enter unmanaged code");
+					System.Diagnostics.Debugger.Break();
+				}
 
 				// run unmanaged init code
 				var libcEnter = _exports["libc.so"].SafeResolve("__libc_entry_routine");
@@ -748,6 +757,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					pe.SealImportsAndTakeXorSnapshot();
 				}
+				if (_mmapheap != null)
+					_mmapheap.Memory.SaveXorSnapshot();
 			}
 		}
 
@@ -811,7 +822,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_heap = null;
 				_sealedheap = null;
 				_invisibleheap = null;
-				_specheap = null;
+				_plainheap = null;
 				_mmapheap = null;
 			}
 		}

@@ -582,7 +582,7 @@ EXPORT int Load(const uint8 *rom, int length)
 		}
 	}
 
-	WRAM = VB_V810->SetFastMap(&Map_Addresses[0], 65536, Map_Addresses.size(), "WRAM");
+	WRAM = VB_V810->SetFastMap(alloc_plain, &Map_Addresses[0], 65536, Map_Addresses.size(), "WRAM");
 	Map_Addresses.clear();
 
 	// Round up the ROM size to 65536(we mirror it a little later)
@@ -597,7 +597,7 @@ EXPORT int Load(const uint8 *rom, int length)
 		}
 	}
 
-	GPROM = VB_V810->SetFastMap(&Map_Addresses[0], GPROM_Mask + 1, Map_Addresses.size(), "Cart ROM");
+	GPROM = VB_V810->SetFastMap(alloc_sealed, &Map_Addresses[0], GPROM_Mask + 1, Map_Addresses.size(), "Cart ROM");
 	Map_Addresses.clear();
 
 	memcpy(GPROM, rom, rom_size);
@@ -633,7 +633,7 @@ EXPORT int Load(const uint8 *rom, int length)
 		}
 	}
 
-	GPRAM = VB_V810->SetFastMap(&Map_Addresses[0], GPRAM_Mask + 1, Map_Addresses.size(), "Cart RAM");
+	GPRAM = VB_V810->SetFastMap(alloc_plain, &Map_Addresses[0], GPRAM_Mask + 1, Map_Addresses.size(), "Cart RAM");
 	Map_Addresses.clear();
 
 	memset(GPRAM, 0, GPRAM_Mask + 1);

@@ -23,6 +23,11 @@ void *alloc_sealed(size_t size);
 // you are absolutely sure will not harm savestates
 void *alloc_invisible(size_t size);
 
+// allocate memory from the "plain" pool.  this memory can never be freed.
+// this memory is savestated normally.
+// useful to avoid malloc() overhead for things that will never be freed
+void *alloc_plain(size_t size);
+
 // send a debug string somewhere, bypassing stdio
 void _debug_puts(const char *);
 

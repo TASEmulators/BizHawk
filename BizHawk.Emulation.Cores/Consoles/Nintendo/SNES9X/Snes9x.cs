@@ -33,10 +33,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			{
 				Path = comm.CoreFileProvider.DllPath(),
 				Filename = "snes9x.wbx",
-				NormalHeapSizeKB = 1024,
+				SbrkHeapSizeKB = 1024,
 				SealedHeapSizeKB = 12 * 1024,
 				InvisibleHeapSizeKB = 6 * 1024,
-				SpecialHeapSizeKB = 64
+				PlainHeapSizeKB = 64
 			});
 
 			_core = BizInvoker.GetInvoker<LibSnes9x>(_exe, _exe);

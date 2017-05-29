@@ -42,6 +42,7 @@ found freely through public domain sources.
 // CPU routines
 
 #include "vb.h"
+#include <emulibc.h>
 
 //#include "pcfx.h"
 //#include "debug.h"
@@ -70,7 +71,7 @@ V810::V810()
 	IOWrite16 = NULL;
 	IOWrite32 = NULL;
 
-	memset(FastMap, 0, sizeof(FastMap));
+	FastMap = (uint8**)alloc_sealed((1ULL << 32) / V810_FAST_MAP_PSIZE * sizeof(*FastMap));
 
 	memset(MemReadBus32, 0, sizeof(MemReadBus32));
 	memset(MemWriteBus32, 0, sizeof(MemWriteBus32));
@@ -81,7 +82,6 @@ V810::V810()
 
 V810::~V810()
 {
-	Kill();
 }
 
 INLINE void V810::RecalcIPendingCache(void)
@@ -344,11 +344,6 @@ bool V810::Init(V810_Emu_Mode mode, bool vb_mode)
 	return (TRUE);
 }
 
-void V810::Kill(void)
-{
-	FastMapAllocList.clear();
-}
-
 void V810::SetInt(int level)
 {
 	assert(level >= -1 && level <= 15);
@@ -357,7 +352,7 @@ void V810::SetInt(int level)
 	RecalcIPendingCache();
 }
 
-uint8 *V810::SetFastMap(uint32 addresses[], uint32 length, unsigned int num_addresses, const char *name)
+uint8* V810::SetFastMap(void *(*allocator)(size_t size), uint32 addresses[], uint32 length, unsigned int num_addresses, const char *name)
 {
 	for (unsigned int i = 0; i < num_addresses; i++)
 	{
@@ -365,8 +360,7 @@ uint8 *V810::SetFastMap(uint32 addresses[], uint32 length, unsigned int num_addr
 	}
 	assert((length & (V810_FAST_MAP_PSIZE - 1)) == 0);
 
-	FastMapAllocList.emplace_back(std::unique_ptr<uint8[]>(new uint8[length + V810_FAST_MAP_TRAMPOLINE_SIZE]));
-	uint8 *ret = FastMapAllocList.back().get();
+	auto ret = (uint8*)allocator(length + V810_FAST_MAP_TRAMPOLINE_SIZE);
 
 	for (unsigned int i = length; i < length + V810_FAST_MAP_TRAMPOLINE_SIZE; i += 2)
 	{

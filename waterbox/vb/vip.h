@@ -24,7 +24,6 @@
 namespace MDFN_IEN_VB
 {
 void VIP_Init(void) MDFN_COLD;
-void VIP_Kill(void) MDFN_COLD;
 void VIP_Power(void) MDFN_COLD;
 
 void VIP_SetInstantDisplayHack(bool) MDFN_COLD;
