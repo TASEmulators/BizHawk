@@ -5,6 +5,9 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -16,16 +19,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 	[CoreAttributes("Virtual Boyee", "???", true, false, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
 	public class VirtualBoyee : IEmulator, IVideoProvider, ISoundProvider, IStatable,
-		IInputPollable, ISaveRam
+		IInputPollable, ISaveRam, ISettable<VirtualBoyee.Settings, VirtualBoyee.SyncSettings>
 	{
 		private PeRunner _exe;
 		private LibVirtualBoyee _boyee;
 
 		[CoreConstructor("VB")]
-		public VirtualBoyee(CoreComm comm, byte[] rom)
+		public VirtualBoyee(CoreComm comm, byte[] rom, Settings settings, SyncSettings syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
+
+			_settings = settings ?? new Settings();
+			_syncSettings = syncSettings ?? new SyncSettings();
+			var nativeSettings = LibVirtualBoyee.NativeSettings.FromFrontendSettings(_settings, _syncSettings);
 
 			_exe = new PeRunner(new PeRunnerOptions
 			{
@@ -39,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 			_boyee = BizInvoker.GetInvoker<LibVirtualBoyee>(_exe, _exe);
 
-			if (!_boyee.Load(rom, rom.Length))
+			if (!_boyee.Load(rom, rom.Length, nativeSettings))
 			{
 				throw new InvalidOperationException("Core rejected the rom");
 			}
@@ -48,6 +55,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 			_inputCallback = InputCallbacks.Call;
 			InitMemoryDomains();
+			InitSaveram();
 		}
 
 		private bool _disposed = false;
@@ -287,6 +295,130 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			}
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(new MemoryDomainList(domains));
 		}
+
+		#endregion
+
+		#region ISettable
+
+		public class SyncSettings
+		{
+			[DefaultValue(false)]
+			public bool InstantReadHack { get; set; }
+			[DefaultValue(false)]
+			public bool DisableParallax { get; set; }
+
+			public SyncSettings Clone()
+			{
+				return (SyncSettings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
+			}
+
+			public SyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+		}
+
+		public class Settings
+		{
+			public enum ThreeDeeModes : int
+			{
+				Anaglyph = 0,
+				CyberScope = 1,
+				SideBySide = 2,
+				//OverUnder,
+				VerticalInterlaced = 4,
+				HorizontalInterlaced = 5
+			}
+
+			[DefaultValue(ThreeDeeModes.Anaglyph)]
+			public ThreeDeeModes ThreeDeeMode { get; set; }
+
+			[DefaultValue(false)]
+			public bool SwapViews { get; set; }
+
+			public enum AnaglyphPresets : int
+			{
+				Custom,
+				RedBlue,
+				RedCyan,
+				RedElectricCyan,
+				RedGreen,
+				GreenMagneto,
+				YellowBlue
+			}
+
+			[DefaultValue(AnaglyphPresets.RedBlue)]
+			public AnaglyphPresets AnaglyphPreset { get; set; }
+
+			[DefaultValue(typeof(Color), "Green")]
+			public Color AnaglyphCustomLeftColor { get; set; }
+			[DefaultValue(typeof(Color), "Purple")]
+			public Color AnaglyphCustomRightColor { get; set; }
+
+			[DefaultValue(typeof(Color), "White")]
+			public Color NonAnaglyphColor { get; set; }
+
+			[DefaultValue(1750)]
+			[Range(1000, 2000)]
+			public int LedOnScale { get; set; }
+
+			[DefaultValue(2)]
+			[Range(1, 10)]
+			public int InterlacePrescale { get; set; }
+
+			[DefaultValue(0)]
+			[Range(0, 1024)]
+			public int SideBySideSeparation { get; set; }
+
+			public Settings Clone()
+			{
+				return (Settings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(Settings x, Settings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
+			}
+
+			public Settings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+		}
+
+		private Settings _settings;
+		private SyncSettings _syncSettings;
+
+		public Settings GetSettings()
+		{
+			return _settings.Clone();
+		}
+
+		public SyncSettings GetSyncSettings()
+		{
+			return _syncSettings.Clone();
+		}
+
+		public bool PutSettings(Settings o)
+		{
+			var ret = Settings.NeedsReboot(_settings, o);
+			_settings = o;
+			return ret;
+		}
+
+		public bool PutSyncSettings(SyncSettings o)
+		{
+			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
+			_syncSettings = o;
+			return ret;
+		}
+
+
 
 		#endregion
 

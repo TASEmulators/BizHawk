@@ -357,6 +357,10 @@
 			this.C64SettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.IntvSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.IntVControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.sNESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.virtualBoyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.preferencesToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
 			this.HelpSubMenu = new System.Windows.Forms.ToolStripMenuItem();
 			this.OnlineHelpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.ForumsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -436,8 +440,6 @@
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-			this.sNESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -470,8 +472,9 @@
             this.AppleSubMenu,
             this.C64SubMenu,
             this.IntvSubMenu,
-            this.HelpSubMenu,
-            this.sNESToolStripMenuItem});
+            this.sNESToolStripMenuItem,
+            this.virtualBoyToolStripMenuItem,
+            this.HelpSubMenu});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainformMenu.Name = "MainformMenu";
@@ -2720,7 +2723,7 @@
             this.GBAmGBAMenuItem,
             this.GBAVBANextMenuItem});
 			this.GBACoreSelectionSubMenu.Name = "GBACoreSelectionSubMenu";
-			this.GBACoreSelectionSubMenu.Size = new System.Drawing.Size(152, 22);
+			this.GBACoreSelectionSubMenu.Size = new System.Drawing.Size(129, 22);
 			this.GBACoreSelectionSubMenu.Text = "&Core";
 			this.GBACoreSelectionSubMenu.DropDownOpened += new System.EventHandler(this.GBACoreSelectionSubMenu_DropDownOpened);
 			// 
@@ -2741,19 +2744,19 @@
 			// GBAcoresettingsToolStripMenuItem1
 			// 
 			this.GBAcoresettingsToolStripMenuItem1.Name = "GBAcoresettingsToolStripMenuItem1";
-			this.GBAcoresettingsToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.GBAcoresettingsToolStripMenuItem1.Size = new System.Drawing.Size(129, 22);
 			this.GBAcoresettingsToolStripMenuItem1.Text = "&Settings...";
 			this.GBAcoresettingsToolStripMenuItem1.Click += new System.EventHandler(this.GBAcoresettingsToolStripMenuItem1_Click);
 			// 
 			// toolStripSeparator33
 			// 
 			this.toolStripSeparator33.Name = "toolStripSeparator33";
-			this.toolStripSeparator33.Size = new System.Drawing.Size(149, 6);
+			this.toolStripSeparator33.Size = new System.Drawing.Size(126, 6);
 			// 
 			// GbaGpuViewerMenuItem
 			// 
 			this.GbaGpuViewerMenuItem.Name = "GbaGpuViewerMenuItem";
-			this.GbaGpuViewerMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.GbaGpuViewerMenuItem.Size = new System.Drawing.Size(129, 22);
 			this.GbaGpuViewerMenuItem.Text = "GPU Viewer";
 			this.GbaGpuViewerMenuItem.Click += new System.EventHandler(this.GbaGpuViewerMenuItem_Click);
 			// 
@@ -3025,7 +3028,7 @@
 			// SaturnPreferencesMenuItem
 			// 
 			this.SaturnPreferencesMenuItem.Name = "SaturnPreferencesMenuItem";
-			this.SaturnPreferencesMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.SaturnPreferencesMenuItem.Size = new System.Drawing.Size(144, 22);
 			this.SaturnPreferencesMenuItem.Text = "Preferences...";
 			this.SaturnPreferencesMenuItem.Click += new System.EventHandler(this.SaturnPreferencesMenuItem_Click);
 			// 
@@ -3174,6 +3177,36 @@
 			this.IntVControllerSettingsMenuItem.Text = "Controller Settings...";
 			this.IntVControllerSettingsMenuItem.Click += new System.EventHandler(this.IntVControllerSettingsMenuItem_Click);
 			// 
+			// sNESToolStripMenuItem
+			// 
+			this.sNESToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.preferencesToolStripMenuItem});
+			this.sNESToolStripMenuItem.Name = "sNESToolStripMenuItem";
+			this.sNESToolStripMenuItem.Size = new System.Drawing.Size(44, 17);
+			this.sNESToolStripMenuItem.Text = "&SNES";
+			// 
+			// preferencesToolStripMenuItem
+			// 
+			this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
+			this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+			this.preferencesToolStripMenuItem.Text = "Preferences...";
+			this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
+			// 
+			// virtualBoyToolStripMenuItem
+			// 
+			this.virtualBoyToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.preferencesToolStripMenuItem1});
+			this.virtualBoyToolStripMenuItem.Name = "virtualBoyToolStripMenuItem";
+			this.virtualBoyToolStripMenuItem.Size = new System.Drawing.Size(67, 17);
+			this.virtualBoyToolStripMenuItem.Text = "&VirtualBoy";
+			// 
+			// preferencesToolStripMenuItem1
+			// 
+			this.preferencesToolStripMenuItem1.Name = "preferencesToolStripMenuItem1";
+			this.preferencesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+			this.preferencesToolStripMenuItem1.Text = "Preferences...";
+			this.preferencesToolStripMenuItem1.Click += new System.EventHandler(this.preferencesToolStripMenuItem1_Click);
+			// 
 			// HelpSubMenu
 			// 
 			this.HelpSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -3190,7 +3223,7 @@
 			// 
 			this.OnlineHelpMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
 			this.OnlineHelpMenuItem.Name = "OnlineHelpMenuItem";
-			this.OnlineHelpMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.OnlineHelpMenuItem.Size = new System.Drawing.Size(140, 22);
 			this.OnlineHelpMenuItem.Text = "&Online Help...";
 			this.OnlineHelpMenuItem.Click += new System.EventHandler(this.OnlineHelpMenuItem_Click);
 			// 
@@ -3198,7 +3231,7 @@
 			// 
 			this.ForumsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
 			this.ForumsMenuItem.Name = "ForumsMenuItem";
-			this.ForumsMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.ForumsMenuItem.Size = new System.Drawing.Size(140, 22);
 			this.ForumsMenuItem.Text = "Forums...";
 			this.ForumsMenuItem.Click += new System.EventHandler(this.ForumsMenuItem_Click);
 			// 
@@ -3206,7 +3239,7 @@
 			// 
 			this.FeaturesMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.kitchensink;
 			this.FeaturesMenuItem.Name = "FeaturesMenuItem";
-			this.FeaturesMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.FeaturesMenuItem.Size = new System.Drawing.Size(140, 22);
 			this.FeaturesMenuItem.Text = "&Features";
 			this.FeaturesMenuItem.Click += new System.EventHandler(this.FeaturesMenuItem_Click);
 			// 
@@ -3214,7 +3247,7 @@
 			// 
 			this.AboutMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CorpHawkSmall;
 			this.AboutMenuItem.Name = "AboutMenuItem";
-			this.AboutMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.AboutMenuItem.Size = new System.Drawing.Size(140, 22);
 			this.AboutMenuItem.Text = "&About";
 			this.AboutMenuItem.Click += new System.EventHandler(this.AboutMenuItem_Click);
 			// 
@@ -3863,21 +3896,6 @@
 			this.timerMouseIdle.Interval = 2000;
 			this.timerMouseIdle.Tick += new System.EventHandler(this.timerMouseIdle_Tick);
 			// 
-			// sNESToolStripMenuItem
-			// 
-			this.sNESToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.preferencesToolStripMenuItem});
-			this.sNESToolStripMenuItem.Name = "sNESToolStripMenuItem";
-			this.sNESToolStripMenuItem.Size = new System.Drawing.Size(44, 17);
-			this.sNESToolStripMenuItem.Text = "&SNES";
-			// 
-			// preferencesToolStripMenuItem
-			// 
-			this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-			this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.preferencesToolStripMenuItem.Text = "Preferences...";
-			this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
-			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -4327,5 +4345,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator36;
 		private System.Windows.Forms.ToolStripMenuItem sNESToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem virtualBoyToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem1;
 	}
 }

@@ -25,6 +25,21 @@
 
 namespace MDFN_IEN_VB
 {
+struct NativeSettings
+{
+	int InstantReadHack;
+	int DisableParallax;
+	int ThreeDeeMode;
+	int SwapViews;
+	int AnaglyphPreset;
+	int AnaglyphCustomLeftColor;
+	int AnaglyphCustomRightColor;
+	int NonAnaglyphColor;
+	int LedOnScale;
+	int InterlacePrescale;
+	int SideBySideSeparation;
+};
+
 static void (*input_callback)();
 static bool lagged;
 
@@ -40,14 +55,14 @@ enum
 };
 
 static const uint32 AnaglyphPreset_Colors[][2] =
-	{
-		{0, 0},
-		{0xFF0000, 0x0000FF},
-		{0xFF0000, 0x00B7EB},
-		{0xFF0000, 0x00FFFF},
-		{0xFF0000, 0x00FF00},
-		{0x00FF00, 0xFF00FF},
-		{0xFFFF00, 0x0000FF},
+{
+	{0, 0},
+	{0xFF0000, 0x0000FF},
+	{0xFF0000, 0x00B7EB},
+	{0xFF0000, 0x00FFFF},
+	{0xFF0000, 0x00FF00},
+	{0x00FF00, 0xFF00FF},
+	{0xFFFF00, 0x0000FF},
 };
 
 int32 VB_InDebugPeek;
@@ -538,7 +553,7 @@ void VB_ExitLoop(void)
 
 using namespace MDFN_IEN_VB;
 
-EXPORT int Load(const uint8 *rom, int length)
+EXPORT int Load(const uint8 *rom, int length, const NativeSettings* settings)
 {
 	const uint64 rom_size = length;
 	V810_Emu_Mode cpu_mode = V810_EMU_MODE_ACCURATE;
@@ -648,19 +663,20 @@ EXPORT int Load(const uint8 *rom, int length)
 	VB_VSU = new VSU();
 	VBINPUT_Init();
 
-	VB3DMode = VB3DMODE_ANAGLYPH;
-	uint32 prescale = 2;
-	uint32 sbs_separation = 0;
-	bool reverse = false;
+	VB3DMode = settings->ThreeDeeMode;
+	uint32 prescale = settings->InterlacePrescale;
+	uint32 sbs_separation = settings->SideBySideSeparation;
+	bool reverse = settings->SwapViews;
 
 	VIP_Set3DMode(VB3DMode, reverse, prescale, sbs_separation);
 
-	VIP_SetParallaxDisable(false);
+	VIP_SetParallaxDisable(settings->DisableParallax);
 
 	{
-		auto presetColor = ANAGLYPH_PRESET_RED_BLUE;
+		auto presetColor = settings->AnaglyphPreset;
 
-		uint32 lcolor, rcolor;
+		uint32 lcolor = settings->AnaglyphCustomLeftColor;
+		uint32 rcolor = settings->AnaglyphCustomRightColor;
 
 		if (presetColor != ANAGLYPH_PRESET_DISABLED)
 		{
@@ -668,12 +684,12 @@ EXPORT int Load(const uint8 *rom, int length)
 			rcolor = AnaglyphPreset_Colors[presetColor][1];
 		}
 		VIP_SetAnaglyphColors(lcolor, rcolor);
-		VIP_SetDefaultColor(0xf0f0f0);
+		VIP_SetDefaultColor(settings->NonAnaglyphColor);
 	}
 
-	VBINPUT_SetInstantReadHack(true);
+	VBINPUT_SetInstantReadHack(settings->InstantReadHack);
 
-	VIP_SetLEDOnScale(1.75);
+	VIP_SetLEDOnScale(settings->LedOnScale / 1000.0);
 
 	VB_Power();
 

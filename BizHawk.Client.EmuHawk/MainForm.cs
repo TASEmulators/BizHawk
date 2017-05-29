@@ -1676,6 +1676,7 @@ namespace BizHawk.Client.EmuHawk
 			C64SubMenu.Visible = false;
 			IntvSubMenu.Visible = false;
 			sNESToolStripMenuItem.Visible = false;
+			virtualBoyToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
@@ -1760,6 +1761,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "INTV":
 					IntvSubMenu.Visible = true;
+					break;
+				case "VB":
+					virtualBoyToolStripMenuItem.Visible = true;
 					break;
 			}
 		}
@@ -4273,6 +4277,11 @@ namespace BizHawk.Client.EmuHawk
 		private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Snes9x settings");
+		}
+
+		private void preferencesToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "VirtualBoy Settings");
 		}
 
 		private void CreateMultigameFileMenuItem_Click(object sender, EventArgs e)

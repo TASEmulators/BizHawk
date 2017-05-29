@@ -1,6 +1,7 @@
 ﻿using BizHawk.Common.BizInvoke;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -87,11 +88,53 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			R = 0x4
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		public class NativeSettings
+		{
+			public int InstantReadHack;
+			public int DisableParallax;
+			public int ThreeDeeMode;
+			public int SwapViews;
+			public int AnaglyphPreset;
+			public int AnaglyphCustomLeftColor;
+			public int AnaglyphCustomRightColor;
+			public int NonAnaglyphColor;
+			public int LedOnScale;
+			public int InterlacePrescale;
+			public int SideBySideSeparation;
+
+			private static int ConvertColor(Color c)
+			{
+				var v = c.ToArgb();
+				return v & 0xff00
+					| v << 16 & 0xff0000
+					| v >> 16 & 0xff;
+			}
+
+			public static NativeSettings FromFrontendSettings(VirtualBoyee.Settings s, VirtualBoyee.SyncSettings ss)
+			{
+				return new NativeSettings
+				{
+					InstantReadHack = ss.InstantReadHack ? 1 : 0,
+					DisableParallax = ss.DisableParallax ? 1 : 0,
+					ThreeDeeMode = (int)s.ThreeDeeMode,
+					SwapViews = s.SwapViews ? 1 : 0,
+					AnaglyphPreset = (int)s.AnaglyphPreset,
+					AnaglyphCustomLeftColor = ConvertColor(s.AnaglyphCustomLeftColor),
+					AnaglyphCustomRightColor = ConvertColor(s.AnaglyphCustomRightColor),
+					NonAnaglyphColor = ConvertColor(s.NonAnaglyphColor),
+					LedOnScale = s.LedOnScale,
+					InterlacePrescale = s.InterlacePrescale,
+					SideBySideSeparation = s.SideBySideSeparation
+				};
+			}
+		}
+
 		[UnmanagedFunctionPointer(CC)]
 		public delegate void InputCallback();
 
 		[BizImport(CC)]
-		public abstract bool Load(byte[] rom, int length);
+		public abstract bool Load(byte[] rom, int length, [In]NativeSettings settings);
 
 		[BizImport(CC)]
 		public abstract void GetMemoryArea(MemoryArea which, ref IntPtr ptr, ref int size);
