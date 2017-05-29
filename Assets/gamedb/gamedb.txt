@@ -271,6 +271,7 @@ sha1:1C3771B7F116F439D684D04DF792570271C93F86		75 Bingo (Sachen-English) [U]	NES
 sha1:4097D5A814308E39D592466B60B64862699CC22A		2-in-1 - Yuu Yuu + Dragonball Z [p1][!]	NES		board=MAPPER023_BMC
 sha1:4C499A857087E6C121522435786792A2E4105AC1		Fuuun Shaolin Kyo (FDS Conversion) (Unl) [U][!]	NES		board=UNIF_UNL-LH10;WRAM=8;VRAM=8
 sha1:CAAC1E829133851648BA7C7CD6EAA7D26A464999		Metal Fighter (Asia) (Unl) (Sachen)	NES		board=UNIF_UNL-SA-016-1M;PRG=32;CHR=32;PAD_V=0;PAD_H=1
+sha1:B9902886D1739983B315B67B02133E44620E4381		Challenge of the Dragon (Asia) (PAL) (Unl)	NES		board=MAPPER147;PAD_V=0;PAD_H=1;system=NES-PAL
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
