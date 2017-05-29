@@ -72,7 +72,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				default:
 					throw new System.Exception();
 			}
-
 			CartPort = new CartridgePort();
 			Cassette = new CassettePort();
 			ColorRam = new Chip2114();
@@ -170,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void Flush()
 		{
-			Sid.Flush();
+			Sid.Flush(true);
 		}
 
 		// -----------------------------------------
@@ -358,7 +357,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			ser.Sync("_joystickPressed", ref _joystickPressed, useNull: false);
 			ser.Sync("_keyboardPressed", ref _keyboardPressed, useNull: false);
 			ser.Sync("_restorePressed", ref _restorePressed);
-			ser.Sync("_pollIndex", ref _pollIndex);
 		}
 	}
 }
