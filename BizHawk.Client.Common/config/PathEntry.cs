@@ -344,6 +344,13 @@ namespace BizHawk.Client.Common
 			new PathEntry { System = "Libretro", SystemDisplayName = "Libretro", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 4 },
 			new PathEntry { System = "Libretro", SystemDisplayName = "Libretro", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 5 },
 			new PathEntry { System = "Libretro", SystemDisplayName = "Libretro", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 6 },
+
+			new PathEntry { System = "VB", SystemDisplayName = "VB", Type = "Base", Path = Path.Combine(".", "VB"), Ordinal = 0 },
+			new PathEntry { System = "VB", SystemDisplayName = "VB", Type = "ROM", Path = ".", Ordinal = 1 },
+			new PathEntry { System = "VB", SystemDisplayName = "VB", Type = "Savestates",  Path = Path.Combine(".", "State"), Ordinal = 2 },
+			new PathEntry { System = "VB", SystemDisplayName = "VB", Type = "Save RAM", Path = Path.Combine(".", "SaveRAM"), Ordinal = 3 },
+			new PathEntry { System = "VB", SystemDisplayName = "VB", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
+			new PathEntry { System = "VB", SystemDisplayName = "VB", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 		};
 	}
 }
