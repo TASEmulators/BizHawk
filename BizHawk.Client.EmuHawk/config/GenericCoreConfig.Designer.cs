@@ -75,6 +75,7 @@
 			this.propertyGrid1.Size = new System.Drawing.Size(306, 299);
 			this.propertyGrid1.TabIndex = 0;
 			this.propertyGrid1.ToolbarVisible = false;
+			this.propertyGrid1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid1_PropertyValueChanged);
 			// 
 			// tabPage2
 			// 
