@@ -1,4 +1,5 @@
-﻿using BizHawk.Common.BizInvoke;
+﻿using BizHawk.Common;
+using BizHawk.Common.BizInvoke;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -14,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 	[CoreAttributes("Virtual Boyee", "???", true, false, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
 	public class VirtualBoyee : IEmulator, IVideoProvider, ISoundProvider, IStatable,
-		IInputPollable
+		IInputPollable, ISaveRam
 	{
 		private PeRunner _exe;
 		private LibVirtualBoyee _boyee;
@@ -45,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			_exe.Seal();
 
 			_inputCallback = InputCallbacks.Call;
+			InitMemoryDomains();
 		}
 
 		private bool _disposed = false;
@@ -89,7 +92,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 				IsLagFrame = spec.Lagged;
 				if (IsLagFrame)
 					LagCount++;
-
 			}
 		}
 
@@ -256,5 +258,88 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 		}
 
 		#endregion
+
+		#region Memory Domains
+
+		private unsafe void InitMemoryDomains()
+		{
+			var domains = new List<MemoryDomain>();
+
+			var domainInfo = new[]
+			{
+				new { name = "WRAM", area = LibVirtualBoyee.MemoryArea.Wram, writable = true },
+				new { name = "CARTRAM", area = LibVirtualBoyee.MemoryArea.Sram, writable = true },
+				new { name = "ROM", area = LibVirtualBoyee.MemoryArea.Rom, writable = false }
+			};
+
+			foreach (var a in domainInfo)
+			{
+				IntPtr ptr = IntPtr.Zero;
+				int size = 0;
+
+				_boyee.GetMemoryArea(a.area, ref ptr, ref size);
+
+				if (ptr != IntPtr.Zero && size > 0)
+				{
+					domains.Add(new MemoryDomainIntPtrMonitor(a.name, MemoryDomain.Endian.Little,
+						ptr, size, a.writable, 4, _exe));
+				}
+			}
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(new MemoryDomainList(domains));
+		}
+
+		#endregion
+
+		#region ISaveRam
+
+		private const int SaveramSize = 65536;
+		private IntPtr _saveRamPtr;
+
+		private void InitSaveram()
+		{
+			int unused = 0;
+			_boyee.GetMemoryArea(LibVirtualBoyee.MemoryArea.Sram, ref _saveRamPtr, ref unused);
+		}
+
+		public unsafe bool SaveRamModified
+		{
+			get
+			{
+				using (_exe.EnterExit())
+				{
+					int* p = (int*)_saveRamPtr;
+					int* pend = p + SaveramSize / sizeof(int);
+
+					while (p < pend)
+					{
+						if (*p++ != 0)
+							return true;
+					}
+				}
+				return false;
+			}
+		}
+
+		public byte[] CloneSaveRam()
+		{
+			using (_exe.EnterExit())
+			{
+				var ret = new byte[SaveramSize];
+				Marshal.Copy(_saveRamPtr, ret, 0, SaveramSize);
+				return ret;
+			}
+		}
+
+		public void StoreSaveRam(byte[] data)
+		{
+			using (_exe.EnterExit())
+			{
+				if (data.Length != SaveramSize)
+					throw new InvalidOperationException("Saveram size mismatch");
+				Marshal.Copy(data, 0, _saveRamPtr, SaveramSize);
+			}
+		}
+
+		#endregion ISaveRam
 	}
 }
