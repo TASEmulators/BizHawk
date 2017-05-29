@@ -81,6 +81,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 					case 0x0005:    // Ocean
 						result = new Mapper0005(chipAddress, chipBank, chipData);
 						break;
+					case 0x0007:    // Fun Play
+						result = new Mapper0007(chipData, game, exrom);
+						break;
 					case 0x0008:    // SuperGame
 						result = new Mapper0008(chipData);
 						break;
