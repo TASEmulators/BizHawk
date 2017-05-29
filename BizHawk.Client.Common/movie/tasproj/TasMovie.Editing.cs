@@ -460,9 +460,9 @@ namespace BizHawk.Client.Common
 
 		public void SetBoolStates(int frame, int count, string buttonName, bool val)
 		{
-			if (frame + count >= Log.Count) // Insert blank frames up to this point
+			if (Log.Count < frame + count)
 			{
-				ExtendMovieForEdit(frame - Log.Count + 1);
+				ExtendMovieForEdit(frame + count - Log.Count);
 			}
 
 			ChangeLog.AddGeneralUndo(frame, frame + count - 1, "Set " + buttonName + "(" + (val ? "On" : "Off") + "): " + frame + "-" + (frame + count - 1));
