@@ -68,10 +68,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					_controller = tmp;
 					ssc.Serialize(bw);
 				}
-				else // hack: dummy controller info
-				{
-					bw.Write(reader.ReadBytes(536));
-				}
 
 				bw.Close();
 				_savestatebuff = ms.ToArray();

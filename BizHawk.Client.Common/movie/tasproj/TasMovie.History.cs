@@ -6,10 +6,21 @@ namespace BizHawk.Client.Common
 {
 	public class TasMovieChangeLog
 	{
-		private readonly List<List<IMovieAction>> History;
-		public List<string> Names;
-		public int UndoIndex = -1;
+		public TasMovieChangeLog(TasMovie movie)
+		{
+			_history = new List<List<IMovieAction>>();
+			_movie = movie;
+		}
+
+		private readonly List<List<IMovieAction>> _history = new List<List<IMovieAction>>();
+		private readonly TasMovie _movie;
+
 		private int _maxSteps = 100;
+		private int _totalSteps;
+		private bool _recordingBatch;
+
+		public List<string> Names { get; } = new List<string>();
+		public int UndoIndex { get; private set; } = -1;
 
 		public int MaxSteps
 		{
@@ -21,46 +32,35 @@ namespace BizHawk.Client.Common
 			set
 			{
 				_maxSteps = value;
-				if (History.Count > value)
+				if (_history.Count > value)
 				{
-					if (History.Count <= value)
+					if (_history.Count <= value)
 					{
 						ClearLog();
 					}
 					else
 					{
-						ClearLog(History.Count - value);
+						ClearLog(_history.Count - value);
 					}
 				}
 			}
 		}
 
-		private int _totalSteps = 0;
-		private bool RecordingBatch = false;
-
 		/// <summary>
+		/// Gets or sets a value indicating whether the movie is in recording mode
 		/// This is not intended to turn off the ChangeLog, but to disable the normal recording process.
 		/// Use this to manually control the ChangeLog. (Useful for when you are making lots of 
 		/// </summary>
-		public bool IsRecording = true;
-
-		public TasMovie Movie;
-
-		public TasMovieChangeLog(TasMovie movie)
-		{
-			History = new List<List<IMovieAction>>();
-			Names = new List<string>();
-			Movie = movie;
-		}
+		public bool IsRecording { get; set; } = true;
 
 		public void ClearLog(int upTo = -1)
 		{
 			if (upTo == -1)
 			{
-				upTo = History.Count;
+				upTo = _history.Count;
 			}
 
-			History.RemoveRange(0, upTo);
+			_history.RemoveRange(0, upTo);
 			Names.RemoveRange(0, upTo);
 			UndoIndex -= upTo;
 			if (UndoIndex < -1)
@@ -68,25 +68,25 @@ namespace BizHawk.Client.Common
 				UndoIndex = -1;
 			}
 
-			if (History.Count == 0)
+			if (_history.Count == 0)
 			{
-				RecordingBatch = false;
+				_recordingBatch = false;
 			}
 		}
 
 		private void TruncateLog(int from)
 		{
-			History.RemoveRange(from, History.Count - from);
+			_history.RemoveRange(from, _history.Count - from);
 			Names.RemoveRange(from, Names.Count - from);
 
-			if (UndoIndex < History.Count - 1)
+			if (UndoIndex < _history.Count - 1)
 			{
-				UndoIndex = History.Count - 1;
+				UndoIndex = _history.Count - 1;
 			}
 
-			if (RecordingBatch)
+			if (_recordingBatch)
 			{
-				RecordingBatch = false;
+				_recordingBatch = false;
 				BeginNewBatch();
 			}
 		}
@@ -106,7 +106,7 @@ namespace BizHawk.Client.Common
 			}
 
 			bool ret = true;
-			if (RecordingBatch)
+			if (_recordingBatch)
 			{
 				if (keepOldBatch)
 				{
@@ -123,7 +123,7 @@ namespace BizHawk.Client.Common
 				ret = AddMovieAction(name);
 			}
 
-			RecordingBatch = true;
+			_recordingBatch = true;
 
 			return ret;
 		}
@@ -134,16 +134,16 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void EndBatch()
 		{
-			if (!IsRecording || !RecordingBatch)
+			if (!IsRecording || !_recordingBatch)
 			{
 				return;
 			}
 
-			RecordingBatch = false;
-			List<IMovieAction> last = History.Last();
+			_recordingBatch = false;
+			List<IMovieAction> last = _history.Last();
 			if (last.Count == 0) // Remove batch if it's empty.
 			{
-				History.RemoveAt(History.Count - 1);
+				_history.RemoveAt(_history.Count - 1);
 				Names.RemoveAt(Names.Count - 1);
 				UndoIndex--;
 			}
@@ -161,22 +161,22 @@ namespace BizHawk.Client.Common
 		{
 			if (UndoIndex == -1)
 			{
-				return Movie.InputLogLength;
+				return _movie.InputLogLength;
 			}
 
-			List<IMovieAction> batch = History[UndoIndex];
+			List<IMovieAction> batch = _history[UndoIndex];
 			for (int i = batch.Count - 1; i >= 0; i--)
 			{
-				batch[i].Undo(Movie);
+				batch[i].Undo(_movie);
 			}
 
 			UndoIndex--;
 
-			RecordingBatch = false;
+			_recordingBatch = false;
 
 			if (batch.All(a => a.GetType() == typeof(MovieActionMarker)))
 			{
-				return Movie.InputLogLength;
+				return _movie.InputLogLength;
 			}
 
 			return PreviousUndoFrame;
@@ -188,30 +188,30 @@ namespace BizHawk.Client.Common
 		/// <returns>Returns the frame which the movie needs to rewind to.</returns>
 		public int Redo()
 		{
-			if (UndoIndex == History.Count - 1)
+			if (UndoIndex == _history.Count - 1)
 			{
-				return Movie.InputLogLength;
+				return _movie.InputLogLength;
 			}
 
 			UndoIndex++;
-			List<IMovieAction> batch = History[UndoIndex];
+			List<IMovieAction> batch = _history[UndoIndex];
 			foreach (IMovieAction b in batch)
 			{
-				b.Redo(Movie);
+				b.Redo(_movie);
 			}
 
-			RecordingBatch = false;
+			_recordingBatch = false;
 
 			if (batch.All(a => a.GetType() == typeof(MovieActionMarker)))
 			{
-				return Movie.InputLogLength;
+				return _movie.InputLogLength;
 			}
 
 			return PreviousRedoFrame;
 		}
 
 		public bool CanUndo => UndoIndex > -1;
-		public bool CanRedo => UndoIndex < History.Count - 1;
+		public bool CanRedo => UndoIndex < _history.Count - 1;
 
 		public string NextUndoStepName
 		{
@@ -230,17 +230,17 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (UndoIndex == History.Count - 1)
+				if (UndoIndex == _history.Count - 1)
 				{
-					return Movie.InputLogLength;
+					return _movie.InputLogLength;
 				}
 
-				if (History[UndoIndex + 1].Count == 0)
+				if (_history[UndoIndex + 1].Count == 0)
 				{
-					return Movie.InputLogLength;
+					return _movie.InputLogLength;
 				}
 
-				return History[UndoIndex + 1].Min(a => a.FirstFrame);
+				return _history[UndoIndex + 1].Min(a => a.FirstFrame);
 			}
 		}
 
@@ -250,15 +250,15 @@ namespace BizHawk.Client.Common
 			{
 				if (UndoIndex == -1)
 				{
-					return Movie.InputLogLength;
+					return _movie.InputLogLength;
 				}
 
-				if (History[UndoIndex].Count == 0)
+				if (_history[UndoIndex].Count == 0)
 				{
-					return Movie.InputLogLength;
+					return _movie.InputLogLength;
 				}
 
-				return History[UndoIndex].Min(a => a.FirstFrame);
+				return _history[UndoIndex].Min(a => a.FirstFrame);
 			}
 		}
 
@@ -266,7 +266,7 @@ namespace BizHawk.Client.Common
 
 		private bool AddMovieAction(string name)
 		{
-			if (UndoIndex + 1 != History.Count)
+			if (UndoIndex + 1 != _history.Count)
 			{
 				TruncateLog(UndoIndex + 1);
 			}
@@ -277,20 +277,20 @@ namespace BizHawk.Client.Common
 			}
 
 			bool ret = false;
-			if (!RecordingBatch)
+			if (!_recordingBatch)
 			{
 				ret = true;
-				History.Add(new List<IMovieAction>(1));
+				_history.Add(new List<IMovieAction>(1));
 				Names.Add(name);
 				_totalSteps += 1;
 
-				if (History.Count <= MaxSteps)
+				if (_history.Count <= MaxSteps)
 				{
 					UndoIndex += 1;
 				}
 				else
 				{
-					History.RemoveAt(0);
+					_history.RemoveAt(0);
 					Names.RemoveAt(0);
 					ret = false;
 				}
@@ -312,8 +312,8 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				History.Last().Add(new MovieAction(first, last, Movie));
-				_lastGeneral = History.Last().Count - 1;
+				_history.Last().Add(new MovieAction(first, last, _movie));
+				_lastGeneral = _history.Last().Count - 1;
 			}
 		}
 
@@ -321,7 +321,7 @@ namespace BizHawk.Client.Common
 		{
 			if (IsRecording || force)
 			{
-				(History.Last()[_lastGeneral] as MovieAction).SetRedoLog(Movie);
+				(_history.Last()[_lastGeneral] as MovieAction).SetRedoLog(_movie);
 			}
 		}
 
@@ -330,7 +330,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				History.Last().Add(new MovieActionFrameEdit(frame, button, oldState, !oldState));
+				_history.Last().Add(new MovieActionFrameEdit(frame, button, oldState, !oldState));
 			}
 		}
 
@@ -339,11 +339,11 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				History.Last().Add(new MovieActionFrameEdit(frame, button, oldState, newState));
+				_history.Last().Add(new MovieActionFrameEdit(frame, button, oldState, newState));
 			}
 		}
 
-		public void AddMarkerChange(TasMovieMarker newMarker, int oldPosition = -1, string old_message = "", string name = "", bool force = false)
+		public void AddMarkerChange(TasMovieMarker newMarker, int oldPosition = -1, string oldMessage = "", string name = "", bool force = false)
 		{
 			if (IsRecording || force)
 			{
@@ -357,7 +357,7 @@ namespace BizHawk.Client.Common
 				}
 
 				AddMovieAction(name);
-				History.Last().Add(new MovieActionMarker(newMarker, oldPosition, old_message));
+				_history.Last().Add(new MovieActionMarker(newMarker, oldPosition, oldMessage));
 			}
 		}
 
@@ -366,7 +366,7 @@ namespace BizHawk.Client.Common
 			if (IsRecording || force)
 			{
 				AddMovieAction(name);
-				History.Last().Add(new MovieActionBindInput(Movie, frame, isDelete));
+				_history.Last().Add(new MovieActionBindInput(_movie, frame, isDelete));
 			}
 		}
 
@@ -392,7 +392,7 @@ namespace BizHawk.Client.Common
 		private readonly int _undoLength;
 		private int _redoLength;
 
-		private int length => LastFrame - FirstFrame + 1;
+		private int Length => LastFrame - FirstFrame + 1;
 
 		private readonly List<string> _oldLog;
 		private List<string> _newLog;
@@ -402,7 +402,7 @@ namespace BizHawk.Client.Common
 		{
 			FirstFrame = firstFrame;
 			LastFrame = lastFrame;
-			_oldLog = new List<string>(length);
+			_oldLog = new List<string>(Length);
 			_undoLength = Math.Min(LastFrame + 1, movie.InputLogLength) - FirstFrame;
 
 			for (int i = 0; i < _undoLength; i++)
@@ -430,12 +430,12 @@ namespace BizHawk.Client.Common
 			movie.ChangeLog.IsRecording = false;
 			movie.BindMarkersToInput = _bindMarkers;
 
-			if (_redoLength != length)
+			if (_redoLength != Length)
 			{
-				movie.InsertEmptyFrame(FirstFrame, length - _redoLength, true);
+				movie.InsertEmptyFrame(FirstFrame, Length - _redoLength, true);
 			}
 
-			if (_undoLength != length)
+			if (_undoLength != Length)
 			{
 				movie.RemoveFrames(FirstFrame, movie.InputLogLength - _undoLength, true);
 			}
@@ -456,12 +456,12 @@ namespace BizHawk.Client.Common
 			movie.ChangeLog.IsRecording = false;
 			movie.BindMarkersToInput = _bindMarkers;
 
-			if (_undoLength != length)
+			if (_undoLength != Length)
 			{
-				movie.InsertEmptyFrame(FirstFrame, length - _undoLength);
+				movie.InsertEmptyFrame(FirstFrame, Length - _undoLength);
 			}
 
-			if (_redoLength != length)
+			if (_redoLength != Length)
 			{
 				movie.RemoveFrames(FirstFrame, movie.InputLogLength - _redoLength);
 			}
@@ -484,18 +484,18 @@ namespace BizHawk.Client.Common
 		private readonly string _oldMessage;
 		private readonly string _newMessage;
 
-		public MovieActionMarker(TasMovieMarker marker, int oldPosition = -1, string old_message = "")
+		public MovieActionMarker(TasMovieMarker marker, int oldPosition = -1, string oldMessage = "")
 		{
 			FirstFrame = oldPosition;
 			if (marker == null)
 			{
 				LastFrame = -1;
-				_oldMessage = old_message;
+				_oldMessage = oldMessage;
 			}
 			else
 			{
 				LastFrame = marker.Frame;
-				_oldMessage = old_message == "" ? marker.Message : old_message;
+				_oldMessage = oldMessage == "" ? marker.Message : oldMessage;
 				_newMessage = marker.Message;
 			}
 		}

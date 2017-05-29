@@ -100,7 +100,7 @@ namespace BizHawk.Client.Common
 					}
 
 					// zero 09-mar-2015 - not sure if adding + 1 here is correct.. but... maybe?
-					var output = (input * multiplier + 10000.0f) * (range.Max - range.Min + 1) / 20000.0f + range.Min;
+					var output = (((input * multiplier) + 10000.0f) * (range.Max - range.Min + 1) / 20000.0f) + range.Min;
 
 					// zero 09-mar-2015 - at this point, we should only have integers, since thats all 100% of consoles ever see
 					// if this becomes a problem we can add flags to the range and update GUIs to be able to display floats

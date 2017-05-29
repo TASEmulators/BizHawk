@@ -348,14 +348,14 @@ namespace BizHawk.Client.EmuHawk
 			this.saveSelectionToMacroToolStripMenuItem.Name = "saveSelectionToMacroToolStripMenuItem";
 			this.saveSelectionToMacroToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.saveSelectionToMacroToolStripMenuItem.Text = "Save Selection to Macro";
-			this.saveSelectionToMacroToolStripMenuItem.Click += new System.EventHandler(this.saveSelectionToMacroToolStripMenuItem_Click);
+			this.saveSelectionToMacroToolStripMenuItem.Click += new System.EventHandler(this.SaveSelectionToMacroMenuItem_Click);
 			// 
 			// placeMacroAtSelectionToolStripMenuItem
 			// 
 			this.placeMacroAtSelectionToolStripMenuItem.Name = "placeMacroAtSelectionToolStripMenuItem";
 			this.placeMacroAtSelectionToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.placeMacroAtSelectionToolStripMenuItem.Text = "Place Macro at Selection";
-			this.placeMacroAtSelectionToolStripMenuItem.Click += new System.EventHandler(this.placeMacroAtSelectionToolStripMenuItem_Click);
+			this.placeMacroAtSelectionToolStripMenuItem.Click += new System.EventHandler(this.PlaceMacroAtSelectionMenuItem_Click);
 			// 
 			// recentMacrosToolStripMenuItem
 			// 
@@ -365,7 +365,7 @@ namespace BizHawk.Client.EmuHawk
 			this.recentMacrosToolStripMenuItem.Name = "recentMacrosToolStripMenuItem";
 			this.recentMacrosToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
 			this.recentMacrosToolStripMenuItem.Text = "Recent Macros";
-			this.recentMacrosToolStripMenuItem.DropDownOpened += new System.EventHandler(this.recentMacrosToolStripMenuItem_DropDownOpened);
+			this.recentMacrosToolStripMenuItem.DropDownOpened += new System.EventHandler(this.RecentMacrosMenuItem_DropDownOpened);
 			// 
 			// toolStripSeparator22
 			// 
@@ -453,7 +453,7 @@ namespace BizHawk.Client.EmuHawk
 			this.showUndoHistoryToolStripMenuItem.Name = "showUndoHistoryToolStripMenuItem";
 			this.showUndoHistoryToolStripMenuItem.Size = new System.Drawing.Size(291, 22);
 			this.showUndoHistoryToolStripMenuItem.Text = "Show Undo History";
-			this.showUndoHistoryToolStripMenuItem.Click += new System.EventHandler(this.showUndoHistoryToolStripMenuItem_Click);
+			this.showUndoHistoryToolStripMenuItem.Click += new System.EventHandler(this.ShowUndoHistoryMenuItem_Click);
 			// 
 			// SelectionUndoMenuItem
 			// 
@@ -753,7 +753,7 @@ namespace BizHawk.Client.EmuHawk
 			this.applyPatternToPaintedInputToolStripMenuItem.Name = "applyPatternToPaintedInputToolStripMenuItem";
 			this.applyPatternToPaintedInputToolStripMenuItem.Size = new System.Drawing.Size(255, 22);
 			this.applyPatternToPaintedInputToolStripMenuItem.Text = "Apply Pattern to painted input";
-			this.applyPatternToPaintedInputToolStripMenuItem.CheckedChanged += new System.EventHandler(this.applyPatternToPaintedInputToolStripMenuItem_CheckedChanged);
+			this.applyPatternToPaintedInputToolStripMenuItem.CheckedChanged += new System.EventHandler(this.ApplyPatternToPaintedInputMenuItem_CheckedChanged);
 			// 
 			// onlyOnAutoFireColumnsToolStripMenuItem
 			// 
@@ -872,7 +872,7 @@ namespace BizHawk.Client.EmuHawk
 			this.autoHoldToolStripMenuItem.Name = "autoHoldToolStripMenuItem";
 			this.autoHoldToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
 			this.autoHoldToolStripMenuItem.Text = "Auto-Hold";
-			this.autoHoldToolStripMenuItem.CheckedChanged += new System.EventHandler(this.autoHoldToolStripMenuItem_CheckedChanged);
+			this.autoHoldToolStripMenuItem.CheckedChanged += new System.EventHandler(this.AutoHoldMenuItem_CheckedChanged);
 			// 
 			// autoFireToolStripMenuItem
 			// 
@@ -880,7 +880,7 @@ namespace BizHawk.Client.EmuHawk
 			this.autoFireToolStripMenuItem.Name = "autoFireToolStripMenuItem";
 			this.autoFireToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
 			this.autoFireToolStripMenuItem.Text = "Auto-Fire";
-			this.autoFireToolStripMenuItem.CheckedChanged += new System.EventHandler(this.autoFireToolStripMenuItem_CheckedChanged);
+			this.autoFireToolStripMenuItem.CheckedChanged += new System.EventHandler(this.AutoFireMenuItem_CheckedChanged);
 			// 
 			// customPatternToolStripMenuItem
 			// 
@@ -888,7 +888,7 @@ namespace BizHawk.Client.EmuHawk
 			this.customPatternToolStripMenuItem.Name = "customPatternToolStripMenuItem";
 			this.customPatternToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
 			this.customPatternToolStripMenuItem.Text = "Custom Pattern";
-			this.customPatternToolStripMenuItem.CheckedChanged += new System.EventHandler(this.customPatternToolStripMenuItem_CheckedChanged);
+			this.customPatternToolStripMenuItem.CheckedChanged += new System.EventHandler(this.CustomPatternMenuItem_CheckedChanged);
 			// 
 			// setpToolStripMenuItem
 			// 
@@ -900,7 +900,7 @@ namespace BizHawk.Client.EmuHawk
 			this.setCustomsToolStripMenuItem.Name = "setCustomsToolStripMenuItem";
 			this.setCustomsToolStripMenuItem.Size = new System.Drawing.Size(171, 22);
 			this.setCustomsToolStripMenuItem.Text = "Set Customs...";
-			this.setCustomsToolStripMenuItem.Click += new System.EventHandler(this.setCustomsToolStripMenuItem_Click);
+			this.setCustomsToolStripMenuItem.Click += new System.EventHandler(this.SetCustomsMenuItem_Click);
 			// 
 			// MetaSubMenu
 			// 
@@ -1039,7 +1039,7 @@ namespace BizHawk.Client.EmuHawk
 			this.hideWasLagFramesToolStripMenuItem.Name = "hideWasLagFramesToolStripMenuItem";
 			this.hideWasLagFramesToolStripMenuItem.Size = new System.Drawing.Size(185, 22);
 			this.hideWasLagFramesToolStripMenuItem.Text = "Hide WasLag Frames";
-			this.hideWasLagFramesToolStripMenuItem.Click += new System.EventHandler(this.hideWasLagFramesToolStripMenuItem_Click);
+			this.hideWasLagFramesToolStripMenuItem.Click += new System.EventHandler(this.HideWasLagFramesMenuItem_Click);
 			// 
 			// iconsToolStripMenuItem
 			// 
@@ -1051,7 +1051,7 @@ namespace BizHawk.Client.EmuHawk
 			this.iconsToolStripMenuItem.Name = "iconsToolStripMenuItem";
 			this.iconsToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.iconsToolStripMenuItem.Text = "Icons";
-			this.iconsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.iconsToolStripMenuItem_DropDownOpened);
+			this.iconsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.IconsMenuItem_DropDownOpened);
 			// 
 			// DenoteStatesWithIconsToolStripMenuItem
 			// 
@@ -1102,7 +1102,7 @@ namespace BizHawk.Client.EmuHawk
 			this.followCursorToolStripMenuItem.Name = "followCursorToolStripMenuItem";
 			this.followCursorToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.followCursorToolStripMenuItem.Text = "Follow Cursor";
-			this.followCursorToolStripMenuItem.DropDownOpened += new System.EventHandler(this.followCursorToolStripMenuItem_DropDownOpened);
+			this.followCursorToolStripMenuItem.DropDownOpened += new System.EventHandler(this.FollowCursorMenuItem_DropDownOpened);
 			// 
 			// alwaysScrollToolStripMenuItem
 			// 
@@ -1110,7 +1110,7 @@ namespace BizHawk.Client.EmuHawk
 			this.alwaysScrollToolStripMenuItem.Name = "alwaysScrollToolStripMenuItem";
 			this.alwaysScrollToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
 			this.alwaysScrollToolStripMenuItem.Text = "Always Scroll";
-			this.alwaysScrollToolStripMenuItem.Click += new System.EventHandler(this.alwaysScrollToolStripMenuItem_Click);
+			this.alwaysScrollToolStripMenuItem.Click += new System.EventHandler(this.AlwaysScrollMenuItem_Click);
 			// 
 			// toolStripSeparator24
 			// 
@@ -1125,7 +1125,7 @@ namespace BizHawk.Client.EmuHawk
 			this.scrollToViewToolStripMenuItem.Name = "scrollToViewToolStripMenuItem";
 			this.scrollToViewToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
 			this.scrollToViewToolStripMenuItem.Text = "Scroll to View";
-			this.scrollToViewToolStripMenuItem.Click += new System.EventHandler(this.scrollToViewToolStripMenuItem_Click);
+			this.scrollToViewToolStripMenuItem.Click += new System.EventHandler(this.ScrollToViewMenuItem_Click);
 			// 
 			// scrollToTopToolStripMenuItem
 			// 
@@ -1133,7 +1133,7 @@ namespace BizHawk.Client.EmuHawk
 			this.scrollToTopToolStripMenuItem.Name = "scrollToTopToolStripMenuItem";
 			this.scrollToTopToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
 			this.scrollToTopToolStripMenuItem.Text = "Scroll to Top";
-			this.scrollToTopToolStripMenuItem.Click += new System.EventHandler(this.scrollToTopToolStripMenuItem_Click);
+			this.scrollToTopToolStripMenuItem.Click += new System.EventHandler(this.ScrollToTopMenuItem_Click);
 			// 
 			// scrollToBottomToolStripMenuItem
 			// 
@@ -1141,7 +1141,7 @@ namespace BizHawk.Client.EmuHawk
 			this.scrollToBottomToolStripMenuItem.Name = "scrollToBottomToolStripMenuItem";
 			this.scrollToBottomToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
 			this.scrollToBottomToolStripMenuItem.Text = "Scroll to Bottom";
-			this.scrollToBottomToolStripMenuItem.Click += new System.EventHandler(this.scrollToBottomToolStripMenuItem_Click);
+			this.scrollToBottomToolStripMenuItem.Click += new System.EventHandler(this.ScrollToBottomMenuItem_Click);
 			// 
 			// scrollToCenterToolStripMenuItem
 			// 
@@ -1149,7 +1149,7 @@ namespace BizHawk.Client.EmuHawk
 			this.scrollToCenterToolStripMenuItem.Name = "scrollToCenterToolStripMenuItem";
 			this.scrollToCenterToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
 			this.scrollToCenterToolStripMenuItem.Text = "Scroll to Center";
-			this.scrollToCenterToolStripMenuItem.Click += new System.EventHandler(this.scrollToCenterToolStripMenuItem_Click);
+			this.scrollToCenterToolStripMenuItem.Click += new System.EventHandler(this.ScrollToCenterMenuItem_Click);
 			// 
 			// toolStripSeparator25
 			// 
@@ -1161,7 +1161,7 @@ namespace BizHawk.Client.EmuHawk
 			this.wheelScrollSpeedToolStripMenuItem.Name = "wheelScrollSpeedToolStripMenuItem";
 			this.wheelScrollSpeedToolStripMenuItem.Size = new System.Drawing.Size(188, 22);
 			this.wheelScrollSpeedToolStripMenuItem.Text = "Wheel Scroll Speed...";
-			this.wheelScrollSpeedToolStripMenuItem.Click += new System.EventHandler(this.wheelScrollSpeedToolStripMenuItem_Click);
+			this.wheelScrollSpeedToolStripMenuItem.Click += new System.EventHandler(this.WheelScrollSpeedMenuItem_Click);
 			// 
 			// ColumnsSubMenu
 			// 
@@ -1227,7 +1227,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			this.TasView.AllowColumnReorder = false;
 			this.TasView.AllowColumnResize = false;
-			this.TasView.allowRightClickSelecton = false;
+			this.TasView.AllowRightClickSelecton = false;
 			this.TasView.AlwaysScroll = false;
 			this.TasView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
@@ -1238,7 +1238,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.HideWasLagFrames = false;
 			this.TasView.HorizontalOrientation = false;
 			this.TasView.LagFramesToHide = 0;
-			this.TasView.letKeysModifySelection = true;
+			this.TasView.LetKeysModifySelection = true;
 			this.TasView.Location = new System.Drawing.Point(3, 0);
 			this.TasView.MaxCharactersInHorizontal = 1;
 			this.TasView.MultiSelect = false;
@@ -1247,7 +1247,7 @@ namespace BizHawk.Client.EmuHawk
 			this.TasView.ScrollSpeed = 1;
 			this.TasView.SeekingCutoffInterval = 0;
 			this.TasView.Size = new System.Drawing.Size(289, 528);
-			this.TasView.suspendHotkeys = false;
+			this.TasView.SuspendHotkeys = false;
 			this.TasView.TabIndex = 1;
 			this.TasView.ColumnClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnClick);
 			this.TasView.ColumnRightClick += new BizHawk.Client.EmuHawk.InputRoll.ColumnClickEventHandler(this.TasView_ColumnRightClick);

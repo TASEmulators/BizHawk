@@ -82,7 +82,7 @@ __Types and notation__
 			public string Scope { get; set; }
 
 			[JsonProperty(PropertyName = "completions")]
-			public List<Completion> Completions = new List<Completion>();
+			public List<Completion> Completions { get; set; } = new List<Completion>();
 
 			public class Completion
 			{

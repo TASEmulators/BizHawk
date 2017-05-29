@@ -6,16 +6,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
 	public class Tape
 	{
-        private readonly byte[] _tapeData;
+		private readonly byte[] _tapeData;
 		private readonly byte _version;
-	    private readonly int _start;
-        private readonly int _end;
+		private readonly int _start;
+		private readonly int _end;
 
-	    private int _pos;
+		private int _pos;
 
-        private int _cycle;
+		private int _cycle;
 
-        private bool _data;
+		private bool _data;
 
 		public Tape(byte version, byte[] tapeData, int start, int end)
 		{
@@ -26,43 +26,43 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			Rewind();
 		}
 
-	    public void ExecuteCycle()
-	    {
-            if (_cycle == 0)
-            {
-                if (_pos >= _end)
-                {
-                    _data = true;
-                    return;
-                }
+		public void ExecuteCycle()
+		{
+			if (_cycle == 0)
+			{
+				if (_pos >= _end)
+				{
+					_data = true;
+					return;
+				}
 
-                _cycle = _tapeData[_pos++] * 8;
-                if (_cycle == 0)
-                {
-                    if (_version == 0)
-                    {
-                        _cycle = 256 * 8; // unspecified overflow condition
-                    }
-                    else
-                    {
-                        _cycle = (int)(BitConverter.ToUInt32(_tapeData, _pos - 1) >> 8);
-                        _pos += 3;
-                        if (_cycle == 0)
-                        {
-                            throw new Exception("Bad tape data");
-                        }
-                    }
-                }
+				_cycle = _tapeData[_pos++] * 8;
+				if (_cycle == 0)
+				{
+					if (_version == 0)
+					{
+						_cycle = 256 * 8; // unspecified overflow condition
+					}
+					else
+					{
+						_cycle = (int)(BitConverter.ToUInt32(_tapeData, _pos - 1) >> 8);
+						_pos += 3;
+						if (_cycle == 0)
+						{
+							throw new Exception("Bad tape data");
+						}
+					}
+				}
 
-                _cycle++;
-            }
+				_cycle++;
+			}
 
-            // Send a single negative pulse at the end of a cycle
-            _data = --_cycle != 0;
-        }
+			// Send a single negative pulse at the end of a cycle
+			_data = --_cycle != 0;
+		}
 
-        // Rewinds the tape back to start
-        public void Rewind()
+		// Rewinds the tape back to start
+		public void Rewind()
 		{
 			_pos = _start;
 			_cycle = 0;
@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		// Reads from tape, this will tell the caller if the flag pin should be raised
 		public bool Read()
 		{
-		    return _data;
+			return _data;
 		}
 
 		// Try to construct a tape file from file data. Returns null if not a tape file, throws exceptions for bad tape files.
@@ -100,5 +100,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			ser.Sync("Cycle", ref _cycle);
 			ser.Sync("Data", ref _data);
 		}
+
+		// Exposed for memory domains, should not be used for actual emulation implementation
+		public byte[] TapeDataDomain => _tapeData;
 	}
 }

@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -18,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 		public TAStudio Tastudio { get; set; }
 
 		[Browsable(true)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool TurboSeek
 		{
 			get
@@ -33,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[Browsable(true)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool AutoRestore
 		{
 			get
@@ -48,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[Browsable(true)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool FollowCursor
 		{
 			get
@@ -63,7 +58,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[Browsable(true)]
-		[DesignerSerializationVisibilityAttribute(DesignerSerializationVisibility.Hidden)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public bool RecordingMode
 		{
 			get
@@ -83,6 +78,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					Global.MovieSession.Movie.SwitchToPlay();
 				}
+
 				GlobalWin.MainForm.SetMainformMovieInfo();
 			}
 		}
@@ -191,7 +187,5 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.MainForm.HoldFrameAdvance = false;
 		}
-
-
 	}
 }

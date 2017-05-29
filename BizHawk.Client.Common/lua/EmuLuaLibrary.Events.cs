@@ -14,13 +14,13 @@ namespace BizHawk.Client.Common
 	public sealed class EventLuaLibrary : LuaLibraryBase
 	{
 		[OptionalService]
-		public IInputPollable InputPollableCore { get; set; }
+		private IInputPollable InputPollableCore { get; set; }
 
 		[OptionalService]
-		public IDebuggable DebuggableCore { get; set; }
+		private IDebuggable DebuggableCore { get; set; }
 
 		[RequiredService]
-		public IEmulator Emulator { get; set; }
+		private IEmulator Emulator { get; set; }
 
 		private readonly LuaFunctionList _luaFunctions = new LuaFunctionList();
 

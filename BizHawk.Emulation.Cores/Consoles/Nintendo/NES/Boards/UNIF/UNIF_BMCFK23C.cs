@@ -9,8 +9,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private IntBuffer chr_regs_1k = new IntBuffer(8);
 		public IntBuffer prg_regs_8k = new IntBuffer(4);
 
-		private bool dip_switch;
-		private byte dip_switch_setting;
+		[MapperProp]
+		public bool dip_switch;
+
+		[MapperProp]
+		public byte dip_switch_setting;
+
 		private int unromChr;
 
 		private int prg_mask_8k, chr_mask_1k;
@@ -29,10 +33,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					return false;
 			}
 
-			exRegs[0] = 0;//xFF;
-			exRegs[1] = 0;// xFF;
-			exRegs[2] = 0;// xFF;
-			exRegs[3] = 0;// x FF;
+			exRegs[0] = 0; // xFF;
+			exRegs[1] = 0; // xFF;
+			exRegs[2] = 0; // xFF;
+			exRegs[3] = 0; // x FF;
 			exRegs[4] = 0xFF;
 			exRegs[5] = 0xFF;
 			exRegs[6] = 0xFF;
@@ -83,6 +87,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("prg_regs_8k", ref prg_regs_8k);
 			ser.Sync("prg_mask", ref prg_mask_8k);
 			ser.Sync("chr_mask", ref chr_mask_1k);
+			ser.Sync("dip_switch", ref dip_switch);
+			ser.Sync("dip_switch_setting", ref dip_switch_setting);
 		}
 
 		void UpdateChr() 

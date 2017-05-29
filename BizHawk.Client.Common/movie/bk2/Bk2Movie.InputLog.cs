@@ -6,8 +6,8 @@ namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
-		protected IStringLog _log;
-		protected string LogKey = "";
+		protected IStringLog Log { get; set; }
+		protected string LogKey { get; set; } = "";
 
 		public void WriteInputLog(TextWriter writer)
 		{
@@ -24,13 +24,13 @@ namespace BizHawk.Client.Common
 
 				if (LoopOffset.HasValue)
 				{
-					if (frame < _log.Count)
+					if (frame < Log.Count)
 					{
 						getframe = frame;
 					}
 					else
 					{
-						getframe = ((frame - LoopOffset.Value) % (_log.Count - LoopOffset.Value)) + LoopOffset.Value;
+						getframe = ((frame - LoopOffset.Value) % (Log.Count - LoopOffset.Value)) + LoopOffset.Value;
 					}
 				}
 				else
@@ -38,7 +38,7 @@ namespace BizHawk.Client.Common
 					getframe = frame;
 				}
 
-				return _log[getframe];
+				return Log[getframe];
 			}
 
 			return "";
@@ -52,13 +52,13 @@ namespace BizHawk.Client.Common
 			// We are in record mode so replace the movie log with the one from the savestate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
-				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Count != 0)
+				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Count != 0)
 				{
 					SaveBackup();
 					MakeBackup = false;
 				}
 
-				_log.Clear();
+				Log.Clear();
 				while (true)
 				{
 					var line = reader.ReadLine();
@@ -102,7 +102,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line[0] == '|')
 					{
-						_log.Add(line);
+						Log.Add(line);
 					}
 				}
 			}
@@ -162,21 +162,21 @@ namespace BizHawk.Client.Common
 
 			var stateFramei = stateFrame ?? 0;
 
-			if (stateFramei > 0 && stateFramei < _log.Count)
+			if (stateFramei > 0 && stateFramei < Log.Count)
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
 					Truncate(stateFramei);
 				}
 			}
-			else if (stateFramei > _log.Count) // Post movie savestate
+			else if (stateFramei > Log.Count) // Post movie savestate
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
-					Truncate(_log.Count);
+					Truncate(Log.Count);
 				}
 
-				_mode = Moviemode.Finished;
+				Mode = Moviemode.Finished;
 			}
 
 			if (IsCountingRerecords)
@@ -243,7 +243,7 @@ namespace BizHawk.Client.Common
 				stateFrame = newLog.Count;  // In case the frame count failed to parse, revert to using the entire state input log
 			}
 
-			if (_log.Count < stateFrame)
+			if (Log.Count < stateFrame)
 			{
 				if (IsFinished)
 				{
@@ -253,14 +253,14 @@ namespace BizHawk.Client.Common
 				errorMessage = "The savestate is from frame "
 					+ newLog.Count
 					+ " which is greater than the current movie length of "
-					+ _log.Count;
+					+ Log.Count;
 
 				return false;
 			}
 
 			for (var i = 0; i < stateFrame; i++)
 			{
-				if (_log[i] != newLog[i])
+				if (Log[i] != newLog[i])
 				{
 					errorMessage = "The savestate input does not match the movie input at frame "
 						+ (i + 1)
@@ -272,18 +272,18 @@ namespace BizHawk.Client.Common
 
 			if (stateFrame > newLog.Count) // stateFrame is greater than state input log, so movie finished mode
 			{
-				if (_mode == Moviemode.Play || _mode == Moviemode.Finished)
+				if (Mode == Moviemode.Play || Mode == Moviemode.Finished)
 				{
-					_mode = Moviemode.Finished;
+					Mode = Moviemode.Finished;
 					return true;
 				}
 
 				return false;
 			}
 
-			if (_mode == Moviemode.Finished)
+			if (Mode == Moviemode.Finished)
 			{
-				_mode = Moviemode.Play;
+				Mode = Moviemode.Play;
 			}
 
 			return true;
@@ -296,7 +296,7 @@ namespace BizHawk.Client.Common
 
 			writer.WriteLine(lg.GenerateLogKey());
 
-			foreach (var record in _log)
+			foreach (var record in Log)
 			{
 				writer.WriteLine(record);
 			}

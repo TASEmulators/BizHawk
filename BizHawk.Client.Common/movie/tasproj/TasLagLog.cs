@@ -9,27 +9,26 @@ namespace BizHawk.Client.Common
 	public class TasLagLog
 	{
 		// TODO: Change this into a regular list.
-		private List<bool> LagLog = new List<bool>();
-
-		private List<bool> WasLag = new List<bool>();
+		private List<bool> _lagLog = new List<bool>();
+		private List<bool> _wasLag = new List<bool>();
 
 		public bool? this[int frame]
 		{
 			get
 			{
-				if (frame < LagLog.Count)
+				if (frame < _lagLog.Count)
 				{
 					if (frame < 0)
 					{
 						return null;
 					}
 
-					return LagLog[frame];
+					return _lagLog[frame];
 				}
 
-				if (frame == Global.Emulator.Frame && frame == LagLog.Count)
+				if (frame == Global.Emulator.Frame && frame == _lagLog.Count)
 				{
-					// LagLog[frame] = Global.Emulator.AsInputPollable().IsLagFrame; // Note: Side effects!
+					////LagLog[frame] = Global.Emulator.AsInputPollable().IsLagFrame; // Note: Side effects!
 					return Global.Emulator.AsInputPollable().IsLagFrame;
 				}
 
@@ -40,7 +39,7 @@ namespace BizHawk.Client.Common
 			{
 				if (!value.HasValue)
 				{
-					LagLog.RemoveAt(frame);
+					_lagLog.RemoveAt(frame);
 					return;
 				}
 
@@ -49,61 +48,61 @@ namespace BizHawk.Client.Common
 					return; // Nothing to do
 				}
 
-				if (frame > LagLog.Count)
+				if (frame > _lagLog.Count)
 				{
-					System.Diagnostics.Debug.Print("Lag Log error. f" + frame + ", log: " + LagLog.Count);
+					System.Diagnostics.Debug.Print("Lag Log error. f" + frame + ", log: " + _lagLog.Count);
 					return; // Can this break anything?
 				}
 
 				bool wasValue;
-				if (frame < LagLog.Count)
+				if (frame < _lagLog.Count)
 				{
-					wasValue = LagLog[frame];
+					wasValue = _lagLog[frame];
 				}
-				else if (frame == WasLag.Count)
+				else if (frame == _wasLag.Count)
 				{
 					wasValue = value.Value;
 				}
 				else
 				{
-					wasValue = WasLag[frame];
+					wasValue = _wasLag[frame];
 				}
 
-				if (frame == WasLag.Count)
+				if (frame == _wasLag.Count)
 				{
-					WasLag.Add(wasValue);
+					_wasLag.Add(wasValue);
 				}
 				else
 				{
-					WasLag[frame] = wasValue;
+					_wasLag[frame] = wasValue;
 				}
 
 				if (frame != 0)
 				{
-					WasLag[frame - 1] = LagLog[frame - 1];
+					_wasLag[frame - 1] = _lagLog[frame - 1];
 				}
 
-				if (frame >= LagLog.Count)
+				if (frame >= _lagLog.Count)
 				{
-					LagLog.Add(value.Value);
+					_lagLog.Add(value.Value);
 				}
 				else
 				{
-					LagLog[frame] = value.Value;
+					_lagLog[frame] = value.Value;
 				}
 			}
 		}
 
 		public void Clear()
 		{
-			LagLog.Clear();
+			_lagLog.Clear();
 		}
 
 		public bool RemoveFrom(int frame)
 		{
-			if (LagLog.Count > frame && frame >= 0)
+			if (_lagLog.Count > frame && frame >= 0)
 			{
-				LagLog.RemoveRange(frame + 1, LagLog.Count - frame - 1);
+				_lagLog.RemoveRange(frame + 1, _lagLog.Count - frame - 1);
 				return true;
 			}
 
@@ -112,41 +111,41 @@ namespace BizHawk.Client.Common
 
 		public void RemoveHistoryAt(int frame)
 		{
-			WasLag.RemoveAt(frame);
+			_wasLag.RemoveAt(frame);
 		}
 
 		public void InsertHistoryAt(int frame, bool isLag)
 		{
 			// LagLog was invalidated when the frame was inserted
-			if (frame <= LagLog.Count)
+			if (frame <= _lagLog.Count)
 			{
-				LagLog.Insert(frame, isLag);
+				_lagLog.Insert(frame, isLag);
 			}
 
-			WasLag.Insert(frame, isLag);
+			_wasLag.Insert(frame, isLag);
 		}
 
 		public void Save(BinaryWriter bw)
 		{
 			bw.Write((byte)1); // New saving format.
-			bw.Write(LagLog.Count);
-			bw.Write(WasLag.Count);
-			for (int i = 0; i < LagLog.Count; i++)
+			bw.Write(_lagLog.Count);
+			bw.Write(_wasLag.Count);
+			for (int i = 0; i < _lagLog.Count; i++)
 			{
-				bw.Write(LagLog[i]);
-				bw.Write(WasLag[i]);
+				bw.Write(_lagLog[i]);
+				bw.Write(_wasLag[i]);
 			}
 
-			for (int i = LagLog.Count; i < WasLag.Count; i++)
+			for (int i = _lagLog.Count; i < _wasLag.Count; i++)
 			{
-				bw.Write(WasLag[i]);
+				bw.Write(_wasLag[i]);
 			}
 		}
 
 		public void Load(BinaryReader br)
 		{
-			LagLog.Clear();
-			WasLag.Clear();
+			_lagLog.Clear();
+			_wasLag.Clear();
 			////if (br.BaseStream.Length > 0)
 			////{ BaseStream.Length does not return the expected value.
 			int formatVersion = br.ReadByte();
@@ -157,8 +156,8 @@ namespace BizHawk.Client.Common
 				for (int i = 0; i < length; i++)
 				{
 					br.ReadInt32();
-					LagLog.Add(br.ReadBoolean());
-					WasLag.Add(LagLog.Last());
+					_lagLog.Add(br.ReadBoolean());
+					_wasLag.Add(_lagLog.Last());
 				}
 			}
 			else if (formatVersion == 1)
@@ -167,13 +166,13 @@ namespace BizHawk.Client.Common
 				int lenWas = br.ReadInt32();
 				for (int i = 0; i < length; i++)
 				{
-					LagLog.Add(br.ReadBoolean());
-					WasLag.Add(br.ReadBoolean());
+					_lagLog.Add(br.ReadBoolean());
+					_wasLag.Add(br.ReadBoolean());
 				}
 
 				for (int i = length; i < lenWas; i++)
 				{
-					WasLag.Add(br.ReadBoolean());
+					_wasLag.Add(br.ReadBoolean());
 				}
 			}
 			////}
@@ -181,14 +180,14 @@ namespace BizHawk.Client.Common
 
 		public bool? History(int frame)
 		{
-			if (frame < WasLag.Count)
+			if (frame < _wasLag.Count)
 			{
 				if (frame < 0)
 				{
 					return null;
 				}
 
-				return WasLag[frame];
+				return _wasLag[frame];
 			}
 
 			return null;
@@ -198,12 +197,12 @@ namespace BizHawk.Client.Common
 		{
 			get
 			{
-				if (LagLog.Count == 0)
+				if (_lagLog.Count == 0)
 				{
 					return 0;
 				}
 
-				return LagLog.Count - 1;
+				return _lagLog.Count - 1;
 			}
 		}
 
@@ -211,21 +210,21 @@ namespace BizHawk.Client.Common
 		{
 			return new TasLagLog
 			{
-				LagLog = LagLog.ToList(),
-				WasLag = WasLag.ToList()
+				_lagLog = _lagLog.ToList(),
+				_wasLag = _wasLag.ToList()
 			};
 		}
 
 		public void FromLagLog(TasLagLog log)
 		{
-			LagLog = log.LagLog.ToList();
-			WasLag = log.WasLag.ToList();
+			_lagLog = log._lagLog.ToList();
+			_wasLag = log._wasLag.ToList();
 		}
 
 		public void StartFromFrame(int index)
 		{
-			LagLog.RemoveRange(0, index);
-			WasLag.RemoveRange(0, index);
+			_lagLog.RemoveRange(0, index);
+			_wasLag.RemoveRange(0, index);
 		}
 	}
 }

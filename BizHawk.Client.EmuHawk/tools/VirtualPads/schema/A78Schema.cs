@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			switch ((core as Atari7800).ControlAdapter.ControlType.Name)
+			switch (((Atari7800)core).ControlAdapter.ControlType.Name)
 			{
 				case "Atari 7800 Joystick Controller":
 					yield return JoystickController(1);
@@ -37,7 +37,6 @@ namespace BizHawk.Client.EmuHawk
 					break;
 			}
 
-			
 			yield return ConsoleButtons();
 		}
 
@@ -197,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(14, 17),
 						Type = PadSchema.PadInputType.TargetedPair,
 						TargetSize = new Size(256, 240),
-						SecondaryNames = new []
+						SecondaryNames = new[]
 						{
 							"P" + controller + " HPos",
 						}

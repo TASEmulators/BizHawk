@@ -1489,7 +1489,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			UpdateValues();
-	}
+		}
+
+		private bool _lastSearchWasText = false;
+		private void SearchTypeChanged(bool isText)
+		{
+			_lastSearchWasText = isText;
+		}
 
 		private void FindMenuItem_Click(object sender, EventArgs e)
 		{
@@ -1499,7 +1505,9 @@ namespace BizHawk.Client.EmuHawk
 				_hexFind = new HexFind
 				{
 					InitialLocation = PointToScreen(AddressesLabel.Location),
-					InitialValue = _findStr
+					InitialValue = _findStr,
+					SearchTypeChangedCallback = SearchTypeChanged,
+					InitialText = _lastSearchWasText
 				};
 
 				_hexFind.Show();

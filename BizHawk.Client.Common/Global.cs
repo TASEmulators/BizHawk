@@ -28,12 +28,10 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static int SoundMaxBufferDeficitMs;
 
-		public static AutofireController AutofireNullControls;
-
 		// the movie will be spliced inbetween these if it is present
-		public static CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
-		public static CopyControllerAdapter MovieOutputHardpoint = new CopyControllerAdapter();
-		public static MultitrackRewiringControllerAdapter MultitrackRewiringAdapter = new MultitrackRewiringControllerAdapter();
+		public static readonly CopyControllerAdapter MovieInputSourceAdapter = new CopyControllerAdapter();
+		public static readonly CopyControllerAdapter MovieOutputHardpoint = new CopyControllerAdapter();
+		public static readonly MultitrackRewiringControllerAdapter MultitrackRewiringAdapter = new MultitrackRewiringControllerAdapter();
 
 		// dont take my word for it, since the final word is actually in RewireInputChain, but here is a guide...
 		// user -> Input -> ActiveController -> UDLR -> StickyXORPlayerInputAdapter -> TurboAdapter(TBD) -> Lua(?TBD?) -> ..
@@ -47,26 +45,26 @@ namespace BizHawk.Client.Common
 		public static AutofireController AutoFireController;
 
 		// the "output" port for the controller chain.
-		public static CopyControllerAdapter ControllerOutput = new CopyControllerAdapter();
+		public static readonly CopyControllerAdapter ControllerOutput = new CopyControllerAdapter();
 
-		public static UD_LR_ControllerAdapter UD_LR_ControllerAdapter = new UD_LR_ControllerAdapter();
+		public static readonly UD_LR_ControllerAdapter UD_LR_ControllerAdapter = new UD_LR_ControllerAdapter();
 
-		public static AutoFireStickyXorAdapter AutofireStickyXORAdapter = new AutoFireStickyXorAdapter();
+		public static readonly AutoFireStickyXorAdapter AutofireStickyXORAdapter = new AutoFireStickyXorAdapter();
 
 		/// <summary>
 		/// provides an opportunity to mutate the player's input in an autohold style
 		/// </summary>
-		public static StickyXorAdapter StickyXORAdapter = new StickyXorAdapter();
+		public static readonly StickyXorAdapter StickyXORAdapter = new StickyXorAdapter();
 
 		/// <summary>
 		/// Used to AND to another controller, used for Joypad.Set()
 		/// </summary>
-		public static OverrideAdaptor LuaAndAdaptor = new OverrideAdaptor();
+		public static readonly OverrideAdaptor LuaAndAdaptor = new OverrideAdaptor();
 
 		/// <summary>
 		/// fire off one-frame logical button clicks here. useful for things like ti-83 virtual pad and reset buttons
 		/// </summary>
-		public static ClickyVirtualPadController ClickyVirtualPadController = new ClickyVirtualPadController();
+		public static readonly ClickyVirtualPadController ClickyVirtualPadController = new ClickyVirtualPadController();
 
 		public static SimpleController MovieOutputController = new SimpleController();
 

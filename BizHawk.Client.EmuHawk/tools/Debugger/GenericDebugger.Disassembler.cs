@@ -9,37 +9,31 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericDebugger
 	{
-		private readonly List<DisasmOp> DisassemblyLines = new List<DisasmOp>();
-		int PCRegisterSize = 4;
-		uint currentDisassemblerAddress = 0;
+		private readonly List<DisasmOp> _disassemblyLines = new List<DisasmOp>();
+		private int _pcRegisterSize = 4;
+		private uint _currentDisassemblerAddress;
 
 		private class DisasmOp
 		{
-			public DisasmOp(uint address, int s, string m)
+			public DisasmOp(uint address, int size, string mnemonic)
 			{
 				Address = address;
-				Size = s;
-				Mnemonic = m;
+				Size = size;
+				Mnemonic = mnemonic;
 			}
 
-			public uint Address { get; private set; }
-			public int Size { get; private set; }
-			public string Mnemonic { get; private set; }
+			public uint Address { get; }
+			public int Size { get; }
+			public string Mnemonic { get; }
 		}
 
-		private long BusMaxValue
-		{
-			get
-			{
-				return MemoryDomains.SystemBus.Size;
-			}
-		}
+		private long BusMaxValue => MemoryDomains.SystemBus.Size;
 
-		public void UpdatePC()
+		private void UpdatePC()
 		{
 			if (CanDisassemble)
 			{
-				currentDisassemblerAddress = (uint)PCRegister.Value;
+				_currentDisassemblerAddress = (uint)PCRegister.Value;
 			}
 		}
 
@@ -56,15 +50,15 @@ namespace BizHawk.Client.EmuHawk
 		
 		private void Disassemble()
 		{
-			int line_count = DisassemblerView.NumberOfVisibleRows;
+			int lineCount = DisassemblerView.NumberOfVisibleRows;
 
-			DisassemblyLines.Clear();
-			uint a = currentDisassemblerAddress;
-			for (int i = 0; i <= line_count; ++i)
+			_disassemblyLines.Clear();
+			uint a = _currentDisassemblerAddress;
+			for (int i = 0; i <= lineCount; ++i)
 			{
 				int advance;
 				string line = Disassembler.Disassemble(MemoryDomains.SystemBus, a, out advance);
-				DisassemblyLines.Add(new DisasmOp(a, advance, line));
+				_disassemblyLines.Add(new DisasmOp(a, advance, line));
 				a += (uint)advance;
 				if (a > BusMaxValue)
 				{
@@ -77,24 +71,24 @@ namespace BizHawk.Client.EmuHawk
 		{
 			text = "";
 
-			if (index < DisassemblyLines.Count)
+			if (index < _disassemblyLines.Count)
 			{
 				if (column == 0)
 				{
-					text = string.Format("{0:X" + PCRegisterSize + "}", DisassemblyLines[index].Address);
+					text = string.Format("{0:X" + _pcRegisterSize + "}", _disassemblyLines[index].Address);
 				}
 				else if (column == 1)
 				{
-					text = DisassemblyLines[index].Mnemonic;
+					text = _disassemblyLines[index].Mnemonic;
 				}
 			}
 		}
 
 		private void DisassemblerView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			if (DisassemblyLines.Any() && index < DisassemblyLines.Count)
+			if (_disassemblyLines.Any() && index < _disassemblyLines.Count)
 			{
-				if (DisassemblyLines[index].Address == currentDisassemblerAddress)
+				if (_disassemblyLines[index].Address == _currentDisassemblerAddress)
 				{
 					color = Color.LightCyan;
 				}
@@ -103,15 +97,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DecrementCurrentAddress()
 		{
-			uint newaddress = currentDisassemblerAddress;
+			uint newaddress = _currentDisassemblerAddress;
 			while (true)
 			{
 				int bytestoadvance;
 				Disassembler.Disassemble(MemoryDomains.SystemBus, newaddress, out bytestoadvance);
-				if (newaddress + bytestoadvance == currentDisassemblerAddress)
+				if (newaddress + bytestoadvance == _currentDisassemblerAddress)
 				{
 					break;
 				}
+
 				newaddress--;
 
 				if (newaddress < 0)
@@ -121,22 +116,22 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				// Just in case
-				if (currentDisassemblerAddress - newaddress > 5)
+				if (_currentDisassemblerAddress - newaddress > 5)
 				{
-					newaddress = currentDisassemblerAddress - 1;
+					newaddress = _currentDisassemblerAddress - 1;
 					break;
 				}
 			}
 
-			currentDisassemblerAddress = newaddress;
+			_currentDisassemblerAddress = newaddress;
 		}
 
 		private void IncrementCurrentAddress()
 		{
-			currentDisassemblerAddress += (uint)DisassemblyLines.First().Size;
-			if (currentDisassemblerAddress >= BusMaxValue)
+			_currentDisassemblerAddress += (uint)_disassemblyLines.First().Size;
+			if (_currentDisassemblerAddress >= BusMaxValue)
 			{
-				currentDisassemblerAddress = (uint)(BusMaxValue - 1);
+				_currentDisassemblerAddress = (uint)(BusMaxValue - 1);
 			}
 		}
 
@@ -188,12 +183,16 @@ namespace BizHawk.Client.EmuHawk
 				var blob = new StringBuilder();
 				foreach (int index in indices)
 				{
-					if (blob.Length != 0) blob.AppendLine();
+					if (blob.Length != 0)
+					{
+						blob.AppendLine();
+					}
 
-					blob.Append(string.Format("{0:X" + PCRegisterSize + "}", DisassemblyLines[index].Address))
+					blob.Append(string.Format("{0:X" + _pcRegisterSize + "}", _disassemblyLines[index].Address))
 						.Append(" ")
-						.Append(DisassemblyLines[index].Mnemonic);
+						.Append(_disassemblyLines[index].Mnemonic);
 				}
+
 				Clipboard.SetDataObject(blob.ToString());
 			}
 		}
@@ -201,7 +200,9 @@ namespace BizHawk.Client.EmuHawk
 		private void OnPauseChanged(object sender, MainForm.PauseChangedEventArgs e)
 		{
 			if (e.Paused)
+			{
 				FullUpdate();
+			}
 		}
 
 		private void DisassemblerContextMenu_Opening(object sender, EventArgs e)
@@ -215,7 +216,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (indices.Count > 0)
 			{
-				var line = DisassemblyLines[indices[0]];
+				var line = _disassemblyLines[indices[0]];
 				BreakPointControl1.AddBreakpoint(line.Address, 0xFFFFFFFF, Emulation.Common.MemoryCallbackType.Execute);
 			}
 		}

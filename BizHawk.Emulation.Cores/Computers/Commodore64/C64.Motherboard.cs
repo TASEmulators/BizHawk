@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void Flush()
 		{
-			Sid.Flush();
+			Sid.Flush(true);
 		}
 
 		// -----------------------------------------

@@ -150,7 +150,7 @@
 			// 
 			this.BranchView.AllowColumnReorder = false;
 			this.BranchView.AllowColumnResize = false;
-			this.BranchView.allowRightClickSelecton = true;
+			this.BranchView.AllowRightClickSelecton = true;
 			this.BranchView.AlwaysScroll = false;
 			this.BranchView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
@@ -161,7 +161,7 @@
 			this.BranchView.HideWasLagFrames = false;
 			this.BranchView.HorizontalOrientation = false;
 			this.BranchView.LagFramesToHide = 0;
-			this.BranchView.letKeysModifySelection = false;
+			this.BranchView.LetKeysModifySelection = false;
 			this.BranchView.Location = new System.Drawing.Point(6, 19);
 			this.BranchView.MaxCharactersInHorizontal = 1;
 			this.BranchView.MultiSelect = false;
@@ -170,7 +170,7 @@
 			this.BranchView.ScrollSpeed = 13;
 			this.BranchView.SeekingCutoffInterval = 0;
 			this.BranchView.Size = new System.Drawing.Size(186, 224);
-			this.BranchView.suspendHotkeys = false;
+			this.BranchView.SuspendHotkeys = false;
 			this.BranchView.TabIndex = 0;
 			this.BranchView.PointedCellChanged += new BizHawk.Client.EmuHawk.InputRoll.CellChangeEventHandler(this.BranchView_PointedCellChanged);
 			this.BranchView.CellDropped += new BizHawk.Client.EmuHawk.InputRoll.CellDroppedEvent(this.BranchView_CellDropped);

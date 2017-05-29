@@ -10,19 +10,20 @@ namespace BizHawk.Client.Common
 	{
 		private class RangBuffer
 		{
-			const int LEN = 4096;
-			const int MASK = 4095;
-			byte[] buff = new byte[LEN];
+			private const int Len = 4096;
+			private const int Mask = 4095;
 
-			int wpos = 0;
-			int rpos = 0;
+			private readonly byte[] _buff = new byte[Len];
 
-			bool writeclosed;
-			bool readclosed;
+			private readonly object _sharedlock = new object();
+			private readonly ManualResetEvent _full = new ManualResetEvent(true);
+			private readonly ManualResetEvent _empty = new ManualResetEvent(false);
 
-			object sharedlock = new object();
-			ManualResetEvent full = new ManualResetEvent(true);
-			ManualResetEvent empty = new ManualResetEvent(false);
+			private int _wpos;
+			private int _rpos;
+
+			private bool _writeclosed;
+			private bool _readclosed;
 
 			public Stream W { get; }
 			public Stream R { get; }
@@ -38,23 +39,23 @@ namespace BizHawk.Client.Common
 				// slow, but faster than using the other overload with byte[1]
 				while (true)
 				{
-					empty.WaitOne();
-					lock (sharedlock)
+					_empty.WaitOne();
+					lock (_sharedlock)
 					{
-						if (rpos != wpos)
+						if (_rpos != _wpos)
 						{
-							byte ret = buff[rpos++];
-							rpos &= MASK;
-							full.Set();
+							byte ret = _buff[_rpos++];
+							_rpos &= Mask;
+							_full.Set();
 							return ret;
 						}
-						else if (writeclosed)
+						else if (_writeclosed)
 						{
 							return -1;
 						}
 						else
 						{
-							empty.Reset();
+							_empty.Reset();
 						}
 					}
 				}
@@ -65,14 +66,14 @@ namespace BizHawk.Client.Common
 				int ret = 0;
 				while (count > 0)
 				{
-					empty.WaitOne();
-					lock (sharedlock)
+					_empty.WaitOne();
+					lock (_sharedlock)
 					{
-						int start = rpos;
-						int end = wpos;
+						int start = _rpos;
+						int end = _wpos;
 						if (end < start) // wrap
 						{
-							end = LEN;
+							end = Len;
 						}
 
 						if (end - start > count)
@@ -83,20 +84,20 @@ namespace BizHawk.Client.Common
 						int c = end - start;
 						if (c > 0)
 						{
-							Buffer.BlockCopy(buff, start, buffer, offset, c);
+							Buffer.BlockCopy(_buff, start, buffer, offset, c);
 							count -= c;
 							ret += c;
 							offset += c;
-							rpos = end & MASK;
-							full.Set();
+							_rpos = end & Mask;
+							_full.Set();
 						}
-						else if (writeclosed)
+						else if (_writeclosed)
 						{
 							break;
 						}
 						else
 						{
-							empty.Reset();
+							_empty.Reset();
 						}
 					}
 				}
@@ -106,10 +107,10 @@ namespace BizHawk.Client.Common
 
 			public void CloseRead()
 			{
-				lock (sharedlock)
+				lock (_sharedlock)
 				{
-					readclosed = true;
-					full.Set();
+					_readclosed = true;
+					_full.Set();
 				}
 			}
 
@@ -117,25 +118,24 @@ namespace BizHawk.Client.Common
 			{
 				while (true)
 				{
-					full.WaitOne();
-					lock (sharedlock)
+					_full.WaitOne();
+					lock (_sharedlock)
 					{
-						int next = (wpos + 1) & MASK;
-						if (next != rpos)
+						int next = (_wpos + 1) & Mask;
+						if (next != _rpos)
 						{
-							buff[wpos] = value;
-							wpos = next;
-							empty.Set();
+							_buff[_wpos] = value;
+							_wpos = next;
+							_empty.Set();
 							return true;
 						}
-						else if (readclosed)
+
+						if (_readclosed)
 						{
 							return false;
 						}
-						else
-						{
-							full.Reset();
-						}
+
+						_full.Reset();
 					}
 				}
 			}
@@ -145,14 +145,14 @@ namespace BizHawk.Client.Common
 				int ret = 0;
 				while (count > 0)
 				{
-					full.WaitOne();
-					lock (sharedlock)
+					_full.WaitOne();
+					lock (_sharedlock)
 					{
-						int start = wpos;
-						int end = (rpos - 1) & MASK;
+						int start = _wpos;
+						int end = (_rpos - 1) & Mask;
 						if (end < start) // wrap
 						{
-							end = LEN;
+							end = Len;
 						}
 
 						if (end - start > count)
@@ -163,20 +163,20 @@ namespace BizHawk.Client.Common
 						int c = end - start;
 						if (c > 0)
 						{
-							Buffer.BlockCopy(buffer, offset, buff, start, c);
+							Buffer.BlockCopy(buffer, offset, _buff, start, c);
 							count -= c;
 							ret += c;
 							offset += c;
-							wpos = end & MASK;
-							empty.Set();
+							_wpos = end & Mask;
+							_empty.Set();
 						}
-						else if (readclosed)
+						else if (_readclosed)
 						{
 							break;
 						}
 						else
 						{
-							full.Reset();
+							_full.Reset();
 						}
 					}
 				}
@@ -186,10 +186,10 @@ namespace BizHawk.Client.Common
 
 			public void CloseWrite()
 			{
-				lock (sharedlock)
+				lock (_sharedlock)
 				{
-					writeclosed = true;
-					empty.Set();
+					_writeclosed = true;
+					_empty.Set();
 				}
 			}
 
@@ -262,11 +262,12 @@ namespace BizHawk.Client.Common
 
 			private class RStream : Stream
 			{
-				public override bool CanRead { get { return true; } }
-				public override bool CanSeek { get { return false; } }
-				public override bool CanWrite { get { return false; } }
+				public override bool CanRead => true;
+				public override bool CanSeek => false;
+				public override bool CanWrite => false;
+
 				public override void Flush() { }
-				public override long Length { get { return 1; } } // { get { throw new NotSupportedException(); } }
+				public override long Length => 1; // { get { throw new NotSupportedException(); } }
 				public override long Seek(long offset, SeekOrigin origin) { return 0; } // { throw new NotSupportedException(); }
 				public override void SetLength(long value) { throw new NotSupportedException(); }
 				public override long Position
@@ -328,43 +329,43 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private SevenZip.SevenZipCompressor svc;
+		private readonly SevenZip.SevenZipCompressor _svc;
+		private readonly string _path;
 
-		private bool first = true;
-		private string path;
-		private int compressionlevel;
+		private bool _first = true;
+		private int _compressionlevel;
 
 		public SevenZipWriter(string path, int compressionlevel)
 		{
-			this.path = path;
-			this.compressionlevel = compressionlevel;
+			_path = path;
+			_compressionlevel = compressionlevel;
 
-			svc = new SevenZip.SevenZipCompressor { ArchiveFormat = SevenZip.OutArchiveFormat.Zip };
+			_svc = new SevenZip.SevenZipCompressor { ArchiveFormat = SevenZip.OutArchiveFormat.Zip };
 
 			switch (compressionlevel)
 			{
 				default:
 				case 0:
-					svc.CompressionLevel = SevenZip.CompressionLevel.None;
+					_svc.CompressionLevel = SevenZip.CompressionLevel.None;
 					break;
 				case 1:
 				case 2:
-					svc.CompressionLevel = SevenZip.CompressionLevel.Fast;
+					_svc.CompressionLevel = SevenZip.CompressionLevel.Fast;
 					break;
 				case 3:
 				case 4:
-					svc.CompressionLevel = SevenZip.CompressionLevel.Low;
+					_svc.CompressionLevel = SevenZip.CompressionLevel.Low;
 					break;
 				case 5:
 				case 6:
-					svc.CompressionLevel = SevenZip.CompressionLevel.Normal;
+					_svc.CompressionLevel = SevenZip.CompressionLevel.Normal;
 					break;
 				case 7:
 				case 8:
-					svc.CompressionLevel = SevenZip.CompressionLevel.High;
+					_svc.CompressionLevel = SevenZip.CompressionLevel.High;
 					break;
 				case 9:
-					svc.CompressionLevel = SevenZip.CompressionLevel.Ultra;
+					_svc.CompressionLevel = SevenZip.CompressionLevel.Ultra;
 					break;
 			}
 		}
@@ -374,19 +375,19 @@ namespace BizHawk.Client.Common
 			var dict = new Dictionary<string, Stream>();
 			var r = new RangBuffer();
 			dict[name] = r.R;
-			if (first)
+			if (_first)
 			{
-				first = false;
-				svc.CompressionMode = SevenZip.CompressionMode.Create;
+				_first = false;
+				_svc.CompressionMode = SevenZip.CompressionMode.Create;
 			}
 			else
 			{
-				svc.CompressionMode = SevenZip.CompressionMode.Append;
+				_svc.CompressionMode = SevenZip.CompressionMode.Append;
 			}
 
 			var task = Task.Factory.StartNew(() =>
 				{
-					svc.CompressStreamDictionary(dict, path);
+					_svc.CompressStreamDictionary(dict, _path);
 				});
 			try
 			{

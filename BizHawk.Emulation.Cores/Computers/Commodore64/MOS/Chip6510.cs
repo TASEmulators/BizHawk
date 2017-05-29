@@ -218,7 +218,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
+			ser.BeginSection("Chip6510Cpu");
 			_cpu.SyncState(ser);
+			ser.EndSection();
+
 			ser.Sync("_pinNmiLast", ref _pinNmiLast);
 
 			ser.BeginSection("_port");

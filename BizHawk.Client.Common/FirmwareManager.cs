@@ -96,8 +96,9 @@ namespace BizHawk.Client.Common
 			return resolved.FilePath;
 		}
 
-		public class RealFirmwareReader : IDisposable
+		private class RealFirmwareReader : IDisposable
 		{
+			private readonly List<RealFirmwareFile> _files = new List<RealFirmwareFile>();
 			private SHA1 _sha1 = SHA1.Create();
 
 			public void Dispose()
@@ -117,13 +118,12 @@ namespace BizHawk.Client.Common
 				}
 
 				rff.Hash = _sha1.Hash.BytesToHexString();
-				dict[rff.Hash] = rff;
+				Dict[rff.Hash] = rff;
 				_files.Add(rff);
 				return rff;
 			}
 
-			public readonly Dictionary<string, RealFirmwareFile> dict = new Dictionary<string, RealFirmwareFile>();
-			private readonly List<RealFirmwareFile> _files = new List<RealFirmwareFile>();
+			public Dictionary<string, RealFirmwareFile> Dict { get; } = new Dictionary<string, RealFirmwareFile>();
 		}
 
 		public void DoScanAndResolve()
@@ -184,12 +184,12 @@ namespace BizHawk.Client.Common
 						var hash = fo.Hash;
 
 						// did we find this firmware?
-						if (reader.dict.ContainsKey(hash))
+						if (reader.Dict.ContainsKey(hash))
 						{
 							// rad! then we can use it
 							var ri = new ResolutionInfo
 								{
-									FilePath = reader.dict[hash].FileInfo.FullName,
+									FilePath = reader.Dict[hash].FileInfo.FullName,
 									KnownFirmwareFile = FirmwareDatabase.FirmwareFilesByHash[hash],
 									Hash = hash,
 									Size = fo.Size

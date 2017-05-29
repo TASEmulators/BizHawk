@@ -21,16 +21,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			addr &= 0x1F;
 			var result = _databus;
+
 			switch (addr)
 			{
 				case 0x19:
 				case 0x1A:
 				case 0x1B:
 				case 0x1C:
-					Flush();
+					//Flush(); not needed
 					result = ReadRegister(addr);
 					break;
 			}
+
 			return result;
 		}
 
@@ -125,6 +127,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			addr &= 0x1F;
 			_databus = val;
+
 			switch (addr)
 			{
 				case 0x19:
@@ -137,7 +140,41 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					// can't write to these
 					break;
 				default:
-					Flush();
+
+					// we want to only flush the filter when the filter is actually changed, that way
+					// the FFT will not be impacted by small sample sizes from other changes
+					if (addr == 15 || addr == 16 || addr==17)
+					{
+						Flush(true);
+					}
+					else if (addr==18)
+					{
+						// note: we only want to flush the filter here if the filter components are changing
+						bool temp1 = (val & 0x10) != 0;
+						bool temp2 = (val & 0x20) != 0;
+						bool temp3 = (val & 0x40) != 0;
+
+						if (temp1 != _filterSelectLoPass)
+						{
+							Flush(true);
+						}
+						else if (temp2 != _filterSelectBandPass)
+						{
+							Flush(true);
+						}
+						else if (temp3 != _filterSelectHiPass)
+						{
+							Flush(true);
+						}
+						else
+						{
+							Flush(false);
+						}
+					}
+					else
+					{
+						Flush(false);
+					}
 					WriteRegister(addr, val);
 					break;
 			}
@@ -168,12 +205,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0x12: _voice2.Control = val; _envelope2.Gate = (val & 0x01) != 0; break;
 				case 0x13: _envelope2.Attack = val >> 4; _envelope2.Decay = val & 0xF; break;
 				case 0x14: _envelope2.Sustain = val >> 4; _envelope2.Release = val & 0xF; break;
-				case 0x15: _filterFrequency &= 0x3FF; _filterFrequency |= val & 0x7; break;
+				case 0x15: _filterFrequency &= 0x7F8; _filterFrequency |= val & 0x7; break;
 				case 0x16: _filterFrequency &= 0x7; _filterFrequency |= val << 3; break;
 				case 0x17:
 					_filterEnable[0] = (val & 0x1) != 0;
 					_filterEnable[1] = (val & 0x2) != 0;
 					_filterEnable[2] = (val & 0x4) != 0;
+
 					_filterResonance = val >> 4;
 					break;
 				case 0x18:

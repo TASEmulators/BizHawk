@@ -86,8 +86,8 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public virtual string ReadName => Name;
-		public virtual string WriteName => Ext != null ? Name + '.' + Ext : Name;
+		public string ReadName => Name;
+		public string WriteName => Ext != null ? Name + '.' + Ext : Name;
 
 		public string Name { get; protected set; }
 		public string Ext { get; protected set; }
@@ -203,7 +203,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private static byte[] zipheader = { 0x50, 0x4b, 0x03, 0x04 };
+		private static readonly byte[] Zipheader = { 0x50, 0x4b, 0x03, 0x04 };
 		public static BinaryStateLoader LoadAndDetect(string filename, bool isMovieLoad = false)
 		{
 			var ret = new BinaryStateLoader();
@@ -212,7 +212,7 @@ namespace BizHawk.Client.Common
 			{
 				byte[] data = new byte[4];
 				fs.Read(data, 0, 4);
-				if (!data.SequenceEqual(zipheader))
+				if (!data.SequenceEqual(Zipheader))
 				{
 					return null;
 				}

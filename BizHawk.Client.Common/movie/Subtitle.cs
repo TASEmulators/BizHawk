@@ -83,7 +83,7 @@ namespace BizHawk.Client.Common
 			// Color tag open
 			if (addcolortag)
 			{
-				uint rgb = (Color & 0x00FFFFFF);
+				uint rgb = Color & 0x00FFFFFF;
 				sb.Append("<font color=\"#");
 				sb.Append(rgb.ToString("X6"));
 				sb.Append("\">");

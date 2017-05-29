@@ -178,7 +178,7 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
 				bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(_syncSettingsJson));
 
-				bs.PutLump(BinaryStateLump.Input, tw => WriteInputLog(tw));
+				bs.PutLump(BinaryStateLump.Input, WriteInputLog);
 
 				if (StartsFromSavestate)
 				{
@@ -211,7 +211,7 @@ namespace BizHawk.Client.Common
 		protected void ClearBeforeLoad()
 		{
 			Header.Clear();
-			_log.Clear();
+			Log.Clear();
 			Subtitles.Clear();
 			Comments.Clear();
 			_syncSettingsJson = "";

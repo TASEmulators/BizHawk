@@ -7,6 +7,8 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
+using BizHawk.Emulation.Cores.Atari.A7800Hawk;
+using BizHawk.Emulation.Cores.Atari.Atari7800;
 
 namespace BizHawk.Client.Common
 {
@@ -40,12 +42,14 @@ namespace BizHawk.Client.Common
 		public Func<string, string, bool> AskYesNoCallback { get; set; }
 
 		/// <summary>
-		/// Required
+		/// Gets or sets a callback that allows the movie session to pause the emulator
+		/// This is Required!
 		/// </summary>
 		public Action PauseCallback { get; set; }
 
 		/// <summary>
-		/// Required
+		/// Gets or sets a callback that is invoked when the movie mode has changed
+		/// This is Required!
 		/// </summary>
 		public Action ModeChangedCallback { get; set; }
 
@@ -96,7 +100,7 @@ namespace BizHawk.Client.Common
 			MessageCallback?.Invoke(message);
 		}
 
-		private void LatchMultitrackPlayerInput(IController playerSource, MultitrackRewiringControllerAdapter rewiredSource)
+		private void LatchMultitrackPlayerInput(MultitrackRewiringControllerAdapter rewiredSource)
 		{
 			if (MultiTrack.IsActive)
 			{
@@ -297,7 +301,7 @@ namespace BizHawk.Client.Common
 			{
 				if (MultiTrack.IsActive)
 				{
-					LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringAdapter);
+					LatchMultitrackPlayerInput(Global.MultitrackRewiringAdapter);
 				}
 				else
 				{
@@ -461,6 +465,7 @@ namespace BizHawk.Client.Common
 		public bool? PreviousNES_InQuickNES { get; set; }
 		public bool? PreviousSNES_InSnes9x { get; set; }
 		public bool? PreviousGBA_UsemGBA { get; set; }
+		public bool? PreviousA78_UseEmu7800 { get; set; }
 
 		public void QueueNewMovie(IMovie movie, bool record, IEmulator emulator)
 		{
@@ -474,13 +479,6 @@ namespace BizHawk.Client.Common
 						$"Movie system Id ({movie.SystemID}) does not match the currently loaded platform ({emulator.SystemId}), unable to load");
 				}
 			}
-
-			// TODO: Delete this, this save is utterly useless.
-			// Movie was saved immediately before calling QueeuNewMovie. (StartNewMovie)
-			////if (Movie.IsActive && !string.IsNullOrEmpty(Movie.Filename))
-			////{
-			////	Movie.Save();
-			////}
 
 			// Note: this populates MovieControllerAdapter's Type with the approparite controller
 			// Don't set it to a movie instance of the adapter or you will lose the definition!
@@ -513,7 +511,7 @@ namespace BizHawk.Client.Common
 					PreviousSNES_InSnes9x = Global.Config.SNES_InSnes9x;
 					Global.Config.SNES_InSnes9x = true;
 				}
-				else
+				else if (movie.Core == bsnesName)
 				{
 					PreviousSNES_InSnes9x = Global.Config.SNES_InSnes9x;
 					Global.Config.SNES_InSnes9x = false;
@@ -529,10 +527,26 @@ namespace BizHawk.Client.Common
 					PreviousGBA_UsemGBA = Global.Config.GBA_UsemGBA;
 					Global.Config.GBA_UsemGBA = true;
 				}
-				else
+				else if (movie.Core == vbaNextName)
 				{
-					PreviousSNES_InSnes9x = Global.Config.GBA_UsemGBA;
+					PreviousGBA_UsemGBA = Global.Config.GBA_UsemGBA;
 					Global.Config.GBA_UsemGBA = false;
+				}
+			}
+			else if (!record && emulator.SystemId == "A78") // meh, copy pasta one more time, last time, I promise
+			{
+				var atari7800HawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(A7800Hawk), typeof(CoreAttributes))).CoreName;
+				var emu7800HawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(Atari7800), typeof(CoreAttributes))).CoreName;
+
+				if (movie.Core == atari7800HawkName)
+				{
+					PreviousA78_UseEmu7800 = Global.Config.A78_UseEmu7800;
+					Global.Config.A78_UseEmu7800 = true;
+				}
+				else if (movie.Core == emu7800HawkName)
+				{
+					PreviousA78_UseEmu7800 = Global.Config.A78_UseEmu7800;
+					Global.Config.A78_UseEmu7800 = false;
 				}
 			}
 

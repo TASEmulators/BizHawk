@@ -9,41 +9,41 @@ namespace BizHawk.Client.Common
 			Inactive, Play, Record, Finished
 		}
 
-		protected Moviemode _mode = Moviemode.Inactive;
+		protected Moviemode Mode { get; set; } = Moviemode.Inactive;
 
-		public bool IsActive => _mode != Moviemode.Inactive;
+		public bool IsActive => Mode != Moviemode.Inactive;
 
-		public bool IsPlaying => _mode == Moviemode.Play || _mode == Moviemode.Finished;
+		public bool IsPlaying => Mode == Moviemode.Play || Mode == Moviemode.Finished;
 
-		public bool IsRecording => _mode == Moviemode.Record;
+		public bool IsRecording => Mode == Moviemode.Record;
 
-		public bool IsFinished => _mode == Moviemode.Finished;
+		public bool IsFinished => Mode == Moviemode.Finished;
 
 		public virtual void StartNewRecording()
 		{
-			_mode = Moviemode.Record;
-			if (Global.Config.EnableBackupMovies && MakeBackup && _log.Any())
+			Mode = Moviemode.Record;
+			if (Global.Config.EnableBackupMovies && MakeBackup && Log.Any())
 			{
 				SaveBackup();
 				MakeBackup = false;
 			}
 
-			_log.Clear();
+			Log.Clear();
 		}
 
 		public virtual void StartNewPlayback()
 		{
-			_mode = Moviemode.Play;
+			Mode = Moviemode.Play;
 		}
 
 		public virtual void SwitchToRecord()
 		{
-			_mode = Moviemode.Record;
+			Mode = Moviemode.Record;
 		}
 
 		public virtual void SwitchToPlay()
 		{
-			_mode = Moviemode.Play;
+			Mode = Moviemode.Play;
 		}
 
 		public virtual bool Stop(bool saveChanges = true)
@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 			bool saved = false;
 			if (saveChanges)
 			{
-				if (_mode == Moviemode.Record || (IsActive && Changes))
+				if (Mode == Moviemode.Record || (IsActive && Changes))
 				{
 					Save();
 					saved = true;
@@ -59,14 +59,14 @@ namespace BizHawk.Client.Common
 			}
 
 			Changes = false;
-			_mode = Moviemode.Inactive;
+			Mode = Moviemode.Inactive;
 
 			return saved;
 		}
 
 		public void FinishedMode()
 		{
-			_mode = Moviemode.Finished;
+			Mode = Moviemode.Finished;
 		}
 	}
 }
