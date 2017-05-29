@@ -221,6 +221,7 @@
     <Compile Include="Computers\Commodore64\C64.MotherboardInput.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0001.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0005.cs" />
+		<Compile Include="Computers\Commodore64\Cartridge\Mapper0007.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0008.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper000A.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper000B.cs" />
