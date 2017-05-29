@@ -9,5 +9,5 @@
 	url = https://github.com/TASVideos/mupen64plus-rsp-cxd4.git
 [submodule "waterbox/snes9x"]
 	path = waterbox/snes9x
-	url = ssh://git@github.com/TASVideos/snes9x.git
+	url = https://github.com/TASVideos/snes9x.git
 	branch = bizsnes
