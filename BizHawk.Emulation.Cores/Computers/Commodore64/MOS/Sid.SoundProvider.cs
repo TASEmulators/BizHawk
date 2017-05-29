@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		// There's not need to do this though unless this core wants to handle async in its own way (the client can handle these situations if not available from the core)
 		private void GetSamples(short[] samples)
 		{
-			Flush();
+			Flush(true);
 			var length = Math.Min(samples.Length, _outputBufferIndex);
 			for (var i = 0; i < length; i++)
 			{
@@ -48,14 +48,45 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			Flush();
+			Flush(true);
 
 			nsamp = _outputBufferIndex;
 
+			for (int i = 0; i < _outputBufferIndex; i++)
+			{
+				_mixer = _outputBuffer_not_filtered[i] + _outputBuffer_filtered[i];
+				_mixer = _mixer >> 7;
+				_mixer = (_mixer * _volume) >> 4;
+				_mixer -= _volume << 8;
+
+				//Console.Write(_mixer);
+				//Console.Write(" ");
+
+				if (_mixer > 0x7FFF)
+				{
+					_mixer = 0x7FFF;
+				}
+
+				if (_mixer < -0x8000)
+				{
+					_mixer = -0x8000;
+				}
+				/*
+				if (_mixer < 0)
+				{
+					_mixer = 0;
+				}
+				*/
+				_outputBuffer[i * 2] = (short)_mixer;
+				_outputBuffer[i * 2 + 1] = (short)_mixer;
+
+			}
+			//Console.WriteLine(" ");
+			//Console.WriteLine(" ");
 			samples = _outputBuffer;
 			
 			_outputBufferIndex = 0;
-			last_index = 0;
+			filter_index = 0;
 		}
 
 	}

@@ -140,7 +140,41 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					// can't write to these
 					break;
 				default:
-					Flush(); 
+
+					// we want to only flush the filter when the filter is actually changed, that way
+					// the FFT will not be impacted by small sample sizes from other changes
+					if (addr == 15 || addr == 16 || addr==17)
+					{
+						Flush(true);
+					}
+					else if (addr==18)
+					{
+						// note: we only want to flush the filter here if the filter components are changing
+						bool temp1 = (val & 0x10) != 0;
+						bool temp2 = (val & 0x20) != 0;
+						bool temp3 = (val & 0x40) != 0;
+
+						if (temp1 != _filterSelectLoPass)
+						{
+							Flush(true);
+						}
+						else if (temp2 != _filterSelectBandPass)
+						{
+							Flush(true);
+						}
+						else if (temp3 != _filterSelectHiPass)
+						{
+							Flush(true);
+						}
+						else
+						{
+							Flush(false);
+						}
+					}
+					else
+					{
+						Flush(false);
+					}
 					WriteRegister(addr, val);
 					break;
 			}
