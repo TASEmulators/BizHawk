@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public class Snes9x : IEmulator, IVideoProvider, ISoundProvider, IStatable,
 		ISettable<Snes9x.Settings, Snes9x.SyncSettings>,
-		ISaveRam, IInputPollable
+		ISaveRam, IInputPollable, IRegionable
 	{
 		private LibSnes9x _core;
 		private PeRunner _exe;
@@ -55,12 +55,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				Console.WriteLine("NTSC rom loaded");
 				VsyncNumerator = 21477272;
 				VsyncDenominator = 357366;
+				Region = DisplayType.NTSC;
 			}
 			else
 			{
 				Console.WriteLine("PAL rom loaded");
 				VsyncNumerator = 21281370;
 				VsyncDenominator = 425568;
+				Region = DisplayType.PAL;
 			}
 
 			_nsampTarget = (int)Math.Round(44100.0 * VsyncDenominator / VsyncNumerator);
@@ -299,7 +301,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			}
 		}
 
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public DisplayType Region { get; }
+
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
