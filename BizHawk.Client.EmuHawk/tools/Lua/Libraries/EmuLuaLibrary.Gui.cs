@@ -311,7 +311,7 @@ namespace BizHawk.Client.EmuHawk
 
 		[LuaMethodAttributes(
 			"drawImage", "draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
-		public void DrawImage(string path, int x, int y, int? width = null, int? height = null)
+		public void DrawImage(string path, int x, int y, int? width = null, int? height = null, bool cache = true)
 		{
 			if (!File.Exists(path))
 			{
@@ -329,11 +329,26 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					img = Image.FromFile(path);
-					_imageCache.Add(path, img);
+					if (cache)
+					{
+						_imageCache.Add(path, img);
+					}
 				}
 
 				g.DrawImage(img, x, y, width ?? img.Width, height ?? img.Height);
 			}
+		}
+
+		[LuaMethodAttributes(
+			"clearImageCache", "clears the image cache that is built up by using gui.drawImage, also releases the file handle for cached images")]
+		public void ClearImageCache()
+		{
+			foreach (var image in _imageCache)
+			{
+				image.Value.Dispose();
+			}
+
+			_imageCache.Clear();
 		}
 
 		[LuaMethodAttributes(
