@@ -56,5 +56,101 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			return DateTime.UtcNow.Ticks;
 		}
+
+		/// <summary>
+		/// system page size
+		/// </summary>
+		public static int PageSize { get; private set; }
+
+		/// <summary>
+		/// bitshift corresponding to PageSize
+		/// </summary>
+		public static int PageShift { get; private set; }
+		/// <summary>
+		/// bitmask corresponding to PageSize
+		/// </summary>
+		public static ulong PageMask { get; private set; }
+
+		static WaterboxUtils()
+		{
+			int p = PageSize = Environment.SystemPageSize;
+			while (p != 1)
+			{
+				p >>= 1;
+				PageShift++;
+			}
+			PageMask = (ulong)(PageSize - 1);
+		}
+
+		/// <summary>
+		/// true if addr is aligned
+		/// </summary>
+		public static bool Aligned(ulong addr)
+		{
+			return (addr & PageMask) == 0;
+		}
+
+		/// <summary>
+		/// align address down to previous page boundary
+		/// </summary>
+		public static ulong AlignDown(ulong addr)
+		{
+			return addr & ~PageMask;
+		}
+
+		/// <summary>
+		/// align address up to next page boundary
+		/// </summary>
+		public static ulong AlignUp(ulong addr)
+		{
+			return ((addr - 1) | PageMask) + 1;
+		}
+
+		/// <summary>
+		/// return the minimum number of pages needed to hold size
+		/// </summary>
+		public static int PagesNeeded(ulong size)
+		{
+			return (int)((size + PageMask) >> PageShift);
+		}
+	}
+
+	// C# is annoying:  arithmetic operators for native ints are not exposed.
+	// So we store them as long/ulong instead in many places, and use these helpers
+	// to convert to IntPtr when needed
+
+	public static class Z
+	{
+		public static IntPtr US(ulong l)
+		{
+			if (IntPtr.Size == 8)
+				return (IntPtr)(long)l;
+			else
+				return (IntPtr)(int)l;
+		}
+
+		public static UIntPtr UU(ulong l)
+		{
+			if (UIntPtr.Size == 8)
+				return (UIntPtr)l;
+			else
+				return (UIntPtr)(uint)l;
+		}
+
+		public static IntPtr SS(long l)
+		{
+			if (IntPtr.Size == 8)
+				return (IntPtr)l;
+			else
+				return (IntPtr)(int)l;
+		}
+
+		public static UIntPtr SU(long l)
+		{
+			if (UIntPtr.Size == 8)
+				return (UIntPtr)(ulong)l;
+			else
+				return (UIntPtr)(uint)l;
+		}
 	}
 }

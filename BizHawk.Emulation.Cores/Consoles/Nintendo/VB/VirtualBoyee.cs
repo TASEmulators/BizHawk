@@ -25,10 +25,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			{
 				Path = comm.CoreFileProvider.DllPath(),
 				Filename = "vb.wbx",
-				NormalHeapSizeKB = 1024,
+				NormalHeapSizeKB = 4 * 1024,
 				SealedHeapSizeKB = 12 * 1024,
 				InvisibleHeapSizeKB = 6 * 1024,
-				SpecialHeapSizeKB = 64
+				SpecialHeapSizeKB = 64,
+				MmapHeapSizeKB = 16 * 1024
 			});
 
 			_boyee = BizInvoker.GetInvoker<LibVirtualBoyee>(_exe, _exe);
@@ -112,22 +113,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 		#region IVideoProvider
 
-		private int[] _videoBuffer = new int[0];
+		private int[] _videoBuffer = new int[256 * 192];
 
 		public int[] GetVideoBuffer()
 		{
-			throw new NotImplementedException();
+			return _videoBuffer;
 		}
 
-		public int VirtualWidth { get; private set; }
-		public int VirtualHeight { get; private set; }
+		public int VirtualWidth { get; private set; } = 256;
+		public int VirtualHeight { get; private set; } = 192;
 
-		public int BufferWidth { get; private set; }
-		public int BufferHeight { get; private set; }
+		public int BufferWidth { get; private set; } = 256;
+		public int BufferHeight { get; private set; } = 192;
 
-		public int VsyncNumerator { get; private set; }
+		public int VsyncNumerator { get; private set; } = 60;
 
-		public int VsyncDenominator { get; private set; }
+		public int VsyncDenominator { get; private set; } = 1;
 
 		public int BackgroundColor => unchecked((int)0xff000000);
 

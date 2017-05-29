@@ -26,23 +26,33 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		/// <summary>
 		/// how large the normal heap should be.  it services sbrk calls
+		/// can be 0, but sbrk calls will crash.
 		/// </summary>
 		public uint NormalHeapSizeKB { get; set; }
 
 		/// <summary>
 		/// how large the sealed heap should be.  it services special allocations that become readonly after init
+		/// Must be > 0 and at least large enough to store argv and envp
 		/// </summary>
 		public uint SealedHeapSizeKB { get; set; }
 
 		/// <summary>
 		/// how large the invisible heap should be.  it services special allocations which are not savestated
+		/// Must be > 0 and at least large enough for the internal vtables
 		/// </summary>
 		public uint InvisibleHeapSizeKB { get; set; }
 
 		/// <summary>
 		/// how large the special heap should be.  it is savestated, and contains ??
+		/// Must be > 0 and at least large enough for the internal pthread structure
 		/// </summary>
 		public uint SpecialHeapSizeKB { get; set; }
+
+		/// <summary>
+		/// how large the mmap heap should be.  it is savestated.
+		/// can be 0, but mmap calls will crash.
+		/// </summary>
+		public uint MmapHeapSizeKB { get; set; }
 	}
 
 
@@ -385,6 +395,57 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				time.NanoSeconds = 0;
 				return 0;
 			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n9")]
+			public IntPtr MMap(IntPtr address, UIntPtr size, int prot, int flags, int fd, IntPtr offs)
+			{
+				if (address != IntPtr.Zero)
+					return Z.SS(-1);
+				MemoryBlock.Protection mprot;
+				switch (prot)
+				{
+					case 0: mprot = MemoryBlock.Protection.None; break;
+					default:
+					case 6: // W^X
+					case 7: // W^X
+					case 4: // exec only????
+					case 2: return Z.SS(-1); // write only????
+					case 3: mprot = MemoryBlock.Protection.RW; break;
+					case 1: mprot = MemoryBlock.Protection.R; break;
+					case 5: mprot = MemoryBlock.Protection.RX; break;
+				}
+				if ((flags & 0x20) == 0)
+				{
+					// MAP_ANONYMOUS is required
+					return Z.SS(-1);
+				}
+				if ((flags & 0xf00) != 0)
+				{
+					// various unsupported flags
+					return Z.SS(-1);
+				}
+
+				var ret = _parent._mmapheap.Map((ulong)size, mprot);
+				return ret == 0 ? Z.SS(-1) : Z.US(ret);
+			}
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n25")]
+			public IntPtr MRemap(UIntPtr oldAddress, UIntPtr oldSize,
+				UIntPtr newSize, int flags)
+			{
+				if ((flags & 2) != 0)
+				{
+					// don't support MREMAP_FIXED
+					return Z.SS(-1);
+				}
+				var ret = _parent._mmapheap.Remap((ulong)oldAddress, (ulong)oldSize, (ulong)newSize,
+					(flags & 1) != 0);
+				return ret == 0 ? Z.SS(-1) : Z.US(ret);
+			}
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n11")]
+			public int MUnmap(UIntPtr address, UIntPtr size)
+			{
+				return _parent._mmapheap.Unmap((ulong)address, (ulong)size) ? 0 : -1;
+			}
 		}
 
 		/// <summary>
@@ -512,6 +573,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private Heap _specheap;
 
 		/// <summary>
+		/// memory map emulation
+		/// </summary>
+		private MapHeap _mmapheap;
+
+		/// <summary>
 		/// all loaded PE files
 		/// </summary>
 		private readonly List<PeWrapper> _modules = new List<PeWrapper>();
@@ -548,15 +614,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private Heap CreateHeapHelper(uint sizeKB, string name, bool saveStated)
 		{
-			var heap = new Heap(_nextStart, sizeKB * 1024, name);
-			heap.Memory.Activate();
-			ComputeNextStart(sizeKB * 1024);
-			AddMemoryBlock(heap.Memory);
-			if (saveStated)
-				_savestateComponents.Add(heap);
-			_disposeList.Add(heap);
-			_heaps.Add(heap);
-			return heap;
+			if (sizeKB != 0)
+			{
+				var heap = new Heap(_nextStart, sizeKB * 1024, name);
+				heap.Memory.Activate();
+				ComputeNextStart(sizeKB * 1024);
+				AddMemoryBlock(heap.Memory);
+				if (saveStated)
+					_savestateComponents.Add(heap);
+				_disposeList.Add(heap);
+				_heaps.Add(heap);
+				return heap;
+			}
+			else
+			{
+				return null;
+			}
 		}
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
@@ -566,7 +639,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			Initialize(_nextStart);
 			using (this.EnterExit())
-			{ 
+			{
 				// load any predefined exports
 				_psx = new Psx(this);
 				_exports.Add("libpsxscl.so", BizExvoker.GetExvoker(_psx));
@@ -609,6 +682,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_sealedheap = CreateHeapHelper(opt.SealedHeapSizeKB, "sealed-heap", true);
 				_invisibleheap = CreateHeapHelper(opt.InvisibleHeapSizeKB, "invisible-heap", false);
 				_specheap = CreateHeapHelper(opt.SpecialHeapSizeKB, "special-heap", true);
+
+				if (opt.MmapHeapSizeKB != 0)
+				{
+					_mmapheap = new MapHeap(_nextStart, opt.MmapHeapSizeKB * 1024, "mmap-heap");
+					_mmapheap.Memory.Activate();
+					ComputeNextStart(opt.MmapHeapSizeKB * 1024);
+					AddMemoryBlock(_mmapheap.Memory);
+					_savestateComponents.Add(_mmapheap);
+					_disposeList.Add(_mmapheap);
+				}
 
 				_syscalls.Init();
 
@@ -729,6 +812,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_sealedheap = null;
 				_invisibleheap = null;
 				_specheap = null;
+				_mmapheap = null;
 			}
 		}
 	}

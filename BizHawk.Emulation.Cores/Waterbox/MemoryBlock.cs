@@ -7,96 +7,8 @@ using System.IO;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
-	// C# is annoying:  arithmetic operators for native ints are not exposed.
-	// So we store them as long/ulong instead in many places, and use these helpers
-	// to convert to IntPtr when needed
-
-	public static class Z
-	{
-		public static IntPtr US(ulong l)
-		{
-			if (IntPtr.Size == 8)
-				return (IntPtr)(long)l;
-			else
-				return (IntPtr)(int)l;
-		}
-
-		public static UIntPtr UU(ulong l)
-		{
-			if (UIntPtr.Size == 8)
-				return (UIntPtr)l;
-			else
-				return (UIntPtr)(uint)l;
-		}
-
-		public static IntPtr SS(long l)
-		{
-			if (IntPtr.Size == 8)
-				return (IntPtr)l;
-			else
-				return (IntPtr)(int)l;
-		}
-
-		public static UIntPtr SU(long l)
-		{
-			if (UIntPtr.Size == 8)
-				return (UIntPtr)(ulong)l;
-			else
-				return (UIntPtr)(uint)l;
-		}
-	}
-
 	public sealed class MemoryBlock : IDisposable
 	{
-		/// <summary>
-		/// system page size
-		/// </summary>
-		public static int PageSize { get; private set; }
-
-		/// <summary>
-		/// bitshift corresponding to PageSize
-		/// </summary>
-		private static readonly int PageShift;
-		/// <summary>
-		/// bitmask corresponding to PageSize
-		/// </summary>
-		private static readonly ulong PageMask;
-
-		static MemoryBlock()
-		{
-			int p = PageSize = Environment.SystemPageSize;
-			while (p != 1)
-			{
-				p >>= 1;
-				PageShift++;
-			}
-			PageMask = (ulong)(PageSize - 1);
-		}
-
-		/// <summary>
-		/// true if addr is aligned
-		/// </summary>
-		private static bool Aligned(ulong addr)
-		{
-			return (addr & PageMask) == 0;
-		}
-
-		/// <summary>
-		/// align address down to previous page boundary
-		/// </summary>
-		private static ulong AlignDown(ulong addr)
-		{
-			return addr & ~PageMask;
-		}
-
-		/// <summary>
-		/// align address up to next page boundary
-		/// </summary>
-		private static ulong AlignUp(ulong addr)
-		{
-			return ((addr - 1) | PageMask) + 1;
-		}
-
 		/// <summary>
 		/// starting address of the memory block
 		/// </summary>
@@ -140,7 +52,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (addr < Start || addr >= End)
 				throw new ArgumentOutOfRangeException();
 
-			return (int)((addr - Start) >> PageShift);
+			return (int)((addr - Start) >> WaterboxUtils.PageShift);
 		}
 
 		/// <summary>
@@ -148,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		private ulong GetStartAddr(int page)
 		{
-			return ((ulong)page << PageShift) + Start;
+			return ((ulong)page << WaterboxUtils.PageShift) + Start;
 		}
 
 		/// <summary>
@@ -167,11 +79,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <param name="size"></param>
 		public MemoryBlock(ulong start, ulong size)
 		{
-			if (!Aligned(start))
+			if (!WaterboxUtils.Aligned(start))
 				throw new ArgumentOutOfRangeException();
 			if (size == 0)
 				throw new ArgumentOutOfRangeException();
-			size = AlignUp(size);
+			size = WaterboxUtils.AlignUp(size);
 
 			_handle = Kernel32.CreateFileMapping(Kernel32.INVALID_HANDLE_VALUE, IntPtr.Zero,
 				Kernel32.FileMapProtection.PageExecuteReadWrite | Kernel32.FileMapProtection.SectionCommit, (uint)(size >> 32), (uint)size, null);
@@ -325,10 +237,13 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			if (Active) // it's legal to Protect() if we're not active; the information is just saved for the next activation
 			{
-				// TODO: if using another OS's memory protection calls, they must give the same non-aligned behavior
-				// as VirtualProtect, or this must be changed
+				var computedStart = WaterboxUtils.AlignDown(start);
+				var computedEnd = WaterboxUtils.AlignUp(start + length);
+				var computedLength = computedEnd - computedStart;
+
 				Kernel32.MemoryProtection old;
-				if (!Kernel32.VirtualProtect(Z.UU(start), Z.UU(length), p, out old))
+				if (!Kernel32.VirtualProtect(Z.UU(computedStart),
+					Z.UU(computedLength), p, out old))
 					throw new InvalidOperationException("VirtualProtect() returned FALSE!");
 			}
 		}

@@ -294,11 +294,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					s.Size);
 			}
 			Console.WriteLine("GDB Symbol Load:");
-			Console.WriteLine("add-sym {0} {1} -s .data {2} -s .bss {3}",
-				ModuleName,
-				_sectionsByName[".text"].Start,
-				_sectionsByName[".data"].Start,
-				_sectionsByName[".bss"].Start);
+			var symload = $"add-sym {ModuleName} {_sectionsByName[".text"].Start}";
+			if (_sectionsByName.ContainsKey(".data"))
+				symload += $" -s .data {_sectionsByName[".data"].Start}";
+			if (_sectionsByName.ContainsKey(".bss"))
+				symload += $" -s .bss {_sectionsByName[".bss"].Start}";
+			Console.WriteLine(symload);
 		}
 
 		public IntPtr Resolve(string entryPoint)
