@@ -854,6 +854,23 @@
       "Caps Lock": "CapsLock",
       "Previous Disk": "",
       "Next Disk": ""
+    },
+    "VirtualBoy Controller": {
+      "L_Up": "UpArrow, X1 DpadUp, X1 LStickUp",
+      "L_Down": "DownArrow, X1 DpadDown, X1 LStickDown",
+      "L_Left": "LeftArrow, X1 DpadLeft, X1 LStickLeft",
+      "L_Right": "RightArrow, X1 DpadRight, X1 LStickRight",
+      "R_Up": "NumberPad8, X1 RStickUp",
+      "R_Down": "NumberPad2, X1 RStickDown",
+      "R_Left": "NumberPad4, X1 RStickLeft",
+      "R_Right": "NumberPad6, X1 RStickRight",
+      "B": "Z, X1 X",
+      "A": "X, X1 A",
+      "R": "W, X1 LeftShoulder",
+      "L": "E, X1 RightShoulder",
+      "Select": "Space, X1 Back",
+      "Start": "Return, X1 Start",
+      "Power": ""
     }
   },
   "AllTrollersAutoFire": {
@@ -1100,6 +1117,23 @@
       "Caps Lock": "",
       "Previous Disk": "",
       "Next Disk": ""
+    },
+    "VirtualBoy Controller": {
+      "L_Up": "",
+      "L_Down": "",
+      "L_Left": "",
+      "L_Right": "",
+      "R_Up": "",
+      "R_Down": "",
+      "R_Left": "",
+      "R_Right": "",
+      "B": "",
+      "A": "",
+      "R": "",
+      "L": "",
+      "Select": "",
+      "Start": "",
+      "Power": ""
     }
   },
   "AllTrollersAnalog": {
@@ -1286,6 +1320,7 @@
         "Mult": 1.0,
         "Deadzone": 0.1
       }
-    }
+    },
+    "VirtualBoy Controller": {}
   }
 }
