@@ -286,6 +286,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					ram[0x701] = 0xFF;
 				}
+				
+				if (cart.DB_GameInfo.Hash == "68ABE1E49C9E9CCEA978A48232432C252E5912C0") // Dancing Blocks
+				{
+					ram[0xEC] = 0;
+					ram[0xED] = 0;
+				}
 			}
 
 		}
