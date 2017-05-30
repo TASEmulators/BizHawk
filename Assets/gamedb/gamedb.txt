@@ -273,6 +273,7 @@ sha1:4C499A857087E6C121522435786792A2E4105AC1		Fuuun Shaolin Kyo (FDS Conversion
 sha1:CAAC1E829133851648BA7C7CD6EAA7D26A464999		Metal Fighter (Asia) (Unl) (Sachen)	NES		board=UNIF_UNL-SA-016-1M;PRG=32;CHR=32;PAD_V=0;PAD_H=1
 sha1:B9902886D1739983B315B67B02133E44620E4381		Challenge of the Dragon (Asia) (PAL) (Unl)	NES		board=MAPPER147;PAD_V=0;PAD_H=1;system=NES-PAL
 sha1:0CDE48DB89896946F0C2E78936EA290348994ED5		Pipemania (Australia) (HES) (Unl)	NES		board=MAPPER113;PRG=32;CHR=16;WRAM=0;VRAM=0
+sha1:E843AB3D779D4F0BB1F933D6EE99DAA526EFBCF1		Gaiapolis (Asia) (Unl)	NES		board=UNIF_NES-TLROM;PRG=128;CHR=256;WRAM=0;VRAM=0
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
