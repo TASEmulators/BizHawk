@@ -148,11 +148,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			KernalRom = new Chip23128();
 		}
 
-		public int ClockNumerator { get; private set; }
-		public int ClockDenominator { get; private set; }
+		public int ClockNumerator { get; }
+		public int ClockDenominator { get; }
 
 		// -----------------------------------------
-
 		public void Execute()
 		{
 			_vicBank = (0x3 - ((Cia1.PrA | ~Cia1.DdrA) & 0x3)) << 14;
@@ -173,7 +172,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		}
 
 		// -----------------------------------------
-
 		public void HardReset()
 		{
 			Bus = 0xFF;

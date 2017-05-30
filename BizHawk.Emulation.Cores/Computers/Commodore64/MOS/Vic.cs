@@ -1,27 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
-
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Vic
 	{
 		/*
-            Commodore VIC-II 6567/6569/6572 core.
+			Commodore VIC-II 6567/6569/6572 core.
 
-            Many thanks to:
-            - Christian Bauer for the VIC-II document.
-              http://www.zimmers.net/cbmpics/cbm/c64/vic-ii.txt
-            - VICE team for the addendum to the above document.
-              http://vice-emu.sourceforge.net/plain/VIC-Addendum.txt
-            - Whoever scanned the CSG 6567 preliminary datasheet.
-              http://www.classiccmp.org/cini/pdf/Commodore/ds_6567.pdf
-            - Michael Huth for die shots of the 6569R3 chip (to get ideas how to implement)
-              http://mail.lipsia.de/~enigma/neu/6581.html
-        */
+			Many thanks to:
+			- Christian Bauer for the VIC-II document.
+				http://www.zimmers.net/cbmpics/cbm/c64/vic-ii.txt
+			- VICE team for the addendum to the above document.
+				http://vice-emu.sourceforge.net/plain/VIC-Addendum.txt
+			- Whoever scanned the CSG 6567 preliminary datasheet.
+				http://www.classiccmp.org/cini/pdf/Commodore/ds_6567.pdf
+			- Michael Huth for die shots of the 6569R3 chip (to get ideas how to implement)
+				http://mail.lipsia.de/~enigma/neu/6581.html
+		*/
 
 		public Func<int, int> ReadColorRam;
 		public Func<int, int> ReadMemory;
@@ -42,8 +40,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _hblankStartCheckXRaster;
 		private int _hblankEndCheckXRaster;
 
-		private int _pixelRatioNum;
-		private int _pixelRatioDen;
+		private readonly int _pixelRatioNum;
+		private readonly int _pixelRatioDen;
 
 		public Vic(int newCycles, int newLines, IList<int[]> newPipeline, int newCyclesPerSec, int hblankStart, int hblankEnd, int vblankStart, int vblankEnd, C64.BorderType borderType, int pixelRatioNum, int pixelRatioDen)
 		{
@@ -69,7 +67,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			_sprites = new Sprite[8];
 			for (var i = 0; i < 8; i++)
+			{
 				_sprites[i] = new Sprite();
+			}
+
 			_sprite0 = _sprites[0];
 			_sprite1 = _sprites[1];
 			_sprite2 = _sprites[2];
@@ -161,28 +162,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 				val -= width;
 			}
+
 			while (val < min)
 			{
 				val += width;
 			}
+
 			return val;
 		}
 
-		public int CyclesPerFrame
-		{
-			get
-			{
-				return _totalCycles * _totalLines;
-			}
-		}
+		public int CyclesPerFrame => _totalCycles * _totalLines;
 
-		public int CyclesPerSecond
-		{
-			get
-			{
-				return _cyclesPerSec;
-			}
-		}
+		public int CyclesPerSecond => _cyclesPerSec;
 
 		public void ExecutePhase()
 		{
@@ -194,9 +185,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 				// border check
 				if (_rasterLine == _borderB)
+				{
 					_borderOnVertical = true;
+				}
+
 				if (_rasterLine == _borderT && _displayEnable)
+				{
 					_borderOnVertical = false;
+				}
 
 				// vblank check
 				if (_rasterLine == _vblankStart)
@@ -262,9 +258,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				if (!_rasterInterruptTriggered)
 				{
 					_rasterInterruptTriggered = true;
+
 					// interrupt needs to be enabled to be set to true
 					if (_enableIntRaster)
+					{
 						_intRaster = true;
+					}
 				}
 			}
 
@@ -280,7 +279,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			// display enable compare
 			if (_rasterLine == FirstDmaLine)
+			{
 				_badlineEnable |= _displayEnable;
+			}
 
 			// badline compare
 			if (_badlineEnable)
@@ -348,26 +349,31 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_videoMode = VideoMode000;
 				return;
 			}
+
 			if (!_extraColorMode && !_bitmapMode && _multicolorMode)
 			{
 				_videoMode = VideoMode001;
 				return;
 			}
+
 			if (!_extraColorMode && _bitmapMode && !_multicolorMode)
 			{
 				_videoMode = VideoMode010;
 				return;
 			}
+
 			if (!_extraColorMode && _bitmapMode && _multicolorMode)
 			{
 				_videoMode = VideoMode011;
 				return;
 			}
+
 			if (_extraColorMode && !_bitmapMode && !_multicolorMode)
 			{
 				_videoMode = VideoMode100;
 				return;
 			}
+
 			_videoMode = VideoModeInvalid;
 		}
 	}

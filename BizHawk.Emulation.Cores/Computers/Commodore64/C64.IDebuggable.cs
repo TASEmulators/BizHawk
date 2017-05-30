@@ -53,7 +53,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			return _selectedDebuggable.CanStep(type);
 		}
 
-
 		public void Step(StepType type)
 		{
 			if (_selectedDebuggable == null)
@@ -64,10 +63,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_selectedDebuggable.Step(type);
 		}
 
-		public int TotalExecutedCycles
-		{
-			get { return _selectedDebuggable.TotalExecutedCycles; }
-		}
+		public int TotalExecutedCycles => _selectedDebuggable.TotalExecutedCycles;
 
 		private readonly IMemoryCallbackSystem _memoryCallbacks;
 

@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		private bool _boardLed;
 
-		private bool _jumper = false;
+		private bool _jumper;
 
 		private int _stateBits;
 
@@ -138,9 +138,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 			addr &= 0x02;
 			if (addr == 0x00)
+			{
 				BankSet(val);
+			}
 			else
+			{
 				StateSet(val);
+			}
 		}
 
 		public override void PokeDF00(int addr, int val)
@@ -181,6 +185,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 						case 0x0002:
 							return 0x00;
 					}
+
 					break;
 				case 0xA0:
 					break;
@@ -195,9 +200,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 			_stateBits = val &= 0x87;
 			if ((val & 0x04) != 0)
+			{
 				pinGame = (val & 0x01) == 0;
+			}
 			else
+			{
 				pinGame = _jumper;
+			}
+
 			pinExRom = (val & 0x02) == 0;
 			_boardLed = (val & 0x80) != 0;
 			_internalRomState = 0;
@@ -242,6 +252,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 							addr &= 0x1FFF;
 							_banksB[addr | _bankOffset] = val & 0xFF;
 						}
+
 						break;
 				}
 			}
@@ -282,9 +293,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 			addr &= 0x02;
 			if (addr == 0x00)
+			{
 				BankSet(val);
+			}
 			else
+			{
 				StateSet(val);
+			}
 		}
 
 		public override void WriteDF00(int addr, int val)

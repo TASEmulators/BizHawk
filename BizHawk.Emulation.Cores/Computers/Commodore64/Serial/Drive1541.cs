@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
+
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
 using BizHawk.Emulation.Cores.Computers.Commodore64.MOS;
@@ -115,6 +110,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 				_ratioDifference -= _cpuClockNum;
 				_clocks++;
 			}
+
 			ExecutePhaseInternal();
 		}
 
@@ -136,6 +132,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			{
 				_cpu.SetOverflow();
 			}
+
 			_overflowFlagDelaySr >>= 1;
 
 			_cpu.IRQ = !(Via0.Irq && Via1.Irq); // active low IRQ line

@@ -17,7 +17,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private const int LastDmaLine = 0x0F7;
 
 		// The special actions taken by the Vic are in the same order and interval on all chips, just different offsets.
-		private static readonly int[] TimingBuilderCycle14Act = {
+		private static readonly int[] TimingBuilderCycle14Act =
+		{
 			PipelineUpdateVc, 0,
 			PipelineSpriteCrunch, 0,
 			PipelineUpdateMcBase, 0,

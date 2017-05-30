@@ -20,19 +20,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 				if (id == @"GCR-1541")
 				{
-
-					reader.ReadByte(); //version
+					reader.ReadByte(); // version
 					int trackCount = reader.ReadByte();
-					reader.ReadInt16(); //max track size in bytes
+					reader.ReadInt16(); // max track size in bytes
 
 					var trackOffsetTable = new int[trackCount];
 					var trackSpeedTable = new int[trackCount];
 
 					for (var i = 0; i < trackCount; i++)
+					{
 						trackOffsetTable[i] = reader.ReadInt32();
+					}
 
 					for (var i = 0; i < trackCount; i++)
+					{
 						trackSpeedTable[i] = reader.ReadInt32();
+					}
 
 					for (var i = 0; i < trackCount; i++)
 					{

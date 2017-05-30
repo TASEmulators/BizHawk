@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			{
 				delta[i] = source[i] ^ data[i];
 			}
+
 			return delta;
 		}
 
@@ -25,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			{
 				delta = GetDelta(source, data);
 			}
+
 			ser.Sync(name, ref delta, false);
 			if (ser.IsReader && delta != null)
 			{

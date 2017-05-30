@@ -108,8 +108,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					   (_readClock() ? 0x04 : 0x00) |
 					   (_readData() ? 0x01 : 0x00) |
 					   (_readAtn() ? 0x80 : 0x00) |
-					   _driveNumber)
-					   );
+					   _driveNumber));
 			}
 
 			public int ReadExternalPra()
@@ -120,10 +119,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			public int ReadExternalPrb()
 			{
 				return
-					   (_readClock() ? 0x04 : 0x00) |
-					   (_readData() ? 0x01 : 0x00) |
-					   (_readAtn() ? 0x80 : 0x00) |
-					   _driveNumber;
+					(_readClock() ? 0x04 : 0x00) |
+					(_readData() ? 0x01 : 0x00) |
+					(_readAtn() ? 0x80 : 0x00) |
+					_driveNumber;
 			}
 
 			public void SyncState(Serializer ser)

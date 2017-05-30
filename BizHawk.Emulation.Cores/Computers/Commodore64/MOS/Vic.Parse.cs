@@ -80,6 +80,7 @@
 						_dataC = 0;
 						_bufferC[_vmli] = _dataC;
 					}
+
 					_srColorSync |= 0x01 << (7 - _xScroll);
 					break;
 				case FetchTypeGraphics:
@@ -91,6 +92,7 @@
 						else
 							_parseAddr = _rc | ((_dataC & 0xFF) << 3) | (_pointerCb << 11);
 					}
+
 					if (_extraColorModeBuffer)
 						_parseAddr &= AddressMaskEc;
 					_dataG = ReadMemory(_parseAddr);
@@ -151,7 +153,9 @@
 			foreach (var spr in _sprites) // sprite rule 1
 			{
 				if (!spr.YExpand)
+				{
 					spr.YCrunch = true;
+				}
 			}
 
 			if ((_parseAct & PipelineUpdateMcBase) != 0) // VIC addendum sprite rule 7
@@ -187,7 +191,9 @@
 				foreach (var spr in _sprites)
 				{
 					if (spr.Dma && spr.YExpand)
+					{
 						spr.YCrunch ^= true;
+					}
 				}
 			}
 
@@ -199,7 +205,9 @@
 					if (spr.Dma)
 					{
 						if (spr.Enable && spr.Y == (_rasterLine & 0xFF))
+						{
 							spr.Display = true;
+						}
 					}
 					else
 					{
@@ -216,7 +224,9 @@
 				_srColorIndexLatch = 0;
 				_vmli = 0;
 				if (_badline)
+				{
 					_rc = 0;
+				}
 			}
 
 			if ((_parseAct & PipelineUpdateRc) != 0) // VC/RC rule 5
@@ -226,6 +236,7 @@
 					_idle = true;
 					_vcbase = _vc;
 				}
+
 				if (!_idle || _badline)
 				{
 					_rc = (_rc + 1) & 0x7;

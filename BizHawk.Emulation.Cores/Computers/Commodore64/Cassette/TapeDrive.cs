@@ -17,10 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 
 		public override void HardReset()
 		{
-			if (_tape != null)
-			{
-				_tape.Rewind();
-			}
+			_tape?.Rewind();
 		}
 
 		public override bool ReadDataInputBuffer()

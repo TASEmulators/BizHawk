@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		public const int FluxBitsPerEntry = 32;
 		public const int FluxBitsPerTrack = 16000000 / 5;
 		public const int FluxEntriesPerTrack = FluxBitsPerTrack / FluxBitsPerEntry;
-		private int[][] _tracks;
+		private readonly int[][] _tracks;
 		private readonly int[] _originalMedia;
 		public bool Valid;
 		public bool WriteProtected;
@@ -33,7 +33,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		/// <param name="trackData">Raw bit data.</param>
 		/// <param name="trackNumbers">Track numbers for the raw bit data.</param>
 		/// <param name="trackDensities">Density zones for the raw bit data.</param>
-		/// <param name="trackLengths">Length, in bits, of each raw bit data.</param>
 		/// <param name="trackCapacity">Total number of tracks on the media.</param>
 		public Disk(IList<byte[]> trackData, IList<int> trackNumbers, IList<int> trackDensities, int trackCapacity)
 		{
@@ -43,6 +42,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			{
 				_tracks[trackNumbers[i]] = ConvertToFluxTransitions(trackDensities[i], trackData[i], 0);
 			}
+
 			FillMissingTracks();
 			Valid = true;
 			_originalMedia = SerializeTracks(_tracks);
@@ -95,10 +95,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 					byteData <<= 1;
 					remainingBits--;
 					if (remainingBits <= 0)
+					{
 						break;
+					}
 				}
+
 				if (remainingBits <= 0)
+				{
 					break;
+				}
 			}
 
 			return result;

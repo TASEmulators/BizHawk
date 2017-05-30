@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BizHawk.Common;
-using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
@@ -102,10 +98,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_ca1L = true;
 		}
 
-		public bool Irq
-		{
-			get { return (_ifr & 0x80) == 0; }
-		}
+		public bool Irq => (_ifr & 0x80) == 0;
 
 		public void HardReset()
 		{
@@ -158,7 +151,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_interruptNextClock = 0;
 
 			// Process 'pulse' and 'handshake' outputs on CA2 and CB2
-
 			if (_resetCa2NextClock)
 			{
 				Ca2 = true;
@@ -184,7 +176,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 
 			// Count timers
-
 			if (_t1Delayed > 0)
 			{
 				_t1Delayed--;
@@ -199,6 +190,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 						_interruptNextClock |= 0x40;
 						_t1CLoaded = false;
 					}
+
 					switch (_acrT1Control)
 					{
 						case ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS:
@@ -211,6 +203,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 							_t1CLoaded = true;
 							break;
 					}
+
 					_t1C &= 0xFFFF;
 				}
 			}
@@ -252,7 +245,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 
 			// Process CA2
-
 			switch (_pcrCa2Control)
 			{
 				case PCR_CONTROL_INPUT_NEGATIVE_ACTIVE_EDGE:
@@ -283,7 +275,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 
 			// Process CB2
-
 			switch (_pcrCb2Control)
 			{
 				case PCR_CONTROL_INPUT_NEGATIVE_ACTIVE_EDGE:
@@ -314,7 +305,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 
 			// interrupt generation
-
 			if ((_pcrCb1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Cb1 && !_cb1L) ||
 				(_pcrCb1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Cb1 && _cb1L))
 			{
