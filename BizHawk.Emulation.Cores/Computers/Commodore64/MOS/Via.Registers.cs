@@ -47,6 +47,7 @@
 					}
 					break;
 			}
+
 			return ReadRegister(addr);
 		}
 
@@ -87,6 +88,7 @@
 				case 0xF:
 					return _port.ReadPra(_pra, _ddra);
 			}
+
 			return 0xFF;
 		}
 
@@ -109,6 +111,7 @@
 					{
 						_handshakeCa2NextClock = true;
 					}
+
 					WriteRegister(addr, val);
 					break;
 				case 0x4:
@@ -137,6 +140,7 @@
 						_t2C = _t2L;
 						_t2CLoaded = true;
 					}
+
 					_t2Delayed = 1;
 					break;
 				case 0xA:
@@ -221,44 +225,20 @@
 			}
 		}
 
-		public int DdrA
-		{
-			get { return _ddra; }
-		}
+		public int DdrA => _ddra;
 
-		public int DdrB
-		{
-			get { return _ddrb; }
-		}
+		public int DdrB => _ddrb;
 
-		public int PrA
-		{
-			get { return _pra; }
-		}
+		public int PrA => _pra;
 
-		public int PrB
-		{
-			get { return _prb; }
-		}
+		public int PrB => _prb;
 
-		public int EffectivePrA
-		{
-			get { return _pra | ~_ddra; }
-		}
+		public int EffectivePrA => _pra | ~_ddra;
 
-		public int EffectivePrB
-		{
-			get { return _prb | ~_ddrb; }
-		}
+		public int EffectivePrB => _prb | ~_ddrb;
 
-		public int ActualPrA
-		{
-			get { return _acrPaLatchEnable ? _paLatch : _port.ReadPra(_pra, _ddra); }
-		}
+		public int ActualPrA => _acrPaLatchEnable ? _paLatch : _port.ReadPra(_pra, _ddra);
 
-		public int ActualPrB
-		{
-			get { return _acrPbLatchEnable ? _pbLatch : _port.ReadPrb(_prb, _ddrb); }
-		}
+		public int ActualPrB => _acrPbLatchEnable ? _pbLatch : _port.ReadPrb(_prb, _ddrb);
 	}
 }

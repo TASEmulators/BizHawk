@@ -28,7 +28,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			// build dummy bank
 			_dummyBank = new int[0x2000];
 			for (var i = 0; i < 0x2000; i++)
+			{
 				_dummyBank[i] = 0xFF; // todo: determine if this is correct
+			}
 
 			switch (count)
 			{
@@ -82,9 +84,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 			// for safety, initialize all banks to dummy
 			for (var i = 0; i < _banksA.Length; i++)
+			{
 				_banksA[i] = _dummyBank;
+			}
+
 			for (var i = 0; i < _banksB.Length; i++)
+			{
 				_banksB[i] = _dummyBank;
+			}
 
 			// now load in the banks
 			for (var i = 0; i < count; i++)
@@ -130,7 +137,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		public override void PokeDE00(int addr, int val)
 		{
 			if (addr == 0x00)
+			{
 				BankSet(val);
+			}
 		}
 
 		public override int Read8000(int addr)
@@ -146,14 +155,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		public override void WriteDE00(int addr, int val)
 		{
 			if (addr == 0x00)
+			{
 				BankSet(val);
+			}
 		}
 
 		public override void SyncState(Serializer ser)
 		{
 			base.SyncState(ser);
 			if (ser.IsReader)
+			{
 				BankSet(_bankNumber);
+			}
 		}
 	}
 }

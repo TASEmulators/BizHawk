@@ -16,9 +16,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		// This constant differs depending on whose research you reference. TODO: Verify.
 		private const int RESET_CAPACITOR_CYCLES = 512;
 
-		private int _capacitorCycles;
-
 		private readonly int[] _rom;
+		private int _capacitorCycles;
 
 		public Mapper000A(IList<int[]> newData)
 		{

@@ -74,8 +74,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			_device.ReadMasterData = () => ReadMasterData();
 		}
 
-		public bool DriveLightEnabled { get { return true; } }
-		public bool DriveLightOn { get { return ReadDeviceLight(); } }
-		public bool IsConnected { get { return _connected; } }
+		public bool DriveLightEnabled => true;
+		public bool DriveLightOn => ReadDeviceLight();
+		public bool IsConnected => _connected;
 	}
 }

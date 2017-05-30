@@ -64,7 +64,10 @@
 		{
 			var data = 0x1F;
 			if (!Cassette.ReadSenseBuffer())
+			{
 				data &= 0xEF;
+			}
+
 			return data;
 		}
 

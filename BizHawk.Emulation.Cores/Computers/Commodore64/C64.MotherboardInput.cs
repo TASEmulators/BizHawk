@@ -5,12 +5,14 @@
 		private bool[] _joystickPressed = new bool[10];
 		private bool[] _keyboardPressed = new bool[64];
 
-		private static readonly string[][] JoystickMatrix = {
-			new[] {"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button"},
-			new[] {"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button"}
+		private static readonly string[][] JoystickMatrix =
+		{
+			new[] {"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button" },
+			new[] {"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button" }
 		};
 
-		private static readonly string[][] KeyboardMatrix = {
+		private static readonly string[][] KeyboardMatrix =
+		{
 			new[] { "Key Insert/Delete", "Key Return", "Key Cursor Left/Right", "Key F7", "Key F1", "Key F3", "Key F5", "Key Cursor Up/Down" },
 			new[] { "Key 3", "Key W", "Key A", "Key 4", "Key Z", "Key S", "Key E", "Key Left Shift" },
 			new[] { "Key 5", "Key R", "Key D", "Key 6", "Key C", "Key F", "Key T", "Key X" },

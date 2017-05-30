@@ -4,14 +4,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public sealed partial class C64 : IEmulator
 	{
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
+		public IEmulatorServiceProvider ServiceProvider { get; }
 
 		public ControllerDefinition ControllerDefinition => C64ControllerDefinition;
 
 		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			_board.Controller = controller;
-
 
 			if (_tracer.Enabled)
 			{
@@ -52,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public int Frame => _frame;
 
-		public string SystemId { get { return "C64"; } }
+		public string SystemId => "C64";
 
 		public bool DeterministicEmulation => true;
 
@@ -64,20 +63,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_frameCycles = 0;
 		}
 
-		public CoreComm CoreComm { get; private set; }
+		public CoreComm CoreComm { get; }
 
 		public void Dispose()
 		{
 			if (_board != null)
 			{
-				if (_board.TapeDrive != null)
-				{
-					_board.TapeDrive.RemoveMedia();
-				}
-				if (_board.DiskDrive != null)
-				{
-					_board.DiskDrive.RemoveMedia();
-				}
+				_board.TapeDrive?.RemoveMedia();
+				_board.DiskDrive?.RemoveMedia();
 				_board = null;
 			}
 		}

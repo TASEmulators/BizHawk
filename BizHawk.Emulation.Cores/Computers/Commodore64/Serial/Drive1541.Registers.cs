@@ -58,10 +58,17 @@
 				case 0x1C00:
 					return Via1.Peek(addr);
 			}
+
 			if ((addr & 0x8000) != 0)
+			{
 				return DriveRom.Peek(addr & 0x3FFF);
+			}
+
 			if ((addr & 0x1F00) < 0x800)
+			{
 				return _ram[addr & 0x7FF];
+			}
+
 			return (addr >> 8) & 0xFF;
 		}
 
@@ -87,7 +94,10 @@
 					break;
 				default:
 					if ((addr & 0x8000) == 0 && (addr & 0x1F00) < 0x800)
+					{
 						_ram[addr & 0x7FF] = val & 0xFF;
+					}
+
 					break;
 			}
 		}
@@ -111,10 +121,17 @@
 				case 0x1C00:
 					return Via1.Read(addr);
 			}
+
 			if ((addr & 0x8000) != 0)
+			{
 				return DriveRom.Read(addr & 0x3FFF);
+			}
+
 			if ((addr & 0x1F00) < 0x800)
+			{
 				return _ram[addr & 0x7FF];
+			}
+
 			return (addr >> 8) & 0xFF;
 		}
 
@@ -130,7 +147,10 @@
 					break;
 				default:
 					if ((addr & 0x8000) == 0 && (addr & 0x1F00) < 0x800)
+					{
 						_ram[addr & 0x7FF] = val & 0xFF;
+					}
+
 					break;
 			}
 		}

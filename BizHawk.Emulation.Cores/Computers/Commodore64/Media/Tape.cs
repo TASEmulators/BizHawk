@@ -83,14 +83,20 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			if (Encoding.ASCII.GetString(tapeFile, 0, 12) == "C64-TAPE-RAW")
 			{
 				var version = tapeFile[12];
-				if (version > 1) throw new Exception("This tape has an unsupported version");
+				if (version > 1)
+				{
+					throw new Exception("This tape has an unsupported version");
+				}
+
 				var size = BitConverter.ToUInt32(tapeFile, 16);
 				if (size + 20 != tapeFile.Length)
 				{
 					throw new Exception("Tape file header specifies a length that doesn't match the file size");
 				}
+
 				result = new Tape(version, tapeFile, 20, tapeFile.Length);
 			}
+
 			return result;
 		}
 

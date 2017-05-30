@@ -1,19 +1,19 @@
-﻿using BizHawk.Common;
-using System;
+﻿using System;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Cia
 	{
 		/*
-            Commodore CIA 6526 core.
+			Commodore CIA 6526 core.
 
-            Many thanks to:
-            - 6502.org for hosting the 6526 datasheet
-              http://archive.6502.org/datasheets/mos_6526_cia.pdf
-            - Christian Bauer for information on the delayed interrupt mechanism on the 6526
-              http://frodo.cebix.net/
-        */
+			Many thanks to:
+			- 6502.org for hosting the 6526 datasheet
+				http://archive.6502.org/datasheets/mos_6526_cia.pdf
+			- Christian Bauer for information on the delayed interrupt mechanism on the 6526
+				http://frodo.cebix.net/
+		*/
 
 		private enum TimerState
 		{
@@ -139,6 +139,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_taIrqNextCycle = false;
 				TriggerInterrupt(1);
 			}
+
 			if (_tbIrqNextCycle)
 			{
 				_tbIrqNextCycle = false;
@@ -159,12 +160,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_prb &= 0xBF;
 				_taPrb6NegativeNextCycle = false;
 			}
+
 			if (_tbPrb7NegativeNextCycle)
 			{
 				_prb &= 0x7F;
 				_tbPrb7NegativeNextCycle = false;
 			}
-
 
 			switch (_taState)
 			{
@@ -196,6 +197,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					{
 						_ta = _latcha;
 					}
+
 					Ta_Idle();
 					break;
 				case TimerState.Count:
@@ -236,6 +238,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					{
 						_tb = _latchb;
 					}
+
 					Tb_Idle();
 					break;
 				case TimerState.Count:
@@ -262,6 +265,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 				TriggerInterrupt(16);
 			}
+
 			_flagLatch = _flagInput;
 
 			if (!DelayedInterrupts)
@@ -270,9 +274,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 
 			if ((_cra & 0x02) != 0)
+			{
 				_ddra |= 0x40;
+			}
+
 			if ((_crb & 0x02) != 0)
+			{
 				_ddrb |= 0x80;
+			}
 		}
 
 		private void Ta_Count()
@@ -285,9 +294,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					{
 						Ta_Interrupt();
 					}
+
 					_taUnderflow = true;
 				}
 			}
+
 			Ta_Idle();
 		}
 
@@ -319,6 +330,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				{
 					_prb ^= 0x40;
 				}
+
 				_ddrb |= 0x40;
 			}
 		}
@@ -344,6 +356,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 								_taState = TimerState.LoadThenStop;
 							}
 						}
+
 						break;
 					case TimerState.Count:
 						if ((_newCra & 0x01) != 0)
@@ -359,6 +372,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 								? TimerState.LoadThenStop
 								: TimerState.CountThenStop;
 						}
+
 						break;
 					case TimerState.LoadThenCount:
 					case TimerState.WaitThenCount:
@@ -378,8 +392,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 						{
 							_taState = TimerState.Stop;
 						}
+
 						break;
 				}
+
 				_cra = _newCra & 0xEF;
 				_hasNewCra = false;
 			}
@@ -397,6 +413,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					}
 				}
 			}
+
 			Tb_Idle();
 		}
 
@@ -452,6 +469,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 								_tbState = TimerState.LoadThenStop;
 							}
 						}
+
 						break;
 					case TimerState.Count:
 						if ((_newCrb & 0x01) != 0)
@@ -467,6 +485,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 								? TimerState.LoadThenStop
 								: TimerState.CountThenStop;
 						}
+
 						break;
 					case TimerState.LoadThenCount:
 					case TimerState.WaitThenCount:
@@ -486,8 +505,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 						{
 							_tbState = TimerState.Stop;
 						}
+
 						break;
 				}
+
 				_crb = _newCrb & 0xEF;
 				_hasNewCrb = false;
 			}
@@ -496,7 +517,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private void TriggerInterrupt(int bit)
 		{
 			_icr |= bit;
-			if ((_intMask & bit) == 0) return;
+			if ((_intMask & bit) == 0)
+			{
+				return;
+			}
+
 			_icr |= 0x80;
 		}
 

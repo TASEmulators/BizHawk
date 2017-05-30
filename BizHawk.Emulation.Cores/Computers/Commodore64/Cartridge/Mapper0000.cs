@@ -14,7 +14,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		// standard cartridge mapper (Commodore)
 		// note that this format also covers Ultimax carts
-
 		public Mapper0000(IList<int> newAddresses, IList<int[]> newData, bool game, bool exrom)
 		{
 			pinGame = game;
@@ -45,6 +44,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 						case 0x4000:
 							_romAMask = 0x1FFF;
 							_romBMask = 0x1FFF;
+
 							// split the rom into two banks
 							_romA = new int[0x2000];
 							_romB = new int[0x2000];
@@ -70,6 +70,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 							validCartridge = false;
 							return;
 					}
+
 					_romB = newData[i];
 				}
 			}

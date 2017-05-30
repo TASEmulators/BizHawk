@@ -1,5 +1,4 @@
 ﻿using System;
-using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
@@ -8,7 +7,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	// emulation notes:
 	// * CS, R/W and RS# pins are not emulated. (not needed)
 	// * A low RES pin is emulated via HardReset().
-
 	public static class Chip6526
 	{
 		public static Cia Create(C64.CiaType type, Func<int> readIec)

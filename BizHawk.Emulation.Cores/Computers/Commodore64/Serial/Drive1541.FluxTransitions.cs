@@ -24,7 +24,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		private void AdvanceRng()
 		{
 			if (_rngCurrent == 0)
+			{
 				_rngCurrent = 1;
+			}
+
 			_rngCurrent = (int)(_rngCurrent * LEHMER_RNG_PRIME % int.MaxValue);
 		}
 
@@ -52,15 +55,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 							{
 								_diskByteOffset = 0;
 							}
+
 							_diskBits = _trackImageData[_diskByteOffset];
 							_diskBitsLeft = Disk.FluxBitsPerEntry;
 						}
 					}
+
 					if ((_diskBits & 1) != 0)
 					{
 						_countsBeforeRandomTransition = 0;
 						_diskFluxReversalDetected = true;
 					}
+
 					_diskBits >>= 1;
 					_diskBitsLeft--;
 				}
@@ -73,6 +79,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 					{
 						_diskFluxReversalDetected = true;
 						AdvanceRng();
+
 						// This constant is what VICE uses. TODO: Determine accuracy.
 						_countsBeforeRandomTransition = (_rngCurrent % 367) + 33;
 					}
@@ -87,6 +94,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 					if (_countsBeforeRandomTransition == 0)
 					{
 						AdvanceRng();
+
 						// This constant is what VICE uses. TODO: Determine accuracy.
 						_countsBeforeRandomTransition = (_rngCurrent & 0x1F) + 289;
 					}

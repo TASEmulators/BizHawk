@@ -1,7 +1,6 @@
 ﻿using System;
 
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
@@ -124,10 +123,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_potX = ReadPotX();
 				_potY = ReadPotY();
 			}
+
 			_potCounter--;
 		}
 
-		public void Flush(bool flush_filter)
+		public void Flush(bool flushFilter)
 		{
 
 			while (_cachedCycles > 0)
@@ -198,7 +198,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 			//here we need to apply filtering to the samples and add them back to the buffer
 
-			if (flush_filter)
+			if (flushFilter)
 			{
 				if (_filterEnable[0] | _filterEnable[1] | _filterEnable[2])
 				{

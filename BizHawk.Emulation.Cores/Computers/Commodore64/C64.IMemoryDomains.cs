@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			{
 				domains.AddRange(new[]
 				{
-					C64MemoryDomainFactory.Create("Tape Data", _board.TapeDrive.TapeDataDomain.Length, a => _board.TapeDrive.TapeDataDomain[a], (a,v) => _board.TapeDrive.TapeDataDomain[a] = (byte)v)
+					C64MemoryDomainFactory.Create("Tape Data", _board.TapeDrive.TapeDataDomain.Length, a => _board.TapeDrive.TapeDataDomain[a], (a, v) => _board.TapeDrive.TapeDataDomain[a] = (byte)v)
 				});
 			}
 

@@ -84,7 +84,8 @@ namespace BizHawk.Client.Common
 			var ret = new TasMovieMarkerList(_movie);
 			for (int i = 0; i < Count; i++)
 			{
-				ret.Add(new TasMovieMarker(this[i].Frame, this[i].Message));
+				// used to copy markers between branches
+				ret.Add(new TasMovieMarker(this[i].Frame, this[i].Message), skipHistory: true);
 			}
 
 			return ret;
@@ -115,14 +116,14 @@ namespace BizHawk.Client.Common
 			Add(item, false);
 		}
 
-		public void Add(TasMovieMarker item, bool fromHistory)
+		public void Add(TasMovieMarker item, bool skipHistory)
 		{
 			var existingItem = this.FirstOrDefault(m => m.Frame == item.Frame);
 			if (existingItem != null)
 			{
 				if (existingItem.Message != item.Message)
 				{
-					if (!fromHistory)
+					if (!skipHistory)
 					{
 						_movie.ChangeLog.AddMarkerChange(item, item.Frame, existingItem.Message);
 					}
@@ -133,7 +134,7 @@ namespace BizHawk.Client.Common
 			}
 			else
 			{
-				if (!fromHistory)
+				if (!skipHistory)
 				{
 					_movie.ChangeLog.AddMarkerChange(item);
 				}

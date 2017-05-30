@@ -5,15 +5,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Sid : ISoundProvider
 	{
-		public bool CanProvideAsync
-		{
-			get { return false; }
-		}
+		public bool CanProvideAsync => false;
 
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{

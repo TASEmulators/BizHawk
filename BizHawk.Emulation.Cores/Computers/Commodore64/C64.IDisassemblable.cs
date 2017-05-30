@@ -31,8 +31,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				{
 					SetDefaultDisassemblable();
 				}
+
 				return _selectedDisassemblable.Cpu;
 			}
+
 			set
 			{
 				var currentSelectedDisassemblable = _selectedDisassemblable;
@@ -52,6 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				{
 					SetDefaultDisassemblable();
 				}
+
 				return _selectedDisassemblable.PCRegisterName;
 			}
 		}
@@ -67,6 +70,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			{
 				SetDefaultDisassemblable();
 			}
+
 			return _selectedDisassemblable.Disassemble(m, addr, out length);
 		}
 	}

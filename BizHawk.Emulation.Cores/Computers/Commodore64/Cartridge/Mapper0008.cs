@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 {
 	internal sealed class Mapper0008 : CartridgeDevice
 	{
-		private int[,] _banks = new int[4,0x4000]; 
+		private readonly int[,] _banks = new int[4, 0x4000]; 
 
 		private int _bankMask;
 		private int _bankNumber;
@@ -15,7 +14,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		// SuperGame mapper
 		// bank switching is done from DF00
-
 		public Mapper0008(IList<int[]> newData)
 		{
 			pinGame = false;
@@ -30,9 +28,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			{
 				for (var i = 0; i < 0x4000; i++)
 				{
-					_banks[j,i] = newData[j][i];
+					_banks[j, i] = newData[j][i];
 				}
 			}
+
 			BankSet(0);
 		}
 
@@ -44,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			ser.Sync("Latchedvalue", ref _latchedval);
 		}
 
-		public void BankSet(int index)
+		private void BankSet(int index)
 		{
 			if (!_disabled)
 			{
@@ -69,7 +68,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		public override void PokeDF00(int addr, int val)
 		{
 			if (addr == 0)
+			{
 				BankSet(val);
+			}
 		}
 
 		public override int Read8000(int addr)
@@ -85,7 +86,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		public override void WriteDF00(int addr, int val)
 		{
 			if (addr == 0)
+			{
 				BankSet(val);
+			}
 		}
 
 		public override int ReadDF00(int addr)
@@ -97,8 +100,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 			base.SyncState(ser);
 			if (ser.IsReader)
+			{
 				BankSet(_bankNumber);
+			}
 		}
 	}
 }
-

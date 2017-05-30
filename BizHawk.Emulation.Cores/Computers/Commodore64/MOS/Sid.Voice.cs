@@ -102,12 +102,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			private void ResetShiftReg()
 			{
-
-				{
-					_shiftRegister = 0x7FFFFF;
-					_shiftRegisterReset = 0;
-					SetNoise();
-				}
+				_shiftRegister = 0x7FFFFF;
+				_shiftRegisterReset = 0;
+				SetNoise();
 			}
 
 			private void SetNoise()
@@ -129,20 +126,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			private void WriteShiftReg()
 			{
-
-				{
-					_output &=
-						0xBB5DA |
-						((_output & 0x800) << 9) |
-						((_output & 0x400) << 8) |
-						((_output & 0x200) << 5) |
-						((_output & 0x100) << 3) |
-						((_output & 0x040) >> 1) |
-						((_output & 0x020) >> 3) |
-						((_output & 0x010) >> 4);
-					_noise &= _output;
-					_noNoiseOrNoise = _noNoise | _noise;
-				}
+				_output &=
+					0xBB5DA |
+					((_output & 0x800) << 9) |
+					((_output & 0x400) << 8) |
+					((_output & 0x200) << 5) |
+					((_output & 0x100) << 3) |
+					((_output & 0x040) >> 1) |
+					((_output & 0x020) >> 3) |
+					((_output & 0x010) >> 4);
+				_noise &= _output;
+				_noNoiseOrNoise = _noNoise | _noise;
 			}
 
 			// ------------------------------------
@@ -218,13 +212,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 						_waveformIndex = (_accumulator ^ (ringModSource._accumulator & _ringMsbMask)) >> 12;
 						_output = _wave[_waveformIndex] & (_noPulse | _pulse) & _noNoiseOrNoise;
 						if (_waveform > 8)
+						{
 							WriteShiftReg();
+						}
 					}
 					else
 					{
 						if (_floatOutputTtl != 0 && --_floatOutputTtl == 0)
+						{
 							_output = 0x000;
+						}
 					}
+
 					_pulse = _accumulator >> 12 >= _pulseWidth ? 0xFFF : 0x000;
 					return _output;
 				}
@@ -236,6 +235,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				{
 					return _pulseWidth & 0xFF;
 				}
+
 				set
 				{
 					_pulseWidth &= 0x0F00;
@@ -249,6 +249,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				{
 					return _pulseWidth >> 8;
 				}
+
 				set
 				{
 					_pulseWidth &= 0x00FF;
@@ -256,46 +257,23 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 			}
 
-			public bool RingMod
-			{
-				get
-				{
-					return _ringMod;
-				}
-			}
+			public bool RingMod => _ringMod;
 
-			public bool Sync
-			{
-				get
-				{
-					return _sync;
-				}
-			}
+			public bool Sync => _sync;
 
 			public void Synchronize(Voice target, Voice source)
 			{
 				if (_msbRising && target._sync && !(_sync && source._msbRising))
+				{
 					target._accumulator = 0;
-			}
-
-			public bool Test
-			{
-				get
-				{
-					return _test;
 				}
 			}
 
-			public int Waveform
-			{
-				get
-				{
-					return _waveform;
-				}
-			}
+			public bool Test => _test;
+
+			public int Waveform => _waveform;
 
 			// ------------------------------------
-
 			public void SyncState(Serializer ser)
 			{
 				ser.Sync("_accBits", ref _accBits);

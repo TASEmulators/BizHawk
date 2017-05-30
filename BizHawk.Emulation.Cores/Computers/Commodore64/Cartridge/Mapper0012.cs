@@ -18,7 +18,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		// Zaxxon and Super Zaxxon cartridges
 		// - read to 8xxx selects bank 0 in A000-BFFF
 		// - read to 9xxx selects bank 1 in A000-BFFF
-
 		public Mapper0012(IList<int> newAddresses, IList<int> newBanks, IList<int[]> newData)
 		{
 			_bankMain = new int[0x2000];
@@ -27,7 +26,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 			// create dummy bank just in case
 			for (var i = 0; i < 0x2000; i++)
+			{
 				dummyBank[i] = 0xFF;
+			}
 
 			_bankHigh[0] = dummyBank;
 			_bankHigh[1] = dummyBank;
@@ -36,9 +37,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			for (var i = 0; i < newAddresses.Count; i++)
 			{
 				if (newAddresses[i] == 0x8000)
+				{
 					Array.Copy(newData[i], _bankMain, 0x1000);
+				}
 				else if ((newAddresses[i] == 0xA000 || newAddresses[i] == 0xE000) && newBanks[i] < 2)
+				{
 					_bankHigh[newBanks[i]] = newData[i];
+				}
 			}
 
 			// mirror the main rom from 8000 to 9000
@@ -47,7 +52,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			// set both pins low for 16k rom config
 			pinExRom = false;
 			pinGame = false;
-
 		}
 
 		protected override void SyncStateInternal(Serializer ser)
@@ -82,7 +86,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 			base.SyncState(ser);
 			if (ser.IsReader)
+			{
 				_bankHighSelected = _bankHigh[_bankIndex];
+			}
 		}
 	}
 }

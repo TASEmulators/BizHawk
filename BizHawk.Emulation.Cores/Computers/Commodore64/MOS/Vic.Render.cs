@@ -300,9 +300,14 @@
 			}
 
 			if (_pixBufferBorderIndex >= PixBorderBufferSize)
+			{
 				_pixBufferBorderIndex = 0;
+			}
+
 			if (_pixBufferIndex >= PixBufferSize)
+			{
 				_pixBufferIndex = 0;
+			}
 		}
 	}
 }

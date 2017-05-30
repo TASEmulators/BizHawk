@@ -3,7 +3,6 @@
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// used as Color RAM in C64
-
 	public sealed class Chip2114
 	{
 		private int[] _ram = new int[0x400];

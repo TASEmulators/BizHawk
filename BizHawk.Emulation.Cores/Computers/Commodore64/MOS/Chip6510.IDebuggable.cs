@@ -11,19 +11,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			return new Dictionary<string, RegisterValue>
 			{
-				{ "A", _cpu.A },
-				{ "X", _cpu.X },
-				{ "Y", _cpu.Y },
-				{ "S", _cpu.S },
-				{ "PC", _cpu.PC },
-				{ "Flag C", _cpu.FlagC },
-				{ "Flag Z", _cpu.FlagZ },
-				{ "Flag I", _cpu.FlagI },
-				{ "Flag D", _cpu.FlagD },
-				{ "Flag B", _cpu.FlagB },
-				{ "Flag V", _cpu.FlagV },
-				{ "Flag N", _cpu.FlagN },
-				{ "Flag T", _cpu.FlagT }
+				["A"] = _cpu.A,
+				["X"] = _cpu.X,
+				["Y"] = _cpu.Y,
+				["S"] = _cpu.S,
+				["PC"] = _cpu.PC,
+				["Flag C"] = _cpu.FlagC,
+				["Flag Z"] = _cpu.FlagZ,
+				["Flag I"] = _cpu.FlagI,
+				["Flag D"] = _cpu.FlagD,
+				["Flag B"] = _cpu.FlagB,
+				["Flag V"] = _cpu.FlagV,
+				["Flag N"] = _cpu.FlagN,
+				["Flag T"] = _cpu.FlagT
 			};
 		}
 
@@ -64,7 +64,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-
 		void IDebuggable.Step(StepType type)
 		{
 			switch (type)
@@ -81,10 +80,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		int IDebuggable.TotalExecutedCycles
-		{
-			get { return _cpu.TotalExecutedCycles; }
-		}
+		int IDebuggable.TotalExecutedCycles => _cpu.TotalExecutedCycles;
 
 		private void StepInto()
 		{
@@ -92,6 +88,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 				DebuggerStep();
 			}
+
 			while (!_cpu.AtInstructionStart())
 			{
 				DebuggerStep();
@@ -151,8 +148,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		private const byte JsrSize = 3;
 
-		private IMemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem();
-
-		IMemoryCallbackSystem IDebuggable.MemoryCallbacks { get { return _memoryCallbacks; } }
+		IMemoryCallbackSystem IDebuggable.MemoryCallbacks { get; } = new MemoryCallbackSystem();
 	}
 }

@@ -13,12 +13,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		"C64Hawk",
 		"SaxxonPike",
 		isPorted: false,
-		isReleased: false)]
+		isReleased: true)]
 	public sealed partial class C64 : IEmulator, IRegionable, IBoardInfo
 	{
 		public C64(CoreComm comm, IEnumerable<byte[]> roms, GameInfo game, object settings, object syncSettings)
 		{
-
 			PutSyncSettings((C64SyncSettings)syncSettings ?? new C64SyncSettings());
 			PutSettings((C64Settings)settings ?? new C64Settings());
 
@@ -27,12 +26,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			InputCallbacks = new InputCallbackSystem();
 
 			CoreComm = comm;
-			Roms = roms?.ToList() ?? new List<byte[]>();
+			_roms = roms?.ToList() ?? new List<byte[]>();
 			_currentDisk = 0;
 			RomSanityCheck();
 
 			Init(SyncSettings.VicType, Settings.BorderType, SyncSettings.SidType, SyncSettings.TapeDriveType, SyncSettings.DiskDriveType);
-			_cyclesPerFrame = _board.Vic.CyclesPerFrame;			
+			_cyclesPerFrame = _board.Vic.CyclesPerFrame;
 			_memoryCallbacks = new MemoryCallbackSystem();
 
 			HardReset();
@@ -64,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			if (_board.CartPort.IsConnected)
 			{
 				// There are no multi-cart cart games, so just hardcode .First()
-				CoreComm.RomStatusDetails = $"{game.Name}\r\nSHA1:{roms.First().HashSHA1()}\r\nMD5:{roms.First().HashMD5()}\r\nMapper Impl \"{_board.CartPort.CartridgeType}\"";
+				CoreComm.RomStatusDetails = $"{game.Name}\r\nSHA1:{_roms.First().HashSHA1()}\r\nMD5:{roms.First().HashMD5()}\r\nMapper Impl \"{_board.CartPort.CartridgeType}\"";
 			}
 
 			SetupMemoryDomains();
@@ -74,12 +73,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		// Given a good enough use case we could in theory expand those requirements, but for now we need a sanity check
 		private void RomSanityCheck()
 		{
-			if (Roms.Count == 0)
+			if (_roms.Count == 0)
 			{
 				throw new NotSupportedException("Currently, a Rom is required to run this core.");
 			}
 
-			var formats = Roms.Select(rom => C64FormatFinder.GetFormat(rom));
+			var formats = _roms.Select(C64FormatFinder.GetFormat);
 
 			HashSet<C64Format> uniqueFormats = new HashSet<C64Format>();
 
@@ -119,11 +118,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		}
 
 		// IRegionable
-		public DisplayType Region { get; private set; }
+		public DisplayType Region { get; }
 
 		private readonly int _cyclesPerFrame;
 
-		private List<byte[]> Roms = new List<byte[]>();
+		private readonly List<byte[]> _roms;
 
 		private static readonly ControllerDefinition C64ControllerDefinition = new ControllerDefinition
 		{
@@ -147,19 +146,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		private int _frameCycles;
 
 		private int _frame;
-		private ITraceable _tracer;
-		// Disk stuff
+		private readonly ITraceable _tracer;
 
+		// Disk stuff
 		private bool _nextPressed;
 		private bool _prevPressed;
 		private int _currentDisk;
 		public int CurrentDisk => _currentDisk;
-		public int DiskCount => Roms.Count;
+		public int DiskCount => _roms.Count;
 
 		private void IncrementDisk()
 		{
 			_currentDisk++;
-			if (CurrentDisk >= Roms.Count)
+			if (CurrentDisk >= _roms.Count)
 			{
 				_currentDisk = 0;
 			}
@@ -172,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_currentDisk--;
 			if (_currentDisk < 0)
 			{
-				_currentDisk = Roms.Count - 1;
+				_currentDisk = _roms.Count - 1;
 			}
 
 			InitDisk();
@@ -180,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private void InitDisk()
 		{
-			InitMedia(Roms[_currentDisk]);
+			InitMedia(_roms[_currentDisk]);
 		}
 
 		public void SetDisk(int discNum)
@@ -229,14 +228,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware("C64", n, false)).FirstOrDefault(b => b != null && b.Length == length);
 			if (result == null)
-				throw new MissingFirmwareException(string.Format("At least one of these firmwares is required: {0}", string.Join(", ", names)));
+			{
+				throw new MissingFirmwareException($"At least one of these firmwares is required: {string.Join(", ", names)}");
+			}
+
 			return result;
 		}
 
 		private void Init(VicType initRegion, BorderType borderType, SidType sidType, TapeDriveType tapeDriveType, DiskDriveType diskDriveType)
 		{
 			// Force certain drive types to be available depending on ROM type
-			var rom = Roms.First();
+			var rom = _roms.First();
 
 			switch (C64FormatFinder.GetFormat(rom))
 			{
@@ -244,7 +246,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				case C64Format.G64:
 				case C64Format.X64:
 					if (diskDriveType == DiskDriveType.None)
+					{
 						diskDriveType = DiskDriveType.Commodore1541;
+					}
+
 					break;
 				case C64Format.T64:
 				case C64Format.TAP:
@@ -252,6 +257,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					{
 						tapeDriveType = TapeDriveType.Commodore1530;
 					}
+
 					break;
 				case C64Format.CRT:
 					// Nothing required.
@@ -261,8 +267,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 					{
 						throw new Exception("The image format is not known, and too large to be used as a PRG.");
 					}
+
 					if (diskDriveType == DiskDriveType.None)
+					{
 						diskDriveType = DiskDriveType.Commodore1541;
+					}
+
 					break;
 				default:
 					throw new Exception("The image format is not yet supported by the Commodore 64 core.");
@@ -348,7 +358,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		private void HardReset()
 		{
-			InitMedia(Roms[_currentDisk]);
+			InitMedia(_roms[_currentDisk]);
 			_board.HardReset();
 		}
 	}

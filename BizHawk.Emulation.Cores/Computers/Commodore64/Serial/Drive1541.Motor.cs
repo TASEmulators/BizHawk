@@ -17,14 +17,22 @@
 			if (_tempStep != _motorStep)
 			{
 				if (_tempStep == ((_motorStep - 1) & 0x3))
+				{
 					_trackNumber--;
+				}
 				else if (_tempStep == ((_motorStep + 1) & 0x3))
+				{
 					_trackNumber++;
+				}
 
 				if (_trackNumber < 0)
+				{
 					_trackNumber = 0;
+				}
 				else if (_trackNumber > 83)
+				{
 					_trackNumber = 83;
+				}
 
 				_motorStep = _tempStep;
 				UpdateMediaData();

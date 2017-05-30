@@ -22,8 +22,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			for (var i = 0; i < newData.Count; i++)
 			{
 				if (newAddresses[i] == 0x8000)
+				{
 					Array.Copy(newData[i], 0, _rom, 0x2000 * newBanks[i], 0x2000);
+				}
 			}
+
 			_romOffset = 0;
 			_cartEnabled = true;
 		}
@@ -42,7 +45,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			pinExRom = false;
 			pinGame = false;
 			for (var i = 0; i < 0x2000; i++)
+			{
 				_ram[i] = 0x00;
+			}
+
 			_romOffset = 0;
 			_cartEnabled = true;
 		}
@@ -146,7 +152,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		private int GetIo2(int addr)
 		{
 			if (!_cartEnabled)
+			{
 				return ReadOpenBus();
+			}
 
 			return _ramEnabled
 				? _ram[(addr & 0xFF) | 0x1F00]
