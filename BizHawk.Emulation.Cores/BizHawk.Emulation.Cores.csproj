@@ -221,7 +221,7 @@
     <Compile Include="Computers\Commodore64\C64.IStatable.cs">
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
-    <Compile Include="Computers\Commodore64\FFT.cs" />  
+    <Compile Include="Computers\Commodore64\FFT.cs" />
     <Compile Include="Computers\Commodore64\C64.Motherboard.cs" />
     <Compile Include="Computers\Commodore64\C64.MotherboardInterface.cs" />
     <Compile Include="Computers\Commodore64\C64Format.cs" />
@@ -1209,6 +1209,8 @@
     <Compile Include="Consoles\Sega\SMS\VDP.ModeTMS.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.Mode4.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.Tables.cs" />
+    <Compile Include="Consoles\SNK\LibNeoGeo.cs" />
+    <Compile Include="Consoles\SNK\NeoGeo.cs" />
     <Compile Include="Consoles\Sony\PSP\PPSSPPDll.cs" />
     <Compile Include="Consoles\Sony\PSP\PSP.cs" />
     <Compile Include="Consoles\Sony\PSX\Octoshock.cs">

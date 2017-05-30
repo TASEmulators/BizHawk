@@ -97,6 +97,7 @@ namespace BizHawk.Client.ApiHawk
 					return CoreSystem.WonderSwan;
 
 				case "VB":
+				case "NGP":
 					return 0; // like I give a shit
 
 				default:

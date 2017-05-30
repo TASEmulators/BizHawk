@@ -335,6 +335,11 @@ namespace BizHawk.Emulation.Common
 				case ".VB":
 					game.System = "VB";
 					break;
+
+				case ".NGP":
+				case ".NGC":
+					game.System = "NGP";
+					break;
 			}
 
 			game.Name = Path.GetFileNameWithoutExtension(fileName)?.Replace('_', ' ');
