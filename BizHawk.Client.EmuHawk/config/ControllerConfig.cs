@@ -45,6 +45,7 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("PSX Gamepad Controller", Properties.Resources.PSX_Original_Controller);
 			ControllerImages.Add("PSX DualShock Controller", Properties.Resources.psx_dualshock);
 			ControllerImages.Add("Apple IIe Keyboard", Properties.Resources.AppleIIKeyboard);
+			ControllerImages.Add("VirtualBoy Controller", Properties.Resources.VBoyController);
 			
 		}
 
