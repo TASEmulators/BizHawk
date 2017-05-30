@@ -1210,8 +1210,8 @@
     <Compile Include="Consoles\Sega\SMS\VDP.ModeTMS.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.Mode4.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.Tables.cs" />
-    <Compile Include="Consoles\SNK\LibNeoGeo.cs" />
-    <Compile Include="Consoles\SNK\NeoGeo.cs" />
+    <Compile Include="Consoles\SNK\LibNeoGeoPort.cs" />
+    <Compile Include="Consoles\SNK\NeoGeoPort.cs" />
     <Compile Include="Consoles\Sony\PSP\PPSSPPDll.cs" />
     <Compile Include="Consoles\Sony\PSP\PSP.cs" />
     <Compile Include="Consoles\Sony\PSX\Octoshock.cs">

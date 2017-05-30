@@ -52,6 +52,9 @@ struct EmulateSpecStruct
 	// Set by emulation code.
 	int64 MasterCycles;
 
+	// unix time for RTC
+	int64 FrontendTime;
+
 	// Maximum size of the sound buffer, in frames.  Set by the driver code.
 	int32 SoundBufMaxSize;
 

@@ -234,8 +234,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public void Init()
 			{
 				// as the inits are done in a defined order with a defined memory map,
-				// we don't need to savestate _pthreadSelf
-				_pthreadSelf = Z.US(_parent._plainheap.Allocate(65536, 1));
+				// we don't need to savestate _pthreadSelf, only its contents
+				_pthreadSelf = Z.US(_parent._plainheap.Allocate(512, 1));
 			}
 
 			[BizExport(CallingConvention.Cdecl, EntryPoint = "log_output")]

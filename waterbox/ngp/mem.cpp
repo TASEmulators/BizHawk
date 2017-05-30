@@ -27,6 +27,8 @@
 namespace MDFN_IEN_NGP
 {
 extern uint8 settings_language;
+extern bool lagged;
+extern void (*inputcallback)();
 
 //Hack way of returning good Flash status.
 bool FlashStatusEnable = FALSE;
@@ -200,6 +202,13 @@ uint8 loadB(uint32 address)
 	if (FastReadMap[address >> 16])
 		return (FastReadMap[address >> 16][address]);
 
+	if (address == 0x6f82)
+	{
+		lagged = false;
+		if (inputcallback)
+			inputcallback();
+	}
+
 	uint8 *ptr = (uint8 *)translate_address_read(address);
 
 	if (ptr)
@@ -254,6 +263,13 @@ uint16 loadW(uint32 address)
 
 	if (FastReadMap[address >> 16])
 		return (MDFN_de16lsb<true>(&FastReadMap[address >> 16][address]));
+
+	if (address == 0x6f82)
+	{
+		lagged = false;
+		if (inputcallback)
+			inputcallback();
+	}
 
 	uint16 *ptr = (uint16 *)translate_address_read(address);
 	if (ptr)

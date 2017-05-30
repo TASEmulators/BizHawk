@@ -4,7 +4,7 @@ CCFLAGS:= -I. -I../emulibc \
 	-Wall -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast -Werror=implicit-function-declaration \
 	-std=c++0x -fomit-frame-pointer -fvisibility=hidden -fno-exceptions -fno-rtti \
 	-DLSB_FIRST \
-	-O0 -g
+	-O3 -flto
 
 TARGET = ngp.wbx
 

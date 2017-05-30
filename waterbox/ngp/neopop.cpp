@@ -27,6 +27,9 @@
 
 namespace MDFN_IEN_NGP
 {
+bool lagged;
+void (*inputcallback)();
+
 
 extern uint8 CPUExRAM[16384];
 
@@ -72,11 +75,13 @@ static int32 z80_runtime;
 
 static void Emulate(EmulateSpecStruct *espec)
 {
+	lagged = true;
 	bool MeowMeow = 0;
 	MDFN_Surface surface;
 	surface.pixels = espec->pixels;
 	surface.pitch32 = 160;
 
+	frontend_time = espec->FrontendTime;
 	storeB(0x6f82, espec->Buttons);
 
 	ngpc_soundTS = 0;
@@ -115,6 +120,7 @@ static void Emulate(EmulateSpecStruct *espec)
 
 	espec->MasterCycles = ngpc_soundTS;
 	espec->SoundBufSize = MDFNNGPCSOUND_Flush(espec->SoundBuf, espec->SoundBufMaxSize);
+	espec->Lagged = lagged;
 }
 
 static MDFN_COLD bool Load(const uint8* romdata, int32 romlength)
@@ -126,7 +132,7 @@ static MDFN_COLD bool Load(const uint8* romdata, int32 romlength)
 	//throw MDFN_Error(0, _("NGP/NGPC ROM image is too large."));
 
 	ngpc_rom.length = fp_size;
-	ngpc_rom.data = new uint8[ngpc_rom.length];
+	ngpc_rom.data = (uint8*)alloc_sealed(ngpc_rom.length);
 	memcpy(ngpc_rom.data, romdata, romlength);
 
 	rom_loaded();
@@ -265,4 +271,9 @@ EXPORT void FrameAdvance(EmulateSpecStruct *espec)
 EXPORT void HardReset()
 {
 	reset();
+}
+
+EXPORT void SetInputCallback(void (*callback)())
+{
+	inputcallback = callback;
 }

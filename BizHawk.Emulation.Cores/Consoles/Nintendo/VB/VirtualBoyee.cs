@@ -225,7 +225,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 		#endregion
 
-		// TODO
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
 

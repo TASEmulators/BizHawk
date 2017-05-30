@@ -31,7 +31,7 @@ NGPGFX_CLASS::NGPGFX_CLASS(void)
 		int g = ((x >> 4) & 0xF) * 17;
 		int b = ((x >> 8) & 0xF) * 17;
 
-		ColorMap[x] = r | g << 8 | b << 16 | 0xff000000;
+		ColorMap[x] = b | g << 8 | r << 16 | 0xff000000;
 	}
 }
 

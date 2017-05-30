@@ -8,16 +8,19 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.SNK
 {
-	public abstract class LibNeoGeo
+	public abstract class LibNeoGeoPort
 	{
 		private const CallingConvention CC = CallingConvention.Cdecl;
 
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void InputCallback();
 		[StructLayout(LayoutKind.Sequential)]
 		public class EmulateSpec
 		{
 			public IntPtr Pixels;
 			public IntPtr SoundBuff;
 			public long MasterCycles;
+			public long FrontendTime;
 			public int SoundBufMaxSize;
 			public int SoundBufSize;
 			public int SkipRendering;
@@ -32,5 +35,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		public abstract void FrameAdvance([In, Out]EmulateSpec espec);
 		[BizImport(CC)]
 		public abstract void HardReset();
+		[BizImport(CC)]
+		public abstract void SetInputCallback(InputCallback callback);
 	}
 }

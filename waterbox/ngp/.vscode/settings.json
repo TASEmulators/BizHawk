@@ -6,6 +6,7 @@
 		"algorithm": "cpp",
 		"vector": "cpp",
 		"xstring": "cpp",
-		"xutility": "cpp"
+		"xutility": "cpp",
+		"xmemory0": "cpp"
 	}
 }
