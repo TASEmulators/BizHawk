@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		"C64Hawk",
 		"SaxxonPike",
 		isPorted: false,
-		isReleased: false)]
+		isReleased: true)]
 	public sealed partial class C64 : IEmulator, IRegionable, IBoardInfo
 	{
 		public C64(CoreComm comm, IEnumerable<byte[]> roms, GameInfo game, object settings, object syncSettings)
