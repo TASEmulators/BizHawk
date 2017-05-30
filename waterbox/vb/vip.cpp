@@ -105,7 +105,7 @@ static void MakeColorLUT()
 			const float g_prime = pow(g, 1.0 / 2.2);
 			const float b_prime = pow(b, 1.0 / 2.2);
 
-			ColorLUT[lr][i] = (int)(r_prime * 255) & 0xff | (int)(g_prime * 255) << 8 & 0xff00 | (int)(b_prime * 255) << 16 & 0xff0000 | 0xff000000;
+			ColorLUT[lr][i] = (int)(b_prime * 255) & 0xff | (int)(g_prime * 255) << 8 & 0xff00 | (int)(r_prime * 255) << 16 & 0xff0000 | 0xff000000;
 		}
 	}
 
@@ -132,7 +132,7 @@ static void MakeColorLUT()
 			g_prime = pow(g, 1.0 / 2.2);
 			b_prime = pow(b, 1.0 / 2.2);
 
-			AnaSlowColorLUT[l_b][r_b] = (int)(r_prime * 255) & 0xff | (int)(g_prime * 255) << 8 & 0xff00 | (int)(b_prime * 255) << 16 & 0xff0000 | 0xff000000;
+			AnaSlowColorLUT[l_b][r_b] = (int)(b_prime * 255) & 0xff | (int)(g_prime * 255) << 8 & 0xff00 | (int)(r_prime * 255) << 16 & 0xff0000 | 0xff000000;
 		}
 	}
 }

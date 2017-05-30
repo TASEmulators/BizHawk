@@ -105,10 +105,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 			private static int ConvertColor(Color c)
 			{
-				var v = c.ToArgb();
-				return v & 0xff00
-					| v << 16 & 0xff0000
-					| v >> 16 & 0xff;
+				return c.ToArgb();
 			}
 
 			public static NativeSettings FromFrontendSettings(VirtualBoyee.Settings s, VirtualBoyee.SyncSettings ss)
