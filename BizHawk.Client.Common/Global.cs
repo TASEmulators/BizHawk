@@ -66,8 +66,6 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static readonly ClickyVirtualPadController ClickyVirtualPadController = new ClickyVirtualPadController();
 
-		public static SimpleController MovieOutputController = new SimpleController();
-
 		public static Controller ClientControls;
 
 		// Input state which has been estine for game controller inputs are coalesce here
