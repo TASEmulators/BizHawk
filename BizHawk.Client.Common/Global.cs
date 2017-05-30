@@ -144,6 +144,8 @@ namespace BizHawk.Client.Common
 						return SystemInfo.AppleII;
 					case "Libretro":
 						return SystemInfo.Libretro;
+					case "VB":
+						return SystemInfo.VirtualBoy;
 				}
 			}
 		}

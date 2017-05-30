@@ -174,9 +174,14 @@ namespace BizHawk.Client.Common
 		public static SystemInfo TI83 { get; } = new SystemInfo("TI - 83", CoreSystem.TI83, 1);
 
 		/// <summary>
-		/// Gets the <see cref="SystemInfo"/> instance for TI-83
+		/// Gets the <see cref="SystemInfo"/> instance for Wonderswan
 		/// </summary>
 		public static SystemInfo WonderSwan { get; } = new SystemInfo("WonderSwan", CoreSystem.WonderSwan, 1);
+
+		/// <summary>
+		/// Gets the <see cref="SystemInfo"/> instance for TI-83
+		/// </summary>
+		public static SystemInfo VirtualBoy { get; } = new SystemInfo("VirtualBoy", CoreSystem.VirtualBoy, 1);
 
 		#endregion Get SystemInfo
 
