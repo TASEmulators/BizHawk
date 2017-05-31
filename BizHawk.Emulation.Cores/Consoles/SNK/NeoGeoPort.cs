@@ -1,9 +1,11 @@
-﻿using BizHawk.Common.BizInvoke;
+﻿using BizHawk.Common;
+using BizHawk.Common.BizInvoke;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,16 +15,20 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 {
 	[CoreAttributes("NeoPop", "Thomas Klausner", true, false, "0.9.44.1", 
 		"https://mednafen.github.io/releases/", false)]
-	public class NeoGeoPort : IEmulator, IVideoProvider, ISoundProvider, IStatable, IInputPollable
+	public class NeoGeoPort : IEmulator, IVideoProvider, ISoundProvider, IStatable, IInputPollable,
+		ISettable<object, NeoGeoPort.SyncSettings>
 	{
 		private PeRunner _exe;
 		private LibNeoGeoPort _neopop;
+		private long _clockTime;
+		private int _clockDen;
 
 		[CoreConstructor("NGP")]
-		public NeoGeoPort(CoreComm comm, byte[] rom)
+		public NeoGeoPort(CoreComm comm, byte[] rom, SyncSettings syncSettings, bool deterministic)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
+			_syncSettings = syncSettings ?? new SyncSettings();
 
 			_exe = new PeRunner(new PeRunnerOptions
 			{
@@ -36,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 
 			_neopop = BizInvoker.GetInvoker<LibNeoGeoPort>(_exe, _exe);
 
-			if (!_neopop.LoadSystem(rom, rom.Length, 1))
+			if (!_neopop.LoadSystem(rom, rom.Length, _syncSettings.Language))
 			{
 				throw new InvalidOperationException("Core rejected the rom");
 			}
@@ -45,10 +51,22 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 
 			_inputCallback = InputCallbacks.Call;
 			InitMemoryDomains();
+
+			DeterministicEmulation = deterministic || !_syncSettings.UseRealTime;
+			_clockTime = (long)((_syncSettings.InitialTime - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds);
 		}
 
 		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
+			_clockDen += VsyncDenominator;
+			if (_clockDen >= VsyncNumerator)
+			{
+				_clockDen -= VsyncNumerator;
+				_clockTime++;
+			}
+
+			long clockTime = DeterministicEmulation ? _clockTime : (long)((_syncSettings.InitialTime - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds);
+
 			_neopop.SetInputCallback(InputCallbacks.Count > 0 ? _inputCallback : null);
 
 			if (controller.IsPressed("Power"))
@@ -63,7 +81,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 					SoundBuff = (IntPtr)sp,
 					SoundBufMaxSize = _soundBuffer.Length / 2,
 					Buttons = GetButtons(controller),
-					SkipRendering = render ? 0 : 1
+					SkipRendering = render ? 0 : 1,
+					FrontendTime = clockTime
 				};
 
 				_neopop.FrameAdvance(spec);
@@ -102,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 		public string SystemId { get { return "NGP"; } }
-		public bool DeterministicEmulation { get { return true; } }
+		public bool DeterministicEmulation { get; private set; }
 		public CoreComm CoreComm { get; }
 
 		#region IStatable
@@ -256,6 +275,67 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		public bool CanProvideAsync => false;
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
+
+		#endregion
+
+		#region ISettable
+
+		private SyncSettings _syncSettings;
+
+		public class SyncSettings
+		{
+			[DisplayName("Language")]
+			[Description("Language of the system.  Only affects some games.")]
+			[DefaultValue(LibNeoGeoPort.Language.Japanese)]
+			public LibNeoGeoPort.Language Language { get; set; }
+
+			[DisplayName("Initial Time")]
+			[Description("Initial time of emulation.  Only relevant when UseRealTime is false.")]
+			[DefaultValue(typeof(DateTime), "2010-01-01")]
+			public DateTime InitialTime { get; set; }
+
+			[DisplayName("Use RealTime")]
+			[Description("If true, RTC clock will be based off of real time instead of emulated time.  Ignored (set to false) when recording a movie.")]
+			[DefaultValue(false)]
+			public bool UseRealTime { get; set; }
+
+			public SyncSettings Clone()
+			{
+				return (SyncSettings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
+			}
+
+			public SyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+		}
+
+		public object GetSettings()
+		{
+			return null;
+		}
+
+		public SyncSettings GetSyncSettings()
+		{
+			return _syncSettings.Clone();
+		}
+
+		public bool PutSettings(object o)
+		{
+			return false;
+		}
+
+		public bool PutSyncSettings(SyncSettings o)
+		{
+			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
+			_syncSettings = o;
+			return ret;
+		}
 
 		#endregion
 

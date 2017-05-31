@@ -1799,6 +1799,7 @@ namespace BizHawk.Client.EmuHawk
 			IntvSubMenu.Visible = false;
 			virtualBoyToolStripMenuItem.Visible = false;
 			sNESToolStripMenuItem.Visible = false;
+			neoGeoPocketToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
@@ -1879,6 +1880,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "VB":
 					virtualBoyToolStripMenuItem.Visible = true;
+					break;
+				case "NGP":
+					neoGeoPocketToolStripMenuItem.Visible = true;
 					break;
 			}
 		}
@@ -4302,6 +4306,11 @@ namespace BizHawk.Client.EmuHawk
 		private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Snes9x Settings");
+		}
+
+		private void preferencesToolStripMenuItem2_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "NeoPop Settings");
 		}
 
 		private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)

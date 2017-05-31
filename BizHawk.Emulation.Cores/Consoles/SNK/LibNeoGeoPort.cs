@@ -27,8 +27,13 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			public int Buttons;
 			public int Lagged;
 		}
+		public enum Language
+		{
+			Japanese, English
+		}
+
 		[BizImport(CC)]
-		public abstract bool LoadSystem(byte[] rom, int romlength, int language);
+		public abstract bool LoadSystem(byte[] rom, int romlength, Language language);
 		[BizImport(CC)]
 		public abstract void SetLayers(int enable); // 1, 2, 4  bg,fg,sprites
 		[BizImport(CC)]

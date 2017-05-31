@@ -441,6 +441,8 @@
 			this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
 			this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
+			this.neoGeoPocketToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.preferencesToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
 			this.MainStatusBar.SuspendLayout();
 			this.MainFormContextMenu.SuspendLayout();
@@ -475,11 +477,12 @@
             this.IntvSubMenu,
             this.sNESToolStripMenuItem,
             this.virtualBoyToolStripMenuItem,
+            this.neoGeoPocketToolStripMenuItem,
             this.HelpSubMenu});
 			this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
 			this.MainformMenu.Location = new System.Drawing.Point(0, 0);
 			this.MainformMenu.Name = "MainformMenu";
-			this.MainformMenu.Size = new System.Drawing.Size(470, 57);
+			this.MainformMenu.Size = new System.Drawing.Size(470, 74);
 			this.MainformMenu.TabIndex = 0;
 			this.MainformMenu.Text = "menuStrip1";
 			this.MainformMenu.MenuActivate += new System.EventHandler(this.MainformMenu_MenuActivate);
@@ -3198,7 +3201,7 @@
 			// preferencesToolStripMenuItem
 			// 
 			this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-			this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
 			this.preferencesToolStripMenuItem.Text = "Preferences...";
 			this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
 			// 
@@ -3213,7 +3216,7 @@
 			// preferencesToolStripMenuItem1
 			// 
 			this.preferencesToolStripMenuItem1.Name = "preferencesToolStripMenuItem1";
-			this.preferencesToolStripMenuItem1.Size = new System.Drawing.Size(144, 22);
+			this.preferencesToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
 			this.preferencesToolStripMenuItem1.Text = "Preferences...";
 			this.preferencesToolStripMenuItem1.Click += new System.EventHandler(this.preferencesToolStripMenuItem1_Click);
 			// 
@@ -3906,6 +3909,21 @@
 			this.timerMouseIdle.Interval = 2000;
 			this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
 			// 
+			// neoGeoPocketToolStripMenuItem
+			// 
+			this.neoGeoPocketToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.preferencesToolStripMenuItem2});
+			this.neoGeoPocketToolStripMenuItem.Name = "neoGeoPocketToolStripMenuItem";
+			this.neoGeoPocketToolStripMenuItem.Size = new System.Drawing.Size(92, 17);
+			this.neoGeoPocketToolStripMenuItem.Text = "&NeoGeo Pocket";
+			// 
+			// preferencesToolStripMenuItem2
+			// 
+			this.preferencesToolStripMenuItem2.Name = "preferencesToolStripMenuItem2";
+			this.preferencesToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
+			this.preferencesToolStripMenuItem2.Text = "Preferences...";
+			this.preferencesToolStripMenuItem2.Click += new System.EventHandler(this.preferencesToolStripMenuItem2_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -4358,5 +4376,7 @@
 		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem virtualBoyToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem1;
+		private System.Windows.Forms.ToolStripMenuItem neoGeoPocketToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem2;
 	}
 }
