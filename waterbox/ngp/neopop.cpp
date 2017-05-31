@@ -161,91 +161,8 @@ static MDFN_COLD bool Load(const uint8* romdata, int32 romlength)
 	MDFNNGPC_SetSoundRate(44100);
 	return true;
 }
-
-/*static void DoSimpleCommand(int cmd)
-{
-	switch (cmd)
-	{
-	case MDFN_MSC_POWER:
-	case MDFN_MSC_RESET:
-		reset();
-		break;
-	}
-}*/
-
-/*static const IDIISG IDII =
-	{
-		{"up", "UP ↑", 0, IDIT_BUTTON, "down"},
-		{"down", "DOWN ↓", 1, IDIT_BUTTON, "up"},
-		{"left", "LEFT ←", 2, IDIT_BUTTON, "right"},
-		{"right", "RIGHT →", 3, IDIT_BUTTON, "left"},
-		{"a", "A", 5, IDIT_BUTTON_CAN_RAPID, NULL},
-		{"b", "B", 6, IDIT_BUTTON_CAN_RAPID, NULL},
-		{"option", "OPTION", 4, IDIT_BUTTON, NULL},
-};*/
-
-/*static const FileExtensionSpecStruct KnownExtensions[] =
-	{
-		{".ngp", gettext_noop("Neo Geo Pocket ROM Image")},
-		{".ngc", gettext_noop("Neo Geo Pocket Color ROM Image")},
-		{NULL, NULL}};
-}*/
 }
 using namespace MDFN_IEN_NGP;
-
-
-
-/*MDFNGI EmulatedNGP =
-	{
-		"ngp",
-		"Neo Geo Pocket (Color)",
-		KnownExtensions,
-		MODPRIO_INTERNAL_HIGH,
-		NULL,
-		PortInfo,
-		Load,
-		TestMagic,
-		NULL,
-		NULL,
-		CloseGame,
-
-		SetLayerEnableMask,
-		"Background Scroll\0Foreground Scroll\0Sprites\0",
-
-		NULL,
-		NULL,
-
-		NULL,
-		0,
-
-		CheatInfo_Empty,
-
-		false,
-		StateAction,
-		Emulate,
-		NULL,
-		SetInput,
-		NULL,
-		DoSimpleCommand,
-		NULL,
-		NGPSettings,
-		MDFN_MASTERCLOCK_FIXED(6144000),
-		0,
-
-		false, // Multires possible?
-
-		160,  // lcm_width
-		152,  // lcm_height
-		NULL, // Dummy
-
-		160, // Nominal width
-		152, // Nominal height
-
-		160, // Framebuffer width
-		152, // Framebuffer height
-
-		2, // Number of output sound channels
-};*/
 
 int main(void)
 {
@@ -277,3 +194,31 @@ EXPORT void SetInputCallback(void (*callback)())
 {
 	inputcallback = callback;
 }
+
+EXPORT void GetMemoryArea(int which, void **ptr, int *size, int *writable)
+{
+	switch (which)
+	{
+	case 0:
+		*ptr = CPUExRAM;
+		*size = 16384;
+		*writable = 1;
+		break;
+	case 1:
+		*ptr = ngpc_rom.data;
+		*size = ngpc_rom.length;
+		*writable = 0;
+		break;
+	case 2:
+		*ptr = ngpc_rom.orig_data;
+		*size = ngpc_rom.length;
+		*writable = 0;
+		break;
+	default:
+		*ptr = nullptr;
+		*size = 0;
+		*writable = 0;
+		break;
+	}
+}
+

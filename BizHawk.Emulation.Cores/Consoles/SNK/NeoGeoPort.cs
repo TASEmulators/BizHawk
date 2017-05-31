@@ -44,6 +44,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			_exe.Seal();
 
 			_inputCallback = InputCallbacks.Call;
+			InitMemoryDomains();
 		}
 
 		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
@@ -255,6 +256,33 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		public bool CanProvideAsync => false;
 
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
+
+		#endregion
+
+		#region Memory Domains
+
+		private unsafe void InitMemoryDomains()
+		{
+			var domains = new List<MemoryDomain>();
+
+			var domainNames = new[] { "RAM", "ROM", "ORIGINAL ROM" };
+
+			foreach (var a in domainNames.Select((s, i) => new { s, i }))
+			{
+				IntPtr ptr = IntPtr.Zero;
+				int size = 0;
+				bool writable = false;
+
+				_neopop.GetMemoryArea(a.i, ref ptr, ref size, ref writable);
+
+				if (ptr != IntPtr.Zero && size > 0)
+				{
+					domains.Add(new MemoryDomainIntPtrMonitor(a.s, MemoryDomain.Endian.Little,
+						ptr, size, writable, 4, _exe));
+				}
+			}
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(new MemoryDomainList(domains));
+		}
 
 		#endregion
 	}

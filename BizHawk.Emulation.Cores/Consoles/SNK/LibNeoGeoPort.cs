@@ -37,5 +37,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		public abstract void HardReset();
 		[BizImport(CC)]
 		public abstract void SetInputCallback(InputCallback callback);
+		[BizImport(CC)]
+		public abstract void GetMemoryArea(int which, ref IntPtr ptr, ref int size, ref bool writable);
 	}
 }
