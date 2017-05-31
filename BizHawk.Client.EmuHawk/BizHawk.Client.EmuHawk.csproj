@@ -1458,6 +1458,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="RomStatusPicker.resx">
       <DependentUpon>RomStatusPicker.cs</DependentUpon>
@@ -2129,6 +2130,7 @@
     <None Include="images\ENE.png" />
     <None Include="images\ESE.png" />
     <None Include="images\5757344.png" />
+    <None Include="images\ControllerImages\NGPController.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
