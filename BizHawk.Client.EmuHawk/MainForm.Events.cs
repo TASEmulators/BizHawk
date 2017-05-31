@@ -2602,7 +2602,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			var window = new config.DisplayConfigLite();
+			var window = new DisplayConfigLite();
 			var result = window.ShowDialog();
 			if (result == DialogResult.OK)
 			{
