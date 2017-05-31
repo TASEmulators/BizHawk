@@ -1610,7 +1610,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is NES && ((NES)Emulator).IsVS)
 			{
-				new NESVSSettings().ShowHawkDialog();
+				new NesVsSettings().ShowHawkDialog();
 			}
 		}
 

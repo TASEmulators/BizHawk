@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -14,30 +9,25 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class NesControllerSettings : Form
 	{
-		NES.NESSyncSettings SyncSettings;
+		private readonly NES.NESSyncSettings _syncSettings;
 
 		public NesControllerSettings()
 		{
 			InitializeComponent();
-			SyncSettings = ((NES)Global.Emulator).GetSyncSettings();
+			_syncSettings = ((NES)Global.Emulator).GetSyncSettings();
 
 			// TODO: use combobox extension and add descriptions to enum values
 			comboBoxFamicom.Items.AddRange(NESControlSettings.GetFamicomExpansionValues().ToArray());
 			comboBoxNESL.Items.AddRange(NESControlSettings.GetNesPortValues().ToArray());
 			comboBoxNESR.Items.AddRange(NESControlSettings.GetNesPortValues().ToArray());
 
-			comboBoxFamicom.SelectedItem = SyncSettings.Controls.FamicomExpPort;
-			comboBoxNESL.SelectedItem = SyncSettings.Controls.NesLeftPort;
-			comboBoxNESR.SelectedItem = SyncSettings.Controls.NesRightPort;
-			checkBoxFamicom.Checked = SyncSettings.Controls.Famicom;
+			comboBoxFamicom.SelectedItem = _syncSettings.Controls.FamicomExpPort;
+			comboBoxNESL.SelectedItem = _syncSettings.Controls.NesLeftPort;
+			comboBoxNESR.SelectedItem = _syncSettings.Controls.NesRightPort;
+			checkBoxFamicom.Checked = _syncSettings.Controls.Famicom;
 		}
 
-		private void NesControllerSettings_Load(object sender, EventArgs e)
-		{
-
-		}
-
-		private void checkBoxFamicom_CheckedChanged(object sender, EventArgs e)
+		private void CheckBoxFamicom_CheckedChanged(object sender, EventArgs e)
 		{
 			comboBoxFamicom.Enabled = checkBoxFamicom.Checked;
 			comboBoxNESL.Enabled = !checkBoxFamicom.Checked;
@@ -54,16 +44,13 @@ namespace BizHawk.Client.EmuHawk
 				NesRightPort = (string)comboBoxNESR.SelectedItem
 			};
 
-			bool changed = NESControlSettings.NeedsReboot(ctrls, SyncSettings.Controls);
+			bool changed = NESControlSettings.NeedsReboot(ctrls, _syncSettings.Controls);
 
-			SyncSettings.Controls = ctrls;
+			_syncSettings.Controls = ctrls;
 
 			if (changed)
 			{
-				GlobalWin.MainForm.PutCoreSyncSettings(SyncSettings);
-				// redundant -- MainForm.PutCoreSyncSettings() flags reboot when it is needed
-				// GlobalWin.MainForm.FlagNeedsReboot();
-				// GlobalWin.OSD.AddMessage("Controller settings saved but a core reboot is required");
+				GlobalWin.MainForm.PutCoreSyncSettings(_syncSettings);
 			}
 
 			DialogResult = DialogResult.OK;

@@ -1,6 +1,6 @@
 ﻿namespace BizHawk.Client.EmuHawk
 {
-	partial class NESVSSettings
+	partial class NesVsSettings
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -161,11 +161,11 @@
 			this.Controls.Add(this.Dipswitch1CheckBox);
 			this.Controls.Add(this.CancelBtn);
 			this.Controls.Add(this.OkBtn);
-			this.Name = "NESVSSettings";
+			this.Name = "NesVsSettings";
 			this.ShowIcon = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "NES VS Settings";
-			this.Load += new System.EventHandler(this.NESVSSettings_Load);
+			this.Load += new System.EventHandler(this.NesVsSettings_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
