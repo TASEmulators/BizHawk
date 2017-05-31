@@ -100,10 +100,10 @@ namespace BizHawk.Client.EmuHawk
 		{
 			HotkeyTabControl.TabPages.Clear();
 
-			//Buckets
-			var Tabs = Global.Config.HotkeyBindings.Select(x => x.TabGroup).Distinct().ToList();
+			// Buckets
+			var tabs = Global.Config.HotkeyBindings.Select(x => x.TabGroup).Distinct().ToList();
 
-			foreach (var tab in Tabs)
+			foreach (var tab in tabs)
 			{
 				var _y = UIHelper.ScaleY(14);
 				var _x = UIHelper.ScaleX(6);
@@ -167,7 +167,10 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var w in InputWidgets)
 			{
 				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => x.DisplayName == w.WidgetName);
-				if (b != null) w.Bindings = b.DefaultBinding;
+				if (b != null)
+				{
+					w.Bindings = b.DefaultBinding;
+				}
 			}
 		}
 
@@ -216,19 +219,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SearchBox_KeyDown(object sender, KeyEventArgs e)
 		{
-			//Tab or Enter
+			// Tab or Enter
 			if (!e.Control && !e.Alt && !e.Shift &&
 				(e.KeyCode == Keys.Enter || e.KeyCode == Keys.Tab))
 			{
-				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => string.Compare(x.DisplayName,SearchBox.Text,true)==0);
+				var b = Global.Config.HotkeyBindings.FirstOrDefault(x => string.Compare(x.DisplayName, SearchBox.Text, true) == 0);
 
-				//Found
+				// Found
 				if (b != null)
 				{
 					var w = InputWidgets.FirstOrDefault(x => x.WidgetName == b.DisplayName);
 					if (w != null)
 					{
-						HotkeyTabControl.SelectTab((w.Parent as TabPage));
+						HotkeyTabControl.SelectTab((TabPage)w.Parent);
 						Input.Instance.BindUnpress(e.KeyCode);
 						w.Focus();
 					}
@@ -238,17 +241,17 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void clearAllToolStripMenuItem_Click(object sender, EventArgs e)
+		private void ClearAllToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ClearAll(true);
 		}
 
-		private void clearCurrentTabToolStripMenuItem_Click(object sender, EventArgs e)
+		private void ClearCurrentTabToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ClearAll(false);
 		}
 
-		private void restoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void RestoreDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Defaults();
 		}

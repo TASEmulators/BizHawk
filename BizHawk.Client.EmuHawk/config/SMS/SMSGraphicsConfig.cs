@@ -8,7 +8,6 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class SMSGraphicsConfig : Form
 	{
-
 		public SMSGraphicsConfig()
 		{
 			InitializeComponent();
@@ -21,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			DispBG.Checked = s.DispBG;
 		}
 
-		private void OK_Click(object sender, EventArgs e)
+		private void Ok_Click(object sender, EventArgs e)
 		{
 			var s = ((SMS)Global.Emulator).GetSettings();
 			s.DispOBJ = DispOBJ.Checked;

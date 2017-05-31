@@ -71,7 +71,7 @@
 			this.trackBarSensitivity.SmallChange = 10;
 			this.trackBarSensitivity.TabIndex = 2;
 			this.trackBarSensitivity.TickFrequency = 10;
-			this.trackBarSensitivity.ValueChanged += new System.EventHandler(this.trackBarSensitivity_ValueChanged);
+			this.trackBarSensitivity.ValueChanged += new System.EventHandler(this.TrackBarSensitivity_ValueChanged);
 			// 
 			// labelSensitivity
 			// 
@@ -84,7 +84,7 @@
 			// 
 			// timer1
 			// 
-			this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+			this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
 			// 
 			// buttonBind
 			// 
@@ -94,7 +94,7 @@
 			this.buttonBind.TabIndex = 4;
 			this.buttonBind.Text = "Bind!";
 			this.buttonBind.UseVisualStyleBackColor = true;
-			this.buttonBind.Click += new System.EventHandler(this.buttonBind_Click);
+			this.buttonBind.Click += new System.EventHandler(this.ButtonBind_Click);
 			// 
 			// trackBarDeadzone
 			// 
@@ -103,7 +103,7 @@
 			this.trackBarDeadzone.Size = new System.Drawing.Size(104, 45);
 			this.trackBarDeadzone.TabIndex = 5;
 			this.trackBarDeadzone.TickFrequency = 2;
-			this.trackBarDeadzone.ValueChanged += new System.EventHandler(this.trackBarDeadzone_ValueChanged);
+			this.trackBarDeadzone.ValueChanged += new System.EventHandler(this.TrackBarDeadzone_ValueChanged);
 			// 
 			// labelDeadzone
 			// 
@@ -122,7 +122,7 @@
 			this.buttonFlip.TabIndex = 7;
 			this.buttonFlip.Text = "Flip Axis";
 			this.buttonFlip.UseVisualStyleBackColor = true;
-			this.buttonFlip.Click += new System.EventHandler(this.buttonFlip_Click);
+			this.buttonFlip.Click += new System.EventHandler(this.ButtonFlip_Click);
 			// 
 			// buttonUnbind
 			// 

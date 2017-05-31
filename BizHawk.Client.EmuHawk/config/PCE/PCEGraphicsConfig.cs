@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			DispBG2.Checked = s.ShowBG2;
 		}
 
-		private void OK_Click(object sender, EventArgs e)
+		private void Ok_Click(object sender, EventArgs e)
 		{
 			var pce = (PCEngine)Global.Emulator;
 			PCEngine.PCESettings s = pce.GetSettings();

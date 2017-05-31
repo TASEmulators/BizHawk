@@ -905,7 +905,7 @@
 			this.RiceAnisotropicFiltering_TB.Size = new System.Drawing.Size(121, 25);
 			this.RiceAnisotropicFiltering_TB.TabIndex = 13;
 			this.toolTip1.SetToolTip(this.RiceAnisotropicFiltering_TB, resources.GetString("RiceAnisotropicFiltering_TB.ToolTip"));
-			this.RiceAnisotropicFiltering_TB.Scroll += new System.EventHandler(this.RiceAnisotropicFiltering_TB_Scroll_1);
+			this.RiceAnisotropicFiltering_TB.Scroll += new System.EventHandler(this.RiceAnisotropicFiltering_Tb_Scroll_1);
 			// 
 			// label6
 			// 
@@ -1839,7 +1839,7 @@
 			this.RiceUseDefaultHacks_CB.TabIndex = 1;
 			this.RiceUseDefaultHacks_CB.Text = "Use defaults for current game";
 			this.RiceUseDefaultHacks_CB.UseVisualStyleBackColor = true;
-			this.RiceUseDefaultHacks_CB.CheckedChanged += new System.EventHandler(this.RiceUseDefaultHacks_CB_CheckedChanged);
+			this.RiceUseDefaultHacks_CB.CheckedChanged += new System.EventHandler(this.RiceUseDefaultHacks_Cb_CheckedChanged);
 			// 
 			// Glide64TabPage
 			// 
@@ -4548,7 +4548,7 @@
 			this.SaveButton.TabIndex = 100;
 			this.SaveButton.Text = "Save";
 			this.SaveButton.UseVisualStyleBackColor = true;
-			this.SaveButton.Click += new System.EventHandler(this.button1_Click);
+			this.SaveButton.Click += new System.EventHandler(this.Button1_Click);
 			// 
 			// CancelBT
 			// 
@@ -4560,7 +4560,7 @@
 			this.CancelBT.TabIndex = 105;
 			this.CancelBT.Text = "Cancel";
 			this.CancelBT.UseVisualStyleBackColor = true;
-			this.CancelBT.Click += new System.EventHandler(this.CancelBT_Click);
+			this.CancelBT.Click += new System.EventHandler(this.CancelBtn_Click);
 			// 
 			// toolTip1
 			// 

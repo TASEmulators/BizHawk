@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.EmuHawk.config.GB
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class GBPrefs
 	{
@@ -31,7 +31,7 @@
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GBPrefs));
 			this.buttonOK = new System.Windows.Forms.Button();
 			this.buttonCancel = new System.Windows.Forms.Button();
-			this.gbPrefControl1 = new BizHawk.Client.EmuHawk.config.GB.GBPrefControl();
+			this.gbPrefControl1 = new GBPrefControl();
 			this.SuspendLayout();
 			// 
 			// buttonOK

@@ -11,27 +11,23 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ColorChooserForm : Form
 	{
-		ColorChooserForm()
+		private ColorChooserForm()
 		{
 			InitializeComponent();
 		}
 
-		private readonly Color[] colors = new Color[12];
+		private readonly Color[] _colors = new Color[12];
 
-		/// <summary>
-		/// gambatte's default dmg colors
-		/// </summary>
-		static readonly int[] DefaultCGBColors =
+		// gambatte's default dmg colors
+		private static readonly int[] DefaultCGBColors =
 		{
 			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
 			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000,
 			0x00ffffff, 0x00aaaaaa, 0x00555555, 0x00000000
 		};
 
-		/// <summary>
-		/// bsnes's default dmg colors with slight tweaking
-		/// </summary>
-		static readonly int[] DefaultDMGColors =
+		// bsnes's default dmg colors with slight tweaking
+		private static readonly int[] DefaultDMGColors =
 		{
 			10798341, 8956165, 1922333, 337157,
 			10798341, 8956165, 1922333, 337157,
@@ -40,83 +36,84 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RefreshAllBackdrops()
 		{
-			panel1.BackColor = colors[0];
-			panel2.BackColor = colors[1];
-			panel3.BackColor = colors[2];
-			panel4.BackColor = colors[3];
-			panel5.BackColor = colors[4];
-			panel6.BackColor = colors[5];
-			panel7.BackColor = colors[6];
-			panel8.BackColor = colors[7];
-			panel9.BackColor = colors[8];
-			panel10.BackColor = colors[9];
-			panel11.BackColor = colors[10];
-			panel12.BackColor = colors[11];
+			panel1.BackColor = _colors[0];
+			panel2.BackColor = _colors[1];
+			panel3.BackColor = _colors[2];
+			panel4.BackColor = _colors[3];
+			panel5.BackColor = _colors[4];
+			panel6.BackColor = _colors[5];
+			panel7.BackColor = _colors[6];
+			panel8.BackColor = _colors[7];
+			panel9.BackColor = _colors[8];
+			panel10.BackColor = _colors[9];
+			panel11.BackColor = _colors[10];
+			panel12.BackColor = _colors[11];
 		}
 
-		Color betweencolor(Color left, Color right, double pos)
+		private Color Betweencolor(Color left, Color right, double pos)
 		{
-			int R = (int)(right.R * pos + left.R * (1.0 - pos) + 0.5);
-			int G = (int)(right.G * pos + left.G * (1.0 - pos) + 0.5);
-			int B = (int)(right.B * pos + left.B * (1.0 - pos) + 0.5);
-			int A = (int)(right.A * pos + left.A * (1.0 - pos) + 0.5);
+			int r = (int)(right.R * pos + left.R * (1.0 - pos) + 0.5);
+			int g = (int)(right.G * pos + left.G * (1.0 - pos) + 0.5);
+			int b = (int)(right.B * pos + left.B * (1.0 - pos) + 0.5);
+			int a = (int)(right.A * pos + left.A * (1.0 - pos) + 0.5);
 
-			return Color.FromArgb(A, R, G, B);
+			return Color.FromArgb(a, r, g, b);
 		}
 
-		void interpolate_colors(int firstindex, int lastindex)
+		private void InterpolateColors(int firstindex, int lastindex)
 		{
 			for (int i = firstindex + 1; i < lastindex; i++)
 			{
 				double pos = (i - firstindex) / (double)(lastindex - firstindex);
-				colors[i] = betweencolor(colors[firstindex], colors[lastindex], pos);
+				_colors[i] = Betweencolor(_colors[firstindex], _colors[lastindex], pos);
 			}
+
 			RefreshAllBackdrops();
 		}
 
-		private void button3_Click(object sender, EventArgs e)
+		private void Button3_Click(object sender, EventArgs e)
 		{
-			interpolate_colors(0, 3);
+			InterpolateColors(0, 3);
 		}
 
-		private void button4_Click(object sender, EventArgs e)
+		private void Button4_Click(object sender, EventArgs e)
 		{
-			interpolate_colors(4, 7);
+			InterpolateColors(4, 7);
 		}
 
-		private void button5_Click(object sender, EventArgs e)
+		private void Button5_Click(object sender, EventArgs e)
 		{
-			interpolate_colors(8, 11);
+			InterpolateColors(8, 11);
 		}
 
-		private void panel12_DoubleClick(object _sender, EventArgs e)
+		private void Panel12_DoubleClick(object sender, EventArgs e)
 		{
-			Panel sender = (Panel)_sender;
+			Panel psender = (Panel)sender;
 
 			int i;
-			if (sender == panel1)
+			if (psender == panel1)
 				i = 0;
-			else if (sender == panel2)
+			else if (psender == panel2)
 				i = 1;
-			else if (sender == panel3)
+			else if (psender == panel3)
 				i = 2;
-			else if (sender == panel4)
+			else if (psender == panel4)
 				i = 3;
-			else if (sender == panel5)
+			else if (psender == panel5)
 				i = 4;
-			else if (sender == panel6)
+			else if (psender == panel6)
 				i = 5;
-			else if (sender == panel7)
+			else if (psender == panel7)
 				i = 6;
-			else if (sender == panel8)
+			else if (psender == panel8)
 				i = 7;
-			else if (sender == panel9)
+			else if (psender == panel9)
 				i = 8;
-			else if (sender == panel10)
+			else if (psender == panel10)
 				i = 9;
-			else if (sender == panel11)
+			else if (psender == panel11)
 				i = 10;
-			else if (sender == panel12)
+			else if (psender == panel12)
 				i = 11;
 			else
 				return; // i = -1;
@@ -125,14 +122,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				dlg.AllowFullOpen = true;
 				dlg.AnyColor = true;
-				dlg.Color = colors[i];
+				dlg.Color = _colors[i];
 
 				// custom colors are ints, not Color structs?
 				// and they don't work right unless the alpha bits are set to 0
 				// and the rgb order is switched
 				int[] customs = new int[12];
 				for (int j = 0; j < customs.Length; j++)
-					customs[j] = colors[j].R | colors[j].G << 8 | colors[j].B << 16;
+				{
+					customs[j] = _colors[j].R | _colors[j].G << 8 | _colors[j].B << 16;
+				}
 
 				dlg.CustomColors = customs;
 				dlg.FullOpen = true;
@@ -141,19 +140,17 @@ namespace BizHawk.Client.EmuHawk
 
 				if (result == DialogResult.OK)
 				{
-					if (colors[i] != dlg.Color)
+					if (_colors[i] != dlg.Color)
 					{
-						colors[i] = dlg.Color;
-						sender.BackColor = colors[i];
+						_colors[i] = dlg.Color;
+						psender.BackColor = _colors[i];
 					}
 				}
 			}
 		}
 
-		/// <summary>
-		/// ini keys for gambatte palette file
-		/// </summary>
-		private static readonly string[] paletteinikeys =
+		// ini keys for gambatte palette file
+		private static readonly string[] Paletteinikeys =
 		{
 			"Background0",
 			"Background1",
@@ -172,18 +169,20 @@ namespace BizHawk.Client.EmuHawk
 		/// <summary>
 		/// load gambatte-style .pal file
 		/// </summary>
-		/// <param name="f"></param>
 		/// <returns>null on failure</returns>
 		public static int[] LoadPalFile(TextReader f)
 		{
-			Dictionary<string, int> lines = new Dictionary<string, int>();
+			var lines = new Dictionary<string, int>();
 
 			string line;
 			while ((line = f.ReadLine()) != null)
 			{
 				int i = line.IndexOf('=');
 				if (i < 0)
+				{
 					continue;
+				}
+
 				try
 				{
 					lines.Add(line.Substring(0, i), int.Parse(line.Substring(i + 1)));
@@ -197,44 +196,49 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				for (int i = 0; i < 12; i++)
-					ret[i] = lines[paletteinikeys[i]];
+				{
+					ret[i] = lines[Paletteinikeys[i]];
+				}
 			}
 			catch (KeyNotFoundException)
 			{
 				return null;
 			}
+
 			return ret;
 		}
 
-		/// <summary>
-		/// save gambatte-style palette file
-		/// </summary>
-		/// <param name="f"></param>
-		/// <param name="colors"></param>
-		public static void SavePalFile(TextWriter f, int[] colors)
+		// save gambatte-style palette file
+		private static void SavePalFile(TextWriter f, int[] colors)
 		{
 			f.WriteLine("[General]");
 			for (int i = 0; i < 12; i++)
-				f.WriteLine(String.Format("{0}={1}", paletteinikeys[i], colors[i]));
+			{
+				f.WriteLine($"{Paletteinikeys[i]}={colors[i]}");
+			}
 		}
 
-		void SetAllColors(int[] _colors)
+		private void SetAllColors(int[] colors)
 		{
 			// fix alpha to 255 in created color objects, else problems
-			for (int i = 0; i < colors.Length; i++)
+			for (int i = 0; i < _colors.Length; i++)
 			{
-				colors[i] = Color.FromArgb(255, Color.FromArgb(_colors[i]));
+				_colors[i] = Color.FromArgb(255, Color.FromArgb(colors[i]));
 			}
+
 			RefreshAllBackdrops();
 		}
 
-		static void DoColorChooserFormDialog(IWin32Window parent, Gameboy.GambatteSettings s, bool fromemu)
+		private static void DoColorChooserFormDialog(IWin32Window parent, Gameboy.GambatteSettings s, bool fromemu)
 		{
 			using (var dlg = new ColorChooserForm())
 			{
 				var gb = Global.Emulator as Gameboy;
 				if (fromemu)
+				{
 					s = gb.GetSettings();
+				}
+
 				dlg.SetAllColors(s.GBPalette);
 
 				var result = dlg.ShowDialog(parent);
@@ -242,18 +246,17 @@ namespace BizHawk.Client.EmuHawk
 				{
 					int[] colorints = new int[12];
 					for (int i = 0; i < 12; i++)
-						colorints[i] = dlg.colors[i].ToArgb();
+					{
+						colorints[i] = dlg._colors[i].ToArgb();
+					}
 
 					s.GBPalette = colorints;
 					if (fromemu)
+					{
 						gb.PutSettings(s);
+					}
 				}
 			}
-		}
-
-		public static void DoColorChooserFormDialog(IWin32Window parent)
-		{
-			DoColorChooserFormDialog(parent, null, true);
 		}
 
 		public static void DoColorChooserFormDialog(IWin32Window parent, Gameboy.GambatteSettings s)
@@ -261,15 +264,17 @@ namespace BizHawk.Client.EmuHawk
 			DoColorChooserFormDialog(parent, s, false);
 		}
 
-		void LoadColorFile(string filename, bool alert)
+		private void LoadColorFile(string filename, bool alert)
 		{
 			try
 			{
-				using (StreamReader f = new StreamReader(filename))
+				using (var f = new StreamReader(filename))
 				{
 					int[] newcolors = LoadPalFile(f);
 					if (newcolors == null)
+					{
 						throw new Exception();
+					}
 
 					SetAllColors(newcolors);
 				}
@@ -277,20 +282,25 @@ namespace BizHawk.Client.EmuHawk
 			catch
 			{
 				if (alert)
+				{
 					MessageBox.Show(this, "Error loading .pal file!");
+				}
 			}
 		}
 
-		void SaveColorFile(string filename)
+		private void SaveColorFile(string filename)
 		{
 			try
 			{
-				using (StreamWriter f = new StreamWriter(filename))
+				using (var f = new StreamWriter(filename))
 				{
 					int[] savecolors = new int[12];
 					for (int i = 0; i < 12; i++)
+					{
 						// clear alpha because gambatte color files don't usually contain it
-						savecolors[i] = colors[i].ToArgb() & 0xffffff;
+						savecolors[i] = _colors[i].ToArgb() & 0xffffff;
+					}
+
 					SavePalFile(f, savecolors);
 				}
 			}
@@ -300,7 +310,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void button6_Click(object sender, EventArgs e)
+		private void Button6_Click(object sender, EventArgs e)
 		{
 			using (var ofd = new OpenFileDialog())
 			{
@@ -310,7 +320,9 @@ namespace BizHawk.Client.EmuHawk
 
 				var result = ofd.ShowDialog(this);
 				if (result == DialogResult.OK)
+				{
 					LoadColorFile(ofd.FileName, true);
+				}
 			}
 		}
 
@@ -318,23 +330,25 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
-				string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+				var files = (string[])e.Data.GetData(DataFormats.FileDrop);
 
 				if (files.Length > 1)
+				{
 					return;
+				}
+
 				LoadColorFile(files[0], true);
 			}
 		}
 
 		private void ColorChooserForm_DragEnter(object sender, DragEventArgs e)
 		{
-			if (e.Data.GetDataPresent(DataFormats.FileDrop))
-				e.Effect = DragDropEffects.Move;
-			else
-				e.Effect = DragDropEffects.None;
+			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop)
+				? DragDropEffects.Move
+				: DragDropEffects.None;
 		}
 
-		private void button7_Click(object sender, EventArgs e)
+		private void Button7_Click(object sender, EventArgs e)
 		{
 			using (var sfd = new SaveFileDialog())
 			{
@@ -345,11 +359,13 @@ namespace BizHawk.Client.EmuHawk
 				sfd.RestoreDirectory = true;
 				var result = sfd.ShowDialog(this);
 				if (result == DialogResult.OK)
+				{
 					SaveColorFile(sfd.FileName);
+				}
 			}
 		}
 
-		private void OK_Click(object sender, EventArgs e)
+		private void Ok_Click(object sender, EventArgs e)
 		{
 		}
 
@@ -361,11 +377,6 @@ namespace BizHawk.Client.EmuHawk
 		private void DefaultButtonCGB_Click(object sender, EventArgs e)
 		{
 			SetAllColors(DefaultCGBColors);
-		}
-
-		private void ColorChooserForm_Load(object sender, EventArgs e)
-		{
-
 		}
 	}
 }

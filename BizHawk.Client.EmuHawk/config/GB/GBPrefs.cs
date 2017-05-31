@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
+
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Client.Common;
 
-namespace BizHawk.Client.EmuHawk.config.GB
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class GBPrefs : Form
 	{
-		public GBPrefs()
+		private GBPrefs()
 		{
 			InitializeComponent();
 		}
 
 		public static void DoGBPrefsDialog(IWin32Window owner)
 		{
-			var gb = ((Gameboy)Global.Emulator);
+			var gb = (Gameboy)Global.Emulator;
 			var s = gb.GetSettings();
 			var ss = gb.GetSyncSettings();
 
@@ -33,7 +27,9 @@ namespace BizHawk.Client.EmuHawk.config.GB
 					dlg.gbPrefControl1.GetSettings(out s, out ss);
 					gb.PutSettings(s);
 					if (dlg.gbPrefControl1.SyncSettingsChanged)
+					{
 						GlobalWin.MainForm.PutCoreSyncSettings(ss);
+					}
 				}
 			}
 		}

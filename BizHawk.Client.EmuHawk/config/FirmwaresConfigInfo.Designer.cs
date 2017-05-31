@@ -67,8 +67,8 @@
 			this.lvOptions.TabIndex = 0;
 			this.lvOptions.UseCompatibleStateImageBehavior = false;
 			this.lvOptions.View = System.Windows.Forms.View.Details;
-			this.lvOptions.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvOptions_KeyDown);
-			this.lvOptions.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvOptions_MouseClick);
+			this.lvOptions.KeyDown += new System.Windows.Forms.KeyEventHandler(this.LvOptions_KeyDown);
+			this.lvOptions.MouseClick += new System.Windows.Forms.MouseEventHandler(this.LvOptions_MouseClick);
 			// 
 			// colHash
 			// 
@@ -179,7 +179,7 @@
 			this.tsmiOptionsCopy.Name = "tsmiOptionsCopy";
 			this.tsmiOptionsCopy.Size = new System.Drawing.Size(99, 22);
 			this.tsmiOptionsCopy.Text = "&Copy";
-			this.tsmiOptionsCopy.Click += new System.EventHandler(this.tsmiOptionsCopy_Click);
+			this.tsmiOptionsCopy.Click += new System.EventHandler(this.TsmiOptionsCopy_Click);
 			// 
 			// colSize
 			// 

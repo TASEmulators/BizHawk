@@ -51,7 +51,7 @@
 			this.btnOk.TabIndex = 0;
 			this.btnOk.Text = "OK";
 			this.btnOk.UseVisualStyleBackColor = true;
-			this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
+			this.btnOk.Click += new System.EventHandler(this.BtnOk_Click);
 			// 
 			// btnCancel
 			// 
@@ -63,7 +63,7 @@
 			this.btnCancel.TabIndex = 1;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
-			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
+			this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
 			// 
 			// rbCompatibility
 			// 
@@ -108,7 +108,7 @@
 			this.rbAccuracy.TabStop = true;
 			this.rbAccuracy.Text = "Accuracy (only to fix bugs in Compatibility!)";
 			this.rbAccuracy.UseVisualStyleBackColor = true;
-			this.rbAccuracy.CheckedChanged += new System.EventHandler(this.rbAccuracy_CheckedChanged);
+			this.rbAccuracy.CheckedChanged += new System.EventHandler(this.RbAccuracy_CheckedChanged);
 			// 
 			// rbPerformance
 			// 
@@ -130,7 +130,7 @@
 			this.cbDoubleSize.TabIndex = 6;
 			this.cbDoubleSize.Text = "Always Double-Size Framebuffer";
 			this.cbDoubleSize.UseVisualStyleBackColor = true;
-			this.cbDoubleSize.CheckedChanged += new System.EventHandler(this.cbDoubleSize_CheckedChanged);
+			this.cbDoubleSize.CheckedChanged += new System.EventHandler(this.CbDoubleSize_CheckedChanged);
 			// 
 			// lblDoubleSize
 			// 
@@ -151,7 +151,7 @@
 			this.cbForceDeterminism.TabIndex = 8;
 			this.cbForceDeterminism.Text = "Force Determinism";
 			this.cbForceDeterminism.UseVisualStyleBackColor = true;
-			this.cbForceDeterminism.CheckedChanged += new System.EventHandler(this.cbForceDeterminism_CheckedChanged);
+			this.cbForceDeterminism.CheckedChanged += new System.EventHandler(this.CbForceDeterminism_CheckedChanged);
 			// 
 			// label3
 			// 

@@ -6,19 +6,19 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class NESVSSettings : Form
+	public partial class NesVsSettings : Form
 	{
 		private NES.NESSyncSettings _settings;
 		private NES _nes;
 
-		public NESVSSettings()
+		public NesVsSettings()
 		{
 			InitializeComponent();
 		}
 
-		private void NESVSSettings_Load(object sender, EventArgs e)
+		private void NesVsSettings_Load(object sender, EventArgs e)
 		{
-			_nes = Global.Emulator as NES;
+			_nes = (NES)Global.Emulator;
 			_settings = _nes.GetSyncSettings();
 
 			Dipswitch1CheckBox.Checked = _settings.VSDipswitches.Dip_Switch_1;

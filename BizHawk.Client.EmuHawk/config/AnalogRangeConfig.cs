@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace BizHawk.Client.EmuHawk
@@ -51,7 +46,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
 		public bool Radial
 		{
 			get
@@ -67,15 +61,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int ScaledX
-		{
-			get { return MaxX / ScaleFactor; }
-		}
+		private int ScaledX => MaxX / ScaleFactor;
 
-		private int ScaledY
-		{
-			get { return MaxY / ScaleFactor; }
-		}
+		private int ScaledY => MaxY / ScaleFactor;
 
 		private Point TopLeft
 		{
@@ -187,10 +175,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void Changed()
 		{
-			if (ChangeCallback != null)
-			{
-				ChangeCallback();
-			}
+			ChangeCallback?.Invoke();
 		}
 	}
 }

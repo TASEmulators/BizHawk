@@ -274,6 +274,9 @@ sha1:CAAC1E829133851648BA7C7CD6EAA7D26A464999		Metal Fighter (Asia) (Unl) (Sache
 sha1:B9902886D1739983B315B67B02133E44620E4381		Challenge of the Dragon (Asia) (PAL) (Unl)	NES		board=MAPPER147;PAD_V=0;PAD_H=1;system=NES-PAL
 sha1:0CDE48DB89896946F0C2E78936EA290348994ED5		Pipemania (Australia) (HES) (Unl)	NES		board=MAPPER113;PRG=32;CHR=16;WRAM=0;VRAM=0
 sha1:E843AB3D779D4F0BB1F933D6EE99DAA526EFBCF1		Gaiapolis (Asia) (Unl)	NES		board=UNIF_NES-TLROM;PRG=128;CHR=256;WRAM=0;VRAM=0
+sha1:68ABE1E49C9E9CCEA978A48232432C252E5912C0		Dancing Blocks (Asia) (PAL) (Unl)	NES		board=MAPPER143;PAD_V=1;PAD_H=0;system=NES-PAL
+sha1:B21CFE30197727C1C8E8DB6D28AD696A708F8FF5		Pyramid II (Asia) (PAL) (Unl)	NES		board=MAPPER146
+sha1:7117413766ABC02F3BB767C2CE96065B6F3CBA85		Silent Assault (Asia) (PAL) (Unl)	NES		board=MAPPER146;PAD_V=0;PAD_H=1;system=NES-PAL
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------

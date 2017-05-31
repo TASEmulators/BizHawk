@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MessageConfig_Load(object sender, EventArgs e)
 		{
-			SetMaxXY();
+			SetMaxXy();
 			MessageColorDialog.Color = Color.FromArgb(_messageColor);
 			AlertColorDialog.Color = Color.FromArgb(_alertColor);
 			LInputColorDialog.Color = Color.FromArgb(_lastInputColor);
@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			StackMessagesCheckbox.Checked = Global.Config.StackOSDMessages;
 		}
 
-		private void SetMaxXY()
+		private void SetMaxXy()
 		{
 			var video = Global.Emulator.AsVideoProvider(); // TODO: this is objectively wrong, these are core agnostic settings, why is the current core used here? Also this will crash on a core without a video provider
 			XNumeric.Maximum = video.BufferWidth - 12;
@@ -81,19 +81,19 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_messageColor = MessageColorDialog.Color.ToArgb();
 			ColorPanel.BackColor = MessageColorDialog.Color;
-			ColorText.Text = String.Format("{0:X8}", _messageColor);
+			ColorText.Text = $"{_messageColor:X8}";
 
 			_alertColor = AlertColorDialog.Color.ToArgb();
 			AlertColorPanel.BackColor = AlertColorDialog.Color;
-			AlertColorText.Text = String.Format("{0:X8}", _alertColor);
+			AlertColorText.Text = $"{_alertColor:X8}";
 
 			_lastInputColor = LInputColorDialog.Color.ToArgb();
 			LInputColorPanel.BackColor = LInputColorDialog.Color;
-			LInputText.Text = String.Format("{0:X8}", _lastInputColor);
+			LInputText.Text = $"{_lastInputColor:X8}";
 
 			_movieInput = MovieInputColorDialog.Color.ToArgb();
 			MovieInputColor.BackColor = MovieInputColorDialog.Color;
-			MovieInputText.Text = String.Format("{0:X8}", _movieInput);
+			MovieInputText.Text = $"{_movieInput:X8}";
 		}
 
 		private void SetAnchorRadio(int anchor)
@@ -102,13 +102,17 @@ namespace BizHawk.Client.EmuHawk
 			{
 				default:
 				case 0:
-					TL.Checked = true; break;
+					TL.Checked = true;
+					break;
 				case 1:
-					TR.Checked = true; break;
+					TR.Checked = true;
+					break;
 				case 2:
-					BL.Checked = true; break;
+					BL.Checked = true;
+					break;
 				case 3:
-					BR.Checked = true; break;
+					BR.Checked = true;
+					break;
 			}
 		}
 
@@ -230,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.StackOSDMessages = StackMessagesCheckbox.Checked;
 		}
 
-		private void OK_Click(object sender, EventArgs e)
+		private void Ok_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
 			GlobalWin.OSD.AddMessage("Message settings saved");
@@ -324,10 +328,9 @@ namespace BizHawk.Client.EmuHawk
 			if (mx > XNumeric.Maximum) mx = (int)XNumeric.Maximum;
 			if (my > YNumeric.Maximum) my = (int)YNumeric.Maximum;
 
-
 			if (TL.Checked)
 			{
-				//Do nothing
+				// Do nothing
 			}
 			else if (TR.Checked)
 			{
@@ -488,7 +491,7 @@ namespace BizHawk.Client.EmuHawk
 			LInputColorDialog.Color = Color.FromArgb(_lastInputColor);
 			MovieInputColorDialog.Color = Color.FromArgb(_movieInput);
 
-			SetMaxXY();
+			SetMaxXy();
 			SetColorBox();
 			SetPositionInfo();
 
@@ -541,6 +544,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetAnchorValue(0);
 			}
+
 			PositionPanel.Refresh();
 		}
 
@@ -550,6 +554,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetAnchorValue(1);
 			}
+
 			PositionPanel.Refresh();
 		}
 

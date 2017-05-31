@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.EmuHawk.config
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class DisplayConfig
 	{

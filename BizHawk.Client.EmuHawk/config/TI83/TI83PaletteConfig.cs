@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -59,7 +54,7 @@ namespace BizHawk.Client.EmuHawk
 				AllowFullOpen = true,
 				AnyColor = true,
 				Color = BackgroundPanel.BackColor,
-				CustomColors = new int[] { customColor }
+				CustomColors = new[] { customColor }
 			};
 
 			if (dlg.ShowDialog() == DialogResult.OK)
@@ -80,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 				AllowFullOpen = true,
 				AnyColor = true,
 				Color = ForeGroundPanel.BackColor,
-				CustomColors = new int[] { customColor }
+				CustomColors = new[] { customColor }
 			};
 
 			if (dlg.ShowDialog() == DialogResult.OK)

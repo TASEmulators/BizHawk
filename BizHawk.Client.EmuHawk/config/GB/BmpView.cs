@@ -11,19 +11,18 @@ using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public partial class BmpView : Control
+	public class BmpView : Control
 	{
 		[Browsable(false)]
-		public Bitmap bmp { get; private set; }
+		public Bitmap BMP { get; private set; }
 
-		bool scaled;
+		private bool _scaled;
 
 		public BmpView()
 		{
 			if (Process.GetCurrentProcess().ProcessName == "devenv")
 			{
 				// in the designer
-				//this.BackColor = Color.Black;
 				SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 			}
 			else
@@ -33,29 +32,29 @@ namespace BizHawk.Client.EmuHawk
 				SetStyle(ControlStyles.DoubleBuffer, true);
 				SetStyle(ControlStyles.SupportsTransparentBackColor, true);
 				SetStyle(ControlStyles.Opaque, true);
-				this.BackColor = Color.Transparent;
-				this.Paint += new PaintEventHandler(BmpView_Paint);
-				this.SizeChanged += new EventHandler(BmpView_SizeChanged);
+				BackColor = Color.Transparent;
+				Paint += BmpView_Paint;
+				SizeChanged += BmpView_SizeChanged;
 				ChangeBitmapSize(1, 1);
 			}
 		}
 
-		void BmpView_SizeChanged(object sender, EventArgs e)
+		private void BmpView_SizeChanged(object sender, EventArgs e)
 		{
-			scaled = !(bmp.Width == Width && bmp.Height == Height);
+			_scaled = !(BMP.Width == Width && BMP.Height == Height);
 		}
 
-		void BmpView_Paint(object sender, PaintEventArgs e)
+		private void BmpView_Paint(object sender, PaintEventArgs e)
 		{
-			if (scaled)
+			if (_scaled)
 			{
 				e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 				e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
-				e.Graphics.DrawImage(bmp, 0, 0, Width, Height);
+				e.Graphics.DrawImage(BMP, 0, 0, Width, Height);
 			}
 			else
 			{
-				e.Graphics.DrawImageUnscaled(bmp, 0, 0);
+				e.Graphics.DrawImageUnscaled(BMP, 0, 0);
 			}
 		}
 
@@ -66,22 +65,26 @@ namespace BizHawk.Client.EmuHawk
 
 		public void ChangeBitmapSize(int w, int h)
 		{
-			if (bmp != null)
+			if (BMP != null)
 			{
-				if (w == bmp.Width && h == bmp.Height)
+				if (w == BMP.Width && h == BMP.Height)
+				{
 					return;
-				bmp.Dispose();
+				}
+
+				BMP.Dispose();
 			}
-			bmp = new Bitmap(w, h, PixelFormat.Format32bppArgb);
+
+			BMP = new Bitmap(w, h, PixelFormat.Format32bppArgb);
 			BmpView_SizeChanged(null, null);
 			Refresh();
 		}
 
 		public void Clear()
 		{
-			var lockdata = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockdata = BMP.LockBits(new Rectangle(0, 0, BMP.Width, BMP.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			Win32.MemSet(lockdata.Scan0, 0xff, (uint)(lockdata.Height * lockdata.Stride));
-			bmp.UnlockBits(lockdata);
+			BMP.UnlockBits(lockdata);
 			Refresh();
 		}
 
@@ -113,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = new FileInfo(sfd.FileName);
-			var b = this.bmp;
+			var b = BMP;
 
 			ImageFormat i;
 			string extension = file.Extension.ToUpper();

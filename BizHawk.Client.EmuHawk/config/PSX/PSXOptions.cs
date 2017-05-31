@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Cores.Sony.PSX;
@@ -14,10 +9,10 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class PSXOptions : Form
 	{
-		//backups of the labels for string replacing
-		string lblPixelPro_text, lblMednafen_text, lblTweakedMednafen_text;
+		// backups of the labels for string replacing
+		private readonly string lblPixelPro_text, lblMednafen_text, lblTweakedMednafen_text;
 		
-		public PSXOptions(Octoshock.Settings settings, Octoshock.SyncSettings syncSettings, OctoshockDll.eVidStandard vidStandard, Size currentVideoSize)
+		private PSXOptions(Octoshock.Settings settings, Octoshock.SyncSettings syncSettings, OctoshockDll.eVidStandard vidStandard, Size currentVideoSize)
 		{
 			InitializeComponent();
 			_settings = settings;
@@ -26,8 +21,13 @@ namespace BizHawk.Client.EmuHawk
 			_previewVideoSize = currentVideoSize;
 
 			if (_previewVideoStandard == OctoshockDll.eVidStandard.NTSC)
-				lblNTSC.Font = new System.Drawing.Font(lblNTSC.Font, FontStyle.Bold);
-			else lblPAL.Font = new System.Drawing.Font(lblPAL.Font, FontStyle.Bold);
+			{
+				lblNTSC.Font = new Font(lblNTSC.Font, FontStyle.Bold);
+			}
+			else
+			{
+				lblPAL.Font = new Font(lblPAL.Font, FontStyle.Bold);
+			}
 
 			lblPixelPro_text = lblPixelPro.Text;
 			lblMednafen_text = lblMednafen.Text;
@@ -54,13 +54,13 @@ namespace BizHawk.Client.EmuHawk
 			PAL_LastLineNumeric.Value = _settings.ScanlineEnd_PAL;
 		}
 
-		Size _previewVideoSize;
-		OctoshockDll.eVidStandard _previewVideoStandard;
-		Octoshock.Settings _settings;
-		Octoshock.SyncSettings _syncSettings;
-		bool _dispSettingsSet = false;
+		private Size _previewVideoSize;
+		private readonly OctoshockDll.eVidStandard _previewVideoStandard;
+		private readonly Octoshock.Settings _settings;
+		private readonly Octoshock.SyncSettings _syncSettings;
+		private bool _dispSettingsSet;
 
-		private void btnNiceDisplayConfig_Click(object sender, EventArgs e)
+		private void BtnNiceDisplayConfig_Click(object sender, EventArgs e)
 		{
 			_dispSettingsSet = true;
 			MessageBox.Show("Finetuned Display Options will take effect if you OK from PSX Options");
@@ -68,18 +68,18 @@ namespace BizHawk.Client.EmuHawk
 
 		public static DialogResult DoSettingsDialog(IWin32Window owner)
 		{
-			var psx = ((Octoshock)Global.Emulator);
+			var psx = (Octoshock)Global.Emulator;
 			var s = psx.GetSettings();
 			var ss = psx.GetSyncSettings();
 			var vid = psx.SystemVidStandard;
 			var size = psx.CurrentVideoSize; 
-			var dlg = new PSXOptions(s,ss,vid,size);
+			var dlg = new PSXOptions(s, ss, vid, size);
 
 			var result = dlg.ShowDialog(owner);
 			return result;
 		}
 
-		void SyncSettingsFromGui(Octoshock.Settings settings, Octoshock.SyncSettings syncSettings)
+		private void SyncSettingsFromGui(Octoshock.Settings settings, Octoshock.SyncSettings syncSettings)
 		{
 			if (rbPixelPro.Checked) settings.ResolutionMode = Octoshock.eResolutionMode.PixelPro;
 			if (rbDebugMode.Checked) settings.ResolutionMode = Octoshock.eResolutionMode.Debug;
@@ -90,9 +90,9 @@ namespace BizHawk.Client.EmuHawk
 			if (rbClipBasic.Checked) settings.HorizontalClipping = Octoshock.eHorizontalClipping.Basic;
 			if (rbClipToFramebuffer.Checked) settings.HorizontalClipping = Octoshock.eHorizontalClipping.Framebuffer;
 
-			if(rbWeave.Checked) _settings.DeinterlaceMode = Octoshock.eDeinterlaceMode.Weave;
-			if(rbBob.Checked) _settings.DeinterlaceMode = Octoshock.eDeinterlaceMode.Bob;
-			if(rbBobOffset.Checked) _settings.DeinterlaceMode = Octoshock.eDeinterlaceMode.BobOffset;
+			if (rbWeave.Checked) _settings.DeinterlaceMode = Octoshock.eDeinterlaceMode.Weave;
+			if (rbBob.Checked) _settings.DeinterlaceMode = Octoshock.eDeinterlaceMode.Bob;
+			if (rbBobOffset.Checked) _settings.DeinterlaceMode = Octoshock.eDeinterlaceMode.BobOffset;
 
 			settings.ScanlineStart_NTSC = (int)NTSC_FirstLineNumeric.Value;
 			settings.ScanlineEnd_NTSC = (int)NTSC_LastLineNumeric.Value;
@@ -104,14 +104,14 @@ namespace BizHawk.Client.EmuHawk
 			syncSettings.EnableLEC = cbLEC.Checked;
 		}
 
-		private void btnOk_Click(object sender, EventArgs e)
+		private void BtnOk_Click(object sender, EventArgs e)
 		{
 			if (_dispSettingsSet)
 			{
 				Global.Config.DispManagerAR = Config.EDispManagerAR.System;
 				Global.Config.DispFixAspectRatio = true;
 				Global.Config.DispFixScaleInteger = false;
-				Global.Config.DispFinalFilter = 1; //bilinear, I hope
+				Global.Config.DispFinalFilter = 1; // bilinear, I hope
 			}
 
 			SyncSettingsFromGui(_settings, _syncSettings);
@@ -123,7 +123,7 @@ namespace BizHawk.Client.EmuHawk
 			Close();
 		}
 
-		private void btnAreaFull_Click(object sender, EventArgs e)
+		private void BtnAreaFull_Click(object sender, EventArgs e)
 		{
 			NTSC_FirstLineNumeric.Value = 0;
 			NTSC_LastLineNumeric.Value = 239;
@@ -132,28 +132,28 @@ namespace BizHawk.Client.EmuHawk
 			SyncLabels();
 		}
 
-		void SyncLabels()
+		private void SyncLabels()
 		{
 			var temp = _settings.Clone();
 			var syncTemp = _syncSettings.Clone();
 			SyncSettingsFromGui(temp, syncTemp);
 			_settings.Validate();
 
-			//actually, I think this is irrelevant. But it's nice in case we want to do some kind of a more detailed simulation later
+			// actually, I think this is irrelevant. But it's nice in case we want to do some kind of a more detailed simulation later
 			int w = _previewVideoSize.Width;
 			int h = _previewVideoSize.Height;
 
 			temp.ResolutionMode = Octoshock.eResolutionMode.PixelPro;
 			var ri = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
-			lblPixelPro.Text = lblPixelPro_text.Replace("800x480", string.Format("{0}x{1}", ri.Resolution.Width, ri.Resolution.Height)); ;
+			lblPixelPro.Text = lblPixelPro_text.Replace("800x480", $"{ri.Resolution.Width}x{ri.Resolution.Height}");
 
 			temp.ResolutionMode = Octoshock.eResolutionMode.Mednafen;
 			ri = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
-			lblMednafen.Text = lblMednafen_text.Replace("320x240", string.Format("{0}x{1}", ri.Resolution.Width, ri.Resolution.Height));
+			lblMednafen.Text = lblMednafen_text.Replace("320x240", $"{ri.Resolution.Width}x{ri.Resolution.Height}");
 
 			temp.ResolutionMode = Octoshock.eResolutionMode.TweakedMednafen;
 			ri = Octoshock.CalculateResolution(_previewVideoStandard, temp, w, h);
-			lblTweakedMednafen.Text = lblTweakedMednafen_text.Replace("400x300", string.Format("{0}x{1}", ri.Resolution.Width, ri.Resolution.Height));
+			lblTweakedMednafen.Text = lblTweakedMednafen_text.Replace("400x300", $"{ri.Resolution.Width}x{ri.Resolution.Height}");
 		}
 
 		private void DrawingArea_ValueChanged(object sender, EventArgs e)
@@ -161,23 +161,22 @@ namespace BizHawk.Client.EmuHawk
 			SyncLabels();
 		}
 
-
-		private void rbClipHorizontal_CheckedChanged(object sender, EventArgs e)
+		private void RbClipHorizontal_CheckedChanged(object sender, EventArgs e)
 		{
 			SyncLabels();
 		}
 
-		private void rbClipToFramebuffer_CheckedChanged(object sender, EventArgs e)
+		private void RbClipToFramebuffer_CheckedChanged(object sender, EventArgs e)
 		{
 			SyncLabels();
 		}
 
-		private void rbClipNone_CheckedChanged(object sender, EventArgs e)
+		private void RbClipNone_CheckedChanged(object sender, EventArgs e)
 		{
 			SyncLabels();
 		}
 
-		private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		private void LinkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			MessageBox.Show(@"These options control BizHawk's Display Options to make it act quite a lot like Mednafen:
 
@@ -191,7 +190,5 @@ But: 1. we think we improved on it a tiny bit with the tweaked mode
 And: 2. It's not suitable for detailed scrutinizing of graphics
 ");
 		}
-
-
 	}
 }
