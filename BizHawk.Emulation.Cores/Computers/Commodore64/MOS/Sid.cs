@@ -218,7 +218,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 
 				filter_index = _outputBufferIndex;
-				last_filtered_value = _outputBuffer_filtered[_outputBufferIndex - 1];
+				if (_outputBufferIndex>0) {
+					last_filtered_value = _outputBuffer_filtered[_outputBufferIndex - 1];
+				}
 			}
 
 			// if the filter is off, keep updating the filter index to the most recent Flush
