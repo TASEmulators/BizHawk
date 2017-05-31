@@ -871,6 +871,16 @@
       "Select": "Space, X1 Back",
       "Start": "Return, X1 Start",
       "Power": ""
+    },
+    "NeoGeo Portable Controller": {
+      "Up": "UpArrow, X1 DpadUp, X1 LStickUp",
+      "Down": "DownArrow, X1 DpadDown, X1 LStickDown",
+      "Left": "LeftArrow, X1 DpadLeft, X1 LStickLeft",
+      "Right": "RightArrow, X1 DpadRight, X1 LStickRight",
+      "B": "Z, J1 B1, X1 X",
+      "A": "X, J1 B2, X1 A",
+      "Option": "Return, J1 B10, X1 Start",
+      "Power": ""
     }
   },
   "AllTrollersAutoFire": {
@@ -1134,6 +1144,16 @@
       "Select": "",
       "Start": "",
       "Power": ""
+    },
+    "NeoGeo Portable Controller": {
+      "Up": "",
+      "Down": "",
+      "Left": "",
+      "Right": "",
+      "B": "",
+      "A": "",
+      "Option": "",
+      "Power": ""
     }
   },
   "AllTrollersAnalog": {
@@ -1321,6 +1341,7 @@
         "Deadzone": 0.1
       }
     },
-    "VirtualBoy Controller": {}
+    "VirtualBoy Controller": {},
+    "NeoGeo Portable Controller": {}
   }
 }
