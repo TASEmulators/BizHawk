@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
-using BizHawk.Common;
 using BizHawk.Common.StringExtensions;
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Cores.Nintendo.N64;
@@ -14,8 +11,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class NewN64PluginSettings : Form
 	{
-		N64Settings s;
-		N64SyncSettings ss;
+		private N64Settings _s;
+		private N64SyncSettings _ss;
 
 		public NewN64PluginSettings()
 		{
@@ -32,36 +29,36 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (VideoResolutionComboBox.Text != "Custom")
 			{
-				var video_settings = VideoResolutionComboBox.SelectedItem.ToString();
-				var strArr = video_settings.Split('x');
-				s.VideoSizeX = int.Parse(strArr[0].Trim());
-				s.VideoSizeY = int.Parse(strArr[1].Trim());
+				var videoSettings = VideoResolutionComboBox.SelectedItem.ToString();
+				var strArr = videoSettings.Split('x');
+				_s.VideoSizeX = int.Parse(strArr[0].Trim());
+				_s.VideoSizeY = int.Parse(strArr[1].Trim());
 			}
 			else
 			{
-				s.VideoSizeX =
+				_s.VideoSizeX =
 					VideoResolutionXTextBox.Text.IsUnsigned() ?
 					int.Parse(VideoResolutionXTextBox.Text) : 320;
 
-				s.VideoSizeY =
+				_s.VideoSizeY =
 					VideoResolutionYTextBox.Text.IsUnsigned() ?
 					int.Parse(VideoResolutionYTextBox.Text) : 240;
 			}
 
-			ss.Core = CoreTypeDropdown.SelectedItem
+			_ss.Core = CoreTypeDropdown.SelectedItem
 				.ToString()
 				.GetEnumFromDescription<N64SyncSettings.CoreType>();
 
-			ss.Rsp = RspTypeDropdown.SelectedItem
+			_ss.Rsp = RspTypeDropdown.SelectedItem
 				.ToString()
 				.GetEnumFromDescription<N64SyncSettings.RspType>();
 
-			ss.VideoPlugin = PluginComboBox.SelectedItem
+			_ss.VideoPlugin = PluginComboBox.SelectedItem
 				.ToString()
 				.GetEnumFromDescription<PluginType>();
 
-			PutSettings(s);
-			PutSyncSettings(ss);
+			PutSettings(_s);
+			PutSyncSettings(_ss);
 
 			DialogResult = DialogResult.OK;
 			Close();
@@ -69,21 +66,21 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewN64PluginSettings_Load(object sender, EventArgs e)
 		{
-			s = GetSettings();
-			ss = GetSyncSettings();
+			_s = GetSettings();
+			_ss = GetSyncSettings();
 
-			CoreTypeDropdown.PopulateFromEnum<N64SyncSettings.CoreType>(ss.Core);
-			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RspType>(ss.Rsp);
-			PluginComboBox.PopulateFromEnum<PluginType>(ss.VideoPlugin);
+			CoreTypeDropdown.PopulateFromEnum<N64SyncSettings.CoreType>(_ss.Core);
+			RspTypeDropdown.PopulateFromEnum<N64SyncSettings.RspType>(_ss.Rsp);
+			PluginComboBox.PopulateFromEnum<PluginType>(_ss.VideoPlugin);
 
-			VideoResolutionXTextBox.Text = s.VideoSizeX.ToString();
-			VideoResolutionYTextBox.Text = s.VideoSizeY.ToString();
+			VideoResolutionXTextBox.Text = _s.VideoSizeX.ToString();
+			VideoResolutionYTextBox.Text = _s.VideoSizeY.ToString();
 
-			var video_setting = s.VideoSizeX
-						+ " x "
-						+ s.VideoSizeY;
+			var videoSetting = _s.VideoSizeX
+				+ " x "
+				+ _s.VideoSizeY;
 
-			var index = VideoResolutionComboBox.Items.IndexOf(video_setting);
+			var index = VideoResolutionComboBox.Items.IndexOf(videoSetting);
 			if (index >= 0)
 			{
 				VideoResolutionComboBox.SelectedIndex = index;
@@ -94,10 +91,10 @@ namespace BizHawk.Client.EmuHawk
 				ShowCustomVideoResolutionControls();
 			}
 
-			RicePropertyGrid.SelectedObject = ss.RicePlugin;
-			Glidemk2PropertyGrid.SelectedObject = ss.Glide64mk2Plugin;
-			GlidePropertyGrid.SelectedObject = ss.GlidePlugin;
-			JaboPropertyGrid.SelectedObject = ss.JaboPlugin;
+			RicePropertyGrid.SelectedObject = _ss.RicePlugin;
+			Glidemk2PropertyGrid.SelectedObject = _ss.Glide64mk2Plugin;
+			GlidePropertyGrid.SelectedObject = _ss.GlidePlugin;
+			JaboPropertyGrid.SelectedObject = _ss.JaboPlugin;
 		}
 
 		#region Setting Get/Set
@@ -159,8 +156,8 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				HideCustomVideoResolutionControls();
-				var new_resolution = VideoResolutionComboBox.SelectedItem.ToString();
-				var strArr = new_resolution.Split('x');
+				var newResolution = VideoResolutionComboBox.SelectedItem.ToString();
+				var strArr = newResolution.Split('x');
 				VideoResolutionXTextBox.Text = strArr[0].Trim();
 				VideoResolutionYTextBox.Text = strArr[1].Trim();
 			}
