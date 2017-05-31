@@ -74,7 +74,7 @@
             this.cbMultitap_1.TabIndex = 0;
             this.cbMultitap_1.Text = "Multitap";
             this.cbMultitap_1.UseVisualStyleBackColor = true;
-            this.cbMultitap_1.CheckedChanged += new System.EventHandler(this.cb_changed);
+            this.cbMultitap_1.CheckedChanged += new System.EventHandler(this.Cb_Changed);
             // 
             // groupBox1
             // 
@@ -187,7 +187,7 @@
             this.combo_1_4.Name = "combo_1_4";
             this.combo_1_4.Size = new System.Drawing.Size(121, 21);
             this.combo_1_4.TabIndex = 5;
-            this.combo_1_4.SelectedIndexChanged += new System.EventHandler(this.combo_SelectedIndexChanged);
+            this.combo_1_4.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // combo_1_3
             // 
@@ -197,7 +197,7 @@
             this.combo_1_3.Name = "combo_1_3";
             this.combo_1_3.Size = new System.Drawing.Size(121, 21);
             this.combo_1_3.TabIndex = 4;
-            this.combo_1_3.SelectedIndexChanged += new System.EventHandler(this.combo_SelectedIndexChanged);
+            this.combo_1_3.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // combo_1_2
             // 
@@ -207,7 +207,7 @@
             this.combo_1_2.Name = "combo_1_2";
             this.combo_1_2.Size = new System.Drawing.Size(121, 21);
             this.combo_1_2.TabIndex = 3;
-            this.combo_1_2.SelectedIndexChanged += new System.EventHandler(this.combo_SelectedIndexChanged);
+            this.combo_1_2.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // combo_1_1
             // 
@@ -217,7 +217,7 @@
             this.combo_1_1.Name = "combo_1_1";
             this.combo_1_1.Size = new System.Drawing.Size(121, 21);
             this.combo_1_1.TabIndex = 2;
-            this.combo_1_1.SelectedIndexChanged += new System.EventHandler(this.combo_SelectedIndexChanged);
+            this.combo_1_1.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // cbMemcard_1
             // 
@@ -228,7 +228,7 @@
             this.cbMemcard_1.TabIndex = 1;
             this.cbMemcard_1.Text = "Memcard";
             this.cbMemcard_1.UseVisualStyleBackColor = true;
-            this.cbMemcard_1.CheckedChanged += new System.EventHandler(this.cb_changed);
+            this.cbMemcard_1.CheckedChanged += new System.EventHandler(this.Cb_Changed);
             // 
             // btnOK
             // 
@@ -239,7 +239,7 @@
             this.btnOK.TabIndex = 2;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
+            this.btnOK.Click += new System.EventHandler(this.BtnOk_Click);
             // 
             // btnCancel
             // 
@@ -362,7 +362,7 @@
             this.combo_2_4.Name = "combo_2_4";
             this.combo_2_4.Size = new System.Drawing.Size(121, 21);
             this.combo_2_4.TabIndex = 5;
-            this.combo_2_4.SelectedIndexChanged += new System.EventHandler(this.combo_SelectedIndexChanged);
+            this.combo_2_4.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // combo_2_3
             // 
@@ -372,7 +372,7 @@
             this.combo_2_3.Name = "combo_2_3";
             this.combo_2_3.Size = new System.Drawing.Size(121, 21);
             this.combo_2_3.TabIndex = 4;
-            this.combo_2_3.SelectedIndexChanged += new System.EventHandler(this.combo_SelectedIndexChanged);
+            this.combo_2_3.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // combo_2_2
             // 
@@ -382,7 +382,7 @@
             this.combo_2_2.Name = "combo_2_2";
             this.combo_2_2.Size = new System.Drawing.Size(121, 21);
             this.combo_2_2.TabIndex = 3;
-            this.combo_2_2.SelectedIndexChanged += new System.EventHandler(this.combo_SelectedIndexChanged);
+            this.combo_2_2.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // combo_2_1
             // 
@@ -392,7 +392,7 @@
             this.combo_2_1.Name = "combo_2_1";
             this.combo_2_1.Size = new System.Drawing.Size(121, 21);
             this.combo_2_1.TabIndex = 2;
-            this.combo_2_1.SelectedIndexChanged += new System.EventHandler(this.combo_SelectedIndexChanged);
+            this.combo_2_1.SelectedIndexChanged += new System.EventHandler(this.Combo_SelectedIndexChanged);
             // 
             // cbMemcard_2
             // 
@@ -403,7 +403,7 @@
             this.cbMemcard_2.TabIndex = 1;
             this.cbMemcard_2.Text = "Memcard";
             this.cbMemcard_2.UseVisualStyleBackColor = true;
-            this.cbMemcard_2.CheckedChanged += new System.EventHandler(this.cb_changed);
+            this.cbMemcard_2.CheckedChanged += new System.EventHandler(this.Cb_Changed);
             // 
             // cbMultitap_2
             // 
@@ -414,7 +414,7 @@
             this.cbMultitap_2.TabIndex = 0;
             this.cbMultitap_2.Text = "Multitap";
             this.cbMultitap_2.UseVisualStyleBackColor = true;
-            this.cbMultitap_2.CheckedChanged += new System.EventHandler(this.cb_changed);
+            this.cbMultitap_2.CheckedChanged += new System.EventHandler(this.Cb_Changed);
             // 
             // PSXControllerConfigNew
             // 
