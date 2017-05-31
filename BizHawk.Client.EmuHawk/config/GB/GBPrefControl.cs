@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Client.Common;
 
-namespace BizHawk.Client.EmuHawk.config.GB
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class GBPrefControl : UserControl
 	{
@@ -21,68 +16,75 @@ namespace BizHawk.Client.EmuHawk.config.GB
 
 		[Browsable(false)]
 		public bool ColorGameBoy { get; set; }
+
 		[Browsable(false)]
 		public bool SyncSettingsChanged { get; private set; }
 
-		Gameboy.GambatteSettings s;
-		Gameboy.GambatteSyncSettings ss;
+		private Gameboy.GambatteSettings _s;
+		private Gameboy.GambatteSyncSettings _ss;
 
 		public void PutSettings(Gameboy.GambatteSettings s, Gameboy.GambatteSyncSettings ss)
 		{
-			this.s = s ?? new Gameboy.GambatteSettings();
-			this.ss = ss ?? new Gameboy.GambatteSyncSettings();
-			propertyGrid1.SelectedObject = this.ss;
+			_s = s ?? new Gameboy.GambatteSettings();
+			_ss = ss ?? new Gameboy.GambatteSyncSettings();
+			propertyGrid1.SelectedObject = _ss;
 			propertyGrid1.Enabled = !Global.MovieSession.Movie.IsActive;
-			checkBoxMuted.Checked = this.s.Muted;
-			cbDisplayBG.Checked = this.s.DisplayBG;
-			cbDisplayOBJ.Checked = this.s.DisplayOBJ;
-			cbDisplayWIN.Checked = this.s.DisplayWindow;
+			checkBoxMuted.Checked = _s.Muted;
+			cbDisplayBG.Checked = _s.DisplayBG;
+			cbDisplayOBJ.Checked = _s.DisplayOBJ;
+			cbDisplayWIN.Checked = _s.DisplayWindow;
 		}
 
 		public void GetSettings(out Gameboy.GambatteSettings s, out Gameboy.GambatteSyncSettings ss)
 		{
-			s = this.s;
-			ss = this.ss;
+			s = _s;
+			ss = _ss;
 		}
 
-		private void buttonDefaults_Click(object sender, EventArgs e)
+		private void ButtonDefaults_Click(object sender, EventArgs e)
 		{
-			PutSettings(null, Global.MovieSession.Movie.IsActive ? ss : null);
+			PutSettings(null, Global.MovieSession.Movie.IsActive ? _ss : null);
 			if (!Global.MovieSession.Movie.IsActive)
+			{
 				SyncSettingsChanged = true;
+			}
 		}
 
-		private void buttonPalette_Click(object sender, EventArgs e)
+		private void ButtonPalette_Click(object sender, EventArgs e)
 		{
 			if (ColorGameBoy)
-				CGBColorChooserForm.DoCGBColorChoserFormDialog(this.ParentForm, s);
+			{
+				CGBColorChooserForm.DoCGBColorChoserFormDialog(ParentForm, _s);
+			}
 			else
-				ColorChooserForm.DoColorChooserFormDialog(this.ParentForm, s);
+			{
+				ColorChooserForm.DoColorChooserFormDialog(ParentForm, _s);
+			}
 		}
 
-		private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+		private void PropertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
 			SyncSettingsChanged = true;
 		}
 
-		private void checkBoxMuted_CheckedChanged(object sender, EventArgs e)
+		private void CheckBoxMuted_CheckedChanged(object sender, EventArgs e)
 		{
-			s.Muted = (sender as CheckBox).Checked;
+			_s.Muted = ((CheckBox)sender).Checked;
 		}
 
-		private void cbDisplayBG_CheckedChanged(object sender, EventArgs e)
+		private void CbDisplayBG_CheckedChanged(object sender, EventArgs e)
 		{
-			s.DisplayBG = (sender as CheckBox).Checked;
+			_s.DisplayBG = ((CheckBox)sender).Checked;
 		}
 
-		private void cbDisplayOBJ_CheckedChanged(object sender, EventArgs e)
+		private void CbDisplayOBJ_CheckedChanged(object sender, EventArgs e)
 		{
-			s.DisplayOBJ = (sender as CheckBox).Checked;
+			_s.DisplayOBJ = ((CheckBox)sender).Checked;
 		}
 
-		private void cbDisplayWIN_CheckedChanged(object sender, EventArgs e)
+		private void CbDisplayWin_CheckedChanged(object sender, EventArgs e)
 		{
-			s.DisplayWindow = (sender as CheckBox).Checked;
+			_s.DisplayWindow = ((CheckBox)sender).Checked;
 		}
 	}
 }

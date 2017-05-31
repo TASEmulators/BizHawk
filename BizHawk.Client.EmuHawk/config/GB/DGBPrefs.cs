@@ -1,30 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿using System.Windows.Forms;
+
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Client.Common;
 
-namespace BizHawk.Client.EmuHawk.config.GB
+namespace BizHawk.Client.EmuHawk
 {
 	public partial class DGBPrefs : Form
 	{
-		DGBPrefs()
+		private DGBPrefs()
 		{
 			InitializeComponent();
 		}
 
-		void PutSettings(GambatteLink.GambatteLinkSettings s, GambatteLink.GambatteLinkSyncSettings ss)
+		private void PutSettings(GambatteLink.GambatteLinkSettings s, GambatteLink.GambatteLinkSyncSettings ss)
 		{
 			gbPrefControl1.PutSettings(s.L, ss.L);
 			gbPrefControl2.PutSettings(s.R, ss.R);
 		}
 
-		void GetSettings(out GambatteLink.GambatteLinkSettings s, out GambatteLink.GambatteLinkSyncSettings ss)
+		private void GetSettings(out GambatteLink.GambatteLinkSettings s, out GambatteLink.GambatteLinkSyncSettings ss)
 		{
 			Gameboy.GambatteSettings sl;
 			Gameboy.GambatteSyncSettings ssl;
@@ -37,13 +31,7 @@ namespace BizHawk.Client.EmuHawk.config.GB
 			ss = new GambatteLink.GambatteLinkSyncSettings(ssl, ssr);
 		}
 
-		private bool SyncSettingsChanged
-		{
-			get
-			{
-				return gbPrefControl1.SyncSettingsChanged || gbPrefControl2.SyncSettingsChanged;
-			}
-		}
+		private bool SyncSettingsChanged => gbPrefControl1.SyncSettingsChanged || gbPrefControl2.SyncSettingsChanged;
 
 		public static void DoDGBPrefsDialog(IWin32Window owner)
 		{
@@ -64,7 +52,9 @@ namespace BizHawk.Client.EmuHawk.config.GB
 					dlg.GetSettings(out s, out ss);
 					gambatte.PutSettings(s);
 					if (dlg.SyncSettingsChanged)
+					{
 						GlobalWin.MainForm.PutCoreSyncSettings(ss);
+					}
 				}
 			}
 		}

@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 
 		unsafe void DrawTiles(int *pal)
 		{
-			var lockdata = bmpViewTiles.bmp.LockBits(new Rectangle(0, 0, 256, 128), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockdata = bmpViewTiles.BMP.LockBits(new Rectangle(0, 0, 256, 128), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int* dest = (int*)lockdata.Scan0;
 			int pitch = lockdata.Stride / sizeof(int);
 
@@ -80,7 +80,7 @@ namespace BizHawk.Client.EmuHawk
 					Draw8x8(src + srcaddr, dest + destaddr, pitch, pal);
 				}
 			}
-			bmpViewTiles.bmp.UnlockBits(lockdata);
+			bmpViewTiles.BMP.UnlockBits(lockdata);
 			bmpViewTiles.Refresh();
 		}
 
@@ -88,13 +88,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			int bgheight = vdp.FrameHeight == 192 ? 224 : 256;
 			int maxtile = bgheight * 4;
-			if (bgheight != bmpViewBG.bmp.Height)
+			if (bgheight != bmpViewBG.BMP.Height)
 			{
 				bmpViewBG.Height = bgheight;
 				bmpViewBG.ChangeBitmapSize(256, bgheight);
 			}
 
-			var lockdata = bmpViewBG.bmp.LockBits(new Rectangle(0, 0, 256, bgheight), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockdata = bmpViewBG.BMP.LockBits(new Rectangle(0, 0, 256, bgheight), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int* dest = (int*)lockdata.Scan0;
 			int pitch = lockdata.Stride / sizeof(int);
 
@@ -116,13 +116,13 @@ namespace BizHawk.Client.EmuHawk
 					Draw8x8hv(src + srcaddr, dest + destaddr, pitch, tpal, hflip, vflip);
 				}
 			}
-			bmpViewBG.bmp.UnlockBits(lockdata);
+			bmpViewBG.BMP.UnlockBits(lockdata);
 			bmpViewBG.Refresh();
 		}
 
 		unsafe void DrawPal(int* pal)
 		{
-			var lockdata = bmpViewPalette.bmp.LockBits(new Rectangle(0, 0, 16, 2), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockdata = bmpViewPalette.BMP.LockBits(new Rectangle(0, 0, 16, 2), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int* dest = (int*)lockdata.Scan0;
 			int pitch = lockdata.Stride / sizeof(int);
 
@@ -135,7 +135,7 @@ namespace BizHawk.Client.EmuHawk
 				dest -= 16;
 				dest += pitch;
 			}
-			bmpViewPalette.bmp.UnlockBits(lockdata);
+			bmpViewPalette.BMP.UnlockBits(lockdata);
 			bmpViewPalette.Refresh();
 		}
 
@@ -204,7 +204,7 @@ namespace BizHawk.Client.EmuHawk
 				if (found is BmpView)
 				{
 					var bv = found as BmpView;
-					Clipboard.SetImage(bv.bmp);
+					Clipboard.SetImage(bv.BMP);
 				}
 			}
 		}

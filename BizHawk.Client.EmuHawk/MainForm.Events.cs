@@ -1324,7 +1324,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			Global.Config.ResolveDefaults();
-			InitControls(); //rebind hotkeys
+			InitControls(); // rebind hotkeys
 			GlobalWin.OSD.AddMessage("Config file loaded: " + PathManager.DefaultIniPath);
 		}
 
@@ -1343,7 +1343,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config = ConfigService.Load<Config>(ofd.FileName);
 				Global.Config.ResolveDefaults();
-				InitControls(); //rebind hotkeys
+				InitControls(); // rebind hotkeys
 				GlobalWin.OSD.AddMessage("Config file loaded: " + ofd.FileName);
 			}
 		}
@@ -1988,7 +1988,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			config.GB.GBPrefs.DoGBPrefsDialog(this);
+			GBPrefs.DoGBPrefsDialog(this);
 		}
 
 		private void LoadGbInSgbMenuItem_Click(object sender, EventArgs e)
@@ -2294,7 +2294,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DgbSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			config.GB.DGBPrefs.DoDGBPrefsDialog(this);
+			DGBPrefs.DoDGBPrefsDialog(this);
 		}
 
 		#endregion
