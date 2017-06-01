@@ -44,17 +44,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			Flush(true);
 
-			nsamp = _outputBufferIndex;
-
+			_outputBuffer = new short[_outputBufferIndex * 2];
 			for (int i = 0; i < _outputBufferIndex; i++)
 			{
 				_mixer = _outputBuffer_not_filtered[i] + _outputBuffer_filtered[i];
 				_mixer = _mixer >> 7;
 				_mixer = (_mixer * _volume) >> 4;
 				_mixer -= _volume << 8;
-
-				//Console.Write(_mixer);
-				//Console.Write(" ");
 
 				if (_mixer > 0x7FFF)
 				{
@@ -65,20 +61,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				{
 					_mixer = -0x8000;
 				}
-				/*
-				if (_mixer < 0)
-				{
-					_mixer = 0;
-				}
-				*/
-				_outputBuffer[i * 2] = (short)_mixer;
-				_outputBuffer[i * 2 + 1] = (short)_mixer;
 
+				_outputBuffer[i * 2] = unchecked((short)_mixer);
+				_outputBuffer[i * 2 + 1] = unchecked((short)_mixer);
+				
 			}
-			//Console.WriteLine(" ");
-			//Console.WriteLine(" ");
+
 			samples = _outputBuffer;
-			
+			nsamp = _outputBufferIndex;
+			last_filtered_value = _outputBuffer_filtered[_outputBufferIndex - 1];
 			_outputBufferIndex = 0;
 			filter_index = 0;
 		}
