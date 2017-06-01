@@ -146,6 +146,8 @@ namespace BizHawk.Client.Common
 						return SystemInfo.Libretro;
 					case "VB":
 						return SystemInfo.VirtualBoy;
+					case "NGP":
+						return SystemInfo.NeoGeoPocket;
 				}
 			}
 		}

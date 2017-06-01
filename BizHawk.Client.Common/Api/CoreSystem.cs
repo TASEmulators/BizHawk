@@ -28,6 +28,7 @@
 		Playstation,
 		WonderSwan,
 		Libretro,
-		VirtualBoy
+		VirtualBoy,
+		NeoGeoPocket
 	}
 }
