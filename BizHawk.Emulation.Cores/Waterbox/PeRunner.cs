@@ -53,8 +53,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// can be 0, but mmap calls will crash.
 		/// </summary>
 		public uint MmapHeapSizeKB { get; set; }
-	}
 
+		/// <summary>
+		/// start address in memory
+		/// </summary>
+		public ulong StartAddress { get; set; } = PeRunner.CanonicalStart;
+	}
 
 	public class PeRunner : Swappable, IImportResolver, IBinaryStateable
 	{
@@ -539,8 +543,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		}
 
-		// usual starting address for the executable
-		private static readonly ulong CanonicalStart = 0x0000036f00000000;
+		/// <summary>
+		/// usual starting point for the executable
+		/// </summary>
+		public const ulong CanonicalStart = 0x0000036f00000000;
+
+		public const ulong AlternateStart = 0x0000036e00000000;
 
 		/// <summary>
 		/// the next place where we can put a module or heap
@@ -642,6 +650,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public PeRunner(PeRunnerOptions opt)
 		{
+			_nextStart = opt.StartAddress;
 			Initialize(_nextStart);
 			using (this.EnterExit())
 			{

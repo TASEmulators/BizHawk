@@ -229,7 +229,7 @@
     <Compile Include="Computers\Commodore64\C64.MotherboardInput.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0001.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0005.cs" />
-		<Compile Include="Computers\Commodore64\Cartridge\Mapper0007.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0007.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0008.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper000A.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper000B.cs" />
@@ -1210,6 +1210,7 @@
     <Compile Include="Consoles\Sega\SMS\VDP.ModeTMS.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.Mode4.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.Tables.cs" />
+    <Compile Include="Consoles\SNK\DualNeoGeoPort.cs" />
     <Compile Include="Consoles\SNK\LibNeoGeoPort.cs" />
     <Compile Include="Consoles\SNK\NeoGeoPort.cs" />
     <Compile Include="Consoles\Sony\PSP\PPSSPPDll.cs" />
@@ -1290,6 +1291,8 @@
     <Compile Include="CPUs\Z80\Registers.cs" />
     <Compile Include="CPUs\Z80\Tables.cs" />
     <Compile Include="CPUs\Z80\Z80A.cs" />
+    <Compile Include="SideBySideVideo.cs" />
+    <Compile Include="Sound\DualSyncSound.cs" />
     <Compile Include="Waterbox\ElfRunner.cs" />
     <Compile Include="FileID.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.cs" />

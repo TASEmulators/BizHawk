@@ -25,6 +25,11 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 
 		[CoreConstructor("NGP")]
 		public NeoGeoPort(CoreComm comm, byte[] rom, SyncSettings syncSettings, bool deterministic)
+			:this(comm, rom, syncSettings, deterministic, PeRunner.CanonicalStart)
+		{
+		}
+
+		internal NeoGeoPort(CoreComm comm, byte[] rom, SyncSettings syncSettings, bool deterministic, ulong startAddress)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
@@ -37,7 +42,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 				SbrkHeapSizeKB = 256,
 				SealedHeapSizeKB = 10 * 1024, // must be a bit larger than twice the ROM size
 				InvisibleHeapSizeKB = 4,
-				PlainHeapSizeKB = 4
+				PlainHeapSizeKB = 4,
+				StartAddress = startAddress
 			});
 
 			_neopop = BizInvoker.GetInvoker<LibNeoGeoPort>(_exe, _exe);

@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// <summary>
 		/// start address
 		/// </summary>
-		private ulong _lockkey;
+		private uint _lockkey;
 
 		/// <summary>
 		/// the the relevant lockinfo for this core
@@ -39,16 +39,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_memoryBlocks = null;
 		}
 
-		protected void Initialize(ulong lockkey)
+		protected void Initialize(ulong startAddress)
 		{
+			// any Swappables in the same 4G range are assumed to conflict
+			var lockkey = (uint)(startAddress >> 32);
+
 			_lockkey = lockkey;
 			if (lockkey == 0)
 				throw new NullReferenceException();
 			_currentLockInfo = LockInfos.GetOrAdd(_lockkey, new LockInfo { Sync = new object() });
 		}
-
-		// any Swappable is assumed to conflict with any other Swappable at the same base address,
-		// but not any other starting address.  so don't put them too close together!
 
 		private class LockInfo
 		{
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		private static readonly ConcurrentDictionary<ulong, LockInfo> LockInfos = new ConcurrentDictionary<ulong, LockInfo>();
+		private static readonly ConcurrentDictionary<uint, LockInfo> LockInfos = new ConcurrentDictionary<uint, LockInfo>();
 
 		/// <summary>
 		/// acquire lock and swap this into memory
