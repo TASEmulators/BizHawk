@@ -4,28 +4,31 @@ using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.SNK
 {
-	[CoreAttributes("NeoPop", "Thomas Klausner", true, false, "0.9.44.1", 
+	[CoreAttributes("NeoPop", "Thomas Klausner", true, false, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
 	public class NeoGeoPort : IEmulator, IVideoProvider, ISoundProvider, IStatable, IInputPollable,
 		ISettable<object, NeoGeoPort.SyncSettings>
 	{
 		private PeRunner _exe;
-		private LibNeoGeoPort _neopop;
+		internal LibNeoGeoPort _neopop;
 		private long _clockTime;
 		private int _clockDen;
 
 		[CoreConstructor("NGP")]
 		public NeoGeoPort(CoreComm comm, byte[] rom, SyncSettings syncSettings, bool deterministic)
-			:this(comm, rom, syncSettings, deterministic, PeRunner.CanonicalStart)
+			: this(comm, rom, syncSettings, deterministic, PeRunner.CanonicalStart)
 		{
 		}
 

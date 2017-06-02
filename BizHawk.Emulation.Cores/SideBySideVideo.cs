@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores
 		{
 			_l = l;
 			_r = r;
+			_buff = new int[BufferWidth * BufferHeight];
 		}
 
 		private static unsafe void Blit(int* src, int srcp, int* dst, int dstp, int w, int h)
@@ -31,8 +32,6 @@ namespace BizHawk.Emulation.Cores
 		{
 			int h = BufferHeight;
 			int w = BufferWidth;
-			if (_buff.Length < w * h)
-				_buff = new int[w * h];
 
 			fixed(int* _pl = _l.GetVideoBuffer(), _pr = _r.GetVideoBuffer(), _pd = _buff)
 			{
@@ -42,7 +41,7 @@ namespace BizHawk.Emulation.Cores
 		}
 		private readonly IVideoProvider _l;
 		private readonly IVideoProvider _r;
-		private int[] _buff = new int[0];
+		private int[] _buff;
 		public int BackgroundColor => _l.BackgroundColor;
 		public int BufferHeight => _l.BufferHeight;
 		public int BufferWidth => _l.BufferWidth * 2;

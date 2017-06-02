@@ -41,19 +41,30 @@ uint8 NGPJoyLatch;
 uint8 settings_language;
 time_t frontend_time;
 
+int (*comms_read_cb)(uint8* buffer);
+int (*comms_poll_cb)(uint8* buffer);
+void (*comms_write_cb)(uint8 data);
+
 bool system_comms_read(uint8 *buffer)
 {
-	return (0);
+	if (comms_read_cb)
+		return comms_read_cb(buffer);
+	else
+		return false;
 }
 
 bool system_comms_poll(uint8 *buffer)
 {
-	return (0);
+	if (comms_poll_cb)
+		return comms_poll_cb(buffer);
+	else
+		return false;
 }
 
 void system_comms_write(uint8 data)
 {
-	return;
+	if (comms_write_cb)
+		comms_write_cb(data);
 }
 
 void instruction_error(char *vaMessage, ...)
@@ -193,6 +204,13 @@ EXPORT void HardReset()
 EXPORT void SetInputCallback(void (*callback)())
 {
 	inputcallback = callback;
+}
+
+EXPORT void SetCommsCallbacks(int (*read_cb)(uint8* buffer), int (*poll_cb)(uint8* buffer), void (*write_cb)(uint8 data))
+{
+	comms_read_cb = read_cb;
+	comms_poll_cb = poll_cb;
+	comms_write_cb = write_cb;
 }
 
 EXPORT void GetMemoryArea(int which, void **ptr, int *size, int *writable)

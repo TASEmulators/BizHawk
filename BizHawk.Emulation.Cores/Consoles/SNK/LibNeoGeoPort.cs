@@ -44,5 +44,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		public abstract void SetInputCallback(InputCallback callback);
 		[BizImport(CC)]
 		public abstract void GetMemoryArea(int which, ref IntPtr ptr, ref int size, ref bool writable);
+		[BizImport(CC)]
+		public abstract void SetCommsCallbacks(IntPtr readcb, IntPtr pollcb, IntPtr writecb);
 	}
 }

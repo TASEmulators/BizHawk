@@ -1,10 +1,16 @@
-﻿using BizHawk.Emulation.Common;
+﻿using BizHawk.Common;
+using BizHawk.Common.BizInvoke;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Sound;
 using BizHawk.Emulation.Cores.Waterbox;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.SNK
@@ -19,13 +25,20 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		private bool _disposed = false;
 		private readonly DualSyncSound _soundProvider;
 		private readonly SideBySideVideo _videoProvider;
+		private readonly LinkInterop _leftEnd;
+		private readonly LinkInterop _rightEnd;
+		private readonly LinkCable _linkCable;
 
 		[CoreConstructor("DNGP")]
 		public DualNeoGeoPort(CoreComm comm, byte[] rom, bool deterministic)
 		{
 			CoreComm = comm;
-			_left = new NeoGeoPort(comm, rom, null, deterministic, PeRunner.CanonicalStart);
-			_right = new NeoGeoPort(comm, rom, null, deterministic, PeRunner.AlternateStart);
+			_left = new NeoGeoPort(comm, rom, new NeoGeoPort.SyncSettings { Language = LibNeoGeoPort.Language.English }, deterministic, PeRunner.CanonicalStart);
+			_right = new NeoGeoPort(comm, rom, new NeoGeoPort.SyncSettings { Language = LibNeoGeoPort.Language.English }, deterministic, PeRunner.AlternateStart);
+			_linkCable = new LinkCable();
+			_leftEnd = new LinkInterop(_left, _linkCable.LeftIn, _linkCable.LeftOut);
+			_rightEnd = new LinkInterop(_right, _linkCable.RightIn, _linkCable.RightOut);
+
 
 			_serviceProvider = new BasicServiceProvider(this);
 			_soundProvider = new DualSyncSound(_left, _right);
@@ -36,12 +49,216 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 
 		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
-			_left.FrameAdvance(new PrefixController(controller, "P1 "), render, rendersound);
-			_right.FrameAdvance(new PrefixController(controller, "P2 "), render, rendersound);
+			var t1 = Task.Run(() =>
+			{
+				_left.FrameAdvance(new PrefixController(controller, "P1 "), render, rendersound);
+				_leftEnd.SignalEndOfFrame();
+			});
+			var t2 = Task.Run(() =>
+			{
+				_right.FrameAdvance(new PrefixController(controller, "P2 "), render, rendersound);
+				_rightEnd.SignalEndOfFrame();
+			});
+			var t3 = Task.Run(() =>
+			{
+				_linkCable.RunFrame();
+			});
+			Task.WaitAll(t1, t2, t3);
 			Frame++;
 			_soundProvider.Fetch();
 			_videoProvider.Fetch();
 		}
+
+		#region link cable
+
+		private class LinkCable
+		{
+			public readonly BlockingCollection<LinkRequest> LeftIn = new BlockingCollection<LinkRequest>();
+			public readonly BlockingCollection<LinkResult> LeftOut = new BlockingCollection<LinkResult>();
+			public readonly BlockingCollection<LinkRequest> RightIn = new BlockingCollection<LinkRequest>();
+			public readonly BlockingCollection<LinkResult> RightOut = new BlockingCollection<LinkResult>();
+
+			private readonly Queue<byte> _leftData = new Queue<byte>();
+			private readonly Queue<byte> _rightData = new Queue<byte>();
+
+			public void RunFrame()
+			{
+				LinkRequest l = LeftIn.Take();
+				LinkRequest r = RightIn.Take();
+				while (true)
+				{
+					switch (l.RequestType)
+					{
+						case LinkRequest.RequestTypes.EndOfFrame:
+							if (r.RequestType == LinkRequest.RequestTypes.EndOfFrame)
+								return;
+							break;
+						case LinkRequest.RequestTypes.Write:
+							_leftData.Enqueue(l.Data);
+							l = LeftIn.Take();
+							continue;
+						case LinkRequest.RequestTypes.Read:
+						case LinkRequest.RequestTypes.Poll:
+							if (_rightData.Count > 0)
+							{
+								LeftOut.Add(new LinkResult
+								{
+									Data = l.RequestType == LinkRequest.RequestTypes.Read ? _rightData.Dequeue() : _rightData.Peek(),
+									Return = true
+								});
+								l = LeftIn.Take();
+								continue;
+							}
+							else if (r.RequestType != LinkRequest.RequestTypes.Write)
+							{
+								LeftOut.Add(new LinkResult
+								{
+									Data = l.Data,
+									Return = false
+								});
+								l = LeftIn.Take();
+								continue;
+							}
+							else
+							{
+								break;
+							}
+					}
+					switch (r.RequestType)
+					{
+						case LinkRequest.RequestTypes.Write:
+							_rightData.Enqueue(r.Data);
+							r = RightIn.Take();
+							continue;
+						case LinkRequest.RequestTypes.Read:
+						case LinkRequest.RequestTypes.Poll:
+							if (_leftData.Count > 0)
+							{
+								RightOut.Add(new LinkResult
+								{
+									Data = r.RequestType == LinkRequest.RequestTypes.Read ? _leftData.Dequeue() : _leftData.Peek(),
+									Return = true
+								});
+								r = RightIn.Take();
+								continue;
+							}
+							else if (l.RequestType != LinkRequest.RequestTypes.Write)
+							{
+								RightOut.Add(new LinkResult
+								{
+									Data = r.Data,
+									Return = false
+								});
+								r = RightIn.Take();
+								continue;
+							}
+							else
+							{
+								break;
+							}
+					}
+				}
+			}
+		}
+
+		public struct LinkRequest
+		{
+			public enum RequestTypes : byte
+			{
+				Read,
+				Poll,
+				Write,
+				EndOfFrame
+			}
+			public RequestTypes RequestType;
+			public byte Data;
+		}
+		public struct LinkResult
+		{
+			public byte Data;
+			public bool Return;
+		}
+
+		private unsafe class LinkInterop
+		{
+			private readonly BlockingCollection<LinkRequest> _push;
+			private readonly BlockingCollection<LinkResult> _pull;
+			private NeoGeoPort _core;
+			private readonly IntPtr _readcb;
+			private readonly IntPtr _pollcb;
+			private readonly IntPtr _writecb;
+			private readonly IImportResolver _exporter;
+
+			public LinkInterop(NeoGeoPort core, BlockingCollection<LinkRequest> push, BlockingCollection<LinkResult> pull)
+			{
+				_core = core;
+				_push = push;
+				_pull = pull;
+				_exporter = BizExvoker.GetExvoker(this);
+				_readcb = _exporter.SafeResolve("CommsReadCallback");
+				_pollcb = _exporter.SafeResolve("CommsPollCallback");
+				_writecb = _exporter.SafeResolve("CommsWriteCallback");
+				ConnectPointers();
+			}
+
+			private void ConnectPointers()
+			{
+				_core._neopop.SetCommsCallbacks(_readcb, _pollcb, _writecb);
+			}
+
+			[BizExport(CallingConvention.Cdecl)]
+			public bool CommsReadCallback(byte* buffer)
+			{
+				if (buffer == null)
+					return true;
+				_push.Add(new LinkRequest
+				{
+					RequestType = LinkRequest.RequestTypes.Read,
+					Data = *buffer
+				});
+				var r = _pull.Take();
+				*buffer = r.Data;
+				return r.Return;
+			}
+			[BizExport(CallingConvention.Cdecl)]
+			public bool CommsPollCallback(byte* buffer)
+			{
+				if (buffer == null)
+					return true;
+				_push.Add(new LinkRequest
+				{
+					RequestType = LinkRequest.RequestTypes.Poll,
+					Data = *buffer
+				});
+				var r = _pull.Take();
+				*buffer = r.Data;
+				return r.Return;
+			}
+			[BizExport(CallingConvention.Cdecl)]
+			public void CommsWriteCallback(byte data)
+			{
+				_push.Add(new LinkRequest
+				{
+					RequestType = LinkRequest.RequestTypes.Write,
+					Data = data
+				});
+			}
+
+			public void SignalEndOfFrame()
+			{
+				_push.Add(new LinkRequest
+				{
+					RequestType = LinkRequest.RequestTypes.EndOfFrame
+				});
+			}
+
+			public void PostLoadState()
+			{
+				ConnectPointers();
+			}
+		}
+
+		#endregion
 
 		private class PrefixController : IController
 		{
