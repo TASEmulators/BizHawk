@@ -338,7 +338,7 @@ namespace BizHawk.Emulation.Common
 
 				case ".NGP":
 				case ".NGC":
-					game.System = "DNGP";
+					game.System = "NGP";
 					break;
 			}
 

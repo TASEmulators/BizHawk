@@ -91,9 +91,13 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 					{
 						case LinkRequest.RequestTypes.EndOfFrame:
 							if (r.RequestType == LinkRequest.RequestTypes.EndOfFrame)
+							{
+								Console.WriteLine("\nEnd of Frame {0} {1}", _leftData.Count, _rightData.Count);
 								return;
+							}
 							break;
 						case LinkRequest.RequestTypes.Write:
+							Console.Write("LW ");
 							_leftData.Enqueue(l.Data);
 							l = LeftIn.Take();
 							continue;
@@ -101,6 +105,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 						case LinkRequest.RequestTypes.Poll:
 							if (_rightData.Count > 0)
 							{
+								if (l.RequestType == LinkRequest.RequestTypes.Read)
+									Console.Write("LR ");
 								LeftOut.Add(new LinkResult
 								{
 									Data = l.RequestType == LinkRequest.RequestTypes.Read ? _rightData.Dequeue() : _rightData.Peek(),
@@ -111,6 +117,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 							}
 							else if (r.RequestType != LinkRequest.RequestTypes.Write)
 							{
+								if (l.RequestType == LinkRequest.RequestTypes.Read)
+									Console.Write("L! ");
 								LeftOut.Add(new LinkResult
 								{
 									Data = l.Data,
@@ -127,6 +135,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 					switch (r.RequestType)
 					{
 						case LinkRequest.RequestTypes.Write:
+							Console.Write("RW ");
 							_rightData.Enqueue(r.Data);
 							r = RightIn.Take();
 							continue;
@@ -134,6 +143,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 						case LinkRequest.RequestTypes.Poll:
 							if (_leftData.Count > 0)
 							{
+								if (r.RequestType == LinkRequest.RequestTypes.Read)
+									Console.Write("RR ");
 								RightOut.Add(new LinkResult
 								{
 									Data = r.RequestType == LinkRequest.RequestTypes.Read ? _leftData.Dequeue() : _leftData.Peek(),
@@ -144,6 +155,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 							}
 							else if (l.RequestType != LinkRequest.RequestTypes.Write)
 							{
+								if (r.RequestType == LinkRequest.RequestTypes.Read)
+									Console.Write("R! ");
 								RightOut.Add(new LinkResult
 								{
 									Data = r.Data,
@@ -206,11 +219,20 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 				_core._neopop.SetCommsCallbacks(_readcb, _pollcb, _writecb);
 			}
 
+			private bool CommsPollNoBuffer()
+			{
+				_push.Add(new LinkRequest
+				{
+					RequestType = LinkRequest.RequestTypes.Poll
+				});
+				return _pull.Take().Return;
+			}
+
 			[BizExport(CallingConvention.Cdecl)]
 			public bool CommsReadCallback(byte* buffer)
 			{
 				if (buffer == null)
-					return true;
+					return CommsPollNoBuffer();
 				_push.Add(new LinkRequest
 				{
 					RequestType = LinkRequest.RequestTypes.Read,
@@ -224,7 +246,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			public bool CommsPollCallback(byte* buffer)
 			{
 				if (buffer == null)
-					return true;
+					return CommsPollNoBuffer();
 				_push.Add(new LinkRequest
 				{
 					RequestType = LinkRequest.RequestTypes.Poll,
