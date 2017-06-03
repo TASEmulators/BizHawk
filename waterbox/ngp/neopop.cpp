@@ -143,7 +143,7 @@ static MDFN_COLD bool Load(const uint8* romdata, int32 romlength)
 	//throw MDFN_Error(0, _("NGP/NGPC ROM image is too large."));
 
 	ngpc_rom.length = fp_size;
-	ngpc_rom.data = (uint8*)alloc_sealed(ngpc_rom.length);
+	ngpc_rom.data = (uint8*)alloc_plain(ngpc_rom.length);
 	memcpy(ngpc_rom.data, romdata, romlength);
 
 	rom_loaded();
@@ -238,5 +238,20 @@ EXPORT void GetMemoryArea(int which, void **ptr, int *size, int *writable)
 		*writable = 0;
 		break;
 	}
+}
+
+EXPORT bool HasSaveRam()
+{
+	return FLASH_IsModified();
+}
+
+EXPORT bool PutSaveRam(const uint8* data, uint32 length)
+{
+	return FLASH_LoadNV(data, length);
+}
+
+EXPORT void GetSaveRam(void (*callback)(const uint8* data, uint32 length))
+{
+	FLASH_SaveNV(callback);
 }
 

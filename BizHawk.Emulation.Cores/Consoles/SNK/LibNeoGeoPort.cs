@@ -31,6 +31,8 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		{
 			Japanese, English
 		}
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void SaveRamCallback(IntPtr data, int length);
 
 		[BizImport(CC)]
 		public abstract bool LoadSystem(byte[] rom, int romlength, Language language);
@@ -46,5 +48,11 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		public abstract void GetMemoryArea(int which, ref IntPtr ptr, ref int size, ref bool writable);
 		[BizImport(CC)]
 		public abstract void SetCommsCallbacks(IntPtr readcb, IntPtr pollcb, IntPtr writecb);
+		[BizImport(CC)]
+		public abstract bool HasSaveRam();
+		[BizImport(CC)]
+		public abstract bool PutSaveRam(byte[] data, int length);
+		[BizImport(CC)]
+		public abstract void GetSaveRam(SaveRamCallback callback);
 	}
 }

@@ -202,11 +202,11 @@ bool FLASH_LoadNV(const uint8* data, uint32 size)
 		//throw MDFN_Error(0, _("FLASH header total_file_length is bad!"));
 	}
 
-	if (size < sizeof(FlashFileHeader) + header.total_file_length)
+	if (size < header.total_file_length)
 		return false;
 
 	flashdata.resize(header.total_file_length);
-	memcpy(&flashdata[0], data + sizeof(FlashFileHeader), flashdata.size());
+	memcpy(&flashdata[0], data, flashdata.size());
 
 	if (!do_flash_read(&flashdata[0]))
 		return false;
@@ -219,7 +219,7 @@ bool FLASH_LoadNV(const uint8* data, uint32 size)
 //-----------------------------------------------------------------------------
 void flash_write(uint32 start_address, uint16 length)
 {
-	/*uint16 i;
+	uint16 i;
 
 	//Now we need a new flash command before the next flash write will work!
 	memory_flash_command = FALSE;
@@ -255,7 +255,7 @@ void flash_write(uint32 start_address, uint16 length)
 		blocks[block_count].start_address = start_address;
 		blocks[block_count].data_length = length;
 		block_count++;
-	}*/
+	}
 }
 
 static void make_flash_commit(std::vector<uint8> &flashdata)
@@ -302,6 +302,11 @@ static void make_flash_commit(std::vector<uint8> &flashdata)
 			fileptr++;
 		}
 	}
+}
+
+bool FLASH_IsModified()
+{
+	return block_count > 0;
 }
 
 void FLASH_SaveNV(void (*callback)(const uint8* data, uint32 size))

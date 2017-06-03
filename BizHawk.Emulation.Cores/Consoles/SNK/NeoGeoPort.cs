@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 	[CoreAttributes("NeoPop", "Thomas Klausner", true, false, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
 	public class NeoGeoPort : IEmulator, IVideoProvider, ISoundProvider, IStatable, IInputPollable,
-		ISettable<object, NeoGeoPort.SyncSettings>
+		ISettable<object, NeoGeoPort.SyncSettings>, ISaveRam
 	{
 		private PeRunner _exe;
 		internal LibNeoGeoPort _neopop;
@@ -34,6 +34,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 
 		internal NeoGeoPort(CoreComm comm, byte[] rom, SyncSettings syncSettings, bool deterministic, ulong startAddress)
 		{
+			if (rom.Length > 4 * 1024 * 1024)
+				throw new InvalidOperationException("ROM too big!");
+
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
 			_syncSettings = syncSettings ?? new SyncSettings();
@@ -43,9 +46,9 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 				Path = comm.CoreFileProvider.DllPath(),
 				Filename = "ngp.wbx",
 				SbrkHeapSizeKB = 256,
-				SealedHeapSizeKB = 10 * 1024, // must be a bit larger than twice the ROM size
+				SealedHeapSizeKB = 5 * 1024, // must be a bit larger than the ROM size
 				InvisibleHeapSizeKB = 4,
-				PlainHeapSizeKB = 4,
+				PlainHeapSizeKB = 5 * 1024, // must be a bit larger than the ROM size
 				StartAddress = startAddress
 			});
 
@@ -371,6 +374,29 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 				}
 			}
 			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(new MemoryDomainList(domains));
+		}
+
+		#endregion
+
+		#region ISaveram
+
+		public bool SaveRamModified => _neopop.HasSaveRam();
+
+		public byte[] CloneSaveRam()
+		{
+			byte[] ret = null;
+			_neopop.GetSaveRam((data, size) =>
+			{
+				ret = new byte[size];
+				Marshal.Copy(data, ret, 0, size);
+			});
+			return ret;
+		}
+
+		public void StoreSaveRam(byte[] data)
+		{
+			if (!_neopop.PutSaveRam(data, data.Length))
+				throw new InvalidOperationException("Core rejected the saveram");
 		}
 
 		#endregion

@@ -31,6 +31,7 @@ using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Client.ApiHawk;
 using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
+using BizHawk.Emulation.Cores.Consoles.SNK;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1686,7 +1687,7 @@ namespace BizHawk.Client.EmuHawk
 
 					// GBA meteor core might not know how big the saveram ought to be, so just send it the whole file
 					// GBA vba-next core will try to eat anything, regardless of size
-					if (Emulator is VBANext || Emulator is MGBAHawk)
+					if (Emulator is VBANext || Emulator is MGBAHawk || Emulator is NeoGeoPort)
 					{
 						sram = File.ReadAllBytes(PathManager.SaveRamPath(Global.Game));
 					}

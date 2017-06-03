@@ -24,6 +24,7 @@ void flash_write(uint32 start_address, uint16 length);
 
 bool FLASH_LoadNV(const uint8* data, uint32 size);
 void FLASH_SaveNV(void (*callback)(const uint8* data, uint32 size));
+bool FLASH_IsModified();
 }
 
 //=============================================================================
