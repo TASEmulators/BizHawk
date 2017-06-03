@@ -4,7 +4,7 @@ namespace BizHawk.Client.Common
 {
 	public partial class BkmMovie : IMovie
 	{
-		private bool _makeBackup = true;
+		private bool _makeBackup;
 		private bool _changes;
 		private int? _loopOffset;
 
@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 		public BkmMovie()
 		{
 			Header = new BkmHeader { [HeaderKeys.MOVIEVERSION] = "BizHawk v0.0.1" };
-			Filename = string.Empty;
+			Filename = "";
 			_preloadFramecount = 0;
 
 			IsCountingRerecords = true;

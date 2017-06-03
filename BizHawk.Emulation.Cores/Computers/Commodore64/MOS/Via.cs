@@ -1,133 +1,85 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BizHawk.Common;
-using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Via
 	{
-		[SaveState.DoNotSave] private const int PCR_INT_CONTROL_NEGATIVE_EDGE = 0x00;
-		[SaveState.DoNotSave] private const int PCR_INT_CONTROL_POSITIVE_EDGE = 0x01;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_INPUT_NEGATIVE_ACTIVE_EDGE = 0x00;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE = 0x02;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_INPUT_POSITIVE_ACTIVE_EDGE = 0x04;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE = 0x06;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_HANDSHAKE_OUTPUT = 0x08;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_PULSE_OUTPUT = 0x0A;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_LOW_OUTPUT = 0x0C;
-		[SaveState.DoNotSave] private const int PCR_CONTROL_HIGH_OUTPUT = 0x0E;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_DISABLED = 0x00;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_SHIFT_IN_T2_ONCE = 0x04;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_SHIFT_IN_PHI2 = 0x08;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_SHIFT_IN_CLOCK = 0x0C;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_SHIFT_OUT_T2 = 0x10;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_SHIFT_OUT_T2_ONCE = 0x14;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_SHIFT_OUT_PHI2 = 0x18;
-		[SaveState.DoNotSave] private const int ACR_SR_CONTROL_SHIFT_OUT_CLOCK = 0x1C;
-		[SaveState.DoNotSave] private const int ACR_T2_CONTROL_TIMED = 0x00;
-		[SaveState.DoNotSave] private const int ACR_T2_CONTROL_COUNT_ON_PB6 = 0x20;
-		[SaveState.DoNotSave] private const int ACR_T1_CONTROL_INTERRUPT_ON_LOAD = 0x00;
-		[SaveState.DoNotSave] private const int ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS = 0x40;
-		[SaveState.DoNotSave] private const int ACR_T1_CONTROL_INTERRUPT_ON_LOAD_AND_ONESHOT_PB7 = 0x80;
-		[SaveState.DoNotSave] private const int ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS_AND_OUTPUT_ON_PB7 = 0xC0;
+		private const int PCR_INT_CONTROL_NEGATIVE_EDGE = 0x00;
+		private const int PCR_INT_CONTROL_POSITIVE_EDGE = 0x01;
+		private const int PCR_CONTROL_INPUT_NEGATIVE_ACTIVE_EDGE = 0x00;
+		private const int PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_NEGATIVE_EDGE = 0x02;
+		private const int PCR_CONTROL_INPUT_POSITIVE_ACTIVE_EDGE = 0x04;
+		private const int PCR_CONTROL_INDEPENDENT_INTERRUPT_INPUT_POSITIVE_EDGE = 0x06;
+		private const int PCR_CONTROL_HANDSHAKE_OUTPUT = 0x08;
+		private const int PCR_CONTROL_PULSE_OUTPUT = 0x0A;
+		private const int PCR_CONTROL_LOW_OUTPUT = 0x0C;
+		private const int PCR_CONTROL_HIGH_OUTPUT = 0x0E;
+		private const int ACR_SR_CONTROL_DISABLED = 0x00;
+		private const int ACR_SR_CONTROL_SHIFT_IN_T2_ONCE = 0x04;
+		private const int ACR_SR_CONTROL_SHIFT_IN_PHI2 = 0x08;
+		private const int ACR_SR_CONTROL_SHIFT_IN_CLOCK = 0x0C;
+		private const int ACR_SR_CONTROL_SHIFT_OUT_T2 = 0x10;
+		private const int ACR_SR_CONTROL_SHIFT_OUT_T2_ONCE = 0x14;
+		private const int ACR_SR_CONTROL_SHIFT_OUT_PHI2 = 0x18;
+		private const int ACR_SR_CONTROL_SHIFT_OUT_CLOCK = 0x1C;
+		private const int ACR_T2_CONTROL_TIMED = 0x00;
+		private const int ACR_T2_CONTROL_COUNT_ON_PB6 = 0x20;
+		private const int ACR_T1_CONTROL_INTERRUPT_ON_LOAD = 0x00;
+		private const int ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS = 0x40;
+		private const int ACR_T1_CONTROL_INTERRUPT_ON_LOAD_AND_ONESHOT_PB7 = 0x80;
+		private const int ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS_AND_OUTPUT_ON_PB7 = 0xC0;
 
-		[SaveState.SaveWithName("PortOutputA")]
 		private int _pra;
-		[SaveState.SaveWithName("PortDirectionA")]
 		private int _ddra;
-		[SaveState.SaveWithName("PortOutputB")]
 		private int _prb;
-		[SaveState.SaveWithName("PortDirectionB")]
 		private int _ddrb;
-		[SaveState.SaveWithName("Timer1Counter")]
 		private int _t1C;
-		[SaveState.SaveWithName("Timer1Latch")]
 		private int _t1L;
-		[SaveState.SaveWithName("Timer2Counter")]
 		private int _t2C;
-		[SaveState.SaveWithName("Timer2Latch")]
 		private int _t2L;
-		[SaveState.SaveWithName("ShiftRegister")]
 		private int _sr;
-		[SaveState.SaveWithName("AuxiliaryControlRegister")]
 		private int _acr;
-		[SaveState.SaveWithName("PeripheralControlRegister")]
 		private int _pcr;
-		[SaveState.SaveWithName("InterruptFlagRegister")]
 		private int _ifr;
-		[SaveState.SaveWithName("InterruptEnableRegister")]
 		private int _ier;
-		[SaveState.SaveWithName("Port")]
-		private readonly Port _port;
+		private readonly IPort _port;
 
-		[SaveState.SaveWithName("PortLatchA")]
 		private int _paLatch;
-		[SaveState.SaveWithName("PortLatchB")]
 		private int _pbLatch;
 
-		[SaveState.SaveWithName("CA1InterruptControl")]
 		private int _pcrCa1IntControl;
-		[SaveState.SaveWithName("CA2Control")]
 		private int _pcrCa2Control;
-		[SaveState.SaveWithName("CB1InterruptControl")]
 		private int _pcrCb1IntControl;
-		[SaveState.SaveWithName("CB2Control")]
 		private int _pcrCb2Control;
-		[SaveState.SaveWithName("PortLatchEnableA")]
 		private bool _acrPaLatchEnable;
-		[SaveState.SaveWithName("PortLatchEnableB")]
 		private bool _acrPbLatchEnable;
-		[SaveState.SaveWithName("ShiftRegisterControl")]
 		private int _acrSrControl;
-		[SaveState.SaveWithName("Timer1Control")]
 		private int _acrT1Control;
-		[SaveState.SaveWithName("Timer2Control")]
 		private int _acrT2Control;
 
-		[SaveState.SaveWithName("PreviousCA1")]
 		private bool _ca1L;
-		[SaveState.SaveWithName("PreviousCA2")]
 		private bool _ca2L;
-		[SaveState.SaveWithName("PreviousCB1")]
 		private bool _cb1L;
-		[SaveState.SaveWithName("PreviousCB2")]
 		private bool _cb2L;
-		[SaveState.SaveWithName("PreviousPB6")]
 		private bool _pb6L;
 
-		[SaveState.SaveWithName("ResetCa2NextClock")]
 		private bool _resetCa2NextClock;
-		[SaveState.SaveWithName("ResetCb2NextClock")]
 		private bool _resetCb2NextClock;
 
-		[SaveState.SaveWithName("HandshakeCa2NextClock")]
 		private bool _handshakeCa2NextClock;
-		[SaveState.SaveWithName("HandshakeCb2NextClock")]
 		private bool _handshakeCb2NextClock;
 
-		[SaveState.SaveWithName("CA1")]
 		public bool Ca1;
-		[SaveState.SaveWithName("CA2")]
 		public bool Ca2;
-		[SaveState.SaveWithName("CB1")]
 		public bool Cb1;
-		[SaveState.SaveWithName("CB2")]
 		public bool Cb2;
-		[SaveState.SaveWithName("PB6")]
 		private bool _pb6;
 
-		[SaveState.SaveWithName("InterruptNextClock")]
 		private int _interruptNextClock;
-		[SaveState.SaveWithName("T1Loaded")]
 		private bool _t1CLoaded;
-		[SaveState.SaveWithName("T2Loaded")]
 		private bool _t2CLoaded;
-		[SaveState.SaveWithName("T1Delayed")]
 		private int _t1Delayed;
-		[SaveState.SaveWithName("T2Delayed")]
 		private int _t2Delayed;
 
 		public Via()
@@ -146,11 +98,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_ca1L = true;
 		}
 
-		[SaveState.DoNotSave]
-		public bool Irq
-		{
-			get { return (_ifr & 0x80) == 0; }
-		}
+		public bool Irq => (_ifr & 0x80) == 0;
 
 		public void HardReset()
 		{
@@ -203,7 +151,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			_interruptNextClock = 0;
 
 			// Process 'pulse' and 'handshake' outputs on CA2 and CB2
-
 			if (_resetCa2NextClock)
 			{
 				Ca2 = true;
@@ -229,7 +176,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 
 			// Count timers
-
 			if (_t1Delayed > 0)
 			{
 				_t1Delayed--;
@@ -244,6 +190,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 						_interruptNextClock |= 0x40;
 						_t1CLoaded = false;
 					}
+
 					switch (_acrT1Control)
 					{
 						case ACR_T1_CONTROL_CONTINUOUS_INTERRUPTS:
@@ -256,6 +203,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 							_t1CLoaded = true;
 							break;
 					}
+
 					_t1C &= 0xFFFF;
 				}
 			}
@@ -297,7 +245,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 
 			// Process CA2
-
 			switch (_pcrCa2Control)
 			{
 				case PCR_CONTROL_INPUT_NEGATIVE_ACTIVE_EDGE:
@@ -328,7 +275,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 
 			// Process CB2
-
 			switch (_pcrCb2Control)
 			{
 				case PCR_CONTROL_INPUT_NEGATIVE_ACTIVE_EDGE:
@@ -359,7 +305,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 
 			// interrupt generation
-
 			if ((_pcrCb1IntControl == PCR_INT_CONTROL_POSITIVE_EDGE && Cb1 && !_cb1L) ||
 				(_pcrCb1IntControl == PCR_INT_CONTROL_NEGATIVE_EDGE && !Cb1 && _cb1L))
 			{
@@ -406,7 +351,54 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.Sync("PortOutputA", ref _pra);
+			ser.Sync("PortDirectionA", ref _ddra);
+			ser.Sync("PortOutputB", ref _prb);
+			ser.Sync("PortDirectionB", ref _ddrb);
+			ser.Sync("Timer1Counter", ref _t1C);
+			ser.Sync("Timer1Latch", ref _t1L);
+			ser.Sync("Timer2Counter", ref _t2C);
+			ser.Sync("Timer2Latch", ref _t2L);
+			ser.Sync("ShiftRegister", ref _sr);
+			ser.Sync("AuxiliaryControlRegister", ref _acr);
+			ser.Sync("PeripheralControlRegister", ref _pcr);
+			ser.Sync("InterruptFlagRegister", ref _ifr);
+			ser.Sync("InterruptEnableRegister", ref _ier);
+
+			ser.BeginSection("Port");
+			_port.SyncState(ser);
+			ser.EndSection();
+
+			ser.Sync("PortLatchA", ref _paLatch);
+			ser.Sync("PortLatchB", ref _pbLatch);
+			ser.Sync("CA1InterruptControl", ref _pcrCa1IntControl);
+			ser.Sync("CA2Control", ref _pcrCa2Control);
+			ser.Sync("CB1InterruptControl", ref _pcrCb1IntControl);
+			ser.Sync("CB2Control", ref _pcrCb2Control);
+			ser.Sync("PortLatchEnableA", ref _acrPaLatchEnable);
+			ser.Sync("PortLatchEnableB", ref _acrPbLatchEnable);
+			ser.Sync("ShiftRegisterControl", ref _acrSrControl);
+			ser.Sync("Timer1Control", ref _acrT1Control);
+			ser.Sync("Timer2Control", ref _acrT2Control);
+			ser.Sync("PreviousCA1", ref _ca1L);
+			ser.Sync("PreviousCA2", ref _ca2L);
+			ser.Sync("PreviousCB1", ref _cb1L);
+			ser.Sync("PreviousCB2", ref _cb2L);
+			ser.Sync("PreviousPB6", ref _pb6L);
+			ser.Sync("ResetCa2NextClock", ref _resetCa2NextClock);
+			ser.Sync("ResetCb2NextClock", ref _resetCb2NextClock);
+			ser.Sync("HandshakeCa2NextClock", ref _handshakeCa2NextClock);
+			ser.Sync("HandshakeCb2NextClock", ref _handshakeCb2NextClock);
+			ser.Sync("CA1", ref Ca1);
+			ser.Sync("CA2", ref Ca2);
+			ser.Sync("CB1", ref Cb1);
+			ser.Sync("CB2", ref Cb2);
+			ser.Sync("PB6", ref _pb6);
+			ser.Sync("InterruptNextClock", ref _interruptNextClock);
+			ser.Sync("T1Loaded", ref _t1CLoaded);
+			ser.Sync("T2Loaded", ref _t2CLoaded);
+			ser.Sync("T1Delayed", ref _t1Delayed);
+			ser.Sync("T2Delayed", ref _t2Delayed);
 		}
 	}
 }

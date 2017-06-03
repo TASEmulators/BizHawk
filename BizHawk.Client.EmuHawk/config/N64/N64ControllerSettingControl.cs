@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
-using BizHawk.Common;
 using BizHawk.Common.ReflectionExtensions;
 
 using BizHawk.Emulation.Cores.Nintendo.N64;
@@ -25,17 +19,13 @@ namespace BizHawk.Client.EmuHawk
 			ControllerNameLabel.Text = "Controller " + ControllerNumber;
 		}
 
-		private void N64ControllerSettingControl_Load(object sender, EventArgs e)
-		{
-
-		}
-
 		public int ControllerNumber
 		{
 			get
 			{
 				return _controllerNumber;
 			}
+
 			set
 			{
 				_controllerNumber = value;

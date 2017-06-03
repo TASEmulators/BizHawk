@@ -6,7 +6,7 @@ namespace BizHawk.Client.EmuHawk
 	public class SchemaAttributes : Attribute
 	{
 		/// <summary>
-		/// The system id associated with this schema
+		/// Gets the system id associated with this schema
 		/// </summary>
 		public string SystemId { get; private set; }
 

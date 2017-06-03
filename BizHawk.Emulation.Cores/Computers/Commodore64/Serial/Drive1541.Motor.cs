@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
 	public sealed partial class Drive1541
 	{
-		[SaveState.DoNotSave] private int _tempStep;
-		[SaveState.DoNotSave] private int _tempPrB1;
+		private int _tempStep;
+		private int _tempPrB1;
 
 		private void ExecuteMotor()
 		{
@@ -23,14 +17,22 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			if (_tempStep != _motorStep)
 			{
 				if (_tempStep == ((_motorStep - 1) & 0x3))
+				{
 					_trackNumber--;
+				}
 				else if (_tempStep == ((_motorStep + 1) & 0x3))
+				{
 					_trackNumber++;
+				}
 
 				if (_trackNumber < 0)
+				{
 					_trackNumber = 0;
+				}
 				else if (_trackNumber > 83)
+				{
 					_trackNumber = 83;
+				}
 
 				_motorStep = _tempStep;
 				UpdateMediaData();

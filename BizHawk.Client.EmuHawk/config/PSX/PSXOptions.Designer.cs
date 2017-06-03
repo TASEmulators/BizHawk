@@ -98,7 +98,7 @@
 			this.btnOk.TabIndex = 2;
 			this.btnOk.Text = "OK";
 			this.btnOk.UseVisualStyleBackColor = true;
-			this.btnOk.Click += new System.EventHandler(this.btnOk_Click);
+			this.btnOk.Click += new System.EventHandler(this.BtnOk_Click);
 			// 
 			// groupBox1
 			// 
@@ -128,7 +128,7 @@
 			this.linkLabel1.TabIndex = 29;
 			this.linkLabel1.TabStop = true;
 			this.linkLabel1.Text = "About Me";
-			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+			this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkLabel1_LinkClicked);
 			// 
 			// lblTweakedMednafen
 			// 
@@ -179,7 +179,7 @@
 			this.btnNiceDisplayConfig.TabIndex = 24;
 			this.btnNiceDisplayConfig.Text = "Change My Display Options";
 			this.btnNiceDisplayConfig.UseVisualStyleBackColor = true;
-			this.btnNiceDisplayConfig.Click += new System.EventHandler(this.btnNiceDisplayConfig_Click);
+			this.btnNiceDisplayConfig.Click += new System.EventHandler(this.BtnNiceDisplayConfig_Click);
 			// 
 			// lblMednafen
 			// 
@@ -263,7 +263,7 @@
 			this.rbClipNone.Text = "None";
 			this.toolTip1.SetToolTip(this.rbClipNone, resources.GetString("rbClipNone.ToolTip"));
 			this.rbClipNone.UseVisualStyleBackColor = true;
-			this.rbClipNone.CheckedChanged += new System.EventHandler(this.rbClipNone_CheckedChanged);
+			this.rbClipNone.CheckedChanged += new System.EventHandler(this.RbClipNone_CheckedChanged);
 			// 
 			// rbClipToFramebuffer
 			// 
@@ -278,7 +278,7 @@
         "s framebuffer.\r\nHorizontal letterbox bars may be re-added in Mednafen-style reso" +
         "lution modes to maintain correct AR.");
 			this.rbClipToFramebuffer.UseVisualStyleBackColor = true;
-			this.rbClipToFramebuffer.CheckedChanged += new System.EventHandler(this.rbClipToFramebuffer_CheckedChanged);
+			this.rbClipToFramebuffer.CheckedChanged += new System.EventHandler(this.RbClipToFramebuffer_CheckedChanged);
 			// 
 			// rbClipBasic
 			// 
@@ -291,7 +291,7 @@
 			this.rbClipBasic.Text = "Basic Clipping";
 			this.toolTip1.SetToolTip(this.rbClipBasic, "A mednafen option -- appears to be 5.5% horizontally");
 			this.rbClipBasic.UseVisualStyleBackColor = true;
-			this.rbClipBasic.CheckedChanged += new System.EventHandler(this.rbClipHorizontal_CheckedChanged);
+			this.rbClipBasic.CheckedChanged += new System.EventHandler(this.RbClipHorizontal_CheckedChanged);
 			// 
 			// lblPAL
 			// 
@@ -350,7 +350,7 @@
 			this.btnAreaFull.TabIndex = 40;
 			this.btnAreaFull.Text = "Full [0,239] and [0,287]";
 			this.btnAreaFull.UseVisualStyleBackColor = true;
-			this.btnAreaFull.Click += new System.EventHandler(this.btnAreaFull_Click);
+			this.btnAreaFull.Click += new System.EventHandler(this.BtnAreaFull_Click);
 			// 
 			// label4
 			// 

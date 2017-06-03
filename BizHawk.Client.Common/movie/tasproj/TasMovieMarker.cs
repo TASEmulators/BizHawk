@@ -19,7 +19,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Parses a Marker from a line of text
+		/// Initializes a new instance of the <see cref="TasMovieMarker"/> class from a line of text
 		/// </summary>
 		public TasMovieMarker(string line)
 		{
@@ -28,7 +28,7 @@ namespace BizHawk.Client.Common
 			Message = split[1];
 		}
 
-		public virtual int Frame { get; private set; }
+		public virtual int Frame { get; }
 
 		public virtual string Message { get; set; }
 
@@ -39,7 +39,7 @@ namespace BizHawk.Client.Common
 
 		public override int GetHashCode()
 		{
-			return this.Frame.GetHashCode();
+			return Frame.GetHashCode();
 		}
 
 		public override bool Equals(object obj)
@@ -48,23 +48,24 @@ namespace BizHawk.Client.Common
 			{
 				return false;
 			}
-			else if (obj is TasMovieMarker)
+
+			if (obj is TasMovieMarker)
 			{
-				return this.Frame == (obj as TasMovieMarker).Frame;
+				return Frame == (obj as TasMovieMarker).Frame;
 			}
-			else
-			{
-				return false;
-			}
+			
+			return false;
 		}
 
 		public static bool operator ==(TasMovieMarker marker, int frame)
 		{
+			// TODO: account for null marker
 			return marker.Frame == frame;
 		}
 
 		public static bool operator !=(TasMovieMarker marker, int frame)
 		{
+			// TODO: account for null marker
 			return marker.Frame != frame;
 		}
 	}
@@ -80,9 +81,12 @@ namespace BizHawk.Client.Common
 
 		public TasMovieMarkerList DeepClone()
 		{
-			TasMovieMarkerList ret = new TasMovieMarkerList(_movie);
-			for (int i = 0; i < this.Count; i++)
-				ret.Add(new TasMovieMarker(this[i].Frame, this[i].Message));
+			var ret = new TasMovieMarkerList(_movie);
+			for (int i = 0; i < Count; i++)
+			{
+				// used to copy markers between branches
+				ret.Add(new TasMovieMarker(this[i].Frame, this[i].Message), skipHistory: true);
+			}
 
 			return ret;
 		}
@@ -91,11 +95,8 @@ namespace BizHawk.Client.Common
 
 		private void OnListChanged(NotifyCollectionChangedAction action)
 		{
-			if (CollectionChanged != null)
-			{
-				//TODO Allow different types
-				CollectionChanged.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
-			}
+			// TODO Allow different types
+			CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 		}
 
 		public override string ToString()
@@ -115,25 +116,31 @@ namespace BizHawk.Client.Common
 			Add(item, false);
 		}
 
-		public void Add(TasMovieMarker item, bool fromHistory)
+		public void Add(TasMovieMarker item, bool skipHistory)
 		{
 			var existingItem = this.FirstOrDefault(m => m.Frame == item.Frame);
 			if (existingItem != null)
 			{
 				if (existingItem.Message != item.Message)
 				{
-					if (!fromHistory)
+					if (!skipHistory)
+					{
 						_movie.ChangeLog.AddMarkerChange(item, item.Frame, existingItem.Message);
+					}
+
 					existingItem.Message = item.Message;
 					OnListChanged(NotifyCollectionChangedAction.Replace);
 				}
 			}
 			else
 			{
-				if (!fromHistory)
+				if (!skipHistory)
+				{
 					_movie.ChangeLog.AddMarkerChange(item);
+				}
+
 				base.Add(item);
-				this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
+				Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
 				OnListChanged(NotifyCollectionChangedAction.Add);
 			}
 		}
@@ -150,8 +157,11 @@ namespace BizHawk.Client.Common
 			{
 				Add(m);
 			}
+
 			if (endBatch)
+			{
 				_movie.ChangeLog.EndBatch();
+			}
 		}
 
 		// the inherited one
@@ -163,9 +173,12 @@ namespace BizHawk.Client.Common
 		public void Insert(int index, TasMovieMarker item, bool fromHistory)
 		{
 			if (!fromHistory)
+			{
 				_movie.ChangeLog.AddMarkerChange(item);
+			}
+
 			base.Insert(index, item);
-			this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
+			Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
 			OnListChanged(NotifyCollectionChangedAction.Add);
 		}
 
@@ -173,12 +186,17 @@ namespace BizHawk.Client.Common
 		{
 			bool endBatch = _movie.ChangeLog.BeginNewBatch("Add Markers", true);
 			foreach (TasMovieMarker m in collection)
+			{
 				_movie.ChangeLog.AddMarkerChange(m);
+			}
+
 			if (endBatch)
+			{
 				_movie.ChangeLog.EndBatch();
+			}
 
 			base.InsertRange(index, collection);
-			this.Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
+			Sort((m1, m2) => m1.Frame.CompareTo(m2.Frame));
 			OnListChanged(NotifyCollectionChangedAction.Add);
 		}
 
@@ -191,9 +209,15 @@ namespace BizHawk.Client.Common
 		public void Remove(TasMovieMarker item, bool fromHistory)
 		{
 			if (item == null || item.Frame == 0) // TODO: Don't do this.
+			{
 				return;
+			}
+
 			if (!fromHistory)
+			{
 				_movie.ChangeLog.AddMarkerChange(null, item.Frame, item.Message);
+			}
+
 			base.Remove(item);
 			OnListChanged(NotifyCollectionChangedAction.Remove);
 		}
@@ -204,26 +228,38 @@ namespace BizHawk.Client.Common
 			foreach (TasMovieMarker m in this)
 			{
 				if (match.Invoke(m))
+				{
 					_movie.ChangeLog.AddMarkerChange(null, m.Frame, m.Message);
+				}
 			}
+
 			if (endBatch)
+			{
 				_movie.ChangeLog.EndBatch();
+			}
 
 			int removeCount = base.RemoveAll(match);
 			if (removeCount > 0)
 			{
 				OnListChanged(NotifyCollectionChangedAction.Remove);
 			}
+
 			return removeCount;
 		}
 
 		public void Move(int fromFrame, int toFrame, bool fromHistory = false)
 		{
 			if (fromFrame == 0) // no thanks!
+			{
 				return;
+			}
+
 			TasMovieMarker m = Get(fromFrame);
 			if (m == null) // TODO: Don't do this.
+			{
 				return;
+			}
+
 			_movie.ChangeLog.AddMarkerChange(m, m.Frame);
 			Insert(0, new TasMovieMarker(toFrame, m.Message), fromHistory);
 			Remove(m, fromHistory);
@@ -243,18 +279,26 @@ namespace BizHawk.Client.Common
 				if (this[i].Frame >= startFrame)
 				{
 					if (i == 0)
+					{
 						continue;
+					}
+
 					_movie.ChangeLog.AddMarkerChange(null, this[i].Frame, this[i].Message);
 					RemoveAt(i);
 					deletedCount++;
 				}
 			}
+
 			if (endBatch)
+			{
 				_movie.ChangeLog.EndBatch();
+			}
+
 			if (deletedCount > 0)
 			{
 				OnListChanged(NotifyCollectionChangedAction.Remove);
 			}
+
 			return deletedCount;
 		}
 
@@ -284,7 +328,7 @@ namespace BizHawk.Client.Common
 
 		public int FindIndex(string markerName)
 		{
-			return this.FindIndex(m => m.Message == markerName);
+			return FindIndex(m => m.Message == markerName);
 		}
 
 		public bool IsMarker(int frame)

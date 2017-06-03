@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 		private long _stateSize;
 		private int _mediumStateSize;
 		private int _largeStateSize;
-		private int _stateSizeCategory = 1; //1 = small, 2 = med, 3 = larg //TODO: enum
+		private int _stateSizeCategory = 1; // 1 = small, 2 = med, 3 = larg //TODO: enum
 
 		public RewindConfig()
 		{
@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.Rewinder.HasBuffer)
 			{
-				FullnessLabel.Text = String.Format("{0:0.00}", Global.Rewinder.FullnessRatio * 100) + "%";
+				FullnessLabel.Text = $"{Global.Rewinder.FullnessRatio * 100:0.00}" + "%";
 				RewindFramesUsedLabel.Text = Global.Rewinder.Count.ToString();
 			}
 			else
@@ -57,13 +57,13 @@ namespace BizHawk.Client.EmuHawk
 
 			SetStateSize();
 
-			var medium_state_size_kb = Global.Config.Rewind_MediumStateSize / 1024;
-			var large_state_size_kb = Global.Config.Rewind_LargeStateSize / 1024;
+			var mediumStateSizeKb = Global.Config.Rewind_MediumStateSize / 1024;
+			var largeStateSizeKb = Global.Config.Rewind_LargeStateSize / 1024;
 
-			MediumStateTrackbar.Value = medium_state_size_kb;
-			MediumStateUpDown.Value = medium_state_size_kb;
-			LargeStateTrackbar.Value = large_state_size_kb;
-			LargeStateUpDown.Value = large_state_size_kb;
+			MediumStateTrackbar.Value = mediumStateSizeKb;
+			MediumStateUpDown.Value = mediumStateSizeKb;
+			LargeStateTrackbar.Value = largeStateSizeKb;
+			LargeStateUpDown.Value = largeStateSizeKb;
 
 			nudCompression.Value = Global.Config.SaveStateCompressionLevelNormal;
 
@@ -87,19 +87,17 @@ namespace BizHawk.Client.EmuHawk
 				ScreenshotInStatesCheckbox.Checked;
 		}
 
-		string FormatKB(long n)
+		private string FormatKB(long n)
 		{
 			double num = n / 1024.0;
 
 			if (num >= 1024)
 			{
 				num /= 1024.0;
-				return String.Format("{0:0.00}", num) + " MB";
+				return $"{num:0.00}" + " MB";
 			}
-			else
-			{
-				return String.Format("{0:0.00}", num) + " KB";
-			}
+
+			return $"{num:0.00}" + " KB";
 		}
 
 		private void SetStateSize()
@@ -147,12 +145,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PutRewindSetting<T>(ref T setting, T value) where T : IEquatable<T>
 		{
-			if (setting.Equals(value)) return;
+			if (setting.Equals(value))
+			{
+				return;
+			}
+
 			setting = value;
 			TriggerRewindSettingsReload = true;
 		}
 
-		private void OK_Click(object sender, EventArgs e)
+		private void Ok_Click(object sender, EventArgs e)
 		{
 			// These settings are used by DoRewindSettings, which we'll only call if anything actually changed (i.e. preserve rewind history if possible)
 			PutRewindSetting(ref Global.Config.RewindEnabledSmall, SmallStateEnabledBox.Checked);
@@ -240,12 +242,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MediumStateTrackbar_ValueChanged(object sender, EventArgs e)
 		{
-			MediumStateUpDown.Value = (sender as TrackBar).Value;
+			MediumStateUpDown.Value = ((TrackBar)sender).Value;
 			if (MediumStateUpDown.Value > LargeStateUpDown.Value)
 			{
 				LargeStateUpDown.Value = MediumStateUpDown.Value;
 				LargeStateTrackbar.Value = (int)MediumStateUpDown.Value;
 			}
+
 			_mediumStateSize = MediumStateTrackbar.Value * 1024;
 			_largeStateSize = LargeStateTrackbar.Value * 1024;
 			SetStateSize();
@@ -253,12 +256,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MediumStateUpDown_ValueChanged(object sender, EventArgs e)
 		{
-			MediumStateTrackbar.Value = (int)(sender as NumericUpDown).Value;
+			MediumStateTrackbar.Value = (int)((NumericUpDown)sender).Value;
 			if (MediumStateUpDown.Value > LargeStateUpDown.Value)
 			{
 				LargeStateUpDown.Value = MediumStateUpDown.Value;
 				LargeStateTrackbar.Value = (int)MediumStateUpDown.Value;
 			}
+
 			_mediumStateSize = MediumStateTrackbar.Value * 1024;
 			_largeStateSize = LargeStateTrackbar.Value * 1024;
 			SetStateSize();
@@ -273,8 +277,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				LargeStateUpDown.Value = (sender as TrackBar).Value;
+				LargeStateUpDown.Value = ((TrackBar)sender).Value;
 			}
+
 			_mediumStateSize = MediumStateTrackbar.Value * 1024;
 			_largeStateSize = LargeStateTrackbar.Value * 1024;
 			SetStateSize();
@@ -289,8 +294,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				LargeStateTrackbar.Value = (int)(sender as NumericUpDown).Value;
+				LargeStateTrackbar.Value = (int)((NumericUpDown)sender).Value;
 			}
+
 			_mediumStateSize = MediumStateTrackbar.Value * 1024;
 			_largeStateSize = LargeStateTrackbar.Value * 1024;
 			SetStateSize();
@@ -298,48 +304,48 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CalculateEstimates()
 		{
-			long avg_state_size;
+			long avgStateSize;
 
 			if (UseDeltaCompression.Checked || _stateSize == 0)
 			{
-
 				if (Global.Rewinder.Count > 0)
 				{
-					avg_state_size = Global.Rewinder.Size / Global.Rewinder.Count;
+					avgStateSize = Global.Rewinder.Size / Global.Rewinder.Count;
 				}
 				else
 				{
-					avg_state_size = _stateSize;
+					avgStateSize = _stateSize;
 				}
 			}
 			else
 			{
-				avg_state_size = _stateSize;
+				avgStateSize = _stateSize;
 			}
 
-			var buffer_size = (long)(BufferSizeUpDown.Value);
-			buffer_size *= 1024 * 1024;
-			var est_frames = buffer_size / avg_state_size;
+			var bufferSize = (long)BufferSizeUpDown.Value;
+			bufferSize *= 1024 * 1024;
+			var estFrames = bufferSize / avgStateSize;
 
-			long est_frequency = 0;
+			long estFrequency = 0;
 			switch (_stateSizeCategory)
 			{
 				case 1:
-					est_frequency = (long)SmallSavestateNumeric.Value;
+					estFrequency = (long)SmallSavestateNumeric.Value;
 					break;
 				case 2:
-					est_frequency = (long)MediumSavestateNumeric.Value;
+					estFrequency = (long)MediumSavestateNumeric.Value;
 					break;
 				case 3:
-					est_frequency = (long)LargeSavestateNumeric.Value;
+					estFrequency = (long)LargeSavestateNumeric.Value;
 					break;
 			}
-			long est_total_frames = est_frames * est_frequency;
-			double minutes = est_total_frames / 60 / 60;
 
-			AverageStoredStateSizeLabel.Text = FormatKB(avg_state_size);
-			ApproxFramesLabel.Text = String.Format("{0:n0}", est_frames) + " frames";
-			EstTimeLabel.Text = String.Format("{0:n}", minutes) + " minutes";
+			long estTotalFrames = estFrames * estFrequency;
+			double minutes = estTotalFrames / 60 / 60;
+
+			AverageStoredStateSizeLabel.Text = FormatKB(avgStateSize);
+			ApproxFramesLabel.Text = $"{estFrames:n0}" + " frames";
+			EstTimeLabel.Text = $"{minutes:n}" + " minutes";
 		}
 
 		private void BufferSizeUpDown_ValueChanged(object sender, EventArgs e)
@@ -367,18 +373,18 @@ namespace BizHawk.Client.EmuHawk
 			CalculateEstimates();
 		}
 
-		private void nudCompression_ValueChanged(object sender, EventArgs e)
+		private void NudCompression_ValueChanged(object sender, EventArgs e)
 		{
-			trackBarCompression.Value = (int)(sender as NumericUpDown).Value;
+			trackBarCompression.Value = (int)((NumericUpDown)sender).Value;
 		}
 
-		private void trackBarCompression_ValueChanged(object sender, EventArgs e)
+		private void TrackBarCompression_ValueChanged(object sender, EventArgs e)
 		{
-			//TODO - make a UserControl which is trackbar and NUD combined
-			nudCompression.Value = (sender as TrackBar).Value;
+			// TODO - make a UserControl which is trackbar and NUD combined
+			nudCompression.Value = ((TrackBar)sender).Value;
 		}
 
-		private void btnResetCompression_Click(object sender, EventArgs e)
+		private void BtnResetCompression_Click(object sender, EventArgs e)
 		{
 			nudCompression.Value = Config.DefaultSaveStateCompressionLevelNormal;
 		}

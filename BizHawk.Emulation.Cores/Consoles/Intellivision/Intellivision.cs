@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 		IBoardInfo, IDebuggable, ISettable<Intellivision.IntvSettings, Intellivision.IntvSyncSettings>
 	{
 		[CoreConstructor("INTV")]
-		public Intellivision(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
+		public Intellivision(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
@@ -24,8 +24,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			_rom = rom;
 
-			_settings = (IntvSettings)Settings ?? new IntvSettings();
-			_syncSettings = (IntvSyncSettings)SyncSettings ?? new IntvSyncSettings();
+			_settings = (IntvSettings)settings ?? new IntvSettings();
+			_syncSettings = (IntvSyncSettings)syncSettings ?? new IntvSyncSettings();
 
 			_controllerDeck = new IntellivisionControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 

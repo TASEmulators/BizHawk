@@ -128,8 +128,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 			savebuff2 = new byte[savebuff.Length + 13];
 
 			// TODO: more precise
-			CoreComm.VsyncNum = (int)(10000000 * api.comm->env.retro_system_av_info.timing.fps);
-			CoreComm.VsyncDen = 10000000;
+			VsyncNumerator = (int)(10000000 * api.comm->env.retro_system_av_info.timing.fps);
+			VsyncDenominator = 10000000;
 
 			SetupResampler(api.comm->env.retro_system_av_info.timing.fps, api.comm->env.retro_system_av_info.timing.sample_rate);
 			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(resampler);
@@ -163,6 +163,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			_controller = controller;
 			api.CMD_Run();
+			timeFrameCounter++;
 		}
 
 		GCHandle vidBufferHandle;
@@ -215,6 +216,9 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		int IVideoProvider.BufferWidth { get { return vidWidth; } }
 		int IVideoProvider.BufferHeight { get { return vidHeight; } }
+
+		public int VsyncNumerator { get; private set; }
+		public int VsyncDenominator { get; private set; }
 
 		#region ISoundProvider
 

@@ -9,8 +9,8 @@ namespace BizHawk.Client.Common
 {
 	public class ToolDialogSettings
 	{
-		private int? _wndx = null;
-		private int? _wndy = null;
+		private int? _wndx;
+		private int? _wndy;
 
 		public ToolDialogSettings()
 		{
@@ -44,7 +44,6 @@ namespace BizHawk.Client.Common
 				{
 					_wndx = value;
 				}
-				
 			}
 		}
 
@@ -62,13 +61,12 @@ namespace BizHawk.Client.Common
 				{
 					_wndy = value;
 				}
-
 			}
 		}
 
 		/// <summary>
-		/// Represents the top left corner coordinate, if Wndx and Wndy form a valid point
-		/// Throws an InvalidOperationException if Wndx or Wndy is null
+		/// Gets a value that represents the top left corner coordinate, if <see cref="Wndx"/> and <see cref="Wndy"/> form a valid point
+		/// Throws an InvalidOperationException if <see cref="Wndx"/> or <see cref="Wndy"/> is null
 		/// It is expected to check for this before using this property
 		/// </summary>
 		[JsonIgnore]
@@ -94,41 +92,18 @@ namespace BizHawk.Client.Common
 		public bool AutoLoad { get; set; }
 
 		[JsonIgnore]
-		public bool UseWindowPosition
-		{
-			get
-			{
-				return SaveWindowPosition && Wndx.HasValue && Wndy.HasValue
-					&& Wndx != -32000 && Wndy != -32000; // Windows OS annoyance, this is saved if the tool was minimized when closing
-			}
-		}
+		public bool UseWindowPosition => SaveWindowPosition && Wndx.HasValue
+			&& Wndy.HasValue
+			&& Wndx != -32000 && Wndy != -32000;
 
 		[JsonIgnore]
-		public bool UseWindowSize
-		{
-			get
-			{
-				return SaveWindowPosition && Width.HasValue && Height.HasValue;
-			}
-		}
+		public bool UseWindowSize => SaveWindowPosition && Width.HasValue && Height.HasValue;
 
 		[JsonIgnore]
-		public Point WindowPosition
-		{
-			get
-			{
-				return new Point(Wndx ?? 0, Wndy ?? 0);
-			}
-		}
+		public Point WindowPosition => new Point(Wndx ?? 0, Wndy ?? 0);
 
 		[JsonIgnore]
-		public Size WindowSize
-		{
-			get
-			{
-				return new Size(Width ?? 0, Height ?? 0);
-			}
-		}
+		public Size WindowSize => new Size(Width ?? 0, Height ?? 0);
 
 		public class ColumnList : List<Column>
 		{

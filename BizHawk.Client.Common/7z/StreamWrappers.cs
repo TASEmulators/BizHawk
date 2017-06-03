@@ -330,7 +330,7 @@ namespace SevenZip
             {
                 return "." + num.ToString(CultureInfo.InvariantCulture);
             }
-            return String.Empty;
+            return "";
         }
 
         private int StreamNumberByOffset(long offset)

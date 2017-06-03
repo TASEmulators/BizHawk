@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
@@ -15,20 +13,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public string Cpu
 		{
-			get { return "6510"; }
+			get
+			{
+				return "6510";
+			}
+
 			set
 			{
 			}
 		}
 
-		public string PCRegisterName
-		{
-			get { return "PC"; }
-		}
+		public string PCRegisterName => "PC";
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
-			return Components.M6502.MOS6502X.Disassemble((ushort)addr, out length, CpuPeek);
+			return MOS6502X.Disassemble((ushort)addr, out length, CpuPeek);
 		}
 	}
 }

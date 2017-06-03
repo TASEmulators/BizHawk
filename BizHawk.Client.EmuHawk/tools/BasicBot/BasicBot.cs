@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private const string DialogTitle = "Basic Bot";
 
-		private string _currentFileName = string.Empty;
+		private string _currentFileName = "";
 
 		private string CurrentFileName
 		{
@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 		private BotAttempt _comparisonBotAttempt = null;
 		private bool _replayMode = false;
 		private int _startFrame = 0;
-		private string _lastRom = string.Empty;
+		private string _lastRom = "";
 
 		private bool _dontUpdateValues = false;
 
@@ -345,7 +345,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return StartFromSlotBox.SelectedItem != null 
 					? StartFromSlotBox.SelectedItem.ToString()
-					: string.Empty;
+					: "";
 			}
 
 			set
@@ -435,7 +435,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NewMenuItem_Click(object sender, EventArgs e)
 		{
-			CurrentFileName = string.Empty;
+			CurrentFileName = "";
 			_bestBotAttempt = null;
 
 			ControlProbabilityPanel.Controls
@@ -1021,12 +1021,12 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				ClearBestButton.Enabled = false;
-				BestAttemptNumberLabel.Text = string.Empty;
-				BestMaximizeBox.Text = string.Empty;
-				BestTieBreak1Box.Text = string.Empty;
-				BestTieBreak2Box.Text = string.Empty;
-				BestTieBreak3Box.Text = string.Empty;
-				BestAttemptLogLabel.Text = string.Empty;
+				BestAttemptNumberLabel.Text = "";
+				BestMaximizeBox.Text = "";
+				BestTieBreak1Box.Text = "";
+				BestTieBreak2Box.Text = "";
+				BestTieBreak3Box.Text = "";
+				BestAttemptLogLabel.Text = "";
 				PlayBestButton.Enabled = false;
 			}
 		}

@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 
 		unsafe void DrawSprites()
 		{
-			var lockdata = bmpViewSP.bmp.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockdata = bmpViewSP.BMP.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* dest = (int*)lockdata.Scan0;
 			int pitch = lockdata.Stride / sizeof(int);
@@ -92,12 +92,12 @@ namespace BizHawk.Client.EmuHawk
 					Draw16x16(src + srcaddr, dest + destaddr, pitch, pal);
 				}
 			}
-			bmpViewSP.bmp.UnlockBits(lockdata);
+			bmpViewSP.BMP.UnlockBits(lockdata);
 		}
 
 		unsafe void DrawBacks()
 		{
-			var lockdata = bmpViewBG.bmp.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockdata = bmpViewBG.BMP.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 
 			int* dest = (int*)lockdata.Scan0;
 			int pitch = lockdata.Stride / sizeof(int);
@@ -113,15 +113,15 @@ namespace BizHawk.Client.EmuHawk
 					Draw8x8(src + srcaddr, dest + destaddr, pitch, pal);
 				}
 			}
-			bmpViewBG.bmp.UnlockBits(lockdata);
+			bmpViewBG.BMP.UnlockBits(lockdata);
 		}
 
 		unsafe void DrawPalettes()
 		{
 			fixed (int* pal = vce.Palette)
 			{
-				DrawPalette(bmpViewBGPal.bmp, pal);
-				DrawPalette(bmpViewSPPal.bmp, pal + 256);
+				DrawPalette(bmpViewBGPal.BMP, pal);
+				DrawPalette(bmpViewSPPal.BMP, pal + 256);
 			}
 		}
 
@@ -211,7 +211,7 @@ namespace BizHawk.Client.EmuHawk
 				if (found is BmpView)
 				{
 					var bv = found as BmpView;
-					Clipboard.SetImage(bv.bmp);
+					Clipboard.SetImage(bv.BMP);
 				}
 			}
 		}

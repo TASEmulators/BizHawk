@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-
-using BizHawk.Common;
-using BizHawk.Common.CollectionExtensions;
-using BizHawk.Common.IOExtensions;
-using System.Diagnostics;
-using System.ComponentModel;
 
 namespace BizHawk.Client.Common
 {
@@ -34,9 +27,9 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.Input, tw => WriteInputLog(tw));
 
 				// TasProj extras
-				bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(StateManager.Settings.ToString()));
+				bs.PutLump(BinaryStateLump.StateHistorySettings, tw => tw.WriteLine(_stateManager.Settings.ToString()));
 
-				bs.PutLump(BinaryStateLump.LagLog, (BinaryWriter bw) => LagLog.Save(bw));
+				bs.PutLump(BinaryStateLump.LagLog, (BinaryWriter bw) => _lagLog.Save(bw));
 				bs.PutLump(BinaryStateLump.Markers, tw => tw.WriteLine(Markers.ToString()));
 
 				if (StartsFromSavestate)
@@ -69,22 +62,24 @@ namespace BizHawk.Client.Common
 				if (Branches.Any())
 				{
 					Branches.Save(bs);
-					if (StateManager.Settings.BranchStatesInTasproj)
+					if (_stateManager.Settings.BranchStatesInTasproj)
 					{
-						bs.PutLump(BinaryStateLump.BranchStateHistory, (BinaryWriter bw) => StateManager.SaveBranchStates(bw));
+						bs.PutLump(BinaryStateLump.BranchStateHistory, (BinaryWriter bw) => _stateManager.SaveBranchStates(bw));
 					}
 				}
 
 				bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(Session.ToString()));
 
-				if (StateManager.Settings.SaveStateHistory)
+				if (_stateManager.Settings.SaveStateHistory)
 				{
-					bs.PutLump(BinaryStateLump.StateHistory, (BinaryWriter bw) => StateManager.Save(bw));
+					bs.PutLump(BinaryStateLump.StateHistory, (BinaryWriter bw) => _stateManager.Save(bw));
 				}
 			}
 
 			if (!backup)
+			{
 				Changes = false;
+			}
 		}
 
 		public override bool Load(bool preload)
@@ -160,7 +155,7 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr) // Note: ExtractInputLog will clear Lag and State data potentially, this must come before loading those
 				{
-					var errorMessage = string.Empty;
+					var errorMessage = "";
 					IsCountingRerecords = false;
 					ExtractInputLog(tr, out errorMessage);
 					IsCountingRerecords = true;
@@ -190,12 +185,12 @@ namespace BizHawk.Client.Common
 				// TasMovie enhanced information
 				bl.GetLump(BinaryStateLump.LagLog, false, delegate(BinaryReader br, long length)
 				{
-					LagLog.Load(br);
+					_lagLog.Load(br);
 				});
 
 				bl.GetLump(BinaryStateLump.StateHistorySettings, false, delegate(TextReader tr)
 				{
-					StateManager.Settings.PopulateFromString(tr.ReadToEnd());
+					_stateManager.Settings.PopulateFromString(tr.ReadToEnd());
 				});
 
 				bl.GetLump(BinaryStateLump.Markers, false, delegate(TextReader tr)
@@ -212,7 +207,7 @@ namespace BizHawk.Client.Common
 
 				if (GetClientSettingsOnLoad != null)
 				{
-					string clientSettings = string.Empty;
+					string clientSettings = "";
 					bl.GetLump(BinaryStateLump.ClientSettings, false, delegate(TextReader tr)
 					{
 						string line;
@@ -250,11 +245,11 @@ namespace BizHawk.Client.Common
 				});
 
 				Branches.Load(bl, this);
-				if (StateManager.Settings.BranchStatesInTasproj)
+				if (_stateManager.Settings.BranchStatesInTasproj)
 				{
 					bl.GetLump(BinaryStateLump.BranchStateHistory, false, delegate(BinaryReader br, long length)
 					{
-						StateManager.LoadBranchStates(br);
+						_stateManager.LoadBranchStates(br);
 					});
 				}
 
@@ -265,17 +260,19 @@ namespace BizHawk.Client.Common
 
 				if (!preload)
 				{
-					if (StateManager.Settings.SaveStateHistory)
+					if (_stateManager.Settings.SaveStateHistory)
 					{
 						bl.GetLump(BinaryStateLump.StateHistory, false, delegate(BinaryReader br, long length)
 						{
-							StateManager.Load(br);
+							_stateManager.Load(br);
 						});
 					}
 
 					// Movie should always have a state at frame 0.
-					if (!this.StartsFromSavestate && Global.Emulator.Frame == 0)
-						StateManager.Capture();
+					if (!StartsFromSavestate && Global.Emulator.Frame == 0)
+					{
+						_stateManager.Capture();
+					}
 				}
 			}
 
@@ -285,8 +282,8 @@ namespace BizHawk.Client.Common
 
 		private void ClearTasprojExtras()
 		{
-			LagLog.Clear();
-			StateManager.Clear();
+			_lagLog.Clear();
+			_stateManager.Clear();
 			Markers.Clear();
 			ChangeLog.ClearLog();
 		}

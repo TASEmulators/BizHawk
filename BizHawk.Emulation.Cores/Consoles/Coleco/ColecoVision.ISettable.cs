@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	{
 		public ColecoSettings GetSettings()
 		{
-			return Settings.Clone();
+			return _settings.Clone();
 		}
 
 		public ColecoSyncSettings GetSyncSettings()
@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public bool PutSettings(ColecoSettings o)
 		{
-			Settings = o;
+			_settings = o;
 			return false;
 		}
 
@@ -40,8 +40,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
-		public ColecoSettings Settings = new ColecoSettings();
-		public ColecoSyncSettings _syncSettings = new ColecoSyncSettings();
+		private ColecoSettings _settings = new ColecoSettings();
+		private ColecoSyncSettings _syncSettings = new ColecoSyncSettings();
 
 		public class ColecoSyncSettings
 		{
@@ -53,7 +53,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			[JsonIgnore]
 			public string Port1
 			{
-				get { return _port1; }
+				get
+				{
+					return _port1;
+				}
+
 				set
 				{
 					if (!ColecoVisionControllerDeck.ValidControllerTypes.ContainsKey(value))
@@ -68,7 +72,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			[JsonIgnore]
 			public string Port2
 			{
-				get { return _port2; }
+				get
+				{
+					return _port2;
+				}
+
 				set
 				{
 					if (!ColecoVisionControllerDeck.ValidControllerTypes.ContainsKey(value))

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.IO;
 using System.Linq;
 
@@ -45,7 +46,6 @@ namespace BizHawk.Client.Common
 			RecentlyServed = new List<FirmwareEventArgs>();
 		}
 
-
 		public ResolutionInfo Resolve(string sysId, string firmwareId)
 		{
 			return Resolve(FirmwareDatabase.LookupFirmwareRecord(sysId, firmwareId));
@@ -68,6 +68,7 @@ namespace BizHawk.Client.Common
 				{
 					DoScanAndResolve();
 				}
+
 				first = false;
 				goto RETRY;
 			}
@@ -95,14 +96,17 @@ namespace BizHawk.Client.Common
 			return resolved.FilePath;
 		}
 
-		public class RealFirmwareReader : IDisposable
+		private class RealFirmwareReader : IDisposable
 		{
-			System.Security.Cryptography.SHA1 sha1 = System.Security.Cryptography.SHA1.Create();
+			private readonly List<RealFirmwareFile> _files = new List<RealFirmwareFile>();
+			private SHA1 _sha1 = SHA1.Create();
+
 			public void Dispose()
 			{
-				sha1.Dispose();
-				sha1 = null;
+				_sha1.Dispose();
+				_sha1 = null;
 			}
+
 			public RealFirmwareFile Read(FileInfo fi)
 			{
 				var rff = new RealFirmwareFile { FileInfo = fi };
@@ -110,17 +114,16 @@ namespace BizHawk.Client.Common
 
 				using (var fs = fi.OpenRead())
 				{
-					sha1.ComputeHash(fs);
+					_sha1.ComputeHash(fs);
 				}
 
-				rff.Hash = sha1.Hash.BytesToHexString();
-				dict[rff.Hash] = rff;
+				rff.Hash = _sha1.Hash.BytesToHexString();
+				Dict[rff.Hash] = rff;
 				_files.Add(rff);
 				return rff;
 			}
 
-			public readonly Dictionary<string, RealFirmwareFile> dict = new Dictionary<string, RealFirmwareFile>();
-			private readonly List<RealFirmwareFile> _files = new List<RealFirmwareFile>();
+			public Dictionary<string, RealFirmwareFile> Dict { get; } = new Dictionary<string, RealFirmwareFile>();
 		}
 
 		public void DoScanAndResolve()
@@ -181,12 +184,12 @@ namespace BizHawk.Client.Common
 						var hash = fo.Hash;
 
 						// did we find this firmware?
-						if (reader.dict.ContainsKey(hash))
+						if (reader.Dict.ContainsKey(hash))
 						{
 							// rad! then we can use it
 							var ri = new ResolutionInfo
 								{
-									FilePath = reader.dict[hash].FileInfo.FullName,
+									FilePath = reader.Dict[hash].FileInfo.FullName,
 									KnownFirmwareFile = FirmwareDatabase.FirmwareFilesByHash[hash],
 									Hash = hash,
 									Size = fo.Size
@@ -197,7 +200,6 @@ namespace BizHawk.Client.Common
 					}
 
 				DONE_FIRMWARE: ;
-
 				}
 
 				// apply user overrides

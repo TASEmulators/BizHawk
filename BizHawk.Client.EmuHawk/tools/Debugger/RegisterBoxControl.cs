@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -30,7 +26,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RegisterBoxControl_Load(object sender, EventArgs e)
 		{
-
 		}
 
 		public void NewUpdate(ToolFormUpdateType type) { }
@@ -63,7 +58,6 @@ namespace BizHawk.Client.EmuHawk
 
 					if (_canSetCpuRegisters)
 					{
-
 						Controls
 							.OfType<TextBox>()
 							.ToList()
@@ -181,7 +175,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							try
 							{
-								if (t.Text != String.Empty)
+								if (t.Text != "")
 								{
 									Core.SetCpuRegister(t.Name, int.Parse(t.Text, System.Globalization.NumberStyles.HexNumber));
 								}		
@@ -192,7 +186,6 @@ namespace BizHawk.Client.EmuHawk
 							}
 							catch (FormatException)
 							{
-
 							}
 						}
 					};
@@ -230,10 +223,10 @@ namespace BizHawk.Client.EmuHawk
 				{
 					var c = new CheckBox
 					{
-						Appearance = System.Windows.Forms.Appearance.Button,
+						Appearance = Appearance.Button,
 						Name = flag.Key,
 						Text = flag.Key.Replace("Flag", "").Trim(), // Hack
-						Checked = flag.Value.Value == 1 ? true : false,
+						Checked = flag.Value.Value == 1,
 						Location = new Point(UIHelper.ScaleX(40), y),
 						Dock = DockStyle.Left,
 						Size = new Size(UIHelper.ScaleX(23), UIHelper.ScaleY(23)),

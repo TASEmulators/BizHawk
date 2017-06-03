@@ -8,9 +8,6 @@ namespace BizHawk.Client.Common
 {
 	public class LuaDocumentation : List<LibraryFunction>
 	{
-		public LuaDocumentation()
-			: base() { }
-
 		public string ToTASVideosWikiMarkup()
 		{
 			var sb = new StringBuilder();
@@ -43,7 +40,7 @@ __Types and notation__
 ** A standard Lua table
 ");
 
-			foreach (var library in this.Select(x => new { Name = x.Library, Description = x.LibraryDescription }).Distinct())
+			foreach (var library in this.Select(lf => new { Name = lf.Library, Description = lf.LibraryDescription }).Distinct())
 			{
 				sb
 					.AppendFormat("%%TAB {0}%%", library.Name)
@@ -57,7 +54,7 @@ __Types and notation__
 						.AppendLine();
 				}
 
-				foreach (var func in this.Where(x => x.Library == library.Name))
+				foreach (var func in this.Where(lf => lf.Library == library.Name))
 				{
 					sb
 						.AppendFormat("__{0}.{1}__%%%", func.Library, func.Name)
@@ -85,7 +82,7 @@ __Types and notation__
 			public string Scope { get; set; }
 
 			[JsonProperty(PropertyName = "completions")]
-			public List<Completion> Completions = new List<Completion>();
+			public List<Completion> Completions { get; set; } = new List<Completion>();
 
 			public class Completion
 			{
@@ -158,7 +155,7 @@ __Types and notation__
 
 		public string ToNotepadPlusPlusAutoComplete()
 		{
-			return string.Empty; // TODO
+			return ""; // TODO
 		}
 	}
 
@@ -228,10 +225,10 @@ __Types and notation__
 		private string TypeCleanup(string str)
 		{
 			return str
-				.Replace("System", string.Empty)
-				.Replace(" ", string.Empty)
-				.Replace(".", string.Empty)
-				.Replace("LuaInterface", string.Empty)
+				.Replace("System", "")
+				.Replace(" ", "")
+				.Replace(".", "")
+				.Replace("LuaInterface", "")
 				.Replace("Object[]", "object[] ")
 				.Replace("Object", "object ")
 				.Replace("Nullable`1[Boolean]", "bool? ")

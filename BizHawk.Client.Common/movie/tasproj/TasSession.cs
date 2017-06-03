@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace BizHawk.Client.Common
 {
 	public class TasSession
 	{
-		private TasMovie _movie;
-		public int CurrentFrame { get; set; }
-		public int CurrentBranch { get; set; }
+		private readonly TasMovie _movie;
+		public int CurrentFrame { get; private set; }
+		public int CurrentBranch { get; private set; }
 
 		public TasSession(TasMovie movie)
 		{
@@ -26,9 +24,9 @@ namespace BizHawk.Client.Common
 
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder();
-
 			UpdateValues();
+
+			var sb = new StringBuilder();
 			sb.AppendLine(CurrentFrame.ToString());
 			sb.AppendLine(CurrentBranch.ToString());
 
@@ -39,17 +37,18 @@ namespace BizHawk.Client.Common
 		{
 			if (!string.IsNullOrWhiteSpace(session))
 			{
-				string[] lines = session.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+				string[] lines = session.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
 
-				if (lines.Length > 0)
-					CurrentFrame = int.Parse(lines[0]);
-				else
-					CurrentFrame = 0;
+				CurrentFrame = lines.Length > 0 ? int.Parse(lines[0]) : 0;
 
 				if (lines.Length > 1)
+				{
 					CurrentBranch = int.Parse(lines[1]);
+				}
 				else
+				{
 					CurrentBranch = -1;
+				}
 			}
 		}
 	}

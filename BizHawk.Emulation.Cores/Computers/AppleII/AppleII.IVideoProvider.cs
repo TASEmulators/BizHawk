@@ -18,5 +18,23 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 		public int BufferWidth => 560;
 		public int BufferHeight => 384;
 		public int BackgroundColor => 0;
+
+		public int VsyncNumerator
+		{
+			[FeatureNotImplemented] // TODO: precise numbers or confirm the default is okay
+			get
+			{
+				return NullVideo.DefaultVsyncNum;
+			}
+		}
+
+		public int VsyncDenominator
+		{
+			[FeatureNotImplemented] // TODO: precise numbers or confirm the default is okay
+			get
+			{
+				return NullVideo.DefaultVsyncDen;
+			}
+		}
 	}
 }

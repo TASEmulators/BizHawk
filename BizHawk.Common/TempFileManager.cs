@@ -17,7 +17,7 @@ namespace BizHawk.Common
 		public static string GetTempFilename(string friendlyname, string extension = null, bool delete = true)
 		{
 			string guidPart = Guid.NewGuid().ToString();
-			var fname = $"biz-{System.Diagnostics.Process.GetCurrentProcess().Id}-{friendlyname}-{guidPart}{extension ?? string.Empty}";
+			var fname = $"biz-{System.Diagnostics.Process.GetCurrentProcess().Id}-{friendlyname}-{guidPart}{extension ?? ""}";
 			if (delete)
 			{
 				fname = RenameTempFilenameForDelete(fname);

@@ -82,7 +82,7 @@
 			this.buttonOK.TabIndex = 2;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
-			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
+			this.buttonOK.Click += new System.EventHandler(this.ButtonOk_Click);
 			// 
 			// buttonCancel
 			// 
@@ -104,7 +104,7 @@
 			this.buttonPal.TabIndex = 4;
 			this.buttonPal.Text = "Browse...";
 			this.buttonPal.UseVisualStyleBackColor = true;
-			this.buttonPal.Click += new System.EventHandler(this.buttonPal_Click);
+			this.buttonPal.Click += new System.EventHandler(this.ButtonPal_Click);
 			// 
 			// buttonPalReset
 			// 
@@ -115,7 +115,7 @@
 			this.buttonPalReset.TabIndex = 5;
 			this.buttonPalReset.Text = "Reset to QuickNES Default";
 			this.buttonPalReset.UseVisualStyleBackColor = true;
-			this.buttonPalReset.Click += new System.EventHandler(this.buttonPalReset_Click);
+			this.buttonPalReset.Click += new System.EventHandler(this.ButtonPalReset_Click);
 			// 
 			// label1
 			// 

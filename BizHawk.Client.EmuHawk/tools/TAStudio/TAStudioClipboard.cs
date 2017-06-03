@@ -1,4 +1,7 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System;
+using System.Windows.Forms;
+
+using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -39,9 +42,9 @@ namespace BizHawk.Client.EmuHawk
 
 				return lg;
 			}
-			catch (System.Exception)
+			catch (Exception)
 			{
-				System.Windows.Forms.MessageBox.Show("Invalid mnemonic string: " + inputLogEntry, "Paste Input failed!");
+				MessageBox.Show("Invalid mnemonic string: " + inputLogEntry, "Paste Input failed!");
 				return null;
 			}
 		}

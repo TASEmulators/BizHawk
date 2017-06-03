@@ -41,8 +41,8 @@ namespace BizHawk.Client.EmuHawk
 		private void LuaFunctionList_Load(object sender, EventArgs e)
 		{
 			FunctionList = GlobalWin.Tools.LuaConsole.LuaImp.Docs
-				.OrderBy(x => x.Library)
-				.ThenBy(x => x.Name)
+				.OrderBy(l => l.Library)
+				.ThenBy(l => l.Name)
 				.ToList();
 			UpdateList();
 			FilterBox.Focus();
@@ -52,12 +52,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FunctionView_QueryItemBkColor(int index, int column, ref Color color)
 		{
-			
 		}
 
 		private void FunctionView_QueryItemText(int index, int column, out string text)
 		{
-			text = string.Empty;
+			text = "";
 
 			try
 			{
@@ -148,7 +147,7 @@ namespace BizHawk.Client.EmuHawk
 			OrderColumn(e.Column);
 		}
 
-		public class Sorting
+		private class Sorting
 		{
 			private bool _desc;
 			private int _column = 1;

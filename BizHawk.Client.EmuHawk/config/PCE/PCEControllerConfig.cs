@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Client.Common;
-using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -48,7 +43,8 @@ namespace BizHawk.Client.EmuHawk
 				.OfType<CheckBox>()
 				.OrderBy(c => c.Name)
 				.ToList()
-				.ForEach(c => {
+				.ForEach(c =>
+				{
 					var index = int.Parse(c.Name.Replace("Controller", ""));
 					pceSettings.Controllers[index].IsConnected = c.Checked;
 				});

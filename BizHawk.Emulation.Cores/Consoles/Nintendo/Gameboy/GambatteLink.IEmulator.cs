@@ -20,11 +20,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					if (s.Contains("P1 "))
 					{
-						LCont.Set(s.Replace("P1 ", string.Empty));
+						LCont.Set(s.Replace("P1 ", ""));
 					}
 					else if (s.Contains("P2 "))
 					{
-						RCont.Set(s.Replace("P2 ", string.Empty));
+						RCont.Set(s.Replace("P2 ", ""));
 					}
 				}
 			}

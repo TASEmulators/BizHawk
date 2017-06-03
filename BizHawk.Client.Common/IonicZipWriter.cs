@@ -7,42 +7,36 @@ namespace BizHawk.Client.Common
 {
 	public class IonicZipWriter : IZipWriter
 	{
-		private ZipOutputStream z;
-		private int level;
+		private readonly int _level;
+		private ZipOutputStream _zipOutputStream;
 
 		public IonicZipWriter(string path, int compressionlevel)
 		{
-			level = compressionlevel;
-			z = new ZipOutputStream(path)
+			_level = compressionlevel;
+			_zipOutputStream = new ZipOutputStream(path)
 			{
 				EnableZip64 = Zip64Option.Never,
-				CompressionLevel = (Ionic.Zlib.CompressionLevel)level
+				CompressionLevel = (Ionic.Zlib.CompressionLevel)_level,
+				CompressionMethod = CompressionMethod.Deflate
 			};
-			z.CompressionMethod = CompressionMethod.Deflate;
-	}
+		}
 
 		public void WriteItem(string name, Action<Stream> callback)
 		{
-			var e = z.PutNextEntry(name);
-			if (level == 0)
-			{
-				e.CompressionMethod = CompressionMethod.None;
-			}
-			else
-			{
-				e.CompressionMethod = CompressionMethod.Deflate;
-			}
+			var e = _zipOutputStream.PutNextEntry(name);
+			e.CompressionMethod = _level == 0
+				? CompressionMethod.None
+				: CompressionMethod.Deflate;
 
-			callback(z);
-			// there is no CloseEntry() call
+			callback(_zipOutputStream); // there is no CloseEntry() call
 		}
 
 		public void Dispose()
 		{
-			if (z != null)
+			if (_zipOutputStream != null)
 			{
-				z.Dispose();
-				z = null;
+				_zipOutputStream.Dispose();
+				_zipOutputStream = null;
 			}
 		}
 	}

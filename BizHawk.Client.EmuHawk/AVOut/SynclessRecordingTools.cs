@@ -46,7 +46,7 @@ namespace BizHawk.Client.EmuHawk
 			//---- this is pretty crappy:
 			var lines = File.ReadAllLines(mSynclessConfigFile);
 
-			string framesdir = string.Empty;
+			string framesdir = "";
 			foreach (var line in lines)
 			{
 				int idx = line.IndexOf('=');

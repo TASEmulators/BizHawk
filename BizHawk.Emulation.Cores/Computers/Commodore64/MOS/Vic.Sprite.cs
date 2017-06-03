@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
@@ -59,7 +54,27 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			public void SyncState(Serializer ser)
 			{
-				SaveState.SyncObject(ser, this);
+				ser.Sync("CollideData", ref CollideData);
+				ser.Sync("CollideSprite", ref CollideSprite);
+				ser.Sync("Color", ref Color);
+				ser.Sync("Display", ref Display);
+				ser.Sync("Dma", ref Dma);
+				ser.Sync("Enable", ref Enable);
+				ser.Sync("Loaded", ref Loaded);
+				ser.Sync("Mc", ref Mc);
+				ser.Sync("Mcbase", ref Mcbase);
+				ser.Sync("Multicolor", ref Multicolor);
+				ser.Sync("MulticolorCrunch", ref MulticolorCrunch);
+				ser.Sync("Pointer", ref Pointer);
+				ser.Sync("Priority", ref Priority);
+				ser.Sync("ShiftEnable", ref ShiftEnable);
+				ser.Sync("Sr", ref Sr);
+				ser.Sync("X", ref X);
+				ser.Sync("XCrunch", ref XCrunch);
+				ser.Sync("XExpand", ref XExpand);
+				ser.Sync("Y", ref Y);
+				ser.Sync("YCrunch", ref YCrunch);
+				ser.Sync("YExpand", ref YExpand);
 			}
 		}
 	}

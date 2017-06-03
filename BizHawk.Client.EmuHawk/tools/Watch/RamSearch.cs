@@ -27,14 +27,14 @@ namespace BizHawk.Client.EmuHawk
 	public partial class RamSearch : ToolFormBase, IToolForm
 	{
 		// TODO: DoSearch grabs the state of widgets and passes it to the engine before running, so rip out code that is attempting to keep the state up to date through change events
-		private string _currentFileName = string.Empty;
+		private string _currentFileName = "";
 
 		private RamSearchEngine _searches;
 		private RamSearchEngine.Settings _settings;
 
 		private int _defaultWidth;
 		private int _defaultHeight;
-		private string _sortedColumn = string.Empty;
+		private string _sortedColumn = "";
 		private bool _sortReverse;
 		private bool _forcePreviewClear;
 		private bool _autoSearch;
@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 			WatchListView.VirtualMode = true;
 			Closing += (o, e) => SaveConfigSettings();
 
-			_sortedColumn = string.Empty;
+			_sortedColumn = "";
 			_sortReverse = false;
 
 			Settings = new RamSearchSettings();
@@ -132,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 			DifferentByBox.Type = Common.DisplayType.Unsigned;
 			DifferenceBox.Type = Common.DisplayType.Unsigned;
 
-			MessageLabel.Text = string.Empty;
+			MessageLabel.Text = "";
 			SpecificAddressBox.MaxLength = (MemoryDomains.MainMemory.Size - 1).NumHexDigits();
 			HardSetSizeDropDown(_settings.Size);
 			PopulateTypeDropDown();
@@ -196,7 +196,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ListView_QueryItemText(int index, int column, out string text)
 		{
-			text = string.Empty;
+			text = "";
 
 			if (index >= _searches.Count)
 			{
@@ -342,7 +342,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateList();
 			ToggleSearchDependentToolBarItems();
 			SetReboot(false);
-			MessageLabel.Text = string.Empty;
+			MessageLabel.Text = "";
 			SetDomainLabel();
 		}
 
@@ -566,7 +566,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SetRemovedMessage(int val)
 		{
-			MessageLabel.Text = val + " address" + (val != 1 ? "es" : string.Empty) + " removed";
+			MessageLabel.Text = val + " address" + (val != 1 ? "es" : "") + " removed";
 		}
 
 		private void SetTotal()
@@ -698,8 +698,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void PopulateTypeDropDown()
 		{
-			var previous = DisplayTypeDropdown.SelectedItem?.ToString() ?? string.Empty;
-			var next = string.Empty;
+			var previous = DisplayTypeDropdown.SelectedItem?.ToString() ?? "";
+			var next = "";
 
 			DisplayTypeDropdown.Items.Clear();
 
@@ -787,7 +787,7 @@ namespace BizHawk.Client.EmuHawk
 
 			NumberOfChangesRadio.Enabled = false;
 			NumberOfChangesBox.Enabled = false;
-			NumberOfChangesBox.Text = string.Empty;
+			NumberOfChangesBox.Text = "";
 			ClearChangeCountsToolBarItem.Enabled = false;
 
 			if (NumberOfChangesRadio.Checked || DifferenceRadio.Checked)
@@ -903,7 +903,7 @@ namespace BizHawk.Client.EmuHawk
 			switch (name)
 			{
 				default:
-					return string.Empty;
+					return "";
 				case WatchList.ADDRESS:
 					return _searches[index].AddressString;
 				case WatchList.VALUE:
@@ -995,7 +995,7 @@ namespace BizHawk.Client.EmuHawk
 		private void OpenMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadWatchFile(
-				GetWatchFileFromUser(string.Empty),
+				GetWatchFileFromUser(""),
 				sender == AppendFileMenuItem,
 				sender == TruncateFromFileMenuItem);
 		}
@@ -1246,7 +1246,7 @@ namespace BizHawk.Client.EmuHawk
 				ToggleSearchDependentToolBarItems();
 				_forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
-				MessageLabel.Text = restoredCount + " address" + (restoredCount != 1 ? "es" : string.Empty) + " restored";
+				MessageLabel.Text = restoredCount + " address" + (restoredCount != 1 ? "es" : "") + " restored";
 			}
 		}
 
@@ -1259,7 +1259,7 @@ namespace BizHawk.Client.EmuHawk
 				ToggleSearchDependentToolBarItems();
 				_forcePreviewClear = true;
 				UpdateUndoToolBarButtons();
-				MessageLabel.Text = restoredCount + " address" + (restoredCount != 1 ? "es" : string.Empty) + " removed";
+				MessageLabel.Text = restoredCount + " address" + (restoredCount != 1 ? "es" : "") + " removed";
 			}
 		}
 

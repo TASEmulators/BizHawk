@@ -68,7 +68,7 @@ namespace BizHawk.Common.ReflectionExtensions
 
 			if (descriptions.Length == 0)
 			{
-				return string.Empty;
+				return "";
 			}
 
 			return descriptions[0].Description;

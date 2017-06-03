@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using BizHawk.Emulation.Common;
+
+using BizHawk.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
 using BizHawk.Emulation.Cores.Computers.Commodore64.MOS;
@@ -13,47 +9,26 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
 	public sealed partial class Drive1541 : SerialPortDevice
 	{
-		[SaveState.SaveWithName("Disk")]
 		private Disk _disk;
-		[SaveState.SaveWithName("BitHistory")]
 		private int _bitHistory;
-		[SaveState.SaveWithName("BitsRemainingInLatchedByte")]
 		private int _bitsRemainingInLatchedByte;
-		[SaveState.SaveWithName("Sync")]
 		private bool _sync;
-		[SaveState.SaveWithName("ByteReady")]
 		private bool _byteReady;
-		[SaveState.SaveWithName("DriveCpuClockNumerator")]
-		private readonly int _driveCpuClockNum;
-		[SaveState.SaveWithName("TrackNumber")]
+		private int _driveCpuClockNum;
 		private int _trackNumber;
-		[SaveState.SaveWithName("MotorEnabled")]
 		private bool _motorEnabled;
-		[SaveState.SaveWithName("LedEnabled")]
 		private bool _ledEnabled;
-		[SaveState.SaveWithName("MotorStep")]
 		private int _motorStep;
-		[SaveState.SaveWithName("CPU")]
 		private readonly MOS6502X _cpu;
-		[SaveState.SaveWithName("RAM")]
-		private readonly int[] _ram;
-		[SaveState.SaveWithName("VIA0")]
+		private int[] _ram;
 		public readonly Via Via0;
-		[SaveState.SaveWithName("VIA1")]
 		public readonly Via Via1;
-		[SaveState.SaveWithName("SystemCpuClockNumerator")]
-		private readonly int _cpuClockNum;
-		[SaveState.SaveWithName("SystemDriveCpuRatioDifference")]
+		private int _cpuClockNum;
 		private int _ratioDifference;
-		[SaveState.SaveWithName("DriveLightOffTime")]
 		private int _driveLightOffTime;
-		[SaveState.DoNotSave]
 		private int[] _trackImageData = new int[1];
-		[SaveState.DoNotSave]
 		public Func<int> ReadIec = () => 0xFF;
-		[SaveState.DoNotSave]
 		public Action DebuggerStep;
-		[SaveState.DoNotSave]
 		public readonly Chip23128 DriveRom;
 
 		public Drive1541(int clockNum, int clockDen)
@@ -76,6 +51,57 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			_driveCpuClockNum = clockDen * 16000000; // 16mhz
 		}
 
+		public override void SyncState(Serializer ser)
+		{
+			ser.BeginSection("Disk");
+			_disk.SyncState(ser);
+			ser.EndSection();
+
+			ser.Sync("BitHistory", ref _bitHistory);
+			ser.Sync("BitsRemainingInLatchedByte", ref _bitsRemainingInLatchedByte);
+			ser.Sync("Sync", ref _sync);
+			ser.Sync("ByteReady", ref _byteReady);
+			ser.Sync("DriveCpuClockNumerator", ref _driveCpuClockNum);
+			ser.Sync("TrackNumber", ref _trackNumber);
+			ser.Sync("MotorEnabled", ref _motorEnabled);
+			ser.Sync("LedEnabled", ref _ledEnabled);
+			ser.Sync("MotorStep", ref _motorStep);
+
+			ser.BeginSection("Disk6502");
+			_cpu.SyncState(ser);
+			ser.EndSection();
+			
+			ser.Sync("RAM", ref _ram, useNull: false);
+
+			ser.BeginSection("VIA0");
+			Via0.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("VIA1");
+			Via1.SyncState(ser);
+			ser.EndSection();
+
+			ser.Sync("SystemCpuClockNumerator", ref _cpuClockNum);
+			ser.Sync("SystemDriveCpuRatioDifference", ref _ratioDifference);
+			ser.Sync("DriveLightOffTime", ref _driveLightOffTime);
+			ser.Sync("TrackImageData", ref _trackImageData, useNull: false);
+
+			ser.Sync("DiskDensityCounter", ref _diskDensityCounter);
+			ser.Sync("DiskSupplementaryCounter", ref _diskSupplementaryCounter);
+			ser.Sync("DiskFluxReversalDetected", ref _diskFluxReversalDetected);
+			ser.Sync("DiskBitsRemainingInDataEntry", ref _diskBitsLeft);
+			ser.Sync("DiskDataEntryIndex", ref _diskByteOffset);
+			ser.Sync("DiskDataEntry", ref _diskBits);
+			ser.Sync("DiskCurrentCycle", ref _diskCycle);
+			ser.Sync("DiskDensityConfig", ref _diskDensity);
+			ser.Sync("PreviousCA1", ref _previousCa1);
+			ser.Sync("CountsBeforeRandomTransition", ref _countsBeforeRandomTransition);
+			ser.Sync("CurrentRNG", ref _rngCurrent);
+			ser.Sync("Clocks", ref _clocks);
+			ser.Sync("CpuClocks", ref _cpuClocks);
+			ser.Sync("OverflowFlagDelayShiftRegister", ref _overflowFlagDelaySr);
+		}
+
 		public override void ExecutePhase()
 		{
 			_ratioDifference += _driveCpuClockNum;
@@ -84,6 +110,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 				_ratioDifference -= _cpuClockNum;
 				_clocks++;
 			}
+
 			ExecutePhaseInternal();
 		}
 
@@ -105,6 +132,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			{
 				_cpu.SetOverflow();
 			}
+
 			_overflowFlagDelaySr >>= 1;
 
 			_cpu.IRQ = !(Via0.Irq && Via1.Irq); // active low IRQ line

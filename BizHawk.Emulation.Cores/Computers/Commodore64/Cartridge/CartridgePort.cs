@@ -17,6 +17,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			Disconnect();
 		}
 
+		internal string CartridgeType => _cartridgeDevice.GetType().Name;
+
 		// ------------------------------------------
 
 		public int PeekHiExp(int addr)
@@ -97,7 +99,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		public void ExecutePhase()
 		{
 			if (_connected)
+			{
 				_cartridgeDevice.ExecutePhase();
+			}
 		}
 
 		public void HardReset()
@@ -109,13 +113,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			}
 		}
 
-		public bool IsConnected
-		{
-			get
-			{
-				return _connected;
-			}
-		}
+		public bool IsConnected => _connected;
 
 		public bool ReadIrq()
 		{
@@ -129,10 +127,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.Sync("_connected", ref _connected);
+
+			ser.BeginSection("CartridgeDevice");
+			_cartridgeDevice.SyncState(ser);
+			ser.EndSection();
 		}
 
-		public bool DriveLightEnabled { get { return _connected && _cartridgeDevice.DriveLightEnabled; } }
-		public bool DriveLightOn { get { return _connected && _cartridgeDevice.DriveLightOn; } }
+		public bool DriveLightEnabled => _connected && _cartridgeDevice.DriveLightEnabled;
+		public bool DriveLightOn => _connected && _cartridgeDevice.DriveLightOn;
 	}
 }

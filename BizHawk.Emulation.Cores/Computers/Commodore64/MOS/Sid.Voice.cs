@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
@@ -33,10 +28,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			private int _shiftRegisterReset;
 			private bool _sync;
 			private bool _test;
-			[SaveState.DoNotSave] private int[] _wave;
+			private int[] _wave;
 			private int _waveform;
 			private int _waveformIndex;
-			[SaveState.DoNotSave] private readonly int[][] _waveTable;
+			private readonly int[][] _waveTable;
 
 			public Voice(int[][] newWaveTable)
 			{
@@ -107,12 +102,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			private void ResetShiftReg()
 			{
-
-				{
-					_shiftRegister = 0x7FFFFF;
-					_shiftRegisterReset = 0;
-					SetNoise();
-				}
+				_shiftRegister = 0x7FFFFF;
+				_shiftRegisterReset = 0;
+				SetNoise();
 			}
 
 			private void SetNoise()
@@ -134,20 +126,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			private void WriteShiftReg()
 			{
-
-				{
-					_output &=
-						0xBB5DA |
-						((_output & 0x800) << 9) |
-						((_output & 0x400) << 8) |
-						((_output & 0x200) << 5) |
-						((_output & 0x100) << 3) |
-						((_output & 0x040) >> 1) |
-						((_output & 0x020) >> 3) |
-						((_output & 0x010) >> 4);
-					_noise &= _output;
-					_noNoiseOrNoise = _noNoise | _noise;
-				}
+				_output &=
+					0xBB5DA |
+					((_output & 0x800) << 9) |
+					((_output & 0x400) << 8) |
+					((_output & 0x200) << 5) |
+					((_output & 0x100) << 3) |
+					((_output & 0x040) >> 1) |
+					((_output & 0x020) >> 3) |
+					((_output & 0x010) >> 4);
+				_noise &= _output;
+				_noNoiseOrNoise = _noNoise | _noise;
 			}
 
 			// ------------------------------------
@@ -223,13 +212,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 						_waveformIndex = (_accumulator ^ (ringModSource._accumulator & _ringMsbMask)) >> 12;
 						_output = _wave[_waveformIndex] & (_noPulse | _pulse) & _noNoiseOrNoise;
 						if (_waveform > 8)
+						{
 							WriteShiftReg();
+						}
 					}
 					else
 					{
 						if (_floatOutputTtl != 0 && --_floatOutputTtl == 0)
+						{
 							_output = 0x000;
+						}
 					}
+
 					_pulse = _accumulator >> 12 >= _pulseWidth ? 0xFFF : 0x000;
 					return _output;
 				}
@@ -241,6 +235,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				{
 					return _pulseWidth & 0xFF;
 				}
+
 				set
 				{
 					_pulseWidth &= 0x0F00;
@@ -254,6 +249,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				{
 					return _pulseWidth >> 8;
 				}
+
 				set
 				{
 					_pulseWidth &= 0x00FF;
@@ -261,49 +257,50 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 			}
 
-			public bool RingMod
-			{
-				get
-				{
-					return _ringMod;
-				}
-			}
+			public bool RingMod => _ringMod;
 
-			public bool Sync
-			{
-				get
-				{
-					return _sync;
-				}
-			}
+			public bool Sync => _sync;
 
 			public void Synchronize(Voice target, Voice source)
 			{
 				if (_msbRising && target._sync && !(_sync && source._msbRising))
+				{
 					target._accumulator = 0;
-			}
-
-			public bool Test
-			{
-				get
-				{
-					return _test;
 				}
 			}
 
-			public int Waveform
-			{
-				get
-				{
-					return _waveform;
-				}
-			}
+			public bool Test => _test;
+
+			public int Waveform => _waveform;
 
 			// ------------------------------------
-
 			public void SyncState(Serializer ser)
 			{
-				SaveState.SyncObject(ser, this);
+				ser.Sync("_accBits", ref _accBits);
+				ser.Sync("_accNext", ref _accNext);
+				ser.Sync("_accumulator", ref _accumulator);
+				ser.Sync("_controlTestPrev", ref _controlTestPrev);
+				ser.Sync("_controlWavePrev", ref _controlWavePrev);
+				ser.Sync("_delay", ref _delay);
+				ser.Sync("_floatOutputTtl", ref _floatOutputTtl);
+				ser.Sync("_frequency", ref _frequency);
+				ser.Sync("_msbRising", ref _msbRising);
+				ser.Sync("_noise", ref _noise);
+				ser.Sync("_noNoise", ref _noNoise);
+				ser.Sync("_noNoiseOrNoise", ref _noNoiseOrNoise);
+				ser.Sync("_noPulse", ref _noPulse);
+				ser.Sync("_output", ref _output);
+				ser.Sync("_pulse", ref _pulse);
+				ser.Sync("_pulseWidth", ref _pulseWidth);
+				ser.Sync("_ringMod", ref _ringMod);
+				ser.Sync("_ringMsbMask", ref _ringMsbMask);
+				ser.Sync("_shiftRegister", ref _shiftRegister);
+				ser.Sync("_shiftRegisterReset", ref _shiftRegisterReset);
+				ser.Sync("_sync", ref _sync);
+				ser.Sync("_test", ref _test);
+				ser.Sync("_waveform", ref _waveform);
+				ser.Sync("_waveformIndex", ref _waveformIndex);
+
 				_wave = _waveTable[_waveform & 0x07];
 			}
 		}

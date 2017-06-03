@@ -8,6 +8,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		public int BufferHeight { get; private set; }
 		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
 
+		public int VsyncNumerator => 39375000;
+		public int VsyncDenominator => 655171;
+
 		public int[] GetVideoBuffer()
 		{
 			return VideoOutput;

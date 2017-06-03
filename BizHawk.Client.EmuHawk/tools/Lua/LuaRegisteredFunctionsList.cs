@@ -7,7 +7,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class LuaRegisteredFunctionsList : Form
 	{
-		public Point StartLocation = new Point(0, 0);
+		public Point StartLocation { get; set; } = new Point(0, 0);
 		public LuaRegisteredFunctionsList()
 		{
 			InitializeComponent();

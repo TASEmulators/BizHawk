@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Via
 	{
@@ -52,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					}
 					break;
 			}
+
 			return ReadRegister(addr);
 		}
 
@@ -92,6 +88,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0xF:
 					return _port.ReadPra(_pra, _ddra);
 			}
+
 			return 0xFF;
 		}
 
@@ -114,6 +111,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					{
 						_handshakeCa2NextClock = true;
 					}
+
 					WriteRegister(addr, val);
 					break;
 				case 0x4:
@@ -142,6 +140,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 						_t2C = _t2L;
 						_t2CLoaded = true;
 					}
+
 					_t2Delayed = 1;
 					break;
 				case 0xA:
@@ -226,52 +225,20 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		[SaveState.DoNotSave]
-		public int DdrA
-		{
-			get { return _ddra; }
-		}
+		public int DdrA => _ddra;
 
-		[SaveState.DoNotSave]
-		public int DdrB
-		{
-			get { return _ddrb; }
-		}
+		public int DdrB => _ddrb;
 
-		[SaveState.DoNotSave]
-		public int PrA
-		{
-			get { return _pra; }
-		}
+		public int PrA => _pra;
 
-		[SaveState.DoNotSave]
-		public int PrB
-		{
-			get { return _prb; }
-		}
+		public int PrB => _prb;
 
-		[SaveState.DoNotSave]
-		public int EffectivePrA
-		{
-			get { return _pra | ~_ddra; }
-		}
+		public int EffectivePrA => _pra | ~_ddra;
 
-		[SaveState.DoNotSave]
-		public int EffectivePrB
-		{
-			get { return _prb | ~_ddrb; }
-		}
+		public int EffectivePrB => _prb | ~_ddrb;
 
-		[SaveState.DoNotSave]
-		public int ActualPrA
-		{
-			get { return _acrPaLatchEnable ? _paLatch : _port.ReadPra(_pra, _ddra); }
-		}
+		public int ActualPrA => _acrPaLatchEnable ? _paLatch : _port.ReadPra(_pra, _ddra);
 
-		[SaveState.DoNotSave]
-		public int ActualPrB
-		{
-			get { return _acrPbLatchEnable ? _pbLatch : _port.ReadPrb(_prb, _ddrb); }
-		}
+		public int ActualPrB => _acrPbLatchEnable ? _pbLatch : _port.ReadPrb(_prb, _ddrb);
 	}
 }

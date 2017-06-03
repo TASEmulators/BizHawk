@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 					var column = new ColumnHeader
 					{
 						Name = columnName,
-						Text = columnName.Replace("Column", string.Empty),
+						Text = columnName.Replace("Column", ""),
 						Width = columnWidth,
 					};
 
@@ -70,7 +70,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 					var lsstViewColumn = new ColumnHeader
 					{
 						Name = column.Name,
-						Text = column.Name.Replace("Column", string.Empty),
+						Text = column.Name.Replace("Column", ""),
 						Width = column.Width,
 						DisplayIndex = column.Index
 					};
@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 				var menuItem = new ToolStripMenuItem
 				{
 					Name = column.Name,
-					Text = column.Name.Replace("Column", string.Empty)
+					Text = column.Name.Replace("Column", "")
 				};
 
 				menuItem.Click += (o, ev) =>
@@ -239,7 +239,7 @@ namespace BizHawk.Client.EmuHawk.WinFormExtensions
 			var indexes = listViewControl.SelectedIndices;
 			if (indexes.Count <= 0)
 			{
-				return String.Empty;
+				return "";
 			}
 
 			var sb = new StringBuilder();

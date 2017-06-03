@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 						throw new ArgumentOutOfRangeException();
 					}
 
-					return Cpu.ReadMemory((ushort)addr);
+					return _cpu.ReadMemory((ushort)addr);
 				},
 				(addr, value) =>
 				{
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 						throw new ArgumentOutOfRangeException();
 					}
 
-					Cpu.WriteMemory((ushort)addr, value);
+					_cpu.WriteMemory((ushort)addr, value);
 				}, 1)
 			};
 
@@ -47,8 +47,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private void SyncAllByteArrayDomains()
 		{
-			SyncByteArrayDomain("Main RAM", Ram);
-			SyncByteArrayDomain("Video RAM", VDP.VRAM);
+			SyncByteArrayDomain("Main RAM", _ram);
+			SyncByteArrayDomain("Video RAM", _vdp.VRAM);
 		}
 
 		private void SyncByteArrayDomain(string name, byte[] data)

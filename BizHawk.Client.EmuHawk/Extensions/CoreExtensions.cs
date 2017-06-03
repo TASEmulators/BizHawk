@@ -44,10 +44,6 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 			{
 				return Properties.Resources.emu7800;
 			}
-			else if (core is GBA)
-			{
-				return Properties.Resources.meteor;
-			}
 			else if (core is GPGX)
 			{
 				return Properties.Resources.genplus;
@@ -74,7 +70,7 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 		{
 			var attributes = core.Attributes();
 
-			var str = (!attributes.Released ? "(Experimental) " : string.Empty) +
+			var str = (!attributes.Released ? "(Experimental) " : "") +
 				attributes.CoreName;
 
 			if (core is LibsnesCore)

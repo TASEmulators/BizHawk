@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class BizBoxInfoControl : UserControl
 	{
-		private string url = string.Empty;
+		private string url = "";
 
 		public BizBoxInfoControl(CoreAttributes attributes)
 		{
@@ -29,7 +29,7 @@ namespace BizHawk.Client.EmuHawk
 				CoreAuthorLabel.Visible = false;
 			}
 
-			CorePortedLabel.Text = attributes.Ported ? " (Ported)" : string.Empty;
+			CorePortedLabel.Text = attributes.Ported ? " (Ported)" : "";
 
 			if (!attributes.Ported)
 			{

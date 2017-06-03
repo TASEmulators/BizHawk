@@ -14,10 +14,9 @@ namespace BizHawk.Client.EmuHawk
 		// Allow selection of palette file from archive
 		// Hotkeys for BG & Sprite display toggle
 		// NTSC filter settings? Hue, Tint (This should probably be a client thing, not a nes specific thing?)
-
-		private NES nes;
-		private NES.NESSettings settings;
-		Bitmap bmp;
+		private NES _nes;
+		private NES.NESSettings _settings;
+		private Bitmap _bmp;
 
 		public NESGraphicsConfig()
 		{
@@ -26,23 +25,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NESGraphicsConfig_Load(object sender, EventArgs e)
 		{
-			nes = Global.Emulator as NES;
-			settings = (NES.NESSettings)nes.GetSettings();
+			_nes = (NES)Global.Emulator;
+			_settings = _nes.GetSettings();
 			LoadStuff();
 		}
 
 		private void LoadStuff()
 		{
-			NTSC_FirstLineNumeric.Value = settings.NTSC_TopLine;
-			NTSC_LastLineNumeric.Value = settings.NTSC_BottomLine;
-			PAL_FirstLineNumeric.Value = settings.PAL_TopLine;
-			PAL_LastLineNumeric.Value = settings.PAL_BottomLine;
-			AllowMoreSprites.Checked = settings.AllowMoreThanEightSprites;
-			ClipLeftAndRightCheckBox.Checked = settings.ClipLeftAndRight;
-			DispSprites.Checked = settings.DispSprites;
-			DispBackground.Checked = settings.DispBackground;
-			BGColorDialog.Color = Color.FromArgb(unchecked(settings.BackgroundColor | (int)0xFF000000));
-			checkUseBackdropColor.Checked = (settings.BackgroundColor & 0xFF000000) != 0;
+			NTSC_FirstLineNumeric.Value = _settings.NTSC_TopLine;
+			NTSC_LastLineNumeric.Value = _settings.NTSC_BottomLine;
+			PAL_FirstLineNumeric.Value = _settings.PAL_TopLine;
+			PAL_LastLineNumeric.Value = _settings.PAL_BottomLine;
+			AllowMoreSprites.Checked = _settings.AllowMoreThanEightSprites;
+			ClipLeftAndRightCheckBox.Checked = _settings.ClipLeftAndRight;
+			DispSprites.Checked = _settings.DispSprites;
+			DispBackground.Checked = _settings.DispBackground;
+			BGColorDialog.Color = Color.FromArgb(unchecked(_settings.BackgroundColor | (int)0xFF000000));
+			checkUseBackdropColor.Checked = (_settings.BackgroundColor & 0xFF000000) != 0;
 			SetColorBox();
 			SetPaletteImage();
 		}
@@ -74,19 +73,20 @@ namespace BizHawk.Client.EmuHawk
 			int w = pictureBoxPalette.Size.Width;
 			int h = pictureBoxPalette.Size.Height;
 
-			bmp = new Bitmap(w, h);
+			_bmp = new Bitmap(w, h);
 			for (int j = 0; j < h; j++)
 			{
 				int cy = j * 4 / h;
 				for (int i = 0; i < w; i++)
 				{
 					int cx = i * 16 / w;
-					int cindex = cy * 16 + cx;
+					int cindex = (cy * 16) + cx;
 					Color col = Color.FromArgb(0xff, pal[cindex, 0], pal[cindex, 1], pal[cindex, 2]);
-					bmp.SetPixel(i, j, col);
+					_bmp.SetPixel(i, j, col);
 				}
 			}
-			pictureBoxPalette.Image = bmp;
+
+			pictureBoxPalette.Image = _bmp;
 		}
 
 		private byte[,] ResolvePalette(bool showmsg = false)
@@ -95,56 +95,65 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (PalettePath.Text.Length > 0)
 				{
-					HawkFile palette = new HawkFile(PalettePath.Text);
+					var palette = new HawkFile(PalettePath.Text);
 
-					if (palette != null && palette.Exists)
+					if (palette.Exists)
 					{
 						var data = Palettes.Load_FCEUX_Palette(HawkFile.ReadAllBytes(palette.Name));
-						if (showmsg) GlobalWin.OSD.AddMessage("Palette file loaded: " + palette.Name);
+						if (showmsg)
+						{
+							GlobalWin.OSD.AddMessage("Palette file loaded: " + palette.Name);
+						}
+
 						return data;
 					}
 					else
 					{
-						return settings.Palette;
+						return _settings.Palette;
 					}
 				}
 				else // no filename: interpret this as "reset to default"
 				{
-					if (showmsg) GlobalWin.OSD.AddMessage("Standard Palette set");
+					if (showmsg)
+					{
+						GlobalWin.OSD.AddMessage("Standard Palette set");
+					}
+
 					return (byte[,])Palettes.QuickNESPalette.Clone();
 				}
 			}
 			else // checkbox unchecked: we're reusing whatever palette was set
 			{
-				return settings.Palette;
+				return _settings.Palette;
 			}
 		}
 
-
-		private void OK_Click(object sender, EventArgs e)
+		private void Ok_Click(object sender, EventArgs e)
 		{
-			settings.Palette = ResolvePalette(true);
+			_settings.Palette = ResolvePalette(true);
 
-			settings.NTSC_TopLine = (int)NTSC_FirstLineNumeric.Value;
-			settings.NTSC_BottomLine = (int)NTSC_LastLineNumeric.Value;
-			settings.PAL_TopLine = (int)PAL_FirstLineNumeric.Value;
-			settings.PAL_BottomLine = (int)PAL_LastLineNumeric.Value;
-			settings.AllowMoreThanEightSprites = AllowMoreSprites.Checked;
-			settings.ClipLeftAndRight = ClipLeftAndRightCheckBox.Checked;
-			settings.DispSprites = DispSprites.Checked;
-			settings.DispBackground = DispBackground.Checked;
-			settings.BackgroundColor = BGColorDialog.Color.ToArgb();
+			_settings.NTSC_TopLine = (int)NTSC_FirstLineNumeric.Value;
+			_settings.NTSC_BottomLine = (int)NTSC_LastLineNumeric.Value;
+			_settings.PAL_TopLine = (int)PAL_FirstLineNumeric.Value;
+			_settings.PAL_BottomLine = (int)PAL_LastLineNumeric.Value;
+			_settings.AllowMoreThanEightSprites = AllowMoreSprites.Checked;
+			_settings.ClipLeftAndRight = ClipLeftAndRightCheckBox.Checked;
+			_settings.DispSprites = DispSprites.Checked;
+			_settings.DispBackground = DispBackground.Checked;
+			_settings.BackgroundColor = BGColorDialog.Color.ToArgb();
 			if (!checkUseBackdropColor.Checked)
-				settings.BackgroundColor &= 0x00FFFFFF;
+			{
+				_settings.BackgroundColor &= 0x00FFFFFF;
+			}
 
-			nes.PutSettings(settings);
+			_nes.PutSettings(_settings);
 			Close();
 		}
 
 		private void SetColorBox()
 		{
 			int color = BGColorDialog.Color.ToArgb();
-			BackGroundColorNumber.Text = String.Format("{0:X8}", color).Substring(2,6);
+			BackGroundColorNumber.Text = $"{color:X8}".Substring(2, 6);
 			BackgroundColorPanel.BackColor = BGColorDialog.Color;
 		}
 
@@ -161,13 +170,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void btnAreaStandard_Click(object sender, EventArgs e)
+		private void BtnAreaStandard_Click(object sender, EventArgs e)
 		{
 			NTSC_FirstLineNumeric.Value = 8;
 			NTSC_LastLineNumeric.Value = 231;
 		}
 
-		private void btnAreaFull_Click(object sender, EventArgs e)
+		private void BtnAreaFull_Click(object sender, EventArgs e)
 		{
 			NTSC_FirstLineNumeric.Value = 0;
 			NTSC_LastLineNumeric.Value = 239;
@@ -180,7 +189,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void RestoreDefaultsButton_Click(object sender, EventArgs e)
 		{
-			settings = new NES.NESSettings();
+			_settings = new NES.NESSettings();
 			LoadStuff();
 		}
 

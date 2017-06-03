@@ -17,12 +17,13 @@
 		private static readonly int[] Ba = Vic.TimingBuilder_BA(Fetch);
 		private static readonly int[] Act = Vic.TimingBuilder_Act(Timing, 0x004, 0x154, 0x16C);
 
-		private static readonly int[][] Pipeline = {
-				Timing,
-				Fetch,
-				Ba,
-				Act
-			};
+		private static readonly int[][] Pipeline =
+		{
+			Timing,
+			Fetch,
+			Ba,
+			Act
+		};
 
 		public static Vic Create(C64.BorderType borderType)
 		{
@@ -33,8 +34,8 @@
 				HblankStart, HblankEnd,
 				VblankStart, VblankEnd,
 				borderType,
-				6136, 8182
-				);
+				6136,
+				8182);
 		}
 	}
 }

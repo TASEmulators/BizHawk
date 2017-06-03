@@ -62,7 +62,7 @@
 			this.panel1.Name = "panel1";
 			this.panel1.Size = new System.Drawing.Size(40, 32);
 			this.panel1.TabIndex = 0;
-			this.panel1.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
+			this.panel1.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
 			// 
 			// panel2
 			// 
@@ -71,7 +71,7 @@
 			this.panel2.Name = "panel2";
 			this.panel2.Size = new System.Drawing.Size(40, 32);
 			this.panel2.TabIndex = 1;
-			this.panel2.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
+			this.panel2.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
 			// 
 			// panel3
 			// 
@@ -80,7 +80,7 @@
 			this.panel3.Name = "panel3";
 			this.panel3.Size = new System.Drawing.Size(40, 32);
 			this.panel3.TabIndex = 2;
-			this.panel3.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
+			this.panel3.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
 			// 
 			// panel4
 			// 
@@ -89,7 +89,7 @@
 			this.panel4.Name = "panel4";
 			this.panel4.Size = new System.Drawing.Size(40, 32);
 			this.panel4.TabIndex = 3;
-			this.panel4.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
+			this.panel4.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
 			// 
 			// panel5
 			// 
@@ -98,7 +98,7 @@
 			this.panel5.Name = "panel5";
 			this.panel5.Size = new System.Drawing.Size(40, 32);
 			this.panel5.TabIndex = 4;
-			this.panel5.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
+			this.panel5.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
 			// 
 			// panel6
 			// 
@@ -107,7 +107,7 @@
 			this.panel6.Name = "panel6";
 			this.panel6.Size = new System.Drawing.Size(40, 32);
 			this.panel6.TabIndex = 5;
-			this.panel6.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
+			this.panel6.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
 			// 
 			// panel7
 			// 
@@ -116,7 +116,7 @@
 			this.panel7.Name = "panel7";
 			this.panel7.Size = new System.Drawing.Size(40, 32);
 			this.panel7.TabIndex = 6;
-			this.panel7.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
+			this.panel7.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
 			// 
 			// panel8
 			// 
@@ -125,7 +125,7 @@
 			this.panel8.Name = "panel8";
 			this.panel8.Size = new System.Drawing.Size(40, 32);
 			this.panel8.TabIndex = 7;
-			this.panel8.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
+			this.panel8.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
 			// 
 			// panel9
 			// 
@@ -134,7 +134,7 @@
 			this.panel9.Name = "panel9";
 			this.panel9.Size = new System.Drawing.Size(40, 32);
 			this.panel9.TabIndex = 8;
-			this.panel9.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
+			this.panel9.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
 			// 
 			// panel10
 			// 
@@ -143,7 +143,7 @@
 			this.panel10.Name = "panel10";
 			this.panel10.Size = new System.Drawing.Size(40, 32);
 			this.panel10.TabIndex = 9;
-			this.panel10.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
+			this.panel10.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
 			// 
 			// panel11
 			// 
@@ -152,7 +152,7 @@
 			this.panel11.Name = "panel11";
 			this.panel11.Size = new System.Drawing.Size(40, 32);
 			this.panel11.TabIndex = 10;
-			this.panel11.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
+			this.panel11.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
 			// 
 			// panel12
 			// 
@@ -161,7 +161,7 @@
 			this.panel12.Name = "panel12";
 			this.panel12.Size = new System.Drawing.Size(40, 32);
 			this.panel12.TabIndex = 11;
-			this.panel12.DoubleClick += new System.EventHandler(this.panel12_DoubleClick);
+			this.panel12.DoubleClick += new System.EventHandler(this.Panel12_DoubleClick);
 			// 
 			// label1
 			// 
@@ -200,7 +200,7 @@
 			this.OK.TabIndex = 22;
 			this.OK.Text = "&OK";
 			this.OK.UseVisualStyleBackColor = true;
-			this.OK.Click += new System.EventHandler(this.OK_Click);
+			this.OK.Click += new System.EventHandler(this.Ok_Click);
 			// 
 			// Cancel
 			// 
@@ -221,7 +221,7 @@
 			this.buttonInterpolateBG.TabIndex = 25;
 			this.buttonInterpolateBG.Text = "Interpolate";
 			this.buttonInterpolateBG.UseVisualStyleBackColor = true;
-			this.buttonInterpolateBG.Click += new System.EventHandler(this.button3_Click);
+			this.buttonInterpolateBG.Click += new System.EventHandler(this.Button3_Click);
 			// 
 			// buttonInterpolateSP1
 			// 
@@ -231,7 +231,7 @@
 			this.buttonInterpolateSP1.TabIndex = 26;
 			this.buttonInterpolateSP1.Text = "Interpolate";
 			this.buttonInterpolateSP1.UseVisualStyleBackColor = true;
-			this.buttonInterpolateSP1.Click += new System.EventHandler(this.button4_Click);
+			this.buttonInterpolateSP1.Click += new System.EventHandler(this.Button4_Click);
 			// 
 			// buttonInterpolateSP2
 			// 
@@ -241,7 +241,7 @@
 			this.buttonInterpolateSP2.TabIndex = 27;
 			this.buttonInterpolateSP2.Text = "Interpolate";
 			this.buttonInterpolateSP2.UseVisualStyleBackColor = true;
-			this.buttonInterpolateSP2.Click += new System.EventHandler(this.button5_Click);
+			this.buttonInterpolateSP2.Click += new System.EventHandler(this.Button5_Click);
 			// 
 			// buttonLoad
 			// 
@@ -251,7 +251,7 @@
 			this.buttonLoad.TabIndex = 28;
 			this.buttonLoad.Text = "&Load...";
 			this.buttonLoad.UseVisualStyleBackColor = true;
-			this.buttonLoad.Click += new System.EventHandler(this.button6_Click);
+			this.buttonLoad.Click += new System.EventHandler(this.Button6_Click);
 			// 
 			// buttonSave
 			// 
@@ -261,7 +261,7 @@
 			this.buttonSave.TabIndex = 29;
 			this.buttonSave.Text = "&Save...";
 			this.buttonSave.UseVisualStyleBackColor = true;
-			this.buttonSave.Click += new System.EventHandler(this.button7_Click);
+			this.buttonSave.Click += new System.EventHandler(this.Button7_Click);
 			// 
 			// DefaultButton
 			// 
@@ -320,7 +320,6 @@
 			this.Name = "ColorChooserForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Game Boy Palette Config";
-			this.Load += new System.EventHandler(this.ColorChooserForm_Load);
 			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.ColorChooserForm_DragDrop);
 			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.ColorChooserForm_DragEnter);
 			this.ResumeLayout(false);

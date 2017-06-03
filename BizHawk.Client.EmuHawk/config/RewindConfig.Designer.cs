@@ -131,7 +131,7 @@
 			this.OK.TabIndex = 0;
 			this.OK.Text = "&OK";
 			this.OK.UseVisualStyleBackColor = true;
-			this.OK.Click += new System.EventHandler(this.OK_Click);
+			this.OK.Click += new System.EventHandler(this.Ok_Click);
 			// 
 			// Cancel
 			// 
@@ -814,7 +814,7 @@
 			this.btnResetCompression.TabIndex = 23;
 			this.toolTip1.SetToolTip(this.btnResetCompression, "Reset to default");
 			this.btnResetCompression.UseVisualStyleBackColor = true;
-			this.btnResetCompression.Click += new System.EventHandler(this.btnResetCompression_Click);
+			this.btnResetCompression.Click += new System.EventHandler(this.BtnResetCompression_Click);
 			// 
 			// trackBarCompression
 			// 
@@ -826,7 +826,7 @@
 			this.trackBarCompression.TabIndex = 20;
 			this.toolTip1.SetToolTip(this.trackBarCompression, "0 = None; 9 = Maximum");
 			this.trackBarCompression.Value = 1;
-			this.trackBarCompression.ValueChanged += new System.EventHandler(this.trackBarCompression_ValueChanged);
+			this.trackBarCompression.ValueChanged += new System.EventHandler(this.TrackBarCompression_ValueChanged);
 			// 
 			// nudCompression
 			// 
@@ -844,7 +844,7 @@
             0,
             0,
             0});
-			this.nudCompression.ValueChanged += new System.EventHandler(this.nudCompression_ValueChanged);
+			this.nudCompression.ValueChanged += new System.EventHandler(this.NudCompression_ValueChanged);
 			// 
 			// groupBox7
 			// 

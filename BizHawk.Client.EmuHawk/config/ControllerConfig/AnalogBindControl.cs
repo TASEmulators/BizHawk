@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -18,75 +12,77 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 		}
 
-		public string ButtonName;
-		public Config.AnalogBind Bind;
-		bool listening = false;
-
-		public AnalogBindControl(string ButtonName, Config.AnalogBind Bind)
+		public AnalogBindControl(string buttonName, Config.AnalogBind bind)
 			: this()
 		{
-			this.Bind = Bind;
-			this.ButtonName = ButtonName;
-			labelButtonName.Text = ButtonName;
-			trackBarSensitivity.Value = (int)(Bind.Mult * 10.0f);
-			trackBarDeadzone.Value = (int)(Bind.Deadzone * 20.0f);
-			trackBarSensitivity_ValueChanged(null, null);
-			trackBarDeadzone_ValueChanged(null, null);
-			textBox1.Text = Bind.Value;
+			_bind = bind;
+			ButtonName = buttonName;
+			labelButtonName.Text = buttonName;
+			trackBarSensitivity.Value = (int)(bind.Mult * 10.0f);
+			trackBarDeadzone.Value = (int)(bind.Deadzone * 20.0f);
+			TrackBarSensitivity_ValueChanged(null, null);
+			TrackBarDeadzone_ValueChanged(null, null);
+			textBox1.Text = bind.Value;
 		}
 
-		private void timer1_Tick(object sender, EventArgs e)
+		public string ButtonName { get; private set; }
+		public Config.AnalogBind Bind => _bind;
+
+		private Config.AnalogBind _bind;
+		private bool _listening;
+
+		private void Timer1_Tick(object sender, EventArgs e)
 		{
 			string bindval = Input.Instance.GetNextFloatEvent();
 			if (bindval != null)
 			{
 				timer1.Stop();
-				listening = false;
-				Bind.Value = bindval;
+				_listening = false;
+				_bind.Value = bindval;
 				textBox1.Text = Bind.Value;
 				buttonBind.Text = "Bind!";
 				Input.Instance.StopListeningForFloatEvents();
 			}
 		}
 
-		private void buttonBind_Click(object sender, EventArgs e)
+		private void ButtonBind_Click(object sender, EventArgs e)
 		{
-			if (listening)
+			if (_listening)
 			{
 				timer1.Stop();
-				listening = false;
+				_listening = false;
 				buttonBind.Text = "Bind!";
 				Input.Instance.StopListeningForFloatEvents();
 			}
 			else
 			{
 				Input.Instance.StartListeningForFloatEvents();
-				listening = true;
+				_listening = true;
 				buttonBind.Text = "Cancel!";
 				timer1.Start();
 			}
 		}
 
-		private void trackBarSensitivity_ValueChanged(object sender, EventArgs e)
+		private void TrackBarSensitivity_ValueChanged(object sender, EventArgs e)
 		{
-			Bind.Mult = trackBarSensitivity.Value / 10.0f;
-			labelSensitivity.Text = String.Format("Sensitivity: {0}", (Bind.Mult*100)) + "%";
+			_bind.Mult = trackBarSensitivity.Value / 10.0f;
+			labelSensitivity.Text = $"Sensitivity: {(Bind.Mult * 100)}" + "%";
 		}
 
-		private void trackBarDeadzone_ValueChanged(object sender, EventArgs e)
+		private void TrackBarDeadzone_ValueChanged(object sender, EventArgs e)
 		{
-			Bind.Deadzone = trackBarDeadzone.Value / 20.0f;
-			labelDeadzone.Text = String.Format("Deadzone: {0}", (Bind.Deadzone*100)) + "%";
+			_bind.Deadzone = trackBarDeadzone.Value / 20.0f;
+			labelDeadzone.Text = $"Deadzone: {(Bind.Deadzone * 100)}" + "%";
 		}
 
-		private void buttonFlip_Click(object sender, EventArgs e)
+		private void ButtonFlip_Click(object sender, EventArgs e)
 		{
 			trackBarSensitivity.Value *= -1;
 		}
 
 		public void Unbind_Click(object sender, EventArgs e)
 		{
-			Bind.Value = "";
+			_bind.Value = "";
 			textBox1.Text = "";
 		}
 	}

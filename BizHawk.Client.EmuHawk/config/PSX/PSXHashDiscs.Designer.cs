@@ -53,7 +53,7 @@
 			this.btnHash.TabIndex = 1;
 			this.btnHash.Text = "Hash";
 			this.btnHash.UseVisualStyleBackColor = true;
-			this.btnHash.Click += new System.EventHandler(this.btnHash_Click);
+			this.btnHash.Click += new System.EventHandler(this.BtnHash_Click);
 			// 
 			// txtHashes
 			// 

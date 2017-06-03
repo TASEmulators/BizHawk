@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -14,12 +13,17 @@ namespace BizHawk.Client.EmuHawk
 			ChangeCasing();
 		}
 
+		// Hacky values to remember the Hex vs Text radio selection across searches
+		public Action<bool> SearchTypeChangedCallback { get; set; }
+		public bool InitialText { get; set; }
+
 		public Point InitialLocation { get; set; }
+		
 
 		public string InitialValue
 		{
 			get { return FindBox.Text; }
-			set { FindBox.Text = value ?? string.Empty; }
+			set { FindBox.Text = value ?? ""; }
 		}
 
 		private void HexFind_Load(object sender, EventArgs e)
@@ -29,29 +33,34 @@ namespace BizHawk.Client.EmuHawk
 				Location = InitialLocation;
 			}
 
+			if (InitialText)
+			{
+				TextRadio.Select();
+			}
+
 			FindBox.Focus();
 			FindBox.Select();
+
 		}
 
 		private string GetFindBoxChars()
 		{
 			if (string.IsNullOrWhiteSpace(FindBox.Text))
 			{
-				return string.Empty;
+				return "";
 			}
 			
 			if (HexRadio.Checked)
 			{
 				return FindBox.Text;
 			}
-			
-			
+
 			var bytes = GlobalWin.Tools.HexEditor.ConvertTextToBytes(FindBox.Text);
 
 			var bytestring = new StringBuilder();
 			foreach (var b in bytes)
 			{
-				bytestring.Append(string.Format("{0:X2}", b));
+				bytestring.Append($"{b:X2}");
 			}
 
 			return bytestring.ToString();
@@ -77,7 +86,6 @@ namespace BizHawk.Client.EmuHawk
 
 			if (HexRadio.Checked)
 			{
-
 				FindBox = new HexTextBox
 				{
 					CharacterCasing = CharacterCasing.Upper,
@@ -103,11 +111,13 @@ namespace BizHawk.Client.EmuHawk
 		private void HexRadio_CheckedChanged(object sender, EventArgs e)
 		{
 			ChangeCasing();
+			SearchTypeChangedCallback?.Invoke(false);
 		}
 
 		private void TextRadio_CheckedChanged(object sender, EventArgs e)
 		{
 			ChangeCasing();
+			SearchTypeChangedCallback?.Invoke(true);
 		}
 
 		private void FindBox_KeyDown(object sender, KeyEventArgs e)

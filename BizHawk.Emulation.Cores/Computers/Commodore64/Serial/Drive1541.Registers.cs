@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
 	public sealed partial class Drive1541
 	{
-		[SaveState.SaveWithName("OverflowFlagDelayShiftRegister")]
 		private int _overflowFlagDelaySr;
 
 		private byte CpuPeek(ushort addr)
@@ -64,10 +58,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 				case 0x1C00:
 					return Via1.Peek(addr);
 			}
+
 			if ((addr & 0x8000) != 0)
+			{
 				return DriveRom.Peek(addr & 0x3FFF);
+			}
+
 			if ((addr & 0x1F00) < 0x800)
+			{
 				return _ram[addr & 0x7FF];
+			}
+
 			return (addr >> 8) & 0xFF;
 		}
 
@@ -93,7 +94,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 					break;
 				default:
 					if ((addr & 0x8000) == 0 && (addr & 0x1F00) < 0x800)
+					{
 						_ram[addr & 0x7FF] = val & 0xFF;
+					}
+
 					break;
 			}
 		}
@@ -117,10 +121,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 				case 0x1C00:
 					return Via1.Read(addr);
 			}
+
 			if ((addr & 0x8000) != 0)
+			{
 				return DriveRom.Read(addr & 0x3FFF);
+			}
+
 			if ((addr & 0x1F00) < 0x800)
+			{
 				return _ram[addr & 0x7FF];
+			}
+
 			return (addr >> 8) & 0xFF;
 		}
 
@@ -136,7 +147,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 					break;
 				default:
 					if ((addr & 0x8000) == 0 && (addr & 0x1F00) < 0x800)
+					{
 						_ram[addr & 0x7FF] = val & 0xFF;
+					}
+
 					break;
 			}
 		}

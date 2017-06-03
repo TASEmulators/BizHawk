@@ -4,7 +4,10 @@ namespace BizHawk.Client.Common
 {
 	public partial class BkmMovie
 	{
-		private enum Moviemode { Inactive, Play, Record, Finished }
+		private enum Moviemode
+		{
+			Inactive, Play, Record, Finished
+		}
 
 		private Moviemode _mode = Moviemode.Inactive;
 

@@ -46,7 +46,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// Returns a list of extensions for all IMovie implementations
+		/// Gets a list of extensions for all <seealso cref="IMovie"/> implementations
 		/// </summary>
 		public static IEnumerable<string> MovieExtensions
 		{
@@ -72,12 +72,6 @@ namespace BizHawk.Client.Common
 		/// Creates a default instance of the default implementation, 
 		/// no path is specified so this is in a minimal state that would not be able to be saved
 		/// </summary>
-		public static IMovie DefaultInstance
-		{
-			get
-			{
-				return new Bk2Movie();
-			}
-		}
+		public static IMovie DefaultInstance => new Bk2Movie();
 	}
 }

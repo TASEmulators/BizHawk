@@ -4,6 +4,7 @@ using System.Linq;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -120,7 +121,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private double AdvertisedSamplesPerFrame
 		{
-			get { return SampleRate / Global.Emulator.CoreComm.VsyncRate; }
+			get { return SampleRate / Global.Emulator.VsyncRate(); }
 		}
 
 		public void GetSamples(short[] samples)

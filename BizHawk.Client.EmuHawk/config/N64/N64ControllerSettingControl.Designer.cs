@@ -75,7 +75,6 @@
 			this.Controls.Add(this.EnabledCheckbox);
 			this.Name = "N64ControllerSettingControl";
 			this.Size = new System.Drawing.Size(290, 22);
-			this.Load += new System.EventHandler(this.N64ControllerSettingControl_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

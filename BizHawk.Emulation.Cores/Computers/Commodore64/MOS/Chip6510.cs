@@ -1,19 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// an extension of the 6502 processor
-
 	public sealed partial class Chip6510
 	{
 		// ------------------------------------
-
-		private MOS6502X _cpu;
+		private readonly MOS6502X _cpu;
 		private bool _pinNmiLast;
 		private LatchedPort _port;
 		private bool _thisNmi;
@@ -48,6 +45,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			HardReset();
 		}
 
+		public string TraceHeader => "6510: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR)";
+
+		public Action<TraceInfo> TraceCallback
+		{
+			get { return _cpu.TraceCallback; }
+			set { _cpu.TraceCallback = value; }
+		}
+
 		public void SetOverflow()
 		{
 		}
@@ -79,7 +84,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		}
 
 		// ------------------------------------
-
 		public void ExecutePhase()
 		{
 			_cpu.RDY = ReadRdy();
@@ -106,8 +110,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		}
 
 		// ------------------------------------
-
-		[SaveState.DoNotSave]
 		public ushort Pc
 		{
 			get
@@ -120,50 +122,38 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		[SaveState.DoNotSave]
 		public int A
 		{
 			get { return _cpu.A; }
 			set { _cpu.A = unchecked((byte)value); }
 		}
 
-		[SaveState.DoNotSave]
 		public int X
 		{
 			get { return _cpu.X; }
 			set { _cpu.X = unchecked((byte)value); }
 		}
 
-		[SaveState.DoNotSave]
 		public int Y
 		{
 			get { return _cpu.Y; }
 			set { _cpu.Y = unchecked((byte)value); }
 		}
 
-		[SaveState.DoNotSave]
 		public int S
 		{
 			get { return _cpu.S; }
 			set { _cpu.S = unchecked((byte)value); }
 		}
 
-		[SaveState.DoNotSave]
-		public bool FlagC { get { return _cpu.FlagC; } }
-		[SaveState.DoNotSave]
-		public bool FlagZ { get { return _cpu.FlagZ; } }
-		[SaveState.DoNotSave]
-		public bool FlagI { get { return _cpu.FlagI; } }
-		[SaveState.DoNotSave]
-		public bool FlagD { get { return _cpu.FlagD; } }
-		[SaveState.DoNotSave]
-		public bool FlagB { get { return _cpu.FlagB; } }
-		[SaveState.DoNotSave]
-		public bool FlagV { get { return _cpu.FlagV; } }
-		[SaveState.DoNotSave]
-		public bool FlagN { get { return _cpu.FlagN; } }
-		[SaveState.DoNotSave]
-		public bool FlagT { get { return _cpu.FlagT; } }
+		public bool FlagC => _cpu.FlagC;
+		public bool FlagZ => _cpu.FlagZ;
+		public bool FlagI => _cpu.FlagI;
+		public bool FlagD => _cpu.FlagD;
+		public bool FlagB => _cpu.FlagB;
+		public bool FlagV => _cpu.FlagV;
+		public bool FlagN => _cpu.FlagN;
+		public bool FlagT => _cpu.FlagT;
 
 		public int Peek(int addr)
 		{
@@ -194,18 +184,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		[SaveState.DoNotSave]
-		public int PortData
-		{
-			get
-			{
-				return _port.ReadInput(ReadPort());
-			}
-			set
-			{
-				_port.Latch = value;
-			}
-		}
+		public int PortData => _port.ReadInput(ReadPort());
 
 		public int Read(int addr)
 		{
@@ -222,7 +201,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.BeginSection("Chip6510Cpu");
+			_cpu.SyncState(ser);
+			ser.EndSection();
+
+			ser.Sync("_pinNmiLast", ref _pinNmiLast);
+
+			ser.BeginSection("_port");
+			_port.SyncState(ser);
+			ser.EndSection();
+
+			ser.Sync("_thisNmi", ref _thisNmi);
+			ser.Sync("LagCycles", ref LagCycles);
 		}
 
 		public void Write(int addr, int val)

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
@@ -21,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		protected class BamEntry
 		{
 			public int Data { get; private set; }
-			public int Sectors { get; private set; }
+			public int Sectors { get; }
 
 			public BamEntry(int sectors)
 			{
@@ -31,6 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 					Data >>= 1;
 					Data |= 0x800000;
 				}
+
 				Data |= (sectors << 24);
 				Sectors = sectors;
 			}
@@ -64,20 +63,25 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				}
 			}
 
-			public int SectorsRemaining
-			{
-				get { return (Data >> 24) & 0xFF; }
-			}
+			public int SectorsRemaining => (Data >> 24) & 0xFF;
 
 			public bool this[int sector]
 			{
-				get { return (Data & (1 << sector)) != 0; }
+				get
+				{
+					return (Data & (1 << sector)) != 0;
+				}
+
 				set
 				{
 					if (value)
+					{
 						Free(sector);
+					}
 					else
+					{
 						Allocate(sector);
+					}
 				}
 			}
 
@@ -241,14 +245,18 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 					}
 
 					if (dataRemaining <= 0)
+					{
 						break;
+					}
 
 					bytes[outputOffset + 0] = (byte)(currentTrack + 1);
 					bytes[outputOffset + 1] = (byte)currentSector;
 				}
 
 				if (diskFull)
+				{
 					break;
+				}
 			}
 
 			// write Directory
@@ -276,8 +284,11 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 				bytes[directoryOutputOffset + directoryOffset + 0x03] = (byte)(entry.Track + 1);
 				bytes[directoryOutputOffset + directoryOffset + 0x04] = (byte)entry.Sector;
 				for (var i = 0x05; i <= 0x14; i++)
+				{
 					bytes[directoryOutputOffset + directoryOffset + i] = 0xA0;
-				var fileNameBytes = Encoding.ASCII.GetBytes(entry.Entry.Name ?? string.Format("FILE{0:D3}", fileIndex));
+				}
+
+				var fileNameBytes = Encoding.ASCII.GetBytes(entry.Entry.Name ?? $"FILE{fileIndex:D3}");
 				Array.Copy(fileNameBytes, 0, bytes, directoryOutputOffset + directoryOffset + 0x05, Math.Min(fileNameBytes.Length, 0x10));
 				bytes[directoryOutputOffset + directoryOffset + 0x1E] = (byte)(entry.LengthInSectors & 0xFF);
 				bytes[directoryOutputOffset + directoryOffset + 0x1F] = (byte)((entry.LengthInSectors >> 8) & 0xFF);
@@ -295,10 +306,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			{
 				Array.Copy(bam[i].GetBytes(), 0, bytes, bamOutputOffset + 4 + (i * 4), 4);
 			}
+
 			for (var i = 0x90; i <= 0xAA; i++)
 			{
 				bytes[bamOutputOffset + i] = 0xA0;
 			}
+
 			var titleBytes = Encoding.ASCII.GetBytes(Title ?? "UNTITLED");
 			Array.Copy(titleBytes, 0, bytes, bamOutputOffset + 0x90, Math.Min(titleBytes.Length, 0x10));
 

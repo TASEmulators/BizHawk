@@ -1,24 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace BizHawk.Client.Common
 {
 	public partial class Bk2Movie
 	{
-		protected IStringLog _log;
-		protected string LogKey = string.Empty;
-
-		public string GetInputLog()
-		{
-			var sb = new StringBuilder();
-			var writer = new StringWriter(sb);
-			WriteInputLog(writer);
-			writer.Flush();
-			return sb.ToString();
-		}
+		protected IStringLog Log { get; set; }
+		protected string LogKey { get; set; } = "";
 
 		public void WriteInputLog(TextWriter writer)
 		{
@@ -35,13 +24,13 @@ namespace BizHawk.Client.Common
 
 				if (LoopOffset.HasValue)
 				{
-					if (frame < _log.Count)
+					if (frame < Log.Count)
 					{
 						getframe = frame;
 					}
 					else
 					{
-						getframe = ((frame - LoopOffset.Value) % (_log.Count - LoopOffset.Value)) + LoopOffset.Value;
+						getframe = ((frame - LoopOffset.Value) % (Log.Count - LoopOffset.Value)) + LoopOffset.Value;
 					}
 				}
 				else
@@ -49,27 +38,27 @@ namespace BizHawk.Client.Common
 					getframe = frame;
 				}
 
-				return _log[getframe];
+				return Log[getframe];
 			}
 
-			return string.Empty;
+			return "";
 		}
 
 		public virtual bool ExtractInputLog(TextReader reader, out string errorMessage)
 		{
-			errorMessage = string.Empty;
+			errorMessage = "";
 			int? stateFrame = null;
 
 			// We are in record mode so replace the movie log with the one from the savestate
 			if (!Global.MovieSession.MultiTrack.IsActive)
 			{
-				if (Global.Config.EnableBackupMovies && MakeBackup && _log.Count != 0)
+				if (Global.Config.EnableBackupMovies && MakeBackup && Log.Count != 0)
 				{
 					SaveBackup();
 					MakeBackup = false;
 				}
 
-				_log.Clear();
+				Log.Clear();
 				while (true)
 				{
 					var line = reader.ReadLine();
@@ -113,7 +102,7 @@ namespace BizHawk.Client.Common
 					}
 					else if (line[0] == '|')
 					{
-						_log.Add(line);
+						Log.Add(line);
 					}
 				}
 			}
@@ -173,21 +162,21 @@ namespace BizHawk.Client.Common
 
 			var stateFramei = stateFrame ?? 0;
 
-			if (stateFramei > 0 && stateFramei < _log.Count)
+			if (stateFramei > 0 && stateFramei < Log.Count)
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
 					Truncate(stateFramei);
 				}
 			}
-			else if (stateFramei > _log.Count) // Post movie savestate
+			else if (stateFramei > Log.Count) // Post movie savestate
 			{
 				if (!Global.Config.VBAStyleMovieLoadState)
 				{
-					Truncate(_log.Count);
+					Truncate(Log.Count);
 				}
 
-				_mode = Moviemode.Finished;
+				Mode = Moviemode.Finished;
 			}
 
 			if (IsCountingRerecords)
@@ -201,7 +190,7 @@ namespace BizHawk.Client.Common
 		public bool CheckTimeLines(TextReader reader, out string errorMessage)
 		{
 			// This function will compare the movie data to the savestate movie data to see if they match
-			errorMessage = string.Empty;
+			errorMessage = "";
 			var newLog = new List<string>();
 			var stateFrame = 0;
 			while (true)
@@ -212,7 +201,7 @@ namespace BizHawk.Client.Common
 					break;
 				}
 
-				if (line.Trim() == string.Empty)
+				if (line.Trim() == "")
 				{
 					continue;
 				}
@@ -254,7 +243,7 @@ namespace BizHawk.Client.Common
 				stateFrame = newLog.Count;  // In case the frame count failed to parse, revert to using the entire state input log
 			}
 
-			if (_log.Count < stateFrame)
+			if (Log.Count < stateFrame)
 			{
 				if (IsFinished)
 				{
@@ -264,14 +253,14 @@ namespace BizHawk.Client.Common
 				errorMessage = "The savestate is from frame "
 					+ newLog.Count
 					+ " which is greater than the current movie length of "
-					+ _log.Count;
+					+ Log.Count;
 
 				return false;
 			}
 
 			for (var i = 0; i < stateFrame; i++)
 			{
-				if (_log[i] != newLog[i])
+				if (Log[i] != newLog[i])
 				{
 					errorMessage = "The savestate input does not match the movie input at frame "
 						+ (i + 1)
@@ -283,18 +272,18 @@ namespace BizHawk.Client.Common
 
 			if (stateFrame > newLog.Count) // stateFrame is greater than state input log, so movie finished mode
 			{
-				if (_mode == Moviemode.Play || _mode == Moviemode.Finished)
+				if (Mode == Moviemode.Play || Mode == Moviemode.Finished)
 				{
-					_mode = Moviemode.Finished;
+					Mode = Moviemode.Finished;
 					return true;
 				}
 
 				return false;
 			}
 
-			if (_mode == Moviemode.Finished)
+			if (Mode == Moviemode.Finished)
 			{
-				_mode = Moviemode.Play;
+				Mode = Moviemode.Play;
 			}
 
 			return true;
@@ -307,7 +296,7 @@ namespace BizHawk.Client.Common
 
 			writer.WriteLine(lg.GenerateLogKey());
 
-			foreach (var record in _log)
+			foreach (var record in Log)
 			{
 				writer.WriteLine(record);
 			}
@@ -315,10 +304,10 @@ namespace BizHawk.Client.Common
 
 		/// <summary>
 		/// Takes a log entry from a line in an input log,
-		/// If the log key differs from the system's, it will be coverted
+		/// If the log key differs from the system's, it will be converted
 		/// </summary>
 		/// <param name="line">a log entry line of text from the input log</param>
-		/// <param name="logKey">a log entry line of text from the input log</param>
+		/// <param name="logKey">a key used to describe the mnemonic values and positions in the log</param>
 		private string ConvertLogEntryFromFile(string line, string logKey)
 		{
 			var adapter = new Bk2LogEntryGenerator(logKey).MovieControllerAdapter;

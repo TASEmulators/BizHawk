@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
@@ -12,19 +11,19 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			return new Dictionary<string, RegisterValue>
 			{
-				{ "A", _cpu.A },
-				{ "X", _cpu.X },
-				{ "Y", _cpu.Y },
-				{ "S", _cpu.S },
-				{ "PC", _cpu.PC },
-				{ "Flag C", _cpu.FlagC },
-				{ "Flag Z", _cpu.FlagZ },
-				{ "Flag I", _cpu.FlagI },
-				{ "Flag D", _cpu.FlagD },
-				{ "Flag B", _cpu.FlagB },
-				{ "Flag V", _cpu.FlagV },
-				{ "Flag N", _cpu.FlagN },
-				{ "Flag T", _cpu.FlagT }
+				["A"] = _cpu.A,
+				["X"] = _cpu.X,
+				["Y"] = _cpu.Y,
+				["S"] = _cpu.S,
+				["PC"] = _cpu.PC,
+				["Flag C"] = _cpu.FlagC,
+				["Flag Z"] = _cpu.FlagZ,
+				["Flag I"] = _cpu.FlagI,
+				["Flag D"] = _cpu.FlagD,
+				["Flag B"] = _cpu.FlagB,
+				["Flag V"] = _cpu.FlagV,
+				["Flag N"] = _cpu.FlagN,
+				["Flag T"] = _cpu.FlagT
 			};
 		}
 
@@ -65,7 +64,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-
 		void IDebuggable.Step(StepType type)
 		{
 			switch (type)
@@ -82,10 +80,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		int IDebuggable.TotalExecutedCycles
-		{
-			get { return _cpu.TotalExecutedCycles; }
-		}
+		int IDebuggable.TotalExecutedCycles => _cpu.TotalExecutedCycles;
 
 		private void StepInto()
 		{
@@ -93,6 +88,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 				DebuggerStep();
 			}
+
 			while (!_cpu.AtInstructionStart())
 			{
 				DebuggerStep();
@@ -144,21 +140,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		[SaveState.DoNotSave]
 		private int _jsrCount;
-		[SaveState.DoNotSave]
+
 		private const byte Jsr = 0x20;
-		[SaveState.DoNotSave]
 		private const byte Rti = 0x40;
-		[SaveState.DoNotSave]
 		private const byte Rts = 0x60;
 
-		[SaveState.DoNotSave]
 		private const byte JsrSize = 3;
 
-		[SaveState.DoNotSave] private IMemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem();
-
-		[SaveState.DoNotSave]
-		IMemoryCallbackSystem IDebuggable.MemoryCallbacks { get { return _memoryCallbacks; } }
+		IMemoryCallbackSystem IDebuggable.MemoryCallbacks { get; } = new MemoryCallbackSystem();
 	}
 }

@@ -10,7 +10,7 @@ namespace BizHawk.Client.Common
 {
 	public static class ConfigService
 	{
-		private static JsonSerializer Serializer;
+		private static readonly JsonSerializer Serializer;
 
 		static ConfigService()
 		{
@@ -107,6 +107,5 @@ namespace BizHawk.Client.Common
 				return sw.ToString();
 			}
 		}
-
 	}
 }

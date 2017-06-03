@@ -39,7 +39,7 @@ int Interface::getBackdropColor()
 	return -1;
 }
 
-void Interface::cpuTrace(const char *msg) {
+void Interface::cpuTrace(uint32_t which, const char *msg) {
 }
 
 }

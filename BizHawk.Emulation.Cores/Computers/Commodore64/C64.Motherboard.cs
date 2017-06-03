@@ -1,6 +1,4 @@
-﻿using System.Reflection;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Cassette;
@@ -150,11 +148,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			KernalRom = new Chip23128();
 		}
 
-		[SaveState.DoNotSave] public int ClockNumerator { get; private set; }
-		[SaveState.DoNotSave] public int ClockDenominator { get; private set; }
+		public int ClockNumerator { get; }
+		public int ClockDenominator { get; }
 
 		// -----------------------------------------
-
 		public void Execute()
 		{
 			_vicBank = (0x3 - ((Cia1.PrA | ~Cia1.DdrA) & 0x3)) << 14;
@@ -171,11 +168,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void Flush()
 		{
-			Sid.Flush();
+			Sid.Flush(false);
 		}
 
 		// -----------------------------------------
-
 		public void HardReset()
 		{
 			Bus = 0xFF;
@@ -282,7 +278,83 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public void SyncState(Serializer ser)
 		{
-			SaveState.SyncObject(ser, this);
+			ser.BeginSection("Cia0");
+			Cia0.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("Cia1");
+			Cia1.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("ColorRam");
+			ColorRam.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("Cpu");
+			Cpu.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("Pla");
+			Pla.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("Ram");
+			Ram.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("Sid");
+			Sid.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("Vic");
+			Vic.SyncState(ser);
+			ser.EndSection();
+
+			if (CartPort.IsConnected)
+			{
+				ser.BeginSection("CartPort");
+				CartPort.SyncState(ser);
+				ser.EndSection();
+			}
+
+			ser.BeginSection("Cassette");
+			Cassette.SyncState(ser);
+			ser.EndSection();
+
+			ser.BeginSection("Serial");
+			Serial.SyncState(ser);
+			ser.EndSection();
+
+			if (TapeDrive != null) // TODO: a tape object is already in a nested class, is it the same reference? do we need this?
+			{
+				ser.BeginSection("TapeDrive");
+				TapeDrive.SyncState(ser);
+				ser.EndSection();
+			}
+
+			ser.BeginSection("User");
+			User.SyncState(ser);
+			ser.EndSection();
+
+			if (DiskDrive != null) // TODO: a disk object is already in a nested class, is it the same reference? do we need this?
+			{
+				ser.BeginSection("DiskDrive");
+				DiskDrive.SyncState(ser);
+				ser.EndSection();
+			}
+
+			ser.Sync("Bus", ref Bus);
+			ser.Sync("InputRead", ref InputRead);
+			ser.Sync("Irq", ref Irq);
+			ser.Sync("Nmi", ref Nmi);
+
+			ser.Sync("_lastReadVicAddress", ref _lastReadVicAddress);
+			ser.Sync("_lastReadVicData", ref _lastReadVicData);
+			ser.Sync("_vicBank", ref _vicBank);
+
+			ser.Sync("_joystickPressed", ref _joystickPressed, useNull: false);
+			ser.Sync("_keyboardPressed", ref _keyboardPressed, useNull: false);
+			ser.Sync("_restorePressed", ref _restorePressed);
 		}
 	}
 }

@@ -7,8 +7,8 @@ using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
-
-using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Atari.A7800Hawk;
+using BizHawk.Emulation.Cores.Atari.Atari7800;
 
 namespace BizHawk.Client.Common
 {
@@ -24,19 +24,17 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
+		/// Gets the queued movie
 		/// When initializing a movie, it will be stored here until Rom processes have been completed, then it will be moved to the Movie property
 		/// If an existing movie is still active, it will remain in the Movie property while the new movie is queued
 		/// </summary>
-		public IMovie QueuedMovie { get; set; }
+		public IMovie QueuedMovie { get; private set; }
 
 		// This wrapper but the logic could change, don't make the client code understand these details
-		public bool MovieIsQueued
-		{
-			get { return QueuedMovie != null; }
-		}
+		public bool MovieIsQueued => QueuedMovie != null;
 
-		public MultitrackRecorder MultiTrack { get; private set; }
-		public IMovieController MovieControllerAdapter{ get; set; }
+		public MultitrackRecorder MultiTrack { get; }
+		public IMovieController MovieControllerAdapter { get; set; }
 
 		public IMovie Movie { get; set; }
 		public bool ReadOnly { get; set; }
@@ -44,19 +42,20 @@ namespace BizHawk.Client.Common
 		public Func<string, string, bool> AskYesNoCallback { get; set; }
 
 		/// <summary>
-		/// Required
+		/// Gets or sets a callback that allows the movie session to pause the emulator
+		/// This is Required!
 		/// </summary>
 		public Action PauseCallback { get; set; }
 
 		/// <summary>
-		/// Required
+		/// Gets or sets a callback that is invoked when the movie mode has changed
+		/// This is Required!
 		/// </summary>
 		public Action ModeChangedCallback { get; set; }
 
 		/// <summary>
 		/// Simply shortens the verbosity necessary otherwise
 		/// </summary>
-		/// <returns></returns>
 		public ILogEntryGenerator LogGeneratorInstance()
 		{
 			return Movie.LogGeneratorInstance();
@@ -98,13 +97,10 @@ namespace BizHawk.Client.Common
 
 		private void Output(string message)
 		{
-			if (MessageCallback != null)
-			{
-				MessageCallback(message);
-			}
+			MessageCallback?.Invoke(message);
 		}
 
-		public void LatchMultitrackPlayerInput(IController playerSource, MultitrackRewiringControllerAdapter rewiredSource)
+		private void LatchMultitrackPlayerInput(MultitrackRewiringControllerAdapter rewiredSource)
 		{
 			if (MultiTrack.IsActive)
 			{
@@ -139,7 +135,9 @@ namespace BizHawk.Client.Common
 
 			// adelikat: TODO: this is likely the source of frame 0 TAStudio bugs, I think the intent is to check if the movie is 0 length?
 			if (Global.Emulator.Frame == 0) // Hacky
+			{
 				HandleMovieAfterFrameLoop(); // Frame 0 needs to be handled.
+			}
 
 			if (input == null)
 			{
@@ -157,7 +155,7 @@ namespace BizHawk.Client.Common
 		private void HandlePlaybackEnd()
 		{
 			// TODO: mainform callback to update on mode change
-			switch(Global.Config.MovieEndAction)
+			switch (Global.Config.MovieEndAction)
 			{
 				case MovieEndAction.Stop:
 					Movie.Stop();
@@ -303,7 +301,7 @@ namespace BizHawk.Client.Common
 			{
 				if (MultiTrack.IsActive)
 				{
-					LatchMultitrackPlayerInput(Global.MovieInputSourceAdapter, Global.MultitrackRewiringAdapter);
+					LatchMultitrackPlayerInput(Global.MultitrackRewiringAdapter);
 				}
 				else
 				{
@@ -340,7 +338,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		//TODO: maybe someone who understands more about what's going on here could rename these step1 and step2 into something more descriptive
+		// TODO: maybe someone who understands more about what's going on here could rename these step1 and step2 into something more descriptive
 		public bool HandleMovieLoadState_HackyStep2(TextReader reader)
 		{
 			if (!Movie.IsActive)
@@ -348,21 +346,17 @@ namespace BizHawk.Client.Common
 				return true;
 			}
 
-
 			if (ReadOnly)
 			{
-
 			}
 			else
 			{
-
 				string errorMsg;
 
 				//// fixme: this is evil (it causes crashes in binary states because InflaterInputStream can't have its position set, even to zero.
-				//((StreamReader)reader).BaseStream.Position = 0;
-				//((StreamReader)reader).DiscardBufferedData();
-				//edit: zero 18-apr-2014 - this was solved by HackyStep1 and HackyStep2, so that the zip stream can be re-acquired instead of needing its position reset
-
+				////((StreamReader)reader).BaseStream.Position = 0;
+				////((StreamReader)reader).DiscardBufferedData();
+				// edit: zero 18-apr-2014 - this was solved by HackyStep1 and HackyStep2, so that the zip stream can be re-acquired instead of needing its position reset
 				var result = Movie.ExtractInputLog(reader, out errorMsg);
 				if (!result)
 				{
@@ -377,7 +371,10 @@ namespace BizHawk.Client.Common
 		public bool HandleMovieLoadState(TextReader reader)
 		{
 			if (!HandleMovieLoadState_HackyStep1(reader))
+			{
 				return false;
+			}
+
 			return HandleMovieLoadState_HackyStep2(reader);
 		}
 
@@ -388,10 +385,9 @@ namespace BizHawk.Client.Common
 				return true;
 			}
 
-			string errorMsg;
-
 			if (ReadOnly)
 			{
+				string errorMsg;
 				var result = Movie.CheckTimeLines(reader, out errorMsg);
 				if (!result)
 				{
@@ -418,7 +414,6 @@ namespace BizHawk.Client.Common
 				{
 					Movie.SwitchToRecord();
 				}
-
 			}
 
 			return true;
@@ -445,7 +440,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		// Movie Load Refactor TODO: a better name
 		/// <summary>
 		/// Sets the Movie property with the QueuedMovie, clears the queued movie, and starts the new movie
 		/// </summary>
@@ -471,6 +465,7 @@ namespace BizHawk.Client.Common
 		public bool? PreviousNES_InQuickNES { get; set; }
 		public bool? PreviousSNES_InSnes9x { get; set; }
 		public bool? PreviousGBA_UsemGBA { get; set; }
+		public bool? PreviousA78_UseEmu7800 { get; set; }
 
 		public void QueueNewMovie(IMovie movie, bool record, IEmulator emulator)
 		{
@@ -481,19 +476,9 @@ namespace BizHawk.Client.Common
 				if (movie.SystemID != emulator.SystemId)
 				{
 					throw new MoviePlatformMismatchException(
-						string.Format(
-						"Movie system Id ({0}) does not match the currently loaded platform ({1}), unable to load",
-						movie.SystemID,
-						emulator.SystemId));
+						$"Movie system Id ({movie.SystemID}) does not match the currently loaded platform ({emulator.SystemId}), unable to load");
 				}
 			}
-
-			// TODO: Delete this, this save is utterly useless.
-			// Movie was saved immediately before calling QueeuNewMovie. (StartNewMovie)
-			//if (Movie.IsActive && !string.IsNullOrEmpty(Movie.Filename))
-			//{
-			//	Movie.Save();
-			//}
 
 			// Note: this populates MovieControllerAdapter's Type with the approparite controller
 			// Don't set it to a movie instance of the adapter or you will lose the definition!
@@ -526,7 +511,7 @@ namespace BizHawk.Client.Common
 					PreviousSNES_InSnes9x = Global.Config.SNES_InSnes9x;
 					Global.Config.SNES_InSnes9x = true;
 				}
-				else
+				else if (movie.Core == bsnesName)
 				{
 					PreviousSNES_InSnes9x = Global.Config.SNES_InSnes9x;
 					Global.Config.SNES_InSnes9x = false;
@@ -542,10 +527,26 @@ namespace BizHawk.Client.Common
 					PreviousGBA_UsemGBA = Global.Config.GBA_UsemGBA;
 					Global.Config.GBA_UsemGBA = true;
 				}
-				else
+				else if (movie.Core == vbaNextName)
 				{
-					PreviousSNES_InSnes9x = Global.Config.GBA_UsemGBA;
+					PreviousGBA_UsemGBA = Global.Config.GBA_UsemGBA;
 					Global.Config.GBA_UsemGBA = false;
+				}
+			}
+			else if (!record && emulator.SystemId == "A78") // meh, copy pasta one more time, last time, I promise
+			{
+				var atari7800HawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(A7800Hawk), typeof(CoreAttributes))).CoreName;
+				var emu7800HawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(Atari7800), typeof(CoreAttributes))).CoreName;
+
+				if (movie.Core == atari7800HawkName)
+				{
+					PreviousA78_UseEmu7800 = Global.Config.A78_UseEmu7800;
+					Global.Config.A78_UseEmu7800 = true;
+				}
+				else if (movie.Core == emu7800HawkName)
+				{
+					PreviousA78_UseEmu7800 = Global.Config.A78_UseEmu7800;
+					Global.Config.A78_UseEmu7800 = false;
 				}
 			}
 

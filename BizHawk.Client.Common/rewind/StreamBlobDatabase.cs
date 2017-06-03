@@ -12,12 +12,14 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public class StreamBlobDatabase : IDisposable
 	{
-		private StreamBlobDatabaseBufferManager _mBufferManage;
+		private readonly StreamBlobDatabaseBufferManager _mBufferManage;
+		private readonly LinkedList<ListItem> _mBookmarks = new LinkedList<ListItem>();
+		private readonly long _mCapacity;
+
 		private byte[] _mAllocatedBuffer;
 		private Stream _mStream;
-		private LinkedList<ListItem> _mBookmarks = new LinkedList<ListItem>();
 		private LinkedListNode<ListItem> _mHead, _mTail;
-		private long _mCapacity, _mSize;
+		private long _mSize;
 
 		public StreamBlobDatabase(bool onDisk, long capacity, StreamBlobDatabaseBufferManager mBufferManage)
 		{
@@ -42,22 +44,22 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets the amount of the buffer that's used
 		/// </summary>
-		public long Size { get { return _mSize; } }
+		public long Size => _mSize;
 
 		/// <summary>
 		/// Gets the current fullness ratio (Size/Capacity). Note that this wont reach 100% due to the buffer size not being a multiple of a fixed savestate size.
 		/// </summary>
-		public float FullnessRatio { get { return (float)((double)Size / (double)_mCapacity); } }
+		public float FullnessRatio => (float)((double)Size / (double)_mCapacity);
 
 		/// <summary>
 		/// Gets the number of frames stored here
 		/// </summary>
-		public int Count { get { return _mBookmarks.Count; } }
+		public int Count => _mBookmarks.Count;
 
 		/// <summary>
 		/// Gets the underlying stream to 
 		/// </summary>
-		public Stream Stream { get { return _mStream; } }
+		public Stream Stream => _mStream;
 
 		public void Dispose()
 		{
@@ -79,7 +81,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// The push and pop semantics are for historical reasons and not resemblence to normal definitions
+		/// The push and pop semantics are for historical reasons and not resemblance to normal definitions
 		/// </summary>
 		public void Push(ArraySegment<byte> seg)
 		{
@@ -91,7 +93,7 @@ namespace BizHawk.Client.Common
 		}
 
 		/// <summary>
-		/// The push and pop semantics are for historical reasons and not resemblence to normal definitions
+		/// The push and pop semantics are for historical reasons and not resemblance to normal definitions
 		/// </summary>
 		public MemoryStream PopMemoryStream()
 		{
@@ -152,7 +154,7 @@ namespace BizHawk.Client.Common
 
 		CLEANUP:
 			// while the head impinges on tail items, discard them
-			for (; ; )
+			for (;;)
 			{
 				if (_mTail == null)
 				{
@@ -172,9 +174,9 @@ namespace BizHawk.Client.Common
 				}
 			}
 
-			//one final check: in case we clobbered from the tail to make room and ended up after the capacity, we need to try again
-			//this has to be done this way, because we need one cleanup pass to purge all the tail items before the capacity; 
-			//and then again to purge tail items impinged by this new item at the beginning
+			// one final check: in case we clobbered from the tail to make room and ended up after the capacity, we need to try again
+			// this has to be done this way, because we need one cleanup pass to purge all the tail items before the capacity; 
+			// and then again to purge tail items impinged by this new item at the beginning
 			if (_mHead.Value.EndExclusive > _mCapacity)
 			{
 				var temp = _mHead.Previous;
@@ -248,7 +250,7 @@ namespace BizHawk.Client.Common
 
 			int ts = _mTail.Value.Timestamp;
 			LinkedListNode<ListItem> curr = _mTail;
-			for (; ; )
+			for (;;)
 			{
 				if (curr == null)
 				{
@@ -276,25 +278,22 @@ namespace BizHawk.Client.Common
 				Length = length;
 			}
 
-			public int Timestamp { get; private set; }
-			public long Index { get; private set; }
-			public int Length { get; private set; }
+			public int Timestamp { get; }
+			public long Index { get; }
+			public int Length { get; }
 			
-			public long EndExclusive
-			{
-				get { return Index + Length; }
-			}
+			public long EndExclusive => Index + Length;
 		}
 
-		private static byte[] test_BufferManage(byte[] inbuf, ref long size, bool allocate)
+		private static byte[] Test_BufferManage(byte[] inbuf, ref long size, bool allocate)
 		{
 			if (allocate)
 			{
 				// if we have an appropriate buffer free, return it
-				if (test_rewindFellationBuf != null && test_rewindFellationBuf.LongLength == size)
+				if (testRewindFellationBuf != null && testRewindFellationBuf.LongLength == size)
 				{
-					var ret = test_rewindFellationBuf;
-					test_rewindFellationBuf = null;
+					var ret = testRewindFellationBuf;
+					testRewindFellationBuf = null;
 					return ret;
 				}
 
@@ -302,26 +301,33 @@ namespace BizHawk.Client.Common
 				return new byte[size];
 			}
 
-			test_rewindFellationBuf = inbuf;
+			testRewindFellationBuf = inbuf;
 			return null;
 		}
-		static byte[] test_rewindFellationBuf;
 
-		private static void test(string[] args)
+		private static byte[] testRewindFellationBuf;
+
+		private static void Test(string[] args)
 		{
-			var sbb = new StreamBlobDatabase(false, 1024, test_BufferManage);
+			var sbb = new StreamBlobDatabase(false, 1024, Test_BufferManage);
 			Random r = new Random(0);
 			byte[] temp = new byte[1024];
 			int trials = 0;
-			for (; ; )
+			for (;;)
 			{
 				int len = r.Next(1024) + 1;
 				if (r.Next(100) == 0)
+				{
 					len = 1024;
+				}
+
 				ArraySegment<byte> seg = new ArraySegment<byte>(temp, 0, len);
 				Console.WriteLine("{0} - {1}", trials, seg.Count);
 				if (seg.Count == 1024)
+				{
 					Console.Write("*************************");
+				}
+
 				trials++;
 				sbb.Push(seg);
 			}

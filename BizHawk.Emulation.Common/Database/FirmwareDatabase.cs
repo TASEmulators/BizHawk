@@ -272,7 +272,7 @@ namespace BizHawk.Emulation.Common
 		private static void FirmwareAndOption(string hash, long size, string systemId, string id, string name, string descr)
 		{
 			Firmware(systemId, id, descr);
-			File(hash, size, name, descr, string.Empty);
+			File(hash, size, name, descr, "");
 			Option(hash, size, systemId, id);
 		}
 

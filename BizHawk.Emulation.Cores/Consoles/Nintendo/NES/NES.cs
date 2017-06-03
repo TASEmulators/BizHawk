@@ -2,11 +2,8 @@
 using System.Linq;
 using System.IO;
 using System.Collections.Generic;
-using System.Reflection;
 
-using BizHawk.Common;
 using BizHawk.Common.BufferExtensions;
-
 using BizHawk.Emulation.Common;
 
 //TODO - redo all timekeeping in terms of master clock
@@ -16,16 +13,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		"NesHawk",
 		"zeromus, natt, alyosha, adelikat",
 		isPorted: false,
-		isReleased: true
-		)]
+		isReleased: true)]
 	public partial class NES : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
 		IBoardInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>
 	{
-		static readonly bool USE_DATABASE = true;
-		public RomStatus RomStatus;
-
 		[CoreConstructor("NES")]
-		public NES(CoreComm comm, GameInfo game, byte[] rom, object Settings, object SyncSettings)
+		public NES(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
@@ -39,8 +32,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				fdsbios = tmp;
 			}
 
-			this.SyncSettings = (NESSyncSettings)SyncSettings ?? new NESSyncSettings();
-			this.ControllerSettings = this.SyncSettings.Controls;
+			SyncSettings = (NESSyncSettings)syncSettings ?? new NESSyncSettings();
+			ControllerSettings = SyncSettings.Controls;
 			CoreComm = comm;
 
 			MemoryCallbacks = new MemoryCallbackSystem();
@@ -55,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				// expects this to be set.
 				RomStatus = game.Status;
 			}
-			PutSettings((NESSettings)Settings ?? new NESSettings());
+			PutSettings((NESSettings)settings ?? new NESSettings());
 
 			// we need to put this here because the line directly above will overwrite palette intialization anywhere else
 			// TODO: What if settings are later loaded?
@@ -80,6 +73,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ser.Register<DatachBarcode>(reader);
 			}
 		}
+
+		static readonly bool USE_DATABASE = true;
+		public RomStatus RomStatus;
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
@@ -337,6 +333,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
+			public int VsyncNumerator => emu.VsyncNum;
+			public int VsyncDenominator => emu.VsyncDen;
 		}
 
 		MyVideoProvider videoProvider;
@@ -503,42 +501,58 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				byte[] nesheader = new byte[16];
 				Buffer.BlockCopy(file, 0, nesheader, 0, 16);
 
+				bool exists = true;
+
 				if (!DetectFromINES(nesheader, out iNesHeaderInfo, out iNesHeaderInfoV2))
-					throw new InvalidOperationException("iNES header not found");
-
-				//now that we know we have an iNES header, we can try to ignore it.
-
-				hash_sha1 = "sha1:" + file.HashSHA1(16, file.Length - 16);
-				hash_sha1_several.Add(hash_sha1);
-				hash_md5 = "md5:" + file.HashMD5(16, file.Length - 16);
-
-				LoadWriteLine("Found iNES header:");
-				LoadWriteLine(iNesHeaderInfo.ToString());
-				if (iNesHeaderInfoV2 != null)
 				{
-					LoadWriteLine("Found iNES V2 header:");
-					LoadWriteLine(iNesHeaderInfoV2);
+					// we don't have an ines header, check if the game hash is in the game db
+					exists = false;
+					Console.WriteLine("headerless ROM, using Game DB");
+					hash_md5 = "md5:" + file.HashMD5(0, file.Length);
+					hash_sha1 = "sha1:" + file.HashSHA1(0, file.Length);
+					if (hash_md5 != null) choice = IdentifyFromGameDB(hash_md5);
+					if (choice == null)
+						choice = IdentifyFromGameDB(hash_sha1);
+					if (choice == null)
+						throw new InvalidOperationException("iNES header not found and no gamedb entry");
 				}
-				LoadWriteLine("Since this is iNES we can (somewhat) confidently parse PRG/CHR banks to hash.");
 
-				LoadWriteLine("headerless rom hash: {0}", hash_sha1);
-				LoadWriteLine("headerless rom hash:  {0}", hash_md5);
-
-				if (iNesHeaderInfo.prg_size == 16)
+				if (exists)
 				{
-					//8KB prg can't be stored in iNES format, which counts 16KB prg banks.
-					//so a correct hash will include only 8KB.
-					LoadWriteLine("Since this rom has a 16 KB PRG, we'll hash it as 8KB too for bootgod's DB:");
-					var msTemp = new MemoryStream();
-					msTemp.Write(file, 16, 8 * 1024); //add prg
-					msTemp.Write(file, 16 + 16 * 1024, iNesHeaderInfo.chr_size * 1024); //add chr
-					msTemp.Flush();
-					var bytes = msTemp.ToArray();
-					var hash = "sha1:" + bytes.HashSHA1(0, bytes.Length);
-					LoadWriteLine("  PRG (8KB) + CHR hash: {0}", hash);
-					hash_sha1_several.Add(hash);
-					hash = "md5:" + bytes.HashMD5(0, bytes.Length);
-					LoadWriteLine("  PRG (8KB) + CHR hash:  {0}", hash);
+					//now that we know we have an iNES header, we can try to ignore it.
+
+					hash_sha1 = "sha1:" + file.HashSHA1(16, file.Length - 16);
+					hash_sha1_several.Add(hash_sha1);
+					hash_md5 = "md5:" + file.HashMD5(16, file.Length - 16);
+
+					LoadWriteLine("Found iNES header:");
+					LoadWriteLine(iNesHeaderInfo.ToString());
+					if (iNesHeaderInfoV2 != null)
+					{
+						LoadWriteLine("Found iNES V2 header:");
+						LoadWriteLine(iNesHeaderInfoV2);
+					}
+					LoadWriteLine("Since this is iNES we can (somewhat) confidently parse PRG/CHR banks to hash.");
+
+					LoadWriteLine("headerless rom hash: {0}", hash_sha1);
+					LoadWriteLine("headerless rom hash:  {0}", hash_md5);
+
+					if (iNesHeaderInfo.prg_size == 16)
+					{
+						//8KB prg can't be stored in iNES format, which counts 16KB prg banks.
+						//so a correct hash will include only 8KB.
+						LoadWriteLine("Since this rom has a 16 KB PRG, we'll hash it as 8KB too for bootgod's DB:");
+						var msTemp = new MemoryStream();
+						msTemp.Write(file, 16, 8 * 1024); //add prg
+						msTemp.Write(file, 16 + 16 * 1024, iNesHeaderInfo.chr_size * 1024); //add chr
+						msTemp.Flush();
+						var bytes = msTemp.ToArray();
+						var hash = "sha1:" + bytes.HashSHA1(0, bytes.Length);
+						LoadWriteLine("  PRG (8KB) + CHR hash: {0}", hash);
+						hash_sha1_several.Add(hash);
+						hash = "md5:" + bytes.HashMD5(0, bytes.Length);
+						LoadWriteLine("  PRG (8KB) + CHR hash:  {0}", hash);
+					}
 				}
 			}
 
@@ -729,10 +743,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (choice.prg_size != iNesHeaderInfo.prg_size || choice.chr_size != iNesHeaderInfo.chr_size)
 					LoadWriteLine("Warning: Detected choice has different filesizes than the INES header!");
 			}
-			else
+			else if (unif != null)
 			{
 				Board.ROM = unif.PRG;
 				Board.VROM = unif.CHR;
+			}
+			else
+			{
+				// we should only get here for boards with no header
+				var ms = new MemoryStream(file, false);
+				ms.Seek(0, SeekOrigin.Begin);
+
+				Board.ROM = new byte[choice.prg_size * 1024];
+				ms.Read(Board.ROM, 0, Board.ROM.Length);
+
+				if (choice.chr_size > 0)
+				{
+					Board.VROM = new byte[choice.chr_size * 1024];
+					int vrom_copy_size = ms.Read(Board.VROM, 0, Board.VROM.Length);
+
+					if (vrom_copy_size < Board.VROM.Length)
+						LoadWriteLine("Less than the expected VROM was found in the file: {0} < {1}", vrom_copy_size, Board.VROM.Length);
+				}
 			}
 
 			LoadReport.Flush();

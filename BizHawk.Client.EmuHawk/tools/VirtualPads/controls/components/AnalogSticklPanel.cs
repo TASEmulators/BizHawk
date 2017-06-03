@@ -49,8 +49,8 @@ namespace BizHawk.Client.EmuHawk
 		public bool HasValue = false;
 		public bool ReadOnly { get; set; }
 
-		public string XName = string.Empty;
-		public string YName = string.Empty;
+		public string XName = "";
+		public string YName = "";
 
 		private IController _previous = null;
 

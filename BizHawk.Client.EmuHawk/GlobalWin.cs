@@ -1,6 +1,6 @@
-﻿using BizHawk.Client.Common;
-using BizHawk.Bizware.BizwareGL;
+﻿using BizHawk.Bizware.BizwareGL;
 
+// ReSharper disable StyleCop.SA1401
 namespace BizHawk.Client.EmuHawk
 {
 	public static class GlobalWin
@@ -13,15 +13,13 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public static IGL GL;
 
-		public static GLManager.ContextRef CR_GL;
-
 		/// <summary>
 		/// The IGL_TK to be used for specifically opengl operations (accessing textures from opengl-based cores)
 		/// </summary>
 		public static Bizware.BizwareGL.Drivers.OpenTK.IGL_TK IGL_GL;
 
 		public static Sound Sound;
-		public static OSDManager OSD = new OSDManager();
+		public static readonly OSDManager OSD = new OSDManager();
 		public static DisplayManager DisplayManager;
 		public static GLManager GLManager;
 

@@ -52,7 +52,7 @@ namespace BizHawk.Client.MultiHawk
 
 		public new void Clear()
 		{
-			SessionName = string.Empty;
+			SessionName = "";
 			base.Clear();
 		}
 

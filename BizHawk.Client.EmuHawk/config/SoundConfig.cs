@@ -41,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 			_programmaticallyChangingValue = false;
 		}
 
-		private void OK_Click(object sender, EventArgs e)
+		private void Ok_Click(object sender, EventArgs e)
 		{
 			if (rbOutputMethodDirectSound.Checked && (int)BufferSizeNumeric.Value < 60)
 			{
@@ -62,12 +62,13 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.SoundVolumeRWFF = tbRWFF.Value;
 			Global.Config.SoundDevice = (string)listBoxSoundDevices.SelectedItem ?? "<default>";
 			GlobalWin.Sound.StopSound();
-			if (Global.Config.SoundOutputMethod != oldOutputMethod ||
-				Global.Config.SoundDevice != oldDevice)
+			if (Global.Config.SoundOutputMethod != oldOutputMethod
+				|| Global.Config.SoundDevice != oldDevice)
 			{
 				GlobalWin.Sound.Dispose();
 				GlobalWin.Sound = new Sound(GlobalWin.MainForm.Handle);
 			}
+
 			GlobalWin.Sound.StartSound();
 			GlobalWin.OSD.AddMessage("Sound settings saved");
 			DialogResult = DialogResult.OK;
@@ -102,16 +103,20 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OutputMethodRadioButtons_CheckedChanged(object sender, EventArgs e)
 		{
-			if (!((RadioButton)sender).Checked) return;
+			if (!((RadioButton)sender).Checked)
+			{
+				return;
+			}
+
 			PopulateDeviceList();
 		}
 
-		private void trackBar1_Scroll(object sender, EventArgs e)
+		private void TrackBar1_Scroll(object sender, EventArgs e)
 		{
 			nudNormal.Value = tbNormal.Value;
 		}
 
-		private void tbRWFF_Scroll(object sender, EventArgs e)
+		private void TbRwff_Scroll(object sender, EventArgs e)
 		{
 			nudRWFF.Value = tbRWFF.Value;
 		}
@@ -122,7 +127,9 @@ namespace BizHawk.Client.EmuHawk
 
 			// If the user is changing the volume, automatically turn on/off sound accordingly
 			if (!_programmaticallyChangingValue)
+			{
 				cbEnableNormal.Checked = tbNormal.Value != 0;
+			}
 		}
 
 		private void UpdateSoundDialog()
@@ -131,11 +138,9 @@ namespace BizHawk.Client.EmuHawk
 			grpSoundVol.Enabled = cbEnableMaster.Checked;
 		}
 
-
 		private void UpdateSoundDialog(object sender, EventArgs e)
 		{
 			UpdateSoundDialog();
 		}
-
 	}
 }

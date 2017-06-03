@@ -43,24 +43,24 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private int wheel1;
 		private int wheel2;
 
-		public byte ReadPort1(IController c, bool left_mode, bool update_wheel)
+		public byte ReadPort1(IController c, bool leftMode, bool updateWheel)
 		{
-			if (update_wheel)
+			if (updateWheel)
 			{
-				wheel1 = Port1.Update_Wheel(c, wheel1);
+				wheel1 = Port1.UpdateWheel(c, wheel1);
 			}
 
-			return Port1.Read(c, left_mode, wheel1);
+			return Port1.Read(c, leftMode, wheel1);
 		}
 
-		public byte ReadPort2(IController c, bool left_mode, bool update_wheel)
+		public byte ReadPort2(IController c, bool leftMode, bool updateWheel)
 		{
-			if (update_wheel)
+			if (updateWheel)
 			{
-				wheel2 = Port2.Update_Wheel(c, wheel2);
+				wheel2 = Port2.UpdateWheel(c, wheel2);
 			}
 
-			return Port2.Read(c, left_mode, wheel2);
+			return Port2.Read(c, leftMode, wheel2);
 		}
 
 		public ControllerDefinition Definition { get; }
@@ -78,8 +78,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.EndSection();
 		}
 
-		private readonly IPort Port1;
-		private readonly IPort Port2;
+		public IPort Port1 { get; private set; }
+		public IPort Port2 { get; private set; }
 
 		private static Dictionary<string, Type> _controllerTypes = null;
 

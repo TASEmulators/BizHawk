@@ -13,28 +13,28 @@ namespace BizHawk.Client.EmuHawk
 		private readonly Timer _timer = new Timer();
 		private readonly List<string> _bindings = new List<string>();
 	
-		private string _wasPressed = string.Empty;
+		private string _wasPressed = "";
 
-		public InputCompositeWidget CompositeWidget;
+		public InputCompositeWidget CompositeWidget { get; set; }
 
 		public class SpecialBindingInfo
 		{
-			public string BindingName;
-			public string TooltipText;
+			public string BindingName { get; set; }
+			public string TooltipText { get; set; }
 		}
 
 		/// <summary>
-		/// These bindings get ignored by the widget and can only be entered by SetBinding() via the contextmenu from the InputCompositeWidget
+		/// These bindings get ignored by the widget and can only be entered by SetBinding() via the context menu from the InputCompositeWidget
 		/// </summary>
-		public static readonly SpecialBindingInfo[] SpecialBindings = {
-			 new SpecialBindingInfo { BindingName = "Escape", TooltipText = "Binds the Escape key" },
-			new SpecialBindingInfo { BindingName = "WMouse L", TooltipText =  "Binds the left mouse button"},
-				new SpecialBindingInfo { BindingName = "WMouse M", TooltipText =  "Binds the middle mouse button"},
-				new SpecialBindingInfo { BindingName = "WMouse R", TooltipText =  "Binds the right mouse button"},
-			new SpecialBindingInfo { BindingName = "WMouse 1", TooltipText =  "Binds the mouse auxiliary button 1" }, 
-				new SpecialBindingInfo {	BindingName = "WMouse 2", TooltipText =  "Binds the mouse auxiliary button 2" },
+		public static readonly SpecialBindingInfo[] SpecialBindings =
+		{
+			new SpecialBindingInfo { BindingName = "Escape", TooltipText = "Binds the Escape key" },
+			new SpecialBindingInfo { BindingName = "WMouse L", TooltipText = "Binds the left mouse button" },
+			new SpecialBindingInfo { BindingName = "WMouse M", TooltipText = "Binds the middle mouse button" },
+			new SpecialBindingInfo { BindingName = "WMouse R", TooltipText = "Binds the right mouse button" },
+			new SpecialBindingInfo { BindingName = "WMouse 1", TooltipText = "Binds the mouse auxiliary button 1" }, 
+			new SpecialBindingInfo { BindingName = "WMouse 2", TooltipText = "Binds the mouse auxiliary button 2" }
 		};
-
 
 		public InputWidget()
 		{
@@ -44,7 +44,6 @@ namespace BizHawk.Client.EmuHawk
 			AutoTab = true;
 			Cursor = Cursors.Arrow;
 		}
-
 
 		public bool AutoTab { get; set; }
 		public string WidgetName { get; set; }
@@ -106,10 +105,10 @@ namespace BizHawk.Client.EmuHawk
 			ReadKeys();
 		}
 
-		public void EraseMappings()
+		private void EraseMappings()
 		{
 			ClearBindings();
-			Text = string.Empty;
+			Text = "";
 		}
 
 		/// <summary>
@@ -136,9 +135,8 @@ namespace BizHawk.Client.EmuHawk
 			
 			if (bindingStr != null)
 			{
-				
-				//has special meaning for the binding UI system (clear it).
-				//you can set it through the special bindings dropdown menu
+				// has special meaning for the binding UI system (clear it).
+				// you can set it through the special bindings dropdown menu
 				if (bindingStr == "Escape")
 				{
 					EraseMappings();
@@ -146,16 +144,20 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 
-				//seriously, we refuse to allow you to bind this to anything else.
+				// seriously, we refuse to allow you to bind this to anything else.
 				if (bindingStr == "Alt+F4")
 				{
 					return;
 				}
 
-				//ignore special bindings
-				foreach(var spec in SpecialBindings)
-					if(spec.BindingName == bindingStr)
+				// ignore special bindings
+				foreach (var spec in SpecialBindings)
+				{
+					if (spec.BindingName == bindingStr)
+					{
 						return;
+					}
+				}
 
 				if (!IsDuplicate(bindingStr))
 				{
@@ -185,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 				base.OnKeyUp(e);
 			}
 
-			_wasPressed = string.Empty;
+			_wasPressed = "";
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)

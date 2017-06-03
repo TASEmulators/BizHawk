@@ -53,11 +53,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private void SyncState(Serializer ser)
 		{
 			ser.BeginSection("Coleco");
-			Cpu.SyncState(ser);
-			VDP.SyncState(ser);
+			_cpu.SyncState(ser);
+			_vdp.SyncState(ser);
 			PSG.SyncState(ser);
-			ser.Sync("RAM", ref Ram, false);
-			ser.Sync("Frame", ref frame);
+			ser.Sync("RAM", ref _ram, false);
+			ser.Sync("Frame", ref _frame);
 			ser.Sync("LagCount", ref _lagCount);
 			ser.Sync("IsLag", ref _isLag);
 			ser.EndSection();

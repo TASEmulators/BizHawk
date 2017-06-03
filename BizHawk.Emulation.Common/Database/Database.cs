@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Common
 			{
 				while (reader.EndOfStream == false)
 				{
-					var line = reader.ReadLine() ?? string.Empty;
+					var line = reader.ReadLine() ?? "";
 					try
 					{
 						if (line.StartsWith(";")) 
@@ -174,8 +174,8 @@ namespace BizHawk.Emulation.Common
 						game.Name = items[2];
 						game.System = items[3];
 						game.MetaData = items.Length >= 6 ? items[5] : null;
-						game.Region = items.Length >= 7 ? items[6] : string.Empty;
-						game.ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : string.Empty;
+						game.Region = items.Length >= 7 ? items[6] : "";
+						game.ForcedCore = items.Length >= 8 ? items[7].ToLowerInvariant() : "";
 
 						if (DB.ContainsKey(game.Hash))
 						{

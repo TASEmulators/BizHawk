@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -27,12 +22,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GenericDebugger_Load(object sender, EventArgs e)
 		{
-			
 		}
 
 		private void EngageDebugger()
 		{
-			DisassemblyLines.Clear();
+			_disassemblyLines.Clear();
 			GlobalWin.MainForm.OnPauseChanged += OnPauseChanged;
 			CancelSeekBtn.Enabled = false;
 			if (CanDisassemble)
@@ -74,7 +68,7 @@ namespace BizHawk.Client.EmuHawk
 					});
 				}
 
-				PCRegisterSize = Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName].BitSize / 4;
+				_pcRegisterSize = Debuggable.GetCpuFlagsAndRegisters()[Disassembler.PCRegisterName].BitSize / 4;
 				SetDisassemblerItemCount();
 				UpdateDisassembler();
 			}
@@ -122,7 +116,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				SeekToBox.Nullable = true;
-				SeekToBox.Text = string.Empty;
+				SeekToBox.Text = "";
 			}
 
 			StepIntoMenuItem.Enabled = StepIntoBtn.Enabled = CanStepInto;
@@ -187,7 +181,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DebugSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-
 		}
 
 		private void RunBtn_Click(object sender, EventArgs e)
@@ -231,23 +224,24 @@ namespace BizHawk.Client.EmuHawk
 				StepIntoMenuItem_Click(null, null);
 				return true;
 			}
-			else if (keyData == (Keys.F11 | Keys.Shift))
+
+			if (keyData == (Keys.F11 | Keys.Shift))
 			{
 				StepOutMenuItem_Click(null, null);
 				return true;
 			}
-			else if (keyData == Keys.F10)
+
+			if (keyData == Keys.F10)
 			{
 				StepOverMenuItem_Click(null, null);
 				return true;
 			}
-			else
-			{
-				return base.ProcessCmdKey(ref msg, keyData);
-			}
+
+			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
 		private Control _currentToolTipControl = null; 
+
 		private void GenericDebugger_MouseMove(object sender, MouseEventArgs e)
 		{
 			var control = GetChildAtPoint(e.Location);

@@ -100,11 +100,7 @@ namespace BizHawk.Client.Common
 
 		public void Clear()
 		{
-			if (_rewindBuffer != null)
-			{
-				_rewindBuffer.Clear();
-			}
-
+			_rewindBuffer?.Clear();
 			_lastState = new byte[0];
 		}
 
@@ -197,6 +193,7 @@ namespace BizHawk.Client.Common
 			{
 				_lastState = new byte[length];
 			}
+
 			Buffer.BlockCopy(state, index, _lastState, 0, length);
 		}
 
@@ -212,16 +209,15 @@ namespace BizHawk.Client.Common
 			// state. That's why the data portion of the delta comes from the previous state,
 			// and also why the previous state is used if we have to bail out and capture the
 			// full state instead.
-
 			if (currentState.Length != _lastState.Length)
 			{
 				// If the state sizes mismatch, capture a full state rather than trying to do anything clever
 				goto CaptureFullState;
 			}
 
-			if(currentState.Length == 0)
+			if (currentState.Length == 0)
 			{
-				//handle empty states as a "full" (empty) state
+				// handle empty states as a "full" (empty) state
 				goto CaptureFullState;
 			}
 
@@ -257,10 +253,10 @@ namespace BizHawk.Client.Common
 
 				if (thisByteMatches || i == stateLength - 1)
 				{
-					const int maxHeaderSize = 10;
+					const int MaxHeaderSize = 10;
 					int length = i - changeSequenceStartOffset + (thisByteMatches ? 0 : 1);
 
-					if (index + length + maxHeaderSize >= stateLength)
+					if (index + length + MaxHeaderSize >= stateLength)
 					{
 						// If the delta ends up being larger than the full state, capture the full state instead
 						goto CaptureFullState;

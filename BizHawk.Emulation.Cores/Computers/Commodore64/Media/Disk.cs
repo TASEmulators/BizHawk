@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 {
 	public sealed class Disk
 	{
-		[SaveState.DoNotSave] public const int FluxBitsPerEntry = 32;
-		[SaveState.DoNotSave] public const int FluxBitsPerTrack = 16000000 / 5;
-		[SaveState.DoNotSave] public const int FluxEntriesPerTrack = FluxBitsPerTrack / FluxBitsPerEntry;
-		[SaveState.DoNotSave] private int[][] _tracks;
-		[SaveState.DoNotSave] private readonly int[] _originalMedia;
-		[SaveState.DoNotSave] public bool Valid;
-		[SaveState.SaveWithName("DiskIsWriteProtected")] public bool WriteProtected;
+		public const int FluxBitsPerEntry = 32;
+		public const int FluxBitsPerTrack = 16000000 / 5;
+		public const int FluxEntriesPerTrack = FluxBitsPerTrack / FluxBitsPerEntry;
+		private readonly int[][] _tracks;
+		private readonly int[] _originalMedia;
+		public bool Valid;
+		public bool WriteProtected;
 
 		/// <summary>
 		/// Create a blank, unformatted disk.
@@ -33,7 +33,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 		/// <param name="trackData">Raw bit data.</param>
 		/// <param name="trackNumbers">Track numbers for the raw bit data.</param>
 		/// <param name="trackDensities">Density zones for the raw bit data.</param>
-		/// <param name="trackLengths">Length, in bits, of each raw bit data.</param>
 		/// <param name="trackCapacity">Total number of tracks on the media.</param>
 		public Disk(IList<byte[]> trackData, IList<int> trackNumbers, IList<int> trackDensities, int trackCapacity)
 		{
@@ -43,6 +42,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 			{
 				_tracks[trackNumbers[i]] = ConvertToFluxTransitions(trackDensities[i], trackData[i], 0);
 			}
+
 			FillMissingTracks();
 			Valid = true;
 			_originalMedia = SerializeTracks(_tracks);
@@ -95,10 +95,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 					byteData <<= 1;
 					remainingBits--;
 					if (remainingBits <= 0)
+					{
 						break;
+					}
 				}
+
 				if (remainingBits <= 0)
+				{
 					break;
+				}
 			}
 
 			return result;
@@ -162,18 +167,23 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Media
 
 		public void SyncState(Serializer ser)
 		{
-			if (ser.IsReader)
-			{
-				var mediaState = new int[_originalMedia.Length];
-				SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
-				_tracks = DeserializeTracks(mediaState);
-			}
-			else if (ser.IsWriter)
-			{
-				var mediaState = SerializeTracks(_tracks);
-				SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
-			}
-			SaveState.SyncObject(ser, this);
+			ser.Sync("WriteProtected", ref WriteProtected);
+
+			// Currently nothing actually writes to _tracks and so it is always the same as _originalMedia
+			// So commenting out this (very slow) code for now
+			// If/when disk writing is implemented, Disk.cs should implement ISaveRam as a means of file storage of the new disk state
+			// And this code needs to be rethought to be reasonably performant
+			//if (ser.IsReader)
+			//{
+			//	var mediaState = new int[_originalMedia.Length];
+			//	SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
+			//	_tracks = DeserializeTracks(mediaState);
+			//}
+			//else if (ser.IsWriter)
+			//{
+			//	var mediaState = SerializeTracks(_tracks);
+			//	SaveState.SyncDelta("MediaState", ser, _originalMedia, ref mediaState);
+			//}
 		}
 	}
 }

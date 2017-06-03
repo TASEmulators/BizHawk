@@ -37,19 +37,13 @@ namespace BizHawk.Client.Common
 
 		#region Unique Library Methods
 
-		[LuaMethodAttributes(
-			"getname",
-			"returns the name of the domain defined as main memory for the given core"
-		)]
+		[LuaMethodAttributes("getname", "returns the name of the domain defined as main memory for the given core")]
 		public string GetName()
 		{
 			return Domain.Name;
 		}
 
-		[LuaMethodAttributes(
-			"getcurrentmemorydomainsize",
-			"Returns the number of bytes of the domain defined as main memory"
-		)]
+		[LuaMethodAttributes("getcurrentmemorydomainsize", "Returns the number of bytes of the domain defined as main memory")]
 		public uint GetSize()
 		{
 			return (uint)Domain.Size;
@@ -59,54 +53,40 @@ namespace BizHawk.Client.Common
 
 		#region Common Special and Legacy Methods
 
-		[LuaMethodAttributes(
-			"readbyte", "gets the value from the given address as an unsigned byte"
-		)]
+		[LuaMethodAttributes("readbyte", "gets the value from the given address as an unsigned byte")]
 		public uint ReadByte(int addr)
 		{
 			return ReadUnsignedByte(addr);
 		}
 
-		[LuaMethodAttributes(
-			"writebyte",
-			"Writes the given value to the given address as an unsigned byte"
-		)]
+		[LuaMethodAttributes("writebyte", "Writes the given value to the given address as an unsigned byte")]
 		public void WriteByte(int addr, uint value)
 		{
 			WriteUnsignedByte(addr, value);
 		}
 
 		[LuaMethodAttributes(
-			"readbyterange",
-			"Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key)."
-		)]
+			"readbyterange", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key).")]
 		public LuaTable ReadByteRange(int addr, int length)
 		{
 			return base.ReadByteRange(addr, length);
 		}
 
-		[LuaMethodAttributes(
-			"writebyterange",
-			"Writes the given values to the given addresses as unsigned bytes"
-		)]
+		[LuaMethodAttributes("writebyterange", "Writes the given values to the given addresses as unsigned bytes")]
 		public void WriteByteRange(LuaTable memoryblock)
 		{
 			base.WriteByteRange(memoryblock);
 		}
 
 		[LuaMethodAttributes(
-			"readfloat",
-			"Reads the given address as a 32-bit float value from the main memory domain with th e given endian"
-		)]
+			"readfloat", "Reads the given address as a 32-bit float value from the main memory domain with th e given endian")]
 		public float ReadFloat(int addr, bool bigendian)
 		{
 			return base.ReadFloat(addr, bigendian);
 		}
 
 		[LuaMethodAttributes(
-			"writefloat",
-			"Writes the given 32-bit float value to the given address and endian"
-		)]
+			"writefloat", "Writes the given 32-bit float value to the given address and endian")]
 		public void WriteFloat(int addr, double value, bool bigendian)
 		{
 			base.WriteFloat(addr, value, bigendian);

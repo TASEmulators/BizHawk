@@ -4,7 +4,7 @@
 	{
 		public LuaFile(string path)
 		{
-			Name = string.Empty;
+			Name = "";
 			Path = path;
 			State = RunState.Running;
 			FrameWaiting = false;
@@ -20,19 +20,21 @@
 			CurrentDirectory = System.IO.Path.GetDirectoryName(path);
 		}
 
-		public LuaFile(bool isSeparator)
+		private LuaFile(bool isSeparator)
 		{
 			IsSeparator = isSeparator;
-			Name = string.Empty;
-			Path = string.Empty;
+			Name = "";
+			Path = "";
 			State = RunState.Disabled;
 		}
 
+		public static LuaFile SeparatorInstance => new LuaFile(true);
+
 		public string Name { get; set; }
-		public string Path { get; set; }
+		public string Path { get; }
 		public bool Enabled => State != RunState.Disabled;
 		public bool Paused => State == RunState.Paused;
-		public bool IsSeparator { get; set; }
+		public bool IsSeparator { get; }
 		public LuaInterface.Lua Thread { get; set; }
 		public bool FrameWaiting { get; set; }
 		public string CurrentDirectory { get; set; }
@@ -44,11 +46,10 @@
 
 		public RunState State { get; set; }
 
-		public static LuaFile SeparatorInstance => new LuaFile(true);
-
 		public void Stop()
 		{
 			State = RunState.Disabled;
+			Thread.GetTable("keepalives")[Thread] = null;
 			Thread = null;
 		}
 

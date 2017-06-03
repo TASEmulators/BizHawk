@@ -13,7 +13,6 @@ namespace BizHawk.Client.EmuHawk
 	{
 		// All path text boxes should do some kind of error checking
 		// Config path under base, config will default to %exe%
-
 		private void LockDownCores()
 		{
 			if (VersionInfo.DeveloperBuild)
@@ -21,28 +20,22 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			string[] coresToHide = { "C64" };
+			string[] coresToHide = { };
 
 			foreach (var core in coresToHide)
 			{
 				PathTabControl.TabPages.Remove(
-					PathTabControl.TabPages().FirstOrDefault(x => x.Name == core) ?? new TabPage());
+					PathTabControl.TabPages().FirstOrDefault(tp => tp.Name == core) ?? new TabPage());
 			}
 		}
 
-		private static AutoCompleteStringCollection AutoCompleteOptions
+		private static AutoCompleteStringCollection AutoCompleteOptions => new AutoCompleteStringCollection
 		{
-			get
-			{
-				return new AutoCompleteStringCollection
-				{
-					"%recent%",
-					"%exe%",
-					".\\",
-					"..\\",
-				};
-			}
-		}
+			"%recent%",
+			"%exe%",
+			".\\",
+			"..\\",
+		};
 
 		public PathConfig()
 		{
@@ -71,11 +64,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var global = PathTabControl.TabPages
 				.OfType<TabPage>()
-				.First(x => x.Name.ToUpper().Contains("GLOBAL"));
+				.First(tp => tp.Name.ToUpper().Contains("GLOBAL"));
 
 			return PathTabControl.TabPages
 				.OfType<TabPage>()
-				.FirstOrDefault(x => x.Name.ToUpper().StartsWith(name.ToUpper()))
+				.FirstOrDefault(tp => tp.Name.ToUpper().StartsWith(name.ToUpper()))
 				?? global;
 		}
 
@@ -85,17 +78,20 @@ namespace BizHawk.Client.EmuHawk
 			PathTabControl.TabPages.Clear();
 
 			// Separate by system
-			var systems = Global.Config.PathEntries.Select(x => x.SystemDisplayName).Distinct().ToList();
+			var systems = Global.Config.PathEntries
+				.Select(s => s.SystemDisplayName)
+				.Distinct()
+				.ToList();
 			systems.Sort();
 
 			// Hacky way to put global first
-			var global = systems.FirstOrDefault(x => x == "Global");
+			var global = systems.FirstOrDefault(s => s == "Global");
 			systems.Remove(global);
 			systems.Insert(0, global);
 
 			var tabPages = new List<TabPage>(systems.Count);
 
-			int _x = UIHelper.ScaleX(6);
+			int x = UIHelper.ScaleX(6);
 			int textboxWidth = UIHelper.ScaleX(70);
 			int padding = UIHelper.ScaleX(5);
 			int buttonWidth = UIHelper.ScaleX(26);
@@ -106,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var systemDisplayName in systems)
 			{
-				var systemId = Global.Config.PathEntries.FirstOrDefault(x => x.SystemDisplayName == systemDisplayName).System;
+				var systemId = Global.Config.PathEntries.First(p => p.SystemDisplayName == systemDisplayName).System;
 				var t = new TabPage
 				{
 					Text = systemDisplayName,
@@ -114,15 +110,19 @@ namespace BizHawk.Client.EmuHawk
 					Width = UIHelper.ScaleX(200), // Initial Left/Width of child controls are based on this size.
 					AutoScroll = true
 				};
-				var paths = pathCollection.Where(x => x.System == systemId).OrderBy(x => x.Ordinal).ThenBy(x => x.Type).ToList();
+				var paths = pathCollection
+					.Where(p => p.System == systemId)
+					.OrderBy(p => p.Ordinal)
+					.ThenBy(p => p.Type)
+					.ToList();
 
-				var _y = UIHelper.ScaleY(14);
+				var y = UIHelper.ScaleY(14);
 				foreach (var path in paths)
 				{
 					var box = new TextBox
 					{
 						Text = path.Path,
-						Location = new Point(_x, _y),
+						Location = new Point(x, y),
 						Width = textboxWidth,
 						Name = path.Type,
 						Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
@@ -134,9 +134,9 @@ namespace BizHawk.Client.EmuHawk
 
 					var btn = new Button
 					{
-						Text = string.Empty,
+						Text = "",
 						Image = Properties.Resources.OpenFile,
-						Location = new Point(widgetOffset, _y + buttonOffsetY),
+						Location = new Point(widgetOffset, y + buttonOffsetY),
 						Size = new Size(buttonWidth, buttonHeight),
 						Name = path.Type,
 						Anchor = AnchorStyles.Top | AnchorStyles.Right,
@@ -158,9 +158,9 @@ namespace BizHawk.Client.EmuHawk
 						var firmwareButton = new Button
 						{
 							Name = "Global",
-							Text = String.Empty,
+							Text = "",
 							Image = Properties.Resources.Help,
-							Location = new Point(UIHelper.ScaleX(115), _y + buttonOffsetY),
+							Location = new Point(UIHelper.ScaleX(115), y + buttonOffsetY),
 							Size = new Size(buttonWidth, buttonHeight),
 							Anchor = AnchorStyles.Top | AnchorStyles.Right
 						};
@@ -181,9 +181,9 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					var label = new Label
-						{
+					{
 						Text = path.Type,
-						Location = new Point(widgetOffset + buttonWidth + padding + infoPadding, _y + UIHelper.ScaleY(4)),
+						Location = new Point(widgetOffset + buttonWidth + padding + infoPadding, y + UIHelper.ScaleY(4)),
 						Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
 						Name = path.Type,
 						Anchor = AnchorStyles.Top | AnchorStyles.Right,
@@ -193,7 +193,7 @@ namespace BizHawk.Client.EmuHawk
 					t.Controls.Add(btn);
 					t.Controls.Add(box);
 
-					_y += rowHeight;
+					y += rowHeight;
 				}
 
 				var sys = systemDisplayName;
@@ -235,7 +235,7 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var t in AllPathBoxes)
 			{
-				var pathEntry = Global.Config.PathEntries.FirstOrDefault(x => x.System == t.Parent.Name && x.Type == t.Name);
+				var pathEntry = Global.Config.PathEntries.First(p => p.System == t.Parent.Name && p.Type == t.Name);
 				pathEntry.Path = t.Text;
 			}
 		}
@@ -243,7 +243,7 @@ namespace BizHawk.Client.EmuHawk
 		private void DoRomToggle()
 		{
 			AllPathControls
-				.Where(x => x.Name == "ROM")
+				.Where(c => c.Name == "ROM")
 				.ToList()
 				.ForEach(control => control.Enabled = !RecentForROMs.Checked);
 		}
@@ -284,7 +284,7 @@ namespace BizHawk.Client.EmuHawk
 			LockDownCores();
 		}
 
-		private void RecentForROMs_CheckedChanged(object sender, EventArgs e)
+		private void RecentForRoms_CheckedChanged(object sender, EventArgs e)
 		{
 			DoRomToggle();
 		}

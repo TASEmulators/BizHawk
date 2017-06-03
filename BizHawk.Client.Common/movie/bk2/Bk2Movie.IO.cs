@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 
 using BizHawk.Common;
+using BizHawk.Common.IOExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -24,10 +24,10 @@ namespace BizHawk.Client.Common
 			backupName = backupName.Insert(Filename.LastIndexOf("."), $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}");
 			backupName = Path.Combine(Global.Config.PathEntries["Global", "Movie backups"].Path, Path.GetFileName(backupName));
 
-			var directory_info = new FileInfo(backupName).Directory;
-			if (directory_info != null)
+			var directoryInfo = new FileInfo(backupName).Directory;
+			if (directoryInfo != null)
 			{
-				Directory.CreateDirectory(directory_info.FullName);
+				Directory.CreateDirectory(directoryInfo.FullName);
 			}
 
 			Write(backupName, backup: true);
@@ -110,7 +110,7 @@ namespace BizHawk.Client.Common
 
 				bl.GetLump(BinaryStateLump.Input, true, delegate(TextReader tr)
 				{
-					var errorMessage = string.Empty;
+					string errorMessage;
 					IsCountingRerecords = false;
 					ExtractInputLog(tr, out errorMessage);
 					IsCountingRerecords = true;
@@ -132,10 +132,11 @@ namespace BizHawk.Client.Common
 						{
 							SavestateFramebuffer = new int[length / sizeof(int)];
 							for (int i = 0; i < SavestateFramebuffer.Length; i++)
+							{
 								SavestateFramebuffer[i] = br.ReadInt32();
+							}
 						});
 				}
-
 				else if (StartsFromSaveRam)
 				{
 					bl.GetLump(BinaryStateLump.MovieSaveRam, false,
@@ -177,7 +178,7 @@ namespace BizHawk.Client.Common
 				bs.PutLump(BinaryStateLump.Subtitles, tw => tw.WriteLine(Subtitles.ToString()));
 				bs.PutLump(BinaryStateLump.SyncSettings, tw => tw.WriteLine(_syncSettingsJson));
 
-				bs.PutLump(BinaryStateLump.Input, tw => WriteInputLog(tw));
+				bs.PutLump(BinaryStateLump.Input, WriteInputLog);
 
 				if (StartsFromSavestate)
 				{
@@ -192,8 +193,7 @@ namespace BizHawk.Client.Common
 
 					if (SavestateFramebuffer != null)
 					{
-						bs.PutLump(BinaryStateLump.Framebuffer,
-							(BinaryWriter bw) => BizHawk.Common.IOExtensions.IOExtensions.Write(bw, SavestateFramebuffer));
+						bs.PutLump(BinaryStateLump.Framebuffer, (BinaryWriter bw) => bw.Write(SavestateFramebuffer));
 					}
 				}
 				else if (StartsFromSaveRam)
@@ -211,10 +211,10 @@ namespace BizHawk.Client.Common
 		protected void ClearBeforeLoad()
 		{
 			Header.Clear();
-			_log.Clear();
+			Log.Clear();
 			Subtitles.Clear();
 			Comments.Clear();
-			_syncSettingsJson = string.Empty;
+			_syncSettingsJson = "";
 			TextSavestate = null;
 			BinarySavestate = null;
 		}

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows;
-using System.Windows.Shell;
 using System.IO;
 using System.Reflection;
 
@@ -11,13 +9,26 @@ namespace BizHawk.Client.EmuHawk
 {
 	public class JumpLists
 	{
-		static Application _app;
+		static readonly Assembly PresentationFramework;
+		static Type Application;
+		static Type JumpList;
+		static Type JumpTask;
+
+		static object _app;
 		static JumpLists()
 		{
-			_app = new Application();
-			var jmp = new JumpList();
-			jmp.ShowRecentCategory = true;
-			JumpList.SetJumpList(_app, jmp);
+			try
+			{
+				PresentationFramework = Assembly.Load("PresentationFramework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35");
+				Application = PresentationFramework.GetType("System.Windows.Application");
+				JumpList = PresentationFramework.GetType("System.Windows.Shell.JumpList");
+				JumpTask = PresentationFramework.GetType("System.Windows.Shell.JumpTask");
+				_app = Activator.CreateInstance(Application);
+				dynamic jmp = Activator.CreateInstance(JumpList);
+				jmp.ShowRecentCategory = true;
+				JumpList.GetMethod("SetJumpList").Invoke(null, new[] { _app, jmp });
+			}
+			catch { }
 		}
 
 		/// <summary>
@@ -31,18 +42,21 @@ namespace BizHawk.Client.EmuHawk
 			//  title = fullpath.Split('|')[1];
 			//else
 			//  title = Path.GetFileName(fullpath);
-
-			string exepath = Assembly.GetEntryAssembly().Location;
-
-			var ji = new JumpTask
+			try
 			{
-				ApplicationPath = exepath,
-				Arguments = '"' + fullpath + '"',
-				Title = title,
+				string exepath = Assembly.GetEntryAssembly().Location;
+
+				dynamic ji = Activator.CreateInstance(JumpTask);
+
+				ji.ApplicationPath = exepath;
+				ji.Arguments = '"' + fullpath + '"';
+				ji.Title = title;
 				// for some reason, this doesn't work
-				WorkingDirectory = Path.GetDirectoryName(exepath)
-			};
-			JumpList.AddToRecentCategory(ji);
+				ji.WorkingDirectory = Path.GetDirectoryName(exepath);
+
+				JumpList.GetMethod("AddToRecentCategory", new[] { JumpTask }).Invoke(null, new[] { ji });
+			}
+			catch { }
 		}
 	}
 }

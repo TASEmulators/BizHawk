@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
-		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object Settings, object SyncSettings)
+		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
@@ -38,7 +38,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Header = "65816: PC, mnemonic, operands, registers (A, X, Y, S, D, DB, flags (NVMXDIZC), V, H)"
 			};
 
-			ser.Register<ITraceable>(_tracer);
 			ser.Register<IDisassemblable>(new W65816_DisassemblerService());
 
 			_game = game;
@@ -56,8 +55,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				game.FirmwareHash = sgbRomData.HashSHA1();
 			}
 
-			_settings = (SnesSettings)Settings ?? new SnesSettings();
-			_syncSettings = (SnesSyncSettings)SyncSettings ?? new SnesSyncSettings();
+			_settings = (SnesSettings)settings ?? new SnesSettings();
+			_syncSettings = (SnesSyncSettings)syncSettings ?? new SnesSyncSettings();
 
 			Api = new LibsnesApi(GetDllPath())
 			{
@@ -156,14 +155,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			if (Api.Region == LibsnesApi.SNES_REGION.NTSC)
 			{
 				// similar to what aviout reports from snes9x and seems logical from bsnes first principles. bsnes uses that numerator (ntsc master clockrate) for sure.
-				CoreComm.VsyncNum = 21477272;
-				CoreComm.VsyncDen = 4 * 341 * 262;
+				VsyncNumerator = 21477272;
+				VsyncDenominator = 4 * 341 * 262;
 			}
 			else
 			{
 				// http://forums.nesdev.com/viewtopic.php?t=5367&start=19
-				CoreComm.VsyncNum = 21281370;
-				CoreComm.VsyncDen = 4 * 341 * 312;
+				VsyncNumerator = 21281370;
+				VsyncDenominator = 4 * 341 * 312;
 			}
 
 			Api.CMD_power();
@@ -179,6 +178,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				bw.Write(true); // framezero, so no controller follows and don't frameadvance on load
 				bw.Close();
 				_savestatebuff = ms.ToArray();
+			}
+
+			if (CurrentProfile == "Compatibility")
+			{
+				ser.Register<ITraceable>(_tracer);
 			}
 		}
 
@@ -275,7 +279,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					{
 						// return @"D:\roms\snes\SuperRoadBlaster\SuperRoadBlaster-1.pcm";
 						// return "";
-						int wantsTrackNumber = int.Parse(hint.Replace("track-", string.Empty).Replace(".pcm", string.Empty));
+						int wantsTrackNumber = int.Parse(hint.Replace("track-", "").Replace(".pcm", ""));
 						wantsTrackNumber++;
 						string wantsTrackString = wantsTrackNumber.ToString();
 						foreach (var child in msu1.ChildNodes.Cast<XmlNode>())
@@ -289,7 +293,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				}
 
 				// not found.. what to do? (every rom will get here when msu1.rom is requested)
-				return string.Empty;
+				return "";
 			}
 
 			// not MSU-1.  ok.
@@ -308,14 +312,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				case "st018.rom": firmwareId = "ST018"; break;
 				default:
 					CoreComm.ShowMessage($"Unrecognized SNES firmware request \"{hint}\".");
-					return string.Empty;
+					return "";
 			}
 
 			// build romfilename
 			string test = CoreComm.CoreFileProvider.GetFirmwarePath("SNES", firmwareId, false, "Game may function incorrectly without the requested firmware.");
 
 			// we need to return something to bsnes
-			test = test ?? string.Empty;
+			test = test ?? "";
 
 			Console.WriteLine("Served libsnes request for firmware \"{0}\" with \"{1}\"", hint, test);
 
@@ -323,18 +327,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			return test;
 		}
 
-		private void snes_trace(string msg)
+		private void snes_trace(uint which, string msg)
 		{
 			// TODO: get them out of the core split up and remove this hackery
-			string splitStr = "A:";
+			const string splitStr = "A:";
 
-			var split = msg.Split(new[] {splitStr }, 2, StringSplitOptions.None);
-
-			_tracer.Put(new TraceInfo
+			if (which == (uint)LibsnesApi.eTRACE.CPU)
 			{
-				Disassembly = split[0].PadRight(34),
-				RegisterInfo = splitStr + split[1]
-			});
+				var split = msg.Split(new[] { splitStr }, 2, StringSplitOptions.None);
+
+				_tracer.Put(new TraceInfo
+				{
+					Disassembly = split[0].PadRight(34),
+					RegisterInfo = splitStr + split[1]
+				});
+			}
+			else if (which == (uint)LibsnesApi.eTRACE.SMP)
+			{
+				int idx = msg.IndexOf("YA:");
+				string dis = msg.Substring(0,idx).TrimEnd();
+				string regs = msg.Substring(idx);
+				_tracer.Put(new TraceInfo
+				{
+					Disassembly = dis,
+					RegisterInfo = regs
+				});
+			}
+			else if (which == (uint)LibsnesApi.eTRACE.GB)
+			{
+				int idx = msg.IndexOf("AF:");
+				string dis = msg.Substring(0,idx).TrimEnd();
+				string regs = msg.Substring(idx);
+				_tracer.Put(new TraceInfo
+				{
+					Disassembly = dis,
+					RegisterInfo = regs
+				});
+			}
 		}
 
 		private void SetPalette(SnesColors.ColorType pal)

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Cores.Computers.Commodore64
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public sealed partial class Motherboard
 	{
@@ -69,7 +64,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		{
 			var data = 0x1F;
 			if (!Cassette.ReadSenseBuffer())
+			{
 				data &= 0xEF;
+			}
+
 			return data;
 		}
 

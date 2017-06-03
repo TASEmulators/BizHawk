@@ -1,4 +1,13 @@
 
+#define TRACE_CPU 0
+#define TRACE_SMP 1
+#define TRACE_GB 2
+
+#define TRACE_MASK_NONE (0)
+#define TRACE_CPU_MASK (1<<TRACE_CPU)
+#define TRACE_SMP_MASK (1<<TRACE_SMP)
+#define TRACE_GB_MASK (1<<TRACE_GB)
+
 struct Interface {
 	Interface();
   virtual void videoRefresh(const uint32_t *data, bool hires, bool interlace, bool overscan);
@@ -18,8 +27,8 @@ struct Interface {
   //zero 17-oct-2012
   virtual int getBackdropColor();
   
-  bool wanttrace;
-  virtual void cpuTrace(const char *msg);
+  uint32_t wanttrace;
+  virtual void cpuTrace(uint32_t which, const char *msg);
 
 	//zero 23-dec-2012
 	virtual void* allocSharedMemory(const char* memtype, size_t amt, int initialByte = -1) = 0;

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
 using BizHawk.Emulation.Common;
 
@@ -97,15 +96,15 @@ namespace BizHawk.Client.Common
 			{
 				if (IsBasePressed("Power"))
 				{
-					input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["Power"]);
+					input.Append(BkmMnemonicConstants.Commands[_controlType]["Power"]);
 				}
 				else if (IsBasePressed("Reset"))
 				{
-					input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["Reset"]);
+					input.Append(BkmMnemonicConstants.Commands[_controlType]["Reset"]);
 				}
 				else if (IsBasePressed("FDS Eject"))
 				{
-					input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["FDS Eject"]);
+					input.Append(BkmMnemonicConstants.Commands[_controlType]["FDS Eject"]);
 				}
 				else if (IsBasePressed("FDS Insert 0"))
 				{
@@ -125,11 +124,11 @@ namespace BizHawk.Client.Common
 				}
 				else if (IsBasePressed("VS Coin 1"))
 				{
-					input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["VS Coin 1"]);
+					input.Append(BkmMnemonicConstants.Commands[_controlType]["VS Coin 1"]);
 				}
 				else if (IsBasePressed("VS Coin 2"))
 				{
-					input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["VS Coin 2"]);
+					input.Append(BkmMnemonicConstants.Commands[_controlType]["VS Coin 2"]);
 				}
 				else
 				{
@@ -140,11 +139,11 @@ namespace BizHawk.Client.Common
 			{
 				if (IsBasePressed("Power"))
 				{
-					input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["Power"]);
+					input.Append(BkmMnemonicConstants.Commands[_controlType]["Power"]);
 				}
 				else if (IsBasePressed("Reset"))
 				{
-					input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["Reset"]);
+					input.Append(BkmMnemonicConstants.Commands[_controlType]["Reset"]);
 				}
 				else
 				{
@@ -153,7 +152,7 @@ namespace BizHawk.Client.Common
 			}
 			else if (_controlType == "Gameboy Controller")
 			{
-				input.Append(IsBasePressed("Power") ? BkmMnemonicConstants.COMMANDS[_controlType]["Power"] : ".");
+				input.Append(IsBasePressed("Power") ? BkmMnemonicConstants.Commands[_controlType]["Power"] : ".");
 			}
 
 			if (_controlType != "SMS Controller" && _controlType != "TI83 Controller" && _controlType != "ColecoVision Basic Controller")
@@ -161,17 +160,17 @@ namespace BizHawk.Client.Common
 				input.Append("|");
 			}
 
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[_controlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[_controlType]; player++)
 			{
-				var prefix = string.Empty;
+				var prefix = "";
 				if (_controlType != "Gameboy Controller" && _controlType != "TI83 Controller")
 				{
 					prefix = "P" + player + " ";
 				}
 
-				foreach (var button in BkmMnemonicConstants.BUTTONS[_controlType].Keys)
+				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed(prefix + button) ? BkmMnemonicConstants.BUTTONS[_controlType][button] : ".");
+					input.Append(IsBasePressed(prefix + button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
 				input.Append("|");
@@ -179,9 +178,9 @@ namespace BizHawk.Client.Common
 
 			if (_controlType == "SMS Controller")
 			{
-				foreach (var command in BkmMnemonicConstants.COMMANDS[_controlType].Keys)
+				foreach (var command in BkmMnemonicConstants.Commands[_controlType].Keys)
 				{
-					input.Append(IsBasePressed(command) ? BkmMnemonicConstants.COMMANDS[_controlType][command] : ".");
+					input.Append(IsBasePressed(command) ? BkmMnemonicConstants.Commands[_controlType][command] : ".");
 				}
 
 				input.Append("|");
@@ -199,7 +198,7 @@ namespace BizHawk.Client.Common
 		{
 			return GenerateLogEntry()
 				.Replace(".", " ")
-				.Replace("|", string.Empty)
+				.Replace("|", "")
 				.Replace(" 000, 000", "         ");
 		}
 
@@ -275,7 +274,7 @@ namespace BizHawk.Client.Common
 			var input = new StringBuilder("|");
 			if (IsBasePressed("Power"))
 			{
-				input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["Power"]);
+				input.Append(BkmMnemonicConstants.Commands[_controlType]["Power"]);
 			}
 			else
 			{
@@ -283,9 +282,9 @@ namespace BizHawk.Client.Common
 			}
 
 			input.Append("|");
-			foreach (var button in BkmMnemonicConstants.BUTTONS[_controlType].Keys)
+			foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 			{
-				input.Append(IsBasePressed(button) ? BkmMnemonicConstants.BUTTONS[_controlType][button] : ".");
+				input.Append(IsBasePressed(button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 			}
 
 			input.Append("|");
@@ -298,11 +297,11 @@ namespace BizHawk.Client.Common
 
 			if (IsBasePressed("Power"))
 			{
-				input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["Power"]);
+				input.Append(BkmMnemonicConstants.Commands[_controlType]["Power"]);
 			}
 			else if (IsBasePressed("Reset"))
 			{
-				input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["Reset"]);
+				input.Append(BkmMnemonicConstants.Commands[_controlType]["Reset"]);
 			}
 			else
 			{
@@ -310,11 +309,11 @@ namespace BizHawk.Client.Common
 			}
 
 			input.Append("|");
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[_controlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[_controlType]; player++)
 			{
-				foreach (var button in BkmMnemonicConstants.BUTTONS[_controlType].Keys)
+				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.BUTTONS[_controlType][button] : ".");
+					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
 				input.Append("|");
@@ -327,19 +326,19 @@ namespace BizHawk.Client.Common
 		{
 			var input = new StringBuilder("|");
 
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[_controlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[_controlType]; player++)
 			{
-				foreach (var button in BkmMnemonicConstants.BUTTONS[_controlType].Keys)
+				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.BUTTONS[_controlType][button] : ".");
+					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
 				input.Append('|');
 			}
 
-			foreach (var button in BkmMnemonicConstants.BUTTONS["Commodore 64 Keyboard"].Keys)
+			foreach (var button in BkmMnemonicConstants.Buttons["Commodore 64 Keyboard"].Keys)
 			{
-				input.Append(IsBasePressed(button) ? BkmMnemonicConstants.BUTTONS["Commodore 64 Keyboard"][button] : ".");
+				input.Append(IsBasePressed(button) ? BkmMnemonicConstants.Buttons["Commodore 64 Keyboard"][button] : ".");
 			}
 
 			input.Append('|');
@@ -351,7 +350,7 @@ namespace BizHawk.Client.Common
 			// |.|........|.|........|
 			var input = new StringBuilder();
 
-			foreach (var t in BkmMnemonicConstants.DGBMnemonic)
+			foreach (var t in BkmMnemonicConstants.DgbMnemonic)
 			{
 				if (t.Item1 != null)
 				{
@@ -371,7 +370,7 @@ namespace BizHawk.Client.Common
 			// |....|....|...|
 			var input = new StringBuilder();
 
-			foreach (var t in BkmMnemonicConstants.WSMnemonic)
+			foreach (var t in BkmMnemonicConstants.WsMnemonic)
 			{
 				if (t.Item1 != null)
 				{
@@ -395,11 +394,11 @@ namespace BizHawk.Client.Common
 			input.Append(IsBasePressed("Pause") ? 'p' : '.');
 			input.Append('|');
 
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[_controlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[_controlType]; player++)
 			{
-				foreach (var button in BkmMnemonicConstants.BUTTONS[_controlType].Keys)
+				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.BUTTONS[_controlType][button] : ".");
+					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
 				input.Append('|');
@@ -414,11 +413,11 @@ namespace BizHawk.Client.Common
 			input.Append(IsBasePressed("Power") ? 'P' : '.');
 			input.Append('|');
 
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[_controlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[_controlType]; player++)
 			{
-				foreach (var button in BkmMnemonicConstants.BUTTONS[_controlType].Keys)
+				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed(button) ? BkmMnemonicConstants.BUTTONS[_controlType][button] : ".");
+					input.Append(IsBasePressed(button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
 				input.Append('|');
@@ -445,16 +444,16 @@ namespace BizHawk.Client.Common
 
 			input.Append('|');
 
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[_controlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[_controlType]; player++)
 			{
-				foreach (var button in BkmMnemonicConstants.BUTTONS[_controlType].Keys)
+				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.BUTTONS[_controlType][button] : ".");
+					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
-				if (BkmMnemonicConstants.ANALOGS[_controlType].Keys.Count > 0)
+				if (BkmMnemonicConstants.Analogs[_controlType].Keys.Count > 0)
 				{
-					foreach (var name in BkmMnemonicConstants.ANALOGS[_controlType].Keys)
+					foreach (var name in BkmMnemonicConstants.Analogs[_controlType].Keys)
 					{
 						int val;
 
@@ -529,11 +528,11 @@ namespace BizHawk.Client.Common
 
 			input.Append('|');
 
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[_controlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[_controlType]; player++)
 			{
-				foreach (var button in BkmMnemonicConstants.BUTTONS[_controlType].Keys)
+				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.BUTTONS[_controlType][button] : ".");
+					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
 				input.Append('|');
@@ -548,11 +547,11 @@ namespace BizHawk.Client.Common
 
 			if (IsBasePressed("Power"))
 			{
-				input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["Power"]);
+				input.Append(BkmMnemonicConstants.Commands[_controlType]["Power"]);
 			}
 			else if (IsBasePressed("Reset"))
 			{
-				input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["Reset"]);
+				input.Append(BkmMnemonicConstants.Commands[_controlType]["Reset"]);
 			}
 			else
 			{
@@ -560,11 +559,11 @@ namespace BizHawk.Client.Common
 			}
 
 			input.Append("|");
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[_controlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[_controlType]; player++)
 			{
-				foreach (var button in BkmMnemonicConstants.BUTTONS[_controlType].Keys)
+				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.BUTTONS[_controlType][button] : ".");
+					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
 				input.Append("|");
@@ -580,11 +579,11 @@ namespace BizHawk.Client.Common
 
 			if (IsBasePressed("Power"))
 			{
-				input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["Power"]);
+				input.Append(BkmMnemonicConstants.Commands[_controlType]["Power"]);
 			}
 			else if (IsBasePressed("Reset"))
 			{
-				input.Append(BkmMnemonicConstants.COMMANDS[_controlType]["Reset"]);
+				input.Append(BkmMnemonicConstants.Commands[_controlType]["Reset"]);
 			}
 			else
 			{
@@ -592,11 +591,11 @@ namespace BizHawk.Client.Common
 			}
 
 			input.Append("|");
-			for (int player = 1; player <= BkmMnemonicConstants.PLAYERS[_controlType]; player++)
+			for (int player = 1; player <= BkmMnemonicConstants.Players[_controlType]; player++)
 			{
-				foreach (var button in BkmMnemonicConstants.BUTTONS[_controlType].Keys)
+				foreach (var button in BkmMnemonicConstants.Buttons[_controlType].Keys)
 				{
-					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.BUTTONS[_controlType][button] : ".");
+					input.Append(IsBasePressed("P" + player + " " + button) ? BkmMnemonicConstants.Buttons[_controlType][button] : ".");
 				}
 
 				input.Append("|");

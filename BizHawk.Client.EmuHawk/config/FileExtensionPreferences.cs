@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -24,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 			int count = 0;
 			foreach (var kvp in Global.Config.PreferredPlatformsForExtensions)
 			{
-				FileExtensionPreferencesPicker picker = new FileExtensionPreferencesPicker
+				var picker = new FileExtensionPreferencesPicker
 				{
 					FileExtension = kvp.Key,
 					OriginalPreference = kvp.Value,
@@ -38,7 +34,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-
 			foreach (var picker in PrefPanel.Controls.OfType<FileExtensionPreferencesPicker>())
 			{
 				Global.Config.PreferredPlatformsForExtensions[picker.FileExtension] = picker.CurrentlySelectedSystemId;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
+﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Cia
 	{
@@ -42,6 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					_icr = 0;
 					return icrTemp;
 			}
+
 			return ReadRegister(addr);
 		}
 
@@ -82,6 +78,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				case 0xF:
 					return _crb;
 			}
+
 			return 0;
 		}
 
@@ -179,7 +176,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 					// Toggle output begins high when timer starts.
 					if ((_cra & 0x05) == 0x05 && (oldCra & 0x01) == 0)
+					{
 						_prb |= 0x40;
+					}
 					break;
 				case 0xF:
 					var oldCrb = _crb;
@@ -187,7 +186,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 					// Toggle output begins high when timer starts.
 					if ((_crb & 0x05) == 0x05 && (oldCrb & 0x01) == 0)
+					{
 						_prb |= 0x80;
+					}
 					break;
 				default:
 					WriteRegister(addr, val);
@@ -261,40 +262,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		[SaveState.DoNotSave]
-		public int DdrA
-		{
-			get { return _ddra; }
-		}
+		public int DdrA => _ddra;
 
-		[SaveState.DoNotSave]
-		public int DdrB
-		{
-			get { return _ddrb; }
-		}
+		public int DdrB => _ddrb;
 
-		[SaveState.DoNotSave]
-		public int PrA
-		{
-			get { return _pra; }
-		}
+		public int PrA => _pra;
 
-		[SaveState.DoNotSave]
-		public int PrB
-		{
-			get { return _prb; }
-		}
+		public int PrB => _prb;
 
-		[SaveState.DoNotSave]
-		public int EffectivePrA
-		{
-			get { return _pra | ~_ddra; }
-		}
+		public int EffectivePrA => _pra | ~_ddra;
 
-		[SaveState.DoNotSave]
-		public int EffectivePrB
-		{
-			get { return _prb | ~_ddrb; }
-		}
+		public int EffectivePrB => _prb | ~_ddrb;
 	}
 }

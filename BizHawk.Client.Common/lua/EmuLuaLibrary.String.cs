@@ -18,9 +18,7 @@ namespace BizHawk.Client.Common
 			: base(lua, logOutputCallback) { }
 
 		[LuaMethodAttributes(
-			"hex",
-			"Converts the number to a string representation of the hexadecimal value of the given number"
-		)]
+			"hex", "Converts the number to a string representation of the hexadecimal value of the given number")]
 		public static string Hex(long num)
 		{
 			var hex = $"{num:X}";
@@ -33,9 +31,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
-			"binary",
-			"Converts the number to a string representation of the binary value of the given number"
-		)]
+			"binary", "Converts the number to a string representation of the binary value of the given number")]
 		public static string Binary(long num)
 		{
 			var binary = Convert.ToString(num, 2);
@@ -44,9 +40,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
-			"octal",
-			"Converts the number to a string representation of the octal value of the given number"
-		)]
+			"octal", "Converts the number to a string representation of the octal value of the given number")]
 		public static string Octal(long num)
 		{
 			var octal = Convert.ToString(num, 8);
@@ -59,9 +53,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
-			"trim",
-			"returns a string that trims whitespace on the left and right ends of the string"
-		)]
+			"trim", "returns a string that trims whitespace on the left and right ends of the string")]
 		public static string Trim(string str)
 		{
 			if (string.IsNullOrEmpty(str))
@@ -73,9 +65,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
-			"replace",
-			"Returns a string that replaces all occurances of str2 in str1 with the value of replace"
-		)]
+			"replace", "Returns a string that replaces all occurances of str2 in str1 with the value of replace")]
 		public static string Replace(string str, string str2, string replace)
 		{
 			if (string.IsNullOrEmpty(str))
@@ -86,10 +76,7 @@ namespace BizHawk.Client.Common
 			return str.Replace(str2, replace);
 		}
 
-		[LuaMethodAttributes(
-			"toupper",
-			"Returns an uppercase version of the given string"
-		)]
+		[LuaMethodAttributes("toupper", "Returns an uppercase version of the given string")]
 		public static string ToUpper(string str)
 		{
 			if (string.IsNullOrEmpty(str))
@@ -100,10 +87,7 @@ namespace BizHawk.Client.Common
 			return str.ToUpper();
 		}
 
-		[LuaMethodAttributes(
-			"tolower",
-			"Returns an lowercase version of the given string"
-		)]
+		[LuaMethodAttributes("tolower", "Returns an lowercase version of the given string")]
 		public static string ToLower(string str)
 		{
 			if (string.IsNullOrEmpty(str))
@@ -115,9 +99,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
-			"substring",
-			"Returns a string that represents a substring of str starting at position for the specified length"
-		)]
+			"substring", "Returns a string that represents a substring of str starting at position for the specified length")]
 		public static string SubString(string str, int position, int length)
 		{
 			if (string.IsNullOrEmpty(str))
@@ -129,9 +111,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
-			"remove",
-			"Returns a string that represents str with the given position and count removed"
-		)]
+			"remove", "Returns a string that represents str with the given position and count removed")]
 		public static string Remove(string str, int position, int count)
 		{
 			if (string.IsNullOrEmpty(str))
@@ -142,10 +122,7 @@ namespace BizHawk.Client.Common
 			return str.Remove(position, count);
 		}
 
-		[LuaMethodAttributes(
-			"contains",
-			"Returns whether or not str contains str2"
-		)]
+		[LuaMethodAttributes("contains", "Returns whether or not str contains str2")]
 		public static bool Contains(string str, string str2)
 		{
 			if (string.IsNullOrEmpty(str))
@@ -156,10 +133,7 @@ namespace BizHawk.Client.Common
 			return str.Contains(str2);
 		}
 
-		[LuaMethodAttributes(
-			"startswith",
-			"Returns whether str starts with str2"
-		)]
+		[LuaMethodAttributes("startswith", "Returns whether str starts with str2")]
 		public static bool StartsWith(string str, string str2)
 		{
 			if (string.IsNullOrEmpty(str))
@@ -170,10 +144,7 @@ namespace BizHawk.Client.Common
 			return str.StartsWith(str2);
 		}
 
-		[LuaMethodAttributes(
-			"endswith",
-			"Returns whether str ends wth str2"
-		)]
+		[LuaMethodAttributes("endswith", "Returns whether str ends wth str2")]
 		public static bool EndsWith(string str, string str2)
 		{
 			if (string.IsNullOrEmpty(str))
@@ -185,16 +156,14 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethodAttributes(
-			"split",
-			"Splits str based on separator into a LuaTable. Separator must be one character!. Same functionality as .NET string.Split() using the RemoveEmptyEntries option"
-		)]
+			"split", "Splits str based on separator into a LuaTable. Separator must be one character!. Same functionality as .NET string.Split() using the RemoveEmptyEntries option")]
 		public LuaTable Split(string str, string separator)
 		{
 			var table = Lua.NewTable();
 			if (!string.IsNullOrEmpty(str))
 			{
 				var splitStr = str.Split(
-					new char[] { separator.FirstOrDefault() },
+					new[] { separator.FirstOrDefault() },
 					StringSplitOptions.RemoveEmptyEntries);
 
 				for (int i = 0; i < splitStr.Length; i++)

@@ -49,7 +49,6 @@
 		/// This tool dialog edits a file.  Returning false will tell the client the user wants to cancel the given action,
 		/// Return false to tell the client to back out of an action (such as closing the emulator)
 		/// </summary>
-		/// <returns></returns>
 		bool AskSaveChanges();
 
 		/// <summary>

@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 			yield return ConsoleButtons();
 		}
 
-		public static PadSchema StandardController()
+		private static PadSchema StandardController()
 		{
 			return new PadSchema
 			{

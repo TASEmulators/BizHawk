@@ -465,6 +465,24 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public int BufferHeight => 192;
 		public int BackgroundColor => 0;
 
+		public int VsyncNumerator
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				return NullVideo.DefaultVsyncNum;
+			}
+		}
+
+		public int VsyncDenominator
+		{
+			[FeatureNotImplemented]
+			get
+			{
+				return NullVideo.DefaultVsyncDen;
+			}
+		}
+
 		private readonly int[] PaletteTMS9918 =
 		{
 			unchecked((int)0xFF000000),

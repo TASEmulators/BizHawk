@@ -21,5 +21,9 @@
 		public int BufferHeight => 144;
 
 		public int BackgroundColor => 0;
+
+		public int VsyncNumerator => 262144;
+
+		public int VsyncDenominator => 4389;
 	}
 }

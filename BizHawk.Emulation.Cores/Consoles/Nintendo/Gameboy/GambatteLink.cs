@@ -1,5 +1,4 @@
-﻿using System;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -12,15 +11,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	public partial class GambatteLink : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, ISaveRam, IStatable, ILinkable,
 		IBoardInfo, IDebuggable, ISettable<GambatteLink.GambatteLinkSettings, GambatteLink.GambatteLinkSyncSettings>, ICodeDataLogger
 	{
-		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object Settings, object SyncSettings, bool deterministic)
+		public GambatteLink(CoreComm comm, GameInfo leftinfo, byte[] leftrom, GameInfo rightinfo, byte[] rightrom, object settings, object syncSettings, bool deterministic)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
-			GambatteLinkSettings settings = (GambatteLinkSettings)Settings ?? new GambatteLinkSettings();
-			GambatteLinkSyncSettings syncSettings = (GambatteLinkSyncSettings)SyncSettings ?? new GambatteLinkSyncSettings();
+			GambatteLinkSettings linkSettings = (GambatteLinkSettings)settings ?? new GambatteLinkSettings();
+			GambatteLinkSyncSettings linkSyncSettings = (GambatteLinkSyncSettings)syncSettings ?? new GambatteLinkSyncSettings();
 
 			CoreComm = comm;
-			L = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), leftinfo, leftrom, settings.L, syncSettings.L, deterministic);
-			R = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), rightinfo, rightrom, settings.R, syncSettings.R, deterministic);
+			L = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), leftinfo, leftrom, linkSettings.L, linkSyncSettings.L, deterministic);
+			R = new Gameboy(new CoreComm(comm.ShowMessage, comm.Notify), rightinfo, rightrom, linkSettings.R, linkSyncSettings.R, deterministic);
 
 			// connect link cable
 			LibGambatte.gambatte_linkstatus(L.GambatteState, 259);
@@ -31,8 +30,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			L.ConnectMemoryCallbackSystem(_memorycallbacks);
 			R.ConnectMemoryCallbackSystem(_memorycallbacks);
 
-			comm.VsyncNum = L.CoreComm.VsyncNum;
-			comm.VsyncDen = L.CoreComm.VsyncDen;
 			comm.RomStatusAnnotation = null;
 			comm.RomStatusDetails = "LEFT:\r\n" + L.CoreComm.RomStatusDetails + "RIGHT:\r\n" + R.CoreComm.RomStatusDetails;
 			comm.NominalWidth = L.CoreComm.NominalWidth + R.CoreComm.NominalWidth;

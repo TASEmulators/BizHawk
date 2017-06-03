@@ -341,11 +341,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void NameTableView_MouseLeave(object sender, EventArgs e)
 		{
-			XYLabel.Text = string.Empty;
-			PPUAddressLabel.Text = string.Empty;
-			TileIDLabel.Text = string.Empty;
-			TableLabel.Text = string.Empty;
-			PaletteLabel.Text = string.Empty;
+			XYLabel.Text = "";
+			PPUAddressLabel.Text = "";
+			TileIDLabel.Text = "";
+			TableLabel.Text = "";
+			PaletteLabel.Text = "";
 		}
 
 		#endregion

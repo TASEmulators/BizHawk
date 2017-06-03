@@ -8,8 +8,7 @@ namespace BizHawk.Client.Common
 	/// </summary>
 	public sealed partial class WatchList
 	{
-		private class WatchEqualityComparer
-			: IEqualityComparer<Watch>
+		private class WatchEqualityComparer : IEqualityComparer<Watch>
 		{
 			/// <summary>
 			/// Determines if two <see cref="Watch"/> are equals
@@ -25,23 +24,21 @@ namespace BizHawk.Client.Common
 					{
 						return true;
 					}
-					else
-					{
-						return false;
-					}
+
+					return false;
 				}
-				else if (ReferenceEquals(y, null))
+
+				if (ReferenceEquals(y, null))
 				{
 					return false;
 				}
-				else if (ReferenceEquals(x, y))
+
+				if (ReferenceEquals(x, y))
 				{
 					return true;
 				}
-				else
-				{
-					return false;
-				}
+
+				return false;
 			}
 
 			/// <summary>

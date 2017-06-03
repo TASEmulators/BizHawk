@@ -187,21 +187,21 @@
 			this.clearAllToolStripMenuItem.Name = "clearAllToolStripMenuItem";
 			this.clearAllToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
 			this.clearAllToolStripMenuItem.Text = "Clear All";
-			this.clearAllToolStripMenuItem.Click += new System.EventHandler(this.clearAllToolStripMenuItem_Click);
+			this.clearAllToolStripMenuItem.Click += new System.EventHandler(this.ClearAllToolStripMenuItem_Click);
 			// 
 			// clearCurrentTabToolStripMenuItem
 			// 
 			this.clearCurrentTabToolStripMenuItem.Name = "clearCurrentTabToolStripMenuItem";
 			this.clearCurrentTabToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
 			this.clearCurrentTabToolStripMenuItem.Text = "Clear Current Tab";
-			this.clearCurrentTabToolStripMenuItem.Click += new System.EventHandler(this.clearCurrentTabToolStripMenuItem_Click);
+			this.clearCurrentTabToolStripMenuItem.Click += new System.EventHandler(this.ClearCurrentTabToolStripMenuItem_Click);
 			// 
 			// restoreDefaultsToolStripMenuItem
 			// 
 			this.restoreDefaultsToolStripMenuItem.Name = "restoreDefaultsToolStripMenuItem";
 			this.restoreDefaultsToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
 			this.restoreDefaultsToolStripMenuItem.Text = "Restore Defaults";
-			this.restoreDefaultsToolStripMenuItem.Click += new System.EventHandler(this.restoreDefaultsToolStripMenuItem_Click);
+			this.restoreDefaultsToolStripMenuItem.Click += new System.EventHandler(this.RestoreDefaultsToolStripMenuItem_Click);
 			// 
 			// toolStripSeparator1
 			// 

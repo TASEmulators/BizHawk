@@ -1,32 +1,13 @@
 ﻿using System;
-using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using System.Reflection;
 using System.Linq;
 using System.Collections.Generic;
 
 using BizHawk.Common;
-
-using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
-using BizHawk.Emulation.Cores.Calculators;
-using BizHawk.Emulation.Cores.ColecoVision;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Nintendo.NES;
-using BizHawk.Emulation.Cores.Nintendo.N64;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
-using BizHawk.Emulation.Cores.Sega.MasterSystem;
-using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
-
 using BizHawk.Client.Common;
-
-using BizHawk.Client.EmuHawk.CustomControls;
-using BizHawk.Client.EmuHawk.WinFormExtensions;
-using BizHawk.Client.EmuHawk.ToolExtensions;
-using BizHawk.Emulation.Cores.Computers.AppleII;
-using BizHawk.Client.ApiHawk;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -47,34 +28,48 @@ namespace BizHawk.Client.EmuHawk
 
 		public struct FileInformation
 		{
-			public string directoryName;
-			public string fileName;
-			public string archiveName;
+			public string DirectoryName { get; }
+			public string FileName { get; }
+			public string ArchiveName { get; }
 
 			public FileInformation(string directory, string file, string archive)
 			{
-				directoryName = directory;
-				fileName = file;
-				archiveName = archive;
+				DirectoryName = directory;
+				FileName = file;
+				ArchiveName = archive;
 			}
 		}
 
 		// This is the list from MainForm->RomFilter()'s non-developer build.  It needs to be kept up-to-date when new cores are added.
-		readonly string[] knownROMExtensions = { ".NES", ".FDS", ".UNF", ".SMS", ".GG", ".SG", ".GB", ".GBC", ".GBA", ".PCE", ".SGX", ".BIN", ".SMD", ".GEN", ".MD", ".SMC", ".SFC", ".A26", ".A78", ".LNX", ".COL", ".ROM", ".M3U", ".CUE", ".CCD", ".SGB", ".Z64", ".V64", ".N64", ".WS", ".WSC", ".XML", ".DSK", ".DO", ".PO", ".PSF", ".MINIPSF", ".NSF" };
-		readonly string[] nonArchive = { ".ISO", ".CUE", ".CCD" };
+		// adelikat: This is annoying and bad. Maybe we could generate RomFilter from this property?
+		private string[] KnownRomExtensions
+		{
+			get
+			{
+				if (VersionInfo.DeveloperBuild)
+				{
+					return new[]
+					{
+						".NES", ".FDS", ".UNF", ".SMS", ".GG", ".SG", ".GB", ".GBC", ".GBA", ".PCE", ".SGX", ".BIN", ".SMD", ".GEN", ".MD", ".SMC", ".SFC", ".A26", ".A78", ".LNX", ".COL", ".ROM", ".M3U", ".CUE", ".CCD", ".SGB", ".Z64", ".V64", ".N64", ".WS", ".WSC", ".XML", ".DSK", ".DO", ".PO", ".PSF", ".MINIPSF", ".NSF",
+						".EXE", ".PRG", ".D64", "*G64", ".CRT", ".TAP"
+				};
+				}
+
+				return new[] { ".NES", ".FDS", ".UNF", ".SMS", ".GG", ".SG", ".GB", ".GBC", ".GBA", ".PCE", ".SGX", ".BIN", ".SMD", ".GEN", ".MD", ".SMC", ".SFC", ".A26", ".A78", ".LNX", ".COL", ".ROM", ".M3U", ".CUE", ".CCD", ".SGB", ".Z64", ".V64", ".N64", ".WS", ".WSC", ".XML", ".DSK", ".DO", ".PO", ".PSF", ".MINIPSF", ".NSF" };
+			}
+		}
+
+		private readonly string[] _nonArchive = { ".ISO", ".CUE", ".CCD" };
 
 		#region Loaders
 
-		// According to the documentation (http://tasvideos.org/Bizhawk/CodeDataLogger.html),
-		// Currently supported for: PCE, GB/GBC, SMS/GG, Genesis, SNES
-		// Perhaps the 'is PCEngine' requirement needs to be expanded.
 		private void _LoadCDL(string filename, string archive = null)
 		{
-			if (!(Global.Emulator is PCEngine))
-				return;
-
-			GlobalWin.Tools.Load<CDL>();
-			(GlobalWin.Tools.Get<CDL>() as CDL).LoadFile(filename);
+			if (GlobalWin.Tools.IsAvailable<CDL>())
+			{
+				CDL cdl = GlobalWin.Tools.Load<CDL>();
+				cdl.LoadFile(filename);
+			}
 		}
 
 		private void _LoadCheats(string filename, string archive = null)
@@ -171,7 +166,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			foreach (string file in fileList)
 			{
-				var ext = Path.GetExtension(file).ToUpper() ?? String.Empty;
+				var ext = Path.GetExtension(file).ToUpper() ?? "";
 				FileInformation fileInformation = new FileInformation(Path.GetDirectoryName(file), Path.GetFileName(file), archive);
 
 				switch (ext)
@@ -196,13 +191,19 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					default:
 						if (MovieService.IsValidMovieExtension(ext))
-							sortedFiles[LoadOrdering.MOVIEFILE].Add(fileInformation);
-						else if (MovieImport.IsValidMovieExtension(ext))
-							sortedFiles[LoadOrdering.LEGACYMOVIEFILE].Add(fileInformation);
-						else if (knownROMExtensions.Contains(ext))
 						{
-							if (String.IsNullOrEmpty(archive) || !nonArchive.Contains(ext))
+							sortedFiles[LoadOrdering.MOVIEFILE].Add(fileInformation);
+						}
+						else if (MovieImport.IsValidMovieExtension(ext))
+						{
+							sortedFiles[LoadOrdering.LEGACYMOVIEFILE].Add(fileInformation);
+						}
+						else if (KnownRomExtensions.Contains(ext))
+						{
+							if (string.IsNullOrEmpty(archive) || !_nonArchive.Contains(ext))
+							{
 								sortedFiles[LoadOrdering.ROM].Add(fileInformation);
+							}
 						}
 						else
 						{
@@ -216,8 +217,15 @@ namespace BizHawk.Client.EmuHawk
 							bool executable = false;
 							var archiveHandler = new SevenZipSharpArchiveHandler();
 
-							if (String.IsNullOrEmpty(archive) && archiveHandler.CheckSignature(file, out offset, out executable))
+							if (string.IsNullOrEmpty(archive) && archiveHandler.CheckSignature(file, out offset, out executable))
+							{
 								sortedFiles[LoadOrdering.ROM].Add(fileInformation);
+							}
+							else
+							{
+								// adelikat: adding this hack to restore the default behavior that unrecognized files are treated like roms
+								sortedFiles[LoadOrdering.ROM].Add(fileInformation);
+							}
 
 							/*
 							 * This is where handling archives would go.
@@ -304,30 +312,30 @@ namespace BizHawk.Client.EmuHawk
 						break;
 					case 1:
 						FileInformation fileInformation = sortedFiles[value].First<FileInformation>();
-						string filename = Path.Combine(new string[] { fileInformation.directoryName, fileInformation.fileName });
+						string filename = Path.Combine(new string[] { fileInformation.DirectoryName, fileInformation.FileName });
 
 						switch (value)
 						{
 							case LoadOrdering.ROM:
-								_LoadRom(filename, fileInformation.archiveName);
+								_LoadRom(filename, fileInformation.ArchiveName);
 								break;
 							case LoadOrdering.STATE:
-								_LoadState(filename, fileInformation.archiveName);
+								_LoadState(filename, fileInformation.ArchiveName);
 								break;
 							case LoadOrdering.WATCH:
-								_LoadWatch(filename, fileInformation.archiveName);
+								_LoadWatch(filename, fileInformation.ArchiveName);
 								break;
 							case LoadOrdering.CDLFILE:
-								_LoadCDL(filename, fileInformation.archiveName);
+								_LoadCDL(filename, fileInformation.ArchiveName);
 								break;
 							case LoadOrdering.LUASESSION:
-								_LoadLuaSession(filename, fileInformation.archiveName);
+								_LoadLuaSession(filename, fileInformation.ArchiveName);
 								break;
 							case LoadOrdering.LUASCRIPT:
-								_LoadLuaFile(filename, fileInformation.archiveName);
+								_LoadLuaFile(filename, fileInformation.ArchiveName);
 								break;
 							case LoadOrdering.CHEAT:
-								_LoadCheats(filename, fileInformation.archiveName);
+								_LoadCheats(filename, fileInformation.ArchiveName);
 								break;
 							case LoadOrdering.MOVIEFILE:
 							case LoadOrdering.LEGACYMOVIEFILE:
@@ -336,9 +344,9 @@ namespace BizHawk.Client.EmuHawk
 									break;
 
 								if (value == LoadOrdering.MOVIEFILE)
-									_LoadMovie(filename, fileInformation.archiveName);
+									_LoadMovie(filename, fileInformation.ArchiveName);
 								else
-									_LoadLegacyMovie(filename, fileInformation.archiveName);
+									_LoadLegacyMovie(filename, fileInformation.ArchiveName);
 								break;
 						}
 						break;

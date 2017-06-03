@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Threading;
-using System.Collections.Generic;
-using System.IO;
 
-using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
@@ -17,32 +14,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		isReleased: true,
 		portedVersion: "2.0",
 		portedUrl: "https://code.google.com/p/mupen64plus/",
-		singleInstance: true
-		)]
+		singleInstance: true)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class N64 : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IDisassemblable, IRegionable,
 		ISettable<N64Settings, N64SyncSettings>
 	{
-		private readonly N64Input _inputProvider;
-		private readonly N64VideoProvider _videoProvider;
-		private readonly N64Audio _audioProvider;
-
-		private readonly EventWaitHandle _pendingThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
-		private readonly EventWaitHandle _completeThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
-
-		private mupen64plusApi api; // mupen64plus DLL Api
-		
-		private N64SyncSettings _syncSettings;
-		private N64Settings _settings;
-
-		private bool _pendingThreadTerminate;
-
-		private DisplayType _display_type = DisplayType.NTSC;
-
-		private Action _pendingThreadAction;
-
-		private bool _disableExpansionSlot = true;
-
 		/// <summary>
 		/// Create mupen64plus Emulator
 		/// </summary>
@@ -103,17 +79,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 					_display_type = DisplayType.NTSC;
 					break;
 			}
-			switch (Region)
-			{
-				case DisplayType.NTSC:
-					comm.VsyncNum = 60000;
-					comm.VsyncDen = 1001;
-					break;
-				default:
-					comm.VsyncNum = 50;
-					comm.VsyncDen = 1;
-					break;
-			}
 
 			StartThreadLoop();
 
@@ -133,6 +98,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			_inputProvider = new N64Input(this.AsInputPollable(), api, comm, this._syncSettings.Controllers);
 			(ServiceProvider as BasicServiceProvider).Register<IVideoProvider>(_videoProvider);
 			(ServiceProvider as BasicServiceProvider).Register<ISoundProvider>(_audioProvider.Resampler);
+
+			switch (Region)
+			{
+				case DisplayType.NTSC:
+					_videoProvider.VsyncNumerator = 60000;
+					_videoProvider.VsyncDenominator = 1001;
+					break;
+				default:
+					_videoProvider.VsyncNumerator = 50;
+					_videoProvider.VsyncDenominator = 1;
+					break;
+			}
 
 			string rsp;
 			switch (_syncSettings.Rsp)
@@ -169,6 +146,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 
 			SetControllerButtons();
 		}
+
+		private readonly N64Input _inputProvider;
+		private readonly N64VideoProvider _videoProvider;
+		private readonly N64Audio _audioProvider;
+
+		private readonly EventWaitHandle _pendingThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
+		private readonly EventWaitHandle _completeThreadEvent = new EventWaitHandle(false, EventResetMode.AutoReset);
+
+		private mupen64plusApi api; // mupen64plus DLL Api
+
+		private N64SyncSettings _syncSettings;
+		private N64Settings _settings;
+
+		private bool _pendingThreadTerminate;
+
+		private DisplayType _display_type = DisplayType.NTSC;
+
+		private Action _pendingThreadAction;
+
+		private bool _disableExpansionSlot = true;
 
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 

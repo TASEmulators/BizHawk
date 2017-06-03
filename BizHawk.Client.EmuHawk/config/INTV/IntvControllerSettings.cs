@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -19,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void IntvControllerSettings_Load(object sender, EventArgs e)
 		{
-			_syncSettings = (Global.Emulator as Intellivision).GetSyncSettings().Clone();
+			_syncSettings = ((Intellivision)Global.Emulator).GetSyncSettings().Clone();
 
 			var possibleControllers = IntellivisionControllerDeck.ValidControllerTypes.Select(t => t.Key);
 

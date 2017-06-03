@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			if (Settings == null || Settings.SECAMColors != o.SECAMColors)
 			{
-				_tia?.SetSECAM(o.SECAMColors);
+				_tia?.SetSecam(o.SECAMColors);
 			}
 
 			Settings = o;

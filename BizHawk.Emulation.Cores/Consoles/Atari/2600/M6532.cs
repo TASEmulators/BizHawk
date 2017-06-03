@@ -7,9 +7,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		private readonly Atari2600 _core;
 
-		private byte DDRa = 0x00;
-		private byte DDRb = 0x00;
-		private byte outputA = 0x00;
+		private byte _ddRa = 0x00;
+		private byte _ddRb = 0x00;
+		private byte _outputA = 0x00;
 
 		public TimerData Timer;
 
@@ -37,31 +37,29 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				// Read Output reg A
 				// Combine readings from player 1 and player 2
 				// actually depends on setting in SWCHCNTA (aka DDRa)
-
 				var temp = (byte)(_core.ReadControls1(peek) & 0xF0 | ((_core.ReadControls2(peek) >> 4) & 0x0F));
-				temp = (byte)(temp & ~DDRa);
-				temp = (byte)(temp + (outputA & DDRa));
+				temp = (byte)(temp & ~_ddRa);
+				temp = (byte)(temp + (_outputA & _ddRa));
 				return temp;
-				
 			}
 			
 			if (registerAddr == 0x01)
 			{
 				// Read DDRA
-				return DDRa;
+				return _ddRa;
 			}
 			
 			if (registerAddr == 0x02)
 			{
 				// Read Output reg B
 				var temp = _core.ReadConsoleSwitches(peek);
-				temp = (byte)(temp & ~DDRb);
+				temp = (byte)(temp & ~_ddRb);
 				return temp;
 			}
 
 			if (registerAddr == 0x03) // Read DDRB
 			{
-				return DDRb;
+				return _ddRb;
 			}
 			
 			if ((registerAddr & 0x5) == 0x4)
@@ -157,12 +155,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					if (registerAddr == 0x00)
 					{
 						// Write Output reg A
-						outputA = value;
+						_outputA = value;
 					}
 					else if (registerAddr == 0x01)
 					{
 						// Write DDRA
-						DDRa = value;
+						_ddRa = value;
 					}
 					else if (registerAddr == 0x02)
 					{
@@ -172,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					else if (registerAddr == 0x03)
 					{
 						// Write DDRB
-						DDRb = value;
+						_ddRb = value;
 					}
 				}
 			}
@@ -181,9 +179,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("M6532");
-			ser.Sync("ddra", ref DDRa);
-			ser.Sync("ddrb", ref DDRb);
-			ser.Sync("OutputA", ref outputA);
+			ser.Sync("ddra", ref _ddRa);
+			ser.Sync("ddrb", ref _ddRb);
+			ser.Sync("OutputA", ref _outputA);
 			Timer.SyncState(ser);
 			ser.EndSection();
 		}

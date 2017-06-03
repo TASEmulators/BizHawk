@@ -1,4 +1,4 @@
-﻿namespace BizHawk.Client.EmuHawk.config.GB
+﻿namespace BizHawk.Client.EmuHawk
 {
 	partial class GBPrefControl
 	{
@@ -48,7 +48,7 @@
 			this.propertyGrid1.Size = new System.Drawing.Size(338, 279);
 			this.propertyGrid1.TabIndex = 0;
 			this.propertyGrid1.ToolbarVisible = false;
-			this.propertyGrid1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid1_PropertyValueChanged);
+			this.propertyGrid1.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.PropertyGrid1_PropertyValueChanged);
 			// 
 			// buttonDefaults
 			// 
@@ -59,7 +59,7 @@
 			this.buttonDefaults.TabIndex = 1;
 			this.buttonDefaults.Text = "Defaults";
 			this.buttonDefaults.UseVisualStyleBackColor = true;
-			this.buttonDefaults.Click += new System.EventHandler(this.buttonDefaults_Click);
+			this.buttonDefaults.Click += new System.EventHandler(this.ButtonDefaults_Click);
 			// 
 			// buttonPalette
 			// 
@@ -70,7 +70,7 @@
 			this.buttonPalette.TabIndex = 2;
 			this.buttonPalette.Text = "Palette...";
 			this.buttonPalette.UseVisualStyleBackColor = true;
-			this.buttonPalette.Click += new System.EventHandler(this.buttonPalette_Click);
+			this.buttonPalette.Click += new System.EventHandler(this.ButtonPalette_Click);
 			// 
 			// checkBoxMuted
 			// 
@@ -82,7 +82,7 @@
 			this.checkBoxMuted.TabIndex = 3;
 			this.checkBoxMuted.Text = "Mute";
 			this.checkBoxMuted.UseVisualStyleBackColor = true;
-			this.checkBoxMuted.CheckedChanged += new System.EventHandler(this.checkBoxMuted_CheckedChanged);
+			this.checkBoxMuted.CheckedChanged += new System.EventHandler(this.CheckBoxMuted_CheckedChanged);
 			// 
 			// cbDisplayBG
 			// 
@@ -94,7 +94,7 @@
 			this.cbDisplayBG.TabIndex = 4;
 			this.cbDisplayBG.Text = "BG";
 			this.cbDisplayBG.UseVisualStyleBackColor = true;
-			this.cbDisplayBG.CheckedChanged += new System.EventHandler(this.cbDisplayBG_CheckedChanged);
+			this.cbDisplayBG.CheckedChanged += new System.EventHandler(this.CbDisplayBG_CheckedChanged);
 			// 
 			// cbDisplayOBJ
 			// 
@@ -106,7 +106,7 @@
 			this.cbDisplayOBJ.TabIndex = 5;
 			this.cbDisplayOBJ.Text = "OBJ";
 			this.cbDisplayOBJ.UseVisualStyleBackColor = true;
-			this.cbDisplayOBJ.CheckedChanged += new System.EventHandler(this.cbDisplayOBJ_CheckedChanged);
+			this.cbDisplayOBJ.CheckedChanged += new System.EventHandler(this.CbDisplayOBJ_CheckedChanged);
 			// 
 			// cbDisplayWIN
 			// 
@@ -118,7 +118,7 @@
 			this.cbDisplayWIN.TabIndex = 6;
 			this.cbDisplayWIN.Text = "WIN";
 			this.cbDisplayWIN.UseVisualStyleBackColor = true;
-			this.cbDisplayWIN.CheckedChanged += new System.EventHandler(this.cbDisplayWIN_CheckedChanged);
+			this.cbDisplayWIN.CheckedChanged += new System.EventHandler(this.CbDisplayWin_CheckedChanged);
 			// 
 			// GBPrefControl
 			// 

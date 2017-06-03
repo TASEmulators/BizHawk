@@ -31,7 +31,7 @@ namespace BizHawk.Client.ApiHawk
 			{
 				throw new InvalidOperationException("A system must be set");
 			}
-			if (usage == BizHawkExternalToolUsage.GameSpecific && gameHash.Trim() == string.Empty)
+			if (usage == BizHawkExternalToolUsage.GameSpecific && gameHash.Trim() == "")
 			{
 				throw new InvalidOperationException("A game hash must be set");
 			}
@@ -47,14 +47,14 @@ namespace BizHawk.Client.ApiHawk
 		/// <param name="usage"><see cref="BizHawkExternalToolUsage"/> i.e. what your external tool is for</param>
 		/// <param name="system"><see cref="CoreSystem"/> that your external tool is used for</param>		
 		public BizHawkExternalToolUsageAttribute(BizHawkExternalToolUsage usage, CoreSystem system)
-			:this(usage, system, string.Empty)
+			:this(usage, system, "")
 		{}
 
 		/// <summary>
 		/// Initialize a new instance of <see cref="BizHawkExternalToolUsageAttribute"/>
 		/// </summary>
 		public BizHawkExternalToolUsageAttribute()
-			:this(BizHawkExternalToolUsage.Global, CoreSystem.Null, string.Empty)
+			:this(BizHawkExternalToolUsage.Global, CoreSystem.Null, "")
 		{ }
 
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
@@ -12,28 +11,28 @@ namespace BizHawk.Client.EmuHawk
 	public partial class ControllerConfigPanel : UserControl
 	{
 		// the dictionary that results are saved to
-		Dictionary<string, string> RealConfigObject;
+		private Dictionary<string, string> _realConfigObject;
+
 		// if nonnull, the list of keys to use.  used to have the config panel operate on a smaller list than the whole dictionary;
 		// for instance, to show only a single player
-		List<string> RealConfigButtons;
+		private List<string> _realConfigButtons;
 
-		public List<string> buttons = new List<string>();
+		private readonly List<string> _buttons = new List<string>();
 
-		public int InputMarginLeft = UIHelper.ScaleX(0);
-		public int LabelPadding = UIHelper.ScaleX(5);
+		private readonly int _inputMarginLeft = UIHelper.ScaleX(0);
+		private readonly int _labelPadding = UIHelper.ScaleX(5);
+		private readonly int _marginTop = UIHelper.ScaleY(0);
+		private readonly int _spacing = UIHelper.ScaleY(24);
+		private readonly int _inputSize = UIHelper.ScaleX(170);
+		private readonly int _columnWidth = UIHelper.ScaleX(280);
 
-		public int MarginTop = UIHelper.ScaleY(0);
-		public int Spacing = UIHelper.ScaleY(24);
-		public int InputSize = UIHelper.ScaleX(170);
-		public int ColumnWidth = UIHelper.ScaleX(280);
-		public int LabelWidth = UIHelper.ScaleX(60);
+		public ToolTip Tooltip { get; set; }
 
-		public ToolTip Tooltip;
-
-		protected List<InputCompositeWidget> Inputs = new List<InputCompositeWidget>();
-		protected List<Label> Labels = new List<Label>();
+		private readonly List<InputCompositeWidget> _inputs = new List<InputCompositeWidget>();
 
 		private Size _panelSize = new Size(0, 0);
+
+		private bool _autotab;
 
 		public ControllerConfigPanel()
 		{
@@ -42,29 +41,29 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ControllerConfigPanel_Load(object sender, EventArgs e)
 		{
-			
 		}
 
-		public void ClearAll()
+		private void ClearAll()
 		{
-			Inputs.ForEach(x => x.Clear());
+			_inputs.ForEach(x => x.Clear());
 		}
 
 		/// <summary>
 		/// save to config
 		/// </summary>
-		/// <param name="SaveConfigObject">if non-null, save to possibly different config object than originally initialized from</param>
-		public void Save(Dictionary<string, string>SaveConfigObject = null)
+		/// <param name="saveConfigObject">if non-null, save to possibly different config object than originally initialized from</param>
+		public void Save(Dictionary<string, string> saveConfigObject = null)
 		{
-			var saveto = SaveConfigObject ?? RealConfigObject;
-			for (int button = 0; button < buttons.Count; button++)
-				saveto[buttons[button]] = Inputs[button].Bindings;
+			var saveto = saveConfigObject ?? _realConfigObject;
+			for (int button = 0; button < _buttons.Count; button++)
+			{
+				saveto[_buttons[button]] = _inputs[button].Bindings;
+			}
 		}
 
-		public bool Autotab = false;
 		public void LoadSettings(Dictionary<string, string> configobj, bool autotab, List<string> configbuttons = null, int? width = null, int? height = null)
 		{
-			Autotab = autotab;
+			_autotab = autotab;
 			if (width.HasValue && height.HasValue)
 			{
 				_panelSize = new Size(width.Value, height.Value);
@@ -74,78 +73,82 @@ namespace BizHawk.Client.EmuHawk
 				_panelSize = Size;
 			}
 			
-			RealConfigObject = configobj;
-			RealConfigButtons = configbuttons;
+			_realConfigObject = configobj;
+			_realConfigButtons = configbuttons;
 			SetButtonList();
 			Startup();
 			SetWidgetStrings();
 		}
 
-		protected void SetButtonList()
+		private void SetButtonList()
 		{
-			buttons.Clear();
-			IEnumerable<string> bl = RealConfigButtons ?? (IEnumerable<string>)RealConfigObject.Keys;
+			_buttons.Clear();
+			IEnumerable<string> bl = _realConfigButtons ?? (IEnumerable<string>)_realConfigObject.Keys;
 			foreach (string s in bl)
-				buttons.Add(s);
-		}
-
-		protected void SetWidgetStrings()
-		{
-			for (int button = 0; button < buttons.Count; button++)
 			{
-				string s;
-				if (!RealConfigObject.TryGetValue(buttons[button], out s))
-					s = "";
-				Inputs[button].Bindings = s;
+				_buttons.Add(s);
 			}
 		}
 
-		protected void Startup()
+		private void SetWidgetStrings()
 		{
-			int x = InputMarginLeft;
-			int y = MarginTop - Spacing;
-			for (int i = 0; i < buttons.Count; i++)
+			for (int button = 0; button < _buttons.Count; button++)
 			{
-				y += Spacing;
-				if (y > (_panelSize.Height - UIHelper.ScaleY(62)))
+				string s;
+				if (!_realConfigObject.TryGetValue(_buttons[button], out s))
 				{
-					y = MarginTop;
-					x += ColumnWidth;
+					s = "";
 				}
 
-				InputCompositeWidget iw = new InputCompositeWidget
+				_inputs[button].Bindings = s;
+			}
+		}
+
+		private void Startup()
+		{
+			int x = _inputMarginLeft;
+			int y = _marginTop - _spacing;
+			for (int i = 0; i < _buttons.Count; i++)
+			{
+				y += _spacing;
+				if (y > (_panelSize.Height - UIHelper.ScaleY(62)))
+				{
+					y = _marginTop;
+					x += _columnWidth;
+				}
+
+				var iw = new InputCompositeWidget
 				{
 					Location = new Point(x, y),
-					Size = new Size(InputSize, UIHelper.ScaleY(23)),
+					Size = new Size(_inputSize, UIHelper.ScaleY(23)),
 					TabIndex = i,
-					AutoTab = this.Autotab
+					AutoTab = _autotab
 				};
 
 				iw.SetupTooltip(Tooltip, null);
 
 				iw.BringToFront();
 				Controls.Add(iw);
-				Inputs.Add(iw);
-				Label label = new Label
-					{
-						Location = new Point(x + InputSize + LabelPadding, y + UIHelper.ScaleY(3)),
-						Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
-						Text = buttons[i].Replace('_', ' ').Trim(),
-					};
+				_inputs.Add(iw);
+				var label = new Label
+				{
+					Location = new Point(x + _inputSize + _labelPadding, y + UIHelper.ScaleY(3)),
+					Size = new Size(UIHelper.ScaleX(100), UIHelper.ScaleY(15)),
+					Text = _buttons[i].Replace('_', ' ').Trim(),
+				};
 
-				//Tooltip.SetToolTip(label, null); //??? not supported yet
+				////Tooltip.SetToolTip(label, null); //??? not supported yet
 
 				Controls.Add(label);
-				Labels.Add(label);
 			}
 		}
 
 		public void SetAutoTab(bool value)
 		{
-			Inputs.ForEach(x => x.AutoTab = value);
+			_inputs.ForEach(x => x.AutoTab = value);
 		}
 
-		private void clearToolStripMenuItem_Click(object sender, EventArgs e)
+		private void ClearToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			ClearAll();
 		}

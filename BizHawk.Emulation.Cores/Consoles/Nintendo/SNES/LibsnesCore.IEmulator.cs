@@ -24,11 +24,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			if (!_nocallbacks && _tracer.Enabled)
 			{
-				Api.QUERY_set_trace_callback(_tracecb);
+				//Api.QUERY_set_trace_callback(1<<(int)LibsnesApi.eTRACE.SMP, _tracecb); //TEST -- it works but theres no way to control it from the frontend now
+
+				if(IsSGB)
+					Api.QUERY_set_trace_callback(1<<(int)LibsnesApi.eTRACE.GB, _tracecb);
+				else
+					Api.QUERY_set_trace_callback(1<<(int)LibsnesApi.eTRACE.CPU, _tracecb);
 			}
 			else
 			{
-				Api.QUERY_set_trace_callback(null);
+				Api.QUERY_set_trace_callback(0,null);
 			}
 
 			// for deterministic emulation, save the state we're going to use before frame advance

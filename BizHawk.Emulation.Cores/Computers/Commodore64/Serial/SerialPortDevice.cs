@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 {
 	public abstract class SerialPortDevice
 	{
-		[SaveState.DoNotSave]
 		public Func<bool> ReadMasterAtn = () => true;
-		[SaveState.DoNotSave]
 		public Func<bool> ReadMasterClk = () => true;
-		[SaveState.DoNotSave]
 		public Func<bool> ReadMasterData = () => true;
 
 		public virtual void ExecutePhase()
@@ -42,9 +36,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			return false;
 		}
 
-		public virtual void SyncState(Serializer ser)
-		{
-			SaveState.SyncObject(ser, this);
-		}
+		public abstract void SyncState(Serializer ser);
 	}
 }

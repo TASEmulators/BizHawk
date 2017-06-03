@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 
 	public class HexTextBox : TextBox, INumberBox
 	{
-		private string _addressFormatStr = string.Empty;
+		private string _addressFormatStr = "";
 		private long? _maxSize;
 		private bool _nullable = true;
 
@@ -65,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void ResetText()
 		{
-			Text = _nullable ? string.Empty : string.Format(_addressFormatStr, 0);
+			Text = _nullable ? "" : string.Format(_addressFormatStr, 0);
 		}
 
 		protected override void OnKeyPress(KeyPressEventArgs e)
@@ -153,7 +153,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetFromRawInt(int? val)
 		{
-			Text = val.HasValue ? string.Format(_addressFormatStr, val) : string.Empty;
+			Text = val.HasValue ? string.Format(_addressFormatStr, val) : "";
 		}
 
 		public void SetFromLong(long val)
@@ -203,7 +203,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override void ResetText()
 		{
-			Text = _nullable ? string.Empty : "0";
+			Text = _nullable ? "" : "0";
 		}
 
 		protected override void OnKeyDown(KeyEventArgs e)
@@ -278,7 +278,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void SetFromRawInt(int? val)
 		{
-			Text = val.HasValue ? val.ToString() : string.Empty;
+			Text = val.HasValue ? val.ToString() : "";
 		}
 	}
 }
