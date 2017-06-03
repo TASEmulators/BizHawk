@@ -570,36 +570,63 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		public class Settings
 		{
 			[DefaultValue(true)]
+			[DisplayName("Enable Sound Channel 1")]
 			public bool PlaySound0 { get; set; }
+
 			[DefaultValue(true)]
+			[DisplayName("Enable Sound Channel 2")]
 			public bool PlaySound1 { get; set; }
+
 			[DefaultValue(true)]
+			[DisplayName("Enable Sound Channel 3")]
 			public bool PlaySound2 { get; set; }
+
 			[DefaultValue(true)]
+			[DisplayName("Enable Sound Channel 4")]
 			public bool PlaySound3 { get; set; }
+
 			[DefaultValue(true)]
+			[DisplayName("Enable Sound Channel 5")]
 			public bool PlaySound4 { get; set; }
+
 			[DefaultValue(true)]
+			[DisplayName("Enable Sound Channel 6")]
 			public bool PlaySound5 { get; set; }
+
 			[DefaultValue(true)]
+			[DisplayName("Enable Sound Channel 7")]
 			public bool PlaySound6 { get; set; }
+
 			[DefaultValue(true)]
+			[DisplayName("Enable Sound Channel 8")]
 			public bool PlaySound7 { get; set; }
 
 			[DefaultValue(true)]
+			[DisplayName("Enable Background Layer 1")]
 			public bool ShowBg0 { get; set; }
+
 			[DefaultValue(true)]
+			[DisplayName("Enable Background Layer 2")]
 			public bool ShowBg1 { get; set; }
+
 			[DefaultValue(true)]
+			[DisplayName("Enable Background Layer 3")]
 			public bool ShowBg2 { get; set; }
+
 			[DefaultValue(true)]
+			[DisplayName("Enable Background Layer 4")]
 			public bool ShowBg3 { get; set; }
 
 			[DefaultValue(true)]
+			[DisplayName("Show Sprites")]
 			public bool ShowSprites { get; set; }
+
 			[DefaultValue(true)]
+			[DisplayName("Show Window")]
 			public bool ShowWindow { get; set; }
+
 			[DefaultValue(true)]
+			[DisplayName("Show Transparency")]
 			public bool ShowTransparency { get; set; }
 
 			public Settings()
@@ -616,8 +643,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 		public class SyncSettings
 		{
 			[DefaultValue(LibSnes9x.LeftPortDevice.Joypad)]
+			[DisplayName("Left Port")]
+			[Description("Specifies the controller type plugged into the left controller port on the console")]
 			public LibSnes9x.LeftPortDevice LeftPort { get; set; }
+
 			[DefaultValue(LibSnes9x.RightPortDevice.Joypad)]
+			[DisplayName("Right Port")]
+			[Description("Specifies the controller type plugged into the right controller port on the console")]
 			public LibSnes9x.RightPortDevice RightPort { get; set; }
 
 			public SyncSettings()
