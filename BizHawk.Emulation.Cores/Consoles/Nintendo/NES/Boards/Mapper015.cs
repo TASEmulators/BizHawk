@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -23,11 +24,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			prg_bank_mask_8k = (Cart.prg_size / 8) - 1;
 
+			// not a maskable size (BF=10111111)
+			// so just set mask to FF and hope for the best
+			if (Cart.prg_size==192)
+			{
+				prg_bank_mask_8k = 0xFF;
+			}
+
 			prg_banks_8k[0] = 0;
 			prg_banks_8k[1] = 1;
 			prg_banks_8k[2] = 2;
 			prg_banks_8k[3] = 3;
 			ApplyMemoryMapMask(prg_bank_mask_8k, prg_banks_8k);
+
+			SetMirrorType(EMirrorType.Horizontal);
 
 			return true;
 		}
@@ -53,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (mode==2)
 				prg_low_val = prg_low ? 1 : 0;
 			bool mirror = value.Bit(6);
-			SetMirrorType(!mirror ? EMirrorType.Horizontal : EMirrorType.Vertical);
+			SetMirrorType(mirror ? EMirrorType.Horizontal : EMirrorType.Vertical);
 
 			switch(mode)
 			{
