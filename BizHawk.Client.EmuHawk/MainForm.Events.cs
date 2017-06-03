@@ -1211,6 +1211,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
+			Atari7800WithEmu7800MenuItem.Visible = VersionInfo.DeveloperBuild; // Don't expose Atari7800Hawk in releases yet
+
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
 			gBAWithMGBAToolStripMenuItem.Checked = Global.Config.GBA_UsemGBA;
