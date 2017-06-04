@@ -92,9 +92,7 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<N64>(n64Settings);
 
 				// SNES
-				var snesSettings = GetSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>();
-				snesSettings.Profile = "Performance";
-				PutSyncSettings<LibsnesCore>(snesSettings);
+				Global.Config.SNES_InSnes9x = true;
 
 				// Saturn
 				var saturnSettings = GetSyncSettings<Yabause, Yabause.SaturnSyncSettings>();
@@ -148,6 +146,7 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<N64>(n64Settings);
 
 				// SNES
+				Global.Config.SNES_InSnes9x = false;
 				var snesSettings = GetSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>();
 				snesSettings.Profile = "Compatibility";
 				PutSyncSettings<LibsnesCore>(snesSettings);
@@ -207,6 +206,7 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<N64>(n64Settings);
 
 				// SNES
+				Global.Config.SNES_InSnes9x = false;
 				var snesSettings = GetSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>();
 				snesSettings.Profile = "Compatibility";
 				PutSyncSettings<LibsnesCore>(snesSettings);
@@ -266,6 +266,7 @@ namespace BizHawk.Client.EmuHawk
 				PutSyncSettings<N64>(n64Settings);
 
 				// SNES
+				Global.Config.SNES_InSnes9x = false;
 				var snesSettings = GetSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>();
 				snesSettings.Profile = "Compatibility";
 				PutSyncSettings<LibsnesCore>(snesSettings);
