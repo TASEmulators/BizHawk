@@ -2604,12 +2604,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void CoreSelectionContextSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			GBInSGBContextMenuItem.Checked = Global.Config.GB_AsSGB;
-			NesInQuickNESContextMenuItem.Checked = Global.Config.NES_InQuickNES;
-		}
-
 		private void LoadLastRomContextMenuItem_Click(object sender, EventArgs e)
 		{
 			LoadRomFromRecent(Global.Config.RecentRoms.MostRecent);
