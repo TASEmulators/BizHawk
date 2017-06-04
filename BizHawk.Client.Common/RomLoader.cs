@@ -22,6 +22,7 @@ using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.DiscSystem;
 
 using GPGX64 = BizHawk.Emulation.Cores.Consoles.Sega.gpgx64;
+using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
 
 namespace BizHawk.Client.Common
 {
@@ -499,7 +500,8 @@ namespace BizHawk.Client.Common
 
 								break;
 							case "SAT":
-								nextEmulator = new Yabause(nextComm, disc, GetCoreSyncSettings<Yabause>());
+								//nextEmulator = new Yabause(nextComm, disc, GetCoreSyncSettings<Yabause>());
+								nextEmulator = new Saturnus(nextComm, new[] { disc });
 								break;
 							case "PSP":
 								nextEmulator = new PSP(nextComm, file.Name);

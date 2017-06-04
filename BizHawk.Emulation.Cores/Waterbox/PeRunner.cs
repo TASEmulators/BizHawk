@@ -709,9 +709,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 				_syscalls.Init();
 
+				Console.WriteLine("About to enter unmanaged code");
 				if (System.Diagnostics.Debugger.IsAttached)
 				{
-					Console.WriteLine("About to enter unmanaged code");
 					System.Diagnostics.Debugger.Break();
 				}
 
