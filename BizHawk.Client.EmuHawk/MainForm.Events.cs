@@ -1189,33 +1189,29 @@ namespace BizHawk.Client.EmuHawk
 			UpdateKeyPriorityIcon();
 		}
 
-		private void GbInSgbMenuItem_Click(object sender, EventArgs e)
+		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			Global.Config.GB_AsSGB ^= true;
-
-			if (!Emulator.IsNull())
-			{
-				FlagNeedsReboot();
-			}
+			Atari7800CoreSubMenu.Visible = VersionInfo.DeveloperBuild;
+			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
+			
+			
+			allowGameDBCoreOverridesToolStripMenuItem.Checked = Global.Config.CoreForcingViaGameDB;
 		}
 
-		private void NesInQuickNESMenuItem_Click(object sender, EventArgs e)
+		private void NesCoreSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			QuicknesCoreMenuItem.Checked = Global.Config.NES_InQuickNES;
+			NesCoreMenuItem.Checked = !Global.Config.NES_InQuickNES;
+		}
+
+		private void NesCorePick_Click(object sender, EventArgs e)
 		{
 			Global.Config.NES_InQuickNES ^= true;
 
-			if (!Emulator.IsNull())
+			if (Emulator.SystemId == "NES")
 			{
 				FlagNeedsReboot();
 			}
-		}
-
-		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
-			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
-			gBAWithMGBAToolStripMenuItem.Checked = Global.Config.GBA_UsemGBA;
-			Atari7800WithEmu7800MenuItem.Checked = Global.Config.A78_UseEmu7800;
-			allowGameDBCoreOverridesToolStripMenuItem.Checked = Global.Config.CoreForcingViaGameDB;
 		}
 
 		private void CoreSNESSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1228,16 +1224,47 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.SNES_InSnes9x ^= true;
 
-			if (Emulator is Snes9x || Emulator is LibsnesCore)
+			if (Emulator.SystemId == "SNES")
 			{
 				FlagNeedsReboot();
 			}
 		}
 
-		private void Atari7800WithEmu7800MenuItem_Click(object sender, EventArgs e)
+		private void GbaCoreSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			VbaNextCoreMenuItem.Checked = Global.Config.GBA_UsemGBA;
+			MgbaCoreMenuItem.Checked = !Global.Config.GBA_UsemGBA;
+		}
+
+		private void GbaCorePick_Click(object sender, EventArgs e)
+		{
+			Global.Config.GBA_UsemGBA ^= true;
+			if (Emulator.SystemId == "GBA")
+			{
+				FlagNeedsReboot();
+			}
+		}
+
+		private void Atari7800CoreSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			Emu7800CoreMenuItem.Checked = Global.Config.A78_UseEmu7800;
+			Atari7800HawkCoreMenuItem.Checked = !Global.Config.A78_UseEmu7800;
+		}
+
+		private void Atari7800CorePick_Click(object sender, EventArgs e)
 		{
 			Global.Config.A78_UseEmu7800 ^= true;
-			if (Emulator is A7800Hawk || Emulator is Atari7800)
+			if (Emulator.SystemId == "A78")
+			{
+				FlagNeedsReboot();
+			}
+		}
+
+		private void GbInSgbMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_AsSGB ^= true;
+
+			if (!Emulator.IsNull())
 			{
 				FlagNeedsReboot();
 			}
