@@ -248,6 +248,9 @@ namespace BizHawk.Client.Common
 						Bind("SNES", "Toggle OBJ 3"),
 						Bind("SNES", "Toggle OBJ 4"),
 
+						Bind("GB", "GB Toggle BG"),
+						Bind("GB", "GB Toggle Obj"),
+
 						Bind("Analog", "Y Up Small", toolTip: "For Virtual Pad"),
 						Bind("Analog", "Y Up Large", toolTip: "For Virtual Pad"),
 						Bind("Analog", "Y Down Small", toolTip: "For Virtual Pad"),

@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private bool _filterSelectLoPass;
 		private bool _filterSelectHiPass;
 		private int _mixer;
-		private readonly short[] _outputBuffer;
+		private short[] _outputBuffer;
 		private int[] _outputBuffer_filtered;
 		private int[] _outputBuffer_not_filtered;
 		private int _outputBufferIndex;
@@ -91,7 +91,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			for (var i = 0; i < 3; i++)
 				_filterEnable[i] = false;
 
-			_outputBuffer = new short[sampleRate];
 			_outputBuffer_filtered = new int[sampleRate];
 			_outputBuffer_not_filtered = new int[sampleRate];
 		}
@@ -129,7 +128,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void Flush(bool flushFilter)
 		{
-
 			while (_cachedCycles > 0)
 			{
 				_cachedCycles--;
@@ -197,7 +195,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 			}
 			//here we need to apply filtering to the samples and add them back to the buffer
-
 			if (flushFilter)
 			{
 				if (_filterEnable[0] | _filterEnable[1] | _filterEnable[2])
@@ -218,20 +215,21 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 
 				filter_index = _outputBufferIndex;
-				last_filtered_value = _outputBuffer_filtered[_outputBufferIndex - 1];
+				if (_outputBufferIndex>0)
+					last_filtered_value = _outputBuffer_filtered[_outputBufferIndex - 1];
 			}
 
 			// if the filter is off, keep updating the filter index to the most recent Flush
 			if (!(_filterEnable[0] | _filterEnable[1] | _filterEnable[2]))
 			{
 				filter_index = _outputBufferIndex;
-			}
+			}	
 		}
 
 
 		public void filter_operator()
 		{
-			double loc_filterFrequency = (double)(_filterFrequency << 2) + 500;
+			double loc_filterFrequency = (double)(_filterFrequency << 2) + 750;
 
 			double attenuation;
 
@@ -260,24 +258,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				temp_buffer[(int)i] = _outputBuffer_filtered[(int)Math.Floor((i / (nsamp_2-1) * (nsamp - 1))) + filter_index];
 			}
 
-			/*
-			for (int i = 0; i< nsamp; i++)
-			{
-				Console.Write(_outputBuffer_filtered[(int)i + filter_index]);
-				Console.Write(" ");
-			}
-
-			Console.WriteLine(" ");
-			Console.WriteLine("After");
-			*/
-
 			// now we have everything we need to perform the FFT
 			fft.ComputeForward(temp_buffer);
-			
+
 			// for each element in the frequency list, attenuate it according to the specs
-			for (int i = 0; i < nsamp_2; i++)
+			for (int i = 1; i < nsamp_2; i++)
 			{
-				double freq = (i + 1) * ((double)(880*50)/nsamp);
+				double freq = i * ((double)(880*50)/nsamp);
 
 				// add resonance effect
 				// let's assume that frequencies near the peak are doubled in strength at max resonance
@@ -296,10 +283,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				}
 
 				// High pass filter
-				if (_filterSelectHiPass && freq < _filterFrequency)
+				if (_filterSelectHiPass && freq < loc_filterFrequency)
 				{
 					//attenuated at 12db per octave
-					attenuation = Math.Log(freq / _filterFrequency, 2);
+					attenuation = Math.Log(loc_filterFrequency / freq, 2);
 					attenuation = 12 * attenuation;
 					temp_buffer[i] = temp_buffer[i] * Math.Pow(2, -attenuation / 10);
 				}
@@ -308,13 +295,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				if (_filterSelectBandPass)
 				{
 					//attenuated at 6db per octave
-					attenuation = Math.Log(freq / _filterFrequency, 2);
+					attenuation = Math.Log(freq / loc_filterFrequency, 2);
 					attenuation = 6 * attenuation;
 					temp_buffer[i] = temp_buffer[i] * Math.Pow(2, -Math.Abs(attenuation) / 10);
 				}
 				
 			}
-			
+
 			// now transform back into time space and reassemble the attenuated frequency components
 			fft.ComputeReverse(temp_buffer);
 
@@ -335,14 +322,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				
 				if (i<16)
 					_outputBuffer_filtered[(int)i + filter_index] = (int)((last_filtered_value * Math.Pow(15 - i,1) + _outputBuffer_filtered[(int)i + filter_index] * Math.Pow(i,1))/ Math.Pow(15,1));
-				
-				//Console.Write(_outputBuffer_filtered[(int)i + filter_index]);
-				//Console.Write(" ");
 			}
-
-			//Console.WriteLine(" ");
-			//Console.WriteLine("Before");
-
 		}
 		// ----------------------------------
 

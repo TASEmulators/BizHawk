@@ -116,7 +116,10 @@ namespace BizHawk.Client.Common
 
 			["Open"] = 'O',
 			["Close"] = 'C',
-			["Pedal"] = 'P'
+			["Pedal"] = 'P',
+
+			["Next Disk"] = '>',
+			["Previous Disk"] = '<'
 		};
 
 		private readonly Dictionary<string, Dictionary<string, char>> _systemOverrides = new Dictionary<string, Dictionary<string, char>>
@@ -300,8 +303,6 @@ namespace BizHawk.Client.Common
 				["Control"] = 'c' ,
 				["Shift"] = '^' ,
 				["Caps Lock"] = 'C' ,
-				["Next Disk"] = '>' ,
-				["Previous Disk"] = '<' ,
 				["White Apple"] = 'w' ,
 				["Black Apple"] = 'b' ,
 				["L"] = 'L' ,
