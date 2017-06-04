@@ -435,9 +435,6 @@
             this.SavestateTypeDefaultContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SavestateBinaryContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SavestateTextContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.CoreSelectionContextSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.GBInSGBContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.NesInQuickNESContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator37 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripMenuItem66 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem67 = new System.Windows.Forms.ToolStripMenuItem();
@@ -1832,13 +1829,13 @@
             // QuicknesCoreMenuItem
             // 
             this.QuicknesCoreMenuItem.Name = "QuicknesCoreMenuItem";
-            this.QuicknesCoreMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.QuicknesCoreMenuItem.Size = new System.Drawing.Size(152, 22);
             this.QuicknesCoreMenuItem.Text = "QuickNES";
             // 
             // NesCoreMenuItem
             // 
             this.NesCoreMenuItem.Name = "NesCoreMenuItem";
-            this.NesCoreMenuItem.Size = new System.Drawing.Size(126, 22);
+            this.NesCoreMenuItem.Size = new System.Drawing.Size(152, 22);
             this.NesCoreMenuItem.Text = "NesHawk";
             // 
             // CoreSNESSubMenu
@@ -1854,14 +1851,14 @@
             // Coresnes9xMenuItem
             // 
             this.Coresnes9xMenuItem.Name = "Coresnes9xMenuItem";
-            this.Coresnes9xMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.Coresnes9xMenuItem.Size = new System.Drawing.Size(152, 22);
             this.Coresnes9xMenuItem.Text = "Snes9x";
             this.Coresnes9xMenuItem.Click += new System.EventHandler(this.CoreSnesToggle_Click);
             // 
             // CorebsnesMenuItem
             // 
             this.CorebsnesMenuItem.Name = "CorebsnesMenuItem";
-            this.CorebsnesMenuItem.Size = new System.Drawing.Size(109, 22);
+            this.CorebsnesMenuItem.Size = new System.Drawing.Size(152, 22);
             this.CorebsnesMenuItem.Text = "BSNES";
             this.CorebsnesMenuItem.Click += new System.EventHandler(this.CoreSnesToggle_Click);
             // 
@@ -1878,14 +1875,14 @@
             // VbaNextCoreMenuItem
             // 
             this.VbaNextCoreMenuItem.Name = "VbaNextCoreMenuItem";
-            this.VbaNextCoreMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.VbaNextCoreMenuItem.Size = new System.Drawing.Size(152, 22);
             this.VbaNextCoreMenuItem.Text = "VBA-Next";
             this.VbaNextCoreMenuItem.Click += new System.EventHandler(this.GbaCorePick_Click);
             // 
             // MgbaCoreMenuItem
             // 
             this.MgbaCoreMenuItem.Name = "MgbaCoreMenuItem";
-            this.MgbaCoreMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.MgbaCoreMenuItem.Size = new System.Drawing.Size(152, 22);
             this.MgbaCoreMenuItem.Text = "mGBA";
             this.MgbaCoreMenuItem.Click += new System.EventHandler(this.GbaCorePick_Click);
             // 
@@ -3588,7 +3585,7 @@
             this.ShowMenuContextMenuSeparator,
             this.ShowMenuContextMenuItem});
             this.MainFormContextMenu.Name = "contextMenuStrip1";
-            this.MainFormContextMenu.Size = new System.Drawing.Size(217, 490);
+            this.MainFormContextMenu.Size = new System.Drawing.Size(217, 512);
             this.MainFormContextMenu.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.MainFormContextMenu_Closing);
             this.MainFormContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.MainFormContextMenu_Opening);
             // 
@@ -3747,7 +3744,6 @@
             this.customizeToolStripMenuItem,
             this.toolStripSeparator30,
             this.SavestateTypeContextSubMenu,
-            this.CoreSelectionContextSubMenu,
             this.toolStripSeparator37,
             this.toolStripMenuItem66,
             this.toolStripMenuItem67});
@@ -3874,29 +3870,6 @@
             this.SavestateTextContextMenuItem.Name = "SavestateTextContextMenuItem";
             this.SavestateTextContextMenuItem.Size = new System.Drawing.Size(112, 22);
             this.SavestateTextContextMenuItem.Text = "&Text";
-            // 
-            // CoreSelectionContextSubMenu
-            // 
-            this.CoreSelectionContextSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.GBInSGBContextMenuItem,
-            this.NesInQuickNESContextMenuItem});
-            this.CoreSelectionContextSubMenu.Name = "CoreSelectionContextSubMenu";
-            this.CoreSelectionContextSubMenu.Size = new System.Drawing.Size(159, 22);
-            this.CoreSelectionContextSubMenu.Text = "Core Selection";
-            this.CoreSelectionContextSubMenu.DropDownOpened += new System.EventHandler(this.CoreSelectionContextSubMenu_DropDownOpened);
-            // 
-            // GBInSGBContextMenuItem
-            // 
-            this.GBInSGBContextMenuItem.Name = "GBInSGBContextMenuItem";
-            this.GBInSGBContextMenuItem.Size = new System.Drawing.Size(163, 22);
-            this.GBInSGBContextMenuItem.Text = "GB in SGB";
-            this.GBInSGBContextMenuItem.Click += new System.EventHandler(this.GbInSgbMenuItem_Click);
-            // 
-            // NesInQuickNESContextMenuItem
-            // 
-            this.NesInQuickNESContextMenuItem.Name = "NesInQuickNESContextMenuItem";
-            this.NesInQuickNESContextMenuItem.Size = new System.Drawing.Size(163, 22);
-            this.NesInQuickNESContextMenuItem.Text = "NES in QuickNES";
             // 
             // toolStripSeparator37
             // 
@@ -4294,9 +4267,6 @@
 		private System.Windows.Forms.ToolStripMenuItem SavestateTypeDefaultContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SavestateBinaryContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SavestateTextContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem CoreSelectionContextSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem GBInSGBContextMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem NesInQuickNESContextMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator37;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem66;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem67;
