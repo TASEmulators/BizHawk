@@ -67,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public class SnesSyncSettings
 		{
-			public string Profile { get; set; } = "Performance"; // "Accuracy", and "Compatibility" are the other choicec, todo: make this an enum
+			public string Profile { get; set; } = "Compatibility"; // "Accuracy", and "Compatibility" are the other choicec, todo: make this an enum
 
 			public LibsnesControllerDeck.ControllerType LeftPort { get; set; } = LibsnesControllerDeck.ControllerType.Gamepad;
 			public LibsnesControllerDeck.ControllerType RightPort { get; set; } = LibsnesControllerDeck.ControllerType.Gamepad;
