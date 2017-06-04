@@ -1221,48 +1221,10 @@ namespace BizHawk.Client.EmuHawk
 		private void CoreSNESSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			Coresnes9xMenuItem.Checked = Global.Config.SNES_InSnes9x;
-			Coresnes9xMenuItem.Visible = VersionInfo.DeveloperBuild;
-
-			LibsnesCore.SnesSyncSettings sss = (LibsnesCore.SnesSyncSettings)Global.Config.GetCoreSyncSettings<LibsnesCore>()
-				?? new LibsnesCore.SnesSyncSettings();
-
-			CorebsnesPerformanceMenuItem.Checked = sss.Profile == "Performance";
-			CorebsnesCompatibilityMenuItem.Checked = sss.Profile == "Compatibility";
+			CorebsnesMenuItem.Checked = !Global.Config.SNES_InSnes9x;
 		}
 
-		private void CorebsnesPerformanceMenuItem_Click(object sender, EventArgs e)
-		{
-			LibsnesCore.SnesSyncSettings sss = (LibsnesCore.SnesSyncSettings)Global.Config.GetCoreSyncSettings<LibsnesCore>()
-				?? new LibsnesCore.SnesSyncSettings();
-
-			string orig = sss.Profile;
-
-			sss.Profile = "Performance";
-			Global.Config.PutCoreSyncSettings<LibsnesCore>(sss);
-
-			if (Emulator is LibsnesCore && orig != sss.Profile)
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void CorebsnesCompatibilityMenuItem_Click(object sender, EventArgs e)
-		{
-			LibsnesCore.SnesSyncSettings sss = (LibsnesCore.SnesSyncSettings)Global.Config.GetCoreSyncSettings<LibsnesCore>()
-				?? new LibsnesCore.SnesSyncSettings();
-
-			string orig = sss.Profile;
-
-			sss.Profile = "Compatibility";
-			Global.Config.PutCoreSyncSettings<LibsnesCore>(sss);
-
-			if (Emulator is LibsnesCore && orig != sss.Profile)
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void CoreSnes9xMenuItem_Click(object sender, EventArgs e)
+		private void CoreSnesToggle_Click(object sender, EventArgs e)
 		{
 			Global.Config.SNES_InSnes9x ^= true;
 
