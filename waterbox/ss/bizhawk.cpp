@@ -9,10 +9,10 @@
 #define EXPORT extern "C" ECL_EXPORT
 using namespace MDFN_IEN_SS;
 
-static int32 (*FirmwareSizeCallback)(const char* filename);
-static void (*FirmwareDataCallback)(const char* filename, uint8* dest);
+static int32 (*FirmwareSizeCallback)(const char *filename);
+static void (*FirmwareDataCallback)(const char *filename, uint8 *dest);
 
-std::unique_ptr<MemoryStream> GetFirmware(const char* filename)
+std::unique_ptr<MemoryStream> GetFirmware(const char *filename)
 {
 	int32 length = FirmwareSizeCallback(filename);
 	auto buffer = new uint8[length];
@@ -24,7 +24,7 @@ std::unique_ptr<MemoryStream> GetFirmware(const char* filename)
 	return ms;
 }
 
-EXPORT void SetFirmwareCallbacks(int32 (*sizecallback)(const char *filename), void (*datacallback)(const char* filename, uint8* dest))
+EXPORT void SetFirmwareCallbacks(int32 (*sizecallback)(const char *filename), void (*datacallback)(const char *filename, uint8 *dest))
 {
 	FirmwareSizeCallback = sizecallback;
 	FirmwareDataCallback = datacallback;
@@ -37,7 +37,7 @@ struct FrontendTOC
 	int32 DiskType;
 	struct
 	{
-		int32 Address;
+		int32 Adr;
 		int32 Control;
 		int32 Lba;
 		int32 Valid;
@@ -55,7 +55,7 @@ EXPORT void SetCDCallbacks(void (*toccallback)(int disk, FrontendTOC *dest), voi
 
 class MyCDIF : public CDIF
 {
-	private:
+  private:
 	int disk;
 
   public:
@@ -68,10 +68,10 @@ class MyCDIF : public CDIF
 		disc_toc.disc_type = t.DiskType;
 		for (int i = 0; i < 101; i++)
 		{
-			disc_toc.tracks[i].adr = t.Tracks[i].Address;
+			disc_toc.tracks[i].adr = t.Tracks[i].Adr;
 			disc_toc.tracks[i].control = t.Tracks[i].Control;
 			disc_toc.tracks[i].lba = t.Tracks[i].Lba;
-			disc_toc.tracks[i].valid = t.Tracks[i].Valid;			
+			disc_toc.tracks[i].valid = t.Tracks[i].Valid;
 		}
 	}
 
@@ -91,7 +91,7 @@ class MyCDIF : public CDIF
 };
 
 static std::vector<CDIF *> CDInterfaces;
-static uint32* FrameBuffer;
+static uint32 *FrameBuffer;
 static uint8 IsResetPushed; // 1 or 0
 
 namespace MDFN_IEN_SS
@@ -100,7 +100,7 @@ extern bool LoadCD(std::vector<CDIF *> *CDInterfaces);
 }
 EXPORT bool Init(int numDisks)
 {
-	FrameBuffer = (uint32*)alloc_invisible(1024 * 1024);
+	FrameBuffer = (uint32 *)alloc_invisible(1024 * 1024);
 	for (int i = 0; i < numDisks; i++)
 		CDInterfaces.push_back(new MyCDIF(i));
 	auto ret = LoadCD(&CDInterfaces);
@@ -140,9 +140,11 @@ extern void Emulate(EmulateSpecStruct *espec_arg);
 
 struct FrameAdvanceInfo
 {
-	int16* SoundBuf;
+	int16 *SoundBuf;
 
-	uint32* Pixels;
+	uint32 *Pixels;
+
+	uint8* Controllers;
 
 	int64 MasterCycles;
 
@@ -164,7 +166,9 @@ struct FrameAdvanceInfo
 	// bool InterlaceField;
 };
 
-EXPORT void FrameAdvance(FrameAdvanceInfo& f)
+static uint8 ControllerInput[12 * 32];
+
+EXPORT void FrameAdvance(FrameAdvanceInfo &f)
 {
 	EmulateSpecStruct e;
 	int32 LineWidths[1024];
@@ -173,6 +177,8 @@ EXPORT void FrameAdvance(FrameAdvanceInfo& f)
 	e.LineWidths = LineWidths;
 	e.SoundBuf = f.SoundBuf;
 	e.SoundBufMaxSize = f.SoundBufMaxSize;
+	memcpy(ControllerInput, f.Controllers, sizeof(ControllerInput));
+
 	Emulate(&e);
 	f.SoundBufSize = e.SoundBufSize;
 	f.MasterCycles = e.MasterCycles;
@@ -181,8 +187,8 @@ EXPORT void FrameAdvance(FrameAdvanceInfo& f)
 	for (int i = 0; i < e.h; i++)
 		w = std::max(w, LineWidths[i]);
 
-	const uint32* src = FrameBuffer;
-	uint32* dst = f.Pixels;
+	const uint32 *src = FrameBuffer;
+	uint32 *dst = f.Pixels;
 	const int srcp = 1024;
 	const int dstp = w;
 	src += e.y * srcp + e.x;
@@ -193,6 +199,26 @@ EXPORT void FrameAdvance(FrameAdvanceInfo& f)
 	}
 	f.Width = w;
 	f.Height = e.h;
+}
+
+static const char *DeviceNames[] =
+{
+	"none",
+	"gamepad",
+	"3dpad",
+	"mouse",
+	"wheel",
+	"mission",
+	"dmission",
+	"keyboard"
+};
+
+EXPORT void SetupInput(const int* portdevices, const int* multitaps)
+{
+	for (int i = 0; i < 2; i++)
+		SMPC_SetMultitap(i, multitaps[i]);
+	for (int i = 0; i < 12; i++)
+		SMPC_SetInput(i, DeviceNames[portdevices[i]], ControllerInput + i * 32);
 }
 
 /*void VDP2REND_SetGetVideoParams(MDFNGI* gi, const bool caspect, const int sls, const int sle, const bool show_h_overscan, const bool dohblend)
@@ -240,7 +266,6 @@ void SetGetVideoParams(MDFNGI* gi, const bool caspect, const int sls, const int 
 
  VDP2REND_SetGetVideoParams(gi, caspect, sls, sle, show_h_overscan, dohblend);
 }*/
-
 
 // if (BackupRAM_Dirty)SaveBackupRAM();
 // if (CART_GetClearNVDirty())SaveCartNV();

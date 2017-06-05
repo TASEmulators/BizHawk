@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			[StructLayout(LayoutKind.Sequential)]
 			public struct Track
 			{
-				public int Address;
+				public int Adr;
 				public int Control;
 				public int Lba;
 				public int Valid;
@@ -44,14 +44,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			[FieldOffset(8)]
 			public IntPtr Pixels;
 			[FieldOffset(16)]
-			public long MasterCycles;
+			public IntPtr Controllers;
 			[FieldOffset(24)]
-			public int SoundBufMaxSize;
-			[FieldOffset(28)]
-			public int SoundBufSize;
+			public long MasterCycles;
 			[FieldOffset(32)]
-			public int Width;
+			public int SoundBufMaxSize;
 			[FieldOffset(36)]
+			public int SoundBufSize;
+			[FieldOffset(40)]
+			public int Width;
+			[FieldOffset(44)]
 			public int Height;
 		};
 
@@ -76,5 +78,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		public abstract void SetDisk(int disk, bool open);
 		[BizImport(CC)]
 		public abstract void FrameAdvance([In, Out]FrameAdvanceInfo f);
+		[BizImport(CC)]
+		public abstract void SetupInput(int[] portdevices, int[] multitaps);
 	}
 }

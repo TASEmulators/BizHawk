@@ -20,6 +20,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		private Disc[] _disks;
 		private DiscSectorReader[] _diskReaders;
 		private bool _isPal;
+		private SaturnusControllerDeck _controllerDeck;
 
 		public Saturnus(CoreComm comm, IEnumerable<Disc> disks)
 		{
@@ -45,10 +46,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 			SetFirmwareCallbacks();
 			SetCdCallbacks();
-
 			if (!_core.Init(_disks.Length))
 				throw new InvalidOperationException("Core rejected the disks!");
 			ClearAllCallbacks();
+
+			_controllerDeck = new SaturnusControllerDeck(new[] { false, false },
+				new[] { SaturnusControllerDeck.Device.Gamepad, SaturnusControllerDeck.Device.None },
+				_core);
+			ControllerDefinition = _controllerDeck.Definition;
+			ControllerDefinition.Name = "Saturn Controller";
+			ControllerDefinition.BoolButtons.Add("Power");
+			ControllerDefinition.BoolButtons.Add("Reset"); // not yet hooked up
+
 			_exe.Seal();
 			SetCdCallbacks();
 			_core.SetDisk(0, false);
@@ -56,14 +65,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
+			if (controller.IsPressed("Power"))
+				_core.HardReset();
+
 			fixed (short* _sp = _soundBuffer)
-				fixed (int* _vp = _videoBuffer)
+			fixed (int* _vp = _videoBuffer)
+			fixed (byte* _cp = _controllerDeck.Poll(controller))
 			{
 				var info = new LibSaturnus.FrameAdvanceInfo
 				{
 					SoundBuf = (IntPtr)_sp,
 					SoundBufMaxSize = _soundBuffer.Length / 2,
-					Pixels = (IntPtr)_vp
+					Pixels = (IntPtr)_vp,
+					Controllers = (IntPtr)_cp
 				};
 
 				_core.FrameAdvance(info);
@@ -101,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		public string SystemId { get { return "SAT"; } }
 		public bool DeterministicEmulation { get; private set; }
 		public CoreComm CoreComm { get; }
-		public ControllerDefinition ControllerDefinition => NullController.Instance.Definition;
+		public ControllerDefinition ControllerDefinition { get; }
 
 		#region Callbacks
 
@@ -176,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			t.DiskType = (int)tin.Session1Format;
 			for (int i = 0; i < 101; i++)
 			{
-				t.Tracks[i].Address = 1; // ????
+				t.Tracks[i].Adr = 1; // ????
 				t.Tracks[i].Lba = tin.TOCItems[i].LBA;
 				t.Tracks[i].Control = (int)tin.TOCItems[i].Control;
 				t.Tracks[i].Valid = tin.TOCItems[i].Exists ? 1 : 0;
@@ -184,6 +198,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		}
 		private void CDSectorCallback(int disk, int lba, IntPtr dest)
 		{
+			Console.WriteLine("servicing " + lba);
 			var buff = new byte[2448];
 			_diskReaders[disk].ReadLBA_2448(lba, buff, 0);
 			Marshal.Copy(buff, 0, dest, 2448);
