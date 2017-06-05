@@ -2686,8 +2686,11 @@ static int32 ApplyHBlend(uint32* const target, int32 w)
  #undef BHALF
 }
 
-/*static void ReorderRGB(uint32* target, const unsigned w, const unsigned Rshift, const unsigned Gshift, const unsigned Bshift)
+static void ReorderRGB(uint32* target, const unsigned w)
 {
+	const unsigned Rshift = 16;
+	const unsigned Gshift = 8;
+	const unsigned Bshift = 0;
  assert(!(w & 1));
  uint32* const bound = target + w;
 
@@ -2706,7 +2709,7 @@ static int32 ApplyHBlend(uint32* const target, int32 w)
 
   target += 2;
  }
-}*/
+}
 
 static NO_INLINE void DrawLine(const uint16 out_line, const uint16 vdp2_line, const bool field)
 {
@@ -2786,7 +2789,7 @@ static NO_INLINE void DrawLine(const uint16 out_line, const uint16 vdp2_line, co
  back_rgb24 = rgb15_to_rgb24(CurBackColor);
 
  if(BorderMode)
-  border_ncf = back_rgb24;
+  border_ncf = back_rgb24 & 0xff00 | back_rgb24 << 16 && 0xff0000 | back_rgb24 >> 16 & 0xff;
  else
   border_ncf = 0;
 
@@ -3168,7 +3171,7 @@ static NO_INLINE void DrawLine(const uint16 out_line, const uint16 vdp2_line, co
     }
    }
    MixIt[rbg1en][special][CCRTMD][CCMD](target + tvxo, vdp2_line, w, back_rgb24, blursrc);
-   //ReorderRGB(target + tvxo, w, espec->surface->format.Rshift, espec->surface->format.Gshift, espec->surface->format.Bshift);
+   ReorderRGB(target + tvxo, w);
   }
 
   //
