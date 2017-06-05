@@ -70,7 +70,6 @@ namespace MonoMacWrapper
 			//setup the GL context manager, needed for coping with multiple opengl cores vs opengl display method
 			GLManager.CreateInstance(GlobalWin.IGL_GL);
 			GlobalWin.GLManager = GLManager.Instance;
-			GlobalWin.CR_GL = GlobalWin.GLManager.GetContextForIGL(GlobalWin.GL);
 			GlobalWin.GL = GlobalWin.IGL_GL;
 
 			BizHawk.Common.HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();

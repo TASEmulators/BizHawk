@@ -150,8 +150,8 @@
 		9E81CA5A1B3CF6E000B0C884 /* video.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = video.cpp; sourceTree = "<group>"; };
 		9E8EC4ED1C2B57FB00D5577D /* base.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = base.cpp; sourceTree = "<group>"; };
 		9E8EC4F61C2B5A5900D5577D /* core.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = core.cpp; path = core/core.cpp; sourceTree = "<group>"; };
-		9EE26BC11C2A57BC002A2034 /* libsnes-compatibility.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libsnes-compatibility.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
-		9EE26BC91C2A57CE002A2034 /* libsnes-performance.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libsnes-performance.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9EE26BC11C2A57BC002A2034 /* libsneshawk-32-compatibility.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libsneshawk-32-compatibility.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
+		9EE26BC91C2A57CE002A2034 /* libsneshawk-32-performance.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = "libsneshawk-32-performance.dylib"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -187,8 +187,8 @@
 		9E81C6F91B3CF4C100B0C884 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				9EE26BC11C2A57BC002A2034 /* libsnes-compatibility.dylib */,
-				9EE26BC91C2A57CE002A2034 /* libsnes-performance.dylib */,
+				9EE26BC11C2A57BC002A2034 /* libsneshawk-32-compatibility.dylib */,
+				9EE26BC91C2A57CE002A2034 /* libsneshawk-32-performance.dylib */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -660,9 +660,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		9EE26BC01C2A57BC002A2034 /* snes-compatibility */ = {
+		9EE26BC01C2A57BC002A2034 /* sneshawk-32-compatibility */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9EE26BC41C2A57BC002A2034 /* Build configuration list for PBXNativeTarget "snes-compatibility" */;
+			buildConfigurationList = 9EE26BC41C2A57BC002A2034 /* Build configuration list for PBXNativeTarget "sneshawk-32-compatibility" */;
 			buildPhases = (
 				9EE26BBD1C2A57BC002A2034 /* Sources */,
 				9EE26BBE1C2A57BC002A2034 /* Frameworks */,
@@ -672,14 +672,14 @@
 			);
 			dependencies = (
 			);
-			name = "snes-compatibility";
+			name = "sneshawk-32-compatibility";
 			productName = "snes-compatibility";
-			productReference = 9EE26BC11C2A57BC002A2034 /* libsnes-compatibility.dylib */;
+			productReference = 9EE26BC11C2A57BC002A2034 /* libsneshawk-32-compatibility.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
-		9EE26BC81C2A57CE002A2034 /* snes-performance */ = {
+		9EE26BC81C2A57CE002A2034 /* sneshawk-32-performance */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 9EE26BCA1C2A57CE002A2034 /* Build configuration list for PBXNativeTarget "snes-performance" */;
+			buildConfigurationList = 9EE26BCA1C2A57CE002A2034 /* Build configuration list for PBXNativeTarget "sneshawk-32-performance" */;
 			buildPhases = (
 				9EE26BC51C2A57CE002A2034 /* Sources */,
 				9EE26BC61C2A57CE002A2034 /* Frameworks */,
@@ -689,9 +689,9 @@
 			);
 			dependencies = (
 			);
-			name = "snes-performance";
+			name = "sneshawk-32-performance";
 			productName = "snes-performance";
-			productReference = 9EE26BC91C2A57CE002A2034 /* libsnes-performance.dylib */;
+			productReference = 9EE26BC91C2A57CE002A2034 /* libsneshawk-32-performance.dylib */;
 			productType = "com.apple.product-type.library.dynamic";
 		};
 /* End PBXNativeTarget section */
@@ -723,8 +723,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				9EE26BC01C2A57BC002A2034 /* snes-compatibility */,
-				9EE26BC81C2A57CE002A2034 /* snes-performance */,
+				9EE26BC01C2A57BC002A2034 /* sneshawk-32-compatibility */,
+				9EE26BC81C2A57CE002A2034 /* sneshawk-32-performance */,
 			);
 		};
 /* End PBXProject section */
@@ -1020,7 +1020,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9EE26BC41C2A57BC002A2034 /* Build configuration list for PBXNativeTarget "snes-compatibility" */ = {
+		9EE26BC41C2A57BC002A2034 /* Build configuration list for PBXNativeTarget "sneshawk-32-compatibility" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9EE26BC21C2A57BC002A2034 /* Debug */,
@@ -1029,7 +1029,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		9EE26BCA1C2A57CE002A2034 /* Build configuration list for PBXNativeTarget "snes-performance" */ = {
+		9EE26BCA1C2A57CE002A2034 /* Build configuration list for PBXNativeTarget "sneshawk-32-performance" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				9EE26BCB1C2A57CE002A2034 /* Debug */,

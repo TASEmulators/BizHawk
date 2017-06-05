@@ -178,8 +178,6 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 				using (GlobalWin.GL.CreateRenderer()) { }
-				#if WINDOWS
-				#endif
 			}
 			catch(Exception ex)
 			{
