@@ -58,13 +58,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			prg_mask_32k = Cart.prg_size / 32 - 1;
-			
-			// hardware tests show that only 256kb of PRG is possible to acess
-			if (Cart.prg_size>256)
-			{
-				prg_mask_32k = 256 / 32 - 1;
-			}
-			
 			SetMirrorType(NES.NESBoardBase.EMirrorType.OneScreenA);
 
 			return true;
