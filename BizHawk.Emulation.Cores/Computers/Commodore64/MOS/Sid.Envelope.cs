@@ -64,6 +64,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					_lfsr = ((_lfsr << 1) & 0x7FFF) | feedback;
 					return;
 				}
+
 				_lfsr = 0x7FFF;
 
 				if (_state != StateAttack && ++_expCounter != _expPeriod)

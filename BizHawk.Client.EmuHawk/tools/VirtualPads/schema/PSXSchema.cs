@@ -12,7 +12,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			var psx = ((Octoshock)core);
+			var psx = (Octoshock)core;
 			var settings = psx.GetSyncSettings();
 
 			var fioConfig = settings.FIOConfig.ToLogical();
@@ -43,7 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			yield return ConsoleButtons(psx);
 		}
 
-		public static PadSchema DualShockController(int controller)
+		private static PadSchema DualShockController(int controller)
 		{
 			return new PadSchema
 			{
@@ -202,7 +202,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		public static PadSchema GamePadController(int controller)
+		private static PadSchema GamePadController(int controller)
 		{
 			return new PadSchema
 			{
@@ -456,12 +456,12 @@ namespace BizHawk.Client.EmuHawk
 					},
 					new PadSchema.ButtonSchema
 					{
-						Name = "Disc Select", //not really, but shuts up a warning
+						Name = "Disc Select", // not really, but shuts up a warning
 						Type = PadSchema.PadInputType.DiscManager,
-						Location = new Point(10,54),
-						TargetSize = new Size(300,300),
+						Location = new Point(10, 54),
+						TargetSize = new Size(300, 300),
 						OwnerEmulator = psx,
-						SecondaryNames = new [] { "Open", "Close", "Disc Select" }
+						SecondaryNames = new[] { "Open", "Close", "Disc Select" }
 					}
 				}
 			};

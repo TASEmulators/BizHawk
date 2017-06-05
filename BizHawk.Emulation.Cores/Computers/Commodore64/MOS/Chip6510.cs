@@ -7,12 +7,10 @@ using BizHawk.Emulation.Cores.Components.M6502;
 namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	// an extension of the 6502 processor
-
 	public sealed partial class Chip6510
 	{
 		// ------------------------------------
-
-		private MOS6502X _cpu;
+		private readonly MOS6502X _cpu;
 		private bool _pinNmiLast;
 		private LatchedPort _port;
 		private bool _thisNmi;
@@ -47,10 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			HardReset();
 		}
 
-		public string TraceHeader
-		{
-			get { return "6510: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR)"; }
-		}
+		public string TraceHeader => "6510: PC, machine code, mnemonic, operands, registers (A, X, Y, P, SP), flags (NVTBDIZCR)";
 
 		public Action<TraceInfo> TraceCallback
 		{
@@ -89,7 +84,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		}
 
 		// ------------------------------------
-
 		public void ExecutePhase()
 		{
 			_cpu.RDY = ReadRdy();
@@ -116,7 +110,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		}
 
 		// ------------------------------------
-
 		public ushort Pc
 		{
 			get
@@ -153,14 +146,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			set { _cpu.S = unchecked((byte)value); }
 		}
 
-		public bool FlagC { get { return _cpu.FlagC; } }
-		public bool FlagZ { get { return _cpu.FlagZ; } }
-		public bool FlagI { get { return _cpu.FlagI; } }
-		public bool FlagD { get { return _cpu.FlagD; } }
-		public bool FlagB { get { return _cpu.FlagB; } }
-		public bool FlagV { get { return _cpu.FlagV; } }
-		public bool FlagN { get { return _cpu.FlagN; } }
-		public bool FlagT { get { return _cpu.FlagT; } }
+		public bool FlagC => _cpu.FlagC;
+		public bool FlagZ => _cpu.FlagZ;
+		public bool FlagI => _cpu.FlagI;
+		public bool FlagD => _cpu.FlagD;
+		public bool FlagB => _cpu.FlagB;
+		public bool FlagV => _cpu.FlagV;
+		public bool FlagN => _cpu.FlagN;
+		public bool FlagT => _cpu.FlagT;
 
 		public int Peek(int addr)
 		{
@@ -191,17 +184,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			}
 		}
 
-		public int PortData
-		{
-			get
-			{
-				return _port.ReadInput(ReadPort());
-			}
-			set
-			{
-				_port.Latch = value;
-			}
-		}
+		public int PortData => _port.ReadInput(ReadPort());
 
 		public int Read(int addr)
 		{
@@ -218,7 +201,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		public void SyncState(Serializer ser)
 		{
+			ser.BeginSection("Chip6510Cpu");
 			_cpu.SyncState(ser);
+			ser.EndSection();
+
 			ser.Sync("_pinNmiLast", ref _pinNmiLast);
 
 			ser.BeginSection("_port");

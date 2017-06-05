@@ -81,7 +81,7 @@
 			this.OK.TabIndex = 0;
 			this.OK.Text = "&OK";
 			this.OK.UseVisualStyleBackColor = true;
-			this.OK.Click += new System.EventHandler(this.OK_Click);
+			this.OK.Click += new System.EventHandler(this.Ok_Click);
 			// 
 			// cbEnableNormal
 			// 
@@ -143,7 +143,7 @@
 			this.tbRWFF.Size = new System.Drawing.Size(42, 164);
 			this.tbRWFF.TabIndex = 13;
 			this.tbRWFF.TickFrequency = 10;
-			this.tbRWFF.Scroll += new System.EventHandler(this.tbRWFF_Scroll);
+			this.tbRWFF.Scroll += new System.EventHandler(this.TbRwff_Scroll);
 			// 
 			// label2
 			// 
@@ -175,7 +175,7 @@
 			this.tbNormal.Size = new System.Drawing.Size(42, 164);
 			this.tbNormal.TabIndex = 0;
 			this.tbNormal.TickFrequency = 10;
-			this.tbNormal.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+			this.tbNormal.Scroll += new System.EventHandler(this.TrackBar1_Scroll);
 			// 
 			// nudNormal
 			// 

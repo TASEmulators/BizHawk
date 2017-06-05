@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 			bv.Size = pixsize;
 			bv.ChangeBitmapSize(pixsize);
 
-			var lockdata = bv.bmp.LockBits(new Rectangle(Point.Empty, pixsize), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockdata = bv.BMP.LockBits(new Rectangle(Point.Empty, pixsize), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int pitch = lockdata.Stride / sizeof(int);
 			int* dest = (int*)lockdata.Scan0;
 
@@ -77,13 +77,13 @@ namespace BizHawk.Client.EmuHawk
 				dest -= 8 * tilew;
 				dest += 8 * pitch;
 			}
-			bv.bmp.UnlockBits(lockdata);
+			bv.BMP.UnlockBits(lockdata);
 			bv.Refresh();
 		}
 
 		unsafe void DrawPalettes(int *pal)
 		{
-			var lockdata = bmpViewPal.bmp.LockBits(new Rectangle(0, 0, 16, 4), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockdata = bmpViewPal.BMP.LockBits(new Rectangle(0, 0, 16, 4), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int pitch = lockdata.Stride / sizeof(int);
 			int* dest = (int*)lockdata.Scan0;
 
@@ -93,13 +93,13 @@ namespace BizHawk.Client.EmuHawk
 					*dest++ = *pal++;
 				dest += pitch - 16;
 			}
-			bmpViewPal.bmp.UnlockBits(lockdata);
+			bmpViewPal.BMP.UnlockBits(lockdata);
 			bmpViewPal.Refresh();
 		}
 
 		unsafe void DrawTiles()
 		{
-			var lockdata = bmpViewTiles.bmp.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			var lockdata = bmpViewTiles.BMP.LockBits(new Rectangle(0, 0, 512, 256), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int pitch = lockdata.Stride / sizeof(int);
 			int* dest = (int*)lockdata.Scan0;
 			byte* src = (byte*)View.PatternCache;
@@ -115,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 				if ((tile & 63) == 0)
 					dest += 8 * pitch - 512;
 			}
-			bmpViewTiles.bmp.UnlockBits(lockdata);
+			bmpViewTiles.BMP.UnlockBits(lockdata);
 			bmpViewTiles.Refresh();
 		}
 
@@ -186,7 +186,7 @@ namespace BizHawk.Client.EmuHawk
 				if (found is BmpView)
 				{
 					var bv = found as BmpView;
-					Clipboard.SetImage(bv.bmp);
+					Clipboard.SetImage(bv.BMP);
 				}
 			}
 		}

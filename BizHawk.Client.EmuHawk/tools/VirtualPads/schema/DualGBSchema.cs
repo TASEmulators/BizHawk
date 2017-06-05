@@ -3,7 +3,7 @@ using System.Drawing;
 
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
+namespace BizHawk.Client.EmuHawk
 {
 	[SchemaAttributes("DGB")]
 	public class DualGBSchema : IVirtualPadSchema
@@ -86,5 +86,4 @@ namespace BizHawk.Client.EmuHawk.tools.VirtualPads.schema
 			};
 		}
 	}
-	
 }

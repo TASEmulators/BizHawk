@@ -78,8 +78,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 							}
 						}
 					}
+
 					activeColumns >>= 1;
 				}
+
 				return result;
 			}
 
@@ -98,11 +100,14 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 							{
 								result &= ~(1 << r);
 							}
+
 							i += 0x8;
 						}
 					}
+
 					activeRows >>= 1;
 				}
+
 				return result;
 			}
 

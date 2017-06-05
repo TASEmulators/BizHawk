@@ -50,18 +50,7 @@ namespace BizHawk.Emulation.Common
 			}
 		}
 
-		public IEnumerable<SystemInfo> AllSystems
-		{
-			get
-			{
-				if (VersionInfo.DeveloperBuild)
-				{
-					return _systems;
-				}
-
-				return _systems.Where(s => s.SystemId != "C64");
-			}
-		}
+		public IEnumerable<SystemInfo> AllSystems => _systems;
 
 		public class SystemInfo
 		{

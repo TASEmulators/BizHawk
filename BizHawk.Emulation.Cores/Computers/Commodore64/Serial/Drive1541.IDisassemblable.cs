@@ -12,16 +12,17 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 
 		string IDisassemblable.Cpu
 		{
-			get { return "Disk Drive 6502"; }
+			get
+			{
+				return "Disk Drive 6502";
+			}
+
 			set
 			{
 			}
 		}
 
-		string IDisassemblable.PCRegisterName
-		{
-			get { return "PC"; }
-		}
+		string IDisassemblable.PCRegisterName => "PC";
 
 		string IDisassemblable.Disassemble(MemoryDomain m, uint addr, out int length)
 		{

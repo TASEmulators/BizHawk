@@ -72,7 +72,7 @@
 			this.checkBoxFamicom.TabIndex = 4;
 			this.checkBoxFamicom.Text = "Famicom";
 			this.checkBoxFamicom.UseVisualStyleBackColor = true;
-			this.checkBoxFamicom.CheckedChanged += new System.EventHandler(this.checkBoxFamicom_CheckedChanged);
+			this.checkBoxFamicom.CheckedChanged += new System.EventHandler(this.CheckBoxFamicom_CheckedChanged);
 			// 
 			// label5
 			// 
@@ -149,7 +149,6 @@
 			this.Name = "NesControllerSettings";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "NES Controller Settings";
-			this.Load += new System.EventHandler(this.NesControllerSettings_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

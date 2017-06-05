@@ -9,12 +9,15 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 
 		public override void ExecutePhase2()
 		{
-			if (_tape != null && !ReadMotor()) _tape.ExecuteCycle();
+			if (_tape != null && !ReadMotor())
+			{
+				_tape.ExecuteCycle();
+			}
 		}
 
 		public override void HardReset()
 		{
-			if (_tape != null) _tape.Rewind();
+			_tape?.Rewind();
 		}
 
 		public override bool ReadDataInputBuffer()
@@ -41,5 +44,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cassette
 		{
 			_tape = null;
 		}
+
+		// Exposed for memory domains, should not be used for actual emulation implementation
+		public override byte[] TapeDataDomain => _tape.TapeDataDomain;
 	}
 }

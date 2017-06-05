@@ -96,27 +96,27 @@ namespace BizHawk.Client.EmuHawk
 				snesSettings.Profile = "Performance";
 				PutSyncSettings<LibsnesCore>(snesSettings);
 
-				//Saturn
+				// Saturn
 				var saturnSettings = GetSyncSettings<Yabause, Yabause.SaturnSyncSettings>();
 				saturnSettings.SkipBios = false;
 				PutSyncSettings<Yabause>(saturnSettings);
 
-				//Genesis
+				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
 				genesisSettings.Region = LibGPGX.Region.Autodetect;
 				PutSyncSettings<GPGX>(genesisSettings);
 
-				//SMS
+				// SMS
 				var smsSettings = GetSyncSettings<SMS, SMS.SMSSyncSettings>();
 				smsSettings.UseBIOS = false;
 				PutSyncSettings<SMS>(smsSettings);
 
-				//Coleco
+				// Coleco
 				var colecoSettings = GetSyncSettings<ColecoVision, ColecoVision.ColecoSyncSettings>();
 				colecoSettings.SkipBiosIntro = false;
 				PutSyncSettings<ColecoVision>(colecoSettings);
 
-				//A2600
+				// A2600
 				var a2600Settings = GetSyncSettings<Atari2600, Atari2600.A2600SyncSettings>();
 				a2600Settings.FastScBios = true;
 				a2600Settings.LeftDifficulty = false;
@@ -302,15 +302,19 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Global.Config.SelectedProfile == Config.ClientProfile.Custom)
 			{
-				//Disabled for now
-				//DisplayProfileSettingBoxes(true);
+				// Disabled for now
+				////DisplayProfileSettingBoxes(true);
 			}
 
 			bool oldUpdateAutoCheckEnabled = Global.Config.Update_AutoCheckEnabled;
 			Global.Config.Update_AutoCheckEnabled = AutoCheckForUpdates.Checked;
 			if (Global.Config.Update_AutoCheckEnabled != oldUpdateAutoCheckEnabled)
 			{
-				if (!Global.Config.Update_AutoCheckEnabled) UpdateChecker.ResetHistory();
+				if (!Global.Config.Update_AutoCheckEnabled)
+				{
+					UpdateChecker.ResetHistory();
+				}
+
 				UpdateChecker.BeginCheck(); // Call even if auto checking is disabled to trigger event (it won't actually check)
 			}
 
@@ -351,10 +355,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			ProfileDialogHelpTexBox.Text = "Save Screenshot with Savestates: \r\n * Required for TASing \r\n * Not Recommended for \r\n   Longplays or Casual Gaming";
 		}
+
 		private void SaveLargeScreenshotStatesCheckBox_MouseHover(object sender, EventArgs e)
 		{
 			ProfileDialogHelpTexBox.Text = "Save Large Screenshot With States: \r\n * Required for TASing \r\n * Not Recommended for \r\n   Longplays or Casual Gaming";
 		}
+
 		private void AllowUDLRCheckBox_MouseHover(object sender, EventArgs e)
 		{
 			ProfileDialogHelpTexBox.Text = "All Up+Down or Left+Right: \r\n * Useful for TASing \r\n * Unchecked for Casual Gaming \r\n * Unknown for longplays";
@@ -365,11 +371,12 @@ namespace BizHawk.Client.EmuHawk
 			where TEmulator : IEmulator
 		{
 			// should we complain if we get a successful object from the config file, but it is the wrong type?
-
 			object fromcore = null;
 			var settable = new SettingsAdapter(Global.Emulator);
 			if (settable.HasSyncSettings)
+			{
 				fromcore = settable.GetSyncSettings();
+			}
 
 			return fromcore as TSetting
 				?? Global.Config.GetCoreSyncSettings<TEmulator>() as TSetting
@@ -381,11 +388,12 @@ namespace BizHawk.Client.EmuHawk
 			where TEmulator : IEmulator
 		{
 			// should we complain if we get a successful object from the config file, but it is the wrong type?
-
 			object fromcore = null;
 			var settable = new SettingsAdapter(Global.Emulator);
 			if (settable.HasSettings)
+			{
 				fromcore = settable.GetSettings();
+			}
 
 			return fromcore as TSetting
 				?? Global.Config.GetCoreSettings<TEmulator>() as TSetting

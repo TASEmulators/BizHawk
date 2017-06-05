@@ -197,9 +197,11 @@
 							{
 								spr.Mc = (0x2a & spr.Mcbase & spr.Mc) | (0x15 & (spr.Mcbase | spr.Mc));
 							}
+
 							spr.YCrunch = true;
 						}
 					}
+
 					WriteRegister(addr, val);
 					break;
 				case 0x19:

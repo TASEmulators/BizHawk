@@ -108,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "MAPPER069":
 					break;
 				case "SUNSOFT-5A": //Batman (J)
-					AssertPrg(128); AssertChr(128); AssertWram(0); AssertVram(0); AssertBattery(false);
+					AssertPrg(128); AssertChr(128,256); AssertWram(0,8); AssertVram(0); AssertBattery(false);
 					break;
 				case "SUNSOFT-FME-7": //Barcode World (J)
 					AssertPrg(128, 256); AssertChr(128, 256); AssertWram(0, 8); AssertVram(0);

@@ -16,7 +16,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (core is NES)
 			{
-				var nes = core as NES;
+				var nes = (NES)core;
 				var ss = nes.GetSyncSettings();
 
 				var isFds = nes.IsFDS;
@@ -46,7 +46,6 @@ namespace BizHawk.Client.EmuHawk
 						case "OekaKids":
 							yield return OekaKidsTablet(3);
 							break;
-
 					}
 				}
 				else
@@ -129,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 				var ss = ((QuickNES)core).GetSyncSettings();
 				if (ss.LeftPortConnected == true && ss.RightPortConnected == true)
 				{
-					//Set both controllers
+					// Set both controllers
 					yield return StandardController(1);
 					yield return StandardController(2);
 				}
@@ -141,6 +140,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					yield return StandardController(1);
 				}
+
 				yield return NesConsoleButtons();
 			}
 		}
@@ -383,7 +383,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(14, 17),
 						Type = PadSchema.PadInputType.TargetedPair,
 						TargetSize = new Size(256, 240),
-						SecondaryNames = new []
+						SecondaryNames = new[]
 						{
 							"P" + controller + " Zapper Y",
 						}
@@ -543,7 +543,7 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(14, 17),
 						Type = PadSchema.PadInputType.TargetedPair,
 						TargetSize = new Size(256, 240),
-						SecondaryNames = new []
+						SecondaryNames = new[]
 						{
 							"P" + controller + " Pen Y",
 						}

@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
@@ -21,7 +15,8 @@ namespace BizHawk.Client.EmuHawk
 			AddressMask = 0xFFFFFFFF;
 		}
 
-		public AddBreakpointDialog(BreakpointOperation op, uint address, uint mask, MemoryCallbackType type):this(op)
+		public AddBreakpointDialog(BreakpointOperation op, uint address, uint mask, MemoryCallbackType type)
+			: this(op)
 		{
 			AddressMaskBox.SetHexProperties(0xFFFFFFFF);
 			Address = address;
@@ -37,6 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return _operation;
 			}
+
 			set
 			{
 				switch (value)
@@ -51,6 +47,7 @@ namespace BizHawk.Client.EmuHawk
 						Text = "Edit Breakpoint";
 						break;
 				}
+
 				_operation = value;
 			}
 		}
@@ -63,7 +60,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			ExecuteRadio.Enabled = false;
-
 		}
 
 		public MemoryCallbackType BreakType
@@ -124,6 +120,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return AddressBox.GetMax();
 			}
+
 			set
 			{
 				AddressBox.SetHexProperties(value);
@@ -145,13 +142,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void AddBreakpointDialog_Load(object sender, EventArgs e)
 		{
-
 		}
 
 		public enum BreakpointOperation
 		{
 			Add, Edit, Duplicate
 		}
-
 	}
 }

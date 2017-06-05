@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 		void Set(IController controller);
 
 		/// <summary>
-		/// Gets or sets whether or not the user can change the state of the control
+		/// Gets or sets a value indicating whether or not the user can change the state of the control
 		/// </summary>
 		bool ReadOnly { get; set; }
 	}

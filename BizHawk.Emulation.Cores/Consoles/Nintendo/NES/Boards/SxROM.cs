@@ -425,6 +425,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					NES.VS_dips[7] = (byte)(NES.SyncSettings.VSDipswitches.Dip_Switch_8 ? 1 : 0);
 					break;
 				case "MAPPER001":
+				case "NES-SIEPROM":
 					// there's no way to define PRG oversize for mapper001 due to how the MMC1 regs work
 					// so 512KB must mean SUROM or SXROM.  SUROM is more common, so we try that
 					if (Cart.prg_size > 256)

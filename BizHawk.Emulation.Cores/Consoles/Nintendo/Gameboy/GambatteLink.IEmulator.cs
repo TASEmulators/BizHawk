@@ -40,8 +40,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			_cablediscosignal = cablediscosignalNew;
 
 			Frame++;
-			L.FrameAdvancePrep(controller);
-			R.FrameAdvancePrep(controller);
+			L.FrameAdvancePrep(LCont);
+			R.FrameAdvancePrep(RCont);
 
 			unsafe
 			{

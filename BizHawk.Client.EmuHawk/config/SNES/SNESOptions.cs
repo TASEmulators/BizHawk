@@ -7,13 +7,13 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class SNESOptions : Form
 	{
-		public SNESOptions()
+		private SNESOptions()
 		{
 			InitializeComponent();
 		}
 
-		bool SuppressDoubleSize;
-		bool UserDoubleSizeOption;
+		private bool _suppressDoubleSize;
+		private bool _userDoubleSizeOption;
 
 		public static void DoSettingsDialog(IWin32Window owner)
 		{
@@ -42,31 +42,51 @@ namespace BizHawk.Client.EmuHawk
 			rbAccuracy.Visible = VersionInfo.DeveloperBuild;
 		}
 
-		public string Profile
+		private string Profile
 		{
 			get
 			{
-				if (rbCompatibility.Checked) return "Compatibility";
-				else if (rbPerformance.Checked) return "Performance";
-				else if (rbAccuracy.Checked) return "Accuracy";
-				else throw new InvalidOperationException();
+				if (rbCompatibility.Checked)
+				{
+					return "Compatibility";
+				}
+
+				if (rbPerformance.Checked)
+				{
+					return "Performance";
+				}
+
+				if (rbAccuracy.Checked)
+				{
+					return "Accuracy";
+				}
+
+				throw new InvalidOperationException();
 			}
 
 			set
 			{
-				rbCompatibility.Checked = (value == "Compatibility");
-				rbPerformance.Checked = (value == "Performance");
-				rbAccuracy.Checked = (value == "Accuracy");
+				rbCompatibility.Checked = value == "Compatibility";
+				rbPerformance.Checked = value == "Performance";
+				rbAccuracy.Checked = value == "Accuracy";
 			}
 		}
 
-		public bool AlwaysDoubleSize
+		private bool AlwaysDoubleSize
 		{
-			get { return UserDoubleSizeOption; }
-			set { UserDoubleSizeOption = value; RefreshDoubleSizeOption();  }
+			get
+			{
+				return _userDoubleSizeOption;
+			}
+
+			set
+			{
+				_userDoubleSizeOption = value;
+				RefreshDoubleSizeOption();
+			}
 		}
 
-		public bool ForceDeterminism
+		private bool ForceDeterminism
 		{
 			get { return cbForceDeterminism.Checked; }
 			set { cbForceDeterminism.Checked = value; }
@@ -74,38 +94,39 @@ namespace BizHawk.Client.EmuHawk
 
 		void RefreshDoubleSizeOption()
 		{
-			SuppressDoubleSize = true;
-			if (cbDoubleSize.Enabled)
-				cbDoubleSize.Checked = UserDoubleSizeOption;
-			else cbDoubleSize.Checked = true;
-			SuppressDoubleSize = false;
+			_suppressDoubleSize = true;
+			cbDoubleSize.Checked = !cbDoubleSize.Enabled || _userDoubleSizeOption;
+			_suppressDoubleSize = false;
 		}
 
-		private void rbAccuracy_CheckedChanged(object sender, EventArgs e)
+		private void RbAccuracy_CheckedChanged(object sender, EventArgs e)
 		{
 			cbDoubleSize.Enabled = !rbAccuracy.Checked;
 			lblDoubleSize.ForeColor = cbDoubleSize.Enabled ? System.Drawing.SystemColors.ControlText : System.Drawing.SystemColors.GrayText;
 			RefreshDoubleSizeOption();
 		}
 
-		private void cbDoubleSize_CheckedChanged(object sender, EventArgs e)
+		private void CbDoubleSize_CheckedChanged(object sender, EventArgs e)
 		{
-			if (SuppressDoubleSize) return;
-			UserDoubleSizeOption = cbDoubleSize.Checked;
+			if (_suppressDoubleSize)
+			{
+				return;
+			}
+
+			_userDoubleSizeOption = cbDoubleSize.Checked;
 		}
 
-		private void cbForceDeterminism_CheckedChanged(object sender, EventArgs e)
+		private void CbForceDeterminism_CheckedChanged(object sender, EventArgs e)
 		{
-
 		}
 
-		private void btnOk_Click(object sender, EventArgs e)
+		private void BtnOk_Click(object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.OK;
 			Close();
 		}
 
-		private void btnCancel_Click(object sender, EventArgs e)
+		private void BtnCancel_Click(object sender, EventArgs e)
 		{
 			DialogResult = DialogResult.Cancel;
 			Close();

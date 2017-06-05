@@ -25,8 +25,6 @@ namespace BizHawk.Client.EmuHawk
 		private readonly List<string> _consoleCommandHistory = new List<string>();
 		private int _consoleCommandHistoryIndex = -1;
 
-		public bool IsRebootingCore { get; set; }
-
 		public ToolDialogSettings.ColumnList Columns { get; set; }
 
 		public class LuaConsoleSettings
@@ -121,7 +119,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Global.Config.RecentLuaSession.AutoLoad && !Global.Config.RecentLuaSession.Empty)
 			{
-					LoadSessionFromRecent(Global.Config.RecentLuaSession.MostRecent);
+				LoadSessionFromRecent(Global.Config.RecentLuaSession.MostRecent);
 			}
 			else if (Global.Config.RecentLua.AutoLoad)
 			{
@@ -136,37 +134,50 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart()
 		{
-			// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
-			if (IsRebootingCore)
+			List<LuaFile> runningScripts = new List<LuaFile>();
+
+			if (LuaImp != null) // Things we need to do with the existing LuaImp before we can make a new one
 			{
-				LuaImp.Restart(Emulator.ServiceProvider);
-				return;
-			}
-
-			if (LuaImp?.GuiLibrary != null && LuaImp.GuiLibrary.HasLuaSurface)
-			{
-				LuaImp.GuiLibrary.DrawFinish();
-			}
-
-			var runningScripts = LuaImp?.ScriptList.Where(f => f.Enabled).ToList() ?? new List<LuaFile>();
-
-			foreach (var file in runningScripts)
-			{
-				LuaImp.CallExitEvent(file.Thread);
-
-				var functions = LuaImp.RegisteredFunctions.Where(lf => lf.Lua == file.Thread).ToList();
-
-				foreach (var function in functions)
+				if (LuaImp.IsRebootingCore == true)
 				{
-					LuaImp.RegisteredFunctions.Remove(function);
+					// Even if the lua console is self-rebooting from client.reboot_core() we still want to re-inject dependencies
+					LuaImp.Restart(Emulator.ServiceProvider);
+					return;
 				}
 
-				UpdateRegisteredFunctionsDialog();
+				if (LuaImp.GuiLibrary != null && LuaImp.GuiLibrary.HasLuaSurface)
+				{
+					LuaImp.GuiLibrary.DrawFinish();
+				}
 
-				file.Stop();
+				runningScripts = LuaImp.RunningScripts.ToList();
+
+				foreach (var file in runningScripts)
+				{
+					LuaImp.CallExitEvent(file.Thread);
+
+					var functions = LuaImp.RegisteredFunctions
+						.Where(lf => lf.Lua == file.Thread)
+						.ToList();
+
+					foreach (var function in functions)
+					{
+						LuaImp.RegisteredFunctions.Remove(function);
+					}
+
+					UpdateRegisteredFunctionsDialog();
+
+					file.Stop();
+				}
 			}
 
+			var currentScripts = LuaImp?.ScriptList; // Temp fix for now
 			LuaImp = new EmuLuaLibrary(Emulator.ServiceProvider);
+			if (currentScripts != null)
+			{
+				LuaImp.ScriptList.AddRange(currentScripts);
+			}
+
 			InputBox.AutoCompleteCustomSource.AddRange(LuaImp.Docs.Select(a => a.Library + "." + a.Name).ToArray());
 
 			foreach (var file in runningScripts)

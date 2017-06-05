@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Data;
 
 namespace BizHawk.Client.EmuHawk
@@ -9,29 +6,32 @@ namespace BizHawk.Client.EmuHawk
 	public class DataTableDictionaryBind<TKey, TValue>
 	{
 		public DataTable Table { get; private set; }
-		public IDictionary<TKey, TValue> Dictionary { get; private set; }
+
+		private IDictionary<TKey, TValue> Dictionary { get; }
 
 		public bool WasModified { get; private set; }
 
-		public DataTableDictionaryBind(IDictionary<TKey, TValue> Dictionary)
+		public DataTableDictionaryBind(IDictionary<TKey, TValue> dictionary)
 		{
-			this.Dictionary = Dictionary;
+			Dictionary = dictionary;
 			CreateTable();
 		}
 
-		void CreateTable()
+		private void CreateTable()
 		{
 			Table = new DataTable();
 			Table.Columns.Add("Key", typeof(TKey));
 			Table.Columns.Add("Value", typeof(TValue));
 			foreach (var kvp in Dictionary)
+			{
 				Table.Rows.Add(kvp.Key, kvp.Value);
+			}
 
-			Table.RowChanged += new DataRowChangeEventHandler(Table_RowChanged);
+			Table.RowChanged += Table_RowChanged;
 			WasModified = false;
 		}
 
-		void Table_RowChanged(object sender, DataRowChangeEventArgs e)
+		private void Table_RowChanged(object sender, DataRowChangeEventArgs e)
 		{
 			var key = (TKey)e.Row[0];
 			var value = (TValue)e.Row[1];

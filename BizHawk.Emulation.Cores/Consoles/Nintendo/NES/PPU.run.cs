@@ -226,7 +226,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				// "If PPUADDR is not less then 8 when rendering starts, the first 8 fights in OAM and written to from 
 				// the current location off PPUADDR"
-				if (sl == 0 && PPUON && reg_2003 >= 8)
+				if (sl == 0 && PPUON && reg_2003 >= 8 && region==Region.NTSC)
 				{
 					for (int i = 0; i < 8; i++)
 					{

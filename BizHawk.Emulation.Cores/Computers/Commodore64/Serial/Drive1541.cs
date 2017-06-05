@@ -1,11 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
+
 using BizHawk.Common;
-using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
 using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
 using BizHawk.Emulation.Cores.Computers.Commodore64.MOS;
@@ -65,13 +60,16 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			ser.Sync("BitHistory", ref _bitHistory);
 			ser.Sync("BitsRemainingInLatchedByte", ref _bitsRemainingInLatchedByte);
 			ser.Sync("Sync", ref _sync);
+			ser.Sync("ByteReady", ref _byteReady);
 			ser.Sync("DriveCpuClockNumerator", ref _driveCpuClockNum);
 			ser.Sync("TrackNumber", ref _trackNumber);
 			ser.Sync("MotorEnabled", ref _motorEnabled);
 			ser.Sync("LedEnabled", ref _ledEnabled);
 			ser.Sync("MotorStep", ref _motorStep);
 
+			ser.BeginSection("Disk6502");
 			_cpu.SyncState(ser);
+			ser.EndSection();
 			
 			ser.Sync("RAM", ref _ram, useNull: false);
 
@@ -86,6 +84,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			ser.Sync("SystemCpuClockNumerator", ref _cpuClockNum);
 			ser.Sync("SystemDriveCpuRatioDifference", ref _ratioDifference);
 			ser.Sync("DriveLightOffTime", ref _driveLightOffTime);
+			ser.Sync("TrackImageData", ref _trackImageData, useNull: false);
+
 			ser.Sync("DiskDensityCounter", ref _diskDensityCounter);
 			ser.Sync("DiskSupplementaryCounter", ref _diskSupplementaryCounter);
 			ser.Sync("DiskFluxReversalDetected", ref _diskFluxReversalDetected);
@@ -110,6 +110,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 				_ratioDifference -= _cpuClockNum;
 				_clocks++;
 			}
+
 			ExecutePhaseInternal();
 		}
 
@@ -131,6 +132,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			{
 				_cpu.SetOverflow();
 			}
+
 			_overflowFlagDelaySr >>= 1;
 
 			_cpu.IRQ = !(Via0.Irq && Via1.Irq); // active low IRQ line

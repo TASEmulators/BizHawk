@@ -81,7 +81,7 @@
 			this.OK.TabIndex = 70;
 			this.OK.Text = "&OK";
 			this.OK.UseVisualStyleBackColor = true;
-			this.OK.Click += new System.EventHandler(this.OK_Click);
+			this.OK.Click += new System.EventHandler(this.Ok_Click);
 			// 
 			// Cancel
 			// 
@@ -252,7 +252,7 @@
 			this.btnAreaFull.TabIndex = 40;
 			this.btnAreaFull.Text = "Full [0,239]";
 			this.btnAreaFull.UseVisualStyleBackColor = true;
-			this.btnAreaFull.Click += new System.EventHandler(this.btnAreaFull_Click);
+			this.btnAreaFull.Click += new System.EventHandler(this.BtnAreaFull_Click);
 			// 
 			// btnAreaStandard
 			// 
@@ -262,7 +262,7 @@
 			this.btnAreaStandard.TabIndex = 35;
 			this.btnAreaStandard.Text = "Standard [8,231]";
 			this.btnAreaStandard.UseVisualStyleBackColor = true;
-			this.btnAreaStandard.Click += new System.EventHandler(this.btnAreaStandard_Click);
+			this.btnAreaStandard.Click += new System.EventHandler(this.BtnAreaStandard_Click);
 			// 
 			// label4
 			// 

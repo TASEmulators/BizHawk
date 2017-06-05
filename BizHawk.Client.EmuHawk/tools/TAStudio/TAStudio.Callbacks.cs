@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -16,40 +14,22 @@ namespace BizHawk.Client.EmuHawk
 
 		private Color? GetColorOverride(int index, InputRoll.RollColumn column)
 		{
-			if (QueryItemBgColorCallback != null)
-			{
-				return QueryItemBgColorCallback(index, column.Name);
-			}
-
-			return null;
+			return QueryItemBgColorCallback?.Invoke(index, column.Name);
 		}
 
 		private string GetTextOverride(int index, InputRoll.RollColumn column)
 		{
-			if (QueryItemTextCallback != null)
-			{
-				return QueryItemTextCallback(index, column.Name);
-			}
-
-			return null;
+			return QueryItemTextCallback?.Invoke(index, column.Name);
 		}
 
 		private Bitmap GetIconOverride(int index, InputRoll.RollColumn column)
 		{
-			if (QueryItemIconCallback != null)
-			{
-				return QueryItemIconCallback(index, column.Name);
-			}
-
-			return null;
+			return QueryItemIconCallback?.Invoke(index, column.Name);
 		}
 
 		private void GreenzoneInvalidated(int index)
 		{
-			if (GreenzoneInvalidatedCallback != null)
-			{
-				GreenzoneInvalidatedCallback(index);
-			}
+			GreenzoneInvalidatedCallback?.Invoke(index);
 		}
 	}
 }

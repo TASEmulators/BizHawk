@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Drawing;
 
@@ -9,40 +6,42 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	class AnalogBindPanel : UserControl
+	public class AnalogBindPanel : UserControl
 	{
-		Dictionary<string, Config.AnalogBind> RealConfigObject;
+		private readonly Dictionary<string, Config.AnalogBind> _realConfigObject;
 
-		public AnalogBindPanel(Dictionary<string, Config.AnalogBind> RealConfigObject, List<string> RealConfigButtons = null)
-			:base()
+		public AnalogBindPanel(Dictionary<string, Config.AnalogBind> realConfigObject, List<string> realConfigButtons = null)
 		{
-			this.RealConfigObject = RealConfigObject;
-
-			LoadSettings(RealConfigButtons ?? (IEnumerable<string>)RealConfigObject.Keys);
+			_realConfigObject = realConfigObject;
+			LoadSettings(realConfigButtons ?? (IEnumerable<string>)realConfigObject.Keys);
 		}
 
-		void LoadSettings(IEnumerable<string> ButtonList)
+		private void LoadSettings(IEnumerable<string> buttonList)
 		{
 			SuspendLayout();
 			int x = 4;
 			int y = 4;
-			foreach (string ButtonName in ButtonList)
+			foreach (string buttonName in buttonList)
 			{
-				var ctrl = new AnalogBindControl(ButtonName, RealConfigObject[ButtonName]);
-				ctrl.Location = new Point(x, y);
+				var ctrl = new AnalogBindControl(buttonName, _realConfigObject[buttonName])
+				{
+					Location = new Point(x, y)
+				};
+
 				y += ctrl.Height + 4;
 				Controls.Add(ctrl);
 			}
+
 			ResumeLayout();
 		}
 
 		/// <summary>
 		/// save to config
 		/// </summary>
-		/// <param name="SaveConfigObject">if non-null, save to possibly different config object than originally initialized from</param>
-		public void Save(Dictionary<string, Config.AnalogBind> SaveConfigObject = null)
+		/// <param name="saveConfigObject">if non-null, save to possibly different config object than originally initialized from</param>
+		public void Save(Dictionary<string, Config.AnalogBind> saveConfigObject = null)
 		{
-			var saveto = SaveConfigObject ?? RealConfigObject;
+			var saveto = saveConfigObject ?? _realConfigObject;
 			foreach (Control c in Controls)
 			{
 				var abc = (AnalogBindControl)c;

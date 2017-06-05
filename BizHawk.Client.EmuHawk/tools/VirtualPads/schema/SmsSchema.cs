@@ -11,7 +11,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			if ((core as SMS).IsGameGear)
+			if (((SMS)core).IsGameGear)
 			{
 				yield return GGController(1);
 				yield return GGConsoleButtons();
@@ -24,7 +24,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public static PadSchema StandardController(int controller)
+		private static PadSchema StandardController(int controller)
 		{
 			return new PadSchema
 			{
@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
-		public static PadSchema GGController(int controller)
+		private static PadSchema GGController(int controller)
 		{
 			return new PadSchema
 			{

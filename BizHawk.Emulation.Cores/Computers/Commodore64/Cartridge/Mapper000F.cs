@@ -30,7 +30,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			// build dummy bank
 			var dummyBank = new int[0x2000];
 			for (var i = 0; i < 0x2000; i++)
+			{
 				dummyBank[i] = 0xFF; // todo: determine if this is correct
+			}
 
 			switch (count)
 			{
@@ -68,7 +70,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 			// for safety, initialize all banks to dummy
 			for (var i = 0; i < _banks.Length; i++)
+			{
 				_banks[i] = dummyBank;
+			}
 
 			// now load in the banks
 			for (var i = 0; i < count; i++)
@@ -124,7 +128,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 			base.SyncState(ser);
 			if (ser.IsReader)
+			{
 				BankSet(_bankNumber);
+			}
 		}
 	}
 }

@@ -20,7 +20,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			validCartridge = false;
 
 			for (var i = 0; i < 0x4000; i++)
+			{
 				_rom[i] = 0xFF;
+			}
 
 			if (newAddresses[0] != 0x8000)
 			{

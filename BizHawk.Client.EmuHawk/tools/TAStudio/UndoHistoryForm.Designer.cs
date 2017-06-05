@@ -95,14 +95,14 @@
 			this.undoHereToolStripMenuItem.Name = "undoHereToolStripMenuItem";
 			this.undoHereToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.undoHereToolStripMenuItem.Text = "Undo To Selection";
-			this.undoHereToolStripMenuItem.Click += new System.EventHandler(this.undoHereToolStripMenuItem_Click);
+			this.undoHereToolStripMenuItem.Click += new System.EventHandler(this.UndoHereMenuItem_Click);
 			// 
 			// redoHereToolStripMenuItem
 			// 
 			this.redoHereToolStripMenuItem.Name = "redoHereToolStripMenuItem";
 			this.redoHereToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.redoHereToolStripMenuItem.Text = "Redo To Selection";
-			this.redoHereToolStripMenuItem.Click += new System.EventHandler(this.redoHereToolStripMenuItem_Click);
+			this.redoHereToolStripMenuItem.Click += new System.EventHandler(this.RedoHereMenuItem_Click);
 			// 
 			// sepToolStripMenuItem
 			// 
@@ -114,7 +114,7 @@
 			this.clearHistoryToHereToolStripMenuItem.Name = "clearHistoryToHereToolStripMenuItem";
 			this.clearHistoryToHereToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
 			this.clearHistoryToHereToolStripMenuItem.Text = "Clear History To Selection";
-			this.clearHistoryToHereToolStripMenuItem.Click += new System.EventHandler(this.clearHistoryToHereToolStripMenuItem_Click);
+			this.clearHistoryToHereToolStripMenuItem.Click += new System.EventHandler(this.ClearHistoryToHereMenuItem_Click);
 			// 
 			// AutoScrollCheck
 			// 

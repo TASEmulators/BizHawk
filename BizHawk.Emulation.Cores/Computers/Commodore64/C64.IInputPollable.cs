@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	public partial class C64// : IInputPollable
+	public partial class C64 : IInputPollable
 	{
 		public bool IsLagFrame
 		{
@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			set { _lagCount = value; }
 		}
 
-		public IInputCallbackSystem InputCallbacks { get; private set; }
+		public IInputCallbackSystem InputCallbacks { get; }
 
 		private bool _isLagFrame;
 		private int _lagCount;

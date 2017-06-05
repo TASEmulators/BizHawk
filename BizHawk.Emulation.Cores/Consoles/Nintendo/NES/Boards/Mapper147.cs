@@ -26,6 +26,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			_chrBankMask_8k = Cart.chr_size / 8 - 1;
 			_prgBankMask_32k = Cart.prg_size / 32 - 1;
 
+			SetMirrorType(Cart.pad_h, Cart.pad_v);
+
 			return true;
 		}
 

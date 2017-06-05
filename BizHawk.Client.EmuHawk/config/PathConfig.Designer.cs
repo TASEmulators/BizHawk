@@ -114,7 +114,7 @@
 			this.RecentForROMs.TabIndex = 207;
 			this.RecentForROMs.Text = "Always use recent path for ROMs";
 			this.RecentForROMs.UseVisualStyleBackColor = true;
-			this.RecentForROMs.CheckedChanged += new System.EventHandler(this.RecentForROMs_CheckedChanged);
+			this.RecentForROMs.CheckedChanged += new System.EventHandler(this.RecentForRoms_CheckedChanged);
 			// 
 			// DefaultsBtn
 			// 

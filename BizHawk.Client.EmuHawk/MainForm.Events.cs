@@ -5,9 +5,10 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Emulation.Cores.Atari.A7800Hawk;
+using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.ColecoVision;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Nintendo.N64;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
@@ -1202,9 +1203,12 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
+			Atari7800WithEmu7800MenuItem.Visible = VersionInfo.DeveloperBuild; // Don't expose Atari7800Hawk in releases yet
+
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
 			gBAWithMGBAToolStripMenuItem.Checked = Global.Config.GBA_UsemGBA;
+			Atari7800WithEmu7800MenuItem.Checked = Global.Config.A78_UseEmu7800;
 			allowGameDBCoreOverridesToolStripMenuItem.Checked = Global.Config.CoreForcingViaGameDB;
 		}
 
@@ -1262,6 +1266,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void Atari7800WithEmu7800MenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.A78_UseEmu7800 ^= true;
+			if (Emulator is A7800Hawk || Emulator is Atari7800)
+			{
+				FlagNeedsReboot();
+			}
+		}
+
 		private void AllowGameDBCoreOverridesToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.CoreForcingViaGameDB ^= true;
@@ -1305,7 +1318,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			Global.Config.ResolveDefaults();
-			InitControls(); //rebind hotkeys
+			InitControls(); // rebind hotkeys
 			GlobalWin.OSD.AddMessage("Config file loaded: " + PathManager.DefaultIniPath);
 		}
 
@@ -1324,7 +1337,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config = ConfigService.Load<Config>(ofd.FileName);
 				Global.Config.ResolveDefaults();
-				InitControls(); //rebind hotkeys
+				InitControls(); // rebind hotkeys
 				GlobalWin.OSD.AddMessage("Config file loaded: " + ofd.FileName);
 			}
 
@@ -1592,7 +1605,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is NES && ((NES)Emulator).IsVS)
 			{
-				new NESVSSettings().ShowDialog(this);
+				new NesVsSettings().ShowHawkDialog(this);
 			}
 		}
 
@@ -1968,7 +1981,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			config.GB.GBPrefs.DoGBPrefsDialog(this);
+			GBPrefs.DoGBPrefsDialog(this);
 		}
 
 		private void LoadGbInSgbMenuItem_Click(object sender, EventArgs e)
@@ -2274,7 +2287,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DgbSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			config.GB.DGBPrefs.DoDGBPrefsDialog(this);
+			DGBPrefs.DoDGBPrefsDialog(this);
 		}
 
 		#endregion
@@ -2582,7 +2595,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			var window = new config.DisplayConfigLite();
+			var window = new DisplayConfigLite();
 			var result = window.ShowDialog();
 			if (result == DialogResult.OK)
 			{

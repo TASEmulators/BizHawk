@@ -81,8 +81,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		public bool IsRebootingCore { get; set; } // pretty hacky.. we dont want a lua script to be able to restart itself by rebooting the core
+
 		private readonly Dictionary<Type, LuaLibraryBase> Libraries = new Dictionary<Type, LuaLibraryBase>();
 		public LuaFileList ScriptList { get; } = new LuaFileList();
+
+		public IEnumerable<LuaFile> RunningScripts
+		{
+			get { return ScriptList.Where(lf => lf.Enabled); }
+		}
+
 		private Lua _lua = new Lua();
 		private Lua _currThread;
 

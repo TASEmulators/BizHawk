@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Data;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Common;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 
 namespace BizHawk.Client.EmuHawk
@@ -16,13 +13,13 @@ namespace BizHawk.Client.EmuHawk
 	public partial class MarkerControl : UserControl
 	{
 		public TAStudio Tastudio { get; set; }
-		public TasMovieMarkerList Markers { get { return Tastudio.CurrentTasMovie.Markers; } }
+		public TasMovieMarkerList Markers => Tastudio.CurrentTasMovie.Markers;
 
 		public MarkerControl()
 		{
 			InitializeComponent();
 
-			MarkerView.AllColumns.AddRange(new InputRoll.RollColumn[]
+			MarkerView.AllColumns.AddRange(new[]
 			{
 				new InputRoll.RollColumn
 				{
@@ -44,15 +41,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void MarkerControl_Load(object sender, EventArgs e)
 		{
-
 		}
 
-		public InputRoll MarkerInputRoll { get { return MarkerView; } }
+		public InputRoll MarkerInputRoll => MarkerView;
 
 		private void MarkerView_QueryItemBkColor(int index, InputRoll.RollColumn column, ref Color color)
 		{
 			var prev = Markers.PreviousOrCurrent(Tastudio.Emulator.Frame);
-				
+
 			if (prev != null && index == Markers.IndexOf(prev))
 			{
 				// feos: taseditor doesn't have it, so we're free to set arbitrary color scheme. and I prefer consistency
@@ -80,7 +76,9 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 			else
+			{
 				color = Color.White;
+			}
 		}
 
 		private void MarkerView_QueryItemText(int index, InputRoll.RollColumn column, out string text, ref int offsetX, ref int offsetY)
@@ -165,7 +163,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (editText)
 			{
-				InputPrompt i = new InputPrompt
+				var i = new InputPrompt
 				{
 					Text = "Marker for frame " + markerFrame,
 					TextInputType = InputPrompt.InputType.Text,
@@ -191,6 +189,7 @@ namespace BizHawk.Client.EmuHawk
 				Markers.Add(new TasMovieMarker(markerFrame, ""));
 				UpdateValues();
 			}
+
 			Tastudio.RefreshDialog();
 		}
 
@@ -198,15 +197,15 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var markerFrame = marker.Frame;
 			var point = default(Point);
-			InputPrompt i = new InputPrompt
+			var i = new InputPrompt
 			{
 				Text = "Marker for frame " + markerFrame,
 				TextInputType = InputPrompt.InputType.Text,
 				Message = "Enter a message",
 				InitialValue =
-					Markers.IsMarker(markerFrame) ?
-					Markers.PreviousOrCurrent(markerFrame).Message :
-					""
+					Markers.IsMarker(markerFrame)
+					? Markers.PreviousOrCurrent(markerFrame).Message
+					: ""
 			};
 
 			if (followCursor)
@@ -214,6 +213,7 @@ namespace BizHawk.Client.EmuHawk
 				point = Cursor.Position;
 				point.Offset(i.Width / -2, i.Height / -2);
 			}
+
 			var result = i.ShowHawkDialog(position: point);
 
 			if (result == DialogResult.OK)
@@ -225,10 +225,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void UpdateValues()
 		{
-			if (MarkerView != null &&
-				Tastudio != null &&
-				Tastudio.CurrentTasMovie != null &&
-				Markers != null)
+			if (MarkerView != null && Tastudio?.CurrentTasMovie != null && Markers != null)
 			{
 				MarkerView.RowCount = Markers.Count;
 			}
@@ -270,8 +267,7 @@ namespace BizHawk.Client.EmuHawk
 		// A much more useful feature would be to easily jump to it.
 		private void MarkerView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			if (MarkerView.CurrentCell != null && MarkerView.CurrentCell.RowIndex.HasValue &&
-				MarkerView.CurrentCell.RowIndex < MarkerView.RowCount)
+			if (MarkerView.CurrentCell?.RowIndex != null && MarkerView.CurrentCell.RowIndex < MarkerView.RowCount)
 			{
 				var marker = Markers[MarkerView.CurrentCell.RowIndex.Value];
 				Tastudio.GoToFrame(marker.Frame);
@@ -284,8 +280,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var index = MarkerView.SelectedRows.First();
 				var marker = Markers[index];
+
 				return marker.Frame;
 			}
+
 			return -1;
 		}
 

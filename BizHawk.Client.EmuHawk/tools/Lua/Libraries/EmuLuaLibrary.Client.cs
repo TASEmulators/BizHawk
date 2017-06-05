@@ -217,10 +217,9 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodAttributes("reboot_core", "Reboots the currently loaded core")]
 		public static void RebootCore()
 		{
-			// pretty hacky.. we dont want a lua script to be able to restart itself by rebooting the core
-			((LuaConsole)GlobalWin.Tools.Get<LuaConsole>()).IsRebootingCore = true;
+			((LuaConsole)GlobalWin.Tools.Get<LuaConsole>()).LuaImp.IsRebootingCore = true;
 			GlobalWin.MainForm.RebootCore();
-			((LuaConsole)GlobalWin.Tools.Get<LuaConsole>()).IsRebootingCore = false;
+			((LuaConsole)GlobalWin.Tools.Get<LuaConsole>()).LuaImp.IsRebootingCore = false;
 		}
 
 		[LuaMethodAttributes("screenheight", "Gets the current height in pixels of the emulator's drawing area")]

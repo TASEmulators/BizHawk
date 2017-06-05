@@ -2,6 +2,7 @@
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -631,6 +632,28 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "Toggle OBJ 4":
 					SNES_ToggleOBJ4();
+					break;
+
+				// GB
+				case "GB Toggle BG":
+					if (Emulator is Gameboy)
+					{
+						var s = ((Gameboy)Emulator).GetSettings();
+						s.DisplayBG ^= true;
+						((Gameboy)Emulator).PutSettings(s);
+						GlobalWin.OSD.AddMessage("BG toggled " + (s.DisplayBG ? "on" : "off"));
+					}
+
+					break;
+				case "GB Toggle Obj":
+					if (Emulator is Gameboy)
+					{
+						var s = ((Gameboy)Emulator).GetSettings();
+						s.DisplayOBJ ^= true;
+						((Gameboy)Emulator).PutSettings(s);
+						GlobalWin.OSD.AddMessage("OBJ toggled " + (s.DisplayBG ? "on" : "off"));
+					}
+
 					break;
 
 				// Analog

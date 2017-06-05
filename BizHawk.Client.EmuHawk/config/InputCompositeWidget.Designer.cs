@@ -19,7 +19,7 @@
 			}
 			base.Dispose(disposing);
 			
-			DropdownMenu.Dispose();
+			_dropdownMenu.Dispose();
 		}
 
 		#region Component Designer generated code
@@ -46,7 +46,7 @@
 			this.btnSpecial.Size = new System.Drawing.Size(20, 20);
 			this.btnSpecial.TabIndex = 2;
 			this.btnSpecial.UseVisualStyleBackColor = true;
-			this.btnSpecial.Click += new System.EventHandler(this.btnSpecial_Click);
+			this.btnSpecial.Click += new System.EventHandler(this.BtnSpecial_Click);
 			// 
 			// tableLayoutPanel1
 			// 

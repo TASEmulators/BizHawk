@@ -61,7 +61,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 					chipData.Add(reader.ReadBytes(chipDataLength).Select(x => (int)x).ToArray());
 					chipLength -= chipDataLength + 0x10;
 					if (chipLength > 0)
+					{
 						reader.ReadBytes(chipLength);
+					}
 				}
 
 				if (chipData.Count <= 0)
@@ -80,6 +82,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 						break;
 					case 0x0005:    // Ocean
 						result = new Mapper0005(chipAddress, chipBank, chipData);
+						break;
+					case 0x0007:    // Fun Play
+						result = new Mapper0007(chipData, game, exrom);
 						break;
 					case 0x0008:    // SuperGame
 						result = new Mapper0008(chipData);
@@ -147,21 +152,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 		{
 		}
 
-		public bool ExRom
-		{
-			get
-			{
-				return pinExRom;
-			}
-		}
+		public bool ExRom => pinExRom;
 
-		public bool Game
-		{
-			get
-			{
-				return pinGame;
-			}
-		}
+		public bool Game => pinGame;
 
 		public virtual void HardReset()
 		{
@@ -170,21 +163,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			pinReset = true;
 		}
 
-		public bool IRQ
-		{
-			get
-			{
-				return pinIRQ;
-			}
-		}
+		public bool IRQ => pinIRQ;
 
-		public bool NMI
-		{
-			get
-			{
-				return pinNMI;
-			}
-		}
+		public bool NMI => pinNMI;
 
 		public virtual int Peek8000(int addr)
 		{
@@ -242,13 +223,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			return ReadOpenBus();
 		}
 
-		public bool Reset
-		{
-			get
-			{
-				return pinReset;
-			}
-		}
+		public bool Reset => pinReset;
 
 		protected abstract void SyncStateInternal(Serializer ser);
 
@@ -264,13 +239,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			ser.Sync("_driveLightOn", ref _driveLightOn);
 		}
 
-		public bool Valid
-		{
-			get
-			{
-				return validCartridge;
-			}
-		}
+		public bool Valid => validCartridge;
 
 		public virtual void Write8000(int addr, int val)
 		{
