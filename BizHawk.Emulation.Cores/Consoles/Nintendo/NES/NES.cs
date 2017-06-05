@@ -513,6 +513,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					if (hash_md5 != null) choice = IdentifyFromGameDB(hash_md5);
 					if (choice == null)
 						choice = IdentifyFromGameDB(hash_sha1);
+					if (choice==null)
+					{
+						hash_sha1_several.Add(hash_sha1);
+						choice = IdentifyFromBootGodDB(hash_sha1_several);
+						if (choice == null)
+							LoadWriteLine("Could not locate game in nescartdb");
+						else
+						{
+							LoadWriteLine("Chose board from nescartdb:");
+							LoadWriteLine(choice);
+							origin = EDetectionOrigin.BootGodDB;
+						}
+					}
 					if (choice == null)
 						throw new InvalidOperationException("iNES header not found and no gamedb entry");
 				}
@@ -544,7 +557,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						LoadWriteLine("Since this rom has a 16 KB PRG, we'll hash it as 8KB too for bootgod's DB:");
 						var msTemp = new MemoryStream();
 						msTemp.Write(file, 16, 8 * 1024); //add prg
-						msTemp.Write(file, 16 + 16 * 1024, iNesHeaderInfo.chr_size * 1024); //add chr
+						if (file.Length > (16 * 1024 + 16))
+						{
+							// This assumes that even though the PRG is only 8k the CHR is still written
+							// 16k into the file, which is not always the case (e.x. Galaxian RevA)
+							msTemp.Write(file, 16 + 16 * 1024, iNesHeaderInfo.chr_size * 1024); //add chr
+						}
+						else
+						{
+							msTemp.Write(file, 16 + 8 * 1024, iNesHeaderInfo.chr_size * 1024); //add chr
+						}
 						msTemp.Flush();
 						var bytes = msTemp.ToArray();
 						var hash = "sha1:" + bytes.HashSHA1(0, bytes.Length);
@@ -584,9 +606,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (choice.wram_size == -1) choice.wram_size = 0;
 					}
 				}
-
+				
 				//if this is still null, we have to try it some other way. nescartdb perhaps?
-
 				if (choice == null)
 				{
 					choice = IdentifyFromBootGodDB(hash_sha1_several);
@@ -599,6 +620,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						origin = EDetectionOrigin.BootGodDB;
 					}
 				}
+				
 			}
 
 			//if choice is still null, try UNIF and iNES
