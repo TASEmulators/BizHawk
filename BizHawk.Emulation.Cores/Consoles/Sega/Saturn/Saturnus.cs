@@ -15,6 +15,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		"https://mednafen.github.io/releases/", false)]
 	public class Saturnus : IEmulator, IVideoProvider, ISoundProvider, IInputPollable
 	{
+		private static readonly DiscSectorReaderPolicy _diskPolicy = new DiscSectorReaderPolicy
+		{
+			DeinterleavedSubcode = false
+		};
+
 		private PeRunner _exe;
 		private LibSaturnus _core;
 		private Disc[] _disks;
@@ -28,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			CoreComm = comm;
 
 			_disks = disks.ToArray();
-			_diskReaders = disks.Select(d => new DiscSectorReader(d)).ToArray();
+			_diskReaders = disks.Select(d => new DiscSectorReader(d) { Policy = _diskPolicy }).ToArray();
 			InitCallbacks();
 
 			_exe = new PeRunner(new PeRunnerOptions
@@ -190,7 +195,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			t.DiskType = (int)tin.Session1Format;
 			for (int i = 0; i < 101; i++)
 			{
-				t.Tracks[i].Adr = 1; // ????
+				t.Tracks[i].Adr = tin.TOCItems[i].Exists ? 1 : 0; // ????
 				t.Tracks[i].Lba = tin.TOCItems[i].LBA;
 				t.Tracks[i].Control = (int)tin.TOCItems[i].Control;
 				t.Tracks[i].Valid = tin.TOCItems[i].Exists ? 1 : 0;
@@ -198,7 +203,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		}
 		private void CDSectorCallback(int disk, int lba, IntPtr dest)
 		{
-			Console.WriteLine("servicing " + lba);
 			var buff = new byte[2448];
 			_diskReaders[disk].ReadLBA_2448(lba, buff, 0);
 			Marshal.Copy(buff, 0, dest, 2448);
