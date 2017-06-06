@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BizHawk.Client.EmuHawk</RootNamespace>
     <AssemblyName>EmuHawk</AssemblyName>
-    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>BizHawk.Client.EmuHawk.Program</StartupObject>
     <IsWebBootstrapper>false</IsWebBootstrapper>
