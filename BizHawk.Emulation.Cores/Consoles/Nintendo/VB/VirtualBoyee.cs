@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			"Start", "Select", "R_Left", "R_Down"
 		};
 
-		private static Dictionary<string, int> _buttonOrdinals = new Dictionary<string, int>
+		private static readonly Dictionary<string, int> _buttonOrdinals = new Dictionary<string, int>
 		{
 			["L_Up"] = 1,
 			["L_Down"] = 2,
@@ -149,8 +149,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			["R_Right"] = 8,
 			["B"] = 9,
 			["A"] = 10,
-			["R"] = 11,
-			["L"] = 12,
+			["L"] = 11,
+			["R"] = 12,
 			["Select"] = 13,
 			["Start"] = 14
 		};

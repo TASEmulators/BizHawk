@@ -1220,6 +1220,7 @@
     <Compile Include="tools\VirtualPads\schema\SchemaAttributes.cs" />
     <Compile Include="tools\VirtualPads\schema\SmsSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SnesSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\VirtualBoySchema.cs" />
     <Compile Include="tools\VirtualPads\schema\WonderSwanSchema.cs" />
     <Compile Include="tools\VirtualPads\VirtualPad.cs">
       <SubType>UserControl</SubType>
