@@ -1209,6 +1209,7 @@
     <Compile Include="tools\VirtualPads\schema\GenSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\IntvSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\LynxSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\NgpSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\PSXSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SatSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\IVirtualPadSchema.cs" />

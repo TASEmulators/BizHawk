@@ -293,6 +293,10 @@ namespace BizHawk.Client.Common
 				["Option 1"] = '1',
 				["Option 2"] = '2'
 			},
+			["NGP"] = new Dictionary<string, char>
+			{
+				["Option"] = 'O'
+			},
 			["AppleII"] = new Dictionary<string, char>
 			{
 				["Tab"] = 't' ,
