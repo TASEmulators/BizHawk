@@ -154,6 +154,8 @@ struct FrameAdvanceInfo
 	int32 Width;
 	int32 Height;
 
+	int32 ResetPushed;
+
 	// Set by the system emulation code every frame, to denote the horizontal and vertical offsets of the image, and the size
 	// of the image.  If the emulated system sets the elements of LineWidths, then the width(w) of this structure
 	// is ignored while drawing the image.
@@ -179,6 +181,7 @@ EXPORT void FrameAdvance(FrameAdvanceInfo &f)
 	e.SoundBuf = f.SoundBuf;
 	e.SoundBufMaxSize = f.SoundBufMaxSize;
 	memcpy(ControllerInput, f.Controllers, sizeof(ControllerInput));
+	IsResetPushed = f.ResetPushed;
 
 	Emulate(&e);
 	f.SoundBufSize = e.SoundBufSize;

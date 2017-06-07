@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
 	[CoreAttributes("Saturnus", "Ryphecha", true, false, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
-	public class Saturnus : IEmulator, IVideoProvider, ISoundProvider, IInputPollable
+	public class Saturnus : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, IDriveLight
 	{
 		private static readonly DiscSectorReaderPolicy _diskPolicy = new DiscSectorReaderPolicy
 		{
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			ControllerDefinition = _controllerDeck.Definition;
 			ControllerDefinition.Name = "Saturn Controller";
 			ControllerDefinition.BoolButtons.Add("Power");
-			ControllerDefinition.BoolButtons.Add("Reset"); // not yet hooked up
+			ControllerDefinition.BoolButtons.Add("Reset");
 
 			_exe.Seal();
 			SetCdCallbacks();
@@ -70,6 +70,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
+			DriveLightOn = false;
 			if (controller.IsPressed("Power"))
 				_core.HardReset();
 
@@ -82,7 +83,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 					SoundBuf = (IntPtr)_sp,
 					SoundBufMaxSize = _soundBuffer.Length / 2,
 					Pixels = (IntPtr)_vp,
-					Controllers = (IntPtr)_cp
+					Controllers = (IntPtr)_cp,
+					ResetPushed = controller.IsPressed("Reset") ? 1 : 0
 				};
 
 				_core.FrameAdvance(info);
@@ -206,7 +208,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			var buff = new byte[2448];
 			_diskReaders[disk].ReadLBA_2448(lba, buff, 0);
 			Marshal.Copy(buff, 0, dest, 2448);
+			DriveLightOn = true;
 		}
+
+		public bool DriveLightEnabled => true;
+		public bool DriveLightOn { get; private set; }
 
 		#endregion
 

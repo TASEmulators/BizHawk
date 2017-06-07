@@ -55,6 +55,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			public int Width;
 			[FieldOffset(44)]
 			public int Height;
+			[FieldOffset(48)]
+			public int ResetPushed;
 		};
 
 		[UnmanagedFunctionPointer(CC)]
