@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNESOptions_Load(object sender, EventArgs e)
 		{
-			rbAccuracy.Visible = VersionInfo.DeveloperBuild;
+			rbAccuracy.Visible = label2.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private string Profile
