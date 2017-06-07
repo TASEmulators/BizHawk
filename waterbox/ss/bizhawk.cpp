@@ -100,7 +100,7 @@ extern bool LoadCD(std::vector<CDIF *> *CDInterfaces);
 }
 EXPORT bool Init(int numDisks)
 {
-	FrameBuffer = (uint32 *)alloc_invisible(1024 * 1024);
+	FrameBuffer = (uint32 *)alloc_invisible(1024 * 1024 * sizeof(*FrameBuffer));
 	for (int i = 0; i < numDisks; i++)
 		CDInterfaces.push_back(new MyCDIF(i));
 	auto ret = LoadCD(&CDInterfaces);
@@ -172,6 +172,7 @@ EXPORT void FrameAdvance(FrameAdvanceInfo &f)
 {
 	EmulateSpecStruct e;
 	int32 LineWidths[1024];
+	memset(LineWidths, 0, sizeof(LineWidths));
 	e.pixels = FrameBuffer;
 	e.pitch32 = 1024;
 	e.LineWidths = LineWidths;
