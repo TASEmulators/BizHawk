@@ -103,6 +103,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			var name = br.ReadString();
 			if (name != Name)
+				// probable cause: internal error
 				throw new InvalidOperationException(string.Format("Name did not match for heap {0}", Name));
 			var used = br.ReadUInt64();
 			if (used > Memory.Size)
@@ -112,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var hash = br.ReadBytes(Memory.XorHash.Length);
 				if (!hash.SequenceEqual(Memory.XorHash))
 				{
-					throw new InvalidOperationException(string.Format("Hash did not match for heap {0}.  Is this the same rom?", Name));
+					throw new InvalidOperationException(string.Format("Hash did not match for heap {0}.  Is this the same rom with the same SyncSettings?", Name));
 				}
 
 				Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.None);
@@ -126,7 +127,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var hash = br.ReadBytes(_hash.Length);
 				if (!hash.SequenceEqual(_hash))
 				{
-					throw new InvalidOperationException(string.Format("Hash did not match for heap {0}.  Is this the same rom?", Name));
+					throw new InvalidOperationException(string.Format("Hash did not match for heap {0}.  Is this the same rom with the same SyncSettings?", Name));
 				}
 			}
 		}

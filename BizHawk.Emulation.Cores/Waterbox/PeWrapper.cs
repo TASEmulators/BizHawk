@@ -394,15 +394,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public void LoadStateBinary(BinaryReader br)
 		{
 			if (!_importsSealed)
+				// operations happening in the wrong order.  probable cause: internal logic error.  make sure frontend calls Seal
 				throw new InvalidOperationException(".idata sections must be closed before loading state");
 
 			if (br.ReadUInt64() != MAGIC)
-				throw new InvalidOperationException("Magic not magic enough!");
+				// file id is missing.  probable cause:  garbage savestate
+				throw new InvalidOperationException("Savestate corrupted!");
 			if (!br.ReadBytes(_fileHash.Length).SequenceEqual(_fileHash))
-				throw new InvalidOperationException("Elf changed disguise!");
+				// the .dll file that is loaded now has a different hash than the .dll that created the savestate
+				throw new InvalidOperationException("Core consistency check failed.  Is this a savestate from a different version?");
 			if (!br.ReadBytes(Memory.XorHash.Length).SequenceEqual(Memory.XorHash))
-				throw new InvalidOperationException("Elf is super slippery!");
+				// the post-Seal memory state is different. probable cause:  different rom or different version of rom,
+				// different syncsettings
+				throw new InvalidOperationException("Memory consistency check failed.  Is this savestate from different SyncSettings?");
 			if (br.ReadUInt64() != Start)
+				// dll loaded somewhere else.  probable cause: internal logic error.
+				// unlikely to get this far if the previous checks pssed
 				throw new InvalidOperationException("Trickys elves moved on you!");
 
 			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.RW);
