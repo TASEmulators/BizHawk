@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static BizHawk.Emulation.Common.ControllerDefinition;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
@@ -15,12 +16,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		{
 			typeof(None),
 			typeof(Gamepad),
-			typeof(None),
-			typeof(None),
-			typeof(None),
-			typeof(None),
-			typeof(None),
-			typeof(None)
+			typeof(ThreeDeeGamepad),
+			typeof(Mouse),
+			typeof(Wheel),
+			typeof(Mission),
+			typeof(DualMission),
+			typeof(Keyboard)
 		};
 
 		private readonly IDevice[] _devices;
@@ -92,35 +93,71 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		private abstract class ButtonedDevice : IDevice
 		{
+			private static readonly FloatRange AnalogFloatRange = new FloatRange(-32767, 0, 32767);
+
 			protected ButtonedDevice()
 			{
+				_bakedButtonNames = ButtonNames.Select(s => s != null ? "0" + s : null).ToArray();
+				_bakedAnalogNames = AnalogNames.Select(s => "0" + s).ToArray();
+
 				Definition = new ControllerDefinition
 				{
-					BoolButtons = ButtonNames.Where(s => s != null).ToList()
+					BoolButtons = _bakedButtonNames.Where(s => s != null).ToList(),
 				};
+				Definition.FloatControls.AddRange(_bakedAnalogNames);
+				Definition.FloatRanges.AddRange(_bakedAnalogNames.Select(s => AnalogFloatRange));
+
 			}
 
-			protected abstract string[] ButtonNames { get; }
+			private readonly string[] _bakedButtonNames;
+			private readonly string[] _bakedAnalogNames;
+
+			protected virtual string[] ButtonNames { get; } = new string[0];
+			protected virtual int ButtonByteOffset { get; } = 0;
+			protected virtual string[] AnalogNames { get; } = new string[0];
+			protected virtual int AnalogByteOffset => (ButtonNames.Length + 7) / 8;
 			public ControllerDefinition Definition { get; }
 
-			public virtual void Update(IController controller, byte[] dest, int offset)
+			private void UpdateButtons(IController controller, byte[] dest, int offset)
 			{
+				int pos = offset + ButtonByteOffset;
 				byte data = 0;
-				int pos = 0;
 				int bit = 0;
-				for (int i = 0; i < ButtonNames.Length; i++)
+				for (int i = 0; i < _bakedButtonNames.Length; i++)
 				{
-					if (ButtonNames[i] != null && controller.IsPressed(ButtonNames[i]))
+					if (_bakedButtonNames[i] != null && controller.IsPressed(_bakedButtonNames[i]))
 						data |= (byte)(1 << bit);
 					if (++bit == 8)
 					{
 						bit = 0;
-						dest[offset + pos++] = data;
+						dest[pos++] = data;
 						data = 0;
 					}
 				}
 				if (bit != 0)
-					dest[offset] = data;
+					dest[pos] = data;
+			}
+
+			private void UpdateAnalogs(IController controller, byte[] dest, int offset)
+			{
+				int pos = offset + AnalogByteOffset;
+				for (int i = 0; i < _bakedAnalogNames.Length; i++)
+				{
+					var data = (int)controller.GetFloat(_bakedAnalogNames[i]);
+					var datal = (short)Math.Max(data, 0);
+					var datar = (short)Math.Max(-data, 0);
+					dest[pos++] = (byte)datal;
+					dest[pos++] = (byte)(datal >> 8);
+					dest[pos++] = (byte)datar;
+					dest[pos++] = (byte)(datar >> 8);
+				}
+			}
+
+
+			public virtual void Update(IController controller, byte[] dest, int offset)
+			{
+				UpdateButtons(controller, dest, offset);
+				UpdateAnalogs(controller, dest, offset);
 			}
 		}
 
@@ -128,10 +165,281 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		{
 			private static readonly string[] _buttonNames =
 			{
-				"0Z", "0Y", "0X", "0R",
-				"0Up", "0Down", "0Left", "0Right",
-				"0B", "0C", "0A", "0Start",
-				null,null, null, "0L"
+				"Z", "Y", "X", "R",
+				"Up", "Down", "Left", "Right",
+				"B", "C", "A", "Start",
+				null, null, null, "L"
+			};
+
+			protected override string[] ButtonNames => _buttonNames;
+		}
+
+		private class ThreeDeeGamepad : ButtonedDevice
+		{
+			private static readonly string[] _buttonNames =
+			{
+				"Up", "Down", "Left", "Right",
+				"B", "C", "A", "Start",
+				"Z", "Y", "X"
+			};
+
+			protected override string[] ButtonNames => _buttonNames;
+
+			private static readonly string[] _analogNames =
+			{
+				"Stick Horizontal",
+				"Stick Vertical",
+				"Third Axis"
+			};
+
+			protected override string[] AnalogNames => _analogNames;
+
+			public override void Update(IController controller, byte[] dest, int offset)
+			{
+				base.Update(controller, dest, offset);
+				// set the "Mode" button to analog at all times
+				dest[offset + 1] |= 0x10;
+			}
+		}
+
+		private class Mouse : ButtonedDevice
+		{
+			private static readonly FloatRange MouseFloatRange = new FloatRange(-32768, 0, 32767);
+
+			private static readonly string[] _buttonNames =
+			{
+				"Left", "Right", "Middle", "Start"
+			};
+
+			protected override string[] ButtonNames => _buttonNames;
+			protected override int ButtonByteOffset => 8;
+
+			public Mouse()
+			{
+				Definition.FloatControls.AddRange(new[] { "0X", "0Y" });
+				Definition.FloatRanges.AddRange(new[] { MouseFloatRange, MouseFloatRange });
+			}
+
+			private void SetMouseAxis(float value, byte[] dest, int offset)
+			{
+				var data = (short)value;
+				dest[offset++] = 0;
+				dest[offset++] = 0;
+				dest[offset++] = (byte)data;
+				dest[offset++] = (byte)(data >> 8);
+			}
+
+			public override void Update(IController controller, byte[] dest, int offset)
+			{
+				base.Update(controller, dest, offset);
+				SetMouseAxis(controller.GetFloat("0X"), dest, offset + 0);
+				SetMouseAxis(controller.GetFloat("0Y"), dest, offset + 4);
+			}
+		}
+
+		private class Wheel : ButtonedDevice
+		{
+			private static readonly string[] _buttonNames =
+			{
+				"Up", "Down", null, null,
+				"B", "C", "A", "Start",
+				"Z", "Y", "X"
+			};
+
+			protected override string[] ButtonNames => _buttonNames;
+
+			private static readonly string[] _analogNames =
+			{
+				"Wheel"
+			};
+
+			protected override string[] AnalogNames => _analogNames;
+		}
+
+		private class Mission : ButtonedDevice
+		{
+			private static readonly string[] _buttonNames =
+			{
+				"B", "C", "A", "Start",
+				"Z", "Y", "X", "R",
+				null, null, null, "L"
+			};
+
+			protected override string[] ButtonNames => _buttonNames;
+
+			private static readonly string[] _analogNames =
+			{
+				"Stick Horizontal",
+				"Stick Vertical",
+				"Throttle"
+			};
+
+			protected override string[] AnalogNames => _analogNames;
+			protected override int AnalogByteOffset => 3;
+		}
+
+		private class DualMission : Mission
+		{
+			private static readonly string[] _analogNames =
+			{
+				"Right Stick Horizontal",
+				"Right Stick Vertical",
+				"Right Throttle",
+				"Left Stick Horizontal",
+				"Left Stick Vertical",
+				"Left Throttle"
+			};
+
+			protected override string[] AnalogNames => _analogNames;
+		}
+
+		private class Keyboard : ButtonedDevice
+		{
+			// TODO: LEDs, which are actually data sent back by the core
+			private static readonly string[] _buttonNames =
+			{
+				null,
+				"F9",
+				null,
+				"F5",
+				"F3",
+				"F1",
+				"F2",
+				"F12",
+				null,
+				"F10",
+				"F8",
+				"F6",
+				"F4",
+				"Tab",
+				"Grave`",
+				null,
+				null,
+				"LeftAlt",
+				"LeftShift",
+				null,
+				"LeftCtrl",
+				"Q",
+				"1(One)",
+				"RightAlt",
+				"RightCtrl",
+				"KeypadEnter",
+				"Z",
+				"S",
+				"A",
+				"W",
+				"2",
+				null,
+				null,
+				"C",
+				"X",
+				"D",
+				"E",
+				"4",
+				"3",
+				null,
+				null,
+				"Space",
+				"V",
+				"F",
+				"T",
+				"R",
+				"5",
+				null,
+				null,
+				"N",
+				"B",
+				"H",
+				"G",
+				"Y",
+				"6",
+				null,
+				null,
+				null,
+				"M",
+				"J",
+				"U",
+				"7",
+				"8",
+				null,
+				null,
+				"Comma,",
+				"K",
+				"I",
+				"O",
+				"0(Zero)",
+				"9",
+				null,
+				null,
+				"Period.",
+				"Slash/",
+				"L",
+				"Semicolon;",
+				"P",
+				"Minus-",
+				null,
+				null,
+				null,
+				"Quote'",
+				null,
+				"LeftBracket[",
+				"Equals=",
+				null,
+				null,
+				"CapsLock",
+				"RightShift",
+				"Enter",
+				"RightBracket]",
+				null,
+				"Backslash\\",
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				null,
+				"Backspace",
+				null,
+				null,
+				"KeypadEnd/1",
+				null,
+				"KeypadLeft/4",
+				"KeypadHome/7",
+				null,
+				null,
+				null,
+				"KeypadInsert/0",
+				"KeypadDelete",
+				"KeypadDown/2",
+				"KeypadCenter/5",
+				"KeypadRight/6",
+				"KeypadUp/8",
+				"Escape",
+				"NumLock",
+				"F11",
+				"KeypadPlus",
+				"KeypadPagedown/3",
+				"KeypadMinus",
+				"KeypadAsterisk(Multiply)",
+				"KeypadPageup/9",
+				"ScrollLock",
+				null,
+				"KeypadSlash(Divide)",
+				"Insert",
+				"Pause",
+				"F7",
+				"PrintScreen",
+				"Delete",
+				"CursorLeft",
+				"Home",
+				"End",
+				"Up",
+				"Down",
+				"PageUp",
+				"PageDown",
+				"Right",
 			};
 
 			protected override string[] ButtonNames => _buttonNames;
