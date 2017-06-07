@@ -225,74 +225,11 @@ EXPORT void SetupInput(const int* portdevices, const int* multitaps)
 		SMPC_SetInput(i, DeviceNames[portdevices[i]], ControllerInput + i * 32);
 }
 
-/*void VDP2REND_SetGetVideoParams(MDFNGI* gi, const bool caspect, const int sls, const int sle, const bool show_h_overscan, const bool dohblend)
-{
- CorrectAspect = caspect;
- ShowHOverscan = show_h_overscan;
- DoHBlend = dohblend;
- LineVisFirst = sls;
- LineVisLast = sle;
- //
- //
- //
- gi->fb_width = 704;
-
- if(PAL)
- {
-  gi->nominal_width = (ShowHOverscan ? 365 : 354);
-  gi->fb_height = 576;
- }
- else
- {
-  gi->nominal_width = (ShowHOverscan ? 302 : 292);
-  gi->fb_height = 480;
- }
- gi->nominal_height = LineVisLast + 1 - LineVisFirst;
-
-
- gi->lcm_width = (ShowHOverscan? 10560 : 10240);
- gi->lcm_height = (LineVisLast + 1 - LineVisFirst) * 2;
- //
- //
- //
- if(!CorrectAspect)
- {
-  gi->nominal_width = (ShowHOverscan ? 352 : 341);
-  gi->lcm_width = gi->nominal_width * 2;
- }
-}
-void SetGetVideoParams(MDFNGI* gi, const bool caspect, const int sls, const int sle, const bool show_h_overscan, const bool dohblend)
-{
- if(PAL)
-  gi->fps = 65536 * 256 * (1734687500.0 / 61 / 4 / 455 / ((313 + 312.5) / 2.0));
- else
-  gi->fps = 65536 * 256 * (1746818181.8 / 61 / 4 / 455 / ((263 + 262.5) / 2.0));
-
- VDP2REND_SetGetVideoParams(gi, caspect, sls, sle, show_h_overscan, dohblend);
-}*/
 
 // if (BackupRAM_Dirty)SaveBackupRAM();
 // if (CART_GetClearNVDirty())SaveCartNV();
 
-/*static MDFN_COLD bool IsSaturnDisc(const uint8 *sa32k)
-{
-	//if(sha256(&sa32k[0x100], 0xD00) != "96b8ea48819cfa589f24c40aa149c224c420dccf38b730f00156efe25c9bbc8f"_sha256)
-	// return false;
 
-	if (memcmp(&sa32k[0], "SEGA SEGASATURN ", 16))
-		return false;
-
-	return true;
-}*/
-/*static MDFN_COLD bool TestMagicCD(std::vector<CDIF *> *CDInterfaces)
-{
-	std::unique_ptr<uint8[]> buf(new uint8[2048 * 16]);
-
-	if ((*CDInterfaces)[0]->ReadSector(&buf[0], 0, 16, true) != 0x1)
-		return false;
-
-	return IsSaturnDisc(&buf[0]);
-}*/
 
 /*static MDFN_COLD void CloseGame(void)
 {

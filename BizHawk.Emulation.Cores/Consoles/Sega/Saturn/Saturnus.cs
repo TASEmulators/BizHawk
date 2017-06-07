@@ -1,4 +1,5 @@
 ﻿using BizHawk.Common.BizInvoke;
+using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
@@ -6,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -27,6 +29,30 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		private bool _isPal;
 		private SaturnusControllerDeck _controllerDeck;
 
+		private static bool CheckDisks(IEnumerable<DiscSectorReader> readers)
+		{
+			var buff = new byte[2048 * 16];
+			foreach (var r in readers)
+			{
+				for (int i = 0; i < 16; i++)
+				{
+					if (r.ReadLBA_2048(i, buff, 2048 * i) != 2048)
+						return false;
+				}
+
+				if (Encoding.ASCII.GetString(buff, 0, 16) != "SEGA SEGASATURN ")
+					return false;
+
+				using (var sha256 = SHA256.Create())
+				{
+					sha256.ComputeHash(buff, 0x100, 0xd00);
+					if (sha256.Hash.BytesToHexString() != "96B8EA48819CFA589F24C40AA149C224C420DCCF38B730F00156EFE25C9BBC8F")
+						return false;
+				}
+			}
+			return true;
+		}
+
 		public Saturnus(CoreComm comm, IEnumerable<Disc> disks)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
@@ -34,6 +60,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 			_disks = disks.ToArray();
 			_diskReaders = disks.Select(d => new DiscSectorReader(d) { Policy = _diskPolicy }).ToArray();
+			if (!CheckDisks(_diskReaders))
+				throw new InvalidOperationException("Some disks are not valid");
 			InitCallbacks();
 
 			_exe = new PeRunner(new PeRunnerOptions
