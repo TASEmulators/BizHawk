@@ -305,6 +305,9 @@ inline char *strdup(const char *p)
 // returns a firmware file suitable for use by the core
 std::unique_ptr<MemoryStream> GetFirmware(const char *filename);
 
+extern int32 (*FirmwareSizeCallback)(const char *filename);
+extern void (*FirmwareDataCallback)(const char *filename, uint8 *dest);
+
 extern int setting_ss_slstartp;
 extern int setting_ss_slendp;
 extern int setting_ss_slstart;

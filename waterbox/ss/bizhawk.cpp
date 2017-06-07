@@ -9,8 +9,8 @@
 #define EXPORT extern "C" ECL_EXPORT
 using namespace MDFN_IEN_SS;
 
-static int32 (*FirmwareSizeCallback)(const char *filename);
-static void (*FirmwareDataCallback)(const char *filename, uint8 *dest);
+int32 (*FirmwareSizeCallback)(const char *filename);
+void (*FirmwareDataCallback)(const char *filename, uint8 *dest);
 
 std::unique_ptr<MemoryStream> GetFirmware(const char *filename)
 {

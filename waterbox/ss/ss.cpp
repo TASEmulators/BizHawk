@@ -77,7 +77,7 @@ static uint8 SCU_SSH2VectorFetch(void);
 static void INLINE MDFN_HOT CheckEventsByMemTS(void);
 
 SH7095 CPU[2]{{"SH2-M", SS_EVENT_SH2_M_DMA, SCU_MSH2VectorFetch}, {"SH2-S", SS_EVENT_SH2_S_DMA, SCU_SSH2VectorFetch}};
-static uint16 BIOSROM[524288 / sizeof(uint16)];
+static uint16* BIOSROM;
 static uint16 WorkRAML[1024 * 1024 / sizeof(uint16)];
 static uint16 WorkRAMH[1024 * 1024 / sizeof(uint16)]; // Effectively 32-bit in reality, but 16-bit here because of CPU interpreter design(regarding fastmap).
 static uint8 BackupRAM[32768];
@@ -938,7 +938,8 @@ static bool MDFN_COLD InitCommon(const unsigned cart_type, const unsigned smpc_a
 
 	// Call InitFastMemMap() before functions like SOUND_Init()
 	InitFastMemMap();
-	SS_SetPhysMemMap(0x00000000, 0x000FFFFF, BIOSROM, sizeof(BIOSROM));
+	BIOSROM = (uint16*)alloc_sealed(524288);
+	SS_SetPhysMemMap(0x00000000, 0x000FFFFF, BIOSROM, 524288);
 	SS_SetPhysMemMap(0x00200000, 0x003FFFFF, WorkRAML, sizeof(WorkRAML), true);
 	SS_SetPhysMemMap(0x06000000, 0x07FFFFFF, WorkRAMH, sizeof(WorkRAMH), true);
 	//MDFNMP_RegSearchable(0x00200000, sizeof(WorkRAML));
@@ -972,17 +973,16 @@ static bool MDFN_COLD InitCommon(const unsigned cart_type, const unsigned smpc_a
 	else
 		biospath = "BIOS_U";
 
+	if (FirmwareSizeCallback(biospath) != 524288)
 	{
-		auto BIOSFile = GetFirmware(biospath);
-		if (BIOSFile->size() != 524288)
-		{
-			printf("BIOS file is of an incorrect size.\n");
-			return false;
-		}
-		BIOSFile->read(BIOSROM, 512 * 1024);
-		for (unsigned i = 0; i < 262144; i++)
-			BIOSROM[i] = MDFN_de16msb(&BIOSROM[i]);
+		printf("BIOS file is of an incorrect size.\n");
+		return false;
 	}
+
+	FirmwareDataCallback(biospath, (uint8*)&BIOSROM[0]);
+	for (unsigned i = 0; i < 262144; i++)
+		BIOSROM[i] = MDFN_de16msb(&BIOSROM[i]);
+
 	EmulatedSS_MasterClock = MDFN_MASTERCLOCK_FIXED(MasterClock);
 
 	SCU_Init();
