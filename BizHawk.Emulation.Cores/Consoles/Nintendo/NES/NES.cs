@@ -557,15 +557,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						LoadWriteLine("Since this rom has a 16 KB PRG, we'll hash it as 8KB too for bootgod's DB:");
 						var msTemp = new MemoryStream();
 						msTemp.Write(file, 16, 8 * 1024); //add prg
-						if (file.Length > (16 * 1024 + 16))
+						if (file.Length >= (16 * 1024 + iNesHeaderInfo.chr_size * 1024 + 16))
 						{
 							// This assumes that even though the PRG is only 8k the CHR is still written
 							// 16k into the file, which is not always the case (e.x. Galaxian RevA)
 							msTemp.Write(file, 16 + 16 * 1024, iNesHeaderInfo.chr_size * 1024); //add chr
 						}
+						else if (file.Length >= (8 * 1024 + iNesHeaderInfo.chr_size * 1024 + 16))
+						{
+							// maybe the PRG is only 8k
+							msTemp.Write(file, 16 + 8 * 1024, iNesHeaderInfo.chr_size * 1024); //add chr
+						}
 						else
 						{
-							msTemp.Write(file, 16 + 8 * 1024, iNesHeaderInfo.chr_size * 1024); //add chr
+							// we failed somehow
+							// most likely the header is wrong
+							Console.WriteLine("WARNING: 16kb PRG iNES header but unable to parse");
 						}
 						msTemp.Flush();
 						var bytes = msTemp.ToArray();
