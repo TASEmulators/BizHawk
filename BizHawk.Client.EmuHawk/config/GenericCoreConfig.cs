@@ -1,62 +1,73 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
-using BizHawk.Client.EmuHawk;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class GenericCoreConfig : Form
 	{
-		object s;
-		object ss;
-		bool syncsettingschanged = false;
+		private object _s;
+		private object _ss;
+		private bool _syncsettingschanged;
 
-		GenericCoreConfig(bool ignoresettings, bool ignoresyncsettings)
+		private GenericCoreConfig(bool ignoresettings, bool ignoresyncsettings)
 		{
 			InitializeComponent();
 
 			var settable = new SettingsAdapter(Global.Emulator);
 
 			if (settable.HasSettings && !ignoresettings)
-				s = settable.GetSettings();
-			if (settable.HasSyncSettings && !ignoresyncsettings)
-				ss = settable.GetSyncSettings();
-
-			if (s != null)
-				propertyGrid1.SelectedObject = s;
-			else
-				tabControl1.TabPages.Remove(tabPage1);
-			if (ss != null)
-				propertyGrid2.SelectedObject = ss;
-			else
-				tabControl1.TabPages.Remove(tabPage2);
-
-			if (Global.MovieSession.Movie.IsActive)
-				propertyGrid2.Enabled = false; // disable changes to sync setting when movie, so as not to confuse user
-		}
-
-		GenericCoreConfig()
-			:this(false, false)
-		{
-		}
-
-		private void button1_Click(object sender, EventArgs e)
-		{
-			var settable = new SettingsAdapter(Global.Emulator);
-			if (s != null && settable.HasSettings)
 			{
-				settable.PutSettings(s);
+				_s = settable.GetSettings();
 			}
 
-			if (ss != null && syncsettingschanged)
-				GlobalWin.MainForm.PutCoreSyncSettings(ss);
+			if (settable.HasSyncSettings && !ignoresyncsettings)
+			{
+				_ss = settable.GetSyncSettings();
+			}
+
+			if (_s != null)
+			{
+				propertyGrid1.SelectedObject = _s;
+			}
+			else
+			{
+				tabControl1.TabPages.Remove(tabPage1);
+			}
+
+			if (_ss != null)
+			{
+				propertyGrid2.SelectedObject = _ss;
+			}
+			else
+			{
+				tabControl1.TabPages.Remove(tabPage2);
+			}
+
+			if (Global.MovieSession.Movie.IsActive)
+			{
+				propertyGrid2.Enabled = false; // disable changes to sync setting when movie, so as not to confuse user
+			}
+		}
+
+		private GenericCoreConfig()
+			: this(false, false)
+		{
+		}
+
+		private void OkBtn_Click(object sender, EventArgs e)
+		{
+			var settable = new SettingsAdapter(Global.Emulator);
+			if (_s != null && settable.HasSettings)
+			{
+				settable.PutSettings(_s);
+			}
+
+			if (_ss != null && _syncsettingschanged)
+			{
+				GlobalWin.MainForm.PutCoreSyncSettings(_ss);
+			}
 
 			DialogResult = DialogResult.OK;
 			Close();
@@ -65,40 +76,43 @@ namespace BizHawk.Client.EmuHawk
 		public static void DoDialog(IWin32Window owner, string title)
 		{
 			using (var dlg = new GenericCoreConfig { Text = title })
+			{
 				dlg.ShowDialog(owner);
+			}
 		}
 
 		public static void DoDialog(IWin32Window owner, string title, bool hidesettings, bool hidesyncsettings)
 		{
 			using (var dlg = new GenericCoreConfig(hidesettings, hidesyncsettings) { Text = title })
+			{
 				dlg.ShowDialog(owner);
+			}
 		}
 
-		private void propertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+		private void PropertyGrid2_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
 		{
-			syncsettingschanged = true;
+			_syncsettingschanged = true;
 		}
 
 		private void GenericCoreConfig_Load(object sender, EventArgs e)
 		{
-
 		}
 
-		private void buttonDefaults_Click(object sender, EventArgs e)
+		private void DefaultsBtn_Click(object sender, EventArgs e)
 		{
 			// the new config objects guarantee that the default constructor gives a default-settings object
-			if (s != null)
+			if (_s != null)
 			{
-				s = Activator.CreateInstance(s.GetType());
-				propertyGrid1.SelectedObject = s;
-			}
-			if (ss != null)
-			{
-				ss = Activator.CreateInstance(ss.GetType());
-				propertyGrid2.SelectedObject = ss;
-				syncsettingschanged = true;
+				_s = Activator.CreateInstance(_s.GetType());
+				propertyGrid1.SelectedObject = _s;
 			}
 
+			if (_ss != null)
+			{
+				_ss = Activator.CreateInstance(_ss.GetType());
+				propertyGrid2.SelectedObject = _ss;
+				_syncsettingschanged = true;
+			}
 		}
 	}
 }
