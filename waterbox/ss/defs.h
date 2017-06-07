@@ -315,5 +315,6 @@ extern bool setting_ss_correct_aspect;
 extern bool setting_ss_h_overscan;
 extern bool setting_ss_h_blend;
 extern bool setting_ss_region_autodetect;
-extern bool setting_ss_input_sport1_multitap;
-extern bool setting_ss_input_sport0_multitap;
+
+extern bool InputLagged;
+extern void (*InputCallback)();

@@ -989,6 +989,11 @@ sscpu_timestamp_t SMPC_Update(sscpu_timestamp_t timestamp)
 
      if(IREG[1] & 0x8)
      {
+		InputLagged = false;
+		if (InputCallback)
+			InputCallback();
+
+
       #define JR_WAIT(cond)	{ SMPC_WAIT_UNTIL_COND((cond) || PendingVB); if(PendingVB) { SS_DBGTI(SS_DBG_SMPC, "[SMPC] abortjr wait"); goto AbortJR; } }
       #define JR_EAT(n)		{ SMPC_EAT_CLOCKS(n); if(PendingVB) { SS_DBGTI(SS_DBG_SMPC, "[SMPC] abortjr eat"); goto AbortJR; } }
       #define JR_WRNYB(val)															\

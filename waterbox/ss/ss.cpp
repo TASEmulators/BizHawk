@@ -1018,8 +1018,7 @@ static bool MDFN_COLD InitCommon(const unsigned cart_type, const unsigned smpc_a
 	MDFN_printf("\n");
 	for (unsigned sp = 0; sp < 2; sp++)
 	{
-		bool sv = sp ? setting_ss_input_sport1_multitap : setting_ss_input_sport0_multitap;
-		SMPC_SetMultitap(sp, sv);
+		SMPC_SetMultitap(sp, false);
 
 		MDFN_printf(_("Multitap on Saturn Port %u: %s\n"), sp + 1, sv ? _("Enabled") : _("Disabled"));
 	}

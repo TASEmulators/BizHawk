@@ -154,7 +154,8 @@ struct FrameAdvanceInfo
 	int32 Width;
 	int32 Height;
 
-	int32 ResetPushed;
+	int16 ResetPushed;
+	int16 InputLagged;
 
 	// Set by the system emulation code every frame, to denote the horizontal and vertical offsets of the image, and the size
 	// of the image.  If the emulated system sets the elements of LineWidths, then the width(w) of this structure
@@ -169,6 +170,7 @@ struct FrameAdvanceInfo
 };
 
 static uint8 ControllerInput[12 * 32];
+bool InputLagged;
 
 EXPORT void FrameAdvance(FrameAdvanceInfo &f)
 {
@@ -182,10 +184,11 @@ EXPORT void FrameAdvance(FrameAdvanceInfo &f)
 	e.SoundBufMaxSize = f.SoundBufMaxSize;
 	memcpy(ControllerInput, f.Controllers, sizeof(ControllerInput));
 	IsResetPushed = f.ResetPushed;
-
+	InputLagged = true;
 	Emulate(&e);
 	f.SoundBufSize = e.SoundBufSize;
 	f.MasterCycles = e.MasterCycles;
+	f.InputLagged = InputLagged;
 
 	int w = 256;
 	for (int i = 0; i < e.h; i++)
@@ -223,6 +226,12 @@ EXPORT void SetupInput(const int* portdevices, const int* multitaps)
 		SMPC_SetMultitap(i, multitaps[i]);
 	for (int i = 0; i < 12; i++)
 		SMPC_SetInput(i, DeviceNames[portdevices[i]], ControllerInput + i * 32);
+}
+
+void (*InputCallback)();
+EXPORT void SetInputCallback(void (*callback)())
+{
+	InputCallback = callback;
 }
 
 

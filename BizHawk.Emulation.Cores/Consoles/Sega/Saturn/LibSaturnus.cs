@@ -56,7 +56,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			[FieldOffset(44)]
 			public int Height;
 			[FieldOffset(48)]
-			public int ResetPushed;
+			public short ResetPushed;
+			[FieldOffset(50)]
+			public short InputLagged;
 		};
 
 		[UnmanagedFunctionPointer(CC)]
@@ -67,6 +69,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		public delegate void CDTOCCallback(int disk, [In, Out]TOC toc);
 		[UnmanagedFunctionPointer(CC)]
 		public delegate void CDSectorCallback(int disk, int lba, IntPtr dest);
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void InputCallback();
 
 		[BizImport(CC)]
 		public abstract void SetFirmwareCallbacks(FirmwareSizeCallback sizecallback, FirmwareDataCallback datacallback);
@@ -82,5 +86,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		public abstract void FrameAdvance([In, Out]FrameAdvanceInfo f);
 		[BizImport(CC)]
 		public abstract void SetupInput(int[] portdevices, int[] multitaps);
+		[BizImport(CC)]
+		public abstract void SetInputCallback(InputCallback callback);
 	}
 }

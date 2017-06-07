@@ -101,6 +101,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			DriveLightOn = false;
 			if (controller.IsPressed("Power"))
 				_core.HardReset();
+			SetInputCallback();
 
 			fixed (short* _sp = _soundBuffer)
 			fixed (int* _vp = _videoBuffer)
@@ -112,11 +113,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 					SoundBufMaxSize = _soundBuffer.Length / 2,
 					Pixels = (IntPtr)_vp,
 					Controllers = (IntPtr)_cp,
-					ResetPushed = controller.IsPressed("Reset") ? 1 : 0
+					ResetPushed = (short)(controller.IsPressed("Reset") ? 1 : 0)
 				};
 
 				_core.FrameAdvance(info);
 				Frame++;
+				IsLagFrame = info.InputLagged != 0;
+				if (IsLagFrame)
+					LagCount++;
 				_numSamples = info.SoundBufSize;
 				BufferWidth = info.Width;
 				BufferHeight = info.Height;
@@ -158,6 +162,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		private LibSaturnus.FirmwareDataCallback _firmwareDataCallback;
 		private LibSaturnus.CDTOCCallback _cdTocCallback;
 		private LibSaturnus.CDSectorCallback _cdSectorCallback;
+		private LibSaturnus.InputCallback _inputCallback;
 
 		private void InitCallbacks()
 		{
@@ -165,6 +170,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			_firmwareDataCallback = FirmwareData;
 			_cdTocCallback = CDTOCCallback;
 			_cdSectorCallback = CDSectorCallback;
+			_inputCallback = InputCallbacks.Call;
 		}
 
 		private void SetFirmwareCallbacks()
@@ -175,10 +181,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		{
 			_core.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);
 		}
+		private void SetInputCallback()
+		{
+			_core.SetInputCallback(InputCallbacks.Count > 0 ? _inputCallback : null);
+		}
 		private void ClearAllCallbacks()
 		{
 			_core.SetFirmwareCallbacks(null, null);
 			_core.SetCDCallbacks(null, null);
+			_core.SetInputCallback(null);
 		}
 
 		private string TranslateFirmwareName(string filename)
