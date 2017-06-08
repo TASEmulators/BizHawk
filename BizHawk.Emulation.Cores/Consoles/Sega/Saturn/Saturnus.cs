@@ -5,6 +5,7 @@ using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
@@ -15,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
 	[CoreAttributes("Saturnus", "Ryphecha", true, false, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
-	public class Saturnus : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, IDriveLight
+	public class Saturnus : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, IDriveLight, IStatable, IRegionable
 	{
 		private static readonly DiscSectorReaderPolicy _diskPolicy = new DiscSectorReaderPolicy
 		{
@@ -68,11 +69,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			{
 				Path = comm.CoreFileProvider.DllPath(),
 				Filename = "ss.wbx",
-				SbrkHeapSizeKB = 32 * 1024,
-				SealedHeapSizeKB = 32 * 1024, // 512KB of bios
-				InvisibleHeapSizeKB = 32 * 1024, // 4MB of framebuffer
-				MmapHeapSizeKB = 32 * 1024, // not used?
-				PlainHeapSizeKB = 32 * 1024, // up to 16MB of cart ram
+				SbrkHeapSizeKB = 128,
+				SealedHeapSizeKB = 1024, // 512KB of bios
+				InvisibleHeapSizeKB = 8 * 1024, // 4MB of framebuffer
+				MmapHeapSizeKB = 0, // not used?
+				PlainHeapSizeKB = 24 * 1024, // up to 16MB of cart ram
 				StartAddress = LibSaturnus.StartAddress
 			});
 			_core = BizInvoker.GetInvoker<LibSaturnus>(_exe, _exe);
@@ -150,11 +151,65 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			Frame = 0;
 		}
 
+		public DisplayType Region => _isPal ? DisplayType.PAL : DisplayType.NTSC;
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 		public string SystemId { get { return "SAT"; } }
 		public bool DeterministicEmulation { get; private set; }
 		public CoreComm CoreComm { get; }
 		public ControllerDefinition ControllerDefinition { get; }
+
+		#region IStatable
+
+		public bool BinarySaveStatesPreferred => true;
+
+		public void SaveStateText(TextWriter writer)
+		{
+			var temp = SaveStateBinary();
+			temp.SaveAsHexFast(writer);
+			// write extra copy of stuff we don't use
+			writer.WriteLine("Frame {0}", Frame);
+		}
+
+		public void LoadStateText(TextReader reader)
+		{
+			string hex = reader.ReadLine();
+			byte[] state = new byte[hex.Length / 2];
+			state.ReadFromHexFast(hex);
+			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
+		}
+
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			_exe.LoadStateBinary(reader);
+			// other variables
+			Frame = reader.ReadInt32();
+			LagCount = reader.ReadInt32();
+			IsLagFrame = reader.ReadBoolean();
+			// any managed pointers that we sent to the core need to be resent now!
+			SetCdCallbacks();
+			_core.SetInputCallback(null);
+		}
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			_exe.SaveStateBinary(writer);
+			// other variables
+			writer.Write(Frame);
+			writer.Write(LagCount);
+			writer.Write(IsLagFrame);
+		}
+
+		public byte[] SaveStateBinary()
+		{
+			var ms = new MemoryStream();
+			var bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			ms.Close();
+			return ms.ToArray();
+		}
+
+		#endregion
 
 		#region Callbacks
 
