@@ -71,6 +71,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		public delegate void CDSectorCallback(int disk, int lba, IntPtr dest);
 		[UnmanagedFunctionPointer(CC)]
 		public delegate void InputCallback();
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void AddMemoryDomainCallback(string name, IntPtr ptr, int size, bool writable);
 
 		[BizImport(CC)]
 		public abstract void SetFirmwareCallbacks(FirmwareSizeCallback sizecallback, FirmwareDataCallback datacallback);
@@ -88,5 +90,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		public abstract void SetupInput(int[] portdevices, int[] multitaps);
 		[BizImport(CC)]
 		public abstract void SetInputCallback(InputCallback callback);
+		[BizImport(CC)]
+		public abstract void SetAddMemoryDomainCallback(AddMemoryDomainCallback callback);
 	}
 }

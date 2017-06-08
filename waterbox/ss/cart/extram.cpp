@@ -24,61 +24,61 @@
 
 namespace MDFN_IEN_SS
 {
-static uint16* ExtRAM; //[0x200000];
+static uint16 *ExtRAM; //[0x200000];
 static size_t ExtRAM_Mask;
 static uint8 Cart_ID;
 
-template<typename T, bool IsWrite>
-static MDFN_HOT void ExtRAM_RW_DB(uint32 A, uint16* DB)
+template <typename T, bool IsWrite>
+static MDFN_HOT void ExtRAM_RW_DB(uint32 A, uint16 *DB)
 {
- const uint32 mask = (sizeof(T) == 2) ? 0xFFFF : (0xFF << (((A & 1) ^ 1) << 3));
- uint16* const ptr = (uint16*)((uint8*)ExtRAM + (A & ExtRAM_Mask));
+	const uint32 mask = (sizeof(T) == 2) ? 0xFFFF : (0xFF << (((A & 1) ^ 1) << 3));
+	uint16 *const ptr = (uint16 *)((uint8 *)ExtRAM + (A & ExtRAM_Mask));
 
- //printf("Barf %zu %d: %08x\n", sizeof(T), IsWrite, A);
+	//printf("Barf %zu %d: %08x\n", sizeof(T), IsWrite, A);
 
- if(IsWrite)
-  *ptr = (*ptr & ~mask) | (*DB & mask);
- else
-  *DB = *ptr;
+	if (IsWrite)
+		*ptr = (*ptr & ~mask) | (*DB & mask);
+	else
+		*DB = *ptr;
 }
 
-static MDFN_HOT void CartID_Read_DB(uint32 A, uint16* DB)
+static MDFN_HOT void CartID_Read_DB(uint32 A, uint16 *DB)
 {
- if((A & ~1) == 0x04FFFFFE)
-  *DB = Cart_ID;
+	if ((A & ~1) == 0x04FFFFFE)
+		*DB = Cart_ID;
 }
 
 static MDFN_COLD void Reset(bool powering_up)
 {
- if(powering_up)
-  memset(ExtRAM, 0, 0x400000);	// TODO: Test.
+	if (powering_up)
+		memset(ExtRAM, 0, 0x400000); // TODO: Test.
 }
 
-void CART_ExtRAM_Init(CartInfo* c, bool R4MiB)
+void CART_ExtRAM_Init(CartInfo *c, bool R4MiB)
 {
-	ExtRAM = (uint16*)alloc_plain(0x400000);
- if(R4MiB)
- {
-  Cart_ID = 0x5C;
-  ExtRAM_Mask = 0x3FFFFE;
- }
- else
- {
-  Cart_ID = 0x5A;
-  ExtRAM_Mask = 0x27FFFE;
- }
+	ExtRAM = (uint16 *)alloc_plain(0x400000);
+	if (R4MiB)
+	{
+		Cart_ID = 0x5C;
+		ExtRAM_Mask = 0x3FFFFE;
+	}
+	else
+	{
+		Cart_ID = 0x5A;
+		ExtRAM_Mask = 0x27FFFE;
+	}
 
- SS_SetPhysMemMap(0x02400000, 0x025FFFFF, ExtRAM + (0x000000 / sizeof(uint16)), (R4MiB ? 0x200000 : 0x080000), true);
- SS_SetPhysMemMap(0x02600000, 0x027FFFFF, ExtRAM + (0x200000 / sizeof(uint16)), (R4MiB ? 0x200000 : 0x080000), true);
+	SS_SetPhysMemMap(0x02400000, 0x025FFFFF, ExtRAM + (0x000000 / sizeof(uint16)), (R4MiB ? 0x200000 : 0x080000), true);
+	SS_SetPhysMemMap(0x02600000, 0x027FFFFF, ExtRAM + (0x200000 / sizeof(uint16)), (R4MiB ? 0x200000 : 0x080000), true);
 
- c->CS01_SetRW8W16(0x02400000, 0x027FFFFF,
-	ExtRAM_RW_DB<uint16, false>,
-	ExtRAM_RW_DB<uint8, true>,
-	ExtRAM_RW_DB<uint16, true>);
+	c->CS01_SetRW8W16(0x02400000, 0x027FFFFF,
+					  ExtRAM_RW_DB<uint16, false>,
+					  ExtRAM_RW_DB<uint8, true>,
+					  ExtRAM_RW_DB<uint16, true>);
 
- c->CS01_SetRW8W16(/*0x04FFFFFE*/0x04F00000, 0x04FFFFFF, CartID_Read_DB);
+	c->CS01_SetRW8W16(/*0x04FFFFFE*/ 0x04F00000, 0x04FFFFFF, CartID_Read_DB);
 
- c->Reset = Reset;
+	c->Reset = Reset;
+	AddMemoryDomain("Ram Cart", ExtRAM, 0x400000, true);
 }
-
 }

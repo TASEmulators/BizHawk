@@ -25,29 +25,29 @@
 namespace MDFN_IEN_SS
 {
 
-static uint16* ROM; //[0x100000];
+static uint16 *ROM; //[0x100000];
 
-static MDFN_HOT void ROM_Read(uint32 A, uint16* DB)
+static MDFN_HOT void ROM_Read(uint32 A, uint16 *DB)
 {
- // TODO: Check mirroring.
- //printf("ROM: %08x\n", A);
- *DB = *(uint16*)((uint8*)ROM + (A & 0x1FFFFE));
+	// TODO: Check mirroring.
+	//printf("ROM: %08x\n", A);
+	*DB = *(uint16 *)((uint8 *)ROM + (A & 0x1FFFFE));
 }
 
-void CART_ROM_Init(CartInfo* c, const char* filename)
+void CART_ROM_Init(CartInfo *c, const char *filename)
 {
 	if (FirmwareSizeCallback(filename) != 0x200000)
 		abort();
-	ROM = (uint16*)alloc_sealed(0x200000);
-	FirmwareDataCallback(filename, (uint8*)ROM);
+	ROM = (uint16 *)alloc_sealed(0x200000);
+	FirmwareDataCallback(filename, (uint8 *)ROM);
 
- for(unsigned i = 0; i < 0x100000; i++)
- {
-  ROM[i] = MDFN_de16msb<true>(&ROM[i]);
- }
+	for (unsigned i = 0; i < 0x100000; i++)
+	{
+		ROM[i] = MDFN_de16msb<true>(&ROM[i]);
+	}
 
- SS_SetPhysMemMap (0x02000000, 0x03FFFFFF, ROM, 0x200000, false);
- c->CS01_SetRW8W16(0x02000000, 0x03FFFFFF, ROM_Read);
+	SS_SetPhysMemMap(0x02000000, 0x03FFFFFF, ROM, 0x200000, false);
+	c->CS01_SetRW8W16(0x02000000, 0x03FFFFFF, ROM_Read);
+	AddMemoryDomain("Rom Cart", ROM, 0x200000, false);
 }
-
 }

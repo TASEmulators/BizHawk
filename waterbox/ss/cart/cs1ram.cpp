@@ -24,37 +24,37 @@
 
 namespace MDFN_IEN_SS
 {
-static uint16* CS1RAM = nullptr;
+static uint16 *CS1RAM = nullptr;
 
-template<typename T, bool IsWrite>
-static MDFN_HOT void CS1RAM_RW_DB(uint32 A, uint16* DB)
+template <typename T, bool IsWrite>
+static MDFN_HOT void CS1RAM_RW_DB(uint32 A, uint16 *DB)
 {
- const uint32 mask = (sizeof(T) == 2) ? 0xFFFF : (0xFF << (((A & 1) ^ 1) << 3));
- uint16* const ptr = (uint16*)((uint8*)CS1RAM + (A & 0x00FFFFFE));
+	const uint32 mask = (sizeof(T) == 2) ? 0xFFFF : (0xFF << (((A & 1) ^ 1) << 3));
+	uint16 *const ptr = (uint16 *)((uint8 *)CS1RAM + (A & 0x00FFFFFE));
 
- if(IsWrite)
-  *ptr = (*ptr & ~mask) | (*DB & mask);
- else
-  *DB = *ptr;
+	if (IsWrite)
+		*ptr = (*ptr & ~mask) | (*DB & mask);
+	else
+		*DB = *ptr;
 }
 
 static MDFN_COLD void Reset(bool powering_up)
 {
- if(powering_up)
-  memset(CS1RAM, 0, 0x1000000);
+	if (powering_up)
+		memset(CS1RAM, 0, 0x1000000);
 }
 
-void CART_CS1RAM_Init(CartInfo* c)
+void CART_CS1RAM_Init(CartInfo *c)
 {
- CS1RAM = (uint16*)alloc_plain(0x1000000);
+	CS1RAM = (uint16 *)alloc_plain(0x1000000);
 
- SS_SetPhysMemMap   (0x04000000, 0x04FFFFFF, CS1RAM, 0x1000000, true);
- c->CS01_SetRW8W16(0x04000000, 0x04FFFFFF, 
-	CS1RAM_RW_DB<uint16, false>,
-	CS1RAM_RW_DB<uint8, true>,
-	CS1RAM_RW_DB<uint16, true>);
+	SS_SetPhysMemMap(0x04000000, 0x04FFFFFF, CS1RAM, 0x1000000, true);
+	c->CS01_SetRW8W16(0x04000000, 0x04FFFFFF,
+					  CS1RAM_RW_DB<uint16, false>,
+					  CS1RAM_RW_DB<uint8, true>,
+					  CS1RAM_RW_DB<uint16, true>);
 
- c->Reset = Reset;
+	c->Reset = Reset;
+	AddMemoryDomain("CS1 Cart", CS1RAM, 0x1000000, true);
 }
-
 }

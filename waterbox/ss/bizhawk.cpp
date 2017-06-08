@@ -222,6 +222,13 @@ EXPORT void SetInputCallback(void (*callback)())
 	InputCallback = callback;
 }
 
+void (*AddMemoryDomain)(const char* name, const void* ptr, int size, bool writable);
+
+EXPORT void SetAddMemoryDomainCallback(void (*callback)(const char* name, const void* ptr, int size, bool writable))
+{
+	AddMemoryDomain = callback;
+}
+
 
 // if (BackupRAM_Dirty)SaveBackupRAM();
 // if (CART_GetClearNVDirty())SaveCartNV();

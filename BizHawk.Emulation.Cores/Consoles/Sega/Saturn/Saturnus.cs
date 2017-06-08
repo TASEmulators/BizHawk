@@ -80,6 +80,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 			SetFirmwareCallbacks();
 			SetCdCallbacks();
+			_core.SetAddMemoryDomainCallback(_addMemoryDomainCallback);
 			if (!_core.Init(_disks.Length))
 				throw new InvalidOperationException("Core rejected the disks!");
 			ClearAllCallbacks();
@@ -95,6 +96,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			_exe.Seal();
 			SetCdCallbacks();
 			_core.SetDisk(0, false);
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(new MemoryDomainList(_memoryDomains.Values.ToList())
+			{
+				MainMemory = _memoryDomains["Work Ram Low"]
+			});
 		}
 
 		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
@@ -158,6 +163,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		public CoreComm CoreComm { get; }
 		public ControllerDefinition ControllerDefinition { get; }
 
+		#region IMemoryDomains
+
+		private readonly Dictionary<string, MemoryDomain> _memoryDomains = new Dictionary<string, MemoryDomain>();
+
+		private void AddMemoryDomain(string name, IntPtr ptr, int size, bool writable)
+		{
+			_memoryDomains.Add(name, new MemoryDomainIntPtrMonitor(name, MemoryDomain.Endian.Big, ptr, size, writable, 2, _exe));
+		}
+
+		#endregion
+
 		#region IStatable
 
 		public bool BinarySaveStatesPreferred => true;
@@ -218,6 +234,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		private LibSaturnus.CDTOCCallback _cdTocCallback;
 		private LibSaturnus.CDSectorCallback _cdSectorCallback;
 		private LibSaturnus.InputCallback _inputCallback;
+		private LibSaturnus.AddMemoryDomainCallback _addMemoryDomainCallback;
 
 		private void InitCallbacks()
 		{
@@ -226,6 +243,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			_cdTocCallback = CDTOCCallback;
 			_cdSectorCallback = CDSectorCallback;
 			_inputCallback = InputCallbacks.Call;
+			_addMemoryDomainCallback = AddMemoryDomain;
 		}
 
 		private void SetFirmwareCallbacks()
@@ -245,6 +263,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			_core.SetFirmwareCallbacks(null, null);
 			_core.SetCDCallbacks(null, null);
 			_core.SetInputCallback(null);
+			_core.SetAddMemoryDomainCallback(null);
 		}
 
 		private string TranslateFirmwareName(string filename)

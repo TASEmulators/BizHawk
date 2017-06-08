@@ -935,15 +935,17 @@ static bool MDFN_COLD InitCommon(const unsigned cart_type, const unsigned smpc_a
 	memset(BackupRAM, 0x00, sizeof(BackupRAM));
 	for (unsigned i = 0; i < 0x40; i++)
 		BackupRAM[i] = BRAM_Init_Data[i & 0x0F];
+	AddMemoryDomain("Backup Ram", BackupRAM, sizeof(BackupRAM), true);
 
 	// Call InitFastMemMap() before functions like SOUND_Init()
 	InitFastMemMap();
 	BIOSROM = (uint16*)alloc_sealed(524288);
+	AddMemoryDomain("Boot Rom", BIOSROM, 524288, false);
 	SS_SetPhysMemMap(0x00000000, 0x000FFFFF, BIOSROM, 524288);
 	SS_SetPhysMemMap(0x00200000, 0x003FFFFF, WorkRAML, sizeof(WorkRAML), true);
 	SS_SetPhysMemMap(0x06000000, 0x07FFFFFF, WorkRAMH, sizeof(WorkRAMH), true);
-	//MDFNMP_RegSearchable(0x00200000, sizeof(WorkRAML));
-	//MDFNMP_RegSearchable(0x06000000, sizeof(WorkRAMH));
+	AddMemoryDomain("Work Ram Low", WorkRAML, sizeof(WorkRAML), true);
+	AddMemoryDomain("Work Ram High", WorkRAMH, sizeof(WorkRAMH), true);
 
 	CART_Init(cart_type);
 	//

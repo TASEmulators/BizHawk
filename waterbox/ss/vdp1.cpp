@@ -118,6 +118,8 @@ void Init(void)
  //
  //
  SS_SetPhysMemMap(0x05C00000, 0x05C7FFFF, VRAM, sizeof(VRAM), true);
+ AddMemoryDomain("VDP1 Ram", VRAM, sizeof(VRAM), true);
+ AddMemoryDomain("VDP1 Framebuffer", FB, sizeof(FB), true);
  //SS_SetPhysMemMap(0x05C80000, 0x05CFFFFF, FB[FBDrawWhich], sizeof(FB[0]), true);
 
  vb_status = false;
