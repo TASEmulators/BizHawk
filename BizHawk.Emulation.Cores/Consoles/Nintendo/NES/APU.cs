@@ -433,7 +433,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.EndSection();
 			}
 
-
 			public bool IsLenCntNonZero() { return len_cnt > 0; }
 
 			public void WriteReg(int addr, byte val)
@@ -508,8 +507,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						else env_counter--;
 					}
 				}
-
 			}
+
 			public void clock_length_and_sweep()
 			{
 
@@ -561,7 +560,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//misc..
 			int lenctr_en;
 			int linear_counter, timer, timer_cnt_reload;
-			int seq = 15;
+			int seq = 0;
 			public int sample;
 
 			APU apu;
@@ -655,41 +654,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//except when linear counter or
 				//length counter is 0
 
-				//dont stop the triangle channel until its level is 0. makes it sound nicer.
-				bool need_declick = (seq != 16 && seq != 15);
-				bool en = len_cnt != 0 && linear_counter != 0 || need_declick;
+				bool en = len_cnt != 0 && linear_counter != 0;
 
-				//length counter and linear counter 
-				//is clocked in frame counter.
-				if (en)
+				bool do_clock = false;
+				if (timer > 0) timer--;
+				if (timer == 0)
+				{
+					do_clock = true;
+					timer = timer_cnt_reload;
+				}
+
+				if (en && do_clock)
 				{
 					int newsample;
-					if (timer > 0) timer--;
-					if (timer == 0)
-					{
-						seq = (seq + 1) & 0x1F;
-						timer = timer_cnt_reload;
-					}
-					if (CFG_DECLICK) // this looks ugly...
-						newsample = TRIANGLE_TABLE[(seq + 8) & 0x1F];
-					else
-						newsample = TRIANGLE_TABLE[seq];
+
+					seq = (seq + 1) & 0x1F;
+
+					newsample = TRIANGLE_TABLE[seq];
 
 					//special hack: frequently, games will use the maximum frequency triangle in order to mute it
 					//apparently this results in the DAC for the triangle wave outputting a steady level at about 7.5
 					//so we'll emulate it at the digital level
 					if (timer_cnt_reload == 1) newsample = 8;
 
-					//newsample -= 8; //unbias
 					if (newsample != sample)
 					{
 						apu.recalculate = true;
 						sample = newsample;
 					}
 				}
-
 			}
-
 
 			public void clock_length_and_sweep()
 			{
@@ -800,9 +794,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				//Any time the sample buffer is in an empty state and bytes remaining is not zero, the following occur: 
 				// also note that the halt for DMC DMA occurs on APU cycles only (hence the timer check)
-				
-				
-				
 				if (!sample_buffer_filled && sample_length > 0  && apu.dmc_dma_countdown == -1 && delay==0)
 				{
 					// calls from write take one less cycle, but start on a write instead of a read
@@ -850,7 +841,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 
-
 			void Clock()
 			{
 				//If the silence flag is clear, bit 0 of the shift register is applied to the counter as follows: 
@@ -869,7 +859,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if (out_deltacounter > 1)
 							out_deltacounter -= 2;
 					}
-					//apu.nes.LogLine("dmc out sample: {0}", out_deltacounter);
+					//Console.WriteLine("dmc out sample: {0}", out_deltacounter);
 					apu.recalculate = true;
 				}
 
@@ -896,8 +886,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 				else out_bits_remaining--;
-
-
 			}
 
 			public void set_lenctr_en(bool en)
@@ -1012,7 +1000,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("sequencer_irq_flag", ref sequencer_irq_flag);
 			ser.Sync("len_clock_active", ref len_clock_active);
 
-
 			pulse[0].SyncState(ser);
 			pulse[1].SyncState(ser);
 			triangle.SyncState(ser);
@@ -1069,7 +1056,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			new int[]{8313,16627,24939,33254},
 			new int[]{8313,16627,24939,33254,41566}
 		};
-
 
 		void sequencer_write_tick(byte val)
 		{
@@ -1193,7 +1179,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			sequencer_counter = 0;
 			sequencer_step = 0;
-
 		}
 
 		public void NESHardReset()
@@ -1202,7 +1187,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			// that translates to a starting value for the counter of -2
 
 			sequencer_counter = -2;
-
 		}
 
 		public void WriteReg(int addr, byte val)
@@ -1261,7 +1245,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 
-
 		public byte PeekReg(int addr)
 		{
 			switch (addr)
@@ -1307,7 +1290,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int DebugCallbackTimer;
 
 		int pending_length_change;
-
 
 		public void RunOne(bool read)
 		{
@@ -1401,7 +1383,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				}
 			}
-
 		}
 
 		public struct Delta
@@ -1414,6 +1395,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				this.value = value;
 			}
 		}
+
 		public List<Delta> dlist = new List<Delta>();
 
 		/// <summary>only call in board.ClockCPU()</summary>
@@ -1428,7 +1410,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		int oldmix = 0;
 
-
 		void EmitSample()
 		{
 			if (recalculate)
@@ -1440,6 +1421,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				int s_tri = triangle.sample;
 				int s_noise = noise.sample;
 				int s_dmc = dmc.sample;
+
 				//int s_ext = 0; //gamepak
 
 				/*
@@ -1463,12 +1445,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//this needs to leave enough headroom for straying DC bias due to the DMC unit getting stuck outputs. smb3 is bad about that. 
 				int mix = (int)(20000 * output);
 
-
 				dlist.Add(new Delta(sampleclock, mix - oldmix));
 				oldmix = mix;
 			}
-			
-
 
 			sampleclock++;
 		}
