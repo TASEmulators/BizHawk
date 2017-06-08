@@ -25,7 +25,7 @@
 namespace MDFN_IEN_SS
 {
 
-static uint16 ROM[0x100000];
+static uint16* ROM; //[0x100000];
 
 static MDFN_HOT void ROM_Read(uint32 A, uint16* DB)
 {
@@ -34,9 +34,12 @@ static MDFN_HOT void ROM_Read(uint32 A, uint16* DB)
  *DB = *(uint16*)((uint8*)ROM + (A & 0x1FFFFE));
 }
 
-void CART_ROM_Init(CartInfo* c, Stream* str)
+void CART_ROM_Init(CartInfo* c, const char* filename)
 {
- str->read(ROM, 0x200000);
+	if (FirmwareSizeCallback(filename) != 0x200000)
+		abort();
+	ROM = (uint16*)alloc_sealed(0x200000);
+	FirmwareDataCallback(filename, (uint8*)ROM);
 
  for(unsigned i = 0; i < 0x100000; i++)
  {

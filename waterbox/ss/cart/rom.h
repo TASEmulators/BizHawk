@@ -24,7 +24,7 @@
 
 namespace MDFN_IEN_SS
 {
-void CART_ROM_Init(CartInfo* c, Stream* str) MDFN_COLD;
+void CART_ROM_Init(CartInfo* c, const char* filename) MDFN_COLD;
 }
 
 #endif

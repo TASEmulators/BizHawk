@@ -46,7 +46,7 @@ static MDFN_COLD void Reset(bool powering_up)
 
 void CART_CS1RAM_Init(CartInfo* c)
 {
- CS1RAM = new uint16[0x1000000 / sizeof(uint16)];
+ CS1RAM = (uint16*)alloc_plain(0x1000000);
 
  SS_SetPhysMemMap   (0x04000000, 0x04FFFFFF, CS1RAM, 0x1000000, true);
  c->CS01_SetRW8W16(0x04000000, 0x04FFFFFF, 

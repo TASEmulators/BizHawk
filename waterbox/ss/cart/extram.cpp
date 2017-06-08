@@ -24,7 +24,7 @@
 
 namespace MDFN_IEN_SS
 {
-static uint16 ExtRAM[0x200000];
+static uint16* ExtRAM; //[0x200000];
 static size_t ExtRAM_Mask;
 static uint8 Cart_ID;
 
@@ -51,11 +51,12 @@ static MDFN_HOT void CartID_Read_DB(uint32 A, uint16* DB)
 static MDFN_COLD void Reset(bool powering_up)
 {
  if(powering_up)
-  memset(ExtRAM, 0, sizeof(ExtRAM));	// TODO: Test.
+  memset(ExtRAM, 0, 0x400000);	// TODO: Test.
 }
 
 void CART_ExtRAM_Init(CartInfo* c, bool R4MiB)
 {
+	ExtRAM = (uint16*)alloc_plain(0x400000);
  if(R4MiB)
  {
   Cart_ID = 0x5C;

@@ -69,10 +69,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				Path = comm.CoreFileProvider.DllPath(),
 				Filename = "ss.wbx",
 				SbrkHeapSizeKB = 32 * 1024,
-				SealedHeapSizeKB = 32 * 1024,
-				InvisibleHeapSizeKB = 32 * 1024,
-				MmapHeapSizeKB = 32 * 1024,
-				PlainHeapSizeKB = 32 * 1024,
+				SealedHeapSizeKB = 32 * 1024, // 512KB of bios
+				InvisibleHeapSizeKB = 32 * 1024, // 4MB of framebuffer
+				MmapHeapSizeKB = 32 * 1024, // not used?
+				PlainHeapSizeKB = 32 * 1024, // up to 16MB of cart ram
 				StartAddress = LibSaturnus.StartAddress
 			});
 			_core = BizInvoker.GetInvoker<LibSaturnus>(_exe, _exe);

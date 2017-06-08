@@ -12,18 +12,6 @@ using namespace MDFN_IEN_SS;
 int32 (*FirmwareSizeCallback)(const char *filename);
 void (*FirmwareDataCallback)(const char *filename, uint8 *dest);
 
-std::unique_ptr<MemoryStream> GetFirmware(const char *filename)
-{
-	int32 length = FirmwareSizeCallback(filename);
-	auto buffer = new uint8[length];
-	FirmwareDataCallback(filename, buffer);
-	auto ms = std::unique_ptr<MemoryStream>(new MemoryStream(length, true));
-	ms->write(buffer, length);
-	ms->seek(0, SEEK_SET);
-	delete[] buffer;
-	return ms;
-}
-
 EXPORT void SetFirmwareCallbacks(int32 (*sizecallback)(const char *filename), void (*datacallback)(const char *filename, uint8 *dest))
 {
 	FirmwareSizeCallback = sizecallback;

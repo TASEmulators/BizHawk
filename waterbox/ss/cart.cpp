@@ -144,9 +144,7 @@ void CART_Init(const int cart_type)
   case CART_KOF95:
   case CART_ULTRAMAN:
 	{
-    auto fp = GetFirmware(cart_type == CART_KOF95 ? "ss.cart.kof95_path" : "ss.cart.ultraman_path");
-
-	 CART_ROM_Init(&Cart, fp.get());
+	 CART_ROM_Init(&Cart, cart_type == CART_KOF95 ? "ss.cart.kof95_path" : "ss.cart.ultraman_path");
 	}
 	break;
 
