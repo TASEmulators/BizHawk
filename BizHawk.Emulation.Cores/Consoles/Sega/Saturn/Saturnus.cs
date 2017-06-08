@@ -1,4 +1,5 @@
-﻿using BizHawk.Common.BizInvoke;
+﻿using BizHawk.Common;
+using BizHawk.Common.BizInvoke;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
@@ -16,7 +17,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
 	[CoreAttributes("Saturnus", "Ryphecha", true, false, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
-	public class Saturnus : IEmulator, IVideoProvider, ISoundProvider, IInputPollable, IDriveLight, IStatable, IRegionable
+	public class Saturnus : IEmulator, IVideoProvider, ISoundProvider,
+		IInputPollable, IDriveLight, IStatable, IRegionable, ISaveRam
 	{
 		private static readonly DiscSectorReaderPolicy _diskPolicy = new DiscSectorReaderPolicy
 		{
@@ -96,10 +98,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			_exe.Seal();
 			SetCdCallbacks();
 			_core.SetDisk(0, false);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(new MemoryDomainList(_memoryDomains.Values.ToList())
-			{
-				MainMemory = _memoryDomains["Work Ram Low"]
-			});
+			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(
+				new MemoryDomainList(_memoryDomains.Values.Cast<MemoryDomain>().ToList())
+				{
+					MainMemory = _memoryDomains["Work Ram Low"]
+				});
 		}
 
 		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
@@ -165,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		#region IMemoryDomains
 
-		private readonly Dictionary<string, MemoryDomain> _memoryDomains = new Dictionary<string, MemoryDomain>();
+		private readonly Dictionary<string, MemoryDomainIntPtrMonitor> _memoryDomains = new Dictionary<string, MemoryDomainIntPtrMonitor>();
 
 		private void AddMemoryDomain(string name, IntPtr ptr, int size, bool writable)
 		{
@@ -382,8 +385,57 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		}
 
 		public bool CanProvideAsync => false;
-
 		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
+
+		#endregion
+
+		#region ISaveRam
+
+		private static readonly string[] SaveRamDomains = new[] { "Backup Ram", "Backup Cart" };
+
+		private int SaveRamSize()
+		{
+			return ActiveSaveRamDomains()
+				.Select(m => (int)m.Size)
+				.Sum();
+		}
+		private IEnumerable<MemoryDomainIntPtrMonitor> ActiveSaveRamDomains()
+		{
+			return SaveRamDomains.Where(_memoryDomains.ContainsKey)
+				.Select(s => _memoryDomains[s]);
+		}
+
+		public byte[] CloneSaveRam()
+		{
+			var ret = new byte[SaveRamSize()];
+			var offs = 0;
+			using (_exe.EnterExit())
+			{
+				foreach (var m in ActiveSaveRamDomains())
+				{
+					Marshal.Copy(m.Data, ret, offs, (int)m.Size);
+					offs += (int)m.Size;
+				}
+			}
+			return ret;
+		}
+
+		public void StoreSaveRam(byte[] data)
+		{
+			if (data.Length != SaveRamSize())
+				throw new InvalidOperationException("Saveram was the wrong size!");
+			var offs = 0;
+			using (_exe.EnterExit())
+			{
+				foreach (var m in ActiveSaveRamDomains())
+				{
+					Marshal.Copy(data, offs, m.Data, (int)m.Size);
+					offs += (int)m.Size;
+				}
+			}
+		}
+
+		public bool SaveRamModified => true;
 
 		#endregion
 	}
