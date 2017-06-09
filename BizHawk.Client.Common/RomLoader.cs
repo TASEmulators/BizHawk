@@ -501,7 +501,8 @@ namespace BizHawk.Client.Common
 								break;
 							case "SAT":
 								//nextEmulator = new Yabause(nextComm, disc, GetCoreSyncSettings<Yabause>());
-								nextEmulator = new Saturnus(nextComm, new[] { disc });
+								nextEmulator = new Saturnus(nextComm, new[] { disc }, Deterministic,
+									(Saturnus.Settings)GetCoreSettings<Saturnus>(), (Saturnus.SyncSettings)GetCoreSyncSettings<Saturnus>());
 								break;
 							case "PSP":
 								nextEmulator = new PSP(nextComm, file.Name);

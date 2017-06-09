@@ -79,7 +79,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		[BizImport(CC)]
 		public abstract void SetCDCallbacks(CDTOCCallback toccallback, CDSectorCallback sectorcallback);
 		[BizImport(CC)]
-		public abstract bool Init(int numDisks);
+		public abstract bool Init(
+			int numDisks,
+			Saturnus.SyncSettings.CartType cartType,
+			Saturnus.SyncSettings.RegionType regionDefault,
+			bool regionAutodetect);
 		[BizImport(CC)]
 		public abstract void HardReset();
 		[BizImport(CC)]
@@ -92,5 +96,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		public abstract void SetInputCallback(InputCallback callback);
 		[BizImport(CC)]
 		public abstract void SetAddMemoryDomainCallback(AddMemoryDomainCallback callback);
+		[BizImport(CC)]
+		public abstract void SetRtc(long ticks, Saturnus.SyncSettings.LanguageType language);
+		[BizImport(CC)]
+		public abstract void SetVideoParameters(bool correctAspect, bool hBlend, bool hOverscan, int sls, int sle);
 	}
 }

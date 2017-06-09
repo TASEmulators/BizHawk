@@ -5,6 +5,7 @@
 #include "cdb.h"
 #include "smpc.h"
 #include "cart.h"
+#include <ctime>
 
 #define EXPORT extern "C" ECL_EXPORT
 using namespace MDFN_IEN_SS;
@@ -86,8 +87,12 @@ namespace MDFN_IEN_SS
 {
 extern bool LoadCD(std::vector<CDIF *> *CDInterfaces);
 }
-EXPORT bool Init(int numDisks)
+EXPORT bool Init(int numDisks, int cartType, int regionDefault, int regionAutodetect)
 {
+	setting_ss_cart = cartType;
+	setting_ss_region_autodetect = regionAutodetect;
+	setting_ss_region_default = regionDefault;
+
 	FrameBuffer = (uint32 *)alloc_invisible(1024 * 1024 * sizeof(*FrameBuffer));
 	for (int i = 0; i < numDisks; i++)
 		CDInterfaces.push_back(new MyCDIF(i));
@@ -132,7 +137,7 @@ struct FrameAdvanceInfo
 
 	uint32 *Pixels;
 
-	uint8* Controllers;
+	uint8 *Controllers;
 
 	int64 MasterCycles;
 
@@ -197,18 +202,17 @@ EXPORT void FrameAdvance(FrameAdvanceInfo &f)
 }
 
 static const char *DeviceNames[] =
-{
-	"none",
-	"gamepad",
-	"3dpad",
-	"mouse",
-	"wheel",
-	"mission",
-	"dmission",
-	"keyboard"
-};
+	{
+		"none",
+		"gamepad",
+		"3dpad",
+		"mouse",
+		"wheel",
+		"mission",
+		"dmission",
+		"keyboard"};
 
-EXPORT void SetupInput(const int* portdevices, const int* multitaps)
+EXPORT void SetupInput(const int *portdevices, const int *multitaps)
 {
 	for (int i = 0; i < 2; i++)
 		SMPC_SetMultitap(i, multitaps[i]);
@@ -222,18 +226,39 @@ EXPORT void SetInputCallback(void (*callback)())
 	InputCallback = callback;
 }
 
-void (*AddMemoryDomain)(const char* name, const void* ptr, int size, bool writable);
+void (*AddMemoryDomain)(const char *name, const void *ptr, int size, bool writable);
 
-EXPORT void SetAddMemoryDomainCallback(void (*callback)(const char* name, const void* ptr, int size, bool writable))
+EXPORT void SetAddMemoryDomainCallback(void (*callback)(const char *name, const void *ptr, int size, bool writable))
 {
 	AddMemoryDomain = callback;
 }
 
+EXPORT void SetRtc(int64 ticks, int language)
+{
+	time_t time = ticks;
+	const struct tm *tm = gmtime(&time);
+	SMPC_SetRTC(tm, language);
+}
+
+namespace MDFN_IEN_SS
+{
+extern bool CorrectAspect;
+extern bool ShowHOverscan;
+extern bool DoHBlend;
+extern int LineVisFirst;
+extern int LineVisLast;
+}
+EXPORT void SetVideoParameters(bool correctAspect, bool hBlend, bool hOverscan, int sls, int sle)
+{
+	CorrectAspect = correctAspect;
+	ShowHOverscan = hOverscan;
+	DoHBlend = hBlend;
+	LineVisFirst = sls;
+	LineVisLast = sle;
+}
 
 // if (BackupRAM_Dirty)SaveBackupRAM();
 // if (CART_GetClearNVDirty())SaveCartNV();
-
-
 
 /*static MDFN_COLD void CloseGame(void)
 {

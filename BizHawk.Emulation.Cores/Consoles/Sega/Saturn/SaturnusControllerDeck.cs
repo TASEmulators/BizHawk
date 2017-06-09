@@ -1,6 +1,7 @@
 ﻿using BizHawk.Emulation.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -67,10 +68,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		{
 			None,
 			Gamepad,
+			[Display(Name = "3D Pad")]
 			ThreeDeePad,
 			Mouse,
+			[Display(Name = "Racing Controller")]
 			Wheel,
+			[Display(Name = "Mission Stick")]
 			Mission,
+			[Display(Name = "Two Mission Sticks")]
 			DualMission,
 			Keyboard
 		}

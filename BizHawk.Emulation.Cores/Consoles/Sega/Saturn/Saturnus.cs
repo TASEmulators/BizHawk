@@ -6,6 +6,8 @@ using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Emulation.DiscSystem;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -18,7 +20,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 	[CoreAttributes("Saturnus", "Ryphecha", true, false, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
 	public class Saturnus : IEmulator, IVideoProvider, ISoundProvider,
-		IInputPollable, IDriveLight, IStatable, IRegionable, ISaveRam
+		IInputPollable, IDriveLight, IStatable, IRegionable, ISaveRam,
+		ISettable<Saturnus.Settings, Saturnus.SyncSettings>
 	{
 		private static readonly DiscSectorReaderPolicy _diskPolicy = new DiscSectorReaderPolicy
 		{
@@ -56,10 +59,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			return true;
 		}
 
-		public Saturnus(CoreComm comm, IEnumerable<Disc> disks)
+		public Saturnus(CoreComm comm, IEnumerable<Disc> disks, bool deterministic, Settings settings,
+			SyncSettings syncSettings)
 		{
 			ServiceProvider = new BasicServiceProvider(this);
 			CoreComm = comm;
+			settings = settings ?? new Settings();
+			syncSettings = syncSettings ?? new SyncSettings();
 
 			_disks = disks.ToArray();
 			_diskReaders = disks.Select(d => new DiscSectorReader(d) { Policy = _diskPolicy }).ToArray();
@@ -83,17 +89,36 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			SetFirmwareCallbacks();
 			SetCdCallbacks();
 			_core.SetAddMemoryDomainCallback(_addMemoryDomainCallback);
-			if (!_core.Init(_disks.Length))
+			if (!_core.Init(_disks.Length, syncSettings.ExpansionCart, syncSettings.Region, syncSettings.RegionAutodetect))
 				throw new InvalidOperationException("Core rejected the disks!");
 			ClearAllCallbacks();
 
-			_controllerDeck = new SaturnusControllerDeck(new[] { false, false },
-				new[] { SaturnusControllerDeck.Device.Gamepad, SaturnusControllerDeck.Device.None },
-				_core);
+			_controllerDeck = new SaturnusControllerDeck(new[]
+			{
+				syncSettings.Port1Multitap,
+				syncSettings.Port2Multitap
+			}, new[]
+			{
+				syncSettings.Port1,
+				syncSettings.Port2,
+				syncSettings.Port3,
+				syncSettings.Port4,
+				syncSettings.Port5,
+				syncSettings.Port6,
+				syncSettings.Port7,
+				syncSettings.Port8,
+				syncSettings.Port9,
+				syncSettings.Port10,
+				syncSettings.Port11,
+				syncSettings.Port12
+			}, _core);
 			ControllerDefinition = _controllerDeck.Definition;
 			ControllerDefinition.Name = "Saturn Controller";
 			ControllerDefinition.BoolButtons.Add("Power");
 			ControllerDefinition.BoolButtons.Add("Reset");
+
+			_core.SetRtc((long)syncSettings.InitialTime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds,
+				syncSettings.Language);
 
 			_exe.Seal();
 			SetCdCallbacks();
@@ -103,10 +128,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				{
 					MainMemory = _memoryDomains["Work Ram Low"]
 				});
+			PutSettings(settings);
+			_syncSettings = syncSettings;
+			DeterministicEmulation = deterministic || !_syncSettings.UseRealTime;
 		}
 
 		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
+			// if not reset, the core will maintain its own deterministic increasing time each frame
+			if (!DeterministicEmulation)
+			{
+				_core.SetRtc((long)DateTime.Now.Subtract(new DateTime(1970, 1, 1)).TotalSeconds,
+					_syncSettings.Language);
+			}
+
 			DriveLightOn = false;
 			if (controller.IsPressed("Power"))
 				_core.HardReset();
@@ -165,6 +200,250 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		public bool DeterministicEmulation { get; private set; }
 		public CoreComm CoreComm { get; }
 		public ControllerDefinition ControllerDefinition { get; }
+
+		#region ISettable
+
+		public class Settings
+		{
+			// extern bool setting_ss_correct_aspect;
+			[DefaultValue(true)]
+			public bool CorrectAspectRatio { get; set; }
+
+			// extern bool setting_ss_h_blend;
+			[DisplayName("Horizontal Blend")]
+			[DefaultValue(false)]
+			[Description("Use horizontal blend filter")]
+			public bool HBlend { get; set; }
+
+			// extern bool setting_ss_h_overscan;
+			[DisplayName("Horizontal Overscan")]
+			[DefaultValue(true)]
+			[Description("Show horiziontal overscan area")]
+			public bool HOverscan { get; set; }
+
+			// extern int setting_ss_slstart;
+			[DefaultValue(0)]
+			[Description("First scanline to display in NTSC mode")]
+			[Range(0, 239)]
+			public int ScanlineStartNtsc { get; set; }
+			// extern int setting_ss_slend;
+			[DefaultValue(239)]
+			[Description("Last scanline to display in NTSC mode")]
+			[Range(0, 239)]
+			public int ScanlineEndNtsc { get; set; }
+			// extern int setting_ss_slstartp;
+			[DefaultValue(0)]
+			[Description("First scanline to display in PAL mode")]
+			[Range(-16, 271)]
+			public int ScanlineStartPal { get; set; }
+			// extern int setting_ss_slendp;
+			[DefaultValue(255)]
+			[Description("Last scanline to display in PAL mode")]
+			[Range(-16, 271)]
+			public int ScanlineEndPal { get; set; }
+
+			public Settings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
+			public Settings Clone()
+			{
+				return (Settings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(Settings x, Settings y)
+			{
+				return false;
+			}
+		}
+
+		public class SyncSettings
+		{
+			public enum CartType
+			{
+				[Display(Name = "Autodetect.  Will use Backup Ram Cart if no others are appropriate")]
+				Autodetect = -1,
+				[Display(Name = "None")]
+				None,
+				[Display(Name = "Backup Ram Cart")]
+				Backup,
+				[Display(Name = "1 Meg Ram Cart")]
+				Ram1Meg,
+				[Display(Name = "4 Meg Ram Cart")]
+				Ram4Meg,
+				[Display(Name = "King of Fighters 95 Rom Cart")]
+				Kof95,
+				[Display(Name = "Ultraman Rom Cart")]
+				Ultraman,
+				[Display(Name = "CS1 16 Meg Ram Cart")]
+				Ram16Meg
+			}
+
+			// extern int setting_ss_cart;
+			[DefaultValue(CartType.Autodetect)]
+			[Description("What to plug into the Saturn expansion slot")]
+			public CartType ExpansionCart { get; set; }
+
+			[DisplayName("Port 1 Device")]
+			[DefaultValue(SaturnusControllerDeck.Device.Gamepad)]
+			public SaturnusControllerDeck.Device Port1 { get; set; }
+			[DisplayName("Port 2 Device")]
+			[DefaultValue(SaturnusControllerDeck.Device.Gamepad)]
+			public SaturnusControllerDeck.Device Port2 { get; set; }
+			[DisplayName("Port 3 Device")]
+			[DefaultValue(SaturnusControllerDeck.Device.None)]
+			[Description("Only used if one or both multitaps are set")]
+			public SaturnusControllerDeck.Device Port3 { get; set; }
+			[DisplayName("Port 4 Device")]
+			[DefaultValue(SaturnusControllerDeck.Device.None)]
+			[Description("Only used if one or both multitaps are set")]
+			public SaturnusControllerDeck.Device Port4 { get; set; }
+			[DisplayName("Port 5 Device")]
+			[DefaultValue(SaturnusControllerDeck.Device.None)]
+			[Description("Only used if one or both multitaps are set")]
+			public SaturnusControllerDeck.Device Port5 { get; set; }
+			[DisplayName("Port 6 Device")]
+			[DefaultValue(SaturnusControllerDeck.Device.None)]
+			[Description("Only used if one or both multitaps are set")]
+			public SaturnusControllerDeck.Device Port6 { get; set; }
+			[DisplayName("Port 7 Device")]
+			[DefaultValue(SaturnusControllerDeck.Device.None)]
+			[Description("Only used if one or both multitaps are set")]
+			public SaturnusControllerDeck.Device Port7 { get; set; }
+			[DisplayName("Port 8 Device")]
+			[DefaultValue(SaturnusControllerDeck.Device.None)]
+			[Description("Only used if both multitaps are set")]
+			public SaturnusControllerDeck.Device Port8 { get; set; }
+			[DisplayName("Port 9 Device")]
+			[DefaultValue(SaturnusControllerDeck.Device.None)]
+			[Description("Only used if both multitaps are set")]
+			public SaturnusControllerDeck.Device Port9 { get; set; }
+			[DisplayName("Port 10 Device")]
+			[DefaultValue(SaturnusControllerDeck.Device.None)]
+			[Description("Only used if both multitaps are set")]
+			public SaturnusControllerDeck.Device Port10 { get; set; }
+			[DisplayName("Port 11 Device")]
+			[DefaultValue(SaturnusControllerDeck.Device.None)]
+			[Description("Only used if both multitaps are set")]
+			public SaturnusControllerDeck.Device Port11 { get; set; }
+			[DisplayName("Port 12 Device")]
+			[DefaultValue(SaturnusControllerDeck.Device.None)]
+			[Description("Only used if both multitaps are set")]
+			public SaturnusControllerDeck.Device Port12 { get; set; }
+			[DisplayName("Port 1 Multitap")]
+			[Description("If true, Ports 1-6 will be used for multitap")]
+			[DefaultValue(false)]
+			public bool Port1Multitap { get; set; }
+			[DisplayName("Port 2 Multitap")]
+			[Description("If true, Ports 2-7 (or 7-12, depending on Port 1 Multitap) will be used for multitap")]
+			[DefaultValue(false)]
+			public bool Port2Multitap { get; set; }
+
+			// extern bool setting_ss_region_autodetect;
+			[DisplayName("Region Autodetect")]
+			[Description("Attempt to guess the game region")]
+			[DefaultValue(true)]
+			public bool RegionAutodetect { get; set; }
+
+			public enum RegionType
+			{
+				[Display(Name = "Japan")]
+				Japan = 1,
+				[Display(Name = "Asia NTSC (Taiwan, Phillipines)")]
+				Taiwan = 2,
+				[Display(Name = "North America")]
+				Murka = 4,
+				[Display(Name = "Latin America NTSC (Brazil)")]
+				Brazil = 5,
+				[Display(Name = "South Korea")]
+				Korea = 6,
+				[Display(Name = "Asia PAL (China, Middle East)")]
+				China = 10,
+				[Display(Name = "Europe")]
+				Yurop = 12,
+				[Display(Name = "Latin America PAL")]
+				SouthAmerica = 13
+			}
+
+			// extern int setting_ss_region_default;
+			[DisplayName("Default Region")]
+			[Description("Used when Region Autodetect is disabled or fails")]
+			[DefaultValue(RegionType.Japan)]
+			public RegionType Region { get; set; }
+
+			public enum LanguageType
+			{
+				English = 0,
+				German = 1,
+				French = 2,
+				Spanish = 3,
+				Italian = 4,
+				Japanese = 5,
+			}
+
+			[DisplayName("Language")]
+			[Description("Language of the system.  Only affects some games in some regions.")]
+			[DefaultValue(LanguageType.Japanese)]
+			public LanguageType Language { get; set; }
+
+			[DisplayName("Initial Time")]
+			[Description("Initial time of emulation.  Only relevant when UseRealTime is false.")]
+			[DefaultValue(typeof(DateTime), "2010-01-01")]
+			public DateTime InitialTime { get; set; }
+
+			[DisplayName("Use RealTime")]
+			[Description("If true, RTC clock will be based off of real time instead of emulated time.  Ignored (set to false) when recording a movie.")]
+			[DefaultValue(false)]
+			public bool UseRealTime { get; set; }
+
+			public SyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
+			public SyncSettings Clone()
+			{
+				return (SyncSettings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
+			}
+		}
+
+		private Settings _settings;
+		private SyncSettings _syncSettings;
+
+		public Settings GetSettings()
+		{
+			return _settings.Clone();
+		}
+
+		public bool PutSettings(Settings s)
+		{
+			var ret = Settings.NeedsReboot(_settings, s);
+			_settings = s;
+			var sls = _isPal ? s.ScanlineStartPal + 16 : s.ScanlineStartNtsc;
+			var sle = _isPal ? s.ScanlineEndPal + 16 : s.ScanlineEndNtsc;
+			_core.SetVideoParameters(s.CorrectAspectRatio, s.HBlend, s.HOverscan, sls, sle);
+			return ret;
+		}
+
+		public SyncSettings GetSyncSettings()
+		{
+			return _syncSettings.Clone();
+		}
+
+		public bool PutSyncSettings(SyncSettings s)
+		{
+			var ret = SyncSettings.NeedsReboot(_syncSettings, s);
+			_syncSettings = s;
+			return ret;
+		}
+
+		#endregion
 
 		#region IMemoryDomains
 
