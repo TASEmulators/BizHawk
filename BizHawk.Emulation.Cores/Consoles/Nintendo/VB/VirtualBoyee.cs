@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 			_settings = settings ?? new Settings();
 			_syncSettings = syncSettings ?? new SyncSettings();
+			// TODO: the way settings work in this core, changing the non-sync ones will invalidate savestates
 			var nativeSettings = LibVirtualBoyee.NativeSettings.FromFrontendSettings(_settings, _syncSettings);
 
 			_exe = new PeRunner(new PeRunnerOptions
