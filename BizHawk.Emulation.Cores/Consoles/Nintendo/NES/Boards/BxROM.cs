@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (VRAM != null)
 				{
-					return VRAM[addr | (chr_bank_8k << 13)];
+					return VRAM[addr];
 				}
 				else
 				{
