@@ -239,11 +239,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			[FieldOffset(24)]
 			public void* ptr;
 			[FieldOffset(32)]
-			public uint id, addr, value, size;
+			public uint id;
+			[FieldOffset(36)]
+			public uint addr;
+			[FieldOffset(40)]
+			public uint value;
+			[FieldOffset(44)]
+			public uint size;
 			[FieldOffset(48)]
-			public int port, device, index, slot;
+			public int port;
+			[FieldOffset(52)]
+			public int device;
+			[FieldOffset(56)]
+			public int index;
+			[FieldOffset(60)]
+			public int slot;
 			[FieldOffset(64)]
-			public int width, height;
+			public int width;
+			[FieldOffset(68)]
+			public int height;
 			[FieldOffset(72)]
 			public int scanline;
 			[FieldOffset(76)]
