@@ -1,6 +1,6 @@
 pushd %~dp0\
 del /s DiscoHawk.zip
-set DIR=..\output
+set DIR=..\output64
 set BUILDDIR=%~dp0
 echo %BUILDIR%
 cd "%DIR%"

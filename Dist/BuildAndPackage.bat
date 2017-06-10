@@ -17,13 +17,13 @@ for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBui
 IF NOT EXIST %MSBUILDDIR%nul goto MISSINGMSBUILD
 IF NOT EXIST %MSBUILDDIR%msbuild.exe goto MISSINGMSBUILD
 
-call "%MSBUILDDIR%msbuild.exe" ..\BizHawk.sln /p:Configuration=Release /p:Platform="x86" /t:rebuild
+call "%MSBUILDDIR%msbuild.exe" ..\BizHawk.sln /p:Configuration=Release /p:Platform="x64" /t:rebuild
 
 @if errorlevel 1 goto MSBUILDFAILED
 
 rmdir /s /q temp
 del /s %NAME%
-cd ..\output
+cd ..\output64
 
 rem slimdx has a way of not making it into the output directory, so this is a good time to make sure
 copy ..\..\SlimDx.dll
@@ -46,12 +46,12 @@ rmdir /s /q temp\lua
 rmdir /s /q temp\firmware
 
 rmdir /s /q gitsucks
-git --git-dir ../.git archive --format zip --output lua.zip HEAD Assets/Lua
-git --git-dir ../.git archive --format zip --output firmware.zip HEAD output/Firmware
+git --git-dir ../.git archive --format zip --output64 lua.zip HEAD Assets/Lua
+git --git-dir ../.git archive --format zip --output64 firmware.zip HEAD output64/Firmware
 rem Getting externaltools example from my repo
 rem I once talked about a dedicated repo for external tools, think about moving the exemple to it it it happend
 git clone https://github.com/Hathor86/HelloWorld_BizHawkTool.git
-git --git-dir HelloWorld_BizHawkTool/.git archive --format zip --output HelloWorld_BizHawkTool.zip master
+git --git-dir HelloWorld_BizHawkTool/.git archive --format zip --output64 HelloWorld_BizHawkTool.zip master
 rmdir /s /q  HelloWorld_BizHawkTool
 
 unzip lua.zip -d gitsucks
@@ -59,7 +59,7 @@ rem del lua.zip
 move gitsucks\Assets\Lua temp
 unzip Firmware.zip -d gitsucks
 rem del firmware.zip
-move gitsucks\output\Firmware temp
+move gitsucks\output64\Firmware temp
 
 rmdir /s /q gitsucks
 
