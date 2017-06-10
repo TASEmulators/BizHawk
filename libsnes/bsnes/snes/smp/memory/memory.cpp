@@ -40,7 +40,7 @@ uint8 SMP::op_busread(uint16 addr) {
   case 0xf5:  //CPUIO1
   case 0xf6:  //CPUIO2
   case 0xf7:  //CPUIO3
-    synchronize_cpu_force();
+    synchronize_cpu();
     return cpu.port_read(addr);
 
   case 0xf8:  //RAM0
@@ -99,7 +99,7 @@ void SMP::op_buswrite(uint16 addr, uint8 data) {
     if(data & 0x30) {
       //one-time clearing of APU port read registers,
       //emulated by simulating CPU writes of 0x00
-      synchronize_cpu_force();
+      synchronize_cpu();
       if(data & 0x20) {
         cpu.port_write(2, 0x00);
         cpu.port_write(3, 0x00);
@@ -143,7 +143,7 @@ void SMP::op_buswrite(uint16 addr, uint8 data) {
   case 0xf5:  //CPUIO1
   case 0xf6:  //CPUIO2
   case 0xf7:  //CPUIO3
-    synchronize_cpu_force();
+    synchronize_cpu();
     port_write(addr, data);
     break;
 

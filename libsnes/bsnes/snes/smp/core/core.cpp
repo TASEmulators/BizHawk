@@ -4,13 +4,10 @@
 namespace SNES {
 
 #include "algorithms.cpp"
-//#include "opcodes.cpp"
+#include "opcodes.cpp"
 #include "disassembler.cpp"
 #include "serialization.cpp"
 
-#include "uop.cpp"
-
-/*
 void SMPcore::op_step() {
   switch(opcode = op_readpc()) {
   case 0x00: return op_nop();
@@ -271,5 +268,5 @@ void SMPcore::op_step() {
   case 0xff: return op_wait();
   }
 }
-*/
+
 }

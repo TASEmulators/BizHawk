@@ -22,8 +22,6 @@ void SMPcore::core_serialize(serializer &s) {
   s.integer(wr.w);
   s.integer(bit.w);
   s.integer(ya.w);
-
-  s.integer(uindex);
 }
 
 #endif

@@ -60,24 +60,19 @@ void CPU::enter() {
       scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
     }
 
-		if (regs.hang == HangType::Wait) this->op_wai();
-		else if (regs.hang == HangType::Stop) this->op_stp();
-		else 
-		{
-			if(status.nmi_pending) {
-				status.nmi_pending = false;
-				regs.vector = (regs.e == false ? 0xffea : 0xfffa);
-				op_irq();
-			}
+    if(status.nmi_pending) {
+      status.nmi_pending = false;
+      regs.vector = (regs.e == false ? 0xffea : 0xfffa);
+      op_irq();
+    }
 
-			if(status.irq_pending) {
-				status.irq_pending = false;
-				regs.vector = (regs.e == false ? 0xffee : 0xfffe);
-				op_irq();
-			}
+    if(status.irq_pending) {
+      status.irq_pending = false;
+      regs.vector = (regs.e == false ? 0xffee : 0xfffe);
+      op_irq();
+    }
 
-			op_step();
-		}
+    op_step();
   }
 }
 

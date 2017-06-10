@@ -56,12 +56,8 @@ void CPU::Enter() { cpu.enter(); }
 void CPU::enter() {
   while(true) {
     if(scheduler.sync == Scheduler::SynchronizeMode::CPU) {
-      // we can only stop if there's enough time for at least one more event
-      // on both the PPU and the SMP
-      if (smp.clock < 0 && ppu.clock < 0) {
-        scheduler.sync = Scheduler::SynchronizeMode::All;
-        scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
-      }
+      scheduler.sync = Scheduler::SynchronizeMode::All;
+      scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
     }
 
     if(status.interrupt_pending) {

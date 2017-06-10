@@ -11,8 +11,6 @@ struct SMPcore {
   word_t dp, sp, rd, wr, bit, ya;
   uint8 opcode;
 
-  int uindex;
-
   void core_serialize(serializer&);
   string disassemble_opcode(uint16 addr);
 

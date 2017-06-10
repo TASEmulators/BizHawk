@@ -17,13 +17,9 @@ void HitachiDSP::Enter() { hitachidsp.enter(); }
 
 void HitachiDSP::enter() {
   while(true) {
-    // exit requested due to savestate
     if(scheduler.sync == Scheduler::SynchronizeMode::All) {
       scheduler.exit(Scheduler::ExitReason::SynchronizeEvent);
     }
-
-    // if we bail out due to savestating, the first thing we'll try afterwards is synchronize_cpu() again
-    synchronize_cpu();
 
     switch(state) {
     case State::Idle:
@@ -46,8 +42,7 @@ void HitachiDSP::enter() {
       break;
     }
 
-    // this call is gone, but it's the first thing we try at the top of the loop AFTER we bail out
-    //synchronize_cpu();
+    synchronize_cpu();
   }
 }
 
