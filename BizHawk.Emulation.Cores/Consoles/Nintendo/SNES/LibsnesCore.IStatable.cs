@@ -12,73 +12,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void SaveStateText(TextWriter writer)
 		{
-			/*var temp = SaveStateBinary();
+			var temp = SaveStateBinary();
 			temp.SaveAsHexFast(writer);
-			writer.WriteLine("Frame {0}", Frame); // we don't parse this, it's only for the client to use
-			writer.WriteLine("Profile {0}", CurrentProfile);*/
 		}
 
 		public void LoadStateText(TextReader reader)
 		{
-			/*string hex = reader.ReadLine();
+			string hex = reader.ReadLine();
 			byte[] state = new byte[hex.Length / 2];
 			state.ReadFromHexFast(hex);
 			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-			reader.ReadLine(); // Frame #
-			var profile = reader.ReadLine().Split(' ')[1];
-			ValidateLoadstateProfile(profile);*/
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			/*writer.Write(DeterministicEmulation ? _savestatebuff : CoreSaveState());
-
-			// other variables
+			Api.SaveStateBinary(writer);
 			writer.Write(IsLagFrame);
 			writer.Write(LagCount);
 			writer.Write(Frame);
-			writer.Write(CurrentProfile);
-
-			writer.Flush();*/
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			/*int size = Api.QUERY_serialize_size();
-			byte[] buf = reader.ReadBytes(size);
-			CoreLoadState(buf);
-
-			if (DeterministicEmulation) // deserialize controller and fast-foward now
-			{
-				// reconstruct savestatebuff at the same time to avoid a costly core serialize
-				var ms = new MemoryStream();
-				var bw = new BinaryWriter(ms);
-				bw.Write(buf);
-				bool framezero = reader.ReadBoolean();
-				bw.Write(framezero);
-				if (!framezero)
-				{
-					var ssc = new SaveController(ControllerDefinition);
-					ssc.DeSerialize(reader);
-					IController tmp = _controller;
-					_controller = ssc;
-					_nocallbacks = true;
-					FrameAdvance(ssc, false, false);
-					_nocallbacks = false;
-					_controller = tmp;
-					ssc.Serialize(bw);
-				}
-
-				bw.Close();
-				_savestatebuff = ms.ToArray();
-			}
-
-			// other variables
+			Api.LoadStateBinary(reader);
 			IsLagFrame = reader.ReadBoolean();
 			LagCount = reader.ReadInt32();
 			Frame = reader.ReadInt32();
-			var profile = reader.ReadString();
-			ValidateLoadstateProfile(profile);*/
+			// refresh all callbacks now
+			Api.QUERY_set_video_refresh(snes_video_refresh);
+			Api.QUERY_set_input_poll(snes_input_poll);
+			Api.QUERY_set_input_state(snes_input_state);
+			Api.QUERY_set_input_notify(snes_input_notify);
+			Api.QUERY_set_audio_sample(_soundcb);
 		}
 
 		public byte[] SaveStateBinary()
@@ -88,14 +53,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			SaveStateBinary(bw);
 			bw.Flush();
 			return ms.ToArray();
-		}
-
-		private void ValidateLoadstateProfile(string profile)
-		{
-			if (profile != CurrentProfile)
-			{
-				throw new InvalidOperationException($"You've attempted to load a savestate made using a different SNES profile ({profile}) than your current configuration ({CurrentProfile}). We COULD automatically switch for you, but we havent done that yet. This error is to make sure you know that this isnt going to work right now.");
-			}
 		}
 	}
 }

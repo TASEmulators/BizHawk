@@ -55,7 +55,6 @@ MappedRAM::MappedRAM(const char* name) : data_(0), size_(0), write_protect_(fals
 //Bus
 
 uint8 Bus::read(unsigned addr) {
-  if(cheat.override[addr]) return cheat.read(addr);
   return reader[lookup[addr]](target[addr]);
 }
 

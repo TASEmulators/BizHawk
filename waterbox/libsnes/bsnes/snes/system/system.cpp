@@ -124,7 +124,6 @@ void System::load() {
   if(cartridge.has_link()) link.load();
 
   serialize_init();
-  cheat.init();
 }
 
 void System::unload() {

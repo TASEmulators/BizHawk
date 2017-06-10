@@ -296,60 +296,6 @@ bool snes_unserialize(const uint8_t *data, unsigned size) {
   return SNES::system.unserialize(s);
 }
 
-struct CheatList {
-  bool enable;
-  string code;
-  CheatList() : enable(false) {}
-};
-
-static linear_vector<CheatList> cheatList;
-
-void snes_cheat_reset(void) {
-  cheatList.reset();
-  GameBoy::cheat.reset();
-  GameBoy::cheat.synchronize();
-  SNES::cheat.reset();
-  SNES::cheat.synchronize();
-}
-
-void snes_cheat_set(unsigned index, bool enable, const char *code) {
-  cheatList[index].enable = enable;
-  cheatList[index].code = code;
-  lstring list;
-  for(unsigned n = 0; n < cheatList.size(); n++) {
-    if(cheatList[n].enable) list.append(cheatList[n].code);
-  }
-
-  if(SNES::cartridge.mode() == SNES::Cartridge::Mode::SuperGameBoy) {
-    GameBoy::cheat.reset();
-    for(auto &code : list) {
-      lstring codelist;
-      codelist.split("+", code);
-      for(auto &part : codelist) {
-        unsigned addr, data, comp;
-        if(GameBoy::Cheat::decode(part, addr, data, comp)) {
-          GameBoy::cheat.append({ addr, data, comp });
-        }
-      }
-    }
-    GameBoy::cheat.synchronize();
-    return;
-  }
-
-  SNES::cheat.reset();
-  for(auto &code : list) {
-    lstring codelist;
-    codelist.split("+", code);
-    for(auto &part : codelist) {
-      unsigned addr, data;
-      if(SNES::Cheat::decode(part, addr, data)) {
-        SNES::cheat.append({ addr, data });
-      }
-    }
-  }
-  SNES::cheat.synchronize();
-}
-
 //zero 21-sep-2012
 void snes_set_scanlineStart(snes_scanlineStart_t cb)
 {
@@ -464,7 +410,6 @@ int snes_peek_logical_register(int reg)
 bool snes_load_cartridge_normal(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size
 ) {
-  snes_cheat_reset();
   if(rom_data) SNES::cartridge.rom.copy(rom_data, rom_size);
   iface->cart = SnesCartridge(rom_data, rom_size);
   string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
@@ -477,7 +422,6 @@ bool snes_load_cartridge_bsx_slotted(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
   const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
 ) {
-  snes_cheat_reset();
   if(rom_data) SNES::cartridge.rom.copy(rom_data, rom_size);
   iface->cart = SnesCartridge(rom_data, rom_size);
   string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
@@ -492,7 +436,6 @@ bool snes_load_cartridge_bsx(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
   const char *bsx_xml, const uint8_t *bsx_data, unsigned bsx_size
 ) {
-  snes_cheat_reset();
   if(rom_data) SNES::cartridge.rom.copy(rom_data, rom_size);
   iface->cart = SnesCartridge(rom_data, rom_size);
   string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
@@ -508,7 +451,6 @@ bool snes_load_cartridge_sufami_turbo(
   const char *sta_xml, const uint8_t *sta_data, unsigned sta_size,
   const char *stb_xml, const uint8_t *stb_data, unsigned stb_size
 ) {
-  snes_cheat_reset();
   if(rom_data) SNES::cartridge.rom.copy(rom_data, rom_size);
   iface->cart = SnesCartridge(rom_data, rom_size);
   string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;
@@ -525,7 +467,6 @@ bool snes_load_cartridge_super_game_boy(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size,
   const char *dmg_xml, const uint8_t *dmg_data, unsigned dmg_size
 ) {
-  snes_cheat_reset();
   if(rom_data) SNES::cartridge.rom.copy(rom_data, rom_size);
   iface->cart = SnesCartridge(rom_data, rom_size);
   string xmlrom = (rom_xml && *rom_xml) ? string(rom_xml) : iface->cart.markup;

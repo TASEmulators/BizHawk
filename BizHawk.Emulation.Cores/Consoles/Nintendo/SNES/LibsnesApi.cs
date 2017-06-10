@@ -56,11 +56,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				Filename = "libsnes.wbx",
 				Path = dllPath,
-				SbrkHeapSizeKB = 32 * 1024,
-				InvisibleHeapSizeKB = 32 * 1024,
-				MmapHeapSizeKB = 256 * 1024,
-				PlainHeapSizeKB = 32 * 1024,
-				SealedHeapSizeKB = 256 * 1024
+				SbrkHeapSizeKB = 4 * 1024,
+				InvisibleHeapSizeKB = 1024,
+				MmapHeapSizeKB = 32 * 1024, // TODO: see if we can safely make libco stacks smaller
+				PlainHeapSizeKB = 2 * 1024, // TODO: wasn't there more in here?
+				SealedHeapSizeKB = 128 * 1024
 			});
 
 			_core = BizInvoker.GetInvoker<CoreImpl>(_exe, _exe);

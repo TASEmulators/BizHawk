@@ -34,7 +34,6 @@ SRCS_ALL:= \
 	$(ROOT_DIR)/bsnes/base/base.cpp \
 	$(ROOT_DIR)/bsnes/gameboy/apu/apu.cpp \
 	$(ROOT_DIR)/bsnes/gameboy/cartridge/cartridge.cpp \
-	$(ROOT_DIR)/bsnes/gameboy/cheat/cheat.cpp \
 	$(ROOT_DIR)/bsnes/gameboy/cpu/cpu.cpp \
 	$(ROOT_DIR)/bsnes/snes/alt/dsp/dsp.cpp \
 	$(ROOT_DIR)/bsnes/gameboy/interface/interface.cpp \
@@ -44,7 +43,6 @@ SRCS_ALL:= \
 	$(ROOT_DIR)/bsnes/gameboy/system/system.cpp \
 	$(ROOT_DIR)/bsnes/gameboy/video/video.cpp \
 	$(ROOT_DIR)/bsnes/snes/cartridge/cartridge.cpp \
-	$(ROOT_DIR)/bsnes/snes/cheat/cheat.cpp \
 	$(ROOT_DIR)/bsnes/snes/chip/armdsp/armdsp.cpp \
 	$(ROOT_DIR)/bsnes/snes/chip/bsx/bsx.cpp \
 	$(ROOT_DIR)/bsnes/snes/chip/hitachidsp/hitachidsp.cpp \

@@ -53,7 +53,6 @@ namespace GameBoy {
   #include <gameboy/cpu/cpu.hpp>
   #include <gameboy/apu/apu.hpp>
   #include <gameboy/lcd/lcd.hpp>
-  #include <gameboy/cheat/cheat.hpp>
   #include <gameboy/video/video.hpp>
 };
 

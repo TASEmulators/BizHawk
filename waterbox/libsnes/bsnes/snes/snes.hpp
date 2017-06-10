@@ -67,7 +67,6 @@ namespace SNES {
   #include <snes/system/system.hpp>
   #include <snes/chip/chip.hpp>
   #include <snes/cartridge/cartridge.hpp>
-  #include <snes/cheat/cheat.hpp>
   #include <snes/interface/interface.hpp>
 
   #include <snes/memory/memory-inline.hpp>
