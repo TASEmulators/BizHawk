@@ -33,12 +33,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-
 		private PeRunner _exe;
 		private CoreImpl _core;
 		private bool _disposed;
 		private CommStruct* _comm;
 		private readonly Dictionary<string, IntPtr> _sharedMemoryBlocks = new Dictionary<string, IntPtr>();
+		private bool _sealed = false;
 
 		public void Enter()
 		{
@@ -110,6 +110,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// </summary>
 		public void SetBytes(int id, byte[] bytes, Action andThen)
 		{
+			if (_sealed)
+				throw new InvalidOperationException("Init period is over");
 			fixed (byte* bp = bytes)
 			{
 				_core.SetBuffer(id, bp, bytes.Length);
@@ -122,6 +124,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// </summary>
 		public void SetAscii(int id, string str, Action andThen)
 		{
+			if (_sealed)
+				throw new InvalidOperationException("Init period is over");
 			fixed (byte* cp = System.Text.Encoding.ASCII.GetBytes(str + "\0"))
 			{
 				_core.SetBuffer(id, cp, str.Length + 1);
@@ -345,7 +349,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void Seal()
 		{
+			_core.SetBuffer(0, null, 0);
+			_core.SetBuffer(1, null, 0);
+			_core.SetBuffer(2, null, 0);
 			_exe.Seal();
+			_sealed = true;
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)

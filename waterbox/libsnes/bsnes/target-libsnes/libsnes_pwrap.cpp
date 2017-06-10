@@ -173,7 +173,7 @@ struct CommStruct
 	//===========================================================
 
 	//private stuff
-	void* privbuf[2]; //TODO remember to tidy this..
+	void* privbuf[3]; //TODO remember to tidy this..
 
 	void CopyBuffer(int id, void* ptr, int32 size)
 	{
