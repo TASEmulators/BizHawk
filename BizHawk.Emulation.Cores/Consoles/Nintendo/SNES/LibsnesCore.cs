@@ -58,7 +58,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_settings = (SnesSettings)settings ?? new SnesSettings();
 			_syncSettings = (SnesSyncSettings)syncSettings ?? new SnesSyncSettings();
 
-			Api = new LibsnesApi(GetDllPath())
+			// TODO: pass profile here
+			Api = new LibsnesApi(CoreComm.CoreFileProvider.DllPath())
 			{
 				ReadHook = ReadHook,
 				ExecHook = ExecHook,
@@ -169,17 +170,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			SetupMemoryDomains(romData, sgbRomData);
 
-			// DeterministicEmulation = deterministicEmulation; // Note we don't respect the value coming in and force it instead
-			if (DeterministicEmulation) // save frame-0 savestate now
-			{
-				var ms = new MemoryStream();
-				var bw = new BinaryWriter(ms);
-				bw.Write(CoreSaveState());
-				bw.Write(true); // framezero, so no controller follows and don't frameadvance on load
-				bw.Close();
-				_savestatebuff = ms.ToArray();
-			}
-
 			if (CurrentProfile == "Compatibility")
 			{
 				ser.Register<ITraceable>(_tracer);
@@ -198,7 +188,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private LoadParams _currLoadParams;
 		private SpeexResampler _resampler;
 		private int _timeFrameCounter;
-		private bool _nocallbacks; // disable all external callbacks.  the front end should not even know the core is frame advancing
 		private bool _disposed;
 
 		public bool IsSGB { get; }
@@ -222,7 +211,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			}
 		}
 
-		public LibsnesApi Api { get; }
+		private LibsnesApi Api { get; }
 
 		public SnesColors.ColorType CurrPalette { get; private set; }
 
@@ -372,20 +361,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			int[] tmp = SnesColors.GetLUT(pal);
 			fixed (int* p = &tmp[0])
 				Api.QUERY_set_color_lut((IntPtr)p);
-		}
-
-		private string GetDllPath()
-		{
-			var exename = "libsneshawk-32-" + CurrentProfile.ToLower() + ".dll";
-
-			string dllPath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), exename);
-
-			if (!File.Exists(dllPath))
-			{
-				throw new InvalidOperationException("Couldn't locate the DLL for SNES emulation for profile: " + CurrentProfile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
-			}
-
-			return dllPath;
 		}
 
 		private void ReadHook(uint addr)

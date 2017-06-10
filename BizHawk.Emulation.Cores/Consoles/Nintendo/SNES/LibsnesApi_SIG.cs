@@ -8,127 +8,89 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		bool Handle_SIG(eMessage msg)
 		{
-			switch (msg)
+			using (_exe.EnterExit())
 			{
-				default:
-					return false;
+				switch (msg)
+				{
+					default:
+						return false;
 
-				case eMessage.eMessage_SIG_video_refresh:
-					{
-						int width = comm->width;
-						int height = comm->height;
-						if (video_refresh != null)
+					case eMessage.eMessage_SIG_video_refresh:
 						{
-							video_refresh((int*)comm->ptr, width, height);
+							int width = _comm->width;
+							int height = _comm->height;
+							video_refresh?.Invoke((int*)_comm->ptr, width, height);
+							break;
 						}
+					case eMessage.eMessage_SIG_input_poll:
 						break;
-					}
-				case eMessage.eMessage_SIG_input_poll:
-					break;
-				case eMessage.eMessage_SIG_input_state:
-					{
-						int port = comm->port;
-						int device = comm->device;
-						int index = comm->index;
-						int id = (int)comm->id;
-						if (input_state != null)
-							comm->value = (uint)input_state(port, device, index, id);
-						break;
-					}
-				case eMessage.eMessage_SIG_input_notify:
-					{
-						if (input_notify != null)
-							input_notify(comm->index);
-						break;
-					}
-				case eMessage.eMessage_SIG_audio_flush:
-					{
-						uint nsamples = comm->size;
-
-						if (audio_sample != null)
+					case eMessage.eMessage_SIG_input_state:
 						{
-							ushort* audiobuffer = ((ushort*)comm->ptr);
-							for (uint i = 0; i < nsamples; )
+							int port = _comm->port;
+							int device = _comm->device;
+							int index = _comm->index;
+							int id = (int)_comm->id;
+							if (input_state != null)
+								_comm->value = (uint)input_state(port, device, index, id);
+							break;
+						}
+					case eMessage.eMessage_SIG_input_notify:
+						{
+							input_notify?.Invoke(_comm->index);
+							break;
+						}
+					case eMessage.eMessage_SIG_audio_flush:
+						{
+							uint nsamples = _comm->size;
+
+							if (audio_sample != null)
 							{
-								ushort left = audiobuffer[i++];
-								ushort right = audiobuffer[i++];
-								audio_sample(left, right);
+								ushort* audiobuffer = ((ushort*)_comm->ptr);
+								for (uint i = 0; i < nsamples;)
+								{
+									ushort left = audiobuffer[i++];
+									ushort right = audiobuffer[i++];
+									audio_sample(left, right);
+								}
 							}
+
+							break;
 						}
-
-						break;
-					}
-				case eMessage.eMessage_SIG_path_request:
-					{
-						int slot = comm->slot;
-						string hint = comm->GetAscii();
-						string ret = hint;
-						if (pathRequest != null)
-						  hint = pathRequest(slot, hint);
-						CopyAscii(0, hint);
-						break;
-					}
-				case eMessage.eMessage_SIG_trace_callback:
-					{
-						if (traceCallback != null)
-							traceCallback(comm->value, comm->GetAscii());
-						break;
-					}
-				case eMessage.eMessage_SIG_allocSharedMemory:
-					{
-						var name = comm->GetAscii();
-						var size = comm->size;
-
-						if (SharedMemoryBlocks.ContainsKey(name))
+					case eMessage.eMessage_SIG_path_request:
 						{
-							throw new InvalidOperationException("Re-defined a shared memory block. Check bsnes init/shutdown code. Block name: " + name);
+							int slot = _comm->slot;
+							string hint = _comm->GetAscii();
+							string ret = hint;
+							if (pathRequest != null)
+								hint = pathRequest(slot, hint);
+							CopyAscii(0, hint);
+							break;
 						}
-
-						//try reusing existing block; dispose it if it exists and if the size doesnt match
-						SharedMemoryBlock smb = null;
-						if (DeallocatedMemoryBlocks.ContainsKey(name))
+					case eMessage.eMessage_SIG_trace_callback:
 						{
-							smb = DeallocatedMemoryBlocks[name];
-							DeallocatedMemoryBlocks.Remove(name);
-							if (smb.Size != size)
-							{
-								smb.Dispose();
-								smb = null;
-							}
+							traceCallback?.Invoke(_comm->value, _comm->GetAscii());
+							break;
 						}
-
-						//allocate a new block if we have to
-						if (smb == null)
+					case eMessage.eMessage_SIG_allocSharedMemory:
 						{
-							smb = new SharedMemoryBlock();
-							smb.Name = name;
-							smb.Size = (int)size;
-							smb.BlockName = InstanceName + smb.Name;
-							smb.Allocate();
-						}
+							// NB: shared memory blocks are allocated on the unmanaged side
+							var name = _comm->GetAscii();
+							var size = _comm->size;
+							var ptr = _comm->ptr;
 
-						comm->ptr = smb.Ptr;
-						SharedMemoryBlocks[smb.Name] = smb;
-						CopyAscii(0, smb.BlockName);
-						break;
-					}
-				case eMessage.eMessage_SIG_freeSharedMemory:
-					{
-						foreach (var block in SharedMemoryBlocks.Values)
-						{
-							if (block.Ptr == comm->ptr)
-							{
-								DeallocatedMemoryBlocks[block.Name] = block;
-								SharedMemoryBlocks.Remove(block.Name);
-								break;
-							}
-						}
-						break;
-					}
-			} //switch(msg)
+							if (_sharedMemoryBlocks.ContainsKey(name))
+								throw new InvalidOperationException("Re-defined a shared memory block. Check bsnes init/shutdown code. Block name: " + name);
 
-			Message(eMessage.eMessage_Resume);
-			return true;
+							_sharedMemoryBlocks.Add(name, (IntPtr)ptr);
+							break;
+						}
+					case eMessage.eMessage_SIG_freeSharedMemory:
+						throw new InvalidOperationException("Unexpected call:  SIG_freeSharedMemory");
+				} //switch(msg)
+
+				_core.Message(eMessage.eMessage_Resume);
+				return true;
+			}
 		}
 	}
 }

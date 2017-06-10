@@ -31,9 +31,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public byte* QUERY_get_memory_data(SNES_MEMORY id)
 		{
 			string name = QUERY_MemoryNameForId(id);
-			if (!SharedMemoryBlocks.ContainsKey(name)) return null;
-			var smb = SharedMemoryBlocks[name];
-			return (byte*)smb.Ptr;
+			IntPtr ret;
+			_sharedMemoryBlocks.TryGetValue(name, out ret);
+			return (byte*)ret;
 		}
 
 		public byte QUERY_peek(SNES_MEMORY id, uint addr)

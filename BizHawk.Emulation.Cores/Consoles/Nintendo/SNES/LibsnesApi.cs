@@ -10,28 +10,44 @@ using BizHawk.Common.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	public unsafe partial class LibsnesApi : IDisposable
+	public abstract unsafe class CoreImpl
 	{
-		/*[DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
-		public static unsafe extern void* CopyMemory(void* dest, void* src, ulong count);*/
+		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+		public abstract IntPtr DllInit();
+		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+		public abstract void Message(LibsnesApi.eMessage msg);
+		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+		public abstract void CopyBuffer(int id, void* ptr, int size);
+		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+		public abstract void SetBuffer(int id, void* ptr, int size);
+	}
+
+	public unsafe partial class LibsnesApi : IDisposable, IMonitor
+	{
+		static LibsnesApi()
+		{
+			if (sizeof(CommStruct) != 232)
+			{
+				throw new InvalidOperationException("sizeof(comm)");
+			}
+		}
+
 
 		private PeRunner _exe;
 		private CoreImpl _core;
 		private bool _disposed;
 		private CommStruct* _comm;
+		private readonly Dictionary<string, IntPtr> _sharedMemoryBlocks = new Dictionary<string, IntPtr>();
 
-		private abstract class CoreImpl
+		public void Enter()
 		{
-			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-			public abstract IntPtr DllInit();
-			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-			public abstract void Message(eMessage msg);
-			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-			public abstract void CopyBuffer(int id, void* ptr, int size);
-			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
-			public abstract void SetBuffer(int id, void* ptr, int size);
+			_exe.Enter();
 		}
 
+		public void Exit()
+		{
+			_exe.Exit();
+		}
 
 		public LibsnesApi(string dllPath)
 		{
@@ -41,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Path = dllPath,
 				SbrkHeapSizeKB = 32 * 1024,
 				InvisibleHeapSizeKB = 32 * 1024,
-				MmapHeapSizeKB = 32 * 1024,
+				MmapHeapSizeKB = 256 * 1024,
 				PlainHeapSizeKB = 32 * 1024,
 				SealedHeapSizeKB = 32 * 1024
 			});
@@ -54,6 +70,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			if (!_disposed)
 			{
+				_disposed = true;
 				_exe.Dispose();
 				_exe = null;
 				_core = null;
@@ -137,9 +154,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			BRR = 0x80,
 		};
 
-		//Dictionary<string, SharedMemoryBlock> SharedMemoryBlocks = new Dictionary<string, SharedMemoryBlock>();
-		//Dictionary<string, SharedMemoryBlock> DeallocatedMemoryBlocks = new Dictionary<string, SharedMemoryBlock>();
-
 		snes_video_refresh_t video_refresh;
 		snes_input_poll_t input_poll;
 		snes_input_state_t input_state;
@@ -165,15 +179,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public delegate void snes_trace_t(uint which, string msg);
 
 
+		[StructLayout(LayoutKind.Explicit)]
 		public struct CPURegs
 		{
+			[FieldOffset(0)]
 			public uint pc;
+			[FieldOffset(4)]
 			public ushort a, x, y, z, s, d, vector; //7x
+			[FieldOffset(18)]
 			public byte p, nothing;
+			[FieldOffset(20)]
 			public uint aa, rd;
+			[FieldOffset(28)]
 			public byte sp, dp, db, mdr;
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
 		public struct LayerEnables
 		{
 			byte _BG1_Prio0, _BG1_Prio1;
@@ -197,42 +218,62 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public bool Obj_Prio3 { get { return _Obj_Prio3 != 0; } set { _Obj_Prio3 = (byte)(value ? 1 : 0); } }
 		}
 
+		[StructLayout(LayoutKind.Explicit)]
 		struct CommStruct
 		{
+			[FieldOffset(0)]
 			//the cmd being executed
 			public eMessage cmd;
-
+			[FieldOffset(4)]
 			//the status of the core
 			public eStatus status;
-
+			[FieldOffset(8)]
 			//the SIG or BRK that the core is halted in
 			public eMessage reason;
 
 			//flexible in/out parameters
 			//these are all "overloaded" a little so it isn't clear what's used for what in for any particular message..
 			//but I think it will beat having to have some kind of extremely verbose custom layouts for every message
+			[FieldOffset(16)]
 			public sbyte* str;
+			[FieldOffset(24)]
 			public void* ptr;
+			[FieldOffset(32)]
 			public uint id, addr, value, size;
+			[FieldOffset(48)]
 			public int port, device, index, slot;
+			[FieldOffset(64)]
 			public int width, height;
+			[FieldOffset(72)]
 			public int scanline;
+			[FieldOffset(76)]
 			public fixed int inports[2];
 
+			[FieldOffset(88)]
 			//this should always be used in pairs
-			public fixed uint buf[3]; //ACTUALLY A POINTER but can't marshal it :(
+			public fixed long buf[3]; //ACTUALLY A POINTER but can't marshal it :(
+			[FieldOffset(112)]
 			public fixed int buf_size[3];
 
+			[FieldOffset(128)]
 			//bleck. this is a long so that it can be a 32/64bit pointer
 			public fixed long cdl_ptr[4];
+			[FieldOffset(160)]
 			public fixed int cdl_size[4];
 
+			[FieldOffset(176)]
 			public CPURegs cpuregs;
+			[FieldOffset(208)]
 			public LayerEnables layerEnables;
 
+			[FieldOffset(220)]
 			//static configuration-type information which can be grabbed off the core at any time without even needing a QUERY command
 			public SNES_REGION region;
+			[FieldOffset(224)]
 			public SNES_MAPPER mapper;
+
+			[FieldOffset(228)]
+			public int unused;
 
 			//utilities
 			//TODO: make internal, wrap on the API instead of the comm

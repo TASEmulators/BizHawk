@@ -7,6 +7,7 @@
 #define LIBSNES_IMPORT
 #include "snes/snes.hpp"
 #include "libsnes.hpp"
+#include <emulibc.h>
 
 #include <libco.h>
 
@@ -136,6 +137,8 @@ struct CommStruct
 	//the SIG or BRK that the core is halted in
 	eMessage reason;
 
+	int32 padding1;
+
 	//flexible in/out parameters
 	//these are all "overloaded" a little so it isn't clear what's used for what in for any particular message..
 	//but I think it will beat having to have some kind of extremely verbose custom layouts for every message
@@ -147,9 +150,13 @@ struct CommStruct
 	int32 scanline;
 	SNES::Input::Device inports[2];
 
+	int32 padding2;
+
 	//always used in pairs
 	void* buf[3];
 	int32 buf_size[3];
+
+	int32 padding3;
 
 	int64 cdl_ptr[4];
 	int32 cdl_size[4];
@@ -160,6 +167,8 @@ struct CommStruct
 	//static configuration-type information which can be grabbed off the core at any time without even needing a QUERY command
 	uint32 region;
 	uint32 mapper;
+
+	int32 padding4;
 
 	//===========================================================
 
@@ -282,8 +291,11 @@ void* snes_allocSharedMemory(const char* memtype, size_t amt)
 	//its important that this happen before the message marshaling because allocation/free attempts can happen before the marshaling is setup (or at shutdown time, in case of errors?)
 	//if(!running) return NULL;
 
+	auto ret = alloc_plain(amt);
+
 	comm.str = (char*)memtype;
 	comm.size = amt;
+	comm.ptr = ret;
 	
 	BREAK(eMessage_SIG_allocSharedMemory);
 	
@@ -573,6 +585,29 @@ void new_emuthread()
 
 EXPORT void* DllInit()
 {
+	#define T(s,n) static_assert(offsetof(CommStruct,s)==n,#n)
+	T(cmd, 0);
+	T(status, 4);
+	T(reason, 8);
+	T(str, 16);
+	T(ptr, 24);
+	T(id, 32);
+	T(port, 48);
+	T(width, 64);
+	T(scanline, 72);
+	T(inports, 76);
+	T(buf, 88);
+	T(buf_size, 112);
+	T(cdl_ptr, 128);
+	T(cdl_size, 160);
+	T(cpuregs, 176);
+	T(layerEnables, 208);
+	T(region, 220);
+	T(mapper, 224);
+	// start of private stuff
+	T(privbuf, 232);
+	#undef T
+
 	memset(&comm,0,sizeof(comm));
 
 	//make a coroutine thread to run the emulation in. we'll switch back to this cothread when communicating with the frontend

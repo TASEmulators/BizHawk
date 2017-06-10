@@ -76,16 +76,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				return _comm->GetBool();
 			}
 		}
-
-		public void CMD_term()
-		{
-			_core.Message(eMessage.eMessage_CMD_term);
-			WaitForCMD();
-		}
-		public void CMD_unload_cartridge()
-		{
-			_core.Message(eMessage.eMessage_CMD_unload_cartridge);
-			WaitForCMD();
-		}
 	}
 }

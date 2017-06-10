@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			IsLagFrame = true;
 
-			if (!_nocallbacks && _tracer.Enabled)
+			if (_tracer.Enabled)
 			{
 				//Api.QUERY_set_trace_callback(1<<(int)LibsnesApi.eTRACE.SMP, _tracecb); //TEST -- it works but theres no way to control it from the frontend now
 
@@ -34,21 +34,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			else
 			{
 				Api.QUERY_set_trace_callback(0,null);
-			}
-
-			// for deterministic emulation, save the state we're going to use before frame advance
-			// don't do this during nocallbacks though, since it's already been done
-			if (!_nocallbacks && DeterministicEmulation)
-			{
-				var ms = new MemoryStream();
-				var bw = new BinaryWriter(ms);
-				bw.Write(CoreSaveState());
-				bw.Write(false); // not framezero
-				var ssc = new SaveController();
-				ssc.CopyFrom(controller);
-				ssc.Serialize(bw);
-				bw.Close();
-				_savestatebuff = ms.ToArray();
 			}
 
 			// speedup when sound rendering is not needed
@@ -104,14 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 
 		public string SystemId { get; }
-
-		// adelikat: Nasty hack to force new business logic.  Compatibility (and Accuracy when fully supported) will ALWAYS be in deterministic mode,
-		// a consequence is a permanent performance hit to the compatibility core
-		// Perormance will NEVER be in deterministic mode (and the client side logic will prohibit movie recording on it)
-		// feos: Nasty hack to a nasty hack. Allow user disable it with a strong warning.
-		public bool DeterministicEmulation =>
-			_settings.ForceDeterminism
-			&& (CurrentProfile == "Compatibility" || CurrentProfile == "Accuracy");
+		public bool DeterministicEmulation => true;
 
 		public void ResetCounters()
 		{
@@ -129,15 +107,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				return;
 			}
 
-			_disposed = true;
-
-			Api.CMD_unload_cartridge();
-			Api.CMD_term();
-
-			_resampler.Dispose();
 			Api.Dispose();
+			_resampler.Dispose();
 
-			_currCdl?.Unpin();
+			_disposed = true;
 		}
 	}
 }

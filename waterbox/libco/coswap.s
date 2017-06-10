@@ -2,9 +2,13 @@ section .text
 	global co_swap
 	global __imp_co_swap
 
+; TODO: how to tell GCC it doesn't need this?
+align 16
+__imp_co_swap:
+	dq co_swap
+
 align 16
 co_swap:
-__imp_co_swap:
 	mov [rdx],rsp
 	mov rsp,[rcx]
 	pop rax
