@@ -142,13 +142,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private Bin GetBinForEndPageEnsureAllocated(int page, Bin start)
 		{
 			Bin curr = start;
-			while (curr != null && curr.StartPage + curr.PageCount < page)
+			while (curr != null)
 			{
 				if (curr.Free)
 					return null;
+				if (curr.EndPage >= page)
+					return curr;
 				curr = curr.Next;
 			}
-			return curr;
+			return curr; // ran off the end
 		}
 
 		public ulong Map(ulong size, MemoryBlock.Protection prot)
@@ -184,6 +186,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			Memory.Protect(ret, totalSize, prot);
 			Used += totalSize;
 			Console.WriteLine($"Allocated {totalSize} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
+			//EnsureUsedInternal();
 			return ret;
 		}
 
@@ -235,6 +238,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					Used += newTotalSize;
 					Used -= oldTotalSize;
 					Console.WriteLine($"Reallocated from {oldTotalSize} bytes to {newTotalSize} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
+					//EnsureUsedInternal();
 					return start;
 				}
 				// could not increase in place, so move
@@ -260,6 +264,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					ss.CopyTo(ds);
 					Memory.Protect(ret, oldSize, oldStartBin.Protection);
 					UnmapPagesInternal(oldStartPage, oldNumPages, oldStartBin);
+					//EnsureUsedInternal();
 					return ret;
 				}
 				else
@@ -272,6 +277,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				// shrink in place
 				var s = GetBinForStartPage(newEndPage);
 				UnmapPagesInternal(newEndPage, oldEndPage - newEndPage, s);
+				//EnsureUsedInternal();
 				return start;
 			}
 			else
@@ -309,12 +315,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			var endPage = startPage + numPages;
 			Bin freeBin = startBin;
-			if (!freeBin.Free && freeBin.StartPage != startPage)
+			if (freeBin.StartPage != startPage)
 			{
 				freeBin.Cleave(startPage - freeBin.StartPage);
 				freeBin = freeBin.Next;
-				freeBin.Free = true;
 			}
+			freeBin.Free = true;
 			MemoryBlock.Protection lastEaten = MemoryBlock.Protection.None;
 			while (freeBin.EndPage < endPage)
 			{
@@ -322,7 +328,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				lastEaten = freeBin.Next.Protection;
 				freeBin.Next = freeBin.Next.Next;
 			}
-			if (freeBin.Cleave(freeBin.EndPage - endPage))
+			if (freeBin.Cleave(endPage - freeBin.StartPage))
 			{
 				freeBin.Next.Protection = lastEaten;
 			}
@@ -331,6 +337,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			var totalSize = ((ulong)numPages) << WaterboxUtils.PageShift;
 			Used -= totalSize;
 			Console.WriteLine($"Freed {totalSize} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
+			//EnsureUsedInternal();
 		}
 
 		public void Dispose()
@@ -340,6 +347,25 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				Memory.Dispose();
 				Memory = null;
 			}
+		}
+
+		private ulong CalcUsedInternal()
+		{
+			ulong ret = 0;
+			var bin = _root;
+			while (bin != null)
+			{
+				if (!bin.Free)
+					ret += (ulong)bin.PageCount << WaterboxUtils.PageShift;
+				bin = bin.Next;
+			}
+			return ret;
+		}
+
+		private void EnsureUsedInternal()
+		{
+			if (Used != CalcUsedInternal())
+				throw new Exception();
 		}
 
 		public void SaveStateBinary(BinaryWriter bw)
@@ -412,6 +438,44 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				throw new InvalidOperationException(string.Format("Inernal error loading mapheap {0}", Name));
 
 			_root = scratch.Next;
+		}
+
+		public static void StressTest()
+		{
+			var allocs = new Dictionary<ulong, ulong>();
+			var mmo = new MapHeap(0x36a00000000, 256 * 1024 * 1024, "ballsacks");
+			var rnd = new Random(12512);
+
+			for (int i = 0; i < 40; i++)
+			{
+				ulong siz = (ulong)(rnd.Next(256 * 1024) + 384 * 1024);
+				siz = siz / 4096 * 4096;
+				var ptr = mmo.Map(siz, Waterbox.MemoryBlock.Protection.RW);
+				allocs.Add(ptr, siz);
+			}
+
+			for (int i = 0; i < 20; i++)
+			{
+				int idx = rnd.Next(allocs.Count);
+				var elt = allocs.ElementAt(idx);
+				mmo.Unmap(elt.Key, elt.Value);
+				allocs.Remove(elt.Key);
+			}
+
+			for (int i = 0; i < 40; i++)
+			{
+				ulong siz = (ulong)(rnd.Next(256 * 1024) + 384 * 1024);
+				siz = siz / 4096 * 4096;
+				var ptr = mmo.Map(siz, Waterbox.MemoryBlock.Protection.RW);
+				allocs.Add(ptr, siz);
+			}
+
+			for (int i = 0; i < 20; i++)
+			{
+				int idx = rnd.Next(allocs.Count);
+				var elt = allocs.ElementAt(idx);
+				mmo.Unmap(elt.Key, elt.Value);
+			}
 		}
 	}
 }
