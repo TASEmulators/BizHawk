@@ -756,6 +756,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			using (this.EnterExit())
 			{
+				// if libco is used, the jmp_buf for the main cothread can have stack stuff in it.
+				// this isn't a problem, since we only savestate when the core is not running, and
+				// the next time it's run, that buf will be overridden again.
+				// but it breaks xor state verification, so when we seal, nuke it.
+
+				// this could be the responsibility of something else other than the PeRunner; I am not sure yet...
+				IImportResolver libco;
+				if (_exports.TryGetValue("libco.so", out libco))
+				{
+					Console.WriteLine("Calling co_clean()...");
+					Marshal.GetDelegateForFunctionPointer<Action>(libco.SafeResolve("co_clean"))();
+				}
+
 				_sealedheap.Seal();
 				foreach (var h in _heaps)
 				{

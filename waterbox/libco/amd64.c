@@ -9,6 +9,7 @@
 
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,6 +22,10 @@ extern void co_swap(cothread_t, cothread_t);
 
 static void crash() {
   assert(0);  /* called only if cothread_t entrypoint returns */
+}
+
+void co_clean() {
+  memset(co_active_buffer, 0, sizeof(co_active_buffer));
 }
 
 cothread_t co_active() {
