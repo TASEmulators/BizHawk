@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using BizHawk.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Common.BizInvoke;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
@@ -22,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public abstract void SetBuffer(int id, void* ptr, int size);
 	}
 
-	public unsafe partial class LibsnesApi : IDisposable, IMonitor
+	public unsafe partial class LibsnesApi : IDisposable, IMonitor, IBinaryStateable
 	{
 		static LibsnesApi()
 		{
@@ -59,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				InvisibleHeapSizeKB = 32 * 1024,
 				MmapHeapSizeKB = 256 * 1024,
 				PlainHeapSizeKB = 32 * 1024,
-				SealedHeapSizeKB = 32 * 1024
+				SealedHeapSizeKB = 256 * 1024
 			});
 
 			_core = BizInvoker.GetInvoker<CoreImpl>(_exe, _exe);
@@ -340,6 +341,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				_comm->inports[port] = (int)type;
 			}
+		}
+
+		public void Seal()
+		{
+			_exe.Seal();
+		}
+
+		public void SaveStateBinary(BinaryWriter writer)
+		{
+			_exe.SaveStateBinary(writer);
+		}
+
+		public void LoadStateBinary(BinaryReader reader)
+		{
+			_exe.LoadStateBinary(reader);
 		}
 	}
 }

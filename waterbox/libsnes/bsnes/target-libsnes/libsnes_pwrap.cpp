@@ -291,7 +291,12 @@ void* snes_allocSharedMemory(const char* memtype, size_t amt)
 	//its important that this happen before the message marshaling because allocation/free attempts can happen before the marshaling is setup (or at shutdown time, in case of errors?)
 	//if(!running) return NULL;
 
-	auto ret = alloc_plain(amt);
+	void* ret;
+
+	if (strcmp(memtype, "CARTRIDGE_ROM") == 0)
+		ret = alloc_sealed(amt);
+	else
+		ret = alloc_plain(amt);
 
 	comm.str = (char*)memtype;
 	comm.size = amt;

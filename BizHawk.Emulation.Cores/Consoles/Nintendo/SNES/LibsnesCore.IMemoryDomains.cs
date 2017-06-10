@@ -93,7 +93,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			byte* blockptr = Api.QUERY_get_memory_data(id);
 
-			var md = new MemoryDomainIntPtrMonitor(name, MemoryDomain.Endian.Little, (IntPtr)blockptr, size, true, byteSize, Api);
+			var md = new MemoryDomainIntPtrMonitor(name, MemoryDomain.Endian.Little, (IntPtr)blockptr, size, 
+				id != LibsnesApi.SNES_MEMORY.CARTRIDGE_ROM, // hack: for just this one memory area, it will be readonly
+				byteSize, Api);
 
 			_memoryDomainList.Add(md);
 		}

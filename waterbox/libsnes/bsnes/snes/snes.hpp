@@ -1,6 +1,7 @@
 #ifndef SNES_HPP
 #define SNES_HPP
 
+#include <emulibc.h>
 #include <base/base.hpp>
 
 namespace SNES {

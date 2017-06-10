@@ -19,9 +19,10 @@ StaticRAM::~StaticRAM() { delete[] data_; }
 
 void MappedRAM::reset() {
   if(data_) {
-		if(name_) interface()->freeSharedMemory(data_);
+		/*if(name_) interface()->freeSharedMemory(data_);
 		else free(data_);
-    data_ = 0;
+    data_ = 0;*/
+    abort();
   }
   size_ = 0;
   write_protect_ = false;

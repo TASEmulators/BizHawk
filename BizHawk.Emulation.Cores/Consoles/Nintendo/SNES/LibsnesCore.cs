@@ -73,19 +73,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			
 			Api.CMD_init();
 
-			Api.QUERY_set_video_refresh(snes_video_refresh);
-			Api.QUERY_set_input_poll(snes_input_poll);
-			Api.QUERY_set_input_state(snes_input_state);
-			Api.QUERY_set_input_notify(snes_input_notify);
 			Api.QUERY_set_path_request(snes_path_request);
 
 			_scanlineStartCb = new LibsnesApi.snes_scanlineStart_t(snes_scanlineStart);
 			_tracecb = new LibsnesApi.snes_trace_t(snes_trace);
 
 			_soundcb = new LibsnesApi.snes_audio_sample_t(snes_audio_sample);
-			Api.QUERY_set_audio_sample(_soundcb);
-
-			RefreshPalette();
 
 			// start up audio resampler
 			InitAudio();
@@ -174,6 +167,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				ser.Register<ITraceable>(_tracer);
 			}
+
+			Api.QUERY_set_path_request(null);
+			Api.Seal();
+			RefreshPalette();
+			Api.QUERY_set_video_refresh(snes_video_refresh);
+			Api.QUERY_set_input_poll(snes_input_poll);
+			Api.QUERY_set_input_state(snes_input_state);
+			Api.QUERY_set_input_notify(snes_input_notify);
+			Api.QUERY_set_audio_sample(_soundcb);
 		}
 
 		private readonly GameInfo _game;

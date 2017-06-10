@@ -1,4 +1,5 @@
 #include <snes/snes.hpp>
+#include <emulibc.h>
 
 #define MEMORY_CPP
 namespace SNES {
@@ -67,13 +68,11 @@ void Bus::map_xml() {
 }
 
 Bus::Bus() {
-  lookup = new uint8 [16 * 1024 * 1024];
-  target = new uint32[16 * 1024 * 1024];
+  lookup = (uint8*)alloc_sealed(16 * 1024 * 1024);
+  target = (uint32*)alloc_sealed(16 * 1024 * 1024 * sizeof(uint32));
 }
 
 Bus::~Bus() {
-  delete[] lookup;
-  delete[] target;
 }
 
 }
