@@ -349,9 +349,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public void Seal()
 		{
-			_core.SetBuffer(0, null, 0);
-			_core.SetBuffer(1, null, 0);
-			_core.SetBuffer(2, null, 0);
+			/* Cothreads can very easily acquire "pointer poison"; because their stack and even registers
+			 * are part of state, any poisoned pointer that's used even temporarily might be persisted longer
+			 * than needed.  Most of the libsnes core cothreads handle internal matters only and aren't very
+			 * vulnerable to pointer poison, but the main boss cothread is used heavily during init, when
+			 * many syscalls happen and many kinds of poison can end up on the stack.  so here, we call
+			 * _core.DllInit() again, which recreates that cothread, zeroing out all of the memory first,
+			 * as well as zeroing out the comm struct. */
+			_core.DllInit();
 			_exe.Seal();
 			_sealed = true;
 		}

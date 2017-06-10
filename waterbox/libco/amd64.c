@@ -18,6 +18,25 @@ extern "C" {
 static long long co_active_buffer[64];
 static cothread_t co_active_handle = 0;
 
+static void* smalloc(size_t size)
+{
+  char* ret = malloc(size + 16);
+  if (ret)
+  {
+    *(size_t*)ret = size;
+    return ret + 16;
+  }
+  return NULL;
+}
+
+static void sfree(void* ptr)
+{
+  char* original = (char*)ptr - 16;
+  size_t size = *(size_t*)original + 16;
+  memset(original, 0, size);
+  free(original);
+}
+
 extern void co_swap(cothread_t, cothread_t);
 
 static void crash() {
@@ -39,7 +58,7 @@ cothread_t co_create(unsigned int size, void (*entrypoint)(void)) {
   size += 512;  /* allocate additional space for storage */
   size &= ~15;  /* align stack to 16-byte boundary */
 
-  if(handle = (cothread_t)malloc(size)) {
+  if(handle = (cothread_t)smalloc(size)) {
     long long *p = (long long*)((char*)handle + size);  /* seek to top of stack */
     *--p = (long long)crash;                            /* crash if entrypoint returns */
     *--p = (long long)entrypoint;                       /* start of function */
@@ -50,7 +69,7 @@ cothread_t co_create(unsigned int size, void (*entrypoint)(void)) {
 }
 
 void co_delete(cothread_t handle) {
-  free(handle);
+  sfree(handle);
 }
 
 void co_switch(cothread_t handle) {

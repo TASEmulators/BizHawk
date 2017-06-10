@@ -613,10 +613,16 @@ EXPORT void* DllInit()
 	T(privbuf, 232);
 	#undef T
 
-	memset(&comm,0,sizeof(comm));
+	memset(&comm, 0, sizeof(comm));
 
 	//make a coroutine thread to run the emulation in. we'll switch back to this cothread when communicating with the frontend
 	co_control = co_active();
+	if (co_emu)
+	{
+		// if this was called again, that's OK; delete the old emuthread
+		co_delete(co_emu);
+		co_emu = nullptr;
+	}
 	co_emu = co_create(65536 * sizeof(void*), new_emuthread);
 
 	return &comm;
