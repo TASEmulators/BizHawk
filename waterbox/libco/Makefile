@@ -31,11 +31,10 @@ all: $(TARGET)
 
 .PHONY: clean all
 
-$(TARGET).in : $(OBJS) $(AOBJS)
+$(TARGET): $(OBJS) $(AOBJS)
 	$(CC) -o $@ $(LDFLAGS) $(CCFLAGS) $(OBJS) $(AOBJS)
-
-$(TARGET): $(TARGET).in
-	strip $< -o $@ -R /4 -R /14 -R /29 -R /41 -R /55 -R /67 -R /78 -R /89 -R /104
+	mv $(TARGET) $(TARGET).in
+	strip $(TARGET).in -o $(TARGET) -R /4 -R /14 -R /29 -R /41 -R /55 -R /67 -R /78 -R /89 -R /104
 
 clean:
 	rm -rf $(OBJ_DIR)

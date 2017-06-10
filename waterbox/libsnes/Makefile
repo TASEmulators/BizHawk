@@ -12,6 +12,7 @@ CCFLAGS:= -DHOOKS -DBIZHAWK -DPROFILE_COMPATIBILITY -DGAMEBOY \
 	-Wno-parentheses -Wno-sign-compare \
 	-Wno-unused-variable -Wno-unused-function \
 	-fvisibility=hidden \
+	-fno-threadsafe-statics \
 	-std=c++0x \
 	-O0 -g
 
