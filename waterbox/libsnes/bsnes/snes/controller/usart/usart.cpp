@@ -89,7 +89,7 @@ USART::USART(bool port) : Controller(port) {
   txdata = 0;
 
   string filename = interface()->path(Cartridge::Slot::Base, "usart.so");
-  if(open_absolute(filename)) {
+  if(0 /*open_absolute(filename)*/) {
     init = sym("usart_init");
     main = sym("usart_main");
     if(init && main) create(Controller::Enter, 1000000);

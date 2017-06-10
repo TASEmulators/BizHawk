@@ -21,7 +21,7 @@ void ResampleCosine::clear() {
 
 void ResampleCosine::sample() {
   while(fraction <= 1.0) {
-		real *channel = (real*)alloca(dsp.settings.channels * sizeof(real));
+		std::vector<real> channel(dsp.settings.channels);
 
 
     for(unsigned n = 0; n < dsp.settings.channels; n++) {
@@ -34,7 +34,7 @@ void ResampleCosine::sample() {
       channel[n] = a * (1.0 - mu) + b * mu;
     }
 
-    dsp.write(channel);
+    dsp.write(channel.data());
     fraction += step;
   }
 

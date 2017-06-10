@@ -3,11 +3,15 @@ CC = x86_64-nt64-midipix-g++
 	# -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast
 	#-std=c99 -fomit-frame-pointer -fvisibility=hidden
 	#-DPROFILE_PERFORMANCE
+	#-fno-exceptions -fno-rtti 
 CCFLAGS:= -DHOOKS -DBIZHAWK -DPROFILE_COMPATIBILITY -DGAMEBOY \
+	-D_GNU_SOURCE \
 	-Werror=pointer-to-int-cast -Werror=int-to-pointer-cast \
-	-I../emulibc -I../libco \
+	-I../emulibc -I../libco -I./bsnes \
 	-Wall -Werror=implicit-function-declaration \
-	-fno-exceptions -fno-rtti -fvisibility=hidden \
+	-Wno-parentheses -Wno-sign-compare \
+	-Wno-unused-variable -Wno-unused-function \
+	-fvisibility=hidden \
 	-std=c++0x \
 	-O0 -g
 
@@ -16,16 +20,22 @@ TARGET = libsnes.wbx
 LDFLAGS = -Wl,--dynamicbase,--export-all-symbols
 
 ROOT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-SRCS:= \
-#	$(ROOT_DIR)/bsnes/snes/alt/cpu/cpu.cpp \ #perf only
-#	$(ROOT_DIR)/bsnes/snes/alt/ppu-performance/ppu.cpp \ #perf only
-#	$(ROOT_DIR)/bsnes/snes/alt/smp/smp.cpp \ # perf only
-	$(ROOT_DIR)/bsnes/snes/alt/ppu-compatibility/ppu.cpp \ #compat only
+
+SRCS_PERF:= \
+	$(ROOT_DIR)/bsnes/snes/alt/cpu/cpu.cpp \
+	$(ROOT_DIR)/bsnes/snes/alt/ppu-performance/ppu.cpp \
+	$(ROOT_DIR)/bsnes/snes/alt/smp/smp.cpp
+SRCS_COMPAT:= \
+	$(ROOT_DIR)/bsnes/snes/alt/ppu-compatibility/ppu.cpp \
+	$(ROOT_DIR)/bsnes/snes/cpu/cpu.cpp \
+	$(ROOT_DIR)/bsnes/snes/smp/smp.cpp
+SRCS_ALL:= \
 	$(ROOT_DIR)/bsnes/base/base.cpp \
 	$(ROOT_DIR)/bsnes/gameboy/apu/apu.cpp \
 	$(ROOT_DIR)/bsnes/gameboy/cartridge/cartridge.cpp \
 	$(ROOT_DIR)/bsnes/gameboy/cheat/cheat.cpp \
 	$(ROOT_DIR)/bsnes/gameboy/cpu/cpu.cpp \
+	$(ROOT_DIR)/bsnes/snes/alt/dsp/dsp.cpp \
 	$(ROOT_DIR)/bsnes/gameboy/interface/interface.cpp \
 	$(ROOT_DIR)/bsnes/gameboy/lcd/lcd.cpp \
 	$(ROOT_DIR)/bsnes/gameboy/memory/memory.cpp \
@@ -58,6 +68,7 @@ SRCS:= \
 	$(ROOT_DIR)/bsnes/snes/system/system.cpp \
 	$(ROOT_DIR)/bsnes/target-libsnes/libsnes.cpp \
 	$(ROOT_DIR)/bsnes/target-libsnes/libsnes_pwrap.cpp
+SRCS:=$(SRCS_ALL) $(SRCS_COMPAT)
 
 OBJ_DIR:=$(ROOT_DIR)/obj
 

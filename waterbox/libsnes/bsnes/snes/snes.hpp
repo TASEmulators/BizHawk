@@ -17,7 +17,7 @@ namespace SNES {
   project started: 2004-10-14
 */
 
-#include <libco/libco.h>
+#include <libco.h>
 
 #if defined(GAMEBOY)
   #include <gameboy/gameboy.hpp>

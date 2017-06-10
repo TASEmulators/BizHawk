@@ -5,51 +5,60 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using BizHawk.Common;
+using BizHawk.Emulation.Cores.Waterbox;
+using BizHawk.Common.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public unsafe partial class LibsnesApi : IDisposable
 	{
-		InstanceDll instanceDll;
-		string InstanceName;
+		/*[DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
+		public static unsafe extern void* CopyMemory(void* dest, void* src, ulong count);*/
 
-		[DllImport("msvcrt.dll", EntryPoint = "memcpy", CallingConvention = CallingConvention.Cdecl, SetLastError = false)]
-		public static unsafe extern void* CopyMemory(void* dest, void* src, ulong count);
+		private PeRunner _exe;
+		private CoreImpl _core;
+		private bool _disposed;
+		private CommStruct* _comm;
 
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate IntPtr DllInit();
+		private abstract class CoreImpl
+		{
+			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+			public abstract IntPtr DllInit();
+			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+			public abstract void Message(eMessage msg);
+			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+			public abstract void CopyBuffer(int id, void* ptr, int size);
+			[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+			public abstract void SetBuffer(int id, void* ptr, int size);
+		}
 
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate void MessageApi(eMessage msg);
-
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate void BufferApi(int id, void* ptr, int size);
-
-		CommStruct* comm;
-		MessageApi Message;
-		BufferApi _copyBuffer; //TODO: consider making private and wrapping
-		BufferApi _setBuffer; //TODO: consider making private and wrapping
 
 		public LibsnesApi(string dllPath)
 		{
-			InstanceName = "libsneshawk_" + Guid.NewGuid().ToString();
-			instanceDll = new InstanceDll(dllPath);
-			var dllinit = (DllInit)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("DllInit"), typeof(DllInit));
-			Message = (MessageApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("Message"), typeof(MessageApi));
-			_copyBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("CopyBuffer"), typeof(BufferApi));
-			_setBuffer = (BufferApi)Marshal.GetDelegateForFunctionPointer(instanceDll.GetProcAddress("SetBuffer"), typeof(BufferApi));
+			_exe = new PeRunner(new PeRunnerOptions
+			{
+				Filename = "libsnes.wbx",
+				Path = dllPath,
+				SbrkHeapSizeKB = 32 * 1024,
+				InvisibleHeapSizeKB = 32 * 1024,
+				MmapHeapSizeKB = 32 * 1024,
+				PlainHeapSizeKB = 32 * 1024,
+				SealedHeapSizeKB = 32 * 1024
+			});
 
-			comm = (CommStruct*)dllinit().ToPointer();
+			_core = BizInvoker.GetInvoker<CoreImpl>(_exe, _exe);
+			_comm = (CommStruct*)_core.DllInit().ToPointer();
 		}
 
 		public void Dispose()
 		{
-			instanceDll.Dispose();
-
-			foreach (var smb in DeallocatedMemoryBlocks.Values) smb.Dispose();
-			foreach (var smb in SharedMemoryBlocks.Values) smb.Dispose();
-			SharedMemoryBlocks.Clear();
-			DeallocatedMemoryBlocks.Clear();
+			if (!_disposed)
+			{
+				_exe.Dispose();
+				_exe = null;
+				_core = null;
+				_comm = null;
+			}
 		}
 
 		/// <summary>
@@ -57,8 +66,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// </summary>
 		public void CopyAscii(int id, string str)
 		{
-			fixed (byte* cp = System.Text.Encoding.ASCII.GetBytes(str+"\0"))
-				_copyBuffer(id, cp, str.Length + 1);
+			fixed (byte* cp = System.Text.Encoding.ASCII.GetBytes(str + "\0"))
+			{
+				_core.CopyBuffer(id, cp, str.Length + 1);
+			}
 		}
 
 		/// <summary>
@@ -67,7 +78,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public void CopyBytes(int id, byte[] bytes)
 		{
 			fixed (byte* bp = bytes)
-				_copyBuffer(id, bp, bytes.Length);
+			{
+				_core.CopyBuffer(id, bp, bytes.Length);
+			}
 		}
 
 		/// <summary>
@@ -81,7 +94,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			fixed (byte* bp = bytes)
 			{
-				_setBuffer(id, bp, bytes.Length);
+				_core.SetBuffer(id, bp, bytes.Length);
 				andThen();
 			}
 		}
@@ -91,9 +104,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		/// </summary>
 		public void SetAscii(int id, string str, Action andThen)
 		{
-			fixed (byte* cp = System.Text.Encoding.ASCII.GetBytes(str+"\0"))
+			fixed (byte* cp = System.Text.Encoding.ASCII.GetBytes(str + "\0"))
 			{
-				_setBuffer(id, cp, str.Length + 1);
+				_core.SetBuffer(id, cp, str.Length + 1);
 				andThen();
 			}
 		}
@@ -124,8 +137,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			BRR = 0x80,
 		};
 
-		Dictionary<string, SharedMemoryBlock> SharedMemoryBlocks = new Dictionary<string, SharedMemoryBlock>();
-		Dictionary<string, SharedMemoryBlock> DeallocatedMemoryBlocks = new Dictionary<string, SharedMemoryBlock>();
+		//Dictionary<string, SharedMemoryBlock> SharedMemoryBlocks = new Dictionary<string, SharedMemoryBlock>();
+		//Dictionary<string, SharedMemoryBlock> DeallocatedMemoryBlocks = new Dictionary<string, SharedMemoryBlock>();
 
 		snes_video_refresh_t video_refresh;
 		snes_input_poll_t input_poll;
@@ -177,7 +190,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public bool BG3_Prio1 { get { return _BG3_Prio1 != 0; } set { _BG3_Prio1 = (byte)(value ? 1 : 0); } }
 			public bool BG4_Prio0 { get { return _BG4_Prio0 != 0; } set { _BG4_Prio0 = (byte)(value ? 1 : 0); } }
 			public bool BG4_Prio1 { get { return _BG4_Prio1 != 0; } set { _BG4_Prio1 = (byte)(value ? 1 : 0); } }
-			
+
 			public bool Obj_Prio0 { get { return _Obj_Prio0 != 0; } set { _Obj_Prio0 = (byte)(value ? 1 : 0); } }
 			public bool Obj_Prio1 { get { return _Obj_Prio1 != 0; } set { _Obj_Prio1 = (byte)(value ? 1 : 0); } }
 			public bool Obj_Prio2 { get { return _Obj_Prio2 != 0; } set { _Obj_Prio2 = (byte)(value ? 1 : 0); } }
@@ -226,27 +239,52 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public unsafe string GetAscii() { return _getAscii(str); }
 			public bool GetBool() { return value != 0; }
 
-			private unsafe string _getAscii(sbyte* ptr) {
+			private unsafe string _getAscii(sbyte* ptr)
+			{
 				int len = 0;
 				sbyte* junko = (sbyte*)ptr;
-				while(junko[len] != 0) len++;
+				while (junko[len] != 0) len++;
 
 				return new string((sbyte*)str, 0, len, System.Text.Encoding.ASCII);
 			}
 		}
 
-		public SNES_REGION Region { get { return comm->region; } }
-		public SNES_MAPPER Mapper { get { return comm->mapper; } }
+		public SNES_REGION Region
+		{
+			get
+			{
+				using (_exe.EnterExit())
+				{
+					return _comm->region;
+				}
+			}
+		}
+		public SNES_MAPPER Mapper
+		{
+			get
+			{
+				using (_exe.EnterExit())
+				{
+					return _comm->mapper;
+				}
+			}
+		}
+
 		public void SetLayerEnables(ref LayerEnables enables)
 		{
-			comm->layerEnables = enables;
-			QUERY_set_layer_enable();
+			using (_exe.EnterExit())
+			{
+				_comm->layerEnables = enables;
+				QUERY_set_layer_enable();
+			}
 		}
 
 		public void SetInputPortBeforeInit(int port, SNES_INPUT_PORT type)
 		{
-			comm->inports[port] = (int)type;
+			using (_exe.EnterExit())
+			{
+				_comm->inports[port] = (int)type;
+			}
 		}
 	}
-
 }

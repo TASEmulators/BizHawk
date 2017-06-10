@@ -259,11 +259,10 @@ void Cartridge::parse_markup_necdsp(XML::Node &root) {
     if(!sha256.empty()) {
       //XML file specified SHA256 sum for program. Verify file matches the hash.
       fp.seek(0);
-      //uint8_t data[filesize]; //test
-			uint8_t *data = (uint8_t*)alloca(filesize);
-      fp.read(data, filesize);
+      std::vector<uint8_t> data(filesize);
+      fp.read(data.data(), filesize);
 
-      if(sha256 != nall::sha256(data, filesize)) {
+      if(sha256 != nall::sha256(data.data(), filesize)) {
         interface()->message({ "Warning: NEC DSP firmware ", firmware, " SHA256 sum is incorrect." });
       }
     }

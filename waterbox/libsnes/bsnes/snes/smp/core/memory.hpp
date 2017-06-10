@@ -24,6 +24,5 @@ alwaysinline void op_writedp(uint8 addr, uint8 data) {
 
 alwaysinline void op_next() {
   opcode = op_readpcfirst();
-  uindex = -1;
 }
 

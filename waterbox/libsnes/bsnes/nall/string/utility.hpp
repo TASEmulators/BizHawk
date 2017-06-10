@@ -166,15 +166,15 @@ template<unsigned length_, char padding> string decimal(uintmax_t value) {
   buffer[size] = 0;
 
   unsigned length = (length_ == 0 ? size : length_);
-	char* result = (char*)alloca(length + 1);
-  memset(result, padding, length);
+  std::vector<char> result(length + 1);
+  memset(result.data(), padding, length);
   result[length] = 0;
 
   for(signed x = length - 1, y = 0; x >= 0 && y < size; x--, y++) {
     result[x] = buffer[y];
   }
 
-  return (const char*)result;
+  return (const char*)result.data();
 }
 
 template<unsigned length_, char padding> string ldecimal(uintmax_t value) {
@@ -211,15 +211,15 @@ template<unsigned length_, char padding> string hex(uintmax_t value) {
   } while(value);
 
   unsigned length = (length_ == 0 ? size : length_);
-  char *result = (char*)alloca(length + 1);
-  memset(result, padding, length);
+  std::vector<char> result(length + 1);
+  memset(result.data(), padding, length);
   result[length] = 0;
 
   for(signed x = length - 1, y = 0; x >= 0 && y < size; x--, y++) {
     result[x] = buffer[y];
   }
 
-  return (const char*)result;
+  return (const char*)result.data();
 }
 
 template<unsigned length_, char padding> string binary(uintmax_t value) {

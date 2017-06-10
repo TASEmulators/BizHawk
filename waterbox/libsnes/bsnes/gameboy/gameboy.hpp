@@ -17,7 +17,7 @@ namespace GameBoy {
   project started: 2010-12-27
 */
 
-#include <libco/libco.h>
+#include <libco.h>
 #include <nall/gameboy/cartridge.hpp>
 
 namespace GameBoy {

@@ -6,8 +6,6 @@
 
 #include <queue>
 
-#include <Windows.h>
-
 using namespace nall;
 
 struct Interface : public SNES::Interface {

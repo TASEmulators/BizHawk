@@ -4,13 +4,11 @@
 //sig: core->frontend: "core signal" a synchronous operation called from the emulation process which the frontend should handle immediately without issuing any calls into the core
 //brk: core->frontend: "core break" the emulation process has suspended. the frontend is free to do whatever it wishes.
 
-#include <Windows.h>
-
 #define LIBSNES_IMPORT
 #include "snes/snes.hpp"
 #include "libsnes.hpp"
 
-#include <libco/libco.h>
+#include <libco.h>
 
 #include <string.h>
 #include <stdio.h>
@@ -570,12 +568,10 @@ void new_emuthread()
 //------------------------------------------------
 //DLL INTERFACE
 
-BOOL WINAPI DllMain(_In_ HINSTANCE hinstDLL, _In_ DWORD     fdwReason, _In_ LPVOID    lpvReserved)
-{
-	return TRUE;
-}
+#include <emulibc.h>
+#define EXPORT extern "C" ECL_EXPORT
 
-extern "C" dllexport void* __cdecl DllInit()
+EXPORT void* DllInit()
 {
 	memset(&comm,0,sizeof(comm));
 
@@ -586,7 +582,7 @@ extern "C" dllexport void* __cdecl DllInit()
 	return &comm;
 }
 
-extern "C" dllexport void __cdecl Message(eMessage msg)
+EXPORT void Message(eMessage msg)
 {
 	if (msg == eMessage_Resume)
 	{
@@ -625,13 +621,18 @@ extern "C" dllexport void __cdecl Message(eMessage msg)
 
 
 //receives the given buffer and COPIES it. use this for returning values from SIGs
-extern "C" dllexport void __cdecl CopyBuffer(int id, void* ptr, int32 size)
+EXPORT void CopyBuffer(int id, void* ptr, int32 size)
 {
 	comm.CopyBuffer(id, ptr, size);
 }
 
 //receives the given buffer and STASHES IT. use this (carefully) for sending params for CMDs
-extern "C" dllexport void __cdecl SetBuffer(int id, void* ptr, int32 size)
+EXPORT void SetBuffer(int id, void* ptr, int32 size)
 {
 	comm.SetBuffer(id, ptr, size);
+}
+
+int main()
+{
+	return 0;
 }
