@@ -2144,7 +2144,7 @@ namespace BizHawk.Client.EmuHawk
 						"PlayStation", "*.cue;*.ccd;*.m3u",
 						"PSX Executables (experimental)", "*.exe",
 						"PSF Playstation Sound File", "*.psf;*.minipsf",
-						"Commodore 64 (experimental)", "*.prg; *.d64, *.g64; *.crt; *.tap;%ARCH%",
+						"Commodore 64", "*.prg; *.d64, *.g64; *.crt; *.tap;%ARCH%",
 						"SID Commodore 64 Music File", "*.sid;%ARCH%",
 						"Nintendo 64", "*.z64;*.v64;*.n64",
 						"WonderSwan", "*.ws;*.wsc;%ARCH%",
@@ -2153,7 +2153,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.prg;*.d64;*.g64;*.minipsf;*.nsf;%ARCH%",
 					"Disc Images", "*.cue;*.ccd;*.m3u",
 					"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -2175,6 +2175,7 @@ namespace BizHawk.Client.EmuHawk
 					"Genesis", "*.gen;*.md;*.smd;*.bin;*.cue;*.ccd;%ARCH%",
 					"WonderSwan", "*.ws;*.wsc;%ARCH%",
 					"Apple II", "*.dsk;*.do;*.po;%ARCH%",
+					"Commodore 64", "*.prg; *.d64, *.g64; *.crt; *.tap;%ARCH%",
 					"All Files", "*.*");
 			}
 		}
