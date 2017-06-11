@@ -532,6 +532,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					}
 				}
 			}
+
+			VirtualHeight = BufferHeight;
+			VirtualWidth = BufferWidth;
+			if (VirtualHeight * 2 < VirtualWidth)
+				VirtualHeight *= 2;
+			if (VirtualHeight > 240)
+				VirtualWidth = 512;
+			VirtualWidth = (int)Math.Round(VirtualWidth * 1.146);
 		}
 
 		private void RefreshMemoryCallbacks(bool suppress)
