@@ -94,11 +94,6 @@ namespace BizHawk.Client.EmuHawk
 				// SNES
 				Global.Config.SNES_InSnes9x = true;
 
-				// Saturn
-				var saturnSettings = GetSyncSettings<Yabause, Yabause.SaturnSyncSettings>();
-				saturnSettings.SkipBios = false;
-				PutSyncSettings<Yabause>(saturnSettings);
-
 				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
 				genesisSettings.Region = LibGPGX.Region.Autodetect;
@@ -150,11 +145,6 @@ namespace BizHawk.Client.EmuHawk
 				var snesSettings = GetSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>();
 				snesSettings.Profile = "Compatibility";
 				PutSyncSettings<LibsnesCore>(snesSettings);
-
-				// Saturn
-				var saturnSettings = GetSyncSettings<Yabause, Yabause.SaturnSyncSettings>();
-				saturnSettings.SkipBios = false;
-				PutSyncSettings<Yabause>(saturnSettings);
 
 				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
@@ -211,11 +201,6 @@ namespace BizHawk.Client.EmuHawk
 				snesSettings.Profile = "Compatibility";
 				PutSyncSettings<LibsnesCore>(snesSettings);
 
-				// Saturn
-				var saturnSettings = GetSyncSettings<Yabause, Yabause.SaturnSyncSettings>();
-				saturnSettings.SkipBios = true;
-				PutSyncSettings<Yabause>(saturnSettings);
-
 				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
 				genesisSettings.Region = LibGPGX.Region.Autodetect;
@@ -270,11 +255,6 @@ namespace BizHawk.Client.EmuHawk
 				var snesSettings = GetSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>();
 				snesSettings.Profile = "Compatibility";
 				PutSyncSettings<LibsnesCore>(snesSettings);
-
-				// Saturn
-				var saturnSettings = GetSyncSettings<Yabause, Yabause.SaturnSyncSettings>();
-				saturnSettings.SkipBios = true;
-				PutSyncSettings<Yabause>(saturnSettings);
 
 				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();

@@ -36,10 +36,6 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 			{
 				return Properties.Resources.bsnes;
 			}
-			else if (core is Yabause)
-			{
-				return Properties.Resources.yabause;
-			}
 			else if (core is Atari7800)
 			{
 				return Properties.Resources.emu7800;

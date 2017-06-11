@@ -1148,31 +1148,8 @@
     <Compile Include="Consoles\Sega\gpgx64\LibGPGX.cs" />
     <Compile Include="Consoles\Sega\Saturn\FilePiping.cs" />
     <Compile Include="Consoles\Sega\Saturn\LibSaturnus.cs" />
-    <Compile Include="Consoles\Sega\Saturn\LibYabause.cs" />
     <Compile Include="Consoles\Sega\Saturn\Saturnus.cs" />
     <Compile Include="Consoles\Sega\Saturn\SaturnusControllerDeck.cs" />
-    <Compile Include="Consoles\Sega\Saturn\Yabause.cs" />
-    <Compile Include="Consoles\Sega\Saturn\Yabause.IDriveLight.cs">
-      <DependentUpon>Yabause.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Sega\Saturn\Yabause.IInputPollable.cs">
-      <DependentUpon>Yabause.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Sega\Saturn\Yabause.IMemoryDomains.cs">
-      <DependentUpon>Yabause.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Sega\Saturn\Yabause.ISaveram.cs">
-      <DependentUpon>Yabause.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Sega\Saturn\Yabause.ISettable.cs">
-      <DependentUpon>Yabause.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Sega\Saturn\Yabause.IStatable.cs">
-      <DependentUpon>Yabause.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Sega\Saturn\Yabause.ITraceable.cs">
-      <DependentUpon>Yabause.cs</DependentUpon>
-    </Compile>
     <Compile Include="Consoles\Sega\SMS\SMS.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.ICodeDataLogger.cs">
       <DependentUpon>SMS.cs</DependentUpon>
