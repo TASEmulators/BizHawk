@@ -122,11 +122,6 @@ namespace BizHawk.Emulation.Cores.Libretro
 			api.comm->env.fb_bufptr = (int*)vidBufferHandle.AddrOfPinnedObject().ToPointer();
 			//TODO: latch DAR? we may want to change it synchronously, or something
 
-			//TODO - libretro cores can return a varying serialize size over time. I tried to get them to write it in the docs...
-			//UPDATE: well, they wrote in the docs that they CANT. they can ask the frontend if it's supported. (we wont support it unless we have to)
-			savebuff = new byte[api.comm->env.retro_serialize_size];
-			savebuff2 = new byte[savebuff.Length + 13];
-
 			// TODO: more precise
 			VsyncNumerator = (int)(10000000 * api.comm->env.retro_system_av_info.timing.fps);
 			VsyncDenominator = 10000000;
@@ -379,7 +374,12 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
-			Console.WriteLine(api.comm->env.retro_serialize_size);
+			if (savebuff == null || savebuff.Length != api.comm->env.retro_serialize_size)
+			{
+				savebuff = new byte[api.comm->env.retro_serialize_size];
+				savebuff2 = new byte[savebuff.Length + 13];
+			}
+
 			api.CMD_Serialize(savebuff);
 			writer.Write(savebuff.Length);
 			writer.Write(savebuff);
@@ -404,6 +404,12 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public byte[] SaveStateBinary()
 		{
+			if (savebuff == null || savebuff.Length != api.comm->env.retro_serialize_size)
+			{
+				savebuff = new byte[api.comm->env.retro_serialize_size];
+				savebuff2 = new byte[savebuff.Length + 13];
+			}
+
 			var ms = new System.IO.MemoryStream(savebuff2, true);
 			var bw = new System.IO.BinaryWriter(ms);
 			SaveStateBinary(bw);
