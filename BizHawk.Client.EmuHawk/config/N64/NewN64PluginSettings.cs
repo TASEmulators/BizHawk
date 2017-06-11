@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			RicePropertyGrid.SelectedObject = _ss.RicePlugin;
 			Glidemk2PropertyGrid.SelectedObject = _ss.Glide64mk2Plugin;
 			GlidePropertyGrid.SelectedObject = _ss.GlidePlugin;
-			JaboPropertyGrid.SelectedObject = _ss.JaboPlugin;
+			//JaboPropertyGrid.SelectedObject = _ss.JaboPlugin;
 		}
 
 		#region Setting Get/Set

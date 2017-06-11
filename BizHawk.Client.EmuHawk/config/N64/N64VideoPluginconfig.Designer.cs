@@ -275,35 +275,35 @@
 			this.label58 = new System.Windows.Forms.Label();
 			this.Glide64mk2_filtering = new System.Windows.Forms.ComboBox();
 			this.Glide64mk2_UseDefaultHacks2 = new System.Windows.Forms.CheckBox();
-			this.JaboTab = new System.Windows.Forms.TabPage();
-			this.JaboPerGameHacksGroupBox = new System.Windows.Forms.GroupBox();
+			//this.JaboTab = new System.Windows.Forms.TabPage();
+			//this.JaboPerGameHacksGroupBox = new System.Windows.Forms.GroupBox();
 			this.label71 = new System.Windows.Forms.Label();
 			this.label70 = new System.Windows.Forms.Label();
-			this.JaboClearModeDropDown = new System.Windows.Forms.ComboBox();
+			//this.JaboClearModeDropDown = new System.Windows.Forms.ComboBox();
 			this.label69 = new System.Windows.Forms.Label();
-			this.JaboUseForGameCheckbox = new System.Windows.Forms.CheckBox();
+			//this.JaboUseForGameCheckbox = new System.Windows.Forms.CheckBox();
 			this.label68 = new System.Windows.Forms.Label();
-			this.JaboCopyFrameBufferCheckbox = new System.Windows.Forms.CheckBox();
+			//this.JaboCopyFrameBufferCheckbox = new System.Windows.Forms.CheckBox();
 			this.label67 = new System.Windows.Forms.Label();
-			this.JaboZCompareCheckbox = new System.Windows.Forms.CheckBox();
+			//this.JaboZCompareCheckbox = new System.Windows.Forms.CheckBox();
 			this.label66 = new System.Windows.Forms.Label();
-			this.JaboDirect3DPipelineCheckbox = new System.Windows.Forms.CheckBox();
+			//this.JaboDirect3DPipelineCheckbox = new System.Windows.Forms.CheckBox();
 			this.label65 = new System.Windows.Forms.Label();
-			this.JaboAlphaBlendingCheckbox = new System.Windows.Forms.CheckBox();
+			//this.JaboAlphaBlendingCheckbox = new System.Windows.Forms.CheckBox();
 			this.label64 = new System.Windows.Forms.Label();
-			this.JaboLegacyPixelPipelineCheckbox = new System.Windows.Forms.CheckBox();
+			//this.JaboLegacyPixelPipelineCheckbox = new System.Windows.Forms.CheckBox();
 			this.label63 = new System.Windows.Forms.Label();
 			this.label62 = new System.Windows.Forms.Label();
-			this.JaboAdjustAspectRatioCheckbox = new System.Windows.Forms.CheckBox();
+			//this.JaboAdjustAspectRatioCheckbox = new System.Windows.Forms.CheckBox();
 			this.label61 = new System.Windows.Forms.Label();
-			this.JaboAntialiasingLevelDropdown = new System.Windows.Forms.ComboBox();
+			//this.JaboAntialiasingLevelDropdown = new System.Windows.Forms.ComboBox();
 			this.label60 = new System.Windows.Forms.Label();
-			this.JaboTextureFilterCheckbox = new System.Windows.Forms.CheckBox();
+			//this.JaboTextureFilterCheckbox = new System.Windows.Forms.CheckBox();
 			this.label59 = new System.Windows.Forms.Label();
-			this.JaboSuper2xsalCheckbox = new System.Windows.Forms.CheckBox();
-			this.JaboBrightnessBox = new System.Windows.Forms.NumericUpDown();
+			//this.JaboSuper2xsalCheckbox = new System.Windows.Forms.CheckBox();
+			//this.JaboBrightnessBox = new System.Windows.Forms.NumericUpDown();
 			this.label57 = new System.Windows.Forms.Label();
-			this.JaboAnisotropicFilteringLevelDropdown = new System.Windows.Forms.ComboBox();
+			//this.JaboAnisotropicFilteringLevelDropdown = new System.Windows.Forms.ComboBox();
 			this.label51 = new System.Windows.Forms.Label();
 			this.GLideN64Tab = new System.Windows.Forms.TabPage();
 			this.tabControl3 = new System.Windows.Forms.TabControl();
@@ -376,8 +376,8 @@
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.label89 = new System.Windows.Forms.Label();
 			this.GLideN64_UseNativeResolutionFactor = new System.Windows.Forms.TextBox();
-			this.JaboResolutionHeightBox = new BizHawk.Client.EmuHawk.WatchValueBox();
-			this.JaboResolutionWidthBox = new BizHawk.Client.EmuHawk.WatchValueBox();
+			//this.JaboResolutionHeightBox = new BizHawk.Client.EmuHawk.WatchValueBox();
+			//this.JaboResolutionWidthBox = new BizHawk.Client.EmuHawk.WatchValueBox();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.RiceTabPage.SuspendLayout();
@@ -398,9 +398,9 @@
 			this.tabPage1.SuspendLayout();
 			this.tabPage2.SuspendLayout();
 			this.tabPage3.SuspendLayout();
-			this.JaboTab.SuspendLayout();
-			this.JaboPerGameHacksGroupBox.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.JaboBrightnessBox)).BeginInit();
+			//this.JaboTab.SuspendLayout();
+			//this.JaboPerGameHacksGroupBox.SuspendLayout();
+			//((System.ComponentModel.ISupportInitialize)(this.JaboBrightnessBox)).BeginInit();
 			this.GLideN64Tab.SuspendLayout();
 			this.tabControl3.SuspendLayout();
 			this.tabPage5.SuspendLayout();
@@ -417,7 +417,7 @@
 			this.N64plugintabcontrol.Controls.Add(this.RiceTabPage);
 			this.N64plugintabcontrol.Controls.Add(this.Glide64TabPage);
 			this.N64plugintabcontrol.Controls.Add(this.Glide64mk2TabPage);
-			this.N64plugintabcontrol.Controls.Add(this.JaboTab);
+			//this.N64plugintabcontrol.Controls.Add(this.JaboTab);
 			this.N64plugintabcontrol.Controls.Add(this.GLideN64Tab);
 			this.N64plugintabcontrol.Location = new System.Drawing.Point(-2, -2);
 			this.N64plugintabcontrol.Name = "N64plugintabcontrol";
@@ -583,7 +583,7 @@
             "Rice",
             "Glide64",
             "Glide64mk2",
-            "Jabo 1.6.1",
+            //"Jabo 1.6.1",
             "GLideN64"});
 			this.PluginComboBox.Location = new System.Drawing.Point(13, 91);
 			this.PluginComboBox.Name = "PluginComboBox";
@@ -3369,55 +3369,55 @@
 			this.Glide64mk2_UseDefaultHacks2.Text = "Use defaults for current game";
 			this.Glide64mk2_UseDefaultHacks2.UseVisualStyleBackColor = true;
 			this.Glide64mk2_UseDefaultHacks2.CheckedChanged += new System.EventHandler(this.Glide64mk2_UseDefaultHacks2_CheckedChanged);
-			// 
-			// JaboTab
-			// 
-			this.JaboTab.Controls.Add(this.JaboPerGameHacksGroupBox);
-			this.JaboTab.Controls.Add(this.JaboUseForGameCheckbox);
-			this.JaboTab.Controls.Add(this.label68);
-			this.JaboTab.Controls.Add(this.JaboCopyFrameBufferCheckbox);
-			this.JaboTab.Controls.Add(this.label67);
-			this.JaboTab.Controls.Add(this.JaboZCompareCheckbox);
-			this.JaboTab.Controls.Add(this.label66);
-			this.JaboTab.Controls.Add(this.JaboDirect3DPipelineCheckbox);
-			this.JaboTab.Controls.Add(this.label65);
-			this.JaboTab.Controls.Add(this.JaboAlphaBlendingCheckbox);
-			this.JaboTab.Controls.Add(this.label64);
-			this.JaboTab.Controls.Add(this.JaboLegacyPixelPipelineCheckbox);
-			this.JaboTab.Controls.Add(this.label63);
-			this.JaboTab.Controls.Add(this.label62);
-			this.JaboTab.Controls.Add(this.JaboAdjustAspectRatioCheckbox);
-			this.JaboTab.Controls.Add(this.label61);
-			this.JaboTab.Controls.Add(this.JaboAntialiasingLevelDropdown);
-			this.JaboTab.Controls.Add(this.label60);
-			this.JaboTab.Controls.Add(this.JaboTextureFilterCheckbox);
-			this.JaboTab.Controls.Add(this.label59);
-			this.JaboTab.Controls.Add(this.JaboSuper2xsalCheckbox);
-			this.JaboTab.Controls.Add(this.JaboBrightnessBox);
-			this.JaboTab.Controls.Add(this.label57);
-			this.JaboTab.Controls.Add(this.JaboAnisotropicFilteringLevelDropdown);
-			this.JaboTab.Controls.Add(this.label51);
-			this.JaboTab.Location = new System.Drawing.Point(4, 22);
-			this.JaboTab.Name = "JaboTab";
-			this.JaboTab.Size = new System.Drawing.Size(572, 343);
-			this.JaboTab.TabIndex = 7;
-			this.JaboTab.Text = "Jabo";
-			this.JaboTab.UseVisualStyleBackColor = true;
-			// 
-			// JaboPerGameHacksGroupBox
-			// 
-			this.JaboPerGameHacksGroupBox.Controls.Add(this.JaboResolutionHeightBox);
-			this.JaboPerGameHacksGroupBox.Controls.Add(this.JaboResolutionWidthBox);
-			this.JaboPerGameHacksGroupBox.Controls.Add(this.label71);
-			this.JaboPerGameHacksGroupBox.Controls.Add(this.label70);
-			this.JaboPerGameHacksGroupBox.Controls.Add(this.JaboClearModeDropDown);
-			this.JaboPerGameHacksGroupBox.Controls.Add(this.label69);
-			this.JaboPerGameHacksGroupBox.Location = new System.Drawing.Point(292, 36);
-			this.JaboPerGameHacksGroupBox.Name = "JaboPerGameHacksGroupBox";
-			this.JaboPerGameHacksGroupBox.Size = new System.Drawing.Size(271, 196);
-			this.JaboPerGameHacksGroupBox.TabIndex = 29;
-			this.JaboPerGameHacksGroupBox.TabStop = false;
-			this.JaboPerGameHacksGroupBox.Text = "Per game settings";
+			//// 
+			//// JaboTab
+			//// 
+			//this.JaboTab.Controls.Add(this.JaboPerGameHacksGroupBox);
+			//this.JaboTab.Controls.Add(this.JaboUseForGameCheckbox);
+			//this.JaboTab.Controls.Add(this.label68);
+			//this.JaboTab.Controls.Add(this.JaboCopyFrameBufferCheckbox);
+			//this.JaboTab.Controls.Add(this.label67);
+			//this.JaboTab.Controls.Add(this.JaboZCompareCheckbox);
+			//this.JaboTab.Controls.Add(this.label66);
+			//this.JaboTab.Controls.Add(this.JaboDirect3DPipelineCheckbox);
+			//this.JaboTab.Controls.Add(this.label65);
+			//this.JaboTab.Controls.Add(this.JaboAlphaBlendingCheckbox);
+			//this.JaboTab.Controls.Add(this.label64);
+			//this.JaboTab.Controls.Add(this.JaboLegacyPixelPipelineCheckbox);
+			//this.JaboTab.Controls.Add(this.label63);
+			//this.JaboTab.Controls.Add(this.label62);
+			//this.JaboTab.Controls.Add(this.JaboAdjustAspectRatioCheckbox);
+			//this.JaboTab.Controls.Add(this.label61);
+			//this.JaboTab.Controls.Add(this.JaboAntialiasingLevelDropdown);
+			//this.JaboTab.Controls.Add(this.label60);
+			//this.JaboTab.Controls.Add(this.JaboTextureFilterCheckbox);
+			//this.JaboTab.Controls.Add(this.label59);
+			//this.JaboTab.Controls.Add(this.JaboSuper2xsalCheckbox);
+			//this.JaboTab.Controls.Add(this.JaboBrightnessBox);
+			//this.JaboTab.Controls.Add(this.label57);
+			//this.JaboTab.Controls.Add(this.JaboAnisotropicFilteringLevelDropdown);
+			//this.JaboTab.Controls.Add(this.label51);
+			//this.JaboTab.Location = new System.Drawing.Point(4, 22);
+			//this.JaboTab.Name = "JaboTab";
+			//this.JaboTab.Size = new System.Drawing.Size(572, 343);
+			//this.JaboTab.TabIndex = 7;
+			//this.JaboTab.Text = "Jabo";
+			//this.JaboTab.UseVisualStyleBackColor = true;
+			//// 
+			//// JaboPerGameHacksGroupBox
+			//// 
+			//this.JaboPerGameHacksGroupBox.Controls.Add(this.JaboResolutionHeightBox);
+			//this.JaboPerGameHacksGroupBox.Controls.Add(this.JaboResolutionWidthBox);
+			//this.JaboPerGameHacksGroupBox.Controls.Add(this.label71);
+			//this.JaboPerGameHacksGroupBox.Controls.Add(this.label70);
+			//this.JaboPerGameHacksGroupBox.Controls.Add(this.JaboClearModeDropDown);
+			//this.JaboPerGameHacksGroupBox.Controls.Add(this.label69);
+			//this.JaboPerGameHacksGroupBox.Location = new System.Drawing.Point(292, 36);
+			//this.JaboPerGameHacksGroupBox.Name = "JaboPerGameHacksGroupBox";
+			//this.JaboPerGameHacksGroupBox.Size = new System.Drawing.Size(271, 196);
+			//this.JaboPerGameHacksGroupBox.TabIndex = 29;
+			//this.JaboPerGameHacksGroupBox.TabStop = false;
+			//this.JaboPerGameHacksGroupBox.Text = "Per game settings";
 			// 
 			// label71
 			// 
@@ -3436,15 +3436,15 @@
 			this.label70.Size = new System.Drawing.Size(88, 13);
 			this.label70.TabIndex = 31;
 			this.label70.Text = "Resolution Width";
-			// 
-			// JaboClearModeDropDown
-			// 
-			this.JaboClearModeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.JaboClearModeDropDown.FormattingEnabled = true;
-			this.JaboClearModeDropDown.Location = new System.Drawing.Point(127, 30);
-			this.JaboClearModeDropDown.Name = "JaboClearModeDropDown";
-			this.JaboClearModeDropDown.Size = new System.Drawing.Size(138, 21);
-			this.JaboClearModeDropDown.TabIndex = 30;
+			//// 
+			//// JaboClearModeDropDown
+			//// 
+			//this.JaboClearModeDropDown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			//this.JaboClearModeDropDown.FormattingEnabled = true;
+			//this.JaboClearModeDropDown.Location = new System.Drawing.Point(127, 30);
+			//this.JaboClearModeDropDown.Name = "JaboClearModeDropDown";
+			//this.JaboClearModeDropDown.Size = new System.Drawing.Size(138, 21);
+			//this.JaboClearModeDropDown.TabIndex = 30;
 			// 
 			// label69
 			// 
@@ -3454,17 +3454,17 @@
 			this.label69.Size = new System.Drawing.Size(106, 13);
 			this.label69.TabIndex = 0;
 			this.label69.Text = "Direct3D Clear Mode";
-			// 
-			// JaboUseForGameCheckbox
-			// 
-			this.JaboUseForGameCheckbox.AutoSize = true;
-			this.JaboUseForGameCheckbox.Location = new System.Drawing.Point(292, 13);
-			this.JaboUseForGameCheckbox.Name = "JaboUseForGameCheckbox";
-			this.JaboUseForGameCheckbox.Size = new System.Drawing.Size(165, 17);
-			this.JaboUseForGameCheckbox.TabIndex = 28;
-			this.JaboUseForGameCheckbox.Text = "Use defaults for current game";
-			this.JaboUseForGameCheckbox.UseVisualStyleBackColor = true;
-			this.JaboUseForGameCheckbox.CheckedChanged += new System.EventHandler(this.JaboUseForGameCheckbox_CheckedChanged);
+			//// 
+			//// JaboUseForGameCheckbox
+			//// 
+			//this.JaboUseForGameCheckbox.AutoSize = true;
+			//this.JaboUseForGameCheckbox.Location = new System.Drawing.Point(292, 13);
+			//this.JaboUseForGameCheckbox.Name = "JaboUseForGameCheckbox";
+			//this.JaboUseForGameCheckbox.Size = new System.Drawing.Size(165, 17);
+			//this.JaboUseForGameCheckbox.TabIndex = 28;
+			//this.JaboUseForGameCheckbox.Text = "Use defaults for current game";
+			//this.JaboUseForGameCheckbox.UseVisualStyleBackColor = true;
+			//this.JaboUseForGameCheckbox.CheckedChanged += new System.EventHandler(this.JaboUseForGameCheckbox_CheckedChanged);
 			// 
 			// label68
 			// 
@@ -3474,15 +3474,15 @@
 			this.label68.Size = new System.Drawing.Size(87, 13);
 			this.label68.TabIndex = 27;
 			this.label68.Text = "Copy framebuffer";
-			// 
-			// JaboCopyFrameBufferCheckbox
-			// 
-			this.JaboCopyFrameBufferCheckbox.AutoSize = true;
-			this.JaboCopyFrameBufferCheckbox.Location = new System.Drawing.Point(154, 315);
-			this.JaboCopyFrameBufferCheckbox.Name = "JaboCopyFrameBufferCheckbox";
-			this.JaboCopyFrameBufferCheckbox.Size = new System.Drawing.Size(15, 14);
-			this.JaboCopyFrameBufferCheckbox.TabIndex = 26;
-			this.JaboCopyFrameBufferCheckbox.UseVisualStyleBackColor = true;
+			//// 
+			//// JaboCopyFrameBufferCheckbox
+			//// 
+			//this.JaboCopyFrameBufferCheckbox.AutoSize = true;
+			//this.JaboCopyFrameBufferCheckbox.Location = new System.Drawing.Point(154, 315);
+			//this.JaboCopyFrameBufferCheckbox.Name = "JaboCopyFrameBufferCheckbox";
+			//this.JaboCopyFrameBufferCheckbox.Size = new System.Drawing.Size(15, 14);
+			//this.JaboCopyFrameBufferCheckbox.TabIndex = 26;
+			//this.JaboCopyFrameBufferCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label67
 			// 
@@ -3492,15 +3492,15 @@
 			this.label67.Size = new System.Drawing.Size(89, 13);
 			this.label67.TabIndex = 25;
 			this.label67.Text = "Force Z Compare";
-			// 
-			// JaboZCompareCheckbox
-			// 
-			this.JaboZCompareCheckbox.AutoSize = true;
-			this.JaboZCompareCheckbox.Location = new System.Drawing.Point(154, 285);
-			this.JaboZCompareCheckbox.Name = "JaboZCompareCheckbox";
-			this.JaboZCompareCheckbox.Size = new System.Drawing.Size(15, 14);
-			this.JaboZCompareCheckbox.TabIndex = 24;
-			this.JaboZCompareCheckbox.UseVisualStyleBackColor = true;
+			//// 
+			//// JaboZCompareCheckbox
+			//// 
+			//this.JaboZCompareCheckbox.AutoSize = true;
+			//this.JaboZCompareCheckbox.Location = new System.Drawing.Point(154, 285);
+			//this.JaboZCompareCheckbox.Name = "JaboZCompareCheckbox";
+			//this.JaboZCompareCheckbox.Size = new System.Drawing.Size(15, 14);
+			//this.JaboZCompareCheckbox.TabIndex = 24;
+			//this.JaboZCompareCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label66
 			// 
@@ -3510,15 +3510,15 @@
 			this.label66.Size = new System.Drawing.Size(114, 13);
 			this.label66.TabIndex = 23;
 			this.label66.Text = "Direct3D trans pipeline";
-			// 
-			// JaboDirect3DPipelineCheckbox
-			// 
-			this.JaboDirect3DPipelineCheckbox.AutoSize = true;
-			this.JaboDirect3DPipelineCheckbox.Location = new System.Drawing.Point(154, 255);
-			this.JaboDirect3DPipelineCheckbox.Name = "JaboDirect3DPipelineCheckbox";
-			this.JaboDirect3DPipelineCheckbox.Size = new System.Drawing.Size(15, 14);
-			this.JaboDirect3DPipelineCheckbox.TabIndex = 22;
-			this.JaboDirect3DPipelineCheckbox.UseVisualStyleBackColor = true;
+			//// 
+			//// JaboDirect3DPipelineCheckbox
+			//// 
+			//this.JaboDirect3DPipelineCheckbox.AutoSize = true;
+			//this.JaboDirect3DPipelineCheckbox.Location = new System.Drawing.Point(154, 255);
+			//this.JaboDirect3DPipelineCheckbox.Name = "JaboDirect3DPipelineCheckbox";
+			//this.JaboDirect3DPipelineCheckbox.Size = new System.Drawing.Size(15, 14);
+			//this.JaboDirect3DPipelineCheckbox.TabIndex = 22;
+			//this.JaboDirect3DPipelineCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label65
 			// 
@@ -3528,15 +3528,15 @@
 			this.label65.Size = new System.Drawing.Size(106, 13);
 			this.label65.TabIndex = 21;
 			this.label65.Text = "Force alpha blending";
-			// 
-			// JaboAlphaBlendingCheckbox
-			// 
-			this.JaboAlphaBlendingCheckbox.AutoSize = true;
-			this.JaboAlphaBlendingCheckbox.Location = new System.Drawing.Point(154, 225);
-			this.JaboAlphaBlendingCheckbox.Name = "JaboAlphaBlendingCheckbox";
-			this.JaboAlphaBlendingCheckbox.Size = new System.Drawing.Size(15, 14);
-			this.JaboAlphaBlendingCheckbox.TabIndex = 20;
-			this.JaboAlphaBlendingCheckbox.UseVisualStyleBackColor = true;
+			//// 
+			//// JaboAlphaBlendingCheckbox
+			//// 
+			//this.JaboAlphaBlendingCheckbox.AutoSize = true;
+			//this.JaboAlphaBlendingCheckbox.Location = new System.Drawing.Point(154, 225);
+			//this.JaboAlphaBlendingCheckbox.Name = "JaboAlphaBlendingCheckbox";
+			//this.JaboAlphaBlendingCheckbox.Size = new System.Drawing.Size(15, 14);
+			//this.JaboAlphaBlendingCheckbox.TabIndex = 20;
+			//this.JaboAlphaBlendingCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label64
 			// 
@@ -3546,15 +3546,15 @@
 			this.label64.Size = new System.Drawing.Size(123, 13);
 			this.label64.TabIndex = 19;
 			this.label64.Text = "Use legacy pixel pipeline";
-			// 
-			// JaboLegacyPixelPipelineCheckbox
-			// 
-			this.JaboLegacyPixelPipelineCheckbox.AutoSize = true;
-			this.JaboLegacyPixelPipelineCheckbox.Location = new System.Drawing.Point(154, 195);
-			this.JaboLegacyPixelPipelineCheckbox.Name = "JaboLegacyPixelPipelineCheckbox";
-			this.JaboLegacyPixelPipelineCheckbox.Size = new System.Drawing.Size(15, 14);
-			this.JaboLegacyPixelPipelineCheckbox.TabIndex = 18;
-			this.JaboLegacyPixelPipelineCheckbox.UseVisualStyleBackColor = true;
+			//// 
+			//// JaboLegacyPixelPipelineCheckbox
+			//// 
+			//this.JaboLegacyPixelPipelineCheckbox.AutoSize = true;
+			//this.JaboLegacyPixelPipelineCheckbox.Location = new System.Drawing.Point(154, 195);
+			//this.JaboLegacyPixelPipelineCheckbox.Name = "JaboLegacyPixelPipelineCheckbox";
+			//this.JaboLegacyPixelPipelineCheckbox.Size = new System.Drawing.Size(15, 14);
+			//this.JaboLegacyPixelPipelineCheckbox.TabIndex = 18;
+			//this.JaboLegacyPixelPipelineCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label63
 			// 
@@ -3573,15 +3573,15 @@
 			this.label62.Size = new System.Drawing.Size(123, 13);
 			this.label62.TabIndex = 16;
 			this.label62.Text = "Adjust game aspect ratio";
-			// 
-			// JaboAdjustAspectRatioCheckbox
-			// 
-			this.JaboAdjustAspectRatioCheckbox.AutoSize = true;
-			this.JaboAdjustAspectRatioCheckbox.Location = new System.Drawing.Point(154, 165);
-			this.JaboAdjustAspectRatioCheckbox.Name = "JaboAdjustAspectRatioCheckbox";
-			this.JaboAdjustAspectRatioCheckbox.Size = new System.Drawing.Size(15, 14);
-			this.JaboAdjustAspectRatioCheckbox.TabIndex = 15;
-			this.JaboAdjustAspectRatioCheckbox.UseVisualStyleBackColor = true;
+			//// 
+			//// JaboAdjustAspectRatioCheckbox
+			//// 
+			//this.JaboAdjustAspectRatioCheckbox.AutoSize = true;
+			//this.JaboAdjustAspectRatioCheckbox.Location = new System.Drawing.Point(154, 165);
+			//this.JaboAdjustAspectRatioCheckbox.Name = "JaboAdjustAspectRatioCheckbox";
+			//this.JaboAdjustAspectRatioCheckbox.Size = new System.Drawing.Size(15, 14);
+			//this.JaboAdjustAspectRatioCheckbox.TabIndex = 15;
+			//this.JaboAdjustAspectRatioCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label61
 			// 
@@ -3591,15 +3591,15 @@
 			this.label61.Size = new System.Drawing.Size(89, 13);
 			this.label61.TabIndex = 14;
 			this.label61.Text = "Antialiasing Level";
-			// 
-			// JaboAntialiasingLevelDropdown
-			// 
-			this.JaboAntialiasingLevelDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.JaboAntialiasingLevelDropdown.FormattingEnabled = true;
-			this.JaboAntialiasingLevelDropdown.Location = new System.Drawing.Point(154, 45);
-			this.JaboAntialiasingLevelDropdown.Name = "JaboAntialiasingLevelDropdown";
-			this.JaboAntialiasingLevelDropdown.Size = new System.Drawing.Size(121, 21);
-			this.JaboAntialiasingLevelDropdown.TabIndex = 13;
+			//// 
+			//// JaboAntialiasingLevelDropdown
+			//// 
+			//this.JaboAntialiasingLevelDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			//this.JaboAntialiasingLevelDropdown.FormattingEnabled = true;
+			//this.JaboAntialiasingLevelDropdown.Location = new System.Drawing.Point(154, 45);
+			//this.JaboAntialiasingLevelDropdown.Name = "JaboAntialiasingLevelDropdown";
+			//this.JaboAntialiasingLevelDropdown.Size = new System.Drawing.Size(121, 21);
+			//this.JaboAntialiasingLevelDropdown.TabIndex = 13;
 			// 
 			// label60
 			// 
@@ -3609,15 +3609,15 @@
 			this.label60.Size = new System.Drawing.Size(117, 13);
 			this.label60.TabIndex = 12;
 			this.label60.Text = "Always use texture filter";
-			// 
-			// JaboTextureFilterCheckbox
-			// 
-			this.JaboTextureFilterCheckbox.AutoSize = true;
-			this.JaboTextureFilterCheckbox.Location = new System.Drawing.Point(154, 135);
-			this.JaboTextureFilterCheckbox.Name = "JaboTextureFilterCheckbox";
-			this.JaboTextureFilterCheckbox.Size = new System.Drawing.Size(15, 14);
-			this.JaboTextureFilterCheckbox.TabIndex = 11;
-			this.JaboTextureFilterCheckbox.UseVisualStyleBackColor = true;
+			//// 
+			//// JaboTextureFilterCheckbox
+			//// 
+			//this.JaboTextureFilterCheckbox.AutoSize = true;
+			//this.JaboTextureFilterCheckbox.Location = new System.Drawing.Point(154, 135);
+			//this.JaboTextureFilterCheckbox.Name = "JaboTextureFilterCheckbox";
+			//this.JaboTextureFilterCheckbox.Size = new System.Drawing.Size(15, 14);
+			//this.JaboTextureFilterCheckbox.TabIndex = 11;
+			//this.JaboTextureFilterCheckbox.UseVisualStyleBackColor = true;
 			// 
 			// label59
 			// 
@@ -3627,42 +3627,42 @@
 			this.label59.Size = new System.Drawing.Size(62, 13);
 			this.label59.TabIndex = 10;
 			this.label59.Text = "Super 2xsal";
-			// 
-			// JaboSuper2xsalCheckbox
-			// 
-			this.JaboSuper2xsalCheckbox.AutoSize = true;
-			this.JaboSuper2xsalCheckbox.Location = new System.Drawing.Point(154, 105);
-			this.JaboSuper2xsalCheckbox.Name = "JaboSuper2xsalCheckbox";
-			this.JaboSuper2xsalCheckbox.Size = new System.Drawing.Size(15, 14);
-			this.JaboSuper2xsalCheckbox.TabIndex = 9;
-			this.JaboSuper2xsalCheckbox.UseVisualStyleBackColor = true;
-			// 
-			// JaboBrightnessBox
-			// 
-			this.JaboBrightnessBox.Increment = new decimal(new int[] {
-            3,
-            0,
-            0,
-            0});
-			this.JaboBrightnessBox.Location = new System.Drawing.Point(154, 75);
-			this.JaboBrightnessBox.Maximum = new decimal(new int[] {
-            190,
-            0,
-            0,
-            0});
-			this.JaboBrightnessBox.Minimum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-			this.JaboBrightnessBox.Name = "JaboBrightnessBox";
-			this.JaboBrightnessBox.Size = new System.Drawing.Size(48, 20);
-			this.JaboBrightnessBox.TabIndex = 8;
-			this.JaboBrightnessBox.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
+			//// 
+			//// JaboSuper2xsalCheckbox
+			//// 
+			//this.JaboSuper2xsalCheckbox.AutoSize = true;
+			//this.JaboSuper2xsalCheckbox.Location = new System.Drawing.Point(154, 105);
+			//this.JaboSuper2xsalCheckbox.Name = "JaboSuper2xsalCheckbox";
+			//this.JaboSuper2xsalCheckbox.Size = new System.Drawing.Size(15, 14);
+			//this.JaboSuper2xsalCheckbox.TabIndex = 9;
+			//this.JaboSuper2xsalCheckbox.UseVisualStyleBackColor = true;
+			//// 
+			//// JaboBrightnessBox
+			//// 
+			//this.JaboBrightnessBox.Increment = new decimal(new int[] {
+   //         3,
+   //         0,
+   //         0,
+   //         0});
+			//this.JaboBrightnessBox.Location = new System.Drawing.Point(154, 75);
+			//this.JaboBrightnessBox.Maximum = new decimal(new int[] {
+   //         190,
+   //         0,
+   //         0,
+   //         0});
+			//this.JaboBrightnessBox.Minimum = new decimal(new int[] {
+   //         100,
+   //         0,
+   //         0,
+   //         0});
+			//this.JaboBrightnessBox.Name = "JaboBrightnessBox";
+			//this.JaboBrightnessBox.Size = new System.Drawing.Size(48, 20);
+			//this.JaboBrightnessBox.TabIndex = 8;
+			//this.JaboBrightnessBox.Value = new decimal(new int[] {
+   //         100,
+   //         0,
+   //         0,
+   //         0});
 			// 
 			// label57
 			// 
@@ -3672,15 +3672,15 @@
 			this.label57.Size = new System.Drawing.Size(56, 13);
 			this.label57.TabIndex = 7;
 			this.label57.Text = "Brightness";
-			// 
-			// JaboAnisotropicFilteringLevelDropdown
-			// 
-			this.JaboAnisotropicFilteringLevelDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.JaboAnisotropicFilteringLevelDropdown.FormattingEnabled = true;
-			this.JaboAnisotropicFilteringLevelDropdown.Location = new System.Drawing.Point(154, 12);
-			this.JaboAnisotropicFilteringLevelDropdown.Name = "JaboAnisotropicFilteringLevelDropdown";
-			this.JaboAnisotropicFilteringLevelDropdown.Size = new System.Drawing.Size(121, 21);
-			this.JaboAnisotropicFilteringLevelDropdown.TabIndex = 6;
+			//// 
+			//// JaboAnisotropicFilteringLevelDropdown
+			//// 
+			//this.JaboAnisotropicFilteringLevelDropdown.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			//this.JaboAnisotropicFilteringLevelDropdown.FormattingEnabled = true;
+			//this.JaboAnisotropicFilteringLevelDropdown.Location = new System.Drawing.Point(154, 12);
+			//this.JaboAnisotropicFilteringLevelDropdown.Name = "JaboAnisotropicFilteringLevelDropdown";
+			//this.JaboAnisotropicFilteringLevelDropdown.Size = new System.Drawing.Size(121, 21);
+			//this.JaboAnisotropicFilteringLevelDropdown.TabIndex = 6;
 			// 
 			// label51
 			// 
@@ -4585,32 +4585,32 @@
 			this.GLideN64_UseNativeResolutionFactor.Name = "GLideN64_UseNativeResolutionFactor";
 			this.GLideN64_UseNativeResolutionFactor.Size = new System.Drawing.Size(32, 20);
 			this.GLideN64_UseNativeResolutionFactor.TabIndex = 77;
-			// 
-			// JaboResolutionHeightBox
-			// 
-			this.JaboResolutionHeightBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
-			this.JaboResolutionHeightBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.JaboResolutionHeightBox.Location = new System.Drawing.Point(127, 90);
-			this.JaboResolutionHeightBox.MaxLength = 4;
-			this.JaboResolutionHeightBox.Name = "JaboResolutionHeightBox";
-			this.JaboResolutionHeightBox.Nullable = false;
-			this.JaboResolutionHeightBox.Size = new System.Drawing.Size(52, 20);
-			this.JaboResolutionHeightBox.TabIndex = 34;
-			this.JaboResolutionHeightBox.Text = "0";
-			this.JaboResolutionHeightBox.Type = BizHawk.Client.Common.DisplayType.Signed;
-			// 
-			// JaboResolutionWidthBox
-			// 
-			this.JaboResolutionWidthBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
-			this.JaboResolutionWidthBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.JaboResolutionWidthBox.Location = new System.Drawing.Point(127, 60);
-			this.JaboResolutionWidthBox.MaxLength = 4;
-			this.JaboResolutionWidthBox.Name = "JaboResolutionWidthBox";
-			this.JaboResolutionWidthBox.Nullable = false;
-			this.JaboResolutionWidthBox.Size = new System.Drawing.Size(52, 20);
-			this.JaboResolutionWidthBox.TabIndex = 33;
-			this.JaboResolutionWidthBox.Text = "0";
-			this.JaboResolutionWidthBox.Type = BizHawk.Client.Common.DisplayType.Signed;
+			//// 
+			//// JaboResolutionHeightBox
+			//// 
+			//this.JaboResolutionHeightBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
+			//this.JaboResolutionHeightBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			//this.JaboResolutionHeightBox.Location = new System.Drawing.Point(127, 90);
+			//this.JaboResolutionHeightBox.MaxLength = 4;
+			//this.JaboResolutionHeightBox.Name = "JaboResolutionHeightBox";
+			//this.JaboResolutionHeightBox.Nullable = false;
+			//this.JaboResolutionHeightBox.Size = new System.Drawing.Size(52, 20);
+			//this.JaboResolutionHeightBox.TabIndex = 34;
+			//this.JaboResolutionHeightBox.Text = "0";
+			//this.JaboResolutionHeightBox.Type = BizHawk.Client.Common.DisplayType.Signed;
+			//// 
+			//// JaboResolutionWidthBox
+			//// 
+			//this.JaboResolutionWidthBox.ByteSize = BizHawk.Client.Common.WatchSize.Byte;
+			//this.JaboResolutionWidthBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
+			//this.JaboResolutionWidthBox.Location = new System.Drawing.Point(127, 60);
+			//this.JaboResolutionWidthBox.MaxLength = 4;
+			//this.JaboResolutionWidthBox.Name = "JaboResolutionWidthBox";
+			//this.JaboResolutionWidthBox.Nullable = false;
+			//this.JaboResolutionWidthBox.Size = new System.Drawing.Size(52, 20);
+			//this.JaboResolutionWidthBox.TabIndex = 33;
+			//this.JaboResolutionWidthBox.Text = "0";
+			//this.JaboResolutionWidthBox.Type = BizHawk.Client.Common.DisplayType.Signed;
 			// 
 			// N64VideoPluginconfig
 			// 
@@ -4660,11 +4660,11 @@
 			this.tabPage2.PerformLayout();
 			this.tabPage3.ResumeLayout(false);
 			this.tabPage3.PerformLayout();
-			this.JaboTab.ResumeLayout(false);
-			this.JaboTab.PerformLayout();
-			this.JaboPerGameHacksGroupBox.ResumeLayout(false);
-			this.JaboPerGameHacksGroupBox.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.JaboBrightnessBox)).EndInit();
+			//this.JaboTab.ResumeLayout(false);
+			//this.JaboTab.PerformLayout();
+			//this.JaboPerGameHacksGroupBox.ResumeLayout(false);
+			//this.JaboPerGameHacksGroupBox.PerformLayout();
+			//((System.ComponentModel.ISupportInitialize)(this.JaboBrightnessBox)).EndInit();
 			this.GLideN64Tab.ResumeLayout(false);
 			this.tabControl3.ResumeLayout(false);
 			this.tabPage5.ResumeLayout(false);
@@ -4923,37 +4923,37 @@
 		private System.Windows.Forms.ComboBox CoreTypeDropdown;
 		private System.Windows.Forms.Label label49;
 		private System.Windows.Forms.ComboBox RspTypeDropdown;
-		private System.Windows.Forms.TabPage JaboTab;
+		//private System.Windows.Forms.TabPage JaboTab;
 		private System.Windows.Forms.Label label51;
-		private System.Windows.Forms.ComboBox JaboAnisotropicFilteringLevelDropdown;
+		//private System.Windows.Forms.ComboBox JaboAnisotropicFilteringLevelDropdown;
 		private System.Windows.Forms.Label label57;
-		private System.Windows.Forms.NumericUpDown JaboBrightnessBox;
+		//private System.Windows.Forms.NumericUpDown JaboBrightnessBox;
 		private System.Windows.Forms.Label label59;
-		private System.Windows.Forms.CheckBox JaboSuper2xsalCheckbox;
+		//private System.Windows.Forms.CheckBox JaboSuper2xsalCheckbox;
 		private System.Windows.Forms.Label label60;
-		private System.Windows.Forms.CheckBox JaboTextureFilterCheckbox;
+		//private System.Windows.Forms.CheckBox JaboTextureFilterCheckbox;
 		private System.Windows.Forms.Label label61;
-		private System.Windows.Forms.ComboBox JaboAntialiasingLevelDropdown;
-		private System.Windows.Forms.CheckBox JaboAdjustAspectRatioCheckbox;
+		//private System.Windows.Forms.ComboBox JaboAntialiasingLevelDropdown;
+		//private System.Windows.Forms.CheckBox JaboAdjustAspectRatioCheckbox;
 		private System.Windows.Forms.Label label62;
 		private System.Windows.Forms.Label label63;
 		private System.Windows.Forms.Label label64;
-		private System.Windows.Forms.CheckBox JaboLegacyPixelPipelineCheckbox;
+		//private System.Windows.Forms.CheckBox JaboLegacyPixelPipelineCheckbox;
 		private System.Windows.Forms.Label label65;
-		private System.Windows.Forms.CheckBox JaboAlphaBlendingCheckbox;
+		//private System.Windows.Forms.CheckBox JaboAlphaBlendingCheckbox;
 		private System.Windows.Forms.Label label66;
-		private System.Windows.Forms.CheckBox JaboDirect3DPipelineCheckbox;
+		//private System.Windows.Forms.CheckBox JaboDirect3DPipelineCheckbox;
 		private System.Windows.Forms.Label label67;
-		private System.Windows.Forms.CheckBox JaboZCompareCheckbox;
+		//private System.Windows.Forms.CheckBox JaboZCompareCheckbox;
 		private System.Windows.Forms.Label label68;
-		private System.Windows.Forms.CheckBox JaboCopyFrameBufferCheckbox;
-		private System.Windows.Forms.GroupBox JaboPerGameHacksGroupBox;
-		private System.Windows.Forms.CheckBox JaboUseForGameCheckbox;
+		//private System.Windows.Forms.CheckBox JaboCopyFrameBufferCheckbox;
+		//private System.Windows.Forms.GroupBox JaboPerGameHacksGroupBox;
+		//private System.Windows.Forms.CheckBox JaboUseForGameCheckbox;
 		private System.Windows.Forms.Label label69;
-		private System.Windows.Forms.ComboBox JaboClearModeDropDown;
+		//private System.Windows.Forms.ComboBox JaboClearModeDropDown;
 		private System.Windows.Forms.Label label70;
-		private WatchValueBox JaboResolutionHeightBox;
-		private WatchValueBox JaboResolutionWidthBox;
+		//private WatchValueBox JaboResolutionHeightBox;
+		//private WatchValueBox JaboResolutionWidthBox;
 		private System.Windows.Forms.Label label71;
 		private System.Windows.Forms.Label LabelVideoResolutionY;
 		private System.Windows.Forms.Label LabelVideoResolutionX;
