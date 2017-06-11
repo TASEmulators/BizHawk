@@ -199,6 +199,8 @@
     <Compile Include="lua\LuaMemoryBase.cs" />
     <Compile Include="lua\LuaSandbox.cs" />
     <Compile Include="lua\NamedLuaFunction.cs" />
+    <Compile Include="miniz\LibMiniz.cs" />
+    <Compile Include="miniz\MinizZipWriter.cs" />
     <Compile Include="movie\bk2\Bk2ControllerAdapter.cs" />
     <Compile Include="movie\bk2\Bk2Header.cs" />
     <Compile Include="movie\bk2\Bk2LogEntryGenerator.cs" />
