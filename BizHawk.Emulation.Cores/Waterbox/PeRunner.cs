@@ -5,6 +5,7 @@ using PeNet;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -671,7 +672,30 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					var moduleName = todoModules.Dequeue();
 					if (!_exports.ContainsKey(moduleName))
 					{
-						var module = new PeWrapper(moduleName, File.ReadAllBytes(Path.Combine(opt.Path, moduleName)), _nextStart);
+						var path = Path.Combine(opt.Path, moduleName);
+						var gzpath = path + ".gz";
+						byte[] data;
+						if (File.Exists(gzpath))
+						{
+							using (var fs = new FileStream(gzpath, FileMode.Open, FileAccess.Read))
+							{
+								var tmp = new byte[4];
+								fs.Seek(-4, SeekOrigin.End);
+								fs.Read(tmp, 0, 4);
+								int size = BitConverter.ToInt32(tmp, 0);
+								data = new byte[size];
+								var ms = new MemoryStream(data);
+								fs.Seek(0, SeekOrigin.Begin);
+								using (var gs = new GZipStream(fs, CompressionMode.Decompress))
+									gs.CopyTo(ms);
+							}
+						}
+						else
+						{
+							data = File.ReadAllBytes(path);
+						}
+
+						var module = new PeWrapper(moduleName, data, _nextStart);
 						ComputeNextStart(module.Size);
 						AddMemoryBlock(module.Memory);
 						_savestateComponents.Add(module);
