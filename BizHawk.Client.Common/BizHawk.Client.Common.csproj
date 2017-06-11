@@ -157,6 +157,7 @@
     <Compile Include="ExceptionClasses.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="FirmwareManager.cs" />
+    <Compile Include="FrameworkFastZipWriter.cs" />
     <Compile Include="FrameworkZipWriter.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="inputAdapters\AutoPattern.cs" />
