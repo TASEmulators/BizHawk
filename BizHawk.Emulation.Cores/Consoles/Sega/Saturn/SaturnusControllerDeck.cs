@@ -107,11 +107,18 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 				Definition = new ControllerDefinition
 				{
-					BoolButtons = _bakedButtonNames.Where(s => s != null).ToList(),
+					BoolButtons = _bakedButtonNames
+						.Select((s, i) => new { s, i })
+						.Where(a => a.s != null)
+						.OrderBy(a => ButtonOrdinal(ButtonNames[a.i]))
+						.Select(a => a.s)
+						.ToList(),
 				};
-				Definition.FloatControls.AddRange(_bakedAnalogNames);
+				Definition.FloatControls.AddRange(_bakedAnalogNames
+					.Select((s, i) => new { s, i })
+					.OrderBy(a => AnalogOrdinal(AnalogNames[a.i]))
+					.Select(a => a.s));
 				Definition.FloatRanges.AddRange(_bakedAnalogNames.Select(s => AnalogFloatRange));
-
 			}
 
 			private readonly string[] _bakedButtonNames;
@@ -122,6 +129,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			protected virtual string[] AnalogNames { get; } = new string[0];
 			protected virtual int AnalogByteOffset => (ButtonNames.Length + 7) / 8;
 			public ControllerDefinition Definition { get; }
+
+			protected virtual int ButtonOrdinal(string name)
+			{
+				return 0;
+			}
+			protected virtual int AnalogOrdinal(string name)
+			{
+				return 0;
+			}
 
 			private void UpdateButtons(IController controller, byte[] dest, int offset)
 			{
@@ -177,6 +193,29 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			};
 
 			protected override string[] ButtonNames => _buttonNames;
+
+			protected override int ButtonOrdinal(string name)
+			{
+				switch (name)
+				{
+					default:
+						return 0;
+					case "A":
+						return 1;
+					case "B":
+					case "C":
+						return 2;
+					case "X":
+						return 3;
+					case "Y":
+						return 4;
+					case "Z":
+					case "L":
+						return 5;
+					case "R":
+						return 6;
+				}
+			}
 		}
 
 		private class ThreeDeeGamepad : ButtonedDevice
