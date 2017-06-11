@@ -1211,8 +1211,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			Atari7800WithEmu7800MenuItem.Visible = VersionInfo.DeveloperBuild; // Don't expose Atari7800Hawk in releases yet
-
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
 			gBAWithMGBAToolStripMenuItem.Checked = Global.Config.GBA_UsemGBA;
@@ -1326,7 +1324,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			Global.Config.ResolveDefaults();
-			InitControls(); // rebind hotkeys
+			InitControls(); //rebind hotkeys
 			GlobalWin.OSD.AddMessage("Config file loaded: " + PathManager.DefaultIniPath);
 		}
 
@@ -1345,7 +1343,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config = ConfigService.Load<Config>(ofd.FileName);
 				Global.Config.ResolveDefaults();
-				InitControls(); // rebind hotkeys
+				InitControls(); //rebind hotkeys
 				GlobalWin.OSD.AddMessage("Config file loaded: " + ofd.FileName);
 			}
 		}
@@ -1612,7 +1610,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is NES && ((NES)Emulator).IsVS)
 			{
-				new NesVsSettings().ShowHawkDialog();
+				new NESVSSettings().ShowHawkDialog();
 			}
 		}
 
@@ -1981,6 +1979,20 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region Atari7800
+
+		private void A7800SubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			A7800ControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+		}
+
+		private void A7800SettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new A7800ControllerSettings().ShowDialog();
+		}
+
+		#endregion
+
 		#region GB
 
 		private void GBSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1990,7 +2002,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			GBPrefs.DoGBPrefsDialog(this);
+			config.GB.GBPrefs.DoGBPrefsDialog(this);
 		}
 
 		private void LoadGbInSgbMenuItem_Click(object sender, EventArgs e)
@@ -2296,7 +2308,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DgbSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			DGBPrefs.DoDGBPrefsDialog(this);
+			config.GB.DGBPrefs.DoDGBPrefsDialog(this);
 		}
 
 		#endregion
@@ -2604,7 +2616,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			var window = new DisplayConfigLite();
+			var window = new config.DisplayConfigLite();
 			var result = window.ShowDialog();
 			if (result == DialogResult.OK)
 			{
