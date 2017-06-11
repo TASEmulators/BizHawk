@@ -55,6 +55,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public bool ShowOBJ_2 { get; set; } = true;
 			public bool ShowOBJ_3 { get; set; } = true;
 
+			public bool CropSGBFrame { get; set; } = false;
 			public bool AlwaysDoubleSize { get; set; } = false;
 			public bool ForceDeterminism { get; set; } = true;
 			public string Palette { get; set; } = "BizHawk";

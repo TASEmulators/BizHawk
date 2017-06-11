@@ -39,13 +39,15 @@
 			this.lblDoubleSize = new System.Windows.Forms.Label();
 			this.cbForceDeterminism = new System.Windows.Forms.CheckBox();
 			this.label3 = new System.Windows.Forms.Label();
+			this.radioButton1 = new System.Windows.Forms.RadioButton();
+			this.cbCropSGBFrame = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnOk
 			// 
 			this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.btnOk.Location = new System.Drawing.Point(136, 286);
+			this.btnOk.Location = new System.Drawing.Point(136, 308);
 			this.btnOk.Name = "btnOk";
 			this.btnOk.Size = new System.Drawing.Size(75, 23);
 			this.btnOk.TabIndex = 0;
@@ -57,7 +59,7 @@
 			// 
 			this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.btnCancel.Location = new System.Drawing.Point(217, 286);
+			this.btnCancel.Location = new System.Drawing.Point(217, 308);
 			this.btnCancel.Name = "btnCancel";
 			this.btnCancel.Size = new System.Drawing.Size(75, 23);
 			this.btnCancel.TabIndex = 1;
@@ -78,6 +80,7 @@
 			// 
 			// groupBox1
 			// 
+			this.groupBox1.Controls.Add(this.radioButton1);
 			this.groupBox1.Controls.Add(this.label2);
 			this.groupBox1.Controls.Add(this.rbAccuracy);
 			this.groupBox1.Controls.Add(this.rbPerformance);
@@ -145,7 +148,7 @@
 			// cbForceDeterminism
 			// 
 			this.cbForceDeterminism.AutoSize = true;
-			this.cbForceDeterminism.Location = new System.Drawing.Point(19, 212);
+			this.cbForceDeterminism.Location = new System.Drawing.Point(15, 234);
 			this.cbForceDeterminism.Name = "cbForceDeterminism";
 			this.cbForceDeterminism.Size = new System.Drawing.Size(113, 17);
 			this.cbForceDeterminism.TabIndex = 8;
@@ -155,12 +158,33 @@
 			// 
 			// label3
 			// 
-			this.label3.Location = new System.Drawing.Point(38, 236);
+			this.label3.Location = new System.Drawing.Point(34, 258);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(251, 41);
 			this.label3.TabIndex = 9;
 			this.label3.Text = "Guarantee deterministic emulation by savestating every frame. Don\'t TAS without i" +
     "t! Only ~75% of runs sync without it, but speed boost is ~30%.";
+			// 
+			// radioButton1
+			// 
+			this.radioButton1.AutoSize = true;
+			this.radioButton1.Location = new System.Drawing.Point(37, 46);
+			this.radioButton1.Name = "radioButton1";
+			this.radioButton1.Size = new System.Drawing.Size(202, 17);
+			this.radioButton1.TabIndex = 9;
+			this.radioButton1.TabStop = true;
+			this.radioButton1.Text = "Performance (only for casual gaming!)";
+			this.radioButton1.UseVisualStyleBackColor = true;
+			// 
+			// cbCropSGBFrame
+			// 
+			this.cbCropSGBFrame.AutoSize = true;
+			this.cbCropSGBFrame.Location = new System.Drawing.Point(15, 211);
+			this.cbCropSGBFrame.Name = "cbCropSGBFrame";
+			this.cbCropSGBFrame.Size = new System.Drawing.Size(105, 17);
+			this.cbCropSGBFrame.TabIndex = 10;
+			this.cbCropSGBFrame.Text = "Crop SGB Frame";
+			this.cbCropSGBFrame.UseVisualStyleBackColor = true;
 			// 
 			// SNESOptions
 			// 
@@ -168,7 +192,8 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.btnCancel;
-			this.ClientSize = new System.Drawing.Size(304, 321);
+			this.ClientSize = new System.Drawing.Size(304, 343);
+			this.Controls.Add(this.cbCropSGBFrame);
 			this.Controls.Add(this.label3);
 			this.Controls.Add(this.cbForceDeterminism);
 			this.Controls.Add(this.lblDoubleSize);
@@ -204,5 +229,7 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.CheckBox cbForceDeterminism;
 		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.RadioButton radioButton1;
+		private System.Windows.Forms.CheckBox cbCropSGBFrame;
 	}
 }
