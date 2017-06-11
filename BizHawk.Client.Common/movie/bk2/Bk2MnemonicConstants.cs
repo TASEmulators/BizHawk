@@ -10,10 +10,18 @@ namespace BizHawk.Client.Common
 			get
 			{
 				var key = button.Replace("Key ", "");
-				if (key.StartsWith("P") && key.Length > 1 && key[1] >= '0' && key[1] <= '9')
+				if (key.StartsWith("P"))
 				{
-					key = key.Substring(3);
+					if (key.Length > 2 && key[1] == '1' && key[2] >= '0' && key[1] <= '9') // Hack to support 10-20 controllers, TODO: regex this thing instead
+					{
+						key = key.Substring(4);
+					}
+					else if (key.Length > 1 && key[1] >= '0' && key[1] <= '9')
+					{
+						key = key.Substring(3);
+					}
 				}
+				
 
 				if (_systemOverrides.ContainsKey(Global.Emulator.SystemId) && _systemOverrides[Global.Emulator.SystemId].ContainsKey(key))
 				{
