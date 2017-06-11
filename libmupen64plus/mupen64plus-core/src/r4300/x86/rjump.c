@@ -63,6 +63,7 @@ void dyna_jump()
 #pragma warning(disable:4731) /* frame pointer register 'ebp' modified by inline assembly code */
 #endif
 
+#if HAVE_DYNAREC
 void dyna_start(void *code)
 {
   /* save the base and stack pointers */
@@ -155,6 +156,7 @@ void dyna_start(void *code)
     save_eip=0;
 }
 
+
 void dyna_stop()
 {
   if (save_eip == 0)
@@ -165,3 +167,10 @@ void dyna_stop()
   }
 }
 
+
+#else //#if HAVE_DYNAREC
+
+void dyna_start(void *code) {}
+void dyna_stop(void) {}
+
+#endif //#if HAVE_DYNAREC
