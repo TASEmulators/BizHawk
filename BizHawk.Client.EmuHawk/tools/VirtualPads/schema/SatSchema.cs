@@ -49,6 +49,7 @@ namespace BizHawk.Client.EmuHawk
 				case SaturnusControllerDeck.Device.Gamepad:
 					return StandardController(controllerNum);
 				case SaturnusControllerDeck.Device.ThreeDeePad:
+					return ThreeDeeController(controllerNum);
 				case SaturnusControllerDeck.Device.Mission:
 				case SaturnusControllerDeck.Device.DualMission:
 				case SaturnusControllerDeck.Device.Wheel:
@@ -64,7 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			return new PadSchema
 			{
 				IsConsole = false,
-				DefaultSize = new Size(212, 90),
+				DefaultSize = new Size(500, 500),
 				Buttons = new[]
 				{
 					new PadSchema.ButtonSchema
@@ -161,6 +162,113 @@ namespace BizHawk.Client.EmuHawk
 						DisplayName = "R",
 						Location = new Point(184, 10),
 						Type = PadSchema.PadInputType.Boolean
+					}
+				}
+			};
+		}
+
+		private static PadSchema ThreeDeeController(int controller)
+		{
+			return new PadSchema
+			{
+				IsConsole = false,
+				DefaultSize = new Size(500, 300),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Up",
+						DisplayName = "",
+						Icon = Properties.Resources.BlueUp,
+						Location = new Point(290, 17),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Down",
+						DisplayName = "",
+						Icon = Properties.Resources.BlueDown,
+						Location = new Point(290, 61),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Left",
+						DisplayName = "",
+						Icon = Properties.Resources.Back,
+						Location = new Point(278, 39),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Right",
+						DisplayName = "",
+						Icon = Properties.Resources.Forward,
+						Location = new Point(300, 39),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Start",
+						DisplayName = "S",
+						Location = new Point(334, 52),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " A",
+						DisplayName = "A",
+						Location = new Point(366, 63),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " B",
+						DisplayName = "B",
+						Location = new Point(390, 53),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " C",
+						DisplayName = "C",
+						Location = new Point(414, 43),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " X",
+						DisplayName = "X",
+						Location = new Point(366, 40),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Y",
+						DisplayName = "Y",
+						Location = new Point(390, 30),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Z",
+						DisplayName = "Z",
+						Location = new Point(414, 20),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = $"P{controller} Stick Horizontal",
+						SecondaryNames = new[] { $"P{controller} StickVertical" },
+						MinValue = -32767,
+						MidValue = 0,
+						MaxValue = 32767,
+						MinValueSec = -32767,
+						MidValueSec = 0,
+						MaxValueSec = 32767,
+						DisplayName = "",
+						Location = new Point(6, 14),
+						Type = PadSchema.PadInputType.AnalogStick
 					}
 				}
 			};
