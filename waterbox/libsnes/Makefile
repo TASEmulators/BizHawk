@@ -14,7 +14,7 @@ CCFLAGS:= -DHOOKS -DBIZHAWK -DPROFILE_COMPATIBILITY -DGAMEBOY \
 	-fvisibility=hidden \
 	-fno-threadsafe-statics \
 	-std=c++0x \
-	-O0 -g
+	-O3 -flto
 
 TARGET = libsnes.wbx
 
@@ -86,8 +86,8 @@ $(TARGET).in: $(OBJS)
 	@$(CC) -o $@ $(LDFLAGS) $(CCFLAGS) $(OBJS) ../emulibc/libemuhost.so ../libco/libco.so
 
 $(TARGET): $(TARGET).in
-#	strip $< -o $@ -R /4 -R /14 -R /29 -R /41 -R /55 -R /67 -R /78 -R /89 -R /104
-	cp $< $@
+	strip $< -o $@ -R /4 -R /14 -R /29 -R /41 -R /55 -R /67 -R /78 -R /89 -R /104
+#	cp $< $@
 
 clean:
 	rm -rf $(OBJ_DIR)
