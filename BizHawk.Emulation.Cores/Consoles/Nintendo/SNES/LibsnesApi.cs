@@ -21,6 +21,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public abstract void CopyBuffer(int id, void* ptr, int size);
 		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract void SetBuffer(int id, void* ptr, int size);
+		[BizImport(CallingConvention.Cdecl)]
+		public abstract void PostLoadState();
 	}
 
 	public unsafe partial class LibsnesApi : IDisposable, IMonitor, IBinaryStateable
@@ -57,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				Filename = "libsnes.wbx",
 				Path = dllPath,
 				SbrkHeapSizeKB = 4 * 1024,
-				InvisibleHeapSizeKB = 1024,
+				InvisibleHeapSizeKB = 2048,
 				MmapHeapSizeKB = 32 * 1024, // TODO: see if we can safely make libco stacks smaller
 				PlainHeapSizeKB = 2 * 1024, // TODO: wasn't there more in here?
 				SealedHeapSizeKB = 128 * 1024
@@ -374,6 +376,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public void LoadStateBinary(BinaryReader reader)
 		{
 			_exe.LoadStateBinary(reader);
+			_core.PostLoadState();
 		}
 	}
 }

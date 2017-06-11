@@ -659,6 +659,11 @@ EXPORT void SetBuffer(int id, void* ptr, int32 size)
 	comm.SetBuffer(id, ptr, size);
 }
 
+EXPORT void PostLoadState()
+{
+	SNES::ppu.flush_tiledata_cache();
+}
+
 int main()
 {
 	return 0;

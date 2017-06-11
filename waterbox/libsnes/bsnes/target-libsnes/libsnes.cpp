@@ -214,9 +214,9 @@ void snes_set_cartridge_basename(const char *basename) {
 }
 
 template<typename T> inline void reconstruct(T* t) { 
-	t->~T();
+	/*t->~T();
 	memset(t,0,sizeof(*t));
-	new(t) T();
+	new(t) T();*/
 }
 
 void snes_init(void) {
