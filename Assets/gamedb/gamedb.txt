@@ -1,4 +1,5 @@
 #include gamedb_a2600.txt
+#include gamedb_a7800.txt
 #include gamedb_appleII.txt
 #include gamedb_coleco.txt
 #include gamedb_e_cards.txt
