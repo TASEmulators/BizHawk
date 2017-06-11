@@ -1211,6 +1211,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
+			Atari7800WithEmu7800MenuItem.Visible = VersionInfo.DeveloperBuild; // Don't expose Atari7800Hawk in releases yet
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
 			gBAWithMGBAToolStripMenuItem.Checked = Global.Config.GBA_UsemGBA;
@@ -1324,7 +1325,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config = ConfigService.Load<Config>(PathManager.DefaultIniPath);
 			Global.Config.ResolveDefaults();
-			InitControls(); //rebind hotkeys
+			InitControls(); // rebind hotkeys
 			GlobalWin.OSD.AddMessage("Config file loaded: " + PathManager.DefaultIniPath);
 		}
 
@@ -1343,7 +1344,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config = ConfigService.Load<Config>(ofd.FileName);
 				Global.Config.ResolveDefaults();
-				InitControls(); //rebind hotkeys
+				InitControls(); // rebind hotkeys
 				GlobalWin.OSD.AddMessage("Config file loaded: " + ofd.FileName);
 			}
 		}
@@ -1610,7 +1611,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Emulator is NES && ((NES)Emulator).IsVS)
 			{
-				new NESVSSettings().ShowHawkDialog();
+				new NesVsSettings().ShowHawkDialog();
 			}
 		}
 
@@ -2002,7 +2003,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			config.GB.GBPrefs.DoGBPrefsDialog(this);
+			GBPrefs.DoGBPrefsDialog(this);
 		}
 
 		private void LoadGbInSgbMenuItem_Click(object sender, EventArgs e)
@@ -2308,7 +2309,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DgbSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			config.GB.DGBPrefs.DoDGBPrefsDialog(this);
+			DGBPrefs.DoDGBPrefsDialog(this);
 		}
 
 		#endregion
@@ -2616,7 +2617,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void DisplayConfigMenuItem_Click(object sender, EventArgs e)
 		{
-			var window = new config.DisplayConfigLite();
+			var window = new DisplayConfigLite();
 			var result = window.ShowDialog();
 			if (result == DialogResult.OK)
 			{
