@@ -11,8 +11,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	{
 		public N64SyncSettings()
 		{
-			VideoPlugin = PluginType.Jabo;
-			Core = CoreType.Dynarec;
+			VideoPlugin = PluginType.Glide;
+			Core = CoreType.Interpret;
 			Rsp = RspType.Rsp_Hle;
 			DisableExpansionSlot = true;
 
