@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				Path = comm.CoreFileProvider.DllPath(),
 				Filename = "ss.wbx",
 				SbrkHeapSizeKB = 128,
-				SealedHeapSizeKB = 1024, // 512KB of bios
+				SealedHeapSizeKB = 4096, // 512KB of bios, 2MB of kof95/ultraman carts
 				InvisibleHeapSizeKB = 8 * 1024, // 4MB of framebuffer
 				MmapHeapSizeKB = 0, // not used?
 				PlainHeapSizeKB = 24 * 1024, // up to 16MB of cart ram
@@ -553,9 +553,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			switch (filename)
 			{
 				case "ss.cart.kof95_path":
+					return "KOF95";
 				case "ss.cart.ultraman_path":
-					// this may be moved to an xmlloader thing, and not the firmware interface
-					throw new NotImplementedException();
+					return "ULTRAMAN";
 				case "BIOS_J":
 				case "BIOS_A":
 					return "J";
