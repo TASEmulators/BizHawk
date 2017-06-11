@@ -290,8 +290,10 @@
             this.AutoloadKeypadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.paletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AtariSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.AtariSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.GBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.AtariSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.A7800SubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.A7800ControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.GBcoreSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LoadGBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator28 = new System.Windows.Forms.ToolStripSeparator();
@@ -456,7 +458,8 @@
             this.SMSSubMenu,
             this.TI83SubMenu,
             this.AtariSubMenu,
-            this.GBSubMenu,
+			this.A7800SubMenu,
+			this.GBSubMenu,
             this.GBASubMenu,
             this.PSXSubMenu,
             this.SNESSubMenu,
@@ -2655,10 +2658,26 @@
             this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.AtariSettingsToolStripMenuItem.Text = "Settings...";
             this.AtariSettingsToolStripMenuItem.Click += new System.EventHandler(this.AtariSettingsToolStripMenuItem_Click);
-            // 
-            // GBSubMenu
-            // 
-            this.GBSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			// 
+			// A7800SubMenu
+			// 
+			this.A7800SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.A7800ControllerSettingsMenuItem});
+			this.A7800SubMenu.Name = "A7800SubMenu";
+			this.A7800SubMenu.Size = new System.Drawing.Size(56, 19);
+			this.A7800SubMenu.Text = "&A7800";
+			this.A7800SubMenu.DropDownOpened += new System.EventHandler(this.A7800SubMenu_DropDownOpened);
+			// 
+			// A7800SettingsToolStripMenuItem
+			// 
+			this.A7800ControllerSettingsMenuItem.Name = "A7800ControllerSettingsMenuItem";
+			this.A7800ControllerSettingsMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.A7800ControllerSettingsMenuItem.Text = "Settings...";
+			this.A7800ControllerSettingsMenuItem.Click += new System.EventHandler(this.A7800SettingsToolStripMenuItem_Click);
+			// 
+			// GBSubMenu
+			// 
+			this.GBSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.GBcoreSettingsToolStripMenuItem,
             this.LoadGBInSGBMenuItem,
             this.toolStripSeparator28,
@@ -4097,6 +4116,7 @@
 		private System.Windows.Forms.ToolStripMenuItem PCEBGViewerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ScreenshotContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AtariSubMenu;
+		private System.Windows.Forms.ToolStripMenuItem A7800SubMenu;
 		private System.Windows.Forms.ToolStripMenuItem NESSoundChannelsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SNESSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem SnesGfxDebuggerMenuItem;
@@ -4167,6 +4187,7 @@
 		private System.Windows.Forms.ToolStripMenuItem GenesisSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GenesisSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AtariSettingsToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem A7800ControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MovieSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CoresSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GBInSGBMenuItem;
