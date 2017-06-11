@@ -41,19 +41,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				throw new InvalidOperationException("ROM too big!  Did you try to load a CD as a ROM?");
 			}
 
-				_elf = new PeRunner(new PeRunnerOptions
-				{
-					Path = comm.CoreFileProvider.DllPath(),
-					Filename = "gpgx.wbx",
-					SbrkHeapSizeKB = 256,
-					SealedHeapSizeKB = 36 * 1024,
-					InvisibleHeapSizeKB = 4 * 1024,
-					PlainHeapSizeKB = 64
-				});
+			_elf = new PeRunner(new PeRunnerOptions
+			{
+				Path = comm.CoreFileProvider.DllPath(),
+				Filename = "gpgx.wbx",
+				SbrkHeapSizeKB = 256,
+				SealedHeapSizeKB = 36 * 1024,
+				InvisibleHeapSizeKB = 4 * 1024,
+				PlainHeapSizeKB = 64
+			});
 
-				Core = BizInvoker.GetInvoker<LibGPGX>(_elf, _elf);
 			using (_elf.EnterExit())
-			{ 
+			{
+				Core = BizInvoker.GetInvoker<LibGPGX>(_elf, _elf);
 				_syncSettings = (GPGXSyncSettings)syncSettings ?? new GPGXSyncSettings();
 				_settings = (GPGXSettings)settings ?? new GPGXSettings();
 
