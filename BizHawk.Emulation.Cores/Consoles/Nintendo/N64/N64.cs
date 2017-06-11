@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			api.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_RSP, rsp);
 
 			InitMemoryDomains();
-			if (_syncSettings.Core != N64SyncSettings.CoreType.Dynarec)
+			//if (_syncSettings.Core != N64SyncSettings.CoreType.Dynarec)
 			{
 				ConnectTracer();
 				SetBreakpointHandler();

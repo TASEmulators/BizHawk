@@ -90,8 +90,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[Description("Interpreter")]
 			Interpret = 1,
 
-			[Description("DynaRec")]
-			Dynarec = 2,
+			//[Description("DynaRec")]
+			//Dynarec = 2,
 		}
 
 		public enum RspType

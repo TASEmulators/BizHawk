@@ -87,7 +87,8 @@ namespace BizHawk.Client.EmuHawk
 				// N64
 				var n64Settings = GetSyncSettings<N64, N64SyncSettings>();
 				n64Settings.Rsp = N64SyncSettings.RspType.Rsp_Hle;
-				n64Settings.Core = N64SyncSettings.CoreType.Dynarec;
+				//n64Settings.Core = N64SyncSettings.CoreType.Dynarec;
+				n64Settings.Core = N64SyncSettings.CoreType.Interpret;
 				Global.Config.N64UseCircularAnalogConstraint = true;
 				PutSyncSettings<N64>(n64Settings);
 
