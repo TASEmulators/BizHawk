@@ -12,7 +12,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight))]
-	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable
+	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
+	ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
 	{
 		// this register selects between 2600 and 7800 mode in the A7800
 		// however, we already have a 2600 emulator so this core will only be loading A7800 games
@@ -25,13 +26,19 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public byte[] Maria_regs = new byte[0x20];
 		public byte[] RAM = new byte[0x1000];
 		public byte[] regs_6532 = new byte[0x80];
+		public byte[] hs_bios_mem = new byte[0x800];
 
-		private readonly byte[] _rom;
-		private readonly byte[] _hsbios;
-		private readonly byte[] _bios;
-		private readonly byte[] _hsram = new byte[2048];
+		public readonly byte[] _rom;
+		public readonly byte[] _hsbios;
+		public readonly byte[] _bios;
+		public readonly byte[] _hsram = new byte[2048];
 
 		private int _frame = 0;
+
+		public string s_mapper;
+		public MapperBase mapper;
+
+		private readonly ITraceable _tracer;
 
 		public MOS6502X cpu;
 		public Maria maria;
@@ -45,10 +52,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			maria = new Maria();
 			tia = new TIA();
-
-			ser.Register<IVideoProvider>(maria);
-			ser.Register<ISoundProvider>(tia);
-			ServiceProvider = ser;
+			cpu = new MOS6502X
+			{
+				ReadMemory = ReadMemory,
+				WriteMemory = WriteMemory,
+				PeekMemory = ReadMemory,
+				DummyReadMemory = ReadMemory,
+				OnExecFetch = ExecFetch
+			};
 
 			maria = new Maria
 			{
@@ -56,6 +67,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			};
 
 			CoreComm = comm;
+
+			_controllerDeck = new A7800HawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
+
 			byte[] highscoreBios = comm.CoreFileProvider.GetFirmware("A78", "Bios_HSC", false, "Some functions may not work without the high score BIOS.");
 			byte[] palBios = comm.CoreFileProvider.GetFirmware("A78", "Bios_PAL", false, "The game will not run if the correct region BIOS is not available.");
 			byte[] ntscBios = comm.CoreFileProvider.GetFirmware("A78", "Bios_NTSC", false, "The game will not run if the correct region BIOS is not available.");
@@ -74,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// if none found default is zero
 			// also check for PAL region
 			string hash_md5 = null;
-			string s_mapper = null;
+			s_mapper = null;
 			hash_md5 = "md5:" + rom.HashMD5(0, rom.Length);
 
 			var gi = Database.CheckDatabase(hash_md5);
@@ -82,21 +96,23 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (gi != null)
 			{
 				var dict = gi.GetOptionsDict();
-				if (!dict.ContainsKey("PAL"))
+				if (dict.ContainsKey("PAL"))
 				{
 					_isPAL = true;
 				}
-				if (!dict.ContainsKey("board"))
+				if (dict.ContainsKey("board"))
 				{
 					s_mapper = dict["board"];
 				}
 				else
-					throw new Exception("No Board selected for this mapper");
+					throw new Exception("No Board selected for this game");
 			}
 			else
 			{
 				throw new Exception("ROM not in gamedb");
 			}
+
+			Reset_Mapper(s_mapper);
 
 			_rom = rom;
 			_hsbios = highscoreBios;
@@ -111,21 +127,31 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (_isPAL)
 			{
 				maria._frameHz = 50;
+				maria._screen_width = 454;
+				maria._screen_height = 313;
 				maria._palette = PALPalette;
 			}
 			else
 			{
 				maria._frameHz = 60;
+				maria._screen_width = 454;
+				maria._screen_height = 263;
 				maria._palette = NTSCPalette;
 			}
 
+			ser.Register<IVideoProvider>(maria);
+			ser.Register<ISoundProvider>(tia);
+			ServiceProvider = ser;
+
+			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
+			ser.Register<ITraceable>(_tracer);
 
 			HardReset();
 		}
 
 		public DisplayType Region => _isPAL ? DisplayType.PAL : DisplayType.NTSC;
 
-		public A7800HawkControl ControlAdapter { get; private set; }
+		private readonly A7800HawkControllerDeck _controllerDeck;
 
 		private void HardReset()
 		{
@@ -142,7 +168,24 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			Maria_regs = new byte[0x20];
 			RAM = new byte[0x1000];
 			regs_6532 = new byte[0x80];
-	}
+
+			cpu_cycle = 0;
+		}
+
+		private void ExecFetch(ushort addr)
+		{
+			//MemoryCallbacks.CallExecutes(addr);
+		}
+
+		private void Reset_Mapper(string m)
+		{
+			if (m=="0")
+			{
+				mapper = new MapperDefault();
+			}
+
+			mapper.Core = this;
+		}
 
 		/*
 		 * MariaTables.cs
