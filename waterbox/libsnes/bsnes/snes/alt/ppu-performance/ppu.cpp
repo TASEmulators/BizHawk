@@ -138,7 +138,7 @@ vram(nullptr),
 oam(nullptr),
 cgram(nullptr)
 {
-  surface = new uint32[512 * 512];
+  surface = (uint32_t*)alloc_invisible(512 * 512 * sizeof(uint32_t));
   output = surface + 16 * 512;
   display.width = 256;
   display.height = 224;
@@ -147,10 +147,7 @@ cgram(nullptr)
 }
 
 PPU::~PPU() {
-  delete[] surface;
-	interface()->freeSharedMemory(vram);
-	interface()->freeSharedMemory(oam);
-	interface()->freeSharedMemory(cgram);
+  abort();
 }
 
 void PPU::initialize()

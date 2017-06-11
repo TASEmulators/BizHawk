@@ -151,7 +151,7 @@ void PPU::initialize()
 	vram = (uint8*)interface()->allocSharedMemory("VRAM",128 * 1024);
   oam = (uint8*)interface()->allocSharedMemory("OAM",544);
   cgram = (uint8*)interface()->allocSharedMemory("CGRAM",512);	
-  surface = new uint32[512 * 512];
+  surface = (uint32_t*)alloc_invisible(512 * 512 * sizeof(uint32_t));
   output = surface + 16 * 512;	
 }
 
@@ -167,10 +167,7 @@ screen(*this) {
 }
 
 PPU::~PPU() {
-  delete[] surface;
-	interface()->freeSharedMemory(vram);
-	interface()->freeSharedMemory(oam);
-	interface()->freeSharedMemory(cgram);  
+  abort();
 }
 
 }

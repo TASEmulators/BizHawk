@@ -130,14 +130,13 @@ struct Interface : public SNES::Interface {
 			ptrace(0),
 			cart(nullptr, 0)
 	{
-    buffer = new uint32_t[512 * 480];
-    palette = new uint32_t[16 * 32768];
+    buffer = (uint32_t*)alloc_invisible(512 * 480 * sizeof(uint32_t));
+    palette = (uint32_t*)alloc_invisible(16 * 32768 * sizeof(uint32_t));
 		memset(&cdlInfo,0,sizeof(cdlInfo));
   }
 
   ~Interface() {
-    delete[] buffer;
-    delete[] palette;
+    abort();
   }
 };
 
