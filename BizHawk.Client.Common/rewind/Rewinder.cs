@@ -80,8 +80,6 @@ namespace BizHawk.Client.Common
 
 		public void Uninitialize()
 		{
-			Clear();
-
 			if (_rewindThread != null)
 			{
 				_rewindThread.Dispose();
@@ -93,6 +91,8 @@ namespace BizHawk.Client.Common
 				_rewindBuffer.Dispose();
 				_rewindBuffer = null;
 			}
+
+			Clear();
 
 			RewindEnabled = false;
 			RewindFrequency = 0;
