@@ -55,7 +55,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 			else if (addr < 0x480)
 			{
-				return 0xFF; // cartridge space available
+				// cartridge space available
+				return mapper.ReadMemory(addr);
 			}
 			else if (addr < 0x500)
 			{
@@ -64,7 +65,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 			else if (addr < 0x1800)
 			{
-				return 0xFF; // cartridge space available
+				// cartridge space available
+				return mapper.ReadMemory(addr);
 			}
 			else if (addr < 0x2800)
 			{
@@ -72,11 +74,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 			else if (addr < 0x4000)
 			{
-				return RAM[addr - 0x2800 + 0x800];
+				// could be either RAM mirror or ROM
+				return mapper.ReadMemory(addr);
 			}
 			else
 			{
-				return 0xFF; // cartridge and other OPSYS
+				return mapper.ReadMemory(addr);
 			}
 		}
 
@@ -125,6 +128,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			else if (addr < 0x480)
 			{
 				// cartridge space available
+				mapper.WriteMemory(addr, value);
 			}
 			else if (addr < 0x500)
 			{
@@ -134,6 +138,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			else if (addr < 0x1800)
 			{
 				// cartridge space available
+				mapper.WriteMemory(addr, value);
 			}
 			else if (addr < 0x2800)
 			{
@@ -141,13 +146,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 			else if (addr < 0x4000)
 			{
-				RAM[addr - 0x2800 + 0x800] = value;
+				// could be either RAM mirror or ROM
+				mapper.WriteMemory(addr, value);
 			}
 			else
 			{
 				// cartridge and other OPSYS
+				mapper.WriteMemory(addr, value);
 			}
 		}
+
 
 	}
 }

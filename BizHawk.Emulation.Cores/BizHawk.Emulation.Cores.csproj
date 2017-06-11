@@ -208,12 +208,12 @@
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
     <Compile Include="Computers\Commodore64\C64.ISettable.cs">
-        <DependentUpon>C64.cs</DependentUpon>
+      <DependentUpon>C64.cs</DependentUpon>
     </Compile>
     <Compile Include="Computers\Commodore64\C64.IStatable.cs">
       <DependentUpon>C64.cs</DependentUpon>
     </Compile>
-    <Compile Include="Computers\Commodore64\FFT.cs" />  
+    <Compile Include="Computers\Commodore64\FFT.cs" />
     <Compile Include="Computers\Commodore64\C64.Motherboard.cs" />
     <Compile Include="Computers\Commodore64\C64.MotherboardInterface.cs" />
     <Compile Include="Computers\Commodore64\C64Format.cs" />
@@ -221,7 +221,7 @@
     <Compile Include="Computers\Commodore64\C64.MotherboardInput.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0001.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0005.cs" />
-		<Compile Include="Computers\Commodore64\Cartridge\Mapper0007.cs" />
+    <Compile Include="Computers\Commodore64\Cartridge\Mapper0007.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper0008.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper000A.cs" />
     <Compile Include="Computers\Commodore64\Cartridge\Mapper000B.cs" />
@@ -382,10 +382,16 @@
     <Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.ISaveRam.cs">
       <DependentUpon>A7800Hawk.cs</DependentUpon>
     </Compile>
+	<Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.ISettable.cs">
+      <DependentUpon>A7800Hawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Atari\A7800Hawk\A7800HawkControllerDeck.cs" />
+    <Compile Include="Consoles\Atari\A7800Hawk\A7800HawkControllers.cs" />
+    <Compile Include="Consoles\Atari\A7800Hawk\Mappers\MapperDefault.cs" />
+    <Compile Include="Consoles\Atari\A7800Hawk\Mappers\MapperBase.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\MemoryMap.cs">
       <DependentUpon>A7800Hawk.cs</DependentUpon>
     </Compile>
-    <Compile Include="Consoles\Atari\A7800Hawk\A7800HawkControl.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\M6532.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\Maria.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\Tia.Audio.cs" />
