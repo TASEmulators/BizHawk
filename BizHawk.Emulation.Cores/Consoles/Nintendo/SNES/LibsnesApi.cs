@@ -62,9 +62,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				PlainHeapSizeKB = 2 * 1024, // TODO: wasn't there more in here?
 				SealedHeapSizeKB = 128 * 1024
 			});
-
-			_core = BizInvoker.GetInvoker<CoreImpl>(_exe, _exe);
-			_comm = (CommStruct*)_core.DllInit().ToPointer();
+			using (_exe.EnterExit())
+			{
+				_core = BizInvoker.GetInvoker<CoreImpl>(_exe, _exe);
+				_comm = (CommStruct*)_core.DllInit().ToPointer();
+			}
 		}
 
 		public void Dispose()

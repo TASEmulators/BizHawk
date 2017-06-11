@@ -54,6 +54,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			public object Sync;
 			private WeakReference LoadedRef = new WeakReference(null);
+#if DEBUG
+			/// <summary>
+			/// recursive lock count
+			/// </summary>
+			public int LockCount;
+#endif
 			public Swappable Loaded
 			{
 				get
@@ -78,6 +84,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public void Enter()
 		{
 			Monitor.Enter(_currentLockInfo.Sync);
+#if DEBUG
+			if (_currentLockInfo.LockCount++ != 0 && _currentLockInfo.Loaded != this)
+				throw new InvalidOperationException("Woops!");
+#endif
 			if (_currentLockInfo.Loaded != this)
 			{
 				if (_currentLockInfo.Loaded != null)
@@ -93,6 +103,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public void Exit()
 		{
+#if DEBUG
+			// when debugging, if we're releasing the lock then deactivate
+			if (_currentLockInfo.LockCount-- == 1)
+			{
+				if (_currentLockInfo.Loaded != this)
+					throw new InvalidOperationException("Woops!");
+				DeactivateInternal();
+				_currentLockInfo.Loaded = null;
+			}
+#endif
 			Monitor.Exit(_currentLockInfo.Sync);
 		}
 
