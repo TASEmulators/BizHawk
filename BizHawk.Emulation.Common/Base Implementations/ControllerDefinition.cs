@@ -165,7 +165,8 @@ namespace BizHawk.Emulation.Common
 				List<string> list = new List<string>(FloatControls);
 				list.AddRange(BoolButtons);
 
-				List<string>[] ret = new List<string>[9];
+				// starts with console buttons, then each plasyer's buttons individually
+				List<string>[] ret = new List<string>[PlayerCount + 1];
 				for (int i = 0; i < ret.Length; i++)
 				{
 					ret[i] = new List<string>();
@@ -182,16 +183,18 @@ namespace BizHawk.Emulation.Common
 
 		public int PlayerNumber(string buttonName)
 		{
-			int player = 0;
-			if (buttonName.Length > 3 && buttonName.StartsWith("P") && char.IsNumber(buttonName[1]))
+			var match = PlayerRegex.Match(buttonName);
+			if (match.Success)
 			{
-				player = buttonName[1] - '0';
+				return int.Parse(match.Groups[1].Value);
 			}
-
-			return player;
+			else
+			{
+				return 0;
+			}
 		}
 
-		private static readonly Regex PlayerRegex = new Regex("^P(\\d) ");
+		private static readonly Regex PlayerRegex = new Regex("^P(\\d+) ");
 
 		public int PlayerCount
 		{
@@ -199,9 +202,7 @@ namespace BizHawk.Emulation.Common
 			{
 				var allNames = FloatControls.Concat(BoolButtons).ToList();
 				var player = allNames
-					.Select(s => PlayerRegex.Match(s).Groups[1])
-					.Where(group => group.Success)
-					.Select(group => group.Value[0] - '0')
+					.Select(PlayerNumber)
 					.DefaultIfEmpty(0)
 					.Max();
 
