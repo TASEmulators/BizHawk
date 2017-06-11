@@ -118,8 +118,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		[Description("Glide64 mk2")]
 		GlideMk2,
 
-		//[Description("Jabo")]
-		//Jabo,
+		//this is left to keep some enums from getting mixed up
+		[Description("FormerlyJabo")]
+		FormerlyJabo,
 
 		[Description("GLideN64")]
 		GLideN64
