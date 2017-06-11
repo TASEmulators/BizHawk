@@ -18,7 +18,6 @@ struct PPU : public Processor, public PPUcounter {
   void reset();
   void layer_enable(unsigned layer, unsigned priority, bool enable);
 
-  void serialize(serializer&);
   void initialize();  
   PPU();
   ~PPU();

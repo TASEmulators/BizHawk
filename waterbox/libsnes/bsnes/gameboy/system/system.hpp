@@ -31,15 +31,6 @@ struct System : property<System> {
 
   unsigned clocks_executed;
 
-  //serialization.cpp
-  unsigned serialize_size;
-
-  serializer serialize();
-  bool unserialize(serializer&);
-
-  void serialize(serializer&);
-  void serialize_all(serializer&);
-  void serialize_init();
 };
 
 #include <gameboy/interface/interface.hpp>

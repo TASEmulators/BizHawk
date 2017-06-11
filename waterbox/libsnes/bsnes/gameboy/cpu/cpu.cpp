@@ -8,7 +8,6 @@ namespace GameBoy {
 #include "core/core.cpp"
 #include "mmio/mmio.cpp"
 #include "timing/timing.cpp"
-#include "serialization.cpp"
 CPU cpu;
 
 void CPU::Main() {

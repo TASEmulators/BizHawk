@@ -13,7 +13,6 @@ namespace GameBoy {
 #include "mmm01/mmm01.cpp"
 #include "huc1/huc1.cpp"
 #include "huc3/huc3.cpp"
-#include "serialization.cpp"
 Cartridge cartridge;
 
 void Cartridge::load(System::Revision revision, const string &markup, const uint8_t *data, unsigned size) {

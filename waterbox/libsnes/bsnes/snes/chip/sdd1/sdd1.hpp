@@ -13,7 +13,6 @@ public:
   uint8 mcu_read(unsigned addr);
   void mcu_write(unsigned addr, uint8 data);
 
-  void serialize(serializer&);
   SDD1();
   ~SDD1();
 

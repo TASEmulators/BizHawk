@@ -6,7 +6,6 @@ namespace SNES {
 #include "memory.cpp"
 #include "opcodes.cpp"
 #include "registers.cpp"
-#include "serialization.cpp"
 HitachiDSP hitachidsp;
 
 //zero 01-sep-2014 - dont clobber these when reconstructing!

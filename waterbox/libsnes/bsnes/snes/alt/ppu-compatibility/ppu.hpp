@@ -69,7 +69,6 @@ public:
   unsigned framecounter;
   void set_frameskip(unsigned frameskip);
 
-  void serialize(serializer&);
 	void initialize();
   PPU();
   ~PPU();

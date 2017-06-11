@@ -13,7 +13,6 @@ static bool trace = 0;
 #include "opcodes.cpp"
 #include "memory.cpp"
 #include "disassembler.cpp"
-#include "serialization.cpp"
 ArmDSP armdsp;
 
 void ArmDSP::Enter() { armdsp.enter(); }

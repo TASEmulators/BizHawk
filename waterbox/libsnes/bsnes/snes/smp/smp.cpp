@@ -5,7 +5,6 @@ namespace SNES {
 
 SMP smp;
 
-#include "serialization.cpp"
 #include "iplrom.cpp"
 #include "memory/memory.cpp"
 #include "timing/timing.cpp"

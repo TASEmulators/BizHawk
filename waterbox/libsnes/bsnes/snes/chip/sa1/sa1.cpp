@@ -5,7 +5,6 @@ namespace SNES {
 
 SA1 sa1;
 
-#include "serialization.cpp"
 #include "bus/bus.cpp"
 #include "dma/dma.cpp"
 #include "memory/memory.cpp"

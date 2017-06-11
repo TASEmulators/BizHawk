@@ -6,7 +6,6 @@ namespace SNES {
 SDD1 sdd1;
 
 #include "decomp.cpp"
-#include "serialization.cpp"
 
 void SDD1::init() {
 }

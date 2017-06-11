@@ -88,23 +88,4 @@ void APU::Square2::power() {
   volume = 0;
 }
 
-void APU::Square2::serialize(serializer &s) {
-  s.integer(enable);
-
-  s.integer(duty);
-  s.integer(length);
-  s.integer(envelope_volume);
-  s.integer(envelope_direction);
-  s.integer(envelope_frequency);
-  s.integer(frequency);
-  s.integer(counter);
-
-  s.integer(output);
-  s.integer(duty_output);
-  s.integer(phase);
-  s.integer(period);
-  s.integer(envelope_period);
-  s.integer(volume);
-}
-
 #endif

@@ -11,7 +11,6 @@ public:
   uint8 read(unsigned addr);
   void write(unsigned addr, uint8 data);
 
-  void serialize(serializer&);
 	void initialize();
   SRTC();
 	~SRTC();

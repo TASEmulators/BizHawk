@@ -5,8 +5,6 @@ namespace SNES {
 
 MSU1 msu1;
 
-#include "serialization.cpp"
-
 void MSU1::Enter() { msu1.enter(); }
 
 void MSU1::enter() {

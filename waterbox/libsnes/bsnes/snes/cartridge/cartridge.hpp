@@ -85,7 +85,6 @@ struct Cartridge : property<Cartridge> {
   void load(Mode, const char*);
   void unload();
 
-  void serialize(serializer&);
   Cartridge();
   ~Cartridge();
 

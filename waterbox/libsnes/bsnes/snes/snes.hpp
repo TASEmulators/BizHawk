@@ -4,13 +4,6 @@
 #include <emulibc.h>
 #include <base/base.hpp>
 
-namespace SNES {
-  namespace Info {
-    static const char Name[] = "bsnes";
-    static const unsigned SerializerVersion = 23;
-  }
-}
-
 /*
   bsnes - SNES emulator
   author: byuu
@@ -35,11 +28,6 @@ namespace SNES {
       thread = co_create(65536 * sizeof(void*), entrypoint);
       this->frequency = frequency;
       clock = 0;
-    }
-
-    inline void serialize(serializer &s) {
-      s.integer(frequency);
-      s.integer(clock);
     }
 
     inline Processor() : thread(nullptr) {

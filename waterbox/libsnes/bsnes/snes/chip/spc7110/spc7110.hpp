@@ -39,7 +39,6 @@ public:
   void decomp_init();
   uint8 decomp_read();
 
-  void serialize(serializer&);
   SPC7110();
 	~SPC7110();
 	void initialize();

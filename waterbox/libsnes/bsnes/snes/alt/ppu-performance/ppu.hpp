@@ -23,7 +23,6 @@ public:
   void layer_enable(unsigned layer, unsigned priority, bool enable);
   void set_frameskip(unsigned frameskip);
 
-  void serialize(serializer&);
   PPU();
   ~PPU();
 	void initialize();

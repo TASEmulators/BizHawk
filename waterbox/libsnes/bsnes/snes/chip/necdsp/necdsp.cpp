@@ -5,7 +5,6 @@ namespace SNES {
 
 #include "memory.cpp"
 #include "disassembler.cpp"
-#include "serialization.cpp"
 NECDSP necdsp;
 
 //zero 01-sep-2014 - dont clobber these when reconstructing!

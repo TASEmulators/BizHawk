@@ -3,7 +3,6 @@
 #define CPUCORE_CPP
 namespace SNES {
 
-#include "serialization.cpp"
 #include "algorithms.cpp"
 #include "disassembler/disassembler.cpp"
 

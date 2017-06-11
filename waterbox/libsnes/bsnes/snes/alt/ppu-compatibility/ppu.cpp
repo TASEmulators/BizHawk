@@ -8,7 +8,6 @@ PPU ppu;
 #include "memory/memory.cpp"
 #include "mmio/mmio.cpp"
 #include "render/render.cpp"
-#include "serialization.cpp"
 
 void PPU::step(unsigned clocks) {
   clock += clocks;

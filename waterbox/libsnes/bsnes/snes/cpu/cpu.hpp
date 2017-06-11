@@ -24,7 +24,6 @@ struct CPU : public Processor, public CPUcore, public PPUcounter {
   void power();
   void reset();
 
-  void serialize(serializer&);
   CPU();
   ~CPU();
 	void initialize();

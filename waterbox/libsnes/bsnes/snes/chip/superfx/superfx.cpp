@@ -3,7 +3,6 @@
 #define SUPERFX_CPP
 namespace SNES {
 
-#include "serialization.cpp"
 #include "bus/bus.cpp"
 #include "core/core.cpp"
 #include "memory/memory.cpp"

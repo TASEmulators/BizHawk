@@ -27,7 +27,6 @@ public:
   void power();
   void reset();
 
-  void serialize(serializer&);
   CPU();
   ~CPU();
 	void initialize();

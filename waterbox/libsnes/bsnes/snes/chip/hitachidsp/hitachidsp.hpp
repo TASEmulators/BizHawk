@@ -43,8 +43,6 @@ public:
   //registers.cpp
   unsigned reg_read(unsigned n) const;
   void reg_write(unsigned n, unsigned data);
-
-  void serialize(serializer&);
 };
 
 extern HitachiDSP hitachidsp;

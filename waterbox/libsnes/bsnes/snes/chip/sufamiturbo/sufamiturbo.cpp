@@ -3,7 +3,6 @@
 #define SUFAMITURBO_CPP
 namespace SNES {
 
-#include "serialization.cpp"
 SufamiTurbo sufamiturbo;
 
 SufamiTurbo::SufamiTurbo()

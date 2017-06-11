@@ -8,7 +8,6 @@ public:
   uint8* tile_8bpp(unsigned tile);
   uint8* tile(unsigned bpp, unsigned tile);
 
-  void serialize(serializer&);
   Cache(PPU &self);
 	~Cache();
 

@@ -42,7 +42,6 @@ public:
   void power();
   void reset();
 
-  void serialize(serializer&);
   NECDSP();
   ~NECDSP();
 };

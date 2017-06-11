@@ -46,13 +46,6 @@ void Controller::iobit(bool data) {
   }
 }
 
-void Controller::serialize(serializer& s) {
-  Processor::serialize(s);
-  //Save a zero block.
-  unsigned char blockzeroes[SaveSize] = {0};
-  s.array(blockzeroes, SaveSize);
-}
-
 Controller::Controller(bool port) : port(port) {
   if(!thread) create(Controller::Enter, 1);
 }

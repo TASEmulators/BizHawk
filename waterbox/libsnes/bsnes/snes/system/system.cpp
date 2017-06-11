@@ -12,7 +12,6 @@ System system;
 #include "video.cpp"
 #include "audio.cpp"
 #include "input.cpp"
-#include "serialization.cpp"
 
 void System::run() {
   scheduler.sync = Scheduler::SynchronizeMode::None;
@@ -122,8 +121,6 @@ void System::load() {
   if(cartridge.has_obc1()) obc1.load();
   if(cartridge.has_msu1()) msu1.load();
   if(cartridge.has_link()) link.load();
-
-  serialize_init();
 }
 
 void System::unload() {

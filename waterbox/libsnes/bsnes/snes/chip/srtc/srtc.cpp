@@ -5,8 +5,6 @@ namespace SNES {
 
 SRTC srtc;
 
-#include "serialization.cpp"
-
 const unsigned SRTC::months[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
 SRTC::SRTC()

@@ -212,6 +212,5 @@ struct CPUcore {
     table_mx = 1024,  //16-bit accumulator, 16-bit index
   };
 
-  void core_serialize(serializer&);
   CPUcore();
 };

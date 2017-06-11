@@ -57,7 +57,6 @@ class Background {
   void render();
   void render_mode7();
 
-  void serialize(serializer&);
   Background(PPU &self, unsigned id);
   ~Background();
 

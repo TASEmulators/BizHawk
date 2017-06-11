@@ -7,7 +7,6 @@
 namespace SNES {
 
 #include "markup.cpp"
-#include "serialization.cpp"
 
 Cartridge cartridge;
 

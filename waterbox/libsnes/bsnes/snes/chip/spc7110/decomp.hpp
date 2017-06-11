@@ -4,7 +4,6 @@ public:
   void init(unsigned mode, unsigned offset, unsigned index);
   void reset();
 
-  void serialize(serializer&);
   Decomp();
   ~Decomp();
 

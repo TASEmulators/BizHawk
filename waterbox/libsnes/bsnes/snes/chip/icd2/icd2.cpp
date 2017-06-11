@@ -7,7 +7,6 @@ namespace SNES {
 
 #include "interface/interface.cpp"
 #include "mmio/mmio.cpp"
-#include "serialization.cpp"
 ICD2 icd2;
 
 void ICD2::Enter() { icd2.enter(); }

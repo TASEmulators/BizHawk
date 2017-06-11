@@ -20,10 +20,6 @@ namespace nall {
       buffer[index + size + size] = value;
     }
 
-    void serialize(serializer &s) {
-      s.array(buffer, size * 3);
-    }
-
     modulo_array() {
       buffer = new T[size * 3]();
     }

@@ -27,7 +27,6 @@ public:
 
   inline void reset();
   function<void ()> scanline;
-  void serialize(serializer&);
 
 private:
   inline void vcounter_tick();

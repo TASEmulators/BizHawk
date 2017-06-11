@@ -14,7 +14,6 @@ struct SMP : public Processor, public SMPcore {
   void power();
   void reset();
 
-  void serialize(serializer&);
   SMP();
   ~SMP();
 	void initialize();

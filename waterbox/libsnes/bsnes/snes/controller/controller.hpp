@@ -20,7 +20,6 @@ struct Controller : Processor {
   virtual void enter();
   void step(unsigned clocks);
   void synchronize_cpu();
-  virtual void serialize(serializer& s);
 
   bool iobit();
   void iobit(bool data);

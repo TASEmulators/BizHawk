@@ -61,9 +61,6 @@ struct ArmDSP : public Coprocessor {
   //disassembler.cpp
   string disassemble_opcode(uint32 pc);
   string disassemble_registers();
-
-  //serialization.cpp
-  void serialize(serializer&);
 };
 
 extern ArmDSP armdsp;

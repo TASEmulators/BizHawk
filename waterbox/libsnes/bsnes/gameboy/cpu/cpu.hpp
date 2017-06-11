@@ -98,7 +98,6 @@ struct CPU : Processor, MMIO {
   void interrupt_exec(uint16 pc);
   void power();
 
-  void serialize(serializer&);
   void initialize();
   CPU();
   ~CPU();

@@ -87,7 +87,6 @@ struct LCD : Processor, MMIO {
 
   void power();
 
-  void serialize(serializer&);
   LCD();
 };
 

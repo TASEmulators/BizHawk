@@ -114,10 +114,6 @@ void snes_power(void);
 void snes_reset(void);
 void snes_run(void);
 
-unsigned snes_serialize_size(void);
-bool snes_serialize(uint8_t *data, unsigned size);
-bool snes_unserialize(const uint8_t *data, unsigned size);
-
 bool snes_load_cartridge_normal(
   const char *rom_xml, const uint8_t *rom_data, unsigned rom_size
 );

@@ -279,23 +279,6 @@ void snes_run(void) {
   SNES::system.run();
 }
 
-unsigned snes_serialize_size(void) {
-  return SNES::system.serialize_size();
-}
-
-bool snes_serialize(uint8_t *data, unsigned size) {
-  SNES::system.runtosave();
-  serializer s = SNES::system.serialize();
-  if(s.size() > size) return false;
-  memcpy(data, s.data(), s.size());
-  return true;
-}
-
-bool snes_unserialize(const uint8_t *data, unsigned size) {
-  serializer s(data, size);
-  return SNES::system.unserialize(s);
-}
-
 //zero 21-sep-2012
 void snes_set_scanlineStart(snes_scanlineStart_t cb)
 {

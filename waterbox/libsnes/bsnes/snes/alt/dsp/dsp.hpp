@@ -15,7 +15,6 @@ public:
 
   void channel_enable(unsigned channel, bool enable);
 
-  void serialize(serializer&);
   DSP();
 
 private:

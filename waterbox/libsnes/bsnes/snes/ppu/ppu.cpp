@@ -10,7 +10,6 @@ PPU ppu;
 #include "screen/screen.cpp"
 #include "sprite/sprite.cpp"
 #include "window/window.cpp"
-#include "serialization.cpp"
 
 void PPU::step(unsigned clocks) {
   clock += clocks;

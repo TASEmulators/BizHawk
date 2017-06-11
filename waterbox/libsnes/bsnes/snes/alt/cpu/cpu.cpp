@@ -5,7 +5,6 @@ namespace SNES {
 
 CPU cpu;
 
-#include "serialization.cpp"
 #include "dma.cpp"
 #include "memory.cpp"
 #include "mmio.cpp"

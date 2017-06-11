@@ -396,22 +396,6 @@ void CMD_init()
 	SNES::input.connect(SNES::Controller::Port2, comm.inports[1]);
 }
 
-void CMD_Serialize()
-{
-	int size = comm.buf_size[0];
-	char* buf = (char*)comm.buf[0];
-	bool ret = snes_serialize((uint8_t*)buf,size);
-	comm.value = ret ? 1 : 0;
-}
-
-void CMD_Unserialize()
-{
-	int size = comm.buf_size[0];
-	char* buf = (char*)comm.buf[0];
-	bool ret = snes_unserialize((uint8_t*)buf	,size);
-	comm.value = ret ? 1 : 0;
-}
-
 static void CMD_Run()
 {
 	do_SIG_audio_flush();
@@ -527,17 +511,14 @@ void QUERY_peek_set_cdl() {
 		cdlInfo.blockSizes[i] = comm.cdl_size[i];
 	}
 }
-void QUERY_serialize_size() {
-	comm.size = snes_serialize_size();
-}
 
 const Action kHandlers_CMD[] = {
 	CMD_init,
 	snes_power,
 	snes_reset,
 	CMD_Run,
-	CMD_Serialize,
-	CMD_Unserialize,
+	nullptr,
+	nullptr,
 	CMD_LoadCartridgeNormal,
 	CMD_LoadCartridgeSGB,
 	snes_term,
@@ -548,7 +529,7 @@ const Action kHandlers_QUERY[] = {
 	QUERY_get_memory_size, //eMessage_QUERY_get_memory_size TODO - grab during bootup (for all possible memdomains)
 	QUERY_peek,
 	QUERY_poke,
-	QUERY_serialize_size, //eMessage_QUERY_serialize_size TODO - grab during bootup/reset (for all possible memdomains)
+	nullptr, //eMessage_QUERY_serialize_size TODO - grab during bootup/reset (for all possible memdomains)
 	QUERY_set_color_lut,
 	QUERY_GetMemoryIdName, //snes_get_memory_id_name TODO - grab during bootup (for all possible memdomains)
 	QUERY_state_hook_exec, //eMessage_QUERY_state_hook_exec

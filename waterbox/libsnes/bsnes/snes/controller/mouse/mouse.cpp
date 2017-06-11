@@ -68,25 +68,6 @@ void Mouse::latch(bool data) {
   counter = 0;
 }
 
-void Mouse::serialize(serializer& s) {
-  Processor::serialize(s);
-  //Save block.
-  unsigned char block[Controller::SaveSize] = {0};
-  block[0] = latched ? 1 : 0;
-  block[1] = counter;
-  block[2] = (unsigned short)position_x >> 8;
-  block[3] = (unsigned short)position_x;
-  block[4] = (unsigned short)position_y >> 8;
-  block[5] = (unsigned short)position_y;
-  s.array(block, Controller::SaveSize);
-  if(s.mode() == nall::serializer::Load) {
-    latched = (block[0] != 0);
-    counter = block[1];
-    position_x = (short)(((unsigned short)block[2] << 8) | (unsigned short)block[3]);
-    position_y = (short)(((unsigned short)block[4] << 8) | (unsigned short)block[5]);
-  }
-}
-
 Mouse::Mouse(bool port) : Controller(port) {
   latched = 0;
   counter = 0;
