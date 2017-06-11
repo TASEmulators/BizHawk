@@ -34,6 +34,9 @@ namespace BizHawk.Client.ApiHawk
 				case "A78":
 					return CoreSystem.Atari2600;
 
+				case "A7800":
+					return CoreSystem.Atari7800;
+
 				case "Coleco":
 					return CoreSystem.ColecoVision;
 
