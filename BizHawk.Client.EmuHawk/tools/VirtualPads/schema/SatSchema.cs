@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -10,9 +12,51 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			yield return StandardController(1);
-			yield return StandardController(2);
-			yield return ConsoleButtons();
+			var ss = ((Saturnus)core).GetSyncSettings();
+
+			int totalPorts = (ss.Port1Multitap ? 6 : 1) + (ss.Port2Multitap ? 6 : 1);
+
+			var padSchemas = new SaturnusControllerDeck.Device[]
+			{
+				ss.Port1,
+				ss.Port2,
+				ss.Port3,
+				ss.Port4,
+				ss.Port5,
+				ss.Port6,
+				ss.Port7,
+				ss.Port8,
+				ss.Port9,
+				ss.Port10,
+				ss.Port11,
+				ss.Port12
+			}.Take(totalPorts)
+			.Where(p => p != SaturnusControllerDeck.Device.None)
+			.Select((p, i) => GenerateSchemaForPort(p, i + 1))
+			.Where(s => s != null)
+			.Concat(new[] { ConsoleButtons() });
+
+			return padSchemas;
+		}
+
+		private static PadSchema GenerateSchemaForPort(SaturnusControllerDeck.Device device, int controllerNum)
+		{
+			switch (device)
+			{
+				default:
+				case SaturnusControllerDeck.Device.None:
+					return null;
+				case SaturnusControllerDeck.Device.Gamepad:
+					return StandardController(controllerNum);
+				case SaturnusControllerDeck.Device.ThreeDeePad:
+				case SaturnusControllerDeck.Device.Mission:
+				case SaturnusControllerDeck.Device.DualMission:
+				case SaturnusControllerDeck.Device.Wheel:
+				case SaturnusControllerDeck.Device.Keyboard:
+				case SaturnusControllerDeck.Device.Mouse:
+					System.Windows.Forms.MessageBox.Show("This peripheral is not supported yet");
+					return null;
+			}
 		}
 
 		private static PadSchema StandardController(int controller)
