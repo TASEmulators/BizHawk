@@ -1016,6 +1016,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool irq_pending;
 		bool dmc_irq;
 		int pending_reg = -1;
+		bool doing_tick_quarter = false;
 		byte pending_val = 0;
 		public int seq_tick;
 		public byte seq_val;
@@ -1032,15 +1033,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		void sequencer_reset()
 		{
 			sequencer_counter = 0;
-
-			if (sequencer_mode == 1)
-			{
-				sequencer_step = 0;
-				QuarterFrame();
-				HalfFrame();
-			}
-			else
-				sequencer_step = 0;
+			sequencer_step = 0;
 		}
 
 		//these figures are not valid for PAL. they must be recalculated with nintendulator's values above
@@ -1062,6 +1055,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (seq_tick>0)
 			{
 				seq_tick--;
+
+				// check if we will be doing the extra frame ticks or not
+				if (seq_tick==0)
+				{
+					if (((val >> 7) & 1) > 0)
+					{
+						if (!doing_tick_quarter)
+						{
+							QuarterFrame();
+							HalfFrame();
+						}
+					}
+				}
+
 				if (seq_tick==0)
 				{
 					sequencer_mode = (val >> 7) & 1;
@@ -1149,6 +1156,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void HalfFrame()
 		{
+			doing_tick_quarter = true;
 			pulse[0].clock_length_and_sweep();
 			pulse[1].clock_length_and_sweep();
 			triangle.clock_length_and_sweep();
@@ -1157,6 +1165,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void QuarterFrame()
 		{
+			doing_tick_quarter = true;
 			pulse[0].clock_env();
 			pulse[1].clock_env();
 			triangle.clock_linear_counter();
@@ -1334,9 +1343,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//notes: this set up is a bit convoluded at the moment, mainly because APU behaviour is not entirely understood
 				//in partiuclar, there are several clock pulses affecting the APU, and when new written are latched is not known in detail
 				//the current code simply matches known behaviour
+				
 				if (pending_reg != -1)
 				{
-					if (pending_reg == 0x4015 || pending_reg == 0x4017 || pending_reg==0x4003 || pending_reg==0x4007)
+					if (pending_reg == 0x4015 || pending_reg == 0x4015 || pending_reg == 0x4003 || pending_reg==0x4007)
 					{
 						_WriteReg(pending_reg, pending_val);
 						pending_reg = -1;
@@ -1352,6 +1362,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				sequencer_tick();
 				sequencer_write_tick(seq_val);
+				doing_tick_quarter = false;
 				
 				if (sequencer_irq_assert>0) {
 					sequencer_irq_assert--;
