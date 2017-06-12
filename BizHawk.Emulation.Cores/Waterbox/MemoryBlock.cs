@@ -290,18 +290,18 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			private MemoryBlock _owner;
 
-			private bool _readable;
-			private bool _writable;
+			private readonly bool _readable;
+			private readonly bool _writable;
 
 			private long _length;
 			private long _pos;
-			private long _ptr;
+			private readonly long _ptr;
 
-			public override bool CanRead { get { return _readable; } }
-			public override bool CanSeek { get { return true; } }
-			public override bool CanWrite { get { return _writable; } }
+			public override bool CanRead => _readable;
+			public override bool CanSeek => true;
+			public override bool CanWrite => _writable;
 			public override void Flush() { }
-			public override long Length { get { return _length; } }
+			public override long Length => _length;
 
 			public override long Position
 			{

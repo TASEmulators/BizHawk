@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {
@@ -40,155 +41,137 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			return ((ulong)page << WaterboxUtils.PageShift) + Memory.Start;
 		}
 
-		private class Bin
-		{
-			public const MemoryBlock.Protection _FreeProt = (MemoryBlock.Protection)255;
+		private const MemoryBlock.Protection FREE = (MemoryBlock.Protection)255;
 
-			/// <summary>
-			/// first page# in this bin, inclusive
-			/// </summary>
-			public int StartPage;
-			/// <summary>
-			/// numbe of pages in this bin
-			/// </summary>
-			public int PageCount;
-			/// <summary>
-			/// first page# not in this bin
-			/// </summary>
-			public int EndPage => StartPage + PageCount;
-			public MemoryBlock.Protection Protection;
-			/// <summary>
-			/// true if not mapped (we distinguish between PROT_NONE and not mapped)
-			/// </summary>
-			public bool Free
-			{
-				get
-				{
-					return Protection == _FreeProt;
-				}
-				set
-				{
-					Protection = value ? _FreeProt : MemoryBlock.Protection.None;
-				}
-			}
-
-			public Bin Next;
-
-			/// <summary>
-			/// split this bin, keeping only numPages pages
-			/// </summary>
-			public bool Cleave(int numPages)
-			{
-				int nextPages = PageCount - numPages;
-				if (nextPages > 0)
-				{
-					Next = new Bin
-					{
-						StartPage = StartPage + numPages,
-						PageCount = nextPages,
-						Next = Next
-					};
-					PageCount = numPages;
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-
-			/// <summary>
-			/// activate the protection specified by this block
-			/// </summary>
-			public void ApplyProtection(MemoryBlock m)
-			{
-				var prot = Free ? MemoryBlock.Protection.None : Protection;
-				var start = ((ulong)StartPage << WaterboxUtils.PageShift) + m.Start;
-				var length = (ulong)PageCount << WaterboxUtils.PageShift;
-				m.Protect(start, length, prot);
-			}
-		}
-
-		private Bin _root;
+		private readonly MemoryBlock.Protection[] _pages;
+		private readonly byte[] _pagesAsBytes;
 
 		public MapHeap(ulong start, ulong size, string name)
 		{
 			size = WaterboxUtils.AlignUp(size);
 			Memory = new MemoryBlock(start, size);
 			Name = name;
+			_pagesAsBytes = new byte[size >> WaterboxUtils.PageShift];
+			_pages = (MemoryBlock.Protection[])(object)_pagesAsBytes;
+			for (var i = 0; i < _pages.Length; i++)
+				_pages[i] = FREE;
 			Console.WriteLine("Created mapheap `{1}` at {0:x16}:{2:x16}", start, name, start + size);
-
-			_root = new Bin
-			{
-				StartPage = 0,
-				PageCount = (int)(size >> WaterboxUtils.PageShift),
-				Free = true
-			};
 		}
 
-		/// <summary>
-		/// gets the bin that contains a page
-		/// </summary>
-		private Bin GetBinForStartPage(int page)
+		// find consecutive unused pages to map
+		private int FindConsecutiveFreePages(int count)
 		{
-			Bin curr = _root;
-			while (curr.StartPage + curr.PageCount <= page)
-				curr = curr.Next;
-			return curr;
+			return FindConsecutiveFreePagesAssumingFreed(count, -1, -1);
 		}
 
-		/// <summary>
-		/// gets the bin that contains the page before the passed page, returning null if 
-		/// any bin along the way is Free
-		/// </summary>
-		private Bin GetBinForEndPageEnsureAllocated(int page, Bin start)
+		// find consecutive unused pages to map, pretending that [startPage..startPage + numPages) is free
+		// used in realloc
+		private int FindConsecutiveFreePagesAssumingFreed(int count, int startPage, int numPages)
 		{
-			Bin curr = start;
-			while (curr != null)
+			var starts = new List<int>();
+			var sizes = new List<int>();
+
+			var currStart = 0;
+			for (var i = 0; i <= _pages.Length; i++)
 			{
-				if (curr.Free)
-					return null;
-				if (curr.EndPage >= page)
-					return curr;
-				curr = curr.Next;
+				if (i == _pages.Length || _pages[i] != FREE && (i < startPage || i >= startPage + numPages))
+				{
+					if (currStart < i)
+					{
+						starts.Add(currStart);
+						var size = i - currStart;
+						if (size == count)
+							return currStart;
+						sizes.Add(i - currStart);
+					}
+					currStart = i + 1;
+				}
 			}
-			return curr; // ran off the end
+			int bestIdx = -1;
+			int bestSize = int.MaxValue;
+			for (int i = 0; i < sizes.Count; i++)
+			{
+				if (sizes[i] < bestSize && sizes[i] >= count)
+				{
+					bestSize = sizes[i];
+					bestIdx = i;
+				}
+			}
+			if (bestIdx != -1)
+				return starts[bestIdx];
+			else
+				return -1;
+		}
+
+		private void ProtectInternal(int startPage, int numPages, MemoryBlock.Protection prot, bool wasUsed)
+		{
+			for (var i = startPage; i < startPage + numPages; i++)
+				_pages[i] = prot;
+
+			ulong start = GetStartAddr(startPage);
+			ulong length = ((ulong)numPages) << WaterboxUtils.PageShift;
+			if (prot == FREE)
+			{
+				Memory.Protect(start, length, MemoryBlock.Protection.RW);
+				WaterboxUtils.ZeroMemory(Z.US(start), (long)length);
+				Memory.Protect(start, length, MemoryBlock.Protection.None);
+				Used -= length;
+				Console.WriteLine($"Freed {length} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
+			}
+			else
+			{
+				Memory.Protect(start, length, prot);
+				if (wasUsed)
+				{
+					Console.WriteLine($"Set protection for {length} bytes on {Name} to {prot}");
+				}
+				else
+				{
+					Used += length;
+					Console.WriteLine($"Allocated {length} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
+				}
+			}
+		}
+
+		private void RefreshProtections(int startPage, int pageCount)
+		{
+			int ps = 0;
+			for (int i = startPage; i < pageCount; i++)
+			{
+				if (i == pageCount - 1 || _pages[i] != _pages[i + 1])
+				{
+					var p = _pages[i];
+					ulong zstart = GetStartAddr(ps);
+					ulong zlength = (ulong)(i - ps + 1) << WaterboxUtils.PageShift;
+					Memory.Protect(zstart, zlength, p == FREE ? MemoryBlock.Protection.None : p);
+					ps = i + 1;
+				}
+			}
+		}
+
+		private void RefreshAllProtections()
+		{
+			RefreshProtections(0, _pages.Length);
+		}
+
+		private bool EnsureMapped(int startPage, int pageCount)
+		{
+			for (int i = startPage; i < startPage + pageCount; i++)
+				if (_pages[i] == FREE)
+					return false;
+			return true;
 		}
 
 		public ulong Map(ulong size, MemoryBlock.Protection prot)
 		{
-			int numPages = WaterboxUtils.PagesNeeded(size);
-			Bin best = null;
-			Bin curr = _root;
-
-			// find smallest potential bin
-			do
-			{
-				if (curr.Free && curr.PageCount >= numPages)
-				{
-					if (best == null || curr.PageCount < best.PageCount)
-					{
-						best = curr;
-						if (curr.PageCount == numPages)
-							break;
-					}
-				}
-				curr = curr.Next;
-			} while (curr != null);
-
-			if (best == null)
+			if (size == 0)
 				return 0;
-
-			if (best.Cleave(numPages))
-				best.Next.Free = true;
-			best.Protection = prot;
-
-			var ret = GetStartAddr(best.StartPage);
-			var totalSize = ((ulong)numPages) << WaterboxUtils.PageShift;
-			Memory.Protect(ret, totalSize, prot);
-			Used += totalSize;
-			Console.WriteLine($"Allocated {totalSize} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
-			//EnsureUsedInternal();
+			int numPages = WaterboxUtils.PagesNeeded(size);
+			int startPage = FindConsecutiveFreePages(numPages);
+			if (startPage == -1)
+				return 0;
+			var ret = GetStartAddr(startPage);
+			ProtectInternal(startPage, numPages, prot, false);
 			return ret;
 		}
 
@@ -196,178 +179,81 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			// TODO: what is the expected behavior when everything requested for remap is allocated,
 			// but with different protections?
-
-			if (start < Memory.Start || start + oldSize > Memory.End)
+			if (start < Memory.Start || start + oldSize > Memory.End || oldSize == 0 || newSize == 0)
 				return 0;
 
 			var oldStartPage = GetPage(start);
-			var oldStartBin = GetBinForStartPage(oldStartPage);
-			if (oldSize == 0 && canMove)
-			{
-				if (oldStartBin.Free)
-					return 0;
-				else
-					return Map(newSize, oldStartBin.Protection);
-			}
-
 			var oldNumPages = WaterboxUtils.PagesNeeded(oldSize);
-			var oldEndPage = oldStartPage + oldNumPages;
-			// first, check if the requested area is actually mapped
-			var oldEndBin = GetBinForEndPageEnsureAllocated(oldEndPage, oldStartBin);
-			if (oldEndBin == null)
+			if (!EnsureMapped(oldStartPage, oldNumPages))
 				return 0;
+			var oldProt = _pages[oldStartPage];
 
-			var newNumPages = WaterboxUtils.PagesNeeded(newSize);
-			var newEndPage = oldStartPage + newNumPages;
-			if (newEndPage > oldEndPage)
+			int newNumPages = WaterboxUtils.PagesNeeded(newSize);
+
+			if (!canMove)
 			{
-				// increase size
-				// the only way this will work in place is if all of the remaining space is free
-				Bin nextBin;
-				if (oldEndBin.EndPage == oldEndPage // if end bin is too bag, space after that is used by something else
-					&& (nextBin = oldEndBin.Next) != null // can't go off the edge
-					&& nextBin.Free
-					&& nextBin.EndPage >= newEndPage)
+				if (newNumPages <= oldNumPages)
 				{
-					nextBin.Protection = oldStartBin.Protection;
-					if (nextBin.Cleave(newEndPage - nextBin.StartPage))
-						nextBin.Next.Free = true;
-
-					nextBin.ApplyProtection(Memory);
-
-					var oldTotalSize = ((ulong)oldNumPages) << WaterboxUtils.PageShift;
-					var newTotalSize = ((ulong)newNumPages) << WaterboxUtils.PageShift;
-					Used += newTotalSize;
-					Used -= oldTotalSize;
-					Console.WriteLine($"Reallocated from {oldTotalSize} bytes to {newTotalSize} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
-					//EnsureUsedInternal();
+					if (newNumPages < oldNumPages)
+						ProtectInternal(oldStartPage + newNumPages, oldNumPages - newNumPages, FREE, true);
 					return start;
 				}
-				// could not increase in place, so move
-				if (!canMove)
-					return 0;
-
-				// if there's some free space right before `start`, and some right after, but not enough
-				// to extend in place, it's possible that a realloc would succeed reusing the same space,
-				// but would fail anywhere else due to heavy memory pressure.
-
-				// that would be a much more complicated algorithm; we'd need to compute a new allocation
-				// as if this one had been freed, but still be able to preserve this if that allocation
-				// still failed.  instead, we ignore this case.
-				var ret = Map(newSize, oldStartBin.Protection);
-				if (ret != 0)
+				else if (newNumPages > oldNumPages)
 				{
-					// move data
-					// NB: oldSize > 0
-					Memory.Protect(start, oldSize, MemoryBlock.Protection.R);
-					var ss = Memory.GetStream(start, oldSize, false);
-					Memory.Protect(ret, oldSize, MemoryBlock.Protection.RW);
-					var ds = Memory.GetStream(ret, oldSize, true);
-					ss.CopyTo(ds);
-					Memory.Protect(ret, oldSize, oldStartBin.Protection);
-					ProtectPagesInternal(oldStartPage, oldNumPages, oldStartBin, Bin._FreeProt);
-					//EnsureUsedInternal();
-					return ret;
-				}
-				else
-				{
-					return 0;
+					for (var i = oldStartPage + oldNumPages; i < oldStartPage + newNumPages; i++)
+						if (_pages[i] != FREE)
+							return 0;
+					ProtectInternal(oldStartPage + oldNumPages, newNumPages - oldNumPages, oldProt, false);
+					return start;
 				}
 			}
-			else if (newEndPage < oldEndPage)
-			{
-				// shrink in place
-				var s = GetBinForStartPage(newEndPage);
-				ProtectPagesInternal(newEndPage, oldEndPage - newEndPage, s, Bin._FreeProt);
-				//EnsureUsedInternal();
-				return start;
-			}
-			else
-			{
-				// no change
-				return start;
-			}
+
+			// if moving is allowed, we always move to simplify and defragment when possible
+			int newStartPage = FindConsecutiveFreePagesAssumingFreed(newNumPages, oldStartPage, oldNumPages);
+			if (newStartPage == -1)
+				return 0;
+
+			var copyDataLen = Math.Min(oldSize, newSize);
+			var copyPageLen = Math.Min(oldNumPages, newNumPages);
+
+			var data = new byte[copyDataLen];
+			Memory.Protect(start, copyDataLen, MemoryBlock.Protection.RW);
+			Marshal.Copy(Z.US(start), data, 0, (int)copyDataLen);
+
+			var pages = new MemoryBlock.Protection[copyPageLen];
+			Array.Copy(_pages, oldStartPage, pages, 0, copyPageLen);
+
+			ProtectInternal(oldStartPage, oldNumPages, FREE, true);
+			ProtectInternal(newStartPage, newNumPages, MemoryBlock.Protection.RW, false);
+
+			var ret = GetStartAddr(newStartPage);
+			Marshal.Copy(data, 0, Z.US(ret), (int)copyDataLen);
+
+			Array.Copy(pages, 0, _pages, newStartPage, copyPageLen);
+			RefreshProtections(newStartPage, copyPageLen);
+			if (newNumPages > oldNumPages)
+				ProtectInternal(newStartPage + oldNumPages, newNumPages - oldNumPages, oldProt, true);
+
+			return ret;
 		}
 
 		public bool Unmap(ulong start, ulong size)
 		{
-			if (start < Memory.Start || start + size > Memory.End)
-				return false;
-			if (size == 0)
-				return true;
-
-			var startPage = GetPage(start);
-			var numPages = WaterboxUtils.PagesNeeded(size);
-			var endPage = startPage + numPages;
-			// check to see if the requested area is actually mapped
-			var startBin = GetBinForStartPage(startPage);
-			if (GetBinForEndPageEnsureAllocated(endPage, startBin) == null)
-				return false;
-
-			ProtectPagesInternal(startPage, numPages, startBin, Bin._FreeProt);
-			return true;
+			return Protect(start, size, FREE);
 		}
 
 		public bool Protect(ulong start, ulong size, MemoryBlock.Protection prot)
 		{
-			// TODO: lots of copy paste here
-			if (start < Memory.Start || start + size > Memory.End)
+			if (start < Memory.Start || start + size > Memory.End || size == 0)
 				return false;
-			if (size == 0)
-				return true;
 
 			var startPage = GetPage(start);
 			var numPages = WaterboxUtils.PagesNeeded(size);
-			var endPage = startPage + numPages;
-			// to change protection, the entire area must currently be mapped
-			var startBin = GetBinForStartPage(startPage);
-			if (GetBinForEndPageEnsureAllocated(endPage, startBin) == null)
+			if (!EnsureMapped(startPage, numPages))
 				return false;
 
-			ProtectPagesInternal(startPage, numPages, startBin, prot);
+			ProtectInternal(startPage, numPages, prot, true);
 			return true;
-		}
-
-		/// <summary>
-		/// frees or changes the protection on some pages.  assumes they are all allocated
-		/// </summary>
-		private void ProtectPagesInternal(int startPage, int numPages, Bin startBin, MemoryBlock.Protection prot)
-		{
-			// from the various paths we took to get here, we must be unmapping at least one page
-
-			var endPage = startPage + numPages;
-			Bin freeBin = startBin;
-			if (freeBin.StartPage != startPage)
-			{
-				freeBin.Cleave(startPage - freeBin.StartPage);
-				freeBin.Next.Protection = freeBin.Protection;
-				freeBin = freeBin.Next;
-			}
-			MemoryBlock.Protection lastEaten = freeBin.Protection;
-			while (freeBin.EndPage < endPage)
-			{
-				freeBin.PageCount += freeBin.Next.PageCount;
-				lastEaten = freeBin.Next.Protection;
-				freeBin.Next = freeBin.Next.Next;
-			}
-			if (freeBin.Cleave(endPage - freeBin.StartPage))
-			{
-				freeBin.Next.Protection = lastEaten;
-			}
-			freeBin.Protection = prot;
-			freeBin.ApplyProtection(Memory);
-
-			var totalSize = ((ulong)numPages) << WaterboxUtils.PageShift;
-			if (prot == Bin._FreeProt)
-			{
-				Used -= totalSize;
-				Console.WriteLine($"Freed {totalSize} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
-			}
-			else
-			{
-				Console.WriteLine($"Set protection for {totalSize} bytes on {Name} to {prot}");
-			}
-			//EnsureUsedInternal();
 		}
 
 		public void Dispose()
@@ -379,24 +265,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
-		private ulong CalcUsedInternal()
-		{
-			ulong ret = 0;
-			var bin = _root;
-			while (bin != null)
-			{
-				if (!bin.Free)
-					ret += (ulong)bin.PageCount << WaterboxUtils.PageShift;
-				bin = bin.Next;
-			}
-			return ret;
-		}
-
-		private void EnsureUsedInternal()
-		{
-			if (Used != CalcUsedInternal())
-				throw new Exception();
-		}
+		private const ulong MAGIC = 0x1590abbcdeef5910;
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
@@ -404,24 +273,20 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			bw.Write(Memory.Size);
 			bw.Write(Used);
 			bw.Write(Memory.XorHash);
-			var bin = _root;
-			do
+			bw.Write(_pagesAsBytes);
+
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
+			var srcs = Memory.GetXorStream(Memory.Start, Memory.Size, false);
+			for (int i = 0, addr = 0; i < _pages.Length; i++, addr += WaterboxUtils.PageSize)
 			{
-				bw.Write(bin.PageCount);
-				bw.Write((byte)bin.Protection);
-				if (!bin.Free)
+				if (_pages[i] != FREE)
 				{
-					var start = GetStartAddr(bin.StartPage);
-					var length = (ulong)bin.PageCount << WaterboxUtils.PageShift;
-					if (bin.Protection == MemoryBlock.Protection.None)
-						Memory.Protect(start, length, MemoryBlock.Protection.R);
-					Memory.GetXorStream(start, length, false).CopyTo(bw.BaseStream);
-					if (bin.Protection == MemoryBlock.Protection.None)
-						Memory.Protect(start, length, MemoryBlock.Protection.None);
+					srcs.Seek(addr, SeekOrigin.Begin);
+					WaterboxUtils.CopySome(srcs, bw.BaseStream, WaterboxUtils.PageSize);
 				}
-				bin = bin.Next;
-			} while (bin != null);
-			bw.Write(-1);
+			}
+			bw.Write(MAGIC);
+			RefreshAllProtections();
 		}
 
 		public void LoadStateBinary(BinaryReader br)
@@ -437,37 +302,22 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (!hash.SequenceEqual(Memory.XorHash))
 				throw new InvalidOperationException(string.Format("Hash did not match for mapheap {0}.  Is this the same rom?", Name));
 
-			Used = 0;
+			if (br.BaseStream.Read(_pagesAsBytes, 0, _pagesAsBytes.Length) != _pagesAsBytes.Length)
+				throw new InvalidOperationException("Unexpected error reading!");
 
-			int startPage = 0;
-			int pageCount;
-			Bin scratch = new Bin(), curr = scratch;
-			while ((pageCount = br.ReadInt32()) != -1)
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.RW);
+			var dsts = Memory.GetXorStream(Memory.Start, Memory.Size, true);
+			for (int i = 0, addr = 0; i < _pages.Length; i++, addr += WaterboxUtils.PageSize)
 			{
-				var next = new Bin
+				if (_pages[i] != FREE)
 				{
-					StartPage = startPage,
-					PageCount = pageCount,
-					Protection = (MemoryBlock.Protection)br.ReadByte()
-				};
-				startPage += pageCount;
-				if (!next.Free)
-				{
-					var start = GetStartAddr(next.StartPage);
-					var length = (ulong)pageCount << WaterboxUtils.PageShift;
-					Memory.Protect(start, length, MemoryBlock.Protection.RW);
-					WaterboxUtils.CopySome(br.BaseStream, Memory.GetXorStream(start, length, true), (long)length);
-					Used += length;
+					dsts.Seek(addr, SeekOrigin.Begin);
+					WaterboxUtils.CopySome(br.BaseStream, dsts, WaterboxUtils.PageSize);
 				}
-				next.ApplyProtection(Memory);
-				curr.Next = next;
-				curr = next;
 			}
-
-			if (used != Used)
-				throw new InvalidOperationException(string.Format("Inernal error loading mapheap {0}", Name));
-
-			_root = scratch.Next;
+			if (br.ReadUInt64() != MAGIC)
+				throw new InvalidOperationException("Savestate internal error");
+			RefreshAllProtections();
 		}
 
 		public static void StressTest()
@@ -480,7 +330,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				ulong siz = (ulong)(rnd.Next(256 * 1024) + 384 * 1024);
 				siz = siz / 4096 * 4096;
-				var ptr = mmo.Map(siz, Waterbox.MemoryBlock.Protection.RW);
+				var ptr = mmo.Map(siz, MemoryBlock.Protection.RW);
 				allocs.Add(ptr, siz);
 			}
 
@@ -496,7 +346,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				ulong siz = (ulong)(rnd.Next(256 * 1024) + 384 * 1024);
 				siz = siz / 4096 * 4096;
-				var ptr = mmo.Map(siz, Waterbox.MemoryBlock.Protection.RW);
+				var ptr = mmo.Map(siz, MemoryBlock.Protection.RW);
 				allocs.Add(ptr, siz);
 			}
 
