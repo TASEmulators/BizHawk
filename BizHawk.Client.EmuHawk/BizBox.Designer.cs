@@ -109,18 +109,6 @@
 			this.CoreInfoPanel.Name = "CoreInfoPanel";
 			this.CoreInfoPanel.Size = new System.Drawing.Size(423, 259);
 			this.CoreInfoPanel.TabIndex = 14;
-			//// 
-			//// textBox1
-			//// 
-			//this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-   //         | System.Windows.Forms.AnchorStyles.Right)));
-			//this.textBox1.Location = new System.Drawing.Point(13, 462);
-			//this.textBox1.Multiline = true;
-			//this.textBox1.Name = "textBox1";
-			//this.textBox1.ReadOnly = true;
-			//this.textBox1.Size = new System.Drawing.Size(423, 33);
-			//this.textBox1.TabIndex = 16;
-			//this.textBox1.Text = "jabo_direct3d8_patched.dll is distributed with the special permission of the author.";
 			// 
 			// VersionLabel
 			// 

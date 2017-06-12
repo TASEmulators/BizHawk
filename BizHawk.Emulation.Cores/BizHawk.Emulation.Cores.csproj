@@ -620,7 +620,6 @@
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Controller.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Glide.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.GlideMk2.cs" />
-    <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Jabo.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Rice.cs" />
     <Compile Include="Consoles\Nintendo\N64\NativeApi\mupen64plusAudioApi.cs" />
     <Compile Include="Consoles\Nintendo\N64\NativeApi\mupen64plusCoreApi.cs" />
