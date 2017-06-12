@@ -456,6 +456,25 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				return _parent._mmapheap.Unmap((ulong)address, (ulong)size) ? 0 : -1;
 			}
+
+			[BizExport(CallingConvention.Cdecl, EntryPoint = "n10")]
+			public int MProtect(UIntPtr address, UIntPtr size, int prot)
+			{
+				MemoryBlock.Protection mprot;
+				switch (prot)
+				{
+					case 0: mprot = MemoryBlock.Protection.None; break;
+					default:
+					case 6: // W^X
+					case 7: // W^X
+					case 4: // exec only????
+					case 2: return -1; // write only????
+					case 3: mprot = MemoryBlock.Protection.RW; break;
+					case 1: mprot = MemoryBlock.Protection.R; break;
+					case 5: mprot = MemoryBlock.Protection.RX; break;
+				}
+				return _parent._mmapheap.Protect((ulong)address, (ulong)size, mprot) ? 0 : -1;
+			}
 		}
 
 		/// <summary>

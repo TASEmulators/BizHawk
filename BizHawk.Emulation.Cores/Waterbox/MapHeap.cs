@@ -42,6 +42,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private class Bin
 		{
+			public const MemoryBlock.Protection _FreeProt = (MemoryBlock.Protection)255;
+
 			/// <summary>
 			/// first page# in this bin, inclusive
 			/// </summary>
@@ -62,11 +64,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				get
 				{
-					return (byte)Protection == 255;
+					return Protection == _FreeProt;
 				}
 				set
 				{
-					Protection = value ? (MemoryBlock.Protection)255 : MemoryBlock.Protection.None;
+					Protection = value ? _FreeProt : MemoryBlock.Protection.None;
 				}
 			}
 
@@ -263,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					var ds = Memory.GetStream(ret, oldSize, true);
 					ss.CopyTo(ds);
 					Memory.Protect(ret, oldSize, oldStartBin.Protection);
-					UnmapPagesInternal(oldStartPage, oldNumPages, oldStartBin);
+					ProtectPagesInternal(oldStartPage, oldNumPages, oldStartBin, Bin._FreeProt);
 					//EnsureUsedInternal();
 					return ret;
 				}
@@ -276,7 +278,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				// shrink in place
 				var s = GetBinForStartPage(newEndPage);
-				UnmapPagesInternal(newEndPage, oldEndPage - newEndPage, s);
+				ProtectPagesInternal(newEndPage, oldEndPage - newEndPage, s, Bin._FreeProt);
 				//EnsureUsedInternal();
 				return start;
 			}
@@ -302,14 +304,34 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (GetBinForEndPageEnsureAllocated(endPage, startBin) == null)
 				return false;
 
-			UnmapPagesInternal(startPage, numPages, startBin);
+			ProtectPagesInternal(startPage, numPages, startBin, Bin._FreeProt);
+			return true;
+		}
+
+		public bool Protect(ulong start, ulong size, MemoryBlock.Protection prot)
+		{
+			// TODO: lots of copy paste here
+			if (start < Memory.Start || start + size > Memory.End)
+				return false;
+			if (size == 0)
+				return true;
+
+			var startPage = GetPage(start);
+			var numPages = WaterboxUtils.PagesNeeded(size);
+			var endPage = startPage + numPages;
+			// to change protection, the entire area must currently be mapped
+			var startBin = GetBinForStartPage(startPage);
+			if (GetBinForEndPageEnsureAllocated(endPage, startBin) == null)
+				return false;
+
+			ProtectPagesInternal(startPage, numPages, startBin, prot);
 			return true;
 		}
 
 		/// <summary>
-		/// frees some pages.  assumes they are all allocated
+		/// frees or changes the protection on some pages.  assumes they are all allocated
 		/// </summary>
-		private void UnmapPagesInternal(int startPage, int numPages, Bin startBin)
+		private void ProtectPagesInternal(int startPage, int numPages, Bin startBin, MemoryBlock.Protection prot)
 		{
 			// from the various paths we took to get here, we must be unmapping at least one page
 
@@ -318,10 +340,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (freeBin.StartPage != startPage)
 			{
 				freeBin.Cleave(startPage - freeBin.StartPage);
+				freeBin.Next.Protection = freeBin.Protection;
 				freeBin = freeBin.Next;
 			}
-			freeBin.Free = true;
-			MemoryBlock.Protection lastEaten = MemoryBlock.Protection.None;
+			MemoryBlock.Protection lastEaten = freeBin.Protection;
 			while (freeBin.EndPage < endPage)
 			{
 				freeBin.PageCount += freeBin.Next.PageCount;
@@ -332,11 +354,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				freeBin.Next.Protection = lastEaten;
 			}
+			freeBin.Protection = prot;
 			freeBin.ApplyProtection(Memory);
 
 			var totalSize = ((ulong)numPages) << WaterboxUtils.PageShift;
-			Used -= totalSize;
-			Console.WriteLine($"Freed {totalSize} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
+			if (prot == Bin._FreeProt)
+			{
+				Used -= totalSize;
+				Console.WriteLine($"Freed {totalSize} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
+			}
+			else
+			{
+				Console.WriteLine($"Set protection for {totalSize} bytes on {Name} to {prot}");
+			}
 			//EnsureUsedInternal();
 		}
 
