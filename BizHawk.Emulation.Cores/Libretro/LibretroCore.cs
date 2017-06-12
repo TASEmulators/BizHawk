@@ -316,7 +316,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			var mem = api.QUERY_GetMemory(LibretroApi.RETRO_MEMORY.SAVE_RAM);
 			var buf = new byte[mem.Item2];
 
-			Marshal.Copy(mem.Item1, buf, 0, mem.Item2);
+			Marshal.Copy(mem.Item1, buf, 0, (int)mem.Item2);
 			return buf;
 		}
 
@@ -328,7 +328,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			if (mem.Item2 == 0)
 				return;
 
-			Marshal.Copy(data, 0, mem.Item1, mem.Item2);
+			Marshal.Copy(data, 0, mem.Item1, (int)mem.Item2);
 		}
 
 		public bool SaveRamModified

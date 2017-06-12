@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 				case eMessage.SIG_SampleBatch:
 					{
 						void* samples = (void*)comm->buf[(int)BufId.Param0];
-						core.retro_audio_sample_batch(samples, comm->buf_size[(int)BufId.Param0]/4);
+						core.retro_audio_sample_batch(samples, (int)comm->buf_size[(int)BufId.Param0]/4);
 					}
 					break;
 
