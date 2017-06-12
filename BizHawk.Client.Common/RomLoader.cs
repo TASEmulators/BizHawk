@@ -765,7 +765,7 @@ namespace BizHawk.Client.Common
 
 								break;
 							case "SNES":
-								if (Global.Config.SNES_InSnes9x && VersionInfo.DeveloperBuild)
+								if (Global.Config.SNES_InSnes9x)
 								{
 									core = CoreInventory.Instance["SNES", "Snes9x"];
 								}
