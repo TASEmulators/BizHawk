@@ -58,6 +58,13 @@ namespace BizHawk.Emulation.Cores.Libretro
 			return true;
 		}
 
+		public uint CMD_UpdateSerializeSize()
+		{
+			Message(eMessage.CMD_UpdateSerializeSize);
+			WaitForCMD();
+			return comm->env.retro_serialize_size;
+		}
+
 		public bool CMD_Serialize(byte[] data)
 		{
 			bool ret = false;
