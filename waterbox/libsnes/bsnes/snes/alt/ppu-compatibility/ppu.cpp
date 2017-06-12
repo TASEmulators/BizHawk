@@ -345,7 +345,7 @@ void PPU::power() {
 }
 
 void PPU::reset() {
-  create(Enter, system.cpu_frequency());
+  create(Enter, system.cpu_frequency(), 32768);
   PPUcounter::reset();
   memset(surface, 0, 512 * 512 * sizeof(uint32));
 

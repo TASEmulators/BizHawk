@@ -275,7 +275,7 @@ void NECDSP::power() {
 }
 
 void NECDSP::reset() {
-  create(NECDSP::Enter, frequency);
+  create(NECDSP::Enter, frequency, 8192);
 
   for(unsigned n = 0; n < 16; n++) regs.stack[n] = 0x0000;
   regs.pc = 0x0000;

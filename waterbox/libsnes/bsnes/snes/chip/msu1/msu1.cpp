@@ -63,7 +63,7 @@ void MSU1::power() {
 }
 
 void MSU1::reset() {
-  create(MSU1::Enter, 44100);
+  create(MSU1::Enter, 44100, 16384);
 
   mmio.data_offset  = 0;
   mmio.audio_offset = 0;

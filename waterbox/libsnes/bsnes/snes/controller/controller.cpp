@@ -47,7 +47,7 @@ void Controller::iobit(bool data) {
 }
 
 Controller::Controller(bool port) : port(port) {
-  if(!thread) create(Controller::Enter, 1);
+  if(!thread) create(Controller::Enter, 1, 4096);
 }
 
 

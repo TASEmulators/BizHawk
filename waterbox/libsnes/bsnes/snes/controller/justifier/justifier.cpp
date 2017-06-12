@@ -99,7 +99,7 @@ void Justifier::latch(bool data) {
 }
 
 Justifier::Justifier(bool port, bool chained) : Controller(port), chained(chained) {
-  create(Controller::Enter, 21477272);
+  create(Controller::Enter, 21477272, 8192);
   latched = 0;
   counter = 0;
   active = 0;

@@ -23,9 +23,9 @@ namespace SNES {
     unsigned frequency;
     int64 clock;
 
-    inline void create(void (*entrypoint)(), unsigned frequency) {
+    inline void create(void (*entrypoint)(), unsigned frequency, int size) {
       if(thread) co_delete(thread);
-      thread = co_create(65536 * sizeof(void*), entrypoint);
+      thread = co_create(size * sizeof(void*), entrypoint);
       this->frequency = frequency;
       clock = 0;
     }

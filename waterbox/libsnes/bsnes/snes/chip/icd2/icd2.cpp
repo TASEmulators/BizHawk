@@ -45,7 +45,7 @@ void ICD2::power() {
 }
 
 void ICD2::reset() {
-  create(ICD2::Enter, cpu.frequency / 5);
+  create(ICD2::Enter, cpu.frequency / 5, 16384);
 
   r6000_ly = 0x00;
   r6000_row = 0x00;

@@ -99,7 +99,7 @@ void SuperScope::latch(bool data) {
 }
 
 SuperScope::SuperScope(bool port) : Controller(port) {
-  create(Controller::Enter, 21477272);
+  create(Controller::Enter, 21477272, 8192);
   latched = 0;
   counter = 0;
 

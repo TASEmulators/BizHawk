@@ -60,7 +60,7 @@ void SMP::power() {
 }
 
 void SMP::reset() {
-  create(Enter, system.apu_frequency());
+  create(Enter, system.apu_frequency(), 16384);
 
   regs.pc = 0xffc0;
   regs.a = 0x00;

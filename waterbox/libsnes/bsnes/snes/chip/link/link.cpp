@@ -44,7 +44,7 @@ void Link::power() {
 
 void Link::reset() {
   if(link_reset) link_reset();
-  create(Link::Enter, frequency);
+  create(Link::Enter, frequency, 8192);
 }
 
 uint8 Link::read(unsigned addr) {

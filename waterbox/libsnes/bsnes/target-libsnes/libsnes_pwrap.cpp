@@ -604,7 +604,7 @@ EXPORT void* DllInit()
 		co_delete(co_emu);
 		co_emu = nullptr;
 	}
-	co_emu = co_create(65536 * sizeof(void*), new_emuthread);
+	co_emu = co_create(32768 * sizeof(void*), new_emuthread);
 
 	return &comm;
 }

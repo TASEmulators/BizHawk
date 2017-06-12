@@ -155,7 +155,7 @@ void ArmDSP::reset() {
 }
 
 void ArmDSP::arm_reset() {
-  create(ArmDSP::Enter, 21477272);
+  create(ArmDSP::Enter, 21477272, 8192);
 
   bridge.ready = false;
   bridge.timer = 0;

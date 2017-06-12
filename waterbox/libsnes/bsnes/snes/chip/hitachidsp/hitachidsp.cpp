@@ -58,7 +58,7 @@ void HitachiDSP::power() {
 }
 
 void HitachiDSP::reset() {
-  create(HitachiDSP::Enter, frequency);
+  create(HitachiDSP::Enter, frequency, 8192);
   state = State::Idle;
 
   regs.n = 0;

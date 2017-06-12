@@ -92,7 +92,7 @@ USART::USART(bool port) : Controller(port) {
   if(0 /*open_absolute(filename)*/) {
     init = sym("usart_init");
     main = sym("usart_main");
-    if(init && main) create(Controller::Enter, 1000000);
+    if(init && main) create(Controller::Enter, 1000000, 8192);
   }
 }
 

@@ -130,7 +130,7 @@ void SA1::power() {
 }
 
 void SA1::reset() {
-  create(SA1::Enter, system.cpu_frequency());
+  create(SA1::Enter, system.cpu_frequency(), 8192);
 
   cpubwram.dma = false;
   for(unsigned addr = 0; addr < iram.size(); addr++) {
