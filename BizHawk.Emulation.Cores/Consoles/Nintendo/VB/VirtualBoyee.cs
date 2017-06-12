@@ -324,8 +324,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 		public class SyncSettings
 		{
 			[DefaultValue(false)]
+			[Description("Reduce input latency.  Works with all known commercial games, may have homebrew issues.")]
 			public bool InstantReadHack { get; set; }
 			[DefaultValue(false)]
+			[Description("Disable parallax for rendering.")]
 			public bool DisableParallax { get; set; }
 
 			public SyncSettings Clone()
@@ -357,9 +359,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			}
 
 			[DefaultValue(ThreeDeeModes.Anaglyph)]
+			[Description("How to display the 3d image.  Use whichever method works with your VR hardware.")]
 			public ThreeDeeModes ThreeDeeMode { get; set; }
 
 			[DefaultValue(false)]
+			[Description("Swap the left and right views.")]
 			public bool SwapViews { get; set; }
 
 			public enum AnaglyphPresets : int
@@ -374,18 +378,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			}
 
 			[DefaultValue(AnaglyphPresets.RedBlue)]
+			[Description("Color preset for Anaglyph mode.")]
 			public AnaglyphPresets AnaglyphPreset { get; set; }
 
 			[DefaultValue(typeof(Color), "Green")]
+			[Description("Left anaglyph color.  Ignored unless Preset is Custom.")]
 			public Color AnaglyphCustomLeftColor { get; set; }
 			[DefaultValue(typeof(Color), "Purple")]
+			[Description("Right anaglyph color.  Ignored unless Preset is Custom.")]
 			public Color AnaglyphCustomRightColor { get; set; }
 
 			[DefaultValue(typeof(Color), "White")]
+			[Description("Display color for all of the non-anaglyph modes.  Real hardware was red, but other colors may be easier on your eyes.")]
 			public Color NonAnaglyphColor { get; set; }
 
 			[DefaultValue(1750)]
 			[Range(1000, 2000)]
+			[Description("LED gamma ramp.  Range of 1000 to 2000")]
 			public int LedOnScale { get; set; }
 
 			[DefaultValue(2)]
@@ -394,6 +403,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 			[DefaultValue(0)]
 			[Range(0, 1024)]
+			[Description("How many pixels to put between views in Side By Side mode")]
 			public int SideBySideSeparation { get; set; }
 
 			public Settings Clone()
