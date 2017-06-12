@@ -4,7 +4,7 @@ CP = cp
 
 MACHINE = $(shell $(CXX) -dumpmachine)
 ifneq (,$(findstring i686,$(MACHINE)))
-	ARCH = 32
+	$(error 32 bit build no longer supported)
 else ifneq (,$(findstring x86_64,$(MACHINE)))
 	ARCH = 64
 else
@@ -18,7 +18,7 @@ LDFLAGS_64 =
 LDFLAGS = -shared $(LDFLAGS_$(ARCH)) $(CXXFLAGS)
 
 DEST_32 = ../output/dll
-DEST_64 = ../output64/dll
+DEST_64 = ../output/dll
 
 SRCS = \
 	src/cinterface.cpp \
