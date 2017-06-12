@@ -374,6 +374,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public void SaveStateBinary(System.IO.BinaryWriter writer)
 		{
+			api.CMD_UpdateSerializeSize();
 			if (savebuff == null || savebuff.Length != api.comm->env.retro_serialize_size)
 			{
 				savebuff = new byte[api.comm->env.retro_serialize_size];
@@ -404,6 +405,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 
 		public byte[] SaveStateBinary()
 		{
+			api.CMD_UpdateSerializeSize();
 			if (savebuff == null || savebuff.Length != api.comm->env.retro_serialize_size)
 			{
 				savebuff = new byte[api.comm->env.retro_serialize_size];

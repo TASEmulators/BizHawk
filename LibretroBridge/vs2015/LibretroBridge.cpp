@@ -89,6 +89,7 @@ enum eMessage : s32
 	CMD_Deinit,
 	CMD_Reset,
 	CMD_Run,
+	CMD_UpdateSerializeSize,
 	CMD_Serialize,
 	CMD_Unserialize,
 	CMD_LAST,
@@ -140,6 +141,7 @@ struct CommStruct
 		//set by the core
 		retro_system_info retro_system_info;
 		retro_system_av_info retro_system_av_info;
+		size_t retro_serialize_size_initial;
 		size_t retro_serialize_size;
 		u32 retro_region;
 		u32 retro_api_version;
@@ -694,7 +696,7 @@ static void LoadHandler(eMessage msg)
 
 	//Between calls to retro_load_game() and retro_unload_game(), the returned size is never allowed to be larger than a previous returned
 	//value, to ensure that the frontend can allocate a save state buffer once.
-	comm.env.retro_serialize_size = comm.funs.retro_serialize_size();
+	comm.env.retro_serialize_size_initial = comm.env.retro_serialize_size = comm.funs.retro_serialize_size();
 
 	//not sure when this can be called, but it's surely safe here
 	comm.env.retro_region = comm.funs.retro_get_region();
@@ -720,6 +722,11 @@ void cmd_Reset()
 void cmd_Run()
 {
 	comm.funs.retro_run();
+}
+
+void cmd_UpdateSerializeSize()
+{
+	comm.env.retro_serialize_size = comm.funs.retro_serialize_size();
 }
 
 void cmd_Serialize()
@@ -765,6 +772,7 @@ const Action kHandlers_CMD[] = {
 	cmd_Deinit,
 	cmd_Reset,
 	cmd_Run,
+	cmd_UpdateSerializeSize,
 	cmd_Serialize,
 	cmd_Unserialize,
 };
