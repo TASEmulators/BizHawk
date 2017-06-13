@@ -199,19 +199,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public string BoardName => "SGB";
 		}
 
-		public string CurrentProfile
-		{
-			get
-			{
-				// TODO: This logic will only work until Accuracy is ready, would we really want to override the user's choice of Accuracy with Compatibility?
-				if (_game.OptionValue("profile") == "Compatibility")
-				{
-					return "Compatibility";
-				}
-
-				return _syncSettings.Profile;
-			}
-		}
+		public string CurrentProfile => "Compatibility"; // We no longer support performance, and accuracy isn't worth the effort so we shall just hardcode this one
 
 		private LibsnesApi Api { get; }
 

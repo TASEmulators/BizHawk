@@ -142,9 +142,6 @@ namespace BizHawk.Client.EmuHawk
 
 				// SNES
 				Global.Config.SNES_InSnes9x = false;
-				var snesSettings = GetSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>();
-				snesSettings.Profile = "Compatibility";
-				PutSyncSettings<LibsnesCore>(snesSettings);
 
 				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
@@ -196,9 +193,6 @@ namespace BizHawk.Client.EmuHawk
 
 				// SNES
 				Global.Config.SNES_InSnes9x = false;
-				var snesSettings = GetSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>();
-				snesSettings.Profile = "Compatibility";
-				PutSyncSettings<LibsnesCore>(snesSettings);
 
 				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
@@ -251,9 +245,6 @@ namespace BizHawk.Client.EmuHawk
 
 				// SNES
 				Global.Config.SNES_InSnes9x = false;
-				var snesSettings = GetSyncSettings<LibsnesCore, LibsnesCore.SnesSyncSettings>();
-				snesSettings.Profile = "Compatibility";
-				PutSyncSettings<LibsnesCore>(snesSettings);
 
 				// Genesis
 				var genesisSettings = GetSyncSettings<GPGX, GPGX.GPGXSyncSettings>();
