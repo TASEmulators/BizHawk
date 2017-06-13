@@ -8,12 +8,13 @@
 //TODO
 //when a BG is not available, the last rendered BG still shows up. should clear it
 
+using BizHawk.Common;
 using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 
-	public unsafe class SNESGraphicsDecoder : IDisposable
+	public unsafe class SNESGraphicsDecoder : IDisposable, IMonitor
 	{
 		public class PaletteSelection
 		{
@@ -1041,7 +1042,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				screen[i] = directColorTable[screen[i]];
 
 		}
-	
-	
+
+		public void Enter()
+		{
+			((IMonitor)api).Enter();
+		}
+
+		public void Exit()
+		{
+			((IMonitor)api).Exit();
+		}
 	} //class SNESGraphicsDecoder
 } //namespace

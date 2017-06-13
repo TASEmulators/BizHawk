@@ -201,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public string CurrentProfile => "Compatibility"; // We no longer support performance, and accuracy isn't worth the effort so we shall just hardcode this one
 
-		private LibsnesApi Api { get; }
+		public LibsnesApi Api { get; }
 
 		public SnesColors.ColorType CurrPalette { get; private set; }
 
