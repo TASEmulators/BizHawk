@@ -34,6 +34,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		private DiscSectorReader[] _diskReaders;
 		private bool _isPal;
 		private SaturnusControllerDeck _controllerDeck;
+		private int _activeDisk;
+		private bool _prevDiskSignal;
+		private bool _nextDiskSignal;
 
 		private static bool CheckDisks(IEnumerable<DiscSectorReader> readers)
 		{
@@ -114,8 +117,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			}, _core);
 			ControllerDefinition = _controllerDeck.Definition;
 			ControllerDefinition.Name = "Saturn Controller";
-			ControllerDefinition.BoolButtons.Add("Power");
-			ControllerDefinition.BoolButtons.Add("Reset");
+			ControllerDefinition.BoolButtons.AddRange(new[]
+			{
+				"Power", "Reset", "Previous Disk", "Next Disk"
+			});
 
 			_core.SetRtc((long)syncSettings.InitialTime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds,
 				syncSettings.Language);
@@ -135,6 +140,25 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
+			var prevDiskSignal = controller.IsPressed("Previous Disk");
+			var nextDiskSignal = controller.IsPressed("Next Disk");
+			var newDisk = _activeDisk;
+			if (prevDiskSignal && !_prevDiskSignal)
+				newDisk--;
+			if (nextDiskSignal && !_nextDiskSignal)
+				newDisk++;
+			_prevDiskSignal = prevDiskSignal;
+			_nextDiskSignal = nextDiskSignal;
+			if (newDisk < -1)
+				newDisk = -1;
+			if (newDisk >= _disks.Length)
+				newDisk = _disks.Length - 1;
+			if (newDisk != _activeDisk)
+			{
+				_core.SetDisk(newDisk == -1 ? 0 : newDisk, newDisk == -1);
+				_activeDisk = newDisk;
+			}
+
 			// if not reset, the core will maintain its own deterministic increasing time each frame
 			if (!DeterministicEmulation)
 			{
@@ -483,6 +507,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			Frame = reader.ReadInt32();
 			LagCount = reader.ReadInt32();
 			IsLagFrame = reader.ReadBoolean();
+			_activeDisk = reader.ReadInt32();
+			_prevDiskSignal = reader.ReadBoolean();
+			_nextDiskSignal = reader.ReadBoolean();
 			// any managed pointers that we sent to the core need to be resent now!
 			SetCdCallbacks();
 			_core.SetInputCallback(null);
@@ -495,6 +522,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			writer.Write(Frame);
 			writer.Write(LagCount);
 			writer.Write(IsLagFrame);
+			writer.Write(_activeDisk);
+			writer.Write(_prevDiskSignal);
+			writer.Write(_nextDiskSignal);
 		}
 
 		public byte[] SaveStateBinary()
