@@ -36,7 +36,7 @@ namespace BizHawk.Client.EmuHawk
 			DiskBufferCheckbox.Checked = Global.Config.Rewind_OnDisk;
 			RewindIsThreadedCheckbox.Checked = Global.Config.Rewind_IsThreaded;
 			_stateSize = Global.Emulator.AsStatable().SaveStateBinary().Length;
-			BufferSizeUpDown.Value = Global.Config.Rewind_BufferSize;
+			BufferSizeUpDown.Value = Math.Max(Global.Config.Rewind_BufferSize, BufferSizeUpDown.Minimum);
 
 			_mediumStateSize = Global.Config.Rewind_MediumStateSize;
 			_largeStateSize = Global.Config.Rewind_LargeStateSize;
