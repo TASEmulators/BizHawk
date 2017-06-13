@@ -473,34 +473,29 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 			}
-			else if (Emulator is LibsnesCore)
+			else if (Emulator is Snes9x)
 			{
-				var snes = (LibsnesCore)Emulator;
-				if (snes.CurrentProfile == "Performance")
+				var box = new MsgBox(
+					"While the Snes9x core is faster, it is not nearly as accurate as bsnes. \nIt is recommended that you switch to the bsnes core for movie recording\nSwitch to bsnes?",
+					"Accuracy Warning",
+					MessageBoxIcon.Warning);
+
+				box.SetButtons(
+					new[] { "Switch", "Cancel" },
+					new[] { DialogResult.Yes, DialogResult.Cancel });
+
+				box.MaximumSize = new Size(475, 350);
+				box.SetMessageToAutoSize();
+				var result = box.ShowDialog();
+
+				if (result == DialogResult.Yes)
 				{
-					var box = new MsgBox(
-						"While the performance core is faster, it is not stable enough for movie recording\n\nSwitch to Compatibility?",
-						"Stability Warning",
-						MessageBoxIcon.Warning);
-
-					box.SetButtons(
-						new[] { "Switch", "Cancel" },
-						new[] { DialogResult.Yes, DialogResult.Cancel });
-
-					box.MaximumSize = new Size(450, 350);
-					box.SetMessageToAutoSize();
-					var result = box.ShowDialog();
-
-					if (result == DialogResult.Yes)
-					{
-						var ss = snes.GetSyncSettings();
-						ss.Profile = "Compatibility";
-						snes.PutSyncSettings(ss);
-					}
-					else if (result == DialogResult.Cancel)
-					{
-						return;
-					}
+					Global.Config.SNES_InSnes9x = false;
+					RebootCore();
+				}
+				else if (result == DialogResult.Cancel)
+				{
+					return;
 				}
 			}
 
