@@ -5,7 +5,7 @@ CXXFLAGS = -Wall -O3 -fpermissive -Wno-unused-but-set-variable \
 
 MACHINE = $(shell $(CXX) -dumpmachine)
 ifneq (,$(findstring i686,$(MACHINE)))
-	ARCH = 32
+    $(error 32 bit build no longer supported)
 else ifneq (,$(findstring x86_64,$(MACHINE)))
 	ARCH = 64
 else
@@ -26,7 +26,7 @@ SRCS = \
 
 OBJS = $(SRCS:.cpp=.o)
 DEST_32 = ../../output/dll
-DEST_64 = ../../output64/dll
+DEST_64 = ../../output/dll
 
 all: $(TARGET)
 
