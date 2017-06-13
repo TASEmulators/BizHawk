@@ -22,16 +22,12 @@ namespace BizHawk.Client.EmuHawk
 			var dlg = new SNESOptions
 			{
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
-				ForceDeterminism = s.ForceDeterminism,
-				//Profile = ss.Profile
 			};
 
 			var result = dlg.ShowDialog(owner);
 			if (result == DialogResult.OK)
 			{
 				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
-				s.ForceDeterminism = dlg.ForceDeterminism;
-				//ss.Profile = dlg.Profile;
 				GlobalWin.MainForm.PutCoreSettings(s);
 				GlobalWin.MainForm.PutCoreSyncSettings(ss);
 			}
@@ -49,12 +45,6 @@ namespace BizHawk.Client.EmuHawk
 				_userDoubleSizeOption = value;
 				RefreshDoubleSizeOption();
 			}
-		}
-
-		private bool ForceDeterminism
-		{
-			get { return cbForceDeterminism.Checked; }
-			set { cbForceDeterminism.Checked = value; }
 		}
 
 		void RefreshDoubleSizeOption()

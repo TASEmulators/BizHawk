@@ -32,14 +32,12 @@
             this.btnCancel = new System.Windows.Forms.Button();
             this.cbDoubleSize = new System.Windows.Forms.CheckBox();
             this.lblDoubleSize = new System.Windows.Forms.Label();
-            this.cbForceDeterminism = new System.Windows.Forms.CheckBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // btnOk
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOk.Location = new System.Drawing.Point(136, 193);
+            this.btnOk.Location = new System.Drawing.Point(136, 117);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 0;
@@ -51,7 +49,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(217, 193);
+            this.btnCancel.Location = new System.Drawing.Point(217, 117);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 1;
@@ -80,34 +78,13 @@
     "orce the SNES output to stay double-size always. NOTE: The Accuracy core runs as" +
     " if this is selected.\r\n";
             // 
-            // cbForceDeterminism
-            // 
-            this.cbForceDeterminism.AutoSize = true;
-            this.cbForceDeterminism.Location = new System.Drawing.Point(19, 102);
-            this.cbForceDeterminism.Name = "cbForceDeterminism";
-            this.cbForceDeterminism.Size = new System.Drawing.Size(113, 17);
-            this.cbForceDeterminism.TabIndex = 8;
-            this.cbForceDeterminism.Text = "Force Determinism";
-            this.cbForceDeterminism.UseVisualStyleBackColor = true;
-            // 
-            // label3
-            // 
-            this.label3.Location = new System.Drawing.Point(38, 126);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(251, 41);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "Guarantee deterministic emulation by savestating every frame. Don\'t TAS without i" +
-    "t! Only ~75% of runs sync without it, but speed boost is ~30%.";
-            // 
             // SNESOptions
             // 
             this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(304, 228);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.cbForceDeterminism);
+            this.ClientSize = new System.Drawing.Size(304, 152);
             this.Controls.Add(this.lblDoubleSize);
             this.Controls.Add(this.cbDoubleSize);
             this.Controls.Add(this.btnCancel);
@@ -130,7 +107,5 @@
 		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.CheckBox cbDoubleSize;
 		private System.Windows.Forms.Label lblDoubleSize;
-		private System.Windows.Forms.CheckBox cbForceDeterminism;
-		private System.Windows.Forms.Label label3;
 	}
 }
