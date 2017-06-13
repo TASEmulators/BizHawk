@@ -23,7 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
 				ForceDeterminism = s.ForceDeterminism,
-				Profile = ss.Profile
+				//Profile = ss.Profile
 			};
 
 			var result = dlg.ShowDialog(owner);
@@ -31,44 +31,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
 				s.ForceDeterminism = dlg.ForceDeterminism;
-				ss.Profile = dlg.Profile;
+				//ss.Profile = dlg.Profile;
 				GlobalWin.MainForm.PutCoreSettings(s);
 				GlobalWin.MainForm.PutCoreSyncSettings(ss);
-			}
-		}
-
-		private void SNESOptions_Load(object sender, EventArgs e)
-		{
-			rbAccuracy.Visible = VersionInfo.DeveloperBuild;
-		}
-
-		private string Profile
-		{
-			get
-			{
-				if (rbCompatibility.Checked)
-				{
-					return "Compatibility";
-				}
-
-				if (rbPerformance.Checked)
-				{
-					return "Performance";
-				}
-
-				if (rbAccuracy.Checked)
-				{
-					return "Accuracy";
-				}
-
-				throw new InvalidOperationException();
-			}
-
-			set
-			{
-				rbCompatibility.Checked = value == "Compatibility";
-				rbPerformance.Checked = value == "Performance";
-				rbAccuracy.Checked = value == "Accuracy";
 			}
 		}
 
@@ -99,13 +64,6 @@ namespace BizHawk.Client.EmuHawk
 			_suppressDoubleSize = false;
 		}
 
-		private void RbAccuracy_CheckedChanged(object sender, EventArgs e)
-		{
-			cbDoubleSize.Enabled = !rbAccuracy.Checked;
-			lblDoubleSize.ForeColor = cbDoubleSize.Enabled ? System.Drawing.SystemColors.ControlText : System.Drawing.SystemColors.GrayText;
-			RefreshDoubleSizeOption();
-		}
-
 		private void CbDoubleSize_CheckedChanged(object sender, EventArgs e)
 		{
 			if (_suppressDoubleSize)
@@ -114,10 +72,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_userDoubleSizeOption = cbDoubleSize.Checked;
-		}
-
-		private void CbForceDeterminism_CheckedChanged(object sender, EventArgs e)
-		{
 		}
 
 		private void BtnOk_Click(object sender, EventArgs e)
