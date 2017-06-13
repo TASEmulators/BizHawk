@@ -53,6 +53,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync("Lag", ref _lagcount);
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLag", ref _islag);
+			_controllerDeck.SyncState(ser);
+
 			ser.EndSection();
 		}
 	}

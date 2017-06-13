@@ -22,14 +22,52 @@ namespace BizHawk.Client.EmuHawk
 			var dlg = new SNESOptions
 			{
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
+				CropSGBFrame = s.CropSGBFrame
 			};
 
 			var result = dlg.ShowDialog(owner);
 			if (result == DialogResult.OK)
 			{
 				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
+				s.CropSGBFrame = dlg.CropSGBFrame;
+				
 				GlobalWin.MainForm.PutCoreSettings(s);
 				GlobalWin.MainForm.PutCoreSyncSettings(ss);
+			}
+		}
+
+		private void SNESOptions_Load(object sender, EventArgs e)
+		{
+			rbAccuracy.Visible = label2.Visible = VersionInfo.DeveloperBuild;
+		}
+
+		private string Profile
+		{
+			get
+			{
+				if (rbCompatibility.Checked)
+				{
+					return "Compatibility";
+				}
+
+				if (rbPerformance.Checked)
+				{
+					return "Performance";
+				}
+
+				if (rbAccuracy.Checked)
+				{
+					return "Accuracy";
+				}
+
+				throw new InvalidOperationException();
+			}
+
+			set
+			{
+				rbCompatibility.Checked = value == "Compatibility";
+				rbPerformance.Checked = value == "Performance";
+				rbAccuracy.Checked = value == "Accuracy";
 			}
 		}
 
@@ -45,6 +83,12 @@ namespace BizHawk.Client.EmuHawk
 				_userDoubleSizeOption = value;
 				RefreshDoubleSizeOption();
 			}
+		}
+
+		private bool CropSGBFrame
+		{
+			get { return cbCropSGBFrame.Checked; }
+			set { cbCropSGBFrame.Checked = value; }
 		}
 
 		void RefreshDoubleSizeOption()

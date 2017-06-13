@@ -1,18 +1,19 @@
 ﻿using BizHawk.Common;
+using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class Mapper112 : NES.NESBoardBase
 	{
 		//configuration
-		int prg_bank_mask_8k, chr_bank_mask_1k;
+		int prg_bank_mask_8k, chr_bank_mask_1k, chr_outer_reg;
 
 		//state
 		int reg_addr;
 		ByteBuffer regs = new ByteBuffer(8);
 
 		//volatile state
-		ByteBuffer chr_regs_1k = new ByteBuffer(8);
+		IntBuffer chr_regs_1k = new IntBuffer(8);
 		ByteBuffer prg_regs_8k = new ByteBuffer(4);
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -48,12 +49,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			ser.Sync("reg_addr", ref reg_addr);
 			ser.Sync("regs", ref regs);
+			ser.Sync("chr_outer_Reg", ref chr_outer_reg);
 			Sync();
 		}
 
 		public override void WritePRG(int addr, byte value)
 		{
-			//Console.WriteLine("{0:X4} = {1:X2}", addr, value);
+			
 			switch (addr & 0x6001)
 			{
 				case 0x0000: //$8000
@@ -61,6 +63,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					break;
 				case 0x2000: //$A000
 					regs[reg_addr] = value;
+					Sync();
+					break;
+				case 0x4000:
+					Console.WriteLine("{0:X4} = {1:X2}", addr, value);
+					chr_outer_reg = value;
 					Sync();
 					break;
 				case 0x6000:
@@ -88,14 +95,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			byte r1_0 = (byte)(regs[3] & ~1);
 			byte r1_1 = (byte)(regs[3] | 1);
 
+			int temp4 = (chr_outer_reg & 0x10) << 4;
+			int temp5 = (chr_outer_reg & 0x20) << 3;
+			int temp6 = (chr_outer_reg & 0x40) << 2;
+			int temp7 = (chr_outer_reg & 0x80) << 1;
+
 			chr_regs_1k[0] = r0_0;
 			chr_regs_1k[1] = r0_1;
 			chr_regs_1k[2] = r1_0;
 			chr_regs_1k[3] = r1_1;
-			chr_regs_1k[4] = regs[4];
-			chr_regs_1k[5] = regs[5];
-			chr_regs_1k[6] = regs[6];
-			chr_regs_1k[7] = regs[7];
+			chr_regs_1k[4] = temp4 | regs[4];
+			chr_regs_1k[5] = temp5 | regs[5];
+			chr_regs_1k[6] = temp6 | regs[6];
+			chr_regs_1k[7] = temp7 | regs[7];
 		}
 
 		public int Get_PRGBank_8K(int addr)

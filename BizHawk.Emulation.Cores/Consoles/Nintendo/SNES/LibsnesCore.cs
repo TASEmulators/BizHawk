@@ -485,10 +485,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				xskip = 2;
 			}
 
+			if (_settings.CropSGBFrame)
+			{
+				_videoWidth = 160;
+				_videoHeight = 144;
+			}
+
 			int size = _videoWidth * _videoHeight;
 			if (_videoBuffer.Length != size)
 			{
 				_videoBuffer = new int[size];
+			}
+
+			if (_settings.CropSGBFrame)
+			{
+				int di = 0;
+				for (int y = 0; y < 144; y++)
+				{
+					int si = ((y+39) * srcPitch) + 48;
+					for(int x=0;x<160;x++)
+						_videoBuffer[di++] = data[si++];
+				}
+				return;
 			}
 
 			for (int j = 0; j < 2; j++)

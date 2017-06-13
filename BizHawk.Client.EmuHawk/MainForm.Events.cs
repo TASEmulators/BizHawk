@@ -1963,6 +1963,20 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
+		#region Atari7800
+
+		private void A7800SubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			A7800ControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+		}
+
+		private void A7800SettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new A7800ControllerSettings().ShowDialog();
+		}
+
+		#endregion
+
 		#region GB
 
 		private void GBSubMenu_DropDownOpened(object sender, EventArgs e)

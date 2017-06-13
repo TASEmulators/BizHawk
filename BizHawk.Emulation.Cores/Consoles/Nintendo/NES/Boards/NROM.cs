@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case "NAMCOT-3305":
 				case "NAMCOT-3311":
 				case "NAMCOT-3312":
+				case "NAMCOT-NROM-128":
 				case "NES-NROM-128":
 				case "NES-NROM-256": //10 yard fight
 				case "NES-RROM-128":
