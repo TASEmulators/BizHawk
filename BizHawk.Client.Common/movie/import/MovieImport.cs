@@ -12,6 +12,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
 
 using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 namespace BizHawk.Client.Common
 {
@@ -1490,8 +1491,9 @@ namespace BizHawk.Client.Common
 
 			m.Header[HeaderKeys.PLATFORM] = platform;
 
-			var ss = new LibsnesCore.SnesSyncSettings { Profile = "Compatibility" };
+			var ss = new LibsnesCore.SnesSyncSettings();
 			m.SyncSettingsJson = ConfigService.SaveWithType(ss);
+			Global.Config.SNES_InSnes9x = true; // This could be annoying to a user if they don't notice we set this preference, but the alternative is for the movie import to fail to load the movie
 
 			return m;
 		}
@@ -2324,9 +2326,9 @@ namespace BizHawk.Client.Common
 			r.Close();
 			fs.Close();
 
-			var ss = new LibsnesCore.SnesSyncSettings { Profile = "Compatibility" };
+			var ss = new Snes9x.SyncSettings();
 			m.SyncSettingsJson = ConfigService.SaveWithType(ss);
-
+			Global.Config.SNES_InSnes9x = true; // This could be annoying to a user if they don't notice we set this preference, but the alternative is for the movie import to fail to load the movie
 			return m;
 		}
 		
