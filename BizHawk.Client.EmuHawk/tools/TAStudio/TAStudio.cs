@@ -8,7 +8,7 @@ using System.ComponentModel;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
-using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 using BizHawk.Client.Common;
 using BizHawk.Client.Common.MovieConversionExtensions;
@@ -300,39 +300,33 @@ namespace BizHawk.Client.EmuHawk
 			Mainform.PauseOnFrame = null;
 			Mainform.PauseEmulator();
 
-			// Start Scenario 0: bsnes in performance mode (copied from RecordMovieMenuItem_Click())
-			if (Emulator is LibsnesCore)
+			// Start Scenario 0: snes9x needs a nag (copied from RecordMovieMenuItem_Click())
+			if (Emulator is Snes9x)
 			{
-				var snes = (LibsnesCore)Emulator;
-				if (snes.CurrentProfile == "Performance")
+				var box = new CustomControls.MsgBox(
+					"While the Snes9x core is faster, it is not nearly as accurate as bsnes. \nIt is recommended that you switch to the bsnes core for movie recording\nSwitch to bsnes?",
+					"Accuracy Warning",
+					MessageBoxIcon.Warning);
+
+				box.SetButtons(
+					new[] { "Switch", "Cancel" },
+					new[] { DialogResult.Yes, DialogResult.Cancel });
+
+				box.MaximumSize = new Size(475, 350);
+				box.SetMessageToAutoSize();
+				var result = box.ShowDialog();
+
+				if (result == DialogResult.Yes)
 				{
-					var box = new CustomControls.MsgBox(
-						"While the performance core is faster, it is not stable enough for movie recording\n\nSwitch to Compatibility?",
-						"Stability Warning",
-						MessageBoxIcon.Warning);
-
-					box.SetButtons(
-						new[] { "Switch", "Cancel" },
-						new[] { DialogResult.Yes, DialogResult.Cancel });
-
-					box.MaximumSize = new Size(450, 350);
-					box.SetMessageToAutoSize();
-					var result = box.ShowDialog();
-
-					if (result == DialogResult.Yes)
-					{
-						var ss = snes.GetSyncSettings();
-						ss.Profile = "Compatibility";
-						snes.PutSyncSettings(ss);
-						Mainform.RebootCore();
-					}
-					else if (result == DialogResult.Cancel)
-					{
-						return false;
-					}
+					Global.Config.SNES_InSnes9x = false;
+					Mainform.RebootCore();
+				}
+				else if (result == DialogResult.Cancel)
+				{
+					return false;
 				}
 			}
-			
+
 			// Start Scenario 1: A regular movie is active
 			if (Global.MovieSession.Movie.IsActive && !(Global.MovieSession.Movie is TasMovie))
 			{
