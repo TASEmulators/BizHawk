@@ -28,19 +28,18 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-<<<<<<< HEAD
             this.btnOk = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
             this.cbDoubleSize = new System.Windows.Forms.CheckBox();
             this.lblDoubleSize = new System.Windows.Forms.Label();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
-			this.cbCropSGBFrame = new System.Windows.Forms.CheckBox();
+            this.cbCropSGBFrame = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnOk
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOk.Location = new System.Drawing.Point(136, 117);
+            this.btnOk.Location = new System.Drawing.Point(136, 141);
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size(75, 23);
             this.btnOk.TabIndex = 0;
@@ -52,7 +51,7 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(217, 117);
+            this.btnCancel.Location = new System.Drawing.Point(217, 141);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 1;
@@ -95,7 +94,7 @@
             // cbCropSGBFrame
             // 
             this.cbCropSGBFrame.AutoSize = true;
-            this.cbCropSGBFrame.Location = new System.Drawing.Point(15, 211);
+            this.cbCropSGBFrame.Location = new System.Drawing.Point(15, 110);
             this.cbCropSGBFrame.Name = "cbCropSGBFrame";
             this.cbCropSGBFrame.Size = new System.Drawing.Size(105, 17);
             this.cbCropSGBFrame.TabIndex = 10;
@@ -108,8 +107,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(304, 152);
-            this.Controls.Add(this.cbCropSGBFrame)
+            this.ClientSize = new System.Drawing.Size(304, 176);
+            this.Controls.Add(this.cbCropSGBFrame);
             this.Controls.Add(this.lblDoubleSize);
             this.Controls.Add(this.cbDoubleSize);
             this.Controls.Add(this.btnCancel);
@@ -123,6 +122,7 @@
             this.Text = "SNES Options";
             this.ResumeLayout(false);
             this.PerformLayout();
+
 		}
 
 		#endregion

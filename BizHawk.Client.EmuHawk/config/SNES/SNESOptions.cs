@@ -36,41 +36,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void SNESOptions_Load(object sender, EventArgs e)
-		{
-			rbAccuracy.Visible = label2.Visible = VersionInfo.DeveloperBuild;
-		}
-
-		private string Profile
-		{
-			get
-			{
-				if (rbCompatibility.Checked)
-				{
-					return "Compatibility";
-				}
-
-				if (rbPerformance.Checked)
-				{
-					return "Performance";
-				}
-
-				if (rbAccuracy.Checked)
-				{
-					return "Accuracy";
-				}
-
-				throw new InvalidOperationException();
-			}
-
-			set
-			{
-				rbCompatibility.Checked = value == "Compatibility";
-				rbPerformance.Checked = value == "Performance";
-				rbAccuracy.Checked = value == "Accuracy";
-			}
-		}
-
 		private bool AlwaysDoubleSize
 		{
 			get

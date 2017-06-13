@@ -59,9 +59,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			if (s != null && settingschanged)
+			if (_s != null && settingschanged)
 			{
-				GlobalWin.MainForm.PutCoreSettings(s);
+				GlobalWin.MainForm.PutCoreSettings(_s);
 			}
 
 			if (_ss != null && _syncsettingschanged)
