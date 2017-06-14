@@ -334,7 +334,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					default:
 					case SeekOrigin.Begin:
-						newpos = 0;
+						newpos = offset;
 						break;
 					case SeekOrigin.Current:
 						newpos = _pos + offset;
