@@ -552,9 +552,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			if (o.ShowBg1) l |= 2;
 			if (o.ShowBg2) l |= 4;
 			if (o.ShowBg3) l |= 8;
-			if (o.ShowSprites) l |= 16;
 			if (o.ShowWindow) l |= 32;
 			if (o.ShowTransparency) l |= 64;
+			if (o.ShowSprites0) l |= 256;
+			if (o.ShowSprites1) l |= 512;
+			if (o.ShowSprites2) l |= 1024;
+			if (o.ShowSprites3) l |= 2048;
 			_core.biz_set_layers(l);
 
 			return false; // no reboot needed
@@ -618,8 +621,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			public bool ShowBg3 { get; set; }
 
 			[DefaultValue(true)]
-			[DisplayName("Show Sprites")]
-			public bool ShowSprites { get; set; }
+			[DisplayName("Show Sprites Priority 1")]
+			public bool ShowSprites0 { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Show Sprites Priority 2")]
+			public bool ShowSprites1 { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Show Sprites Priority 3")]
+			public bool ShowSprites2 { get; set; }
+
+			[DefaultValue(true)]
+			[DisplayName("Show Sprites Priority 4")]
+			public bool ShowSprites3 { get; set; }
 
 			[DefaultValue(true)]
 			[DisplayName("Show Window")]
