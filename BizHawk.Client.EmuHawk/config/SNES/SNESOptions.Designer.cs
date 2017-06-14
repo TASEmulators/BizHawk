@@ -119,7 +119,7 @@
             this.Name = "SNESOptions";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "SNES Options";
+            this.Text = "BSNES Options";
             this.ResumeLayout(false);
             this.PerformLayout();
 
