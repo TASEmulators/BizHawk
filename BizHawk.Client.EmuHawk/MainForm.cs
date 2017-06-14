@@ -1259,8 +1259,67 @@ namespace BizHawk.Client.EmuHawk
 
 		private LibsnesCore AsSNES => Emulator as LibsnesCore;
 
+		private void SNES_ToggleBG(int layer)
+		{
+			if (!(Emulator is LibsnesCore) && !(Emulator is Snes9x))
+			{
+				return;
+			}
+
+			if (layer < 1 || layer > 4)
+			{
+				return;
+			}
+
+			bool result = false;
+			if (Emulator is LibsnesCore)
+			{
+				var s = ((LibsnesCore)Emulator).GetSettings();
+				switch (layer)
+				{
+					case 1:
+						result = s.ShowBG1_0 = s.ShowBG1_1 ^= true;
+						break;
+					case 2:
+						result = s.ShowBG2_0 = s.ShowBG2_1 ^= true;
+						break;
+					case 3:
+						result = s.ShowBG3_0 = s.ShowBG3_1 ^= true;
+						break;
+					case 4:
+						result = s.ShowBG4_0 = s.ShowBG4_1 ^= true;
+						break;
+				}
+
+				((LibsnesCore)Emulator).PutSettings(s);
+			}
+			else if (Emulator is Snes9x)
+			{
+				var s = ((Snes9x)Emulator).GetSettings();
+				switch (layer)
+				{
+					case 1:
+						result = s.ShowBg0 ^= true;
+						break;
+					case 2:
+						result = s.ShowBg1 ^= true;
+						break;
+					case 3:
+						result = s.ShowBg2 ^= true;
+						break;
+					case 4:
+						result = s.ShowBg3 ^= true;
+						break;
+				}
+
+				((Snes9x)Emulator).PutSettings(s);
+			}
+
+			GlobalWin.OSD.AddMessage($"BG {layer} Layer " + (result ? "On" : "Off"));
+		}
+
 		// TODO: Clean Me!
-		private void SNES_ToggleBG1(bool? setto = null)
+		private void SNES_ToggleObj1()
 		{
 			if (!(Emulator is LibsnesCore))
 			{
@@ -1268,104 +1327,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
-			{
-				s.ShowBG1_1 = s.ShowBG1_0 = setto.Value;
-			}
-			else
-			{
-				s.ShowBG1_1 = s.ShowBG1_0 ^= true;
-			}
-
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowBG1_1 ? "BG 1 Layer On" : "BG 1 Layer Off");
-		}
-
-		private void SNES_ToggleBG2(bool? setto = null)
-		{
-			if (!(Emulator is LibsnesCore))
-			{
-				return;
-			}
-
-			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
-			{
-				s.ShowBG2_1 = s.ShowBG2_0 = setto.Value;
-			}
-			else
-			{
-				s.ShowBG2_1 = s.ShowBG2_0 ^= true;
-			}
-
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowBG2_1 ? "BG 2 Layer On" : "BG 2 Layer Off");
-		}
-
-		private void SNES_ToggleBG3(bool? setto = null)
-		{
-			if (!(Emulator is LibsnesCore))
-			{
-				return;
-			}
-
-			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
-			{
-				s.ShowBG3_1 = s.ShowBG3_0 = setto.Value;
-			}
-			else
-			{
-				s.ShowBG3_1 = s.ShowBG3_0 ^= true;
-			}
-
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowBG3_1 ? "BG 3 Layer On" : "BG 3 Layer Off");
-		}
-
-		private void SNES_ToggleBG4(bool? setto = null)
-		{
-			if (!(Emulator is LibsnesCore))
-			{
-				return;
-			}
-
-			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
-			{
-				s.ShowBG4_1 = s.ShowBG4_0 = setto.Value;
-			}
-			else
-			{
-				s.ShowBG4_1 = s.ShowBG4_0 ^= true;
-			}
-
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowBG4_1 ? "BG 4 Layer On" : "BG 4 Layer Off");
-		}
-
-		private void SNES_ToggleObj1(bool? setto = null)
-		{
-			if (!(Emulator is LibsnesCore))
-			{
-				return;
-			}
-
-			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
-			{
-				s.ShowOBJ_0 = setto.Value;
-			}
-			else
-			{
-				s.ShowOBJ_0 ^= true;
-			}
+			s.ShowOBJ_0 ^= true;
 
 			AsSNES.PutSettings(s);
 			GlobalWin.OSD.AddMessage(s.ShowOBJ_0 ? "OBJ 1 Layer On" : "OBJ 1 Layer Off");
 		}
 
-		private void SNES_ToggleObj2(bool? setto = null)
+		private void SNES_ToggleObj2()
 		{
 			if (!(Emulator is LibsnesCore))
 			{
@@ -1373,20 +1341,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
-			{
-				s.ShowOBJ_1 = setto.Value;
-			}
-			else
-			{
-				s.ShowOBJ_1 ^= true;
-			}
+			s.ShowOBJ_1 ^= true;
 
 			AsSNES.PutSettings(s);
 			GlobalWin.OSD.AddMessage(s.ShowOBJ_1 ? "OBJ 2 Layer On" : "OBJ 2 Layer Off");
 		}
 
-		private void SNES_ToggleOBJ3(bool? setto = null)
+		private void SNES_ToggleOBJ3()
 		{
 			if (!(Emulator is LibsnesCore))
 			{
@@ -1394,20 +1355,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
-			{
-				s.ShowOBJ_2 = setto.Value;
-			}
-			else
-			{
-				s.ShowOBJ_2 ^= true;
-			}
+			s.ShowOBJ_2 ^= true;
 
 			AsSNES.PutSettings(s);
 			GlobalWin.OSD.AddMessage(s.ShowOBJ_2 ? "OBJ 3 Layer On" : "OBJ 3 Layer Off");
 		}
 
-		private void SNES_ToggleOBJ4(bool? setto = null)
+		private void SNES_ToggleOBJ4()
 		{
 			if (!(Emulator is LibsnesCore))
 			{
@@ -1415,14 +1369,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
-			{
-				s.ShowOBJ_3 = setto.Value;
-			}
-			else
-			{
-				s.ShowOBJ_3 ^= true;
-			}
+			s.ShowOBJ_3 ^= true;
 
 			AsSNES.PutSettings(s);
 			GlobalWin.OSD.AddMessage(s.ShowOBJ_3 ? "OBJ 4 Layer On" : "OBJ 4 Layer Off");
