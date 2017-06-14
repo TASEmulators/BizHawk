@@ -8,16 +8,16 @@ struct Buffer {
 
   void setChannels(unsigned channels) {
     for(unsigned c = 0; c < this->channels; c++) {
-      if(sample[c]) delete[] sample[c];
+      if(sample[c]) abort();
     }
-    if(sample) delete[] sample;
+    if(sample) abort();
 
     this->channels = channels;
     if(channels == 0) return;
 
-    sample = new double*[channels];
+    sample = (double**)alloc_invisible(channels * sizeof(*sample));
     for(unsigned c = 0; c < channels; c++) {
-      sample[c] = new double[65536]();
+      sample[c] = (double*)alloc_invisible(65536 * sizeof(**sample));
     }
   }
 
