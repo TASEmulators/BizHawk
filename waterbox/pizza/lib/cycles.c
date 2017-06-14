@@ -96,34 +96,6 @@ void cycles_set_speed(char dbl)
     cycles_change_emulation_speed();
 } 
 
-/* set emulation speed */
-void cycles_change_emulation_speed()
-{
-    switch (global_emulation_speed)
-    {
-        case GLOBAL_EMULATION_SPEED_QUARTER:
-            cycles.step = ((4194304 / CYCLES_PAUSES) / 4 
-                          << global_cpu_double_speed);
-            break;
-        case GLOBAL_EMULATION_SPEED_HALF:
-            cycles.step = ((4194304 / CYCLES_PAUSES) / 2 
-                          << global_cpu_double_speed);
-            break;
-        case GLOBAL_EMULATION_SPEED_NORMAL:
-            cycles.step = ((4194304 / CYCLES_PAUSES) 
-                          << global_cpu_double_speed);
-            break;
-        case GLOBAL_EMULATION_SPEED_DOUBLE:
-            cycles.step = ((4194304 / CYCLES_PAUSES) * 2 
-                          << global_cpu_double_speed);
-            break;
-        case GLOBAL_EMULATION_SPEED_4X:
-            cycles.step = ((4194304 / CYCLES_PAUSES) * 4
-                          << global_cpu_double_speed);
-            break;
-    }
-}
-
 void cycles_closest_next()
 {
     int_fast32_t diff = cycles.cnt - cycles.next;
@@ -393,17 +365,3 @@ void cycles_stop_timer()
 void cycles_term()
 {
 }
-
-void cycles_save_stat(FILE *fp)
-{
-    fwrite(&cycles, 1, sizeof(cycles_t), fp);
-}
-
-void cycles_restore_stat(FILE *fp)
-{
-    fread(&cycles, 1, sizeof(cycles_t), fp);
-
-    /* recalc speed stuff */
-    cycles_change_emulation_speed();
-}
-

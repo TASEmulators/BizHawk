@@ -20,21 +20,6 @@
 #ifndef __UTILS_HDR__
 #define __UTILS_HDR__
 
-#include <pthread.h>
-
-/* binary semaphore */
-typedef struct utils_binary_sem_s 
-{
-    pthread_mutex_t mutex;
-    pthread_cond_t cvar;
-    int v;
-
-} utils_binary_sem_t;
-
-/* prototypes */
-void    utils_binary_sem_init(utils_binary_sem_t *p);
-void    utils_binary_sem_post(utils_binary_sem_t *p);
-void    utils_binary_sem_wait(utils_binary_sem_t *p, unsigned int nanosecs);
 void    utils_log(const char *format, ...);
 void    utils_log_urgent(const char *format, ...);
 void    utils_ts_log(const char *format, ...);

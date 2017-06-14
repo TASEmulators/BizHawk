@@ -25,15 +25,9 @@
 #include "utils.h"
 
 #include <errno.h>
-#include <pthread.h>
-#include <semaphore.h>
 #include <string.h>
 #include <strings.h>
 #include <sys/time.h>
-
-/* semaphore for audio sync */
-pthread_cond_t    sound_cond;
-pthread_mutex_t   sound_mutex;
 
 /* super variable for audio controller */
 sound_t sound;
@@ -109,10 +103,6 @@ void sound_init()
     sound.buf_rd = 0;
     sound.buf_available = 0;
 
-    /* init semaphore for sync */
-    pthread_mutex_init(&sound_mutex, NULL);
-    pthread_cond_init(&sound_cond, NULL);
-
     /* how many cpu cycles we need to emit a 512hz clock (frame sequencer) */
     sound.fs_cycles = 4194304 / 512;
 
@@ -125,9 +115,6 @@ void sound_init()
 
     sound.sample_cycles_next = sound.sample_cycles / 1000;
     sound.sample_cycles_next_rounded = sound.sample_cycles_next & 0xFFFFFFFC;
-
-    /* init multiplier */
-    sound.frame_multiplier = 1;
   
     /* no, i'm not empty */
     sound.buf_empty = 0;
@@ -147,16 +134,6 @@ void sound_set_speed(char dbl)
         sound.step_int = 4;
         sound.step_int1000 = 4000;
     }
-}
-
-void sound_change_emulation_speed()
-{
-    if (global_emulation_speed == GLOBAL_EMULATION_SPEED_HALF)
-        sound.frame_multiplier = 2;
-    else if (global_emulation_speed == GLOBAL_EMULATION_SPEED_QUARTER)
-        sound.frame_multiplier = 4;
-    else
-        sound.frame_multiplier = 1; 
 }
 
 /* update sound internal state given CPU T-states */
@@ -276,13 +253,6 @@ void sound_step_sample()
     /* update output frame counter */
     sound.frame_counter++;
 
-    /* is it the case to push samples? */
-    if (((global_emulation_speed == GLOBAL_EMULATION_SPEED_DOUBLE &&
-        (sound.frame_counter & 0x0001) != 0) ||
-        (global_emulation_speed == GLOBAL_EMULATION_SPEED_4X &&
-        (sound.frame_counter & 0x0003) != 0)))
-        return;
-
     /* DAC turned off? */
     if (sound.nr30->dac == 0 && 
         sound.channel_one.active == 0 && 
@@ -369,13 +339,8 @@ void sound_step_sample()
             sample_left += sound.channel_four.sample;
     }
 
-    int i;
-
-    for (i=0; i<sound.frame_multiplier; i++)
-    { 
         /* push the sum of all channels samples */
         sound_push_samples(sample_left, sample_right);
-    }
 }
 
 /* update length of channel1 */
@@ -1469,16 +1434,4 @@ void sound_term()
         sound.buf_empty = 0;
         pthread_cond_signal(&sound_cond);
     }
-}
-
-void sound_save_stat(FILE *fp)
-{
-    fwrite(&sound, 1, sizeof(sound_t), fp);
-}
-
-void sound_restore_stat(FILE *fp)
-{
-    fread(&sound, 1, sizeof(sound_t), fp);
-
-    sound_init_pointers();
 }

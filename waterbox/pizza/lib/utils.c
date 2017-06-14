@@ -106,34 +106,3 @@ void utils_ts_log(const char *format, ...)
 
     va_end(args);
 }
-
-void utils_binary_sem_init(utils_binary_sem_t *p)
-{
-    pthread_mutex_init(&p->mutex, NULL);
-    pthread_cond_init(&p->cvar, NULL);
-    p->v = 0;
-}
-
-void utils_binary_sem_post(utils_binary_sem_t *p)
-{
-    pthread_mutex_lock(&p->mutex);
-    p->v = 1;
-    pthread_cond_signal(&p->cvar);
-    pthread_mutex_unlock(&p->mutex);
-}
-
-void utils_binary_sem_wait(utils_binary_sem_t *p, unsigned int nanosecs)
-{
-    struct timespec ts;
-
-    ts.tv_sec = time(NULL) + nanosecs / 1000000000;
-    ts.tv_nsec = nanosecs % 1000000000;
-
-    pthread_mutex_lock(&p->mutex);
-    while (!p->v)
-        if (pthread_cond_timedwait(&p->cvar, &p->mutex, &ts) == ETIMEDOUT)
-            break;
-    p->v = 0;
-    pthread_mutex_unlock(&p->mutex);
-}
-

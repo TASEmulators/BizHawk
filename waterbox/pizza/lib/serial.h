@@ -88,10 +88,8 @@ void    serial_verify_intr();
 uint8_t serial_read_reg(uint16_t a);
 void    serial_recv_byte(uint8_t v, uint8_t clock, uint8_t transfer_start);
 void    serial_recv_clock();
-void    serial_save_stat(FILE *fp);
 void    serial_send_byte();
 void    serial_set_send_cb(serial_data_send_cb_t cb);
-void    serial_restore_stat(FILE *fp);
 void    serial_unlock();
 void    serial_wait_data();
 

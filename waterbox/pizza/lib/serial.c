@@ -92,16 +92,6 @@ void serial_init()
     pthread_cond_init(&serial_cond, NULL);
 }
 
-void serial_save_stat(FILE *fp)
-{
-    fwrite(&serial, 1, sizeof(serial_t), fp);
-}
-
-void serial_restore_stat(FILE *fp)
-{
-    fread(&serial, 1, sizeof(serial_t), fp);
-}
-
 void serial_write_reg(uint16_t a, uint8_t v)
 {
     /* lock the serial */

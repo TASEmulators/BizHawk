@@ -99,4 +99,3 @@ void input_set_key_a(char state) { input_key_a = state; }
 void input_set_key_b(char state) { input_key_b = state; }
 void input_set_key_select(char state) { input_key_select = state; }
 void input_set_key_start(char state) { input_key_start = state; }
-

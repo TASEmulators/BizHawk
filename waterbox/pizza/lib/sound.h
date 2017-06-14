@@ -277,7 +277,6 @@ typedef struct sound_s
 
     /* emulation speed stuff */
     uint_fast16_t     frame_counter;
-    uint_fast16_t     frame_multiplier;
 
     /* circular audio buffer stuff */
     uint_fast16_t     buf_rd;
@@ -318,8 +317,6 @@ int      sound_get_samples();
 void     sound_init();
 void     sound_read_buffer(void *userdata, uint8_t *stream, int snd_len);
 uint8_t  sound_read_reg(uint16_t a, uint8_t v);
-void     sound_restore_stat(FILE *fp);
-void     sound_save_stat(FILE *fp);
 void     sound_set_speed(char dbl);
 void     sound_set_output_rate(int freq);
 void     sound_step_fs();

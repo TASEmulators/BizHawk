@@ -172,14 +172,6 @@ char cartridge_load(char *file_gb)
     /* save base name of the rom */
     strncpy(global_rom_name, basename(file_gb), 256);
 
-    /* build file.sav */
-    snprintf(file_sav, sizeof(file_sav), "%s/%s.sav", 
-                                         global_save_folder, global_rom_name);
-
-    /* build file.rtc */
-    snprintf(file_rtc, sizeof(file_rtc), "%s/%s.rtc", 
-                                         global_save_folder, global_rom_name);
-
     /* restore saved RAM if it's the case */
     mmu_restore_ram(file_sav);
 

@@ -23,8 +23,6 @@
 /* prototypes */
 void gameboy_init();
 void gameboy_run();
-char gameboy_restore_stat(int idx);
-char gameboy_save_stat(int idx);
 void gameboy_set_pause(char pause);
 void gameboy_stop();
 

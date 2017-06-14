@@ -181,11 +181,11 @@ void gpu_draw_frame()
     gpu.frame_counter++;
 
     /* is it the case to push samples? */
-    if ((global_emulation_speed == GLOBAL_EMULATION_SPEED_DOUBLE &&
+    /*if ((global_emulation_speed == GLOBAL_EMULATION_SPEED_DOUBLE &&
         (gpu.frame_counter & 0x0001) != 0) ||
         (global_emulation_speed == GLOBAL_EMULATION_SPEED_4X &&
         (gpu.frame_counter & 0x0003) != 0))
-        return;
+        return;*/
 
     uint_fast32_t i,r,g,b,r2,g2,b2,res;
 
@@ -257,11 +257,11 @@ void gpu_draw_line(uint8_t line)
         return;
 
     /* is it the case to push samples? */
-    if ((global_emulation_speed == GLOBAL_EMULATION_SPEED_DOUBLE &&
+    /*if ((global_emulation_speed == GLOBAL_EMULATION_SPEED_DOUBLE &&
         (gpu.frame_counter & 0x0001) != 0) ||
         (global_emulation_speed == GLOBAL_EMULATION_SPEED_4X &&
         (gpu.frame_counter & 0x0003) != 0))
-        return;
+        return;*/
 
     int i, t, y, px_start, px_drawn;
     uint8_t *tiles_map, tile_subline, palette_idx, x_flip, priority;
@@ -689,14 +689,7 @@ void gpu_draw_sprite_line(gpu_oam_t *oam, uint8_t sprites_size, uint8_t line)
     int16_t  tile_ptr;
     uint16_t *palette;
     uint8_t *tiles;
-  
-    /* is it the case to push samples? */
-/*    if ((global_emulation_speed == GLOBAL_EMULATION_SPEED_DOUBLE &&
-        (gpu.frame_counter & 0x01) != 0) ||
-        (global_emulation_speed == GLOBAL_EMULATION_SPEED_4X &&
-        (gpu.frame_counter & 0x03) != 0))
-        return; */
- 
+
     /* REMEMBER! position of sprites is relative to the visible screen area */
     /* ... and y is shifted by 16 pixels, x by 8                            */
     y = oam->y - 16;
@@ -1159,21 +1152,3 @@ void gpu_set_speed(char speed)
     else
         gpu.step = 4;
 }
-
-void gpu_save_fb(FILE *fp)
-{
-    fwrite(&gpu.frame_buffer, 1, sizeof(int16_t) * 144 * 160, fp);
-}
-
-void gpu_save_stat(FILE *fp)
-{
-    fwrite(&gpu, 1, sizeof(gpu_t), fp);
-}
-
-void gpu_restore_stat(FILE *fp)
-{
-    fread(&gpu, 1, sizeof(gpu_t), fp);
-
-    gpu_init_pointers();
-}
-

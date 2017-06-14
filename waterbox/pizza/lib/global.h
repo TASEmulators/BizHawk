@@ -20,15 +20,6 @@
 #ifndef __GLOBAL__
 #define __GLOBAL__
 
-/* defines */
-enum {
-    GLOBAL_EMULATION_SPEED_QUARTER,
-    GLOBAL_EMULATION_SPEED_HALF,
-    GLOBAL_EMULATION_SPEED_NORMAL,
-    GLOBAL_EMULATION_SPEED_DOUBLE,
-    GLOBAL_EMULATION_SPEED_4X
-};
-
 extern char global_quit;
 extern char global_pause;
 extern char global_window;
@@ -39,9 +30,7 @@ extern char global_next_frame;
 extern char global_cpu_double_speed;
 extern char global_slow_down;
 extern char global_record_audio;
-extern char global_emulation_speed;
 extern char global_rumble;
-extern char global_save_folder[256];
 extern char global_rom_name[256];
 extern char global_cart_name[256];
 

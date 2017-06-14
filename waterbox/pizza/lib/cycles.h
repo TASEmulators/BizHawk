@@ -63,8 +63,6 @@ typedef void (*cycles_send_cb_t) (uint32_t v);
 void cycles_change_emulation_speed();
 void cycles_hdma();
 char cycles_init();
-void cycles_restore_stat(FILE *fp);
-void cycles_save_stat(FILE *fp);
 void cycles_set_speed(char dbl);
 void cycles_start_hs();
 char cycles_start_timer();

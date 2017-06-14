@@ -26,7 +26,6 @@ char global_cart_name[256];
 char global_cgb;
 char global_cpu_double_speed;
 char global_debug;
-char global_emulation_speed;
 char global_next_frame;
 char global_pause;
 char global_quit;
@@ -34,7 +33,6 @@ char global_record_audio;
 char global_rom_name[256];
 char global_rumble;
 char global_slow_down;
-char global_save_folder[256];
 char global_window;
 
 void global_init()
@@ -49,8 +47,6 @@ void global_init()
     global_record_audio = 0;
     global_next_frame = 0;
     global_rumble = 0;
-    global_emulation_speed = GLOBAL_EMULATION_SPEED_NORMAL;
-    // bzero(global_save_folder, 256);
     bzero(global_rom_name, 256);
     sprintf(global_cart_name, "NOCARTIRDGE");
 }
