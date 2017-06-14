@@ -325,7 +325,6 @@ void     sound_step_ch2();
 void     sound_step_ch3();
 void     sound_step_ch4();
 void     sound_step_sample();
-void     sound_term();
 void     sound_write_reg(uint16_t a, uint8_t v);
 
 #endif

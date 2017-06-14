@@ -17,8 +17,6 @@
 
 */
 
-#include <pthread.h>
-
 #include "cycles.h"
 #include "interrupt.h"
 #include "mmu.h"
@@ -32,10 +30,6 @@ serial_t serial;
 serial_data_send_cb_t serial_data_send_cb;
 
 interrupts_flags_t *serial_if;
-
-/* mutexes for serial sync */
-pthread_cond_t    serial_cond;
-pthread_mutex_t   serial_mutex;
 
 /* second message before the first was handled? */
 uint8_t serial_second_set = 0;
@@ -86,17 +80,10 @@ void serial_init()
 
     /* start as not connected */
     serial.peer_connected = 0;
-
-    /* init semaphore for sync */
-    pthread_mutex_init(&serial_mutex, NULL);
-    pthread_cond_init(&serial_cond, NULL);
 }
 
 void serial_write_reg(uint16_t a, uint8_t v)
 {
-    /* lock the serial */
-    pthread_mutex_lock(&serial_mutex);
-
     switch (a)
     {
     case 0xFF01: 
@@ -122,8 +109,6 @@ void serial_write_reg(uint16_t a, uint8_t v)
     } 
 
 end:
-    /* unlock the serial */
-    pthread_mutex_unlock(&serial_mutex);
 }
 
 uint8_t serial_read_reg(uint16_t a)
@@ -144,9 +129,6 @@ uint8_t serial_read_reg(uint16_t a)
 
 void serial_recv_byte(uint8_t v, uint8_t clock, uint8_t transfer_start)
 {
-    /* lock the serial */
-    pthread_mutex_lock(&serial_mutex);
-
     /* second message during same span time? */
     if (serial.data_recv)
     {
@@ -166,20 +148,14 @@ void serial_recv_byte(uint8_t v, uint8_t clock, uint8_t transfer_start)
     serial.data_recv_transfer_start = transfer_start;
 
     /* notify main thread in case it's waiting */
-    if (serial_waiting_data)
-        pthread_cond_signal(&serial_cond);
+    //if (serial_waiting_data)
+        //pthread_cond_signal(&serial_cond);
 
 end:
-
-    /* unlock the serial */
-    pthread_mutex_unlock(&serial_mutex);
 }
 
 void serial_send_byte()
 {
-    /* lock the serial */
-    pthread_mutex_lock(&serial_mutex);
-
     serial.data_sent = 1;
     serial.data_to_send = serial.data; 
     serial.data_sent_clock = serial.clock; 
@@ -188,9 +164,6 @@ void serial_send_byte()
     if (serial_data_send_cb)
         (*serial_data_send_cb) (serial.data, serial.clock, 
                                 serial.transfer_start);
-
-    /* unlock the serial */
-    pthread_mutex_unlock(&serial_mutex);
 }
 
 void serial_set_send_cb(serial_data_send_cb_t cb)
@@ -200,9 +173,6 @@ void serial_set_send_cb(serial_data_send_cb_t cb)
 
 void serial_wait_data()
 {
-    /* lock the serial */
-    pthread_mutex_lock(&serial_mutex);
-
     if (serial.data_sent && serial.data_recv == 0)
     {
         /* wait max 3 seconds */
@@ -217,12 +187,9 @@ void serial_wait_data()
         serial_waiting_data = 1;
 
         /* notify something has arrived */
-        pthread_cond_timedwait(&serial_cond, &serial_mutex, &wait);
+        // pthread_cond_timedwait(&serial_cond, &serial_mutex, &wait);
 
         /* not waiting anymore */
         serial_waiting_data = 0;
     }
-
-    /* unlock the serial */
-    pthread_mutex_unlock(&serial_mutex);
 }

@@ -396,18 +396,12 @@ void sound_push_samples(int16_t l, int16_t r)
     {
         unsigned int i;
 
-	    /* since we're accessing a shared buffer, lock it */
-        pthread_mutex_lock(&sound_mutex);
-
         /* put them in circular shared buffer */
 	    for (i=0; i<SOUND_BUF_TMP_SZ; i++)
             sound_push_sample(sound.buf_tmp[i]);
 
 	    /* reset counter */
 	    sound.buf_tmp_wr = 0;
-   
-        /* set it free */	
-        pthread_mutex_unlock(&sound_mutex);
     }	    
 }
 
@@ -431,7 +425,7 @@ void sound_push_sample(int16_t s)
     {
         sound.buf_empty = 0;
 
-        pthread_cond_signal(&sound_cond); 
+        //pthread_cond_signal(&sound_cond); 
     }
 
     /* wait for the audio to be played */
@@ -460,24 +454,14 @@ size_t sound_available_samples()
 /* read a block of data from circular buffer */
 void sound_read_samples(int to_read, int16_t *buf)
 {
-    /* lock the buffer */
-    pthread_mutex_lock(&sound_mutex);
-
-    /* am i shutting down? exit */
-    if (global_quit)
-    {
-        pthread_mutex_unlock(&sound_mutex);
-        return;
-    }
-
     /* not enough samples? read what we got */
     if (sound.buf_available < to_read)
     {
         /* stop until we got enough samples */
         sound.buf_empty = 1;
 
-        while (sound.buf_empty && !global_quit)
-            pthread_cond_wait(&sound_cond, &sound_mutex);
+        //while (sound.buf_empty && !global_quit)
+            //pthread_cond_wait(&sound_cond, &sound_mutex);
     }
 
     if (sound.buf_rd + to_read >= SOUND_BUF_SZ)
@@ -503,9 +487,6 @@ void sound_read_samples(int to_read, int16_t *buf)
 
     /* update avaiable samples */
     sound.buf_available -= to_read;
-
-    /* unlock the buffer */
-    pthread_mutex_unlock(&sound_mutex);
 }
 
 /* calc the new frequency by sweep module */
@@ -1425,13 +1406,4 @@ void sound_rebuild_wave()
     sound.channel_three.sample =
         sound.channel_three.wave[sound.channel_three.index];
 
-}
-
-void sound_term()
-{
-    if (sound.buf_empty)
-    {
-        sound.buf_empty = 0;
-        pthread_cond_signal(&sound_cond);
-    }
 }

@@ -35,35 +35,19 @@ uint8_t rom[2 << 24];
 char file_sav[1024];
 char file_rtc[1024];
 
-/* internal use prototype */
-int __mkdirp (char *path, mode_t omode);
-
-
 /* guess what              */
 /* return values           */
 /* 0: OK                   */
 /* 1: Can't open/read file */
 /* 2: Unknown cartridge    */
 
-char cartridge_load(char *file_gb) 
+char cartridge_load(const void* data, size_t sz) 
 {
-    FILE *fp;
     int i,z = 0;
 
-    /* open ROM file */
-    if ((fp = fopen(file_gb, "r")) == NULL) 
+    if (sz < 1 || sz > 2 << 24)
         return 1;
 
-    /* read all the content into rom buffer */
-    size_t sz = fread(rom, 1, (2 << 24), fp);
-
-    /* check for errors   */
-    if (sz < 1) 
-        return 1;
-
-    /* close */
-    fclose(fp);
- 
     /* gameboy color? */
     if (rom[0x143] == 0xC0 || rom[0x143] == 0x80)
     {
@@ -168,9 +152,6 @@ char cartridge_load(char *file_gb)
         case 0x04: mmu_init_ram(1 << 17); utils_log("128 kB\n"); break;
         case 0x05: mmu_init_ram(1 << 16); utils_log("64 kB\n"); break;
     }
-
-    /* save base name of the rom */
-    strncpy(global_rom_name, basename(file_gb), 256);
 
     /* restore saved RAM if it's the case */
     mmu_restore_ram(file_sav);

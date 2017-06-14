@@ -17,8 +17,6 @@
 
 */
 
-#include <semaphore.h>
-#include <signal.h>
 #include <string.h>
 #include <time.h>
 
@@ -32,21 +30,12 @@
 #include "interrupt.h"
 #include "utils.h"
 
-/* timer stuff */
-struct itimerspec cycles_timer;
-timer_t           cycles_timer_id = 0;
-struct sigevent   cycles_te;
-struct sigaction  cycles_sa;
-
 interrupts_flags_t *cycles_if;
 
 /* instance of the main struct */
 cycles_t cycles = { 0, 0, 0, 0 };
 
 #define CYCLES_PAUSES 256
-
-/* sync timing */
-struct timespec deadline;
 
 /* hard sync stuff (for remote connection) */
 uint8_t  cycles_hs_mode = 0;
@@ -94,7 +83,14 @@ void cycles_set_speed(char dbl)
 
     /* calculate the mask */
     cycles_change_emulation_speed();
-} 
+}
+
+/* set emulation speed */
+void cycles_change_emulation_speed()
+{
+            cycles.step = ((4194304 / CYCLES_PAUSES) 
+                          << global_cpu_double_speed);
+}
 
 void cycles_closest_next()
 {
@@ -163,16 +159,6 @@ void cycles_step()
     /* 65536 == cpu clock / CYCLES_PAUSES pauses every second */
     if (cycles.cnt == cycles.next) 
     {
-        deadline.tv_nsec += 1000000000 / CYCLES_PAUSES;
-
-        if (deadline.tv_nsec > 1000000000)
-        {
-            deadline.tv_sec += 1;
-            deadline.tv_nsec -= 1000000000;
-        }
-
-        clock_nanosleep(CLOCK_MONOTONIC, TIMER_ABSTIME, &deadline, NULL);
-        
         cycles.next += cycles.step;
 
         /* update current running seconds */
@@ -328,9 +314,6 @@ void cycles_hdma()
 
 char cycles_init()
 {
-    /* CLOCK */
-    clock_gettime(CLOCK_MONOTONIC, &deadline);
-
     cycles.inited = 1;
 
     /* interrupt registers */
@@ -346,22 +329,4 @@ char cycles_init()
     cycles.next = 4194304 / CYCLES_PAUSES;
 
     return 0;
-}
-
-char cycles_start_timer()
-{
-    /* just pick new time reference */
-    clock_gettime(CLOCK_MONOTONIC, &deadline);
-
-    return 0;
-}
-
-void cycles_stop_timer()
-{
-    if (cycles.inited == 0)
-        return;
-}
-
-void cycles_term()
-{
 }

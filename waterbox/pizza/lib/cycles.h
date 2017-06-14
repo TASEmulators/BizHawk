@@ -65,10 +65,8 @@ void cycles_hdma();
 char cycles_init();
 void cycles_set_speed(char dbl);
 void cycles_start_hs();
-char cycles_start_timer();
 void cycles_step();
 void cycles_stop_hs();
-void cycles_stop_timer();
 void cycles_term();
 void cycles_vblank();
 

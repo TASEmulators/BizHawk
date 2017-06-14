@@ -121,8 +121,10 @@ void gameboy_init()
     state.sp = 0xFFFE;
     *state.f = 0xB0;
 
-    /* init semaphore for pauses */
-    sem_init(&gameboy_sem, 0, 0);
+    /* reset counter */
+    cycles.cnt = 0;
+    /* start at normal speed */
+    global_cpu_double_speed = 0;
 
     /* mark as inited */
     gameboy_inited = 1;
@@ -130,40 +132,9 @@ void gameboy_init()
     return;
 } 
 
-void gameboy_set_pause(char pause)
-{
-    if (!gameboy_inited)
-        return;
-
-    if (pause == global_pause)
-        return;
-
-    global_pause = pause;
-
-    if (pause)
-    {
-        /* wait a bit - i need the main cycle fall into global_pause check */
-        usleep(100000);
-
-        /* stop timer */
-        cycles_stop_timer();
-    }
-    else
-    {
-        /* restart timer */
-        cycles_start_timer();
-
-        /* wake up */
-        sem_post(&gameboy_sem);
-    }
-}
-
 void gameboy_run()
 {
     uint8_t op;
-
-    /* reset counter */
-    cycles.cnt = 0;
 
     /* get interrupt flags and interrupt enables */
     uint8_t *int_e;
@@ -172,9 +143,6 @@ void gameboy_run()
     /* pointers to memory location of interrupt enables/flags */
     int_e = mmu_addr(0xFFFF);
     int_f = mmu_addr(0xFF0F);
-
-    /* start at normal speed */
-    global_cpu_double_speed = 0;
 
     /* run stuff!                                                          */
     /* mechanism is simple.                                                */
@@ -187,10 +155,6 @@ void gameboy_run()
             usleep(100000);
             global_slow_down = 0;
         }*/
-
-        /* pause? */
-        while (global_pause)
-            sem_wait(&gameboy_sem);
 
         /* get op */
         op = mmu_read(state.pc);
@@ -290,28 +254,5 @@ void gameboy_run()
         }
     }
 
-    /* terminate all the stuff */
-    cartridge_term();
-    sound_term();
-    mmu_term();
-
     return; 
-}
-
-void gameboy_stop() 
-{
-    global_quit = 1;
-
-    /* wake up */
-    if (global_pause) 
-    {
-        global_pause = 0;
-        sem_post(&gameboy_sem);
-    }
-
-    /* unlock threads stuck during reading */
-    sound_term();
-
-    /* shutdown semaphore limitator */
-    cycles_term();
 }
