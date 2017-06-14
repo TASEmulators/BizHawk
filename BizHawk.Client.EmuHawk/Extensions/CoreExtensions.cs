@@ -69,11 +69,6 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 			var str = (!attributes.Released ? "(Experimental) " : "") +
 				attributes.CoreName;
 
-			if (core is LibsnesCore)
-			{
-				str += " (" + ((LibsnesCore)core).CurrentProfile + ")";
-			}
-
 			return str;
 		}
 	}
