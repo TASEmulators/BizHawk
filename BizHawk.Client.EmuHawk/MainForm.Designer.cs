@@ -317,15 +317,6 @@
             this.PSXDiscControlsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.PSXHashDiscsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SNESSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.SNESDisplayMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SnesBg1MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SnesBg2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SnesBg3MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SnesBg4MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SnesObj1MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SnesObj2MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SnesObj3MenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SnesObj4MenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SNESControllerConfigurationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator18 = new System.Windows.Forms.ToolStripSeparator();
             this.SnesGfxDebuggerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2869,7 +2860,6 @@
             // SNESSubMenu
             // 
             this.SNESSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.SNESDisplayMenuItem,
             this.SNESControllerConfigurationMenuItem,
             this.toolStripSeparator18,
             this.SnesGfxDebuggerMenuItem,
@@ -2880,78 +2870,6 @@
             this.SNESSubMenu.Size = new System.Drawing.Size(46, 19);
             this.SNESSubMenu.Text = "&SNES";
             this.SNESSubMenu.DropDownOpened += new System.EventHandler(this.SNESSubMenu_DropDownOpened);
-            // 
-            // SNESDisplayMenuItem
-            // 
-            this.SNESDisplayMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.SnesBg1MenuItem,
-            this.SnesBg2MenuItem,
-            this.SnesBg3MenuItem,
-            this.SnesBg4MenuItem,
-            this.SnesObj1MenuItem,
-            this.SnesObj2MenuItem,
-            this.SnesObj3MenuItem,
-            this.SnesObj4MenuItem});
-            this.SNESDisplayMenuItem.Name = "SNESDisplayMenuItem";
-            this.SNESDisplayMenuItem.Size = new System.Drawing.Size(233, 22);
-            this.SNESDisplayMenuItem.Text = "Display";
-            this.SNESDisplayMenuItem.DropDownOpened += new System.EventHandler(this.SNESDisplayMenuItem_DropDownOpened);
-            // 
-            // SnesBg1MenuItem
-            // 
-            this.SnesBg1MenuItem.Name = "SnesBg1MenuItem";
-            this.SnesBg1MenuItem.Size = new System.Drawing.Size(103, 22);
-            this.SnesBg1MenuItem.Text = "BG 1";
-            this.SnesBg1MenuItem.Click += new System.EventHandler(this.SnesBg1MenuItem_Click);
-            // 
-            // SnesBg2MenuItem
-            // 
-            this.SnesBg2MenuItem.Name = "SnesBg2MenuItem";
-            this.SnesBg2MenuItem.Size = new System.Drawing.Size(103, 22);
-            this.SnesBg2MenuItem.Text = "BG 2";
-            this.SnesBg2MenuItem.Click += new System.EventHandler(this.SnesBg2MenuItem_Click);
-            // 
-            // SnesBg3MenuItem
-            // 
-            this.SnesBg3MenuItem.Name = "SnesBg3MenuItem";
-            this.SnesBg3MenuItem.Size = new System.Drawing.Size(103, 22);
-            this.SnesBg3MenuItem.Text = "BG 3";
-            this.SnesBg3MenuItem.Click += new System.EventHandler(this.SnesBg3MenuItem_Click);
-            // 
-            // SnesBg4MenuItem
-            // 
-            this.SnesBg4MenuItem.Name = "SnesBg4MenuItem";
-            this.SnesBg4MenuItem.Size = new System.Drawing.Size(103, 22);
-            this.SnesBg4MenuItem.Text = "BG 4";
-            this.SnesBg4MenuItem.Click += new System.EventHandler(this.SnesBg4MenuItem_Click);
-            // 
-            // SnesObj1MenuItem
-            // 
-            this.SnesObj1MenuItem.Name = "SnesObj1MenuItem";
-            this.SnesObj1MenuItem.Size = new System.Drawing.Size(103, 22);
-            this.SnesObj1MenuItem.Text = "OBJ 1";
-            this.SnesObj1MenuItem.Click += new System.EventHandler(this.SnesObj1MenuItem_Click);
-            // 
-            // SnesObj2MenuItem
-            // 
-            this.SnesObj2MenuItem.Name = "SnesObj2MenuItem";
-            this.SnesObj2MenuItem.Size = new System.Drawing.Size(103, 22);
-            this.SnesObj2MenuItem.Text = "OBJ 2";
-            this.SnesObj2MenuItem.Click += new System.EventHandler(this.SnesObj2MenuItem_Click);
-            // 
-            // SnesObj3MenuItem
-            // 
-            this.SnesObj3MenuItem.Name = "SnesObj3MenuItem";
-            this.SnesObj3MenuItem.Size = new System.Drawing.Size(103, 22);
-            this.SnesObj3MenuItem.Text = "OBJ 3";
-            this.SnesObj3MenuItem.Click += new System.EventHandler(this.SnesObj3MenuItem_Click);
-            // 
-            // SnesObj4MenuItem
-            // 
-            this.SnesObj4MenuItem.Name = "SnesObj4MenuItem";
-            this.SnesObj4MenuItem.Size = new System.Drawing.Size(103, 22);
-            this.SnesObj4MenuItem.Text = "OBJ 4";
-            this.SnesObj4MenuItem.Click += new System.EventHandler(this.SnesObj4MenuItem_Click);
             // 
             // SNESControllerConfigurationMenuItem
             // 
@@ -4184,15 +4102,6 @@
 		private System.Windows.Forms.ToolStripMenuItem SNESSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem SnesGfxDebuggerMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator18;
-		private System.Windows.Forms.ToolStripMenuItem SNESDisplayMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SnesBg1MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SnesBg2MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SnesBg3MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SnesBg4MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SnesObj1MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SnesObj2MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SnesObj3MenuItem;
-		private System.Windows.Forms.ToolStripMenuItem SnesObj4MenuItem;
 		private System.Windows.Forms.ToolStripMenuItem HardResetMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator19;
 		private System.Windows.Forms.ToolStripMenuItem CaptureOSDMenuItem;
