@@ -135,10 +135,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private void RefreshProtections(int startPage, int pageCount)
 		{
-			int ps = 0;
-			for (int i = startPage; i < pageCount; i++)
+			int ps = startPage;
+			for (int i = startPage; i < startPage + pageCount; i++)
 			{
-				if (i == pageCount - 1 || _pages[i] != _pages[i + 1])
+				if (i == startPage + pageCount - 1 || _pages[i] != _pages[i + 1])
 				{
 					var p = _pages[i];
 					ulong zstart = GetStartAddr(ps);
@@ -305,6 +305,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (br.BaseStream.Read(_pagesAsBytes, 0, _pagesAsBytes.Length) != _pagesAsBytes.Length)
 				throw new InvalidOperationException("Unexpected error reading!");
 
+			Used = 0;
 			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.RW);
 			var dsts = Memory.GetXorStream(Memory.Start, Memory.Size, true);
 			for (int i = 0, addr = 0; i < _pages.Length; i++, addr += WaterboxUtils.PageSize)
@@ -313,8 +314,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					dsts.Seek(addr, SeekOrigin.Begin);
 					WaterboxUtils.CopySome(br.BaseStream, dsts, WaterboxUtils.PageSize);
+					Used += (uint)WaterboxUtils.PageSize;
 				}
 			}
+			if (Used != used)
+				throw new InvalidOperationException("Internal savestate error");
 			if (br.ReadUInt64() != MAGIC)
 				throw new InvalidOperationException("Savestate internal error");
 			RefreshAllProtections();

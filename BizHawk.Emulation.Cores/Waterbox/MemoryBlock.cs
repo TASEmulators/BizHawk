@@ -379,11 +379,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// <summary>
 			/// the initial data to XOR against for both reading and writing
 			/// </summary>
-			private byte[] _initial;
+			private readonly byte[] _initial;
 			/// <summary>
 			/// offset into the XOR data that this stream is representing
 			/// </summary>
-			private int _offset;
+			private readonly int _offset;
 
 			public override int Read(byte[] buffer, int offset, int count)
 			{
