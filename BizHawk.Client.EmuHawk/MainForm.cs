@@ -1259,7 +1259,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private LibsnesCore AsSNES => Emulator as LibsnesCore;
 
-		private void SNES_ToggleBG(int layer)
+		private void SNES_ToggleBg(int layer)
 		{
 			if (!(Emulator is LibsnesCore) && !(Emulator is Snes9x))
 			{
@@ -1318,61 +1318,63 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddMessage($"BG {layer} Layer " + (result ? "On" : "Off"));
 		}
 
-		// TODO: Clean Me!
-		private void SNES_ToggleObj1()
+		private void SNES_ToggleObj(int layer)
 		{
-			if (!(Emulator is LibsnesCore))
+			if (!(Emulator is LibsnesCore) && !(Emulator is Snes9x))
 			{
 				return;
 			}
 
-			var s = AsSNES.GetSettings();
-			s.ShowOBJ_0 ^= true;
-
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowOBJ_0 ? "OBJ 1 Layer On" : "OBJ 1 Layer Off");
-		}
-
-		private void SNES_ToggleObj2()
-		{
-			if (!(Emulator is LibsnesCore))
+			if (layer < 1 || layer > 4)
 			{
 				return;
 			}
 
-			var s = AsSNES.GetSettings();
-			s.ShowOBJ_1 ^= true;
-
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowOBJ_1 ? "OBJ 2 Layer On" : "OBJ 2 Layer Off");
-		}
-
-		private void SNES_ToggleOBJ3()
-		{
-			if (!(Emulator is LibsnesCore))
+			bool result = false;
+			if (Emulator is LibsnesCore)
 			{
-				return;
+				var s = ((LibsnesCore)Emulator).GetSettings();
+				switch (layer)
+				{
+					case 1:
+						result = s.ShowOBJ_0 ^= true;
+						break;
+					case 2:
+						result = s.ShowOBJ_1 ^= true;
+						break;
+					case 3:
+						result = s.ShowOBJ_2 ^= true;
+						break;
+					case 4:
+						result = s.ShowOBJ_3 ^= true;
+						break;
+				}
+
+				((LibsnesCore)Emulator).PutSettings(s);
+				GlobalWin.OSD.AddMessage($"Obj {layer} Layer " + (result ? "On" : "Off"));
 			}
-
-			var s = AsSNES.GetSettings();
-			s.ShowOBJ_2 ^= true;
-
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowOBJ_2 ? "OBJ 3 Layer On" : "OBJ 3 Layer Off");
-		}
-
-		private void SNES_ToggleOBJ4()
-		{
-			if (!(Emulator is LibsnesCore))
+			else if (Emulator is Snes9x)
 			{
-				return;
+				var s = ((Snes9x)Emulator).GetSettings();
+				switch (layer)
+				{
+					case 1:
+						result = s.ShowSprites0 ^= true;
+						break;
+					case 2:
+						result = s.ShowSprites1 ^= true;
+						break;
+					case 3:
+						result = s.ShowSprites2 ^= true;
+						break;
+					case 4:
+						result = s.ShowSprites3 ^= true;
+						break;
+				}
+
+				((Snes9x)Emulator).PutSettings(s);
+				GlobalWin.OSD.AddMessage($"Sprite {layer} Layer " + (result ? "On" : "Off"));
 			}
-
-			var s = AsSNES.GetSettings();
-			s.ShowOBJ_3 ^= true;
-
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowOBJ_3 ? "OBJ 4 Layer On" : "OBJ 4 Layer Off");
 		}
 
 		public bool RunLibretroCoreChooser()
