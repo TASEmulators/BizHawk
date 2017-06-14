@@ -38,8 +38,14 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				int ActiveDisplayStartLine = DisplayStartLine;
 				int VBlankLine = ActiveDisplayStartLine + Registers[VDW] + 1;
+				int signal_delay = 0;
+
 				if (VBlankLine > 261)
+				{
 					VBlankLine = 261;
+					signal_delay = 1;
+				}
+					
 				ActiveLine = ScanLine - ActiveDisplayStartLine;
 				bool InActiveDisplay = (ScanLine >= ActiveDisplayStartLine) && (ScanLine < VBlankLine);
 
@@ -73,10 +79,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					if (render) RenderScanLine();
 				}
 
-				if (ScanLine == VBlankLine && VBlankInterruptEnabled)
+				if (ScanLine == VBlankLine + signal_delay)
 					StatusByte |= StatusVerticalBlanking;
 
-				if (ScanLine == VBlankLine + 4 && SatDmaPerformed)
+				if (ScanLine == (VBlankLine + 4) % vce.NumberOfScanlines && SatDmaPerformed)
 				{
 					SatDmaPerformed = false;
 					if ((Registers[DCR] & 1) > 0)
@@ -85,7 +91,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 				cpu.Execute(2);
 
-				if ((StatusByte & (StatusVerticalBlanking | StatusVramSatDmaComplete)) != 0)
+				if ((StatusByte & (StatusVramSatDmaComplete)) != 0)
+					cpu.IRQ1Assert = true;
+
+				if (ScanLine == VBlankLine && VBlankInterruptEnabled)
 					cpu.IRQ1Assert = true;
 
 				cpu.Execute(455 - HBlankCycles - 2);
