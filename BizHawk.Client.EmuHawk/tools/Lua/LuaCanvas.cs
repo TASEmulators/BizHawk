@@ -283,6 +283,16 @@ namespace BizHawk.Client.EmuHawk
 			DrawLine(x, y + size, x, y - size, color);
 		}
 
+		[LuaMethodAttributes(
+			"drawArc",
+			"draws a Arc shape at the given coordinates and the given width and height"
+		)]
+		public void DrawArc(int x, int y, int width, int height, int startangle, int sweepangle, Color? line = null)
+		{
+			var pen = new Pen(line.HasValue ? line.Value : Color.Black);
+			_graphics.DrawArc(pen, x, y, width, height, startangle, sweepangle);
+		}
+
 		[LuaMethodAttributes("drawPie", "draws a Pie shape at the given coordinates and the given width and height")]
 		public void DrawPie(
 			int x,
