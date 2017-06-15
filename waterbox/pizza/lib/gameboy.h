@@ -22,8 +22,7 @@
 
 /* prototypes */
 void gameboy_init();
-void gameboy_run();
-void gameboy_set_pause(char pause);
+void gameboy_run(uint64_t target);
 void gameboy_stop();
 
 #endif

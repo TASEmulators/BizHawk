@@ -4,8 +4,8 @@ CCFLAGS:=-Ilib \
 	-I../emulibc \
 	-Wall -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast -Werror=implicit-function-declaration \
 	-std=c99 -fomit-frame-pointer -fvisibility=hidden \
-	-DLSB_FIRST -DUSE_32BPP_RENDERING -DINLINE=static\ __inline__ \
-	-O0 -flto
+	-DLSB_FIRST -D_GNU_SOURCE \
+	-O0 -g
 
 TARGET = pizza.wbx
 

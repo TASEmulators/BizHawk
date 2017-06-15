@@ -91,7 +91,7 @@ typedef struct gpu_s
     uint8_t   *lyc;
 
     /* clocks counter   */
-    uint_fast32_t   next;
+    uint64_t   next;
 
     /* gpu step span */
     uint_fast32_t   step;
@@ -116,24 +116,18 @@ typedef struct gpu_s
     uint16_t  cgb_palette_bg[0x20];
     uint8_t   cgb_palette_bg_idx;
     uint8_t   cgb_palette_bg_autoinc;
-    uint16_t  spare2;
 
     /* CGB palette for sprites */
     uint16_t  cgb_palette_oam_rgb565[0x20];
     uint16_t  cgb_palette_oam[0x20];
     uint8_t   cgb_palette_oam_idx;
     uint8_t   cgb_palette_oam_autoinc;
-    uint16_t  spare3;
 
     /* frame buffer     */
     uint16_t  frame_buffer_prev[160 * 144];
     uint16_t  frame_buffer[160 * 144];
     uint8_t   priority[160 * 144];
     uint8_t   palette_idx[160 * 144];
-
-    uint_fast32_t spare4;
-    uint_fast32_t spare5;
-
 } gpu_t;
 
 extern gpu_t gpu;

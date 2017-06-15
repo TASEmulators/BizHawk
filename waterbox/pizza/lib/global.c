@@ -23,13 +23,11 @@
 #include "global.h"
 
 char global_cart_name[256];
-char global_cgb;
+char global_cgb; // if true, in CGB mode
 char global_cpu_double_speed;
 char global_debug;
-char global_next_frame;
 char global_rumble;
-char global_slow_down;
-char global_window;
+char global_window; // if true, show window
 
 void global_init()
 {
@@ -37,8 +35,6 @@ void global_init()
     global_debug = 0;
     global_cgb = 0;
     global_cpu_double_speed = 0;
-    global_slow_down = 0;
-    global_next_frame = 0;
     global_rumble = 0;
     sprintf(global_cart_name, "NOCARTIRDGE");
 }

@@ -54,7 +54,7 @@ typedef struct serial_s {
     uint8_t  data_to_recv;
 
     /* counter */
-    uint_fast32_t next;
+    uint64_t next;
 
     /* peer connected? */
     uint8_t  peer_connected:1;
@@ -65,10 +65,6 @@ typedef struct serial_s {
     uint8_t  data_recv_clock:1;
     uint8_t  data_recv_transfer_start:1;
     uint8_t  spare10:1;
-
-    uint8_t  spare2;
-    uint8_t  spare3;
-    uint8_t  spare4;
 
     uint_fast32_t  last_send_cnt;
 

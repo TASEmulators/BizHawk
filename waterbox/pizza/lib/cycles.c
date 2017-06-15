@@ -115,6 +115,7 @@ void cycles_closest_next()
 void cycles_step()
 {
     cycles.cnt += 4;
+	cycles.sampleclock += 2 >> global_cpu_double_speed;
 
 /*
     while (cycles.cnt >= cycles_very_next)

@@ -24,7 +24,6 @@
 #include "sound.h"
 #include "utils.h"
 
-#include <errno.h>
 #include <string.h>
 #include <strings.h>
 #include <sys/time.h>
@@ -45,7 +44,6 @@ void   sound_push_sample(int16_t s);
 void   sound_read_samples(int len, int16_t *buf);
 void   sound_rebuild_wave();
 void   sound_sweep_step();
-void   sound_term();
 void   sound_write_wave(uint16_t a, uint8_t v);
 
 int sound_get_samples()

@@ -24,29 +24,7 @@
 #include <stdint.h>
 #include <sys/time.h>
 
-typedef struct mmu_gamegenie_s {
-
-    /* data necessary */
-    uint16_t address;
-    uint8_t  old_value;
-    uint8_t  new_value;
-
-} mmu_gamegenie_t;
-
-typedef struct mmu_gameshark_s {
-
-    /* data necessary */
-    uint16_t address;
-    uint8_t  ram_bank;
-    uint8_t  new_value;
-
-} mmu_gameshark_t;
-
-#define MMU_GAMEGENIE_MAX 4
-#define MMU_GAMESHARK_MAX 32
-
 typedef struct mmu_s {
-
     /* main 64K of memory */
     uint8_t memory[65536];
 
@@ -101,18 +79,8 @@ typedef struct mmu_s {
     uint16_t spare6;
     time_t   rtc_time;
     time_t   rtc_latch_time;
-    
-    /* Gamegenie */
-    uint8_t         gg_count;
-    mmu_gamegenie_t gg_array[MMU_GAMEGENIE_MAX];
 
-    /* Gameshark */
-    uint8_t         gs_count;
-    mmu_gameshark_t gs_array[MMU_GAMESHARK_MAX];
-
-    uint_fast32_t   dma_next;
-    uint_fast32_t   spare8;
-
+    uint64_t   dma_next;
 } mmu_t;
 
 extern mmu_t mmu;

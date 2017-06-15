@@ -19,8 +19,6 @@
 
 #include <stdint.h>
 #include <stdio.h>
-#include <errno.h>
-#include <libgen.h>
 #include <string.h>
 #include <sys/stat.h>
 
@@ -47,6 +45,8 @@ char cartridge_load(const void* data, size_t sz)
 
     if (sz < 1 || sz > 2 << 24)
         return 1;
+
+	memcpy(rom, data, sz);
 
     /* gameboy color? */
     if (rom[0x143] == 0xC0 || rom[0x143] == 0x80)

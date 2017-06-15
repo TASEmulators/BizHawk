@@ -17,8 +17,6 @@
 
 */
 
-#include <errno.h>
-#include <semaphore.h>
 #include <signal.h>
 #include <string.h>
 #include <strings.h>
@@ -233,12 +231,6 @@ void gpu_draw_frame()
     /* reset priority matrix */
     bzero(gpu.priority, 160 * 144);
     bzero(gpu.palette_idx, 160 * 144);
-
-    if (global_next_frame)
-    {
-        global_next_frame = 0;
-        gameboy_set_pause(1);
-    }
 
     return;
 }
@@ -865,7 +857,7 @@ void gpu_step()
                     gpu_if->lcd_vblank = 1;
 
                     /* apply gameshark patches */
-                    mmu_apply_gs();
+                    //mmu_apply_gs();
 
                     /* and finally push it on screen! */
                     gpu_draw_frame();

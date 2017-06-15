@@ -362,7 +362,7 @@
     <Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.ISaveRam.cs">
       <DependentUpon>A7800Hawk.cs</DependentUpon>
     </Compile>
-	<Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.ISettable.cs">
+    <Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.ISettable.cs">
       <DependentUpon>A7800Hawk.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\A7800Hawk\A7800HawkControllerDeck.cs" />
@@ -539,7 +539,10 @@
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GBColors.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GBDisassembler.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\IGameboyCommon.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\LibPizza.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\Pizza.cs" />
     <Compile Include="Consoles\Nintendo\GBA\ArmV4Disassembler.cs" />
     <Compile Include="Consoles\Nintendo\GBA\GBA.cs" />
     <Compile Include="Consoles\Nintendo\GBA\IGBAGPUViewable.cs" />

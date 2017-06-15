@@ -17,13 +17,9 @@
 
 */
 
-#ifdef __ANDROID__
-#include <android/log.h>
-#else
+#include <emulibc.h>
 #include <stdio.h>
-#endif
 
-#include <errno.h>
 #include <stdarg.h>
 #include <sys/time.h>
 
@@ -31,7 +27,7 @@
 #include "gpu.h"
 #include "utils.h"
 
-uint32_t prev_cycles = 0;
+uint64_t prev_cycles = 0;
 
 void utils_log(const char *format, ...)
 {
@@ -39,19 +35,8 @@ void utils_log(const char *format, ...)
 
     va_list args;
     va_start(args, format);
-
-#ifdef __ANDROID__
-
     vsnprintf(buf, 256, format, args);
-    __android_log_write(ANDROID_LOG_INFO, "Pizza", buf);
-
-#else
-
-    vsnprintf(buf, 256, format, args);
-    printf(buf);
-
-#endif
-
+    _debug_puts(buf);
     va_end(args);
 }
 
@@ -62,19 +47,8 @@ void utils_log_urgent(const char *format, ...)
 
     va_list args;
     va_start(args, format);
-
-#ifdef __ANDROID__
-
     vsnprintf(buf, 256, format, args);
-    __android_log_write(ANDROID_LOG_INFO, "Pizza", buf);
-
-#else
-
-    vsnprintf(buf, 256, format, args);
-    printf(buf);
-
-#endif
-
+    _debug_puts(buf);
     va_end(args);
 }
 
@@ -84,25 +58,18 @@ void utils_ts_log(const char *format, ...)
     va_start(args, format);
 
     char buf[256];
+	char buf2[512];
     struct timeval tv;
 
-#ifdef __ANDROID__
-
-    vsnprintf(buf, 256, format, args);
-    __android_log_write(ANDROID_LOG_INFO, "Pizza", buf);
-
-#else
 
     vsprintf(buf, format, args);
-    gettimeofday(&tv, NULL);
+    //gettimeofday(&tv, NULL);
 //    printf("%ld - %s\n", tv.tv_sec, buf);
-    printf("LINE %u - CYCLES %u - DIFF %u - %ld:%06ld - %s", 
-            *(gpu.ly), cycles.cnt, cycles.cnt - prev_cycles, 
+    sprintf(buf2, "LINE %u - CYCLES %lu - DIFF %lu - %ld:%06ld - %s", 
+            *(gpu.ly), cycles.cnt, cycles.cnt - prev_cycles,
             tv.tv_sec, tv.tv_usec, buf);
-
+	_debug_puts(buf2);
     prev_cycles = cycles.cnt;
-
-#endif
 
     va_end(args);
 }

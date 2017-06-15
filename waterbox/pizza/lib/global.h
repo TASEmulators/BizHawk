@@ -23,10 +23,8 @@
 extern char global_window;
 extern char global_debug;
 extern char global_cgb;
-extern char global_next_frame;
 // extern char global_started;
 extern char global_cpu_double_speed;
-extern char global_slow_down;
 extern char global_rumble;
 extern char global_cart_name[256];
 

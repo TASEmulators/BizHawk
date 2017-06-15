@@ -17,12 +17,13 @@
 
 */
 
-#include <errno.h>
-#include <SDL2/SDL.h>
 #include <stdio.h>
 #include <stdint.h>
-#include <sys/stat.h>
 #include <sys/types.h>
+#include <emulibc.h>
+#include <string.h>
+
+#define EXPORT ECL_EXPORT
 
 #include "cartridge.h"
 #include "cycles.h"
@@ -30,9 +31,10 @@
 #include "global.h"
 #include "gpu.h"
 #include "input.h"
-#include "network.h"
 #include "sound.h"
 #include "serial.h"
+#include "utils.h"
+#include "mmu.h"
 
 /* proto */
 void cb();
@@ -49,177 +51,50 @@ uint16_t *fb;
 /* magnify rate */
 float magnify_rate = 1.f;
 
-/* emulator thread */
-pthread_t thread;
-
-/* SDL video stuff */
-SDL_Window *window;
-SDL_Surface *screenSurface;
-SDL_Surface *windowSurface;
-
 /* cartridge name */
 char cart_name[64];
 
-
-int main(int argc, char **argv)
+int main(void)
 {
-    /* SDL variables */
-    SDL_Event e;
-    SDL_AudioSpec desired;
-    SDL_AudioSpec obtained;
+}
 
-    /* init global variables */
-    global_init();
+EXPORT int Init(const void *rom, int romlen)
+{
+	/* init global variables */
+	global_init();
 
-    /* set global folder */
-    snprintf(global_save_folder, sizeof(global_save_folder), "/tmp/str/save/");
-    __mkdirp(global_save_folder, S_IRWXU);
+	/* first, load cartridge */
+	char ret = cartridge_load(rom, romlen);
 
-    /* first, load cartridge */
-    char ret = cartridge_load(argv[1]);
+	if (ret != 0)
+		return 0; // failure
 
-    if (ret != 0)
-        return 1;
+	gameboy_init();
 
-    /* apply cheat */
+	/* init GPU */
+	gpu_init(&cb);
 
-    /* tetris */
-/*    mmu_set_cheat("00063D6E9");
-    mmu_set_cheat("3E064D5D0");
-    mmu_set_cheat("04065D087"); */
+	/* set sound output rate */
+	sound_set_output_rate(44100);
 
-    /* samurai shodown */
-    // mmu_set_cheat("11F86E3B6");
-    //)
-    // mmu_set_cheat("3EB60D7F1");
-    //
+	/* set rumble cb */
+	mmu_set_rumble_cb(&rumble_cb);
 
-    /* gameshark aladdin */
-   // mmu_set_cheat("01100ADC");
+	/* get frame buffer reference */
+	fb = gpu_get_frame_buffer();
 
-    /* gameshark wario land */
-    // mmu_set_cheat("809965A9");
+	return 1;
+}
 
-   // mmu_apply_gg();
+static uint32_t fb32[160 * 144];
 
-    /* initialize SDL video */
-    if (SDL_Init(SDL_INIT_VIDEO) < 0 )
-    {
-        printf( "SDL could not initialize! SDL_Error: %s\n", SDL_GetError() );
-        return 1;
-    }
+//case (SDLK_d): global_debug ^= 0x01; break;
+//case (SDLK_s): global_slow_down = 1; break;
+//case (SDLK_w): global_window ^= 0x01; break;
+//case (SDLK_n): gameboy_set_pause(0);
+//               global_next_frame = 1; break;
 
-    window = SDL_CreateWindow("Emu Pizza - Gameboy",
-                              SDL_WINDOWPOS_UNDEFINED,
-                              SDL_WINDOWPOS_UNDEFINED,
-                              160 * magnify_rate, 144 * magnify_rate,
-                              SDL_WINDOW_SHOWN);
-
-    /* get window surface */
-    windowSurface = SDL_GetWindowSurface(window);
-    screenSurface = SDL_ConvertSurfaceFormat(windowSurface,
-                                             SDL_PIXELFORMAT_RGB565, 
-                                             0);
-
-    gameboy_init();
-
-    /* initialize SDL audio */
-    SDL_Init(SDL_INIT_AUDIO);
-    desired.freq = 44100;
-    desired.samples = SOUND_SAMPLES / 2;
-    desired.format = AUDIO_S16SYS;
-    desired.channels = 2;
-    desired.callback = sound_read_buffer;
-    desired.userdata = NULL;
-
-    /* Open audio */
-    if (SDL_OpenAudio(&desired, &obtained) == 0)
-        SDL_PauseAudio(0);
-    else
-    {
-        printf("Cannot open audio device!!\n");
-        return 1;
-    }
-
-    /* init GPU */
-    gpu_init(&cb);
-
-    /* set sound output rate */
-    sound_set_output_rate(44100);
-
-    /* set rumble cb */
-    mmu_set_rumble_cb(&rumble_cb);
-
-    /* get frame buffer reference */
-    fb = gpu_get_frame_buffer();    
-
-    /* start thread! */
-    pthread_create(&thread, NULL, start_thread, NULL);
-
-    /* start network thread! */
-    network_start(&connected_cb, &disconnected_cb, "192.168.100.255");
-
-    /* loop forever */
-    while (!global_quit)
-    {
-        /* aaaaaaaaaaaaaand finally, check for SDL events */
-
-        /* SDL_WaitEvent should be better but somehow, */ 
-        /* it interfer with my cycles timer            */
-        if (SDL_PollEvent(&e) == 0)
-        {
-            usleep(100000);
-            continue;
-        }
-        
-        switch (e.type)
-        {
-            case SDL_QUIT:
-                global_quit = 1;
-                break;
-
-            case SDL_KEYDOWN:
-                switch (e.key.keysym.sym)
-                {
-                    case (SDLK_1): gameboy_set_pause(1);
-                                   gameboy_save_stat(0);
-                                   gameboy_set_pause(0);
-                                   break;
-                    case (SDLK_2): gameboy_set_pause(1);
-                                   gameboy_restore_stat(0); 
-                                   gameboy_set_pause(0);
-                                   break;
-                    case (SDLK_9): network_start(&connected_cb, 
-                                                 &disconnected_cb,
-                                                 "192.168.100.255"); break;
-                    case (SDLK_0): network_stop(); break;
-                    case (SDLK_q): global_quit = 1; break;
-                    case (SDLK_d): global_debug ^= 0x01; break;
-                    case (SDLK_s): global_slow_down = 1; break;
-                    case (SDLK_w): global_window ^= 0x01; break;
-                    case (SDLK_n): gameboy_set_pause(0); 
-                                   global_next_frame = 1; break;
-                    case (SDLK_PLUS): 
-                        if (global_emulation_speed != 
-                            GLOBAL_EMULATION_SPEED_4X) 
-                        {
-                            global_emulation_speed++; 
-                            cycles_change_emulation_speed();
-                            sound_change_emulation_speed();
-                        }
-
-                        break;
-                    case (SDLK_MINUS):
-                        if (global_emulation_speed !=
-                            GLOBAL_EMULATION_SPEED_QUARTER)
-                        {
-                            global_emulation_speed--;
-                            cycles_change_emulation_speed();
-                            sound_change_emulation_speed();
-                        }
-
-                        break;
-                    case (SDLK_p): gameboy_set_pause(global_pause ^ 0x01); 
+/* case (SDLK_p): gameboy_set_pause(global_pause ^ 0x01); 
                                    break;
                     case (SDLK_m): mmu_dump_all(); break;
                     case (SDLK_SPACE):  input_set_key_select(1); break;
@@ -249,90 +124,61 @@ int main(int argc, char **argv)
         }
     }
 
-    /* join emulation thread */   
+    // join emulation thread   
     pthread_join(thread, NULL);
 
-    /* stop network thread! */
+    // stop network thread!
     network_stop();
 
     utils_log("Total cycles %d\n", cycles.cnt);
     utils_log("Total running seconds %d\n", cycles.seconds);
 
     return 0;
-}
+}*/
 
-void *start_thread(void *args)
+typedef struct
 {
-    /* run until break or global_quit is set */
-    gameboy_run();
+	uint32_t* vbuff;
+	int32_t clocks; // desired(in) actual(out) time to run; 2MHZ
+} frameinfo_t;
 
-    /* tell main thread it's over */
-    global_quit = 1;
+
+EXPORT void FrameAdvance(frameinfo_t* frame)
+{
+	uint64_t current = cycles.sampleclock;
+	gameboy_run(current + frame->clocks);
+	frame->clocks = cycles.sampleclock - current;
+	memcpy(frame->vbuff, fb32, 160 * 144 * sizeof(uint32_t));
 }
 
 void cb()
 {
-    uint16_t *pixel = screenSurface->pixels;
+	// frame received into fb
+	uint16_t *src = fb;
+	uint8_t *dst = (uint8_t *)fb32;
 
-    /* magnify! */
-    if (magnify_rate > 1)
-    {
-        int x,y,p;
-        float px, py = 0;
-
-        uint16_t *line = malloc(sizeof(uint16_t) * 160 * magnify_rate);
-
-        for (y=0; y<144; y++)
-        {
-            px = 0;
-
-            for (x=0; x<160; x++)
-            {
-                for (; px<magnify_rate; px++)
-                    line[(int) (px + (x * magnify_rate))] =
-                        fb[x + (y * 160)];
-
-                px -= magnify_rate;
-            }
-
-            for (; py<magnify_rate; py++)
-                memcpy(&pixel[(int) (((y * magnify_rate) + py) *
-                           160 * magnify_rate)],
-                       line, sizeof(uint16_t) * 160 * magnify_rate);
-
-            py -= magnify_rate;
-        }
-
-        free(line);
-    }
-    else
-    {
-        /* just copy GPU frame buffer into SDL frame buffer */
-        memcpy(pixel, fb, 160 * 144 * sizeof(uint16_t));
-    }
-
-    SDL_ConvertPixels(screenSurface->w, screenSurface->h,
-                      screenSurface->format->format,
-                      screenSurface->pixels, screenSurface->pitch,
-                      SDL_PIXELFORMAT_ARGB8888,
-                      windowSurface->pixels, windowSurface->pitch);
-                       
-    /* Update the surface */
-    SDL_UpdateWindowSurface(window);
+	for (int i = 0; i < 160 * 144; i++)
+	{
+		uint16_t c = *src++;
+		*dst++ = c << 3 & 0xf8 | c >> 2 & 7;
+		*dst++ = c >> 3 & 0xfa | c >> 9 & 3;
+		*dst++ = c >> 8 & 0xf8 | c >> 13 & 7;
+		*dst++ = 0xff;
+	}
 }
 
 void connected_cb()
 {
-    utils_log("Connected\n");
+	utils_log("Connected\n");
 }
 
 void disconnected_cb()
 {
-    utils_log("Disconnected\n");
+	utils_log("Disconnected\n");
 }
 
 void rumble_cb(uint8_t rumble)
 {
-    if (rumble)
-        printf("RUMBLE\n");
+	if (rumble)
+		printf("RUMBLE\n");
 }

@@ -195,7 +195,7 @@ typedef struct channel_square_s
     uint8_t       duty_idx;
     uint8_t       envelope_cnt;
     uint_fast16_t duty_cycles;
-    uint_fast16_t duty_cycles_next;
+    uint64_t duty_cycles_next;
     uint_fast32_t length;
     uint_fast32_t frequency;
     int16_t       sample;
@@ -219,7 +219,7 @@ typedef struct channel_wave_s
     int16_t  spare;
     int16_t  wave[32];
     uint_fast32_t cycles;
-    uint_fast32_t cycles_next;
+    uint64_t cycles_next;
     uint_fast32_t ram_access_next;
     uint_fast32_t length;
 
@@ -232,7 +232,7 @@ typedef struct channel_noise_s
     uint16_t      spare;
     uint_fast32_t length;
     uint_fast16_t period_lfsr;
-    uint_fast32_t cycles_next;
+    uint64_t cycles_next;
     int16_t       volume;
     int16_t       sample;
     uint16_t      reg;
@@ -294,11 +294,11 @@ typedef struct sound_s
     /* CPU cycles to internal cycles counters */
     uint_fast32_t     fs_cycles;
     uint_fast32_t     fs_cycles_idx;
-    uint_fast32_t     fs_cycles_next;
+    uint64_t     fs_cycles_next;
     uint_fast32_t     sample_cycles;
     uint_fast32_t     sample_cycles_remainder;
     uint_fast32_t     sample_cycles_next;
-    uint_fast32_t     sample_cycles_next_rounded;
+    uint64_t     sample_cycles_next_rounded;
 
     /* steps length */
     uint_fast32_t   step_int;

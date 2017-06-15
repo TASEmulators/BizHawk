@@ -87,7 +87,8 @@ void serial_write_reg(uint16_t a, uint8_t v)
     switch (a)
     {
     case 0xFF01: 
-        serial.data = v; goto end;
+        serial.data = v;
+        return;
     case 0xFF02: 
         serial.clock = v & 0x01; 
         serial.speed = (v & 0x02) ? 0x01 : 0x00;
@@ -96,6 +97,7 @@ void serial_write_reg(uint16_t a, uint8_t v)
 
         /* reset? */
         serial.data_sent = 0;
+        break;
     }
 
     if (serial.transfer_start && 
@@ -106,9 +108,7 @@ void serial_write_reg(uint16_t a, uint8_t v)
             serial.next = cycles.cnt + 8 * 8;
 	    else
             serial.next = cycles.cnt + 256 * 8;
-    } 
-
-end:
+    }
 }
 
 uint8_t serial_read_reg(uint16_t a)
@@ -137,8 +137,7 @@ void serial_recv_byte(uint8_t v, uint8_t clock, uint8_t transfer_start)
         serial_second_data = v;
         serial_second_clock = clock;
         serial_second_transfer_start = transfer_start;
-
-        goto end;
+        return;
     }
 
     /* received side OK */
@@ -150,8 +149,6 @@ void serial_recv_byte(uint8_t v, uint8_t clock, uint8_t transfer_start)
     /* notify main thread in case it's waiting */
     //if (serial_waiting_data)
         //pthread_cond_signal(&serial_cond);
-
-end:
 }
 
 void serial_send_byte()
@@ -176,20 +173,20 @@ void serial_wait_data()
     if (serial.data_sent && serial.data_recv == 0)
     {
         /* wait max 3 seconds */
-        struct timespec wait;
+        //struct timespec wait;
 
-        wait.tv_sec = time(NULL) + 3;
+        //wait.tv_sec = time(NULL) + 3;
 
         /* this is very important to avoid EINVAL return! */
-        wait.tv_nsec = 0;
+        //wait.tv_nsec = 0;
 
         /* declare i'm waiting for data */
-        serial_waiting_data = 1;
+        //serial_waiting_data = 1;
 
         /* notify something has arrived */
         // pthread_cond_timedwait(&serial_cond, &serial_mutex, &wait);
 
         /* not waiting anymore */
-        serial_waiting_data = 0;
+        //serial_waiting_data = 0;
     }
 }

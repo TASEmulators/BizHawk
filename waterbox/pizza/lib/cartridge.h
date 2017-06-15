@@ -23,7 +23,7 @@
 #include <stdint.h>
 
 /* prototypes */
-char cartridge_load(char *file_nm);
+char cartridge_load(const void* data, size_t sz);
 void cartridge_term();
 
 #endif

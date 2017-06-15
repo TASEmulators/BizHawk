@@ -2,6 +2,7 @@
 
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -17,7 +18,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		portedUrl: "http://gambatte.sourceforge.net/")]
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IDriveLight))]
 	public partial class Gameboy : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable, ICodeDataLogger,
-		IBoardInfo, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>
+		IBoardInfo, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>,
+		IGameboyCommon
 	{
 		[CoreConstructor("GB", "GBC")]
 		public Gameboy(CoreComm comm, GameInfo game, byte[] file, object settings, object syncSettings, bool deterministic)

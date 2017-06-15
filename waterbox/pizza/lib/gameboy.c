@@ -130,9 +130,9 @@ void gameboy_init()
     gameboy_inited = 1;
 
     return;
-} 
+}
 
-void gameboy_run()
+void gameboy_run(uint64_t target)
 {
     uint8_t op;
 
@@ -148,14 +148,8 @@ void gameboy_run()
     /* mechanism is simple.                                                */
     /* 1) execute instruction 2) update cycles counter 3) check interrupts */
     /* and repeat forever                                                  */
-    while (!global_quit)
+    while (cycles.sampleclock < target)
     {
-        /*if (global_slow_down)
-        {
-            usleep(100000);
-            global_slow_down = 0;
-        }*/
-
         /* get op */
         op = mmu_read(state.pc);
 
