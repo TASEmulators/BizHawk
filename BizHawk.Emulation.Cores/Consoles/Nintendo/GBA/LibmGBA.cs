@@ -132,5 +132,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 		[DllImport(dll, CallingConvention = cc)]
 		public static extern void BizGetRegisters(IntPtr ctx, int[] dest);
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void BizWriteBus(IntPtr ctx, uint addr, byte val);
+
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern byte BizReadBus(IntPtr ctx, uint addr);
+
 	}
 }
