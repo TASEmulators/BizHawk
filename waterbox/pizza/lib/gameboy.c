@@ -17,12 +17,10 @@
 
 */
 
-#include <semaphore.h>
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
 #include <time.h>
-#include <unistd.h>
 #include "cartridge.h"
 #include "sound.h"
 #include "mmu.h"
@@ -35,9 +33,6 @@
 #include "utils.h"
 #include "z80_gameboy_regs.h"
 #include "z80_gameboy.h"
-
-/* semaphore for pauses */
-sem_t gameboy_sem;
 
 char gameboy_inited = 0;
 
@@ -52,9 +47,6 @@ void gameboy_init()
 
     /* init cycles syncronizer */
     cycles_init();
-
-    /* init input */
-    input_init();
 
     /* init timer */
     timer_init();

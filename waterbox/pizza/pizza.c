@@ -88,67 +88,26 @@ EXPORT int Init(const void *rom, int romlen)
 
 static uint32_t fb32[160 * 144];
 
-//case (SDLK_d): global_debug ^= 0x01; break;
-//case (SDLK_s): global_slow_down = 1; break;
-//case (SDLK_w): global_window ^= 0x01; break;
-//case (SDLK_n): gameboy_set_pause(0);
-//               global_next_frame = 1; break;
-
-/* case (SDLK_p): gameboy_set_pause(global_pause ^ 0x01); 
-                                   break;
-                    case (SDLK_m): mmu_dump_all(); break;
-                    case (SDLK_SPACE):  input_set_key_select(1); break;
-                    case (SDLK_RETURN): input_set_key_start(1); break;
-                    case (SDLK_UP):     input_set_key_up(1);    break;
-                    case (SDLK_DOWN):   input_set_key_down(1);  break;
-                    case (SDLK_RIGHT):  input_set_key_right(1); break;
-                    case (SDLK_LEFT):   input_set_key_left(1);  break;
-                    case (SDLK_z):      input_set_key_b(1);     break;
-                    case (SDLK_x):      input_set_key_a(1);     break;
-                }
-                break;
-
-            case SDL_KEYUP:
-                switch (e.key.keysym.sym)
-                {
-                    case (SDLK_SPACE):  input_set_key_select(0); break;
-                    case (SDLK_RETURN): input_set_key_start(0);  break;
-                    case (SDLK_UP):     input_set_key_up(0);     break;
-                    case (SDLK_DOWN):   input_set_key_down(0);   break;
-                    case (SDLK_RIGHT):  input_set_key_right(0);  break;
-                    case (SDLK_LEFT):   input_set_key_left(0);   break;
-                    case (SDLK_z):      input_set_key_b(0);      break;
-                    case (SDLK_x):      input_set_key_a(0);      break;
-                }
-                break;
-        }
-    }
-
-    // join emulation thread   
-    pthread_join(thread, NULL);
-
-    // stop network thread!
-    network_stop();
-
-    utils_log("Total cycles %d\n", cycles.cnt);
-    utils_log("Total running seconds %d\n", cycles.seconds);
-
-    return 0;
-}*/
-
 typedef struct
 {
 	uint32_t* vbuff;
 	int32_t clocks; // desired(in) actual(out) time to run; 2MHZ
+	uint16_t keys; // keypad input
 } frameinfo_t;
 
 
 EXPORT void FrameAdvance(frameinfo_t* frame)
 {
+	input_set_keys(frame->keys);
 	uint64_t current = cycles.sampleclock;
 	gameboy_run(current + frame->clocks);
 	frame->clocks = cycles.sampleclock - current;
 	memcpy(frame->vbuff, fb32, 160 * 144 * sizeof(uint32_t));
+}
+
+EXPORT int IsCGB(void)
+{
+	return global_cgb;
 }
 
 void cb()

@@ -22,14 +22,6 @@
 
 /* prototypes */
 uint8_t input_get_keys(uint8_t line);
-uint8_t input_init();
-void    input_set_key_left(char state);
-void    input_set_key_right(char state);
-void    input_set_key_up(char state);
-void    input_set_key_down(char state);
-void    input_set_key_a(char state);
-void    input_set_key_b(char state);
-void    input_set_key_select(char state);
-void    input_set_key_start(char state);
+void input_set_keys(uint16_t keys);
 
 #endif

@@ -35,12 +35,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				MmapHeapSizeKB = 32 * 1024
 			});
 			_pizza = BizInvoker.GetInvoker<LibPizza>(_exe, _exe);
-			using (_exe.EnterExit())
+			if (!_pizza.Init(rom, rom.Length))
 			{
-				if (!_pizza.Init(rom, rom.Length))
-				{
-					throw new InvalidOperationException("Core rejected the rom!");
-				}
+				throw new InvalidOperationException("Core rejected the rom!");
 			}
 		}
 
@@ -61,6 +58,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		private int _tickOverflow = 0;
 
+		private static LibPizza.Buttons GetButtons(IController c)
+		{
+			LibPizza.Buttons b = 0;
+			if (c.IsPressed("Up"))
+				b |= LibPizza.Buttons.UP;
+			if (c.IsPressed("Down"))
+				b |= LibPizza.Buttons.DOWN;
+			if (c.IsPressed("Left"))
+				b |= LibPizza.Buttons.LEFT;
+			if (c.IsPressed("Right"))
+				b |= LibPizza.Buttons.RIGHT;
+			if (c.IsPressed("A"))
+				b |= LibPizza.Buttons.A;
+			if (c.IsPressed("B"))
+				b |= LibPizza.Buttons.B;
+			if (c.IsPressed("Select"))
+				b |= LibPizza.Buttons.SELECT;
+			if (c.IsPressed("Start"))
+				b |= LibPizza.Buttons.START;
+			return b;
+		}
 
 		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
@@ -71,11 +89,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				var frame = new LibPizza.FrameInfo
 				{
 					VideoBuffer = (IntPtr)vp,
-					Clocks = targetClocks
+					Clocks = targetClocks,
+					Keys = GetButtons(controller)
 				};
 
 				_pizza.FrameAdvance(frame);
 				_tickOverflow = frame.Clocks - targetClocks;
+				Frame++;
 			}
 		}
 
@@ -90,8 +110,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			}
 		}
 
-		public bool IsCGBMode() { return false; } // TODO
-		public ControllerDefinition ControllerDefinition => NullController.Instance.Definition;
+		public bool IsCGBMode() => _pizza.IsCGB();
+		public ControllerDefinition ControllerDefinition => BizHawk.Emulation.Cores.Nintendo.Gameboy.Gameboy.GbController;
 		public int Frame { get; private set; }
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
