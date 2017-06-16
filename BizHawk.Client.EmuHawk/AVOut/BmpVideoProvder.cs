@@ -12,9 +12,11 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private Bitmap _bmp;
 
-		public BmpVideoProvider(Bitmap bmp)
+		public BmpVideoProvider(Bitmap bmp, int vsyncnum, int vsyncden)
 		{
 			_bmp = bmp;
+			VsyncNumerator = vsyncnum;
+			VsyncDenominator = vsyncden;
 		}
 
 		public void Dispose()
@@ -50,14 +52,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public int BackgroundColor => 0;
 
-		public int VsyncNumerator
-		{
-			get { throw new InvalidOperationException(); }
-		}
+		public int VsyncNumerator { get; private set; }
 
-		public int VsyncDenominator
-		{
-			get { throw new InvalidOperationException(); }
-		}
+		public int VsyncDenominator { get; private set; }
 	}
 }
