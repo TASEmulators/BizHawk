@@ -20,10 +20,7 @@
 #ifndef __SOUND_HDR__
 #define __SOUND_HDR__
 
-#define SOUND_FREQ_MAX 48000
 #define SOUND_SAMPLES 4096
-#define SOUND_BUF_SZ (SOUND_SAMPLES * 3)
-#define SOUND_BUF_TMP_SZ (SOUND_SAMPLES / 2)
 
 typedef struct nr10_s
 {
@@ -278,16 +275,6 @@ typedef struct sound_s
     /* emulation speed stuff */
     uint_fast16_t     frame_counter;
 
-    /* circular audio buffer stuff */
-    uint_fast16_t     buf_rd;
-    uint_fast16_t     buf_wr;
-    uint_fast16_t     buf_available;
-    uint_fast16_t     buf_empty; 
-    uint_fast16_t     buf_full; 
-    int16_t           buf[SOUND_BUF_SZ];
-    int16_t           buf_tmp[SOUND_BUF_TMP_SZ];
-    uint_fast16_t     buf_tmp_wr;
-
     /* output rate */
     uint_fast32_t     output_rate;
 
@@ -295,36 +282,19 @@ typedef struct sound_s
     uint_fast32_t     fs_cycles;
     uint_fast32_t     fs_cycles_idx;
     uint64_t     fs_cycles_next;
-    uint_fast32_t     sample_cycles;
-    uint_fast32_t     sample_cycles_remainder;
-    uint_fast32_t     sample_cycles_next;
-    uint64_t     sample_cycles_next_rounded;
-
-    /* steps length */
-    uint_fast32_t   step_int;
-    uint_fast32_t   step_int1000;
-
-    uint_fast32_t          spare;
-    uint_fast32_t          spare2;
-
 } sound_t;
  
 extern sound_t sound; 
 
 /* prototypes */
-void     sound_change_emulation_speed();
-int      sound_get_samples();
 void     sound_init();
-void     sound_read_buffer(void *userdata, uint8_t *stream, int snd_len);
 uint8_t  sound_read_reg(uint16_t a, uint8_t v);
 void     sound_set_speed(char dbl);
-void     sound_set_output_rate(int freq);
 void     sound_step_fs();
 void     sound_step_ch1();
 void     sound_step_ch2();
 void     sound_step_ch3();
 void     sound_step_ch4();
-void     sound_step_sample();
 void     sound_write_reg(uint16_t a, uint8_t v);
 
 #endif

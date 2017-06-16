@@ -23,6 +23,7 @@
 #include "mmu.h"
 #include "sound.h"
 #include "utils.h"
+#include "sound_output.h"
 
 #include <string.h>
 #include <strings.h>
@@ -31,25 +32,86 @@
 /* super variable for audio controller */
 sound_t sound;
 
-/* global for output frequency */
-int sound_output_rate = 48000;
-int sound_output_rate_fifth = 48; // 48000 / 5;
+// functions to connect to blip buf
+static int16_t last_sample[8];
+
+#define BLIP_LEFT(v,i) if(1){int32_t d = (v)-last_sample[(i)*2];blip_left(d);last_sample[(i)*2] = (v);}
+#define BLIP_RIGHT(v,i) if(1){int32_t d = (v)-last_sample[(i)*2+1];blip_right(d);last_sample[(i)*2+1] = (v);}
+
+static void blip_ch1()
+{
+    if (sound.channel_one.active)
+    {
+		if (sound.nr51->ch1_to_so1)
+			BLIP_RIGHT(sound.channel_one.sample, 0);
+        if (sound.nr51->ch1_to_so2)
+            BLIP_LEFT(sound.channel_one.sample, 0);
+    }
+}
+static void blip_ch2()
+{
+    if (sound.channel_two.active)
+    {
+		if (sound.nr51->ch2_to_so1)
+			BLIP_RIGHT(sound.channel_two.sample, 1);
+        if (sound.nr51->ch2_to_so2)
+            BLIP_LEFT(sound.channel_two.sample, 1);
+    }
+}
+static void blip_ch3()
+{
+	if (sound.channel_three.active)
+	{
+		uint16_t sample;
+		uint8_t shift = (sound.nr32->volume_code == 0 ?
+        	4 : sound.nr32->volume_code - 1);
+
+        /* volume is zero in any case */ 
+        if (shift == 4)
+            sample = 0;
+        else
+        {
+            /* apply volume change */
+            uint8_t idx = sound.channel_three.index;
+            uint16_t s;
+
+            /* extract current sample */
+            if ((idx & 0x01) == 0)
+                s = (sound.wave_table[idx >> 1] & 0xf0) >> 4;
+            else
+                s = sound.wave_table[idx >> 1] & 0x0f;
+
+            /* transform it into signed 16 bit sample */
+            sample = ((s * 0x222) >> shift); 
+        }
+
+        
+        /* not silence? */
+        if (sample != 0)
+        {
+            if (sound.nr51->ch3_to_so1)
+				BLIP_RIGHT(sample, 2);
+            if (sound.nr51->ch3_to_so2)
+                BLIP_LEFT(sample, 2);
+        }
+	}
+}
+static void blip_ch4()
+{
+    if (sound.channel_four.active)
+    {
+		if (sound.nr51->ch4_to_so1)
+			BLIP_RIGHT(sound.channel_four.sample, 3);
+        if (sound.nr51->ch4_to_so2)
+            BLIP_LEFT(sound.channel_four.sample, 3);
+    }
+}
 
 /* internal prototypes */
-size_t sound_available_samples();
 void   sound_envelope_step();
 void   sound_length_ctrl_step();
-void   sound_push_samples(int16_t l, int16_t r);
-void   sound_push_sample(int16_t s);
-void   sound_read_samples(int len, int16_t *buf);
-void   sound_rebuild_wave();
 void   sound_sweep_step();
 void   sound_write_wave(uint16_t a, uint8_t v);
-
-int sound_get_samples()
-{
-    return SOUND_SAMPLES; // sound_output_rate / 10;
-}
 
 void sound_init_pointers()
 {
@@ -92,46 +154,15 @@ void sound_init()
     /* point sound structures to their memory areas */
     sound_init_pointers();
 
-    /* steps length */
-    sound.step_int = 4;
-    sound.step_int1000 = 4000;
-
-    /* buffer stuff */
-    sound.buf_wr = 0;
-    sound.buf_rd = 0;
-    sound.buf_available = 0;
-
     /* how many cpu cycles we need to emit a 512hz clock (frame sequencer) */
     sound.fs_cycles = 4194304 / 512;
 
     /* how many cpu cycles to generate a single frame seq clock? */
     sound.fs_cycles_next = sound.fs_cycles;
-
-    /* how many cpu cycles to generate a sample */
-    sound.sample_cycles = (uint_fast32_t) (((double) 4194304 /
-                                            (double) sound_output_rate) * 1000);
-
-    sound.sample_cycles_next = sound.sample_cycles / 1000;
-    sound.sample_cycles_next_rounded = sound.sample_cycles_next & 0xFFFFFFFC;
-  
-    /* no, i'm not empty */
-    sound.buf_empty = 0;
 }
 
 void sound_set_speed(char dbl)
 {
-	return;
-
-    if (dbl)
-    {
-        sound.step_int = 2;
-        sound.step_int1000 = 2000;
-    }
-    else
-    {
-        sound.step_int = 4;
-        sound.step_int1000 = 4000;
-    }
 }
 
 /* update sound internal state given CPU T-states */
@@ -155,6 +186,10 @@ void sound_step_fs()
     /* envelope works at 64hz */
     if (sound.fs_cycles_idx == 7)
         sound_envelope_step();
+	blip_ch1();
+	blip_ch2();
+	blip_ch3();
+	blip_ch4();	
 }
 
 /* update all channels */
@@ -172,6 +207,7 @@ void sound_step_ch1()
 
     /* go back */
     sound.channel_one.duty_cycles_next += sound.channel_one.duty_cycles;
+	blip_ch1();
 }
 
 void sound_step_ch2()
@@ -188,6 +224,7 @@ void sound_step_ch2()
 
     /* go back */
     sound.channel_two.duty_cycles_next += sound.channel_two.duty_cycles;
+	blip_ch2();
 }
 
 void sound_step_ch3()
@@ -206,6 +243,7 @@ void sound_step_ch3()
     /* qty of cpu ticks needed for a wave sample change */
     sound.channel_three.cycles = ((2048 - freq) * 2) << global_cpu_double_speed; 
     sound.channel_three.cycles_next += sound.channel_three.cycles;
+	blip_ch3();
 }
    
 void sound_step_ch4()
@@ -236,109 +274,8 @@ void sound_step_ch4()
         sound.channel_four.sample = sound.channel_four.volume;
 
     /* qty of cpu ticks needed for a wave sample change */
-    sound.channel_four.cycles_next += sound.channel_four.period_lfsr; 
-}
-
-void sound_step_sample()
-{
-    uint_fast32_t zum = sound.sample_cycles + sound.sample_cycles_remainder;
-
-    sound.sample_cycles_next += ((zum / 1000) << global_cpu_double_speed);
-    sound.sample_cycles_next_rounded = 
-    sound.sample_cycles_next & 0xFFFFFFFC;
-    sound.sample_cycles_remainder = zum % 1000;
-
-    /* update output frame counter */
-    sound.frame_counter++;
-
-    /* DAC turned off? */
-    if (sound.nr30->dac == 0 && 
-        sound.channel_one.active == 0 && 
-        sound.channel_two.active == 0 && 
-        sound.channel_four.active == 0) 
-    { 
-        sound_push_samples(0, 0);
-        return;
-    } 
-
-    int16_t sample_left = 0;
-    int16_t sample_right = 0;
-    int16_t sample = 0;
-
-    /* time to generate a sample! sum all the fields */
-    if (sound.channel_one.active) // && sound.channel_one.sample)
-    {
-        /* to the right? */
-        if (sound.nr51->ch1_to_so1)
-            sample_right += sound.channel_one.sample;
-
-        /* to the left? */
-        if (sound.nr51->ch1_to_so2)
-            sample_left += sound.channel_one.sample;
-    }
-
-    if (sound.channel_two.active) // && sound.channel_two.sample)
-    {
-        /* to the right? */
-        if (sound.nr51->ch2_to_so1)
-            sample_right += sound.channel_two.sample;
-
-        /* to the left? */
-        if (sound.nr51->ch2_to_so2)
-            sample_left += sound.channel_two.sample;
-    }
-
-    if (sound.channel_three.active)
-    {
-        uint8_t shift = (sound.nr32->volume_code == 0 ?
-                         4 : sound.nr32->volume_code - 1);
-
-        /* volume is zero in any case */ 
-        if (shift == 4)
-            sample = 0;
-        else
-        {
-            /* apply volume change */
-            uint8_t idx = sound.channel_three.index;
-            uint16_t s;
-
-            /* extract current sample */
-            if ((idx & 0x01) == 0)
-                s = (sound.wave_table[idx >> 1] & 0xf0) >> 4;
-            else
-                s = sound.wave_table[idx >> 1] & 0x0f;
-
-            /* transform it into signed 16 bit sample */
-            sample = ((s * 0x222) >> shift); 
-        }
-
-        
-        /* not silence? */
-        if (sample != 0)
-        {
-            /* to the right? */
-            if (sound.nr51->ch3_to_so1)
-                sample_right += sample;
-
-            /* to the left? */
-            if (sound.nr51->ch3_to_so2)
-                sample_left += sample;
-        }
-    }
-    
-    if (sound.channel_four.active) 
-    {
-        /* to the right? */
-        if (sound.nr51->ch4_to_so1)
-            sample_right += sound.channel_four.sample;
-
-        /* to the left? */
-        if (sound.nr51->ch4_to_so2)
-            sample_left += sound.channel_four.sample;
-    }
-
-        /* push the sum of all channels samples */
-        sound_push_samples(sample_left, sample_right);
+    sound.channel_four.cycles_next += sound.channel_four.period_lfsr;
+	blip_ch4();
 }
 
 /* update length of channel1 */
@@ -375,116 +312,6 @@ void sound_length_ctrl_step()
     sound_length_ctrl_step_ch(sound.nr44->length_enable,
                               &sound.channel_four.length,
                               &sound.channel_four.active);
-}
-
-void sound_read_buffer(void *userdata, uint8_t *stream, int snd_len)
-{
-    /* requester snd_len is expressed in byte,           */
-    /* so divided by to to obtain wanted 16 bits samples */
-    sound_read_samples(snd_len / 2, (int16_t *) stream);
-}
-
-void sound_push_samples(int16_t l, int16_t r)
-{
-    /* store them in tmp buffer */	
-    sound.buf_tmp[sound.buf_tmp_wr++] = l;
-    sound.buf_tmp[sound.buf_tmp_wr++] = r;
-
-    if (sound.buf_tmp_wr == SOUND_BUF_TMP_SZ)
-    {
-        unsigned int i;
-
-        /* put them in circular shared buffer */
-	    for (i=0; i<SOUND_BUF_TMP_SZ; i++)
-            sound_push_sample(sound.buf_tmp[i]);
-
-	    /* reset counter */
-	    sound.buf_tmp_wr = 0;
-    }	    
-}
-
-/* push a single sample data into circular buffer */
-void sound_push_sample(int16_t s)
-{
-    /* assign sample value */ 
-    sound.buf[sound.buf_wr] = s;
-
-    /* update write index */
-    sound.buf_wr++;   
-
-    if (sound.buf_wr == SOUND_BUF_SZ)
-        sound.buf_wr = 0;
-
-    /* update available samples */
-    sound.buf_available++;
-
-    /* if it's locked and we got enough samples, unlock */
-    if (sound.buf_empty && sound.buf_available == (SOUND_SAMPLES * 2))
-    {
-        sound.buf_empty = 0;
-
-        //pthread_cond_signal(&sound_cond); 
-    }
-
-    /* wait for the audio to be played */
-    if (sound.buf_available == SOUND_BUF_SZ)
-    {
-        /* if full, just discard an old sample */
-        sound.buf_available--;
-
-        /* step forward for rd pointer */
-        sound.buf_rd++;
-
-        if (sound.buf_rd == SOUND_BUF_SZ)
-           sound.buf_rd = 0;
-    }
-}
-
-/* calculate the available samples in circula buffer */
-size_t sound_available_samples()
-{
-    if (sound.buf_rd > sound.buf_wr)
-        return sound.buf_wr + SOUND_BUF_SZ - sound.buf_rd;
-
-    return sound.buf_wr - sound.buf_rd; 
-}
-
-/* read a block of data from circular buffer */
-void sound_read_samples(int to_read, int16_t *buf)
-{
-    /* not enough samples? read what we got */
-    if (sound.buf_available < to_read)
-    {
-        /* stop until we got enough samples */
-        sound.buf_empty = 1;
-
-        //while (sound.buf_empty && !global_quit)
-            //pthread_cond_wait(&sound_cond, &sound_mutex);
-    }
-
-    if (sound.buf_rd + to_read >= SOUND_BUF_SZ)
-    {
-        /* overlaps the end of the buffer? copy in 2 phases */
-        size_t first_block = SOUND_BUF_SZ - sound.buf_rd;
-
-        memcpy(buf, &sound.buf[sound.buf_rd], first_block * 2);
-
-        memcpy(&buf[first_block], sound.buf, (to_read - first_block) * 2);
-
-        /* set the new read index */
-        sound.buf_rd = to_read - first_block;
-    }
-    else
-    {
-        /* a single memcpy is enough */
-        memcpy(buf, &sound.buf[sound.buf_rd], to_read * 2); 
-
-        /* update read index */
-        sound.buf_rd += to_read;
-    }    
-
-    /* update avaiable samples */
-    sound.buf_available -= to_read;
 }
 
 /* calc the new frequency by sweep module */
@@ -743,21 +570,6 @@ uint8_t sound_read_reg(uint16_t a, uint8_t v)
 
         default: return v;
     }
-}
-
-void sound_set_output_rate(int freq)
-{
-    sound_output_rate = freq;
-    sound_output_rate_fifth = freq / 5;
-
-    double cpu_base_freq = 4194304;
-
-    /* calc cycles needed to generate a sample */
-    sound.sample_cycles = (uint_fast32_t) (((double) cpu_base_freq /
-                           (double) sound_output_rate) * 1000);
-
-    sound.sample_cycles_next = sound.sample_cycles / 1000;
-    sound.sample_cycles_next_rounded = sound.sample_cycles_next & 0xFFFFFFFC;
 }
 
 void sound_write_reg(uint16_t a, uint8_t v)
@@ -1350,58 +1162,4 @@ void sound_write_wave(uint16_t a, uint8_t v)
     }
 
     sound.wave_table[a - 0xFF30] = v;
-}
-
-void sound_rebuild_wave()
-{
-    int sample;
-    uint8_t shift = (sound.nr32->volume_code == 0 ?
-                    4 : sound.nr32->volume_code - 1);
-    int i;
-
-    int min = 0;
-    int max = 0;
-
-    /* fill wave buffer */
-    for (i=0; i<16; i++)
-    {
-        /* read higher nibble */
-        sample = (sound.wave_table[i] & 0xf0) >> 4;
-
-        /* apply volume change */
-        sample >>= shift; 
-
-        /* convert to signed int 16 */
-        sample = (sample * 0x1111) - 0x8000;
-
-        if (sample < min)
-            min = sample;
-        if (sample > max)
-            max = sample;
-
-        /* save it into rendered wave table */
-        sound.channel_three.wave[i * 2] = (int16_t) sample; 
-        
-        /* do the same with lowest nibble */
-        sample = (sound.wave_table[i] & 0x0f);
-
-        /* apply volume change */
-        sample >>= shift; 
-
-        /* convert to signed int 16 */
-        sample = (sample * 0x1111) - 0x8000;
-
-        /* save it into rendered wave table */
-        sound.channel_three.wave[(i * 2) + 1] = (int16_t) sample;
-
-        if (sample < min)
-            min = sample;
-        if (sample > max)
-            max = sample;
-    }
-
-    /* set the new current sample */
-    sound.channel_three.sample =
-        sound.channel_three.wave[sound.channel_three.index];
-
 }

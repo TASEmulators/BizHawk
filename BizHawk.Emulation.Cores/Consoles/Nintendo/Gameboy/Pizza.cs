@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 {
 	[CoreAttributes("Pizza Boy", "Davide Berra", true, false, "c7bc6ee376028b3766de8d7a02e60ab794841f45",
 		"https://github.com/davideberra/emu-pizza/", false)]
-	public class Pizza : IEmulator, IInputPollable, IVideoProvider, IGameboyCommon
+	public class Pizza : IEmulator, IInputPollable, IVideoProvider, IGameboyCommon, ISoundProvider
 	{
 		private LibPizza _pizza;
 		private PeRunner _exe;
@@ -83,18 +83,21 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
 			fixed (int* vp = _videoBuffer)
+			fixed (short* sp = _soundBuffer)
 			{
 				var targetClocks = TICKSPERFRAME - _tickOverflow;
 
 				var frame = new LibPizza.FrameInfo
 				{
 					VideoBuffer = (IntPtr)vp,
+					SoundBuffer = (IntPtr)sp,
 					Clocks = targetClocks,
 					Keys = GetButtons(controller)
 				};
 
 				_pizza.FrameAdvance(frame);
 				_tickOverflow = frame.Clocks - targetClocks;
+				_numSamples = frame.Samples;
 				Frame++;
 			}
 		}
@@ -126,6 +129,40 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		public string SystemId { get { return "GB"; } }
 		public bool DeterministicEmulation { get; private set; }
 		public CoreComm CoreComm { get; }
+
+		#region ISoundProvider
+
+		private short[] _soundBuffer = new short[2048];
+		private int _numSamples;
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode == SyncSoundMode.Async)
+			{
+				throw new NotSupportedException("Async mode is not supported.");
+			}
+		}
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
+		{
+			samples = _soundBuffer;
+			nsamp = _numSamples;
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new InvalidOperationException("Async mode is not supported.");
+		}
+
+		public void DiscardSamples()
+		{
+		}
+
+		public bool CanProvideAsync => false;
+
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
+
+		#endregion
 
 		#region IVideoProvider
 

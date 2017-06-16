@@ -222,10 +222,6 @@ void cycles_step()
     /* channel four */
     if (sound.channel_four.cycles_next == cycles.cnt)
         sound_step_ch4();
-        
-    /* time to generate a sample? */
-    if (sound.sample_cycles_next_rounded == cycles.cnt)
-        sound_step_sample();
 
     /* update timer state */
     if (cycles.cnt == timer.next)

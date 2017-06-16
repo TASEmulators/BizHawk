@@ -35,6 +35,7 @@
 #include "serial.h"
 #include "utils.h"
 #include "mmu.h"
+#include "sound_output.h"
 
 /* proto */
 void cb();
@@ -74,14 +75,13 @@ EXPORT int Init(const void *rom, int romlen)
 	/* init GPU */
 	gpu_init(&cb);
 
-	/* set sound output rate */
-	sound_set_output_rate(44100);
-
 	/* set rumble cb */
 	mmu_set_rumble_cb(&rumble_cb);
 
 	/* get frame buffer reference */
 	fb = gpu_get_frame_buffer();
+
+	sound_output_init(2 * 1024 * 1024, 44100);
 
 	return 1;
 }
@@ -91,7 +91,9 @@ static uint32_t fb32[160 * 144];
 typedef struct
 {
 	uint32_t* vbuff;
+	int16_t* sbuff;
 	int32_t clocks; // desired(in) actual(out) time to run; 2MHZ
+	int32_t samples; // actual number of samples produced
 	uint16_t keys; // keypad input
 } frameinfo_t;
 
@@ -103,6 +105,7 @@ EXPORT void FrameAdvance(frameinfo_t* frame)
 	gameboy_run(current + frame->clocks);
 	frame->clocks = cycles.sampleclock - current;
 	memcpy(frame->vbuff, fb32, 160 * 144 * sizeof(uint32_t));
+	frame->samples = sound_output_read(frame->sbuff);
 }
 
 EXPORT int IsCGB(void)

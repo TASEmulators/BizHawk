@@ -39,9 +39,6 @@ char gameboy_inited = 0;
 
 void gameboy_init()
 {
-    /* init global values */
-    // global_init(); 
-
     /* init z80 */
     z80_init(); 
 

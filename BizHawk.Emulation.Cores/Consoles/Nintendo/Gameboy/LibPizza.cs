@@ -27,7 +27,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		public class FrameInfo
 		{
 			public IntPtr VideoBuffer;
+			public IntPtr SoundBuffer;
 			public int Clocks;
+			public int Samples;
 			public Buttons Keys;
 		}
 
