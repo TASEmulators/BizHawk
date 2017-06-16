@@ -12,7 +12,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		//Maria related variables
 		public int cycle;
 		public int cpu_cycle;
-		public int scanline;
+		public bool cpu_is_haltable;
+		public bool cpu_is_halted;
+		public bool cpu_halt_pending;
+		public bool cpu_resume_pending;
 
 		// there are 4 maria cycles in a CPU cycle (fast access, both NTSC and PAL)
 		// if the 6532 or TIA are accessed (PC goes to one of those addresses) the next access will be slower by 1/2 a CPU cycle
@@ -47,58 +50,67 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// read the controller state here for now
 			GetControllerState(controller);
 
-			scanline = 0;
+			maria.RunFrame();
+		}
 
-			// actually execute the frame
-			while (scanline < 263)
+		public void RunCPUCycle()
+		{
+			cpu_cycle++;
+			tia._hsyncCnt++;
+
+			if (cpu_cycle <= (2 + (slow_access ? 1 : 0)))
 			{
-				maria.Execute(cycle, scanline);
-				cycle++;
-				cpu_cycle++;
-				tia._hsyncCnt++;
+				cpu_is_haltable = true;
+			} else
+			{
+				cpu_is_haltable = false;
+			}
 
-				// the time a cpu cycle takes depends on the status of the address bus
-				// any address in range of the TIA or m6532 takes an extra cycle to complete
-				if (cpu_cycle==(4 + (slow_access ? 2 : 0)))
-				{
+			// the time a cpu cycle takes depends on the status of the address bus
+			// any address in range of the TIA or m6532 takes an extra cycle to complete
+			if (cpu_cycle == (4 + (slow_access ? 2 : 0)))
+			{
+				if (!cpu_is_halted)
 					cpu.ExecuteOne();
-					cpu_cycle = 0;
-				}
-	
-				// determine if the next access will be fast or slow
-				if (cpu.PC < 0x0400)
+
+				cpu_cycle = 0;
+
+				if (cpu_halt_pending)
 				{
-					if ((cpu.PC & 0xFF) < 0x20)
-					{
-						if ((A7800_control_register & 0x1) == 0 && (cpu.PC < 0x20))
-						{
-							slow_access = false;
-						}
-						else
-						{
-							slow_access = true;
-						}
-					}
-					else if (cpu.PC < 0x300)
-					{
-						slow_access = true;
-					}
-					else
-					{
-						slow_access = false;
-					}
+					cpu_halt_pending = false;
+					cpu_is_halted = true;
 				}
 
-
-				if (cycle == 454)
+				if (cpu_resume_pending)
 				{
-					scanline++;
-					cycle = 0;
-					tia._hsyncCnt = 0;
+					cpu_resume_pending = false;
+					cpu_is_halted = false;
 				}
 			}
 
-
+			// determine if the next access will be fast or slow
+			if (cpu.PC < 0x0400)
+			{
+				if ((cpu.PC & 0xFF) < 0x20)
+				{
+					if ((A7800_control_register & 0x1) == 0 && (cpu.PC < 0x20))
+					{
+						slow_access = false;
+					}
+					else
+					{
+						slow_access = true;
+					}
+				}
+				else if (cpu.PC < 0x300)
+				{
+					slow_access = true;
+				}
+				else
+				{
+					slow_access = false;
+				}
+			}
 		}
 
 		private void GetControllerState(IController controller)
