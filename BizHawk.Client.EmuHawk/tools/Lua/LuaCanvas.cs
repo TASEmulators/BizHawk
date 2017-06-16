@@ -15,6 +15,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private Color _defaultForeground = Color.Black;
 		private Color? _defaultBackground;
+		private Color? _defaultTextBackground = Color.FromArgb(128, 0, 0, 0);
 
 		#region Helpers
 		private readonly Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
@@ -88,7 +89,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_defaultBackground = color;
 		}
-		
+
+		[LuaMethodAttributes("defaultTextBackground", "Sets the default backgroiund color to use in text drawing methods, half-transparent black by default")]
+		public void SetDefaultTextBackground(Color color)
+		{
+			_defaultTextBackground = color;
+		}
+
 		[LuaMethodAttributes("drawBezier", "Draws a Bezier curve using the table of coordinates provided in the given color")]
 		public void DrawBezier(LuaTable points, Color color)
 		{
@@ -374,7 +381,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodAttributes(
 			"DrawText",
 			"Draws the given message at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates.")]
-		public void DrawText(int x, int y, string message, Color? color = null, int? fontsize = null, string fontfamily = null, string fontstyle = null)
+		public void DrawText(int x, int y, string message, Color? color = null, Color? backcolor = null, int? fontsize = null, string fontfamily = null, string fontstyle = null)
 		{
 			var family = FontFamily.GenericMonospace;
 			if (fontfamily != null)
@@ -405,7 +412,11 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			var f = new StringFormat(StringFormat.GenericDefault);
 			var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
+			Size sizeOfText = _graphics.MeasureString(message, font, 0, f).ToSize();
+			Rectangle rect = new Rectangle(new Point(x, y), sizeOfText);
+			_graphics.FillRectangle(GetBrush(backcolor ?? _defaultTextBackground.Value), rect);
 			_graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
 			_graphics.DrawString(message, font, new SolidBrush(color ?? Color.White), x, y);
 		}
