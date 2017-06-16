@@ -15,10 +15,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		{
 			byte* buf = Api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
 			var size = Api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.CARTRIDGE_RAM);
-			if (buf == null)
+
+			if (buf == null && Api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.SGB_CARTRAM)>0)
 			{
 				buf = Api.QUERY_get_memory_data(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
 				size = Api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
+			}
+			if (buf==null)
+			{
+				return null;
 			}
 
 			var ret = new byte[size];
