@@ -2,7 +2,6 @@
 
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
@@ -10,6 +9,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	{
 		public byte ReadMemory(ushort addr)
 		{
+			MemoryCallbacks.CallReads(addr);
+
 			if (addr < 0x0400) {
 				if ((addr & 0xFF) < 0x20)
 				{
@@ -85,6 +86,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public void WriteMemory(ushort addr, byte value)
 		{
+			MemoryCallbacks.CallWrites(addr);
+
 			if (addr < 0x0400)
 			{
 				if ((addr & 0xFF) < 0x20)
@@ -92,18 +95,25 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					// return TIA registers or control register if it is still unlocked
 					if ((A7800_control_register & 0x1) == 0 && (addr < 0x20))
 					{
-						A7800_control_register = value; // TODO: what to return here?
+						A7800_control_register = value;
 					}
 					else
 					{
-						TIA_regs[addr] = value; // TODO: what to return here?
+						TIA_regs[addr] = value; 
 					}
 				}
 				else if ((addr & 0xFF) < 0x40)
 				{
 					if ((A7800_control_register & 0x2) > 0)
 					{
-						Maria_regs[(addr & 0x3F) - 0x20] = value;
+						var temp = (addr & 0x3F) - 0x20;
+
+						// register 8 is read only and controlled by Maria
+						if (temp != 8)
+							Maria_regs[temp] = value;
+
+						if (temp==4) // WSYNC
+							cpu.RDY = false;
 					}
 				}
 				else if (addr < 0x100)

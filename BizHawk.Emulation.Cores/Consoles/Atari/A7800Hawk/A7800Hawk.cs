@@ -127,17 +127,19 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (_isPAL)
 			{
 				maria._frameHz = 50;
-				maria._screen_width = 454;
+				maria._screen_width = 320;
 				maria._screen_height = 313;
 				maria._palette = PALPalette;
 			}
 			else
 			{
 				maria._frameHz = 60;
-				maria._screen_width = 454;
+				maria._screen_width = 320;
 				maria._screen_height = 263;
 				maria._palette = NTSCPalette;
 			}
+
+			maria.Core = this;
 
 			ser.Register<IVideoProvider>(maria);
 			ser.Register<ISoundProvider>(tia);
@@ -146,6 +148,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
 
+			SetupMemoryDomains();
 			HardReset();
 		}
 
@@ -174,7 +177,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private void ExecFetch(ushort addr)
 		{
-			//MemoryCallbacks.CallExecutes(addr);
+			MemoryCallbacks.CallExecutes(addr);
 		}
 
 		private void Reset_Mapper(string m)
