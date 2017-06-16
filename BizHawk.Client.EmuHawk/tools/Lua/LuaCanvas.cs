@@ -378,10 +378,36 @@ namespace BizHawk.Client.EmuHawk
 			_graphics.DrawRectangle(GetPen(line ?? _defaultForeground), x, y, width, height);
 		}
 
+		[LuaMethodAttributes("drawString", "Alias of DrawText()")]
+		public void DrawString(
+			int x,
+			int y,
+			string message,
+			Color? forecolor = null,
+			Color? backcolor = null,
+			int? fontsize = null,
+			string fontfamily = null,
+			string fontstyle = null,
+			string horizalign = null,
+			string vertalign = null)
+		{
+			DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
+		}
+
 		[LuaMethodAttributes(
 			"DrawText",
 			"Draws the given message at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates.")]
-		public void DrawText(int x, int y, string message, Color? color = null, Color? backcolor = null, int? fontsize = null, string fontfamily = null, string fontstyle = null)
+		public void DrawText(
+			int x, 
+			int y, 
+			string message,
+			Color? forecolor = null,
+			Color? backcolor = null, 
+			int? fontsize = null, 
+			string fontfamily = null, 
+			string fontstyle = null,
+			string horizalign = null,
+			string vertalign = null)
 		{
 			var family = FontFamily.GenericMonospace;
 			if (fontfamily != null)
@@ -415,10 +441,42 @@ namespace BizHawk.Client.EmuHawk
 			var f = new StringFormat(StringFormat.GenericDefault);
 			var font = new Font(family, fontsize ?? 12, fstyle, GraphicsUnit.Pixel);
 			Size sizeOfText = _graphics.MeasureString(message, font, 0, f).ToSize();
+
+			if (horizalign != null)
+			{
+				switch(horizalign.ToLower())
+				{
+					default:
+					case "left":
+						break;
+					case "center":
+						x -= sizeOfText.Width / 2;
+						break;
+					case "right":
+						x -= sizeOfText.Width / 2;
+						break;
+				}
+			}
+
+			if (vertalign != null)
+			{
+				switch (vertalign.ToLower())
+				{
+					default:
+					case "bottom":
+						break;
+					case "middle":
+						y -= sizeOfText.Height / 2;
+						break;
+					case "top":
+						y -= sizeOfText.Height;
+						break;
+				}
+			}
 			Rectangle rect = new Rectangle(new Point(x, y), sizeOfText);
 			_graphics.FillRectangle(GetBrush(backcolor ?? _defaultTextBackground.Value), rect);
 			_graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-			_graphics.DrawString(message, font, new SolidBrush(color ?? Color.White), x, y);
+			_graphics.DrawString(message, font, new SolidBrush(forecolor ?? Color.White), x, y);
 		}
 	}
 }
