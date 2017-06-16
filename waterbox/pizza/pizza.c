@@ -38,19 +38,13 @@
 #include "sound_output.h"
 
 /* proto */
-void cb();
+void frame_cb();
 void connected_cb();
 void disconnected_cb();
 void rumble_cb(uint8_t rumble);
 void network_send_data(uint8_t v);
 void *start_thread(void *args);
 void *start_thread_network(void *args);
-
-/* frame buffer pointer */
-uint16_t *fb;
-
-/* magnify rate */
-float magnify_rate = 1.f;
 
 /* cartridge name */
 char cart_name[64];
@@ -73,20 +67,15 @@ EXPORT int Init(const void *rom, int romlen)
 	gameboy_init();
 
 	/* init GPU */
-	gpu_init(&cb);
+	gpu_init(frame_cb);
 
 	/* set rumble cb */
 	mmu_set_rumble_cb(&rumble_cb);
-
-	/* get frame buffer reference */
-	fb = gpu_get_frame_buffer();
 
 	sound_output_init(2 * 1024 * 1024, 44100);
 
 	return 1;
 }
-
-static uint32_t fb32[160 * 144];
 
 typedef struct
 {
@@ -97,15 +86,17 @@ typedef struct
 	uint16_t keys; // keypad input
 } frameinfo_t;
 
+static uint32_t* current_vbuff;
 
 EXPORT void FrameAdvance(frameinfo_t* frame)
 {
 	input_set_keys(frame->keys);
 	uint64_t current = cycles.sampleclock;
+	current_vbuff = frame->vbuff;
 	gameboy_run(current + frame->clocks);
 	frame->clocks = cycles.sampleclock - current;
-	memcpy(frame->vbuff, fb32, 160 * 144 * sizeof(uint32_t));
 	frame->samples = sound_output_read(frame->sbuff);
+	current_vbuff = NULL;
 }
 
 EXPORT int IsCGB(void)
@@ -113,20 +104,9 @@ EXPORT int IsCGB(void)
 	return global_cgb;
 }
 
-void cb()
+void frame_cb()
 {
-	// frame received into fb
-	uint16_t *src = fb;
-	uint8_t *dst = (uint8_t *)fb32;
-
-	for (int i = 0; i < 160 * 144; i++)
-	{
-		uint16_t c = *src++;
-		*dst++ = c << 3 & 0xf8 | c >> 2 & 7;
-		*dst++ = c >> 3 & 0xfa | c >> 9 & 3;
-		*dst++ = c >> 8 & 0xf8 | c >> 13 & 7;
-		*dst++ = 0xff;
-	}
+	memcpy(current_vbuff, gpu.frame_buffer, sizeof(gpu.frame_buffer));
 }
 
 void connected_cb()

@@ -28,7 +28,6 @@ typedef void (*gpu_frame_ready_cb_t) ();
 
 /* prototypes */
 void      gpu_dump_oam();
-uint16_t *gpu_get_frame_buffer();
 void      gpu_init(gpu_frame_ready_cb_t cb);
 void      gpu_reset();
 void      gpu_set_speed(char speed);
@@ -105,27 +104,26 @@ typedef struct gpu_s
     uint_fast16_t  frame_counter;
 
     /* BG palette       */
-    uint16_t  bg_palette[4]; 
+    uint32_t  bg_palette[4]; 
 
     /* Obj palette 0/1  */
-    uint16_t  obj_palette_0[4]; 
-    uint16_t  obj_palette_1[4]; 
+    uint32_t  obj_palette_0[4]; 
+    uint32_t  obj_palette_1[4]; 
 
     /* CGB palette for background */
-    uint16_t  cgb_palette_bg_rgb565[0x20];
+    uint32_t  cgb_palette_bg_rgb888[0x20];
     uint16_t  cgb_palette_bg[0x20];
     uint8_t   cgb_palette_bg_idx;
     uint8_t   cgb_palette_bg_autoinc;
 
     /* CGB palette for sprites */
-    uint16_t  cgb_palette_oam_rgb565[0x20];
+    uint32_t  cgb_palette_oam_rgb888[0x20];
     uint16_t  cgb_palette_oam[0x20];
     uint8_t   cgb_palette_oam_idx;
     uint8_t   cgb_palette_oam_autoinc;
 
     /* frame buffer     */
-    uint16_t  frame_buffer_prev[160 * 144];
-    uint16_t  frame_buffer[160 * 144];
+    uint32_t  frame_buffer[160 * 144];
     uint8_t   priority[160 * 144];
     uint8_t   palette_idx[160 * 144];
 } gpu_t;
