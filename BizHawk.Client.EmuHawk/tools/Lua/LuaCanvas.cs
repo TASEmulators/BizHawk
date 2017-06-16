@@ -13,7 +13,7 @@ namespace BizHawk.Client.EmuHawk
 	[Description("Represents a canvas object returned by the gui.createcanvas() method")]
 	public partial class LuaCanvas : Form
 	{
-		private Color _defaultForeground = Color.White;
+		private Color _defaultForeground = Color.Black;
 		private Color? _defaultBackground;
 
 		#region Helpers
@@ -289,8 +289,7 @@ namespace BizHawk.Client.EmuHawk
 		)]
 		public void DrawArc(int x, int y, int width, int height, int startangle, int sweepangle, Color? line = null)
 		{
-			var pen = new Pen(line.HasValue ? line.Value : Color.Black);
-			_graphics.DrawArc(pen, x, y, width, height, startangle, sweepangle);
+			_graphics.DrawArc(GetPen(line ?? _defaultForeground), x, y, width, height, startangle, sweepangle);
 		}
 
 		[LuaMethodAttributes("drawPie", "draws a Pie shape at the given coordinates and the given width and height")]
@@ -361,16 +360,15 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethodAttributes(
 			"DrawRectangle",
 			"Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color")]
-		public void DrawRectangle(int x, int y, int width, int height, Color? outline = null, Color? fill = null)
+		public void DrawRectangle(int x, int y, int width, int height, Color? line = null, Color? background = null)
 		{
-			if (fill.HasValue)
+			var bg = background ?? _defaultBackground;
+			if (bg.HasValue)
 			{
-				var brush = new SolidBrush(fill.Value);
-				_graphics.FillRectangle(brush, x, y, width, height);
+				_graphics.FillRectangle(GetBrush(bg.Value), x, y, width, height);
 			}
 
-			var pen = new Pen(outline.HasValue ? outline.Value : Color.Black);
-			_graphics.DrawRectangle(pen, x, y, width, height);
+			_graphics.DrawRectangle(GetPen(line ?? _defaultForeground), x, y, width, height);
 		}
 
 		[LuaMethodAttributes(
