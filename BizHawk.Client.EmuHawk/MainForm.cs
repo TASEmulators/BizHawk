@@ -3634,10 +3634,10 @@ namespace BizHawk.Client.EmuHawk
 					((OpenAdvanced_OpenRom)ioa).Path = loader.CanonicalFullPath;
 				}
 
-				string loaderName = "*" + OpenAdvancedSerializer.Serialize(ioa);
-
 				if (result)
 				{
+					
+					string loaderName = "*" + OpenAdvancedSerializer.Serialize(ioa);
 					Emulator = loader.LoadedEmulator;
 					Global.Game = loader.Game;
 					CoreFileProvider.SyncCoreCommInputSignals(nextComm);
