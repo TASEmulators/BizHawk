@@ -3120,6 +3120,7 @@ namespace BizHawk.Client.EmuHawk
 				videowritername = Global.Config.VideoWriter;
 			}
 
+			_dumpaudiosync = Global.Config.VideoWriterAudioSync;
 			if (unattended && !string.IsNullOrEmpty(videowritername))
 			{
 				aw = VideoWriterInventory.GetVideoWriter(videowritername);
@@ -3127,7 +3128,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(VideoWriterInventory.GetAllWriters(), this,
-					out _avwriterResizew, out _avwriterResizeh, out _avwriterpad, out _dumpaudiosync);
+					out _avwriterResizew, out _avwriterResizeh, out _avwriterpad, ref _dumpaudiosync);
 			}
 
 			if (aw == null)

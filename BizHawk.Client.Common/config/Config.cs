@@ -398,6 +398,7 @@ namespace BizHawk.Client.Common
 		public string AVICodecToken = "";
 		public int GifWriterFrameskip = 3;
 		public int GifWriterDelay = -1;
+		public bool VideoWriterAudioSync = true;
 
 		#region emulation core settings
 
