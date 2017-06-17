@@ -89,7 +89,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			/// <summary>
 			/// native wordsize.  only a hint
 			/// </summary>
-			WordSize8 = 256
+			WordSize8 = 256,
+			/// <summary>
+			/// for a yuge endian domain, if true, bytes are stored word-swapped from their native ordering
+			/// </summary>
+			Swapped = 512,
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -171,7 +175,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				else
 					throw new InvalidOperationException("Unknown word size for memory domain");
 				_monitor = monitor;
-				if (EndianType == Endian.Big)
+				if ((m.Flags & MemoryDomainFlags.Swapped) != 0 && EndianType == Endian.Big)
 				{
 					_addressMangler = WordSize - 1;
 				}

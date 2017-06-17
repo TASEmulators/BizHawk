@@ -19,8 +19,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
 	[CoreAttributes("Saturnus", "Ryphecha", true, false, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
-	public class Saturnus : IEmulator, IVideoProvider, ISoundProvider,
-		IInputPollable, IDriveLight, IStatable, IRegionable, ISaveRam,
+	public class Saturnus : WaterboxCore,
+		IDriveLight, IRegionable, 
 		ISettable<Saturnus.Settings, Saturnus.SyncSettings>
 	{
 		private static readonly DiscSectorReaderPolicy _diskPolicy = new DiscSectorReaderPolicy
@@ -28,7 +28,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			DeinterleavedSubcode = false
 		};
 
-		private PeRunner _exe;
 		private LibSaturnus _core;
 		private Disc[] _disks;
 		private DiscSectorReader[] _diskReaders;
@@ -64,9 +63,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		public Saturnus(CoreComm comm, IEnumerable<Disc> disks, bool deterministic, Settings settings,
 			SyncSettings syncSettings)
+			:base(comm, new Configuration
+			{
+				MaxSamples = 8192,
+				DefaultWidth = 320,
+				DefaultHeight = 240,
+				MaxWidth = 1024,
+				MaxHeight = 1024,
+				SystemId = "SAT"
+			})
 		{
-			ServiceProvider = new BasicServiceProvider(this);
-			CoreComm = comm;
 			settings = settings ?? new Settings();
 			syncSettings = syncSettings ?? new SyncSettings();
 
@@ -76,9 +82,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				throw new InvalidOperationException("Some disks are not valid");
 			InitCallbacks();
 
-			_exe = new PeRunner(new PeRunnerOptions
+			_core = PreInit<LibSaturnus>(new PeRunnerOptions
 			{
-				Path = comm.CoreFileProvider.DllPath(),
 				Filename = "ss.wbx",
 				SbrkHeapSizeKB = 128,
 				SealedHeapSizeKB = 4096, // 512KB of bios, 2MB of kof95/ultraman carts
@@ -87,11 +92,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				PlainHeapSizeKB = 24 * 1024, // up to 16MB of cart ram
 				StartAddress = LibSaturnus.StartAddress
 			});
-			_core = BizInvoker.GetInvoker<LibSaturnus>(_exe, _exe);
 
 			SetFirmwareCallbacks();
 			SetCdCallbacks();
-			_core.SetAddMemoryDomainCallback(_addMemoryDomainCallback);
+
 			if (!_core.Init(_disks.Length, syncSettings.ExpansionCart, syncSettings.Region, syncSettings.RegionAutodetect))
 				throw new InvalidOperationException("Core rejected the disks!");
 			ClearAllCallbacks();
@@ -125,20 +129,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			_core.SetRtc((long)syncSettings.InitialTime.Subtract(new DateTime(1970, 1, 1)).TotalSeconds,
 				syncSettings.Language);
 
-			_exe.Seal();
+			PostInit();
 			SetCdCallbacks();
 			_core.SetDisk(0, false);
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(
-				new MemoryDomainList(_memoryDomains.Values.Cast<MemoryDomain>().ToList())
-				{
-					MainMemory = _memoryDomains["Work Ram Low"]
-				});
 			PutSettings(settings);
 			_syncSettings = syncSettings;
 			DeterministicEmulation = deterministic || !_syncSettings.UseRealTime;
 		}
 
-		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
+		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			var prevDiskSignal = controller.IsPressed("Previous Disk");
 			var nextDiskSignal = controller.IsPressed("Next Disk");
@@ -169,61 +168,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			DriveLightOn = false;
 			if (controller.IsPressed("Power"))
 				_core.HardReset();
-			SetInputCallback();
 
-			fixed (short* _sp = _soundBuffer)
-			fixed (int* _vp = _videoBuffer)
-			fixed (byte* _cp = _controllerDeck.Poll(controller))
-			{
-				var info = new LibSaturnus.FrameAdvanceInfo
-				{
-					SoundBuf = (IntPtr)_sp,
-					SoundBufMaxSize = _soundBuffer.Length / 2,
-					Pixels = (IntPtr)_vp,
-					Controllers = (IntPtr)_cp,
-					ResetPushed = (short)(controller.IsPressed("Reset") ? 1 : 0)
-				};
+			_core.SetControllerData(_controllerDeck.Poll(controller));
 
-				_core.FrameAdvance(info);
-				Frame++;
-				IsLagFrame = info.InputLagged != 0;
-				if (IsLagFrame)
-					LagCount++;
-				_numSamples = info.SoundBufSize;
-				BufferWidth = info.Width;
-				BufferHeight = info.Height;
-			}
-		}
-
-		private bool _disposed = false;
-
-		public void Dispose()
-		{
-			if (!_disposed)
-			{
-				_exe.Dispose();
-				_exe = null;
-				_core = null;
-				_disposed = true;
-			}
-		}
-
-		public int Frame { get; private set; }
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get; set; }
-		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
-
-		public void ResetCounters()
-		{
-			Frame = 0;
+			return new LibSaturnus.FrameInfo { ResetPushed = controller.IsPressed("Reset") ? 1 : 0 };
 		}
 
 		public DisplayType Region => _isPal ? DisplayType.PAL : DisplayType.NTSC;
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
-		public string SystemId { get { return "SAT"; } }
-		public bool DeterministicEmulation { get; private set; }
-		public CoreComm CoreComm { get; }
-		public ControllerDefinition ControllerDefinition { get; }
 
 		#region ISettable
 
@@ -469,72 +420,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		#endregion
 
-		#region IMemoryDomains
-
-		private readonly Dictionary<string, MemoryDomainIntPtrMonitor> _memoryDomains = new Dictionary<string, MemoryDomainIntPtrMonitor>();
-
-		private void AddMemoryDomain(string name, IntPtr ptr, int size, bool writable)
-		{
-			_memoryDomains.Add(name, new MemoryDomainIntPtrMonitor(name, MemoryDomain.Endian.Big, ptr, size, writable, 2, _exe));
-		}
-
-		#endregion
-
 		#region IStatable
 
-		public bool BinarySaveStatesPreferred => true;
-
-		public void SaveStateText(TextWriter writer)
+		protected override void SaveStateBinaryInternal(BinaryWriter writer)
 		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHexFast(writer);
-			// write extra copy of stuff we don't use
-			writer.WriteLine("Frame {0}", Frame);
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHexFast(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			_exe.LoadStateBinary(reader);
-			// other variables
-			Frame = reader.ReadInt32();
-			LagCount = reader.ReadInt32();
-			IsLagFrame = reader.ReadBoolean();
-			_activeDisk = reader.ReadInt32();
-			_prevDiskSignal = reader.ReadBoolean();
-			_nextDiskSignal = reader.ReadBoolean();
-			// any managed pointers that we sent to the core need to be resent now!
-			SetCdCallbacks();
-			_core.SetInputCallback(null);
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			_exe.SaveStateBinary(writer);
-			// other variables
-			writer.Write(Frame);
-			writer.Write(LagCount);
-			writer.Write(IsLagFrame);
 			writer.Write(_activeDisk);
 			writer.Write(_prevDiskSignal);
 			writer.Write(_nextDiskSignal);
 		}
 
-		public byte[] SaveStateBinary()
+		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
-			var ms = new MemoryStream();
-			var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			ms.Close();
-			return ms.ToArray();
+			_activeDisk = reader.ReadInt32();
+			_prevDiskSignal = reader.ReadBoolean();
+			_nextDiskSignal = reader.ReadBoolean();
+			// any managed pointers that we sent to the core need to be resent now!
+			SetCdCallbacks();
 		}
 
 		#endregion
@@ -545,8 +446,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		private LibSaturnus.FirmwareDataCallback _firmwareDataCallback;
 		private LibSaturnus.CDTOCCallback _cdTocCallback;
 		private LibSaturnus.CDSectorCallback _cdSectorCallback;
-		private LibSaturnus.InputCallback _inputCallback;
-		private LibSaturnus.AddMemoryDomainCallback _addMemoryDomainCallback;
 
 		private void InitCallbacks()
 		{
@@ -554,8 +453,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			_firmwareDataCallback = FirmwareData;
 			_cdTocCallback = CDTOCCallback;
 			_cdSectorCallback = CDSectorCallback;
-			_inputCallback = InputCallbacks.Call;
-			_addMemoryDomainCallback = AddMemoryDomain;
 		}
 
 		private void SetFirmwareCallbacks()
@@ -566,16 +463,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		{
 			_core.SetCDCallbacks(_cdTocCallback, _cdSectorCallback);
 		}
-		private void SetInputCallback()
-		{
-			_core.SetInputCallback(InputCallbacks.Count > 0 ? _inputCallback : null);
-		}
 		private void ClearAllCallbacks()
 		{
 			_core.SetFirmwareCallbacks(null, null);
 			_core.SetCDCallbacks(null, null);
 			_core.SetInputCallback(null);
-			_core.SetAddMemoryDomainCallback(null);
 		}
 
 		private string TranslateFirmwareName(string filename)
@@ -641,111 +533,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		#endregion
 
-		#region IVideoProvider
-
-		private int[] _videoBuffer = new int[1024 * 1024];
-
-		public int[] GetVideoBuffer()
-		{
-			return _videoBuffer;
-		}
-
 		private const int PalFpsNum = 1734687500;
 		private const int PalFpsDen = 61 * 455 * 1251;
 		private const int NtscFpsNum = 1746818182; // 1746818181.8
 		private const int NtscFpsDen = 61 * 455 * 1051;
-
-		public int VirtualWidth => BufferWidth; // TODO
-		public int VirtualHeight => BufferHeight; // TODO
-		public int BufferWidth { get; private set; } = 320;
-		public int BufferHeight { get; private set; } = 240;
-		public int VsyncNumerator => _isPal ? PalFpsNum : NtscFpsNum;
-		public int VsyncDenominator => _isPal ? PalFpsDen : NtscFpsDen;
-		public int BackgroundColor => unchecked((int)0xff000000);
-
-		#endregion
-
-		#region ISoundProvider
-
-		private short[] _soundBuffer = new short[16384];
-		private int _numSamples;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
-		}
-
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			samples = _soundBuffer;
-			nsamp = _numSamples;
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
-
-		public void DiscardSamples()
-		{
-		}
-
-		public bool CanProvideAsync => false;
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		#endregion
-
-		#region ISaveRam
-
-		private static readonly string[] SaveRamDomains = new[] { "Backup Ram", "Backup Cart" };
-
-		private int SaveRamSize()
-		{
-			return ActiveSaveRamDomains()
-				.Select(m => (int)m.Size)
-				.Sum();
-		}
-		private IEnumerable<MemoryDomainIntPtrMonitor> ActiveSaveRamDomains()
-		{
-			return SaveRamDomains.Where(_memoryDomains.ContainsKey)
-				.Select(s => _memoryDomains[s]);
-		}
-
-		public byte[] CloneSaveRam()
-		{
-			var ret = new byte[SaveRamSize()];
-			var offs = 0;
-			using (_exe.EnterExit())
-			{
-				foreach (var m in ActiveSaveRamDomains())
-				{
-					Marshal.Copy(m.Data, ret, offs, (int)m.Size);
-					offs += (int)m.Size;
-				}
-			}
-			return ret;
-		}
-
-		public void StoreSaveRam(byte[] data)
-		{
-			if (data.Length != SaveRamSize())
-				throw new InvalidOperationException("Saveram was the wrong size!");
-			var offs = 0;
-			using (_exe.EnterExit())
-			{
-				foreach (var m in ActiveSaveRamDomains())
-				{
-					Marshal.Copy(data, offs, m.Data, (int)m.Size);
-					offs += (int)m.Size;
-				}
-			}
-		}
-
-		public bool SaveRamModified => true;
-
-		#endregion
+		public override int VsyncNumerator => _isPal ? PalFpsNum : NtscFpsNum;
+		public override int VsyncDenominator => _isPal ? PalFpsDen : NtscFpsDen;
 	}
 }

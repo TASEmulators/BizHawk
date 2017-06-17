@@ -112,7 +112,7 @@ void SOUND_Init(void)
 
 	SS_SetPhysMemMap(0x05A00000, 0x05A7FFFF, SCSP.GetRAMPtr(), 0x80000, true);
 	// TODO: MEM4B: SS_SetPhysMemMap(0x05A00000, 0x05AFFFFF, SCSP.GetRAMPtr(), 0x40000, true);
-	AddMemoryDomain("Sound Ram", SCSP.GetRAMPtr(), 0x100000, true);
+	AddMemoryDomain("Sound Ram", SCSP.GetRAMPtr(), 0x100000, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 }
 
 uint8 SOUND_PeekRAM(uint32 A)

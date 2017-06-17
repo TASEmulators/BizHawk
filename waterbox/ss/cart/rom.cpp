@@ -48,6 +48,6 @@ void CART_ROM_Init(CartInfo *c, const char *filename)
 
 	SS_SetPhysMemMap(0x02000000, 0x03FFFFFF, ROM, 0x200000, false);
 	c->CS01_SetRW8W16(0x02000000, 0x03FFFFFF, ROM_Read);
-	AddMemoryDomain("Rom Cart", ROM, 0x200000, false);
+	AddMemoryDomain("Rom Cart", ROM, 0x200000, MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 }
 }

@@ -210,7 +210,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public string SystemId { get; }
 		public bool DeterministicEmulation { get; protected set; } = true;
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
-		public abstract ControllerDefinition ControllerDefinition { get; }
+		public virtual ControllerDefinition ControllerDefinition { get; protected set; } = NullController.Instance.Definition;
 
 		#endregion
 

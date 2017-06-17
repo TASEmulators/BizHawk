@@ -86,6 +86,6 @@ void CART_Backup_Init(CartInfo *c)
 	c->GetClearNVDirty = GetClearNVDirty;
 	c->GetNVInfo = GetNVInfo;
 
-	AddMemoryDomain("Backup Cart", ExtBackupRAM, 524288, true);
+	AddMemoryDomain("Backup Cart", ExtBackupRAM, 524288, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SAVERAMMABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 }
 }

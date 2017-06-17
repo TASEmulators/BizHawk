@@ -118,8 +118,8 @@ void Init(void)
  //
  //
  SS_SetPhysMemMap(0x05C00000, 0x05C7FFFF, VRAM, sizeof(VRAM), true);
- AddMemoryDomain("VDP1 Ram", VRAM, sizeof(VRAM), true);
- AddMemoryDomain("VDP1 Framebuffer", FB, sizeof(FB), true);
+ AddMemoryDomain("VDP1 Ram", VRAM, sizeof(VRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+ AddMemoryDomain("VDP1 Framebuffer", FB, sizeof(FB), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
  //SS_SetPhysMemMap(0x05C80000, 0x05CFFFFF, FB[FBDrawWhich], sizeof(FB[0]), true);
 
  vb_status = false;

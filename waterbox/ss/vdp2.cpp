@@ -789,8 +789,8 @@ void Init(const bool IsPAL)
  lastts = 0;
 
  SS_SetPhysMemMap(0x05E00000, 0x05EFFFFF, VRAM, 0x80000, true);
- AddMemoryDomain("VDP2 Ram", VRAM, sizeof(VRAM), true);
- AddMemoryDomain("VDP2 CRam", CRAM, sizeof(CRAM), true);
+ AddMemoryDomain("VDP2 Ram", VRAM, sizeof(VRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
+ AddMemoryDomain("VDP2 CRam", CRAM, sizeof(CRAM), MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 
  VDP2REND_Init(IsPAL);
 }

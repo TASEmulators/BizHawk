@@ -79,6 +79,6 @@ void CART_ExtRAM_Init(CartInfo *c, bool R4MiB)
 	c->CS01_SetRW8W16(/*0x04FFFFFE*/ 0x04F00000, 0x04FFFFFF, CartID_Read_DB);
 
 	c->Reset = Reset;
-	AddMemoryDomain("Ram Cart", ExtRAM, 0x400000, true);
+	AddMemoryDomain("Ram Cart", ExtRAM, 0x400000, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 }
 }

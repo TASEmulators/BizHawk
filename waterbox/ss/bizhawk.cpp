@@ -131,41 +131,20 @@ namespace MDFN_IEN_SS
 extern void Emulate(EmulateSpecStruct *espec_arg);
 }
 
-struct FrameAdvanceInfo
-{
-	int16 *SoundBuf;
-
-	uint32 *Pixels;
-
-	uint8 *Controllers;
-
-	int64 MasterCycles;
-
-	int32 SoundBufMaxSize;
-	int32 SoundBufSize;
-
-	int32 Width;
-	int32 Height;
-
-	int16 ResetPushed;
-	int16 InputLagged;
-
-	// Set by the system emulation code every frame, to denote the horizontal and vertical offsets of the image, and the size
-	// of the image.  If the emulated system sets the elements of LineWidths, then the width(w) of this structure
-	// is ignored while drawing the image.
-	// int32 x, y, h;
-
-	// Set(optionally) by emulation code.  If InterlaceOn is true, then assume field height is 1/2 DisplayRect.h, and
-	// only every other line in surface (with the start line defined by InterlacedField) has valid data
-	// (it's up to internal Mednafen code to deinterlace it).
-	// bool InterlaceOn;
-	// bool InterlaceField;
-};
-
 static uint8 ControllerInput[12 * 32];
 bool InputLagged;
 
-EXPORT void FrameAdvance(FrameAdvanceInfo &f)
+EXPORT void SetControllerData(const uint8_t* controllerData)
+{
+	memcpy(ControllerInput, controllerData, sizeof(ControllerInput));
+}
+
+struct MyFrameInfo: public FrameInfo
+{
+	int32_t ResetPushed;
+};
+
+EXPORT void FrameAdvance(MyFrameInfo& f)
 {
 	EmulateSpecStruct e;
 	int32 LineWidths[1024];
@@ -173,22 +152,21 @@ EXPORT void FrameAdvance(FrameAdvanceInfo &f)
 	e.pixels = FrameBuffer;
 	e.pitch32 = 1024;
 	e.LineWidths = LineWidths;
-	e.SoundBuf = f.SoundBuf;
-	e.SoundBufMaxSize = f.SoundBufMaxSize;
-	memcpy(ControllerInput, f.Controllers, sizeof(ControllerInput));
+	e.SoundBuf = f.SoundBuffer;
+	e.SoundBufMaxSize = 8192;
 	IsResetPushed = f.ResetPushed;
 	InputLagged = true;
 	Emulate(&e);
-	f.SoundBufSize = e.SoundBufSize;
-	f.MasterCycles = e.MasterCycles;
-	f.InputLagged = InputLagged;
+	f.Samples = e.SoundBufSize;
+	f.Cycles = e.MasterCycles;
+	f.Lagged = InputLagged;
 
 	int w = 256;
 	for (int i = 0; i < e.h; i++)
 		w = std::max(w, LineWidths[i]);
 
 	const uint32 *src = FrameBuffer;
-	uint32 *dst = f.Pixels;
+	uint32 *dst = f.VideoBuffer;
 	const int srcp = 1024;
 	const int dstp = w;
 	src += e.y * srcp + e.x;
@@ -226,11 +204,21 @@ EXPORT void SetInputCallback(void (*callback)())
 	InputCallback = callback;
 }
 
-void (*AddMemoryDomain)(const char *name, const void *ptr, int size, bool writable);
+static std::vector<MemoryArea> MemoryAreas;
 
-EXPORT void SetAddMemoryDomainCallback(void (*callback)(const char *name, const void *ptr, int size, bool writable))
+void AddMemoryDomain(const char *name, const void *ptr, int size, int flags)
 {
-	AddMemoryDomain = callback;
+	MemoryArea m;
+	m.Data = (void*)ptr;
+	m.Name = name;
+	m.Size = size;
+	m.Flags = flags;
+	MemoryAreas.push_back(m);
+}
+
+EXPORT void GetMemoryAreas(MemoryArea* m)
+{
+	memcpy(m, MemoryAreas.data(), MemoryAreas.size() * sizeof(MemoryArea));
 }
 
 EXPORT void SetRtc(int64 ticks, int language)

@@ -55,6 +55,6 @@ void CART_CS1RAM_Init(CartInfo *c)
 					  CS1RAM_RW_DB<uint16, true>);
 
 	c->Reset = Reset;
-	AddMemoryDomain("CS1 Cart", CS1RAM, 0x1000000, true);
+	AddMemoryDomain("CS1 Cart", CS1RAM, 0x1000000, MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 }
 }

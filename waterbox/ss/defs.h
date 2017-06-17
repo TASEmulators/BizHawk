@@ -300,7 +300,8 @@ inline char *strdup(const char *p)
 #include "stream/MemoryStream.h"
 #include "math_ops.h"
 
-#include <emulibc.h>
+#include "../emulibc/emulibc.h"
+#include "../emulibc/waterboxcore.h"
 
 extern int32 (*FirmwareSizeCallback)(const char *filename);
 extern void (*FirmwareDataCallback)(const char *filename, uint8 *dest);
@@ -319,4 +320,4 @@ extern bool setting_ss_region_autodetect;
 extern bool InputLagged;
 extern void (*InputCallback)();
 
-extern void (*AddMemoryDomain)(const char* name, const void* ptr, int size, bool writable);
+void AddMemoryDomain(const char* name, const void* ptr, int size, int flags);
