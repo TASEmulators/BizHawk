@@ -479,7 +479,15 @@ namespace BizHawk.Client.Common
 								case DiscType.TurboCD:
 								case DiscType.UnknownCDFS:
 								case DiscType.UnknownFormat:
-									game.System = "PCECD";
+									if (PreferredPlatformIsDefined(ext))
+									{
+										game.System = Global.Config.PreferredPlatformsForExtensions[ext];
+									}
+									else
+									{
+										game.System = "PCECD";
+									}
+
 									break;
 							}
 						}

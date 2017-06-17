@@ -46,6 +46,7 @@ namespace BizHawk.Client.Common
 			{ ".rom", "" },
 			{ ".iso", "" },
 			{ ".img", "" },
+			{ ".cue", "" }
 		};
 
 		// Path Settings ************************************/
