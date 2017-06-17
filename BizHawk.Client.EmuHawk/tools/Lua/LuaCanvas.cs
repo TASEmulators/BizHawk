@@ -505,7 +505,7 @@ namespace BizHawk.Client.EmuHawk
 			Rectangle rect = new Rectangle(new Point(x, y), sizeOfText);
 			_graphics.FillRectangle(GetBrush(backcolor ?? _defaultTextBackground.Value), rect);
 			_graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
-			_graphics.DrawString(message, font, new SolidBrush(forecolor ?? Color.White), x, y);
+			_graphics.DrawString(message, font, new SolidBrush(forecolor ?? Color.Black), x, y);
 		}
 	}
 }
