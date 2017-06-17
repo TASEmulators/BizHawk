@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		#region IEmulator
 
-		protected abstract LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller);
+		protected abstract LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound);
 
 		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
@@ -163,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				fixed (int* vp = _videoBuffer)
 				fixed (short* sp = _soundBuffer)
 				{
-					var frame = FrameAdvancePrep(controller);
+					var frame = FrameAdvancePrep(controller, render, rendersound);
 					frame.VideoBuffer = (IntPtr)vp;
 					frame.SoundBuffer = (IntPtr)sp;
 
@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		protected readonly BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
 		public string SystemId { get; }
-		public bool DeterministicEmulation => true;
+		public bool DeterministicEmulation { get; protected set; } = true;
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 		public abstract ControllerDefinition ControllerDefinition { get; }
 

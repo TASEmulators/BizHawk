@@ -18,10 +18,10 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 {
 	[CoreAttributes("NeoPop", "Thomas Klausner", true, false, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
-	public class NeoGeoPort : IEmulator, IVideoProvider, ISoundProvider, IStatable, IInputPollable,
-		ISettable<object, NeoGeoPort.SyncSettings>, ISaveRam
+	public class NeoGeoPort : WaterboxCore, 
+		ISaveRam, // NGP provides its own saveram interface
+		ISettable<object, NeoGeoPort.SyncSettings>
 	{
-		private PeRunner _exe;
 		internal LibNeoGeoPort _neopop;
 		private long _clockTime;
 		private int _clockDen;
@@ -33,17 +33,25 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		}
 
 		internal NeoGeoPort(CoreComm comm, byte[] rom, SyncSettings syncSettings, bool deterministic, ulong startAddress)
+			:base(comm, new Configuration
+			{
+				DefaultFpsNumerator = 6144000,
+				DefaultFpsDenominator = 515 * 198,
+				DefaultWidth = 160,
+				DefaultHeight = 152,
+				MaxWidth = 160,
+				MaxHeight = 152,
+				MaxSamples = 8192,
+				SystemId = "NGP"
+			})
 		{
 			if (rom.Length > 4 * 1024 * 1024)
 				throw new InvalidOperationException("ROM too big!");
 
-			ServiceProvider = new BasicServiceProvider(this);
-			CoreComm = comm;
 			_syncSettings = syncSettings ?? new SyncSettings();
 
-			_exe = new PeRunner(new PeRunnerOptions
+			_neopop = PreInit<LibNeoGeoPort>(new PeRunnerOptions
 			{
-				Path = comm.CoreFileProvider.DllPath(),
 				Filename = "ngp.wbx",
 				SbrkHeapSizeKB = 256,
 				SealedHeapSizeKB = 5 * 1024, // must be a bit larger than the ROM size
@@ -52,23 +60,16 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 				StartAddress = startAddress
 			});
 
-			_neopop = BizInvoker.GetInvoker<LibNeoGeoPort>(_exe, _exe);
-
 			if (!_neopop.LoadSystem(rom, rom.Length, _syncSettings.Language))
-			{
 				throw new InvalidOperationException("Core rejected the rom");
-			}
 
-			_exe.Seal();
-
-			_inputCallback = InputCallbacks.Call;
-			InitMemoryDomains();
+			PostInit();
 
 			DeterministicEmulation = deterministic || !_syncSettings.UseRealTime;
 			_clockTime = (long)((_syncSettings.InitialTime - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds);
 		}
 
-		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
+		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			_clockDen += VsyncDenominator;
 			if (_clockDen >= VsyncNumerator)
@@ -79,114 +80,29 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 
 			long clockTime = DeterministicEmulation ? _clockTime : (long)((_syncSettings.InitialTime - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds);
 
-			_neopop.SetInputCallback(InputCallbacks.Count > 0 ? _inputCallback : null);
-
 			if (controller.IsPressed("Power"))
 				_neopop.HardReset();
 
-			fixed (int* vp = _videoBuffer)
-			fixed (short* sp = _soundBuffer)
+			return new LibNeoGeoPort.FrameInfo
 			{
-				var spec = new LibNeoGeoPort.EmulateSpec
-				{
-					Pixels = (IntPtr)vp,
-					SoundBuff = (IntPtr)sp,
-					SoundBufMaxSize = _soundBuffer.Length / 2,
-					Buttons = GetButtons(controller),
-					SkipRendering = render ? 0 : 1,
-					FrontendTime = clockTime
-				};
-
-				_neopop.FrameAdvance(spec);
-				_numSamples = spec.SoundBufSize;
-
-				Frame++;
-
-				IsLagFrame = spec.Lagged != 0;
-				if (IsLagFrame)
-					LagCount++;
-			}
+				FrontendTime = clockTime,
+				Buttons = GetButtons(controller),
+				SkipRendering = render ? 0 : 1,
+			};
 		}
-
-		private bool _disposed = false;
-
-		public void Dispose()
-		{
-			if (!_disposed)
-			{
-				_exe.Dispose();
-				_exe = null;
-				_disposed = true;
-			}
-		}
-
-		public int Frame { get; private set; }
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get; set; }
-		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
-		private LibNeoGeoPort.InputCallback _inputCallback;
-
-		public void ResetCounters()
-		{
-			Frame = 0;
-		}
-
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
-		public string SystemId { get { return "NGP"; } }
-		public bool DeterministicEmulation { get; private set; }
-		public CoreComm CoreComm { get; }
 
 		#region IStatable
 
-		public bool BinarySaveStatesPreferred
+		protected override void SaveStateBinaryInternal(BinaryWriter writer)
 		{
-			get { return true; }
+			writer.Write(_clockTime);
+			writer.Write(_clockDen);
 		}
 
-		public void SaveStateText(TextWriter writer)
+		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHexFast(writer);
-			// write extra copy of stuff we don't use
-			writer.WriteLine("Frame {0}", Frame);
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHexFast(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			_exe.LoadStateBinary(reader);
-			// other variables
-			Frame = reader.ReadInt32();
-			LagCount = reader.ReadInt32();
-			IsLagFrame = reader.ReadBoolean();
-			// any managed pointers that we sent to the core need to be resent now!
-			_neopop.SetInputCallback(null);
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			_exe.SaveStateBinary(writer);
-			// other variables
-			writer.Write(Frame);
-			writer.Write(LagCount);
-			writer.Write(IsLagFrame);
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			var ms = new MemoryStream();
-			var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			ms.Close();
-			return ms.ToArray();
+			_clockTime = reader.ReadInt64();
+			_clockDen = reader.ReadInt32();
 		}
 
 		#endregion
@@ -233,60 +149,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 				.ToList()
 		};
 
-		public ControllerDefinition ControllerDefinition => NeoGeoPortableController;
-
-		#endregion
-
-		#region IVideoProvider
-
-		private int[] _videoBuffer = new int[160 * 152];
-
-		public int[] GetVideoBuffer()
-		{
-			return _videoBuffer;
-		}
-
-		public int VirtualWidth => 160;
-		public int VirtualHeight => 152;
-		public int BufferWidth => 160;
-		public int BufferHeight => 152;
-		public int VsyncNumerator { get; private set; } = 6144000;
-		public int VsyncDenominator { get; private set; } = 515 * 198;
-		public int BackgroundColor => unchecked((int)0xff000000);
-
-		#endregion
-
-		#region ISoundProvider
-
-		private short[] _soundBuffer = new short[16384];
-		private int _numSamples;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
-		}
-
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			samples = _soundBuffer;
-			nsamp = _numSamples;
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
-
-		public void DiscardSamples()
-		{
-		}
-
-		public bool CanProvideAsync => false;
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
+		public override ControllerDefinition ControllerDefinition => NeoGeoPortableController;
 
 		#endregion
 
@@ -351,38 +214,11 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 
 		#endregion
 
-		#region Memory Domains
-
-		private unsafe void InitMemoryDomains()
-		{
-			var domains = new List<MemoryDomain>();
-
-			var domainNames = new[] { "RAM", "ROM", "ORIGINAL ROM" };
-
-			foreach (var a in domainNames.Select((s, i) => new { s, i }))
-			{
-				IntPtr ptr = IntPtr.Zero;
-				int size = 0;
-				bool writable = false;
-
-				_neopop.GetMemoryArea(a.i, ref ptr, ref size, ref writable);
-
-				if (ptr != IntPtr.Zero && size > 0)
-				{
-					domains.Add(new MemoryDomainIntPtrMonitor(a.s, MemoryDomain.Endian.Little,
-						ptr, size, writable, 4, _exe));
-				}
-			}
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(new MemoryDomainList(domains));
-		}
-
-		#endregion
-
 		#region ISaveram
 
-		public bool SaveRamModified => _neopop.HasSaveRam();
+		public new bool SaveRamModified => _neopop.HasSaveRam();
 
-		public byte[] CloneSaveRam()
+		public new byte[] CloneSaveRam()
 		{
 			byte[] ret = null;
 			_neopop.GetSaveRam((data, size) =>
@@ -393,7 +229,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			return ret;
 		}
 
-		public void StoreSaveRam(byte[] data)
+		public new void StoreSaveRam(byte[] data)
 		{
 			if (!_neopop.PutSaveRam(data, data.Length))
 				throw new InvalidOperationException("Core rejected the saveram");

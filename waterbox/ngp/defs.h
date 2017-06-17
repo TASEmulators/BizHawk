@@ -29,45 +29,22 @@ typedef int64_t int64;
 #define alignas(p)
 #endif
 
+#include <emulibc.h>
+#define EXPORT extern "C" ECL_EXPORT
+#include <waterboxcore.h>
+
+struct MyFrameInfo: public FrameInfo
+{
+	int64_t FrontendTime;
+	int32_t SkipRendering;
+	int32_t Buttons;
+};
+
+
 struct MDFN_Surface
 {
 	uint32 *pixels;
 	int pitch32;
-};
-
-struct EmulateSpecStruct
-{
-	// Pitch(32-bit) must be equal to width and >= the "fb_width" specified in the MDFNGI struct for the emulated system.
-	// Height must be >= to the "fb_height" specified in the MDFNGI struct for the emulated system.
-	// The framebuffer pointed to by surface->pixels is written to by the system emulation code.
-	uint32 *pixels;
-
-	// Pointer to sound buffer, set by the driver code, that the emulation code should render sound to.
-	// Guaranteed to be at least 500ms in length, but emulation code really shouldn't exceed 40ms or so.  Additionally, if emulation code
-	// generates >= 100ms,
-	// DEPRECATED: Emulation code may set this pointer to a sound buffer internal to the emulation module.
-	int16 *SoundBuf;
-
-	// Number of cycles that this frame consumed, using MDFNGI::MasterClock as a time base.
-	// Set by emulation code.
-	int64 MasterCycles;
-
-	// unix time for RTC
-	int64 FrontendTime;
-
-	// Maximum size of the sound buffer, in frames.  Set by the driver code.
-	int32 SoundBufMaxSize;
-
-	// Number of frames currently in internal sound buffer.  Set by the system emulation code, to be read by the driver code.
-	int32 SoundBufSize;
-
-	// true to skip rendering
-	int32 skip;
-
-	int32 Buttons;
-
-	// set by core, true if lagged
-	int32 Lagged;
 };
 
 #define MDFN_printf(...)
@@ -83,6 +60,3 @@ inline char* strdup(const char* p)
         strcpy(ret, p);
     return ret;
 }
-
-#include <emulibc.h>
-#define EXPORT extern "C" ECL_EXPORT

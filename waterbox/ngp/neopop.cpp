@@ -84,19 +84,20 @@ int32 ngpc_soundTS = 0;
 //static int32 main_timeaccum;
 static int32 z80_runtime;
 
-static void Emulate(EmulateSpecStruct *espec)
+EXPORT void FrameAdvance(MyFrameInfo* frame)
 {
 	lagged = true;
 	bool MeowMeow = 0;
 	MDFN_Surface surface;
-	surface.pixels = espec->pixels;
+	surface.pixels = frame->VideoBuffer;
 	surface.pitch32 = 160;
-
-	frontend_time = espec->FrontendTime;
-	storeB(0x6f82, espec->Buttons);
+	frame->Width = 160;
+	frame->Height = 152;
+	frontend_time = frame->FrontendTime;
+	storeB(0x6f82, frame->Buttons);
 
 	ngpc_soundTS = 0;
-	NGPFrameSkip = espec->skip;
+	NGPFrameSkip = frame->SkipRendering;
 
 	do
 	{
@@ -129,9 +130,9 @@ static void Emulate(EmulateSpecStruct *espec)
 		}
 	} while (!MeowMeow);
 
-	espec->MasterCycles = ngpc_soundTS;
-	espec->SoundBufSize = MDFNNGPCSOUND_Flush(espec->SoundBuf, espec->SoundBufMaxSize);
-	espec->Lagged = lagged;
+	frame->Cycles = ngpc_soundTS;
+	frame->Samples = MDFNNGPCSOUND_Flush(frame->SoundBuffer, 8192);
+	frame->Lagged = lagged;
 }
 
 static MDFN_COLD bool Load(const uint8* romdata, int32 romlength)
@@ -191,11 +192,6 @@ EXPORT void SetLayers(int enable) // 1, 2, 4  bg,fg,sprites
 	NGPGfx->SetLayerEnableMask(enable);
 }
 
-EXPORT void FrameAdvance(EmulateSpecStruct *espec)
-{
-	Emulate(espec);
-}
-
 EXPORT void HardReset()
 {
 	reset();
@@ -213,31 +209,22 @@ EXPORT void SetCommsCallbacks(int (*read_cb)(uint8* buffer), int (*poll_cb)(uint
 	comms_write_cb = write_cb;
 }
 
-EXPORT void GetMemoryArea(int which, void **ptr, int *size, int *writable)
+EXPORT void GetMemoryAreas(MemoryArea* m)
 {
-	switch (which)
-	{
-	case 0:
-		*ptr = CPUExRAM;
-		*size = 16384;
-		*writable = 1;
-		break;
-	case 1:
-		*ptr = ngpc_rom.data;
-		*size = ngpc_rom.length;
-		*writable = 0;
-		break;
-	case 2:
-		*ptr = ngpc_rom.orig_data;
-		*size = ngpc_rom.length;
-		*writable = 0;
-		break;
-	default:
-		*ptr = nullptr;
-		*size = 0;
-		*writable = 0;
-		break;
-	}
+	m[0].Data = CPUExRAM;
+	m[0].Name = "RAM";
+	m[0].Size = 16384;
+	m[0].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY | MEMORYAREA_FLAGS_WORDSIZE4;
+
+	m[1].Data = ngpc_rom.data;
+	m[1].Name = "ROM";
+	m[1].Size = ngpc_rom.length;
+	m[1].Flags = MEMORYAREA_FLAGS_WORDSIZE4;
+
+	m[2].Data = ngpc_rom.orig_data;
+	m[2].Name = "ORIGINAL ROM";
+	m[2].Size = ngpc_rom.length;
+	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE4;
 }
 
 EXPORT bool HasSaveRam()

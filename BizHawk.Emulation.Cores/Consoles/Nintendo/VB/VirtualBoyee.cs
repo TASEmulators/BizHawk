@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			PostInit();
 		}
 
-		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller)
+		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			if (controller.IsPressed("Power"))
 				_boyee.HardReset();
