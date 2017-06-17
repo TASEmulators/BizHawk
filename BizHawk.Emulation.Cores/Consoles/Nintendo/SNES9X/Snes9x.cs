@@ -12,26 +12,31 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 {
-	[CoreAttributes("Snes9x", "", true, true, "5e0319ab3ef9611250efb18255186d0dc0d7e125", "https://github.com/snes9xgit/snes9x", false)]
+	[CoreAttributes("Snes9x", "", true, true,
+		"5e0319ab3ef9611250efb18255186d0dc0d7e125", "https://github.com/snes9xgit/snes9x", false)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public class Snes9x : IEmulator, IVideoProvider, ISoundProvider, IStatable,
-		ISettable<Snes9x.Settings, Snes9x.SyncSettings>,
-		ISaveRam, IInputPollable, IRegionable
+	public class Snes9x : WaterboxCore, 
+		ISettable<Snes9x.Settings, Snes9x.SyncSettings>, IRegionable
 	{
 		private LibSnes9x _core;
-		private PeRunner _exe;
 
 		[CoreConstructor("SNES")]
 		public Snes9x(CoreComm comm, byte[] rom, Settings settings, SyncSettings syncSettings)
+			:base(comm, new Configuration
+			{
+				DefaultWidth = 256,
+				DefaultHeight = 224,
+				MaxWidth = 512,
+				MaxHeight = 480,
+				MaxSamples = 8192,
+				SystemId = "SNES"
+			})
 		{
-			ServiceProvider = new BasicServiceProvider(this);
-			CoreComm = comm;
 			settings = settings ?? new Settings();
 			syncSettings = syncSettings ?? new SyncSettings();
 
-			_exe = new PeRunner(new PeRunnerOptions
+			_core = PreInit<LibSnes9x>(new PeRunnerOptions
 			{
-				Path = comm.CoreFileProvider.DllPath(),
 				Filename = "snes9x.wbx",
 				SbrkHeapSizeKB = 1024,
 				SealedHeapSizeKB = 12 * 1024,
@@ -39,16 +44,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				PlainHeapSizeKB = 64
 			});
 
-			_core = BizInvoker.GetInvoker<LibSnes9x>(_exe, _exe);
 			if (!_core.biz_init())
-			{
 				throw new InvalidOperationException("Init() failed");
-			}
 			if (!_core.biz_load_rom(rom, rom.Length))
-			{
 				throw new InvalidOperationException("LoadRom() failed");
-			}
-			_exe.Seal();
+
+			PostInit();
 
 			if (_core.biz_is_ntsc())
 			{
@@ -65,16 +66,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				Region = DisplayType.PAL;
 			}
 
-			_nsampTarget = (int)Math.Round(44100.0 * VsyncDenominator / VsyncNumerator);
-			_nsampWarn = (int)Math.Round(1.05 * 44100.0 * VsyncDenominator / VsyncNumerator);
-
 			_syncSettings = syncSettings;
 			InitControllers();
 			PutSettings(settings);
-			InitMemoryDomains();
-			InitSaveram();
-
-			_inputCallback = InputCallbacks.Call;
 		}
 
 		#region controller
@@ -115,13 +109,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 					break;
 			}
 
-			ControllerDefinition = ControllerDefinitionMerger.GetMerged(
+			_controllerDefinition = ControllerDefinitionMerger.GetMerged(
 				_controllers.Select(c => c.Definition), out _cdums);
 
 			// add buttons that the core itself will handle
-			ControllerDefinition.BoolButtons.Add("Reset");
-			ControllerDefinition.BoolButtons.Add("Power");
-			ControllerDefinition.Name = "SNES Controller";
+			_controllerDefinition.BoolButtons.Add("Reset");
+			_controllerDefinition.BoolButtons.Add("Power");
+			_controllerDefinition.Name = "SNES Controller";
 		}
 
 		private void UpdateControls(IController c)
@@ -285,236 +279,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 			public override ControllerDefinition Definition => _definition;
 		}
 
-		public ControllerDefinition ControllerDefinition { get; private set; }
+		private ControllerDefinition _controllerDefinition;
+		public override ControllerDefinition ControllerDefinition => _controllerDefinition;
 
 		#endregion
 
-		private bool _disposed = false;
-
-		public void Dispose()
-		{
-			if (!_disposed)
-			{
-				_exe.Dispose();
-				_exe = null;
-				_disposed = true;
-			}
-		}
-
 		public DisplayType Region { get; }
 
-		public IEmulatorServiceProvider ServiceProvider { get; }
-
-		public void FrameAdvance(IController controller, bool render, bool rendersound = true)
+		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			_core.biz_set_input_callback(InputCallbacks.Count > 0 ? _inputCallback : null);
-
 			if (controller.IsPressed("Power"))
 				_core.biz_hard_reset();
 			else if (controller.IsPressed("Reset"))
 				_core.biz_soft_reset();
-
 			UpdateControls(controller);
-			Frame++;
-			LibSnes9x.frame_info frame = new LibSnes9x.frame_info();
+			_core.SetButtons(_inputState);
 
-			_core.biz_run(frame, _inputState);
-			IsLagFrame = frame.padread == 0;
-			if (IsLagFrame)
-				LagCount++;
-			using (_exe.EnterExit())
-			{
-				Blit(frame);
-				Sblit(frame);
-			}
+			return new LibWaterboxCore.FrameInfo();
 		}
-
-		public int Frame { get; private set; }
-
-		public void ResetCounters()
+		protected override void FrameAdvancePost()
 		{
-			Frame = 0;
+			_virtualHeight = BufferHeight;
+			_virtualWidth = BufferWidth;
+			if (_virtualHeight * 2 < _virtualWidth)
+				_virtualHeight *= 2;
+			if (_virtualHeight > 240)
+				_virtualWidth = 512;
+			_virtualWidth = (int)Math.Round(_virtualWidth * 1.146);
 		}
 
-		public string SystemId { get { return "SNES"; } }
-		public bool DeterministicEmulation { get { return true; } }
-		public CoreComm CoreComm { get; private set; }
-
-		#region IVideoProvider
-
-		private static readonly int[] VirtualWidths = new[] { 293, 587, 587, 587 };  // 256 512 256 512
-		private static readonly int[] VirtualHeights = new[] { 224, 448, 448, 448 }; // 224 224 448 448
-
-		private unsafe void Blit(LibSnes9x.frame_info frame)
-		{
-			BufferWidth = frame.vwidth;
-			BufferHeight = frame.vheight;
-
-			int vinc = frame.vpitch / sizeof(ushort) - frame.vwidth;
-
-			ushort* src = (ushort*)frame.vptr;
-			fixed (int* _dst = _vbuff)
-			{
-				byte* dst = (byte*)_dst;
-
-				for (int j = 0; j < frame.vheight; j++)
-				{
-					for (int i = 0; i < frame.vwidth; i++)
-					{
-						var c = *src++;
-
-						*dst++ = (byte)(c << 3 & 0xf8 | c >> 2 & 7);
-						*dst++ = (byte)(c >> 3 & 0xfa | c >> 9 & 3);
-						*dst++ = (byte)(c >> 8 & 0xf8 | c >> 13 & 7);
-						*dst++ = 0xff;
-					}
-					src += vinc;
-				}
-			}
-
-			VirtualHeight = BufferHeight;
-			VirtualWidth = BufferWidth;
-			if (VirtualHeight * 2 < VirtualWidth)
-				VirtualHeight *= 2;
-			if (VirtualHeight > 240)
-				VirtualWidth = 512;
-			VirtualWidth = (int)Math.Round(VirtualWidth * 1.146);
-		}
-
-		private int[] _vbuff = new int[512 * 480];
-		public int[] GetVideoBuffer() { return _vbuff; }
-		public int VirtualWidth { get; private set; } = 293;
-		public int VirtualHeight { get; private set; } = 224;
-		public int BufferWidth { get; private set; } = 256;
-		public int BufferHeight { get; private set; } = 224;
-		public int BackgroundColor { get { return unchecked((int)0xff000000); } }
-
-		public int VsyncNumerator
-		{
-			get;
-		}
-
-		public int VsyncDenominator
-		{
-			get;
-		}
-
-		#endregion
-
-		#region ISoundProvider
-
-		private void Sblit(LibSnes9x.frame_info frame)
-		{
-			Marshal.Copy(frame.sptr, _sbuff, 0, frame.slen * 2);
-			_nsamp = frame.slen;
-			if (_nsamp > _nsampWarn)
-			{
-				Console.WriteLine($"Warn: Long frame! {_nsamp} > {_nsampTarget}");
-			}
-		}
-
-		private readonly int _nsampWarn;
-		private readonly int _nsampTarget;
-
-		private int _nsamp;
-		private short[] _sbuff = new short[8192];
-
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			samples = _sbuff;
-			nsamp = _nsamp;
-		}
-
-		public void DiscardSamples()
-		{
-			// Nothing to do
-		}
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
-		}
-
-		public bool CanProvideAsync
-		{
-			get { return false; }
-		}
-
-		public SyncSoundMode SyncMode
-		{
-			get { return SyncSoundMode.Sync; }
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
-
-		#endregion
-
-		private LibSnes9x.InputCallback _inputCallback;
-
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get; set; }
-
-		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
+		private int _virtualWidth;
+		private int _virtualHeight;
+		public override int VirtualWidth => _virtualWidth;
+		public override int VirtualHeight => _virtualHeight;
 
 		#region IStatable
 
-		public bool BinarySaveStatesPreferred
+		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
-			get { return true; }
-		}
-
-		public void SaveStateText(TextWriter writer)
-		{
-			var temp = SaveStateBinary();
-			temp.SaveAsHexFast(writer);
-			// write extra copy of stuff we don't use
-			writer.WriteLine("Frame {0}", Frame);
-		}
-
-		public void LoadStateText(TextReader reader)
-		{
-			string hex = reader.ReadLine();
-			byte[] state = new byte[hex.Length / 2];
-			state.ReadFromHexFast(hex);
-			LoadStateBinary(new BinaryReader(new MemoryStream(state)));
-		}
-
-		public void LoadStateBinary(BinaryReader reader)
-		{
-			_exe.LoadStateBinary(reader);
-			// other variables
-			Frame = reader.ReadInt32();
-			LagCount = reader.ReadInt32();
-			IsLagFrame = reader.ReadBoolean();
-			// any managed pointers that we sent to the core need to be resent now!
-			_core.biz_set_input_callback(null);
-
 			_core.biz_post_load_state();
-		}
-
-		public void SaveStateBinary(BinaryWriter writer)
-		{
-			_exe.SaveStateBinary(writer);
-			// other variables
-			writer.Write(Frame);
-			writer.Write(LagCount);
-			writer.Write(IsLagFrame);
-		}
-
-		public byte[] SaveStateBinary()
-		{
-			var ms = new MemoryStream();
-			var bw = new BinaryWriter(ms);
-			SaveStateBinary(bw);
-			bw.Flush();
-			ms.Close();
-			return ms.ToArray();
 		}
 
 		#endregion
@@ -682,84 +485,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 				// the core can handle dynamic plugging and unplugging, but that changes
 				// the controllerdefinition, and we're not ready for that
 				return !DeepEquality.DeepEquals(x, y);
-			}
-		}
-
-		#endregion
-
-		#region Memory Domains
-
-		private unsafe void InitMemoryDomains()
-		{
-			var native = new LibSnes9x.memory_area();
-			var domains = new List<MemoryDomain>();
-
-			var names = new[] { "CARTRAM", "CARTRAM B", "RTC", "WRAM", "VRAM" };
-			int index = 0;
-			foreach (var s in names)
-			{
-				_core.biz_get_memory_area(index++, native);
-				if (native.ptr != IntPtr.Zero && native.size > 0)
-				{
-					domains.Add(new MemoryDomainIntPtrMonitor(s, MemoryDomain.Endian.Little,
-						native.ptr, native.size, true, 2, _exe));
-				}
-			}
-			(ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(new MemoryDomainList(domains)
-			{
-				MainMemory = domains.Single(d => d.Name == "WRAM")
-			});
-		}
-
-		#endregion
-
-		#region ISaveRam
-
-		private void InitSaveram()
-		{
-			for (int i = 0; i < 2; i++) // SRAM A, SRAM B, RTC
-			{
-				var native = new LibSnes9x.memory_area();
-				_core.biz_get_memory_area(i, native);
-				if (native.ptr != IntPtr.Zero && native.size > 0)
-					_saveramMemoryAreas.Add(native);
-			}
-			_saveramSize = _saveramMemoryAreas.Sum(a => a.size);
-		}
-
-		private readonly List<LibSnes9x.memory_area> _saveramMemoryAreas = new List<LibSnes9x.memory_area>();
-
-		private int _saveramSize;
-
-		public bool SaveRamModified => _saveramSize > 0;
-
-		public byte[] CloneSaveRam()
-		{
-			using (_exe.EnterExit())
-			{
-				var ret = new byte[_saveramSize];
-				var offset = 0;
-				foreach (var area in _saveramMemoryAreas)
-				{
-					Marshal.Copy(area.ptr, ret, offset, area.size);
-					offset += area.size;
-				}
-				return ret;
-			}
-		}
-
-		public void StoreSaveRam(byte[] data)
-		{
-			using (_exe.EnterExit())
-			{
-				if (data.Length != _saveramSize)
-					throw new InvalidOperationException("Saveram size mismatch");
-				var offset = 0;
-				foreach (var area in _saveramMemoryAreas)
-				{
-					Marshal.Copy(data, offset, area.ptr, area.size);
-					offset += area.size;
-				}
 			}
 		}
 

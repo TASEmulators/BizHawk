@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 	public abstract class WaterboxCore : IEmulator, IVideoProvider, ISoundProvider, IStatable,
 		IInputPollable, ISaveRam
 	{
-		protected LibWaterboxCore _core;
+		private LibWaterboxCore _core;
 		protected PeRunner _exe;
 		protected LibWaterboxCore.MemoryArea[] _memoryAreas;
 		private LibWaterboxCore.EmptyCallback _inputCallback;
@@ -153,6 +153,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		#region IEmulator
 
 		protected abstract LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound);
+		protected virtual void FrameAdvancePost()
+		{ }
 
 		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
 		{
@@ -176,6 +178,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					BufferWidth = frame.Width;
 					BufferHeight = frame.Height;
 					_numSamples = frame.Samples;
+
+					FrameAdvancePost();
 				}
 			}
 		}
