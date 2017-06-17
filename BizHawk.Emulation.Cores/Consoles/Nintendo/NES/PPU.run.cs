@@ -63,7 +63,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		void Read_bgdata(ref BGDataRecord bgdata)
 		{
 			for (int i = 0; i < 8; i++)
+			{
 				Read_bgdata(i, ref bgdata);
+				runppu(1);
+
+				if (PPUON && i==6)
+				{
+					ppu_was_on = true;
+				}
+
+				if (PPUON && i==7)
+				{
+					if (!race_2006)
+						ppur.increment_hsc();
+
+					if (ppur.status.cycle == 256 && !race_2006)
+						ppur.increment_vs();
+
+					ppu_was_on = false;
+				}
+			}
 		}
 
 		// attempt to emulate graphics pipeline behaviour
@@ -97,10 +116,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0:
 					ppu_addr_temp = ppur.get_ntread();
 					bgdata.nt = ppubus_read(ppu_addr_temp, true, true);
-					runppu(1);
 					break;
 				case 1:
-					runppu(1);
 					break;
 				case 2:
 					{
@@ -112,49 +129,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						if ((ppur.ht & 2) != 0) at >>= 2;
 						at &= 0x03;
 						at <<= 2;
-						bgdata.at = at;
-						runppu(1);
-						
+						bgdata.at = at;						
 						break;
 					}
 				case 3:
-					runppu(1);
 					break;
 				case 4:
 					ppu_addr_temp = ppur.get_ptread(bgdata.nt);
 					bgdata.pt_0 = ppubus_read(ppu_addr_temp, true, true);
-					runppu(1);
 					break;
 				case 5:
-					runppu(1);
 					break;
 				case 6:
 					ppu_addr_temp |= 8;
 					bgdata.pt_1 = ppubus_read(ppu_addr_temp, true, true);
-
-					
-					runppu(1);
-					if (PPUON)
-					{
-						ppu_was_on = true;
-					}
-
 					break;
 				case 7:
-
-					runppu(1);
-					//horizontal scroll clocked at cycle 3 and then
-					//vertical scroll at 256
-					if (PPUON)
-					{
-						if (!race_2006)
-							ppur.increment_hsc();
-
-						if (ppur.status.cycle == 256 && !race_2006)
-							ppur.increment_vs();
-					}
-
-					ppu_was_on = false;
 					break;
 			} //switch(cycle)
 		}
@@ -185,6 +175,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			bool nmi_destiny = reg_2000.vblank_nmi_gen && Reg2002_vblank_active;
 			runppu(3);
 			if (nmi_destiny) nes.cpu.NMI = true;
+
 			nes.Board.AtVsyncNMI();
 			runppu(postNMIlines * kLineTime - delay);
 
@@ -391,10 +382,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 							//process the current clock's worth of bg data fetching
 							//this needs to be split into 8 pieces or else exact sprite 0 hitting wont work due to the cpu not running while the sprite renders below
+
+
 							if (PPUON)
 								Read_bgdata(xp, ref bgdata[xt + 2]);
-							else
-								runppu(1);
+
+							runppu(1);
+
+							if (PPUON && xp == 6)
+							{
+								ppu_was_on = true;
+							}
+
+							if (PPUON && xp == 7)
+							{
+								if (!race_2006)
+									ppur.increment_hsc();
+
+								if (ppur.status.cycle == 256 && !race_2006)
+									ppur.increment_vs();
+
+								ppu_was_on = false;
+							}
 
 							if (hit_pending)
 							{
@@ -484,8 +493,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							} //oamcount loop
 							 
 							pipeline(pixelcolor, target, xt*32+xp);
-							target++;
-							
+							target++;							
 						} //loop across 8 pixels
 					} //loop across 32 tiles
 				}
@@ -751,14 +759,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					Read_bgdata(ref bgdata[xt]);
 				}
 
-				// this sequence is tuned to pass 10-even_odd_timing.nes
-				
+				// this sequence is tuned to pass 10-even_odd_timing.nes				
 				runppu(1);
 				
 				runppu(1);
 				
 				runppu(1);
-				
+					
 				runppu(1);
 				bool evenOddDestiny = PPUON;
 
@@ -777,7 +784,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//idle for pre NMI lines
 			runppu(preNMIlines * kLineTime);
-
 		} //FrameAdvance
 
 		void FrameAdvance_ppudead()
@@ -788,7 +794,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//should write to those regs during that time, it needs
 			//to wait for vblank
 
-			runppu(241 * kLineTime+3);// -8*3);
+			runppu(241 * kLineTime-3);// -8*3);
 			ppudead--;
 		}
 	}
