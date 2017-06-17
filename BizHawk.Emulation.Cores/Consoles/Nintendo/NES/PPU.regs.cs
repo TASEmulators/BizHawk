@@ -309,6 +309,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public Reg_2000 reg_2000;
 		public Reg_2001 reg_2001;
 		byte reg_2003;
+
 		void regs_reset()
 		{
 			//TODO - would like to reconstitute the entire PPU instead of all this..
@@ -394,12 +395,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			return (byte)((Reg2002_vblank_active << 7) | (Reg2002_objhit << 6) | (Reg2002_objoverflow << 5) | (ppu_open_bus & 0x1F));
-		}
-
-		void clear_2002()
-		{
-			Reg2002_objhit = Reg2002_objoverflow = 0;
-			Reg2002_vblank_clear_pending = true;
 		}
 
 		//OAM ADDRESS (write)

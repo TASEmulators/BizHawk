@@ -54,11 +54,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks
-		{
-			[FeatureNotImplemented]
-			get { throw new NotImplementedException(); }
-		}
+		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem();
 
 		public bool CanStep(StepType type)
 		{

@@ -1204,7 +1204,6 @@ namespace BizHawk.Client.EmuHawk
 		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			Atari7800WithEmu7800MenuItem.Visible = VersionInfo.DeveloperBuild; // Don't expose Atari7800Hawk in releases yet
-
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
 			gBAWithMGBAToolStripMenuItem.Checked = Global.Config.GBA_UsemGBA;
@@ -1968,6 +1967,20 @@ namespace BizHawk.Client.EmuHawk
 		private void AtariSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "Atari 2600 Settings");
+		}
+
+		#endregion
+
+		#region Atari7800
+
+		private void A7800SubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			A7800ControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+		}
+
+		private void A7800SettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new A7800ControllerSettings().ShowDialog();
 		}
 
 		#endregion

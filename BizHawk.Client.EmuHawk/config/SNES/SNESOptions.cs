@@ -23,6 +23,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
 				ForceDeterminism = s.ForceDeterminism,
+				CropSGBFrame = s.CropSGBFrame,
 				Profile = ss.Profile
 			};
 
@@ -31,6 +32,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
 				s.ForceDeterminism = dlg.ForceDeterminism;
+				s.CropSGBFrame = dlg.CropSGBFrame;
 				ss.Profile = dlg.Profile;
 				GlobalWin.MainForm.PutCoreSettings(s);
 				GlobalWin.MainForm.PutCoreSyncSettings(ss);
@@ -39,7 +41,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SNESOptions_Load(object sender, EventArgs e)
 		{
-			rbAccuracy.Visible = VersionInfo.DeveloperBuild;
+			rbAccuracy.Visible = label2.Visible = VersionInfo.DeveloperBuild;
 		}
 
 		private string Profile
@@ -90,6 +92,12 @@ namespace BizHawk.Client.EmuHawk
 		{
 			get { return cbForceDeterminism.Checked; }
 			set { cbForceDeterminism.Checked = value; }
+		}
+
+		private bool CropSGBFrame
+		{
+			get { return cbCropSGBFrame.Checked; }
+			set { cbCropSGBFrame.Checked = value; }
 		}
 
 		void RefreshDoubleSizeOption()

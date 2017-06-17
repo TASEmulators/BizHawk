@@ -60,8 +60,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("cpu_accumulate", ref cpu_accumulate);
 			ser.Sync("_irq_apu", ref _irq_apu);
 			ser.Sync("sprdma_countdown", ref sprdma_countdown);
-			ser.Sync("cpu_step", ref cpu_step);
-			ser.Sync("cpu_stepcounter", ref cpu_stepcounter);
 			ser.Sync("cpu_deadcounter", ref cpu_deadcounter);
 
 			//oam related

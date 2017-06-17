@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private bool _doTicks;
 
-		private byte _hsyncCnt;
+		public int _hsyncCnt;
 		private int _capChargeStart;
 		private bool _capCharging;
 		public int AudioClocks; // not savestated
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public void Execute(int cycles)
 		{
 			// do the audio sampling
-			if (_hsyncCnt == 36 || _hsyncCnt == 148)
+			if (_hsyncCnt == 113 || _hsyncCnt == 340)
 			{
 				LocalAudioCycles[AudioClocks] += (short)(AUD[0].Cycle() / 2);
 				LocalAudioCycles[AudioClocks] += (short)(AUD[1].Cycle() / 2);

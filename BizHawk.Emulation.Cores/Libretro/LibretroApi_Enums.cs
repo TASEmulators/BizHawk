@@ -24,6 +24,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			CMD_Deinit,
 			CMD_Reset,
 			CMD_Run,
+			CMD_UpdateSerializeSize,
 			CMD_Serialize,
 			CMD_Unserialize,
 			CMD_LAST,

@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				case "IREM-BNROM": //Mashou (J).nes
 				case "NES-BNROM": //Deadly Towers (U)
-					AssertPrg(128); AssertChr(0); AssertWram(0); AssertVram(8);
+					AssertPrg(128,256); AssertChr(0); AssertWram(0,8); AssertVram(8);
 					break;
 
 				default:
@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				if (VRAM != null)
 				{
-					return VRAM[addr | (chr_bank_8k << 13)];
+					return VRAM[addr];
 				}
 				else
 				{

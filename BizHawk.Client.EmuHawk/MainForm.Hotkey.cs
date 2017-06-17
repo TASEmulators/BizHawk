@@ -221,6 +221,7 @@ namespace BizHawk.Client.EmuHawk
 				case "Load State 7":
 					LoadQuickSave("QuickSave7");
 					Global.Config.SaveSlot = 7;
+					UpdateStatusSlots();
 					break;
 				case "Load State 8":
 					LoadQuickSave("QuickSave8");

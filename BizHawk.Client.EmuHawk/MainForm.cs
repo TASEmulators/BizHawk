@@ -1823,6 +1823,7 @@ namespace BizHawk.Client.EmuHawk
 			GBSubMenu.Visible = false;
 			GBASubMenu.Visible = false;
 			AtariSubMenu.Visible = false;
+			A7800SubMenu.Visible = false;
 			SNESSubMenu.Visible = false;
 			PSXSubMenu.Visible = false;
 			ColecoSubMenu.Visible = false;
@@ -1872,6 +1873,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "A26":
 					AtariSubMenu.Visible = true;
+					break;
+				case "A7800":
+					A7800SubMenu.Visible = true;
 					break;
 				case "PSX":
 					PSXSubMenu.Visible = true;
@@ -3668,10 +3672,10 @@ namespace BizHawk.Client.EmuHawk
 					((OpenAdvanced_OpenRom)ioa).Path = loader.CanonicalFullPath;
 				}
 
-				string loaderName = "*" + OpenAdvancedSerializer.Serialize(ioa);
-
 				if (result)
 				{
+					
+					string loaderName = "*" + OpenAdvancedSerializer.Serialize(ioa);
 					Emulator = loader.LoadedEmulator;
 					Global.Game = loader.Game;
 					CoreFileProvider.SyncCoreCommInputSignals(nextComm);
