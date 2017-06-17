@@ -314,7 +314,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			//the interrupt would then take place if necessary, using a cached PC. but im not so sure about that.
 			/*VOP_NMI*/ new Uop[] { Uop.FetchDummy, Uop.FetchDummy, Uop.PushPCH, Uop.PushPCL, Uop.PushP_NMI, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End_SuppressInterrupt },
 			/*VOP_IRQ*/ new Uop[] { Uop.FetchDummy, Uop.FetchDummy, Uop.PushPCH, Uop.PushPCL, Uop.PushP_IRQ, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End_SuppressInterrupt },
-			/*VOP_RESET*/ new Uop[] { Uop.FetchDummy, Uop.FetchDummy, Uop.FetchDummy, Uop.PushDummy, Uop.PushDummy, Uop.PushP_Reset, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End_SuppressInterrupt },
+			/*VOP_RESET*/ new Uop[] { Uop.FetchDummy, /*Uop.FetchDummy,*/ Uop.FetchDummy, Uop.PushDummy, Uop.PushDummy, Uop.PushP_Reset, Uop.FetchPCLVector, Uop.FetchPCHVector, Uop.End_SuppressInterrupt },
 			/*VOP_Fetch1_NoInterrupt*/  new Uop[] { Uop.Fetch1_Real },
 		};
 
