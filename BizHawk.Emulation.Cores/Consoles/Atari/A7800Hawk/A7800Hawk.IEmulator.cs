@@ -71,7 +71,15 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (cpu_cycle == (4 + (slow_access ? 2 : 0)))
 			{
 				if (!cpu_is_halted)
+				{
 					cpu.ExecuteOne();
+				}
+				else
+				{
+					// we still want to keep track of CPU time even if it is halted, so increment the counter here
+					// The basic 6502 has no halt state, this feature is specific to SALLY
+					cpu.TotalExecutedCycles++;
+				}
 
 				cpu_cycle = 0;
 
