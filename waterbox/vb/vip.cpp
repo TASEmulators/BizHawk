@@ -864,7 +864,7 @@ MDFN_FASTCALL void VIP_Write16(int32 &timestamp, uint32 A, uint16 V)
 static MDFN_Surface real_surface;
 static MDFN_Surface *surface;
 
-void VIP_StartFrame(EmulateSpecStruct *espec)
+void VIP_StartFrame(MyFrameInfo* frame)
 {
 	// puts("Start frame");
 
@@ -876,40 +876,37 @@ void VIP_StartFrame(EmulateSpecStruct *espec)
 		VidSettingsDirty = false;
 	}
 
-	espec->DisplayRect.x = 0;
-	espec->DisplayRect.y = 0;
-
 	switch (VB3DMode)
 	{
 	default:
-		espec->DisplayRect.w = 384;
-		espec->DisplayRect.h = 224;
+		frame->Width = 384;
+		frame->Height = 224;
 		break;
 
 	case VB3DMODE_VLI:
-		espec->DisplayRect.w = 768 * VBPrescale;
-		espec->DisplayRect.h = 224;
+		frame->Width = 768 * VBPrescale;
+		frame->Height = 224;
 		break;
 
 	case VB3DMODE_HLI:
-		espec->DisplayRect.w = 384;
-		espec->DisplayRect.h = 448 * VBPrescale;
+		frame->Width = 384;
+		frame->Height = 448 * VBPrescale;
 		break;
 
 	case VB3DMODE_CSCOPE:
-		espec->DisplayRect.w = 512;
-		espec->DisplayRect.h = 384;
+		frame->Width = 512;
+		frame->Height = 384;
 		break;
 
 	case VB3DMODE_SIDEBYSIDE:
-		espec->DisplayRect.w = 768 + VBSBS_Separation;
-		espec->DisplayRect.h = 224;
+		frame->Width = 768 + VBSBS_Separation;
+		frame->Height = 224;
 		break;
 	}
 
 	surface = &real_surface;
-	real_surface.pixels = espec->pixels;
-	real_surface.pitch32 = espec->DisplayRect.w;
+	real_surface.pixels = frame->VideoBuffer;
+	real_surface.pitch32 = frame->Width;
 }
 
 void VIP_ResetTS(void)

@@ -420,9 +420,9 @@ namespace BizHawk.Common.BizInvoke
 			if (type.IsArray)
 			{
 				var et = type.GetElementType();
-				if (!et.IsPrimitive && !et.IsEnum)
+				if (!et.IsValueType)
 				{
-					throw new InvalidOperationException("Only arrays of primitive or enum types are supported!");
+					throw new InvalidOperationException("Only arrays of value types are supported!");
 				}
 
 				// these two cases aren't too hard to add

@@ -174,7 +174,7 @@ namespace BizHawk.Emulation.Cores
 			{
 				foreach (var typ in assy.GetTypes())
 				{
-					if (typ.GetInterfaces().Contains(typeof(IEmulator)))
+					if (!typ.IsAbstract && typ.GetInterfaces().Contains(typeof(IEmulator)))
 					{
 						var coreattr = typ.GetCustomAttributes(typeof(CoreAttributes), false);
 						if (coreattr.Length != 1)

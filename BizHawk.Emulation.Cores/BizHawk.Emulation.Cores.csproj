@@ -1276,6 +1276,7 @@
     <Compile Include="Libretro\LibretroCore_Description.cs" />
     <Compile Include="Libretro\LibretroCore_InputCallbacks.cs" />
     <Compile Include="Waterbox\Heap.cs" />
+    <Compile Include="Waterbox\LibWaterboxCore.cs" />
     <Compile Include="Waterbox\MapHeap.cs" />
     <Compile Include="Waterbox\MemoryBlock.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -1292,6 +1293,7 @@
     <Compile Include="Waterbox\PeRunner.cs" />
     <Compile Include="Waterbox\PeWrapper.cs" />
     <Compile Include="Waterbox\Swappable.cs" />
+    <Compile Include="Waterbox\WaterboxCore.cs" />
     <Compile Include="Waterbox\WaterboxUtils.cs" />
   </ItemGroup>
   <ItemGroup>

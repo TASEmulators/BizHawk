@@ -51,6 +51,18 @@ typedef int64_t int64;
 #define alignas(p)
 #endif
 
+struct MyFrameInfo
+{
+	uint32_t* VideoBuffer;
+	int16_t* SoundBuffer;
+	int64_t Cycles;
+	int32_t Width;
+	int32_t Height;
+	int32_t Samples;
+	int32_t Lagged;
+	int32_t Buttons;
+};
+
 #include "endian.h"
 #include "math_ops.h"
 #include "blip/Blip_Buffer.h"
@@ -109,6 +121,4 @@ uint16 MDFN_FASTCALL MemRead16(v810_timestamp_t &timestamp, uint32 A);
 
 void MDFN_FASTCALL MemWrite8(v810_timestamp_t &timestamp, uint32 A, uint8 V);
 void MDFN_FASTCALL MemWrite16(v810_timestamp_t &timestamp, uint32 A, uint16 V);
-
-extern int32 VB_InDebugPeek;
 }

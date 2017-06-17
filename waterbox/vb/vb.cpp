@@ -20,7 +20,8 @@
 */
 
 #include "vb.h"
-#include <emulibc.h>
+#include "../emulibc/emulibc.h"
+#include "../emulibc/waterboxcore.h"
 #define EXPORT extern "C" ECL_EXPORT
 
 namespace MDFN_IEN_VB
@@ -64,8 +65,6 @@ static const uint32 AnaglyphPreset_Colors[][2] =
 	{0x00FF00, 0xFF00FF},
 	{0xFFFF00, 0x0000FF},
 };
-
-int32 VB_InDebugPeek;
 
 static uint32 VB3DMode;
 
@@ -558,8 +557,6 @@ EXPORT int Load(const uint8 *rom, int length, const NativeSettings* settings)
 	const uint64 rom_size = length;
 	V810_Emu_Mode cpu_mode = V810_EMU_MODE_ACCURATE;
 
-	VB_InDebugPeek = 0;
-
 	if (rom_size != round_up_pow2(rom_size))
 	{
 		return 0;
@@ -734,49 +731,44 @@ EXPORT int Load(const uint8 *rom, int length, const NativeSettings* settings)
 	return 1;
 }
 
-EXPORT void GetMemoryArea(int which, void **ptr, int *size)
+EXPORT void GetMemoryAreas(MemoryArea* m)
 {
-	switch (which)
-	{
-	case 0:
-		*ptr = WRAM;
-		*size = 65536;
-		break;
-	case 1:
-		*ptr = GPRAM;
-		*size = GPRAM_Mask + 1;
-		break;
-	case 2:
-		*ptr = GPROM;
-		*size = GPROM_Mask + 1;
-		break;
-	default:
-		*ptr = nullptr;
-		*size = 0;
-		break;
-	}
+	m[0].Data = WRAM;
+	m[0].Name = "WRAM";
+	m[0].Size = 65536;
+	m[0].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_PRIMARY | MEMORYAREA_FLAGS_WORDSIZE4;
+
+	m[1].Data = GPRAM;
+	m[1].Name = "CARTRAM";
+	m[1].Size = GPRAM_Mask + 1;
+	m[1].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_SAVERAMMABLE | MEMORYAREA_FLAGS_WORDSIZE4;
+
+	m[2].Data = GPROM;
+	m[2].Name = "ROM";
+	m[2].Size = GPROM_Mask + 1;
+	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE4;
 }
 
-EXPORT void Emulate(EmulateSpecStruct *espec)
+EXPORT void FrameAdvance(MyFrameInfo* frame)
 {
 	v810_timestamp_t v810_timestamp;
 	lagged = true;
 
-	VBINPUT_Frame(&espec->Buttons);
+	VBINPUT_Frame(&frame->Buttons);
 
-	VIP_StartFrame(espec);
+	VIP_StartFrame(frame);
 
 	v810_timestamp = VB_V810->Run(EventHandler);
 
 	FixNonEvents();
 	ForceEventUpdates(v810_timestamp);
 
-	espec->SoundBufSize = VB_VSU->EndFrame((v810_timestamp + VSU_CycleFix) >> 2, espec->SoundBuf, espec->SoundBufMaxSize);
+	frame->Samples = VB_VSU->EndFrame((v810_timestamp + VSU_CycleFix) >> 2, frame->SoundBuffer, 8192);
 
 	VSU_CycleFix = (v810_timestamp + VSU_CycleFix) & 3;
 
-	espec->MasterCycles = v810_timestamp;
-	espec->Lagged = lagged;
+	frame->Cycles = v810_timestamp;
+	frame->Lagged = lagged;
 
 	TIMER_ResetTS();
 	VBINPUT_ResetTS();

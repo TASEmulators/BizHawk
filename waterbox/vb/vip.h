@@ -37,7 +37,7 @@ void VIP_SetLEDOnScale(float coeff) MDFN_COLD;
 v810_timestamp_t MDFN_FASTCALL VIP_Update(const v810_timestamp_t timestamp);
 void VIP_ResetTS(void);
 
-void VIP_StartFrame(EmulateSpecStruct *espec);
+void VIP_StartFrame(MyFrameInfo* frame);
 
 MDFN_FASTCALL uint8 VIP_Read8(v810_timestamp_t &timestamp, uint32 A);
 MDFN_FASTCALL uint16 VIP_Read16(v810_timestamp_t &timestamp, uint32 A);
