@@ -246,6 +246,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				// set the "Mode" button to analog at all times
 				dest[offset + 1] |= 0x10;
 			}
+
+			protected override int ButtonOrdinal(string name)
+			{
+				switch (name)
+				{
+					default:
+						return 0;
+					case "A":
+						return 1;
+					case "B":
+					case "C":
+						return 2;
+					case "X":
+						return 3;
+					case "Y":
+						return 4;
+					case "Z":
+						return 5;
+				}
+			}
 		}
 
 		private class Mouse : ButtonedDevice
@@ -263,6 +283,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			};
 
 			protected override string[] AnalogNames => _analogNames;
+
+			protected override int ButtonOrdinal(string name)
+			{
+				switch (name)
+				{
+					default:
+					case "Mouse Left":
+						return 0;
+					case "Mouse Center":
+						return 1;
+					case "Mouse Right":
+						return 2;
+					case "Start":
+						return 3;
+				}
+			}
 		}
 
 		private class Wheel : ButtonedDevice
@@ -282,6 +318,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			};
 
 			protected override string[] AnalogNames => _analogNames;
+
+			protected override int ButtonOrdinal(string name)
+			{
+				switch (name)
+				{
+					default:
+						return 0;
+					case "A":
+						return 1;
+					case "B":
+					case "C":
+						return 2;
+					case "X":
+						return 3;
+					case "Y":
+						return 4;
+					case "Z":
+						return 5;
+				}
+			}
 		}
 
 		private class Mission : ButtonedDevice
@@ -304,6 +360,31 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 			protected override string[] AnalogNames => _analogNames;
 			protected override int AnalogByteOffset => 4;
+
+			protected override int ButtonOrdinal(string name)
+			{
+				switch (name)
+				{
+					default:
+						return 0;
+					case "Start":
+						return 1;
+					case "A":
+						return 2;
+					case "B":
+					case "C":
+						return 3;
+					case "X":
+						return 4;
+					case "Y":
+						return 5;
+					case "Z":
+					case "L":
+						return 6;
+					case "R":
+						return 7;
+				}
+			}
 		}
 
 		private class DualMission : Mission
@@ -471,6 +552,124 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			};
 
 			protected override string[] ButtonNames => _buttonNames;
+
+			protected override int ButtonOrdinal(string name)
+			{
+				switch (name)
+				{
+					default: return 0;
+					case "Escape": return 1;
+					case "F1": return 2;
+					case "F2": return 3;
+					case "F3": return 4;
+					case "F4": return 5;
+					case "F5": return 6;
+					case "F6": return 7;
+					case "F7": return 8;
+					case "F8": return 9;
+					case "F9": return 10;
+					case "F10": return 11;
+					case "F11": return 12;
+					case "F12": return 13;
+
+					case "Grave`": return 100;
+					case "1(One)": return 101;
+					case "2": return 102;
+					case "3": return 103;
+					case "4": return 104;
+					case "5": return 105;
+					case "6": return 106;
+					case "7": return 107;
+					case "8": return 108;
+					case "9": return 109;
+					case "0(Zero)": return 110;
+					case "Equals=": return 111;
+					case "Minus-": return 112;
+					case "Backslash\\": return 113;
+					case "Backspace": return 114;
+
+					case "Tab": return 200;
+					case "Q": return 201;
+					case "W": return 202;
+					case "E": return 203;
+					case "R": return 204;
+					case "T": return 205;
+					case "Y": return 206;
+					case "U": return 207;
+					case "I": return 208;
+					case "O": return 209;
+					case "P": return 210;
+					case "LeftBracket[": return 211;
+					case "RightBracket]": return 212;
+					case "Enter": return 213;
+
+					case "CapsLock": return 300;
+					case "A": return 301;
+					case "S": return 302;
+					case "D": return 303;
+					case "F": return 304;
+					case "G": return 305;
+					case "H": return 306;
+					case "J": return 307;
+					case "K": return 308;
+					case "L": return 309;
+					case "Semicolon;": return 310;
+					case "Quote'": return 311;
+
+					case "LeftShift": return 400;
+					case "Z": return 401;
+					case "X": return 402;
+					case "C": return 403;
+					case "V": return 404;
+					case "B": return 405;
+					case "N": return 406;
+					case "M": return 407;
+					case "Comma,": return 408;
+					case "Period.": return 409;
+					case "Slash/": return 410;
+					case "RightShift": return 411;
+
+					case "LeftCtrl": return 500;
+					case "LeftAlt": return 501;
+					case "Space": return 502;
+					case "RightAlt": return 503;
+					case "RightCtrl": return 504;
+
+					case "PrintScreen": return 1000;
+					case "ScrollLock": return 1001;
+					case "Pause": return 1002;
+
+					case "Insert": return 1100;
+					case "Delete": return 1101;
+					case "Home": return 1102;
+					case "End": return 1103;
+					case "PageUp": return 1104;
+					case "PageDown": return 1105;
+
+					case "Up": return 1200;
+					case "Down": return 1201;
+					case "CursorLeft": return 1202;
+					case "Right": return 1203;
+
+					case "NumLock": return 1300;
+					case "KeypadSlash(Divide)": return 1301;
+					case "KeypadAsterisk(Multiply)": return 1302;
+					case "KeypadMinus": return 1303;
+					case "KeypadHome/7": return 1304;
+					case "KeypadUp/8": return 1305;
+					case "KeypadPageup/9": return 1306;
+					case "KeypadPlus": return 1307;
+					case "KeypadLeft/4": return 1308;
+					case "KeypadCenter/5": return 1309;
+					case "KeypadRight/6": return 1310;
+					case "KeypadEnd/1": return 1311;
+					case "KeypadDown/2": return 1312;
+					case "KeypadPagedown/3": return 1313;
+					case "KeypadEnter": return 1314;
+					case "KeypadInsert/0": return 1315;
+					case "KeypadDelete": return 1316;
+				}
+			}
 		}
 	}
 }
