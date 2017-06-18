@@ -102,33 +102,4 @@ uint8 IODevice_Wheel::UpdateBus(const uint8 smpc_out, const uint8 smpc_out_asser
  return (smpc_out & (smpc_out_asserted | 0xE0)) | (tmp &~ smpc_out_asserted);
 }
 
-IDIISG IODevice_Wheel_IDII =
-{
- { "up", "L Gear Shift(Equiv. UP ↑)", 2, IDIT_BUTTON, "down" },
- { "down", "R Gear Shift(Equiv. DOWN ↓)", 3, IDIT_BUTTON, "up" },
- { NULL, "empty", 0, IDIT_BUTTON }, // left
- { NULL, "empty", 0, IDIT_BUTTON }, // right
-
- { "b", "B (R Group)", 9, IDIT_BUTTON },
- { "c", "C (R Group)", 10, IDIT_BUTTON },
- { "a", "A (R Group)", 8, IDIT_BUTTON },
- { "start", "START", 7, IDIT_BUTTON },
-
- { "z", "Z (L Group)", 4, IDIT_BUTTON },
- { "y", "Y (L Group)", 5, IDIT_BUTTON },
- { "x", "X (L Group)", 6, IDIT_BUTTON },
- { NULL, "empty", 0, IDIT_BUTTON },
-
- { NULL, "empty", 0, IDIT_BUTTON },
- { NULL, "empty", 0, IDIT_BUTTON },
- { NULL, "empty", 0, IDIT_BUTTON },
- { NULL, "empty", 0, IDIT_BUTTON },
-
- { "analog_left", "Analog LEFT ←", 0, IDIT_BUTTON_ANALOG },
- { "analog_right", "Analog RIGHT →", 1, IDIT_BUTTON_ANALOG },
-};
-
-
-
-
 }

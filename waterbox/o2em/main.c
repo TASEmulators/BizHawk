@@ -76,7 +76,7 @@ ECL_EXPORT int Init(const char *rom, int romlen, const char *bios, int bioslen)
 
 ECL_EXPORT void FrameAdvance(FrameInfo* f)
 {
-	cpu_exec(20000);
+	cpu_exec(6026);
 	f->Samples = 735;
 	f->Width = 320;
 	f->Height = 240;

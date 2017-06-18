@@ -221,7 +221,7 @@ Byte read_P2(void)
 {
 	int i, si, so, km;
 
-	return 0;
+	return 0xff;
 	// TODO
 	/*if (NeedsPoll)
 		poll_keyboard();

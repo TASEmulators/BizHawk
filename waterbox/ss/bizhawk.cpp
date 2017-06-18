@@ -1,5 +1,4 @@
 #include "ss.h"
-#include "stream/MemoryStream.h"
 #include <memory>
 #include "cdrom/cdromif.h"
 #include "cdb.h"
@@ -257,26 +256,7 @@ EXPORT void SetVideoParameters(bool correctAspect, bool hBlend, bool hOverscan, 
  Cleanup();
 }*/
 
-/*static MDFN_COLD void SaveBackupRAM(void)
-{
- FileStream brs(MDFN_MakeFName(MDFNMKF_SAV, 0, "bkr"), FileStream::MODE_WRITE_INPLACE);
-
- brs.write(BackupRAM, sizeof(BackupRAM));
-
- brs.close();
-}
-
-static MDFN_COLD void LoadBackupRAM(void)
-{
- FileStream brs(MDFN_MakeFName(MDFNMKF_SAV, 0, "bkr"), FileStream::MODE_READ);
-
- brs.read(BackupRAM, sizeof(BackupRAM));
-}
-
-static MDFN_COLD void BackupBackupRAM(void)
-{
- MDFN_BackupSavFile(10, "bkr");
-}
+/*
 
 static MDFN_COLD void BackupCartNV(void)
 {

@@ -128,41 +128,4 @@ uint8 IODevice_3DPad::UpdateBus(const uint8 smpc_out, const uint8 smpc_out_asser
  return (smpc_out & (smpc_out_asserted | 0xE0)) | (tmp &~ smpc_out_asserted);
 }
 
-static const char* const ModeSwitchPositions[] =
-{
- gettext_noop("Digital(+)"),
- gettext_noop("Analog(○)"),
-};
-
-IDIISG IODevice_3DPad_IDII =
-{
- { "up", "D-Pad UP ↑", 0, IDIT_BUTTON, "down" },
- { "down", "D-Pad DOWN ↓", 1, IDIT_BUTTON, "up" },
- { "left", "D-Pad LEFT ←", 2, IDIT_BUTTON, "right" },
- { "right", "D-Pad RIGHT →", 3, IDIT_BUTTON, "left" },
-
- { "b", "B", 6, IDIT_BUTTON },
- { "c", "C", 7, IDIT_BUTTON },
- { "a", "A", 5, IDIT_BUTTON },
- { "start", "START", 4, IDIT_BUTTON },
-
- { "z", "Z", 10, IDIT_BUTTON },
- { "y", "Y", 9, IDIT_BUTTON },
- { "x", "X", 8, IDIT_BUTTON },
- { NULL, "empty", 0, IDIT_BUTTON },
-
- IDIIS_Switch("mode", "Mode", 17, ModeSwitchPositions, sizeof(ModeSwitchPositions) / sizeof(ModeSwitchPositions[0])),
-
- { "analog_left", "Analog LEFT ←", 15, IDIT_BUTTON_ANALOG },
- { "analog_right", "Analog RIGHT →", 16, IDIT_BUTTON_ANALOG },
- { "analog_up", "Analog UP ↑", 13, IDIT_BUTTON_ANALOG },
- { "analog_down", "Analog DOWN ↓", 14, IDIT_BUTTON_ANALOG },
-
- { "rs", "Right Shoulder (Analog)", 12, IDIT_BUTTON_ANALOG },
- { "ls", "Left Shoulder (Analog)", 11, IDIT_BUTTON_ANALOG },
-};
-
-
-
-
 }

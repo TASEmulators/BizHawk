@@ -46,9 +46,6 @@ class IODevice_Wheel final : public IODevice
  int8 phase;
 };
 
-
-extern IDIISG IODevice_Wheel_IDII;
-
 }
 
 #endif

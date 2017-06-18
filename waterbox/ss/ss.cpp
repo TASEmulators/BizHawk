@@ -21,21 +21,9 @@
 
 // WARNING: Be careful with 32-bit access to 16-bit space, bus locking, etc. in respect to DMA and event updates(and where they can occur).
 
-/*#include <mednafen/general.h>
-#include <mednafen/FileStream.h>
-#include <mednafen/compress/GZFileStream.h>
-#include <mednafen/mempatcher.h>
-#include <mednafen/hash/sha256.h>
-#include <mednafen/hash/md5.h>
-#include <mednafen/Time.h>*/
-
 #include <ctype.h>
 
 #include <bitset>
-
-//#include <zlib.h>
-
-//extern MDFNGI EmulatedSS;
 
 #include "ss.h"
 #include "cdrom/cdromif.h"

@@ -47,9 +47,6 @@ class IODevice_Mouse final : public IODevice
  int8 phase;
 };
 
-
-extern IDIISG IODevice_Mouse_IDII;
-
 }
 
 #endif

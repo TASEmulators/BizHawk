@@ -128,16 +128,4 @@ uint8 IODevice_Mouse::UpdateBus(const uint8 smpc_out, const uint8 smpc_out_asser
  return (smpc_out & (smpc_out_asserted | 0xE0)) | (tmp &~ smpc_out_asserted);
 }
 
-IDIISG IODevice_Mouse_IDII =
-{
- { "x_axis", "X Axis", -1, IDIT_X_AXIS_REL },
- { "y_axis", "Y Axis", -1, IDIT_Y_AXIS_REL },
-
- { "left", "Left Button", 0, IDIT_BUTTON },
- { "right", "Right Button", 2, IDIT_BUTTON },
- { "middle", "Middle Button", 1, IDIT_BUTTON },
- { "start", "Start", 3, IDIT_BUTTON },
-};
-
-
 }

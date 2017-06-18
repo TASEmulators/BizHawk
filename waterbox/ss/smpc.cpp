@@ -325,7 +325,7 @@ static void RTC_Reset(void)
 }
 #endif
 
-void SMPC_LoadNV(Stream* s)
+/*void SMPC_LoadNV(Stream* s)
 {
  RTC.Valid = s->get_u8();
  s->read(RTC.raw, sizeof(RTC.raw));
@@ -337,7 +337,7 @@ void SMPC_SaveNV(Stream* s)
  s->put_u8(RTC.Valid);
  s->write(RTC.raw, sizeof(RTC.raw));
  s->write(SaveMem, sizeof(SaveMem));
-}
+}*/
 
 void SMPC_SetRTC(const struct tm* ht, const uint8 lang)
 {

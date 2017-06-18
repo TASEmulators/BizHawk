@@ -53,12 +53,6 @@ class IODevice_Mission final : public IODevice
  const bool dual;
 };
 
-
-extern IDIISG IODevice_Mission_IDII;
-extern IDIISG IODevice_MissionNoAF_IDII;
-
-extern IDIISG IODevice_DualMission_IDII;
-
 }
 
 #endif

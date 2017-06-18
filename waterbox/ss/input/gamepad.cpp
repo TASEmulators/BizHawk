@@ -54,28 +54,4 @@ uint8 IODevice_Gamepad::UpdateBus(const uint8 smpc_out, const uint8 smpc_out_ass
  return 0x10 | (smpc_out & (smpc_out_asserted | 0xE0)) | (tmp &~ smpc_out_asserted);
 }
 
-IDIISG IODevice_Gamepad_IDII =
-{
- { "z", "Z", 10, IDIT_BUTTON },
- { "y", "Y", 9, IDIT_BUTTON },
- { "x", "X", 8, IDIT_BUTTON },
- { "rs", "Right Shoulder", 12, IDIT_BUTTON },
-
- { "up", "UP ↑", 0, IDIT_BUTTON, "down" },
- { "down", "DOWN ↓", 1, IDIT_BUTTON, "up" },
- { "left", "LEFT ←", 2, IDIT_BUTTON, "right" },
- { "right", "RIGHT →", 3, IDIT_BUTTON, "left" },
-
- { "b", "B", 6, IDIT_BUTTON },
- { "c", "C", 7, IDIT_BUTTON },
- { "a", "A", 5, IDIT_BUTTON },
- { "start", "START", 4, IDIT_BUTTON },
-
- { NULL, "empty", 0, IDIT_BUTTON },
- { NULL, "empty", 0, IDIT_BUTTON },
- { NULL, "empty", 0, IDIT_BUTTON },
- { "ls", "Left Shoulder", 11, IDIT_BUTTON },
-};
-
-
 }

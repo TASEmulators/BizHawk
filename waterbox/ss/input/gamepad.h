@@ -40,9 +40,6 @@ class IODevice_Gamepad final : public IODevice
  uint16 buttons;
 };
 
-
-extern IDIISG IODevice_Gamepad_IDII;
-
 }
 
 #endif

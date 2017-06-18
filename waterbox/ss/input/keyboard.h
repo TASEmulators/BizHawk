@@ -67,7 +67,6 @@ class IODevice_Keyboard final : public IODevice
  int8 phase;
 };
 
-extern const IDIISG IODevice_Keyboard_US101_IDII;
 }
 
 #endif
