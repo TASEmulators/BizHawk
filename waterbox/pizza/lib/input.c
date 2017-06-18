@@ -23,9 +23,9 @@
 #include <stdint.h>
 
 /* button states */
-static uint16_t input_keys;
+static uint8_t input_keys;
 
-void input_set_keys(uint16_t keys)
+void input_set_keys(uint8_t keys)
 {
 	// 7......0
 	// DULRSsBA

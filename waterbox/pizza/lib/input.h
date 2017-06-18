@@ -22,6 +22,6 @@
 
 /* prototypes */
 uint8_t input_get_keys(uint8_t line);
-void input_set_keys(uint16_t keys);
+void input_set_keys(uint8_t keys);
 
 #endif

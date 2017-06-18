@@ -20,7 +20,8 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <sys/types.h>
-#include <emulibc.h>
+#include "../emulibc/emulibc.h"
+#include "../emulibc/waterboxcore.h"
 #include <string.h>
 
 #define EXPORT ECL_EXPORT
@@ -79,29 +80,53 @@ EXPORT int Init(const void *rom, int romlen)
 
 typedef struct
 {
-	uint32_t* vbuff;
-	int16_t* sbuff;
-	int32_t clocks; // desired(in) actual(out) time to run; 2MHZ
-	int32_t samples; // actual number of samples produced
-	uint16_t keys; // keypad input
-} frameinfo_t;
+	uint32_t* VideoBuffer;
+	int16_t* SoundBuffer;
+	int64_t Cycles;
+	int32_t Width;
+	int32_t Height;
+	int32_t Samples;
+	int32_t Lagged;
+	uint32_t Keys;
+} MyFrameInfo;
 
 static uint32_t* current_vbuff;
+static uint64_t overflow;
 
-EXPORT void FrameAdvance(frameinfo_t* frame)
+EXPORT void FrameAdvance(MyFrameInfo* frame)
 {
-	input_set_keys(frame->keys);
+	input_set_keys(frame->Keys);
+	current_vbuff = frame->VideoBuffer;
+
 	uint64_t current = cycles.sampleclock;
-	current_vbuff = frame->vbuff;
-	gameboy_run(current + frame->clocks);
-	frame->clocks = cycles.sampleclock - current;
-	frame->samples = sound_output_read(frame->sbuff);
+	uint64_t target = current + 35112 - overflow;
+	gameboy_run(target);
+	uint64_t elapsed = cycles.sampleclock - current;
+	frame->Cycles = elapsed;
+	overflow = cycles.sampleclock - target;
+
+	frame->Samples = sound_output_read(frame->SoundBuffer);
+	frame->Width = 160;
+	frame->Height = 144;
 	current_vbuff = NULL;
 }
 
 EXPORT int IsCGB(void)
 {
 	return global_cgb;
+}
+
+EXPORT void SetInputCallback(void (*callback)(void))
+{
+	// TODO
+}
+
+EXPORT void GetMemoryAreas(MemoryArea* m)
+{
+	m[0].Data = mmu.memory;
+	m[0].Name = "Fake System Bus";
+	m[0].Size = 0x10000;
+	m[0].Flags = MEMORYAREA_FLAGS_PRIMARY | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1;
 }
 
 void frame_cb()

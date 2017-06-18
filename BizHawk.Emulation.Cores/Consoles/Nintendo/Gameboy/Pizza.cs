@@ -12,33 +12,42 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 {
 	[CoreAttributes("Pizza Boy", "Davide Berra", true, false, "c7bc6ee376028b3766de8d7a02e60ab794841f45",
 		"https://github.com/davideberra/emu-pizza/", false)]
-	public class Pizza : IEmulator, IInputPollable, IVideoProvider, IGameboyCommon, ISoundProvider
+	public class Pizza : WaterboxCore, IGameboyCommon
 	{
 		private LibPizza _pizza;
-		private PeRunner _exe;
-		private bool _disposed;
 
 		[CoreConstructor("GB")]
 		public Pizza(byte[] rom, CoreComm comm)
+			:base(comm, new Configuration
+			{
+				DefaultWidth = 160,
+				DefaultHeight = 144,
+				MaxWidth = 160,
+				MaxHeight = 144,
+				MaxSamples = 1024,
+				SystemId = "GB",
+				DefaultFpsNumerator = TICKSPERSECOND,
+				DefaultFpsDenominator = TICKSPERFRAME
+			})
 		{
-			CoreComm = comm;
-			ServiceProvider = new BasicServiceProvider(this);
+			ControllerDefinition = BizHawk.Emulation.Cores.Nintendo.Gameboy.Gameboy.GbController;
 
-			_exe = new PeRunner(new PeRunnerOptions
+			_pizza = PreInit<LibPizza>(new PeRunnerOptions
 			{
 				Filename = "pizza.wbx",
-				Path = comm.CoreFileProvider.DllPath(),
 				SbrkHeapSizeKB = 2 * 1024,
 				InvisibleHeapSizeKB = 16 * 1024,
 				SealedHeapSizeKB = 16 * 1024,
 				PlainHeapSizeKB = 16 * 1024,
 				MmapHeapSizeKB = 32 * 1024
 			});
-			_pizza = BizInvoker.GetInvoker<LibPizza>(_exe, _exe, CallingConventionAdapters.Waterbox);
+
 			if (!_pizza.Init(rom, rom.Length))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
 			}
+
+			PostInit();
 		}
 
 		/// <summary>
@@ -55,8 +64,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		/// number of ticks per second (SGB)
 		/// </summary>
 		private const int TICKSPERSECOND_SGB = 2147727;
-
-		private int _tickOverflow = 0;
 
 		private static LibPizza.Buttons GetButtons(IController c)
 		{
@@ -80,108 +87,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			return b;
 		}
 
-		public unsafe void FrameAdvance(IController controller, bool render, bool rendersound = true)
+		LibPizza.FrameInfo _tmp; // TODO: clean this up so it's not so hacky
+
+		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			fixed (int* vp = _videoBuffer)
-			fixed (short* sp = _soundBuffer)
+			return _tmp = new LibPizza.FrameInfo
 			{
-				var targetClocks = TICKSPERFRAME - _tickOverflow;
-
-				var frame = new LibPizza.FrameInfo
-				{
-					VideoBuffer = (IntPtr)vp,
-					SoundBuffer = (IntPtr)sp,
-					Clocks = targetClocks,
-					Keys = GetButtons(controller)
-				};
-
-				_pizza.FrameAdvance(frame);
-				_tickOverflow = frame.Clocks - targetClocks;
-				_numSamples = frame.Samples;
-				Frame++;
-			}
+				Keys = GetButtons(controller)
+			};
 		}
 
-		public void Dispose()
+		protected override void FrameAdvancePost()
 		{
-			if (!_disposed)
-			{
-				_exe.Dispose();
-				_exe = null;
-				_pizza = null;
-				_disposed = true;
-			}
+			Console.WriteLine(_tmp.Cycles);
+			_tmp = null;
 		}
 
 		public bool IsCGBMode() => _pizza.IsCGB();
-		public ControllerDefinition ControllerDefinition => BizHawk.Emulation.Cores.Nintendo.Gameboy.Gameboy.GbController;
-		public int Frame { get; private set; }
-		public int LagCount { get; set; }
-		public bool IsLagFrame { get; set; }
-		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
-
-		public void ResetCounters()
-		{
-			Frame = 0;
-		}
-
-		public IEmulatorServiceProvider ServiceProvider { get; private set; }
-		public string SystemId { get { return "GB"; } }
-		public bool DeterministicEmulation { get; private set; }
-		public CoreComm CoreComm { get; }
-
-		#region ISoundProvider
-
-		private short[] _soundBuffer = new short[2048];
-		private int _numSamples;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode == SyncSoundMode.Async)
-			{
-				throw new NotSupportedException("Async mode is not supported.");
-			}
-		}
-
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			samples = _soundBuffer;
-			nsamp = _numSamples;
-		}
-
-		public void GetSamplesAsync(short[] samples)
-		{
-			throw new InvalidOperationException("Async mode is not supported.");
-		}
-
-		public void DiscardSamples()
-		{
-		}
-
-		public bool CanProvideAsync => false;
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		#endregion
-
-		#region IVideoProvider
-
-		private int[] _videoBuffer = new int[160 * 144];
-
-		public int[] GetVideoBuffer()
-		{
-			return _videoBuffer;
-		}
-
-		public int VirtualWidth => 160;
-		public int VirtualHeight => 144;
-		public int BufferWidth => 160;
-		public int BufferHeight => 144;
-		public int VsyncNumerator { get; private set; } = TICKSPERSECOND;
-		public int VsyncDenominator { get; private set; } = TICKSPERFRAME;
-		public int BackgroundColor => unchecked((int)0xff000000);
-
-		#endregion
 
 	}
 }

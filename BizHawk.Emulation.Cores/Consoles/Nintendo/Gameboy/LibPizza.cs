@@ -1,4 +1,5 @@
 ﻿using BizHawk.Common.BizInvoke;
+using BizHawk.Emulation.Cores.Waterbox;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,11 +9,10 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 {
-	public abstract class LibPizza
+	public abstract class LibPizza : LibWaterboxCore
 	{
-		private const CallingConvention CC = CallingConvention.Cdecl;
 		[Flags]
-		public enum Buttons : ushort
+		public enum Buttons : int
 		{
 			A = 0x01,
 			B = 0x02,
@@ -24,19 +24,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			DOWN = 0x80
 		}
 		[StructLayout(LayoutKind.Sequential)]
-		public class FrameInfo
+		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
-			public IntPtr VideoBuffer;
-			public IntPtr SoundBuffer;
-			public int Clocks;
-			public int Samples;
 			public Buttons Keys;
 		}
-
 		[BizImport(CC)]
 		public abstract bool Init(byte[] rom, int romlen);
-		[BizImport(CC)]
-		public abstract void FrameAdvance([In,Out] FrameInfo frame);
 		[BizImport(CC)]
 		public abstract bool IsCGB();
 	}
