@@ -252,7 +252,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		{
 			private static readonly string[] _buttonNames =
 			{
-				"Left", "Right", "Middle", "Start"
+				"Mouse Left", "Mouse Right", "Mouse Center", "Start"
 			};
 
 			protected override string[] ButtonNames => _buttonNames;

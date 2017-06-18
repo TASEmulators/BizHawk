@@ -50,11 +50,12 @@ namespace BizHawk.Client.EmuHawk
 					return StandardController(controllerNum);
 				case SaturnusControllerDeck.Device.ThreeDeePad:
 					return ThreeDeeController(controllerNum);
+				case SaturnusControllerDeck.Device.Mouse:
+					return Mouse(controllerNum);
 				case SaturnusControllerDeck.Device.Mission:
 				case SaturnusControllerDeck.Device.DualMission:
 				case SaturnusControllerDeck.Device.Wheel:
 				case SaturnusControllerDeck.Device.Keyboard:
-				case SaturnusControllerDeck.Device.Mouse:
 					System.Windows.Forms.MessageBox.Show("This peripheral is not supported yet");
 					return null;
 			}
@@ -289,8 +290,58 @@ namespace BizHawk.Client.EmuHawk
 						TargetSize = new Size(128, 55),
 						MinValue = 0,
 						MaxValue = 255,
-					},
+					}
 				}
+			};
+		}
+
+		private static PadSchema Mouse(int controller)
+		{
+			return new PadSchema
+			{
+				DisplayName = "Mouse",
+				IsConsole = false,
+				DefaultSize = new Size(375, 320),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonSchema
+					{
+						Name = $"P{controller} X",
+						SecondaryNames = new[] { $"P{controller} Y" },
+						Location = new Point(14, 17),
+						Type = PadSchema.PadInputType.TargetedPair,
+						TargetSize = new Size(256, 256)
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Mouse Left",
+						DisplayName = "Left",
+						Location = new Point(300, 17),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Mouse Center",
+						DisplayName = "Center",
+						Location = new Point(300, 47),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Mouse Right",
+						DisplayName = "Right",
+						Location = new Point(300, 77),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Start",
+						DisplayName = "Start",
+						Location = new Point(300, 107),
+						Type = PadSchema.PadInputType.Boolean
+					}
+				},
+
 			};
 		}
 
