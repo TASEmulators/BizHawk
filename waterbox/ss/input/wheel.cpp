@@ -42,26 +42,19 @@ void IODevice_Wheel::Power(void)
  data_out = 0x01;
 }
 
-void IODevice_Wheel::UpdateInput(const uint8* data, const int32 time_elapsed)
+void IODevice_Wheel::UpdateInput(const uint8 *data, const int32 time_elapsed)
 {
- dbuttons = (dbuttons & 0xC) | (MDFN_de16lsb(&data[0]) & 0x07F3);
+	dbuttons = (dbuttons & 0xC) | (MDFN_de16lsb(&data[0]) & 0x07F3);
+	wheel = data[2];
+	if (wheel >= 0x6F)
+		dbuttons &= ~0x4;
+	else if (wheel <= 0x67)
+		dbuttons |= 0x4;
 
- //
- {
-  int32 tmp = 32767 + MDFN_de16lsb(&data[0x2 + 2]) - MDFN_de16lsb(&data[0x2 + 0]);
-
-  wheel = 1 + tmp * 253 / 65534;
-
-  if(wheel >= 0x6F)
-   dbuttons &= ~0x4;
-  else if(wheel <= 0x67)
-   dbuttons |= 0x4;
-
-  if(wheel <= 0x8F)
-   dbuttons &= ~0x8;
-  else if(wheel >= 0x97)
-   dbuttons |= 0x8;
- }
+	if (wheel <= 0x8F)
+		dbuttons &= ~0x8;
+	else if (wheel >= 0x97)
+		dbuttons |= 0x8;
 }
 
 uint8 IODevice_Wheel::UpdateBus(const uint8 smpc_out, const uint8 smpc_out_asserted)

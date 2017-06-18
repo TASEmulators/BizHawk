@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		private abstract class ButtonedDevice : IDevice
 		{
-			private static readonly FloatRange AnalogFloatRange = new FloatRange(-32767, 0, 32767);
+			private static readonly FloatRange AnalogFloatRange = new FloatRange(0, 128, 255);
 
 			protected ButtonedDevice()
 			{
@@ -164,13 +164,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				int pos = offset + AnalogByteOffset;
 				for (int i = 0; i < _bakedAnalogNames.Length; i++)
 				{
-					var data = (int)controller.GetFloat(_bakedAnalogNames[i]);
-					var datal = (short)Math.Max(-data, 0);
-					var datar = (short)Math.Max(data, 0);
-					dest[pos++] = (byte)datal;
-					dest[pos++] = (byte)(datal >> 8);
-					dest[pos++] = (byte)datar;
-					dest[pos++] = (byte)(datar >> 8);
+					var data = (byte)(int)controller.GetFloat(_bakedAnalogNames[i]);
+					dest[pos++] = data;
 				}
 			}
 
@@ -233,10 +228,17 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			{
 				"Stick Horizontal",
 				"Stick Vertical",
-				"Third Axis"
+				"Left Shoulder",
+				"Right Shoulder"
 			};
 
 			protected override string[] AnalogNames => _analogNames;
+
+			public ThreeDeeGamepad()
+			{
+				Definition.FloatRanges[2] = new FloatRange(0, 0, 255);
+				Definition.FloatRanges[3] = new FloatRange(0, 0, 255);
+			}
 
 			public override void Update(IController controller, byte[] dest, int offset)
 			{
@@ -248,37 +250,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		private class Mouse : ButtonedDevice
 		{
-			private static readonly FloatRange MouseFloatRange = new FloatRange(-32768, 0, 32767);
-
 			private static readonly string[] _buttonNames =
 			{
 				"Left", "Right", "Middle", "Start"
 			};
 
 			protected override string[] ButtonNames => _buttonNames;
-			protected override int ButtonByteOffset => 8;
 
-			public Mouse()
+			private static readonly string[] _analogNames =
 			{
-				Definition.FloatControls.AddRange(new[] { "0X", "0Y" });
-				Definition.FloatRanges.AddRange(new[] { MouseFloatRange, MouseFloatRange });
-			}
+				"X", "Y"
+			};
 
-			private void SetMouseAxis(float value, byte[] dest, int offset)
-			{
-				var data = (short)value;
-				dest[offset++] = 0;
-				dest[offset++] = 0;
-				dest[offset++] = (byte)data;
-				dest[offset++] = (byte)(data >> 8);
-			}
-
-			public override void Update(IController controller, byte[] dest, int offset)
-			{
-				base.Update(controller, dest, offset);
-				SetMouseAxis(controller.GetFloat("0X"), dest, offset + 0);
-				SetMouseAxis(controller.GetFloat("0Y"), dest, offset + 4);
-			}
+			protected override string[] AnalogNames => _analogNames;
 		}
 
 		private class Wheel : ButtonedDevice
@@ -319,7 +303,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			};
 
 			protected override string[] AnalogNames => _analogNames;
-			protected override int AnalogByteOffset => 3;
+			protected override int AnalogByteOffset => 4;
 		}
 
 		private class DualMission : Mission

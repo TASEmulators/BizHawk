@@ -46,9 +46,9 @@ void IODevice_Mouse::Power(void)
 
 void IODevice_Mouse::UpdateInput(const uint8* data, const int32 time_elapsed)
 {
- accum_xdelta += MDFN_de32lsb(&data[0]);
- accum_ydelta -= MDFN_de32lsb(&data[4]);
- buttons = data[8] & 0xF;
+ accum_xdelta += data[1];
+ accum_ydelta -= data[2];
+ buttons = data[0] & 0xF;
 }
 
 uint8 IODevice_Mouse::UpdateBus(const uint8 smpc_out, const uint8 smpc_out_asserted)

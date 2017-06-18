@@ -52,25 +52,24 @@ void IODevice_Mission::Power(void)
  afphase = false;
 }
 
-void IODevice_Mission::UpdateInput(const uint8* data, const int32 time_elapsed)
+void IODevice_Mission::UpdateInput(const uint8 *data, const int32 time_elapsed)
 {
- const uint32 dtmp = MDFN_de32lsb(&data[0]);
+	const uint32 dtmp = MDFN_de32lsb(&data[0]);
 
- dbuttons = (dbuttons & 0xF) | ((dtmp & 0xFFF) << 4);
- afeswitches = ((dtmp >> 12) & 0x8FF) << 4;
- afspeed = (dtmp >> 20) & 0x7;
+	dbuttons = (dbuttons & 0xF) | ((dtmp & 0xFFF) << 4);
+	afeswitches = ((dtmp >> 12) & 0x8FF) << 4;
+	afspeed = (dtmp >> 20) & 0x7;
 
- for(unsigned stick = 0; stick < (dual ? 2 : 1); stick++)
- {
-  for(unsigned axis = 0; axis < 3; axis++)
-  {
-   int32 tmp = 32767 + MDFN_de16lsb(&data[0x3 + ((axis + (stick * 3)) * 4) + 2]) - MDFN_de16lsb(&data[0x3 + ((axis + (stick * 3)) * 4) + 0]);
+	int offs = 4;
+	for (unsigned stick = 0; stick < (dual ? 2 : 1); stick++)
+	{
+		for (unsigned axis = 0; axis < 3; axis++)
+		{
+			axes[stick][axis] = data[offs++];
+		}
+	}
 
-   axes[stick][axis] = (tmp * 255 + 32767) / 65534;
-  }
- }
-
- //printf("Update: %02x %02x %02x\n", axes[0][0], axes[0][1], axes[0][2]);
+	//printf("Update: %02x %02x %02x\n", axes[0][0], axes[0][1], axes[0][2]);
 }
 
 uint8 IODevice_Mission::UpdateBus(const uint8 smpc_out, const uint8 smpc_out_asserted)
