@@ -236,8 +236,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 			public ThreeDeeGamepad()
 			{
-				Definition.FloatRanges[2] = new FloatRange(0, 0, 255);
-				Definition.FloatRanges[3] = new FloatRange(0, 0, 255);
+				Definition.FloatRanges[2] = new FloatRange(0, 128, 255);
+				Definition.FloatRanges[3] = new FloatRange(0, 128, 255);
 			}
 
 			public override void Update(IController controller, byte[] dest, int offset)
