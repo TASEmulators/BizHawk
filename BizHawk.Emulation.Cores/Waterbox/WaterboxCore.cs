@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_exe = new PeRunner(options);
 			using (_exe.EnterExit())
 			{
-				var ret = BizInvoker.GetInvoker<T>(_exe, _exe);
+				var ret = BizInvoker.GetInvoker<T>(_exe, _exe, CallingConventionAdapters.Waterbox);
 				_core = ret;
 				return ret;
 			}

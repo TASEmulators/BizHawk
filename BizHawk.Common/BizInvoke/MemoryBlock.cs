@@ -5,7 +5,7 @@ using System.Text;
 using System.Runtime.InteropServices;
 using System.IO;
 
-namespace BizHawk.Emulation.Cores.Waterbox
+namespace BizHawk.Common.BizInvoke
 {
 	public sealed class MemoryBlock : IDisposable
 	{

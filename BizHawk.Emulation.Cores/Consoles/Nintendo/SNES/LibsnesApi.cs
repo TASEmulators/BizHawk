@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				// Marshal checks that function pointers passed to GetDelegateForFunctionPointer are
 				// _currently_ valid when created, even though they don't need to be valid until
 				// the delegate is later invoked.  so GetInvoker needs to be acquired within a lock.
-				_core = BizInvoker.GetInvoker<CoreImpl>(_exe, _exe);
+				_core = BizInvoker.GetInvoker<CoreImpl>(_exe, _exe, CallingConventionAdapters.Waterbox);
 				_comm = (CommStruct*)_core.DllInit().ToPointer();
 			}
 		}

@@ -207,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 				_core = core;
 				_push = push;
 				_pull = pull;
-				_exporter = BizExvoker.GetExvoker(this);
+				_exporter = BizExvoker.GetExvoker(this, CallingConventionAdapters.Waterbox);
 				_readcb = _exporter.SafeResolve("CommsReadCallback");
 				_pollcb = _exporter.SafeResolve("CommsPollCallback");
 				_writecb = _exporter.SafeResolve("CommsWriteCallback");

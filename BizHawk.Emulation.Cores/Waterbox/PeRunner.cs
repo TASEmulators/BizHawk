@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 							throw new InvalidOperationException(s);
 						};
 						_traps.Add(del);
-						ptr = Marshal.GetFunctionPointerForDelegate(del);
+						ptr = CallingConventionAdapters.Waterbox.GetFunctionPointerForDelegate(del);
 					}
 					return ptr;
 				}).ToArray();
@@ -355,7 +355,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			[BizExport(CallingConvention.Cdecl, EntryPoint = "start_main")]
 			public unsafe int StartMain(IntPtr main, int argc, IntPtr argv, IntPtr libc_start_main)
 			{
-				//var del = (LibcStartMain)Marshal.GetDelegateForFunctionPointer(libc_start_main, typeof(LibcStartMain));
+				//var del = (LibcStartMain)CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer(libc_start_main, typeof(LibcStartMain));
 				// this will init, and then call user main, and then call exit()
 				//del(main, argc, argv);
 				//int* foobar = stackalloc int[128];
@@ -676,11 +676,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				// load any predefined exports
 				_psx = new Psx(this);
-				_exports.Add("libpsxscl.so", BizExvoker.GetExvoker(_psx));
+				_exports.Add("libpsxscl.so", BizExvoker.GetExvoker(_psx, CallingConventionAdapters.Waterbox));
 				_emu = new Emu(this);
-				_exports.Add("libemuhost.so", BizExvoker.GetExvoker(_emu));
+				_exports.Add("libemuhost.so", BizExvoker.GetExvoker(_emu, CallingConventionAdapters.Waterbox));
 				_syscalls = new Syscalls(this);
-				_exports.Add("__syscalls", BizExvoker.GetExvoker(_syscalls));
+				_exports.Add("__syscalls", BizExvoker.GetExvoker(_syscalls, CallingConventionAdapters.Waterbox));
 
 				// load and connect all modules, starting with the executable
 				var todoModules = new Queue<string>();
@@ -730,7 +730,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 
 				_libcpatch = new LibcPatch(this);
-				_exports["libc.so"] = new PatchImportResolver(_exports["libc.so"], BizExvoker.GetExvoker(_libcpatch));
+				_exports["libc.so"] = new PatchImportResolver(_exports["libc.so"], BizExvoker.GetExvoker(_libcpatch, CallingConventionAdapters.Waterbox));
 
 				ConnectAllImports();
 
@@ -764,7 +764,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var libcEnter = _exports["libc.so"].SafeResolve("__libc_entry_routine");
 				var psxInit = _exports["libpsxscl.so"].SafeResolve("__psx_init");
 
-				var del = (LibcEntryRoutineD)Marshal.GetDelegateForFunctionPointer(libcEnter, typeof(LibcEntryRoutineD));
+				var del = (LibcEntryRoutineD)CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer(libcEnter, typeof(LibcEntryRoutineD));
 				// the current mmglue code doesn't use the main pointer at all, and this just returns
 				del(IntPtr.Zero, psxInit, 0);
 
@@ -811,7 +811,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				if (_exports.TryGetValue("libco.so", out libco))
 				{
 					Console.WriteLine("Calling co_clean()...");
-					Marshal.GetDelegateForFunctionPointer<Action>(libco.SafeResolve("co_clean"))();
+					CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer<Action>(libco.SafeResolve("co_clean"))();
 				}
 
 				_sealedheap.Seal();

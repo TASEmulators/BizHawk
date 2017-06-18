@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using System.Runtime.InteropServices;
+using BizHawk.Common.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {

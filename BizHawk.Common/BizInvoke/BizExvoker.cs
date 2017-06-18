@@ -87,13 +87,13 @@ namespace BizHawk.Common.BizInvoke
 
 			private readonly List<Delegate> Delegates = new List<Delegate>();
 			
-			public ExvokerImpl(object o, DelegateStorage d)
+			public ExvokerImpl(object o, DelegateStorage d, ICallingConventionAdapter a)
 			{
 				foreach (var sdt in d.DelegateTypes)
 				{
 					var del = Delegate.CreateDelegate(sdt.DelegateType, o, sdt.Method);
 					Delegates.Add(del); // prevent garbage collection of the delegate, which would invalidate the pointer
-					EntryPoints.Add(sdt.EntryPointName, Marshal.GetFunctionPointerForDelegate(del));
+					EntryPoints.Add(sdt.EntryPointName, a.GetFunctionPointerForDelegate(del));
 				}
 			}
 
@@ -108,7 +108,7 @@ namespace BizHawk.Common.BizInvoke
 		static readonly Dictionary<Type, DelegateStorage> Impls = new Dictionary<Type, DelegateStorage>();
 
 
-		public static IImportResolver GetExvoker(object o)
+		public static IImportResolver GetExvoker(object o, ICallingConventionAdapter a)
 		{
 			DelegateStorage ds;
 			lock (Impls)
@@ -121,7 +121,7 @@ namespace BizHawk.Common.BizInvoke
 				}
 			}
 
-			return new ExvokerImpl(o, ds);
+			return new ExvokerImpl(o, ds, a);
 		}
 	}
 

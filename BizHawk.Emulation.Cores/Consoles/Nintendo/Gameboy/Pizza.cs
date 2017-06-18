@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				PlainHeapSizeKB = 16 * 1024,
 				MmapHeapSizeKB = 32 * 1024
 			});
-			_pizza = BizInvoker.GetInvoker<LibPizza>(_exe, _exe);
+			_pizza = BizInvoker.GetInvoker<LibPizza>(_exe, _exe, CallingConventionAdapters.Waterbox);
 			if (!_pizza.Init(rom, rom.Length))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");

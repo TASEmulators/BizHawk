@@ -1,4 +1,5 @@
 ﻿using BizHawk.Common;
+using BizHawk.Common.BizInvoke;
 using BizHawk.Emulation.Common;
 using PeNet;
 using System;
@@ -77,12 +78,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		/*public bool RunDllEntry()
 		{
-			var entryThunk = (DllEntry)Marshal.GetDelegateForFunctionPointer(EntryPoint, typeof(DllEntry));
+			var entryThunk = (DllEntry)CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer(EntryPoint, typeof(DllEntry));
 			return entryThunk(Z.US(Start), 1, IntPtr.Zero); // DLL_PROCESS_ATTACH
 		}
 		public void RunExeEntry()
 		{
-			var entryThunk = (ExeEntry)Marshal.GetDelegateForFunctionPointer(EntryPoint, typeof(ExeEntry));
+			var entryThunk = (ExeEntry)CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer(EntryPoint, typeof(ExeEntry));
 			entryThunk();
 		}*/
 		public unsafe void RunGlobalCtors()
@@ -94,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				IntPtr f;
 				while ((f = *++p) != IntPtr.Zero) // skip 0th dummy pointer
 				{
-					var ctorThunk = (GlobalCtor)Marshal.GetDelegateForFunctionPointer(f, typeof(GlobalCtor));
+					var ctorThunk = (GlobalCtor)CallingConventionAdapters.Waterbox.GetDelegateForFunctionPointer(f, typeof(GlobalCtor));
 					//Console.WriteLine(f);
 					//System.Diagnostics.Debugger.Break();
 					ctorThunk();

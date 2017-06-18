@@ -1,4 +1,5 @@
 ﻿using BizHawk.Common;
+using BizHawk.Common.BizInvoke;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

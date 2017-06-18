@@ -13,6 +13,7 @@ using System.IO;
 using System.Collections.Concurrent;
 using System.Threading;
 using BizHawk.Emulation.Common;
+using BizHawk.Common.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Waterbox
 {

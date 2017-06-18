@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 			using (_elf.EnterExit())
 			{
-				Core = BizInvoker.GetInvoker<LibGPGX>(_elf, _elf);
+				Core = BizInvoker.GetInvoker<LibGPGX>(_elf, _elf, CallingConventionAdapters.Waterbox);
 				_syncSettings = (GPGXSyncSettings)syncSettings ?? new GPGXSyncSettings();
 				_settings = (GPGXSettings)settings ?? new GPGXSettings();
 

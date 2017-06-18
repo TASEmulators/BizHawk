@@ -17,17 +17,18 @@ namespace BizHawk.Common.BizInvoke
 		private class InvokerImpl
 		{
 			public Type ImplType;
-			public List<Action<object, IImportResolver>> Hooks;
+			public List<Action<object, IImportResolver, ICallingConventionAdapter>> Hooks;
 			public Action<object, IMonitor> ConnectMonitor;
+			public Action<object, ICallingConventionAdapter> ConnectCallingConventionAdapter;
 
-			public object Create(IImportResolver dll, IMonitor monitor)
+			public object Create(IImportResolver dll, IMonitor monitor, ICallingConventionAdapter adapter)
 			{
 				var ret = Activator.CreateInstance(ImplType);
+				ConnectCallingConventionAdapter(ret, adapter);
 				foreach (var f in Hooks)
 				{
-					f(ret, dll);
+					f(ret, dll, adapter);
 				}
-
 				ConnectMonitor?.Invoke(ret, monitor);
 				return ret;
 			}
@@ -59,7 +60,7 @@ namespace BizHawk.Common.BizInvoke
 		/// get an implementation proxy for an interop class
 		/// </summary>
 		/// <typeparam name="T">The class type that represents the DLL</typeparam>
-		public static T GetInvoker<T>(IImportResolver dll)
+		public static T GetInvoker<T>(IImportResolver dll, ICallingConventionAdapter adapter)
 			where T : class
 		{
 			InvokerImpl impl;
@@ -78,10 +79,10 @@ namespace BizHawk.Common.BizInvoke
 				throw new InvalidOperationException("Class was previously proxied with a monitor!");
 			}
 
-			return (T)impl.Create(dll, null);
+			return (T)impl.Create(dll, null, adapter);
 		}
 
-		public static T GetInvoker<T>(IImportResolver dll, IMonitor monitor)
+		public static T GetInvoker<T>(IImportResolver dll, IMonitor monitor, ICallingConventionAdapter adapter)
 			where T : class
 		{
 			InvokerImpl impl;
@@ -100,7 +101,7 @@ namespace BizHawk.Common.BizInvoke
 				throw new InvalidOperationException("Class was previously proxied without a monitor!");
 			}
 
-			return (T)impl.Create(dll, monitor);
+			return (T)impl.Create(dll, monitor, adapter);
 		}
 
 		private static InvokerImpl CreateProxy(Type baseType, bool monitor)
@@ -153,11 +154,13 @@ namespace BizHawk.Common.BizInvoke
 			}
 
 			// hooks that will be run on the created proxy object
-			var postCreateHooks = new List<Action<object, IImportResolver>>();
+			var postCreateHooks = new List<Action<object, IImportResolver, ICallingConventionAdapter>>();
 
 			var type = ImplModuleBuilder.DefineType("Bizhawk.BizInvokeProxy" + baseType.Name, TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Sealed, baseType);
 
 			var monitorField = monitor ? type.DefineField("MonitorField", typeof(IMonitor), FieldAttributes.Public) : null;
+
+			var adapterField = type.DefineField("CallingConvention", typeof(ICallingConventionAdapter), FieldAttributes.Public);
 
 			foreach (var mi in baseMethods)
 			{
@@ -165,7 +168,7 @@ namespace BizHawk.Common.BizInvoke
 
 				var hook = mi.Attr.Compatibility
 					? ImplementMethodDelegate(type, mi.Info, mi.Attr.CallingConvention, entryPointName, monitorField)
-					: ImplementMethodCalli(type, mi.Info, mi.Attr.CallingConvention, entryPointName, monitorField);
+					: ImplementMethodCalli(type, mi.Info, mi.Attr.CallingConvention, entryPointName, monitorField, adapterField);
 
 				postCreateHooks.Add(hook);
 			}
@@ -179,6 +182,7 @@ namespace BizHawk.Common.BizInvoke
 			{
 				ret.ConnectMonitor = (o, m) => o.GetType().GetField(monitorField.Name).SetValue(o, m);
 			}
+			ret.ConnectCallingConventionAdapter = (o, a) => o.GetType().GetField(adapterField.Name).SetValue(o, a);
 
 			return ret;
 		}
@@ -186,7 +190,8 @@ namespace BizHawk.Common.BizInvoke
 		/// <summary>
 		/// create a method implementation that uses GetDelegateForFunctionPointer internally
 		/// </summary>
-		private static Action<object, IImportResolver> ImplementMethodDelegate(TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName, FieldInfo monitorField)
+		private static Action<object, IImportResolver, ICallingConventionAdapter> ImplementMethodDelegate(
+			TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName, FieldInfo monitorField)
 		{
 			// create the delegate type
 			MethodBuilder delegateInvoke;
@@ -195,6 +200,13 @@ namespace BizHawk.Common.BizInvoke
 			var paramInfos = baseMethod.GetParameters();
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
 			var returnType = baseMethod.ReturnType;
+
+			if (paramTypes.Concat(new[] { returnType }).Any(typeof(Delegate).IsAssignableFrom))
+			{
+				// this isn't a problem if CallingConventionAdapters.Waterbox is a no-op
+				if (CallingConventionAdapters.Waterbox.GetType() != CallingConventionAdapters.Native.GetType())
+					throw new InvalidOperationException("Compatibility call mode cannot use ICallingConventionAdapters!");
+			}
 
 			// define a field on the class to hold the delegate
 			var field = type.DefineField(
@@ -255,10 +267,10 @@ namespace BizHawk.Common.BizInvoke
 
 			type.DefineMethodOverride(method, baseMethod);
 
-			return (o, dll) =>
+			return (o, dll, adapter) =>
 			{
 				var entryPtr = dll.SafeResolve(entryPointName);
-				var interopDelegate = Marshal.GetDelegateForFunctionPointer(entryPtr, delegateType.CreateType());
+				var interopDelegate = adapter.GetDelegateForFunctionPointer(entryPtr, delegateType.CreateType());
 				o.GetType().GetField(field.Name).SetValue(o, interopDelegate);
 			};
 		}
@@ -266,7 +278,9 @@ namespace BizHawk.Common.BizInvoke
 		/// <summary>
 		/// create a method implementation that uses calli internally
 		/// </summary>
-		private static Action<object, IImportResolver> ImplementMethodCalli(TypeBuilder type, MethodInfo baseMethod, CallingConvention nativeCall, string entryPointName, FieldInfo monitorField)
+		private static Action<object, IImportResolver, ICallingConventionAdapter> ImplementMethodCalli(
+			TypeBuilder type, MethodInfo baseMethod,
+			CallingConvention nativeCall, string entryPointName, FieldInfo monitorField, FieldInfo adapterField)
 		{
 			var paramInfos = baseMethod.GetParameters();
 			var paramTypes = paramInfos.Select(p => p.ParameterType).ToArray();
@@ -304,7 +318,7 @@ namespace BizHawk.Common.BizInvoke
 			for (int i = 0; i < paramTypes.Length; i++)
 			{
 				// arg 0 is this, so + 1
-				nativeParamTypes.Add(EmitParamterLoad(il, i + 1, paramTypes[i]));
+				nativeParamTypes.Add(EmitParamterLoad(il, i + 1, paramTypes[i], adapterField));
 			}
 
 			il.Emit(OpCodes.Ldarg_0);
@@ -342,10 +356,11 @@ namespace BizHawk.Common.BizInvoke
 
 			type.DefineMethodOverride(method, baseMethod);
 
-			return (o, dll) =>
+			return (o, dll, adapter) =>
 			{
 				var entryPtr = dll.SafeResolve(entryPointName);
-				o.GetType().GetField(field.Name).SetValue(o, entryPtr);
+				o.GetType().GetField(field.Name).SetValue(
+					o, adapter.GetDepartureFunctionPointer(entryPtr, new ParameterInfo(returnType, paramTypes), o));
 			};
 		}
 
@@ -394,7 +409,7 @@ namespace BizHawk.Common.BizInvoke
 		/// <summary>
 		/// emit a single parameter load with unmanaged conversions
 		/// </summary>
-		private static Type EmitParamterLoad(ILGenerator il, int idx, Type type)
+		private static Type EmitParamterLoad(ILGenerator il, int idx, Type type, FieldInfo adapterField)
 		{
 			if (type.IsGenericType)
 			{
@@ -460,13 +475,15 @@ namespace BizHawk.Common.BizInvoke
 
 			if (typeof(Delegate).IsAssignableFrom(type))
 			{
-				var mi = typeof(Marshal).GetMethod("GetFunctionPointerForDelegate", new[] { typeof(Delegate) });
+				var mi = typeof(ICallingConventionAdapter).GetMethod("GetFunctionPointerForDelegate");
 				var end = il.DefineLabel();
 				var isNull = il.DefineLabel();
 
 				il.Emit(OpCodes.Ldarg, (short)idx);
 				il.Emit(OpCodes.Brfalse, isNull);
 
+				il.Emit(OpCodes.Ldarg_0);
+				il.Emit(OpCodes.Ldfld, adapterField);
 				il.Emit(OpCodes.Ldarg, (short)idx);
 				il.Emit(OpCodes.Call, mi);
 				il.Emit(OpCodes.Br, end);
