@@ -165,8 +165,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				for (int i = 0; i < _bakedAnalogNames.Length; i++)
 				{
 					var data = (int)controller.GetFloat(_bakedAnalogNames[i]);
-					var datal = (short)Math.Max(data, 0);
-					var datar = (short)Math.Max(-data, 0);
+					var datal = (short)Math.Max(-data, 0);
+					var datar = (short)Math.Max(data, 0);
 					dest[pos++] = (byte)datal;
 					dest[pos++] = (byte)(datal >> 8);
 					dest[pos++] = (byte)datar;
