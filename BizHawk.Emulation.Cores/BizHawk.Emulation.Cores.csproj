@@ -475,6 +475,8 @@
     </Compile>
     <Compile Include="Consoles\Intellivision\PSG.cs" />
     <Compile Include="Consoles\Intellivision\STIC.cs" />
+    <Compile Include="Consoles\Magnavox\LibO2Em.cs" />
+    <Compile Include="Consoles\Magnavox\O2Em.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ICodeDataLog.cs">
       <DependentUpon>Gambatte.cs</DependentUpon>

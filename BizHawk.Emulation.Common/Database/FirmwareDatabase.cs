@@ -200,6 +200,9 @@ namespace BizHawk.Emulation.Common
 			Firmware("AppleII", "DiskII", "DiskII.rom");
 			var appleII_DiskII = File("D4181C9F046AAFC3FB326B381BAAC809D9E38D16", 256, "DiskII.rom", "Disk II");
 			Option("AppleII", "DiskII", appleII_DiskII);
+
+			FirmwareAndOption("b2e1955d957a475de2411770452eff4ea19f4cee", 1024, "O2", "BIOS", "Odyssey2.bin", "Odyssey 2 Bios");
+			FirmwareAndOption("a6120aed50831c9c0d95dbdf707820f601d9452e", 1024, "O2", "BIOS-C52", "PhillipsC52.bin", "Phillips C52 Bios");
 		}
 
 		// adds a defined firmware ID to the database

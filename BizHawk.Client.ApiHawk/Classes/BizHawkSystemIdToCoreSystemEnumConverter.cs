@@ -102,6 +102,7 @@ namespace BizHawk.Client.ApiHawk
 				case "VB":
 				case "NGP":
 				case "DNGP":
+				case "O2":
 					return 0; // like I give a shit
 
 				default:
