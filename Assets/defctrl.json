@@ -508,19 +508,9 @@
       "P1 C": "Z, J1 B4, X1 Y",
       "P1 L": "Q, J1 B5, X1 LeftShoulder",
       "P1 R": "W, J1 B6, X1 RightShoulder",
-      "P2 Up": "",
-      "P2 Down": "",
-      "P2 Left": "",
-      "P2 Right": "",
-      "P2 Start": "",
-      "P2 Z": "",
-      "P2 Y": "",
-      "P2 X": "",
-      "P2 C": "",
-      "P2 B": "",
-      "P2 A": "",
-      "P2 L": "",
-      "P2 R": "",
+      "P1 Mouse Left": "WMouse L",
+      "P1 Mouse Center": "WMouse M",
+      "P1 Mouse Right": "WMouse R",
       "P1 Escape": "Escape",
       "P1 F1": "F1",
       "P1 F2": "F2",
@@ -1443,6 +1433,67 @@
       }
     },
     "VirtualBoy Controller": {},
-    "NeoGeo Portable Controller": {}
+    "NeoGeo Portable Controller": {},
+    "Saturn Controller": {
+      "P1 Right Stick Horizontal": {
+        "Value": "X1 RightThumbX",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 Right Stick Vertical": {
+        "Value": "",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 Right Throttle": {
+        "Value": "X1 RightThumbY",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 Left Stick Horizontal": {
+        "Value": "X1 LeftThumbX",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 Left Stick Vertical": {
+        "Value": "X1 LeftThumbY",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 Left Throttle": {
+        "Value": "",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 Wheel": {
+        "Value": "X1 LeftThumbX",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 Stick Horizontal": {
+        "Value": "X1 LeftThumbX",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 Stick Vertical": {
+        "Value": "X1 LeftThumbY",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 Throttle": {
+        "Value": "X1 RightThumbX",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 X": {
+        "Value": "WMouse X",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P1 Y": {
+        "Value": "WMouse Y",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      }
   }
 }
