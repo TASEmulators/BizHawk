@@ -29,6 +29,7 @@
 #include "interrupt.h"
 #include "mmu.h"
 #include "utils.h"
+#include "sgb.h"
 
 /* Gameboy OAM 4 bytes data */
 typedef struct gpu_oam_s
@@ -182,6 +183,11 @@ void gpu_draw_frame()
         (global_emulation_speed == GLOBAL_EMULATION_SPEED_4X &&
         (gpu.frame_counter & 0x0003) != 0))
         return;*/
+
+	if (global_sgb)
+	{
+		sgb_take_frame(gpu.frame_buffer);
+	}
 
 	/* call the callback */
 	if (gpu_frame_ready_cb)

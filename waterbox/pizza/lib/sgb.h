@@ -8,3 +8,7 @@ uint8_t sgb_read_ff00(uint64_t time);
 void sgb_set_controller_data(const uint8_t* buttons);
 
 void sgb_init(void);
+
+void sgb_take_frame(uint32_t* vbuff);
+
+void sgb_render_frame(uint32_t* vbuff);

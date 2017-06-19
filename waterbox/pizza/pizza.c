@@ -86,8 +86,8 @@ EXPORT int Init(const void *rom, int romlen, int sgb)
 
 typedef struct
 {
-	uint32_t* VideoBuffer;
-	int16_t* SoundBuffer;
+	uint32_t *VideoBuffer;
+	int16_t *SoundBuffer;
 	int64_t Cycles;
 	int32_t Width;
 	int32_t Height;
@@ -96,13 +96,13 @@ typedef struct
 	uint32_t Keys;
 } MyFrameInfo;
 
-static uint32_t* current_vbuff;
+static uint32_t *current_vbuff;
 static uint64_t overflow;
 
-EXPORT void FrameAdvance(MyFrameInfo* frame)
+EXPORT void FrameAdvance(MyFrameInfo *frame)
 {
 	if (global_sgb)
-		sgb_set_controller_data((uint8_t*)&frame->Keys);
+		sgb_set_controller_data((uint8_t *)&frame->Keys);
 	else
 		input_set_keys(frame->Keys);
 	current_vbuff = frame->VideoBuffer;
@@ -115,8 +115,16 @@ EXPORT void FrameAdvance(MyFrameInfo* frame)
 	overflow = cycles.sampleclock - target;
 
 	frame->Samples = sound_output_read(frame->SoundBuffer);
-	frame->Width = 160;
-	frame->Height = 144;
+	if (global_sgb)
+	{
+		frame->Width = 256;
+		frame->Height = 224;
+	}
+	else
+	{
+		frame->Width = 160;
+		frame->Height = 144;
+	}
 	current_vbuff = NULL;
 }
 
@@ -130,7 +138,7 @@ EXPORT void SetInputCallback(void (*callback)(void))
 	// TODO
 }
 
-EXPORT void GetMemoryAreas(MemoryArea* m)
+EXPORT void GetMemoryAreas(MemoryArea *m)
 {
 	m[0].Data = mmu.memory;
 	m[0].Name = "Fake System Bus";
@@ -140,7 +148,14 @@ EXPORT void GetMemoryAreas(MemoryArea* m)
 
 void frame_cb()
 {
-	memcpy(current_vbuff, gpu.frame_buffer, sizeof(gpu.frame_buffer));
+	if (global_sgb)
+	{
+		sgb_render_frame(current_vbuff);
+	}
+	else
+	{
+		memcpy(current_vbuff, gpu.frame_buffer, sizeof(gpu.frame_buffer));
+	}
 }
 
 void connected_cb()

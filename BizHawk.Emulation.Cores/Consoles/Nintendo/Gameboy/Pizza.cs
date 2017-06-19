@@ -53,6 +53,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 			if (_sgb)
 				VsyncNumerator = TICKSPERSECOND_SGB;
+
+			Console.WriteLine("Pizza Initialized: CGB {0} SGB {1}", IsCGBMode(), IsSGBMode());
 		}
 
 		/// <summary>
