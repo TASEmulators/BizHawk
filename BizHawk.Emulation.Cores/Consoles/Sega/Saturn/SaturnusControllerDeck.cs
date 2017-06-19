@@ -452,7 +452,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				"V",
 				"F",
 				"T",
-				"R",
+				"R(Key)",
 				"5",
 				null,
 				null,
@@ -482,7 +482,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				null,
 				"Period.",
 				"Slash/",
-				"L",
+				"L(Key)",
 				"Semicolon;",
 				"P",
 				"Minus-",
@@ -592,7 +592,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 					case "Q": return 201;
 					case "W": return 202;
 					case "E": return 203;
-					case "R": return 204;
+					case "R(Key)": return 204;
 					case "T": return 205;
 					case "Y(Key)": return 206;
 					case "U": return 207;
@@ -612,7 +612,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 					case "H": return 306;
 					case "J": return 307;
 					case "K": return 308;
-					case "L": return 309;
+					case "L(Key)": return 309;
 					case "Semicolon;": return 310;
 					case "Quote'": return 311;
 

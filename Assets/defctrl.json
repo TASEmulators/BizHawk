@@ -543,7 +543,7 @@
       "P1 Q": "Q",
       "P1 W": "W",
       "P1 E": "E",
-      "P1 R": "R",
+      "P1 R(Key)": "R",
       "P1 T": "T",
       "P1 Y(Key)": "Y",
       "P1 U": "U",
@@ -562,7 +562,7 @@
       "P1 H": "H",
       "P1 J": "J",
       "P1 K": "K",
-      "P1 L": "L",
+      "P1 L(Key)": "L",
       "P1 Semicolon;": "Semicolon",
       "P1 Quote'": "Apostrophe",
       "P1 LeftShift": "LeftShift",
@@ -1495,5 +1495,6 @@
         "Mult": 1.0,
         "Deadzone": 0.1
       }
+    }
   }
 }
