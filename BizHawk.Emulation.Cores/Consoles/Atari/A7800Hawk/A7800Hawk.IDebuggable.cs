@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; private set; }
+		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem();
 
 		public bool CanStep(StepType type)
 		{
