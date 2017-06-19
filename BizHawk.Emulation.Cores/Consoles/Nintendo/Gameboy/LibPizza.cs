@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 	public abstract class LibPizza : LibWaterboxCore
 	{
 		[Flags]
-		public enum Buttons : int
+		public enum Buttons : uint
 		{
 			A = 0x01,
 			B = 0x02,
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			public Buttons Keys;
 		}
 		[BizImport(CC)]
-		public abstract bool Init(byte[] rom, int romlen);
+		public abstract bool Init(byte[] rom, int romlen, bool sgb);
 		[BizImport(CC)]
 		public abstract bool IsCGB();
 	}

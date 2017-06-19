@@ -33,6 +33,7 @@
 #include <string.h>
 #include <strings.h>
 #include <time.h>
+#include "sgb.h"
 
 /* GAMEBOY MEMORY AREAS 
 
@@ -249,7 +250,7 @@ uint8_t mmu_read(uint16_t a)
 
         /* joypad reading */
         case 0xFF00:
-            return input_get_keys(mmu.memory[a]);
+            return global_sgb ? sgb_read_ff00(cycles.sampleclock) : input_get_keys(mmu.memory[a]);
 
         /* CGB HDMA transfer */
         case 0xFF55:
@@ -944,6 +945,9 @@ void mmu_write(uint16_t a, uint8_t v)
         /* TODO - put them all */
         switch(a)
         { 
+			case 0xFF00:
+				sgb_write_ff00(v, cycles.sampleclock);
+				break;
             case 0xFF01: 
             case 0xFF02:
                 serial_write_reg(a, v);

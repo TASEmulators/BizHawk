@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 	public class Pizza : WaterboxCore, IGameboyCommon
 	{
 		private LibPizza _pizza;
+		private readonly bool _sgb;
 
 		[CoreConstructor("GB")]
 		public Pizza(byte[] rom, CoreComm comm)
@@ -22,8 +23,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			{
 				DefaultWidth = 160,
 				DefaultHeight = 144,
-				MaxWidth = 160,
-				MaxHeight = 144,
+				MaxWidth = 256,
+				MaxHeight = 224,
 				MaxSamples = 1024,
 				SystemId = "GB",
 				DefaultFpsNumerator = TICKSPERSECOND,
@@ -42,12 +43,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				MmapHeapSizeKB = 32 * 1024
 			});
 
-			if (!_pizza.Init(rom, rom.Length))
+			_sgb = true;
+			if (!_pizza.Init(rom, rom.Length, _sgb))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
 			}
 
 			PostInit();
+
+			if (_sgb)
+				VsyncNumerator = TICKSPERSECOND_SGB;
 		}
 
 		/// <summary>
@@ -65,27 +70,49 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		/// </summary>
 		private const int TICKSPERSECOND_SGB = 2147727;
 
+		#region Controller
+
+		private static readonly ControllerDefinition _definition;
+		public override ControllerDefinition ControllerDefinition => _definition;
+
+		static Pizza()
+		{
+			_definition = new ControllerDefinition { Name = "Gameboy Controller" };
+			for (int i = 0; i < 4; i++)
+			{
+				_definition.BoolButtons.AddRange(
+					new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" }
+						.Select(s => $"P{i + 1} {s}"));
+			}
+		}
 		private static LibPizza.Buttons GetButtons(IController c)
 		{
 			LibPizza.Buttons b = 0;
-			if (c.IsPressed("Up"))
-				b |= LibPizza.Buttons.UP;
-			if (c.IsPressed("Down"))
-				b |= LibPizza.Buttons.DOWN;
-			if (c.IsPressed("Left"))
-				b |= LibPizza.Buttons.LEFT;
-			if (c.IsPressed("Right"))
-				b |= LibPizza.Buttons.RIGHT;
-			if (c.IsPressed("A"))
-				b |= LibPizza.Buttons.A;
-			if (c.IsPressed("B"))
-				b |= LibPizza.Buttons.B;
-			if (c.IsPressed("Select"))
-				b |= LibPizza.Buttons.SELECT;
-			if (c.IsPressed("Start"))
-				b |= LibPizza.Buttons.START;
+			for (int i = 4; i > 0; i--)
+			{
+				if (c.IsPressed($"P{i} Up"))
+					b |= LibPizza.Buttons.UP;
+				if (c.IsPressed($"P{i} Down"))
+					b |= LibPizza.Buttons.DOWN;
+				if (c.IsPressed($"P{i} Left"))
+					b |= LibPizza.Buttons.LEFT;
+				if (c.IsPressed($"P{i} Right"))
+					b |= LibPizza.Buttons.RIGHT;
+				if (c.IsPressed($"P{i} A"))
+					b |= LibPizza.Buttons.A;
+				if (c.IsPressed($"P{i} B"))
+					b |= LibPizza.Buttons.B;
+				if (c.IsPressed($"P{i} Select"))
+					b |= LibPizza.Buttons.SELECT;
+				if (c.IsPressed($"P{i} Start"))
+					b |= LibPizza.Buttons.START;
+				if (i != 1)
+					b = (LibPizza.Buttons)((uint)b << 8);
+			}
 			return b;
 		}
+
+		#endregion
 
 		LibPizza.FrameInfo _tmp; // TODO: clean this up so it's not so hacky
 
@@ -99,11 +126,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		protected override void FrameAdvancePost()
 		{
-			Console.WriteLine(_tmp.Cycles);
+			//Console.WriteLine(_tmp.Cycles);
 			_tmp = null;
 		}
 
 		public bool IsCGBMode() => _pizza.IsCGB();
+		public bool IsSGBMode() => _sgb;
 
 	}
 }

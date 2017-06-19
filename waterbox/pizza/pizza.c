@@ -37,6 +37,7 @@
 #include "utils.h"
 #include "mmu.h"
 #include "sound_output.h"
+#include "sgb.h"
 
 /* proto */
 void frame_cb();
@@ -54,7 +55,7 @@ int main(void)
 {
 }
 
-EXPORT int Init(const void *rom, int romlen)
+EXPORT int Init(const void *rom, int romlen, int sgb)
 {
 	/* init global variables */
 	global_init();
@@ -64,6 +65,11 @@ EXPORT int Init(const void *rom, int romlen)
 
 	if (ret != 0)
 		return 0; // failure
+	global_sgb = !!sgb;
+	if (global_sgb && global_cgb)
+		utils_log("Warn: CGB game in SGB mode");
+	if (sgb)
+		sgb_init();
 
 	gameboy_init();
 
@@ -73,7 +79,7 @@ EXPORT int Init(const void *rom, int romlen)
 	/* set rumble cb */
 	mmu_set_rumble_cb(&rumble_cb);
 
-	sound_output_init(2 * 1024 * 1024, 44100);
+	sound_output_init(global_sgb ? 2147727 : 2097152, 44100);
 
 	return 1;
 }
@@ -95,7 +101,10 @@ static uint64_t overflow;
 
 EXPORT void FrameAdvance(MyFrameInfo* frame)
 {
-	input_set_keys(frame->Keys);
+	if (global_sgb)
+		sgb_set_controller_data((uint8_t*)&frame->Keys);
+	else
+		input_set_keys(frame->Keys);
 	current_vbuff = frame->VideoBuffer;
 
 	uint64_t current = cycles.sampleclock;
