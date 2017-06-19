@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					size = Api.QUERY_get_memory_size(LibsnesApi.SNES_MEMORY.SGB_CARTRAM);
 				}
 
-				if (buff == null)
+				if (buf == null)
 				{
 					return null;
 				}
