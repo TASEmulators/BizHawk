@@ -433,15 +433,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				"RightAlt",
 				"RightCtrl",
 				"KeypadEnter",
-				"Z",
+				"Z(Key)",
 				"S",
-				"A",
+				"A(Key)",
 				"W",
 				"2",
 				null,
 				null,
-				"C",
-				"X",
+				"C(Key)",
+				"X(Key)",
 				"D",
 				"E",
 				"4",
@@ -457,10 +457,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				null,
 				null,
 				"N",
-				"B",
+				"B(Key)",
 				"H",
 				"G",
-				"Y",
+				"Y(Key)",
 				"6",
 				null,
 				null,
@@ -583,8 +583,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 					case "8": return 108;
 					case "9": return 109;
 					case "0(Zero)": return 110;
-					case "Equals=": return 111;
-					case "Minus-": return 112;
+					case "Minus-": return 111;
+					case "Equals=": return 112;
 					case "Backslash\\": return 113;
 					case "Backspace": return 114;
 
@@ -594,7 +594,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 					case "E": return 203;
 					case "R": return 204;
 					case "T": return 205;
-					case "Y": return 206;
+					case "Y(Key)": return 206;
 					case "U": return 207;
 					case "I": return 208;
 					case "O": return 209;
@@ -604,7 +604,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 					case "Enter": return 213;
 
 					case "CapsLock": return 300;
-					case "A": return 301;
+					case "A(Key)": return 301;
 					case "S": return 302;
 					case "D": return 303;
 					case "F": return 304;
@@ -617,11 +617,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 					case "Quote'": return 311;
 
 					case "LeftShift": return 400;
-					case "Z": return 401;
-					case "X": return 402;
-					case "C": return 403;
+					case "Z(Key)": return 401;
+					case "X(Key)": return 402;
+					case "C(Key)": return 403;
 					case "V": return 404;
-					case "B": return 405;
+					case "B(Key)": return 405;
 					case "N": return 406;
 					case "M": return 407;
 					case "Comma,": return 408;
