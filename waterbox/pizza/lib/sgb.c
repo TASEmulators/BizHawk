@@ -476,7 +476,7 @@ static void do_command(void)
 		// TODO: Is it possible for this (and DATA_TRN) to write data to
 		// memory areas used for the attribute file, etc?
 		// If so, do games do this?
-		utils_log("SGB: DATA_SND!!");
+		utils_log("SGB: DATA_SND!! %02x:%02x%02x [%02x]", sgb.command[3], sgb.command[2], sgb.command[1], sgb.command[4]);
 		break;
 	case 0x10: // DATA_TRN
 		utils_log("SGB: DATA_TRN!!");
