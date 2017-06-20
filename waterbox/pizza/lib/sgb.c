@@ -27,6 +27,10 @@ typedef struct
 	uint32_t palette[8][16];
 	uint32_t auxpalette[512][4];
 
+	// border
+	uint8_t tiles[256][64]; // tiles stored in packed form
+	uint16_t tilemap[32 * 32];
+
 	// frame data
 	uint8_t frame[160 * 144];		// the most recent obtained full frame
 	uint8_t frozenframe[160 * 144]; // the most recent saved full frame (MASK_EN)
@@ -84,6 +88,9 @@ static void cmd_pal(int a, int b)
 		for (int i = 0; i < 7; i++)
 			c[i] = makecol(sgb.command[i * 2 + 1] | sgb.command[i * 2 + 2] << 8);
 		sgb.palette[0][0] = c[0];
+		sgb.palette[1][0] = c[0];
+		sgb.palette[2][0] = c[0];
+		sgb.palette[3][0] = c[0];
 		sgb.palette[a][1] = c[1];
 		sgb.palette[a][2] = c[2];
 		sgb.palette[a][3] = c[3];
@@ -101,11 +108,14 @@ static void cmd_pal_set(void)
 {
 	if ((sgb.command[0] & 7) == 1)
 	{
+		int p0 = sgb.command[1] | sgb.command[2] << 8 & 0x100;
 		for (int i = 0; i < 4; i++)
 		{
 			int p = sgb.command[i * 2 + 1] | sgb.command[i * 2 + 2] << 8 & 0x100;
-			for (int j = 0; j < 4; j++)
-				sgb.palette[i][j] = sgb.auxpalette[p][j];
+			sgb.palette[i][0] = sgb.auxpalette[p0][0];
+			sgb.palette[i][1] = sgb.auxpalette[p][1];
+			sgb.palette[i][2] = sgb.auxpalette[p][2];
+			sgb.palette[i][3] = sgb.auxpalette[p][3];
 		}
 		if (sgb.command[9] & 0x80) // change attribute
 		{
@@ -128,6 +138,57 @@ static void cmd_pal_set(void)
 
 static void cmd_attr_blk()
 {
+	int nset = sgb.command[1];
+	if (nset <= 0 || nset >= 19)
+	{
+		utils_log("SGB: cmd_attr_blk bad nset");
+		return;
+	}
+	int npacket = (nset * 6 + 16) / 16;
+	if ((sgb.command[0] & 7) != npacket)
+	{
+		utils_log("SGB: cmd_attr_blk bad length");
+		return;
+	}
+	for (int i = 0; i < nset; i++)
+	{
+		int ctrl = sgb.command[i * 6 + 2] & 7;
+		int pals = sgb.command[i * 6 + 3];
+		int x1 = sgb.command[i * 6 + 4];
+		int y1 = sgb.command[i * 6 + 5];
+		int x2 = sgb.command[i * 6 + 6];
+		int y2 = sgb.command[i * 6 + 7];
+		int inside = ctrl & 1;
+		int line = ctrl & 2;
+		int outside = ctrl & 4;
+		int insidepal = pals & 3;
+		int linepal = pals >> 2 & 3;
+		int outsidepal = pals >> 4 & 3;
+		if (ctrl == 1)
+		{
+			ctrl = 3;
+			linepal = insidepal;
+		}
+		else if (ctrl == 4)
+		{
+			ctrl = 6;
+			linepal = outsidepal;
+		}
+		uint8_t* dst = sgb.attr;
+		for (int y = 0; y < 18; y++)
+		{
+			for (int x = 0; x < 20; x++)
+			{
+				if (outside && (x < x1 || x > x2 || y < y1 || y > y2))
+					*dst = outsidepal;
+				else if (inside && x > x1 && x < x2 && y > y1 && y < y2)
+					*dst = insidepal;
+				else if (line)
+					*dst = linepal;
+				dst++;
+			}
+		}
+	}
 }
 
 static void cmd_attr_lin()
@@ -591,14 +652,14 @@ void sgb_set_controller_data(const uint8_t *buttons)
 static void trn_pal(const uint8_t *data)
 {
 	const uint16_t *src = (const uint16_t *)data;
-	uint32_t *dst = (uint32_t *)sgb.auxpalette;
+	uint32_t *dst = sgb.auxpalette[0];
 	for (int i = 0; i < 2048; i++)
 		dst[i] = makecol(src[i]);
 }
 
 static void trn_attr(const uint8_t *data)
 {
-	uint8_t *dst = (uint8_t *)sgb.auxattr;
+	uint8_t *dst = sgb.auxattr[0];
 	for (int n = 0; n < 45 * 90; n++)
 	{
 		uint8_t s = *data++;
@@ -609,7 +670,41 @@ static void trn_attr(const uint8_t *data)
 	}
 }
 
-#include "mmu.h"
+static void trn_pct(const uint8_t* data)
+{
+	memcpy(sgb.tilemap, data, sizeof(sgb.tilemap));
+	const uint16_t* palettes = (const uint16_t*)(data + sizeof(sgb.tilemap));
+	uint32_t* dst = sgb.palette[4];
+	for (int i = 0; i < 64; i++)
+		dst[i] = makecol(palettes[i]);
+}
+
+static void trn_chr(const uint8_t* data, int bank)
+{
+	uint8_t* dst = sgb.tiles[128 * bank];
+	for (int n = 0; n < 128; n++)
+	{
+		for (int y = 0; y < 8; y++)
+		{
+			int a = data[0];
+			int b = data[1] << 1;
+			int c = data[16] << 2;
+			int d = data[17] << 3;
+			for (int x = 7; x >= 0; x--)
+			{
+				dst[x] = a & 1 | b & 2 | c & 4 | d & 8;
+				a >>= 1;
+				b >>= 1;
+				c >>= 1;
+				d >>= 1;
+			}
+			dst += 8;
+			data += 2;
+		}
+		data += 16;
+	}
+}
+
 static void do_vram_transfer(void)
 {
 	uint8_t vram[4096];
@@ -653,10 +748,13 @@ static void do_vram_transfer(void)
 		trn_pal(vram);
 		break;
 	case TRN_CHR_LOW:
+		trn_chr(vram, 0);
 		break;
 	case TRN_CHR_HI:
+		trn_chr(vram, 1);
 		break;
 	case TRN_PCT:
+		trn_pct(vram);
 		break;
 	case TRN_ATTR:
 		trn_attr(vram);
@@ -690,26 +788,6 @@ void sgb_take_frame(uint32_t *vbuff)
 
 static void sgb_render_frame_gb(uint32_t *vbuff)
 {
-	/*sgb.palette[0][0] = 0xff000000;
-	sgb.palette[0][1] = 0xff550055;
-	sgb.palette[0][2] = 0xffaa00aa;
-	sgb.palette[0][3] = 0xffff00ff;
-
-	sgb.palette[1][0] = 0xff00003f;
-	sgb.palette[1][1] = 0xff00007f;
-	sgb.palette[1][2] = 0xff0000bf;
-	sgb.palette[1][3] = 0xff0000ff;
-	
-	sgb.palette[2][0] = 0xff003f00;
-	sgb.palette[2][1] = 0xff007f00;
-	sgb.palette[2][2] = 0xff00bf00;
-	sgb.palette[2][3] = 0xff00ff00;
-	
-	sgb.palette[3][0] = 0xff3f0000;
-	sgb.palette[3][1] = 0xff7f0000;
-	sgb.palette[3][2] = 0xffbf0000;
-	sgb.palette[3][3] = 0xffff0000;*/
-
 	const uint8_t *attr = sgb.attr;
 	const uint8_t *src = sgb.active_mask ? sgb.frozenframe : sgb.frame;
 	uint32_t *dst = vbuff + ((224 - 144) / 2 * 256 + (256 - 160) / 2);
@@ -726,7 +804,59 @@ static void sgb_render_frame_gb(uint32_t *vbuff)
 	}
 }
 
+static void draw_tile(uint16_t entry, uint32_t* dest)
+{
+	const uint8_t* tile = sgb.tiles[entry & 0xff];
+	const uint32_t* palette = sgb.palette[entry >> 10 & 7];
+	int hflip = entry & 0x4000;
+	int vflip = entry & 0x8000;
+	int hinc, vinc;
+	if (hflip)
+	{
+		hinc = -1;
+		dest += 7;
+	}
+	else
+	{
+		hinc = 1;
+	}
+	if (vflip)
+	{
+		vinc = -256;
+		dest += 7 * 256;
+	}
+	else
+	{
+		vinc = 256;
+	}
+	vinc -= 8 * hinc;
+	for (int y = 0; y < 8; y++, dest += vinc)
+	{
+		for (int x = 0; x < 8; x++, dest += hinc)
+		{
+			int c = *tile++;
+			if (c)
+				*dest = palette[c];
+		}
+	}
+}
+
+static void sgb_render_border(uint32_t*vbuff)
+{
+	const uint16_t* tilemap = sgb.tilemap;
+	for (int n = 0; n < 32 * 28; n++)
+	{
+		draw_tile(*tilemap++, vbuff);
+		vbuff += 8;
+		if ((n & 31) == 31)
+			vbuff += 256 * 7;
+	}
+}
+
 void sgb_render_frame(uint32_t *vbuff)
 {
+	for (int i = 0; i < 256 * 224; i++)
+		vbuff[i] = sgb.palette[0][0];
 	sgb_render_frame_gb(vbuff);
+	sgb_render_border(vbuff);
 }
