@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using LuaInterface;
+using System.IO;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -411,6 +412,731 @@ namespace BizHawk.Client.EmuHawk
 			
 			return "";
 		}
+
+		[LuaMethodAttributes("PictureBox", "Creates a new drawing area in the form. Optionally the location in the form as well as the size of the drawing area can be specified. Returns the handle the component can be refered to with.")]
+		public int PictureBox(int formHandle, int? x = null, int? y = null, int? width = null, int? height = null)
+		{
+			var form = GetForm(formHandle);
+			if (form == null)
+			{
+				return 0;
+			}
+			
+			var pictureBox = new LuaPictureBox();
+			form.Controls.Add(pictureBox);
+
+			if (x.HasValue && y.HasValue)
+			{
+				SetLocation(pictureBox, x.Value, y.Value);
+			}
+
+			if (width.HasValue && height.HasValue)
+			{
+				pictureBox.LuaResize(width.Value, height.Value);
+			}
+
+			SetSize(pictureBox, width.Value, height.Value);
+
+			return (int)pictureBox.Handle;
+		}
+
+		#region LuaPictureBox Methods
+
+		[LuaMethodAttributes(
+			"Clear",
+			"Clears the canvas")]
+		public void Clear(int componentHandle, Color color)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).Clear(color);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"Refresh",
+			"Redraws the canvas")]
+		public void Refresh(int componentHandle)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).Refresh();
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"SetDefaultForegroundColor",
+			"Sets the default foreground color to use in drawing methods, white by default")]
+		public void SetDefaultForegroundColor(int componentHandle, Color color)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).SetDefaultForegroundColor(color);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"SetDefaultBackgroundColor",
+			"Sets the default background color to use in drawing methods, transparent by default")]
+		public void SetDefaultBackgroundColor(int componentHandle, Color color)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).SetDefaultBackgroundColor(color);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"SetDefaultTextBackground",
+			"Sets the default backgroiund color to use in text drawing methods, half-transparent black by default")]
+		public void SetDefaultTextBackground(int componentHandle, Color color)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).SetDefaultTextBackground(color);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"DrawBezier",
+			"Draws a Bezier curve using the table of coordinates provided in the given color")]
+		public void DrawBezier(int componentHandle, LuaTable points, Color color)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).DrawBezier(points, color);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"DrawBox",
+			"Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height")]
+		public void DrawBox(int componentHandle, int x, int y, int x2, int y2, Color? line = null, Color? background = null)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).DrawBox(x, y, x2, y2, line, background);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"DrawEllipse",
+			"Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color")]
+		public void DrawEllipse(int componentHandle, int x, int y, int width, int height, Color? line = null, Color? background = null)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).DrawEllipse(x, y, width, height, line, background);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"DrawIcon",
+			"draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
+		public void DrawIcon(int componentHandle, string path, int x, int y, int? width = null, int? height = null)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).DrawIcon(path, x, y, width, height);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"DrawImage",
+			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
+		public void DrawImage(int componentHandle, string path, int x, int y, int? width = null, int? height = null, bool cache = true)
+		{
+			if (!File.Exists(path))
+			{
+				ConsoleLuaLibrary.Log("File not found: " + path + "\nScript Terminated");
+				return;
+			}
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).DrawImage(path, x, y, width, height, cache);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"ClearImageCache",
+			"clears the image cache that is built up by using gui.drawImage, also releases the file handle for cached images")]
+		public void ClearImageCache(int componentHandle)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).ClearImageCache();
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"DrawImageRegion",
+			"draws a given region of an image file from the given path at the given coordinate, and optionally with the given size")]
+		public void DrawImageRegion(int componentHandle, string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null)
+		{
+			if (!File.Exists(path))
+			{
+				ConsoleLuaLibrary.Log("File not found: " + path + "\nScript Terminated");
+				return;
+			}
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).DrawImageRegion(path, source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"DrawLine",
+			"Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)")]
+		public void DrawLine(int componentHandle, int x1, int y1, int x2, int y2, Color? color = null)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).DrawLine(x1, y1, x2, y2, color);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"DrawAxis",
+			"Draws an axis of the specified size at the coordinate pair.)")]
+		public void DrawAxis(int componentHandle, int x, int y, int size, Color? color = null)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).DrawAxis(x, y, size, color);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"DrawArc",
+			"draws a Arc shape at the given coordinates and the given width and height"
+		)]
+		public void DrawArc(int componentHandle, int x, int y, int width, int height, int startangle, int sweepangle, Color? line = null)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).DrawArc(x, y, width, height, startangle, sweepangle, line);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"DrawPie",
+			"draws a Pie shape at the given coordinates and the given width and height")]
+		public void DrawPie(
+			int componentHandle,
+			int x,
+			int y,
+			int width,
+			int height,
+			int startangle,
+			int sweepangle,
+			Color? line = null,
+			Color? background = null)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).DrawPie(x, y, width, height, startangle, sweepangle, line, background);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"DrawPixel",
+			"Draws a single pixel at the given coordinates in the given color. Color is optional (if not specified it will be drawn black)")]
+		public void DrawPixel(int componentHandle, int x, int y, Color? color = null)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).DrawPixel(x, y, color);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"DrawPolygon",
+			"Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). Line is the color of the polygon. Background is the optional fill color")]
+		public void DrawPolygon(int componentHandle, LuaTable points, Color? line = null, Color? background = null)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).DrawPolygon(points, line, background);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+
+		[LuaMethodAttributes(
+			"DrawRectangle",
+			"Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color")]
+		public void DrawRectangle(int componentHandle, int x, int y, int width, int height, Color? line = null, Color? background = null)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).DrawRectangle(x, y, width, height, line, background);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"DrawString",
+			"Alias of DrawText()")]
+		public void DrawString(
+			int componentHandle,
+			int x,
+			int y,
+			string message,
+			Color? forecolor = null,
+			Color? backcolor = null,
+			int? fontsize = null,
+			string fontfamily = null,
+			string fontstyle = null,
+			string horizalign = null,
+			string vertalign = null)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		[LuaMethodAttributes(
+			"DrawText",
+			"Draws the given message at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates.")]
+		public void DrawText(
+			int componentHandle,
+			int x,
+			int y,
+			string message,
+			Color? forecolor = null,
+			Color? backcolor = null,
+			int? fontsize = null,
+			string fontfamily = null,
+			string fontstyle = null,
+			string horizalign = null,
+			string vertalign = null)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							(control as LuaPictureBox).DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+		}
+
+		#endregion
 
 		[LuaMethodAttributes("setdropdownitems", "Sets the items for a given dropdown box")]
 		public void SetDropdownItems(int handle, LuaTable items)
