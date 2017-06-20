@@ -345,6 +345,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			[DisplayName("Default Region")]
 			[Description("Used when Region Autodetect is disabled or fails")]
 			[DefaultValue(RegionType.Japan)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public RegionType Region { get; set; }
 
 			public enum LanguageType
