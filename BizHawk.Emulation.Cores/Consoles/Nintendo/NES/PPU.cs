@@ -1,6 +1,4 @@
-﻿//http://nesdev.parodius.com/bbs/viewtopic.php?p=4571&sid=db4c7e35316cc5d734606dd02f11dccb
-
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using BizHawk.Common;
 
@@ -8,6 +6,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed partial class PPU
 	{
+		public int cpu_step, cpu_stepcounter;
+
 		// this only handles region differences within the PPU
 		int preNMIlines;
 		int postNMIlines;
@@ -203,6 +203,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void SyncState(Serializer ser)
 		{
+			ser.Sync("cpu_step", ref cpu_step);
+			ser.Sync("cpu_stepcounter", ref cpu_stepcounter);
 			ser.Sync("ppudead", ref ppudead);
 			ser.Sync("idleSynch", ref idleSynch);
 			ser.Sync("NMI_PendingInstructions", ref NMI_PendingInstructions);
@@ -255,32 +257,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppu_open_bus_decay_timer = new int[8];
 		}
 
-#if VS2012
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
-		void TriggerNMI()
-		{
-			nes.cpu.NMI = true;
-		}
-
-		//this gets called once after each cpu instruction executes.
-		//anything that needs to happen at instruction granularity can get checked here
-		//to save having to check it at ppu cycle granularity
-		public void PostCpuInstructionOne()
-		{
-			if (NMI_PendingInstructions > 0)
-			{
-				NMI_PendingInstructions--;
-				if (NMI_PendingInstructions <= 0)
-				{
-					TriggerNMI();
-				}
-			}
-		}
-
-#if VS2012
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-#endif
 		void runppu(int x)
 		{
 			//run one ppu cycle at a time so we can interact with the ppu and clockPPU at high granularity
@@ -318,13 +294,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				ppur.status.cycle++;
 				is_even_cycle = !is_even_cycle;
-				//might not actually run a cpu cycle if there are none to be run right now
-				nes.RunCpuOne();
+
+				// Here we execute a CPU instruction if enough PPU cycles have passed
+				// also do other things that happen at instruction level granularity
+				cpu_stepcounter++;
+				if (cpu_stepcounter == nes.cpu_sequence[cpu_step])
+				{
+					cpu_step++;
+					if (cpu_step == 5) cpu_step = 0;
+					cpu_stepcounter = 0;
+
+					// this is where the CPU instruction is called
+					nes.RunCpuOne();
+
+					// decay the ppu bus, approximating real behaviour
+					ppu_open_bus_decay(0);
+
+					// Check for NMIs
+					if (NMI_PendingInstructions > 0)
+					{
+						NMI_PendingInstructions--;
+						if (NMI_PendingInstructions <= 0)
+						{
+							nes.cpu.NMI = true;
+						}
+					}
+				}
 
 				if (Reg2002_vblank_active_pending)
 				{
-					//if (Reg2002_vblank_active_pending)
-						Reg2002_vblank_active = 1;
+					Reg2002_vblank_active = 1;
 					Reg2002_vblank_active_pending = false;
 				}
 
@@ -337,10 +336,5 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				nes.Board.ClockPPU();
 			}
 		}
-
-		//hack
-		//public bool PAL = false;
-		//bool SPRITELIMIT = true;
-	
 	}
 }
