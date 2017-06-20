@@ -262,50 +262,74 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 			[DisplayName("Port 1 Device")]
 			[DefaultValue(SaturnusControllerDeck.Device.Gamepad)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SaturnusControllerDeck.Device Port1 { get; set; }
+
 			[DisplayName("Port 2 Device")]
 			[DefaultValue(SaturnusControllerDeck.Device.Gamepad)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SaturnusControllerDeck.Device Port2 { get; set; }
+
 			[DisplayName("Port 3 Device")]
 			[DefaultValue(SaturnusControllerDeck.Device.None)]
 			[Description("Only used if one or both multitaps are set")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SaturnusControllerDeck.Device Port3 { get; set; }
+
 			[DisplayName("Port 4 Device")]
 			[DefaultValue(SaturnusControllerDeck.Device.None)]
 			[Description("Only used if one or both multitaps are set")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SaturnusControllerDeck.Device Port4 { get; set; }
+
 			[DisplayName("Port 5 Device")]
 			[DefaultValue(SaturnusControllerDeck.Device.None)]
 			[Description("Only used if one or both multitaps are set")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SaturnusControllerDeck.Device Port5 { get; set; }
+
 			[DisplayName("Port 6 Device")]
 			[DefaultValue(SaturnusControllerDeck.Device.None)]
 			[Description("Only used if one or both multitaps are set")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SaturnusControllerDeck.Device Port6 { get; set; }
+
 			[DisplayName("Port 7 Device")]
 			[DefaultValue(SaturnusControllerDeck.Device.None)]
 			[Description("Only used if one or both multitaps are set")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SaturnusControllerDeck.Device Port7 { get; set; }
+
 			[DisplayName("Port 8 Device")]
 			[DefaultValue(SaturnusControllerDeck.Device.None)]
 			[Description("Only used if both multitaps are set")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SaturnusControllerDeck.Device Port8 { get; set; }
+
 			[DisplayName("Port 9 Device")]
 			[DefaultValue(SaturnusControllerDeck.Device.None)]
 			[Description("Only used if both multitaps are set")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SaturnusControllerDeck.Device Port9 { get; set; }
+
 			[DisplayName("Port 10 Device")]
 			[DefaultValue(SaturnusControllerDeck.Device.None)]
 			[Description("Only used if both multitaps are set")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SaturnusControllerDeck.Device Port10 { get; set; }
+
 			[DisplayName("Port 11 Device")]
 			[DefaultValue(SaturnusControllerDeck.Device.None)]
 			[Description("Only used if both multitaps are set")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SaturnusControllerDeck.Device Port11 { get; set; }
+
 			[DisplayName("Port 12 Device")]
 			[DefaultValue(SaturnusControllerDeck.Device.None)]
 			[Description("Only used if both multitaps are set")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
 			public SaturnusControllerDeck.Device Port12 { get; set; }
+
 			[DisplayName("Port 1 Multitap")]
 			[Description("If true, Ports 1-6 will be used for multitap")]
 			[DefaultValue(false)]
