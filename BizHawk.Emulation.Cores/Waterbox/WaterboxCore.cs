@@ -243,6 +243,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			BufferHeight = reader.ReadInt32();
 			// reset pointers here!
 			_core.SetInputCallback(null);
+			//_exe.PrintDebuggingInfo();
+			LoadStateBinaryInternal(reader);
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)
@@ -254,6 +256,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			writer.Write(IsLagFrame);
 			writer.Write(BufferWidth);
 			writer.Write(BufferHeight);
+			SaveStateBinaryInternal(writer);
 		}
 
 		public byte[] SaveStateBinary()
