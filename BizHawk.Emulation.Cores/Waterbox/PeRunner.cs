@@ -652,7 +652,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var heap = new Heap(_nextStart, sizeKB * 1024, name);
 				heap.Memory.Activate();
 				ComputeNextStart(sizeKB * 1024);
-				AddMemoryBlock(heap.Memory);
+				AddMemoryBlock(heap.Memory, name);
 				if (saveStated)
 					_savestateComponents.Add(heap);
 				_disposeList.Add(heap);
@@ -716,7 +716,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 						var module = new PeWrapper(moduleName, data, _nextStart);
 						ComputeNextStart(module.Size);
-						AddMemoryBlock(module.Memory);
+						AddMemoryBlock(module.Memory, moduleName);
 						_savestateComponents.Add(module);
 						_disposeList.Add(module);
 
@@ -745,7 +745,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					_mmapheap = new MapHeap(_nextStart, opt.MmapHeapSizeKB * 1024, "mmap-heap");
 					_mmapheap.Memory.Activate();
 					ComputeNextStart(opt.MmapHeapSizeKB * 1024);
-					AddMemoryBlock(_mmapheap.Memory);
+					AddMemoryBlock(_mmapheap.Memory, "mmap-heap");
 					_savestateComponents.Add(_mmapheap);
 					_disposeList.Add(_mmapheap);
 				}

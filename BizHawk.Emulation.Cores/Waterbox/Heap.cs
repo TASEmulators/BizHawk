@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			Console.WriteLine("Created heap `{1}` at {0:x16}:{2:x16}", start, name, start + size);
 		}
 
-		private void EnsureAlignment(int align)
+		private ulong EnsureAlignment(int align)
 		{
 			if (align > 1)
 			{
@@ -47,8 +47,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					throw new InvalidOperationException(string.Format("Failed to meet alignment {0} on heap {1}", align, Name));
 				}
-				Used = newused;
+				return newused;
 			}
+			return Used;
 		}
 
 		public ulong Allocate(ulong size, int align)
@@ -56,15 +57,14 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (Sealed)
 				throw new InvalidOperationException(string.Format("Attempt made to allocate from sealed heap {0}", Name));
 
-			EnsureAlignment(align);
-
-			ulong newused = Used + size;
+			ulong allocstart = EnsureAlignment(align);
+			ulong newused = allocstart + size;
 			if (newused > Memory.Size)
 			{
 				throw new InvalidOperationException(string.Format("Failed to allocate {0} bytes from heap {1}", size, Name));
 			}
-			ulong ret = Memory.Start + Used;
-			Memory.Protect(ret, newused - Used, MemoryBlock.Protection.RW);
+			ulong ret = Memory.Start + allocstart;
+			Memory.Protect(Memory.Start + Used, newused - Used, MemoryBlock.Protection.RW);
 			Used = newused;
 			Console.WriteLine($"Allocated {size} bytes on {Name}, utilization {Used}/{Memory.Size} ({100.0 * Used / Memory.Size:0.#}%)");
 			return ret;
@@ -91,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (!Sealed)
 			{
 				bw.Write(Memory.XorHash);
-				var ms = Memory.GetXorStream(Memory.Start, Used, false);
+				var ms = Memory.GetXorStream(Memory.Start, WaterboxUtils.AlignUp(Used), false);
 				ms.CopyTo(bw.BaseStream);
 			}
 			else
@@ -116,11 +116,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				{
 					throw new InvalidOperationException(string.Format("Hash did not match for heap {0}.  Is this the same rom with the same SyncSettings?", Name));
 				}
+				var usedAligned = WaterboxUtils.AlignUp(used);
 
 				Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.None);
 				Memory.Protect(Memory.Start, used, MemoryBlock.Protection.RW);
-				var ms = Memory.GetXorStream(Memory.Start, used, true);
-				WaterboxUtils.CopySome(br.BaseStream, ms, (long)used);
+				var ms = Memory.GetXorStream(Memory.Start, usedAligned, true);
+				WaterboxUtils.CopySome(br.BaseStream, ms, (long)usedAligned);
 				Used = used;
 			}
 			else

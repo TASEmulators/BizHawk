@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.BizInvoke;
+using BizHawk.Common.BufferExtensions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -30,9 +31,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		private List<MemoryBlock> _memoryBlocks = new List<MemoryBlock>();
 
-		protected void AddMemoryBlock(MemoryBlock block)
+		/// <summary>
+		/// an informative name for each memory block:  used for debugging purposes
+		/// </summary>
+		private List<string> _memoryBlockNames = new List<string>();
+
+		protected void AddMemoryBlock(MemoryBlock block, string name)
 		{
 			_memoryBlocks.Add(block);
+			_memoryBlockNames.Add(name);
 		}
 
 		protected void PurgeMemoryBlocks()
@@ -129,6 +136,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			Console.WriteLine("Swappable ActivateInternal {0}", GetHashCode());
 			foreach (var m in _memoryBlocks)
 				m.Activate();
+		}
+		
+		public void PrintDebuggingInfo()
+		{
+			using (this.EnterExit())
+			{
+				foreach (var a in _memoryBlocks.Zip(_memoryBlockNames, (m, s) => new { m, s }))
+				{
+					Console.WriteLine($"{a.m.FullHash().BytesToHexString()}: {a.s}");
+				}
+			}
 		}
 
 		private bool _disposed = false;

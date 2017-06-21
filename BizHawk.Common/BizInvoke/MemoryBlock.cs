@@ -186,6 +186,23 @@ namespace BizHawk.Common.BizInvoke
 			ProtectAll();
 		}
 
+		/// <summary>
+		/// take a hash of the current full contents of the block, including unreadable areas
+		/// </summary>
+		/// <returns></returns>
+		public byte[] FullHash()
+		{
+			if (!Active)
+				throw new InvalidOperationException("Not active");
+			// temporarily switch the entire block to `R`
+			Kernel32.MemoryProtection old;
+			if (!Kernel32.VirtualProtect(Z.UU(Start), Z.UU(Size), Kernel32.MemoryProtection.READONLY, out old))
+				throw new InvalidOperationException("VirtualProtect() returned FALSE!");
+			var ret = WaterboxUtils.Hash(GetStream(Start, Size, false));
+			ProtectAll();
+			return ret;
+		}
+
 		private static Kernel32.MemoryProtection GetKernelMemoryProtectionValue(Protection prot)
 		{
 			Kernel32.MemoryProtection p;

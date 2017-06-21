@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			try
 			{
 				_disposeList.Add(_base);
-				AddMemoryBlock(_base);
+				AddMemoryBlock(_base, "elf");
 				_base.Activate();
 				_base.Protect(_base.Start, _base.Size, MemoryBlock.Protection.RW);
 
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					_heap.Memory.Activate();
 					end = _heap.Memory.End;
 					_disposeList.Add(_heap);
-					AddMemoryBlock(_heap.Memory);
+					AddMemoryBlock(_heap.Memory, "sbrk - heap");
 				}
 
 				if (sealedheapsize > 0)
@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					_sealedheap.Memory.Activate();
 					end = _sealedheap.Memory.End;
 					_disposeList.Add(_sealedheap);
-					AddMemoryBlock(_sealedheap.Memory);
+					AddMemoryBlock(_sealedheap.Memory, "sealed-heap");
 				}
 
 				if (invisibleheapsize > 0)
@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					_invisibleheap.Memory.Activate();
 					end = _invisibleheap.Memory.End;
 					_disposeList.Add(_invisibleheap);
-					AddMemoryBlock(_invisibleheap.Memory);
+					AddMemoryBlock(_invisibleheap.Memory, "invisible-heap");
 				}
 
 				ConnectAllClibPatches();

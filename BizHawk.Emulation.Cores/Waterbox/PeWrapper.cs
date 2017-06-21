@@ -30,6 +30,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			public string Name { get; set; }
 			public ulong Start { get; set; }
 			public ulong Size { get; set; }
+			public ulong SavedSize { get; set; }
 			public bool W { get; set; }
 			public bool R { get; set; }
 			public bool X { get; set; }
@@ -151,6 +152,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						(s.Name.Select((v, i) => new { v, i }).FirstOrDefault(a => a.v == 0) ?? new { v = (byte)0, i = s.Name.Length }).i),
 					Start = start,
 					Size = length,
+					SavedSize = WaterboxUtils.AlignUp(length),
 					R = r,
 					W = w,
 					X = x,
@@ -199,7 +201,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				ulong datalength = Math.Min(s.Size, s.DiskSize);
 				Marshal.Copy(_fileData, (int)s.DiskStart, Z.US(s.Start), (int)datalength);
-				WaterboxUtils.ZeroMemory(Z.US(s.Start + datalength), (long)(s.Size - datalength));
+				WaterboxUtils.ZeroMemory(Z.US(s.Start + datalength), (long)(s.SavedSize - datalength));
 			}
 
 			// apply relocations
@@ -386,8 +388,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				if (!s.W)
 					continue;
 
-				var ms = Memory.GetXorStream(s.Start, s.Size, false);
-				bw.Write(s.Size);
+				var ms = Memory.GetXorStream(s.Start, s.SavedSize, false);
+				bw.Write(s.SavedSize);
 				ms.CopyTo(bw.BaseStream);
 			}
 		}
@@ -420,11 +422,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				if (!s.W)
 					continue;
 
-				if (br.ReadUInt64() != s.Size)
+				if (br.ReadUInt64() != s.SavedSize)
 					throw new InvalidOperationException("Unexpected section size for " + s.Name);
 
-				var ms = Memory.GetXorStream(s.Start, s.Size, true);
-				WaterboxUtils.CopySome(br.BaseStream, ms, (long)s.Size);
+				var ms = Memory.GetXorStream(s.Start, s.SavedSize, true);
+				WaterboxUtils.CopySome(br.BaseStream, ms, (long)s.SavedSize);
 			}
 
 			ProtectMemory();
