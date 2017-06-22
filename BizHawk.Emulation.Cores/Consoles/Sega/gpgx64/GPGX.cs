@@ -48,7 +48,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				SbrkHeapSizeKB = 256,
 				SealedHeapSizeKB = 36 * 1024,
 				InvisibleHeapSizeKB = 4 * 1024,
-				PlainHeapSizeKB = 64
+				PlainHeapSizeKB = 64,
+				MmapHeapSizeKB = 512
 			});
 
 			using (_elf.EnterExit())

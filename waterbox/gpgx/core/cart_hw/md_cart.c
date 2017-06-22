@@ -393,17 +393,6 @@ void md_cart_init(void)
   if (strstr(rominfo.international,"Virtua Racing"))
   {
     svp_init();
-
-    m68k.memory_map[0x30].base    = svp->dram;
-    m68k.memory_map[0x30].read16  = NULL;
-    m68k.memory_map[0x30].write16 = svp_write_dram;
-
-    m68k.memory_map[0x31].base    = svp->dram + 0x10000;
-    m68k.memory_map[0x31].read16  = NULL;
-    m68k.memory_map[0x31].write16 = svp_write_dram;
-
-    m68k.memory_map[0x39].read16  = svp_read_cell_1;
-    m68k.memory_map[0x3a].read16  = svp_read_cell_2;
   }
 
   /**********************************************
