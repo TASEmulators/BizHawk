@@ -102,7 +102,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// SMS
 				var smsSettings = GetSyncSettings<SMS, SMS.SMSSyncSettings>();
-				smsSettings.UseBIOS = false;
+				smsSettings.UseBIOS = true;
 				PutSyncSettings<SMS>(smsSettings);
 
 				// Coleco
@@ -150,7 +150,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// SMS
 				var smsSettings = GetSyncSettings<SMS, SMS.SMSSyncSettings>();
-				smsSettings.UseBIOS = false;
+				smsSettings.UseBIOS = true;
 				PutSyncSettings<SMS>(smsSettings);
 
 				// Coleco
@@ -201,7 +201,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// SMS
 				var smsSettings = GetSyncSettings<SMS, SMS.SMSSyncSettings>();
-				smsSettings.UseBIOS = false;
+				smsSettings.UseBIOS = true;
 				PutSyncSettings<SMS>(smsSettings);
 
 				// Coleco
@@ -253,7 +253,7 @@ namespace BizHawk.Client.EmuHawk
 
 				// SMS
 				var smsSettings = GetSyncSettings<SMS, SMS.SMSSyncSettings>();
-				smsSettings.UseBIOS = false;
+				smsSettings.UseBIOS = true;
 				PutSyncSettings<SMS>(smsSettings);
 
 				// Coleco
