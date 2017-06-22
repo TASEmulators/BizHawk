@@ -175,7 +175,20 @@ void sram_init()
         sram.end = 0x203fff;
       }
     }
-
+	else if (strstr(rominfo.product, "T-50166") != NULL)
+	{
+		/* Might and Magic Gates to Another World */
+		sram.on = 1;
+		sram.start = 0x200001;
+		sram.end = 0x203fff;
+	}
+	else if (strstr(rominfo.international, "MIGHT & MAGIC III") != NULL)
+	{
+		/* Might and Magic III - Isles of Terra (USA) (Proto) */
+		sram.on = 1;
+		sram.start = 0x200001;
+		sram.end = 0x203fff;
+	}
     /* auto-detect games which need disabled backup RAM */
     else if (strstr(rominfo.product,"T-113016") != NULL)
     {
