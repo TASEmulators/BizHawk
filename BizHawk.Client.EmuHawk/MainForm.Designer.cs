@@ -2551,7 +2551,7 @@
             // 
             this.SMSenableBIOSToolStripMenuItem.Name = "SMSenableBIOSToolStripMenuItem";
             this.SMSenableBIOSToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
-            this.SMSenableBIOSToolStripMenuItem.Text = "Enable BIOS";
+            this.SMSenableBIOSToolStripMenuItem.Text = "Enable BIOS (Must be Enabled for TAS)";
             this.SMSenableBIOSToolStripMenuItem.Click += new System.EventHandler(this.SmsBiosMenuItem_Click);
             // 
             // SMSEnableFMChipMenuItem
