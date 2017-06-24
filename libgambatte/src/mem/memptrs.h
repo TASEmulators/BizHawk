@@ -53,6 +53,7 @@ class MemPtrs {
 public:
 	unsigned char *biosdata_;
 	unsigned char *notbiosdata_;
+	bool use_bios;
 
 	enum RamFlag { READ_EN = 1, WRITE_EN = 2, RTC_EN = 4 };
 	

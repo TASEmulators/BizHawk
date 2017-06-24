@@ -68,6 +68,7 @@ public:
 	void loadState(const SaveState &);
 
 	bool use_bios;
+	bool using_bios;
 	unsigned loc_bios_length;
 	
 	bool loaded() const { return mbc.get(); }

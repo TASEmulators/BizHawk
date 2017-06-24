@@ -31,12 +31,15 @@ MemPtrs::MemPtrs()
 
 MemPtrs::~MemPtrs() {
 	delete []memchunk_;
+	if (use_bios)
+	{
+		delete[]biosdata_;
+		delete[]notbiosdata_;
+	}
 }
 
 void MemPtrs::reset(const unsigned rombanks, const unsigned rambanks, const unsigned wrambanks) {
 	delete []memchunk_;
-	delete []biosdata_;
-	delete []notbiosdata_;
 
 	memchunk_len = 0x4000 + rombanks * 0x4000ul + 0x4000 + rambanks * 0x2000ul + wrambanks * 0x1000ul + 0x4000;
 	memchunk_ = new unsigned char[memchunk_len];
@@ -223,6 +226,10 @@ SYNCFUNC(MemPtrs)
 	MSS(rambankdata_);
 	MSS(wramdataend_);
 	NSS(oamDmaSrc_);
+
+	NSS(biosdata_);
+	NSS(notbiosdata_);
+	NSS(use_bios);
 }
 
 }

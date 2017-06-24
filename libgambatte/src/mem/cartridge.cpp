@@ -21,6 +21,7 @@
 #include <cstdio>
 #include <cstring>
 #include <fstream>
+#include <algorithm>
 
 namespace gambatte {
 
@@ -500,11 +501,15 @@ void Cartridge::setStatePtrs(SaveState &state) {
 	state.mem.vram.set(memptrs.vramdata(), memptrs.vramdataend() - memptrs.vramdata());
 	state.mem.sram.set(memptrs.rambankdata(), memptrs.rambankdataend() - memptrs.rambankdata());
 	state.mem.wram.set(memptrs.wramdata(0), memptrs.wramdataend() - memptrs.wramdata(0));
+	
 }
 
 void Cartridge::loadState(const SaveState &state) {
 	rtc.loadState(state);
 	mbc->loadState(state.mem);
+	//if (state.mem.using_bios) {
+	//	bios_remap(0);
+	//}
 }
 
 static void enforce8bit(unsigned char *data, unsigned long sz) {
@@ -528,11 +533,13 @@ void Cartridge::bios_remap(int setting) {
 	// disable the BIOS if writing 1 or 0x22 (GBC)
 	if (setting == 1 || setting == 0x11) {
 		std::memcpy(memptrs.romdata(), memptrs.notbiosdata_, loc_bios_length);
+		using_bios = false;
 	}
 
 	// we'll also use it to reset to BIOS on reset
 	if (setting == 0) {
 		std::memcpy(memptrs.romdata(), memptrs.biosdata_, loc_bios_length);
+		using_bios = true;
 	}
 }
 
@@ -633,7 +640,7 @@ int Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, const ch
 	std::printf("rambanks: %u\n", rambanks);
 
 	const std::size_t filesize = romfilelength; //rom->size();
-	rombanks = std::fmax(pow2ceil(filesize / 0x4000), 2u);
+	rombanks = std::max(pow2ceil(filesize / 0x4000), 2u);
 	std::printf("rombanks: %u\n", static_cast<unsigned>(filesize / 0x4000));
 
 	mbc.reset();
@@ -653,9 +660,12 @@ int Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, const ch
 
 	//we want to copy in the bios data only if it exists
 	if (use_bios) {
+		using_bios = true;
+		memptrs.use_bios = true;
+		
 		memptrs.biosdata_ = new unsigned char[biosfilelength];
 		memptrs.notbiosdata_ = new unsigned char[biosfilelength];
-
+		
 		std::memcpy(memptrs.biosdata_, biosfiledata, biosfilelength);
 		std::memcpy(memptrs.notbiosdata_, romfiledata, biosfilelength);
 
@@ -778,6 +788,11 @@ SYNCFUNC(Cartridge)
 	SSS(memptrs);
 	SSS(rtc);
 	TSS(mbc);
+	NSS(using_bios);
+
+	if (using_bios) {
+		bios_remap(0);
+	}
 }
 
 }
