@@ -524,7 +524,19 @@ static unsigned pow2ceil(unsigned n) {
 	return n;
 }
 
-int Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, const bool forceDmg, const bool multicartCompat) {
+void Cartridge::bios_remap(int setting) {
+	// disable the BIOS if writing 1 or 0x22 (GBC)
+	if (setting == 1 || setting == 0x11) {
+		std::memcpy(memptrs.romdata(), memptrs.notbiosdata_, loc_bios_length);
+	}
+
+	// we'll also use it to reset to BIOS on reset
+	if (setting == 0) {
+		std::memcpy(memptrs.romdata(), memptrs.biosdata_, loc_bios_length);
+	}
+}
+
+int Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, const char *biosfiledata, unsigned biosfilelength, const bool forceDmg, const bool multicartCompat) {
 	//const std::auto_ptr<File> rom(newFileInstance(romfile));
 
 	//if (rom->fail())
@@ -621,18 +633,40 @@ int Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, const bo
 	std::printf("rambanks: %u\n", rambanks);
 
 	const std::size_t filesize = romfilelength; //rom->size();
-	rombanks = std::max(pow2ceil(filesize / 0x4000), 2u);
+	rombanks = std::fmax(pow2ceil(filesize / 0x4000), 2u);
 	std::printf("rombanks: %u\n", static_cast<unsigned>(filesize / 0x4000));
-	
+
 	mbc.reset();
+
+	use_bios = biosfilelength > 0 ? true : false;
+	loc_bios_length = biosfilelength;
+
 	memptrs.reset(rombanks, rambanks, cgb ? 8 : 2);
 	rtc.set(false, 0);
 
 	//rom->rewind();
 	//rom->read(reinterpret_cast<char*>(memptrs.romdata()), (filesize / 0x4000) * 0x4000ul);
+	
 	std::memcpy(memptrs.romdata(), romfiledata, (filesize / 0x4000) * 0x4000ul);
 	std::memset(memptrs.romdata() + (filesize / 0x4000) * 0x4000ul, 0xFF, (rombanks - filesize / 0x4000) * 0x4000ul);
 	enforce8bit(memptrs.romdata(), rombanks * 0x4000ul);
+
+	//we want to copy in the bios data only if it exists
+	if (use_bios) {
+		memptrs.biosdata_ = new unsigned char[biosfilelength];
+		memptrs.notbiosdata_ = new unsigned char[biosfilelength];
+
+		std::memcpy(memptrs.biosdata_, biosfiledata, biosfilelength);
+		std::memcpy(memptrs.notbiosdata_, romfiledata, biosfilelength);
+
+		//if using GBC, the header is not overwritten by the BIOS
+		if (biosfilelength > 256) {
+			std::memcpy(memptrs.biosdata_ + 256, memptrs.notbiosdata_ + 256, 256);
+		}
+		
+
+		std::memcpy(memptrs.romdata(), memptrs.biosdata_, biosfilelength);
+	}
 	
 	//if (rom->fail())
 	//	return -1;
