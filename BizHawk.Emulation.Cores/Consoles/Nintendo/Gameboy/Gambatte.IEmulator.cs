@@ -95,8 +95,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			if (GambatteState != IntPtr.Zero)
 			{
+				Console.WriteLine("disposing");
 				LibGambatte.gambatte_destroy(GambatteState);
+				Console.WriteLine("step2");
 				GambatteState = IntPtr.Zero;
+				Console.WriteLine("disposed");
 			}
 
 			DisposeSound();

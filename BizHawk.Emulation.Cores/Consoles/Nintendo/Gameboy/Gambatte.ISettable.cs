@@ -80,6 +80,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public class GambatteSyncSettings
 		{
+			[DisplayName("Use System BIOS")]
+			[Description("Boots game using system BIOS. Should be used for TASing")]
+			[DefaultValue(false)]
+			public bool EnableBIOS { get; set; }
+
 			[DisplayName("Force DMG Mode")]
 			[Description("Force the game to run on DMG hardware, even if it's detected as a CGB game.  Relevant for games that are \"CGB Enhanced\" but do not require CGB.")]
 			[DefaultValue(false)]
