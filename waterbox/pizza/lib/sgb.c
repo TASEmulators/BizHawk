@@ -2,11 +2,53 @@
 #include "utils.h"
 #include <stdlib.h>
 #include <string.h>
+#include "snes_spc/spc.h"
+
+const uint8_t iplrom[64] = {
+	/*ffc0*/ 0xcd, 0xef,	   //mov   x,#$ef
+	/*ffc2*/ 0xbd,			   //mov   sp,x
+	/*ffc3*/ 0xe8, 0x00,	   //mov   a,#$00
+	/*ffc5*/ 0xc6,			   //mov   (x),a
+	/*ffc6*/ 0x1d,			   //dec   x
+	/*ffc7*/ 0xd0, 0xfc,	   //bne   $ffc5
+	/*ffc9*/ 0x8f, 0xaa, 0xf4, //mov   $f4,#$aa
+	/*ffcc*/ 0x8f, 0xbb, 0xf5, //mov   $f5,#$bb
+	/*ffcf*/ 0x78, 0xcc, 0xf4, //cmp   $f4,#$cc
+	/*ffd2*/ 0xd0, 0xfb,	   //bne   $ffcf
+	/*ffd4*/ 0x2f, 0x19,	   //bra   $ffef
+	/*ffd6*/ 0xeb, 0xf4,	   //mov   y,$f4
+	/*ffd8*/ 0xd0, 0xfc,	   //bne   $ffd6
+	/*ffda*/ 0x7e, 0xf4,	   //cmp   y,$f4
+	/*ffdc*/ 0xd0, 0x0b,	   //bne   $ffe9
+	/*ffde*/ 0xe4, 0xf5,	   //mov   a,$f5
+	/*ffe0*/ 0xcb, 0xf4,	   //mov   $f4,y
+	/*ffe2*/ 0xd7, 0x00,	   //mov   ($00)+y,a
+	/*ffe4*/ 0xfc,			   //inc   y
+	/*ffe5*/ 0xd0, 0xf3,	   //bne   $ffda
+	/*ffe7*/ 0xab, 0x01,	   //inc   $01
+	/*ffe9*/ 0x10, 0xef,	   //bpl   $ffda
+	/*ffeb*/ 0x7e, 0xf4,	   //cmp   y,$f4
+	/*ffed*/ 0x10, 0xeb,	   //bpl   $ffda
+	/*ffef*/ 0xba, 0xf6,	   //movw  ya,$f6
+	/*fff1*/ 0xda, 0x00,	   //movw  $00,ya
+	/*fff3*/ 0xba, 0xf4,	   //movw  ya,$f4
+	/*fff5*/ 0xc4, 0xf4,	   //mov   $f4,a
+	/*fff7*/ 0xdd,			   //mov   a,y
+	/*fff8*/ 0x5d,			   //mov   x,a
+	/*fff9*/ 0xd0, 0xdb,	   //bne   $ffd6
+	/*fffb*/ 0x1f, 0x00, 0x00, //jmp   ($0000+x)
+	/*fffe*/ 0xc0, 0xff		   //reset vector location ($ffc0)
+};
+
+// the "reference clock" is tied to the GB cpu.  35112 of these should equal one GB LCD frame.
+// it is always increasing and never resets/rebases
+
+const int refclocks_per_spc_sample = 67; // ~32055hz
 
 typedef struct
 {
 	// writes to FF00
-	uint64_t last_write_time;
+	uint64_t last_write_time; // last write time relative to reference clock
 	uint8_t last_write_value;
 
 	// recv packets
@@ -40,6 +82,12 @@ typedef struct
 	// MASK_EN
 	uint8_t waiting_mask; // true if waiting to capture a mask
 	uint8_t active_mask;  // true if mask is currently being used
+
+	// audio
+	SNES_SPC *spc;
+	uint64_t frame_start;	 // when the current audio frame started relative to reference clock
+	uint32_t clock_remainder; // number of reference clocks not sent to the SPC last frame
+	uint8_t sound_control[4]; // TODO...
 
 	// transfers
 	uint32_t waiting_transfer;
@@ -174,7 +222,7 @@ static void cmd_attr_blk()
 			ctrl = 6;
 			linepal = outsidepal;
 		}
-		uint8_t* dst = sgb.attr;
+		uint8_t *dst = sgb.attr;
 		for (int y = 0; y < 18; y++)
 		{
 			for (int x = 0; x < 20; x++)
@@ -400,6 +448,20 @@ static void cmd_mask(void)
 	}
 }
 
+static void cmd_sound(void)
+{
+	if ((sgb.command[0] & 7) == 1)
+	{
+		sgb.sound_control[1] = sgb.command[1];
+		sgb.sound_control[2] = sgb.command[2];
+		sgb.sound_control[3] = sgb.command[3];		
+	}
+	else
+	{
+		utils_log("SGB: cmd_sound bad length");
+	}
+}
+
 static void do_command(void)
 {
 	const int command = sgb.command[0] >> 3;
@@ -491,6 +553,12 @@ static void do_command(void)
 		cmd_mlt_req();
 		break;
 
+	// sound
+	case 0x08: // SOUND
+		utils_log("SGB: SOUND %02x %02x %02x %02x", sgb.command[1], sgb.command[2], sgb.command[3], sgb.command[4]);
+		cmd_sound();
+		break;
+
 	// all vram transfers
 	case 0x09: // SOU_TRN
 		utils_log("SGB: SOU_TRN");
@@ -537,11 +605,26 @@ static void do_packet(void)
 	}
 }
 
-void sgb_init(void)
+int sgb_init(const uint8_t *spc, int length)
 {
 	memset(&sgb, 0, sizeof(sgb));
 	sgb.read_index = 255;
 	sgb.num_joypads = 1;
+	sgb.palette[0][0] = 0xffffffff;
+	sgb.palette[0][1] = 0xffaaaaaa;
+	sgb.palette[0][2] = 0xff555555;
+	sgb.palette[0][3] = 0xff000000;
+
+	sgb.spc = spc_new();
+	spc_init_rom(sgb.spc, iplrom);
+	spc_reset(sgb.spc);
+	if (spc_load_spc(sgb.spc, spc, length) != NULL)
+	{
+		utils_log("SGB: Failed to load SPC");
+		return 0;
+	}
+
+	return 1;
 }
 
 void sgb_write_ff00(uint8_t val, uint64_t time)
@@ -670,18 +753,18 @@ static void trn_attr(const uint8_t *data)
 	}
 }
 
-static void trn_pct(const uint8_t* data)
+static void trn_pct(const uint8_t *data)
 {
 	memcpy(sgb.tilemap, data, sizeof(sgb.tilemap));
-	const uint16_t* palettes = (const uint16_t*)(data + sizeof(sgb.tilemap));
-	uint32_t* dst = sgb.palette[4];
+	const uint16_t *palettes = (const uint16_t *)(data + sizeof(sgb.tilemap));
+	uint32_t *dst = sgb.palette[4];
 	for (int i = 0; i < 64; i++)
 		dst[i] = makecol(palettes[i]);
 }
 
-static void trn_chr(const uint8_t* data, int bank)
+static void trn_chr(const uint8_t *data, int bank)
 {
-	uint8_t* dst = sgb.tiles[128 * bank];
+	uint8_t *dst = sgb.tiles[128 * bank];
 	for (int n = 0; n < 128; n++)
 	{
 		for (int y = 0; y < 8; y++)
@@ -804,10 +887,10 @@ static void sgb_render_frame_gb(uint32_t *vbuff)
 	}
 }
 
-static void draw_tile(uint16_t entry, uint32_t* dest)
+static void draw_tile(uint16_t entry, uint32_t *dest)
 {
-	const uint8_t* tile = sgb.tiles[entry & 0xff];
-	const uint32_t* palette = sgb.palette[entry >> 10 & 7];
+	const uint8_t *tile = sgb.tiles[entry & 0xff];
+	const uint32_t *palette = sgb.palette[entry >> 10 & 7];
 	int hflip = entry & 0x4000;
 	int vflip = entry & 0x8000;
 	int hinc, vinc;
@@ -841,9 +924,9 @@ static void draw_tile(uint16_t entry, uint32_t* dest)
 	}
 }
 
-static void sgb_render_border(uint32_t*vbuff)
+static void sgb_render_border(uint32_t *vbuff)
 {
-	const uint16_t* tilemap = sgb.tilemap;
+	const uint16_t *tilemap = sgb.tilemap;
 	for (int n = 0; n < 32 * 28; n++)
 	{
 		draw_tile(*tilemap++, vbuff);
@@ -859,4 +942,40 @@ void sgb_render_frame(uint32_t *vbuff)
 		vbuff[i] = sgb.palette[0][0];
 	sgb_render_frame_gb(vbuff);
 	sgb_render_border(vbuff);
+}
+
+void sgb_render_audio(uint64_t time, void (*callback)(int16_t l, int16_t r, uint64_t time))
+{
+	int16_t sound_buffer[4096];
+	uint32_t diff = time - sgb.frame_start + sgb.clock_remainder;
+	//utils_log("%ul", diff);
+
+	uint32_t samples = diff / refclocks_per_spc_sample;
+	uint32_t new_remainder = diff % refclocks_per_spc_sample;
+
+	spc_set_output(sgb.spc, sound_buffer, sizeof(sound_buffer) / sizeof(sound_buffer[0]));
+	int p;
+	for (p = 0; p < 4; p++)
+	{
+		if (spc_read_port(sgb.spc, 0, p) != sgb.sound_control[p])
+			break;
+	}
+	if (p == 4) // recived
+	{
+		sgb.sound_control[1] = 0;
+		sgb.sound_control[2] = 0;
+	}
+	for (p = 0; p < 4; p++)
+	{
+		spc_write_port(sgb.spc, 0, p, sgb.sound_control[p]);
+	}
+
+	spc_end_frame(sgb.spc, samples * 32);
+
+	uint64_t t = sgb.frame_start + refclocks_per_spc_sample - sgb.clock_remainder;
+	for (int i = 0; i < samples; i++, t += refclocks_per_spc_sample)
+		callback(sound_buffer[i * 2], sound_buffer[i * 2] + 1, t);
+
+	sgb.frame_start = time;
+	sgb.clock_remainder = new_remainder;
 }

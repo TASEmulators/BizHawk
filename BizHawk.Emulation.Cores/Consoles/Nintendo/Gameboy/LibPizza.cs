@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			public Buttons Keys;
 		}
 		[BizImport(CC)]
-		public abstract bool Init(byte[] rom, int romlen, bool sgb);
+		public abstract bool Init(byte[] rom, int romlen, bool sgb, byte[] spc, int spclen);
 		[BizImport(CC)]
 		public abstract bool IsCGB();
 	}

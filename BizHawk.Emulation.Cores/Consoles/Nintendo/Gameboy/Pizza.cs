@@ -31,8 +31,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				DefaultFpsDenominator = TICKSPERFRAME
 			})
 		{
-			ControllerDefinition = BizHawk.Emulation.Cores.Nintendo.Gameboy.Gameboy.GbController;
-
 			_pizza = PreInit<LibPizza>(new PeRunnerOptions
 			{
 				Filename = "pizza.wbx",
@@ -43,8 +41,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				MmapHeapSizeKB = 32 * 1024
 			});
 
+			var spc = comm.CoreFileProvider.GetFirmware("SGB", "SPC", true);
 			_sgb = true;
-			if (!_pizza.Init(rom, rom.Length, _sgb))
+			if (!_pizza.Init(rom, rom.Length, _sgb, spc, spc.Length))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
 			}

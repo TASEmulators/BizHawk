@@ -55,7 +55,7 @@ int main(void)
 {
 }
 
-EXPORT int Init(const void *rom, int romlen, int sgb)
+EXPORT int Init(const void *rom, int romlen, int sgb, const void *spc, int spclen)
 {
 	/* init global variables */
 	global_init();
@@ -68,8 +68,8 @@ EXPORT int Init(const void *rom, int romlen, int sgb)
 	global_sgb = !!sgb;
 	if (global_sgb && global_cgb)
 		utils_log("Warn: CGB game in SGB mode");
-	if (sgb)
-		sgb_init();
+	if (sgb && !sgb_init((const uint8_t*)spc, spclen))
+		return 0;
 
 	gameboy_init();
 
