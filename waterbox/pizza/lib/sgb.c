@@ -80,7 +80,6 @@ typedef struct
 	uint8_t auxattr[45][20 * 18];   // 45 attr files
 
 	// MASK_EN
-	uint8_t waiting_mask; // true if waiting to capture a mask
 	uint8_t active_mask;  // true if mask is currently being used
 
 	// audio
@@ -174,7 +173,6 @@ static void cmd_pal_set(void)
 		}
 		if (sgb.command[9] & 0x40) // cancel mask
 		{
-			sgb.waiting_mask = 0;
 			sgb.active_mask = 0;
 		}
 	}
@@ -383,7 +381,6 @@ static void cmd_attr_set()
 		memcpy(sgb.attr, sgb.auxattr[attr], sizeof(sgb.attr));
 		if (sgb.command[1] & 0x40)
 		{
-			sgb.waiting_mask = 0;
 			sgb.active_mask = 0;
 		}
 	}
@@ -428,15 +425,13 @@ static void cmd_mask(void)
 		switch (sgb.command[1] & 3)
 		{
 		case 0:
-			sgb.waiting_mask = 0;
 			sgb.active_mask = 0;
 			break;
 		case 1:
-			sgb.waiting_mask = 1;
+			sgb.active_mask = 1;
 			break;
 		case 2:
 		case 3:
-			sgb.waiting_mask = 0;
 			sgb.active_mask = 1;
 			memset(sgb.frozenframe, 0, sizeof(sgb.frozenframe));
 			break;
@@ -883,11 +878,9 @@ void sgb_take_frame(uint32_t *vbuff)
 			sgb.waiting_transfer = TRN_NONE;
 		}
 	}
-	if (sgb.waiting_mask)
+	if (!sgb.active_mask)
 	{
 		memcpy(sgb.frozenframe, sgb.frame, sizeof(sgb.frame));
-		sgb.waiting_mask = 0;
-		sgb.active_mask = 1;
 	}
 }
 
