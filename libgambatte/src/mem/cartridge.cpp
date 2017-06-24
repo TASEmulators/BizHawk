@@ -501,15 +501,11 @@ void Cartridge::setStatePtrs(SaveState &state) {
 	state.mem.vram.set(memptrs.vramdata(), memptrs.vramdataend() - memptrs.vramdata());
 	state.mem.sram.set(memptrs.rambankdata(), memptrs.rambankdataend() - memptrs.rambankdata());
 	state.mem.wram.set(memptrs.wramdata(0), memptrs.wramdataend() - memptrs.wramdata(0));
-	
 }
 
 void Cartridge::loadState(const SaveState &state) {
 	rtc.loadState(state);
 	mbc->loadState(state.mem);
-	//if (state.mem.using_bios) {
-	//	bios_remap(0);
-	//}
 }
 
 static void enforce8bit(unsigned char *data, unsigned long sz) {
@@ -792,6 +788,9 @@ SYNCFUNC(Cartridge)
 
 	if (using_bios) {
 		bios_remap(0);
+	}
+	else {
+		bios_remap(1);
 	}
 }
 
