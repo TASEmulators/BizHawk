@@ -1199,9 +1199,6 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 		state.cpu.skip = false;
 		setInitialVram(state.mem.vram.ptr, cgb);
 		state.cpu.cycleCounter = cgb ? 0x102A0 : 0x102A0 + 0x8D2C;
-		state.mem.ioamhram.ptr[0x140] = 0x91;
-		state.mem.ioamhram.ptr[0x104] = 0x1C;
-
 	}
 	
 	std::memset(state.mem.sram.ptr, 0xFF, state.mem.sram.getSz());
@@ -1210,14 +1207,25 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 
 	if (cgb) {
 		setInitialCgbWram(state.mem.wram.ptr);
-		setInitialCgbIoamhram(state.mem.ioamhram.ptr);
 	} else {
 		setInitialDmgWram(state.mem.wram.ptr);
-		setInitialDmgIoamhram(state.mem.ioamhram.ptr);
 	}
 	
-	state.mem.ioamhram.ptr[0x144] = 0x00;
-	
+	if (!boot_bios)
+	{
+		if (cgb) {
+			setInitialCgbIoamhram(state.mem.ioamhram.ptr);
+		}
+		else {
+			setInitialDmgIoamhram(state.mem.ioamhram.ptr);
+		}
+		
+		
+		state.mem.ioamhram.ptr[0x140] = 0x91;
+		state.mem.ioamhram.ptr[0x104] = 0x1C;
+		state.mem.ioamhram.ptr[0x144] = 0x00;
+	}
+
 	state.mem.divLastUpdate = 0;
 	state.mem.timaLastUpdate = 0;
 	state.mem.tmatime = DISABLED_TIME;
