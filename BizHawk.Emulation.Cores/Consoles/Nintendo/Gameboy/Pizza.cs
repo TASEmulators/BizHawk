@@ -21,8 +21,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		public Pizza(byte[] rom, CoreComm comm)
 			:base(comm, new Configuration
 			{
-				DefaultWidth = 256,
-				DefaultHeight = 224,
+				DefaultWidth = 160,
+				DefaultHeight = 144,
 				MaxWidth = 256,
 				MaxHeight = 224,
 				MaxSamples = 1024,
@@ -34,11 +34,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			_pizza = PreInit<LibPizza>(new PeRunnerOptions
 			{
 				Filename = "pizza.wbx",
-				SbrkHeapSizeKB = 2 * 1024,
-				InvisibleHeapSizeKB = 16 * 1024,
-				SealedHeapSizeKB = 16 * 1024,
-				PlainHeapSizeKB = 16 * 1024,
-				MmapHeapSizeKB = 32 * 1024
+				SbrkHeapSizeKB = 128,
+				InvisibleHeapSizeKB = 16,
+				SealedHeapSizeKB = 5 * 1024,
+				PlainHeapSizeKB = 16,
+				MmapHeapSizeKB = 0
 			});
 
 			var spc = comm.CoreFileProvider.GetFirmware("SGB", "SPC", true);
@@ -51,8 +51,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			PostInit();
 
 			if (_sgb)
+			{
 				VsyncNumerator = TICKSPERSECOND_SGB;
-
+				BufferWidth = 256;
+				BufferHeight = 224;
+			}
 			Console.WriteLine("Pizza Initialized: CGB {0} SGB {1}", IsCGBMode(), IsSGBMode());
 		}
 

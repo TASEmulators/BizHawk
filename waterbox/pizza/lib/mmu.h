@@ -96,7 +96,7 @@ void          mmu_dump_all();
 void          mmu_init(uint8_t c, uint8_t rn);
 void          mmu_init_ram(uint32_t c);
 void          mmu_load(uint8_t *data, size_t sz, uint16_t a);
-void          mmu_load_cartridge(uint8_t *data, size_t sz);
+void          mmu_load_cartridge(const uint8_t *data, size_t sz);
 void          mmu_move(uint16_t d, uint16_t s);
 uint8_t       mmu_read_no_cyc(uint16_t a);
 uint8_t       mmu_read(uint16_t a);

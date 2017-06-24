@@ -34,6 +34,7 @@
 #include <strings.h>
 #include <time.h>
 #include "sgb.h"
+#include <emulibc.h>
 
 /* GAMEBOY MEMORY AREAS 
 
@@ -52,7 +53,7 @@
 */
 
 /* cartridge memory (max 8MB) */
-uint8_t cart_memory[1 << 22];
+uint8_t* cart_memory;
 
 /* RAM memory area */
 uint8_t *ram;
@@ -162,11 +163,12 @@ void mmu_load(uint8_t *data, size_t sz, uint16_t a)
 }
 
 /* load full cartridge */
-void mmu_load_cartridge(uint8_t *data, size_t sz)
+void mmu_load_cartridge(const uint8_t *data, size_t sz)
 {
     /* copy max 32k into working memory */
     memcpy(mmu.memory, data, 2 << 14);
 
+	cart_memory = alloc_sealed(1 << 22);
     /* copy full cartridge */
     memcpy(cart_memory, data, sz);
 }
