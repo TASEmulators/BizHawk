@@ -6,6 +6,7 @@
 
 #include "SPC_DSP.h"
 #include "blargg_endian.h"
+#include <stdint.h>
 
 struct SNES_SPC {
 public:
