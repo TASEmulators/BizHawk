@@ -80,21 +80,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				LibGambatte.LoadFlags flags = 0;
 
+				if (_syncSettings.ForceDMG)
+				{
+					flags |= LibGambatte.LoadFlags.FORCE_DMG;
+
+					// we need to change the BIOS to GB bios
+					if (game.System == "GBC")
+					{
+						BiosRom = null;
+						BiosRom = new byte[256];
+						BiosRom = comm.CoreFileProvider.GetFirmware("GB", "World", false);
+					}
+				}
+
 				if (_syncSettings.EnableBIOS && BiosRom == null)
 				{
-					Console.WriteLine("Warning: BIOS not found, loading without BIOS");
-					bios_length = 0;
+					throw new MissingFirmwareException("Boot Rom not found");
 				}
 
 				// to disable BIOS loading into gambatte, just set bios_length to 0
 				if (!_syncSettings.EnableBIOS)
 				{
 					bios_length = 0;
-				}
-
-				if (_syncSettings.ForceDMG)
-				{
-					flags |= LibGambatte.LoadFlags.FORCE_DMG;
 				}
 
 				if (_syncSettings.GBACGB)
