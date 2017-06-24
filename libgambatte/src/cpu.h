@@ -95,9 +95,13 @@ public:
 	void setRTCCallback(std::uint32_t (*callback)()) {
 		memory.setRTCCallback(callback);
 	}
+
+	void reset_bios(int setting) {
+		memory.bios_reset(setting);
+	}
 	
-	int load(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat) {
-		return memory.loadROM(romfiledata, romfilelength, forceDmg, multicartCompat);
+	int load(const char *romfiledata, unsigned romfilelength, const char *biosfiledata, unsigned biosfilelength, bool forceDmg, bool multicartCompat) {
+		return memory.loadROM(romfiledata, romfilelength, biosfiledata, biosfilelength, forceDmg, multicartCompat);
 	}
 	
 	bool loaded() const { return memory.loaded(); }

@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="flags">ORed combination of LoadFlags.</param>
 		/// <returns>0 on success, negative value on failure.</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_load(IntPtr core, byte[] romdata, uint length, long now, LoadFlags flags);
+		public static extern int gambatte_load(IntPtr core, byte[] romdata, uint length, byte[] biosdata, uint bioslength, long now, LoadFlags flags);
 
 		/// <summary>
 		/// Emulates until at least 'samples' stereo sound samples are produced in the supplied buffer,

@@ -94,7 +94,12 @@ void GB::reset(const std::uint32_t now) {
 		
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
-		setInitState(state, p_->cpu.isCgb(), p_->gbaCgbMode, now);
+		if (use_bios) 
+		{
+			p_->cpu.reset_bios(0);
+		}
+
+		setInitState(state, p_->cpu.isCgb(), p_->gbaCgbMode, now, use_bios);
 		p_->cpu.loadState(state);
 		if (length > 0)
 		{
@@ -136,16 +141,17 @@ void GB::setRTCCallback(std::uint32_t (*callback)()) {
 	p_->cpu.setRTCCallback(callback);
 }
 
-int GB::load(const char *romfiledata, unsigned romfilelength, const std::uint32_t now, const unsigned flags) {
+int GB::load(const char *romfiledata, unsigned romfilelength, const char *biosfiledata, unsigned biosfilelength, const std::uint32_t now, const unsigned flags) {
 	//if (p_->cpu.loaded())
 	//	p_->cpu.saveSavedata();
 	
-	const int failed = p_->cpu.load(romfiledata, romfilelength, flags & FORCE_DMG, flags & MULTICART_COMPAT);
+	const int failed = p_->cpu.load(romfiledata, romfilelength, biosfiledata, biosfilelength, flags & FORCE_DMG, flags & MULTICART_COMPAT);
+	use_bios = biosfilelength > 0 ? true : false;
 	
 	if (!failed) {
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
-		setInitState(state, p_->cpu.isCgb(), p_->gbaCgbMode = flags & GBA_CGB, now);
+		setInitState(state, p_->cpu.isCgb(), p_->gbaCgbMode = flags & GBA_CGB, now, use_bios);
 		p_->cpu.loadState(state);
 		//p_->cpu.loadSavedata();
 	}
@@ -228,6 +234,7 @@ SYNCFUNC(GB)
 	SSS(p_->cpu);
 	NSS(p_->gbaCgbMode);
 	NSS(p_->vbuff);
+	NSS(use_bios);
 }
 
 }

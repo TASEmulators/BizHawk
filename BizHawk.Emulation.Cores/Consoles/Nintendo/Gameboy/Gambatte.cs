@@ -52,6 +52,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				throw new InvalidOperationException("gambatte_create() returned null???");
 			}
 
+			Console.WriteLine(game.System);
+
+			byte[] BiosRom;
+
+			if (game.System == "GB")
+			{
+				BiosRom = new byte[256];
+				BiosRom = comm.CoreFileProvider.GetFirmware("GB", "World", false);
+			}
+			else
+			{
+				BiosRom = new byte[2304];
+				BiosRom = comm.CoreFileProvider.GetFirmware("GBC", "World", false);
+			}
+
+			int bios_length = BiosRom == null ? 0 : BiosRom.Length;
+
 			try
 			{
 				_syncSettings = (GambatteSyncSettings)syncSettings ?? new GambatteSyncSettings();
@@ -66,6 +83,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				if (_syncSettings.ForceDMG)
 				{
 					flags |= LibGambatte.LoadFlags.FORCE_DMG;
+
+					// we need to change the BIOS to GB bios
+					if (game.System == "GBC")
+					{
+						BiosRom = null;
+						BiosRom = new byte[256];
+						BiosRom = comm.CoreFileProvider.GetFirmware("GB", "World", false);
+					}
+				}
+
+				if (_syncSettings.EnableBIOS && BiosRom == null)
+				{
+					throw new MissingFirmwareException("Boot Rom not found");
+				}
+
+				// to disable BIOS loading into gambatte, just set bios_length to 0
+				if (!_syncSettings.EnableBIOS)
+				{
+					bios_length = 0;
 				}
 
 				if (_syncSettings.GBACGB)
@@ -78,7 +114,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
 				}
 
-				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, GetCurrentTime(), flags) != 0)
+				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, BiosRom, (uint)bios_length, GetCurrentTime(), flags) != 0)
 				{
 					throw new InvalidOperationException("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 				}
