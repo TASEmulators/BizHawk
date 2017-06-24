@@ -98,10 +98,7 @@ void GB::reset(const std::uint32_t now) {
 		{
 			p_->cpu.reset_bios(0);
 		}
-		else 
-		{
 
-		}
 		setInitState(state, p_->cpu.isCgb(), p_->gbaCgbMode, now, use_bios);
 		p_->cpu.loadState(state);
 		if (length > 0)
@@ -237,6 +234,7 @@ SYNCFUNC(GB)
 	SSS(p_->cpu);
 	NSS(p_->gbaCgbMode);
 	NSS(p_->vbuff);
+	NSS(use_bios);
 }
 
 }

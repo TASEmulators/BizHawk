@@ -78,6 +78,7 @@ struct SaveState {
 		bool enableRam;
 		bool rambankMode;
 		bool hdmaTransfer;
+		bool using_bios;
 	} mem;
 	
 	struct PPU {

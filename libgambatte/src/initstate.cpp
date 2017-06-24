@@ -1182,7 +1182,7 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 		state.cpu.cycleCounter = 0;
 		state.mem.ioamhram.ptr[0x140] = 0x00;
 		state.mem.ioamhram.ptr[0x104] = 0x00;
-
+		state.mem.using_bios = true;
 	}
 	else
 	{
