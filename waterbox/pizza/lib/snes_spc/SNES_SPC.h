@@ -51,6 +51,8 @@ public:
 
 	// Runs SPC to end_time and starts a new time frame at 0
 	void end_frame( time_t end_time );
+
+	uint8_t* get_ram();
 	
 // Sound control
 	
@@ -253,6 +255,8 @@ private:
 };
 
 #include <assert.h>
+
+inline uint8_t* SNES_SPC::get_ram() { return m.ram.ram; }
 
 inline int SNES_SPC::sample_count() const { return (m.extra_clocks >> 5) * 2; }
 

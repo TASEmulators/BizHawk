@@ -5,6 +5,7 @@
 #define SPC_H
 
 #include <stddef.h>
+#include <stdint.h>
 
 #ifdef __cplusplus
 	extern "C" {
@@ -60,6 +61,7 @@ void spc_write_port( SNES_SPC*, spc_time_t, int port, int data );
 /* Runs SPC to end_time and starts a new time frame at 0 */
 void spc_end_frame( SNES_SPC*, spc_time_t end_time );
 
+uint8_t* spc_get_ram(SNES_SPC*);
 
 /**** Sound control ****/
 

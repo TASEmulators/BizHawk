@@ -54,6 +54,7 @@ void spc_end_frame       ( SNES_SPC* s, spc_time_t t )                  { s->end
 void spc_mute_voices     ( SNES_SPC* s, int mask )                      { s->mute_voices( mask ); }
 void spc_disable_surround( SNES_SPC* s, int disable )                   { s->disable_surround( disable ); }
 void spc_set_tempo       ( SNES_SPC* s, int tempo )                     { s->set_tempo( tempo ); }
+uint8_t* spc_get_ram(SNES_SPC* s) { return s->get_ram(); }
 spc_err_t spc_load_spc   ( SNES_SPC* s, void const* p, long n )         { return s->load_spc( p, n ); }
 void spc_clear_echo      ( SNES_SPC* s )                                { s->clear_echo(); }
 spc_err_t spc_play       ( SNES_SPC* s, int count, short* out )         { return s->play( count, out ); }

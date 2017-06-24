@@ -454,7 +454,8 @@ static void cmd_sound(void)
 	{
 		sgb.sound_control[1] = sgb.command[1];
 		sgb.sound_control[2] = sgb.command[2];
-		sgb.sound_control[3] = sgb.command[3];		
+		sgb.sound_control[3] = sgb.command[3];
+		sgb.sound_control[0] = sgb.command[4];
 	}
 	else
 	{
@@ -732,6 +733,26 @@ void sgb_set_controller_data(const uint8_t *buttons)
 	memcpy(sgb.joypad_data, buttons, sizeof(sgb.joypad_data));
 }
 
+static void trn_sound(const uint8_t* data)
+{
+	int len = data[0] | data[1] << 8;
+	int addr = data[2] | data[3] << 8;
+	utils_log("TRN_SOUND %04x %04x", addr, len);
+	uint8_t* dst = spc_get_ram(sgb.spc);
+
+	if (len > 0xffc)
+	{
+		utils_log("TRN_SOUND src overflow");
+		return;
+	}
+	if (len + addr >= 0x10000)
+	{
+		utils_log("TRN_SOUND dst overflow");
+		return;
+	}
+	memcpy(dst + addr, data + 4, len);
+}
+
 static void trn_pal(const uint8_t *data)
 {
 	const uint16_t *src = (const uint16_t *)data;
@@ -826,6 +847,7 @@ static void do_vram_transfer(void)
 	switch (sgb.waiting_transfer)
 	{
 	case TRN_SOUND:
+		trn_sound(vram);
 		break;
 	case TRN_PAL:
 		trn_pal(vram);
@@ -962,6 +984,7 @@ void sgb_render_audio(uint64_t time, void (*callback)(int16_t l, int16_t r, uint
 	}
 	if (p == 4) // recived
 	{
+		sgb.sound_control[0] = 0;
 		sgb.sound_control[1] = 0;
 		sgb.sound_control[2] = 0;
 	}
