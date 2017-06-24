@@ -205,6 +205,9 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("b2e1955d957a475de2411770452eff4ea19f4cee", 1024, "O2", "BIOS", "Odyssey2.bin", "Odyssey 2 Bios");
 			FirmwareAndOption("a6120aed50831c9c0d95dbdf707820f601d9452e", 1024, "O2", "BIOS-C52", "PhillipsC52.bin", "Phillips C52 Bios");
+		
+			FirmwareAndOption("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "GB", "World", "GB_boot_ROM.gb", "Game Boy BIOS");
+			FirmwareAndOption("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "GBC", "World", "GBC_boot_ROM.gb", "Game Boy Color BIOS");
 		}
 
 		// adds a defined firmware ID to the database
