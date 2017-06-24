@@ -29,6 +29,8 @@ char global_cpu_double_speed;
 char global_debug;
 char global_rumble;
 char global_window; // if true, show window
+int global_lagged;
+void (*global_input_callback)(void);
 
 void global_init()
 {
@@ -38,5 +40,7 @@ void global_init()
 	global_sgb = 0;
     global_cpu_double_speed = 0;
     global_rumble = 0;
+	global_lagged = 0;
+	global_input_callback = NULL;
     sprintf(global_cart_name, "NOCARTIRDGE");
 }

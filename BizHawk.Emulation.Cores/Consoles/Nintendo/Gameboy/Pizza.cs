@@ -21,12 +21,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		public Pizza(byte[] rom, CoreComm comm)
 			:base(comm, new Configuration
 			{
-				DefaultWidth = 160,
-				DefaultHeight = 144,
+				DefaultWidth = 256,
+				DefaultHeight = 224,
 				MaxWidth = 256,
 				MaxHeight = 224,
 				MaxSamples = 1024,
-				SystemId = "GB",
+				SystemId = "SGB",
 				DefaultFpsNumerator = TICKSPERSECOND,
 				DefaultFpsDenominator = TICKSPERFRAME
 			})

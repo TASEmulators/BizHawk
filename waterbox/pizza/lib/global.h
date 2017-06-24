@@ -28,6 +28,8 @@ extern char global_sgb;
 extern char global_cpu_double_speed;
 extern char global_rumble;
 extern char global_cart_name[256];
+extern int global_lagged;
+extern void (*global_input_callback)(void);
 
 /* prototypes */
 void global_init();

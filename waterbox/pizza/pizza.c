@@ -106,6 +106,7 @@ EXPORT void FrameAdvance(MyFrameInfo *frame)
 	else
 		input_set_keys(frame->Keys);
 	current_vbuff = frame->VideoBuffer;
+	global_lagged = 1;
 
 	uint64_t current = cycles.sampleclock;
 	uint64_t target = current + 35112 - overflow;
@@ -125,6 +126,7 @@ EXPORT void FrameAdvance(MyFrameInfo *frame)
 		frame->Width = 160;
 		frame->Height = 144;
 	}
+	frame->Lagged = global_lagged;
 	current_vbuff = NULL;
 }
 
@@ -135,7 +137,7 @@ EXPORT int IsCGB(void)
 
 EXPORT void SetInputCallback(void (*callback)(void))
 {
-	// TODO
+	global_input_callback = callback;
 }
 
 EXPORT void GetMemoryAreas(MemoryArea *m)

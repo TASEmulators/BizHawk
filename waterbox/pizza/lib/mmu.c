@@ -250,6 +250,9 @@ uint8_t mmu_read(uint16_t a)
 
         /* joypad reading */
         case 0xFF00:
+			global_lagged = 0;
+			if (global_input_callback)
+				global_input_callback();
             return global_sgb ? sgb_read_ff00(cycles.sampleclock) : input_get_keys(mmu.memory[a]);
 
         /* CGB HDMA transfer */
