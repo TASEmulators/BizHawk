@@ -17,10 +17,8 @@
 
 */
 
-#include <signal.h>
 #include <string.h>
 #include <strings.h>
-#include <time.h>
 
 #include "cycles.h"
 #include "gameboy.h"

@@ -25,26 +25,23 @@
 
 typedef struct cycles_s
 {
-    /* am i init'ed? */
-    uint_fast32_t          inited;
-    
-    /* ticks counter */
-    uint64_t        cnt;
+	/* am i init'ed? */
+	uint_fast32_t inited;
 
-    // CPU clock.   advances at 4MHz or 8MHz depending on current cgb setting
-    uint_fast32_t          clock;
+	/* ticks counter */
+	uint64_t cnt;
 
-    /* handy for calculation */
-    uint64_t          next;
+	// CPU clock.   advances at 4MHz or 8MHz depending on current cgb setting
+	uint_fast32_t clock;
 
-    /* step varying on cpu and emulation speed */
-    uint_fast32_t          step;
+	/* handy for calculation */
+	uint64_t next;
 
-    /* total running seconds */
-    uint_fast32_t          seconds;
+	/* step varying on cpu and emulation speed */
+	uint_fast32_t step;
 
-    /* 2 spares */
-    uint64_t          hs_next;
+	/* 2 spares */
+	uint64_t hs_next;
 
 	// reference clock.  advances at 2MHz always
 	uint64_t sampleclock;
@@ -56,7 +53,7 @@ extern cycles_t cycles;
 // extern uint8_t  cycles_hs_peer_cnt;
 
 /* callback function */
-typedef void (*cycles_send_cb_t) (uint32_t v);
+typedef void (*cycles_send_cb_t)(uint32_t v);
 
 /* prototypes */
 void cycles_change_emulation_speed();

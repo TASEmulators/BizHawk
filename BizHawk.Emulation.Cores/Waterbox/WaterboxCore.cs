@@ -88,6 +88,36 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			}
 		}
 
+		#region RTC
+
+		private static readonly DateTime Epoch = new DateTime(1970, 1, 1, 0, 0, 0);
+		private long _clockTime;
+		private int _clockRemainder;
+
+		protected void InitializeRtc(DateTime start)
+		{
+			_clockTime = (long)(start - Epoch).TotalSeconds;
+		}
+
+		protected long GetRtcTime(bool realTime)
+		{
+			if (realTime && DeterministicEmulation)
+				throw new InvalidOperationException();
+			return realTime ? (long)(DateTime.Now - Epoch).TotalSeconds : _clockTime;
+		}
+
+		private void AdvanceRtc()
+		{
+			_clockRemainder += VsyncDenominator;
+			if (_clockRemainder >= VsyncNumerator)
+			{
+				_clockRemainder -= VsyncNumerator;
+				_clockTime++;
+			}
+		}
+
+		#endregion
+
 		#region ISaveRam
 
 		private LibWaterboxCore.MemoryArea[] _saveramAreas;
@@ -179,6 +209,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 					Frame++;
 					if (IsLagFrame = frame.Lagged != 0)
 						LagCount++;
+					AdvanceRtc();
 
 					BufferWidth = frame.Width;
 					BufferHeight = frame.Height;
@@ -246,6 +277,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			IsLagFrame = reader.ReadBoolean();
 			BufferWidth = reader.ReadInt32();
 			BufferHeight = reader.ReadInt32();
+			_clockTime = reader.ReadInt64();
+			_clockRemainder = reader.ReadInt32();
 			// reset pointers here!
 			_core.SetInputCallback(null);
 			//_exe.PrintDebuggingInfo();
@@ -261,6 +294,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			writer.Write(IsLagFrame);
 			writer.Write(BufferWidth);
 			writer.Write(BufferHeight);
+			writer.Write(_clockTime);
+			writer.Write(_clockRemainder);
 			SaveStateBinaryInternal(writer);
 		}
 

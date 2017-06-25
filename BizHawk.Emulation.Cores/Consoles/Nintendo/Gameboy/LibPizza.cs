@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		[StructLayout(LayoutKind.Sequential)]
 		public new class FrameInfo : LibWaterboxCore.FrameInfo
 		{
+			public long Time;
 			public Buttons Keys;
 		}
 		[BizImport(CC)]

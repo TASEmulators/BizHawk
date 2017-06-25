@@ -32,7 +32,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <strings.h>
-#include <time.h>
 #include "sgb.h"
 #include <emulibc.h>
 
@@ -140,7 +139,6 @@ void mmu_init(uint8_t c, uint8_t rn)
     mmu.dma_cycles = 0;
     mmu.dma_address = 0;
     mmu.rtc_mode = 0;
-    time(&mmu.rtc_time);
 
     /* reset memory */
     bzero(mmu.memory, 65536);
@@ -207,7 +205,7 @@ uint8_t mmu_read(uint16_t a)
     {
         if (mmu.rtc_mode != 0x00)
         {
-            time_t diff = mmu.rtc_latch_time - mmu.rtc_time;
+            int64_t diff = mmu.rtc_latch_time - mmu.rtc_time;
 
             switch (mmu.rtc_mode)
             {
@@ -358,47 +356,6 @@ void mmu_save_saveram(uint8_t* dest, int sz)
 	}
 }
 
-void mmu_restore_rtc(char *fn)
-{
-    /* save only if cartridge got a battery */
-    if (mmu.carttype == 0x10 ||
-        mmu.carttype == 0x13) 
-    {
-        FILE *fp = fopen(fn, "r+");
-
-        /* it could be not present */
-        if (fp == NULL)
-        {
-            /* just pick current time */
-            time(&mmu.rtc_time);
-            return;
-        }
-
-        /* read last saved time */
-        fscanf(fp, "%ld", &mmu.rtc_time);
-
-        fclose(fp);
-    }
-}
-
-void mmu_save_rtc(char *fn)
-{
-    /* save only if cartridge got a battery */
-    if (mmu.carttype == 0x10 ||
-        mmu.carttype == 0x13)
-    {
-        FILE *fp = fopen(fn, "w+");
-
-        if (fp == NULL)
-        {
-            printf("Error saving RTC\n");
-            return;
-        }
-
-        fprintf(fp, "%ld", mmu.rtc_time);
-    }
-}
-
 void mmu_set_rumble_cb(mmu_rumble_cb_t cb)
 {
     mmu_rumble_cb = cb;
@@ -428,10 +385,9 @@ void mmu_write(uint16_t a, uint8_t v)
             /* wanna access to RTC register? */
             if (a >= 0xA000 && a <= 0xBFFF && mmu.rtc_mode != 0x00)
             {
-                time_t t,s1,s2,m1,m2,h1,h2,d1,d2,days;
+                int64_t t,s1,s2,m1,m2,h1,h2,d1,d2,days;
 
-                /* get current time */
-                time(&t);
+                t = global_currenttime;
 
                 /* extract parts in seconds from current and ref times */
                 s1 = t % 60;
@@ -727,7 +683,7 @@ void mmu_write(uint16_t a, uint8_t v)
                 else if (a >= 0x6000 && a <= 0x7FFF)
                 {
                     /* latch clock data. move clock data to RTC registers */
-                    time(&mmu.rtc_latch_time);
+					mmu.rtc_latch_time = global_currenttime;
                 }
 
 

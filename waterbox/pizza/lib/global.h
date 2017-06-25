@@ -20,6 +20,8 @@
 #ifndef __GLOBAL__
 #define __GLOBAL__
 
+#include <stdint.h>
+
 extern char global_window;
 extern char global_debug;
 extern char global_cgb;
@@ -30,6 +32,7 @@ extern char global_rumble;
 extern char global_cart_name[256];
 extern int global_lagged;
 extern void (*global_input_callback)(void);
+extern int64_t global_currenttime;
 
 /* prototypes */
 void global_init();

@@ -56,6 +56,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				BufferWidth = 256;
 				BufferHeight = 224;
 			}
+			InitializeRtc(new DateTime(2010, 1, 1)); // TODO: connect to syncsettings
 			Console.WriteLine("Pizza Initialized: CGB {0} SGB {1}", IsCGBMode(), IsSGBMode());
 		}
 
@@ -124,6 +125,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		{
 			return _tmp = new LibPizza.FrameInfo
 			{
+				Time = GetRtcTime(false),
 				Keys = GetButtons(controller)
 			};
 		}

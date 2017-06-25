@@ -23,8 +23,6 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 		ISettable<object, NeoGeoPort.SyncSettings>
 	{
 		internal LibNeoGeoPort _neopop;
-		private long _clockTime;
-		private int _clockDen;
 
 		[CoreConstructor("NGP")]
 		public NeoGeoPort(CoreComm comm, byte[] rom, SyncSettings syncSettings, bool deterministic)
@@ -66,46 +64,21 @@ namespace BizHawk.Emulation.Cores.Consoles.SNK
 			PostInit();
 
 			DeterministicEmulation = deterministic || !_syncSettings.UseRealTime;
-			_clockTime = (long)((_syncSettings.InitialTime - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds);
+			InitializeRtc(_syncSettings.InitialTime);
 		}
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			_clockDen += VsyncDenominator;
-			if (_clockDen >= VsyncNumerator)
-			{
-				_clockDen -= VsyncNumerator;
-				_clockTime++;
-			}
-
-			long clockTime = DeterministicEmulation ? _clockTime : (long)((_syncSettings.InitialTime - new DateTime(1970, 1, 1, 0, 0, 0)).TotalSeconds);
-
 			if (controller.IsPressed("Power"))
 				_neopop.HardReset();
 
 			return new LibNeoGeoPort.FrameInfo
 			{
-				FrontendTime = clockTime,
+				FrontendTime = GetRtcTime(!DeterministicEmulation),
 				Buttons = GetButtons(controller),
 				SkipRendering = render ? 0 : 1,
 			};
 		}
-
-		#region IStatable
-
-		protected override void SaveStateBinaryInternal(BinaryWriter writer)
-		{
-			writer.Write(_clockTime);
-			writer.Write(_clockDen);
-		}
-
-		protected override void LoadStateBinaryInternal(BinaryReader reader)
-		{
-			_clockTime = reader.ReadInt64();
-			_clockDen = reader.ReadInt32();
-		}
-
-		#endregion
 
 		#region Controller
 

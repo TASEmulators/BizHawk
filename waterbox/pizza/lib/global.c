@@ -31,6 +31,7 @@ char global_rumble;
 char global_window; // if true, show window
 int global_lagged;
 void (*global_input_callback)(void);
+int64_t global_currenttime;
 
 void global_init()
 {

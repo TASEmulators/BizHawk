@@ -93,6 +93,7 @@ typedef struct
 	int32_t Height;
 	int32_t Samples;
 	int32_t Lagged;
+	int64_t Time;
 	uint32_t Keys;
 } MyFrameInfo;
 
@@ -107,6 +108,7 @@ EXPORT void FrameAdvance(MyFrameInfo *frame)
 		input_set_keys(frame->Keys);
 	current_vbuff = frame->VideoBuffer;
 	global_lagged = 1;
+	global_currenttime = frame->Time;
 
 	uint64_t current = cycles.sampleclock;
 	uint64_t target = current + 35112 - overflow;
