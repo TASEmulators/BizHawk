@@ -1160,8 +1160,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void NESHardReset()
 		{
 			// "at power on it is as if $00 was written to $4017 9-12 cycles before the reset vector"
-			// that translates to a starting value for the counter of -2
-			sequencer_counter = -2;
+			// that translates to a starting value for the counter of -3
+			sequencer_counter = -1;
 		}
 
 		public void WriteReg(int addr, byte val)

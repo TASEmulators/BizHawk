@@ -3440,7 +3440,7 @@ namespace BizHawk.Client.EmuHawk
 								}
 							}
 
-							output = new BmpVideoProvider(bmpout);
+							output = new BmpVideoProvider(bmpout, _currentVideoProvider.VsyncNumerator, _currentVideoProvider.VsyncDenominator);
 							disposableOutput = (IDisposable)output;
 						}
 						finally
