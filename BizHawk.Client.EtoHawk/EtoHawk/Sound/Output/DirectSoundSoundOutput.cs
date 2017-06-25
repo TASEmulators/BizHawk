@@ -103,7 +103,7 @@ namespace BizHawk.Client.EtoHawk
 			_lastWriteTime = 0;
 			_lastWriteCursor = 0;
 
-			_deviceBuffer.Play(0, SlimDX.DirectSound.PlayFlags.Looping);
+			_deviceBuffer.Play(0, PlayFlags.Looping);
 		}
 
 		public void StopSound()
@@ -129,11 +129,7 @@ namespace BizHawk.Client.EtoHawk
 				int cursorDelta = CircularDistance(_lastWriteCursor, writeCursor, BufferSizeBytes);
 				cursorDelta += BufferSizeBytes * (int)Math.Round((elapsedSeconds - (cursorDelta / (double)(Sound.SampleRate * Sound.BlockAlign))) / bufferSizeSeconds);
 				_filledBufferSizeBytes -= cursorDelta;
-				if (_filledBufferSizeBytes < 0)
-				{
-					_sound.OnUnderrun();
-					detectedUnderrun = true;
-				}
+				detectedUnderrun = _filledBufferSizeBytes < 0;
 			}
 			if (isInitializing || detectedUnderrun)
 			{

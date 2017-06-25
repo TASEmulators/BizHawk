@@ -15,6 +15,7 @@ using System.Reflection;
 using System.Diagnostics;
 using BizHawk.Emulation.Cores.Nintendo.NES;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.EtoHawk
 {
@@ -80,8 +81,8 @@ namespace BizHawk.Client.EtoHawk
             var comm = CreateCoreComm();
             CoreFileProvider.SyncCoreCommInputSignals(comm);
             Global.Emulator = new NullEmulator(comm, Global.Config.GetCoreSettings<NullEmulator>());
-            Global.ActiveController = new Controller(NullEmulator.NullController);
-            Global.AutoFireController = Global.AutofireNullControls;
+            Global.ActiveController = new Controller(NullController.Instance.Definition);
+            Global.AutoFireController = new AutofireController(NullController.Instance.Definition, Global.Emulator);
             Global.AutofireStickyXORAdapter.SetOnOffPatternFromConfig();
 
             Global.Config.SoundOutputMethod = Config.ESoundOutputMethod.OpenAL; //Temporary, remove later
@@ -118,7 +119,6 @@ namespace BizHawk.Client.EtoHawk
             }
 
             Global.ClientControls = controls;
-            Global.AutofireNullControls = new AutofireController(NullEmulator.NullController, Global.Emulator);
 
         }
 
@@ -132,8 +132,8 @@ namespace BizHawk.Client.EtoHawk
             }
             else*/
             {
-                Global.Emulator.EndAsyncSound();
-                GlobalWin.Sound.SetSyncInputPin(Global.Emulator.SyncSoundProvider);
+                //Global.Emulator.EndAsyncSound();
+                //GlobalWin.Sound.SetSyncInputPin(Global.Emulator.SyncSoundProvider);
             }
         }
         public void ProgramRunLoop()
@@ -492,12 +492,11 @@ namespace BizHawk.Client.EtoHawk
                 Global.MovieSession.HandleMovieOnFrameLoop();
 
                 coreskipaudio = IsTurboing;// && _currAviWriter == null;
-
-                {
+                /*{
                     bool render = !_throttle.skipnextframe;// || _currAviWriter != null;
                     bool renderSound = !coreskipaudio;
                     Global.Emulator.FrameAdvance(render, renderSound);
-                }
+                }*/
 
                 Global.MovieSession.HandleMovieAfterFrameLoop();
 
@@ -550,7 +549,7 @@ namespace BizHawk.Client.EtoHawk
             }
 
             bool outputSilence = !genSound || coreskipaudio;
-            GlobalWin.Sound.UpdateSound(outputSilence);
+            GlobalWin.Sound.UpdateSound(0.5f);
         }
 
         private void SyncThrottle()
@@ -577,7 +576,7 @@ namespace BizHawk.Client.EtoHawk
             Global.DisableSecondaryThrottling = _unthrottled || turbo || fastForward || rewind;
 
             // realtime throttle is never going to be so exact that using a double here is wrong
-            _throttle.SetCoreFps(Global.Emulator.CoreComm.VsyncRate);
+            _throttle.SetCoreFps(60.0);
             _throttle.signal_paused = EmulatorPaused;
             _throttle.signal_unthrottle = _unthrottled || turbo;
             _throttle.signal_overrideSecondaryThrottle = (fastForward || rewind) && (Global.Config.SoundThrottle || Global.Config.VSyncThrottle || Global.Config.VSync);
@@ -709,7 +708,7 @@ namespace BizHawk.Client.EtoHawk
         {
             if (Global.Emulator != null) 
             {
-                var video = Global.Emulator.VideoProvider();
+                var video = Global.Emulator.AsVideoProviderOrDefault();
                 Bitmap img = new Bitmap(video.BufferWidth, video.BufferHeight, PixelFormat.Format32bppRgb);
                 BitmapData data = img.Lock();
                 int[] buffer = (int[])(video.GetVideoBuffer().Clone());
@@ -782,7 +781,7 @@ namespace BizHawk.Client.EtoHawk
                         }
                     }
 
-                    Global.Rewinder.ResetRewindBuffer();
+                    //Global.Rewinder.ResetRewindBuffer();
 
                     /*if (Global.Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
                     {
@@ -793,10 +792,10 @@ namespace BizHawk.Client.EtoHawk
                             loader.Rom.RomData.HashMD5());
                     }*/
 
-                    if (Global.Emulator.BoardName != null)
+                    /*if (Global.Emulator.BoardName != null)
                     {
                         Console.WriteLine("Core reported BoardID: \"{0}\"", Global.Emulator.BoardName);
-                    }
+                    }*/
 
                     // restarts the lua console if a different rom is loaded.
                     // im not really a fan of how this is done..
@@ -832,7 +831,7 @@ namespace BizHawk.Client.EtoHawk
                     UpdateDumpIcon();
                     SetMainformMovieInfo();
                     */
-                    Global.Rewinder.CaptureRewindState();
+                    //Global.Rewinder.CaptureRewindState();
 
                     Global.StickyXORAdapter.ClearStickies();
                     Global.StickyXORAdapter.ClearStickyFloats();

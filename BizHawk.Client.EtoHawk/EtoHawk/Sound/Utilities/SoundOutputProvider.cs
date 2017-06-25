@@ -4,6 +4,7 @@ using System.Linq;
 
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Common.IEmulatorExtensions;
 
 namespace BizHawk.Client.EtoHawk
 {
@@ -16,7 +17,7 @@ namespace BizHawk.Client.EtoHawk
 	// perform a "soft" correction by resampling it to hopefully get back inside our
 	// window shortly. If it ends up going too low or too high, we will perform a
 	// "hard" correction by generating silence or discarding samples.
-	public class SoundOutputProvider
+	public class SoundOutputProvider : IBufferedSoundProvider
 	{
 		private const int SampleRate = 44100;
 		private const int ChannelCount = 2;
@@ -32,6 +33,9 @@ namespace BizHawk.Client.EtoHawk
 		private const int MinResamplingDistanceSamples = 3;
 
 		private Queue<short> _buffer = new Queue<short>();
+		private bool _standaloneMode;
+		private int _targetExtraSamples;
+		private int _maxSamplesDeficit;
 
 		private Queue<int> _extraCountHistory = new Queue<int>();
 		private Queue<int> _outputCountHistory = new Queue<int>();
@@ -48,17 +52,37 @@ namespace BizHawk.Client.EtoHawk
 		private short[] _resampleBuffer = new short[0];
 		private double _resampleLengthRoundingError;
 
-		public SoundOutputProvider()
+		public SoundOutputProvider(bool standaloneMode = false)
 		{
+			_standaloneMode = standaloneMode;
+			if (_standaloneMode)
+			{
+				const double targetExtraMs = 10.0;
+				_targetExtraSamples = (int)Math.Ceiling(targetExtraMs * SampleRate / 1000.0);
+			}
+			ResetBuffer();
 		}
 
-		public int MaxSamplesDeficit { get; set; }
+		public int MaxSamplesDeficit
+		{
+			get { return _maxSamplesDeficit; }
+			set
+			{
+				if (_standaloneMode) throw new InvalidOperationException();
+				_maxSamplesDeficit = value;
+			}
+		}
 
-		public ISyncSoundProvider BaseSoundProvider { get; set; }
+		private int EffectiveMaxSamplesDeficit
+		{
+			get { return _maxSamplesDeficit + _targetExtraSamples; }
+		}
+
+		public ISoundProvider BaseSoundProvider { get; set; }
 
 		public void DiscardSamples()
 		{
-			_buffer.Clear();
+			ResetBuffer();
 			_extraCountHistory.Clear();
 			_outputCountHistory.Clear();
 			_hardCorrectionHistory.Clear();
@@ -76,6 +100,15 @@ namespace BizHawk.Client.EtoHawk
 			}
 		}
 
+		private void ResetBuffer()
+		{
+			_buffer.Clear();
+			for (int i = 0; i < _targetExtraSamples * ChannelCount; i++)
+			{
+				_buffer.Enqueue(0);
+			}
+		}
+
 		// To let us know about buffer underruns, rewinding, fast-forwarding, etc.
 		public void OnVolatility()
 		{
@@ -88,10 +121,26 @@ namespace BizHawk.Client.EtoHawk
 
 		private double AdvertisedSamplesPerFrame
 		{
-			get { return SampleRate / Global.Emulator.CoreComm.VsyncRate; }
+			get { return SampleRate / Global.Emulator.VsyncRate(); }
+		}
+
+		public void GetSamples(short[] samples)
+		{
+			if (!_standaloneMode) throw new InvalidOperationException();
+			int returnSampleCount = samples.Length / ChannelCount;
+			GetSamples(returnSampleCount);
+			GetSamplesFromBuffer(samples, returnSampleCount);
 		}
 
 		public void GetSamples(int idealSampleCount, out short[] samples, out int sampleCount)
+		{
+			if (_standaloneMode) throw new InvalidOperationException();
+			sampleCount = GetSamples(idealSampleCount);
+			samples = GetOutputBuffer(sampleCount);
+			GetSamplesFromBuffer(samples, sampleCount);
+		}
+
+		private int GetSamples(int idealSampleCount)
 		{
 			double scaleFactor = 1.0;
 
@@ -108,9 +157,9 @@ namespace BizHawk.Client.EtoHawk
 			GetSamplesFromBase(ref scaleFactor);
 
 			int bufferSampleCount = _buffer.Count / ChannelCount;
-			int extraSampleCount = bufferSampleCount - idealSampleCount;
+			int extraSampleCount = bufferSampleCount - _targetExtraSamples - idealSampleCount;
 			int maxSamplesDeficit = _extraCountHistory.Count >= UsableHistoryLength ?
-				MaxSamplesDeficit : Math.Min(StartupMaxSamplesSurplusDeficit, MaxSamplesDeficit);
+				EffectiveMaxSamplesDeficit : Math.Min(StartupMaxSamplesSurplusDeficit, EffectiveMaxSamplesDeficit);
 			int maxSamplesSurplus = _extraCountHistory.Count >= UsableHistoryLength ?
 				MaxSamplesSurplus : Math.Min(StartupMaxSamplesSurplusDeficit, MaxSamplesSurplus);
 			bool hardCorrected = false;
@@ -137,7 +186,7 @@ namespace BizHawk.Client.EtoHawk
 			}
 
 			bufferSampleCount = _buffer.Count / ChannelCount;
-			extraSampleCount = bufferSampleCount - idealSampleCount;
+			extraSampleCount = bufferSampleCount - _targetExtraSamples - idealSampleCount;
 
 			int outputSampleCount = Math.Min(idealSampleCount, bufferSampleCount);
 
@@ -154,9 +203,7 @@ namespace BizHawk.Client.EtoHawk
 					scaleFactor);
 			}
 
-			sampleCount = outputSampleCount;
-			samples = GetOutputBuffer(sampleCount);
-			GetSamplesFromBuffer(samples, sampleCount);
+			return outputSampleCount;
 		}
 
 		private void GetSamplesFromBase(ref double scaleFactor)
@@ -164,7 +211,11 @@ namespace BizHawk.Client.EtoHawk
 			short[] samples;
 			int count;
 
-			BaseSoundProvider.GetSamples(out samples, out count);
+			if (BaseSoundProvider.SyncMode != SyncSoundMode.Sync)
+			{
+				throw new InvalidOperationException("Base sound provider must be in sync mode.");
+			}
+			BaseSoundProvider.GetSamplesSync(out samples, out count);
 
 			bool correctedEmptyFrame = false;
 			if (count == 0)

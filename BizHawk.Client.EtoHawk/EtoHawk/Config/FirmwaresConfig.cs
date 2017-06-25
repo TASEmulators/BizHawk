@@ -10,9 +10,9 @@ namespace BizHawk.Client.EtoHawk
 	internal class FirmwareRow
 	{
 		public FirmwareDatabase.FirmwareRecord Record { get; set; }
-		public string SystemId { get { return Record.systemId; } }
-		public string FirmwareId { get { return Record.firmwareId; } }
-		public string Description { get { return Record.descr; } }
+		public string SystemId { get { return Record.SystemId; } }
+		public string FirmwareId { get { return Record.FirmwareId; } }
+		public string Description { get { return Record.Descr; } }
 		public string ResolvedWith { get; set; }
 		public string Location { get; set; }
 		public long Size { get; set; }

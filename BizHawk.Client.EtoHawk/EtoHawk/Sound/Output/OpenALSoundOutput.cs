@@ -81,13 +81,12 @@ namespace BizHawk.Client.EtoHawk
 			bool detectedUnderrun = sourceState == ALSourceState.Stopped;
 			if (detectedUnderrun)
 			{
-				_sound.OnUnderrun();
 				// SampleOffset should reset to 0 when stopped; update the queued sample count to match
 				UnqueueProcessedBuffers();
 				currentSamplesPlayed = 0;
 			}
 			int samplesAwaitingPlayback = _currentSamplesQueued - currentSamplesPlayed;
-			int samplesNeeded = (int)Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
+			int samplesNeeded = Math.Max(BufferSizeSamples - samplesAwaitingPlayback, 0);
 			if (isInitializing || detectedUnderrun)
 			{
 				_sound.HandleInitializationOrUnderrun(detectedUnderrun, ref samplesNeeded);

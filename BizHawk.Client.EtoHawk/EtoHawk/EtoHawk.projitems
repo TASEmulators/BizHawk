@@ -33,6 +33,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Input\OTK_GamePad.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Config\FirmwaresConfig.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Config\FirmwaresConfig.Design.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sound\Interfaces\IBufferedSoundProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sound\Interfaces\ISoundOutput.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Sound\Utilities\BufferedAsync.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)defctrl.json">
