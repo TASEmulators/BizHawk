@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 {
-	public abstract class LibPizza : LibWaterboxCore
+	public abstract class LibPizza : LibWaterboxCore, ICustomSaveram
 	{
 		[Flags]
 		public enum Buttons : uint
@@ -32,5 +32,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		public abstract bool Init(byte[] rom, int romlen, bool sgb, byte[] spc, int spclen);
 		[BizImport(CC)]
 		public abstract bool IsCGB();
+		[BizImport(CC)]
+		public abstract int GetSaveramSize();
+		[BizImport(CC)]
+		public abstract void PutSaveram(byte[] data, int size);
+		[BizImport(CC)]
+		public abstract void GetSaveram(byte[] data, int size);
 	}
 }

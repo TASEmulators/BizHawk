@@ -79,6 +79,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var mdl = new MemoryDomainList(memoryDomains.Cast<MemoryDomain>().ToList());
 				mdl.MainMemory = mdl[primaryIndex];
 				_serviceProvider.Register<IMemoryDomains>(mdl);
+
+				var sr = _core as ICustomSaveram;
+				if (sr != null)
+					_serviceProvider.Register<ISaveRam>(new CustomSaverammer(sr)); // override the default implementation
+
 				_exe.Seal();
 			}
 		}

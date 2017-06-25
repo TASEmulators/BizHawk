@@ -1255,6 +1255,7 @@
     <Compile Include="CPUs\Z80\Z80A.cs" />
     <Compile Include="SideBySideVideo.cs" />
     <Compile Include="Sound\DualSyncSound.cs" />
+    <Compile Include="Waterbox\CustomSaverammer.cs" />
     <Compile Include="Waterbox\ElfRunner.cs" />
     <Compile Include="FileID.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.cs" />

@@ -303,10 +303,9 @@ uint8_t mmu_read_no_cyc(uint16_t a)
     return mmu.memory[a];
 }
 
-void mmu_restore_ram(char *fn)
-{   
-    /* save only if cartridge got a battery */
-    if (mmu.carttype == 0x03 ||
+static int has_saveram(void)
+{
+	return mmu.carttype == 0x03 ||
         mmu.carttype == 0x06 ||
         mmu.carttype == 0x09 ||
         mmu.carttype == 0x0D ||
@@ -317,31 +316,46 @@ void mmu_restore_ram(char *fn)
         mmu.carttype == 0x1B ||
         mmu.carttype == 0x1E ||
         mmu.carttype == 0x22 ||
-        mmu.carttype == 0xFF)
-    {
-        FILE *fp = fopen(fn, "r+");
+        mmu.carttype == 0xFF;
+}
 
-        /* it could be not present */
-        if (fp == NULL)
-            return;
+int mmu_saveram_size(void)
+{
+	return has_saveram() ? ram_sz : 0;
+}
 
-        if (ram_sz <= 0x2000)
-        {
-            /* no need to put togheter pieces of ram banks */
-            fread(&mmu.memory[0xA000], ram_sz, 1, fp);
-        }
-        else
-        {
-            /* read entire file into ram buffer */
-            fread(mmu.ram_internal, 0x2000, 1, fp);
-            fread(ram, ram_sz, 1, fp);
+void mmu_restore_saveram(const uint8_t* data, int sz)
+{
+	if (sz == mmu_saveram_size())
+	{
+		if (ram_sz <= 0x2000)
+		{
+			memcpy(&mmu.memory[0xa000], data, ram_sz);
+		}
+		else
+		{
+			memcpy(ram, data, ram_sz);
+			if (mmu.ram_external_enabled)
+				memcpy(&mmu.memory[0xa000], &ram[0x2000 * mmu.ram_current_bank], 0x2000);
+		}
+	}
+}
 
-            /* copy internal RAM to 0xA000 address */
-            memcpy(&mmu.memory[0xA000], mmu.ram_internal, 0x2000);
-        }
-
-        fclose(fp);
-    } 
+void mmu_save_saveram(uint8_t* dest, int sz)
+{
+	if (sz == mmu_saveram_size())
+	{
+		if (ram_sz <= 0x2000)
+		{
+			memcpy(dest, &mmu.memory[0xa000], ram_sz);
+		}
+		else
+		{
+			memcpy(dest, ram, ram_sz);
+			if (mmu.ram_external_enabled)
+				memcpy(&dest[0x2000 * mmu.ram_current_bank], &mmu.memory[0xa000], 0x2000);
+		}
+	}
 }
 
 void mmu_restore_rtc(char *fn)
@@ -362,56 +376,6 @@ void mmu_restore_rtc(char *fn)
 
         /* read last saved time */
         fscanf(fp, "%ld", &mmu.rtc_time);
-
-        fclose(fp);
-    }
-}
-
-void mmu_save_ram(char *fn)
-{
-    /* save only if cartridge got a battery */
-    if (mmu.carttype == 0x03 || 
-        mmu.carttype == 0x06 ||
-        mmu.carttype == 0x09 ||
-        mmu.carttype == 0x0d ||
-        mmu.carttype == 0x0f ||
-        mmu.carttype == 0x10 ||
-        mmu.carttype == 0x13 ||
-        mmu.carttype == 0x17 ||
-        mmu.carttype == 0x1b ||
-        mmu.carttype == 0x1e ||
-        mmu.carttype == 0x22 ||
-        mmu.carttype == 0xff)
-    {
-        FILE *fp = fopen(fn, "w+");
-
-        if (fp == NULL)
-        {
-            printf("Error dumping RAM\n");
-            return;
-        } 
-
-        if (ram_sz <= 0x2000)
-        {
-            /* no need to put togheter pieces of ram banks */
-            fwrite(&mmu.memory[0xA000], ram_sz, 1, fp);
-        }
-        else
-        {
-            /* yes, i need to put togheter pieces */
-
-            /* save current used bank */
-            if (mmu.ram_external_enabled)
-                memcpy(&ram[0x2000 * mmu.ram_current_bank],
-                       &mmu.memory[0xA000], 0x2000);
-            else
-                memcpy(mmu.ram_internal,
-                       &mmu.memory[0xA000], 0x2000);
-           
-            /* dump the entire internal + external RAM */
-            fwrite(mmu.ram_internal, 0x2000, 1, fp); 
-            fwrite(ram, ram_sz, 1, fp); 
-        }
 
         fclose(fp);
     }
@@ -438,15 +402,6 @@ void mmu_save_rtc(char *fn)
 void mmu_set_rumble_cb(mmu_rumble_cb_t cb)
 {
     mmu_rumble_cb = cb;
-}
-
-void mmu_term()
-{
-    if (ram)
-    {
-        free(ram);
-        ram = NULL;
-    }
 }
 
 /* write 16 bit block on a memory address */
@@ -699,10 +654,6 @@ void mmu_write(uint16_t a, uint8_t v)
                         if (mmu.ram_external_enabled)
                             return;
 
-                        /* save current bank */
-                        memcpy(mmu.ram_internal,
-                               &mmu.memory[0xA000], 0x2000);
-
                         /* restore external ram bank */
                         memcpy(&mmu.memory[0xA000],
                                &ram[0x2000 * mmu.ram_current_bank],
@@ -723,10 +674,6 @@ void mmu_write(uint16_t a, uint8_t v)
                         /* save current bank */
                         memcpy(&ram[0x2000 * mmu.ram_current_bank],
                                &mmu.memory[0xA000], 0x2000);
-
-                        /* restore external ram bank */
-                        memcpy(&mmu.memory[0xA000],
-                               mmu.ram_internal, 0x2000);
 
                         /* clear external RAM eanbled flag */
                         mmu.ram_external_enabled = 0;
@@ -807,10 +754,6 @@ void mmu_write(uint16_t a, uint8_t v)
                         if (mmu.ram_external_enabled)
                             return;
 
-                        /* save current bank */
-                        memcpy(mmu.ram_internal,
-                               &mmu.memory[0xA000], 0x2000);
-
                         /* restore external ram bank */
                         memcpy(&mmu.memory[0xA000],
                                &ram[0x2000 * mmu.ram_current_bank],
@@ -835,10 +778,6 @@ void mmu_write(uint16_t a, uint8_t v)
                         /* save current bank */
                         memcpy(&ram[0x2000 * mmu.ram_current_bank], 
                                &mmu.memory[0xA000], 0x2000);
-
-                        /* restore external ram bank */
-                        memcpy(&mmu.memory[0xA000],
-                               mmu.ram_internal, 0x2000);
 
                         /* clear external RAM eanbled flag */
                         mmu.ram_external_enabled = 0;
@@ -921,9 +860,6 @@ void mmu_write(uint16_t a, uint8_t v)
 
             /* save new current bank */
             mmu.rom_current_bank = b;
-
-            /* re-apply cheats */
-//            mmu_apply_gg();
         }
 
         return; 
@@ -1135,8 +1071,3 @@ void mmu_write_no_cyc(uint16_t a, uint8_t v)
 {
     mmu.memory[a] = v;
 }
-
-
-
-
-

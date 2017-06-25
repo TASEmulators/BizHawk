@@ -24,6 +24,5 @@
 
 /* prototypes */
 char cartridge_load(const void* data, size_t sz);
-void cartridge_term();
 
 #endif

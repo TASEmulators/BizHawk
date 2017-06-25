@@ -37,8 +37,7 @@ typedef struct mmu_s {
     uint8_t  spare;
     uint16_t spare2;
 
-    /* internal RAM */
-    uint8_t ram_internal[0x2000];
+    // cartridge RAM
     uint8_t ram_external_enabled;
     uint8_t ram_current_bank;
 
@@ -101,13 +100,13 @@ void          mmu_move(uint16_t d, uint16_t s);
 uint8_t       mmu_read_no_cyc(uint16_t a);
 uint8_t       mmu_read(uint16_t a);
 unsigned int  mmu_read_16(uint16_t a);
-void          mmu_restore_ram(char *fn);
+int mmu_saveram_size(void);
+void mmu_restore_saveram(const uint8_t* data, int sz);
+void mmu_save_saveram(uint8_t* dest, int sz);
 void          mmu_restore_rtc(char *fn);
-void          mmu_save_ram(char *fn);
 void          mmu_save_rtc(char *fn);
 void          mmu_set_rumble_cb(mmu_rumble_cb_t cb);
 void          mmu_step();
-void          mmu_term();
 void          mmu_write_no_cyc(uint16_t a, uint8_t v);
 void          mmu_write(uint16_t a, uint8_t v);
 void          mmu_write_16(uint16_t a, uint16_t v);

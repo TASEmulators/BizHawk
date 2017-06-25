@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		[Flags]
-		public enum MemoryDomainFlags: int
+		public enum MemoryDomainFlags : int
 		{
 			None = 0,
 			/// <summary>
@@ -166,11 +166,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				Writable = (m.Flags & MemoryDomainFlags.Writable) != 0;
 				if ((m.Flags & MemoryDomainFlags.WordSize1) != 0)
 					WordSize = 1;
-				else if((m.Flags & MemoryDomainFlags.WordSize2) != 0)
+				else if ((m.Flags & MemoryDomainFlags.WordSize2) != 0)
 					WordSize = 2;
-				else if((m.Flags & MemoryDomainFlags.WordSize4) != 0)
+				else if ((m.Flags & MemoryDomainFlags.WordSize4) != 0)
 					WordSize = 4;
-				else if((m.Flags & MemoryDomainFlags.WordSize8) != 0)
+				else if ((m.Flags & MemoryDomainFlags.WordSize8) != 0)
 					WordSize = 8;
 				else
 					throw new InvalidOperationException("Unknown word size for memory domain");
@@ -194,5 +194,15 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		[BizImport(CC)]
 		public abstract void SetInputCallback(EmptyCallback callback);
+	}
+
+	/// <summary>
+	/// if a core implements this, it will be used for saveramming instead of memory domains
+	/// </summary>
+	interface ICustomSaveram
+	{
+		int GetSaveramSize();
+		void PutSaveram(byte[] data, int size);
+		void GetSaveram(byte[] data, int size);
 	}
 }

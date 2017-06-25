@@ -148,6 +148,21 @@ EXPORT void GetMemoryAreas(MemoryArea *m)
 	m[0].Flags = MEMORYAREA_FLAGS_PRIMARY | MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1;
 }
 
+EXPORT int GetSaveramSize(void)
+{
+	return mmu_saveram_size();
+}
+
+EXPORT void PutSaveram(const uint8_t* data, int size)
+{
+	mmu_restore_saveram(data, size);
+}
+
+EXPORT void GetSaveram(uint8_t* data, int size)
+{
+	mmu_save_saveram(data, size);
+}
+
 void frame_cb()
 {
 	if (global_sgb)
