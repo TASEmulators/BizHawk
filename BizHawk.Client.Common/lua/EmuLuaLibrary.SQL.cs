@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethodAttributes("readcommand", "Run a SQLite read command which includes Select. Returns all rows into a  " +
+		[LuaMethodAttributes("readcommand", "Run a SQLite read command which includes Select. Returns all rows into a LuaTable." +
 			"Ex: select * from rewards")]
 		public dynamic ReadCommand(string query="")
 		{
