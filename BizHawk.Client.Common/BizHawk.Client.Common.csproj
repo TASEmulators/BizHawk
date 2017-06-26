@@ -66,6 +66,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.79.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\References\x86\SQLite\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.Xml.Linq" />
@@ -161,6 +165,7 @@
     <Compile Include="lua\EmuLuaLibrary.Movie.cs" />
     <Compile Include="lua\EmuLuaLibrary.NES.cs" />
     <Compile Include="lua\EmuLuaLibrary.SNES.cs" />
+    <Compile Include="lua\EmuLuaLibrary.SQL.cs" />
     <Compile Include="lua\EmuLuaLibrary.String.cs" />
     <Compile Include="lua\EmuLuaLibrary.UserData.cs" />
     <Compile Include="lua\EnvironmentSandbox.cs" />
