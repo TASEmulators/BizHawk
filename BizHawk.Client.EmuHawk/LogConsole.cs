@@ -188,7 +188,7 @@ namespace BizHawk.Client.EmuHawk
 			if (attachedConsole)
 			{
 				Console.WriteLine();
-				Console.WriteLine("use cmd /c {0} to get more sensible console behaviour", Path.GetFileName(PathManager.GetBasePathAbsolute()));
+				Console.WriteLine("use cmd /c {0} to get more sensible console behaviour", Path.GetFileName(PathManager.GetGlobalBasePathAbsolute()));
 			}
 		}
 
