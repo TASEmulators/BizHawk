@@ -46,6 +46,7 @@ namespace BizHawk.Client.Common
 			{ ".rom", "" },
 			{ ".iso", "" },
 			{ ".img", "" },
+			{ ".cue", "" }
 		};
 
 		// Path Settings ************************************/
@@ -217,7 +218,7 @@ namespace BizHawk.Client.Common
 
 		// Savestate settings
 		public SaveStateTypeE SaveStateType = SaveStateTypeE.Default;
-		public const int DefaultSaveStateCompressionLevelNormal = 0;
+		public const int DefaultSaveStateCompressionLevelNormal = 1;
 		public int SaveStateCompressionLevelNormal = DefaultSaveStateCompressionLevelNormal;
 		public const int DefaultSaveStateCompressionLevelRewind = 0; // this isnt actually used yet 
 		public int SaveStateCompressionLevelRewind = DefaultSaveStateCompressionLevelRewind; // this isnt actually used yet 
@@ -398,6 +399,7 @@ namespace BizHawk.Client.Common
 		public string AVICodecToken = "";
 		public int GifWriterFrameskip = 3;
 		public int GifWriterDelay = -1;
+		public bool VideoWriterAudioSync = true;
 
 		#region emulation core settings
 
@@ -535,8 +537,8 @@ namespace BizHawk.Client.Common
 		// it hasn't been absorbed into the new system
 		public bool GB_AsSGB = false;
 		public bool NES_InQuickNES = true;
-		public bool SNES_InSnes9x = false;
-		public bool GBA_UsemGBA = false;
+		public bool SNES_InSnes9x = true;
+		public bool GBA_UsemGBA = true;
 		public bool A78_UseEmu7800 = true;
 		public bool CoreForcingViaGameDB = true;
 		public string LibretroCore;

@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 				if (PlatformDropdown.SelectedIndex > 0)
 				{
 					return _availableSystems
-						.First(x => x.SystemId == PlatformDropdown.SelectedItem.ToString()).FullName;
+						.First(x => x.FullName == PlatformDropdown.SelectedItem.ToString()).SystemId;
 				}
 
 				return "";

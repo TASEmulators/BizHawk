@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ControllerConfig : Form
 	{
-		private const int MAXPLAYERS = 8;
+		private const int MaxPlayers = 12;
 		private static readonly Dictionary<string, Bitmap> ControllerImages = new Dictionary<string, Bitmap>();
 		private readonly ControllerDefinition _theDefinition;
 
@@ -45,6 +45,8 @@ namespace BizHawk.Client.EmuHawk
 			ControllerImages.Add("PSX Gamepad Controller", Properties.Resources.PSX_Original_Controller);
 			ControllerImages.Add("PSX DualShock Controller", Properties.Resources.psx_dualshock);
 			ControllerImages.Add("Apple IIe Keyboard", Properties.Resources.AppleIIKeyboard);
+			ControllerImages.Add("VirtualBoy Controller", Properties.Resources.VBoyController);
+			ControllerImages.Add("NeoGeo Portable Controller", Properties.Resources.NGPController);
 			
 		}
 
@@ -107,7 +109,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// split the list of all settings into buckets by player number
-			var buckets = new List<string>[MAXPLAYERS + 1];
+			var buckets = new List<string>[MaxPlayers + 1];
 			var categoryBuckets = new WorkingDictionary<string, List<string>>();
 			for (var i = 0; i < buckets.Length; i++)
 			{
@@ -120,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var button in controllerButtons)
 			{
 				int i;
-				for (i = 1; i <= MAXPLAYERS; i++)
+				for (i = MaxPlayers; i > 0; i--)
 				{
 					if (button.StartsWith("P" + i))
 					{
@@ -128,14 +130,19 @@ namespace BizHawk.Client.EmuHawk
 					}
 				}
 
-				if (i > MAXPLAYERS) // couldn't find
+				if (i > MaxPlayers) // couldn't find
 				{
 					i = 0;
 				}
 
 				if (categoryLabels.ContainsKey(button))
+				{
 					categoryBuckets[categoryLabels[button]].Add(button);
-				else buckets[i].Add(button);
+				}
+				else
+				{
+					buckets[i].Add(button);
+				}
 			}
 
 			if (buckets[0].Count == controllerButtons.Count)
@@ -149,7 +156,7 @@ namespace BizHawk.Client.EmuHawk
 				var tt = new TabControl { Dock = DockStyle.Fill };
 				dest.Controls.Add(tt);
 				int pageidx = 0;
-				for (int i = 1; i <= MAXPLAYERS; i++)
+				for (int i = 1; i <= MaxPlayers; i++)
 				{
 					if (buckets[i].Count > 0)
 					{

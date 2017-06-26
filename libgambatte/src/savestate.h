@@ -38,7 +38,7 @@ struct SaveState {
 		void set(T *ptr, const unsigned long sz) { this->ptr = ptr; this->sz = sz; }
 		
 		friend class SaverList;
-		friend void setInitState(SaveState &, bool, bool, std::uint32_t);
+		friend void setInitState(SaveState &, bool, bool, std::uint32_t, bool);
 	};
 
 	struct CPU {
@@ -78,6 +78,7 @@ struct SaveState {
 		bool enableRam;
 		bool rambankMode;
 		bool hdmaTransfer;
+		bool using_bios;
 	} mem;
 	
 	struct PPU {

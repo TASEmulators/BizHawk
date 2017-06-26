@@ -33,22 +33,6 @@ namespace BizHawk.Client.EmuHawk
 			"Custom"
 		};
 
-		private static readonly string[] ValidResolutionsJabo =
-		{
-			"320 x 240",
-			"400 x 300",
-			"512 x 384",
-			"640 x 480",
-			"800 x 600",
-			"1024 x 768",
-			"1152 x 864",
-			"1280 x 960",
-			"1600 x 1200",
-			"848 x 480",
-			"1024 x 576",
-			"1380 x 768"
-		};
-
 		private bool _programmaticallyChangingPluginComboBox = false;
 
 		public N64VideoPluginconfig()
@@ -149,40 +133,10 @@ namespace BizHawk.Client.EmuHawk
 				case "Glide64mk2":
 					_ss.VideoPlugin = PluginType.GlideMk2;
 					break;
-				case "Jabo 1.6.1":
-					_ss.VideoPlugin = PluginType.Jabo;
-					break;
 				case "GLideN64":
 					_ss.VideoPlugin = PluginType.GLideN64;
 					break;
 			}
-
-			// Jabo
-			_ss.JaboPlugin.UseDefaultHacks = JaboUseForGameCheckbox.Checked;
-
-			_ss.JaboPlugin.clear_mode = JaboClearModeDropDown.SelectedItem
-				.ToString()
-				.GetEnumFromDescription<N64SyncSettings.N64JaboPluginSettings.Direct3DClearMode>();
-
-			_ss.JaboPlugin.anisotropic_level = JaboAnisotropicFilteringLevelDropdown.SelectedItem
-				.ToString()
-				.GetEnumFromDescription<N64SyncSettings.N64JaboPluginSettings.ANISOTROPIC_FILTERING_LEVEL>();
-
-			_ss.JaboPlugin.antialiasing_level = JaboAntialiasingLevelDropdown.SelectedItem
-				.ToString()
-				.GetEnumFromDescription<N64SyncSettings.N64JaboPluginSettings.ANTIALIASING_LEVEL>();
-
-			_ss.JaboPlugin.brightness = (int)JaboBrightnessBox.Value;
-			_ss.JaboPlugin.super2xsal = JaboSuper2xsalCheckbox.Checked;
-			_ss.JaboPlugin.texture_filter = JaboTextureFilterCheckbox.Checked;
-			_ss.JaboPlugin.adjust_aspect_ratio = JaboAdjustAspectRatioCheckbox.Checked;
-			_ss.JaboPlugin.legacy_pixel_pipeline = JaboLegacyPixelPipelineCheckbox.Checked;
-			_ss.JaboPlugin.alpha_blending = JaboAlphaBlendingCheckbox.Checked;
-			_ss.JaboPlugin.direct3d_transformation_pipeline = JaboDirect3DPipelineCheckbox.Checked;
-			_ss.JaboPlugin.z_compare = JaboZCompareCheckbox.Checked;
-			_ss.JaboPlugin.copy_framebuffer = JaboCopyFrameBufferCheckbox.Checked;
-			_ss.JaboPlugin.resolution_width = JaboResolutionWidthBox.ToRawInt().Value;
-			_ss.JaboPlugin.resolution_height = JaboResolutionHeightBox.ToRawInt().Value;
 
 			// Rice
 			_ss.RicePlugin.NormalAlphaBlender = RiceNormalAlphaBlender_CB.Checked;
@@ -540,9 +494,6 @@ namespace BizHawk.Client.EmuHawk
 				case PluginType.Rice:
 					PluginComboBox.Text = "Rice";
 					break;
-				case PluginType.Jabo:
-					PluginComboBox.Text = "Jabo 1.6.1";
-					break;
 				case PluginType.GLideN64:
 					PluginComboBox.Text = "GLideN64";
 					break;
@@ -565,29 +516,6 @@ namespace BizHawk.Client.EmuHawk
 				VideoResolutionComboBox.SelectedIndex = 13;
 				ShowCustomVideoResolutionControls();
 			}
-
-			// Jabo
-			JaboUseForGameCheckbox.Checked = _ss.JaboPlugin.UseDefaultHacks;
-			JaboClearModeDropDown
-				.PopulateFromEnum<N64SyncSettings.N64JaboPluginSettings.Direct3DClearMode>(_ss.JaboPlugin.clear_mode);
-			JaboResolutionWidthBox.Text = _ss.JaboPlugin.resolution_width.ToString();
-			JaboResolutionHeightBox.Text = _ss.JaboPlugin.resolution_height.ToString();
-
-			JaboUpdateHacksSection();
-
-			JaboAnisotropicFilteringLevelDropdown
-				.PopulateFromEnum<N64SyncSettings.N64JaboPluginSettings.ANISOTROPIC_FILTERING_LEVEL>(_ss.JaboPlugin.anisotropic_level);
-			JaboAntialiasingLevelDropdown
-				.PopulateFromEnum<N64SyncSettings.N64JaboPluginSettings.ANTIALIASING_LEVEL>(_ss.JaboPlugin.antialiasing_level);
-			JaboBrightnessBox.Value = _ss.JaboPlugin.brightness;
-			JaboSuper2xsalCheckbox.Checked = _ss.JaboPlugin.super2xsal;
-			JaboTextureFilterCheckbox.Checked = _ss.JaboPlugin.texture_filter;
-			JaboAdjustAspectRatioCheckbox.Checked = _ss.JaboPlugin.adjust_aspect_ratio;
-			JaboLegacyPixelPipelineCheckbox.Checked = _ss.JaboPlugin.legacy_pixel_pipeline;
-			JaboAlphaBlendingCheckbox.Checked = _ss.JaboPlugin.alpha_blending;
-			JaboDirect3DPipelineCheckbox.Checked = _ss.JaboPlugin.direct3d_transformation_pipeline;
-			JaboZCompareCheckbox.Checked = _ss.JaboPlugin.z_compare;
-			JaboCopyFrameBufferCheckbox.Checked = _ss.JaboPlugin.copy_framebuffer;
 
 			// Rice
 			RiceNormalAlphaBlender_CB.Checked = _ss.RicePlugin.NormalAlphaBlender;
@@ -1223,18 +1151,10 @@ namespace BizHawk.Client.EmuHawk
 				oldSizeY = int.Parse(VideoResolutionYTextBox.Text);
 			}
 
-			if (PluginComboBox.Text == "Jabo 1.6.1")
-			{
-				// Change resolution list to jabo
-				VideoResolutionComboBox.Items.Clear();
-				VideoResolutionComboBox.Items.AddRange(ValidResolutionsJabo);
-			}
-			else
-			{
-				// Change resolution list to the rest
-				VideoResolutionComboBox.Items.Clear();
-				VideoResolutionComboBox.Items.AddRange(ValidResolutions);
-			}
+			
+			// Change resolution list to the rest
+			VideoResolutionComboBox.Items.Clear();
+			VideoResolutionComboBox.Items.AddRange(ValidResolutions);
 
 			// If the given resolution is in the table, pick it.
 			// Otherwise find a best fit
@@ -1272,40 +1192,12 @@ namespace BizHawk.Client.EmuHawk
 
 				if (bestFit < 0)
 				{
-					if (PluginComboBox.Text == "Jabo 1.6.1")
-					{
-						// Pick 8 to avoid picking the widescreen resolutions
-						VideoResolutionComboBox.SelectedIndex = 8;
-					}
-					else
-					{
-						VideoResolutionComboBox.SelectedIndex = VideoResolutionComboBox.Items.Count - 1;
-					}
+					VideoResolutionComboBox.SelectedIndex = VideoResolutionComboBox.Items.Count - 1;
 				}
 				else
 				{
 					VideoResolutionComboBox.SelectedIndex = bestFit;
 				}
-			}
-		}
-
-		private void JaboUseForGameCheckbox_CheckedChanged(object sender, EventArgs e)
-		{
-			JaboPerGameHacksGroupBox.Controls
-				.OfType<Control>()
-				.ToList()
-				.ForEach(c => c.Enabled = !JaboUseForGameCheckbox.Checked);
-
-			JaboUpdateHacksSection();
-		}
-
-		private void JaboUpdateHacksSection()
-		{
-			if (JaboUseForGameCheckbox.Checked)
-			{
-				JaboResolutionWidthBox.Text = GetIntFromDB("Jabo_Resolution_Width", -1).ToString();
-				JaboResolutionHeightBox.Text = GetIntFromDB("Jabo_Resolution_Height", -1).ToString();
-				JaboClearModeDropDown.SelectedItem = ((N64SyncSettings.N64JaboPluginSettings.Direct3DClearMode)GetIntFromDB("Jabo_Clear_Frame", 0)).GetDescription();
 			}
 		}
 

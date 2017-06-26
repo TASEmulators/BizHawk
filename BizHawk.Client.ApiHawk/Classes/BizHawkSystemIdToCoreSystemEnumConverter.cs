@@ -99,6 +99,13 @@ namespace BizHawk.Client.ApiHawk
 				case "WSWAN":
 					return CoreSystem.WonderSwan;
 
+				case "VB":
+				case "NGP":
+				case "DNGP":
+				case "O2":
+				case "SGB":
+					return 0; // like I give a shit
+
 				default:
 					throw new IndexOutOfRangeException(string.Format("{0} is missing in convert list", value));
 			}

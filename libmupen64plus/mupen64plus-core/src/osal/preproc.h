@@ -27,7 +27,7 @@
 #if defined(WIN32) && !defined(__MINGW32__)
 
   // macros
-  #define OSAL_BREAKPOINT_INTERRUPT __asm{ int 3 };
+  #define OSAL_BREAKPOINT_INTERRUPT DebugBreak();
   #define ALIGN(BYTES,DATA) __declspec(align(BYTES)) DATA;
   #define osal_inline __inline
 

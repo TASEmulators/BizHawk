@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		delegate void MessageApi(eMessage msg);
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		delegate void BufferApi(BufId id, void* ptr, int size);
+		delegate void BufferApi(BufId id, void* ptr, ulong size); //size_t
 
 		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
 		delegate void SetVariableApi(string key, string value);
@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public void CopyAscii(BufId id, string str)
 		{
 			fixed (char* cp = str)
-				_copyBuffer(id, cp, str.Length + 1);
+				_copyBuffer(id, cp, (ulong)str.Length + 1);
 		}
 
 		/// <summary>
@@ -115,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		public void CopyBytes(BufId id, byte[] bytes)
 		{
 			fixed (byte* bp = bytes)
-				_copyBuffer(id, bp, bytes.Length);
+				_copyBuffer(id, bp, (ulong)bytes.Length);
 		}
 
 		/// <summary>
@@ -129,7 +129,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			fixed (byte* bp = bytes)
 			{
-				_setBuffer(id, bp, bytes.Length);
+				_setBuffer(id, bp, (ulong)bytes.Length);
 				andThen();
 			}
 		}
@@ -141,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			fixed (byte* cp = System.Text.Encoding.ASCII.GetBytes(str+"\0"))
 			{
-				_setBuffer(id, cp, str.Length + 1);
+				_setBuffer(id, cp, (ulong)str.Length + 1);
 				andThen();
 			}
 		}
@@ -150,8 +150,10 @@ namespace BizHawk.Emulation.Cores.Libretro
 		{
 			public retro_system_info retro_system_info;
 			public retro_system_av_info retro_system_av_info;
+
 			public uint retro_serialize_size_initial; //size_t :(
 			public uint retro_serialize_size; //size_t :(
+
 			public uint retro_region;
 			public uint retro_api_version;
 			public retro_pixel_format pixel_format; //default is 0 -- RETRO_PIXEL_FORMAT_0RGB1555
@@ -197,8 +199,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 			public CommStructEnv env;
 
 			//this should always be used in pairs
-			public fixed uint buf[(int)BufId.BufId_Num]; //ACTUALLY A POINTER but can't marshal it :(
-			public fixed int buf_size[(int)BufId.BufId_Num];
+			public fixed ulong buf[(int)BufId.BufId_Num]; //actually a pointer, but can't marshal IntPtr, so dumb
+			public fixed ulong buf_size[(int)BufId.BufId_Num]; //actually a size_t
 
 			//utilities
 			public bool GetBoolValue() { return value != 0; } //should this be here or by the other helpers? I dont know

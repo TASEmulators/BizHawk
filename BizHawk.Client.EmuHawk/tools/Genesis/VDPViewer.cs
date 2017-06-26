@@ -7,9 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using BizHawk.Client.Common;
-using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using System.Drawing.Imaging;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx64;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -18,7 +19,8 @@ namespace BizHawk.Client.EmuHawk
 		[RequiredService]
 		private GPGX Emu { get; set; }
 
-		private LibGPGX.VDPView View = new LibGPGX.VDPView();
+		private GPGX.VDPView View;
+
 		int palindex = 0;
 
 		protected override System.Drawing.Point ScrollToControl(System.Windows.Forms.Control activeControl)
@@ -81,7 +83,7 @@ namespace BizHawk.Client.EmuHawk
 			bv.Refresh();
 		}
 
-		unsafe void DrawPalettes(int *pal)
+		unsafe void DrawPalettes(int* pal)
 		{
 			var lockdata = bmpViewPal.BMP.LockBits(new Rectangle(0, 0, 16, 4), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			int pitch = lockdata.Stride / sizeof(int);
@@ -121,23 +123,24 @@ namespace BizHawk.Client.EmuHawk
 
 		public void NewUpdate(ToolFormUpdateType type) { }
 
-		public void UpdateValues()
+		public unsafe void UpdateValues()
 		{
 			if (Emu == null)
 				return;
-			Emu.UpdateVDPViewContext(View);
-			unsafe
+
+			using ((View = Emu.UpdateVDPViewContext()).EnterExit())
 			{
 				int* pal = (int*)View.ColorCache;
 				//for (int i = 0; i < 0x40; i++)
 				//	pal[i] |= unchecked((int)0xff000000);
 				DrawPalettes(pal);
 				DrawTiles();
-				ushort *VRAMNT = (ushort*)View.VRAM;
-				byte *tiles = (byte*)View.PatternCache;
+				ushort* VRAMNT = (ushort*)View.VRAM;
+				byte* tiles = (byte*)View.PatternCache;
 				DrawNameTable(View.NTA, VRAMNT, tiles, pal, bmpViewNTA);
 				DrawNameTable(View.NTB, VRAMNT, tiles, pal, bmpViewNTB);
 				DrawNameTable(View.NTW, VRAMNT, tiles, pal, bmpViewNTW);
+				View = null;
 			}
 		}
 

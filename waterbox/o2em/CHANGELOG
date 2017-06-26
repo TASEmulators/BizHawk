@@ -1,0 +1,316 @@
+v1.18:  01/15/2007
+	
+	- added the option -biosdir to define bios directory path
+	- added the option -romdir to define rom directory path
+	- added the option -help to help display
+	- directory search fix : When you don't have the "roms/" and/or "bios/" 
+	  directory, the program will dump core (by Walter de Jong).
+	- O2Launcher works now, o2em ignore roms and bios path if o2Launcher
+	  is running.
+	- quad display fix: changed the way quad chars are drawn, fixes problems
+	  in KTAA as well as score display in Black Hole and Red Baron (Soeren Gust)
+	- support for Soerens MegaCART bank switching (Information about
+	  how to use this will be included in the next verison of Soerens
+	  Bios-Documentation) (Soeren Gust)
+	- new feature in debugger: savevpp to make an uncompressed dump of the VPP
+	  screen and slide data (Soeren Gust)
+	- dis48: fix to work under linux again (Soeren Gust)
+	- init_sound volume is not set to maximum (By Gunter Wambaugh)
+	- added makefile and options for freeBSD (By Gunter Wambaugh)
+	- Other minor fixes.
+
+
+	all the next changes were implemented by Manopac:	
+
+	- added the option -s0 to redefine the system keys (see o2em.txt for usage)
+	- bugfix: highscore-file is only written if scoretype is set
+	- changed Default Stick 1 key from right <Control> to "L" to enable Fire and 
+	  movement at the same time
+	- two joysticks can be used now: first stick in command-line is mapped to joystick 1,
+	  second to joystick 2 (compatible to old command line options)
+	- changes in debugger: status of registers is now displayed after instructions 
+	  are executed
+	- new features in debugger: savedatah and savedatab to save data from memory 
+	  as sourcecode ("db xxx")
+	- changed Default Stick 1 key from right <Control> to "L" to enable Fire
+	  and movement at the same time
+	- two joysticks can be used now: first stick in command-line is mapped to
+	  joystick 1, second to joystick 2 (compatible to old command line options)
+	- changes in debugger: status of registers is now displayed after 
+	  instructions are executed
+	- new features in debugger: savedatah and savedatab to save data from memory
+	  as sourcecode ("db xxx")
+	- removed the limit that KTAA was the only 3K enabled rom (every
+	  rom divideable by 3K is allowed now)
+	- dis48: added option -bios to disassemble bios (start at address 0)
+	- dis48: empty line after each page
+	- new feature to save the highscore in games (F6 to set in game)
+	- new feature to save/load state (F2/F3) (with command line option savefile)
+	- new features in debugger: savevdc and saveext to save data from Extram and VDC
+	- new feature in debugger: viewsprite
+	- new feature in debugger: bp (breakpoint) - o2em runs with output until 
+	  breakpoint is reached (bpc to clear)
+	- new feature in debugger: so (step over) - runs to next instruction in memory
+	- more explicit register display (P1 & PSW)
+	- fixed the "double size sprites are shifted only 1 instead of 2 pixles" bug
+	- new features in debugger (load / save file, change values in memory, 
+	  assemble to memory)
+
+v1.17:  05/01/2005
+
+    - BIOS identified by CRC, to activate a specific BIOS type: -o2rom, or 
+    -g7400, or -c52, or -jopac. The old form can be used. See O2EM.txt for more.
+
+    - Automatic identification of BIOS VP+ when the selected game is only VP+.
+
+    - Creation of the standard directories (ROMS, BIOS, VOICE) when uncompressing
+    O2EM archive. 
+
+    - ATLANTIS, FROGGER, COMANDO NOTURNO and CATCH THE BALL now work without 
+    graphic bugs. This correction is based on a specific patch for each game.
+    Thanks Rafael Cardoso for reports these bugs.
+
+
+V1.16:  12/28/2004
+
+    - Fixed a slowdown in Pick Axe Pete (based on a patch by Arlindo de
+    Oliveira).
+    
+    - Reverted back to the old palette for O2 games, while using the new
+    palette for Videpac Plus games (selected based on bios version in use).
+
+
+V1.15:  12/12/2004
+
+    - Added support for 12kb and 16kb games. Trans American Rally+ works now.
+    
+    - Added fixes to the VP+ gfx emulation made by Soeren Gust. Flashpoint
+    works properly now.
+    
+    - Fixed a bug in the Windows-specific emulation timing code that caused
+    the emulator to crash when run on a Windows machine which was on for a
+    few days without a reboot.
+    
+    - Fixed a bug in the emulation of the DAA instruction, which caused bugs
+    in the score of several games (Le Tresor Englouti, Cosmic Conflict, etc.).
+    
+    - Fixed instruction timings (patch by Soeren)
+    
+    - Modified the palette to use values calculated from the Videopac+ RGB
+    encoder specs by René van den Enden, instead of guessed values.
+    
+    - Other minor fixes.
+    
+
+
+V1.01:  10/23/2002
+
+    - Major speed optimization.
+    
+    - Implemented VDC <-> VP+ collision detection.
+    
+    - On the original machines it is possible to make all VDC 
+    colors bright by clearing P17. This affects the background and
+    dark grid colors. Implemented. Now the Killer Bees! intro screen
+    works correctly.
+    
+    - Fixed the wrong color order when mixing between VP+ and VDC graphics.
+    Jopac Moto Crash now works.  Fixed by Soeren Gust.
+    
+    - Now the VBLANK pulse is visible on the T1 input. This can be used
+    to differentiate between PAL and NTSC.
+
+    - Other minor fixes.
+
+
+
+V1.00:  09/12/2002
+
+    - Implemented complete Videopac+ G7400 emulation. Implemented it from
+    scratch, based on the EF9340/41 datasheet (sent by Simon Scudder), on
+    the technical docs made by Soeren Gust and disassembling the VP+ bios.
+    You will need a Videopac+ bios image file in order to use this feature.
+    You can use the -bios option to select it, rename the file to o2rom.bin,
+    or select it in O2EM Launcher settings. Please note that a few O2 games
+    do not work with the VP+ bios, so most likely you will need both bios
+    versions to be able to run all the games. For copyright reasons these
+    files are not included with O2EM, but you can find them in the Internet.
+    
+    - Added a default configuration file. Now you can specify your preferred
+    options in a configuration file, instead of typing it every time you
+    execute the emulator. The command line options override the default
+    settings in the file. See O2EM.txt for more.
+    
+    - Extended the -s1 and -s2 switches to allow customizable keys with the
+    joystick emulation. Based on a patch written by Zimmerman that
+    implemented customizable keys it in a different way. See O2EM.txt for
+    more.
+    
+    - Added support to the Four in 1 Row game.
+    
+    - Added the -exrom switch to enable the use of a special ROM mapping mode.
+    See O2EM.txt for more.
+
+    - Improved the sound with Frogger and Popeye.
+
+    - Minor fixes.
+
+
+
+V0.90:  08/07/2002
+
+    - Fixed the color palette, based on screen shots from a real O2 console.
+
+    - Fixed a bug in the sprite drawing priority. Now in several games the
+    sprites look better (Demon Attack, Turtles, Atlantis, Computer Golf,
+    Football, Helicopter Rescue, etc.).
+
+    - Modified the emulation of sprites and characters in the border region of
+    the screen. Fixed the bug of character wrapping to the other side of the
+    screen and other problems (Atlantis and others). Now the main characters of
+    P.T.Barnum's Acrobats! do not fall from the edge of screen.
+
+    - Fixed the audio pitch and implemented white noise emulation. Now
+    explosions sound much better!
+
+    - Fixed a background line blinking problem that used to affect lots of
+    games.
+
+    - Fixed the color bar at the left of the screen.
+
+    - Enhanced the support for European/Pal games. Now several games look and
+    play better. Shark Hunter intro works correctly. Frogger and Depth Charge
+    are fully playable !
+
+    - Implemented an audio filter that accurately emulates the behavior of the
+    low-pass filter present in the audio output of the real console. The sound
+    is better now. (Enable it with -filter).
+
+    - Fixed the screen size. Now you can see all the graphics in the game,
+    including the time in Labyrinth.
+
+    - Implemented Dot Grid emulation. Now Marksman is playable.
+
+    - Implemented a cached video emulation, to make it run faster with slow
+    machines / video cards.
+
+    - Implemented screen shots (use the F8 key and the -scshot option)
+
+    - Implemented the sprite shifted/smooth modes. Now the main character of
+    Q*bert looks hi-res.
+
+    - Several minor fixes.
+
+
+    The following fixes were made by Soeren Gust:
+
+
+    - Implemented the missing JNI instruction.
+
+    - Implemented the 1kb data ROM / 3kb program ROM addressing mode used by
+    Musician.
+
+    - Fixed the height of the grid lines.
+
+    - Added support for 3Kb per bank
+
+
+
+V0.87:  06/21/2002
+
+    - Fixed a collision bug introduced with version 0.86.
+    Now Cosmic Conflict runs again. Thanks to Dan Boris for reporting
+    this bug.
+
+    - Implemented the option to set the O2 bios file name/dir, as
+    requested by my friend Heitor, to enable him to support it with his
+    nice O2EMLauncher frontend for O2EM 0.8x, as requested by its users.
+    Get O2EMLauncher here: http://www.odyssey.com.br/o2emlauncher/
+
+
+
+Version 0.86:
+
+    - Fixed a bug in the drawing of quad characters. Now you can play
+    Q*Bert and Nimble Numbers Ned. Some other games will also have
+    improved graphics or text (Popeye, Super Cobra, etc.) .
+
+    - Fixed another bug in the collision detection. Now Demon Attack
+    works correctly.
+
+
+
+Version 0.85:
+
+    - Fixed the collision detection. Now you can play Killer Bees!
+
+    - Implemented partial support to mid-screen changes to the VDC
+    registers without interrupts. Now several games look better, and some
+    that didn't work can be played, including Power Lords and Super Cobra.
+
+    - Fixed a bug in the video emulation that made some games like Turtles
+    and Shark Hunter appear with some strange static characters.
+
+
+
+Version 0.80:
+
+The following changes were already implemented by Daniel Boris in version
+0.701.  Implemented them again in the sources based on version v0.65:
+
+    - Fixed a bug in the CPU core related to the handling of branch
+    instructions near page boundaries. (Without it Sid the Spellbinder
+    crashed after the first level).
+
+    - CPU core now jumps to the correct address on an external interrupt.
+    Killer Bees runs again.
+
+    - Fixed shape of '$' character and added missing 64th character to
+    character set (ripped the correct character data from the v0.701
+    executable file).
+
+    - Fixed bug in drawing of bottom grid line.
+
+    - Added Voice support. Re implemented it from scratch, based on O2
+    technical specs released by Dan Boris and disassembling Smithereens
+    and Turtles (now it always work with Turtles).
+
+The following changes are new to version 0.80:
+
+    - Updated the code to compile with Allegro 4.0.x and to work
+    without changes under Windows, Linux and DOS, with optimizations
+    for each.
+
+    - Implemented the option of windowed or fullscreen video modes,
+    with scaling, centering and optional 50% scanlines.
+
+    - Cleaned the code to make it more portable and maintainable.
+
+    - Improved timing, using the most accurate way available for
+    each platform.
+
+    - Fixed the keyboard scan code translation table.
+
+    - Fixed and improved the built-in debugger.
+
+    - Fixed the reset. It now works with Turtles.
+
+    - Fixed joystick detection code.
+
+    - Implemented variable speed control relative to original O2.
+
+    - Implemented individual volume control for sounds and voice.
+
+    - Implemented Pause/Information (F1).
+
+    - Avoided collision of keyboard input with key joystick
+    emulation. Now Caps Lock enables/disables the W,D,S,A,Space keys
+    for keyboard input when they are used by joystick emulation.
+    Works well with games like K.C.'s Krazy Chase.
+
+    - It now releases more CPU time to the system (if possible).
+
+    - Other minor changes/fixes.
+
+
+

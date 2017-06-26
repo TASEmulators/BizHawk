@@ -4,6 +4,7 @@ using System.IO;
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using System.Runtime.InteropServices;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 {
@@ -17,7 +18,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 				return new byte[0];
 
 			byte[] ret = new byte[size];
-			Marshal.Copy(area, ret, 0, size);
+			using (_elf.EnterExit())
+				Marshal.Copy(area, ret, 0, size);
 			return ret;
 		}
 

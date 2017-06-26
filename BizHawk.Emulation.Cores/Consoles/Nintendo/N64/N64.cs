@@ -118,18 +118,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				case N64SyncSettings.RspType.Rsp_Hle:
 					rsp = "mupen64plus-rsp-hle.dll";
 					break;
-				case N64SyncSettings.RspType.Rsp_Z64_hlevideo:
-					rsp = "mupen64plus-rsp-z64-hlevideo.dll";
-					break;
-				case N64SyncSettings.RspType.Rsp_cxd4:
-					rsp = "mupen64plus-rsp-cxd4.dll";
-					break;
+				//case N64SyncSettings.RspType.Rsp_cxd4:
+				//	rsp = "mupen64plus-rsp-cxd4.dll";
+				//	break;
 			}
 
 			api.AttachPlugin(mupen64plusApi.m64p_plugin_type.M64PLUGIN_RSP, rsp);
 
 			InitMemoryDomains();
-			if (_syncSettings.Core != N64SyncSettings.CoreType.Dynarec)
+			//if (_syncSettings.Core != N64SyncSettings.CoreType.Dynarec)
 			{
 				ConnectTracer();
 				SetBreakpointHandler();

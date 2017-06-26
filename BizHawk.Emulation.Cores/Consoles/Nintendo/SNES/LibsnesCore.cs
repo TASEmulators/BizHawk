@@ -58,7 +58,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_settings = (SnesSettings)settings ?? new SnesSettings();
 			_syncSettings = (SnesSyncSettings)syncSettings ?? new SnesSyncSettings();
 
-			Api = new LibsnesApi(GetDllPath())
+			// TODO: pass profile here
+			Api = new LibsnesApi(CoreComm.CoreFileProvider.DllPath())
 			{
 				ReadHook = ReadHook,
 				ExecHook = ExecHook,
@@ -72,19 +73,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			
 			Api.CMD_init();
 
-			Api.QUERY_set_video_refresh(snes_video_refresh);
-			Api.QUERY_set_input_poll(snes_input_poll);
-			Api.QUERY_set_input_state(snes_input_state);
-			Api.QUERY_set_input_notify(snes_input_notify);
 			Api.QUERY_set_path_request(snes_path_request);
 
 			_scanlineStartCb = new LibsnesApi.snes_scanlineStart_t(snes_scanlineStart);
 			_tracecb = new LibsnesApi.snes_trace_t(snes_trace);
 
 			_soundcb = new LibsnesApi.snes_audio_sample_t(snes_audio_sample);
-			Api.QUERY_set_audio_sample(_soundcb);
-
-			RefreshPalette();
 
 			// start up audio resampler
 			InitAudio();
@@ -169,21 +163,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			SetupMemoryDomains(romData, sgbRomData);
 
-			// DeterministicEmulation = deterministicEmulation; // Note we don't respect the value coming in and force it instead
-			if (DeterministicEmulation) // save frame-0 savestate now
-			{
-				var ms = new MemoryStream();
-				var bw = new BinaryWriter(ms);
-				bw.Write(CoreSaveState());
-				bw.Write(true); // framezero, so no controller follows and don't frameadvance on load
-				bw.Close();
-				_savestatebuff = ms.ToArray();
-			}
-
 			if (CurrentProfile == "Compatibility")
 			{
 				ser.Register<ITraceable>(_tracer);
 			}
+
+			Api.QUERY_set_path_request(null);
+			Api.QUERY_set_video_refresh(snes_video_refresh);
+			Api.QUERY_set_input_poll(snes_input_poll);
+			Api.QUERY_set_input_state(snes_input_state);
+			Api.QUERY_set_input_notify(snes_input_notify);
+			Api.QUERY_set_audio_sample(_soundcb);
+			Api.Seal();
+			RefreshPalette();
 		}
 
 		private readonly GameInfo _game;
@@ -198,7 +190,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private LoadParams _currLoadParams;
 		private SpeexResampler _resampler;
 		private int _timeFrameCounter;
-		private bool _nocallbacks; // disable all external callbacks.  the front end should not even know the core is frame advancing
 		private bool _disposed;
 
 		public bool IsSGB { get; }
@@ -208,19 +199,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public string BoardName => "SGB";
 		}
 
-		public string CurrentProfile
-		{
-			get
-			{
-				// TODO: This logic will only work until Accuracy is ready, would we really want to override the user's choice of Accuracy with Compatibility?
-				if (_game.OptionValue("profile") == "Compatibility")
-				{
-					return "Compatibility";
-				}
-
-				return _syncSettings.Profile;
-			}
-		}
+		public string CurrentProfile => "Compatibility"; // We no longer support performance, and accuracy isn't worth the effort so we shall just hardcode this one
 
 		public LibsnesApi Api { get; }
 
@@ -372,20 +351,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			int[] tmp = SnesColors.GetLUT(pal);
 			fixed (int* p = &tmp[0])
 				Api.QUERY_set_color_lut((IntPtr)p);
-		}
-
-		private string GetDllPath()
-		{
-			var exename = "libsneshawk-32-" + CurrentProfile.ToLower() + ".dll";
-
-			string dllPath = Path.Combine(CoreComm.CoreFileProvider.DllPath(), exename);
-
-			if (!File.Exists(dllPath))
-			{
-				throw new InvalidOperationException("Couldn't locate the DLL for SNES emulation for profile: " + CurrentProfile + ". Please make sure you're using a fresh dearchive of a BizHawk distribution.");
-			}
-
-			return dllPath;
 		}
 
 		private void ReadHook(uint addr)
@@ -573,6 +538,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					}
 				}
 			}
+
+			VirtualHeight = BufferHeight;
+			VirtualWidth = BufferWidth;
+			if (VirtualHeight * 2 < VirtualWidth)
+				VirtualHeight *= 2;
+			if (VirtualHeight > 240)
+				VirtualWidth = 512;
+			VirtualWidth = (int)Math.Round(VirtualWidth * 1.146);
 		}
 
 		private void RefreshMemoryCallbacks(bool suppress)

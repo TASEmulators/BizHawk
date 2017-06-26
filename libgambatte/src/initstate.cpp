@@ -1146,7 +1146,7 @@ static void setInitialDmgIoamhram(unsigned char *const ioamhram) {
 
 } // anon namespace
 
-void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbMode, const std::uint32_t now) {
+void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbMode, const std::uint32_t now, bool boot_bios) {
 	static const unsigned char cgbObjpDump[0x40] = {
 		0x00, 0x00, 0xF2, 0xAB, 
 		0x61, 0xC2, 0xD9, 0xBA, 
@@ -1166,35 +1166,66 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 		0x83, 0x40, 0x0B, 0x77
 	};
 	
-	state.cpu.cycleCounter = cgb ? 0x102A0 : 0x102A0 + 0x8D2C;
-	state.cpu.PC = 0x100;
-	state.cpu.SP = 0xFFFE;
-	state.cpu.A = cgb * 0x10 | 0x01;
-	state.cpu.B = cgb & gbaCgbMode;
-	state.cpu.C = 0x13;
-	state.cpu.D = 0x00;
-	state.cpu.E = 0xD8;
-	state.cpu.F = 0xB0;
-	state.cpu.H = 0x01;
-	state.cpu.L = 0x4D;
-	state.cpu.skip = false;
+	if (boot_bios) 
+	{
+		state.cpu.PC = 0x00;
+		state.cpu.SP = 0xFFFF;
+		state.cpu.A = 0;
+		state.cpu.B = 0;
+		state.cpu.C = 0x0;
+		state.cpu.D = 0x0;
+		state.cpu.E = 0x0;
+		state.cpu.F = 0x0;
+		state.cpu.H = 0x0;
+		state.cpu.L = 0x0;
+		state.cpu.skip = false;
+		state.cpu.cycleCounter = 0;
+		state.mem.ioamhram.ptr[0x140] = 0x00;
+		state.mem.ioamhram.ptr[0x104] = 0x00;
+		state.mem.using_bios = true;
+	}
+	else
+	{
+		state.cpu.PC = 0x100;
+		state.cpu.SP = 0xFFFE;
+		state.cpu.A = cgb * 0x10 | 0x01;
+		state.cpu.B = cgb & gbaCgbMode;
+		state.cpu.C = 0x13;
+		state.cpu.D = 0x00;
+		state.cpu.E = 0xD8;
+		state.cpu.F = 0xB0;
+		state.cpu.H = 0x01;
+		state.cpu.L = 0x4D;
+		state.cpu.skip = false;
+		setInitialVram(state.mem.vram.ptr, cgb);
+		state.cpu.cycleCounter = cgb ? 0x102A0 : 0x102A0 + 0x8D2C;
+	}
 	
 	std::memset(state.mem.sram.ptr, 0xFF, state.mem.sram.getSz());
 	
-	setInitialVram(state.mem.vram.ptr, cgb);
+	
 
 	if (cgb) {
 		setInitialCgbWram(state.mem.wram.ptr);
-		setInitialCgbIoamhram(state.mem.ioamhram.ptr);
 	} else {
 		setInitialDmgWram(state.mem.wram.ptr);
-		setInitialDmgIoamhram(state.mem.ioamhram.ptr);
 	}
 	
-	state.mem.ioamhram.ptr[0x104] = 0x1C;
-	state.mem.ioamhram.ptr[0x140] = 0x91;
-	state.mem.ioamhram.ptr[0x144] = 0x00;
-	
+	if (!boot_bios)
+	{
+		if (cgb) {
+			setInitialCgbIoamhram(state.mem.ioamhram.ptr);
+		}
+		else {
+			setInitialDmgIoamhram(state.mem.ioamhram.ptr);
+		}
+		
+		
+		state.mem.ioamhram.ptr[0x140] = 0x91;
+		state.mem.ioamhram.ptr[0x104] = 0x1C;
+		state.mem.ioamhram.ptr[0x144] = 0x00;
+	}
+
 	state.mem.divLastUpdate = 0;
 	state.mem.timaLastUpdate = 0;
 	state.mem.tmatime = DISABLED_TIME;
@@ -1257,7 +1288,6 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.ppu.nextM0Irq = 0;
 	state.ppu.oldWy = state.mem.ioamhram.get()[0x14A];
 	state.ppu.pendingLcdstatIrq = false;
-	
 	
 	state.spu.cycleCounter = 0x1000 | (state.cpu.cycleCounter >> 1 & 0xFFF); // spu.cycleCounter >> 12 & 7 represents the frame sequencer position.
 	

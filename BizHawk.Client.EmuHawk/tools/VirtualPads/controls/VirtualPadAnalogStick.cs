@@ -40,12 +40,16 @@ namespace BizHawk.Client.EmuHawk
 		public float[] RangeX = new float[] { -128f, 0.0f, 127f };
 		public float[] RangeY = new float[] { -128f, 0.0f, 127f };
 
+		public string SecondaryName { get; set; }
+
 
 		private void VirtualPadAnalogStick_Load(object sender, EventArgs e)
 		{
 			AnalogStick.Name = Name;
 			AnalogStick.XName = Name;
-			AnalogStick.YName = Name.Replace("X", "Y"); // TODO: allow schema to dictate this but this is a convenient default
+			AnalogStick.YName = !string.IsNullOrEmpty(SecondaryName)
+				? SecondaryName
+				: Name.Replace("X", "Y"); // Fallback
 			AnalogStick.SetRangeX(RangeX);
 			AnalogStick.SetRangeY(RangeY);
 
@@ -228,7 +232,7 @@ namespace BizHawk.Client.EmuHawk
 			manualR.ValueChanged -= polarNumericChangedEventHandler;
 			manualTheta.ValueChanged -= polarNumericChangedEventHandler;
 
-			manualR.Value = (decimal)Math.Sqrt(Math.Pow(AnalogStick.X - rangeAverageX, 2) + Math.Pow(AnalogStick.Y - rangeAverageY, 2));
+			manualR.Value =  Math.Min(manualR.Value, (decimal)Math.Sqrt(Math.Pow(AnalogStick.X - rangeAverageX, 2) + Math.Pow(AnalogStick.Y - rangeAverageY, 2)));
 			manualTheta.Value = (decimal)(Math.Atan2(AnalogStick.Y - rangeAverageY, AnalogStick.X - rangeAverageX) * (180 / Math.PI));
 
 			manualR.ValueChanged += polarNumericChangedEventHandler;

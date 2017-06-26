@@ -172,7 +172,7 @@ struct CommStruct
 
 	//always used in pairs
 	void* buf[BufId_Num];
-	s32 buf_size[BufId_Num];
+	size_t buf_size[BufId_Num];
 
 	//===========================================================
 	//private stuff
@@ -187,7 +187,7 @@ struct CommStruct
 		size_t len = strlen(str);
 		CopyBuffer(id, (void*)str, len+1);
 	}
-	void CopyBuffer(int id, void* ptr, s32 size)
+	void CopyBuffer(int id, void* ptr, size_t size)
 	{
 		if (privbuf[id]) free(privbuf[id]);
 		buf[id] = privbuf[id] = malloc(size);
@@ -195,7 +195,7 @@ struct CommStruct
 		buf_size[id] = size;
 	}
 
-	void SetBuffer(int id, void* ptr, s32 size)
+	void SetBuffer(int id, void* ptr, size_t size)
 	{
 		buf[id] = ptr;
 		buf_size[id] = size;

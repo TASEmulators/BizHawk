@@ -84,8 +84,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private unsafe void MakeMemoryDomain(string name, LibsnesApi.SNES_MEMORY id, MemoryDomain.Endian endian, int byteSize = 1)
 		{
 			int size = Api.QUERY_get_memory_size(id);
-			int mask = size - 1;
-			bool pow2 = Util.IsPowerOfTwo(size);
 
 			// if this type of memory isnt available, dont make the memory domain (most commonly save ram)
 			if (size == 0)
@@ -95,46 +93,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			byte* blockptr = Api.QUERY_get_memory_data(id);
 
-			MemoryDomain md;
-
-			if (id == LibsnesApi.SNES_MEMORY.OAM)
-			{
-				// OAM is actually two differently sized banks of memory which arent truly considered adjacent. 
-				// maybe a better way to visualize it is with an empty bus and adjacent banks
-				// so, we just throw away everything above its size of 544 bytes
-				if (size != 544)
-				{
-					throw new InvalidOperationException("oam size isnt 544 bytes.. wtf?");
-				}
-
-				md = new MemoryDomainDelegate(
-					name,
-					size,
-					endian,
-					addr => addr < 544 ? blockptr[addr] : (byte)0x00,
-					(addr, value) => { if (addr < 544) { blockptr[addr] = value; } },
-					byteSize);
-			}
-			else if (pow2)
-			{
-				md = new MemoryDomainDelegate(
-					name,
-					size,
-					endian,
-					addr => blockptr[addr & mask],
-					(addr, value) => blockptr[addr & mask] = value,
-					byteSize);
-			}
-			else
-			{
-				md = new MemoryDomainDelegate(
-					name,
-					size,
-					endian,
-					addr => blockptr[addr % size],
-					(addr, value) => blockptr[addr % size] = value,
-					byteSize);
-			}
+			var md = new MemoryDomainIntPtrMonitor(name, MemoryDomain.Endian.Little, (IntPtr)blockptr, size, 
+				id != LibsnesApi.SNES_MEMORY.CARTRIDGE_ROM, // hack: for just this one memory area, it will be readonly
+				byteSize, Api);
 
 			_memoryDomainList.Add(md);
 		}
@@ -152,19 +113,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			var md = new MemoryDomainDelegate("System Bus", 0x1000000, MemoryDomain.Endian.Little,
 				addr =>
 				{
-					var a = FakeBusMap((int)addr);
-					if (a.HasValue)
+					using (Api.EnterExit())
 					{
-						return blockptr[a.Value];
-					}
+						var a = FakeBusMap((int)addr);
+						if (a.HasValue)
+						{
+							return blockptr[a.Value];
+						}
 
-					return FakeBusRead((int)addr);
+						return FakeBusRead((int)addr);
+					}
 				},
 				(addr, val) =>
 				{
-					var a = FakeBusMap((int)addr);
-					if (a.HasValue)
-						blockptr[a.Value] = val;
+					using (Api.EnterExit())
+					{
+						var a = FakeBusMap((int)addr);
+						if (a.HasValue)
+							blockptr[a.Value] = val;
+					}
 				}, wordSize: 2);
 			_memoryDomainList.Add(md);
 		}

@@ -35,7 +35,7 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.CoreInfoPanel = new System.Windows.Forms.Panel();
-			this.textBox1 = new System.Windows.Forms.TextBox();
+			//this.textBox1 = new System.Windows.Forms.TextBox();
 			this.VersionLabel = new System.Windows.Forms.Label();
 			this.btnCopyHash = new System.Windows.Forms.Button();
 			this.linkLabel2 = new System.Windows.Forms.LinkLabel();
@@ -110,19 +110,6 @@
 			this.CoreInfoPanel.Size = new System.Drawing.Size(423, 259);
 			this.CoreInfoPanel.TabIndex = 14;
 			// 
-			// textBox1
-			// 
-			this.textBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-			this.textBox1.Location = new System.Drawing.Point(13, 462);
-			this.textBox1.Multiline = true;
-			this.textBox1.Name = "textBox1";
-			this.textBox1.ReadOnly = true;
-			this.textBox1.Size = new System.Drawing.Size(423, 33);
-			this.textBox1.TabIndex = 16;
-			this.textBox1.Text = "jabo_direct3d8_patched.dll is distributed with the special permission of the auth" +
-    "or.";
-			// 
 			// VersionLabel
 			// 
 			this.VersionLabel.AutoSize = true;
@@ -189,7 +176,7 @@
 			this.Controls.Add(this.linkLabel3);
 			this.Controls.Add(this.linkLabel2);
 			this.Controls.Add(this.btnCopyHash);
-			this.Controls.Add(this.textBox1);
+			//this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.CoreInfoPanel);
 			this.Controls.Add(this.VersionLabel);
 			this.Controls.Add(this.label4);
@@ -217,7 +204,7 @@
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.Panel CoreInfoPanel;
-		private System.Windows.Forms.TextBox textBox1;
+		//private System.Windows.Forms.TextBox textBox1;
 		private System.Windows.Forms.Label VersionLabel;
 		private System.Windows.Forms.Button btnCopyHash;
 		private System.Windows.Forms.LinkLabel linkLabel2;

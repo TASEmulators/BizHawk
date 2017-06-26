@@ -64,7 +64,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\src\Glitch64\inc;..\..\..\mupen64plus-win32-deps\boost-1.53.0\;..\..\..\mupen64plus-core\src\api;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\include;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src\Glitch64\inc;..\..\..\mupen64plus-win32-deps\boost-1.53.0\;..\..\..\mupen64plus-core\src\api;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\include;..\..\..\mupen64plus-win32-deps\libpng-1.6.18\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_GLIBCXX_HAVE_BROKEN_VSWPRINTF;NO_FILTER_THREAD;_VARIADIC_MAX=10;_CRT_SECURE_NO_WARNINGS;__MSC__;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ExceptionHandling>Async</ExceptionHandling>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -83,7 +83,7 @@
       <Culture>0x0409</Culture>
     </ResourceCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glu32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\lib\SDL.lib;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\lib\libpng.lib;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\lib\zlib.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;msvcrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glu32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\lib\SDL.lib;..\..\..\mupen64plus-win32-deps\libpng-1.6.18\lib\libpng.lib;..\..\..\mupen64plus-win32-deps\zlib-1.2.8\lib\zlib.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;msvcrtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AdditionalLibraryDirectories>..\lib;..\..\..\mupen64plus-win32-deps\boost-1.53.0\boost\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -114,7 +114,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
-      <AdditionalIncludeDirectories>..\..\..\mupen64plus-win32-deps\boost-1.53.0\;..\..\..\mupen64plus-core\src\api;..\..\src\Glide64;..\..\src\Glide64\inc;..\..\src\GlideHQ;..\..\src\GlideHQ\tc-1.1+;..\..\src\Glitch64;..\..\src\Glitch64\inc;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\include;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\mupen64plus-win32-deps\boost-1.53.0\;..\..\..\mupen64plus-core\src\api;..\..\src\Glide64;..\..\src\Glide64\inc;..\..\src\GlideHQ;..\..\src\GlideHQ\tc-1.1+;..\..\src\Glitch64;..\..\src\Glitch64\inc;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.8\include;..\..\..\mupen64plus-win32-deps\libpng-1.6.18\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_GLIBCXX_HAVE_BROKEN_VSWPRINTF;NO_FILTER_THREAD;_VARIADIC_MAX=10;_CRT_SECURE_NO_WARNINGS;__MSC__;WIN32;__VISUALC__;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>Async</ExceptionHandling>
@@ -137,7 +137,7 @@
       <AdditionalDependencies>SDL.lib;zlib.lib;libpng.lib;opengl32.lib;winmm.lib;comctl32.lib;rpcrt4.lib;wsock32.lib;msvcrt.lib;LIBCMT.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>..\..\..\mupen64plus-win32-deps\boost-1.53.0\boost\libs;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\lib;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>..\..\..\mupen64plus-win32-deps\boost-1.53.0\boost\libs;..\..\..\mupen64plus-win32-deps\libpng-1.6.18\lib;..\..\..\mupen64plus-win32-deps\zlib-1.2.8\lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ProgramDatabaseFile>$(TargetDir)$(TargetName).pdb</ProgramDatabaseFile>
       <ImportLibrary>
       </ImportLibrary>

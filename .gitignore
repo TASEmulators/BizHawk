@@ -71,3 +71,5 @@ ExternalCoreProjects/Virtu/bin/*.*
 
 **/StyleCop.Cache
 libsnes/vs2015/libsnes.VC.db
+waterbox/**/*.wbx
+waterbox/**/*.wbx.in

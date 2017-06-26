@@ -7,6 +7,7 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 namespace BizHawk.Client.Common
 {
@@ -351,6 +352,11 @@ namespace BizHawk.Client.Common
 
 			// Neshawk and Quicknes have incompatible savestates, store the name to keep them separate
 			if (Global.Emulator.SystemId == "NES")
+			{
+				name += "." + Global.Emulator.Attributes().CoreName;
+			}
+
+			if (Global.Emulator is Snes9x) // Keep snes9x savestate away from libsnes, we want to not be too tedious so bsnes names will just have the profile name not the core name
 			{
 				name += "." + Global.Emulator.Attributes().CoreName;
 			}

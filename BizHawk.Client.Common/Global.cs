@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 // ReSharper disable StyleCop.SA1401
@@ -112,7 +112,7 @@ namespace BizHawk.Client.Common
 					case "SNES":
 						return SystemInfo.SNES;
 					case "GB":
-						if ((Emulator as Gameboy).IsCGBMode())
+						if ((Emulator as IGameboyCommon).IsCGBMode())
 						{
 							return SystemInfo.GBC;
 						}
@@ -144,6 +144,10 @@ namespace BizHawk.Client.Common
 						return SystemInfo.AppleII;
 					case "Libretro":
 						return SystemInfo.Libretro;
+					case "VB":
+						return SystemInfo.VirtualBoy;
+					case "NGP":
+						return SystemInfo.NeoGeoPocket;
 				}
 			}
 		}

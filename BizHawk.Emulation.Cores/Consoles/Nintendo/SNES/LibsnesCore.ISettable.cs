@@ -28,8 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public bool PutSyncSettings(SnesSyncSettings o)
 		{
-			bool ret = o.Profile != _syncSettings.Profile
-				|| o.LeftPort != _syncSettings.LeftPort
+			bool ret = o.LeftPort != _syncSettings.LeftPort
 				|| o.RightPort != _syncSettings.RightPort
 				|| o.LimitAnalogChangeSensitivity != _syncSettings.LimitAnalogChangeSensitivity;
 
@@ -57,7 +56,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			public bool CropSGBFrame { get; set; } = false;
 			public bool AlwaysDoubleSize { get; set; } = false;
-			public bool ForceDeterminism { get; set; } = true;
 			public string Palette { get; set; } = "BizHawk";
 
 			public SnesSettings Clone()
@@ -68,8 +66,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		public class SnesSyncSettings
 		{
-			public string Profile { get; set; } = "Performance"; // "Accuracy", and "Compatibility" are the other choicec, todo: make this an enum
-
 			public LibsnesControllerDeck.ControllerType LeftPort { get; set; } = LibsnesControllerDeck.ControllerType.Gamepad;
 			public LibsnesControllerDeck.ControllerType RightPort { get; set; } = LibsnesControllerDeck.ControllerType.Gamepad;
 

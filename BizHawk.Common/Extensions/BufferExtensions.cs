@@ -8,6 +8,7 @@ namespace BizHawk.Common.BufferExtensions
 {
 	public static class BufferExtensions
 	{
+		[Obsolete] // do we know of any situation where SaveAsHexFast doesn't work?
 		public static void SaveAsHex(this byte[] buffer, TextWriter writer)
 		{
 			foreach (var b in buffer)
@@ -39,6 +40,7 @@ namespace BizHawk.Common.BufferExtensions
 			writer.WriteLine();
 		}
 
+		[Obsolete] // do we know of any situation where SaveAsHexFast doesn't work?
 		public static void SaveAsHex(this byte[] buffer, TextWriter writer, int length)
 		{
 			for (int i = 0; i < length; i++)

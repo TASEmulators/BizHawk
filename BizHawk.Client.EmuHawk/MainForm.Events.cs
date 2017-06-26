@@ -473,34 +473,29 @@ namespace BizHawk.Client.EmuHawk
 					return;
 				}
 			}
-			else if (Emulator is LibsnesCore)
+			else if (Emulator is Snes9x)
 			{
-				var snes = (LibsnesCore)Emulator;
-				if (snes.CurrentProfile == "Performance")
+				var box = new MsgBox(
+					"While the Snes9x core is faster, it is not nearly as accurate as bsnes. \nIt is recommended that you switch to the bsnes core for movie recording\nSwitch to bsnes?",
+					"Accuracy Warning",
+					MessageBoxIcon.Warning);
+
+				box.SetButtons(
+					new[] { "Switch", "Cancel" },
+					new[] { DialogResult.Yes, DialogResult.Cancel });
+
+				box.MaximumSize = new Size(475, 350);
+				box.SetMessageToAutoSize();
+				var result = box.ShowDialog();
+
+				if (result == DialogResult.Yes)
 				{
-					var box = new MsgBox(
-						"While the performance core is faster, it is not stable enough for movie recording\n\nSwitch to Compatibility?",
-						"Stability Warning",
-						MessageBoxIcon.Warning);
-
-					box.SetButtons(
-						new[] { "Switch", "Cancel" },
-						new[] { DialogResult.Yes, DialogResult.Cancel });
-
-					box.MaximumSize = new Size(450, 350);
-					box.SetMessageToAutoSize();
-					var result = box.ShowDialog();
-
-					if (result == DialogResult.Yes)
-					{
-						var ss = snes.GetSyncSettings();
-						ss.Profile = "Compatibility";
-						snes.PutSyncSettings(ss);
-					}
-					else if (result == DialogResult.Cancel)
-					{
-						return;
-					}
+					Global.Config.SNES_InSnes9x = false;
+					RebootCore();
+				}
+				else if (result == DialogResult.Cancel)
+				{
+					return;
 				}
 			}
 
@@ -1189,94 +1184,82 @@ namespace BizHawk.Client.EmuHawk
 			UpdateKeyPriorityIcon();
 		}
 
-		private void GbInSgbMenuItem_Click(object sender, EventArgs e)
+		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			Global.Config.GB_AsSGB ^= true;
-
-			if (!Emulator.IsNull())
-			{
-				FlagNeedsReboot();
-			}
+			Atari7800CoreSubMenu.Visible = VersionInfo.DeveloperBuild;
+			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
+			
+			
+			allowGameDBCoreOverridesToolStripMenuItem.Checked = Global.Config.CoreForcingViaGameDB;
 		}
 
-		private void NesInQuickNESMenuItem_Click(object sender, EventArgs e)
+		private void NesCoreSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			QuicknesCoreMenuItem.Checked = Global.Config.NES_InQuickNES;
+			NesCoreMenuItem.Checked = !Global.Config.NES_InQuickNES;
+		}
+
+		private void NesCorePick_Click(object sender, EventArgs e)
 		{
 			Global.Config.NES_InQuickNES ^= true;
 
-			if (!Emulator.IsNull())
+			if (Emulator.SystemId == "NES")
 			{
 				FlagNeedsReboot();
 			}
-		}
-
-		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			Atari7800WithEmu7800MenuItem.Visible = VersionInfo.DeveloperBuild; // Don't expose Atari7800Hawk in releases yet
-			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
-			NesInQuickNESMenuItem.Checked = Global.Config.NES_InQuickNES;
-			gBAWithMGBAToolStripMenuItem.Checked = Global.Config.GBA_UsemGBA;
-			Atari7800WithEmu7800MenuItem.Checked = Global.Config.A78_UseEmu7800;
-			allowGameDBCoreOverridesToolStripMenuItem.Checked = Global.Config.CoreForcingViaGameDB;
 		}
 
 		private void CoreSNESSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			Coresnes9xMenuItem.Checked = Global.Config.SNES_InSnes9x;
-			Coresnes9xMenuItem.Visible = VersionInfo.DeveloperBuild;
-
-			LibsnesCore.SnesSyncSettings sss = (LibsnesCore.SnesSyncSettings)Global.Config.GetCoreSyncSettings<LibsnesCore>()
-				?? new LibsnesCore.SnesSyncSettings();
-
-			CorebsnesPerformanceMenuItem.Checked = sss.Profile == "Performance";
-			CorebsnesCompatibilityMenuItem.Checked = sss.Profile == "Compatibility";
+			CorebsnesMenuItem.Checked = !Global.Config.SNES_InSnes9x;
 		}
 
-		private void CorebsnesPerformanceMenuItem_Click(object sender, EventArgs e)
-		{
-			LibsnesCore.SnesSyncSettings sss = (LibsnesCore.SnesSyncSettings)Global.Config.GetCoreSyncSettings<LibsnesCore>()
-				?? new LibsnesCore.SnesSyncSettings();
-
-			string orig = sss.Profile;
-
-			sss.Profile = "Performance";
-			Global.Config.PutCoreSyncSettings<LibsnesCore>(sss);
-
-			if (Emulator is LibsnesCore && orig != sss.Profile)
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void CorebsnesCompatibilityMenuItem_Click(object sender, EventArgs e)
-		{
-			LibsnesCore.SnesSyncSettings sss = (LibsnesCore.SnesSyncSettings)Global.Config.GetCoreSyncSettings<LibsnesCore>()
-				?? new LibsnesCore.SnesSyncSettings();
-
-			string orig = sss.Profile;
-
-			sss.Profile = "Compatibility";
-			Global.Config.PutCoreSyncSettings<LibsnesCore>(sss);
-
-			if (Emulator is LibsnesCore && orig != sss.Profile)
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void CoreSnes9xMenuItem_Click(object sender, EventArgs e)
+		private void CoreSnesToggle_Click(object sender, EventArgs e)
 		{
 			Global.Config.SNES_InSnes9x ^= true;
 
-			if (Emulator is Snes9x || Emulator is LibsnesCore)
+			if (Emulator.SystemId == "SNES")
 			{
 				FlagNeedsReboot();
 			}
 		}
 
-		private void Atari7800WithEmu7800MenuItem_Click(object sender, EventArgs e)
+		private void GbaCoreSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			VbaNextCoreMenuItem.Checked = Global.Config.GBA_UsemGBA;
+			MgbaCoreMenuItem.Checked = !Global.Config.GBA_UsemGBA;
+		}
+
+		private void GbaCorePick_Click(object sender, EventArgs e)
+		{
+			Global.Config.GBA_UsemGBA ^= true;
+			if (Emulator.SystemId == "GBA")
+			{
+				FlagNeedsReboot();
+			}
+		}
+
+		private void Atari7800CoreSubMenu_DropDownOpened(object sender, EventArgs e)
+		{
+			Emu7800CoreMenuItem.Checked = Global.Config.A78_UseEmu7800;
+			Atari7800HawkCoreMenuItem.Checked = !Global.Config.A78_UseEmu7800;
+		}
+
+		private void Atari7800CorePick_Click(object sender, EventArgs e)
 		{
 			Global.Config.A78_UseEmu7800 ^= true;
-			if (Emulator is A7800Hawk || Emulator is Atari7800)
+			if (Emulator.SystemId == "A78")
+			{
+				FlagNeedsReboot();
+			}
+		}
+
+		private void GbInSgbMenuItem_Click(object sender, EventArgs e)
+		{
+			Global.Config.GB_AsSGB ^= true;
+
+			if (!Emulator.IsNull())
 			{
 				FlagNeedsReboot();
 			}
@@ -2106,71 +2089,6 @@ namespace BizHawk.Client.EmuHawk
 			SNESControllerConfigurationMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
 		}
 
-		private void SNESDisplayMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			var s = ((LibsnesCore)Emulator).GetSettings();
-
-			SnesBg1MenuItem.Checked = s.ShowBG1_1;
-			SnesBg2MenuItem.Checked = s.ShowBG2_1;
-			SnesBg3MenuItem.Checked = s.ShowBG3_1;
-			SnesBg4MenuItem.Checked = s.ShowBG4_1;
-
-			SnesObj1MenuItem.Checked = s.ShowOBJ_0;
-			SnesObj2MenuItem.Checked = s.ShowOBJ_1;
-			SnesObj3MenuItem.Checked = s.ShowOBJ_2;
-			SnesObj4MenuItem.Checked = s.ShowOBJ_3;
-
-			SnesBg1MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 1"].Bindings;
-			SnesBg2MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 2"].Bindings;
-			SnesBg3MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 3"].Bindings;
-			SnesBg4MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle BG 4"].Bindings;
-
-			SnesObj1MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 1"].Bindings;
-			SnesObj2MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 2"].Bindings;
-			SnesObj3MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 3"].Bindings;
-			SnesObj4MenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Toggle OBJ 4"].Bindings;
-		}
-
-		private void SnesBg1MenuItem_Click(object sender, EventArgs e)
-		{
-			SNES_ToggleBG1();
-		}
-
-		private void SnesBg2MenuItem_Click(object sender, EventArgs e)
-		{
-			SNES_ToggleBG2();
-		}
-
-		private void SnesBg3MenuItem_Click(object sender, EventArgs e)
-		{
-			SNES_ToggleBG3();
-		}
-
-		private void SnesBg4MenuItem_Click(object sender, EventArgs e)
-		{
-			SNES_ToggleBG4();
-		}
-
-		private void SnesObj1MenuItem_Click(object sender, EventArgs e)
-		{
-			SNES_ToggleObj1();
-		}
-
-		private void SnesObj2MenuItem_Click(object sender, EventArgs e)
-		{
-			SNES_ToggleObj2();
-		}
-
-		private void SnesObj3MenuItem_Click(object sender, EventArgs e)
-		{
-			SNES_ToggleOBJ3();
-		}
-
-		private void SnesObj4MenuItem_Click(object sender, EventArgs e)
-		{
-			SNES_ToggleOBJ4();
-		}
-
 		private void SNESControllerConfigurationMenuItem_Click(object sender, EventArgs e)
 		{
 			new SNESControllerSettings().ShowDialog();
@@ -2628,12 +2546,6 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.OSD.AddMessage("Restart program for changed settings");
 				}
 			}
-		}
-
-		private void CoreSelectionContextSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			GBInSGBContextMenuItem.Checked = Global.Config.GB_AsSGB;
-			NesInQuickNESContextMenuItem.Checked = Global.Config.NES_InQuickNES;
 		}
 
 		private void LoadLastRomContextMenuItem_Click(object sender, EventArgs e)

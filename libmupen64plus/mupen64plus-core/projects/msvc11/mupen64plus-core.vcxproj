@@ -5,9 +5,17 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -22,7 +30,18 @@
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <PlatformToolset>v100</PlatformToolset>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v100</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <CharacterSet>MultiByte</CharacterSet>
     <PlatformToolset>v100</PlatformToolset>
@@ -33,35 +52,59 @@
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)..\..\..\..\output\dll\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)..\..\..\..\output\dll\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)..\..\..\..\output\dll\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)..\..\..\..\output\dll\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>mupen64plus</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <TargetName>mupen64plus</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <TargetName>mupen64plus</TargetName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <TargetName>mupen64plus</TargetName>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\..\src;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\include;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\include;..\..\..\mupen64plus-win32-deps\freetype-2.3.5-1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\src;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.8\include;..\..\..\mupen64plus-win32-deps\libpng-1.6.18\include;..\..\..\mupen64plus-win32-deps\freetype-2.6\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DBG;WIN32;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;DYNAREC;M64P_OSD;M64P_PARALLEL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -74,7 +117,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>winmm.lib;shell32.lib;opengl32.lib;glu32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\lib\SDL.lib;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\lib\zlib.lib;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\lib\libpng.lib;..\..\..\mupen64plus-win32-deps\freetype-2.3.5-1\lib\freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;shell32.lib;opengl32.lib;glu32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\lib\SDL.lib;..\..\..\mupen64plus-win32-deps\zlib-1.2.8\lib\zlib.lib;..\..\..\mupen64plus-win32-deps\libpng-1.6.18\lib\libpng.lib;..\..\..\mupen64plus-win32-deps\freetype-2.6\lib\freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)mupen64plus.dll</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
@@ -85,10 +128,41 @@
       </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\..\src;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.8\include;..\..\..\mupen64plus-win32-deps\libpng-1.6.18\include;..\..\..\mupen64plus-win32-deps\freetype-2.6\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;DYNAREC;M64P_OSD;M64P_PARALLEL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>winmm.lib;shell32.lib;opengl32.lib;glu32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\lib\x64\SDL.lib;..\..\..\mupen64plus-win32-deps\zlib-1.2.8\lib\x64\zlib.lib;..\..\..\mupen64plus-win32-deps\libpng-1.6.18\lib\x64\libpng16.lib;..\..\..\mupen64plus-win32-deps\freetype-2.6\lib\x64\freetype26.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)mupen64plus.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
+<<<<<<< HEAD
+      <AdditionalIncludeDirectories>..\..\src;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.8\include;..\..\..\mupen64plus-win32-deps\libpng-1.6.18\include;..\..\..\mupen64plus-win32-deps\freetype-2.6\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;DYNAREC;M64P_OSD;M64P_PARALLEL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+=======
       <AdditionalIncludeDirectories>..\..\src;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\include;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\include;..\..\..\mupen64plus-win32-deps\freetype-2.3.5-1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>DBG;WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;DYNAREC;M64P_OSD;M64P_PARALLEL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+>>>>>>> master
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -97,13 +171,38 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>winmm.lib;shell32.lib;opengl32.lib;glu32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\lib\SDL.lib;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\lib\zlib.lib;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\lib\libpng.lib;..\..\..\mupen64plus-win32-deps\freetype-2.3.5-1\lib\freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>winmm.lib;shell32.lib;opengl32.lib;glu32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\lib\SDL.lib;..\..\..\mupen64plus-win32-deps\zlib-1.2.8\lib\zlib.lib;..\..\..\mupen64plus-win32-deps\libpng-1.6.18\lib\libpng.lib;..\..\..\mupen64plus-win32-deps\freetype-2.6\lib\freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)mupen64plus.dll</OutputFile>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
+      <AdditionalOptions>/PDBALTPATH:%_PDB%.%_EXT% %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\src;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.8\include;..\..\..\mupen64plus-win32-deps\libpng-1.6.18\include;..\..\..\mupen64plus-win32-deps\freetype-2.6\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;DYNAREC;M64P_OSD;M64P_PARALLEL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <CompileAs>Default</CompileAs>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>winmm.lib;shell32.lib;opengl32.lib;glu32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\lib\x64\SDL.lib;..\..\..\mupen64plus-win32-deps\zlib-1.2.8\lib\x64\zlib.lib;..\..\..\mupen64plus-win32-deps\libpng-1.6.18\lib\x64\libpng16.lib;..\..\..\mupen64plus-win32-deps\freetype-2.6\lib\x64\freetype26.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)mupen64plus.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <AdditionalOptions>/PDBALTPATH:%_PDB%.%_EXT% %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
@@ -122,9 +221,13 @@
     <ClCompile Include="..\..\src\debugger\dbg_memory.c" />
     <ClCompile Include="..\..\src\debugger\debugger.c">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.obj</ObjectFileName>
       <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
+      <XMLDocumentationFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(Filename)1.xdc</XMLDocumentationFileName>
     </ClCompile>
     <ClCompile Include="..\..\src\api\debugger.c" />
     <ClCompile Include="..\..\src\memory\dma.c" />

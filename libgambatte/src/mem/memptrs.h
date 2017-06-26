@@ -38,7 +38,7 @@ class MemPtrs {
 	unsigned char *memchunk_;
 	unsigned char *rambankdata_;
 	unsigned char *wramdataend_;
-	
+
 	OamDmaSrc oamDmaSrc_;
 
 	int memchunk_len;
@@ -51,6 +51,10 @@ class MemPtrs {
 	unsigned char * rdisabledRamw() const { return wramdataend_         ; }
 	unsigned char * wdisabledRam()  const { return wramdataend_ + 0x2000; }
 public:
+	unsigned char *biosdata_;
+	unsigned char *notbiosdata_;
+	bool use_bios;
+
 	enum RamFlag { READ_EN = 1, WRITE_EN = 2, RTC_EN = 4 };
 	
 	MemPtrs();
@@ -61,7 +65,7 @@ public:
 	unsigned char * wmem(unsigned area) const { return wmem_[area]; }
 	unsigned char * vramdata() const { return rambankdata_ - 0x4000; }
 	unsigned char * vramdataend() const { return rambankdata_; }
-	unsigned char * romdata() const { return memchunk_ + 0x4000; }
+	unsigned char * romdata() const { return memchunk_ + 0x4000;}
 	unsigned char * romdata(unsigned area) const { return romdata_[area]; }
 	unsigned char * romdataend() const { return rambankdata_ - 0x4000; }
 	unsigned char * wramdata(unsigned area) const { return wramdata_[area]; }

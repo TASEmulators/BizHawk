@@ -47,7 +47,7 @@ namespace BizHawk.Client.EmuHawk
 		/// <param name="list">list of IVideoWriters to choose from</param>
 		/// <param name="owner">parent window</param>
 		/// <returns>user choice, or null on Cancel\Close\invalid</returns>
-		public static IVideoWriter DoVideoWriterChoserDlg(IEnumerable<VideoWriterInfo> list, IWin32Window owner, out int resizew, out int resizeh, out bool pad, out bool audiosync)
+		public static IVideoWriter DoVideoWriterChoserDlg(IEnumerable<VideoWriterInfo> list, IWin32Window owner, out int resizew, out int resizeh, out bool pad, ref bool audiosync)
 		{
 			VideoWriterChooserForm dlg = new VideoWriterChooserForm
 			{
@@ -76,6 +76,7 @@ namespace BizHawk.Client.EmuHawk
 				c.Enabled = false;
 			}
 
+			dlg.checkBoxASync.Checked = audiosync;
 			DialogResult result = dlg.ShowDialog(owner);
 
 			IVideoWriter ret;

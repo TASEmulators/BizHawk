@@ -135,11 +135,11 @@ namespace BizHawk.Client.Common
 
 		private bool N64CoreTypeDynarec()
 		{
-			if ((Emulator as N64)?.GetSyncSettings().Core == N64SyncSettings.CoreType.Dynarec)
-			{
-				Log("N64 Error: Memory callbacks are not implemented for Dynamic Recompiler core type\nUse Interpreter or Pure Interpreter\n");
-				return true;
-			}
+			//if ((Emulator as N64)?.GetSyncSettings().Core == N64SyncSettings.CoreType.Dynarec)
+			//{
+			//	Log("N64 Error: Memory callbacks are not implemented for Dynamic Recompiler core type\nUse Interpreter or Pure Interpreter\n");
+			//	return true;
+			//}
 
 			return false;
 		}

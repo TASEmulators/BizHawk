@@ -22,6 +22,7 @@ using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.DiscSystem;
 
 using GPGX64 = BizHawk.Emulation.Cores.Consoles.Sega.gpgx64;
+using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
 
 namespace BizHawk.Client.Common
 {
@@ -487,7 +488,15 @@ namespace BizHawk.Client.Common
 								case DiscType.TurboCD:
 								case DiscType.UnknownCDFS:
 								case DiscType.UnknownFormat:
-									game.System = "PCECD";
+									if (PreferredPlatformIsDefined(ext))
+									{
+										game.System = Global.Config.PreferredPlatformsForExtensions[ext];
+									}
+									else
+									{
+										game.System = "PCECD";
+									}
+
 									break;
 							}
 						}
@@ -508,7 +517,9 @@ namespace BizHawk.Client.Common
 
 								break;
 							case "SAT":
-								nextEmulator = new Yabause(nextComm, disc, GetCoreSyncSettings<Yabause>());
+								//nextEmulator = new Yabause(nextComm, disc, GetCoreSyncSettings<Yabause>());
+								nextEmulator = new Saturnus(nextComm, new[] { disc }, Deterministic,
+									(Saturnus.Settings)GetCoreSettings<Saturnus>(), (Saturnus.SyncSettings)GetCoreSyncSettings<Saturnus>());
 								break;
 							case "PSP":
 								nextEmulator = new PSP(nextComm, file.Name);
@@ -771,7 +782,7 @@ namespace BizHawk.Client.Common
 
 								break;
 							case "SNES":
-								if (Global.Config.SNES_InSnes9x && VersionInfo.DeveloperBuild)
+								if (Global.Config.SNES_InSnes9x)
 								{
 									core = CoreInventory.Instance["SNES", "Snes9x"];
 								}
@@ -823,6 +834,7 @@ namespace BizHawk.Client.Common
 							case "GBC":
 								if (!Global.Config.GB_AsSGB)
 								{
+									//core = CoreInventory.Instance["GB", "Pizza Boy"];
 									core = CoreInventory.Instance["GB", "Gambatte"];
 								}
 								else

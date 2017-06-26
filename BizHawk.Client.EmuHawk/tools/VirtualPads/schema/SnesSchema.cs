@@ -3,6 +3,7 @@ using System.Drawing;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
+using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -10,6 +11,49 @@ namespace BizHawk.Client.EmuHawk
 	public class SnesSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
+		{
+			if (core is LibsnesCore)
+			{
+				return GetBsnesPadSchemas(core);
+			}
+
+			return GetSnes9xPadSchemas(core);
+		}
+		private IEnumerable<PadSchema> GetSnes9xPadSchemas(IEmulator core)
+		{
+			// Only standard controller is supported on the left port
+			yield return StandardController(1);
+
+			Snes9x.SyncSettings syncSettings = ((Snes9x)core).GetSyncSettings();
+			LibSnes9x.RightPortDevice rightPort = syncSettings.RightPort;
+
+			switch (rightPort)
+			{
+				default:
+				case LibSnes9x.RightPortDevice.Joypad:
+					yield return StandardController(2);
+					break;
+				case LibSnes9x.RightPortDevice.Justifier:
+					yield return Justifier(2);
+					break;
+				case LibSnes9x.RightPortDevice.Mouse:
+					yield return Mouse(2);
+					break;
+				case LibSnes9x.RightPortDevice.Multitap:
+					yield return StandardController(2);
+					yield return StandardController(3);
+					yield return StandardController(4);
+					yield return StandardController(5);
+					break;
+				case LibSnes9x.RightPortDevice.SuperScope:
+					yield return SuperScope(2);
+					break;
+			}
+
+			yield return ConsoleButtons();
+		}
+
+		private IEnumerable<PadSchema> GetBsnesPadSchemas(IEmulator core)
 		{
 			var syncsettings = ((LibsnesCore)core).GetSyncSettings();
 

@@ -14,6 +14,7 @@
 #endif /* M68K_EMULATE_ADDRESS_ERROR */
 
 #include "m68k.h"
+#include "mem68k.h"
 #include "../cinterface/callbacks.h"
 
 void CDLog68k(uint addr, uint flags);
@@ -1106,15 +1107,21 @@ INLINE void m68ki_push_16(uint value)
 {
   REG_SP = MASK_OUT_ABOVE_32(REG_SP - 2);
   /*m68ki_write_16(REG_SP, value);*/
-  *(uint16 *)(m68ki_cpu.memory_map[(REG_SP>>16)&0xff].base + (REG_SP & 0xffff)) = value;
+  if (m68ki_cpu.memory_map[(REG_SP >> 16) & 0xff].write16 != m68k_unused_16_w)
+  {
+	  *(uint16 *)(m68ki_cpu.memory_map[(REG_SP >> 16) & 0xff].base + (REG_SP & 0xffff)) = value;
+  }
 }
 
 INLINE void m68ki_push_32(uint value)
 {
   REG_SP = MASK_OUT_ABOVE_32(REG_SP - 4);
   /*m68ki_write_32(REG_SP, value);*/
-  *(uint16 *)(m68ki_cpu.memory_map[(REG_SP>>16)&0xff].base + (REG_SP & 0xffff)) = value >> 16;
-  *(uint16 *)(m68ki_cpu.memory_map[((REG_SP + 2)>>16)&0xff].base + ((REG_SP + 2) & 0xffff)) = value & 0xffff;
+  if (m68ki_cpu.memory_map[(REG_SP >> 16) & 0xff].write16 != m68k_unused_16_w)
+  {
+	  *(uint16 *)(m68ki_cpu.memory_map[(REG_SP >> 16) & 0xff].base + (REG_SP & 0xffff)) = value >> 16;
+	  *(uint16 *)(m68ki_cpu.memory_map[((REG_SP + 2) >> 16) & 0xff].base + ((REG_SP + 2) & 0xffff)) = value & 0xffff;
+  }
 }
 
 INLINE uint m68ki_pull_16(void)

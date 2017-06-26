@@ -34,6 +34,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			mm.Add(_sram = new MemoryDomainIntPtr("SRAM", le, IntPtr.Zero, 0, true, 4)); // size will be fixed in wireup
 			mm.Add(_cwram = new MemoryDomainDelegate("Combined WRAM", (256 + 32) * 1024, le, null, null, 4));
 
+			mm.Add(new MemoryDomainDelegate("System Bus", 0x10000000, le,
+				delegate (long addr)
+				{
+					var a = (uint)addr;
+					if (a >= 0x10000000)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
+					return LibmGBA.BizReadBus(_core, a);
+				},
+				delegate (long addr, byte val)
+				{
+					var a = (uint)addr;
+					if (a >= 0x10000000)
+					{
+						throw new ArgumentOutOfRangeException();
+					}
+
+					LibmGBA.BizWriteBus(_core, a, val);
+				}, 4));
+
 			_memoryDomains = new MemoryDomainList(mm);
 			WireMemoryDomainPointers();
 		}
@@ -55,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 
 			// special combined ram memory domain
 			_cwram.Peek =
-				delegate(long addr)
+				delegate (long addr)
 				{
 					if (addr < 0 || addr >= (256 + 32) * 1024)
 					{
@@ -70,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 					return PeekWRAM(s.wram, addr);
 				};
 			_cwram.Poke =
-				delegate(long addr, byte val)
+				delegate (long addr, byte val)
 				{
 					if (addr < 0 || addr >= (256 + 32) * 1024)
 					{

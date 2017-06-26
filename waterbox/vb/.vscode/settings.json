@@ -1,0 +1,9 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "editor.detectIndentation": false,
+	"editor.insertSpaces": false,
+	"files.associations": {
+		"xiosbase": "cpp",
+		"xlocale": "cpp"
+	}
+}

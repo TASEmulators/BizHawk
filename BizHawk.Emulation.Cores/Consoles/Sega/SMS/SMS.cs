@@ -143,13 +143,20 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			else if (game.System == "SMS")
 			{
 				BiosRom = comm.CoreFileProvider.GetFirmware("SMS", RegionStr, false);
-				if (BiosRom != null && (game["RequireBios"] || SyncSettings.UseBIOS))
-					Port3E = 0xF7;
 
-				if (BiosRom == null && game["RequireBios"])
-					throw new MissingFirmwareException("BIOS image not available. This game requires BIOS to function.");
-				if (SyncSettings.UseBIOS && BiosRom == null)
-					CoreComm.Notify("BIOS was selected, but rom image not available. BIOS not enabled.");
+				if (BiosRom == null)
+				{
+					throw new MissingFirmwareException("No BIOS found");
+				}				
+				else if (!game["RequireBios"] && !SyncSettings.UseBIOS)
+				{
+					// we are skipping the BIOS
+					// but only if it won't break the game
+				}
+				else
+				{
+					Port3E = 0xF7;
+				}
 			}
 
 			if (game["SRAM"])

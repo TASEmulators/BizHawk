@@ -10,6 +10,7 @@ namespace BizHawk.Client.EmuHawk
 		private object _s;
 		private object _ss;
 		private bool _syncsettingschanged;
+		bool settingschanged = false;
 
 		private GenericCoreConfig(bool ignoresettings, bool ignoresyncsettings)
 		{
@@ -58,10 +59,9 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			var settable = new SettingsAdapter(Global.Emulator);
-			if (_s != null && settable.HasSettings)
+			if (_s != null && settingschanged)
 			{
-				settable.PutSettings(_s);
+				GlobalWin.MainForm.PutCoreSettings(_s);
 			}
 
 			if (_ss != null && _syncsettingschanged)
@@ -113,6 +113,11 @@ namespace BizHawk.Client.EmuHawk
 				propertyGrid2.SelectedObject = _ss;
 				_syncsettingschanged = true;
 			}
+		}
+
+		private void propertyGrid1_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
+		{
+			settingschanged = true;
 		}
 	}
 }

@@ -611,28 +611,28 @@ namespace BizHawk.Client.EmuHawk
 
 				// SNES
 				case "Toggle BG 1":
-					SNES_ToggleBG1();
+					SNES_ToggleBg(1);
 					break;
 				case "Toggle BG 2":
-					SNES_ToggleBG2(); 
+					SNES_ToggleBg(2);
 					break;
 				case "Toggle BG 3":
-					SNES_ToggleBG3();
+					SNES_ToggleBg(3);
 					break;
 				case "Toggle BG 4":
-					SNES_ToggleBG4();
+					SNES_ToggleBg(4);
 					break;
 				case "Toggle OBJ 1":
-					SNES_ToggleObj1();
+					SNES_ToggleObj(1);
 					break;
 				case "Toggle OBJ 2":
-					SNES_ToggleObj2();
+					SNES_ToggleObj(2);
 					break;
 				case "Toggle OBJ 3":
-					SNES_ToggleOBJ3();
+					SNES_ToggleObj(3);
 					break;
 				case "Toggle OBJ 4":
-					SNES_ToggleOBJ4();
+					SNES_ToggleObj(4);
 					break;
 
 				// GB

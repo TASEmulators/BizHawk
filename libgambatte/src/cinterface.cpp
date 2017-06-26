@@ -29,9 +29,9 @@ GBEXPORT void gambatte_destroy(GB *g)
 	delete g;
 }
 
-GBEXPORT int gambatte_load(GB *g, const char *romfiledata, unsigned romfilelength, long long now, unsigned flags)
+GBEXPORT int gambatte_load(GB *g, const char *romfiledata, unsigned romfilelength, const char *biosfiledata, unsigned biosfilelength, long long now, unsigned flags)
 {
-	int ret = g->load(romfiledata, romfilelength, now, flags);
+	int ret = g->load(romfiledata, romfilelength, biosfiledata, biosfilelength, now, flags);
 	return ret;
 }
 

@@ -32,8 +32,9 @@ using System.Windows.Forms;
 using BizHawk.Common.NumberExtensions;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
-using BizHawk.Client.EmuHawk; //TODO: What??
 using BizHawk.Emulation.Common;
+using BizHawk.Client.EmuHawk;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -140,8 +141,8 @@ namespace BizHawk.Client.EmuHawk
 			SyncCore();
 			if (Visible && !checkScanlineControl.Checked)
 			{
-				RegenerateData();
-				InternalUpdateValues();
+					RegenerateData();
+					InternalUpdateValues();
 			}
 		}
 
@@ -227,117 +228,122 @@ namespace BizHawk.Client.EmuHawk
 			gd = null;
 			if (currentSnesCore == null) return;
 			gd = NewDecoder();
-			if(checkBackdropColor.Checked)
-				gd.SetBackColor(DecodeWinformsColorToSNES(pnBackdropColor.BackColor));
-			gd.CacheTiles();
-			si = gd.ScanScreenInfo();
+			using (gd.EnterExit())
+			{
+				if (checkBackdropColor.Checked)
+					gd.SetBackColor(DecodeWinformsColorToSNES(pnBackdropColor.BackColor));
+				gd.CacheTiles();
+				si = gd.ScanScreenInfo();
+			}
 		}
 
 		private void InternalUpdateValues()
 		{
 			if (currentSnesCore == null) return;
-
-			txtOBSELSizeBits.Text = si.OBSEL_Size.ToString();
-			txtOBSELBaseBits.Text = si.OBSEL_NameBase.ToString();
-			txtOBSELT1OfsBits.Text = si.OBSEL_NameSel.ToString();
-			txtOBSELSizeDescr.Text = string.Format("{0}, {1}", SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 0], SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 1]);
-			txtOBSELBaseDescr.Text = FormatVramAddress(si.OBJTable0Addr);
-			txtOBSELT1OfsDescr.Text = FormatVramAddress(si.OBJTable1Addr);
-
-			checkScreenExtbg.Checked = si.SETINI_Mode7ExtBG;
-			checkScreenHires.Checked = si.SETINI_HiRes;
-			checkScreenOverscan.Checked = si.SETINI_Overscan;
-			checkScreenObjInterlace.Checked = si.SETINI_ObjInterlace;
-			checkScreenInterlace.Checked = si.SETINI_ScreenInterlace;
-
-			txtScreenCGWSEL_ColorMask.Text = si.CGWSEL_ColorMask.ToString();
-			txtScreenCGWSEL_ColorSubMask.Text = si.CGWSEL_ColorSubMask.ToString();
-			txtScreenCGWSEL_MathFixed.Text = si.CGWSEL_AddSubMode.ToString();
-			checkScreenCGWSEL_DirectColor.Checked = si.CGWSEL_DirectColor;
-			txtScreenCGADSUB_AddSub.Text = si.CGWSEL_AddSubMode.ToString();
-			txtScreenCGADSUB_AddSub_Descr.Text = si.CGADSUB_AddSub == 1 ? "SUB" : "ADD";
-			txtScreenCGADSUB_Half.Checked = si.CGADSUB_Half;
-
-			txtModeBits.Text = si.Mode.MODE.ToString();
-			txtScreenBG1Bpp.Text = FormatBpp(si.BG.BG1.Bpp);
-			txtScreenBG2Bpp.Text = FormatBpp(si.BG.BG2.Bpp);
-			txtScreenBG3Bpp.Text = FormatBpp(si.BG.BG3.Bpp);
-			txtScreenBG4Bpp.Text = FormatBpp(si.BG.BG4.Bpp);
-			txtScreenBG1TSize.Text = FormatBpp(si.BG.BG1.TileSize);
-			txtScreenBG2TSize.Text = FormatBpp(si.BG.BG2.TileSize);
-			txtScreenBG3TSize.Text = FormatBpp(si.BG.BG3.TileSize);
-			txtScreenBG4TSize.Text = FormatBpp(si.BG.BG4.TileSize);
-
-			int bgnum = comboBGProps.SelectedIndex + 1;
-
-			var bg = si.BG[bgnum];
-			txtBG1TSizeBits.Text = bg.TILESIZE.ToString();
-			txtBG1TSizeDescr.Text = string.Format("{0}x{0}", bg.TileSize);
-			txtBG1Bpp.Text = FormatBpp(bg.Bpp);
-			txtBG1SizeBits.Text = bg.SCSIZE.ToString();
-			txtBG1SizeInTiles.Text = bg.ScreenSizeInTiles.ToString();
-			int size = bg.ScreenSizeInTiles.Width * bg.ScreenSizeInTiles.Height * 2 / 1024;
-			txtBG1MapSizeBytes.Text = string.Format("({0}K)", size);
-			txtBG1SCAddrBits.Text = bg.SCADDR.ToString();
-			txtBG1SCAddrDescr.Text = FormatVramAddress(bg.ScreenAddr);
-			txtBG1Colors.Text = (1 << bg.Bpp).ToString();
-			if (bg.Bpp == 8 && si.CGWSEL_DirectColor) txtBG1Colors.Text = "(Direct Color)";
-			txtBG1TDAddrBits.Text = bg.TDADDR.ToString();
-			txtBG1TDAddrDescr.Text = FormatVramAddress(bg.TiledataAddr);
-
-			txtBG1Scroll.Text = string.Format("({0},{1})", bg.HOFS, bg.VOFS);
-
-			if (bg.Bpp != 0)
+			using (gd.EnterExit())
 			{
-				var pi = bg.PaletteSelection;
-				txtBGPaletteInfo.Text = string.Format("{0} colors from ${1:X2} - ${2:X2}", pi.size, pi.start, pi.start + pi.size - 1);
+				txtOBSELSizeBits.Text = si.OBSEL_Size.ToString();
+				txtOBSELBaseBits.Text = si.OBSEL_NameBase.ToString();
+				txtOBSELT1OfsBits.Text = si.OBSEL_NameSel.ToString();
+				txtOBSELSizeDescr.Text = string.Format("{0}, {1}", SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 0], SNESGraphicsDecoder.ObjSizes[si.OBSEL_Size, 1]);
+				txtOBSELBaseDescr.Text = FormatVramAddress(si.OBJTable0Addr);
+				txtOBSELT1OfsDescr.Text = FormatVramAddress(si.OBJTable1Addr);
+
+				checkScreenExtbg.Checked = si.SETINI_Mode7ExtBG;
+				checkScreenHires.Checked = si.SETINI_HiRes;
+				checkScreenOverscan.Checked = si.SETINI_Overscan;
+				checkScreenObjInterlace.Checked = si.SETINI_ObjInterlace;
+				checkScreenInterlace.Checked = si.SETINI_ScreenInterlace;
+
+				txtScreenCGWSEL_ColorMask.Text = si.CGWSEL_ColorMask.ToString();
+				txtScreenCGWSEL_ColorSubMask.Text = si.CGWSEL_ColorSubMask.ToString();
+				txtScreenCGWSEL_MathFixed.Text = si.CGWSEL_AddSubMode.ToString();
+				checkScreenCGWSEL_DirectColor.Checked = si.CGWSEL_DirectColor;
+				txtScreenCGADSUB_AddSub.Text = si.CGWSEL_AddSubMode.ToString();
+				txtScreenCGADSUB_AddSub_Descr.Text = si.CGADSUB_AddSub == 1 ? "SUB" : "ADD";
+				txtScreenCGADSUB_Half.Checked = si.CGADSUB_Half;
+
+				txtModeBits.Text = si.Mode.MODE.ToString();
+				txtScreenBG1Bpp.Text = FormatBpp(si.BG.BG1.Bpp);
+				txtScreenBG2Bpp.Text = FormatBpp(si.BG.BG2.Bpp);
+				txtScreenBG3Bpp.Text = FormatBpp(si.BG.BG3.Bpp);
+				txtScreenBG4Bpp.Text = FormatBpp(si.BG.BG4.Bpp);
+				txtScreenBG1TSize.Text = FormatBpp(si.BG.BG1.TileSize);
+				txtScreenBG2TSize.Text = FormatBpp(si.BG.BG2.TileSize);
+				txtScreenBG3TSize.Text = FormatBpp(si.BG.BG3.TileSize);
+				txtScreenBG4TSize.Text = FormatBpp(si.BG.BG4.TileSize);
+
+				int bgnum = comboBGProps.SelectedIndex + 1;
+
+				var bg = si.BG[bgnum];
+				txtBG1TSizeBits.Text = bg.TILESIZE.ToString();
+				txtBG1TSizeDescr.Text = string.Format("{0}x{0}", bg.TileSize);
+				txtBG1Bpp.Text = FormatBpp(bg.Bpp);
+				txtBG1SizeBits.Text = bg.SCSIZE.ToString();
+				txtBG1SizeInTiles.Text = bg.ScreenSizeInTiles.ToString();
+				int size = bg.ScreenSizeInTiles.Width * bg.ScreenSizeInTiles.Height * 2 / 1024;
+				txtBG1MapSizeBytes.Text = string.Format("({0}K)", size);
+				txtBG1SCAddrBits.Text = bg.SCADDR.ToString();
+				txtBG1SCAddrDescr.Text = FormatVramAddress(bg.ScreenAddr);
+				txtBG1Colors.Text = (1 << bg.Bpp).ToString();
+				if (bg.Bpp == 8 && si.CGWSEL_DirectColor) txtBG1Colors.Text = "(Direct Color)";
+				txtBG1TDAddrBits.Text = bg.TDADDR.ToString();
+				txtBG1TDAddrDescr.Text = FormatVramAddress(bg.TiledataAddr);
+
+				txtBG1Scroll.Text = string.Format("({0},{1})", bg.HOFS, bg.VOFS);
+
+				if (bg.Bpp != 0)
+				{
+					var pi = bg.PaletteSelection;
+					txtBGPaletteInfo.Text = string.Format("{0} colors from ${1:X2} - ${2:X2}", pi.size, pi.start, pi.start + pi.size - 1);
+				}
+				else txtBGPaletteInfo.Text = "";
+
+				var sizeInPixels = bg.ScreenSizeInPixels;
+				txtBG1SizeInPixels.Text = string.Format("{0}x{1}", sizeInPixels.Width, sizeInPixels.Height);
+
+				checkTMOBJ.Checked = si.OBJ_MainEnabled;
+				checkTMBG1.Checked = si.BG.BG1.MainEnabled;
+				checkTMBG2.Checked = si.BG.BG2.MainEnabled;
+				checkTMBG3.Checked = si.BG.BG3.MainEnabled;
+				checkTMBG4.Checked = si.BG.BG4.MainEnabled;
+				checkTMOBJ.Checked = si.OBJ_SubEnabled;
+				checkTSBG1.Checked = si.BG.BG1.SubEnabled;
+				checkTSBG2.Checked = si.BG.BG2.SubEnabled;
+				checkTSBG3.Checked = si.BG.BG3.SubEnabled;
+				checkTSBG4.Checked = si.BG.BG4.SubEnabled;
+				checkTSOBJ.Checked = si.OBJ_MainEnabled;
+				checkMathOBJ.Checked = si.OBJ_MathEnabled;
+				checkMathBK.Checked = si.BK_MathEnabled;
+				checkMathBG1.Checked = si.BG.BG1.MathEnabled;
+				checkMathBG2.Checked = si.BG.BG2.MathEnabled;
+				checkMathBG3.Checked = si.BG.BG3.MathEnabled;
+				checkMathBG4.Checked = si.BG.BG4.MathEnabled;
+
+				if (si.Mode.MODE == 1 && si.Mode1_BG3_Priority)
+				{
+					lblBG3.ForeColor = Color.Red;
+					if (toolTip1.GetToolTip(lblBG3) != "Mode 1 BG3 priority toggle bit of $2105 is SET")
+						toolTip1.SetToolTip(lblBG3, "Mode 1 BG3 priority toggle bit of $2105 is SET");
+				}
+				else
+				{
+					lblBG3.ForeColor = Color.Black;
+					if (toolTip1.GetToolTip(lblBG3) != "Mode 1 BG3 priority toggle bit of $2105 is CLEAR")
+						toolTip1.SetToolTip(lblBG3, "Mode 1 BG3 priority toggle bit of $2105 is CLEAR");
+				}
+
+				SyncColorSelection();
+				RenderView();
+				RenderPalette();
+				RenderTileView();
+				//these are likely to be changing all the time
+				UpdateColorDetails();
+				UpdateOBJDetails();
+				//maybe bg settings changed, or something
+				UpdateMapEntryDetails();
+				UpdateTileDetails();
 			}
-			else txtBGPaletteInfo.Text = "";
-
-			var sizeInPixels = bg.ScreenSizeInPixels;
-			txtBG1SizeInPixels.Text = string.Format("{0}x{1}", sizeInPixels.Width, sizeInPixels.Height);
-
-			checkTMOBJ.Checked = si.OBJ_MainEnabled;
-			checkTMBG1.Checked = si.BG.BG1.MainEnabled;
-			checkTMBG2.Checked = si.BG.BG2.MainEnabled;
-			checkTMBG3.Checked = si.BG.BG3.MainEnabled;
-			checkTMBG4.Checked = si.BG.BG4.MainEnabled;
-			checkTMOBJ.Checked = si.OBJ_SubEnabled;
-			checkTSBG1.Checked = si.BG.BG1.SubEnabled;
-			checkTSBG2.Checked = si.BG.BG2.SubEnabled;
-			checkTSBG3.Checked = si.BG.BG3.SubEnabled;
-			checkTSBG4.Checked = si.BG.BG4.SubEnabled;
-			checkTSOBJ.Checked = si.OBJ_MainEnabled;
-			checkMathOBJ.Checked = si.OBJ_MathEnabled;
-			checkMathBK.Checked = si.BK_MathEnabled;
-			checkMathBG1.Checked = si.BG.BG1.MathEnabled;
-			checkMathBG2.Checked = si.BG.BG2.MathEnabled;
-			checkMathBG3.Checked = si.BG.BG3.MathEnabled;
-			checkMathBG4.Checked = si.BG.BG4.MathEnabled;
-
-			if (si.Mode.MODE == 1 && si.Mode1_BG3_Priority)
-			{
-				lblBG3.ForeColor = Color.Red;
-				if (toolTip1.GetToolTip(lblBG3) != "Mode 1 BG3 priority toggle bit of $2105 is SET")
-					toolTip1.SetToolTip(lblBG3, "Mode 1 BG3 priority toggle bit of $2105 is SET");
-			}
-			else
-			{
-				lblBG3.ForeColor = Color.Black;
-				if (toolTip1.GetToolTip(lblBG3) != "Mode 1 BG3 priority toggle bit of $2105 is CLEAR")
-					toolTip1.SetToolTip(lblBG3, "Mode 1 BG3 priority toggle bit of $2105 is CLEAR");
-			}
-
-			SyncColorSelection();
-			RenderView();
-			RenderPalette();
-			RenderTileView();
-			//these are likely to be changing all the time
-			UpdateColorDetails();
-			UpdateOBJDetails();
-			//maybe bg settings changed, or something
-			UpdateMapEntryDetails();
-			UpdateTileDetails();
 		}
 
 		eDisplayType CurrDisplaySelection { get { return (comboDisplayType.SelectedValue as eDisplayType?).Value; } }
@@ -658,10 +664,10 @@ namespace BizHawk.Client.EmuHawk
 
 		SNESGraphicsDecoder NewDecoder()
 		{
-			//wtf to do? now we need an api all the time
 			if (currentSnesCore != null)
 				return new SNESGraphicsDecoder(currentSnesCore.Api, currentSnesCore.CurrPalette);
-			else return new SNESGraphicsDecoder(currentSnesCore.Api, SnesColors.ColorType.BizHawk);
+			else
+				return null;
 		}
 
 		void RenderPalette()
@@ -1120,82 +1126,85 @@ namespace BizHawk.Client.EmuHawk
 
 		void UpdateViewerMouseover(Point loc)
 		{
-			currMapEntryState = null;
-			currTileDataState = null;
-			currObjDataState = null;
-
-			int tx = loc.X / 8;
-			int ty = loc.Y / 8;
-
-			switch (CurrDisplaySelection)
+			using (gd.EnterExit())
 			{
-				case eDisplayType.OBJTiles0:
-				case eDisplayType.OBJTiles1:
-					HandleTileViewMouseOver(128, 256, 4, tx, ty);
-					break;
-				case eDisplayType.OBJ:
-					HandleObjMouseOver(loc.X, loc.Y);
-					break;
-				case eDisplayType.Sprites:
-					HandleSpriteMouseOver(loc.X, loc.Y);
-					break;
-				case eDisplayType.Tiles2bpp:
-					HandleTileViewMouseOver(512, 512, 2, tx, ty);
-					break;
-			  case eDisplayType.Tiles4bpp:
-					HandleTileViewMouseOver(512, 256, 4, tx, ty);
-					break;
-				case eDisplayType.Tiles8bpp:
-					HandleTileViewMouseOver(256, 256, 8, tx, ty);
-					break;
-				case eDisplayType.TilesMode7:
-				case eDisplayType.TilesMode7DC:
-					HandleTileViewMouseOver(128, 128, 8, tx, ty);
-					break;
-				case eDisplayType.TilesMode7Ext:
-					HandleTileViewMouseOver(128, 128, 7, tx, ty);
-					break;
-				case eDisplayType.BG1:
-				case eDisplayType.BG2:
-				case eDisplayType.BG3:
-				case eDisplayType.BG4:
-					{
-						var bg = si.BG[(int)CurrDisplaySelection];
+				currMapEntryState = null;
+				currTileDataState = null;
+				currObjDataState = null;
 
-						//unavailable BG for this mode
-						if (bg.Bpp == 0)
-							break;
+				int tx = loc.X / 8;
+				int ty = loc.Y / 8;
 
-						if (bg.TileSize == 16) { tx /= 2; ty /= 2; } //worry about this later. need to pass a different flag into `currViewingTile`
+				switch (CurrDisplaySelection)
+				{
+					case eDisplayType.OBJTiles0:
+					case eDisplayType.OBJTiles1:
+						HandleTileViewMouseOver(128, 256, 4, tx, ty);
+						break;
+					case eDisplayType.OBJ:
+						HandleObjMouseOver(loc.X, loc.Y);
+						break;
+					case eDisplayType.Sprites:
+						HandleSpriteMouseOver(loc.X, loc.Y);
+						break;
+					case eDisplayType.Tiles2bpp:
+						HandleTileViewMouseOver(512, 512, 2, tx, ty);
+						break;
+					case eDisplayType.Tiles4bpp:
+						HandleTileViewMouseOver(512, 256, 4, tx, ty);
+						break;
+					case eDisplayType.Tiles8bpp:
+						HandleTileViewMouseOver(256, 256, 8, tx, ty);
+						break;
+					case eDisplayType.TilesMode7:
+					case eDisplayType.TilesMode7DC:
+						HandleTileViewMouseOver(128, 128, 8, tx, ty);
+						break;
+					case eDisplayType.TilesMode7Ext:
+						HandleTileViewMouseOver(128, 128, 7, tx, ty);
+						break;
+					case eDisplayType.BG1:
+					case eDisplayType.BG2:
+					case eDisplayType.BG3:
+					case eDisplayType.BG4:
+						{
+							var bg = si.BG[(int)CurrDisplaySelection];
 
-						int tloc = ty * bg.ScreenSizeInTiles.Width + tx;
-						if (tx >= bg.ScreenSizeInTiles.Width) break;
-						if (ty >= bg.ScreenSizeInTiles.Height) break;
-						if (tx < 0) break;
-						if (ty < 0) break;
+							//unavailable BG for this mode
+							if (bg.Bpp == 0)
+								break;
 
-						currMapEntryState = new MapEntryState();
-						currMapEntryState.bgnum = (int)CurrDisplaySelection;
-						currMapEntryState.entry = map[tloc];
-						currMapEntryState.Location = new Point(tx, ty);
+							if (bg.TileSize == 16) { tx /= 2; ty /= 2; } //worry about this later. need to pass a different flag into `currViewingTile`
 
-						//public void DecodeBG(int* screen, int stride, TileEntry[] map, int tiledataBaseAddr, ScreenSize size, int bpp, int tilesize, int paletteStart)
+							int tloc = ty * bg.ScreenSizeInTiles.Width + tx;
+							if (tx >= bg.ScreenSizeInTiles.Width) break;
+							if (ty >= bg.ScreenSizeInTiles.Height) break;
+							if (tx < 0) break;
+							if (ty < 0) break;
+
+							currMapEntryState = new MapEntryState();
+							currMapEntryState.bgnum = (int)CurrDisplaySelection;
+							currMapEntryState.entry = map[tloc];
+							currMapEntryState.Location = new Point(tx, ty);
+
+							//public void DecodeBG(int* screen, int stride, TileEntry[] map, int tiledataBaseAddr, ScreenSize size, int bpp, int tilesize, int paletteStart)
 
 
-						//var map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
-						//int paletteStart = 0;
-						//gd.DecodeBG(pixelptr, stride / 4, map, bg.TiledataAddr, bg.ScreenSize, bg.Bpp, bg.TileSize, paletteStart);
-						//gd.Paletteize(pixelptr, 0, 0, numPixels);
+							//var map = gd.FetchTilemap(bg.ScreenAddr, bg.ScreenSize);
+							//int paletteStart = 0;
+							//gd.DecodeBG(pixelptr, stride / 4, map, bg.TiledataAddr, bg.ScreenSize, bg.Bpp, bg.TileSize, paletteStart);
+							//gd.Paletteize(pixelptr, 0, 0, numPixels);
 
-						SetTab(tpMapEntry);
-					}
-					break;
+							SetTab(tpMapEntry);
+						}
+						break;
+				}
+
+				RenderTileView();
+				UpdateMapEntryDetails();
+				UpdateTileDetails();
+				UpdateOBJDetails();
 			}
-
-			RenderTileView();
-			UpdateMapEntryDetails();
-			UpdateTileDetails();
-			UpdateOBJDetails();
 		}
 
 		private void viewer_MouseLeave(object sender, EventArgs e)
@@ -1428,44 +1437,43 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 	} //class SNESGraphicsDebugger 
-} //namespace BizHawk.Client.EmuHawk
 
-
-static class ControlExtensions
-{
-	static string[] secondPass = new[] { "Size" };
-	public static T Clone<T>(this T controlToClone)
-			where T : Control
+	static class ControlExtensions
 	{
-		PropertyInfo[] controlProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-
-		Type t = controlToClone.GetType();
-		T instance = Activator.CreateInstance(t) as T;
-
-		t.GetProperty("AutoSize").SetValue(instance, false, null);
-
-		for (int i = 0; i < 3; i++)
+		static string[] secondPass = new[] { "Size" };
+		public static T Clone<T>(this T controlToClone)
+				where T : Control
 		{
-			foreach (PropertyInfo propInfo in controlProperties)
+			PropertyInfo[] controlProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+			Type t = controlToClone.GetType();
+			T instance = Activator.CreateInstance(t) as T;
+
+			t.GetProperty("AutoSize").SetValue(instance, false, null);
+
+			for (int i = 0; i < 3; i++)
 			{
-				if (!propInfo.CanWrite)
-					continue;
+				foreach (PropertyInfo propInfo in controlProperties)
+				{
+					if (!propInfo.CanWrite)
+						continue;
 
-				if (propInfo.Name == "AutoSize")
-				{ }
-				else if (propInfo.Name == "WindowTarget")
-				{ }
-				else
-					propInfo.SetValue(instance, propInfo.GetValue(controlToClone, null), null);
+					if (propInfo.Name == "AutoSize")
+					{ }
+					else if (propInfo.Name == "WindowTarget")
+					{ }
+					else
+						propInfo.SetValue(instance, propInfo.GetValue(controlToClone, null), null);
+				}
 			}
-		}
 
-		if (instance is RetainedViewportPanel)
-		{
-			var clonebmp = ((controlToClone) as RetainedViewportPanel).GetBitmap().Clone() as Bitmap;
-			((instance) as RetainedViewportPanel).SetBitmap(clonebmp);
-		}
+			if (instance is RetainedViewportPanel)
+			{
+				var clonebmp = ((controlToClone) as RetainedViewportPanel).GetBitmap().Clone() as Bitmap;
+				((instance) as RetainedViewportPanel).SetBitmap(clonebmp);
+			}
 
-		return instance;
+			return instance;
+		}
 	}
-}
+} //namespace BizHawk.Client.EmuHawk

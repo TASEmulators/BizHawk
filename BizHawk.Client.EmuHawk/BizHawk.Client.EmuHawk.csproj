@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BizHawk.Client.EmuHawk</RootNamespace>
     <AssemblyName>EmuHawk</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <StartupObject>BizHawk.Client.EmuHawk.Program</StartupObject>
     <IsWebBootstrapper>false</IsWebBootstrapper>
@@ -36,42 +36,16 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\output\</OutputPath>
-    <DefineConstants>$(DefineConstants);DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\output\</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <DefineConstants>WINDOWS</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup>
     <NoWin32Manifest>true</NoWin32Manifest>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\output64\</OutputPath>
+    <OutputPath>..\output\</OutputPath>
     <DefineConstants>WINDOWS;DEBUG</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisLogFile>..\output\EmuHawk.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -82,15 +56,15 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>..\output64\</OutputPath>
+    <OutputPath>..\output\</OutputPath>
     <DefineConstants>WINDOWS</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisLogFile>..\output\EmuHawk.exe.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -101,6 +75,7 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GongShell">
@@ -407,12 +382,6 @@
     </Compile>
     <Compile Include="config\N64\N64VideoPluginconfig.Designer.cs">
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
-    </Compile>
-    <Compile Include="config\N64\NewN64PluginSettings.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="config\N64\NewN64PluginSettings.Designer.cs">
-      <DependentUpon>NewN64PluginSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="config\NES\DataTableDictionaryBind.cs" />
     <Compile Include="config\NES\NesControllerSettings.cs">
@@ -1215,6 +1184,7 @@
     <Compile Include="tools\VirtualPads\schema\GenSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\IntvSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\LynxSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\NgpSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\PSXSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SatSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\IVirtualPadSchema.cs" />
@@ -1225,6 +1195,7 @@
     <Compile Include="tools\VirtualPads\schema\SchemaAttributes.cs" />
     <Compile Include="tools\VirtualPads\schema\SmsSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SnesSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\VirtualBoySchema.cs" />
     <Compile Include="tools\VirtualPads\schema\WonderSwanSchema.cs" />
     <Compile Include="tools\VirtualPads\VirtualPad.cs">
       <SubType>UserControl</SubType>
@@ -1362,9 +1333,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\N64\N64VideoPluginconfig.resx">
       <DependentUpon>N64VideoPluginconfig.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="config\N64\NewN64PluginSettings.resx">
-      <DependentUpon>NewN64PluginSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\NES\NesControllerSettings.resx">
       <DependentUpon>NesControllerSettings.cs</DependentUpon>
@@ -1783,6 +1751,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="images\FindHS.png" />
   </ItemGroup>
   <ItemGroup>
@@ -2109,6 +2078,7 @@
     <None Include="images\LightOn.png" />
     <None Include="images\Both.png" />
     <None Include="config\ControllerImages\A78Joystick.png" />
+    <None Include="config\ControllerImages\VBoyController.png" />
     <None Include="config\ControllerImages\IntVController.png" />
     <None Include="config\ControllerImages\Lynx.png" />
     <Content Include="config\ControllerImages\N64.png" />
@@ -2137,6 +2107,7 @@
     <None Include="images\ENE.png" />
     <None Include="images\ESE.png" />
     <None Include="images\5757344.png" />
+    <None Include="images\ControllerImages\NGPController.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />

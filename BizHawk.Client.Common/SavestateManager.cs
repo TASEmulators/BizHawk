@@ -201,10 +201,6 @@ namespace BizHawk.Client.Common
 						});
 					}
 				}
-				catch
-				{
-					return false;
-				}
 				finally
 				{
 					bl.Dispose();
@@ -212,41 +208,9 @@ namespace BizHawk.Client.Common
 
 				return true;
 			}
-			else // text mode
+			else
 			{
-				if (Global.MovieSession.HandleMovieLoadState(path))
-				{
-					using (var reader = new StreamReader(path))
-					{
-						core.LoadStateText(reader);
-
-						while (true)
-						{
-							var str = reader.ReadLine();
-							if (str == null)
-							{
-								break;
-							}
-							
-							if (str.Trim() == "")
-							{
-								continue;
-							}
-
-							var args = str.Split(' ');
-							if (args[0] == "Framebuffer" && Global.Emulator.HasVideoProvider())
-							{
-								Global.Emulator.AsVideoProvider().GetVideoBuffer().ReadFromHex(args[1]);
-							}
-						}
-					}
-
-					return true;
-				}
-				else
-				{
-					return false;
-				}
+				return false;
 			}
 		}
 	}

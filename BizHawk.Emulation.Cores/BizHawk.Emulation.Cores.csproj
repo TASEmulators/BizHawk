@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BizHawk.Emulation.Cores</RootNamespace>
     <AssemblyName>BizHawk.Emulation.Cores</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -33,39 +33,13 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\output\dll\</OutputPath>
-    <DefineConstants>TRACE;VS2010</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x86</PlatformTarget>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\output64\dll\</OutputPath>
+    <OutputPath>..\output\dll\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <CodeAnalysisLogFile>..\output\dll\BizHawk.Emulation.Cores.dll.CodeAnalysisLog.xml</CodeAnalysisLogFile>
     <CodeAnalysisUseTypeNameInSuppression>true</CodeAnalysisUseTypeNameInSuppression>
     <CodeAnalysisModuleSuppressionsFile>GlobalSuppressions.cs</CodeAnalysisModuleSuppressionsFile>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -76,9 +50,10 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>..\output64\dll\</OutputPath>
+    <OutputPath>..\output\dll\</OutputPath>
     <DefineConstants>TRACE;VS2010</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
@@ -95,6 +70,7 @@
     <CodeAnalysisRuleDirectories>;C:\Program Files (x86)\Microsoft Visual Studio 10.0\Team Tools\Static Analysis Tools\FxCop\\Rules</CodeAnalysisRuleDirectories>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="ELFSharp">
@@ -110,7 +86,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\OpenTK.dll</HintPath>
     </Reference>
+    <Reference Include="PeNet">
+      <HintPath>..\References\PeNet.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -382,7 +362,7 @@
     <Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.ISaveRam.cs">
       <DependentUpon>A7800Hawk.cs</DependentUpon>
     </Compile>
-	<Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.ISettable.cs">
+    <Compile Include="Consoles\Atari\A7800Hawk\A7800Hawk.ISettable.cs">
       <DependentUpon>A7800Hawk.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Atari\A7800Hawk\A7800HawkControllerDeck.cs" />
@@ -495,6 +475,8 @@
     </Compile>
     <Compile Include="Consoles\Intellivision\PSG.cs" />
     <Compile Include="Consoles\Intellivision\STIC.cs" />
+    <Compile Include="Consoles\Magnavox\LibO2Em.cs" />
+    <Compile Include="Consoles\Magnavox\O2Em.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ICodeDataLog.cs">
       <DependentUpon>Gambatte.cs</DependentUpon>
@@ -559,7 +541,10 @@
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\GBColors.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GBDisassembler.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\IGameboyCommon.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\LibPizza.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\Pizza.cs" />
     <Compile Include="Consoles\Nintendo\GBA\ArmV4Disassembler.cs" />
     <Compile Include="Consoles\Nintendo\GBA\GBA.cs" />
     <Compile Include="Consoles\Nintendo\GBA\IGBAGPUViewable.cs" />
@@ -646,7 +631,6 @@
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Controller.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Glide.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.GlideMk2.cs" />
-    <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Jabo.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.Rice.cs" />
     <Compile Include="Consoles\Nintendo\N64\NativeApi\mupen64plusAudioApi.cs" />
     <Compile Include="Consoles\Nintendo\N64\NativeApi\mupen64plusCoreApi.cs" />
@@ -1022,6 +1006,8 @@
     <Compile Include="Consoles\Nintendo\SNES\ScanlineHookManager.cs" />
     <Compile Include="Consoles\Nintendo\SNES\SnesColors.cs" />
     <Compile Include="Consoles\Nintendo\SNES\SNESGraphicsDecoder.cs" />
+    <Compile Include="Consoles\Nintendo\VB\LibVirtualBoyee.cs" />
+    <Compile Include="Consoles\Nintendo\VB\VirtualBoyee.cs" />
     <Compile Include="Consoles\PC Engine\ADPCM.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.TurboCD.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.Populous.cs" />
@@ -1143,29 +1129,9 @@
     <Compile Include="Consoles\Sega\gpgx64\GPGXControlConverter.cs" />
     <Compile Include="Consoles\Sega\gpgx64\LibGPGX.cs" />
     <Compile Include="Consoles\Sega\Saturn\FilePiping.cs" />
-    <Compile Include="Consoles\Sega\Saturn\LibYabause.cs" />
-    <Compile Include="Consoles\Sega\Saturn\Yabause.cs" />
-    <Compile Include="Consoles\Sega\Saturn\Yabause.IDriveLight.cs">
-      <DependentUpon>Yabause.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Sega\Saturn\Yabause.IInputPollable.cs">
-      <DependentUpon>Yabause.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Sega\Saturn\Yabause.IMemoryDomains.cs">
-      <DependentUpon>Yabause.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Sega\Saturn\Yabause.ISaveram.cs">
-      <DependentUpon>Yabause.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Sega\Saturn\Yabause.ISettable.cs">
-      <DependentUpon>Yabause.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Sega\Saturn\Yabause.IStatable.cs">
-      <DependentUpon>Yabause.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Sega\Saturn\Yabause.ITraceable.cs">
-      <DependentUpon>Yabause.cs</DependentUpon>
-    </Compile>
+    <Compile Include="Consoles\Sega\Saturn\LibSaturnus.cs" />
+    <Compile Include="Consoles\Sega\Saturn\Saturnus.cs" />
+    <Compile Include="Consoles\Sega\Saturn\SaturnusControllerDeck.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.ICodeDataLogger.cs">
       <DependentUpon>SMS.cs</DependentUpon>
@@ -1206,6 +1172,9 @@
     <Compile Include="Consoles\Sega\SMS\VDP.ModeTMS.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.Mode4.cs" />
     <Compile Include="Consoles\Sega\SMS\VDP.Tables.cs" />
+    <Compile Include="Consoles\SNK\DualNeoGeoPort.cs" />
+    <Compile Include="Consoles\SNK\LibNeoGeoPort.cs" />
+    <Compile Include="Consoles\SNK\NeoGeoPort.cs" />
     <Compile Include="Consoles\Sony\PSP\PPSSPPDll.cs" />
     <Compile Include="Consoles\Sony\PSP\PSP.cs" />
     <Compile Include="Consoles\Sony\PSX\Octoshock.cs">
@@ -1284,7 +1253,10 @@
     <Compile Include="CPUs\Z80\Registers.cs" />
     <Compile Include="CPUs\Z80\Tables.cs" />
     <Compile Include="CPUs\Z80\Z80A.cs" />
-    <Compile Include="ElfRunner.cs" />
+    <Compile Include="SideBySideVideo.cs" />
+    <Compile Include="Sound\DualSyncSound.cs" />
+    <Compile Include="Waterbox\CustomSaverammer.cs" />
+    <Compile Include="Waterbox\ElfRunner.cs" />
     <Compile Include="FileID.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.cs" />
     <Compile Include="Consoles\PC Engine\MemoryMap.SF2.cs" />
@@ -1306,7 +1278,9 @@
     <Compile Include="Libretro\LibretroCoreSettings.cs" />
     <Compile Include="Libretro\LibretroCore_Description.cs" />
     <Compile Include="Libretro\LibretroCore_InputCallbacks.cs" />
-    <Compile Include="MemoryBlock.cs" />
+    <Compile Include="Waterbox\Heap.cs" />
+    <Compile Include="Waterbox\LibWaterboxCore.cs" />
+    <Compile Include="Waterbox\MapHeap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sound\CDAudio.cs" />
     <Compile Include="Sound\HuC6280PSG.cs" />
@@ -1318,6 +1292,11 @@
     <Compile Include="Sound\VRC6Alt.cs" />
     <Compile Include="Sound\YM2413.cs" />
     <Compile Include="Sound\YM2612.cs" />
+    <Compile Include="Waterbox\PeRunner.cs" />
+    <Compile Include="Waterbox\PeWrapper.cs" />
+    <Compile Include="Waterbox\Swappable.cs" />
+    <Compile Include="Waterbox\WaterboxCore.cs" />
+    <Compile Include="Waterbox\WaterboxUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Consoles\Coleco\docs\CV-Sound.txt" />

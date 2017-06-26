@@ -4,9 +4,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
 	public partial class LibsnesCore : IVideoProvider
 	{
-		public int VirtualWidth => (int)(_videoWidth * 1.146);
+		public int VirtualWidth { get; private set; } = 293;
 
-		public int VirtualHeight => _videoHeight;
+		public int VirtualHeight { get; private set; } = 224;
 
 		public int BufferWidth => _videoWidth;
 

@@ -5,9 +5,17 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
@@ -46,7 +54,18 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -58,7 +77,13 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -66,7 +91,15 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\..\..\output\dll\</OutDir>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)..\..\..\..\output\dll\</OutDir>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)..\..\..\..\output\dll\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>$(SolutionDir)..\..\..\..\output\dll\</OutDir>
   </PropertyGroup>
@@ -76,7 +109,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MUPEN64PLUSVIDEOZ64_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\mupen64plus-core\src\api;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\include;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\include;..\..\..\mupen64plus-win32-deps\glew-1.10.0\include\GL</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\mupen64plus-core\src\api;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\include;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\include;..\..\..\mupen64plus-win32-deps\glew-1.10.0\include\GL</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4005;4244</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -84,7 +117,24 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
-      <AdditionalDependencies>opengl32.lib;..\..\..\mupen64plus-win32-deps\glew-1.10.0\lib\Release\Win32\glew32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\lib\SDL.lib</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;..\..\..\mupen64plus-win32-deps\glew-1.10.0\lib\Release\Win32\glew32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\lib\SDL.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MUPEN64PLUSVIDEOZ64_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\mupen64plus-core\src\api;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\include;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\include;..\..\..\mupen64plus-win32-deps\glew-1.10.0\include\GL</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996;4005;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>opengl32.lib;..\..\..\mupen64plus-win32-deps\glew-1.10.0\lib\Release\Win32\glew32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\lib\SDL.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -95,7 +145,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MUPEN64PLUSVIDEOZ64_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\mupen64plus-core\src\api;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\include;..\..\..\mupen64plus-win32-deps\libpng-1.2.37\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\include;..\..\..\mupen64plus-win32-deps\glew-1.10.0\include\GL</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\mupen64plus-core\src\api;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\include;..\..\..\mupen64plus-win32-deps\libpng-1.6.18\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\include;..\..\..\mupen64plus-win32-deps\glew-1.10.0\include\GL</AdditionalIncludeDirectories>
       <DisableSpecificWarnings>4996;4005;4244</DisableSpecificWarnings>
     </ClCompile>
     <Link>
@@ -103,7 +153,28 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>opengl32.lib;..\..\..\mupen64plus-win32-deps\glew-1.10.0\lib\Release\Win32\glew32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.14\lib\SDL.lib</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;..\..\..\mupen64plus-win32-deps\glew-1.10.0\lib\Release\Win32\glew32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\lib\SDL.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MUPEN64PLUSVIDEOZ64_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\mupen64plus-core\src\api;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\include;..\..\..\mupen64plus-win32-deps\libpng-1.6.18\include;..\..\..\mupen64plus-win32-deps\zlib-1.2.3\include;..\..\..\mupen64plus-win32-deps\glew-1.10.0\include\GL</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>4996;4005;4244</DisableSpecificWarnings>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>opengl32.lib;..\..\..\mupen64plus-win32-deps\glew-1.10.0\lib\Release\Win32\glew32.lib;..\..\..\mupen64plus-win32-deps\SDL-1.2.15\lib\SDL.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>
       </AdditionalLibraryDirectories>
     </Link>

@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 		public void LoadStateBinary(BinaryReader reader)
 		{
-			Elf.LoadStateBinary(reader);
+			_elf.LoadStateBinary(reader);
 			// other variables
 			Frame = reader.ReadInt32();
 			LagCount = reader.ReadInt32();
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 		public void SaveStateBinary(BinaryWriter writer)
 		{
-			Elf.SaveStateBinary(writer);
+			_elf.SaveStateBinary(writer);
 			// other variables
 			writer.Write(Frame);
 			writer.Write(LagCount);
@@ -61,10 +61,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 			bw.Flush();
 			ms.Close();
 			return ms.ToArray();
-		}
-
-		private void InitStateBuffers()
-		{
 		}
 	}
 }

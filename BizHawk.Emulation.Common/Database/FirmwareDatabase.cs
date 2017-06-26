@@ -30,6 +30,8 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("A3AF676991391A6DD716C79022D4947206B78164", 4096, "A78", "Bios_HSC", "7800highscore.bin", "Highscore Bios");
 			FirmwareAndOption("45BEDC4CBDEAC66C7DF59E9E599195C778D86A92", 8192, "Coleco", "Bios", "ColecoBios.bin", "Bios");
 
+			FirmwareAndOption("079a7ce93f3fd7d35e444b2fab16b1867c95e2c1", 66084, "SGB", "SPC", "sgb.spc", "Super Gameboy SPC");
+
 			var gbaNormal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "gbabios.rom", "Bios (World)");
 			var gbaJDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "gbabios.rom", "Bios (J Debug)");
 			Firmware("GBA", "Bios", "Bios");
@@ -70,6 +72,8 @@ namespace BizHawk.Emulation.Common
 			Option("SAT", "E", ss_100a_ue);
 			Option("SAT", "E", ss_100_j);
 			Option("SAT", "E", ss_101_j);
+			FirmwareAndOption("a67cd4f550751f8b91de2b8b74528ab4e0c11c77", 2 * 1024 * 1024, "SAT", "KOF95", "kof95.bin", "King of Fighters cartridge");
+			Firmware("SAT", "ULTRAMAN", "Ultraman cartridge");
 
 			var ti83_102 = File("CE08F6A808701FC6672230A790167EE485157561", 262144, "ti83_102.rom", "TI-83 Rom v1.02"); // ?? is this size correct?
 			var ti83_103 = File("8399E384804D8D29866CAA4C8763D7A61946A467", 262144, "ti83_103.rom", "TI-83 Rom v1.03"); // ?? is this size correct?
@@ -198,6 +202,12 @@ namespace BizHawk.Emulation.Common
 			Firmware("AppleII", "DiskII", "DiskII.rom");
 			var appleII_DiskII = File("D4181C9F046AAFC3FB326B381BAAC809D9E38D16", 256, "DiskII.rom", "Disk II");
 			Option("AppleII", "DiskII", appleII_DiskII);
+
+			FirmwareAndOption("b2e1955d957a475de2411770452eff4ea19f4cee", 1024, "O2", "BIOS", "Odyssey2.bin", "Odyssey 2 Bios");
+			FirmwareAndOption("a6120aed50831c9c0d95dbdf707820f601d9452e", 1024, "O2", "BIOS-C52", "PhillipsC52.bin", "Phillips C52 Bios");
+		
+			FirmwareAndOption("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "GB", "World", "GB_boot_ROM.gb", "Game Boy BIOS");
+			FirmwareAndOption("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "GBC", "World", "GBC_boot_ROM.gb", "Game Boy Color BIOS");
 		}
 
 		// adds a defined firmware ID to the database

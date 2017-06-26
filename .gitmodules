@@ -7,3 +7,7 @@
 [submodule "libmupen64plus/mupen64plus-rsp-cxd4"]
 	path = libmupen64plus/mupen64plus-rsp-cxd4
 	url = https://github.com/TASVideos/mupen64plus-rsp-cxd4.git
+[submodule "waterbox/snes9x"]
+	path = waterbox/snes9x
+	url = https://github.com/TASVideos/snes9x.git
+	branch = bizsnes

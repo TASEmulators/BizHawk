@@ -869,6 +869,11 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 		}
 
 		return;
+	case 0x50:
+		// this is the register that turns off the bootrom
+		// it can only ever be written to once (with 1) once boot rom finishes
+		cart.bios_remap(data);
+		return;
 	case 0x51:
 		dmaSource = data << 8 | (dmaSource & 0xFF);
 		return;
@@ -1008,8 +1013,8 @@ void Memory::nontrivial_write(const unsigned P, const unsigned data, const unsig
 		ioamhram[P - 0xFE00] = data;
 }
 
-int Memory::loadROM(const char *romfiledata, unsigned romfilelength, const bool forceDmg, const bool multicartCompat) {
-	if (const int fail = cart.loadROM(romfiledata, romfilelength, forceDmg, multicartCompat))
+int Memory::loadROM(const char *romfiledata, unsigned romfilelength, const char *biosfiledata, unsigned biosfilelength, const bool forceDmg, const bool multicartCompat) {
+	if (const int fail = cart.loadROM(romfiledata, romfilelength, biosfiledata, biosfilelength, forceDmg, multicartCompat))
 		return fail;
 
 	sound.init(cart.isCgb());

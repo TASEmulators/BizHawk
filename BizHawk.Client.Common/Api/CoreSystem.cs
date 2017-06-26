@@ -27,6 +27,8 @@
 		PSP,
 		Playstation,
 		WonderSwan,
-		Libretro
+		Libretro,
+		VirtualBoy,
+		NeoGeoPocket
 	}
 }

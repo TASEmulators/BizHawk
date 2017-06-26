@@ -416,7 +416,19 @@ unsigned int ctrl_io_read_byte(unsigned int address)
     case 0x44:  /* RADICA */
     case 0x50:  /* SVP */
     {
-      return m68k_read_bus_8(address);
+		if ((address & 0xFC) == 0x00)
+		{
+			unsigned int data = svp->ssp1601.gr[SSP_XST].byte.h;
+			return (address & 1) ? (data & 0xFF) : (data >> 8);
+		}
+		
+		if ((address & 0xFE) == 0x04)
+		{
+			unsigned int data = svp->ssp1601.gr[SSP_PM0].byte.h;
+			svp->ssp1601.gr[SSP_PM0].byte.h &= ~1;
+			return (address & 1) ? (data & 0xFF) : (data >> 8);
+		}
+		return m68k_read_bus_8(address);
     }
 
     default:  /* Invalid address */
@@ -532,12 +544,12 @@ unsigned int ctrl_io_read_word(unsigned int address)
 
     case 0x50:  /* SVP */
     {
-      if ((address & 0xFD) == 0)
+      if ((address & 0xFC) == 0)
       {
         return svp->ssp1601.gr[SSP_XST].byte.h;
       }
 
-      if ((address & 0xFF) == 4)
+      if ((address & 0xFE) == 4)
       {
         unsigned int data = svp->ssp1601.gr[SSP_PM0].byte.h;
         svp->ssp1601.gr[SSP_PM0].byte.h &= ~1;

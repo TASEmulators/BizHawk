@@ -1,0 +1,180 @@
+GunBlaze-S:
+	Game does an excessively-large SCU DMA that runs off the end of VDP1 VRAM and into the VDP1 register area, causing the registers to be
+	overwritten with (what looks like) garbage.
+
+Pocket Fighter - Interrupt handler interrupting other interrupt handler in the middle of a read,modify,write sequence of instructions.  Same sort of issue as
+	Street Fighter Alpha 2.
+	16-bits var at 0x60443E2
+	INT42->
+		0x600D7C4
+		0x600D7D0
+	INT41->
+		0x600D738 (writes 0)
+
+Independence Day
+
+Batman Forever - Corrupt batmobile graphic during intro(timing issue maybe?).
+
+Ultimate Mortal Kombat 3 - Major issues and no sound after defeating first opponent.
+
+Panzer Dragon II - Quasi-illegal window settings.
+Panzer Dragon Saga - Quasi-illegal window settings.
+
+All-Star Baseball 97 - VDP1 glitchy issues
+
+Space Jam
+
+Langrisser V - Really sensitive about SMPC timing during startup apparently...
+
+Street Fighter Alpha 2 -
+	Line counter @ 0x6050C2E
+	0 written to 0x6050C2E in VB Out irq handler @ PC=0x600F374
+	VB Out IRQ sometimes happens between PC 0x600F40E and 0x600F414...
+	
+
+Christmas Nights - Precision-related VDP1 bug, leading to horribly stretched something or another.
+
+Magical Drop III - Missing intro graphics.
+
+Golden Axe The Duel - Flickering title screen
+	Routine at PC=0x6093DA8, checks byte at 0x607D55C, and if != 0x1, skips writing...
+	@0x607423C = 0x8001	PC = 0x6093DC4
+	@0x607411C = 0x0001
+
+	@0x607D55C written at PC=0x60910DC
+
+X-Men vs. Street Fighter - Sometimes locks up if skipping Capcom intro movie.
+
+Thunderhawk II - Hangs reading from 25D00010, waiting for bit1 to be 1
+Cyberbots - VDP1 timing issue. Hangs during startup.
+
+Lunar - FMV issues(timing-related; DMA is a bit too fast), @PC=0x60D7C24
+
+Nissan Presents Over Drivin' GT-R - SMPC problems
+
+Break Point - Fails to boot.
+
+Time Bokan - Freezes a few minutes into gameplay.
+ [M68K] Exception 9(vec=26) @PC=0x00001ae0 SR=0x2008 ---> PC=0x0000177a, SR=0x2208
+ [M68K] Exception 9(vec=26) @PC=0x00001ae4 SR=0x2000 ---> PC=0x0000177a, SR=0x2200
+ [M68K] Exception 9(vec=26) @PC=0x00001ae4 SR=0x2000 ---> PC=0x0000177a, SR=0x2200
+ [M68K] Exception 9(vec=26) @PC=0x00001af6 SR=0x2008 ---> PC=0x0000177a, SR=0x2208
+
+Falcom Classics II - Ys 2 sometimes freezes during startup.
+
+Virtua Fighter Kids - Wonky FMV.
+	data @ 0x60435B8 0x60435C0	-- 0x6043318
+	0x060CAAA2
+	0x060CAAE4
+	code @ 0x60CA1C6
+	PC=0x60BA1D2
+
+	x inc 0x060FFD38
+	(312,gbr)
+
+	Writes to 0x25F80000:
+		PC=0x20000572 (clock change?)
+		PC=0x06030AB6
+
+
+Virtua Cop - Flickery 3D
+
+Image Fight - uses RBG0 and RBG1 simultaneously during gameplay
+
+Shienryu - VDP1 output rotation probably.
+
+Taito Chase HQ - Indexes
+
+Zero Divide: Bad DMAs?
+
+----------------------------------------------------------
+	0x060FFC13 (@19,GBR) - SynchCount?
+	0x060FFCB0 (@176, GBR) - Resolution/screen mode?
+Tilk Aoi Umi kara Kita Shoujo
+Zero4 Champ
+Yuukyuu Gensoukyoku (Japan)
+Yuukyuu no Kobako Official Collection (Japan)
+SD Gundam Century S - similar issue to Super Tempo?
+Real Sound Kaze no Regret - similar issue to Super Tempo?
+Super Tempo - mov.b @(19,gbr), r0 ... 0x060FFC13
+	Function pointer of some sort @ 0x60FFFCC
+
+	PC=0x0602C228: 0x0100 -> 0x060FFC12
+	PC=0x06020D0A:    0x5 -> 0x060FFC13
+	PC=0x06021CB8:    0x0 -> 0x060FFC13	(@0x060FFC12 - 1)
+	INT41:
+	 PC=0x0602C174:	  0x1 -> 0x060FFC13	(((@0x60FFCB0) & 0x10) >> 4) + 1)
+	 PC=0x0602C184:	  0x0 -> 0x060FFC13	(@0x060FFC13 - 1)
+
+	Break out of cmp/pz loop manually:
+	 PC=0x06021DAE:	  0x1 -> 0x060FFC13
+
+	What we want...(maybe)...or maybe we need INT4A
+	 PC=0x0602C132 (branch taken)
+	 PC=0x0602C17C
+
+	@0x06021CB8 mov.b r0,@(19,gbr)
+		Entry point: 0x6021CAC
+
+
+	Slave:
+	 @PC=0x0602AB00: first read from 0xFFFFFE11
+		FTI by master @PC=0x0602C6A4
+
+	 FTI by master @PC=0x06020CF0
+	 FTI by master @PC=0x06021CDE
+
+	 @PC=0x0602BB7A: read from 0xFFFFFE11
+
+
+	 PC=0x06000600: slave entry
+
+--------------------------------------------------------
+
+Virtua Fighter spams SCU DMAs...
+
+TODO: check SCU write throughput for sparse writes.
+
+Resident Evil - Probably IM related.  Fighting Vipers too
+-----------------------
+Alone in the Dark
+Mr. Bones	- PC= 25788C - other: 256D8C ... jumps to 0xC0000064?
+
+Sega Saturn Choice Cuts - hangs on skipping video, hangs on playing video later.
+Marvel Super Heroes vs. Street Fighter - Goes back to CD screen after winning battle?
+-------------------
+
+-------------------------------------
+
+Probably vblank signal issue for a lot of these...
+
+Arcade's Greatest Hits - Locks up near Digital Eclipse video.
+
+Baku Baku - 600091A, Timer0 triggers an IRQ when the software isn't ready?
+
+Father Christmas - icache or CPU timing related probably
+
+Doom - Sound effect positioning seems off.
+
+NBA Jam Extreme - [M68K] Exception 3 @PC=0x0000088e SR=0x2700 ---> PC=0x0000029e, SR=0x2700
+
+Whizz - CDB?
+
+Tenchi Muyou! Ryououki Gokuraku - CDB issues?
+
+Layer Section - Gets confused and misprograms the CDB?
+
+Tomb Raider:
+Pastel Muses - Tries illegal DMA transfer in indirect mode.
+Resident Evil - Almost same:
+[SCU] DMA level 1 reading indirect table entries @ 0x060c8000
+[SCU] Starting DMA level 1 transfer; ra=0x00000000 wa=0x05c00060 bc=0x0000001e - read_inc=1, write_inc=0x01 -- indirect=1 7
+[SCU] Attempted DMA from illegal address 0x00000000
+
+
+----------------------------------------------------------------------------------------------
+Funky Fantasy:
+[SCU] DMA level 1 reading indirect table entries @ 0x060c0000
+[SCU] Starting DMA level 1 transfer; ra=0x00000000 wa=0x05c00060 bc=0x0000001e - read_inc=1, write_inc=0x01 -- indirect=1 7
+[SCU] Attempted DMA from illegal address 0x00000000
+

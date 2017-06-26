@@ -22,55 +22,33 @@ namespace BizHawk.Client.EmuHawk
 			var dlg = new SNESOptions
 			{
 				AlwaysDoubleSize = s.AlwaysDoubleSize,
-				ForceDeterminism = s.ForceDeterminism,
 				CropSGBFrame = s.CropSGBFrame,
-				Profile = ss.Profile
+				ShowObj1 = s.ShowOBJ_0,
+				ShowObj2 = s.ShowOBJ_1,
+				ShowObj3 = s.ShowOBJ_2,
+				ShowObj4 = s.ShowOBJ_3,
+				ShowBg1 = s.ShowBG1_0,
+				ShowBg2 = s.ShowBG2_0,
+				ShowBg3 = s.ShowBG3_0,
+				ShowBg4 = s.ShowBG4_0
 			};
 
 			var result = dlg.ShowDialog(owner);
 			if (result == DialogResult.OK)
 			{
 				s.AlwaysDoubleSize = dlg.AlwaysDoubleSize;
-				s.ForceDeterminism = dlg.ForceDeterminism;
 				s.CropSGBFrame = dlg.CropSGBFrame;
-				ss.Profile = dlg.Profile;
+				s.ShowOBJ_0 = dlg.ShowObj1;
+				s.ShowOBJ_1 = dlg.ShowObj2;
+				s.ShowOBJ_2 = dlg.ShowObj3;
+				s.ShowOBJ_3 = dlg.ShowObj4;
+				s.ShowBG1_0 = s.ShowBG1_1 = dlg.ShowBg1;
+				s.ShowBG2_0 = s.ShowBG2_1 = dlg.ShowBg2;
+				s.ShowBG3_0 = s.ShowBG3_1 = dlg.ShowBg3;
+				s.ShowBG4_0 = s.ShowBG4_1 = dlg.ShowBg4;
+
 				GlobalWin.MainForm.PutCoreSettings(s);
 				GlobalWin.MainForm.PutCoreSyncSettings(ss);
-			}
-		}
-
-		private void SNESOptions_Load(object sender, EventArgs e)
-		{
-			rbAccuracy.Visible = label2.Visible = VersionInfo.DeveloperBuild;
-		}
-
-		private string Profile
-		{
-			get
-			{
-				if (rbCompatibility.Checked)
-				{
-					return "Compatibility";
-				}
-
-				if (rbPerformance.Checked)
-				{
-					return "Performance";
-				}
-
-				if (rbAccuracy.Checked)
-				{
-					return "Accuracy";
-				}
-
-				throw new InvalidOperationException();
-			}
-
-			set
-			{
-				rbCompatibility.Checked = value == "Compatibility";
-				rbPerformance.Checked = value == "Performance";
-				rbAccuracy.Checked = value == "Accuracy";
 			}
 		}
 
@@ -88,30 +66,27 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private bool ForceDeterminism
-		{
-			get { return cbForceDeterminism.Checked; }
-			set { cbForceDeterminism.Checked = value; }
-		}
-
 		private bool CropSGBFrame
 		{
 			get { return cbCropSGBFrame.Checked; }
 			set { cbCropSGBFrame.Checked = value; }
 		}
 
-		void RefreshDoubleSizeOption()
+		private bool ShowObj1 { get { return Obj1Checkbox.Checked; } set { Obj1Checkbox.Checked = value; } }
+		private bool ShowObj2 { get { return Obj2Checkbox.Checked; } set { Obj2Checkbox.Checked = value; } }
+		private bool ShowObj3 { get { return Obj3Checkbox.Checked; } set { Obj3Checkbox.Checked = value; } }
+		private bool ShowObj4 { get { return Obj4Checkbox.Checked; } set { Obj4Checkbox.Checked = value; } }
+
+		private bool ShowBg1 { get { return Bg1Checkbox.Checked; } set { Bg1Checkbox.Checked = value; } }
+		private bool ShowBg2 { get { return Bg2Checkbox.Checked; } set { Bg2Checkbox.Checked = value; } }
+		private bool ShowBg3 { get { return Bg3Checkbox.Checked; } set { Bg3Checkbox.Checked = value; } }
+		private bool ShowBg4 { get { return Bg4Checkbox.Checked; } set { Bg4Checkbox.Checked = value; } }
+
+		private void RefreshDoubleSizeOption()
 		{
 			_suppressDoubleSize = true;
 			cbDoubleSize.Checked = !cbDoubleSize.Enabled || _userDoubleSizeOption;
 			_suppressDoubleSize = false;
-		}
-
-		private void RbAccuracy_CheckedChanged(object sender, EventArgs e)
-		{
-			cbDoubleSize.Enabled = !rbAccuracy.Checked;
-			lblDoubleSize.ForeColor = cbDoubleSize.Enabled ? System.Drawing.SystemColors.ControlText : System.Drawing.SystemColors.GrayText;
-			RefreshDoubleSizeOption();
 		}
 
 		private void CbDoubleSize_CheckedChanged(object sender, EventArgs e)
@@ -122,10 +97,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_userDoubleSizeOption = cbDoubleSize.Checked;
-		}
-
-		private void CbForceDeterminism_CheckedChanged(object sender, EventArgs e)
-		{
 		}
 
 		private void BtnOk_Click(object sender, EventArgs e)

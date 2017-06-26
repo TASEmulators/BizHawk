@@ -57,9 +57,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 				case PluginType.GlideMk2:
 					videoplugin = "mupen64plus-video-glide64mk2.dll";
 					break;
-				case PluginType.Jabo:
-					videoplugin = "mupen64plus-video-jabo.dll";
-					break;
 				case PluginType.GLideN64:
 					videoplugin = "mupen64plus-video-GLideN64.dll";
 					break;

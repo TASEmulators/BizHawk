@@ -30,6 +30,8 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Client.EmuHawk.CoreExtensions;
 using BizHawk.Client.ApiHawk;
 using BizHawk.Emulation.Common.Base_Implementations;
+using BizHawk.Emulation.Cores.Nintendo.SNES9X;
+using BizHawk.Emulation.Cores.Consoles.SNK;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -665,7 +667,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool IsSeeking => PauseOnFrame.HasValue;
 
 		private bool IsTurboSeeking => PauseOnFrame.HasValue && Global.Config.TurboSeek;
-		
+
 		private bool IsTurboing => Global.ClientControls["Turbo"] || IsTurboSeeking;
 
 		#endregion
@@ -1257,173 +1259,122 @@ namespace BizHawk.Client.EmuHawk
 
 		private LibsnesCore AsSNES => Emulator as LibsnesCore;
 
-		// TODO: Clean Me!
-		private void SNES_ToggleBG1(bool? setto = null)
+		private void SNES_ToggleBg(int layer)
 		{
-			if (!(Emulator is LibsnesCore))
+			if (!(Emulator is LibsnesCore) && !(Emulator is Snes9x))
 			{
 				return;
 			}
 
-			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
+			if (layer < 1 || layer > 4)
 			{
-				s.ShowBG1_1 = s.ShowBG1_0 = setto.Value;
-			}
-			else
-			{
-				s.ShowBG1_1 = s.ShowBG1_0 ^= true;
+				return;
 			}
 
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowBG1_1 ? "BG 1 Layer On" : "BG 1 Layer Off");
+			bool result = false;
+			if (Emulator is LibsnesCore)
+			{
+				var s = ((LibsnesCore)Emulator).GetSettings();
+				switch (layer)
+				{
+					case 1:
+						result = s.ShowBG1_0 = s.ShowBG1_1 ^= true;
+						break;
+					case 2:
+						result = s.ShowBG2_0 = s.ShowBG2_1 ^= true;
+						break;
+					case 3:
+						result = s.ShowBG3_0 = s.ShowBG3_1 ^= true;
+						break;
+					case 4:
+						result = s.ShowBG4_0 = s.ShowBG4_1 ^= true;
+						break;
+				}
+
+				((LibsnesCore)Emulator).PutSettings(s);
+			}
+			else if (Emulator is Snes9x)
+			{
+				var s = ((Snes9x)Emulator).GetSettings();
+				switch (layer)
+				{
+					case 1:
+						result = s.ShowBg0 ^= true;
+						break;
+					case 2:
+						result = s.ShowBg1 ^= true;
+						break;
+					case 3:
+						result = s.ShowBg2 ^= true;
+						break;
+					case 4:
+						result = s.ShowBg3 ^= true;
+						break;
+				}
+
+				((Snes9x)Emulator).PutSettings(s);
+			}
+
+			GlobalWin.OSD.AddMessage($"BG {layer} Layer " + (result ? "On" : "Off"));
 		}
 
-		private void SNES_ToggleBG2(bool? setto = null)
+		private void SNES_ToggleObj(int layer)
 		{
-			if (!(Emulator is LibsnesCore))
+			if (!(Emulator is LibsnesCore) && !(Emulator is Snes9x))
 			{
 				return;
 			}
 
-			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
-			{
-				s.ShowBG2_1 = s.ShowBG2_0 = setto.Value;
-			}
-			else
-			{
-				s.ShowBG2_1 = s.ShowBG2_0 ^= true;
-			}
-
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowBG2_1 ? "BG 2 Layer On" : "BG 2 Layer Off");
-		}
-
-		private void SNES_ToggleBG3(bool? setto = null)
-		{
-			if (!(Emulator is LibsnesCore))
+			if (layer < 1 || layer > 4)
 			{
 				return;
 			}
 
-			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
+			bool result = false;
+			if (Emulator is LibsnesCore)
 			{
-				s.ShowBG3_1 = s.ShowBG3_0 = setto.Value;
-			}
-			else
-			{
-				s.ShowBG3_1 = s.ShowBG3_0 ^= true;
-			}
+				var s = ((LibsnesCore)Emulator).GetSettings();
+				switch (layer)
+				{
+					case 1:
+						result = s.ShowOBJ_0 ^= true;
+						break;
+					case 2:
+						result = s.ShowOBJ_1 ^= true;
+						break;
+					case 3:
+						result = s.ShowOBJ_2 ^= true;
+						break;
+					case 4:
+						result = s.ShowOBJ_3 ^= true;
+						break;
+				}
 
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowBG3_1 ? "BG 3 Layer On" : "BG 3 Layer Off");
-		}
-
-		private void SNES_ToggleBG4(bool? setto = null)
-		{
-			if (!(Emulator is LibsnesCore))
-			{
-				return;
+				((LibsnesCore)Emulator).PutSettings(s);
+				GlobalWin.OSD.AddMessage($"Obj {layer} Layer " + (result ? "On" : "Off"));
 			}
-
-			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
+			else if (Emulator is Snes9x)
 			{
-				s.ShowBG4_1 = s.ShowBG4_0 = setto.Value;
-			}
-			else
-			{
-				s.ShowBG4_1 = s.ShowBG4_0 ^= true;
-			}
+				var s = ((Snes9x)Emulator).GetSettings();
+				switch (layer)
+				{
+					case 1:
+						result = s.ShowSprites0 ^= true;
+						break;
+					case 2:
+						result = s.ShowSprites1 ^= true;
+						break;
+					case 3:
+						result = s.ShowSprites2 ^= true;
+						break;
+					case 4:
+						result = s.ShowSprites3 ^= true;
+						break;
+				}
 
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowBG4_1 ? "BG 4 Layer On" : "BG 4 Layer Off");
-		}
-
-		private void SNES_ToggleObj1(bool? setto = null)
-		{
-			if (!(Emulator is LibsnesCore))
-			{
-				return;
+				((Snes9x)Emulator).PutSettings(s);
+				GlobalWin.OSD.AddMessage($"Sprite {layer} Layer " + (result ? "On" : "Off"));
 			}
-
-			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
-			{
-				s.ShowOBJ_0 = setto.Value;
-			}
-			else
-			{
-				s.ShowOBJ_0 ^= true;
-			}
-
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowOBJ_0 ? "OBJ 1 Layer On" : "OBJ 1 Layer Off");
-		}
-
-		private void SNES_ToggleObj2(bool? setto = null)
-		{
-			if (!(Emulator is LibsnesCore))
-			{
-				return;
-			}
-
-			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
-			{
-				s.ShowOBJ_1 = setto.Value;
-			}
-			else
-			{
-				s.ShowOBJ_1 ^= true;
-			}
-
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowOBJ_1 ? "OBJ 2 Layer On" : "OBJ 2 Layer Off");
-		}
-
-		private void SNES_ToggleOBJ3(bool? setto = null)
-		{
-			if (!(Emulator is LibsnesCore))
-			{
-				return;
-			}
-
-			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
-			{
-				s.ShowOBJ_2 = setto.Value;
-			}
-			else
-			{
-				s.ShowOBJ_2 ^= true;
-			}
-
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowOBJ_2 ? "OBJ 3 Layer On" : "OBJ 3 Layer Off");
-		}
-
-		private void SNES_ToggleOBJ4(bool? setto = null)
-		{
-			if (!(Emulator is LibsnesCore))
-			{
-				return;
-			}
-
-			var s = AsSNES.GetSettings();
-			if (setto.HasValue)
-			{
-				s.ShowOBJ_3 = setto.Value;
-			}
-			else
-			{
-				s.ShowOBJ_3 ^= true;
-			}
-
-			AsSNES.PutSettings(s);
-			GlobalWin.OSD.AddMessage(s.ShowOBJ_3 ? "OBJ 4 Layer On" : "OBJ 4 Layer Off");
 		}
 
 		public bool RunLibretroCoreChooser()
@@ -1685,7 +1636,7 @@ namespace BizHawk.Client.EmuHawk
 
 					// GBA meteor core might not know how big the saveram ought to be, so just send it the whole file
 					// GBA vba-next core will try to eat anything, regardless of size
-					if (Emulator is VBANext || Emulator is MGBAHawk)
+					if (Emulator is VBANext || Emulator is MGBAHawk || Emulator is NeoGeoPort)
 					{
 						sram = File.ReadAllBytes(PathManager.SaveRamPath(Global.Game));
 					}
@@ -1749,7 +1700,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					writer.Write(saveram, 0, saveram.Length);
 				}
-					
+
 				writer.Close();
 			}
 		}
@@ -1797,6 +1748,9 @@ namespace BizHawk.Client.EmuHawk
 			AppleSubMenu.Visible = false;
 			C64SubMenu.Visible = false;
 			IntvSubMenu.Visible = false;
+			virtualBoyToolStripMenuItem.Visible = false;
+			sNESToolStripMenuItem.Visible = false;
+			neoGeoPocketToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
@@ -1844,17 +1798,15 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "SNES":
 				case "SGB":
-					// TODO: fix SNES9x here
 					if (Emulator is LibsnesCore)
 					{
 						SNESSubMenu.Text = ((LibsnesCore)Emulator).IsSGB ? "&SGB" : "&SNES";
 						SNESSubMenu.Visible = true;
 					}
-					else
+					else if (Emulator is Snes9x)
 					{
-						SNESSubMenu.Visible = false;
+						sNESToolStripMenuItem.Visible = true;
 					}
-
 					break;
 				case "Coleco":
 					ColecoSubMenu.Visible = true;
@@ -1879,6 +1831,12 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "INTV":
 					IntvSubMenu.Visible = true;
+					break;
+				case "VB":
+					virtualBoyToolStripMenuItem.Visible = true;
+					break;
+				case "NGP":
+					neoGeoPocketToolStripMenuItem.Visible = true;
 					break;
 			}
 		}
@@ -2123,7 +2081,7 @@ namespace BizHawk.Client.EmuHawk
 				if (VersionInfo.DeveloperBuild)
 				{
 					return FormatFilter(
-						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.psf;*.minipsf;*.nsf;%ARCH%",
+						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.vb;*.ngp;*.ngc;*.psf;*.minipsf;*.nsf;%ARCH%",
 						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
 						"Disc Images", "*.cue;*.ccd;*.m3u",
 						"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
@@ -2149,11 +2107,13 @@ namespace BizHawk.Client.EmuHawk
 						"Nintendo 64", "*.z64;*.v64;*.n64",
 						"WonderSwan", "*.ws;*.wsc;%ARCH%",
 						"Apple II", "*.dsk;*.do;*.po;%ARCH%",
+						"Virtual Boy", "*.vb;%ARCH%",
+						"Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%",
 						"All Files", "*.*");
 				}
 
 				return FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.prg;*.d64;*.g64;*.minipsf;*.nsf;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.ngp;*.ngc;*.prg;*.d64;*.g64;*.minipsf;*.nsf;%ARCH%",
 					"Disc Images", "*.cue;*.ccd;*.m3u",
 					"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -2175,6 +2135,8 @@ namespace BizHawk.Client.EmuHawk
 					"Genesis", "*.gen;*.md;*.smd;*.bin;*.cue;*.ccd;%ARCH%",
 					"WonderSwan", "*.ws;*.wsc;%ARCH%",
 					"Apple II", "*.dsk;*.do;*.po;%ARCH%",
+					"Virtual Boy", "*.vb;%ARCH%",
+					"Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%",
 					"Commodore 64", "*.prg; *.d64, *.g64; *.crt; *.tap;%ARCH%",
 					"All Files", "*.*");
 			}
@@ -3158,6 +3120,7 @@ namespace BizHawk.Client.EmuHawk
 				videowritername = Global.Config.VideoWriter;
 			}
 
+			_dumpaudiosync = Global.Config.VideoWriterAudioSync;
 			if (unattended && !string.IsNullOrEmpty(videowritername))
 			{
 				aw = VideoWriterInventory.GetVideoWriter(videowritername);
@@ -3165,7 +3128,7 @@ namespace BizHawk.Client.EmuHawk
 			else
 			{
 				aw = VideoWriterChooserForm.DoVideoWriterChoserDlg(VideoWriterInventory.GetAllWriters(), this,
-					out _avwriterResizew, out _avwriterResizeh, out _avwriterpad, out _dumpaudiosync);
+					out _avwriterResizew, out _avwriterResizeh, out _avwriterpad, ref _dumpaudiosync);
 			}
 
 			if (aw == null)
@@ -3402,7 +3365,7 @@ namespace BizHawk.Client.EmuHawk
 								}
 							}
 
-							output = new BmpVideoProvider(bmpout);
+							output = new BmpVideoProvider(bmpout, _currentVideoProvider.VsyncNumerator, _currentVideoProvider.VsyncDenominator);
 							disposableOutput = (IDisposable)output;
 						}
 						finally
@@ -3538,7 +3501,7 @@ namespace BizHawk.Client.EmuHawk
 			public IOpenAdvanced OpenAdvanced { get; set; }
 		}
 
-		private LoadRomArgs _currentLoadRomArgs; 
+		private LoadRomArgs _currentLoadRomArgs;
 
 		// Still needs a good bit of refactoring
 		public bool LoadRom(string path, LoadRomArgs args)
@@ -4291,6 +4254,21 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Rewinder.Capture();
 			}
+		}
+
+		private void preferencesToolStripMenuItem1_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "VirtualBoy Settings");
+		}
+
+		private void preferencesToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "Snes9x Settings");
+		}
+
+		private void preferencesToolStripMenuItem2_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "NeoPop Settings");
 		}
 
 		private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)

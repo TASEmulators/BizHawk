@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			public bool EnableFM = true;
 			public bool AllowOverlock = false;
-			public bool UseBIOS = false;
+			public bool UseBIOS = true;
 			public string ConsoleRegion = "Export";
 			public string DisplayType = "NTSC";
 

@@ -66,13 +66,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 		public void Dispose()
 		{
-			if (!disposed)
+			if (!_disposed)
 			{
-				if (Elf != null)
-					Elf.Dispose();
+				if (_elf != null)
+					_elf.Dispose();
 				if (CD != null)
 					CD.Dispose();
-				disposed = true;
+				_disposed = true;
 			}
 		}
 	}

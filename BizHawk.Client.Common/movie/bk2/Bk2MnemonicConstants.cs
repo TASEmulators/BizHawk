@@ -10,10 +10,18 @@ namespace BizHawk.Client.Common
 			get
 			{
 				var key = button.Replace("Key ", "");
-				if (key.StartsWith("P") && key.Length > 1 && key[1] >= '0' && key[1] <= '9')
+				if (key.StartsWith("P"))
 				{
-					key = key.Substring(3);
+					if (key.Length > 2 && key[1] == '1' && key[2] >= '0' && key[1] <= '9') // Hack to support 10-20 controllers, TODO: regex this thing instead
+					{
+						key = key.Substring(4);
+					}
+					else if (key.Length > 1 && key[1] >= '0' && key[1] <= '9')
+					{
+						key = key.Substring(3);
+					}
 				}
+				
 
 				if (_systemOverrides.ContainsKey(Global.Emulator.SystemId) && _systemOverrides[Global.Emulator.SystemId].ContainsKey(key))
 				{
@@ -293,6 +301,10 @@ namespace BizHawk.Client.Common
 				["Option 1"] = '1',
 				["Option 2"] = '2'
 			},
+			["NGP"] = new Dictionary<string, char>
+			{
+				["Option"] = 'O'
+			},
 			["AppleII"] = new Dictionary<string, char>
 			{
 				["Tab"] = 't' ,
@@ -332,6 +344,17 @@ namespace BizHawk.Client.Common
 				["Red"] = 'R',
 				["Blue"] = 'B',
 				["Purple"] = 'P'
+			},
+			["VB"] = new Dictionary<string, char>
+			{
+				["L_Up"] = 'U',
+				["L_Down"] = 'D',
+				["L_Left"] = 'L',
+				["L_Right"] = 'R',
+				["R_Up"] = 'u',
+				["R_Down"] = 'd',
+				["R_Left"] = 'l',
+				["R_Right"] = 'r',
 			}
 		};
 	}

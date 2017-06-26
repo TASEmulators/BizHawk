@@ -10,169 +10,197 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	{
 		public int QUERY_get_memory_size(SNES_MEMORY id)
 		{
-			comm->value = (uint)id;
-			Message(eMessage.eMessage_QUERY_get_memory_size);
-			return (int)comm->value;
+			using (_exe.EnterExit())
+			{
+				_comm->value = (uint)id;
+				_core.Message(eMessage.eMessage_QUERY_get_memory_size);
+				return (int)_comm->value;
+			}
 		}
 
 		string QUERY_MemoryNameForId(SNES_MEMORY id)
 		{
-			comm->id = (uint)id;
-			Message(eMessage.eMessage_QUERY_GetMemoryIdName);
-			return comm->GetAscii();
+			using (_exe.EnterExit())
+			{
+				_comm->id = (uint)id;
+				_core.Message(eMessage.eMessage_QUERY_GetMemoryIdName);
+				return _comm->GetAscii();
+			}
 		}
 
 		public byte* QUERY_get_memory_data(SNES_MEMORY id)
 		{
 			string name = QUERY_MemoryNameForId(id);
-			if (!SharedMemoryBlocks.ContainsKey(name)) return null;
-			var smb = SharedMemoryBlocks[name];
-			return (byte*)smb.Ptr;
+			IntPtr ret;
+			_sharedMemoryBlocks.TryGetValue(name, out ret);
+			return (byte*)ret;
 		}
 
 		public byte QUERY_peek(SNES_MEMORY id, uint addr)
 		{
-			comm->id = (uint)id;
-			comm->addr = addr;
-			Message(eMessage.eMessage_QUERY_peek);
-			return (byte)comm->value;
+			using (_exe.EnterExit())
+			{
+				_comm->id = (uint)id;
+				_comm->addr = addr;
+				_core.Message(eMessage.eMessage_QUERY_peek);
+				return (byte)_comm->value;
+			}
 		}
 		public void QUERY_poke(SNES_MEMORY id, uint addr, byte val)
 		{
-			comm->id = (uint)id;
-			comm->addr = addr;
-			comm->value = (byte)val;
-			Message(eMessage.eMessage_QUERY_poke);
-		}
-
-		public int QUERY_serialize_size()
-		{
-			for (; ; )
+			using (_exe.EnterExit())
 			{
-				Message(eMessage.eMessage_QUERY_serialize_size);
-				int ret = (int)comm->size;
-				if (ret > 100)
-				{
-					return ret;
-				}
-				else Console.WriteLine("WHY????????");
+				_comm->id = (uint)id;
+				_comm->addr = addr;
+				_comm->value = (byte)val;
+				_core.Message(eMessage.eMessage_QUERY_poke);
 			}
 		}
 
-
-
 		public void QUERY_set_color_lut(IntPtr colors)
 		{
-			comm->ptr = colors.ToPointer();
-			Message(eMessage.eMessage_QUERY_set_color_lut);
+			using (_exe.EnterExit())
+			{
+				_comm->ptr = colors.ToPointer();
+				_core.Message(eMessage.eMessage_QUERY_set_color_lut);
+			}
 		}
 
 		public void QUERY_set_state_hook_exec(bool state)
 		{
-			comm->value = state ? 1u : 0u;
-			Message(eMessage.eMessage_QUERY_state_hook_exec);
+			using (_exe.EnterExit())
+			{
+				_comm->value = state ? 1u : 0u;
+				_core.Message(eMessage.eMessage_QUERY_state_hook_exec);
+			}
 		}
 
 		public void QUERY_set_state_hook_read(bool state)
 		{
-			comm->value = state ? 1u : 0u;
-			Message(eMessage.eMessage_QUERY_state_hook_read);
+			using (_exe.EnterExit())
+			{
+				_comm->value = state ? 1u : 0u;
+				_core.Message(eMessage.eMessage_QUERY_state_hook_read);
+			}
 		}
 
 		public void QUERY_set_state_hook_write(bool state)
 		{
-			comm->value = state ? 1u : 0u;
-			Message(eMessage.eMessage_QUERY_state_hook_write);
+			using (_exe.EnterExit())
+			{
+				_comm->value = state ? 1u : 0u;
+				_core.Message(eMessage.eMessage_QUERY_state_hook_write);
+			}
 		}
 
 		public void QUERY_set_trace_callback(int mask, snes_trace_t callback)
 		{
-			this.traceCallback = callback;
-			comm->value = (uint)mask;
-			Message(eMessage.eMessage_QUERY_enable_trace);
+			using (_exe.EnterExit())
+			{
+				this.traceCallback = callback;
+				_comm->value = (uint)mask;
+				_core.Message(eMessage.eMessage_QUERY_enable_trace);
+			}
 		}
 		public void QUERY_set_scanlineStart(snes_scanlineStart_t scanlineStart)
 		{
-			this.scanlineStart = scanlineStart;
-			comm->value = (scanlineStart != null) ? 1u : 0u;
-			Message(eMessage.eMessage_QUERY_enable_scanline);
+			using (_exe.EnterExit())
+			{
+				this.scanlineStart = scanlineStart;
+				_comm->value = (scanlineStart != null) ? 1u : 0u;
+				_core.Message(eMessage.eMessage_QUERY_enable_scanline);
+			}
 		}
 		public void QUERY_set_audio_sample(snes_audio_sample_t audio_sample)
 		{
-			this.audio_sample = audio_sample;
-			comm->value = (audio_sample!=null) ? 1u : 0u;
-			Message(eMessage.eMessage_QUERY_enable_audio);
+			using (_exe.EnterExit())
+			{
+				this.audio_sample = audio_sample;
+				_comm->value = (audio_sample != null) ? 1u : 0u;
+				_core.Message(eMessage.eMessage_QUERY_enable_audio);
+			}
 		}
 
 		public void QUERY_set_layer_enable()
 		{
-			Message(eMessage.eMessage_QUERY_set_layer_enable);
+			_core.Message(eMessage.eMessage_QUERY_set_layer_enable);
 		}
 
 		public void QUERY_set_backdropColor(int backdropColor)
 		{
-			comm->value = (uint)backdropColor;
-			Message(eMessage.eMessage_QUERY_set_backdropColor);
+			using (_exe.EnterExit())
+			{
+				_comm->value = (uint)backdropColor;
+				_core.Message(eMessage.eMessage_QUERY_set_backdropColor);
+			}
 		}
-		
+
 		public int QUERY_peek_logical_register(SNES_REG reg)
 		{
-			comm->id = (uint)reg;
-			Message(eMessage.eMessage_QUERY_peek_logical_register);
-			return (int)comm->value;
+			using (_exe.EnterExit())
+			{
+				_comm->id = (uint)reg;
+				_core.Message(eMessage.eMessage_QUERY_peek_logical_register);
+				return (int)_comm->value;
+			}
 		}
 
 		public unsafe void QUERY_peek_cpu_regs(out CPURegs ret)
 		{
-			Message(eMessage.eMessage_QUERY_peek_cpu_regs);
-			ret = comm->cpuregs;
+			using (_exe.EnterExit())
+			{
+				_core.Message(eMessage.eMessage_QUERY_peek_cpu_regs);
+				ret = _comm->cpuregs;
+			}
 		}
 
 		public void QUERY_set_cdl(ICodeDataLog cdl)
 		{
-			for (int i = 0; i < 8; i++)
+			using (_exe.EnterExit())
 			{
-				comm->cdl_ptr[i] = 0;
-				comm->cdl_size[i] = 0;
-			}
-
-			if (cdl != null)
-			{
-				comm->cdl_ptr[0] = cdl.GetPin("CARTROM").ToInt64();
-				comm->cdl_size[0] = cdl["CARTROM"].Length;
-				if (cdl.Has("CARTRAM"))
+				for (int i = 0; i < 8; i++)
 				{
-					comm->cdl_ptr[1] = cdl.GetPin("CARTRAM").ToInt64();
-					comm->cdl_size[1] = cdl["CARTRAM"].Length;
+					_comm->cdl_ptr[i] = 0;
+					_comm->cdl_size[i] = 0;
 				}
 
-				comm->cdl_ptr[2] = cdl.GetPin("WRAM").ToInt64();
-				comm->cdl_size[2] = cdl["WRAM"].Length;
-
-				comm->cdl_ptr[3] = cdl.GetPin("APURAM").ToInt64();
-				comm->cdl_size[3] = cdl["APURAM"].Length;
-
-				if (cdl.Has("SGB_CARTROM"))
+				if (cdl != null)
 				{
-					comm->cdl_ptr[4] = cdl.GetPin("SGB_CARTROM").ToInt64();
-					comm->cdl_size[4] = cdl["SGB_CARTROM"].Length;
-
-					if (cdl.Has("SGB_CARTRAM"))
+					_comm->cdl_ptr[0] = cdl.GetPin("CARTROM").ToInt64();
+					_comm->cdl_size[0] = cdl["CARTROM"].Length;
+					if (cdl.Has("CARTRAM"))
 					{
-						comm->cdl_ptr[5] = cdl.GetPin("SGB_CARTRAM").ToInt64();
-						comm->cdl_size[5] = cdl["SGB_CARTRAM"].Length;
+						_comm->cdl_ptr[1] = cdl.GetPin("CARTRAM").ToInt64();
+						_comm->cdl_size[1] = cdl["CARTRAM"].Length;
 					}
 
-					comm->cdl_ptr[6] = cdl.GetPin("SGB_WRAM").ToInt64();
-					comm->cdl_size[6] = cdl["SGB_WRAM"].Length;
+					_comm->cdl_ptr[2] = cdl.GetPin("WRAM").ToInt64();
+					_comm->cdl_size[2] = cdl["WRAM"].Length;
 
-					comm->cdl_ptr[7] = cdl.GetPin("SGB_HRAM").ToInt64();
-					comm->cdl_size[7] = cdl["SGB_HRAM"].Length;
+					_comm->cdl_ptr[3] = cdl.GetPin("APURAM").ToInt64();
+					_comm->cdl_size[3] = cdl["APURAM"].Length;
+
+					if (cdl.Has("SGB_CARTROM"))
+					{
+						_comm->cdl_ptr[4] = cdl.GetPin("SGB_CARTROM").ToInt64();
+						_comm->cdl_size[4] = cdl["SGB_CARTROM"].Length;
+
+						if (cdl.Has("SGB_CARTRAM"))
+						{
+							_comm->cdl_ptr[5] = cdl.GetPin("SGB_CARTRAM").ToInt64();
+							_comm->cdl_size[5] = cdl["SGB_CARTRAM"].Length;
+						}
+
+						_comm->cdl_ptr[6] = cdl.GetPin("SGB_WRAM").ToInt64();
+						_comm->cdl_size[6] = cdl["SGB_WRAM"].Length;
+
+						_comm->cdl_ptr[7] = cdl.GetPin("SGB_HRAM").ToInt64();
+						_comm->cdl_size[7] = cdl["SGB_HRAM"].Length;
+					}
 				}
-			}
 
-			Message(eMessage.eMessage_QUERY_set_cdl);
+				_core.Message(eMessage.eMessage_QUERY_set_cdl);
+			}
 		}
-		
 	}
 }

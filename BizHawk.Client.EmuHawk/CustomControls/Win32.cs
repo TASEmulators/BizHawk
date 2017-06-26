@@ -302,7 +302,7 @@ namespace BizHawk.Client.EmuHawk
 			out IntPtr ppavi,
 			ref AVISTREAMINFOW psi);
 
-		[StructLayout(LayoutKind.Sequential, Pack = 1)]
+		[StructLayout(LayoutKind.Sequential)]
 		public struct AVICOMPRESSOPTIONS
 		{
 			public int fccType;

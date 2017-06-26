@@ -17,7 +17,7 @@ for /f "skip=2 tokens=2,*" %%A in ('reg.exe query "HKLM\SOFTWARE\Microsoft\MSBui
 IF NOT EXIST %MSBUILDDIR%nul goto MISSINGMSBUILD
 IF NOT EXIST %MSBUILDDIR%msbuild.exe goto MISSINGMSBUILD
 
-call "%MSBUILDDIR%msbuild.exe" ..\BizHawk.sln /p:Configuration=Release /p:Platform="x86" /t:rebuild
+call "%MSBUILDDIR%msbuild.exe" ..\BizHawk.sln /p:Configuration=Release /p:Platform="x64" /t:rebuild
 
 @if errorlevel 1 goto MSBUILDFAILED
 

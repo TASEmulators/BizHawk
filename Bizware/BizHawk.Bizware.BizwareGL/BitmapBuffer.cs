@@ -367,7 +367,7 @@ namespace BizHawk.Bizware.BizwareGL
 					int height = bmp.Height;
 					InitSize(width, height);
 					BitmapData bmpdata = bmp.LockBits(new sd.Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-					int* ptr = (int*)bmpdata.Scan0.ToInt32();
+					int* ptr = (int*)bmpdata.Scan0;
 					int stride = bmpdata.Stride / 4;
 					LoadFrom(width, stride, height, (byte*)ptr, options);
 					bmp.UnlockBits(bmpdata);

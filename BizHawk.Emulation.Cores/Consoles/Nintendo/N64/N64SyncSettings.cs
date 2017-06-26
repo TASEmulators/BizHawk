@@ -11,8 +11,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	{
 		public N64SyncSettings()
 		{
-			VideoPlugin = PluginType.Jabo;
-			Core = CoreType.Dynarec;
+			VideoPlugin = PluginType.GLideN64;
+			Core = CoreType.Interpret;
 			Rsp = RspType.Rsp_Hle;
 			DisableExpansionSlot = true;
 
@@ -27,7 +27,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			RicePlugin = new N64RicePluginSettings();
 			GlidePlugin = new N64GlidePluginSettings();
 			Glide64mk2Plugin = new N64Glide64mk2PluginSettings();
-			JaboPlugin = new N64JaboPluginSettings();
 			GLideN64Plugin = new N64GLideN64PluginSettings();
 		}
 
@@ -42,7 +41,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		public N64RicePluginSettings RicePlugin { get; private set; }
 		public N64GlidePluginSettings GlidePlugin { get; private set; }
 		public N64Glide64mk2PluginSettings Glide64mk2Plugin { get; private set; }
-		public N64JaboPluginSettings JaboPlugin { get; private set; }
 		public N64GLideN64PluginSettings GLideN64Plugin { get; private set; }
 
 		public N64SyncSettings Clone()
@@ -56,7 +54,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				RicePlugin = RicePlugin.Clone(),
 				GlidePlugin = GlidePlugin.Clone(),
 				Glide64mk2Plugin = Glide64mk2Plugin.Clone(),
-				JaboPlugin = JaboPlugin.Clone(),
 				GLideN64Plugin = GLideN64Plugin.Clone(),
 				Controllers = System.Array.ConvertAll(Controllers, a => a.Clone())
 			};
@@ -73,7 +70,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				case PluginType.Glide: ips = GlidePlugin.Clone(); break;
 				case PluginType.GlideMk2: ips = Glide64mk2Plugin.Clone(); break;
 				case PluginType.Rice: ips = RicePlugin.Clone(); break;
-				case PluginType.Jabo: ips = JaboPlugin.Clone(); break;
 				case PluginType.GLideN64: ips = GLideN64Plugin.Clone(); break;
 			}
 
@@ -90,8 +86,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[Description("Interpreter")]
 			Interpret = 1,
 
-			[Description("DynaRec")]
-			Dynarec = 2,
+			//[Description("DynaRec")]
+			//Dynarec = 2,
 		}
 
 		public enum RspType
@@ -99,11 +95,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[Description("Hle")]
 			Rsp_Hle = 0,
 
-			[Description("Z64 Hle Video")]
-			Rsp_Z64_hlevideo = 1,
-
-			[Description("cxd4 LLE")]
-			Rsp_cxd4 = 2
+			//[Description("cxd4 LLE")]
+			//Rsp_cxd4 = 2
 		}
 	}
 
@@ -118,8 +111,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		[Description("Glide64 mk2")]
 		GlideMk2,
 
-		[Description("Jabo")]
-		Jabo,
+		//this is left to keep some enums from getting mixed up
+		[Description("FormerlyJabo")]
+		FormerlyJabo,
 
 		[Description("GLideN64")]
 		GLideN64
