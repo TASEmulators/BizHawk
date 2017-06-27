@@ -564,5 +564,33 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		private const int NtscFpsDen = 61 * 455 * 1051;
 		public override int VsyncNumerator => _isPal ? PalFpsNum : NtscFpsNum;
 		public override int VsyncDenominator => _isPal ? PalFpsDen : NtscFpsDen;
+
+		private int _virtualWidth;
+		private int _virtualHeight;
+		public override int VirtualWidth => _virtualWidth;
+		public override int VirtualHeight => _virtualHeight;
+
+		protected override void FrameAdvancePost()
+		{
+			//overkill for constants, but here for future use
+
+			//mednafen:
+			//takes 320x240 -> 302x240(nominal)  --> 1.2583333333333333333333333333333
+
+			//we return 330x240 now. Those are bonus columns so we want a wider AR technically
+			//mednafen crunches 320 to 302 --> 1.0596026490066225165562913907285 ratio
+			//so we take 330 / 1.0596026490066225165562913907285 = 311.43749999999999999999999999999
+			//but we don't actually want to do that; we're optimized for 1x window sizes; lets expand height instead of crunching width
+			//at any rate we have our AR as (330 / (320/302)) / 240 = 1.29765625
+			//let's size up instead.. solve VX/VY = (330 / (320/302)) / 240 for VX=330; 
+			//330 / VY = (330 / (320/302)) / 240
+			//330 * 240 / (330 / (320/302)) = VY
+			//330 * 240 * 320 / 330 / 302 = VY
+			//240 * 320 / 302 = VY
+			//254.3 = VY -> Final answer 330x254
+			
+			_virtualWidth = 330;
+			_virtualHeight = 254;
+		}
 	}
 }
