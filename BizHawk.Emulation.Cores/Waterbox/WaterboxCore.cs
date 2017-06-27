@@ -374,7 +374,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		protected readonly int[] _videoBuffer;
 		public virtual int VirtualWidth => BufferWidth;
-		public virtual int VirtualHeight => BufferWidth;
+		public virtual int VirtualHeight => BufferHeight;
 		public int BufferWidth { get; protected set; }
 		public int BufferHeight { get; protected set; }
 		public virtual int VsyncNumerator { get; protected set; }
