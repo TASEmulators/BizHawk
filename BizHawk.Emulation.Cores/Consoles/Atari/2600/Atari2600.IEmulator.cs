@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
-		public ControllerDefinition ControllerDefinition => Atari2600ControllerDefinition;
+		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
 		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
