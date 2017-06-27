@@ -11,7 +11,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	public enum Atari2600ControllerTypes
 	{
 		Unplugged,
-		Joystick
+		Joystick,
+		Paddle
 	}
 
 	/// <summary>
@@ -93,5 +94,46 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			"Up", "Down", "Left", "Right", "Button"
 		};
+	}
+
+	public class PaddleController : IPort
+	{
+		public PaddleController(int portNum)
+		{
+			PortNum = portNum;
+			Definition = new ControllerDefinition
+			{
+				BoolButtons = BaseDefinition
+				.Select(b => $"P{PortNum} " + b)
+				.ToList(),
+				FloatControls = { "P" + PortNum + " Paddle X" },
+				FloatRanges = { new[] { -127.0f, 0, 127.0f }, } // No idea what values should be here
+			};
+		}
+
+		public int PortNum { get; }
+
+		public void SyncState(Serializer ser)
+		{
+			// Nothing todo, I think
+		}
+
+		public ControllerDefinition Definition { get; }
+
+		private static readonly string[] BaseDefinition =
+		{
+			"Button"
+		};
+
+		public byte Read(IController c)
+		{
+			byte result = 0xFF;
+
+			if (c.IsPressed($"P{PortNum} Button")) { result &= 0xF7; } // TODO
+
+			//int x = (int)c.GetFloat(Definition.FloatControls[0]);
+
+			return result;
+		}
 	}
 }
