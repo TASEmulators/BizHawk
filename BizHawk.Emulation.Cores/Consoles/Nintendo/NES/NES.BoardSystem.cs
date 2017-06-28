@@ -404,6 +404,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			Board.Dispose();
 			Board = newboard;
+			ppu.HasClockPPU = Board.GetType().GetMethod(nameof(INESBoard.ClockPPU)).DeclaringType != typeof(NESBoardBase);
 		}
 
 
