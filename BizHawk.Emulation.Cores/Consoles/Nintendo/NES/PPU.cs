@@ -310,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					nes.RunCpuOne();
 
 					// decay the ppu bus, approximating real behaviour
-					ppu_open_bus_decay(0);
+					PpuOpenBusDecay(DecayType.None);
 
 					// Check for NMIs
 					if (NMI_PendingInstructions > 0)

@@ -365,7 +365,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			// update the open bus here
 			ppu_open_bus = ret;
-			ppu_open_bus_decay(2);
+			PpuOpenBusDecay(DecayType.High);
 			return ret;
 		}
 		byte peek_2002()
@@ -468,7 +468,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			ppu_open_bus = ret;
-			ppu_open_bus_decay(1);
+			PpuOpenBusDecay(DecayType.All);
 			return ret;
 		}
 		byte peek_2004() { return OAM[reg_2003]; }
@@ -595,10 +595,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppu_open_bus = ret;
 			if (bus_case==0)
 			{
-				ppu_open_bus_decay(1);
-			} else
+				PpuOpenBusDecay(DecayType.All);
+			}
+			else
 			{
-				ppu_open_bus_decay(3);
+				PpuOpenBusDecay(DecayType.Low);
 			}
 
 			return ret;
@@ -671,6 +672,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default: throw new InvalidOperationException();
 			}
 		}
+
 		public byte PeekReg(int addr)
 		{
 			switch (addr)
@@ -680,6 +682,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				default: throw new InvalidOperationException();
 			}
 		}
+
 		public void WriteReg(int addr, byte value)
 		{
 			PPUGenLatch = value;
@@ -709,55 +712,54 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 		}
 		
-		public void ppu_open_bus_decay(byte action)
+		private enum DecayType
 		{
-			// if there is no action, decrement the timer
-			if (action == 0)
-			{
-				for (int i = 0; i < 8; i++)
-				{
-					if (ppu_open_bus_decay_timer[i] == 0)
-					{
-						ppu_open_bus = (byte)(ppu_open_bus & (0xff - (1 << i)));
-						ppu_open_bus_decay_timer[i] = 1786840; // about 1 second worth of cycles
-					}
-					else
-					{
-						ppu_open_bus_decay_timer[i]--;
-					}
-					
-				} 
-			}
+			None = 0, // if there is no action, decrement the timer
+			All = 1, // reset the timer for all bits (reg 2004 / 2007 (non-palette)
+			High = 2, // reset the timer for high 3 bits (reg 2002)
+			Low = 3 // reset the timer for all low 6 bits (reg 2007 (palette))
 
-			// reset the timer for all bits (reg 2004 / 2007 (non-palette)
-			else if (action == 1)
-			{
-				for (int i = 0; i < 8; i++)
-				{
-					ppu_open_bus_decay_timer[i] = 1786840;
-				}
-				
-			}
-
-			// reset the timer for high 3 bits (reg 2002)
-			else if (action == 2)
-			{
-				ppu_open_bus_decay_timer[7] = 1786840;
-				ppu_open_bus_decay_timer[6] = 1786840;
-				ppu_open_bus_decay_timer[5] = 1786840;
-			}
-
-			// reset the timer for all low 6 bits (reg 2007 (palette))
-			else if (action == 3)
-			{
-				for (int i = 0; i < 6; i++)
-				{
-					ppu_open_bus_decay_timer[i] = 1786840;
-				}
-			}
 			// other values of action are reserved for possibly needed expansions, but this passes
 			// ppu_open_bus for now.
-		}		
+		}
+
+		private void PpuOpenBusDecay(DecayType action)
+		{
+			switch (action)
+			{
+				case DecayType.None:
+					for (int i = 0; i < 8; i++)
+					{
+						if (ppu_open_bus_decay_timer[i] == 0)
+						{
+							ppu_open_bus = (byte)(ppu_open_bus & (0xff - (1 << i)));
+							ppu_open_bus_decay_timer[i] = 1786840; // about 1 second worth of cycles
+						}
+						else
+						{
+							ppu_open_bus_decay_timer[i]--;
+						}
+					}
+					break;
+				case DecayType.All:
+					for (int i = 0; i < 8; i++)
+					{
+						ppu_open_bus_decay_timer[i] = 1786840;
+					}
+					break;
+				case DecayType.High:
+					ppu_open_bus_decay_timer[7] = 1786840;
+					ppu_open_bus_decay_timer[6] = 1786840;
+					ppu_open_bus_decay_timer[5] = 1786840;
+					break;
+				case DecayType.Low:
+					for (int i = 0; i < 6; i++)
+					{
+						ppu_open_bus_decay_timer[i] = 1786840;
+					}
+					break;
+			}
+		}
 	}
 }
 
