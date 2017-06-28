@@ -3187,8 +3187,9 @@ namespace BizHawk.Client.EmuHawk
 					//Is this correct?
 					if (GameGenie == true)
 					{
-						var watch = Watch.GenerateWatch(MemoryDomains["CARTROM"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
-						Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+						MessageBox.Show("Game genie codes are not currently supported for SNES", "SNES Game Genie not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						////var watch = Watch.GenerateWatch(MemoryDomains["CARTROM"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
+						////Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 					}
 					else if (GameGenie == false)
 					{
