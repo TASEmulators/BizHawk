@@ -51,6 +51,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return Port2.Read(c);
 		}
 
+		public int ReadPot1(IController c, int pot)
+		{
+			return Port1.Read_Pot(c, pot);
+		}
+
+		public int ReadPot2(IController c, int pot)
+		{
+			return Port2.Read_Pot(c, pot);
+		}
+
 		public ControllerDefinition Definition { get; }
 
 		public void SyncState(Serializer ser)

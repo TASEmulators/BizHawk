@@ -468,6 +468,20 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return value;
 		}
 
+		internal int ReadPot1(int pot)
+		{
+			int value = _controllerDeck.ReadPot1(_controller, pot);
+
+			return value;
+		}
+
+		internal int ReadPot2(int pot)
+		{
+			int value = _controllerDeck.ReadPot2(_controller, pot);
+
+			return value;
+		}
+
 		internal byte ReadConsoleSwitches(bool peek)
 		{
 			byte value = 0xFF;

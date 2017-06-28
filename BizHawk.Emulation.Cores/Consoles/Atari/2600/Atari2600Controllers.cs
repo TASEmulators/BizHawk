@@ -22,6 +22,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 	{
 		byte Read(IController c);
 
+		int Read_Pot(IController c, int pot);
+
 		ControllerDefinition Definition { get; }
 
 		void SyncState(Serializer ser);
@@ -43,6 +45,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		public byte Read(IController c)
 		{
 			return 0xFF;
+		}
+
+		public int Read_Pot(IController c, int pot)
+		{
+			return -1; // indicates not applicable
 		}
 
 		public ControllerDefinition Definition { get; }
@@ -90,6 +97,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			return result;
 		}
 
+		public int Read_Pot(IController c, int pot)
+		{
+			return -1; // indicates not applicable
+		}
+
 		private static readonly string[] BaseDefinition =
 		{
 			"Up", "Down", "Left", "Right", "Button"
@@ -106,8 +118,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				BoolButtons = BaseDefinition
 				.Select(b => $"P{PortNum} " + b)
 				.ToList(),
-				FloatControls = { "P" + PortNum + " Paddle X" },
-				FloatRanges = { new[] { -127.0f, 0, 127.0f }, } // No idea what values should be here
+				FloatControls = { "P" + PortNum + " Paddle X 1" , "P" + PortNum + " Paddle X 2" },
+				FloatRanges = { new[] { 16266.0f, 8138f, 10.0f }, new[] { 16266.0f, 8138f, 10.0f } } // No idea what values should be here
 			};
 		}
 
@@ -122,18 +134,25 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private static readonly string[] BaseDefinition =
 		{
-			"Button"
+			"Button 0",
+			"Button 1"
 		};
 
 		public byte Read(IController c)
 		{
-			byte result = 0xFF;
+			byte result = 0xF0;
 
-			if (c.IsPressed($"P{PortNum} Button")) { result &= 0xF7; } // TODO
-
-			//int x = (int)c.GetFloat(Definition.FloatControls[0]);
+			if (c.IsPressed($"P{PortNum} Button 0")) { result &= 0x70; }
+			if (c.IsPressed($"P{PortNum} Button 1")) { result &= 0xB0; }
 
 			return result;
+		}
+
+		public int Read_Pot(IController c, int pot)
+		{
+			int x = (int)c.GetFloat(Definition.FloatControls[pot]);
+
+			return x;
 		}
 	}
 }
