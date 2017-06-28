@@ -712,7 +712,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void ppu_open_bus_decay(byte action)
 		{
 			// if there is no action, decrement the timer
-			if (action==0)
+			if (action == 0)
 			{
 				for (int i = 0; i < 8; i++)
 				{
@@ -730,9 +730,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			// reset the timer for all bits (reg 2004 / 2007 (non-palette)
-			if (action==1)
+			else if (action == 1)
 			{
-				for (int i=0; i<8; i++)
+				for (int i = 0; i < 8; i++)
 				{
 					ppu_open_bus_decay_timer[i] = 1786840;
 				}
@@ -740,7 +740,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			// reset the timer for high 3 bits (reg 2002)
-			if (action == 2)
+			else if (action == 2)
 			{
 				ppu_open_bus_decay_timer[7] = 1786840;
 				ppu_open_bus_decay_timer[6] = 1786840;
@@ -748,7 +748,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			// reset the timer for all low 6 bits (reg 2007 (palette))
-			if (action == 3)
+			else if (action == 3)
 			{
 				for (int i = 0; i < 6; i++)
 				{
