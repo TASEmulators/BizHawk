@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
-	[Description("A library for performing standard bitwise operations.")]
+	[Description("A library for performing SQLite operations.")]
 	public sealed class SQLLuaLibrary : LuaLibraryBase
 	{
 		public SQLLuaLibrary(Lua lua)
