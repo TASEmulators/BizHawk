@@ -134,16 +134,16 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private static readonly string[] BaseDefinition =
 		{
-			"Button 0",
-			"Button 1"
+			"Button 1",
+			"Button 2"
 		};
 
 		public byte Read(IController c)
 		{
 			byte result = 0xF0;
 
-			if (c.IsPressed($"P{PortNum} Button 0")) { result &= 0x70; }
-			if (c.IsPressed($"P{PortNum} Button 1")) { result &= 0xB0; }
+			if (c.IsPressed($"P{PortNum} Button 1")) { result &= 0x70; }
+			if (c.IsPressed($"P{PortNum} Button 2")) { result &= 0xB0; }
 
 			return result;
 		}

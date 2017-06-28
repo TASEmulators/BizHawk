@@ -101,17 +101,44 @@ namespace BizHawk.Client.EmuHawk
 			{
 				DisplayName = "Player " + controller,
 				IsConsole = false,
-				DefaultSize = new Size(174, 74),
-				MaxSize = new Size(174, 74),
+				DefaultSize = new Size(334, 94),
+				MaxSize = new Size(334, 94),
 				Buttons = new[]
 				{
 					new PadSchema.ButtonSchema
 					{
-						Name = "P" + controller + " Button",
-						DisplayName = "B",
-						Location = new Point(124, 24),
+						Name = "P" + controller + " Button 1",
+						DisplayName = "B1",
+						Location = new Point(5, 24),
 						Type = PadSchema.PadInputType.Boolean
-					}
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Button 2",
+						DisplayName = "B2",
+						Location = new Point(5, 48),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Paddle X 1",
+						DisplayName = "Paddle X 1",
+						Location = new Point(55, 17),
+						Type = PadSchema.PadInputType.FloatSingle,
+						TargetSize = new Size(128, 69),
+						MaxValue = 16266,
+						MinValue = 0
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Paddle X 2",
+						DisplayName = "Paddle X 2",
+						Location = new Point(193, 17),
+						Type = PadSchema.PadInputType.FloatSingle,
+						TargetSize = new Size(128, 69),
+						MaxValue = 16266,
+						MinValue = 0
+					},
 				}
 			};
 		}
