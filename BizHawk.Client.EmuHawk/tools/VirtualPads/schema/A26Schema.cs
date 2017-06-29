@@ -126,8 +126,8 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(55, 17),
 						Type = PadSchema.PadInputType.FloatSingle,
 						TargetSize = new Size(128, 69),
-						MaxValue = 16266,
-						MinValue = 0
+						MaxValue = 127,
+						MinValue = -127
 					},
 					new PadSchema.ButtonSchema
 					{
@@ -136,8 +136,8 @@ namespace BizHawk.Client.EmuHawk
 						Location = new Point(193, 17),
 						Type = PadSchema.PadInputType.FloatSingle,
 						TargetSize = new Size(128, 69),
-						MaxValue = 16266,
-						MinValue = 0
+						MaxValue = 127,
+						MinValue = -127
 					},
 				}
 			};
