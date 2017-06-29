@@ -85,23 +85,32 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		#region Controller
 
-		private static readonly ControllerDefinition _definition;
-		public override ControllerDefinition ControllerDefinition => _definition;
+		private static readonly ControllerDefinition _gbDefinition;
+		private static readonly ControllerDefinition _sgbDefinition;
+		public override ControllerDefinition ControllerDefinition => _sgb ? _sgbDefinition : _gbDefinition;
 
-		static Pizza()
+		private static ControllerDefinition CreateControllerDefinition(int p)
 		{
-			_definition = new ControllerDefinition { Name = "Gameboy Controller" };
-			for (int i = 0; i < 4; i++)
+			var ret = new ControllerDefinition { Name = "Gameboy Controller" };
+			for (int i = 0; i < p; i++)
 			{
-				_definition.BoolButtons.AddRange(
+				ret.BoolButtons.AddRange(
 					new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" }
 						.Select(s => $"P{i + 1} {s}"));
 			}
+			return ret;
 		}
-		private static LibPizza.Buttons GetButtons(IController c)
+
+		static Pizza()
+		{
+			_gbDefinition = CreateControllerDefinition(1);
+			_sgbDefinition = CreateControllerDefinition(4);
+		}
+
+		private LibPizza.Buttons GetButtons(IController c)
 		{
 			LibPizza.Buttons b = 0;
-			for (int i = 4; i > 0; i--)
+			for (int i = _sgb ? 4 : 1; i > 0; i--)
 			{
 				if (c.IsPressed($"P{i} Up"))
 					b |= LibPizza.Buttons.UP;
