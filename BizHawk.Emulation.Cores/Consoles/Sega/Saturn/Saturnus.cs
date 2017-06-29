@@ -594,6 +594,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				_virtualWidth = BufferWidth;
 				_virtualHeight = BufferHeight * 254 / 240;
 			}
+			else
+			{
+				_virtualWidth = BufferWidth;
+				_virtualHeight = BufferHeight;
+			}
 		}
 	}
 }
