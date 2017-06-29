@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				.Select(b => $"P{PortNum} " + b)
 				.ToList(),
 				FloatControls = { "P" + PortNum + " Paddle X 1" , "P" + PortNum + " Paddle X 2" },
-				FloatRanges = { new[] { 16266.0f, 8138f, 10.0f }, new[] { 16266.0f, 8138f, 10.0f } } // No idea what values should be here
+				FloatRanges = { new[] { -127.0f, 0, 127.0f }, new[] { -127.0f, 0, 127.0f } }
 			};
 		}
 
@@ -150,7 +150,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public int Read_Pot(IController c, int pot)
 		{
-			int x = (int)c.GetFloat(Definition.FloatControls[pot]);
+			int x = (int)c.GetFloat(Definition.FloatControls[pot]);			
+			
+			x = -x;
+			x += 127;
+
+			x = x * 64 + 10;
 
 			return x;
 		}
