@@ -243,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		protected readonly BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
-		public string SystemId { get; }
+		public virtual string SystemId { get; }
 		public bool DeterministicEmulation { get; protected set; } = true;
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 		public virtual ControllerDefinition ControllerDefinition { get; protected set; } = NullController.Instance.Definition;

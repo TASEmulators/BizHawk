@@ -17,16 +17,24 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		private LibPizza _pizza;
 		private readonly bool _sgb;
 
-		[CoreConstructor("GB")]
+		[CoreConstructor("SGB")]
 		public Pizza(byte[] rom, CoreComm comm)
-			:base(comm, new Configuration
+			:this(rom, comm, true)
+		{ }
+
+		[CoreConstructor("GB")]
+		public Pizza(CoreComm comm, byte[] rom)
+			:this(rom, comm, false)
+		{ }
+
+		public Pizza(byte[] rom, CoreComm comm, bool sgb)
+			: base(comm, new Configuration
 			{
 				DefaultWidth = 160,
 				DefaultHeight = 144,
 				MaxWidth = 256,
 				MaxHeight = 224,
 				MaxSamples = 1024,
-				SystemId = "SGB",
 				DefaultFpsNumerator = TICKSPERSECOND,
 				DefaultFpsDenominator = TICKSPERFRAME
 			})
@@ -41,8 +49,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				MmapHeapSizeKB = 0
 			});
 
-			var spc = comm.CoreFileProvider.GetFirmware("SGB", "SPC", true);
-			_sgb = true;
+			var spc = sgb ? comm.CoreFileProvider.GetFirmware("SGB", "SPC", true) : new byte[0];
+			_sgb = sgb;
 			if (!_pizza.Init(rom, rom.Length, _sgb, spc, spc.Length))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
@@ -139,5 +147,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		public bool IsCGBMode() => _pizza.IsCGB();
 		public bool IsSGBMode() => _sgb;
 
+		public override string SystemId => _sgb ? "SGB" : "GB";
 	}
 }

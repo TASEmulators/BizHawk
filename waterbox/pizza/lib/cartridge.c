@@ -45,7 +45,7 @@ char cartridge_load(const void *data, size_t sz)
 	if (rom[0x143] == 0xC0 || rom[0x143] == 0x80)
 	{
 		utils_log("Gameboy Color cartridge\n");
-		global_cgb = 1;
+		global_cgb = global_sgb ? 0 : 1;
 	}
 	else
 	{
