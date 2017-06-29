@@ -588,9 +588,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			//330 * 240 * 320 / 330 / 302 = VY
 			//240 * 320 / 302 = VY
 			//254.3 = VY -> Final answer 330x254
-			
-			_virtualWidth = 330;
-			_virtualHeight = 254;
+
+			if (!_isPal && BufferWidth <= 330) // more research will be needed for PAL or other alternate modes
+			{
+				_virtualWidth = BufferWidth;
+				_virtualHeight = BufferHeight * 254 / 240;
+			}
 		}
 	}
 }
