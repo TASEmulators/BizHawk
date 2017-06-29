@@ -45,44 +45,23 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets absolute base as derived from EXE
 		/// </summary>
-		public static string GetBasePathAbsolute()
+		public static string GetGlobalBasePathAbsolute()
 		{
-			if (Global.Config.PathEntries.GlobalBaseFragment.Length < 1) // If empty, then EXE path
-			{
-				return GetExeDirectoryAbsolute();
-			}
+			var gbase = Global.Config.PathEntries.GlobalBaseFragment;
 
-			if (Global.Config.PathEntries.GlobalBaseFragment.Length >= 5
-				&& Global.Config.PathEntries.GlobalBaseFragment.Substring(0, 5) == "%exe%")
-			{
-				return GetExeDirectoryAbsolute();
-			}
+			// if %exe% prefixed then substitute exe path and repeat
+			if(gbase.StartsWith("%exe%",StringComparison.InvariantCultureIgnoreCase))
+				gbase = GetExeDirectoryAbsolute() + gbase.Substring(5);
 
-			if (Global.Config.PathEntries.GlobalBaseFragment[0] == '.')
-			{
-				if (Global.Config.PathEntries.GlobalBaseFragment.Length == 1)
-				{
-					return GetExeDirectoryAbsolute();
-				}
+			//rooted paths get returned without change
+			//(this is done after keyword substitution to avoid problems though)
+			if (Path.IsPathRooted(gbase))
+				return gbase;
 
-				if (Global.Config.PathEntries.GlobalBaseFragment.Length == 2 &&
-					Global.Config.PathEntries.GlobalBaseFragment == ".\\")
-				{
-					return GetExeDirectoryAbsolute();
-				}
+			//not-rooted things are relative to exe path
+			gbase = Path.Combine(GetExeDirectoryAbsolute(), gbase);
 
-				var tmp = Global.Config.PathEntries.GlobalBaseFragment.Remove(0, 1);
-				tmp = tmp.Insert(0, GetExeDirectoryAbsolute());
-				return tmp;
-			}
-
-			if (Global.Config.PathEntries.GlobalBaseFragment.Substring(0, 2) == "..")
-			{
-				return RemoveParents(Global.Config.PathEntries.GlobalBaseFragment, GetExeDirectoryAbsolute());
-			}
-
-			// In case of error, return EXE path
-			return GetExeDirectoryAbsolute();
+			return gbase;
 		}
 
 		public static string GetPlatformBase(string system)
@@ -106,7 +85,7 @@ namespace BizHawk.Client.Common
 			// This function translates relative path and special identifiers in absolute paths
 			if (path.Length < 1)
 			{
-				return GetBasePathAbsolute();
+				return GetGlobalBasePathAbsolute();
 			}
 
 			if (path == "%recent%")
@@ -136,13 +115,13 @@ namespace BizHawk.Client.Common
 
 				if (path.Length == 1)
 				{
-					return GetBasePathAbsolute();
+					return GetGlobalBasePathAbsolute();
 				}
 
 				if (path[0] == '.')
 				{
 					path = path.Remove(0, 1);
-					path = path.Insert(0, GetBasePathAbsolute());
+					path = path.Insert(0, GetGlobalBasePathAbsolute());
 				}
 
 				return path;
@@ -414,7 +393,7 @@ namespace BizHawk.Client.Common
 		public static string TryMakeRelative(string absolutePath, string system = null)
 		{
 			var parentPath = string.IsNullOrWhiteSpace(system) ?
-				GetBasePathAbsolute() :
+				GetGlobalBasePathAbsolute() :
 				MakeAbsolutePath(GetPlatformBase(system), system);
 
 			if (IsSubfolder(parentPath, absolutePath))

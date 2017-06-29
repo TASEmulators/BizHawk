@@ -11904,6 +11904,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 					}
 
 				}
+				bool int_triggered = false;
 
 				// Process interrupt requests.
 				if (nonMaskableInterruptPending)
@@ -11923,6 +11924,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 				}
 				else if (iff1 && interrupt && Interruptable)
 				{
+					int_triggered = true;
 
 					Halted = false;
 
@@ -11952,11 +11954,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 				if (EI_pending > 0)
 				{
 					EI_pending--;
-					if (EI_pending == 0)
+					if (EI_pending == 0 && !int_triggered)
 					{
 						IFF1 = IFF2 = true;
 					}
 				}
+
 			}
 		}
 

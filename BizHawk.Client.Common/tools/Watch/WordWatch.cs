@@ -229,7 +229,7 @@ namespace BizHawk.Client.Common
 					diff = "-";
 				}
 
-				return $"{diff}{FormatValue((ushort)Math.Abs(diffVal))}";
+				return $"{diff}{((ushort)Math.Abs(diffVal))}";
 			}
 		}
 

@@ -295,10 +295,10 @@
             this.AutoloadKeypadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.paletteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AtariSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.AtariSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.A7800SubMenu = new System.Windows.Forms.ToolStripMenuItem();
-			this.A7800ControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.GBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.AtariSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.A7800SubMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.A7800ControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.GBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.GBcoreSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LoadGBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator28 = new System.Windows.Forms.ToolStripSeparator();
@@ -456,8 +456,8 @@
             this.SMSSubMenu,
             this.TI83SubMenu,
             this.AtariSubMenu,
-			this.A7800SubMenu,
-			this.GBSubMenu,
+            this.A7800SubMenu,
+            this.GBSubMenu,
             this.GBASubMenu,
             this.PSXSubMenu,
             this.SNESSubMenu,
@@ -1825,12 +1825,14 @@
             this.QuicknesCoreMenuItem.Name = "QuicknesCoreMenuItem";
             this.QuicknesCoreMenuItem.Size = new System.Drawing.Size(152, 22);
             this.QuicknesCoreMenuItem.Text = "QuickNES";
+            this.QuicknesCoreMenuItem.Click += new System.EventHandler(this.NesCorePick_Click);
             // 
             // NesCoreMenuItem
             // 
             this.NesCoreMenuItem.Name = "NesCoreMenuItem";
             this.NesCoreMenuItem.Size = new System.Drawing.Size(152, 22);
             this.NesCoreMenuItem.Text = "NesHawk";
+            this.NesCoreMenuItem.Click += new System.EventHandler(this.NesCorePick_Click);
             // 
             // CoreSNESSubMenu
             // 
@@ -1845,14 +1847,14 @@
             // Coresnes9xMenuItem
             // 
             this.Coresnes9xMenuItem.Name = "Coresnes9xMenuItem";
-            this.Coresnes9xMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.Coresnes9xMenuItem.Size = new System.Drawing.Size(109, 22);
             this.Coresnes9xMenuItem.Text = "Snes9x";
             this.Coresnes9xMenuItem.Click += new System.EventHandler(this.CoreSnesToggle_Click);
             // 
             // CorebsnesMenuItem
             // 
             this.CorebsnesMenuItem.Name = "CorebsnesMenuItem";
-            this.CorebsnesMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.CorebsnesMenuItem.Size = new System.Drawing.Size(109, 22);
             this.CorebsnesMenuItem.Text = "BSNES";
             this.CorebsnesMenuItem.Click += new System.EventHandler(this.CoreSnesToggle_Click);
             // 
@@ -2487,7 +2489,7 @@
             this.SMSregionJapanToolStripMenuItem,
             this.SMSregionAutoToolStripMenuItem});
             this.SMSregionToolStripMenuItem.Name = "SMSregionToolStripMenuItem";
-            this.SMSregionToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.SMSregionToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.SMSregionToolStripMenuItem.Text = "Region";
             // 
             // SMSregionExportToolStripMenuItem
@@ -2518,7 +2520,7 @@
             this.SMSdisplayPalToolStripMenuItem,
             this.SMSdisplayAutoToolStripMenuItem});
             this.SMSdisplayToolStripMenuItem.Name = "SMSdisplayToolStripMenuItem";
-            this.SMSdisplayToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.SMSdisplayToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.SMSdisplayToolStripMenuItem.Text = "Display Type";
             // 
             // SMSdisplayNtscToolStripMenuItem
@@ -2545,94 +2547,94 @@
             // SMStoolStripMenuItem2
             // 
             this.SMStoolStripMenuItem2.Name = "SMStoolStripMenuItem2";
-            this.SMStoolStripMenuItem2.Size = new System.Drawing.Size(238, 6);
+            this.SMStoolStripMenuItem2.Size = new System.Drawing.Size(274, 6);
             // 
             // SMSenableBIOSToolStripMenuItem
             // 
             this.SMSenableBIOSToolStripMenuItem.Name = "SMSenableBIOSToolStripMenuItem";
-            this.SMSenableBIOSToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.SMSenableBIOSToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.SMSenableBIOSToolStripMenuItem.Text = "Enable BIOS (Must be Enabled for TAS)";
             this.SMSenableBIOSToolStripMenuItem.Click += new System.EventHandler(this.SmsBiosMenuItem_Click);
             // 
             // SMSEnableFMChipMenuItem
             // 
             this.SMSEnableFMChipMenuItem.Name = "SMSEnableFMChipMenuItem";
-            this.SMSEnableFMChipMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.SMSEnableFMChipMenuItem.Size = new System.Drawing.Size(277, 22);
             this.SMSEnableFMChipMenuItem.Text = "&Enable FM Chip";
             this.SMSEnableFMChipMenuItem.Click += new System.EventHandler(this.SmsEnableFmChipMenuItem_Click);
             // 
             // SMSOverclockMenuItem
             // 
             this.SMSOverclockMenuItem.Name = "SMSOverclockMenuItem";
-            this.SMSOverclockMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.SMSOverclockMenuItem.Size = new System.Drawing.Size(277, 22);
             this.SMSOverclockMenuItem.Text = "&Overclock when Known Safe";
             this.SMSOverclockMenuItem.Click += new System.EventHandler(this.SMSOverclockMenuItem_Click);
             // 
             // SMSForceStereoMenuItem
             // 
             this.SMSForceStereoMenuItem.Name = "SMSForceStereoMenuItem";
-            this.SMSForceStereoMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.SMSForceStereoMenuItem.Size = new System.Drawing.Size(277, 22);
             this.SMSForceStereoMenuItem.Text = "&Force Stereo Separation";
             this.SMSForceStereoMenuItem.Click += new System.EventHandler(this.SMSForceStereoMenuItem_Click);
             // 
             // SMSSpriteLimitMenuItem
             // 
             this.SMSSpriteLimitMenuItem.Name = "SMSSpriteLimitMenuItem";
-            this.SMSSpriteLimitMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.SMSSpriteLimitMenuItem.Size = new System.Drawing.Size(277, 22);
             this.SMSSpriteLimitMenuItem.Text = "Sprite &Limit";
             this.SMSSpriteLimitMenuItem.Click += new System.EventHandler(this.SMSSpriteLimitMenuItem_Click);
             // 
             // SMSDisplayOverscanMenuItem
             // 
             this.SMSDisplayOverscanMenuItem.Name = "SMSDisplayOverscanMenuItem";
-            this.SMSDisplayOverscanMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.SMSDisplayOverscanMenuItem.Size = new System.Drawing.Size(277, 22);
             this.SMSDisplayOverscanMenuItem.Text = "Display Overscan";
             this.SMSDisplayOverscanMenuItem.Click += new System.EventHandler(this.SMSDisplayOverscanMenuItem_Click);
             // 
             // SMSFix3DGameDisplayToolStripMenuItem
             // 
             this.SMSFix3DGameDisplayToolStripMenuItem.Name = "SMSFix3DGameDisplayToolStripMenuItem";
-            this.SMSFix3DGameDisplayToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.SMSFix3DGameDisplayToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.SMSFix3DGameDisplayToolStripMenuItem.Text = "Fix 3D Game Display";
             this.SMSFix3DGameDisplayToolStripMenuItem.Click += new System.EventHandler(this.SMSFix3DDisplayMenuItem_Click);
             // 
             // ShowClippedRegionsMenuItem
             // 
             this.ShowClippedRegionsMenuItem.Name = "ShowClippedRegionsMenuItem";
-            this.ShowClippedRegionsMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.ShowClippedRegionsMenuItem.Size = new System.Drawing.Size(277, 22);
             this.ShowClippedRegionsMenuItem.Text = "&Show Clipped Regions";
             this.ShowClippedRegionsMenuItem.Click += new System.EventHandler(this.ShowClippedRegionsMenuItem_Click);
             // 
             // HighlightActiveDisplayRegionMenuItem
             // 
             this.HighlightActiveDisplayRegionMenuItem.Name = "HighlightActiveDisplayRegionMenuItem";
-            this.HighlightActiveDisplayRegionMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.HighlightActiveDisplayRegionMenuItem.Size = new System.Drawing.Size(277, 22);
             this.HighlightActiveDisplayRegionMenuItem.Text = "&Highlight Active Display Region";
             this.HighlightActiveDisplayRegionMenuItem.Click += new System.EventHandler(this.HighlightActiveDisplayRegionMenuItem_Click);
             // 
             // SMSGraphicsSettingsMenuItem
             // 
             this.SMSGraphicsSettingsMenuItem.Name = "SMSGraphicsSettingsMenuItem";
-            this.SMSGraphicsSettingsMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.SMSGraphicsSettingsMenuItem.Size = new System.Drawing.Size(277, 22);
             this.SMSGraphicsSettingsMenuItem.Text = "&Graphics Settings...";
             this.SMSGraphicsSettingsMenuItem.Click += new System.EventHandler(this.SMSGraphicsSettingsMenuItem_Click);
             // 
             // toolStripSeparator24
             // 
             this.toolStripSeparator24.Name = "toolStripSeparator24";
-            this.toolStripSeparator24.Size = new System.Drawing.Size(238, 6);
+            this.toolStripSeparator24.Size = new System.Drawing.Size(274, 6);
             // 
             // SMSVDPViewerToolStripMenuItem
             // 
             this.SMSVDPViewerToolStripMenuItem.Name = "SMSVDPViewerToolStripMenuItem";
-            this.SMSVDPViewerToolStripMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.SMSVDPViewerToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.SMSVDPViewerToolStripMenuItem.Text = "&VDP Viewer";
             this.SMSVDPViewerToolStripMenuItem.Click += new System.EventHandler(this.SmsVdpViewerMenuItem_Click);
             // 
             // GGGameGenieMenuItem
             // 
             this.GGGameGenieMenuItem.Name = "GGGameGenieMenuItem";
-            this.GGGameGenieMenuItem.Size = new System.Drawing.Size(241, 22);
+            this.GGGameGenieMenuItem.Size = new System.Drawing.Size(277, 22);
             this.GGGameGenieMenuItem.Text = "&Game Genie Encoder/Decoder";
             this.GGGameGenieMenuItem.Click += new System.EventHandler(this.GGGameGenieMenuItem_Click);
             // 
@@ -2699,26 +2701,26 @@
             this.AtariSettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
             this.AtariSettingsToolStripMenuItem.Text = "Settings...";
             this.AtariSettingsToolStripMenuItem.Click += new System.EventHandler(this.AtariSettingsToolStripMenuItem_Click);
-			// 
-			// A7800SubMenu
-			// 
-			this.A7800SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.A7800ControllerSettingsMenuItem});
-			this.A7800SubMenu.Name = "A7800SubMenu";
-			this.A7800SubMenu.Size = new System.Drawing.Size(56, 19);
-			this.A7800SubMenu.Text = "&A7800";
-			this.A7800SubMenu.DropDownOpened += new System.EventHandler(this.A7800SubMenu_DropDownOpened);
-			// 
-			// A7800SettingsToolStripMenuItem
-			// 
-			this.A7800ControllerSettingsMenuItem.Name = "A7800ControllerSettingsMenuItem";
-			this.A7800ControllerSettingsMenuItem.Size = new System.Drawing.Size(125, 22);
-			this.A7800ControllerSettingsMenuItem.Text = "Settings...";
-			this.A7800ControllerSettingsMenuItem.Click += new System.EventHandler(this.A7800SettingsToolStripMenuItem_Click);
-			// 
-			// GBSubMenu
-			// 
-			this.GBSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            // 
+            // A7800SubMenu
+            // 
+            this.A7800SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.A7800ControllerSettingsMenuItem});
+            this.A7800SubMenu.Name = "A7800SubMenu";
+            this.A7800SubMenu.Size = new System.Drawing.Size(51, 19);
+            this.A7800SubMenu.Text = "&A7800";
+            this.A7800SubMenu.DropDownOpened += new System.EventHandler(this.A7800SubMenu_DropDownOpened);
+            // 
+            // A7800ControllerSettingsMenuItem
+            // 
+            this.A7800ControllerSettingsMenuItem.Name = "A7800ControllerSettingsMenuItem";
+            this.A7800ControllerSettingsMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.A7800ControllerSettingsMenuItem.Text = "Settings...";
+            this.A7800ControllerSettingsMenuItem.Click += new System.EventHandler(this.A7800SettingsToolStripMenuItem_Click);
+            // 
+            // GBSubMenu
+            // 
+            this.GBSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.GBcoreSettingsToolStripMenuItem,
             this.LoadGBInSGBMenuItem,
             this.toolStripSeparator28,
@@ -3522,7 +3524,7 @@
             this.ShowMenuContextMenuSeparator,
             this.ShowMenuContextMenuItem});
             this.MainFormContextMenu.Name = "contextMenuStrip1";
-            this.MainFormContextMenu.Size = new System.Drawing.Size(217, 512);
+            this.MainFormContextMenu.Size = new System.Drawing.Size(217, 490);
             this.MainFormContextMenu.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.MainFormContextMenu_Closing);
             this.MainFormContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.MainFormContextMenu_Opening);
             // 

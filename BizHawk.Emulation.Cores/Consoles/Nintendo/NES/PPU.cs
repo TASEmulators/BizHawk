@@ -8,6 +8,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		public int cpu_step, cpu_stepcounter;
 
+		public bool HasClockPPU = false;
+
 		// this only handles region differences within the PPU
 		int preNMIlines;
 		int postNMIlines;
@@ -308,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					nes.RunCpuOne();
 
 					// decay the ppu bus, approximating real behaviour
-					ppu_open_bus_decay(0);
+					PpuOpenBusDecay(DecayType.None);
 
 					// Check for NMIs
 					if (NMI_PendingInstructions > 0)
@@ -333,7 +335,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					Reg2002_vblank_clear_pending = false;
 				}
 
-				nes.Board.ClockPPU();
+				if (HasClockPPU)
+				{
+					nes.Board.ClockPPU();
+				}
 			}
 		}
 	}

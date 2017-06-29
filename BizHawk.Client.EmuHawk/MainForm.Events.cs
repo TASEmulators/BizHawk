@@ -1189,7 +1189,6 @@ namespace BizHawk.Client.EmuHawk
 			Atari7800CoreSubMenu.Visible = VersionInfo.DeveloperBuild;
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 			
-			
 			allowGameDBCoreOverridesToolStripMenuItem.Checked = Global.Config.CoreForcingViaGameDB;
 		}
 
@@ -1227,8 +1226,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GbaCoreSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			VbaNextCoreMenuItem.Checked = Global.Config.GBA_UsemGBA;
-			MgbaCoreMenuItem.Checked = !Global.Config.GBA_UsemGBA;
+			VbaNextCoreMenuItem.Checked = !Global.Config.GBA_UsemGBA;
+			MgbaCoreMenuItem.Checked = Global.Config.GBA_UsemGBA;
 		}
 
 		private void GbaCorePick_Click(object sender, EventArgs e)

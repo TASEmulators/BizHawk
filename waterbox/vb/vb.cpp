@@ -779,6 +779,11 @@ EXPORT void FrameAdvance(MyFrameInfo* frame)
 	VB_V810->ResetTS(0);
 }
 
+EXPORT void PredictFrameSize(MyFrameInfo* frame)
+{
+	VIP_CalcFrameSize(frame);
+}
+
 EXPORT void HardReset()
 {
 	VB_Power();

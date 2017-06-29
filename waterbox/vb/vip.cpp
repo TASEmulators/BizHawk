@@ -864,18 +864,8 @@ MDFN_FASTCALL void VIP_Write16(int32 &timestamp, uint32 A, uint16 V)
 static MDFN_Surface real_surface;
 static MDFN_Surface *surface;
 
-void VIP_StartFrame(MyFrameInfo* frame)
+void VIP_CalcFrameSize(MyFrameInfo* frame)
 {
-	// puts("Start frame");
-
-	if (VidSettingsDirty)
-	{
-		MakeColorLUT();
-		Recalc3DModeStuff();
-
-		VidSettingsDirty = false;
-	}
-
 	switch (VB3DMode)
 	{
 	default:
@@ -903,6 +893,22 @@ void VIP_StartFrame(MyFrameInfo* frame)
 		frame->Height = 224;
 		break;
 	}
+}
+
+void VIP_StartFrame(MyFrameInfo* frame)
+{
+	// puts("Start frame");
+
+	if (VidSettingsDirty)
+	{
+		MakeColorLUT();
+		Recalc3DModeStuff();
+
+		VidSettingsDirty = false;
+	}
+
+	VIP_CalcFrameSize(frame);
+
 
 	surface = &real_surface;
 	real_surface.pixels = frame->VideoBuffer;
