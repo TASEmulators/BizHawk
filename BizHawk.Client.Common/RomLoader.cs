@@ -682,7 +682,7 @@ namespace BizHawk.Client.Common
 								game = rom.GameInfo;
 								game.System = "SNES";
 								
-								var snes = new LibsnesCore(game, romData, Deterministic, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+								var snes = new LibsnesCore(game, romData, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
 								nextEmulator = snes;
 							}
 							catch 
@@ -792,7 +792,7 @@ namespace BizHawk.Client.Common
 									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", "")); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 									var romData = isXml ? null : rom.FileData;
 									var xmlData = isXml ? rom.FileData : null;
-									var snes = new LibsnesCore(game, romData, Deterministic, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+									var snes = new LibsnesCore(game, romData, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
 									nextEmulator = snes;
 								}
 
@@ -845,7 +845,7 @@ namespace BizHawk.Client.Common
 										game.AddOption("SGB");
 										if (Global.Config.SGB_UseBsnes)
 										{
-											var snes = new LibsnesCore(game, rom.FileData, Deterministic, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+											var snes = new LibsnesCore(game, rom.FileData, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
 											nextEmulator = snes;
 										}
 										else

@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
-		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object settings, object syncSettings)
+		public LibsnesCore(GameInfo game, byte[] romData, byte[] xmlData, CoreComm comm, object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
