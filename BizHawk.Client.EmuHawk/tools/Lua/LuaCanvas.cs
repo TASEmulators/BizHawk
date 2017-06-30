@@ -39,6 +39,16 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodAttributes(
+			"SetLocation",
+			"Sets the location of the canvas window")]
+		public void SetLocation(int x, int y)
+		{
+			StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+			Left = (int)x;
+			Top = (int)y;
+		}
+
+		[LuaMethodAttributes(
 			"Clear",
 			"Clears the canvas")]
 		public void Clear(Color color)
