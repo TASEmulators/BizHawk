@@ -12,12 +12,22 @@ namespace BizHawk.Client.EmuHawk
 	[Description("Represents a canvas object returned by the gui.createcanvas() method")]
 	public partial class LuaCanvas : Form
 	{
-		public LuaCanvas(int width, int height)
+		public LuaCanvas(int width, int height, int? x = null, int? y = null)
 		{
 			InitializeComponent();
 			luaPictureBox.Width = width;
 			luaPictureBox.Height = height;
 			luaPictureBox.Image = new Bitmap(width, height);
+
+			if (x.HasValue)
+			{
+				StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+				Left = (int)x;
+				if (y.HasValue)
+				{
+					Top = (int)y;
+				}
+			}
 		}
 
 		[LuaMethodAttributes(
