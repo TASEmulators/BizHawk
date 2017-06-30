@@ -375,5 +375,11 @@ namespace BizHawk.Client.EmuHawk
 			boxBackground = Graphics.FromImage(Image);
 			boxBackground.DrawString(message, font, new SolidBrush(forecolor ?? Color.Black), x, y);
 		}
+		
+		public Point GetMouse()
+		{
+			var p = PointToClient(Control.MousePosition);
+			return p;
+		}
 	}
 }
