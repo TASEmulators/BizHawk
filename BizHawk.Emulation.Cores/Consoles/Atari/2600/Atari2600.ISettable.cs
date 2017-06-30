@@ -149,6 +149,18 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		public class A2600SyncSettings
 		{
+			[DefaultValue(Atari2600ControllerTypes.Joystick)]
+			[DisplayName("Port 1 Device")]
+			[Description("The type of controller plugged into the first controller port")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public Atari2600ControllerTypes Port1 { get; set; } = Atari2600ControllerTypes.Joystick;
+
+			[DefaultValue(Atari2600ControllerTypes.Joystick)]
+			[DisplayName("Port 2 Device")]
+			[Description("The type of controller plugged into the second controller port")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public Atari2600ControllerTypes Port2 { get; set; } = Atari2600ControllerTypes.Joystick;
+
 			[DisplayName("Black and White Mode")]
 			[Description("Set the TV Type switch on the console to B&W or Color.  This only affects the displayed image if the game supports it.")]
 			[DefaultValue(false)]
