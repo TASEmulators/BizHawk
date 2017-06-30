@@ -1254,6 +1254,23 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private void SGBCoreSubmenu_DropDownOpened(object sender, EventArgs e)
+		{
+			SgbBsnesMenuItem.Checked = Global.Config.SGB_UseBsnes;
+			SgbPizzaBoyMenuItem.Checked = !Global.Config.SGB_UseBsnes;
+		}
+
+		private void SgbCorePick_Click(object sender, EventArgs e)
+		{
+			Global.Config.SGB_UseBsnes ^= true;
+			// TODO: only flag if one of these cores
+			if (!Emulator.IsNull())
+			{
+				FlagNeedsReboot();
+			}
+		}
+
+
 		private void GbInSgbMenuItem_Click(object sender, EventArgs e)
 		{
 			Global.Config.GB_AsSGB ^= true;

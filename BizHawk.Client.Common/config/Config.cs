@@ -540,6 +540,7 @@ namespace BizHawk.Client.Common
 		public bool SNES_InSnes9x = true;
 		public bool GBA_UsemGBA = true;
 		public bool A78_UseEmu7800 = true;
+		public bool SGB_UseBsnes = true;
 		public bool CoreForcingViaGameDB = true;
 		public string LibretroCore;
 	}

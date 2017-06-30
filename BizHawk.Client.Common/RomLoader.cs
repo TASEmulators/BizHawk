@@ -843,8 +843,15 @@ namespace BizHawk.Client.Common
 									{
 										game.System = "SNES";
 										game.AddOption("SGB");
-										var snes = new LibsnesCore(game, rom.FileData, Deterministic, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
-										nextEmulator = snes;
+										if (Global.Config.SGB_UseBsnes)
+										{
+											var snes = new LibsnesCore(game, rom.FileData, Deterministic, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+											nextEmulator = snes;
+										}
+										else
+										{
+											core = CoreInventory.Instance["SGB", "Pizza Boy"]; 
+										}
 									}
 									catch
 									{
