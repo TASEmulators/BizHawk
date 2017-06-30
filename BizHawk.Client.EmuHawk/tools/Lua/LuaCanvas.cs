@@ -295,5 +295,25 @@ namespace BizHawk.Client.EmuHawk
 		{
 			luaPictureBox.DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 		}
+
+
+		// It'd be great if these were simplified into 1 function, but I cannot figure out how to return a LuaTable from this class
+		[LuaMethodAttributes(
+			"GetMouseX",
+			"Returns an integer representation of the mouse X coordinate relative to the canvas window.")]
+		public int GetMouseX()
+		{
+			var position = luaPictureBox.GetMouse();
+			return position.X;
+		}
+
+		[LuaMethodAttributes(
+			"GetMouseY",
+			"Returns an integer representation of the mouse Y coordinate relative to the canvas window.")]
+		public int GetMouseY()
+		{
+			var position = luaPictureBox.GetMouse();
+			return position.Y;
+		}
 	}
 }
