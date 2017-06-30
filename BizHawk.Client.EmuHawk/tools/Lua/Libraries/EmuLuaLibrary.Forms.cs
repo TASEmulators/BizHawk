@@ -1136,6 +1136,75 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		// It'd be great if these were simplified into 1 function, but I cannot figure out how to return a LuaTable from this class
+		[LuaMethodAttributes(
+			"GetMouseX",
+			"Returns an integer representation of the mouse X coordinate relative to the PictureBox.")]
+		public int GetMouseX(int componentHandle)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return 0;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							var position = (control as LuaPictureBox).GetMouse();
+							return position.X;
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+
+			return 0;
+		}
+
+		[LuaMethodAttributes(
+			"GetMouseY",
+			"Returns an integer representation of the mouse Y coordinate relative to the PictureBox.")]
+		public int GetMouseY(int componentHandle)
+		{
+			try
+			{
+				var ptr = new IntPtr(componentHandle);
+				foreach (var form in _luaForms)
+				{
+					if (form.Handle == ptr)
+					{
+						ConsoleLuaLibrary.Log("Drawing functions cannot be used on forms directly. Use them on a PictureBox component.");
+						return 0;
+					}
+
+					foreach (Control control in form.Controls)
+					{
+						if (control is LuaPictureBox)
+						{
+							var position = (control as LuaPictureBox).GetMouse();
+							return position.Y;
+						}
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				ConsoleLuaLibrary.Log(ex.Message);
+			}
+
+			return 0;
+		}
+
 		#endregion
 
 		[LuaMethodAttributes("setdropdownitems", "Sets the items for a given dropdown box")]
