@@ -1242,6 +1242,11 @@
     <Compile Include="CPUs\Z80\Registers.cs" />
     <Compile Include="CPUs\Z80\Tables.cs" />
     <Compile Include="CPUs\Z80\Z80A.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="SideBySideVideo.cs" />
     <Compile Include="Sound\DualSyncSound.cs" />
     <Compile Include="Waterbox\CustomSaverammer.cs" />
@@ -1313,7 +1318,12 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BizHawk.Common\BizHawk.Common.csproj">
       <Project>{866F8D13-0678-4FF9-80A4-A3993FD4D8A3}</Project>
@@ -1335,6 +1345,7 @@
     <None Include="Consoles\Nintendo\NES\Docs\BoardTable.xlsx" />
     <None Include="Consoles\Nintendo\NES\Docs\MapperCompatibilityList.url" />
     <None Include="Consoles\Nintendo\NES\Docs\nesasm.pdf" />
+    <None Include="Resources\sgb-cart-present.spc.gz" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

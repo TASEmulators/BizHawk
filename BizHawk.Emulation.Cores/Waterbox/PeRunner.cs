@@ -698,15 +698,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 						{
 							using (var fs = new FileStream(gzpath, FileMode.Open, FileAccess.Read))
 							{
-								var tmp = new byte[4];
-								fs.Seek(-4, SeekOrigin.End);
-								fs.Read(tmp, 0, 4);
-								int size = BitConverter.ToInt32(tmp, 0);
-								data = new byte[size];
-								var ms = new MemoryStream(data);
-								fs.Seek(0, SeekOrigin.Begin);
-								using (var gs = new GZipStream(fs, CompressionMode.Decompress))
-									gs.CopyTo(ms);
+								data = Util.DecompressGzipFile(fs);
 							}
 						}
 						else
