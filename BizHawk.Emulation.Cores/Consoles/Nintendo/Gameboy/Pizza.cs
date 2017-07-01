@@ -39,6 +39,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				DefaultFpsDenominator = TICKSPERFRAME
 			})
 		{
+			if (sgb && (rom[0x143] & 0xc0) == 0xc0)
+			{
+				throw new CGBNotSupportedException();
+			}
+
 			_pizza = PreInit<LibPizza>(new PeRunnerOptions
 			{
 				Filename = "pizza.wbx",
