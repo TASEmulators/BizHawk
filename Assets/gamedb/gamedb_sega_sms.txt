@@ -559,7 +559,7 @@ A7F1049812A4CD1F180DCD644B10145F		Wimbledon (E)	SMS	Sports;Tennis		Europe
 6046D9EE439F3C76EB6713EEA8BA984B		Winter Olympics - Lillehammer '94 (E) (En,Fr,De,Es,It,Pt,Sv,No)	SMS	Sports		Europe
 D3BCF99A883E14A2F9DF8DD92662710F		Winter Olympics - Lillehammer '94 (B) (En,Fr,De,Es,It,Pt,Sv,No)	SMS	Sports		Brazil
 08EB9BF02F5EB4E238F791F27D65449A		Wolfchild (E)	SMS			Europe
-E7F86C049E4BD8B26844FF62BD067D57		Wonder Boy III - The Dragon's Trap (UE)	SMS	Wonder Boy Series	FM;PatchBytes=25B:00,25C:00	USA;Europe
+E7F86C049E4BD8B26844FF62BD067D57		Wonder Boy III - The Dragon's Trap (UE)	SMS	Wonder Boy Series	FM	USA;Europe
 8F8AAAC492DE96F2CFDDB9D1A57DD979		Wonder Boy in Monster Land (UE)	SMS	Wonder Boy Series;Arcade	FM	USA;Europe
 16BE61F4DE705CDD636D1FB1662E24DE		Wonder Boy in Monster Land (UE) (Beta)	SMS	Wonder Boy Series;Arcade	FM	USA;Europe
 5837764C172C8C43C8C7B21F2144CF27		Wonder Boy in Monster World (E)	SMS	Wonder Boy Series		Europe
