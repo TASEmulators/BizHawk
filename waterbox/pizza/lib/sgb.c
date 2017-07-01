@@ -75,7 +75,7 @@ typedef struct
 
 	// frame data
 	uint8_t frame[160 * 144];		// the most recent obtained full frame
-	uint8_t frozenframe[160 * 144]; // the most recent saved full frame (MASK_EN)
+	uint32_t frozenframe[256 * 224]; // the most recent saved full frame (MASK_EN)
 	uint8_t attr[20 * 18];			// current attr map for the GB screen
 	uint8_t auxattr[45][20 * 18];   // 45 attr files
 
@@ -433,7 +433,8 @@ static void cmd_mask(void)
 		case 2:
 		case 3:
 			sgb.active_mask = 1;
-			memset(sgb.frozenframe, 0, sizeof(sgb.frozenframe));
+			for (int i = 0; i < 256 * 224; i++)
+				sgb.frozenframe[i] = sgb.palette[0][0];
 			break;
 		}
 	}
@@ -862,32 +863,10 @@ static void do_vram_transfer(void)
 	}
 }
 
-// 160x144 32bpp pixel data
-// assumed to contain exact pixel values 00, 55, aa, ff
-void sgb_take_frame(uint32_t *vbuff)
-{
-	for (int i = 0; i < 160 * 144; i++)
-	{
-		sgb.frame[i] = 3 - (vbuff[i] >> 6 & 3); // 0, 1, 2, or 3 for each pixel
-	}
-	if (sgb.waiting_transfer != TRN_NONE)
-	{
-		if (!--sgb.transfer_countdown)
-		{
-			do_vram_transfer();
-			sgb.waiting_transfer = TRN_NONE;
-		}
-	}
-	if (!sgb.active_mask)
-	{
-		memcpy(sgb.frozenframe, sgb.frame, sizeof(sgb.frame));
-	}
-}
-
 static void sgb_render_frame_gb(uint32_t *vbuff)
 {
 	const uint8_t *attr = sgb.attr;
-	const uint8_t *src = sgb.active_mask ? sgb.frozenframe : sgb.frame;
+	const uint8_t *src = sgb.frame;
 	uint32_t *dst = vbuff + ((224 - 144) / 2 * 256 + (256 - 160) / 2);
 
 	for (int j = 0; j < 144; j++)
@@ -951,12 +930,35 @@ static void sgb_render_border(uint32_t *vbuff)
 	}
 }
 
+// 160x144 32bpp pixel data
+// assumed to contain exact pixel values 00, 55, aa, ff
+void sgb_take_frame(uint32_t *vbuff)
+{
+	for (int i = 0; i < 160 * 144; i++)
+	{
+		sgb.frame[i] = 3 - (vbuff[i] >> 6 & 3); // 0, 1, 2, or 3 for each pixel
+	}
+	if (sgb.waiting_transfer != TRN_NONE)
+	{
+		if (!--sgb.transfer_countdown)
+		{
+			do_vram_transfer();
+			sgb.waiting_transfer = TRN_NONE;
+		}
+	}
+	if (!sgb.active_mask)
+	{
+		// render the frame now
+		for (int i = 0; i < 256 * 224; i++)
+			sgb.frozenframe[i] = sgb.palette[0][0];
+		sgb_render_frame_gb(sgb.frozenframe);
+		sgb_render_border(sgb.frozenframe);
+	}
+}
+
 void sgb_render_frame(uint32_t *vbuff)
 {
-	for (int i = 0; i < 256 * 224; i++)
-		vbuff[i] = sgb.palette[0][0];
-	sgb_render_frame_gb(vbuff);
-	sgb_render_border(vbuff);
+	memcpy(vbuff, sgb.frozenframe, sizeof(sgb.frozenframe));
 }
 
 void sgb_render_audio(uint64_t time, void (*callback)(int16_t l, int16_t r, uint64_t time))
