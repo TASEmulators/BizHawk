@@ -21,11 +21,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			public bool write_mode;
 			public bool ind_mode;
 			public bool exp_mode;
+			public byte[] obj; // up to 32 bytes can compose one object
 		}
 
 		// technically there is no limit on he number of graphics objects, but since dma is automatically killed
 		// at the end of a scanline, we have an effective limit
-		GFX_Object[] GFX_Objects = new GFX_Object[64];
+		GFX_Object[] GFX_Objects = new GFX_Object[128];
 
 		public int _frameHz = 60;
 		public int _screen_width = 320;
@@ -33,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public int[] _vidbuffer;
 		public int[] _palette;
+		public int[] scanline_buffer = new int[320];
 
 		public int[] GetVideoBuffer()
 		{
@@ -52,8 +54,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public int cycle;
 		public int scanline;
+		public int DLI_countdown;
 		public bool sl_DMA_complete;
 		public bool do_dma;
+		public bool NMI_do_once;
 
 		public int DMA_phase = 0;
 		public int DMA_phase_counter;
@@ -66,6 +70,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public static int DMA_SHUTDOWN_LAST = 5;
 
 		public int header_read_time = 8; // default for 4 byte headers (10 for 5 bytes ones)
+		public int graphics_read_time = 3; // depends on content of graphics header
 		public int DMA_phase_next;
 		public int base_scanline;
 
@@ -79,6 +84,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool current_DLL_H8;
 
 		public int header_counter;
+		public int header_counter_max;
 		public int header_pointer; // since headers could be 4 or 5 bytes, we need a seperate pointer
 
 		// each frame contains 263 scanlines
@@ -109,8 +115,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 
 			// "The end of vblank is made up of a DMA startup plus a long shut down"
+			// Since long shut down loads up the next zone, this basically loads up the DLL for the first zone
 			sl_DMA_complete = false;
 			do_dma = false;
+			NMI_do_once = false;
 
 			for (int i=0; i<454;i++)
 			{
@@ -118,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					// DMA doesn't start until 7 CPU cycles into a scanline
 				}
-				else if (i==28 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(6))
+				else if (i==28 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
 				{
 					Core.cpu_halt_pending = true;
 					DMA_phase = DMA_START_UP;
@@ -128,6 +136,23 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				else if (!sl_DMA_complete && do_dma)
 				{
 					RunDMA(true);
+				}
+				else if (sl_DMA_complete && current_DLL_DLI && !NMI_do_once)
+				{
+					// schedule an NMI for one maria tick into the future
+					// (but set to 2 since it decrements immediately)
+					DLI_countdown = 2;
+					NMI_do_once = true;
+					Console.WriteLine("NMI");
+				}
+
+				if (DLI_countdown > 0)
+				{
+					DLI_countdown--;
+					if (DLI_countdown == 0)
+					{
+						Core.cpu.NMI = true;
+					}
 				}
 
 				Core.RunCPUCycle();
@@ -149,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					// DMA doesn't start until 7 CPU cycles into a scanline
 				}
-				else if (cycle == 28 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(6))
+				else if (cycle == 28 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
 				{
 					Core.cpu_halt_pending = true;
 					DMA_phase = DMA_START_UP;
@@ -160,6 +185,23 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					RunDMA(false);
 				}
+				else if (sl_DMA_complete && current_DLL_DLI && !NMI_do_once)
+				{
+					// schedule an NMI for one maria tick into the future
+					// (but set to 2 since it decrements immediately)
+					Console.WriteLine("NMI");
+					DLI_countdown = 2;
+					NMI_do_once = true;
+				}
+
+				if (DLI_countdown > 0)
+				{
+					DLI_countdown--;
+					if (DLI_countdown == 0)
+					{
+						Core.cpu.NMI = true;
+					}
+				}
 
 				Core.RunCPUCycle();
 
@@ -167,12 +209,21 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 				if (cycle == 454)
 				{
+					if (scanline > 20)
+					{
+						// add the current graphics to the buffer
+						draw_scanline(scanline - 21);
+					}
+
+					//Console.Write("Scanline: ");
+					//Console.WriteLine(scanline);
 					scanline++;
 					cycle = 0;
 					Core.tia._hsyncCnt = 0;
 					Core.cpu.RDY = true;
 					do_dma = false;
 					sl_DMA_complete = false;
+					NMI_do_once = false;
 				}
 			}
 		}
@@ -223,7 +274,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							{
 								// at the end of the list, time to end the DMA
 								// check if we are at the end of the zone
-								if (scanline == base_scanline + current_DLL_offset)
+								if (current_DLL_offset == 0)
 								{
 									DMA_phase_next = DMA_SHUTDOWN_LAST;
 								}
@@ -232,24 +283,37 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 									DMA_phase_next = DMA_SHUTDOWN_OTHER;
 								}
 								header_read_time = 8;
+								header_pointer++;
 							}
 							else
 							{
-								// we are in 5 Byte header mode
+								// we are in 5 Byte header mode (i.e. using the character map)
 								GFX_Objects[header_counter].write_mode = temp.Bit(7);
 								GFX_Objects[header_counter].ind_mode = temp.Bit(5);
 								header_pointer++;
-								temp = ReadMemory((ushort)(current_DLL_addr + header_pointer));
-								GFX_Objects[header_counter].addr |= (ushort)(temp << 8);
+								temp = (byte)(ReadMemory((ushort)(current_DLL_addr + header_pointer)));
+								GFX_Objects[header_counter].addr |= (ushort)((temp + current_DLL_offset)<< 8);
 								header_pointer++;
 								temp = ReadMemory((ushort)(current_DLL_addr + header_pointer));
-								GFX_Objects[header_counter].width = (byte)(temp & 0x1F);
+								int temp_w = (temp & 0x1F); // this is the 2's complement of width (for reasons that escape me)
+								if (temp_w == 0)
+								{
+									// important note here. In 5 byte mode, width 0 actually counts as 32
+									GFX_Objects[header_counter].width = 32;
+								}
+								else
+								{
+									temp_w = (temp_w - 1);
+									temp_w = (0x1F - temp_w);
+									GFX_Objects[header_counter].width = (byte)(temp_w & 0x1F);
+								}
+
 								GFX_Objects[header_counter].palette = (byte)((temp & 0xE0) >> 5);
 								header_pointer++;
-								GFX_Objects[header_pointer].h_pos = ReadMemory((ushort)(current_DLL_addr + header_pointer));
+								GFX_Objects[header_counter].h_pos = ReadMemory((ushort)(current_DLL_addr + header_pointer));
 								header_pointer++;
 
-								GFX_Objects[header_pointer].exp_mode = true;
+								GFX_Objects[header_counter].exp_mode = true;
 								DMA_phase_next = DMA_GRAPHICS;
 
 								header_read_time = 10;
@@ -257,16 +321,20 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						}
 						else
 						{
-							GFX_Objects[header_counter].width = (byte)(temp & 0x1F);
+							int temp_w = (temp & 0x1F); // this is the 2's complement of width (for reasons that escape me)
+							temp_w = (temp_w - 1);
+							temp_w = (0x1F - temp_w);
+							GFX_Objects[header_counter].width = (byte)(temp_w & 0x1F);
+
 							GFX_Objects[header_counter].palette = (byte)((temp & 0xE0) >> 5);
 							header_pointer++;
-							temp = ReadMemory((ushort)(current_DLL_addr + header_pointer));
-							GFX_Objects[header_counter].addr |= (ushort)(temp << 8);
+							temp = (byte)(ReadMemory((ushort)(current_DLL_addr + header_pointer)));
+							GFX_Objects[header_counter].addr |= (ushort)((temp + current_DLL_offset)<< 8);
 							header_pointer++;
-							GFX_Objects[header_pointer].h_pos = ReadMemory((ushort)(current_DLL_addr + header_pointer));
+							GFX_Objects[header_counter].h_pos = ReadMemory((ushort)(current_DLL_addr + header_pointer));
 							header_pointer++;
 
-							GFX_Objects[header_pointer].exp_mode = false;
+							GFX_Objects[header_counter].exp_mode = false;
 							DMA_phase_next = DMA_GRAPHICS;
 
 							header_read_time = 8;
@@ -285,13 +353,78 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					if (DMA_phase_counter == 1)
 					{
-						// get all the graphics data
+						// get all the graphics data 
+						// the time this takes depend on the source and number of bytes
+						if (GFX_Objects[header_counter].exp_mode)
+						{
+							// in 5 byte mode, we first have to check if we are in direct or indirect mode
+							if (GFX_Objects[header_counter].ind_mode)
+							{
+								int ch_size = 0;
+
+								if (Core.Maria_regs[0x1C].Bit(4))
+								{
+									graphics_read_time = 6 * GFX_Objects[header_counter].width + 3;
+									ch_size = 1;
+								}
+								else
+								{
+									graphics_read_time = 9 * GFX_Objects[header_counter].width + 3;
+									ch_size = 2;
+								}
+
+								// the address here is specified by CHAR_BASE maria registers
+								ushort addr = (ushort)(GFX_Objects[header_counter].addr & 0xFF);
+								addr |= (ushort)((Core.Maria_regs[0x14] + current_DLL_offset) << 8);
+
+								for (int i = 0; i < GFX_Objects[header_counter].width; i ++)
+								{
+									// if game is programmed correctly, should always be less then 32
+									// but in order to not go out of bounds, lets clamp it here anyway
+									if (i * ch_size < 32)
+									{
+										GFX_Objects[header_counter].obj[i * ch_size] = ReadMemory((ushort)(addr + i));
+									}
+									if ((i * ch_size + 1 < 32) && (ch_size == 2))
+									{
+										GFX_Objects[header_counter].obj[i * ch_size + 1] = ReadMemory((ushort)(addr + i));
+									}		
+								}
+							}
+							else
+							{
+								graphics_read_time = 3 * GFX_Objects[header_counter].width;
+
+								// do direct reads same as in 4 byte mode
+								for (int i = 0; i < GFX_Objects[header_counter].width; i++)
+								{
+									GFX_Objects[header_counter].obj[i] = ReadMemory((ushort)(GFX_Objects[header_counter].addr + i));
+								}
+							}
+						}
+						else
+						{
+							graphics_read_time = 3 * GFX_Objects[header_counter].width;
+
+							for (int i = 0; i < GFX_Objects[header_counter].width; i++)
+							{
+								GFX_Objects[header_counter].obj[i] = ReadMemory((ushort)(GFX_Objects[header_counter].addr + i));
+							}
+						}
 					}
 
-					if (DMA_phase_counter == 3)
+					if (DMA_phase_counter == graphics_read_time)
 					{
-						DMA_phase = DMA_SHUTDOWN_OTHER;
+						// We have read the graphics data, for this header, now return to the header list 
+						// This loop will continue until a header indicates its time to stop
+						DMA_phase = DMA_HEADER;
 						DMA_phase_counter = 0;
+
+						// fail safe for debugging
+						if (header_counter==125)
+						{
+							DMA_phase = DMA_SHUTDOWN_OTHER;
+						}
 					}
 					return;
 				}
@@ -300,6 +433,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					Core.cpu_resume_pending = true;
 					sl_DMA_complete = true;
+					current_DLL_offset -= 1; // this is reduced by one for each scanline, which changes where graphics are fetched
+					header_counter_max = header_counter;
+					header_counter = -1;
+					header_pointer = 0;
 					return;
 				}
 
@@ -317,26 +454,143 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						current_DLL_addr = (ushort)(ReadMemory((ushort)(temp_addr + 1)) << 8);
 						current_DLL_addr |= ReadMemory((ushort)(temp_addr + 2));
 
-						current_DLL_offset = (byte)(temp & 0xF + 1);
+						current_DLL_offset = (byte)(temp & 0xF);
 						current_DLL_DLI = temp.Bit(7);
 						current_DLL_H16 = temp.Bit(6);
 						current_DLL_H8 = temp.Bit(5);
 
+						header_counter_max = header_counter;
 						header_counter = -1;
 						header_pointer = 0;
 					}
 					return;
 				}
+			}
+		}
 
+		public void draw_scanline(int scanline)
+		{
+			int local_start;
+			int local_width;
+			int local_palette;
+			int index;
+			int color;
+			int obj_index;
+			int counter;
 
+			int disp_mode = Core.Maria_regs[0x1C] & 0x3;
+
+			scanline_buffer = new int[320];
+			//Console.WriteLine(scanline);
+			if (disp_mode == 0)
+			{
+				for (int i = 0; i < header_counter_max; i++)
+				{
+					local_start = GFX_Objects[i].h_pos;
+					local_width = GFX_Objects[i].width * 4;
+					local_palette = GFX_Objects[i].palette;
+					//Console.Write("hpos: ");
+					//Console.Write(local_start);
+					//Console.Write(" width: ");
+					//Console.Write(local_width);
+					//Console.Write(" indexes: ");
+					counter = 3;
+					obj_index = 0;
+					for (int j = local_start; j < local_start + local_width; j++)
+					{
+						index = j;
+						if (index > 255) index -= 256;
+						if (index < 160)
+						{
+							color = GFX_Objects[i].obj[obj_index];
+							color = (color >> (counter * 2)) & 0x3; // this is now the color index (0-3) we choose from the palette
+
+							if (color != 0) // transparent
+							{
+								if (color == 2)
+								{
+									//Console.Write(index);
+									//Console.Write(" ");
+								}
+
+								color = Core.Maria_regs[local_palette * 4 + color];
+
+								// the top 4 bits from this are the color, the bottom 4 are the luminosity
+								// this is already conveniently arranged in the palette
+								scanline_buffer[index * 2] = _palette[color];
+								scanline_buffer[index * 2 + 1] = _palette[color];
+							}
+
+						}
+						counter--;
+						if (counter == -1)
+						{
+							counter = 3;
+							obj_index++;
+						}
+					}
+					//Console.WriteLine(" ");
+				}
+			}
+			else if (disp_mode==2) // note 1 is not used
+			{
+			}
+			else
+			{
+				for (int i = 0; i < header_counter_max; i++)
+				{
+					local_start = GFX_Objects[i].h_pos;
+					local_width = GFX_Objects[i].width;
+					local_palette = GFX_Objects[i].palette;
+					//Console.Write("hpos: ");
+					//Console.Write(local_start);
+					//Console.Write(" width: ");
+					//Console.Write(local_width);
+					//Console.Write(" indexes: ");
+					counter = 3;
+					obj_index = 0;
+					for (int j = 0; j < local_width; j++)
+					{
+						//color = GFX_Objects[i].obj[j];
+						for (int k = 7; k >= 0; k--)
+						{
+							color = (GFX_Objects[i].obj[j] >> k) & 1;
+							index = local_start * 2 + j * 8 + (7 - k);
+							if (index > 511) index -= 512;
+							if (index < 320 && color == 1)
+							{
+
+								//Console.Write(index);
+								//Console.Write(" ");
+
+								color = Core.Maria_regs[local_palette * 4 + 2]; // automatically use index 2 here
+
+								// the top 4 bits from this are the color, the bottom 4 are the luminosity
+								// this is already conveniently arranged in the palette
+								scanline_buffer[index] = _palette[color];
+							}
+						}
+					}
+					//Console.WriteLine(" ");
+				}
 			}
 
 
+			// send buffer to the video buffer
+			for (int i = 0; i < 320; i ++)
+			{
+				_vidbuffer[scanline * 320 + i] = scanline_buffer[i];
+			}
 		}
 
 		public void Reset()
 		{
 			_vidbuffer = new int[VirtualWidth * VirtualHeight];
+
+			for (int i = 0; i < 128; i++)
+			{
+				GFX_Objects[i].obj = new byte[128];
+			}
 		}
 
 	}

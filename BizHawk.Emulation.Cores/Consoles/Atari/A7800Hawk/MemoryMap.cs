@@ -15,13 +15,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if ((addr & 0xFF) < 0x20)
 				{
 					// return TIA registers or control register if it is still unlocked
-					if ((A7800_control_register & 0x1) == 0 && (addr < 0x20))
+					if ((A7800_control_register & 0x1) == 0)// && (addr < 0x20))
 					{
 						return 0xFF; // TODO: what to return here?
 					}
 					else
 					{
-						return TIA_regs[addr]; // TODO: what to return here?
+						return TIA_regs[addr & 0x1F]; // TODO: what to return here?
 					}
 				}
 				else if ((addr & 0xFF) < 0x40)
@@ -47,7 +47,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 				else if (addr < 0x300)
 				{
-					return regs_6532[addr - 0x240];
+					if (addr > 0x280)
+						return regs_6532[addr - 0x280];
+					else
+						return 0xFF; // unclear what is mapped from 0x240 - 0x280
 				}
 				else
 				{
@@ -93,13 +96,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if ((addr & 0xFF) < 0x20)
 				{
 					// return TIA registers or control register if it is still unlocked
-					if ((A7800_control_register & 0x1) == 0 && (addr < 0x20))
+					if ((A7800_control_register & 0x1) == 0)// && (addr < 0x20))
 					{
 						A7800_control_register = value;
 					}
 					else
 					{
-						TIA_regs[addr] = value; 
+						TIA_regs[addr & 0x1F] = value; 
 					}
 				}
 				else if ((addr & 0xFF) < 0x40)
@@ -114,6 +117,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 						if (temp==4) // WSYNC
 							cpu.RDY = false;
+						/*
+						Console.WriteLine("Maria Regs: ");
+
+						for (int i = 0; i < 0x20; i++)
+						{
+							Console.Write(Maria_regs[i]);
+							Console.Write(" ");
+						}
+						Console.WriteLine(" ");
+						*/
 					}
 				}
 				else if (addr < 0x100)
@@ -128,7 +141,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 				else if (addr < 0x300)
 				{
-					regs_6532[addr - 0x240] = value;
+					if (addr > 0x280)
+						regs_6532[addr - 0x280] = value;
 				}
 				else
 				{
