@@ -47,6 +47,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				ms.Close();
 				core = ms.ToArray();
 			}
+			cpu.SyncState(ser);
+			tia.SyncState(ser);
+			maria.SyncState(ser);
+			m6532.SyncState(ser);
 
 			ser.BeginSection("Atari7800");
 			ser.Sync("core", ref core, false);
@@ -54,6 +58,25 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("IsLag", ref _islag);
 			_controllerDeck.SyncState(ser);
+
+			ser.Sync("IsLag", ref A7800_control_register);
+			ser.Sync("IsLag", ref _isPAL);
+
+			ser.Sync("IsLag", ref TIA_regs, false);
+			ser.Sync("IsLag", ref Maria_regs, false);
+			ser.Sync("IsLag", ref RAM, false);
+			ser.Sync("IsLag", ref regs_6532, false);
+			ser.Sync("IsLag", ref hs_bios_mem, false);
+
+			ser.Sync("IsLag", ref cycle);
+			ser.Sync("IsLag", ref cpu_cycle);
+			ser.Sync("IsLag", ref cpu_is_haltable);
+			ser.Sync("IsLag", ref cpu_is_halted);
+			ser.Sync("IsLag", ref cpu_halt_pending);
+			ser.Sync("IsLag", ref cpu_resume_pending);
+
+			ser.Sync("IsLag", ref slow_access);
+
 
 			ser.EndSection();
 		}

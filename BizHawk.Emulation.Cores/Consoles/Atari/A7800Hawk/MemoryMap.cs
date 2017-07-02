@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if ((addr & 0xFF) < 0x20)
 				{
 					// return TIA registers or control register if it is still unlocked
-					if ((A7800_control_register & 0x1) == 0)// && (addr < 0x20))
+					if ((A7800_control_register & 0x1) == 0 && (addr < 0x20))
 					{
 						return 0xFF; // TODO: what to return here?
 					}
@@ -96,13 +96,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if ((addr & 0xFF) < 0x20)
 				{
 					// return TIA registers or control register if it is still unlocked
-					if ((A7800_control_register & 0x1) == 0)// && (addr < 0x20))
+					if ((A7800_control_register & 0x1) == 0 && (addr < 0x20))
 					{
 						A7800_control_register = value;
 					}
 					else
 					{
-						TIA_regs[addr & 0x1F] = value; 
+						TIA_regs[addr & 0x1F] = value;
+						tia.WriteMemory((ushort)(addr & 0x1F), value, false); 
 					}
 				}
 				else if ((addr & 0xFF) < 0x40)

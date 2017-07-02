@@ -57,6 +57,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		{
 			cpu_cycle++;
 			tia._hsyncCnt++;
+			tia._hsyncCnt %= 454;
+			// do the audio sampling
+			if (tia._hsyncCnt == 113 || tia._hsyncCnt == 340)
+			{
+				tia.Execute(0);
+			}
 
 			if (cpu_cycle <= (2 + (slow_access ? 1 : 0)))
 			{

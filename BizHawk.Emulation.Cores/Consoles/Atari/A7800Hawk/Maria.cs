@@ -2,6 +2,7 @@
 
 using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
@@ -57,7 +58,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public int DLI_countdown;
 		public bool sl_DMA_complete;
 		public bool do_dma;
-		public bool NMI_do_once;
 
 		public int DMA_phase = 0;
 		public int DMA_phase_counter;
@@ -86,6 +86,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public int header_counter;
 		public int header_counter_max;
 		public int header_pointer; // since headers could be 4 or 5 bytes, we need a seperate pointer
+
+		// write mode is actually persistent but exists outside of the regs
+		public bool global_write_mode; 
 
 		// each frame contains 263 scanlines
 		// each scanline consists of 113.5 CPU cycles (fast access) which equates to 454 Maria cycles
@@ -118,7 +121,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// Since long shut down loads up the next zone, this basically loads up the DLL for the first zone
 			sl_DMA_complete = false;
 			do_dma = false;
-			NMI_do_once = false;
 
 			for (int i=0; i<454;i++)
 			{
@@ -137,13 +139,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					RunDMA(true);
 				}
-				else if (sl_DMA_complete && current_DLL_DLI && !NMI_do_once)
+				else if (sl_DMA_complete && current_DLL_DLI && !Core.cpu_is_halted)
 				{
 					// schedule an NMI for one maria tick into the future
 					// (but set to 2 since it decrements immediately)
 					DLI_countdown = 2;
-					NMI_do_once = true;
-					Console.WriteLine("NMI");
+					current_DLL_DLI = false;
 				}
 
 				if (DLI_countdown > 0)
@@ -161,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			scanline++;
 			cycle = 0;
 			do_dma = false;
-			Core.Maria_regs[8] = 0; // we have now left VBLank'
+			Core.Maria_regs[8] = 0; // we have now left VBLank
 			base_scanline = 0;
 			sl_DMA_complete = false;
 
@@ -185,13 +186,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					RunDMA(false);
 				}
-				else if (sl_DMA_complete && current_DLL_DLI && !NMI_do_once)
+				else if (sl_DMA_complete && current_DLL_DLI && !Core.cpu_is_halted)
 				{
 					// schedule an NMI for one maria tick into the future
 					// (but set to 2 since it decrements immediately)
-					Console.WriteLine("NMI");
 					DLI_countdown = 2;
-					NMI_do_once = true;
+					current_DLL_DLI = false;
 				}
 
 				if (DLI_countdown > 0)
@@ -215,15 +215,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						draw_scanline(scanline - 21);
 					}
 
-					//Console.Write("Scanline: ");
-					//Console.WriteLine(scanline);
 					scanline++;
 					cycle = 0;
 					Core.tia._hsyncCnt = 0;
 					Core.cpu.RDY = true;
 					do_dma = false;
 					sl_DMA_complete = false;
-					NMI_do_once = false;
 				}
 			}
 		}
@@ -289,6 +286,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							{
 								// we are in 5 Byte header mode (i.e. using the character map)
 								GFX_Objects[header_counter].write_mode = temp.Bit(7);
+								global_write_mode = temp.Bit(7);
 								GFX_Objects[header_counter].ind_mode = temp.Bit(5);
 								header_pointer++;
 								temp = (byte)(ReadMemory((ushort)(current_DLL_addr + header_pointer)));
@@ -336,6 +334,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 							GFX_Objects[header_counter].exp_mode = false;
 							DMA_phase_next = DMA_GRAPHICS;
+
+							GFX_Objects[header_counter].write_mode = global_write_mode;
 
 							header_read_time = 8;
 						}
@@ -419,12 +419,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						// This loop will continue until a header indicates its time to stop
 						DMA_phase = DMA_HEADER;
 						DMA_phase_counter = 0;
-
-						// fail safe for debugging
-						if (header_counter==125)
-						{
-							DMA_phase = DMA_SHUTDOWN_OTHER;
-						}
 					}
 					return;
 				}
@@ -481,7 +475,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			int disp_mode = Core.Maria_regs[0x1C] & 0x3;
 
 			scanline_buffer = new int[320];
-			//Console.WriteLine(scanline);
+
 			if (disp_mode == 0)
 			{
 				for (int i = 0; i < header_counter_max; i++)
@@ -489,11 +483,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					local_start = GFX_Objects[i].h_pos;
 					local_width = GFX_Objects[i].width * 4;
 					local_palette = GFX_Objects[i].palette;
-					//Console.Write("hpos: ");
-					//Console.Write(local_start);
-					//Console.Write(" width: ");
-					//Console.Write(local_width);
-					//Console.Write(" indexes: ");
+
 					counter = 3;
 					obj_index = 0;
 					for (int j = local_start; j < local_start + local_width; j++)
@@ -507,12 +497,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 							if (color != 0) // transparent
 							{
-								if (color == 2)
-								{
-									//Console.Write(index);
-									//Console.Write(" ");
-								}
-
 								color = Core.Maria_regs[local_palette * 4 + color];
 
 								// the top 4 bits from this are the color, the bottom 4 are the luminosity
@@ -520,8 +504,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 								scanline_buffer[index * 2] = _palette[color];
 								scanline_buffer[index * 2 + 1] = _palette[color];
 							}
-
 						}
+
 						counter--;
 						if (counter == -1)
 						{
@@ -529,7 +513,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							obj_index++;
 						}
 					}
-					//Console.WriteLine(" ");
 				}
 			}
 			else if (disp_mode==2) // note 1 is not used
@@ -542,16 +525,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					local_start = GFX_Objects[i].h_pos;
 					local_width = GFX_Objects[i].width;
 					local_palette = GFX_Objects[i].palette;
-					//Console.Write("hpos: ");
-					//Console.Write(local_start);
-					//Console.Write(" width: ");
-					//Console.Write(local_width);
-					//Console.Write(" indexes: ");
+
 					counter = 3;
 					obj_index = 0;
 					for (int j = 0; j < local_width; j++)
 					{
-						//color = GFX_Objects[i].obj[j];
 						for (int k = 7; k >= 0; k--)
 						{
 							color = (GFX_Objects[i].obj[j] >> k) & 1;
@@ -559,10 +537,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							if (index > 511) index -= 512;
 							if (index < 320 && color == 1)
 							{
-
-								//Console.Write(index);
-								//Console.Write(" ");
-
 								color = Core.Maria_regs[local_palette * 4 + 2]; // automatically use index 2 here
 
 								// the top 4 bits from this are the color, the bottom 4 are the luminosity
@@ -571,10 +545,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							}
 						}
 					}
-					//Console.WriteLine(" ");
 				}
 			}
-
 
 			// send buffer to the video buffer
 			for (int i = 0; i < 320; i ++)
@@ -589,9 +561,20 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			for (int i = 0; i < 128; i++)
 			{
-				GFX_Objects[i].obj = new byte[128];
+				GFX_Objects[i].obj = new byte[32];
 			}
 		}
 
+		// Most of the Maria state is captured in Maria Regs in the core
+		// Only write Mode is persistent and outside of the regs
+		// also since DMA is always killed at scanline boundaries, most related check variables are also not needed
+		public void SyncState(Serializer ser)
+		{
+			ser.BeginSection("Maria");
+
+			ser.Sync("global write mode", ref global_write_mode);
+
+			ser.EndSection();
+		}
 	}
 }
