@@ -1117,6 +1117,8 @@
     </Compile>
     <Compile Include="Consoles\Sega\gpgx64\GPGXControlConverter.cs" />
     <Compile Include="Consoles\Sega\gpgx64\LibGPGX.cs" />
+    <Compile Include="Consoles\Sega\PicoDrive\LibPicoDrive.cs" />
+    <Compile Include="Consoles\Sega\PicoDrive\PicoDrive.cs" />
     <Compile Include="Consoles\Sega\Saturn\FilePiping.cs" />
     <Compile Include="Consoles\Sega\Saturn\LibSaturnus.cs" />
     <Compile Include="Consoles\Sega\Saturn\Saturnus.cs" />
