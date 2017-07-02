@@ -383,7 +383,7 @@ static int is_expr(const char *expr, char **pr)
   return 1;
 }
 
-#include "carthw_cfg.c"
+#include "carthw_cfg.inc"
 
 static void parse_carthw(const char *carthw_cfg, int *fill_sram)
 {
