@@ -35,15 +35,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		// Execute TIA cycles
 		public void Execute(int cycles)
-		{
-			// do the audio sampling
-			if (_hsyncCnt == 113 || _hsyncCnt == 340)
-			{
-				LocalAudioCycles[AudioClocks] += (short)(AUD[0].Cycle() / 2);
-				LocalAudioCycles[AudioClocks] += (short)(AUD[1].Cycle() / 2);
-				AudioClocks++;
-			}
-
+		{			
+			LocalAudioCycles[AudioClocks] += (short)(AUD[0].Cycle() / 2);
+			LocalAudioCycles[AudioClocks] += (short)(AUD[1].Cycle() / 2);
+			AudioClocks++;
 		}
 
 		public byte ReadMemory(ushort addr, bool peek)

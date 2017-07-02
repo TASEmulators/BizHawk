@@ -19,10 +19,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			short[] ret = new short[_spf * 2];
+			short[] ret = new short[AudioClocks * 2];
+			nsamp = AudioClocks;
 			GetSamples(ret);
-			samples = ret;
-			nsamp = _spf;
+			samples = ret;		
 		}
 
 		public void GetSamplesAsync(short[] samples)
