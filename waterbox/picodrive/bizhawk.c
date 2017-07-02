@@ -85,6 +85,7 @@ void emu_video_mode_change(int start_line, int line_count, int is_32cols)
 	video_start_line = start_line;
 	video_line_count = line_count;
 	video_width = is_32cols ? 256 : 320;
+	PicoDrawSetOutBuf(video_buffer, video_width * sizeof(uint16_t));
 }
 
 // "switch to 16bpp mode?"
@@ -113,7 +114,6 @@ ECL_EXPORT int Init(void)
 
 	PicoSetInputDevice(0, PICO_INPUT_PAD_6BTN);
 	PicoSetInputDevice(1, PICO_INPUT_PAD_6BTN);
-	PicoDrawSetOutBuf(video_buffer, 512 * sizeof(uint16_t));
 	PsndRerate(0);
 
 	PicoDrawSetOutFormat(PDF_RGB555, 0); // TODO: what is "use_32x_line_mode"?
@@ -129,19 +129,15 @@ static void Blit(void)
 	f->Width = video_width;
 	f->Height = video_line_count;
 	uint8_t *dst = (uint8_t *)f->VideoBuffer;
-	src += 512 * video_start_line;
+	src += video_width * video_start_line;
 
-	for (int j = 0; j < video_line_count; j++)
+	for (int j = 0; j < video_line_count * video_width; j++)
 	{
-		for (int i = 0; i < video_width; i++)
-		{
-			uint16_t c = src[i];
-			*dst++ = c << 3 & 0xf8 | c >> 2 & 7;
-			*dst++ = c >> 3 & 0xfa | c >> 9 & 3;
-			*dst++ = c >> 8 & 0xf8 | c >> 13 & 7;
-			*dst++ = 0xff;
-		}
-		src += 512;
+		uint16_t c = *src++;
+		*dst++ = c << 3 & 0xf8 | c >> 2 & 7;
+		*dst++ = c >> 3 & 0xfa | c >> 9 & 3;
+		*dst++ = c >> 8 & 0xf8 | c >> 13 & 7;
+		*dst++ = 0xff;
 	}
 }
 
