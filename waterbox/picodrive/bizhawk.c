@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdarg.h>
+#include <string.h>
 
 #include "../emulibc/emulibc.h"
 #include "../emulibc/waterboxcore.h"
@@ -60,10 +61,23 @@ int pm_close(pm_file *fp)
 	return ret;
 }
 
+typedef struct
+{
+	FrameInfo b;
+} MyFrameInfo;
+
 static int video_start_line;
 static int video_line_count;
 static int video_width;
-static uint16_t* video_buffer;
+static uint16_t *video_buffer;
+static int16_t *sound_buffer;
+static MyFrameInfo *current_frame;
+
+static void SoundCallback(int len)
+{
+	current_frame->b.Samples = len / (2 * sizeof(int16_t));
+	memcpy(current_frame->b.SoundBuffer, sound_buffer, len);
+}
 
 void emu_video_mode_change(int start_line, int line_count, int is_32cols)
 {
@@ -83,34 +97,38 @@ void mp3_update(int *buffer, int length, int stereo) {}
 
 ECL_EXPORT int Init(void)
 {
-	video_buffer = alloc_invisible(512 * 512 * sizeof(uint16_t));
+	PicoOpt = POPT_EN_FM | POPT_EN_PSG | POPT_EN_Z80 | POPT_EN_STEREO | POPT_ACC_SPRITES | POPT_DIS_32C_BORDER | POPT_EN_MCD_PCM | POPT_EN_MCD_CDDA | POPT_EN_MCD_GFX | POPT_EN_32X | POPT_EN_PWM;
 
 	PicoInit();
+	if (PicoLoadMedia("romfile.md", NULL, NULL, NULL, PM_MD_CART) != PM_MD_CART)
+		return 0;
+	PicoLoopPrepare();
+
+	video_buffer = alloc_invisible(512 * 512 * sizeof(uint16_t));
+	sound_buffer = alloc_invisible(2048 * sizeof(int16_t));
+	PsndRate = 44100;
+	PsndOut = sound_buffer;
+	PicoWriteSound = SoundCallback;
+
 	PicoSetInputDevice(0, PICO_INPUT_PAD_6BTN);
 	PicoSetInputDevice(1, PICO_INPUT_PAD_6BTN);
 	PicoDrawSetOutBuf(video_buffer, 512 * sizeof(uint16_t));
+	PsndRerate(0);
 
-	if (PicoLoadMedia("romfile.md", NULL, NULL, NULL, PM_MD_CART) != PM_MD_CART)
-		return 0;
 	PicoDrawSetOutFormat(PDF_RGB555, 0); // TODO: what is "use_32x_line_mode"?
 	PicoPower();
 
 	return 1;
 }
 
-typedef struct
+static void Blit(void)
 {
-	FrameInfo b;
-} MyFrameInfo;
-
-static void Blit(const uint16_t *src, FrameInfo *f)
-{
+	const uint16_t *src = video_buffer;
+	FrameInfo *f = &current_frame->b;
 	f->Width = video_width;
 	f->Height = video_line_count;
 	uint8_t *dst = (uint8_t *)f->VideoBuffer;
 	src += 512 * video_start_line;
-	if (video_width == 256)
-		src += 32;
 
 	for (int j = 0; j < video_line_count; j++)
 	{
@@ -128,10 +146,10 @@ static void Blit(const uint16_t *src, FrameInfo *f)
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo *f)
 {
-	PicoLoopPrepare();
+	current_frame = f;
 	PicoFrame();
-	Blit(video_buffer, &f->b);
-	f->b.Samples = 735; // TODO
+	Blit();
+	current_frame = NULL;
 }
 
 static uint8_t dumbo[16];
