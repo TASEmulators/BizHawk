@@ -36,7 +36,7 @@ void utils_log(const char *format, ...)
     va_list args;
     va_start(args, format);
     vsnprintf(buf, 256, format, args);
-    _debug_puts(buf);
+	fputs(buf, stdout);
     va_end(args);
 }
 
@@ -48,7 +48,7 @@ void utils_log_urgent(const char *format, ...)
     va_list args;
     va_start(args, format);
     vsnprintf(buf, 256, format, args);
-    _debug_puts(buf);
+	fputs(buf, stdout);
     va_end(args);
 }
 

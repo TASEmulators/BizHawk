@@ -52,6 +52,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_exe.Exit();
 		}
 
+		private readonly List<string> _readonlyFiles = new List<string>();
+
+		public void AddReadonlyFile(byte[] data, string name)
+		{
+			_exe.AddReadonlyFile(data, name);
+			_readonlyFiles.Add(name);
+		}
+
 		public LibsnesApi(string dllPath)
 		{
 			_exe = new PeRunner(new PeRunnerOptions
@@ -366,6 +374,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			_core.DllInit();
 			_exe.Seal();
 			_sealed = true;
+			foreach (var s in _readonlyFiles)
+			{
+				_exe.RemoveReadonlyFile(s);
+			}
+			_readonlyFiles.Clear();
 		}
 
 		public void SaveStateBinary(BinaryWriter writer)

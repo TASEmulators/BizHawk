@@ -294,16 +294,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					return "";
 			}
 
-			// build romfilename
-			string test = CoreComm.CoreFileProvider.GetFirmwarePath("SNES", firmwareId, false, "Game may function incorrectly without the requested firmware.");
+			string ret;
+			var data = CoreComm.CoreFileProvider.GetFirmware("SNES", firmwareId, false, "Game may function incorrectly without the requested firmware.");
+			if (data != null)
+			{
+				ret = hint;
+				Api.AddReadonlyFile(data, hint);
+			}
+			else
+			{
+				ret = "";
+			}
 
-			// we need to return something to bsnes
-			test = test ?? "";
-
-			Console.WriteLine("Served libsnes request for firmware \"{0}\" with \"{1}\"", hint, test);
+			Console.WriteLine("Served libsnes request for firmware \"{0}\"", hint);
 
 			// return the path we built
-			return test;
+			return ret;
 		}
 
 		private void snes_trace(uint which, string msg)
