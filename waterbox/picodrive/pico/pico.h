@@ -84,6 +84,9 @@ typedef enum { PI_ROM, PI_ISPAL, PI_IS40_CELL, PI_IS240_LINES } pint_t;
 typedef union { int vint; void *vptr; } pint_ret_t;
 void PicoGetInternal(pint_t which, pint_ret_t *ret);
 
+extern void (*PicoInputCallback)(void);
+extern int PicoInputWasRead;
+
 // cd/mcd.c
 extern void (*PicoMCDopenTray)(void);
 extern void (*PicoMCDcloseTray)(void);

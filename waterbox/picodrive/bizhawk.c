@@ -64,6 +64,7 @@ int pm_close(pm_file *fp)
 typedef struct
 {
 	FrameInfo b;
+	uint32_t Buttons;
 } MyFrameInfo;
 
 static int video_start_line;
@@ -147,8 +148,17 @@ static void Blit(void)
 ECL_EXPORT void FrameAdvance(MyFrameInfo *f)
 {
 	current_frame = f;
+	PicoInputWasRead = 0;
+	PicoPad[0] = f->Buttons & 0xfff;
+	PicoPad[1] = f->Buttons >> 12 & 0xfff;
+	if (f->Buttons & 0x1000000)
+		PicoPower();
+	if (f->Buttons & 0x2000000)
+		PicoReset();
+
 	PicoFrame();
 	Blit();
+	f->b.Lagged = !PicoInputWasRead;
 	current_frame = NULL;
 }
 
@@ -163,6 +173,7 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 
 ECL_EXPORT void SetInputCallback(void (*callback)(void))
 {
+	PicoInputCallback = callback;
 }
 
 int main(void)

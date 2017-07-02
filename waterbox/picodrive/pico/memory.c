@@ -241,18 +241,24 @@ static port_read_func *port_readers[3] = {
   read_nothing
 };
 
+void (*PicoInputCallback)(void);
+int PicoInputWasRead;
+
 static NOINLINE u32 port_read(int i)
 {
-  u32 data_reg = Pico.ioports[i + 1];
-  u32 ctrl_reg = Pico.ioports[i + 4] | 0x80;
-  u32 in, out;
+	PicoInputWasRead = 1;
+	if (PicoInputCallback)
+		PicoInputCallback();
+	u32 data_reg = Pico.ioports[i + 1];
+	u32 ctrl_reg = Pico.ioports[i + 4] | 0x80;
+	u32 in, out;
 
-  out = data_reg & ctrl_reg;
-  out |= 0x7f & ~ctrl_reg; // pull-ups
+	out = data_reg & ctrl_reg;
+	out |= 0x7f & ~ctrl_reg; // pull-ups
 
-  in = port_readers[i](i, out);
+	in = port_readers[i](i, out);
 
-  return (in & ~ctrl_reg) | (data_reg & ctrl_reg);
+	return (in & ~ctrl_reg) | (data_reg & ctrl_reg);
 }
 
 void PicoSetInputDevice(int port, enum input_device device)
