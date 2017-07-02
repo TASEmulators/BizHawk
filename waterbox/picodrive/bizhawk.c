@@ -97,8 +97,26 @@ int mp3_get_bitrate(void *f, int size) { return 0; }
 void mp3_start_play(void *f, int pos) {}
 void mp3_update(int *buffer, int length, int stereo) {}
 
+static const uint8_t* TryLoadBios(const char* name)
+{
+	FILE *f = fopen(name, "rb");
+	if (!f)
+		return NULL;
+	fseek(f, 0, SEEK_END);
+	int size = ftell(f);
+	uint8_t* ret = alloc_sealed(size);
+	fseek(f, 0, SEEK_SET);
+	fread(ret, 1, size, f);
+	fclose(f);
+	return ret;
+}
+
 ECL_EXPORT int Init(void)
 {
+	p32x_bios_g = TryLoadBios("32x.g");
+	p32x_bios_m = TryLoadBios("32x.m");
+	p32x_bios_s = TryLoadBios("32x.s");
+
 	PicoOpt = POPT_EN_FM | POPT_EN_PSG | POPT_EN_Z80 | POPT_EN_STEREO | POPT_ACC_SPRITES | POPT_DIS_32C_BORDER | POPT_EN_MCD_PCM | POPT_EN_MCD_CDDA | POPT_EN_MCD_GFX | POPT_EN_32X | POPT_EN_PWM;
 
 	PicoInit();

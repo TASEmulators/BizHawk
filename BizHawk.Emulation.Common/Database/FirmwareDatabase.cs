@@ -112,6 +112,11 @@ namespace BizHawk.Emulation.Common
 			Option("GEN", "CD_BIOS_US", us_scd1_9210);
 			Option("GEN", "CD_BIOS_US", us_scd2_9303);
 
+			FirmwareAndOption("dbebd76a448447cb6e524ac3cb0fd19fc065d944", 256, "32X", "G", "32X_G_BIOS.BIN", "32x 68k BIOS");
+			FirmwareAndOption("1e5b0b2441a4979b6966d942b20cc76c413b8c5e", 2048, "32X", "M", "32X_M_BIOS.BIN", "32x SH2 MASTER BIOS");
+			FirmwareAndOption("4103668c1bbd66c5e24558e73d4f3f92061a109a", 1024, "32X", "S", "32X_S_BIOS.BIN", "32x SH2 SLAVE BIOS");
+
+
 			// SMS
 			var sms_us_13 = File("C315672807D8DDB8D91443729405C766DD95CAE7", 8192, "sms_us_1.3.sms", "SMS BIOS 1.3 (USA, Europe)");
 			var sms_jp_21 = File("A8C1B39A2E41137835EDA6A5DE6D46DD9FADBAF2", 8192, "sms_jp_2.1.sms", "SMS BIOS 2.1 (Japan)");

@@ -43,7 +43,7 @@
 
 static const char str_mars[] = "MARS";
 
-void *p32x_bios_g, *p32x_bios_m, *p32x_bios_s;
+const void *p32x_bios_g, *p32x_bios_m, *p32x_bios_s;
 struct Pico32xMem *Pico32xMem;
 
 static void bank_switch(int b);

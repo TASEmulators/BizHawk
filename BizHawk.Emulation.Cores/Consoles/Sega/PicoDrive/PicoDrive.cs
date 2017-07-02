@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 		private LibPicoDrive _core;
 
 		[CoreConstructor("GEN")]
-		public PicoDrive(CoreComm comm, byte[] rom)
+		public PicoDrive(CoreComm comm, byte[] rom, bool deterministic)
 			: base(comm, new Configuration
 			{
 				MaxSamples = 2048,
@@ -26,6 +26,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				SystemId = "GEN"
 			})
 		{
+			var biosg = comm.CoreFileProvider.GetFirmware("32X", "G", false);
+			var biosm = comm.CoreFileProvider.GetFirmware("32X", "M", false);
+			var bioss = comm.CoreFileProvider.GetFirmware("32X", "S", false);
+			var has32xBios = biosg != null && biosm != null && bioss != null;
+			if (deterministic && !has32xBios)
+				throw new InvalidOperationException("32X BIOS files are required for deterministic mode");
+			deterministic |= has32xBios;
+
 			_core = PreInit<LibPicoDrive>(new PeRunnerOptions
 			{
 				Filename = "picodrive.wbx",
@@ -36,12 +44,29 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				PlainHeapSizeKB = 4096,
 			});
 
+			if (has32xBios)
+			{
+				_exe.AddReadonlyFile(biosg, "32x.g");
+				_exe.AddReadonlyFile(biosm, "32x.m");
+				_exe.AddReadonlyFile(bioss, "32x.s");
+				Console.WriteLine("Using supplied 32x BIOS files");
+			}
 			_exe.AddReadonlyFile(rom, "romfile.md");
+
 			if (!_core.Init())
 				throw new InvalidOperationException("Core rejected the rom!");
+
 			_exe.RemoveReadonlyFile("romfile.md");
+			if (has32xBios)
+			{
+				_exe.RemoveReadonlyFile("32x.g");
+				_exe.RemoveReadonlyFile("32x.m");
+				_exe.RemoveReadonlyFile("32x.s");
+			}
+
 			PostInit();
 			ControllerDefinition = PicoDriveController;
+			DeterministicEmulation = deterministic;
 		}
 
 		public static readonly ControllerDefinition PicoDriveController = new ControllerDefinition
