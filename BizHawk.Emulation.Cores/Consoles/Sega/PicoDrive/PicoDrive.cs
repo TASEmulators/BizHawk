@@ -21,15 +21,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 		private DiscSectorReader _cdReader;
 
 		[CoreConstructor("GEN")]
-		public PicoDrive(CoreComm comm, byte[] rom, bool deterministic)
-			:this(comm, rom, null, deterministic)
+		public PicoDrive(CoreComm comm, GameInfo game, byte[] rom, bool deterministic)
+			:this(comm, game, rom, null, deterministic)
 		{ }
 
-		public PicoDrive(CoreComm comm, Disc cd, bool deterministic)
-			:this(comm, null, cd, deterministic)
+		public PicoDrive(CoreComm comm, GameInfo game, Disc cd, bool deterministic)
+			:this(comm, game, null, cd, deterministic)
 		{ }
 
-		private PicoDrive(CoreComm comm, byte[] rom, Disc cd, bool deterministic)
+		private PicoDrive(CoreComm comm, GameInfo game, byte[] rom, Disc cd, bool deterministic)
 			: base(comm, new Configuration
 			{
 				MaxSamples = 2048,
@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				_exe.AddReadonlyFile(rom, "romfile.md");
 			}
 
-			if (!_core.Init(cd != null))
+			if (!_core.Init(cd != null, game["32X"]))
 				throw new InvalidOperationException("Core rejected the file!");
 
 			if (cd != null)

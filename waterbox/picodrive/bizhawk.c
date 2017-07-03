@@ -6,6 +6,7 @@
 #include "../emulibc/emulibc.h"
 #include "../emulibc/waterboxcore.h"
 #include "pico/pico.h"
+#include "pico/pico_int.h"
 #include "pico/cd/cdd.h"
 
 void lprintf(const char *fmt, ...)
@@ -137,7 +138,7 @@ static const uint8_t *TryLoadBios(const char *name)
 	return ret;
 }
 
-ECL_EXPORT int Init(int cd)
+ECL_EXPORT int Init(int cd, int _32xPreinit)
 {
 	p32x_bios_g = TryLoadBios("32x.g");
 	p32x_bios_m = TryLoadBios("32x.m");
@@ -169,6 +170,13 @@ ECL_EXPORT int Init(int cd)
 	PsndRerate(0);
 
 	PicoDrawSetOutFormat(PDF_RGB555, 0); // TODO: what is "use_32x_line_mode"?
+	if (_32xPreinit)
+	{
+		// this is only needed so that the memory domains will show up on the memory domain list
+		// otherwise, 32x will run fine without it.
+		Pico32xMem = malloc(sizeof(*Pico32xMem));
+	}
+
 	PicoPower();
 
 	return 1;
@@ -210,13 +218,58 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo *f)
 	current_frame = NULL;
 }
 
-static uint8_t dumbo[16];
 ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 {
-	m[0].Data = dumbo;
-	m[0].Name = "TODO";
-	m[0].Size = 16;
-	m[0].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_PRIMARY;
+	m[0].Data = Pico.ram;
+	m[0].Name = "68K RAM";
+	m[0].Size = 0x10000;
+	m[0].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_PRIMARY | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SWAPPED;
+
+	m[1].Data = Pico.vram;
+	m[1].Name = "VRAM";
+	m[1].Size = 0x10000;
+	m[1].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SWAPPED;
+
+	m[2].Data = Pico.zram;
+	m[2].Name = "Z80 RAM";
+	m[2].Size = 0x2000;
+	m[2].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1;
+
+	m[3].Data = Pico.cram;
+	m[3].Name = "CRAM";
+	m[3].Size = 0x40;
+	m[3].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1;
+
+	m[4].Data = Pico.vsram;
+	m[4].Name = "VSRAM";
+	m[4].Size = 0x40;
+	m[4].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1;
+
+	m[5].Data = Pico.rom;
+	m[5].Name = "MD CART";
+	m[5].Size = Pico.romsize;
+	m[5].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_SWAPPED;
+
+	if (Pico32xMem)
+	{
+		m[6].Data = Pico32xMem->sdram;
+		m[6].Name = "32X RAM";
+		m[6].Size = 0x40000;
+		m[6].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SWAPPED;
+
+		m[7].Data = Pico32xMem->dram;
+		m[7].Name = "32X FB";
+		m[7].Size = 0x40000;
+		m[7].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_SWAPPED;
+	}
+
+	if (SRam.data != NULL)
+	{
+		m[8].Data = SRam.data;
+		m[8].Name = "SRAM";
+		m[8].Size = SRam.size;
+		m[8].Flags = MEMORYAREA_FLAGS_WRITABLE | MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_SAVERAMMABLE;
+	}
 }
 
 ECL_EXPORT void SetInputCallback(void (*callback)(void))

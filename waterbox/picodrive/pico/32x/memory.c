@@ -1752,7 +1752,8 @@ void PicoMemSetup32x(void)
   unsigned int rs;
   int i;
 
-  Pico32xMem = malloc(sizeof(*Pico32xMem));
+  if (!Pico32xMem)
+  	Pico32xMem = malloc(sizeof(*Pico32xMem));
   if (Pico32xMem == NULL) {
     elprintf(EL_STATUS, "OOM");
     return;
