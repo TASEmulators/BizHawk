@@ -51,11 +51,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			_core = PreInit<LibPicoDrive>(new PeRunnerOptions
 			{
 				Filename = "picodrive.wbx",
-				SbrkHeapSizeKB = 4096,
-				SealedHeapSizeKB = 4096,
-				InvisibleHeapSizeKB = 4096,
-				MmapHeapSizeKB = 65536,
-				PlainHeapSizeKB = 4096,
+				SbrkHeapSizeKB = 64,
+				SealedHeapSizeKB = 18 * 1024,
+				InvisibleHeapSizeKB = 1024,
+				MmapHeapSizeKB = 4096,
+				PlainHeapSizeKB = 64,
 			});
 
 			if (has32xBios)

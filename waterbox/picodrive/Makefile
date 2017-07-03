@@ -6,7 +6,7 @@ CCFLAGS:=-I. \
 	-std=c99 -fomit-frame-pointer -fvisibility=hidden \
 	-falign-functions=16 \
 	-DLSB_FIRST -DNDEBUG -DEMU_F68K -D_USE_CZ80 \
-	-O0 -g
+	-O3 -flto
 
 TARGET = picodrive.wbx
 
@@ -31,8 +31,8 @@ $(TARGET).in: $(OBJS)
 	@$(CC) -o $@ $(LDFLAGS) $(CCFLAGS) $(OBJS) ../emulibc/libemuhost.so
 
 $(TARGET): $(TARGET).in
-#	strip $< -o $@ -R /4 -R /14 -R /29 -R /41 -R /55 -R /67 -R /78 -R /89 -R /104
-	cp $< $@
+	strip $< -o $@ -R /4 -R /14 -R /29 -R /41 -R /55 -R /67 -R /78 -R /89 -R /104
+#	cp $< $@
 
 clean:
 	rm -rf $(OBJ_DIR)
