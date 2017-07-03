@@ -1046,7 +1046,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_sealedheap.Seal();
 				foreach (var h in _heaps)
 				{
-					if (h != _invisibleheap) // TODO: if we have more non-savestated heaps, refine this hack
+					if (h != _invisibleheap && h != _sealedheap) // TODO: if we have more non-savestated heaps, refine this hack
 						h.Memory.SaveXorSnapshot();
 				}
 				foreach (var pe in _modules)
