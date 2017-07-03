@@ -206,7 +206,6 @@ void cdd_read_data(uint8 *dst)
 
 void cdd_read_audio(short *buffer, unsigned int samples)
 {
-	printf("cdd_read_audio %u\n", samples);
 	short *outptr = buffer;
 	/* audio track playing ? */
 	if (!Pico_mcd->s68k_regs[0x36 + 0])
