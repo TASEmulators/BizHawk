@@ -127,54 +127,6 @@ void gfx_init(void)
   }
 }
 
-int gfx_context_save(uint8 *state)
-{
-  uint32 tmp32;
-  int bufferptr = 0;
-
-  //save_param(&gfx.cycles, sizeof(gfx.cycles));
-  //save_param(&gfx.cyclesPerLine, sizeof(gfx.cyclesPerLine));
-  save_param(&gfx.dotMask, sizeof(gfx.dotMask));
-  save_param(&gfx.stampShift, sizeof(gfx.stampShift));
-  save_param(&gfx.mapShift, sizeof(gfx.mapShift));
-  save_param(&gfx.bufferOffset, sizeof(gfx.bufferOffset));
-  save_param(&gfx.bufferStart, sizeof(gfx.bufferStart));
-
-  tmp32 = (uint8 *)(gfx.tracePtr) - Pico_mcd->word_ram2M;
-  save_param(&tmp32, 4);
-
-  tmp32 = (uint8 *)(gfx.mapPtr) - Pico_mcd->word_ram2M;
-  save_param(&tmp32, 4);
-
-  save_param(&gfx.y_step, sizeof(gfx.y_step));
-
-  return bufferptr;
-}
-
-int gfx_context_load(const uint8 *state)
-{
-  uint32 tmp32;
-  int bufferptr = 0;
-
-  //load_param(&gfx.cycles, sizeof(gfx.cycles));
-  //load_param(&gfx.cyclesPerLine, sizeof(gfx.cyclesPerLine));
-  load_param(&gfx.dotMask, sizeof(gfx.dotMask));
-  load_param(&gfx.stampShift, sizeof(gfx.stampShift));
-  load_param(&gfx.mapShift, sizeof(gfx.mapShift));
-  load_param(&gfx.bufferOffset, sizeof(gfx.bufferOffset));
-  load_param(&gfx.bufferStart, sizeof(gfx.bufferStart));
-
-  load_param(&tmp32, 4);
-  gfx.tracePtr = (uint16 *)(Pico_mcd->word_ram2M + tmp32);
-
-  load_param(&tmp32, 4);
-  gfx.mapPtr = (uint16 *)(Pico_mcd->word_ram2M + tmp32);
-
-  load_param(&gfx.y_step, sizeof(gfx.y_step));
-
-  return bufferptr;
-}
-
 static void gfx_render(uint32 bufferIndex, uint32 width)
 {
   uint8 pixel_in, pixel_out;

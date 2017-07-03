@@ -8,7 +8,6 @@
 
 #include <string.h>
 #include "pico_int.h"
-#include "cd/cue.h"
 
 unsigned char media_id_header[0x100];
 

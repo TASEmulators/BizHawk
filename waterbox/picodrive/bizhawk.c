@@ -6,7 +6,7 @@
 #include "../emulibc/emulibc.h"
 #include "../emulibc/waterboxcore.h"
 #include "pico/pico.h"
-#include "pico/cd/cue.h"
+#include "pico/cd/cdd.h"
 
 void lprintf(const char *fmt, ...)
 {
@@ -24,12 +24,41 @@ int PicoCartResize(int newsize)
 
 int PicoCdCheck(const char *fname_in, int *pregion)
 {
-	return CIT_NOT_CD;
+	uint8_t buff[2048];
+	CDReadSector(0, buff, 0);
+	int region;
+	switch (buff[0x20b])
+	{
+	case 0x64:
+		region = 8; // EU
+		printf("Detected CD region EU\n");
+		break;
+	case 0xa1:
+		region = 1; // JP
+		printf("Detected CD region JP\n");
+		break;
+	default:
+		region = 4; // US
+		printf("Detected CD region US\n");
+		break;
+	}
+	if (pregion)
+		*pregion = region;
+
+	return CIT_BIN;
 }
 
-cue_data_t *cue_parse(const char *fname)
+static const char *GetBiosFilename(int *region, const char *cd_fname)
 {
-	return NULL;
+	switch (*region)
+	{
+	case 8: // EU
+		return "cd.eu";
+	case 1: // JP
+		return "cd.jp";
+	default: // US?
+		return "cd.us";
+	}
 }
 
 pm_file *pm_open(const char *path)
@@ -97,21 +126,21 @@ int mp3_get_bitrate(void *f, int size) { return 0; }
 void mp3_start_play(void *f, int pos) {}
 void mp3_update(int *buffer, int length, int stereo) {}
 
-static const uint8_t* TryLoadBios(const char* name)
+static const uint8_t *TryLoadBios(const char *name)
 {
 	FILE *f = fopen(name, "rb");
 	if (!f)
 		return NULL;
 	fseek(f, 0, SEEK_END);
 	int size = ftell(f);
-	uint8_t* ret = alloc_sealed(size);
+	uint8_t *ret = alloc_sealed(size);
 	fseek(f, 0, SEEK_SET);
 	fread(ret, 1, size, f);
 	fclose(f);
 	return ret;
 }
 
-ECL_EXPORT int Init(void)
+ECL_EXPORT int Init(int cd)
 {
 	p32x_bios_g = TryLoadBios("32x.g");
 	p32x_bios_m = TryLoadBios("32x.m");
@@ -120,8 +149,16 @@ ECL_EXPORT int Init(void)
 	PicoOpt = POPT_EN_FM | POPT_EN_PSG | POPT_EN_Z80 | POPT_EN_STEREO | POPT_ACC_SPRITES | POPT_DIS_32C_BORDER | POPT_EN_MCD_PCM | POPT_EN_MCD_CDDA | POPT_EN_MCD_GFX | POPT_EN_32X | POPT_EN_PWM;
 
 	PicoInit();
-	if (PicoLoadMedia("romfile.md", NULL, NULL, NULL, PM_MD_CART) != PM_MD_CART)
-		return 0;
+	if (cd)
+	{
+		if (PicoLoadMedia(NULL, NULL, GetBiosFilename, NULL, PM_CD) != PM_CD)
+			return 0;
+	}
+	else
+	{
+		if (PicoLoadMedia("romfile.md", NULL, NULL, NULL, PM_MD_CART) != PM_MD_CART)
+			return 0;
+	}
 	PicoLoopPrepare();
 
 	video_buffer = alloc_invisible(512 * 512 * sizeof(uint16_t));
@@ -188,6 +225,10 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 ECL_EXPORT void SetInputCallback(void (*callback)(void))
 {
 	PicoInputCallback = callback;
+}
+ECL_EXPORT void SetCDReadCallback(void (*callback)(int lba, void *dest, int audio))
+{
+	CDReadSector = callback;
 }
 
 int main(void)

@@ -596,9 +596,6 @@ PICO_INTERNAL void PicoMemSetupPico(void);
 // cd/cdc.c
 void cdc_init(void);
 void cdc_reset(void);
-int  cdc_context_save(unsigned char *state);
-int  cdc_context_load(unsigned char *state);
-int  cdc_context_load_old(unsigned char *state);
 void cdc_dma_update(void);
 int  cdc_decoder_update(unsigned char header[4]);
 void cdc_reg_w(unsigned char data);
@@ -607,9 +604,6 @@ unsigned short cdc_host_r(void);
 
 // cd/cdd.c
 void cdd_reset(void);
-int cdd_context_save(unsigned char *state);
-int cdd_context_load(unsigned char *state);
-int cdd_context_load_old(unsigned char *state);
 void cdd_read_data(unsigned char *dst);
 void cdd_read_audio(unsigned int samples);
 void cdd_update(void);
@@ -622,8 +616,6 @@ int load_cd_image(const char *cd_img_name, int *type);
 void gfx_init(void);
 void gfx_start(unsigned int base);
 void gfx_update(unsigned int cycles);
-int gfx_context_save(unsigned char *state);
-int gfx_context_load(const unsigned char *state);
 
 // cd/gfx_dma.c
 void DmaSlowCell(unsigned int source, unsigned int a, int len, unsigned char inc);

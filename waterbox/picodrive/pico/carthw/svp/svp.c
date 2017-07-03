@@ -107,14 +107,6 @@ void PicoSVPInit(void)
 #endif
 }
 
-static void PicoSVPExit(void)
-{
-#ifdef _SVP_DRC
-	ssp1601_dyn_exit();
-#endif
-}
-
-
 void PicoSVPStartup(void)
 {
 	int ret;

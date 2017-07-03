@@ -17,7 +17,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			public int Buttons;
 		}
 
+		[UnmanagedFunctionPointer(CC)]
+		public delegate void CDReadCallback(int lba, IntPtr dest, bool audio);
+
 		[BizImport(CC)]
-		public abstract bool Init();
+		public abstract bool Init(bool cd);
+
+		[BizImport(CC)]
+		public abstract void SetCDReadCallback(CDReadCallback callback);
 	}
 }

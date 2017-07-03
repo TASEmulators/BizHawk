@@ -38,19 +38,17 @@
 #ifndef _HW_CDD_
 #define _HW_CDD_
 
-#ifdef USE_LIBTREMOR
-#include "tremor/ivorbisfile.h"
-#endif
+#include <stdint.h>
 
 /* CDD status */
-#define NO_DISC  0x00
-#define CD_PLAY  0x01
-#define CD_SEEK  0x02
-#define CD_SCAN  0x03
+#define NO_DISC 0x00
+#define CD_PLAY 0x01
+#define CD_SEEK 0x02
+#define CD_SCAN 0x03
 #define CD_READY 0x04
-#define CD_OPEN  0x05 /* similar to 0x0E ? */
-#define CD_STOP  0x09
-#define CD_END   0x0C
+#define CD_OPEN 0x05 /* similar to 0x0E ? */
+#define CD_STOP 0x09
+#define CD_END 0x0C
 
 /* CD blocks scanning speed */
 #define CD_SCAN_SPEED 30
@@ -60,39 +58,35 @@
 /* CD track */
 typedef struct
 {
-  void *fd;
-#ifdef USE_LIBTREMOR
-  OggVorbis_File vf;
-#endif
-  int offset;
-  int start;
-  int end;
-} track_t; 
+	int start;
+	int end;
+} track_t;
 
 /* CD TOC */
 typedef struct
 {
-  int end;
-  int last;
-  track_t tracks[CD_MAX_TRACKS];
-} toc_t; 
+	int end;
+	int last;
+	track_t tracks[CD_MAX_TRACKS];
+} toc_t;
 
 /* CDD hardware */
 typedef struct
 {
-  uint32 cycles;
-  uint32 latency;
-  int loaded;
-  int index;
-  int lba;
-  int scanOffset;
-  int volume;
-  uint8 status;
-  uint16 sectorSize;
-  toc_t toc;
-  int16 audio[2];
-} cdd_t; 
+	uint32_t cycles;
+	uint32_t latency;
+	int loaded;
+	int index;
+	int lba;
+	int scanOffset;
+	int volume;
+	uint8_t status;
+	toc_t toc;
+	int16_t audio[2];
+} cdd_t;
 
 extern cdd_t cdd;
+
+extern void (*CDReadSector)(int lba, void *dest, int audio);
 
 #endif
