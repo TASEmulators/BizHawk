@@ -19,6 +19,7 @@ void lprintf(const char *fmt, ...)
 int PicoCartResize(int newsize)
 {
 	// TODO: change boards that use this to store their extra data elsewhere
+	abort();
 	return -1;
 }
 
