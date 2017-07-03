@@ -19,11 +19,6 @@ extern "C" {
 // message log
 extern void lprintf(const char *fmt, ...);
 
-// external funcs for Sega/Mega CD
-extern int  mp3_get_bitrate(void *f, int size);
-extern void mp3_start_play(void *f, int pos);
-extern void mp3_update(int *buffer, int length, int stereo);
-
 // this one should handle display mode changes
 extern void emu_video_mode_change(int start_line, int line_count, int is_32cols);
 

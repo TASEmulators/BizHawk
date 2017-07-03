@@ -24,7 +24,7 @@ static int PsndBuffer[2*(44100+100)/50];
 static unsigned short dac_info[312+4]; // pppppppp ppppllll, p - pos in buff, l - length to write for this sample
 
 // cdda output buffer
-short cdda_out_buffer[2*1152];
+static short cdda_out_buffer[2*1152];
 
 // for Pico
 int PsndRate=0;
@@ -190,49 +190,29 @@ PICO_INTERNAL void PsndDoDAC(int line_to)
 // cdda
 static void cdda_raw_update(int *buffer, int length)
 {
-  /*int ret, cdda_bytes, mult = 1;
+	cdd_read_audio(cdda_out_buffer, length);
 
-  cdda_bytes = length*4;
-  if (PsndRate <= 22050 + 100) mult = 2;
-  if (PsndRate <  22050 - 100) mult = 4;
-  cdda_bytes *= mult;
+	int mult = 1;
 
-  ret = pm_read(cdda_out_buffer, cdda_bytes, Pico_mcd->cdda_stream);
-  if (ret < cdda_bytes) {
-    memset((char *)cdda_out_buffer + ret, 0, cdda_bytes - ret);
-    Pico_mcd->cdda_stream = NULL;
-    return;
-  }
+	if (PsndRate <= 22050 + 100)
+		mult = 2;
+	if (PsndRate < 22050 - 100)
+		mult = 4;
 
-  // now mix
-  switch (mult) {
-    case 1: mix_16h_to_32(buffer, cdda_out_buffer, length*2); break;
-    case 2: mix_16h_to_32_s1(buffer, cdda_out_buffer, length*2); break;
-    case 4: mix_16h_to_32_s2(buffer, cdda_out_buffer, length*2); break;
-  }*/
+	// now mix
+	switch (mult)
+	{
+	case 1:
+		mix_16h_to_32(buffer, cdda_out_buffer, length * 2);
+		break;
+	case 2:
+		mix_16h_to_32_s1(buffer, cdda_out_buffer, length * 2);
+		break;
+	case 4:
+		mix_16h_to_32_s2(buffer, cdda_out_buffer, length * 2);
+		break;
+	}
 }
-
-void cdda_start_play(int lba_base, int lba_offset, int lb_len)
-{
-  /*if (Pico_mcd->cdda_type == CT_MP3)
-  {
-    int pos1024 = 0;
-
-    if (lba_offset)
-      pos1024 = lba_offset * 1024 / lb_len;
-
-    mp3_start_play(Pico_mcd->cdda_stream, pos1024);
-    return;
-  }
-
-  pm_seek(Pico_mcd->cdda_stream, (lba_base + lba_offset) * 2352, SEEK_SET);
-  if (Pico_mcd->cdda_type == CT_WAV)
-  {
-    // skip headers, assume it's 44kHz stereo uncompressed
-    pm_seek(Pico_mcd->cdda_stream, 44, SEEK_CUR);
-  }*/
-}
-
 
 PICO_INTERNAL void PsndClear(void)
 {
@@ -297,7 +277,6 @@ static int PsndRender(int offset, int length)
   // CD: CDDA audio
   // CD mode, cdda enabled, not data track, CDC is reading
   if ((PicoAHW & PAHW_MCD) && (PicoOpt & POPT_EN_MCD_CDDA)
-      && Pico_mcd->cdda_stream != NULL
       && !(Pico_mcd->s68k_regs[0x36] & 1))
   {
     // note: only 44, 22 and 11 kHz supported, with forced stereo

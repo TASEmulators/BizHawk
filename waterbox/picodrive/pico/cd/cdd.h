@@ -80,6 +80,8 @@ typedef struct
 	int lba;
 	int scanOffset;
 	int volume;
+	int sampleOffset;
+	int sampleLba;
 	uint8_t status;
 	toc_t toc;
 	int16_t audio[2];

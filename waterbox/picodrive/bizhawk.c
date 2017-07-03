@@ -122,10 +122,6 @@ void emu_32x_startup(void)
 {
 }
 
-int mp3_get_bitrate(void *f, int size) { return 0; }
-void mp3_start_play(void *f, int pos) {}
-void mp3_update(int *buffer, int length, int stereo) {}
-
 static const uint8_t *TryLoadBios(const char *name)
 {
 	FILE *f = fopen(name, "rb");

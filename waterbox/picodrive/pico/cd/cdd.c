@@ -125,6 +125,12 @@ void cdd_reset(void)
 	/* reset logical block address */
 	cdd.lba = 0;
 
+	// reset audio subblock position
+	cdd.sampleOffset = 0;
+
+	// reset audio read position
+	cdd.sampleLba = 0;
+
 	/* reset status */
 	cdd.status = NO_DISC;
 
@@ -198,164 +204,108 @@ void cdd_read_data(uint8 *dst)
 	}
 }
 
-#if 0
-void cdd_read_audio(unsigned int samples)
+void cdd_read_audio(short *buffer, unsigned int samples)
 {
-  /* previous audio outputs */
-  int16 l = cdd.audio[0];
-  int16 r = cdd.audio[1];
+	printf("cdd_read_audio %u\n", samples);
+	short *outptr = buffer;
+	/* audio track playing ? */
+	if (!Pico_mcd->s68k_regs[0x36 + 0])
+	{
+		int i, mul;
 
-  /* get number of internal clocks (samples) needed */
-  samples = blip_clocks_needed(blip[0], samples);
+		/* current CD-DA fader volume */
+		int curVol = cdd.volume;
 
-  /* audio track playing ? */
-  if (!Pico_mcd->s68k_regs[0x36+0] && cdd.toc.tracks[cdd.index].fd)
-  {
-    int i, mul, delta;
+		/* CD-DA fader volume setup (0-1024) */
+		int endVol = Pico_mcd->s68k_regs[0x34] << 4 | Pico_mcd->s68k_regs[0x35] >> 4;
 
-    /* current CD-DA fader volume */
-    int curVol = cdd.volume;
-
-    /* CD-DA fader volume setup (0-1024) */
-    int endVol = Pico_mcd->regs[0x34>>1].w >> 4;
-
-    /* read samples from current block */
-#ifdef USE_LIBTREMOR
-    if (cdd.toc.tracks[cdd.index].vf.datasource)
-    {
-      int len, done = 0;
-      int16 *ptr = (int16 *) (cdc.ram);
-      samples = samples * 4;
-      while (done < samples)
-      {
-        len = ov_read(&cdd.toc.tracks[cdd.index].vf, (char *)(cdc.ram + done), samples - done, 0);
-        if (len <= 0) 
-        {
-          done = samples;
-          break;
-        }
-        done += len;
-      }
-      samples = done / 4;
-
-      /* process 16-bit (host-endian) stereo samples */
-      for (i=0; i<samples; i++)
-      {
-        /* CD-DA fader multiplier (cf. LC7883 datasheet) */
-        /* (MIN) 0,1,2,3,4,8,12,16,20...,1020,1024 (MAX) */
-        mul = (curVol & 0x7fc) ? (curVol & 0x7fc) : (curVol & 0x03);
-
-        /* left channel */
-        delta = ((ptr[0] * mul) / 1024) - l;
-        ptr++;
-        l += delta;
-        blip_add_delta_fast(blip[0], i, delta);
-
-        /* right channel */
-        delta = ((ptr[0] * mul) / 1024) - r;
-        ptr++;
-        r += delta;
-        blip_add_delta_fast(blip[1], i, delta);
-
-        /* update CD-DA fader volume (one step/sample) */
-        if (curVol < endVol)
-        {
-          /* fade-in */
-          curVol++;
-        }
-        else if (curVol > endVol)
-        {
-          /* fade-out */
-          curVol--;
-        }
-        else if (!curVol)
-        {
-          /* audio will remain muted until next setup */
-          break;
-        }
-      }
-    }
-    else
-#endif
-    {
+		/* read samples from current block */
+		{
+			uint8_t audio_scratch[4096];
 #ifdef LSB_FIRST
-      int16 *ptr = (int16 *) (cdc.ram);
+			int16 *ptr = (int16 *)audio_scratch;
 #else
-      uint8 *ptr = cdc.ram;
+			uint8 *ptr = audio_scratch;
 #endif
-      fread(cdc.ram, 1, samples * 4, cdd.toc.tracks[cdd.index].fd);
+			{
+				char scratch[2352];
+				int nsampreq = samples;
+				unsigned char *dest = audio_scratch;
+				while (nsampreq > 0)
+				{
+					int tocopy = 588 - cdd.sampleOffset;
+					if (tocopy > nsampreq)
+						tocopy = nsampreq;
+					CDReadSector(cdd.sampleLba, scratch, 1);
+					memcpy(dest, scratch + cdd.sampleOffset * 4, tocopy * 4);
+					nsampreq -= tocopy;
+					dest += tocopy * 4;
+					cdd.sampleOffset += tocopy;
+					if (cdd.sampleOffset == 588)
+					{
+						cdd.sampleOffset = 0;
+						cdd.sampleLba++;
+					}
+				}
 
-      /* process 16-bit (little-endian) stereo samples */
-      for (i=0; i<samples; i++)
-      {
-        /* CD-DA fader multiplier (cf. LC7883 datasheet) */
-        /* (MIN) 0,1,2,3,4,8,12,16,20...,1020,1024 (MAX) */
-        mul = (curVol & 0x7fc) ? (curVol & 0x7fc) : (curVol & 0x03);
+				//printf("samples: %i\n", samples);
+				//memset(cdc.ram, 0, samples * 4);
+				//fread(cdc.ram, 1, samples * 4, cdd.toc.tracks[cdd.index].fd);
+			}
 
-        /* left channel */
+			/* process 16-bit (little-endian) stereo samples */
+			for (i = 0; i < samples; i++)
+			{
+				/* CD-DA fader multiplier (cf. LC7883 datasheet) */
+				/* (MIN) 0,1,2,3,4,8,12,16,20...,1020,1024 (MAX) */
+				mul = (curVol & 0x7fc) ? (curVol & 0x7fc) : (curVol & 0x03);
+
+/* left channel */
 #ifdef LSB_FIRST
-        delta = ((ptr[0] * mul) / 1024) - l;
-        ptr++;
+				*outptr++ = ((ptr[0] * mul) / 1024);
+				ptr++;
 #else
-        delta = (((int16)((ptr[0] + ptr[1]*256)) * mul) / 1024) - l;
-        ptr += 2;
+				*outptr++ = (((int16)((ptr[0] + ptr[1] * 256)) * mul) / 1024);
+				ptr += 2;
 #endif
-        l += delta;
-        blip_add_delta_fast(blip[0], i, delta);
 
-        /* right channel */
+/* right channel */
 #ifdef LSB_FIRST
-        delta = ((ptr[0] * mul) / 1024) - r;
-        ptr++;
+				*outptr++ = ((ptr[0] * mul) / 1024);
+				ptr++;
 #else
-        delta = (((int16)((ptr[0] + ptr[1]*256)) * mul) / 1024) - r;
-        ptr += 2;
+				*outptr++ = (((int16)((ptr[0] + ptr[1] * 256)) * mul) / 1024);
+				ptr += 2;
 #endif
-        r += delta;
-        blip_add_delta_fast(blip[1], i, delta);
 
-        /* update CD-DA fader volume (one step/sample) */
-        if (curVol < endVol)
-        {
-          /* fade-in */
-          curVol++;
-        }
-        else if (curVol > endVol)
-        {
-          /* fade-out */
-          curVol--;
-        }
-        else if (!curVol)
-        {
-          /* audio will remain muted until next setup */
-          break;
-        }
-      }
-    }
+				/* update CD-DA fader volume (one step/sample) */
+				if (curVol < endVol)
+				{
+					/* fade-in */
+					curVol++;
+				}
+				else if (curVol > endVol)
+				{
+					/* fade-out */
+					curVol--;
+				}
+				else if (!curVol)
+				{
+					/* audio will remain muted until next setup */
+					break;
+				}
+			}
+		}
 
-    /* save current CD-DA fader volume */
-    cdd.volume = curVol;
-
-    /* save last audio output for next frame */
-    cdd.audio[0] = l;
-    cdd.audio[1] = r;
-  }
-  else
-  {
-    /* no audio output */
-    if (l) blip_add_delta_fast(blip[0], 0, -l);
-    if (r) blip_add_delta_fast(blip[1], 0, -r);
-
-    /* save audio output for next frame */
-    cdd.audio[0] = 0;
-    cdd.audio[1] = 0;
-  }
-
-  /* end of Blip Buffer timeframe */
-  blip_end_frame(blip[0], samples);
-  blip_end_frame(blip[1], samples);
+		/* save current CD-DA fader volume */
+		cdd.volume = curVol;
+	}
+	else
+	{
+		/* no audio output */
+		memset(buffer, 0, samples * 4);
+	}
 }
-#endif
 
 void cdd_update(void)
 {
@@ -411,6 +361,12 @@ void cdd_update(void)
 			if (cdd.lba >= cdd.toc.tracks[cdd.index].start)
 			{
 				/* audio track playing */
+				// if it wasn't before, set the audio start position
+				if (Pico_mcd->s68k_regs[0x36 + 0])
+				{
+					cdd.sampleLba = cdd.lba + 1;
+					cdd.sampleOffset = 0;
+				}
 				Pico_mcd->s68k_regs[0x36 + 0] = 0x00;
 			}
 
@@ -455,6 +411,7 @@ void cdd_update(void)
 	{
 		/* fast-forward or fast-rewind */
 		cdd.lba += cdd.scanOffset;
+		cdd.sampleLba += cdd.scanOffset;
 
 		/* check current track limits */
 		if (cdd.lba >= cdd.toc.tracks[cdd.index].end)
@@ -469,6 +426,9 @@ void cdd_update(void)
 			if (cdd.status == CD_PLAY)
 			{
 				Pico_mcd->s68k_regs[0x36 + 0] = 0x00;
+				// set audio start point
+				cdd.sampleLba = cdd.lba;
+				cdd.sampleOffset = 0;
 			}
 		}
 		else if (cdd.lba < cdd.toc.tracks[cdd.index].start)

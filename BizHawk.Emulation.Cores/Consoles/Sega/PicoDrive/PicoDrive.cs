@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			if (audio)
 			{
 				byte[] data = new byte[2352];
-				if (lba < _cd.Session1.LeadoutLBA)
+				if (lba < _cd.Session1.LeadoutLBA && lba >= _cd.Session1.Tracks[2].LBA)
 				{
 					_cdReader.ReadLBA_2352(lba, data, 0);
 				}

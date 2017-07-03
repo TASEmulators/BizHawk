@@ -438,8 +438,6 @@ typedef struct
   unsigned char bram[0x2000];			// 110200: 8K
   struct mcd_misc m;				// 112200: misc
   struct mcd_pcm pcm;				// 112240:
-  void *cdda_stream;
-  int cdda_type;
   int pcm_mixbuf[PCM_MIXBUF_LEN * 2];
   int pcm_mixpos;
   char pcm_mixbuf_dirty;
@@ -605,7 +603,7 @@ unsigned short cdc_host_r(void);
 // cd/cdd.c
 void cdd_reset(void);
 void cdd_read_data(unsigned char *dst);
-void cdd_read_audio(unsigned int samples);
+void cdd_read_audio(short *buffer, unsigned int samples);
 void cdd_update(void);
 void cdd_process(void);
 
@@ -709,7 +707,6 @@ PICO_INTERNAL int  SekInterruptS68k(int irq);
 void SekInterruptClearS68k(int irq);
 
 // sound/sound.c
-extern short cdda_out_buffer[2*1152];
 extern int PsndLen_exc_cnt;
 extern int PsndLen_exc_add;
 extern int timer_a_next_oflow, timer_a_step; // in z80 cycles
