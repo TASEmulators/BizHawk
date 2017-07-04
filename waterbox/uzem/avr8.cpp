@@ -241,35 +241,6 @@ inline static void store_bit_1(u8 &dest, unsigned int bit, unsigned int value)
 #define DIS(fmt, ...)
 #endif
 
-static u8 encode_delta(int d)
-{
-	u8 result;
-	if (d < 0)
-	{
-		result = 0;
-		d = -d;
-	}
-	else
-		result = 1;
-	if (d > 127)
-		d = 127;
-	if (!(d & 64))
-		result |= 2;
-	if (!(d & 32))
-		result |= 4;
-	if (!(d & 16))
-		result |= 8;
-	if (!(d & 8))
-		result |= 16;
-	if (!(d & 4))
-		result |= 32;
-	if (!(d & 2))
-		result |= 64;
-	if (!(d & 1))
-		result |= 128;
-	return result;
-}
-
 void avr8::spi_calculateClock()
 {
 	// calculate the number of cycles before the write completes
@@ -375,31 +346,20 @@ void avr8::write_io_x(u8 addr, u8 value)
 		break;
 
 	case (ports::PORTA):
-		changed = value ^ io[addr];
-		went_low = changed & io[addr];
-
-		if (went_low == (1 << 2)) // LATCH
+		if ((value & 8) > (io[addr] & 8)) // clock rising
 		{
 			for (int i = 0; i < 2; i++)
-			{
-				latched_buttons[i] = buttons[i];
-			}
+				latched_buttons[i] >>= 1;
 		}
-		else if (went_low == (1 << 3)) // CLOCK
+		if (value & 4) // latch high
 		{
-			if (new_input_mode)
-				PINA = u8((latched_buttons[0] & 1) | ((latched_buttons[1] & 1) << 1));
-			latched_buttons[0] >>= 1;
-			latched_buttons[1] >>= 1;
-
-			if ((latched_buttons[1] < 0xFFFFF) && !new_input_mode)
-			{
-				//New input routines detected, switching emulation method
-				new_input_mode = true;
-			}
+			for (int i = 0; i < 2; i++)
+				latched_buttons[i] = buttons[i];
 		}
-		if (!new_input_mode)
-			PINA = u8((latched_buttons[0] & 1) | ((latched_buttons[1] & 1) << 1));
+		PINA = latched_buttons[0] & 1 | latched_buttons[1] << 1 & 2;
+
+		changed = value ^ io[addr];
+		went_low = changed & io[addr];
 
 		//Uzebox keyboard (always on P2 port)
 		switch (uzeKbState)
@@ -1960,45 +1920,6 @@ bool avr8::init_gui()
 // keydown: see keyboard.h
 // uzeKbScanCodeQueue.push(...);
 // keup: uzeKbScanCodeQueue.push(0xf0); uzeKbScanCodeQueue.push(...);
-
-/* resizing the display "top lock" / "left lock"
-			case SDLK_1: if (left_edge > 0U) { left_edge--; } printf("left=%u\n",left_edge); break;
-			case SDLK_2: if (left_edge < 2047U - ((VIDEO_DISP_WIDTH * 7U) / 3U)) { left_edge++; } printf("left=%u\n",left_edge); break;
-			case SDLK_3: scanline_top--; printf("top=%d\n",scanline_top); break;
-			case SDLK_4: scanline_top++; printf("top=%d\n",scanline_top); break;
-*/
-
-// soft power switch
-// PIND = PIND & ~0b00001100; // press
-// PIND |= 0b00001100; // release
-
-/*
-					if (pad_mode == SNES_MOUSE)
-					{
-						// http://www.repairfaq.org/REPAIR/F_SNES.html
-						// we always report "low sensitivity"
-						int mouse_dx, mouse_dy;
-						u8 mouse_buttons = SDL_GetRelativeMouseState(&mouse_dx,&mouse_dy);
-						mouse_dx >>= mouse_scale;
-						mouse_dy >>= mouse_scale;
-						// clear high bit so we know it's the mouse
-						buttons[0] = (encode_delta(mouse_dx) << 24)
-							| (encode_delta(mouse_dy) << 16) | 0x7FFF;
-						if (mouse_buttons & SDL_BUTTON_LMASK)
-							buttons[0] &= ~(1<<9);
-						if (mouse_buttons & SDL_BUTTON_RMASK)
-							buttons[0] &= ~(1<<8);
-						// keep mouse centered so it doesn't get stuck on edge of screen.
-						// ...and immediately consume the bogus motion event it generated.
-						if (fullscreen)
-						{
-							SDL_WarpMouseInWindow(window,400,300);
-							SDL_GetRelativeMouseState(&mouse_dx,&mouse_dy);
-						}
-					}
-					else
-						buttons[0] |= 0xFFFF8000;
-*/
 
 #ifdef SPI_DEBUG
 char ascii(unsigned char ch)

@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 
 		private static int EncodePad(IController c, int p)
 		{
-			int ret = 0;
+			int ret = unchecked((int)0xffff0000);
 			int val = 1;
 			int idx = 0;
 			foreach (var s in PadBits)
@@ -129,8 +129,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 			var ret = new LibUzem.FrameInfo();
 			if (_mouseEnabled)
 			{
-				ret.ButtonsP1 = EncodeDelta(controller.GetFloat("P1 X")) << 24
-					| EncodeDelta(controller.GetFloat("P1 Y")) << 16
+				ret.ButtonsP1 = EncodeDelta(controller.GetFloat("P1 Mouse X")) << 24
+					| EncodeDelta(controller.GetFloat("P1 Mouse Y")) << 16
 					| 0x8000;
 				if (controller.IsPressed("P1 Mouse Left"))
 					ret.ButtonsP1 |= 0x200;

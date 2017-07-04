@@ -441,7 +441,7 @@ struct avr8
 			 enableSound(true),
 
 			 /*Joystick*/
-			 new_input_mode(false), lagged(false),
+			 lagged(false),
 
 			 /*Uzekeyboard*/
 			 uzeKbState(0), uzeKbEnabled(false),
@@ -551,7 +551,6 @@ struct avr8
 	// SNES bit order:  0 = B, Y, Select, Start, Up, Down, Left, Right, A, X, L, 11 = R
 	// NES bit order: 0 = A, B, Select, Start, Up, Down, Left, 7 = Right
 	u32 buttons[2], latched_buttons[2];
-	bool new_input_mode;
 	bool lagged;
 
 	/*Uzebox Keyboard*/
