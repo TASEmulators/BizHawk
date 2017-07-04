@@ -1,0 +1,92 @@
+0000 0000 0000 0000		NOP
+0000 0001 dddd rrrr		MOVW Rd+1:Rd,Rr+1:R
+0000 0010 dddd rrrr		MULS Rd,Rr
+0000 0011 0ddd 0rrr		MULSU Rd,Rr (registers are in 16-23 range)
+0000 0011 0ddd 1rrr		FMUL Rd,Rr (registers are in 16-23 range)
+0000 0011 1ddd 0rrr		FMULS Rd,Rr
+0000 0011 1ddd 1rrr		FMULSU Rd,Rr
+0000 01rd dddd rrrr		CPC Rd,Rr
+0000 10rd dddd rrrr		SBC Rd,Rr
+0000 11rd dddd rrrr		ADD Rd,Rr (LSL is ADD Rd,Rd)
+0001 00rd dddd rrrr		CPSE Rd,Rr
+0001 01rd dddd rrrr		CP Rd,Rr
+0001 10rd dddd rrrr		SUB Rd,Rr
+0001 11rd dddd rrrr		ADC Rd,Rr (ROL is ADC Rd,Rd)
+0010 00rd dddd rrrr		AND Rd,Rr (TST is AND Rd,Rd)
+0010 01rd dddd rrrr		EOR Rd,Rr (CLR is EOR Rd,Rd)
+0010 10rd dddd rrrr		OR Rd,Rr
+0010 11rd dddd rrrr		MOV Rd,Rr
+0011 KKKK dddd KKKK		CPI Rd,K
+0100 KKKK dddd KKKK		SBCI Rd,K
+0101 KKKK dddd KKKK		SUBI Rd,K
+0110 KKKK dddd KKKK		ORI Rd,K (same as SBR insn)
+0111 KKKK dddd KKKK		ANDI Rd,K (CBR is ANDI with K complemented)
+10q0 qq0d dddd 0qqq		LD Rd,Z+q
+10q0 qq0d dddd 1qqq		LD Rd,Y+q
+10q0 qq1d dddd 0qqq		ST Z+q,Rd
+10q0 qq1d dddd 1qqq		ST Y+q,Rd
+1001 000d dddd 0000		LDS Rd,k (next word is rest of address)
+1001 000d dddd 0001		LD Rd,Z+
+1001 000d dddd 0010		LD Rd,-Z
+1001 000d dddd 0100		LPM Rd,Z
+1001 000d dddd 0101		LPM Rd,Z+
+1001 000d dddd 0110		ELPM Rd,Z
+1001 000d dddd 0111		ELPM Rd,Z+
+1001 000d dddd 1001		LD Rd,Y+
+1001 000d dddd 1010		LD Rd,-Y
+1001 000d dddd 1100		LD rd,X
+1001 000d dddd 1101		LD rd,X+
+1001 000d dddd 1110		LD rd,-X
+1001 000d dddd 1111		POP Rd
+1001 001d dddd 0000		STS k,Rr (next word is rest of address)
+1001 001r rrrr 0001		ST Z+,Rr
+1001 001r rrrr 0010		ST -Z,Rr
+1001 001r rrrr 1001		ST Y+,Rr
+1001 001r rrrr 1010		ST -Y,Rr
+1001 001r rrrr 1100		ST X,Rr
+1001 001r rrrr 1101		ST X+,Rr
+1001 001r rrrr 1110		ST -X,Rr
+1001 001d dddd 1111		PUSH Rd
+1001 010d dddd 0000		COM Rd
+1001 010d dddd 0001		NEG Rd
+1001 010d dddd 0010		SWAP Rd
+1001 010d dddd 0011		INC Rd
+1001 010d dddd 0101		ASR Rd
+1001 010d dddd 0110		LSR Rd
+1001 010d dddd 0111		ROR Rd
+1001 010d dddd 1010		DEC Rd
+1001 010k kkkk 110k		JMP k (next word is rest of address)
+1001 010k kkkk 111k		CALL k (next word is rest of address)
+1001 0100 0sss 1000		BSET s (SEC, etc are aliases with sss implicit)
+1001 0100 1sss 1000		BCLR s (CLC, etc are aliases with sss implicit)
+1001 0100 0000 1001		IJMP (jump thru Z register)
+1001 0101 0000 1000		RET
+1001 0101 0000 1001		ICALL (call thru Z register)
+1001 0101 0001 1000		RETI
+1001 0101 1000 1000		SLEEP
+1001 0101 1001 1000		BREAK
+1001 0101 1010 1000		WDR
+1001 0101 1100 1000		LPM (r0 implied, why is this special?)
+1001 0101 1110 1000		SPM Z (writes R1:R0)
+1001 0110 KKdd KKKK		ADIW Rd+1:Rd,K   (16-bit add to upper four register pairs)
+1001 0111 KKdd KKKK		SBIW Rd+1:Rd,K
+1001 1000 AAAA Abbb		CBI A,b
+1001 1001 AAAA Abbb		SBIC A,b
+1001 1010 AAAA Abbb		SBI A,b
+1001 1011 AAAA Abbb		SBIS A,b
+1001 11rd dddd rrrr		MUL Rd,Rr
+1011 0AAd dddd AAAA		IN Rd,A
+1011 1AAd dddd AAAA		OUT A,Rd
+1100 kkkk kkkk kkkk		RJMP k
+1101 kkkk kkkk kkkk		RCALL k
+1110 KKKK dddd KKKK		LDI Rd,K (SER is just LDI Rd,255)
+1111 00kk kkkk ksss		BRBS s,k (same here)
+1111 01kk kkkk ksss		BRBC s,k (BRCC, etc are aliases for this with sss implicit)
+1111 100d dddd 0bbb		BLD Rd,b
+1111 101d dddd 0bbb		BST Rd,b
+1111 110r rrrr 0bbb		SBRC Rr,b
+1111 111r rrrr 0bbb		SBRS Rr,b
+
+
+
+

@@ -407,6 +407,8 @@
     <Compile Include="Consoles\Atari\lynx\Lynx.IVideoProvider.cs">
       <DependentUpon>Lynx.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Belogic\LibUzem.cs" />
+    <Compile Include="Consoles\Belogic\Uzem.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.cs" />
     <Compile Include="Consoles\Coleco\ColecoVision.IDebuggable.cs">
       <DependentUpon>ColecoVision.cs</DependentUpon>
