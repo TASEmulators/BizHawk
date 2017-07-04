@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 			_uze = PreInit<LibUzem>(new PeRunnerOptions
 			{
 				Filename = "uzem.wbx",
-				SbrkHeapSizeKB = 4,
+				SbrkHeapSizeKB = 20,
 				SealedHeapSizeKB = 4,
 				InvisibleHeapSizeKB = 4,
 				MmapHeapSizeKB = 4,
@@ -52,8 +52,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 			Name = "SNES Controller",
 			BoolButtons =
 			{
-				"P1 Up", "P1 Left", "P1 Right", "P1 Down", "P1 Select", "P1 Start", "P1 X", "P1 A", "P1 B", "P1 Y", "P1 R", "P1 L",
-				"P2 Up", "P2 Left", "P2 Right", "P2 Down", "P2 Select", "P2 Start", "P2 X", "P2 A", "P2 B", "P2 Y", "P2 R", "P2 L",
+				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Select", "P1 Start", "P1 X", "P1 A", "P1 B", "P1 Y", "P1 L", "P1 R",
+				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Select", "P2 Start", "P2 X", "P2 A", "P2 B", "P2 Y", "P2 L", "P2 R",
 				"Power"
 			}
 		};
@@ -129,8 +129,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 			var ret = new LibUzem.FrameInfo();
 			if (_mouseEnabled)
 			{
-				ret.ButtonsP1 = EncodeDelta(controller.GetFloat("P1 X"))
-					| EncodeDelta(controller.GetFloat("P1 Y"))
+				ret.ButtonsP1 = EncodeDelta(controller.GetFloat("P1 X")) << 24
+					| EncodeDelta(controller.GetFloat("P1 Y")) << 16
 					| 0x8000;
 				if (controller.IsPressed("P1 Mouse Left"))
 					ret.ButtonsP1 |= 0x200;
@@ -148,6 +148,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Belogic
 			return ret;
 		}
 
-		public override int VirtualHeight => 448; // TODO: It's not quite this, NTSC and such
+		// with the high clockrate and full software signal generation, horizontal resolution is
+		// very variable.  in practice, 240 wide, 360 wide, and 180 wide are what you'll see...
+		public override int VirtualWidth => 619;
+		public override int VirtualHeight => 448;
 	}
 }
