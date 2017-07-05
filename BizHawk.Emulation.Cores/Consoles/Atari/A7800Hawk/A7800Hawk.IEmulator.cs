@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Common;
+﻿using BizHawk.Common.NumberExtensions;
+using BizHawk.Emulation.Common;
 using System;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
@@ -16,6 +17,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool cpu_is_halted;
 		public bool cpu_halt_pending;
 		public bool cpu_resume_pending;
+
+		// input state of controllers and console
+		public byte p1_state;
+		public byte p2_state;
+		public byte con_state;
 
 		// there are 4 maria cycles in a CPU cycle (fast access, both NTSC and PAL)
 		// if the 6532 or TIA are accessed (PC goes to one of those addresses) the next access will be slower by 1/2 a CPU cycle
@@ -42,15 +48,19 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				HardReset();
 			}
 
+			_islag = true;
+
+			p1_state = GetControllerState(controller, 1);
+			p2_state = GetControllerState(controller, 2);
+			con_state = GetConsoleState(controller);
+
+			maria.RunFrame();
+
 			if (_islag)
 			{
 				_lagcount++;
 			}
 
-			// read the controller state here for now
-			GetControllerState(controller);
-
-			maria.RunFrame();
 		}
 
 		public void RunCPUCycle()
@@ -67,7 +77,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (cpu_cycle <= (2 + (slow_access ? 1 : 0)))
 			{
 				cpu_is_haltable = true;
-			} else
+			}
+			else
 			{
 				cpu_is_haltable = false;
 			}
@@ -127,13 +138,42 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 		}
 
-		private void GetControllerState(IController controller)
+		public byte GetControllerState(IController controller, int index)
 		{
 			InputCallbacks.Call();
 
-			ushort port1 = _controllerDeck.ReadPort1(controller);
+			if (index == 1)
+				return _controllerDeck.ReadPort1(controller);
+			else 
+				return _controllerDeck.ReadPort2(controller);
+		}
 
-			ushort port2 = _controllerDeck.ReadPort2(controller);
+		public byte GetConsoleState(IController controller)
+		{
+			byte result = 0;
+
+			if (controller.IsPressed("Right Difficulty"))
+			{
+				result |= (1 << 7);
+			}
+			if (controller.IsPressed("Left Difficulty"))
+			{
+				result |= (1 << 6);
+			}
+			if (!controller.IsPressed("Pause"))
+			{
+				result |= (1 << 3);
+			}
+			if (!controller.IsPressed("Select"))
+			{
+				result |= (1 << 1);
+			}
+			if (!controller.IsPressed("Reset"))
+			{
+				result |= 1;
+			}
+
+			return result;
 		}
 
 		public int Frame => _frame;

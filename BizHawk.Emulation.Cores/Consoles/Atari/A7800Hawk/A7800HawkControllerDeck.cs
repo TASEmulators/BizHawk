@@ -35,9 +35,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						"Power",
 						"Reset",
 						"Select",
-						"BW", // should be "Color"??
+						"BW", 
 						"Left Difficulty", // better not put P# on these as they might not correspond to player numbers
-						"Right Difficulty"
+						"Right Difficulty",
+						"Pause"
 					})
 					.ToList()
 			};

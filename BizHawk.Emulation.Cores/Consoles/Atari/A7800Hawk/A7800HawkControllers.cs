@@ -15,6 +15,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	{
 		byte Read(IController c);
 
+		byte ReadFire(IController c);
+
 		ControllerDefinition Definition { get; }
 
 		void SyncState(Serializer ser);
@@ -35,6 +37,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		}
 
 		public byte Read(IController c)
+		{
+			return 0;
+		}
+
+		public byte ReadFire(IController c)
 		{
 			return 0;
 		}
@@ -67,16 +74,26 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public byte Read(IController c)
 		{
-			byte result = 0;
-			for (int i = 0; i < 5; i++)
+			byte result = 0xF;
+			for (int i = 0; i < 4; i++)
 			{
 				if (c.IsPressed(Definition.BoolButtons[i]))
 				{
-					result |= HandControllerButtons[i];
+					result -= (byte)(1 << i);
 				}
 			}
 
+			if (PortNum==1)
+			{
+				result = (byte)(result << 4);
+			}
+
 			return result;
+		}
+
+		public byte ReadFire(IController c)
+		{
+			return 0;
 		}
 
 		public ControllerDefinition Definition { get; }
@@ -94,11 +111,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private static byte[] HandControllerButtons =
 		{
-			0x60, // UP
-			0xC0, // Down
-			0xA0, // Left
-			0x48, // Right
-			0x81 // Fire
+			0x0, // UP
+			0x0, // Down
+			0x0, // Left
+			0x0, // Right
 		};
 	}
 }

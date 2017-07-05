@@ -36,11 +36,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					(addr, value) => Maria_regs[addr] = value,
 					1),
 				new MemoryDomainDelegate(
-					"6532 Registers",
-					regs_6532.Length,
+					"6532 RAM",
+					RAM_6532.Length,
 					MemoryDomain.Endian.Little,
-					addr => regs_6532[addr],
-					(addr, value) => regs_6532[addr] = value,
+					addr => RAM_6532[addr],
+					(addr, value) => RAM_6532[addr] = value,
 					1),
 				new MemoryDomainDelegate(
 					"Ram Block 0",

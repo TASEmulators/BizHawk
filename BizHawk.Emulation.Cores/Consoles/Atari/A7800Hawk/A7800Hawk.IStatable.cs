@@ -59,23 +59,23 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync("IsLag", ref _islag);
 			_controllerDeck.SyncState(ser);
 
-			ser.Sync("IsLag", ref A7800_control_register);
-			ser.Sync("IsLag", ref _isPAL);
+			ser.Sync("A7800_control_register", ref A7800_control_register);
+			ser.Sync("_isPAL", ref _isPAL);
 
-			ser.Sync("IsLag", ref TIA_regs, false);
-			ser.Sync("IsLag", ref Maria_regs, false);
-			ser.Sync("IsLag", ref RAM, false);
-			ser.Sync("IsLag", ref regs_6532, false);
-			ser.Sync("IsLag", ref hs_bios_mem, false);
+			ser.Sync("TIA_regs", ref TIA_regs, false);
+			ser.Sync("Maria_regs", ref Maria_regs, false);
+			ser.Sync("RAM", ref RAM, false);
+			ser.Sync("RAM_6532", ref RAM_6532, false);
+			ser.Sync("hs_bios_mem", ref hs_bios_mem, false);
 
-			ser.Sync("IsLag", ref cycle);
-			ser.Sync("IsLag", ref cpu_cycle);
-			ser.Sync("IsLag", ref cpu_is_haltable);
-			ser.Sync("IsLag", ref cpu_is_halted);
-			ser.Sync("IsLag", ref cpu_halt_pending);
-			ser.Sync("IsLag", ref cpu_resume_pending);
+			ser.Sync("cycle", ref cycle);
+			ser.Sync("cpu_cycle", ref cpu_cycle);
+			ser.Sync("cpu_is_haltable", ref cpu_is_haltable);
+			ser.Sync("cpu_is_halted", ref cpu_is_halted);
+			ser.Sync("cpu_halt_pending", ref cpu_halt_pending);
+			ser.Sync("cpu_resume_pending", ref cpu_resume_pending);
 
-			ser.Sync("IsLag", ref slow_access);
+			ser.Sync("slow_access", ref slow_access);
 
 
 			ser.EndSection();

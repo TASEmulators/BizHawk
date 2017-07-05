@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public byte[] TIA_regs = new byte[0x20];
 		public byte[] Maria_regs = new byte[0x20];
 		public byte[] RAM = new byte[0x1000];
-		public byte[] regs_6532 = new byte[0x80];
+		public byte[] RAM_6532 = new byte[0x80];
 		public byte[] hs_bios_mem = new byte[0x800];
 
 		public readonly byte[] _rom;
@@ -52,6 +52,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			maria = new Maria();
 			tia = new TIA();
+			m6532 = new M6532();
+
 			cpu = new MOS6502X
 			{
 				ReadMemory = ReadMemory,
@@ -140,6 +142,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 
 			maria.Core = this;
+			m6532.Core = this;
 
 			ser.Register<IVideoProvider>(maria);
 			ser.Register<ISoundProvider>(tia);
@@ -165,12 +168,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			cpu.SetCallbacks(ReadMemory, ReadMemory, ReadMemory, WriteMemory);
 
 			maria.Reset();
-			m6532 = new M6532();
-
+			m6532.Reset();
+			
 			TIA_regs = new byte[0x20];
 			Maria_regs = new byte[0x20];
 			RAM = new byte[0x1000];
-			regs_6532 = new byte[0x80];
 
 			cpu_cycle = 0;
 		}
