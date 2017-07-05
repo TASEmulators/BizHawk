@@ -165,7 +165,7 @@ AC90D79743CAC1AFCD7049F7B4E73BC4		Cyborg Hunter (UE)	SMS		FM	USA;Europe
 6B0FC60AA886C060BF1A16EA97B4F441		Danan - The Jungle Fighter (E)	SMS			Europe
 8D5E93715BAD32BA8BBCAC9D21E87D89		Dead Angle (UE)	SMS			USA;Europe
 05E3071AAD9C36B6E18F1656592EEB3D		Deep Duck Trouble Starring Donald Duck (E)	SMS	Disney		Europe
-8FE55ADE7B34AA4E42C5F63F4368497F		Desert Speedtrap Starring Road Runner and Wile E. Coyote (E) (En,Fr,De,Es,It)	SMS			Europe
+8FE55ADE7B34AA4E42C5F63F4368497F		Desert Speedtrap Starring Road Runner and Wile E. Coyote (E) (En,Fr,De,Es,It)	SMS		SRAM=8192	Europe
 DF89AA1EBC5F42DB21FB8D12D9E78511		Desert Strike (E) (En,Fr,De,Es)	SMS			Europe
 1DCAF7D1EA7CAAAA716F0EC43C3F828A		Dick Tracy (UE)	SMS			USA;Europe
 BB448CA5CE1EC7D86636C6571D6E94CB		Dinobasher Starring Bignose the Caveman (E) (Proto)	SMS		CMMapper	Europe
