@@ -492,11 +492,11 @@ namespace BizHawk.Client.EtoHawk
                 Global.MovieSession.HandleMovieOnFrameLoop();
 
                 coreskipaudio = IsTurboing;// && _currAviWriter == null;
-                /*{
+                {
                     bool render = !_throttle.skipnextframe;// || _currAviWriter != null;
                     bool renderSound = !coreskipaudio;
-                    Global.Emulator.FrameAdvance(render, renderSound);
-                }*/
+                    Global.Emulator.FrameAdvance(Global.ActiveController, render, renderSound);
+                }
 
                 Global.MovieSession.HandleMovieAfterFrameLoop();
 
