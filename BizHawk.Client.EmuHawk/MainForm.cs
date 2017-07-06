@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -160,6 +160,9 @@ namespace BizHawk.Client.EmuHawk
 			string cmdDumpType = null;
 			string cmdDumpName = null;
 			bool startFullscreen = false;
+			string luaScript = null;
+			bool luaConsole = false;
+
 			for (int i = 0; i < args.Length; i++)
 			{
 				// For some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
@@ -221,6 +224,15 @@ namespace BizHawk.Client.EmuHawk
 				else if (arg.StartsWith("--fullscreen"))
 				{
 					startFullscreen = true;
+				}
+				else if (arg.StartsWith("--lua="))
+				{
+					luaScript = arg.Substring(arg.IndexOf('=') + 1);
+					luaConsole = true;
+				}
+				else if (arg.StartsWith("--luaconsole"))
+				{
+					luaConsole = true;
 				}
 				else
 				{
@@ -445,6 +457,17 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
 				}
+			}
+
+			//start Lua Console if requested in the command line arguments
+			if (luaConsole)
+			{
+				GlobalWin.Tools.Load<LuaConsole>();
+			}
+			//load Lua Script if requested in the command line arguments
+			if (luaScript != null)
+			{
+				GlobalWin.Tools.LuaConsole.LoadLuaFile(luaScript);
 			}
 
 			GlobalWin.Tools.AutoLoad();
