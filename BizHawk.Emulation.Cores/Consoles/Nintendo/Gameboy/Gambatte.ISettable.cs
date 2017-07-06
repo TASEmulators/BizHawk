@@ -85,10 +85,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(false)]
 			public bool EnableBIOS { get; set; }
 
-			[DisplayName("Force DMG Mode")]
-			[Description("Force the game to run on DMG hardware, even if it's detected as a CGB game.  Relevant for games that are \"CGB Enhanced\" but do not require CGB.")]
-			[DefaultValue(false)]
-			public bool ForceDMG { get; set; }
+			[DisplayName("Console Mode")]
+			[Description("Pick which console to run, 'Default' chooses from ROM extension, 'GB' and 'GBC' chooses the respective system")]
+			[DefaultValue("Default")]
+			public string ConsoleMode
+			{
+				get { return _ConsoleMode; }
+				set { _ConsoleMode = value;}
+			}
+			[JsonIgnore]
+			private string _ConsoleMode;
 
 			[DisplayName("CGB in GBA")]
 			[Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]

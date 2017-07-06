@@ -80,17 +80,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				LibGambatte.LoadFlags flags = 0;
 
-				if (_syncSettings.ForceDMG)
+				if (_syncSettings.ConsoleMode=="GB")
 				{
 					flags |= LibGambatte.LoadFlags.FORCE_DMG;
-
+					
 					// we need to change the BIOS to GB bios
 					if (game.System == "GBC")
 					{
 						BiosRom = null;
 						BiosRom = new byte[256];
 						BiosRom = comm.CoreFileProvider.GetFirmware("GB", "World", false);
+						bios_length = BiosRom.Length;
 					}
+					
+				}
+				else if (_syncSettings.ConsoleMode == "GBC")
+				{
+					BiosRom = null;
+					BiosRom = new byte[2304];
+					BiosRom = comm.CoreFileProvider.GetFirmware("GBC", "World", false);
+					bios_length = BiosRom.Length;
+
+				}
+				else
+				{
+					 if(game.System == "GB")
+						flags |= LibGambatte.LoadFlags.FORCE_DMG;
 				}
 
 				if (_syncSettings.EnableBIOS && BiosRom == null)
