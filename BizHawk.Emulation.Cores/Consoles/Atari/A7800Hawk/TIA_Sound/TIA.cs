@@ -8,6 +8,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	// Emulates the TIA
 	public partial class TIA : ISoundProvider
 	{
+		public A7800Hawk Core { get; set; }
+
 		public byte BusState;
 
 		private bool _doTicks;
@@ -49,42 +51,42 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			if (maskedAddr == 0x00) // CXM0P
 			{
-
+				return 0;
 			}
 
 			if (maskedAddr == 0x01) // CXM1P
 			{
-
+				return 0;
 			}
 
 			if (maskedAddr == 0x02) // CXP0FB
 			{
-
+				return 0;
 			}
 
 			if (maskedAddr == 0x03) // CXP1FB
 			{
-
+				return 0;
 			}
 
 			if (maskedAddr == 0x04) // CXM0FB
 			{
-
+				return 0;
 			}
 
 			if (maskedAddr == 0x05) // CXM1FB
 			{
-
+				return 0;
 			}
 
 			if (maskedAddr == 0x06) // CXBLPF
 			{
-
+				return 0;
 			}
 
 			if (maskedAddr == 0x07) // CXPPMM
 			{
-
+				return 0;
 			}
 
 			// inputs 0-3 are measured by a charging capacitor, these inputs are used with the paddles and the keyboard
@@ -92,37 +94,40 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// 6105 roughly centers the paddle in Breakout
 			if (maskedAddr == 0x08) // INPT0
 			{
-
+				return 0;
 			}
 
 			if (maskedAddr == 0x09) // INPT1
 			{
-
+				return 0;
 			}
 
 			if (maskedAddr == 0x0A) // INPT2
 			{
-
+				return 0;
 			}
 
 			if (maskedAddr == 0x0B) // INPT3
 			{
-
+				return 0;
 			}
 
 			if (maskedAddr == 0x0C) // INPT4
 			{
-
+				return Core.p1_fire;
 			}
 
 			if (maskedAddr == 0x0D) // INPT5
 			{
-
+				return Core.p2_fire;
 			}
+
+			return 0;
 
 			// some bits of the databus will be undriven when a read call is made. Our goal here is to sort out what
 			// happens to the undriven pins. Most of the time, they will be in whatever state they were when previously
 			// assigned in some other bus access, so let's go with that. 
+			/*
 			coll += (byte)(mask & BusState);
 
 			if (!peek)
@@ -131,6 +136,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 
 			return coll;
+			*/
 		}
 
 		public void WriteMemory(ushort addr, byte value, bool poke)
