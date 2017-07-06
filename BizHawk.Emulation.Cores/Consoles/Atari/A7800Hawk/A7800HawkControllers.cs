@@ -93,7 +93,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public byte ReadFire(IController c)
 		{
-			return 0;
+			byte result = 0x80;
+			if (c.IsPressed(Definition.BoolButtons[4]))
+			{
+				result = 0x00; // zero means fire is pressed
+			}
+			return result;
 		}
 
 		public ControllerDefinition Definition { get; }

@@ -21,6 +21,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		// input state of controllers and console
 		public byte p1_state;
 		public byte p2_state;
+		public byte p1_fire;
+		public byte p2_fire;
 		public byte con_state;
 
 		// there are 4 maria cycles in a CPU cycle (fast access, both NTSC and PAL)
@@ -50,9 +52,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			_islag = true;
 
-			p1_state = GetControllerState(controller, 1);
-			p2_state = GetControllerState(controller, 2);
-			con_state = GetConsoleState(controller);
+			GetControllerState(controller);
+			GetConsoleState(controller);
 
 			maria.RunFrame();
 
@@ -114,41 +115,43 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 
 			// determine if the next access will be fast or slow
-			if (cpu.PC < 0x0400)
+			if ((cpu.PC & 0xFCE0) == 0)
 			{
-				if ((cpu.PC & 0xFF) < 0x20)
-				{
-					if ((A7800_control_register & 0x1) == 0 && (cpu.PC < 0x20))
-					{
-						slow_access = false;
-					}
-					else
-					{
-						slow_access = true;
-					}
-				}
-				else if (cpu.PC < 0x300)
-				{
-					slow_access = true;
-				}
-				else
+				// return TIA registers or control register if it is still unlocked
+				if ((A7800_control_register & 0x1) == 0)
 				{
 					slow_access = false;
 				}
+				else
+				{
+					slow_access = true;
+				}
+			}
+			else if ((cpu.PC & 0xFF80) == 0x280)
+			{
+				slow_access = true;
+			}
+			else if ((cpu.PC & 0xFE80) == 0x480)
+			{
+				slow_access = true;
+			}
+			else
+			{
+				slow_access = false;
 			}
 		}
 
-		public byte GetControllerState(IController controller, int index)
+		public void GetControllerState(IController controller)
 		{
 			InputCallbacks.Call();
 
-			if (index == 1)
-				return _controllerDeck.ReadPort1(controller);
-			else 
-				return _controllerDeck.ReadPort2(controller);
+			p1_state = _controllerDeck.ReadPort1(controller);
+			p2_state = _controllerDeck.ReadPort2(controller);
+			p1_fire = _controllerDeck.ReadFire1(controller);
+			p2_fire = _controllerDeck.ReadFire2(controller);
 		}
 
-		public byte GetConsoleState(IController controller)
+		public void GetConsoleState(IController controller)
 		{
 			byte result = 0;
 
@@ -173,7 +176,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				result |= 1;
 			}
 
-			return result;
+			con_state = result;
 		}
 
 		public int Frame => _frame;

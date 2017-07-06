@@ -34,7 +34,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 				else
 				{
-					return TIA_regs[addr & 0x1F]; // TODO: what to return here?
+					return tia.ReadMemory((ushort)(addr & 0x1F), false);
+					//return TIA_regs[addr & 0x1F]; // TODO: what to return here?
 				}
 			}
 			else if ((addr & 0xFCE0) == 0x20)

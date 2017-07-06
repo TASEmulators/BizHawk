@@ -143,6 +143,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			maria.Core = this;
 			m6532.Core = this;
+			tia.Core = this;
 
 			ser.Register<IVideoProvider>(maria);
 			ser.Register<ISoundProvider>(tia);

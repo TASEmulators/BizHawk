@@ -21,7 +21,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// additional entries used only in 5-byte header mode
 			public bool write_mode;
 			public bool ind_mode;
-			public bool exp_mode;
 			public byte[] obj; // up to 32 bytes can compose one object
 		}
 
@@ -292,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 								GFX_Objects[header_counter].ind_mode = temp.Bit(5);
 								header_pointer++;
 								temp = (byte)(ReadMemory((ushort)(current_DLL_addr + header_pointer)));
-								GFX_Objects[header_counter].addr |= (ushort)((temp/* + current_DLL_offset*/)<< 8);
+								GFX_Objects[header_counter].addr |= (ushort)(temp << 8);
 								header_pointer++;
 								temp = ReadMemory((ushort)(current_DLL_addr + header_pointer));
 								int temp_w = (temp & 0x1F); // this is the 2's complement of width (for reasons that escape me)
@@ -314,7 +313,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 								GFX_Objects[header_counter].h_pos = ReadMemory((ushort)(current_DLL_addr + header_pointer));
 								header_pointer++;
 
-								GFX_Objects[header_counter].exp_mode = true;
 								DMA_phase_next = DMA_GRAPHICS;
 
 								header_read_time = 10;
@@ -330,15 +328,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							GFX_Objects[header_counter].palette = (byte)((temp & 0xE0) >> 5);
 							header_pointer++;
 							temp = (byte)(ReadMemory((ushort)(current_DLL_addr + header_pointer)));
-							GFX_Objects[header_counter].addr |= (ushort)((temp + current_DLL_offset)<< 8);
+							GFX_Objects[header_counter].addr |= (ushort)(temp << 8);
 							header_pointer++;
 							GFX_Objects[header_counter].h_pos = ReadMemory((ushort)(current_DLL_addr + header_pointer));
 							header_pointer++;
 
-							GFX_Objects[header_counter].exp_mode = false;
 							DMA_phase_next = DMA_GRAPHICS;
 
 							GFX_Objects[header_counter].write_mode = global_write_mode;
+
+							GFX_Objects[header_counter].ind_mode = false;
 
 							header_read_time = 8;
 						}
@@ -356,55 +355,61 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					if (DMA_phase_counter == 1)
 					{
-						// get all the graphics data 
-						// the time this takes depend on the source and number of bytes
-						if (GFX_Objects[header_counter].exp_mode)
+						ushort addr_t = 0;
+
+						// in 5 byte mode, we first have to check if we are in direct or indirect mode
+						if (GFX_Objects[header_counter].ind_mode)
 						{
-							// in 5 byte mode, we first have to check if we are in direct or indirect mode
-							if (GFX_Objects[header_counter].ind_mode)
+							int ch_size = 0;
+
+							if (Core.Maria_regs[0x1C].Bit(4))
 							{
-								//Console.Write(" Indirect graphics");
-
-								int ch_size = 0;
-
-								if (Core.Maria_regs[0x1C].Bit(4))
-								{
-									graphics_read_time = 6 * GFX_Objects[header_counter].width + 3;
-									ch_size = 1;
-								}
-								else
-								{
-									graphics_read_time = 9 * GFX_Objects[header_counter].width + 3;
-									ch_size = 2;
-								}
-
-								// the address here is specified by CHAR_BASE maria registers
-								//ushort addr = (ushort)(GFX_Objects[header_counter].addr & 0xFF);
-								ushort addr = (ushort)(ReadMemory(GFX_Objects[header_counter].addr));
-								addr |= (ushort)((Core.Maria_regs[0x14] + current_DLL_offset) << 8);
-
-								for (int i = 0; i < GFX_Objects[header_counter].width; i ++)
-								{
-									// if game is programmed correctly, should always be less then 32
-									// but in order to not go out of bounds, lets clamp it here anyway
-									if (i * ch_size < 32)
-									{
-										GFX_Objects[header_counter].obj[i * ch_size] = ReadMemory((ushort)(addr + i));
-									}
-									if ((i * ch_size + 1 < 32) && (ch_size == 2))
-									{
-										GFX_Objects[header_counter].obj[i * ch_size + 1] = ReadMemory((ushort)(addr + i));
-									}		
-								}
+								graphics_read_time = 9 * GFX_Objects[header_counter].width + 3;
+								ch_size = 2;
 							}
 							else
 							{
-								graphics_read_time = 3 * GFX_Objects[header_counter].width;
+								graphics_read_time = 6 * GFX_Objects[header_counter].width + 3;
+								ch_size = 1;
+							}
 
-								// do direct reads same as in 4 byte mode
-								for (int i = 0; i < GFX_Objects[header_counter].width; i++)
+							// the address here is specified by CHAR_BASE maria registers
+							//ushort addr = (ushort)(GFX_Objects[header_counter].addr & 0xFF);
+							for (int i = 0; i < GFX_Objects[header_counter].width; i++)
+							{
+								addr_t = ReadMemory((ushort)(GFX_Objects[header_counter].addr + i));
+								addr_t |= (ushort)((Core.Maria_regs[0x14] + current_DLL_offset) << 8);
+
+								if ((current_DLL_H16 && addr_t.Bit(12)) || (current_DLL_H8 && addr_t.Bit(11)))
 								{
-									GFX_Objects[header_counter].obj[i] = ReadMemory((ushort)((GFX_Objects[header_counter].addr + (current_DLL_offset << 8) + i)));
+									if (i * ch_size < 32)
+									{
+										GFX_Objects[header_counter].obj[i * ch_size] = 0;
+									}
+									if ((i * ch_size + 1 < 32) && (ch_size == 2))
+									{
+										GFX_Objects[header_counter].obj[i * ch_size + 1] = 0;
+									}
+									if (ch_size == 1)
+									{
+										graphics_read_time -= 6;
+									}
+									else
+									{
+										graphics_read_time -= 9;
+									}
+
+								}
+								else
+								{
+									if (i * ch_size < 32)
+									{
+										GFX_Objects[header_counter].obj[i * ch_size] = ReadMemory(addr_t);
+									}
+									if ((i * ch_size + 1 < 32) && (ch_size == 2))
+									{
+										GFX_Objects[header_counter].obj[i * ch_size + 1] = ReadMemory(addr_t);
+									}
 								}
 							}
 						}
@@ -414,12 +419,21 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 							for (int i = 0; i < GFX_Objects[header_counter].width; i++)
 							{
-								GFX_Objects[header_counter].obj[i] = ReadMemory((ushort)(GFX_Objects[header_counter].addr + i));
+								addr_t = (ushort)(GFX_Objects[header_counter].addr + (current_DLL_offset << 8) + i);
+								if ((current_DLL_H16 && addr_t.Bit(12)) || (current_DLL_H8 && addr_t.Bit(11)))
+								{
+									GFX_Objects[header_counter].obj[i] = 0;
+									graphics_read_time -= 3;
+								}
+								else
+								{
+									GFX_Objects[header_counter].obj[i] = ReadMemory(addr_t);
+								}
 							}
 						}
 					}
 
-					if (DMA_phase_counter == graphics_read_time)
+					if (DMA_phase_counter == graphics_read_time || graphics_read_time == 0)
 					{
 						// We have read the graphics data, for this header, now return to the header list 
 						// This loop will continue until a header indicates its time to stop
