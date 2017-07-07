@@ -84,7 +84,7 @@ namespace BizHawk.Client.EmuHawk
 						PadBox.Controls.Add(new VirtualPadAnalogStick
 						{
 							Name = button.Name,
-							SecondaryName = button.SecondaryNames.Any() ? button.SecondaryNames[0] : "",
+							SecondaryName = (button.SecondaryNames != null && button.SecondaryNames.Any()) ? button.SecondaryNames[0] : "",
 							Location = UIHelper.Scale(button.Location),
 							Size = UIHelper.Scale(new Size(180 + 79, 200 + 9)),
 							RangeX = new float[] { button.MinValue, button.MidValue, button.MaxValue },
