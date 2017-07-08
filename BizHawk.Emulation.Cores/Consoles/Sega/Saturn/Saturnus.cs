@@ -61,6 +61,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			return true;
 		}
 
+		[CoreConstructor("SAT")]
+		public Saturnus(CoreComm comm, byte[] rom)
+			:base(comm, new Configuration())
+		{
+			throw new InvalidOperationException("To load a Saturn game, please load the CUE file and not the BIN file.");
+		}
+
 		public Saturnus(CoreComm comm, IEnumerable<Disc> disks, bool deterministic, Settings settings,
 			SyncSettings syncSettings)
 			:base(comm, new Configuration
