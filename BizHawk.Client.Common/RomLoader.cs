@@ -21,7 +21,7 @@ using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.DiscSystem;
 
-using GPGX64 = BizHawk.Emulation.Cores.Consoles.Sega.gpgx64;
+using GPGX64 = BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
 
 namespace BizHawk.Client.Common
@@ -504,17 +504,8 @@ namespace BizHawk.Client.Common
 						switch (game.System)
 						{
 							case "GEN":
-								if (Environment.Is64BitProcess)
-								{
-									var genesis = new GPGX64.GPGX(nextComm, null, disc, GetCoreSettings<GPGX64.GPGX>(), GetCoreSyncSettings<GPGX64.GPGX>());
-									nextEmulator = genesis;
-								}
-								else
-								{
-									var genesis = new GPGX(nextComm, null, disc, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
-									nextEmulator = genesis;
-								}
-
+								var genesis = new GPGX(nextComm, null, disc, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
+								nextEmulator = genesis;
 								break;
 							case "SAT":
 								//nextEmulator = new Yabause(nextComm, disc, GetCoreSyncSettings<Yabause>());
@@ -911,17 +902,7 @@ namespace BizHawk.Client.Common
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "GEN":
-								// discard "Genplus-gx64", auto-added due to implementing IEmulator // HUH?
-								// core = CoreInventory.Instance["GEN", "Genplus-gx"];
-								if (Environment.Is64BitProcess)
-								{
-									core = CoreInventory.Instance["GEN", "Genplus-gx64"];
-								}
-								else
-								{
-									core = CoreInventory.Instance["GEN", "Genplus-gx"];
-								}
-
+								core = CoreInventory.Instance["GEN", "Genplus-gx"];
 								break;
 						}
 

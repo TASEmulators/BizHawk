@@ -8,10 +8,10 @@ using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Common;
 using BizHawk.Emulation.DiscSystem;
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
+namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	[CoreAttributes(
-		"Genplus-gx64",
+		"Genplus-gx",
 		"",
 		isPorted: true,
 		isReleased: true,

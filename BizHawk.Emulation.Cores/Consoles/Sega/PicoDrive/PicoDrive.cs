@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				_exe.AddReadonlyFile(comm.CoreFileProvider.GetFirmware("GEN", "CD_BIOS_EU", true), "cd.eu");
 				_exe.AddReadonlyFile(comm.CoreFileProvider.GetFirmware("GEN", "CD_BIOS_US", true), "cd.us");
 				_exe.AddReadonlyFile(comm.CoreFileProvider.GetFirmware("GEN", "CD_BIOS_JP", true), "cd.jp");
-				_exe.AddReadonlyFile(gpgx64.GPGX.GetCDData(cd), "toc");
+				_exe.AddReadonlyFile(gpgx.GPGX.GetCDData(cd), "toc");
 				_cd = cd;
 				_cdReader = new DiscSectorReader(_cd);
 				_cdcallback = CDRead;
