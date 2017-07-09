@@ -910,7 +910,15 @@ namespace BizHawk.Client.Common
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "GEN":
-								core = CoreInventory.Instance["GEN", "Genplus-gx"];
+								if (Global.Config.CoreForcingViaGameDB && game.ForcedCore?.ToLower() == "pico")
+								{
+									core = CoreInventory.Instance["GEN", "PicoDrive"];
+								}
+								else
+								{
+									core = CoreInventory.Instance["GEN", "Genplus-gx"];
+								}
+
 								break;
 						}
 
