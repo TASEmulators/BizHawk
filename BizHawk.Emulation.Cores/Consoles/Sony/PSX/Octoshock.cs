@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 {
 	[CoreAttributes(
 		"Octoshock",
-		"Ryphecha",
+		"Mednafen Team",
 		isPorted: true,
 		isReleased: true)]
 	public unsafe partial class Octoshock : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IDriveLight, ISettable<Octoshock.Settings, Octoshock.SyncSettings>, IRegionable, IInputPollable

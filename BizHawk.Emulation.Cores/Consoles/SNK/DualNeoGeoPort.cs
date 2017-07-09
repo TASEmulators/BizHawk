@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.SNK
 {
-	[CoreAttributes("Dual NeoPop", "Thomas Klausner and natt", true, false, "0.9.44.1",
+	[CoreAttributes("Dual NeoPop", "Thomas Klausner, Mednafen Team, natt", true, false, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
 	public class DualNeoGeoPort : IEmulator
 	{
