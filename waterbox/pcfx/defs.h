@@ -42,7 +42,12 @@ typedef int64_t int64;
 #define final
 #define gettext_noop(s) (s)
 #define MDFN_MASTERCLOCK_FIXED(n) ((int64)((double)(n) * (1LL << 32)))
-#define MDFN_FastArraySet memset
+static INLINE void MDFN_FastArraySet(uint32 *dst, const uint32 value, const size_t count)
+{
+	uint32 *const end = dst + count;
+	while (dst < end)
+		*dst++ = value;
+}
 #define _(a) (a)
 
 typedef struct
@@ -111,4 +116,3 @@ extern bool Setting_NoSpriteLimit;
 extern bool Setting_AdpcmBuggy;
 extern bool Setting_AdpcmNoClicks;
 extern bool Setting_ChromaInterpolate;
-
