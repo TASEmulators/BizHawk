@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 				DefaultWidth = 256,
 				DefaultHeight = 240,
 				MaxWidth = 1024,
-				MaxHeight = 240,
+				MaxHeight = 232,
 				MaxSamples = 2048,
 				SystemId = "PCFX"
 			})
@@ -77,6 +77,8 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			_controllerDeck = new TstControllerDeck(new[] { ControllerType.Gamepad, ControllerType.Gamepad });
 			ControllerDefinition = _controllerDeck.Definition;
 		}
+
+		public override int VirtualWidth => 293;
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
