@@ -7,6 +7,7 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
+using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 
 namespace BizHawk.Client.Common.MovieConversionExtensions
 {
@@ -323,6 +324,11 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			if (Global.Emulator is GPGX && (Global.Emulator as GPGX).IsMegaCD)
 			{
 				movie.HeaderEntries.Add("IsSegaCDMode", "1");
+			}
+
+			if (Global.Emulator is PicoDrive && (Global.Emulator as PicoDrive).Is32X)
+			{
+				movie.HeaderEntries.Add("Is32X", "1");
 			}
 
 			movie.Core = ((CoreAttributes)Attribute
