@@ -708,7 +708,7 @@ EXPORT void FrameAdvance(MyFrameInfo& f)
 	for (int i = 0; i < 2; i++)
 		InputData[i] = f.Buttons[i];
 
-	uint32_t ConsoleButtons = f.Buttons[3];
+	uint32_t ConsoleButtons = f.Buttons[2];
 	int NewActiveDisk = ActiveDisk;
 	#define ROSE(n) ((ConsoleButtons & 1 << (n)) > (PrevConsoleButtons & 1 << (n)))
 	if (ROSE(0))
@@ -716,9 +716,9 @@ EXPORT void FrameAdvance(MyFrameInfo& f)
 	if (ROSE(1))
 		PCFX_Reset();
 	if (ROSE(2))
-		NewActiveDisk++;
-	if (ROSE(3))
 		NewActiveDisk--;
+	if (ROSE(3))
+		NewActiveDisk++;
 	#undef ROSE
 	NewActiveDisk = std::max(NewActiveDisk, -1);
 	NewActiveDisk = std::min<int>(NewActiveDisk, CDInterfaces.size() - 1);

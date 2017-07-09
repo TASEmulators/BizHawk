@@ -26,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 		private DiscSectorReader[] _diskReaders;
 		private LibSaturnus.CDTOCCallback _cdTocCallback;
 		private LibSaturnus.CDSectorCallback _cdSectorCallback;
+		private TstControllerDeck _controllerDeck;
 
 		[CoreConstructor("PCFX")]
 		public Tst(CoreComm comm, byte[] rom)
@@ -34,7 +35,6 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			throw new InvalidOperationException("To load a PC-FX game, please load the CUE file and not the BIN file.");
 		}
 
-		// MDFNGameInfo->fps = (uint32)((double)7159090.90909090 / 455 / 263 * 65536 * 256);
 		public Tst(CoreComm comm, IEnumerable<Disc> disks)
 			:base(comm, new Configuration
 			{
@@ -74,6 +74,8 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 
 			PostInit();
 			SetCdCallbacks();
+			_controllerDeck = new TstControllerDeck(new[] { ControllerType.Gamepad, ControllerType.Gamepad });
+			ControllerDefinition = _controllerDeck.Definition;
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
@@ -83,7 +85,13 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
-			return new LibTst.FrameInfo();
+			DriveLightOn = false;
+			var ret = new LibTst.FrameInfo();
+			var controls = _controllerDeck.GetData(controller);
+			ret.Port1Buttons = controls[0];
+			ret.Port2Buttons = controls[1];
+			ret.ConsoleButtons = controls[2];
+			return ret;
 		}
 
 		private void CDTOCCallback(int disk, [In, Out]LibSaturnus.TOC t)

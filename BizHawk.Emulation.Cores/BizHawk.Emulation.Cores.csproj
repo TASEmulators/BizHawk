@@ -470,6 +470,7 @@
     <Compile Include="Consoles\Magnavox\O2Em.cs" />
     <Compile Include="Consoles\NEC\PCFX\LibTst.cs" />
     <Compile Include="Consoles\NEC\PCFX\Tst.cs" />
+    <Compile Include="Consoles\NEC\PCFX\TstControllerDeck.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ICodeDataLog.cs">
       <DependentUpon>Gambatte.cs</DependentUpon>
