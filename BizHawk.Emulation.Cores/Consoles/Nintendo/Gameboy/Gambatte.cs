@@ -58,12 +58,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			if (game.System == "GB")
 			{
-				BiosRom = new byte[256];
 				BiosRom = comm.CoreFileProvider.GetFirmware("GB", "World", false);
 			}
 			else
 			{
-				BiosRom = new byte[2304];
 				BiosRom = comm.CoreFileProvider.GetFirmware("GBC", "World", false);
 			}
 
@@ -80,32 +78,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				LibGambatte.LoadFlags flags = 0;
 
-				if (_syncSettings.ConsoleMode=="GB")
+				switch (_syncSettings.ConsoleMode)
 				{
-					flags |= LibGambatte.LoadFlags.FORCE_DMG;
-					
-					// we need to change the BIOS to GB bios
-					if (game.System == "GBC")
-					{
-						BiosRom = null;
-						BiosRom = new byte[256];
-						BiosRom = comm.CoreFileProvider.GetFirmware("GB", "World", false);
-						bios_length = BiosRom.Length;
-					}
-					
-				}
-				else if (_syncSettings.ConsoleMode == "GBC")
-				{
-					BiosRom = null;
-					BiosRom = new byte[2304];
-					BiosRom = comm.CoreFileProvider.GetFirmware("GBC", "World", false);
-					bios_length = BiosRom.Length;
-
-				}
-				else
-				{
-					 if(game.System == "GB")
+					case GambatteSyncSettings.ConsoleModeType.GB:
 						flags |= LibGambatte.LoadFlags.FORCE_DMG;
+						// we need to change the BIOS to GB bios
+						if (game.System == "GBC")
+						{
+							BiosRom = comm.CoreFileProvider.GetFirmware("GB", "World", false);
+							bios_length = BiosRom.Length;
+						}
+						break;
+					case GambatteSyncSettings.ConsoleModeType.GBC:
+						BiosRom = comm.CoreFileProvider.GetFirmware("GBC", "World", false);
+						bios_length = BiosRom.Length;
+						break;
+					default:
+						if (game.System == "GB")
+							flags |= LibGambatte.LoadFlags.FORCE_DMG;
+						break;
 				}
 
 				if (_syncSettings.EnableBIOS && BiosRom == null)
@@ -351,7 +342,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			LibGambatte.gambatte_settracecallback(GambatteState, _tracecb);
 
-			LibGambatte.gambatte_setlayers(GambatteState, (_settings.DisplayBG ? 1 : 0) | (_settings.DisplayOBJ ? 2 : 0) | (_settings.DisplayWindow ? 4 : 0 ) );
+			LibGambatte.gambatte_setlayers(GambatteState, (_settings.DisplayBG ? 1 : 0) | (_settings.DisplayOBJ ? 2 : 0) | (_settings.DisplayWindow ? 4 : 0));
 		}
 
 		internal void FrameAdvancePost()

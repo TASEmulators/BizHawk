@@ -85,16 +85,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DefaultValue(false)]
 			public bool EnableBIOS { get; set; }
 
-			[DisplayName("Console Mode")]
-			[Description("Pick which console to run, 'Default' chooses from ROM extension, 'GB' and 'GBC' chooses the respective system")]
-			[DefaultValue("Default")]
-			public string ConsoleMode
+			public enum ConsoleModeType
 			{
-				get { return _ConsoleMode; }
-				set { _ConsoleMode = value;}
+				Auto,
+				GB,
+				GBC
 			}
-			[JsonIgnore]
-			private string _ConsoleMode;
+
+			[DisplayName("Console Mode")]
+			[Description("Pick which console to run, 'Auto' chooses from ROM header, 'GB' and 'GBC' chooses the respective system")]
+			[DefaultValue(ConsoleModeType.Auto)]
+			public ConsoleModeType ConsoleMode { get; set; }
 
 			[DisplayName("CGB in GBA")]
 			[Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]
