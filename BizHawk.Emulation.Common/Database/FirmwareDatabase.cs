@@ -208,20 +208,28 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("b2e1955d957a475de2411770452eff4ea19f4cee", 1024, "O2", "BIOS", "Odyssey2.bin", "Odyssey 2 Bios");
 			FirmwareAndOption("a6120aed50831c9c0d95dbdf707820f601d9452e", 1024, "O2", "BIOS-C52", "PhillipsC52.bin", "Phillips C52 Bios");
-		
+
 			FirmwareAndOption("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "GB", "World", "GB_boot_ROM.gb", "Game Boy BIOS");
 			FirmwareAndOption("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "GBC", "World", "GBC_boot_ROM.gb", "Game Boy Color BIOS");
+
+			Firmware("PCFX", "BIOS", "pcfxbios.bin");
+			Option("1a77fd83e337f906aecab27a1604db064cf10074", 1024 * 1024, "PCFX", "BIOS");
+			Option("8b662f7548078be52a871565e19511ccca28c5c8", 1024 * 1024, "PCFX", "BIOS");
+
+			Firmware("PCFX", "SCSIROM", "fx-scsi.rom");
+			Option("65482a23ac5c10a6095aee1db5824cca54ead6e5", 512 * 1024, "PCFX", "SCSIROM");
+
 		}
 
 		// adds a defined firmware ID to the database
 		private static void Firmware(string systemId, string id, string descr)
 		{
 			var fr = new FirmwareRecord
-				{
-					SystemId = systemId,
-					FirmwareId = id,
-					Descr = descr
-				};
+			{
+				SystemId = systemId,
+				FirmwareId = id,
+				Descr = descr
+			};
 
 			FirmwareRecords.Add(fr);
 		}
@@ -230,22 +238,22 @@ namespace BizHawk.Emulation.Common
 		private static FirmwareOption Option(string hash, long size, string systemId, string id, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 		{
 			var fo = new FirmwareOption
-				{
-					SystemId = systemId,
-					FirmwareId = id,
-					Hash = hash,
-					Status = status,
-					Size = size
-				};
+			{
+				SystemId = systemId,
+				FirmwareId = id,
+				Hash = hash,
+				Status = status,
+				Size = size
+			};
 
 			FirmwareOptions.Add(fo);
-			
+
 			// first option is automatically ideal
 			if (FirmwareOptions.Count == 1 && fo.Status == FirmwareOptionStatus.Acceptable)
 			{
 				fo.Status = FirmwareOptionStatus.Ideal;
 			}
-			
+
 			return fo;
 		}
 
@@ -269,13 +277,13 @@ namespace BizHawk.Emulation.Common
 			string hashfix = hash.ToUpperInvariant();
 
 			var ff = new FirmwareFile
-				{
-					Hash = hashfix,
-					Size = size,
-					RecommendedName = recommendedName,
-					Description = descr,
-					Info = additionalInfo
-				};
+			{
+				Hash = hashfix,
+				Size = size,
+				RecommendedName = recommendedName,
+				Description = descr,
+				Info = additionalInfo
+			};
 			FirmwareFiles.Add(ff);
 			FirmwareFilesByHash[hashfix] = ff;
 			return ff;
@@ -335,9 +343,9 @@ namespace BizHawk.Emulation.Common
 		{
 			var found =
 				from fr in FirmwareRecords
-				 where fr.FirmwareId == firmwareId
-				 && fr.SystemId == sysId
-				 select fr;
+				where fr.FirmwareId == firmwareId
+				&& fr.SystemId == sysId
+				select fr;
 
 			return found.FirstOrDefault();
 		}

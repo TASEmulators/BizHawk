@@ -574,10 +574,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			Marshal.Copy(data, 0, dest, data.Length);
 		}
 
-		private void CDTOCCallback(int disk, [In, Out]LibSaturnus.TOC t)
+		public static void SetupTOC(LibSaturnus.TOC t, DiscTOC tin)
 		{
 			// everything that's not commented, we're sure about
-			var tin = _disks[disk].TOC;
 			t.FirstTrack = tin.FirstRecordedTrackNumber;
 			t.LastTrack = tin.LastRecordedTrackNumber;
 			t.DiskType = (int)tin.Session1Format;
@@ -588,6 +587,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				t.Tracks[i].Control = (int)tin.TOCItems[i].Control;
 				t.Tracks[i].Valid = tin.TOCItems[i].Exists ? 1 : 0;
 			}
+		}
+
+		private void CDTOCCallback(int disk, [In, Out]LibSaturnus.TOC t)
+		{
+			SetupTOC(t, _disks[disk].TOC);
 		}
 		private void CDSectorCallback(int disk, int lba, IntPtr dest)
 		{

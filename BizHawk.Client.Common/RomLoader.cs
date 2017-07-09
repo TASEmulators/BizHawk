@@ -23,6 +23,7 @@ using BizHawk.Emulation.DiscSystem;
 
 using GPGX64 = BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
+using BizHawk.Emulation.Cores.Consoles.NEC.PCFX;
 
 namespace BizHawk.Client.Common
 {
@@ -484,6 +485,10 @@ namespace BizHawk.Client.Common
 								case DiscType.MegaCD:
 									game.System = "GEN";
 									break;
+								case DiscType.PCFX:
+									game.System = "PCFX";
+									break;
+
 								case DiscType.AudioDisc:
 								case DiscType.TurboCD:
 								case DiscType.UnknownCDFS:
@@ -532,6 +537,9 @@ namespace BizHawk.Client.Common
 									nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
 								}
 
+								break;
+							case "PCFX":
+								nextEmulator = new Tst(nextComm, new[] { disc });
 								break;
 							case "PCE":
 							case "PCECD":

@@ -105,6 +105,7 @@ namespace BizHawk.Client.ApiHawk
 				case "O2":
 				case "SGB":
 				case "UZE":
+				case "PCFX":
 					return 0; // like I give a shit
 
 				default:
