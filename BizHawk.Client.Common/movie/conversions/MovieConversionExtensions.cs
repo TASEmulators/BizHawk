@@ -331,7 +331,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				movie.HeaderEntries.Add("IsSegaCDMode", "1");
 			}
 
-			if (Global.Emulator is PicoDrive && (Global.Emulator as PicoDrive).Is32xActive)
+			if (Global.Emulator is PicoDrive && Global.Game["32X"])
 			{
 				movie.HeaderEntries.Add("Is32X", "1");
 			}
