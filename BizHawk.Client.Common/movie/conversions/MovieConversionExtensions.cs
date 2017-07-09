@@ -321,6 +321,11 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				movie.HeaderEntries.Add("IsSGMode", "1");
 			}
 
+			if (Global.Emulator is SMS && (Global.Emulator as SMS).IsGameGear)
+			{
+				movie.HeaderEntries.Add("IsGGMode", "1");
+			}
+
 			if (Global.Emulator is GPGX && (Global.Emulator as GPGX).IsMegaCD)
 			{
 				movie.HeaderEntries.Add("IsSegaCDMode", "1");
