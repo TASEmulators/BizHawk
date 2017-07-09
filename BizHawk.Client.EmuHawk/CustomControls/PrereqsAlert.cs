@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk.CustomControls
 		private void linkLabel2_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			linkLabel2.LinkVisited = true;
-			System.Diagnostics.Process.Start("http://sf.net/projects/bizhawk");
+			System.Diagnostics.Process.Start("https://github.com/TASVideos/BizHawk-Prereqs/releases");
 		}
 
 		private void button1_Click(object sender, EventArgs e)
