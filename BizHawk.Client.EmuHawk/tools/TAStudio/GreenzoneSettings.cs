@@ -23,14 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_stateSizeMb = Statable.SaveStateBinary().Length / (decimal)1024 / (decimal)1024;
 
-			if (Environment.Is64BitProcess) // ?
-			{
-				MemCapacityNumeric.Maximum = 1024 * 8;
-			}
-			else
-			{
-				MemCapacityNumeric.Maximum = 1024;
-			}
+			MemCapacityNumeric.Maximum = 1024 * 8;
 
 			MemCapacityNumeric.Value = _settings.Capacitymb < MemCapacityNumeric.Maximum ?
 				_settings.Capacitymb : MemCapacityNumeric.Maximum;
