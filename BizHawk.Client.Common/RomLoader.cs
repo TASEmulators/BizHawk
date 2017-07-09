@@ -782,7 +782,20 @@ namespace BizHawk.Client.Common
 
 								break;
 							case "SNES":
-								if (Global.Config.SNES_InSnes9x)
+								bool useSnes9x = Global.Config.SNES_InSnes9x;
+								if (Global.Config.CoreForcingViaGameDB && !string.IsNullOrEmpty(game.ForcedCore))
+								{
+									if (game.ForcedCore.ToLower() == "snes9x")
+									{
+										useSnes9x = true;
+									}
+									else if (game.ForcedCore.ToLower() == "bsnes")
+									{
+										useSnes9x = false;
+									}
+								}
+
+								if (useSnes9x)
 								{
 									core = CoreInventory.Instance["SNES", "Snes9x"];
 								}
