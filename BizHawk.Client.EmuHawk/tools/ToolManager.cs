@@ -427,7 +427,10 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var tool in _tools)
 			{
-				tool.NewUpdate(ToolFormUpdateType.PreFrame);
+				if (!tool.IsDisposed)
+				{
+					tool.NewUpdate(ToolFormUpdateType.PreFrame);
+				}
 			}
 		}
 
@@ -445,7 +448,10 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var tool in _tools)
 			{
-				tool.NewUpdate(ToolFormUpdateType.PostFrame);
+				if (!tool.IsDisposed)
+				{
+					tool.NewUpdate(ToolFormUpdateType.PostFrame);
+				}
 			}
 		}
 
