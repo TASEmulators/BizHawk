@@ -280,6 +280,10 @@ ECL_EXPORT void SetCDReadCallback(void (*callback)(int lba, void *dest, int audi
 {
 	CDReadSector = callback;
 }
+ECL_EXPORT int IsPal(void)
+{
+	return Pico.m.pal;
+}
 
 int main(void)
 {

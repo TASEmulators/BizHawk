@@ -32,5 +32,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 
 		[BizImport(CC)]
 		public abstract void SetCDReadCallback(CDReadCallback callback);
+
+		[BizImport(CC)]
+		public abstract bool IsPal();
 	}
 }
