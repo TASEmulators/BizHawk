@@ -87,7 +87,7 @@ namespace BizHawk.Client.Common
 				Type = type;
 			}
 
-			public RomErrorArgs(string message, string systemId, string path, bool? det, LoadErrorType type) 
+			public RomErrorArgs(string message, string systemId, string path, bool? det, LoadErrorType type)
 				: this(message, systemId, type)
 			{
 				Deterministic = det;
@@ -327,7 +327,7 @@ namespace BizHawk.Client.Common
 							Console.WriteLine("No ROM to Load");
 							return false;
 						}
-						
+
 						// if not libretro:
 						// do extension checknig
 						ext = file.Extension.ToLowerInvariant();
@@ -478,7 +478,7 @@ namespace BizHawk.Client.Common
 								case DiscType.SonyPSP:
 									game.System = "PSP";
 									break;
-								default: 
+								default:
 								case DiscType.SonyPSX:
 									game.System = "PSX";
 									break;
@@ -680,11 +680,11 @@ namespace BizHawk.Client.Common
 
 								game = rom.GameInfo;
 								game.System = "SNES";
-								
+
 								var snes = new LibsnesCore(game, romData, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
 								nextEmulator = snes;
 							}
-							catch 
+							catch
 							{
 								DoLoadErrorCallback(ex.ToString(), "DGB", LoadErrorType.XML);
 								return false;
@@ -851,29 +851,18 @@ namespace BizHawk.Client.Common
 								}
 								else
 								{
-									try
+									if (Global.Config.SGB_UseBsnes)
 									{
 										game.System = "SNES";
 										game.AddOption("SGB");
-										if (Global.Config.SGB_UseBsnes)
-										{
-											var snes = new LibsnesCore(game, rom.FileData, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
-											nextEmulator = snes;
-										}
-										else
-										{
-											core = CoreInventory.Instance["SGB", "Pizza Boy"]; 
-										}
+										var snes = new LibsnesCore(game, rom.FileData, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+										nextEmulator = snes;
 									}
-									catch
+									else
 									{
-										// failed to load SGB bios or game does not support SGB mode. 
-										// To avoid catch-22, disable SGB mode
-										Global.Config.GB_AsSGB = false;
-										throw;
+										core = CoreInventory.Instance["SGB", "Pizza Boy"];
 									}
 								}
-
 								break;
 							case "A78":
 								var gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
@@ -961,7 +950,7 @@ namespace BizHawk.Client.Common
 						{
 							DoMessageCallback("Unable to use quicknes, using NESHawk instead");
 						}
-						
+
 						return LoadRom(path, nextComm, true, recursiveCount + 1);
 					}
 					else if (ex is MissingFirmwareException)
@@ -970,7 +959,9 @@ namespace BizHawk.Client.Common
 					}
 					else if (ex is CGBNotSupportedException)
 					{
-						// Note: GB as SGB was set to false by this point, otherwise we would want to do it here
+						// failed to load SGB bios or game does not support SGB mode. 
+						// To avoid catch-22, disable SGB mode
+						Global.Config.GB_AsSGB = false;
 						DoMessageCallback("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
 						return LoadRom(path, nextComm, false, recursiveCount + 1);
 					}
