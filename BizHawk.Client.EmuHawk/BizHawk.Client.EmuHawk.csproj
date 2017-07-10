@@ -1778,7 +1778,6 @@
     <None Include="images\tastudio\icon_marker.png" />
     <EmbeddedResource Include="Resources\gens.ttf" />
     <EmbeddedResource Include="Resources\fceux.ttf" />
-    <None Include="Resources\HawkInLove.png" />
     <None Include="images\Circle.png" />
     <None Include="images\Cross.png" />
     <None Include="images\Square.png" />
@@ -1961,8 +1960,6 @@
     <None Include="images\thumbsdown.png" />
     <None Include="images\monitor.png" />
     <None Include="images\ppsspp.png" />
-    <None Include="images\meteor.png" />
-    <None Include="images\yabause.png" />
     <None Include="images\QuickNes.png" />
     <None Include="images\sms-icon.png" />
     <None Include="images\pcb.png" />
@@ -2087,7 +2084,6 @@
     <None Include="images\JumpTo.png" />
     <None Include="images\ENE.png" />
     <None Include="images\ESE.png" />
-    <None Include="images\5757344.png" />
     <None Include="images\ControllerImages\NGPController.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
