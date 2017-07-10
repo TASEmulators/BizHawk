@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-using LuaInterface;
+using NLua;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 

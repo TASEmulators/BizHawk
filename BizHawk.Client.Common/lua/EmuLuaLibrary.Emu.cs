@@ -9,7 +9,7 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Cores.WonderSwan;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
-using LuaInterface;
+using NLua;
 
 namespace BizHawk.Client.Common
 {

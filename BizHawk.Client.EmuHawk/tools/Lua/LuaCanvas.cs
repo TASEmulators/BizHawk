@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.IO;
 
 using BizHawk.Client.Common;
-using LuaInterface;
+using NLua;
 using System;
 using System.Collections.Generic;
 

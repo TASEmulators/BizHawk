@@ -70,13 +70,13 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\References\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="LuaInterface">
-      <HintPath>..\References\x64\LuaInterface.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLua">
+      <HintPath>..\References\NLua.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

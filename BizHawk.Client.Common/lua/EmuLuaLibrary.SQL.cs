@@ -2,7 +2,7 @@
 using System.Collections;
 using System.ComponentModel;
 using System.Data.SQLite;
-using LuaInterface;
+using NLua;
 using System.Collections.Generic;
 
 namespace BizHawk.Client.Common

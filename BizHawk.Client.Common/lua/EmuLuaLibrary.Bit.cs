@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-using LuaInterface;
+using NLua;
 
 namespace BizHawk.Client.Common
 {

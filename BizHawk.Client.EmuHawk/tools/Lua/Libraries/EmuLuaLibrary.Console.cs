@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 using BizHawk.Client.Common;
-using LuaInterface;
+using NLua;
 
 namespace BizHawk.Client.EmuHawk
 {

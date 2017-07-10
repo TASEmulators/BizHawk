@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using BizHawk.Emulation.Common;
-using LuaInterface;
+using NLua;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 
 namespace BizHawk.Client.Common

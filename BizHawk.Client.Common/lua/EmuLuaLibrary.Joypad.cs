@@ -1,5 +1,5 @@
 ﻿using System;
-using LuaInterface;
+using NLua;
 
 namespace BizHawk.Client.Common
 {

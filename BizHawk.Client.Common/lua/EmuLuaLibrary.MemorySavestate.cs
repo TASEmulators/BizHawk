@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-using LuaInterface;
+using NLua;
 
 using BizHawk.Emulation.Common;
 

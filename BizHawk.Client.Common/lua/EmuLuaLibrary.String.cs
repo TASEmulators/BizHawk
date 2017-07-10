@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 
-using LuaInterface;
+using NLua;
 
 namespace BizHawk.Client.Common
 {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using LuaInterface;
+using NLua;
 
 namespace BizHawk.Client.EmuHawk
 {

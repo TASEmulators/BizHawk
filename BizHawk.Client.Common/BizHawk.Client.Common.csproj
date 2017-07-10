@@ -46,12 +46,12 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\References\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="LuaInterface">
-      <HintPath>..\References\x64\LuaInterface.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLua">
+      <HintPath>..\References\NLua.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -160,6 +160,7 @@
     <Compile Include="lua\EnvironmentSandbox.cs" />
     <Compile Include="lua\LuaAttributes.cs" />
     <Compile Include="lua\LuaDocumentation.cs" />
+    <Compile Include="lua\LuaExtensions.cs" />
     <Compile Include="lua\LuaFile.cs" />
     <Compile Include="lua\LuaFileList.cs" />
     <Compile Include="lua\LuaFunctionList.cs" />

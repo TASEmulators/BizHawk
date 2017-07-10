@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 
-using LuaInterface;
+using NLua;
 using BizHawk.Common.ReflectionExtensions;
 
 namespace BizHawk.Client.Common

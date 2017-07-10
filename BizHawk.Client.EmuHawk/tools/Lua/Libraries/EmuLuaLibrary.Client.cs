@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
-using LuaInterface;
+using NLua;
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
