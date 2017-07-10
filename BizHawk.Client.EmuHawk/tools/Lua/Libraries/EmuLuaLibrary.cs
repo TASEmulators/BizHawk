@@ -199,10 +199,10 @@ namespace BizHawk.Client.EmuHawk
 
 				var execResult = script.Resume(0);
 
-				//_lua.RunScheduledDisposes();
+				_lua.RunScheduledDisposes();
 
 				// not sure how this is going to work out, so do this too
-				//script.RunScheduledDisposes();
+				script.RunScheduledDisposes();
 
 				_currThread = null;
 				var result = new ResumeResult();
