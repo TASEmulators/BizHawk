@@ -161,13 +161,13 @@ __Types and notation__
 
 	public class LibraryFunction
 	{
-		private readonly LuaMethodAttributes _luaAttributes;
+		private readonly LuaMethodAttribute _luaAttributes;
 		private readonly MethodInfo _method;
 
 		public LibraryFunction(string library, string libraryDescription, MethodInfo method)
 		{
-			_luaAttributes = method.GetCustomAttributes(typeof(LuaMethodAttributes), false)
-				.First() as LuaMethodAttributes;
+			_luaAttributes = method.GetCustomAttributes(typeof(LuaMethodAttribute), false)
+				.First() as LuaMethodAttribute;
 			_method = method;
 
 			Library = library;

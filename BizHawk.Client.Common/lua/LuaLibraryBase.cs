@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common
 		{
 			Lua.NewTable(Name);
 
-			var luaAttr = typeof(LuaMethodAttributes);
+			var luaAttr = typeof(LuaMethodAttribute);
 
 			var methods = GetType()
 				.GetMethods()
@@ -104,7 +104,7 @@ namespace BizHawk.Client.Common
 
 			foreach (var method in methods)
 			{
-				var luaMethodAttr = (LuaMethodAttributes)method.GetCustomAttributes(luaAttr, false).First();
+				var luaMethodAttr = (LuaMethodAttribute)method.GetCustomAttributes(luaAttr, false).First();
 				var luaName = Name + "." + luaMethodAttr.Name;
 				Lua.RegisterFunction(luaName, this, method);
 
