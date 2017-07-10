@@ -160,7 +160,6 @@
     <Compile Include="lua\EnvironmentSandbox.cs" />
     <Compile Include="lua\LuaAttributes.cs" />
     <Compile Include="lua\LuaDocumentation.cs" />
-    <Compile Include="lua\LuaExtensions.cs" />
     <Compile Include="lua\LuaFile.cs" />
     <Compile Include="lua\LuaFileList.cs" />
     <Compile Include="lua\LuaFunctionList.cs" />
