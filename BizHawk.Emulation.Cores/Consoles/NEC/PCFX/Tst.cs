@@ -30,13 +30,13 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 
 		[CoreConstructor("PCFX")]
 		public Tst(CoreComm comm, byte[] rom)
-			:base(comm, new Configuration())
+			: base(comm, new Configuration())
 		{
 			throw new InvalidOperationException("To load a PC-FX game, please load the CUE file and not the BIN file.");
 		}
 
 		public Tst(CoreComm comm, IEnumerable<Disc> disks)
-			:base(comm, new Configuration
+			: base(comm, new Configuration
 			{
 				DefaultFpsNumerator = 7159091,
 				DefaultFpsDenominator = 455 * 263,
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			ControllerDefinition = _controllerDeck.Definition;
 		}
 
-		public override int VirtualWidth => 293;
+		public override int VirtualWidth => VirtualHeight > 240 ? 586 : 293;
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
