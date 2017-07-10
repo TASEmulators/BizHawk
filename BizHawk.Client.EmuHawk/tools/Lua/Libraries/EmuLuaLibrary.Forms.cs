@@ -239,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				Log(ex.Message);
 			}
 
 			return "";
@@ -274,7 +274,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				Log(ex.Message);
 			}
 
 			return "";

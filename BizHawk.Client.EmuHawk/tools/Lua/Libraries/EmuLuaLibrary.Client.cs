@@ -106,7 +106,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else
 			{
-				ConsoleLuaLibrary.Log("Invalid frame skip value");
+				Log("Invalid frame skip value");
 			}
 		}
 
