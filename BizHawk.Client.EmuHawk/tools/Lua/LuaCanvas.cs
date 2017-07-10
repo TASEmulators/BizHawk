@@ -346,7 +346,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 
-		[LuaMethod("DrawRectangle", "Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color")]
+		[LuaMethod("drawRectangle", "Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color")]
 		public void DrawRectangle(int x, int y, int width, int height, Color? outline = null, Color? fill = null)
 		{
 			if (fill.HasValue)
@@ -359,7 +359,7 @@ namespace BizHawk.Client.EmuHawk
 			_graphics.DrawRectangle(pen, x, y, width, height);
 		}
 
-		[LuaMethod("DrawText", "Draws the given message at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates.")]
+		[LuaMethod("drawText", "Draws the given message at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates.")]
 		public void DrawText(int x, int y, string message, Color? color = null, int? fontsize = null, string fontfamily = null, string fontstyle = null)
 		{
 			var family = FontFamily.GenericMonospace;
