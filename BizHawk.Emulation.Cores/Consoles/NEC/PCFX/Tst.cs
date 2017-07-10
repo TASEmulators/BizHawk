@@ -41,9 +41,9 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 				DefaultFpsNumerator = 7159091,
 				DefaultFpsDenominator = 455 * 263,
 				DefaultWidth = 256,
-				DefaultHeight = 240,
+				DefaultHeight = 232,
 				MaxWidth = 1024,
-				MaxHeight = 232,
+				MaxHeight = 480,
 				MaxSamples = 2048,
 				SystemId = "PCFX"
 			})

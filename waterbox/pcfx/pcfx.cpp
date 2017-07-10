@@ -671,8 +671,8 @@ struct MyFrameInfo: public FrameInfo
 	uint32_t Buttons[3]; // port 1, port 2, console
 };
 static EmulateSpecStruct Ess;
-static int32_t LineWidths[256];
-static uint32_t FrameBuffer[1024 * 512];
+static int32_t LineWidths[480];
+static uint32_t FrameBuffer[1024 * 480];
 
 EXPORT bool Init(int numDisks, const uint8_t *bios)
 {
