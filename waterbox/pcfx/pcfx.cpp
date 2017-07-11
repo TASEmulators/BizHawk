@@ -675,7 +675,7 @@ struct MyFrameInfo : public FrameInfo
 };
 static EmulateSpecStruct Ess;
 static int32_t LineWidths[480];
-static uint32_t FrameBuffer[1024 * 480];
+ECL_INVISIBLE static uint32_t FrameBuffer[1024 * 480];
 
 EXPORT bool Init(int numDisks, const uint8_t *bios)
 {
@@ -805,21 +805,21 @@ EXPORT void SetInputCallback(void (*callback)())
 }
 
 // settings
-int Setting_HighDotclockWidth = 341;
-int Setting_CdSpeed = 2;
-int Setting_SlStart = 4;
-int Setting_SlEnd = 235;
+ECL_SEALED int Setting_HighDotclockWidth = 341;
+ECL_SEALED int Setting_CdSpeed = 2;
+ECL_SEALED int Setting_SlStart = 4;
+ECL_SEALED int Setting_SlEnd = 235;
 
-double Setting_ResampRateError = 0.0000009;
-int Setting_ResampQuality = 3;
+ECL_SEALED double Setting_ResampRateError = 0.0000009;
+ECL_SEALED int Setting_ResampQuality = 3;
 
-int Setting_CpuEmulation = 2; // 0 = fast, 1 = accurate, 2 = auto
-bool Setting_NoSpriteLimit;
-bool Setting_AdpcmBuggy = false;
-bool Setting_AdpcmNoClicks = true;
-bool Setting_ChromaInterpolate = false;
+ECL_SEALED int Setting_CpuEmulation = 2; // 0 = fast, 1 = accurate, 2 = auto
+ECL_SEALED bool Setting_NoSpriteLimit;
+ECL_SEALED bool Setting_AdpcmBuggy = false;
+ECL_SEALED bool Setting_AdpcmNoClicks = true;
+ECL_SEALED bool Setting_ChromaInterpolate = false;
 
-int Setting_PortDevice[2];
+ECL_SEALED int Setting_PortDevice[2];
 
 struct FrontendSettings
 {
