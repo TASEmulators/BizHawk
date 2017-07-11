@@ -349,7 +349,7 @@ namespace BizHawk.Emulation.Common
 					game.System = "UZE";
 					break;
 				case ".32X":
-					game.System = "GEN";
+					game.System = "32X";
 					game.AddOption("32X", "true");
 					break;
 			}

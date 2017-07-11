@@ -909,6 +909,9 @@ namespace BizHawk.Client.Common
 								}
 
 								break;
+							case "32X":
+								core = CoreInventory.Instance["GEN", "PicoDrive"];
+								break;
 						}
 
 						if (core != null)
