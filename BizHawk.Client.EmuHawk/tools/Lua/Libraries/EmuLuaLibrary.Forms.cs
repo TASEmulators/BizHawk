@@ -525,7 +525,7 @@ namespace BizHawk.Client.EmuHawk
 			return Color.FromArgb(a, r, g, b);
 		}
 
-		[LuaMethod("setsize", "TODO")]
+		[LuaMethod("setsize", "Sets the size of the form or control to the given width or height")]
 		public void SetSize(int handle, int width, int height)
 		{
 			var ptr = new IntPtr(handle);
