@@ -143,9 +143,9 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 
 			public enum DotClockWidths
 			{
-				Fast = 256,
-				Good = 341,
-				Pedantic = 1024
+				Fastest = 256,
+				Fast = 341,
+				Good = 1024
 			}
 			[Description("Quality for high-width resolution output")]
 			[DefaultValue(DotClockWidths.Good)]
