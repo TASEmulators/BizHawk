@@ -76,6 +76,13 @@ namespace BizHawk.Client.Common
 
 		public static string MakeAbsolutePath(string path, string system)
 		{
+			//warning: supposedly Path.GetFullPath accesses directories (and needs permissions)
+			//if this poses a problem, we need to paste code from .net or mono sources and fix them to not pose problems, rather than homebrew stuff
+			return Path.GetFullPath(MakeAbsolutePathInner(path, system));
+		}
+
+		static string MakeAbsolutePathInner(string path, string system)
+		{
 			// Hack
 			if (system == "Global")
 			{
@@ -127,23 +134,8 @@ namespace BizHawk.Client.Common
 				return path;
 			}
 
-			// If begins wtih .. do alorithm to determine how many ..\.. combos and deal with accordingly, return drive letter only if too many ..
-			if ((path[0] > 'A' && path[0] < 'Z') || (path[0] > 'a' && path[0] < 'z'))
-			{
-				// C:\
-				if (path.Length > 2 && path[1] == ':' && path[2] == '\\')
-				{
-					return path;
-				}
-
-				// file:\ is an acceptable path as well, and what FileBrowserDialog returns
-				if (path.Length >= 6 && path.Substring(0, 6) == "file:\\")
-				{
-					return path;
-				}
-
-				return GetExeDirectoryAbsolute(); // bad path
-			}
+			//handling of initial .. was removed (Path.GetFullPath can handle it)
+			//handling of file:// or file:\\ was removed  (can Path.GetFullPath handle it? not sure)
 
 			// all pad paths default to EXE
 			return GetExeDirectoryAbsolute();
