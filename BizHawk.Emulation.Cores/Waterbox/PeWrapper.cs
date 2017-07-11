@@ -47,7 +47,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public string ModuleName { get; }
 
-		private readonly byte[] _fileData;
 		private readonly PeFile _pe;
 		private readonly byte[] _fileHash;
 
@@ -120,7 +119,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public PeWrapper(string moduleName, byte[] fileData, ulong destAddress)
 		{
 			ModuleName = moduleName;
-			_fileData = fileData;
 			_pe = new PeFile(fileData);
 			Size = _pe.ImageNtHeaders.OptionalHeader.SizeOfImage;
 			Start = destAddress;
@@ -171,41 +169,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			_sectionsByName.TryGetValue(".sealed", out _sealed);
 			_sectionsByName.TryGetValue(".invis", out _invisible);
 
-			Mount();
-		}
+			// OK, NOW MOUNT
 
-		/// <summary>
-		/// set memory protections.
-		/// </summary>
-		private void ProtectMemory()
-		{
-			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
-
-			foreach (var s in _sections)
-			{
-				Memory.Protect(s.Start, s.Size, s.Prot);
-			}
-		}
-
-		/// <summary>
-		/// load the PE into memory
-		/// </summary>
-		/// <param name="org">start address</param>
-		private void Mount()
-		{
 			LoadOffset = (long)Start - (long)_pe.ImageNtHeaders.OptionalHeader.ImageBase;
 			Memory = new MemoryBlock(Start, Size);
 			Memory.Activate();
 			Memory.Protect(Start, Size, MemoryBlock.Protection.RW);
 
 			// copy headers
-			Marshal.Copy(_fileData, 0, Z.US(Start), (int)_pe.ImageNtHeaders.OptionalHeader.SizeOfHeaders);
+			Marshal.Copy(fileData, 0, Z.US(Start), (int)_pe.ImageNtHeaders.OptionalHeader.SizeOfHeaders);
 
 			// copy sections
 			foreach (var s in _sections)
 			{
 				ulong datalength = Math.Min(s.Size, s.DiskSize);
-				Marshal.Copy(_fileData, (int)s.DiskStart, Z.US(s.Start), (int)datalength);
+				Marshal.Copy(fileData, (int)s.DiskStart, Z.US(s.Start), (int)datalength);
 				WaterboxUtils.ZeroMemory(Z.US(s.Start + datalength), (long)(s.SavedSize - datalength));
 			}
 
@@ -286,8 +264,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (_sectionsByName.TryGetValue(".midipix", out midipix))
 			{
 				var dataOffset = midipix.DiskStart;
-				CtorList = Z.SS(BitConverter.ToInt64(_fileData, (int)(dataOffset + 0x30)) + LoadOffset);
-				DtorList = Z.SS(BitConverter.ToInt64(_fileData, (int)(dataOffset + 0x38)) + LoadOffset);
+				CtorList = Z.SS(BitConverter.ToInt64(fileData, (int)(dataOffset + 0x30)) + LoadOffset);
+				DtorList = Z.SS(BitConverter.ToInt64(fileData, (int)(dataOffset + 0x38)) + LoadOffset);
 			}
 
 			Console.WriteLine($"Mounted `{ModuleName}` @{Start:x16}");
@@ -308,6 +286,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (_sectionsByName.ContainsKey(".bss"))
 				symload += $" -s .bss {_sectionsByName[".bss"].Start}";
 			Console.WriteLine(symload);
+		}
+
+		/// <summary>
+		/// set memory protections.
+		/// </summary>
+		private void ProtectMemory()
+		{
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
+
+			foreach (var s in _sections)
+			{
+				Memory.Protect(s.Start, s.Size, s.Prot);
+			}
 		}
 
 		public IntPtr Resolve(string entryPoint)
