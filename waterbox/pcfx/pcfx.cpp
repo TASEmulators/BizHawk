@@ -69,6 +69,9 @@ static uint16 BackupControl;
 static uint8 BackupRAM[0x8000], ExBackupRAM[0x8000];
 static uint8 ExBusReset; // I/O Register at 0x0700
 
+static bool Lagged;
+static void (*InputCallback)();
+
 // Checks to see if this main-RAM-area access
 // is in the same DRAM page as the last access.
 #define RAMLPCHECK                            \
@@ -707,7 +710,7 @@ EXPORT void FrameAdvance(MyFrameInfo& f)
 {
 	for (int i = 0; i < 2; i++)
 		InputData[i] = f.Buttons[i];
-
+	Lagged = true;
 	uint32_t ConsoleButtons = f.Buttons[2];
 	int NewActiveDisk = ActiveDisk;
 	#define ROSE(n) ((ConsoleButtons & 1 << (n)) > (PrevConsoleButtons & 1 << (n)))
@@ -733,6 +736,7 @@ EXPORT void FrameAdvance(MyFrameInfo& f)
 	f.Width = Ess.w;
 	f.Height = Ess.h;
 	f.Samples = Ess.SoundBufSize;
+	f.Lagged = Lagged;
 
 	const uint32_t* src = FrameBuffer;
 	uint32_t* dst = f.VideoBuffer;
@@ -797,7 +801,7 @@ EXPORT void EnableLayers(int mask)
 
 EXPORT void SetInputCallback(void (*callback)())
 {
-	// TODO
+	InputCallback = callback;
 }
 
 // settings
