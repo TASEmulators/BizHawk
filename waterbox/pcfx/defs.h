@@ -116,3 +116,5 @@ extern bool Setting_NoSpriteLimit;
 extern bool Setting_AdpcmBuggy;
 extern bool Setting_AdpcmNoClicks;
 extern bool Setting_ChromaInterpolate;
+
+extern int Setting_PortDevice[2];

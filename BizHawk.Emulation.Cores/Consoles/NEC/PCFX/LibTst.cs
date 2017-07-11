@@ -35,6 +35,22 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			RAINBOW = 256
 		}
 
+		[StructLayout(LayoutKind.Sequential)]
+		public class FrontendSettings
+		{
+			public int AdpcmEmulateBuggyCodec;
+			public int AdpcmSuppressChannelResetClicks;
+			public int HiResEmulation;
+			public int DisableSpriteLimit;
+			public int ChromaInterpolation;
+			public int ScanlineStart;
+			public int ScanlineEnd;
+			public int CdSpeed;
+			public int CpuEmulation;
+			public int Port1;
+			public int Port2;
+		}
+
 		[BizImport(CC)]
 		public abstract void SetCDCallbacks(LibSaturnus.CDTOCCallback toccallback,
 			LibSaturnus.CDSectorCallback sectorcallback);
@@ -44,5 +60,8 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 
 		[BizImport(CC)]
 		public abstract void EnableLayers(Layers mask);
+
+		[BizImport(CC)]
+		public abstract void PutSettingsBeforeInit(FrontendSettings s);
 	}
 }

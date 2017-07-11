@@ -1774,6 +1774,7 @@ namespace BizHawk.Client.EmuHawk
 			virtualBoyToolStripMenuItem.Visible = false;
 			sNESToolStripMenuItem.Visible = false;
 			neoGeoPocketToolStripMenuItem.Visible = false;
+			pCFXToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
@@ -1860,6 +1861,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "NGP":
 					neoGeoPocketToolStripMenuItem.Visible = true;
+					break;
+				case "PCFX":
+					pCFXToolStripMenuItem.Visible = true;
 					break;
 			}
 		}
@@ -4292,6 +4296,11 @@ namespace BizHawk.Client.EmuHawk
 		private void preferencesToolStripMenuItem2_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "NeoPop Settings");
+		}
+
+		private void preferencesToolStripMenuItem3_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
 		}
 
 		private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)

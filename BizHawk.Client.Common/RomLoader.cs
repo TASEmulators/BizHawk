@@ -539,7 +539,8 @@ namespace BizHawk.Client.Common
 
 								break;
 							case "PCFX":
-								nextEmulator = new Tst(nextComm, new[] { disc });
+								nextEmulator = new Tst(nextComm, new[] { disc },
+									(Tst.Settings)GetCoreSettings<Tst>(), (Tst.SyncSettings)GetCoreSyncSettings<Tst>());
 								break;
 							case "PCE":
 							case "PCECD":
