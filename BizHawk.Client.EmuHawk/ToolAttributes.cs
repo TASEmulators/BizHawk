@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace BizHawk.Client.EmuHawk
 {
 	[AttributeUsage(AttributeTargets.Class)]
-	public class ToolAttributes : Attribute
+	public class ToolAttribute : Attribute
 	{
-		public ToolAttributes(bool released, string[] supportedSystems)
+		public ToolAttribute(bool released, string[] supportedSystems)
 		{
 			Released = released;
 			SupportedSystems = supportedSystems;

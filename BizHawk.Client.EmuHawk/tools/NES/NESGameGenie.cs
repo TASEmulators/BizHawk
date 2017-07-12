@@ -8,7 +8,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[ToolAttributes(false, null)]
+	[Tool(false, null)]
 	public partial class NESGameGenie : Form, IToolFormAutoConfig
 	{
 		[RequiredService]

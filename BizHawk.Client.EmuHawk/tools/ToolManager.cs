@@ -740,7 +740,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var attr = tool.GetCustomAttributes(false)
-				.OfType<ToolAttributes>()
+				.OfType<ToolAttribute>()
 				.FirstOrDefault();
 
 			// If no supported systems mentioned assume all
