@@ -2017,20 +2017,20 @@ static void vdp_reg_w(unsigned int r, unsigned int d, unsigned int cycles)
 
 static void vdp_fifo_update(unsigned int cycles)
 {
-  int slots, count = 0;
-
+  int num, slots, count = 0;
+  
   const int *fifo_timing;
 
-  const int fifo_cycles_h32[16+2] =
+  const int fifo_cycles_h32[16+4] = 
   {
     230, 510, 810, 970, 1130, 1450, 1610, 1770, 2090, 2250, 2410, 2730, 2890, 3050, 3350, 3370,
-    MCYCLES_PER_LINE + 230, MCYCLES_PER_LINE + 510
+    MCYCLES_PER_LINE + 230, MCYCLES_PER_LINE + 510, MCYCLES_PER_LINE + 810, MCYCLES_PER_LINE + 970, 
   };
 
-  const int fifo_cycles_h40[18+2] =
+  const int fifo_cycles_h40[18+4] = 
   {
     352, 820, 948, 1076, 1332, 1460, 1588, 1844, 1972, 2100, 2356, 2484, 2612, 2868, 2996, 3124, 3364, 3380,
-    MCYCLES_PER_LINE + 352, MCYCLES_PER_LINE + 820
+    MCYCLES_PER_LINE + 352, MCYCLES_PER_LINE + 820, MCYCLES_PER_LINE + 948, MCYCLES_PER_LINE + 1076, 
   };
 
 
@@ -2038,28 +2038,28 @@ static void vdp_fifo_update(unsigned int cycles)
   if (reg[12] & 0x01)
   {
     fifo_timing = fifo_cycles_h40;
-    slots = 18 * (cycles / MCYCLES_PER_LINE);
+    slots = 18 * ((v_counter + 1) % lines_per_frame);
   }
   else
   {
     fifo_timing = fifo_cycles_h32;
-    slots = 16 * (cycles / MCYCLES_PER_LINE);
+    slots = 16 * ((v_counter + 1) % lines_per_frame);
   }
 
   /* number of access slots within current line */
-  cycles = cycles % MCYCLES_PER_LINE;
+  cycles -= mcycles_vdp;
   while (fifo_timing[count] <= cycles)
   {
     count++;
   }
 
-  /* number of processed FIFO entries since last access */
-  slots = (slots + count - fifo_slots) >> fifo_byte_access;
+  /* number of processed FIFO entries since last access (byte access needs two slots to process one FIFO word) */
+  num = (slots + count - fifo_slots) >> fifo_byte_access;
 
-  if (slots > 0)
+  if (num > 0)
   {
     /* process FIFO entries */
-    fifo_write_cnt -= slots;
+    fifo_write_cnt -= num;
 
     /* Clear FIFO full flag */
     status &= 0xFEFF;
@@ -2071,14 +2071,19 @@ static void vdp_fifo_update(unsigned int cycles)
 
       /* Set FIFO empty flag */
       status |= 0x200;
-    }
 
-    /* Update FIFO access slot counter */
-    fifo_slots += (slots << fifo_byte_access);
+      /* Reinitialize FIFO access slot counter */
+      fifo_slots = slots + count;
+    }
+    else
+    {
+      /* Update FIFO access slot counter */
+      fifo_slots += (num << fifo_byte_access);
+    }
   }
 
   /* next FIFO update cycle */
-  fifo_cycles = mcycles_vdp + fifo_timing[count | fifo_byte_access];
+  fifo_cycles = mcycles_vdp + fifo_timing[fifo_slots - slots + fifo_byte_access];
 }
 
 
