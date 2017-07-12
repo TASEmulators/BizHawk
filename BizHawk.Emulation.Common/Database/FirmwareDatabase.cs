@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
@@ -212,13 +213,15 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "GB", "World", "GB_boot_ROM.gb", "Game Boy BIOS");
 			FirmwareAndOption("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "GBC", "World", "GBC_boot_ROM.gb", "Game Boy Color BIOS");
 
-			Firmware("PCFX", "BIOS", "pcfxbios.bin");
-			Option("1a77fd83e337f906aecab27a1604db064cf10074", 1024 * 1024, "PCFX", "BIOS");
-			Option("8b662f7548078be52a871565e19511ccca28c5c8", 1024 * 1024, "PCFX", "BIOS");
+			Firmware("PCFX", "BIOS", "PCFX bios");
+			var pcfxbios = File("1A77FD83E337F906AECAB27A1604DB064CF10074", 1024 * 1024, "pcfxbios.bin", "PCFX BIOS 1.00");
+			var pcfxv101 = File("8B662F7548078BE52A871565E19511CCCA28C5C8", 1024 * 1024, "pcfxv101.bin", "PCFX BIOS 1.01");
+			Option("PCFX", "BIOS", pcfxbios, FirmwareOptionStatus.Ideal);
+			Option("PCFX", "BIOS", pcfxbios, FirmwareOptionStatus.Acceptable);
 
 			Firmware("PCFX", "SCSIROM", "fx-scsi.rom");
-			Option("65482a23ac5c10a6095aee1db5824cca54ead6e5", 512 * 1024, "PCFX", "SCSIROM");
-
+			var fxscsi = File("65482A23AC5C10A6095AEE1DB5824CCA54EAD6E5", 512 * 1024, "fx-scsi.rom", "PCFX SCSI ROM");
+			Option("PCFX", "SCSIROM", fxscsi);
 		}
 
 		// adds a defined firmware ID to the database
@@ -234,10 +237,13 @@ namespace BizHawk.Emulation.Common
 			FirmwareRecords.Add(fr);
 		}
 
-		// adds an acceptable option for a firmware ID to the database
-		private static FirmwareOption Option(string hash, long size, string systemId, string id, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
+		private static FirmwareOption _OptionWork(string hash, long size, string systemId, string id, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 		{
 			hash = hash.ToUpperInvariant();
+
+			//confirm that it's been added as a file
+			if (!FirmwareFilesByHash.ContainsKey(hash))
+				throw new InvalidOperationException("Added option for unregistered file");
 
 			var fo = new FirmwareOption
 			{
@@ -262,7 +268,7 @@ namespace BizHawk.Emulation.Common
 		// adds an acceptable option for a firmware ID to the database
 		private static FirmwareOption Option(string systemId, string id, FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 		{
-			var fo = Option(ff.Hash, ff.Size, systemId, id, status);
+			var fo = _OptionWork(ff.Hash, ff.Size, systemId, id, status);
 
 			// make sure this goes in as bad
 			if (ff.Bad)
@@ -296,7 +302,7 @@ namespace BizHawk.Emulation.Common
 		{
 			Firmware(systemId, id, descr);
 			File(hash, size, name, descr, "");
-			Option(hash, size, systemId, id);
+			_OptionWork(hash, size, systemId, id);
 		}
 
 		public static readonly List<FirmwareRecord> FirmwareRecords = new List<FirmwareRecord>();
@@ -326,7 +332,19 @@ namespace BizHawk.Emulation.Common
 
 		public enum FirmwareOptionStatus
 		{
-			Ideal, Acceptable, Unacceptable, Bad
+			//This is what we want you to use to get checkmarks, and for tasing
+			Ideal,
+
+			//This will work with our core
+			Acceptable,
+
+			//This is a good file, but it doesnt work with our core
+			Unacceptable,
+
+			//I know this is weird, you'd think the file is bad
+			//But bad files are definitely not ideal, acceptable, or unacceptable options.
+			//Really the only alternative to this is leaving it off as an option entirely--and we do want it here as an option, to categorize it as a BAD option.
+			Bad
 		}
 
 		public class FirmwareOption
