@@ -29,6 +29,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class FirmwaresConfig : Form
 	{
 		// friendlier names than the system Ids
+		// Redundant with SystemLookup? Not so fast. That datadrives things. This is one step abstracted. Don't be such a smart guy. Keep this redundant list up to date.
 		private static readonly Dictionary<string, string> SystemGroupNames = new Dictionary<string, string>
 		{
 			{ "NES", "NES" },
@@ -43,9 +44,14 @@ namespace BizHawk.Client.EmuHawk
 			{ "C64", "C64" },
 			{ "GEN", "Genesis" },
 			{ "SMS", "Sega Master System" },
-			{ "PSX", "Sony PlayStation" },
-			{ "Lynx", "Atari Lynx" },
-			{ "AppleII", "Apple II" }
+			{ "PSX", "PlayStation" },
+			{ "Lynx", "Lynx" },
+			{ "AppleII", "Apple II" },
+			{ "O2", "Odyssey 2" },
+			{ "GB", "Game Boy" },
+			{ "GBC", "Game Boy Color" },
+			{ "PCFX", "PC-FX" },
+			{ "32X", "32X" },
 		};
 
 		public string TargetSystem = null;
