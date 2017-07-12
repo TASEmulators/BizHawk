@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 {
-	[CoreAttributes("Pizza Boy", "Davide Berra", true, true, "c7bc6ee376028b3766de8d7a02e60ab794841f45",
+	[Core("Pizza Boy", "Davide Berra", true, true, "c7bc6ee376028b3766de8d7a02e60ab794841f45",
 		"https://github.com/davideberra/emu-pizza/", false)]
 	public class Pizza : WaterboxCore, IGameboyCommon
 	{

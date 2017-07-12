@@ -336,8 +336,8 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				movie.HeaderEntries.Add("Is32X", "1");
 			}
 
-			movie.Core = ((CoreAttributes)Attribute
-				.GetCustomAttribute(Global.Emulator.GetType(), typeof(CoreAttributes)))
+			movie.Core = ((CoreAttribute)Attribute
+				.GetCustomAttribute(Global.Emulator.GetType(), typeof(CoreAttribute)))
 				.CoreName;
 		}
 	}

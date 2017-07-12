@@ -6,7 +6,7 @@ using Jellyfish.Virtu;
 
 namespace BizHawk.Emulation.Cores.Computers.AppleII
 {
-	[CoreAttributes(
+	[Core(
 		"Virtu",
 		"fool",
 		isPorted: true,

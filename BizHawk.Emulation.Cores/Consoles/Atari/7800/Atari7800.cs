@@ -7,7 +7,7 @@ using EMU7800.Win;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari7800
 {
-	[CoreAttributes(
+	[Core(
 		"EMU7800",
 		"",
 		isPorted: true,

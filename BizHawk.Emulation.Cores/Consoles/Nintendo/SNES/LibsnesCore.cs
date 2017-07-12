@@ -17,7 +17,7 @@ using BizHawk.Emulation.Cores.Components.W65816;
 // wrap dll code around some kind of library-accessing interface so that it doesnt malfunction if the dll is unavailablecd
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	[CoreAttributes(
+	[Core(
 		"BSNES",
 		"byuu",
 		isPorted: true,

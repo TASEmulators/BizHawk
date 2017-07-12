@@ -25,7 +25,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Sony.PSX
 {
-	[CoreAttributes(
+	[Core(
 		"Octoshock",
 		"Mednafen Team",
 		isPorted: true,

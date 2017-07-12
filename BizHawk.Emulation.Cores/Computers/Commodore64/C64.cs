@@ -9,7 +9,7 @@ using BizHawk.Emulation.Cores.Computers.Commodore64.Media;
 
 namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
-	[CoreAttributes(
+	[Core(
 		"C64Hawk",
 		"SaxxonPike",
 		isPorted: false,

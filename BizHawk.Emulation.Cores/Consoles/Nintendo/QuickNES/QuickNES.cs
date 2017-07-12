@@ -8,7 +8,7 @@ using BizHawk.Common.BizInvoke;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 {
-	[CoreAttributes(
+	[Core(
 		"QuickNes",
 		"",
 		isPorted: true,

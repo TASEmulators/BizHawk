@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private string url = "";
 
-		public BizBoxInfoControl(CoreAttributes attributes)
+		public BizBoxInfoControl(CoreAttribute attributes)
 		{
 			InitializeComponent();
 			CoreNameLabel.Text = attributes.CoreName;

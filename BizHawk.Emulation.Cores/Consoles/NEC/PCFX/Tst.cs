@@ -15,7 +15,7 @@ using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 {
-	[CoreAttributes("T. S. T.", "Mednafen Team", true, false, "0.9.44.1",
+	[Core("T. S. T.", "Mednafen Team", true, false, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
 	public class Tst : WaterboxCore, IDriveLight,
 		ISettable<Tst.Settings, Tst.SyncSettings>

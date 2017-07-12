@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 {
-	[CoreAttributes("Virtual Boyee", "Mednafen Team", true, true, "0.9.44.1",
+	[Core("Virtual Boyee", "Mednafen Team", true, true, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
 	public class VirtualBoyee : WaterboxCore, ISettable<VirtualBoyee.Settings, VirtualBoyee.SyncSettings>
 	{

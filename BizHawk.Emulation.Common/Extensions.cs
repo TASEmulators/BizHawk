@@ -7,9 +7,9 @@ namespace BizHawk.Emulation.Common.IEmulatorExtensions
 {
 	public static class Extensions
 	{
-		public static CoreAttributes Attributes(this IEmulator core)
+		public static CoreAttribute Attributes(this IEmulator core)
 		{
-			return (CoreAttributes)Attribute.GetCustomAttribute(core.GetType(), typeof(CoreAttributes));
+			return (CoreAttribute)Attribute.GetCustomAttribute(core.GetType(), typeof(CoreAttribute));
 		}
 
 		// todo: most of the special cases involving the NullEmulator should probably go away

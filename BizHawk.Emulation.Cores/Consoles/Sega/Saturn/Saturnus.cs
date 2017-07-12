@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
-	[CoreAttributes("Saturnus", "Mednafen Team", true, false, "0.9.44.1",
+	[Core("Saturnus", "Mednafen Team", true, false, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
 	public class Saturnus : WaterboxCore,
 		IDriveLight, IRegionable, 

@@ -3,9 +3,9 @@
 namespace BizHawk.Emulation.Common
 {
 	[AttributeUsage(AttributeTargets.Class)]
-	public class CoreAttributes : Attribute
+	public class CoreAttribute : Attribute
 	{
-		public CoreAttributes(
+		public CoreAttribute(
 			string name,
 			string author,
 			bool isPorted = false,

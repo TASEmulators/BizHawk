@@ -6,7 +6,7 @@ using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	[CoreAttributes(
+	[Core(
 		"A7800Hawk",
 		"",
 		isPorted: false,

@@ -5,7 +5,7 @@ using BizHawk.Emulation.Cores.Components.CP1610;
 
 namespace BizHawk.Emulation.Cores.Intellivision
 {
-	[CoreAttributes(
+	[Core(
 		"IntelliHawk",
 		"BrandonE, Alyosha",
 		isPorted: false,

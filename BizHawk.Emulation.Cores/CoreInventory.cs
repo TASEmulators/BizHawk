@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores
 		private readonly Dictionary<string, List<Core>> systems = new Dictionary<string, List<Core>>();
 
 
-		private void ProcessConstructor(Type type, string system, CoreAttributes coreattr, ConstructorInfo cons)
+		private void ProcessConstructor(Type type, string system, CoreAttribute coreattr, ConstructorInfo cons)
 		{
 			Core core = new Core(coreattr.CoreName, type, cons);
 			List<Core> ss;
@@ -176,7 +176,7 @@ namespace BizHawk.Emulation.Cores
 				{
 					if (!typ.IsAbstract && typ.GetInterfaces().Contains(typeof(IEmulator)))
 					{
-						var coreattr = typ.GetCustomAttributes(typeof(CoreAttributes), false);
+						var coreattr = typ.GetCustomAttributes(typeof(CoreAttribute), false);
 						if (coreattr.Length != 1)
 							throw new InvalidOperationException(string.Format("IEmulator {0} without CoreAttributes!", typ));
 						var cons = typ.GetConstructors(BindingFlags.Public | BindingFlags.Instance)
@@ -185,7 +185,7 @@ namespace BizHawk.Emulation.Cores
 						{
 							foreach (string system in ((CoreConstructorAttribute)con.GetCustomAttributes(typeof(CoreConstructorAttribute), false)[0]).Systems)
 							{
-								ProcessConstructor(typ, system, (CoreAttributes)coreattr[0], con);
+								ProcessConstructor(typ, system, (CoreAttribute)coreattr[0], con);
 							}
 						}
 					}

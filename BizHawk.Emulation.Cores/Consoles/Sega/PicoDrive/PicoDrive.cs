@@ -11,7 +11,7 @@ using System.IO;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 {
-	[CoreAttributes("PicoDrive", "notaz", true, true,
+	[Core("PicoDrive", "notaz", true, true,
 		"0e352905c7aa80b166933970abbcecfce96ad64e", "https://github.com/notaz/picodrive", false)]
 	public class PicoDrive : WaterboxCore, IDriveLight, IRegionable
 	{

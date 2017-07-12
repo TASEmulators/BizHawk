@@ -10,7 +10,7 @@ using BizHawk.Emulation.DiscSystem;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
-	[CoreAttributes(
+	[Core(
 		"Genplus-gx",
 		"",
 		isPorted: true,

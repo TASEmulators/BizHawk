@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Belogic
 {
-	[CoreAttributes("uzem", "David Etherton", true, true, "", "", false)]
+	[Core("uzem", "David Etherton", true, true, "", "", false)]
 	public class Uzem : WaterboxCore
 	{
 		private LibUzem _uze;

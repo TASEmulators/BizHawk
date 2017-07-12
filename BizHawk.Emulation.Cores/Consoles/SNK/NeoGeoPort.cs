@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.SNK
 {
-	[CoreAttributes("NeoPop", "Thomas Klausner, Mednafen Team", true, true, "0.9.44.1",
+	[Core("NeoPop", "Thomas Klausner, Mednafen Team", true, true, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
 	public class NeoGeoPort : WaterboxCore, 
 		ISaveRam, // NGP provides its own saveram interface

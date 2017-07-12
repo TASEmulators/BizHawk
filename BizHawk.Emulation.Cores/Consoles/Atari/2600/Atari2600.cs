@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	[CoreAttributes(
+	[Core(
 		"Atari2600Hawk",
 		"Micro500, Alyosha, adelikat, natt",
 		isPorted: false,

@@ -2,7 +2,7 @@
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
-	[CoreAttributes(
+	[Core(
 		"DualGambatte",
 		"sinamas/natt",
 		isPorted: true,
