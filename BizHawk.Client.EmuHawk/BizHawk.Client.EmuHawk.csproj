@@ -696,7 +696,7 @@
     <Compile Include="Sound\Utilities\SyncToAsyncProvider.cs" />
     <Compile Include="Sound\Utilities\SoundOutputProvider.cs" />
     <Compile Include="Throttle.cs" />
-    <Compile Include="ToolAttributes.cs" />
+    <Compile Include="ToolAttribute.cs" />
     <Compile Include="tools\AutoHawk.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1173,7 +1173,7 @@
     <Compile Include="tools\VirtualPads\schema\NesSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\PadSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\PceSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\SchemaAttributes.cs" />
+    <Compile Include="tools\VirtualPads\schema\SchemaAttribute.cs" />
     <Compile Include="tools\VirtualPads\schema\SmsSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SnesSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\VirtualBoySchema.cs" />

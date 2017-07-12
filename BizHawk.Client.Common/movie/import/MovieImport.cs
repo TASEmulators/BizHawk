@@ -129,7 +129,7 @@ namespace BizHawk.Client.Common
 
 		private static bool TypeImportsExtension(Type t, string ext)
 		{
-			var attrs = (ImportExtension[])t.GetCustomAttributes(typeof(ImportExtension), inherit: false);
+			var attrs = (ImportExtensionAttribute[])t.GetCustomAttributes(typeof(ImportExtensionAttribute), inherit: false);
 
 			if (attrs.Any(a => a.Extension.ToUpper() == ext.ToUpper()))
 			{

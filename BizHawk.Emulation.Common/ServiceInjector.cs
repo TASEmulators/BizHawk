@@ -19,8 +19,8 @@ namespace BizHawk.Emulation.Common
 			object[] tmp = new object[1];
 
 			foreach (var propinfo in
-				targetType.GetPropertiesWithAttrib(typeof(RequiredService))
-				.Concat(targetType.GetPropertiesWithAttrib(typeof(OptionalService))))
+				targetType.GetPropertiesWithAttrib(typeof(RequiredServiceAttribute))
+				.Concat(targetType.GetPropertiesWithAttrib(typeof(OptionalServiceAttribute))))
 			{
 				propinfo.GetSetMethod(true).Invoke(target, tmp);
 			}
@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Common
 			Type targetType = target.GetType();
 			object[] tmp = new object[1];
 
-			foreach (var propinfo in targetType.GetPropertiesWithAttrib(typeof(RequiredService)))
+			foreach (var propinfo in targetType.GetPropertiesWithAttrib(typeof(RequiredServiceAttribute)))
 			{
 				tmp[0] = source.GetService(propinfo.PropertyType);
 				if (tmp[0] == null)
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Common
 				propinfo.GetSetMethod(true).Invoke(target, tmp);
 			}
 
-			foreach (var propinfo in targetType.GetPropertiesWithAttrib(typeof(OptionalService)))
+			foreach (var propinfo in targetType.GetPropertiesWithAttrib(typeof(OptionalServiceAttribute)))
 			{
 				tmp[0] = source.GetService(propinfo.PropertyType);
 				propinfo.GetSetMethod(true).Invoke(target, tmp);
@@ -61,19 +61,19 @@ namespace BizHawk.Emulation.Common
 		/// </summary>
 		public static bool IsAvailable(IEmulatorServiceProvider source, Type targetType)
 		{
-			return targetType.GetPropertiesWithAttrib(typeof(RequiredService))
+			return targetType.GetPropertiesWithAttrib(typeof(RequiredServiceAttribute))
 				.Select(pi => pi.PropertyType)
 				.All(source.HasService);
 		}
 	}
 
 	[AttributeUsage(AttributeTargets.Property)]
-	public class RequiredService : Attribute
+	public class RequiredServiceAttribute : Attribute
 	{
 	}
 
 	[AttributeUsage(AttributeTargets.Property)]
-	public class OptionalService : Attribute
+	public class OptionalServiceAttribute : Attribute
 	{
 	}
 }
