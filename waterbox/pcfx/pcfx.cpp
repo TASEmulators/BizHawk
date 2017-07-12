@@ -343,8 +343,8 @@ static MDFN_COLD void LoadCommon(std::vector<CDIF *> *CDInterfaces, const uint8_
 	uint32 RAM_Map_Addresses[1] = {0x00000000};
 	uint32 BIOSROM_Map_Addresses[1] = {0xFFF00000};
 
-	RAM = PCFX_V810.SetFastMap(RAM_Map_Addresses, 0x00200000, 1, _("RAM"));
-	BIOSROM = PCFX_V810.SetFastMap(BIOSROM_Map_Addresses, 0x00100000, 1, _("BIOS ROM"));
+	RAM = PCFX_V810.SetFastMap(RAM_Map_Addresses, 0x00200000, 1, _("RAM"), true);
+	BIOSROM = PCFX_V810.SetFastMap(BIOSROM_Map_Addresses, 0x00100000, 1, _("BIOS ROM"), false);
 
 	memcpy(BIOSROM, bios, 1024 * 1024);
 
@@ -356,7 +356,7 @@ static MDFN_COLD void LoadCommon(std::vector<CDIF *> *CDInterfaces, const uint8_
 			FileStream FXSCSIFile(fxscsi_path, FileStream::MODE_READ);
 			uint32 FXSCSI_Map_Addresses[1] = {0x80780000};
 
-			FXSCSIROM = PCFX_V810.SetFastMap(FXSCSI_Map_Addresses, 0x0080000, 1, _("FX-SCSI ROM"));
+			FXSCSIROM = PCFX_V810.SetFastMap(FXSCSI_Map_Addresses, 0x0080000, 1, _("FX-SCSI ROM"), false);
 
 			FXSCSIFile.read(FXSCSIROM, 1024 * 512);
 		}

@@ -7,6 +7,9 @@
 		"*.inc": "cpp",
 		"system_error": "cpp",
 		"ios": "cpp",
-		"xiosbase": "cpp"
+		"xiosbase": "cpp",
+		"iosfwd": "cpp",
+		"xlocale": "cpp",
+		"xstring": "cpp"
 	}
 }

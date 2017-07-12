@@ -4,7 +4,7 @@ CCFLAGS:= -I. -I../emulibc \
 	-Wall -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast -Werror=implicit-function-declaration \
 	-std=c++0x -fomit-frame-pointer -fvisibility=hidden -fno-exceptions -fno-rtti \
 	-DLSB_FIRST \
-	-O0 -g
+	-O3 -flto
 
 TARGET = pcfx.wbx
 
@@ -29,8 +29,8 @@ $(TARGET).in: $(OBJS)
 	@$(CC) -o $@ $(LDFLAGS) $(CCFLAGS) $(OBJS) ../emulibc/libemuhost.so
 
 $(TARGET): $(TARGET).in
-#	strip $< -o $@ -R /4 -R /14 -R /29 -R /41 -R /55 -R /67 -R /78 -R /89 -R /104
-	cp $< $@
+	strip $< -o $@ -R /4 -R /14 -R /29 -R /41 -R /55 -R /67 -R /78 -R /89 -R /104
+#	cp $< $@
 
 clean:
 	rm -rf $(OBJ_DIR)

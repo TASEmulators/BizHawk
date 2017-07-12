@@ -67,11 +67,11 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			_core = PreInit<LibTst>(new PeRunnerOptions
 			{
 				Filename = "pcfx.wbx",
-				SbrkHeapSizeKB = 1024,
-				SealedHeapSizeKB = 4 * 1024,
-				InvisibleHeapSizeKB = 256,
-				PlainHeapSizeKB = 256,
-				MmapHeapSizeKB = 32 * 1024
+				SbrkHeapSizeKB = 512,
+				SealedHeapSizeKB = 2 * 1024,
+				InvisibleHeapSizeKB = 4,
+				PlainHeapSizeKB = 4 * 1024,
+				MmapHeapSizeKB = 6 * 1024,
 			});
 
 			SetCdCallbacks();

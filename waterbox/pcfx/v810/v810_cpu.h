@@ -160,7 +160,7 @@ class V810
  void SetIOWriteHandlers(void MDFN_FASTCALL (*write8)(v810_timestamp_t &, uint32, uint8), void MDFN_FASTCALL (*write16)(v810_timestamp_t &, uint32, uint16), void MDFN_FASTCALL (*write32)(v810_timestamp_t &, uint32, uint32)) MDFN_COLD;
 
  // Length specifies the number of bytes to map in, at each location specified by addresses[] (for mirroring)
- uint8 *SetFastMap(uint32 addresses[], uint32 length, unsigned int num_addresses, const char *name) MDFN_COLD;
+ uint8 *SetFastMap(uint32 addresses[], uint32 length, unsigned int num_addresses, const char *name, bool writable) MDFN_COLD;
 
  INLINE void ResetTS(v810_timestamp_t new_base_timestamp)
  {
@@ -311,8 +311,6 @@ class V810
  bool have_src_cache, have_dst_cache;
 
  uint8 *FastMap[(1ULL << 32) / V810_FAST_MAP_PSIZE];
- std::vector<std::unique_ptr<uint8[]>> FastMapAllocList;
-
 
  #ifdef WANT_DEBUGGER
  void (*CPUHook)(const v810_timestamp_t timestamp, uint32 PC);
