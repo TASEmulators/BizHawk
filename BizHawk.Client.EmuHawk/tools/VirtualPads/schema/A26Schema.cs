@@ -6,7 +6,7 @@ using BizHawk.Emulation.Cores.Atari.Atari2600;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[SchemaAttributes("A26")]
+	[Schema("A26")]
 	public class A26Schema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)

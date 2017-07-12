@@ -6,7 +6,7 @@ using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[SchemaAttributes("GEN")]
+	[Schema("GEN")]
 	public class GenSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)

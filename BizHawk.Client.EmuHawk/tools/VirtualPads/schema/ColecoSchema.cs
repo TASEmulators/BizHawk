@@ -6,7 +6,7 @@ using BizHawk.Emulation.Cores.ColecoVision;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[SchemaAttributes("Coleco")]
+	[Schema("Coleco")]
 	public class ColecoSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)

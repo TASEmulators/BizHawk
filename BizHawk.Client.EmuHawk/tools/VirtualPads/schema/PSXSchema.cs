@@ -7,7 +7,7 @@ using BizHawk.Emulation.Cores.Sony.PSX;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[SchemaAttributes("PSX")]
+	[Schema("PSX")]
 	public class PSXSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)

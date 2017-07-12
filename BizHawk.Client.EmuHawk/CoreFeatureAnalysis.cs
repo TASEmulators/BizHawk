@@ -37,8 +37,8 @@ namespace BizHawk.Client.EmuHawk
 					Services.Add(si.TypeName, si);
 				}
 
-				var notapplicableAttr = ((ServiceNotApplicable)Attribute
-					.GetCustomAttribute(emu.GetType(), typeof(ServiceNotApplicable)));
+				var notapplicableAttr = ((ServiceNotApplicableAttribute)Attribute
+					.GetCustomAttribute(emu.GetType(), typeof(ServiceNotApplicableAttribute)));
 
 				if (notapplicableAttr != null)
 				{

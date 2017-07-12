@@ -7,7 +7,7 @@ using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[SchemaAttributes("A7800Hawk")]
+	[Schema("A7800Hawk")]
 	public class A7800HawkSchema : IVirtualPadSchema
 	{
 		private string UnpluggedControllerName => typeof(UnpluggedController).DisplayName();

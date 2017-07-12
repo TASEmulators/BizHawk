@@ -6,7 +6,7 @@ using BizHawk.Emulation.Cores.Atari.Atari7800;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[SchemaAttributes("A78")]
+	[Schema("A78")]
 	public class A78Schema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
