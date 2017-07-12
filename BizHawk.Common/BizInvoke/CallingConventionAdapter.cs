@@ -23,8 +23,8 @@ namespace BizHawk.Common.BizInvoke
 	public static class CallingConventionAdapterExtensions
 	{
 		public static T GetDelegateForFunctionPointer<T>(this ICallingConventionAdapter a, IntPtr p)
-			where T: class
-		{ 
+			where T : class
+		{
 			return (T)(object)a.GetDelegateForFunctionPointer(p, typeof(T));
 		}
 	}
@@ -155,6 +155,16 @@ namespace BizHawk.Common.BizInvoke
 				throw new InvalidOperationException("Out of Thunk memory");
 			}
 
+			private int FindUsedIndex(object o)
+			{
+				for (int i = 0; i < _refs.Length; i++)
+				{
+					if (_refs[i] == o)
+						return i;
+				}
+				return -1;
+			}
+
 			private static void VerifyParameter(Type type)
 			{
 				if (type == typeof(float) || type == typeof(double))
@@ -202,8 +212,21 @@ namespace BizHawk.Common.BizInvoke
 
 			public IntPtr GetFunctionPointerForDelegate(Delegate d)
 			{
-				return GetArrivalFunctionPointer(
-					Marshal.GetFunctionPointerForDelegate(d), new ParameterInfo(d.GetType()), d);
+				// for this call only, the expectation is that it can be called multiple times
+				// on the same delegate and not leak extra memory, so the result has to be cached
+				lock (_sync)
+				{
+					var index = FindUsedIndex(d);
+					if (index != -1)
+					{
+						return GetThunkAddress(index);
+					}
+					else
+					{
+						return GetArrivalFunctionPointer(
+							Marshal.GetFunctionPointerForDelegate(d), new ParameterInfo(d.GetType()), d);
+					}
+				}
 			}
 
 			public IntPtr GetArrivalFunctionPointer(IntPtr p, ParameterInfo pp, object lifetime)
