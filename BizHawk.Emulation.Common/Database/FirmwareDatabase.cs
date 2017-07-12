@@ -237,6 +237,8 @@ namespace BizHawk.Emulation.Common
 		// adds an acceptable option for a firmware ID to the database
 		private static FirmwareOption Option(string hash, long size, string systemId, string id, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 		{
+			hash = hash.ToUpperInvariant();
+
 			var fo = new FirmwareOption
 			{
 				SystemId = systemId,
@@ -274,18 +276,18 @@ namespace BizHawk.Emulation.Common
 		// defines a firmware file
 		private static FirmwareFile File(string hash, long size, string recommendedName, string descr, string additionalInfo = "")
 		{
-			string hashfix = hash.ToUpperInvariant();
+			hash = hash.ToUpperInvariant();
 
 			var ff = new FirmwareFile
 			{
-				Hash = hashfix,
+				Hash = hash,
 				Size = size,
 				RecommendedName = recommendedName,
 				Description = descr,
 				Info = additionalInfo
 			};
 			FirmwareFiles.Add(ff);
-			FirmwareFilesByHash[hashfix] = ff;
+			FirmwareFilesByHash[hash] = ff;
 			return ff;
 		}
 
