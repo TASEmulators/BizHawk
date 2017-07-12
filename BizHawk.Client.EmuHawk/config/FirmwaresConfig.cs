@@ -414,13 +414,25 @@ namespace BizHawk.Client.EmuHawk
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				var ff = FirmwareDatabase.FirmwareFilesByHash[o.Hash];
 				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Ideal)
+				{
 					olvi.ImageIndex = FirmwaresConfigInfo.idIdeal;
+					olvi.ToolTipText = FirmwaresConfigInfo.ttIdeal;
+				}
 				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Acceptable)
+				{
 					olvi.ImageIndex = FirmwaresConfigInfo.idAcceptable;
+					olvi.ToolTipText = FirmwaresConfigInfo.ttAcceptable;
+				}
 				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Unacceptable)
+				{
 					olvi.ImageIndex = FirmwaresConfigInfo.idUnacceptable;
+					olvi.ToolTipText = FirmwaresConfigInfo.ttUnacceptable;
+				}
 				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Bad)
+				{
 					olvi.ImageIndex = FirmwaresConfigInfo.idBad;
+					olvi.ToolTipText = FirmwaresConfigInfo.ttBad;
+				}
 				olvi.SubItems[0].Text = ff.Size.ToString();
 				olvi.SubItems[0].Font = this.Font; // why doesnt this work?
 				olvi.SubItems[1].Text = "sha1:" + o.Hash;

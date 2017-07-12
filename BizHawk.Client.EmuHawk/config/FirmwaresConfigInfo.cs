@@ -15,6 +15,11 @@ namespace BizHawk.Client.EmuHawk
 		public const int idUnacceptable = 2;
 		public const int idBad = 3;
 
+		public const string ttIdeal = "COOL: Ideal for TASing and anything. There can only be one.";
+		public const string ttAcceptable = "OK: This works on the core";
+		public const string ttUnacceptable = "NO: This doesn't work on the core";
+		public const string ttBad = "BAD! Why are you using this file";
+
 		public FirmwaresConfigInfo()
 		{
 			InitializeComponent();
