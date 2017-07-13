@@ -513,7 +513,6 @@ namespace BizHawk.Client.Common
 								nextEmulator = genesis;
 								break;
 							case "SAT":
-								//nextEmulator = new Yabause(nextComm, disc, GetCoreSyncSettings<Yabause>());
 								nextEmulator = new Saturnus(nextComm, new[] { disc }, Deterministic,
 									(Saturnus.Settings)GetCoreSettings<Saturnus>(), (Saturnus.SyncSettings)GetCoreSyncSettings<Saturnus>());
 								break;
