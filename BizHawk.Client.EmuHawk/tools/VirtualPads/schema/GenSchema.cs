@@ -3,6 +3,7 @@ using System.Drawing;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
+using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -11,7 +12,24 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			var devs = ((GPGX)core).GetDevices();
+			if (core is GPGX)
+			{
+				return GpgxPadSchemas((GPGX)core);
+			}
+
+			return PicoPadSchemas((PicoDrive)core);
+		}
+
+		private IEnumerable<PadSchema> PicoPadSchemas(PicoDrive core)
+		{
+			yield return SixButtonController(1);
+			yield return SixButtonController(2);
+			yield return ConsoleButtons();
+		}
+
+		private IEnumerable<PadSchema> GpgxPadSchemas(GPGX core)
+		{
+			var devs = (core).GetDevices();
 			int player = 1;
 			foreach (var dev in devs)
 			{
