@@ -32,6 +32,7 @@ using BizHawk.Client.ApiHawk;
 using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.SNK;
+using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1779,7 +1780,11 @@ namespace BizHawk.Client.EmuHawk
 			switch (system)
 			{
 				case "GEN":
-					GenesisSubMenu.Visible = true;
+					if (!(Emulator is PicoDrive)) // Currently PicoDrive doesn't support anything in this menu
+					{
+						GenesisSubMenu.Visible = true;
+					}
+
 					break;
 				case "TI83":
 					TI83SubMenu.Visible = true;
