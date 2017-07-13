@@ -2108,7 +2108,7 @@ namespace BizHawk.Client.EmuHawk
 				if (VersionInfo.DeveloperBuild)
 				{
 					return FormatFilter(
-						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.vb;*.ngp;*.ngc;*.psf;*.minipsf;*.nsf;%ARCH%",
+						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.32x;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.vb;*.ngp;*.ngc;*.psf;*.minipsf;*.nsf;%ARCH%",
 						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
 						"Disc Images", "*.cue;*.ccd;*.m3u",
 						"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
@@ -2121,7 +2121,7 @@ namespace BizHawk.Client.EmuHawk
 						"Atari 2600", "*.a26;*.bin;%ARCH%",
 						"Atari 7800", "*.a78;*.bin;%ARCH%",
 						"Atari Lynx", "*.lnx;%ARCH%",
-						"Genesis", "*.gen;*.smd;*.bin;*.md;*.cue;*.ccd;%ARCH%",
+						"Genesis", "*.gen;*.smd;*.bin;*.md;*.32x;*.cue;*.ccd;%ARCH%",
 						"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
 						"Gameboy Advance", "*.gba;%ARCH%",
 						"Colecovision", "*.col;%ARCH%",
@@ -2140,7 +2140,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.ngp;*.ngc;*.prg;*.d64;*.g64;*.minipsf;*.nsf;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.32x;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.ngp;*.ngc;*.prg;*.d64;*.g64;*.minipsf;*.nsf;%ARCH%",
 					"Disc Images", "*.cue;*.ccd;*.m3u",
 					"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -2159,7 +2159,7 @@ namespace BizHawk.Client.EmuHawk
 					"TI-83", "*.rom;%ARCH%",
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
-					"Genesis", "*.gen;*.md;*.smd;*.bin;*.cue;*.ccd;%ARCH%",
+					"Genesis", "*.gen;*.md;*.smd;*.32x;*.bin;*.cue;*.ccd;%ARCH%",
 					"WonderSwan", "*.ws;*.wsc;%ARCH%",
 					"Apple II", "*.dsk;*.do;*.po;%ARCH%",
 					"Virtual Boy", "*.vb;%ARCH%",
