@@ -201,16 +201,18 @@ static void Blit(void)
 	}
 }
 
+static uint32_t PrevButtons;
 ECL_EXPORT void FrameAdvance(MyFrameInfo *f)
 {
 	current_frame = f;
 	PicoInputWasRead = 0;
 	PicoPad[0] = f->Buttons & 0xfff;
 	PicoPad[1] = f->Buttons >> 12 & 0xfff;
-	if (f->Buttons & 0x1000000)
+	if ((f->Buttons & 0x1000000) > (PrevButtons & 0x1000000))
 		PicoPower();
-	if (f->Buttons & 0x2000000)
+	if ((f->Buttons & 0x2000000) > (PrevButtons & 0x2000000))
 		PicoReset();
+	PrevButtons = f->Buttons;
 
 	PicoFrame();
 	Blit();
