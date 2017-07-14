@@ -2,9 +2,8 @@
 using System.Drawing;
 using System.Windows.Forms;
 
-using LuaInterface;
+using NLua;
 using System.Collections.Generic;
-using System.IO;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -380,6 +379,18 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var p = PointToClient(Control.MousePosition);
 			return p;
+		}
+
+		private void DoLuaClick(object sender, EventArgs e)
+		{
+			LuaWinform parent = Parent as LuaWinform;
+			parent?.DoLuaEvent(Handle);
+		}
+
+		protected override void OnClick(EventArgs e)
+		{
+			DoLuaClick(this, e);
+			base.OnClick(e);
 		}
 	}
 }
