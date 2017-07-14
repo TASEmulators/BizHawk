@@ -677,8 +677,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddGUIText(message, x, y, Color.Black, forecolor ?? Color.White, a);
 		}
 
-
-		[LuaMethodAttributes("createcanvas", "Creates a canvas of the given size and, if specified, the given coordinates.")]
+		[LuaMethod("createcanvas", "Creates a canvas of the given size and, if specified, the given coordinates.")]
 		public LuaTable Text(int width, int height, int? x = null, int? y = null)
 		{
 			var canvas = new LuaCanvas(width, height, x, y);

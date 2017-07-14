@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -7,6 +7,7 @@ using System.Windows.Forms;
 
 using BizHawk.Client.Common;
 using NLua;
+using System.IO;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -77,7 +78,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethod("button", "Creates a button control on the given form. The caption property will be the text value on the button. clickEvent is the name of a Lua function that will be invoked when the button is clicked. x, and y are the optional location parameters for the position of the button within the given form. The function returns the handle of the created button. Width and Height are optional, if not specified they will be a default size")]
+		[LuaMethod(
+			"button", "Creates a button control on the given form. The caption property will be the text value on the button. clickEvent is the name of a Lua function that will be invoked when the button is clicked. x, and y are the optional location parameters for the position of the button within the given form. The function returns the handle of the created button. Width and Height are optional, if not specified they will be a default size")]
 		public int Button(
 			int formHandle,
 			string caption,
@@ -111,7 +113,8 @@ namespace BizHawk.Client.EmuHawk
 			return (int)button.Handle;
 		}
 
-		[LuaMethod("checkbox", "Creates a checkbox control on the given form. The caption property will be the text of the checkbox. x and y are the optional location parameters for the position of the checkbox within the form")]
+		[LuaMethod(
+			"checkbox", "Creates a checkbox control on the given form. The caption property will be the text of the checkbox. x and y are the optional location parameters for the position of the checkbox within the form")]
 		public int Checkbox(int formHandle, string caption, int? x = null, int? y = null)
 		{
 			var form = GetForm(formHandle);
@@ -178,7 +181,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethod("dropdown", "Creates a dropdown (with a ComboBoxStyle of DropDownList) control on the given form. Dropdown items are passed via a lua table. Only the values will be pulled for the dropdown items, the keys are irrelevant. Items will be sorted alphabetically. x and y are the optional location parameters, and width and height are the optional size parameters.")]
+		[LuaMethod(
+			"dropdown", "Creates a dropdown (with a ComboBoxStyle of DropDownList) control on the given form. Dropdown items are passed via a lua table. Only the values will be pulled for the dropdown items, the keys are irrelevant. Items will be sorted alphabetically. x and y are the optional location parameters, and width and height are the optional size parameters.")]
 		public int Dropdown(
 			int formHandle,
 			LuaTable items,
@@ -208,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				SetSize(dropdown, width.Value, height.Value);
 			}
-			
+
 			return (int)dropdown.Handle;
 		}
 
@@ -224,7 +228,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						return form.GetType().GetProperty(property).GetValue(form, null).ToString();
 					}
-					
+
 					foreach (Control control in form.Controls)
 					{
 						if (control.Handle == ptr)
@@ -236,7 +240,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				Log(ex.Message);
+				ConsoleLuaLibrary.Log(ex.Message);
 			}
 
 			return "";
@@ -254,7 +258,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						return form.Text;
 					}
-					
+
 					foreach (Control control in form.Controls)
 					{
 						if (control.Handle == ptr)
@@ -263,7 +267,7 @@ namespace BizHawk.Client.EmuHawk
 							{
 								return (control as LuaDropDown).SelectedItem.ToString();
 							}
-							
+
 							return control.Text;
 						}
 					}
@@ -271,7 +275,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				Log(ex.Message);
+				ConsoleLuaLibrary.Log(ex.Message);
 			}
 
 			return "";
@@ -287,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					return false;
 				}
-				
+
 				foreach (Control control in form.Controls)
 				{
 					if (control.Handle == ptr)
@@ -296,7 +300,7 @@ namespace BizHawk.Client.EmuHawk
 						{
 							return (control as LuaCheckbox).Checked;
 						}
-						
+
 						return false;
 					}
 				}
@@ -305,7 +309,8 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		[LuaMethod("label", "Creates a label control on the given form. The caption property is the text of the label. x, and y are the optional location parameters for the position of the label within the given form. The function returns the handle of the created label. Width and Height are optional, if not specified they will be a default size.")]
+		[LuaMethod(
+			"label", "Creates a label control on the given form. The caption property is the text of the label. x, and y are the optional location parameters for the position of the label within the given form. The function returns the handle of the created label. Width and Height are optional, if not specified they will be a default size.")]
 		public int Label(
 			int formHandle,
 			string caption,
@@ -343,7 +348,8 @@ namespace BizHawk.Client.EmuHawk
 			return (int)label.Handle;
 		}
 
-		[LuaMethod("newform", "creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created.")]
+		[LuaMethod(
+			"newform", "creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created.")]
 		public int NewForm(int? width = null, int? height = null, string title = null, LuaFunction onClose = null)
 		{
 			var form = new LuaWinform(CurrentThread);
@@ -377,7 +383,8 @@ namespace BizHawk.Client.EmuHawk
 			return (int)form.Handle;
 		}
 
-		[LuaMethod("openfile", "Creates a standard openfile dialog with optional parameters for the filename, directory, and filter. The return value is the directory that the user picked. If they chose to cancel, it will return an empty string")]
+		[LuaMethod(
+			"openfile", "Creates a standard openfile dialog with optional parameters for the filename, directory, and filter. The return value is the directory that the user picked. If they chose to cancel, it will return an empty string")]
 		public string OpenFile(string fileName = null, string initialDirectory = null, string filter = "All files (*.*)|*.*")
 		{
 			// filterext format ex: "Image Files(*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
@@ -386,27 +393,29 @@ namespace BizHawk.Client.EmuHawk
 			{
 				openFileDialog1.InitialDirectory = initialDirectory;
 			}
-			
+
 			if (fileName != null)
 			{
 				openFileDialog1.FileName = fileName;
 			}
-			
+
 			if (filter != null)
 			{
 				openFileDialog1.AddExtension = true;
 				openFileDialog1.Filter = filter;
 			}
-			
+
 			if (openFileDialog1.ShowDialog() == DialogResult.OK)
 			{
 				return openFileDialog1.FileName;
 			}
-			
+
 			return "";
 		}
 
-		[LuaMethodAttributes("PictureBox", "Creates a new drawing area in the form. Optionally the location in the form as well as the size of the drawing area can be specified. Returns the handle the component can be refered to with.")]
+		[LuaMethod(
+			"pictureBox",
+			"Creates a new drawing area in the form. Optionally the location in the form as well as the size of the drawing area can be specified. Returns the handle the component can be refered to with.")]
 		public int PictureBox(int formHandle, int? x = null, int? y = null, int? width = null, int? height = null)
 		{
 			var form = GetForm(formHandle);
@@ -414,7 +423,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return 0;
 			}
-			
+
 			var pictureBox = new LuaPictureBox();
 			form.Controls.Add(pictureBox);
 
@@ -435,8 +444,8 @@ namespace BizHawk.Client.EmuHawk
 
 		#region LuaPictureBox Methods
 
-		[LuaMethodAttributes(
-			"Clear",
+		[LuaMethod(
+			"clear",
 			"Clears the canvas")]
 		public void Clear(int componentHandle, Color color)
 		{
@@ -466,8 +475,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"Refresh",
+		[LuaMethod(
+			"refresh",
 			"Redraws the canvas")]
 		public void Refresh(int componentHandle)
 		{
@@ -497,8 +506,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"SetDefaultForegroundColor",
+		[LuaMethod(
+			"setDefaultForegroundColor",
 			"Sets the default foreground color to use in drawing methods, white by default")]
 		public void SetDefaultForegroundColor(int componentHandle, Color color)
 		{
@@ -528,8 +537,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"SetDefaultBackgroundColor",
+		[LuaMethod(
+			"setDefaultBackgroundColor",
 			"Sets the default background color to use in drawing methods, transparent by default")]
 		public void SetDefaultBackgroundColor(int componentHandle, Color color)
 		{
@@ -559,8 +568,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"SetDefaultTextBackground",
+		[LuaMethod(
+			"setDefaultTextBackground",
 			"Sets the default backgroiund color to use in text drawing methods, half-transparent black by default")]
 		public void SetDefaultTextBackground(int componentHandle, Color color)
 		{
@@ -590,8 +599,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"DrawBezier",
+		[LuaMethod(
+			"drawBezier",
 			"Draws a Bezier curve using the table of coordinates provided in the given color")]
 		public void DrawBezier(int componentHandle, LuaTable points, Color color)
 		{
@@ -621,8 +630,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"DrawBox",
+		[LuaMethod(
+			"drawBox",
 			"Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height")]
 		public void DrawBox(int componentHandle, int x, int y, int x2, int y2, Color? line = null, Color? background = null)
 		{
@@ -652,8 +661,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"DrawEllipse",
+		[LuaMethod(
+			"drawEllipse",
 			"Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color")]
 		public void DrawEllipse(int componentHandle, int x, int y, int width, int height, Color? line = null, Color? background = null)
 		{
@@ -683,8 +692,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"DrawIcon",
+		[LuaMethod(
+			"drawIcon",
 			"draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
 		public void DrawIcon(int componentHandle, string path, int x, int y, int? width = null, int? height = null)
 		{
@@ -714,8 +723,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"DrawImage",
+		[LuaMethod(
+			"drawImage",
 			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
 		public void DrawImage(int componentHandle, string path, int x, int y, int? width = null, int? height = null, bool cache = true)
 		{
@@ -750,8 +759,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"ClearImageCache",
+		[LuaMethod(
+			"clearImageCache",
 			"clears the image cache that is built up by using gui.drawImage, also releases the file handle for cached images")]
 		public void ClearImageCache(int componentHandle)
 		{
@@ -781,8 +790,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"DrawImageRegion",
+		[LuaMethod(
+			"drawImageRegion",
 			"draws a given region of an image file from the given path at the given coordinate, and optionally with the given size")]
 		public void DrawImageRegion(int componentHandle, string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null)
 		{
@@ -817,8 +826,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"DrawLine",
+		[LuaMethod(
+			"drawLine",
 			"Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)")]
 		public void DrawLine(int componentHandle, int x1, int y1, int x2, int y2, Color? color = null)
 		{
@@ -848,8 +857,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"DrawAxis",
+		[LuaMethod(
+			"drawAxis",
 			"Draws an axis of the specified size at the coordinate pair.)")]
 		public void DrawAxis(int componentHandle, int x, int y, int size, Color? color = null)
 		{
@@ -879,8 +888,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"DrawArc",
+		[LuaMethod(
+			"drawArc",
 			"draws a Arc shape at the given coordinates and the given width and height"
 		)]
 		public void DrawArc(int componentHandle, int x, int y, int width, int height, int startangle, int sweepangle, Color? line = null)
@@ -911,8 +920,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"DrawPie",
+		[LuaMethod(
+			"drawPie",
 			"draws a Pie shape at the given coordinates and the given width and height")]
 		public void DrawPie(
 			int componentHandle,
@@ -951,8 +960,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"DrawPixel",
+		[LuaMethod(
+			"drawPixel",
 			"Draws a single pixel at the given coordinates in the given color. Color is optional (if not specified it will be drawn black)")]
 		public void DrawPixel(int componentHandle, int x, int y, Color? color = null)
 		{
@@ -982,8 +991,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"DrawPolygon",
+		[LuaMethod(
+			"drawPolygon",
 			"Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). Line is the color of the polygon. Background is the optional fill color")]
 		public void DrawPolygon(int componentHandle, LuaTable points, Color? line = null, Color? background = null)
 		{
@@ -1014,8 +1023,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 
-		[LuaMethodAttributes(
-			"DrawRectangle",
+		[LuaMethod(
+			"drawRectangle",
 			"Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color")]
 		public void DrawRectangle(int componentHandle, int x, int y, int width, int height, Color? line = null, Color? background = null)
 		{
@@ -1045,8 +1054,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"DrawString",
+		[LuaMethod(
+			"drawString",
 			"Alias of DrawText()")]
 		public void DrawString(
 			int componentHandle,
@@ -1087,8 +1096,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"DrawText",
+		[LuaMethod(
+			"drawText",
 			"Draws the given message at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates.")]
 		public void DrawText(
 			int componentHandle,
@@ -1130,8 +1139,8 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// It'd be great if these were simplified into 1 function, but I cannot figure out how to return a LuaTable from this class
-		[LuaMethodAttributes(
-			"GetMouseX",
+		[LuaMethod(
+			"getMouseX",
 			"Returns an integer representation of the mouse X coordinate relative to the PictureBox.")]
 		public int GetMouseX(int componentHandle)
 		{
@@ -1164,8 +1173,8 @@ namespace BizHawk.Client.EmuHawk
 			return 0;
 		}
 
-		[LuaMethodAttributes(
-			"GetMouseY",
+		[LuaMethod(
+			"getMouseY",
 			"Returns an integer representation of the mouse Y coordinate relative to the PictureBox.")]
 		public int GetMouseY(int componentHandle)
 		{
@@ -1286,7 +1295,7 @@ namespace BizHawk.Client.EmuHawk
 							throw new Exception("Invalid #aarrggbb color");
 						}
 
-						value = Color.FromArgb(int.Parse(sval.Substring(1),System.Globalization.NumberStyles.HexNumber));
+						value = Color.FromArgb(int.Parse(sval.Substring(1), System.Globalization.NumberStyles.HexNumber));
 					}
 
 					form.GetType()
@@ -1319,7 +1328,7 @@ namespace BizHawk.Client.EmuHawk
 			return Color.FromArgb(a, r, g, b);
 		}
 
-		[LuaMethod("setsize", "Sets the size of the form or control to the given width or height")]
+		[LuaMethod("setsize", "TODO")]
 		public void SetSize(int handle, int width, int height)
 		{
 			var ptr = new IntPtr(handle);
@@ -1365,7 +1374,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethod("textbox", "Creates a textbox control on the given form. The caption property will be the initial value of the textbox (default is empty). Width and Height are option, if not specified they will be a default size of 100, 20. Type is an optional property to restrict the textbox input. The available options are HEX, SIGNED, and UNSIGNED. Passing it null or any other value will set it to no restriction. x, and y are the optional location parameters for the position of the textbox within the given form. The function returns the handle of the created textbox. If true, the multiline will enable the standard winform multi-line property. If true, the fixedWidth options will create a fixed width font. Scrollbars is an optional property to specify which scrollbars to display. The available options are Vertical, Horizontal, Both, and None. Scrollbars are only shown on a multiline textbox")]
+		[LuaMethod(
+			"textbox", "Creates a textbox control on the given form. The caption property will be the initial value of the textbox (default is empty). Width and Height are option, if not specified they will be a default size of 100, 20. Type is an optional property to restrict the textbox input. The available options are HEX, SIGNED, and UNSIGNED. Passing it null or any other value will set it to no restriction. x, and y are the optional location parameters for the position of the textbox within the given form. The function returns the handle of the created textbox. If true, the multiline will enable the standard winform multi-line property. If true, the fixedWidth options will create a fixed width font. Scrollbars is an optional property to specify which scrollbars to display. The available options are Vertical, Horizontal, Both, and None. Scrollbars are only shown on a multiline textbox")]
 		public int Textbox(
 			int formHandle,
 			string caption = null,
