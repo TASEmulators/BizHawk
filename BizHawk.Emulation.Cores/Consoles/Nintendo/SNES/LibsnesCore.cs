@@ -491,7 +491,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				xskip = 2;
 			}
 
-			if (_settings.CropSGBFrame)
+			if (_settings.CropSGBFrame && IsSGB)
 			{
 				_videoWidth = 160;
 				_videoHeight = 144;
@@ -503,7 +503,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				_videoBuffer = new int[size];
 			}
 
-			if (_settings.CropSGBFrame)
+			if (_settings.CropSGBFrame && IsSGB)
 			{
 				int di = 0;
 				for (int y = 0; y < 144; y++)
