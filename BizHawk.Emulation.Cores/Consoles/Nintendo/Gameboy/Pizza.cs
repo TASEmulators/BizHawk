@@ -4,33 +4,47 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 {
-	[CoreAttributes("Pizza Boy", "Davide Berra", true, false, "c7bc6ee376028b3766de8d7a02e60ab794841f45",
+	[Core("Pizza Boy", "Davide Berra", true, true, "c7bc6ee376028b3766de8d7a02e60ab794841f45",
 		"https://github.com/davideberra/emu-pizza/", false)]
 	public class Pizza : WaterboxCore, IGameboyCommon
 	{
 		private LibPizza _pizza;
 		private readonly bool _sgb;
 
-		[CoreConstructor("GB")]
+		[CoreConstructor("SGB")]
 		public Pizza(byte[] rom, CoreComm comm)
-			:base(comm, new Configuration
+			: this(rom, comm, true)
+		{ }
+
+		[CoreConstructor("GB")]
+		public Pizza(CoreComm comm, byte[] rom)
+			: this(rom, comm, false)
+		{ }
+
+		public Pizza(byte[] rom, CoreComm comm, bool sgb)
+			: base(comm, new Configuration
 			{
 				DefaultWidth = 160,
 				DefaultHeight = 144,
 				MaxWidth = 256,
 				MaxHeight = 224,
 				MaxSamples = 1024,
-				SystemId = "SGB",
 				DefaultFpsNumerator = TICKSPERSECOND,
 				DefaultFpsDenominator = TICKSPERFRAME
 			})
 		{
+			if (sgb && (rom[0x143] & 0xc0) == 0xc0)
+			{
+				throw new CGBNotSupportedException();
+			}
+
 			_pizza = PreInit<LibPizza>(new PeRunnerOptions
 			{
 				Filename = "pizza.wbx",
@@ -41,8 +55,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				MmapHeapSizeKB = 0
 			});
 
-			var spc = comm.CoreFileProvider.GetFirmware("SGB", "SPC", true);
-			_sgb = true;
+			var spc = sgb
+				? Util.DecompressGzipFile(new MemoryStream(Properties.Resources.SgbCartPresent_SPC))
+				: new byte[0];
+			_sgb = sgb;
 			if (!_pizza.Init(rom, rom.Length, _sgb, spc, spc.Length))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
@@ -77,23 +93,32 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		#region Controller
 
-		private static readonly ControllerDefinition _definition;
-		public override ControllerDefinition ControllerDefinition => _definition;
+		private static readonly ControllerDefinition _gbDefinition;
+		private static readonly ControllerDefinition _sgbDefinition;
+		public override ControllerDefinition ControllerDefinition => _sgb ? _sgbDefinition : _gbDefinition;
 
-		static Pizza()
+		private static ControllerDefinition CreateControllerDefinition(int p)
 		{
-			_definition = new ControllerDefinition { Name = "Gameboy Controller" };
-			for (int i = 0; i < 4; i++)
+			var ret = new ControllerDefinition { Name = "Gameboy Controller" };
+			for (int i = 0; i < p; i++)
 			{
-				_definition.BoolButtons.AddRange(
+				ret.BoolButtons.AddRange(
 					new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" }
 						.Select(s => $"P{i + 1} {s}"));
 			}
+			return ret;
 		}
-		private static LibPizza.Buttons GetButtons(IController c)
+
+		static Pizza()
+		{
+			_gbDefinition = CreateControllerDefinition(1);
+			_sgbDefinition = CreateControllerDefinition(4);
+		}
+
+		private LibPizza.Buttons GetButtons(IController c)
 		{
 			LibPizza.Buttons b = 0;
-			for (int i = 4; i > 0; i--)
+			for (int i = _sgb ? 4 : 1; i > 0; i--)
 			{
 				if (c.IsPressed($"P{i} Up"))
 					b |= LibPizza.Buttons.UP;
@@ -139,5 +164,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		public bool IsCGBMode() => _pizza.IsCGB();
 		public bool IsSGBMode() => _sgb;
 
+		public override string SystemId => _sgb ? "SGB" : "GB";
 	}
 }

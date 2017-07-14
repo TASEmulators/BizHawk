@@ -81,9 +81,9 @@ namespace BizHawk.Client.Common
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
-	public class ImportExtension : Attribute
+	public class ImportExtensionAttribute : Attribute
 	{
-		public ImportExtension(string extension)
+		public ImportExtensionAttribute(string extension)
 		{
 			Extension = extension;
 		}

@@ -6,8 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
-using LuaInterface;
-using System.IO;
+using NLua;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -62,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		[LuaMethodAttributes("addclick", "adds the given lua function as a click event to the given control")]
+		[LuaMethod("addclick", "adds the given lua function as a click event to the given control")]
 		public void AddClick(int handle, LuaFunction clickEvent)
 		{
 			var ptr = new IntPtr(handle);
@@ -78,8 +77,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"button", "Creates a button control on the given form. The caption property will be the text value on the button. clickEvent is the name of a Lua function that will be invoked when the button is clicked. x, and y are the optional location parameters for the position of the button within the given form. The function returns the handle of the created button. Width and Height are optional, if not specified they will be a default size")]
+		[LuaMethod("button", "Creates a button control on the given form. The caption property will be the text value on the button. clickEvent is the name of a Lua function that will be invoked when the button is clicked. x, and y are the optional location parameters for the position of the button within the given form. The function returns the handle of the created button. Width and Height are optional, if not specified they will be a default size")]
 		public int Button(
 			int formHandle,
 			string caption,
@@ -113,8 +111,7 @@ namespace BizHawk.Client.EmuHawk
 			return (int)button.Handle;
 		}
 
-		[LuaMethodAttributes(
-			"checkbox", "Creates a checkbox control on the given form. The caption property will be the text of the checkbox. x and y are the optional location parameters for the position of the checkbox within the form")]
+		[LuaMethod("checkbox", "Creates a checkbox control on the given form. The caption property will be the text of the checkbox. x and y are the optional location parameters for the position of the checkbox within the form")]
 		public int Checkbox(int formHandle, string caption, int? x = null, int? y = null)
 		{
 			var form = GetForm(formHandle);
@@ -135,7 +132,7 @@ namespace BizHawk.Client.EmuHawk
 			return (int)checkbox.Handle;
 		}
 
-		[LuaMethodAttributes("clearclicks", "Removes all click events from the given widget at the specified handle")]
+		[LuaMethod("clearclicks", "Removes all click events from the given widget at the specified handle")]
 		public void ClearClicks(int handle)
 		{
 			var ptr = new IntPtr(handle);
@@ -155,7 +152,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("destroy", "Closes and removes a Lua created form with the specified handle. If a dialog was found and removed true is returned, else false")]
+		[LuaMethod("destroy", "Closes and removes a Lua created form with the specified handle. If a dialog was found and removed true is returned, else false")]
 		public bool Destroy(int handle)
 		{
 			var ptr = new IntPtr(handle);
@@ -172,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		[LuaMethodAttributes("destroyall", "Closes and removes all Lua created dialogs")]
+		[LuaMethod("destroyall", "Closes and removes all Lua created dialogs")]
 		public void DestroyAll()
 		{
 			for (var i = _luaForms.Count - 1; i >= 0; i--)
@@ -181,8 +178,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"dropdown", "Creates a dropdown (with a ComboBoxStyle of DropDownList) control on the given form. Dropdown items are passed via a lua table. Only the values will be pulled for the dropdown items, the keys are irrelevant. Items will be sorted alphabetically. x and y are the optional location parameters, and width and height are the optional size parameters.")]
+		[LuaMethod("dropdown", "Creates a dropdown (with a ComboBoxStyle of DropDownList) control on the given form. Dropdown items are passed via a lua table. Only the values will be pulled for the dropdown items, the keys are irrelevant. Items will be sorted alphabetically. x and y are the optional location parameters, and width and height are the optional size parameters.")]
 		public int Dropdown(
 			int formHandle,
 			LuaTable items,
@@ -216,7 +212,7 @@ namespace BizHawk.Client.EmuHawk
 			return (int)dropdown.Handle;
 		}
 
-		[LuaMethodAttributes("getproperty", "returns a string representation of the value of a property of the widget at the given handle")]
+		[LuaMethod("getproperty", "returns a string representation of the value of a property of the widget at the given handle")]
 		public string GetProperty(int handle, string property)
 		{
 			try
@@ -240,13 +236,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				Log(ex.Message);
 			}
 
 			return "";
 		}
 
-		[LuaMethodAttributes("gettext", "Returns the text property of a given form or control")]
+		[LuaMethod("gettext", "Returns the text property of a given form or control")]
 		public string GetText(int handle)
 		{
 			try
@@ -275,13 +271,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (Exception ex)
 			{
-				ConsoleLuaLibrary.Log(ex.Message);
+				Log(ex.Message);
 			}
 
 			return "";
 		}
 
-		[LuaMethodAttributes("ischecked", "Returns the given checkbox's checked property")]
+		[LuaMethod("ischecked", "Returns the given checkbox's checked property")]
 		public bool IsChecked(int handle)
 		{
 			var ptr = new IntPtr(handle);
@@ -309,8 +305,7 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		[LuaMethodAttributes(
-			"label", "Creates a label control on the given form. The caption property is the text of the label. x, and y are the optional location parameters for the position of the label within the given form. The function returns the handle of the created label. Width and Height are optional, if not specified they will be a default size.")]
+		[LuaMethod("label", "Creates a label control on the given form. The caption property is the text of the label. x, and y are the optional location parameters for the position of the label within the given form. The function returns the handle of the created label. Width and Height are optional, if not specified they will be a default size.")]
 		public int Label(
 			int formHandle,
 			string caption,
@@ -348,8 +343,7 @@ namespace BizHawk.Client.EmuHawk
 			return (int)label.Handle;
 		}
 
-		[LuaMethodAttributes(
-			"newform", "creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created.")]
+		[LuaMethod("newform", "creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created.")]
 		public int NewForm(int? width = null, int? height = null, string title = null, LuaFunction onClose = null)
 		{
 			var form = new LuaWinform(CurrentThread);
@@ -383,8 +377,7 @@ namespace BizHawk.Client.EmuHawk
 			return (int)form.Handle;
 		}
 
-		[LuaMethodAttributes(
-			"openfile", "Creates a standard openfile dialog with optional parameters for the filename, directory, and filter. The return value is the directory that the user picked. If they chose to cancel, it will return an empty string")]
+		[LuaMethod("openfile", "Creates a standard openfile dialog with optional parameters for the filename, directory, and filter. The return value is the directory that the user picked. If they chose to cancel, it will return an empty string")]
 		public string OpenFile(string fileName = null, string initialDirectory = null, string filter = "All files (*.*)|*.*")
 		{
 			// filterext format ex: "Image Files(*.BMP;*.JPG;*.GIF)|*.BMP;*.JPG;*.GIF|All files (*.*)|*.*"
@@ -1207,7 +1200,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		[LuaMethodAttributes("setdropdownitems", "Sets the items for a given dropdown box")]
+		[LuaMethod("setdropdownitems", "Sets the items for a given dropdown box")]
 		public void SetDropdownItems(int handle, LuaTable items)
 		{
 			try
@@ -1242,7 +1235,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("setlocation", "Sets the location of a control or form by passing in the handle of the created object")]
+		[LuaMethod("setlocation", "Sets the location of a control or form by passing in the handle of the created object")]
 		public void SetLocation(int handle, int x, int y)
 		{
 			var ptr = new IntPtr(handle);
@@ -1265,7 +1258,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("setproperty", "Attempts to set the given property of the widget with the given value.  Note: not all properties will be able to be represented for the control to accept")]
+		[LuaMethod("setproperty", "Attempts to set the given property of the widget with the given value.  Note: not all properties will be able to be represented for the control to accept")]
 		public void SetProperty(int handle, string property, object value)
 		{
 			var ptr = new IntPtr(handle);
@@ -1320,13 +1313,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("createcolor", "Creates a color object useful with setproperty")]
+		[LuaMethod("createcolor", "Creates a color object useful with setproperty")]
 		public Color CreateColor(int r, int g, int b, int a)
 		{
 			return Color.FromArgb(a, r, g, b);
 		}
 
-		[LuaMethodAttributes("setsize", "TODO")]
+		[LuaMethod("setsize", "Sets the size of the form or control to the given width or height")]
 		public void SetSize(int handle, int width, int height)
 		{
 			var ptr = new IntPtr(handle);
@@ -1349,7 +1342,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("settext", "Sets the text property of a control or form by passing in the handle of the created object")]
+		[LuaMethod("settext", "Sets the text property of a control or form by passing in the handle of the created object")]
 		public void Settext(int handle, string caption)
 		{
 			var ptr = new IntPtr(handle);
@@ -1372,8 +1365,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"textbox", "Creates a textbox control on the given form. The caption property will be the initial value of the textbox (default is empty). Width and Height are option, if not specified they will be a default size of 100, 20. Type is an optional property to restrict the textbox input. The available options are HEX, SIGNED, and UNSIGNED. Passing it null or any other value will set it to no restriction. x, and y are the optional location parameters for the position of the textbox within the given form. The function returns the handle of the created textbox. If true, the multiline will enable the standard winform multi-line property. If true, the fixedWidth options will create a fixed width font. Scrollbars is an optional property to specify which scrollbars to display. The available options are Vertical, Horizontal, Both, and None. Scrollbars are only shown on a multiline textbox")]
+		[LuaMethod("textbox", "Creates a textbox control on the given form. The caption property will be the initial value of the textbox (default is empty). Width and Height are option, if not specified they will be a default size of 100, 20. Type is an optional property to restrict the textbox input. The available options are HEX, SIGNED, and UNSIGNED. Passing it null or any other value will set it to no restriction. x, and y are the optional location parameters for the position of the textbox within the given form. The function returns the handle of the created textbox. If true, the multiline will enable the standard winform multi-line property. If true, the fixedWidth options will create a fixed width font. Scrollbars is an optional property to specify which scrollbars to display. The available options are Vertical, Horizontal, Both, and None. Scrollbars are only shown on a multiline textbox")]
 		public int Textbox(
 			int formHandle,
 			string caption = null,

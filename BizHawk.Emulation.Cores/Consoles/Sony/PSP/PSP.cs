@@ -5,7 +5,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Sony.PSP
 {
-	[CoreAttributes(
+	[Core(
 		"PPSSPP",
 		"hrydgard",
 		isPorted: true,

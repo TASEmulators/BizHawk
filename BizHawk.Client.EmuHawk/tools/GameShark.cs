@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 	//Verify all wording in the error reports
 
 
-	[ToolAttributes(released: true, supportedSystems: new[] { "GB", "GBA", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" })]
+	[Tool(released: true, supportedSystems: new[] { "GB", "GBA", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" })]
 	public partial class GameShark : Form, IToolForm, IToolFormAutoConfig
 	{
 		#region " Game Genie Dictionary "
@@ -3187,8 +3187,9 @@ namespace BizHawk.Client.EmuHawk
 					//Is this correct?
 					if (GameGenie == true)
 					{
-						var watch = Watch.GenerateWatch(MemoryDomains["CARTROM"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
-						Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
+						MessageBox.Show("Game genie codes are not currently supported for SNES", "SNES Game Genie not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						////var watch = Watch.GenerateWatch(MemoryDomains["CARTROM"], long.Parse(RAMAddress, NumberStyles.HexNumber), WatchSize.Byte, Common.DisplayType.Hex, false, txtDescription.Text);
+						////Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber)));
 					}
 					else if (GameGenie == false)
 					{

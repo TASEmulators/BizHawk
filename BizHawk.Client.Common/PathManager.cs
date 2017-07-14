@@ -45,44 +45,23 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Gets absolute base as derived from EXE
 		/// </summary>
-		public static string GetBasePathAbsolute()
+		public static string GetGlobalBasePathAbsolute()
 		{
-			if (Global.Config.PathEntries.GlobalBaseFragment.Length < 1) // If empty, then EXE path
-			{
-				return GetExeDirectoryAbsolute();
-			}
+			var gbase = Global.Config.PathEntries.GlobalBaseFragment;
 
-			if (Global.Config.PathEntries.GlobalBaseFragment.Length >= 5
-				&& Global.Config.PathEntries.GlobalBaseFragment.Substring(0, 5) == "%exe%")
-			{
-				return GetExeDirectoryAbsolute();
-			}
+			// if %exe% prefixed then substitute exe path and repeat
+			if(gbase.StartsWith("%exe%",StringComparison.InvariantCultureIgnoreCase))
+				gbase = GetExeDirectoryAbsolute() + gbase.Substring(5);
 
-			if (Global.Config.PathEntries.GlobalBaseFragment[0] == '.')
-			{
-				if (Global.Config.PathEntries.GlobalBaseFragment.Length == 1)
-				{
-					return GetExeDirectoryAbsolute();
-				}
+			//rooted paths get returned without change
+			//(this is done after keyword substitution to avoid problems though)
+			if (Path.IsPathRooted(gbase))
+				return gbase;
 
-				if (Global.Config.PathEntries.GlobalBaseFragment.Length == 2 &&
-					Global.Config.PathEntries.GlobalBaseFragment == ".\\")
-				{
-					return GetExeDirectoryAbsolute();
-				}
+			//not-rooted things are relative to exe path
+			gbase = Path.Combine(GetExeDirectoryAbsolute(), gbase);
 
-				var tmp = Global.Config.PathEntries.GlobalBaseFragment.Remove(0, 1);
-				tmp = tmp.Insert(0, GetExeDirectoryAbsolute());
-				return tmp;
-			}
-
-			if (Global.Config.PathEntries.GlobalBaseFragment.Substring(0, 2) == "..")
-			{
-				return RemoveParents(Global.Config.PathEntries.GlobalBaseFragment, GetExeDirectoryAbsolute());
-			}
-
-			// In case of error, return EXE path
-			return GetExeDirectoryAbsolute();
+			return gbase;
 		}
 
 		public static string GetPlatformBase(string system)
@@ -97,6 +76,13 @@ namespace BizHawk.Client.Common
 
 		public static string MakeAbsolutePath(string path, string system)
 		{
+			//warning: supposedly Path.GetFullPath accesses directories (and needs permissions)
+			//if this poses a problem, we need to paste code from .net or mono sources and fix them to not pose problems, rather than homebrew stuff
+			return Path.GetFullPath(MakeAbsolutePathInner(path, system));
+		}
+
+		static string MakeAbsolutePathInner(string path, string system)
+		{
 			// Hack
 			if (system == "Global")
 			{
@@ -106,7 +92,7 @@ namespace BizHawk.Client.Common
 			// This function translates relative path and special identifiers in absolute paths
 			if (path.Length < 1)
 			{
-				return GetBasePathAbsolute();
+				return GetGlobalBasePathAbsolute();
 			}
 
 			if (path == "%recent%")
@@ -136,35 +122,20 @@ namespace BizHawk.Client.Common
 
 				if (path.Length == 1)
 				{
-					return GetBasePathAbsolute();
+					return GetGlobalBasePathAbsolute();
 				}
 
 				if (path[0] == '.')
 				{
 					path = path.Remove(0, 1);
-					path = path.Insert(0, GetBasePathAbsolute());
+					path = path.Insert(0, GetGlobalBasePathAbsolute());
 				}
 
 				return path;
 			}
 
-			// If begins wtih .. do alorithm to determine how many ..\.. combos and deal with accordingly, return drive letter only if too many ..
-			if ((path[0] > 'A' && path[0] < 'Z') || (path[0] > 'a' && path[0] < 'z'))
-			{
-				// C:\
-				if (path.Length > 2 && path[1] == ':' && path[2] == '\\')
-				{
-					return path;
-				}
-
-				// file:\ is an acceptable path as well, and what FileBrowserDialog returns
-				if (path.Length >= 6 && path.Substring(0, 6) == "file:\\")
-				{
-					return path;
-				}
-
-				return GetExeDirectoryAbsolute(); // bad path
-			}
+			//handling of initial .. was removed (Path.GetFullPath can handle it)
+			//handling of file:// or file:\\ was removed  (can Path.GetFullPath handle it? not sure)
 
 			// all pad paths default to EXE
 			return GetExeDirectoryAbsolute();
@@ -414,7 +385,7 @@ namespace BizHawk.Client.Common
 		public static string TryMakeRelative(string absolutePath, string system = null)
 		{
 			var parentPath = string.IsNullOrWhiteSpace(system) ?
-				GetBasePathAbsolute() :
+				GetGlobalBasePathAbsolute() :
 				MakeAbsolutePath(GetPlatformBase(system), system);
 
 			if (IsSubfolder(parentPath, absolutePath))

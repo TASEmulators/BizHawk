@@ -395,6 +395,9 @@ namespace BizHawk.Client.EmuHawk.Filters
 			XIS = OutputSize.Width / state.SurfaceFormat.Size.Width;
 			YIS = OutputSize.Height / state.SurfaceFormat.Size.Height;
 
+			if (XIS == 0) XIS = 1;
+			if (YIS == 0) YIS = 1;
+
 			OutputSize = state.SurfaceFormat.Size;
 
 			if (XIS <= 1 && YIS <= 1)

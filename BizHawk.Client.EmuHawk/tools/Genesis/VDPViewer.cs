@@ -9,7 +9,7 @@ using System.Windows.Forms;
 using BizHawk.Client.Common;
 using System.Drawing.Imaging;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Consoles.Sega.gpgx64;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk

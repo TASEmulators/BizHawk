@@ -200,11 +200,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				oam_index = 0;
 				is_even_cycle = true;
 				sprite_eval_write = true;
-				sprite_zero_go = false;
-				if (sprite_zero_in_range)
-					sprite_zero_go = true;
+				sprite_zero_go = sprite_zero_in_range;
 
-				sprite_zero_in_range = false;
+			    sprite_zero_in_range = false;
 
 				yp = sl - 1;
 				ppuphase = PPUPHASE.BG;
@@ -759,14 +757,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					Read_bgdata(ref bgdata[xt]);
 				}
 
-				// this sequence is tuned to pass 10-even_odd_timing.nes				
-				runppu(1);
-				
-				runppu(1);
-				
-				runppu(1);
-					
-				runppu(1);
+				// this sequence is tuned to pass 10-even_odd_timing.nes
+				runppu(4);
 				bool evenOddDestiny = PPUON;
 
 				// After memory access 170, the PPU simply rests for 4 cycles (or the

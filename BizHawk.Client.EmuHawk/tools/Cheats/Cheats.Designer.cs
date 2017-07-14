@@ -415,7 +415,7 @@
 			// 
 			this.OpenGameGenieEncoderDecoderMenuItem.Name = "OpenGameGenieEncoderDecoderMenuItem";
 			this.OpenGameGenieEncoderDecoderMenuItem.Size = new System.Drawing.Size(233, 22);
-			this.OpenGameGenieEncoderDecoderMenuItem.Text = "Game Genie Encoder/Decoder";
+			this.OpenGameGenieEncoderDecoderMenuItem.Text = "Code Converter";
 			this.OpenGameGenieEncoderDecoderMenuItem.Click += new System.EventHandler(this.OpenGameGenieEncoderDecoderMenuItem_Click);
 			// 
 			// OptionsSubMenu
@@ -615,8 +615,8 @@
 			this.LoadGameGenieToolbarItem.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.LoadGameGenieToolbarItem.Name = "LoadGameGenieToolbarItem";
 			this.LoadGameGenieToolbarItem.Size = new System.Drawing.Size(75, 22);
-			this.LoadGameGenieToolbarItem.Text = "Game Genie";
-			this.LoadGameGenieToolbarItem.ToolTipText = "Open the Game Genie Encoder/Decoder";
+			this.LoadGameGenieToolbarItem.Text = "Code Converter";
+			this.LoadGameGenieToolbarItem.ToolTipText = "Open the Cheat Code Converter";
 			this.LoadGameGenieToolbarItem.Click += new System.EventHandler(this.OpenGameGenieEncoderDecoderMenuItem_Click);
 			// 
 			// TotalLabel

@@ -7,7 +7,7 @@ using BizHawk.Emulation.Cores.Intellivision;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[SchemaAttributes("INTV")]
+	[Schema("INTV")]
 	public class IntvSchema : IVirtualPadSchema
 	{
 		private string UnpluggedControllerName => typeof(UnpluggedController).DisplayName();

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Common
@@ -29,8 +30,6 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("5A140136A16D1D83E4FF32A19409CA376A8DF874", 16384, "A78", "Bios_PAL", "7800PALBIOS.bin", "PAL Bios");
 			FirmwareAndOption("A3AF676991391A6DD716C79022D4947206B78164", 4096, "A78", "Bios_HSC", "7800highscore.bin", "Highscore Bios");
 			FirmwareAndOption("45BEDC4CBDEAC66C7DF59E9E599195C778D86A92", 8192, "Coleco", "Bios", "ColecoBios.bin", "Bios");
-
-			FirmwareAndOption("079a7ce93f3fd7d35e444b2fab16b1867c95e2c1", 66084, "SGB", "SPC", "sgb.spc", "Super Gameboy SPC");
 
 			var gbaNormal = File("300C20DF6731A33952DED8C436F7F186D25D3492", 16384, "gbabios.rom", "Bios (World)");
 			var gbaJDebug = File("AA98A2AD32B86106340665D1222D7D973A1361C7", 16384, "gbabios.rom", "Bios (J Debug)");
@@ -113,6 +112,11 @@ namespace BizHawk.Emulation.Common
 			Option("GEN", "CD_BIOS_JP", jp_mcd1_9112);
 			Option("GEN", "CD_BIOS_US", us_scd1_9210);
 			Option("GEN", "CD_BIOS_US", us_scd2_9303);
+
+			FirmwareAndOption("dbebd76a448447cb6e524ac3cb0fd19fc065d944", 256, "32X", "G", "32X_G_BIOS.BIN", "32x 68k BIOS");
+			FirmwareAndOption("1e5b0b2441a4979b6966d942b20cc76c413b8c5e", 2048, "32X", "M", "32X_M_BIOS.BIN", "32x SH2 MASTER BIOS");
+			FirmwareAndOption("4103668c1bbd66c5e24558e73d4f3f92061a109a", 1024, "32X", "S", "32X_S_BIOS.BIN", "32x SH2 SLAVE BIOS");
+
 
 			// SMS
 			var sms_us_13 = File("C315672807D8DDB8D91443729405C766DD95CAE7", 8192, "sms_us_1.3.sms", "SMS BIOS 1.3 (USA, Europe)");
@@ -205,51 +209,66 @@ namespace BizHawk.Emulation.Common
 
 			FirmwareAndOption("b2e1955d957a475de2411770452eff4ea19f4cee", 1024, "O2", "BIOS", "Odyssey2.bin", "Odyssey 2 Bios");
 			FirmwareAndOption("a6120aed50831c9c0d95dbdf707820f601d9452e", 1024, "O2", "BIOS-C52", "PhillipsC52.bin", "Phillips C52 Bios");
-		
+
 			FirmwareAndOption("4ED31EC6B0B175BB109C0EB5FD3D193DA823339F", 256, "GB", "World", "GB_boot_ROM.gb", "Game Boy BIOS");
 			FirmwareAndOption("1293D68BF9643BC4F36954C1E80E38F39864528D", 2304, "GBC", "World", "GBC_boot_ROM.gb", "Game Boy Color BIOS");
+
+			Firmware("PCFX", "BIOS", "PCFX bios");
+			var pcfxbios = File("1A77FD83E337F906AECAB27A1604DB064CF10074", 1024 * 1024, "pcfxbios.bin", "PCFX BIOS 1.00");
+			var pcfxv101 = File("8B662F7548078BE52A871565E19511CCCA28C5C8", 1024 * 1024, "pcfxv101.bin", "PCFX BIOS 1.01");
+			Option("PCFX", "BIOS", pcfxbios, FirmwareOptionStatus.Ideal);
+			Option("PCFX", "BIOS", pcfxbios, FirmwareOptionStatus.Acceptable);
+
+			Firmware("PCFX", "SCSIROM", "fx-scsi.rom");
+			var fxscsi = File("65482A23AC5C10A6095AEE1DB5824CCA54EAD6E5", 512 * 1024, "fx-scsi.rom", "PCFX SCSI ROM");
+			Option("PCFX", "SCSIROM", fxscsi);
 		}
 
 		// adds a defined firmware ID to the database
 		private static void Firmware(string systemId, string id, string descr)
 		{
 			var fr = new FirmwareRecord
-				{
-					SystemId = systemId,
-					FirmwareId = id,
-					Descr = descr
-				};
+			{
+				SystemId = systemId,
+				FirmwareId = id,
+				Descr = descr
+			};
 
 			FirmwareRecords.Add(fr);
 		}
 
-		// adds an acceptable option for a firmware ID to the database
-		private static FirmwareOption Option(string hash, long size, string systemId, string id, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
+		private static FirmwareOption _OptionWork(string hash, long size, string systemId, string id, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 		{
+			hash = hash.ToUpperInvariant();
+
+			//confirm that it's been added as a file
+			if (!FirmwareFilesByHash.ContainsKey(hash))
+				throw new InvalidOperationException("Added option for unregistered file");
+
 			var fo = new FirmwareOption
-				{
-					SystemId = systemId,
-					FirmwareId = id,
-					Hash = hash,
-					Status = status,
-					Size = size
-				};
+			{
+				SystemId = systemId,
+				FirmwareId = id,
+				Hash = hash,
+				Status = status,
+				Size = size
+			};
 
 			FirmwareOptions.Add(fo);
-			
+
 			// first option is automatically ideal
 			if (FirmwareOptions.Count == 1 && fo.Status == FirmwareOptionStatus.Acceptable)
 			{
 				fo.Status = FirmwareOptionStatus.Ideal;
 			}
-			
+
 			return fo;
 		}
 
 		// adds an acceptable option for a firmware ID to the database
 		private static FirmwareOption Option(string systemId, string id, FirmwareFile ff, FirmwareOptionStatus status = FirmwareOptionStatus.Acceptable)
 		{
-			var fo = Option(ff.Hash, ff.Size, systemId, id, status);
+			var fo = _OptionWork(ff.Hash, ff.Size, systemId, id, status);
 
 			// make sure this goes in as bad
 			if (ff.Bad)
@@ -263,18 +282,18 @@ namespace BizHawk.Emulation.Common
 		// defines a firmware file
 		private static FirmwareFile File(string hash, long size, string recommendedName, string descr, string additionalInfo = "")
 		{
-			string hashfix = hash.ToUpperInvariant();
+			hash = hash.ToUpperInvariant();
 
 			var ff = new FirmwareFile
-				{
-					Hash = hashfix,
-					Size = size,
-					RecommendedName = recommendedName,
-					Description = descr,
-					Info = additionalInfo
-				};
+			{
+				Hash = hash,
+				Size = size,
+				RecommendedName = recommendedName,
+				Description = descr,
+				Info = additionalInfo
+			};
 			FirmwareFiles.Add(ff);
-			FirmwareFilesByHash[hashfix] = ff;
+			FirmwareFilesByHash[hash] = ff;
 			return ff;
 		}
 
@@ -283,7 +302,7 @@ namespace BizHawk.Emulation.Common
 		{
 			Firmware(systemId, id, descr);
 			File(hash, size, name, descr, "");
-			Option(hash, size, systemId, id);
+			_OptionWork(hash, size, systemId, id);
 		}
 
 		public static readonly List<FirmwareRecord> FirmwareRecords = new List<FirmwareRecord>();
@@ -313,7 +332,19 @@ namespace BizHawk.Emulation.Common
 
 		public enum FirmwareOptionStatus
 		{
-			Ideal, Acceptable, Unacceptable, Bad
+			//This is what we want you to use to get checkmarks, and for tasing
+			Ideal,
+
+			//This will work with our core
+			Acceptable,
+
+			//This is a good file, but it doesnt work with our core
+			Unacceptable,
+
+			//I know this is weird, you'd think the file is bad
+			//But bad files are definitely not ideal, acceptable, or unacceptable options.
+			//Really the only alternative to this is leaving it off as an option entirely--and we do want it here as an option, to categorize it as a BAD option.
+			Bad
 		}
 
 		public class FirmwareOption
@@ -332,9 +363,9 @@ namespace BizHawk.Emulation.Common
 		{
 			var found =
 				from fr in FirmwareRecords
-				 where fr.FirmwareId == firmwareId
-				 && fr.SystemId == sysId
-				 select fr;
+				where fr.FirmwareId == firmwareId
+				&& fr.SystemId == sysId
+				select fr;
 
 			return found.FirstOrDefault();
 		}

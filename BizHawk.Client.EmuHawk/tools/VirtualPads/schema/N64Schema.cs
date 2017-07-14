@@ -6,7 +6,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[SchemaAttributes("N64")]
+	[Schema("N64")]
 	public class N64Schema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)

@@ -31,6 +31,12 @@ void *alloc_plain(size_t size);
 // send a debug string somewhere, bypassing stdio
 void _debug_puts(const char *);
 
+// put data in a section that will have similar behavior characteristics to alloc_sealed
+#define ECL_SEALED __attribute__((section(".sealed")))
+
+// put data in a section that will have similar behavior characteristics to alloc_invisible
+#define ECL_INVISIBLE __attribute__((section(".invis")))
+
 #ifdef __cplusplus
 }
 #endif

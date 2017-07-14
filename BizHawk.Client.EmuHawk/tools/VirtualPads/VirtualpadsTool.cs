@@ -84,10 +84,10 @@ namespace BizHawk.Client.EmuHawk
 				.GetTypes()
 				.Where(t => typeof(IVirtualPadSchema)
 					.IsAssignableFrom(t) && t.GetCustomAttributes(false)
-					.OfType<SchemaAttributes>()
+					.OfType<SchemaAttribute>()
 					.Any())
 				.FirstOrDefault(t => t.GetCustomAttributes(false)
-					.OfType<SchemaAttributes>()
+					.OfType<SchemaAttribute>()
 					.First().SystemId == Emulator.SystemId);
 			
 			if (schemaType != null)

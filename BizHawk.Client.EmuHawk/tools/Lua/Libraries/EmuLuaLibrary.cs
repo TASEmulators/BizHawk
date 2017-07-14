@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 
-using LuaInterface;
+using NLua;
 
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
@@ -47,10 +47,10 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var lib in libs)
 			{
 				bool addLibrary = true;
-				var attributes = lib.GetCustomAttributes(typeof(LuaLibraryAttributes), false);
+				var attributes = lib.GetCustomAttributes(typeof(LuaLibraryAttribute), false);
 				if (attributes.Any())
 				{
-					addLibrary = VersionInfo.DeveloperBuild || (attributes.First() as LuaLibraryAttributes).Released;
+					addLibrary = VersionInfo.DeveloperBuild || (attributes.First() as LuaLibraryAttribute).Released;
 				}
 
 				if (addLibrary)
@@ -73,7 +73,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var methods = luaCanvas
 				.GetMethods()
-				.Where(m => m.GetCustomAttributes(typeof(LuaMethodAttributes), false).Any());
+				.Where(m => m.GetCustomAttributes(typeof(LuaMethodAttribute), false).Any());
 
 			foreach (var method in methods)
 			{

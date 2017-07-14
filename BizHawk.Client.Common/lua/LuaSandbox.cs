@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
-using LuaInterface;
+using NLua;
 
 // TODO - evaluate for re-entrancy problems
 namespace BizHawk.Client.Common
@@ -92,7 +92,7 @@ namespace BizHawk.Client.Common
 
 				EnvironmentSandbox.Sandbox(callback);
 			}
-			catch (LuaException ex)
+			catch (NLua.Exceptions.LuaException ex)
 			{
 				Console.WriteLine(ex);
 				DefaultLogger(ex.ToString());

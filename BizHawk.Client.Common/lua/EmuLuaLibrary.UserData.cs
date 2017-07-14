@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-using LuaInterface;
+using NLua;
 
 using BizHawk.Client.Common;
 
@@ -18,17 +18,13 @@ namespace BizHawk.Client.EmuHawk
 
 		public override string Name => "userdata";
 
-		[LuaMethodAttributes(
-			"set",
-			"adds or updates the data with the given key with the given value")]
+		[LuaMethod("set", "adds or updates the data with the given key with the given value")]
 		public void Set(string name, object value)
 		{
 			Global.UserBag[name] = value;
 		}
 
-		[LuaMethodAttributes(
-			"get",
-			"gets the data with the given key, if the key does not exist it will return nil")]
+		[LuaMethod("get", "gets the data with the given key, if the key does not exist it will return nil")]
 		public object Get(string key)
 		{
 			if (Global.UserBag.ContainsKey(key))
@@ -39,25 +35,19 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		[LuaMethodAttributes(
-			"clear",
-			"clears all user data")]
+		[LuaMethod("clear", "clears all user data")]
 		public void Clear()
 		{
 			Global.UserBag.Clear();
 		}
 
-		[LuaMethodAttributes(
-			"remove",
-			"remove the data with the given key. Returns true if the element is successfully found and removed; otherwise, false.")]
+		[LuaMethod("remove", "remove the data with the given key. Returns true if the element is successfully found and removed; otherwise, false.")]
 		public bool Remove(string key)
 		{
 			return Global.UserBag.Remove(key);
 		}
 
-		[LuaMethodAttributes(
-			"containskey",
-			"returns whether or not there is an entry for the given key")]
+		[LuaMethod("containskey", "returns whether or not there is an entry for the given key")]
 		public bool ContainsKey(string key)
 		{
 			return Global.UserBag.ContainsKey(key);

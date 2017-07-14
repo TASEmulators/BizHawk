@@ -1189,7 +1189,6 @@ namespace BizHawk.Client.EmuHawk
 			Atari7800CoreSubMenu.Visible = VersionInfo.DeveloperBuild;
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 			
-			
 			allowGameDBCoreOverridesToolStripMenuItem.Checked = Global.Config.CoreForcingViaGameDB;
 		}
 
@@ -1227,8 +1226,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GbaCoreSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			VbaNextCoreMenuItem.Checked = Global.Config.GBA_UsemGBA;
-			MgbaCoreMenuItem.Checked = !Global.Config.GBA_UsemGBA;
+			VbaNextCoreMenuItem.Checked = !Global.Config.GBA_UsemGBA;
+			MgbaCoreMenuItem.Checked = Global.Config.GBA_UsemGBA;
 		}
 
 		private void GbaCorePick_Click(object sender, EventArgs e)
@@ -1254,6 +1253,23 @@ namespace BizHawk.Client.EmuHawk
 				FlagNeedsReboot();
 			}
 		}
+
+		private void SGBCoreSubmenu_DropDownOpened(object sender, EventArgs e)
+		{
+			SgbBsnesMenuItem.Checked = Global.Config.SGB_UseBsnes;
+			SgbPizzaBoyMenuItem.Checked = !Global.Config.SGB_UseBsnes;
+		}
+
+		private void SgbCorePick_Click(object sender, EventArgs e)
+		{
+			Global.Config.SGB_UseBsnes ^= true;
+			// TODO: only flag if one of these cores
+			if (!Emulator.IsNull())
+			{
+				FlagNeedsReboot();
+			}
+		}
+
 
 		private void GbInSgbMenuItem_Click(object sender, EventArgs e)
 		{

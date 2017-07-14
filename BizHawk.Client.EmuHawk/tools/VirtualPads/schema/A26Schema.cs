@@ -2,17 +2,44 @@
 using System.Drawing;
 
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Atari.Atari2600;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[SchemaAttributes("A26")]
+	[Schema("A26")]
 	public class A26Schema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			yield return StandardController(1);
-			yield return StandardController(2);
+			var ss = ((Atari2600)core).GetSyncSettings().Clone();
+
+			var port1 = PadSchemaFromSetting(ss.Port1, 1);
+			if (port1 != null)
+			{
+				yield return port1;
+			}
+
+			var port2 = PadSchemaFromSetting(ss.Port2, 2);
+			if (port2 != null)
+			{
+				yield return port2;
+			}
+
 			yield return ConsoleButtons();
+		}
+
+		private static PadSchema PadSchemaFromSetting(Atari2600ControllerTypes type, int controller)
+		{
+			switch (type)
+			{
+				default:
+				case Atari2600ControllerTypes.Unplugged:
+					return null;
+				case Atari2600ControllerTypes.Joystick:
+					return StandardController(controller);
+				case Atari2600ControllerTypes.Paddle:
+					return PaddleController(controller);
+			}
 		}
 
 		private static PadSchema StandardController(int controller)
@@ -68,13 +95,61 @@ namespace BizHawk.Client.EmuHawk
 			};
 		}
 
+		private static PadSchema PaddleController(int controller)
+		{
+			return new PadSchema
+			{
+				DisplayName = "Player " + controller,
+				IsConsole = false,
+				DefaultSize = new Size(334, 94),
+				MaxSize = new Size(334, 94),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Button 1",
+						DisplayName = "B1",
+						Location = new Point(5, 24),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Button 2",
+						DisplayName = "B2",
+						Location = new Point(5, 48),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Paddle X 1",
+						DisplayName = "Paddle X 1",
+						Location = new Point(55, 17),
+						Type = PadSchema.PadInputType.FloatSingle,
+						TargetSize = new Size(128, 69),
+						MaxValue = 127,
+						MinValue = -127
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Paddle X 2",
+						DisplayName = "Paddle X 2",
+						Location = new Point(193, 17),
+						Type = PadSchema.PadInputType.FloatSingle,
+						TargetSize = new Size(128, 69),
+						MaxValue = 127,
+						MinValue = -127
+					},
+				}
+			};
+		}
+
 		private static PadSchema ConsoleButtons()
 		{
 			return new PadSchema
 			{
 				DisplayName = "Console",
 				IsConsole = true,
-				DefaultSize = new Size(160, 50),
+				DefaultSize = new Size(185, 75),
 				Buttons = new[]
 				{
 					new PadSchema.ButtonSchema
@@ -97,7 +172,21 @@ namespace BizHawk.Client.EmuHawk
 						DisplayName = "Power",
 						Location = new Point(108, 15),
 						Type = PadSchema.PadInputType.Boolean
-					}
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "Toggle Left Difficulty",
+						DisplayName = "Left Difficulty",
+						Location = new Point(10, 40),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "Toggle Right Difficulty",
+						DisplayName = "Right Difficulty",
+						Location = new Point(92, 40),
+						Type = PadSchema.PadInputType.Boolean
+					},
 				}
 			};
 		}

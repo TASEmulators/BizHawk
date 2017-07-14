@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Common
 	/// By Convention it should also throw a NotImplementedException
 	/// Any feature that does not have this attribute is assumed to be implemented
 	/// </summary>
-	public class FeatureNotImplemented : Attribute
+	public class FeatureNotImplementedAttribute : Attribute
 	{
 	}
 
@@ -21,9 +21,9 @@ namespace BizHawk.Emulation.Common
 	/// assumed to be a "TODO" that needs to be done but hasn't been done yet
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class)]
-	public class ServiceNotApplicable : Attribute
+	public class ServiceNotApplicableAttribute : Attribute
 	{
-		public ServiceNotApplicable(params Type[] types)
+		public ServiceNotApplicableAttribute(params Type[] types)
 		{
 			NotApplicableTypes = types?.ToList() ?? new List<Type>();
 		}

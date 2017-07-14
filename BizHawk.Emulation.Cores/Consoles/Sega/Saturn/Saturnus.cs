@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 {
-	[CoreAttributes("Saturnus", "Ryphecha", true, false, "0.9.44.1",
+	[Core("Saturnus", "Mednafen Team", true, true, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
 	public class Saturnus : WaterboxCore,
 		IDriveLight, IRegionable, 
@@ -59,6 +59,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				}
 			}
 			return true;
+		}
+
+		[CoreConstructor("SAT")]
+		public Saturnus(CoreComm comm, byte[] rom)
+			:base(comm, new Configuration())
+		{
+			throw new InvalidOperationException("To load a Saturn game, please load the CUE file and not the BIN file.");
 		}
 
 		public Saturnus(CoreComm comm, IEnumerable<Disc> disks, bool deterministic, Settings settings,
@@ -171,6 +178,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 			_core.SetControllerData(_controllerDeck.Poll(controller));
 
+			SetVideoParameters();
+
 			return new LibSaturnus.FrameInfo { ResetPushed = controller.IsPressed("Reset") ? 1 : 0 };
 		}
 
@@ -180,9 +189,22 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 		public class Settings
 		{
-			// extern bool setting_ss_correct_aspect;
-			[DefaultValue(true)]
-			public bool CorrectAspectRatio { get; set; }
+			public enum ResolutionModeTypes
+			{
+				[Display(Name = "Pixel Pro")]
+				PixelPro,
+				[Display(Name = "Hardcode Debug")]
+				HardcoreDebug,
+				[Display(Name = "Mednafen (5:4 AR)")]
+				Mednafen,
+				[Display(Name = "Tweaked Mednafen (5:4 AR)")]
+				TweakedMednafen,
+			}
+
+			[DisplayName("Resolution Mode")]
+			[DefaultValue(ResolutionModeTypes.PixelPro)]
+			[Description("Method for managing varying resolutions")]
+			public ResolutionModeTypes ResolutionMode { get; set; }
 
 			// extern bool setting_ss_h_blend;
 			[DisplayName("Horizontal Blend")]
@@ -425,9 +447,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		{
 			var ret = Settings.NeedsReboot(_settings, s);
 			_settings = s;
-			var sls = _isPal ? s.ScanlineStartPal + 16 : s.ScanlineStartNtsc;
-			var sle = _isPal ? s.ScanlineEndPal + 16 : s.ScanlineEndNtsc;
-			_core.SetVideoParameters(s.CorrectAspectRatio, s.HBlend, s.HOverscan, sls, sle);
+
+
+			//todo natt - is this safe? this is now called before every frameadvance
+			//(the correct aspect ratio is no longer an option for other reasons)
+			//_core.SetVideoParameters(s.CorrectAspectRatio, s.HBlend, s.HOverscan, sls, sle);
+
 			return ret;
 		}
 
@@ -441,6 +466,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			var ret = SyncSettings.NeedsReboot(_syncSettings, s);
 			_syncSettings = s;
 			return ret;
+		}
+
+		private void SetVideoParameters()
+		{
+			var s = _settings;
+			var sls = _isPal ? s.ScanlineStartPal + 16 : s.ScanlineStartNtsc;
+			var sle = _isPal ? s.ScanlineEndPal + 16 : s.ScanlineEndNtsc;
+
+			bool correctAspect = true;
+			if (_settings.ResolutionMode == Settings.ResolutionModeTypes.PixelPro)
+				correctAspect = false;
+
+			_core.SetVideoParameters(correctAspect, _settings.HBlend, _settings.HOverscan, sls, sle);
 		}
 
 		#endregion
@@ -461,6 +499,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			_nextDiskSignal = reader.ReadBoolean();
 			// any managed pointers that we sent to the core need to be resent now!
 			SetCdCallbacks();
+
+			//todo natt: evaluate the philosophy of this. 
+			//i think it's sound: loadstate will replace the last values set by frontend; so this should re-assert them.
+			//or we could make sure values from the frontend are stored in a segment designed with the appropriate waterboxing rules, but that seems tricky...
+			//anyway, in this case, I did it before frameadvance instead, so that's just as good (probably?)
+			//PutSettings(_settings);
 		}
 
 		#endregion
@@ -530,10 +574,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			Marshal.Copy(data, 0, dest, data.Length);
 		}
 
-		private void CDTOCCallback(int disk, [In, Out]LibSaturnus.TOC t)
+		public static void SetupTOC(LibSaturnus.TOC t, DiscTOC tin)
 		{
 			// everything that's not commented, we're sure about
-			var tin = _disks[disk].TOC;
 			t.FirstTrack = tin.FirstRecordedTrackNumber;
 			t.LastTrack = tin.LastRecordedTrackNumber;
 			t.DiskType = (int)tin.Session1Format;
@@ -544,6 +587,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 				t.Tracks[i].Control = (int)tin.TOCItems[i].Control;
 				t.Tracks[i].Valid = tin.TOCItems[i].Exists ? 1 : 0;
 			}
+		}
+
+		private void CDTOCCallback(int disk, [In, Out]LibSaturnus.TOC t)
+		{
+			SetupTOC(t, _disks[disk].TOC);
 		}
 		private void CDSectorCallback(int disk, int lba, IntPtr dest)
 		{
@@ -564,5 +612,110 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		private const int NtscFpsDen = 61 * 455 * 1051;
 		public override int VsyncNumerator => _isPal ? PalFpsNum : NtscFpsNum;
 		public override int VsyncDenominator => _isPal ? PalFpsDen : NtscFpsDen;
+
+		private int _virtualWidth;
+		private int _virtualHeight;
+		public override int VirtualWidth => _virtualWidth;
+		public override int VirtualHeight => _virtualHeight;
+
+		protected override void FrameAdvancePost()
+		{
+			//TODO: can we force the videoprovider to add a prescale instead of having to do it in software here?
+			//TODO: if not, actually do it in software, instead of relying on the virtual sizes
+			//TODO: find a reason why relying on the virtual sizes is actually not good enough?
+			
+			//TODO: export VDP2 display area width from emulator and add option to aggressively crop overscan - OR - add that logic to core
+
+			//mednafen, for reference:
+			//if (PAL)
+			//{
+			//	gi->nominal_width = (ShowHOverscan ? 365 : 354);
+			//	gi->fb_height = 576;
+			//}
+			//else
+			//{
+			//	gi->nominal_width = (ShowHOverscan ? 302 : 292);
+			//	gi->fb_height = 480;
+			//}
+			//gi->nominal_height = LineVisLast + 1 - LineVisFirst;
+			//gi->lcm_width = (ShowHOverscan ? 10560 : 10240);
+			//gi->lcm_height = (LineVisLast + 1 - LineVisFirst) * 2;
+			//if (!CorrectAspect)
+			//{
+			//	gi->nominal_width = (ShowHOverscan ? 352 : 341);
+			//	gi->lcm_width = gi->nominal_width * 2;
+			//}
+
+			bool isHorz2x = false, isVert2x = false;
+
+			//note: these work with PAL also
+			//these are all with CorrectAR.
+			//with IncorrectAR, only 352 and 341 will show up
+			//that is, 330 is forced to 352 so mednafen's presentation can display it pristine no matter what mode it is
+			//(it's mednafen's equivalent of a more debuggish mode, I guess)
+			if (BufferWidth == 352) { } //a large basic framebuffer size 
+			else if (BufferWidth == 341) { } //a large basic framebuffer size with overscan cropped
+			else if (BufferWidth == 330) { } //a small basic framebuffer
+			else if (BufferWidth == 320) { } //a small basic framebuffer with overscan cropped
+			else isHorz2x = true;
+
+			int slStart = _isPal ? _settings.ScanlineStartPal : _settings.ScanlineStartNtsc;
+			int slEnd = _isPal ? _settings.ScanlineEndPal : _settings.ScanlineEndNtsc;
+			int slHeight = (slEnd - slStart) + 1;
+
+			if (BufferHeight == slHeight) { }
+			else isVert2x = true;
+
+			switch (_settings.ResolutionMode)
+			{
+				case Settings.ResolutionModeTypes.HardcoreDebug:
+					_virtualWidth = BufferWidth;
+					_virtualHeight = BufferHeight;
+					break;
+
+				case Settings.ResolutionModeTypes.Mednafen:
+					//this is mednafen's "correct AR" case.
+					//note that this will shrink a width from 330 to 302 (that's the nature of mednafen)
+					//that makes the bios saturn orb get stretched vertically
+					//note: these are never high resolution (use a 2x window size if you want to see high resolution content)
+					if (_isPal)
+					{
+						_virtualWidth = (_settings.HOverscan ? 365 : 354); 
+						_virtualHeight = slHeight;
+					}
+					else
+					{
+						_virtualWidth = (_settings.HOverscan ? 302 : 292);
+						_virtualHeight = slHeight;
+					}
+					break;
+
+				case Settings.ResolutionModeTypes.TweakedMednafen:
+					//same as mednafen but stretch up
+					//base case is 330x254
+					if (_isPal)
+					{
+						//this can be the same as Mednafen mode? we don't shrink down in any case, so it must be OK
+						_virtualWidth = (_settings.HOverscan ? 365 : 354);
+						_virtualHeight = slHeight;
+					}
+					else
+					{
+						//ideally we want a height of 254, but we may have changed the overscan settings
+						_virtualWidth = (_settings.HOverscan ? 330 : 320);
+						_virtualHeight = BufferHeight * 254 / 240; 
+					}
+					break;
+
+				case Settings.ResolutionModeTypes.PixelPro:
+					//mednafen makes sure we always get 352 or 341 (if overscan cropped)
+					//really the only thing we do
+					//(that's not the best solution for us [not what psx does], but it will do for now)
+					_virtualWidth = BufferWidth * (isHorz2x ? 1 : 2); //not a mistake, we scale to make it bigger if it isn't already
+					_virtualHeight = BufferHeight * (isVert2x ? 1 : 2); //not a mistake
+					break;
+			}
+
+		}
 	}
 }

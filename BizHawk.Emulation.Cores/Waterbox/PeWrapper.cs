@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public Dictionary<string, IntPtr> ExportsByName { get; } = new Dictionary<string, IntPtr>();
 
-		public Dictionary<string, Dictionary<string, IntPtr>> ImportsByModule { get; } = 
+		public Dictionary<string, Dictionary<string, IntPtr>> ImportsByModule { get; } =
 			new Dictionary<string, Dictionary<string, IntPtr>>();
 
 		private class Section
@@ -42,10 +42,11 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		private readonly Dictionary<string, Section> _sectionsByName = new Dictionary<string, Section>();
 		private readonly List<Section> _sections = new List<Section>();
 		private Section _imports;
+		private Section _sealed;
+		private Section _invisible;
 
 		public string ModuleName { get; }
 
-		private readonly byte[] _fileData;
 		private readonly PeFile _pe;
 		private readonly byte[] _fileHash;
 
@@ -67,8 +68,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		/// </summary>
 		public IntPtr DtorList { get; private set; }
 
-		// true if the imports have been set to readonly
-		private bool _importsSealed = false;
+		// true if the seal process has completed, including .idata and .sealed set to readonly,
+		// xorstate taken
+		private bool _everythingSealed = false;
 
 		/*[UnmanagedFunctionPointer(CallingConvention.Winapi)]
 		private delegate bool DllEntry(IntPtr instance, int reason, IntPtr reserved);
@@ -117,7 +119,6 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public PeWrapper(string moduleName, byte[] fileData, ulong destAddress)
 		{
 			ModuleName = moduleName;
-			_fileData = fileData;
 			_pe = new PeFile(fileData);
 			Size = _pe.ImageNtHeaders.OptionalHeader.SizeOfImage;
 			Start = destAddress;
@@ -165,42 +166,24 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				_sectionsByName.Add(section.Name, section);
 			}
 			_sectionsByName.TryGetValue(".idata", out _imports);
+			_sectionsByName.TryGetValue(".sealed", out _sealed);
+			_sectionsByName.TryGetValue(".invis", out _invisible);
 
-			Mount();
-		}
+			// OK, NOW MOUNT
 
-		/// <summary>
-		/// set memory protections.
-		/// </summary>
-		private void ProtectMemory()
-		{
-			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
-
-			foreach (var s in _sections)
-			{
-				Memory.Protect(s.Start, s.Size, s.Prot);
-			}
-		}
-
-		/// <summary>
-		/// load the PE into memory
-		/// </summary>
-		/// <param name="org">start address</param>
-		private void Mount()
-		{
 			LoadOffset = (long)Start - (long)_pe.ImageNtHeaders.OptionalHeader.ImageBase;
 			Memory = new MemoryBlock(Start, Size);
 			Memory.Activate();
 			Memory.Protect(Start, Size, MemoryBlock.Protection.RW);
 
 			// copy headers
-			Marshal.Copy(_fileData, 0, Z.US(Start), (int)_pe.ImageNtHeaders.OptionalHeader.SizeOfHeaders);
+			Marshal.Copy(fileData, 0, Z.US(Start), (int)_pe.ImageNtHeaders.OptionalHeader.SizeOfHeaders);
 
 			// copy sections
 			foreach (var s in _sections)
 			{
 				ulong datalength = Math.Min(s.Size, s.DiskSize);
-				Marshal.Copy(_fileData, (int)s.DiskStart, Z.US(s.Start), (int)datalength);
+				Marshal.Copy(fileData, (int)s.DiskStart, Z.US(s.Start), (int)datalength);
 				WaterboxUtils.ZeroMemory(Z.US(s.Start + datalength), (long)(s.SavedSize - datalength));
 			}
 
@@ -281,8 +264,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (_sectionsByName.TryGetValue(".midipix", out midipix))
 			{
 				var dataOffset = midipix.DiskStart;
-				CtorList = Z.SS(BitConverter.ToInt64(_fileData, (int)(dataOffset + 0x30)) + LoadOffset);
-				DtorList = Z.SS(BitConverter.ToInt64(_fileData, (int)(dataOffset + 0x38)) + LoadOffset);
+				CtorList = Z.SS(BitConverter.ToInt64(fileData, (int)(dataOffset + 0x30)) + LoadOffset);
+				DtorList = Z.SS(BitConverter.ToInt64(fileData, (int)(dataOffset + 0x38)) + LoadOffset);
 			}
 
 			Console.WriteLine($"Mounted `{ModuleName}` @{Start:x16}");
@@ -305,6 +288,19 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			Console.WriteLine(symload);
 		}
 
+		/// <summary>
+		/// set memory protections.
+		/// </summary>
+		private void ProtectMemory()
+		{
+			Memory.Protect(Memory.Start, Memory.Size, MemoryBlock.Protection.R);
+
+			foreach (var s in _sections)
+			{
+				Memory.Protect(s.Start, s.Size, s.Prot);
+			}
+		}
+
 		public IntPtr Resolve(string entryPoint)
 		{
 			IntPtr ret;
@@ -317,7 +313,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			// this is called once internally when bootstrapping, and externally
 			// when we need to restore a savestate from another run.  so imports might or might not be sealed
 
-			if (_importsSealed && _imports != null)
+			if (_everythingSealed && _imports != null)
 				Memory.Protect(_imports.Start, _imports.Size, MemoryBlock.Protection.RW);
 
 			Dictionary<string, IntPtr> imports;
@@ -330,33 +326,38 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 			}
 
-			if (_importsSealed && _imports != null)
+			if (_everythingSealed && _imports != null)
 				Memory.Protect(_imports.Start, _imports.Size, _imports.Prot);
 		}
 
 		public void SealImportsAndTakeXorSnapshot()
 		{
-			if (_importsSealed)
-				throw new InvalidOperationException("Imports already sealed!");
+			if (_everythingSealed)
+				throw new InvalidOperationException("PeWrapper already sealed!");
 
 			// save import values, then zero them all (for hash purposes), then take our snapshot, then load them again,
 			// then set the .idata area to read only
+			byte[] impData = null;
 			if (_imports != null)
 			{
-				var data = new byte[_imports.Size];
-				Marshal.Copy(Z.US(_imports.Start), data, 0, (int)_imports.Size);
+				impData = new byte[_imports.Size];
+				Marshal.Copy(Z.US(_imports.Start), impData, 0, (int)_imports.Size);
 				WaterboxUtils.ZeroMemory(Z.US(_imports.Start), (long)_imports.Size);
-				Memory.SaveXorSnapshot();
-				Marshal.Copy(data, 0, Z.US(_imports.Start), (int)_imports.Size);
+			}
+			Memory.SaveXorSnapshot();
+			if (_imports != null)
+			{
+				Marshal.Copy(impData, 0, Z.US(_imports.Start), (int)_imports.Size);
 				_imports.W = false;
 				Memory.Protect(_imports.Start, _imports.Size, _imports.Prot);
 			}
-			else
+			if (_sealed != null)
 			{
-				Memory.SaveXorSnapshot();
+				_sealed.W = false;
+				Memory.Protect(_sealed.Start, _sealed.Size, _sealed.Prot);
 			}
 
-			_importsSealed = true;
+			_everythingSealed = true;
 		}
 
 		private bool _disposed = false;
@@ -375,7 +376,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			if (!_importsSealed)
+			if (!_everythingSealed)
 				throw new InvalidOperationException(".idata sections must be closed before saving state");
 
 			bw.Write(MAGIC);
@@ -385,7 +386,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			foreach (var s in _sections)
 			{
-				if (!s.W)
+				if (!s.W || s == _invisible)
 					continue;
 
 				var ms = Memory.GetXorStream(s.Start, s.SavedSize, false);
@@ -396,7 +397,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		public void LoadStateBinary(BinaryReader br)
 		{
-			if (!_importsSealed)
+			if (!_everythingSealed)
 				// operations happening in the wrong order.  probable cause: internal logic error.  make sure frontend calls Seal
 				throw new InvalidOperationException(".idata sections must be closed before loading state");
 
@@ -419,7 +420,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			foreach (var s in _sections)
 			{
-				if (!s.W)
+				if (!s.W || s == _invisible)
 					continue;
 
 				if (br.ReadUInt64() != s.SavedSize)

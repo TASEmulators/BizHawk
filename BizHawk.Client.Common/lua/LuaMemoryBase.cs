@@ -1,5 +1,5 @@
 ﻿using System;
-using LuaInterface;
+using NLua;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 

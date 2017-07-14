@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 
-		private bool _islag = true;
+		public bool _islag = true;
 		private int _lagcount;
 	}
 }

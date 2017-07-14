@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 {
-	[CoreAttributes("Virtual Boyee", "Ryphecha", true, true, "0.9.44.1",
+	[Core("Virtual Boyee", "Mednafen Team", true, true, "0.9.44.1",
 		"https://mednafen.github.io/releases/", false)]
 	public class VirtualBoyee : WaterboxCore, ISettable<VirtualBoyee.Settings, VirtualBoyee.SyncSettings>
 	{
@@ -52,6 +52,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 			if (!_boyee.Load(rom, rom.Length, nativeSettings))
 				throw new InvalidOperationException("Core rejected the rom");
+
+			// do a quick hack up for frame zero size
+			var tmp = new LibVirtualBoyee.FrameInfo();
+			_boyee.PredictFrameSize(tmp);
+			BufferWidth = tmp.Width;
+			BufferHeight = tmp.Height;
 
 			PostInit();
 		}

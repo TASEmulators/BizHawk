@@ -9,7 +9,7 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[ToolAttributes(false, null)]
+	[Tool(false, null)]
 	public partial class GBGameGenie : Form, IToolFormAutoConfig
 	{
 		// TODO: fix the use of Global.Game.System and Emulator.SystemId

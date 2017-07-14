@@ -81,5 +81,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 		[BizImport(CC)]
 		public abstract void HardReset();
+
+		[BizImport(CC)]
+		public abstract void PredictFrameSize([In, Out]FrameInfo frame);
 	}
 }

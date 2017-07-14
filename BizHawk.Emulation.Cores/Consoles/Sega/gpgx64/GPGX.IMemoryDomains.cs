@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using BizHawk.Emulation.Common;
 using BizHawk.Common;
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
+namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public partial class GPGX
 	{

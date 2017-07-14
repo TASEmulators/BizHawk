@@ -2,7 +2,7 @@
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M68000;
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
+namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public partial class GPGX : IDisassemblable
 	{

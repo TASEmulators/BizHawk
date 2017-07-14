@@ -19,7 +19,9 @@
 ;games which might be good according to goodNES, but which are almost positively not according to bootgod, who has dumps with different hashes
 ;these we tend to mark as Unknown, because maybe these are variants of the cart which bootgod didnt happen to dump, or maybe bootgod's is wrong (?)
 sha1:E80FF0B707B0D675FDBEF474E3FDB1A83E2B7C44	U	Mississippi Satsujin Jiken (J)	NES		board=JALECO-JF-11;PRG=128;CHR=32;PAD_H=1
+;GoodNES marks the following (alt) rom as B [h2]
 sha1:8A5FD1061ADACDEABF422A2D2E555FF70749AE7C	U	Mississippi Satsujin Jiken (Alt) (J)	NES		board=MAPPER066;PRG=128;CHR=32;PAD_H=1
+
 
 ;possibly good roms for games which arent in bootgod's db yet, most likely due to obscurity or incompleteness at the present.
 ;when they appear in bootgod's db then we can re-evaluate this category.
@@ -96,7 +98,6 @@ sha1:2028940CF7C757A3A7931A741D5EC79C3554D38C	O	Wally Bear and the No Gang (AVE)
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 ;these roms are in goodNES but theyre junk. hacks, mostly. ideally we would put ever game from goodNES that was labeled as a hack in a list here.
 sha1:111D38E2FB41D0B43753E18757D427A91B0DBCB9	H	Dragon Ball Z II Gekishin Freeza!! (J)	NES		board=BANDAI-LZ93D50+24C02;PRG=256;CHR=256;WRAM=0
-sha1:A907E600CEDA175ECD115B406B28155397A4C1FA	H	Dragon Ball Z Gaiden Saiya Jin Zetsumetsu Keikaku (CH)	NES		board=BANDAI-FCG-1;PRG=512;CHR=256;WRAM=0
 sha1:A13EAF0132905FBE3D0456BB075028A30C084D0E	H	Dragon Ball Dai Maou Fukkatsu (J) [hFFE]	NES		board=BANDAI-FCG-1;PRG=128;CHR=128;WRAM=0;VRAM=0
 sha1:8885F4F00C0B73C156179BCEABA5381487DBEAAD	H	Spy vs Spy (J)	NES		board=HVC-CNROM-256K-01;PRG=32;CHR=8;WRAM=8
 sha1:8C676CC9BEF5B93C5A7630D12B8A5B2FEBCE3438	H	Rad Racket Deluxe Tennis II	NES		board=NINA-06;PRG=32;CHR=32
@@ -169,7 +170,6 @@ sha1:12DDD9EDB8894C200C9D89B9EE5673F1202ABA19		Falsion (FDS Conversion, Whirlwin
 sha1:D6E9F3722CFA26CBC582649F197D780809F575CA	O	Family Circuit '91 (J) [o1]	NES		board=MAPPER210;PAD_V=1;PAD_H=0
 sha1:387E7B477F5A61A165A41CD2BFE8A467B3816323	O	Family Circuit '91 (J) [o2]	NES		board=MAPPER210;PAD_V=1;PAD_H=0
 sha1:68ADA89BC7539679871AD14C5C1FFADF04D71280	O	Family Circuit '91 (J) [o3]	NES		board=MAPPER210;PAD_V=1;PAD_H=0
-sha1:8A5FD1061ADACDEABF422A2D2E555FF70749AE7C	B	Mississippi Satsujin Jiken (J) [h2]	NES		board=MAPPER066
 sha1:C1F7AD0A347078B9213B2748D4ADFF33305A6647	O	Mississippi Satsujin Jiken (J) [h2][o1]	NES		board=MAPPER066
 sha1:4BBD4C55C37F531031177DE51F007B10418AD760	O	Pyramid (AVE) (PRG1) [o1]	NES		board=MAPPER000
 sha1:BAF860940369C54B3FF547DA7E759515015B1131	O	Pyramid (AVE) (PRG1) [o2]	NES		board=MAPPER000
@@ -180,7 +180,6 @@ sha1:43E3ED6480E7BF32FFAF1AEBC7F534E0A9B775E6	T	Super Mario Bros 2 (Lost Levels)
 sha1:F32E366828DCA94A612DD39613858DD8E26FA2DC	T	Thunder & Lightning (U) [t1]	NES		board=MAPPER066;WRAM=0
 sha1:8554112E83B5978F5D4EC6E4551F390D5F698E00	B	U-Force Power Games (U) (Prototype2) (Defaced by NA) [b1]	NES		board=NES-GNROM;WRAM=0
 sha1:A6A0A3DC8438558FA5DA3AF8D3349AA8CF080404		Xi You Ji Hou Zhuan (Ch)	NES		board=MAPPER162
-sha1:BC1734BEE472D34F489A6F5F2530A019F28055B7	B	800-in-1 [p1][b1]	NES		board=MAPPER236
 sha1:BC1734BEE472D34F489A6F5F2530A019F28055B7	G	800-in-1 [p1][U]	NES		board=MAPPER236;VRAM=8
 sha1:BD167D1BCC9A008D04136EB91396EBEBCAC976E2	B	R.B.I. Baseball (Tengen) [b]	NES		board=TENGEN-800002;WRAM=0;PAD_H=1;PAD_V=0
 sha1:DEE958845DC528BED899557FB2A8A3B61F1BA7D1		Bao Xiao San Guo (Ch) [a4]	NES		board=WAIXINGMAPPER176
@@ -289,7 +288,6 @@ sha1:B5C4E5E858113F5AA5E063BC79A12D7F6B856E6C		Contra (Konami Collection 2002)	N
 
 ;chinese shit
 sha1:BFA31777E077E64AF0E274B5A22B57C6765D36E1		Fan Kong Jing Ying (Unl) (Ch)	NES		board=MAPPER241;MIR=H
-sha1:17473C223453D2D80FCB9DCFA317947287DC5C52		Xing He Zhan Shi (Ch)	NES		board=MAPPER176
 sha1:0B58E16B7FD5ABE62B1D9B1841875582DF5A9195		Ying Lie Qun Xia Zhuan (Ch)	NES		board=MAPPER192
 sha1:27CB8AEAF0EA97A6C69D3D90BC056C5EB61695F6		Dai-2-Ji Super Robot Taisen (Ch)	NES		board=MAPPER194;VRAM=2
 sha1:F5FA7807F2B70ADFE5707D9BF88F90DAC1436DB0		Di 4 Ci Ji Qi Ren Dai Zhan (Ch)	NES		board=MAPPER074;VRAM=2

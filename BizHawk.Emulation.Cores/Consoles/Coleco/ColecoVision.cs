@@ -4,7 +4,7 @@ using BizHawk.Emulation.Cores.Components.Z80;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
-	[CoreAttributes(
+	[Core(
 		"ColecoHawk",
 		"Vecna",
 		isPorted: false,

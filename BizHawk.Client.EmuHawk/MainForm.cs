@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -32,6 +32,7 @@ using BizHawk.Client.ApiHawk;
 using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.SNK;
+using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -160,6 +161,9 @@ namespace BizHawk.Client.EmuHawk
 			string cmdDumpType = null;
 			string cmdDumpName = null;
 			bool startFullscreen = false;
+			string luaScript = null;
+			bool luaConsole = false;
+
 			for (int i = 0; i < args.Length; i++)
 			{
 				// For some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
@@ -221,6 +225,15 @@ namespace BizHawk.Client.EmuHawk
 				else if (arg.StartsWith("--fullscreen"))
 				{
 					startFullscreen = true;
+				}
+				else if (arg.StartsWith("--lua="))
+				{
+					luaScript = arg.Substring(arg.IndexOf('=') + 1);
+					luaConsole = true;
+				}
+				else if (arg.StartsWith("--luaconsole"))
+				{
+					luaConsole = true;
 				}
 				else
 				{
@@ -445,6 +458,17 @@ namespace BizHawk.Client.EmuHawk
 				{
 					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
 				}
+			}
+
+			//start Lua Console if requested in the command line arguments
+			if (luaConsole)
+			{
+				GlobalWin.Tools.Load<LuaConsole>();
+			}
+			//load Lua Script if requested in the command line arguments
+			if (luaScript != null)
+			{
+				GlobalWin.Tools.LuaConsole.LoadLuaFile(luaScript);
 			}
 
 			GlobalWin.Tools.AutoLoad();
@@ -1751,11 +1775,16 @@ namespace BizHawk.Client.EmuHawk
 			virtualBoyToolStripMenuItem.Visible = false;
 			sNESToolStripMenuItem.Visible = false;
 			neoGeoPocketToolStripMenuItem.Visible = false;
+			pCFXToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
 				case "GEN":
-					GenesisSubMenu.Visible = true;
+					if (!(Emulator is PicoDrive)) // Currently PicoDrive doesn't support anything in this menu
+					{
+						GenesisSubMenu.Visible = true;
+					}
+
 					break;
 				case "TI83":
 					TI83SubMenu.Visible = true;
@@ -1837,6 +1866,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "NGP":
 					neoGeoPocketToolStripMenuItem.Visible = true;
+					break;
+				case "PCFX":
+					pCFXToolStripMenuItem.Visible = true;
 					break;
 			}
 		}
@@ -2081,7 +2113,7 @@ namespace BizHawk.Client.EmuHawk
 				if (VersionInfo.DeveloperBuild)
 				{
 					return FormatFilter(
-						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.vb;*.ngp;*.ngc;*.psf;*.minipsf;*.nsf;%ARCH%",
+						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.32x;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.vb;*.ngp;*.ngc;*.psf;*.minipsf;*.nsf;%ARCH%",
 						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
 						"Disc Images", "*.cue;*.ccd;*.m3u",
 						"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
@@ -2094,7 +2126,7 @@ namespace BizHawk.Client.EmuHawk
 						"Atari 2600", "*.a26;*.bin;%ARCH%",
 						"Atari 7800", "*.a78;*.bin;%ARCH%",
 						"Atari Lynx", "*.lnx;%ARCH%",
-						"Genesis", "*.gen;*.smd;*.bin;*.md;*.cue;*.ccd;%ARCH%",
+						"Genesis", "*.gen;*.smd;*.bin;*.md;*.32x;*.cue;*.ccd;%ARCH%",
 						"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
 						"Gameboy Advance", "*.gba;%ARCH%",
 						"Colecovision", "*.col;%ARCH%",
@@ -2113,7 +2145,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.ngp;*.ngc;*.prg;*.d64;*.g64;*.minipsf;*.nsf;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.32x;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.ngp;*.ngc;*.prg;*.d64;*.g64;*.minipsf;*.nsf;%ARCH%",
 					"Disc Images", "*.cue;*.ccd;*.m3u",
 					"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -2132,7 +2164,7 @@ namespace BizHawk.Client.EmuHawk
 					"TI-83", "*.rom;%ARCH%",
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
-					"Genesis", "*.gen;*.md;*.smd;*.bin;*.cue;*.ccd;%ARCH%",
+					"Genesis", "*.gen;*.md;*.smd;*.32x;*.bin;*.cue;*.ccd;%ARCH%",
 					"WonderSwan", "*.ws;*.wsc;%ARCH%",
 					"Apple II", "*.dsk;*.do;*.po;%ARCH%",
 					"Virtual Boy", "*.vb;%ARCH%",
@@ -4269,6 +4301,11 @@ namespace BizHawk.Client.EmuHawk
 		private void preferencesToolStripMenuItem2_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "NeoPop Settings");
+		}
+
+		private void preferencesToolStripMenuItem3_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
 		}
 
 		private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)

@@ -21,8 +21,9 @@ using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
 using BizHawk.Emulation.DiscSystem;
 
-using GPGX64 = BizHawk.Emulation.Cores.Consoles.Sega.gpgx64;
+using GPGX64 = BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
+using BizHawk.Emulation.Cores.Consoles.NEC.PCFX;
 
 namespace BizHawk.Client.Common
 {
@@ -86,7 +87,7 @@ namespace BizHawk.Client.Common
 				Type = type;
 			}
 
-			public RomErrorArgs(string message, string systemId, string path, bool? det, LoadErrorType type) 
+			public RomErrorArgs(string message, string systemId, string path, bool? det, LoadErrorType type)
 				: this(message, systemId, type)
 			{
 				Deterministic = det;
@@ -326,7 +327,7 @@ namespace BizHawk.Client.Common
 							Console.WriteLine("No ROM to Load");
 							return false;
 						}
-						
+
 						// if not libretro:
 						// do extension checknig
 						ext = file.Extension.ToLowerInvariant();
@@ -477,13 +478,17 @@ namespace BizHawk.Client.Common
 								case DiscType.SonyPSP:
 									game.System = "PSP";
 									break;
-								default: 
+								default:
 								case DiscType.SonyPSX:
 									game.System = "PSX";
 									break;
 								case DiscType.MegaCD:
 									game.System = "GEN";
 									break;
+								case DiscType.PCFX:
+									game.System = "PCFX";
+									break;
+
 								case DiscType.AudioDisc:
 								case DiscType.TurboCD:
 								case DiscType.UnknownCDFS:
@@ -504,20 +509,10 @@ namespace BizHawk.Client.Common
 						switch (game.System)
 						{
 							case "GEN":
-								if (Environment.Is64BitProcess)
-								{
-									var genesis = new GPGX64.GPGX(nextComm, null, disc, GetCoreSettings<GPGX64.GPGX>(), GetCoreSyncSettings<GPGX64.GPGX>());
-									nextEmulator = genesis;
-								}
-								else
-								{
-									var genesis = new GPGX(nextComm, null, disc, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
-									nextEmulator = genesis;
-								}
-
+								var genesis = new GPGX(nextComm, null, disc, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
+								nextEmulator = genesis;
 								break;
 							case "SAT":
-								//nextEmulator = new Yabause(nextComm, disc, GetCoreSyncSettings<Yabause>());
 								nextEmulator = new Saturnus(nextComm, new[] { disc }, Deterministic,
 									(Saturnus.Settings)GetCoreSettings<Saturnus>(), (Saturnus.SyncSettings)GetCoreSyncSettings<Saturnus>());
 								break;
@@ -541,6 +536,10 @@ namespace BizHawk.Client.Common
 									nextEmulator.CoreComm.RomStatusDetails = sw.ToString();
 								}
 
+								break;
+							case "PCFX":
+								nextEmulator = new Tst(nextComm, new[] { disc },
+									(Tst.Settings)GetCoreSettings<Tst>(), (Tst.SyncSettings)GetCoreSyncSettings<Tst>());
 								break;
 							case "PCE":
 							case "PCECD":
@@ -681,11 +680,11 @@ namespace BizHawk.Client.Common
 
 								game = rom.GameInfo;
 								game.System = "SNES";
-								
-								var snes = new LibsnesCore(game, romData, Deterministic, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+
+								var snes = new LibsnesCore(game, romData, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
 								nextEmulator = snes;
 							}
-							catch 
+							catch
 							{
 								DoLoadErrorCallback(ex.ToString(), "DGB", LoadErrorType.XML);
 								return false;
@@ -782,7 +781,20 @@ namespace BizHawk.Client.Common
 
 								break;
 							case "SNES":
-								if (Global.Config.SNES_InSnes9x)
+								bool useSnes9x = Global.Config.SNES_InSnes9x;
+								if (Global.Config.CoreForcingViaGameDB && !string.IsNullOrEmpty(game.ForcedCore))
+								{
+									if (game.ForcedCore.ToLower() == "snes9x")
+									{
+										useSnes9x = true;
+									}
+									else if (game.ForcedCore.ToLower() == "bsnes")
+									{
+										useSnes9x = false;
+									}
+								}
+
+								if (useSnes9x)
 								{
 									core = CoreInventory.Instance["SNES", "Snes9x"];
 								}
@@ -792,7 +804,7 @@ namespace BizHawk.Client.Common
 									((CoreFileProvider)nextComm.CoreFileProvider).SubfileDirectory = Path.GetDirectoryName(path.Replace("|", "")); // Dirty hack to get around archive filenames (since we are just getting the directory path, it is safe to mangle the filename
 									var romData = isXml ? null : rom.FileData;
 									var xmlData = isXml ? rom.FileData : null;
-									var snes = new LibsnesCore(game, romData, Deterministic, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+									var snes = new LibsnesCore(game, romData, xmlData, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
 									nextEmulator = snes;
 								}
 
@@ -839,22 +851,18 @@ namespace BizHawk.Client.Common
 								}
 								else
 								{
-									try
+									if (Global.Config.SGB_UseBsnes)
 									{
 										game.System = "SNES";
 										game.AddOption("SGB");
-										var snes = new LibsnesCore(game, rom.FileData, Deterministic, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+										var snes = new LibsnesCore(game, rom.FileData, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
 										nextEmulator = snes;
 									}
-									catch
+									else
 									{
-										// failed to load SGB bios or game does not support SGB mode. 
-										// To avoid catch-22, disable SGB mode
-										Global.Config.GB_AsSGB = false;
-										throw;
+										core = CoreInventory.Instance["SGB", "Pizza Boy"];
 									}
 								}
-
 								break;
 							case "A78":
 								var gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
@@ -891,17 +899,18 @@ namespace BizHawk.Client.Common
 								nextEmulator.CoreComm.RomStatusDetails = "PSX etc.";
 								break;
 							case "GEN":
-								// discard "Genplus-gx64", auto-added due to implementing IEmulator // HUH?
-								// core = CoreInventory.Instance["GEN", "Genplus-gx"];
-								if (Environment.Is64BitProcess)
+								if (Global.Config.CoreForcingViaGameDB && game.ForcedCore?.ToLower() == "pico")
 								{
-									core = CoreInventory.Instance["GEN", "Genplus-gx64"];
+									core = CoreInventory.Instance["GEN", "PicoDrive"];
 								}
 								else
 								{
 									core = CoreInventory.Instance["GEN", "Genplus-gx"];
 								}
 
+								break;
+							case "32X":
+								core = CoreInventory.Instance["GEN", "PicoDrive"];
 								break;
 						}
 
@@ -944,7 +953,7 @@ namespace BizHawk.Client.Common
 						{
 							DoMessageCallback("Unable to use quicknes, using NESHawk instead");
 						}
-						
+
 						return LoadRom(path, nextComm, true, recursiveCount + 1);
 					}
 					else if (ex is MissingFirmwareException)
@@ -953,7 +962,9 @@ namespace BizHawk.Client.Common
 					}
 					else if (ex is CGBNotSupportedException)
 					{
-						// Note: GB as SGB was set to false by this point, otherwise we would want to do it here
+						// failed to load SGB bios or game does not support SGB mode. 
+						// To avoid catch-22, disable SGB mode
+						Global.Config.GB_AsSGB = false;
 						DoMessageCallback("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
 						return LoadRom(path, nextComm, false, recursiveCount + 1);
 					}

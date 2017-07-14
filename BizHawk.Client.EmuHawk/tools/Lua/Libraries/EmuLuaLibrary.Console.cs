@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 using BizHawk.Client.Common;
-using LuaInterface;
+using NLua;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -18,7 +18,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override string Name => "console";
 
-		[LuaMethodAttributes("clear", "clears the output box of the Lua Console window")]
+		[LuaMethod("clear", "clears the output box of the Lua Console window")]
 		public static void Clear()
 		{
 			if (GlobalWin.Tools.Has<LuaConsole>())
@@ -27,7 +27,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("getluafunctionslist", "returns a list of implemented functions")]
+		[LuaMethod("getluafunctionslist", "returns a list of implemented functions")]
 		public static string GetLuaFunctionsList()
 		{
 			var list = new StringBuilder();
@@ -39,7 +39,7 @@ namespace BizHawk.Client.EmuHawk
 			return list.ToString();
 		}
 
-		[LuaMethodAttributes("log", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
+		[LuaMethod("log", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
 		public static void Log(params object[] outputs)
 		{
 			if (GlobalWin.Tools.Has<LuaConsole>())
@@ -57,7 +57,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("writeline", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
+		[LuaMethod("writeline", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
 		public static void WriteLine(params object[] outputs)
 		{
 			if (GlobalWin.Tools.Has<LuaConsole>())
@@ -66,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("write", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
+		[LuaMethod("write", "Outputs the given object to the output box on the Lua Console dialog. Note: Can accept a LuaTable")]
 		public static void Write(params object[] outputs)
 		{
 			LogWithSeparator("", "", outputs);

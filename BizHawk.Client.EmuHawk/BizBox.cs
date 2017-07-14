@@ -45,7 +45,7 @@ namespace BizHawk.Client.EmuHawk
 				.Load("BizHawk.Emulation.Cores")
 				.GetTypes()
 				.Where(t => typeof(IEmulator).IsAssignableFrom(t))
-				.Select(t => t.GetCustomAttributes(false).OfType<CoreAttributes>().FirstOrDefault())
+				.Select(t => t.GetCustomAttributes(false).OfType<CoreAttribute>().FirstOrDefault())
 				.Where(a => a != null)
 				.Where(a => a.Released)
 				.OrderByDescending(a => a.CoreName.ToLower())

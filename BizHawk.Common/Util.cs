@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Reflection;
 using System.Text;
 
@@ -427,6 +428,24 @@ namespace BizHawk.Common
 			}
 
 			return true;
+		}
+
+		public static byte[] DecompressGzipFile(Stream src)
+		{
+			var tmp = new byte[4];
+			if (src.Read(tmp, 0, 2) != 2)
+				throw new InvalidOperationException("Unexpected end of stream");
+			if (tmp[0] != 0x1f || tmp[1] != 0x8b)
+				throw new InvalidOperationException("GZIP header not present");
+			src.Seek(-4, SeekOrigin.End);
+			src.Read(tmp, 0, 4);
+			int size = BitConverter.ToInt32(tmp, 0);
+			var data = new byte[size];
+			var ms = new MemoryStream(data);
+			src.Seek(0, SeekOrigin.Begin);
+			using (var gs = new GZipStream(src, CompressionMode.Decompress, true))
+				gs.CopyTo(ms);
+			return data;
 		}
 	}
 

@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using System.IO;
 
 using BizHawk.Client.Common;
-using LuaInterface;
+using NLua;
 using System;
 
 namespace BizHawk.Client.EmuHawk
@@ -56,6 +56,7 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.Clear(color);
 		}
 
+
 		[LuaMethodAttributes(
 			"Refresh",
 			"Redraws the canvas")]
@@ -64,6 +65,7 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.Refresh();
 		}
 
+
 		[LuaMethodAttributes(
 			"SetDefaultForegroundColor",
 			"Sets the default foreground color to use in drawing methods, white by default")]
@@ -71,6 +73,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			luaPictureBox.SetDefaultForegroundColor(color);
 		}
+
 
 		[LuaMethodAttributes(
 			"SetDefaultBackgroundColor",
@@ -104,6 +107,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+
 		[LuaMethodAttributes(
 			"DrawBox",
 			"Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height")]
@@ -119,6 +123,7 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 		}
+
 
 		[LuaMethodAttributes(
 			"DrawEllipse",
@@ -136,6 +141,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+
 		[LuaMethodAttributes(
 			"DrawIcon",
 			"draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
@@ -152,6 +158,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+
 		[LuaMethodAttributes(
 			"DrawImage",
 			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
@@ -165,6 +172,7 @@ namespace BizHawk.Client.EmuHawk
 
 			luaPictureBox.DrawImage(path, x, y, width, height, cache);
 		}
+
 
 		[LuaMethodAttributes(
 			"ClearImageCache",

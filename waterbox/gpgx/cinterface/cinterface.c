@@ -454,30 +454,30 @@ GPGX_EX const char* gpgx_get_memdom(int which, void **area, int *size)
 
 GPGX_EX void gpgx_write_m68k_bus(unsigned addr, unsigned data)
 {
-	unsigned char *base = m68k.memory_map[addr >> 16 & 0xff].base;
-	if (base)
-		base[addr & 0xffff ^ 1] = data;
+	cpu_memory_map m = m68k.memory_map[addr >> 16 & 0xff];
+	if (m.base && !m.write8)
+		m.base[addr & 0xffff ^ 1] = data;
 }
 
 GPGX_EX void gpgx_write_s68k_bus(unsigned addr, unsigned data)
 {
-	unsigned char *base = s68k.memory_map[addr >> 16 & 0xff].base;
-	if (base)
-		base[addr & 0xffff ^ 1] = data;
+	cpu_memory_map m = s68k.memory_map[addr >> 16 & 0xff];
+	if (m.base && !m.write8)
+		m.base[addr & 0xffff ^ 1] = data;
 }
 GPGX_EX unsigned gpgx_peek_m68k_bus(unsigned addr)
 {
-	unsigned char *base = m68k.memory_map[addr >> 16 & 0xff].base;
-	if (base)
-		return base[addr & 0xffff ^ 1];
+	cpu_memory_map m = m68k.memory_map[addr >> 16 & 0xff];
+	if (m.base && !m.read8)
+		return m.base[addr & 0xffff ^ 1];
 	else
 		return 0xff;
 }
 GPGX_EX unsigned gpgx_peek_s68k_bus(unsigned addr)
 {
-	unsigned char *base = s68k.memory_map[addr >> 16 & 0xff].base;
-	if (base)
-		return base[addr & 0xffff ^ 1];
+	cpu_memory_map m = s68k.memory_map[addr >> 16 & 0xff];
+	if (m.base && !m.read8)
+		return m.base[addr & 0xffff ^ 1];
 	else
 		return 0xff;
 }

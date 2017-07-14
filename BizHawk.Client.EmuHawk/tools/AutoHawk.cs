@@ -11,7 +11,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[ToolAttributes(released: false, supportedSystems: null)]
+	[Tool(released: false, supportedSystems: null)]
 	public partial class AutoHawk : Form, IToolFormAutoConfig
 	{
 		public AutoHawk()

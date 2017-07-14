@@ -2,7 +2,7 @@
 using System.Linq;
 using System.ComponentModel;
 
-using LuaInterface;
+using NLua;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
@@ -156,8 +156,7 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
-		[LuaMethodAttributes(
-			"onframeend", "Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts")]
+		[LuaMethod("onframeend", "Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts")]
 		public string OnFrameEnd(LuaFunction luaf, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnFrameEnd", LogOutputCallback, CurrentThread, name);
@@ -165,8 +164,7 @@ namespace BizHawk.Client.Common
 			return nlf.Guid.ToString();
 		}
 
-		[LuaMethodAttributes(
-			"onframestart", "Calls the given lua function at the beginning of each frame before any emulation and drawing occurs")]
+		[LuaMethod("onframestart", "Calls the given lua function at the beginning of each frame before any emulation and drawing occurs")]
 		public string OnFrameStart(LuaFunction luaf, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnFrameStart", LogOutputCallback, CurrentThread, name);
@@ -174,8 +172,7 @@ namespace BizHawk.Client.Common
 			return nlf.Guid.ToString();
 		}
 
-		[LuaMethodAttributes(
-			"oninputpoll", "Calls the given lua function after each time the emulator core polls for input")]
+		[LuaMethod("oninputpoll", "Calls the given lua function after each time the emulator core polls for input")]
 		public string OnInputPoll(LuaFunction luaf, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnInputPoll", LogOutputCallback, CurrentThread, name);
@@ -204,8 +201,7 @@ namespace BizHawk.Client.Common
 			Log($"Error: {Emulator.Attributes().CoreName} does not yet implement input polling callbacks");
 		}
 
-		[LuaMethodAttributes(
-			"onloadstate", "Fires after a state is loaded. Receives a lua function name, and registers it to the event immediately following a successful savestate event")]
+		[LuaMethod("onloadstate", "Fires after a state is loaded. Receives a lua function name, and registers it to the event immediately following a successful savestate event")]
 		public string OnLoadState(LuaFunction luaf, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnSavestateLoad", LogOutputCallback, CurrentThread, name);
@@ -213,7 +209,7 @@ namespace BizHawk.Client.Common
 			return nlf.Guid.ToString();
 		}
 
-		[LuaMethodAttributes("onmemoryexecute", "Fires after the given address is executed by the core")]
+		[LuaMethod("onmemoryexecute", "Fires after the given address is executed by the core")]
 		public string OnMemoryExecute(LuaFunction luaf, uint address, string name = null)
 		{
 			try
@@ -244,8 +240,7 @@ namespace BizHawk.Client.Common
 			return Guid.Empty.ToString();
 		}
 
-		[LuaMethodAttributes(
-			"onmemoryread", "Fires after the given address is read by the core. If no address is given, it will attach to every memory read")]
+		[LuaMethod("onmemoryread", "Fires after the given address is read by the core. If no address is given, it will attach to every memory read")]
 		public string OnMemoryRead(LuaFunction luaf, uint? address = null, string name = null)
 		{
 			try
@@ -275,8 +270,7 @@ namespace BizHawk.Client.Common
 			return Guid.Empty.ToString();
 		}
 
-		[LuaMethodAttributes(
-			"onmemorywrite", "Fires after the given address is written by the core. If no address is given, it will attach to every memory write")]
+		[LuaMethod("onmemorywrite", "Fires after the given address is written by the core. If no address is given, it will attach to every memory write")]
 		public string OnMemoryWrite(LuaFunction luaf, uint? address = null, string name = null)
 		{
 			try
@@ -306,7 +300,7 @@ namespace BizHawk.Client.Common
 			return Guid.Empty.ToString();
 		}
 
-		[LuaMethodAttributes("onsavestate", "Fires after a state is saved")]
+		[LuaMethod("onsavestate", "Fires after a state is saved")]
 		public string OnSaveState(LuaFunction luaf, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnSavestateSave", LogOutputCallback, CurrentThread, name);
@@ -314,7 +308,7 @@ namespace BizHawk.Client.Common
 			return nlf.Guid.ToString();
 		}
 
-		[LuaMethodAttributes("onexit", "Fires after the calling script has stopped")]
+		[LuaMethod("onexit", "Fires after the calling script has stopped")]
 		public string OnExit(LuaFunction luaf, string name = null)
 		{
 			var nlf = new NamedLuaFunction(luaf, "OnExit", LogOutputCallback, CurrentThread, name);
@@ -322,8 +316,7 @@ namespace BizHawk.Client.Common
 			return nlf.Guid.ToString();
 		}
 
-		[LuaMethodAttributes(
-			"unregisterbyid", "Removes the registered function that matches the guid. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
+		[LuaMethod("unregisterbyid", "Removes the registered function that matches the guid. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
 		public bool UnregisterById(string guid)
 		{
 			foreach (var nlf in _luaFunctions.Where(nlf => nlf.Guid.ToString() == guid.ToString()))
@@ -335,8 +328,7 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		[LuaMethodAttributes(
-			"unregisterbyname", "Removes the first registered function that matches Name. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
+		[LuaMethod("unregisterbyname", "Removes the first registered function that matches Name. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
 		public bool UnregisterByName(string name)
 		{
 			foreach (var nlf in _luaFunctions.Where(nlf => nlf.Name == name))

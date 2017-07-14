@@ -8,7 +8,7 @@ using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[SchemaAttributes("SAT")]
+	[Schema("SAT")]
 	public class SaturnSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)

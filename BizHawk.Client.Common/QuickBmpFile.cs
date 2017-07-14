@@ -16,24 +16,23 @@ namespace BizHawk.Client.Common
 		#region Structs
 
 		[StructLayout(LayoutKind.Sequential, Pack = 1)]
-		private class Bitmapfileheader
+		private class BITMAPFILEHEADER
 		{
-			public readonly uint bfSize;
 			public ushort bfType;
-			
+			public uint bfSize;
 			public ushort bfReserved1;
 			public ushort bfReserved2;
 			public uint bfOffBits;
 
-			public Bitmapfileheader()
+			public BITMAPFILEHEADER()
 			{
 				bfSize = (uint)Marshal.SizeOf(this);
 			}
 
-			public static Bitmapfileheader FromStream(Stream s)
+			public static BITMAPFILEHEADER FromStream(Stream s)
 			{
-				var ret = GetObject<Bitmapfileheader>(s);
-				if (ret.bfSize != Marshal.SizeOf(typeof(Bitmapfileheader)))
+				var ret = GetObject<BITMAPFILEHEADER>(s);
+				if (ret.bfSize != Marshal.SizeOf(typeof(BITMAPFILEHEADER)))
 				{
 					throw new InvalidOperationException();
 				}
@@ -42,10 +41,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[StructLayout(LayoutKind.Sequential)]
-		private class Bitmapinfoheader
+		[StructLayout(LayoutKind.Sequential, Pack = 1)]
+		private class BITMAPINFOHEADER
 		{
-			public readonly uint biSize;
+			public uint biSize;
+
 			public int biWidth;
 			public int biHeight;
 			public ushort biPlanes;
@@ -57,15 +57,15 @@ namespace BizHawk.Client.Common
 			public uint biClrUsed;
 			public uint biClrImportant;
 
-			public Bitmapinfoheader()
+			public BITMAPINFOHEADER()
 			{
 				biSize = (uint)Marshal.SizeOf(this);
 			}
 
-			public static Bitmapinfoheader FromStream(Stream s)
+			public static BITMAPINFOHEADER FromStream(Stream s)
 			{
-				var ret = GetObject<Bitmapinfoheader>(s);
-				if (ret.biSize != Marshal.SizeOf(typeof(Bitmapinfoheader)))
+				var ret = GetObject<BITMAPINFOHEADER>(s);
+				if (ret.biSize != Marshal.SizeOf(typeof(BITMAPINFOHEADER)))
 				{
 					throw new InvalidOperationException();
 				}
@@ -244,8 +244,8 @@ namespace BizHawk.Client.Common
 
 		public static unsafe bool Load(IVideoProvider v, Stream s)
 		{
-			var bf = Bitmapfileheader.FromStream(s);
-			var bi = Bitmapinfoheader.FromStream(s);
+			var bf = BITMAPFILEHEADER.FromStream(s);
+			var bi = BITMAPINFOHEADER.FromStream(s);
 			if (bf.bfType != 0x4d42
 				|| bf.bfOffBits != bf.bfSize + bi.biSize
 				|| bi.biPlanes != 1
@@ -295,8 +295,8 @@ namespace BizHawk.Client.Common
 
 		public static unsafe void Save(IVideoProvider v, Stream s, int w, int h)
 		{
-			var bf = new Bitmapfileheader();
-			var bi = new Bitmapinfoheader();
+			var bf = new BITMAPFILEHEADER();
+			var bi = new BITMAPINFOHEADER();
 			bf.bfType = 0x4d42;
 			bf.bfOffBits = bf.bfSize + bi.biSize;
 

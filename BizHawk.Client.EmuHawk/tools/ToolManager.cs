@@ -427,7 +427,10 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var tool in _tools)
 			{
-				tool.NewUpdate(ToolFormUpdateType.PreFrame);
+				if (!tool.IsDisposed)
+				{
+					tool.NewUpdate(ToolFormUpdateType.PreFrame);
+				}
 			}
 		}
 
@@ -445,7 +448,10 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var tool in _tools)
 			{
-				tool.NewUpdate(ToolFormUpdateType.PostFrame);
+				if (!tool.IsDisposed)
+				{
+					tool.NewUpdate(ToolFormUpdateType.PostFrame);
+				}
 			}
 		}
 
@@ -734,7 +740,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var attr = tool.GetCustomAttributes(false)
-				.OfType<ToolAttributes>()
+				.OfType<ToolAttribute>()
 				.FirstOrDefault();
 
 			// If no supported systems mentioned assume all

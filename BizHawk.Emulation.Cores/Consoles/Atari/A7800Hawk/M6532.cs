@@ -5,6 +5,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	// Emulates the M6532 RIOT Chip
 	public class M6532
 	{
+
+		public A7800Hawk Core { get; set; }
+
 		private byte _ddRa = 0x00;
 		private byte _ddRb = 0x00;
 		private byte _outputA = 0x00;
@@ -13,7 +16,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public M6532()
 		{
-
 			// arbitrary value to start with.
 			Timer.Value = 0x73;
 			Timer.PrescalerShift = 10;
@@ -31,10 +33,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			var registerAddr = (ushort)(addr & 0x0007);
 			if (registerAddr == 0x00)
 			{
+				Core._islag = false;
+
 				// Read Output reg A
 				// Combine readings from player 1 and player 2
 				// actually depends on setting in SWCHCNTA (aka DDRa)
-				byte temp = 0;// (byte)(_core.ReadControls1(peek) & 0xF0 | ((_core.ReadControls2(peek) >> 4) & 0x0F));
+				byte temp = (byte)(Core.p1_state | Core.p2_state);
 				temp = (byte)(temp & ~_ddRa);
 				temp = (byte)(temp + (_outputA & _ddRa));
 				return temp;
@@ -49,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (registerAddr == 0x02)
 			{
 				// Read Output reg B
-				byte temp = 0;// _core.ReadConsoleSwitches(peek);
+				byte temp = Core.con_state;
 				temp = (byte)(temp & ~_ddRb);
 				return temp;
 			}
@@ -172,6 +176,18 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 			}
 		}
+
+		public void Reset()
+		{
+			// arbitrary value to start with.
+			Timer.Value = 0x73;
+			Timer.PrescalerShift = 10;
+			Timer.PrescalerCount = 1 << Timer.PrescalerShift;
+
+			_ddRa = 0x00;
+			_ddRb = 0x00;
+			_outputA = 0x00;
+	}
 
 		public void SyncState(Serializer ser)
 		{

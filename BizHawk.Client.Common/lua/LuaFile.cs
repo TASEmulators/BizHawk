@@ -35,7 +35,7 @@
 		public bool Enabled => State != RunState.Disabled;
 		public bool Paused => State == RunState.Paused;
 		public bool IsSeparator { get; }
-		public LuaInterface.Lua Thread { get; set; }
+		public NLua.Lua Thread { get; set; }
 		public bool FrameWaiting { get; set; }
 		public string CurrentDirectory { get; set; }
 

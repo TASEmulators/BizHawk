@@ -243,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		protected readonly BasicServiceProvider _serviceProvider;
 		public IEmulatorServiceProvider ServiceProvider => _serviceProvider;
-		public string SystemId { get; }
+		public virtual string SystemId { get; }
 		public bool DeterministicEmulation { get; protected set; } = true;
 		public IInputCallbackSystem InputCallbacks { get; } = new InputCallbackSystem();
 		public virtual ControllerDefinition ControllerDefinition { get; protected set; } = NullController.Instance.Definition;
@@ -374,7 +374,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		protected readonly int[] _videoBuffer;
 		public virtual int VirtualWidth => BufferWidth;
-		public virtual int VirtualHeight => BufferWidth;
+		public virtual int VirtualHeight => BufferHeight;
 		public int BufferWidth { get; protected set; }
 		public int BufferHeight { get; protected set; }
 		public virtual int VsyncNumerator { get; protected set; }

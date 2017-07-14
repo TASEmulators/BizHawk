@@ -6,11 +6,12 @@ using BizHawk.Common.BizInvoke;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using BizHawk.Common;
+using BizHawk.Emulation.DiscSystem;
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
+namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
-	[CoreAttributes(
-		"Genplus-gx64",
+	[Core(
+		"Genplus-gx",
 		"",
 		isPorted: true,
 		isReleased: true,
@@ -45,11 +46,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 			{
 				Path = comm.CoreFileProvider.DllPath(),
 				Filename = "gpgx.wbx",
-				SbrkHeapSizeKB = 256,
+				SbrkHeapSizeKB = 512,
 				SealedHeapSizeKB = 36 * 1024,
 				InvisibleHeapSizeKB = 4 * 1024,
 				PlainHeapSizeKB = 64,
-				MmapHeapSizeKB = 512
+				MmapHeapSizeKB = 1 * 1024
 			});
 
 			using (_elf.EnterExit())
@@ -221,7 +222,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 						Console.WriteLine("Couldn't satisfy firmware request {0} because none was provided.", filename);
 						return 0;
 					}
-					srcdata = GetCDData();
+					srcdata = GetCDData(CD);
 					if (srcdata.Length != maxsize)
 					{
 						Console.WriteLine("Couldn't satisfy firmware request {0} because of struct size.", filename);
@@ -308,12 +309,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
 
 		LibGPGX.cd_read_cb cd_callback_handle;
 
-		unsafe byte[] GetCDData()
+		public static unsafe byte[] GetCDData(Disc cd)
 		{
 			LibGPGX.CDData ret = new LibGPGX.CDData();
 			int size = Marshal.SizeOf(ret);
 
-			var ses = CD.Session1;
+			var ses = cd.Session1;
 			int ntrack = ses.InformationTrackCount;
 
 			// bet you a dollar this is all wrong
