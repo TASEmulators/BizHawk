@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Diagnostics;
 using System.IO;
 using System.Collections.Generic;
@@ -309,7 +310,21 @@ namespace BizHawk.Client.EmuHawk
 			//    later, we look for NLua or KopiLua assembly names and redirect them to files located in the output/DLL/nlua directory
 			if (new AssemblyName(requested).Name == "NLua")
 			{
-				if (Global.Config.UseNLua) { }
+				//this method referencing Global.Config makes assemblies get loaded, which isnt smart from the assembly resolver.
+				//so.. we're going to resort to something really bad.
+				//avert your eyes.
+				bool UseNLua = true;
+				string configPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
+				if (File.Exists(configPath))
+				{
+					var cfg = File.ReadAllLines(configPath);
+					var usenlua_key = cfg.FirstOrDefault(line=>line.Contains("  \"UseNLua\": "));
+					if (usenlua_key != null)
+						if (usenlua_key.Contains("false"))
+							UseNLua = false;
+				}
+				
+				if (UseNLua) { }
 				else requested = "LuaInterface";
 			}
 
