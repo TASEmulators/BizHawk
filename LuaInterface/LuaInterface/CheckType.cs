@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Reflection;
 using Lua511;
 
-namespace LuaInterface
+namespace NLua
 {
 	/*
 	 * Type checking and conversion functions.

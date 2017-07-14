@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Lua511;
 
-namespace LuaInterface
+namespace NLua
 {
     public class LuaFunction : LuaBase
     {
