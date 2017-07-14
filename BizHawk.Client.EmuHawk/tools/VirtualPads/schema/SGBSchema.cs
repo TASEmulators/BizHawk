@@ -11,6 +11,9 @@ namespace BizHawk.Client.EmuHawk
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
 			yield return StandardController(1);
+			yield return StandardController(2);
+			yield return StandardController(3);
+			yield return StandardController(4);
 		}
 
 		private static PadSchema StandardController(int controllerNum)
