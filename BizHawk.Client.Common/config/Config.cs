@@ -133,7 +133,7 @@ namespace BizHawk.Client.Common
 		public string Update_LatestVersion = "";
 		public string Update_IgnoreVersion = "";
 		public bool CDLAutoSave = true, CDLAutoStart = true;
-
+		public bool UseNLua = true; // Whether or not to use a good, reliable, memory-leak-free lua interface that is slower than the original luainterface
 		////public bool TurboSeek = true; // When PauseOnFrame is set, this will decide whether the client goes into turbo mode or not
 
 		private bool _turboSeek;

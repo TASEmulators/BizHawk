@@ -31,6 +31,9 @@ namespace BizHawk.Client.EmuHawk
 			cbMoviesOnDisk.Checked = Global.Config.MoviesOnDisk;
 			cbMoviesInAWE.Checked = Global.Config.MoviesInAWE;
 
+			NLuaRadio.Checked = Global.Config.UseNLua;
+			LuaInterfaceRadio.Checked = !Global.Config.UseNLua;
+
 			if (LogConsole.ConsoleVisible)
 			{
 				LogWindowAsConsoleCheckbox.Enabled = false;
@@ -58,6 +61,7 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.RunLuaDuringTurbo = LuaDuringTurboCheckbox.Checked;
 			Global.Config.MoviesOnDisk = cbMoviesOnDisk.Checked;
 			Global.Config.MoviesInAWE = cbMoviesInAWE.Checked;
+			Global.Config.UseNLua = NLuaRadio.Checked;
 
 			Close();
 			DialogResult = DialogResult.OK;
