@@ -894,9 +894,9 @@
     <Compile Include="tools\Lua\LuaFunctionsForm.Designer.cs">
       <DependentUpon>LuaFunctionsForm.cs</DependentUpon>
     </Compile>
-	<Compile Include="tools\Lua\LuaPictureBox.cs">
-		<SubType>Component</SubType>
-	</Compile>
+    <Compile Include="tools\Lua\LuaPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="tools\Lua\LuaRegisteredFunctionsList.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1172,6 +1172,7 @@
     <Compile Include="tools\VirtualPads\schema\IntvSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\LynxSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\NgpSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\PcfxSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\PSXSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SatSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\IVirtualPadSchema.cs" />
