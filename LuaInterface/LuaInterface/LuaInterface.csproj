@@ -162,7 +162,7 @@
     <CodeAnalysisFailOnMissingRules>false</CodeAnalysisFailOnMissingRules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release-LUAPERKS|x64'">
-    <OutputPath>bin\x64\Release-LUAPERKS\</OutputPath>
+    <OutputPath>..\..\references\x64\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>

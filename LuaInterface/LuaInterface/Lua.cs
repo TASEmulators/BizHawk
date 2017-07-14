@@ -8,6 +8,7 @@ namespace NLua
 	using System.Collections.Specialized;
 	using System.Reflection;
     using System.Threading;
+	using NLua.Exceptions;
     using Lua511;
 
 	/*

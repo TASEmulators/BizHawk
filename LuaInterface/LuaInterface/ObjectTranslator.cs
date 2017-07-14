@@ -6,6 +6,7 @@ namespace NLua
 	using System.Reflection;
     using System.Collections.Generic;
     using System.Diagnostics;
+	using NLua.Exceptions;
     using Lua511;
 
 	/*
