@@ -894,6 +894,9 @@
     <Compile Include="tools\Lua\LuaFunctionsForm.Designer.cs">
       <DependentUpon>LuaFunctionsForm.cs</DependentUpon>
     </Compile>
+	<Compile Include="tools\Lua\LuaPictureBox.cs">
+		<SubType>Component</SubType>
+	</Compile>
     <Compile Include="tools\Lua\LuaRegisteredFunctionsList.cs">
       <SubType>Form</SubType>
     </Compile>
