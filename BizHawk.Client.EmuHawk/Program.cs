@@ -297,18 +297,37 @@ namespace BizHawk.Client.EmuHawk
 
 		static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
+			string requested = args.Name;
+
+			//mutate filename depending on selection of lua core. here's how it works
+			//1. we build NLua to the output/dll/lua directory. that brings KopiLua with it
+			//2. We reference it from there, but we tell it not to copy local; that way there's no NLua in the output/dll directory
+			//3. When NLua assembly attempts to load, it can't find it
+			//I. if LuaInterface is selected by the user, we switch to requesting that.
+			//     (those DLLs are built into the output/DLL directory)
+			//II. if NLua is selected by the user, we skip over this part; 
+			//    later, we look for NLua or KopiLua assembly names and redirect them to files located in the output/DLL/nlua directory
+			if (new AssemblyName(requested).Name == "NLua")
+			{
+				if (Global.Config.UseNLua) { }
+				else requested = "LuaInterface";
+			}
+
 			lock (AppDomain.CurrentDomain)
 			{
 				var asms = AppDomain.CurrentDomain.GetAssemblies();
 				foreach (var asm in asms)
-					if (asm.FullName == args.Name)
+					if (asm.FullName == requested)
 						return asm;
 
 				//load missing assemblies by trying to find them in the dll directory
-				string dllname = new AssemblyName(args.Name).Name + ".dll";
+				string dllname = new AssemblyName(requested).Name + ".dll";
 				string directory = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
+				string simpleName = new AssemblyName(requested).Name;
+				if (simpleName == "NLua" || simpleName == "KopiLua") directory = Path.Combine(directory, "nlua");
 				string fname = Path.Combine(directory, dllname);
 				if (!File.Exists(fname)) return null;
+
 				//it is important that we use LoadFile here and not load from a byte array; otherwise mixed (managed/unamanged) assemblies can't load
 				return Assembly.LoadFile(fname);
 			}
