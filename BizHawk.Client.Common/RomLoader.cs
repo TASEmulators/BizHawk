@@ -719,6 +719,16 @@ namespace BizHawk.Client.Common
 									nextEmulator = new Saturnus(nextComm, saturnDiscs, Deterministic,
 									(Saturnus.Settings)GetCoreSettings<Saturnus>(), (Saturnus.SyncSettings)GetCoreSyncSettings<Saturnus>());
 									break;
+								case "PCFX":
+									var pcfxDiscs = DiscsFromXml(xmlGame, "PCFX", DiscType.PCFX);
+									if (!pcfxDiscs.Any())
+									{
+										return false;
+									}
+
+									nextEmulator = new Tst(nextComm, pcfxDiscs,
+										(Tst.Settings)GetCoreSettings<Tst>(), (Tst.SyncSettings)GetCoreSyncSettings<Tst>());
+									break;
 								default:
 									return false;
 							}
