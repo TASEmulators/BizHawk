@@ -49,7 +49,8 @@
 		public void Stop()
 		{
 			State = RunState.Disabled;
-			Thread.GetTable("keepalives")[Thread] = null;
+			if(NLua.Lua.WhichLua == "NLua")
+				Thread.GetTable("keepalives")[Thread] = null;
 			Thread = null;
 		}
 

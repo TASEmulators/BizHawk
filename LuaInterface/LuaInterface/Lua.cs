@@ -26,6 +26,8 @@ namespace NLua
     public class Lua : IDisposable
 	{
 
+		public static readonly string WhichLua = "LuaInterface";
+
 		static string init_luanet =
 			"local metatable = {}									\n"+
 			"local import_type = luanet.import_type							\n"+
