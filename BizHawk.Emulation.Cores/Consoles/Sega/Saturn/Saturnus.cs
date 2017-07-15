@@ -618,12 +618,28 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 		public override int VirtualWidth => _virtualWidth;
 		public override int VirtualHeight => _virtualHeight;
 
-		protected override void FrameAdvancePost()
+		bool _useResizedBuffer;
+		int[] _resizedBuffer;
+
+		public override int[] GetVideoBuffer()
+		{
+			if (_useResizedBuffer) return _resizedBuffer;
+			else return _videoBuffer;
+		}
+
+		void AllocResizedBuffer(int width, int height)
+		{
+			_useResizedBuffer = true;
+			if (_resizedBuffer == null || width * height != _resizedBuffer.Length)
+				_resizedBuffer = new int[width * height];
+		}
+
+		protected unsafe override void FrameAdvancePost()
 		{
 			//TODO: can we force the videoprovider to add a prescale instead of having to do it in software here?
 			//TODO: if not, actually do it in software, instead of relying on the virtual sizes
 			//TODO: find a reason why relying on the virtual sizes is actually not good enough?
-			
+
 			//TODO: export VDP2 display area width from emulator and add option to aggressively crop overscan - OR - add that logic to core
 
 			//mednafen, for reference:
@@ -646,6 +662,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 			//	gi->lcm_width = gi->nominal_width * 2;
 			//}
 
+			_useResizedBuffer = false;
+
 			bool isHorz2x = false, isVert2x = false;
 
 			//note: these work with PAL also
@@ -665,6 +683,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 
 			if (BufferHeight == slHeight) { }
 			else isVert2x = true;
+
+			if (_settings.ResolutionMode == Settings.ResolutionModeTypes.PixelPro)
+			{
+				//this is the tricky one: need to adapt the framebuffer size
+			}
 
 			switch (_settings.ResolutionMode)
 			{
@@ -713,6 +736,58 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.Saturn
 					//(that's not the best solution for us [not what psx does], but it will do for now)
 					_virtualWidth = BufferWidth * (isHorz2x ? 1 : 2); //not a mistake, we scale to make it bigger if it isn't already
 					_virtualHeight = BufferHeight * (isVert2x ? 1 : 2); //not a mistake
+
+					if (isHorz2x && isVert2x) { } //nothing to do
+					else if (isHorz2x && !isVert2x)
+					{
+						//needs double sizing vertically
+						AllocResizedBuffer(_virtualWidth, _virtualHeight);
+						for (int y = 0; y < BufferHeight; y++)
+						{
+							Buffer.BlockCopy(_videoBuffer, BufferWidth * y * 4, _resizedBuffer, BufferWidth * (y * 2 + 0) * 4, BufferWidth * 4);
+							Buffer.BlockCopy(_videoBuffer, BufferWidth * y * 4, _resizedBuffer, BufferWidth * (y * 2 + 1) * 4, BufferWidth * 4);
+						}
+					}
+					else if (!isHorz2x && isVert2x)
+					{
+						//needs double sizing horizontally
+						AllocResizedBuffer(_virtualWidth, _virtualHeight);
+						fixed (int* _pdst = &_resizedBuffer[0])
+						{
+							fixed (int* _psrc = &_videoBuffer[0])
+							{
+								int* psrc = _psrc;
+								int* pdst = _pdst;
+								for (int y = 0; y < BufferHeight; y++)
+								{
+									for (int x = 0; x < BufferWidth; x++) { *pdst++ = *psrc; *pdst++ = *psrc++; }
+								}
+							}
+						}
+					}
+					else
+					{
+						//needs double sizing horizontally and vertically
+						AllocResizedBuffer(_virtualWidth, _virtualHeight);
+						fixed (int* _pdst = &_resizedBuffer[0])
+						{
+							fixed (int* _psrc = &_videoBuffer[0])
+							{
+								int* psrc = _psrc;
+								int* pdst = _pdst;
+								for (int y = 0; y < BufferHeight; y++)
+								{
+									for (int x = 0; x < BufferWidth; x++) { *pdst++ = psrc[x]; *pdst++ = psrc[x]; }
+									for (int x = 0; x < BufferWidth; x++) { *pdst++ = psrc[x]; *pdst++ = psrc[x]; }
+									psrc += BufferWidth;
+								}
+							}
+						}
+					}
+
+					BufferWidth = _virtualWidth;
+					BufferHeight = _virtualHeight;
+
 					break;
 			}
 

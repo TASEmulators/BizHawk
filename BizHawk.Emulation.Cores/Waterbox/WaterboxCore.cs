@@ -367,7 +367,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		#region IVideoProvider
 
-		public int[] GetVideoBuffer()
+		public virtual int[] GetVideoBuffer()
 		{
 			return _videoBuffer;
 		}
