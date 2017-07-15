@@ -194,6 +194,51 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
+		private List<Disc> DiscsFromXml(XmlGame xmlGame, string systemId, DiscType diskType)
+		{
+			var discs = new List<Disc>();
+			var sw = new StringWriter();
+			foreach (var e in xmlGame.AssetFullPaths)
+			{
+				Disc disc = null;
+				string discPath = e;
+
+				//--- load the disc in a context which will let us abort if it's going to take too long
+				var discMountJob = new DiscMountJob { IN_FromPath = discPath, IN_SlowLoadAbortThreshold = 8 };
+				discMountJob.Run();
+				disc = discMountJob.OUT_Disc;
+
+				if (discMountJob.OUT_SlowLoadAborted)
+				{
+					DoLoadErrorCallback("This disc would take too long to load. Run it through discohawk first, or find a new rip because this one is probably junk", systemId, LoadErrorType.DiscError);
+				}
+
+				else if (discMountJob.OUT_ErrorLevel)
+				{
+					throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
+				}
+
+				else if (disc == null)
+				{
+					throw new InvalidOperationException("Can't load one of the files specified in the XML");
+				}
+
+				else
+				{
+					discs.Add(disc);
+
+					var discType = new DiscIdentifier(disc).DetectDiscType();
+
+					if (discType != diskType)
+					{
+						DoLoadErrorCallback($"Not a {systemId} disc", systemId, LoadErrorType.DiscError);
+					}
+				}
+			}
+
+			return discs;
+		}
+
 		public bool LoadRom(string path, CoreComm nextComm, bool forceAccurateCore = false,
 			int recursiveCount = 0) // forceAccurateCore is currently just for Quicknes vs Neshawk but could be used for other situations
 		{
@@ -663,6 +708,16 @@ namespace BizHawk.Client.Common
 										Name = Path.GetFileNameWithoutExtension(file.Name),
 										System = "PSX"
 									};
+									break;
+								case "SAT":
+									var saturnDiscs = DiscsFromXml(xmlGame, "SAT", DiscType.SegaSaturn);
+									if (!saturnDiscs.Any())
+									{
+										return false;
+									}
+
+									nextEmulator = new Saturnus(nextComm, saturnDiscs, Deterministic,
+									(Saturnus.Settings)GetCoreSettings<Saturnus>(), (Saturnus.SyncSettings)GetCoreSyncSettings<Saturnus>());
 									break;
 								default:
 									return false;
