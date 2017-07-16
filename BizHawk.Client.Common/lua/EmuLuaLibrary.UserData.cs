@@ -21,6 +21,15 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("set", "adds or updates the data with the given key with the given value")]
 		public void Set(string name, object value)
 		{
+			if (value != null)
+			{
+				var t = value.GetType();
+				if (!t.IsPrimitive && t != typeof(string))
+				{
+					throw new InvalidOperationException("Invalid type for userdata");
+				}
+			}
+
 			Global.UserBag[name] = value;
 		}
 
