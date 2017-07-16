@@ -413,7 +413,7 @@ namespace BizHawk.Common.BizInvoke
 		{
 			if (type.IsGenericType)
 			{
-				throw new InvalidOperationException("Generic types not supported");
+				throw new NotImplementedException("Generic types not supported");
 			}
 
 			if (type.IsByRef)
@@ -421,7 +421,7 @@ namespace BizHawk.Common.BizInvoke
 				var et = type.GetElementType();
 				if (!et.IsPrimitive && !et.IsEnum)
 				{
-					throw new InvalidOperationException("Only refs of primitive or enum types are supported!");
+					throw new NotImplementedException("Only refs of primitive or enum types are supported!");
 				}
 
 				var loc = il.DeclareLocal(type, true);
@@ -437,18 +437,18 @@ namespace BizHawk.Common.BizInvoke
 				var et = type.GetElementType();
 				if (!et.IsValueType)
 				{
-					throw new InvalidOperationException("Only arrays of value types are supported!");
+					throw new NotImplementedException("Only arrays of value types are supported!");
 				}
 
 				// these two cases aren't too hard to add
 				if (type.GetArrayRank() > 1)
 				{
-					throw new InvalidOperationException("Multidimensional arrays are not supported!");
+					throw new NotImplementedException("Multidimensional arrays are not supported!");
 				}
 
 				if (type.Name.Contains('*'))
 				{
-					throw new InvalidOperationException("Only 0-based 1-dimensional arrays are supported!");
+					throw new NotImplementedException("Only 0-based 1-dimensional arrays are supported!");
 				}
 
 				var loc = il.DeclareLocal(type, true);
@@ -494,6 +494,11 @@ namespace BizHawk.Common.BizInvoke
 				return typeof(IntPtr);
 			}
 
+			if (type == typeof(string))
+			{
+				throw new NotImplementedException("Cannot marshal strings");
+			}
+
 			if (type.IsClass)
 			{
 				// non ref of class can just be passed as pointer
@@ -527,7 +532,7 @@ namespace BizHawk.Common.BizInvoke
 				return type;
 			}
 
-			throw new InvalidOperationException("Unrecognized parameter type!");
+			throw new NotImplementedException("Unrecognized parameter type!");
 		}
 	}
 
