@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Magnavox
 {
-	[CoreAttributes("o2em", "", true, false, "", "", false)]
+	[Core("o2em", "", true, false, "", "", false)]
 	public class O2Em : WaterboxCore
 	{
 		private LibO2Em _core;

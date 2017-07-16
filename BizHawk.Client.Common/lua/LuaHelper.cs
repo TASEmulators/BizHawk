@@ -1,4 +1,7 @@
-﻿using LuaInterface;
+﻿using System.Linq;
+using System.Reflection;
+
+using NLua;
 
 namespace BizHawk.Client.Common
 {
@@ -15,7 +18,15 @@ namespace BizHawk.Client.Common
 			{
 				if (method.IsPublic)
 				{
-					table[method.Name] = lua.RegisterFunction("", obj, method);
+					string luaName = ""; // Empty will default to the actual method name;
+
+					var luaMethodAttr = (LuaMethodAttribute)method.GetCustomAttributes(typeof(LuaMethodAttribute)).FirstOrDefault();
+					if (luaMethodAttr != null)
+					{
+						luaName = luaMethodAttr.Name;
+					}
+
+					table[method.Name] = lua.RegisterFunction(luaName, obj, method);
 				}
 			}
 

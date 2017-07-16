@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-using LuaInterface;
+using NLua;
 
 using BizHawk.Emulation.Common;
 
@@ -23,8 +23,7 @@ namespace BizHawk.Client.Common
 
 		private readonly Dictionary<Guid, byte[]> _memorySavestates = new Dictionary<Guid, byte[]>();
 
-		[LuaMethodAttributes(
-			"savecorestate", "creates a core savestate and stores it in memory.  Note: a core savestate is only the raw data from the core, and not extras such as movie input logs, or framebuffers. Returns a unique identifer for the savestate")]
+		[LuaMethod("savecorestate", "creates a core savestate and stores it in memory.  Note: a core savestate is only the raw data from the core, and not extras such as movie input logs, or framebuffers. Returns a unique identifer for the savestate")]
 		public string SaveCoreStateToMemory()
 		{
 			var guid = Guid.NewGuid();
@@ -35,7 +34,7 @@ namespace BizHawk.Client.Common
 			return guid.ToString();
 		}
 
-		[LuaMethodAttributes("loadcorestate", "loads an in memory state with the given identifier")]
+		[LuaMethod("loadcorestate", "loads an in memory state with the given identifier")]
 		public void LoadCoreStateFromMemory(string identifier)
 		{
 			var guid = new Guid(identifier);
@@ -56,14 +55,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethodAttributes("removestate", "removes the savestate with the given identifier from memory")]
+		[LuaMethod("removestate", "removes the savestate with the given identifier from memory")]
 		public void DeleteState(string identifier)
 		{
 			var guid = new Guid(identifier);
 			_memorySavestates.Remove(guid);
 		}
 
-		[LuaMethodAttributes("clearstatesfrommemory", "clears all savestates stored in memory")]
+		[LuaMethod("clearstatesfrommemory", "clears all savestates stored in memory")]
 		public void ClearInMemoryStates()
 		{
 			_memorySavestates.Clear();

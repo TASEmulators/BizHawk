@@ -165,7 +165,7 @@ AC90D79743CAC1AFCD7049F7B4E73BC4		Cyborg Hunter (UE)	SMS		FM	USA;Europe
 6B0FC60AA886C060BF1A16EA97B4F441		Danan - The Jungle Fighter (E)	SMS			Europe
 8D5E93715BAD32BA8BBCAC9D21E87D89		Dead Angle (UE)	SMS			USA;Europe
 05E3071AAD9C36B6E18F1656592EEB3D		Deep Duck Trouble Starring Donald Duck (E)	SMS	Disney		Europe
-8FE55ADE7B34AA4E42C5F63F4368497F		Desert Speedtrap Starring Road Runner and Wile E. Coyote (E) (En,Fr,De,Es,It)	SMS			Europe
+8FE55ADE7B34AA4E42C5F63F4368497F		Desert Speedtrap Starring Road Runner and Wile E. Coyote (E) (En,Fr,De,Es,It)	SMS		SRAM=8192	Europe
 DF89AA1EBC5F42DB21FB8D12D9E78511		Desert Strike (E) (En,Fr,De,Es)	SMS			Europe
 1DCAF7D1EA7CAAAA716F0EC43C3F828A		Dick Tracy (UE)	SMS			USA;Europe
 BB448CA5CE1EC7D86636C6571D6E94CB		Dinobasher Starring Bignose the Caveman (E) (Proto)	SMS		CMMapper	Europe
@@ -559,7 +559,7 @@ A7F1049812A4CD1F180DCD644B10145F		Wimbledon (E)	SMS	Sports;Tennis		Europe
 6046D9EE439F3C76EB6713EEA8BA984B		Winter Olympics - Lillehammer '94 (E) (En,Fr,De,Es,It,Pt,Sv,No)	SMS	Sports		Europe
 D3BCF99A883E14A2F9DF8DD92662710F		Winter Olympics - Lillehammer '94 (B) (En,Fr,De,Es,It,Pt,Sv,No)	SMS	Sports		Brazil
 08EB9BF02F5EB4E238F791F27D65449A		Wolfchild (E)	SMS			Europe
-E7F86C049E4BD8B26844FF62BD067D57		Wonder Boy III - The Dragon's Trap (UE)	SMS	Wonder Boy Series	FM;PatchBytes=25B:00,25C:00	USA;Europe
+E7F86C049E4BD8B26844FF62BD067D57		Wonder Boy III - The Dragon's Trap (UE)	SMS	Wonder Boy Series	FM	USA;Europe
 8F8AAAC492DE96F2CFDDB9D1A57DD979		Wonder Boy in Monster Land (UE)	SMS	Wonder Boy Series;Arcade	FM	USA;Europe
 16BE61F4DE705CDD636D1FB1662E24DE		Wonder Boy in Monster Land (UE) (Beta)	SMS	Wonder Boy Series;Arcade	FM	USA;Europe
 5837764C172C8C43C8C7B21F2144CF27		Wonder Boy in Monster World (E)	SMS	Wonder Boy Series		Europe

@@ -17,7 +17,7 @@ using BizHawk.Emulation.Cores.Components.Z80;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
-	[CoreAttributes(
+	[Core(
 		"SMSHawk",
 		"Vecna",
 		isPorted: false,

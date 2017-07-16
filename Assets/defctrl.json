@@ -298,7 +298,15 @@
       "Select": "Space, J1 B9, X1 Back",
       "B": "Z, J1 B1, X1 X",
       "A": "X, J1 B2, X1 A",
-      "Power": ""
+      "Power": "",
+      "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
+      "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
+      "P1 Left": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
+      "P1 Right": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",
+      "P1 Start": "Return, J1 B10, X1 Start",
+      "P1 Select": "Space, J1 B9, X1 Back",
+      "P1 B": "Z, J1 B1, X1 X",
+      "P1 A": "X, J1 B2, X1 A"
     },
     "GBA Controller": {
       "Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
@@ -491,6 +499,30 @@
       "P2 Key9": "",
       "P2 Enter": "",
       "P2 Clear": ""
+    },
+    "PC-FX Controller": {
+      "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
+      "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
+      "P1 Left": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
+      "P1 Right": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",
+      "P1 I": "C, J1 B1, X1 X",
+      "P1 II": "X, J1 B2, X1 A",
+      "P1 III": "Z, J1 B4, X1 Y",
+      "P1 IV": "D, J1 B3, X1 B",
+      "P1 V": "S, J1 B11, X1 X",
+      "P1 VI": "A, J1 B12, X1 X",
+      "P1 Select": "Space, J1 B9, X1 Back",
+      "P1 Run": "Return, J1 B10, X1 Start",
+      "P1 Mode 1": "",
+      "P1 Mode 2": "",
+      "P2 Mouse Left": "NumberPad1",
+      "P2 Mouse Right": "NumberPad2",
+      "Power": "",
+      "Reset": "",
+      "Previous Disk": "",
+      "Next Disk": "",
+      "P2 Mouse Left": "WMouse L",
+      "P2 Mouse Right": "WMouse R",
     },
     "Saturn Controller": {
       "Power": "",
@@ -824,6 +856,34 @@
       "P2 Mouse Center": "WMouse M",
       "P2 Mouse Right": "WMouse R",
       "P2 Mouse Start": "NumberPad5",
+      "Power": "",
+      "Reset": ""
+    },
+    "PicoDrive Genesis Controller": {
+      "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
+      "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
+      "P1 Left": "LeftArrow, J1 POV1L, X1 DpadLeft, X1 LStickLeft",
+      "P1 Right": "RightArrow, J1 POV1R, X1 DpadRight, X1 LStickRight",
+      "P1 A": "Z, J1 B1, X1 X",
+      "P1 B": "X, J1 B2, X1 A",
+      "P1 C": "C, J1 B4, X1 Y",
+      "P1 Start": "Return, J1 B10, X1 Start",
+      "P1 X": "A, J1 B3, X1 B",
+      "P1 Y": "S, J1 B5, X1 LeftShoulder",
+      "P1 Z": "D, J1 B6, X1 RightShoulder",
+      "P1 Mode": "E, J1 B9, X1 Back",
+      "P2 Up": "",
+      "P2 Down": "",
+      "P2 Left": "",
+      "P2 Right": "",
+      "P2 A": "",
+      "P2 B": "",
+      "P2 C": "",
+      "P2 Start": "",
+      "P2 X": "",
+      "P2 Y": "",
+      "P2 Z": "",
+      "P2 Mode": "",
       "Power": "",
       "Reset": ""
     },
@@ -1406,6 +1466,18 @@
       },
       "P1 Pointer Y": {
         "Value": "",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      }
+    },
+    "PC-FX Controller": {
+      "P2 Mouse X": {
+        "Value": "X1 LeftThumbX",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+      "P2 Mouse Y": {
+        "Value": "X1 LeftThumbY",
         "Mult": 1.0,
         "Deadzone": 0.1
       }

@@ -10,15 +10,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	{
 		public override byte ReadMemory(ushort addr)
 		{
-			if (addr < 0x480)
-			{
-				// Nothing here
-				return 0xFF;
-			}
-			else if (addr < 0x1800)
+			if (addr >=0x1000 && addr < 0x1800)
 			{
 				//could be hsbios RAM here
-				if (addr >= 0x1000 && Core._hsbios != null)
+				if (Core._hsbios != null)
 				{
 					return Core._hsram[addr - 0x1000];
 				}
@@ -49,7 +44,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 				else
 				{
-					return 0xFF;
+					return 0x00;
 				}
 			}
 		}
@@ -61,14 +56,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public override void WriteMemory(ushort addr, byte value)
 		{
-			if (addr < 0x480)
-			{
-				// Nothing here
-			}
-			else if (addr < 0x1800)
+			if (addr >= 0x1000 && addr < 0x1800)
 			{
 				//could be hsbios RAM here
-				if (addr >= 0x1000 && Core._hsbios != null)
+				if (Core._hsbios != null)
 				{
 					Core._hsram[addr - 0x1000] = value;
 				}

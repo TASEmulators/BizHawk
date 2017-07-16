@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -32,6 +32,7 @@ using BizHawk.Client.ApiHawk;
 using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.SNK;
+using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -152,81 +153,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 
-			// TODO - replace this with some kind of standard dictionary-yielding parser in a separate component
-			string cmdRom = null;
-			string cmdLoadState = null;
-			string cmdLoadSlot = null;
-			string cmdMovie = null;
-			string cmdDumpType = null;
-			string cmdDumpName = null;
-			bool startFullscreen = false;
-			for (int i = 0; i < args.Length; i++)
-			{
-				// For some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
-				if (args[i] == ">")
-				{
-					i++;
-					var stdout = args[i];
-					Console.SetOut(new StreamWriter(stdout));
-					continue;
-				}
-
-				var arg = args[i].ToLower();
-				if (arg.StartsWith("--load-slot="))
-				{
-					cmdLoadSlot = arg.Substring(arg.IndexOf('=') + 1);
-				}
-
-				if (arg.StartsWith("--load-state="))
-				{
-					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (arg.StartsWith("--movie="))
-				{
-					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (arg.StartsWith("--dump-type="))
-				{
-					cmdDumpType = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (arg.StartsWith("--dump-frames="))
-				{
-					var list = arg.Substring(arg.IndexOf('=') + 1);
-					var items = list.Split(',');
-					_currAviWriterFrameList = new HashSet<int>();
-					foreach (string item in items)
-					{
-						_currAviWriterFrameList.Add(int.Parse(item));
-					}
-
-					// automatically set dump length to maximum frame
-					_autoDumpLength = _currAviWriterFrameList.OrderBy(x => x).Last();
-				}
-				else if (arg.StartsWith("--dump-name="))
-				{
-					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
-				}
-				else if (arg.StartsWith("--dump-length="))
-				{
-					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out _autoDumpLength);
-				}
-				else if (arg.StartsWith("--dump-close"))
-				{
-					_autoCloseOnDump = true;
-				}
-				else if (arg.StartsWith("--chromeless"))
-				{
-					_chromeless = true;
-				}
-				else if (arg.StartsWith("--fullscreen"))
-				{
-					startFullscreen = true;
-				}
-				else
-				{
-					cmdRom = arg;
-				}
-			}
+			ArgParser argParse = new ArgParser();
+			argParse.parseArguments(args);
 
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
@@ -342,13 +270,13 @@ namespace BizHawk.Client.EmuHawk
 				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 			}
 
-			if (cmdRom != null)
+			if (argParse.cmdRom != null)
 			{
 				// Commandline should always override auto-load
-				LoadRom(cmdRom, new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom() });
+				LoadRom(argParse.cmdRom, new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom() });
 				if (Global.Game == null)
 				{
-					MessageBox.Show("Failed to load " + cmdRom + " specified on commandline");
+					MessageBox.Show("Failed to load " + argParse.cmdRom + " specified on commandline");
 				}
 			}
 			else if (Global.Config.RecentRoms.AutoLoad && !Global.Config.RecentRoms.Empty)
@@ -356,7 +284,7 @@ namespace BizHawk.Client.EmuHawk
 				LoadRomFromRecent(Global.Config.RecentRoms.MostRecent);
 			}
 
-			if (cmdMovie != null)
+			if (argParse.cmdMovie != null)
 			{
 				_supressSyncSettingsWarning = true; // We dont' want to be nagged if we are attempting to automate
 				if (Global.Game == null)
@@ -367,7 +295,7 @@ namespace BizHawk.Client.EmuHawk
 				// If user picked a game, then do the commandline logic
 				if (!Global.Game.IsNullInstance)
 				{
-					var movie = MovieService.Get(cmdMovie);
+					var movie = MovieService.Get(argParse.cmdMovie);
 					Global.MovieSession.ReadOnly = true;
 
 					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
@@ -377,11 +305,11 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					// Copy pasta from drag & drop
-					if (MovieImport.IsValidMovieExtension(Path.GetExtension(cmdMovie)))
+					if (MovieImport.IsValidMovieExtension(Path.GetExtension(argParse.cmdMovie)))
 					{
 						string errorMsg;
 						string warningMsg;
-						var imported = MovieImport.ImportFile(cmdMovie, out errorMsg, out warningMsg);
+						var imported = MovieImport.ImportFile(argParse.cmdMovie, out errorMsg, out warningMsg);
 						if (!string.IsNullOrEmpty(errorMsg))
 						{
 							MessageBox.Show(errorMsg, "Conversion error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -399,7 +327,7 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						StartNewMovie(movie, false);
-						Global.Config.RecentMovies.Add(cmdMovie);
+						Global.Config.RecentMovies.Add(argParse.cmdMovie);
 					}
 
 					_supressSyncSettingsWarning = false;
@@ -426,25 +354,36 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (startFullscreen || Global.Config.StartFullscreen)
+			if (argParse.startFullscreen || Global.Config.StartFullscreen)
 			{
 				_needsFullscreenOnLoad = true;
 			}
 
 			if (!Global.Game.IsNullInstance)
 			{
-				if (cmdLoadState != null)
+				if (argParse.cmdLoadState != null)
 				{
-					LoadState(cmdLoadState, Path.GetFileName(cmdLoadState));
+					LoadState(argParse.cmdLoadState, Path.GetFileName(argParse.cmdLoadState));
 				}
-				else if (cmdLoadSlot != null)
+				else if (argParse.cmdLoadSlot != null)
 				{
-					LoadQuickSave("QuickSave" + cmdLoadSlot);
+					LoadQuickSave("QuickSave" + argParse.cmdLoadSlot);
 				}
 				else if (Global.Config.AutoLoadLastSaveSlot)
 				{
 					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
 				}
+			}
+
+			//start Lua Console if requested in the command line arguments
+			if (argParse.luaConsole)
+			{
+				GlobalWin.Tools.Load<LuaConsole>();
+			}
+			//load Lua Script if requested in the command line arguments
+			if (argParse.luaScript != null)
+			{
+				GlobalWin.Tools.LuaConsole.LoadLuaFile(argParse.luaScript);
 			}
 
 			GlobalWin.Tools.AutoLoad();
@@ -467,9 +406,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			// start dumping, if appropriate
-			if (cmdDumpType != null && cmdDumpName != null)
+			if (argParse.cmdDumpType != null && argParse.cmdDumpName != null)
 			{
-				RecordAv(cmdDumpType, cmdDumpName);
+				RecordAv(argParse.cmdDumpType, argParse.cmdDumpName);
 			}
 
 			SetMainformMovieInfo();
@@ -815,7 +754,7 @@ namespace BizHawk.Client.EmuHawk
 				// zero 09-sep-2012 - all input is eligible for controller input. not sure why the above was done. 
 				// maybe because it doesnt make sense to me to bind hotkeys and controller inputs to the same keystrokes
 
-				// adelikat 02-dec-2012 - implemented options for how to handle controller vs hotkey conflicts.  This is primarily motivated by computer emulation and thus controller being nearly the entire keyboard
+				// adelikat 02-dec-2012 - implemented options for how to handle controller vs hotkey conflicts. This is primarily motivated by computer emulation and thus controller being nearly the entire keyboard
 				bool handled;
 				switch (Global.Config.Input_Hotkey_OverrideOptions)
 				{
@@ -1645,7 +1584,7 @@ namespace BizHawk.Client.EmuHawk
 						var oldram = Emulator.AsSaveRam().CloneSaveRam();
 						if (oldram == null)
 						{
-							// we're eating this one now.  the possible negative consequence is that a user could lose
+							// we're eating this one now. The possible negative consequence is that a user could lose
 							// their saveram and not know why
 							// MessageBox.Show("Error: tried to load saveram, but core would not accept it?");
 							return;
@@ -1751,11 +1690,15 @@ namespace BizHawk.Client.EmuHawk
 			virtualBoyToolStripMenuItem.Visible = false;
 			sNESToolStripMenuItem.Visible = false;
 			neoGeoPocketToolStripMenuItem.Visible = false;
+			pCFXToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
 				case "GEN":
-					GenesisSubMenu.Visible = true;
+					if (!(Emulator is PicoDrive)) // Currently PicoDrive doesn't support anything in this menu
+					{
+						GenesisSubMenu.Visible = true;
+					}
 					break;
 				case "TI83":
 					TI83SubMenu.Visible = true;
@@ -1837,6 +1780,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case "NGP":
 					neoGeoPocketToolStripMenuItem.Visible = true;
+					break;
+				case "PCFX":
+					pCFXToolStripMenuItem.Visible = true;
 					break;
 			}
 		}
@@ -2081,7 +2027,7 @@ namespace BizHawk.Client.EmuHawk
 				if (VersionInfo.DeveloperBuild)
 				{
 					return FormatFilter(
-						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.vb;*.ngp;*.ngc;*.psf;*.minipsf;*.nsf;%ARCH%",
+						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.32x;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.vb;*.ngp;*.ngc;*.psf;*.minipsf;*.nsf;%ARCH%",
 						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
 						"Disc Images", "*.cue;*.ccd;*.m3u",
 						"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
@@ -2094,7 +2040,7 @@ namespace BizHawk.Client.EmuHawk
 						"Atari 2600", "*.a26;*.bin;%ARCH%",
 						"Atari 7800", "*.a78;*.bin;%ARCH%",
 						"Atari Lynx", "*.lnx;%ARCH%",
-						"Genesis", "*.gen;*.smd;*.bin;*.md;*.cue;*.ccd;%ARCH%",
+						"Genesis", "*.gen;*.smd;*.bin;*.md;*.32x;*.cue;*.ccd;%ARCH%",
 						"Gameboy", "*.gb;*.gbc;*.sgb;%ARCH%",
 						"Gameboy Advance", "*.gba;%ARCH%",
 						"Colecovision", "*.col;%ARCH%",
@@ -2113,7 +2059,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.ngp;*.ngc;*.prg;*.d64;*.g64;*.minipsf;*.nsf;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.32x;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.ngp;*.ngc;*.prg;*.d64;*.g64;*.minipsf;*.nsf;%ARCH%",
 					"Disc Images", "*.cue;*.ccd;*.m3u",
 					"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -2132,7 +2078,7 @@ namespace BizHawk.Client.EmuHawk
 					"TI-83", "*.rom;%ARCH%",
 					"Archive Files", "%ARCH%",
 					"Savestate", "*.state",
-					"Genesis", "*.gen;*.md;*.smd;*.bin;*.cue;*.ccd;%ARCH%",
+					"Genesis", "*.gen;*.md;*.smd;*.32x;*.bin;*.cue;*.ccd;%ARCH%",
 					"WonderSwan", "*.ws;*.wsc;%ARCH%",
 					"Apple II", "*.dsk;*.do;*.po;%ARCH%",
 					"Virtual Boy", "*.vb;%ARCH%",
@@ -3552,7 +3498,7 @@ namespace BizHawk.Client.EmuHawk
 				loader.OnLoadSettings += CoreSettings;
 				loader.OnLoadSyncSettings += CoreSyncSettings;
 
-				// this also happens in CloseGame().  but it needs to happen here since if we're restarting with the same core,
+				// this also happens in CloseGame(). But it needs to happen here since if we're restarting with the same core,
 				// any settings changes that we made need to make it back to config before we try to instantiate that core with
 				// the new settings objects
 				CommitCoreSettingsToConfig(); // adelikat: I Think by reordering things, this isn't necessary anymore
@@ -4269,6 +4215,11 @@ namespace BizHawk.Client.EmuHawk
 		private void preferencesToolStripMenuItem2_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "NeoPop Settings");
+		}
+
+		private void preferencesToolStripMenuItem3_Click(object sender, EventArgs e)
+		{
+			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
 		}
 
 		private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)

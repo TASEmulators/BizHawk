@@ -5,7 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 
-using LuaInterface;
+using NLua;
 
 using BizHawk.Common.ReflectionExtensions;
 using BizHawk.Emulation.Common;
@@ -18,7 +18,8 @@ namespace BizHawk.Client.EmuHawk
 		public EmuLuaLibrary()
 		{
 			Docs = new LuaDocumentation();
-			_lua["keepalives"] = _lua.NewTable();
+			if(NLua.Lua.WhichLua == "NLua")
+				_lua["keepalives"] = _lua.NewTable();
 		}
 
 		public EmuLuaLibrary(IEmulatorServiceProvider serviceProvider)
@@ -47,10 +48,10 @@ namespace BizHawk.Client.EmuHawk
 			foreach (var lib in libs)
 			{
 				bool addLibrary = true;
-				var attributes = lib.GetCustomAttributes(typeof(LuaLibraryAttributes), false);
+				var attributes = lib.GetCustomAttributes(typeof(LuaLibraryAttribute), false);
 				if (attributes.Any())
 				{
-					addLibrary = VersionInfo.DeveloperBuild || (attributes.First() as LuaLibraryAttributes).Released;
+					addLibrary = VersionInfo.DeveloperBuild || (attributes.First() as LuaLibraryAttribute).Released;
 				}
 
 				if (addLibrary)
@@ -73,7 +74,7 @@ namespace BizHawk.Client.EmuHawk
 
 			var methods = luaCanvas
 				.GetMethods()
-				.Where(m => m.GetCustomAttributes(typeof(LuaMethodAttributes), false).Any());
+				.Where(m => m.GetCustomAttributes(typeof(LuaMethodAttribute), false).Any());
 
 			foreach (var method in methods)
 			{
@@ -177,8 +178,12 @@ namespace BizHawk.Client.EmuHawk
 			var content = File.ReadAllText(file);
 			var main = lua.LoadString(content, "main");
 			lua.Push(main); // push main function on to stack for subsequent resuming
-			_lua.GetTable("keepalives")[lua] = 1;
-			_lua.Pop();
+			if (NLua.Lua.WhichLua == "NLua")
+			{
+				_lua.GetTable("keepalives")[lua] = 1;
+				//this not being run is the origin of a memory leak if you restart scripts too many times
+				_lua.Pop();
+			}
 			return lua;
 		}
 
@@ -186,7 +191,8 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_currThread = _lua.NewThread();
 			_currThread.DoString(command);
-			_lua.Pop();
+			if (NLua.Lua.WhichLua == "NLua")
+				_lua.Pop();
 		}
 
 		public ResumeResult ResumeScript(Lua script)

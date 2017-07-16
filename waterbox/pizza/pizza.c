@@ -67,7 +67,7 @@ EXPORT int Init(const void *rom, int romlen, int sgb, const void *spc, int spcle
 		return 0; // failure
 	global_sgb = !!sgb;
 	if (global_sgb && global_cgb)
-		utils_log("Warn: CGB game in SGB mode");
+		utils_log("Warn: CGB game in SGB mode\n");
 	if (sgb && !sgb_init((const uint8_t*)spc, spclen))
 		return 0;
 

@@ -10,17 +10,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
 	public partial class Atari2600
 	{
-		private static readonly ControllerDefinition Atari2600ControllerDefinition = new ControllerDefinition
-		{
-			Name = "Atari 2600 Basic Controller",
-			BoolButtons =
-			{
-				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button",
-				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button",
-				"Reset", "Select", "Power", "Toggle Left Difficulty", "Toggle Right Difficulty"
-			}
-		};
-
 		private readonly GameInfo _game;
 
 		private TIA _tia;
@@ -455,13 +444,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		internal byte ReadControls1(bool peek)
 		{
 			InputCallbacks.Call();
-			byte value = 0xFF;
-
-			if (_controller.IsPressed("P1 Up")) { value &= 0xEF; }
-			if (_controller.IsPressed("P1 Down")) { value &= 0xDF; }
-			if (_controller.IsPressed("P1 Left")) { value &= 0xBF; }
-			if (_controller.IsPressed("P1 Right")) { value &= 0x7F; }
-			if (_controller.IsPressed("P1 Button")) { value &= 0xF7; }
+			
+			byte value = _controllerDeck.ReadPort1(_controller);
 
 			if (!peek)
 			{
@@ -474,18 +458,26 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		internal byte ReadControls2(bool peek)
 		{
 			InputCallbacks.Call();
-			byte value = 0xFF;
-
-			if (_controller.IsPressed("P2 Up")) { value &= 0xEF; }
-			if (_controller.IsPressed("P2 Down")) { value &= 0xDF; }
-			if (_controller.IsPressed("P2 Left")) { value &= 0xBF; }
-			if (_controller.IsPressed("P2 Right")) { value &= 0x7F; }
-			if (_controller.IsPressed("P2 Button")) { value &= 0xF7; }
+			byte value = _controllerDeck.ReadPort2(_controller);
 
 			if (!peek)
 			{
 				_islag = false;
 			}
+
+			return value;
+		}
+
+		internal int ReadPot1(int pot)
+		{
+			int value = _controllerDeck.ReadPot1(_controller, pot);
+
+			return value;
+		}
+
+		internal int ReadPot2(int pot)
+		{
+			int value = _controllerDeck.ReadPot2(_controller, pot);
 
 			return value;
 		}

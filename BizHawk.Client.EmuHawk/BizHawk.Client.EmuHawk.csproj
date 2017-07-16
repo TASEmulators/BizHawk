@@ -70,13 +70,15 @@
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\References\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="LuaInterface">
-      <HintPath>..\References\x64\LuaInterface.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualBasic" Condition=" '$(OS)' == 'Windows_NT' " />
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="NLua, Version=1.3.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\output\dll\nlua\NLua.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -124,6 +126,7 @@
     <Compile Include="ArchiveChooser.Designer.cs">
       <DependentUpon>ArchiveChooser.cs</DependentUpon>
     </Compile>
+    <Compile Include="ArgParser.cs" />
     <Compile Include="AVOut\AviWriter.cs" />
     <Compile Include="AVOut\AVSync.cs" />
     <Compile Include="AVOut\BmpVideoProvder.cs" />
@@ -696,7 +699,7 @@
     <Compile Include="Sound\Utilities\SyncToAsyncProvider.cs" />
     <Compile Include="Sound\Utilities\SoundOutputProvider.cs" />
     <Compile Include="Throttle.cs" />
-    <Compile Include="ToolAttributes.cs" />
+    <Compile Include="ToolAttribute.cs" />
     <Compile Include="tools\AutoHawk.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -890,6 +893,9 @@
     </Compile>
     <Compile Include="tools\Lua\LuaFunctionsForm.Designer.cs">
       <DependentUpon>LuaFunctionsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="tools\Lua\LuaPictureBox.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="tools\Lua\LuaRegisteredFunctionsList.cs">
       <SubType>Form</SubType>
@@ -1166,6 +1172,7 @@
     <Compile Include="tools\VirtualPads\schema\IntvSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\LynxSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\NgpSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\PcfxSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\PSXSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SatSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\IVirtualPadSchema.cs" />
@@ -1173,7 +1180,8 @@
     <Compile Include="tools\VirtualPads\schema\NesSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\PadSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\PceSchema.cs" />
-    <Compile Include="tools\VirtualPads\schema\SchemaAttributes.cs" />
+    <Compile Include="tools\VirtualPads\schema\SchemaAttribute.cs" />
+    <Compile Include="tools\VirtualPads\schema\SGBSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SmsSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\SnesSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\VirtualBoySchema.cs" />
@@ -1778,7 +1786,6 @@
     <None Include="images\tastudio\icon_marker.png" />
     <EmbeddedResource Include="Resources\gens.ttf" />
     <EmbeddedResource Include="Resources\fceux.ttf" />
-    <None Include="Resources\HawkInLove.png" />
     <None Include="images\Circle.png" />
     <None Include="images\Cross.png" />
     <None Include="images\Square.png" />
@@ -1961,8 +1968,6 @@
     <None Include="images\thumbsdown.png" />
     <None Include="images\monitor.png" />
     <None Include="images\ppsspp.png" />
-    <None Include="images\meteor.png" />
-    <None Include="images\yabause.png" />
     <None Include="images\QuickNes.png" />
     <None Include="images\sms-icon.png" />
     <None Include="images\pcb.png" />
@@ -2087,7 +2092,6 @@
     <None Include="images\JumpTo.png" />
     <None Include="images\ENE.png" />
     <None Include="images\ESE.png" />
-    <None Include="images\5757344.png" />
     <None Include="images\ControllerImages\NGPController.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />

@@ -4,13 +4,14 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Waterbox;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 {
-	[CoreAttributes("Pizza Boy", "Davide Berra", true, false, "c7bc6ee376028b3766de8d7a02e60ab794841f45",
+	[Core("Pizza Boy", "Davide Berra", true, true, "c7bc6ee376028b3766de8d7a02e60ab794841f45",
 		"https://github.com/davideberra/emu-pizza/", false)]
 	public class Pizza : WaterboxCore, IGameboyCommon
 	{
@@ -19,12 +20,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		[CoreConstructor("SGB")]
 		public Pizza(byte[] rom, CoreComm comm)
-			:this(rom, comm, true)
+			: this(rom, comm, true)
 		{ }
 
 		[CoreConstructor("GB")]
 		public Pizza(CoreComm comm, byte[] rom)
-			:this(rom, comm, false)
+			: this(rom, comm, false)
 		{ }
 
 		public Pizza(byte[] rom, CoreComm comm, bool sgb)
@@ -39,6 +40,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				DefaultFpsDenominator = TICKSPERFRAME
 			})
 		{
+			if (sgb && (rom[0x143] & 0xc0) == 0xc0)
+			{
+				throw new CGBNotSupportedException();
+			}
+
 			_pizza = PreInit<LibPizza>(new PeRunnerOptions
 			{
 				Filename = "pizza.wbx",
@@ -49,7 +55,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				MmapHeapSizeKB = 0
 			});
 
-			var spc = sgb ? comm.CoreFileProvider.GetFirmware("SGB", "SPC", true) : new byte[0];
+			var spc = sgb
+				? Util.DecompressGzipFile(new MemoryStream(Properties.Resources.SgbCartPresent_SPC))
+				: new byte[0];
 			_sgb = sgb;
 			if (!_pizza.Init(rom, rom.Length, _sgb, spc, spc.Length))
 			{

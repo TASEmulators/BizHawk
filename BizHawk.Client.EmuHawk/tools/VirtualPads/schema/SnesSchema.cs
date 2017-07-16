@@ -7,7 +7,7 @@ using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[SchemaAttributes("SNES")]
+	[Schema("SNES")]
 	public class SnesSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)

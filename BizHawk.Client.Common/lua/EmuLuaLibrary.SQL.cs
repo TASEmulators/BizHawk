@@ -2,7 +2,7 @@
 using System.Collections;
 using System.ComponentModel;
 using System.Data.SQLite;
-using LuaInterface;
+using NLua;
 using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
@@ -21,7 +21,7 @@ namespace BizHawk.Client.Common
 		SQLiteConnection m_dbConnection;
 		string connectionString;
 
-		[LuaMethodAttributes("createdatabase","Creates a SQLite Database. Name should end with .db")]
+		[LuaMethod("createdatabase","Creates a SQLite Database. Name should end with .db")]
 		public string CreateDatabase(string name)
 		{
 			try
@@ -37,7 +37,7 @@ namespace BizHawk.Client.Common
 		}
 
 
-		[LuaMethodAttributes("opendatabase", "Opens a SQLite database. Name should end with .db")]
+		[LuaMethod("opendatabase", "Opens a SQLite database. Name should end with .db")]
 		public string OpenDatabase(string name)
 		{
 			try
@@ -60,7 +60,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethodAttributes("writecommand", "Runs a SQLite write command which includes CREATE,INSERT, UPDATE. " +
+		[LuaMethod("writecommand", "Runs a SQLite write command which includes CREATE,INSERT, UPDATE. " +
 			"Ex: create TABLE rewards (ID integer  PRIMARY KEY, action VARCHAR(20)) ")]
 		public string WriteCommand(string query="")
 		{
@@ -90,7 +90,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethodAttributes("readcommand", "Run a SQLite read command which includes Select. Returns all rows into a LuaTable." +
+		[LuaMethod("readcommand", "Run a SQLite read command which includes Select. Returns all rows into a LuaTable." +
 			"Ex: select * from rewards")]
 		public dynamic ReadCommand(string query="")
 		{

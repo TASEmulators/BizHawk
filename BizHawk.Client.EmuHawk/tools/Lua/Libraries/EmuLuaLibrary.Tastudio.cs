@@ -2,13 +2,13 @@
 using System.ComponentModel;
 using System.Drawing;
 
-using LuaInterface;
+using NLua;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for manipulating the Tastudio dialog of the EmuHawk client")]
-	[LuaLibraryAttributes(released: true)]
+	[LuaLibrary(released: true)]
 	public sealed class TastudioLuaLibrary : LuaLibraryBase
 	{
 		public TastudioLuaLibrary(Lua lua)
@@ -21,19 +21,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private TAStudio Tastudio => GlobalWin.Tools.Get<TAStudio>() as TAStudio;
 
-		[LuaMethodAttributes("engaged", "returns whether or not tastudio is currently engaged (active)")]
+		[LuaMethod("engaged", "returns whether or not tastudio is currently engaged (active)")]
 		public bool Engaged()
 		{
 			return GlobalWin.Tools.Has<TAStudio>(); // TODO: eventually tastudio should have an engaged flag
 		}
 
-		[LuaMethodAttributes("getrecording", "returns whether or not TAStudio is in recording mode")]
+		[LuaMethod("getrecording", "returns whether or not TAStudio is in recording mode")]
 		public bool GetRecording()
 		{
 			return Tastudio.TasPlaybackBox.RecordingMode;
 		}
 
-		[LuaMethodAttributes("setrecording", "sets the recording mode on/off depending on the parameter")]
+		[LuaMethod("setrecording", "sets the recording mode on/off depending on the parameter")]
 		public void SetRecording(bool val)
 		{
 			if (Tastudio.TasPlaybackBox.RecordingMode != val)
@@ -42,13 +42,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("togglerecording", "toggles tastudio recording mode on/off depending on its current state")]
+		[LuaMethod("togglerecording", "toggles tastudio recording mode on/off depending on its current state")]
 		public void SetRecording()
 		{
 			Tastudio.ToggleReadOnly();
 		}
 
-		[LuaMethodAttributes("setbranchtext", "adds the given message to the existing branch, or to the branch that will be created next if branch index is not specified")]
+		[LuaMethod("setbranchtext", "adds the given message to the existing branch, or to the branch that will be created next if branch index is not specified")]
 		public void SetBranchText(string text, int? index = null)
 		{
 			if (index != null)
@@ -61,7 +61,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("getmarker", "returns the marker text at the given frame, or an empty string if there is no marker for the given frame")]
+		[LuaMethod("getmarker", "returns the marker text at the given frame, or an empty string if there is no marker for the given frame")]
 		public string GetMarker(int frame)
 		{
 			if (Engaged())
@@ -76,7 +76,7 @@ namespace BizHawk.Client.EmuHawk
 			return "";
 		}
 
-		[LuaMethodAttributes("removemarker", "if there is a marker for the given frame, it will be removed")]
+		[LuaMethod("removemarker", "if there is a marker for the given frame, it will be removed")]
 		public void RemoveMarker(int frame)
 		{
 			if (Engaged())
@@ -90,7 +90,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("setmarker", "Adds or sets a marker at the given frame, with an optional message")]
+		[LuaMethod("setmarker", "Adds or sets a marker at the given frame, with an optional message")]
 		public void SetMarker(int frame, string message = null)
 		{
 			if (Engaged())
@@ -108,7 +108,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("islag", "Returns whether or not the given frame was a lag frame, null if unknown")]
+		[LuaMethod("islag", "Returns whether or not the given frame was a lag frame, null if unknown")]
 		public bool? IsLag(int frame)
 		{
 			if (Engaged())
@@ -122,7 +122,7 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		[LuaMethodAttributes("setlag", "Sets the lag information for the given frame, if the frame does not exist in the lag log, it will be added. If the value is null, the lag information for that frame will be removed")]
+		[LuaMethod("setlag", "Sets the lag information for the given frame, if the frame does not exist in the lag log, it will be added. If the value is null, the lag information for that frame will be removed")]
 		public void SetLag(int frame, bool? value)
 		{
 			if (Engaged())
@@ -131,7 +131,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("hasstate", "Returns whether or not the given frame has a savestate associated with it")]
+		[LuaMethod("hasstate", "Returns whether or not the given frame has a savestate associated with it")]
 		public bool HasState(int frame)
 		{
 			if (Engaged())
@@ -145,7 +145,7 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		[LuaMethodAttributes("setplayback", "Seeks the given frame (a number) or marker (a string)")]
+		[LuaMethod("setplayback", "Seeks the given frame (a number) or marker (a string)")]
 		public void SetPlayback(object frame)
 		{
 			if (Engaged())
@@ -173,8 +173,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"onqueryitembg", "called during the background draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)")]
+		[LuaMethod("onqueryitembg", "called during the background draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)")]
 		public void OnQueryItemBg(LuaFunction luaf)
 		{
 			if (Engaged())
@@ -194,8 +193,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"onqueryitemtext", "called during the text draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)")]
+		[LuaMethod("onqueryitemtext", "called during the text draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)")]
 		public void OnQueryItemText(LuaFunction luaf)
 		{
 			if (Engaged())
@@ -209,8 +207,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"onqueryitemicon", "called during the icon draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)")]
+		[LuaMethod("onqueryitemicon", "called during the icon draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)")]
 		public void OnQueryItemIcon(LuaFunction luaf)
 		{
 			if (Engaged())
@@ -230,7 +227,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("ongreenzoneinvalidated", "called whenever the greenzone is invalidated and returns the first frame that was invalidated")]
+		[LuaMethod("ongreenzoneinvalidated", "called whenever the greenzone is invalidated and returns the first frame that was invalidated")]
 		public void OnGreenzoneInvalidated(LuaFunction luaf)
 		{
 			if (Engaged())
@@ -242,7 +239,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("getselection", "gets the currently selected frames")]
+		[LuaMethod("getselection", "gets the currently selected frames")]
 		public LuaTable GetSelection()
 		{
 			LuaTable table = Lua.NewTable();
@@ -260,7 +257,7 @@ namespace BizHawk.Client.EmuHawk
 			return table;
 		}
 
-		[LuaMethodAttributes("insertframes", "inserts the given number of blank frames at the given insertion frame")]
+		[LuaMethod("insertframes", "inserts the given number of blank frames at the given insertion frame")]
 		public void InsertNumFrames(int insertionFrame, int numberOfFrames)
 		{
 			if (Engaged())
@@ -276,7 +273,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("deleteframes", "deletes the given number of blank frames beginning at the given frame")]
+		[LuaMethod("deleteframes", "deletes the given number of blank frames beginning at the given frame")]
 		public void DeleteFrames(int beginningFrame, int numberOfFrames)
 		{
 			if (Engaged())

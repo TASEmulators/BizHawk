@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="lblTweakedMednafen.Text" xml:space="preserve">
-    <value>Displays all content at as multiple of 400x300.
+    <value>Displays all content at a multiple of 400x300.
  • Correct aspect ratio
  • Generally enjoyable game presentation
  • Detail loss at 1x in fewer cases
@@ -127,7 +127,7 @@
 </value>
   </data>
   <data name="lblMednafen.Text" xml:space="preserve">
-    <value>Displays all content at as multiple of 320x240
+    <value>Displays all content at a multiple of 320x240
  • Correct aspect ratio
  • Generally enjoyable game presentation
  • At 1x window size, detail can be lost

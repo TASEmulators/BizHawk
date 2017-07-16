@@ -6,7 +6,7 @@ using BizHawk.Emulation.Cores.Nintendo.GBA;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[SchemaAttributes("GBA")]
+	[Schema("GBA")]
 	public class GBASchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)

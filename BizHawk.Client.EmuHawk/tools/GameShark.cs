@@ -20,7 +20,7 @@ namespace BizHawk.Client.EmuHawk
 	//Verify all wording in the error reports
 
 
-	[ToolAttributes(released: true, supportedSystems: new[] { "GB", "GBA", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" })]
+	[Tool(released: true, supportedSystems: new[] { "GB", "GBA", "GEN", "N64", "NES", "PSX", "SAT", "SMS", "SNES" })]
 	public partial class GameShark : Form, IToolForm, IToolFormAutoConfig
 	{
 		#region " Game Genie Dictionary "

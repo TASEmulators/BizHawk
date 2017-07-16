@@ -60,7 +60,7 @@ namespace BizHawk.Client.EmuHawk
 					continue;
 				if (typeof(ToolBox).IsAssignableFrom(t))  //yo dawg i head you like toolboxes
 					continue;
-				if (VersionInfo.DeveloperBuild && t.GetCustomAttributes(false).OfType<ToolAttributes>().Any(a => !a.Released))
+				if (VersionInfo.DeveloperBuild && t.GetCustomAttributes(false).OfType<ToolAttribute>().Any(a => !a.Released))
 					continue;
 				if (t == typeof(GBGameGenie)) // Hack, this tool is specific to a system id and a sub-system (gb and gg) we have no reasonable way to declare a dependency like that
 					continue;

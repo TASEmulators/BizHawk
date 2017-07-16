@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LuaInterface
+namespace NLua.Exceptions
 {
     /// <summary>
     /// Exceptions thrown by the Lua runtime because of errors in the script

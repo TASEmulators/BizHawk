@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 using BizHawk.Common.BizInvoke;
 
-namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx64
+namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 {
 	public abstract class LibGPGX
 	{

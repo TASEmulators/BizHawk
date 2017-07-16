@@ -9,7 +9,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[SchemaAttributes("NES")]
+	[Schema("NES")]
 	public class NesSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)

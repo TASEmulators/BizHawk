@@ -75,7 +75,7 @@ typedef struct
 
 	// frame data
 	uint8_t frame[160 * 144];		// the most recent obtained full frame
-	uint8_t frozenframe[160 * 144]; // the most recent saved full frame (MASK_EN)
+	uint32_t frozenframe[256 * 224]; // the most recent saved full frame (MASK_EN)
 	uint8_t attr[20 * 18];			// current attr map for the GB screen
 	uint8_t auxattr[45][20 * 18];   // 45 attr files
 
@@ -118,12 +118,12 @@ static void cmd_trn(uint32_t which)
 		}
 		else
 		{
-			utils_log("SGB: TRN already queued!");
+			utils_log("SGB: TRN already queued!\n");
 		}
 	}
 	else
 	{
-		utils_log("SGB: cmd_trn bad length");
+		utils_log("SGB: cmd_trn bad length\n");
 	}
 }
 
@@ -147,7 +147,7 @@ static void cmd_pal(int a, int b)
 	}
 	else
 	{
-		utils_log("SGB: cmd_pal bad length");
+		utils_log("SGB: cmd_pal bad length\n");
 	}
 }
 
@@ -178,7 +178,7 @@ static void cmd_pal_set(void)
 	}
 	else
 	{
-		utils_log("SGB: cmd_pal bad length");
+		utils_log("SGB: cmd_pal bad length\n");
 	}
 }
 
@@ -187,13 +187,13 @@ static void cmd_attr_blk()
 	int nset = sgb.command[1];
 	if (nset <= 0 || nset >= 19)
 	{
-		utils_log("SGB: cmd_attr_blk bad nset");
+		utils_log("SGB: cmd_attr_blk bad nset\n");
 		return;
 	}
 	int npacket = (nset * 6 + 16) / 16;
 	if ((sgb.command[0] & 7) != npacket)
 	{
-		utils_log("SGB: cmd_attr_blk bad length");
+		utils_log("SGB: cmd_attr_blk bad length\n");
 		return;
 	}
 	for (int i = 0; i < nset; i++)
@@ -242,13 +242,13 @@ static void cmd_attr_lin()
 	int nset = sgb.command[1];
 	if (nset <= 0 || nset >= 111)
 	{
-		utils_log("SGB: cmd_attr_lin bad nset");
+		utils_log("SGB: cmd_attr_lin bad nset\n");
 		return;
 	}
 	int npacket = (nset + 17) / 16;
 	if ((sgb.command[0] & 7) != npacket)
 	{
-		utils_log("SGB: cmd_attr_lin bad length");
+		utils_log("SGB: cmd_attr_lin bad length\n");
 		return;
 	}
 	for (int i = 0; i < nset; i++)
@@ -315,7 +315,7 @@ static void cmd_attr_div()
 	}
 	else
 	{
-		utils_log("SGB: cmd_attr_div bad length");
+		utils_log("SGB: cmd_attr_div bad length\n");
 	}
 }
 
@@ -326,13 +326,13 @@ static void cmd_attr_chr()
 	int n = sgb.command[3] | sgb.command[4] << 8;
 	if (n > 360)
 	{
-		utils_log("SGB: cmd_attr_chr bad n");
+		utils_log("SGB: cmd_attr_chr bad n\n");
 		return;
 	}
 	int npacket = (n + 87) / 64;
 	if ((sgb.command[0] & 7) != npacket)
 	{
-		utils_log("SGB: cmd_attr_chr bad length");
+		utils_log("SGB: cmd_attr_chr bad length\n");
 		return;
 	}
 	uint8_t *dst = sgb.attr;
@@ -386,7 +386,7 @@ static void cmd_attr_set()
 	}
 	else
 	{
-		utils_log("SGB: cmd_attr_set bad length");
+		utils_log("SGB: cmd_attr_set bad length\n");
 	}
 }
 
@@ -410,11 +410,11 @@ static void cmd_mlt_req(void)
 			sgb.joypad_index = 1;
 			break;
 		}
-		utils_log("SGB: %u joypads", sgb.num_joypads);
+		utils_log("SGB: %u joypads\n", sgb.num_joypads);
 	}
 	else
 	{
-		utils_log("SGB: cmd_mlt_req bad length");
+		utils_log("SGB: cmd_mlt_req bad length\n");
 	}
 }
 
@@ -433,13 +433,14 @@ static void cmd_mask(void)
 		case 2:
 		case 3:
 			sgb.active_mask = 1;
-			memset(sgb.frozenframe, 0, sizeof(sgb.frozenframe));
+			for (int i = 0; i < 256 * 224; i++)
+				sgb.frozenframe[i] = sgb.palette[0][0];
 			break;
 		}
 	}
 	else
 	{
-		utils_log("SGB: cmd_mask bad length");
+		utils_log("SGB: cmd_mask bad length\n");
 	}
 }
 
@@ -454,7 +455,7 @@ static void cmd_sound(void)
 	}
 	else
 	{
-		utils_log("SGB: cmd_sound bad length");
+		utils_log("SGB: cmd_sound bad length\n");
 	}
 }
 
@@ -464,69 +465,69 @@ static void do_command(void)
 	switch (command)
 	{
 	default:
-		utils_log("SGB: Unknown or unimplemented command %02xh", command);
+		utils_log("SGB: Unknown or unimplemented command %02xh\n", command);
 		break;
 
 	case 0x00: // PAL01
-		utils_log("SGB: PAL01");
+		utils_log("SGB: PAL01\n");
 		cmd_pal(0, 1);
 		break;
 	case 0x01: // PAL23
-		utils_log("SGB: PAL23");
+		utils_log("SGB: PAL23\n");
 		cmd_pal(2, 3);
 		break;
 	case 0x02: // PAL03
-		utils_log("SGB: PAL03");
+		utils_log("SGB: PAL03\n");
 		cmd_pal(0, 3);
 		break;
 	case 0x03: // PAL12
-		utils_log("SGB: PAL12");
+		utils_log("SGB: PAL12\n");
 		cmd_pal(1, 2);
 		break;
 	case 0x0a: // PAL_SET
-		utils_log("SGB: PAL_SET");
+		utils_log("SGB: PAL_SET\n");
 		cmd_pal_set();
 		break;
 
 	case 0x04: // ATTR_BLK
-		utils_log("SGB: ATTR_BLK");
+		utils_log("SGB: ATTR_BLK\n");
 		cmd_attr_blk();
 		break;
 	case 0x05: // ATTR_LIN
-		utils_log("SGB: ATTR_LIN");
+		utils_log("SGB: ATTR_LIN\n");
 		cmd_attr_lin();
 		break;
 	case 0x06: // ATTR_DIV
-		utils_log("SGB: ATTR_DIV");
+		utils_log("SGB: ATTR_DIV\n");
 		cmd_attr_div();
 		break;
 	case 0x07: // ATTR_CHR
-		utils_log("SGB: ATTR_CHR");
+		utils_log("SGB: ATTR_CHR\n");
 		cmd_attr_chr();
 		break;
 	case 0x16: // ATTR_SET
-		utils_log("SGB: ATTR_SET");
+		utils_log("SGB: ATTR_SET\n");
 		cmd_attr_set();
 		break;
 
 	case 0x17: // MASK_EN
-		utils_log("SGB: MASK_EN");
+		utils_log("SGB: MASK_EN\n");
 		cmd_mask();
 		break;
 
 	// unknown functions
 	case 0x0c: // ATRC_EN
-		utils_log("SGB: ATRC_EN??");
+		utils_log("SGB: ATRC_EN??\n");
 		break;
 	case 0x0d: // TEST_EN
-		utils_log("SGB: TEST_EN??");
+		utils_log("SGB: TEST_EN??\n");
 		break;
 	case 0x0e: // ICON_EN
-		utils_log("SGB: ICON_EN??");
+		utils_log("SGB: ICON_EN??\n");
 		break;
 	case 0x18: // OBJ_TRN
 		// no game used this
-		utils_log("SGB: OBJ_TRN??");
+		utils_log("SGB: OBJ_TRN??\n");
 		break;
 
 	// unimplementable functions
@@ -534,46 +535,46 @@ static void do_command(void)
 		// TODO: Is it possible for this (and DATA_TRN) to write data to
 		// memory areas used for the attribute file, etc?
 		// If so, do games do this?
-		utils_log("SGB: DATA_SND!! %02x:%02x%02x [%02x]", sgb.command[3], sgb.command[2], sgb.command[1], sgb.command[4]);
+		utils_log("SGB: DATA_SND!! %02x:%02x%02x [%02x]\n", sgb.command[3], sgb.command[2], sgb.command[1], sgb.command[4]);
 		break;
 	case 0x10: // DATA_TRN
-		utils_log("SGB: DATA_TRN!!");
+		utils_log("SGB: DATA_TRN!!\n");
 		break;
 	case 0x12: // JUMP
-		utils_log("SGB: JUMP!!");
+		utils_log("SGB: JUMP!!\n");
 		break;
 
 	// joypad
 	case 0x11: // MLT_REQ
-		utils_log("SGB: MLT_REQ");
+		utils_log("SGB: MLT_REQ\n");
 		cmd_mlt_req();
 		break;
 
 	// sound
 	case 0x08: // SOUND
-		utils_log("SGB: SOUND %02x %02x %02x %02x", sgb.command[1], sgb.command[2], sgb.command[3], sgb.command[4]);
+		utils_log("SGB: SOUND %02x %02x %02x %02x\n", sgb.command[1], sgb.command[2], sgb.command[3], sgb.command[4]);
 		cmd_sound();
 		break;
 
 	// all vram transfers
 	case 0x09: // SOU_TRN
-		utils_log("SGB: SOU_TRN");
+		utils_log("SGB: SOU_TRN\n");
 		cmd_trn(TRN_SOUND);
 		break;
 	case 0x0b: // PAL_TRN
-		utils_log("SGB: PAL_TRN");
+		utils_log("SGB: PAL_TRN\n");
 		cmd_trn(TRN_PAL);
 		break;
 	case 0x13: // CHR_TRN
-		utils_log("SGB: CHR_TRN");
+		utils_log("SGB: CHR_TRN\n");
 		cmd_trn(sgb.command[1] & 1 ? TRN_CHR_HI : TRN_CHR_LOW);
 		break;
 	case 0x14: // PCT_TRN
-		utils_log("SGB: PCT_TRN");
+		utils_log("SGB: PCT_TRN\n");
 		cmd_trn(TRN_PCT);
 		break;
 	case 0x15: // ATTR_TRN
-		utils_log("SGB: ATTR_TRN");
+		utils_log("SGB: ATTR_TRN\n");
 		cmd_trn(TRN_ATTR);
 		break;
 	}
@@ -589,7 +590,7 @@ static void do_packet(void)
 
 	if (sgb.expected_packets == 0) // huh?
 	{
-		utils_log("SGB: zero packet command");
+		utils_log("SGB: zero packet command\n");
 		sgb.expected_packets = 0;
 		sgb.next_packet = 0;
 	}
@@ -616,7 +617,7 @@ int sgb_init(const uint8_t *spc, int length)
 	spc_reset(sgb.spc);
 	if (spc_load_spc(sgb.spc, spc, length) != NULL)
 	{
-		utils_log("SGB: Failed to load SPC");
+		utils_log("SGB: Failed to load SPC\n");
 		return 0;
 	}
 
@@ -647,7 +648,7 @@ void sgb_write_ff00(uint8_t val, uint64_t time)
 				if (p14_fell)
 					do_packet();
 				else
-					utils_log("SGB: Stop bit not present");
+					utils_log("SGB: Stop bit not present\n");
 				sgb.read_index = 255;
 			}
 			else
@@ -732,17 +733,17 @@ static void trn_sound(const uint8_t* data)
 {
 	int len = data[0] | data[1] << 8;
 	int addr = data[2] | data[3] << 8;
-	utils_log("TRN_SOUND %04x %04x", addr, len);
+	utils_log("TRN_SOUND %04x %04x\n", addr, len);
 	uint8_t* dst = spc_get_ram(sgb.spc);
 
 	if (len > 0xffc)
 	{
-		utils_log("TRN_SOUND src overflow");
+		utils_log("TRN_SOUND src overflow\n");
 		return;
 	}
 	if (len + addr >= 0x10000)
 	{
-		utils_log("TRN_SOUND dst overflow");
+		utils_log("TRN_SOUND dst overflow\n");
 		return;
 	}
 	memcpy(dst + addr, data + 4, len);
@@ -862,32 +863,10 @@ static void do_vram_transfer(void)
 	}
 }
 
-// 160x144 32bpp pixel data
-// assumed to contain exact pixel values 00, 55, aa, ff
-void sgb_take_frame(uint32_t *vbuff)
-{
-	for (int i = 0; i < 160 * 144; i++)
-	{
-		sgb.frame[i] = 3 - (vbuff[i] >> 6 & 3); // 0, 1, 2, or 3 for each pixel
-	}
-	if (sgb.waiting_transfer != TRN_NONE)
-	{
-		if (!--sgb.transfer_countdown)
-		{
-			do_vram_transfer();
-			sgb.waiting_transfer = TRN_NONE;
-		}
-	}
-	if (!sgb.active_mask)
-	{
-		memcpy(sgb.frozenframe, sgb.frame, sizeof(sgb.frame));
-	}
-}
-
 static void sgb_render_frame_gb(uint32_t *vbuff)
 {
 	const uint8_t *attr = sgb.attr;
-	const uint8_t *src = sgb.active_mask ? sgb.frozenframe : sgb.frame;
+	const uint8_t *src = sgb.frame;
 	uint32_t *dst = vbuff + ((224 - 144) / 2 * 256 + (256 - 160) / 2);
 
 	for (int j = 0; j < 144; j++)
@@ -951,12 +930,35 @@ static void sgb_render_border(uint32_t *vbuff)
 	}
 }
 
+// 160x144 32bpp pixel data
+// assumed to contain exact pixel values 00, 55, aa, ff
+void sgb_take_frame(uint32_t *vbuff)
+{
+	for (int i = 0; i < 160 * 144; i++)
+	{
+		sgb.frame[i] = 3 - (vbuff[i] >> 6 & 3); // 0, 1, 2, or 3 for each pixel
+	}
+	if (sgb.waiting_transfer != TRN_NONE)
+	{
+		if (!--sgb.transfer_countdown)
+		{
+			do_vram_transfer();
+			sgb.waiting_transfer = TRN_NONE;
+		}
+	}
+	if (!sgb.active_mask)
+	{
+		// render the frame now
+		for (int i = 0; i < 256 * 224; i++)
+			sgb.frozenframe[i] = sgb.palette[0][0];
+		sgb_render_frame_gb(sgb.frozenframe);
+		sgb_render_border(sgb.frozenframe);
+	}
+}
+
 void sgb_render_frame(uint32_t *vbuff)
 {
-	for (int i = 0; i < 256 * 224; i++)
-		vbuff[i] = sgb.palette[0][0];
-	sgb_render_frame_gb(vbuff);
-	sgb_render_border(vbuff);
+	memcpy(vbuff, sgb.frozenframe, sizeof(sgb.frozenframe));
 }
 
 void sgb_render_audio(uint64_t time, void (*callback)(int16_t l, int16_t r, uint64_t time))

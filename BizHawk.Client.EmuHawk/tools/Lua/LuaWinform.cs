@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Forms;
 
-using LuaInterface;
+using NLua;
 
 using BizHawk.Client.Common;
 

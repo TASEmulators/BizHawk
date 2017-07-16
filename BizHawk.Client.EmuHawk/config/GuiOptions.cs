@@ -31,6 +31,9 @@ namespace BizHawk.Client.EmuHawk
 			cbMoviesOnDisk.Checked = Global.Config.MoviesOnDisk;
 			cbMoviesInAWE.Checked = Global.Config.MoviesInAWE;
 
+			NLuaRadio.Checked = Global.Config.UseNLua;
+			LuaInterfaceRadio.Checked = !Global.Config.UseNLua;
+
 			if (LogConsole.ConsoleVisible)
 			{
 				LogWindowAsConsoleCheckbox.Enabled = false;
@@ -59,9 +62,13 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.MoviesOnDisk = cbMoviesOnDisk.Checked;
 			Global.Config.MoviesInAWE = cbMoviesInAWE.Checked;
 
+			bool changedLua = Global.Config.UseNLua != NLuaRadio.Checked;
+			Global.Config.UseNLua = NLuaRadio.Checked;
+
 			Close();
 			DialogResult = DialogResult.OK;
 			GlobalWin.OSD.AddMessage("Custom configurations saved.");
+			if(changedLua) GlobalWin.OSD.AddMessage("Restart emulator for Lua change to take effect");
 		}
 
 		private void CancelBtn_Click(object sender, EventArgs e)

@@ -6,7 +6,7 @@ using BizHawk.Emulation.Cores.Sega.MasterSystem;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[SchemaAttributes("SMS")]
+	[Schema("SMS")]
 	public class SmsSchema : IVirtualPadSchema
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)

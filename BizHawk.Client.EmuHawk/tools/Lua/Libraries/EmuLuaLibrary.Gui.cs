@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 
-using LuaInterface;
+using NLua;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
@@ -45,8 +45,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public bool SurfaceIsNull => _luaSurface == null;
 
-		[LuaMethodAttributes(
-			"DrawNew", "Changes drawing target to the specified lua surface name. This may clobber any previous drawing to this surface (pass false if you don't want it to)")]
+		[LuaMethod("DrawNew", "Changes drawing target to the specified lua surface name. This may clobber any previous drawing to this surface (pass false if you don't want it to)")]
 		public void DrawNew(string name, bool? clear = true)
 		{
 			try
@@ -60,7 +59,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("DrawFinish", "Finishes drawing to the current lua surface and causes it to get displayed.")]
+		[LuaMethod("DrawFinish", "Finishes drawing to the current lua surface and causes it to get displayed.")]
 		public void DrawFinish()
 		{
 			if (_luaSurface != null)
@@ -127,45 +126,44 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		[LuaMethodAttributes("addmessage", "Adds a message to the OSD's message area")]
+		[LuaMethod("addmessage", "Adds a message to the OSD's message area")]
 		public void AddMessage(string message)
 		{
 			GlobalWin.OSD.AddMessage(message);
 		}
 
-		[LuaMethodAttributes("clearGraphics", "clears all lua drawn graphics from the screen")]
+		[LuaMethod("clearGraphics", "clears all lua drawn graphics from the screen")]
 		public void ClearGraphics()
 		{
 			_luaSurface.Clear();
 			DrawFinish();
 		}
 
-		[LuaMethodAttributes("cleartext", "clears all text created by gui.text()")]
+		[LuaMethod("cleartext", "clears all text created by gui.text()")]
 		public static void ClearText()
 		{
 			GlobalWin.OSD.ClearGUIText();
 		}
 
-		[LuaMethodAttributes("defaultForeground", "Sets the default foreground color to use in drawing methods, white by default")]
+		[LuaMethod("defaultForeground", "Sets the default foreground color to use in drawing methods, white by default")]
 		public void SetDefaultForegroundColor(Color color)
 		{
 			_defaultForeground = color;
 		}
 
-		[LuaMethodAttributes("defaultBackground", "Sets the default background color to use in drawing methods, transparent by default")]
+		[LuaMethod("defaultBackground", "Sets the default background color to use in drawing methods, transparent by default")]
 		public void SetDefaultBackgroundColor(Color color)
 		{
 			_defaultBackground = color;
 		}
 
-		[LuaMethodAttributes("defaultTextBackground", "Sets the default backgroiund color to use in text drawing methods, half-transparent black by default")]
+		[LuaMethod("defaultTextBackground", "Sets the default backgroiund color to use in text drawing methods, half-transparent black by default")]
 		public void SetDefaultTextBackground(Color color)
 		{
 			_defaultTextBackground = color;
 		}
 
-		[LuaMethodAttributes(
-			"defaultPixelFont", "Sets the default font to use in gui.pixelText(). Two font families are available, \"fceux\" and \"gens\" (or  \"0\" and \"1\" respectively), \"gens\" is used by default")]
+		[LuaMethod("defaultPixelFont", "Sets the default font to use in gui.pixelText(). Two font families are available, \"fceux\" and \"gens\" (or  \"0\" and \"1\" respectively), \"gens\" is used by default")]
 		public void SetDefaultTextBackground(string fontfamily)
 		{
 			switch (fontfamily)
@@ -184,7 +182,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("drawBezier", "Draws a Bezier curve using the table of coordinates provided in the given color")]
+		[LuaMethod("drawBezier", "Draws a Bezier curve using the table of coordinates provided in the given color")]
 		public void DrawBezier(LuaTable points, Color color)
 		{
 			using (var g = GetGraphics())
@@ -213,8 +211,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"drawBox", "Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height")]
+		[LuaMethod("drawBox", "Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height")]
 		public void DrawBox(int x, int y, int x2, int y2, Color? line = null, Color? background = null)
 		{
 			using (var g = GetGraphics())
@@ -257,8 +254,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"drawEllipse", "Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color")]
+		[LuaMethod("drawEllipse", "Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color")]
 		public void DrawEllipse(int x, int y, int width, int height, Color? line = null, Color? background = null)
 		{
 			using (var g = GetGraphics())
@@ -282,8 +278,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"drawIcon", "draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
+		[LuaMethod("drawIcon", "draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
 		public void DrawIcon(string path, int x, int y, int? width = null, int? height = null)
 		{
 			using (var g = GetGraphics())
@@ -309,8 +304,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"drawImage", "draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
+		[LuaMethod("drawImage", "draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
 		public void DrawImage(string path, int x, int y, int? width = null, int? height = null, bool cache = true)
 		{
 			if (!File.Exists(path))
@@ -339,8 +333,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"clearImageCache", "clears the image cache that is built up by using gui.drawImage, also releases the file handle for cached images")]
+		[LuaMethod("clearImageCache", "clears the image cache that is built up by using gui.drawImage, also releases the file handle for cached images")]
 		public void ClearImageCache()
 		{
 			foreach (var image in _imageCache)
@@ -351,8 +344,7 @@ namespace BizHawk.Client.EmuHawk
 			_imageCache.Clear();
 		}
 
-		[LuaMethodAttributes(
-			"drawImageRegion", "draws a given region of an image file from the given path at the given coordinate, and optionally with the given size")]
+		[LuaMethod("drawImageRegion", "draws a given region of an image file from the given path at the given coordinate, and optionally with the given size")]
 		public void DrawImageRegion(string path, int source_x, int source_y, int source_width, int source_height, int dest_x, int dest_y, int? dest_width = null, int? dest_height = null)
 		{
 			if (!File.Exists(path))
@@ -380,8 +372,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"drawLine", "Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)")]
+		[LuaMethod("drawLine", "Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)")]
 		public void DrawLine(int x1, int y1, int x2, int y2, Color? color = null)
 		{
 			using (var g = GetGraphics())
@@ -390,14 +381,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("drawAxis", "Draws an axis of the specified size at the coordinate pair.)")]
+		[LuaMethod("drawAxis", "Draws an axis of the specified size at the coordinate pair.)")]
 		public void DrawAxis(int x, int y, int size, Color? color = null)
 		{
 			DrawLine(x + size, y, x - size, y, color);
 			DrawLine(x, y + size, x, y - size, color);
 		}
 
-		[LuaMethodAttributes("drawPie", "draws a Pie shape at the given coordinates and the given width and height")]
+		[LuaMethod("drawPie", "draws a Pie shape at the given coordinates and the given width and height")]
 		public void DrawPie(
 			int x,
 			int y,
@@ -421,8 +412,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"drawPixel", "Draws a single pixel at the given coordinates in the given color. Color is optional (if not specified it will be drawn black)")]
+		[LuaMethod("drawPixel", "Draws a single pixel at the given coordinates in the given color. Color is optional (if not specified it will be drawn black)")]
 		public void DrawPixel(int x, int y, Color? color = null)
 		{
 			using (var g = GetGraphics())
@@ -438,8 +428,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"drawPolygon", "Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). Line is the color of the polygon. Background is the optional fill color")]
+		[LuaMethod("drawPolygon", "Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). Line is the color of the polygon. Background is the optional fill color")]
 		public void DrawPolygon(LuaTable points, Color? line = null, Color? background = null)
 		{
 			using (var g = GetGraphics())
@@ -468,8 +457,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"drawRectangle", "Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color")]
+		[LuaMethod("drawRectangle", "Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color")]
 		public void DrawRectangle(int x, int y, int width, int height, Color? line = null, Color? background = null)
 		{
 			using (var g = GetGraphics())
@@ -483,7 +471,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("drawString", "Alias of gui.drawText()")]
+		[LuaMethod("drawString", "Alias of gui.drawText()")]
 		public void DrawString(
 			int x,
 			int y,
@@ -499,8 +487,7 @@ namespace BizHawk.Client.EmuHawk
 			DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 		}
 
-		[LuaMethodAttributes(
-			"drawText", "Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates.")]
+		[LuaMethod("drawText", "Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates.")]
 		public void DrawText(
 			int x,
 			int y,
@@ -595,9 +582,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"pixelText",
-			"Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. Two font families are available, \"fceux\" and \"gens\" (or  \"0\" and \"1\" respectively), both are monospace and have the same size as in the emulaors they've been taken from. If no font family is specified, it uses \"gens\" font, unless that's overridden via gui.defaultPixelFont()")]
+		[LuaMethod("pixelText", "Draws the given message in the emulator screen space (like all draw functions) at the given x,y coordinates and the given color. The default color is white. Two font families are available, \"fceux\" and \"gens\" (or  \"0\" and \"1\" respectively), both are monospace and have the same size as in the emulaors they've been taken from. If no font family is specified, it uses \"gens\" font, unless that's overridden via gui.defaultPixelFont()")]
 		public void DrawText(
 			int x,
 			int y,
@@ -651,8 +636,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes(
-			"text", "Displays the given text on the screen at the given coordinates. Optional Foreground color. The optional anchor flag anchors the text to one of the four corners. Anchor flag parameters: topleft, topright, bottomleft, bottomright")]
+		[LuaMethod("text", "Displays the given text on the screen at the given coordinates. Optional Foreground color. The optional anchor flag anchors the text to one of the four corners. Anchor flag parameters: topleft, topright, bottomleft, bottomright")]
 		public void Text(
 			int x,
 			int y,
@@ -693,10 +677,10 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.OSD.AddGUIText(message, x, y, Color.Black, forecolor ?? Color.White, a);
 		}
 
-		[LuaMethodAttributes("createcanvas", "Creates a canvas of the given size.")]
-		public LuaTable Text(int width, int height)
+		[LuaMethod("createcanvas", "Creates a canvas of the given size and, if specified, the given coordinates.")]
+		public LuaTable Text(int width, int height, int? x = null, int? y = null)
 		{
-			var canvas = new LuaCanvas(width, height);
+			var canvas = new LuaCanvas(width, height, x, y);
 			canvas.Show();
 			return LuaHelper.ToLuaTable(Lua, canvas);
 		}

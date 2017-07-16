@@ -1,4 +1,4 @@
-namespace LuaInterface
+namespace NLua
 {
     using System;
     using System.IO;
@@ -6,6 +6,7 @@ namespace LuaInterface
     using System.Reflection;
     using System.Collections.Generic;
     using System.Diagnostics;
+	using NLua.Exceptions;
     using Lua511;
 
     /*

@@ -7,6 +7,7 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Sega.MasterSystem;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
+using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 
 namespace BizHawk.Client.Common.MovieConversionExtensions
 {
@@ -320,13 +321,23 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 				movie.HeaderEntries.Add("IsSGMode", "1");
 			}
 
-			if (Global.Emulator is GPGX && (Global.Emulator as GPGX).IsSegaCD)
+			if (Global.Emulator is SMS && (Global.Emulator as SMS).IsGameGear)
+			{
+				movie.HeaderEntries.Add("IsGGMode", "1");
+			}
+
+			if (Global.Emulator is GPGX && (Global.Emulator as GPGX).IsMegaCD)
 			{
 				movie.HeaderEntries.Add("IsSegaCDMode", "1");
 			}
 
-			movie.Core = ((CoreAttributes)Attribute
-				.GetCustomAttribute(Global.Emulator.GetType(), typeof(CoreAttributes)))
+			if (Global.Emulator is PicoDrive && Global.Game["32X"])
+			{
+				movie.HeaderEntries.Add("Is32X", "1");
+			}
+
+			movie.Core = ((CoreAttribute)Attribute
+				.GetCustomAttribute(Global.Emulator.GetType(), typeof(CoreAttribute)))
 				.CoreName;
 		}
 	}

@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
-	[CoreAttributes(
+	[Core(
 		"Atari2600Hawk",
 		"Micro500, Alyosha, adelikat, natt",
 		isPorted: false,
@@ -26,6 +26,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			CoreComm = comm;
 			Settings = (A2600Settings)settings ?? new A2600Settings();
 			SyncSettings = (A2600SyncSettings)syncSettings ?? new A2600SyncSettings();
+
+			_controllerDeck = new Atari2600ControllerDeck(SyncSettings.Port1, SyncSettings.Port2);
 
 			_leftDifficultySwitchPressed = SyncSettings.LeftDifficulty;
 			_rightDifficultySwitchPressed = SyncSettings.RightDifficulty;
@@ -57,6 +59,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Register<IVideoProvider>(_tia);
 			ser.Register<ISoundProvider>(_dcfilter);
 		}
+
+		private readonly Atari2600ControllerDeck _controllerDeck;
 
 		// IRegionable
 		public DisplayType Region => _pal ? DisplayType.PAL : DisplayType.NTSC;

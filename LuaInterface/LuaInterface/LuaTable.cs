@@ -4,7 +4,7 @@ using System.Text;
 using Lua511;
 using System.Collections;
 
-namespace LuaInterface
+namespace NLua
 {
     /*
 	 * Wrapper class for Lua tables

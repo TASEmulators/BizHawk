@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-using LuaInterface;
+using NLua;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override string Name => "savestate";
 
-		[LuaMethodAttributes("load", "Loads a savestate with the given path")]
+		[LuaMethod("load", "Loads a savestate with the given path")]
 		public void Load(string path)
 		{
 			if (!File.Exists(path))
@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("loadslot", "Loads the savestate at the given slot number (must be an integer between 0 and 9)")]
+		[LuaMethod("loadslot", "Loads the savestate at the given slot number (must be an integer between 0 and 9)")]
 		public void LoadSlot(int slotNum)
 		{
 			if (slotNum >= 0 && slotNum <= 9)
@@ -39,13 +39,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodAttributes("save", "Saves a state at the given path")]
+		[LuaMethod("save", "Saves a state at the given path")]
 		public void Save(string path)
 		{
 			GlobalWin.MainForm.SaveState(path, path, true);
 		}
 
-		[LuaMethodAttributes("saveslot", "Saves a state at the given save slot (must be an integer between 0 and 9)")]
+		[LuaMethod("saveslot", "Saves a state at the given save slot (must be an integer between 0 and 9)")]
 		public void SaveSlot(int slotNum)
 		{
 			if (slotNum >= 0 && slotNum <= 9)

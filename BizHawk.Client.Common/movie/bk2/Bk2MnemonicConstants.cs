@@ -79,6 +79,8 @@ namespace BizHawk.Client.Common
 			["R3"] = '>',
 
 			["Button"] = 'B',
+			["Button 1"] = '1',
+			["Button 2"] = '2',
 			["B1"] = '1',
 			["B2"] = '2',
 
@@ -93,6 +95,8 @@ namespace BizHawk.Client.Common
 
 			["Mode"] = 'M',
 			["MODE"] = 'M',
+			["Mode 1"] = 'M',
+			["Mode 2"] = 'm',
 
 			["Fire"] = 'F',
 			["Lightgun Trigger"] = 'T',
@@ -355,6 +359,15 @@ namespace BizHawk.Client.Common
 				["R_Down"] = 'd',
 				["R_Left"] = 'l',
 				["R_Right"] = 'r',
+			},
+			["PCFX"] = new Dictionary<string, char>
+			{
+				["I"] = '1',
+				["II"] = '2',
+				["III"] = '3',
+				["IV"] = '4',
+				["V"] = '5',
+				["VI"] = '6',
 			}
 		};
 	}

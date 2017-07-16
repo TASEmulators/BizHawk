@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 
-using LuaInterface;
+using NLua;
 using BizHawk.Common.ReflectionExtensions;
 
 namespace BizHawk.Client.Common
@@ -96,7 +96,7 @@ namespace BizHawk.Client.Common
 		{
 			Lua.NewTable(Name);
 
-			var luaAttr = typeof(LuaMethodAttributes);
+			var luaAttr = typeof(LuaMethodAttribute);
 
 			var methods = GetType()
 				.GetMethods()
@@ -104,7 +104,7 @@ namespace BizHawk.Client.Common
 
 			foreach (var method in methods)
 			{
-				var luaMethodAttr = (LuaMethodAttributes)method.GetCustomAttributes(luaAttr, false).First();
+				var luaMethodAttr = (LuaMethodAttribute)method.GetCustomAttributes(luaAttr, false).First();
 				var luaName = Name + "." + luaMethodAttr.Name;
 				Lua.RegisterFunction(luaName, this, method);
 

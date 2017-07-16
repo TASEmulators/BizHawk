@@ -35,9 +35,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						"Power",
 						"Reset",
 						"Select",
-						"BW", // should be "Color"??
+						"BW", 
 						"Left Difficulty", // better not put P# on these as they might not correspond to player numbers
-						"Right Difficulty"
+						"Right Difficulty",
+						"Pause"
 					})
 					.ToList()
 			};
@@ -57,6 +58,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public byte ReadPort2(IController c)
 		{
 			return Port2.Read(c);
+		}
+
+		public byte ReadFire1(IController c)
+		{
+			return Port1.ReadFire(c);
+		}
+
+		public byte ReadFire2(IController c)
+		{
+			return Port2.ReadFire(c);
 		}
 
 		public ControllerDefinition Definition { get; }

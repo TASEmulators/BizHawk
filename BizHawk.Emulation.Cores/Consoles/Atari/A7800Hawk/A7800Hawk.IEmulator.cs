@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Common;
+﻿using BizHawk.Common.NumberExtensions;
+using BizHawk.Emulation.Common;
 using System;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
@@ -16,6 +17,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool cpu_is_halted;
 		public bool cpu_halt_pending;
 		public bool cpu_resume_pending;
+
+		// input state of controllers and console
+		public byte p1_state;
+		public byte p2_state;
+		public byte p1_fire;
+		public byte p2_fire;
+		public byte con_state;
 
 		// there are 4 maria cycles in a CPU cycle (fast access, both NTSC and PAL)
 		// if the 6532 or TIA are accessed (PC goes to one of those addresses) the next access will be slower by 1/2 a CPU cycle
@@ -42,26 +50,36 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				HardReset();
 			}
 
+			_islag = true;
+
+			GetControllerState(controller);
+			GetConsoleState(controller);
+
+			maria.RunFrame();
+
 			if (_islag)
 			{
 				_lagcount++;
 			}
 
-			// read the controller state here for now
-			GetControllerState(controller);
-
-			maria.RunFrame();
 		}
 
 		public void RunCPUCycle()
 		{
 			cpu_cycle++;
 			tia._hsyncCnt++;
+			tia._hsyncCnt %= 454;
+			// do the audio sampling
+			if (tia._hsyncCnt == 113 || tia._hsyncCnt == 340)
+			{
+				tia.Execute(0);
+			}
 
 			if (cpu_cycle <= (2 + (slow_access ? 1 : 0)))
 			{
 				cpu_is_haltable = true;
-			} else
+			}
+			else
 			{
 				cpu_is_haltable = false;
 			}
@@ -97,37 +115,68 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 
 			// determine if the next access will be fast or slow
-			if (cpu.PC < 0x0400)
+			if ((cpu.PC & 0xFCE0) == 0)
 			{
-				if ((cpu.PC & 0xFF) < 0x20)
-				{
-					if ((A7800_control_register & 0x1) == 0 && (cpu.PC < 0x20))
-					{
-						slow_access = false;
-					}
-					else
-					{
-						slow_access = true;
-					}
-				}
-				else if (cpu.PC < 0x300)
-				{
-					slow_access = true;
-				}
-				else
+				// return TIA registers or control register if it is still unlocked
+				if ((A7800_control_register & 0x1) == 0)
 				{
 					slow_access = false;
 				}
+				else
+				{
+					slow_access = true;
+				}
+			}
+			else if ((cpu.PC & 0xFF80) == 0x280)
+			{
+				slow_access = true;
+			}
+			else if ((cpu.PC & 0xFE80) == 0x480)
+			{
+				slow_access = true;
+			}
+			else
+			{
+				slow_access = false;
 			}
 		}
 
-		private void GetControllerState(IController controller)
+		public void GetControllerState(IController controller)
 		{
 			InputCallbacks.Call();
 
-			ushort port1 = _controllerDeck.ReadPort1(controller);
+			p1_state = _controllerDeck.ReadPort1(controller);
+			p2_state = _controllerDeck.ReadPort2(controller);
+			p1_fire = _controllerDeck.ReadFire1(controller);
+			p2_fire = _controllerDeck.ReadFire2(controller);
+		}
 
-			ushort port2 = _controllerDeck.ReadPort2(controller);
+		public void GetConsoleState(IController controller)
+		{
+			byte result = 0;
+
+			if (controller.IsPressed("Right Difficulty"))
+			{
+				result |= (1 << 7);
+			}
+			if (controller.IsPressed("Left Difficulty"))
+			{
+				result |= (1 << 6);
+			}
+			if (!controller.IsPressed("Pause"))
+			{
+				result |= (1 << 3);
+			}
+			if (!controller.IsPressed("Select"))
+			{
+				result |= (1 << 1);
+			}
+			if (!controller.IsPressed("Reset"))
+			{
+				result |= 1;
+			}
+
+			con_state = result;
 		}
 
 		public int Frame => _frame;

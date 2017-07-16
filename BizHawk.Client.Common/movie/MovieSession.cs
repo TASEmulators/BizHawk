@@ -486,8 +486,8 @@ namespace BizHawk.Client.Common
 
 			if (!record && emulator.SystemId == "NES") // For NES we need special logic since the movie will drive which core to load
 			{
-				var quicknesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttributes))).CoreName;
-				var neshawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttributes))).CoreName;
+				var quicknesName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(QuickNES), typeof(CoreAttribute))).CoreName;
+				var neshawkName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(NES), typeof(CoreAttribute))).CoreName;
 
 				// If either is specified use that, else use whatever is currently set
 				if (movie.Core == quicknesName)
@@ -503,8 +503,8 @@ namespace BizHawk.Client.Common
 			}
 			else if (!record && emulator.SystemId == "SNES") // ditto with snes9x vs bsnes
 			{
-				var snes9xName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(Snes9x), typeof(CoreAttributes))).CoreName;
-				var bsnesName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttributes))).CoreName;
+				var snes9xName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Snes9x), typeof(CoreAttribute))).CoreName;
+				var bsnesName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(LibsnesCore), typeof(CoreAttribute))).CoreName;
 
 				if (movie.Core == snes9xName)
 				{
@@ -519,8 +519,8 @@ namespace BizHawk.Client.Common
 			}
 			else if (!record && emulator.SystemId == "GBA") // ditto with GBA, we should probably architect this at some point, this isn't sustainable
 			{
-				var mGBAName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(MGBAHawk), typeof(CoreAttributes))).CoreName;
-				var vbaNextName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(VBANext), typeof(CoreAttributes))).CoreName;
+				var mGBAName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(MGBAHawk), typeof(CoreAttribute))).CoreName;
+				var vbaNextName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(VBANext), typeof(CoreAttribute))).CoreName;
 
 				if (movie.Core == mGBAName)
 				{
@@ -535,8 +535,8 @@ namespace BizHawk.Client.Common
 			}
 			else if (!record && emulator.SystemId == "A78") // meh, copy pasta one more time, last time, I promise
 			{
-				var atari7800HawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(A7800Hawk), typeof(CoreAttributes))).CoreName;
-				var emu7800HawkName = ((CoreAttributes)Attribute.GetCustomAttribute(typeof(Atari7800), typeof(CoreAttributes))).CoreName;
+				var atari7800HawkName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(A7800Hawk), typeof(CoreAttribute))).CoreName;
+				var emu7800HawkName = ((CoreAttribute)Attribute.GetCustomAttribute(typeof(Atari7800), typeof(CoreAttribute))).CoreName;
 
 				if (movie.Core == atari7800HawkName)
 				{

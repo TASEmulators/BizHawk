@@ -7,7 +7,7 @@ using BizHawk.Emulation.Cores.Nintendo.N64.NativeApi;
 
 namespace BizHawk.Emulation.Cores.Nintendo.N64
 {
-	[CoreAttributes(
+	[Core(
 		"Mupen64Plus",
 		"",
 		isPorted: true,

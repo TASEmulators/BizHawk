@@ -134,6 +134,9 @@ namespace BizHawk.Client.Common
 		public string Update_IgnoreVersion = "";
 		public bool CDLAutoSave = true, CDLAutoStart = true;
 
+		//check CurrentDomain_AssemblyResolve if you change the defaults or name of this key
+		public bool UseNLua = true; // Whether or not to use a good, reliable, memory-leak-free lua interface that is slower than the original luainterface
+
 		////public bool TurboSeek = true; // When PauseOnFrame is set, this will decide whether the client goes into turbo mode or not
 
 		private bool _turboSeek;
@@ -540,6 +543,7 @@ namespace BizHawk.Client.Common
 		public bool SNES_InSnes9x = true;
 		public bool GBA_UsemGBA = true;
 		public bool A78_UseEmu7800 = true;
+		public bool SGB_UseBsnes = false;
 		public bool CoreForcingViaGameDB = true;
 		public string LibretroCore;
 	}

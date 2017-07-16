@@ -17,7 +17,7 @@ using BizHawk.Emulation.Cores.Components.W65816;
 // wrap dll code around some kind of library-accessing interface so that it doesnt malfunction if the dll is unavailablecd
 namespace BizHawk.Emulation.Cores.Nintendo.SNES
 {
-	[CoreAttributes(
+	[Core(
 		"BSNES",
 		"byuu",
 		isPorted: true,
@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 	public unsafe partial class LibsnesCore : IEmulator, IVideoProvider, ISaveRam, IStatable, IInputPollable, IRegionable, ICodeDataLogger,
 		IDebuggable, ISettable<LibsnesCore.SnesSettings, LibsnesCore.SnesSyncSettings>
 	{
-		public LibsnesCore(GameInfo game, byte[] romData, bool deterministicEmulation, byte[] xmlData, CoreComm comm, object settings, object syncSettings)
+		public LibsnesCore(GameInfo game, byte[] romData, byte[] xmlData, CoreComm comm, object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
@@ -294,16 +294,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 					return "";
 			}
 
-			// build romfilename
-			string test = CoreComm.CoreFileProvider.GetFirmwarePath("SNES", firmwareId, false, "Game may function incorrectly without the requested firmware.");
+			string ret;
+			var data = CoreComm.CoreFileProvider.GetFirmware("SNES", firmwareId, false, "Game may function incorrectly without the requested firmware.");
+			if (data != null)
+			{
+				ret = hint;
+				Api.AddReadonlyFile(data, hint);
+			}
+			else
+			{
+				ret = "";
+			}
 
-			// we need to return something to bsnes
-			test = test ?? "";
-
-			Console.WriteLine("Served libsnes request for firmware \"{0}\" with \"{1}\"", hint, test);
+			Console.WriteLine("Served libsnes request for firmware \"{0}\"", hint);
 
 			// return the path we built
-			return test;
+			return ret;
 		}
 
 		private void snes_trace(uint which, string msg)
@@ -485,7 +491,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				xskip = 2;
 			}
 
-			if (_settings.CropSGBFrame)
+			if (_settings.CropSGBFrame && IsSGB)
 			{
 				_videoWidth = 160;
 				_videoHeight = 144;
@@ -497,7 +503,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				_videoBuffer = new int[size];
 			}
 
-			if (_settings.CropSGBFrame)
+			if (_settings.CropSGBFrame && IsSGB)
 			{
 				int di = 0;
 				for (int y = 0; y < 144; y++)

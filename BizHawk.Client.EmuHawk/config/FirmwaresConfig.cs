@@ -29,6 +29,7 @@ namespace BizHawk.Client.EmuHawk
 	public partial class FirmwaresConfig : Form
 	{
 		// friendlier names than the system Ids
+		// Redundant with SystemLookup? Not so fast. That datadrives things. This is one step abstracted. Don't be such a smart guy. Keep this redundant list up to date.
 		private static readonly Dictionary<string, string> SystemGroupNames = new Dictionary<string, string>
 		{
 			{ "NES", "NES" },
@@ -43,9 +44,14 @@ namespace BizHawk.Client.EmuHawk
 			{ "C64", "C64" },
 			{ "GEN", "Genesis" },
 			{ "SMS", "Sega Master System" },
-			{ "PSX", "Sony PlayStation" },
-			{ "Lynx", "Atari Lynx" },
-			{ "AppleII", "Apple II" }
+			{ "PSX", "PlayStation" },
+			{ "Lynx", "Lynx" },
+			{ "AppleII", "Apple II" },
+			{ "O2", "Odyssey 2" },
+			{ "GB", "Game Boy" },
+			{ "GBC", "Game Boy Color" },
+			{ "PCFX", "PC-FX" },
+			{ "32X", "32X" },
 		};
 
 		public string TargetSystem = null;
@@ -236,7 +242,7 @@ namespace BizHawk.Client.EmuHawk
 				if (ri == null)
 				{
 					lvi.ImageIndex = idMissing;
-					lvi.ToolTipText = "Missing!";
+					lvi.ToolTipText = "No file bound for this firmware!";
 				}
 				else
 				{
@@ -252,13 +258,13 @@ namespace BizHawk.Client.EmuHawk
 					if (ri.KnownFirmwareFile == null)
 					{
 						lvi.ImageIndex = idUnsure;
-						lvi.ToolTipText = null;
+						lvi.ToolTipText = "You've bound a custom choice here. Hope you know what you're doing.";
 						lvi.SubItems[4].Text = "-custom-";
 					}
 					else
 					{
 						lvi.ImageIndex = idOk;
-						lvi.ToolTipText = "Good!";
+						lvi.ToolTipText = "Good! This file has been bound to some kind of a decent choice";
 						lvi.SubItems[4].Text = ri.KnownFirmwareFile.Description;
 					}
 
@@ -278,12 +284,16 @@ namespace BizHawk.Client.EmuHawk
 					if (ri.Missing)
 					{
 						lvi.ImageIndex = idMissing;
-						lvi.ToolTipText = "Missing!";
+						lvi.ToolTipText = "The file that's specified is missing!";
 					}
 
 					// if the user specified a known firmware file but its for some other firmware, it was probably a mistake. mark it as suspicious
 					if (ri.KnownMismatching)
+					{
 						lvi.ImageIndex = idUnsure;
+						lvi.ToolTipText = "You've manually specified a firmware file, and we're sure it's wrong. Hope you know what you're doing.";
+					}
+
 
 					lvi.SubItems[5].Text = path;
 
@@ -414,13 +424,25 @@ namespace BizHawk.Client.EmuHawk
 				olvi.SubItems.Add(new ListViewItem.ListViewSubItem());
 				var ff = FirmwareDatabase.FirmwareFilesByHash[o.Hash];
 				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Ideal)
+				{
 					olvi.ImageIndex = FirmwaresConfigInfo.idIdeal;
+					olvi.ToolTipText = FirmwaresConfigInfo.ttIdeal;
+				}
 				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Acceptable)
+				{
 					olvi.ImageIndex = FirmwaresConfigInfo.idAcceptable;
+					olvi.ToolTipText = FirmwaresConfigInfo.ttAcceptable;
+				}
 				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Unacceptable)
+				{
 					olvi.ImageIndex = FirmwaresConfigInfo.idUnacceptable;
+					olvi.ToolTipText = FirmwaresConfigInfo.ttUnacceptable;
+				}
 				if (o.Status == FirmwareDatabase.FirmwareOptionStatus.Bad)
+				{
 					olvi.ImageIndex = FirmwaresConfigInfo.idBad;
+					olvi.ToolTipText = FirmwaresConfigInfo.ttBad;
+				}
 				olvi.SubItems[0].Text = ff.Size.ToString();
 				olvi.SubItems[0].Font = this.Font; // why doesnt this work?
 				olvi.SubItems[1].Text = "sha1:" + o.Hash;

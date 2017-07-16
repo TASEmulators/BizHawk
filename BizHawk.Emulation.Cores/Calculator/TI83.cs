@@ -7,7 +7,7 @@ using BizHawk.Emulation.Cores.Components.Z80;
 // http://www.ticalc.org/pub/text/calcinfo/
 namespace BizHawk.Emulation.Cores.Calculators
 {
-	[CoreAttributes(
+	[Core(
 		"TI83Hawk",
 		"zeromus",
 		isPorted: false,

@@ -63,37 +63,31 @@ static void blip_ch3()
 	if (sound.channel_three.active)
 	{
 		uint16_t sample;
-		uint8_t shift = (sound.nr32->volume_code == 0 ?
-        	4 : sound.nr32->volume_code - 1);
+		uint8_t shift = sound.nr32->volume_code == 0 ? 4 : sound.nr32->volume_code - 1;
 
-        /* volume is zero in any case */ 
-        if (shift == 4)
-            sample = 0;
-        else
-        {
-            /* apply volume change */
-            uint8_t idx = sound.channel_three.index;
-            uint16_t s;
+		/* volume is zero in any case */
+		if (shift == 4)
+			sample = 0;
+		else
+		{
+			/* apply volume change */
+			uint8_t idx = sound.channel_three.index;
+			uint16_t s;
 
-            /* extract current sample */
-            if ((idx & 0x01) == 0)
-                s = (sound.wave_table[idx >> 1] & 0xf0) >> 4;
-            else
-                s = sound.wave_table[idx >> 1] & 0x0f;
+			/* extract current sample */
+			if ((idx & 0x01) == 0)
+				s = (sound.wave_table[idx >> 1] & 0xf0) >> 4;
+			else
+				s = sound.wave_table[idx >> 1] & 0x0f;
 
-            /* transform it into signed 16 bit sample */
-            sample = ((s * 0x222) >> shift); 
-        }
+			/* transform it into signed 16 bit sample */
+			sample = ((s * 0x222) >> shift);
+		}
 
-        
-        /* not silence? */
-        if (sample != 0)
-        {
-            if (sound.nr51->ch3_to_so1)
-				BLIP_RIGHT(sample, 2);
-            if (sound.nr51->ch3_to_so2)
-                BLIP_LEFT(sample, 2);
-        }
+		if (sound.nr51->ch3_to_so1)
+			BLIP_RIGHT(sample, 2);
+		if (sound.nr51->ch3_to_so2)
+			BLIP_LEFT(sample, 2);
 	}
 }
 static void blip_ch4()
