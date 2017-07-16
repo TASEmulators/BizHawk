@@ -72,7 +72,8 @@ namespace BizHawk.Emulation.Common
 			Option("SAT", "E", ss_100_j);
 			Option("SAT", "E", ss_101_j);
 			FirmwareAndOption("a67cd4f550751f8b91de2b8b74528ab4e0c11c77", 2 * 1024 * 1024, "SAT", "KOF95", "kof95.bin", "King of Fighters cartridge");
-			Firmware("SAT", "ULTRAMAN", "Ultraman cartridge");
+			//Firmware("SAT", "ULTRAMAN", "Ultraman cartridge");
+			FirmwareAndOption("56c1b93da6b660bf393fbf48ca47569000ef4047", 2 * 1024 * 1024, "SAT", "ULTRAMAN", "Ultraman.bin", "Ultraman cartridge");
 
 			var ti83_102 = File("CE08F6A808701FC6672230A790167EE485157561", 262144, "ti83_102.rom", "TI-83 Rom v1.02"); // ?? is this size correct?
 			var ti83_103 = File("8399E384804D8D29866CAA4C8763D7A61946A467", 262144, "ti83_103.rom", "TI-83 Rom v1.03"); // ?? is this size correct?
