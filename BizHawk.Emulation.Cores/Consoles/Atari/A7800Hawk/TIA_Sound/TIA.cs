@@ -92,24 +92,54 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// inputs 0-3 are measured by a charging capacitor, these inputs are used with the paddles and the keyboard
 			// Changing the hard coded value will change the paddle position. The range seems to be roughly 0-56000 according to values from stella
 			// 6105 roughly centers the paddle in Breakout
+
+			//INPT0-3 are used to read 2 button joysticks as well for the A7800
 			if (maskedAddr == 0x08) // INPT0
 			{
-				return 0;
+				if (Core.m6532._outputB == 0 && (Core.m6532._ddRb & 0x10)==0x10)
+				{
+					return (byte)(Core.p1_fire_2x & 0x80);
+				}
+				else
+				{
+					return 0;
+				}			
 			}
 
 			if (maskedAddr == 0x09) // INPT1
 			{
-				return 0;
+				if (Core.m6532._outputB == 0 && (Core.m6532._ddRb & 0x10) == 0x10)
+				{
+					return (byte)((Core.p1_fire_2x & 0x40)<<1);
+				}
+				else
+				{
+					return 0;
+				}
 			}
 
 			if (maskedAddr == 0x0A) // INPT2
 			{
-				return 0;
+				if (Core.m6532._outputB == 0 && (Core.m6532._ddRb & 0x04) == 0x04)
+				{
+					return (byte)(Core.p2_fire_2x & 0x80);
+				}
+				else
+				{
+					return 0;
+				}
 			}
 
 			if (maskedAddr == 0x0B) // INPT3
 			{
-				return 0;
+				if (Core.m6532._outputB == 0 && (Core.m6532._ddRb & 0x04) == 0x04)
+				{
+					return (byte)((Core.p2_fire_2x & 0x40)<<1);
+				}
+				else
+				{
+					return 0;
+				}
 			}
 
 			if (maskedAddr == 0x0C) // INPT4
