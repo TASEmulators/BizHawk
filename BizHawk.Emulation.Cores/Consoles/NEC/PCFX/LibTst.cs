@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			public int CpuEmulation;
 			public int Port1;
 			public int Port2;
+			public int PixelPro;
 		}
 
 		[BizImport(CC)]

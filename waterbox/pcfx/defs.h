@@ -80,7 +80,7 @@ typedef struct
 	// Set by the system emulation code every frame, to denote the horizontal and vertical offsets of the image, and the size
 	// of the image.  If the emulated system sets the elements of LineWidths, then the width(w) of this structure
 	// is ignored while drawing the image.
-	int32 x, y, w, h;
+	int32 y, w, h;
 
 	// Set(optionally) by emulation code.  If InterlaceOn is true, then assume field height is 1/2 DisplayRect.h, and
 	// only every other line in surface (with the start line defined by InterlacedField) has valid data
@@ -118,3 +118,5 @@ extern bool Setting_AdpcmNoClicks;
 extern bool Setting_ChromaInterpolate;
 
 extern int Setting_PortDevice[2];
+
+extern bool Setting_PixelPro;

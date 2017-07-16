@@ -222,6 +222,10 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 			[DeepEqualsIgnore]
 			private bool _showLayerRAINBOW;
 
+			[Description("Pixel Pro.  Overrides HiResEmulation if set")]
+			[DefaultValue(false)]
+			public bool PixelPro { get; set; }
+
 			public Settings Clone()
 			{
 				return (Settings)MemberwiseClone();
@@ -321,7 +325,8 @@ namespace BizHawk.Emulation.Cores.Consoles.NEC.PCFX
 				CdSpeed = _syncSettings.CdSpeed,
 				CpuEmulation = (int)_syncSettings.CpuEmulation,
 				Port1 = (int)_syncSettings.Port1,
-				Port2 = (int)_syncSettings.Port2
+				Port2 = (int)_syncSettings.Port2,
+				PixelPro = _settings.PixelPro ? 1 : 0
 			};
 			_core.PutSettingsBeforeInit(s);
 		}

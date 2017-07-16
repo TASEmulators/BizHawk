@@ -2628,7 +2628,6 @@ void KING_StartFrame(VDC **arg_vdc_chips, EmulateSpecStruct *espec)
 	LineWidths[0] = 0;
 
 	// These 2 should be overwritten in the big loop below.
-	espec->x = 0;
 	espec->w = 256;
 
 	espec->y = Setting_SlStart;
@@ -3104,7 +3103,6 @@ static void MixLayers(void)
 #undef YUV888_TO_xxx
 	}
 	Ess->w = fx_vce.dot_clock ? HighDotClockWidth : 256;
-	Ess->x = 0;
 
 	// FIXME
 	if (fx_vce.frame_interlaced)

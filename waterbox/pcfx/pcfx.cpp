@@ -706,6 +706,90 @@ EXPORT bool Init(int numDisks, const uint8_t *bios)
 static int ActiveDisk;
 static uint32_t PrevConsoleButtons;
 
+static void Blit(MyFrameInfo &f)
+{
+	// two widths to deal with: 256 and "341" (which can be 256, 341, or 1024 wide depending on settings)
+	// two heights: 240 and 480, but watch out for scanlinestart / scanline end
+
+	// in pixel pro mode, 341 width is forced to 1024.  we upsize 256 to 1024 as well, and double 240 tall
+
+	const uint32_t *src = FrameBuffer;
+	uint32_t *dst = f.VideoBuffer;
+	const int srcp = 1024;
+	src += Ess.y * srcp;
+
+	if (Setting_PixelPro)
+	{
+		f.Width = 1024;
+		f.Height = Ess.h;
+
+		const int dstp = 1024;
+
+		if (Ess.h > 240) // interlace
+		{
+			if (Ess.w == 256)
+			{
+				for (int j = 0; j < Ess.h; j++, src += srcp, dst += dstp)
+				{
+					for (int i = 0; i < 256; i++)
+					{
+						auto c = src[i];
+						dst[i * 4 + 0] = c;
+						dst[i * 4 + 1] = c;
+						dst[i * 4 + 2] = c;
+						dst[i * 4 + 3] = c;
+					}
+				}
+			}
+			else
+			{
+				for (int j = 0; j < Ess.h; j++, src += srcp, dst += dstp)
+				{
+					memcpy(dst, src, LineWidths[j + Ess.y] * sizeof(uint32_t));
+				}
+			}
+		}
+		else // progressive: line double
+		{
+			f.Height *= 2;
+			if (Ess.w == 256)
+			{
+				for (int j = 0; j < Ess.h; j++, src += srcp, dst += dstp * 2)
+				{
+					for (int i = 0; i < 256; i++)
+					{
+						auto c = src[i];
+						dst[i * 4 + 0] = c;
+						dst[i * 4 + 1] = c;
+						dst[i * 4 + 2] = c;
+						dst[i * 4 + 3] = c;
+					}
+					memcpy(dst + dstp, dst, 4096);
+				}
+			}
+			else
+			{
+				for (int j = 0; j < Ess.h; j++, src += srcp, dst += dstp * 2)
+				{
+					memcpy(dst, src, 4096);
+					memcpy(dst + dstp, src, 4096);
+				}
+			}
+		}
+	}
+	else
+	{
+		f.Width = Ess.w;
+		f.Height = Ess.h;
+
+		const int dstp = Ess.w;
+		for (int j = 0; j < Ess.h; j++, src += srcp, dst += dstp)
+		{
+			memcpy(dst, src, LineWidths[j + Ess.y] * sizeof(uint32_t));
+		}
+	}
+}
+
 EXPORT void FrameAdvance(MyFrameInfo &f)
 {
 	for (int i = 0; i < 2; i++)
@@ -733,20 +817,10 @@ EXPORT void FrameAdvance(MyFrameInfo &f)
 	Ess.SoundBuf = f.SoundBuffer;
 	Emulate(&Ess);
 	f.Cycles = Ess.MasterCycles;
-	f.Width = Ess.w;
-	f.Height = Ess.h;
 	f.Samples = Ess.SoundBufSize;
 	f.Lagged = Lagged;
 
-	const uint32_t *src = FrameBuffer;
-	uint32_t *dst = f.VideoBuffer;
-	const int srcp = 1024;
-	const int dstp = Ess.w;
-	src += Ess.y * srcp + Ess.x;
-	for (int j = 0; j < Ess.h; j++, src += srcp, dst += dstp)
-	{
-		memcpy(dst, src, LineWidths[j + Ess.y] * sizeof(uint32_t));
-	}
+	Blit(f);
 }
 
 EXPORT void GetMemoryAreas(MemoryArea *m)
@@ -821,6 +895,8 @@ ECL_SEALED bool Setting_ChromaInterpolate = false;
 
 ECL_SEALED int Setting_PortDevice[2];
 
+ECL_SEALED bool Setting_PixelPro;
+
 struct FrontendSettings
 {
 	int32_t AdpcmEmulateBuggyCodec;
@@ -834,13 +910,14 @@ struct FrontendSettings
 	int32_t CpuEmulation;
 	int32_t Port1;
 	int32_t Port2;
+	int32_t PixelPro;
 };
 
 EXPORT void PutSettingsBeforeInit(const FrontendSettings &s)
 {
 	Setting_AdpcmBuggy = s.AdpcmEmulateBuggyCodec;
 	Setting_AdpcmNoClicks = s.AdpcmSuppressChannelResetClicks;
-	Setting_HighDotclockWidth = s.HiResEmulation;
+	Setting_HighDotclockWidth = s.PixelPro ? 1024 : s.HiResEmulation;
 	Setting_NoSpriteLimit = s.DisableSpriteLimit;
 	Setting_ChromaInterpolate = s.ChromaInterpolation;
 	Setting_SlStart = s.ScanlineStart;
@@ -849,6 +926,7 @@ EXPORT void PutSettingsBeforeInit(const FrontendSettings &s)
 	Setting_CpuEmulation = s.CpuEmulation;
 	Setting_PortDevice[0] = s.Port1;
 	Setting_PortDevice[1] = s.Port2;
+	Setting_PixelPro = s.PixelPro;
 }
 
 /*MDFNGI EmulatedPCFX =
