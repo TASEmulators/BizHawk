@@ -701,7 +701,6 @@ static void ret_cc(GB_gameboy_t *gb, uint8_t opcode)
 {
     /* Todo: Verify timing */
     if (condition_code(gb, opcode)) {
-        GB_debugger_ret_hook(gb);
         GB_advance_cycles(gb, 8);
         gb->pc = GB_read_memory(gb, gb->registers[GB_REGISTER_SP]);
         GB_advance_cycles(gb, 4);
@@ -768,8 +767,6 @@ static void call_cc_a16(GB_gameboy_t *gb, uint8_t opcode)
         GB_write_memory(gb, gb->registers[GB_REGISTER_SP], (gb->pc) & 0xFF);
         GB_advance_cycles(gb, 4);
         gb->pc = addr;
-
-        GB_debugger_call_hook(gb, call_addr);
     }
     else {
         GB_advance_cycles(gb, 12);
@@ -938,12 +935,10 @@ static void rst(GB_gameboy_t *gb, uint8_t opcode)
     GB_write_memory(gb, gb->registers[GB_REGISTER_SP], (gb->pc) & 0xFF);
     GB_advance_cycles(gb, 4);
     gb->pc = opcode ^ 0xC7;
-    GB_debugger_call_hook(gb, call_addr);
 }
 
 static void ret(GB_gameboy_t *gb, uint8_t opcode)
 {
-    GB_debugger_ret_hook(gb);
     GB_advance_cycles(gb, 4);
     gb->pc = GB_read_memory(gb, gb->registers[GB_REGISTER_SP]);
     GB_advance_cycles(gb, 4);
@@ -972,7 +967,6 @@ static void call_a16(GB_gameboy_t *gb, uint8_t opcode)
     GB_write_memory(gb, gb->registers[GB_REGISTER_SP], (gb->pc) & 0xFF);
     GB_advance_cycles(gb, 4);
     gb->pc = addr;
-    GB_debugger_call_hook(gb, call_addr);
 }
 
 static void ld_da8_a(GB_gameboy_t *gb, uint8_t opcode)

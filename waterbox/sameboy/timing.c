@@ -125,8 +125,6 @@ void GB_advance_cycles(GB_gameboy_t *gb, uint8_t cycles)
         }
     }
 
-    gb->debugger_ticks += cycles;
-
     if (gb->cgb_double_speed) {
         cycles >>=1;
     }

@@ -10,7 +10,6 @@
 
 #include "apu.h"
 #include "camera.h"
-#include "debugger.h"
 #include "display.h"
 #include "joypad.h"
 #include "mbc.h"
@@ -178,9 +177,6 @@ typedef struct {
     bool state;
     long delay;
 } GB_ir_queue_item_t;
-
-struct GB_breakpoint_s;
-struct GB_watchpoint_s;
 
 /* When state saving, each section is dumped independently of other sections.
    This allows adding data to the end of the section without worrying about future compatibility.
@@ -445,10 +441,6 @@ struct GB_gameboy_internal_s {
         GB_ir_queue_item_t ir_queue[GB_MAX_IR_QUEUE];
         size_t ir_queue_length;
 
-        /*** Debugger ***/
-        volatile bool debug_stopped, debug_disable;
-        bool debug_fin_command, debug_next_command;
-
         /* Breakpoints */
         uint16_t n_breakpoints;
         struct GB_breakpoint_s *breakpoints;
@@ -466,10 +458,6 @@ struct GB_gameboy_internal_s {
             uint16_t bank;
             uint16_t addr;
         } backtrace_returns[0x200];
-
-        /* Watchpoints */
-        uint16_t n_watchpoints;
-        struct GB_watchpoint_s *watchpoints;
 
         /* Symbol tables */
         GB_symbol_map_t *bank_symbols[0x200];

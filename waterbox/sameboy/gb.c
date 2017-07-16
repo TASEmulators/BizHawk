@@ -67,7 +67,7 @@ static char *default_input_callback(GB_gameboy_t *gb)
 
 static char *default_async_input_callback(GB_gameboy_t *gb)
 {
-#ifndef _WIN32
+#if 0
     fd_set set;
     FD_ZERO(&set);
     FD_SET(STDIN_FILENO, &set);
@@ -260,12 +260,10 @@ exit:
 
 void GB_run(GB_gameboy_t *gb)
 {
-    GB_debugger_run(gb);
     GB_cpu_run(gb);
     if (gb->vblank_just_occured) {
         GB_update_joyp(gb);
         GB_rtc_run(gb);
-        GB_debugger_handle_async_commands(gb);
     }
 }
 

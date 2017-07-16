@@ -538,7 +538,9 @@
     <Compile Include="Consoles\Nintendo\Gameboy\IGameboyCommon.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibPizza.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\LibSameboy.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\Pizza.cs" />
+    <Compile Include="Consoles\Nintendo\Gameboy\Sameboy.cs" />
     <Compile Include="Consoles\Nintendo\GBA\ArmV4Disassembler.cs" />
     <Compile Include="Consoles\Nintendo\GBA\GBA.cs" />
     <Compile Include="Consoles\Nintendo\GBA\IGBAGPUViewable.cs" />
@@ -1309,6 +1311,8 @@
     <None Include="Consoles\Nintendo\NES\Docs\BoardTable.xlsx" />
     <None Include="Consoles\Nintendo\NES\Docs\MapperCompatibilityList.url" />
     <None Include="Consoles\Nintendo\NES\Docs\nesasm.pdf" />
+    <None Include="Resources\cgb_boot.bin.gz" />
+    <None Include="Resources\dmg_boot.bin.gz" />
     <None Include="Resources\sgb-cart-present.spc.gz" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
