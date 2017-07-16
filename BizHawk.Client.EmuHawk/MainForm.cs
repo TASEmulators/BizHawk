@@ -643,15 +643,15 @@ namespace BizHawk.Client.EmuHawk
 
 			// even more special logic for TAStudio:
 			// TODO - implement by event filter in TAStudio
-			if (ActiveForm is TAStudio)
+			var maybeTAStudio = ActiveForm as TAStudio;
+			if (maybeTAStudio != null)
 			{
 				if (yieldAlt)
 				{
 					return false;
 				}
 
-				var ts = (TAStudio)ActiveForm;
-				if (ts.IsInMenuLoop)
+				if (maybeTAStudio.IsInMenuLoop)
 				{
 					return false;
 				}

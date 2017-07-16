@@ -414,6 +414,7 @@ namespace BizHawk.Client.EmuHawk
 
 					}
 
+					//WHAT!? WE SHOULD NOT BE SO NAIVELY TOUCHING MAINFORM FROM THE INPUTTHREAD. ITS BUSY RUNNING.
 					bool swallow = !GlobalWin.MainForm.AllowInput(false);
 
 					foreach (var ie in _NewEvents)
