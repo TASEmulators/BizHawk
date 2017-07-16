@@ -13,6 +13,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		//Maria related variables
 		public int cycle;
 		public int cpu_cycle;
+		public int m6532_cycle;
 		public bool cpu_is_haltable;
 		public bool cpu_is_halted;
 		public bool cpu_halt_pending;
@@ -23,6 +24,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public byte p2_state;
 		public byte p1_fire;
 		public byte p2_fire;
+		public byte p1_fire_2x;
+		public byte p2_fire_2x;
 		public byte con_state;
 
 		// there are 4 maria cycles in a CPU cycle (fast access, both NTSC and PAL)
@@ -73,6 +76,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (tia._hsyncCnt == 113 || tia._hsyncCnt == 340)
 			{
 				tia.Execute(0);
+			}
+
+			// tick the m6532 timer, which is still active although not recommended to use
+			m6532_cycle++;
+			if (m6532_cycle== 4)
+			{
+				m6532.Timer.Tick();
+				m6532_cycle = 0;
 			}
 
 			if (cpu_cycle <= (2 + (slow_access ? 1 : 0)))
@@ -149,6 +160,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			p2_state = _controllerDeck.ReadPort2(controller);
 			p1_fire = _controllerDeck.ReadFire1(controller);
 			p2_fire = _controllerDeck.ReadFire2(controller);
+			p1_fire_2x = _controllerDeck.ReadFire1_2x(controller);
+			p2_fire_2x = _controllerDeck.ReadFire2_2x(controller);
 		}
 
 		public void GetConsoleState(IController controller)

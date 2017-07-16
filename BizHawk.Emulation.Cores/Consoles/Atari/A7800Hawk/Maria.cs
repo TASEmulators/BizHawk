@@ -31,6 +31,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public int _frameHz = 60;
 		public int _screen_width = 320;
 		public int _screen_height = 263;
+		public int _vblanklines = 20;
 
 		public int[] _vidbuffer;
 		public int[] _palette;
@@ -42,9 +43,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		}
 
 		public int VirtualWidth => 320;
-		public int VirtualHeight => _screen_height;
+		public int VirtualHeight => _screen_height - _vblanklines;
 		public int BufferWidth => 320;
-		public int BufferHeight => _screen_height;
+		public int BufferHeight => _screen_height - _vblanklines;
 		public int BackgroundColor => unchecked((int)0xff000000);
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;
@@ -71,7 +72,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public int header_read_time = 8; // default for 4 byte headers (10 for 5 bytes ones)
 		public int graphics_read_time = 3; // depends on content of graphics header
 		public int DMA_phase_next;
-		public int base_scanline;
 
 		public ushort display_zone_pointer;
 		public int display_zone_counter;
@@ -120,14 +120,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// Since long shut down loads up the next zone, this basically loads up the DLL for the first zone
 			sl_DMA_complete = false;
 			do_dma = false;
-
+			
 			for (int i=0; i<454;i++)
 			{
-				if (i<28)
-				{
-					// DMA doesn't start until 7 CPU cycles into a scanline
-				}
-				else if (i==28 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
+				if(i==0 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
 				{
 					Core.cpu_halt_pending = true;
 					DMA_phase = DMA_START_UP;
@@ -161,21 +157,17 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			scanline++;
 			cycle = 0;
 			do_dma = false;
-			Core.Maria_regs[8] = 0; // we have now left VBLank
-			base_scanline = 0;
 			sl_DMA_complete = false;
 			Core.cpu.RDY = true;
+			Core.Maria_regs[8] = 0; // we have now left VBLank
+
 
 			// Now proceed with the remaining scanlines
 			// the first one is a pre-render line, since we didn't actually put any data into the buffer yet
 			while (scanline < 263)
 			{
 				
-				if (cycle < 28)
-				{
-					// DMA doesn't start until 7 CPU cycles into a scanline
-				}
-				else if (cycle == 28 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
+				if (cycle == 28 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
 				{
 					Core.cpu_halt_pending = true;
 					DMA_phase = DMA_START_UP;
@@ -374,7 +366,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							}
 
 							// the address here is specified by CHAR_BASE maria registers
-							//ushort addr = (ushort)(GFX_Objects[header_counter].addr & 0xFF);
+							// ushort addr = (ushort)(GFX_Objects[header_counter].addr & 0xFF);
 							for (int i = 0; i < GFX_Objects[header_counter].width; i++)
 							{
 								addr_t = ReadMemory((ushort)(GFX_Objects[header_counter].addr + i));

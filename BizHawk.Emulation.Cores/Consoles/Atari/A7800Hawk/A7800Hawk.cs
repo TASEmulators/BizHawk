@@ -6,7 +6,7 @@ using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	[Core(
+	[CoreAttributes(
 		"A7800Hawk",
 		"",
 		isPorted: false,
@@ -22,7 +22,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public byte A7800_control_register;
 
 		// memory domains
-		public byte[] TIA_regs = new byte[0x20];
 		public byte[] Maria_regs = new byte[0x20];
 		public byte[] RAM = new byte[0x1000];
 		public byte[] RAM_6532 = new byte[0x80];
@@ -131,6 +130,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				maria._frameHz = 50;
 				maria._screen_width = 320;
 				maria._screen_height = 313;
+				maria._vblanklines = 20;
 				maria._palette = PALPalette;
 			}
 			else
@@ -138,6 +138,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				maria._frameHz = 60;
 				maria._screen_width = 320;
 				maria._screen_height = 263;
+				maria._vblanklines = 20;
 				maria._palette = NTSCPalette;
 			}
 
@@ -171,7 +172,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			maria.Reset();
 			m6532.Reset();
 			
-			TIA_regs = new byte[0x20];
 			Maria_regs = new byte[0x20];
 			RAM = new byte[0x1000];
 

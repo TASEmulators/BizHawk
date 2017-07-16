@@ -23,10 +23,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					1),
 				new MemoryDomainDelegate(
 					"TIA Registers",
-					TIA_regs.Length,
+					0x20,
 					MemoryDomain.Endian.Little,
-					addr => TIA_regs[addr],
-					(addr, value) => TIA_regs[addr] = value,
+					addr => tia.ReadMemory((ushort)addr,true),
+					(addr, value) => tia.WriteMemory((ushort)addr, value, true),
 					1),
 				new MemoryDomainDelegate(
 					"Maria Registers",

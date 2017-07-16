@@ -62,7 +62,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync("A7800_control_register", ref A7800_control_register);
 			ser.Sync("_isPAL", ref _isPAL);
 
-			ser.Sync("TIA_regs", ref TIA_regs, false);
 			ser.Sync("Maria_regs", ref Maria_regs, false);
 			ser.Sync("RAM", ref RAM, false);
 			ser.Sync("RAM_6532", ref RAM_6532, false);
@@ -70,6 +69,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			ser.Sync("cycle", ref cycle);
 			ser.Sync("cpu_cycle", ref cpu_cycle);
+			ser.Sync("m6532_cycle", ref m6532_cycle);
 			ser.Sync("cpu_is_haltable", ref cpu_is_haltable);
 			ser.Sync("cpu_is_halted", ref cpu_is_halted);
 			ser.Sync("cpu_halt_pending", ref cpu_halt_pending);

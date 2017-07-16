@@ -17,6 +17,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		byte ReadFire(IController c);
 
+		byte ReadFire2x(IController c);
+
 		ControllerDefinition Definition { get; }
 
 		void SyncState(Serializer ser);
@@ -42,6 +44,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		}
 
 		public byte ReadFire(IController c)
+		{
+			return 0x80;
+		}
+
+		public byte ReadFire2x(IController c)
 		{
 			return 0;
 		}
@@ -101,6 +108,20 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return result;
 		}
 
+		public byte ReadFire2x(IController c)
+		{
+			byte result = 0;
+			if (c.IsPressed(Definition.BoolButtons[4]))
+			{
+				result = 0x80;
+			}
+			if (c.IsPressed(Definition.BoolButtons[5]))
+			{
+				result |= 0x40;
+			}
+			return result;
+		}
+
 		public ControllerDefinition Definition { get; }
 
 
@@ -111,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private static readonly string[] BaseDefinition =
 		{
-			"U", "D", "L", "R", "Fire"
+			"U", "D", "L", "R", "Fire", "Fire2"
 		};
 
 		private static byte[] HandControllerButtons =

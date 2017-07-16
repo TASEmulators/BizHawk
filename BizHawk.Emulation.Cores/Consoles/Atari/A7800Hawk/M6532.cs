@@ -1,4 +1,5 @@
 ﻿using BizHawk.Common;
+using System;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
@@ -8,9 +9,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public A7800Hawk Core { get; set; }
 
-		private byte _ddRa = 0x00;
-		private byte _ddRb = 0x00;
-		private byte _outputA = 0x00;
+		public byte _ddRa = 0x00;
+		public byte _ddRb = 0x00;
+		public byte _outputA = 0x00;
+		public byte _outputB = 0x00;
 
 		public TimerData Timer;
 
@@ -55,6 +57,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				// Read Output reg B
 				byte temp = Core.con_state;
 				temp = (byte)(temp & ~_ddRb);
+				temp = (byte)(temp + (_outputB & _ddRb));
 				return temp;
 			}
 
@@ -166,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					else if (registerAddr == 0x02)
 					{
 						// Write Output reg B
-						// But is read only
+						_outputB = value;
 					}
 					else if (registerAddr == 0x03)
 					{
@@ -187,7 +190,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			_ddRa = 0x00;
 			_ddRb = 0x00;
 			_outputA = 0x00;
-	}
+			_outputB = 0x00;
+		}
 
 		public void SyncState(Serializer ser)
 		{
@@ -195,6 +199,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync("ddra", ref _ddRa);
 			ser.Sync("ddrb", ref _ddRb);
 			ser.Sync("OutputA", ref _outputA);
+			ser.Sync("OutputB", ref _outputB);
 			Timer.SyncState(ser);
 			ser.EndSection();
 		}
