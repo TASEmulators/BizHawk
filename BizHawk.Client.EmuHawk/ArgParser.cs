@@ -20,6 +20,7 @@ namespace BizHawk.Client.EmuHawk
 		public HashSet<int> _currAviWriterFrameList;
 		public int _autoDumpLength;
 		public bool _autoCloseOnDump = false;
+		// chrome is never shown, even in windowed mode
 		public bool _chromeless = false;
 		public bool startFullscreen = false;
 		public string luaScript = null;

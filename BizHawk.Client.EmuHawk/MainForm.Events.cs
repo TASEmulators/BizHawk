@@ -2430,7 +2430,7 @@ namespace BizHawk.Client.EmuHawk
 				showMenuVisible = true; // need to always be able to restore this as an emergency measure
 			}
 
-			if (_chromeless)
+			if (argParse._chromeless)
 			{
 				showMenuVisible = true; // I decided this was always possible in chromeless mode, we'll see what they think
 			}

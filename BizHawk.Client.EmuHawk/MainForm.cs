@@ -153,7 +153,6 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 
-			ArgParser argParse = new ArgParser();
 			argParse.parseArguments(args);
 
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
@@ -299,9 +298,9 @@ namespace BizHawk.Client.EmuHawk
 					Global.MovieSession.ReadOnly = true;
 
 					// if user is dumping and didnt supply dump length, make it as long as the loaded movie
-					if (_autoDumpLength == 0)
+					if (argParse._autoDumpLength == 0)
 					{
-						_autoDumpLength = movie.InputLogLength;
+						argParse._autoDumpLength = movie.InputLogLength;
 					}
 
 					// Copy pasta from drag & drop
@@ -1022,15 +1021,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				// TODO - maybe apply a hack tracked during fullscreen here to override it
 				FormBorderStyle = FormBorderStyle.None;
-				MainMenuStrip.Visible = Global.Config.DispChrome_MenuFullscreen && !_chromeless;
-				MainStatusBar.Visible = Global.Config.DispChrome_StatusBarFullscreen && !_chromeless;
+				MainMenuStrip.Visible = Global.Config.DispChrome_MenuFullscreen && !argParse._chromeless;
+				MainStatusBar.Visible = Global.Config.DispChrome_StatusBarFullscreen && !argParse._chromeless;
 			}
 			else
 			{
-				MainStatusBar.Visible = Global.Config.DispChrome_StatusBarWindowed && !_chromeless;
-				MainMenuStrip.Visible = Global.Config.DispChrome_MenuWindowed && !_chromeless;
-				MaximizeBox = MinimizeBox = Global.Config.DispChrome_CaptionWindowed && !_chromeless;
-				if (Global.Config.DispChrome_FrameWindowed == 0 || _chromeless)
+				MainStatusBar.Visible = Global.Config.DispChrome_StatusBarWindowed && !argParse._chromeless;
+				MainMenuStrip.Visible = Global.Config.DispChrome_MenuWindowed && !argParse._chromeless;
+				MaximizeBox = MinimizeBox = Global.Config.DispChrome_CaptionWindowed && !argParse._chromeless;
+				if (Global.Config.DispChrome_FrameWindowed == 0 || argParse._chromeless)
 				{
 					FormBorderStyle = FormBorderStyle.None;
 				}
@@ -1356,7 +1355,6 @@ namespace BizHawk.Client.EmuHawk
 
 		// AVI/WAV state
 		private IVideoWriter _currAviWriter;
-		private readonly HashSet<int> _currAviWriterFrameList;
 
 		private AutofireController _autofireNullControls;
 
@@ -1399,13 +1397,9 @@ namespace BizHawk.Client.EmuHawk
 		private Point _windowedLocation;
 		private bool _needsFullscreenOnLoad;
 
-		private int _autoDumpLength;
-		private readonly bool _autoCloseOnDump;
 		private int _lastOpenRomFilter;
 
-		// chrome is never shown, even in windowed mode
-		private readonly bool _chromeless;
-
+		private ArgParser argParse = new ArgParser();
 		// Resources
 		private Bitmap _statusBarDiskLightOnImage;
 		private Bitmap _statusBarDiskLightOffImage;
@@ -1472,7 +1466,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			if (!Global.Config.DispChrome_CaptionWindowed || _chromeless)
+			if (!Global.Config.DispChrome_CaptionWindowed || argParse._chromeless)
 			{
 				str = "";
 			}
@@ -3272,9 +3266,9 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					// is this the best time to handle this? or deeper inside?
-					if (_currAviWriterFrameList != null)
+					if (argParse._currAviWriterFrameList != null)
 					{
-						if (!_currAviWriterFrameList.Contains(Emulator.Frame))
+						if (!argParse._currAviWriterFrameList.Contains(Emulator.Frame))
 						{
 							goto HANDLE_AUTODUMP;
 						}
@@ -3357,13 +3351,13 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 			HANDLE_AUTODUMP:
-				if (_autoDumpLength > 0)
+				if (argParse._autoDumpLength > 0)
 				{
-					_autoDumpLength--;
-					if (_autoDumpLength == 0) // finish
+					argParse._autoDumpLength--;
+					if (argParse._autoDumpLength == 0) // finish
 					{
 						StopAv();
-						if (_autoCloseOnDump)
+						if (argParse._autoCloseOnDump)
 						{
 							_exit = true;
 						}
