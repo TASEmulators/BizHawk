@@ -78,7 +78,7 @@ namespace BizHawk.Client.EmuHawk
 				DenoteMarkersWithBGColor = true;
 			}
 
-			public RecentFiles RecentTas { get; }
+			public RecentFiles RecentTas { get; set; }
 			public bool DrawInput { get; set; }
 			public bool AutoPause { get; set; }
 			public bool AutoRestoreLastPosition { get; set; }
