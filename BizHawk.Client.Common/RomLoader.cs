@@ -554,7 +554,7 @@ namespace BizHawk.Client.Common
 						switch (game.System)
 						{
 							case "GEN":
-								var genesis = new GPGX(nextComm, null, disc, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
+								var genesis = new GPGX(nextComm, null, new[] { disc }, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 								nextEmulator = genesis;
 								break;
 							case "SAT":

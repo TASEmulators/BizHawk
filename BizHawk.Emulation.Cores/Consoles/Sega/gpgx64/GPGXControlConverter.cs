@@ -175,7 +175,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			});
 		}
 
-		public GPGXControlConverter(LibGPGX.InputData input)
+		public GPGXControlConverter(LibGPGX.InputData input, bool cdButtons)
 		{
 			Console.WriteLine("Genesis Controller report:");
 			foreach (var e in input.system)
@@ -189,6 +189,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			ControllerDef.BoolButtons.Add("Power");
 			ControllerDef.BoolButtons.Add("Reset");
+			if (cdButtons)
+			{
+				ControllerDef.BoolButtons.Add("Previous Disk");
+				ControllerDef.BoolButtons.Add("Next Disk");
+			}
 
 			for (int i = 0; i < LibGPGX.MAX_DEVICES; i++)
 			{

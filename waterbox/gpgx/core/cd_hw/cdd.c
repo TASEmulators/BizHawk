@@ -203,6 +203,21 @@ void cdd_unload(void)
   memset(&cdd.toc, 0x00, sizeof(cdd.toc));
 }
 
+void cdd_hotswap(const toc_t *toc)
+{
+	if (toc)
+	{
+		cdd.loaded = 1;
+		memcpy(&cdd.toc, &toc, sizeof(cdd.toc));
+	}
+	else
+	{
+		cdd.loaded = 0;
+		memset(&cdd.toc, 0x00, sizeof(cdd.toc));
+	}
+	cdd_reset();
+}
+
 void cdd_read_data(uint8 *dst)
 {
   /* only read DATA track sectors */
@@ -348,7 +363,7 @@ void cdd_read_audio(unsigned int samples)
 void cdd_update(void)
 {
 #ifdef LOG_CDD
-  error("LBA = %d (track n°%d)(latency=%d)\n", cdd.lba, cdd.index, cdd.latency);
+  error("LBA = %d (track nï¿½%d)(latency=%d)\n", cdd.lba, cdd.index, cdd.latency);
 #endif
 
   /* seeking disc */
