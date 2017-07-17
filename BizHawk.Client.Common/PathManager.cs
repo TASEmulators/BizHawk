@@ -134,6 +134,9 @@ namespace BizHawk.Client.Common
 				return path;
 			}
 
+			if (Path.IsPathRooted(path))
+				return path;
+
 			//handling of initial .. was removed (Path.GetFullPath can handle it)
 			//handling of file:// or file:\\ was removed  (can Path.GetFullPath handle it? not sure)
 
