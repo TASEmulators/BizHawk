@@ -283,7 +283,7 @@ static void jr_r8(GB_gameboy_t *gb, uint8_t opcode)
 {
     /* Todo: Verify cycles are not 8 and 4 instead */
     GB_advance_cycles(gb, 4);
-    gb->pc += (int8_t) GB_read_memory(gb, gb->pc++);
+	gb->pc += (int8_t)GB_read_memory(gb, gb->pc) + 1;
     GB_advance_cycles(gb, 8);
 }
 
@@ -307,7 +307,7 @@ static void jr_cc_r8(GB_gameboy_t *gb, uint8_t opcode)
 {
     if (condition_code(gb, opcode)) {
         GB_advance_cycles(gb, 4);
-        gb->pc += (int8_t)GB_read_memory(gb, gb->pc++);
+		gb->pc += (int8_t)GB_read_memory(gb, gb->pc) + 1;
         GB_advance_cycles(gb, 8);
     }
     else {

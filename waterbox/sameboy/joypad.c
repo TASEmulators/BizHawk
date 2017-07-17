@@ -22,13 +22,6 @@ void GB_update_joyp(GB_gameboy_t *gb)
             for (uint8_t i = 0; i < 4; i++) {
                 gb->io_registers[GB_IO_JOYP] |= (!gb->keys[i]) << i;
             }
-            /* Forbid pressing two opposing keys, this breaks a lot of games; even if it's somewhat possible. */
-            if (!(gb->io_registers[GB_IO_JOYP] & 1)) {
-                gb->io_registers[GB_IO_JOYP] |= 2;
-            }
-            if (!(gb->io_registers[GB_IO_JOYP] & 4)) {
-                gb->io_registers[GB_IO_JOYP] |= 8;
-            }
             break;
 
         case 1:

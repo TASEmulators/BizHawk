@@ -4,9 +4,9 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <time.h>
+#include <string.h>
 
 #include "gb_struct_def.h"
-#include "save_state.h"
 
 #include "apu.h"
 #include "camera.h"
@@ -17,7 +17,6 @@
 #include "printer.h"
 #include "timing.h"
 #include "z80_cpu.h"
-#include "symbol_hash.h"
 
 #define GB_STRUCT_VERSION 11
 
@@ -193,7 +192,6 @@ struct GB_gameboy_s {
 #else
 struct GB_gameboy_internal_s {
 #endif
-    GB_SECTION(header,
         /* The magic makes sure a state file is:
             - Indeed a SameBoy state file.
             - Has the same endianess has the current platform. */
@@ -201,9 +199,7 @@ struct GB_gameboy_internal_s {
         /* The version field makes sure we don't load save state files with a completely different structure.
            This happens when struct fields are removed/resized in an backward incompatible manner. */
         uint32_t version;
-    );
-
-    GB_SECTION(core_state,
+ 
         /* Registers */
         uint16_t pc;
            union {
@@ -249,10 +245,8 @@ struct GB_gameboy_internal_s {
         /* Misc state */
         bool infrared_input;
         GB_printer_t printer;
-    );
 
     /* DMA and HDMA */
-    GB_SECTION(dma,
         bool hdma_on;
         bool hdma_on_hblank;
         uint8_t hdma_steps_left;
@@ -264,10 +258,8 @@ struct GB_gameboy_internal_s {
         uint16_t dma_current_src;
         int16_t dma_cycles;
         bool is_dma_restarting;
-    );
     
     /* MBC */
-    GB_SECTION(mbc,
         uint16_t mbc_rom_bank;
         uint8_t mbc_ram_bank;
         uint32_t mbc_ram_size;
@@ -311,32 +303,23 @@ struct GB_gameboy_internal_s {
         bool camera_registers_mapped;
         uint8_t camera_registers[0x36];
         bool rumble_state;
-    );
 
 
     /* HRAM and HW Registers */
-    GB_SECTION(hram,
         uint8_t hram[0xFFFF - 0xFF80];
         uint8_t io_registers[0x80];
-    );
 
     /* Timing */
-    GB_SECTION(timing,
         uint32_t display_cycles;
         uint32_t div_cycles;
         uint8_t tima_reload_state; /* After TIMA overflows, it becomes 0 for 4 cycles before actually reloading. */
-        GB_PADDING(uint16_t, serial_cycles);
         uint16_t serial_cycles; /* This field changed its meaning in v0.10 */
         uint16_t serial_length;
-    );
 
     /* APU */
-    GB_SECTION(apu,
         GB_apu_t apu;
-    );
 
     /* RTC */
-    GB_SECTION(rtc,
         union {
             struct {
                 uint8_t seconds;
@@ -349,10 +332,8 @@ struct GB_gameboy_internal_s {
         } rtc_real, rtc_latched;
         time_t last_rtc_second;
         bool rtc_latch;
-    );
 
     /* Video Display */
-    GB_SECTION(video,
         uint32_t vram_size; // Different between CGB and DMG
         uint8_t cgb_vram_bank;
         uint8_t oam[0xA0];
@@ -379,11 +360,9 @@ struct GB_gameboy_internal_s {
         bool vram_read_blocked;
         bool oam_write_blocked;
         bool vram_write_blocked;
-    );
 
     /* Unsaved data. This includes all pointers, as well as everything that shouldn't be on a save state */
     /* This data is reserved on reset and must come last in the struct */
-    GB_SECTION(unsaved,
         /* ROM */
         uint8_t *rom;
         uint32_t rom_size;
@@ -404,8 +383,7 @@ struct GB_gameboy_internal_s {
         bool keys[GB_KEY_MAX];
                
         /* Timing */
-        uint64_t last_sync;
-        uint64_t cycles_since_last_sync;
+        uint64_t cycles_since_epoch;
 
         /* Audio */
         unsigned buffer_size;
@@ -459,21 +437,11 @@ struct GB_gameboy_internal_s {
             uint16_t addr;
         } backtrace_returns[0x200];
 
-        /* Symbol tables */
-        GB_symbol_map_t *bank_symbols[0x200];
-        GB_reversed_symbol_map_t reversed_symbol_map;
-
-        /* Ticks command */
-        unsigned long debugger_ticks;
-
         /* Misc */
-        bool turbo;
-        bool turbo_dont_skip;
         bool disable_rendering;
         uint32_t ram_size; // Different between CGB and DMG
         uint8_t boot_rom[0x900];
         bool vblank_just_occured; // For slow operations involving syscalls; these should only run once per vblank
-   );
 };
     
 #ifndef GB_INTERNAL
@@ -497,8 +465,7 @@ void GB_free(GB_gameboy_t *gb);
 void GB_reset(GB_gameboy_t *gb);
 void GB_switch_model_and_reset(GB_gameboy_t *gb, bool is_cgb);
 void GB_run(GB_gameboy_t *gb);
-/* Returns the time passed since the last frame, in nanoseconds */
-uint64_t GB_run_frame(GB_gameboy_t *gb);
+uint64_t GB_run_cycles(GB_gameboy_t *gb, uint32_t cycles);
 
 typedef enum {
     GB_DIRECT_ACCESS_ROM,
@@ -526,7 +493,6 @@ int GB_load_rom(GB_gameboy_t *gb, const char *path);
 int GB_save_battery(GB_gameboy_t *gb, const char *path);
 void GB_load_battery(GB_gameboy_t *gb, const char *path);
 
-void GB_set_turbo_mode(GB_gameboy_t *gb, bool on, bool no_frame_skip);
 void GB_set_rendering_disabled(GB_gameboy_t *gb, bool disabled);
     
 void GB_log(GB_gameboy_t *gb, const char *fmt, ...) __printflike(2, 3);

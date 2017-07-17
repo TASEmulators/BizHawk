@@ -6,69 +6,6 @@
 #include <sys/time.h>
 #endif
 
-static int64_t get_nanoseconds(void)
-{
-#ifndef _WIN32
-    struct timeval now;
-    gettimeofday(&now, NULL);
-    return (now.tv_usec) * 1000 + now.tv_sec * 1000000000L;
-#else
-    FILETIME time;
-    GetSystemTimeAsFileTime(&time);
-    return (((int64_t)time.dwHighDateTime << 32) | time.dwLowDateTime) * 100L;
-#endif
-}
-
-static void nsleep(uint64_t nanoseconds)
-{
-#ifndef _WIN32
-    struct timespec sleep = {0, nanoseconds};
-    nanosleep(&sleep, NULL);
-#else
-    HANDLE timer;
-    LARGE_INTEGER time;
-    timer = CreateWaitableTimer(NULL, true, NULL);
-    time.QuadPart = -(nanoseconds / 100L);
-    SetWaitableTimer(timer, &time, 0, NULL, NULL, false);
-    WaitForSingleObject(timer, INFINITE);
-    CloseHandle(timer);
-#endif
-}
-
-bool GB_timing_sync_turbo(GB_gameboy_t *gb)
-{
-    if (!gb->turbo_dont_skip) {
-        int64_t nanoseconds = get_nanoseconds();
-        if (nanoseconds <= gb->last_sync + FRAME_LENGTH) {
-            return true;
-        }
-        gb->last_sync = nanoseconds;
-    }
-    return false;
-}
-
-void GB_timing_sync(GB_gameboy_t *gb)
-{
-    if (gb->turbo) {
-        gb->cycles_since_last_sync = 0;
-        return;
-    }
-    /* Prevent syncing if not enough time has passed.*/
-    if (gb->cycles_since_last_sync < LCDC_PERIOD / 4) return;
-
-    uint64_t target_nanoseconds = gb->cycles_since_last_sync * FRAME_LENGTH / LCDC_PERIOD;
-    int64_t nanoseconds = get_nanoseconds();
-    if (labs((signed long)(nanoseconds - gb->last_sync)) < target_nanoseconds ) {
-        nsleep(target_nanoseconds  + gb->last_sync - nanoseconds);
-        gb->last_sync += target_nanoseconds;
-    }
-    else {
-        gb->last_sync = nanoseconds;
-    }
-
-    gb->cycles_since_last_sync = 0;
-}
-
 static void GB_ir_run(GB_gameboy_t *gb)
 {
     if (gb->ir_queue_length == 0) return;
@@ -136,7 +73,7 @@ void GB_advance_cycles(GB_gameboy_t *gb, uint8_t cycles)
     gb->apu.apu_cycles += cycles;
     gb->cycles_since_ir_change += cycles;
     gb->cycles_since_input_ir_change += cycles;
-    gb->cycles_since_last_sync += cycles;
+    gb->cycles_since_epoch += cycles >> 1;
     GB_dma_run(gb);
     GB_hdma_run(gb);
     GB_apu_run(gb);

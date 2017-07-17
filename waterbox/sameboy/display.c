@@ -197,12 +197,6 @@ static uint32_t get_pixel(GB_gameboy_t *gb, uint8_t x, uint8_t y)
 
 static void display_vblank(GB_gameboy_t *gb)
 {
-    if (gb->turbo) {
-        if (GB_timing_sync_turbo(gb)) {
-            return;
-        }
-    }
-    
     if (!gb->disable_rendering && ((!(gb->io_registers[GB_IO_LCDC] & 0x80) || gb->stopped) || gb->frame_skip_state == GB_FRAMESKIP_LCD_TURNED_ON)) {
         /* LCD is off, set screen to white */
         uint32_t white = gb->rgb_encode_callback(gb, 0xFF, 0xFF, 0xFF);
@@ -212,7 +206,6 @@ static void display_vblank(GB_gameboy_t *gb)
     }
 
     gb->vblank_callback(gb);
-    GB_timing_sync(gb);
 
     gb->vblank_just_occured = true;
 }

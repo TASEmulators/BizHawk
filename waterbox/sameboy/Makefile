@@ -6,12 +6,11 @@ FLAGS:=-Wall -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast -Werror=imp
 	-fomit-frame-pointer -fvisibility=hidden \
 	-O0 -g
 
-CCFLAGS:=$(FLAGS) -Ilib \
-	-I../emulibc \
+CCFLAGS:=$(FLAGS) \
 	-std=gnu99 \
 	-DLSB_FIRST -D_GNU_SOURCE -DGB_INTERNAL
 
-CPPFLAGS:=$(FLAGS) -DSPC_NO_COPY_STATE_FUNCS -std=c++0x
+CPPFLAGS:=$(FLAGS) -DSPC_NO_COPY_STATE_FUNCS -std=c++0x -D_GNU_SOURCE -DGB_INTERNAL
 
 TARGET = sameboy.wbx
 

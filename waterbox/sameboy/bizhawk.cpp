@@ -65,6 +65,9 @@ ECL_EXPORT bool Init(bool cgb)
     GB_set_infrared_callback(&GB, InfraredCallback);
     GB_set_rumble_callback(&GB, RumbleCallback);
 
+	GB_set_sample_rate(&GB, 44100);
+	GB_set_audio_quality(&GB, 1);
+
     return true;
 }
 
@@ -76,9 +79,12 @@ struct MyFrameInfo : public FrameInfo
 ECL_EXPORT void FrameAdvance(MyFrameInfo &f)
 {
     GB_set_pixels_output(&GB, f.VideoBuffer);
-	// void GB_set_key_state(GB_gameboy_t *gb, GB_key_t index, bool pressed);
-    GB_run_frame(&GB);
-	f.Samples = 735;
+	for (int i = 0; i < (int)GB_KEY_MAX; i++)
+		GB_set_key_state(&GB, (GB_key_t)i, false);
+
+    f.Cycles = GB_run_cycles(&GB, 35112);
+	f.Samples = GB_apu_get_current_buffer_length(&GB);
+	GB_apu_copy_buffer(&GB, (GB_sample_t*)f.SoundBuffer, f.Samples);
 	f.Width = 160;
 	f.Height = 144;
 }
@@ -104,7 +110,7 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 	SetMemoryArea(m + 6, GB_DIRECT_ACCESS_IO, "IO", MEMORYAREA_FLAGS_WORDSIZE1);
 	SetMemoryArea(m + 7, GB_DIRECT_ACCESS_BOOTROM, "BOOTROM", MEMORYAREA_FLAGS_WORDSIZE1);
 	SetMemoryArea(m + 8, GB_DIRECT_ACCESS_BGP, "BGP", MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE);
-	SetMemoryArea(m + 8, GB_DIRECT_ACCESS_OBP, "OBP", MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE);
+	SetMemoryArea(m + 9, GB_DIRECT_ACCESS_OBP, "OBP", MEMORYAREA_FLAGS_WORDSIZE1 | MEMORYAREA_FLAGS_WRITABLE);
 }
 
 ECL_EXPORT void SetInputCallback(void (*callback)())

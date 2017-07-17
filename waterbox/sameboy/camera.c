@@ -125,7 +125,7 @@ void GB_camera_write_register(GB_gameboy_t *gb, uint16_t addr, uint8_t value)
     addr &= 0x7F;
     if (addr == GB_CAMERA_SHOOT_AND_1D_FLAGS) {
         value &= 0x7;
-        noise_seed = rand();
+        noise_seed = 42; // rand();
         if ((value & 1) && !(gb->camera_registers[GB_CAMERA_SHOOT_AND_1D_FLAGS] & 1) && gb->camera_update_request_callback) {
             /* If no callback is set, ignore the write as if the camera is instantly done */
             gb->camera_registers[GB_CAMERA_SHOOT_AND_1D_FLAGS] |= 1;

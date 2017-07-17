@@ -59,8 +59,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 			_cgb = (rom[0x143] & 0xc0) == 0xc0;
 			Console.WriteLine("Automaticly detected CGB to " + _cgb);
-			var bios = Util.DecompressGzipFile(new MemoryStream(
-				_cgb ? Resources.SameboyCgbBoot : Resources.SameboyDmgBoot));
+			var bios = Util.DecompressGzipFile(new MemoryStream(_cgb ? Resources.SameboyCgbBoot : Resources.SameboyDmgBoot));
+			// var bios = comm.CoreFileProvider.GetFirmware(_cgb ? "GBC" : "GB", "World", true);
 
 			_exe.AddReadonlyFile(rom, "game.rom");
 			_exe.AddReadonlyFile(bios, "boot.rom");

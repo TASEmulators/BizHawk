@@ -133,18 +133,6 @@ void GB_free(GB_gameboy_t *gb)
     if (gb->breakpoints) {
         free(gb->breakpoints);
     }
-    for (int i = 0x200; i--;) {
-        if (gb->bank_symbols[i]) {
-            GB_map_free(gb->bank_symbols[i]);
-        }
-    }
-    for (int i = 0x400; i--;) {
-        if (gb->reversed_symbol_map.buckets[i]) {
-            GB_symbol_t *next = gb->reversed_symbol_map.buckets[i]->next;
-            free(gb->reversed_symbol_map.buckets[i]);
-            gb->reversed_symbol_map.buckets[i] = next;
-        }
-    }
     memset(gb, 0, sizeof(*gb));
 }
 
@@ -267,24 +255,20 @@ void GB_run(GB_gameboy_t *gb)
     }
 }
 
-uint64_t GB_run_frame(GB_gameboy_t *gb)
+uint64_t GB_run_cycles(GB_gameboy_t *gb, uint32_t cycles)
 {
-    /* Configure turbo temporarily, the user wants to handle FPS capping manually. */
-    bool old_turbo = gb->turbo;
-    bool old_dont_skip = gb->turbo_dont_skip;
-    gb->turbo = true;
-    gb->turbo_dont_skip = true;
-    
-    gb->cycles_since_last_sync = 0;
-    while (true) {
+	uint64_t start = gb->cycles_since_epoch;
+	uint64_t target = start + cycles;
+    while (gb->cycles_since_epoch < target) {
         GB_run(gb);
         if (gb->vblank_just_occured) {
+			// TODO: fix these up
+        	GB_update_joyp(gb);
+        	GB_rtc_run(gb);
             break;
         }
     }
-    gb->turbo = old_turbo;
-    gb->turbo_dont_skip = old_dont_skip;
-    return gb->cycles_since_last_sync * FRAME_LENGTH * LCDC_PERIOD;
+	return gb->cycles_since_epoch - start;
 }
 
 void GB_set_pixels_output(GB_gameboy_t *gb, uint32_t *output)
@@ -416,12 +400,6 @@ bool GB_is_cgb(GB_gameboy_t *gb)
     return gb->is_cgb;
 }
 
-void GB_set_turbo_mode(GB_gameboy_t *gb, bool on, bool no_frame_skip)
-{
-    gb->turbo = on;
-    gb->turbo_dont_skip = no_frame_skip;
-}
-
 void GB_set_rendering_disabled(GB_gameboy_t *gb, bool disabled)
 {
     gb->disable_rendering = disabled;
@@ -441,7 +419,7 @@ void GB_reset(GB_gameboy_t *gb)
 {
     uint32_t mbc_ram_size = gb->mbc_ram_size;
     bool cgb = gb->is_cgb;
-    memset(gb, 0, (size_t)GB_GET_SECTION((GB_gameboy_t *) 0, unsaved));
+    // memset(gb, 0, (size_t)GB_GET_SECTION((GB_gameboy_t *) 0, unsaved));
     gb->version = GB_STRUCT_VERSION;
     
     gb->mbc_rom_bank = 1;
