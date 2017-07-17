@@ -373,16 +373,6 @@ namespace BizHawk.Client.EmuHawk
 					LoadQuickSave("QuickSave" + Global.Config.SaveSlot);
 				}
 			}
-            //start Lua Console if requested in the command line arguments
-            if (luaConsole)
-            {
-                GlobalWin.Tools.Load<LuaConsole>();
-            }
-            //load Lua Script if requested in the command line arguments
-            if (luaScript != null)
-            {
-                GlobalWin.Tools.LuaConsole.LoadLuaFile(luaScript);
-            }
 
 			//start Lua Console if requested in the command line arguments
 			if (argParse.luaConsole)
