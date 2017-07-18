@@ -9,7 +9,7 @@ void GB_update_joyp(GB_gameboy_t *gb)
 
     /* Todo: add delay to key selection */
     previous_state = gb->io_registers[GB_IO_JOYP] & 0xF;
-    key_selection = (gb->io_registers[GB_IO_JOYP] >> 4) & 3;
+    key_selection = gb->io_registers[GB_IO_JOYP] >> 4 & 3;
     gb->io_registers[GB_IO_JOYP] &= 0xF0;
     switch (key_selection) {
         case 3:
@@ -19,24 +19,17 @@ void GB_update_joyp(GB_gameboy_t *gb)
 
         case 2:
             /* Direction keys */
-            for (uint8_t i = 0; i < 4; i++) {
-                gb->io_registers[GB_IO_JOYP] |= (!gb->keys[i]) << i;
-            }
+			gb->io_registers[GB_IO_JOYP] |= ~gb->keys >> 4 & 0xf;
             break;
 
         case 1:
             /* Other keys */
-            for (uint8_t i = 0; i < 4; i++) {
-                gb->io_registers[GB_IO_JOYP] |= (!gb->keys[i + 4]) << i;
-            }
+			gb->io_registers[GB_IO_JOYP] |= ~gb->keys & 0xf;
             break;
 
         case 0:
             /* Todo: verifiy this is correct */
-            for (uint8_t i = 0; i < 4; i++) {
-                gb->io_registers[GB_IO_JOYP] |= (!gb->keys[i]) << i;
-                gb->io_registers[GB_IO_JOYP] |= (!gb->keys[i + 4]) << i;
-            }
+			gb->io_registers[GB_IO_JOYP] |= ~(gb->keys >> 4 & gb->keys) & 0xf;
             break;
 
         default:
@@ -49,8 +42,7 @@ void GB_update_joyp(GB_gameboy_t *gb)
     gb->io_registers[GB_IO_JOYP] |= 0xC0; // No SGB support
 }
 
-void GB_set_key_state(GB_gameboy_t *gb, GB_key_t index, bool pressed)
+void GB_set_key_state(GB_gameboy_t *gb, int keys)
 {
-    assert(index >= 0 && index < GB_KEY_MAX);
-    gb->keys[index] = pressed;
+    gb->keys = keys;
 }

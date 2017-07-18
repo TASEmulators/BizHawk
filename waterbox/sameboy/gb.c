@@ -252,14 +252,12 @@ void GB_run(GB_gameboy_t *gb)
 
 uint64_t GB_run_cycles(GB_gameboy_t *gb, uint32_t cycles)
 {
+    GB_update_joyp(gb);
+    GB_rtc_run(gb);
 	uint64_t start = gb->cycles_since_epoch;
 	uint64_t target = start + cycles;
     while (gb->cycles_since_epoch < target) {
         GB_run(gb);
-        if (gb->vblank_just_occured) {
-        	GB_update_joyp(gb);
-        	GB_rtc_run(gb);
-        }
     }
 	return gb->cycles_since_epoch - start;
 }

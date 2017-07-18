@@ -380,7 +380,7 @@ struct GB_gameboy_internal_s {
 
         /* I/O */
         uint32_t *screen;
-        bool keys[GB_KEY_MAX];
+		int keys;
                
         /* Timing */
         uint64_t cycles_since_epoch;

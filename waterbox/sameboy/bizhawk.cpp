@@ -91,6 +91,8 @@ ECL_EXPORT bool Init(bool cgb)
 
 struct MyFrameInfo : public FrameInfo
 {
+	int64_t Time;
+	uint32_t Keys;
 };
 
 static int FrameOverflow;
@@ -98,8 +100,7 @@ static int FrameOverflow;
 ECL_EXPORT void FrameAdvance(MyFrameInfo &f)
 {
 	GB_set_pixels_output(&GB, f.VideoBuffer);
-	for (int i = 0; i < (int)GB_KEY_MAX; i++)
-		GB_set_key_state(&GB, (GB_key_t)i, false);
+	GB_set_key_state(&GB, f.Keys & 0xff);
 	
 	sound_start_clock = GB_epoch(&GB);
 

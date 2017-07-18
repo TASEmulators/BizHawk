@@ -32,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		private LibSameboy _core;
 		private bool _cgb;
+		private bool _sgb;
 
 		[CoreConstructor("GB")]
 		public Sameboy(CoreComm comm, byte[] rom)
@@ -76,10 +77,65 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			PostInit();
 		}
 
+		#region Controller
+
+		private static readonly ControllerDefinition _gbDefinition;
+		private static readonly ControllerDefinition _sgbDefinition;
+		public override ControllerDefinition ControllerDefinition => _sgb ? _sgbDefinition : _gbDefinition;
+
+		private static ControllerDefinition CreateControllerDefinition(int p)
+		{
+			var ret = new ControllerDefinition { Name = "Gameboy Controller" };
+			for (int i = 0; i < p; i++)
+			{
+				ret.BoolButtons.AddRange(
+					new[] { "Up", "Down", "Left", "Right", "A", "B", "Select", "Start" }
+						.Select(s => $"P{i + 1} {s}"));
+			}
+			return ret;
+		}
+
+		static Sameboy()
+		{
+			_gbDefinition = CreateControllerDefinition(1);
+			_sgbDefinition = CreateControllerDefinition(4);
+		}
+
+		private LibSameboy.Buttons GetButtons(IController c)
+		{
+			LibSameboy.Buttons b = 0;
+			for (int i = _sgb ? 4 : 1; i > 0; i--)
+			{
+				if (c.IsPressed($"P{i} Up"))
+					b |= LibSameboy.Buttons.UP;
+				if (c.IsPressed($"P{i} Down"))
+					b |= LibSameboy.Buttons.DOWN;
+				if (c.IsPressed($"P{i} Left"))
+					b |= LibSameboy.Buttons.LEFT;
+				if (c.IsPressed($"P{i} Right"))
+					b |= LibSameboy.Buttons.RIGHT;
+				if (c.IsPressed($"P{i} A"))
+					b |= LibSameboy.Buttons.A;
+				if (c.IsPressed($"P{i} B"))
+					b |= LibSameboy.Buttons.B;
+				if (c.IsPressed($"P{i} Select"))
+					b |= LibSameboy.Buttons.SELECT;
+				if (c.IsPressed($"P{i} Start"))
+					b |= LibSameboy.Buttons.START;
+				if (i != 1)
+					b = (LibSameboy.Buttons)((uint)b << 8);
+			}
+			return b;
+		}
+
+		#endregion
+
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			return new LibSameboy.FrameInfo
 			{
+				Time = 0,
+				Keys = GetButtons(controller)
 			};
 		}
 
