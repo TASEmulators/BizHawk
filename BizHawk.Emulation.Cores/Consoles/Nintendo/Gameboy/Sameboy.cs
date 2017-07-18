@@ -34,18 +34,27 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		private bool _cgb;
 		private bool _sgb;
 
+		[CoreConstructor("SGB")]
+		public Sameboy(byte[] rom, CoreComm comm)
+			: this(rom, comm, true)
+		{ }
+
 		[CoreConstructor("GB")]
 		public Sameboy(CoreComm comm, byte[] rom)
+			: this(rom, comm, false)
+		{ }
+
+		public Sameboy(byte[] rom, CoreComm comm, bool sgb)
 			: base(comm, new Configuration
 			{
-				DefaultWidth = 160,
-				DefaultHeight = 144,
-				MaxWidth = 256,
-				MaxHeight = 224,
+				DefaultWidth = sgb ? 256 : 160,
+				DefaultHeight = sgb ? 224 : 144,
+				MaxWidth = sgb ? 256 : 160,
+				MaxHeight = sgb ? 224 : 144,
 				MaxSamples = 1024,
-				DefaultFpsNumerator = TICKSPERSECOND,
+				DefaultFpsNumerator = sgb ? TICKSPERSECOND_SGB : TICKSPERSECOND,
 				DefaultFpsDenominator = TICKSPERFRAME,
-				SystemId = "GB"
+				SystemId = sgb ? "SGB" : "GB"
 			})
 		{
 			_core = PreInit<LibSameboy>(new PeRunnerOptions
@@ -58,15 +67,19 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				MmapHeapSizeKB = 34 * 1024
 			});
 
-			_cgb = (rom[0x143] & 0xc0) == 0xc0;
+			_cgb = (rom[0x143] & 0xc0) == 0xc0 && !sgb;
+			_sgb = sgb;
 			Console.WriteLine("Automaticly detected CGB to " + _cgb);
 			var bios = Util.DecompressGzipFile(new MemoryStream(_cgb ? Resources.SameboyCgbBoot : Resources.SameboyDmgBoot));
 			// var bios = comm.CoreFileProvider.GetFirmware(_cgb ? "GBC" : "GB", "World", true);
+			var spc = sgb
+				? Util.DecompressGzipFile(new MemoryStream(Resources.SgbCartPresent_SPC))
+				: null;
 
 			_exe.AddReadonlyFile(rom, "game.rom");
 			_exe.AddReadonlyFile(bios, "boot.rom");
 
-			if (!_core.Init(_cgb))
+			if (!_core.Init(_cgb, spc, spc?.Length ?? 0))
 			{
 				throw new InvalidOperationException("Core rejected the rom!");
 			}

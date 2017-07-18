@@ -32,6 +32,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		}
 
 		[BizImport(CC)]
-		public abstract bool Init(bool cgb);
+		public abstract bool Init(bool cgb, byte[] spc, int spclen);
 	}
 }

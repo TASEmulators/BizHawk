@@ -234,6 +234,7 @@ struct GB_gameboy_internal_s {
         uint8_t cgb_ram_bank;
 
         /* CPU and General Hardware Flags*/
+		bool is_sgb;
         bool cgb_mode;
         bool is_cgb;
         bool cgb_double_speed;
@@ -445,6 +446,7 @@ __attribute__((__format__ (__printf__, fmtarg, firstvararg)))
 #endif
 
 void GB_init(GB_gameboy_t *gb);
+void GB_init_sgb(GB_gameboy_t *gb);
 void GB_init_cgb(GB_gameboy_t *gb);
 bool GB_is_inited(GB_gameboy_t *gb);
 bool GB_is_cgb(GB_gameboy_t *gb);

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "gb.h"
+#include "sgb.h"
 
 typedef uint8_t GB_read_function_t(GB_gameboy_t *gb, uint16_t addr);
 typedef void GB_write_function_t(GB_gameboy_t *gb, uint16_t addr, uint8_t value);
@@ -134,6 +135,11 @@ static uint8_t read_high_memory(GB_gameboy_t *gb, uint16_t addr)
     }
 
     if (addr < 0xFF80) {
+		if (addr == 0xff00 && gb->is_sgb)
+		{
+			return sgb_read_ff00(gb->cycles_since_epoch);
+		}
+
         switch (addr & 0xFF) {
             case GB_IO_IF:
                 return gb->io_registers[GB_IO_IF] | 0xE0;
@@ -406,6 +412,12 @@ static void write_high_memory(GB_gameboy_t *gb, uint16_t addr, uint8_t value)
     }
 
     if (addr < 0xFF80) {
+		if (addr == 0xff00 && gb->is_sgb)
+		{
+			sgb_write_ff00(value, gb->cycles_since_epoch);
+			return;
+		}
+
         /* Hardware registers */
         switch (addr & 0xFF) {
 

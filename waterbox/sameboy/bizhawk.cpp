@@ -9,12 +9,25 @@ extern "C" {
 #include "gb.h"
 #include "joypad.h"
 #include "apu.h"
+#include "sgb.h"
 }
 
 static GB_gameboy_t GB;
 
+static uint32_t GBPixels[160 * 144];
+static uint32_t* CurrentFramebuffer;
+static bool sgb;
 static void VBlankCallback(GB_gameboy_t *gb)
 {
+	if (sgb)
+	{
+		sgb_take_frame(GBPixels);
+		sgb_render_frame(CurrentFramebuffer);
+	}
+	else
+	{
+		memcpy(CurrentFramebuffer, GBPixels, sizeof(GBPixels));
+	}
 }
 
 static void LogCallback(GB_gameboy_t *gb, const char *string, GB_log_attributes attributes)
@@ -50,6 +63,7 @@ const int SOUND_RATE_GB = 2097152;
 const int SOUND_RATE_SGB = 2147727;
 static uint64_t sound_start_clock;
 static GB_sample_t sample_gb;
+static GB_sample_t sample_sgb;
 
 static void SampleCallback(GB_gameboy_t *gb, GB_sample_t sample, uint64_t clock)
 {
@@ -61,19 +75,42 @@ static void SampleCallback(GB_gameboy_t *gb, GB_sample_t sample, uint64_t clock)
 		blip_add_delta(rightblip, clock - sound_start_clock, r);
 	sample_gb = sample;
 }
-
-ECL_EXPORT bool Init(bool cgb)
+static void SgbSampleCallback(int16_t sl, int16_t sr, uint64_t clock)
 {
-	if (cgb)
+	int l = sl - sample_sgb.left;
+	int r = sr - sample_sgb.right;
+	if (l)
+		blip_add_delta(leftblip, clock - sound_start_clock, l);
+	if (r)
+		blip_add_delta(rightblip, clock - sound_start_clock, r);
+	sample_sgb.left = sl;
+	sample_sgb.right = sr;
+}
+
+ECL_EXPORT bool Init(bool cgb, const uint8_t* spc, int spclen)
+{
+	if (spc)
+	{
+		GB_init_sgb(&GB);
+		if (!sgb_init(spc, spclen))
+			return false;
+		sgb = true;
+	}
+	else if (cgb)
+	{
 		GB_init_cgb(&GB);
+	}
 	else
+	{
 		GB_init(&GB);
+	}
+
 	if (GB_load_boot_rom(&GB, "boot.rom") != 0)
 		return false;
-
 	if (GB_load_rom(&GB, "game.rom") != 0)
 		return false;
 
+	GB_set_pixels_output(&GB, GBPixels);
 	GB_set_vblank_callback(&GB, VBlankCallback);
 	GB_set_log_callback(&GB, LogCallback);
 	GB_set_rgb_encode_callback(&GB, RgbEncodeCallback);
@@ -83,8 +120,8 @@ ECL_EXPORT bool Init(bool cgb)
 
 	leftblip = blip_new(1024);
 	rightblip = blip_new(1024);
-	blip_set_rates(leftblip, SOUND_RATE_GB, 44100);
-	blip_set_rates(rightblip, SOUND_RATE_GB, 44100);
+	blip_set_rates(leftblip, sgb ? SOUND_RATE_SGB : SOUND_RATE_GB, 44100);
+	blip_set_rates(rightblip, sgb ? SOUND_RATE_SGB : SOUND_RATE_GB, 44100);
 
 	return true;
 }
@@ -99,20 +136,36 @@ static int FrameOverflow;
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo &f)
 {
-	GB_set_pixels_output(&GB, f.VideoBuffer);
-	GB_set_key_state(&GB, f.Keys & 0xff);
-	
+	if (sgb)
+	{
+		sgb_set_controller_data((uint8_t*)&f.Keys);
+	}
+	else
+	{
+		GB_set_key_state(&GB, f.Keys & 0xff);
+	}
 	sound_start_clock = GB_epoch(&GB);
+	CurrentFramebuffer = f.VideoBuffer;
 
 	uint32_t target = 35112 - FrameOverflow;
 	f.Cycles = GB_run_cycles(&GB, target);
 	FrameOverflow = f.Cycles - target;
+	if (sgb)
+	{
+		f.Width = 256;
+		f.Height = 224;
+		sgb_render_audio(GB_epoch(&GB), SgbSampleCallback);
+	}
+	else
+	{
+		f.Width = 160;
+		f.Height = 144;
+	}
 	blip_end_frame(leftblip, f.Cycles);
 	blip_end_frame(rightblip, f.Cycles);
 	f.Samples = blip_read_samples(leftblip, f.SoundBuffer, 2048, 1);
 	blip_read_samples(rightblip, f.SoundBuffer + 1, 2048, 1);
-	f.Width = 160;
-	f.Height = 144;
+	CurrentFramebuffer = NULL;
 }
 
 static void SetMemoryArea(MemoryArea *m, GB_direct_access_t access, const char *name, int32_t flags)

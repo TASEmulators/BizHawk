@@ -935,7 +935,7 @@ namespace BizHawk.Client.Common
 									}
 									else
 									{
-										core = CoreInventory.Instance["SGB", "Pizza Boy"];
+										core = CoreInventory.Instance["SGB", "SameBoy"];
 									}
 								}
 								break;

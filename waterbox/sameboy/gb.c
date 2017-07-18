@@ -96,6 +96,20 @@ void GB_init(GB_gameboy_t *gb)
     GB_reset(gb);
 }
 
+void GB_init_sgb(GB_gameboy_t *gb)
+{
+    memset(gb, 0, sizeof(*gb));
+    gb->ram = malloc(gb->ram_size = 0x2000);
+    gb->vram = malloc(gb->vram_size = 0x2000);
+	gb->is_sgb = true;
+
+    gb->input_callback = default_input_callback;
+    gb->async_input_callback = default_async_input_callback;
+    gb->cartridge_type = &GB_cart_defs[0]; // Default cartridge type
+    
+    GB_reset(gb);
+}
+
 void GB_init_cgb(GB_gameboy_t *gb)
 {
     memset(gb, 0, sizeof(*gb));
