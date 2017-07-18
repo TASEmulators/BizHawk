@@ -2,25 +2,25 @@
 {
 	public partial class PCEngine
 	{
-		private int SelectedController;
-		private byte InputByte;
+		private int _selectedController;
+		private byte _inputByte;
 
-		public bool SEL => (InputByte & 1) != 0;
-		public bool CLR => (InputByte & 2) != 0;
+		private bool Sel => (_inputByte & 1) != 0;
+		private bool Clr => (_inputByte & 2) != 0;
 
 		private void WriteInput(byte value)
 		{
-			bool prevSEL = SEL;
-			InputByte = value;
+			bool prevSel = Sel;
+			_inputByte = value;
 
-			if (SEL && CLR)
+			if (Sel && Clr)
 			{
-				SelectedController = 0;
+				_selectedController = 0;
 			}
 
-			if (CLR == false && prevSEL == false && SEL == true)
+			if (Clr == false && prevSel == false && Sel)
 			{
-				SelectedController = (SelectedController + 1);
+				_selectedController = _selectedController + 1;
 			}
 		}
 
@@ -31,11 +31,11 @@
 			InputCallbacks.Call();
 			byte value = 0x3F;
 
-			int player = SelectedController + 1;
+			int player = _selectedController + 1;
 			if (player < 6)
 			{
 				_lagged = false;
-				value &= _controllerDeck.Read(player, _controller, SEL);
+				value &= _controllerDeck.Read(player, _controller, Sel);
 			}
 
 			if (Region == "Japan")

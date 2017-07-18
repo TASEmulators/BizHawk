@@ -24,10 +24,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-			var pceSettings = ((PCEngine)Global.Emulator).GetSyncSettings();
-
-			pceSettings = _controllerSettings;
-			GlobalWin.MainForm.PutCoreSyncSettings(pceSettings);
+			GlobalWin.MainForm.PutCoreSyncSettings(_controllerSettings);
 			DialogResult = DialogResult.OK;
 			Close();
 		}

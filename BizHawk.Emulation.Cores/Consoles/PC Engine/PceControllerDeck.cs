@@ -27,41 +27,41 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			PceControllerType controller4,
 			PceControllerType controller5)
 		{
-			Port1 = (IPort)Activator.CreateInstance(Implementors[(int)controller1], 1);
-			Port2 = (IPort)Activator.CreateInstance(Implementors[(int)controller2], 2);
-			Port3 = (IPort)Activator.CreateInstance(Implementors[(int)controller3], 3);
-			Port4 = (IPort)Activator.CreateInstance(Implementors[(int)controller4], 4);
-			Port5 = (IPort)Activator.CreateInstance(Implementors[(int)controller5], 5);
+			_port1 = (IPort)Activator.CreateInstance(Implementors[(int)controller1], 1);
+			_port2 = (IPort)Activator.CreateInstance(Implementors[(int)controller2], 2);
+			_port3 = (IPort)Activator.CreateInstance(Implementors[(int)controller3], 3);
+			_port4 = (IPort)Activator.CreateInstance(Implementors[(int)controller4], 4);
+			_port5 = (IPort)Activator.CreateInstance(Implementors[(int)controller5], 5);
 
 			Definition = new ControllerDefinition
 			{
 				Name = "PC Engine Controller",
-				BoolButtons = Port1.Definition.BoolButtons
-					.Concat(Port2.Definition.BoolButtons)
-					.Concat(Port3.Definition.BoolButtons)
-					.Concat(Port4.Definition.BoolButtons)
-					.Concat(Port5.Definition.BoolButtons)
+				BoolButtons = _port1.Definition.BoolButtons
+					.Concat(_port2.Definition.BoolButtons)
+					.Concat(_port3.Definition.BoolButtons)
+					.Concat(_port4.Definition.BoolButtons)
+					.Concat(_port5.Definition.BoolButtons)
 					.ToList()
 			};
 
-			Definition.FloatControls.AddRange(Port1.Definition.FloatControls);
-			Definition.FloatControls.AddRange(Port2.Definition.FloatControls);
-			Definition.FloatControls.AddRange(Port3.Definition.FloatControls);
-			Definition.FloatControls.AddRange(Port4.Definition.FloatControls);
-			Definition.FloatControls.AddRange(Port5.Definition.FloatControls);
+			Definition.FloatControls.AddRange(_port1.Definition.FloatControls);
+			Definition.FloatControls.AddRange(_port2.Definition.FloatControls);
+			Definition.FloatControls.AddRange(_port3.Definition.FloatControls);
+			Definition.FloatControls.AddRange(_port4.Definition.FloatControls);
+			Definition.FloatControls.AddRange(_port5.Definition.FloatControls);
 
-			Definition.FloatRanges.AddRange(Port1.Definition.FloatRanges);
-			Definition.FloatRanges.AddRange(Port2.Definition.FloatRanges);
-			Definition.FloatRanges.AddRange(Port3.Definition.FloatRanges);
-			Definition.FloatRanges.AddRange(Port4.Definition.FloatRanges);
-			Definition.FloatRanges.AddRange(Port5.Definition.FloatRanges);
+			Definition.FloatRanges.AddRange(_port1.Definition.FloatRanges);
+			Definition.FloatRanges.AddRange(_port2.Definition.FloatRanges);
+			Definition.FloatRanges.AddRange(_port3.Definition.FloatRanges);
+			Definition.FloatRanges.AddRange(_port4.Definition.FloatRanges);
+			Definition.FloatRanges.AddRange(_port5.Definition.FloatRanges);
 		}
 
-		private readonly IPort Port1;
-		private readonly IPort Port2;
-		private readonly IPort Port3;
-		private readonly IPort Port4;
-		private readonly IPort Port5;
+		private readonly IPort _port1;
+		private readonly IPort _port2;
+		private readonly IPort _port3;
+		private readonly IPort _port4;
+		private readonly IPort _port5;
 
 		public byte Read(int portNum, IController c, bool sel)
 		{
@@ -70,15 +70,15 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				default:
 					throw new ArgumentException($"Invalid {nameof(portNum)}: {portNum}");
 				case 1:
-					return Port1.Read(c, sel);
+					return _port1.Read(c, sel);
 				case 2:
-					return Port2.Read(c, sel);
+					return _port2.Read(c, sel);
 				case 3:
-					return Port3.Read(c, sel);
+					return _port3.Read(c, sel);
 				case 4:
-					return Port4.Read(c, sel);
+					return _port4.Read(c, sel);
 				case 5:
-					return Port5.Read(c, sel);
+					return _port5.Read(c, sel);
 			}
 		}
 
