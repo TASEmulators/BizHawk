@@ -63,6 +63,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
+		private readonly PceControllerDeck _controllerDeck;
+
 		private byte ReadInput()
 		{
 			InputCallbacks.Call();
@@ -72,21 +74,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (player < 6)
 			{
 				_lagged = false;
-				if (SEL == false) // return buttons
-				{
-					if (_controller.IsPressed("P" + player + " B1")) value &= 0xFE;
-					if (_controller.IsPressed("P" + player + " B2")) value &= 0xFD;
-					if (_controller.IsPressed("P" + player + " Select")) value &= 0xFB;
-					if (_controller.IsPressed("P" + player + " Run")) value &= 0xF7;
-				}
-				else
-				{
-					//return directions
-					if (_controller.IsPressed("P" + player + " Up")) value &= 0xFE;
-					if (_controller.IsPressed("P" + player + " Right")) value &= 0xFD;
-					if (_controller.IsPressed("P" + player + " Down")) value &= 0xFB;
-					if (_controller.IsPressed("P" + player + " Left")) value &= 0xF7;
-				}
+				value &= _controllerDeck.Read(player, _controller, SEL);
 			}
 
 			if (Region == "Japan")

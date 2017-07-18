@@ -1,4 +1,7 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System.ComponentModel;
+
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
@@ -62,6 +65,36 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public class PCESyncSettings
 		{
+			[DefaultValue(PceControllerType.GamePad)]
+			[DisplayName("Port 1 Device")]
+			[Description("The type of controller plugged into the first controller port")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public PceControllerType Port1 { get; set; } = PceControllerType.GamePad;
+
+			[DefaultValue(PceControllerType.Unplugged)]
+			[DisplayName("Port 2 Device")]
+			[Description("The type of controller plugged into the second controller port")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public PceControllerType Port2 { get; set; } = PceControllerType.Unplugged;
+
+			[DefaultValue(PceControllerType.Unplugged)]
+			[DisplayName("Port 3 Device")]
+			[Description("The type of controller plugged into the third controller port")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public PceControllerType Port3 { get; set; } = PceControllerType.Unplugged;
+
+			[DefaultValue(PceControllerType.Unplugged)]
+			[DisplayName("Port 4 Device")]
+			[Description("The type of controller plugged into the fourth controller port")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public PceControllerType Port4 { get; set; } = PceControllerType.Unplugged;
+
+			[DefaultValue(PceControllerType.Unplugged)]
+			[DisplayName("Port 5 Device")]
+			[Description("The type of controller plugged into the fifth controller port")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public PceControllerType Port5 { get; set; } = PceControllerType.Unplugged;
+
 			public ControllerSetting[] Controllers =
 			{
 				new ControllerSetting { IsConnected = true },
