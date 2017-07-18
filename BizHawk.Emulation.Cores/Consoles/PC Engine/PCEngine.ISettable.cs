@@ -106,13 +106,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			public PCESyncSettings Clone()
 			{
-				var ret = new PCESyncSettings();
-				for (int i = 0; i < Controllers.Length; i++)
-				{
-					ret.Controllers[i].IsConnected = Controllers[i].IsConnected;
-				}
-
-				return ret;
+				return (PCESyncSettings)MemberwiseClone();
 			}
 
 			public class ControllerSetting
@@ -122,15 +116,11 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			public static bool NeedsReboot(PCESyncSettings x, PCESyncSettings y)
 			{
-				for (int i = 0; i < x.Controllers.Length; i++)
-				{
-					if (x.Controllers[i].IsConnected != y.Controllers[i].IsConnected)
-					{
-						return true;
-					}
-				}
-
-				return false;
+				return x.Port1 != y.Port1
+					|| x.Port2 != y.Port2
+					|| x.Port3 != y.Port3
+					|| x.Port4 != y.Port4
+					|| x.Port5 != y.Port5;
 			}
 		}
 	}
