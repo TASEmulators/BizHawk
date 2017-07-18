@@ -48,7 +48,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				_syncSettings.Port3,
 				_syncSettings.Port4,
 				_syncSettings.Port5);
-			//SetControllerButtons(); // TODO: get rid of this method
 		}
 
 		public PCEngine(CoreComm comm, GameInfo game, Disc disc, object Settings, object syncSettings)
@@ -110,7 +109,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				_syncSettings.Port3,
 				_syncSettings.Port4,
 				_syncSettings.Port5);
-			//SetControllerButtons();
 		}
 
 		// ROM

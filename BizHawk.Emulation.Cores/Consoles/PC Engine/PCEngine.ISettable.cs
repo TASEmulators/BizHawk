@@ -38,7 +38,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			bool ret = PCESyncSettings.NeedsReboot(o, _syncSettings);
 			_syncSettings = o;
-			// SetControllerButtons(); // not safe to change the controller during emulation, so instead make it a reboot event
 			return ret;
 		}
 
@@ -95,23 +94,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			[TypeConverter(typeof(DescribableEnumConverter))]
 			public PceControllerType Port5 { get; set; } = PceControllerType.Unplugged;
 
-			public ControllerSetting[] Controllers =
-			{
-				new ControllerSetting { IsConnected = true },
-				new ControllerSetting { IsConnected = false },
-				new ControllerSetting { IsConnected = false },
-				new ControllerSetting { IsConnected = false },
-				new ControllerSetting { IsConnected = false }
-			};
-
 			public PCESyncSettings Clone()
 			{
 				return (PCESyncSettings)MemberwiseClone();
-			}
-
-			public class ControllerSetting
-			{
-				public bool IsConnected { get; set; }
 			}
 
 			public static bool NeedsReboot(PCESyncSettings x, PCESyncSettings y)
