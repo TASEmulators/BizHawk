@@ -92,7 +92,6 @@ void GB_init(GB_gameboy_t *gb)
     gb->input_callback = default_input_callback;
     gb->async_input_callback = default_async_input_callback;
     gb->cartridge_type = &GB_cart_defs[0]; // Default cartridge type
-    gb->audio_quality = 4;
     
     GB_reset(gb);
 }
@@ -107,7 +106,6 @@ void GB_init_cgb(GB_gameboy_t *gb)
     gb->input_callback = default_input_callback;
     gb->async_input_callback = default_async_input_callback;
     gb->cartridge_type = &GB_cart_defs[0]; // Default cartridge type
-    gb->audio_quality = 4;
 
     GB_reset(gb);
 }
@@ -126,9 +124,6 @@ void GB_free(GB_gameboy_t *gb)
     }
     if (gb->rom) {
         free(gb->rom);
-    }
-    if (gb->audio_buffer) {
-        free(gb->audio_buffer);
     }
     if (gb->breakpoints) {
         free(gb->breakpoints);
@@ -262,13 +257,16 @@ uint64_t GB_run_cycles(GB_gameboy_t *gb, uint32_t cycles)
     while (gb->cycles_since_epoch < target) {
         GB_run(gb);
         if (gb->vblank_just_occured) {
-			// TODO: fix these up
         	GB_update_joyp(gb);
         	GB_rtc_run(gb);
-            break;
         }
     }
 	return gb->cycles_since_epoch - start;
+}
+
+uint64_t GB_epoch(GB_gameboy_t *gb)
+{
+	return gb->cycles_since_epoch;
 }
 
 void GB_set_pixels_output(GB_gameboy_t *gb, uint32_t *output)
@@ -340,6 +338,11 @@ void GB_set_rumble_callback(GB_gameboy_t *gb, GB_rumble_callback_t callback)
     gb->rumble_callback = callback;
 }
 
+void GB_set_sample_callback(GB_gameboy_t *gb, GB_sample_callback_t callback)
+{
+	gb->sample_callback = callback;
+}
+
 void GB_set_serial_transfer_start_callback(GB_gameboy_t *gb, GB_serial_transfer_start_callback_t callback)
 {
     gb->serial_transfer_start_callback = callback;
@@ -368,17 +371,6 @@ void GB_serial_set_data(GB_gameboy_t *gb, uint8_t data)
     }
     gb->io_registers[GB_IO_SB] = data;
     gb->io_registers[GB_IO_IF] |= 8;
-}
-
-void GB_set_sample_rate(GB_gameboy_t *gb, unsigned int sample_rate)
-{
-    if (gb->audio_buffer) {
-        free(gb->audio_buffer);
-    }
-    gb->buffer_size = sample_rate / 25; // 40ms delay
-    gb->audio_buffer = malloc(gb->buffer_size * sizeof(*gb->audio_buffer));
-    gb->sample_rate = sample_rate;
-    gb->audio_position = 0;
 }
 
 void GB_disconnect_serial(GB_gameboy_t *gb)

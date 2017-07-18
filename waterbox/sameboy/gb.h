@@ -171,6 +171,7 @@ typedef void (*GB_infrared_callback_t)(GB_gameboy_t *gb, bool on, long cycles_si
 typedef void (*GB_rumble_callback_t)(GB_gameboy_t *gb, bool rumble_on);
 typedef void (*GB_serial_transfer_start_callback_t)(GB_gameboy_t *gb, uint8_t byte_to_send);
 typedef uint8_t (*GB_serial_transfer_end_callback_t)(GB_gameboy_t *gb);
+typedef void (*GB_sample_callback_t)(GB_gameboy_t *gb, GB_sample_t sample, uint64_t clock);
 
 typedef struct {
     bool state;
@@ -379,25 +380,10 @@ struct GB_gameboy_internal_s {
 
         /* I/O */
         uint32_t *screen;
-        GB_sample_t *audio_buffer;
         bool keys[GB_KEY_MAX];
                
         /* Timing */
         uint64_t cycles_since_epoch;
-
-        /* Audio */
-        unsigned buffer_size;
-        unsigned sample_rate;
-        unsigned audio_position;
-        bool audio_stream_started; /* detects first copy request to minimize lag */
-        volatile bool audio_copy_in_progress;
-        volatile bool apu_lock;
-        double apu_sample_cycles;
-        double apu_subsample_cycles;
-        GB_double_sample_t current_supersample;
-        unsigned n_subsamples;
-        unsigned audio_quality;
-        
 
         /* Callbacks */
         void *user_data;
@@ -412,6 +398,7 @@ struct GB_gameboy_internal_s {
         GB_rumble_callback_t rumble_callback;
         GB_serial_transfer_start_callback_t serial_transfer_start_callback;
         GB_serial_transfer_end_callback_t serial_transfer_end_callback;
+		GB_sample_callback_t sample_callback;
                
         /* IR */
         long cycles_since_ir_change;
@@ -466,6 +453,7 @@ void GB_reset(GB_gameboy_t *gb);
 void GB_switch_model_and_reset(GB_gameboy_t *gb, bool is_cgb);
 void GB_run(GB_gameboy_t *gb);
 uint64_t GB_run_cycles(GB_gameboy_t *gb, uint32_t cycles);
+uint64_t GB_epoch(GB_gameboy_t *gb);
 
 typedef enum {
     GB_DIRECT_ACCESS_ROM,
@@ -510,6 +498,7 @@ void GB_set_async_input_callback(GB_gameboy_t *gb, GB_input_callback_t callback)
 void GB_set_rgb_encode_callback(GB_gameboy_t *gb, GB_rgb_encode_callback_t callback);
 void GB_set_infrared_callback(GB_gameboy_t *gb, GB_infrared_callback_t callback);
 void GB_set_rumble_callback(GB_gameboy_t *gb, GB_rumble_callback_t callback);
+void GB_set_sample_callback(GB_gameboy_t *gb, GB_sample_callback_t callback);
 
 /* These APIs are used when using internal clock */
 void GB_set_serial_transfer_start_callback(GB_gameboy_t *gb, GB_serial_transfer_start_callback_t callback);

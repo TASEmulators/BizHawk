@@ -14,12 +14,6 @@ typedef struct
     int16_t right;
 } GB_sample_t;
 
-typedef struct
-{
-    double left;
-    double right;
-} GB_double_sample_t;
-
 /* Not all used on all channels */
 /* All lengths are in APU ticks */
 typedef struct
@@ -59,13 +53,6 @@ typedef struct
     uint8_t right_volume;
     GB_apu_channel_t wave_channels[4];
 } GB_apu_t;
-
-void GB_set_sample_rate(GB_gameboy_t *gb, unsigned int sample_rate);
-/* Quality is the number of subsamples per sampling, for the sake of resampling.
-   1 means on resampling at all, 0 is maximum quality. Default is 4. */
-void GB_set_audio_quality(GB_gameboy_t *gb, unsigned quality);
-void GB_apu_copy_buffer(GB_gameboy_t *gb, GB_sample_t *dest, unsigned int count);
-unsigned GB_apu_get_current_buffer_length(GB_gameboy_t *gb);
 
 #ifdef GB_INTERNAL
 void GB_apu_write(GB_gameboy_t *gb, uint8_t reg, uint8_t value);

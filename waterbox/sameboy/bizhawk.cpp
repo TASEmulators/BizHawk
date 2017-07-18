@@ -1,6 +1,7 @@
 #include <stdint.h>
 #include "../emulibc/emulibc.h"
 #include "../emulibc/waterboxcore.h"
+#include "blip_buf/blip_buf.h"
 
 #define _Static_assert static_assert
 
@@ -14,7 +15,6 @@ static GB_gameboy_t GB;
 
 static void VBlankCallback(GB_gameboy_t *gb)
 {
-
 }
 
 static void LogCallback(GB_gameboy_t *gb, const char *string, GB_log_attributes attributes)
@@ -24,22 +24,19 @@ static void LogCallback(GB_gameboy_t *gb, const char *string, GB_log_attributes 
 
 static uint32_t RgbEncodeCallback(GB_gameboy_t *gb, uint8_t r, uint8_t g, uint8_t b)
 {
-    return b | g << 8 | r << 16 | 0xff000000;
+	return b | g << 8 | r << 16 | 0xff000000;
 }
 
 static void InfraredCallback(GB_gameboy_t *gb, bool on, long cycles_since_last_update)
 {
-
 }
 
 static void RumbleCallback(GB_gameboy_t *gb, bool rumble_on)
 {
-
 }
 
 static void SerialStartCallback(GB_gameboy_t *gb, uint8_t byte_to_send)
 {
-
 }
 
 static uint8_t SerialEndCallback(GB_gameboy_t *gb)
@@ -47,55 +44,83 @@ static uint8_t SerialEndCallback(GB_gameboy_t *gb)
 	return 0;
 }
 
+static blip_t *leftblip;
+static blip_t *rightblip;
+const int SOUND_RATE_GB = 2097152;
+const int SOUND_RATE_SGB = 2147727;
+static uint64_t sound_start_clock;
+static GB_sample_t sample_gb;
+
+static void SampleCallback(GB_gameboy_t *gb, GB_sample_t sample, uint64_t clock)
+{
+	int l = sample.left - sample_gb.left;
+	int r = sample.right - sample_gb.right;
+	if (l)
+		blip_add_delta(leftblip, clock - sound_start_clock, l);
+	if (r)
+		blip_add_delta(rightblip, clock - sound_start_clock, r);
+	sample_gb = sample;
+}
+
 ECL_EXPORT bool Init(bool cgb)
 {
-    if (cgb)
-        GB_init_cgb(&GB);
-    else
-        GB_init(&GB);
-    if (GB_load_boot_rom(&GB, "boot.rom") != 0)
-        return false;
-    
-    if (GB_load_rom(&GB, "game.rom") != 0)
-        return false;
+	if (cgb)
+		GB_init_cgb(&GB);
+	else
+		GB_init(&GB);
+	if (GB_load_boot_rom(&GB, "boot.rom") != 0)
+		return false;
 
-    GB_set_vblank_callback(&GB, VBlankCallback);
-    GB_set_log_callback(&GB, LogCallback);
-    GB_set_rgb_encode_callback(&GB, RgbEncodeCallback);
-    GB_set_infrared_callback(&GB, InfraredCallback);
-    GB_set_rumble_callback(&GB, RumbleCallback);
+	if (GB_load_rom(&GB, "game.rom") != 0)
+		return false;
 
-	GB_set_sample_rate(&GB, 44100);
-	GB_set_audio_quality(&GB, 1);
+	GB_set_vblank_callback(&GB, VBlankCallback);
+	GB_set_log_callback(&GB, LogCallback);
+	GB_set_rgb_encode_callback(&GB, RgbEncodeCallback);
+	GB_set_infrared_callback(&GB, InfraredCallback);
+	GB_set_rumble_callback(&GB, RumbleCallback);
+	GB_set_sample_callback(&GB, SampleCallback);
 
-    return true;
+	leftblip = blip_new(1024);
+	rightblip = blip_new(1024);
+	blip_set_rates(leftblip, SOUND_RATE_GB, 44100);
+	blip_set_rates(rightblip, SOUND_RATE_GB, 44100);
+
+	return true;
 }
 
 struct MyFrameInfo : public FrameInfo
 {
-
 };
+
+static int FrameOverflow;
 
 ECL_EXPORT void FrameAdvance(MyFrameInfo &f)
 {
-    GB_set_pixels_output(&GB, f.VideoBuffer);
+	GB_set_pixels_output(&GB, f.VideoBuffer);
 	for (int i = 0; i < (int)GB_KEY_MAX; i++)
 		GB_set_key_state(&GB, (GB_key_t)i, false);
+	
+	sound_start_clock = GB_epoch(&GB);
 
-    f.Cycles = GB_run_cycles(&GB, 35112);
-	f.Samples = GB_apu_get_current_buffer_length(&GB);
-	GB_apu_copy_buffer(&GB, (GB_sample_t*)f.SoundBuffer, f.Samples);
+	uint32_t target = 35112 - FrameOverflow;
+	f.Cycles = GB_run_cycles(&GB, target);
+	FrameOverflow = f.Cycles - target;
+	blip_end_frame(leftblip, f.Cycles);
+	blip_end_frame(rightblip, f.Cycles);
+	f.Samples = blip_read_samples(leftblip, f.SoundBuffer, 2048, 1);
+	blip_read_samples(rightblip, f.SoundBuffer + 1, 2048, 1);
 	f.Width = 160;
 	f.Height = 144;
 }
 
-static void SetMemoryArea(MemoryArea *m, GB_direct_access_t access, const char* name, int32_t flags)
+static void SetMemoryArea(MemoryArea *m, GB_direct_access_t access, const char *name, int32_t flags)
 {
-    size_t size;
-    m->Name = name;
-    m->Data = GB_get_direct_access(&GB, access, &size, nullptr);
-    m->Size = size;
-    m->Flags = flags;
+	size_t size;
+	m->Name = name;
+	m->Data = GB_get_direct_access(&GB, access, &size, nullptr);
+	m->Size = size;
+	m->Flags = flags;
 }
 
 ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
