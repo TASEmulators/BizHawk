@@ -729,6 +729,15 @@ namespace BizHawk.Client.Common
 									nextEmulator = new Tst(nextComm, pcfxDiscs,
 										(Tst.Settings)GetCoreSettings<Tst>(), (Tst.SyncSettings)GetCoreSyncSettings<Tst>());
 									break;
+								case "GEN":
+									// We are assuming discs only, for now
+									var genDiscs = DiscsFromXml(xmlGame, "GEN", DiscType.MegaCD);
+									if (!genDiscs.Any())
+									{
+										return false;
+									}
+									nextEmulator = new GPGX(nextComm, null, genDiscs, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
+									break;
 								default:
 									return false;
 							}
