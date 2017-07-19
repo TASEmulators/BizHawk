@@ -54,6 +54,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			
 			if (registerAddr == 0x02)
 			{
+				Core._islag = false;
+
 				// Read Output reg B
 				byte temp = Core.con_state;
 				temp = (byte)(temp & ~_ddRb);
