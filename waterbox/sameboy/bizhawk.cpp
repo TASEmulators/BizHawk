@@ -57,6 +57,13 @@ static uint8_t SerialEndCallback(GB_gameboy_t *gb)
 	return 0;
 }
 
+static void (*FrontendInputCallback)();
+
+static void InputCallback(GB_gameboy_t *gb)
+{
+	FrontendInputCallback();
+}
+
 static blip_t *leftblip;
 static blip_t *rightblip;
 const int SOUND_RATE_GB = 2097152;
@@ -146,6 +153,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo &f)
 	}
 	sound_start_clock = GB_epoch(&GB);
 	CurrentFramebuffer = f.VideoBuffer;
+	GB_set_lagged(&GB, true);
 
 	uint32_t target = 35112 - FrameOverflow;
 	f.Cycles = GB_run_cycles(&GB, target);
@@ -166,6 +174,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo &f)
 	f.Samples = blip_read_samples(leftblip, f.SoundBuffer, 2048, 1);
 	blip_read_samples(rightblip, f.SoundBuffer + 1, 2048, 1);
 	CurrentFramebuffer = NULL;
+	f.Lagged = GB_get_lagged(&GB);
 }
 
 static void SetMemoryArea(MemoryArea *m, GB_direct_access_t access, const char *name, int32_t flags)
@@ -194,7 +203,8 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 
 ECL_EXPORT void SetInputCallback(void (*callback)())
 {
-	// TODO
+	FrontendInputCallback = callback;
+	GB_set_input_callback(&GB, callback ? InputCallback : nullptr);
 }
 
 int main()

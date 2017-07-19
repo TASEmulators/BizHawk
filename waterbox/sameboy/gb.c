@@ -43,54 +43,11 @@ void GB_log(GB_gameboy_t *gb, const char *fmt, ...)
     va_end(args);
 }
 
-static char *default_input_callback(GB_gameboy_t *gb)
-{
-    char *expression = NULL;
-    size_t size = 0;
-
-    if (getline(&expression, &size, stdin) == -1) {
-        /* The user doesn't have STDIN or used ^D. We make sure the program keeps running. */
-        GB_set_async_input_callback(gb, NULL); /* Disable async input */
-        return strdup("c");
-    }
-
-    if (!expression) {
-        return strdup("");
-    }
-
-    size_t length = strlen(expression);
-    if (expression[length - 1] == '\n') {
-        expression[length - 1] = 0;
-    }
-    return expression;
-}
-
-static char *default_async_input_callback(GB_gameboy_t *gb)
-{
-#if 0
-    fd_set set;
-    FD_ZERO(&set);
-    FD_SET(STDIN_FILENO, &set);
-    struct timeval time = {0,};
-    if (select(1, &set, NULL, NULL, &time) == 1) {
-        if (feof(stdin)) {
-            GB_set_async_input_callback(gb, NULL); /* Disable async input */
-            return NULL;
-        }
-        return default_input_callback(gb);
-    }
-#endif
-    return NULL;
-}
-
 void GB_init(GB_gameboy_t *gb)
 {
     memset(gb, 0, sizeof(*gb));
     gb->ram = malloc(gb->ram_size = 0x2000);
     gb->vram = malloc(gb->vram_size = 0x2000);
-
-    gb->input_callback = default_input_callback;
-    gb->async_input_callback = default_async_input_callback;
     gb->cartridge_type = &GB_cart_defs[0]; // Default cartridge type
     
     GB_reset(gb);
@@ -102,9 +59,6 @@ void GB_init_sgb(GB_gameboy_t *gb)
     gb->ram = malloc(gb->ram_size = 0x2000);
     gb->vram = malloc(gb->vram_size = 0x2000);
 	gb->is_sgb = true;
-
-    gb->input_callback = default_input_callback;
-    gb->async_input_callback = default_async_input_callback;
     gb->cartridge_type = &GB_cart_defs[0]; // Default cartridge type
     
     GB_reset(gb);
@@ -116,9 +70,6 @@ void GB_init_cgb(GB_gameboy_t *gb)
     gb->ram = malloc(gb->ram_size = 0x2000 * 8);
     gb->vram = malloc(gb->vram_size = 0x2000 * 2);
     gb->is_cgb = true;
-
-    gb->input_callback = default_input_callback;
-    gb->async_input_callback = default_async_input_callback;
     gb->cartridge_type = &GB_cart_defs[0]; // Default cartridge type
 
     GB_reset(gb);
@@ -298,15 +249,7 @@ void GB_set_log_callback(GB_gameboy_t *gb, GB_log_callback_t callback)
 
 void GB_set_input_callback(GB_gameboy_t *gb, GB_input_callback_t callback)
 {
-    if (gb->input_callback == default_input_callback) {
-        gb->async_input_callback = NULL;
-    }
     gb->input_callback = callback;
-}
-
-void GB_set_async_input_callback(GB_gameboy_t *gb, GB_input_callback_t callback)
-{
-    gb->async_input_callback = callback;
 }
 
 void GB_set_rgb_encode_callback(GB_gameboy_t *gb, GB_rgb_encode_callback_t callback)
@@ -541,3 +484,14 @@ void *GB_get_direct_access(GB_gameboy_t *gb, GB_direct_access_t access, size_t *
             return NULL;
     }
 }
+
+void GB_set_lagged(GB_gameboy_t *gb, bool lagged)
+{
+	gb->lagged = lagged;
+}
+
+bool GB_get_lagged(GB_gameboy_t *gb)
+{
+	return gb->lagged;
+}
+

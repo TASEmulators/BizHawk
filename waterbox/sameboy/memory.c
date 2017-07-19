@@ -137,6 +137,9 @@ static uint8_t read_high_memory(GB_gameboy_t *gb, uint16_t addr)
     if (addr < 0xFF80) {
 		if (addr == 0xff00 && gb->is_sgb)
 		{
+			if (gb->input_callback)
+				gb->input_callback(gb);
+			gb->lagged = false;
 			return sgb_read_ff00(gb->cycles_since_epoch);
 		}
 

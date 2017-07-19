@@ -165,7 +165,7 @@ typedef enum {
 
 typedef void (*GB_vblank_callback_t)(GB_gameboy_t *gb);
 typedef void (*GB_log_callback_t)(GB_gameboy_t *gb, const char *string, GB_log_attributes attributes);
-typedef char *(*GB_input_callback_t)(GB_gameboy_t *gb);
+typedef void (*GB_input_callback_t)(GB_gameboy_t *gb);
 typedef uint32_t (*GB_rgb_encode_callback_t)(GB_gameboy_t *gb, uint8_t r, uint8_t g, uint8_t b);
 typedef void (*GB_infrared_callback_t)(GB_gameboy_t *gb, bool on, long cycles_since_last_update);
 typedef void (*GB_rumble_callback_t)(GB_gameboy_t *gb, bool rumble_on);
@@ -382,6 +382,7 @@ struct GB_gameboy_internal_s {
         /* I/O */
         uint32_t *screen;
 		int keys;
+		bool lagged;
                
         /* Timing */
         uint64_t cycles_since_epoch;
@@ -390,7 +391,6 @@ struct GB_gameboy_internal_s {
         void *user_data;
         GB_log_callback_t log_callback;
         GB_input_callback_t input_callback;
-        GB_input_callback_t async_input_callback;
         GB_rgb_encode_callback_t rgb_encode_callback;
         GB_vblank_callback_t vblank_callback;
         GB_infrared_callback_t infrared_callback;
@@ -496,7 +496,6 @@ void GB_queue_infrared_input(GB_gameboy_t *gb, bool state, long cycles_after_pre
 void GB_set_vblank_callback(GB_gameboy_t *gb, GB_vblank_callback_t callback);
 void GB_set_log_callback(GB_gameboy_t *gb, GB_log_callback_t callback);
 void GB_set_input_callback(GB_gameboy_t *gb, GB_input_callback_t callback);
-void GB_set_async_input_callback(GB_gameboy_t *gb, GB_input_callback_t callback);
 void GB_set_rgb_encode_callback(GB_gameboy_t *gb, GB_rgb_encode_callback_t callback);
 void GB_set_infrared_callback(GB_gameboy_t *gb, GB_infrared_callback_t callback);
 void GB_set_rumble_callback(GB_gameboy_t *gb, GB_rumble_callback_t callback);
@@ -511,5 +510,8 @@ uint8_t GB_serial_get_data(GB_gameboy_t *gb);
 void GB_serial_set_data(GB_gameboy_t *gb, uint8_t data);
     
 void GB_disconnect_serial(GB_gameboy_t *gb);
+
+void GB_set_lagged(GB_gameboy_t *gb, bool lagged);
+bool GB_get_lagged(GB_gameboy_t *gb);
 
 #endif /* GB_h */
