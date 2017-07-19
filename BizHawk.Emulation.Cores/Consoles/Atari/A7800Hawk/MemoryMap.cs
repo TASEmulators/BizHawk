@@ -118,6 +118,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					// register 8 is read only and controlled by Maria
 					var temp = addr & 0x1F;
+
 					if (temp != 8)
 						Maria_regs[temp] = value;
 

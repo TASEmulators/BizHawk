@@ -122,7 +122,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// Since long shut down loads up the next zone, this basically loads up the DLL for the first zone
 			sl_DMA_complete = false;
 			do_dma = false;
-			
+			Core.Maria_regs[8] = 0; // we have now left VBLank
+
 			for (int i=0; i<454;i++)
 			{
 				if(i==0 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
@@ -140,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					// schedule an NMI for one maria tick into the future
 					// (but set to 2 since it decrements immediately)
-					//DLI_countdown = 2;
+					DLI_countdown = 2;
 					current_DLL_DLI = false;
 				}
 
@@ -161,14 +162,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			do_dma = false;
 			sl_DMA_complete = false;
 			Core.cpu.RDY = true;
-			Core.Maria_regs[8] = 0; // we have now left VBLank
-
 
 			// Now proceed with the remaining scanlines
 			// the first one is a pre-render line, since we didn't actually put any data into the buffer yet
-			while (scanline < 263)
-			{
-				
+			while (scanline < _screen_height)
+			{				
 				if (cycle == 28 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
 				{
 					Core.cpu_halt_pending = true;
@@ -205,6 +203,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				
 				if (cycle == 440 && !sl_DMA_complete && do_dma && (DMA_phase == DMA_GRAPHICS || DMA_phase == DMA_HEADER))
 				{
+					//Console.WriteLine(scanline);
+
 					if (current_DLL_offset == 0)
 					{
 						DMA_phase = DMA_SHUTDOWN_LAST;
@@ -213,8 +213,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					{
 						DMA_phase = DMA_SHUTDOWN_OTHER;
 					}
-					DMA_phase_counter = 0;
-					
+
+					DMA_phase_counter = 0;				
 				}
 				
 				Core.RunCPUCycle();
@@ -443,6 +443,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							for (int i = 0; i < GFX_Objects[GFX_index, header_counter].width; i++)
 							{
 								addr_t = (ushort)(GFX_Objects[GFX_index, header_counter].addr + (current_DLL_offset << 8) + i);
+
 								if ((current_DLL_H16 && addr_t.Bit(12)) || (current_DLL_H8 && addr_t.Bit(11)))
 								{
 									GFX_Objects[GFX_index, header_counter].obj[i] = 0;
