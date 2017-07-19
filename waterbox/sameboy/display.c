@@ -296,7 +296,10 @@ static void update_display_state(GB_gameboy_t *gb, uint8_t cycles)
         }
         bool should_compare_ly = true;
         uint8_t ly_for_comparison = gb->io_registers[GB_IO_LY] = gb->display_cycles / LINE_LENGTH;
-        
+
+		if (gb->scanline_callback && gb->display_cycles % LINE_LENGTH == 0 && gb->scanline_callback_ly == ly_for_comparison) {
+			gb->scanline_callback(gb->io_registers[GB_IO_LCDC]);
+		}
         
         /* Handle cycle completion. STAT's initial value depends on model and mode */
         if (gb->display_cycles == LCDC_PERIOD) {
@@ -380,7 +383,7 @@ static void update_display_state(GB_gameboy_t *gb, uint8_t cycles)
         /* Handle STAT changes for lines 0-143 */
         else if (gb->display_cycles < LINES * LINE_LENGTH) {
             unsigned position_in_line = gb->display_cycles % LINE_LENGTH;
-            
+
             /* Handle OAM and VRAM blocking */
             /* Todo: verify CGB timing for write blocking */
             if (position_in_line == stat_delay - oam_blocking_rush ||

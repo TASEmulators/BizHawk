@@ -9,13 +9,15 @@ using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using System.Collections.Generic;
 using BizHawk.Emulation.Common;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
 	public partial class GBGPUView : Form, IToolFormAutoConfig
 	{
 		[RequiredService]
-		public Gameboy Gb { get; private set; }
+		public IGameboyCommon Gb { get; private set; }
 
 		// TODO: freeze semantics are a bit weird: details for a mouseover or freeze are taken from the current
 		// state, not the state at the last callback (and so can be quite different when update is set to manual).
@@ -32,11 +34,8 @@ namespace BizHawk.Client.EmuHawk
 		// g' = 8.25g
 		// b' = 8.25b
 
-		// gambatte doesn't modify these memory locations unless you reconstruct, so we can store
-		private IntPtr _vram;
-		private IntPtr _bgpal;
-		private IntPtr _sppal;
-		private IntPtr _oam;
+
+		private GPUMemoryAreas _memory;
 
 		private bool _cgb; // set once at start
 		private int _lcdc; // set at each callback
@@ -89,13 +88,9 @@ namespace BizHawk.Client.EmuHawk
 			_cgb = Gb.IsCGBMode();
 			_lcdc = 0;
 
-			// TODO: can this be a required Emulator Service, and let the tool manage the logic of closing?
-			if (!Gb.GetGPUMemoryAreas(out _vram, out _bgpal, out _sppal, out _oam))
-			{
-				if (Visible)
-					Close();
-			}
-			tilespal = _bgpal;
+			_memory = Gb.GetGPU();
+
+			tilespal = _memory.Bgpal;
 
 			if (_cgb)
 				label4.Enabled = true;
@@ -357,112 +352,120 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		void ScanlineCallback(int lcdc)
+		void ScanlineCallback(byte lcdc)
 		{
-			_lcdc = lcdc;
-			// set alpha on all pixels
-			unsafe
+			using (_memory.EnterExit())
 			{
-				int* p = (int*)_bgpal;
-				for (int i = 0; i < 32; i++)
-					p[i] |= unchecked((int)0xff000000);
-				p = (int*)_sppal;
-				for (int i = 0; i < 32; i++)
-					p[i] |= unchecked((int)0xff000000);
-				int c = Spriteback.ToArgb();
-				for (int i = 0; i < 32; i += 4)
-					p[i] = c;
-			}
+				var _bgpal = _memory.Bgpal;
+				var _sppal = _memory.Sppal;
+				var _oam = _memory.Oam;
+				var _vram = _memory.Vram;
 
-			// bg maps
-			if (!_cgb)
-			{
-				DrawBGDMG(
-					bmpViewBG.BMP,
-					_vram + (lcdc.Bit(3) ? 0x1c00 : 0x1800),
-					_vram + (lcdc.Bit(4) ? 0x0000 : 0x1000),
-					!lcdc.Bit(4),
-					_bgpal);
+				_lcdc = lcdc;
+				// set alpha on all pixels
+				// TODO: RE: Spriteback, you can't muck with Sameboy in this way due to how SGB reads stuff...?
+				/*unsafe
+				{
+					int* p = (int*)_bgpal;
+					for (int i = 0; i < 32; i++)
+						p[i] |= unchecked((int)0xff000000);
+					p = (int*)_sppal;
+					for (int i = 0; i < 32; i++)
+						p[i] |= unchecked((int)0xff000000);
+					int c = Spriteback.ToArgb();
+					for (int i = 0; i < 32; i += 4)
+						p[i] = c;
+				}*/
 
-				DrawBGDMG(
-					bmpViewWin.BMP,
-					_vram + (lcdc.Bit(6) ? 0x1c00 : 0x1800),
-					_vram + 0x1000, // force win to second tile bank???
-					true,
-					_bgpal);
-			}
-			else
-			{
-				DrawBGCGB(
-					bmpViewBG.BMP,
-					_vram + (lcdc.Bit(3) ? 0x1c00 : 0x1800),
-					_vram + (lcdc.Bit(4) ? 0x0000 : 0x1000),
-					!lcdc.Bit(4),
-					_bgpal);
+				// bg maps
+				if (!_cgb)
+				{
+					DrawBGDMG(
+						bmpViewBG.BMP,
+						_vram + (lcdc.Bit(3) ? 0x1c00 : 0x1800),
+						_vram + (lcdc.Bit(4) ? 0x0000 : 0x1000),
+						!lcdc.Bit(4),
+						_bgpal);
 
-				DrawBGCGB(
-					bmpViewWin.BMP,
-					_vram + (lcdc.Bit(6) ? 0x1c00 : 0x1800),
-					_vram + 0x1000, // force win to second tile bank???
-					true,
-					_bgpal);
-			}
-			bmpViewBG.Refresh();
-			bmpViewWin.Refresh();
+					DrawBGDMG(
+						bmpViewWin.BMP,
+						_vram + (lcdc.Bit(6) ? 0x1c00 : 0x1800),
+						_vram + 0x1000, // force win to second tile bank???
+						true,
+						_bgpal);
+				}
+				else
+				{
+					DrawBGCGB(
+						bmpViewBG.BMP,
+						_vram + (lcdc.Bit(3) ? 0x1c00 : 0x1800),
+						_vram + (lcdc.Bit(4) ? 0x0000 : 0x1000),
+						!lcdc.Bit(4),
+						_bgpal);
 
-			// tile display
-			// TODO: user selects palette to use, instead of fixed palette 0
-			// or possibly "smart" where, if a tile is in use, it's drawn with one of the palettes actually being used with it?
-			DrawTiles(bmpViewTiles1.BMP, _vram, tilespal);
-			bmpViewTiles1.Refresh();
-			if (_cgb)
-			{
-				DrawTiles(bmpViewTiles2.BMP, _vram + 0x2000, tilespal);
-				bmpViewTiles2.Refresh();
-			}
+					DrawBGCGB(
+						bmpViewWin.BMP,
+						_vram + (lcdc.Bit(6) ? 0x1c00 : 0x1800),
+						_vram + 0x1000, // force win to second tile bank???
+						true,
+						_bgpal);
+				}
+				bmpViewBG.Refresh();
+				bmpViewWin.Refresh();
 
-			// palettes
-			if (_cgb)
-			{
-				bmpViewBGPal.ChangeBitmapSize(8, 4);
-				if (bmpViewBGPal.Width != 128)
-					bmpViewBGPal.Width = 128;
-				bmpViewSPPal.ChangeBitmapSize(8, 4);
-				if (bmpViewSPPal.Width != 128)
-					bmpViewSPPal.Width = 128;
-				DrawPal(bmpViewBGPal.BMP, _bgpal, 8);
-				DrawPal(bmpViewSPPal.BMP, _sppal, 8);
-			}
-			else
-			{
-				bmpViewBGPal.ChangeBitmapSize(1, 4);
-				if (bmpViewBGPal.Width != 16)
-					bmpViewBGPal.Width = 16;
-				bmpViewSPPal.ChangeBitmapSize(2, 4);
-				if (bmpViewSPPal.Width != 32)
-					bmpViewSPPal.Width = 32;
-				DrawPal(bmpViewBGPal.BMP, _bgpal, 1);
-				DrawPal(bmpViewSPPal.BMP, _sppal, 2);
-			}
-			bmpViewBGPal.Refresh();
-			bmpViewSPPal.Refresh();
+				// tile display
+				// TODO: user selects palette to use, instead of fixed palette 0
+				// or possibly "smart" where, if a tile is in use, it's drawn with one of the palettes actually being used with it?
+				DrawTiles(bmpViewTiles1.BMP, _vram, tilespal);
+				bmpViewTiles1.Refresh();
+				if (_cgb)
+				{
+					DrawTiles(bmpViewTiles2.BMP, _vram + 0x2000, tilespal);
+					bmpViewTiles2.Refresh();
+				}
 
-			// oam
-			if (lcdc.Bit(2)) // 8x16
-			{
-				bmpViewOAM.ChangeBitmapSize(320, 16);
-				if (bmpViewOAM.Height != 16)
-					bmpViewOAM.Height = 16;
-			}
-			else
-			{
-				bmpViewOAM.ChangeBitmapSize(320, 8);
-				if (bmpViewOAM.Height != 8)
-					bmpViewOAM.Height = 8;
-			}
-			DrawOam(bmpViewOAM.BMP, _oam, _vram, _sppal, lcdc.Bit(2), _cgb);
-			bmpViewOAM.Refresh();
+				// palettes
+				if (_cgb)
+				{
+					bmpViewBGPal.ChangeBitmapSize(8, 4);
+					if (bmpViewBGPal.Width != 128)
+						bmpViewBGPal.Width = 128;
+					bmpViewSPPal.ChangeBitmapSize(8, 4);
+					if (bmpViewSPPal.Width != 128)
+						bmpViewSPPal.Width = 128;
+					DrawPal(bmpViewBGPal.BMP, _bgpal, 8);
+					DrawPal(bmpViewSPPal.BMP, _sppal, 8);
+				}
+				else
+				{
+					bmpViewBGPal.ChangeBitmapSize(1, 4);
+					if (bmpViewBGPal.Width != 16)
+						bmpViewBGPal.Width = 16;
+					bmpViewSPPal.ChangeBitmapSize(2, 4);
+					if (bmpViewSPPal.Width != 32)
+						bmpViewSPPal.Width = 32;
+					DrawPal(bmpViewBGPal.BMP, _bgpal, 1);
+					DrawPal(bmpViewSPPal.BMP, _sppal, 2);
+				}
+				bmpViewBGPal.Refresh();
+				bmpViewSPPal.Refresh();
 
+				// oam
+				if (lcdc.Bit(2)) // 8x16
+				{
+					bmpViewOAM.ChangeBitmapSize(320, 16);
+					if (bmpViewOAM.Height != 16)
+						bmpViewOAM.Height = 16;
+				}
+				else
+				{
+					bmpViewOAM.ChangeBitmapSize(320, 8);
+					if (bmpViewOAM.Height != 8)
+						bmpViewOAM.Height = 8;
+				}
+				DrawOam(bmpViewOAM.BMP, _oam, _vram, _sppal, lcdc.Bit(2), _cgb);
+				bmpViewOAM.Refresh();
+			}
 			// try to run the current mouseover, to refresh if the mouse is being held over a pane while the emulator runs
 			// this doesn't really work well; the update rate seems to be throttled
 			MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, Cursor.Position.X, Cursor.Position.Y, 0);
@@ -514,7 +517,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void buttonRefresh_Click(object sender, EventArgs e)
 		{
-			if (cbscanline == -2 && Gb != null)
+			if (cbscanline == -2)
 				Gb.SetScanlineCallback(ScanlineCallback, -2);
 		}
 
@@ -614,145 +617,177 @@ namespace BizHawk.Client.EmuHawk
 
 		private unsafe void PaletteMouseover(int x, int y, bool sprite)
 		{
-			bmpViewDetails.ChangeBitmapSize(8, 10);
-			if (bmpViewDetails.Height != 80)
-				bmpViewDetails.Height = 80;
-			var sb = new StringBuilder();
-			x /= 16;
-			y /= 16;
-			int* pal = (int*)(sprite ? _sppal : _bgpal) + x * 4;
-			int color = pal[y];
-
-			sb.AppendLine(string.Format("Palette {0}", x));
-			sb.AppendLine(string.Format("Color {0}", y));
-			sb.AppendLine(string.Format("(R,G,B) = ({0},{1},{2})", color >> 16 & 255, color >> 8 & 255, color & 255));
-
-			var lockdata = bmpViewDetails.BMP.LockBits(new Rectangle(0, 0, 8, 10), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			int* dest = (int*)lockdata.Scan0;
-			int pitch = lockdata.Stride / sizeof(int);
-
-			for (int py = 0; py < 10; py++)
+			using (_memory.EnterExit())
 			{
-				for (int px = 0; px < 8; px++)
+				var _bgpal = _memory.Bgpal;
+				var _sppal = _memory.Sppal;
+				var _oam = _memory.Oam;
+				var _vram = _memory.Vram;
+
+				bmpViewDetails.ChangeBitmapSize(8, 10);
+				if (bmpViewDetails.Height != 80)
+					bmpViewDetails.Height = 80;
+				var sb = new StringBuilder();
+				x /= 16;
+				y /= 16;
+				int* pal = (int*)(sprite ? _sppal : _bgpal) + x * 4;
+				int color = pal[y];
+
+				sb.AppendLine(string.Format("Palette {0}", x));
+				sb.AppendLine(string.Format("Color {0}", y));
+				sb.AppendLine(string.Format("(R,G,B) = ({0},{1},{2})", color >> 16 & 255, color >> 8 & 255, color & 255));
+
+				var lockdata = bmpViewDetails.BMP.LockBits(new Rectangle(0, 0, 8, 10), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				int* dest = (int*)lockdata.Scan0;
+				int pitch = lockdata.Stride / sizeof(int);
+
+				for (int py = 0; py < 10; py++)
 				{
-					if (py < 8)
-						*dest++ = color;
-					else
-						*dest++ = pal[px / 2];
+					for (int px = 0; px < 8; px++)
+					{
+						if (py < 8)
+							*dest++ = color;
+						else
+							*dest++ = pal[px / 2];
+					}
+					dest -= 8;
+					dest += pitch;
 				}
-				dest -= 8;
-				dest += pitch;
+				bmpViewDetails.BMP.UnlockBits(lockdata);
+				labelDetails.Text = sb.ToString();
+				bmpViewDetails.Refresh();
 			}
-			bmpViewDetails.BMP.UnlockBits(lockdata);
-			labelDetails.Text = sb.ToString();
-			bmpViewDetails.Refresh();
 		}
 
 		unsafe void TileMouseover(int x, int y, bool secondbank)
 		{
-			// todo: draw with a specific palette
-			bmpViewDetails.ChangeBitmapSize(8, 8);
-			if (bmpViewDetails.Height != 64)
-				bmpViewDetails.Height = 64;
-			var sb = new StringBuilder();
-			x /= 8;
-			y /= 8;
-			int tileindex = y * 16 + x;
-			int tileoffs = tileindex * 16;
-			if (_cgb)
-				sb.AppendLine(string.Format("Tile #{0} @{2}:{1:x4}", tileindex, tileoffs + 0x8000, secondbank ? 1 : 0));
-			else
-				sb.AppendLine(string.Format("Tile #{0} @{1:x4}", tileindex, tileoffs + 0x8000));
+			using (_memory.EnterExit())
+			{
+				var _bgpal = _memory.Bgpal;
+				var _sppal = _memory.Sppal;
+				var _oam = _memory.Oam;
+				var _vram = _memory.Vram;
 
-			var lockdata = bmpViewDetails.BMP.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			DrawTile((byte*)_vram + tileoffs + (secondbank ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)tilespal);
-			bmpViewDetails.BMP.UnlockBits(lockdata);
-			labelDetails.Text = sb.ToString();
-			bmpViewDetails.Refresh();
+				// todo: draw with a specific palette
+				bmpViewDetails.ChangeBitmapSize(8, 8);
+				if (bmpViewDetails.Height != 64)
+					bmpViewDetails.Height = 64;
+				var sb = new StringBuilder();
+				x /= 8;
+				y /= 8;
+				int tileindex = y * 16 + x;
+				int tileoffs = tileindex * 16;
+				if (_cgb)
+					sb.AppendLine(string.Format("Tile #{0} @{2}:{1:x4}", tileindex, tileoffs + 0x8000, secondbank ? 1 : 0));
+				else
+					sb.AppendLine(string.Format("Tile #{0} @{1:x4}", tileindex, tileoffs + 0x8000));
+
+				var lockdata = bmpViewDetails.BMP.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				DrawTile((byte*)_vram + tileoffs + (secondbank ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)tilespal);
+				bmpViewDetails.BMP.UnlockBits(lockdata);
+				labelDetails.Text = sb.ToString();
+				bmpViewDetails.Refresh();
+			}
 		}
 
 		unsafe void TilemapMouseover(int x, int y, bool win)
 		{
-			bmpViewDetails.ChangeBitmapSize(8, 8);
-			if (bmpViewDetails.Height != 64)
-				bmpViewDetails.Height = 64;
-			var sb = new StringBuilder();
-			bool secondmap = win ? _lcdc.Bit(6) : _lcdc.Bit(3);
-			int mapoffs = secondmap ? 0x1c00 : 0x1800;
-			x /= 8;
-			y /= 8;
-			mapoffs += y * 32 + x;
-			byte* mapbase = (byte*)_vram + mapoffs;
-			int tileindex = mapbase[0];
-			if (win || !_lcdc.Bit(4)) // 0x9000 base
-				if (tileindex < 128)
-					tileindex += 256; // compute all if from 0x8000 base
-			int tileoffs = tileindex * 16;
-			var lockdata = bmpViewDetails.BMP.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			if (!_cgb)
+			using (_memory.EnterExit())
 			{
-				sb.AppendLine(string.Format("{0} Map ({1},{2}) @{3:x4}", win ? "Win" : "BG", x, y, mapoffs + 0x8000));
-				sb.AppendLine(string.Format("  Tile #{0} @{1:x4}", tileindex, tileoffs + 0x8000));
-				DrawTile((byte*)_vram + tileoffs, (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)_bgpal);
-			}
-			else
-			{
-				int tileext = mapbase[8192];
+				var _bgpal = _memory.Bgpal;
+				var _sppal = _memory.Sppal;
+				var _oam = _memory.Oam;
+				var _vram = _memory.Vram;
 
-				sb.AppendLine(string.Format("{0} Map ({1},{2}) @{3:x4}", win ? "Win" : "BG", x, y, mapoffs + 0x8000));
-				sb.AppendLine(string.Format("  Tile #{0} @{2}:{1:x4}", tileindex, tileoffs + 0x8000, tileext.Bit(3) ? 1 : 0));
-				sb.AppendLine(string.Format("  Palette {0}", tileext & 7));
-				sb.AppendLine(string.Format("  Flags {0}{1}{2}", tileext.Bit(5) ? 'H' : ' ', tileext.Bit(6) ? 'V' : ' ', tileext.Bit(7) ? 'P' : ' '));
-				DrawTileHv((byte*)_vram + tileoffs + (tileext.Bit(3) ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)_bgpal + 4 * (tileext & 7), tileext.Bit(5), tileext.Bit(6));
+				bmpViewDetails.ChangeBitmapSize(8, 8);
+				if (bmpViewDetails.Height != 64)
+					bmpViewDetails.Height = 64;
+				var sb = new StringBuilder();
+				bool secondmap = win ? _lcdc.Bit(6) : _lcdc.Bit(3);
+				int mapoffs = secondmap ? 0x1c00 : 0x1800;
+				x /= 8;
+				y /= 8;
+				mapoffs += y * 32 + x;
+				byte* mapbase = (byte*)_vram + mapoffs;
+				int tileindex = mapbase[0];
+				if (win || !_lcdc.Bit(4)) // 0x9000 base
+					if (tileindex < 128)
+						tileindex += 256; // compute all if from 0x8000 base
+				int tileoffs = tileindex * 16;
+				var lockdata = bmpViewDetails.BMP.LockBits(new Rectangle(0, 0, 8, 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				if (!_cgb)
+				{
+					sb.AppendLine(string.Format("{0} Map ({1},{2}) @{3:x4}", win ? "Win" : "BG", x, y, mapoffs + 0x8000));
+					sb.AppendLine(string.Format("  Tile #{0} @{1:x4}", tileindex, tileoffs + 0x8000));
+					DrawTile((byte*)_vram + tileoffs, (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)_bgpal);
+				}
+				else
+				{
+					int tileext = mapbase[8192];
+
+					sb.AppendLine(string.Format("{0} Map ({1},{2}) @{3:x4}", win ? "Win" : "BG", x, y, mapoffs + 0x8000));
+					sb.AppendLine(string.Format("  Tile #{0} @{2}:{1:x4}", tileindex, tileoffs + 0x8000, tileext.Bit(3) ? 1 : 0));
+					sb.AppendLine(string.Format("  Palette {0}", tileext & 7));
+					sb.AppendLine(string.Format("  Flags {0}{1}{2}", tileext.Bit(5) ? 'H' : ' ', tileext.Bit(6) ? 'V' : ' ', tileext.Bit(7) ? 'P' : ' '));
+					DrawTileHv((byte*)_vram + tileoffs + (tileext.Bit(3) ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)_bgpal + 4 * (tileext & 7), tileext.Bit(5), tileext.Bit(6));
+				}
+				bmpViewDetails.BMP.UnlockBits(lockdata);
+				labelDetails.Text = sb.ToString();
+				bmpViewDetails.Refresh();
 			}
-			bmpViewDetails.BMP.UnlockBits(lockdata);
-			labelDetails.Text = sb.ToString();
-			bmpViewDetails.Refresh();
 		}
 
 		unsafe void SpriteMouseover(int x, int y)
 		{
-			bool tall = _lcdc.Bit(2);
-			x /= 8;
-			y /= 8;
-			bmpViewDetails.ChangeBitmapSize(8, tall ? 16 : 8);
-			if (bmpViewDetails.Height != bmpViewDetails.BMP.Height * 8)
-				bmpViewDetails.Height = bmpViewDetails.BMP.Height * 8;
-			var sb = new StringBuilder();
+			using (_memory.EnterExit())
+			{
+				var _bgpal = _memory.Bgpal;
+				var _sppal = _memory.Sppal;
+				var _oam = _memory.Oam;
+				var _vram = _memory.Vram;
 
-			byte* oament = (byte*)_oam + 4 * x;
-			int sy = oament[0];
-			int sx = oament[1];
-			int tilenum = oament[2];
-			int flags = oament[3];
-			bool hflip = flags.Bit(5);
-			bool vflip = flags.Bit(6);
-			if (tall)
-				tilenum = vflip ? tilenum | 1 : tilenum & ~1;
-			int tileoffs = tilenum * 16;
-			sb.AppendLine(string.Format("Sprite #{0} @{1:x4}", x, 4 * x + 0xfe00));
-			sb.AppendLine(string.Format("  (x,y) = ({0},{1})", sx, sy));
-			var lockdata = bmpViewDetails.BMP.LockBits(new Rectangle(0, 0, 8, tall ? 16 : 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-			if (_cgb)
-			{
-				sb.AppendLine(string.Format("  Tile #{0} @{2}:{1:x4}", y == 1 ? tilenum ^ 1 : tilenum, tileoffs + 0x8000, flags.Bit(3) ? 1 : 0));
-				sb.AppendLine(string.Format("  Palette {0}", flags & 7));
-				DrawTileHv((byte*)_vram + tileoffs + (flags.Bit(3) ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)_sppal + 4 * (flags & 7), hflip, vflip);
+				bool tall = _lcdc.Bit(2);
+				x /= 8;
+				y /= 8;
+				bmpViewDetails.ChangeBitmapSize(8, tall ? 16 : 8);
+				if (bmpViewDetails.Height != bmpViewDetails.BMP.Height * 8)
+					bmpViewDetails.Height = bmpViewDetails.BMP.Height * 8;
+				var sb = new StringBuilder();
+
+				byte* oament = (byte*)_oam + 4 * x;
+				int sy = oament[0];
+				int sx = oament[1];
+				int tilenum = oament[2];
+				int flags = oament[3];
+				bool hflip = flags.Bit(5);
+				bool vflip = flags.Bit(6);
 				if (tall)
-					DrawTileHv((byte*)_vram + (tileoffs ^ 16) + (flags.Bit(3) ? 8192 : 0), (int*)(lockdata.Scan0 + lockdata.Stride * 8), lockdata.Stride / sizeof(int), (int*)_sppal + 4 * (flags & 7), hflip, vflip);
+					tilenum = vflip ? tilenum | 1 : tilenum & ~1;
+				int tileoffs = tilenum * 16;
+				sb.AppendLine(string.Format("Sprite #{0} @{1:x4}", x, 4 * x + 0xfe00));
+				sb.AppendLine(string.Format("  (x,y) = ({0},{1})", sx, sy));
+				var lockdata = bmpViewDetails.BMP.LockBits(new Rectangle(0, 0, 8, tall ? 16 : 8), System.Drawing.Imaging.ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+				if (_cgb)
+				{
+					sb.AppendLine(string.Format("  Tile #{0} @{2}:{1:x4}", y == 1 ? tilenum ^ 1 : tilenum, tileoffs + 0x8000, flags.Bit(3) ? 1 : 0));
+					sb.AppendLine(string.Format("  Palette {0}", flags & 7));
+					DrawTileHv((byte*)_vram + tileoffs + (flags.Bit(3) ? 8192 : 0), (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)_sppal + 4 * (flags & 7), hflip, vflip);
+					if (tall)
+						DrawTileHv((byte*)_vram + (tileoffs ^ 16) + (flags.Bit(3) ? 8192 : 0), (int*)(lockdata.Scan0 + lockdata.Stride * 8), lockdata.Stride / sizeof(int), (int*)_sppal + 4 * (flags & 7), hflip, vflip);
+				}
+				else
+				{
+					sb.AppendLine(string.Format("  Tile #{0} @{1:x4}", y == 1 ? tilenum ^ 1 : tilenum, tileoffs + 0x8000));
+					sb.AppendLine(string.Format("  Palette {0}", flags.Bit(4) ? 1 : 0));
+					DrawTileHv((byte*)_vram + tileoffs, (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)_sppal + (flags.Bit(4) ? 4 : 0), hflip, vflip);
+					if (tall)
+						DrawTileHv((byte*)_vram + (tileoffs ^ 16), (int*)(lockdata.Scan0 + lockdata.Stride * 8), lockdata.Stride / sizeof(int), (int*)_sppal + 4 * (flags.Bit(4) ? 4 : 0), hflip, vflip);
+				}
+				sb.AppendLine(string.Format("  Flags {0}{1}{2}", hflip ? 'H' : ' ', vflip ? 'V' : ' ', flags.Bit(7) ? 'P' : ' '));
+				bmpViewDetails.BMP.UnlockBits(lockdata);
+				labelDetails.Text = sb.ToString();
+				bmpViewDetails.Refresh();
 			}
-			else
-			{
-				sb.AppendLine(string.Format("  Tile #{0} @{1:x4}", y == 1 ? tilenum ^ 1 : tilenum, tileoffs + 0x8000));
-				sb.AppendLine(string.Format("  Palette {0}", flags.Bit(4) ? 1 : 0));
-				DrawTileHv((byte*)_vram + tileoffs, (int*)lockdata.Scan0, lockdata.Stride / sizeof(int), (int*)_sppal + (flags.Bit(4) ? 4 : 0), hflip, vflip);
-				if (tall)
-					DrawTileHv((byte*)_vram + (tileoffs ^ 16), (int*)(lockdata.Scan0 + lockdata.Stride * 8), lockdata.Stride / sizeof(int), (int*)_sppal + 4 * (flags.Bit(4) ? 4 : 0), hflip, vflip);
-			}
-			sb.AppendLine(string.Format("  Flags {0}{1}{2}", hflip ? 'H' : ' ', vflip ? 'V' : ' ', flags.Bit(7) ? 'P' : ' '));
-			bmpViewDetails.BMP.UnlockBits(lockdata);
-			labelDetails.Text = sb.ToString();
-			bmpViewDetails.Refresh();
 		}
 
 		private void bmpViewBG_MouseEnter(object sender, EventArgs e)
@@ -882,9 +917,9 @@ namespace BizHawk.Client.EmuHawk
 			else if (e.Button == MouseButtons.Left)
 			{
 				if (sender == bmpViewBGPal)
-					tilespal = _bgpal + e.X / 16 * 16;
+					tilespal = _memory.Bgpal + e.X / 16 * 16;
 				else if (sender == bmpViewSPPal)
-					tilespal = _sppal + e.X / 16 * 16;
+					tilespal = _memory.Sppal + e.X / 16 * 16;
 			}
 		}
 

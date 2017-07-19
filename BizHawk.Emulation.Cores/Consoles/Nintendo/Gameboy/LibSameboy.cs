@@ -33,5 +33,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		[BizImport(CC)]
 		public abstract bool Init(bool cgb, byte[] spc, int spclen);
+
+		[BizImport(CC)]
+		public abstract void GetGpuMemory(IntPtr[] ptrs);
+
+		[BizImport(CC)]
+		public abstract void SetScanlineCallback(ScanlineCallback callback, int ly);
+
+		[BizImport(CC)]
+		public abstract byte GetIoReg(byte port);
 	}
 }

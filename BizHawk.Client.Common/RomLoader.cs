@@ -921,8 +921,8 @@ namespace BizHawk.Client.Common
 								if (!Global.Config.GB_AsSGB)
 								{
 									//core = CoreInventory.Instance["GB", "Pizza Boy"];
-									//core = CoreInventory.Instance["GB", "Gambatte"];
-									core = CoreInventory.Instance["GB", "SameBoy"];
+									core = CoreInventory.Instance["GB", "Gambatte"];
+									//core = CoreInventory.Instance["GB", "SameBoy"];
 								}
 								else
 								{

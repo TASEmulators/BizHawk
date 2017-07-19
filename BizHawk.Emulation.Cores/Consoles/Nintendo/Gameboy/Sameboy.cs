@@ -88,6 +88,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			_exe.RemoveReadonlyFile("boot.rom");
 
 			PostInit();
+
+			var scratch = new IntPtr[4];
+			_core.GetGpuMemory(scratch);
+			_gpuMemory = new GPUMemoryAreas(scratch[0], scratch[1], scratch[3], scratch[2], _exe);
 		}
 
 		#region Controller
@@ -152,6 +156,53 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			};
 		}
 
+		protected override void FrameAdvancePost()
+		{
+			if (_scanlineCallback != null && _scanlineCallbackLine == -1)
+				_scanlineCallback(_core.GetIoReg(0x40));
+		}
+
+		protected override void LoadStateBinaryInternal(BinaryReader reader)
+		{
+			UpdateCoreScanlineCallback(false);
+		}
+
 		public bool IsCGBMode() => _cgb;
+
+		private GPUMemoryAreas _gpuMemory;
+
+		public GPUMemoryAreas GetGPU() => _gpuMemory;
+		private ScanlineCallback _scanlineCallback;
+		private int _scanlineCallbackLine;
+
+		public void SetScanlineCallback(ScanlineCallback callback, int line)
+		{
+			_scanlineCallback = callback;
+			_scanlineCallbackLine = line;
+			UpdateCoreScanlineCallback(true);
+		}
+
+		private void UpdateCoreScanlineCallback(bool now)
+		{
+			if (_scanlineCallback == null)
+			{
+				_core.SetScanlineCallback(null, -1);
+			}
+			else
+			{
+				if (_scanlineCallbackLine >= 0 && _scanlineCallbackLine <= 153)
+				{
+					_core.SetScanlineCallback(_scanlineCallback, _scanlineCallbackLine);
+				}
+				else
+				{
+					_core.SetScanlineCallback(null, -1);
+					if (_scanlineCallbackLine == -2 && now)
+					{
+						_scanlineCallback(_core.GetIoReg(0x40));
+					}
+				}
+			}
+		}
 	}
 }

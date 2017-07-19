@@ -207,6 +207,24 @@ ECL_EXPORT void SetInputCallback(void (*callback)())
 	GB_set_input_callback(&GB, callback ? InputCallback : nullptr);
 }
 
+ECL_EXPORT void GetGpuMemory(void **p)
+{
+	p[0] = GB_get_direct_access(&GB, GB_DIRECT_ACCESS_VRAM, nullptr, nullptr);
+	p[1] = GB_get_direct_access(&GB, GB_DIRECT_ACCESS_OAM, nullptr, nullptr);
+	p[2] = GB.background_palettes_rgb;
+	p[3] = GB.sprite_palettes_rgb;
+}
+
+ECL_EXPORT void SetScanlineCallback(void (*callback)(uint8_t), int ly)
+{
+	GB.scanline_callback = callback;
+	GB.scanline_callback_ly = ly;
+}
+ECL_EXPORT uint8_t GetIoReg(uint8_t port)
+{
+	return GB.io_registers[port];
+}
+
 int main()
 {
 	return 0;

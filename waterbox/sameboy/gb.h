@@ -172,6 +172,7 @@ typedef void (*GB_rumble_callback_t)(GB_gameboy_t *gb, bool rumble_on);
 typedef void (*GB_serial_transfer_start_callback_t)(GB_gameboy_t *gb, uint8_t byte_to_send);
 typedef uint8_t (*GB_serial_transfer_end_callback_t)(GB_gameboy_t *gb);
 typedef void (*GB_sample_callback_t)(GB_gameboy_t *gb, GB_sample_t sample, uint64_t clock);
+typedef void (*GB_scanline_callback_t)(uint8_t lcdc);
 
 typedef struct {
     bool state;
@@ -400,7 +401,10 @@ struct GB_gameboy_internal_s {
         GB_serial_transfer_start_callback_t serial_transfer_start_callback;
         GB_serial_transfer_end_callback_t serial_transfer_end_callback;
 		GB_sample_callback_t sample_callback;
-               
+
+		GB_scanline_callback_t scanline_callback;
+        int scanline_callback_ly;
+
         /* IR */
         long cycles_since_ir_change;
         long cycles_since_input_ir_change;

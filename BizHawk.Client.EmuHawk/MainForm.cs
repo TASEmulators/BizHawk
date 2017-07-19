@@ -33,6 +33,7 @@ using BizHawk.Emulation.Common.Base_Implementations;
 using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1743,6 +1744,10 @@ namespace BizHawk.Client.EmuHawk
 					else if (Emulator is Snes9x)
 					{
 						sNESToolStripMenuItem.Visible = true;
+					}
+					else if (Emulator is Sameboy)
+					{
+						GBSubMenu.Visible = true;
 					}
 					break;
 				case "Coleco":
