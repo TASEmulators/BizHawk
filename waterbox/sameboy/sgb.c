@@ -332,7 +332,7 @@ static void cmd_attr_chr()
 		return;
 	}
 	int npacket = (n + 87) / 64;
-	if ((sgb.command[0] & 7) != npacket)
+	if ((sgb.command[0] & 7) < npacket)
 	{
 		utils_log("SGB: cmd_attr_chr bad length\n");
 		return;
@@ -343,9 +343,9 @@ static void cmd_attr_chr()
 	if (y > 17)
 		y = 17;
 	int vertical = sgb.command[5];
-	for (int i = 0; i < 360; i++)
+	for (int i = 0; i < n; i++)
 	{
-		uint8_t v = i / 4 + 6;
+		uint8_t v = sgb.command[i / 4 + 6];
 		int a = v >> (2 * (3 - (i & 3))) & 3;
 		dst[y * 20 + x] = a;
 		if (vertical)
