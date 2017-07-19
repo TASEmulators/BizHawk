@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public MOS6502X cpu;
 		public Maria maria;
-		private bool _isPAL;
+		public bool _isPAL;
 		public M6532 m6532;
 		public TIA tia;
 
@@ -188,6 +188,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (m=="0")
 			{
 				mapper = new MapperDefault();
+			}
+			if (m=="A78SG")
+			{
+				mapper = new MapperSG();
 			}
 
 			mapper.Core = this;
