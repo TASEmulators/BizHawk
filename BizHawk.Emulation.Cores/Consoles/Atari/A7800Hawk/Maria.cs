@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			sl_DMA_complete = false;
 			do_dma = false;
 			
-			for (int i=0; i<28;i++)
+			for (int i=0; i<454;i++)
 			{
 				if(i==0 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
 				{
@@ -156,8 +156,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				Core.RunCPUCycle();
 			}
 
-			//scanline++;
-			//cycle = 0;
+			scanline++;
+			cycle = 0;
 			do_dma = false;
 			sl_DMA_complete = false;
 			Core.cpu.RDY = true;
@@ -205,12 +205,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				
 				if (cycle == 440 && !sl_DMA_complete && do_dma && (DMA_phase == DMA_GRAPHICS || DMA_phase == DMA_HEADER))
 				{
-					//Console.Write(scanline);
-					//Console.Write(" ");
-					//Console.Write(DMA_phase);
-					//Console.Write(" ");
-					//Console.WriteLine(DMA_phase_counter);				
-					
 					if (current_DLL_offset == 0)
 					{
 						DMA_phase = DMA_SHUTDOWN_LAST;
