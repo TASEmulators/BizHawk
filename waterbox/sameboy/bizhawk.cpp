@@ -15,7 +15,7 @@ extern "C" {
 static GB_gameboy_t GB;
 
 static uint32_t GBPixels[160 * 144];
-static uint32_t* CurrentFramebuffer;
+static uint32_t *CurrentFramebuffer;
 static bool sgb;
 static void VBlankCallback(GB_gameboy_t *gb)
 {
@@ -94,7 +94,7 @@ static void SgbSampleCallback(int16_t sl, int16_t sr, uint64_t clock)
 	sample_sgb.right = sr;
 }
 
-ECL_EXPORT bool Init(bool cgb, const uint8_t* spc, int spclen)
+ECL_EXPORT bool Init(bool cgb, const uint8_t *spc, int spclen)
 {
 	if (spc)
 	{
@@ -145,7 +145,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo &f)
 {
 	if (sgb)
 	{
-		sgb_set_controller_data((uint8_t*)&f.Keys);
+		sgb_set_controller_data((uint8_t *)&f.Keys);
 	}
 	else
 	{
@@ -223,6 +223,25 @@ ECL_EXPORT void SetScanlineCallback(void (*callback)(uint8_t), int ly)
 ECL_EXPORT uint8_t GetIoReg(uint8_t port)
 {
 	return GB.io_registers[port];
+}
+
+ECL_EXPORT void PutSaveRam()
+{
+	GB_load_battery(&GB, "save.ram");
+}
+
+ECL_EXPORT void GetSaveRam()
+{
+	GB_save_battery(&GB, "save.ram");
+}
+
+ECL_EXPORT bool HasSaveRam()
+{
+	if (!GB.cartridge_type->has_battery)
+		return false; // Nothing to save.
+	if (GB.mbc_ram_size == 0 && !GB.cartridge_type->has_rtc)
+		return false; /* Claims to have battery, but has no RAM or RTC */
+	return true;
 }
 
 int main()

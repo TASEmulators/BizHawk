@@ -42,5 +42,14 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		[BizImport(CC)]
 		public abstract byte GetIoReg(byte port);
+
+		[BizImport(CC)]
+		public abstract void PutSaveRam();
+
+		[BizImport(CC)]
+		public abstract void GetSaveRam();
+
+		[BizImport(CC)]
+		public abstract bool HasSaveRam();
 	}
 }

@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 {
 	[Core("SameBoy", "LIJI32", true, false, "efc11783c7fb6da66e1dd084e41ba6a85c0bd17e",
 		"https://sameboy.github.io/", false)]
-	public class Sameboy : WaterboxCore, IGameboyCommon
+	public class Sameboy : WaterboxCore, IGameboyCommon, ISaveRam
 	{
 		/// <summary>
 		/// the nominal length of one frame
@@ -143,6 +143,26 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 					b = (LibSameboy.Buttons)((uint)b << 8);
 			}
 			return b;
+		}
+
+		#endregion
+
+		#region ISaveram
+
+		public new bool SaveRamModified => _core.HasSaveRam();
+
+		public new byte[] CloneSaveRam()
+		{
+			_exe.AddTransientFile(null, "save.ram");
+			_core.GetSaveRam();
+			return _exe.RemoveTransientFile("save.ram");
+		}
+
+		public new void StoreSaveRam(byte[] data)
+		{
+			_exe.AddReadonlyFile(data, "save.ram");
+			_core.PutSaveRam();
+			_exe.RemoveReadonlyFile("save.ram");
 		}
 
 		#endregion
