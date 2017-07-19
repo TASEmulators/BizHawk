@@ -357,6 +357,7 @@
     <Compile Include="Consoles\Atari\A7800Hawk\A7800HawkControllerDeck.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\A7800HawkControllers.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\Mappers\MapperDefault.cs" />
+		<Compile Include="Consoles\Atari\A7800Hawk\Mappers\MapperSG.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\Mappers\MapperBase.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\MemoryMap.cs">
       <DependentUpon>A7800Hawk.cs</DependentUpon>
