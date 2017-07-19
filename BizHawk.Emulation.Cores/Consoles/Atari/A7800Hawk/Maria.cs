@@ -169,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			while (scanline < 263)
 			{
 				
-				if (cycle == 50 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
+				if (cycle == 28 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
 				{
 					Core.cpu_halt_pending = true;
 					DMA_phase = DMA_START_UP;
@@ -394,6 +394,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							{
 								graphics_read_time = 9 * GFX_Objects[GFX_index, header_counter].width + 3;
 								ch_size = 2;
+								GFX_Objects[GFX_index, header_counter].width *= 2;
 							}
 							else
 							{
@@ -410,7 +411,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 								if ((current_DLL_H16 && addr_t.Bit(12)) || (current_DLL_H8 && addr_t.Bit(11)))
 								{
-									if (i * ch_size < 32)
+									if (i * ch_size < 64)
 									{
 										GFX_Objects[GFX_index, header_counter].obj[i * ch_size] = 0;
 									}
@@ -430,13 +431,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 								}
 								else
 								{
-									if (i * ch_size < 32)
+									if (i * ch_size < 128)
 									{
 										GFX_Objects[GFX_index, header_counter].obj[i * ch_size] = ReadMemory(addr_t);
 									}
-									if ((i * ch_size + 1 < 32) && (ch_size == 2))
+									if (((i * ch_size + 1) < 128) && (ch_size == 2))
 									{
-										GFX_Objects[GFX_index, header_counter].obj[i * ch_size + 1] = ReadMemory(addr_t);
+										GFX_Objects[GFX_index, header_counter].obj[i * ch_size + 1] = ReadMemory((ushort)(addr_t + 1));
 									}
 								}
 							}
@@ -552,7 +553,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							{
 								index = local_start * 2 + j * 8 + (7 - k);
 
-								if (index > 511) index -= 512;
+								if (index > 511)
+								{
+									index -= 512;
+								}
+
 								if (index < 320)
 								{
 									color = GFX_Objects[local_GFX_index, i].obj[j];
@@ -661,7 +666,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				for (int i = 0; i < 128; i++)
 				{
-					GFX_Objects[j, i].obj = new byte[32];
+					GFX_Objects[j, i].obj = new byte[128];
 				}
 			}			
 		}
