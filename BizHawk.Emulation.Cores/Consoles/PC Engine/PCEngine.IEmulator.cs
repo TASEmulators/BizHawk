@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; private set; }
 
-		public ControllerDefinition ControllerDefinition => PCEngineController;
+		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
 		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
