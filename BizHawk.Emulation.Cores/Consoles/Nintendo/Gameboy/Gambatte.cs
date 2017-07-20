@@ -439,7 +439,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region ppudebug
 
-		public bool GetGPUMemoryAreas(out IntPtr vram, out IntPtr bgpal, out IntPtr sppal, out IntPtr oam)
+		public GPUMemoryAreas GetGPU()
 		{
 			IntPtr _vram = IntPtr.Zero;
 			IntPtr _bgpal = IntPtr.Zero;
@@ -451,23 +451,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.sppal, ref _sppal, ref unused)
 				|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.oam, ref _oam, ref unused))
 			{
-				vram = IntPtr.Zero;
-				bgpal = IntPtr.Zero;
-				sppal = IntPtr.Zero;
-				oam = IntPtr.Zero;
-				return false;
+				throw new InvalidOperationException("Unexpected error in gambatte_getmemoryarea");
 			}
-			vram = _vram;
-			bgpal = _bgpal;
-			sppal = _sppal;
-			oam = _oam;
-			return true;
-		}
+			return new GPUMemoryAreas(_vram, _oam, _sppal, _bgpal);
 
-		/// <summary>
-		/// </summary>
-		/// <param name="lcdc">current value of register $ff40 (LCDC)</param>
-		public delegate void ScanlineCallback(int lcdc);
+		}
 
 		/// <summary>
 		/// set up callback

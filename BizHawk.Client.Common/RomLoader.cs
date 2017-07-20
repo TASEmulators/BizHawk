@@ -922,6 +922,7 @@ namespace BizHawk.Client.Common
 								{
 									//core = CoreInventory.Instance["GB", "Pizza Boy"];
 									core = CoreInventory.Instance["GB", "Gambatte"];
+									//core = CoreInventory.Instance["GB", "SameBoy"];
 								}
 								else
 								{
@@ -934,7 +935,7 @@ namespace BizHawk.Client.Common
 									}
 									else
 									{
-										core = CoreInventory.Instance["SGB", "Pizza Boy"];
+										core = CoreInventory.Instance["SGB", "SameBoy"];
 									}
 								}
 								break;
