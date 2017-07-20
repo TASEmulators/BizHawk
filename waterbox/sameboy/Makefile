@@ -3,8 +3,8 @@ CPP = x86_64-nt64-midipix-g++
 
 FLAGS:=-Wall -Werror=pointer-to-int-cast -Werror=int-to-pointer-cast -Werror=implicit-function-declaration \
 	-Wno-multichar \
-	-fomit-frame-pointer -fvisibility=hidden \
-	-O0 -g
+	-fomit-frame-pointer \
+	-O3 -flto
 
 CCFLAGS:=$(FLAGS) \
 	-std=gnu99 \
@@ -42,8 +42,8 @@ $(TARGET).in: $(OBJS)
 	@$(CPP) -o $@ $(LDFLAGS) $(FLAGS) $(OBJS) ../emulibc/libemuhost.so
 
 $(TARGET): $(TARGET).in
-#	strip $< -o $@ -R /4 -R /14 -R /29 -R /41 -R /55 -R /67 -R /78 -R /89 -R /104
-	cp $< $@
+	strip $< -o $@ -R /4 -R /14 -R /29 -R /41 -R /55 -R /67 -R /78 -R /89 -R /104
+#	cp $< $@
 
 clean:
 	rm -rf $(OBJ_DIR)
