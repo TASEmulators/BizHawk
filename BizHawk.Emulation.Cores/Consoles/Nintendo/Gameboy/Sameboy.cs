@@ -63,11 +63,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			_core = PreInit<LibSameboy>(new PeRunnerOptions
 			{
 				Filename = "sameboy.wbx",
-				SbrkHeapSizeKB = 128,
-				InvisibleHeapSizeKB = 16 * 1024,
-				SealedHeapSizeKB = 5 * 1024,
-				PlainHeapSizeKB = 4096,
-				MmapHeapSizeKB = 34 * 1024
+				SbrkHeapSizeKB = 192,
+				InvisibleHeapSizeKB = 4,
+				SealedHeapSizeKB = 9 * 1024,
+				PlainHeapSizeKB = 4,
+				MmapHeapSizeKB = 1024
 			});
 
 			_cgb = (rom[0x143] & 0xc0) == 0xc0 && !sgb;

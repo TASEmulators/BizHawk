@@ -5,11 +5,8 @@
 #include <string.h>
 #include <errno.h>
 #include <stdarg.h>
-#ifndef _WIN32
-#include <unistd.h>
-#include <sys/select.h>
-#endif
 #include "gb.h"
+#include "../emulibc/emulibc.h"
 
 void GB_attributed_logv(GB_gameboy_t *gb, GB_log_attributes attributes, const char *fmt, va_list args)
 {
@@ -75,27 +72,6 @@ void GB_init_cgb(GB_gameboy_t *gb)
     GB_reset(gb);
 }
 
-void GB_free(GB_gameboy_t *gb)
-{
-    gb->magic = 0;
-    if (gb->ram) {
-        free(gb->ram);
-    }
-    if (gb->vram) {
-        free(gb->vram);
-    }
-    if (gb->mbc_ram) {
-        free(gb->mbc_ram);
-    }
-    if (gb->rom) {
-        free(gb->rom);
-    }
-    if (gb->breakpoints) {
-        free(gb->breakpoints);
-    }
-    memset(gb, 0, sizeof(*gb));
-}
-
 int GB_load_boot_rom(GB_gameboy_t *gb, const char *path)
 {
     FILE *f = fopen(path, "rb");
@@ -127,7 +103,7 @@ int GB_load_rom(GB_gameboy_t *gb, const char *path)
     if (gb->rom) {
         free(gb->rom);
     }
-    gb->rom = malloc(gb->rom_size);
+    gb->rom = alloc_sealed(gb->rom_size);
     memset(gb->rom, 0xFF, gb->rom_size); /* Pad with 0xFFs */
     fread(gb->rom, gb->rom_size, 1, f);
     fclose(f);
