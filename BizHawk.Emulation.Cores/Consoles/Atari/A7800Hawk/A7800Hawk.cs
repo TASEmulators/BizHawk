@@ -3,6 +3,7 @@
 using BizHawk.Common.BufferExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.M6502;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
@@ -75,10 +76,15 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			byte[] palBios = comm.CoreFileProvider.GetFirmware("A78", "Bios_PAL", false, "The game will not run if the correct region BIOS is not available.");
 			byte[] ntscBios = comm.CoreFileProvider.GetFirmware("A78", "Bios_NTSC", false, "The game will not run if the correct region BIOS is not available.");
 
+			byte[] header = new byte[128];
+			bool is_header = false;
+
 			if (rom.Length % 1024 == 128)
 			{
 				Console.WriteLine("Trimming 128 byte .a78 header...");
 				byte[] newrom = new byte[rom.Length - 128];
+				is_header = true;
+				Buffer.BlockCopy(rom, 0, header, 0, 128);
 				Buffer.BlockCopy(rom, 128, newrom, 0, newrom.Length);
 				rom = newrom;
 			}
@@ -108,9 +114,26 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				else
 					throw new Exception("No Board selected for this game");
 			}
+			else if (is_header)
+			{
+				byte cart_1 = header[0x35];
+				byte cart_2 = header[0x36];
+
+				_isPAL = (header[0x39] > 0) ? true : false;
+
+				if (cart_2.Bit(1))
+				{
+					s_mapper = "1";
+				}
+				else
+				{
+					s_mapper = "0";
+				}
+
+			}
 			else
 			{
-				throw new Exception("ROM not in gamedb");
+				throw new Exception("ROM not in gamedb and has no header");
 			}
 
 			Reset_Mapper(s_mapper);
@@ -189,7 +212,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				mapper = new MapperDefault();
 			}
-			if (m=="A78SG")
+			if (m=="1")
 			{
 				mapper = new MapperSG();
 			}
