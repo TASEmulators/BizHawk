@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 				LoadCallback = new LibGPGX.load_archive_cb(load_archive);
 
-				this.romfile = rom;
+				_romfile = rom;
 
 				if (cds != null)
 				{
@@ -155,6 +155,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				Tracer = new GPGXTraceBuffer(this, MemoryDomains, this);
 				(ServiceProvider as BasicServiceProvider).Register<ITraceable>(Tracer);
 			}
+
+			_romfile = null;
 		}
 
 		private LibGPGX Core;
@@ -166,7 +168,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		private bool _prevDiskPressed;
 		private bool _nextDiskPressed;
 
-		byte[] romfile;
+		byte[] _romfile;
 
 		private bool _disposed = false;
 
@@ -206,16 +208,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 			if (filename == "PRIMARY_ROM")
 			{
-				if (romfile == null)
+				if (_romfile == null)
 				{
 					Console.WriteLine("Couldn't satisfy firmware request PRIMARY_ROM because none was provided.");
 					return 0;
 				}
-				srcdata = romfile;
+				srcdata = _romfile;
 			}
 			else if (filename == "PRIMARY_CD" || filename == "SECONDARY_CD")
 			{
-				if (filename == "PRIMARY_CD" && romfile != null)
+				if (filename == "PRIMARY_CD" && _romfile != null)
 				{
 					Console.WriteLine("Declined to satisfy firmware request PRIMARY_CD because PRIMARY_ROM was provided.");
 					return 0;
