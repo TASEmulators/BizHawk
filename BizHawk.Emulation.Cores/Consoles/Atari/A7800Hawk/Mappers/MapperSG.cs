@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				// cartridge and other OPSYS
 				if (addr>=0x8000)
 				{
-					bank = value;
+					bank = (byte)(value & 0x7);
 				}
 			}
 		}
