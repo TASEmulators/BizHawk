@@ -21,6 +21,7 @@
 
 #include "vb.h"
 #include <cmath>
+#include "../emulibc/emulibc.h"
 
 #define VIP_DBGMSG(format, ...) \
 	{                           \
@@ -67,8 +68,8 @@ static uint32 ColorLUT[2][256];
 static int32 BrightnessCache[4];
 static uint32 BrightCLUT[2][4];
 
-static float ColorLUTNoGC[2][256][3];
-static uint32 AnaSlowColorLUT[256][256];
+static float ECL_INVISIBLE ColorLUTNoGC[2][256][3];
+static uint32 ECL_INVISIBLE AnaSlowColorLUT[256][256];
 
 static bool VidSettingsDirty;
 static bool ParallaxDisabled;

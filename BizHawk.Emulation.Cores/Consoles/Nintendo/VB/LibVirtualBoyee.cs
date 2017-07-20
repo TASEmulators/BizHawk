@@ -37,10 +37,23 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
-		public class NativeSettings
+		public class NativeSyncSettings
 		{
 			public int InstantReadHack;
 			public int DisableParallax;
+
+			public static NativeSyncSettings FromFrontendSettings(VirtualBoyee.SyncSettings ss)
+			{
+				return new NativeSyncSettings
+				{
+					InstantReadHack = ss.InstantReadHack ? 1 : 0,
+					DisableParallax = ss.DisableParallax ? 1 : 0,
+				};
+			}
+		}
+
+		public class NativeSettings
+		{
 			public int ThreeDeeMode;
 			public int SwapViews;
 			public int AnaglyphPreset;
@@ -56,12 +69,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 				return c.ToArgb();
 			}
 
-			public static NativeSettings FromFrontendSettings(VirtualBoyee.Settings s, VirtualBoyee.SyncSettings ss)
+			public static NativeSettings FromFrontendSettings(VirtualBoyee.Settings s)
 			{
 				return new NativeSettings
 				{
-					InstantReadHack = ss.InstantReadHack ? 1 : 0,
-					DisableParallax = ss.DisableParallax ? 1 : 0,
 					ThreeDeeMode = (int)s.ThreeDeeMode,
 					SwapViews = s.SwapViews ? 1 : 0,
 					AnaglyphPreset = (int)s.AnaglyphPreset,
@@ -77,7 +88,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 
 		[BizImport(CC)]
-		public abstract bool Load(byte[] rom, int length, [In]NativeSettings settings);
+		public abstract bool Load(byte[] rom, int length, NativeSyncSettings settings);
+
+		[BizImport(CC)]
+		public abstract void SetSettings(NativeSettings settings);
 
 		[BizImport(CC)]
 		public abstract void HardReset();

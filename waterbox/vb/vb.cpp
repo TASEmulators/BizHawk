@@ -26,10 +26,13 @@
 
 namespace MDFN_IEN_VB
 {
-struct NativeSettings
+struct NativeSyncSettings
 {
 	int InstantReadHack;
 	int DisableParallax;
+};
+struct NativeSettings
+{
 	int ThreeDeeMode;
 	int SwapViews;
 	int AnaglyphPreset;
@@ -56,14 +59,14 @@ enum
 };
 
 static const uint32 AnaglyphPreset_Colors[][2] =
-{
-	{0, 0},
-	{0xFF0000, 0x0000FF},
-	{0xFF0000, 0x00B7EB},
-	{0xFF0000, 0x00FFFF},
-	{0xFF0000, 0x00FF00},
-	{0x00FF00, 0xFF00FF},
-	{0xFFFF00, 0x0000FF},
+	{
+		{0, 0},
+		{0xFF0000, 0x0000FF},
+		{0xFF0000, 0x00B7EB},
+		{0xFF0000, 0x00FFFF},
+		{0xFF0000, 0x00FF00},
+		{0x00FF00, 0xFF00FF},
+		{0xFFFF00, 0x0000FF},
 };
 
 static uint32 VB3DMode;
@@ -501,7 +504,6 @@ void VB_ExitLoop(void)
 	VB_V810->Exit();
 }
 
-
 /*MDFNGI EmulatedVB =
     {
 
@@ -552,7 +554,7 @@ void VB_ExitLoop(void)
 
 using namespace MDFN_IEN_VB;
 
-EXPORT int Load(const uint8 *rom, int length, const NativeSettings* settings)
+EXPORT int Load(const uint8 *rom, int length, const NativeSyncSettings *syncSettings)
 {
 	const uint64 rom_size = length;
 	V810_Emu_Mode cpu_mode = V810_EMU_MODE_ACCURATE;
@@ -660,20 +662,20 @@ EXPORT int Load(const uint8 *rom, int length, const NativeSettings* settings)
 	VB_VSU = new VSU();
 	VBINPUT_Init();
 
-	VB3DMode = settings->ThreeDeeMode;
-	uint32 prescale = settings->InterlacePrescale;
-	uint32 sbs_separation = settings->SideBySideSeparation;
-	bool reverse = settings->SwapViews;
+	VB3DMode = 0;
+	uint32 prescale = 1;
+	uint32 sbs_separation = 0;
+	bool reverse = false;
 
 	VIP_Set3DMode(VB3DMode, reverse, prescale, sbs_separation);
 
-	VIP_SetParallaxDisable(settings->DisableParallax);
+	VIP_SetParallaxDisable(syncSettings->DisableParallax);
 
 	{
-		auto presetColor = settings->AnaglyphPreset;
+		auto presetColor = 1;
 
-		uint32 lcolor = settings->AnaglyphCustomLeftColor;
-		uint32 rcolor = settings->AnaglyphCustomRightColor;
+		uint32 lcolor = 0xff0000;
+		uint32 rcolor = 0x00ff00;
 
 		if (presetColor != ANAGLYPH_PRESET_DISABLED)
 		{
@@ -681,12 +683,12 @@ EXPORT int Load(const uint8 *rom, int length, const NativeSettings* settings)
 			rcolor = AnaglyphPreset_Colors[presetColor][1];
 		}
 		VIP_SetAnaglyphColors(lcolor, rcolor);
-		VIP_SetDefaultColor(settings->NonAnaglyphColor);
+		VIP_SetDefaultColor(0xffffff);
 	}
 
-	VBINPUT_SetInstantReadHack(settings->InstantReadHack);
+	VBINPUT_SetInstantReadHack(syncSettings->InstantReadHack);
 
-	VIP_SetLEDOnScale(settings->LedOnScale / 1000.0);
+	VIP_SetLEDOnScale(1750 / 1000.0);
 
 	VB_Power();
 
@@ -731,7 +733,34 @@ EXPORT int Load(const uint8 *rom, int length, const NativeSettings* settings)
 	return 1;
 }
 
-EXPORT void GetMemoryAreas(MemoryArea* m)
+EXPORT void SetSettings(const NativeSettings *settings)
+{
+	VB3DMode = settings->ThreeDeeMode;
+	uint32 prescale = settings->InterlacePrescale;
+	uint32 sbs_separation = settings->SideBySideSeparation;
+	bool reverse = settings->SwapViews;
+
+	VIP_Set3DMode(VB3DMode, reverse, prescale, sbs_separation);
+
+	{
+		auto presetColor = settings->AnaglyphPreset;
+
+		uint32 lcolor = settings->AnaglyphCustomLeftColor;
+		uint32 rcolor = settings->AnaglyphCustomRightColor;
+
+		if (presetColor != ANAGLYPH_PRESET_DISABLED)
+		{
+			lcolor = AnaglyphPreset_Colors[presetColor][0];
+			rcolor = AnaglyphPreset_Colors[presetColor][1];
+		}
+		VIP_SetAnaglyphColors(lcolor, rcolor);
+		VIP_SetDefaultColor(settings->NonAnaglyphColor);
+	}
+
+	VIP_SetLEDOnScale(settings->LedOnScale / 1000.0);
+}
+
+EXPORT void GetMemoryAreas(MemoryArea *m)
 {
 	m[0].Data = WRAM;
 	m[0].Name = "WRAM";
@@ -749,7 +778,7 @@ EXPORT void GetMemoryAreas(MemoryArea* m)
 	m[2].Flags = MEMORYAREA_FLAGS_WORDSIZE4;
 }
 
-EXPORT void FrameAdvance(MyFrameInfo* frame)
+EXPORT void FrameAdvance(MyFrameInfo *frame)
 {
 	v810_timestamp_t v810_timestamp;
 	lagged = true;
@@ -779,7 +808,7 @@ EXPORT void FrameAdvance(MyFrameInfo* frame)
 	VB_V810->ResetTS(0);
 }
 
-EXPORT void PredictFrameSize(MyFrameInfo* frame)
+EXPORT void PredictFrameSize(MyFrameInfo *frame)
 {
 	VIP_CalcFrameSize(frame);
 }
