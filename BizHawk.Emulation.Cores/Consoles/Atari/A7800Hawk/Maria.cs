@@ -534,7 +534,158 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				// the two different rendering paths are basically controlled by write mode
 				if (GFX_Objects[local_GFX_index, i].write_mode)
 				{
+					if (disp_mode == 0)
+					{
+						local_width = GFX_Objects[local_GFX_index, i].width;
 
+						for (int j = 0; j < local_width; j++)
+						{
+							for (int k = 3; k >= 0; k--)
+							{
+								index = local_start * 2 + j * 4 + (3 - k);
+
+								if (index > 511)
+								{
+									index -= 512;
+								}
+
+								if (index < 320)
+								{
+									color = GFX_Objects[local_GFX_index, i].obj[j];
+
+									// this is now the color index (0-3) we choose from the palette
+									if (k >= 2)
+									{
+										color = (((color >> 2) & 0x3) << 2) + ((color >> 6) & 0x3);
+									}
+									else
+									{
+										color = ((color & 0x3) << 2) + ((color >> 4) & 0x3);
+									}
+
+									if ((color != 0) && (color != 4) && (color != 8) && (color != 12)) // transparent
+									{
+										color = ((local_palette & 4) << 2) + color;
+
+										color = Core.Maria_regs[color];
+
+										// the top 4 bits from this are the color, the bottom 4 are the luminosity
+										// this is already conveniently arranged in the palette
+										scanline_buffer[index] = _palette[color];
+									}
+								}
+							}
+						}
+					}
+					else if (disp_mode == 2) // note: 1 is not used
+					{
+						local_width = GFX_Objects[local_GFX_index, i].width;
+
+						for (int j = 0; j < local_width; j++)
+						{
+							for (int k = 7; k >= 0; k--)
+							{
+								index = local_start * 2 + j * 8 + (7 - k);
+
+								if (index > 511)
+								{
+									index -= 512;
+								}
+
+								if (index < 320)
+								{
+									color = GFX_Objects[local_GFX_index, i].obj[j];
+
+									// this is now the color index (0-3) we choose from the palette
+									if (k >= 6)
+									{
+										color = ((color >> 6) & 0x2) + ((color >> 3) & 0x1);
+									}
+									else if (k >= 4)
+									{
+										color = ((color >> 5) & 0x2) + ((color >> 2) & 0x1);
+
+									}
+									else if (k >= 2)
+									{
+										color = ((color >> 4) & 0x2) + ((color >> 1) & 0x1);
+									}
+									else
+									{
+										color = ((color >> 3) & 0x2) + (color & 0x1);
+									}
+
+									if (color != 0) // transparent
+									{
+										color = ((local_palette & 4) << 2) + color;
+
+										color = Core.Maria_regs[color];
+
+										// the top 4 bits from this are the color, the bottom 4 are the luminosity
+										// this is already conveniently arranged in the palette
+										scanline_buffer[index] = _palette[color];
+									}
+								}
+							}
+						}
+					}
+					else
+					{
+						local_width = GFX_Objects[local_GFX_index, i].width;
+
+						for (int j = 0; j < local_width; j++)
+						{
+							for (int k = 7; k >= 0; k--)
+							{
+								index = local_start * 2 + j * 8 + (7 - k);
+
+								if (index > 511)
+								{
+									index -= 512;
+								}
+
+								if (index < 320)
+								{
+									color = GFX_Objects[local_GFX_index, i].obj[j];
+									int temp_color = color;
+
+									// this is now the color index (0-3) we choose from the palette
+									if (k >= 6)
+									{
+										color = ((color >> 7) & 0x1);
+										temp_color = (local_palette & 4) + ((temp_color >> 2) & 3);
+									}
+									else if (k >= 4)
+									{
+										color = ((color >> 6) & 0x1);
+										temp_color = (local_palette & 4) + ((temp_color >> 2) & 3);
+
+									}
+									else if (k >= 2)
+									{
+										color = ((color >> 5) & 0x1);
+										temp_color = (local_palette & 4) + (temp_color & 3);
+									}
+									else
+									{
+										color = ((color >> 4) & 0x1);
+										temp_color = (local_palette & 4) + (temp_color & 3);
+									}
+
+									if (color != 0) // transparent
+									{
+										color = (temp_color << 2) + color;
+
+										color = Core.Maria_regs[color];
+
+										// the top 4 bits from this are the color, the bottom 4 are the luminosity
+										// this is already conveniently arranged in the palette
+										scanline_buffer[index] = _palette[color];
+									}
+								}
+							}
+						}
+					}
 				}
 				else
 				{
@@ -558,17 +709,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 									color = GFX_Objects[local_GFX_index, i].obj[j];
 
 									// this is now the color index (0-3) we choose from the palette
-									if (k>=6)
+									if (k >= 6)
 									{
-										color = (color >> 6) & 0x3; 
+										color = (color >> 6) & 0x3;
+									}
+									else if (k >= 4)
+									{
+										color = (color >> 4) & 0x3;
 
 									}
-									else if (k>=4)
-									{
-										color = (color >> 4) & 0x3; 
-
-									}
-									else if (k>=2)
+									else if (k >= 2)
 									{
 										color = (color >> 2) & 0x3;
 									}
@@ -576,7 +726,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 									{
 										color = color & 0x3;
 									}
-									
+
 									if (color != 0) // transparent
 									{
 										color = Core.Maria_regs[local_palette * 4 + color];
