@@ -84,6 +84,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool current_DLL_H16;
 		public bool current_DLL_H8;
 
+		public bool overrun_dma;
+
 		public int header_counter;
 		public int[] header_counter_max = new int [2];
 		public int header_pointer; // since headers could be 4 or 5 bytes, we need a seperate pointer
@@ -173,6 +175,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					DMA_phase = DMA_START_UP;
 					DMA_phase_counter = 0;
 					do_dma = true;
+					sl_DMA_complete = false;
 				}
 				else if (!sl_DMA_complete && do_dma)
 				{
@@ -184,6 +187,20 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					// (but set to 2 since it decrements immediately)
 					DLI_countdown = 2;
 					current_DLL_DLI = false;
+				}
+
+				if (overrun_dma && sl_DMA_complete)
+				{
+					if (GFX_index == 1)
+					{
+						GFX_index = 0;
+					}
+					else
+					{
+						GFX_index = 1;
+					}
+
+					overrun_dma = false;
 				}
 
 				if (DLI_countdown > 0)
@@ -201,10 +218,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 
 				
-				if (cycle == 440 && !sl_DMA_complete && do_dma && (DMA_phase == DMA_GRAPHICS || DMA_phase == DMA_HEADER))
+				if (cycle == 453 && !sl_DMA_complete && do_dma && (DMA_phase == DMA_GRAPHICS || DMA_phase == DMA_HEADER))
 				{
+					overrun_dma = true;
 					//Console.WriteLine(scanline);
-
 					if (current_DLL_offset == 0)
 					{
 						DMA_phase = DMA_SHUTDOWN_LAST;
@@ -232,17 +249,18 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					cycle = 0;
 					Core.tia._hsyncCnt = 0;
 					Core.cpu.RDY = true;
-					do_dma = false;
-					sl_DMA_complete = false;
 
 					// swap sacnline buffers
-					if (GFX_index == 1)
+					if (!overrun_dma)
 					{
-						GFX_index = 0;
-					}
-					else
-					{
-						GFX_index = 1;
+						if (GFX_index == 1)
+						{
+							GFX_index = 0;
+						}
+						else
+						{
+							GFX_index = 1;
+						}
 					}
 				}
 			}
@@ -403,13 +421,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 								addr_t = ReadMemory((ushort)(GFX_Objects[GFX_index, header_counter].addr + i));
 								addr_t |= (ushort)((Core.Maria_regs[0x14] + current_DLL_offset) << 8);
 
-								if (((current_DLL_H16 && addr_t.Bit(12)) || (current_DLL_H8 && addr_t.Bit(11))) && (addr_t > 0x8000))
+								if (((current_DLL_H16 && addr_t.Bit(12)) || (current_DLL_H8 && addr_t.Bit(11))) && (addr_t >= 0x8000))
 								{
-									if (i * ch_size < 64)
+									if (i * ch_size < 128)
 									{
 										GFX_Objects[GFX_index, header_counter].obj[i * ch_size] = 0;
 									}
-									if ((i * ch_size + 1 < 32) && (ch_size == 2))
+									if ((i * ch_size + 1 < 128) && (ch_size == 2))
 									{
 										GFX_Objects[GFX_index, header_counter].obj[i * ch_size + 1] = 0;
 									}
@@ -421,7 +439,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 									{
 										graphics_read_time -= 9;
 									}
-
+									
 								}
 								else
 								{
@@ -444,7 +462,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							{
 								addr_t = (ushort)(GFX_Objects[GFX_index, header_counter].addr + (current_DLL_offset << 8) + i);
 
-								if (((current_DLL_H16 && addr_t.Bit(12)) || (current_DLL_H8 && addr_t.Bit(11))) && (addr_t > 0x8000))
+								if (((current_DLL_H16 && addr_t.Bit(12)) || (current_DLL_H8 && addr_t.Bit(11))) && (addr_t >= 0x8000))
 								{
 									GFX_Objects[GFX_index, header_counter].obj[i] = 0; 
 									graphics_read_time -= 3;
@@ -537,7 +555,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					if (disp_mode == 0)
 					{
 						local_width = GFX_Objects[local_GFX_index, i].width;
-
+						
 						for (int j = 0; j < local_width; j++)
 						{
 							for (int k = 3; k >= 0; k--)
@@ -580,12 +598,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					else if (disp_mode == 2) // note: 1 is not used
 					{
 						local_width = GFX_Objects[local_GFX_index, i].width;
-						
+
 						for (int j = 0; j < local_width; j++)
 						{
 							for (int k = 7; k >= 0; k--)
 							{
-								index = local_start * 2 + j * 8 + (7 - k);
+								index = local_start * 4 + j * 8 + (7 - k);
 
 								if (index > 511)
 								{
@@ -772,7 +790,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					else
 					{
 						local_width = GFX_Objects[local_GFX_index, i].width;
-						
+
 						for (int j = 0; j < local_width; j++)
 						{
 							for (int k = 7; k >= 0; k--)
