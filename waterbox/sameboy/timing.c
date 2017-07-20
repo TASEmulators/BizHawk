@@ -133,7 +133,7 @@ void GB_emulate_timer_glitch(GB_gameboy_t *gb, uint8_t old_tac, uint8_t new_tac)
 void GB_rtc_run(GB_gameboy_t *gb)
 {
     if ((gb->rtc_real.high & 0x40) == 0) { /* is timer running? */
-        time_t current_time = time(NULL);
+        time_t current_time = gb->frontend_rtc_time;
         while (gb->last_rtc_second < current_time) {
             gb->last_rtc_second++;
             if (++gb->rtc_real.seconds == 60)

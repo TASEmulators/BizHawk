@@ -154,6 +154,7 @@ ECL_EXPORT void FrameAdvance(MyFrameInfo &f)
 	sound_start_clock = GB_epoch(&GB);
 	CurrentFramebuffer = f.VideoBuffer;
 	GB_set_lagged(&GB, true);
+	GB.frontend_rtc_time = f.Time;
 
 	uint32_t target = 35112 - FrameOverflow;
 	f.Cycles = GB_run_cycles(&GB, target);

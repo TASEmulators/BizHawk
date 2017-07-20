@@ -25,6 +25,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Client.ApiHawk;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -2002,7 +2003,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			GBPrefs.DoGBPrefsDialog(this);
+			if (Global.Emulator is Gameboy)
+			{
+				GBPrefs.DoGBPrefsDialog(this);
+			}
+			else // sameboy
+			{
+				GenericCoreConfig.DoDialog(this, "Gameboy Settings");
+			}
 		}
 
 		private void LoadGbInSgbMenuItem_Click(object sender, EventArgs e)

@@ -434,6 +434,8 @@ struct GB_gameboy_internal_s {
         uint32_t ram_size; // Different between CGB and DMG
         uint8_t boot_rom[0x900];
         bool vblank_just_occured; // For slow operations involving syscalls; these should only run once per vblank
+
+		int64_t frontend_rtc_time;
 };
     
 #ifndef GB_INTERNAL

@@ -4,6 +4,7 @@ using BizHawk.Emulation.Cores.Properties;
 using BizHawk.Emulation.Cores.Waterbox;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 {
 	[Core("SameBoy", "LIJI32", true, false, "efc11783c7fb6da66e1dd084e41ba6a85c0bd17e",
 		"https://sameboy.github.io/", false)]
-	public class Sameboy : WaterboxCore, IGameboyCommon, ISaveRam
+	public class Sameboy : WaterboxCore,
+		IGameboyCommon, ISaveRam,
+		ISettable<object, Sameboy.SyncSettings>
 	{
 		/// <summary>
 		/// the nominal length of one frame
@@ -35,16 +38,16 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		private bool _sgb;
 
 		[CoreConstructor("SGB")]
-		public Sameboy(byte[] rom, CoreComm comm)
-			: this(rom, comm, true)
+		public Sameboy(byte[] rom, CoreComm comm, SyncSettings syncSettings, bool deterministic)
+			: this(rom, comm, true, syncSettings, deterministic)
 		{ }
 
 		[CoreConstructor("GB")]
-		public Sameboy(CoreComm comm, byte[] rom)
-			: this(rom, comm, false)
+		public Sameboy(CoreComm comm, byte[] rom, SyncSettings syncSettings, bool deterministic)
+			: this(rom, comm, false, syncSettings, deterministic)
 		{ }
 
-		public Sameboy(byte[] rom, CoreComm comm, bool sgb)
+		public Sameboy(byte[] rom, CoreComm comm, bool sgb, SyncSettings syncSettings, bool deterministic)
 			: base(comm, new Configuration
 			{
 				DefaultWidth = sgb ? 256 : 160,
@@ -70,8 +73,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			_cgb = (rom[0x143] & 0xc0) == 0xc0 && !sgb;
 			_sgb = sgb;
 			Console.WriteLine("Automaticly detected CGB to " + _cgb);
-			var bios = Util.DecompressGzipFile(new MemoryStream(_cgb ? Resources.SameboyCgbBoot : Resources.SameboyDmgBoot));
-			// var bios = comm.CoreFileProvider.GetFirmware(_cgb ? "GBC" : "GB", "World", true);
+			_syncSettings = syncSettings ?? new SyncSettings();
+
+			var bios = _syncSettings.UseRealBIOS && !sgb
+				? comm.CoreFileProvider.GetFirmware(_cgb ? "GBC" : "GB", "World", true)
+				: Util.DecompressGzipFile(new MemoryStream(_cgb ? Resources.SameboyCgbBoot : Resources.SameboyDmgBoot));
+
 			var spc = sgb
 				? Util.DecompressGzipFile(new MemoryStream(Resources.SgbCartPresent_SPC))
 				: null;
@@ -92,6 +99,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			var scratch = new IntPtr[4];
 			_core.GetGpuMemory(scratch);
 			_gpuMemory = new GPUMemoryAreas(scratch[0], scratch[1], scratch[3], scratch[2], _exe);
+
+			DeterministicEmulation = deterministic || !_syncSettings.UseRealTime;
+			InitializeRtc(_syncSettings.InitialTime);
 		}
 
 		#region Controller
@@ -167,11 +177,71 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		#endregion
 
+		#region ISettable
+
+		private SyncSettings _syncSettings;
+
+		public class SyncSettings
+		{
+			[DisplayName("Initial Time")]
+			[Description("Initial time of emulation.  Only relevant when UseRealTime is false.")]
+			[DefaultValue(typeof(DateTime), "2010-01-01")]
+			public DateTime InitialTime { get; set; }
+
+			[DisplayName("Use RealTime")]
+			[Description("If true, RTC clock will be based off of real time instead of emulated time.  Ignored (set to false) when recording a movie.")]
+			[DefaultValue(false)]
+			public bool UseRealTime { get; set; }
+
+			[Description("If true, real BIOS files will be used.  Ignored in SGB mode.")]
+			[DefaultValue(false)]
+			public bool UseRealBIOS { get; set; }
+
+			public SyncSettings Clone()
+			{
+				return (SyncSettings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
+			}
+
+			public SyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+		}
+
+		public object GetSettings()
+		{
+			return null;
+		}
+
+		public SyncSettings GetSyncSettings()
+		{
+			return _syncSettings.Clone();
+		}
+
+		public bool PutSettings(object o)
+		{
+			return false;
+		}
+
+		public bool PutSyncSettings(SyncSettings o)
+		{
+			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
+			_syncSettings = o;
+			return ret;
+		}
+
+		#endregion
+
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)
 		{
 			return new LibSameboy.FrameInfo
 			{
-				Time = 0,
+				Time = GetRtcTime(!DeterministicEmulation),
 				Keys = GetButtons(controller)
 			};
 		}
