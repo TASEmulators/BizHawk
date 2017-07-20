@@ -203,7 +203,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				
 				if (cycle == 440 && !sl_DMA_complete && do_dma && (DMA_phase == DMA_GRAPHICS || DMA_phase == DMA_HEADER))
 				{
-					Console.WriteLine(scanline);
+					//Console.WriteLine(scanline);
 
 					if (current_DLL_offset == 0)
 					{
