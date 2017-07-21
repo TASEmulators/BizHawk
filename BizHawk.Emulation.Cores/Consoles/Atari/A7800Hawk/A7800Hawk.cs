@@ -37,6 +37,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public string s_mapper;
 		public MapperBase mapper;
+		public bool small_flag = false;
+		public bool PAL_Kara = false;
 
 		private readonly ITraceable _tracer;
 
@@ -123,7 +125,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 				if (cart_2.Bit(1))
 				{
-					s_mapper = "1";
+					if (cart_2.Bit(3))
+					{
+						s_mapper = "2";
+					}
+					else
+					{
+						s_mapper = "1";
+					}					
 				}
 				else
 				{
@@ -134,6 +143,18 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			else
 			{
 				throw new Exception("ROM not in gamedb and has no header");
+			}
+
+			// some games that use the Super Game mapper only have 4 banks, so let's set a flag to limit bank size
+			if (rom.Length < 0x14000)
+			{
+				small_flag = true;
+
+				// additionally, PAL Karateka  has bank 6 (actually 2) at 0x4000
+				if (rom.HashMD5()=="5E0A1E832BBCEA6FACB832FDE23A440A")
+				{
+					PAL_Kara = true;
+				}
 			}
 
 			Reset_Mapper(s_mapper);
@@ -208,13 +229,17 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private void Reset_Mapper(string m)
 		{
-			if (m=="0")
+			if (m == "0")
 			{
 				mapper = new MapperDefault();
 			}
-			if (m=="1")
+			if (m == "1")
 			{
 				mapper = new MapperSG();
+			}
+			if (m == "2")
+			{
+				mapper = new MapperSGE();
 			}
 
 			mapper.Core = this;

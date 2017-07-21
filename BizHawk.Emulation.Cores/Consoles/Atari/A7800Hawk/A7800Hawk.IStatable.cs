@@ -76,7 +76,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync("cpu_resume_pending", ref cpu_resume_pending);
 
 			ser.Sync("slow_access", ref slow_access);
-
+			ser.Sync("small flag", ref small_flag);
+			ser.Sync("pal kara", ref PAL_Kara);
 
 			ser.EndSection();
 		}

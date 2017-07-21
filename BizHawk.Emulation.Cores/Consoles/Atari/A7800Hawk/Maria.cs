@@ -90,9 +90,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public int[] header_counter_max = new int [2];
 		public int header_pointer; // since headers could be 4 or 5 bytes, we need a seperate pointer
 
-		// write mode is actually persistent but exists outside of the regs
-		public bool global_write_mode; 
-
 		// each frame contains 263 scanlines
 		// each scanline consists of 113.5 CPU cycles (fast access) which equates to 454 Maria cycles
 		// In total there are 29850.5 CPU cycles (fast access) in a frame
@@ -327,7 +324,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							{
 								// we are in 5 Byte header mode (i.e. using the character map)
 								GFX_Objects[GFX_index, header_counter].write_mode = temp.Bit(7);
-								global_write_mode = temp.Bit(7);
+
 								GFX_Objects[GFX_index, header_counter].ind_mode = temp.Bit(5);
 								header_pointer++;
 								temp = (byte)(ReadMemory((ushort)(current_DLL_addr + header_pointer)));
@@ -375,7 +372,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 							DMA_phase_next = DMA_GRAPHICS;
 
-							GFX_Objects[GFX_index, header_counter].write_mode = global_write_mode;
+							GFX_Objects[GFX_index, header_counter].write_mode = false;
 
 							GFX_Objects[GFX_index, header_counter].ind_mode = false;
 
@@ -587,8 +584,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 										color = Core.Maria_regs[color];
 
-										// the top 4 bits from this are the color, the bottom 4 are the luminosity
-										// this is already conveniently arranged in the palette
 										scanline_buffer[index] = _palette[color];
 									}
 								}
@@ -598,7 +593,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					else if (disp_mode == 2) // note: 1 is not used
 					{
 						local_width = GFX_Objects[local_GFX_index, i].width;
-
+						
 						for (int j = 0; j < local_width; j++)
 						{
 							for (int k = 7; k >= 0; k--)
@@ -639,8 +634,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 										color = Core.Maria_regs[color];
 
-										// the top 4 bits from this are the color, the bottom 4 are the luminosity
-										// this is already conveniently arranged in the palette
 										scanline_buffer[index] = _palette[color];
 									}
 								}
@@ -696,8 +689,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 										color = Core.Maria_regs[color];
 
-										// the top 4 bits from this are the color, the bottom 4 are the luminosity
-										// this is already conveniently arranged in the palette
 										scanline_buffer[index] = _palette[color];
 									}
 								}
@@ -710,7 +701,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					if (disp_mode == 0)
 					{
 						local_width = GFX_Objects[local_GFX_index, i].width;
-
+						
 						for (int j = 0; j < local_width; j++)
 						{
 							for (int k = 7; k >= 0; k--)
@@ -749,8 +740,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 									{
 										color = Core.Maria_regs[local_palette * 4 + color];
 
-										// the top 4 bits from this are the color, the bottom 4 are the luminosity
-										// this is already conveniently arranged in the palette
 										scanline_buffer[index] = _palette[color];
 									}
 								}
@@ -763,7 +752,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						// here the palette is determined by palette bit 2 only
 						// hence only palette 0 or 4 is available
 						local_palette = GFX_Objects[local_GFX_index, i].palette & 0x4;
-
+						
 						int temp_c0 = GFX_Objects[local_GFX_index, i].palette & 0x1;
 						int temp_c1 = GFX_Objects[local_GFX_index, i].palette & 0x2;
 						
@@ -780,8 +769,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 								{
 									color = Core.Maria_regs[local_palette + color];
 
-									// the top 4 bits from this are the color, the bottom 4 are the luminosity
-									// this is already conveniently arranged in the palette
 									scanline_buffer[index] = _palette[color];
 								}
 							}
@@ -802,8 +789,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 								{
 									color = Core.Maria_regs[local_palette * 4 + 2]; // automatically use index 2 here
 
-									// the top 4 bits from this are the color, the bottom 4 are the luminosity
-									// this is already conveniently arranged in the palette
 									scanline_buffer[index] = _palette[color];
 								}
 							}
@@ -839,7 +824,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		{
 			ser.BeginSection("Maria");
 
-			ser.Sync("global write mode", ref global_write_mode);
 			ser.Sync("GFX_index", ref GFX_index);
 
 			ser.EndSection();
