@@ -539,9 +539,7 @@
     <Compile Include="Consoles\Nintendo\Gameboy\GBDisassembler.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\IGameboyCommon.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibGambatte.cs" />
-    <Compile Include="Consoles\Nintendo\Gameboy\LibPizza.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\LibSameboy.cs" />
-    <Compile Include="Consoles\Nintendo\Gameboy\Pizza.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\Sameboy.cs" />
     <Compile Include="Consoles\Nintendo\GBA\ArmV4Disassembler.cs" />
     <Compile Include="Consoles\Nintendo\GBA\GBA.cs" />
