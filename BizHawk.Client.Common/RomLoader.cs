@@ -920,9 +920,7 @@ namespace BizHawk.Client.Common
 							case "GBC":
 								if (!Global.Config.GB_AsSGB)
 								{
-									//core = CoreInventory.Instance["GB", "Pizza Boy"];
 									core = CoreInventory.Instance["GB", "Gambatte"];
-									//core = CoreInventory.Instance["GB", "SameBoy"];
 								}
 								else
 								{
