@@ -4,8 +4,9 @@ using System;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	// Default Bank Switching Mapper used by most games
-	public class MapperSG : MapperBase
+	// Super Game mapper but with extra ROM at the start of the file
+	// Have to add 1 to bank number to get correct bank value
+	public class MapperSGE : MapperBase
 	{
 		public byte bank = 0;
 
@@ -41,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 				else
 				{
-					if (addr >= 0xC000)
+					if (addr >=0xC000)
 					{
 						// bank 7 is fixed
 						return Core._rom[Core._rom.Length - (0x10000 - addr)];
@@ -49,31 +50,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					else if (addr >= 0x8000)
 					{
 						// return whatever bank is there
+						// but remember we need to add 1 to adjust for the extra bank at the beginning
 						int temp_addr = addr - 0x8000;
-						return Core._rom[temp_addr + bank * 0x4000];
+						return Core._rom[temp_addr + (bank + 1) * 0x4000];
 					}
 					else
 					{
-						// return bank 6
+						// return the 16k extra ROM (located at beginning of file)
 						int temp_addr = addr - 0x4000;
-
-						if (!Core.small_flag)
-						{
-							return Core._rom[temp_addr + 6 * 0x4000];					
-						}
-						else
-						{
-							if (Core.PAL_Kara)
-							{
-								return Core._rom[temp_addr + 2 * 0x4000];
-							}
-							else
-							{
-								// Should never get here, but in case we do just return FF
-								return 0xFF;
-							}
-						}
-					}			
+						return Core._rom[temp_addr];
+					}				
 				}
 			}
 		}
@@ -109,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				// cartridge and other OPSYS
 				if (addr>=0x8000)
 				{
-					bank = (byte)(value & (Core.small_flag ? 0x3 : 0x7));
+					bank = (byte)(value & 0x7);
 				}
 			}
 		}
