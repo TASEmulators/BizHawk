@@ -12,12 +12,13 @@ namespace BizHawk.Client.EmuHawk
 	{
 		private string UnpluggedControllerName => typeof(UnpluggedController).DisplayName();
 		private string StandardControllerName => typeof(StandardController).DisplayName();
+		private string ProLineControllerName => typeof(ProLineController).DisplayName();
 
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			var intvSyncSettings = ((A7800Hawk)core).GetSyncSettings().Clone();
-			var port1 = intvSyncSettings.Port1;
-			var port2 = intvSyncSettings.Port2;
+			var A78SyncSettings = ((A7800Hawk)core).GetSyncSettings().Clone();
+			var port1 = A78SyncSettings.Port1;
+			var port2 = A78SyncSettings.Port2;
 
 			if (port1 == StandardControllerName)
 			{
@@ -28,7 +29,17 @@ namespace BizHawk.Client.EmuHawk
 			{
 				yield return JoystickController(2);
 			}
-			
+
+			if (port1 == ProLineControllerName)
+			{
+				yield return ProLineController(1);
+			}
+
+			if (port2 == ProLineControllerName)
+			{
+				yield return ProLineController(2);
+			}
+
 		}
 
 		private static PadSchema ProLineController(int controller)
