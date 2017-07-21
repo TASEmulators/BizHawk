@@ -948,7 +948,7 @@ namespace BizHawk.Client.Common
 								{
 									nextEmulator = Global.Config.A78_UseEmu7800
 										? nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath)
-										: nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gamedbpath);
+										: nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gamedbpathGetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
 								}
 
 								break;
