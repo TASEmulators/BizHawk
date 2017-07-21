@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public M6532 m6532;
 		public TIA tia;
 
-		public A7800Hawk(CoreComm comm, GameInfo game, byte[] rom, string gameDbFn)
+		public A7800Hawk(CoreComm comm, GameInfo game, byte[] rom, string gameDbFn, object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
 
@@ -71,6 +71,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			};
 
 			CoreComm = comm;
+
+			_settings = (A7800Settings)settings ?? new A7800Settings();
+			_syncSettings = (A7800SyncSettings)syncSettings ?? new A7800SyncSettings();
 
 			_controllerDeck = new A7800HawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 

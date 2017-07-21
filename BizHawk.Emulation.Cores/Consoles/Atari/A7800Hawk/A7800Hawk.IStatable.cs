@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			tia.SyncState(ser);
 			maria.SyncState(ser);
 			m6532.SyncState(ser);
+			mapper.SyncState(ser);
 
 			ser.BeginSection("Atari7800");
 			ser.Sync("core", ref core, false);
