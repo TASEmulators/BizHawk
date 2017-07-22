@@ -19,8 +19,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			short[] ret = new short[AudioClocks * 2];
-			nsamp = AudioClocks;
+			short[] ret = new short[_spf * 2];
+			nsamp = _spf;
 			GetSamples(ret);
 			samples = ret;		
 		}
@@ -34,8 +34,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		{
 			AudioClocks = 0;
 		}
-
-		private readonly int _spf;
 
 		// Exposing this as GetSamplesAsync would allow this to provide async sound
 		// However, it does nothing special for async sound so I don't see a point
