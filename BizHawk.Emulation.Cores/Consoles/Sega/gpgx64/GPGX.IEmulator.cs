@@ -26,6 +26,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 				if (next && !_nextDiskPressed)
 					newDisk++;
 
+				_prevDiskPressed = prev;
+				_nextDiskPressed = next;
+
 				if (newDisk < -1)
 					newDisk = -1;
 				if (newDisk >= _cds.Length)
