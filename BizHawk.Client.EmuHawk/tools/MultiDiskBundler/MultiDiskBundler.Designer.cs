@@ -141,7 +141,6 @@
             "AppleII",
             "C64",
             "GB",
-            "GEN",
             "PCFX",
             "PSX",
             "SAT"});
