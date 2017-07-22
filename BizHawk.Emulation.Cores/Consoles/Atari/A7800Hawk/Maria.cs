@@ -126,7 +126,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			for (int i=0; i<454;i++)
 			{
-				if(i==0 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
+				if(i==28 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
 				{
 					Core.cpu_halt_pending = true;
 					DMA_phase = DMA_START_UP;
