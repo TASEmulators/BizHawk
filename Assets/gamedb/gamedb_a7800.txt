@@ -2,6 +2,8 @@
 ;0 = normal cart (no banking or pokey or RAM)
 ;1 = Super Game mapper (standard mapper)
 ;2 = Super Game with extra ROM
+;3 = F-18 Hornet Mapper
+;4 = Double Dragon and Rampage
 
 md5:91041AADD1700A7A4076F4005F2C362F		Diagnostics	A78		NTSC=true;board=0
 md5:89E7B20E7E0C629D00C6CA68949A216F		Test Rom	A78		NTSC=true;board=0
@@ -11,13 +13,13 @@ md5:0be996d25144966d5541c9eb4919b289		Ace of Aces	A78		NTSC=true;board=1
 md5:aadde920b3aaba03bc10b40bd0619c94		Ace of Aces	A78		PAL=true;board=1		
 md5:877dcc97a775ed55081864b2dbf5f1e2		Alien Brigade	A78		NTSC=true;board=2		
 md5:de3e9496cb7341f865f27e5a72c7f2f5		Alien Brigade	A78		PAL=true;board=2		
-md5:0a9e58ef5eb9ff93246e0fff684dc7f1		Arkanoid (0911)	A78		NTSC=true;board=0P		
+md5:0a9e58ef5eb9ff93246e0fff684dc7f1		Arkanoid (0911)	A78		NTSC=true;board=0;Pokey=true		
 md5:f9fb84658c5586df159a0c75cc46b54c		Asteroids Deluxe	A78		NTSC=true;board=0		
 md5:a65f79ad4a0bbdecd59d5f7eb3623fd7		Asteroids Deluxe	A78		NTSC=true;board=0		
 md5:1baf41de200f26ec643625021290bec2		Asteroids Deluxe	A78		PAL=true;board=0		
 md5:07342c78619ba6ffcc61c10e907e3b50		Asteroids	A78		NTSC=true;board=0		
-md5:8fc3a695eaea3984912d98ed4a543376		Ballblazer	A78		NTSC=true;board=0P		
-md5:b558814d54904ce0582e2f6a801d03af		Ballblazer	A78		PAL=true;board=0P		
+md5:8fc3a695eaea3984912d98ed4a543376		Ballblazer	A78		NTSC=true;board=0;Pokey=true		
+md5:b558814d54904ce0582e2f6a801d03af		Ballblazer	A78		PAL=true;board=0;Pokey=true		
 md5:42682415906c21c6af80e4198403ffda		Barnyard Blaster	A78		NTSC=true;board=1
 md5:babe2bc2976688bafb8b23c192658126		Barnyard Blaster	A78		PAL=true;board=1
 md5:f5f6b69c5eb4b55fc163158d1a6b423e		Basketbrawl	A78		NTSC=true;board=1		
@@ -31,8 +33,8 @@ md5:38c056a48472d9a9e16ebda5ed91dae7		Centipede	A78		PAL=true;board=0
 md5:93e4387864b014c155d7c17877990d1e		Choplifter!	A78		NTSC=true;board=0		
 md5:59d4edb0230b5acc918b94f6bc94779f		Choplifter!	A78		PAL=true;board=0		
 md5:441ac404cdc7bcbd4d787f911df7bf0d		Color Test	A78		NTSC=true;board=0		
-md5:2e8e28f6ad8b9b9267d518d880c73ebb		Commando	A78		NTSC=true;board=1P		
-md5:55da6c6c3974d013f517e725aa60f48e		Commando	A78		PAL=true;board=1P		
+md5:2e8e28f6ad8b9b9267d518d880c73ebb		Commando	A78		NTSC=true;board=1;Pokey=true		
+md5:55da6c6c3974d013f517e725aa60f48e		Commando	A78		PAL=true;board=1;Pokey=true		
 md5:db691469128d9a4217ec7e315930b646		Crack'ed	A78		NTSC=true;board=1		
 md5:7cbe78fa06f47ba6516a67a4b003c9ee		Crack'ed	A78		PAL=true;board=1		
 md5:0c9b124355d5328697a3b9e0011353f2		Crazy Brix	A78		NTSC=true;board=0		
@@ -50,10 +52,10 @@ md5:5e332fbfc1e0fc74223d2e73271ce650		Donkey Kong Junior	A78		NTSC=true;board=0
 md5:4dc5f88243250461bd61053b13777060		Donkey Kong Junior	A78		PAL=true;board=0		
 md5:19f1ee292a23636bd57d408b62de79c7		Donkey Kong	A78		NTSC=true;board=0		
 md5:8e96ef14ce9b5d84bcbc996b66d6d4c7		Donkey Kong	A78		PAL=true;board=0		
-md5:de2ebafcf0e37aaa9d0e9525a7f4dd62		Double Dragon	A78		PAL=true;board=A78AC		
-md5:543484c00ba233736bcaba2da20eeea9		Double Dragon	A78		NTSC=true;board=A78AC		
-md5:2251a6a0f3aec84cc0aff66fc9fa91e8		F-18 Hornet	A78		NTSC=true;board=A78AB		
-md5:e7709da8e49d3767301947a0a0b9d2e6		F-18 Hornet	A78		PAL=true;board=A78AB		
+md5:de2ebafcf0e37aaa9d0e9525a7f4dd62		Double Dragon	A78		PAL=true;board=4		
+md5:543484c00ba233736bcaba2da20eeea9		Double Dragon	A78		NTSC=true;board=4		
+md5:2251a6a0f3aec84cc0aff66fc9fa91e8		F-18 Hornet	A78		NTSC=true;board=3		
+md5:e7709da8e49d3767301947a0a0b9d2e6		F-18 Hornet	A78		PAL=true;board=3		
 md5:6287727ab36391a62f728bbdee88675c		FailSafe	A78		NTSC=true;board=0		
 md5:d2bb22f704f1610a4c396c51f5188e15		FailSafe	A78		NTSC=true;board=0		
 md5:d25d5d19188e9f149977c49eb0367cd1		Fatal Run	A78		NTSC=true;board=1		
@@ -70,17 +72,17 @@ md5:0baec96787ce17f390e204de1a136e59		Hat Trick	A78		PAL=true;board=0
 md5:fd9e78e201b6baafddfd3e1fbfe6ba31		Hat Trick	A78		NTSC=true;board=0		
 md5:c3672482ca93f70eafd9134b936c3feb		Ikari Warriors	A78		NTSC=true;board=1		
 md5:8c2c2a1ea6e9a928a44c3151ba5c1ce3		Ikari Warriors	A78		PAL=true;board=1		
-md5:1745feadabb24e7cefc375904c73fa4c		Impossible Mission Fixed	A78		NTSC=true;board=1R		
-md5:baebc9246c087e893dfa489632157180		Impossible Mission	A78		NTSC=true;board=1R		
-md5:80dead01ea2db5045f6f4443faa6fce8		Impossible Mission	A78		PAL=true;board=1R		
-md5:045fd12050b7f2b842d5970f2414e912		Jinks	A78		NTSC=true;board=1R		
-md5:dfb86f4d06f05ad00cf418f0a59a24f7		Jinks	A78		PAL=true;board=1R		
+md5:1745feadabb24e7cefc375904c73fa4c		Impossible Mission Fixed	A78		NTSC=true;board=1;RAM=8		
+md5:baebc9246c087e893dfa489632157180		Impossible Mission	A78		NTSC=true;board=1;RAM=8		
+md5:80dead01ea2db5045f6f4443faa6fce8		Impossible Mission	A78		PAL=true;board=1;RAM=8		
+md5:045fd12050b7f2b842d5970f2414e912		Jinks	A78		NTSC=true;board=1;RAM=8		
+md5:dfb86f4d06f05ad00cf418f0a59a24f7		Jinks	A78		PAL=true;board=1;RAM=8		
 md5:f18b3b897a25ab3885b43b4bd141b396		Joust	A78		NTSC=true;board=0		
 md5:f2dae0264a4b4a73762b9d7177e989f6		Joust	A78		PAL=true;board=0		
-md5:548ba2e54e4fc45ab84ed634d702c136		Jr. Ms. Pac-Man	A78		NTSC=true;board=0P		
-md5:6bc2daeb48e28d103a4298a276e7e551		Jr. Pac-Man (Tunnels)	A78		NTSC=true;board=0P		
-md5:0b3baf47886915dd2eec5da7671bfa63		Jr. Pac-Man	A78		NTSC=true;board=1R		
-md5:8281ab17fa3bfc0a6c497d6a4f350061		Jr. Pac-Man	A78		NTSC=true;board=1R		
+md5:548ba2e54e4fc45ab84ed634d702c136		Jr. Ms. Pac-Man	A78		NTSC=true;board=0;Pokey=true		
+md5:6bc2daeb48e28d103a4298a276e7e551		Jr. Pac-Man (Tunnels)	A78		NTSC=true;board=0;Pokey=true		
+md5:0b3baf47886915dd2eec5da7671bfa63		Jr. Pac-Man	A78		NTSC=true;board=1;RAM=8		
+md5:8281ab17fa3bfc0a6c497d6a4f350061		Jr. Pac-Man	A78		NTSC=true;board=1;RAM=8		
 md5:17b3b764d33eae9b5260f01df7bb9d2f		KLAX	A78		NTSC=true;board=1		
 md5:5e0a1e832bbcea6facb832fde23a440a		Karateka	A78		PAL=true;board=1		
 md5:c3a5a8692a423d43d9d28dd5b7d109d9		Karateka	A78		NTSC=true;board=0		
@@ -116,11 +118,11 @@ md5:1a5207870dec6fae9111cb747e20d8e3		Pete Rose Baseball	A78		NTSC=true;board=0
 md5:05f43244465943ce819780a71a5b572a		Pitfighter	A78		NTSC=true;board=1		
 md5:33aea1e2b6634a1dec8c7006d9afda22		Planet Smashers	A78		NTSC=true;board=1		
 md5:2837a8fd49b7fc7ccd70fd45b69c5099		Planet Smashers	A78		PAL=true;board=1		
-md5:86546808dc60961cdb1b20e761c50ab1		Plutos	A78		NTSC=true;board=1R		
+md5:86546808dc60961cdb1b20e761c50ab1		Plutos	A78		NTSC=true;board=1;RAM=8		
 md5:584582bb09ee8122e7fc09dc7d1ed813		Pole Position II	A78		NTSC=true;board=0		
 md5:865457e0e0f48253b08f77b9e18f93b2		Pole Position II	A78		PAL=true;board=0		
 md5:66e7230f7ef9d14db82d76b06b241bc0		Q-bert	A78		NTSC=true;board=0		
-md5:ac03806cef2558fc795a7d5d8dba7bc0		Rampage	A78		NTSC=true;board=A78AC		
+md5:ac03806cef2558fc795a7d5d8dba7bc0		Rampage	A78		NTSC=true;board=4		
 md5:383ed9bd1efb9b6cb3388a777678c928		Realsports Baseball	A78		NTSC=true;board=1		
 md5:8f7eb10ad0bd75474abf0c6c36c08486		Rescue on Fractalus	A78		NTSC=true;board=0		
 md5:43525a0405184875c2ecfd0196886a34		Rip Off	A78		NTSC=true;board=0		
@@ -134,13 +136,13 @@ md5:1ee26fc6b06b4c9ba74931914b7e719d		Scramble	A78		PAL=true;board=0
 md5:65fe82f419f6583a0f9a736242cb303d		Scramble	A78		PAL=true;board=0		
 md5:980c35ae9625773a450aa7ef51751c04		Scrapyard Dog	A78		NTSC=true;board=1		
 md5:53db322c201323fe2ca8f074c0a2bf86		Scrapyard Dog	A78		PAL=true;board=1		
-md5:b697d9c2d1b9f6cb21041286d1bbfa7f		Sentinel	A78		NTSC=true;board=1P
-md5:5469b4de0608f23a5c4f98f331c9e75f		Sentinel	A78		PAL=true;board=1P
-md5:2d643ac548c40e58c99d0fe433ba4ba0		Sirius	A78		NTSC=true;board=1R		
+md5:b697d9c2d1b9f6cb21041286d1bbfa7f		Sentinel	A78		NTSC=true;board=1;Pokey=true
+md5:5469b4de0608f23a5c4f98f331c9e75f		Sentinel	A78		PAL=true;board=1;Pokey=true
+md5:2d643ac548c40e58c99d0fe433ba4ba0		Sirius	A78		NTSC=true;board=1;RAM=8		
 md5:a84c1b2300fbfbf21b1c02387f613dad		Space Duel	A78		PAL=true;board=0		
 md5:771cb4609347657f63e6f0eb26036e35		Space Duel	A78		NTSC=true;board=0		
 md5:6adf79558a3d7f5beca1bb8d34337417		Space Invaders	A78		NTSC=true;board=0		
-md5:cbb0746192540a13b4c7775c7ce2021f		Summer Games	A78		NTSC=true;board=1R		
+md5:cbb0746192540a13b4c7775c7ce2021f		Summer Games	A78		NTSC=true;board=1;RAM=16		
 md5:cc18e3b37a507c4217eb6cb1de8c8538		Super Huey UH-IX	A78		NTSC=true;board=0		
 md5:162f9c953f0657689cc74ab20b40280f		Super Huey UH-IX	A78		PAL=true;board=0					
 md5:59b5793bece1c80f77b55d60fb39cb94		Super Skateboardin'	A78		NTSC=true;board=0		
@@ -151,11 +153,11 @@ md5:1af475ff6429a160752b592f0f92b287		Titlematch Pro Wrestling	A78		NTSC=true;bo
 md5:c3903ab01a51222a52197dbfe6538ecf		Tomcat F14	A78		NTSC=true;board=0		
 md5:682338364243b023ecc9d24f0abfc9a7		Tomcat F14	A78		PAL=true;board=0		
 md5:208ef955fa90a29815eb097bce89bace		Touchdown Football	A78		NTSC=true;board=1		
-md5:8d64763db3100aadc552db5e6868506a		Tower Toppler	A78		NTSC=true;board=1R		
-md5:32a37244a9c6cc928dcdf02b45365aa8		Tower Toppler	A78		PAL=true;board=1R		
+md5:8d64763db3100aadc552db5e6868506a		Tower Toppler	A78		NTSC=true;board=1;RAM=8	
+md5:32a37244a9c6cc928dcdf02b45365aa8		Tower Toppler	A78		PAL=true;board=1;RAM=8		
 md5:412cc5bfa08bd03244b9c4e8d46cd0a0		Wasp (Standard Edition)	A78		NTSC=true;board=0		
 md5:427cb05d0a1abb068998e2760d77f4fb		Water Ski	A78		NTSC=true;board=1		
-md5:3799d72f78dda2ee87b0ef8bf7b91186		Winter Games	A78		NTSC=true;board=1R		
+md5:3799d72f78dda2ee87b0ef8bf7b91186		Winter Games	A78		NTSC=true;board=1;RAM=16		
 md5:6813ffff510f930c867b3f0aba78ac85		Worm (0703)	A78		NTSC=true;board=0		
 md5:05fb699db9eef564e2fe45c568746dbc		Xenophobe	A78		NTSC=true;board=1		
 md5:70937c3184f0be33d06f7f4382ca54de		Xenophobe	A78		PAL=true;board=1		
