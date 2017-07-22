@@ -39,6 +39,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public MapperBase mapper;
 		public bool small_flag = false;
 		public bool PAL_Kara = false;
+		public int cart_RAM = 0;
+		public bool pokey = false;
 
 		private readonly ITraceable _tracer;
 
@@ -117,7 +119,35 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					s_mapper = dict["board"];
 				}
 				else
+				{
 					throw new Exception("No Board selected for this game");
+				}
+
+				// check if the game uses pokey or RAM
+				if (dict.ContainsKey("RAM"))
+				{
+					int.TryParse(dict["RAM"], out cart_RAM);
+					Console.WriteLine(cart_RAM);
+				}
+
+				if (dict.ContainsKey("Pokey"))
+				{
+					bool.TryParse(dict["Pokey"], out pokey);
+				}
+
+				// some games will not function with the high score bios
+				// if such a game is being played, tell the user and disable it
+				if (dict.ContainsKey("No_HS"))
+				{
+					bool no_hs;
+					bool.TryParse(dict["No_HS"], out no_hs);
+
+					if (no_hs)
+					{
+						Console.WriteLine("This game is incompatible with the High Score BIOS, disabling it");
+						highscoreBios = null;
+					}
+				}
 			}
 			else if (is_header)
 			{
@@ -243,6 +273,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (m == "2")
 			{
 				mapper = new MapperSGE();
+			}
+			if (m == "3")
+			{
+				mapper = new MapperF18();
+			}
+			if (m == "4")
+			{
+				mapper = new MapperRampage();
 			}
 
 			mapper.Core = this;

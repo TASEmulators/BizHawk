@@ -27,6 +27,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public byte p1_fire_2x;
 		public byte p2_fire_2x;
 		public byte con_state;
+		public bool left_toggle;
+		public bool right_toggle;
+		public bool left_was_pressed;
+		public bool right_was_pressed;
 
 		// there are 4 maria cycles in a CPU cycle (fast access, both NTSC and PAL)
 		// if the 6532 or TIA are accessed (PC goes to one of those addresses) the next access will be slower by 1/2 a CPU cycle
@@ -171,12 +175,34 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			if (controller.IsPressed("Right Difficulty"))
 			{
-				result |= (1 << 7);
+				if (!right_was_pressed)
+				{
+					right_toggle = !right_toggle;
+				}
+				right_was_pressed = true;
+				result |= (byte)((right_toggle ? 1 : 0) << 7);
 			}
+			else
+			{
+				right_was_pressed = false;
+				result |= (byte)((right_toggle ? 1 : 0) << 7);
+			}
+
 			if (controller.IsPressed("Left Difficulty"))
 			{
-				result |= (1 << 6);
+				if (!left_was_pressed)
+				{
+					left_toggle = !left_toggle;
+				}
+				left_was_pressed = true;
+				result |= (byte)((left_toggle ? 1 : 0) << 6);
 			}
+			else
+			{
+				left_was_pressed = false;
+				result |= (byte)((left_toggle ? 1 : 0) << 6);
+			}
+
 			if (!controller.IsPressed("Pause"))
 			{
 				result |= (1 << 3);

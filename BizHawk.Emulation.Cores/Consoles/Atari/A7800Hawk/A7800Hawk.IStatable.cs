@@ -79,8 +79,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync("slow_access", ref slow_access);
 			ser.Sync("small flag", ref small_flag);
 			ser.Sync("pal kara", ref PAL_Kara);
+			ser.Sync("Cart RAM", ref cart_RAM);
+			ser.Sync("pokey", ref pokey);
+			ser.Sync("left_toggle", ref left_toggle);
+			ser.Sync("right_toggle", ref right_toggle);
+			ser.Sync("left_was_pressed", ref left_was_pressed);
+			ser.Sync("right_was_pressed", ref right_was_pressed);
 
-			ser.EndSection();
+		ser.EndSection();
 		}
 	}
 }

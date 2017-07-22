@@ -85,6 +85,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool current_DLL_H8;
 
 		public bool overrun_dma;
+		public bool global_write_mode;
 
 		public int header_counter;
 		public int[] header_counter_max = new int [2];
@@ -96,7 +97,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public void RunFrame()
 		{
 			scanline = 0;
-
+			global_write_mode = false;
 			Core.Maria_regs[8] = 0x80; // indicates VBlank state
 
 			// we start off in VBlank for 20 scanlines
@@ -324,7 +325,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							{
 								// we are in 5 Byte header mode (i.e. using the character map)
 								GFX_Objects[GFX_index, header_counter].write_mode = temp.Bit(7);
-
+								global_write_mode = temp.Bit(7);
 								GFX_Objects[GFX_index, header_counter].ind_mode = temp.Bit(5);
 								header_pointer++;
 								temp = (byte)(ReadMemory((ushort)(current_DLL_addr + header_pointer)));
@@ -372,7 +373,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 							DMA_phase_next = DMA_GRAPHICS;
 
-							GFX_Objects[GFX_index, header_counter].write_mode = false;
+							GFX_Objects[GFX_index, header_counter].write_mode = global_write_mode;
 
 							GFX_Objects[GFX_index, header_counter].ind_mode = false;
 
@@ -461,7 +462,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 								if (((current_DLL_H16 && addr_t.Bit(12)) || (current_DLL_H8 && addr_t.Bit(11))) && (addr_t >= 0x8000))
 								{
-									GFX_Objects[GFX_index, header_counter].obj[i] = 0; 
+									GFX_Objects[GFX_index, header_counter].obj[i] = 0;
 									graphics_read_time -= 3;
 								}
 								else
@@ -552,7 +553,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					if (disp_mode == 0)
 					{
 						local_width = GFX_Objects[local_GFX_index, i].width;
-						
+
 						for (int j = 0; j < local_width; j++)
 						{
 							for (int k = 3; k >= 0; k--)
@@ -593,7 +594,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					else if (disp_mode == 2) // note: 1 is not used
 					{
 						local_width = GFX_Objects[local_GFX_index, i].width;
-						
+
 						for (int j = 0; j < local_width; j++)
 						{
 							for (int k = 7; k >= 0; k--)
@@ -643,12 +644,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					else
 					{
 						local_width = GFX_Objects[local_GFX_index, i].width;
-						
+
 						for (int j = 0; j < local_width; j++)
 						{
-							for (int k = 7; k >= 0; k--)
+							for (int k = 3; k >= 0; k--)
 							{
-								index = local_start * 2 + j * 8 + (7 - k);
+								index = local_start * 2 + j * 4 + (3 - k);
 
 								if (index > 511)
 								{
@@ -661,18 +662,18 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 									int temp_color = color;
 
 									// this is now the color index (0-3) we choose from the palette
-									if (k >= 6)
+									if (k >= 3)
 									{
 										color = ((color >> 7) & 0x1);
 										temp_color = (local_palette & 4) + ((temp_color >> 2) & 3);
 									}
-									else if (k >= 4)
+									else if (k >= 2)
 									{
 										color = ((color >> 6) & 0x1);
 										temp_color = (local_palette & 4) + ((temp_color >> 2) & 3);
 
 									}
-									else if (k >= 2)
+									else if (k >= 1)
 									{
 										color = ((color >> 5) & 0x1);
 										temp_color = (local_palette & 4) + (temp_color & 3);
@@ -685,7 +686,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 									if (color != 0) // transparent
 									{
-										color = (temp_color << 2) + color;
+										color = (temp_color << 2) + 2;
 
 										color = Core.Maria_regs[color];
 
@@ -701,7 +702,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					if (disp_mode == 0)
 					{
 						local_width = GFX_Objects[local_GFX_index, i].width;
-						
+
 						for (int j = 0; j < local_width; j++)
 						{
 							for (int k = 7; k >= 0; k--)
@@ -752,7 +753,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						// here the palette is determined by palette bit 2 only
 						// hence only palette 0 or 4 is available
 						local_palette = GFX_Objects[local_GFX_index, i].palette & 0x4;
-						
+
 						int temp_c0 = GFX_Objects[local_GFX_index, i].palette & 0x1;
 						int temp_c1 = GFX_Objects[local_GFX_index, i].palette & 0x2;
 						
