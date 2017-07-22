@@ -622,6 +622,16 @@ int sgb_init(const uint8_t *spc, int length)
 		utils_log("SGB: Failed to load SPC\n");
 		return 0;
 	}
+	
+	// the combination of the sameboy bootrom plus the built in SPC file we use means
+	// that the SPC doesn't finish its init fast enough for donkey kong, which starts poking
+	// data too early.  it's just a combination of various HLE concerns not meshing...
+	int16_t sound_buffer[4096];
+	spc_set_output(sgb.spc, sound_buffer, sizeof(sound_buffer) / sizeof(sound_buffer[0]));
+	for (int i = 0; i < 240; i++)
+	{
+		spc_end_frame(sgb.spc, 35104);
+	}
 
 	return 1;
 }
@@ -733,22 +743,38 @@ void sgb_set_controller_data(const uint8_t *buttons)
 
 static void trn_sound(const uint8_t* data)
 {
-	int len = data[0] | data[1] << 8;
-	int addr = data[2] | data[3] << 8;
-	utils_log("TRN_SOUND %04x %04x\n", addr, len);
-	uint8_t* dst = spc_get_ram(sgb.spc);
+	const uint8_t* const dataend = data + 0x10000;
+	uint8_t* const dst = spc_get_ram(sgb.spc);
 
-	if (len > 0xffc)
+	while (1)
 	{
-		utils_log("TRN_SOUND src overflow\n");
-		return;
+		if (data + 4 > dataend)
+		{
+			utils_log("TRN_SOUND header overflow\n");
+			break;
+		}
+		int len = data[0] | data[1] << 8;
+		int addr = data[2] | data[3] << 8;
+		if (!len)
+		{
+			utils_log("TRN_SOUND END %04x\n", addr);
+			break;
+		}
+		data += 4;
+		if (data + len > dataend)
+		{
+			utils_log("TRN_SOUND src overflow\n");
+			break;
+		}
+		if (addr + len >= 0x10000)
+		{
+			utils_log("TRN_SOUND dst overflow\n");
+			return;
+		}
+    	utils_log("TRN_SOUND addr %04x len %04x\n", addr, len);
+		memcpy(dst + addr, data, len);
+		data += len;
 	}
-	if (len + addr >= 0x10000)
-	{
-		utils_log("TRN_SOUND dst overflow\n");
-		return;
-	}
-	memcpy(dst + addr, data + 4, len);
 }
 
 static void trn_pal(const uint8_t *data)
@@ -973,19 +999,31 @@ void sgb_render_audio(uint64_t time, void (*callback)(int16_t l, int16_t r, uint
 	uint32_t new_remainder = diff % refclocks_per_spc_sample;
 
 	spc_set_output(sgb.spc, sound_buffer, sizeof(sound_buffer) / sizeof(sound_buffer[0]));
-	int p;
-	for (p = 0; p < 4; p++)
+	int matched = 1;
+	for (int p = 0; p < 4; p++)
 	{
 		if (spc_read_port(sgb.spc, 0, p) != sgb.sound_control[p])
-			break;
+			matched = 0;
 	}
-	if (p == 4) // recived
+	if (matched) // recived
 	{
 		sgb.sound_control[0] = 0;
 		sgb.sound_control[1] = 0;
 		sgb.sound_control[2] = 0;
 	}
-	for (p = 0; p < 4; p++)
+	else
+	{
+		utils_log("SPC: %02x %02x %02x %02x => %02x %02x %02x %02x\n",
+			spc_read_port(sgb.spc, 0, 0),
+			spc_read_port(sgb.spc, 0, 1),
+			spc_read_port(sgb.spc, 0, 2),
+			spc_read_port(sgb.spc, 0, 3),
+			sgb.sound_control[0],
+			sgb.sound_control[1],
+			sgb.sound_control[2],
+			sgb.sound_control[3]);
+	}
+	for (int p = 0; p < 4; p++)
 	{
 		spc_write_port(sgb.spc, 0, p, sgb.sound_control[p]);
 	}
