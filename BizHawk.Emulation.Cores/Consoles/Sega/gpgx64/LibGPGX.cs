@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public uint BackdropColor;
 		}
 
-		[BizImport(CallingConvention.Cdecl, Compatibility=true)]
+		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
 		public abstract bool gpgx_init(string feromextension, load_archive_cb feload_archive_cb, bool sixbutton, INPUT_SYSTEM system_a, INPUT_SYSTEM system_b, Region region, [In]InitSettings settings);
 
 		[BizImport(CallingConvention.Cdecl)]
@@ -84,34 +84,34 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		public enum INPUT_SYSTEM : byte
 		{
-			SYSTEM_NONE = 0,		// unconnected port	
-			SYSTEM_MD_GAMEPAD = 1,	// single 3-buttons or 6-buttons Control Pad 	
-			SYSTEM_MOUSE = 2,		// Sega Mouse 	
-			SYSTEM_MENACER = 3,		// Sega Menacer -- port B only
-			SYSTEM_JUSTIFIER = 4,	// Konami Justifiers -- port B only
-			SYSTEM_XE_A1P = 5,		// XE-A1P analog controller -- port A only
-			SYSTEM_ACTIVATOR = 6,	// Sega Activator 	
-			SYSTEM_MS_GAMEPAD = 7,	// single 2-buttons Control Pad -- Master System
-			SYSTEM_LIGHTPHASER = 8,	// Sega Light Phaser -- Master System
-			SYSTEM_PADDLE = 9,		// Sega Paddle Control -- Master System
-			SYSTEM_SPORTSPAD = 10,	// Sega Sports Pad -- Master System
-			SYSTEM_TEAMPLAYER = 11,	// Multi Tap -- Sega TeamPlayer 	
-			SYSTEM_WAYPLAY = 12,	// Multi Tap -- EA 4-Way Play -- use both ports
+			SYSTEM_NONE = 0,        // unconnected port	
+			SYSTEM_MD_GAMEPAD = 1,  // single 3-buttons or 6-buttons Control Pad 	
+			SYSTEM_MOUSE = 2,       // Sega Mouse 	
+			SYSTEM_MENACER = 3,     // Sega Menacer -- port B only
+			SYSTEM_JUSTIFIER = 4,   // Konami Justifiers -- port B only
+			SYSTEM_XE_A1P = 5,      // XE-A1P analog controller -- port A only
+			SYSTEM_ACTIVATOR = 6,   // Sega Activator 	
+			SYSTEM_MS_GAMEPAD = 7,  // single 2-buttons Control Pad -- Master System
+			SYSTEM_LIGHTPHASER = 8, // Sega Light Phaser -- Master System
+			SYSTEM_PADDLE = 9,      // Sega Paddle Control -- Master System
+			SYSTEM_SPORTSPAD = 10,  // Sega Sports Pad -- Master System
+			SYSTEM_TEAMPLAYER = 11, // Multi Tap -- Sega TeamPlayer 	
+			SYSTEM_WAYPLAY = 12,    // Multi Tap -- EA 4-Way Play -- use both ports
 		};
 
 		public enum INPUT_DEVICE : byte
 		{
-			DEVICE_NONE = 0xff,		// unconnected device = fixed ID for Team Player)
-			DEVICE_PAD3B = 0x00,	// 3-buttons Control Pad = fixed ID for Team Player)
-			DEVICE_PAD6B = 0x01,	// 6-buttons Control Pad = fixed ID for Team Player)
-			DEVICE_PAD2B = 0x02,	// 2-buttons Control Pad
-			DEVICE_MOUSE = 0x03,	// Sega Mouse
+			DEVICE_NONE = 0xff,     // unconnected device = fixed ID for Team Player)
+			DEVICE_PAD3B = 0x00,    // 3-buttons Control Pad = fixed ID for Team Player)
+			DEVICE_PAD6B = 0x01,    // 6-buttons Control Pad = fixed ID for Team Player)
+			DEVICE_PAD2B = 0x02,    // 2-buttons Control Pad
+			DEVICE_MOUSE = 0x03,    // Sega Mouse
 			DEVICE_LIGHTGUN = 0x04, // Sega Light Phaser, Menacer or Konami Justifiers
-			DEVICE_PADDLE = 0x05,	// Sega Paddle Control
+			DEVICE_PADDLE = 0x05,   // Sega Paddle Control
 			DEVICE_SPORTSPAD = 0x06,// Sega Sports Pad
-			DEVICE_PICO = 0x07,		// PICO tablet
-			DEVICE_TEREBI = 0x08,	// Terebi Oekaki tablet
-			DEVICE_XE_A1P = 0x09,	// XE-A1P analog controller
+			DEVICE_PICO = 0x07,     // PICO tablet
+			DEVICE_TEREBI = 0x08,   // Terebi Oekaki tablet
+			DEVICE_XE_A1P = 0x09,   // XE-A1P analog controller
 			DEVICE_ACTIVATOR = 0x0a,// Activator
 		};
 
@@ -150,8 +150,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_set_cd_callback(CDCallback cd);
-
-
 
 		/// <summary>
 		/// not every flag is valid for every device!
@@ -276,6 +274,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 
 		[BizImport(CallingConvention.Cdecl)]
 		public abstract void gpgx_set_cdd_callback(cd_read_cb cddcb);
+
+		[BizImport(CallingConvention.Cdecl, Compatibility = true)]
+		public abstract void gpgx_swap_disc(CDData toc);
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct VDPNameTable

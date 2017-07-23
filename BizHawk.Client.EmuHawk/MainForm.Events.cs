@@ -25,6 +25,7 @@ using BizHawk.Client.EmuHawk.ToolExtensions;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Client.ApiHawk;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1257,7 +1258,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SGBCoreSubmenu_DropDownOpened(object sender, EventArgs e)
 		{
 			SgbBsnesMenuItem.Checked = Global.Config.SGB_UseBsnes;
-			SgbPizzaBoyMenuItem.Checked = !Global.Config.SGB_UseBsnes;
+			SgbSameBoyMenuItem.Checked = !Global.Config.SGB_UseBsnes;
 		}
 
 		private void SgbCorePick_Click(object sender, EventArgs e)
@@ -1269,7 +1270,6 @@ namespace BizHawk.Client.EmuHawk
 				FlagNeedsReboot();
 			}
 		}
-
 
 		private void GbInSgbMenuItem_Click(object sender, EventArgs e)
 		{
@@ -2002,7 +2002,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void GBCoreSettingsMenuItem_Click(object sender, EventArgs e)
 		{
-			GBPrefs.DoGBPrefsDialog(this);
+			if (Global.Emulator is Gameboy)
+			{
+				GBPrefs.DoGBPrefsDialog(this);
+			}
+			else // sameboy
+			{
+				GenericCoreConfig.DoDialog(this, "Gameboy Settings");
+			}
 		}
 
 		private void LoadGbInSgbMenuItem_Click(object sender, EventArgs e)
@@ -2430,7 +2437,7 @@ namespace BizHawk.Client.EmuHawk
 				showMenuVisible = true; // need to always be able to restore this as an emergency measure
 			}
 
-			if (_chromeless)
+			if (argParse._chromeless)
 			{
 				showMenuVisible = true; // I decided this was always possible in chromeless mode, we'll see what they think
 			}

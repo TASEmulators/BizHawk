@@ -554,7 +554,7 @@ namespace BizHawk.Client.Common
 						switch (game.System)
 						{
 							case "GEN":
-								var genesis = new GPGX(nextComm, null, disc, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
+								var genesis = new GPGX(nextComm, null, new[] { disc }, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 								nextEmulator = genesis;
 								break;
 							case "SAT":
@@ -728,6 +728,15 @@ namespace BizHawk.Client.Common
 
 									nextEmulator = new Tst(nextComm, pcfxDiscs,
 										(Tst.Settings)GetCoreSettings<Tst>(), (Tst.SyncSettings)GetCoreSyncSettings<Tst>());
+									break;
+								case "GEN":
+									// We are assuming discs only, for now
+									var genDiscs = DiscsFromXml(xmlGame, "GEN", DiscType.MegaCD);
+									if (!genDiscs.Any())
+									{
+										return false;
+									}
+									nextEmulator = new GPGX(nextComm, null, genDiscs, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 									break;
 								default:
 									return false;
@@ -911,7 +920,6 @@ namespace BizHawk.Client.Common
 							case "GBC":
 								if (!Global.Config.GB_AsSGB)
 								{
-									//core = CoreInventory.Instance["GB", "Pizza Boy"];
 									core = CoreInventory.Instance["GB", "Gambatte"];
 								}
 								else
@@ -925,7 +933,7 @@ namespace BizHawk.Client.Common
 									}
 									else
 									{
-										core = CoreInventory.Instance["SGB", "Pizza Boy"];
+										core = CoreInventory.Instance["SGB", "SameBoy"];
 									}
 								}
 								break;
@@ -940,7 +948,7 @@ namespace BizHawk.Client.Common
 								{
 									nextEmulator = Global.Config.A78_UseEmu7800
 										? nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath)
-										: nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gamedbpath);
+										: nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gamedbpath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
 								}
 
 								break;

@@ -192,6 +192,14 @@ GPGX_EX void gpgx_advance(void)
 	nsamples = audio_update(soundbuffer);
 }
 
+GPGX_EX void gpgx_swap_disc(const toc_t* toc)
+{
+	if (system_hw == SYSTEM_MCD)
+	{
+		cdd_hotswap(toc);
+	}
+}
+
 typedef struct
 {
 	uint32 width; // in cells

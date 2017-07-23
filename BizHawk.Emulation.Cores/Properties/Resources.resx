@@ -118,6 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="SameboyCgbBoot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cgb_boot.bin.gz;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="SameboyDmgBoot" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\dmg_boot.bin.gz;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="SgbCartPresent_SPC" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\sgb-cart-present.spc.gz;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>

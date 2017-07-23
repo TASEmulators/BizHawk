@@ -20,6 +20,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 		[UnmanagedFunctionPointer(CC)]
 		public delegate void CDReadCallback(int lba, IntPtr dest, bool audio);
 
+		public enum Region : int
+		{
+			Auto = 0,
+			JapanNTSC = 1,
+			JapanPAL = 2,
+			US = 4,
+			Europe = 8
+		}
+
 		/// <summary>
 		/// 
 		/// </summary>
@@ -28,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 		///		32X games will still run, but will not have memory domains</param>
 		/// <returns></returns>
 		[BizImport(CC)]
-		public abstract bool Init(bool cd, bool _32xPreinit);
+		public abstract bool Init(bool cd, bool _32xPreinit, Region regionAutoOrder,  Region regionOverride);
 
 		[BizImport(CC)]
 		public abstract void SetCDReadCallback(CDReadCallback callback);

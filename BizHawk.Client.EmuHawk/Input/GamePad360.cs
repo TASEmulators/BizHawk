@@ -180,8 +180,8 @@ namespace BizHawk.Client.EmuHawk
 
 		void InitializeButtons()
 		{
-			const int dzp = 9000;
-			const int dzn = -9000;
+			const int dzp = 20000;
+			const int dzn = -20000;
 			const int dzt = 40;
 
 			AddItem("A", () => (state.Gamepad.wButtons & (ushort)GamepadButtonFlags.A) != 0);

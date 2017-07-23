@@ -44,7 +44,7 @@ namespace BizHawk.Client.Common
 			// assume we have a header of that size. Otherwise, assume it's just all rom.
 			// Other 'recognized' header sizes may need to be added.
 			int headerOffset = fileLength % BankSize;
-			if (headerOffset.In(0, 512) == false)
+			if (headerOffset.In(0, 128, 512) == false)
 			{
 				Console.WriteLine("ROM was not a multiple of 1024 bytes, and not a recognized header size: {0}. Assume it's purely ROM data.", headerOffset);
 				headerOffset = 0;
@@ -86,6 +86,13 @@ namespace BizHawk.Client.Common
 
 			// note: this will be taking several hashes, of a potentially large amount of data.. yikes!
 			GameInfo = Database.GetGameInfo(RomData, file.Name);
+
+			if (GameInfo.NotInDatabase && headerOffset==128 && file.Extension == ".A78")
+			{
+				// if the game is not in the DB, add the header back in so the core can use it
+				// for now only .A78 games, but probably should be for other systems as well
+				RomData = FileData;
+			}
 			
 			CheckForPatchOptions();
 

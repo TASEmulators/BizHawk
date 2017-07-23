@@ -346,6 +346,11 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 		public void FreePipeline(Pipeline pipeline)
 		{
 			var pw = pipeline.Opaque as PipelineWrapper;
+
+			//unavailable pipelines will have no opaque
+			if (pw == null)
+				return;
+
 			GL.DeleteProgram(pw.pid);
 
 			pw.FragmentShader.Release();
@@ -686,9 +691,13 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.OpenTK
 			{
 				var cgc = new CGC();
 				var results = cgc.Run(source, entry, type == ShaderType.FragmentShader ? "glslf" : "glslv", false);
-				
+
 				if (!results.Succeeded)
+				{
+					Console.WriteLine("CGC failed");
+					Console.WriteLine(results.Errors);
 					return new Shader(this, null, false);
+				}
 
 				source = results.Code;
 				sw.MapCodeToNative = results.MapCodeToNative;

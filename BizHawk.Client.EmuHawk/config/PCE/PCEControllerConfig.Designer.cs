@@ -28,52 +28,63 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PCEControllerConfig));
-			this.CancelBtn = new System.Windows.Forms.Button();
-			this.OkBtn = new System.Windows.Forms.Button();
-			this.SuspendLayout();
-			// 
-			// CancelBtn
-			// 
-			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelBtn.Location = new System.Drawing.Point(235, 145);
-			this.CancelBtn.Name = "CancelBtn";
-			this.CancelBtn.Size = new System.Drawing.Size(60, 23);
-			this.CancelBtn.TabIndex = 3;
-			this.CancelBtn.Text = "&Cancel";
-			this.CancelBtn.UseVisualStyleBackColor = true;
-			this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
-			// 
-			// OkBtn
-			// 
-			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OkBtn.Location = new System.Drawing.Point(169, 145);
-			this.OkBtn.Name = "OkBtn";
-			this.OkBtn.Size = new System.Drawing.Size(60, 23);
-			this.OkBtn.TabIndex = 2;
-			this.OkBtn.Text = "&OK";
-			this.OkBtn.UseVisualStyleBackColor = true;
-			this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
-			// 
-			// PCEControllerConfig
-			// 
-			this.AcceptButton = this.OkBtn;
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.CancelButton = this.CancelBtn;
-			this.ClientSize = new System.Drawing.Size(307, 180);
-			this.Controls.Add(this.CancelBtn);
-			this.Controls.Add(this.OkBtn);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.Name = "PCEControllerConfig";
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Controller Settings";
-			this.Load += new System.EventHandler(this.PCEControllerConfig_Load);
-			this.ResumeLayout(false);
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PCEControllerConfig));
+            this.CancelBtn = new System.Windows.Forms.Button();
+            this.OkBtn = new System.Windows.Forms.Button();
+            this.ControllerPropertyGrid = new System.Windows.Forms.PropertyGrid();
+            this.SuspendLayout();
+            // 
+            // CancelBtn
+            // 
+            this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelBtn.Location = new System.Drawing.Point(235, 203);
+            this.CancelBtn.Name = "CancelBtn";
+            this.CancelBtn.Size = new System.Drawing.Size(60, 23);
+            this.CancelBtn.TabIndex = 3;
+            this.CancelBtn.Text = "&Cancel";
+            this.CancelBtn.UseVisualStyleBackColor = true;
+            this.CancelBtn.Click += new System.EventHandler(this.CancelBtn_Click);
+            // 
+            // OkBtn
+            // 
+            this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.OkBtn.Location = new System.Drawing.Point(169, 203);
+            this.OkBtn.Name = "OkBtn";
+            this.OkBtn.Size = new System.Drawing.Size(60, 23);
+            this.OkBtn.TabIndex = 2;
+            this.OkBtn.Text = "&OK";
+            this.OkBtn.UseVisualStyleBackColor = true;
+            this.OkBtn.Click += new System.EventHandler(this.OkBtn_Click);
+            // 
+            // ControllerPropertyGrid
+            // 
+            this.ControllerPropertyGrid.Location = new System.Drawing.Point(12, 12);
+            this.ControllerPropertyGrid.Name = "ControllerPropertyGrid";
+            this.ControllerPropertyGrid.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
+            this.ControllerPropertyGrid.Size = new System.Drawing.Size(283, 181);
+            this.ControllerPropertyGrid.TabIndex = 4;
+            this.ControllerPropertyGrid.ToolbarVisible = false;
+            // 
+            // PCEControllerConfig
+            // 
+            this.AcceptButton = this.OkBtn;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.CancelBtn;
+            this.ClientSize = new System.Drawing.Size(307, 238);
+            this.Controls.Add(this.ControllerPropertyGrid);
+            this.Controls.Add(this.CancelBtn);
+            this.Controls.Add(this.OkBtn);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "PCEControllerConfig";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Controller Settings";
+            this.Load += new System.EventHandler(this.PCEControllerConfig_Load);
+            this.ResumeLayout(false);
 
 		}
 
@@ -81,5 +92,6 @@
 
 		private System.Windows.Forms.Button CancelBtn;
 		private System.Windows.Forms.Button OkBtn;
+		private System.Windows.Forms.PropertyGrid ControllerPropertyGrid;
 	}
 }

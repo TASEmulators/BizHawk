@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 
 		[CoreConstructor("VB")]
 		public VirtualBoyee(CoreComm comm, byte[] rom, Settings settings, SyncSettings syncSettings)
-			:base(comm, new Configuration
+			: base(comm, new Configuration
 			{
 				DefaultFpsNumerator = 20000000,
 				DefaultFpsDenominator = 397824,
@@ -38,8 +38,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 		{
 			_settings = settings ?? new Settings();
 			_syncSettings = syncSettings ?? new SyncSettings();
-			// TODO: the way settings work in this core, changing the non-sync ones will invalidate savestates
-			var nativeSettings = LibVirtualBoyee.NativeSettings.FromFrontendSettings(_settings, _syncSettings);
 
 			_boyee = PreInit<LibVirtualBoyee>(new PeRunnerOptions
 			{
@@ -50,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 				PlainHeapSizeKB = 256
 			});
 
-			if (!_boyee.Load(rom, rom.Length, nativeSettings))
+			if (!_boyee.Load(rom, rom.Length, LibVirtualBoyee.NativeSyncSettings.FromFrontendSettings(_syncSettings)))
 				throw new InvalidOperationException("Core rejected the rom");
 
 			// do a quick hack up for frame zero size
@@ -60,6 +58,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.VB
 			BufferHeight = tmp.Height;
 
 			PostInit();
+
+			_boyee.SetSettings(LibVirtualBoyee.NativeSettings.FromFrontendSettings(_settings));
 		}
 
 		protected override LibWaterboxCore.FrameInfo FrameAdvancePrep(IController controller, bool render, bool rendersound)

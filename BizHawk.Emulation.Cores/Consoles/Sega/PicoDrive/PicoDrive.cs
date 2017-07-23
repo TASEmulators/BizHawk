@@ -8,12 +8,14 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using BizHawk.Common;
+using System.ComponentModel;
 
 namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 {
 	[Core("PicoDrive", "notaz", true, true,
 		"0e352905c7aa80b166933970abbcecfce96ad64e", "https://github.com/notaz/picodrive", false)]
-	public class PicoDrive : WaterboxCore, IDriveLight, IRegionable
+	public class PicoDrive : WaterboxCore, IDriveLight, IRegionable, ISettable<object, PicoDrive.SyncSettings>
 	{
 		private LibPicoDrive _core;
 		private LibPicoDrive.CDReadCallback _cdcallback;
@@ -22,15 +24,15 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 		private bool _isPal;
 
 		[CoreConstructor("GEN")]
-		public PicoDrive(CoreComm comm, GameInfo game, byte[] rom, bool deterministic)
-			:this(comm, game, rom, null, deterministic)
+		public PicoDrive(CoreComm comm, GameInfo game, byte[] rom, bool deterministic, SyncSettings syncSettings)
+			: this(comm, game, rom, null, deterministic, syncSettings)
 		{ }
 
-		public PicoDrive(CoreComm comm, GameInfo game, Disc cd, bool deterministic)
-			:this(comm, game, null, cd, deterministic)
+		public PicoDrive(CoreComm comm, GameInfo game, Disc cd, bool deterministic, SyncSettings syncSettings)
+			: this(comm, game, null, cd, deterministic, syncSettings)
 		{ }
 
-		private PicoDrive(CoreComm comm, GameInfo game, byte[] rom, Disc cd, bool deterministic)
+		private PicoDrive(CoreComm comm, GameInfo game, byte[] rom, Disc cd, bool deterministic, SyncSettings syncSettings)
 			: base(comm, new Configuration
 			{
 				MaxSamples = 2048,
@@ -48,6 +50,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 			if (deterministic && !has32xBios)
 				throw new InvalidOperationException("32X BIOS files are required for deterministic mode");
 			deterministic |= has32xBios;
+
+			_syncSettings = syncSettings ?? new SyncSettings();
 
 			_core = PreInit<LibPicoDrive>(new PeRunnerOptions
 			{
@@ -83,7 +87,12 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 				_exe.AddReadonlyFile(rom, "romfile.md");
 			}
 
-			if (!_core.Init(cd != null, game["32X"]))
+			var regionAutoOrder = (LibPicoDrive.Region)(
+				(int)_syncSettings.FirstChoice |
+				(int)_syncSettings.SecondChoice << 4 |
+				(int)_syncSettings.ThirdChoice << 8);
+
+			if (!_core.Init(cd != null, game["32X"], regionAutoOrder, _syncSettings.RegionOverride))
 				throw new InvalidOperationException("Core rejected the file!");
 
 			if (cd != null)
@@ -173,6 +182,68 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive
 		{
 			_core.SetCDReadCallback(_cdcallback);
 		}
+
+		#region ISettable
+
+		public class SyncSettings
+		{
+			[DefaultValue(LibPicoDrive.Region.Auto)]
+			[Description("If set, force the console to this region")]
+			public LibPicoDrive.Region RegionOverride { get; set; }
+
+			[DefaultValue(LibPicoDrive.Region.Auto)]
+			[Description("When region is set to automatic, highest priority region to use if the game supports multiple regions")]
+			public LibPicoDrive.Region FirstChoice { get; set; }
+
+			[DefaultValue(LibPicoDrive.Region.Auto)]
+			[Description("When region is set to automatic, second highest priority region to use if the game supports multiple regions")]
+			public LibPicoDrive.Region SecondChoice { get; set; }
+
+			[DefaultValue(LibPicoDrive.Region.Auto)]
+			[Description("When region is set to automatic, lowest priority region to use if the game supports multiple regions")]
+			public LibPicoDrive.Region ThirdChoice { get; set; }
+
+			public SyncSettings Clone()
+			{
+				return (SyncSettings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(SyncSettings x, SyncSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
+			}
+
+			public SyncSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+		}
+
+		private SyncSettings _syncSettings;
+
+		public object GetSettings()
+		{
+			return new object();
+		}
+
+		public SyncSettings GetSyncSettings()
+		{
+			return _syncSettings.Clone();
+		}
+
+		public bool PutSettings(object o)
+		{
+			return false;
+		}
+
+		public bool PutSyncSettings(SyncSettings o)
+		{
+			var ret = SyncSettings.NeedsReboot(_syncSettings, o);
+			_syncSettings = o;
+			return ret;
+		}
+
+		#endregion
 
 		#region IDriveLight
 

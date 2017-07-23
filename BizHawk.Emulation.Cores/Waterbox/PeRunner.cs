@@ -308,6 +308,68 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 			}
 
+			private class TransientFile : IFileObject
+			{
+				private bool _inUse = false;
+				public string Name { get; }
+				public Stream Stream { get; }
+				public bool Close()
+				{
+					if (_inUse)
+					{
+						_inUse = false;
+						return true;
+					}
+					else
+					{
+						return false;
+					}
+				}
+
+				public bool Open(FileAccess access)
+				{
+					if (_inUse)
+					{
+						return false;
+					}
+					else
+					{
+						// TODO: if access != RW, the resultant handle lets you do those all anyway
+						_inUse = true;
+						Stream.Position = 0;
+						return true;
+					}
+				}
+
+				public void LoadStateBinary(BinaryReader br)
+				{
+					throw new InvalidOperationException("Internal savestate error!");
+				}
+
+				public void SaveStateBinary(BinaryWriter bw)
+				{
+					throw new InvalidOperationException("Transient files cannot be savestated!");
+				}
+
+				public TransientFile(byte[] data, string name)
+				{
+					Stream = new MemoryStream();
+					Name = name;
+					if (data != null)
+					{
+						Stream.Write(data, 0, data.Length);
+						Stream.Position = 0;
+					}
+				}
+
+				public byte[] GetContents()
+				{
+					if (_inUse)
+						throw new InvalidOperationException();
+					return ((MemoryStream)Stream).ToArray();
+				}
+			}
+
 			private readonly List<IFileObject> _openFiles = new List<IFileObject>();
 			private readonly Dictionary<string, IFileObject> _availableFiles = new Dictionary<string, IFileObject>();
 
@@ -697,6 +759,21 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				}
 			}
 
+
+			private T RemoveFileInternal<T>(string name)
+				where T : IFileObject
+			{
+				IFileObject o;
+				if (!_availableFiles.TryGetValue(name, out o))
+					throw new InvalidOperationException("File was never registered!");
+				if (o.GetType() != typeof(T))
+					throw new InvalidOperationException("Object was not a the right kind of file");
+				if (_openFiles.Contains(o))
+					throw new InvalidOperationException("Core never closed the file!");
+				_availableFiles.Remove(name);
+				return (T)o;
+			}
+
 			public void AddReadonlyFile(byte[] data, string name)
 			{
 				_availableFiles.Add(name, new ReadonlyFirmware(data, name));
@@ -704,15 +781,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			public void RemoveReadonlyFile(string name)
 			{
-				IFileObject o;
-				if (!_availableFiles.TryGetValue(name, out o))
-					throw new InvalidOperationException("Firmware was never registered!");
-				var f = o as ReadonlyFirmware;
-				if (f == null)
-					throw new InvalidOperationException("Object was not a firmware!");
-				if (_openFiles.Contains(o))
-					throw new InvalidOperationException("Core never closed the firmware!");
-				_availableFiles.Remove(name);
+				RemoveFileInternal<ReadonlyFirmware>(name);
+			}
+
+			public void AddTransientFile(byte[] data, string name)
+			{
+				_availableFiles.Add(name, new TransientFile(data, name));
+			}
+			public byte[] RemoveTransientFile(string name)
+			{
+				return RemoveFileInternal<TransientFile>(name).GetContents();
 			}
 		}
 
@@ -1088,6 +1166,24 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		public void RemoveReadonlyFile(string name)
 		{
 			_syscalls.RemoveReadonlyFile(name);
+		}
+
+		/// <summary>
+		/// Add a transient file that will appear to the waterbox core's libc.  The file will be readable
+		/// and writable.  Any attempt to save state while the file is loaded will fail.
+		/// </summary>
+		public void AddTransientFile(byte[] data, string name)
+		{
+			_syscalls.AddTransientFile(data, name); // don't need to clone data, as it's used at init only
+		}
+
+		/// <summary>
+		/// Remove a file previously added by AddTransientFile
+		/// </summary>
+		/// <returns>The state of the file when it was removed</returns>
+		public byte[] RemoveTransientFile(string name)
+		{
+			return _syscalls.RemoveTransientFile(name);
 		}
 
 		public void SaveStateBinary(BinaryWriter bw)

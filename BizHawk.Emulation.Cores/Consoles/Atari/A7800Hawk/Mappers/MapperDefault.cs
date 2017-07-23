@@ -38,9 +38,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					return Core._rom[Core._rom.Length - (0x10000 - addr)];
 				}
-				else if (addr >= 0xF000 && !Core.A7800_control_register.Bit(2))
+				else if (addr >= (0x10000-Core._bios.Length) && !Core.A7800_control_register.Bit(2))
 				{
-					return Core._bios[addr - 0xF000];
+					return Core._bios[addr - (0x10000 - Core._bios.Length)];		
 				}
 				else
 				{

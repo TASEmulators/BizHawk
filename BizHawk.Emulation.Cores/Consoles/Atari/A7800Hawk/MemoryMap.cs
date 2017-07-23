@@ -35,7 +35,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				else
 				{
 					return tia.ReadMemory((ushort)(addr & 0x1F), false);
-					//return TIA_regs[addr & 0x1F]; // TODO: what to return here?
 				}
 			}
 			else if ((addr & 0xFCE0) == 0x20)
@@ -110,7 +109,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 				else
 				{
-					TIA_regs[addr & 0x1F] = value;
 					tia.WriteMemory((ushort)(addr & 0x1F), value, false);
 				}
 			}
@@ -120,12 +118,20 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					// register 8 is read only and controlled by Maria
 					var temp = addr & 0x1F;
+
 					if (temp != 8)
 						Maria_regs[temp] = value;
 
 					if (temp == 4) // WSYNC
 						cpu.RDY = false;
-
+					/*
+					for (int i = 0; i < 0x20; i++) 
+					{
+						Console.Write(Maria_regs[i]);
+						Console.Write(" ");
+					}
+					Console.WriteLine(maria.scanline);
+					*/
 				}
 				else
 				{

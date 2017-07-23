@@ -63,6 +63,26 @@ namespace BizHawk.Emulation.Cores.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] SameboyCgbBoot {
+            get {
+                object obj = ResourceManager.GetObject("SameboyCgbBoot", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] SameboyDmgBoot {
+            get {
+                object obj = ResourceManager.GetObject("SameboyDmgBoot", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] SgbCartPresent_SPC {
             get {
                 object obj = ResourceManager.GetObject("SgbCartPresent_SPC", resourceCulture);

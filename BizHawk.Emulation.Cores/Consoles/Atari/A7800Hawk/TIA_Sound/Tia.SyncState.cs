@@ -14,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Sync("Bus_State", ref BusState);
 
 			ser.Sync("Ticks", ref _doTicks);
+			ser.Sync("_spf", ref _spf);
 
 			// some of these things weren't in the state because they weren't needed if
 			// states were always taken at frame boundaries

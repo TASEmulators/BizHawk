@@ -103,4 +103,8 @@ extern void cdd_read_audio(unsigned int samples);
 extern void cdd_update(void);
 extern void cdd_process(void);
 
+// switch disks after emulation was started
+// pass NULL to open tray
+void cdd_hotswap(const toc_t *toc);
+
 #endif

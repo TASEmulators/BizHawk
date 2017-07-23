@@ -138,8 +138,11 @@ static const uint8_t *TryLoadBios(const char *name)
 	return ret;
 }
 
-ECL_EXPORT int Init(int cd, int _32xPreinit)
+ECL_EXPORT int Init(int cd, int _32xPreinit, int regionAutoOrder, int regionOverride)
 {
+	PicoAutoRgnOrder = regionAutoOrder;
+	PicoRegionOverride = regionOverride;
+
 	p32x_bios_g = TryLoadBios("32x.g");
 	p32x_bios_m = TryLoadBios("32x.m");
 	p32x_bios_s = TryLoadBios("32x.s");

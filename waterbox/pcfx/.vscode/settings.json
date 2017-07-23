@@ -10,6 +10,7 @@
 		"xiosbase": "cpp",
 		"iosfwd": "cpp",
 		"xlocale": "cpp",
-		"xstring": "cpp"
+		"xstring": "cpp",
+		"queue": "cpp"
 	}
 }

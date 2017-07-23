@@ -1,4 +1,7 @@
-﻿using BizHawk.Emulation.Common;
+﻿using System.ComponentModel;
+
+using BizHawk.Common;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
@@ -35,7 +38,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			bool ret = PCESyncSettings.NeedsReboot(o, _syncSettings);
 			_syncSettings = o;
-			// SetControllerButtons(); // not safe to change the controller during emulation, so instead make it a reboot event
 			return ret;
 		}
 
@@ -62,42 +64,48 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public class PCESyncSettings
 		{
-			public ControllerSetting[] Controllers =
-			{
-				new ControllerSetting { IsConnected = true },
-				new ControllerSetting { IsConnected = false },
-				new ControllerSetting { IsConnected = false },
-				new ControllerSetting { IsConnected = false },
-				new ControllerSetting { IsConnected = false }
-			};
+			[DefaultValue(PceControllerType.GamePad)]
+			[DisplayName("Port 1 Device")]
+			[Description("The type of controller plugged into the first controller port")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public PceControllerType Port1 { get; set; } = PceControllerType.GamePad;
+
+			[DefaultValue(PceControllerType.Unplugged)]
+			[DisplayName("Port 2 Device")]
+			[Description("The type of controller plugged into the second controller port")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public PceControllerType Port2 { get; set; } = PceControllerType.Unplugged;
+
+			[DefaultValue(PceControllerType.Unplugged)]
+			[DisplayName("Port 3 Device")]
+			[Description("The type of controller plugged into the third controller port")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public PceControllerType Port3 { get; set; } = PceControllerType.Unplugged;
+
+			[DefaultValue(PceControllerType.Unplugged)]
+			[DisplayName("Port 4 Device")]
+			[Description("The type of controller plugged into the fourth controller port")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public PceControllerType Port4 { get; set; } = PceControllerType.Unplugged;
+
+			[DefaultValue(PceControllerType.Unplugged)]
+			[DisplayName("Port 5 Device")]
+			[Description("The type of controller plugged into the fifth controller port")]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public PceControllerType Port5 { get; set; } = PceControllerType.Unplugged;
 
 			public PCESyncSettings Clone()
 			{
-				var ret = new PCESyncSettings();
-				for (int i = 0; i < Controllers.Length; i++)
-				{
-					ret.Controllers[i].IsConnected = Controllers[i].IsConnected;
-				}
-
-				return ret;
-			}
-
-			public class ControllerSetting
-			{
-				public bool IsConnected { get; set; }
+				return (PCESyncSettings)MemberwiseClone();
 			}
 
 			public static bool NeedsReboot(PCESyncSettings x, PCESyncSettings y)
 			{
-				for (int i = 0; i < x.Controllers.Length; i++)
-				{
-					if (x.Controllers[i].IsConnected != y.Controllers[i].IsConnected)
-					{
-						return true;
-					}
-				}
-
-				return false;
+				return x.Port1 != y.Port1
+					|| x.Port2 != y.Port2
+					|| x.Port3 != y.Port3
+					|| x.Port4 != y.Port4
+					|| x.Port5 != y.Port5;
 			}
 		}
 	}

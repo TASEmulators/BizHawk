@@ -344,12 +344,23 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				Marshal.Copy(Z.US(_imports.Start), impData, 0, (int)_imports.Size);
 				WaterboxUtils.ZeroMemory(Z.US(_imports.Start), (long)_imports.Size);
 			}
+			byte[] invData = null;
+			if (_invisible != null)
+			{
+				invData = new byte[_invisible.Size];
+				Marshal.Copy(Z.US(_invisible.Start), invData, 0, (int)_invisible.Size);
+				WaterboxUtils.ZeroMemory(Z.US(_invisible.Start), (long)_invisible.Size);
+			}
 			Memory.SaveXorSnapshot();
 			if (_imports != null)
 			{
 				Marshal.Copy(impData, 0, Z.US(_imports.Start), (int)_imports.Size);
 				_imports.W = false;
 				Memory.Protect(_imports.Start, _imports.Size, _imports.Prot);
+			}
+			if (_invisible != null)
+			{
+				Marshal.Copy(invData, 0, Z.US(_invisible.Start), (int)_invisible.Size);
 			}
 			if (_sealed != null)
 			{
