@@ -60,8 +60,10 @@ namespace BizHawk.Emulation.DiscSystem
 			_disc = disc;
 			_dsr = new DiscSectorReader(disc);
 
-			//the first check for mode 0 should be sufficient for blocking attempts to read audio sectors, so dont do this
-			//dsr.Policy.ThrowExceptions2048 = false;
+			//the first check for mode 0 should be sufficient for blocking attempts to read audio sectors
+			//but github #928 had a data track with an audio sector
+			//so let's be careful here.. we're just trying to ID things, not be robust
+			_dsr.Policy.ThrowExceptions2048 = false;
 		}
 
 		private readonly Disc _disc;
@@ -74,14 +76,13 @@ namespace BizHawk.Emulation.DiscSystem
 		/// </summary>
 		public DiscType DetectDiscType()
 		{
-			//check track 1's data type. if it's an audio track, further data-track testing is useless
-			//furthermore, it's probably senseless (no binary data there to read)
-			//however a sector could mark itself as audio without actually being.. we'll just wait for that one.
-
 			// not fully tested yet
 			if (DetectPCFX())
 				return DiscType.PCFX;
 
+			//check track 1's data type. if it's an audio track, further data-track testing is useless
+			//furthermore, it's probably senseless (no binary data there to read)
+			//NOTE: PCE-CD detection goes through here (no good way to detect PCE cd)
 			if (!_disc.TOC.TOCItems[1].IsData)
 				return DiscType.AudioDisc;
 
@@ -179,7 +180,9 @@ namespace BizHawk.Emulation.DiscSystem
 			if (!_sectorCache.TryGetValue(lba, out data))
 			{
 				data = new byte[2048];
-				_dsr.ReadLBA_2048(lba, data, 0);
+				int read = _dsr.ReadLBA_2048(lba, data, 0);
+				if (read != 2048)
+					return null;
 				_sectorCache[lba] = data;
 			}
 			return data;
@@ -188,6 +191,7 @@ namespace BizHawk.Emulation.DiscSystem
 		private bool StringAt(string s, int n, int lba = 0)
 		{
 			var data = ReadSectorCached(lba);
+			if (data == null) return false;
 			byte[] cmp = System.Text.Encoding.ASCII.GetBytes(s);
 			byte[] cmp2 = new byte[cmp.Length];
 			Buffer.BlockCopy(data, n, cmp2, 0, cmp.Length);
