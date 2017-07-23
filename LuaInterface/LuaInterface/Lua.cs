@@ -65,7 +65,7 @@ namespace LuaInterface
 			"-- Preload the mscorlib assembly							\n"+
 			"luanet.load_assembly(\"mscorlib\")							\n";
 
-		/*readonly */ IntPtr luaState;
+		/*readonly */ public IntPtr luaState; //zero 22-jul-2017 - made public
 		ObjectTranslator translator;
 
         LuaCSFunction panicCallback, lockCallback, unlockCallback;

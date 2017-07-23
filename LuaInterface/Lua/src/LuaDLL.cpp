@@ -618,6 +618,18 @@ namespace Lua511
         static void lua_atunlock(IntPtr luaState, LuaCSFunction^ unlockf);
 #endif
 
+		  //zero 22-jul-2017
+		static int lua_pushthread(IntPtr luaState)
+		{
+			return ::lua_pushthread(((lua_State *)luaState.ToPointer()));
+		}
+
+		static void lua_xmove(IntPtr from, IntPtr to, int n)
+		{
+			::lua_xmove(((lua_State *)from.ToPointer()), ((lua_State *)to.ToPointer()),n);
+		}
+
+
 		static void lua_pushnumber(IntPtr luaState, double number)
 		{
 			::lua_pushnumber(toState, number);
