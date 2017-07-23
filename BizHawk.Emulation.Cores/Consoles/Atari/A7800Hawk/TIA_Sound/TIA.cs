@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			//INPT0-3 are used to read 2 button joysticks as well for the A7800
 			if (maskedAddr == 0x08) // INPT0
 			{
-				if (Core.m6532._outputB == 0 && (Core.m6532._ddRb & 0x10)==0x10)
+				if ((Core.m6532._outputB & 0x04) == 0 && (Core.m6532._ddRb & 0x04) == 0x04)
 				{
 					Core._islag = false;
 					return (byte)(Core.p1_fire_2x & 0x80);
@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			if (maskedAddr == 0x09) // INPT1
 			{
-				if (Core.m6532._outputB == 0 && (Core.m6532._ddRb & 0x10) == 0x10)
+				if ((Core.m6532._outputB & 0x04) == 0 && (Core.m6532._ddRb & 0x04) == 0x04)
 				{
 					Core._islag = false;
 					return (byte)((Core.p1_fire_2x & 0x40)<<1);
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			if (maskedAddr == 0x0A) // INPT2
 			{
-				if (Core.m6532._outputB == 0 && (Core.m6532._ddRb & 0x04) == 0x04)
+				if ((Core.m6532._outputB & 0x10) == 0 && (Core.m6532._ddRb & 0x10) == 0x10)
 				{
 					Core._islag = false;
 					return (byte)(Core.p2_fire_2x & 0x80);
@@ -137,7 +137,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			if (maskedAddr == 0x0B) // INPT3
 			{
-				if (Core.m6532._outputB == 0 && (Core.m6532._ddRb & 0x04) == 0x04)
+				if ((Core.m6532._outputB & 0x10) == 0 && (Core.m6532._ddRb & 0x10) == 0x10)
 				{
 					Core._islag = false;
 					return (byte)((Core.p2_fire_2x & 0x40)<<1);
@@ -151,13 +151,37 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (maskedAddr == 0x0C) // INPT4
 			{
 				Core._islag = false;
-				return Core.p1_fire;
+
+				if (!Core.p1_is_2button)
+				{
+					return Core.p1_fire;
+				}
+				else if ((Core.m6532._outputB & 0x04) != 0 || (Core.m6532._ddRb & 0x04) != 0x04)
+				{
+					return Core.p1_fire;
+				}
+				else
+				{
+					return 0x80;
+				}
 			}
 
 			if (maskedAddr == 0x0D) // INPT5
 			{
 				Core._islag = false;
-				return Core.p2_fire;
+
+				if (!Core.p2_is_2button)
+				{
+					return Core.p2_fire;
+				}
+				else if ((Core.m6532._outputB & 0x10) != 0 || (Core.m6532._ddRb & 0x10) != 0x10)
+				{
+					return Core.p2_fire;
+				}
+				else
+				{
+					return 0x80;
+				}
 			}
 
 			return 0;
