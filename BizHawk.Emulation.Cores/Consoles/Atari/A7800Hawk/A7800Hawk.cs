@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			if (rom.Length % 1024 == 128)
 			{
-				Console.WriteLine("Trimming 128 byte .a78 header...");
+				Console.WriteLine("128 byte header detected");
 				byte[] newrom = new byte[rom.Length - 128];
 				is_header = true;
 				Buffer.BlockCopy(rom, 0, header, 0, 128);
@@ -151,6 +151,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 			else if (is_header)
 			{
+				Console.WriteLine("ROM not in DB, inferring mapper info from header");
+
 				byte cart_1 = header[0x35];
 				byte cart_2 = header[0x36];
 
