@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 {
-	[Core("SameBoy", "LIJI32", true, false, "efc11783c7fb6da66e1dd084e41ba6a85c0bd17e",
+	[Core("SameBoy", "LIJI32", true, true, "efc11783c7fb6da66e1dd084e41ba6a85c0bd17e",
 		"https://sameboy.github.io/", false)]
 	public class Sameboy : WaterboxCore,
 		IGameboyCommon, ISaveRam,
