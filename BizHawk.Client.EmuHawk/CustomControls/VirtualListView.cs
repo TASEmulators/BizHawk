@@ -54,9 +54,10 @@ namespace BizHawk.Client.EmuHawk
 		public uint dwDrawStage;
 		public IntPtr Hdc;
 		public RECT Rect;
-		public int dwItemSpec;
+		public IntPtr dwItemSpec;
 		public uint ItemState;
-		public int lItemlParam;
+		private int _pad64bits;
+		public IntPtr lItemlParam;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -596,7 +597,7 @@ namespace BizHawk.Client.EmuHawk
 					if (QueryItemBkColor != null)
 					{
 						var color = Color.FromArgb(cd.ClearTextBackground & 0xFF, (cd.ClearTextBackground >> 8) & 0xFF, (cd.ClearTextBackground >> 16) & 0xFF);
-						QueryItemBkColor(cd.Nmcd.dwItemSpec, cd.SubItem, ref color);
+						QueryItemBkColor(cd.Nmcd.dwItemSpec.ToInt32(), cd.SubItem, ref color);
 						cd.ClearTextBackground = (color.B << 16) | (color.G << 8) | color.R;
 						Marshal.StructureToPtr(cd, m.LParam, false);
 					}
