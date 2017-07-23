@@ -80,6 +80,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return Port2.ReadFire2x(c);
 		}
 
+		public bool Is_2_button1(IController c)
+		{
+			return Port1.Is_2_button(c);
+		}
+
+		public bool Is_2_button2(IController c)
+		{
+			return Port2.Is_2_button(c);
+		}
+
 		public ControllerDefinition Definition { get; }
 
 		public void SyncState(Serializer ser)

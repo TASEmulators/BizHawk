@@ -31,6 +31,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool right_toggle;
 		public bool left_was_pressed;
 		public bool right_was_pressed;
+		public bool p1_is_2button;
+		public bool p2_is_2button;
 
 		// there are 4 maria cycles in a CPU cycle (fast access, both NTSC and PAL)
 		// if the 6532 or TIA are accessed (PC goes to one of those addresses) the next access will be slower by 1/2 a CPU cycle
@@ -167,6 +169,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			p2_fire = _controllerDeck.ReadFire2(controller);
 			p1_fire_2x = _controllerDeck.ReadFire1_2x(controller);
 			p2_fire_2x = _controllerDeck.ReadFire2_2x(controller);
+			p1_is_2button = _controllerDeck.Is_2_button1(controller);
+			p2_is_2button = _controllerDeck.Is_2_button2(controller);
 		}
 
 		public void GetConsoleState(IController controller)

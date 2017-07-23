@@ -9,7 +9,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	/// <summary>
-	/// Represents a controller plugged into a controller port on the intellivision
+	/// Represents a controller plugged into a controller port on the A7800
 	/// </summary>
 	public interface IPort
 	{
@@ -18,6 +18,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		byte ReadFire(IController c);
 
 		byte ReadFire2x(IController c);
+
+		bool Is_2_button(IController c);
 
 		ControllerDefinition Definition { get; }
 
@@ -51,6 +53,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public byte ReadFire2x(IController c)
 		{
 			return 0;
+		}
+
+		public bool Is_2_button(IController c)
+		{
+			return false;
 		}
 
 		public ControllerDefinition Definition { get; }
@@ -113,8 +120,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return 0; // only applicable for 2 button mode
 		}
 
-		public ControllerDefinition Definition { get; }
+		public bool Is_2_button(IController c)
+		{
+			return false;
+		}
 
+		public ControllerDefinition Definition { get; }
 
 		public void SyncState(Serializer ser)
 		{
@@ -172,7 +183,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public byte ReadFire(IController c)
 		{
-			return 0x80;
+			byte result = 0x80;
+			if (c.IsPressed(Definition.BoolButtons[4]) || c.IsPressed(Definition.BoolButtons[5]))
+			{
+				result = 0x00; // zero means fire is pressed
+			}
+			return result;
 		}
 
 		public byte ReadFire2x(IController c)
@@ -189,8 +205,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return result;
 		}
 
-		public ControllerDefinition Definition { get; }
+		public bool Is_2_button(IController c)
+		{
+			return true;
+		}
 
+		public ControllerDefinition Definition { get; }
 
 		public void SyncState(Serializer ser)
 		{

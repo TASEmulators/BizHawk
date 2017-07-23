@@ -219,7 +219,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if (cycle == 453 && !sl_DMA_complete && do_dma && (DMA_phase == DMA_GRAPHICS || DMA_phase == DMA_HEADER))
 				{
 					overrun_dma = true;
-					Console.WriteLine(scanline);
+					//Console.WriteLine(scanline);
 					if (current_DLL_offset == 0)
 					{
 						DMA_phase = DMA_SHUTDOWN_LAST;
@@ -402,13 +402,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 							if (Core.Maria_regs[0x1C].Bit(4))
 							{
-								graphics_read_time = 9 * GFX_Objects[GFX_index, header_counter].width + 3;
+								graphics_read_time = 9 * GFX_Objects[GFX_index, header_counter].width;
 								ch_size = 2;
 								GFX_Objects[GFX_index, header_counter].width *= 2;
 							}
 							else
 							{
-								graphics_read_time = 6 * GFX_Objects[GFX_index, header_counter].width + 3;
+								graphics_read_time = 6 * GFX_Objects[GFX_index, header_counter].width;
 								ch_size = 1;
 							}
 
