@@ -806,7 +806,7 @@ namespace LuaInterface
 			else if (o is Lua)
 			{
 				var lua = o as Lua;
-				LuaDLL.lua_pushnil(lua.luaState);
+				LuaDLL.lua_pushthread(lua.luaState);
 				LuaDLL.lua_xmove(lua.luaState, luaState, 1);
 			}
 			else 
