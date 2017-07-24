@@ -284,6 +284,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				mapper = new MapperRampage();
 			}
+			if (m == "5")
+			{
+				mapper = new MapperFractulus();
+			}
+			if (m == "6")
+			{
+				mapper = new MapperFractulus();
+			}
 
 			mapper.Core = this;
 		}

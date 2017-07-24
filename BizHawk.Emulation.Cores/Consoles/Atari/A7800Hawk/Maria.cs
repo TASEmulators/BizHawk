@@ -543,6 +543,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							line_ram[GFX_index, (temp_start + z) % 512] = temp_check;
 							line_ram[GFX_index, (temp_start + z) % 512] += (byte)((GFX_Objects[header_counter].palette & 4) << 2);
 						}
+						else if (Core.Maria_regs[0x1C].Bit(2))
+						{
+							// kangaroo mode, override transparency with zero
+							line_ram[GFX_index, (temp_start + z) % 512] = 0;
+						}
 					}
 				}
 			}
@@ -576,6 +581,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							line_ram[GFX_index, (temp_start + z) % 512] = temp_check;
 							line_ram[GFX_index, (temp_start + z) % 512] += (byte)(GFX_Objects[header_counter].palette << 2);
 						}
+						else if (Core.Maria_regs[0x1C].Bit(2))
+						{
+							// kangaroo mode, override transparency with zero
+							line_ram[GFX_index, (temp_start + z) % 512] = 0;
+						}
 					}
 				}
 			}
@@ -599,10 +609,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			if (disp_mode == 0)
 			{
-				if ((color & 3) != 0)
-				{
-					scanline_buffer[pixel] = _palette[Core.Maria_regs[color]];
-				}
+				scanline_buffer[pixel] = _palette[Core.Maria_regs[color]];
 			}
 			else if (disp_mode == 2) // note: 1 is not used
 			{
@@ -628,10 +635,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 				color = temp_palette + temp_bit_1 + temp_bit_0;
 
-				if ((color & 3) != 0)
-				{
-					scanline_buffer[pixel] = _palette[Core.Maria_regs[color]];
-				}
+				scanline_buffer[pixel] = _palette[Core.Maria_regs[color]];
 			}
 			else
 			{
@@ -645,10 +649,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					color = (color & 0x1C) + ((color & 1) << 1);
 				}
 
-				if ((color & 3) != 0)
-				{
-					scanline_buffer[pixel] = _palette[Core.Maria_regs[color]];
-				}
+				scanline_buffer[pixel] = _palette[Core.Maria_regs[color]];
+				
 			}
 
 			// send buffer to the video buffer
