@@ -136,8 +136,8 @@ md5:1ee26fc6b06b4c9ba74931914b7e719d		Scramble	A78		PAL=true;board=0
 md5:65fe82f419f6583a0f9a736242cb303d		Scramble	A78		PAL=true;board=0		
 md5:980c35ae9625773a450aa7ef51751c04		Scrapyard Dog	A78		NTSC=true;board=1		
 md5:53db322c201323fe2ca8f074c0a2bf86		Scrapyard Dog	A78		PAL=true;board=1		
-md5:b697d9c2d1b9f6cb21041286d1bbfa7f		Sentinel	A78		NTSC=true;board=1;Pokey=true
-md5:5469b4de0608f23a5c4f98f331c9e75f		Sentinel	A78		PAL=true;board=1;Pokey=true
+md5:b697d9c2d1b9f6cb21041286d1bbfa7f		Sentinel	A78		NTSC=true;board=1;
+md5:5469b4de0608f23a5c4f98f331c9e75f		Sentinel	A78		PAL=true;board=1;
 md5:2d643ac548c40e58c99d0fe433ba4ba0		Sirius	A78		NTSC=true;board=1;RAM=8		
 md5:a84c1b2300fbfbf21b1c02387f613dad		Space Duel	A78		PAL=true;board=0		
 md5:771cb4609347657f63e6f0eb26036e35		Space Duel	A78		NTSC=true;board=0		
