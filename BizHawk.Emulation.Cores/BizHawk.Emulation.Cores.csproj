@@ -359,7 +359,8 @@
     <Compile Include="Consoles\Atari\A7800Hawk\Mappers\MapperDefault.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\Mappers\MapperSG.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\Mappers\MapperSGE.cs" />
-		<Compile Include="Consoles\Atari\A7800Hawk\Mappers\MapperF18.cs" />
+    <Compile Include="Consoles\Atari\A7800Hawk\Mappers\MapperF18.cs" />
+    <Compile Include="Consoles\Atari\A7800Hawk\Mappers\MapperFractalus.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\Mappers\MapperRampage.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\Mappers\MapperBase.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\MemoryMap.cs">
