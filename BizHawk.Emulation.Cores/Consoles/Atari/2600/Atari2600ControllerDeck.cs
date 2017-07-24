@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			Definition = new ControllerDefinition
 			{
-				Name = "Atari 2600 Controller",
+				Name = "Atari 2600 Basic Controller",
 				BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(new[]
