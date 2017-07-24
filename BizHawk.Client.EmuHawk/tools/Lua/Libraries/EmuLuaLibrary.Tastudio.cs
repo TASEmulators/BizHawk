@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 
 using NLua;
 using BizHawk.Client.Common;
@@ -246,11 +247,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Engaged())
 			{
-				var selection = Tastudio.GetSelection();
+				var selection = Tastudio.GetSelection().ToList();
 
-				foreach (var row in selection)
+				for (int i = 0; i < selection.Count; i++)
 				{
-					table[row] = row;
+					table[i] = selection[i];
 				}
 			}
 
