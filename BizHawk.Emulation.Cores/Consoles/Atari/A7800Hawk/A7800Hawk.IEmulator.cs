@@ -225,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public int Frame => _frame;
 
-		public string SystemId => "A7800"; 
+		public string SystemId => "A78"; 
 
 		public bool DeterministicEmulation { get; set; }
 
