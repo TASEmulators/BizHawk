@@ -78,6 +78,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			PortNum = portNum;
 			Definition = new ControllerDefinition
 			{
+				Name = "Atari 2600 Basic Controller",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList()
@@ -134,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private static readonly string[] BaseDefinition =
 		{
-			"U", "D", "L", "R", "Fire"
+			"U", "D", "L", "R", "Trigger"
 		};
 
 		private static byte[] HandControllerButtons =
@@ -154,6 +155,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			PortNum = portNum;
 			Definition = new ControllerDefinition
 			{
+				Name = "Atari 7800 ProLine Joystick Controller",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList()
@@ -219,7 +221,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private static readonly string[] BaseDefinition =
 		{
-			"U", "D", "L", "R", "Fire", "Fire2"
+			"U", "D", "L", "R", "Trigger", "Trigger 2"
 		};
 
 		private static byte[] HandControllerButtons =

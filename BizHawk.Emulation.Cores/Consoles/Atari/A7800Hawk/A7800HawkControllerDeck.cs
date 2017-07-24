@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			Definition = new ControllerDefinition
 			{
-				Name = "A7800 Controller",
+				Name = Port1.Definition.Name,
 				BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(new[]
@@ -35,9 +35,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						"Power",
 						"Reset",
 						"Select",
-						"BW", 
-						"Left Difficulty", // better not put P# on these as they might not correspond to player numbers
-						"Right Difficulty",
+						"BW",
+						"Toggle Left Difficulty", // better not put P# on these as they might not correspond to player numbers
+						"Toggle Right Difficulty",
 						"Pause"
 					})
 					.ToList()

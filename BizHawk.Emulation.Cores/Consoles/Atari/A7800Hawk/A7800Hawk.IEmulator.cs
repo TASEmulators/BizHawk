@@ -42,6 +42,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			Console.WriteLine("-----------------------FRAME-----------------------");
+
 			if (_tracer.Enabled)
 			{
 				cpu.TraceCallback = s => _tracer.Put(s);
@@ -225,7 +226,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public int Frame => _frame;
 
-		public string SystemId => "A78"; 
+		public string SystemId => "A7800"; 
 
 		public bool DeterministicEmulation { get; set; }
 
