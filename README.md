@@ -1,8 +1,30 @@
+# BizHawk
+
 BizHawk is a multi-system emulator written in C#. BizHawk provides nice features for casual gamers such as fullscreen, rewind, and joypad support in addition to rerecording and debugging tools for all system cores.
 
 [Release Notes](http://tasvideos.org/Bizhawk/ReleaseHistory.html)
 
-[Here](http://tasvideos.org/Bizhawk/Features.html) is a list of features offered by bizhawk.
+## Features
+
+### Casual Gaming
+
+  * Full Screen support
+  * Controller and Hotkey mapping
+  * Joypad support (for both controller and hotkeys)
+  * Auto (Rapid) Fire controls
+
+### Pro Users / Rerecording
+
+  * Basic re-recording and rerecording
+  * "Bullet-proof" rerecording"
+  * Frame/Lag/Rerecording counters
+  * Input Display
+  * Auto-hold
+  * Released version of TAStudio
+  * Ram Watching/Poking tools
+  * Ram Searching
+  * Lua Scripting
+  * Rewind
 
 ## Download Binaries
 
