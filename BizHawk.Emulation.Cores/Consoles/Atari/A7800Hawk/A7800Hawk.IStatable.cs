@@ -70,13 +70,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			ser.Sync("cycle", ref cycle);
 			ser.Sync("cpu_cycle", ref cpu_cycle);
-			ser.Sync("m6532_cycle", ref m6532_cycle);
 			ser.Sync("cpu_is_haltable", ref cpu_is_haltable);
 			ser.Sync("cpu_is_halted", ref cpu_is_halted);
 			ser.Sync("cpu_halt_pending", ref cpu_halt_pending);
 			ser.Sync("cpu_resume_pending", ref cpu_resume_pending);
 
 			ser.Sync("slow_access", ref slow_access);
+			ser.Sync("slow_access", ref slow_countdown);
 			ser.Sync("small flag", ref small_flag);
 			ser.Sync("pal kara", ref PAL_Kara);
 			ser.Sync("Cart RAM", ref cart_RAM);

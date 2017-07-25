@@ -13,7 +13,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		//Maria related variables
 		public int cycle;
 		public int cpu_cycle;
-		public int m6532_cycle;
 		public bool cpu_is_haltable;
 		public bool cpu_is_halted;
 		public bool cpu_halt_pending;
@@ -38,6 +37,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		// if the 6532 or TIA are accessed (PC goes to one of those addresses) the next access will be slower by 1/2 a CPU cycle
 		// i.e. it will take 6 Maria cycles instead of 4
 		public bool slow_access = false;
+		public int slow_countdown;
 
 		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
@@ -77,7 +77,15 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public void RunCPUCycle()
 		{
-			cpu_cycle++;
+			if (slow_countdown==0)
+			{
+				cpu_cycle++;
+			}
+			else
+			{
+				slow_countdown--;
+			}
+			
 			tia._hsyncCnt++;
 			tia._hsyncCnt %= 454;
 			// do the audio sampling
@@ -87,11 +95,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 
 			// tick the m6532 timer, which is still active although not recommended to use
-			m6532_cycle++;
-			if (m6532_cycle== 4)
+			// also it runs off of the cpu cycle timer
+			if (cpu_cycle== 4)
 			{
 				m6532.Timer.Tick();
-				m6532_cycle = 0;
 			}
 
 			if (cpu_cycle <= (2 + (slow_access ? 1 : 0)))
@@ -110,6 +117,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if (!cpu_is_halted)
 				{
 					cpu.ExecuteOne();
+
+					// we need to stall the next cpu cycle from starting if the current one is a slow access
+					if (slow_access)
+					{
+						slow_access = false;
+						slow_countdown = 2;
+					}
 				}
 				else
 				{
@@ -131,32 +145,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					cpu_resume_pending = false;
 					cpu_is_halted = false;
 				}
-			}
-
-			// determine if the next access will be fast or slow
-			if ((cpu.PC & 0xFCE0) == 0)
-			{
-				// return TIA registers or control register if it is still unlocked
-				if ((A7800_control_register & 0x1) == 0)
-				{
-					slow_access = false;
-				}
-				else
-				{
-					slow_access = true;
-				}
-			}
-			else if ((cpu.PC & 0xFF80) == 0x280)
-			{
-				slow_access = true;
-			}
-			else if ((cpu.PC & 0xFE80) == 0x480)
-			{
-				slow_access = true;
-			}
-			else
-			{
-				slow_access = false;
 			}
 		}
 
