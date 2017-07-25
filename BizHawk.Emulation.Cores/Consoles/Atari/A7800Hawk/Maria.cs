@@ -86,11 +86,19 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool current_DLL_H16;
 		public bool current_DLL_H8;
 
-		public bool overrun_dma;
 		public bool global_write_mode;
 
 		public int header_counter;
 		public int header_pointer; // since headers could be 4 or 5 bytes, we need a seperate pointer
+
+		// variables for drawing a pixel
+		int color;
+		int local_GFX_index;
+		int temp_palette;
+		int temp_bit_0;
+		int temp_bit_1;
+		int disp_mode;
+		int pixel;
 
 		// each frame contains 263 scanlines
 		// each scanline consists of 113.5 CPU cycles (fast access) which equates to 454 Maria cycles
@@ -188,20 +196,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					current_DLL_DLI = false;
 				}
 
-				if (overrun_dma && sl_DMA_complete)
-				{
-					if (GFX_index == 1)
-					{
-						GFX_index = 0;
-					}
-					else
-					{
-						GFX_index = 1;
-					}
-
-					overrun_dma = false;
-				}
-
 				if (DLI_countdown > 0)
 				{
 					DLI_countdown--;
@@ -211,9 +205,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					}
 				}
 
-				if (cycle == 453 && !sl_DMA_complete && do_dma && (DMA_phase == DMA_GRAPHICS || DMA_phase == DMA_HEADER))
+				if (cycle == 415 && !sl_DMA_complete && do_dma && (DMA_phase == DMA_GRAPHICS || DMA_phase == DMA_HEADER))
 				{
-					overrun_dma = true;
 					//Console.WriteLine(scanline);
 					if (current_DLL_offset == 0)
 					{
@@ -229,10 +222,79 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				
 				Core.RunCPUCycle();
 
-				if (cycle >=130 && cycle < 450  && scanline > 20)
+				//////////////////////////////////////////////
+				// Drawing Start
+				//////////////////////////////////////////////
+
+				if (cycle >=133 && cycle < 453  && scanline > 20)
 				{
-					draw_pixel(scanline - 21, cycle - 130);
+					pixel = cycle - 133;
+					local_GFX_index = (GFX_index == 1) ? 0 : 1; // whatever the current index is, we use the opposite
+					disp_mode = Core.Maria_regs[0x1C] & 0x3;
+
+					color = line_ram[local_GFX_index, pixel];
+
+					if (disp_mode == 0)
+					{
+						// direct read, nothing to do
+					}
+					else if (disp_mode == 2) // note: 1 is not used
+					{
+						// there is a trick here to be aware of.
+						// the renderer has no concept of objects, as it only has information on each pixel
+						// but objects are specified in groups of 8 pixels. 
+						// however, since objects can only be placed in 160 resolution
+						// we can pick bits based on whether the current pixel is even or odd
+						temp_palette = color & 0x10;
+						temp_bit_0 = 0;
+						temp_bit_1 = 0;
+
+						if (pixel % 2 == 0)
+						{
+							temp_bit_1 = color & 2;
+							temp_bit_0 = (color & 8) >> 3;
+						}
+						else
+						{
+							temp_bit_1 = (color & 1) << 1;
+							temp_bit_0 = (color & 4) >> 2;
+						}
+
+						color = temp_palette + temp_bit_1 + temp_bit_0;
+					}
+					else
+					{
+						// same as above, we can use the pixel index to pick the bits out
+						if (pixel % 2 == 0)
+						{
+							color &= 0x1E;
+						}
+						else
+						{
+							color = (color & 0x1C) + ((color & 1) << 1);
+						}
+					}
+
+					if ((color & 0x3) != 0)
+					{
+						scanline_buffer[pixel] = _palette[Core.Maria_regs[color]];
+					}
+					else
+					{
+						scanline_buffer[pixel] = _palette[Core.Maria_regs[0x00]];
+					}
+					
+
+					// send buffer to the video buffer
+					_vidbuffer[(scanline - 21) * 320 + pixel] = scanline_buffer[pixel];
+
+					// clear the line ram
+					line_ram[local_GFX_index, pixel] = 0;
 				}
+
+				//////////////////////////////////////////////
+				// Drawing End
+				//////////////////////////////////////////////
 
 				cycle++;
 
@@ -244,16 +306,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					Core.cpu.RDY = true;
 
 					// swap sacnline buffers
-					if (!overrun_dma)
+					if (GFX_index == 1)
 					{
-						if (GFX_index == 1)
-						{
-							GFX_index = 0;
-						}
-						else
-						{
-							GFX_index = 1;
-						}
+						GFX_index = 0;
+					}
+					else
+					{
+						GFX_index = 1;
 					}
 				}
 			}
@@ -397,12 +456,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 							if (Core.Maria_regs[0x1C].Bit(4))
 							{
-								graphics_read_time = 9 * GFX_Objects[header_counter].width + 3;
+								graphics_read_time = 9 * GFX_Objects[header_counter].width;
 								ch_size = 2;
 							}
 							else
 							{
-								graphics_read_time = 6 * GFX_Objects[header_counter].width + 3;
+								graphics_read_time = 6 * GFX_Objects[header_counter].width;
 								ch_size = 1;
 							}
 
@@ -482,17 +541,20 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 				if (DMA_phase == DMA_SHUTDOWN_OTHER)
 				{
-					Core.cpu_resume_pending = true;
-					sl_DMA_complete = true;
-					current_DLL_offset -= 1; // this is reduced by one for each scanline, which changes where graphics are fetched
-					header_counter = -1;
-					header_pointer = 0;
+					if (DMA_phase_counter == 6)
+					{
+						Core.cpu_resume_pending = true;
+						sl_DMA_complete = true;
+						current_DLL_offset -= 1; // this is reduced by one for each scanline, which changes where graphics are fetched
+						header_counter = -1;
+						header_pointer = 0;
+					}
 					return;
 				}
 
 				if (DMA_phase == DMA_SHUTDOWN_LAST)
 				{
-					if (DMA_phase_counter==6)
+					if (DMA_phase_counter==12)
 					{
 						Core.cpu_resume_pending = true;
 						sl_DMA_complete = true;
@@ -589,75 +651,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					}
 				}
 			}
-		}
-
-		public void draw_pixel(int scanline, int pixel)
-		{
-			int color;
-			int local_GFX_index;
-			int temp_palette = 0;
-			int temp_bit_0 = 0;
-			int temp_bit_1 = 0;
-
-			local_GFX_index = (GFX_index == 1) ? 0 : 1; // whatever the current index is, we use the opposite
-
-			int disp_mode = Core.Maria_regs[0x1C] & 0x3;
-
-			scanline_buffer[pixel] = _palette[Core.Maria_regs[0x00]];
-
-			color = line_ram[local_GFX_index, pixel];
-
-			if (disp_mode == 0)
-			{
-				scanline_buffer[pixel] = _palette[Core.Maria_regs[color]];
-			}
-			else if (disp_mode == 2) // note: 1 is not used
-			{
-				// there is a trick here to be aware of.
-				// the renderer has no concept of objects, as it only has information on each pixel
-				// but objects are specified in groups of 8 pixels. 
-				// however, since objects can only be placed in 160 resolution
-				// we can pick bits based on whether the current pixel is even or odd
-				temp_palette = color & 0x10;
-				temp_bit_0 = 0;
-				temp_bit_1 = 0;
-
-				if (pixel % 2 == 0)
-				{
-					temp_bit_1 = color & 2;
-					temp_bit_0 = (color & 8) >> 3;
-				}
-				else
-				{
-					temp_bit_1 = (color & 1) << 1;
-					temp_bit_0 = (color & 4) >> 2;
-				}
-
-				color = temp_palette + temp_bit_1 + temp_bit_0;
-
-				scanline_buffer[pixel] = _palette[Core.Maria_regs[color]];
-			}
-			else
-			{
-				// same as above, we can use the pixel index to pick the bits out
-				if (pixel % 2 == 0)
-				{
-					color &= 0x1E;
-				}
-				else
-				{
-					color = (color & 0x1C) + ((color & 1) << 1);
-				}
-
-				scanline_buffer[pixel] = _palette[Core.Maria_regs[color]];
-				
-			}
-
-			// send buffer to the video buffer
-			_vidbuffer[scanline * 320 + pixel] = scanline_buffer[pixel];
-
-			// clear the line ram
-			line_ram[local_GFX_index, pixel] = 0;
 		}
 
 		public void Reset()
