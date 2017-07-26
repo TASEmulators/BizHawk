@@ -506,6 +506,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 									}
 								}
 							}
+							if (graphics_read_time == 0)
+							{
+								graphics_read_time = 3;
+							}
+
 						}
 						else
 						{

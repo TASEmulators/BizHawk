@@ -32,6 +32,15 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool right_was_pressed;
 		public bool p1_is_2button;
 		public bool p2_is_2button;
+		public bool p1_is_lightgun;
+		public bool p2_is_lightgun;
+		public float p1_lightgun_x;
+		public float p1_lightgun_y;
+		public float p2_lightgun_x;
+		public float p2_lightgun_y;
+		public bool lg_counting_down;
+		public bool lg_trigger_hit;
+		public int lg_target;
 
 		// there are 4 maria cycles in a CPU cycle (fast access, both NTSC and PAL)
 		// if the 6532 or TIA are accessed (PC goes to one of those addresses) the next access will be slower by 1/2 a CPU cycle
@@ -65,6 +74,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			GetControllerState(controller);
 			GetConsoleState(controller);
+
+			//reset lightgun detection
+			lg_counting_down = false;
+			lg_trigger_hit = false;
 
 			maria.RunFrame();
 
@@ -160,6 +173,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			p2_fire_2x = _controllerDeck.ReadFire2_2x(controller);
 			p1_is_2button = _controllerDeck.Is_2_button1(controller);
 			p2_is_2button = _controllerDeck.Is_2_button2(controller);
+			p1_is_lightgun = _controllerDeck.Is_LightGun1(controller, out p1_lightgun_x, out p1_lightgun_y);
+			p2_is_lightgun = _controllerDeck.Is_LightGun2(controller, out p2_lightgun_x, out p2_lightgun_y);
 		}
 
 		public void GetConsoleState(IController controller)
@@ -210,6 +225,53 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 
 			con_state = result;
+		}
+
+		public byte getLightGunState(int p_x)
+		{
+			float x = p_x == 1 ? p1_lightgun_x : p2_lightgun_x;
+			float y = p_x == 1 ? p1_lightgun_y : p2_lightgun_y;
+
+			if ((maria.scanline - 21) == y)
+			{
+				if (maria.cycle >= (133 + x) && !lg_counting_down)
+				{
+					// return true 60 cycles into the future
+					lg_counting_down = true;
+					lg_target = (int)(133 + x) + 60;
+				}
+			}
+			else if ((maria.scanline - 21) == (y + 1) && !lg_counting_down && !lg_trigger_hit)
+			{
+				// return true 60 cycles into the future
+				lg_counting_down = true;
+				lg_target = 53;
+			}
+
+			if (lg_counting_down)
+			{
+				if (((maria.scanline - 21) == y) && (maria.cycle >= lg_target))
+				{
+					lg_trigger_hit = true;
+					lg_counting_down = false;
+				}
+				else if (((maria.scanline - 21) == (y + 1)) && (maria.cycle >= (lg_target % 453)))
+				{
+					//Console.WriteLine(maria.cycle);
+					lg_trigger_hit = true;
+					lg_counting_down = false;
+				}
+			}
+
+			if (lg_trigger_hit)
+			{
+				return 0x0;
+			}
+			else
+			{
+				return 0x80;
+			}
+
 		}
 
 		public int Frame => _frame;

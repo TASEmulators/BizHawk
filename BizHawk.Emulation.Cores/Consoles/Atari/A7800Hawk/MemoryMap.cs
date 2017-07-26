@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				// return TIA registers or control register if it is still unlocked
 				if ((A7800_control_register & 0x1) == 0)
 				{
-					A7800_control_register = value; 
+					A7800_control_register = value;
 				}
 				else
 				{
@@ -133,8 +133,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						Console.Write(Maria_regs[i]);
 						Console.Write(" ");
 					}
+					Console.WriteLine(maria.scanline);
 					*/
-					
 				}
 				else
 				{

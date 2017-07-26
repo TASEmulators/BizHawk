@@ -233,7 +233,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Register<ITraceable>(_tracer);
 
 			SetupMemoryDomains();
-			HardReset();
+			HardReset();		
 		}
 
 		public DisplayType Region => _isPAL ? DisplayType.PAL : DisplayType.NTSC;
