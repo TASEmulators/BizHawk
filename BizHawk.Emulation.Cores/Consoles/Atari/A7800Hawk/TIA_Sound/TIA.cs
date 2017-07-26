@@ -154,7 +154,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 				if (!Core.p1_is_2button)
 				{
-					return Core.p1_fire;
+					if (!Core.p1_is_lightgun)
+					{
+						return Core.p1_fire;
+					}
+					else
+					{
+						return Core.getLightGunState(1);
+					}			
 				}
 				else if ((Core.m6532._outputB & 0x04) != 0 || (Core.m6532._ddRb & 0x04) != 0x04)
 				{
@@ -169,10 +176,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (maskedAddr == 0x0D) // INPT5
 			{
 				Core._islag = false;
-
 				if (!Core.p2_is_2button)
 				{
-					return Core.p2_fire;
+					if (!Core.p2_is_lightgun)
+					{
+						return Core.p2_fire;
+					}
+					else
+					{
+						return Core.getLightGunState(2);
+					}
 				}
 				else if ((Core.m6532._outputB & 0x10) != 0 || (Core.m6532._ddRb & 0x10) != 0x10)
 				{
