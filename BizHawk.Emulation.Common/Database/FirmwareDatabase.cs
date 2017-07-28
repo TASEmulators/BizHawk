@@ -191,6 +191,7 @@ namespace BizHawk.Emulation.Common
 			Option("PSX", "J", ps_22j_bad2, FirmwareOptionStatus.Bad);
 			Option("PSX", "U", ps_22a, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "E", ps_22e, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", ps_22d, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "E", ps_30e_bad, FirmwareOptionStatus.Bad);
 			Option("PSX", "J", ps_40j, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "U", ps_41a, FirmwareOptionStatus.Unacceptable);
