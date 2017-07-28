@@ -1970,14 +1970,32 @@ namespace BizHawk.Client.EmuHawk
 			var video = _currentVideoProvider;
 			Size currVideoSize = new Size(video.BufferWidth, video.BufferHeight);
 			Size currVirtualSize = new Size(video.VirtualWidth, video.VirtualHeight);
+
+			bool resizeFramebuffer = false;
 			if (currVideoSize != _lastVideoSize || currVirtualSize != _lastVirtualSize)
+				resizeFramebuffer = true;
+
+			bool isZero = false;
+			if (currVideoSize.Width == 0 || currVideoSize.Height == 0 || currVirtualSize.Width == 0 || currVirtualSize.Height == 0)
+				isZero = true;
+			
+			//don't resize if the new size is 0 somehow; we'll wait until we have a sensible size
+			if(isZero)
+				resizeFramebuffer = false;
+
+			if(resizeFramebuffer)
 			{
 				_lastVideoSize = currVideoSize;
 				_lastVirtualSize = currVirtualSize;
 				FrameBufferResized();
 			}
 
-			GlobalWin.DisplayManager.UpdateSource(video);
+			//rendering flakes out egregiously if we have a zero size
+			//can we fix it later not to?
+			if(isZero)
+				GlobalWin.DisplayManager.Blank();
+			else
+				GlobalWin.DisplayManager.UpdateSource(video);
 		}
 
 		// sends a simulation of a plain alt key keystroke
@@ -3627,6 +3645,7 @@ namespace BizHawk.Client.EmuHawk
 					UpdateDumpIcon();
 					SetMainformMovieInfo();
 					CurrentlyOpenRomArgs = args;
+					GlobalWin.DisplayManager.Blank();
 
 					Global.Rewinder.Initialize();
 
