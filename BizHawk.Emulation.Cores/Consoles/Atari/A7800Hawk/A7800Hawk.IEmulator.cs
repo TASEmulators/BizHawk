@@ -38,9 +38,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public float p1_lightgun_y;
 		public float p2_lightgun_x;
 		public float p2_lightgun_y;
-		public bool lg_counting_down;
+		public int lg_counting_down;
+		public int lg_counting_down2;
 		public bool lg_trigger_hit;
-		public int lg_target;
+		public bool lg_do_once = true;
 
 		// there are 4 maria cycles in a CPU cycle (fast access, both NTSC and PAL)
 		// if the 6532 or TIA are accessed (PC goes to one of those addresses) the next access will be slower by 1/2 a CPU cycle
@@ -76,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			GetConsoleState(controller);
 
 			//reset lightgun detection
-			lg_counting_down = false;
+			lg_do_once = true;
 			lg_trigger_hit = false;
 
 			maria.RunFrame();
@@ -85,7 +86,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				_lagcount++;
 			}
-
 		}
 
 		public void RunCPUCycle()
@@ -98,7 +98,27 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				slow_countdown--;
 			}
-			
+
+			if (lg_counting_down > 0)
+			{
+				lg_counting_down--;
+				if (lg_counting_down==0)
+				{
+					lg_trigger_hit = true;
+					lg_counting_down2 = 454*4;
+				}
+			}
+
+			if (lg_counting_down2 > 0)
+			{
+				lg_counting_down2--;
+				if (lg_counting_down2 == 0)
+				{
+					lg_trigger_hit = false;
+				}
+			}
+
+
 			tia._hsyncCnt++;
 			tia._hsyncCnt %= 454;
 			// do the audio sampling
@@ -232,34 +252,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			float x = p_x == 1 ? p1_lightgun_x : p2_lightgun_x;
 			float y = p_x == 1 ? p1_lightgun_y : p2_lightgun_y;
 
-			if ((maria.scanline - 21) == y)
+			if ((maria.scanline - 20) == y)
 			{
-				if (maria.cycle >= (133 + x) && !lg_counting_down)
+				if (maria.cycle >= (133 + x) && lg_do_once)
 				{
-					// return true 60 cycles into the future
-					lg_counting_down = true;
-					lg_target = (int)(133 + x) + 60;
-				}
-			}
-			else if ((maria.scanline - 21) == (y + 1) && !lg_counting_down && !lg_trigger_hit)
-			{
-				// return true 60 cycles into the future
-				lg_counting_down = true;
-				lg_target = 53;
-			}
-
-			if (lg_counting_down)
-			{
-				if (((maria.scanline - 21) == y) && (maria.cycle >= lg_target))
-				{
-					lg_trigger_hit = true;
-					lg_counting_down = false;
-				}
-				else if (((maria.scanline - 21) == (y + 1)) && (maria.cycle >= (lg_target % 453)))
-				{
-					//Console.WriteLine(maria.cycle);
-					lg_trigger_hit = true;
-					lg_counting_down = false;
+					// return true 61 cycles into the future
+					lg_counting_down = 61 - (maria.cycle - (int)(133 + x));
+					lg_do_once = false;
 				}
 			}
 
