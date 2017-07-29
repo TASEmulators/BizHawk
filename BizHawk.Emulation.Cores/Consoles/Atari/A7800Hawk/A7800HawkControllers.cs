@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private static readonly string[] BaseDefinition =
 		{
-			"U", "D", "L", "R", "Trigger"
+			"Up", "Down", "Left", "Right", "Trigger"
 		};
 
 		private static byte[] HandControllerButtons =
@@ -244,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private static readonly string[] BaseDefinition =
 		{
-			"U", "D", "L", "R", "Trigger", "Trigger 2"
+			"Up", "Down", "Left", "Right", "Trigger", "Trigger 2"
 		};
 
 		private static byte[] HandControllerButtons =
