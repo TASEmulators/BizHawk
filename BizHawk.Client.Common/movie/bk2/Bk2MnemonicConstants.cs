@@ -125,6 +125,7 @@ namespace BizHawk.Client.Common
 
 			["Toggle Left Difficulty"] = 'l',
 			["Toggle Right Difficulty"] = 'r',
+			["BW"] = 'b',
 
 			["Open"] = 'O',
 			["Close"] = 'C',
