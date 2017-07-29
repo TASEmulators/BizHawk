@@ -44,18 +44,18 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					1),
 				new MemoryDomainDelegate(
 					"Ram Block 0",
-					0xB0,
+					0xC0,
 					MemoryDomain.Endian.Little,
 					addr => RAM[addr+0x840],
-					(addr, value) => RAM[addr+0x840] = value,
+					(addr, value) => RAM[addr+0x800] = value,
 					1
 				),
 				new MemoryDomainDelegate(
 					"Ram Block 1",
-					0xB0,
+					0xC0,
 					MemoryDomain.Endian.Little,
 					addr => RAM[addr+0x940],
-					(addr, value) => RAM[addr+0x940] = value,
+					(addr, value) => RAM[addr+0x900] = value,
 					1
 				),
 				new MemoryDomainDelegate(
