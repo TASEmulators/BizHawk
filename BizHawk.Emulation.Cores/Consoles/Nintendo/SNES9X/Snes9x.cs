@@ -297,21 +297,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES9X
 
 			return new LibWaterboxCore.FrameInfo();
 		}
-		protected override void FrameAdvancePost()
-		{
-			_virtualHeight = BufferHeight;
-			_virtualWidth = BufferWidth;
-			if (_virtualHeight * 2 < _virtualWidth)
-				_virtualHeight *= 2;
-			if (_virtualHeight > 240)
-				_virtualWidth = 512;
-			_virtualWidth = (int)Math.Round(_virtualWidth * 1.146);
-		}
 
-		private int _virtualWidth;
-		private int _virtualHeight;
-		public override int VirtualWidth => _virtualWidth;
-		public override int VirtualHeight => _virtualHeight;
+		public override int VirtualWidth => BufferWidth == 256 && BufferHeight <= 240 ? 293 : 587;
+		public override int VirtualHeight => BufferHeight <= 240 && BufferWidth == 512 ? BufferHeight * 2 : BufferHeight;
 
 		#region IStatable
 
