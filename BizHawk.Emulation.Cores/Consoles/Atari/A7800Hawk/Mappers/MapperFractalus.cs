@@ -49,8 +49,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					int temp_ret_2 = addr & 0xFF;
 
 					return RAM[(temp_ret_1 << 8) + temp_ret_2];
-
-
 				}
 				else
 				{

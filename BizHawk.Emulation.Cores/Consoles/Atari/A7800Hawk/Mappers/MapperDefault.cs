@@ -85,7 +85,5 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		{
 			WriteMemory(addr, value);
 		}
-
-
 	}
 }
