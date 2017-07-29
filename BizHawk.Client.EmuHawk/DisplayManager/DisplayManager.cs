@@ -724,6 +724,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Blank()
 		{
+			GLManager.Activate(CR_GraphicsControl);
 			GL.BeginScene();
 			GL.BindRenderTarget(null);
 			GL.SetClearColor(Color.Black);
