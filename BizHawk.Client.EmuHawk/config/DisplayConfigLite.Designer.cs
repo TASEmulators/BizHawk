@@ -602,7 +602,7 @@
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(359, 27);
 			this.label8.TabIndex = 20;
-			this.label8.Text = " • Best compatibility\r\n • May have trouble with OpenGL-based cores (Saturn,N64)\r\n" +
+			this.label8.Text = " • Best compatibility\r\n • May have trouble with OpenGL-based cores (N64)\r\n" +
     "";
 			// 
 			// rbD3D9
