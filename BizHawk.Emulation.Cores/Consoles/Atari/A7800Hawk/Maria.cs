@@ -124,7 +124,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					Core.tia._hsyncCnt = 0;
 					Core.cpu.RDY = true;
 				}
-
 			}
 
 			// "The end of vblank is made up of a DMA startup plus a long shut down"
@@ -284,7 +283,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						scanline_buffer[pixel] = _palette[Core.Maria_regs[0x00]];
 					}
 					
-
 					// send buffer to the video buffer
 					_vidbuffer[(scanline - 21) * 320 + pixel] = scanline_buffer[pixel];
 

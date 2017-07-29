@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 				else
 				{
-					return 0xFF; // TODO: What if Maria is off?
+					return 0x80; // TODO: What if Maria is off?
 				}
 			}
 			else if ((addr & 0xFF80) == 0x280)

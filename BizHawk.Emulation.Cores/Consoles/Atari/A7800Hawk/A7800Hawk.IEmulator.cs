@@ -279,7 +279,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				return 0x80;
 			}
-
 		}
 
 		public int Frame => _frame;

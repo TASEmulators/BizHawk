@@ -48,24 +48,21 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					MemoryDomain.Endian.Little,
 					addr => RAM[addr+0x840],
 					(addr, value) => RAM[addr+0x840] = value,
-					1
-				),
+					1),
 				new MemoryDomainDelegate(
 					"Ram Block 1",
 					0xC0,
 					MemoryDomain.Endian.Little,
 					addr => RAM[addr+0x940],
 					(addr, value) => RAM[addr+0x940] = value,
-					1
-				),
+					1),
 				new MemoryDomainDelegate(
 					"System Bus",
 					0X10000,
 					MemoryDomain.Endian.Little,
 					addr => PeekSystemBus(addr),
 					(addr, value) => PokeSystemBus(addr, value),
-					1
-				)
+					1)
 			};
 
 			MemoryDomains = new MemoryDomainList(domains);

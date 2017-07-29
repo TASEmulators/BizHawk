@@ -137,5 +137,4 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public static string DefaultControllerName => typeof(StandardController).DisplayName();
 	}
-
 }
