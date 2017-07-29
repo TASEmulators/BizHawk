@@ -39,7 +39,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public float p2_lightgun_x;
 		public float p2_lightgun_y;
 		public int lg_counting_down;
-		public int lg_counting_down2;
+		public int lg_counting_down_2;
+		public int lg_counting_down_3;
 		public bool lg_trigger_hit;
 		public bool lg_do_once = true;
 
@@ -105,14 +106,22 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if (lg_counting_down==0)
 				{
 					lg_trigger_hit = true;
-					lg_counting_down2 = 454*4;
+					lg_counting_down_2 = 454;
+					lg_counting_down_3 = 8;
 				}
 			}
 
-			if (lg_counting_down2 > 0)
+			if (lg_counting_down_2 > 0)
 			{
-				lg_counting_down2--;
-				if (lg_counting_down2 == 0)
+				lg_counting_down_2--;
+				if (lg_counting_down_2 == 0 && lg_counting_down_3 > 0)
+				{
+					lg_counting_down_3--;
+					lg_counting_down_2 = 454;
+					lg_trigger_hit = true;
+				}
+
+				if (lg_counting_down_2 == 424)
 				{
 					lg_trigger_hit = false;
 				}
@@ -252,12 +261,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			float x = p_x == 1 ? p1_lightgun_x : p2_lightgun_x;
 			float y = p_x == 1 ? p1_lightgun_y : p2_lightgun_y;
 
-			if ((maria.scanline - 20) == y)
+			if ((maria.scanline - 20) == y-4)
 			{
 				if (maria.cycle >= (133 + x) && lg_do_once)
 				{
 					// return true 61 cycles into the future
-					lg_counting_down = 61 - (maria.cycle - (int)(133 + x));
+					lg_counting_down = 64 - (maria.cycle - (int)(133 + x));
 					lg_do_once = false;
 				}
 			}
