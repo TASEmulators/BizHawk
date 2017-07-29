@@ -7,7 +7,7 @@ using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 
 namespace BizHawk.Client.EmuHawk
 {
-	[Schema("A7800Hawk")]
+	[Schema("A7800")]
 	public class A7800HawkSchema : IVirtualPadSchema
 	{
 		private string UnpluggedControllerName => typeof(UnpluggedController).DisplayName();
@@ -248,6 +248,13 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = "Pause",
 						DisplayName = "Pause",
+						Location = new Point(158, 15),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "BW",
+						DisplayName = "BW",
 						Location = new Point(158, 15),
 						Type = PadSchema.PadInputType.Boolean
 					}
