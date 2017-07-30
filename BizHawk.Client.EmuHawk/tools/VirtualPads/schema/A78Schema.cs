@@ -248,6 +248,13 @@ namespace BizHawk.Client.EmuHawk
 						DisplayName = "Pause",
 						Location = new Point(158, 15),
 						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "BW",
+						DisplayName = "BW",
+						Location = new Point(158, 15),
+						Type = PadSchema.PadInputType.Boolean
 					}
 				}
 			};
