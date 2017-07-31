@@ -237,7 +237,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		{
 			byte result = 0;
 
-			if (controller.IsPressed("Right Difficulty"))
+			if (controller.IsPressed("Toggle Right Difficulty"))
 			{
 				if (!right_was_pressed)
 				{
@@ -252,7 +252,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				result |= (byte)((right_toggle ? 1 : 0) << 7);
 			}
 
-			if (controller.IsPressed("Left Difficulty"))
+			if (controller.IsPressed("Toggle Left Difficulty"))
 			{
 				if (!left_was_pressed)
 				{
