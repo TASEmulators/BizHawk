@@ -54,8 +54,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
-			Console.WriteLine("-----------------------FRAME-----------------------");
-
 			if (_tracer.Enabled)
 			{
 				cpu.TraceCallback = s => _tracer.Put(s);
@@ -321,7 +319,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (_syncSettings.Filter != "None")
 			{
 				apply_filter();
-				Console.WriteLine("works!");
 			}
 			return _vidbuffer;
 		}
