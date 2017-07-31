@@ -6,7 +6,7 @@ using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Emulates the Atari 7800 Maria graphics chip
-	public class Maria : IVideoProvider
+	public class Maria
 	{
 		public A7800Hawk Core { get; set; }
 
@@ -32,27 +32,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		int GFX_index = 0;
 
-		public int _frameHz = 60;
-		public int _screen_width = 320;
-		public int _screen_height = 263;
-		public int _vblanklines = 20;
-
-		public int[] _vidbuffer;
 		public int[] _palette;
 		public int[] scanline_buffer = new int[320];
-
-		public int[] GetVideoBuffer()
-		{
-			return _vidbuffer;
-		}
-
-		public int VirtualWidth => 320;
-		public int VirtualHeight => _screen_height - _vblanklines;
-		public int BufferWidth => 320;
-		public int BufferHeight => _screen_height - _vblanklines;
-		public int BackgroundColor => unchecked((int)0xff000000);
-		public int VsyncNumerator => _frameHz;
-		public int VsyncDenominator => 1;
 
 		// the Maria chip can directly access memory
 		public Func<ushort, byte> ReadMemory;
@@ -173,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			// Now proceed with the remaining scanlines
 			// the first one is a pre-render line, since we didn't actually put any data into the buffer yet
-			while (scanline < _screen_height)
+			while (scanline < Core._screen_height)
 			{				
 				if (cycle == 28 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
 				{
@@ -284,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					}
 					
 					// send buffer to the video buffer
-					_vidbuffer[(scanline - 21) * 320 + pixel] = scanline_buffer[pixel];
+					Core._vidbuffer[(scanline - 21) * 320 + pixel] = scanline_buffer[pixel];
 
 					// clear the line ram
 					line_ram[local_GFX_index, pixel] = 0;
@@ -660,8 +641,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public void Reset()
 		{
-			_vidbuffer = new int[VirtualWidth * VirtualHeight];
-
 			for (int i = 0; i < 128; i++)
 			{
 				GFX_Objects[i].obj = new byte[128];

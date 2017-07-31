@@ -204,18 +204,18 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// set up palette and frame rate
 			if (_isPAL)
 			{
-				maria._frameHz = 50;
-				maria._screen_width = 320;
-				maria._screen_height = 313;
-				maria._vblanklines = 20;
+				_frameHz = 50;
+				_screen_width = 320;
+				_screen_height = 313;
+				_vblanklines = 20;
 				maria._palette = PALPalette;
 			}
 			else
 			{
-				maria._frameHz = 60;
-				maria._screen_width = 320;
-				maria._screen_height = 263;
-				maria._vblanklines = 20;
+				_frameHz = 60;
+				_screen_width = 320;
+				_screen_height = 263;
+				_vblanklines = 20;
 				maria._palette = NTSCPalette;
 			}
 
@@ -223,7 +223,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			m6532.Core = this;
 			tia.Core = this;
 
-			ser.Register<IVideoProvider>(maria);
+			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(tia);
 			ServiceProvider = ser;
 
@@ -253,6 +253,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			RAM = new byte[0x1000];
 
 			cpu_cycle = 0;
+
+			_vidbuffer = new int[VirtualWidth * VirtualHeight];
 		}
 
 		private void ExecFetch(ushort addr)

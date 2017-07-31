@@ -1,10 +1,11 @@
 ﻿using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	public partial class A7800Hawk : IEmulator 
+	public partial class A7800Hawk : IEmulator, IVideoProvider
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
@@ -304,5 +305,47 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			tia = null;
 			m6532 = null;
 		}
+
+
+		#region Video provider
+
+		public int _frameHz = 60;
+		public int _screen_width = 320;
+		public int _screen_height = 263;
+		public int _vblanklines = 20;
+
+		public int[] _vidbuffer;
+
+		public int[] GetVideoBuffer()
+		{
+			if (_syncSettings.Filter != "None")
+			{
+				apply_filter();
+				Console.WriteLine("works!");
+			}
+			return _vidbuffer;
+		}
+
+		public int VirtualWidth => 320;
+		public int VirtualHeight => _screen_height - _vblanklines;
+		public int BufferWidth => 320;
+		public int BufferHeight => _screen_height - _vblanklines;
+		public int BackgroundColor => unchecked((int)0xff000000);
+		public int VsyncNumerator => _frameHz;
+		public int VsyncDenominator => 1;
+
+		public void apply_filter()
+		{
+
+		}
+
+		public static Dictionary<string, string> ValidFilterTypes = new Dictionary<string, string>
+		{
+			{ "None",  "None"},
+			{ "NTSC",  "NTSC"},
+			{ "Pal",  "Pal"}
+		};
+
+		#endregion
 	}
 }
