@@ -38,11 +38,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public float p1_lightgun_y;
 		public float p2_lightgun_x;
 		public float p2_lightgun_y;
-		public int lg_counting_down;
-		public int lg_counting_down_2;
-		public int lg_counting_down_3;
-		public bool lg_trigger_hit;
-		public bool lg_do_once = true;
+		public int lg_1_counting_down;
+		public int lg_1_counting_down_2;
+		public int lg_2_counting_down;
+		public int lg_2_counting_down_2;
+		public byte lg_1_trigger_hit;
+		public byte lg_2_trigger_hit;
 
 		// there are 4 maria cycles in a CPU cycle (fast access, both NTSC and PAL)
 		// if the 6532 or TIA are accessed (PC goes to one of those addresses) the next access will be slower by 1/2 a CPU cycle
@@ -77,10 +78,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			GetControllerState(controller);
 			GetConsoleState(controller);
 
-			//reset lightgun detection
-			lg_do_once = true;
-			lg_trigger_hit = false;
-
 			maria.RunFrame();
 
 			if (_islag)
@@ -100,33 +97,63 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				slow_countdown--;
 			}
 
-			if (lg_counting_down > 0)
+			if (p1_is_lightgun)
 			{
-				lg_counting_down--;
-				if (lg_counting_down==0)
+				if (lg_1_counting_down > 0)
 				{
-					lg_trigger_hit = true;
-					lg_counting_down_2 = 454;
-					lg_counting_down_3 = 8;
+					lg_1_counting_down--;
+					if (lg_1_counting_down == 0 && lg_1_counting_down_2 > 0)
+					{
+						lg_1_trigger_hit = 0;
+						lg_1_counting_down = 454;
+						lg_1_counting_down_2--;
+					}
+
+					if (lg_1_counting_down < 424)
+					{
+						lg_1_trigger_hit = 0x80;
+					}
+				}
+
+				if ((maria.scanline - 20) == (p1_lightgun_y - 4))
+				{
+					if (maria.cycle == (132 + p1_lightgun_x))
+					{ 
+						// return true 64 cycles into the future
+						lg_1_counting_down = 64;
+						lg_1_counting_down_2 = 9;
+					}			
 				}
 			}
 
-			if (lg_counting_down_2 > 0)
+			if (p2_is_lightgun)
 			{
-				lg_counting_down_2--;
-				if (lg_counting_down_2 == 0 && lg_counting_down_3 > 0)
+				if (lg_2_counting_down > 0)
 				{
-					lg_counting_down_3--;
-					lg_counting_down_2 = 454;
-					lg_trigger_hit = true;
+					lg_2_counting_down--;
+					if (lg_2_counting_down == 0 && lg_2_counting_down_2 > 0)
+					{
+						lg_2_trigger_hit = 0;
+						lg_2_counting_down = 454;
+						lg_2_counting_down_2--;
+					}
+
+					if (lg_2_counting_down < 424)
+					{
+						lg_2_trigger_hit = 0x80;
+					}
 				}
 
-				if (lg_counting_down_2 == 424)
+				if ((maria.scanline - 20) == (p2_lightgun_y - 4))
 				{
-					lg_trigger_hit = false;
+					if (maria.cycle == (132 + p2_lightgun_x))
+					{
+						// return true 64 cycles into the future
+						lg_2_counting_down = 64;
+						lg_2_counting_down_2 = 9;
+					}					
 				}
 			}
-
 
 			tia._hsyncCnt++;
 			tia._hsyncCnt %= 454;
@@ -254,31 +281,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 
 			con_state = result;
-		}
-
-		public byte getLightGunState(int p_x)
-		{
-			float x = p_x == 1 ? p1_lightgun_x : p2_lightgun_x;
-			float y = p_x == 1 ? p1_lightgun_y : p2_lightgun_y;
-
-			if ((maria.scanline - 20) == y-4)
-			{
-				if (maria.cycle >= (133 + x) && lg_do_once)
-				{
-					// return true 61 cycles into the future
-					lg_counting_down = 64 - (maria.cycle - (int)(133 + x));
-					lg_do_once = false;
-				}
-			}
-
-			if (lg_trigger_hit)
-			{
-				return 0x0;
-			}
-			else
-			{
-				return 0x80;
-			}
 		}
 
 		public int Frame => _frame;
