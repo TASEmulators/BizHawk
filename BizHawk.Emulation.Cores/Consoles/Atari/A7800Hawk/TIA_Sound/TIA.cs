@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			_capChargeStart = 0;
 			_capCharging = false;
 			AudioClocks = 0;
-			_spf = (Core.maria._frameHz > 55) ? 740 : 880;
+			_spf = (Core._frameHz > 55) ? 740 : 880;
 			_doTicks = false;
 		}
 
