@@ -340,10 +340,10 @@
     <Compile Include="config\A7800\A7800ControllerSettings.Designer.cs">
       <DependentUpon>A7800ControllerSettings.cs</DependentUpon>
     </Compile>
-		<Compile Include="config\A7800\A7800FilterSettings.cs">
+    <Compile Include="config\A7800\A7800FilterSettings.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="config\A7800\A7800FiltSettings.Designer.cs">
+    <Compile Include="config\A7800\A7800FilterSettings.Designer.cs">
       <DependentUpon>A7800FilterSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="config\INTV\IntvControllerSettings.cs">
