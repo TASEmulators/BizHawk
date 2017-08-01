@@ -33,6 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool mapper_090 = false;
 		bool mapper_209 = false;
 		bool mapper_211 = false;
+		bool mapper_035 = false;
 
 		bool nt_advanced_control = false;
 		bool nt_ram_disable = false;
@@ -67,6 +68,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			switch (Cart.board_type)
 			{
+				case "MAPPER035":
+					mapper_035 = true;
+					break;
 				case "MAPPER090":
 				case "UNIF_UNL-TEK90":
 					mapper_090 = true;
@@ -148,6 +152,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("sram_prg", ref sram_prg);
 			ser.Sync("ram_bank", ref ram_bank);
 
+			ser.Sync("mapper_035", ref mapper_035);
 			ser.Sync("mapper_090", ref mapper_090);
 			ser.Sync("mapper_209", ref mapper_209);
 			ser.Sync("mapper_211", ref mapper_211);
@@ -465,10 +470,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							SetMirrorType(EMirrorType.Horizontal);
 							break;
 						case 2:
-							SetMirrorType(EMirrorType.OneScreenA);
+							if (mapper_035)
+							{
+								SetMirrorType(EMirrorType.OneScreenB);
+							}
+							else
+							{
+								SetMirrorType(EMirrorType.OneScreenA);
+							}		
 							break;
 						case 3:
-							SetMirrorType(EMirrorType.OneScreenB);
+							if (mapper_035)
+							{
+								SetMirrorType(EMirrorType.OneScreenA);
+							}
+							else
+							{
+								SetMirrorType(EMirrorType.OneScreenB);
+							}
 							break;
 					}
 					break;
