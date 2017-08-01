@@ -686,7 +686,6 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper029.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper030.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper034.cs" />
-    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper035.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper036.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper038.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper040.cs" />
