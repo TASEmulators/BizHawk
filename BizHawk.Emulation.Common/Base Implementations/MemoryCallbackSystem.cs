@@ -14,8 +14,14 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IMemoryCallbackSystem" />
 	public class MemoryCallbackSystem : IMemoryCallbackSystem
 	{
-		public MemoryCallbackSystem()
+		public MemoryCallbackSystem(string[] availableDomains)
 		{
+			if (availableDomains == null)
+			{
+				availableDomains = new[] { "System Bus" };
+			}
+
+			AvailableDomains = availableDomains;
 			ExecuteCallbacksAvailable = true;
 
 			_reads.CollectionChanged += OnCollectionChanged;
@@ -35,8 +41,15 @@ namespace BizHawk.Emulation.Common
 
 		public bool ExecuteCallbacksAvailable { get; }
 
+		public string[] AvailableDomains { get; }
+
 		public void Add(IMemoryCallback callback)
 		{
+			if (!AvailableDomains.Contains(callback.Domain))
+			{
+				throw new InvalidOperationException($"{callback.Domain} is not currently supported for callbacks");
+			}
+
 			switch (callback.Type)
 			{
 				case MemoryCallbackType.Execute:
@@ -273,7 +286,7 @@ namespace BizHawk.Emulation.Common
 
 	public class MemoryCallback : IMemoryCallback
 	{
-		public MemoryCallback(MemoryCallbackType type, string name, Action callback, uint? address, uint? mask)
+		public MemoryCallback(string domain, MemoryCallbackType type, string name, Action callback, uint? address, uint? mask)
 		{
 			if (type == MemoryCallbackType.Execute && !address.HasValue)
 			{
@@ -285,6 +298,7 @@ namespace BizHawk.Emulation.Common
 			Callback = callback;
 			Address = address;
 			AddressMask = mask ?? 0xFFFFFFFF;
+			Domain = domain;
 		}
 
 		public MemoryCallbackType Type { get; }
@@ -292,5 +306,6 @@ namespace BizHawk.Emulation.Common
 		public Action Callback { get; }
 		public uint? Address { get; }
 		public uint? AddressMask { get; }
+		public string Domain { get; }
 	}
 }

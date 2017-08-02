@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Settings = (SMSSettings)settings ?? new SMSSettings();
 			SyncSettings = (SMSSyncSettings)syncSettings ?? new SMSSyncSettings();
 			CoreComm = comm;
-			MemoryCallbacks = new MemoryCallbackSystem();
+			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
 			IsGameGear = game.System == "GG";
 			IsSG1000 = game.System == "SG";

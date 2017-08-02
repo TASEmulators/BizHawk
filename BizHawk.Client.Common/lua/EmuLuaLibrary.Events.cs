@@ -22,6 +22,9 @@ namespace BizHawk.Client.Common
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
 
+		[OptionalService]
+		private IMemoryDomains Domains { get; set; }
+
 		private readonly LuaFunctionList _luaFunctions = new LuaFunctionList();
 
 		public EventLuaLibrary(Lua lua)
@@ -210,7 +213,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethod("onmemoryexecute", "Fires after the given address is executed by the core")]
-		public string OnMemoryExecute(LuaFunction luaf, uint address, string name = null)
+		public string OnMemoryExecute(LuaFunction luaf, uint address, string name = null, string domain = null)
 		{
 			try
 			{
@@ -225,8 +228,16 @@ namespace BizHawk.Client.Common
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryExecute", LogOutputCallback, CurrentThread, name);
 					_luaFunctions.Add(nlf);
 
+					if (string.IsNullOrWhiteSpace(domain))
+					{
+						if (Domains != null && Domains.HasSystemBus)
+						{
+							domain = Domains.SystemBus.Name;
+						}
+					}
+
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(MemoryCallbackType.Execute, "Lua Hook", nlf.Callback, address, null));
+						new MemoryCallback(domain, MemoryCallbackType.Execute, "Lua Hook", nlf.Callback, address, null));
 					return nlf.Guid.ToString();
 				}
 			}
@@ -241,7 +252,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethod("onmemoryread", "Fires after the given address is read by the core. If no address is given, it will attach to every memory read")]
-		public string OnMemoryRead(LuaFunction luaf, uint? address = null, string name = null)
+		public string OnMemoryRead(LuaFunction luaf, uint? address = null, string name = null, string domain = null)
 		{
 			try
 			{
@@ -255,8 +266,16 @@ namespace BizHawk.Client.Common
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryRead", LogOutputCallback, CurrentThread, name);
 					_luaFunctions.Add(nlf);
 
+					if (string.IsNullOrWhiteSpace(domain))
+					{
+						if (Domains != null && Domains.HasSystemBus)
+						{
+							domain = Domains.SystemBus.Name;
+						}
+					}
+
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(MemoryCallbackType.Read, "Lua Hook", nlf.Callback, address, null));
+						new MemoryCallback(domain, MemoryCallbackType.Read, "Lua Hook", nlf.Callback, address, null));
 					return nlf.Guid.ToString();
 				}
 			}
@@ -271,7 +290,7 @@ namespace BizHawk.Client.Common
 		}
 
 		[LuaMethod("onmemorywrite", "Fires after the given address is written by the core. If no address is given, it will attach to every memory write")]
-		public string OnMemoryWrite(LuaFunction luaf, uint? address = null, string name = null)
+		public string OnMemoryWrite(LuaFunction luaf, uint? address = null, string name = null, string domain = null)
 		{
 			try
 			{
@@ -285,8 +304,16 @@ namespace BizHawk.Client.Common
 					var nlf = new NamedLuaFunction(luaf, "OnMemoryWrite", LogOutputCallback, CurrentThread, name);
 					_luaFunctions.Add(nlf);
 
+					if (string.IsNullOrWhiteSpace(domain))
+					{
+						if (Domains != null && Domains.HasSystemBus)
+						{
+							domain = Domains.SystemBus.Name;
+						}
+					}
+
 					DebuggableCore.MemoryCallbacks.Add(
-						new MemoryCallback(MemoryCallbackType.Write, "Lua Hook", nlf.Callback, address, null));
+						new MemoryCallback(domain, MemoryCallbackType.Write, "Lua Hook", nlf.Callback, address, null));
 					return nlf.Guid.ToString();
 				}
 			}

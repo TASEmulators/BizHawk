@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 			Init(SyncSettings.VicType, Settings.BorderType, SyncSettings.SidType, SyncSettings.TapeDriveType, SyncSettings.DiskDriveType);
 			_cyclesPerFrame = _board.Vic.CyclesPerFrame;
-			_memoryCallbacks = new MemoryCallbackSystem();
+			_memoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
 			HardReset();
 
