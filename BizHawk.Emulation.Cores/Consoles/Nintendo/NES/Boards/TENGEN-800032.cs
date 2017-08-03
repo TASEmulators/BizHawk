@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -25,6 +26,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		bool irq_mode;
 		bool irq_reload_pending;
 		int separator_counter;
+		int irq_countdown_2 = 0;
+		bool clock_scanline_irq;
 
 
 		public override void Dispose()
@@ -172,20 +175,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				case 0x4001:
 					irq_mode = value.Bit(0);
-					if (irq_mode) irq_countdown = 12;
+					if (irq_mode) irq_countdown = 4;
 					irq_reload_pending = true;
 					break;
 
 				case 0x6000:
 					irq_enable = false;
 					irq_pending = false;
+					irq_counter = 0;
 					SyncIRQ();
 					break;
 				case 0x6001:
 					irq_enable = true;
 					SyncIRQ();
 					break;
-
 			}
 		}
 
@@ -224,20 +227,79 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				irq_counter = irq_reload + 1;
 				irq_reload_pending = false;
+
+				if (irq_counter == 0)
+				{
+					if (irq_enable)
+					{
+						irq_countdown_2 = 9;
+					}
+				}
+				
 			}
-			else if (irq_counter == 0)
+			
+			irq_counter--;
+			if (irq_counter==0)
+			{
+				if (irq_enable)
+				{
+					irq_countdown_2 = 9;
+				}
+				
+				irq_counter = irq_reload + 1;
+			}
+
+			if (irq_counter < 0)
 			{
 				irq_counter = irq_reload;
+			}
+			/*
+			else if (irq_counter == 0)
+			{
+
+				irq_counter = irq_reload;
+				if (irq_counter == 0)
+				{
+					if (irq_enable)
+					{
+						irq_countdown_2 = 9;
+					}
+				}
 			}
 			else
 			{
 				irq_counter--;
-				if (irq_counter == 0 && irq_enable)
+				if (irq_enable)
 				{
-					irq_pending = true;
-					SyncIRQ();
-				} 
+					
+					if (irq_counter==0)
+						irq_countdown_2 = 9;
+				}		
 			}
+			*/
+		}
+
+		public override void ClockCPU()
+		{
+
+			if (irq_mode == true)
+			{
+				irq_countdown--;
+				if (irq_countdown == 0)
+				{
+					ClockIRQ();
+					irq_countdown = 4;
+				}
+			}
+			else
+			{
+				if (clock_scanline_irq)
+				{
+					clock_scanline_irq = false;
+					ClockIRQ();
+				}
+			}
+
 		}
 
 		public override void ClockPPU()
@@ -245,14 +307,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (separator_counter > 0)
 				separator_counter--;
 
-			if (irq_countdown > 0)
+			if (irq_countdown_2 > 0)
 			{
-				irq_countdown--;
-				if (irq_countdown == 0)
+				irq_countdown_2--;
+				if (irq_countdown_2==0)
 				{
-					ClockIRQ();
-					if (irq_mode==true)
-						irq_countdown = 12;
+					irq_pending = true;
+					SyncIRQ();
 				}
 			}
 		}
@@ -270,7 +331,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				else
 				{
 					separator_counter = 15;
-					irq_countdown = 11;
+					clock_scanline_irq = true;
+
 				}
 			}
 
