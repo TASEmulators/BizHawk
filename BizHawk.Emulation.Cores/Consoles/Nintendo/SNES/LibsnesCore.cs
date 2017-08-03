@@ -361,7 +361,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void ReadHook(uint addr)
 		{
-			MemoryCallbacks.CallReads(addr);
+			MemoryCallbacks.CallReads(addr, "System Bus");
 			// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			// EDIT: for now, theres some IPC re-entrancy problem
 			// RefreshMemoryCallbacks();
@@ -369,7 +369,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void ExecHook(uint addr)
 		{
-			MemoryCallbacks.CallExecutes(addr);
+			MemoryCallbacks.CallExecutes(addr, "System Bus");
 			// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			// EDIT: for now, theres some IPC re-entrancy problem
 			// RefreshMemoryCallbacks();
@@ -377,7 +377,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void WriteHook(uint addr, byte val)
 		{
-			MemoryCallbacks.CallWrites(addr);
+			MemoryCallbacks.CallWrites(addr, "System Bus");
 			// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			// EDIT: for now, theres some IPC re-entrancy problem
 			// RefreshMemoryCallbacks();

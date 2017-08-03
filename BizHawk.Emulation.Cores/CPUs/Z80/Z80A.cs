@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 		{
 			if (MemoryCallbacks != null)
 			{
-				MemoryCallbacks.CallReads(addr);
+				MemoryCallbacks.CallReads(addr, "System Bus");
 			}
 
 			return ReadMemory(addr);
@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 		{
 			if (MemoryCallbacks != null)
 			{
-				MemoryCallbacks.CallReads(addr);
+				MemoryCallbacks.CallReads(addr, "System Bus");
 			}
 
 			if (FetchMemory != null)
@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 		{
 			if (MemoryCallbacks != null)
 			{
-				MemoryCallbacks.CallReads(addr);
+				MemoryCallbacks.CallReads(addr, "System Bus");
 			}
 
 			if (FetchMemory != null)
@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 		{
 			if (MemoryCallbacks != null)
 			{
-				MemoryCallbacks.CallWrites(addr);
+				MemoryCallbacks.CallWrites(addr, "System Bus");
 			}
 
 			WriteMemory(addr, value);

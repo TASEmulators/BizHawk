@@ -46,19 +46,19 @@ namespace BizHawk.Emulation.Common
 		void Add(IMemoryCallback callback);
 
 		/// <summary>
-		/// Executes all Read callbacks for the given address
+		/// Executes all Read callbacks for the given address and domain
 		/// </summary>
-		void CallReads(uint addr);
+		void CallReads(uint addr, string domain);
 
 		/// <summary>
-		/// Executes all Write callbacks for the given address
+		/// Executes all Write callbacks for the given address and domain
 		/// </summary>
-		void CallWrites(uint addr);
+		void CallWrites(uint addr, string domain);
 
 		/// <summary>
-		/// Executes all Execute callbacks for the given address
+		/// Executes all Execute callbacks for the given address and domain
 		/// </summary>
-		void CallExecutes(uint addr);
+		void CallExecutes(uint addr, string domain);
 
 		/// <summary>
 		/// Removes the given callback from the list

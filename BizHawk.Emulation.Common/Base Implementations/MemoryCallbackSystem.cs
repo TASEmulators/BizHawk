@@ -74,38 +74,38 @@ namespace BizHawk.Emulation.Common
 			_empty = false;
 		}
 
-		private static void Call(ObservableCollection<IMemoryCallback> cbs, uint addr)
+		private static void Call(ObservableCollection<IMemoryCallback> cbs, uint addr, string domain)
 		{
 			for (int i = 0; i < cbs.Count; i++)
 			{
-				if (!cbs[i].Address.HasValue || cbs[i].Address == (addr & cbs[i].AddressMask))
+				if (!cbs[i].Address.HasValue || (cbs[i].Domain == domain && cbs[i].Address == (addr & cbs[i].AddressMask)))
 				{
 					cbs[i].Callback();
 				}
 			}
 		}
 
-		public void CallReads(uint addr)
+		public void CallReads(uint addr, string domain)
 		{
 			if (_hasReads)
 			{
-				Call(_reads, addr);
+				Call(_reads, addr, domain);
 			}
 		}
 
-		public void CallWrites(uint addr)
+		public void CallWrites(uint addr, string domain)
 		{
 			if (_hasWrites)
 			{
-				Call(_writes, addr);
+				Call(_writes, addr, domain);
 			}
 		}
 
-		public void CallExecutes(uint addr)
+		public void CallExecutes(uint addr, string domain)
 		{
 			if (_hasExecutes)
 			{
-				Call(_execs, addr);
+				Call(_execs, addr, domain);
 			}
 		}
 

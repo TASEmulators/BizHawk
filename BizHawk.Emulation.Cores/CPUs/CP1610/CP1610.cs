@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		{
 			if (MemoryCallbacks != null && !peek)
 			{
-				MemoryCallbacks.CallReads(addr);
+				MemoryCallbacks.CallReads(addr, "System Bus");
 			}
 
 			return ReadMemory(addr, peek);
@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 		{
 			if (MemoryCallbacks != null && !poke)
 			{
-				MemoryCallbacks.CallWrites(addr);
+				MemoryCallbacks.CallWrites(addr, "System Bus");
 			}
 
 			WriteMemory(addr, value, poke);

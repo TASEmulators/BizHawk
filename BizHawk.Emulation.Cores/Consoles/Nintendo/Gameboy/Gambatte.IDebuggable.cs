@@ -68,9 +68,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private void InitMemoryCallbacks()
 		{
-			_readcb = addr => MemoryCallbacks.CallReads(addr);
-			_writecb = addr => MemoryCallbacks.CallWrites(addr);
-			_execcb = addr => MemoryCallbacks.CallExecutes(addr);
+			_readcb = addr => MemoryCallbacks.CallReads(addr, "System Bus");
+			_writecb = addr => MemoryCallbacks.CallWrites(addr, "System Bus");
+			_execcb = addr => MemoryCallbacks.CallExecutes(addr, "System Bus");
 			_memorycallbacks.ActiveChanged += RefreshMemoryCallbacks;
 		}
 

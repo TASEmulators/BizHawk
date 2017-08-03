@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 
 					if (MemoryCallbacks != null)
 					{
-						MemoryCallbacks.CallExecutes(RegPC.Word);
+						MemoryCallbacks.CallExecutes(RegPC.Word, "System Bus");
 					}
 
 					++RegR;
