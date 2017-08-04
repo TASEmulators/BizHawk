@@ -42,23 +42,29 @@ namespace BizHawk.Emulation.Common
 		/// If no address is specified the callback will be hooked to all addresses
 		/// Note: an execute callback can not be added without an address, else an InvalidOperationException will occur
 		/// </summary>
-		/// <exception cref="InvalidCastException">Thrown when the <see cref="IMemoryCallback.Domain"/> property of the <see cref="IMemoryCallback"/> is not in the <see cref="AvailableDomains"/></exception>
+		/// <exception cref="InvalidCastException">Thrown when the <see cref="IMemoryCallback.Scope"/> property of the <see cref="IMemoryCallback"/> is not in the <see cref="AvailableScopes"/></exception>
 		void Add(IMemoryCallback callback);
 
 		/// <summary>
 		/// Executes all Read callbacks for the given address and domain
 		/// </summary>
-		void CallReads(uint addr, string domain);
+		/// <param name="addr">The address to check for callbacks</param>
+		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"></param>
+		void CallReads(uint addr, string scope);
 
 		/// <summary>
 		/// Executes all Write callbacks for the given address and domain
 		/// </summary>
-		void CallWrites(uint addr, string domain);
+		/// <param name="addr">The address to check for callbacks</param>
+		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"></param>
+		void CallWrites(uint addr, string scope);
 
 		/// <summary>
 		/// Executes all Execute callbacks for the given address and domain
 		/// </summary>
-		void CallExecutes(uint addr, string domain);
+		/// <param name="addr">The address to check for callbacks</param>
+		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"></param>
+		void CallExecutes(uint addr, string scope);
 
 		/// <summary>
 		/// Removes the given callback from the list
@@ -76,10 +82,10 @@ namespace BizHawk.Emulation.Common
 		void Clear();
 
 		/// <summary>
-		/// A list of available memory domains that a the <see cref="IMemoryCallback.Domain"/> property of the <see cref="IMemoryCallback"/>  can have
+		/// A list of available "scopes" (memory domains, cpus, etc) that a the <see cref="IMemoryCallback.Scope"/> property of the <see cref="IMemoryCallback"/> can have
 		/// Passing a <see cref="IMemoryCallback"/> into the <see cref="Add(IMemoryCallback)"/> method that is not in this list will result in an <seealso cref="InvalidOperationException"/>
 		/// </summary>
-		string[] AvailableDomains { get; }
+		string[] AvailableScopes { get; }
 	}
 
 	/// <summary>
@@ -93,7 +99,7 @@ namespace BizHawk.Emulation.Common
 		Action Callback { get; }
 		uint? Address { get; }
 		uint? AddressMask { get; }
-		string Domain { get; }
+		string Scope { get; }
 	}
 
 	public enum MemoryCallbackType
