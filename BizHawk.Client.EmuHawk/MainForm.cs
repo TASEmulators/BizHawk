@@ -34,6 +34,7 @@ using BizHawk.Emulation.Cores.Nintendo.SNES9X;
 using BizHawk.Emulation.Cores.Consoles.SNK;
 using BizHawk.Emulation.Cores.Consoles.Sega.PicoDrive;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -1725,8 +1726,11 @@ namespace BizHawk.Client.EmuHawk
 				case "A26":
 					AtariSubMenu.Visible = true;
 					break;
-				case "A7800":
-					A7800SubMenu.Visible = true;
+				case "A78":
+					if (Emulator is A7800Hawk)
+					{
+						A7800SubMenu.Visible = true;
+					}
 					break;
 				case "PSX":
 					PSXSubMenu.Visible = true;
