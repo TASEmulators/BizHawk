@@ -13,8 +13,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight))]
-	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
-	ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
+	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable,
+		IRegionable, IBoardInfo, ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
 	{
 		// this register selects between 2600 and 7800 mode in the A7800
 		// however, we already have a 2600 emulator so this core will only be loading A7800 games
@@ -234,6 +234,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Register<IDisassemblable>(cpu);
 			HardReset();
 		}
+
+		public string BoardName => mapper.GetType().Name.Replace("Mapper", "");
 
 		public DisplayType Region => _isPAL ? DisplayType.PAL : DisplayType.NTSC;
 
