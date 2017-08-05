@@ -1,3 +1,5 @@
+# BizHawk
+
 BizHawk is a multi-system emulator written in C#. BizHawk provides nice features for casual gamers such as fullscreen, rewind, and joypad support in addition to rerecording and debugging tools for all system cores.
 
 [Release Notes](http://tasvideos.org/Bizhawk/ReleaseHistory.html)

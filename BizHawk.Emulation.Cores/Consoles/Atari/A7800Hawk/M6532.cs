@@ -6,7 +6,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	// Emulates the M6532 RIOT Chip
 	public class M6532
 	{
-
 		public A7800Hawk Core { get; set; }
 
 		public byte _ddRa = 0x00;

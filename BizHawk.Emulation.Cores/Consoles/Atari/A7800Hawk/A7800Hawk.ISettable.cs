@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+
 using Newtonsoft.Json;
 
 using BizHawk.Common;
@@ -32,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		}
 
 		private A7800Settings _settings = new A7800Settings();
-		private A7800SyncSettings _syncSettings = new A7800SyncSettings();
+		public A7800SyncSettings _syncSettings = new A7800SyncSettings();
 
 		public class A7800Settings
 		{
@@ -46,6 +48,17 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		{
 			private string _port1 = A7800HawkControllerDeck.DefaultControllerName;
 			private string _port2 = A7800HawkControllerDeck.DefaultControllerName;
+			private string _Filter = "None";
+
+			[JsonIgnore]
+			public string Filter
+			{
+				get { return _Filter; }
+				set
+				{
+					_Filter = value;
+				}
+			}
 
 			[JsonIgnore]
 			public string Port1

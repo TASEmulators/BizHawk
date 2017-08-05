@@ -310,6 +310,7 @@ sha1:203523818A348361584CDEBE47AEB860808757FC	U	Jurassic Boy 2 (Sachen)	NES		boa
 sha1:C1D82F6BE8AF524F951FC7C9D41604E59F9FE92A	G	Dragon Wars (USA) (Proto)	NES		board=MAPPER004;PAD_H=0;PAD_V=0
 sha1:22FCC2D33F6715D63E04235A0A7CCB0C8DC489C5		Mortal Kombat 3 Extra 60 (Unl) [!]	NES		board=MK3E60;PAD_H=1;PAD_V=0
 sha1:8928F7293C12EE7D3FC90BECC68AE5261802EAA6		AV Super Real Pachinko (Unl)	NES		board=MAPPER066;PAD_H=0;PAD_V=1
+sha1:3FB806A4A5625920935880BB5C9545EF23250C33		Don Doko Don 2 (J) [a1]	NES		board=TAITO-TC0190FMC+PAL16R4;WRAM=0;VRAM=0
 
 ;;;;;;;;;;;;;;;;;;;-----------------------------------------------------------------------
 ;mmc3 homebrews that need chip specification

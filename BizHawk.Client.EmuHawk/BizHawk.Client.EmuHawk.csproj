@@ -340,6 +340,12 @@
     <Compile Include="config\A7800\A7800ControllerSettings.Designer.cs">
       <DependentUpon>A7800ControllerSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\A7800\A7800FilterSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\A7800\A7800FilterSettings.Designer.cs">
+      <DependentUpon>A7800FilterSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\INTV\IntvControllerSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1161,7 +1167,6 @@
     </Compile>
     <Compile Include="tools\VirtualPads\schema\A26Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\A78Schema.cs" />
-    <Compile Include="tools\VirtualPads\schema\A7800HawkSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\AppleIISchema.cs" />
     <Compile Include="tools\VirtualPads\schema\C64Schema.cs" />
     <Compile Include="tools\VirtualPads\schema\ColecoSchema.cs" />
@@ -1310,6 +1315,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\A7800\A7800ControllerSettings.resx">
       <DependentUpon>A7800ControllerSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\A7800\A7800FilterSettings.resx">
+      <DependentUpon>A7800FilterSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\INTV\IntvControllerSettings.resx">
       <DependentUpon>IntvControllerSettings.cs</DependentUpon>

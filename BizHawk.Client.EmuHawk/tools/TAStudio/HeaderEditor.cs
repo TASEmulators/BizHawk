@@ -19,7 +19,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			AuthorTextBox.Text = _movie.Author;
 			EmulatorVersionTextBox.Text = _movie.EmulatorVersion;
-			PlatformTextBox.Text = _movie.SystemID;
 			CoreTextBox.Text = _movie.Core;
 			BoardNameTextBox.Text = _movie.BoardName;
 			GameNameTextBox.Text = _movie.GameName;
@@ -34,7 +33,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_movie.EmulatorVersion = EmulatorVersionTextBox.Text;
-			_movie.SystemID = PlatformTextBox.Text;
 			_movie.Core = CoreTextBox.Text;
 			_movie.BoardName = BoardNameTextBox.Text;
 			_movie.GameName = GameNameTextBox.Text;

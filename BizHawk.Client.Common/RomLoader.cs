@@ -167,7 +167,7 @@ namespace BizHawk.Client.Common
 
 		private bool HandleArchiveBinding(HawkFile file)
 		{
-			var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA" };
+			var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA", "32X" };
 
 			// try binding normal rom extensions first
 			if (!file.IsBound)
@@ -939,10 +939,9 @@ namespace BizHawk.Client.Common
 								break;
 							case "A78":
 								var gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
-
-								if (!VersionInfo.DeveloperBuild)
+								if (game["Pokey"] && game.OptionValue("Pokey") == "true") // A7800Hawk does not emulate Pokey so route it to Emu7800
 								{
-									nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath); // Don't expose A7800Hawk in releases yet
+									nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath);
 								}
 								else
 								{

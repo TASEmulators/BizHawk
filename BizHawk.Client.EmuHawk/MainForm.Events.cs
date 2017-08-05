@@ -1984,11 +1984,17 @@ namespace BizHawk.Client.EmuHawk
 		private void A7800SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			A7800ControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+			A7800FilterSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
 		}
 
-		private void A7800SettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void A7800ControllerSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new A7800ControllerSettings().ShowDialog();
+		}
+
+		private void A7800FilterSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new A7800FilterSettings().ShowDialog();
 		}
 
 		#endregion

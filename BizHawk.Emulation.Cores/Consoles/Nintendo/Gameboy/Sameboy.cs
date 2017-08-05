@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		"https://sameboy.github.io/", false)]
 	public class Sameboy : WaterboxCore,
 		IGameboyCommon, ISaveRam,
-		ISettable<object, Sameboy.SyncSettings>
+		ISettable<Sameboy.Settings, Sameboy.SyncSettings>
 	{
 		/// <summary>
 		/// the nominal length of one frame
@@ -38,20 +38,20 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		private bool _sgb;
 
 		[CoreConstructor("SGB")]
-		public Sameboy(byte[] rom, CoreComm comm, SyncSettings syncSettings, bool deterministic)
-			: this(rom, comm, true, syncSettings, deterministic)
+		public Sameboy(byte[] rom, CoreComm comm, Settings settings, SyncSettings syncSettings, bool deterministic)
+			: this(rom, comm, true, settings, syncSettings, deterministic)
 		{ }
 
 		[CoreConstructor("GB")]
-		public Sameboy(CoreComm comm, byte[] rom, SyncSettings syncSettings, bool deterministic)
-			: this(rom, comm, false, syncSettings, deterministic)
+		public Sameboy(CoreComm comm, byte[] rom, Settings settings, SyncSettings syncSettings, bool deterministic)
+			: this(rom, comm, false, settings, syncSettings, deterministic)
 		{ }
 
-		public Sameboy(byte[] rom, CoreComm comm, bool sgb, SyncSettings syncSettings, bool deterministic)
+		public Sameboy(byte[] rom, CoreComm comm, bool sgb, Settings settings, SyncSettings syncSettings, bool deterministic)
 			: base(comm, new Configuration
 			{
-				DefaultWidth = sgb ? 256 : 160,
-				DefaultHeight = sgb ? 224 : 144,
+				DefaultWidth = sgb && (settings == null || settings.ShowSgbBorder) ? 256 : 160,
+				DefaultHeight = sgb && (settings == null || settings.ShowSgbBorder) ? 224 : 144,
 				MaxWidth = sgb ? 256 : 160,
 				MaxHeight = sgb ? 224 : 144,
 				MaxSamples = 1024,
@@ -74,6 +74,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			_sgb = sgb;
 			Console.WriteLine("Automaticly detected CGB to " + _cgb);
 			_syncSettings = syncSettings ?? new SyncSettings();
+			_settings = settings ?? new Settings();
 
 			var bios = _syncSettings.UseRealBIOS && !sgb
 				? comm.CoreFileProvider.GetFirmware(_cgb ? "GBC" : "GB", "World", true)
@@ -179,7 +180,30 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		#region ISettable
 
+		private Settings _settings;
 		private SyncSettings _syncSettings;
+
+		public class Settings
+		{
+			[DisplayName("Show SGB Border")]
+			[DefaultValue(true)]
+			public bool ShowSgbBorder { get; set; }
+
+			public Settings Clone()
+			{
+				return (Settings)MemberwiseClone();
+			}
+
+			public static bool NeedsReboot(Settings x, Settings y)
+			{
+				return false;
+			}
+
+			public Settings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+		}
 
 		public class SyncSettings
 		{
@@ -213,9 +237,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			}
 		}
 
-		public object GetSettings()
+		public Settings GetSettings()
 		{
-			return null;
+			return _settings.Clone();
 		}
 
 		public SyncSettings GetSyncSettings()
@@ -223,9 +247,11 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			return _syncSettings.Clone();
 		}
 
-		public bool PutSettings(object o)
+		public bool PutSettings(Settings o)
 		{
-			return false;
+			var ret = Settings.NeedsReboot(_settings, o);
+			_settings = o;
+			return ret;
 		}
 
 		public bool PutSyncSettings(SyncSettings o)
@@ -246,10 +272,29 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			};
 		}
 
-		protected override void FrameAdvancePost()
+		protected unsafe override void FrameAdvancePost()
 		{
 			if (_scanlineCallback != null && _scanlineCallbackLine == -1)
 				_scanlineCallback(_core.GetIoReg(0x40));
+
+			if (_sgb && !_settings.ShowSgbBorder)
+			{
+				fixed(int *buff = _videoBuffer)
+				{
+					int* dst = buff;
+					int* src = buff + (224 - 144) / 2 * 256 + (256 - 160) / 2;
+					for (int j = 0; j < 144; j++)
+					{
+						for (int i = 0; i < 160; i++)
+						{
+							*dst++ = *src++;
+						}
+						src += 256 - 160;
+					}
+				}
+				BufferWidth = 160;
+				BufferHeight = 144;
+			}
 		}
 
 		protected override void LoadStateBinaryInternal(BinaryReader reader)

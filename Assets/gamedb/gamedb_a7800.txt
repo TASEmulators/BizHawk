@@ -4,7 +4,11 @@
 ;2 = Super Game with extra ROM
 ;3 = F-18 Hornet Mapper
 ;4 = Double Dragon and Rampage
+;5 = Rescue on Fractulus
+;6 = Dev Cart
 
+md5:0D9452D4DB4D1E1CF843F4F10605EB7D		Dev Cart	A78		NTSC=true;board=0
+md5:31FBCF03946E804FC2D77CCA5D61C928		Mode Test	A78		NTSC=true;board=0
 md5:91041AADD1700A7A4076F4005F2C362F		Diagnostics	A78		NTSC=true;board=0
 md5:89E7B20E7E0C629D00C6CA68949A216F		Test Rom	A78		NTSC=true;board=0
 md5:4332c24e4f3bc72e7fe1b77adf66c2b7		3D Asteroids	A78		NTSC=true;board=0		
@@ -124,7 +128,7 @@ md5:865457e0e0f48253b08f77b9e18f93b2		Pole Position II	A78		PAL=true;board=0
 md5:66e7230f7ef9d14db82d76b06b241bc0		Q-bert	A78		NTSC=true;board=0		
 md5:ac03806cef2558fc795a7d5d8dba7bc0		Rampage	A78		NTSC=true;board=4		
 md5:383ed9bd1efb9b6cb3388a777678c928		Realsports Baseball	A78		NTSC=true;board=1		
-md5:8f7eb10ad0bd75474abf0c6c36c08486		Rescue on Fractalus	A78		NTSC=true;board=0		
+md5:8f7eb10ad0bd75474abf0c6c36c08486		Rescue on Fractalus	A78		NTSC=true;board=5		
 md5:43525a0405184875c2ecfd0196886a34		Rip Off	A78		NTSC=true;board=0		
 md5:106b409c6f4c219b1a3b3d099ead3b2b		Rip Off	A78		PAL=true;board=0		
 md5:505f05e7f161f62ccd749dab3c4a204b		Robot Finds Kitten	A78		NTSC=true;board=0		
@@ -136,8 +140,8 @@ md5:1ee26fc6b06b4c9ba74931914b7e719d		Scramble	A78		PAL=true;board=0
 md5:65fe82f419f6583a0f9a736242cb303d		Scramble	A78		PAL=true;board=0		
 md5:980c35ae9625773a450aa7ef51751c04		Scrapyard Dog	A78		NTSC=true;board=1		
 md5:53db322c201323fe2ca8f074c0a2bf86		Scrapyard Dog	A78		PAL=true;board=1		
-md5:b697d9c2d1b9f6cb21041286d1bbfa7f		Sentinel	A78		NTSC=true;board=1;Pokey=true
-md5:5469b4de0608f23a5c4f98f331c9e75f		Sentinel	A78		PAL=true;board=1;Pokey=true
+md5:b697d9c2d1b9f6cb21041286d1bbfa7f		Sentinel	A78		NTSC=true;board=1
+md5:5469b4de0608f23a5c4f98f331c9e75f		Sentinel	A78		PAL=true;board=1
 md5:2d643ac548c40e58c99d0fe433ba4ba0		Sirius	A78		NTSC=true;board=1;RAM=8		
 md5:a84c1b2300fbfbf21b1c02387f613dad		Space Duel	A78		PAL=true;board=0		
 md5:771cb4609347657f63e6f0eb26036e35		Space Duel	A78		NTSC=true;board=0		

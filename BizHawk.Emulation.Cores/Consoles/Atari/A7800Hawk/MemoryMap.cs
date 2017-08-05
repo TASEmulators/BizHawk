@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 				else
 				{
+					slow_access = true;
 					return tia.ReadMemory((ushort)(addr & 0x1F), false);
 				}
 			}
@@ -45,16 +46,17 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 				else
 				{
-					return 0xFF; // TODO: What if Maria is off?
+					return 0x80; // TODO: What if Maria is off?
 				}
 			}
 			else if ((addr & 0xFF80) == 0x280)
 			{
-				//return regs_6532[addr & 0x1F];
+				slow_access = true;
 				return m6532.ReadMemory(addr, false);
 			}
 			else if ((addr & 0xFE80) == 0x480)
 			{
+				slow_access = true;
 				return RAM_6532[addr & 0x7F];
 			}
 			else if ((addr >= 0x1800) && (addr < 0x2800))
@@ -105,10 +107,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				// return TIA registers or control register if it is still unlocked
 				if ((A7800_control_register & 0x1) == 0)
 				{
-					A7800_control_register = value; 
+					A7800_control_register = value;
 				}
 				else
 				{
+					slow_access = true;
 					tia.WriteMemory((ushort)(addr & 0x1F), value, false);
 				}
 			}
@@ -140,10 +143,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 			else if ((addr & 0xFF80) == 0x280)
 			{
+				slow_access = true;
 				m6532.WriteMemory(addr, value);
 			}
 			else if ((addr & 0xFE80) == 0x480)
 			{
+				slow_access = true;
 				RAM_6532[addr & 0x7F] = value;
 			}
 			else if ((addr >= 0x1800) && (addr < 0x2800))

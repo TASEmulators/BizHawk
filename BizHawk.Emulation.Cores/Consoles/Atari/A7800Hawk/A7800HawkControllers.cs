@@ -21,6 +21,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		bool Is_2_button(IController c);
 
+		bool Is_LightGun(IController c, out float x, out float y);
+
 		ControllerDefinition Definition { get; }
 
 		void SyncState(Serializer ser);
@@ -60,6 +62,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return false;
 		}
 
+		public bool Is_LightGun(IController c, out float x, out float y)
+		{
+			x = -1;
+			y = -1;
+			return false;
+		}
+
 		public ControllerDefinition Definition { get; }
 
 		public void SyncState(Serializer ser)
@@ -78,6 +87,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			PortNum = portNum;
 			Definition = new ControllerDefinition
 			{
+				Name = "Atari 2600 Basic Controller",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList()
@@ -125,6 +135,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return false;
 		}
 
+		public bool Is_LightGun(IController c, out float x, out float y)
+		{
+			x = -1;
+			y = -1;
+			return false;
+		}
+
 		public ControllerDefinition Definition { get; }
 
 		public void SyncState(Serializer ser)
@@ -134,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private static readonly string[] BaseDefinition =
 		{
-			"U", "D", "L", "R", "Fire"
+			"Up", "Down", "Left", "Right", "Trigger"
 		};
 
 		private static byte[] HandControllerButtons =
@@ -154,6 +171,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			PortNum = portNum;
 			Definition = new ControllerDefinition
 			{
+				Name = "Atari 7800 ProLine Joystick Controller",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList()
@@ -210,6 +228,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return true;
 		}
 
+		public bool Is_LightGun(IController c, out float x, out float y)
+		{
+			x = -1;
+			y = -1;
+			return false;
+		}
+
 		public ControllerDefinition Definition { get; }
 
 		public void SyncState(Serializer ser)
@@ -219,7 +244,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private static readonly string[] BaseDefinition =
 		{
-			"U", "D", "L", "R", "Fire", "Fire2"
+			"Up", "Down", "Left", "Right", "Trigger", "Trigger 2"
 		};
 
 		private static byte[] HandControllerButtons =
@@ -228,6 +253,77 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			0x0, // Down
 			0x0, // Left
 			0x0, // Right
+		};
+	}
+
+
+	[DisplayName("Light Gun Controller")]
+	public class LightGunController : IPort
+	{
+		public LightGunController(int portNum)
+		{
+			PortNum = portNum;
+			Definition = new ControllerDefinition
+			{
+				Name = "Light Gun Controller",
+				BoolButtons = BaseDefinition
+				.Select(b => "P" + PortNum + " " + b)
+				.ToList(),
+				FloatControls = { "P" + PortNum + " X", "P" + PortNum + " Y" },
+				FloatRanges = { new[] { 1.0f, 160, 320.0f }, new[] { 1.0f, 121, 242.0f } }
+			};
+		}
+		
+		public int PortNum { get; }
+
+		public byte Read(IController c)
+		{
+			byte result = 0xE;
+			if (c.IsPressed(Definition.BoolButtons[0]))
+			{
+				result |= 0x1;
+			}
+
+			if (PortNum == 1)
+			{
+				result = (byte)(result << 4);
+			}
+
+			return result;
+		}
+
+		public byte ReadFire(IController c)
+		{
+			return 0x80;
+		}
+
+		public byte ReadFire2x(IController c)
+		{
+			return 0; // only applicable for 2 button mode
+		}
+
+		public bool Is_2_button(IController c)
+		{
+			return false;
+		}
+
+		public bool Is_LightGun(IController c, out float x, out float y)
+		{
+			x = c.GetFloat(Definition.FloatControls[0]);
+			y = c.GetFloat(Definition.FloatControls[1]);
+			return true;
+		}
+
+		public ControllerDefinition Definition { get; }
+
+		public void SyncState(Serializer ser)
+		{
+			// Nothing todo, I think
+		}
+
+		private static readonly string[] BaseDefinition =
+		{
+			"Trigger"
 		};
 	}
 }

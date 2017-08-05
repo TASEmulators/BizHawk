@@ -166,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			//Not sure if this is correct.  According to Matt Conte and my own tests, it is. Timing is probably off, though.
 			//NOTE:  Not having this here breaks a Super Donkey Kong game.
-			if (PPUON) reg_2003 = 0;
+			//if (PPUON) reg_2003 = 0;
 
 			//this was repeatedly finetuned from the fceux days thrugh the old cpu core and into the new one to pass 05-nmi_timing.nes
 			//note that there is still some leniency. for instance, 4,2 will pass in addition to 3,3
@@ -207,13 +207,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				yp = sl - 1;
 				ppuphase = PPUPHASE.BG;
 
-				// "If PPUADDR is not less then 8 when rendering starts, the first 8 bytes in OAM and written to from 
-				// the current location off PPUADDR"			
+				// "If PPUADDR is not less then 8 when rendering starts, the first 8 bytes in OAM are written to from 
+				// the current location of PPUADDR"			
 				if (sl == 0 && PPUON && reg_2003 >= 8 && region==Region.NTSC)
 				{
 					for (int i = 0; i < 8; i++)
 					{
-						OAM[i] = OAM[reg_2003 & 0xF8 + i];
+						OAM[i] = OAM[(reg_2003 & 0xF8) + i];
 					}
 				}
 				
@@ -258,7 +258,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							if (ppur.status.cycle == 64)
 							{
 								soam_index = 0;
-								oam_index = 0;// reg_2003;
+								oam_index = reg_2003;
 							}
 
 							// otherwise, scan through OAM and test if sprites are in range
@@ -297,7 +297,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 										if (yp >= read_value && yp < read_value + spriteHeight && spr_true_count == 0)
 										{
 											//a flag gets set if sprite zero is in range
-											if (oam_index == 0)//reg_2003)
+											if (oam_index == reg_2003)
 												sprite_zero_in_range = true;
 
 											spr_true_count++;
@@ -769,7 +769,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{ }
 				else
 					runppu(1);
-
 			} // scanline loop
 
 			ppur.status.sl = 241;

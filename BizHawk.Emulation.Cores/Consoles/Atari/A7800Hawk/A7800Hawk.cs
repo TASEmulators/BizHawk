@@ -13,8 +13,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight))]
-	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
-	ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
+	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable,
+		IRegionable, IBoardInfo, ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
 	{
 		// this register selects between 2600 and 7800 mode in the A7800
 		// however, we already have a 2600 emulator so this core will only be loading A7800 games
@@ -76,7 +76,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			_settings = (A7800Settings)settings ?? new A7800Settings();
 			_syncSettings = (A7800SyncSettings)syncSettings ?? new A7800SyncSettings();
-
 			_controllerDeck = new A7800HawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
 			byte[] highscoreBios = comm.CoreFileProvider.GetFirmware("A78", "Bios_HSC", false, "Some functions may not work without the high score BIOS.");
@@ -173,7 +172,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					s_mapper = "0";
 				}
-
 			}
 			else
 			{
@@ -206,18 +204,18 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// set up palette and frame rate
 			if (_isPAL)
 			{
-				maria._frameHz = 50;
-				maria._screen_width = 320;
-				maria._screen_height = 313;
-				maria._vblanklines = 20;
+				_frameHz = 50;
+				_screen_width = 320;
+				_screen_height = 313;
+				_vblanklines = 20;
 				maria._palette = PALPalette;
 			}
 			else
 			{
-				maria._frameHz = 60;
-				maria._screen_width = 320;
-				maria._screen_height = 263;
-				maria._vblanklines = 20;
+				_frameHz = 60;
+				_screen_width = 320;
+				_screen_height = 263;
+				_vblanklines = 20;
 				maria._palette = NTSCPalette;
 			}
 
@@ -225,7 +223,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			m6532.Core = this;
 			tia.Core = this;
 
-			ser.Register<IVideoProvider>(maria);
+			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(tia);
 			ServiceProvider = ser;
 
@@ -233,8 +231,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			ser.Register<ITraceable>(_tracer);
 
 			SetupMemoryDomains();
+			ser.Register<IDisassemblable>(cpu);
 			HardReset();
 		}
+
+		public string BoardName => mapper.GetType().Name.Replace("Mapper", "");
 
 		public DisplayType Region => _isPAL ? DisplayType.PAL : DisplayType.NTSC;
 
@@ -255,6 +256,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			RAM = new byte[0x1000];
 
 			cpu_cycle = 0;
+
+			_vidbuffer = new int[VirtualWidth * VirtualHeight];
 		}
 
 		private void ExecFetch(ushort addr)
@@ -283,6 +286,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (m == "4")
 			{
 				mapper = new MapperRampage();
+			}
+			if (m == "5")
+			{
+				mapper = new MapperFractalus();
+			}
+			if (m == "6")
+			{
+				mapper = new MapperFractalus();
 			}
 
 			mapper.Core = this;

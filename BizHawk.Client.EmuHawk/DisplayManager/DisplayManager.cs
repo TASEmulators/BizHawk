@@ -722,6 +722,17 @@ namespace BizHawk.Client.EmuHawk
 			return filterProgram;
 		}
 
+		public void Blank()
+		{
+			GLManager.Activate(CR_GraphicsControl);
+			GL.BeginScene();
+			GL.BindRenderTarget(null);
+			GL.SetClearColor(Color.Black);
+			GL.Clear(OpenTK.Graphics.OpenGL.ClearBufferMask.ColorBufferBit);
+			GL.EndScene();
+			presentationPanel.GraphicsControl.SwapBuffers();
+		}
+
 		void UpdateSourceDrawingWork(JobInfo job)
 		{
 			bool vsync = false;

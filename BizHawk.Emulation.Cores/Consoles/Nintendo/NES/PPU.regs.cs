@@ -40,10 +40,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					show_obj_leftmost = (value >> 2) & 1;
 					show_bg = (value >> 3) & 1;
 					show_obj = (value >> 4) & 1;
-					intense_green = (value >> 5) & 1;
 					intense_blue = (value >> 6) & 1;
 					intense_red = (value >> 7) & 1;
-					intensity_lsl_6 = ((value >> 5) & 7)<<6;
+					intense_green = (value >> 5) & 1;
+					intensity_lsl_6 =  ((value >> 5) & 7)<<6;
 				}
 			}
 		}
@@ -427,10 +427,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//OAM DATA (write)
 		void write_2004(byte value)
 		{
-			if ((reg_2003 & 3) == 2) value &= 0xE3; //some of the OAM bits are unwired so we mask them out here
-			//otherwise we just write this value and move on to the next oam byte
-			OAM[reg_2003] = value;
-			reg_2003++;
+			if ((reg_2003 & 3) == 2)
+			{
+				//some of the OAM bits are unwired so we mask them out here
+				//otherwise we just write this value and move on to the next oam byte
+				value &= 0xE3; 
+			}						
+			if (0 <= ppur.status.sl && ppur.status.sl <= 240)
+			{
+				// don't write to OAM if the screen is on and we are in the active display area
+				// this impacts sprite evaluation
+				if (show_bg_new || show_obj_new)
+				{
+					// glitchy increment of OAM index
+					oam_index += 4;
+				}
+				else
+				{
+					OAM[reg_2003] = value;
+					reg_2003++;
+				}
+			}
+			else
+			{
+				OAM[reg_2003] = value;
+				reg_2003++;
+			}
+			
 		}
 		byte read_2004()
 		{

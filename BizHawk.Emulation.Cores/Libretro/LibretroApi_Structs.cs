@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 			public sbyte* valid_extensions;
 			public bool need_fullpath;
 			public bool block_extract;
-			public short pad;
+			short _pad;
 		}
 
 		public struct retro_system_timing
