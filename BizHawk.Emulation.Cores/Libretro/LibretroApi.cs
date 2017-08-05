@@ -151,8 +151,8 @@ namespace BizHawk.Emulation.Cores.Libretro
 			public retro_system_info retro_system_info;
 			public retro_system_av_info retro_system_av_info;
 
-			public uint retro_serialize_size_initial; //size_t :(
-			public uint retro_serialize_size; //size_t :(
+			public ulong retro_serialize_size_initial; //size_t :(
+			public ulong retro_serialize_size; //size_t :(
 
 			public uint retro_region;
 			public uint retro_api_version;
