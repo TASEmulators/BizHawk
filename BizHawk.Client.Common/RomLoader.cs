@@ -940,16 +940,9 @@ namespace BizHawk.Client.Common
 							case "A78":
 								var gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
 
-								if (!VersionInfo.DeveloperBuild)
-								{
-									nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath); // Don't expose A7800Hawk in releases yet
-								}
-								else
-								{
-									nextEmulator = Global.Config.A78_UseEmu7800
-										? nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath)
-										: nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gamedbpath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
-								}
+								nextEmulator = Global.Config.A78_UseEmu7800
+									? nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath)
+									: nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gamedbpath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
 
 								break;
 							case "C64":
