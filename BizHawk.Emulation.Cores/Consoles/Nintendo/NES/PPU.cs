@@ -203,6 +203,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte[] OAM;
 		public byte[] PALRAM;
 
+		private long _totalCycles;
+		public long TotalCycles => _totalCycles;
+
 		public void SyncState(Serializer ser)
 		{
 			ser.Sync("cpu_step", ref cpu_step);
@@ -248,6 +251,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//don't sync framebuffer into binary (rewind) states
 			if(ser.IsText)
 				ser.Sync("xbuf", ref xbuf, false);
+
+			ser.Sync("_totalCycles", ref _totalCycles);
 		}
 
 		public void Reset()
@@ -345,6 +350,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					nes.Board.ClockPPU();
 				}
 			}
+			_totalCycles += x;
 		}
 	}
 }
