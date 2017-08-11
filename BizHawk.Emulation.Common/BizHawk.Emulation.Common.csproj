@@ -91,6 +91,7 @@
     <Compile Include="Interfaces\IEmulatorServiceProvider.cs" />
     <Compile Include="Interfaces\Services\IBoardInfo.cs" />
     <Compile Include="Interfaces\Services\ICreateGameDBEntries.cs" />
+    <Compile Include="Interfaces\Services\ICycleTiming.cs" />
     <Compile Include="Interfaces\Services\ISoundProvider.cs" />
     <Compile Include="Interfaces\Services\ICodeDataLogger.cs" />
     <Compile Include="Interfaces\Services\IDebuggable.cs" />
