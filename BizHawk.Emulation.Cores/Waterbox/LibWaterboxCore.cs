@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		}
 
 		[Flags]
-		public enum MemoryDomainFlags : int
+		public enum MemoryDomainFlags : long
 		{
 			None = 0,
 			/// <summary>
