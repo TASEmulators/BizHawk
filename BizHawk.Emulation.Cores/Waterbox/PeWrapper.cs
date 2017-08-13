@@ -392,6 +392,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 			bw.Write(MAGIC);
 			bw.Write(_fileHash);
+			bw.Write(Memory.ZZDEBUGSNAPSHOT.Length);
+			bw.Write(Memory.ZZDEBUGSNAPSHOT);
 			bw.Write(Memory.XorHash);
 			bw.Write(Start);
 
@@ -418,10 +420,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (!br.ReadBytes(_fileHash.Length).SequenceEqual(_fileHash))
 				// the .dll file that is loaded now has a different hash than the .dll that created the savestate
 				throw new InvalidOperationException("Core consistency check failed.  Is this a savestate from a different version?");
+			var _zzlen = br.ReadInt32();
+			var _zzdata = br.ReadBytes(_zzlen);
 			if (!br.ReadBytes(Memory.XorHash.Length).SequenceEqual(Memory.XorHash))
+			{
+				var name = "D:\\__" + ModuleName;
+				File.WriteAllBytes(name + "0", _zzdata);
+				File.WriteAllBytes(name + "1", Memory.ZZDEBUGSNAPSHOT);
 				// the post-Seal memory state is different. probable cause:  different rom or different version of rom,
 				// different syncsettings
 				throw new InvalidOperationException("Memory consistency check failed.  Is this savestate from different SyncSettings?");
+			}
 			if (br.ReadUInt64() != Start)
 				// dll loaded somewhere else.  probable cause: internal logic error.
 				// unlikely to get this far if the previous checks pssed

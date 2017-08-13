@@ -88,6 +88,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 		{
 			bw.Write(Name);
 			bw.Write(Used);
+			bw.Write(Memory.ZZDEBUGSNAPSHOT.Length);
+			bw.Write(Memory.ZZDEBUGSNAPSHOT);
 			if (!Sealed)
 			{
 				bw.Write(Memory.XorHash);
@@ -109,11 +111,17 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			var used = br.ReadUInt64();
 			if (used > Memory.Size)
 				throw new InvalidOperationException(string.Format("Heap {0} used {1} larger than available {2}", Name, used, Memory.Size));
+			var _zzlen = br.ReadInt32();
+			var _zzdata = br.ReadBytes(_zzlen);
 			if (!Sealed)
 			{
 				var hash = br.ReadBytes(Memory.XorHash.Length);
 				if (!hash.SequenceEqual(Memory.XorHash))
 				{
+					var fname = "D:\\__" + Name;
+					File.WriteAllBytes(fname + "0", _zzdata);
+					File.WriteAllBytes(fname + "1", Memory.ZZDEBUGSNAPSHOT);
+
 					throw new InvalidOperationException(string.Format("Hash did not match for heap {0}.  Is this the same rom with the same SyncSettings?", Name));
 				}
 				var usedAligned = WaterboxUtils.AlignUp(used);
@@ -129,6 +137,9 @@ namespace BizHawk.Emulation.Cores.Waterbox
 				var hash = br.ReadBytes(_hash.Length);
 				if (!hash.SequenceEqual(_hash))
 				{
+					var fname = "D:\\__" + Name;
+					File.WriteAllBytes(fname + "0", _zzdata);
+					File.WriteAllBytes(fname + "1", Memory.ZZDEBUGSNAPSHOT);
 					throw new InvalidOperationException(string.Format("Hash did not match for heap {0}.  Is this the same rom with the same SyncSettings?", Name));
 				}
 			}

@@ -41,6 +41,7 @@ namespace BizHawk.Common.BizInvoke
 		/// snapshot for XOR buffer
 		/// </summary>
 		private byte[] _snapshot;
+		public byte[] ZZDEBUGSNAPSHOT => _snapshot;
 
 		public byte[] XorHash { get; private set; }
 

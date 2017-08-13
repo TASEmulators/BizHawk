@@ -273,6 +273,8 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			bw.Write(Name);
 			bw.Write(Memory.Size);
 			bw.Write(Used);
+			bw.Write(Memory.ZZDEBUGSNAPSHOT.Length);
+			bw.Write(Memory.ZZDEBUGSNAPSHOT);
 			bw.Write(Memory.XorHash);
 			bw.Write(_pagesAsBytes);
 
@@ -299,10 +301,16 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			if (size != Memory.Size)
 				throw new InvalidOperationException(string.Format("Size did not match for mapheap {0}", Name));
 			var used = br.ReadUInt64();
+			var _zzlen = br.ReadInt32();
+			var _zzdata = br.ReadBytes(_zzlen);
 			var hash = br.ReadBytes(Memory.XorHash.Length);
 			if (!hash.SequenceEqual(Memory.XorHash))
+			{
+				var dumpname = "D:\\__" + Name;
+				File.WriteAllBytes(dumpname + "0", _zzdata);
+				File.WriteAllBytes(dumpname + "1", Memory.ZZDEBUGSNAPSHOT);
 				throw new InvalidOperationException(string.Format("Hash did not match for mapheap {0}.  Is this the same rom?", Name));
-
+			}
 			if (br.BaseStream.Read(_pagesAsBytes, 0, _pagesAsBytes.Length) != _pagesAsBytes.Length)
 				throw new InvalidOperationException("Unexpected error reading!");
 
