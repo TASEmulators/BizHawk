@@ -1775,9 +1775,11 @@ namespace BizHawk.Client.EmuHawk
 			SMSEnableFMChipMenuItem.Visible =
 				SMSFix3DGameDisplayToolStripMenuItem.Visible =
 				SMSenableBIOSToolStripMenuItem.Visible =
-				SMSDisplayOverscanMenuItem.Visible =
 				Global.Game.System == "SMS";
 
+			SMSDisplayOverscanMenuItem.Visible =
+				Global.Game.System == "SMS" || Global.Game.System == "SG";
+			
 			SMSOverclockMenuItem.Visible =
 				SMSForceStereoMenuItem.Visible =
 				SMSdisplayToolStripMenuItem.Visible =
