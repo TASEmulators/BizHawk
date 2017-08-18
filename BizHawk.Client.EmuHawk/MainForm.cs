@@ -406,6 +406,8 @@ namespace BizHawk.Client.EmuHawk
 				PauseEmulator();
 			}
 
+			_flushSaveRamIn = Global.Config.FlushSaveRamFrames;
+
 			// start dumping, if appropriate
 			if (argParse.cmdDumpType != null && argParse.cmdDumpName != null)
 			{
@@ -1415,6 +1417,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public PresentationPanel PresentationPanel { get; }
 
+		private int _flushSaveRamIn;
 		#endregion
 
 		#region Private methods
@@ -1635,6 +1638,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					writer.Write(saveram, 0, saveram.Length);
 				}
+				_flushSaveRamIn = Global.Config.FlushSaveRamFrames;
 
 				writer.Close();
 			}
@@ -2906,6 +2910,15 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.MovieSession.HandleMovieOnFrameLoop();
 
+				if (Global.Config.FlushSaveRamFrames > 0)
+				{
+					_flushSaveRamIn -= 1;
+					if (_flushSaveRamIn <= 0)
+					{
+						FlushSaveRAM();
+						_flushSaveRamIn = Global.Config.FlushSaveRamFrames;
+					}
+				}
 				// why not skip audio if the user doesnt want sound
 				bool renderSound = (Global.Config.SoundEnabled && !IsTurboing) || (_currAviWriter?.UsesAudio ?? false);
 				if (!renderSound)
