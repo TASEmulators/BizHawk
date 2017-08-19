@@ -1607,11 +1607,13 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void FlushSaveRAM()
+		public void FlushSaveRAM(bool autosave = false)
 		{
 			if (Emulator.HasSaveRam())
 			{
 				var path = PathManager.SaveRamPath(Global.Game);
+				if (autosave)
+					path=path.Insert(path.Length-8, ".autosave"); //becomes path\name.autosave.SaveRAM
 				var f = new FileInfo(path);
 				if (f.Directory != null && !f.Directory.Exists)
 				{
@@ -2915,7 +2917,7 @@ namespace BizHawk.Client.EmuHawk
 					_flushSaveRamIn -= 1;
 					if (_flushSaveRamIn <= 0)
 					{
-						FlushSaveRAM();
+						FlushSaveRAM(true);
 						_flushSaveRamIn = Global.Config.FlushSaveRamFrames;
 					}
 				}
