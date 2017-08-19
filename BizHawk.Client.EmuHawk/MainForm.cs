@@ -405,9 +405,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PauseEmulator();
 			}
-
-			_flushSaveRamIn = Global.Config.FlushSaveRamFrames;
-
+		
 			// start dumping, if appropriate
 			if (argParse.cmdDumpType != null && argParse.cmdDumpName != null)
 			{
@@ -1418,6 +1416,7 @@ namespace BizHawk.Client.EmuHawk
 		public PresentationPanel PresentationPanel { get; }
 
 		private int _flushSaveRamIn;
+		public int FlushSaveRamIn { get { return _flushSaveRamIn; } set { _flushSaveRamIn = value; } }
 		#endregion
 
 		#region Private methods
@@ -1599,6 +1598,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					Emulator.AsSaveRam().StoreSaveRam(sram);
+					_flushSaveRamIn = Global.Config.FlushSaveRamFrames;
 				}
 				catch (IOException)
 				{
@@ -1613,36 +1613,47 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var path = PathManager.SaveRamPath(Global.Game);
 				if (autosave)
-					path=path.Insert(path.Length-8, ".autosave"); //becomes path\name.autosave.SaveRAM
-				var f = new FileInfo(path);
-				if (f.Directory != null && !f.Directory.Exists)
 				{
-					f.Directory.Create();
+					_flushSaveRamIn = Global.Config.FlushSaveRamFrames;
+					path = path.Insert(path.Length - 8, ".autosave"); //becomes path\name.autosave.SaveRAM
+				}
+				var file = new FileInfo(path);
+				var newPath = path + ".new";
+				var newFile = new FileInfo(newPath);
+				var backupPath = path + ".bak";
+				var backupFile = new FileInfo(backupPath);
+				if (file.Directory != null && !file.Directory.Exists)
+				{
+					file.Directory.Create();
 				}
 
-				// Make backup first
-				if (Global.Config.BackupSaveram && f.Exists)
-				{
-					var backup = path + ".bak";
-					var backupFile = new FileInfo(backup);
-					if (backupFile.Exists)
-					{
-						backupFile.Delete();
-					}
-
-					f.CopyTo(backup);
-				}
-
-				var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
+				var writer = new BinaryWriter(new FileStream(newPath, FileMode.Create, FileAccess.Write));
 				var saveram = Emulator.AsSaveRam().CloneSaveRam();
 
 				if (saveram != null)
 				{
 					writer.Write(saveram, 0, saveram.Length);
 				}
-				_flushSaveRamIn = Global.Config.FlushSaveRamFrames;
-
 				writer.Close();
+
+				if (file.Exists)
+				{
+					if (Global.Config.BackupSaveram)
+					{
+						if (backupFile.Exists)
+						{
+							backupFile.Delete();
+						}
+
+						file.MoveTo(backupPath);
+					}
+					else
+					{
+						file.Delete();
+					}
+				}
+
+				newFile.MoveTo(path);
 			}
 		}
 
@@ -2912,13 +2923,11 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.MovieSession.HandleMovieOnFrameLoop();
 
-				if (Global.Config.AutosaveSaveRAM && Global.Config.FlushSaveRamFrames > 0)
+				if (Global.Config.AutosaveSaveRAM)
 				{
-					_flushSaveRamIn -= 1;
-					if (_flushSaveRamIn <= 0)
+					if (FlushSaveRamIn-- <= 0)
 					{
 						FlushSaveRAM(true);
-						_flushSaveRamIn = Global.Config.FlushSaveRamFrames;
 					}
 				}
 				// why not skip audio if the user doesnt want sound

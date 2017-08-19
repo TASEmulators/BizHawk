@@ -89,6 +89,8 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.BackupSaveram = BackupSRamCheckbox.Checked;
 			Global.Config.AutosaveSaveRAM = AutosaveSRAMCheckbox.Checked;
 			Global.Config.FlushSaveRamFrames = AutosaveSaveRAMSeconds * 60;
+			if (GlobalWin.MainForm.FlushSaveRamIn > Global.Config.FlushSaveRamFrames)
+				GlobalWin.MainForm.FlushSaveRamIn = Global.Config.FlushSaveRamFrames;
 			Global.Config.SkipLagFrame = FrameAdvSkipLagCheckbox.Checked;
 			Global.Config.WIN32_CONSOLE = LogWindowAsConsoleCheckbox.Checked;
 			Global.Config.RunLuaDuringTurbo = LuaDuringTurboCheckbox.Checked;

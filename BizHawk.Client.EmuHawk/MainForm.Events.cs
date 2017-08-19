@@ -453,22 +453,6 @@ namespace BizHawk.Client.EmuHawk
 			FlushSaveRAM();
 		}
 
-		private void AutoFlushMenuItem_Click(object sender, EventArgs e)
-		{
-			switch (((ToolStripMenuItem)sender).Text)
-			{
-				case "Off": Global.Config.FlushSaveRamFrames = 0; break;
-				case "1s": Global.Config.FlushSaveRamFrames = 1 * 60; break;
-				case "5s": Global.Config.FlushSaveRamFrames = 5 * 60; break;
-				case "15s": Global.Config.FlushSaveRamFrames = 15 * 60; break;
-				case "30s": Global.Config.FlushSaveRamFrames = 30 * 60; break;
-				case "1m": Global.Config.FlushSaveRamFrames = 60 * 60; break;
-				case "5m": Global.Config.FlushSaveRamFrames = 300 * 60; break;
-			}
-			if (_flushSaveRamIn > Global.Config.FlushSaveRamFrames)
-				_flushSaveRamIn = Global.Config.FlushSaveRamFrames;
-		}
-
 		private void ReadonlyMenuItem_Click(object sender, EventArgs e)
 		{
 			ToggleReadOnly();
