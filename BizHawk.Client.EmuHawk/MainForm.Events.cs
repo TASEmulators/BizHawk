@@ -53,7 +53,6 @@ namespace BizHawk.Client.EmuHawk
 			SaveRAMSubMenu.Enabled = hasSaveRam;
 			if (SaveRAMSubMenu.Font.Bold != needBold)
 			{
-				AutoFlushMenuItem.Font = new Font(AutoFlushMenuItem.Font, FontStyle.Regular);
 				var font = new Font(SaveRAMSubMenu.Font, needBold ? FontStyle.Bold : FontStyle.Regular);
 				SaveRAMSubMenu.Font = font;
 			}
@@ -227,27 +226,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void FlushSaveRAMSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			FlushSaveRAMMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Flush SRAM"].Bindings;
-			AutoFlushMenuItem.Checked = Global.Config.FlushSaveRamFrames > 0;
-		}
-
 		private void SaveRAMSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			FlushSaveRAMMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Save SRAM"].Bindings;
-			AutoFlushMenuItem.Checked = Global.Config.FlushSaveRamFrames > 0;
-		}
-
-		private void AutoFlushMenuItem_DropDownOpened(object sender, EventArgs e)
-		{
-			AutoFlushOffToolStripMenuItem.Checked = Global.Config.FlushSaveRamFrames == 0;
-			AutoFlush1sToolStripMenuItem.Checked = Global.Config.FlushSaveRamFrames == 1 * 60;
-			AutoFlush5sToolStripMenuItem.Checked = Global.Config.FlushSaveRamFrames == 5 * 60;
-			AutoFlush15sToolStripMenuItem.Checked = Global.Config.FlushSaveRamFrames == 15 * 60;
-			AutoFlush30sToolStripMenuItem.Checked = Global.Config.FlushSaveRamFrames == 30 * 60;
-			AutoFlush60sToolStripMenuItem.Checked = Global.Config.FlushSaveRamFrames == 60 * 60;
-			AutoFlush300sToolStripMenuItem.Checked = Global.Config.FlushSaveRamFrames == 300 * 60;
+			FlushSaveRAMMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Flush SaveRAM"].Bindings;
 		}
 
 		private void MovieSubMenu_DropDownOpened(object sender, EventArgs e)

@@ -72,15 +72,7 @@
             this.SaveToCurrentSlotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LoadCurrentSlotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SaveRAMSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.FlushSaveRAMMenuItem = new System.Windows.Forms.ToolStripMenuItem(); this.AutoFlushMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoFlushOffToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator35 = new System.Windows.Forms.ToolStripSeparator();
-			this.AutoFlush1sToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoFlush5sToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoFlush15sToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoFlush30sToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoFlush60sToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.AutoFlush300sToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FlushSaveRAMMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.MovieSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.ReadonlyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -246,8 +238,9 @@
             this.coreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quickNESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nesHawkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator34 = new System.Windows.Forms.ToolStripSeparator();
-            this.NESPPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator34 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator35 = new System.Windows.Forms.ToolStripSeparator();
+			this.NESPPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NESNametableViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NESGameGenieCodesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.musicRipperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -337,7 +330,6 @@
             this.SnesOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ColecoSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.ColecoControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator35 = new System.Windows.Forms.ToolStripSeparator();
             this.ColecoSkipBiosMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.N64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.N64PluginSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -915,7 +907,7 @@
 			// SaveRAMSubMenu
 			// 
 			this.SaveRAMSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.FlushSaveRAMMenuItem, this.AutoFlushMenuItem});
+			this.FlushSaveRAMMenuItem});
 			this.SaveRAMSubMenu.Name = "SaveRAMSubMenu";
 			this.SaveRAMSubMenu.Size = new System.Drawing.Size(159, 22);
 			this.SaveRAMSubMenu.Text = "Save &RAM";
@@ -927,77 +919,7 @@
 			this.FlushSaveRAMMenuItem.Size = new System.Drawing.Size(156, 22);
 			this.FlushSaveRAMMenuItem.Text = "&Flush Save Ram";
 			this.FlushSaveRAMMenuItem.Click += new System.EventHandler(this.FlushSaveRAMMenuItem_Click);
-			// 
-			// AutoFlushMenuItem
-			// 
-			this.AutoFlushMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-			this.AutoFlushOffToolStripMenuItem,
-			this.toolStripSeparator35,
-			this.AutoFlush1sToolStripMenuItem,
-			this.AutoFlush5sToolStripMenuItem,
-			this.AutoFlush15sToolStripMenuItem,
-			this.AutoFlush30sToolStripMenuItem,
-			this.AutoFlush60sToolStripMenuItem,
-			this.AutoFlush300sToolStripMenuItem });
-			this.AutoFlushMenuItem.Name = "AutoFlushMenuItem";
-			this.AutoFlushMenuItem.Size = new System.Drawing.Size(187, 22);
-			this.AutoFlushMenuItem.Text = "Flush &Save Ram Every";
-			this.AutoFlushMenuItem.DropDownOpened += new System.EventHandler(this.AutoFlushMenuItem_DropDownOpened);
-			// 
-			// AutoFlushOffToolStripMenuItem
-			// 
-			this.AutoFlushOffToolStripMenuItem.Name = "AutoFlushOffToolStripMenuItem";
-			this.AutoFlushOffToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.AutoFlushOffToolStripMenuItem.Text = "Off";
-			this.AutoFlushOffToolStripMenuItem.Click += new System.EventHandler(this.AutoFlushMenuItem_Click);
-			// 
-			// toolStripSeparator35
-			// 
-			this.toolStripSeparator35.Name = "toolStripSeparator35";
-			this.toolStripSeparator35.Size = new System.Drawing.Size(149, 6);
-			// 
-			// AutoFlush1sToolStripMenuItem
-			// 
-			this.AutoFlush1sToolStripMenuItem.Name = "AutoFlush1sToolStripMenuItem";
-			this.AutoFlush1sToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.AutoFlush1sToolStripMenuItem.Text = "1s";
-			this.AutoFlush1sToolStripMenuItem.Click += new System.EventHandler(this.AutoFlushMenuItem_Click);
-			// 
-			// AutoFlush5sToolStripMenuItem
-			// 
-			this.AutoFlush5sToolStripMenuItem.Name = "AutoFlush5sToolStripMenuItem";
-			this.AutoFlush5sToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.AutoFlush5sToolStripMenuItem.Text = "5s";
-			this.AutoFlush5sToolStripMenuItem.Click += new System.EventHandler(this.AutoFlushMenuItem_Click);
-			// 
-			// AutoFlush15sToolStripMenuItem
-			// 
-			this.AutoFlush15sToolStripMenuItem.Name = "AutoFlush15sToolStripMenuItem";
-			this.AutoFlush15sToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.AutoFlush15sToolStripMenuItem.Text = "15s";
-			this.AutoFlush15sToolStripMenuItem.Click += new System.EventHandler(this.AutoFlushMenuItem_Click);
-			// 
-			// AutoFlush30sToolStripMenuItem
-			// 
-			this.AutoFlush30sToolStripMenuItem.Name = "AutoFlush30sToolStripMenuItem";
-			this.AutoFlush30sToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.AutoFlush30sToolStripMenuItem.Text = "30s";
-			this.AutoFlush30sToolStripMenuItem.Click += new System.EventHandler(this.AutoFlushMenuItem_Click);
-			// 
-			// AutoFlush60sToolStripMenuItem
-			// 
-			this.AutoFlush60sToolStripMenuItem.Name = "AutoFlush60sToolStripMenuItem";
-			this.AutoFlush60sToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.AutoFlush60sToolStripMenuItem.Text = "1m";
-			this.AutoFlush60sToolStripMenuItem.Click += new System.EventHandler(this.AutoFlushMenuItem_Click);
-			// 
-			// AutoFlush300sToolStripMenuItem
-			// 
-			this.AutoFlush300sToolStripMenuItem.Name = "AutoFlush300sToolStripMenuItem";
-			this.AutoFlush300sToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-			this.AutoFlush300sToolStripMenuItem.Text = "5m";
-			this.AutoFlush300sToolStripMenuItem.Click += new System.EventHandler(this.AutoFlushMenuItem_Click);            // 
-																														   // toolStripMenuItem2
+			// toolStripMenuItem2
 																														   // 
 			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(156, 6);
@@ -4387,6 +4309,7 @@
 		private System.Windows.Forms.ToolStripMenuItem quickNESToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem nesHawkToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator34;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator35;
 		private System.Windows.Forms.ToolStripMenuItem GBACoreSelectionSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GBAmGBAMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GBAVBANextMenuItem;
@@ -4436,15 +4359,6 @@
 		private System.Windows.Forms.ToolStripMenuItem IntvSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem IntVControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SNESControllerConfigurationMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoFlushMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoFlushOffToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoFlush1sToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoFlush5sToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoFlush15sToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoFlush30sToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoFlush60sToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem AutoFlush300sToolStripMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator35;
 		private System.Windows.Forms.ToolStripMenuItem C64DisksSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator36;
 		private System.Windows.Forms.ToolStripMenuItem sNESToolStripMenuItem;

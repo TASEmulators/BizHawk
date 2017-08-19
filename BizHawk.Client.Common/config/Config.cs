@@ -134,7 +134,10 @@ namespace BizHawk.Client.Common
 		public string Update_IgnoreVersion = "";
 		public bool CDLAutoSave = true, CDLAutoStart = true;
 
-		public int FlushSaveRamFrames = 0;
+		private int _flushSaveRAMFrames;
+		public int FlushSaveRamFrames { get { return _flushSaveRAMFrames; } set { _flushSaveRAMFrames = value; } }
+		private bool _autosaveSaveRAM;
+		public bool AutosaveSaveRAM { get { return _autosaveSaveRAM; } set { _autosaveSaveRAM = value; } }
 		//check CurrentDomain_AssemblyResolve if you change the defaults or name of this key
 		public bool UseNLua = true; // Whether or not to use a good, reliable, memory-leak-free lua interface that is slower than the original luainterface
 

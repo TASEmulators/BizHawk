@@ -48,6 +48,17 @@
             this.EnableContextMenuCheckbox = new System.Windows.Forms.CheckBox();
             this.PauseWhenMenuActivatedCheckbox = new System.Windows.Forms.CheckBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.AutosaveSRAMtextBox = new System.Windows.Forms.NumericUpDown();
+            this.AutosaveSRAMradioButton1 = new System.Windows.Forms.RadioButton();
+            this.label8 = new System.Windows.Forms.Label();
+            this.AutosaveSRAMradioButton2 = new System.Windows.Forms.RadioButton();
+            this.AutosaveSRAMradioButton3 = new System.Windows.Forms.RadioButton();
+            this.AutosaveSRAMCheckbox = new System.Windows.Forms.CheckBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label7 = new System.Windows.Forms.Label();
+            this.LuaInterfaceRadio = new System.Windows.Forms.RadioButton();
+            this.NLuaRadio = new System.Windows.Forms.RadioButton();
             this.label6 = new System.Windows.Forms.Label();
             this.cbMoviesInAWE = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -56,20 +67,16 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.FrameAdvSkipLagCheckbox = new System.Windows.Forms.CheckBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
             this.BackupSRamCheckbox = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
             this.LogWindowAsConsoleCheckbox = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.NLuaRadio = new System.Windows.Forms.RadioButton();
-            this.LuaInterfaceRadio = new System.Windows.Forms.RadioButton();
-            this.label7 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.AutosaveSRAMtextBox)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -270,6 +277,8 @@
             // 
             // tabPage3
             // 
+            this.tabPage3.Controls.Add(this.groupBox2);
+            this.tabPage3.Controls.Add(this.AutosaveSRAMCheckbox);
             this.tabPage3.Controls.Add(this.panel1);
             this.tabPage3.Controls.Add(this.label6);
             this.tabPage3.Controls.Add(this.cbMoviesInAWE);
@@ -279,8 +288,6 @@
             this.tabPage3.Controls.Add(this.label12);
             this.tabPage3.Controls.Add(this.label13);
             this.tabPage3.Controls.Add(this.FrameAdvSkipLagCheckbox);
-            this.tabPage3.Controls.Add(this.label9);
-            this.tabPage3.Controls.Add(this.label10);
             this.tabPage3.Controls.Add(this.BackupSRamCheckbox);
             this.tabPage3.Controls.Add(this.label4);
             this.tabPage3.Controls.Add(this.LogWindowAsConsoleCheckbox);
@@ -290,6 +297,126 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Advanced";
             this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.AutosaveSRAMtextBox);
+            this.groupBox2.Controls.Add(this.AutosaveSRAMradioButton1);
+            this.groupBox2.Controls.Add(this.label8);
+            this.groupBox2.Controls.Add(this.AutosaveSRAMradioButton2);
+            this.groupBox2.Controls.Add(this.AutosaveSRAMradioButton3);
+            this.groupBox2.Location = new System.Drawing.Point(27, 74);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(0);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(244, 38);
+            this.groupBox2.TabIndex = 27;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Autosave SaveRAM to .autosave.SaveRAM";
+            // 
+            // AutosaveSRAMtextBox
+            // 
+            this.AutosaveSRAMtextBox.Location = new System.Drawing.Point(106, 14);
+            this.AutosaveSRAMtextBox.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.AutosaveSRAMtextBox.Name = "AutosaveSRAMtextBox";
+            this.AutosaveSRAMtextBox.Size = new System.Drawing.Size(50, 20);
+            this.AutosaveSRAMtextBox.TabIndex = 27;
+            // 
+            // AutosaveSRAMradioButton1
+            // 
+            this.AutosaveSRAMradioButton1.AutoSize = true;
+            this.AutosaveSRAMradioButton1.Location = new System.Drawing.Point(6, 14);
+            this.AutosaveSRAMradioButton1.Name = "AutosaveSRAMradioButton1";
+            this.AutosaveSRAMradioButton1.Size = new System.Drawing.Size(36, 17);
+            this.AutosaveSRAMradioButton1.TabIndex = 22;
+            this.AutosaveSRAMradioButton1.TabStop = true;
+            this.AutosaveSRAMradioButton1.Text = "5s";
+            this.AutosaveSRAMradioButton1.UseVisualStyleBackColor = true;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(165, 18);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(47, 13);
+            this.label8.TabIndex = 26;
+            this.label8.Text = "seconds";
+            // 
+            // AutosaveSRAMradioButton2
+            // 
+            this.AutosaveSRAMradioButton2.AutoSize = true;
+            this.AutosaveSRAMradioButton2.Location = new System.Drawing.Point(46, 14);
+            this.AutosaveSRAMradioButton2.Name = "AutosaveSRAMradioButton2";
+            this.AutosaveSRAMradioButton2.Size = new System.Drawing.Size(39, 17);
+            this.AutosaveSRAMradioButton2.TabIndex = 23;
+            this.AutosaveSRAMradioButton2.TabStop = true;
+            this.AutosaveSRAMradioButton2.Text = "5m";
+            this.AutosaveSRAMradioButton2.UseVisualStyleBackColor = true;
+            // 
+            // AutosaveSRAMradioButton3
+            // 
+            this.AutosaveSRAMradioButton3.AutoSize = true;
+            this.AutosaveSRAMradioButton3.Location = new System.Drawing.Point(88, 16);
+            this.AutosaveSRAMradioButton3.Name = "AutosaveSRAMradioButton3";
+            this.AutosaveSRAMradioButton3.Size = new System.Drawing.Size(14, 13);
+            this.AutosaveSRAMradioButton3.TabIndex = 24;
+            this.AutosaveSRAMradioButton3.TabStop = true;
+            this.AutosaveSRAMradioButton3.UseVisualStyleBackColor = true;
+            this.AutosaveSRAMradioButton3.CheckedChanged += new System.EventHandler(this.AutosaveSRAMradioButton3_CheckedChanged);
+            // 
+            // AutosaveSRAMCheckbox
+            // 
+            this.AutosaveSRAMCheckbox.AutoSize = true;
+            this.AutosaveSRAMCheckbox.Location = new System.Drawing.Point(6, 77);
+            this.AutosaveSRAMCheckbox.Name = "AutosaveSRAMCheckbox";
+            this.AutosaveSRAMCheckbox.Size = new System.Drawing.Size(15, 14);
+            this.AutosaveSRAMCheckbox.TabIndex = 21;
+            this.AutosaveSRAMCheckbox.UseVisualStyleBackColor = true;
+            this.AutosaveSRAMCheckbox.CheckedChanged += new System.EventHandler(this.AutosaveSRAMCheckbox_CheckedChanged);
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.label7);
+            this.panel1.Controls.Add(this.LuaInterfaceRadio);
+            this.panel1.Controls.Add(this.NLuaRadio);
+            this.panel1.Location = new System.Drawing.Point(6, 312);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(377, 61);
+            this.panel1.TabIndex = 20;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(3, 1);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(50, 13);
+            this.label7.TabIndex = 2;
+            this.label7.Text = "Lua Core";
+            // 
+            // LuaInterfaceRadio
+            // 
+            this.LuaInterfaceRadio.AutoSize = true;
+            this.LuaInterfaceRadio.Location = new System.Drawing.Point(4, 36);
+            this.LuaInterfaceRadio.Name = "LuaInterfaceRadio";
+            this.LuaInterfaceRadio.Size = new System.Drawing.Size(338, 17);
+            this.LuaInterfaceRadio.TabIndex = 1;
+            this.LuaInterfaceRadio.TabStop = true;
+            this.LuaInterfaceRadio.Text = "Lua+LuaInterface - Faster but memory leaks,  use at your own risk!";
+            this.LuaInterfaceRadio.UseVisualStyleBackColor = true;
+            // 
+            // NLuaRadio
+            // 
+            this.NLuaRadio.AutoSize = true;
+            this.NLuaRadio.Location = new System.Drawing.Point(4, 17);
+            this.NLuaRadio.Name = "NLuaRadio";
+            this.NLuaRadio.Size = new System.Drawing.Size(194, 17);
+            this.NLuaRadio.TabIndex = 0;
+            this.NLuaRadio.TabStop = true;
+            this.NLuaRadio.Text = "NLua+KopiLua - Reliable but slower";
+            this.NLuaRadio.UseVisualStyleBackColor = true;
             // 
             // label6
             // 
@@ -370,32 +497,14 @@
             this.FrameAdvSkipLagCheckbox.Text = "Frame advance button skips non-input frames";
             this.FrameAdvSkipLagCheckbox.UseVisualStyleBackColor = true;
             // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(24, 94);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(99, 13);
-            this.label9.TabIndex = 11;
-            this.label9.Text = "before overwriting it";
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(24, 81);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(277, 13);
-            this.label10.TabIndex = 10;
-            this.label10.Text = "When set, the client will make a backup copy of saveram";
-            // 
             // BackupSRamCheckbox
             // 
             this.BackupSRamCheckbox.AutoSize = true;
-            this.BackupSRamCheckbox.Location = new System.Drawing.Point(6, 61);
+            this.BackupSRamCheckbox.Location = new System.Drawing.Point(6, 55);
             this.BackupSRamCheckbox.Name = "BackupSRamCheckbox";
-            this.BackupSRamCheckbox.Size = new System.Drawing.Size(108, 17);
+            this.BackupSRamCheckbox.Size = new System.Drawing.Size(203, 17);
             this.BackupSRamCheckbox.TabIndex = 9;
-            this.BackupSRamCheckbox.Text = "Backup Saveram";
+            this.BackupSRamCheckbox.Text = "Backup SaveRAM to .SaveRAM.bak";
             this.BackupSRamCheckbox.UseVisualStyleBackColor = true;
             // 
             // label4
@@ -416,47 +525,6 @@
             this.LogWindowAsConsoleCheckbox.TabIndex = 1;
             this.LogWindowAsConsoleCheckbox.Text = "Create the log window as a console window";
             this.LogWindowAsConsoleCheckbox.UseVisualStyleBackColor = true;
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.label7);
-            this.panel1.Controls.Add(this.LuaInterfaceRadio);
-            this.panel1.Controls.Add(this.NLuaRadio);
-            this.panel1.Location = new System.Drawing.Point(6, 312);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(377, 61);
-            this.panel1.TabIndex = 20;
-            // 
-            // NLuaRadio
-            // 
-            this.NLuaRadio.AutoSize = true;
-            this.NLuaRadio.Location = new System.Drawing.Point(4, 17);
-            this.NLuaRadio.Name = "NLuaRadio";
-            this.NLuaRadio.Size = new System.Drawing.Size(194, 17);
-            this.NLuaRadio.TabIndex = 0;
-            this.NLuaRadio.TabStop = true;
-            this.NLuaRadio.Text = "NLua+KopiLua - Reliable but slower";
-            this.NLuaRadio.UseVisualStyleBackColor = true;
-            // 
-            // LuaInterfaceRadio
-            // 
-            this.LuaInterfaceRadio.AutoSize = true;
-            this.LuaInterfaceRadio.Location = new System.Drawing.Point(4, 36);
-            this.LuaInterfaceRadio.Name = "LuaInterfaceRadio";
-            this.LuaInterfaceRadio.Size = new System.Drawing.Size(338, 17);
-            this.LuaInterfaceRadio.TabIndex = 1;
-            this.LuaInterfaceRadio.TabStop = true;
-            this.LuaInterfaceRadio.Text = "Lua+LuaInterface - Faster but memory leaks,  use at your own risk!";
-            this.LuaInterfaceRadio.UseVisualStyleBackColor = true;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(3, 1);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(50, 13);
-            this.label7.TabIndex = 2;
-            this.label7.Text = "Lua Core";
             // 
             // EmuHawkOptions
             // 
@@ -480,6 +548,9 @@
             this.groupBox1.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.AutosaveSRAMtextBox)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -508,8 +579,6 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.ToolTip toolTip1;
 		private System.Windows.Forms.CheckBox BackupSRamCheckbox;
-		private System.Windows.Forms.Label label9;
-		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.CheckBox FrameAdvSkipLagCheckbox;
 		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.Label label13;
@@ -525,5 +594,12 @@
 		private System.Windows.Forms.Label label7;
 		private System.Windows.Forms.RadioButton LuaInterfaceRadio;
 		private System.Windows.Forms.RadioButton NLuaRadio;
+		private System.Windows.Forms.CheckBox AutosaveSRAMCheckbox;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.RadioButton AutosaveSRAMradioButton3;
+		private System.Windows.Forms.RadioButton AutosaveSRAMradioButton2;
+		private System.Windows.Forms.RadioButton AutosaveSRAMradioButton1;
+		private System.Windows.Forms.GroupBox groupBox2;
+		private System.Windows.Forms.NumericUpDown AutosaveSRAMtextBox;
 	}
 }

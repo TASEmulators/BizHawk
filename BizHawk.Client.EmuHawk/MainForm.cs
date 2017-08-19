@@ -2912,7 +2912,7 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.MovieSession.HandleMovieOnFrameLoop();
 
-				if (Global.Config.FlushSaveRamFrames > 0)
+				if (Global.Config.AutosaveSaveRAM && Global.Config.FlushSaveRamFrames > 0)
 				{
 					_flushSaveRamIn -= 1;
 					if (_flushSaveRamIn <= 0)
