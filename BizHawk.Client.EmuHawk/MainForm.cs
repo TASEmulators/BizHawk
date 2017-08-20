@@ -1569,6 +1569,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try // zero says: this is sort of sketchy... but this is no time for rearchitecting
 				{
+					if (Global.Config.AutosaveSaveRAM)
+					{
+						var saveram = new FileInfo(PathManager.SaveRamPath(Global.Game));
+						var autosave = new FileInfo(PathManager.AutoSaveRamPath(Global.Game));
+						if (autosave.Exists && autosave.LastWriteTime > saveram.LastWriteTime)
+						{
+							GlobalWin.OSD.AddMessage("AutoSaveRAM is newer than last saved SaveRAM");
+						}
+					}
+
 					byte[] sram;
 
 					// GBA meteor core might not know how big the saveram ought to be, so just send it the whole file
@@ -1605,17 +1615,21 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.OSD.AddMessage("An error occurred while loading Sram");
 				}
 			}
-		}
+		}		
 
 		public void FlushSaveRAM(bool autosave = false)
 		{
 			if (Emulator.HasSaveRam())
 			{
-				var path = PathManager.SaveRamPath(Global.Game);
+				string path;
 				if (autosave)
 				{
+					path = PathManager.AutoSaveRamPath(Global.Game);
 					_flushSaveRamIn = Global.Config.FlushSaveRamFrames;
-					path = path.Insert(path.Length - 8, ".autosave"); //becomes path\name.autosave.SaveRAM
+				}
+				else
+				{
+					path = PathManager.SaveRamPath(Global.Game);
 				}
 				var file = new FileInfo(path);
 				var newPath = path + ".new";
@@ -3644,9 +3658,16 @@ namespace BizHawk.Client.EmuHawk
 					JumpLists.AddRecentItem(loaderName, ioa.DisplayName);
 
 					// Don't load Save Ram if a movie is being loaded
-					if (!Global.MovieSession.MovieIsQueued && File.Exists(PathManager.SaveRamPath(loader.Game)))
+					if (!Global.MovieSession.MovieIsQueued)
 					{
-						LoadSaveRam();
+						if (File.Exists(PathManager.SaveRamPath(loader.Game)))
+						{
+							LoadSaveRam();
+						}
+						else if (Global.Config.AutosaveSaveRAM && File.Exists(PathManager.AutoSaveRamPath(loader.Game)))
+						{
+							GlobalWin.OSD.AddMessage("AutoSaveRAM found, but SaveRAM was not saved");
+						}
 					}
 
 					GlobalWin.Tools.Restart();

@@ -71,6 +71,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.LogWindowAsConsoleCheckbox = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -130,7 +132,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(386, 368);
+            this.tabPage1.Size = new System.Drawing.Size(386, 376);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "General";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -300,22 +302,24 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label10);
+            this.groupBox2.Controls.Add(this.label9);
             this.groupBox2.Controls.Add(this.AutosaveSRAMtextBox);
             this.groupBox2.Controls.Add(this.AutosaveSRAMradioButton1);
             this.groupBox2.Controls.Add(this.label8);
             this.groupBox2.Controls.Add(this.AutosaveSRAMradioButton2);
             this.groupBox2.Controls.Add(this.AutosaveSRAMradioButton3);
-            this.groupBox2.Location = new System.Drawing.Point(27, 74);
+            this.groupBox2.Location = new System.Drawing.Point(27, 59);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(0);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(244, 38);
+            this.groupBox2.Size = new System.Drawing.Size(265, 60);
             this.groupBox2.TabIndex = 27;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Autosave SaveRAM to .autosave.SaveRAM";
+            this.groupBox2.Text = "AutoSaveRAM";
             // 
             // AutosaveSRAMtextBox
             // 
-            this.AutosaveSRAMtextBox.Location = new System.Drawing.Point(106, 14);
+            this.AutosaveSRAMtextBox.Location = new System.Drawing.Point(151, 33);
             this.AutosaveSRAMtextBox.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -328,7 +332,7 @@
             // AutosaveSRAMradioButton1
             // 
             this.AutosaveSRAMradioButton1.AutoSize = true;
-            this.AutosaveSRAMradioButton1.Location = new System.Drawing.Point(6, 14);
+            this.AutosaveSRAMradioButton1.Location = new System.Drawing.Point(48, 33);
             this.AutosaveSRAMradioButton1.Name = "AutosaveSRAMradioButton1";
             this.AutosaveSRAMradioButton1.Size = new System.Drawing.Size(36, 17);
             this.AutosaveSRAMradioButton1.TabIndex = 22;
@@ -339,16 +343,16 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(165, 18);
+            this.label8.Location = new System.Drawing.Point(202, 35);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(47, 13);
+            this.label8.Size = new System.Drawing.Size(12, 13);
             this.label8.TabIndex = 26;
-            this.label8.Text = "seconds";
+            this.label8.Text = "s";
             // 
             // AutosaveSRAMradioButton2
             // 
             this.AutosaveSRAMradioButton2.AutoSize = true;
-            this.AutosaveSRAMradioButton2.Location = new System.Drawing.Point(46, 14);
+            this.AutosaveSRAMradioButton2.Location = new System.Drawing.Point(90, 34);
             this.AutosaveSRAMradioButton2.Name = "AutosaveSRAMradioButton2";
             this.AutosaveSRAMradioButton2.Size = new System.Drawing.Size(39, 17);
             this.AutosaveSRAMradioButton2.TabIndex = 23;
@@ -359,7 +363,7 @@
             // AutosaveSRAMradioButton3
             // 
             this.AutosaveSRAMradioButton3.AutoSize = true;
-            this.AutosaveSRAMradioButton3.Location = new System.Drawing.Point(88, 16);
+            this.AutosaveSRAMradioButton3.Location = new System.Drawing.Point(131, 35);
             this.AutosaveSRAMradioButton3.Name = "AutosaveSRAMradioButton3";
             this.AutosaveSRAMradioButton3.Size = new System.Drawing.Size(14, 13);
             this.AutosaveSRAMradioButton3.TabIndex = 24;
@@ -370,7 +374,7 @@
             // AutosaveSRAMCheckbox
             // 
             this.AutosaveSRAMCheckbox.AutoSize = true;
-            this.AutosaveSRAMCheckbox.Location = new System.Drawing.Point(6, 77);
+            this.AutosaveSRAMCheckbox.Location = new System.Drawing.Point(6, 62);
             this.AutosaveSRAMCheckbox.Name = "AutosaveSRAMCheckbox";
             this.AutosaveSRAMCheckbox.Size = new System.Drawing.Size(15, 14);
             this.AutosaveSRAMCheckbox.TabIndex = 21;
@@ -462,7 +466,7 @@
             // LuaDuringTurboCheckbox
             // 
             this.LuaDuringTurboCheckbox.AutoSize = true;
-            this.LuaDuringTurboCheckbox.Location = new System.Drawing.Point(6, 174);
+            this.LuaDuringTurboCheckbox.Location = new System.Drawing.Point(6, 178);
             this.LuaDuringTurboCheckbox.Name = "LuaDuringTurboCheckbox";
             this.LuaDuringTurboCheckbox.Size = new System.Drawing.Size(166, 17);
             this.LuaDuringTurboCheckbox.TabIndex = 15;
@@ -472,7 +476,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(24, 149);
+            this.label12.Location = new System.Drawing.Point(24, 162);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(231, 13);
             this.label12.TabIndex = 14;
@@ -481,7 +485,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(24, 136);
+            this.label13.Location = new System.Drawing.Point(24, 149);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(268, 13);
             this.label13.TabIndex = 13;
@@ -490,7 +494,7 @@
             // FrameAdvSkipLagCheckbox
             // 
             this.FrameAdvSkipLagCheckbox.AutoSize = true;
-            this.FrameAdvSkipLagCheckbox.Location = new System.Drawing.Point(6, 116);
+            this.FrameAdvSkipLagCheckbox.Location = new System.Drawing.Point(6, 129);
             this.FrameAdvSkipLagCheckbox.Name = "FrameAdvSkipLagCheckbox";
             this.FrameAdvSkipLagCheckbox.Size = new System.Drawing.Size(241, 17);
             this.FrameAdvSkipLagCheckbox.TabIndex = 12;
@@ -500,7 +504,7 @@
             // BackupSRamCheckbox
             // 
             this.BackupSRamCheckbox.AutoSize = true;
-            this.BackupSRamCheckbox.Location = new System.Drawing.Point(6, 55);
+            this.BackupSRamCheckbox.Location = new System.Drawing.Point(6, 39);
             this.BackupSRamCheckbox.Name = "BackupSRamCheckbox";
             this.BackupSRamCheckbox.Size = new System.Drawing.Size(203, 17);
             this.BackupSRamCheckbox.TabIndex = 9;
@@ -510,7 +514,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(24, 37);
+            this.label4.Location = new System.Drawing.Point(24, 23);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(234, 13);
             this.label4.TabIndex = 2;
@@ -519,12 +523,30 @@
             // LogWindowAsConsoleCheckbox
             // 
             this.LogWindowAsConsoleCheckbox.AutoSize = true;
-            this.LogWindowAsConsoleCheckbox.Location = new System.Drawing.Point(6, 17);
+            this.LogWindowAsConsoleCheckbox.Location = new System.Drawing.Point(6, 3);
             this.LogWindowAsConsoleCheckbox.Name = "LogWindowAsConsoleCheckbox";
             this.LogWindowAsConsoleCheckbox.Size = new System.Drawing.Size(233, 17);
             this.LogWindowAsConsoleCheckbox.TabIndex = 1;
             this.LogWindowAsConsoleCheckbox.Text = "Create the log window as a console window";
             this.LogWindowAsConsoleCheckbox.UseVisualStyleBackColor = true;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(6, 16);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(225, 13);
+            this.label9.TabIndex = 28;
+            this.label9.Text = "Save SaveRAM to .AutoSaveRAM.SaveRAM";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(9, 34);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(33, 13);
+            this.label10.TabIndex = 29;
+            this.label10.Text = "every";
             // 
             // EmuHawkOptions
             // 
@@ -601,5 +623,7 @@
 		private System.Windows.Forms.RadioButton AutosaveSRAMradioButton1;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.NumericUpDown AutosaveSRAMtextBox;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.Label label9;
 	}
 }
