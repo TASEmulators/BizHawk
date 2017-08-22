@@ -586,6 +586,13 @@ namespace BizHawk.Client.EmuHawk
 			};
 			var filterProgram = UpdateSourceInternal(job);
 
+			//this only happens when we're forcing the client to size itself with autoload and the core says 0x0....
+			//we need some other more sensible client size.
+			if (filterProgram == null)
+			{
+				return new Size(256, 192);
+			}
+
 			var size = filterProgram.Filters[filterProgram.Filters.Count - 1].FindOutput().SurfaceFormat.Size;
 
 			return size;
