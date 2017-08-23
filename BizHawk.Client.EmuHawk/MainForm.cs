@@ -1415,8 +1415,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public PresentationPanel PresentationPanel { get; }
 
-		private int _flushSaveRamIn;
-		public int FlushSaveRamIn { get { return _flushSaveRamIn; } set { _flushSaveRamIn = value; } }
+		//countdown for saveram autoflushing
+		public int AutoFlushSaveRamIn { get; set; }
 		#endregion
 
 		#region Private methods
@@ -1608,7 +1608,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					Emulator.AsSaveRam().StoreSaveRam(sram);
-					_flushSaveRamIn = Global.Config.FlushSaveRamFrames;
+					AutoFlushSaveRamIn = Global.Config.FlushSaveRamFrames;
 				}
 				catch (IOException)
 				{
@@ -1625,7 +1625,7 @@ namespace BizHawk.Client.EmuHawk
 				if (autosave)
 				{
 					path = PathManager.AutoSaveRamPath(Global.Game);
-					_flushSaveRamIn = Global.Config.FlushSaveRamFrames;
+					AutoFlushSaveRamIn = Global.Config.FlushSaveRamFrames;
 				}
 				else
 				{
@@ -2939,7 +2939,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (Global.Config.AutosaveSaveRAM)
 				{
-					if (FlushSaveRamIn-- <= 0)
+					if (AutoFlushSaveRamIn-- <= 0)
 					{
 						FlushSaveRAM(true);
 					}
