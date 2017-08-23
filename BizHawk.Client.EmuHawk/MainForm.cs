@@ -405,7 +405,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				PauseEmulator();
 			}
-
+		
 			// start dumping, if appropriate
 			if (argParse.cmdDumpType != null && argParse.cmdDumpName != null)
 			{
@@ -1415,6 +1415,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public PresentationPanel PresentationPanel { get; }
 
+		private int _flushSaveRamIn;
+		public int FlushSaveRamIn { get { return _flushSaveRamIn; } set { _flushSaveRamIn = value; } }
 		#endregion
 
 		#region Private methods
@@ -1567,6 +1569,16 @@ namespace BizHawk.Client.EmuHawk
 			{
 				try // zero says: this is sort of sketchy... but this is no time for rearchitecting
 				{
+					if (Global.Config.AutosaveSaveRAM)
+					{
+						var saveram = new FileInfo(PathManager.SaveRamPath(Global.Game));
+						var autosave = new FileInfo(PathManager.AutoSaveRamPath(Global.Game));
+						if (autosave.Exists && autosave.LastWriteTime > saveram.LastWriteTime)
+						{
+							GlobalWin.OSD.AddMessage("AutoSaveRAM is newer than last saved SaveRAM");
+						}
+					}
+
 					byte[] sram;
 
 					// GBA meteor core might not know how big the saveram ought to be, so just send it the whole file
@@ -1596,47 +1608,66 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					Emulator.AsSaveRam().StoreSaveRam(sram);
+					_flushSaveRamIn = Global.Config.FlushSaveRamFrames;
 				}
 				catch (IOException)
 				{
 					GlobalWin.OSD.AddMessage("An error occurred while loading Sram");
 				}
 			}
-		}
+		}		
 
-		public void FlushSaveRAM()
+		public void FlushSaveRAM(bool autosave = false)
 		{
 			if (Emulator.HasSaveRam())
 			{
-				var path = PathManager.SaveRamPath(Global.Game);
-				var f = new FileInfo(path);
-				if (f.Directory != null && !f.Directory.Exists)
+				string path;
+				if (autosave)
 				{
-					f.Directory.Create();
+					path = PathManager.AutoSaveRamPath(Global.Game);
+					_flushSaveRamIn = Global.Config.FlushSaveRamFrames;
+				}
+				else
+				{
+					path = PathManager.SaveRamPath(Global.Game);
+				}
+				var file = new FileInfo(path);
+				var newPath = path + ".new";
+				var newFile = new FileInfo(newPath);
+				var backupPath = path + ".bak";
+				var backupFile = new FileInfo(backupPath);
+				if (file.Directory != null && !file.Directory.Exists)
+				{
+					file.Directory.Create();
 				}
 
-				// Make backup first
-				if (Global.Config.BackupSaveram && f.Exists)
-				{
-					var backup = path + ".bak";
-					var backupFile = new FileInfo(backup);
-					if (backupFile.Exists)
-					{
-						backupFile.Delete();
-					}
-
-					f.CopyTo(backup);
-				}
-
-				var writer = new BinaryWriter(new FileStream(path, FileMode.Create, FileAccess.Write));
+				var writer = new BinaryWriter(new FileStream(newPath, FileMode.Create, FileAccess.Write));
 				var saveram = Emulator.AsSaveRam().CloneSaveRam();
 
 				if (saveram != null)
 				{
 					writer.Write(saveram, 0, saveram.Length);
 				}
-
 				writer.Close();
+
+				if (file.Exists)
+				{
+					if (Global.Config.BackupSaveram)
+					{
+						if (backupFile.Exists)
+						{
+							backupFile.Delete();
+						}
+
+						file.MoveTo(backupPath);
+					}
+					else
+					{
+						file.Delete();
+					}
+				}
+
+				newFile.MoveTo(path);
 			}
 		}
 
@@ -2906,6 +2937,13 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.MovieSession.HandleMovieOnFrameLoop();
 
+				if (Global.Config.AutosaveSaveRAM)
+				{
+					if (FlushSaveRamIn-- <= 0)
+					{
+						FlushSaveRAM(true);
+					}
+				}
 				// why not skip audio if the user doesnt want sound
 				bool renderSound = (Global.Config.SoundEnabled && !IsTurboing) || (_currAviWriter?.UsesAudio ?? false);
 				if (!renderSound)
@@ -3620,9 +3658,16 @@ namespace BizHawk.Client.EmuHawk
 					JumpLists.AddRecentItem(loaderName, ioa.DisplayName);
 
 					// Don't load Save Ram if a movie is being loaded
-					if (!Global.MovieSession.MovieIsQueued && File.Exists(PathManager.SaveRamPath(loader.Game)))
+					if (!Global.MovieSession.MovieIsQueued)
 					{
-						LoadSaveRam();
+						if (File.Exists(PathManager.SaveRamPath(loader.Game)))
+						{
+							LoadSaveRam();
+						}
+						else if (Global.Config.AutosaveSaveRAM && File.Exists(PathManager.AutoSaveRamPath(loader.Game)))
+						{
+							GlobalWin.OSD.AddMessage("AutoSaveRAM found, but SaveRAM was not saved");
+						}
 					}
 
 					GlobalWin.Tools.Restart();

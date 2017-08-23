@@ -73,7 +73,7 @@
             this.LoadCurrentSlotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SaveRAMSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.FlushSaveRAMMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.MovieSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.ReadonlyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
@@ -238,8 +238,9 @@
             this.coreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quickNESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nesHawkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator34 = new System.Windows.Forms.ToolStripSeparator();
-            this.NESPPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator34 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator35 = new System.Windows.Forms.ToolStripSeparator();
+			this.NESPPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NESNametableViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NESGameGenieCodesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.musicRipperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -329,7 +330,6 @@
             this.SnesOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ColecoSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.ColecoControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator35 = new System.Windows.Forms.ToolStripSeparator();
             this.ColecoSkipBiosMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.N64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.N64PluginSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -902,26 +902,26 @@
             this.LoadCurrentSlotMenuItem.Size = new System.Drawing.Size(178, 22);
             this.LoadCurrentSlotMenuItem.Text = "Load Current Slot";
             this.LoadCurrentSlotMenuItem.Click += new System.EventHandler(this.LoadCurrentSlotMenuItem_Click);
-            // 
-            // SaveRAMSubMenu
-            // 
-            this.SaveRAMSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FlushSaveRAMMenuItem});
-            this.SaveRAMSubMenu.Name = "SaveRAMSubMenu";
-            this.SaveRAMSubMenu.Size = new System.Drawing.Size(159, 22);
-            this.SaveRAMSubMenu.Text = "Save &RAM";
-            this.SaveRAMSubMenu.DropDownOpened += new System.EventHandler(this.FlushSaveRAMSubMenu_DropDownOpened);
-            // 
-            // FlushSaveRAMMenuItem
-            // 
-            this.FlushSaveRAMMenuItem.Name = "FlushSaveRAMMenuItem";
-            this.FlushSaveRAMMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.FlushSaveRAMMenuItem.Text = "&Flush Save Ram";
-            this.FlushSaveRAMMenuItem.Click += new System.EventHandler(this.FlushSaveRAMMenuItem_Click);
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+
+			// 
+			// SaveRAMSubMenu
+			// 
+			this.SaveRAMSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.FlushSaveRAMMenuItem});
+			this.SaveRAMSubMenu.Name = "SaveRAMSubMenu";
+			this.SaveRAMSubMenu.Size = new System.Drawing.Size(159, 22);
+			this.SaveRAMSubMenu.Text = "Save &RAM";
+			this.SaveRAMSubMenu.DropDownOpened += new System.EventHandler(this.SaveRAMSubMenu_DropDownOpened);
+			// 
+			// FlushSaveRAMMenuItem
+			// 
+			this.FlushSaveRAMMenuItem.Name = "FlushSaveRAMMenuItem";
+			this.FlushSaveRAMMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.FlushSaveRAMMenuItem.Text = "&Flush Save Ram";
+			this.FlushSaveRAMMenuItem.Click += new System.EventHandler(this.FlushSaveRAMMenuItem_Click);
+			// toolStripMenuItem2
+																														   // 
+			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(156, 6);
             // 
             // MovieSubMenu
@@ -4309,6 +4309,7 @@
 		private System.Windows.Forms.ToolStripMenuItem quickNESToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem nesHawkToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator34;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator35;
 		private System.Windows.Forms.ToolStripMenuItem GBACoreSelectionSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GBAmGBAMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GBAVBANextMenuItem;
@@ -4358,7 +4359,6 @@
 		private System.Windows.Forms.ToolStripMenuItem IntvSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem IntVControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SNESControllerConfigurationMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator35;
 		private System.Windows.Forms.ToolStripMenuItem C64DisksSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator36;
 		private System.Windows.Forms.ToolStripMenuItem sNESToolStripMenuItem;

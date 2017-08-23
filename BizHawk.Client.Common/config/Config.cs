@@ -114,6 +114,8 @@ namespace BizHawk.Client.Common
 		public bool ShowLogWindow = false;
 		public bool BackupSavestates = true;
 		public bool BackupSaveram = true;
+		private int _flushSaveRAMFrames = 5 * 60 * 60;
+		private bool _autosaveSaveRAM = false;
 		public bool SaveScreenshotWithStates = true;
 		public int BigScreenshotSize = 128 * 1024;
 		public bool NoLowResLargeScreenshotWithStates = false;
@@ -134,6 +136,8 @@ namespace BizHawk.Client.Common
 		public string Update_IgnoreVersion = "";
 		public bool CDLAutoSave = true, CDLAutoStart = true;
 
+		public int FlushSaveRamFrames { get { return _flushSaveRAMFrames; } set { _flushSaveRAMFrames = value; } }
+		public bool AutosaveSaveRAM { get { return _autosaveSaveRAM; } set { _autosaveSaveRAM = value; } }
 		//check CurrentDomain_AssemblyResolve if you change the defaults or name of this key
 		public bool UseNLua = true; // Whether or not to use a good, reliable, memory-leak-free lua interface that is slower than the original luainterface
 
