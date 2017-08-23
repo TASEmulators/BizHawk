@@ -38,6 +38,21 @@ namespace BizHawk.Emulation.Common
 		bool HasExecutes { get; }
 
 		/// <summary>
+		/// Gets a value indicating whether or not there are currently any read hooks
+		/// </summary>
+		bool HasReadsForScope(string scope);
+
+		/// <summary>
+		/// Gets a value indicating whether or not there are currently any write hooks
+		/// </summary>
+		bool HasWritesForScope(string scope);
+
+		/// <summary>
+		/// Gets a value indicating whether or not there are currently any execute hooks
+		/// </summary>
+		bool HasExecutesForScope(string scope);
+
+		/// <summary>
 		/// Adds a callback for the given type to the given address
 		/// If no address is specified the callback will be hooked to all addresses
 		/// Note: an execute callback can not be added without an address, else an InvalidOperationException will occur

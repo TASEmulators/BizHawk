@@ -115,6 +115,21 @@ namespace BizHawk.Emulation.Common
 
 		public bool HasExecutes => _hasExecutes;
 
+		public bool HasReadsForScope(string scope)
+		{
+			return _reads.Where(e => e.Scope == scope).Any();
+		}
+
+		public bool HasWritesForScope(string scope)
+		{
+			return _writes.Where(e => e.Scope == scope).Any();
+		}
+
+		public bool HasExecutesForScope(string scope)
+		{
+			return _execs.Where(e => e.Scope == scope).Any();
+		}
+
 		private void UpdateHasVariables()
 		{
 			_hasReads = _reads.Count > 0;
