@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			GetControllerState(controller);
 			GetConsoleState(controller);
-
+			
 			maria.RunFrame();
 
 			if (_islag)
@@ -164,9 +164,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			// tick the m6532 timer, which is still active although not recommended to use
 			// also it runs off of the cpu cycle timer
+			// similarly tick the pokey if it is in use
 			if (cpu_cycle== 4)
 			{
 				m6532.Timer.Tick();
+			}
+
+			// the pokey chip ticks at the nominal clock rate (same as maria) 
+			if (is_pokey)
+			{
+				pokey.Tick();
 			}
 
 			if (cpu_cycle <= (2 + (slow_access ? 1 : 0)))
