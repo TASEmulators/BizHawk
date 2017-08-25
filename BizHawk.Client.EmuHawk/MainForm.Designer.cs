@@ -1898,21 +1898,18 @@
             this.Atari7800CoreSubMenu.Name = "Atari7800CoreSubMenu";
             this.Atari7800CoreSubMenu.Size = new System.Drawing.Size(239, 22);
             this.Atari7800CoreSubMenu.Text = "Atari 7800";
-            this.Atari7800CoreSubMenu.DropDownOpened += new System.EventHandler(this.Atari7800CoreSubMenu_DropDownOpened);
             // 
             // Emu7800CoreMenuItem
             // 
             this.Emu7800CoreMenuItem.Name = "Emu7800CoreMenuItem";
             this.Emu7800CoreMenuItem.Size = new System.Drawing.Size(153, 22);
             this.Emu7800CoreMenuItem.Text = "EMU7800";
-            this.Emu7800CoreMenuItem.Click += new System.EventHandler(this.Atari7800CorePick_Click);
             // 
             // Atari7800HawkCoreMenuItem
             // 
             this.Atari7800HawkCoreMenuItem.Name = "Atari7800HawkCoreMenuItem";
             this.Atari7800HawkCoreMenuItem.Size = new System.Drawing.Size(153, 22);
             this.Atari7800HawkCoreMenuItem.Text = "Atari7800Hawk";
-            this.Atari7800HawkCoreMenuItem.Click += new System.EventHandler(this.Atari7800CorePick_Click);
             // 
             // SGBCoreSubmenu
             // 

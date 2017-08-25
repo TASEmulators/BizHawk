@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Atari.A7800Hawk;
-using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Nintendo.NES;
@@ -1235,21 +1234,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.GBA_UsemGBA ^= true;
 			if (Emulator.SystemId == "GBA")
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void Atari7800CoreSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			Emu7800CoreMenuItem.Checked = Global.Config.A78_UseEmu7800;
-			Atari7800HawkCoreMenuItem.Checked = !Global.Config.A78_UseEmu7800;
-		}
-
-		private void Atari7800CorePick_Click(object sender, EventArgs e)
-		{
-			Global.Config.A78_UseEmu7800 ^= true;
-			if (Emulator.SystemId == "A78")
 			{
 				FlagNeedsReboot();
 			}
