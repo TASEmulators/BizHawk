@@ -13,7 +13,6 @@ using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
-using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.Saturn;
