@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					}
 					else
 					{
-						if (Core.cart_RAM == 0 && !Core.pokey)
+						if (Core.cart_RAM == 0 && !Core.is_pokey)
 						{
 							// return bank 6
 							int temp_addr = addr - 0x4000;
@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					bank = (byte)(value & (Core.small_flag ? 0x3 : 0x7));
 				}
-				else if (Core.pokey)
+				else if (Core.is_pokey)
 				{
 
 				}
