@@ -8,12 +8,12 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Libretro;
 using BizHawk.Emulation.Cores.Atari.A7800Hawk;
-using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.Saturn;
@@ -920,7 +920,8 @@ namespace BizHawk.Client.Common
 							case "GBC":
 								if (!Global.Config.GB_AsSGB)
 								{
-									core = CoreInventory.Instance["GB", "Gambatte"];
+									//core = CoreInventory.Instance["GB", "Gambatte"];
+									core = CoreInventory.Instance["GB", "GBHawk"];
 								}
 								else
 								{
@@ -939,17 +940,7 @@ namespace BizHawk.Client.Common
 								break;
 							case "A78":
 								var gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
-								if (game["Pokey"] && game.OptionValue("Pokey") == "true") // A7800Hawk does not emulate Pokey so route it to Emu7800
-								{
-									nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath);
-								}
-								else
-								{
-									nextEmulator = Global.Config.A78_UseEmu7800
-										? nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath)
-										: nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gamedbpath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
-								}
-
+								nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gamedbpath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
 								break;
 							case "C64":
 								var c64 = new C64(nextComm, Enumerable.Repeat(rom.RomData, 1), rom.GameInfo, GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());
