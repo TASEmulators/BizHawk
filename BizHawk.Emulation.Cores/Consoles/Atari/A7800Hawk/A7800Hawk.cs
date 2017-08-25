@@ -227,7 +227,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			pokey.Core = this;
 
 			ser.Register<IVideoProvider>(this);
-			ser.Register<ISoundProvider>(tia);
+			ser.Register<ISoundProvider>(this);
 			ServiceProvider = ser;
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
@@ -262,6 +262,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			cpu_cycle = 0;
 
 			_vidbuffer = new int[VirtualWidth * VirtualHeight];
+
+			_spf = (_frameHz > 55) ? 740 : 880;
 		}
 
 		private void ExecFetch(ushort addr)

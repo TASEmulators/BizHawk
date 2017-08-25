@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	public partial class A7800Hawk : IEmulator, IVideoProvider
+	public partial class A7800Hawk : IEmulator, IVideoProvider, ISoundProvider
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
@@ -351,5 +351,45 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		};
 
 		#endregion
+
+		#region Sound provider
+
+		private int _spf;
+		
+		public bool CanProvideAsync => false;
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode != SyncSoundMode.Sync)
+			{
+				throw new InvalidOperationException("Only Sync mode is supported.");
+			}
+		}
+
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
+		{
+			short[] ret = new short[_spf * 2];
+			nsamp = _spf;
+			tia.GetSamples(ret);
+			// add pokey samples here
+
+
+			samples = ret;
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new NotSupportedException("Async is not available");
+		}
+
+		public void DiscardSamples()
+		{
+			tia.AudioClocks = 0;
+		}
+
+		#endregion
+
 	}
 }

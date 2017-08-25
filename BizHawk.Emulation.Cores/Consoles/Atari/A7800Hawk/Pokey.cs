@@ -46,6 +46,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public void WriteReg(int reg, byte value)
 		{
 			Regs[reg] = value;
+
+
 		}
 
 		public void Tick()

@@ -62,6 +62,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			ser.Sync("A7800_control_register", ref A7800_control_register);
 			ser.Sync("_isPAL", ref _isPAL);
+			ser.Sync("_spf", ref _spf);
 
 			ser.Sync("Maria_regs", ref Maria_regs, false);
 			ser.Sync("RAM", ref RAM, false);
