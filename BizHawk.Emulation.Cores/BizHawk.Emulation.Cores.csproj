@@ -371,7 +371,6 @@
 		<Compile Include="Consoles\Atari\A7800Hawk\Pokey.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\Tia.Audio.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\TIA.cs" />
-    <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\Tia.ISoundProvider.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\Tia.SyncState.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
     <Compile Include="Consoles\Atari\7800\Atari7800.IDebuggable.cs">
