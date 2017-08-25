@@ -1186,7 +1186,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			Atari7800CoreSubMenu.Visible = VersionInfo.DeveloperBuild;
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 			
 			allowGameDBCoreOverridesToolStripMenuItem.Checked = Global.Config.CoreForcingViaGameDB;

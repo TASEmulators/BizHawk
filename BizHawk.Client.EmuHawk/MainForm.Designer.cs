@@ -192,8 +192,6 @@
             this.GbaCoreSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.VbaNextCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MgbaCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Atari7800CoreSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.Emu7800CoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Atari7800HawkCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SGBCoreSubmenu = new System.Windows.Forms.ToolStripMenuItem();
             this.SgbBsnesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -1805,7 +1803,6 @@
             this.NesCoreSubMenu,
             this.CoreSNESSubMenu,
             this.GbaCoreSubMenu,
-            this.Atari7800CoreSubMenu,
             this.SGBCoreSubmenu,
             this.GBInSGBMenuItem,
             this.toolStripMenuItem16,
@@ -1889,21 +1886,6 @@
             this.MgbaCoreMenuItem.Size = new System.Drawing.Size(125, 22);
             this.MgbaCoreMenuItem.Text = "mGBA";
             this.MgbaCoreMenuItem.Click += new System.EventHandler(this.GbaCorePick_Click);
-            // 
-            // Atari7800CoreSubMenu
-            // 
-            this.Atari7800CoreSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.Emu7800CoreMenuItem,
-            this.Atari7800HawkCoreMenuItem});
-            this.Atari7800CoreSubMenu.Name = "Atari7800CoreSubMenu";
-            this.Atari7800CoreSubMenu.Size = new System.Drawing.Size(239, 22);
-            this.Atari7800CoreSubMenu.Text = "Atari 7800";
-            // 
-            // Emu7800CoreMenuItem
-            // 
-            this.Emu7800CoreMenuItem.Name = "Emu7800CoreMenuItem";
-            this.Emu7800CoreMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.Emu7800CoreMenuItem.Text = "EMU7800";
             // 
             // Atari7800HawkCoreMenuItem
             // 
@@ -4370,8 +4352,6 @@
 		private System.Windows.Forms.ToolStripMenuItem GbaCoreSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem VbaNextCoreMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MgbaCoreMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Atari7800CoreSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem Emu7800CoreMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem Atari7800HawkCoreMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SGBCoreSubmenu;
 		private System.Windows.Forms.ToolStripMenuItem SgbBsnesMenuItem;
