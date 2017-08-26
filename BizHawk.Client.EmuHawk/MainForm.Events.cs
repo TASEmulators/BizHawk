@@ -2018,6 +2018,11 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.Tools.LoadGameGenieEc();
 		}
 
+		private void GBPrinterViewerMenuItem_Click(object sender, EventArgs e)
+		{
+			GlobalWin.Tools.Load<GBPrinterView>();
+		}
+
 		#endregion
 
 		#region GBA

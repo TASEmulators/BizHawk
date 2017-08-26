@@ -339,5 +339,13 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 				}
 			}
 		}
+		
+		private PrinterCallback _printerCallback;
+		
+		public void SetPrinterCallback(PrinterCallback callback)
+		{
+			_printerCallback = callback;
+			_core.SetPrinterCallback(callback);
+		}
 	}
 }

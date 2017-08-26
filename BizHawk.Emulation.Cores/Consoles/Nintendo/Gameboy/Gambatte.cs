@@ -497,6 +497,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
+		/// <summary>
+		/// set up Printer callback
+		/// </summary>
+		public void SetPrinterCallback(PrinterCallback callback)
+		{
+			// Copying SetScanlineCallback for this check, I assume this is still a bug somewhere
+			if (GambatteState == IntPtr.Zero)
+			{
+				return; // not sure how this is being reached.  tried the debugger...
+			}
+
+			// TODO: this
+		}
+
 		LibGambatte.ScanlineCallback scanlinecb;
 		ScanlineCallback endofframecallback;
 
