@@ -30,14 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			public long Time;
 			public Buttons Keys;
 		}
-
-		[UnmanagedFunctionPointer(CC)]
-		public delegate void PrinterCallback(IntPtr image,
-										  byte height,
-										  byte top_margin,
-										  byte bottom_margin,
-										  byte exposure);
-
+		
 		[BizImport(CC)]
 		public abstract bool Init(bool cgb, byte[] spc, int spclen);
 

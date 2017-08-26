@@ -306,7 +306,8 @@
             this.LoadGBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator28 = new System.Windows.Forms.ToolStripSeparator();
             this.GBGPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.GBGameGenieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GBPrinterViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GBGameGenieMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GBASubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.GBACoreSelectionSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.GBAmGBAMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2744,7 +2745,8 @@
             this.LoadGBInSGBMenuItem,
             this.toolStripSeparator28,
             this.GBGPUViewerMenuItem,
-            this.GBGameGenieMenuItem});
+            this.GBGameGenieMenuItem,
+			this.GBPrinterViewerMenuItem});
             this.GBSubMenu.Name = "GBSubMenu";
             this.GBSubMenu.Size = new System.Drawing.Size(34, 19);
             this.GBSubMenu.Text = "&GB";
@@ -2782,10 +2784,17 @@
             this.GBGameGenieMenuItem.Size = new System.Drawing.Size(233, 22);
             this.GBGameGenieMenuItem.Text = "&Game Genie Encoder/Decoder";
             this.GBGameGenieMenuItem.Click += new System.EventHandler(this.GBGameGenieMenuItem_Click);
-            // 
-            // GBASubMenu
-            // 
-            this.GBASubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			// 
+			// GBPrinterViewerMenuItem
+			// 
+			this.GBPrinterViewerMenuItem.Name = "GBPrinterViewerMenuItem";
+			this.GBPrinterViewerMenuItem.Size = new System.Drawing.Size(233, 22);
+			this.GBPrinterViewerMenuItem.Text = "&Printer Viewer";
+			this.GBPrinterViewerMenuItem.Click += new System.EventHandler(this.GBPrinterViewerMenuItem_Click);
+			// 
+			// GBASubMenu
+			// 
+			this.GBASubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.GBACoreSelectionSubMenu,
             this.GBAcoresettingsToolStripMenuItem1,
             this.toolStripSeparator33,
@@ -4155,6 +4164,7 @@
 		private System.Windows.Forms.ToolStripMenuItem SaveMovieContextMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem VirtualPadMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GBGPUViewerMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem GBPrinterViewerMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AudioThrottleMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator27;
 		private System.Windows.Forms.ToolStripMenuItem VsyncEnabledMenuItem;
