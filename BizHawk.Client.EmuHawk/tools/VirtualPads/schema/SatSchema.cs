@@ -264,7 +264,7 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Stick Horizontal",
-						SecondaryNames = new[] { $"P{controller} StickVertical" },
+						SecondaryNames = new[] { $"P{controller} Stick Vertical" },
 						MinValue = 0,
 						MidValue = 127,
 						MaxValue = 255,
@@ -575,7 +575,7 @@ namespace BizHawk.Client.EmuHawk
 					new PadSchema.ButtonSchema
 					{
 						Name = $"P{controller} Right Stick Horizontal",
-						SecondaryNames = new[] { $"P{controller} Right StickVertical" },
+						SecondaryNames = new[] { $"P{controller} Right Stick Vertical" },
 						MinValue = 0,
 						MidValue = 127,
 						MaxValue = 255,

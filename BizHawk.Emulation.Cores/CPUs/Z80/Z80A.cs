@@ -8,6 +8,8 @@ using BizHawk.Emulation.Common;
 // This Z80 emulator is a modified version of Ben Ryves 'Brazil' emulator.
 // It is MIT licensed.
 
+// for WZ register details, see: http://www.grimware.org/lib/exe/fetch.php/documentations/devices/z80/z80.memptr.eng.txt
+
 namespace BizHawk.Emulation.Cores.Components.Z80
 {
 	public sealed partial class Z80A
@@ -113,6 +115,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 			ser.Sync("BC", ref RegBC.Word);
 			ser.Sync("DE", ref RegDE.Word);
 			ser.Sync("HL", ref RegHL.Word);
+			ser.Sync("WZ", ref RegWZ.Word);
 			ser.Sync("ShadowAF", ref RegAltAF.Word);
 			ser.Sync("ShadowBC", ref RegAltBC.Word);
 			ser.Sync("ShadowDE", ref RegAltDE.Word);

@@ -73,7 +73,7 @@
             this.LoadCurrentSlotMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SaveRAMSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.FlushSaveRAMMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
             this.MovieSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.ReadonlyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator15 = new System.Windows.Forms.ToolStripSeparator();
@@ -192,8 +192,6 @@
             this.GbaCoreSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.VbaNextCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MgbaCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Atari7800CoreSubMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.Emu7800CoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Atari7800HawkCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SGBCoreSubmenu = new System.Windows.Forms.ToolStripMenuItem();
             this.SgbBsnesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -238,8 +236,9 @@
             this.coreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.quickNESToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.nesHawkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator34 = new System.Windows.Forms.ToolStripSeparator();
-            this.NESPPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator34 = new System.Windows.Forms.ToolStripSeparator();
+			this.toolStripSeparator35 = new System.Windows.Forms.ToolStripSeparator();
+			this.NESPPUViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NESNametableViewerMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NESGameGenieCodesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.musicRipperToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -301,7 +300,8 @@
             this.AtariSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.A7800SubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.A7800ControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.GBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.A7800FilterSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GBSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.GBcoreSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LoadGBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator28 = new System.Windows.Forms.ToolStripSeparator();
@@ -328,7 +328,6 @@
             this.SnesOptionsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ColecoSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.ColecoControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator35 = new System.Windows.Forms.ToolStripSeparator();
             this.ColecoSkipBiosMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.N64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.N64PluginSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -901,26 +900,26 @@
             this.LoadCurrentSlotMenuItem.Size = new System.Drawing.Size(178, 22);
             this.LoadCurrentSlotMenuItem.Text = "Load Current Slot";
             this.LoadCurrentSlotMenuItem.Click += new System.EventHandler(this.LoadCurrentSlotMenuItem_Click);
-            // 
-            // SaveRAMSubMenu
-            // 
-            this.SaveRAMSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FlushSaveRAMMenuItem});
-            this.SaveRAMSubMenu.Name = "SaveRAMSubMenu";
-            this.SaveRAMSubMenu.Size = new System.Drawing.Size(159, 22);
-            this.SaveRAMSubMenu.Text = "Save &RAM";
-            this.SaveRAMSubMenu.DropDownOpened += new System.EventHandler(this.FlushSaveRAMSubMenu_DropDownOpened);
-            // 
-            // FlushSaveRAMMenuItem
-            // 
-            this.FlushSaveRAMMenuItem.Name = "FlushSaveRAMMenuItem";
-            this.FlushSaveRAMMenuItem.Size = new System.Drawing.Size(156, 22);
-            this.FlushSaveRAMMenuItem.Text = "&Flush Save Ram";
-            this.FlushSaveRAMMenuItem.Click += new System.EventHandler(this.FlushSaveRAMMenuItem_Click);
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+
+			// 
+			// SaveRAMSubMenu
+			// 
+			this.SaveRAMSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.FlushSaveRAMMenuItem});
+			this.SaveRAMSubMenu.Name = "SaveRAMSubMenu";
+			this.SaveRAMSubMenu.Size = new System.Drawing.Size(159, 22);
+			this.SaveRAMSubMenu.Text = "Save &RAM";
+			this.SaveRAMSubMenu.DropDownOpened += new System.EventHandler(this.SaveRAMSubMenu_DropDownOpened);
+			// 
+			// FlushSaveRAMMenuItem
+			// 
+			this.FlushSaveRAMMenuItem.Name = "FlushSaveRAMMenuItem";
+			this.FlushSaveRAMMenuItem.Size = new System.Drawing.Size(156, 22);
+			this.FlushSaveRAMMenuItem.Text = "&Flush Save Ram";
+			this.FlushSaveRAMMenuItem.Click += new System.EventHandler(this.FlushSaveRAMMenuItem_Click);
+			// toolStripMenuItem2
+																														   // 
+			this.toolStripMenuItem2.Name = "toolStripMenuItem2";
             this.toolStripMenuItem2.Size = new System.Drawing.Size(156, 6);
             // 
             // MovieSubMenu
@@ -1804,7 +1803,6 @@
             this.NesCoreSubMenu,
             this.CoreSNESSubMenu,
             this.GbaCoreSubMenu,
-            this.Atari7800CoreSubMenu,
             this.SGBCoreSubmenu,
             this.GBInSGBMenuItem,
             this.toolStripMenuItem16,
@@ -1889,29 +1887,11 @@
             this.MgbaCoreMenuItem.Text = "mGBA";
             this.MgbaCoreMenuItem.Click += new System.EventHandler(this.GbaCorePick_Click);
             // 
-            // Atari7800CoreSubMenu
-            // 
-            this.Atari7800CoreSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.Emu7800CoreMenuItem,
-            this.Atari7800HawkCoreMenuItem});
-            this.Atari7800CoreSubMenu.Name = "Atari7800CoreSubMenu";
-            this.Atari7800CoreSubMenu.Size = new System.Drawing.Size(239, 22);
-            this.Atari7800CoreSubMenu.Text = "Atari 7800";
-            this.Atari7800CoreSubMenu.DropDownOpened += new System.EventHandler(this.Atari7800CoreSubMenu_DropDownOpened);
-            // 
-            // Emu7800CoreMenuItem
-            // 
-            this.Emu7800CoreMenuItem.Name = "Emu7800CoreMenuItem";
-            this.Emu7800CoreMenuItem.Size = new System.Drawing.Size(153, 22);
-            this.Emu7800CoreMenuItem.Text = "EMU7800";
-            this.Emu7800CoreMenuItem.Click += new System.EventHandler(this.Atari7800CorePick_Click);
-            // 
             // Atari7800HawkCoreMenuItem
             // 
             this.Atari7800HawkCoreMenuItem.Name = "Atari7800HawkCoreMenuItem";
             this.Atari7800HawkCoreMenuItem.Size = new System.Drawing.Size(153, 22);
             this.Atari7800HawkCoreMenuItem.Text = "Atari7800Hawk";
-            this.Atari7800HawkCoreMenuItem.Click += new System.EventHandler(this.Atari7800CorePick_Click);
             // 
             // SGBCoreSubmenu
             // 
@@ -2736,7 +2716,8 @@
             // A7800SubMenu
             // 
             this.A7800SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.A7800ControllerSettingsMenuItem});
+            this.A7800ControllerSettingsMenuItem,
+			this.A7800FilterSettingsMenuItem});
             this.A7800SubMenu.Name = "A7800SubMenu";
             this.A7800SubMenu.Size = new System.Drawing.Size(51, 19);
             this.A7800SubMenu.Text = "&A7800";
@@ -2746,12 +2727,19 @@
             // 
             this.A7800ControllerSettingsMenuItem.Name = "A7800ControllerSettingsMenuItem";
             this.A7800ControllerSettingsMenuItem.Size = new System.Drawing.Size(125, 22);
-            this.A7800ControllerSettingsMenuItem.Text = "Settings...";
-            this.A7800ControllerSettingsMenuItem.Click += new System.EventHandler(this.A7800SettingsToolStripMenuItem_Click);
-            // 
-            // GBSubMenu
-            // 
-            this.GBSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.A7800ControllerSettingsMenuItem.Text = "Controller Settings";
+            this.A7800ControllerSettingsMenuItem.Click += new System.EventHandler(this.A7800ControllerSettingsToolStripMenuItem_Click);
+			// 
+			// A7800FilterSettingsMenuItem
+			// 
+			this.A7800FilterSettingsMenuItem.Name = "A7800FilterSettingsMenuItem";
+			this.A7800FilterSettingsMenuItem.Size = new System.Drawing.Size(125, 22);
+			this.A7800FilterSettingsMenuItem.Text = "Filter Settings";
+			this.A7800FilterSettingsMenuItem.Click += new System.EventHandler(this.A7800FilterSettingsToolStripMenuItem_Click);
+			// 
+			// GBSubMenu
+			// 
+			this.GBSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.GBcoreSettingsToolStripMenuItem,
             this.LoadGBInSGBMenuItem,
             this.toolStripSeparator28,
@@ -4208,6 +4196,7 @@
 		private System.Windows.Forms.ToolStripMenuItem GenesisSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem AtariSettingsToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem A7800ControllerSettingsMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem A7800FilterSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MovieSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem CoresSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GBInSGBMenuItem;
@@ -4299,6 +4288,7 @@
 		private System.Windows.Forms.ToolStripMenuItem quickNESToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem nesHawkToolStripMenuItem;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator34;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator35;
 		private System.Windows.Forms.ToolStripMenuItem GBACoreSelectionSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem GBAmGBAMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem GBAVBANextMenuItem;
@@ -4348,7 +4338,6 @@
 		private System.Windows.Forms.ToolStripMenuItem IntvSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem IntVControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SNESControllerConfigurationMenuItem;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator35;
 		private System.Windows.Forms.ToolStripMenuItem C64DisksSubMenu;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator36;
 		private System.Windows.Forms.ToolStripMenuItem sNESToolStripMenuItem;
@@ -4363,8 +4352,6 @@
 		private System.Windows.Forms.ToolStripMenuItem GbaCoreSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem VbaNextCoreMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem MgbaCoreMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem Atari7800CoreSubMenu;
-		private System.Windows.Forms.ToolStripMenuItem Emu7800CoreMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem Atari7800HawkCoreMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SGBCoreSubmenu;
 		private System.Windows.Forms.ToolStripMenuItem SgbBsnesMenuItem;

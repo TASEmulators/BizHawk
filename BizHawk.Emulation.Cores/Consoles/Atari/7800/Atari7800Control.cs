@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				"BW", // should be "Color"??
 				"Left Difficulty", // better not put P# on these as they might not correspond to player numbers
 				"Right Difficulty",
+				"Pause",
 
 				// ports
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Trigger",
@@ -166,9 +167,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari7800
 				// on the console
 				"Reset",
 				"Select",
-				"Pause",
+				"BW", // should be "Color"??
 				"Toggle Left Difficulty", // better not put P# on these as they might not correspond to player numbers
 				"Toggle Right Difficulty",
+				"Pause",
 
 				// ports
 				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Trigger", "P1 Trigger 2",

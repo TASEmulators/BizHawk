@@ -14,10 +14,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		{
 			var s = SaveState();
 			ser.Serialize(writer, s);
-
-			// write extra copy of stuff we don't use
-			writer.WriteLine();
-			writer.WriteLine("Frame {0}", Frame);
 		}
 
 		public void LoadStateText(TextReader reader)

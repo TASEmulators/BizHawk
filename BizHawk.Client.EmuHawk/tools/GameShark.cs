@@ -2808,7 +2808,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				if (strCompare != "00")
 				{
-					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber), int.Parse(strCompare, NumberStyles.HexNumber)));
+					Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber), int.Parse(strCompare, NumberStyles.HexNumber), true, Cheat.CompareType.Equal));
 				}
 				//Global.CheatList.Add(new Cheat(watch, int.Parse(RAMValue, NumberStyles.HexNumber), )
 			}

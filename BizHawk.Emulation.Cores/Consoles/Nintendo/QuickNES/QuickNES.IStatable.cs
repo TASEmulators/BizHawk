@@ -15,8 +15,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			CheckDisposed();
 			var temp = SaveStateBinary();
 			temp.SaveAsHexFast(writer);
-			// write extra copy of stuff we don't use
-			writer.WriteLine("Frame {0}", Frame);
 		}
 
 		public void LoadStateText(System.IO.TextReader reader)

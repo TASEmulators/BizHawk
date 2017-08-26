@@ -803,6 +803,13 @@ namespace NLua
 			{
 				((LuaFunction)o).push(luaState);
 			}
+			//zero 22-jul-2017
+			else if (o is Lua)
+			{
+				var lua = o as Lua;
+				LuaDLL.lua_pushthread(lua.luaState);
+				LuaDLL.lua_xmove(lua.luaState, luaState, 1);
+			}
 			else 
 			{
 				pushObject(luaState,o,"luaNet_metatable");

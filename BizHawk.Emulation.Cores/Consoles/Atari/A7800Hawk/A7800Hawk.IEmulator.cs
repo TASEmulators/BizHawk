@@ -1,10 +1,11 @@
 ﻿using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	public partial class A7800Hawk : IEmulator 
+	public partial class A7800Hawk : IEmulator, IVideoProvider, ISoundProvider
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
@@ -13,7 +14,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		//Maria related variables
 		public int cycle;
 		public int cpu_cycle;
-		public int m6532_cycle;
 		public bool cpu_is_haltable;
 		public bool cpu_is_halted;
 		public bool cpu_halt_pending;
@@ -31,15 +31,29 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool right_toggle;
 		public bool left_was_pressed;
 		public bool right_was_pressed;
+		public bool p1_is_2button;
+		public bool p2_is_2button;
+		public bool p1_is_lightgun;
+		public bool p2_is_lightgun;
+		public float p1_lightgun_x;
+		public float p1_lightgun_y;
+		public float p2_lightgun_x;
+		public float p2_lightgun_y;
+		public int lg_1_counting_down;
+		public int lg_1_counting_down_2;
+		public int lg_2_counting_down;
+		public int lg_2_counting_down_2;
+		public byte lg_1_trigger_hit;
+		public byte lg_2_trigger_hit;
 
 		// there are 4 maria cycles in a CPU cycle (fast access, both NTSC and PAL)
 		// if the 6532 or TIA are accessed (PC goes to one of those addresses) the next access will be slower by 1/2 a CPU cycle
 		// i.e. it will take 6 Maria cycles instead of 4
 		public bool slow_access = false;
+		public int slow_countdown;
 
 		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
-			Console.WriteLine("-----------------------FRAME-----------------------");
 			if (_tracer.Enabled)
 			{
 				cpu.TraceCallback = s => _tracer.Put(s);
@@ -62,19 +76,84 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			GetControllerState(controller);
 			GetConsoleState(controller);
-
+			
 			maria.RunFrame();
 
 			if (_islag)
 			{
 				_lagcount++;
 			}
-
 		}
 
 		public void RunCPUCycle()
 		{
-			cpu_cycle++;
+			if (slow_countdown==0)
+			{
+				cpu_cycle++;
+			}
+			else
+			{
+				slow_countdown--;
+			}
+
+			if (p1_is_lightgun)
+			{
+				if (lg_1_counting_down > 0)
+				{
+					lg_1_counting_down--;
+					if (lg_1_counting_down == 0 && lg_1_counting_down_2 > 0)
+					{
+						lg_1_trigger_hit = 0;
+						lg_1_counting_down = 454;
+						lg_1_counting_down_2--;
+					}
+
+					if (lg_1_counting_down < 424)
+					{
+						lg_1_trigger_hit = 0x80;
+					}
+				}
+
+				if ((maria.scanline - 20) == (p1_lightgun_y - 4))
+				{
+					if (maria.cycle == (132 + p1_lightgun_x))
+					{ 
+						// return true 64 cycles into the future
+						lg_1_counting_down = 64;
+						lg_1_counting_down_2 = 9;
+					}			
+				}
+			}
+
+			if (p2_is_lightgun)
+			{
+				if (lg_2_counting_down > 0)
+				{
+					lg_2_counting_down--;
+					if (lg_2_counting_down == 0 && lg_2_counting_down_2 > 0)
+					{
+						lg_2_trigger_hit = 0;
+						lg_2_counting_down = 454;
+						lg_2_counting_down_2--;
+					}
+
+					if (lg_2_counting_down < 424)
+					{
+						lg_2_trigger_hit = 0x80;
+					}
+				}
+
+				if ((maria.scanline - 20) == (p2_lightgun_y - 4))
+				{
+					if (maria.cycle == (132 + p2_lightgun_x))
+					{
+						// return true 64 cycles into the future
+						lg_2_counting_down = 64;
+						lg_2_counting_down_2 = 9;
+					}					
+				}
+			}
+
 			tia._hsyncCnt++;
 			tia._hsyncCnt %= 454;
 			// do the audio sampling
@@ -84,11 +163,17 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 
 			// tick the m6532 timer, which is still active although not recommended to use
-			m6532_cycle++;
-			if (m6532_cycle== 4)
+			// also it runs off of the cpu cycle timer
+			// similarly tick the pokey if it is in use
+			if (cpu_cycle== 4)
 			{
 				m6532.Timer.Tick();
-				m6532_cycle = 0;
+			}
+
+			// the pokey chip ticks at the nominal clock rate (same as maria) 
+			if (is_pokey)
+			{
+				pokey.Tick();
 			}
 
 			if (cpu_cycle <= (2 + (slow_access ? 1 : 0)))
@@ -107,6 +192,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if (!cpu_is_halted)
 				{
 					cpu.ExecuteOne();
+
+					// we need to stall the next cpu cycle from starting if the current one is a slow access
+					if (slow_access)
+					{
+						slow_access = false;
+						slow_countdown = 2;
+					}
 				}
 				else
 				{
@@ -129,32 +221,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					cpu_is_halted = false;
 				}
 			}
-
-			// determine if the next access will be fast or slow
-			if ((cpu.PC & 0xFCE0) == 0)
-			{
-				// return TIA registers or control register if it is still unlocked
-				if ((A7800_control_register & 0x1) == 0)
-				{
-					slow_access = false;
-				}
-				else
-				{
-					slow_access = true;
-				}
-			}
-			else if ((cpu.PC & 0xFF80) == 0x280)
-			{
-				slow_access = true;
-			}
-			else if ((cpu.PC & 0xFE80) == 0x480)
-			{
-				slow_access = true;
-			}
-			else
-			{
-				slow_access = false;
-			}
 		}
 
 		public void GetControllerState(IController controller)
@@ -167,13 +233,17 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			p2_fire = _controllerDeck.ReadFire2(controller);
 			p1_fire_2x = _controllerDeck.ReadFire1_2x(controller);
 			p2_fire_2x = _controllerDeck.ReadFire2_2x(controller);
+			p1_is_2button = _controllerDeck.Is_2_button1(controller);
+			p2_is_2button = _controllerDeck.Is_2_button2(controller);
+			p1_is_lightgun = _controllerDeck.Is_LightGun1(controller, out p1_lightgun_x, out p1_lightgun_y);
+			p2_is_lightgun = _controllerDeck.Is_LightGun2(controller, out p2_lightgun_x, out p2_lightgun_y);
 		}
 
 		public void GetConsoleState(IController controller)
 		{
 			byte result = 0;
 
-			if (controller.IsPressed("Right Difficulty"))
+			if (controller.IsPressed("Toggle Right Difficulty"))
 			{
 				if (!right_was_pressed)
 				{
@@ -188,7 +258,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				result |= (byte)((right_toggle ? 1 : 0) << 7);
 			}
 
-			if (controller.IsPressed("Left Difficulty"))
+			if (controller.IsPressed("Toggle Left Difficulty"))
 			{
 				if (!left_was_pressed)
 				{
@@ -221,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public int Frame => _frame;
 
-		public string SystemId => "A7800"; 
+		public string SystemId => "A78"; 
 
 		public bool DeterministicEmulation { get; set; }
 
@@ -240,5 +310,86 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			tia = null;
 			m6532 = null;
 		}
+
+
+		#region Video provider
+
+		public int _frameHz = 60;
+		public int _screen_width = 320;
+		public int _screen_height = 263;
+		public int _vblanklines = 20;
+
+		public int[] _vidbuffer;
+
+		public int[] GetVideoBuffer()
+		{
+			if (_syncSettings.Filter != "None")
+			{
+				apply_filter();
+			}
+			return _vidbuffer;
+		}
+
+		public int VirtualWidth => 320;
+		public int VirtualHeight => _screen_height - _vblanklines;
+		public int BufferWidth => 320;
+		public int BufferHeight => _screen_height - _vblanklines;
+		public int BackgroundColor => unchecked((int)0xff000000);
+		public int VsyncNumerator => _frameHz;
+		public int VsyncDenominator => 1;
+
+		public void apply_filter()
+		{
+
+		}
+
+		public static Dictionary<string, string> ValidFilterTypes = new Dictionary<string, string>
+		{
+			{ "None",  "None"},
+			{ "NTSC",  "NTSC"},
+			{ "Pal",  "Pal"}
+		};
+
+		#endregion
+
+		#region Sound provider
+
+		private int _spf;
+		
+		public bool CanProvideAsync => false;
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode != SyncSoundMode.Sync)
+			{
+				throw new InvalidOperationException("Only Sync mode is supported.");
+			}
+		}
+
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
+		{
+			short[] ret = new short[_spf * 2];
+			nsamp = _spf;
+			tia.GetSamples(ret);
+			// add pokey samples here
+
+
+			samples = ret;
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new NotSupportedException("Async is not available");
+		}
+
+		public void DiscardSamples()
+		{
+			tia.AudioClocks = 0;
+		}
+
+		#endregion
+
 	}
 }

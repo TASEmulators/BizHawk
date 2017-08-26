@@ -126,14 +126,12 @@ namespace BizHawk.Emulation.Cores.Waterbox
 
 		private void DeactivateInternal()
 		{
-			Console.WriteLine("Swappable DeactivateInternal {0}", GetHashCode());
 			foreach (var m in _memoryBlocks)
 				m.Deactivate();
 		}
 
 		private void ActivateInternal()
 		{
-			Console.WriteLine("Swappable ActivateInternal {0}", GetHashCode());
 			foreach (var m in _memoryBlocks)
 				m.Activate();
 		}

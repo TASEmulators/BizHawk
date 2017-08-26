@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 using BizHawk.Emulation.Cores.Atari.A7800Hawk;
-using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.ColecoVision;
 using BizHawk.Emulation.Cores.Nintendo.NES;
@@ -226,9 +225,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void FlushSaveRAMSubMenu_DropDownOpened(object sender, EventArgs e)
+		private void SaveRAMSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			FlushSaveRAMMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Flush SRAM"].Bindings;
+			FlushSaveRAMMenuItem.ShortcutKeyDisplayString = Global.Config.HotkeyBindings["Flush SaveRAM"].Bindings;
 		}
 
 		private void MovieSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -1187,7 +1186,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CoresSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			Atari7800CoreSubMenu.Visible = VersionInfo.DeveloperBuild;
 			GBInSGBMenuItem.Checked = Global.Config.GB_AsSGB;
 			
 			allowGameDBCoreOverridesToolStripMenuItem.Checked = Global.Config.CoreForcingViaGameDB;
@@ -1235,21 +1233,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			Global.Config.GBA_UsemGBA ^= true;
 			if (Emulator.SystemId == "GBA")
-			{
-				FlagNeedsReboot();
-			}
-		}
-
-		private void Atari7800CoreSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			Emu7800CoreMenuItem.Checked = Global.Config.A78_UseEmu7800;
-			Atari7800HawkCoreMenuItem.Checked = !Global.Config.A78_UseEmu7800;
-		}
-
-		private void Atari7800CorePick_Click(object sender, EventArgs e)
-		{
-			Global.Config.A78_UseEmu7800 ^= true;
-			if (Emulator.SystemId == "A78")
 			{
 				FlagNeedsReboot();
 			}
@@ -1775,9 +1758,11 @@ namespace BizHawk.Client.EmuHawk
 			SMSEnableFMChipMenuItem.Visible =
 				SMSFix3DGameDisplayToolStripMenuItem.Visible =
 				SMSenableBIOSToolStripMenuItem.Visible =
-				SMSDisplayOverscanMenuItem.Visible =
 				Global.Game.System == "SMS";
 
+			SMSDisplayOverscanMenuItem.Visible =
+				Global.Game.System == "SMS" || Global.Game.System == "SG";
+			
 			SMSOverclockMenuItem.Visible =
 				SMSForceStereoMenuItem.Visible =
 				SMSdisplayToolStripMenuItem.Visible =
@@ -1984,11 +1969,17 @@ namespace BizHawk.Client.EmuHawk
 		private void A7800SubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			A7800ControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
+			A7800FilterSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
 		}
 
-		private void A7800SettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		private void A7800ControllerSettingsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			new A7800ControllerSettings().ShowDialog();
+		}
+
+		private void A7800FilterSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			new A7800FilterSettings().ShowDialog();
 		}
 
 		#endregion

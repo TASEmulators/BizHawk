@@ -1128,7 +1128,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if (!_hmove.LateHBlankReset)
 				{
 					_player0.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
-					if (_hsyncCnt == 67)
+					if (_hsyncCnt == 67 || _hsyncCnt==0)
 					{
 						_player0.HPosCnt = 160 - 3;
 					}
@@ -1136,7 +1136,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				else
 				{
 					_player0.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
-					if (_hsyncCnt == 75)
+					if (_hsyncCnt == 75 || _hsyncCnt == 0)
 					{
 						_player0.HPosCnt = 160 - 3;
 					}
@@ -1148,7 +1148,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if (!_hmove.LateHBlankReset)
 				{
 					_player1.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
-					if (_hsyncCnt == 67)
+					if (_hsyncCnt == 67 || _hsyncCnt == 0)
 					{
 						_player1.HPosCnt = 160 - 3;
 					}
@@ -1156,7 +1156,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				else
 				{
 					_player1.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
-					if (_hsyncCnt == 75)
+					if (_hsyncCnt == 75 || _hsyncCnt == 0)
 					{
 						_player1.HPosCnt = 160 - 3;
 					}
@@ -1167,7 +1167,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if (!_hmove.LateHBlankReset)
 				{
 					_player0.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
-					if (_hsyncCnt == 67)
+					if (_hsyncCnt == 67 || _hsyncCnt == 0)
 					{
 						_player0.Missile.HPosCnt = 160 - 3;
 					}
@@ -1175,7 +1175,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				else
 				{
 					_player0.Missile.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
-					if (_hsyncCnt == 75)
+					if (_hsyncCnt == 75 || _hsyncCnt == 0)
 					{
 						_player0.Missile.HPosCnt = 160 - 3;
 					}
@@ -1186,7 +1186,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if (!_hmove.LateHBlankReset)
 				{
 					_player1.Missile.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
-					if (_hsyncCnt == 67)
+					if (_hsyncCnt == 67 || _hsyncCnt == 0)
 					{
 						_player1.Missile.HPosCnt = 160 - 3;
 					}
@@ -1194,7 +1194,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				else
 				{
 					_player1.Missile.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
-					if (_hsyncCnt == 75)
+					if (_hsyncCnt == 75 || _hsyncCnt == 0)
 					{
 						_player1.Missile.HPosCnt = 160 - 3;
 					}
@@ -1205,7 +1205,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				if (!_hmove.LateHBlankReset)
 				{
 					_ball.HPosCnt = (byte)(_hsyncCnt < 68 ? 160 - 2 : 160 - 4);
-					if (_hsyncCnt == 67)
+					if (_hsyncCnt == 67 || _hsyncCnt == 0)
 					{
 						_ball.HPosCnt = 160 - 3;
 					}
@@ -1213,7 +1213,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				else
 				{
 					_ball.HPosCnt = (byte)(_hsyncCnt < 76 ? 160 - 2 : 160 - 4);
-					if (_hsyncCnt == 75)
+					if (_hsyncCnt == 75 || _hsyncCnt == 0)
 					{
 						_ball.HPosCnt = 160 - 3;
 					}

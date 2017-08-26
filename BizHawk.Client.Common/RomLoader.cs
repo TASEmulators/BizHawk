@@ -8,7 +8,6 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores;
 using BizHawk.Emulation.Cores.Libretro;
 using BizHawk.Emulation.Cores.Atari.A7800Hawk;
-using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Calculators;
 using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
@@ -167,7 +166,7 @@ namespace BizHawk.Client.Common
 
 		private bool HandleArchiveBinding(HawkFile file)
 		{
-			var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA" };
+			var romExtensions = new[] { "SMS", "SMC", "SFC", "PCE", "SGX", "GG", "SG", "BIN", "GEN", "MD", "SMD", "GB", "NES", "FDS", "ROM", "INT", "GBC", "UNF", "A78", "CRT", "COL", "XML", "Z64", "V64", "N64", "WS", "WSC", "GBA", "32X" };
 
 			// try binding normal rom extensions first
 			if (!file.IsBound)
@@ -920,7 +919,8 @@ namespace BizHawk.Client.Common
 							case "GBC":
 								if (!Global.Config.GB_AsSGB)
 								{
-									core = CoreInventory.Instance["GB", "Gambatte"];
+									//core = CoreInventory.Instance["GB", "Gambatte"];
+									core = CoreInventory.Instance["GB", "GBHawk"];
 								}
 								else
 								{
@@ -939,18 +939,7 @@ namespace BizHawk.Client.Common
 								break;
 							case "A78":
 								var gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
-
-								if (!VersionInfo.DeveloperBuild)
-								{
-									nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath); // Don't expose A7800Hawk in releases yet
-								}
-								else
-								{
-									nextEmulator = Global.Config.A78_UseEmu7800
-										? nextEmulator = new Atari7800(nextComm, game, rom.RomData, gamedbpath)
-										: nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gamedbpath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
-								}
-
+								nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gamedbpath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
 								break;
 							case "C64":
 								var c64 = new C64(nextComm, Enumerable.Repeat(rom.RomData, 1), rom.GameInfo, GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());

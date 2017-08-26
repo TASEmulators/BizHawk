@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 
 using NLua;
 using BizHawk.Client.Common;
@@ -246,11 +248,11 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Engaged())
 			{
-				var selection = Tastudio.GetSelection();
+				var selection = Tastudio.GetSelection().ToList();
 
-				foreach (var row in selection)
+				for (int i = 0; i < selection.Count; i++)
 				{
-					table[row] = row;
+					table[i] = selection[i];
 				}
 			}
 
@@ -287,6 +289,75 @@ namespace BizHawk.Client.EmuHawk
 					Log(beginningFrame + " is out of range");
 				}
 			}
+		}
+
+		public class TastudioBranchInfo
+		{
+			public string Id { get; set; }
+			public int Frame { get; set; }
+			public string Text { get; set; }
+		}
+
+		[LuaMethod("getbranches", "Returns a list of the current tastudio branches.  Each entry will have the Id, Frame, and Text properties of the branch")]
+		public LuaTable GetBranches()
+		{
+			var table = Lua.NewTable();
+
+			if (Engaged())
+			{
+				var branches = Tastudio.CurrentTasMovie.Branches.Select(b => new
+				{
+					Id = b.UniqueIdentifier.ToString(),
+					Frame = b.Frame,
+					Text = b.UserText
+				})
+				.ToList();
+
+				for (int i = 0; i < branches.Count; i++)
+				{
+					table[i] = branches[i];
+				}
+			}
+
+			return table;
+		}
+
+
+		[LuaMethod("getbranchinput", "Gets the controller state of the given frame with the given branch identifier")]
+		public LuaTable GetBranchInput(string branchId, int frame)
+		{
+			var table = Lua.NewTable();
+
+			if (Engaged())
+			{
+				if (Tastudio.CurrentTasMovie.Branches.Any(b => b.UniqueIdentifier.ToString() == branchId))
+				{
+					var branch = Tastudio.CurrentTasMovie.Branches.First(b => b.UniqueIdentifier.ToString() == branchId);
+					if (frame < branch.InputLog.Count)
+					{
+						var input = branch.InputLog[frame];
+						
+						var adapter = new Bk2ControllerAdapter
+						{
+							Definition = Global.MovieSession.MovieControllerAdapter.Definition
+						};
+
+						adapter.SetControllersAsMnemonic(input);
+
+						foreach (var button in adapter.Definition.BoolButtons)
+						{
+							table[button] = adapter.IsPressed(button);
+						}
+
+						foreach (var button in adapter.Definition.FloatControls)
+						{
+							table[button] = adapter.GetFloat(button);
+						}
+					}
+				}
+			}
+
+			return table;
 		}
 	}
 }

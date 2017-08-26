@@ -13,8 +13,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		isPorted: false,
 		isReleased: true)]
 	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight))]
-	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
-	ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
+	public partial class A7800Hawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable,
+		IRegionable, IBoardInfo, ISettable<A7800Hawk.A7800Settings, A7800Hawk.A7800SyncSettings>
 	{
 		// this register selects between 2600 and 7800 mode in the A7800
 		// however, we already have a 2600 emulator so this core will only be loading A7800 games
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool small_flag = false;
 		public bool PAL_Kara = false;
 		public int cart_RAM = 0;
-		public bool pokey = false;
+		public bool is_pokey = false;
 
 		private readonly ITraceable _tracer;
 
@@ -49,6 +49,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool _isPAL;
 		public M6532 m6532;
 		public TIA tia;
+		public Pokey pokey;
 
 		public A7800Hawk(CoreComm comm, GameInfo game, byte[] rom, string gameDbFn, object settings, object syncSettings)
 		{
@@ -57,6 +58,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			maria = new Maria();
 			tia = new TIA();
 			m6532 = new M6532();
+			pokey = new Pokey();
 
 			cpu = new MOS6502X
 			{
@@ -76,7 +78,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			_settings = (A7800Settings)settings ?? new A7800Settings();
 			_syncSettings = (A7800SyncSettings)syncSettings ?? new A7800SyncSettings();
-
 			_controllerDeck = new A7800HawkControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
 			byte[] highscoreBios = comm.CoreFileProvider.GetFirmware("A78", "Bios_HSC", false, "Some functions may not work without the high score BIOS.");
@@ -88,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			if (rom.Length % 1024 == 128)
 			{
-				Console.WriteLine("Trimming 128 byte .a78 header...");
+				Console.WriteLine("128 byte header detected");
 				byte[] newrom = new byte[rom.Length - 128];
 				is_header = true;
 				Buffer.BlockCopy(rom, 0, header, 0, 128);
@@ -132,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 				if (dict.ContainsKey("Pokey"))
 				{
-					bool.TryParse(dict["Pokey"], out pokey);
+					bool.TryParse(dict["Pokey"], out is_pokey);
 				}
 
 				// some games will not function with the high score bios
@@ -151,6 +152,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 			else if (is_header)
 			{
+				Console.WriteLine("ROM not in DB, inferring mapper info from header");
+
 				byte cart_1 = header[0x35];
 				byte cart_2 = header[0x36];
 
@@ -171,7 +174,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					s_mapper = "0";
 				}
-
 			}
 			else
 			{
@@ -204,35 +206,39 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// set up palette and frame rate
 			if (_isPAL)
 			{
-				maria._frameHz = 50;
-				maria._screen_width = 320;
-				maria._screen_height = 313;
-				maria._vblanklines = 20;
+				_frameHz = 50;
+				_screen_width = 320;
+				_screen_height = 313;
+				_vblanklines = 20;
 				maria._palette = PALPalette;
 			}
 			else
 			{
-				maria._frameHz = 60;
-				maria._screen_width = 320;
-				maria._screen_height = 263;
-				maria._vblanklines = 20;
+				_frameHz = 60;
+				_screen_width = 320;
+				_screen_height = 263;
+				_vblanklines = 20;
 				maria._palette = NTSCPalette;
 			}
 
 			maria.Core = this;
 			m6532.Core = this;
 			tia.Core = this;
+			pokey.Core = this;
 
-			ser.Register<IVideoProvider>(maria);
-			ser.Register<ISoundProvider>(tia);
+			ser.Register<IVideoProvider>(this);
+			ser.Register<ISoundProvider>(this);
 			ServiceProvider = ser;
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);
 
 			SetupMemoryDomains();
+			ser.Register<IDisassemblable>(cpu);
 			HardReset();
 		}
+
+		public string BoardName => mapper.GetType().Name.Replace("Mapper", "");
 
 		public DisplayType Region => _isPAL ? DisplayType.PAL : DisplayType.NTSC;
 
@@ -248,11 +254,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			maria.Reset();
 			m6532.Reset();
+			pokey.Reset();
 			
 			Maria_regs = new byte[0x20];
 			RAM = new byte[0x1000];
 
 			cpu_cycle = 0;
+
+			_vidbuffer = new int[VirtualWidth * VirtualHeight];
+
+			_spf = (_frameHz > 55) ? 740 : 880;
 		}
 
 		private void ExecFetch(ushort addr)
@@ -281,6 +292,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (m == "4")
 			{
 				mapper = new MapperRampage();
+			}
+			if (m == "5")
+			{
+				mapper = new MapperFractalus();
+			}
+			if (m == "6")
+			{
+				mapper = new MapperFractalus();
 			}
 
 			mapper.Core = this;

@@ -507,7 +507,10 @@ namespace BizHawk.Emulation.Cores.Waterbox
 			{
 				long ret = 0;
 				for (int i = 0; i < iovcnt; i++)
-					ret += Write(fd, iov[i].Base, iov[i].Length);
+				{
+					if (iov[i].Base != IntPtr.Zero)
+						ret += Write(fd, iov[i].Base, iov[i].Length);
+				}
 				return ret;
 			}
 

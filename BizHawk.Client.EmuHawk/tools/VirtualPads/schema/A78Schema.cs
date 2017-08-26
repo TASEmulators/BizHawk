@@ -2,7 +2,9 @@
 using System.Drawing;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Atari.Atari7800;
+
+using BizHawk.Common.ReflectionExtensions;
+using BizHawk.Emulation.Cores.Atari.A7800Hawk;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -11,33 +13,42 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
 		{
-			switch (((Atari7800)core).ControlAdapter.ControlType.Name)
+			return Atari7800HawkSchema.GetPadSchemas((A7800Hawk)core);
+		}
+	}
+
+	internal static class Atari7800HawkSchema
+	{
+		private static string UnpluggedControllerName => typeof(UnpluggedController).DisplayName();
+		private static string StandardControllerName => typeof(StandardController).DisplayName();
+		private static string ProLineControllerName => typeof(ProLineController).DisplayName();
+
+		public static IEnumerable<PadSchema> GetPadSchemas(A7800Hawk core)
+		{
+			var A78SyncSettings = core.GetSyncSettings().Clone();
+			var port1 = A78SyncSettings.Port1;
+			var port2 = A78SyncSettings.Port2;
+
+			if (port1 == StandardControllerName)
 			{
-				case "Atari 7800 Joystick Controller":
-					yield return JoystickController(1);
-					yield return JoystickController(2);
-					break;
-				case "Atari 7800 Paddle Controller":
-					yield return PaddleController(1);
-					yield return PaddleController(2);
-					break;
-				case "Atari 7800 Keypad Controller":
-					break;
-				case "Atari 7800 Driving Controller":
-					break;
-				case "Atari 7800 Booster Grip Controller":
-					break;
-				case "Atari 7800 ProLine Joystick Controller":
-					yield return ProLineController(1);
-					yield return ProLineController(2);
-					break;
-				case "Atari 7800 Light Gun Controller":
-					yield return LightGunController(1);
-					yield return LightGunController(2);
-					break;
+				yield return JoystickController(1);
 			}
 
-			yield return ConsoleButtons();
+			if (port2 == StandardControllerName)
+			{
+				yield return JoystickController(2);
+			}
+
+			if (port1 == ProLineControllerName)
+			{
+				yield return ProLineController(1);
+			}
+
+			if (port2 == ProLineControllerName)
+			{
+				yield return ProLineController(2);
+			}
+
 		}
 
 		private static PadSchema ProLineController(int controller)
@@ -246,6 +257,13 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = "Pause",
 						DisplayName = "Pause",
+						Location = new Point(158, 15),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "BW",
+						DisplayName = "BW",
 						Location = new Point(158, 15),
 						Type = PadSchema.PadInputType.Boolean
 					}

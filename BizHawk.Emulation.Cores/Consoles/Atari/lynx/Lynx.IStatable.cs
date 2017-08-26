@@ -22,10 +22,6 @@ namespace BizHawk.Emulation.Cores.Atari.Lynx
 
 			_ser.Serialize(writer, s);
 
-			// write extra copy of stuff we don't use
-			writer.WriteLine();
-			writer.WriteLine("Frame {0}", Frame);
-
 			////Console.WriteLine(BizHawk.Common.BufferExtensions.BufferExtensions.HashSHA1(SaveStateBinary()));
 		}
 

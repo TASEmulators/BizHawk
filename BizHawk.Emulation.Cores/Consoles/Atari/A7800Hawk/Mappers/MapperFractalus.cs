@@ -4,10 +4,11 @@ using System;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	// Default mapper with no bank switching
-	// Just need to keep track of high score bios stuff
-	public class MapperDefault : MapperBase
+	// Rescue on Fractulus has unique RAM mapping
+	public class MapperFractalus : MapperBase
 	{
+		public byte[] RAM = new byte[0x800];
+
 		public override byte ReadMemory(ushort addr)
 		{
 			if (addr >=0x1000 && addr < 0x1800)
@@ -31,10 +32,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					return Core.RAM[0x800 + addr & 0x7FF];
 				}
 			}
-			else if (addr < 0x8000 && Core.is_pokey)
-			{
-				return Core.pokey.ReadReg(addr & 0xF);
-			}
 			else
 			{
 				// cartridge and other OPSYS
@@ -45,6 +42,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				else if (addr >= (0x10000-Core._bios.Length) && !Core.A7800_control_register.Bit(2))
 				{
 					return Core._bios[addr - (0x10000 - Core._bios.Length)];		
+				}
+				else if (addr >= 0x4000 && addr <0x5000)
+				{
+					int temp_ret_1 = ((addr >> 8) & 0xE) >> 1;
+					int temp_ret_2 = addr & 0xFF;
+
+					return RAM[(temp_ret_1 << 8) + temp_ret_2];
 				}
 				else
 				{
@@ -79,19 +83,26 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					Core.RAM[0x800 + addr & 0x7FF] = value;
 				}
 			}
-			else if (addr < 0x8000 && Core.is_pokey)
-			{
-				Core.pokey.WriteReg(addr & 0xF, value);
-			}
 			else
-			{ 
-				// cartridge and other OPSYS
+			{
+				if (addr >= 0x4000 && addr < 0x5000)
+				{
+					int temp_ret_1 = ((addr >> 8) & 0xE) >> 1;
+					int temp_ret_2 = addr & 0xFF;
+
+					RAM[(temp_ret_1 << 8) + temp_ret_2] = value;
+				}
 			}
 		}
 
 		public override void PokeMemory(ushort addr, byte value)
 		{
 			WriteMemory(addr, value);
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			ser.Sync("RAM", ref RAM, false);
 		}
 	}
 }

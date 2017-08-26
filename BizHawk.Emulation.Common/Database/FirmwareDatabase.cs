@@ -138,6 +138,7 @@ namespace BizHawk.Emulation.Common
 			// https://en.wikipedia.org/wiki/PlayStation_models#Comparison_of_models [w]
 			// https://github.com/petrockblog/RetroPie-Setup/wiki/PCSX-Core-Playstation-1 [g] 
 			// http://redump.org/datfile/psx-bios/ also
+			// http://emulation.gametechwiki.com/index.php/File_Hashes [t]
 			var ps_10j = File("343883A7B555646DA8CEE54AADD2795B6E7DD070", 524288, "ps-10j.bin", "PSX BIOS (Version 1.0 J)", "Used on SCPH-1000, DTL-H1000 [g]. This is Rev for A hardware [w].");
 			var ps_11j = File("B06F4A861F74270BE819AA2A07DB8D0563A7CC4E", 524288, "ps-11j.bin", "PSX BIOS (Version 1.1 01/22/95)", "Used on SCPH-3000, DTL-H1000H [g]. This is for Rev B hardware [w].");
 			var ps_20a = File("649895EFD79D14790EABB362E94EB0622093DFB9", 524288, "ps-20a.bin", "PSX BIOS (Version 2.0 05/07/95 A)", "Used on DTL-H1001 [g]. This is for Rev B hardware [w].");
@@ -151,6 +152,7 @@ namespace BizHawk.Emulation.Common
 			var ps_22a = File("10155D8D6E6E832D6EA66DB9BC098321FB5E8EBF", 524288, "ps-22a.bin", "PSX BIOS (Version 2.2 12/04/95 A)", "Used on SCPH-1001, DTL-H1201, DTL-H3001 [g]. This is for Rev C hardware [w].");
 			var ps_22e = File("B6A11579CAEF3875504FCF3831B8E3922746DF2C", 524288, "ps-22e.bin", "PSX BIOS (Version 2.2 12/04/95 E)", "Used on SCPH-1002, DTL-H1202, DTL-H3002 [g]. This is for Rev C hardware [w].");
 			var ps_22d = File("73107D468FC7CB1D2C5B18B269715DD889ECEF06", 524288, "ps-22d.bin", "PSX BIOS (Version 2.2 03/06/96 D)", "Used on DTL-H1100 [g]. This is for Rev C hardware, presumably.");
+			/*new*/var ps_22jv = File("15C94DA3CC5A38A582429575AF4198C487FE893C", 1048576, "ps-22j(v).bin", "PSX BIOS (Version 2.2 12/04/95 J)", "Used on SCPH-5903 [t].");
 			var ps_30j = File("B05DEF971D8EC59F346F2D9AC21FB742E3EB6917", 524288, "ps-30j.bin", "PSX BIOS (Version 3.0 09/09/96 J)", "Used on SCPH-5500 [g]. This is for Rev C hardware [w]. Recommended for (J) [f].");
 			var ps_30a = File("0555C6FAE8906F3F09BAF5988F00E55F88E9F30B", 524288, "ps-30a.bin", "PSX BIOS (Version 3.0 11/18/96 A)", "Used on SCPH-5501, SCPH-5503, SCPH-7003 [g]. This is for Rev C hardware [w]. Recommended for (U) [f].");
 			var ps_30e = File("F6BC2D1F5EB6593DE7D089C425AC681D6FFFD3F0", 524288, "ps-30e.bin", "PSX BIOS (Version 3.0 01/06/97 E)", "Used on SCPH-5502, SCPH-5552 [g]. This is for Rev C hardware [w]. Recommended for (E) [f].");
@@ -158,11 +160,15 @@ namespace BizHawk.Emulation.Common
 			var ps_40j = File("77B10118D21AC7FFA9B35F9C4FD814DA240EB3E9", 524288, "ps-40j.bin", "PSX BIOS (Version 4.0 08/18/97 J)", "Used on SCPH-7000, SCPH-7500, SCPH-9000 [g]. This is for Rev C hardware [w].");
 			var ps_41a = File("14DF4F6C1E367CE097C11DEAE21566B4FE5647A9", 524288, "ps-41a.bin", "PSX BIOS (Version 4.1 12/16/97 A)", "Used on SCPH-7001, SCPH-7501, SCPH-7503, SCPH-9001, SCPH-9003, SCPH-9903 [g]. This is for Rev C hardware [w].");
 			var ps_41e = File("8D5DE56A79954F29E9006929BA3FED9B6A418C1D", 524288, "ps-41e.bin", "PSX BIOS (Version 4.1 12/16/97 E)", "Used on SCPH-7002, SCPH-7502, SCPH-9002 [g]. This is for Rev C hardware [w].");
+			/*new*/var ps_41aw = File("1B0DBDB23DA9DC0776AAC58D0755DC80FEA20975", 524288, "ps-41a(w).bin", "PSX BIOS (Version 4.1 11/14/97 A)", "Used on SCPH-7000W [t].");
 			var psone_43j = File("339A48F4FCF63E10B5B867B8C93CFD40945FAF6C", 524288, "psone-43j.bin", "PSX BIOS (Version 4.3 03/11/00 J)", "Used on PSone SCPH-100 [g]. This is for Rev C PSone hardware [w].");
 			var psone_44e = File("BEB0AC693C0DC26DAF5665B3314DB81480FA5C7C", 524288, "psone-44e.bin", "PSX BIOS (Version 4.4 03/24/00 E)", "Used on PSone SCPH-102 [g]. This is for Rev C PSone hardware [w].");
 			var psone_45a = File("DCFFE16BD90A723499AD46C641424981338D8378", 524288, "psone-45a.bin", "PSX BIOS (Version 4.5 05/25/00 A)", "Used on PSone SCPH-101 [g]. This is for Rev C PSone hardware [w].");
 			var psone_r5e = File("DBC7339E5D85827C095764FC077B41F78FD2ECAE", 524288, "psone-45e.bin", "PSX BIOS (Version 4.5 05/25/00 E)", "Used on PSone SCPH-102 [g]. This is for Rev C PSone hardware [w].");
-			var ps2_50j = File("D7D6BE084F51354BC951D8FA2D8D912AA70ABC5E", 4194304, "ps2-50j.bin", "PSX BIOS (Version 5.0 10/27/00 J)", "Found on a PS2 [p].");
+			var ps2_50j = File("D7D6BE084F51354BC951D8FA2D8D912AA70ABC5E", 4194304, "ps2-50j.bin", "PSX BIOS (Version 5.0 10/27/00 J)", "Found on a PS2 [p]. May be known as SCPH18000.BIN.");
+			/*new*/ var ps_dtl_h2000 = File("1A8D6F9453111B1D317BB7DAE300495FBF54600C", 524288, "DTLH2000.bin", "DTL-H2000 Devkit [t]");
+			/*new*/ var ps_ps3 = File("C40146361EB8CF670B19FDC9759190257803CAB7", 524288, "ps1_rom.bin", "PSX BIOS (Version 5.0 06/23/03 A)", "Found on a PS3. [t]");
+			
 
 			ps_22j_bad.Bad = ps_22j_bad2.Bad = ps_30e_bad.Bad = true;
 
@@ -191,14 +197,22 @@ namespace BizHawk.Emulation.Common
 			Option("PSX", "J", ps_22j_bad2, FirmwareOptionStatus.Bad);
 			Option("PSX", "U", ps_22a, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "E", ps_22e, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", ps_22d, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "E", ps_30e_bad, FirmwareOptionStatus.Bad);
 			Option("PSX", "J", ps_40j, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "U", ps_41a, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "E", ps_41e, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "J", psone_43j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "E", psone_44e, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "U", psone_45a, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "E", psone_r5e, FirmwareOptionStatus.Unacceptable);
 			Option("PSX", "J", ps2_50j, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", ps_22jv, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", ps_41aw, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", ps_ps3, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "U", ps_dtl_h2000, FirmwareOptionStatus.Unacceptable); //not really sure what to do with this one, let's just call it region free
+			Option("PSX", "E", ps_dtl_h2000, FirmwareOptionStatus.Unacceptable);
+			Option("PSX", "J", ps_dtl_h2000, FirmwareOptionStatus.Unacceptable);
 
 			Firmware("AppleII", "AppleIIe", "AppleIIe.rom");
 			var appleII_AppleIIe = File("B8EA90ABE135A0031065E01697C4A3A20D51198B", 16384, "AppleIIe.rom", "Apple II e");

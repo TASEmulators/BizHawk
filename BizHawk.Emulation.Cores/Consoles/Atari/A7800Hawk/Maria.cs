@@ -6,7 +6,7 @@ using BizHawk.Common;
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Emulates the Atari 7800 Maria graphics chip
-	public class Maria : IVideoProvider
+	public class Maria
 	{
 		public A7800Hawk Core { get; set; }
 
@@ -25,32 +25,15 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		// technically there is no limit on the number of graphics objects, but since dma is automatically killed
 		// at the end of a scanline, we have an effective limit
-		GFX_Object[,] GFX_Objects = new GFX_Object[2,128];
+		GFX_Object[] GFX_Objects = new GFX_Object[128];
+
+		public byte[,] line_ram = new byte[2, 320];
+		byte temp_check = 0;
 
 		int GFX_index = 0;
 
-		public int _frameHz = 60;
-		public int _screen_width = 320;
-		public int _screen_height = 263;
-		public int _vblanklines = 20;
-
-		public int[] _vidbuffer;
 		public int[] _palette;
 		public int[] scanline_buffer = new int[320];
-		public int[] bg_temp = new int[320]; // since BG color can be changed midscanline, we need to account for this here.
-
-		public int[] GetVideoBuffer()
-		{
-			return _vidbuffer;
-		}
-
-		public int VirtualWidth => 320;
-		public int VirtualHeight => _screen_height - _vblanklines;
-		public int BufferWidth => 320;
-		public int BufferHeight => _screen_height - _vblanklines;
-		public int BackgroundColor => unchecked((int)0xff000000);
-		public int VsyncNumerator => _frameHz;
-		public int VsyncDenominator => 1;
 
 		// the Maria chip can directly access memory
 		public Func<ushort, byte> ReadMemory;
@@ -84,12 +67,19 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public bool current_DLL_H16;
 		public bool current_DLL_H8;
 
-		public bool overrun_dma;
 		public bool global_write_mode;
 
 		public int header_counter;
-		public int[] header_counter_max = new int [2];
 		public int header_pointer; // since headers could be 4 or 5 bytes, we need a seperate pointer
+
+		// variables for drawing a pixel
+		int color;
+		int local_GFX_index;
+		int temp_palette;
+		int temp_bit_0;
+		int temp_bit_1;
+		int disp_mode;
+		int pixel;
 
 		// each frame contains 263 scanlines
 		// each scanline consists of 113.5 CPU cycles (fast access) which equates to 454 Maria cycles
@@ -115,7 +105,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					Core.tia._hsyncCnt = 0;
 					Core.cpu.RDY = true;
 				}
-
 			}
 
 			// "The end of vblank is made up of a DMA startup plus a long shut down"
@@ -165,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			// Now proceed with the remaining scanlines
 			// the first one is a pre-render line, since we didn't actually put any data into the buffer yet
-			while (scanline < _screen_height)
+			while (scanline < Core._screen_height)
 			{				
 				if (cycle == 28 && Core.Maria_regs[0x1C].Bit(6) && !Core.Maria_regs[0x1C].Bit(5))
 				{
@@ -187,20 +176,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					current_DLL_DLI = false;
 				}
 
-				if (overrun_dma && sl_DMA_complete)
-				{
-					if (GFX_index == 1)
-					{
-						GFX_index = 0;
-					}
-					else
-					{
-						GFX_index = 1;
-					}
-
-					overrun_dma = false;
-				}
-
 				if (DLI_countdown > 0)
 				{
 					DLI_countdown--;
@@ -210,16 +185,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					}
 				}
 
-				if (cycle > 133)
+				if (cycle == 428 && !sl_DMA_complete && do_dma && (DMA_phase == DMA_GRAPHICS || DMA_phase == DMA_HEADER))
 				{
-					bg_temp[cycle - 134] = Core.Maria_regs[0];
-				}
-
-				
-				if (cycle == 453 && !sl_DMA_complete && do_dma && (DMA_phase == DMA_GRAPHICS || DMA_phase == DMA_HEADER))
-				{
-					overrun_dma = true;
-					Console.WriteLine(scanline);
+					//Console.WriteLine(scanline);
 					if (current_DLL_offset == 0)
 					{
 						DMA_phase = DMA_SHUTDOWN_LAST;
@@ -234,31 +202,97 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				
 				Core.RunCPUCycle();
 
+				//////////////////////////////////////////////
+				// Drawing Start
+				//////////////////////////////////////////////
+
+				if (cycle >=133 && cycle < 453  && scanline > 20)
+				{
+					pixel = cycle - 133;
+					local_GFX_index = (GFX_index == 1) ? 0 : 1; // whatever the current index is, we use the opposite
+					disp_mode = Core.Maria_regs[0x1C] & 0x3;
+
+					color = line_ram[local_GFX_index, pixel];
+
+					if (disp_mode == 0)
+					{
+						// direct read, nothing to do
+					}
+					else if (disp_mode == 2) // note: 1 is not used
+					{
+						// there is a trick here to be aware of.
+						// the renderer has no concept of objects, as it only has information on each pixel
+						// but objects are specified in groups of 8 pixels. 
+						// however, since objects can only be placed in 160 resolution
+						// we can pick bits based on whether the current pixel is even or odd
+						temp_palette = color & 0x10;
+						temp_bit_0 = 0;
+						temp_bit_1 = 0;
+
+						if (pixel % 2 == 0)
+						{
+							temp_bit_1 = color & 2;
+							temp_bit_0 = (color & 8) >> 3;
+						}
+						else
+						{
+							temp_bit_1 = (color & 1) << 1;
+							temp_bit_0 = (color & 4) >> 2;
+						}
+
+						color = temp_palette + temp_bit_1 + temp_bit_0;
+					}
+					else
+					{
+						// same as above, we can use the pixel index to pick the bits out
+						if (pixel % 2 == 0)
+						{
+							color &= 0x1E;
+						}
+						else
+						{
+							color = (color & 0x1C) + ((color & 1) << 1);
+						}
+					}
+
+					if ((color & 0x3) != 0)
+					{
+						scanline_buffer[pixel] = _palette[Core.Maria_regs[color]];
+					}
+					else
+					{
+						scanline_buffer[pixel] = _palette[Core.Maria_regs[0x00]];
+					}
+					
+					// send buffer to the video buffer
+					Core._vidbuffer[(scanline - 21) * 320 + pixel] = scanline_buffer[pixel];
+
+					// clear the line ram
+					line_ram[local_GFX_index, pixel] = 0;
+				}
+
+				//////////////////////////////////////////////
+				// Drawing End
+				//////////////////////////////////////////////
+
 				cycle++;
 
 				if (cycle == 454)
 				{
-					if (scanline > 20)
-					{
-						// add the current graphics to the buffer
-						draw_scanline(scanline - 21);
-					}
 					scanline++;
+
 					cycle = 0;
 					Core.tia._hsyncCnt = 0;
 					Core.cpu.RDY = true;
 
 					// swap sacnline buffers
-					if (!overrun_dma)
+					if (GFX_index == 1)
 					{
-						if (GFX_index == 1)
-						{
-							GFX_index = 0;
-						}
-						else
-						{
-							GFX_index = 1;
-						}
+						GFX_index = 0;
+					}
+					else
+					{
+						GFX_index = 1;
 					}
 				}
 			}
@@ -299,7 +333,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					if (DMA_phase_counter==1)
 					{
 						header_counter++;
-						GFX_Objects[GFX_index, header_counter].addr = ReadMemory((ushort)(current_DLL_addr + header_pointer));
+						GFX_Objects[header_counter].addr = ReadMemory((ushort)(current_DLL_addr + header_pointer));
 						header_pointer++;
 						byte temp = ReadMemory((ushort)(current_DLL_addr + header_pointer));
 						// if there is no width, then we must have an extended header
@@ -324,12 +358,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							else
 							{
 								// we are in 5 Byte header mode (i.e. using the character map)
-								GFX_Objects[GFX_index, header_counter].write_mode = temp.Bit(7);
+								GFX_Objects[header_counter].write_mode = temp.Bit(7);
 								global_write_mode = temp.Bit(7);
-								GFX_Objects[GFX_index, header_counter].ind_mode = temp.Bit(5);
+								GFX_Objects[header_counter].ind_mode = temp.Bit(5);
 								header_pointer++;
 								temp = (byte)(ReadMemory((ushort)(current_DLL_addr + header_pointer)));
-								GFX_Objects[GFX_index, header_counter].addr |= (ushort)(temp << 8);
+								GFX_Objects[header_counter].addr |= (ushort)(temp << 8);
 								header_pointer++;
 								temp = ReadMemory((ushort)(current_DLL_addr + header_pointer));
 								int temp_w = (temp & 0x1F); // this is the 2's complement of width (for reasons that escape me)
@@ -337,18 +371,18 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 								if (temp_w == 0)
 								{
 									// important note here. In 5 byte mode, width 0 actually counts as 32
-									GFX_Objects[GFX_index, header_counter].width = 32;
+									GFX_Objects[header_counter].width = 32;
 								}
 								else
 								{
 									temp_w = (temp_w - 1);
 									temp_w = (0x1F - temp_w);
-									GFX_Objects[GFX_index, header_counter].width = (byte)(temp_w & 0x1F);
+									GFX_Objects[header_counter].width = (byte)(temp_w & 0x1F);
 								}
 
-								GFX_Objects[GFX_index, header_counter].palette = (byte)((temp & 0xE0) >> 5);
+								GFX_Objects[header_counter].palette = (byte)((temp & 0xE0) >> 5);
 								header_pointer++;
-								GFX_Objects[GFX_index, header_counter].h_pos = ReadMemory((ushort)(current_DLL_addr + header_pointer));
+								GFX_Objects[header_counter].h_pos = ReadMemory((ushort)(current_DLL_addr + header_pointer));
 								header_pointer++;
 
 								DMA_phase_next = DMA_GRAPHICS;
@@ -361,21 +395,21 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							int temp_w = (temp & 0x1F); // this is the 2's complement of width (for reasons that escape me)
 							temp_w = (temp_w - 1);
 							temp_w = (0x1F - temp_w);
-							GFX_Objects[GFX_index, header_counter].width = (byte)(temp_w & 0x1F);
+							GFX_Objects[header_counter].width = (byte)(temp_w & 0x1F);
 
-							GFX_Objects[GFX_index, header_counter].palette = (byte)((temp & 0xE0) >> 5);
+							GFX_Objects[header_counter].palette = (byte)((temp & 0xE0) >> 5);
 							header_pointer++;
 							temp = (byte)(ReadMemory((ushort)(current_DLL_addr + header_pointer)));
-							GFX_Objects[GFX_index, header_counter].addr |= (ushort)(temp << 8);
+							GFX_Objects[header_counter].addr |= (ushort)(temp << 8);
 							header_pointer++;
-							GFX_Objects[GFX_index, header_counter].h_pos = ReadMemory((ushort)(current_DLL_addr + header_pointer));
+							GFX_Objects[header_counter].h_pos = ReadMemory((ushort)(current_DLL_addr + header_pointer));
 							header_pointer++;
 
 							DMA_phase_next = DMA_GRAPHICS;
 
-							GFX_Objects[GFX_index, header_counter].write_mode = global_write_mode;
+							GFX_Objects[header_counter].write_mode = global_write_mode;
 
-							GFX_Objects[GFX_index, header_counter].ind_mode = false;
+							GFX_Objects[header_counter].ind_mode = false;
 
 							header_read_time = 8;
 						}
@@ -396,46 +430,48 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						ushort addr_t = 0;
 
 						// in 5 byte mode, we first have to check if we are in direct or indirect mode
-						if (GFX_Objects[GFX_index, header_counter].ind_mode)
+						if (GFX_Objects[header_counter].ind_mode)
 						{
 							int ch_size = 0;
 
 							if (Core.Maria_regs[0x1C].Bit(4))
 							{
-								graphics_read_time = 9 * GFX_Objects[GFX_index, header_counter].width + 3;
+								graphics_read_time = 9 * GFX_Objects[header_counter].width;
 								ch_size = 2;
-								GFX_Objects[GFX_index, header_counter].width *= 2;
 							}
 							else
 							{
-								graphics_read_time = 6 * GFX_Objects[GFX_index, header_counter].width + 3;
+								graphics_read_time = 6 * GFX_Objects[header_counter].width;
 								ch_size = 1;
 							}
 
 							// the address here is specified by CHAR_BASE maria registers
 							// ushort addr = (ushort)(GFX_Objects[header_counter].addr & 0xFF);
-							for (int i = 0; i < GFX_Objects[GFX_index, header_counter].width; i++)
+							for (int i = 0; i < GFX_Objects[header_counter].width; i++)
 							{
-								addr_t = ReadMemory((ushort)(GFX_Objects[GFX_index, header_counter].addr + i));
+								addr_t = ReadMemory((ushort)(GFX_Objects[header_counter].addr + i));
 								addr_t |= (ushort)((Core.Maria_regs[0x14] + current_DLL_offset) << 8);
 
 								if (((current_DLL_H16 && addr_t.Bit(12)) || (current_DLL_H8 && addr_t.Bit(11))) && (addr_t >= 0x8000))
 								{
 									if (i * ch_size < 128)
 									{
-										GFX_Objects[GFX_index, header_counter].obj[i * ch_size] = 0;
+										GFX_Objects[header_counter].obj[i * ch_size] = 0;
 									}
 									if ((i * ch_size + 1 < 128) && (ch_size == 2))
 									{
-										GFX_Objects[GFX_index, header_counter].obj[i * ch_size + 1] = 0;
+										GFX_Objects[header_counter].obj[i * ch_size + 1] = 0;
 									}
-									if (ch_size == 1)
+									if (i != 0)
 									{
-										graphics_read_time -= 6;
-									}
-									else
-									{
-										graphics_read_time -= 9;
+										if (ch_size == 1)
+										{
+											graphics_read_time -= 6;
+										}
+										else
+										{
+											graphics_read_time -= 9;
+										}
 									}
 									
 								}
@@ -443,31 +479,37 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 								{
 									if (i * ch_size < 128)
 									{
-										GFX_Objects[GFX_index, header_counter].obj[i * ch_size] = ReadMemory(addr_t);
+										GFX_Objects[header_counter].obj[i * ch_size] = ReadMemory(addr_t);
+										fill_line_ram(GFX_Objects[header_counter].h_pos * 2, i, 0, ch_size, GFX_Objects[header_counter].obj[i * ch_size], GFX_Objects[header_counter].write_mode);
 									}
 									if (((i * ch_size + 1) < 128) && (ch_size == 2))
 									{
-										GFX_Objects[GFX_index, header_counter].obj[i * ch_size + 1] = ReadMemory((ushort)(addr_t + 1));
+										GFX_Objects[header_counter].obj[i * ch_size + 1] = ReadMemory((ushort)(addr_t + 1));
+										fill_line_ram(GFX_Objects[header_counter].h_pos * 2, i, 1, ch_size, GFX_Objects[header_counter].obj[i * ch_size + 1], GFX_Objects[header_counter].write_mode);
 									}
 								}
 							}
 						}
 						else
 						{
-							graphics_read_time = 3 * GFX_Objects[GFX_index, header_counter].width;
+							graphics_read_time = 3 * GFX_Objects[header_counter].width;
 
-							for (int i = 0; i < GFX_Objects[GFX_index, header_counter].width; i++)
+							for (int i = 0; i < GFX_Objects[header_counter].width; i++)
 							{
-								addr_t = (ushort)(GFX_Objects[GFX_index, header_counter].addr + (current_DLL_offset << 8) + i);
+								addr_t = (ushort)(GFX_Objects[header_counter].addr + (current_DLL_offset << 8) + i);
 
 								if (((current_DLL_H16 && addr_t.Bit(12)) || (current_DLL_H8 && addr_t.Bit(11))) && (addr_t >= 0x8000))
 								{
-									GFX_Objects[GFX_index, header_counter].obj[i] = 0;
-									graphics_read_time -= 3;
+									GFX_Objects[header_counter].obj[i] = 0;
+									if (i != 0)
+									{ 
+										graphics_read_time -= 3;
+									}
 								}
 								else
 								{
-									GFX_Objects[GFX_index, header_counter].obj[i] = ReadMemory(addr_t);
+									GFX_Objects[header_counter].obj[i] = ReadMemory(addr_t);
+									fill_line_ram(GFX_Objects[header_counter].h_pos * 2, i, 0, 1, GFX_Objects[header_counter].obj[i], GFX_Objects[header_counter].write_mode);
 								}
 							}
 						}
@@ -485,18 +527,20 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 				if (DMA_phase == DMA_SHUTDOWN_OTHER)
 				{
-					Core.cpu_resume_pending = true;
-					sl_DMA_complete = true;
-					current_DLL_offset -= 1; // this is reduced by one for each scanline, which changes where graphics are fetched
-					header_counter_max[GFX_index] = header_counter;
-					header_counter = -1;
-					header_pointer = 0;
+					if (DMA_phase_counter == 6)
+					{
+						Core.cpu_resume_pending = true;
+						sl_DMA_complete = true;
+						current_DLL_offset -= 1; // this is reduced by one for each scanline, which changes where graphics are fetched
+						header_counter = -1;
+						header_pointer = 0;
+					}
 					return;
 				}
 
 				if (DMA_phase == DMA_SHUTDOWN_LAST)
 				{
-					if (DMA_phase_counter==6)
+					if (DMA_phase_counter==12)
 					{
 						Core.cpu_resume_pending = true;
 						sl_DMA_complete = true;
@@ -515,7 +559,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						current_DLL_H16 = temp.Bit(6);
 						current_DLL_H8 = temp.Bit(5);
 
-						header_counter_max[GFX_index] = header_counter;
 						header_counter = -1;
 						header_pointer = 0;
 					}
@@ -524,298 +567,84 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 		}
 
-		public void draw_scanline(int scanline)
+		public void fill_line_ram(int temp_start, int index, int doub_size, int ch_s, byte temp_byte, bool w_m)
 		{
-			int local_start;
-			int local_width;
-			int local_palette;
-			int index;
-			int color;
-			int local_GFX_index;
-
-			local_GFX_index = (GFX_index == 1) ? 0 : 1; // whatever the current index is, we use the opposite
-
-			int disp_mode = Core.Maria_regs[0x1C] & 0x3;
-
-			for (int i = 0; i < 320; i++)
+			if (w_m)
 			{
-				scanline_buffer[i] = _palette[bg_temp[i]];
-			}
+				temp_start = temp_start + index * ch_s * 4 + doub_size * 4;
 
-			for (int i = 0; i < header_counter_max[local_GFX_index]; i++)
-			{
-				local_start = GFX_Objects[local_GFX_index, i].h_pos;
-				local_palette = GFX_Objects[local_GFX_index, i].palette;
-
-				// the two different rendering paths are basically controlled by write mode
-				if (GFX_Objects[local_GFX_index, i].write_mode)
+				for (int z = 0; z < 4; z++)
 				{
-					if (disp_mode == 0)
+					if ((temp_start + z) % 512 < 320)
 					{
-						local_width = GFX_Objects[local_GFX_index, i].width;
-
-						for (int j = 0; j < local_width; j++)
+						if (z < 2)
 						{
-							for (int k = 3; k >= 0; k--)
-							{
-								index = local_start * 2 + j * 4 + (3 - k);
-
-								if (index > 511)
-								{
-									index -= 512;
-								}
-
-								if (index < 320)
-								{
-									color = GFX_Objects[local_GFX_index, i].obj[j];
-
-									// this is now the color index (0-3) we choose from the palette
-									if (k >= 2)
-									{
-										color = (((color >> 2) & 0x3) << 2) + ((color >> 6) & 0x3);
-									}
-									else
-									{
-										color = ((color & 0x3) << 2) + ((color >> 4) & 0x3);
-									}
-
-									if ((color != 0) && (color != 4) && (color != 8) && (color != 12)) // transparent
-									{
-										color = ((local_palette & 4) << 2) + color;
-
-										color = Core.Maria_regs[color];
-
-										scanline_buffer[index] = _palette[color];
-									}
-								}
-							}
+							temp_check = (byte)((temp_byte & 0xC) + ((temp_byte >> 6) & 0x3));
 						}
-					}
-					else if (disp_mode == 2) // note: 1 is not used
-					{
-						local_width = GFX_Objects[local_GFX_index, i].width;
-
-						for (int j = 0; j < local_width; j++)
+						else
 						{
-							for (int k = 7; k >= 0; k--)
-							{
-								index = local_start * 4 + j * 8 + (7 - k);
-
-								if (index > 511)
-								{
-									index -= 512;
-								}
-
-								if (index < 320)
-								{
-									color = GFX_Objects[local_GFX_index, i].obj[j];
-
-									// this is now the color index (0-3) we choose from the palette
-									if (k >= 6)
-									{
-										color = ((color >> 6) & 0x2) + ((color >> 3) & 0x1);
-									}
-									else if (k >= 4)
-									{
-										color = ((color >> 5) & 0x2) + ((color >> 2) & 0x1);
-
-									}
-									else if (k >= 2)
-									{
-										color = ((color >> 4) & 0x2) + ((color >> 1) & 0x1);
-									}
-									else
-									{
-										color = ((color >> 3) & 0x2) + (color & 0x1);
-									}
-
-									if (color != 0) // transparent
-									{
-										color = ((local_palette & 4) << 2) + color;
-
-										color = Core.Maria_regs[color];
-
-										scanline_buffer[index] = _palette[color];
-									}
-								}
-							}
+							temp_check = (byte)(((temp_byte & 0x3) << 2) + ((temp_byte >> 4) & 0x3));
 						}
-					}
-					else
-					{
-						local_width = GFX_Objects[local_GFX_index, i].width;
 
-						for (int j = 0; j < local_width; j++)
+						if ((temp_check & 3) != 0)
 						{
-							for (int k = 3; k >= 0; k--)
-							{
-								index = local_start * 2 + j * 4 + (3 - k);
-
-								if (index > 511)
-								{
-									index -= 512;
-								}
-
-								if (index < 320)
-								{
-									color = GFX_Objects[local_GFX_index, i].obj[j];
-									int temp_color = color;
-
-									// this is now the color index (0-3) we choose from the palette
-									if (k >= 3)
-									{
-										color = ((color >> 7) & 0x1);
-										temp_color = (local_palette & 4) + ((temp_color >> 2) & 3);
-									}
-									else if (k >= 2)
-									{
-										color = ((color >> 6) & 0x1);
-										temp_color = (local_palette & 4) + ((temp_color >> 2) & 3);
-
-									}
-									else if (k >= 1)
-									{
-										color = ((color >> 5) & 0x1);
-										temp_color = (local_palette & 4) + (temp_color & 3);
-									}
-									else
-									{
-										color = ((color >> 4) & 0x1);
-										temp_color = (local_palette & 4) + (temp_color & 3);
-									}
-
-									if (color != 0) // transparent
-									{
-										color = (temp_color << 2) + 2;
-
-										color = Core.Maria_regs[color];
-
-										scanline_buffer[index] = _palette[color];
-									}
-								}
-							}
+							line_ram[GFX_index, (temp_start + z) % 512] = temp_check;
+							line_ram[GFX_index, (temp_start + z) % 512] += (byte)((GFX_Objects[header_counter].palette & 4) << 2);
 						}
-					}
-				}
-				else
-				{
-					if (disp_mode == 0)
-					{
-						local_width = GFX_Objects[local_GFX_index, i].width;
-
-						for (int j = 0; j < local_width; j++)
+						else if (Core.Maria_regs[0x1C].Bit(2))
 						{
-							for (int k = 7; k >= 0; k--)
-							{
-								index = local_start * 2 + j * 8 + (7 - k);
-
-								if (index > 511)
-								{
-									index -= 512;
-								}
-
-								if (index < 320)
-								{
-									color = GFX_Objects[local_GFX_index, i].obj[j];
-
-									// this is now the color index (0-3) we choose from the palette
-									if (k >= 6)
-									{
-										color = (color >> 6) & 0x3;
-									}
-									else if (k >= 4)
-									{
-										color = (color >> 4) & 0x3;
-
-									}
-									else if (k >= 2)
-									{
-										color = (color >> 2) & 0x3;
-									}
-									else
-									{
-										color = color & 0x3;
-									}
-
-									if (color != 0) // transparent
-									{
-										color = Core.Maria_regs[local_palette * 4 + color];
-
-										scanline_buffer[index] = _palette[color];
-									}
-								}
-							}
-						}
-					}
-					else if (disp_mode == 2) // note: 1 is not used
-					{
-						local_width = GFX_Objects[local_GFX_index, i].width;
-						// here the palette is determined by palette bit 2 only
-						// hence only palette 0 or 4 is available
-						local_palette = GFX_Objects[local_GFX_index, i].palette & 0x4;
-
-						int temp_c0 = GFX_Objects[local_GFX_index, i].palette & 0x1;
-						int temp_c1 = GFX_Objects[local_GFX_index, i].palette & 0x2;
-						
-						for (int j = 0; j < local_width; j++)
-						{
-							for (int k = 7; k >= 0; k--)
-							{
-								color = (GFX_Objects[local_GFX_index, i].obj[j] >> k) & 1;
-								color = (color << 1) | ((k % 2 == 0) ? temp_c0 : temp_c1);
-								index = local_start * 2 + j * 8 + (7 - k);
-								if (index > 511) index -= 512;
-
-								if (index < 320)
-								{
-									color = Core.Maria_regs[local_palette + color];
-
-									scanline_buffer[index] = _palette[color];
-								}
-							}
-						}
-					}
-					else
-					{
-						local_width = GFX_Objects[local_GFX_index, i].width;
-
-						for (int j = 0; j < local_width; j++)
-						{
-							for (int k = 7; k >= 0; k--)
-							{
-								color = (GFX_Objects[local_GFX_index, i].obj[j] >> k) & 1;
-								index = local_start * 2 + j * 8 + (7 - k);
-								if (index > 511) index -= 512;
-								if (index < 320 && color == 1)
-								{
-									color = Core.Maria_regs[local_palette * 4 + 2]; // automatically use index 2 here
-
-									scanline_buffer[index] = _palette[color];
-								}
-							}
+							// kangaroo mode, override transparency with zero
+							line_ram[GFX_index, (temp_start + z) % 512] = 0;
 						}
 					}
 				}
 			}
-	
-			// send buffer to the video buffer
-			for (int i = 0; i < 320; i ++)
+			else
 			{
-				_vidbuffer[scanline * 320 + i] = scanline_buffer[i];
+				temp_start = temp_start + index * ch_s * 8 + doub_size * 8;
+
+				for (int z = 0; z < 8; z++)
+				{
+					if (((temp_start + z) % 512) < 320)
+					{
+						if (z < 2)
+						{
+							temp_check = (byte)((temp_byte >> 6) & 0x3);
+						}
+						else if (z < 4)
+						{
+							temp_check = (byte)((temp_byte >> 4) & 0x3);
+						}
+						else if (z < 6)
+						{
+							temp_check = (byte)((temp_byte >> 2) & 0x3);
+						}
+						else
+						{
+							temp_check = (byte)(temp_byte & 0x3);
+						}
+
+						if (temp_check != 0)
+						{
+							line_ram[GFX_index, (temp_start + z) % 512] = temp_check;
+							line_ram[GFX_index, (temp_start + z) % 512] += (byte)(GFX_Objects[header_counter].palette << 2);
+						}
+						else if (Core.Maria_regs[0x1C].Bit(2))
+						{
+							// kangaroo mode, override transparency with zero
+							line_ram[GFX_index, (temp_start + z) % 512] = 0;
+						}
+					}
+				}
 			}
 		}
 
 		public void Reset()
 		{
-			_vidbuffer = new int[VirtualWidth * VirtualHeight];
-
-			for (int j = 0; j < 2; j++)
+			for (int i = 0; i < 128; i++)
 			{
-				for (int i = 0; i < 128; i++)
-				{
-					GFX_Objects[j, i].obj = new byte[128];
-				}
-			}			
+				GFX_Objects[i].obj = new byte[128];
+			}		
 		}
 
 		// Most of the Maria state is captured in Maria Regs in the core

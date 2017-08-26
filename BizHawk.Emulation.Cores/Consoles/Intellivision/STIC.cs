@@ -492,10 +492,10 @@ namespace BizHawk.Emulation.Cores.Intellivision
 								// also if the pixel is on set it in the collision matrix
 								// note that the collision field is attached to the lower right corner of the BG
 								// so we add 8 to x and 16 to y here
-								if ((card_col * 8 + (7-pict_col) + 8) < 167)
+								if ((card_col * 8 + (7 - pict_col) + 8) < 167)
 								{
-									Collision[card_col * 8 + (7-pict_col) + 8, (card_row * 8 + pict_row) * 2 + 16] = 1 << 8;
-									Collision[card_col * 8 + (7-pict_col) + 8, (card_row * 8 + pict_row) * 2 + 16 + 1] = 1 << 8;
+									Collision[card_col * 8 + (7 - pict_col) + 8, (card_row * 8 + pict_row) * 2 + 16] = 1 << 8;
+									Collision[card_col * 8 + (7 - pict_col) + 8, (card_row * 8 + pict_row) * 2 + 16 + 1] = 1 << 8;
 								}
 							}
 							else
@@ -521,7 +521,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			int min_x = x_border == 0 ? x_delay : x_border;
 			int min_y = y_border == 0 ? y_delay : y_border;
 
-			for (int j=input_row*8;j < (input_row * 8)+8; j++)
+			for (int j = input_row * 8; j < (input_row * 8) + 8; j++)
 			{
 				for (int i = 0; i < 159; i++)
 				{
@@ -602,8 +602,11 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				bool gram = attr.Bit(11);
 				byte loc_color = (byte)(attr & 7);
 				bool color_3 = attr.Bit(12);
+
 				if (color_3 && gram)
+				{
 					loc_color += 8;
+				}
 
 				bool priority = attr.Bit(13);
 				byte loc_x = (byte)(x & 0xFF);
@@ -619,7 +622,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 				ushort y_size = (ushort)(ysiz2 * ysiz4);
 				// setting yres implicitly uses an even card first
-				if (yres>1)
+				if (yres > 1)
 					card &= 0xFE;
 
 				// in GRAM mode only take the first 6 bits of the card number
@@ -642,7 +645,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				}
 
 				// assign the y_mob, used to double vertical resolution
-				if (yres>1)
+				if (yres > 1)
 				{
 					for (int j = 0; j < 8; j++)
 					{
@@ -752,15 +755,15 @@ namespace BizHawk.Emulation.Cores.Intellivision
 						{
 							cur_y = j * y_size + m;
 
-							if ((cur_x) < (167 - x_delay) && (loc_y * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && (cur_x) >= (8 - x_delay) && (loc_y * 2 + cur_y) >= (16 - y_delay * 2))
+							if ((cur_x) < (167 - x_delay) && (loc_y * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && cur_x >= (8 - x_delay) && (loc_y * 2 + cur_y) >= (16 - y_delay * 2))
 							{
 								if (!(priority && (Collision[cur_x, loc_y * 2 + cur_y]&0x100)>0))
-									FrameBuffer[(loc_y * 2 + cur_y - (16 - y_delay * 2)) * 176 + (cur_x + 8) - (8 - x_delay) + BORDER_OFFSET] = ColorToRGBA(loc_color);
+									FrameBuffer[(loc_y * 2 + cur_y - (16 - y_delay * 2)) * 176 + cur_x + x_delay + BORDER_OFFSET] = ColorToRGBA(loc_color);
 							}
 
 							// a MOB does not need to be visible for it to be interracting
 							// special case: a mob with x position 0 is counted as off
-							if (intr && pixel && (cur_x) <= 167 && (loc_y * 2 + cur_y) < 210 && loc_x != 0)
+							if (intr && pixel && cur_x <= 167 && (loc_y * 2 + cur_y) < 210 && loc_x != 0)
 							{
 								Collision[cur_x, loc_y * 2 + cur_y] |= (ushort)(1 << i);
 							}
@@ -770,7 +773,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 								if ((cur_x + 1) < (167 - x_delay) && (loc_y * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && (cur_x + 1) >= (8 - x_delay) && (loc_y * 2 + cur_y) >= (16 - y_delay * 2))
 								{
 									if (!(priority && (Collision[cur_x + 1, loc_y * 2 + cur_y] & 0x100) > 0))
-										FrameBuffer[(loc_y * 2 + cur_y - (16 - y_delay * 2)) * 176 + (cur_x + 8) + 1 - (8 - x_delay) + BORDER_OFFSET] = ColorToRGBA(loc_color);
+										FrameBuffer[(loc_y * 2 + cur_y - (16 - y_delay * 2)) * 176 + cur_x + x_delay + 1 + BORDER_OFFSET] = ColorToRGBA(loc_color);
 								}
 								//a MOB does not need to be visible for it to be interracting
 								//special case: a mob with x position 0 is counted as off
@@ -797,15 +800,15 @@ namespace BizHawk.Emulation.Cores.Intellivision
 							{
 								cur_y = j * y_size + m;
 
-								if ((cur_x) < (167 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && (cur_x) >= (8 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) >= (16 - y_delay * 2))
+								if ((cur_x) < (167 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && cur_x >= (8 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) >= (16 - y_delay * 2))
 								{
 									if (!(priority && (Collision[cur_x, (loc_y + 4 * y_size) * 2 + cur_y] & 0x100) > 0))
-										FrameBuffer[((loc_y + 4 * y_size) * 2 + cur_y - (16 - y_delay * 2)) * 176 + (cur_x + 8) - (8 - x_delay) + BORDER_OFFSET] = ColorToRGBA(loc_color);
+										FrameBuffer[((loc_y + 4 * y_size) * 2 + cur_y - (16 - y_delay * 2)) * 176 + cur_x + x_delay + BORDER_OFFSET] = ColorToRGBA(loc_color);
 								}
 
 								// a MOB does not need to be visible for it to be interracting
 								// special case: a mob with x position 0 is counted as off
-								if (intr && pixel && (cur_x) <= 167 && ((loc_y + 4 * y_size) * 2 + cur_y) < 210 && loc_x != 0)
+								if (intr && pixel && cur_x <= 167 && ((loc_y + 4 * y_size) * 2 + cur_y) < 210 && loc_x != 0)
 								{
 									Collision[cur_x, (loc_y + 4 * y_size) * 2 + cur_y] |= (ushort)(1 << i);
 								}
@@ -815,7 +818,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 									if ((cur_x + 1) < (167 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) < (208 - y_delay * 2) && pixel && vis && (cur_x + 1) >= (8 - x_delay) && ((loc_y + 4 * y_size) * 2 + cur_y) >= (16 - y_delay * 2))
 									{
 										if (!(priority && (Collision[cur_x + 1, (loc_y + 4 * y_size) * 2 + cur_y] & 0x100) > 0))
-											FrameBuffer[((loc_y + 4 * y_size) * 2 + cur_y - (16 - y_delay * 2)) * 176 + (cur_x + 8) + 1 - (8 - x_delay) + BORDER_OFFSET] = ColorToRGBA(loc_color);
+											FrameBuffer[((loc_y + 4 * y_size) * 2 + cur_y - (16 - y_delay * 2)) * 176 + cur_x + x_delay + 1 + BORDER_OFFSET] = ColorToRGBA(loc_color);
 									}
 
 									// a MOB does not need to be visible for it to be interracting
@@ -833,8 +836,8 @@ namespace BizHawk.Emulation.Cores.Intellivision
 
 			// by now we have collision information for all 8 mobs and the BG
 			// so we can store data in the collision registers here
-			int x_border = Register[0x32].Bit(0) ? 15-x_delay : 7-x_delay;
-			int y_border = Register[0x32].Bit(1) ? 30-y_delay*2 : 14-y_delay*2;
+			int x_border = Register[0x32].Bit(0) ? 15 - x_delay : 7 - x_delay;
+			int y_border = Register[0x32].Bit(1) ? 30 - y_delay * 2 : 14 - y_delay * 2;
 
 			int x_border_2 = Register[0x32].Bit(0) ? 8 : 0;
 			int y_border_2 = Register[0x32].Bit(1) ? 16 : 0;
@@ -844,17 +847,17 @@ namespace BizHawk.Emulation.Cores.Intellivision
 				for (int j = 0; j < 210; j++)
 				{
 					// while we are here we can set collision detection bits for the border region
-					if (i == x_border || i == (167-x_delay))
+					if (i == x_border || i == (167 - x_delay))
 					{
 						Collision[i, j] |= (1 << 9);
 					}
-					if (j == y_border || j == y_border+1 || j == (208-y_delay*2) ||  j == (208 - y_delay * 2+1))
+					if (j == y_border || j == y_border + 1 || j == (208 - y_delay * 2) ||  j == (208 - y_delay * 2 + 1))
 					{
 						Collision[i, j] |= (1 << 9);
 					}
 
 					// and also make sure the border region is all the border color
-					if ((i-x_delay)>=0 && (i-x_delay)<=159 && (j-y_delay*2)>=0 && (j-y_delay*2)<192)
+					if ((i-x_delay)>=0 && (i-x_delay) <= 159 && (j-y_delay*2) >= 0 && (j-y_delay*2) < 192)
 					{
 						if ((i-x_delay) < x_border_2)
 							FrameBuffer[(j - y_delay*2) * 176 + ((i + 8) - x_delay) + BORDER_OFFSET] = ColorToRGBA(Register[0x2C] & 0xF);
@@ -869,7 +872,7 @@ namespace BizHawk.Emulation.Cores.Intellivision
 					}
 
 					// the extra condition here is to ignore only border/BG collsion bit set
-					if (Collision[i, j] != 0 && Collision[i,j] != (1<<9) && Collision[i,j] != (1<<8)) 
+					if (Collision[i, j] != 0 && Collision[i,j] != (1 << 9) && Collision[i,j] != (1 << 8)) 
 					{
 						for (int k = 0; k < 8; k++)
 						{

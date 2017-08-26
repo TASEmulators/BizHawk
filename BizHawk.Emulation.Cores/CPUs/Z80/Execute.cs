@@ -1,3 +1,4 @@
+using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 using System;
 
@@ -15,6 +16,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 		public int PendingCycles { get { return pendingCycles; } set { pendingCycles = value; } }
 
 		private int EI_pending;
+
+		private ushort temp_WZ;
 
 		public bool Debug;
 		public Action<TraceInfo> Logger;
@@ -37,18 +40,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 			while (pendingCycles > 0)
 			{
 				Interruptable = true;
-				//if (interrupt == true)
-					//Console.WriteLine(totalExecutedCycles);
+
 				if (halted)
 				{
-
 					++RegR;
 					totalExecutedCycles += 4; pendingCycles -= 4;
-
 				}
 				else
 				{
-
 					if (Debug)
 					{
 						Logger(State());
@@ -70,6 +69,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							totalExecutedCycles += 10; pendingCycles -= 10;
 							break;
 						case 0x02: // LD (BC), A
+							RegWZ.Low = (byte)((RegBC.Word + 1) & 0xFF);
+							RegWZ.High = RegAF.High;
 							WriteMemoryWrapper(RegBC.Word, RegAF.High);
 							totalExecutedCycles += 7; pendingCycles -= 7;
 							break;
@@ -98,6 +99,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							totalExecutedCycles += 4; pendingCycles -= 4;
 							break;
 						case 0x09: // ADD HL, BC
+							RegWZ = (ushort)(RegHL + 1);
 							TI1 = (short)RegHL.Word; TI2 = (short)RegBC.Word; TIR = TI1 + TI2;
 							TUS = (ushort)TIR;
 							RegFlagH = ((TI1 & 0xFFF) + (TI2 & 0xFFF)) > 0xFFF;
@@ -111,6 +113,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 						case 0x0A: // LD A, (BC)
 							RegAF.High = ReadMemoryWrapper(RegBC.Word);
 							totalExecutedCycles += 7; pendingCycles -= 7;
+							RegWZ = (ushort)(RegBC.Word + 1);
 							break;
 						case 0x0B: // DEC BC
 							--RegBC.Word;
@@ -134,6 +137,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0x10: // DJNZ d
 							TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+							RegWZ = (ushort)(RegPC.Word + TSB);
 							if (--RegBC.High != 0)
 							{
 								RegPC.Word = (ushort)(RegPC.Word + TSB);
@@ -149,6 +153,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							totalExecutedCycles += 10; pendingCycles -= 10;
 							break;
 						case 0x12: // LD (DE), A
+							RegWZ.Low = (byte)((RegDE.Word + 1) & 0xFF);
+							RegWZ.High = RegAF.High;
 							WriteMemoryWrapper(RegDE.Word, RegAF.High);
 							totalExecutedCycles += 7; pendingCycles -= 7;
 							break;
@@ -174,10 +180,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0x18: // JR d
 							TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+							RegWZ = (ushort)(RegPC.Word + TSB);
 							RegPC.Word = (ushort)(RegPC.Word + TSB);
 							totalExecutedCycles += 12; pendingCycles -= 12;
 							break;
 						case 0x19: // ADD HL, DE
+							RegWZ = (ushort)(RegHL + 1);
 							TI1 = (short)RegHL.Word; TI2 = (short)RegDE.Word; TIR = TI1 + TI2;
 							TUS = (ushort)TIR;
 							RegFlagH = ((TI1 & 0xFFF) + (TI2 & 0xFFF)) > 0xFFF;
@@ -191,6 +199,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 						case 0x1A: // LD A, (DE)
 							RegAF.High = ReadMemoryWrapper(RegDE.Word);
 							totalExecutedCycles += 7; pendingCycles -= 7;
+							RegWZ = (ushort)(RegDE.Word + 1);
 							break;
 						case 0x1B: // DEC DE
 							--RegDE.Word;
@@ -214,6 +223,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0x20: // JR NZ, d
 							TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+							RegWZ = (ushort)(RegPC.Word + TSB);
 							if (!RegFlagZ)
 							{
 								RegPC.Word = (ushort)(RegPC.Word + TSB);
@@ -230,6 +240,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0x22: // LD (nn), HL
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = (ushort)(TUS + 1);
 							WriteMemoryWrapper(TUS++, RegHL.Low);
 							WriteMemoryWrapper(TUS, RegHL.High);
 							totalExecutedCycles += 16; pendingCycles -= 16;
@@ -256,6 +267,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0x28: // JR Z, d
 							TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+							RegWZ = (ushort)(RegPC.Word + TSB);
 							if (RegFlagZ)
 							{
 								RegPC.Word = (ushort)(RegPC.Word + TSB);
@@ -267,6 +279,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							}
 							break;
 						case 0x29: // ADD HL, HL
+							RegWZ = (ushort)(RegHL + 1);
 							TI1 = (short)RegHL.Word; TI2 = (short)RegHL.Word; TIR = TI1 + TI2;
 							TUS = (ushort)TIR;
 							RegFlagH = ((TI1 & 0xFFF) + (TI2 & 0xFFF)) > 0xFFF;
@@ -279,6 +292,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0x2A: // LD HL, (nn)
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = (ushort)(TUS + 1);
 							RegHL.Low = ReadMemoryWrapper(TUS++); RegHL.High = ReadMemoryWrapper(TUS);
 							totalExecutedCycles += 16; pendingCycles -= 16;
 							break;
@@ -304,6 +318,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0x30: // JR NC, d
 							TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+							RegWZ = (ushort)(RegPC.Word + TSB);
 							if (!RegFlagC)
 							{
 								RegPC.Word = (ushort)(RegPC.Word + TSB);
@@ -319,7 +334,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							totalExecutedCycles += 10; pendingCycles -= 10;
 							break;
 						case 0x32: // LD (nn), A
-							WriteMemoryWrapper((ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256), RegAF.High);
+							temp_WZ = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ.Low = (byte)((temp_WZ + 1) & 0xFF);
+							RegWZ.High = RegAF.High;
+							WriteMemoryWrapper(temp_WZ, RegAF.High);
 							totalExecutedCycles += 13; pendingCycles -= 13;
 							break;
 						case 0x33: // INC SP
@@ -344,6 +362,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0x38: // JR C, d
 							TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+							RegWZ = (ushort)(RegPC.Word + TSB);
 							if (RegFlagC)
 							{
 								RegPC.Word = (ushort)(RegPC.Word + TSB);
@@ -355,6 +374,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							}
 							break;
 						case 0x39: // ADD HL, SP
+							RegWZ = (ushort)(RegHL + 1);
 							TI1 = (short)RegHL.Word; TI2 = (short)RegSP.Word; TIR = TI1 + TI2;
 							TUS = (ushort)TIR;
 							RegFlagH = ((TI1 & 0xFFF) + (TI2 & 0xFFF)) > 0xFFF;
@@ -366,8 +386,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							totalExecutedCycles += 11; pendingCycles -= 11;
 							break;
 						case 0x3A: // LD A, (nn)
-							RegAF.High = ReadMemoryWrapper((ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256));
+							temp_WZ = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegAF.High = ReadMemoryWrapper(temp_WZ);
 							totalExecutedCycles += 13; pendingCycles -= 13;
+							RegWZ.Word = (ushort)(temp_WZ + 1);
 							break;
 						case 0x3B: // DEC SP
 							--RegSP.Word;
@@ -604,6 +626,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							totalExecutedCycles += 4; pendingCycles -= 4;
 							break;
 						case 0x77: // LD (HL), A
+							RegWZ.Low = (byte)((RegHL.Word + 1) & 0xFF);
+							RegWZ.High = RegAF.High;
 							WriteMemoryWrapper(RegHL.Word, RegAF.High);
 							totalExecutedCycles += 7; pendingCycles -= 7;
 							break;
@@ -634,6 +658,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 						case 0x7E: // LD A, (HL)
 							RegAF.High = ReadMemoryWrapper(RegHL.Word);
 							totalExecutedCycles += 7; pendingCycles -= 7;
+							RegWZ = (ushort)(RegHL.Word + 1);
 							break;
 						case 0x7F: // LD A, A
 							totalExecutedCycles += 4; pendingCycles -= 4;
@@ -663,6 +688,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							totalExecutedCycles += 4; pendingCycles -= 4;
 							break;
 						case 0x86: // ADD A, (HL)
+							RegWZ = (ushort)(RegHL + 1);
 							RegAF.Word = TableALU[0, RegAF.High, ReadMemoryWrapper(RegHL.Word), 0];
 							totalExecutedCycles += 7; pendingCycles -= 7;
 							break;
@@ -911,6 +937,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0xC2: // JP NZ, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (!RegFlagZ)
 							{
 								RegPC.Word = TUS;
@@ -918,11 +945,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							totalExecutedCycles += 10; pendingCycles -= 10;
 							break;
 						case 0xC3: // JP nn
-							RegPC.Word = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
+							RegPC.Word = TUS;
 							totalExecutedCycles += 10; pendingCycles -= 10;
 							break;
 						case 0xC4: // CALL NZ, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (!RegFlagZ)
 							{
 								WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -964,6 +994,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0xCA: // JP Z, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (RegFlagZ)
 							{
 								RegPC.Word = TUS;
@@ -1362,8 +1393,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.High & 0x01) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegBC.High.Bit(3);
+									RegFlag5 = RegBC.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1372,8 +1403,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.Low & 0x01) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegBC.Low.Bit(3);
+									RegFlag5 = RegBC.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1382,8 +1413,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.High & 0x01) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegDE.High.Bit(3);
+									RegFlag5 = RegDE.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1392,8 +1423,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.Low & 0x01) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegDE.Low.Bit(3);
+									RegFlag5 = RegDE.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1402,8 +1433,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.High & 0x01) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegHL.High.Bit(3);
+									RegFlag5 = RegHL.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1412,8 +1443,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.Low & 0x01) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegHL.Low.Bit(3);
+									RegFlag5 = RegHL.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1422,8 +1453,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (ReadMemoryWrapper(RegHL.Word) & 0x01) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegWZ.High.Bit(3);
+									RegFlag5 = RegWZ.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 12; pendingCycles -= 12;
@@ -1432,8 +1463,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegAF.High & 0x01) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegAF.High.Bit(3);
+									RegFlag5 = RegAF.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1442,8 +1473,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.High & 0x02) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegBC.High.Bit(3);
+									RegFlag5 = RegBC.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1452,8 +1483,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.Low & 0x02) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegBC.Low.Bit(3);
+									RegFlag5 = RegBC.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1462,8 +1493,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.High & 0x02) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegDE.High.Bit(3);
+									RegFlag5 = RegDE.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1472,8 +1503,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.Low & 0x02) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegDE.Low.Bit(3);
+									RegFlag5 = RegDE.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1482,8 +1513,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.High & 0x02) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegHL.High.Bit(3);
+									RegFlag5 = RegHL.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1492,8 +1523,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.Low & 0x02) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegHL.Low.Bit(3);
+									RegFlag5 = RegHL.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1502,8 +1533,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (ReadMemoryWrapper(RegHL.Word) & 0x02) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegWZ.High.Bit(3);
+									RegFlag5 = RegWZ.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 12; pendingCycles -= 12;
@@ -1512,8 +1543,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegAF.High & 0x02) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegAF.High.Bit(3);
+									RegFlag5 = RegAF.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1522,8 +1553,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.High & 0x04) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegBC.High.Bit(3);
+									RegFlag5 = RegBC.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1532,8 +1563,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.Low & 0x04) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegBC.Low.Bit(3);
+									RegFlag5 = RegBC.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1542,8 +1573,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.High & 0x04) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegDE.High.Bit(3);
+									RegFlag5 = RegDE.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1552,8 +1583,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.Low & 0x04) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegDE.Low.Bit(3);
+									RegFlag5 = RegDE.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1562,8 +1593,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.High & 0x04) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegHL.High.Bit(3);
+									RegFlag5 = RegHL.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1572,8 +1603,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.Low & 0x04) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegHL.Low.Bit(3);
+									RegFlag5 = RegHL.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1582,8 +1613,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (ReadMemoryWrapper(RegHL.Word) & 0x04) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegWZ.High.Bit(3);
+									RegFlag5 = RegWZ.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 12; pendingCycles -= 12;
@@ -1592,8 +1623,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegAF.High & 0x04) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegAF.High.Bit(3);
+									RegFlag5 = RegAF.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1602,8 +1633,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.High & 0x08) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = !RegFlagZ;
-									RegFlag5 = false;
+									RegFlag3 = RegBC.High.Bit(3);
+									RegFlag5 = RegBC.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1612,8 +1643,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.Low & 0x08) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = !RegFlagZ;
-									RegFlag5 = false;
+									RegFlag3 = RegBC.Low.Bit(3);
+									RegFlag5 = RegBC.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1622,8 +1653,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.High & 0x08) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = !RegFlagZ;
-									RegFlag5 = false;
+									RegFlag3 = RegDE.High.Bit(3);
+									RegFlag5 = RegDE.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1632,8 +1663,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.Low & 0x08) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = !RegFlagZ;
-									RegFlag5 = false;
+									RegFlag3 = RegDE.Low.Bit(3);
+									RegFlag5 = RegDE.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1642,8 +1673,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.High & 0x08) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = !RegFlagZ;
-									RegFlag5 = false;
+									RegFlag3 = RegHL.High.Bit(3);
+									RegFlag5 = RegHL.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1652,8 +1683,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.Low & 0x08) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = !RegFlagZ;
-									RegFlag5 = false;
+									RegFlag3 = RegHL.Low.Bit(3);
+									RegFlag5 = RegHL.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1662,8 +1693,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (ReadMemoryWrapper(RegHL.Word) & 0x08) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = !RegFlagZ;
-									RegFlag5 = false;
+									RegFlag3 = RegWZ.High.Bit(3);
+									RegFlag5 = RegWZ.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 12; pendingCycles -= 12;
@@ -1672,8 +1703,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegAF.High & 0x08) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = !RegFlagZ;
-									RegFlag5 = false;
+									RegFlag3 = RegAF.High.Bit(3);
+									RegFlag5 = RegAF.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1682,8 +1713,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.High & 0x10) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegBC.High.Bit(3);
+									RegFlag5 = RegBC.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1692,8 +1723,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.Low & 0x10) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegBC.Low.Bit(3);
+									RegFlag5 = RegBC.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1702,8 +1733,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.High & 0x10) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegDE.High.Bit(3);
+									RegFlag5 = RegDE.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1712,8 +1743,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.Low & 0x10) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegDE.Low.Bit(3);
+									RegFlag5 = RegDE.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1722,8 +1753,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.High & 0x10) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegHL.High.Bit(3);
+									RegFlag5 = RegHL.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1732,8 +1763,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.Low & 0x10) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegHL.Low.Bit(3);
+									RegFlag5 = RegHL.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1742,8 +1773,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (ReadMemoryWrapper(RegHL.Word) & 0x10) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegWZ.High.Bit(3);
+									RegFlag5 = RegWZ.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 12; pendingCycles -= 12;
@@ -1752,8 +1783,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegAF.High & 0x10) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegAF.High.Bit(3);
+									RegFlag5 = RegAF.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1762,8 +1793,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.High & 0x20) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = !RegFlagZ;
+									RegFlag3 = RegBC.High.Bit(3);
+									RegFlag5 = RegBC.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1772,8 +1803,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.Low & 0x20) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = !RegFlagZ;
+									RegFlag3 = RegBC.Low.Bit(3);
+									RegFlag5 = RegBC.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1782,8 +1813,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.High & 0x20) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = !RegFlagZ;
+									RegFlag3 = RegDE.High.Bit(3);
+									RegFlag5 = RegDE.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1792,8 +1823,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.Low & 0x20) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = !RegFlagZ;
+									RegFlag3 = RegDE.Low.Bit(3);
+									RegFlag5 = RegDE.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1802,8 +1833,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.High & 0x20) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = !RegFlagZ;
+									RegFlag3 = RegHL.High.Bit(3);
+									RegFlag5 = RegHL.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1812,8 +1843,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.Low & 0x20) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = !RegFlagZ;
+									RegFlag3 = RegHL.Low.Bit(3);
+									RegFlag5 = RegHL.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1822,8 +1853,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (ReadMemoryWrapper(RegHL.Word) & 0x20) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = !RegFlagZ;
+									RegFlag3 = RegWZ.High.Bit(3);
+									RegFlag5 = RegWZ.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 12; pendingCycles -= 12;
@@ -1832,8 +1863,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegAF.High & 0x20) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = !RegFlagZ;
+									RegFlag3 = RegAF.High.Bit(3);
+									RegFlag5 = RegAF.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1842,8 +1873,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.High & 0x40) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegBC.High.Bit(3);
+									RegFlag5 = RegBC.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1852,8 +1883,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.Low & 0x40) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegBC.Low.Bit(3);
+									RegFlag5 = RegBC.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1862,8 +1893,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.High & 0x40) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegDE.High.Bit(3);
+									RegFlag5 = RegDE.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1872,8 +1903,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.Low & 0x40) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegDE.Low.Bit(3);
+									RegFlag5 = RegDE.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1882,8 +1913,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.High & 0x40) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegHL.High.Bit(3);
+									RegFlag5 = RegHL.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1892,8 +1923,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.Low & 0x40) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegHL.Low.Bit(3);
+									RegFlag5 = RegHL.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1902,8 +1933,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (ReadMemoryWrapper(RegHL.Word) & 0x40) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegWZ.High.Bit(3);
+									RegFlag5 = RegWZ.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 12; pendingCycles -= 12;
@@ -1912,8 +1943,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegAF.High & 0x40) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = false;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegAF.High.Bit(3);
+									RegFlag5 = RegAF.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1922,8 +1953,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.High & 0x80) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = !RegFlagZ;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegBC.High.Bit(3);
+									RegFlag5 = RegBC.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1932,8 +1963,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegBC.Low & 0x80) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = !RegFlagZ;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegBC.Low.Bit(3);
+									RegFlag5 = RegBC.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1942,8 +1973,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.High & 0x80) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = !RegFlagZ;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegDE.High.Bit(3);
+									RegFlag5 = RegDE.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1952,8 +1983,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegDE.Low & 0x80) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = !RegFlagZ;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegDE.Low.Bit(3);
+									RegFlag5 = RegDE.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1962,8 +1993,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.High & 0x80) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = !RegFlagZ;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegHL.High.Bit(3);
+									RegFlag5 = RegHL.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1972,8 +2003,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegHL.Low & 0x80) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = !RegFlagZ;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegHL.Low.Bit(3);
+									RegFlag5 = RegHL.Low.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -1982,8 +2013,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (ReadMemoryWrapper(RegHL.Word) & 0x80) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = !RegFlagZ;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegWZ.High.Bit(3);
+									RegFlag5 = RegWZ.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 12; pendingCycles -= 12;
@@ -1992,8 +2023,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									RegFlagZ = (RegAF.High & 0x80) == 0;
 									RegFlagP = RegFlagZ;
 									RegFlagS = !RegFlagZ;
-									RegFlag3 = false;
-									RegFlag5 = false;
+									RegFlag3 = RegAF.High.Bit(3);
+									RegFlag5 = RegAF.High.Bit(5);
 									RegFlagH = true;
 									RegFlagN = false;
 									totalExecutedCycles += 8; pendingCycles -= 8;
@@ -2514,6 +2545,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0xCC: // CALL Z, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (RegFlagZ)
 							{
 								WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -2527,6 +2559,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0xCD: // CALL nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
 							RegPC.Word = TUS;
 							totalExecutedCycles += 17; pendingCycles -= 17;
@@ -2557,6 +2590,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0xD2: // JP NC, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (!RegFlagC)
 							{
 								RegPC.Word = TUS;
@@ -2569,6 +2603,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0xD4: // CALL NC, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (!RegFlagC)
 							{
 								WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -2612,6 +2647,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0xDA: // JP C, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (RegFlagC)
 							{
 								RegPC.Word = TUS;
@@ -2624,6 +2660,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0xDC: // CALL C, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (RegFlagC)
 							{
 								WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -2647,6 +2684,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 10; pendingCycles -= 10;
 									break;
 								case 0x02: // LD (BC), A
+									RegWZ.Low = (byte)((RegBC.Word + 1) & 0xFF);
+									RegWZ.High = RegAF.High;
 									WriteMemoryWrapper(RegBC.Word, RegAF.High);
 									totalExecutedCycles += 7; pendingCycles -= 7;
 									break;
@@ -2675,6 +2714,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 4; pendingCycles -= 4;
 									break;
 								case 0x09: // ADD IX, BC
+									RegWZ = (ushort)(RegIX + 1);
 									TI1 = (short)RegIX.Word; TI2 = (short)RegBC.Word; TIR = TI1 + TI2;
 									TUS = (ushort)TIR;
 									RegFlagH = ((TI1 & 0xFFF) + (TI2 & 0xFFF)) > 0xFFF;
@@ -2688,6 +2728,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 								case 0x0A: // LD A, (BC)
 									RegAF.High = ReadMemoryWrapper(RegBC.Word);
 									totalExecutedCycles += 7; pendingCycles -= 7;
+									RegWZ = (ushort)(RegBC.Word + 1);
 									break;
 								case 0x0B: // DEC BC
 									--RegBC.Word;
@@ -2711,6 +2752,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x10: // DJNZ d
 									TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegPC.Word + TSB);
 									if (--RegBC.High != 0)
 									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
@@ -2726,6 +2768,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 10; pendingCycles -= 10;
 									break;
 								case 0x12: // LD (DE), A
+									RegWZ.Low = (byte)((RegDE.Word + 1) & 0xFF);
+									RegWZ.High = RegAF.High;
 									WriteMemoryWrapper(RegDE.Word, RegAF.High);
 									totalExecutedCycles += 7; pendingCycles -= 7;
 									break;
@@ -2751,10 +2795,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x18: // JR d
 									TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegPC.Word + TSB);
 									RegPC.Word = (ushort)(RegPC.Word + TSB);
 									totalExecutedCycles += 12; pendingCycles -= 12;
 									break;
 								case 0x19: // ADD IX, DE
+									RegWZ = (ushort)(RegIX + 1);
 									TI1 = (short)RegIX.Word; TI2 = (short)RegDE.Word; TIR = TI1 + TI2;
 									TUS = (ushort)TIR;
 									RegFlagH = ((TI1 & 0xFFF) + (TI2 & 0xFFF)) > 0xFFF;
@@ -2768,6 +2814,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 								case 0x1A: // LD A, (DE)
 									RegAF.High = ReadMemoryWrapper(RegDE.Word);
 									totalExecutedCycles += 7; pendingCycles -= 7;
+									RegWZ = (ushort)(RegDE.Word + 1);
 									break;
 								case 0x1B: // DEC DE
 									--RegDE.Word;
@@ -2791,6 +2838,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x20: // JR NZ, d
 									TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegPC.Word + TSB);
 									if (!RegFlagZ)
 									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
@@ -2807,6 +2855,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x22: // LD (nn), IX
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = (ushort)(TUS + 1);
 									WriteMemoryWrapper(TUS++, RegIX.Low);
 									WriteMemoryWrapper(TUS, RegIX.High);
 									totalExecutedCycles += 20; pendingCycles -= 20;
@@ -2833,6 +2882,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x28: // JR Z, d
 									TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegPC.Word + TSB);
 									if (RegFlagZ)
 									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
@@ -2844,6 +2894,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									}
 									break;
 								case 0x29: // ADD IX, IX
+									RegWZ = (ushort)(RegIX + 1);
 									TI1 = (short)RegIX.Word; TI2 = (short)RegIX.Word; TIR = TI1 + TI2;
 									TUS = (ushort)TIR;
 									RegFlagH = ((TI1 & 0xFFF) + (TI2 & 0xFFF)) > 0xFFF;
@@ -2856,6 +2907,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x2A: // LD IX, (nn)
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = (ushort)(TUS + 1);
 									RegIX.Low = ReadMemoryWrapper(TUS++); RegIX.High = ReadMemoryWrapper(TUS);
 									totalExecutedCycles += 20; pendingCycles -= 20;
 									break;
@@ -2881,6 +2933,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x30: // JR NC, d
 									TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegPC.Word + TSB);
 									if (!RegFlagC)
 									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
@@ -2896,7 +2949,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 10; pendingCycles -= 10;
 									break;
 								case 0x32: // LD (nn), A
-									WriteMemoryWrapper((ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256), RegAF.High);
+									temp_WZ = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ.Low = (byte)((temp_WZ + 1) & 0xFF);
+									RegWZ.High = RegAF.High;
+									WriteMemoryWrapper(temp_WZ, RegAF.High);
 									totalExecutedCycles += 13; pendingCycles -= 13;
 									break;
 								case 0x33: // INC SP
@@ -2905,16 +2961,19 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x34: // INC (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									TB = ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)); RegAF.Low = (byte)(TableInc[++TB] | (RegAF.Low & 1)); WriteMemoryWrapper((ushort)(RegIX.Word + Displacement), TB);
 									totalExecutedCycles += 23; pendingCycles -= 23;
 									break;
 								case 0x35: // DEC (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									TB = ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)); RegAF.Low = (byte)(TableDec[--TB] | (RegAF.Low & 1)); WriteMemoryWrapper((ushort)(RegIX.Word + Displacement), TB);
 									totalExecutedCycles += 23; pendingCycles -= 23;
 									break;
 								case 0x36: // LD (IX+d), n
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIX.Word + Displacement), FetchMemoryWrapper(RegPC.Word++));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -2924,6 +2983,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x38: // JR C, d
 									TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegPC.Word + TSB);
 									if (RegFlagC)
 									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
@@ -2935,6 +2995,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									}
 									break;
 								case 0x39: // ADD IX, SP
+									RegWZ = (ushort)(RegIX + 1);
 									TI1 = (short)RegIX.Word; TI2 = (short)RegSP.Word; TIR = TI1 + TI2;
 									TUS = (ushort)TIR;
 									RegFlagH = ((TI1 & 0xFFF) + (TI2 & 0xFFF)) > 0xFFF;
@@ -2946,8 +3007,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 15; pendingCycles -= 15;
 									break;
 								case 0x3A: // LD A, (nn)
-									RegAF.High = ReadMemoryWrapper((ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256));
+									temp_WZ = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegAF.High = ReadMemoryWrapper(temp_WZ);
 									totalExecutedCycles += 13; pendingCycles -= 13;
+									RegWZ = (ushort)(temp_WZ + 1);
 									break;
 								case 0x3B: // DEC SP
 									--RegSP.Word;
@@ -2994,6 +3057,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x46: // LD B, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									RegBC.High = ReadMemoryWrapper((ushort)(RegIX.Word + Displacement));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3026,6 +3090,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x4E: // LD C, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									RegBC.Low = ReadMemoryWrapper((ushort)(RegIX.Word + Displacement));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3058,6 +3123,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x56: // LD D, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									RegDE.High = ReadMemoryWrapper((ushort)(RegIX.Word + Displacement));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3090,6 +3156,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x5E: // LD E, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									RegDE.Low = ReadMemoryWrapper((ushort)(RegIX.Word + Displacement));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3122,6 +3189,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x66: // LD H, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									RegHL.High = ReadMemoryWrapper((ushort)(RegIX.Word + Displacement));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3154,6 +3222,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x6E: // LD L, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									RegHL.Low = ReadMemoryWrapper((ushort)(RegIX.Word + Displacement));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3163,31 +3232,37 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x70: // LD (IX+d), B
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIX.Word + Displacement), RegBC.High);
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
 								case 0x71: // LD (IX+d), C
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIX.Word + Displacement), RegBC.Low);
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
 								case 0x72: // LD (IX+d), D
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIX.Word + Displacement), RegDE.High);
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
 								case 0x73: // LD (IX+d), E
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIX.Word + Displacement), RegDE.Low);
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
 								case 0x74: // LD (IX+d), H
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIX.Word + Displacement), RegHL.High);
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
 								case 0x75: // LD (IX+d), L
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIX.Word + Displacement), RegHL.Low);
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3197,6 +3272,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x77: // LD (IX+d), A
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIX.Word + Displacement), RegAF.High);
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3226,6 +3302,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x7E: // LD A, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									RegAF.High = ReadMemoryWrapper((ushort)(RegIX.Word + Displacement));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3258,6 +3335,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x86: // ADD A, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									RegAF.Word = TableALU[0, RegAF.High, ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)), 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3291,6 +3369,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x8E: // ADC A, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									RegAF.Word = TableALU[1, RegAF.High, ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)), RegFlagC ? 1 : 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3324,6 +3403,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x96: // SUB (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									RegAF.Word = TableALU[2, RegAF.High, ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)), 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3357,6 +3437,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x9E: // SBC A, (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									RegAF.Word = TableALU[3, RegAF.High, ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)), RegFlagC ? 1 : 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3390,6 +3471,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xA6: // AND (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									RegAF.Word = TableALU[4, RegAF.High, ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)), 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3423,6 +3505,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xAE: // XOR (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									RegAF.Word = TableALU[5, RegAF.High, ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)), 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3456,6 +3539,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xB6: // OR (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									RegAF.Word = TableALU[6, RegAF.High, ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)), 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3489,6 +3573,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xBE: // CP (IX+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									RegAF.Word = TableALU[7, RegAF.High, ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)), 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -3513,6 +3598,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xC2: // JP NZ, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (!RegFlagZ)
 									{
 										RegPC.Word = TUS;
@@ -3520,11 +3606,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 10; pendingCycles -= 10;
 									break;
 								case 0xC3: // JP nn
-									RegPC.Word = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
+									RegPC.Word = TUS;
 									totalExecutedCycles += 10; pendingCycles -= 10;
 									break;
 								case 0xC4: // CALL NZ, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (!RegFlagZ)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -3566,6 +3655,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xCA: // JP Z, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagZ)
 									{
 										RegPC.Word = TUS;
@@ -3574,6 +3664,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xCB: // (Prefix)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIX.Word + Displacement);
 									++RegR;
 									switch (FetchMemoryWrapper(RegPC.Word++))
 									{
@@ -3936,7 +4027,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											totalExecutedCycles += 23; pendingCycles -= 23;
 											break;
 										case 0x34: // SL1 (IX+d)→H
-											TUS = TableRotShift[1, 6, RegAF.Low + 256 * ReadMemoryWrapper((ushort)(RegIX.Word + Displacement))];
+											TUS = TableRotShift[1, 6, RegAF.Low + 256 * ReadMemoryWrapper((ushort)(RegIX.Word + Displacement))];								
 											WriteMemoryWrapper((ushort)(RegIX.Word + Displacement), (byte)(TUS >> 8));
 											RegAF.Low = (byte)TUS;
 											RegHL.High = (byte)TUS;
@@ -3950,20 +4041,20 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											totalExecutedCycles += 23; pendingCycles -= 23;
 											break;
 										case 0x36: // SL1 (IX+d)
-											TUS = TableRotShift[1, 6, RegAF.Low + 256 * ReadMemoryWrapper((ushort)(RegIX.Word + Displacement))];
+											TUS = TableRotShift[1, 6, RegAF.Low + 256 * ReadMemoryWrapper((ushort)(RegIX.Word + Displacement))];											
 											WriteMemoryWrapper((ushort)(RegIX.Word + Displacement), (byte)(TUS >> 8));
 											RegAF.Low = (byte)TUS;
 											totalExecutedCycles += 23; pendingCycles -= 23;
 											break;
 										case 0x37: // SL1 (IX+d)→A
-											TUS = TableRotShift[1, 6, RegAF.Low + 256 * ReadMemoryWrapper((ushort)(RegIX.Word + Displacement))];
+											TUS = TableRotShift[1, 6, RegAF.Low + 256 * ReadMemoryWrapper((ushort)(RegIX.Word + Displacement))];											
 											WriteMemoryWrapper((ushort)(RegIX.Word + Displacement), (byte)(TUS >> 8));
 											RegAF.Low = (byte)TUS;
 											RegAF.High = (byte)TUS;
 											totalExecutedCycles += 23; pendingCycles -= 23;
 											break;
 										case 0x38: // SRL (IX+d)→B
-											TUS = TableRotShift[1, 7, RegAF.Low + 256 * ReadMemoryWrapper((ushort)(RegIX.Word + Displacement))];
+											TUS = TableRotShift[1, 7, RegAF.Low + 256 * ReadMemoryWrapper((ushort)(RegIX.Word + Displacement))];											
 											WriteMemoryWrapper((ushort)(RegIX.Word + Displacement), (byte)(TUS >> 8));
 											RegAF.Low = (byte)TUS;
 											RegBC.High = (byte)TUS;
@@ -4021,6 +4112,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4029,6 +4122,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4037,6 +4132,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4045,6 +4142,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4053,6 +4152,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4061,6 +4162,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4069,6 +4172,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4077,6 +4182,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4085,6 +4192,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4093,6 +4202,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4101,6 +4212,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4109,6 +4222,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4117,6 +4232,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4125,6 +4242,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4133,6 +4252,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4141,6 +4262,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4149,6 +4272,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4157,6 +4282,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4165,6 +4292,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4173,6 +4302,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4181,6 +4312,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4189,6 +4322,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4197,6 +4332,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4205,6 +4342,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4213,6 +4352,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4221,6 +4362,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4229,6 +4372,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4237,6 +4382,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4245,6 +4392,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4253,6 +4402,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4261,6 +4412,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4269,6 +4422,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4277,6 +4432,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4285,6 +4442,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4293,6 +4452,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4301,6 +4462,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4309,6 +4472,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4317,6 +4482,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4325,6 +4492,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4333,6 +4502,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4341,6 +4512,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4349,6 +4522,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4357,6 +4532,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4365,6 +4542,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4373,6 +4552,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4381,6 +4562,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4389,6 +4572,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4397,6 +4582,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4405,6 +4592,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4413,6 +4602,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4421,6 +4612,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4429,6 +4622,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4437,6 +4632,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4445,6 +4642,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4453,6 +4652,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4461,6 +4662,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4469,6 +4672,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4477,6 +4682,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4485,6 +4692,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4493,6 +4702,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4501,6 +4712,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4509,6 +4722,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4517,6 +4732,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -4525,6 +4742,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIX.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -5157,6 +5376,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xCC: // CALL Z, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagZ)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -5170,6 +5390,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xCD: // CALL nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
 									RegPC.Word = TUS;
 									totalExecutedCycles += 17; pendingCycles -= 17;
@@ -5200,6 +5421,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xD2: // JP NC, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (!RegFlagC)
 									{
 										RegPC.Word = TUS;
@@ -5212,6 +5434,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xD4: // CALL NC, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (!RegFlagC)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -5255,6 +5478,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xDA: // JP C, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagC)
 									{
 										RegPC.Word = TUS;
@@ -5267,6 +5491,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xDC: // CALL C, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagC)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -5308,6 +5533,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xE2: // JP PO, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (!RegFlagP)
 									{
 										RegPC.Word = TUS;
@@ -5318,10 +5544,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									TUS = RegSP.Word; TBL = ReadMemoryWrapper(TUS++); TBH = ReadMemoryWrapper(TUS--);
 									WriteMemoryWrapper(TUS++, RegIX.Low); WriteMemoryWrapper(TUS, RegIX.High);
 									RegIX.Low = TBL; RegIX.High = TBH;
+									RegWZ = RegIX;
 									totalExecutedCycles += 23; pendingCycles -= 23;
 									break;
 								case 0xE4: // CALL C, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagC)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -5358,11 +5586,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									}
 									break;
 								case 0xE9: // JP IX
+									RegWZ = RegIX;
 									RegPC.Word = RegIX.Word;
 									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xEA: // JP PE, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagP)
 									{
 										RegPC.Word = TUS;
@@ -5375,6 +5605,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xEC: // CALL PE, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagP)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -5612,6 +5843,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x43: // LD (nn), BC
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											WriteMemoryWrapper(TUS++, RegBC.Low);
 											WriteMemoryWrapper(TUS, RegBC.High);
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -5663,6 +5895,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x4B: // LD BC, (nn)
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											RegBC.Low = ReadMemoryWrapper(TUS++); RegBC.High = ReadMemoryWrapper(TUS);
 											totalExecutedCycles += 20; pendingCycles -= 20;
 											break;
@@ -5712,6 +5945,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x53: // LD (nn), DE
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											WriteMemoryWrapper(TUS++, RegDE.Low);
 											WriteMemoryWrapper(TUS, RegDE.High);
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -5768,6 +6002,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x5B: // LD DE, (nn)
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											RegDE.Low = ReadMemoryWrapper(TUS++); RegDE.High = ReadMemoryWrapper(TUS);
 											totalExecutedCycles += 20; pendingCycles -= 20;
 											break;
@@ -5822,6 +6057,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x63: // LD (nn), HL
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											WriteMemoryWrapper(TUS++, RegHL.Low);
 											WriteMemoryWrapper(TUS, RegHL.High);
 											totalExecutedCycles += 16; pendingCycles -= 16;
@@ -5840,6 +6076,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											totalExecutedCycles += 8; pendingCycles -= 8;
 											break;
 										case 0x67: // RRD
+											RegWZ = (ushort)(RegHL + 1);
 											TB1 = RegAF.High; TB2 = ReadMemoryWrapper(RegHL.Word);
 											WriteMemoryWrapper(RegHL.Word, (byte)((TB2 >> 4) + (TB1 << 4)));
 											RegAF.High = (byte)((TB1 & 0xF0) + (TB2 & 0x0F));
@@ -5882,6 +6119,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x6B: // LD HL, (nn)
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											RegHL.Low = ReadMemoryWrapper(TUS++); RegHL.High = ReadMemoryWrapper(TUS);
 											totalExecutedCycles += 16; pendingCycles -= 16;
 											break;
@@ -5898,6 +6136,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											totalExecutedCycles += 8; pendingCycles -= 8;
 											break;
 										case 0x6F: // RLD
+											RegWZ = (ushort)(RegHL + 1);
 											TB1 = RegAF.High; TB2 = ReadMemoryWrapper(RegHL.Word);
 											WriteMemoryWrapper(RegHL.Word, (byte)((TB1 & 0x0F) + (TB2 << 4)));
 											RegAF.High = (byte)((TB1 & 0xF0) + (TB2 >> 4));
@@ -5940,6 +6179,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x73: // LD (nn), SP
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											WriteMemoryWrapper(TUS++, RegSP.Low);
 											WriteMemoryWrapper(TUS, RegSP.High);
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -5990,6 +6230,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x7B: // LD SP, (nn)
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											RegSP.Low = ReadMemoryWrapper(TUS++); RegSP.High = ReadMemoryWrapper(TUS);
 											totalExecutedCycles += 20; pendingCycles -= 20;
 											break;
@@ -6114,6 +6355,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											totalExecutedCycles += 16; pendingCycles -= 16;
 											break;
 										case 0xA1: // CPI
+											RegWZ = (ushort)(RegWZ + 1);
 											TB1 = ReadMemoryWrapper(RegHL.Word++); TB2 = (byte)(RegAF.High - TB1);
 											RegFlagN = true;
 											RegFlagH = TableHalfBorrow[RegAF.High, TB1];
@@ -6125,6 +6367,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											totalExecutedCycles += 16; pendingCycles -= 16;
 											break;
 										case 0xA2: // INI
+											RegWZ = (ushort)(RegBC + 1);
 											WriteMemoryWrapper(RegHL.Word++, ReadHardware(RegBC.Word));
 											--RegBC.High;
 											RegFlagZ = RegBC.High == 0;
@@ -6160,6 +6403,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											totalExecutedCycles += 16; pendingCycles -= 16;
 											break;
 										case 0xA9: // CPD
+											RegWZ = (ushort)(RegWZ - 1);
 											TB1 = ReadMemoryWrapper(RegHL.Word--); TB2 = (byte)(RegAF.High - TB1);
 											RegFlagN = true;
 											RegFlagH = TableHalfBorrow[RegAF.High, TB1];
@@ -6171,6 +6415,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											totalExecutedCycles += 16; pendingCycles -= 16;
 											break;
 										case 0xAA: // IND
+											RegWZ = (ushort)(RegBC - 1);
 											WriteMemoryWrapper(RegHL.Word--, ReadHardware(RegBC.Word));
 											--RegBC.High;
 											RegFlagZ = RegBC.High == 0;
@@ -6572,6 +6817,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xF2: // JP P, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (!RegFlagS)
 									{
 										RegPC.Word = TUS;
@@ -6584,6 +6830,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xF4: // CALL P, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (!RegFlagS)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -6625,6 +6872,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xFA: // JP M, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagS)
 									{
 										RegPC.Word = TUS;
@@ -6638,6 +6886,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xFC: // CALL M, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagS)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -6690,6 +6939,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0xE2: // JP PO, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (!RegFlagP)
 							{
 								RegPC.Word = TUS;
@@ -6700,10 +6950,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							TUS = RegSP.Word; TBL = ReadMemoryWrapper(TUS++); TBH = ReadMemoryWrapper(TUS--);
 							WriteMemoryWrapper(TUS++, RegHL.Low); WriteMemoryWrapper(TUS, RegHL.High);
 							RegHL.Low = TBL; RegHL.High = TBH;
+							RegWZ = RegHL;
 							totalExecutedCycles += 19; pendingCycles -= 19;
 							break;
 						case 0xE4: // CALL PO, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (!RegFlagP)
 							{
 								WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -6740,11 +6992,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							}
 							break;
 						case 0xE9: // JP HL
+							RegWZ = RegHL;
 							RegPC.Word = RegHL.Word;
 							totalExecutedCycles += 4; pendingCycles -= 4;
 							break;
 						case 0xEA: // JP PE, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (RegFlagP)
 							{
 								RegPC.Word = TUS;
@@ -6757,6 +7011,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0xEC: // CALL PE, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (RegFlagP)
 							{
 								WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -6994,6 +7249,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x43: // LD (nn), BC
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = (ushort)(TUS + 1);
 									WriteMemoryWrapper(TUS++, RegBC.Low);
 									WriteMemoryWrapper(TUS, RegBC.High);
 									totalExecutedCycles += 20; pendingCycles -= 20;
@@ -7045,6 +7301,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x4B: // LD BC, (nn)
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = (ushort)(TUS + 1);
 									RegBC.Low = ReadMemoryWrapper(TUS++); RegBC.High = ReadMemoryWrapper(TUS);
 									totalExecutedCycles += 20; pendingCycles -= 20;
 									break;
@@ -7094,6 +7351,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x53: // LD (nn), DE
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = (ushort)(TUS + 1);
 									WriteMemoryWrapper(TUS++, RegDE.Low);
 									WriteMemoryWrapper(TUS, RegDE.High);
 									totalExecutedCycles += 20; pendingCycles -= 20;
@@ -7150,6 +7408,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x5B: // LD DE, (nn)
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = (ushort)(TUS + 1);
 									RegDE.Low = ReadMemoryWrapper(TUS++); RegDE.High = ReadMemoryWrapper(TUS);
 									totalExecutedCycles += 20; pendingCycles -= 20;
 									break;
@@ -7204,6 +7463,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x63: // LD (nn), HL
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = (ushort)(TUS + 1);
 									WriteMemoryWrapper(TUS++, RegHL.Low);
 									WriteMemoryWrapper(TUS, RegHL.High);
 									totalExecutedCycles += 20; pendingCycles -= 20;
@@ -7222,6 +7482,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x67: // RRD
+									RegWZ = (ushort)(RegHL + 1);
 									TB1 = RegAF.High; TB2 = ReadMemoryWrapper(RegHL.Word);
 									WriteMemoryWrapper(RegHL.Word, (byte)((TB2 >> 4) + (TB1 << 4)));
 									RegAF.High = (byte)((TB1 & 0xF0) + (TB2 & 0x0F));
@@ -7264,6 +7525,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x6B: // LD HL, (nn)
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = (ushort)(TUS + 1);
 									RegHL.Low = ReadMemoryWrapper(TUS++); RegHL.High = ReadMemoryWrapper(TUS);
 									totalExecutedCycles += 20; pendingCycles -= 20;
 									break;
@@ -7280,6 +7542,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0x6F: // RLD
+									RegWZ = (ushort)(RegHL + 1);
 									TB1 = RegAF.High; TB2 = ReadMemoryWrapper(RegHL.Word);
 									WriteMemoryWrapper(RegHL.Word, (byte)((TB1 & 0x0F) + (TB2 << 4)));
 									RegAF.High = (byte)((TB1 & 0xF0) + (TB2 >> 4));
@@ -7322,6 +7585,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x73: // LD (nn), SP
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = (ushort)(TUS + 1);
 									WriteMemoryWrapper(TUS++, RegSP.Low);
 									WriteMemoryWrapper(TUS, RegSP.High);
 									totalExecutedCycles += 20; pendingCycles -= 20;
@@ -7372,6 +7636,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x7B: // LD SP, (nn)
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = (ushort)(TUS + 1);
 									RegSP.Low = ReadMemoryWrapper(TUS++); RegSP.High = ReadMemoryWrapper(TUS);
 									totalExecutedCycles += 20; pendingCycles -= 20;
 									break;
@@ -7496,6 +7761,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 16; pendingCycles -= 16;
 									break;
 								case 0xA1: // CPI
+									RegWZ = (ushort)(RegWZ + 1);
 									TB1 = ReadMemoryWrapper(RegHL.Word++); TB2 = (byte)(RegAF.High - TB1);
 									RegFlagN = true;
 									RegFlagH = TableHalfBorrow[RegAF.High, TB1];
@@ -7507,6 +7773,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 16; pendingCycles -= 16;
 									break;
 								case 0xA2: // INI
+									RegWZ = (ushort)(RegBC + 1);
 									WriteMemoryWrapper(RegHL.Word++, ReadHardware(RegBC.Word));
 									--RegBC.High;
 									RegFlagZ = RegBC.High == 0;
@@ -7542,6 +7809,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 16; pendingCycles -= 16;
 									break;
 								case 0xA9: // CPD
+									RegWZ = (ushort)(RegWZ - 1);
 									TB1 = ReadMemoryWrapper(RegHL.Word--); TB2 = (byte)(RegAF.High - TB1);
 									RegFlagN = true;
 									RegFlagH = TableHalfBorrow[RegAF.High, TB1];
@@ -7553,6 +7821,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 16; pendingCycles -= 16;
 									break;
 								case 0xAA: // IND
+									RegWZ = (ushort)(RegBC - 1);
 									WriteMemoryWrapper(RegHL.Word--, ReadHardware(RegBC.Word));
 									--RegBC.High;
 									RegFlagZ = RegBC.High == 0;
@@ -7954,6 +8223,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0xF2: // JP P, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (!RegFlagS)
 							{
 								RegPC.Word = TUS;
@@ -7966,6 +8236,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0xF4: // CALL P, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (!RegFlagS)
 							{
 								WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -8007,6 +8278,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0xFA: // JP M, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (RegFlagS)
 							{
 								RegPC.Word = TUS;
@@ -8020,6 +8292,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 							break;
 						case 0xFC: // CALL M, nn
 							TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+							RegWZ = TUS;
 							if (RegFlagS)
 							{
 								WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -8043,6 +8316,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 10; pendingCycles -= 10;
 									break;
 								case 0x02: // LD (BC), A
+									RegWZ.Low = (byte)((RegBC.Word + 1) & 0xFF);
+									RegWZ.High = RegAF.High;
 									WriteMemoryWrapper(RegBC.Word, RegAF.High);
 									totalExecutedCycles += 7; pendingCycles -= 7;
 									break;
@@ -8071,6 +8346,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 4; pendingCycles -= 4;
 									break;
 								case 0x09: // ADD IY, BC
+									RegWZ = (ushort)(RegIY + 1);
 									TI1 = (short)RegIY.Word; TI2 = (short)RegBC.Word; TIR = TI1 + TI2;
 									TUS = (ushort)TIR;
 									RegFlagH = ((TI1 & 0xFFF) + (TI2 & 0xFFF)) > 0xFFF;
@@ -8084,6 +8360,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 								case 0x0A: // LD A, (BC)
 									RegAF.High = ReadMemoryWrapper(RegBC.Word);
 									totalExecutedCycles += 7; pendingCycles -= 7;
+									RegWZ = (ushort)(RegBC.Word + 1);
 									break;
 								case 0x0B: // DEC BC
 									--RegBC.Word;
@@ -8107,6 +8384,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x10: // DJNZ d
 									TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegPC.Word + TSB);
 									if (--RegBC.High != 0)
 									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
@@ -8122,6 +8400,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 10; pendingCycles -= 10;
 									break;
 								case 0x12: // LD (DE), A
+									RegWZ.Low = (byte)((RegDE.Word + 1) & 0xFF);
+									RegWZ.High = RegAF.High;
 									WriteMemoryWrapper(RegDE.Word, RegAF.High);
 									totalExecutedCycles += 7; pendingCycles -= 7;
 									break;
@@ -8147,10 +8427,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x18: // JR d
 									TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegPC.Word + TSB);
 									RegPC.Word = (ushort)(RegPC.Word + TSB);
 									totalExecutedCycles += 12; pendingCycles -= 12;
 									break;
 								case 0x19: // ADD IY, DE
+									RegWZ = (ushort)(RegIY + 1);
 									TI1 = (short)RegIY.Word; TI2 = (short)RegDE.Word; TIR = TI1 + TI2;
 									TUS = (ushort)TIR;
 									RegFlagH = ((TI1 & 0xFFF) + (TI2 & 0xFFF)) > 0xFFF;
@@ -8164,6 +8446,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 								case 0x1A: // LD A, (DE)
 									RegAF.High = ReadMemoryWrapper(RegDE.Word);
 									totalExecutedCycles += 7; pendingCycles -= 7;
+									RegWZ = (ushort)(RegDE.Word + 1);
 									break;
 								case 0x1B: // DEC DE
 									--RegDE.Word;
@@ -8187,6 +8470,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x20: // JR NZ, d
 									TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegPC.Word + TSB);
 									if (!RegFlagZ)
 									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
@@ -8203,6 +8487,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x22: // LD (nn), IY
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = (ushort)(TUS + 1);
 									WriteMemoryWrapper(TUS++, RegIY.Low);
 									WriteMemoryWrapper(TUS, RegIY.High);
 									totalExecutedCycles += 20; pendingCycles -= 20;
@@ -8229,6 +8514,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x28: // JR Z, d
 									TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegPC.Word + TSB);
 									if (RegFlagZ)
 									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
@@ -8240,6 +8526,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									}
 									break;
 								case 0x29: // ADD IY, IY
+									RegWZ = (ushort)(RegIY + 1);
 									TI1 = (short)RegIY.Word; TI2 = (short)RegIY.Word; TIR = TI1 + TI2;
 									TUS = (ushort)TIR;
 									RegFlagH = ((TI1 & 0xFFF) + (TI2 & 0xFFF)) > 0xFFF;
@@ -8252,6 +8539,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x2A: // LD IY, (nn)
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = (ushort)(TUS + 1);
 									RegIY.Low = ReadMemoryWrapper(TUS++); RegIY.High = ReadMemoryWrapper(TUS);
 									totalExecutedCycles += 20; pendingCycles -= 20;
 									break;
@@ -8277,6 +8565,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x30: // JR NC, d
 									TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegPC.Word + TSB);
 									if (!RegFlagC)
 									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
@@ -8292,7 +8581,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 10; pendingCycles -= 10;
 									break;
 								case 0x32: // LD (nn), A
-									WriteMemoryWrapper((ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256), RegAF.High);
+									temp_WZ = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ.Low = (byte)((temp_WZ + 1) & 0xFF);
+									RegWZ.High = RegAF.High;
+									WriteMemoryWrapper(temp_WZ, RegAF.High);
 									totalExecutedCycles += 13; pendingCycles -= 13;
 									break;
 								case 0x33: // INC SP
@@ -8301,16 +8593,19 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x34: // INC (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									TB = ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)); RegAF.Low = (byte)(TableInc[++TB] | (RegAF.Low & 1)); WriteMemoryWrapper((ushort)(RegIY.Word + Displacement), TB);
 									totalExecutedCycles += 23; pendingCycles -= 23;
 									break;
 								case 0x35: // DEC (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									TB = ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)); RegAF.Low = (byte)(TableDec[--TB] | (RegAF.Low & 1)); WriteMemoryWrapper((ushort)(RegIY.Word + Displacement), TB);
 									totalExecutedCycles += 23; pendingCycles -= 23;
 									break;
 								case 0x36: // LD (IY+d), n
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIY.Word + Displacement), FetchMemoryWrapper(RegPC.Word++));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8320,6 +8615,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x38: // JR C, d
 									TSB = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegPC.Word + TSB);
 									if (RegFlagC)
 									{
 										RegPC.Word = (ushort)(RegPC.Word + TSB);
@@ -8331,6 +8627,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									}
 									break;
 								case 0x39: // ADD IY, SP
+									RegWZ = (ushort)(RegIY + 1);
 									TI1 = (short)RegIY.Word; TI2 = (short)RegSP.Word; TIR = TI1 + TI2;
 									TUS = (ushort)TIR;
 									RegFlagH = ((TI1 & 0xFFF) + (TI2 & 0xFFF)) > 0xFFF;
@@ -8342,8 +8639,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 15; pendingCycles -= 15;
 									break;
 								case 0x3A: // LD A, (nn)
-									RegAF.High = ReadMemoryWrapper((ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256));
+									temp_WZ = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegAF.High = ReadMemoryWrapper(temp_WZ);
 									totalExecutedCycles += 13; pendingCycles -= 13;
+									RegWZ = (ushort)(temp_WZ + 1);
 									break;
 								case 0x3B: // DEC SP
 									--RegSP.Word;
@@ -8390,6 +8689,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x46: // LD B, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									RegBC.High = ReadMemoryWrapper((ushort)(RegIY.Word + Displacement));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8422,6 +8722,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x4E: // LD C, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									RegBC.Low = ReadMemoryWrapper((ushort)(RegIY.Word + Displacement));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8454,6 +8755,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x56: // LD D, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									RegDE.High = ReadMemoryWrapper((ushort)(RegIY.Word + Displacement));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8486,6 +8788,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x5E: // LD E, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									RegDE.Low = ReadMemoryWrapper((ushort)(RegIY.Word + Displacement));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8518,6 +8821,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x66: // LD H, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									RegHL.High = ReadMemoryWrapper((ushort)(RegIY.Word + Displacement));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8550,6 +8854,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x6E: // LD L, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									RegHL.Low = ReadMemoryWrapper((ushort)(RegIY.Word + Displacement));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8559,31 +8864,37 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x70: // LD (IY+d), B
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIY.Word + Displacement), RegBC.High);
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
 								case 0x71: // LD (IY+d), C
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIY.Word + Displacement), RegBC.Low);
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
 								case 0x72: // LD (IY+d), D
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIY.Word + Displacement), RegDE.High);
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
 								case 0x73: // LD (IY+d), E
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIY.Word + Displacement), RegDE.Low);
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
 								case 0x74: // LD (IY+d), H
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIY.Word + Displacement), RegHL.High);
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
 								case 0x75: // LD (IY+d), L
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIY.Word + Displacement), RegHL.Low);
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8593,6 +8904,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x77: // LD (IY+d), A
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									WriteMemoryWrapper((ushort)(RegIY.Word + Displacement), RegAF.High);
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8622,6 +8934,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x7E: // LD A, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									RegAF.High = ReadMemoryWrapper((ushort)(RegIY.Word + Displacement));
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8654,6 +8967,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x86: // ADD A, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									RegAF.Word = TableALU[0, RegAF.High, ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)), 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8687,6 +9001,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x8E: // ADC A, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									RegAF.Word = TableALU[1, RegAF.High, ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)), RegFlagC ? 1 : 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8720,6 +9035,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x96: // SUB (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									RegAF.Word = TableALU[2, RegAF.High, ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)), 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8753,6 +9069,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0x9E: // SBC A, (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									RegAF.Word = TableALU[3, RegAF.High, ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)), RegFlagC ? 1 : 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8786,6 +9103,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xA6: // AND (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									RegAF.Word = TableALU[4, RegAF.High, ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)), 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8819,6 +9137,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xAE: // XOR (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									RegAF.Word = TableALU[5, RegAF.High, ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)), 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8852,6 +9171,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xB6: // OR (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									RegAF.Word = TableALU[6, RegAF.High, ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)), 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8885,6 +9205,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xBE: // CP (IY+d)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									RegAF.Word = TableALU[7, RegAF.High, ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)), 0];
 									totalExecutedCycles += 19; pendingCycles -= 19;
 									break;
@@ -8909,6 +9230,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xC2: // JP NZ, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (!RegFlagZ)
 									{
 										RegPC.Word = TUS;
@@ -8916,11 +9238,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									totalExecutedCycles += 10; pendingCycles -= 10;
 									break;
 								case 0xC3: // JP nn
-									RegPC.Word = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
+									RegPC.Word = TUS;
 									totalExecutedCycles += 10; pendingCycles -= 10;
 									break;
 								case 0xC4: // CALL NZ, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (!RegFlagZ)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -8962,6 +9287,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xCA: // JP Z, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagZ)
 									{
 										RegPC.Word = TUS;
@@ -8970,10 +9296,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xCB: // (Prefix)
 									Displacement = (sbyte)FetchMemoryWrapper(RegPC.Word++);
+									RegWZ = (ushort)(RegIY.Word + Displacement);
 									++RegR;
 									switch (FetchMemoryWrapper(RegPC.Word++))
 									{
 										case 0x00: // RLC (IY+d)
+											RegWZ = (ushort)(RegIY.Word + Displacement);
 											TUS = TableRotShift[1, 0, RegAF.Low + 256 * ReadMemoryWrapper((ushort)(RegIY.Word + Displacement))];
 											WriteMemoryWrapper((ushort)(RegIY.Word + Displacement), (byte)(TUS >> 8));
 											RegAF.Low = (byte)TUS;
@@ -9361,6 +9689,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9369,6 +9699,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9377,6 +9709,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9385,6 +9719,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9393,6 +9729,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9401,6 +9739,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9409,6 +9749,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9417,6 +9759,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x01) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9425,6 +9769,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9433,6 +9779,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9441,6 +9789,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9449,6 +9799,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9457,6 +9809,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9465,6 +9819,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9473,6 +9829,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9481,6 +9839,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x02) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9489,6 +9849,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9497,6 +9859,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9505,6 +9869,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9513,6 +9879,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9521,6 +9889,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9529,6 +9899,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9537,6 +9909,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9545,6 +9919,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x04) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9553,6 +9929,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9561,6 +9939,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9569,6 +9949,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9577,6 +9959,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9585,6 +9969,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9593,6 +9979,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9601,6 +9989,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9609,6 +9999,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x08) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9617,6 +10009,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9625,6 +10019,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9633,6 +10029,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9641,6 +10039,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9649,6 +10049,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9657,6 +10059,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9665,6 +10069,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9673,6 +10079,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x10) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9681,6 +10089,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9689,6 +10099,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9697,6 +10109,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9705,6 +10119,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9713,6 +10129,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9721,6 +10139,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9729,6 +10149,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9737,6 +10159,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x20) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9745,6 +10169,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9753,6 +10179,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9761,6 +10189,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9769,6 +10199,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9777,6 +10209,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9785,6 +10219,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9793,6 +10229,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9801,6 +10239,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x40) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = false;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9809,6 +10249,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9817,6 +10259,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9825,6 +10269,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9833,6 +10279,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9841,6 +10289,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9849,6 +10299,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9857,6 +10309,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -9865,6 +10319,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											RegFlagZ = (ReadMemoryWrapper((ushort)(RegIY.Word + Displacement)) & 0x80) == 0;
 											RegFlagP = RegFlagZ;
 											RegFlagS = !RegFlagZ;
+											RegFlag3 = RegWZ.High.Bit(3);
+											RegFlag5 = RegWZ.High.Bit(5);
 											RegFlagH = true;
 											RegFlagN = false;
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -10385,6 +10841,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xCC: // CALL Z, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagZ)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -10398,6 +10855,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xCD: // CALL nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
 									RegPC.Word = TUS;
 									totalExecutedCycles += 17; pendingCycles -= 17;
@@ -10428,6 +10886,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xD2: // JP NC, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (!RegFlagC)
 									{
 										RegPC.Word = TUS;
@@ -10440,6 +10899,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xD4: // CALL NC, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (!RegFlagC)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -10483,6 +10943,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xDA: // JP C, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagC)
 									{
 										RegPC.Word = TUS;
@@ -10495,6 +10956,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xDC: // CALL C, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagC)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -10536,6 +10998,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xE2: // JP PO, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (!RegFlagP)
 									{
 										RegPC.Word = TUS;
@@ -10546,10 +11009,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									TUS = RegSP.Word; TBL = ReadMemoryWrapper(TUS++); TBH = ReadMemoryWrapper(TUS--);
 									WriteMemoryWrapper(TUS++, RegIY.Low); WriteMemoryWrapper(TUS, RegIY.High);
 									RegIY.Low = TBL; RegIY.High = TBH;
+									RegWZ = RegIY;
 									totalExecutedCycles += 23; pendingCycles -= 23;
 									break;
 								case 0xE4: // CALL C, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagC)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -10586,11 +11051,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									}
 									break;
 								case 0xE9: // JP IY
+									RegWZ = RegIY;
 									RegPC.Word = RegIY.Word;
 									totalExecutedCycles += 8; pendingCycles -= 8;
 									break;
 								case 0xEA: // JP PE, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagP)
 									{
 										RegPC.Word = TUS;
@@ -10603,6 +11070,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xEC: // CALL PE, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagP)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -10840,6 +11308,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x43: // LD (nn), BC
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											WriteMemoryWrapper(TUS++, RegBC.Low);
 											WriteMemoryWrapper(TUS, RegBC.High);
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -10891,6 +11360,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x4B: // LD BC, (nn)
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											RegBC.Low = ReadMemoryWrapper(TUS++); RegBC.High = ReadMemoryWrapper(TUS);
 											totalExecutedCycles += 20; pendingCycles -= 20;
 											break;
@@ -10940,6 +11410,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x53: // LD (nn), DE
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											WriteMemoryWrapper(TUS++, RegDE.Low);
 											WriteMemoryWrapper(TUS, RegDE.High);
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -10996,6 +11467,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x5B: // LD DE, (nn)
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											RegDE.Low = ReadMemoryWrapper(TUS++); RegDE.High = ReadMemoryWrapper(TUS);
 											totalExecutedCycles += 20; pendingCycles -= 20;
 											break;
@@ -11050,6 +11522,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x63: // LD (nn), HL
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											WriteMemoryWrapper(TUS++, RegHL.Low);
 											WriteMemoryWrapper(TUS, RegHL.High);
 											totalExecutedCycles += 16; pendingCycles -= 16;
@@ -11068,6 +11541,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											totalExecutedCycles += 8; pendingCycles -= 8;
 											break;
 										case 0x67: // RRD
+											RegWZ = (ushort)(RegHL + 1);
 											TB1 = RegAF.High; TB2 = ReadMemoryWrapper(RegHL.Word);
 											WriteMemoryWrapper(RegHL.Word, (byte)((TB2 >> 4) + (TB1 << 4)));
 											RegAF.High = (byte)((TB1 & 0xF0) + (TB2 & 0x0F));
@@ -11110,6 +11584,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x6B: // LD HL, (nn)
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											RegHL.Low = ReadMemoryWrapper(TUS++); RegHL.High = ReadMemoryWrapper(TUS);
 											totalExecutedCycles += 16; pendingCycles -= 16;
 											break;
@@ -11126,6 +11601,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											totalExecutedCycles += 8; pendingCycles -= 8;
 											break;
 										case 0x6F: // RLD
+											RegWZ = (ushort)(RegHL + 1);
 											TB1 = RegAF.High; TB2 = ReadMemoryWrapper(RegHL.Word);
 											WriteMemoryWrapper(RegHL.Word, (byte)((TB1 & 0x0F) + (TB2 << 4)));
 											RegAF.High = (byte)((TB1 & 0xF0) + (TB2 >> 4));
@@ -11168,6 +11644,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x73: // LD (nn), SP
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											WriteMemoryWrapper(TUS++, RegSP.Low);
 											WriteMemoryWrapper(TUS, RegSP.High);
 											totalExecutedCycles += 20; pendingCycles -= 20;
@@ -11218,6 +11695,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											break;
 										case 0x7B: // LD SP, (nn)
 											TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+											RegWZ = (ushort)(TUS + 1);
 											RegSP.Low = ReadMemoryWrapper(TUS++); RegSP.High = ReadMemoryWrapper(TUS);
 											totalExecutedCycles += 20; pendingCycles -= 20;
 											break;
@@ -11342,6 +11820,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											totalExecutedCycles += 16; pendingCycles -= 16;
 											break;
 										case 0xA1: // CPI
+											RegWZ = (ushort)(RegWZ + 1);
 											TB1 = ReadMemoryWrapper(RegHL.Word++); TB2 = (byte)(RegAF.High - TB1);
 											RegFlagN = true;
 											RegFlagH = TableHalfBorrow[RegAF.High, TB1];
@@ -11353,6 +11832,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											totalExecutedCycles += 16; pendingCycles -= 16;
 											break;
 										case 0xA2: // INI
+											RegWZ = (ushort)(RegBC + 1);
 											WriteMemoryWrapper(RegHL.Word++, ReadHardware(RegBC.Word));
 											--RegBC.High;
 											RegFlagZ = RegBC.High == 0;
@@ -11388,6 +11868,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											totalExecutedCycles += 16; pendingCycles -= 16;
 											break;
 										case 0xA9: // CPD
+											RegWZ = (ushort)(RegWZ - 1);
 											TB1 = ReadMemoryWrapper(RegHL.Word--); TB2 = (byte)(RegAF.High - TB1);
 											RegFlagN = true;
 											RegFlagH = TableHalfBorrow[RegAF.High, TB1];
@@ -11399,6 +11880,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 											totalExecutedCycles += 16; pendingCycles -= 16;
 											break;
 										case 0xAA: // IND
+											RegWZ = (ushort)(RegBC - 1);
 											WriteMemoryWrapper(RegHL.Word--, ReadHardware(RegBC.Word));
 											--RegBC.High;
 											RegFlagZ = RegBC.High == 0;
@@ -11800,6 +12282,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xF2: // JP P, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (!RegFlagS)
 									{
 										RegPC.Word = TUS;
@@ -11812,6 +12295,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xF4: // CALL P, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (!RegFlagS)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -11853,6 +12337,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xFA: // JP M, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagS)
 									{
 										RegPC.Word = TUS;
@@ -11866,6 +12351,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 									break;
 								case 0xFC: // CALL M, nn
 									TUS = (ushort)(FetchMemoryWrapper(RegPC.Word++) + FetchMemoryWrapper(RegPC.Word++) * 256);
+									RegWZ = TUS;
 									if (RegFlagS)
 									{
 										WriteMemoryWrapper(--RegSP.Word, RegPC.High); WriteMemoryWrapper(--RegSP.Word, RegPC.Low);
@@ -11904,7 +12390,16 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 					}
 
 				}
-				bool int_triggered = false;
+
+				//EI (enable interrupts) actually takes effect after the NEXT instruction
+				if (EI_pending > 0)
+				{
+					EI_pending--;
+					if (EI_pending == 0)
+					{
+						IFF1 = IFF2 = true;
+					}
+				}
 
 				// Process interrupt requests.
 				if (nonMaskableInterruptPending)
@@ -11924,8 +12419,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 				}
 				else if (iff1 && interrupt && Interruptable)
 				{
-					int_triggered = true;
-
 					Halted = false;
 
 					iff1 = iff2 = false;
@@ -11950,15 +12443,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 					IRQCallback();
 				}
 
-				//EI (enable interrupts) actually takes effect after the NEXT instruction
-				if (EI_pending > 0)
-				{
-					EI_pending--;
-					if (EI_pending == 0 && !int_triggered)
-					{
-						IFF1 = IFF2 = true;
-					}
-				}
 
 			}
 		}

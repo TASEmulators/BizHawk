@@ -88,11 +88,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 		private RegisterPair RegBC;
 		private RegisterPair RegDE;
 		private RegisterPair RegHL;
+		private RegisterPair RegWZ;
 
 		private RegisterPair RegAltAF; // Shadow for A and F
 		private RegisterPair RegAltBC; // Shadow for B and C
 		private RegisterPair RegAltDE; // Shadow for D and E
 		private RegisterPair RegAltHL; // Shadow for H and L
+		// NOTE: There is no AltWZ register (despite it being shown on various block diagrams)
 
 		private byte RegI; // I (interrupt vector)
 		private byte RegR; // R (memory refresh)
@@ -106,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 		private void ResetRegisters()
 		{
 			// Clear main registers
-			RegAF = 0; RegBC = 0; RegDE = 0; RegHL = 0;
+			RegAF = 0; RegBC = 0; RegDE = 0; RegHL = 0; RegWZ = 0;
 			// Clear alternate registers
 			RegAltAF = 0; RegAltBC = 0; RegAltDE = 0; RegAltHL = 0;
 			// Clear special purpose registers
@@ -162,6 +164,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 			get { return RegDE.Low; }
 			set { RegDE.Low = value; }
 		}
+
 		public ushort RegisterDE
 		{
 			get { return RegDE.Word; }
@@ -179,10 +182,29 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 			get { return RegHL.Low; }
 			set { RegHL.Low = value; }
 		}
+
 		public ushort RegisterHL
 		{
 			get { return RegHL.Word; }
 			set { RegHL.Word = value; }
+		}
+
+		public byte RegisterW
+		{
+			get { return RegWZ.High; }
+			set { RegWZ.High = value; }
+		}
+
+		public byte RegisterZ
+		{
+			get { return RegWZ.Low; }
+			set { RegWZ.Low = value; }
+		}
+
+		public ushort RegisterWZ
+		{
+			get { return RegWZ.Word; }
+			set { RegWZ.Word = value; }
 		}
 
 		public ushort RegisterPC
@@ -190,46 +212,55 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 			get { return RegPC.Word; }
 			set { RegPC.Word = value; }
 		}
+
 		public ushort RegisterSP
 		{
 			get { return RegSP.Word; }
 			set { RegSP.Word = value; }
 		}
+
 		public ushort RegisterIX
 		{
 			get { return RegIX.Word; }
 			set { RegIX.Word = value; }
 		}
+
 		public ushort RegisterIY
 		{
 			get { return RegIY.Word; }
 			set { RegIY.Word = value; }
 		}
+
 		public byte RegisterI
 		{
 			get { return RegI; }
 			set { RegI = value; }
 		}
+
 		public byte RegisterR
 		{
 			get { return RegR; }
 			set { RegR = value; }
 		}
+
 		public ushort RegisterShadowAF
 		{
 			get { return RegAltAF.Word; }
 			set { RegAltAF.Word = value; }
 		}
+
 		public ushort RegisterShadowBC
 		{
 			get { return RegAltBC.Word; }
 			set { RegAltBC.Word = value; }
 		}
+
 		public ushort RegisterShadowDE
 		{
 			get { return RegAltDE.Word; }
 			set { RegAltDE.Word = value; }
 		}
+
 		public ushort RegisterShadowHL
 		{
 			get { return RegAltHL.Word; }

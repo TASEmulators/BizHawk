@@ -6,20 +6,17 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
 	// Emulates the TIA
-	public partial class TIA : ISoundProvider
+	public partial class TIA
 	{
 		public A7800Hawk Core { get; set; }
 
 		public byte BusState;
 
 		private bool _doTicks;
-
-		private int _spf;
-
+		public int AudioClocks; // not savestated
 		public int _hsyncCnt;
 		private int _capChargeStart;
 		private bool _capCharging;
-		public int AudioClocks; // not savestated
 
 		private readonly Audio[] AUD = { new Audio(), new Audio() };
 
@@ -33,7 +30,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			_capChargeStart = 0;
 			_capCharging = false;
 			AudioClocks = 0;
-			_spf = (Core.maria._frameHz > 55) ? 740 : 880;
 			_doTicks = false;
 		}
 
@@ -45,11 +41,32 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			AudioClocks++;
 		}
 
+		public void GetSamples(short[] samples)
+		{
+			if (AudioClocks > 0)
+			{
+				var samples31Khz = new short[AudioClocks]; // mono
+
+				for (int i = 0; i < AudioClocks; i++)
+				{
+					samples31Khz[i] = LocalAudioCycles[i];
+					LocalAudioCycles[i] = 0;
+				}
+
+				// convert from 31khz to 44khz
+				for (var i = 0; i < samples.Length / 2; i++)
+				{
+					samples[i * 2] = samples31Khz[(int)(((double)samples31Khz.Length / (double)(samples.Length / 2)) * i)];
+					samples[(i * 2) + 1] = samples[i * 2];
+				}
+			}
+
+			AudioClocks = 0;
+		}
+
 		public byte ReadMemory(ushort addr, bool peek)
 		{
 			var maskedAddr = (ushort)(addr & 0x000F);
-			byte coll = 0;
-			int mask = 0;
 
 			if (maskedAddr == 0x00) // CXM0P
 			{
@@ -98,7 +115,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			//INPT0-3 are used to read 2 button joysticks as well for the A7800
 			if (maskedAddr == 0x08) // INPT0
 			{
-				if (Core.m6532._outputB == 0 && (Core.m6532._ddRb & 0x10)==0x10)
+				if ((Core.m6532._outputB & 0x04) == 0 && (Core.m6532._ddRb & 0x04) == 0x04)
 				{
 					Core._islag = false;
 					return (byte)(Core.p1_fire_2x & 0x80);
@@ -111,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			if (maskedAddr == 0x09) // INPT1
 			{
-				if (Core.m6532._outputB == 0 && (Core.m6532._ddRb & 0x10) == 0x10)
+				if ((Core.m6532._outputB & 0x04) == 0 && (Core.m6532._ddRb & 0x04) == 0x04)
 				{
 					Core._islag = false;
 					return (byte)((Core.p1_fire_2x & 0x40)<<1);
@@ -124,7 +141,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			if (maskedAddr == 0x0A) // INPT2
 			{
-				if (Core.m6532._outputB == 0 && (Core.m6532._ddRb & 0x04) == 0x04)
+				if ((Core.m6532._outputB & 0x10) == 0 && (Core.m6532._ddRb & 0x10) == 0x10)
 				{
 					Core._islag = false;
 					return (byte)(Core.p2_fire_2x & 0x80);
@@ -137,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			if (maskedAddr == 0x0B) // INPT3
 			{
-				if (Core.m6532._outputB == 0 && (Core.m6532._ddRb & 0x04) == 0x04)
+				if ((Core.m6532._outputB & 0x10) == 0 && (Core.m6532._ddRb & 0x10) == 0x10)
 				{
 					Core._islag = false;
 					return (byte)((Core.p2_fire_2x & 0x40)<<1);
@@ -151,13 +168,50 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (maskedAddr == 0x0C) // INPT4
 			{
 				Core._islag = false;
-				return Core.p1_fire;
+
+				if (!Core.p1_is_2button)
+				{
+					if (!Core.p1_is_lightgun)
+					{
+						return Core.p1_fire;
+					}
+					else
+					{
+						return Core.lg_1_trigger_hit;
+					}			
+				}
+				else if ((Core.m6532._outputB & 0x04) != 0 || (Core.m6532._ddRb & 0x04) != 0x04)
+				{
+					return Core.p1_fire;
+				}
+				else
+				{
+					return 0x80;
+				}
 			}
 
 			if (maskedAddr == 0x0D) // INPT5
 			{
 				Core._islag = false;
-				return Core.p2_fire;
+				if (!Core.p2_is_2button)
+				{
+					if (!Core.p2_is_lightgun)
+					{
+						return Core.p2_fire;
+					}
+					else
+					{
+						return Core.lg_2_trigger_hit;
+					}
+				}
+				else if ((Core.m6532._outputB & 0x10) != 0 || (Core.m6532._ddRb & 0x10) != 0x10)
+				{
+					return Core.p2_fire;
+				}
+				else
+				{
+					return 0x80;
+				}
 			}
 
 			return 0;

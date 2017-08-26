@@ -9,7 +9,7 @@ using BizHawk.Emulation.Cores.Components.M6502;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
-	public partial class NES : IEmulator
+	public partial class NES : IEmulator, ICycleTiming
 	{
 		//hardware/state
 		public MOS6502X cpu;
@@ -216,6 +216,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					cpuclockrate = 1662607;
 					cpu_sequence = cpu_sequence_PAL;
 					_display_type = DisplayType.PAL;
+					ClockRate = 5320342.5;
 					break;
 				case Common.DisplayType.NTSC:
 					apu = new APU(this, apu, false);
@@ -224,6 +225,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					VsyncDen = 655171;
 					cpuclockrate = 1789773;
 					cpu_sequence = cpu_sequence_NTSC;
+					ClockRate = 5369318.1818181818181818181818182;
 					break;
 				// this is in bootgod, but not used at all
 				case Common.DisplayType.Dendy:
@@ -234,6 +236,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					cpuclockrate = 1773448;
 					cpu_sequence = cpu_sequence_NTSC;
 					_display_type = DisplayType.Dendy;
+					ClockRate = 5320342.5;
 					break;
 				default:
 					throw new Exception("Unknown displaytype!");
@@ -295,6 +298,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 		}
+
+		public long CycleCount => ppu.TotalCycles;
+		public double ClockRate { get; private set; }
 
 		private int VsyncNum { get; set; }
 		private int VsyncDen { get; set; }

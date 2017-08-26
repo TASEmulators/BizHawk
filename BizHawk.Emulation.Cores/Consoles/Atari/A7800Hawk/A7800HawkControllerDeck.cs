@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			Definition = new ControllerDefinition
 			{
-				Name = "A7800 Controller",
+				Name = Port1.Definition.Name,
 				BoolButtons = Port1.Definition.BoolButtons
 					.Concat(Port2.Definition.BoolButtons)
 					.Concat(new[]
@@ -35,9 +35,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						"Power",
 						"Reset",
 						"Select",
-						"BW", 
-						"Left Difficulty", // better not put P# on these as they might not correspond to player numbers
-						"Right Difficulty",
+						"BW",
+						"Toggle Left Difficulty", // better not put P# on these as they might not correspond to player numbers
+						"Toggle Right Difficulty",
 						"Pause"
 					})
 					.ToList()
@@ -80,6 +80,26 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			return Port2.ReadFire2x(c);
 		}
 
+		public bool Is_2_button1(IController c)
+		{
+			return Port1.Is_2_button(c);
+		}
+
+		public bool Is_2_button2(IController c)
+		{
+			return Port2.Is_2_button(c);
+		}
+
+		public bool Is_LightGun1(IController c, out float lightgun_x, out float lightgun_y)
+		{
+			return Port1.Is_LightGun(c, out lightgun_x, out lightgun_y);
+		}
+
+		public bool Is_LightGun2(IController c, out float lightgun_x, out float lightgun_y)
+		{
+			return Port2.Is_LightGun(c, out lightgun_x, out lightgun_y);
+		}
+
 		public ControllerDefinition Definition { get; }
 
 		public void SyncState(Serializer ser)
@@ -117,5 +137,4 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public static string DefaultControllerName => typeof(StandardController).DisplayName();
 	}
-
 }

@@ -85,6 +85,8 @@ namespace BizHawk.Emulation.Common
 							string xaxis = constraint.Params[0] as string;
 							string yaxis = constraint.Params[1] as string;
 							float range = (float)constraint.Params[2];
+							if (!floatButtons.ContainsKey(xaxis)) break;
+							if (!floatButtons.ContainsKey(yaxis)) break;
 							double xval = floatButtons[xaxis];
 							double yval = floatButtons[yaxis];
 							double length = Math.Sqrt((xval * xval) + (yval * yval));
