@@ -160,6 +160,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (tia._hsyncCnt == 113 || tia._hsyncCnt == 340)
 			{
 				tia.Execute(0);
+
+				// even though its clocked seperately, we sample the Pokey here
+				pokey.sample();
 			}
 
 			// tick the m6532 timer, which is still active although not recommended to use
@@ -371,10 +374,18 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
 			short[] ret = new short[_spf * 2];
+			
 			nsamp = _spf;
 			tia.GetSamples(ret);
-			// add pokey samples here
-
+			if (is_pokey)
+			{
+				short[] ret2 = new short[_spf * 2];
+				pokey.GetSamples(ret2);
+				for (int i = 0; i < _spf * 2; i ++)
+				{
+					ret[i] += ret2[i];
+				}
+			}
 
 			samples = ret;
 		}
