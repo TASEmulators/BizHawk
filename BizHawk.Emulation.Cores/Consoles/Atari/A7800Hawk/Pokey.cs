@@ -18,9 +18,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 	 * The registers are write only, except for the RNG none of the things that would return reads are connected
 	 * for now return FF
 	 */
-
-
-
 	public class Pokey
 	{
 		public A7800Hawk Core { get; set; }
@@ -111,24 +108,24 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// poly5 output: 1101001100000111001000101011110
 			if ((Regs[0xF] & 3) != 0)
 			{
-				bit_xor = ((poly4 >> 3) ^ (poly4 >> 2) ^ poly4) & 1;
+				bit_xor = ((poly4) ^ (poly4 >> 1)) & 1;
 				poly4 = (poly4 >> 1) | (bit_xor << 3);
 
-				bit_xor = ((poly5 >> 4) ^ (poly5 >> 2) ^ poly5) & 1;
+				bit_xor = ((poly5 >> 2) ^ poly5) & 1;
 				poly5 = (poly5 >> 1) | (bit_xor << 4);
 
 				if (Regs[8].Bit(7))
 				{
 					// clock only 9 bits of the 17 bit poly
 					poly9 = poly17 >> 8;
-					bit_xor = ((poly9 >> 8) ^ (poly9 >> 4) ^ poly9) & 1;
+					bit_xor = ((poly9 >> 4) ^ poly9) & 1;
 					poly9 = (poly9 >> 1) | (bit_xor << 8);
 					poly17 = (poly17 & 0xFF) | (poly9 << 8);
 				}
 				else
 				{
 					// clock the whole 17 bit poly
-					bit_xor = ((poly17 >> 16) ^ (poly17 >> 13) ^ poly17) & 1;
+					bit_xor = ((poly17 >> 3) ^ poly17) & 1;
 					poly17 = (poly17 >> 1) | (bit_xor << 16);
 				}
 			}
@@ -200,7 +197,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				if (clock_ch[i])
 				{
 					ch_div[i]++;
-					if (ch_div[i] == (Regs[i * 2] + 1))
+
+					if (ch_div[i] >= (Regs[i * 2] + 1))
 					{
 						ch_div[i] = 0;
 
@@ -262,6 +260,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							{
 								ch_out[i] = poly4.Bit(3);
 							}
+
 							ch_src[i] = !ch_src[i];
 						}
 
