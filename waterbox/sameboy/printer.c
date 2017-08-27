@@ -1,4 +1,5 @@
 #include "gb.h"
+#include "../emulibc/emulibc.h"
 
 /* TODO: Emulation is VERY basic and assumes the ROM correctly uses the printer's interface.
          Incorrect usage is not correctly emulated, as it's not well documented, nor do I
@@ -8,6 +9,9 @@
          might prevent the printer operation until the GameBoy is restarted.
  
          Also, field mask values are assumed. */
+
+// hackadoodle!  we must not overflow the stack
+static ECL_INVISIBLE uint32_t tmp_image[160 * 200];
 
 static void handle_command(GB_gameboy_t *gb)
 {
@@ -21,7 +25,7 @@ static void handle_command(GB_gameboy_t *gb)
         case GB_PRINTER_START_COMMAND:
             if (gb->printer.command_length == 4) {
                 gb->printer.status = 6; /* Printing */
-                uint32_t image[gb->printer.image_offset];
+                uint32_t *const image = tmp_image;
                 uint8_t palette = gb->printer.command_data[2];
                 uint32_t colors[4] = {gb->rgb_encode_callback(gb, 0xff, 0xff, 0xff),
                                       gb->rgb_encode_callback(gb, 0xaa, 0xaa, 0xaa),
