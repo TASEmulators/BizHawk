@@ -162,7 +162,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				tia.Execute(0);
 
 				// even though its clocked seperately, we sample the Pokey here
-				pokey.sample();
+				if (is_pokey) { pokey.sample(); }
 			}
 
 			// tick the m6532 timer, which is still active although not recommended to use
