@@ -219,12 +219,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							{
 								ch_out[i] = poly5.Bit(16);
 							}
-							ch_src[i] = !ch_src[i];
 						}
 						else if (((Regs[i * 2 + 1] & 0xF0) == 0x20) || ((Regs[i * 2 + 1] & 0xF0) == 0x60))
 						{
 							// 5 bit poly
-							ch_out[i] = poly5.Bit(4);
+							if (ch_src[i])
+							{
+								ch_out[i] = poly5.Bit(4);
+							}
 						}
 						else if ((Regs[i * 2 + 1] & 0xF0) == 0x40)
 						{
@@ -237,7 +239,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							{
 								ch_out[i] = poly4.Bit(3);
 							}
-							ch_src[i] = !ch_src[i];
 						}
 						else if ((Regs[i * 2 + 1] & 0xF0) == 0x80)
 						{
@@ -246,12 +247,14 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							{
 								ch_out[i] = poly17.Bit(16);
 							}
-							ch_src[i] = !ch_src[i];
 						}
 						else if ((Regs[i * 2 + 1] & 0xF0) == 0xA0)
 						{
 							// tone
-							ch_out[i] = !ch_out[i];
+							if (ch_src[i])
+							{
+								ch_out[i] = !ch_out[i];
+							}
 						}
 						else if ((Regs[i * 2 + 1] & 0xF0) == 0xC0)
 						{
@@ -259,10 +262,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							if (ch_src[i])
 							{
 								ch_out[i] = poly4.Bit(3);
-							}
-
-							ch_src[i] = !ch_src[i];
+							}					
 						}
+						ch_src[i] = !ch_src[i];
 
 						// for channels 1 and 2, an optional high pass filter exists
 						// the filter is just a flip flop and xor combo
