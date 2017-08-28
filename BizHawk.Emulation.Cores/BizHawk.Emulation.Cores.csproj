@@ -535,6 +535,7 @@
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IVideoProvider.cs">
       <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambattePrinter.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GamebatteLink.ISoundProvider.cs">
       <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>

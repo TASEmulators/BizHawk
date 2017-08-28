@@ -39,6 +39,7 @@ class Memory {
 	void (*writeCallback)(unsigned);
 	void (*execCallback)(unsigned);
 	CDCallback cdCallback;
+	void (*linkCallback)();
 
 	unsigned (*getInput)();
 	unsigned long divLastUpdate;
@@ -273,6 +274,10 @@ public:
 
 	void setRTCCallback(std::uint32_t (*callback)()) {
 		cart.setRTCCallback(callback);
+	}
+
+	void setLinkCallback(void (*callback)()) {
+		this->linkCallback = callback;
 	}
 
 	void setEndtime(unsigned long cc, unsigned long inc);
