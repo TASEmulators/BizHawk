@@ -141,6 +141,10 @@ void GB::setRTCCallback(std::uint32_t (*callback)()) {
 	p_->cpu.setRTCCallback(callback);
 }
 
+void GB::setLinkCallback(void(*callback)()) {
+	p_->cpu.setLinkCallback(callback);
+}
+
 int GB::load(const char *romfiledata, unsigned romfilelength, const char *biosfiledata, unsigned biosfilelength, const std::uint32_t now, const unsigned flags) {
 	//if (p_->cpu.loaded())
 	//	p_->cpu.saveSavedata();

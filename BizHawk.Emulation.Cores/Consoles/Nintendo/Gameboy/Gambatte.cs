@@ -497,6 +497,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
+		GambattePrinter printer;
+
 		/// <summary>
 		/// set up Printer callback
 		/// </summary>
@@ -508,7 +510,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				return; // not sure how this is being reached.  tried the debugger...
 			}
 
-			// TODO: this
+			if (callback != null)
+			{
+				printer = new GambattePrinter(this, callback);
+			}
+			else
+			{
+				printer.Disconnect();
+				printer = null;
+			}
 		}
 
 		LibGambatte.ScanlineCallback scanlinecb;

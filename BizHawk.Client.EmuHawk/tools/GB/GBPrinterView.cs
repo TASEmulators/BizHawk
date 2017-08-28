@@ -19,10 +19,10 @@ namespace BizHawk.Client.EmuHawk
 	{
 		const int PaperWidth = 160;
 
-		// the lightest color
+		// the bg color
 		private static readonly uint PaperColor = (uint)Color.AntiqueWhite.ToArgb();
-		// the darkest color
-		private static readonly uint InkColor = (uint)Color.DarkSlateGray.ToArgb();
+
+		private ColorMatrix PaperAdjustment;
 
 		[RequiredService]
 		public IGameboyCommon Gb { get; private set; }
@@ -36,6 +36,15 @@ namespace BizHawk.Client.EmuHawk
 		public GBPrinterView()
 		{
 			InitializeComponent();
+
+			// adjust the color of the printed output to be more papery
+			PaperAdjustment = new ColorMatrix();
+			PaperAdjustment.Matrix00 = (0xFA - 0x10) / 255F;
+			PaperAdjustment.Matrix40 = 0x10 / 255F;
+			PaperAdjustment.Matrix11 = (0xEB - 0x10) / 255F;
+			PaperAdjustment.Matrix41 = 0x10 / 255F;
+			PaperAdjustment.Matrix22 = (0xD7 - 0x18) / 255F;
+			PaperAdjustment.Matrix42 = 0x18 / 255F;
 
 			paperView.ChangeBitmapSize(PaperWidth, PaperWidth);
 
@@ -87,7 +96,6 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		void OnPrint(IntPtr image, byte height, byte topMargin, byte bottomMargin, byte exposure)
 		{
-			return;
 			// In this implementation:
 			//   the bottom margin and top margin are just white lines at the top and bottom
 			//   exposure is ignored
@@ -112,12 +120,18 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			page.UnlockBits(bmp);
+
 			// add it to the bottom of the history
 			int oldHeight = printerHistory.Height;
 			ResizeHistory(printerHistory.Height + page.Height + topMargin + bottomMargin);
 			using (var g = Graphics.FromImage(printerHistory))
 			{
-				g.DrawImage(page, new Point(0, oldHeight + topMargin));
+				// Make it brown
+				ImageAttributes a = new ImageAttributes();
+				a.SetColorMatrix(PaperAdjustment);
+
+				g.DrawImage(page, new Rectangle(0, oldHeight + topMargin, page.Width, page.Height), 0F, 0F, page.Width, page.Height, GraphicsUnit.Pixel, a);
 				g.Flush();
 			}
 			RefreshView();
@@ -159,7 +173,7 @@ namespace BizHawk.Client.EmuHawk
 			printerHistory = newHistory;
 
 			// Update scrollbar, viewport is a square
-			paperScroll.Maximum = Math.Max(0, PaperWidth - height);
+			paperScroll.Maximum = Math.Max(0, height);
 		}
 
 		void RefreshView()
@@ -167,7 +181,7 @@ namespace BizHawk.Client.EmuHawk
 			using (Graphics g = Graphics.FromImage(paperView.BMP))
 			{
 				g.Clear(Color.FromArgb((int)PaperColor));
-				g.DrawImage(printerHistory, new Point(0, paperScroll.Value));
+				g.DrawImage(printerHistory, new Point(0, -paperScroll.Value));
 				g.Flush();
 			}
 
