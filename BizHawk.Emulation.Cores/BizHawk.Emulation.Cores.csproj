@@ -63,9 +63,6 @@
     <Reference Include="ELFSharp">
       <HintPath>..\References\ELFSharp.dll</HintPath>
     </Reference>
-    <Reference Include="EMU7800">
-      <HintPath>..\References\EMU7800.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
     </Reference>
