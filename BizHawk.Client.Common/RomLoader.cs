@@ -937,7 +937,7 @@ namespace BizHawk.Client.Common
 								}
 								break;
 							case "A78":
-								var gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "EMU7800.csv");
+								var gamedbpath = Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb_a7800.csv");
 								nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gamedbpath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
 								break;
 							case "C64":
