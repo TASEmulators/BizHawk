@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			public long Time;
 			public Buttons Keys;
 		}
-
+		
 		[BizImport(CC)]
 		public abstract bool Init(bool cgb, byte[] spc, int spclen);
 
@@ -51,5 +51,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 
 		[BizImport(CC)]
 		public abstract bool HasSaveRam();
+
+		[BizImport(CC)]
+		public abstract void SetPrinterCallback(PrinterCallback callback);
 	}
 }

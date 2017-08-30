@@ -29,6 +29,7 @@ Memory::Memory(const Interrupter &interrupter_in)
   writeCallback(0),
   execCallback(0),
   cdCallback(0),
+  linkCallback(0),
   getInput(0),
   divLastUpdate(0),
   lastOamDmaUpdate(DISABLED_TIME),
@@ -123,6 +124,8 @@ void Memory::updateSerial(const unsigned long cc) {
 			if (intreq.eventTime(SERIAL) <= cc) {
 				linkClockTrigger = true;
 				intreq.setEventTime<SERIAL>(DISABLED_TIME);
+				if (linkCallback)
+					linkCallback();
 			}
 		}
 	}

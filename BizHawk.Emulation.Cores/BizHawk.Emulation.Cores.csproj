@@ -63,9 +63,6 @@
     <Reference Include="ELFSharp">
       <HintPath>..\References\ELFSharp.dll</HintPath>
     </Reference>
-    <Reference Include="EMU7800">
-      <HintPath>..\References\EMU7800.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -372,26 +369,6 @@
     <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\Tia.Audio.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\TIA.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\Tia.SyncState.cs" />
-    <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
-    <Compile Include="Consoles\Atari\7800\Atari7800.IDebuggable.cs">
-      <DependentUpon>Atari7800.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Atari\7800\Atari7800.IEmulator.cs">
-      <DependentUpon>Atari7800.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Atari\7800\Atari7800.IInputPollable.cs">
-      <DependentUpon>Atari7800.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Atari\7800\Atari7800.IMemoryDomains.cs">
-      <DependentUpon>Atari7800.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Atari\7800\Atari7800.IStatable.cs">
-      <DependentUpon>Atari7800.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Atari\7800\Atari7800Control.cs" />
-    <Compile Include="Consoles\Atari\7800\Atari7800.ISaveRam.cs">
-      <DependentUpon>Atari7800.cs</DependentUpon>
-    </Compile>
     <Compile Include="Consoles\Atari\lynx\LibLynx.cs" />
     <Compile Include="Consoles\Atari\lynx\Lynx.cs" />
     <Compile Include="Consoles\Atari\lynx\Lynx.IInputPollable.cs">
@@ -535,6 +512,7 @@
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IVideoProvider.cs">
       <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambattePrinter.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GamebatteLink.ISoundProvider.cs">
       <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>

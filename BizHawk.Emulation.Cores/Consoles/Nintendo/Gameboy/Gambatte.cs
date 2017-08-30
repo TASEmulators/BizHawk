@@ -497,6 +497,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			}
 		}
 
+		GambattePrinter printer;
+
+		/// <summary>
+		/// set up Printer callback
+		/// </summary>
+		public void SetPrinterCallback(PrinterCallback callback)
+		{
+			// Copying SetScanlineCallback for this check, I assume this is still a bug somewhere
+			if (GambatteState == IntPtr.Zero)
+			{
+				return; // not sure how this is being reached.  tried the debugger...
+			}
+
+			if (callback != null)
+			{
+				printer = new GambattePrinter(this, callback);
+			}
+			else
+			{
+				printer.Disconnect();
+				printer = null;
+			}
+		}
+
 		LibGambatte.ScanlineCallback scanlinecb;
 		ScanlineCallback endofframecallback;
 
