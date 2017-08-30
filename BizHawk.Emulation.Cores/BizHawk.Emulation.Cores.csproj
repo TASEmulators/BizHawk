@@ -365,7 +365,7 @@
     </Compile>
     <Compile Include="Consoles\Atari\A7800Hawk\M6532.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\Maria.cs" />
-		<Compile Include="Consoles\Atari\A7800Hawk\Pokey.cs" />
+    <Compile Include="Consoles\Atari\A7800Hawk\Pokey.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\Tia.Audio.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\TIA.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\Tia.SyncState.cs" />
@@ -461,6 +461,9 @@
       <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IEmulator.cs">
+      <DependentUpon>Gambatte.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ILinkable.cs">
       <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IMemoryDomains.cs">

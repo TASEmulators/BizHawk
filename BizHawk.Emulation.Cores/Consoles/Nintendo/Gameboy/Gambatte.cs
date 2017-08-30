@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 	[ServiceNotApplicable(typeof(IDriveLight), typeof(IDriveLight))]
 	public partial class Gameboy : IEmulator, IVideoProvider, ISoundProvider, ISaveRam, IStatable, IInputPollable, ICodeDataLogger,
 		IBoardInfo, IDebuggable, ISettable<Gameboy.GambatteSettings, Gameboy.GambatteSyncSettings>,
-		IGameboyCommon, ICycleTiming
+		IGameboyCommon, ICycleTiming, ILinkable
 	{
 		[CoreConstructor("GB", "GBC")]
 		public Gameboy(CoreComm comm, GameInfo game, byte[] file, object settings, object syncSettings, bool deterministic)
@@ -513,9 +513,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			if (callback != null)
 			{
 				printer = new GambattePrinter(this, callback);
+				LinkConnected = true;
 			}
 			else
 			{
+				LinkConnected = false;
 				printer.Disconnect();
 				printer = null;
 			}
