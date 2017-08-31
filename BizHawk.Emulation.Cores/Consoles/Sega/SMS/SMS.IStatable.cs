@@ -73,6 +73,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync("Port3F", ref Port3F);
 			ser.Sync("Paddle1High", ref Paddle1High);
 			ser.Sync("Paddle2High", ref Paddle2High);
+			ser.Sync("LatchLightPhaser", ref LatchLightPhaser);
 
 			if (SaveRAM != null)
 			{

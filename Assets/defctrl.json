@@ -748,7 +748,12 @@
       "P1 Right": "RightArrow, J1 POV1R",
       "P1 B1": "Z, J1 B1, X1 X",
       "Reset": "J1 B9, X1 Back",
-      "Pause": "J1 B10, X1 Start",
+      "Pause": "J1 B10, X1 Start"
+    },
+    "SMS Light Phaser Controller": {
+      "P1 Trigger": "Z, J1 B1, X1 X, WMouse L",
+      "Reset": "J1 B9, X1 Back",
+      "Pause": "J1 B10, X1 Start"
     },
     "GG Controller": {
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
@@ -1580,6 +1585,18 @@
         "Value": "X1 LeftThumbX",
         "Mult": 1.0,
         "Deadzone": 0.1
+      }
+    },
+    "SMS Light Phaser Controller": {
+      "P1 X": {
+        "Value": "WMouse X",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      },
+      "P1 Y": {
+        "Value": "WMouse Y",
+        "Mult": 1.0,
+        "Deadzone": 0.0
       }
     }
   }

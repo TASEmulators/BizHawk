@@ -19,6 +19,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				{
 					case "Paddle":
 						return SMSPaddleController;
+					case "Light Phaser":
+						// scale the vertical to the display mode
+						SMSLightPhaserController.FloatRanges[1] = new ControllerDefinition.FloatRange(0, Vdp.FrameHeight / 2, Vdp.FrameHeight - 1);
+
+						return SMSLightPhaserController;
 					default:
 						return SmsController;
 				}
