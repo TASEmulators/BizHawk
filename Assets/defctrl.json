@@ -743,6 +743,13 @@
       "P2 B1": "",
       "P2 B2": ""
     },
+    "SMS Paddle Controller": {
+      "P1 Left": "LeftArrow, J1 POV1L",
+      "P1 Right": "RightArrow, J1 POV1R",
+      "P1 B1": "Z, J1 B1, X1 X",
+      "Reset": "J1 B9, X1 Back",
+      "Pause": "J1 B10, X1 Start",
+    },
     "GG Controller": {
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
       "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
@@ -1564,6 +1571,13 @@
       },
       "P1 Y": {
         "Value": "WMouse Y",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      }
+    },
+    "SMS Paddle Controller": {
+      "P1 Paddle": {
+        "Value": "X1 LeftThumbX",
         "Mult": 1.0,
         "Deadzone": 0.1
       }
