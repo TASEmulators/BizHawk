@@ -442,6 +442,9 @@
             this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
+            this.SMSControllerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SMSControllerStandardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SMSControllerPaddleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -2475,6 +2478,7 @@
             this.SMSSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SMSregionToolStripMenuItem,
             this.SMSdisplayToolStripMenuItem,
+            this.SMSControllerToolStripMenuItem,
             this.SMStoolStripMenuItem2,
             this.SMSenableBIOSToolStripMenuItem,
             this.SMSEnableFMChipMenuItem,
@@ -2541,6 +2545,26 @@
             this.SMSdisplayNtscToolStripMenuItem.Size = new System.Drawing.Size(104, 22);
             this.SMSdisplayNtscToolStripMenuItem.Text = "NTSC";
             this.SMSdisplayNtscToolStripMenuItem.Click += new System.EventHandler(this.SMS_DisplayNTSC_Click);
+            // 
+            // SMSControllerToolStripMenuItem
+            // 
+            this.SMSControllerToolStripMenuItem.Name = "SMSControllerToolStripMenuItem";
+            this.SMSControllerToolStripMenuItem.Text = "&Controller Type";
+            this.SMSControllerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.SMSControllerStandardToolStripMenuItem,
+            this.SMSControllerPaddleToolStripMenuItem});
+            // 
+            // SMSControllerStandardToolStripMenuItem
+            // 
+            this.SMSControllerStandardToolStripMenuItem.Name = "SMSControllerStandardToolStripMenuItem";
+            this.SMSControllerStandardToolStripMenuItem.Text = "Standard";
+			this.SMSControllerStandardToolStripMenuItem.Click += new System.EventHandler(this.SMSControllerStandardToolStripMenuItem_Click);
+            // 
+            // SMSControllerPaddleToolStripMenuItem
+            // 
+            this.SMSControllerPaddleToolStripMenuItem.Name = "SMSControllerPaddleToolStripMenuItem";
+            this.SMSControllerPaddleToolStripMenuItem.Text = "Paddle";
+            this.SMSControllerPaddleToolStripMenuItem.Click += new System.EventHandler(this.SMSControllerPaddleToolStripMenuItem_Click);
             // 
             // SMSdisplayPalToolStripMenuItem
             // 
@@ -4368,5 +4392,8 @@
 		private System.Windows.Forms.ToolStripMenuItem SgbSameBoyMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pCFXToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem3;
+		private System.Windows.Forms.ToolStripMenuItem SMSControllerToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSControllerStandardToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSControllerPaddleToolStripMenuItem;
 	}
 }

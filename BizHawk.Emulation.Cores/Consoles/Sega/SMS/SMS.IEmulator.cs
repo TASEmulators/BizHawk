@@ -15,7 +15,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					return GGController;
 				}
 
-				return SmsController;
+				switch(Settings.ControllerType)
+				{
+					case "Paddle":
+						return SMSPaddleController;
+					default:
+						return SmsController;
+				}
 			}
 		}
 

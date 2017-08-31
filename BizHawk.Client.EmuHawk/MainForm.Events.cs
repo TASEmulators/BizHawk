@@ -1745,6 +1745,8 @@ namespace BizHawk.Client.EmuHawk
 			SMSdisplayNtscToolStripMenuItem.Checked = ss.DisplayType == "NTSC";
 			SMSdisplayPalToolStripMenuItem.Checked = ss.DisplayType == "PAL";
 			SMSdisplayAutoToolStripMenuItem.Checked = ss.DisplayType == "Auto";
+			SMSControllerStandardToolStripMenuItem.Checked = s.ControllerType == "Standard";
+			SMSControllerPaddleToolStripMenuItem.Checked = s.ControllerType == "Paddle";
 			SMSenableBIOSToolStripMenuItem.Checked = ss.UseBIOS;
 			SMSEnableFMChipMenuItem.Checked = ss.EnableFM;
 			SMSOverclockMenuItem.Checked = ss.AllowOverlock;
@@ -1897,6 +1899,20 @@ namespace BizHawk.Client.EmuHawk
 		private void SmsVdpViewerMenuItem_Click(object sender, EventArgs e)
 		{
 			GlobalWin.Tools.Load<SmsVDPViewer>();
+		}
+
+		private void SMSControllerStandardToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var s = ((SMS)Emulator).GetSettings();
+			s.ControllerType = "Standard";
+			PutCoreSettings(s);
+		}
+
+		private void SMSControllerPaddleToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var s = ((SMS)Emulator).GetSettings();
+			s.ControllerType = "Paddle";
+			PutCoreSettings(s);
 		}
 
 		#endregion

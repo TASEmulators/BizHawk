@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			public bool SpriteLimit = false;
 			public bool Fix3D = true;
 			public bool DisplayOverscan = false;
+			public string ControllerType = "Standard";
 
 			// GG settings
 			public bool ShowClippedRegions = false;
