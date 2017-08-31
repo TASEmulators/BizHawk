@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public int FrameHeight = 192;
 		public int ScanLine;
+		public byte HCounter = 0x90;
 		public int[] FrameBuffer = new int[256 * 192];
 		public int[] GameGearFrameBuffer = new int[160 * 144];
 		public int[] OverscanFrameBuffer = null;
@@ -134,6 +135,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					return VLineCounterTablePAL224[ScanLine];
 				return VLineCounterTablePAL240[ScanLine];
 			}
+		}
+
+		public byte ReadHLineCounter()
+		{
+			return HCounter;
 		}
 
 		public void WriteVdpControl(byte value)
@@ -375,6 +381,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 				ProcessFrameInterrupt();
 				ProcessLineInterrupt();
+				Sms.ProcessLineControls();
 
 				Cpu.ExecuteCycles(IPeriod);
 
@@ -428,6 +435,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync("Registers", ref Registers, false);
 			ser.Sync("CRAM", ref CRAM, false);
 			ser.Sync("VRAM", ref VRAM, false);
+			ser.Sync("HCounter", ref HCounter);
 			ser.EndSection();
 
 			if (ser.IsReader)

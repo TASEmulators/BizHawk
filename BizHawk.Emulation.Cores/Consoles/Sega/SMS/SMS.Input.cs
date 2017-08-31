@@ -7,15 +7,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 	public partial class SMS
 	{
 		public static readonly ControllerDefinition SmsController = new ControllerDefinition
-			{
-				Name = "SMS Controller",
-				BoolButtons =
+		{
+			Name = "SMS Controller",
+			BoolButtons =
 				{
 					"Reset", "Pause",
 					"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B1", "P1 B2",
 					"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B1", "P2 B2"
 				}
-			};
+		};
 
 		public static readonly ControllerDefinition GGController = new ControllerDefinition
 		{
@@ -48,6 +48,25 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		};
 
+		public static readonly ControllerDefinition SMSLightPhaserController = new ControllerDefinition
+		{
+			Name = "SMS Light Phaser Controller",
+			BoolButtons =
+			{
+				"Reset", "Pause",
+				"P1 Trigger",
+			},
+			FloatControls =
+			{
+				"P1 X", "P1 Y",
+			},
+			FloatRanges =
+			{
+				new ControllerDefinition.FloatRange(0, 64, 127),
+				new ControllerDefinition.FloatRange(0, 500, 1000)
+			}
+		};
+
 		// The paddles have a nibble select state
 		bool Paddle1High = false;
 		bool Paddle2High = false;
@@ -55,6 +74,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		const int PaddleMin = 0;
 		const int PaddleMax = 255;
 
+		bool LatchLightPhaser = false;
+		
 		private byte ReadControls1()
 		{
 			InputCallbacks.Call();
@@ -131,6 +152,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 					break;
 
+				case "Light Phaser":
+					if (_controller.IsPressed("P1 Trigger")) value &= 0xEF;
+					break;
+
 				default:
 					// Normal controller
 
@@ -194,6 +219,14 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 					break;
 
+				case "Light Phaser":
+					if (LatchLightPhaser)
+					{
+						value &= 0xBF;
+						LatchLightPhaser = false;
+					}
+					break;
+
 				default:
 					// Normal controller
 
@@ -222,6 +255,33 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 
 			return value;
+		}
+
+		internal void ProcessLineControls()
+		{
+			const int phaserRadius = 4;
+
+			// specifically lightgun needs to do things on a per-line basis
+			if (Settings.ControllerType == "Light Phaser")
+			{
+				byte phaserX = (byte)(_controller.GetFloat("P1 X") + 20);
+				int phaserY = (int)_controller.GetFloat("P1 Y");
+				int scanline = Vdp.ScanLine;
+
+				if (!LatchLightPhaser && phaserY >= scanline - phaserRadius && phaserY <= scanline + phaserRadius)
+				{
+					if (scanline >= Vdp.FrameHeight)
+						return;
+
+					// latch HCounter via TH
+					Vdp.HCounter = phaserX;
+					LatchLightPhaser = true;
+				}
+				else
+				{
+					LatchLightPhaser = false;
+				}
+			}
 		}
 
 		byte ReadPort0()

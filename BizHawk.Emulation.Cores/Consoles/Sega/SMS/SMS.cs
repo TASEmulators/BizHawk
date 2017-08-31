@@ -8,9 +8,9 @@ using BizHawk.Emulation.Cores.Components.Z80;
 
 /*****************************************************
   TODO: 
-  + HCounter
+  + HCounter (Manually set for light phaser emulation... should be only case it's polled)
   + Try to clean up the organization of the source code. 
-  + Lightgun/Paddle/etc if I get really bored  
+  + Lightgun/Paddle/etc if I get really bored  (first 2 done!)
   + Mode 1 not implemented in VDP TMS modes. (I dont have a test case in SG1000 or Coleco)
  
 **********************************************************/
@@ -281,7 +281,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				if ((port & 1) == 0)
 					return Vdp.ReadVLineCounter();
 				else
-					return 0x50; // TODO Vdp.ReadHLineCounter();
+					return Vdp.ReadHLineCounter();
 			}
 			if (port < 0xC0) // VDP data/control ports
 			{

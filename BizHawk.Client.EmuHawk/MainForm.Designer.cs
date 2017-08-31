@@ -445,6 +445,7 @@
             this.SMSControllerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SMSControllerStandardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SMSControllerPaddleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.SMSControllerLightPhaserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -2552,7 +2553,8 @@
             this.SMSControllerToolStripMenuItem.Text = "&Controller Type";
             this.SMSControllerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SMSControllerStandardToolStripMenuItem,
-            this.SMSControllerPaddleToolStripMenuItem});
+            this.SMSControllerPaddleToolStripMenuItem,
+            this.SMSControllerLightPhaserToolStripMenuItem});
             // 
             // SMSControllerStandardToolStripMenuItem
             // 
@@ -2565,6 +2567,12 @@
             this.SMSControllerPaddleToolStripMenuItem.Name = "SMSControllerPaddleToolStripMenuItem";
             this.SMSControllerPaddleToolStripMenuItem.Text = "Paddle";
             this.SMSControllerPaddleToolStripMenuItem.Click += new System.EventHandler(this.SMSControllerPaddleToolStripMenuItem_Click);
+            // 
+            // SMSControllerLightPhaserToolStripMenuItem
+            // 
+            this.SMSControllerLightPhaserToolStripMenuItem.Name = "SMSControllerLightPhaserToolStripMenuItem";
+            this.SMSControllerLightPhaserToolStripMenuItem.Text = "Light Phaser";
+            this.SMSControllerLightPhaserToolStripMenuItem.Click += new System.EventHandler(this.SMSControllerLightPhaserToolStripMenuItem_Click);
             // 
             // SMSdisplayPalToolStripMenuItem
             // 
@@ -4395,5 +4403,6 @@
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerStandardToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerPaddleToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSControllerLightPhaserToolStripMenuItem;
 	}
 }
