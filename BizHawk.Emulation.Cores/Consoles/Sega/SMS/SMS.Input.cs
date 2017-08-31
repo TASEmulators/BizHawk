@@ -89,6 +89,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						if ((Port3F & 0x02) == 0x00)
 						{
 							Paddle1High = (Port3F & 0x20) != 0;
+							Paddle2High = Paddle1High;
 						}
 						if ((Port3F & 0x08) == 0x00)
 						{
