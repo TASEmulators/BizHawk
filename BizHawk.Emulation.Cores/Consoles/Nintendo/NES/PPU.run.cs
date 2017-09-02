@@ -133,9 +133,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public bool do_vbl;
 		public bool do_active_sl;
 		public bool do_pre_vbl;
-		public int ppu_tick_counter;
 
-		int scanline_counter;		
 		bool nmi_destiny;
 		int yp_shift;
 		int sprite_eval_cycle;
@@ -156,50 +154,51 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void ppu_init_frame()
 		{
-			scanline_counter = 0;
-			ppu_tick_counter = 0;
+			ppur.status.sl = 241 + preNMIlines;
+			ppur.status.cycle = 0;
 
 			// These things happen at the start of every frame
 
 			Reg2002_vblank_active_pending = true;
 			ppuphase = PPUPHASE.VBL;
-			ppur.status.sl = 241;
 			bgdata = new BGDataRecord[34];
 		}
 
 		public void TickPPU_VBL()
 		{
-			if (ppu_tick_counter == 3)
+			if (ppur.status.cycle == 3 && ppur.status.sl == 241 + preNMIlines)
 			{
 				nmi_destiny = reg_2000.vblank_nmi_gen && Reg2002_vblank_active;
 			}
-			else if (ppu_tick_counter == 6)
+			else if (ppur.status.cycle == 6 && ppur.status.sl == 241 + preNMIlines)
 			{
 				if (nmi_destiny) { nes.cpu.NMI = true; }
 				nes.Board.AtVsyncNMI();
 			}
 
-			runppu();
-			ppu_tick_counter++;
+			runppu(); // note cycle ticks inside runppu
 
-			if (ppu_tick_counter == postNMIlines * kLineTime)
+			if (ppur.status.cycle == 341)
 			{
-				Reg2002_objhit = Reg2002_objoverflow = 0;
-				Reg2002_vblank_clear_pending = true;
-				idleSynch ^= true;
+				ppur.status.cycle = 0;
+				ppur.status.sl++;
+				if (ppur.status.sl == 241 + preNMIlines + postNMIlines)
+				{
+					Reg2002_objhit = Reg2002_objoverflow = 0;
+					Reg2002_vblank_clear_pending = true;
+					idleSynch ^= true;
 
-				do_vbl = false;
-				ppu_tick_counter = 0;
+					do_vbl = false;
+					ppur.status.sl = 0;
+				}
 			}
 		}
 
 		public void TickPPU_active()
 		{
-			if (ppu_tick_counter == 0)
+			if (ppur.status.cycle == 0)
 			{
 				ppur.status.cycle = 0;
-
-				ppur.status.sl = scanline_counter;
 
 				spr_true_count = 0;
 				soam_index = 0;
@@ -213,12 +212,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 				sprite_zero_in_range = false;
 
-				yp = scanline_counter - 1;
+				yp = ppur.status.sl - 1;
 				ppuphase = PPUPHASE.BG;
 
 				// "If PPUADDR is not less then 8 when rendering starts, the first 8 bytes in OAM are written to from 
 				// the current location of PPUADDR"			
-				if (scanline_counter == 0 && PPUON && reg_2003 >= 8 && region == Region.NTSC)
+				if (ppur.status.sl == 0 && PPUON && reg_2003 >= 8 && region == Region.NTSC)
 				{
 					for (int i = 0; i < 8; i++)
 					{
@@ -248,9 +247,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			}
 
-			if (ppu_tick_counter < 256)
+			if (ppur.status.cycle < 256)
 			{
-				if (scanline_counter != 0)
+				if (ppur.status.sl != 0)
 				{
 					/////////////////////////////////////////////
 					// Sprite Evaluation End
@@ -542,10 +541,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					}
 				}
 			}
-			else if (ppu_tick_counter < 320)
+			else if (ppur.status.cycle < 320)
 			{
 				// after we are done with the visible part of the frame, we reach sprite transfer to temp OAM tables and such
-				if (ppu_tick_counter == 256)
+				if (ppur.status.cycle == 256)
 				{
 					// do the more then 8 sprites stuff here where it is convenient
 					// normally only 8 sprites are allowed, but with a particular setting we can have more then that
@@ -625,7 +624,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						runppu();
 						break;
 					case 1:
-						if (PPUON && scanline_counter == 0 && ppur.status.cycle == 305)
+						if (PPUON && ppur.status.sl == 0 && ppur.status.cycle == 305)
 						{
 							ppur.install_latches();
 
@@ -633,7 +632,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							runppu();
 
 						}
-						else if (PPUON && (scanline_counter != 0) && ppur.status.cycle == 257)
+						else if (PPUON && (ppur.status.sl != 0) && ppur.status.cycle == 257)
 						{
 
 							if (target <= 61441 && target > 0 && s == 0)
@@ -882,14 +881,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 			{
-				if (ppu_tick_counter == 320)
+				if (ppur.status.cycle == 320)
 				{
 					ppuphase = PPUPHASE.BG;
 					xt = 0;
 					xp = 0;
 				}
 
-				if (ppu_tick_counter < 336)
+				if (ppur.status.cycle < 336)
 				{
 					// if scanline is the pre-render line, we just read BG data
 					Read_bgdata(xp, ref bgdata[xt]);
@@ -920,7 +919,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						xt++;
 					}
 				}
-				else if (ppu_tick_counter < 340)
+				else if (ppur.status.cycle < 340)
 				{
 					runppu();
 				}
@@ -932,23 +931,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// equivelant of half a memory access cycle) before repeating the whole
 					// pixel/scanline rendering process. If the scanline being rendered is the very
 					// first one on every second frame, then this delay simply doesn't exist.
-					if (scanline_counter == 0 && idleSynch && evenOddDestiny && chopdot)
-					{}
+					if (ppur.status.sl == 0 && idleSynch && evenOddDestiny && chopdot)
+					{ ppur.status.cycle++; } // increment cycle without running ppu
 					else
 					{ runppu(); }
 				}
 			}
 
-			ppu_tick_counter++;
-			if (ppu_tick_counter == 341)
+			if (ppur.status.cycle == 341)
 			{
-				ppu_tick_counter = 0;
-				scanline_counter++;
+				ppur.status.cycle = 0;
+				ppur.status.sl++;
 
-				if (scanline_counter == 241)
+				if (ppur.status.sl == 241)
 				{
 					do_active_sl = false;
-					ppur.status.sl = 241;
 				}
 			}
 		}
@@ -957,12 +954,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			runppu();
 
-
-			ppu_tick_counter++;
-			if (ppu_tick_counter == preNMIlines * kLineTime)
+			if (ppur.status.cycle == 341)
 			{
-				ppu_tick_counter = 0;
-				do_pre_vbl = false;
+				ppur.status.cycle = 0;
+				ppur.status.sl++;
+				if (ppur.status.sl == 241 + preNMIlines)
+				{
+					do_pre_vbl = false;
+				}				
 			}
 		}
 
@@ -975,8 +974,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			runppu();
 
-			ppu_tick_counter++;
-			if (ppu_tick_counter == 241 * kLineTime - 3)
+			if (ppur.status.cycle == 241 * kLineTime - 3)
 			{
 				ppudead--;
 			}

@@ -135,7 +135,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		//when the ppu issues a write it goes through here and into the game board
 		public void ppubus_write(int addr, byte value)
 		{
-			if (ppur.status.sl == 241 || !PPUON)
+			if (ppur.status.sl >= 241 || !PPUON)
 				nes.Board.AddressPPU(addr);
 
 			nes.Board.WritePPU(addr, value);
@@ -257,9 +257,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("do_vbl", ref do_vbl);
 			ser.Sync("do_active_sl", ref do_active_sl);
 			ser.Sync("do_pre_vbl", ref do_pre_vbl);
-			ser.Sync("ppu_tick_counter", ref ppu_tick_counter);
 
-			ser.Sync("scanline_counter", ref scanline_counter);
 			ser.Sync("nmi_destiny", ref nmi_destiny);
 			ser.Sync("yp_shift", ref yp_shift);
 			ser.Sync("sprite_eval_cycle", ref sprite_eval_cycle);
@@ -326,7 +324,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					//but maybe thats just because a ppu read/write shoves it on the address bus
 					//apparently this shoves it on the address bus, too, or else blargg's mmc3 tests dont pass
 					//ONLY if the ppu is not rendering
-					if (ppur.status.sl == 241 || !PPUON)
+					if (ppur.status.sl >= 241 || !PPUON)
 						nes.Board.AddressPPU(ppur.get_2007access());
 
 					race_2006 = true;
@@ -346,7 +344,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppur.status.cycle++;
 			is_even_cycle = !is_even_cycle;
 
-			if (PPUON && ppur.status.cycle >= 257 && ppur.status.cycle <= 320 && 0 <= ppur.status.sl && ppur.status.sl <= 240)
+			if (PPUON && ppur.status.cycle >= 257 && ppur.status.cycle <= 320 && ppur.status.sl <= 240)
 			{
 				reg_2003 = 0;
 			}

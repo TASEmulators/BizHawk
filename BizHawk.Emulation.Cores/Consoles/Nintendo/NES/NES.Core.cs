@@ -367,7 +367,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 
 			FrameGo = true;
-			ppu.ppu_tick_counter = 0;
 
 			if (ppu.ppudead > 0)
 			{

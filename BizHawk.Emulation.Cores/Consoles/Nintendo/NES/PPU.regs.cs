@@ -148,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				fh = 0;
 				_fv = _v = _h = _vt = _ht = 0;
 				status.cycle = 0;
-				status.sl = 241;
+				status.sl = 0;
 			}
 
 			public void install_latches()
@@ -433,7 +433,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				//otherwise we just write this value and move on to the next oam byte
 				value &= 0xE3; 
 			}						
-			if (0 <= ppur.status.sl && ppur.status.sl <= 240)
+			if (ppur.status.rendering)
 			{
 				// don't write to OAM if the screen is on and we are in the active display area
 				// this impacts sprite evaluation
@@ -587,7 +587,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppur.increment2007(ppur.status.rendering && PPUON, reg_2000.vram_incr32 != 0);
 
 			//see comments in $2006
-			if (ppur.status.sl == 241 || !PPUON)
+			if (ppur.status.sl >= 241 || !PPUON)
 				nes.Board.AddressPPU(ppur.get_2007access()); 
 		}
 		byte read_2007()
@@ -611,7 +611,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ppur.increment2007(ppur.status.rendering && PPUON, reg_2000.vram_incr32 != 0);
 
 			//see comments in $2006
-			if (ppur.status.sl == 241 || !PPUON)
+			if (ppur.status.sl >= 241 || !PPUON)
 				nes.Board.AddressPPU(ppur.get_2007access());
 
 			// update open bus here
