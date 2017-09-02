@@ -366,7 +366,43 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					VS_coin_inserted &= 1;
 			}
 
-			ppu.FrameAdvance();
+			FrameGo = true;
+			ppu.ppu_tick_counter = 0;
+
+			if (ppu.ppudead > 0)
+			{
+				while (ppu.ppudead > 0)
+				{
+					ppu.NewDeadPPU();
+				}				
+			}
+			else
+			{
+				ppu.ppu_init_frame();
+
+				ppu.do_vbl = true;
+				ppu.do_active_sl = true;
+				ppu.do_pre_vbl = true;
+
+				// do the vbl ticks seperate, that will save us a few checks that don't happen in active region
+				while (ppu.do_vbl)
+				{
+					ppu.TickPPU_VBL();
+				}
+
+				// now do the rest of the frame
+				while (ppu.do_active_sl)
+				{
+					ppu.TickPPU_active();
+				}
+
+				// now do the pre-NMI lines
+				while (ppu.do_pre_vbl)
+				{
+					ppu.TickPPU_preVBL();
+				}
+			}
+			
 			if (lagged)
 			{
 				_lagcount++;
@@ -384,6 +420,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			num_cheats = 0;
 		}
+
+		public bool FrameGo;
 
 		//PAL:
 		//0 15 30 45 60 -> 12 27 42 57 -> 9 24 39 54 -> 6 21 36 51 -> 3 18 33 48 -> 0
