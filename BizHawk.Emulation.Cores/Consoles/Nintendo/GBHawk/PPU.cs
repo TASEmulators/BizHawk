@@ -78,6 +78,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int sprite_ordered_index;
 		public int bottom_index;
 
+		// windowing state
+		public int window_counter;
+		public bool window_pre_render;
+		public bool window_started;
+		public int window_tile_inc;
+		public int window_y_tile;
+		public int window_x_tile;
+		public int window_y_tile_inc;
+
 		public byte ReadReg(int addr)
 		{
 			byte ret = 0;
@@ -318,6 +327,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						LY_inc = 1;
 						Core.in_vblank = false;
 						VBL_INT = false;
+
+						// special note here, the y coordiate of the window is kept if the window is deactivated
+						// meaning it will pick up where it left off if re-enabled later
+						// so we don't reset it in the scanline loop
+						window_y_tile = 0;
+						window_y_tile_inc = 0;
+						window_started = false;
 					}
 
 					Core.cpu.LY = LY;
@@ -325,6 +341,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (LY==144)
 					{
 						Core.in_vblank = true;
+
 					}
 				}
 			}
@@ -460,6 +477,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				fetch_sprite = false;
 				no_sprites = false;
 
+				window_pre_render = false;
+				if (window_started && LCDC.Bit(5))
+				{
+					window_y_tile_inc++;
+					if (window_y_tile_inc==8)
+					{
+						window_y_tile_inc = 0;
+						window_y_tile++;
+					}
+				}
+				window_started = false;
+
 				// calculate the row number of the tiles to be fetched
 				y_tile = ((int)Math.Floor((float)(scroll_y + LY) / 8)) % 32;
 
@@ -468,8 +497,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					no_sprites = true;
 				}
 			}
+			
+			// before anything else, we have to check if windowing is in effect
+			if (LCDC.Bit(5) && !window_started && LY >= window_y && pixel_counter >= window_x - 7)
+			{
+				/*
+				Console.Write(LY);
+				Console.Write(" ");
+				Console.Write(window_y);
+				Console.Write(" ");
+				Console.Write(window_y_tile_inc);
+				Console.Write(" ");
+				Console.WriteLine(scroll_y);
+				*/
+				if (pixel_counter == 0 && window_x <= 7)
+				{
+					// if the window starts at zero, we still do the first access to the BG
+					// but then restart all over again at the window
+					window_pre_render = true;
+				}
+				else
+				{
+					// otherwise, just restart the whole process as if starting BG again
+					window_pre_render = true;
+					read_case = 4;
+					window_counter = 0;
+				}
 
-			if (!pre_render && !fetch_sprite)
+				window_x_tile = (int)Math.Floor((float)(pixel_counter - (window_x - 7)) / 8);
+				window_tile_inc = 0;
+				window_started = true;
+			}
+			
+			if (!pre_render && !fetch_sprite && !window_pre_render)
 			{
 				// start by fetching all the sprites that need to be fetched
 				if (!no_sprites)
@@ -600,11 +660,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
+							read_case = 1;
 							if (!pre_render)
 							{
 								tile_inc++;
-							}
-							read_case = 1;
+								if (window_pre_render)
+								{
+									read_case = 4;
+								}
+							}						
 						}
 						break;
 
@@ -687,18 +751,110 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
-							read_case = 0;
+							if (window_started)
+							{
+								read_case = 4;
+							}
+							else
+							{
+								read_case = 0;
+							}
+							
 							latch_new_data = true;
 						}
+						if (window_started) { window_counter++; }						
+
 						break;
 
 					case 4: // read from window data
+						if ((window_counter % 2) == 0)
+						{
+
+							temp_fetch = window_y_tile * 32 + (window_x_tile + window_tile_inc) % 32;
+							tile_byte = LCDC.Bit(6) ? Core.BG_map_2[temp_fetch] : Core.BG_map_1[temp_fetch];
+						}
+						else
+						{
+							if (!window_pre_render)
+							{
+								window_tile_inc++;
+							}
+							read_case = 6;
+						}
+						window_counter++;
 						break;
 
 					case 6: // read from tile graphics (for the window)
+						if ((window_counter % 2) == 0)
+						{
+							y_scroll_offset = (window_y_tile_inc) % 8;
+
+							if (LCDC.Bit(4))
+							{
+								tile_data[0] = Core.CHR_RAM[tile_byte * 16 + y_scroll_offset * 2];
+							}
+							else
+							{
+								// same as before except now tile byte represents a signed byte
+								if (tile_byte.Bit(7))
+								{
+									tile_byte -= 256;
+								}
+								tile_data[0] = Core.CHR_RAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2];
+							}
+
+						}
+						else
+						{
+							read_case = 7;
+						}
+						window_counter++;
 						break;
 
 					case 7: // read from tile graphics (for the window)
+						if ((window_counter % 2) == 0)
+						{
+							y_scroll_offset = (window_y_tile_inc) % 8;
+							if (LCDC.Bit(4))
+							{
+								// if LCDC somehow changed between the two reads, make sure we have a positive number
+								if (tile_byte < 0)
+								{
+									tile_byte += 256;
+								}
+
+								tile_data[1] = Core.CHR_RAM[tile_byte * 16 + y_scroll_offset * 2 + 1];
+							}
+							else
+							{
+								// same as before except now tile byte represents a signed byte
+								if (tile_byte.Bit(7) && tile_byte > 0)
+								{
+									tile_byte -= 256;
+								}
+
+								tile_data[1] = Core.CHR_RAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
+							}
+
+						}
+						else
+						{
+							if (window_pre_render)
+							{
+								// here we set up rendering
+								window_pre_render = false;
+								render_offset = 0;
+								render_counter = -1;
+								latch_counter = 0;
+								read_case = 4;
+							}
+							else
+							{
+								read_case = 3;
+							}
+
+						}
+						window_counter++;
 						break;
 
 					case 8: // done reading, we are now in phase 0
@@ -794,7 +950,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			stat_line = false;
 			stat_line_old = false;
-		}
+
+			window_counter = 0;
+			window_pre_render = false;
+			window_started = false;
+			window_tile_inc = 0;
+			window_y_tile = 0;
+			window_x_tile = 0;
+			window_y_tile_inc = 0;
+	}
 
 		public void process_sprite()
 		{
@@ -917,6 +1081,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("sprite_ordered_index", ref sprite_ordered_index);
 			ser.Sync("bottom_index", ref bottom_index);
 
+			ser.Sync("window_counter", ref window_counter);
+			ser.Sync("window_pre_render", ref window_pre_render);
+			ser.Sync("window_started", ref window_started);
+			ser.Sync("window_tile_inc", ref window_tile_inc);
+			ser.Sync("window_y_tile", ref window_y_tile);
+			ser.Sync("window_x_tile", ref window_x_tile);
+			ser.Sync("window_y_tile_inc", ref window_y_tile_inc);
 		}
 	}
 }
