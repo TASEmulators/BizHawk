@@ -485,6 +485,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						window_y_tile_inc = 0;
 						window_y_tile++;
+						window_y_tile %= 32;
 					}
 				}
 				window_started = false;
