@@ -62,11 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private DisplayType _display_type = DisplayType.NTSC;
 
 		//Sound config
-		public void SetSquare1(int v) { apu.Square1V = v; }
-		public void SetSquare2(int v) { apu.Square2V = v; }
-		public void SetTriangle(int v) { apu.TriangleV = v; }
-		public void SetNoise(int v) { apu.NoiseV = v; }
-		public void SetDMC(int v) { apu.DMCV = v; }
+		public void SetVol1(int v) { apu.m_vol = v; }
 
 		/// <summary>
 		/// for debugging only!

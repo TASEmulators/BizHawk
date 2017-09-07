@@ -22,11 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		public static bool CFG_DECLICK = true;
 
-		public int Square1V = 376;
-		public int Square2V = 376;
-		public int TriangleV = 426;
-		public int NoiseV = 247;
-		public int DMCV = 167;
+		public int m_vol = 1;
 
 		public int dmc_dma_countdown = -1;
 		public bool call_from_write;
@@ -53,11 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			pulse[1] = new PulseUnit(this, 1);
 			if (old != null)
 			{
-				Square1V = old.Square1V;
-				Square2V = old.Square2V;
-				TriangleV = old.TriangleV;
-				NoiseV = old.NoiseV;
-				DMCV = old.DMCV;
+				m_vol = old.m_vol;
 			}
 		}
 
@@ -1419,7 +1411,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				float output = pulse_out + tnd_out;
 				// output = output * 2 - 1;
 				// this needs to leave enough headroom for straying DC bias due to the DMC unit getting stuck outputs. smb3 is bad about that. 
-				int mix = (int)(20000 * output);
+				int mix = (int)(20000 * output * (1 + m_vol/5));
 
 				dlist.Add(new Delta(sampleclock, mix - oldmix));
 				oldmix = mix;
