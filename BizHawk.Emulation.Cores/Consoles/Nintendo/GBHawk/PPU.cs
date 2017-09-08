@@ -209,13 +209,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					cycle = 0;
 					LY += LY_inc;
-
+					//Console.WriteLine(Core.cpu.TotalExecutedCycles);
 					no_scan = false;
 
 					// here is where LY = LYC gets cleared (but only if LY isnt 0 as that's a special case
 					if (LY_inc == 1)
 					{
-						LYC_INT = false;
+						//LYC_INT = false;
 						STAT &= 0xFB;
 					}
 
@@ -1134,6 +1134,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("DMA_inc", ref DMA_inc);
 			ser.Sync("DMA_byte", ref DMA_byte);
 
+			ser.Sync("cycle", ref cycle);
 			ser.Sync("LYC_INT", ref LYC_INT);
 			ser.Sync("HBL_INT", ref HBL_INT);
 			ser.Sync("VBL_INT", ref VBL_INT);
