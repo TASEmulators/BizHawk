@@ -602,8 +602,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// otherwise, just restart the whole process as if starting BG again
 					window_pre_render = true;
 					read_case = 4;
-					window_counter = 0;
 				}
+				window_counter = 0;
 
 				window_x_tile = (int)Math.Floor((float)(pixel_counter - (window_x - 7)) / 8);
 				
@@ -833,29 +833,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
-							if (window_started)
-							{
-								read_case = 4;
-							}
-							else
-							{
-								read_case = 0;
-							}
-							
+							read_case = 0;
 							latch_new_data = true;
 						}
-						if (window_started) { window_counter++; }						
-
 						break;
 
 					case 4: // read from window data
 						if ((window_counter % 2) == 0)
 						{
-
 							temp_fetch = window_y_tile * 32 + (window_x_tile + window_tile_inc) % 32;
-
 							tile_byte = LCDC.Bit(6) ? Core.BG_map_2[temp_fetch] : Core.BG_map_1[temp_fetch];
-
 						}
 						else
 						{
@@ -863,19 +850,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								window_tile_inc++;
 							}
-							read_case = 6;
+							read_case = 5;
 						}
 						window_counter++;
 						break;
 
-					case 6: // read from tile graphics (for the window)
+					case 5: // read from tile graphics (for the window)
 						if ((window_counter % 2) == 0)
 						{
 							y_scroll_offset = (window_y_tile_inc) % 8;
 
 							if (LCDC.Bit(4))
 							{
+								
 								tile_data[0] = Core.CHR_RAM[tile_byte * 16 + y_scroll_offset * 2];
+								
 							}
 							else
 							{
@@ -884,18 +873,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								{
 									tile_byte -= 256;
 								}
+								
 								tile_data[0] = Core.CHR_RAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2];
 							}
-
 						}
 						else
 						{
-							read_case = 7;
+							read_case = 6;
 						}
 						window_counter++;
 						break;
 
-					case 7: // read from tile graphics (for the window)
+					case 6: // read from tile graphics (for the window)
 						if ((window_counter % 2) == 0)
 						{
 							y_scroll_offset = (window_y_tile_inc) % 8;
@@ -934,17 +923,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 							else
 							{
-								read_case = 3;
+								read_case = 7;
 							}
-
 						}
 						window_counter++;
+						break;
+
+					case 7: // read from sprite data
+						if ((window_counter % 2) == 0)
+						{
+							// nothing to do if not fetching
+						}
+						else
+						{
+							read_case = 4;
+							latch_new_data = true;
+						}
+						window_counter++; 
 						break;
 
 					case 8: // done reading, we are now in phase 0
 
 						pre_render = true;
-
 
 						// the other interrupts appear to be delayed by 1 CPU cycle, so do the same here
 						if (hbl_countdown > 0)
@@ -966,7 +966,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							
 						break;
 				}
-
 				internal_cycle++;
 			}
 
