@@ -60,6 +60,7 @@ static void prefetch(void);
         interp_PC.addr += 4; \
         delay_slot=1; \
         prefetch(); \
+        TRACECB(); \
         PC->ops(); \
         update_count(); \
         delay_slot=0; \
