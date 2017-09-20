@@ -35,6 +35,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_spf = _vsyncNum / (double)_vsyncDen > 55.0 ? 735 : 882;
 		}
 
+		// indicates to the core where a new frame is starting
+		public bool New_Frame = false;
+
 		private const int BackColor = unchecked((int)0xff000000);
 		private const int ScreenWidth = 160;
 		private const int MaxScreenHeight = 312;
@@ -161,11 +164,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		/// </summary>
 		public int LineCount { get; set; }
 
-		/// <summary>
-		/// Gets or sets a callback that is called at the end of a video frame.  used internally
-		/// </summary>
-		public Action<int> FrameEndCallBack { private get; set; }
-
 		public void Reset()
 		{
 			_hsyncCnt = 0;
@@ -229,11 +227,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 
 		// Execute TIA cycles
-		public void Execute(int cycles)
+		public void Execute()
 		{
-			// Still ignoring cycles...
-
-			// delay vblank latch
+			// Handle all of the Latch delays that occur in the TIA
 			if (_vblankDelay > 0)
 			{
 				_vblankDelay++;
@@ -244,7 +240,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 			}
 
-			// delay latch to new playfield register
 			if (_pf0Updater)
 			{
 				_pf0DelayClock++;
@@ -275,7 +270,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 			}
 
-			// delay latch to missile enable
 			if (_enam0Delay > 0)
 			{
 				_enam0Delay++;
@@ -296,7 +290,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 			}
 
-			// delay latch to ball enable
 			if (_enambDelay > 0)
 			{
 				_enambDelay++;
@@ -307,7 +300,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 			}
 
-			// delay latch to player graphics registers
 			if (_prg0Delay > 0)
 			{
 				_prg0Delay++;
@@ -333,7 +325,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				}
 			}
 
-			// HMP write delay
 			if (_hmp0Delay > 0)
 			{
 				_hmp0Delay++;
@@ -773,9 +764,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			// do the audio sampling
 			if (_hsyncCnt == 36 || _hsyncCnt == 148)
 			{
-				LocalAudioCycles[AudioClocks] += (short)(AUD[0].Cycle() / 2);
-				LocalAudioCycles[AudioClocks] += (short)(AUD[1].Cycle() / 2);
-				AudioClocks++;
+				if (AudioClocks < 2000)
+				{
+					LocalAudioCycles[AudioClocks] += (short)(AUD[0].Cycle() / 2);
+					LocalAudioCycles[AudioClocks] += (short)(AUD[1].Cycle() / 2);
+					AudioClocks++;
+				}
 			}
 
 			// Increment the hsync counter
@@ -796,7 +790,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			int topLine = _pal ? _core.Settings.PALTopLine : _core.Settings.NTSCTopLine;
 			int bottomLine = _pal ? _core.Settings.PALBottomLine : _core.Settings.NTSCBottomLine;
 
-			// if vsync occured unexpectedly early, black out the remainer
+			// if vsync occured unexpectedly early, black out the remainder
 			for (; validlines < bottomLine; validlines++)
 			{
 				for (int i = 0; i < 160; i++)
@@ -972,7 +966,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 					// write to frame buffer
 					OutputFrame(_currentScanLine);
 
-					FrameEndCallBack?.Invoke(_currentScanLine);
+					New_Frame = true;
 
 					// Clear all from last frame
 					_currentScanLine = 0;
@@ -1336,18 +1330,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private enum AudioRegister : byte
 		{
 			AUDC, AUDF, AUDV
-		}
-
-		private int _frameStartCycles, _frameEndCycles;
-
-		public void BeginAudioFrame()
-		{
-			_frameStartCycles = _core.Cpu.TotalExecutedCycles;
-		}
-
-		public void CompleteAudioFrame()
-		{
-			_frameEndCycles = _core.Cpu.TotalExecutedCycles;
 		}
 	}
 }
