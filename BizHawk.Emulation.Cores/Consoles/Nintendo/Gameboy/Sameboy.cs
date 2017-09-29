@@ -300,6 +300,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
 			UpdateCoreScanlineCallback(false);
+			_core.SetPrinterCallback(_printerCallback);
 		}
 
 		public bool IsCGBMode() => _cgb;
