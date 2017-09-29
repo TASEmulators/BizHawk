@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			{
 				Filename = "sameboy.wbx",
 				SbrkHeapSizeKB = 192,
-				InvisibleHeapSizeKB = 4,
+				InvisibleHeapSizeKB = 12,
 				SealedHeapSizeKB = 9 * 1024,
 				PlainHeapSizeKB = 4,
 				MmapHeapSizeKB = 1024
