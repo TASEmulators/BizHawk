@@ -274,7 +274,8 @@ namespace BizHawk.Client.EmuHawk
 			if (argParse.cmdRom != null)
 			{
 				// Commandline should always override auto-load
-				LoadRom(argParse.cmdRom, new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom() });
+				var ioa = OpenAdvancedSerializer.ParseWithLegacy(argParse.cmdRom);
+				LoadRom(argParse.cmdRom, new LoadRomArgs { OpenAdvanced = ioa });
 				if (Global.Game == null)
 				{
 					MessageBox.Show("Failed to load " + argParse.cmdRom + " specified on commandline");
@@ -3580,6 +3581,12 @@ namespace BizHawk.Client.EmuHawk
 					{
 						throw new InvalidOperationException("Can't load a file via Libretro until a core is specified");
 					}
+				}
+
+				if (ioa is OpenAdvanced_OpenRom)
+				{
+					var ioa_openrom = (OpenAdvanced_OpenRom)ioa;
+					path = ioa_openrom.Path;
 				}
 
 				CoreFileProvider.SyncCoreCommInputSignals(nextComm);
