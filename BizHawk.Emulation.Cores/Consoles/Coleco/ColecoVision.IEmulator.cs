@@ -12,6 +12,18 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public void FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			_controller = controller;
+
+			// NOTE: Need to research differences between reset and power cycle
+			if (_controller.IsPressed("Power"))
+			{
+				HardReset();
+			}
+
+			if (_controller.IsPressed("Reset"))
+			{
+				SoftReset();
+			}
+
 			_cpu.Debug = _tracer.Enabled;
 			_frame++;
 			_isLag = true;

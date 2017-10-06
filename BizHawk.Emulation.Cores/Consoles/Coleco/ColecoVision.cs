@@ -223,5 +223,17 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			////Console.WriteLine("Unhandled write at {0:X4}:{1:X2}", addr, value);
 		}
+
+		private void HardReset()
+		{
+			PSG.Reset();
+			_cpu.Reset();
+		}
+
+		private void SoftReset()
+		{
+			PSG.Reset();
+			_cpu.Reset();
+		}
 	}
 }
