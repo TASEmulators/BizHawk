@@ -72,11 +72,10 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else if (ofd.FileName.EndsWith(".bkm") || ofd.FileName.EndsWith(".bk2")) // todo: proper extention iteration
 					{
-						Mainform.StartNewMovie(MovieService.Get(ofd.FileName), false);
-
 						var result1 = MessageBox.Show("This is a regular movie, a new project must be created from it, in order to use in TAStudio\nProceed?", "Convert movie", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
 						if (result1 == DialogResult.OK)
 						{
+							Mainform.StartNewMovie(MovieService.Get(ofd.FileName), false);
 							ConvertCurrentMovieToTasproj();
 							StartNewMovieWrapper(false);
 							SetUpColumns();
