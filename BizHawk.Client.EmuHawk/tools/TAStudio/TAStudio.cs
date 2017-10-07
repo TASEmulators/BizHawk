@@ -835,7 +835,7 @@ namespace BizHawk.Client.EmuHawk
 			if (frame == Emulator.Frame)
 				return;
 
-			_shouldUnpauseFromRewind = fromRewinding && !Mainform.EmulatorPaused;
+			_unpauseAfterSeeking = (fromRewinding || WasRecording) && !Mainform.EmulatorPaused;
 			TastudioPlayMode();
 			KeyValuePair<int, byte[]> closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
 			if (closestState.Value != null && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
@@ -877,7 +877,8 @@ namespace BizHawk.Client.EmuHawk
 			// frame == Emulator.Frame when frame == 0
 			if (frame > Emulator.Frame)
 			{
-				if (Mainform.EmulatorPaused || Mainform.IsSeeking || fromRewinding) // make seek frame keep up with emulation on fast scrolls
+				// make seek frame keep up with emulation on fast scrolls
+				if (Mainform.EmulatorPaused || Mainform.IsSeeking || fromRewinding || WasRecording)
 				{
 					StartSeeking(frame);
 				}
