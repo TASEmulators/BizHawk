@@ -55,7 +55,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
 		private bool? _autoRestorePaused = null;
 		private int? _seekStartFrame = null;
-		private bool _shouldUnpauseFromRewind = false;
+		private bool _unpauseAfterSeeking = false;
 
 		private ControllerDefinition ControllerType => Global.MovieSession.MovieControllerAdapter.Definition;
 
@@ -111,10 +111,10 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			Mainform.PauseOnFrame = null;
-			if (_shouldUnpauseFromRewind)
+			if (_unpauseAfterSeeking)
 			{
 				Mainform.UnpauseEmulator();
-				_shouldUnpauseFromRewind = false;
+				_unpauseAfterSeeking = false;
 			}
 
 			if (CurrentTasMovie != null)
