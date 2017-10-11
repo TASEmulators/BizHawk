@@ -45,15 +45,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		private bool _isBotting = false;
-		private long _attempts = 1;
-		private long _frames = 0;
-		private int _targetFrame = 0;
-		private bool _oldCountingSetting = false;
-		private BotAttempt _currentBotAttempt = null;
-		private BotAttempt _bestBotAttempt = null;
-		private BotAttempt _comparisonBotAttempt = null;
+
+
 		private bool _replayMode = false;
-		private int _startFrame = 0;
 		private string _lastRom = "";
 
 		private bool _dontUpdateValues = false;
@@ -62,7 +56,6 @@ namespace BizHawk.Client.EmuHawk
 		private bool _bigEndian;
 		private int _dataSize;
 
-		private Dictionary<string, double> _cachedControlProbabilities;
 		private ILogEntryGenerator _logGenerator;
 		private TcpClient client;
 		private string IP;
@@ -211,10 +204,7 @@ namespace BizHawk.Client.EmuHawk
 			Text = DialogTitle;
 			Settings = new GyroscopeBotSettings();
 			this.IP = "127.0.0.1";
-			this.port = 9999;
-
-			_comparisonBotAttempt = new BotAttempt();
-			
+			this.port = 9999;			
 		}
 
 		private void GyroscopeBot_Load(object sender, EventArgs e)
@@ -476,127 +466,17 @@ namespace BizHawk.Client.EmuHawk
 
 		#region UI Bindings
 
-		private Dictionary<string, double> ControlProbabilities
-		{
-			get
-			{
-				return ControlProbabilityPanel.Controls
-					.OfType<GyroscopeBotControlsRow>()
-					.ToDictionary(tkey => tkey.ButtonName, tvalue => tvalue.Probability);
-			}
-		}
 
-		private string SelectedSlot
-		{
-			get
-			{
-				char num = StartFromSlotBox.SelectedItem
-					.ToString()
-					.Last();
-
-				return "QuickSave" + num;
-			}
-		}
-
-		private long Attempts
-		{
-			get { return _attempts; }
-			set
-			{
-				_attempts = value;
-				AttemptsLabel.Text = _attempts.ToString();
-			}
-		}
-
-		private long Frames
-		{
-			get { return _frames; }
-			set
-			{
-				_frames = value;
-				FramesLabel.Text = _frames.ToString();
-			}
-		}
-
-		private int FrameLength
-		{
-			get { return (int)FrameLengthNumeric.Value; }
-			set { FrameLengthNumeric.Value = value; }
-		}
-
-		public int MaximizeAddress
-		{
-			get
-			{
-				int? addr = MaximizeAddressBox.ToRawInt();
-				if (addr.HasValue)
-				{
-					return addr.Value;
-				}
-
-				return 0;
-			}
-
-			set
-			{
-				MaximizeAddressBox.SetFromRawInt(value);
-			}
-		}
-
-		public int MaximizeValue
-		{
-			get
-			{
-				int? addr = MaximizeAddressBox.ToRawInt();
-				if (addr.HasValue)
-				{
-					return GetRamvalue(addr.Value);
-				}
-
-				return 0;
-			}
-		}
 
 		
-		public byte MainComparisonType
-		{
-			get
-			{
-				return (byte)MainOperator.SelectedIndex;
-			}
-			set
-			{
-				if (value < 5) MainOperator.SelectedIndex = value;
-				else MainOperator.SelectedIndex = 0;
-			}
-		}
 
 
-		public string FromSlot
-		{
-			get
-			{
-				return StartFromSlotBox.SelectedItem != null 
-					? StartFromSlotBox.SelectedItem.ToString()
-					: "";
-			}
 
-			set
-			{
-				var item = StartFromSlotBox.Items.
-					OfType<object>()
-					.FirstOrDefault(o => o.ToString() == value);
+		
 
-				if (item != null)
-				{
-					StartFromSlotBox.SelectedItem = item;
-				}
-				else
-				{
-					StartFromSlotBox.SelectedItem = null;
-				}
-			}
-		}
+
+
+
 
 		#endregion
 
@@ -630,10 +510,6 @@ namespace BizHawk.Client.EmuHawk
 			{
 				StopBot();
 			}
-			else if (_replayMode)
-			{
-				FinishReplay();
-			}
 
 
 			if (_lastRom != GlobalWin.MainForm.CurrentlyOpenRom)
@@ -656,78 +532,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private void FileSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
-			SaveMenuItem.Enabled = !string.IsNullOrWhiteSpace(CurrentFileName);
 		}
 
-		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
-		{
-			RecentSubMenu.DropDownItems.Clear();
-			RecentSubMenu.DropDownItems.AddRange(
-				Settings.RecentBotFiles.RecentMenu(LoadFileFromRecent, true));
-		}
-
-		private void NewMenuItem_Click(object sender, EventArgs e)
-		{
-			CurrentFileName = "";
-			_bestBotAttempt = null;
-
-			ControlProbabilityPanel.Controls
-				.OfType<GyroscopeBotControlsRow>()
-				.ToList()
-				.ForEach(cp => cp.Probability = 0);
-
-			FrameLength = 0;
-			MaximizeAddress = 0;
-			
-			StartFromSlotBox.SelectedIndex = 0;
-			MainOperator.SelectedIndex = 0;
-			
-			MainBestRadio.Checked = true;
-			MainValueNumeric.Value = 0;
-		
-
-			UpdateBestAttempt();
-			UpdateComparisonBotAttempt();
-		}
-
-		private void OpenMenuItem_Click(object sender, EventArgs e)
-		{
-			var file = OpenFileDialog(
-					CurrentFileName,
-					PathManager.MakeAbsolutePath(Global.Config.PathEntries.ToolsPathFragment, null),
-					"Bot files",
-					"bot"
-				);
-
-			if (file != null)
-			{
-				LoadBotFile(file.FullName);
-			}
-		}
-
-		private void SaveMenuItem_Click(object sender, EventArgs e)
-		{
-			if (!string.IsNullOrWhiteSpace(CurrentFileName))
-			{
-				SaveBotFile(CurrentFileName);
-			}
-		}
-
-		private void SaveAsMenuItem_Click(object sender, EventArgs e)
-		{
-			var file = SaveFileDialog(
-					CurrentFileName,
-					PathManager.MakeAbsolutePath(Global.Config.PathEntries.ToolsPathFragment, null),
-					"Bot files",
-					"bot"
-				);
-
-			if (file != null)
-			{
-				SaveBotFile(file.FullName);
-				_currentFileName = file.FullName;
-			}
-		}
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
@@ -796,38 +602,14 @@ namespace BizHawk.Client.EmuHawk
 			StopBot();
 		}
 
-		private void ClearBestButton_Click(object sender, EventArgs e)
-		{
-			_bestBotAttempt = null;
-			Attempts = 0;
-			Frames = 0;
-			UpdateBestAttempt();
-			UpdateComparisonBotAttempt();
-		}
 
-		private void PlayBestButton_Click(object sender, EventArgs e)
-		{
-			StopBot();
-			_replayMode = true;
-			_dontUpdateValues = true;
-			GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true); // Triggers an UpdateValues call
-			_dontUpdateValues = false;
-			_startFrame = Emulator.Frame;
-			SetNormalSpeed();
-			UpdateBotStatusIcon();
-			MessageLabel.Text = "Replaying";
-			GlobalWin.MainForm.UnpauseEmulator();
-		}
 
-		private void FrameLengthNumeric_ValueChanged(object sender, EventArgs e)
-		{
-			AssessRunButtonStatus();
-		}
 
+
+	
 		private void ClearStatsContextMenuItem_Click(object sender, EventArgs e)
 		{
-			Attempts = 0;
-			Frames = 0;
+		
 		}
 
 		#endregion
@@ -845,63 +627,8 @@ namespace BizHawk.Client.EmuHawk
 
 		}
 
-		private class BotAttempt
-		{
-			public BotAttempt()
-			{
-				Log = new List<string>();
-			}
-
-			public long Attempt { get; set; }
-			public int Maximize { get; set; }
-			public int TieBreak1 { get; set; }
-			public int TieBreak2 { get; set; }
-			public int TieBreak3 { get; set; }
-			public byte ComparisonTypeMain { get; set; }
-			public byte ComparisonTypeTie1 { get; set; }
-			public byte ComparisonTypeTie2 { get; set; }
-			public byte ComparisonTypeTie3 { get; set; }
-
-			public List<string> Log { get; set; }
-		}
-
-		private class BotData
-		{
-			public BotData()
-			{
-				MainCompareToBest = true;
-				TieBreaker1CompareToBest = true;
-				TieBreaker2CompareToBest = true;
-				TieBreaker3CompareToBest = true;
-			}
-
-			public BotAttempt Best { get; set; }
-			public Dictionary<string, double> ControlProbabilities { get; set; }
-			public int Maximize { get; set; }
-			public int TieBreaker1 { get; set; }
-			public int TieBreaker2 { get; set; }
-			public int TieBreaker3 { get; set; }
-			public byte ComparisonTypeMain { get; set; }
-			public byte ComparisonTypeTie1 { get; set; }
-			public byte ComparisonTypeTie2 { get; set; }
-			public byte ComparisonTypeTie3 { get; set; }
-			public bool MainCompareToBest { get; set; }
-			public bool TieBreaker1CompareToBest { get; set; }
-			public bool TieBreaker2CompareToBest { get; set; }
-			public bool TieBreaker3CompareToBest { get; set; }
-			public int MainCompareToValue { get; set; }
-			public int TieBreaker1CompareToValue { get; set; }
-			public int TieBreaker2CompareToValue { get; set; }
-			public int TieBreaker3CompareToValue { get; set; }
-			public int FrameLength { get; set; }
-			public string FromSlot { get; set; }
-			public long Attempts { get; set; }
-			public long Frames { get; set; }
-
-			public string MemoryDomain { get; set; }
-			public bool BigEndian { get; set; }
-			public int DataSize { get; set; }
-		}
+		
+		
 
 		#endregion
 
@@ -918,152 +645,19 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool LoadBotFile(string path)
 		{
-			var file = new FileInfo(path);
-			if (!file.Exists)
-			{
-				return false;
-			}
-
-			var json = File.ReadAllText(path);
-			var botData = (BotData)ConfigService.LoadWithType(json);
-
-			_bestBotAttempt = botData.Best;
-
-			var probabilityControls = ControlProbabilityPanel.Controls
-					.OfType<GyroscopeBotControlsRow>()
-					.ToList();
-
-			foreach (var kvp in botData.ControlProbabilities)
-			{
-				var control = probabilityControls.Single(c => c.ButtonName == kvp.Key);
-				control.Probability = kvp.Value;
-			}
-
-			MaximizeAddress = botData.Maximize;
-			
-			try
-			{
-				MainComparisonType = botData.ComparisonTypeMain;
-				
-
-				MainBestRadio.Checked = botData.MainCompareToBest;
-				
-				MainValueRadio.Checked = !botData.MainCompareToBest;
-				
-
-				MainValueNumeric.Value = botData.MainCompareToValue;
-				
-			}
-			catch
-			{
-				MainComparisonType = 0;
-				
-
-				MainBestRadio.Checked = true;
-				
-				MainBestRadio.Checked = false;
-			
-
-				MainValueNumeric.Value = 0;
-			
-			}
-			FrameLength = botData.FrameLength;
-			FromSlot = botData.FromSlot;
-			Attempts = botData.Attempts;
-			Frames = botData.Frames;
-
-			_currentDomain = !string.IsNullOrWhiteSpace(botData.MemoryDomain)
-					? MemoryDomains[botData.MemoryDomain]
-					: MemoryDomains.MainMemory;
-
-			_bigEndian = botData.BigEndian;
-			_dataSize = botData.DataSize > 0 ? botData.DataSize : 1;
-
-			UpdateBestAttempt();
-			UpdateComparisonBotAttempt();
-
-			if (_bestBotAttempt != null)
-			{
-				PlayBestButton.Enabled = true;
-			}
-
-			CurrentFileName = path;
-			Settings.RecentBotFiles.Add(CurrentFileName);
-			MessageLabel.Text = Path.GetFileNameWithoutExtension(path) + " loaded";
-
-			AssessRunButtonStatus();
+	
 			return true;
 		}
 
 		private void SaveBotFile(string path)
 		{
-			var data = new BotData
-			{
-				Best = _bestBotAttempt,
-				ControlProbabilities = ControlProbabilities,
-				Maximize = MaximizeAddress,
-				
-				ComparisonTypeMain = MainComparisonType,
-				
-				MainCompareToBest = MainBestRadio.Checked,
-			
-				MainCompareToValue = (int)MainValueNumeric.Value,
-	
-				FromSlot = FromSlot,
-				FrameLength = FrameLength,
-				Attempts = Attempts,
-				Frames = Frames,
-				MemoryDomain = _currentDomain.Name,
-				BigEndian = _bigEndian,
-				DataSize = _dataSize
-			};
 
-			var json = ConfigService.SaveWithType(data);
-
-			File.WriteAllText(path, json);
-			CurrentFileName = path;
-			Settings.RecentBotFiles.Add(CurrentFileName);
-			MessageLabel.Text = Path.GetFileName(CurrentFileName) + " saved";
 		}
 
 		#endregion
 
 		private void SetupControlsAndProperties()
 		{
-			MaximizeAddressBox.SetHexProperties(MemoryDomains.MainMemory.Size);
-
-
-			StartFromSlotBox.SelectedIndex = 0;
-
-			int starty = 0;
-			int accumulatedy = 0;
-			int lineHeight = 30;
-			int marginLeft = 15;
-			int count = 0;
-
-			ControlProbabilityPanel.Controls.Clear();
-
-			foreach (var button in Emulator.ControllerDefinition.BoolButtons)
-			{
-				var control = new GyroscopeBotControlsRow
-				{
-					ButtonName = button,
-					Probability = 0.0,
-					Location = new Point(marginLeft, starty + accumulatedy),
-					TabIndex = count + 1,
-					ProbabilityChangedCallback = AssessRunButtonStatus
-				};
-
-				ControlProbabilityPanel.Controls.Add(control);
-				accumulatedy += lineHeight;
-				count++;
-			}
-
-			if (Settings.RecentBotFiles.AutoLoad)
-			{
-				LoadFileFromRecent(Settings.RecentBotFiles.MostRecent);
-			}
-
 			UpdateBotStatusIcon();
 		}
 
@@ -1135,84 +729,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private void FinishReplay()
-		{
-			GlobalWin.MainForm.PauseEmulator();
-			_startFrame = 0;
-			_replayMode = false;
-			UpdateBotStatusIcon();
-			MessageLabel.Text = "Replay stopped";
-		}
-
-		private bool IsBetter(BotAttempt comparison, BotAttempt current)
-		{
-			
-			return true;
-		}
-
-		private bool TestValue(byte operation, int currentValue, int bestValue)
-		{
-			switch (operation)
-			{
-				case 0:
-					return currentValue > bestValue;
-				case 1:
-					return currentValue >= bestValue;
-				case 2:
-					return currentValue == bestValue;
-				case 3:
-					return currentValue <= bestValue;
-				case 4:
-					return currentValue < bestValue;
-			}
-			return false;
-		}
-
-		private void UpdateBestAttempt()
-		{
-			if (_bestBotAttempt != null)
-			{
-				ClearBestButton.Enabled = true;
-				BestAttemptNumberLabel.Text = _bestBotAttempt.Attempt.ToString();
-				BestMaximizeBox.Text = _bestBotAttempt.Maximize.ToString();
-	
-
-				var sb = new StringBuilder();
-				foreach (var logEntry in _bestBotAttempt.Log)
-				{
-					sb.AppendLine(logEntry);
-				}
-				BestAttemptLogLabel.Text = sb.ToString();
-				PlayBestButton.Enabled = true;
-			}
-			else
-			{
-				ClearBestButton.Enabled = false;
-				BestAttemptNumberLabel.Text = "";
-				BestMaximizeBox.Text = "";
-		
-				BestAttemptLogLabel.Text = "";
-				PlayBestButton.Enabled = false;
-			}
-		}
-
-		private void PressButtons()
-		{
-			var rand = new Random((int)DateTime.Now.Ticks);
-
-			var buttonLog = new Dictionary<string, bool>();
-
-			foreach (var button in Emulator.ControllerDefinition.BoolButtons)
-			{
-				double probability = _cachedControlProbabilities[button];
-				bool pressed = !(rand.Next(100) < probability);
-
-				buttonLog.Add(button, pressed);
-				Global.ClickyVirtualPadController.SetBool(button, pressed);
-			}
-
-			_currentBotAttempt.Log.Add(_logGenerator.GenerateLogEntry());
-		}
 
 		private void StartBot()
 		{
@@ -1223,25 +739,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			_isBotting = true;
-			ControlsBox.Enabled = false;
-			StartFromSlotBox.Enabled = false;
 			RunBtn.Visible = false;
 			StopBtn.Visible = true;
-			GoalGroupBox.Enabled = false;
-			_currentBotAttempt = new BotAttempt { Attempt = Attempts };
 			this.client = CreateTCPClient(this.IP, this.port);
 
-			if (Global.MovieSession.Movie.IsRecording)
-			{
-				_oldCountingSetting = Global.MovieSession.Movie.IsCountingRerecords;
-				Global.MovieSession.Movie.IsCountingRerecords = false;
-			}
 
-			_dontUpdateValues = true;
-			GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true); // Triggers an UpdateValues call
-			_dontUpdateValues = false;
-
-			_targetFrame = Emulator.Frame + (int)FrameLengthNumeric.Value;
 			Global.Config.SoundEnabled = false;
 			GlobalWin.MainForm.UnpauseEmulator();
 			SetMaxSpeed();
@@ -1253,7 +755,6 @@ namespace BizHawk.Client.EmuHawk
 
 			UpdateBotStatusIcon();
 			MessageLabel.Text = "Running...";
-			_cachedControlProbabilities = ControlProbabilities;
 			_logGenerator = Global.MovieSession.LogGeneratorInstance();
 			_logGenerator.SetSource(Global.ClickyVirtualPadController);
 		}
@@ -1270,17 +771,8 @@ namespace BizHawk.Client.EmuHawk
 			RunBtn.Visible = true;
 			StopBtn.Visible = false;
 			_isBotting = false;
-			_targetFrame = 0;
-			ControlsBox.Enabled = true;
-			StartFromSlotBox.Enabled = true;
-			_targetFrame = 0;
-			_currentBotAttempt = null;
-			GoalGroupBox.Enabled = true;
-
-			if (Global.MovieSession.Movie.IsRecording)
-			{
-				Global.MovieSession.Movie.IsCountingRerecords = _oldCountingSetting;
-			}
+	
+			
 
 			GlobalWin.MainForm.PauseEmulator();
 			SetNormalSpeed();
@@ -1317,81 +809,8 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.MainForm.Throttle();
 		}
 
-		private void AssessRunButtonStatus()
-		{
-			RunBtn.Enabled =
-				FrameLength > 0
-				&& !string.IsNullOrWhiteSpace(MaximizeAddressBox.Text)
-				&& ControlProbabilities.Any(kvp => kvp.Value > 0);
-		}
 
-		/// <summary>
-		/// Updates comparison bot attempt with current best bot attempt values for values where the "best" radio button is selected
-		/// </summary>
-		private void UpdateComparisonBotAttempt()
-		{
-			if(_bestBotAttempt == null)
-			{
-				if (MainBestRadio.Checked)
-				{
-					_comparisonBotAttempt.Maximize = 0;
-				}
-
-			}
-			else
-			{
-				if (MainBestRadio.Checked && _bestBotAttempt.Maximize != _comparisonBotAttempt.Maximize)
-				{
-					_comparisonBotAttempt.Maximize = _bestBotAttempt.Maximize;
-				}
-				
-			}
-		}
-
-		private void MainBestRadio_CheckedChanged(object sender, EventArgs e)
-		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
-			{
-				this.MainValueNumeric.Enabled = false;
-				_comparisonBotAttempt.Maximize = _bestBotAttempt == null ? 0 : _bestBotAttempt.Maximize;
-			}
-		}
 		
-
-		private void MainValueRadio_CheckedChanged(object sender, EventArgs e)
-		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
-			{
-				this.MainValueNumeric.Enabled = true;
-				_comparisonBotAttempt.Maximize = (int)this.MainValueNumeric.Value;
-			}
-		}
-		
-		private void MainValueNumeric_ValueChanged(object sender, EventArgs e)
-		{
-			NumericUpDown numericUpDown = (NumericUpDown)sender;
-			this._comparisonBotAttempt.Maximize = (int)numericUpDown.Value;
-		}
-
-		private void TieBreak1Numeric_ValueChanged(object sender, EventArgs e)
-		{
-			NumericUpDown numericUpDown = (NumericUpDown)sender;
-			this._comparisonBotAttempt.TieBreak1 = (int)numericUpDown.Value;
-		}
-
-		private void TieBreak2Numeric_ValueChanged(object sender, EventArgs e)
-		{
-			NumericUpDown numericUpDown = (NumericUpDown)sender;
-			this._comparisonBotAttempt.TieBreak2 = (int)numericUpDown.Value;
-		}
-
-		private void TieBreak3Numeric_ValueChanged(object sender, EventArgs e)
-		{
-			NumericUpDown numericUpDown = (NumericUpDown)sender;
-			this._comparisonBotAttempt.TieBreak3 = (int)numericUpDown.Value;
-		}
 
 	}
 }
