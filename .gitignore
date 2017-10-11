@@ -73,3 +73,5 @@ ExternalCoreProjects/Virtu/bin/*.*
 libsnes/vs2015/libsnes.VC.db
 waterbox/**/*.wbx
 waterbox/**/*.wbx.in
+Report20171010-2020.vspx
+.vs/BizHawk/v15/sqlite3/storage.ide
