@@ -215,12 +215,11 @@ namespace BizHawk.Client.EmuHawk
 
 			_comparisonBotAttempt = new BotAttempt();
 			
-			
 		}
 
 		private void GyroscopeBot_Load(object sender, EventArgs e)
 		{
-
+			StartBot();
 		}
 
 		#endregion
