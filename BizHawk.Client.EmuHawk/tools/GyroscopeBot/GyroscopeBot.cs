@@ -557,105 +557,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public int TieBreaker1Address
-		{
-			get
-			{
-				int? addr = TieBreaker1Box.ToRawInt();
-				if (addr.HasValue)
-				{
-					return addr.Value;
-				}
-
-				return 0;
-			}
-
-			set
-			{
-				TieBreaker1Box.SetFromRawInt(value);
-			}
-		}
-
-		public int TieBreaker1Value
-		{
-			get
-			{
-				int? addr = TieBreaker1Box.ToRawInt();
-				if (addr.HasValue)
-				{
-					return GetRamvalue(addr.Value);
-				}
-
-				return 0;
-			}
-		}
-
-		public int TieBreaker2Address
-		{
-			get
-			{
-				int? addr = TieBreaker2Box.ToRawInt();
-				if (addr.HasValue)
-				{
-					return addr.Value;
-				}
-
-				return 0;
-			}
-
-			set
-			{
-				TieBreaker2Box.SetFromRawInt(value);
-			}
-		}
-
-		public int TieBreaker2Value
-		{
-			get
-			{
-				int? addr = TieBreaker2Box.ToRawInt();
-				if (addr.HasValue)
-				{
-					return GetRamvalue(addr.Value);
-				}
-
-				return 0;
-			}
-		}
-
-		public int TieBreaker3Address
-		{
-			get
-			{
-				int? addr = TieBreaker3Box.ToRawInt();
-				if (addr.HasValue)
-				{
-					return addr.Value;
-				}
-
-				return 0;
-			}
-
-			set
-			{
-				TieBreaker3Box.SetFromRawInt(value);
-			}
-		}
-
-		public int TieBreaker3Value
-		{
-			get
-			{
-				int? addr = TieBreaker3Box.ToRawInt();
-				if (addr.HasValue)
-				{
-					return GetRamvalue(addr.Value);
-				}
-
-				return 0;
-			}
-		}
-
+		
 		public byte MainComparisonType
 		{
 			get
@@ -669,44 +571,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public byte Tie1ComparisonType
-		{
-			get
-			{
-				return (byte)Tiebreak1Operator.SelectedIndex;
-			}
-			set
-			{
-				if (value < 5) Tiebreak1Operator.SelectedIndex = value;
-				else Tiebreak1Operator.SelectedIndex = 0;
-			}
-		}
-
-		public byte Tie2ComparisonType
-		{
-			get
-			{
-				return (byte)Tiebreak2Operator.SelectedIndex;
-			}
-			set
-			{
-				if (value < 5) Tiebreak2Operator.SelectedIndex = value;
-				else Tiebreak2Operator.SelectedIndex = 0;
-			}
-		}
-
-		public byte Tie3ComparisonType
-		{
-			get
-			{
-				return (byte)Tiebreak3Operator.SelectedIndex;
-			}
-			set
-			{
-				if (value < 5) Tiebreak3Operator.SelectedIndex = value;
-				else Tiebreak3Operator.SelectedIndex = 0;
-			}
-		}
 
 		public string FromSlot
 		{
@@ -814,22 +678,13 @@ namespace BizHawk.Client.EmuHawk
 
 			FrameLength = 0;
 			MaximizeAddress = 0;
-			TieBreaker1Address = 0;
-			TieBreaker2Address = 0;
-			TieBreaker3Address = 0;
+			
 			StartFromSlotBox.SelectedIndex = 0;
 			MainOperator.SelectedIndex = 0;
-			Tiebreak1Operator.SelectedIndex = 0;
-			Tiebreak2Operator.SelectedIndex = 0;
-			Tiebreak3Operator.SelectedIndex = 0;
+			
 			MainBestRadio.Checked = true;
 			MainValueNumeric.Value = 0;
-			TieBreak1Numeric.Value = 0;
-			TieBreak2Numeric.Value = 0;
-			TieBreak3Numeric.Value = 0;
-			TieBreak1BestRadio.Checked = true;
-			TieBreak2BestRadio.Checked = true;
-			TieBreak3BestRadio.Checked = true;
+		
 
 			UpdateBestAttempt();
 			UpdateComparisonBotAttempt();
@@ -1085,50 +940,32 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			MaximizeAddress = botData.Maximize;
-			TieBreaker1Address = botData.TieBreaker1;
-			TieBreaker2Address = botData.TieBreaker2;
-			TieBreaker3Address = botData.TieBreaker3;
+			
 			try
 			{
 				MainComparisonType = botData.ComparisonTypeMain;
-				Tie1ComparisonType = botData.ComparisonTypeTie1;
-				Tie2ComparisonType = botData.ComparisonTypeTie2;
-				Tie3ComparisonType = botData.ComparisonTypeTie3;
+				
 
 				MainBestRadio.Checked = botData.MainCompareToBest;
-				TieBreak1BestRadio.Checked = botData.TieBreaker1CompareToBest;
-				TieBreak2BestRadio.Checked = botData.TieBreaker2CompareToBest;
-				TieBreak3BestRadio.Checked = botData.TieBreaker3CompareToBest;
+				
 				MainValueRadio.Checked = !botData.MainCompareToBest;
-				TieBreak1ValueRadio.Checked = !botData.TieBreaker1CompareToBest;
-				TieBreak2ValueRadio.Checked = !botData.TieBreaker2CompareToBest;
-				TieBreak3ValueRadio.Checked = !botData.TieBreaker3CompareToBest;
+				
 
 				MainValueNumeric.Value = botData.MainCompareToValue;
-				TieBreak1Numeric.Value = botData.TieBreaker1CompareToValue;
-				TieBreak2Numeric.Value = botData.TieBreaker2CompareToValue;
-				TieBreak3Numeric.Value = botData.TieBreaker3CompareToValue;
+				
 			}
 			catch
 			{
 				MainComparisonType = 0;
-				Tie1ComparisonType = 0;
-				Tie2ComparisonType = 0;
-				Tie3ComparisonType = 0;
+				
 
 				MainBestRadio.Checked = true;
-				TieBreak1BestRadio.Checked = true;
-				TieBreak2BestRadio.Checked = true;
-				TieBreak3BestRadio.Checked = true;
+				
 				MainBestRadio.Checked = false;
-				TieBreak1BestRadio.Checked = false;
-				TieBreak2BestRadio.Checked = false;
-				TieBreak3BestRadio.Checked = false;
+			
 
 				MainValueNumeric.Value = 0;
-				TieBreak1Numeric.Value = 0;
-				TieBreak2Numeric.Value = 0;
-				TieBreak3Numeric.Value = 0;
+			
 			}
 			FrameLength = botData.FrameLength;
 			FromSlot = botData.FromSlot;
@@ -1165,21 +1002,13 @@ namespace BizHawk.Client.EmuHawk
 				Best = _bestBotAttempt,
 				ControlProbabilities = ControlProbabilities,
 				Maximize = MaximizeAddress,
-				TieBreaker1 = TieBreaker1Address,
-				TieBreaker2 = TieBreaker2Address,
-				TieBreaker3 = TieBreaker3Address,
+				
 				ComparisonTypeMain = MainComparisonType,
-				ComparisonTypeTie1 = Tie1ComparisonType,
-				ComparisonTypeTie2 = Tie2ComparisonType,
-				ComparisonTypeTie3 = Tie3ComparisonType,
+				
 				MainCompareToBest = MainBestRadio.Checked,
-				TieBreaker1CompareToBest = TieBreak1BestRadio.Checked,
-				TieBreaker2CompareToBest = TieBreak2BestRadio.Checked,
-				TieBreaker3CompareToBest = TieBreak3BestRadio.Checked,
+			
 				MainCompareToValue = (int)MainValueNumeric.Value,
-				TieBreaker1CompareToValue = (int)TieBreak1Numeric.Value,
-				TieBreaker2CompareToValue = (int)TieBreak2Numeric.Value,
-				TieBreaker3CompareToValue = (int)TieBreak3Numeric.Value,
+	
 				FromSlot = FromSlot,
 				FrameLength = FrameLength,
 				Attempts = Attempts,
@@ -1202,9 +1031,7 @@ namespace BizHawk.Client.EmuHawk
 		private void SetupControlsAndProperties()
 		{
 			MaximizeAddressBox.SetHexProperties(MemoryDomains.MainMemory.Size);
-			TieBreaker1Box.SetHexProperties(MemoryDomains.MainMemory.Size);
-			TieBreaker2Box.SetHexProperties(MemoryDomains.MainMemory.Size);
-			TieBreaker3Box.SetHexProperties(MemoryDomains.MainMemory.Size);
+
 
 			StartFromSlotBox.SelectedIndex = 0;
 
@@ -1319,32 +1146,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsBetter(BotAttempt comparison, BotAttempt current)
 		{
-			if (!TestValue(MainComparisonType, current.Maximize, comparison.Maximize))
-			{
-				return false;
-			}
-			else if (current.Maximize == comparison.Maximize)
-			{
-				if (!TestValue(Tie1ComparisonType, current.TieBreak1, comparison.TieBreak1))
-				{
-					return false;
-				}
-				else if (current.TieBreak1 == comparison.TieBreak1)
-				{
-					if (!TestValue(Tie2ComparisonType, current.TieBreak2, comparison.TieBreak2))
-					{
-						return false;
-					}
-					else if (current.TieBreak2 == comparison.TieBreak2)
-					{
-						if (!TestValue(Tie3ComparisonType, current.TieBreak3, current.TieBreak3))
-						{
-							return false;
-						}
-					}
-				}
-			}
-
+			
 			return true;
 		}
 
@@ -1373,9 +1175,7 @@ namespace BizHawk.Client.EmuHawk
 				ClearBestButton.Enabled = true;
 				BestAttemptNumberLabel.Text = _bestBotAttempt.Attempt.ToString();
 				BestMaximizeBox.Text = _bestBotAttempt.Maximize.ToString();
-				BestTieBreak1Box.Text = _bestBotAttempt.TieBreak1.ToString();
-				BestTieBreak2Box.Text = _bestBotAttempt.TieBreak2.ToString();
-				BestTieBreak3Box.Text = _bestBotAttempt.TieBreak3.ToString();
+	
 
 				var sb = new StringBuilder();
 				foreach (var logEntry in _bestBotAttempt.Log)
@@ -1390,9 +1190,7 @@ namespace BizHawk.Client.EmuHawk
 				ClearBestButton.Enabled = false;
 				BestAttemptNumberLabel.Text = "";
 				BestMaximizeBox.Text = "";
-				BestTieBreak1Box.Text = "";
-				BestTieBreak2Box.Text = "";
-				BestTieBreak3Box.Text = "";
+		
 				BestAttemptLogLabel.Text = "";
 				PlayBestButton.Enabled = false;
 			}
@@ -1539,20 +1337,6 @@ namespace BizHawk.Client.EmuHawk
 					_comparisonBotAttempt.Maximize = 0;
 				}
 
-				if (TieBreak1BestRadio.Checked)
-				{
-					_comparisonBotAttempt.TieBreak1 = 0;
-				}
-
-				if (TieBreak2BestRadio.Checked)
-				{
-					_comparisonBotAttempt.TieBreak2= 0;
-				}
-
-				if (TieBreak3BestRadio.Checked)
-				{
-					_comparisonBotAttempt.TieBreak3 = 0;
-				}
 			}
 			else
 			{
@@ -1560,21 +1344,7 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_comparisonBotAttempt.Maximize = _bestBotAttempt.Maximize;
 				}
-
-				if (TieBreak1BestRadio.Checked && _bestBotAttempt.TieBreak1 != _comparisonBotAttempt.TieBreak1)
-				{
-					_comparisonBotAttempt.TieBreak1 = _bestBotAttempt.TieBreak1;
-				}
-
-				if (TieBreak2BestRadio.Checked && _bestBotAttempt.TieBreak2 != _comparisonBotAttempt.TieBreak2)
-				{
-					_comparisonBotAttempt.TieBreak2 = _bestBotAttempt.TieBreak2;
-				}
-
-				if (TieBreak3BestRadio.Checked && _bestBotAttempt.TieBreak3 != _comparisonBotAttempt.TieBreak3)
-				{
-					_comparisonBotAttempt.TieBreak3 = _bestBotAttempt.TieBreak3;
-				}
+				
 			}
 		}
 
@@ -1587,36 +1357,7 @@ namespace BizHawk.Client.EmuHawk
 				_comparisonBotAttempt.Maximize = _bestBotAttempt == null ? 0 : _bestBotAttempt.Maximize;
 			}
 		}
-
-		private void Tiebreak1BestRadio_CheckedChanged(object sender, EventArgs e)
-		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
-			{
-				this.TieBreak1Numeric.Enabled = false;
-				_comparisonBotAttempt.TieBreak1 = _bestBotAttempt == null ? 0 : _bestBotAttempt.TieBreak1;
-			}
-		}
-
-		private void Tiebreak2BestRadio_CheckedChanged(object sender, EventArgs e)
-		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
-			{
-				this.TieBreak2Numeric.Enabled = false;
-				_comparisonBotAttempt.TieBreak2 = _bestBotAttempt == null ? 0 : _bestBotAttempt.TieBreak2;
-			}
-		}
-
-		private void Tiebreak3BestRadio_CheckedChanged(object sender, EventArgs e)
-		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
-			{
-				this.TieBreak3Numeric.Enabled = false;
-				_comparisonBotAttempt.TieBreak3 = _bestBotAttempt == null ? 0 : _bestBotAttempt.TieBreak3;
-			}
-		}
+		
 
 		private void MainValueRadio_CheckedChanged(object sender, EventArgs e)
 		{
@@ -1627,37 +1368,7 @@ namespace BizHawk.Client.EmuHawk
 				_comparisonBotAttempt.Maximize = (int)this.MainValueNumeric.Value;
 			}
 		}
-
-		private void TieBreak1ValueRadio_CheckedChanged(object sender, EventArgs e)
-		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
-			{
-				this.TieBreak1Numeric.Enabled = true;
-				_comparisonBotAttempt.TieBreak1 = (int)this.TieBreak1Numeric.Value;
-			}
-		}
-
-		private void TieBreak2ValueRadio_CheckedChanged(object sender, EventArgs e)
-		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
-			{
-				this.TieBreak2Numeric.Enabled = true;
-				_comparisonBotAttempt.TieBreak2 = (int)this.TieBreak2Numeric.Value;
-			}
-		}
-
-		private void TieBreak3ValueRadio_CheckedChanged(object sender, EventArgs e)
-		{
-			RadioButton radioButton = (RadioButton)sender;
-			if (radioButton.Checked)
-			{
-				this.TieBreak3Numeric.Enabled = true;
-				_comparisonBotAttempt.TieBreak3 = (int)this.TieBreak3Numeric.Value;
-			}
-		}
-
+		
 		private void MainValueNumeric_ValueChanged(object sender, EventArgs e)
 		{
 			NumericUpDown numericUpDown = (NumericUpDown)sender;
