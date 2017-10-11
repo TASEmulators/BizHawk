@@ -64,9 +64,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Dictionary<string, double> _cachedControlProbabilities;
 		private ILogEntryGenerator _logGenerator;
-		private Socket sender;
-		private IPEndPoint remoteEP;
-		private TcpClient client;
+		
 		private string IP;
 		private int port;
 		
@@ -102,17 +100,22 @@ namespace BizHawk.Client.EmuHawk
 		#region sockethandling
 		private TcpClient CreateTCPClient(string IP, int port)
 		{
-			return client = new TcpClient(IP, port);
+			return new TcpClient(IP, port);
 		}
 		
-		private dynamic SendEmulatorGameState()
+		private ControllerCommand SendEmulatorGameStateToController()
 		{
+			ControllerCommand cc = new ControllerCommand();
 			try
 			{
-				NetworkStream stream = this.client.GetStream();
+
+				TcpClient client = CreateTCPClient(this.IP, this.port);
+				NetworkStream stream = client.GetStream();
 				byte[] bytes = new byte[1024];
 				// Encode the data string into a byte array. 
-				string data = "{}";
+				GameState gs = GetCurrentState();
+				string data = JsonConvert.SerializeObject(gs);
+
 				byte[] msg = Encoding.ASCII.GetBytes(data);
 				stream.Write(msg, 0, msg.Length);
 
@@ -130,21 +133,23 @@ namespace BizHawk.Client.EmuHawk
 					}
 					while (stream.DataAvailable);
 				}
-				return Newtonsoft.Json.JsonConvert.DeserializeObject(myCompleteMessage.ToString());
+				cc = JsonConvert.DeserializeObject<ControllerCommand>(myCompleteMessage.ToString());
 			}
 			catch (ArgumentNullException ane)
 			{
-				return "__err__" + ane.ToString();
+				cc.type = "__err__" + ane.ToString();
 			}
 			catch (SocketException se)
 			{
-				return "__err__" + se.ToString();
+				cc.type = "__err__" + se.ToString();
 			}
 			catch (Exception e)
 			{
-				return "__err__" + e.ToString();
+				cc.type = "__err__" + e.ToString();
 			}
+			return cc;
 		}
+		/*
 		public static string ConnectToSocketAndSend(string IP, int port, string data)
 		{
 			try
@@ -184,18 +189,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 			catch (ArgumentNullException ane)
 			{
-				return "__err__" + ane.ToString();
+				//return "__err__" + ane.ToString();
 			}
 			catch (SocketException se)
 			{
-				return "__err__" + se.ToString();
+				//return "__err__" + se.ToString();
 			}
 			catch (Exception e)
 			{
-				return "__err__" + e.ToString();
+				//return "__err__" + e.ToString();
 			}
 		}
-
+		*/
 		#endregion
 
 		#region Initialize
@@ -205,9 +210,12 @@ namespace BizHawk.Client.EmuHawk
 			InitializeComponent();
 			Text = DialogTitle;
 			Settings = new GyroscopeBotSettings();
+			this.IP = "127.0.0.1";
+			this.port = 9999;
 
 			_comparisonBotAttempt = new BotAttempt();
-			this.client = CreateTCPClient(this.IP, this.port);
+			
+			
 		}
 
 		private void GyroscopeBot_Load(object sender, EventArgs e)
@@ -338,7 +346,70 @@ namespace BizHawk.Client.EmuHawk
 			}
 			return buttons;
 		}
-		
+
+
+		public void SetJoypadButtons(Dictionary<string,bool> buttons, int? controller = null)
+		{
+			try
+			{
+				foreach (var button in buttons.Keys)
+				{
+					var invert = false;
+					bool? theValue;
+					var theValueStr = buttons[button].ToString();
+
+					if (!string.IsNullOrWhiteSpace(theValueStr))
+					{
+						if (theValueStr.ToLower() == "false")
+						{
+							theValue = false;
+						}
+						else if (theValueStr.ToLower() == "true")
+						{
+							theValue = true;
+						}
+						else
+						{
+							invert = true;
+							theValue = null;
+						}
+					}
+					else
+					{
+						theValue = null;
+					}
+
+					var toPress = button.ToString();
+					if (controller.HasValue)
+					{
+						toPress = "P" + controller + " " + button;
+					}
+
+					if (!invert)
+					{
+						if (theValue.HasValue) // Force
+						{
+							Global.LuaAndAdaptor.SetButton(toPress, theValue.Value);
+							Global.ActiveController.Overrides(Global.LuaAndAdaptor);
+						}
+						else // Unset
+						{
+							Global.LuaAndAdaptor.UnSet(toPress);
+							Global.ActiveController.Overrides(Global.LuaAndAdaptor);
+						}
+					}
+					else // Inverse
+					{
+						Global.LuaAndAdaptor.SetInverse(toPress);
+						Global.ActiveController.Overrides(Global.LuaAndAdaptor);
+					}
+				}
+			}
+			catch
+			{
+				/*Eat it*/
+			}
+		}
 		private class PlayerState
 		{
 			public PlayerState()
@@ -909,6 +980,17 @@ namespace BizHawk.Client.EmuHawk
 
 		#region Classes
 
+		private class ControllerCommand
+		{
+			public ControllerCommand() { }
+			public string type { get; set; }
+			public Dictionary<string, bool> p1 { get; set; }
+			public Dictionary<string, bool> p2 { get; set; }
+			public int player_count { get; set; }
+			public string savegamepath { get; set; }
+
+		}
+
 		private class BotAttempt
 		{
 			public BotAttempt()
@@ -1192,54 +1274,38 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
-			if (_replayMode)
+			if (_isBotting)
 			{
-				int index = Emulator.Frame - _startFrame;
-
-				if (index < _bestBotAttempt.Log.Count)
+				string command_type = "";
+				do
 				{
-					var logEntry = _bestBotAttempt.Log[index];
-					var lg = Global.MovieSession.MovieControllerInstance();
-					lg.SetControllersAsMnemonic(logEntry);
-
-					foreach (var button in lg.Definition.BoolButtons)
+					// send over the current game state
+					ControllerCommand command = SendEmulatorGameStateToController();
+					command_type = command.type;
+					// get a command back
+					// act on the command
+					if (command_type == "reset")
 					{
-						// TODO: make an input adapter specifically for the bot?
-						Global.LuaAndAdaptor.SetButton(button, lg.IsPressed(button));
+						GlobalWin.MainForm.LoadState(command.savegamepath, Path.GetFileName(command.savegamepath));
 					}
-				}
-				else
-				{
-					FinishReplay();
-				}
-			}
-			else if (_isBotting)
-			{
-				if (Emulator.Frame >= _targetFrame)
-				{
-					Attempts++;
-					Frames += FrameLength;
-
-					_currentBotAttempt.Maximize = MaximizeValue;
-					_currentBotAttempt.TieBreak1 = TieBreaker1Value;
-					_currentBotAttempt.TieBreak2 = TieBreaker2Value;
-					_currentBotAttempt.TieBreak3 = TieBreaker3Value;
-					PlayBestButton.Enabled = true;
-					string command = SendEmulatorGameState();
-
-
-
-					if (_bestBotAttempt == null || IsBetter(_bestBotAttempt, _currentBotAttempt))
+					else if (command_type == "processing")
 					{
-						_bestBotAttempt = _currentBotAttempt;
-						UpdateBestAttempt();
+						// just do nothing, we're waiting for feedback from the controller.
+						// XXX how do we tell the emulator to not advance the frame?
+
 					}
+					else
+					{
+						SetJoypadButtons(command.p1, 1);
+						if (command.player_count == 2)
+						{
+							SetJoypadButtons(command.p2, 2);
+						}
+					}
+				} while (command_type == "processing");
 
-					_currentBotAttempt = new BotAttempt { Attempt = Attempts };
-					GlobalWin.MainForm.LoadQuickSave(SelectedSlot, false, true);
-				}
-
-				PressButtons();
+				// press the buttons if need be
+				//PressButtons();
 			}
 		}
 
@@ -1378,12 +1444,14 @@ namespace BizHawk.Client.EmuHawk
 			_dontUpdateValues = false;
 
 			_targetFrame = Emulator.Frame + (int)FrameLengthNumeric.Value;
-
+			Global.Config.SoundEnabled = false;
 			GlobalWin.MainForm.UnpauseEmulator();
-			if (Settings.TurboWhenBotting)
-			{
-				SetMaxSpeed();
-			}
+			SetMaxSpeed();
+			GlobalWin.MainForm.ClickSpeedItem(6399);
+			//if (Settings.TurboWhenBotting)
+			//{
+			//	SetMaxSpeed();
+			//}
 
 			UpdateBotStatusIcon();
 			MessageLabel.Text = "Running...";
@@ -1394,20 +1462,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool CanStart()
 		{
-			if (!ControlProbabilities.Any(cp => cp.Value > 0))
-			{
-				return false;
-			}
-
-			if (!MaximizeAddressBox.ToRawInt().HasValue)
-			{
-				return false;
-			}
-
-			if (FrameLengthNumeric.Value == 0)
-			{
-				return false;
-			}
+		
 
 			return true;
 		}

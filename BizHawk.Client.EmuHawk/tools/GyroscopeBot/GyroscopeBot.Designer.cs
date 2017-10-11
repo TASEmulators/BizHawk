@@ -1134,9 +1134,9 @@
 			this.Controls.Add(this.BotMenu);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.BotMenu;
-			this.Name = "GyroscopeBasicBot";
+			this.Name = "GyroscopeBot";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-			this.Text = "Gyroscope Basic Bot";
+			this.Text = "Gyroscope Bot";
 			this.Load += new System.EventHandler(this.GyroscopeBot_Load);
 			this.BotMenu.ResumeLayout(false);
 			this.BotMenu.PerformLayout();
