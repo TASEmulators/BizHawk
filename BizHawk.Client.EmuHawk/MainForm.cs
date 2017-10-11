@@ -271,6 +271,15 @@ namespace BizHawk.Client.EmuHawk
 				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 			}
 
+			if (argParse.socket_ip != null)
+			{
+				Global.Config.controller_ip = argParse.socket_ip;
+			}
+
+			if (argParse.socket_port != null)
+			{
+				Global.Config.controller_port = argParse.socket_port;
+			}
 			if (argParse.cmdRom != null)
 			{
 				// Commandline should always override auto-load
