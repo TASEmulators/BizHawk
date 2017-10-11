@@ -58,8 +58,6 @@ namespace BizHawk.Client.EmuHawk
 
 		private ILogEntryGenerator _logGenerator;
 		private TcpClient client;
-		private string IP;
-		private int port;
 		
 		#region Services and Settings
 
@@ -142,58 +140,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			return cc;
 		}
-		/*
-		public static string ConnectToSocketAndSend(string IP, int port, string data)
-		{
-			try
-			{
-
-
-				TcpClient client = new TcpClient(IP, port);
-				// Create a TCP/IP  socket.  
-				//this.sender = new Socket(AddressFamily.InterNetwork,
-				//	SocketType.Stream, ProtocolType.Tcp);
-				//this.sender.Connect(remoteEP);
-				//
-				byte[] bytes = new byte[1024];
-				// Encode the data string into a byte array.  
-				byte[] msg = Encoding.ASCII.GetBytes(data);
-				NetworkStream stream = client.GetStream();
-				stream.Write(msg, 0, msg.Length);
-				StringBuilder myCompleteMessage = new StringBuilder();
-
-				if (stream.CanRead)
-				{
-					byte[] myReadBuffer = new byte[1024];
-					int numberOfBytesRead = 0;
-					// Incoming message may be larger than the buffer size.
-					do
-					{
-						numberOfBytesRead = stream.Read(myReadBuffer, 0, myReadBuffer.Length);
-
-						myCompleteMessage.AppendFormat("{0}", Encoding.ASCII.GetString(myReadBuffer, 0, numberOfBytesRead));
-
-					}
-					while (stream.DataAvailable);
-
-				}
-
-				return myCompleteMessage.ToString();
-			}
-			catch (ArgumentNullException ane)
-			{
-				//return "__err__" + ane.ToString();
-			}
-			catch (SocketException se)
-			{
-				//return "__err__" + se.ToString();
-			}
-			catch (Exception e)
-			{
-				//return "__err__" + e.ToString();
-			}
-		}
-		*/
+		
 		#endregion
 
 		#region Initialize
@@ -202,9 +149,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			InitializeComponent();
 			Text = DialogTitle;
-			Settings = new GyroscopeBotSettings();
-			this.IP = "127.0.0.1";
-			this.port = 9999;			
+			Settings = new GyroscopeBotSettings();		
 		}
 
 		private void GyroscopeBot_Load(object sender, EventArgs e)
@@ -741,7 +686,7 @@ namespace BizHawk.Client.EmuHawk
 			_isBotting = true;
 			RunBtn.Visible = false;
 			StopBtn.Visible = true;
-			this.client = CreateTCPClient(this.IP, this.port);
+			this.client = CreateTCPClient(Global.Config.controller_ip, Global.Config.controller_port);
 
 
 			Global.Config.SoundEnabled = false;
