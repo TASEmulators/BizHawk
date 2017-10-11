@@ -298,7 +298,7 @@ namespace BizHawk.Emulation.DiscSystem
         //asni - slightly longer running than the others due to its brute-force nature. Should run later in the method
         bool DetectDreamcast()
         {
-            for (int i = 0; i < 10000; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 if (SectorContains("segakatana", i))
                     return true;
