@@ -64,7 +64,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private Dictionary<string, double> _cachedControlProbabilities;
 		private ILogEntryGenerator _logGenerator;
-		
+		private TcpClient client;
 		private string IP;
 		private int port;
 		
@@ -109,8 +109,8 @@ namespace BizHawk.Client.EmuHawk
 			try
 			{
 
-				TcpClient client = CreateTCPClient(this.IP, this.port);
-				NetworkStream stream = client.GetStream();
+				
+				NetworkStream stream = this.client.GetStream();
 				byte[] bytes = new byte[1024];
 				// Encode the data string into a byte array. 
 				GameState gs = GetCurrentState();
@@ -1432,6 +1432,7 @@ namespace BizHawk.Client.EmuHawk
 			StopBtn.Visible = true;
 			GoalGroupBox.Enabled = false;
 			_currentBotAttempt = new BotAttempt { Attempt = Attempts };
+			this.client = CreateTCPClient(this.IP, this.port);
 
 			if (Global.MovieSession.Movie.IsRecording)
 			{
