@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components.Z80;
+using BizHawk.Emulation.Common.Components.Z80A;
 
 // http://www.ticalc.org/pub/text/calcinfo/
 namespace BizHawk.Emulation.Cores.Calculators
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			_tracer = new TraceBuffer { Header = _cpu.TraceHeader };
 
 			ser.Register<ITraceable>(_tracer);
-			ser.Register<IDisassemblable>(new Disassembler());
+			ser.Register<IDisassemblable>(_cpu);
 		}
 
 		private readonly TraceBuffer _tracer;
@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 					if (LinkActive)
 					{
 						// Prevent rom calls from disturbing link port activity
-						if (LinkActive && _cpu.RegisterPC < 0x4000)
+						if (LinkActive && _cpu.RegPC < 0x4000)
 						{
 							return;
 						}
@@ -428,13 +428,13 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		private void IRQCallback()
 		{
-			// Console.WriteLine("IRQ with vec {0} and cpu.InterruptMode {1}", cpu.RegisterI, cpu.InterruptMode);
-			_cpu.Interrupt = false;
+			//Console.WriteLine("IRQ with vec {0} and cpu.InterruptMode {1}", _cpu.Regs[_cpu.I], _cpu.InterruptMode);
+			_cpu.FlagI = false;
 		}
 
 		private void NMICallback()
 		{
-			Console.WriteLine("NMI");
+			//Console.WriteLine("NMI");
 			_cpu.NonMaskableInterrupt = false;
 		}
 
@@ -447,7 +447,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 				_ram[i] = 0xFF;
 			}
 
-			_cpu.RegisterPC = _startPC;
+			_cpu.RegPC = _startPC;
 
 			_cpu.IFF1 = false;
 			_cpu.IFF2 = false;
