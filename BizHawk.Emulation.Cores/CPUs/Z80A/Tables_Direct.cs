@@ -440,11 +440,9 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 		private void LD_SP_16(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
+						{IDLE,						
 						IDLE,
 						TR, SPl, src_l,
-						IDLE,
 						TR, SPh, src_h,
 						IDLE,
 						OP };
@@ -526,6 +524,7 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 						TR16, Z, W, dest_l, dest_h,
 						INC16, Z, W,
 						IDLE,
+						IDLE,
 						op, dest_l, dest_h, src_l, src_h,
 						IDLE,
 						IDLE,
@@ -546,11 +545,7 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,
-						IDLE,
 						TR16, Z, W, L, H,
-						IDLE,
-						IDLE,
 						IDLE,
 						RD, ALU, Z, W,
 						IDLE,
@@ -569,11 +564,7 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,
-						IDLE,
 						TR16, Z, W, L, H,
-						IDLE,
-						IDLE,
 						IDLE,
 						RD, ALU, Z, W,
 						IDLE,

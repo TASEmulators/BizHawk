@@ -43,8 +43,6 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 
 		public ushort[] Regs = new ushort[36];
 
-		// The Z80 also has ports to communicate with external components
-
 		public bool FlagI;
 
 		public bool FlagC
@@ -107,7 +105,7 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 
 		private void ResetRegisters()
 		{
-			for (int i=0; i < 14; i++)
+			for (int i=0; i < 36; i++)
 			{
 				Regs[i] = 0;
 			}

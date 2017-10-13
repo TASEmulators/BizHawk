@@ -177,6 +177,7 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 					else if (iff1 && FlagI && NO_prefix)
 					{
 						iff1 = iff2 = false;
+						EI_pending = 0;
 
 						if (TraceCallback != null)
 						{
@@ -310,6 +311,7 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 						else if (iff1 && FlagI && NO_prefix)
 						{
 							iff1 = iff2 = false;
+							EI_pending = 0;
 
 							if (TraceCallback != null)
 							{
@@ -384,6 +386,7 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 					else if (iff1 && FlagI && NO_prefix)
 					{
 						iff1 = iff2 = false;
+						EI_pending = 0;
 
 						if (TraceCallback != null)
 						{
@@ -415,7 +418,6 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 					}
 					else
 					{
-						instr_pntr = 0;
 						Regs[R]++;
 						Regs[R] &= 0xFF;
 						cur_instr = new ushort[]
@@ -424,6 +426,8 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 						IDLE,
 						HALT };
 					}
+
+					instr_pntr = 0;
 					break;
 				case RD:
 					Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
