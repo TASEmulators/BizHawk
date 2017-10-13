@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Common.Components.Z80A
+namespace BizHawk.Emulation.Cores.Components.Z80A
 {
 	public sealed partial class Z80A : IDisassemblable
 	{

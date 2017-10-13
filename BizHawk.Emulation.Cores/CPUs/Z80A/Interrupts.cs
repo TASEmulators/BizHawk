@@ -1,6 +1,6 @@
 using System;
 
-namespace BizHawk.Emulation.Common.Components.Z80A
+namespace BizHawk.Emulation.Cores.Components.Z80A
 {
 	public partial class Z80A
 	{

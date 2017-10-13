@@ -7,7 +7,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
 
 // Z80A CPU
-namespace BizHawk.Emulation.Common.Components.Z80A
+namespace BizHawk.Emulation.Cores.Components.Z80A
 {
 	public sealed partial class Z80A
 	{
