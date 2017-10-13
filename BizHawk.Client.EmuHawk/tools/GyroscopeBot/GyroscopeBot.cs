@@ -61,6 +61,7 @@ namespace BizHawk.Client.EmuHawk
 		private string _lastResult = "Unknown";
 		private float _winsToLosses = 0;
 		private int _totalGames = 0;
+		private int _OSDMessageTimeInSeconds = 15;
 
 		private ILogEntryGenerator _logGenerator;
 		private TcpClient client;
@@ -663,7 +664,7 @@ namespace BizHawk.Client.EmuHawk
 
 					_winsToLosses = (float)_wins / _totalGames;
 					GlobalWin.OSD.ClearGUIText();
-					GlobalWin.OSD.AddMessageForever("Game #: " + _totalGames + " Wins: " + _wins + " Losses: " + _losses + " last result: " + _lastResult + " ratio: " + _winsToLosses);
+					GlobalWin.OSD.AddMessageForTime("Game #: " + _totalGames + " Wins: " + _wins + " Losses: " + _losses + " last result: " + _lastResult + " ratio: " + _winsToLosses, _OSDMessageTimeInSeconds);
 				}
 				string command_type = "";
 				do
@@ -729,7 +730,7 @@ namespace BizHawk.Client.EmuHawk
 			MessageLabel.Text = "Running...";
 			_logGenerator = Global.MovieSession.LogGeneratorInstance();
 			_logGenerator.SetSource(Global.ClickyVirtualPadController);
-			GlobalWin.OSD.AddMessageForever(" Wins: " + _wins + " Losses: " + _losses + " last result: " + _lastResult + " ratio: " + _winsToLosses);
+			GlobalWin.OSD.AddMessageForTime(" Wins: " + _wins + " Losses: " + _losses + " last result: " + _lastResult + " ratio: " + _winsToLosses, _OSDMessageTimeInSeconds);
 
 		}
 
