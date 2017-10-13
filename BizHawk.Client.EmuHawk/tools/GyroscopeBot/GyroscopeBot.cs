@@ -168,6 +168,49 @@ namespace BizHawk.Client.EmuHawk
 
 		#region streetfighter
 
+		public uint get_p2_move()
+		{
+			if (is_p2_in_move())
+			{
+				uint val = (uint)_currentDomain.PeekUint(0x0007E5, _bigEndian);
+				return val;
+			}
+			return 0;
+
+		}
+		public bool is_p2_in_move()
+		{
+			if (_currentDomain.PeekByte(0x0007E9) == 0)
+			{
+				return false;
+			}
+			return true;
+		}
+
+		public int p_width_delta()
+		{
+			return _currentDomain.PeekByte(0x0007EB);
+		}
+
+		public uint get_p1_move()
+		{
+			if (is_p1_in_move())
+			{
+				uint val = (uint)_currentDomain.PeekUint(0x0005E5, _bigEndian);
+				return val;
+			}
+			return 0;
+
+		}
+		public bool is_p1_in_move()
+		{
+			if (_currentDomain.PeekByte(0x0005E9) == 0)
+			{
+				return false;
+			}
+			return true;
+		}
+
 		public int get_framecount()
 		{
 			return Emulator.Frame;
@@ -348,8 +391,8 @@ namespace BizHawk.Client.EmuHawk
 			catch
 			{
 				/*Eat it*/
-			}
-		}
+	}
+}
 		private class PlayerState
 		{
 			public PlayerState()
@@ -362,6 +405,8 @@ namespace BizHawk.Client.EmuHawk
 			public bool jumping { get; set; }
 			public bool crouching { get; set; }
 			public Dictionary<string, bool> buttons { get; set; }
+			public bool in_move { get; set; }
+			public uint move { get; set; }
 
 
 		}
@@ -378,6 +423,7 @@ namespace BizHawk.Client.EmuHawk
 			public bool round_started { get; set; }
 			public bool round_over { get; set; }
 			public int height_delta { get; set; }
+			public int width_delta { get; set; }
 		}
 
 		private GameState GetCurrentState()
@@ -392,6 +438,8 @@ namespace BizHawk.Client.EmuHawk
 			p1.crouching = is_p1_crouching();
 			p1.character = get_p1_character();
 			p1.buttons = GetJoypadButtons(1);
+			p1.move = get_p1_move();
+			p1.in_move = is_p1_in_move();
 
 
 			p2.health = get_p2_health();
@@ -401,6 +449,8 @@ namespace BizHawk.Client.EmuHawk
 			p2.crouching = is_p2_crouching();
 			p2.character = get_p2_character();
 			p2.buttons = GetJoypadButtons(2);
+			p2.move = get_p2_move();
+			p2.in_move = is_p2_in_move();
 
 			gs.p1 = p1;
 			gs.p2 = p2;
@@ -410,6 +460,7 @@ namespace BizHawk.Client.EmuHawk
 			gs.round_started = is_round_started();
 			gs.round_over = is_round_over();
 			gs.height_delta = p_height_delta();
+			gs.width_delta = p_width_delta();
 
 			return gs;
 		}
@@ -666,6 +717,7 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.OSD.ClearGUIText();
 					GlobalWin.OSD.AddMessageForTime("Game #: " + _totalGames + " Wins: " + _wins + " Losses: " + _losses + " last result: " + _lastResult + " ratio: " + _winsToLosses, _OSDMessageTimeInSeconds);
 				}
+
 				string command_type = "";
 				do
 				{
