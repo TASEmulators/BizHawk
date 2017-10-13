@@ -168,36 +168,10 @@ namespace BizHawk.Client.EmuHawk
 
 		#region streetfighter
 
-		/*
-		 * L - High Punch
-X - Middle Punch
-Y - Low Punch
-R - High Kick
-A - Middle Kick
-B - Low Kick
-
- 
-			 y - y
-			 h - b
-			 n - x
-			 u- a
-			 j - l
-			 m - r
-
-
-			 */
-
 		public uint get_p2_move()
 		{
-			Console.WriteLine("In get_p2_move");
 			if (is_p2_in_move())
 			{
-				/*
-				int _7e5 = _currentDomain.PeekByte(0x0007E5);
-				int _7e6 = _currentDomain.PeekByte(0x0007E6);
-				int _7e7 = _currentDomain.PeekByte(0x0007E7);
-				int _7e8 = _currentDomain.PeekByte(0x0007E8);
-				*/
 				uint val = (uint)_currentDomain.PeekUint(0x0007E5, _bigEndian);
 				return val;
 			}
@@ -217,16 +191,11 @@ B - Low Kick
 		{
 			return _currentDomain.PeekByte(0x0007EB);
 		}
+
 		public uint get_p1_move()
 		{
 			if (is_p1_in_move())
 			{
-				/*
-				int _7e5 = _currentDomain.PeekByte(0x0007E5);
-				int _7e6 = _currentDomain.PeekByte(0x0007E6);
-				int _7e7 = _currentDomain.PeekByte(0x0007E7);
-				int _7e8 = _currentDomain.PeekByte(0x0007E8);
-				*/
 				uint val = (uint)_currentDomain.PeekUint(0x0005E5, _bigEndian);
 				return val;
 			}
@@ -235,13 +204,13 @@ B - Low Kick
 		}
 		public bool is_p1_in_move()
 		{
-			Console.WriteLine("In is_p2_in_move");
 			if (_currentDomain.PeekByte(0x0005E9) == 0)
 			{
 				return false;
 			}
 			return true;
 		}
+
 		public int get_framecount()
 		{
 			return Emulator.Frame;
