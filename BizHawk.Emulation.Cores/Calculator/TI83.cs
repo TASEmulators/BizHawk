@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Components.Z80A;
+using BizHawk.Emulation.Cores.Components.Z80A;
 
 // http://www.ticalc.org/pub/text/calcinfo/
 namespace BizHawk.Emulation.Cores.Calculators
