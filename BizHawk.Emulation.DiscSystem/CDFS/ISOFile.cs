@@ -164,7 +164,62 @@ namespace BizHawk.Emulation.DiscSystem
             this.Root.Parse(s, visitedNodes);
 
 			return true;
-		}        
+		}
+
+
+        private List<KeyValuePair<string, ISOFileNode>> fileNodes;
+        private List<ISODirectoryNode> dirsParsed;
+
+        /// <summary>
+        /// Returns a flat list of all recursed files
+        /// </summary>
+        /// <returns></returns>
+        public List<KeyValuePair<string, ISOFileNode>> EnumerateAllFilesRecursively()
+        {
+            fileNodes = new List<KeyValuePair<string, ISOFileNode>>();
+            dirsParsed = new List<ISODirectoryNode>();
+
+            if (Root.Children == null)
+                return fileNodes;
+
+            // get all folders
+            List<KeyValuePair<string, ISONode>> dirs = (from a in Root.Children
+                                                       where a.Value.GetType() == typeof(ISODirectoryNode)
+                                                        select a).ToList();
+            // iterate through each folder
+            foreach (var d in dirs)
+            {
+                // process all files in this directory (and recursively process files in sub folders
+                ISODirectoryNode idn = d.Value as ISODirectoryNode;
+                if (dirsParsed.Where(a => a == idn).Count() > 0)
+                    continue;
+
+                dirsParsed.Add(idn);
+                ProcessDirectoryFiles(idn.Children);                
+            }
+
+            return fileNodes.Distinct().ToList();
+        }  
+
+        private void ProcessDirectoryFiles(Dictionary<string, ISONode> idn)
+        {
+            foreach (var n in idn)
+            {
+                if (n.Value.GetType() == typeof(ISODirectoryNode))
+                {
+                    if (dirsParsed.Where(a => a == n.Value).Count() > 0)
+                        continue;
+
+                    dirsParsed.Add(n.Value as ISODirectoryNode);
+                    ProcessDirectoryFiles((n.Value as ISODirectoryNode).Children);
+                }
+                else
+                {
+                    KeyValuePair<string, ISOFileNode> f = new KeyValuePair<string, ISOFileNode>(n.Key, n.Value as ISOFileNode);
+                    fileNodes.Add(f);
+                }
+            }
+        }
 
 		#endregion
 
