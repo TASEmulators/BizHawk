@@ -24,16 +24,18 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				SoftReset();
 			}
 
-			_cpu.Debug = _tracer.Enabled;
 			_frame++;
 			_isLag = true;
 			PSG.BeginFrame(_cpu.TotalExecutedCycles);
 
-			if (_cpu.Debug && _cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
+			if (_tracer.Enabled)
 			{
-				_cpu.Logger = (s) => _tracer.Put(s);
+				_cpu.TraceCallback = s => _tracer.Put(s);
 			}
-
+			else
+			{
+				_cpu.TraceCallback = null;
+			}
 			byte tempRet1 = ControllerDeck.ReadPort1(controller, true, true);
 			byte tempRet2 = ControllerDeck.ReadPort2(controller, true, true);
 
