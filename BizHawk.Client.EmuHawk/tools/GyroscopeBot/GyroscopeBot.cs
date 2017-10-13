@@ -56,6 +56,12 @@ namespace BizHawk.Client.EmuHawk
 		private bool _bigEndian;
 		private int _dataSize;
 
+		private int _wins = 0;
+		private int _losses = 0;
+		private string _lastResult = "Unknown";
+		private float _winsToLosses = 0;
+		private int _totalGames = 0;
+
 		private ILogEntryGenerator _logGenerator;
 		private TcpClient client;
 		
@@ -280,8 +286,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 			return buttons;
 		}
-
-
+		
 		public void SetJoypadButtons(Dictionary<string,bool> buttons, int? controller = null)
 		{
 			try
@@ -641,6 +646,25 @@ namespace BizHawk.Client.EmuHawk
 
 			if (_isBotting)
 			{
+				if (is_round_over())
+				{
+					_totalGames = _totalGames + 1;
+					if (get_round_result() == "P1")
+					{
+						_wins = _wins + 1;
+						_lastResult = "Win";
+
+					}
+					else
+					{
+						_losses = _losses + 1;
+						_lastResult = "Loss";
+					}
+
+					_winsToLosses = (float)_wins / _totalGames;
+					GlobalWin.OSD.ClearGUIText();
+					GlobalWin.OSD.AddMessageForever("Game #: " + _totalGames + " Wins: " + _wins + " Losses: " + _losses + " last result: " + _lastResult + " ratio: " + _winsToLosses);
+				}
 				string command_type = "";
 				do
 				{
@@ -668,6 +692,9 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 				} while (command_type == "processing");
+				
+
+
 
 				// press the buttons if need be
 				//PressButtons();
@@ -702,6 +729,8 @@ namespace BizHawk.Client.EmuHawk
 			MessageLabel.Text = "Running...";
 			_logGenerator = Global.MovieSession.LogGeneratorInstance();
 			_logGenerator.SetSource(Global.ClickyVirtualPadController);
+			GlobalWin.OSD.AddMessageForever(" Wins: " + _wins + " Losses: " + _losses + " last result: " + _lastResult + " ratio: " + _winsToLosses);
+
 		}
 
 		private bool CanStart()

@@ -135,6 +135,13 @@ namespace BizHawk.Client.EmuHawk
 			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(2) });
 		}
 
+		public void AddMessageForever(string message)
+		{
+			messages.Add(new UIMessage { Message = message, ExpireAt = DateTime.Now + TimeSpan.FromSeconds(20) });
+		}
+
+
+
 		public void AddGUIText(string message, int x, int y, Color backGround, Color foreColor, int anchor)
 		{
 			GUITextList.Add(new UIDisplay
