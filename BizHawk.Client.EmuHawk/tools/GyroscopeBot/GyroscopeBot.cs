@@ -481,7 +481,7 @@ B - Low Kick
 			p2.character = get_p2_character();
 			p2.buttons = GetJoypadButtons(2);
 			p2.move = get_p2_move();
-			p.in_move = is_p2_in_move();
+			p2.in_move = is_p2_in_move();
 
 			gs.p1 = p1;
 			gs.p2 = p2;
