@@ -12,17 +12,27 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 
 		public void I_Read_Func(ushort dest, ushort src_l, ushort src_h, ushort inc)
 		{
-			Regs[dest] = ReadMemory((ushort)((Regs[src_l] | (Regs[src_h]) << 8) + inc));
+			Regs[dest] = ReadMemory((ushort)((Regs[src_l] | (Regs[src_h] << 8)) + inc));
 		}
 
 		public void Write_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
-			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h]) << 8), (byte)Regs[src]);
+			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
 		}
 
 		public void I_Write_Func(ushort dest_l, ushort dest_h, ushort inc,  ushort src)
 		{
-			WriteMemory((ushort)((Regs[dest_l] | (Regs[dest_h] + inc)) << 8), (byte)Regs[src]);
+			WriteMemory((ushort)((Regs[dest_l] | (Regs[dest_h] << 8)) + inc), (byte)Regs[src]);
+		}
+
+		public void OUT_Func(ushort dest, ushort src)
+		{
+			WriteHardware(Regs[dest], (byte)(Regs[src]));
+		}
+
+		public void IN_Func(ushort dest, ushort src)
+		{
+			Regs[dest] = ReadHardware(Regs[src]);
 		}
 
 		public void TR_Func(ushort dest, ushort src)
@@ -260,7 +270,7 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 
 		public void XOR8_Func(ushort dest, ushort src)
 		{
-			Regs[dest] = (ushort)(Regs[dest] ^ Regs[src]);
+			Regs[dest] = (ushort)((Regs[dest] ^ Regs[src]));
 
 			FlagZ = Regs[dest] == 0;
 			FlagC = false;
@@ -580,16 +590,6 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 			temp = Regs[dest_h];
 			Regs[dest_h] = Regs[src_h];
 			Regs[src_h] = temp;
-		}
-
-		public void OUT_Func(ushort dest, ushort src)
-		{
-			WriteHardware(Regs[dest], (byte)(Regs[src]));
-		}
-
-		public void IN_Func(ushort dest, ushort src)
-		{
-			Regs[dest] = ReadHardware(Regs[src]);
 		}
 
 		public void SBC_16_Func(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)

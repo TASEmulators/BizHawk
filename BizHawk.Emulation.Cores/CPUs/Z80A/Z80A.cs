@@ -138,6 +138,7 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 		// Execute instructions
 		public void ExecuteOne()
 		{
+			if (Regs[A] > 255) { Console.WriteLine(RegPC); }
 			switch (cur_instr[instr_pntr++])
 			{
 				case IDLE:
@@ -172,7 +173,6 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 						iff1 = false;
 						NMI_();
 						NMICallback();
-
 					}
 					else if (iff1 && FlagI && NO_prefix)
 					{
@@ -213,6 +213,7 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 					}
 					instr_pntr = 0;
 					Regs[R]++;
+					Regs[R] &= 0xFF;
 					break;
 				case OP_R:
 					// determine if we repeat based on what operation we are doing
@@ -243,7 +244,6 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 					// if we don't repeat, continue on as a normal opcode fetch
 					if (repeat && temp3 > 0)
 					{
-						instr_pntr = 0;
 						cur_instr = new ushort[]
 									{IDLE,
 									DEC16, PCl, PCh,
@@ -278,7 +278,7 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 					{
 						// Interrupts can occur at this point, so process them accordingly
 						// Read the opcode of the next instruction				
-						if (EI_pending > 0)
+						if (EI_pending > 0 && NO_prefix)
 						{
 							EI_pending--;
 							if (EI_pending == 0)
@@ -343,10 +343,11 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 							if (OnExecFetch != null) OnExecFetch(RegPC);
 							if (TraceCallback != null) TraceCallback(State());
 							FetchInstruction(ReadMemory(RegPC++));
-							instr_pntr = 0;
 							Regs[R]++;
+							Regs[R] &= 0xFF;
 						}
 					}
+					instr_pntr = 0;
 					break;
 
 				case HALT:
@@ -378,7 +379,7 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 						iff1 = false;
 						NMI_();
 						NMICallback();
-
+						halted = false;
 					}
 					else if (iff1 && FlagI && NO_prefix)
 					{
@@ -410,11 +411,13 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 								break;
 						}
 						IRQCallback();
+						halted = false;
 					}
 					else
 					{
 						instr_pntr = 0;
 						Regs[R]++;
+						Regs[R] &= 0xFF;
 						cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
@@ -538,7 +541,6 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 					break;
 				case DI:
 					IFF1 = IFF2 = false;
-					EI_pending = 0;
 					break;
 				case EXCH:
 					EXCH_16_Func(F_s, A_s, F, A);
@@ -561,6 +563,7 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 					if (prefix_src == IXCBpre) { IXCB_prefix = true; IXCB_prefetch = true; }
 					if (prefix_src == IYCBpre) { IYCB_prefix = true; IYCB_prefetch = true; }
 					Regs[R]++;
+					Regs[R] &= 0xFF;
 					break;
 				case ASGN:
 					ASGN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -577,7 +580,7 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 					// Not currently implemented here
 					break;
 				case EI_RETN:
-					EI_pending = 1;
+					iff1 = iff2;
 					break;
 				case OUT:
 					OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);

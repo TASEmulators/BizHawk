@@ -593,7 +593,7 @@ namespace BizHawk.Emulation.Common.Components.Z80A
 					case 0x5C: INT_OP(NEG, A);							break; // NEG
 					case 0x5D: RETN_();									break; // RETI
 					case 0x5E: INT_MODE_(2);							break; // IM $0
-					case 0x5F: REG_OP_IR(TR, A, R);						break; // LD R, A
+					case 0x5F: REG_OP_IR(TR, A, R);						break; // LD A, R
 					case 0x60: IN_REG_(H, C);							break; // IN H, (C)
 					case 0x61: OUT_REG_(C, H);							break; // OUT (C), H
 					case 0x62: REG_OP_16_(SBC16, L, H, L, H);			break; // SBC HL, HL
