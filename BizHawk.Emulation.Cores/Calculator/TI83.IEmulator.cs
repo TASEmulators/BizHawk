@@ -13,11 +13,13 @@ namespace BizHawk.Emulation.Cores.Calculators
 			_controller = controller;
 			_lagged = true;
 
-			_cpu.Debug = _tracer.Enabled;
-
-			if (_cpu.Debug && _cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
+			if (_tracer.Enabled)
 			{
-				_cpu.Logger = s => _tracer.Put(s);
+				_cpu.TraceCallback = s => _tracer.Put(s);
+			}
+			else
+			{
+				_cpu.TraceCallback = null;
 			}
 
 			// I eyeballed this speed
@@ -26,8 +28,12 @@ namespace BizHawk.Emulation.Cores.Calculators
 				_onPressed = controller.IsPressed("ON");
 
 				// and this was derived from other emus
-				_cpu.ExecuteCycles(10000);
-				_cpu.Interrupt = true;
+				for (int j = 0; j < 10000; j++)
+				{
+					_cpu.ExecuteOne();
+				}
+				
+				_cpu.FlagI = true;
 			}
 
 			Frame++;

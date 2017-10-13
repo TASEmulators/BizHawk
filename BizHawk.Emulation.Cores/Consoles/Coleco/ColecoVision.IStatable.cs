@@ -7,53 +7,52 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public partial class ColecoVision : IStatable
 	{
-		public bool BinarySaveStatesPreferred => false;
+		public bool BinarySaveStatesPreferred
+		{
+			get { return true; }
+		}
+
+		public void SaveStateText(TextWriter writer)
+		{
+			SyncState(new Serializer(writer));
+		}
+
+		public void LoadStateText(TextReader reader)
+		{
+			SyncState(new Serializer(reader));
+		}
 
 		public void SaveStateBinary(BinaryWriter bw)
 		{
-			SyncState(Serializer.CreateBinaryWriter(bw));
+			SyncState(new Serializer(bw));
 		}
 
 		public void LoadStateBinary(BinaryReader br)
 		{
-			SyncState(Serializer.CreateBinaryReader(br));
-		}
-
-		public void SaveStateText(TextWriter tw)
-		{
-			SyncState(Serializer.CreateTextWriter(tw));
-		}
-
-		public void LoadStateText(TextReader tr)
-		{
-			SyncState(Serializer.CreateTextReader(tr));
+			SyncState(new Serializer(br));
 		}
 
 		public byte[] SaveStateBinary()
 		{
-			if (_stateBuffer == null)
-			{
-				var stream = new MemoryStream();
-				var writer = new BinaryWriter(stream);
-				SaveStateBinary(writer);
-				_stateBuffer = stream.ToArray();
-				writer.Close();
-				return _stateBuffer;
-			}
-			else
-			{
-				var stream = new MemoryStream(_stateBuffer);
-				var writer = new BinaryWriter(stream);
-				SaveStateBinary(writer);
-				writer.Close();
-				return _stateBuffer;
-			}
+			MemoryStream ms = new MemoryStream();
+			BinaryWriter bw = new BinaryWriter(ms);
+			SaveStateBinary(bw);
+			bw.Flush();
+			return ms.ToArray();
 		}
 
 		private void SyncState(Serializer ser)
 		{
-			ser.BeginSection("Coleco");
+			byte[] core = null;
+			if (ser.IsWriter)
+			{
+				var ms = new MemoryStream();
+				ms.Close();
+				core = ms.ToArray();
+			}
 			_cpu.SyncState(ser);
+
+			ser.BeginSection("Coleco");		
 			_vdp.SyncState(ser);
 			PSG.SyncState(ser);
 			ser.Sync("RAM", ref _ram, false);

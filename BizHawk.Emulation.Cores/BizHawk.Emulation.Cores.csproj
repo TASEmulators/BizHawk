@@ -1186,12 +1186,14 @@
     <Compile Include="CPUs\Z80-GB\Registers.cs" />
     <Compile Include="CPUs\Z80-GB\Tables.cs" />
     <Compile Include="CPUs\Z80-GB\Z80.cs" />
-    <Compile Include="CPUs\Z80\Disassembler.cs" />
-    <Compile Include="CPUs\Z80\Execute.cs" />
-    <Compile Include="CPUs\Z80\Interrupts.cs" />
-    <Compile Include="CPUs\Z80\Registers.cs" />
-    <Compile Include="CPUs\Z80\Tables.cs" />
-    <Compile Include="CPUs\Z80\Z80A.cs" />
+    <Compile Include="CPUs\Z80A\NewDisassembler.cs" />
+    <Compile Include="CPUs\Z80A\Execute.cs" />
+    <Compile Include="CPUs\Z80A\Interrupts.cs" />
+    <Compile Include="CPUs\Z80A\Registers.cs" />
+		<Compile Include="CPUs\Z80A\Operations.cs" />
+    <Compile Include="CPUs\Z80A\Tables_Direct.cs" />
+		<Compile Include="CPUs\Z80A\Tables_Indirect.cs" />
+    <Compile Include="CPUs\Z80A\Z80A.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
