@@ -36,15 +36,19 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			_lagged = true;
 			_frame++;
 			PSG.BeginFrame(Cpu.TotalExecutedCycles);
-			Cpu.Debug = Tracer.Enabled;
+
 			if (!IsGameGear)
 			{
 				PSG.StereoPanning = Settings.ForceStereoSeparation ? ForceStereoByte : (byte)0xFF;
 			}
 
-			if (Cpu.Debug && Cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
+			if (Tracer.Enabled)
 			{
-				Cpu.Logger = s => Tracer.Put(s);
+				Cpu.TraceCallback = s => Tracer.Put(s);
+			}
+			else
+			{
+				Cpu.TraceCallback = null;
 			}
 
 			if (IsGameGear == false)

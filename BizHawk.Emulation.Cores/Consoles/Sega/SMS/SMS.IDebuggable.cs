@@ -12,36 +12,36 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			return new Dictionary<string, RegisterValue>
 			{
-				["A"] = Cpu.RegisterA,
-				["AF"] = Cpu.RegisterAF,
-				["B"] = Cpu.RegisterB,
-				["BC"] = Cpu.RegisterBC,
-				["C"] = Cpu.RegisterC,
-				["D"] = Cpu.RegisterD,
-				["DE"] = Cpu.RegisterDE,
-				["E"] = Cpu.RegisterE,
-				["F"] = Cpu.RegisterF,
-				["H"] = Cpu.RegisterH,
-				["HL"] = Cpu.RegisterHL,
-				["I"] = Cpu.RegisterI,
-				["IX"] = Cpu.RegisterIX,
-				["IY"] = Cpu.RegisterIY,
-				["L"] = Cpu.RegisterL,
-				["PC"] = Cpu.RegisterPC,
-				["R"] = Cpu.RegisterR,
-				["Shadow AF"] = Cpu.RegisterShadowAF,
-				["Shadow BC"] = Cpu.RegisterShadowBC,
-				["Shadow DE"] = Cpu.RegisterShadowDE,
-				["Shadow HL"] = Cpu.RegisterShadowHL,
-				["SP"] = Cpu.RegisterSP,
-				["Flag C"] = Cpu.RegisterF.Bit(0),
-				["Flag N"] = Cpu.RegisterF.Bit(1),
-				["Flag P/V"] = Cpu.RegisterF.Bit(2),
-				["Flag 3rd"] = Cpu.RegisterF.Bit(3),
-				["Flag H"] = Cpu.RegisterF.Bit(4),
-				["Flag 5th"] = Cpu.RegisterF.Bit(5),
-				["Flag Z"] = Cpu.RegisterF.Bit(6),
-				["Flag S"] = Cpu.RegisterF.Bit(7)
+				["A"] = Cpu.Regs[Cpu.A],
+				["AF"] = Cpu.Regs[Cpu.F] + (Cpu.Regs[Cpu.A] << 8),
+				["B"] = Cpu.Regs[Cpu.B],
+				["BC"] = Cpu.Regs[Cpu.C] + (Cpu.Regs[Cpu.B] << 8),
+				["C"] = Cpu.Regs[Cpu.C],
+				["D"] = Cpu.Regs[Cpu.D],
+				["DE"] = Cpu.Regs[Cpu.E] + (Cpu.Regs[Cpu.D] << 8),
+				["E"] = Cpu.Regs[Cpu.E],
+				["F"] = Cpu.Regs[Cpu.F],
+				["H"] = Cpu.Regs[Cpu.H],
+				["HL"] = Cpu.Regs[Cpu.L] + (Cpu.Regs[Cpu.H] << 8),
+				["I"] = Cpu.Regs[Cpu.I],
+				["IX"] = Cpu.Regs[Cpu.Ixl] + (Cpu.Regs[Cpu.Ixh] << 8),
+				["IY"] = Cpu.Regs[Cpu.Iyl] + (Cpu.Regs[Cpu.Iyh] << 8),
+				["L"] = Cpu.Regs[Cpu.L],
+				["PC"] = Cpu.Regs[Cpu.PCl] + (Cpu.Regs[Cpu.PCh] << 8),
+				["R"] = Cpu.Regs[Cpu.R],
+				["Shadow AF"] = Cpu.Regs[Cpu.F_s] + (Cpu.Regs[Cpu.A_s] << 8),
+				["Shadow BC"] = Cpu.Regs[Cpu.C_s] + (Cpu.Regs[Cpu.B_s] << 8),
+				["Shadow DE"] = Cpu.Regs[Cpu.E_s] + (Cpu.Regs[Cpu.D_s] << 8),
+				["Shadow HL"] = Cpu.Regs[Cpu.L_s] + (Cpu.Regs[Cpu.H_s] << 8),
+				["SP"] = Cpu.Regs[Cpu.Iyl] + (Cpu.Regs[Cpu.Iyh] << 8),
+				["Flag C"] = Cpu.FlagC,
+				["Flag N"] = Cpu.FlagN,
+				["Flag P/V"] = Cpu.FlagP,
+				["Flag 3rd"] = Cpu.Flag3,
+				["Flag H"] = Cpu.FlagH,
+				["Flag 5th"] = Cpu.Flag5,
+				["Flag Z"] = Cpu.FlagZ,
+				["Flag S"] = Cpu.FlagS
 			};
 		}
 
@@ -52,70 +52,82 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				default:
 					throw new InvalidOperationException();
 				case "A":
-					Cpu.RegisterA = (byte)value;
+					Cpu.Regs[Cpu.A] = (ushort)value;
 					break;
 				case "AF":
-					Cpu.RegisterAF = (byte)value;
+					Cpu.Regs[Cpu.F] = (ushort)(value & 0xFF);
+					Cpu.Regs[Cpu.A] = (ushort)(value & 0xFF00);
 					break;
 				case "B":
-					Cpu.RegisterB = (byte)value;
+					Cpu.Regs[Cpu.B] = (ushort)value;
 					break;
 				case "BC":
-					Cpu.RegisterBC = (byte)value;
+					Cpu.Regs[Cpu.C] = (ushort)(value & 0xFF);
+					Cpu.Regs[Cpu.B] = (ushort)(value & 0xFF00);
 					break;
 				case "C":
-					Cpu.RegisterC = (byte)value;
+					Cpu.Regs[Cpu.C] = (ushort)value;
 					break;
 				case "D":
-					Cpu.RegisterD = (byte)value;
+					Cpu.Regs[Cpu.D] = (ushort)value;
 					break;
 				case "DE":
-					Cpu.RegisterDE = (byte)value;
+					Cpu.Regs[Cpu.E] = (ushort)(value & 0xFF);
+					Cpu.Regs[Cpu.D] = (ushort)(value & 0xFF00);
 					break;
 				case "E":
-					Cpu.RegisterE = (byte)value;
+					Cpu.Regs[Cpu.E] = (ushort)value;
 					break;
 				case "F":
-					Cpu.RegisterF = (byte)value;
+					Cpu.Regs[Cpu.F] = (ushort)value;
 					break;
 				case "H":
-					Cpu.RegisterH = (byte)value;
+					Cpu.Regs[Cpu.H] = (ushort)value;
 					break;
 				case "HL":
-					Cpu.RegisterHL = (byte)value;
+					Cpu.Regs[Cpu.L] = (ushort)(value & 0xFF);
+					Cpu.Regs[Cpu.H] = (ushort)(value & 0xFF00);
 					break;
 				case "I":
-					Cpu.RegisterI = (byte)value;
+					Cpu.Regs[Cpu.I] = (ushort)value;
 					break;
 				case "IX":
-					Cpu.RegisterIX = (byte)value;
+					Cpu.Regs[Cpu.Ixl] = (ushort)(value & 0xFF);
+					Cpu.Regs[Cpu.Ixh] = (ushort)(value & 0xFF00);
 					break;
 				case "IY":
-					Cpu.RegisterIY = (byte)value;
+					Cpu.Regs[Cpu.Iyl] = (ushort)(value & 0xFF);
+					Cpu.Regs[Cpu.Iyh] = (ushort)(value & 0xFF00);
 					break;
 				case "L":
-					Cpu.RegisterL = (byte)value;
+					Cpu.Regs[Cpu.L] = (ushort)value;
 					break;
 				case "PC":
-					Cpu.RegisterPC = (ushort)value;
+					Cpu.Regs[Cpu.PCl] = (ushort)(value & 0xFF);
+					Cpu.Regs[Cpu.PCh] = (ushort)(value & 0xFF00);
 					break;
 				case "R":
-					Cpu.RegisterR = (byte)value;
+					Cpu.Regs[Cpu.R] = (ushort)value;
 					break;
 				case "Shadow AF":
-					Cpu.RegisterShadowAF = (byte)value;
+					Cpu.Regs[Cpu.F_s] = (ushort)(value & 0xFF);
+					Cpu.Regs[Cpu.A_s] = (ushort)(value & 0xFF00);
 					break;
 				case "Shadow BC":
-					Cpu.RegisterShadowBC = (byte)value;
+					Cpu.Regs[Cpu.C_s] = (ushort)(value & 0xFF);
+					Cpu.Regs[Cpu.B_s] = (ushort)(value & 0xFF00);
 					break;
 				case "Shadow DE":
-					Cpu.RegisterShadowDE = (byte)value;
+					Cpu.Regs[Cpu.E_s] = (ushort)(value & 0xFF);
+					Cpu.Regs[Cpu.D_s] = (ushort)(value & 0xFF00);
 					break;
 				case "Shadow HL":
-					Cpu.RegisterShadowHL = (byte)value;
+					Cpu.Regs[Cpu.L_s] = (ushort)(value & 0xFF);
+					Cpu.Regs[Cpu.H_s] = (ushort)(value & 0xFF00);
 					break;
 				case "SP":
-					Cpu.RegisterSP = (byte)value;
+					Cpu.Regs[Cpu.SPl] = (ushort)(value & 0xFF);
+					Cpu.Regs[Cpu.SPh] = (ushort)(value & 0xFF00);
 					break;
 			}
 		}

@@ -4,7 +4,7 @@ using BizHawk.Common.StringExtensions;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components;
 using BizHawk.Emulation.Cores.Components;
-using BizHawk.Emulation.Cores.Components.Z80;
+using BizHawk.Emulation.Common.Components.Z80A;
 
 /*****************************************************
   TODO: 
@@ -75,11 +75,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				HasYM2413 = true;
 			}
 
-			Cpu = new Z80A
+			Cpu = new Z80A()
 			{
-				RegisterSP = 0xDFF0,
 				ReadHardware = ReadPort,
 				WriteHardware = WritePort,
+				ReadMemory = ReadMemory,
+				WriteMemory = WriteMemory,
 				MemoryCallbacks = MemoryCallbacks
 			};
 
@@ -160,7 +161,10 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 
 			if (game["SRAM"])
+			{
 				SaveRAM = new byte[int.Parse(game.OptionValue("SRAM"))];
+				Console.WriteLine(SaveRAM.Length);
+			}			
 			else if (game.NotInDatabase)
 				SaveRAM = new byte[0x8000];
 
@@ -175,8 +179,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			var serviceProvider = ServiceProvider as BasicServiceProvider;
 			serviceProvider.Register<ITraceable>(Tracer);
-			serviceProvider.Register<IDisassemblable>(new Disassembler());
+			serviceProvider.Register<IDisassemblable>(Cpu);
 			Vdp.ProcessOverscan();
+
+			Cpu.ReadMemory = ReadMemory;
+			Cpu.WriteMemory = WriteMemory;
 		}
 
 		// Constants
