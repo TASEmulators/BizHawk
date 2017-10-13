@@ -4,7 +4,7 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Components.Z80A;
+using BizHawk.Emulation.Cores.Components.Z80A;
 
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
