@@ -723,5 +723,20 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			Flag5 = (temp & 0x02) != 0;
 			Flag3 = (temp & 0x08) != 0;
 		}
+
+		// set flags for LD A, I/R
+		public void SET_FL_IR_Func(ushort dest)
+		{
+			if (dest == A)
+			{
+				FlagN = false;
+				FlagH = false;
+				FlagZ = Regs[A] == 0;
+				FlagS = Regs[A] > 127;
+				FlagP = iff2;
+				Flag5 = (Regs[A] & 0x02) != 0;
+				Flag3 = (Regs[A] & 0x08) != 0;
+			}
+		}
 	}
 }

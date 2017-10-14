@@ -34,6 +34,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				char sign = neg ? '-' : '+';
 				int val = neg ? 256 - B : B;
 				format = format.Replace("d", string.Format("{0}{1:X2}h", sign, val));
+				addr++;
 			}
 
 			return format;

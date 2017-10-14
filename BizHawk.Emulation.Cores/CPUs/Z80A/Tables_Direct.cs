@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						{operation, dest, src,
 						IDLE,
 						IDLE,
-						IDLE,
+						SET_FL_IR, dest,
 						OP };
 		}
 

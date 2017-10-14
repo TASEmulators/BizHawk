@@ -874,7 +874,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0xDA: JP_COND(FlagC);							break; // JP C
 					case 0xDB: IN_();									break; // IN A
 					case 0xDC: CALL_COND(FlagC);						break; // CALL C
-					case 0xDD: JAM_();									break; // Jam (invalid)
+					case 0xDD: PREFIX_(IXpre);							break; // IX Prefix
 					case 0xDE: REG_OP_IND_INC(SBC8, A, PCl, PCh);		break; // SBC A, n
 					case 0xDF: RST_(0x18);								break; // RST 0x18
 					case 0xE0: RET_COND(!FlagP);						break; // RET Po
@@ -890,7 +890,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0xEA: JP_COND(FlagP);							break; // JP Pe
 					case 0xEB: EXCH_16_(E, D, L, H);					break; // ex DE, HL
 					case 0xEC: CALL_COND(FlagP);						break; // CALL Pe
-					case 0xED: JAM_();									break; // Jam (invalid)
+					case 0xED: PREFIX_(EXTDpre);						break; // EXTD Prefix
 					case 0xEE: REG_OP_IND_INC(XOR8, A, PCl, PCh);		break; // XOR A, n
 					case 0xEF: RST_(0x28);								break; // RST 0x28
 					case 0xF0: RET_COND(!FlagS);						break; // RET p
@@ -906,7 +906,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0xFA: JP_COND(FlagS);							break; // JP M
 					case 0xFB: EI_();									break; // EI
 					case 0xFC: CALL_COND(FlagS);						break; // CALL M
-					case 0xFD: JAM_();									break; // Jam (invalid)
+					case 0xFD: PREFIX_(IYpre);							break; // IY Prefix
 					case 0xFE: REG_OP_IND_INC(CP8, A, PCl, PCh);		break; // CP A, n
 					case 0xFF: RST_(0x38);								break; // RST $38
 				}
@@ -1139,7 +1139,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0xDA: JP_COND(FlagC);							break; // JP C
 					case 0xDB: IN_();									break; // IN A
 					case 0xDC: CALL_COND(FlagC);						break; // CALL C
-					case 0xDD: JAM_();									break; // Jam (invalid)
+					case 0xDD: PREFIX_(IXpre);							break; // IX Prefix
 					case 0xDE: REG_OP_IND_INC(SBC8, A, PCl, PCh);		break; // SBC A, n
 					case 0xDF: RST_(0x18);								break; // RST 0x18
 					case 0xE0: RET_COND(!FlagP);						break; // RET Po
@@ -1155,7 +1155,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0xEA: JP_COND(FlagP);							break; // JP Pe
 					case 0xEB: EXCH_16_(E, D, L, H);					break; // ex DE, HL
 					case 0xEC: CALL_COND(FlagP);						break; // CALL Pe
-					case 0xED: JAM_();									break; // Jam (invalid)
+					case 0xED: PREFIX_(EXTDpre);						break; // EXTD Prefix
 					case 0xEE: REG_OP_IND_INC(XOR8, A, PCl, PCh);		break; // XOR A, n
 					case 0xEF: RST_(0x28);								break; // RST 0x28
 					case 0xF0: RET_COND(!FlagS);						break; // RET p
@@ -1171,7 +1171,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0xFA: JP_COND(FlagS);							break; // JP M
 					case 0xFB: EI_();									break; // EI
 					case 0xFC: CALL_COND(FlagS);						break; // CALL M
-					case 0xFD: JAM_();									break; // Jam (invalid)
+					case 0xFD: PREFIX_(IYpre);							break; // IY Prefix
 					case 0xFE: REG_OP_IND_INC(CP8, A, PCl, PCh);		break; // CP A, n
 					case 0xFF: RST_(0x38);								break; // RST $38
 				}

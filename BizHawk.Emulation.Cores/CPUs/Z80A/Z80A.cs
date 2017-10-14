@@ -74,6 +74,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort SET_FL_CP = 59;
 		public const ushort I_BIT = 60;
 		public const ushort HL_BIT = 61;
+		public const ushort SET_FL_IR = 62;
 		
 
 		public Z80A()
@@ -582,6 +583,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				case EI_RETI:
 					// NOTE: This is needed for systems using multiple interrupt sources, it triggers the next interrupt
 					// Not currently implemented here
+					iff1 = iff2;
 					break;
 				case EI_RETN:
 					iff1 = iff2;
@@ -609,6 +611,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					break;
 				case SET_FL_CP:
 					SET_FL_CP_Func();
+					break;
+				case SET_FL_IR:
+					SET_FL_IR_Func(cur_instr[instr_pntr++]);
 					break;
 			}
 			totalExecutedCycles++;
