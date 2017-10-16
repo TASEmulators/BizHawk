@@ -280,6 +280,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.Config.controller_port = argParse.socket_port;
 			}
+
+			if (argParse.run_id != null)
+			{
+				Global.Config.run_id = argParse.run_id;
+			}
+
 			if (argParse.cmdRom != null)
 			{
 				// Commandline should always override auto-load
@@ -1464,6 +1470,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			str += Emulator.IsNull() ? "BizHawk" : Global.SystemInfo.DisplayName;
+
+			if (Global.Config.run_id != null)
+			{
+				str += " " + Global.Config.run_id;
+			}
 
 			if (VersionInfo.DeveloperBuild)
 			{

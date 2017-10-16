@@ -134,6 +134,8 @@ namespace BizHawk.Client.Common
 		public bool CDLAutoSave = true, CDLAutoStart = true;
 		public int controller_port = 9999;
 		public string controller_ip = "127.0.0.1";
+		public string run_id = null;
+
 		/// <summary>
 		/// Makes a .bak file before any saveram-writing operation (could be extended to make timestamped backups)
 		/// </summary>
