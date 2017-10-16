@@ -27,6 +27,7 @@ namespace BizHawk.Client.EmuHawk
 		public bool luaConsole = false;
 		public int socket_port = 9999;
 		public string socket_ip = null;
+		public string run_id = null;
 
 		public void parseArguments(string[] args)
 			
@@ -46,6 +47,11 @@ namespace BizHawk.Client.EmuHawk
 				if (arg.StartsWith("--load-slot="))
 				{
 					cmdLoadSlot = arg.Substring(arg.IndexOf('=') + 1);
+				}
+
+				if (arg.StartsWith("--run_id="))
+				{
+					run_id = arg.Substring(arg.IndexOf('=') + 1);
 				}
 
 				if (arg.StartsWith("--load-state="))
