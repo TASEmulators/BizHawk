@@ -281,6 +281,21 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.controller_port = argParse.socket_port;
 			}
 
+			if (argParse.socket_ip_p2 != null)
+			{
+				Global.Config.controller_ip_p2 = argParse.socket_ip_p2;
+			}
+
+			if (argParse.socket_port_p2 != null)
+			{
+				Global.Config.controller_port_p2 = argParse.socket_port_p2;
+			}
+
+			if (argParse.use_two_controllers)
+			{
+				Global.Config.use_two_controllers = true;
+			}
+
 			if (argParse.run_id != null)
 			{
 				Global.Config.run_id = argParse.run_id;

@@ -58,14 +58,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private int _wins = 0;
 		private int _losses = 0;
+		private int _p2_wins = 0;
+		private int _p2_losses = 0;
 		private string _lastResult = "Unknown";
 		private float _winsToLosses = 0;
+		private float _p2_winsToLosses = 0;
 		private int _totalGames = 0;
 		private int _OSDMessageTimeInSeconds = 15;
 
 		private ILogEntryGenerator _logGenerator;
 		private TcpClient client;
-		
+		private TcpClient client_p2;
+
 		#region Services and Settings
 
 		[RequiredService]
@@ -101,14 +105,14 @@ namespace BizHawk.Client.EmuHawk
 			return new TcpClient(IP, port);
 		}
 		
-		private ControllerCommand SendEmulatorGameStateToController()
+		private ControllerCommand SendEmulatorGameStateToController(TcpClient cl)
 		{
 			ControllerCommand cc = new ControllerCommand();
 			try
 			{
 
 				
-				NetworkStream stream = this.client.GetStream();
+				NetworkStream stream = cl.GetStream();
 				byte[] bytes = new byte[1024];
 				// Encode the data string into a byte array. 
 				GameState gs = GetCurrentState();
@@ -704,26 +708,49 @@ namespace BizHawk.Client.EmuHawk
 					if (get_round_result() == "P1")
 					{
 						_wins = _wins + 1;
-						_lastResult = "Win";
+						_lastResult = "P1 Win";
+						_p2_losses = _p2_losses + 1;
 
 					}
 					else
 					{
 						_losses = _losses + 1;
-						_lastResult = "Loss";
+						_lastResult = "P1 Loss";
+						_p2_wins = _p2_wins + 1;
 					}
 
 					_winsToLosses = (float)_wins / _totalGames;
+					_p2_winsToLosses = (float)_p2_wins / _totalGames;
 					GlobalWin.OSD.ClearGUIText();
-					GlobalWin.OSD.AddMessageForTime("Game #: " + _totalGames + " Wins: " + _wins + " Losses: " + _losses + " last result: " + _lastResult + " ratio: " + _winsToLosses, _OSDMessageTimeInSeconds);
+					GlobalWin.OSD.AddMessageForTime("Game #: " + _totalGames + " | Last Result: " + _lastResult + " | P1 Wins-Losses: " + _wins + "-" + _losses + " (" + _winsToLosses + ") | P2 Wins-Losses: " + _p2_wins + "-" + _p2_losses + " (" + _p2_winsToLosses + ")", _OSDMessageTimeInSeconds);
 				}
 
 				string command_type = "";
 				do
 				{
 					// send over the current game state
-					ControllerCommand command = SendEmulatorGameStateToController();
+					ControllerCommand command = SendEmulatorGameStateToController(this.client);
+					ControllerCommand command_p2;
+
 					command_type = command.type;
+
+					if (Global.Config.use_two_controllers)
+					{
+						do
+						{
+							command_p2 = SendEmulatorGameStateToController(this.client_p2);
+							//Console.WriteLine("p1 command: "  + command.type + "p2 command: "  + command_p2.type);
+							// send the game state to the controller
+							// if the commands don't match, wait until they do.
+						} while (command_p2.type != command_type);
+						if (command_type == "buttons")
+						{
+							command.p2 = command_p2.p1;
+						}
+					
+					}
+
+
 					// get a command back
 					// act on the command
 					if (command_type == "reset")
@@ -739,9 +766,10 @@ namespace BizHawk.Client.EmuHawk
 					else
 					{
 						SetJoypadButtons(command.p1, 1);
-						if (command.player_count == 2)
+						if (Global.Config.use_two_controllers)
 						{
 							SetJoypadButtons(command.p2, 2);
+							
 						}
 					}
 				} while (command_type == "processing");
@@ -767,7 +795,10 @@ namespace BizHawk.Client.EmuHawk
 			RunBtn.Visible = false;
 			StopBtn.Visible = true;
 			this.client = CreateTCPClient(Global.Config.controller_ip, Global.Config.controller_port);
-
+			if (Global.Config.use_two_controllers)
+			{
+				this.client_p2 = CreateTCPClient(Global.Config.controller_ip_p2, Global.Config.controller_port_p2);
+			}
 
 			Global.Config.SoundEnabled = false;
 			GlobalWin.MainForm.UnpauseEmulator();
@@ -782,7 +813,7 @@ namespace BizHawk.Client.EmuHawk
 			MessageLabel.Text = "Running...";
 			_logGenerator = Global.MovieSession.LogGeneratorInstance();
 			_logGenerator.SetSource(Global.ClickyVirtualPadController);
-			GlobalWin.OSD.AddMessageForTime(" Wins: " + _wins + " Losses: " + _losses + " last result: " + _lastResult + " ratio: " + _winsToLosses, _OSDMessageTimeInSeconds);
+			GlobalWin.OSD.AddMessageForTime("Game #: 0 Last Result: N/A P1 Wins-Losses: " + _wins + "-" + _losses + "(" + _winsToLosses + ") P2 Wins-Losses: " + _p2_wins + "-" + _p2_losses + "(" + _p2_winsToLosses + ")", _OSDMessageTimeInSeconds);
 
 		}
 

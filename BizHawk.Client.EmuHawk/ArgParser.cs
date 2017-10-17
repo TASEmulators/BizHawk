@@ -28,6 +28,9 @@ namespace BizHawk.Client.EmuHawk
 		public int socket_port = 9999;
 		public string socket_ip = null;
 		public string run_id = null;
+		public bool use_two_controllers = false;
+		public int socket_port_p2 = 10000;
+		public string socket_ip_p2 = "127.0.0.1";
 
 		public void parseArguments(string[] args)
 			
@@ -115,6 +118,18 @@ namespace BizHawk.Client.EmuHawk
 				else if (arg.StartsWith("--socket_ip="))
 				{
 					socket_ip = arg.Substring(arg.IndexOf('=') + 1);
+				}
+				else if (arg.StartsWith("--socket_port_p2="))
+				{
+					int.TryParse(arg.Substring(arg.IndexOf('=') + 1), out socket_port_p2);
+				}
+				else if (arg.StartsWith("--socket_ip_p2="))
+				{
+					socket_ip_p2 = arg.Substring(arg.IndexOf('=') + 1);
+				}
+				else if (arg.StartsWith("--use_two_controllers"))
+				{
+					use_two_controllers = true;
 				}
 				else
 				{
