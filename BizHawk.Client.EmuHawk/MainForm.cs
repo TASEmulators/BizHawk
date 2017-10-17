@@ -271,6 +271,36 @@ namespace BizHawk.Client.EmuHawk
 				Location = new Point(Global.Config.MainWndx, Global.Config.MainWndy);
 			}
 
+			if (argParse.socket_ip != null)
+			{
+				Global.Config.controller_ip = argParse.socket_ip;
+			}
+
+			if (argParse.socket_port != null)
+			{
+				Global.Config.controller_port = argParse.socket_port;
+			}
+
+			if (argParse.socket_ip_p2 != null)
+			{
+				Global.Config.controller_ip_p2 = argParse.socket_ip_p2;
+			}
+
+			if (argParse.socket_port_p2 != null)
+			{
+				Global.Config.controller_port_p2 = argParse.socket_port_p2;
+			}
+
+			if (argParse.use_two_controllers)
+			{
+				Global.Config.use_two_controllers = true;
+			}
+
+			if (argParse.run_id != null)
+			{
+				Global.Config.run_id = argParse.run_id;
+			}
+
 			if (argParse.cmdRom != null)
 			{
 				// Commandline should always override auto-load
@@ -1455,6 +1485,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			str += Emulator.IsNull() ? "BizHawk" : Global.SystemInfo.DisplayName;
+
+			if (Global.Config.run_id != null)
+			{
+				str += " " + Global.Config.run_id;
+			}
 
 			if (VersionInfo.DeveloperBuild)
 			{

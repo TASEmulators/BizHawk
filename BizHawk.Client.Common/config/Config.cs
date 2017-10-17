@@ -132,6 +132,12 @@ namespace BizHawk.Client.Common
 		public string Update_LatestVersion = "";
 		public string Update_IgnoreVersion = "";
 		public bool CDLAutoSave = true, CDLAutoStart = true;
+		public int controller_port = 9999;
+		public string controller_ip = "127.0.0.1";
+		public bool use_two_controllers = false;
+		public int controller_port_p2 = 10000;
+		public string controller_ip_p2 = "127.0.0.1";
+		public string run_id = null;
 
 		/// <summary>
 		/// Makes a .bak file before any saveram-writing operation (could be extended to make timestamped backups)
