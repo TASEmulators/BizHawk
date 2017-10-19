@@ -448,15 +448,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						OP };
 		}
 
-		private void JAM_()
-		{
-			cur_instr = new ushort[]
-						{JAM,
-						IDLE,
-						IDLE,
-						IDLE };
-		}
-
 		private void OUT_()
 		{
 			cur_instr = new ushort[]

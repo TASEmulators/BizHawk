@@ -61,20 +61,20 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort PREFETCH = 46;
 		public const ushort ASGN = 47;
 		public const ushort ADDS = 48; // signed 16 bit operation used in 2 instructions
-		public const ushort JAM = 49;  // all undocumented opcodes jam the machine
+		public const ushort INT_MODE = 49;
 		public const ushort EI_RETN = 50;
 		public const ushort EI_RETI = 51; // reti has no delay in interrupt enable
 		public const ushort OUT = 52;
 		public const ushort IN = 53;
 		public const ushort NEG = 54;		
-		public const ushort INT_MODE = 55;	
-		public const ushort RRD = 56;
-		public const ushort RLD = 57;		
-		public const ushort SET_FL_LD = 58;
-		public const ushort SET_FL_CP = 59;
+		public const ushort RRD = 55;
+		public const ushort RLD = 56;		
+		public const ushort SET_FL_LD = 57;
+		public const ushort SET_FL_CP = 58;
+		public const ushort SET_FL_IR = 59;
 		public const ushort I_BIT = 60;
 		public const ushort HL_BIT = 61;
-		public const ushort SET_FL_IR = 62;
+
 		
 
 		public Z80A()
@@ -576,10 +576,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				case ADDS:
 					ADDS_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case JAM:
-					jammed = true;
-					instr_pntr--;
-					break;
 				case EI_RETI:
 					// NOTE: This is needed for systems using multiple interrupt sources, it triggers the next interrupt
 					// Not currently implemented here
@@ -689,7 +685,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			ser.Sync("instruction_pointer", ref instr_pntr);
 			ser.Sync("current instruction", ref cur_instr, false);		
 			ser.Sync("opcode", ref opcode);
-			ser.Sync("jammped", ref jammed);
 			ser.Sync("FlagI", ref FlagI);
 
 			ser.Sync("NO Preifx", ref NO_prefix);

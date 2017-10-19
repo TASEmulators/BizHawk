@@ -23,7 +23,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public bool NO_prefix, CB_prefix, IX_prefix, EXTD_prefix, IY_prefix, IXCB_prefix, IYCB_prefix;
 		public bool IXCB_prefetch, IYCB_prefetch; // value is fetched before opcode
 		public bool halted;
-		public bool jammed;
 		public ushort PF;
 
 		public void FetchInstruction(byte opcode)
@@ -617,7 +616,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0x74: INT_OP(NEG, A);							break; // NEG
 					case 0x75: RETN_();									break; // RETN
 					case 0x76: INT_MODE_(1);							break; // IM $1
-					case 0x77: JAM_();									break; // JAM
+					case 0x77: NOP_();									break; // NOP
 					case 0x78: IN_REG_(A, C);							break; // IN A, (C)
 					case 0x79: OUT_REG_(C, A);							break; // OUT (C), A
 					case 0x7A: REG_OP_16_(ADC16, L, H, SPl, SPh);		break; // ADC HL, SP
@@ -625,7 +624,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0x7C: INT_OP(NEG, A);							break; // NEG
 					case 0x7D: RETN_();									break; // RETI
 					case 0x7E: INT_MODE_(2);							break; // IM $2
-					case 0x7F: JAM_();									break; // JAM
+					case 0x7F: NOP_();									break; // NOP
 					case 0xA0: LD_OP_R(INC16, 0);						break; // LDI
 					case 0xA1: CP_OP_R(INC16, 0);						break; // CPI
 					case 0xA2: IN_OP_R(INC16, 0);						break; // INI
@@ -642,7 +641,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0xB9: CP_OP_R(DEC16, 1);						break; // CPDR
 					case 0xBA: IN_OP_R(DEC16, 1);						break; // INDR
 					case 0xBB: OUT_OP_R(DEC16, 1);						break; // OTDR
-					default: JAM_();									break; // JAM
+					default: NOP_();									break; // NOP
 
 				}
 			}
