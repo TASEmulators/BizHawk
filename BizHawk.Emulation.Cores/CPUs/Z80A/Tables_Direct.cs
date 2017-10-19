@@ -395,10 +395,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		private void PREFIX_(ushort src)
 		{
 			cur_instr = new ushort[]
-						{PREFIX, src,
+						{IDLE,
 						IDLE,
 						IDLE,
-						OP };
+						PREFIX, src};
 		}
 
 		private void PREFETCH_(ushort src_l, ushort src_h)
@@ -407,7 +407,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						{TR16, Z, W, src_l, src_h,
 						ADDS, Z, W, ALU, ZERO,
 						IDLE,
-						OP };
+						PREFIX, IXYprefetch };
 		}
 
 		private void DI_()

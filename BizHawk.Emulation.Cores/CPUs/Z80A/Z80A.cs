@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort I_BIT = 60;
 		public const ushort HL_BIT = 61;
 
-		
+		public byte temp_R;
 
 		public Z80A()
 		{
@@ -147,27 +147,20 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					break;
 				case OP:
 					// Read the opcode of the next instruction				
-					if (EI_pending > 0 && NO_prefix)
+					if (EI_pending > 0)
 					{
 						EI_pending--;
-						if (EI_pending == 0)
-						{
-							IFF1 = IFF2 = true;
-						}
+						if (EI_pending == 0) { IFF1 = IFF2 = true; }
 					}
 
 					// Process interrupt requests.
-					if (nonMaskableInterruptPending && NO_prefix)
+					if (nonMaskableInterruptPending)
 					{
 						nonMaskableInterruptPending = false;
 
 						if (TraceCallback != null)
 						{
-							TraceCallback(new TraceInfo
-							{
-								Disassembly = "====NMI====",
-								RegisterInfo = ""
-							});
+							TraceCallback(new TraceInfo{Disassembly = "====NMI====", RegisterInfo = ""});
 						}
 
 						iff2 = iff1;
@@ -175,18 +168,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						NMI_();
 						NMICallback();
 					}
-					else if (iff1 && FlagI && NO_prefix)
+					else if (iff1 && FlagI)
 					{
 						iff1 = iff2 = false;
 						EI_pending = 0;
 
 						if (TraceCallback != null)
 						{
-							TraceCallback(new TraceInfo
-							{
-								Disassembly = "====IRQ====",
-								RegisterInfo = ""
-							});
+							TraceCallback(new TraceInfo{Disassembly = "====IRQ====", RegisterInfo = ""});
 						}
 
 						switch (interruptMode)
@@ -210,12 +199,15 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					else
 					{
 						if (OnExecFetch != null) OnExecFetch(RegPC);
-						if (TraceCallback != null && NO_prefix) TraceCallback(State());
+						if (TraceCallback != null) TraceCallback(State());
 						FetchInstruction(ReadMemory(RegPC++));
 					}
 					instr_pntr = 0;
-					Regs[R]++;
-					Regs[R] &= 0xFF;
+
+					temp_R = (byte)(Regs[R] & 0x7F);
+					temp_R++;
+					temp_R &= 0x7F;
+					Regs[R] = (byte)((Regs[R] & 0x80) | temp_R);
 					break;
 				case OP_R:
 					// determine if we repeat based on what operation we are doing
@@ -280,47 +272,35 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					{
 						// Interrupts can occur at this point, so process them accordingly
 						// Read the opcode of the next instruction				
-						if (EI_pending > 0 && NO_prefix)
+						if (EI_pending > 0)
 						{
 							EI_pending--;
-							if (EI_pending == 0)
-							{
-								IFF1 = IFF2 = true;
-							}
+							if (EI_pending == 0) { IFF1 = IFF2 = true; }
 						}
 
 						// Process interrupt requests.
-						if (nonMaskableInterruptPending && NO_prefix)
+						if (nonMaskableInterruptPending)
 						{
 							nonMaskableInterruptPending = false;
 
 							if (TraceCallback != null)
 							{
-								TraceCallback(new TraceInfo
-								{
-									Disassembly = "====NMI====",
-									RegisterInfo = ""
-								});
+								TraceCallback(new TraceInfo{Disassembly = "====NMI====", RegisterInfo = ""});
 							}
 
 							iff2 = iff1;
 							iff1 = false;
 							NMI_();
 							NMICallback();
-
 						}
-						else if (iff1 && FlagI && NO_prefix)
+						else if (iff1 && FlagI)
 						{
 							iff1 = iff2 = false;
 							EI_pending = 0;
 
 							if (TraceCallback != null)
 							{
-								TraceCallback(new TraceInfo
-								{
-									Disassembly = "====IRQ====",
-									RegisterInfo = ""
-								});
+								TraceCallback(new TraceInfo{Disassembly = "====IRQ====", RegisterInfo = ""});
 							}
 
 							switch (interruptMode)
@@ -346,36 +326,32 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							if (OnExecFetch != null) OnExecFetch(RegPC);
 							if (TraceCallback != null) TraceCallback(State());
 							FetchInstruction(ReadMemory(RegPC++));
-							Regs[R]++;
-							Regs[R] &= 0xFF;
 						}
+
+						temp_R = (byte)(Regs[R] & 0x7F);
+						temp_R++;
+						temp_R &= 0x7F;
+						Regs[R] = (byte)((Regs[R] & 0x80) | temp_R);
 					}
 					instr_pntr = 0;
 					break;
 
 				case HALT:
 					halted = true;
-					if (EI_pending > 0 && NO_prefix)
+					if (EI_pending > 0)
 					{
 						EI_pending--;
-						if (EI_pending == 0)
-						{
-							IFF1 = IFF2 = true;
-						}
+						if (EI_pending == 0) { IFF1 = IFF2 = true; }
 					}
 
 					// Process interrupt requests.
-					if (nonMaskableInterruptPending && NO_prefix)
+					if (nonMaskableInterruptPending)
 					{
 						nonMaskableInterruptPending = false;
 
 						if (TraceCallback != null)
 						{
-							TraceCallback(new TraceInfo
-							{
-								Disassembly = "====NMI====",
-								RegisterInfo = ""
-							});
+							TraceCallback(new TraceInfo{Disassembly = "====NMI====", RegisterInfo = ""});
 						}
 
 						iff2 = iff1;
@@ -384,18 +360,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						NMICallback();
 						halted = false;
 					}
-					else if (iff1 && FlagI && NO_prefix)
+					else if (iff1 && FlagI)
 					{
 						iff1 = iff2 = false;
 						EI_pending = 0;
 
 						if (TraceCallback != null)
 						{
-							TraceCallback(new TraceInfo
-							{
-								Disassembly = "====IRQ====",
-								RegisterInfo = ""
-							});
+							TraceCallback(new TraceInfo{Disassembly = "====IRQ====", RegisterInfo = ""});
 						}
 
 						switch (interruptMode)
@@ -419,14 +391,16 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					}
 					else
 					{
-						Regs[R]++;
-						Regs[R] &= 0xFF;
 						cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
 						IDLE,
 						HALT };
 					}
+					temp_R = (byte)(Regs[R] & 0x7F);
+					temp_R++;
+					temp_R &= 0x7F;
+					Regs[R] = (byte)((Regs[R] & 0x80) | temp_R);
 
 					instr_pntr = 0;
 					break;
@@ -567,8 +541,17 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					if (prefix_src == IYpre) { IY_prefix = true; }
 					if (prefix_src == IXCBpre) { IXCB_prefix = true; IXCB_prefetch = true; }
 					if (prefix_src == IYCBpre) { IYCB_prefix = true; IYCB_prefetch = true; }
-					Regs[R]++;
-					Regs[R] &= 0xFF;
+
+					FetchInstruction(ReadMemory(RegPC++));
+					instr_pntr = 0;
+					// only the first prefix in a double prefix increases R, although I don't know how / why
+					if (prefix_src < 4)
+					{
+						temp_R = (byte)(Regs[R] & 0x7F);
+						temp_R++;
+						temp_R &= 0x7F;
+						Regs[R] = (byte)((Regs[R] & 0x80) | temp_R);
+					}
 					break;
 				case ASGN:
 					ASGN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);

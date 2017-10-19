@@ -15,6 +15,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort IYpre = 3;
 		public const ushort IXCBpre = 4;
 		public const ushort IYCBpre = 5;
+		public const ushort IXYprefetch = 6;
 
 		// variables for executing instructions
 		public int instr_pntr = 0;
@@ -1194,8 +1195,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					IYCB_prefetch = false;
 					PF = opcode;
 					Regs[ALU] = PF;
-					PREFETCH_(Iyl, Iyh);
-					
+					PREFETCH_(Iyl, Iyh);					
 					return;
 				}
 

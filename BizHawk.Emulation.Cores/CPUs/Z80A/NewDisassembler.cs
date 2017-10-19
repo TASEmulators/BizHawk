@@ -34,7 +34,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				char sign = neg ? '-' : '+';
 				int val = neg ? 256 - B : B;
 				format = format.Replace("d", string.Format("{0}{1:X2}h", sign, val));
-				addr++;
 			}
 
 			return format;
@@ -397,6 +396,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public string Disassemble(ushort addr, Func<ushort, byte> read, out ushort size)
 		{
 			ushort start_addr = addr;
+			ushort extra_inc = 0;
 			byte A = read(addr++);
 			string format;
 			switch (A)
@@ -409,7 +409,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					A = read(addr++);
 					switch (A)
 					{
-						case 0xCB: format = mnemonicsDDCB[A]; break;
+						case 0xCB: format = mnemonicsDDCB[A]; extra_inc = 1; break;
 						case 0xED: format = mnemonicsED[A]; break;
 						default: format = mnemonicsDD[A]; break;
 					}
@@ -422,7 +422,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					A = read(addr++);
 					switch (A)
 					{
-						case 0xCB: format = mnemonicsFDCB[A]; break;
+						case 0xCB: format = mnemonicsFDCB[A]; extra_inc = 1; break;
 						case 0xED: format = mnemonicsED[A]; break;
 						default: format = mnemonicsFD[A]; break;
 					}
@@ -431,6 +431,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			}
 			
 			string temp = Result(format, read, ref addr);
+
+			addr += extra_inc;
 
 			size = (ushort)(addr - start_addr);
 			return temp;
