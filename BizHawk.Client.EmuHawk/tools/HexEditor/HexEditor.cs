@@ -533,14 +533,9 @@ namespace BizHawk.Client.EmuHawk
 						{
 							t_next = MakeValue(1, _addr + j + k);
 							t_val += (t_next << ((DataSize - k - 1) * 8));
-
-							if (_addr + j + k == 0x0020 || _addr + j + k == 0x0021)
-							{
-								Console.WriteLine(t_next);
-							}
 						}
 
-						rowStr.AppendFormat(_digitFormatString, t_val);// MakeValue(_addr + j));
+						rowStr.AppendFormat(_digitFormatString, t_val);
 					}
 					else
 					{
