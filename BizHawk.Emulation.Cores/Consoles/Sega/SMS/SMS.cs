@@ -114,6 +114,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				InitNemesisMapper();
 			else if (game["TerebiOekaki"])
 				InitTerebiOekaki();
+			else if (game["EEPROM"])
+				InitEEPROMMapper();
 			else
 				InitSegaMapper();
 

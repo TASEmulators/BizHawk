@@ -1071,6 +1071,8 @@
     <Compile Include="Consoles\Sega\Saturn\LibSaturnus.cs" />
     <Compile Include="Consoles\Sega\Saturn\Saturnus.cs" />
     <Compile Include="Consoles\Sega\Saturn\SaturnusControllerDeck.cs" />
+    <Compile Include="Consoles\Sega\SMS\EEPROM.93c46.cs" />
+    <Compile Include="Consoles\Sega\SMS\MemoryMap.EEPROM.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.ICodeDataLogger.cs">
       <DependentUpon>SMS.cs</DependentUpon>
@@ -1190,9 +1192,9 @@
     <Compile Include="CPUs\Z80A\Execute.cs" />
     <Compile Include="CPUs\Z80A\Interrupts.cs" />
     <Compile Include="CPUs\Z80A\Registers.cs" />
-		<Compile Include="CPUs\Z80A\Operations.cs" />
+    <Compile Include="CPUs\Z80A\Operations.cs" />
     <Compile Include="CPUs\Z80A\Tables_Direct.cs" />
-		<Compile Include="CPUs\Z80A\Tables_Indirect.cs" />
+    <Compile Include="CPUs\Z80A\Tables_Indirect.cs" />
     <Compile Include="CPUs\Z80A\Z80A.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
