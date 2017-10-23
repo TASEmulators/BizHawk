@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 {
@@ -217,6 +214,20 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 
 			Flags = (EEPROMFlags)bit & ~EEPROMFlags.Ready;
+		}
+
+		public void SyncState(Serializer ser)
+		{
+			ser.BeginSection("93c46");
+			ser.Sync("Address", ref Address);
+			ser.Sync("Value", ref Value);
+			ser.Sync("BitsWritten", ref BitsWritten);
+			ser.Sync("BitsRead", ref BitsRead);
+			ser.Sync("WriteEnable", ref WriteEnable);
+			ser.SyncEnum("WriteMode", ref WriteMode);
+			ser.SyncEnum("ReadMode", ref ReadMode);
+			ser.SyncEnum("Flags", ref Flags);
+			ser.EndSection();
 		}
 	}
 }
