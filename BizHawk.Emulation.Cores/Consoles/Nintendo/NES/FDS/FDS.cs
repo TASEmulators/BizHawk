@@ -255,19 +255,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				case 0x0020:
 					timerlatch &= 0xff00;
 					timerlatch |= value;
-					//timerirq = false;
 					break;
 				case 0x0021:
 					timerlatch &= 0x00ff;
 					timerlatch |= value << 8;
-					//timerirq = false;
 					break;
 				case 0x0022:
-					timerreg = (byte)(value & 3);
-					timervalue = timerlatch;
+					if (diskenable)
+					{
+						timerreg = (byte)(value & 3);
+						if ((value & 0x02) == 0x02)
+						{
+							timervalue = timerlatch;
+						}
+						else
+						{
+							_timerirq = false;
+						}
+					}
+					
 					break;
 				case 0x0023:
 					diskenable = (value & 1) != 0;
+					if (!diskenable) { _timerirq = false; }
 					soundenable = (value & 2) != 0;
 					break;
 				case 0x0024:
@@ -344,7 +354,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void ClockCPU()
 		{
-			if ((timerreg & 2) != 0)// && timervalue > 0)
+			if ((timerreg & 2) != 0 && diskenable)
 			{
 				if (timervalue!=0)
 				{
@@ -352,22 +362,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 				if (timervalue == 0)
 				{
-
-					/*
-					if ((timerreg & 1) != 0)
-					{
-						timervalue = timerlatch;
-						//timervalue = 0xFFFF;
-					}
-					else
-					{
-						timerreg &= unchecked((byte)~2);
-						timervalue = 0;
-						timerlatch = 0;
-					}
-					*/
 					timervalue = timerlatch;
 					timerirq = true;
+					if ((timerreg & 1) == 0)
+					{
+						timerreg -= 2;
+					}
 				}
 			}
 			audio.Clock();
