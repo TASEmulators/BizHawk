@@ -49,15 +49,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (addr < 0x9800)
 			{
-				return CHR_RAM[addr - 0x8000];
+				if (ppu.VRAM_access_read) { return CHR_RAM[addr - 0x8000]; }
+				else { return 0xFF; }			
 			}
 			else if (addr < 0x9C00)
 			{
-				return BG_map_1[addr - 0x9800];
+				if (ppu.VRAM_access_read) { return BG_map_1[addr - 0x9800]; }
+				else { return 0xFF; }
 			}
 			else if (addr < 0xA000)
 			{
-				return BG_map_2[addr - 0x9C00];
+				if (ppu.VRAM_access_read) { return BG_map_2[addr - 0x9C00]; }
+				else { return 0xFF; }
 			}
 			else if (addr < 0xC000)
 			{
@@ -71,9 +74,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				return RAM[addr - 0xE000];
 			}
-			else if (addr < 0xFEA0 && ppu.OAM_access)
+			else if (addr < 0xFEA0)
 			{
-				return OAM[addr - 0xFE00];
+				if (ppu.OAM_access_read) { return OAM[addr - 0xFE00]; }
+				else { return 0xFF; }		
 			}
 			else if (addr < 0xFF00)
 			{
@@ -117,15 +121,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (addr < 0x9800)
 			{
-				CHR_RAM[addr - 0x8000] = value;
+				if (ppu.VRAM_access_write) { CHR_RAM[addr - 0x8000] = value; }
 			}
 			else if (addr < 0x9C00)
 			{
-				BG_map_1[addr - 0x9800] = value;
+				if (ppu.VRAM_access_write) { BG_map_1[addr - 0x9800] = value; }
 			}
 			else if (addr < 0xA000)
 			{
-				BG_map_2[addr - 0x9C00] = value;
+				if (ppu.VRAM_access_write) { BG_map_2[addr - 0x9C00] = value; }
 			}
 			else if (addr < 0xC000)
 			{
@@ -139,9 +143,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				RAM[addr - 0xE000] = value;
 			}
-			else if (addr < 0xFEA0 && ppu.OAM_access)
+			else if (addr < 0xFEA0)
 			{
-				OAM[addr - 0xFE00] = value;
+				if (ppu.OAM_access_write) { OAM[addr - 0xFE00] = value; }
 			}
 			else if (addr < 0xFF00)
 			{
