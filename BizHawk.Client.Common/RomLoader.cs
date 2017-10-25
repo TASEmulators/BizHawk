@@ -470,7 +470,7 @@ namespace BizHawk.Client.Common
 							System = "PSX"
 						};
 					}
-					else if (ext == ".iso" || ext == ".cue" || ext == ".ccd")
+					else if (ext == ".iso" || ext == ".cue" || ext == ".ccd" || ext == ".mds")
 					{
 						if (file.IsArchive)
 						{
@@ -494,7 +494,7 @@ namespace BizHawk.Client.Common
 							throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
 						}
 
-						var disc = discMountJob.OUT_Disc;
+						var disc = discMountJob.OUT_Disc;                        
 
 						// -----------
 						// TODO - use more sophisticated IDer
