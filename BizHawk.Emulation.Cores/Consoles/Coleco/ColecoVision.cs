@@ -24,6 +24,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			_cpu = new Z80A
 			{
+				FetchMemory = ReadMemory,
 				ReadMemory = ReadMemory,
 				WriteMemory = WriteMemory,
 				ReadHardware = ReadPort,
