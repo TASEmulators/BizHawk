@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			PutSettings((TI83Settings)settings ?? new TI83Settings());
 
 			CoreComm = comm;
+			_cpu.FetchMemory = ReadMemory;
 			_cpu.ReadMemory = ReadMemory;
 			_cpu.WriteMemory = WriteMemory;
 			_cpu.ReadHardware = ReadHardware;
