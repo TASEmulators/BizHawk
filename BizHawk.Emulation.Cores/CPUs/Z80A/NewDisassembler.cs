@@ -409,7 +409,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					A = read(addr++);
 					switch (A)
 					{
-						case 0xCB: format = mnemonicsDDCB[A]; extra_inc = 1; break;
+						case 0xCB: format = mnemonicsDDCB[read((ushort)(addr + 1))]; extra_inc = 1; break;
 						case 0xED: format = mnemonicsED[A]; break;
 						default: format = mnemonicsDD[A]; break;
 					}
@@ -422,7 +422,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					A = read(addr++);
 					switch (A)
 					{
-						case 0xCB: format = mnemonicsFDCB[A]; extra_inc = 1; break;
+						case 0xCB: format = mnemonicsFDCB[read((ushort)(addr + 1))]; extra_inc = 1; break;
 						case 0xED: format = mnemonicsED[A]; break;
 						default: format = mnemonicsFD[A]; break;
 					}

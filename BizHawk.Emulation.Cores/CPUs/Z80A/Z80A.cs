@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public IMemoryCallbackSystem MemoryCallbacks { get; set; }
 
 		// Memory Access 
-		public Func<ushort, bool, byte> FetchMemory;
+		public Func<ushort, byte> FetchMemory;
 		public Func<ushort, byte> ReadMemory;
 		public Action<ushort, byte> WriteMemory;
 		public Func<ushort, byte> PeekMemory;
@@ -200,7 +200,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					{
 						if (OnExecFetch != null) OnExecFetch(RegPC);
 						if (TraceCallback != null) TraceCallback(State());
-						FetchInstruction(ReadMemory(RegPC++));
+						FetchInstruction(FetchMemory(RegPC++));
 					}
 					instr_pntr = 0;
 
@@ -325,7 +325,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						{
 							if (OnExecFetch != null) OnExecFetch(RegPC);
 							if (TraceCallback != null) TraceCallback(State());
-							FetchInstruction(ReadMemory(RegPC++));
+							FetchInstruction(FetchMemory(RegPC++));
 						}
 
 						temp_R = (byte)(Regs[R] & 0x7F);
@@ -542,7 +542,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					if (prefix_src == IXCBpre) { IXCB_prefix = true; IXCB_prefetch = true; }
 					if (prefix_src == IYCBpre) { IYCB_prefix = true; IYCB_prefetch = true; }
 
-					FetchInstruction(ReadMemory(RegPC++));
+					FetchInstruction(FetchMemory(RegPC++));
 					instr_pntr = 0;
 					// only the first prefix in a double prefix increases R, although I don't know how / why
 					if (prefix_src < 4)
