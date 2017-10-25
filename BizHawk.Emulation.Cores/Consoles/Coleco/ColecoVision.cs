@@ -1,6 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
-using BizHawk.Emulation.Cores.Components.Z80;
+using BizHawk.Emulation.Cores.Components.Z80A;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			SetupMemoryDomains();
 
 			_tracer.Header = _cpu.TraceHeader;
-			ser.Register<IDisassemblable>(new Disassembler());
+			ser.Register<IDisassemblable>(_cpu);
 			ser.Register<ITraceable>(_tracer);
 		}
 

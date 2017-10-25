@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace BizHawk.Emulation.DiscSystem
@@ -111,6 +112,50 @@ namespace BizHawk.Emulation.DiscSystem
                 corrected = data;
             }
             return BitConverter.ToInt64(corrected, offset);
+        }
+
+        #endregion
+
+        // (asni 20171013) - Some methods I wrote that have been shoehorned in from another project to speed up development time
+        // If these are offensive in any way, tell me I suck and that I need to do more work with existing methods
+        #region Misc
+
+        /// <summary>
+        /// Returns a byte array of any length
+        /// Not really anything endian going on, but I struggled to find a better place for it
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public byte[] ReadBytes(byte[] buffer, int offset, int length)
+        {
+            return buffer.Skip(offset).Take(length).ToArray();
+        }
+
+        /// <summary>
+        /// Returns an int32 value from any size byte array
+        /// (careful, data may/will be truncated)
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="offset"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
+        public int ReadIntValue(byte[] buffer, int offset, int length)
+        {
+            var bytes = buffer.Skip(offset).Take(length).ToArray();
+
+            if (swap)
+                Array.Reverse(bytes);
+
+            if (length == 1)
+                return bytes.FirstOrDefault();
+
+            if (length == 2)
+                return BitConverter.ToInt16(bytes, 0);
+
+            int result = BitConverter.ToInt32(bytes, 0);
+            return result;
         }
 
         #endregion

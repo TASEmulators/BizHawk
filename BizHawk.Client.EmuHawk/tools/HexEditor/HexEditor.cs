@@ -526,7 +526,16 @@ namespace BizHawk.Client.EmuHawk
 				{
 					if (_addr + j + DataSize <= _domain.Size)
 					{
-						rowStr.AppendFormat(_digitFormatString, MakeValue(_addr + j));
+						int t_val = 0;
+						int t_next = 0;
+
+						for (int k = 0; k < DataSize; k++)
+						{
+							t_next = MakeValue(1, _addr + j + k);
+							t_val += (t_next << ((DataSize - k - 1) * 8));
+						}
+
+						rowStr.AppendFormat(_digitFormatString, t_val);
 					}
 					else
 					{
@@ -569,7 +578,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Global.CheatList.IsActive(_domain, address))
 			{
-				return Global.CheatList.GetCheatValue(_domain, address, (WatchSize)DataSize ).Value;
+				return Global.CheatList.GetCheatValue(_domain, address, (WatchSize)dataSize ).Value;
 			}
 
 			switch (dataSize)
