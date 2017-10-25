@@ -79,6 +79,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				ReadHardware = ReadPort,
 				WriteHardware = WritePort,
+				FetchMemory = ReadMemory,
 				ReadMemory = ReadMemory,
 				WriteMemory = WriteMemory,
 				MemoryCallbacks = MemoryCallbacks
@@ -262,7 +263,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		/// <summary>
 		/// A dummy FetchMemory that simply reads the memory
 		/// </summary>
-		private byte FetchMemory_StubThunk(ushort address, bool first)
+		private byte FetchMemory_StubThunk(ushort address)
 		{
 			return ReadMemory(address);
 		}
