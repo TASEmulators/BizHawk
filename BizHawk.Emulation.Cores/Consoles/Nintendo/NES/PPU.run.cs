@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public byte[] soam = new byte[512]; // in a real nes, this would only be 32, but we wish to allow more then 8 sprites per scanline
 		public bool reg_2001_color_disable_latch; // the value used here is taken 
 		public bool ppu_was_on;
-		public unsafe byte[] sl_sprites = new byte[3 * 256];
+		public byte[] sl_sprites = new byte[3 * 256];
 
 		// installing vram address is delayed after second write to 2006, set this up here
 		public int install_2006;
