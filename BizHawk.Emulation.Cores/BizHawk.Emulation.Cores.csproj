@@ -880,6 +880,9 @@
     <Compile Include="Consoles\Nintendo\NES\NES.IDriveLight.cs">
       <DependentUpon>NES.cs</DependentUpon>
     </Compile>
+		<Compile Include="Consoles\Nintendo\NES\NES.IInputPollable.cs">
+      <DependentUpon>NES.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\NES\NES.IInputPollable.cs">
       <DependentUpon>NES.cs</DependentUpon>
     </Compile>
