@@ -20,8 +20,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	public sealed class APU
 	{
-		public static bool CFG_DECLICK = true;
-
 		public int m_vol = 1;
 
 		public int dmc_dma_countdown = -1;
@@ -1330,8 +1328,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}				
 
 				SyncIRQ();
-				nes.irq_apu = irq_pending;
-				
+
 				// since the units run concurrently, the APU frame sequencer is ran last because
 				// it can change the ouput values of the pulse/triangle channels
 				// we want the changes to affect it on the *next* cycle.

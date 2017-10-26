@@ -13,7 +13,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		//hardware/state
 		public MOS6502X cpu;
-		int cpu_accumulate; //cpu timekeeper
 		public PPU ppu;
 		public APU apu;
 		public byte[] ram;
@@ -26,11 +25,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		int sprdma_countdown;
 
 		bool _irq_apu; //various irq signals that get merged to the cpu irq pin
-					   /// <summary>clock speed of the main cpu in hz</summary>
+		
+		/// <summary>clock speed of the main cpu in hz</summary>
 		public int cpuclockrate { get; private set; }
-
-		//irq state management
-		public bool irq_apu { get { return _irq_apu; } set { _irq_apu = value; } }
 
 		//user configuration 
 		int[] palette_compiled = new int[64 * 8];
@@ -362,8 +359,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					VS_coin_inserted &= 1;
 			}
 
-			FrameGo = true;
-
 			if (ppu.ppudead > 0)
 			{
 				while (ppu.ppudead > 0)
@@ -416,10 +411,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			num_cheats = 0;
 		}
 
-		public bool FrameGo;
-
 		//PAL:
-		//0 15 30 45 60 -> 12 27 42 57 -> 9 24 39 54 -> 6 21 36 51 -> 3 18 33 48 -> 0
 		//sequence of ppu clocks per cpu clock: 3,3,3,3,4
 		//at least it should be, but something is off with that (start up time?) so it is 3,3,3,4,3 for now
 		//NTSC:

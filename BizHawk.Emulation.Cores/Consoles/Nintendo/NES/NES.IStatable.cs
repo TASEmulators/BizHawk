@@ -57,7 +57,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			cpu.SyncState(ser);
 			ser.Sync("ram", ref ram, false);
 			ser.Sync("CIRAM", ref CIRAM, false);
-			ser.Sync("cpu_accumulate", ref cpu_accumulate);
 			ser.Sync("_irq_apu", ref _irq_apu);
 			ser.Sync("sprdma_countdown", ref sprdma_countdown);
 			ser.Sync("cpu_deadcounter", ref cpu_deadcounter);

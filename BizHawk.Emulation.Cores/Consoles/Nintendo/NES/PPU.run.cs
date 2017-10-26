@@ -8,9 +8,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	sealed partial class PPU
 	{
-		const int kFetchTime = 2;
-		const int kLineTime = 341;
-
 		struct BGDataRecord
 		{
 			public byte nt, at;
@@ -29,8 +26,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int soam_index_prev;
 		public int soam_m_index;
 		public int oam_index;
-		public byte read_value_aux;
-		public int soam_m_index_aux;
 		public int oam_index_aux;
 		public int soam_index_aux;
 		public bool is_even_cycle;
@@ -39,8 +34,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public int yp;
 		public int target;
 		public int spriteHeight;
-		public byte[] soam = new byte[512]; // in a real nes, this would only be 32, but we wish to allow more then 8 sprites per scanline
-		public bool reg_2001_color_disable_latch; // the value used here is taken 
+		public byte[] soam = new byte[256]; // in a real nes, this would only be 32, but we wish to allow more then 8 sprites per scanline
 		public bool ppu_was_on;
 		public byte[] sl_sprites = new byte[3 * 256];
 
@@ -69,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		// experimental
 		int pixelcolor_latch_1;
 		int pixelcolor_latch_2;
-		void pipeline(int pixelcolor, int target, int row_check)
+		void pipeline(int pixelcolor, int row_check)
 		{
 			if (row_check > 1)
 			{
@@ -81,11 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				xbuf[(target - 2)] = (short)(pixelcolor_latch_2 | reg_2001.intensity_lsl_6);
 			}
 
-			if (row_check >= 1)
-			{
-				pixelcolor_latch_2 = pixelcolor_latch_1;
-			}
-
+			pixelcolor_latch_2 = pixelcolor_latch_1;			
 			pixelcolor_latch_1 = pixelcolor;
 		}
 
@@ -203,7 +193,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				spr_true_count = 0;
 				soam_index = 0;
 				soam_m_index = 0;
-				soam_m_index_aux = 0;
 				oam_index_aux = 0;
 				oam_index = 0;
 				is_even_cycle = true;
@@ -252,7 +241,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				if (ppur.status.sl != 0)
 				{
 					/////////////////////////////////////////////
-					// Sprite Evaluation End
+					// Sprite Evaluation Start
 					/////////////////////////////////////////////
 
 					if (sprite_eval_cycle <= 63 && !is_even_cycle)
@@ -479,7 +468,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					} //oamcount loop
 
 
-					pipeline(pixelcolor, target, xt * 8 + xp);
+					pipeline(pixelcolor, xt * 8 + xp);
 					target++;
 
 					// clear out previous sprites from scanline buffer
@@ -557,8 +546,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							//look for sprites 
 							soam[soam_index_aux * 4] = OAM[oam_index_aux * 4];
-							read_value_aux = OAM[oam_index_aux * 4];
-							if (yp >= read_value_aux && yp < read_value_aux + spriteHeight)
+							if (yp >= OAM[oam_index_aux * 4] && yp < OAM[oam_index_aux * 4] + spriteHeight)
 							{
 								soam[soam_index_aux * 4 + 1] = OAM[oam_index_aux * 4 + 1];
 								soam[soam_index_aux * 4 + 2] = OAM[oam_index_aux * 4 + 2];
@@ -637,7 +625,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 							if (target <= 61441 && target > 0 && s == 0)
 							{
-								pipeline(0, target, 256);
+								pipeline(0, 256);
 								target++;
 							}
 
@@ -648,14 +636,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 							if (target <= 61441 && target > 0 && s == 0)
 							{
-								pipeline(0, target, 257);  //  last pipeline call option 1 of 2
+								pipeline(0, 257);  //  last pipeline call option 1 of 2
 							}
 						}
 						else
 						{
 							if (target <= 61441 && target > 0 && s == 0)
 							{
-								pipeline(0, target, 256);
+								pipeline(0, 256);
 								target++;
 							}
 
@@ -664,7 +652,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 							if (target <= 61441 && target > 0 && s == 0)
 							{
-								pipeline(0, target, 257);  //  last pipeline call option 2 of 2
+								pipeline(0, 257);  //  last pipeline call option 2 of 2
 							}
 						}
 						break;
@@ -772,7 +760,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 									sl_sprites[temp_x + i] = (byte)s;
 									sl_sprites[256 + temp_x + i] = (byte)spixel;
 									sl_sprites[512 + temp_x + i] = t_oam[s].oam_attr;
-
 								}
 							}
 						}
@@ -870,7 +857,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 											sl_sprites[temp_x + i] = (byte)s;
 											sl_sprites[256 + temp_x + i] = (byte)spixel;
 											sl_sprites[512 + temp_x + i] = t_oam[s].oam_attr;
-
 										}
 									}
 								}
@@ -974,7 +960,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			runppu();
 
-			if (ppur.status.cycle == 241 * kLineTime - 3)
+			if (ppur.status.cycle == 241 * 341 - 3)
 			{
 				ppudead--;
 			}
