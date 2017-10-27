@@ -446,7 +446,8 @@
             this.SMSControllerStandardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SMSControllerPaddleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SMSControllerLightPhaserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.MainformMenu.SuspendLayout();
+			this.SMSControllerSportsPadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
             this.SuspendLayout();
@@ -2480,7 +2481,7 @@
             this.SMSregionToolStripMenuItem,
             this.SMSdisplayToolStripMenuItem,
             this.SMSControllerToolStripMenuItem,
-            this.SMStoolStripMenuItem2,
+			this.SMStoolStripMenuItem2,
             this.SMSenableBIOSToolStripMenuItem,
             this.SMSEnableFMChipMenuItem,
             this.SMSOverclockMenuItem,
@@ -2554,7 +2555,8 @@
             this.SMSControllerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SMSControllerStandardToolStripMenuItem,
             this.SMSControllerPaddleToolStripMenuItem,
-            this.SMSControllerLightPhaserToolStripMenuItem});
+            this.SMSControllerLightPhaserToolStripMenuItem,
+			this.SMSControllerSportsPadToolStripMenuItem});
             // 
             // SMSControllerStandardToolStripMenuItem
             // 
@@ -2573,10 +2575,17 @@
             this.SMSControllerLightPhaserToolStripMenuItem.Name = "SMSControllerLightPhaserToolStripMenuItem";
             this.SMSControllerLightPhaserToolStripMenuItem.Text = "Light Phaser";
             this.SMSControllerLightPhaserToolStripMenuItem.Click += new System.EventHandler(this.SMSControllerLightPhaserToolStripMenuItem_Click);
-            // 
-            // SMSdisplayPalToolStripMenuItem
-            // 
-            this.SMSdisplayPalToolStripMenuItem.Name = "SMSdisplayPalToolStripMenuItem";
+			// 
+			// SMSControllerSportsPadToolStripMenuItem
+			// 
+			this.SMSControllerSportsPadToolStripMenuItem.Name = "SMSControllerSportsPadToolStripMenuItem";
+			this.SMSControllerSportsPadToolStripMenuItem.Text = "Sports Pad";
+			this.SMSControllerSportsPadToolStripMenuItem.Click += new System.EventHandler(this.SMSControllerSportsPadToolStripMenuItem_Click);
+
+			// 
+			// SMSdisplayPalToolStripMenuItem
+			// 
+			this.SMSdisplayPalToolStripMenuItem.Name = "SMSdisplayPalToolStripMenuItem";
             this.SMSdisplayPalToolStripMenuItem.Size = new System.Drawing.Size(104, 22);
             this.SMSdisplayPalToolStripMenuItem.Text = "PAL";
             this.SMSdisplayPalToolStripMenuItem.Click += new System.EventHandler(this.SMS_DisplayPAL_Click);
@@ -4404,5 +4413,6 @@
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerStandardToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerPaddleToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerLightPhaserToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSControllerSportsPadToolStripMenuItem;
 	}
 }
