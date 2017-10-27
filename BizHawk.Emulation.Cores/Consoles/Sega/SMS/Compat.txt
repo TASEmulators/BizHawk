@@ -9,10 +9,6 @@ Korean games currently not booting:
 
 * Desert Strike - you can enter the map screen but cannot leave.
 
-- Light Gun emulation
-- Paddle emulation
-- Sports pad emulation?
-
 ======= Game Gear compatibility issues =======
 
 * Outrun has raster effect on the wrong line. I've been able to modify interrupt code to

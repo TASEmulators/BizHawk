@@ -1745,9 +1745,10 @@ namespace BizHawk.Client.EmuHawk
 			SMSdisplayNtscToolStripMenuItem.Checked = ss.DisplayType == "NTSC";
 			SMSdisplayPalToolStripMenuItem.Checked = ss.DisplayType == "PAL";
 			SMSdisplayAutoToolStripMenuItem.Checked = ss.DisplayType == "Auto";
-			SMSControllerStandardToolStripMenuItem.Checked = s.ControllerType == "Standard";
-			SMSControllerPaddleToolStripMenuItem.Checked = s.ControllerType == "Paddle";
-			SMSControllerLightPhaserToolStripMenuItem.Checked = s.ControllerType == "Light Phaser";
+			SMSControllerStandardToolStripMenuItem.Checked = ss.ControllerType == "Standard";
+			SMSControllerPaddleToolStripMenuItem.Checked = ss.ControllerType == "Paddle";
+			SMSControllerLightPhaserToolStripMenuItem.Checked = ss.ControllerType == "Light Phaser";
+			SMSControllerSportsPadToolStripMenuItem.Checked = ss.ControllerType == "Sports Pad";
 			SMSenableBIOSToolStripMenuItem.Checked = ss.UseBIOS;
 			SMSEnableFMChipMenuItem.Checked = ss.EnableFM;
 			SMSOverclockMenuItem.Checked = ss.AllowOverlock;
@@ -1904,23 +1905,30 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SMSControllerStandardToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((SMS)Emulator).GetSettings();
+			var s = ((SMS)Emulator).GetSyncSettings();
 			s.ControllerType = "Standard";
-			PutCoreSettings(s);
+			PutCoreSyncSettings(s);
 		}
 
 		private void SMSControllerPaddleToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((SMS)Emulator).GetSettings();
+			var s = ((SMS)Emulator).GetSyncSettings();
 			s.ControllerType = "Paddle";
-			PutCoreSettings(s);
+			PutCoreSyncSettings(s);
 		}
 
 		private void SMSControllerLightPhaserToolStripMenuItem_Click(object sender, EventArgs e)
 		{
-			var s = ((SMS)Emulator).GetSettings();
+			var s = ((SMS)Emulator).GetSyncSettings();
 			s.ControllerType = "Light Phaser";
-			PutCoreSettings(s);
+			PutCoreSyncSettings(s);
+		}
+
+		private void SMSControllerSportsPadToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var s = ((SMS)Emulator).GetSyncSettings();
+			s.ControllerType = "Sports Pad";
+			PutCoreSyncSettings(s);
 		}
 
 		#endregion
