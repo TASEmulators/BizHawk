@@ -2,8 +2,8 @@ using System.IO;
 
 internal static class VersionInfo
 {
-	public const string Mainversion = "2.2"; // Use numbers only or the new version notification won't work
-	public static readonly string RELEASEDATE = "August 5, 2017";
+	public const string Mainversion = "2.2.1"; // Use numbers only or the new version notification won't work
+	public static readonly string RELEASEDATE = "October 29, 2017";
 	public static readonly bool DeveloperBuild = false;
 	public static readonly string HomePage = "http://tasvideos.org/BizHawk.html";
 
