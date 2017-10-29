@@ -1083,7 +1083,6 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			s.ExtraData.CurrentDiscIndexMounted = CurrentDiscIndexMounted;
 
 			ser.Serialize(writer, s);
-			// TODO write extra copy of stuff we don't use (WHY?)
 		}
 
 		public void LoadStateText(TextReader reader)

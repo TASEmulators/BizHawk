@@ -109,6 +109,11 @@ GBEXPORT void gambatte_setrtccallback(GB *g, unsigned int (*callback)())
 	g->setRTCCallback(callback);
 }
 
+GBEXPORT void gambatte_setlinkcallback(GB *g, void (*callback)())
+{
+	g->setLinkCallback(callback);
+}
+
 GBEXPORT int gambatte_iscgb(GB *g)
 {
 	return g->isCgb();

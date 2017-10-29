@@ -20,7 +20,6 @@ namespace BizHawk.Client.Common
 		bool? PreviousNES_InQuickNES { get; set; }
 		bool? PreviousSNES_InSnes9x { get; set; }
 		bool? PreviousGBA_UsemGBA { get; set; }
-		bool? PreviousA78_UseEmu7800 { get; set; }
 
 		void HandleMovieOnFrameLoop();
 		void HandleMovieAfterFrameLoop();

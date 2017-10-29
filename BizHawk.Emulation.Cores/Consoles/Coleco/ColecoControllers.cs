@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public byte Read(IController c, bool left_mode, int wheel)
 		{
-			return 0; // needs checking
+			return 0x7F; // needs checking
 		}
 
 		public ControllerDefinition Definition { get; }

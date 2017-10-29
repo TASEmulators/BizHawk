@@ -64,6 +64,24 @@ static void InputCallback(GB_gameboy_t *gb)
 	FrontendInputCallback();
 }
 
+typedef void (*FrontendPrinterCallback_t)(uint32_t *image,
+										  uint8_t height,
+										  uint8_t top_margin,
+										  uint8_t bottom_margin,
+										  uint8_t exposure);
+
+static FrontendPrinterCallback_t FrontendPrinterCallback;
+
+static void PrinterCallback(GB_gameboy_t *gb,
+							uint32_t *image,
+							uint8_t height,
+							uint8_t top_margin,
+							uint8_t bottom_margin,
+							uint8_t exposure)
+{
+	FrontendPrinterCallback(image, height, top_margin, bottom_margin, exposure);
+}
+
 static blip_t *leftblip;
 static blip_t *rightblip;
 const int SOUND_RATE_GB = 2097152;
@@ -243,6 +261,22 @@ ECL_EXPORT bool HasSaveRam()
 	if (GB.mbc_ram_size == 0 && !GB.cartridge_type->has_rtc)
 		return false; /* Claims to have battery, but has no RAM or RTC */
 	return true;
+}
+
+ECL_EXPORT void SetPrinterCallback(FrontendPrinterCallback_t callback)
+{
+	FrontendPrinterCallback = callback;
+
+	if (callback)
+	{
+		GB_connect_printer(&GB, PrinterCallback);
+	}
+	else
+	{
+		GB_set_serial_transfer_start_callback(&GB, NULL);
+		GB_set_serial_transfer_end_callback(&GB, NULL);
+		GB.printer.callback = NULL;
+	}
 }
 
 int main()

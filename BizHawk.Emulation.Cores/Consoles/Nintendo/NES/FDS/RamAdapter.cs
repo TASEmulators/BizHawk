@@ -67,14 +67,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				byte[] fileheader = br.ReadBytes(16);
 				if (fileheader[0] != 0x03)
 				{
-					throw new Exception("Corrupt FDS block 3");
+					// Instead of exceptions, display strong warnings
+					Console.WriteLine("WARNING: INVALID FILE, BLOCK 3 ERROR");
+					//throw new Exception("Corrupt FDS block 3");
 				}
 				int filesize = fileheader[13] + fileheader[14] * 256;
 
 				byte[] file = br.ReadBytes(filesize + 1);
 				if (file[0] != 0x04)
 				{
-					throw new Exception("Corrupt FDS block 4");
+					Console.WriteLine("WARNING: INVALID FILE, BLOCK 4 ERROR");
+					//throw new Exception("Corrupt FDS block 4");
 				}
 
 				WriteBlock(ret, fileheader, 122);

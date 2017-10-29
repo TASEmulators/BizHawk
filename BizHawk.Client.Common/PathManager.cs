@@ -266,6 +266,12 @@ namespace BizHawk.Client.Common
 
 			return Path.Combine(MakeAbsolutePath(pathEntry.Path, game.System), name) + ".SaveRAM";
 		}
+		
+		public static string AutoSaveRamPath(GameInfo game)
+		{
+			var path = SaveRamPath(game);
+			return path.Insert(path.Length - 8, ".AutoSaveRAM");
+		}
 
 		public static string RetroSaveRAMDirectory(GameInfo game)
 		{

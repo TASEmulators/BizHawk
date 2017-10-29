@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					}
 					else
 					{
-						if (Core.cart_RAM == 0 && !Core.pokey)
+						if (Core.cart_RAM == 0 && !Core.is_pokey)
 						{
 							// return bank 6
 							int temp_addr = addr - 0x4000;
@@ -80,11 +80,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 						else if (Core.cart_RAM > 0)
 						{
 							// return RAM
-							if (Core.cart_RAM==8 && addr >= 0x6000)
+							if (Core.cart_RAM == 8 && addr >= 0x6000)
 							{
 								return RAM[addr - 0x6000];
 							}
-							else if (Core.cart_RAM==16)
+							else if (Core.cart_RAM == 16)
 							{
 								return RAM[addr - 0x4000];
 							}
@@ -92,12 +92,15 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 							{
 								// this would coorespond to reading from 0x4000-0x5FFF with only 8k of RAM
 								// Let's just return FF for now
-								return 0xFF;							
+								return 0xFF;
 							}
+						}
+						else if (Core.is_pokey)
+						{
+							return Core.pokey.ReadReg(addr & 0xF);
 						}
 						else
 						{
-							// pokey
 							return 0xFF;
 						}
 					}			
@@ -138,9 +141,9 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					bank = (byte)(value & (Core.small_flag ? 0x3 : 0x7));
 				}
-				else if (Core.pokey)
+				else if (Core.is_pokey)
 				{
-
+					Core.pokey.WriteReg(addr & 0xF, value);
 				}
 				else if (Core.cart_RAM > 0)
 				{

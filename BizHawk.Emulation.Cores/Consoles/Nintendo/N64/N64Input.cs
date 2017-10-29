@@ -73,9 +73,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 		}
 
 		private const sbyte _maxAnalogX = 127;
-		private const sbyte _minAnalogX = -127;
+		private const sbyte _minAnalogX = -128;
 		private const sbyte _maxAnalogY = 127;
-		private const sbyte _minAnalogY = -127;
+		private const sbyte _minAnalogY = -128;
 
 		/// <summary>
 		/// Translates controller input from EmuHawk into

@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
+using System.Globalization;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
@@ -32,6 +34,118 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			bool ret = GPGXSyncSettings.NeedsReboot(_syncSettings, o);
 			_syncSettings = o;
 			return ret;
+		}
+
+		private class UintToHexConverter : TypeConverter
+		{
+			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+			{
+				if (sourceType == typeof(string))
+				{
+					return true;
+				}
+				else
+				{
+					return base.CanConvertFrom(context, sourceType);
+				}
+			}
+
+			public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+			{
+				if (destinationType == typeof(string))
+				{
+					return true;
+				}
+				else
+				{
+					return base.CanConvertTo(context, destinationType);
+				}
+			}
+
+			public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+			{
+				if (destinationType == typeof(string) && value.GetType() == typeof(uint))
+				{
+					return string.Format("0x{0:x8}", value);
+				}
+				else
+				{
+					return base.ConvertTo(context, culture, value, destinationType);
+				}
+			}
+
+			public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+			{
+				if (value.GetType() == typeof(string))
+				{
+					string input = (string)value;
+					if (input.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+					{
+						input = input.Substring(2);
+					}
+					return uint.Parse(input, NumberStyles.HexNumber, culture);
+				}
+				else
+				{
+					return base.ConvertFrom(context, culture, value);
+				}
+			}
+		}
+
+		private class UshortToHexConverter : TypeConverter
+		{
+			public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+			{
+				if (sourceType == typeof(string))
+				{
+					return true;
+				}
+				else
+				{
+					return base.CanConvertFrom(context, sourceType);
+				}
+			}
+
+			public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
+			{
+				if (destinationType == typeof(string))
+				{
+					return true;
+				}
+				else
+				{
+					return base.CanConvertTo(context, destinationType);
+				}
+			}
+
+			public override object ConvertTo(ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
+			{
+				if (destinationType == typeof(string) && value.GetType() == typeof(ushort))
+				{
+					return string.Format("0x{0:x4}", value);
+				}
+				else
+				{
+					return base.ConvertTo(context, culture, value, destinationType);
+				}
+			}
+
+			public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+			{
+				if (value.GetType() == typeof(string))
+				{
+					string input = (string)value;
+					if (input.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
+					{
+						input = input.Substring(2);
+					}
+					return ushort.Parse(input, NumberStyles.HexNumber, culture);
+				}
+				else
+				{
+					return base.ConvertFrom(context, culture, value);
+				}
+			}
 		}
 
 		private GPGXSyncSettings _syncSettings;
@@ -89,8 +203,9 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			public LibGPGX.InitSettings.FilterType Filter { get; set; }
 
 			[DisplayName("Low Pass Range")]
-			[Description("Only active when filter type is lowpass")]
-			[DefaultValue((ushort)39321)]
+			[Description("Only active when filter type is lowpass. Range is 0 - 0xffff. Default value is 40%")]
+			[TypeConverter(typeof(UshortToHexConverter))]
+			[DefaultValue((ushort)0x6666)]
 			public ushort LowPassRange { get; set; }
 
 			[DisplayName("Three band low cutoff")]
@@ -127,8 +242,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue((bool)false)]
 			public bool Backdrop { get { return _Backdrop; } set { _Backdrop = value; } }
 
-			[DisplayName("Custom backdrop color")]
-			[Description("Magic pink (0xffff00ff) by default")]
+			[Description("Magic pink by default. Requires core reboot")]
+			[TypeConverter(typeof(UintToHexConverter))]
 			[DefaultValue((uint)0xffff00ff)]
 			public uint BackdropColor { get; set; }
 

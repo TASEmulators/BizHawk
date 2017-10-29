@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdio.h>
 #include "snes_spc/spc.h"
+#include "../emulibc/emulibc.h"
 
 #define utils_log printf
 
@@ -76,13 +77,13 @@ typedef struct
 	uint16_t tilemap[32 * 32];
 
 	// frame data
-	uint8_t frame[160 * 144];		// the most recent obtained full frame
+	uint8_t frame[160 * 144];		 // the most recent obtained full frame
 	uint32_t frozenframe[256 * 224]; // the most recent saved full frame (MASK_EN)
-	uint8_t attr[20 * 18];			// current attr map for the GB screen
-	uint8_t auxattr[45][20 * 18];   // 45 attr files
+	uint8_t attr[20 * 18];			 // current attr map for the GB screen
+	uint8_t auxattr[45][20 * 18];	// 45 attr files
 
 	// MASK_EN
-	uint8_t active_mask;  // true if mask is currently being used
+	uint8_t active_mask; // true if mask is currently being used
 
 	// audio
 	SNES_SPC *spc;
@@ -622,12 +623,15 @@ int sgb_init(const uint8_t *spc, int length)
 		utils_log("SGB: Failed to load SPC\n");
 		return 0;
 	}
-	
+
+	// make a scratch buffer in a predictable (not stack) place because spc stores multiple pointers to it
+	// which is kind of nasty...
+	int16_t *sound_buffer = alloc_invisible(4096 * sizeof(int16_t));
+
 	// the combination of the sameboy bootrom plus the built in SPC file we use means
 	// that the SPC doesn't finish its init fast enough for donkey kong, which starts poking
 	// data too early.  it's just a combination of various HLE concerns not meshing...
-	int16_t sound_buffer[4096];
-	spc_set_output(sgb.spc, sound_buffer, sizeof(sound_buffer) / sizeof(sound_buffer[0]));
+	spc_set_output(sgb.spc, sound_buffer, 4096);
 	for (int i = 0; i < 240; i++)
 	{
 		spc_end_frame(sgb.spc, 35104);
@@ -741,10 +745,10 @@ void sgb_set_controller_data(const uint8_t *buttons)
 	memcpy(sgb.joypad_data, buttons, sizeof(sgb.joypad_data));
 }
 
-static void trn_sound(const uint8_t* data)
+static void trn_sound(const uint8_t *data)
 {
-	const uint8_t* const dataend = data + 0x10000;
-	uint8_t* const dst = spc_get_ram(sgb.spc);
+	const uint8_t *const dataend = data + 0x10000;
+	uint8_t *const dst = spc_get_ram(sgb.spc);
 
 	while (1)
 	{
@@ -771,7 +775,7 @@ static void trn_sound(const uint8_t* data)
 			utils_log("TRN_SOUND dst overflow\n");
 			return;
 		}
-    	utils_log("TRN_SOUND addr %04x len %04x\n", addr, len);
+		utils_log("TRN_SOUND addr %04x len %04x\n", addr, len);
 		memcpy(dst + addr, data, len);
 		data += len;
 	}
@@ -1014,14 +1018,14 @@ void sgb_render_audio(uint64_t time, void (*callback)(int16_t l, int16_t r, uint
 	else
 	{
 		utils_log("SPC: %02x %02x %02x %02x => %02x %02x %02x %02x\n",
-			spc_read_port(sgb.spc, 0, 0),
-			spc_read_port(sgb.spc, 0, 1),
-			spc_read_port(sgb.spc, 0, 2),
-			spc_read_port(sgb.spc, 0, 3),
-			sgb.sound_control[0],
-			sgb.sound_control[1],
-			sgb.sound_control[2],
-			sgb.sound_control[3]);
+				  spc_read_port(sgb.spc, 0, 0),
+				  spc_read_port(sgb.spc, 0, 1),
+				  spc_read_port(sgb.spc, 0, 2),
+				  spc_read_port(sgb.spc, 0, 3),
+				  sgb.sound_control[0],
+				  sgb.sound_control[1],
+				  sgb.sound_control[2],
+				  sgb.sound_control[3]);
 	}
 	for (int p = 0; p < 4; p++)
 	{

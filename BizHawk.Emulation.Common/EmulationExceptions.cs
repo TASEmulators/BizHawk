@@ -20,6 +20,20 @@ namespace BizHawk.Emulation.Common
 		}
 	}
 
+    public class NoAvailableCoreException : Exception
+    {
+        public NoAvailableCoreException()
+            : base("System is currently NOT emulated")
+        {
+        }
+
+        public NoAvailableCoreException(string message)
+            : base ("System is currently NOT emulated: " + message)
+        {
+
+        }
+    }
+
 	public class CGBNotSupportedException : Exception
 	{
 		public CGBNotSupportedException()

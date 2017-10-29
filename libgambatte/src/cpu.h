@@ -96,6 +96,10 @@ public:
 		memory.setRTCCallback(callback);
 	}
 
+	void setLinkCallback(void (*callback)()) {
+		memory.setLinkCallback(callback);
+	}
+
 	void reset_bios(int setting) {
 		memory.bios_reset(setting);
 	}

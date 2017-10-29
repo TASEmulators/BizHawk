@@ -4,7 +4,7 @@ using System.IO;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components.Z80;
+using BizHawk.Emulation.Cores.Components.Z80A;
 
 
 namespace BizHawk.Emulation.Cores.Sega.MasterSystem
@@ -47,6 +47,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public int FrameHeight = 192;
 		public int ScanLine;
+		public byte HCounter = 0x90;
 		public int[] FrameBuffer = new int[256 * 192];
 		public int[] GameGearFrameBuffer = new int[160 * 144];
 		public int[] OverscanFrameBuffer = null;
@@ -112,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			StatusByte &= 0x1F;
 			HIntPending = false;
 			VIntPending = false;
-			Cpu.Interrupt = false;
+			Cpu.FlagI = false;
 			return returnValue;
 		}
 
@@ -134,6 +135,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					return VLineCounterTablePAL224[ScanLine];
 				return VLineCounterTablePAL240[ScanLine];
 			}
+		}
+
+		public byte ReadHLineCounter()
+		{
+			return HCounter;
 		}
 
 		public void WriteVdpControl(byte value)
@@ -285,13 +291,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				case 0: // Mode Control Register 1
 					CheckVideoMode();
-					Cpu.Interrupt = (EnableLineInterrupts && HIntPending);
-					Cpu.Interrupt |= (EnableFrameInterrupts && VIntPending);
+					Cpu.FlagI = (EnableLineInterrupts && HIntPending);
+					Cpu.FlagI |= (EnableFrameInterrupts && VIntPending);
 					break;
 				case 1: // Mode Control Register 2
 					CheckVideoMode();
-					Cpu.Interrupt = (EnableFrameInterrupts && VIntPending);
-					Cpu.Interrupt |= (EnableLineInterrupts && HIntPending);
+					Cpu.FlagI = (EnableFrameInterrupts && VIntPending);
+					Cpu.FlagI |= (EnableLineInterrupts && HIntPending);
 					break;
 				case 2: // Name Table Base Address
 					NameTableBase = CalcNameTableBase();
@@ -341,7 +347,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			if (VIntPending && EnableFrameInterrupts)
 			{
-				Cpu.Interrupt = true;
+				Cpu.FlagI = true;
 			}
 				
 		}
@@ -355,7 +361,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					HIntPending = true;
 					if (EnableLineInterrupts)
 					{;
-						Cpu.Interrupt = true;
+						Cpu.FlagI = true;
 					}
 					lineIntLinesRemaining = Registers[0x0A];
 				}
@@ -375,8 +381,16 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 				ProcessFrameInterrupt();
 				ProcessLineInterrupt();
+				Sms.ProcessLineControls();
 
-				Cpu.ExecuteCycles(IPeriod);
+				//Console.Write(Cpu.cur_instr.Length);
+				//Console.Write(" ");
+				//Console.WriteLine(Cpu.instr_pntr);
+				for (int j = 0; j < IPeriod; j++)
+				{
+					Cpu.ExecuteOne();
+				}
+				
 
 				if (ScanLine == scanlinesPerFrame - 1)
 				{
@@ -428,6 +442,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync("Registers", ref Registers, false);
 			ser.Sync("CRAM", ref CRAM, false);
 			ser.Sync("VRAM", ref VRAM, false);
+			ser.Sync("HCounter", ref HCounter);
 			ser.EndSection();
 
 			if (ser.IsReader)

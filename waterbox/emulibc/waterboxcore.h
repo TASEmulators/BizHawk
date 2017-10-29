@@ -21,7 +21,7 @@ typedef struct
 	void* Data;
 	const char* Name;
 	int64_t Size;
-	int32_t Flags;
+	int64_t Flags;
 } MemoryArea;
 
 #define MEMORYAREA_FLAGS_WRITABLE 1

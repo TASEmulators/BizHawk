@@ -66,9 +66,6 @@
             <Component Id="D3D8.DLL" DiskId="1" Guid="7A00676A-C29E-4314-8F5B-61F5CA523248">
               <File Id="D3D8.DLL" Name="d3d8.dll" Source="..\output\dll\d3d8.dll" />
             </Component>
-            <Component Id="EMU7800.DLL" DiskId="1" Guid="812823F6-5CB7-4B2E-A6F2-2583F6332AA3">
-              <File Id="EMU7800.DLL" Name="EMU7800.dll" Source="..\output\dll\EMU7800.dll" />
-            </Component>
             <Component Id="FFMPEG.EXE" DiskId="1" Guid="75864EED-3332-4976-90FE-BE92C5FE1F4A">
               <File Id="FFMPEG.EXE" Name="ffmpeg.exe" Source="..\output\dll\ffmpeg.exe" />
             </Component>
@@ -560,9 +557,6 @@
             </Directory>
           </Directory>
           <Directory Id="GAMEDB" Name="gamedb">
-            <Component Id="EMU7800.CSV" DiskId="1" Guid="12F97BC8-6696-4F39-9E35-9A4DD8F58E99">
-              <File Id="EMU7800.CSV" Name="EMU7800.csv" Source="..\output\gamedb\EMU7800.csv" />
-            </Component>
             <Component Id="GAME.DB" DiskId="1" Guid="CB1C1E8C-9ED9-45C0-8EC5-0D39DF7191F9">
               <File Id="GAME.DB" Name="game.db" Source="..\output\gamedb\game.db" />
             </Component>

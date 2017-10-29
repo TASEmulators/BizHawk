@@ -27,10 +27,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				cablediscosignal = _cablediscosignal
 			};
 			ser.Serialize(writer, s);
-			// write extra copy of stuff we don't use
-			// is this needed anymore??
-			writer.WriteLine();
-			writer.WriteLine("Frame {0}", Frame);
 		}
 
 		public void LoadStateText(TextReader reader)

@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Common.NumberExtensions;
+using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -108,6 +109,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				cheetahmen = true;
 			}
+			else
+			{
+				prg_bank_mask_16k = 0x1F;
+				prg_bank_mask_32k = 0xF;
+			}
 
 			AutoMapperProps.Apply(this);
 
@@ -155,6 +161,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			//$8000-FFFF:    [.... ..CC]   Low 2 bits of CHR
 			//A~[..MH HPPP PPO. CCCC]
 
+			addr += 0x8000;
+
 			if (addr.Bit(13))
 			{
 				SetMirrorType(EMirrorType.Horizontal);
@@ -173,7 +181,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				switch (chip)
 				{
 					case 0:
-						chip_offset = 0;
+						chip_offset = 0x0;
 						break;
 					case 1:
 						chip_offset = 0x80000;
@@ -201,7 +209,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (prg_mode == false)
 			{
 				int bank = (prg_reg >> 1) & prg_bank_mask_32k;
-				return ROM[(bank * 0x8000) + addr];
+				return ROM[(bank * 0x8000) + addr + chip_offset];
 			}
 			else
 			{

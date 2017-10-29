@@ -65,7 +65,7 @@ static uint8 SCU_SSH2VectorFetch(void);
 static void INLINE MDFN_HOT CheckEventsByMemTS(void);
 
 SH7095 CPU[2]{{"SH2-M", SS_EVENT_SH2_M_DMA, SCU_MSH2VectorFetch}, {"SH2-S", SS_EVENT_SH2_S_DMA, SCU_SSH2VectorFetch}};
-static uint16* BIOSROM;
+static uint16 *BIOSROM;
 static uint16 WorkRAML[1024 * 1024 / sizeof(uint16)];
 static uint16 WorkRAMH[1024 * 1024 / sizeof(uint16)]; // Effectively 32-bit in reality, but 16-bit here because of CPU interpreter design(regarding fastmap).
 static uint8 BackupRAM[32768];
@@ -92,6 +92,9 @@ static void INLINE SH7095_BusWrite(uint32 A, T V, const bool BurstHax, int32 *SH
 template <typename T>
 static T INLINE SH7095_BusRead(uint32 A, const bool BurstHax, int32 *SH2DMAHax);
 
+static int32 ExtBusCounter[2];
+static size_t ExtBusWhich;
+
 // SH-2 region
 //  0: 0x00000000-0x01FFFFFF
 //  1: 0x02000000-0x03FFFFFF
@@ -105,6 +108,9 @@ static T INLINE SH7095_BusRead(uint32 A, const bool BurstHax, int32 *SH2DMAHax);
 template <typename T, bool IsWrite>
 static INLINE void BusRW(uint32 A, T &V, const bool BurstHax, int32 *SH2DMAHax)
 {
+	if (!BurstHax && !SH2DMAHax)
+		ExtBusCounter[ExtBusWhich]++;
+
 	//
 	// High work RAM
 	//
@@ -636,11 +642,18 @@ static int32 NO_INLINE MDFN_HOT RunLoop(EmulateSpecStruct *espec)
 	{
 		do
 		{
+			ExtBusCounter[0] = ExtBusCounter[1] = 0;
+			ExtBusWhich = 0;
+
 			if (DebugMode)
 				DBG_CPUHandler<0>(eff_ts);
 
 			CPU[0].Step<0, DebugMode>();
 
+			if (CPU[0].DMA_RunCond(0) || CPU[0].DMA_RunCond(1))
+				CPU[0].timestamp += ExtBusCounter[0] * 16;
+
+			ExtBusWhich = 1;
 			while (MDFN_LIKELY(CPU[0].timestamp > CPU[1].timestamp))
 			{
 				if (DebugMode)
@@ -927,7 +940,7 @@ static bool MDFN_COLD InitCommon(const unsigned cart_type, const unsigned smpc_a
 
 	// Call InitFastMemMap() before functions like SOUND_Init()
 	InitFastMemMap();
-	BIOSROM = (uint16*)alloc_sealed(524288);
+	BIOSROM = (uint16 *)alloc_sealed(524288);
 	AddMemoryDomain("Boot Rom", BIOSROM, 524288, MEMORYAREA_FLAGS_YUGEENDIAN | MEMORYAREA_FLAGS_WORDSIZE2);
 	SS_SetPhysMemMap(0x00000000, 0x000FFFFF, BIOSROM, 524288);
 	SS_SetPhysMemMap(0x00200000, 0x003FFFFF, WorkRAML, sizeof(WorkRAML), true);
@@ -969,7 +982,7 @@ static bool MDFN_COLD InitCommon(const unsigned cart_type, const unsigned smpc_a
 		return false;
 	}
 
-	FirmwareDataCallback(biospath, (uint8*)&BIOSROM[0]);
+	FirmwareDataCallback(biospath, (uint8 *)&BIOSROM[0]);
 	for (unsigned i = 0; i < 262144; i++)
 		BIOSROM[i] = MDFN_de16msb(&BIOSROM[i]);
 
@@ -994,8 +1007,8 @@ static bool MDFN_COLD InitCommon(const unsigned cart_type, const unsigned smpc_a
 		CorrectAspect = setting_ss_correct_aspect;
 		ShowHOverscan = setting_ss_h_overscan;
 		DoHBlend = setting_ss_h_blend;
- 		LineVisFirst = sls;
- 		LineVisLast = sle;
+		LineVisFirst = sls;
+		LineVisLast = sle;
 
 		MDFN_printf(_("Displayed scanlines: [%u,%u]\n"), sls, sle);
 		MDFN_printf(_("Correct Aspect Ratio: %s\n"), correct_aspect ? _("Enabled") : _("Disabled"));

@@ -298,6 +298,7 @@ void CPU::loadState(const SaveState &state) {
 	HF2 = u8; \
 	ZF = CF = A + HF2; \
 	A = ZF & 0xFF; \
+	calcHF(HF1, HF2); \
 } while (0)
 
 //adc a,r (4 cycles):
@@ -308,6 +309,7 @@ void CPU::loadState(const SaveState &state) {
 	HF2 = (CF & 0x100) | (u8); \
 	ZF = CF = (CF >> 8 & 1) + (u8) + A; \
 	A = ZF & 0xFF; \
+	calcHF(HF1, HF2); \
 } while (0)
 
 //sub a,r (4 cycles):
@@ -319,6 +321,7 @@ void CPU::loadState(const SaveState &state) {
 	ZF = CF = A - HF2; \
 	A = ZF & 0xFF; \
 	HF2 |= 0x400; \
+	calcHF(HF1, HF2); \
 } while (0)
 
 //sbc a,r (4 cycles):
@@ -329,6 +332,7 @@ void CPU::loadState(const SaveState &state) {
 	HF2 = 0x400 | (CF & 0x100) | (u8); \
 	ZF = CF = A - ((CF >> 8) & 1) - (u8); \
 	A = ZF & 0xFF; \
+	calcHF(HF1, HF2); \
 } while (0)
 
 //and a,r (4 cycles):
@@ -367,6 +371,7 @@ void CPU::loadState(const SaveState &state) {
 	HF2 = u8; \
 	ZF = CF = A - HF2; \
 	HF2 |= 0x400; \
+	calcHF(HF1, HF2); \
 } while (0)
 
 //inc r (4 cycles):
@@ -375,6 +380,7 @@ void CPU::loadState(const SaveState &state) {
 	HF2 = (r) | 0x800; \
 	ZF = (r) + 1; \
 	(r) = ZF & 0xFF; \
+	calcHF(HF1, HF2); \
 } while (0)
 
 //dec r (4 cycles):
@@ -383,6 +389,7 @@ void CPU::loadState(const SaveState &state) {
 	HF2 = (r) | 0xC00; \
 	ZF = (r) - 1; \
 	(r) = ZF & 0xFF; \
+	calcHF(HF1, HF2); \
 } while (0)
 
 //16-BIT ARITHMETIC
@@ -405,6 +412,7 @@ void CPU::loadState(const SaveState &state) {
 	CF = H + (CF >> 8) + (rh); \
 	H = CF & 0xFF; \
 	cycleCounter += 4; \
+	calcHF(HF1, HF2); \
 } while (0)
 
 //inc rr (8 cycles):
@@ -436,6 +444,7 @@ void CPU::loadState(const SaveState &state) {
 	ZF = 1; \
 	cycleCounter += 4; \
 	(sumout) = sp_plus_n_var_sum & 0xFFFF; \
+	calcHF(HF1, HF2); \
 } while (0)
 
 //JUMPS:
@@ -877,6 +886,7 @@ void CPU::process(const unsigned long cycles) {
 					ZF = HF2 + 1;
 					WRITE(addr, ZF & 0xFF);
 					HF2 |= 0x800;
+					calcHF(HF1, HF2); 
 				}
 				break;
 
@@ -890,6 +900,7 @@ void CPU::process(const unsigned long cycles) {
 					ZF = HF2 - 1;
 					WRITE(addr, ZF & 0xFF);
 					HF2 |= 0xC00;
+					calcHF(HF1, HF2); 
 				}
 				break;
 
@@ -932,6 +943,7 @@ void CPU::process(const unsigned long cycles) {
 				CF += H;
 				H = CF & 0xFF;
 				cycleCounter += 4;
+				calcHF(HF1, HF2); 
 				break;
 
 				//ldd a,(hl) (8 cycles):
@@ -1428,6 +1440,7 @@ void CPU::process(const unsigned long cycles) {
 			case 0xBF:
 				CF = ZF = 0;
 				HF2 = 0x400;
+				calcHF(HF1, HF2); \
 				break;
 
 				//ret nz (20;8 cycles):

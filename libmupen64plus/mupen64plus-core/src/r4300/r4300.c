@@ -94,6 +94,7 @@ int rounding_mode = 0x33F, trunc_mode = 0xF3F, round_mode = 0x33F,
          PC++; \
          delay_slot=1; \
          UPDATE_DEBUGGER(); \
+         TRACECB(); \
          PC->ops(); \
          update_count(); \
          delay_slot=0; \
@@ -126,6 +127,7 @@ int rounding_mode = 0x33F, trunc_mode = 0xF3F, round_mode = 0x33F,
          PC++; \
          delay_slot=1; \
          UPDATE_DEBUGGER(); \
+         TRACECB(); \
          PC->ops(); \
          update_count(); \
          delay_slot=0; \
