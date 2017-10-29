@@ -17,8 +17,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		{
 			var temp = SaveStateBinary();
 			temp.SaveAsHexFast(writer);
-			// write extra copy of stuff we don't use
-			writer.WriteLine("Frame {0}", Frame);
 		}
 
 		public void LoadStateText(TextReader reader)

@@ -3,7 +3,6 @@
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
 
-using BizHawk.Emulation.Cores.Atari.Atari7800;
 using BizHawk.Emulation.Cores.Nintendo.GBA;
 using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
@@ -35,10 +34,6 @@ namespace BizHawk.Client.EmuHawk.CoreExtensions
 			else if (core is LibsnesCore)
 			{
 				return Properties.Resources.bsnes;
-			}
-			else if (core is Atari7800)
-			{
-				return Properties.Resources.emu7800;
 			}
 			else if (core is GPGX)
 			{

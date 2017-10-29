@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
-	public partial class A7800Hawk : IEmulator, IVideoProvider
+	public partial class A7800Hawk : IEmulator, IVideoProvider, ISoundProvider
 	{
 		public IEmulatorServiceProvider ServiceProvider { get; }
 
@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			GetControllerState(controller);
 			GetConsoleState(controller);
-
+			
 			maria.RunFrame();
 
 			if (_islag)
@@ -160,13 +160,23 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			if (tia._hsyncCnt == 113 || tia._hsyncCnt == 340)
 			{
 				tia.Execute(0);
+
+				// even though its clocked seperately, we sample the Pokey here
+				if (is_pokey) { pokey.sample(); }
 			}
 
 			// tick the m6532 timer, which is still active although not recommended to use
 			// also it runs off of the cpu cycle timer
+			// similarly tick the pokey if it is in use
 			if (cpu_cycle== 4)
 			{
 				m6532.Timer.Tick();
+			}
+
+			// the pokey chip ticks at the nominal clock rate (same as maria) 
+			if (is_pokey)
+			{
+				pokey.Tick();
 			}
 
 			if (cpu_cycle <= (2 + (slow_access ? 1 : 0)))
@@ -344,5 +354,53 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		};
 
 		#endregion
+
+		#region Sound provider
+
+		private int _spf;
+		
+		public bool CanProvideAsync => false;
+
+		public void SetSyncMode(SyncSoundMode mode)
+		{
+			if (mode != SyncSoundMode.Sync)
+			{
+				throw new InvalidOperationException("Only Sync mode is supported.");
+			}
+		}
+
+		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
+
+		public void GetSamplesSync(out short[] samples, out int nsamp)
+		{
+			short[] ret = new short[_spf * 2];
+			
+			nsamp = _spf;
+			tia.GetSamples(ret);
+			if (is_pokey)
+			{
+				short[] ret2 = new short[_spf * 2];
+				pokey.GetSamples(ret2);
+				for (int i = 0; i < _spf * 2; i ++)
+				{
+					ret[i] += ret2[i];
+				}
+			}
+
+			samples = ret;
+		}
+
+		public void GetSamplesAsync(short[] samples)
+		{
+			throw new NotSupportedException("Async is not available");
+		}
+
+		public void DiscardSamples()
+		{
+			tia.AudioClocks = 0;
+		}
+
+		#endregion
+
 	}
 }

@@ -75,10 +75,34 @@ namespace BizHawk.Emulation.DiscSystem
 		}
 
 		/// <summary>
+		/// Easily extracts a mode1 sector range (suitable for extracting ISO FS data files)
+		/// </summary>
+		public byte[] Easy_Extract_Mode1(int lba_start, int lba_count, int byteLength = -1)
+		{
+			int totsize = lba_count * 2048;
+			byte[] ret = new byte[totsize];
+			var dsr = new DiscSectorReader(this);
+			dsr.Policy.DeterministicClearBuffer = false;
+			for (int i = 0; i < lba_count; i++)
+			{
+				dsr.ReadLBA_2048(lba_start + i, ret, i*2048);
+			}
+			if (byteLength != -1 && byteLength != totsize)
+			{
+				byte[] newret = new byte[byteLength];
+				Array.Copy(ret, newret, byteLength);
+				return newret;
+			}
+			return ret;
+		}
+
+		/// <summary>
 		/// The DiscMountPolicy used to mount the disc. Consider this read-only.
 		/// NOT SURE WE NEED THIS
 		/// </summary>
 		//public DiscMountPolicy DiscMountPolicy;
+
+
 
 		//----------------------------------------------------------------------------
 

@@ -63,9 +63,6 @@
     <Reference Include="ELFSharp">
       <HintPath>..\References\ELFSharp.dll</HintPath>
     </Reference>
-    <Reference Include="EMU7800">
-      <HintPath>..\References\EMU7800.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -368,30 +365,10 @@
     </Compile>
     <Compile Include="Consoles\Atari\A7800Hawk\M6532.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\Maria.cs" />
+    <Compile Include="Consoles\Atari\A7800Hawk\Pokey.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\Tia.Audio.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\TIA.cs" />
-    <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\Tia.ISoundProvider.cs" />
     <Compile Include="Consoles\Atari\A7800Hawk\TIA_Sound\Tia.SyncState.cs" />
-    <Compile Include="Consoles\Atari\7800\Atari7800.cs" />
-    <Compile Include="Consoles\Atari\7800\Atari7800.IDebuggable.cs">
-      <DependentUpon>Atari7800.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Atari\7800\Atari7800.IEmulator.cs">
-      <DependentUpon>Atari7800.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Atari\7800\Atari7800.IInputPollable.cs">
-      <DependentUpon>Atari7800.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Atari\7800\Atari7800.IMemoryDomains.cs">
-      <DependentUpon>Atari7800.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Atari\7800\Atari7800.IStatable.cs">
-      <DependentUpon>Atari7800.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Consoles\Atari\7800\Atari7800Control.cs" />
-    <Compile Include="Consoles\Atari\7800\Atari7800.ISaveRam.cs">
-      <DependentUpon>Atari7800.cs</DependentUpon>
-    </Compile>
     <Compile Include="Consoles\Atari\lynx\LibLynx.cs" />
     <Compile Include="Consoles\Atari\lynx\Lynx.cs" />
     <Compile Include="Consoles\Atari\lynx\Lynx.IInputPollable.cs">
@@ -486,6 +463,9 @@
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IEmulator.cs">
       <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.ILinkable.cs">
+      <DependentUpon>Gambatte.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\Gameboy\Gambatte.IMemoryDomains.cs">
       <DependentUpon>Gambatte.cs</DependentUpon>
     </Compile>
@@ -535,6 +515,7 @@
     <Compile Include="Consoles\Nintendo\Gameboy\GambatteLink.IVideoProvider.cs">
       <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Nintendo\Gameboy\GambattePrinter.cs" />
     <Compile Include="Consoles\Nintendo\Gameboy\GamebatteLink.ISoundProvider.cs">
       <DependentUpon>GambatteLink.cs</DependentUpon>
     </Compile>
@@ -771,6 +752,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper049.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper052.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper074.cs" />
+		<Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper114.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper115.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper121.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper123.cs" />
@@ -897,6 +879,9 @@
       <DependentUpon>NES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\NES.IDriveLight.cs">
+      <DependentUpon>NES.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\NES\NES.ICodeDataLogger.cs">
       <DependentUpon>NES.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\NES\NES.IInputPollable.cs">
@@ -1090,6 +1075,8 @@
     <Compile Include="Consoles\Sega\Saturn\LibSaturnus.cs" />
     <Compile Include="Consoles\Sega\Saturn\Saturnus.cs" />
     <Compile Include="Consoles\Sega\Saturn\SaturnusControllerDeck.cs" />
+    <Compile Include="Consoles\Sega\SMS\EEPROM.93c46.cs" />
+    <Compile Include="Consoles\Sega\SMS\MemoryMap.EEPROM.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.cs" />
     <Compile Include="Consoles\Sega\SMS\SMS.ICodeDataLogger.cs">
       <DependentUpon>SMS.cs</DependentUpon>
@@ -1205,12 +1192,14 @@
     <Compile Include="CPUs\Z80-GB\Registers.cs" />
     <Compile Include="CPUs\Z80-GB\Tables.cs" />
     <Compile Include="CPUs\Z80-GB\Z80.cs" />
-    <Compile Include="CPUs\Z80\Disassembler.cs" />
-    <Compile Include="CPUs\Z80\Execute.cs" />
-    <Compile Include="CPUs\Z80\Interrupts.cs" />
-    <Compile Include="CPUs\Z80\Registers.cs" />
-    <Compile Include="CPUs\Z80\Tables.cs" />
-    <Compile Include="CPUs\Z80\Z80A.cs" />
+    <Compile Include="CPUs\Z80A\NewDisassembler.cs" />
+    <Compile Include="CPUs\Z80A\Execute.cs" />
+    <Compile Include="CPUs\Z80A\Interrupts.cs" />
+    <Compile Include="CPUs\Z80A\Registers.cs" />
+    <Compile Include="CPUs\Z80A\Operations.cs" />
+    <Compile Include="CPUs\Z80A\Tables_Direct.cs" />
+    <Compile Include="CPUs\Z80A\Tables_Indirect.cs" />
+    <Compile Include="CPUs\Z80A\Z80A.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

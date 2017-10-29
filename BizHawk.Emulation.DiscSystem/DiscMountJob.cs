@@ -187,6 +187,11 @@ namespace BizHawk.Emulation.DiscSystem
 				CCD_Format ccdLoader = new CCD_Format();
 				OUT_Disc = ccdLoader.LoadCCDToDisc(IN_FromPath, IN_DiscMountPolicy);
 			}
+            else if (ext == ".mds")
+            {
+                MDS_Format mdsLoader = new MDS_Format();
+                OUT_Disc = mdsLoader.LoadMDSToDisc(IN_FromPath, IN_DiscMountPolicy);
+            }
 
 
 		DONE:

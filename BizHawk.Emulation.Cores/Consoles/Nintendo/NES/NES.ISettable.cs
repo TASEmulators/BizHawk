@@ -39,11 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			SetPalette(Settings.Palette);
 
-			apu.Square1V = Settings.Square1;
-			apu.Square2V = Settings.Square2;
-			apu.TriangleV = Settings.Triangle;
-			apu.NoiseV = Settings.Noise;
-			apu.DMCV = Settings.DMC;
+			apu.m_vol = Settings.APU_vol;
 
 			return false;
 		}
@@ -157,11 +153,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 			public byte[,] Palette;
 
-			public int Square1 = 376;
-			public int Square2 = 376;
-			public int Triangle = 426;
-			public int Noise = 247;
-			public int DMC = 167;
+			public int APU_vol = 1;
 
 			public NESSettings Clone()
 			{

@@ -48,21 +48,24 @@ namespace BizHawk.Emulation.DiscSystem
 			s.Seek(this.Offset * ISOFile.SECTOR_SIZE, SeekOrigin.Begin);
 
 			List<ISONodeRecord> records = new List<ISONodeRecord>();
-
-			// Read the directory entries
-			while (s.Position < ((this.Offset * ISOFile.SECTOR_SIZE) + this.Length))
+            
+            // Read the directory entries
+            while (s.Position < ((this.Offset * ISOFile.SECTOR_SIZE) + this.Length))
 			{
 				ISONode node;
 				ISONodeRecord record;
-
+                
 				// Read the record
 				record = new ISONodeRecord();
-				record.Parse(s);
+                if (ISOFile.Format == ISOFile.ISOFormat.CDInteractive)
+				    record.ParseCDInteractive(s);
+                if (ISOFile.Format == ISOFile.ISOFormat.ISO9660)
+                    record.ParseISO9660(s);
 
 
-				//zero 24-jun-2013 - improved validity checks
-				//theres nothing here!
-				if (record.Length == 0)
+                //zero 24-jun-2013 - improved validity checks
+                //theres nothing here!
+                if (record.Length == 0)
 				{
 					break;
 				}
@@ -95,7 +98,8 @@ namespace BizHawk.Emulation.DiscSystem
 					}
 
 					// Add the node as a child
-					this.Children.Add(record.Name, node);
+                    if (!this.Children.ContainsKey(record.Name))
+					    this.Children.Add(record.Name, node);
 				}
 			}
 

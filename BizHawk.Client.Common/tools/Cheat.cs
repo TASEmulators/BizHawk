@@ -284,29 +284,61 @@ namespace BizHawk.Client.Common
 				case WatchSize.Byte:
 					return (byte?)_val;
 				case WatchSize.Word:
-					if (addr == _watch.Address)
+					if (_watch.BigEndian)
 					{
+						if (addr == _watch.Address)
+						{
+							return (byte)(_val & 0xFF);
+						}
 						return (byte)(_val >> 8);
 					}
-
-					return (byte)(_val & 0xFF);
-				case WatchSize.DWord:
-					if (addr == _watch.Address)
+					else
 					{
+						if (addr == _watch.Address)
+						{
+							return (byte)(_val >> 8);
+						}
+						return (byte)(_val & 0xFF);
+					}
+				case WatchSize.DWord:
+					if (_watch.BigEndian)
+					{
+						if (addr == _watch.Address)
+						{
+							return (byte)((_val >> 24) & 0xFF);
+						}
+
+						if (addr == _watch.Address + 1)
+						{
+							return (byte)((_val >> 16) & 0xFF);
+						}
+
+						if (addr == _watch.Address + 2)
+						{
+							return (byte)((_val >> 8) & 0xFF);
+						}
+
+						return (byte)(_val & 0xFF);
+					}
+					else
+					{
+						if (addr == _watch.Address)
+						{							
+							return (byte)(_val & 0xFF);
+						}
+
+						if (addr == _watch.Address + 1)
+						{							
+							return (byte)((_val >> 8) & 0xFF);
+						}
+
+						if (addr == _watch.Address + 2)
+						{
+							return (byte)((_val >> 16) & 0xFF);
+						}
+
 						return (byte)((_val >> 24) & 0xFF);
 					}
-
-					if (addr == _watch.Address + 1)
-					{
-						return (byte)((_val >> 16) & 0xFF);
-					}
-
-					if (addr == _watch.Address + 2)
-					{
-						return (byte)((_val >> 8) & 0xFF);
-					}
-
-					return (byte)(_val & 0xFF);
 			}
 		}
 

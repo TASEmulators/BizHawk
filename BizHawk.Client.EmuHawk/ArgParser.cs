@@ -112,7 +112,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					cmdRom = arg;
+					cmdRom = args[i];
 				}
 			}
 		}

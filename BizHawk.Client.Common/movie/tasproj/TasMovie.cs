@@ -514,14 +514,14 @@ namespace BizHawk.Client.Common
 
 			Log?.Dispose();
 			Log = branch.InputLog.Clone();
-			////_changes = true;
+
+			_lagLog.FromLagLog(branch.LagLog);
 
 			// if there are branch states, they will be loaded anyway
 			// but if there's none, or only *after* divergent point, don't invalidate the entire movie anymore
 			if (divergentPoint.HasValue)
 			{
 				_stateManager.Invalidate(divergentPoint.Value);
-				_lagLog.FromLagLog(branch.LagLog); // don't truncate LagLog if the branch's one is shorter, but input is the same
 			}
 			else
 			{
@@ -530,8 +530,7 @@ namespace BizHawk.Client.Common
 
 			_stateManager.LoadBranch(Branches.IndexOf(branch));
 			_stateManager.SetState(branch.Frame, branch.CoreData);
-
-			////ChangeLog = branch.ChangeLog;
+			
 			if (BindMarkersToInput) // pretty critical not to erase them
 			{
 				Markers = branch.Markers;

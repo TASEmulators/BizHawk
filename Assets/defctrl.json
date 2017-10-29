@@ -743,6 +743,34 @@
       "P2 B1": "",
       "P2 B2": ""
     },
+    "SMS Paddle Controller": {
+      "P1 Left": "LeftArrow, J1 POV1L",
+      "P1 Right": "RightArrow, J1 POV1R",
+      "P1 B1": "Z, J1 B1, X1 X",
+      "Reset": "J1 B9, X1 Back",
+      "Pause": "J1 B10, X1 Start"
+    },
+    "SMS Light Phaser Controller": {
+      "P1 Trigger": "Z, J1 B1, X1 X, WMouse L",
+      "Reset": "J1 B9, X1 Back",
+      "Pause": "J1 B10, X1 Start"
+    },
+	"SMS Sports Pad Controller": {
+      "P1 Up": "UpArrow, J1 POV1U",
+      "P1 Down": "DownArrow, J1 POV1D",
+      "P1 Left": "LeftArrow, J1 POV1L",
+      "P1 Right": "RightArrow, J1 POV1R",
+      "P1 B1": "Z, J1 B1, X1 X",
+      "P1 B2": "X, J1 B2, X1 A",
+      "Reset": "J1 B9, X1 Back",
+      "Pause": "J1 B10, X1 Start",
+      "P2 Up": "",
+      "P2 Down": "",
+      "P2 Left": "",
+      "P2 Right": "",
+      "P2 B1": "",
+      "P2 B2": ""
+    },
     "GG Controller": {
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",
       "P1 Down": "DownArrow, J1 POV1D, X1 DpadDown, X1 LStickDown",
@@ -1565,6 +1593,47 @@
       "P1 Y": {
         "Value": "WMouse Y",
         "Mult": 1.0,
+        "Deadzone": 0.1
+      }
+    },
+    "SMS Paddle Controller": {
+      "P1 Paddle": {
+        "Value": "X1 LeftThumbX",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      }
+    },
+    "SMS Light Phaser Controller": {
+      "P1 X": {
+        "Value": "WMouse X",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      },
+      "P1 Y": {
+        "Value": "WMouse Y",
+        "Mult": 1.0,
+        "Deadzone": 0.0
+      }
+    },
+	"SMS Sports Pad Controller": {
+      "P1 X": {
+        "Value": "X1 LeftThumbX",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+	    "P1 Y": {
+        "Value": "X1 LeftThumbY",
+        "Mult": -1.0,
+        "Deadzone": 0.1
+      },
+	    "P2 X": {
+        "Value": "X2 LeftThumbX",
+        "Mult": 1.0,
+        "Deadzone": 0.1
+      },
+	    "P2 Y": {
+        "Value": "X2 LeftThumbY",
+        "Mult": -1.0,
         "Deadzone": 0.1
       }
     }

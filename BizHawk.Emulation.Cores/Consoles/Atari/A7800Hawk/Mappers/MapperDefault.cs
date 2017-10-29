@@ -31,6 +31,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					return Core.RAM[0x800 + addr & 0x7FF];
 				}
 			}
+			else if (addr < 0x8000 && Core.is_pokey)
+			{
+				return Core.pokey.ReadReg(addr & 0xF);
+			}
 			else
 			{
 				// cartridge and other OPSYS
@@ -75,8 +79,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					Core.RAM[0x800 + addr & 0x7FF] = value;
 				}
 			}
-			else
+			else if (addr < 0x8000 && Core.is_pokey)
 			{
+				Core.pokey.WriteReg(addr & 0xF, value);
+			}
+			else
+			{ 
 				// cartridge and other OPSYS
 			}
 		}

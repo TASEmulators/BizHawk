@@ -4,6 +4,7 @@ using System.ComponentModel;
 using NLua;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.IEmulatorExtensions;
+using BizHawk.Common.BufferExtensions;
 
 namespace BizHawk.Client.Common
 {
@@ -106,6 +107,37 @@ namespace BizHawk.Client.Common
 			}
 
 			return false;
+		}
+
+		[LuaMethod("hash_region", "Returns a hash as a string of a region of memory, starting from addr, through count bytes. If the domain is unspecified, it uses the current region.")]
+		public string HashRegion(int addr, int count, string domain = null)
+		{
+			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
+
+			// checks
+			if (addr < 0 || addr >= d.Size)
+			{
+				string error = $"Address {addr} is outside the bounds of domain {d.Name}";
+				Log(error);
+				throw new ArgumentOutOfRangeException(error);
+			}
+			if (addr + count > d.Size)
+			{
+				string error = $"Address {addr} + count {count} is outside the bounds of domain {d.Name}";
+				Log(error);
+				throw new ArgumentOutOfRangeException(error);
+			}
+
+			byte[] data = new byte[count];
+			for (int i = 0; i < count; i++)
+			{
+				data[i] = d.PeekByte(addr + i);
+			}
+
+			using (var hasher = System.Security.Cryptography.SHA256.Create())
+			{
+				return hasher.ComputeHash(data).BytesToHexString();
+			}
 		}
 
 		#endregion

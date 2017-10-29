@@ -50,7 +50,6 @@
           <ComponentRef Id="OPENTK.GLCONTROL.DLL" />
             <ComponentRef Id="BIZHAWK.COMMON.DLL" />
             <ComponentRef Id="BLIP_BUF.DLL" />
-            <ComponentRef Id="EMU7800.DLL" />
             <ComponentRef Id="FFMPEG.EXE" />
             <ComponentRef Id="FFMPEG_README.TXT" />
             <ComponentRef Id="FREETYPE6.DLL" />
@@ -79,7 +78,6 @@
             <ComponentRef Id="SLIMDX.DLL" />
             <ComponentRef Id="ZLIB1.DLL" />
             <ComponentRef Id="GAME.DB" />
-            <ComponentRef Id="EMU7800.CSV" />
             <ComponentRef Id="GAMEDB.TXT" />
             <ComponentRef Id="GAMEDB_A2600.TXT" />
             <ComponentRef Id="GAMEDB_COLECO.TXT" />

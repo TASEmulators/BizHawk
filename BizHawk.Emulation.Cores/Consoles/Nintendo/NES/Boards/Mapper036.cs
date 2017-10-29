@@ -1,17 +1,21 @@
 ﻿using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
+using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
 	// mapper036
 	// Strike Wolf (MGC-014) [!].nes
-	// like an oversize GxROM
-	// information from fceux
+	// Using https://wiki.nesdev.com/w/index.php/INES_Mapper_036
 	public sealed class Mapper036 : NES.NESBoardBase
 	{
 		int chr;
 		int prg;
 		int chr_mask;
 		int prg_mask;
+		byte R;
+		bool M;
+		byte P;
 
 		public override bool Configure(NES.EDetectionOrigin origin)
 		{
@@ -46,10 +50,44 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public override void WritePRG(int addr, byte value)
 		{
 			// either hack emulation of a weird bus conflict, or crappy pirate safeguard
-			if (addr >= 0x400 && addr <= 0x7ffe)
+			prg = (R >> 4) & prg_mask;
+		}
+
+		public override byte ReadEXP(int addr)
+		{
+			return (byte)(R | (NES.DB & 0xCF));
+		}
+
+		public override void WriteEXP(int addr, byte value)
+		{
+			Console.WriteLine(addr);
+			Console.WriteLine(value);
+			if ((addr & 0xE200) == 0x200)
 			{
 				chr = value & 15 & chr_mask;
-				prg = value >> 4 & 15 & prg_mask;
+			}
+			switch (addr & 0xE103)
+			{
+				case 0x100:
+					if (!M)
+					{
+						R = P;
+					}
+					else
+					{
+						R++;
+						R &= 0x30;
+					}
+					
+
+					break;
+				case 0x102:
+					P = (byte)(value & 0x30);
+					prg = (value >> 4) & prg_mask;
+					break;
+				case 0x103:
+					M = value.Bit(4);
+					break;
 			}
 		}
 
@@ -58,6 +96,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			base.SyncState(ser);
 			ser.Sync("chr", ref chr);
 			ser.Sync("prg", ref prg);
+			ser.Sync("R", ref R);
+			ser.Sync("M", ref M);
+			ser.Sync("P", ref P);
 		}
 	}
 }
