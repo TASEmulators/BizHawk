@@ -47,6 +47,9 @@ enum eMessage : int32
 	eMessage_QUERY_state_hook_write,
 	eMessage_QUERY_state_hook_nmi,
 	eMessage_QUERY_state_hook_irq,
+	eMessage_QUERY_state_hook_exec_smp,
+	eMessage_QUERY_state_hook_read_smp,
+	eMessage_QUERY_state_hook_write_smp,
 	eMessage_QUERY_enable_trace,
 	eMessage_QUERY_enable_scanline,
 	eMessage_QUERY_enable_audio,
@@ -86,6 +89,9 @@ enum eMessage : int32
 	eMessage_BRK_hook_write,
 	eMessage_BRK_hook_nmi,
 	eMessage_BRK_hook_irq,
+	eMessage_BRK_hook_exec_smp,
+	eMessage_BRK_hook_read_smp,
+	eMessage_BRK_hook_write_smp,
 	eMessage_BRK_scanlineStart,
 };
 
@@ -348,6 +354,25 @@ static void debug_op_irq()
 	BREAK(eMessage_BRK_hook_irq);
 }
 
+static void debug_op_exec_smp(uint24 addr)
+{
+	comm.addr = addr;
+	BREAK(eMessage_BRK_hook_exec_smp);
+}
+
+static void debug_op_read_smp(uint24 addr)
+{
+	comm.addr = addr;
+	BREAK(eMessage_BRK_hook_read_smp);
+}
+
+static void debug_op_write_smp(uint24 addr, uint8 value)
+{
+	comm.addr = addr;
+	comm.value = value;
+	BREAK(eMessage_BRK_hook_write_smp);
+}
+
 void pwrap_init()
 {
 	//bsnes's interface initialization calls into this after initializing itself, so we can get a chance to mod it for pwrap functionalities
@@ -455,6 +480,15 @@ void QUERY_state_hook_nmi() {
 void QUERY_state_hook_irq() {
 	SNES::cpu.debugger.op_irq = comm.value ? debug_op_irq : hook<void()>();
 }
+void QUERY_state_hook_exec_smp() {
+	SNES::smp.debugger.op_exec = comm.value ? debug_op_exec_smp : hook<void(uint24)>();
+}
+void QUERY_state_hook_read_smp() {
+	SNES::smp.debugger.op_read = comm.value ? debug_op_read_smp : hook<void(uint24)>();
+}
+void QUERY_state_hook_write_smp() {
+	SNES::smp.debugger.op_write = comm.value ? debug_op_write_smp : hook<void(uint24, uint8)>();
+}
 void QUERY_state_enable_trace() {
 	snes_set_trace_callback(comm.value, snes_trace);
 }
@@ -535,6 +569,9 @@ const Action kHandlers_QUERY[] = {
 	QUERY_state_hook_exec, //eMessage_QUERY_state_hook_exec
 	QUERY_state_hook_read, //eMessage_QUERY_state_hook_read
 	QUERY_state_hook_write, //eMessage_QUERY_state_hook_write
+	QUERY_state_hook_exec_smp, //eMessage_QUERY_state_hook_exec_smp
+	QUERY_state_hook_read_smp, //eMessage_QUERY_state_hook_read_smp
+	QUERY_state_hook_write_smp, //eMessage_QUERY_state_hook_write_smp
 	QUERY_state_hook_nmi, //eMessage_QUERY_state_hook_nmi
 	QUERY_state_hook_irq, //eMessage_QUERY_state_hook_irq
 	QUERY_state_enable_trace, //eMessage_QUERY_enable_trace TODO - consolidate enable flags
