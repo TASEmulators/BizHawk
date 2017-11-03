@@ -89,6 +89,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			ResetInterrupts();
 			TotalExecutedCycles = 0;
 			cur_instr = new ushort[] { OP };
+			instr_pntr = 0;
 			NO_prefix = true;
 		}
 
