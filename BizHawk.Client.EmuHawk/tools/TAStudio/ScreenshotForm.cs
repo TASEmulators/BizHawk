@@ -11,11 +11,8 @@ namespace BizHawk.Client.EmuHawk
 {
 	public partial class ScreenshotForm : Form
 	{
-		// but still appear topmost
 		private const int WS_EX_TOPMOST = 0x00000008;
-
-		private const int WidthCap = 320;
-		private const int HeightCap = 240;
+		
 		private const int Interval = 40;
 		private const double AlphaStep = 0.125;
 
@@ -32,9 +29,7 @@ namespace BizHawk.Client.EmuHawk
 		public ScreenshotForm()
 		{
 			InitializeComponent();
-
-			Width = WidthCap;
-			Height = HeightCap;
+			
 			var fontSize = 10;
 			var fontStyle = FontStyle.Regular;
 			Font = new Font(FontFamily.GenericMonospace, fontSize, fontStyle);
@@ -70,15 +65,6 @@ namespace BizHawk.Client.EmuHawk
 			_drawingHeight = height;
 			Text = _branch.UserText;
 			Location = location;
-
-			// Set the screenshot to "1x" resolution of the core
-			// cores like n64 and psx are going to still have sizes too big for the control, so cap them
-			if (Width > WidthCap)
-			{
-				double ratio = WidthCap / (double)Width;
-				Width = WidthCap;
-				_drawingHeight = (int)((double)(_drawingHeight) * ratio);
-			}
 
 			if (Padding > 0)
 			{
