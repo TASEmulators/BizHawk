@@ -35,7 +35,6 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.CoreInfoPanel = new System.Windows.Forms.Panel();
-			//this.textBox1 = new System.Windows.Forms.TextBox();
 			this.VersionLabel = new System.Windows.Forms.Label();
 			this.btnCopyHash = new System.Windows.Forms.Button();
 			this.linkLabel2 = new System.Windows.Forms.LinkLabel();
@@ -146,7 +145,6 @@
 			// 
 			// linkLabel3
 			// 
-			this.linkLabel3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.linkLabel3.AutoSize = true;
 			this.linkLabel3.Location = new System.Drawing.Point(198, 112);
 			this.linkLabel3.Name = "linkLabel3";
@@ -176,7 +174,6 @@
 			this.Controls.Add(this.linkLabel3);
 			this.Controls.Add(this.linkLabel2);
 			this.Controls.Add(this.btnCopyHash);
-			//this.Controls.Add(this.textBox1);
 			this.Controls.Add(this.CoreInfoPanel);
 			this.Controls.Add(this.VersionLabel);
 			this.Controls.Add(this.label4);
