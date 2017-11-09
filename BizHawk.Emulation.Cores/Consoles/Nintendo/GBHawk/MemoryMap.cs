@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public byte ReadMemory(ushort addr)
 		{
-			MemoryCallbacks.CallReads(addr);
+			MemoryCallbacks.CallReads(addr, "System Bus");
 
 			if (addr < 0x100)
 			{
@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void WriteMemory(ushort addr, byte value)
 		{
-			MemoryCallbacks.CallWrites(addr);
+			MemoryCallbacks.CallWrites(addr, "System Bus");
 
 			if (addr < 0x100)
 			{
