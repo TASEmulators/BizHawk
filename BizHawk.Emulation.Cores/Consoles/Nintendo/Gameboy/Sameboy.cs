@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 			{
 				Filename = "sameboy.wbx",
 				SbrkHeapSizeKB = 192,
-				InvisibleHeapSizeKB = 4,
+				InvisibleHeapSizeKB = 12,
 				SealedHeapSizeKB = 9 * 1024,
 				PlainHeapSizeKB = 4,
 				MmapHeapSizeKB = 1024
@@ -300,6 +300,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy
 		protected override void LoadStateBinaryInternal(BinaryReader reader)
 		{
 			UpdateCoreScanlineCallback(false);
+			_core.SetPrinterCallback(_printerCallback);
 		}
 
 		public bool IsCGBMode() => _cgb;

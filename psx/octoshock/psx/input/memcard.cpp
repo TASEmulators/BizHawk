@@ -193,7 +193,9 @@ void InputDevice_Memcard::SyncState(bool isReader, EW::NewState *ns)
 	//HOWEVER - we clear the dirty flag. that way, a user wont accidentally `clobber` his savestates when loading a state.
 	//instead, the state will only be dirtied when the game actually modifies the contents
 	NSS(card_data);
-	dirty_count = 0;
+
+	if(isReader)
+		dirty_count = 0;
 }
 //
 //int InputDevice_Memcard::StateAction(StateMem* sm, int load, int data_only, const char* section_name)

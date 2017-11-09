@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		private readonly InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
 		public IInputCallbackSystem InputCallbacks { get { return _inputCallbacks; } }
 
-		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
+		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" }); // This isn't an actual memory domain in this core (yet), but there's nothing that enforces that it has to be
 		public IMemoryCallbackSystem MemoryCallbacks { get { return _memorycallbacks; } }
 
 		public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()
@@ -140,15 +140,15 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 
 		void ReadCallback(uint addr)
 		{
-			MemoryCallbacks.CallReads(addr);
+			MemoryCallbacks.CallReads(addr, "System Bus");
 		}
 		void WriteCallback(uint addr)
 		{
-			MemoryCallbacks.CallWrites(addr);
+			MemoryCallbacks.CallWrites(addr, "System Bus");
 		}
 		void ExecCallback(uint addr)
 		{
-			MemoryCallbacks.CallExecutes(addr);
+			MemoryCallbacks.CallExecutes(addr, "System Bus");
 		}
 		void ButtonCallback()
 		{

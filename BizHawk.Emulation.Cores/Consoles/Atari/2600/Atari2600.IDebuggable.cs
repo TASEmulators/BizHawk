@@ -56,100 +56,21 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			}
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem();
+		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });
 
 		public bool CanStep(StepType type)
 		{
-			switch (type)
-			{
-				case StepType.Into:
-				case StepType.Out:
-				case StepType.Over:
-					return true;
-				default:
-					return false;
-			}
+			return false;
 		}
 
 		[FeatureNotImplemented]
 		public void Step(StepType type)
 		{
-			switch (type)
-			{
-				case StepType.Into:
-					StepInto();
-					break;
-				case StepType.Out:
-					StepOut();
-					break;
-				case StepType.Over:
-					StepOver();
-					break;
-			}
+			throw new NotImplementedException();
 		}
+
 
 		public int TotalExecutedCycles => Cpu.TotalExecutedCycles;
-
-		private void StepInto()
-		{
-			do
-			{
-				CycleAdvance();
-			} while (!Cpu.AtStart);
-		}
-
-		private void StepOver()
-		{
-			var instruction = Cpu.PeekMemory(Cpu.PC);
-
-			if (instruction == JSR)
-			{
-				var destination = Cpu.PC + opsize[JSR];
-				while (Cpu.PC != destination)
-				{
-					StepInto();
-				}
-			}
-			else
-			{
-				StepInto();
-			}
-		}
-
-		private void StepOut()
-		{
-			var instruction = Cpu.PeekMemory(Cpu.PC);
-
-			JSRCount = instruction == JSR ? 1 : 0;
-
-			var bailOutFrame = Frame + 1;
-			while (true)
-			{
-				StepInto();
-				var instr = Cpu.PeekMemory(Cpu.PC);
-				if (instr == JSR)
-				{
-					JSRCount++;
-				}
-				else if (instr == RTS && JSRCount <= 0)
-				{
-					StepInto();
-					JSRCount = 0;
-					break;
-				}
-				else if (instr == RTS)
-				{
-					JSRCount--;
-				}
-				else // Emergency bail out logic
-				{
-					if (Frame == bailOutFrame)
-					{
-						break;
-					}
-				}
-			}
-		}
 
 		private int JSRCount = 0;
 
@@ -211,22 +132,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		};
 
 		#region Currently Unused Debug hooks
-
-		private void ScanlineAdvance()
-		{
-			StartFrameCond();
-			int currentLine = _tia.LineCount;
-			while (_tia.LineCount == currentLine)
-				Cycle();
-			FinishFrameCond();
-		}
-
-		private void CycleAdvance()
-		{
-			StartFrameCond();
-			Cycle();
-			FinishFrameCond();
-		}
 
 		private int CurrentScanLine
 		{

@@ -94,6 +94,8 @@ namespace BizHawk.Emulation.Common
 			public uint? Address => null;
 
 			public uint? AddressMask => null;
+
+			public string Scope => ""; // This will be relevant if/when the trace logger can trace anything other than the system bus
 		}
 	}
 }

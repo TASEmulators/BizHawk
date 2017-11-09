@@ -111,7 +111,7 @@ namespace BizHawk.Client.DiscoHawk
 			foreach (string str in files)
 			{
 				string ext = Path.GetExtension(str).ToUpper();
-				if(!ext.In(new string[]{".CUE",".ISO",".CCD"}))
+				if(!ext.In(new string[]{".CUE",".ISO",".CCD", ".MDS"}))
 				{
 					return new List<string>();
 				}

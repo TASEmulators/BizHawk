@@ -470,7 +470,7 @@ namespace BizHawk.Client.Common
 							System = "PSX"
 						};
 					}
-					else if (ext == ".iso" || ext == ".cue" || ext == ".ccd")
+					else if (ext == ".iso" || ext == ".cue" || ext == ".ccd" || ext == ".mds")
 					{
 						if (file.IsArchive)
 						{
@@ -494,7 +494,7 @@ namespace BizHawk.Client.Common
 							throw new InvalidOperationException("\r\n" + discMountJob.OUT_Log);
 						}
 
-						var disc = discMountJob.OUT_Disc;
+						var disc = discMountJob.OUT_Disc;                        
 
 						// -----------
 						// TODO - use more sophisticated IDer
@@ -514,7 +514,9 @@ namespace BizHawk.Client.Common
 							// try to use our wizard methods
 							game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name), Hash = discHash };
 
-							switch (new DiscIdentifier(disc).DetectDiscType())
+                            var dt = new DiscIdentifier(disc).DetectDiscType();
+
+                            switch (dt)
 							{
 								case DiscType.SegaSaturn:
 									game.System = "SAT";
@@ -532,9 +534,23 @@ namespace BizHawk.Client.Common
 								case DiscType.PCFX:
 									game.System = "PCFX";
 									break;
+                                case DiscType.TurboCD:
+                                    game.System = "PCECD";
+                                    break;
+
+                                case DiscType.Amiga:
+                                case DiscType.CDi:
+                                case DiscType.Dreamcast:
+                                case DiscType.GameCube:
+                                case DiscType.NeoGeoCD:
+                                case DiscType.Panasonic3DO:
+                                case DiscType.Playdia:
+                                case DiscType.Wii:
+                                    // no supported emulator core for these (yet)
+                                    game.System = dt.ToString();
+                                    throw new NoAvailableCoreException(dt.ToString());
 
 								case DiscType.AudioDisc:
-								case DiscType.TurboCD:
 								case DiscType.UnknownCDFS:
 								case DiscType.UnknownFormat:
 									if (PreferredPlatformIsDefined(ext))
@@ -543,7 +559,7 @@ namespace BizHawk.Client.Common
 									}
 									else
 									{
-										game.System = "PCECD";
+                                        game.System = "NULL"; // "PCECD";
 									}
 
 									break;
@@ -552,6 +568,9 @@ namespace BizHawk.Client.Common
 
 						switch (game.System)
 						{
+                            case "NULL":
+                                nextEmulator = null;
+                                break;
 							case "GEN":
 								var genesis = new GPGX(nextComm, null, new[] { disc }, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 								nextEmulator = genesis;
@@ -1029,7 +1048,14 @@ namespace BizHawk.Client.Common
 						DoMessageCallback("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
 						return LoadRom(path, nextComm, false, recursiveCount + 1);
 					}
-					else
+
+                    // handle exceptions thrown by the new detected systems that bizhawk does not have cores for
+                    else if (ex is NoAvailableCoreException)
+                    {
+                        DoLoadErrorCallback(ex.Message + "\n\n" + ex, system);
+                    }
+
+                    else
 					{
 						DoLoadErrorCallback("A core accepted the rom, but threw an exception while loading it:\n\n" + ex, system);
 					}

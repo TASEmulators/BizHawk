@@ -21,7 +21,6 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private IController _controller;
 		private int _frame;
 		private int _lastAddress;
-		private bool _frameStartPending = true;
 
 		private bool _leftDifficultySwitchPressed;
 		private bool _rightDifficultySwitchPressed;
@@ -33,6 +32,9 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		internal byte[] Ram => _ram;
 		internal byte[] Rom { get; }
 		internal int DistinctAccessCount { get; private set; }
+
+		// keeps track of tia cycles, 3 cycles per CPU cycle
+		private int cyc_counter;
 
 		private static MapperBase SetMultiCartMapper(int romLength, int gameTotal)
 		{
@@ -134,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_mapper.Bit13 = addr.Bit(13);
 			var temp = _mapper.ReadMemory((ushort)(addr & 0x1FFF));
 			_tia.BusState = temp;
-			MemoryCallbacks.CallReads(addr);
+			MemoryCallbacks.CallReads(addr, "System Bus");
 
 			return temp;
 		}
@@ -155,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			_mapper.WriteMemory((ushort)(addr & 0x1FFF), value);
 
-			MemoryCallbacks.CallWrites(addr);
+			MemoryCallbacks.CallWrites(addr, "System Bus");
 		}
 
 		internal void PokeMemory(ushort addr, byte value)
@@ -165,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 		private void ExecFetch(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr);
+			MemoryCallbacks.CallExecutes(addr, "System Bus");
 		}
 
 		private void RebootCore()
@@ -319,17 +321,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			_m6532 = new M6532(this);
 
-			// Set up the system state here. for instance..
-			// Read from the reset vector for where to start
-			Cpu.PC = (ushort)(ReadMemory(0x1FFC) + (ReadMemory(0x1FFD) << 8)); // set the initial PC
+			HardReset();
 
 			// Show mapper class on romstatusdetails
 			CoreComm.RomStatusDetails = $"{this._game.Name}\r\nSHA1:{Rom.HashSHA1()}\r\nMD5:{Rom.HashMD5()}\r\nMapper Impl \"{_mapper.GetType()}\"";
-
-			// as it turns out, the stack pointer cannot be set to 0 for some games as they do not initilize it themselves. 
-			// some documentation seems to indicate it should beset to FD, but currently there is no documentation of the 6532 
-			// executing a reset sequence at power on, but it's needed so let's hard code it for now
-			Cpu.S = 0xFD;
 		}
 
 		private bool _pal;
@@ -349,96 +344,28 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			};
 
 			_tia.Reset();
-
 			_m6532 = new M6532(this);
-			Cpu.PC = (ushort)(ReadMemory(0x1FFC) + (ReadMemory(0x1FFD) << 8)); // set the initial PC
-
-			// as it turns out, the stack pointer cannot be set to 0 for some games as they do not initilize it themselves. 
-			// some documentation seems to indicate it should beset to FD, but currently there is no documentation of the 6532 
-			// executing a reset sequence at power on, but it's needed so let's hard code it for now
-			Cpu.S = 0xFD;
-			
 			SetupMemoryDomains();
-		}
-
-		private void VFrameAdvance() // advance up to 500 lines looking for end of video frame
-			// after vsync falling edge, continues to end of next line
-		{
-			bool frameend = false;
-			_tia.FrameEndCallBack = (n) => frameend = true;
-			for (int i = 0; i < 500 && !frameend; i++)
-			{
-				ScanlineAdvance();
-			}
-
-			_tia.FrameEndCallBack = null;
-		}
-
-		private void StartFrameCond()
-		{
-			if (_frameStartPending)
-			{
-				_frame++;
-				_islag = true;
-
-				if (_controller.IsPressed("Power"))
-				{
-					HardReset();
-				}
-
-				if (_controller.IsPressed("Toggle Left Difficulty") && !_leftDifficultySwitchHeld)
-				{
-					_leftDifficultySwitchPressed ^= true;
-					_leftDifficultySwitchHeld = true;
-				}
-				else if (!_controller.IsPressed("Toggle Left Difficulty"))
-				{
-					_leftDifficultySwitchHeld = false;
-				}
-
-				if (_controller.IsPressed("Toggle Right Difficulty") && !_rightDifficultySwitchHeld)
-				{
-					_rightDifficultySwitchPressed ^= true;
-					_rightDifficultySwitchHeld = true;
-				}
-				else if (!_controller.IsPressed("Toggle Right Difficulty"))
-				{
-					_rightDifficultySwitchHeld = false;
-				}
-
-				_tia.BeginAudioFrame();
-				_frameStartPending = false;
-			}
-		}
-
-		private void FinishFrameCond()
-		{
-			if (_tia.LineCount >= _tia.NominalNumScanlines)
-			{
-				_tia.CompleteAudioFrame();
-				if (_islag)
-				{
-					_lagcount++;
-				}
-
-				_tia.LineCount = 0;
-				_frameStartPending = true;
-			}
+			cyc_counter = 0;
 		}
 
 		private void Cycle()
 		{
-			_tia.Execute(1);
-			_tia.Execute(1);
-			_tia.Execute(1);
-			_m6532.Timer.Tick();
-			if (Tracer.Enabled)
+			_tia.Execute();
+			cyc_counter++;
+			if (cyc_counter == 3)
 			{
-				Tracer.Put(Cpu.TraceState());
-			}
+				_m6532.Timer.Tick();
+				if (Tracer.Enabled)
+				{
+					Tracer.Put(Cpu.TraceState());
+				}
 
-			Cpu.ExecuteOne();
-			_mapper.ClockCpu();
+				Cpu.ExecuteOne();
+				_mapper.ClockCpu();
+
+				cyc_counter = 0;
+			}
 		}
 
 		internal byte ReadControls1(bool peek)

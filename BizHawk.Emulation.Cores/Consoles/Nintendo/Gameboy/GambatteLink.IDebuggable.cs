@@ -50,6 +50,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			get { throw new NotImplementedException(); }
 		}
 
-		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
+		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 	}
 }

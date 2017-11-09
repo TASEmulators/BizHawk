@@ -63,7 +63,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			{
 				ReadHook = ReadHook,
 				ExecHook = ExecHook,
-				WriteHook = WriteHook
+				WriteHook = WriteHook,
+				ReadHook_SMP = ReadHook_SMP,
+				ExecHook_SMP = ExecHook_SMP,
+				WriteHook_SMP = WriteHook_SMP,
 			};
 
 			ScanlineHookManager = new MyScanlineHookManager(this);
@@ -361,7 +364,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void ReadHook(uint addr)
 		{
-			MemoryCallbacks.CallReads(addr);
+			MemoryCallbacks.CallReads(addr, "System Bus");
 			// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			// EDIT: for now, theres some IPC re-entrancy problem
 			// RefreshMemoryCallbacks();
@@ -369,7 +372,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void ExecHook(uint addr)
 		{
-			MemoryCallbacks.CallExecutes(addr);
+			MemoryCallbacks.CallExecutes(addr, "System Bus");
 			// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			// EDIT: for now, theres some IPC re-entrancy problem
 			// RefreshMemoryCallbacks();
@@ -377,10 +380,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 		private void WriteHook(uint addr, byte val)
 		{
-			MemoryCallbacks.CallWrites(addr);
+			MemoryCallbacks.CallWrites(addr, "System Bus");
 			// we RefreshMemoryCallbacks() after the trigger in case the trigger turns itself off at that point
 			// EDIT: for now, theres some IPC re-entrancy problem
 			// RefreshMemoryCallbacks();
+		}
+
+		private void ReadHook_SMP(uint addr)
+		{
+			MemoryCallbacks.CallReads(addr, "SMP");
+		}
+
+		private void ExecHook_SMP(uint addr)
+		{
+			MemoryCallbacks.CallExecutes(addr, "SMP");
+		}
+
+		private void WriteHook_SMP(uint addr, byte val)
+		{
+			MemoryCallbacks.CallWrites(addr, "SMP");
 		}
 
 		private enum LoadParamType
@@ -557,9 +575,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		private void RefreshMemoryCallbacks(bool suppress)
 		{
 			var mcs = MemoryCallbacks;
-			Api.QUERY_set_state_hook_exec(!suppress && mcs.HasExecutes);
-			Api.QUERY_set_state_hook_read(!suppress && mcs.HasReads);
-			Api.QUERY_set_state_hook_write(!suppress && mcs.HasWrites);
+			Api.QUERY_set_state_hook_exec(!suppress && mcs.HasExecutesForScope("System Bus"));
+			Api.QUERY_set_state_hook_read(!suppress && mcs.HasReadsForScope("System Bus"));
+			Api.QUERY_set_state_hook_write(!suppress && mcs.HasWritesForScope("System Bus"));
 		}
 
 		//public byte[] snes_get_memory_data_read(LibsnesApi.SNES_MEMORY id)

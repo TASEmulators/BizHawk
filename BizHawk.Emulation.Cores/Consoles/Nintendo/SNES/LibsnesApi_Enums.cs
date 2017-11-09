@@ -24,6 +24,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_QUERY_state_hook_write,
 			eMessage_QUERY_state_hook_nmi,
 			eMessage_QUERY_state_hook_irq,
+			eMessage_QUERY_state_hook_exec_smp,
+			eMessage_QUERY_state_hook_read_smp,
+			eMessage_QUERY_state_hook_write_smp,
 			eMessage_QUERY_enable_trace,
 			eMessage_QUERY_enable_scanline,
 			eMessage_QUERY_enable_audio,
@@ -63,6 +66,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			eMessage_BRK_hook_write,
 			eMessage_BRK_hook_nmi,
 			eMessage_BRK_hook_irq,
+			eMessage_BRK_hook_exec_smp,
+			eMessage_BRK_hook_read_smp,
+			eMessage_BRK_hook_write_smp,
 			eMessage_BRK_scanlineStart,
 		};
 

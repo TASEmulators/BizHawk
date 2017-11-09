@@ -1,114 +1,27 @@
-﻿//http://www.zophar.net/fileuploads/2/10819kouzv/z80undoc.html
-
-//TODO: ex. (IX+00h) could be turned into (IX)
-
-//usage:
-//VgMuseum.Z80.Disassembler disasm = new Disassembler();
-//ushort pc = RegPC.Word;
-//string str = disasm.Disassemble(() => ReadMemory(pc++));
-//Console.WriteLine(str);
-
-//please note that however much youre tempted to, timings can't be put in a table here because they depend on how the instruction executes at runtime
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
 
-namespace BizHawk.Emulation.Cores.Components.Z80
+namespace BizHawk.Emulation.Cores.Components.Z80A
 {
-	public class Disassembler : IDisassemblable
+	public sealed partial class Z80A : IDisassemblable
 	{
-		readonly static sbyte[,] opcodeSizes = new sbyte[7, 256];
-
-		public static void GenerateOpcodeSizes()
-		{
-			Disassembler disasm = new Disassembler();
-
-			for (int i = 0; i < 256; i++)
-			{
-				int pc = 0;
-				byte[] opcode = { (byte)i, 0, 0, 0 };
-				disasm.Disassemble(() => opcode[pc++]);
-				opcodeSizes[0, i] = (sbyte)pc;
-			}
-
-			opcodeSizes[0, 0xCB] = -1;
-			opcodeSizes[0, 0xED] = -2;
-			opcodeSizes[0, 0xDD] = -3;
-			opcodeSizes[0, 0xFD] = -4;
-
-			for (int i = 0; i < 256; i++)
-			{
-				int pc = 0;
-				byte[] opcode = { 0xCB, (byte)i, 0, 0, 0 };
-				disasm.Disassemble(() => opcode[pc++]);
-				opcodeSizes[1, i] = (sbyte)pc;
-			}
-
-			for (int i = 0; i < 256; i++)
-			{
-				int pc = 0;
-				byte[] opcode = { 0xED, (byte)i, 0, 0, 0 };
-				disasm.Disassemble(() => opcode[pc++]);
-				opcodeSizes[2, i] = (sbyte)pc;
-			}
-
-			for (int i = 0; i < 256; i++)
-			{
-				int pc = 0;
-				byte[] opcode = { 0xDD, (byte)i, 0, 0, 0 };
-				disasm.Disassemble(() => opcode[pc++]);
-				opcodeSizes[3, i] = (sbyte)pc;
-			}
-
-			opcodeSizes[3, 0xCB] = -5;
-			opcodeSizes[3, 0xED] = -2;
-
-			for (int i = 0; i < 256; i++)
-			{
-				int pc = 0;
-				byte[] opcode = { 0xFD, (byte)i, 0, 0, 0 };
-				disasm.Disassemble(() => opcode[pc++]);
-				opcodeSizes[4, i] = (sbyte)pc;
-			}
-
-			opcodeSizes[3, 0xCB] = -6;
-			opcodeSizes[3, 0xED] = -2;
-
-
-			for (int i = 0; i < 256; i++)
-			{
-				int pc = 0;
-				byte[] opcode = { 0xDD, 0xCB, (byte)i, 0, 0, 0 };
-				disasm.Disassemble(() => opcode[pc++]);
-				opcodeSizes[5, i] = (sbyte)pc;
-			}
-
-			for (int i = 0; i < 256; i++)
-			{
-				int pc = 0;
-				byte[] opcode = { 0xFD, 0xCB, (byte)i, 0, 0, 0 };
-				disasm.Disassemble(() => opcode[pc++]);
-				opcodeSizes[6, i] = (sbyte)pc;
-			}
-		}
-
-		static string Result(string format, Func<byte> read)
+		static string Result(string format, Func<ushort, byte> read, ref ushort addr)
 		{
 			//d immediately succeeds the opcode
 			//n immediate succeeds the opcode and the displacement (if present)
 			//nn immediately succeeds the opcode and the displacement (if present)
 			if (format.IndexOf("nn") != -1)
 			{
-				byte B = read();
-				byte C = read();
+				byte B = read(addr++);
+				byte C = read(addr++);
 				format = format.Replace("nn", string.Format("{0:X4}h", B + C * 256));
 			}
 
 			if (format.IndexOf("n") != -1)
 			{
-				byte B = read();
+				byte B = read(addr++);
 				format = format.Replace("n", string.Format("{0:X2}h", B));
 			}
 
@@ -116,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 
 			if (format.IndexOf("d") != -1)
 			{
-				byte B = read();
+				byte B = read(addr++);
 				bool neg = ((B & 0x80) != 0);
 				char sign = neg ? '-' : '+';
 				int val = neg ? 256 - B : B;
@@ -480,46 +393,49 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", //0x100
 		};
 
-		string DisassembleInternal(Func<byte> read)
+		public string Disassemble(ushort addr, Func<ushort, byte> read, out ushort size)
 		{
-			byte A = read();
+			ushort start_addr = addr;
+			ushort extra_inc = 0;
+			byte A = read(addr++);
 			string format;
 			switch (A)
 			{
 				case 0xCB:
-					A = read();
+					A = read(addr++);
 					format = mnemonicsCB[A];
 					break;
 				case 0xDD:
-					A = read();
+					A = read(addr++);
 					switch (A)
 					{
-						case 0xCB: format = mnemonicsDDCB[A]; break;
+						case 0xCB: format = mnemonicsDDCB[read((ushort)(addr + 1))]; extra_inc = 1; break;
 						case 0xED: format = mnemonicsED[A]; break;
 						default: format = mnemonicsDD[A]; break;
 					}
 					break;
 				case 0xED:
-					A = read();
+					A = read(addr++);
 					format = mnemonicsED[A];
 					break;
 				case 0xFD:
-					A = read();
+					A = read(addr++);
 					switch (A)
 					{
-						case 0xCB: format = mnemonicsFDCB[A]; break;
+						case 0xCB: format = mnemonicsFDCB[read((ushort)(addr + 1))]; extra_inc = 1; break;
 						case 0xED: format = mnemonicsED[A]; break;
 						default: format = mnemonicsFD[A]; break;
 					}
 					break;
 				default: format = mnemonics[A]; break;
 			}
-			return format;
-		}
+			
+			string temp = Result(format, read, ref addr);
 
-		public string Disassemble(Func<byte> read)
-		{
-			return Result(DisassembleInternal(read), read);
+			addr += extra_inc;
+
+			size = (ushort)(addr - start_addr);
+			return temp;
 		}
 
 		#region IDisassemblable
@@ -543,7 +459,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
 			int loc = (int)addr;
-			string ret = Disassemble(() => m.PeekByte(loc++));
+			ushort unused = 0;
+			string ret = Disassemble((ushort) addr, a => m.PeekByte(a), out unused);
 			length = loc - (int)addr;
 			return ret;
 		}

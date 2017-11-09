@@ -12,16 +12,30 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public void FrameAdvance(IController controller, bool render, bool renderSound)
 		{
 			_controller = controller;
-			_cpu.Debug = _tracer.Enabled;
+
+			// NOTE: Need to research differences between reset and power cycle
+			if (_controller.IsPressed("Power"))
+			{
+				HardReset();
+			}
+
+			if (_controller.IsPressed("Reset"))
+			{
+				SoftReset();
+			}
+
 			_frame++;
 			_isLag = true;
 			PSG.BeginFrame(_cpu.TotalExecutedCycles);
 
-			if (_cpu.Debug && _cpu.Logger == null) // TODO, lets not do this on each frame. But lets refactor CoreComm/CoreComm first
+			if (_tracer.Enabled)
 			{
-				_cpu.Logger = (s) => _tracer.Put(s);
+				_cpu.TraceCallback = s => _tracer.Put(s);
 			}
-
+			else
+			{
+				_cpu.TraceCallback = null;
+			}
 			byte tempRet1 = ControllerDeck.ReadPort1(controller, true, true);
 			byte tempRet2 = ControllerDeck.ReadPort2(controller, true, true);
 

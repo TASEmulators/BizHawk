@@ -148,6 +148,6 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 		private const byte JsrSize = 3;
 
-		IMemoryCallbackSystem IDebuggable.MemoryCallbacks { get; } = new MemoryCallbackSystem();
+		IMemoryCallbackSystem IDebuggable.MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });
 	}
 }

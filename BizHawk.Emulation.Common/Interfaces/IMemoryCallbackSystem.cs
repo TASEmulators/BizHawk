@@ -38,26 +38,48 @@ namespace BizHawk.Emulation.Common
 		bool HasExecutes { get; }
 
 		/// <summary>
+		/// Gets a value indicating whether or not there are currently any read hooks
+		/// </summary>
+		bool HasReadsForScope(string scope);
+
+		/// <summary>
+		/// Gets a value indicating whether or not there are currently any write hooks
+		/// </summary>
+		bool HasWritesForScope(string scope);
+
+		/// <summary>
+		/// Gets a value indicating whether or not there are currently any execute hooks
+		/// </summary>
+		bool HasExecutesForScope(string scope);
+
+		/// <summary>
 		/// Adds a callback for the given type to the given address
 		/// If no address is specified the callback will be hooked to all addresses
 		/// Note: an execute callback can not be added without an address, else an InvalidOperationException will occur
 		/// </summary>
+		/// <exception cref="InvalidCastException">Thrown when the <see cref="IMemoryCallback.Scope"/> property of the <see cref="IMemoryCallback"/> is not in the <see cref="AvailableScopes"/></exception>
 		void Add(IMemoryCallback callback);
 
 		/// <summary>
-		/// Executes all Read callbacks for the given address
+		/// Executes all Read callbacks for the given address and domain
 		/// </summary>
-		void CallReads(uint addr);
+		/// <param name="addr">The address to check for callbacks</param>
+		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"></param>
+		void CallReads(uint addr, string scope);
 
 		/// <summary>
-		/// Executes all Write callbacks for the given address
+		/// Executes all Write callbacks for the given address and domain
 		/// </summary>
-		void CallWrites(uint addr);
+		/// <param name="addr">The address to check for callbacks</param>
+		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"></param>
+		void CallWrites(uint addr, string scope);
 
 		/// <summary>
-		/// Executes all Execute callbacks for the given address
+		/// Executes all Execute callbacks for the given address and domain
 		/// </summary>
-		void CallExecutes(uint addr);
+		/// <param name="addr">The address to check for callbacks</param>
+		/// <param name="scope">The scope that the address pertains to. Must be a value in <see cref="AvailableScopes"></param>
+		void CallExecutes(uint addr, string scope);
 
 		/// <summary>
 		/// Removes the given callback from the list
@@ -73,6 +95,12 @@ namespace BizHawk.Emulation.Common
 		/// Removes all read,write, and execute callbacks
 		/// </summary>
 		void Clear();
+
+		/// <summary>
+		/// A list of available "scopes" (memory domains, cpus, etc) that a the <see cref="IMemoryCallback.Scope"/> property of the <see cref="IMemoryCallback"/> can have
+		/// Passing a <see cref="IMemoryCallback"/> into the <see cref="Add(IMemoryCallback)"/> method that is not in this list will result in an <seealso cref="InvalidOperationException"/>
+		/// </summary>
+		string[] AvailableScopes { get; }
 	}
 
 	/// <summary>
@@ -86,6 +114,7 @@ namespace BizHawk.Emulation.Common
 		Action Callback { get; }
 		uint? Address { get; }
 		uint? AddressMask { get; }
+		string Scope { get; }
 	}
 
 	public enum MemoryCallbackType

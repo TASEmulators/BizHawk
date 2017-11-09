@@ -62,10 +62,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			ser.Sync("vblankEnabled", ref _vblankEnabled);
 			ser.Sync("vsyncEnabled", ref _vsyncEnabled);
 			ser.Sync("CurrentScanLine", ref _currentScanLine);
-			ser.Sync("scanlinebuffer", ref _scanlinebuffer, false);
 			ser.Sync("AudioClocks", ref AudioClocks);
-			ser.Sync("FrameStartCycles", ref _frameStartCycles);
-			ser.Sync("FrameEndCycles", ref _frameEndCycles);
+			ser.Sync("New_Frame", ref New_Frame);
 
 			ser.BeginSection("Player0");
 			_player0.SyncState(ser);

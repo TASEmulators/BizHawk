@@ -2,7 +2,7 @@
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components.Z80;
+using BizHawk.Emulation.Cores.Components.Z80A;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
@@ -54,14 +54,17 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 						Cpu.NonMaskableInterrupt = true;
 				}
 
-				Cpu.ExecuteCycles(228);
-
-				Cpu.Interrupt = false;
+				for (int i = 0; i < 228; i++)
+				{
+					Cpu.ExecuteOne();
+				}
+				
+				Cpu.FlagI = false;
 				if (Int_pending && scanLine==50)
 				{
 					if (EnableInterrupts)
 					{
-						Cpu.Interrupt = true;
+						Cpu.FlagI = true;
 						Int_pending = false;
 					} 
 				}

@@ -1,6 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
-using BizHawk.Emulation.Cores.Components.Z80;
+using BizHawk.Emulation.Cores.Components.Z80A;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
@@ -17,13 +17,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			MemoryCallbacks = new MemoryCallbackSystem();
+			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 			CoreComm = comm;
 			_syncSettings = (ColecoSyncSettings)syncSettings ?? new ColecoSyncSettings();
 			bool skipbios = _syncSettings.SkipBiosIntro;
 
 			_cpu = new Z80A
 			{
+				FetchMemory = ReadMemory,
 				ReadMemory = ReadMemory,
 				WriteMemory = WriteMemory,
 				ReadHardware = ReadPort,
@@ -53,7 +54,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			SetupMemoryDomains();
 
 			_tracer.Header = _cpu.TraceHeader;
-			ser.Register<IDisassemblable>(new Disassembler());
+			ser.Register<IDisassemblable>(_cpu);
 			ser.Register<ITraceable>(_tracer);
 		}
 
@@ -222,6 +223,18 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 
 			////Console.WriteLine("Unhandled write at {0:X4}:{1:X2}", addr, value);
+		}
+
+		private void HardReset()
+		{
+			PSG.Reset();
+			_cpu.Reset();
+		}
+
+		private void SoftReset()
+		{
+			PSG.Reset();
+			_cpu.Reset();
 		}
 	}
 }
