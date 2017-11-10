@@ -268,6 +268,7 @@
     <Compile Include="tools\Watch\SeparatorWatch.cs" />
     <Compile Include="tools\Watch\Watch.cs" />
     <Compile Include="tools\Watch\WatchList\WatchChangeCountComparer.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchDisplayTypeComparer.cs" />
     <Compile Include="tools\Watch\WatchList\WatchEqualityComparer.cs" />
     <Compile Include="tools\Watch\WatchList\WatchDomainComparer.cs" />
     <Compile Include="tools\Watch\WatchList\WatchAddressComparer.cs" />
