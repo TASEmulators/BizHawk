@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					sel_mode = (value & 1) > 0;
 
-					if (sel_mode)
+					if (sel_mode && Core.cart_RAM != null)
 					{
 						ROM_bank &= 0x1F;
 						ROM_bank &= ROM_mask;
