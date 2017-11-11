@@ -581,7 +581,7 @@
       <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
-	<Compile Include="Consoles\Nintendo\GBHawk\Audio.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Audio.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IDebuggable.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IEmulator.cs" />
@@ -598,6 +598,7 @@
     <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_Default.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_HuC1.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_HuC3.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_MBC1_Multi.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_MBC1.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_MBC2.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_MBC3.cs" />
@@ -780,7 +781,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper049.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper052.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper074.cs" />
-		<Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper114.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper114.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper115.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper121.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper123.cs" />
@@ -1189,7 +1190,7 @@
     <Compile Include="CPUs\CP1610\CP1610.Disassembler.cs" />
     <Compile Include="CPUs\CP1610\CP1610.Execute.cs" />
     <Compile Include="CPUs\HuC6280\HuC6280_CDL.cs" />
-	<Compile Include="CPUs\LR35902\Execute.cs" />
+    <Compile Include="CPUs\LR35902\Execute.cs" />
     <Compile Include="CPUs\LR35902\Interrupts.cs" />
     <Compile Include="CPUs\LR35902\LR35902.cs" />
     <Compile Include="CPUs\LR35902\NewDisassembler.cs" />

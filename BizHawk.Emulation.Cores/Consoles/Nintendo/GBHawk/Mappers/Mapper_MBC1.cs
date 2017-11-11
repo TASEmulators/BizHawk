@@ -11,6 +11,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int RAM_bank;
 		public bool RAM_enable;
 		public bool sel_mode;
+		public int ROM_mask;
+		public int RAM_mask;
 
 		public override void Initialize()
 		{
@@ -18,14 +20,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			RAM_bank = 0;
 			RAM_enable = false;
 			sel_mode = false;
+			ROM_mask = Core._rom.Length / 0x4000 - 1;
+			RAM_mask = 0;
+			if (Core.cart_RAM != null)
+			{
+				RAM_mask = Core.cart_RAM.Length / 0x2000 - 1;
+				if (Core.cart_RAM.Length == 0x800) { RAM_mask = 0; }
+			}
 	}
 
 		public override byte ReadMemory(ushort addr)
 		{
 			if (addr < 0x4000)
 			{
-				// lowest bank is fixed
-				return Core._rom[addr];
+				// lowest bank is fixed, but is still effected by mode
+				if (sel_mode)
+				{
+					return Core._rom[(ROM_bank & 0x60) * 0x4000 + addr];
+				}
+				else
+				{
+					return Core._rom[addr];
+				}				
 			}
 			else if (addr < 0x8000)
 			{
@@ -35,15 +51,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (Core.cart_RAM != null)
 				{
-					if (RAM_enable)
+					if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
 					{
 						return Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000];
 					}
 					else
 					{
-						return 0;
+						return 0xFF;
 					}
-					
+
 				}
 				else
 				{
@@ -74,17 +90,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					ROM_bank &= 0xE0;
 					ROM_bank |= value;
+					ROM_bank &= ROM_mask;
 				}
 				else if (addr < 0x6000)
 				{
-					if (sel_mode)
+					if (sel_mode && Core.cart_RAM != null)
 					{
-						RAM_bank = value & 0x3;
+						RAM_bank = value & 3;
+						RAM_bank &= RAM_mask;
 					}
 					else
 					{
 						ROM_bank &= 0x1F;
 						ROM_bank |= ((value & 3) << 5);
+						ROM_bank &= ROM_mask;
 					}
 				}
 				else
@@ -94,6 +113,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (sel_mode)
 					{
 						ROM_bank &= 0x1F;
+						ROM_bank &= ROM_mask;
 					}
 					else
 					{
@@ -105,11 +125,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (Core.cart_RAM != null)
 				{
-					if (RAM_enable)
+					if (RAM_enable && (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length))
 					{
 						Core.cart_RAM[(addr - 0xA000) + RAM_bank * 0x2000] = value;
 					}
-
 				}
 			}
 		}
@@ -122,7 +141,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public override void SyncState(Serializer ser)
 		{
 			ser.Sync("ROM_Bank", ref ROM_bank);
+			ser.Sync("ROM_Mask", ref ROM_mask);
 			ser.Sync("RAM_Bank", ref RAM_bank);
+			ser.Sync("RAM_Mask", ref RAM_mask);
 			ser.Sync("RAM_enable", ref RAM_enable);
 			ser.Sync("sel_mode", ref sel_mode);
 		}

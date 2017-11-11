@@ -191,6 +191,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			}
 
+			// special case for multi cart mappers
+			if ((_rom.HashMD5(0,_rom.Length) == "97122B9B183AAB4079C8D36A4CE6E9C1") ||
+				(_rom.HashMD5(0, _rom.Length) == "9FB9C42CF52DCFDCFBAD5E61AE1B5777") ||
+				(_rom.HashMD5(0, _rom.Length) == "CF1F58AB72112716D3C615A553B2F481")				
+				)
+			{
+				Console.WriteLine("Using Multi-Cart Mapper");
+				mapper = new MapperMBC1Multi();
+			}
+
 			Console.Write("Mapper: ");
 			Console.WriteLine(header[0x47]);
 

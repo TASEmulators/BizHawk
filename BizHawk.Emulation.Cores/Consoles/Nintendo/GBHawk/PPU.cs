@@ -170,6 +170,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (DMA_clock >= 4)
 				{
 					OAM_access_read = false;
+					OAM_access_write = false;
 					if ((DMA_clock % 4) == 1)
 					{
 						// the cpu can't access memory during this time, but we still need the ppu to be able to.
@@ -194,10 +195,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				DMA_clock++;
 
-				if (DMA_clock==648)
+				if (DMA_clock == 648)
 				{
-					DMA_start = false;
 					OAM_access_read = true;
+					OAM_access_write = true;
+					DMA_start = false;
 				}
 			}
 
