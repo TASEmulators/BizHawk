@@ -44,6 +44,52 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte[] Wave_RAM = new byte [16];
 
+		struct AUD_Object
+		{
+			// channel controls
+			public byte swp_period;
+			public bool negate;
+			public byte shift;
+			public byte duty;
+			public byte length;
+			public byte st_vol;
+			public bool env_add;
+			public byte per;
+			public ushort frq;
+			public bool trigger;
+			public bool len_en;
+			public bool DAC_pow;
+			public byte vol_code;
+			public byte clk_shft;
+			public bool wdth_md;
+			public byte div_code;
+
+			// channel states
+			public byte length_counter;
+		}
+
+		struct CTRL_Object
+		{
+			public bool vin_L_en;
+			public bool vin_R_en;
+			public byte vol_L;
+			public byte vol_R;
+			public bool sq1_L_en;
+			public bool sq2_L_en;
+			public bool wave_L_en;
+			public bool noise_L_en;
+			public bool sq1_R_en;
+			public bool sq2_R_en;
+			public bool wave_R_en;
+			public bool noise_R_en;
+			public bool power;
+		}
+
+		AUD_Object SQ1, SQ2, WAVE, NOISE;
+
+		CTRL_Object AUD_CTRL;
+
+		public int sequencer_len, sequencer_vol, sequencer_swp, sequencer_tick;
 
 		public byte ReadReg(int addr)
 		{
@@ -65,13 +111,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF1C: ret = (byte)(Audio_Regs[NR32] | unused_bits[NR32]);		break; // NR32 (level output)
 				case 0xFF1D: ret = (byte)(Audio_Regs[NR33] | unused_bits[NR33]);		break; // NR33 (freq low)
 				case 0xFF1E: ret = (byte)(Audio_Regs[NR34] | unused_bits[NR34]);		break; // NR34 (freq hi)
-				case 0xFF20: ret = (byte)(Audio_Regs[NR41] | unused_bits[NR41]);		break; // NR41 (sweep)
-				case 0xFF21: ret = (byte)(Audio_Regs[NR42] | unused_bits[NR42]);		break; // NR42 (sweep)
-				case 0xFF22: ret = (byte)(Audio_Regs[NR43] | unused_bits[NR43]);		break; // NR43 (sweep)
-				case 0xFF23: ret = (byte)(Audio_Regs[NR44] | unused_bits[NR44]);		break; // NR44 (sweep)
-				case 0xFF24: ret = (byte)(Audio_Regs[NR50] | unused_bits[NR50]);		break; // NR50 (sweep)
-				case 0xFF25: ret = (byte)(Audio_Regs[NR51] | unused_bits[NR51]);		break; // NR51 (sweep)
-				case 0xFF26: ret = (byte)(Audio_Regs[NR52] | unused_bits[NR52]);		break; // NR52 (sweep)
+				case 0xFF20: ret = (byte)(Audio_Regs[NR41] | unused_bits[NR41]);		break; // NR41 (length)
+				case 0xFF21: ret = (byte)(Audio_Regs[NR42] | unused_bits[NR42]);		break; // NR42 (envelope)
+				case 0xFF22: ret = (byte)(Audio_Regs[NR43] | unused_bits[NR43]);		break; // NR43 (shift)
+				case 0xFF23: ret = (byte)(Audio_Regs[NR44] | unused_bits[NR44]);		break; // NR44 (trigger)
+				case 0xFF24: ret = (byte)(Audio_Regs[NR50] | unused_bits[NR50]);		break; // NR50 (ctrl)
+				case 0xFF25: ret = (byte)(Audio_Regs[NR51] | unused_bits[NR51]);		break; // NR51 (ctrl)
+				case 0xFF26: ret = (byte)(Audio_Regs[NR52] | unused_bits[NR52]);		break; // NR52 (ctrl)
 
 				// wave ram table
 				case 0xFF30:
@@ -100,50 +146,201 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void WriteReg(int addr, byte value)
 		{
-			switch (addr)
+			// while power is on, everything is writable
+			if (AUD_CTRL.power)
 			{
-				case 0xFF10: Audio_Regs[NR10] = value;		break; // NR10 (sweep)
-				case 0xFF11: Audio_Regs[NR11] = value;		break; // NR11 (sound length / wave pattern duty %)
-				case 0xFF12: Audio_Regs[NR12] = value;		break; // NR12 (envelope)
-				case 0xFF13: Audio_Regs[NR13] = value;		break; // NR13 (freq low)
-				case 0xFF14: Audio_Regs[NR14] = value;		break; // NR14 (freq hi)
-				case 0xFF16: Audio_Regs[NR21] = value;		break; // NR21 (sound length / wave pattern duty %)
-				case 0xFF17: Audio_Regs[NR22] = value;		break; // NR22 (envelope)
-				case 0xFF18: Audio_Regs[NR23] = value;		break; // NR23 (freq low)
-				case 0xFF19: Audio_Regs[NR24] = value;		break; // NR24 (freq hi)
-				case 0xFF1A: Audio_Regs[NR30] = value;		break; // NR30 (on/off)
-				case 0xFF1B: Audio_Regs[NR31] = value;		break; // NR31 (length)
-				case 0xFF1C: Audio_Regs[NR32] = value;		break; // NR32 (level output)
-				case 0xFF1D: Audio_Regs[NR33] = value;		break; // NR33 (freq low)
-				case 0xFF1E: Audio_Regs[NR34] = value;		break; // NR34 (freq hi)
-				case 0xFF20: Audio_Regs[NR41] = value;		break; // NR41 (sweep)
-				case 0xFF21: Audio_Regs[NR42] = value;		break; // NR42 (sweep)
-				case 0xFF22: Audio_Regs[NR43] = value;		break; // NR43 (sweep)
-				case 0xFF23: Audio_Regs[NR44] = value;		break; // NR44 (sweep)
-				case 0xFF24: Audio_Regs[NR50] = value;		break; // NR50 (sweep)
-				case 0xFF25: Audio_Regs[NR51] = value;		break; // NR51 (sweep)
-				case 0xFF26: Audio_Regs[NR52] = value;		break; // NR52 (sweep)
+				switch (addr)
+				{
+					case 0xFF10:                                        // NR10 (sweep)
+						Audio_Regs[NR10] = value;
+						SQ1.swp_period = (byte)((value & 0x70) >> 4);
+						SQ1.negate = (value & 8) > 0;
+						SQ1.shift = (byte)(value & 7);
+						break;
+					case 0xFF11:                                        // NR11 (sound length / wave pattern duty %)
+						Audio_Regs[NR11] = value;
+						SQ1.duty = (byte)((value & 0xC0) >> 6);
+						SQ1.length = (byte)(64 - value & 0x3F);
+						break;
+					case 0xFF12:                                        // NR12 (envelope)
+						Audio_Regs[NR12] = value;
+						SQ1.st_vol = (byte)((value & 0xF0) >> 4);
+						SQ1.env_add = (value & 8) > 0;
+						SQ1.per = (byte)(value & 7);
+						break;
+					case 0xFF13:                                        // NR13 (freq low)
+						Audio_Regs[NR13] = value;
+						SQ1.frq &= 0x700;
+						SQ1.frq |= value;
+						break;
+					case 0xFF14:                                        // NR14 (freq hi)
+						Audio_Regs[NR14] = value;
+						SQ1.trigger = (value & 0x80) > 0;
+						SQ1.len_en = (value & 0x40) > 0;
+						SQ1.frq &= 0xFF;
+						SQ1.frq |= (ushort)((value & 7) << 8);
+						break;
+					case 0xFF16:                                        // NR21 (sound length / wave pattern duty %)		
+						Audio_Regs[NR21] = value;
+						SQ2.duty = (byte)((value & 0xC0) >> 6);
+						SQ2.length = (byte)(64 - value & 0x3F);
+						break;
+					case 0xFF17:                                        // NR22 (envelope)
+						Audio_Regs[NR22] = value;
+						SQ2.st_vol = (byte)((value & 0xF0) >> 4);
+						SQ2.env_add = (value & 8) > 0;
+						SQ2.per = (byte)(value & 7);
+						break;
+					case 0xFF18:                                        // NR23 (freq low)
+						Audio_Regs[NR23] = value;
+						SQ2.frq &= 0x700;
+						SQ2.frq |= value;
+						break;
+					case 0xFF19:                                        // NR24 (freq hi)
+						Audio_Regs[NR24] = value;
+						SQ2.trigger = (value & 0x80) > 0;
+						SQ2.len_en = (value & 0x40) > 0;
+						SQ2.frq &= 0xFF;
+						SQ2.frq |= (ushort)((value & 7) << 8);
+						break;
+					case 0xFF1A:                                        // NR30 (on/off)
+						Audio_Regs[NR30] = value;
+						WAVE.DAC_pow = (value & 0x80) > 0;
+						break;
+					case 0xFF1B:                                        // NR31 (length)
+						Audio_Regs[NR31] = value;
+						WAVE.length = (byte)(256 - value);
+						break;
+					case 0xFF1C:                                        // NR32 (level output)
+						Audio_Regs[NR32] = value;
+						WAVE.vol_code = (byte)((value & 0x60) >> 5);
+						break;
+					case 0xFF1D:                                        // NR33 (freq low)
+						Audio_Regs[NR33] = value;
+						WAVE.frq &= 0x700;
+						WAVE.frq |= value;
+						break;
+					case 0xFF1E:                                        // NR34 (freq hi)
+						Audio_Regs[NR34] = value;
+						WAVE.trigger = (value & 0x80) > 0;
+						WAVE.len_en = (value & 0x40) > 0;
+						WAVE.frq &= 0xFF;
+						WAVE.frq |= (ushort)((value & 7) << 8);
+						break;
+					case 0xFF20:                                        // NR41 (length)
+						Audio_Regs[NR41] = value;
+						NOISE.length = (byte)(64 - value & 0x3F);
+						break;
+					case 0xFF21:                                        // NR42 (envelope)
+						Audio_Regs[NR42] = value;
+						NOISE.st_vol = (byte)((value & 0xF0) >> 4);
+						NOISE.env_add = (value & 8) > 0;
+						NOISE.per = (byte)(value & 7);
+						break;
+					case 0xFF22:                                        // NR43 (shift)
+						Audio_Regs[NR43] = value;
+						NOISE.clk_shft = (byte)((value & 0xF0) >> 4);
+						NOISE.wdth_md = (value & 8) > 0;
+						NOISE.div_code = (byte)(value & 7);
+						break;
+					case 0xFF23:                                        // NR44 (trigger)
+						Audio_Regs[NR44] = value;
+						WAVE.trigger = (value & 0x80) > 0;
+						WAVE.len_en = (value & 0x40) > 0;
+						break;
+					case 0xFF24:                                        // NR50 (ctrl)
+						Audio_Regs[NR50] = value;
+						AUD_CTRL.vin_L_en = (value & 0x80) > 0;
+						AUD_CTRL.vol_L = (byte)((value & 0x70) >> 4);
+						AUD_CTRL.vin_R_en = (value & 8) > 0;
+						AUD_CTRL.vol_R = (byte)(value & 7);
+						break;
+					case 0xFF25:                                        // NR51 (ctrl)
+						Audio_Regs[NR51] = value;
+						AUD_CTRL.noise_L_en = (value & 0x80) > 0;
+						AUD_CTRL.wave_L_en = (value & 0x40) > 0;
+						AUD_CTRL.sq2_L_en = (value & 0x20) > 0;
+						AUD_CTRL.sq1_L_en = (value & 0x10) > 0;
+						AUD_CTRL.noise_R_en = (value & 8) > 0;
+						AUD_CTRL.wave_R_en = (value & 4) > 0;
+						AUD_CTRL.sq2_R_en = (value & 2) > 0;
+						AUD_CTRL.sq1_R_en = (value & 1) > 0;
+						break;
+					case 0xFF26:                                        // NR52 (ctrl)
+						Audio_Regs[NR52] &= 0x7F;
+						Audio_Regs[NR52] |= (byte)(value & 0x80);
+						AUD_CTRL.power = (value & 0x80) > 0;
 
-				// wave ram table
-				case 0xFF30:
-				case 0xFF31:
-				case 0xFF32:
-				case 0xFF33:
-				case 0xFF34:
-				case 0xFF35:
-				case 0xFF36:
-				case 0xFF37:
-				case 0xFF38:
-				case 0xFF39:
-				case 0xFF3A:
-				case 0xFF3B:
-				case 0xFF3C:
-				case 0xFF3D:
-				case 0xFF3E:
-				case 0xFF3F:
-					Wave_RAM[addr & 0x0F] = value;
-					break;
+						if (!AUD_CTRL.power)
+						{
+							power_off();
+						}
+						break;
 
+					// wave ram table
+					case 0xFF30:
+					case 0xFF31:
+					case 0xFF32:
+					case 0xFF33:
+					case 0xFF34:
+					case 0xFF35:
+					case 0xFF36:
+					case 0xFF37:
+					case 0xFF38:
+					case 0xFF39:
+					case 0xFF3A:
+					case 0xFF3B:
+					case 0xFF3C:
+					case 0xFF3D:
+					case 0xFF3E:
+					case 0xFF3F:
+						Wave_RAM[addr & 0x0F] = value;
+						break;
+				}
+			}
+			// when power is off, only length counters and waveRAM are effected by writes
+			else
+			{
+				switch (addr)
+				{
+					case 0xFF11:                                        // NR11 (sound length / wave pattern duty %)
+						SQ1.length = (byte)(64 - value & 0x3F);
+						break;
+					case 0xFF16:                                        // NR21 (sound length / wave pattern duty %)		
+						SQ2.length = (byte)(64 - value & 0x3F);
+						break;
+					case 0xFF1B:                                        // NR31 (length)
+						WAVE.length = (byte)(256 - value);
+						break;
+					case 0xFF20:                                        // NR41 (length)
+						NOISE.length = (byte)(64 - value & 0x3F);
+						break;
+					case 0xFF26:                                        // NR52 (ctrl)
+						Audio_Regs[NR52] &= 0x7F;
+						Audio_Regs[NR52] |= (byte)(value & 0x80);
+						AUD_CTRL.power = (value & 0x80) > 0;
+						break;
+
+					// wave ram table
+					case 0xFF30:
+					case 0xFF31:
+					case 0xFF32:
+					case 0xFF33:
+					case 0xFF34:
+					case 0xFF35:
+					case 0xFF36:
+					case 0xFF37:
+					case 0xFF38:
+					case 0xFF39:
+					case 0xFF3A:
+					case 0xFF3B:
+					case 0xFF3C:
+					case 0xFF3D:
+					case 0xFF3E:
+					case 0xFF3F:
+						Wave_RAM[addr & 0x0F] = value;
+						break;
+				}
 			}
 		}
 
@@ -152,11 +349,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		}
 
+		public void power_off()
+		{
+			for (int i = 0; i < 20; i++)
+			{
+				Audio_Regs[i] = 0;
+			}
+
+			sequencer_len = 0;
+			sequencer_vol = 0;
+			sequencer_swp = 0;
+			sequencer_tick = 0;
+		}
 		public void reset()
 		{
 			Wave_RAM = new byte[16];
 
 			Audio_Regs = new byte[21];
+
+			SQ1 = new AUD_Object();
+			SQ2 = new AUD_Object();
+			WAVE = new AUD_Object();
+			NOISE = new AUD_Object();
+
+			AUD_CTRL = new CTRL_Object();
 		}
 
 		public void SyncState(Serializer ser)
@@ -164,6 +380,101 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("Audio_Regs", ref Audio_Regs, false);
 			ser.Sync("Wave_Ram", ref Wave_RAM, false);
 
+			// some aspecta of the channel states are not derived from the Regs
+			ser.Sync("SQ1.length_counter", ref SQ1.length_counter);
+			ser.Sync("SQ2.length_counter", ref SQ2.length_counter);
+			ser.Sync("WAVE.length_counter", ref WAVE.length_counter);
+			ser.Sync("NOISE.length_counter", ref NOISE.length_counter);
+
+			// get derived state
+			if (ser.IsReader)
+			{
+				sync_channels();
+			}
+
+
+
+		}
+
+		public void sync_channels()
+		{
+
+			SQ1.swp_period = (byte)((Audio_Regs[NR10] & 0x70) >> 4);
+			SQ1.negate = (Audio_Regs[NR10] & 8) > 0;
+			SQ1.shift = (byte)(Audio_Regs[NR10] & 7);
+
+			SQ1.duty = (byte)((Audio_Regs[NR11] & 0xC0) >> 6);
+			SQ1.length = (byte)(64 - Audio_Regs[NR11] & 0x3F);
+
+			SQ1.st_vol = (byte)((Audio_Regs[NR12] & 0xF0) >> 4);
+			SQ1.env_add = (Audio_Regs[NR12] & 8) > 0;
+			SQ1.per = (byte)(Audio_Regs[NR12] & 7);
+
+			SQ1.frq &= 0x700;
+			SQ1.frq |= Audio_Regs[NR13];
+
+			SQ1.trigger = (Audio_Regs[NR14] & 0x80) > 0;
+			SQ1.len_en = (Audio_Regs[NR14] & 0x40) > 0;
+			SQ1.frq &= 0xFF;
+			SQ1.frq |= (ushort)((Audio_Regs[NR14] & 7) << 8);
+		
+			SQ2.duty = (byte)((Audio_Regs[NR21] & 0xC0) >> 6);
+			SQ2.length = (byte)(64 - Audio_Regs[NR21] & 0x3F);
+
+			SQ2.st_vol = (byte)((Audio_Regs[NR22] & 0xF0) >> 4);
+			SQ2.env_add = (Audio_Regs[NR22] & 8) > 0;
+			SQ2.per = (byte)(Audio_Regs[NR22] & 7);
+
+			SQ2.frq &= 0x700;
+			SQ2.frq |= Audio_Regs[NR23];
+
+			SQ2.trigger = (Audio_Regs[NR24] & 0x80) > 0;
+			SQ2.len_en = (Audio_Regs[NR24] & 0x40) > 0;
+			SQ2.frq &= 0xFF;
+			SQ2.frq |= (ushort)((Audio_Regs[NR24] & 7) << 8);
+
+			WAVE.DAC_pow = (Audio_Regs[NR30] & 0x80) > 0;
+
+			WAVE.length = (byte)(256 - Audio_Regs[NR31]);
+
+			WAVE.vol_code = (byte)((Audio_Regs[NR32] & 0x60) >> 5);
+
+			WAVE.frq &= 0x700;
+			WAVE.frq |= Audio_Regs[NR33];
+
+			WAVE.trigger = (Audio_Regs[NR34] & 0x80) > 0;
+			WAVE.len_en = (Audio_Regs[NR34] & 0x40) > 0;
+			WAVE.frq &= 0xFF;
+			WAVE.frq |= (ushort)((Audio_Regs[NR34] & 7) << 8);
+
+			NOISE.length = (byte)(64 - Audio_Regs[NR41] & 0x3F);
+
+			NOISE.st_vol = (byte)((Audio_Regs[NR42] & 0xF0) >> 4);
+			NOISE.env_add = (Audio_Regs[NR42] & 8) > 0;
+			NOISE.per = (byte)(Audio_Regs[NR42] & 7);
+
+			NOISE.clk_shft = (byte)((Audio_Regs[NR43] & 0xF0) >> 4);
+			NOISE.wdth_md = (Audio_Regs[NR43] & 8) > 0;
+			NOISE.div_code = (byte)(Audio_Regs[NR43] & 7);
+
+			WAVE.trigger = (Audio_Regs[NR44] & 0x80) > 0;
+			WAVE.len_en = (Audio_Regs[NR44] & 0x40) > 0;
+
+			AUD_CTRL.vin_L_en = (Audio_Regs[NR50] & 0x80) > 0;
+			AUD_CTRL.vol_L = (byte)((Audio_Regs[NR50] & 0x70) >> 4);
+			AUD_CTRL.vin_R_en = (Audio_Regs[NR50] & 8) > 0;
+			AUD_CTRL.vol_R = (byte)(Audio_Regs[NR50] & 7);
+
+			AUD_CTRL.noise_L_en = (Audio_Regs[NR51] & 0x80) > 0;
+			AUD_CTRL.wave_L_en = (Audio_Regs[NR51] & 0x40) > 0;
+			AUD_CTRL.sq2_L_en = (Audio_Regs[NR51] & 0x20) > 0;
+			AUD_CTRL.sq1_L_en = (Audio_Regs[NR51] & 0x10) > 0;
+			AUD_CTRL.noise_R_en = (Audio_Regs[NR51] & 8) > 0;
+			AUD_CTRL.wave_R_en = (Audio_Regs[NR51] & 4) > 0;
+			AUD_CTRL.sq2_R_en = (Audio_Regs[NR51] & 2) > 0;
+			AUD_CTRL.sq1_R_en = (Audio_Regs[NR51] & 1) > 0;
+
+			AUD_CTRL.power = (Audio_Regs[NR51] & 0x80) > 0;
 		}
 
 		#region audio
