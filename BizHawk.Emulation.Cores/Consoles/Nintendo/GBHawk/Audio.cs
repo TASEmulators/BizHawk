@@ -17,6 +17,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 													 1, 0, 0, 0, 0, 1, 1, 1,
 													 0, 1, 1, 1, 1, 1, 1, 0};
 
+		public static int[] DIVISOR = new int[] {8, 16, 32, 48, 64, 80, 96, 112};
+
+
 		public const int NR10 = 0;
 		public const int NR11 = 1;
 		public const int NR12 = 2;
@@ -76,6 +79,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			public int internal_cntr;
 			public byte duty_counter;
 			public bool enable;
+			public int noise_LFSR;
+			public int wave_counter;
+			public int vol_per;
 
 			// channel non-states
 			public int output;
@@ -103,6 +109,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		CTRL_Object AUD_CTRL;
 
 		public int sequencer_len, sequencer_vol, sequencer_swp, sequencer_tick;
+
+		public int master_audio_clock;
 
 		public byte ReadReg(int addr)
 		{
@@ -192,6 +200,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ1.len_en = (value & 0x40) > 0;
 						SQ1.frq &= 0xFF;
 						SQ1.frq |= (ushort)((value & 7) << 8);
+
+						if (SQ1.trigger)
+						{
+							SQ1.enable = true;
+							if (SQ1.length_counter == 0) { SQ1.length_counter = 64; }
+							SQ1.internal_cntr = 0;
+							SQ1.volume_state = SQ1.st_vol;
+							SQ1.vol_per = 0;
+						}
 						break;
 					case 0xFF16:                                        // NR21 (sound length / wave pattern duty %)		
 						Audio_Regs[NR21] = value;
@@ -215,6 +232,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ2.len_en = (value & 0x40) > 0;
 						SQ2.frq &= 0xFF;
 						SQ2.frq |= (ushort)((value & 7) << 8);
+
+						if (SQ2.trigger)
+						{
+							SQ2.enable = true;
+							if (SQ2.length_counter == 0) { SQ2.length_counter = 64; }
+							SQ2.internal_cntr = 0;
+							SQ2.volume_state = SQ2.st_vol;
+							SQ2.vol_per = 0;
+						}
 						break;
 					case 0xFF1A:                                        // NR30 (on/off)
 						Audio_Regs[NR30] = value;
@@ -239,6 +265,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						WAVE.len_en = (value & 0x40) > 0;
 						WAVE.frq &= 0xFF;
 						WAVE.frq |= (ushort)((value & 7) << 8);
+
+						if (WAVE.trigger)
+						{
+							WAVE.enable = true;
+							if (WAVE.length_counter == 0) { WAVE.length_counter = 64; }
+							WAVE.internal_cntr = 0;
+							WAVE.volume_state = WAVE.st_vol;
+							WAVE.vol_per = 0;
+							WAVE.wave_counter = 0;
+						}
 						break;
 					case 0xFF20:                                        // NR41 (length)
 						Audio_Regs[NR41] = value;
@@ -258,8 +294,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 					case 0xFF23:                                        // NR44 (trigger)
 						Audio_Regs[NR44] = value;
-						WAVE.trigger = (value & 0x80) > 0;
-						WAVE.len_en = (value & 0x40) > 0;
+						NOISE.trigger = (value & 0x80) > 0;
+						NOISE.len_en = (value & 0x40) > 0;
+
+						if (NOISE.trigger)
+						{
+							NOISE.enable = true;
+							if (NOISE.length_counter == 0) { NOISE.length_counter = 64; }
+							NOISE.internal_cntr = 0;
+							NOISE.volume_state = NOISE.st_vol;
+							NOISE.vol_per = 0;
+							NOISE.wave_counter = 0;
+							NOISE.noise_LFSR = 0x7FFF;
+						}
 						break;
 					case 0xFF24:                                        // NR50 (ctrl)
 						Audio_Regs[NR50] = value;
@@ -390,12 +437,110 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			// calculate wave output
+			if (WAVE.enable)
+			{
+				WAVE.internal_cntr++;
+				if (WAVE.internal_cntr == (2048 - WAVE.frq) * 2)
+				{
+					WAVE.wave_counter++;
+					WAVE.wave_counter &= 0x1F;
+
+					byte sample = Wave_RAM[WAVE.wave_counter >> 1];
+
+					if ((WAVE.wave_counter & 1) == 0)
+					{
+						sample = (byte)(sample >> 4);
+					}
+
+					if (WAVE.vol_code == 0)
+					{
+						sample = (byte)((sample & 0xF) >> 4);
+					}
+					else if (WAVE.vol_code == 1)
+					{
+						sample = (byte)(sample & 0xF);
+					}
+					else if (WAVE.vol_code == 2)
+					{
+						sample = (byte)((sample & 0xF) >> 1);
+					}
+					else
+					{
+						sample = (byte)((sample & 0xF) >> 2);
+					}
+
+					WAVE.output = sample;
+
+					if (!WAVE.DAC_pow)
+					{
+						WAVE.output = 0;
+					}
+				}
+			}
+
 
 			// calculate noise output
+			if (NOISE.enable)
+			{
+				NOISE.internal_cntr++;
+				if (NOISE.internal_cntr == DIVISOR[NOISE.div_code] << NOISE.shift)
+				{
+					NOISE.internal_cntr = 0;
+					int bit_lfsr = (NOISE.noise_LFSR & 1) ^ ((NOISE.noise_LFSR & 2) >> 1);
 
+					NOISE.noise_LFSR = (NOISE.noise_LFSR >> 1) & 0x3FFF;
+					NOISE.noise_LFSR |= (bit_lfsr << 14);
 
+					if (NOISE.wdth_md)
+					{
+						NOISE.noise_LFSR = NOISE.noise_LFSR & 0x7FBF;
+						NOISE.noise_LFSR |= (bit_lfsr << 6);
+					}
 
+					NOISE.output = NOISE.noise_LFSR & 1;
+					NOISE.output *= NOISE.volume_state;
+				}
+			}
 
+			// add up components to each channel
+			int L_final = 0;
+			int R_final = 0;
+
+			if (AUD_CTRL.sq1_L_en) { L_final += SQ1.output; }
+			if (AUD_CTRL.sq2_L_en) { L_final += SQ2.output; }
+			if (AUD_CTRL.wave_L_en) { L_final += WAVE.output; }
+			if (AUD_CTRL.noise_L_en) { L_final += NOISE.output; }
+
+			if (AUD_CTRL.sq1_R_en) { R_final += SQ1.output; }
+			if (AUD_CTRL.sq2_R_en) { R_final += SQ2.output; }
+			if (AUD_CTRL.wave_R_en) { R_final += WAVE.output; }
+			if (AUD_CTRL.noise_R_en) { R_final += NOISE.output; }
+
+			L_final *= (AUD_CTRL.vol_L + 1);
+			R_final *= (AUD_CTRL.vol_R + 1);
+
+			// send out an actual sample every 94 cycles
+			master_audio_clock++;
+			if (master_audio_clock == 94)
+			{
+				master_audio_clock = 0;
+				if (AudioClocks < 1500)
+				{
+					AudioSamples[AudioClocks] = (short)L_final;
+					/*
+					Console.Write(SQ1.output);
+					Console.Write(" ");
+					Console.Write(SQ2.output);
+					Console.Write(" ");
+					Console.Write(WAVE.output);
+					Console.Write(" ");
+					Console.WriteLine(NOISE.output);
+					*/
+					AudioClocks++;
+					AudioSamples[AudioClocks] = (short)R_final;
+					AudioClocks++;
+				}
+			}
 
 			// frame sequencer ticks at a rate of 512 hz (or every time a 13 bit counter rolls over)
 			sequencer_tick++;
@@ -460,10 +605,46 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// clock the volume envelope
 				if (sequencer_vol == 0)
 				{
-					if (SQ1.per > 0) { if (SQ1.env_add) { SQ1.volume_state++; } else { SQ1.volume_state--; } }
-					if (SQ2.per > 0) { if (SQ2.env_add) { SQ2.volume_state++; } else { SQ2.volume_state--; } }
-					if (WAVE.per > 0) { if (WAVE.env_add) { WAVE.volume_state++; } else { WAVE.volume_state--; } }
-					if (NOISE.per > 0) { if (NOISE.env_add) { NOISE.volume_state++; } else { NOISE.volume_state--; } }
+					if (SQ1.per > 0)
+					{
+						SQ1.vol_per++;
+						if (SQ1.vol_per == SQ1.per)
+						{
+							SQ1.vol_per = 0;
+							if (SQ1.env_add) { SQ1.volume_state++; }
+							else { SQ1.volume_state--; }
+						}
+					}
+					if (SQ2.per > 0)
+					{
+						SQ2.vol_per++;
+						if (SQ2.vol_per == SQ2.per)
+						{
+							SQ2.vol_per = 0;
+							if (SQ2.env_add) { SQ2.volume_state++; }
+							else { SQ2.volume_state--; }
+						}
+					}
+					if (WAVE.per > 0)
+					{
+						WAVE.vol_per++;
+						if (WAVE.vol_per == WAVE.per)
+						{
+							WAVE.vol_per = 0;
+							if (WAVE.env_add) { WAVE.volume_state++; }
+							else { WAVE.volume_state--; }
+						}
+					}
+					if (NOISE.per > 0)
+					{
+						NOISE.vol_per++;
+						if (NOISE.vol_per == NOISE.per)
+						{
+							NOISE.vol_per = 0;
+							if (NOISE.env_add) { NOISE.volume_state++; }
+							else { NOISE.volume_state--; }
+						}
+					}
 				}
 			}
 		}
@@ -479,8 +660,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			sequencer_vol = 0;
 			sequencer_swp = 0;
 			sequencer_tick = 0;
+			master_audio_clock = 0;
 		}
-		public void reset()
+		public void Reset()
 		{
 			Wave_RAM = new byte[16];
 
@@ -490,8 +672,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			SQ2 = new AUD_Object();
 			WAVE = new AUD_Object();
 			NOISE = new AUD_Object();
-
 			AUD_CTRL = new CTRL_Object();
+
+			AudioClocks = 0;
+			master_audio_clock = 0;
+
+			sequencer_len = 0;
+			sequencer_swp = 0;
+			sequencer_vol = 0;
+			sequencer_tick = 0;
 		}
 
 		public void SyncState(Serializer ser)
@@ -504,6 +693,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("SQ2.length_counter", ref SQ2.length_counter);
 			ser.Sync("WAVE.length_counter", ref WAVE.length_counter);
 			ser.Sync("NOISE.length_counter", ref NOISE.length_counter);
+
+			ser.Sync("sequencer_len", ref sequencer_len);
+			ser.Sync("sequencer_vol", ref sequencer_vol);
+			ser.Sync("sequencer_swp", ref sequencer_swp);
+			ser.Sync("sequencer_tick", ref sequencer_tick);
+
+			ser.Sync("master_audio_clock", ref master_audio_clock);
 
 			// get derived state
 			if (ser.IsReader)
@@ -602,6 +798,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int _spf;
 		public int AudioClocks;
+		public short[] AudioSamples = new short[1500];
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -615,10 +812,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			short[] ret = new short[_spf * 2];
-			nsamp = _spf;
-			GetSamples(ret);
-			samples = ret;
+			nsamp = AudioClocks / 2;
+			short[] temp_samp = new short[AudioClocks];
+
+			for (int i = 0; i < AudioClocks; i++)
+			{
+				temp_samp[i] = AudioSamples[i];
+			}
+			Console.WriteLine(AudioClocks);
+			samples = temp_samp;
+
+			AudioClocks = 0;
 		}
 
 		public void GetSamplesAsync(short[] samples)
@@ -631,8 +835,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			AudioClocks = 0;
 		}
 
-		// Exposing this as GetSamplesAsync would allow this to provide async sound
-		// However, it does nothing special for async sound so I don't see a point
 		private void GetSamples(short[] samples)
 		{
 

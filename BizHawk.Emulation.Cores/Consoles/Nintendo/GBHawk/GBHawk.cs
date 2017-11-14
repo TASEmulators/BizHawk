@@ -128,6 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			Register_Reset();
 			timer.Reset();
 			ppu.Reset();
+			audio.Reset();
 
 			cpu.SetCallbacks(ReadMemory, ReadMemory, ReadMemory, WriteMemory);
 
