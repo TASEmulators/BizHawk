@@ -142,36 +142,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		private void Setup_Mapper()
 		{
 			// setup up mapper based on header entry
+			string mppr;
+
 			switch (header[0x47])
 			{
-				case 0x0: mapper = new MapperDefault();				break;
-				case 0x1: mapper = new MapperMBC1();				break;
-				case 0x2: mapper = new MapperMBC1();				break;
-				case 0x3: mapper = new MapperMBC1();				break;
-				case 0x5: mapper = new MapperMBC2();				break;
-				case 0x6: mapper = new MapperMBC2();				break;
-				case 0x8: mapper = new MapperDefault();				break;
-				case 0x9: mapper = new MapperDefault();				break;
-				case 0xB: mapper = new MapperMMM01();				break;
-				case 0xC: mapper = new MapperMMM01();				break;
-				case 0xD: mapper = new MapperMMM01();				break;
-				case 0xF: mapper = new MapperMBC3();				break;
-				case 0x10: mapper = new MapperMBC3();				break;
-				case 0x11: mapper = new MapperMBC3();				break;
-				case 0x12: mapper = new MapperMBC3();				break;
-				case 0x13: mapper = new MapperMBC3();				break;
-				case 0x19: mapper = new MapperMBC5();				break;
-				case 0x1A: mapper = new MapperMBC5();				break;
-				case 0x1B: mapper = new MapperMBC5();				break;
-				case 0x1C: mapper = new MapperMBC5();				break;
-				case 0x1D: mapper = new MapperMBC5();				break;
-				case 0x1E: mapper = new MapperMBC5();				break;
-				case 0x20: mapper = new MapperMBC6();				break;
-				case 0x22: mapper = new MapperMBC7();				break;
-				case 0xFC: mapper = new MapperCamera();				break;
-				case 0xFD: mapper = new MapperTAMA5();				break;
-				case 0xFE: mapper = new MapperHuC3();				break;
-				case 0xFF: mapper = new MapperHuC1();				break;
+				case 0x0: mapper = new MapperDefault();		mppr = "NROM";		break;
+				case 0x1: mapper = new MapperMBC1();		mppr = "MBC1";		break;
+				case 0x2: mapper = new MapperMBC1();		mppr = "MBC1";		break;
+				case 0x3: mapper = new MapperMBC1();		mppr = "MBC1";		break;
+				case 0x5: mapper = new MapperMBC2();		mppr = "MBC2";		break;
+				case 0x6: mapper = new MapperMBC2();		mppr = "MBC2";		break;
+				case 0x8: mapper = new MapperDefault();		mppr = "NROM";		break;
+				case 0x9: mapper = new MapperDefault();		mppr = "NROM";		break;
+				case 0xB: mapper = new MapperMMM01();		mppr = "MMM01";		break;
+				case 0xC: mapper = new MapperMMM01();		mppr = "MMM01";		break;
+				case 0xD: mapper = new MapperMMM01();		mppr = "MMM01";		break;
+				case 0xF: mapper = new MapperMBC3();		mppr = "MBC3";		break;
+				case 0x10: mapper = new MapperMBC3();		mppr = "MBC3";		break;
+				case 0x11: mapper = new MapperMBC3();		mppr = "MBC3";		break;
+				case 0x12: mapper = new MapperMBC3();		mppr = "MBC3";		break;
+				case 0x13: mapper = new MapperMBC3();		mppr = "MBC3";		break;
+				case 0x19: mapper = new MapperMBC5();		mppr = "MBC5";		break;
+				case 0x1A: mapper = new MapperMBC5();		mppr = "MBC5";		break;
+				case 0x1B: mapper = new MapperMBC5();		mppr = "MBC5";		break;
+				case 0x1C: mapper = new MapperMBC5();		mppr = "MBC5";		break;
+				case 0x1D: mapper = new MapperMBC5();		mppr = "MBC5";		break;
+				case 0x1E: mapper = new MapperMBC5();		mppr = "MBC5";		break;
+				case 0x20: mapper = new MapperMBC6();		mppr = "MBC6";		break;
+				case 0x22: mapper = new MapperMBC7();		mppr = "MBC7";		break;
+				case 0xFC: mapper = new MapperCamera();		mppr = "CAM";		break;
+				case 0xFD: mapper = new MapperTAMA5();		mppr = "TAMA5";		break;
+				case 0xFE: mapper = new MapperHuC3();		mppr = "HuC3";		break;
+				case 0xFF: mapper = new MapperHuC1();		mppr = "HuC1";		break;
 
 				case 0x4:
 				case 0x7:
@@ -202,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			Console.Write("Mapper: ");
-			Console.WriteLine(header[0x47]);
+			Console.WriteLine(mppr);
 
 			cart_RAM = null;
 
@@ -223,7 +225,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 5:
 					cart_RAM = new byte[0x10000];
 					break;
+			}
 
+			// mbc2 carts have built in RAM
+			if (mppr == "MBC2")
+			{
+				cart_RAM = new byte[0x200];
 			}
 
 			mapper.Core = this;

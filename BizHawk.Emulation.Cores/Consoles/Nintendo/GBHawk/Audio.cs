@@ -12,6 +12,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public GBHawk Core { get; set; }
 
+		public static int[] DUTY_CYCLES = new int[] {0, 0, 0, 0, 0, 0, 0, 1,
+													 1, 0, 0, 0, 0, 0, 0, 1,
+													 1, 0, 0, 0, 0, 1, 1, 1,
+													 0, 1, 1, 1, 1, 1, 1, 0};
+
 		public const int NR10 = 0;
 		public const int NR11 = 1;
 		public const int NR12 = 2;
@@ -55,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			public byte st_vol;
 			public bool env_add;
 			public byte per;
-			public ushort frq;
+			public int frq;
 			public bool trigger;
 			public bool len_en;
 			public bool DAC_pow;
@@ -66,6 +71,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			// channel states
 			public byte length_counter;
+			public byte volume_state;
+			public int frq_shadow;
+			public int internal_cntr;
+			public byte duty_counter;
+			public bool enable;
+
+			// channel non-states
+			public int output;
 		}
 
 		struct CTRL_Object
@@ -346,7 +359,113 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void tick()
 		{
+			// calculate square1's output
+			if (SQ1.enable)
+			{
+				SQ1.internal_cntr++;
+				if (SQ1.internal_cntr == (2048 - SQ1.frq_shadow) * 4)
+				{
+					SQ1.internal_cntr = 0;
+					SQ1.duty_counter++;
+					SQ1.duty_counter &= 7;
 
+					SQ1.output = DUTY_CYCLES[SQ1.duty * 8 + SQ1.duty_counter];
+					SQ1.output *= SQ1.volume_state;
+				}
+			}
+
+			// calculate square2's output
+			if (SQ2.enable)
+			{
+				SQ2.internal_cntr++;
+				if (SQ2.internal_cntr == (2048 - SQ2.frq) * 4)
+				{
+					SQ2.internal_cntr = 0;
+					SQ2.duty_counter++;
+					SQ2.duty_counter &= 7;
+
+					SQ2.output = DUTY_CYCLES[SQ2.duty * 8 + SQ2.duty_counter];
+					SQ2.output *= SQ2.volume_state;
+				}
+			}
+
+			// calculate wave output
+
+			// calculate noise output
+
+
+
+
+
+			// frame sequencer ticks at a rate of 512 hz (or every time a 13 bit counter rolls over)
+			sequencer_tick++;
+
+			if (sequencer_tick==8192)
+			{
+				sequencer_tick = 0;
+
+				sequencer_vol++; sequencer_vol &= 0x7;
+				sequencer_len++; sequencer_len &= 0x7;
+				sequencer_swp++; sequencer_swp &= 0x7;
+
+				// clock the lengths
+				if ((sequencer_len == 1) || (sequencer_len == 3) || (sequencer_len == 5) || (sequencer_len == 7))
+				{
+					if (SQ1.len_en && SQ1.length_counter > 0) { SQ1.length_counter--; if (SQ1.length_counter == 0) { SQ1.enable = false; } }
+					if (SQ2.len_en && SQ2.length_counter > 0) { SQ2.length_counter--; if (SQ2.length_counter == 0) { SQ2.enable = false; } }
+					if (WAVE.len_en && WAVE.length_counter > 0) { WAVE.length_counter--; if (WAVE.length_counter == 0) { WAVE.enable = false; } }
+					if (NOISE.len_en && NOISE.length_counter > 0) { NOISE.length_counter--; if (NOISE.length_counter == 0) { NOISE.enable = false; } }
+				}
+
+				// clock the sweep
+				if ((sequencer_swp == 3) || (sequencer_swp == 7))
+				{
+					if (((SQ1.swp_period > 0) || (SQ1.shift > 0)) && (SQ1.swp_period > 0))
+					{
+						int shadow_frq = SQ1.frq_shadow;
+						shadow_frq = shadow_frq >> SQ1.shift;
+						if (SQ1.negate) { shadow_frq = -shadow_frq; }
+						shadow_frq += SQ1.frq_shadow;
+
+						// disable channel if overflow
+						if ((uint) shadow_frq > 2047)
+						{
+							SQ1.enable = false;
+						}
+						else
+						{
+							shadow_frq &= 0x7FF;
+							SQ1.frq = shadow_frq;
+							SQ1.frq_shadow = shadow_frq;
+
+							// note that we also write back the frequency to the actual register
+							Audio_Regs[NR13] = (byte)(SQ1.frq & 0xFF);
+							Audio_Regs[NR14] &= 0xF8;
+							Audio_Regs[NR14] |= (byte)((SQ1.frq >> 8) & 7);
+
+							// after writing, we repeat the process and do another overflow check
+							shadow_frq = SQ1.frq_shadow;
+							shadow_frq = shadow_frq >> SQ1.shift;
+							if (SQ1.negate) { shadow_frq = -shadow_frq; }
+							shadow_frq += SQ1.frq_shadow;
+
+							if ((uint)shadow_frq > 2047)
+							{
+								SQ1.enable = false;
+							}
+						}
+					}
+				}
+
+				// clock the volume envelope
+				if (sequencer_vol == 0)
+				{
+					if (SQ1.per > 0) { if (SQ1.env_add) { SQ1.volume_state++; } else { SQ1.volume_state--; } }
+					if (SQ2.per > 0) { if (SQ2.env_add) { SQ2.volume_state++; } else { SQ2.volume_state--; } }
+					if (WAVE.per > 0) { if (WAVE.env_add) { WAVE.volume_state++; } else { WAVE.volume_state--; } }
+					if (NOISE.per > 0) { if (NOISE.env_add) { NOISE.volume_state++; } else { NOISE.volume_state--; } }
+				}
+			}
 		}
 
 		public void power_off()
