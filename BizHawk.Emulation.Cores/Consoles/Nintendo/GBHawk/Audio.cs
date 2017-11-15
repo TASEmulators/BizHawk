@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF23: ret = (byte)(Audio_Regs[NR44] | unused_bits[NR44]);		break; // NR44 (trigger)
 				case 0xFF24: ret = (byte)(Audio_Regs[NR50] | unused_bits[NR50]);		break; // NR50 (ctrl)
 				case 0xFF25: ret = (byte)(Audio_Regs[NR51] | unused_bits[NR51]);		break; // NR51 (ctrl)
-				case 0xFF26: ret = (byte)(Audio_Regs[NR52] | unused_bits[NR52]);	Console.WriteLine(Audio_Regs[NR52] & 0xF);	break; // NR52 (ctrl)
+				case 0xFF26: ret = (byte)(Audio_Regs[NR52] | unused_bits[NR52]);		break; // NR52 (ctrl)
 
 				// wave ram table
 				case 0xFF30:
@@ -175,7 +175,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 0xFF11:                                        // NR11 (sound length / wave pattern duty %)
 						Audio_Regs[NR11] = value;
 						SQ1_duty = (byte)((value & 0xC0) >> 6);
-						SQ1_length = (ushort)(64 - value & 0x3F);
+						SQ1_length = (ushort)(64 - (value & 0x3F));
 						SQ1_len_cntr = SQ1_length;
 						break;
 					case 0xFF12:                                        // NR12 (envelope)
@@ -184,6 +184,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ1_env_add = (value & 8) > 0;
 						SQ1_per = (byte)(value & 7);
 						if (SQ1_per == 0) { SQ1_per = 8; }
+						if ((value & 0xF8) == 0) { SQ1_enable = false; Audio_Regs[NR52] &= 0xFE; }
 						break;
 					case 0xFF13:                                        // NR13 (freq low)
 						Audio_Regs[NR13] = value;
@@ -212,7 +213,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 0xFF16:                                        // NR21 (sound length / wave pattern duty %)		
 						Audio_Regs[NR21] = value;
 						SQ2_duty = (byte)((value & 0xC0) >> 6);
-						SQ2_length = (ushort)(64 - value & 0x3F);
+						SQ2_length = (ushort)(64 - (value & 0x3F));
 						SQ2_len_cntr = SQ2_length;
 						break;
 					case 0xFF17:                                        // NR22 (envelope)
@@ -221,6 +222,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ2_env_add = (value & 8) > 0;
 						SQ2_per = (byte)(value & 7);
 						//if (SQ2_per == 0) { SQ2_per = 8; }
+						if ((value & 0xF8) == 0) { SQ2_enable = false; Audio_Regs[NR52] &= 0xFD; }
 						break;
 					case 0xFF18:                                        // NR23 (freq low)
 						Audio_Regs[NR23] = value;
@@ -248,6 +250,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 0xFF1A:                                        // NR30 (on/off)
 						Audio_Regs[NR30] = value;
 						WAVE_DAC_pow = (value & 0x80) > 0;
+						if (!WAVE_DAC_pow) { WAVE_enable = false; Audio_Regs[NR52] &= 0xFB; }
 						break;
 					case 0xFF1B:                                        // NR31 (length)
 						Audio_Regs[NR31] = value;
@@ -282,7 +285,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 					case 0xFF20:                                        // NR41 (length)
 						Audio_Regs[NR41] = value;
-						NOISE_length = (ushort)(64 - value & 0x3F);
+						NOISE_length = (ushort)(64 - (value & 0x3F));
 						NOISE_len_cntr = NOISE_length;
 						break;
 					case 0xFF21:                                        // NR42 (envelope)
@@ -291,6 +294,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						NOISE_env_add = (value & 8) > 0;
 						NOISE_per = (byte)(value & 7);
 						//if (NOISE_per == 0) { NOISE_per = 8; }
+						if ((value & 0xF8) == 0) { NOISE_enable = false; Audio_Regs[NR52] &= 0xF7; }
 						break;
 					case 0xFF22:                                        // NR43 (shift)
 						Audio_Regs[NR43] = value;
