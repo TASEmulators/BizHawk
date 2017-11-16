@@ -194,21 +194,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 0xFF14:                                        // NR14 (freq hi)
 						Audio_Regs[NR14] = value;
 						SQ1_trigger = (value & 0x80) > 0;
-						SQ1_len_en = (value & 0x40) > 0;
 						SQ1_frq &= 0xFF;
 						SQ1_frq |= (ushort)((value & 7) << 8);
+
+						if (((sequencer_len & 1) > 0))
+						{
+							if (!SQ1_len_en && ((value & 0x40) > 0) && (SQ1_len_cntr > 0))
+							{
+								SQ1_len_cntr--;
+								if ((SQ1_len_cntr == 0) && !SQ1_trigger) { SQ1_enable = false; Audio_Regs[NR52] &= 0xFE; }
+							}
+						}
 
 						if (SQ1_trigger)
 						{
 							SQ1_enable = true;
 							Audio_Regs[NR52] |= 1;
-							if (SQ1_len_cntr == 0) { SQ1_len_cntr = 64; }
+							if (SQ1_len_cntr == 0)
+							{
+								SQ1_len_cntr = 64;
+								if (((value & 0x40) > 0) && ((sequencer_len & 1) > 0)) { SQ1_len_cntr--; }
+							}
 							SQ1_intl_cntr = 0;
 							SQ1_vol_state = SQ1_st_vol;
 							SQ1_vol_per = 0;
 							SQ1_frq_shadow = SQ1_frq;
 							if ((SQ1_vol_state == 0) && !SQ1_env_add) { SQ1_enable = false; Audio_Regs[NR52] &= 0xFE; }
 						}
+						
+
+						SQ1_len_en = (value & 0x40) > 0;
+
 						break;
 					case 0xFF16:                                        // NR21 (sound length / wave pattern duty %)		
 						Audio_Regs[NR21] = value;
@@ -232,20 +248,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 0xFF19:                                        // NR24 (freq hi)
 						Audio_Regs[NR24] = value;
 						SQ2_trigger = (value & 0x80) > 0;
-						SQ2_len_en = (value & 0x40) > 0;
 						SQ2_frq &= 0xFF;
 						SQ2_frq |= (ushort)((value & 7) << 8);
+
+						if ((sequencer_len & 1) > 0)
+						{
+							if (!SQ2_len_en && ((value & 0x40) > 0) && (SQ2_len_cntr > 0))
+							{
+								SQ2_len_cntr--;
+								if ((SQ2_len_cntr == 0) && !SQ2_trigger) { SQ2_enable = false; Audio_Regs[NR52] &= 0xFD; }
+							}
+						}
 
 						if (SQ2_trigger)
 						{
 							SQ2_enable = true;
 							Audio_Regs[NR52] |= 2;
-							if (SQ2_len_cntr == 0) { SQ2_len_cntr = 64; }
+							if (SQ2_len_cntr == 0)
+							{
+								SQ2_len_cntr = 64;
+								if (((value & 0x40) > 0) && ((sequencer_len & 1) > 0)) { SQ2_len_cntr--; }
+							}
 							SQ2_intl_cntr = 0;
 							SQ2_vol_state = SQ2_st_vol;
 							SQ2_vol_per = 0;
 							if ((SQ2_vol_state == 0) && !SQ2_env_add) { SQ2_enable = false; Audio_Regs[NR52] &= 0xFD; }
 						}
+
+						SQ2_len_en = (value & 0x40) > 0;
+
 						break;
 					case 0xFF1A:                                        // NR30 (on/off)
 						Audio_Regs[NR30] = value;
@@ -269,19 +300,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 0xFF1E:                                        // NR34 (freq hi)
 						Audio_Regs[NR34] = value;
 						WAVE_trigger = (value & 0x80) > 0;
-						WAVE_len_en = (value & 0x40) > 0;
 						WAVE_frq &= 0xFF;
 						WAVE_frq |= (ushort)((value & 7) << 8);
+
+						if ((sequencer_len & 1) > 0)
+						{
+							if (!WAVE_len_en && ((value & 0x40) > 0) && (WAVE_len_cntr > 0))
+							{
+								WAVE_len_cntr--;
+								if ((WAVE_len_cntr == 0) && !WAVE_trigger) { WAVE_enable = false; Audio_Regs[NR52] &= 0xFB; }
+							}
+						}
 
 						if (WAVE_trigger)
 						{
 							WAVE_enable = true;
 							Audio_Regs[NR52] |= 4;
-							if (WAVE_len_cntr == 0) { WAVE_len_cntr = 256; }
+							if (WAVE_len_cntr == 0)
+							{
+								WAVE_len_cntr = 256;
+								if (((value & 0x40) > 0) && ((sequencer_len & 1) > 0)) { WAVE_len_cntr--; }
+							}
 							WAVE_intl_cntr = 0;
 							WAVE_wave_cntr = 0;
 							if (!WAVE_DAC_pow) { WAVE_enable = false; Audio_Regs[NR52] &= 0xFB; }
 						}
+
+						WAVE_len_en = (value & 0x40) > 0;
+
 						break;
 					case 0xFF20:                                        // NR41 (length)
 						Audio_Regs[NR41] = value;
@@ -305,19 +351,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 0xFF23:                                        // NR44 (trigger)
 						Audio_Regs[NR44] = value;
 						NOISE_trigger = (value & 0x80) > 0;
-						NOISE_len_en = (value & 0x40) > 0;
+
+						if ((sequencer_len & 1) > 0)
+						{
+							if (!NOISE_len_en && ((value & 0x40) > 0) && (NOISE_len_cntr > 0))
+							{
+								NOISE_len_cntr--;
+								if ((NOISE_len_cntr == 0) && !NOISE_trigger) { NOISE_enable = false; Audio_Regs[NR52] &= 0xF7; }
+							}
+						}
 
 						if (NOISE_trigger)
 						{
 							NOISE_enable = true;
 							Audio_Regs[NR52] |= 8;
-							if (NOISE_len_cntr == 0) { NOISE_len_cntr = 64; }
+							if (NOISE_len_cntr == 0)
+							{
+								NOISE_len_cntr = 64;
+								if (((value & 0x40) > 0) && ((sequencer_len & 1) > 0)) { NOISE_len_cntr--; }
+							}
 							NOISE_intl_cntr = 0;
 							NOISE_vol_state = NOISE_st_vol;
 							NOISE_vol_per = 0;
 							NOISE_LFSR = 0x7FFF;
 							if ((NOISE_vol_state == 0) && !NOISE_env_add) { NOISE_enable = false; Audio_Regs[NR52] &= 0xF7; }
 						}
+						
+						NOISE_len_en = (value & 0x40) > 0;
+
 						break;
 					case 0xFF24:                                        // NR50 (ctrl)
 						Audio_Regs[NR50] = value;
@@ -566,7 +627,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				sequencer_swp++; sequencer_swp &= 0x7;
 
 				// clock the lengths
-				if ((sequencer_len == 1) || (sequencer_len == 3) || (sequencer_len == 5) || (sequencer_len == 7))
+				if ((sequencer_len & 1) > 0)
 				{
 					if (SQ1_len_en && SQ1_len_cntr > 0)
 					{
