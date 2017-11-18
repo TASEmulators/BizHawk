@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF43: ret = scroll_x;				break; // SCX
 				case 0xFF44: ret = LY;						break; // LY
 				case 0xFF45: ret = LYC;						break; // LYC
-				case 0xFF46: /*ret = DMA_addr; */			break; // DMA (not readable?)
+				case 0xFF46: ret = 0xFF;					break; // DMA (not readable?) /*ret = DMA_addr; */
 				case 0xFF47: ret = BGP;						break; // BGP
 				case 0xFF48: ret = obj_pal_0;				break; // OBP0
 				case 0xFF49: ret = obj_pal_1;				break; // OBP1
@@ -1030,8 +1030,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			LYC = 0;
 			DMA_addr = 0;
 			BGP = 0;
-			obj_pal_0 = 0;
-			obj_pal_1 = 0;
+			obj_pal_0 = 0xFF;
+			obj_pal_1 = 0xFF;
 			window_y = 0;
 			window_x = 0;
 			LY_inc = 1;

@@ -72,7 +72,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int SQ1_frq,				SQ2_frq,				WAVE_frq;
 		public ushort SQ1_length,		SQ2_length,				WAVE_length,				NOISE_length;
 		// state
+		public bool SQ1_calc_done;
 		public bool SQ1_swp_enable;
+		public bool SQ1_vol_done,		SQ2_vol_done,										NOISE_vol_done;
 		public bool SQ1_enable,			SQ2_enable,				WAVE_enable,				NOISE_enable;
 		public byte SQ1_vol_state,		SQ2_vol_state,										NOISE_vol_state;
 		public byte SQ1_duty_cntr,		SQ2_duty_cntr;
@@ -169,6 +171,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ1_swp_prd = (byte)((value & 0x70) >> 4);
 						SQ1_negate = (value & 8) > 0;
 						SQ1_shift = (byte)(value & 7);
+
+						if (!SQ1_negate && SQ1_calc_done) { SQ1_enable = false; }
 						break;
 					case 0xFF11:                                        // NR11 (sound length / wave pattern duty %)
 						Audio_Regs[NR11] = value;
@@ -207,6 +211,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (SQ1_trigger)
 						{
 							SQ1_enable = true;
+							SQ1_vol_done = false;
 							if (SQ1_len_cntr == 0)
 							{
 								SQ1_len_cntr = 64;
@@ -218,6 +223,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							SQ1_frq_shadow = SQ1_frq;
 
 							SQ1_intl_swp_cnt = SQ1_swp_prd > 0 ? SQ1_swp_prd : 8;
+							SQ1_calc_done = false;
 
 							if ((SQ1_shift > 0) || (SQ1_swp_prd > 0))
 							{
@@ -240,6 +246,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								{
 									SQ1_enable = SQ1_swp_enable = false;
 								}
+
+								// set negate mode flag that disables channel is negate clerar
+								if (SQ1_negate) { SQ1_calc_done = true; }
 							}
 
 							if ((SQ1_vol_state == 0) && !SQ1_env_add) { SQ1_enable = SQ1_swp_enable = false; }
@@ -284,6 +293,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (SQ2_trigger)
 						{
 							SQ2_enable = true;
+							SQ2_vol_done = false;
 
 							if (SQ2_len_cntr == 0)
 							{
@@ -385,6 +395,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (NOISE_trigger)
 						{
 							NOISE_enable = true;
+							NOISE_vol_done = false;
 
 							if (NOISE_len_cntr == 0)
 							{
@@ -451,19 +462,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				switch (addr)
 				{
 					case 0xFF11:                                        // NR11 (sound length / wave pattern duty %)
-						SQ1_length = (ushort)(64 - value & 0x3F);
+						SQ1_length = (ushort)(64 - (value & 0x3F));
+						SQ1_len_cntr = SQ1_length;
 						break;
 					case 0xFF16:                                        // NR21 (sound length / wave pattern duty %)		
-						SQ2_length = (ushort)(64 - value & 0x3F);
+						SQ2_length = (ushort)(64 - (value & 0x3F));
+						SQ2_len_cntr = SQ2_length;
 						break;
 					case 0xFF1B:                                        // NR31 (length)
 						WAVE_length = (ushort)(256 - value);
+						WAVE_len_cntr = WAVE_length;
 						break;
 					case 0xFF20:                                        // NR41 (length)
-						NOISE_length = (ushort)(64 - value & 0x3F);
+						NOISE_length = (ushort)(64 - (value & 0x3F));
+						NOISE_len_cntr = NOISE_length;
 						break;
 					case 0xFF26:                                        // NR52 (ctrl)
 						AUD_CTRL_power = (value & 0x80) > 0;
+						if (AUD_CTRL_power)
+						{
+							sequencer_vol = 0;
+							sequencer_len = 0;
+							sequencer_swp = 0;
+						}
 						break;
 
 					// wave ram table
@@ -676,6 +697,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (SQ1_negate) { shadow_frq = -shadow_frq; }
 							shadow_frq += SQ1_frq_shadow;
 
+							// set negate mode flag that disables channel is negate clerar
+							if (SQ1_negate) { SQ1_calc_done = true; }
+
 							// disable channel if overflow
 							if ((uint)shadow_frq > 2047)
 							{
@@ -713,34 +737,67 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// clock the volume envelope
 				if (sequencer_vol == 0)
 				{
-					if (SQ1_enable)
+					if (SQ1_per > 0)
 					{
 						SQ1_vol_per--;
 						if (SQ1_vol_per == 0)
 						{
 							SQ1_vol_per = (SQ1_per > 0) ? SQ1_per : 8;
-							if (SQ1_env_add && (SQ1_vol_state < 15)) { SQ1_vol_state++; }
-							else if (SQ1_vol_state > 0) { SQ1_vol_state--; }
+							if (!SQ1_vol_done)
+							{
+								if (SQ1_env_add)
+								{
+									if (SQ1_vol_state < 15) { SQ1_vol_state++; }
+									else { SQ1_vol_done = true; }
+								}
+								else
+								{
+									if (SQ1_vol_state >= 1) { SQ1_vol_state--; }
+									else { SQ1_vol_done = true; }
+								}
+							}
 						}
 					}
-					if (SQ2_enable)
+					if (SQ2_per > 0)
 					{
 						SQ2_vol_per--;
 						if (SQ2_vol_per == 0)
 						{
 							SQ2_vol_per = (SQ2_per > 0) ? SQ2_per : 8;
-							if (SQ2_env_add && (SQ2_vol_state < 15)) { SQ2_vol_state++; }
-							else if (SQ2_vol_state > 0) { SQ2_vol_state--; }
+							if (!SQ2_vol_done)
+							{
+								if (SQ2_env_add)
+								{
+									if (SQ2_vol_state < 15) { SQ2_vol_state++; }
+									else { SQ2_vol_done = true; }
+								}
+								else
+								{
+									if (SQ2_vol_state >= 1) { SQ2_vol_state--; }
+									else { SQ2_vol_done = true; }
+								}
+							}
 						}
 					}
-					if (NOISE_enable)
+					if (NOISE_per > 0)
 					{
 						NOISE_vol_per--;
 						if (NOISE_vol_per == 0)
 						{
 							NOISE_vol_per = (NOISE_per > 0) ? NOISE_per : 8;
-							if (NOISE_env_add && (NOISE_vol_state < 15)) { NOISE_vol_state++; }
-							else if (NOISE_vol_state > 0) { NOISE_vol_state--; }
+							if (!NOISE_vol_done)
+							{
+								if (NOISE_env_add)
+								{
+									if (NOISE_vol_state < 15) { NOISE_vol_state++; }
+									else { NOISE_vol_done = true; }
+								}
+								else
+								{
+									if (NOISE_vol_state >= 1) { NOISE_vol_state--; }
+									else { NOISE_vol_done = true; }
+								}
+							}
 						}
 					}
 				}
@@ -753,15 +810,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				Audio_Regs[i] = 0;
 			}
+
+			// reset derived values 
+			sync_channels();
+
+			// reset state variables
 			SQ1_enable = SQ1_swp_enable = false;
 			SQ2_enable = false;
 			WAVE_enable = false;
 			NOISE_enable = false;
 
+			SQ1_len_en = false;
+			SQ2_len_en = false;
+			WAVE_len_en = false;
+			NOISE_len_en = false;
+
 			sequencer_len = 0;
 			sequencer_vol = 0;
 			sequencer_swp = 0;
-			sequencer_tick = 0;
+
 			master_audio_clock = 0;
 		}
 
@@ -786,6 +853,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("Wave_Ram", ref Wave_RAM, false);
 
 			// save state variables
+			ser.Sync("SQ1_vol_done", ref SQ1_vol_done);
+			ser.Sync("SQ2_vol_done", ref SQ2_vol_done);
+			ser.Sync("NOISE_vol_done", ref NOISE_vol_done);
+			ser.Sync("SQ1_calc_done", ref SQ1_calc_done);
 			ser.Sync("SQ1_swp_enable", ref SQ1_swp_enable);
 			ser.Sync("SQ1_length_counter", ref SQ1_len_cntr);
 			ser.Sync("SQ2_length_counter", ref SQ2_len_cntr);
