@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		void WriteModeControl(int addr, byte value)
 		{
-			if (((addr & 0x4100) != 0x4100) || addr>=0x4200)  return;
+			if ((addr & 0x4100) != 0x4100)  return;
 			mode = value & 3;
 			bool chr_base = value.Bit(2);
 

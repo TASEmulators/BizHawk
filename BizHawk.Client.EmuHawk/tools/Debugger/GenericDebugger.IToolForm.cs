@@ -15,7 +15,7 @@ namespace BizHawk.Client.EmuHawk
 		[OptionalService]
 		private IDisassemblable Disassembler { get; set; }
 
-		[OptionalService]
+		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
 		private IMemoryCallbackSystem MemoryCallbacks { get { return Debuggable.MemoryCallbacks; } }

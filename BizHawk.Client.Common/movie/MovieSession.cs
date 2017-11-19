@@ -318,7 +318,7 @@ namespace BizHawk.Client.Common
 			if (Movie is TasMovie)
 			{
 				(Movie as TasMovie).GreenzoneCurrentFrame();
-				if (Movie.IsPlaying && Global.Emulator.Frame > Movie.InputLogLength)
+				if (Movie.IsPlaying && Global.Emulator.Frame >= Movie.InputLogLength)
 				{
 					HandleFrameLoopForRecordMode();
 				}

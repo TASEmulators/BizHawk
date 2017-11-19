@@ -218,12 +218,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("VRAMBuffer", ref VRAMBuffer);
 			ser.Sync("ppu_addr_temp", ref ppu_addr_temp);
 
+			ser.Sync("spr_true_count", ref spr_true_count);
+			ser.Sync("sprite_eval_write", ref sprite_eval_write);
 			ser.Sync("Read_Value", ref read_value);
 			ser.Sync("Prev_soam_index", ref soam_index_prev);
 			ser.Sync("Spr_Zero_Go", ref sprite_zero_go);
 			ser.Sync("Spr_zero_in_Range", ref sprite_zero_in_range);
 			ser.Sync("Is_even_cycle", ref is_even_cycle);
 			ser.Sync("soam_index", ref soam_index);
+			ser.Sync("soam_m_index", ref soam_m_index);
+			ser.Sync("oam_index", ref oam_index);
+			ser.Sync("oam_index_aux", ref oam_index_aux);
+			ser.Sync("soam_index_aux", ref soam_index_aux);
+			ser.Sync("yp", ref yp);
+			ser.Sync("target", ref target);
+			ser.Sync("ppu_was_on", ref ppu_was_on);
+			ser.Sync("spriteHeight", ref spriteHeight);
 			ser.Sync("install_2006", ref install_2006);
 			ser.Sync("race_2006", ref race_2006);
 			ser.Sync("install_2001", ref install_2001);
@@ -236,6 +246,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ser.Sync("glitchy_reads_2003", ref glitchy_reads_2003, false);
 
 			ser.Sync("OAM", ref OAM, false);
+			ser.Sync("soam", ref soam, false);
 			ser.Sync("PALRAM", ref PALRAM, false);
 
 			ser.Sync("Reg2002_objoverflow", ref Reg2002_objoverflow);

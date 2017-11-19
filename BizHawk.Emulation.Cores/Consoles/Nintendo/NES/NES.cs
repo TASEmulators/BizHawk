@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		isPorted: false,
 		isReleased: true)]
 	public partial class NES : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
-		IBoardInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>
+		IBoardInfo, ISettable<NES.NESSettings, NES.NESSyncSettings>, ICodeDataLogger
 	{
 		[CoreConstructor("NES")]
 		public NES(CoreComm comm, GameInfo game, byte[] rom, object settings, object syncSettings)
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			ControllerSettings = SyncSettings.Controls;
 			CoreComm = comm;
 
-			MemoryCallbacks = new MemoryCallbackSystem();
+			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 			BootGodDB.Initialize();
 			videoProvider = new MyVideoProvider(this);
 			Init(game, rom, fdsbios);
@@ -876,10 +876,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 //todo
 //http://blog.ntrq.net/?p=428
-//cpu bus junk bits
-
-//UBER DOC
-//http://nocash.emubase.de/everynes.htm
 
 //A VERY NICE board assignments list
 //http://personales.epsg.upv.es/~jogilmo1/nes/TEXTOS/ARXIUS/BOARDTABLE.TXT
@@ -889,6 +885,3 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 //a mappers list
 //http://tuxnes.sourceforge.net/nesmapper.txt 
-
-//some ppu tests
-//http://nesdev.parodius.com/bbs/viewtopic.php?p=4571&sid=db4c7e35316cc5d734606dd02f11dccb

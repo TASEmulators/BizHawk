@@ -23,7 +23,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			return false;
 		}
 
-		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem();
+		private readonly MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 
 		[FeatureNotImplemented]

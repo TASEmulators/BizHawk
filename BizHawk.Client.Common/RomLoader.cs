@@ -13,6 +13,7 @@ using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Nintendo.GBHawk;
 using BizHawk.Emulation.Cores.Nintendo.SNES;
 using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.Saturn;
@@ -514,7 +515,9 @@ namespace BizHawk.Client.Common
 							// try to use our wizard methods
 							game = new GameInfo { Name = Path.GetFileNameWithoutExtension(file.Name), Hash = discHash };
 
-							switch (new DiscIdentifier(disc).DetectDiscType())
+                            var dt = new DiscIdentifier(disc).DetectDiscType();
+
+                            switch (dt)
 							{
 								case DiscType.SegaSaturn:
 									game.System = "SAT";
@@ -532,9 +535,23 @@ namespace BizHawk.Client.Common
 								case DiscType.PCFX:
 									game.System = "PCFX";
 									break;
+                                case DiscType.TurboCD:
+                                    game.System = "PCECD";
+                                    break;
+
+                                case DiscType.Amiga:
+                                case DiscType.CDi:
+                                case DiscType.Dreamcast:
+                                case DiscType.GameCube:
+                                case DiscType.NeoGeoCD:
+                                case DiscType.Panasonic3DO:
+                                case DiscType.Playdia:
+                                case DiscType.Wii:
+                                    // no supported emulator core for these (yet)
+                                    game.System = dt.ToString();
+                                    throw new NoAvailableCoreException(dt.ToString());
 
 								case DiscType.AudioDisc:
-								case DiscType.TurboCD:
 								case DiscType.UnknownCDFS:
 								case DiscType.UnknownFormat:
 									if (PreferredPlatformIsDefined(ext))
@@ -543,7 +560,7 @@ namespace BizHawk.Client.Common
 									}
 									else
 									{
-										game.System = "PCECD";
+                                        game.System = "NULL"; // "PCECD";
 									}
 
 									break;
@@ -552,6 +569,9 @@ namespace BizHawk.Client.Common
 
 						switch (game.System)
 						{
+                            case "NULL":
+                                nextEmulator = null;
+                                break;
 							case "GEN":
 								var genesis = new GPGX(nextComm, null, new[] { disc }, GetCoreSettings<GPGX>(), GetCoreSyncSettings<GPGX>());
 								nextEmulator = genesis;
@@ -916,10 +936,36 @@ namespace BizHawk.Client.Common
 								break;
 
 							case "GB":
-							case "GBC":
 								if (!Global.Config.GB_AsSGB)
 								{
-									core = CoreInventory.Instance["GB", "Gambatte"];
+									if (Global.Config.GB_UseGBHawk)
+									{
+										core = CoreInventory.Instance["GB", "GBHawk"];
+									}
+									else
+									{
+										core = CoreInventory.Instance["GB", "Gambatte"];
+									}
+								}
+								else
+								{
+									if (Global.Config.SGB_UseBsnes)
+									{
+										game.System = "SNES";
+										game.AddOption("SGB");
+										var snes = new LibsnesCore(game, rom.FileData, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+										nextEmulator = snes;
+									}
+									else
+									{
+										core = CoreInventory.Instance["SGB", "SameBoy"];
+									}
+								}
+								break;
+							case "GBC":
+								if (!Global.Config.GB_AsSGB)
+								{	
+									core = CoreInventory.Instance["GBC", "Gambatte"];
 								}
 								else
 								{
@@ -1029,7 +1075,14 @@ namespace BizHawk.Client.Common
 						DoMessageCallback("Failed to load a GB rom in SGB mode.  Disabling SGB Mode.");
 						return LoadRom(path, nextComm, false, recursiveCount + 1);
 					}
-					else
+
+                    // handle exceptions thrown by the new detected systems that bizhawk does not have cores for
+                    else if (ex is NoAvailableCoreException)
+                    {
+                        DoLoadErrorCallback(ex.Message + "\n\n" + ex, system);
+                    }
+
+                    else
 					{
 						DoLoadErrorCallback("A core accepted the rom, but threw an exception while loading it:\n\n" + ex, system);
 					}

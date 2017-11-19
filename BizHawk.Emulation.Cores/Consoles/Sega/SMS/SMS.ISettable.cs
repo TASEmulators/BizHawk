@@ -38,7 +38,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			public bool SpriteLimit = false;
 			public bool Fix3D = true;
 			public bool DisplayOverscan = false;
-			public string ControllerType = "Standard";
 
 			// GG settings
 			public bool ShowClippedRegions = false;
@@ -66,6 +65,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			public bool UseBIOS = true;
 			public string ConsoleRegion = "Export";
 			public string DisplayType = "NTSC";
+			public string ControllerType = "Standard";
 
 			public SMSSyncSettings Clone()
 			{
@@ -79,7 +79,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					x.AllowOverlock != y.AllowOverlock ||
 					x.UseBIOS != y.UseBIOS ||
 					x.ConsoleRegion != y.ConsoleRegion ||
-					x.DisplayType != y.DisplayType;
+					x.DisplayType != y.DisplayType ||
+					x.ControllerType != y.ControllerType;
 			}
 		}
 	}

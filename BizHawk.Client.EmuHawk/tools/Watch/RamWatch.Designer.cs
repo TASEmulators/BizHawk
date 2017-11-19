@@ -114,6 +114,7 @@
 			this.PrevColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.ChangesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DiffColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.TypeColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.DomainColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.NotesColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.ListViewContextMenu.SuspendLayout();
@@ -850,6 +851,7 @@
             this.PrevColumn,
             this.ChangesColumn,
             this.DiffColumn,
+            this.TypeColumn,
             this.DomainColumn,
             this.NotesColumn});
 			this.WatchListView.ContextMenuStrip = this.ListViewContextMenu;
@@ -907,6 +909,12 @@
 			this.DiffColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
 			this.DiffColumn.Width = 59;
 			// 
+			// TypeColumn
+			// 
+			this.TypeColumn.Name = "TypeColumn";
+			this.TypeColumn.Text = "Type";
+			this.TypeColumn.Width = 55;
+			// 
 			// DomainColumn
 			// 
 			this.DomainColumn.Name = "DomainColumn";
@@ -959,6 +967,7 @@
 		private System.Windows.Forms.ColumnHeader PrevColumn;
 		private System.Windows.Forms.ColumnHeader ChangesColumn;
 		private System.Windows.Forms.ColumnHeader DiffColumn;
+		private System.Windows.Forms.ColumnHeader TypeColumn;
 		private System.Windows.Forms.ColumnHeader DomainColumn;
 		private System.Windows.Forms.ColumnHeader NotesColumn;
 		private MenuStripEx RamWatchMenu;

@@ -309,6 +309,14 @@ namespace BizHawk.Emulation.DiscSystem
             // parse header
             aFile.Header = aFile.Header.Parse(stream);
 
+            // check version to make sure this is only v1.x
+            // currently NO support for version 2.x
+
+            if (aFile.Header.Version[0] > 1)
+            {
+                throw new MDSParseException("MDS Parse Error: Only MDS version 1.x is supported!\nDetected version: " + aFile.Header.Version[0] + "." + aFile.Header.Version[1]);
+            }
+
             // parse sessions
             Dictionary<int, ASession> aSessions = new Dictionary<int, ASession>();
 

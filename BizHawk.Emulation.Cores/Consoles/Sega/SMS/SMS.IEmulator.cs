@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					return GGController;
 				}
 
-				switch(Settings.ControllerType)
+				switch(SyncSettings.ControllerType)
 				{
 					case "Paddle":
 						return SMSPaddleController;
@@ -24,6 +24,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						SMSLightPhaserController.FloatRanges[1] = new ControllerDefinition.FloatRange(0, Vdp.FrameHeight / 2, Vdp.FrameHeight - 1);
 
 						return SMSLightPhaserController;
+					case "Sports Pad":
+						return SMSSportsPadController;
 					default:
 						return SmsController;
 				}

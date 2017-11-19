@@ -17,13 +17,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			var ser = new BasicServiceProvider(this);
 			ServiceProvider = ser;
-			MemoryCallbacks = new MemoryCallbackSystem();
+			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 			CoreComm = comm;
 			_syncSettings = (ColecoSyncSettings)syncSettings ?? new ColecoSyncSettings();
 			bool skipbios = _syncSettings.SkipBiosIntro;
 
 			_cpu = new Z80A
 			{
+				FetchMemory = ReadMemory,
 				ReadMemory = ReadMemory,
 				WriteMemory = WriteMemory,
 				ReadHardware = ReadPort,

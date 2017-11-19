@@ -10,7 +10,6 @@ using BizHawk.Emulation.Cores.Components.Z80A;
   TODO: 
   + HCounter (Manually set for light phaser emulation... should be only case it's polled)
   + Try to clean up the organization of the source code. 
-  + Lightgun/Paddle/etc if I get really bored  (first 2 done!)
   + Mode 1 not implemented in VDP TMS modes. (I dont have a test case in SG1000 or Coleco)
  
 **********************************************************/
@@ -33,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Settings = (SMSSettings)settings ?? new SMSSettings();
 			SyncSettings = (SMSSyncSettings)syncSettings ?? new SMSSyncSettings();
 			CoreComm = comm;
-			MemoryCallbacks = new MemoryCallbackSystem();
+			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
 			IsGameGear = game.System == "GG";
 			IsSG1000 = game.System == "SG";
@@ -79,6 +78,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				ReadHardware = ReadPort,
 				WriteHardware = WritePort,
+				FetchMemory = ReadMemory,
 				ReadMemory = ReadMemory,
 				WriteMemory = WriteMemory,
 				MemoryCallbacks = MemoryCallbacks
@@ -262,7 +262,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		/// <summary>
 		/// A dummy FetchMemory that simply reads the memory
 		/// </summary>
-		private byte FetchMemory_StubThunk(ushort address, bool first)
+		private byte FetchMemory_StubThunk(ushort address)
 		{
 			return ReadMemory(address);
 		}

@@ -2,7 +2,7 @@
 /snes9xgit
 
 svnrev.cs
-
+.vs/**
 **/bin/**
 **/obj/**
 /output/**

@@ -25,6 +25,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 						WriteHook(_comm->addr, (byte)_comm->value);
 						break;
 
+					case eMessage.eMessage_BRK_hook_exec_smp:
+						ExecHook_SMP(_comm->addr);
+						break;
+					case eMessage.eMessage_BRK_hook_read_smp:
+						ReadHook_SMP(_comm->addr);
+						break;
+					case eMessage.eMessage_BRK_hook_write_smp:
+						WriteHook_SMP(_comm->addr, (byte)_comm->value);
+						break;
+
 					//not supported yet
 					case eMessage.eMessage_BRK_hook_nmi:
 						break;

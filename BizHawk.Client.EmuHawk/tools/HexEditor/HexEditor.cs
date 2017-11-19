@@ -80,6 +80,9 @@ namespace BizHawk.Client.EmuHawk
 		private HexFind _hexFind = new HexFind();
 
 		[ConfigPersist]
+		private bool SwapBytes { get; set; }
+
+		[ConfigPersist]
 		private bool BigEndian { get; set; }
 
 		[ConfigPersist]
@@ -179,7 +182,9 @@ namespace BizHawk.Client.EmuHawk
 				_domain = MemoryDomains.MainMemory;
 			}
 
+			SwapBytes = false;
 			BigEndian = _domain.EndianType == MemoryDomain.Endian.Big;
+
 			_maxRow = _domain.Size / 2;
 
 			// Don't reset scroll bar if restarting the same rom
@@ -528,11 +533,19 @@ namespace BizHawk.Client.EmuHawk
 					{
 						int t_val = 0;
 						int t_next = 0;
-
+						bool is_cht;
 						for (int k = 0; k < DataSize; k++)
 						{
-							t_next = MakeValue(1, _addr + j + k);
-							t_val += (t_next << ((DataSize - k - 1) * 8));
+							t_next = MakeValue(1, _addr + j + k, out is_cht);
+
+							if (SwapBytes)
+							{
+								t_val += (t_next << (k * 8));															
+							}
+							else
+							{
+								t_val += (t_next << ((DataSize - k - 1) * 8));
+							}							
 						}
 
 						rowStr.AppendFormat(_digitFormatString, t_val);
@@ -574,28 +587,31 @@ namespace BizHawk.Client.EmuHawk
 				: _domain.PeekByte(address); 
 		}
 
-		private int MakeValue(int dataSize, long address)
+		private int MakeValue(int dataSize, long address, out bool is_cheat)
 		{
 			if (Global.CheatList.IsActive(_domain, address))
 			{
+				is_cheat = true;
 				return Global.CheatList.GetCheatValue(_domain, address, (WatchSize)dataSize ).Value;
 			}
 
+			is_cheat = false;
 			switch (dataSize)
 			{
 				default:
 				case 1:
 					return _domain.PeekByte(address);
 				case 2:
-					return _domain.PeekUshort(address, BigEndian);
+					return _domain.PeekUshort(address, SwapBytes);
 				case 4:
-					return (int)_domain.PeekUint(address, BigEndian);
+					return (int)_domain.PeekUint(address, SwapBytes);
 			}
 		}
 
 		private int MakeValue(long address)
 		{
-			return MakeValue(DataSize, address);
+			bool temp;
+			return MakeValue(DataSize, address, out temp);
 		}
 
 		private void SetMemoryDomain(string name)
@@ -609,6 +625,7 @@ namespace BizHawk.Client.EmuHawk
 				_domain = MemoryDomains[name];
 			}
 
+			SwapBytes = false;
 			BigEndian = _domain.EndianType == MemoryDomain.Endian.Big;
 			_maxRow = _domain.Size / 2;
 			SetUpScrollBar();
@@ -1453,8 +1470,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					long start = addresses[i];
 					long end = addresses[i] + DataSize -1 ;
+					bool temp;
 					for(long a = start;a<=end;a++)
-						sb.AppendFormat("{0:X2}", MakeValue(1,a));
+						sb.AppendFormat("{0:X2}", MakeValue(1,a, out temp));
 				}
 			}
 
@@ -1607,7 +1625,13 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BigEndianMenuItem_Click(object sender, EventArgs e)
 		{
-			BigEndian ^= true;
+			//BigEndian ^= true;
+			//UpdateValues();
+		}
+
+		private void SwapBytesMenuItem_Click(object sender, EventArgs e)
+		{
+			SwapBytes ^= true;
 			UpdateValues();
 		}
 

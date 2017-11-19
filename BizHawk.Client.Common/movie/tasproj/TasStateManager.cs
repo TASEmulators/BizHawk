@@ -44,14 +44,16 @@ namespace BizHawk.Client.Common
 		private readonly TasMovie _movie;
 		private ulong _expectedStateSize;
 
-		private readonly int _minFrequency = VersionInfo.DeveloperBuild ? 2 : 1;
+		private readonly int _minFrequency = 1;
 		private const int MaxFrequency = 16;
+		private int MaxStates => (int)(Settings.Cap / _expectedStateSize) + (int)((ulong)Settings.DiskCapacitymb * 1024 * 1024 / _expectedStateSize);
+		private int FileStateGap => 1 << Settings.FileStateGap;
 
 		private int StateFrequency
 		{
 			get
 			{
-				int freq = (int)(_expectedStateSize / 65536);
+				int freq = (int)_expectedStateSize / Settings.MemStateGapDivider / 1024;
 
 				if (freq < _minFrequency)
 				{
@@ -66,11 +68,7 @@ namespace BizHawk.Client.Common
 				return freq;
 			}
 		}
-
-		private int MaxStates => (int)(Settings.Cap / _expectedStateSize) + (int)((ulong)Settings.DiskCapacitymb * 1024 * 1024 / _expectedStateSize);
-
-		private int StateGap => 1 << Settings.StateGap;
-
+		
 		public TasStateManager(TasMovie movie)
 		{
 			_movie = movie;
@@ -585,7 +583,7 @@ namespace BizHawk.Client.Common
 			for (int i = 1; i < _states.Count; i++)
 			{
 				if (_movie.Markers.IsMarker(_states.ElementAt(i).Key + 1)
-					|| _states.ElementAt(i).Key % StateGap == 0)
+					|| _states.ElementAt(i).Key % FileStateGap == 0)
 				{
 					continue;
 				}

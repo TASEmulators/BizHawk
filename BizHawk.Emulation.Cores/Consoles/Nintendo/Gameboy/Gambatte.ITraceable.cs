@@ -1,7 +1,7 @@
 ﻿using System;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Components.Z80GB;
+using BizHawk.Emulation.Common.Components.LR35902;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -19,8 +19,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			Tracer.Put(new TraceInfo
 			{
 				Disassembly =
-					NewDisassembler
-						.Disassemble((ushort)s[1], addr => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused)
+					LR35902.Disassemble((ushort)s[1], addr => LibGambatte.gambatte_cpuread(GambatteState, addr), out unused)
 						.PadRight(36),
 				RegisterInfo =
 					string.Format(
