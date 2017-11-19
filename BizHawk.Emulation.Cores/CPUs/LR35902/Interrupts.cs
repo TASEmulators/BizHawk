@@ -27,7 +27,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			set { if (value < 0 || value > 2) throw new ArgumentOutOfRangeException(); interruptMode = value; }
 		}
 
-		private void INTERRUPT_(ushort src)
+		private void INTERRUPT_()
 		{
 			cur_instr = new ushort[]
 						{IDLE,
@@ -40,19 +40,21 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						DEC16, SPl, SPh,
 						IDLE,
 						WR, SPl, SPh, PCh,
-						IDLE,
+						INT_GET, // NOTE: here is where we check for a cancelled IRQ
 						DEC16, SPl, SPh,
 						IDLE,
 						WR, SPl, SPh, PCl,
 						IDLE,
-						ASGN, PCl, INT_vectors[src],
 						IDLE,
+						TR, PCl, W,
 						ASGN, PCh, 0,
 						IDLE,
 						OP };
 		}
 
-		private static ushort[] INT_vectors = new ushort[] {0x40, 0x48, 0x50, 0x58, 0x60};
+		private static ushort[] INT_vectors = new ushort[] {0x40, 0x48, 0x50, 0x58, 0x60, 0x00};
+
+		public ushort int_src;
 
 		private void ResetInterrupts()
 		{

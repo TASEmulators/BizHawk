@@ -56,6 +56,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		public const ushort JAM = 41;  // all undocumented opcodes jam the machine
 		public const ushort RD_F = 42; // special read case to pop value into F
 		public const ushort EI_RETI = 43; // reti has no delay in interrupt enable
+		public const ushort INT_GET = 44;
 
 		public LR35902()
 		{
@@ -134,20 +135,20 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							});
 						}
 
-						// call interrupt processor with the appropriate source
+						// call interrupt processor 
 						// lowest bit set is highest priority
-						ushort priority = 0;
-
-						if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { priority = 0; interrupt_src -= 1; }
-						else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { priority = 1; interrupt_src -= 2; }
-						else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { priority = 2; interrupt_src -= 4; }
-						else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { priority = 3; interrupt_src -= 8; }
-						else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { priority = 4; interrupt_src -= 16; }
-						else { /*Console.WriteLine("No source"); }*/throw new Exception("Interrupt without Source"); }
+						
+						if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; }
+						else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; }
+						else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { int_src = 2; }
+						else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { int_src = 3; }
+						else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; }
+						else { /*Console.WriteLine("No source"); }*/ throw new Exception("Interrupt without Source"); }
+						
 
 						if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
 
-						INTERRUPT_(priority);
+						INTERRUPT_();
 					}
 					else
 					{
@@ -284,22 +285,20 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							});
 						}
 						halted = false;
-						// call interrupt processor with the appropriate source
-						// lowest bit set is highest priority
-						// call interrupt processor with the appropriate source
-						// lowest bit set is highest priority
-						ushort priority = 0;
-
-						if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { priority = 0; interrupt_src -= 1; }
-						else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { priority = 1; interrupt_src -= 2; }
-						else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { priority = 2; interrupt_src -= 4; }
-						else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { priority = 3; interrupt_src -= 8; }
-						else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { priority = 4; interrupt_src -= 16; }
-						else { /*Console.WriteLine("No source"); }*/throw new Exception("Interrupt without Source"); }
-
-						if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
+						// call interrupt processor 
 						instr_pntr = 0;
-						INTERRUPT_(priority);
+						// lowest bit set is highest priority
+						
+						if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; }
+						else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; }
+						else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { int_src = 2; }
+						else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { int_src = 3; }
+						else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; }
+						else { /*Console.WriteLine("No source"); } */throw new Exception("Interrupt without Source"); }
+						
+						if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
+
+						INTERRUPT_();
 					}
 					else if (FlagI)
 					{
@@ -385,6 +384,54 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 				case EI_RETI:
 					EI_pending = 1;
 					break;
+				case INT_GET:
+					// check if any interrupts got cancelled along the way
+					// interrupt src = 5 sets the PC to zero as observed
+
+					Console.WriteLine(int_src);
+					
+					if (int_src == 0) 
+					{
+						if (interrupt_enable.Bit(0)) { interrupt_src -= 1; }
+						else { int_src = 5; }
+					}
+					if (int_src == 1)
+					{
+						if (interrupt_enable.Bit(1)) { interrupt_src -= 2; }
+						else { int_src = 5; }
+					}
+					if (int_src == 2)
+					{
+						if (interrupt_enable.Bit(2)) { interrupt_src -= 4; }
+						else { int_src = 5; }
+					}
+					if (int_src == 3)
+					{
+						if (interrupt_enable.Bit(3)) { interrupt_src -= 8; }
+						else { int_src = 5; }
+					}
+					if (int_src == 4)
+					{
+						if (interrupt_enable.Bit(4)) { interrupt_src -= 16; }
+						else { int_src = 5; }
+					}
+
+					// if we lost the interrupt, find the next highest interrupt, if any
+					if (int_src == 5)
+					{
+						if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; interrupt_src -= 1; }
+						else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; interrupt_src -= 2; }
+						else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { int_src = 2; interrupt_src -= 4; }
+						else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { int_src = 3; interrupt_src -= 8; }
+						else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; interrupt_src -= 16; }
+						else { int_src = 5; }
+					}
+
+					if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
+
+					Regs[W] = INT_vectors[int_src];
+
+					break;
 			}
 			totalExecutedCycles++;
 		}
@@ -443,6 +490,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			ser.Sync("Halted", ref halted);
 			ser.Sync("ExecutedCycles", ref totalExecutedCycles);
 			ser.Sync("EI_pending", ref EI_pending);
+			ser.Sync("int_src", ref int_src);
 
 			ser.Sync("instruction_pointer", ref instr_pntr);
 			ser.Sync("current instruction", ref cur_instr, false);
