@@ -72,6 +72,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int SQ1_frq,				SQ2_frq,				WAVE_frq;
 		public ushort SQ1_length,		SQ2_length,				WAVE_length,				NOISE_length;
 		// state
+		public bool												WAVE_can_get;
 		public bool SQ1_calc_done;
 		public bool SQ1_swp_enable;
 		public bool SQ1_vol_done,		SQ2_vol_done,										NOISE_vol_done;
@@ -152,7 +153,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF3D:
 				case 0xFF3E:
 				case 0xFF3F:
-					ret = Wave_RAM[addr & 0x0F];
+					if (WAVE_enable)
+					{
+						if (WAVE_can_get) { ret = Wave_RAM[WAVE_wave_cntr >> 1]; }
+						else { ret = 0xFF; }						
+					}
+					else { ret = Wave_RAM[addr & 0x0F]; }
+					
 					break;
 			}
 
@@ -217,10 +224,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								SQ1_len_cntr = 64;
 								if (((value & 0x40) > 0) && ((sequencer_len & 1) > 0)) { SQ1_len_cntr--; }
 							}
-							SQ1_intl_cntr = 0;
 							SQ1_vol_state = SQ1_st_vol;
 							SQ1_vol_per = (SQ1_per > 0) ? SQ1_per : 8;
 							SQ1_frq_shadow = SQ1_frq;
+							SQ1_intl_cntr = (2048 - SQ1_frq_shadow) * 4;
 
 							SQ1_intl_swp_cnt = SQ1_swp_prd > 0 ? SQ1_swp_prd : 8;
 							SQ1_calc_done = false;
@@ -300,7 +307,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								SQ2_len_cntr = 64;
 								if (((value & 0x40) > 0) && ((sequencer_len & 1) > 0)) { SQ2_len_cntr--; }
 							}
-							SQ2_intl_cntr = 0;
+							SQ2_intl_cntr = (2048 - SQ2_frq) * 4;
 							SQ2_vol_state = SQ2_st_vol;
 							SQ2_vol_per = (SQ2_per > 0) ? SQ2_per : 8;
 							if ((SQ2_vol_state == 0) && !SQ2_env_add) { SQ2_enable = false; }
@@ -345,6 +352,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 						if (WAVE_trigger)
 						{
+							// some corruption occurs if triggering while reading
+							if (WAVE_enable && WAVE_intl_cntr == 2)
+							{
+								// we want to use the previous wave cntr value since it was just incremented
+								int t_wave_cntr = (WAVE_wave_cntr + 1) & 31;
+								if ((t_wave_cntr >> 1) < 4)
+								{
+									Wave_RAM[0] = Wave_RAM[t_wave_cntr >> 1];
+								}
+								else
+								{
+									Wave_RAM[0] = Wave_RAM[(t_wave_cntr >> 3) * 4];
+									Wave_RAM[1] = Wave_RAM[(t_wave_cntr >> 3) * 4 + 1];
+									Wave_RAM[2] = Wave_RAM[(t_wave_cntr >> 3) * 4 + 2];
+									Wave_RAM[3] = Wave_RAM[(t_wave_cntr >> 3) * 4 + 3];
+								}
+							}
+
 							WAVE_enable = true;
 
 							if (WAVE_len_cntr == 0)
@@ -352,7 +377,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								WAVE_len_cntr = 256;
 								if (((value & 0x40) > 0) && ((sequencer_len & 1) > 0)) { WAVE_len_cntr--; }
 							}
-							WAVE_intl_cntr = 0;
+							WAVE_intl_cntr = (2048 - WAVE_frq) * 2 + 6; // trigger delay for wave channel
 							WAVE_wave_cntr = 0;
 							if (!WAVE_DAC_pow) { WAVE_enable = false; }
 						}
@@ -402,7 +427,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								NOISE_len_cntr = 64;
 								if (((value & 0x40) > 0) && ((sequencer_len & 1) > 0)) { NOISE_len_cntr--; }
 							}
-							NOISE_intl_cntr = 0;
+							NOISE_intl_cntr = (DIVISOR[NOISE_div_code] << NOISE_clk_shft);
 							NOISE_vol_state = NOISE_st_vol;
 							NOISE_vol_per = (NOISE_per > 0) ? NOISE_per : 8;
 							NOISE_LFSR = 0x7FFF;
@@ -452,7 +477,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 0xFF3D:
 					case 0xFF3E:
 					case 0xFF3F:
-						Wave_RAM[addr & 0x0F] = value;
+						if (WAVE_enable)
+						{
+							if (WAVE_can_get) { Wave_RAM[WAVE_wave_cntr >> 1] = value; }
+						}
+						else { Wave_RAM[addr & 0xF] = value; }
+
 						break;
 				}
 			}
@@ -515,10 +545,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// calculate square1's output
 			if (SQ1_enable)
 			{
-				SQ1_intl_cntr++;
-				if (SQ1_intl_cntr >= (2048 - SQ1_frq_shadow) * 4)
+				SQ1_intl_cntr--;
+				if (SQ1_intl_cntr == 0)
 				{
-					SQ1_intl_cntr = 0;
+					SQ1_intl_cntr = (2048 - SQ1_frq_shadow) * 4;
 					SQ1_duty_cntr++;
 					SQ1_duty_cntr &= 7;
 
@@ -530,10 +560,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// calculate square2's output
 			if (SQ2_enable)
 			{
-				SQ2_intl_cntr++;
-				if (SQ2_intl_cntr >= (2048 - SQ2_frq) * 4)
+				SQ2_intl_cntr--;
+				if (SQ2_intl_cntr == 0)
 				{
-					SQ2_intl_cntr = 0;
+					SQ2_intl_cntr = (2048 - SQ2_frq) * 4;
 					SQ2_duty_cntr++;
 					SQ2_duty_cntr &= 7;
 
@@ -543,14 +573,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			// calculate wave output
+			WAVE_can_get = false;
 			if (WAVE_enable)
 			{
-				WAVE_intl_cntr++;
-				if (WAVE_intl_cntr >= (2048 - WAVE_frq) * 2)
+				WAVE_intl_cntr--;
+
+				if (WAVE_intl_cntr == 0)
 				{
-					WAVE_intl_cntr = 0;
+					WAVE_intl_cntr = (2048 - WAVE_frq) * 2;
 					WAVE_wave_cntr++;
 					WAVE_wave_cntr &= 0x1F;
+
+					WAVE_can_get = true;
 
 					byte sample = Wave_RAM[WAVE_wave_cntr >> 1];
 
@@ -586,10 +620,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// calculate noise output
 			if (NOISE_enable)
 			{
-				NOISE_intl_cntr++;
-				if (NOISE_intl_cntr >= (DIVISOR[NOISE_div_code] << NOISE_clk_shft))
+				NOISE_intl_cntr--;
+				if (NOISE_intl_cntr == 0)
 				{
-					NOISE_intl_cntr = 0;
+					NOISE_intl_cntr = (DIVISOR[NOISE_div_code] << NOISE_clk_shft);
 					int bit_lfsr = (NOISE_LFSR & 1) ^ ((NOISE_LFSR & 2) >> 1);
 
 					NOISE_LFSR = (NOISE_LFSR >> 1) & 0x3FFF;
@@ -631,15 +665,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (AudioClocks < 1500)
 				{
 					AudioSamples[AudioClocks] = (short)(L_final * 4);
-					/*
-					Console_Write(SQ1_output);
-					Console_Write(" ");
-					Console_Write(SQ2_output);
-					Console_Write(" ");
-					Console_Write(WAVE_output);
-					Console_Write(" ");
-					Console_WriteLine(NOISE_output);
-					*/
 					AudioClocks++;
 					AudioSamples[AudioClocks] = (short)(R_final * 4);
 					AudioClocks++;
@@ -834,7 +859,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void Reset()
 		{
-			Wave_RAM = new byte[16];
+			Wave_RAM = new byte[] { 0x84, 0x40, 0x43, 0xAA, 0x2D, 0x78, 0x92, 0x3C,
+									0x60, 0x59, 0x59, 0xB0, 0x34, 0xB8, 0x2E, 0xDA };
 
 			Audio_Regs = new byte[21];
 
@@ -853,6 +879,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("Wave_Ram", ref Wave_RAM, false);
 
 			// save state variables
+			ser.Sync("WAVE_can_get", ref WAVE_can_get);
 			ser.Sync("SQ1_vol_done", ref SQ1_vol_done);
 			ser.Sync("SQ2_vol_done", ref SQ2_vol_done);
 			ser.Sync("NOISE_vol_done", ref NOISE_vol_done);

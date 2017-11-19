@@ -387,9 +387,6 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 				case INT_GET:
 					// check if any interrupts got cancelled along the way
 					// interrupt src = 5 sets the PC to zero as observed
-
-					Console.WriteLine(int_src);
-					
 					if (int_src == 0) 
 					{
 						if (interrupt_enable.Bit(0)) { interrupt_src -= 1; }
@@ -429,8 +426,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 
 					if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
 
-					Regs[W] = INT_vectors[int_src];
-
+					Regs[cur_instr[instr_pntr++]] = INT_vectors[int_src];
 					break;
 			}
 			totalExecutedCycles++;
