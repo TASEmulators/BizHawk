@@ -936,7 +936,31 @@ namespace BizHawk.Client.Common
 								break;
 
 							case "GB":
-								core = CoreInventory.Instance["GB", "GBHawk"];
+								if (!Global.Config.GB_AsSGB)
+								{
+									if (Global.Config.GB_UseGBHawk)
+									{
+										core = CoreInventory.Instance["GB", "GBHawk"];
+									}
+									else
+									{
+										core = CoreInventory.Instance["GB", "Gambatte"];
+									}
+								}
+								else
+								{
+									if (Global.Config.SGB_UseBsnes)
+									{
+										game.System = "SNES";
+										game.AddOption("SGB");
+										var snes = new LibsnesCore(game, rom.FileData, null, nextComm, GetCoreSettings<LibsnesCore>(), GetCoreSyncSettings<LibsnesCore>());
+										nextEmulator = snes;
+									}
+									else
+									{
+										core = CoreInventory.Instance["SGB", "SameBoy"];
+									}
+								}
 								break;
 							case "GBC":
 								if (!Global.Config.GB_AsSGB)
