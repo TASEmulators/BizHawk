@@ -26,11 +26,13 @@ namespace BizHawk.Client.Common
 		public const string PREV = "PrevColumn";
 		public const string CHANGES = "ChangesColumn";
 		public const string DIFF = "DiffColumn";
+		public const string TYPE = "TypeColumn";
 		public const string DOMAIN = "DomainColumn";
 		public const string NOTES = "NotesColumn";
 
 		private static readonly WatchDomainComparer DomainComparer = new WatchDomainComparer();
 		private static readonly WatchAddressComparer AddressComparer = new WatchAddressComparer();
+		private static readonly WatchFullDisplayTypeComparer DisplayTypeComparer = new WatchFullDisplayTypeComparer();
 		private static readonly WatchValueComparer ValueComparer = new WatchValueComparer();
 		private static readonly WatchPreviousValueComparer PreviousValueComparer = new WatchPreviousValueComparer();
 		private static readonly WatchValueDifferenceComparer ValueDifferenceComparer = new WatchValueDifferenceComparer();
@@ -293,6 +295,19 @@ namespace BizHawk.Client.Common
 					else
 					{
 						_watchList.Sort(DomainComparer);
+					}
+
+					break;
+
+				case TYPE:
+					if (reverse)
+					{
+						_watchList.Sort(DisplayTypeComparer);
+						_watchList.Reverse();
+					}
+					else
+					{
+						_watchList.Sort(DisplayTypeComparer);
 					}
 
 					break;
