@@ -11,8 +11,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		"GBHawk",
 		"",
 		isPorted: false,
-		isReleased: true)]
-	[ServiceNotApplicable(typeof(ISettable<,>), typeof(IDriveLight))]
+		isReleased: false)]
+	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
 	ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
 	{
@@ -87,6 +87,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_controllerDeck = new GBHawkControllerDeck(_syncSettings.Port1);
 
 			byte[] Bios = comm.CoreFileProvider.GetFirmware("GB", "World", false, "BIOS Not Found, Cannot Load");
+
+			if (Bios == null)
+			{
+				throw new MissingFirmwareException("Missing Gamboy Bios");
+			}
+				
 			_bios = Bios;
 
 			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);
@@ -107,6 +113,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(audio);
 			ServiceProvider = ser;
+
+			_settings = (GBSettings)settings ?? new GBSettings();
+			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
 
 			_tracer = new TraceBuffer { Header = cpu.TraceHeader };
 			ser.Register<ITraceable>(_tracer);

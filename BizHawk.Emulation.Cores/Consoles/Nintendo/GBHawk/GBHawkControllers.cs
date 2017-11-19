@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		int PortNum { get; }
 	}
 
-	[DisplayName("Standard controls")]
+	[DisplayName("Gameboy Controller")]
 	public class StandardControls : IPort
 	{
 		public StandardControls(int portNum)
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			PortNum = portNum;
 			Definition = new ControllerDefinition
 			{
-				Name = "Game Boy",
+				Name = "Gameboy Controller",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList()
@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		private static readonly string[] BaseDefinition =
 		{
-			"Right", "Left", "Up", "Down", "A", "B", "Select", "Start"
+			"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power"
 		};
 
 		public void SyncState(Serializer ser)
