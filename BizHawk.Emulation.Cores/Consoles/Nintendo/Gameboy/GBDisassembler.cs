@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Common.Components.Z80GB;
+using BizHawk.Emulation.Common.Components.LR35902;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		public override string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
 			ushort tmp;
-			string ret = NewDisassembler.Disassemble((ushort)addr, a => m.PeekByte(a), out tmp);
+			string ret = LR35902.Disassemble((ushort)addr, a => m.PeekByte(a), out tmp);
 			length = tmp;
 			return ret;
 		}

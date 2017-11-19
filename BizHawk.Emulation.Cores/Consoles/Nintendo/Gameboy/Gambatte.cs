@@ -99,16 +99,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 						break;
 				}
 
-				if (_syncSettings.EnableBIOS && BiosRom == null)
-				{
-					throw new MissingFirmwareException("Boot Rom not found");
-				}
-
 				// to disable BIOS loading into gambatte, just set bios_length to 0
-				if (!_syncSettings.EnableBIOS)
-				{
-					bios_length = 0;
-				}
+				bios_length = 0;
 
 				if (_syncSettings.GBACGB)
 				{

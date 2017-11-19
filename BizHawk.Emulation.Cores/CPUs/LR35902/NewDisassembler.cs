@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BizHawk.Emulation.Common.Components.Z80GB
+namespace BizHawk.Emulation.Common.Components.LR35902
 {
 	// adapted from the information at http://www.pastraiser.com/cpu/gameboy/gameboy_opcodes.html
-	public class NewDisassembler
+	public sealed partial class LR35902
 	{
 		static string[] table =
 		{

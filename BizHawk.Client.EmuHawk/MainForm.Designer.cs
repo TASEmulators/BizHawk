@@ -194,9 +194,12 @@
             this.MgbaCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Atari7800HawkCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SGBCoreSubmenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.SgbBsnesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SgbBsnesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SgbSameBoyMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.GBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GBCoreSubmenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.GBGambatteMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GBGBHawkMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.GBInSGBMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem16 = new System.Windows.Forms.ToolStripSeparator();
             this.allowGameDBCoreOverridesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
@@ -1810,7 +1813,8 @@
             this.CoreSNESSubMenu,
             this.GbaCoreSubMenu,
             this.SGBCoreSubmenu,
-            this.GBInSGBMenuItem,
+			this.GBCoreSubmenu,
+			this.GBInSGBMenuItem,
             this.toolStripMenuItem16,
             this.allowGameDBCoreOverridesToolStripMenuItem,
             this.toolStripSeparator8,
@@ -1908,10 +1912,20 @@
             this.SGBCoreSubmenu.Size = new System.Drawing.Size(239, 22);
             this.SGBCoreSubmenu.Text = "SGB";
             this.SGBCoreSubmenu.DropDownOpened += new System.EventHandler(this.SGBCoreSubmenu_DropDownOpened);
-            // 
-            // SgbBsnesMenuItem
-            // 
-            this.SgbBsnesMenuItem.Name = "SgbBsnesMenuItem";
+			// 
+			// GBCoreSubmenu
+			// 
+			this.GBCoreSubmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.GBGambatteMenuItem,
+			this.GBGBHawkMenuItem});
+			this.GBCoreSubmenu.Name = "GBCoreSubmenu";
+			this.GBCoreSubmenu.Size = new System.Drawing.Size(239, 22);
+			this.GBCoreSubmenu.Text = "GB";
+			this.GBCoreSubmenu.DropDownOpened += new System.EventHandler(this.GBCoreSubmenu_DropDownOpened);
+			// 
+			// SgbBsnesMenuItem
+			// 
+			this.SgbBsnesMenuItem.Name = "SgbBsnesMenuItem";
             this.SgbBsnesMenuItem.Size = new System.Drawing.Size(152, 22);
             this.SgbBsnesMenuItem.Text = "BSNES";
             this.SgbBsnesMenuItem.Click += new System.EventHandler(this.SgbCorePick_Click);
@@ -1922,10 +1936,24 @@
             this.SgbSameBoyMenuItem.Size = new System.Drawing.Size(152, 22);
             this.SgbSameBoyMenuItem.Text = "SameBoy";
             this.SgbSameBoyMenuItem.Click += new System.EventHandler(this.SgbCorePick_Click);
-            // 
-            // GBInSGBMenuItem
-            // 
-            this.GBInSGBMenuItem.Name = "GBInSGBMenuItem";
+			// 
+			// GBGambatteMenuItem
+			// 
+			this.GBGambatteMenuItem.Name = "GBGambatteMenuItem";
+			this.GBGambatteMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.GBGambatteMenuItem.Text = "Gambatte";
+			this.GBGambatteMenuItem.Click += new System.EventHandler(this.GBCorePick_Click);
+			// 
+			// GBGBHawkMenuItem
+			// 
+			this.GBGBHawkMenuItem.Name = "GBGBHawkMenuItem";
+			this.GBGBHawkMenuItem.Size = new System.Drawing.Size(152, 22);
+			this.GBGBHawkMenuItem.Text = "GBHawk";
+			this.GBGBHawkMenuItem.Click += new System.EventHandler(this.GBCorePick_Click);
+			// 
+			// GBInSGBMenuItem
+			// 
+			this.GBInSGBMenuItem.Name = "GBInSGBMenuItem";
             this.GBInSGBMenuItem.Size = new System.Drawing.Size(239, 22);
             this.GBInSGBMenuItem.Text = "GB in SGB";
             this.GBInSGBMenuItem.Click += new System.EventHandler(this.GbInSgbMenuItem_Click);
@@ -4407,6 +4435,9 @@
 		private System.Windows.Forms.ToolStripMenuItem SGBCoreSubmenu;
 		private System.Windows.Forms.ToolStripMenuItem SgbBsnesMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SgbSameBoyMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem GBCoreSubmenu;
+		private System.Windows.Forms.ToolStripMenuItem GBGambatteMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem GBGBHawkMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem pCFXToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem3;
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerToolStripMenuItem;
