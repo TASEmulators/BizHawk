@@ -23,11 +23,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				Name = Port1.Definition.Name,
 				BoolButtons = Port1.Definition.BoolButtons
-					.Concat(new[]
-					{
-						"Power",
-						"Reset",
-					})
 					.ToList()
 			};
 
