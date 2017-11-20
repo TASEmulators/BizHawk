@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		private static readonly string[] BaseDefinition =
 		{
-			"Up", "Down", "Left", "Right", "Start", "Select", "B", "A", "Power"
+			"Right", "Left", "Up", "Down", "A", "B", "Select", "Start", "Power"
 		};
 
 		public void SyncState(Serializer ser)
