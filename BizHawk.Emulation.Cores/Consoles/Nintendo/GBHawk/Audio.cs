@@ -192,7 +192,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ1_st_vol = (byte)((value & 0xF0) >> 4);
 						SQ1_env_add = (value & 8) > 0;
 						SQ1_per = (byte)(value & 7);
-						if (SQ1_per == 0) { SQ1_per = 8; }
 						if ((value & 0xF8) == 0) { SQ1_enable = SQ1_swp_enable = false; }
 						break;
 					case 0xFF13:                                        // NR13 (freq low)
@@ -274,7 +273,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ2_st_vol = (byte)((value & 0xF0) >> 4);
 						SQ2_env_add = (value & 8) > 0;
 						SQ2_per = (byte)(value & 7);
-						//if (SQ2_per == 0) { SQ2_per = 8; }
 						if ((value & 0xF8) == 0) { SQ2_enable = false; }
 						break;
 					case 0xFF18:                                        // NR23 (freq low)
@@ -395,7 +393,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						NOISE_st_vol = (byte)((value & 0xF0) >> 4);
 						NOISE_env_add = (value & 8) > 0;
 						NOISE_per = (byte)(value & 7);
-						//if (NOISE_per == 0) { NOISE_per = 8; }
 						if ((value & 0xF8) == 0) { NOISE_enable = false; }
 						break;
 					case 0xFF22:                                        // NR43 (shift)
@@ -664,9 +661,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				master_audio_clock = 0;
 				if (AudioClocks < 1500)
 				{
-					AudioSamples[AudioClocks] = (short)(L_final * 4);
+					AudioSamples[AudioClocks] = (short)(L_final * 20);
 					AudioClocks++;
-					AudioSamples[AudioClocks] = (short)(R_final * 4);
+					AudioSamples[AudioClocks] = (short)(R_final * 20);
 					AudioClocks++;
 				}
 			}
@@ -837,9 +834,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			// duty and length are reset
-			SQ1_duty_cntr = 0;
-			SQ2_duty_cntr = 0;
-
+			SQ1_duty_cntr = SQ2_duty_cntr = 0;
 
 			// reset state variables
 			SQ1_enable = SQ1_swp_enable = SQ2_enable = WAVE_enable = NOISE_enable = false;
