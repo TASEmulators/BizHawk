@@ -639,7 +639,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						pixel |= tile_data_latch[1].Bit(7 - (render_counter % 8)) ? 2 : 0;
 
 						int ref_pixel = pixel;
-						pixel = (BGP >> (pixel * 2)) & 3;
+						if (LCDC.Bit(0))
+						{
+							pixel = (BGP >> (pixel * 2)) & 3;
+						}
+						else
+						{
+							pixel = 0;
+						}
+						
 
 						// now we have the BG pixel, we next need the sprite pixel
 						if (!no_sprites)
