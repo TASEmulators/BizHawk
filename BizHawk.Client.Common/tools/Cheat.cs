@@ -288,17 +288,17 @@ namespace BizHawk.Client.Common
 					{
 						if (addr == _watch.Address)
 						{
-							return (byte)(_val & 0xFF);
+							return (byte)(_val >> 8);
 						}
-						return (byte)(_val >> 8);
+						return (byte)(_val & 0xFF);
 					}
 					else
 					{
 						if (addr == _watch.Address)
 						{
-							return (byte)(_val >> 8);
+							return (byte)(_val & 0xFF);
 						}
-						return (byte)(_val & 0xFF);
+						return (byte)(_val >> 8);
 					}
 				case WatchSize.DWord:
 					if (_watch.BigEndian)
