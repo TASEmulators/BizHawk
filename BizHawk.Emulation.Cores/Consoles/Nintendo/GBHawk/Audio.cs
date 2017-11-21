@@ -454,8 +454,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						// NOTE: Make sure to do the power off first since it will call the write_reg function again
 						if ((value & 0x80) == 0) { power_off(); }
 						AUD_CTRL_power = (value & 0x80) > 0;
-						Console.Write("NR52");
-						Console.WriteLine(value);
 						break;
 
 					// wave ram table

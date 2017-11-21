@@ -174,9 +174,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if ((DMA_clock % 4) == 1)
 					{
 						// the cpu can't access memory during this time, but we still need the ppu to be able to.
-						DMA_start = false;
+						OAM_access_read = true;
 						DMA_byte = Core.ReadMemory((ushort)((DMA_addr << 8) + DMA_inc));
-						DMA_start = true;
+						OAM_access_read = false;
 					}
 					else if ((DMA_clock % 4) == 3)
 					{
@@ -637,7 +637,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						pixel = tile_data_latch[0].Bit(7 - (render_counter % 8)) ? 1 : 0;
 						pixel |= tile_data_latch[1].Bit(7 - (render_counter % 8)) ? 2 : 0;
+
+						int ref_pixel = pixel;
 						pixel = (BGP >> (pixel * 2)) & 3;
+
 						// now we have the BG pixel, we next need the sprite pixel
 						if (!no_sprites)
 						{
@@ -682,9 +685,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								{
 									if (!sprite_attr.Bit(7))
 									{
-										if (s_pixel != 0) { use_sprite = true; }
+										use_sprite = true;
 									}
-									else if (pixel == 0)
+									else if (ref_pixel == 0)
 									{
 										use_sprite = true;
 									}
@@ -704,7 +707,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									else
 									{
 										pixel = (obj_pal_0 >> (s_pixel * 2)) & 3;
-									}
+									}							
 								}
 							}
 						}
@@ -1029,7 +1032,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			LY = 0;
 			LYC = 0;
 			DMA_addr = 0;
-			BGP = 0;
+			BGP = 0xFF;
 			obj_pal_0 = 0xFF;
 			obj_pal_1 = 0xFF;
 			window_y = 0;
