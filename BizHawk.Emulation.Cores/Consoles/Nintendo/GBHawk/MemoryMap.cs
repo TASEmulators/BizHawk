@@ -30,7 +30,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte ReadMemory(ushort addr)
 		{
 			MemoryCallbacks.CallReads(addr, "System Bus");
-
+			
+			if (ppu.DMA_start)
+			{
+				if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
+				{
+					return OAM[addr - 0xFE00];
+				}
+				else if ((addr >= 0xFF80))
+				{
+					return ZP_RAM[addr - 0xFF80];
+				}
+				else if ((addr >= 0xE000) && (addr < 0xFE00))
+				{
+					return RAM[addr - 0xE000]; // some of gekkio's tests require this to be accessible during DMA
+				}
+				else if (addr < 0x4000)
+				{
+					return mapper.ReadMemory(addr); // some of gekkio's tests require this to be accessible during DMA
+				}
+				return 0xFF;
+			}
+			
 			if (addr < 0x100)
 			{
 				// return Either BIOS ROM or Game ROM
@@ -102,6 +123,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void WriteMemory(ushort addr, byte value)
 		{
 			MemoryCallbacks.CallWrites(addr, "System Bus");
+			
+			if (ppu.DMA_start)
+			{
+				if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
+				{
+					OAM[addr - 0xFE00] = value; 
+				}
+				else if ((addr >= 0xFF80))
+				{
+					ZP_RAM[addr - 0xFF80] = value;
+				}
+				else if (addr == 0xFF46)
+				{
+					Write_Registers(addr, value); // a second DMA can start, but what about other registers?
+				}
+				else if ((addr >= 0xE000) && (addr < 0xFE00))
+				{
+					RAM[addr - 0xE000] = value; // some of gekkio's tests require this to be accessible during DMA
+				}
+				return;
+			}
 
 			if (addr < 0x100)
 			{

@@ -9,8 +9,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public GBHawk Core { get; set; }
 
-		//public byte BGP_l;
-
 		// register variables
 		public byte LCDC;
 		public byte STAT;
@@ -41,6 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool stat_line_old;
 		public int hbl_countdown;
 		// OAM scan
+		public bool DMA_OAM_access;
 		public bool OAM_access_read;
 		public bool OAM_access_write;
 		public int OAM_scan_index;
@@ -141,6 +140,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF46: // DMA 
 					DMA_addr = value;
 					DMA_start = true;
+					DMA_OAM_access = true;
 					DMA_clock = 0;
 					DMA_inc = 0;
 					break; 
@@ -169,14 +169,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (DMA_clock >= 4)
 				{
-					OAM_access_read = false;
-					OAM_access_write = false;
+					DMA_OAM_access = false;
 					if ((DMA_clock % 4) == 1)
 					{
 						// the cpu can't access memory during this time, but we still need the ppu to be able to.
-						OAM_access_read = true;
+						DMA_start = false;
 						DMA_byte = Core.ReadMemory((ushort)((DMA_addr << 8) + DMA_inc));
-						OAM_access_read = false;
+						DMA_start = true; 
 					}
 					else if ((DMA_clock % 4) == 3)
 					{
@@ -197,8 +196,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				if (DMA_clock == 648)
 				{
-					OAM_access_read = true;
-					OAM_access_write = true;
 					DMA_start = false;
 				}
 			}
@@ -1161,6 +1158,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("write_sprite", ref write_sprite);
 			ser.Sync("no_scan", ref no_scan);
 
+			ser.Sync("DMA_OAM_access", ref DMA_OAM_access);
 			ser.Sync("OAM_access_read", ref OAM_access_read);
 			ser.Sync("OAM_access_write", ref OAM_access_write);
 			ser.Sync("VRAM_access_read", ref VRAM_access_read);
