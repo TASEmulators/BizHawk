@@ -3854,6 +3854,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateStatusSlots();
 				CurrentlyOpenRom = null;
 				CurrentlyOpenRomArgs = null;
+				_currentlyOpenRomPoopForAdvancedLoaderPleaseRefactorMe = "";
 			}
 		}
 
