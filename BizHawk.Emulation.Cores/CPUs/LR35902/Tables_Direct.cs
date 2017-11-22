@@ -76,15 +76,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 
 		private void HALT_()
 		{
-			if (!FlagI)
-			{
-				cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						IDLE,
-						HALT };
-			}
-			else
+			if (FlagI && (EI_pending == 0))
 			{
 				// if interrupts are disabled,
 				// a glitchy decrement to the program counter happens
@@ -93,6 +85,14 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						IDLE,
 						IDLE,
 						OP_G};
+			}
+			else
+			{
+				cur_instr = new ushort[]
+						{IDLE,
+						IDLE,
+						IDLE,
+						HALT };
 			}
 			
 		}
