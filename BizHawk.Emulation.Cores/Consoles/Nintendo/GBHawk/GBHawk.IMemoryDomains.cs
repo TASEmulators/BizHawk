@@ -34,6 +34,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					MemoryDomain.Endian.Little,
 					addr => PeekSystemBus(addr),
 					(addr, value) => PokeSystemBus(addr, value),
+					1),
+				new MemoryDomainDelegate(
+					"ROM",
+					_rom.Length,
+					MemoryDomain.Endian.Little,
+					addr => _rom[addr],
+					(addr, value) => ZP_RAM[addr] = value,
 					1)
 			};
 

@@ -38,6 +38,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public class GBSettings
 		{
+			public enum PaletteType
+			{
+				BW,
+				Gr
+			}
+
+			[DisplayName("Console Mode")]
+			[Description("Pick which console to run, 'Auto' chooses from ROM header, 'GB' and 'GBC' chooses the respective system")]
+			[DefaultValue(PaletteType.BW)]
+			public PaletteType Palette { get; set; }
+
+
 			public GBSettings Clone()
 			{
 				return (GBSettings)MemberwiseClone();

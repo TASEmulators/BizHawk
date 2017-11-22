@@ -20,6 +20,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
 
+			//Update the color palette if a setting changed
+			if(_settings.Palette == GBSettings.PaletteType.BW)
+			{
+				color_palette[0] = color_palette_BW[0];
+				color_palette[1] = color_palette_BW[1];
+				color_palette[2] = color_palette_BW[2];
+				color_palette[3] = color_palette_BW[3];
+			}
+			else
+			{
+				color_palette[0] = color_palette_Gr[0];
+				color_palette[1] = color_palette_Gr[1];
+				color_palette[2] = color_palette_Gr[2];
+				color_palette[3] = color_palette_Gr[3];
+			}
+
+
 			if (_tracer.Enabled)
 			{
 				cpu.TraceCallback = s => _tracer.Put(s);
@@ -165,7 +182,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;
 
-		public static readonly uint[] color_palette = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
+		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
+		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };
+
+		public uint[] color_palette = new uint[4];
 
 		#endregion
 	}
