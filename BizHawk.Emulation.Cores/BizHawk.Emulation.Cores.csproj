@@ -582,6 +582,7 @@
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\Audio.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\SerialPort.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IDebuggable.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IEmulator.cs" />

@@ -16,6 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool in_vblank_old;
 		public bool in_vblank;
 		public bool vblank_rise;
+		bool contr_check_once;
 
 		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
@@ -56,15 +57,53 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// gameboy frames can be variable lengths
 			// we want to end a frame when VBlank turns from false to true
 			int ticker = 0;
+			contr_check_once = true;
 			while (!vblank_rise && (ticker < 100000))
 			{
 				audio.tick();
 				timer.tick_1();
 				ppu.tick();
+				serialport.serial_transfer_tick();
 
 				cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
 
 				timer.tick_2();
+
+				// check for controller interrupts somewhere around the middle of the frame
+				if ((cpu.LY == 50) && contr_check_once)
+				{
+					byte contr_prev = input_register;
+
+					input_register &= 0xF0;
+					if ((input_register & 0x30) == 0x20)
+					{
+						input_register |= (byte)(controller_state & 0xF);
+					}
+					else if ((input_register & 0x30) == 0x10)
+					{
+						input_register |= (byte)((controller_state & 0xF0) >> 4);
+					}
+					else if ((input_register & 0x30) == 0x00)
+					{
+						// if both polls are set, then a bit is zero if either or both pins are zero
+						byte temp = (byte)((controller_state & 0xF) & ((controller_state & 0xF0) >> 4));
+						input_register |= temp;
+					}
+					else
+					{
+						input_register |= 0xF;
+					}
+
+					// check for interrupts
+					if (((contr_prev & 8) > 0) && ((input_register & 8) == 0) ||
+						((contr_prev & 4) > 0) && ((input_register & 4) == 0) ||
+						((contr_prev & 2) > 0) && ((input_register & 2) == 0) ||
+						((contr_prev & 2) > 0) && ((input_register & 1) == 0))
+					{
+						if (REG_FFFF.Bit(4)) { cpu.FlagI = true; }
+						REG_FF0F |= 0x10;
+					}
+				}
 
 
 				if (in_vblank && !in_vblank_old)
@@ -96,17 +135,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			controller_state_old = controller_state;
-		}
-
-		public void serial_transfer()
-		{
-			if (serial_control.Bit(7) && !serial_start_old)
-			{
-				serial_start_old = true;
-
-				// transfer out on byte of data
-				// needs to be modelled
-			}
 		}
 
 		public int Frame => _frame;

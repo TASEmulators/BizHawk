@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			mapper.SyncState(ser);
 			timer.SyncState(ser);
 			ppu.SyncState(ser);
+			serialport.SyncState(ser);
 			audio.SyncState(ser);
 
 			ser.BeginSection("Gameboy");
@@ -68,11 +69,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("GB_bios_register", ref GB_bios_register);
 			ser.Sync("input_register", ref input_register);
 
-			ser.Sync("serial_control", ref serial_control);
-			ser.Sync("serial_data_out", ref serial_data_out);
-			ser.Sync("serial_data_in", ref serial_data_in);
-			ser.Sync("serial_start_old", ref serial_start_old);
-			
 			ser.Sync("REG_FFFF", ref REG_FFFF);
 			ser.Sync("REG_FF0F", ref REG_FF0F);
 			ser.Sync("enable_VBL", ref enable_VBL);

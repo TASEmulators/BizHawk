@@ -21,11 +21,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte input_register;
 
-		public byte serial_control;
-		public byte serial_data_out;
-		public byte serial_data_in;
-		public bool serial_start_old;
-
 		// The unused bits in this register are still read/writable
 		public byte REG_FFFF;
 		// The unused bits in this register (interrupt flags) are always set
@@ -62,6 +57,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public PPU ppu;
 		public Timer timer;
 		public Audio audio;
+		public SerialPort serialport;
 
 		[CoreConstructor("GB")]
 		public GBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
@@ -79,6 +75,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ppu = new PPU();
 			timer = new Timer();
 			audio = new Audio();
+			serialport = new SerialPort();
 
 			CoreComm = comm;
 
@@ -109,6 +106,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			timer.Core = this;
 			audio.Core = this;
 			ppu.Core = this;
+			serialport.Core = this;
 
 			ser.Register<IVideoProvider>(this);
 			ser.Register<ISoundProvider>(audio);
@@ -138,6 +136,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			timer.Reset();
 			ppu.Reset();
 			audio.Reset();
+			serialport.Reset();
 
 			cpu.SetCallbacks(ReadMemory, ReadMemory, ReadMemory, WriteMemory);
 
