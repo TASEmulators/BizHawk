@@ -428,8 +428,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			else
 			{
 				// screen disable sets STAT as though it were vblank, but there is no Stat IRQ asserted
-				STAT &= 0xFC;
-				STAT |= 0x01;
+				//STAT &= 0xFC;
+				//STAT |= 0x01;
+
+				STAT &= 0xF8;
 
 				VBL_INT = LYC_INT = HBL_INT = OAM_INT = false;
 

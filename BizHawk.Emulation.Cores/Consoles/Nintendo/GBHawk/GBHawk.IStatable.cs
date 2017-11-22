@@ -62,7 +62,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_controllerDeck.SyncState(ser);
 
 			ser.Sync("controller_state", ref controller_state);
-			ser.Sync("controller_state_old", ref controller_state_old);
 			ser.Sync("in_vblank", ref in_vblank);
 			ser.Sync("in_vblank_old", ref in_vblank_old);	
 			ser.Sync("vblank_rise", ref vblank_rise);

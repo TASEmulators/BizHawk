@@ -19,8 +19,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte ReadReg(int addr)
 		{
-			byte ret = 0;
-
 			switch (addr)
 			{
 				case 0xFF01:
@@ -29,7 +27,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					return serial_control;
 			}
 
-			return ret;
+			return 0xFF;
+
 		}
 
 		public void WriteReg(int addr, byte value)
@@ -58,6 +57,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							serial_clock = clk_rate;
 						}
 					}
+					else if (serial_start)
+					{
+						if ((value & 1) > 0)
+						{
+							clk_internal = true;
+							clk_rate = 512;
+							serial_clock = clk_rate;
+						}
+						else
+						{
+							clk_internal = false;
+							clk_rate = get_external_clock();
+							serial_clock = clk_rate;
+						}
+					}
 
 					serial_control = (byte)(0x7E | (value & 0x81)); // middle six bits always 1
 					break;
@@ -69,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			if (serial_start)
 			{
-				serial_clock--;
+				if (serial_clock > 0) { serial_clock--; }
 				if (serial_clock == 0)
 				{
 					if (serial_bits > 0)
@@ -98,10 +112,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 
 		// call this function to get the clock rate of a connected device
-		// internal rate is 512
+		// if no external device, the clocking doesn't occur
 		public int get_external_clock()
 		{
-			return 512;
+			return -1;
 		}
 
 		// call this function to get the next bit from the connected device
@@ -120,7 +134,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			serial_control = 0x7E;
 			serial_start = false;
-			serial_data = 0xFF;
+			serial_data = 0x00;
 		}
 
 		public void SyncState(Serializer ser)
