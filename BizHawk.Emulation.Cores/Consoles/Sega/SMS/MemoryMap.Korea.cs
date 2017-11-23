@@ -30,8 +30,8 @@
 
 		void InitKoreaMapper()
 		{
-			ReadMemory = ReadMemoryKR;
-			WriteMemory = WriteMemoryKR;
+			ReadMemoryMapper = ReadMemoryKR;
+			WriteMemoryMapper = WriteMemoryKR;
 			MapMemory = MapMemoryKR;
 			RomBank0 = 0;
 			RomBank1 = 1;
@@ -101,9 +101,9 @@
 
 		void InitMSXMapper()
 		{
-			ReadMemory = ReadMemoryMSX;
-			WriteMemory = WriteMemoryMSX;
-			ReadMemory = ReadMemoryMSX;
+			ReadMemoryMapper = ReadMemoryMSX;
+			WriteMemoryMapper = WriteMemoryMSX;
+			ReadMemoryMapper = ReadMemoryMSX;
 			RomBank0 = 0;
 			RomBank1 = 0;
 			RomBank2 = 0;
@@ -113,7 +113,7 @@
 		void InitNemesisMapper()
 		{
 			InitMSXMapper();
-			ReadMemory = ReadMemoryNemesis;
+			ReadMemoryMapper = ReadMemoryNemesis;
 			MapMemory = MapMemoryNemesis;
 		}
 	}

@@ -46,8 +46,8 @@
 
 		void InitTerebiOekaki()
 		{
-			ReadMemory = ReadMemoryTO;
-			WriteMemory = WriteMemoryTO;
+			ReadMemoryMapper = ReadMemoryTO;
+			WriteMemoryMapper = WriteMemoryTO;
 		}
 	}
 }

@@ -78,10 +78,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				ReadHardware = ReadPort,
 				WriteHardware = WritePort,
-				FetchMemory = ReadMemory,
+				FetchMemory = FetchMemory,
 				ReadMemory = ReadMemory,
 				WriteMemory = WriteMemory,
-				MemoryCallbacks = MemoryCallbacks
+				MemoryCallbacks = MemoryCallbacks,
+				OnExecFetch = OnExecMemory
 			};
 
 			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, Region);
@@ -249,15 +250,39 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return DisplayType.NTSC;
 		}
 
+		private byte ReadMemory(ushort addr)
+		{
+			MemoryCallbacks.CallReads(addr, "System Bus");
+
+			return ReadMemoryMapper(addr);
+		}
+
+		private void WriteMemory(ushort addr, byte value)
+		{
+			WriteMemoryMapper(addr, value);
+
+			MemoryCallbacks.CallWrites(addr, "System Bus");
+		}
+
+		private byte FetchMemory(ushort addr)
+		{
+			return ReadMemoryMapper(addr);
+		}
+
+		private void OnExecMemory(ushort addr)
+		{
+			MemoryCallbacks.CallExecutes(addr, "System Bus");
+		}
+
 		/// <summary>
 		/// The ReadMemory callback for the mapper
 		/// </summary>
-		private Func<ushort, byte> ReadMemory;
+		private Func<ushort, byte> ReadMemoryMapper;
 
 		/// <summary>
 		/// The WriteMemory callback for the wrapper
 		/// </summary>
-		private Action<ushort, byte> WriteMemory;
+		private Action<ushort, byte> WriteMemoryMapper;
 
 		/// <summary>
 		/// A dummy FetchMemory that simply reads the memory

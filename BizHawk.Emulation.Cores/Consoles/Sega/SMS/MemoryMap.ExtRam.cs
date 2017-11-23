@@ -38,8 +38,8 @@
 		{
 			ExtRam = new byte[size];
 			ExtRamMask = size - 1;
-			ReadMemory = ReadMemoryExt;
-			WriteMemory = WriteMemoryExt;
+			ReadMemoryMapper = ReadMemoryExt;
+			WriteMemoryMapper = WriteMemoryExt;
 			MapMemory = MapMemoryExt;
 		}
 	}

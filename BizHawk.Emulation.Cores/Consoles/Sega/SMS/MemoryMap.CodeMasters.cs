@@ -40,8 +40,8 @@
 
 		void InitCodeMastersMapper()
 		{
-			ReadMemory = ReadMemoryCM;
-			WriteMemory = WriteMemoryCM;
+			ReadMemoryMapper = ReadMemoryCM;
+			WriteMemoryMapper = WriteMemoryCM;
 			MapMemory = MapMemoryCM;
 			WriteMemoryCM(0x0000, 0);
 			WriteMemoryCM(0x4000, 1);
@@ -113,8 +113,8 @@
 
 		void InitCodeMastersMapperRam()
 		{
-			ReadMemory = ReadMemoryCMRam;
-			WriteMemory = WriteMemoryCMRam;
+			ReadMemoryMapper = ReadMemoryCMRam;
+			WriteMemoryMapper = WriteMemoryCMRam;
 			MapMemory = MapMemoryCMRam;
 			WriteMemoryCM(0x0000, 0);
 			WriteMemoryCM(0x4000, 1);
