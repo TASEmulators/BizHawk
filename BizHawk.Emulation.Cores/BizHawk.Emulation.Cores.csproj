@@ -256,6 +256,26 @@
     <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
     <Compile Include="Computers\Commodore64\SaveState.cs" />
     <Compile Include="Computers\Commodore64\User\UserPortDevice.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Buzzer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\IKeyboard.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\MachineType.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Input.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Port.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Memory.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Sound.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Pulse.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Tape.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Controllers.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IDebuggable.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IEmulator.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IInputPollable.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IMemoryDomains.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.ISettable.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.ISoundProvider.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IStatable.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs">
       <DependentUpon>Atari2600.cs</DependentUpon>
@@ -1328,6 +1348,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Screen.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Keyboard.cs" />
     <None Include="Consoles\Atari\docs\stella.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech2.pdf" />
@@ -1338,6 +1360,7 @@
     <None Include="Resources\dmg_boot.bin.gz" />
     <None Include="Resources\sgb-cart-present.spc.gz" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>

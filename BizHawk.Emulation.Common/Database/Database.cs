@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 
 using BizHawk.Common.BufferExtensions;
+using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
@@ -298,12 +299,23 @@ namespace BizHawk.Emulation.Common
 				case ".D64":
 				case ".T64":
 				case ".G64":
-				case ".CRT":
-				case ".TAP":
+				case ".CRT":				
 					game.System = "C64";
 					break;
 
-				case ".Z64":
+                case ".TZX":
+                    game.System = "ZXSpectrum";
+                    break;
+
+                case ".TAP":
+                    byte[] head = File.ReadAllBytes(fileName).Take(8).ToArray();
+                    if (System.Text.Encoding.Default.GetString(head).Contains("C64-TAPE"))
+                        game.System = "C64";
+                    else
+                        game.System = "ZXSpectrum";
+                    break;
+
+                case ".Z64":
 				case ".V64":
 				case ".N64":
 					game.System = "N64";

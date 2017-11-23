@@ -19,6 +19,7 @@ using BizHawk.Emulation.Cores.PCEngine;
 using BizHawk.Emulation.Cores.Sega.Saturn;
 using BizHawk.Emulation.Cores.Sony.PSP;
 using BizHawk.Emulation.Cores.Sony.PSX;
+using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 using BizHawk.Emulation.DiscSystem;
 
 using GPGX64 = BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
@@ -657,6 +658,13 @@ namespace BizHawk.Client.Common
 										(C64.C64Settings)GetCoreSettings<C64>(),
 										(C64.C64SyncSettings)GetCoreSyncSettings<C64>());
 									break;
+                                case "ZXSpectrum":
+                                    nextEmulator = new ZXSpectrum(
+                                        nextComm,
+                                        xmlGame.Assets.Select(a => a.Value).First(),
+                                        (ZXSpectrum.ZXSpectrumSettings)GetCoreSettings<ZXSpectrum>(),
+                                        (ZXSpectrum.ZXSpectrumSyncSettings)GetCoreSyncSettings<ZXSpectrum>());
+                                    break;
 								case "PSX":
 									var entries = xmlGame.AssetFullPaths;
 									var discs = new List<Disc>();
@@ -990,6 +998,10 @@ namespace BizHawk.Client.Common
 								var c64 = new C64(nextComm, Enumerable.Repeat(rom.RomData, 1), rom.GameInfo, GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());
 								nextEmulator = c64;
 								break;
+                            case "ZXSpectrum":
+                                var zx = new ZXSpectrum(nextComm, rom.FileData, GetCoreSettings<ZXSpectrum>(), GetCoreSyncSettings<ZXSpectrum>());
+                                nextEmulator = zx;
+                                break;
 							case "GBA":
 								if (Global.Config.GBA_UsemGBA)
 								{

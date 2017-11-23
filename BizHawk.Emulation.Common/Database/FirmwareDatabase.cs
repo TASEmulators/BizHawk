@@ -50,6 +50,9 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("AB16F56989B27D89BABE5F89C5A8CB3DA71A82F0", 16384, "C64", "Drive1541", "drive-1541.bin", "1541 Disk Drive Rom");
 			FirmwareAndOption("D3B78C3DBAC55F5199F33F3FE0036439811F7FB3", 16384, "C64", "Drive1541II", "drive-1541ii.bin", "1541-II Disk Drive Rom");
 
+            // ZX Spectrum
+            FirmwareAndOption("5EA7C2B824672E914525D1D5C419D71B84A426A2", 16384, "ZXSpectrum", "48ROM", "48.ROM", "Spectrum 48K ROM");
+
 			// for saturn, we think any bios region can pretty much run any iso
 			// so, we're going to lay this out carefully so that we choose things in a sensible order, but prefer the correct region
 			var ss_100_j = File("2B8CB4F87580683EB4D760E4ED210813D667F0A2", 524288, "saturn-1.00-(J).bin", "Bios v1.00 (J)");
