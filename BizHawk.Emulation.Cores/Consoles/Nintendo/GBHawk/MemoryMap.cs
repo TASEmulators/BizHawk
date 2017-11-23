@@ -206,5 +206,96 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Write_Registers(addr, value);
 			}
 		}
+
+		public byte PeekMemory(ushort addr)
+		{
+			if (ppu.DMA_start)
+			{
+				if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
+				{
+					return OAM[addr - 0xFE00];
+				}
+				else if ((addr >= 0xFF80))
+				{
+					return ZP_RAM[addr - 0xFF80];
+				}
+				else if ((addr >= 0xE000) && (addr < 0xFE00))
+				{
+					return RAM[addr - 0xE000]; // some of gekkio's tests require this to be accessible during DMA
+				}
+				else if (addr < 0x4000)
+				{
+					return mapper.PeekMemory(addr); // some of gekkio's tests require this to be accessible during DMA
+				}
+				return 0xFF;
+			}
+
+			if (addr < 0x100)
+			{
+				// return Either BIOS ROM or Game ROM
+				if ((GB_bios_register & 0x1) == 0)
+				{
+					return _bios[addr]; // Return BIOS
+				}
+				else
+				{
+					return mapper.PeekMemory(addr);
+				}
+			}
+			else if (addr < 0x8000)
+			{
+				return mapper.PeekMemory(addr);
+			}
+			else if (addr < 0x9800)
+			{
+				if (ppu.VRAM_access_read) { return CHR_RAM[addr - 0x8000]; }
+				else { return 0xFF; }
+			}
+			else if (addr < 0x9C00)
+			{
+				if (ppu.VRAM_access_read) { return BG_map_1[addr - 0x9800]; }
+				else { return 0xFF; }
+			}
+			else if (addr < 0xA000)
+			{
+				if (ppu.VRAM_access_read) { return BG_map_2[addr - 0x9C00]; }
+				else { return 0xFF; }
+			}
+			else if (addr < 0xC000)
+			{
+				return mapper.PeekMemory(addr);
+			}
+			else if (addr < 0xE000)
+			{
+				return RAM[addr - 0xC000];
+			}
+			else if (addr < 0xFE00)
+			{
+				return RAM[addr - 0xE000];
+			}
+			else if (addr < 0xFEA0)
+			{
+				if (ppu.OAM_access_read) { return OAM[addr - 0xFE00]; }
+				else { return 0xFF; }
+			}
+			else if (addr < 0xFF00)
+			{
+				// unmapped memory, returns 0xFF
+				return 0xFF;
+			}
+			else if (addr < 0xFF80)
+			{
+				return Read_Registers(addr);
+			}
+			else if (addr < 0xFFFF)
+			{
+				return ZP_RAM[addr - 0xFF80];
+			}
+			else
+			{
+				return Read_Registers(addr);
+			}
+
+		}
 	}
 }

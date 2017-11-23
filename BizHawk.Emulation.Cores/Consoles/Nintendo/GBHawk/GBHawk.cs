@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				ReadMemory = ReadMemory,
 				WriteMemory = WriteMemory,
-				PeekMemory = ReadMemory,
+				PeekMemory = PeekMemory,
 				DummyReadMemory = ReadMemory,
 				OnExecFetch = ExecFetch
 			};
@@ -138,7 +138,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			audio.Reset();
 			serialport.Reset();
 
-			cpu.SetCallbacks(ReadMemory, ReadMemory, ReadMemory, WriteMemory);
+			cpu.SetCallbacks(ReadMemory, PeekMemory, PeekMemory, WriteMemory);
 
 			_vidbuffer = new int[VirtualWidth * VirtualHeight];
 		}
@@ -184,6 +184,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFE: mapper = new MapperHuC3();		mppr = "HuC3";		break;
 				case 0xFF: mapper = new MapperHuC1();		mppr = "HuC1";		break;
 
+				// Bootleg mappers
+				// NOTE: Sachen mapper selection does not account for scrambling, so if another bootleg mapper
+				// identifies itself as 0x31, this will need to be modified
+				case 0x31: mapper = new MapperSachen2();	mppr = "Schn2";		break;
+
 				case 0x4:
 				case 0x7:
 				case 0xA:
@@ -197,6 +202,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0x21:
 				default:
 					// mapper not implemented
+					Console.WriteLine(header[0x47]);
 					throw new Exception("Mapper not implemented");
 					break;
 
@@ -234,6 +240,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 5:
 					cart_RAM = new byte[0x10000];
 					break;
+			}
+
+			// Sachen maper not known to have RAM
+			if ((mppr == "Schn1") || (mppr == "Schn2"))
+			{
+				cart_RAM = null;
 			}
 
 			// mbc2 carts have built in RAM
