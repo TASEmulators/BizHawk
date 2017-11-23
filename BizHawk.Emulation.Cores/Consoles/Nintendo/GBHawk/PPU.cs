@@ -214,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// here is where LY = LYC gets cleared (but only if LY isnt 0 as that's a special case
 					if (LY_inc == 1)
 					{
-						//LYC_INT = false;
+						LYC_INT = false;
 						STAT &= 0xFB;
 					}
 
@@ -412,9 +412,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// here LY=LYC will be asserted
 				if ((cycle == 4) && (LY != 0))
 				{
-					LYC_INT = false;
-					STAT &= 0xFB;
-
 					if (LY == LYC)
 					{
 						// set STAT coincidence FLAG and interrupt flag if it is enabled
