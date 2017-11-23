@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				Cpu.ReadMemory = ReadMemory;
 				Cpu.WriteMemory = WriteMemory;
-				Cpu.FetchMemory = FetchMemory_StubThunk;
+				Cpu.FetchMemory = FetchMemory;
 			}
 			else
 			{
