@@ -208,6 +208,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public bool IsSG1000 { get; set; }
 
 		private bool HasYM2413 = false;
+		private bool PortDEEnabled = false;
 		private IController _controller;
 
 		private int _frame = 0;
@@ -216,6 +217,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private byte Port02 = 0xFF;
 		private byte Port3E = 0xAF;
 		private byte Port3F = 0xFF;
+		private byte PortDE = 0x00;
 
 		private byte ForceStereoByte = 0xAD;
 		private bool IsGame3D = false;
@@ -330,6 +332,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				case 0xDC: return ReadControls1();
 				case 0xC1:
 				case 0xDD: return ReadControls2();
+				case 0xDE: return PortDEEnabled ? PortDE : (byte)0xFF;
 				case 0xF2: return HasYM2413 ? YM2413.DetectionValue : (byte)0xFF;
 				default: return 0xFF;
 			}
@@ -358,6 +361,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				else
 					Vdp.WriteVdpControl(value);
 			}
+			else if (port == 0xDE && PortDEEnabled) PortDE = value;
 			else if (port == 0xF0 && HasYM2413) YM2413.RegisterLatch = value;
 			else if (port == 0xF1 && HasYM2413) YM2413.Write(value);
 			else if (port == 0xF2 && HasYM2413) YM2413.DetectionValue = value;
