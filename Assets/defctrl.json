@@ -833,8 +833,8 @@
       "Key PI": "RightShift",
       "Key Down Arrow": "DownArrow",
       
-      "Key Graph": "LeftControl",
-      "Key Kana": "LeftAlt",
+      "Key Graph": "PageUp",
+      "Key Kana": "PageDown",
       "Key Space": "Space",
       "Key Home/Clear": "Home",
       "Key Insert/Delete": "Insert",
