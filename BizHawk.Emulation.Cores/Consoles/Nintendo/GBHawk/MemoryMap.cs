@@ -33,22 +33,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			
 			if (ppu.DMA_start)
 			{
-				if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
+				if (addr < 0x4000)
 				{
-					return OAM[addr - 0xFE00];
-				}
-				else if ((addr >= 0xFF80))
-				{
-					return ZP_RAM[addr - 0xFF80];
+					return mapper.ReadMemory(addr); // some of gekkio's tests require this to be accessible during DMA
 				}
 				else if ((addr >= 0xE000) && (addr < 0xFE00))
 				{
 					return RAM[addr - 0xE000]; // some of gekkio's tests require this to be accessible during DMA
 				}
-				else if (addr < 0x4000)
+				else if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
 				{
-					return mapper.ReadMemory(addr); // some of gekkio's tests require this to be accessible during DMA
+					return OAM[addr - 0xFE00];
 				}
+				else if ((addr >= 0xFF00) && (addr < 0xFF80)) // The game GOAL! Requires Hardware Regs to be accessible
+				{
+					return Read_Registers(addr);
+				}
+				else if ((addr >= 0xFF80))
+				{
+					return ZP_RAM[addr - 0xFF80];
+				}
+				
 				return 0xFF;
 			}
 			
@@ -126,21 +131,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			
 			if (ppu.DMA_start)
 			{
-				if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
+				if ((addr >= 0xE000) && (addr < 0xFE00))
+				{
+					RAM[addr - 0xE000] = value; // some of gekkio's tests require this to be accessible during DMA
+				}
+				else if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
 				{
 					OAM[addr - 0xFE00] = value; 
+				}
+				else if ((addr >= 0xFF00) && (addr < 0xFF80)) // The game GOAL! Requires Hardware Regs to be accessible
+				{
+					Write_Registers(addr, value);
 				}
 				else if ((addr >= 0xFF80))
 				{
 					ZP_RAM[addr - 0xFF80] = value;
-				}
-				else if (addr == 0xFF46)
-				{
-					Write_Registers(addr, value); // a second DMA can start, but what about other registers?
-				}
-				else if ((addr >= 0xE000) && (addr < 0xFE00))
-				{
-					RAM[addr - 0xE000] = value; // some of gekkio's tests require this to be accessible during DMA
 				}
 				return;
 			}
@@ -211,22 +216,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			if (ppu.DMA_start)
 			{
-				if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
+				if (addr < 0x4000)
 				{
-					return OAM[addr - 0xFE00];
-				}
-				else if ((addr >= 0xFF80))
-				{
-					return ZP_RAM[addr - 0xFF80];
+					return mapper.ReadMemory(addr); // some of gekkio's tests require this to be accessible during DMA
 				}
 				else if ((addr >= 0xE000) && (addr < 0xFE00))
 				{
 					return RAM[addr - 0xE000]; // some of gekkio's tests require this to be accessible during DMA
 				}
-				else if (addr < 0x4000)
+				else if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
 				{
-					return mapper.PeekMemory(addr); // some of gekkio's tests require this to be accessible during DMA
+					return OAM[addr - 0xFE00];
 				}
+				else if ((addr >= 0xFF00) && (addr < 0xFF80)) // The game GOAL! Requires Hardware Regs to be accessible
+				{
+					return Read_Registers(addr);
+				}
+				else if ((addr >= 0xFF80))
+				{
+					return ZP_RAM[addr - 0xFF80];
+				}
+
 				return 0xFF;
 			}
 

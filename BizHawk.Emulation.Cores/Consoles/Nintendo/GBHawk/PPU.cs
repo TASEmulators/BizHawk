@@ -117,6 +117,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			switch (addr)
 			{
 				case 0xFF40: // LCDC
+					if (LCDC.Bit(7) && !value.Bit(7))
+					{
+						VRAM_access_read = true;
+						VRAM_access_write = true;
+						OAM_access_read = true;
+						OAM_access_write = true;
+					}
+
 					LCDC = value;
 					break; 
 				case 0xFF41: // STAT
@@ -1047,8 +1055,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			BGP = 0xFF;
 			obj_pal_0 = 0xFF;
 			obj_pal_1 = 0xFF;
-			window_y = 0;
-			window_x = 0;
+			window_y = 0x0;
+			window_x = 0x0;
 			LY_inc = 1;
 			no_scan = false;
 			OAM_access_read = true;
