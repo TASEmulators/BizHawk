@@ -120,6 +120,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					LCDC = value;
 					break; 
 				case 0xFF41: // STAT
+					// writing to STAT during mode 0 or 2 causes a STAT IRQ
+					if (LCDC.Bit(7))
+					{
+						if (((STAT & 3) == 0) || ((STAT & 3) == 1))
+						{
+							LYC_INT = true;
+						}
+					}
 					STAT = (byte)((value & 0xF8) | (STAT & 7) | 0x80);
 					break; 
 				case 0xFF42: // SCY
@@ -136,6 +144,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF45:  // LYC
 					LYC = value;
 					if (LY != LYC) { STAT &= 0xFB; }
+					Console.WriteLine(value);
 					break;
 				case 0xFF46: // DMA 
 					DMA_addr = value;

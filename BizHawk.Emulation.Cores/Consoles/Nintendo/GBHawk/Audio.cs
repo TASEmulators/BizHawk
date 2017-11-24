@@ -552,7 +552,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					SQ1_output *= SQ1_vol_state;
 
 					// avoid aliasing at high frequenices
-					if (SQ1_frq > 0x7D2) { SQ1_output = 0; }
+					if (SQ1_frq > 0x7F0) { SQ1_output = 0; }
 				}
 			}
 
@@ -570,7 +570,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					SQ2_output *= SQ2_vol_state;
 
 					// avoid aliasing at high frequenices
-					if (SQ2_frq > 0x7D2) { SQ2_output = 0; }
+					if (SQ2_frq > 0x7F0) { SQ2_output = 0; }
 				}
 			}
 
@@ -615,6 +615,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					WAVE_output = sample;
 
 					if (!WAVE_DAC_pow) { WAVE_output = 0; }
+
+					// avoid aliasing at high frequenices
+					if (WAVE_frq > 0x7F0) { WAVE_output = 0; }
 				}
 			}
 
