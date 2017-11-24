@@ -116,6 +116,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				ppu.tick();
 				serialport.serial_transfer_tick();
 
+				if (Use_RTC) { mapper.RTC_Tick(); }
+
 				cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
 
 				timer.tick_2();

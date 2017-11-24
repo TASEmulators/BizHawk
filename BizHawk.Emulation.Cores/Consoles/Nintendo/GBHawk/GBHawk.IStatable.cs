@@ -83,6 +83,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("BG_map_1", ref BG_map_1, false);
 			ser.Sync("BG_map_2", ref BG_map_2, false);
 			ser.Sync("OAM", ref OAM, false);
+
+			ser.Sync("Use_RTC", ref Use_RTC);
+
 			// probably a better way to do this
 			if (cart_RAM != null)
 			{

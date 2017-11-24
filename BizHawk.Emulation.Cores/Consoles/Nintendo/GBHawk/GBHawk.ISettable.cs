@@ -75,6 +75,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 			}
 
+			[DisplayName("RTC Initial Time")]
+			[Description("Set the initial RTC time in terms of elapsed seconds.  Only used when RealTimeRTC is false.")]
+			[DefaultValue(0)]
+			public int RTCInitialTime
+			{
+				get { return _RTCInitialTime; }
+				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+			}
+
+			[JsonIgnore]
+			private int _RTCInitialTime;
+
+
 			public GBSyncSettings Clone()
 			{
 				return (GBSyncSettings)MemberwiseClone();

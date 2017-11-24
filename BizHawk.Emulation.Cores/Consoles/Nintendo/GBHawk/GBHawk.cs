@@ -49,6 +49,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		private int _frame = 0;
 
+		public bool Use_RTC;
+
 		public MapperBase mapper;
 
 		private readonly ITraceable _tracer;
@@ -262,6 +264,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			mapper.Core = this;
 			mapper.Initialize();
+
+			// Extra RTC initialization for mbc3
+			if (mppr == "MBC3")
+			{
+				Use_RTC = true;
+				int days = (int)Math.Floor(_syncSettings.RTCInitialTime / 86400.0);
+
+				int days_upper = ((days & 0x100) >> 8) | ((days & 0x200) >> 2);
+
+				mapper.RTC_Get((byte)days_upper, 4);
+				mapper.RTC_Get((byte)(days & 0xFF), 3);
+
+				int remaining = _syncSettings.RTCInitialTime - (days * 86400);
+
+				int hours = (int)Math.Floor(remaining / 3600.0);
+
+				mapper.RTC_Get((byte)(hours & 0xFF), 2);
+
+				remaining = remaining - (hours * 3600);
+
+				int minutes = (int)Math.Floor(remaining / 60.0);
+
+				mapper.RTC_Get((byte)(minutes & 0xFF), 1);
+
+				remaining = remaining - (minutes * 60);
+
+				mapper.RTC_Get((byte)(remaining & 0xFF), 0);
+			}
 		}
 	}
 }

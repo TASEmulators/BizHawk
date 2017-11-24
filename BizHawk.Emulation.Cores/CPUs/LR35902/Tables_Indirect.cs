@@ -169,7 +169,20 @@
 						OP };
 		}
 
-		private void LD_IND_8_DEC(ushort dest, ushort src_l, ushort src_h)
+		private void LD_IND_8_INC_HL(ushort dest, ushort src_l, ushort src_h)
+		{
+			cur_instr = new ushort[]
+						{IDLE,
+						IDLE,
+						IDLE,
+						RD, dest, src_l, src_h,
+						IDLE,
+						INC16, src_l, src_h,
+						IDLE,
+						OP };
+		}
+
+		private void LD_IND_8_DEC_HL(ushort dest, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
 						{IDLE,

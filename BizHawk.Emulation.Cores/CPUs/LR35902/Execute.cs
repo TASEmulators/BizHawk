@@ -68,7 +68,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					case 0x27: INT_OP(DA, A);							break; // DAA
 					case 0x28: JR_COND(FlagZ);							break; // JR Z, r8
 					case 0x29: ADD_16(L, H, L, H);						break; // ADD HL, HL
-					case 0x2A: LD_IND_8_INC(A, L, H);					break; // LD A, (HL+)
+					case 0x2A: LD_IND_8_INC_HL(A, L, H);				break; // LD A, (HL+)
 					case 0x2B: DEC_16(L, H);							break; // DEC HL
 					case 0x2C: INT_OP(INC8, L);							break; // INC L
 					case 0x2D: INT_OP(DEC8, L);							break; // DEC L
@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					case 0x37: INT_OP(SCF, A);							break; // SCF
 					case 0x38: JR_COND(FlagC);							break; // JR C, r8
 					case 0x39: ADD_16(L, H, SPl, SPh);					break; // ADD HL, SP
-					case 0x3A: LD_IND_8_DEC(A, L, H);					break; // LD A, (HL-)
+					case 0x3A: LD_IND_8_DEC_HL(A, L, H);				break; // LD A, (HL-)
 					case 0x3B: DEC_16(SPl, SPh);						break; // DEC SP
 					case 0x3C: INT_OP(INC8, A);							break; // INC A
 					case 0x3D: INT_OP(DEC8, A);							break; // DEC A

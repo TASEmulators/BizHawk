@@ -36,5 +36,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public virtual void Initialize()
 		{
 		}
+
+		public virtual void RTC_Tick()
+		{
+		}
+
+		public virtual void RTC_Get(byte value, int index)
+		{
+		}
 	}
 }
