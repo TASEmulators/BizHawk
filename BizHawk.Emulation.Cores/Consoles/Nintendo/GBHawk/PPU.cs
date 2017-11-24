@@ -144,7 +144,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF45:  // LYC
 					LYC = value;
 					if (LY != LYC) { STAT &= 0xFB; }
-					Console.WriteLine(value);
 					break;
 				case 0xFF46: // DMA 
 					DMA_addr = value;

@@ -132,6 +132,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			in_vblank = true; // we start off in vblank since the LCD is off
 			in_vblank_old = true;
 
+			// Start off with RAM all 0xFF (the game 'X' (proto) expects this)
+			for (int i = 0; i < RAM.Length; i++)
+			{
+				RAM[i] = 0xFF;
+			}
+
 			Register_Reset();
 			timer.Reset();
 			ppu.Reset();
