@@ -9,12 +9,27 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /*
+     *  Much of the SCREEN implementation has been taken from: https://github.com/Dotneteer/spectnetide
+     *  
+     *  MIT License
+
+        Copyright (c) 2017 Istvan Novak
+
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+     */
+
     /// <summary>
     /// The abstract class that all emulated models will inherit from
     /// * Screen *
-    /// - A goodly portion of the screen rendering code has been taken from:
-    /// - https://github.com/Dotneteer/spectnetide
-    /// - (MIT Licensed)
     /// </summary>
     public abstract partial class SpectrumBase : IVideoProvider
     {

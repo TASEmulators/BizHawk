@@ -53,9 +53,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _cpu.SyncState(ser);
 
             ser.BeginSection("ZXSpectrum");
-            byte[] ram = new byte[_machine.RAM.Length];
-            _machine.RAM.CopyTo(ram, 0);
-            ser.Sync("RAM", ref ram, false);
+            //byte[] ram = new byte[_machine.RAM.Length];
+            //_machine.RAM.CopyTo(ram, 0);
+            //ser.Sync("RAM", ref ram, false);
             //_vdp.SyncState(ser);
             //PSG.SyncState(ser);
             //ser.Sync("RAM", ref _ram, false);

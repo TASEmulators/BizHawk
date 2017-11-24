@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         private void SyncAllByteArrayDomains()
         {
-            SyncByteArrayDomain("Main RAM", _machine.RAM);
+            //SyncByteArrayDomain("Main RAM", _machine.RAM);
         }
 
         private void SyncByteArrayDomain(string name, byte[] data)

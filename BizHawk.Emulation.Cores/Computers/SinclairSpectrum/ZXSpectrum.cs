@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 case MachineType.ZXSpectrum48:
                     ControllerDefinition = ZXSpectrumControllerDefinition48;                    
-                    Init(MachineType.ZXSpectrum48, Settings.BorderType, Settings.TapeLoadSpeed);
+                    Init(MachineType.ZXSpectrum48, Settings.BorderType, Settings.TapeLoadSpeed, _file);
                     break;
                 default:
                     throw new InvalidOperationException("Machine not yet emulated");
@@ -90,14 +90,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public Action SoftReset;
 
         private readonly Z80A _cpu;
-        private byte[] _systemRom;
+        //private byte[] _systemRom;
         private readonly TraceBuffer _tracer;
         public IController _controller;
         private SpectrumBase _machine;
 
-        
-
-        
+        private byte[] _file;
 
         private byte[] GetFirmware(int length, params string[] names)
         {
@@ -111,15 +109,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
 
-        private void Init(MachineType machineType, BorderType borderType, TapeLoadSpeed tapeLoadSpeed)
+        private void Init(MachineType machineType, BorderType borderType, TapeLoadSpeed tapeLoadSpeed, byte[] file)
         {
             // setup the emulated model based on the MachineType
             switch (machineType)
             {
                 case MachineType.ZXSpectrum48:
-                    _machine = new ZX48(this, _cpu);
-                    _systemRom = GetFirmware(0x4000, "48ROM");
-                    _machine.FillMemory(_systemRom, 0);
+                    _machine = new ZX48(this, _cpu, file);
+                    var _systemRom = GetFirmware(0x4000, "48ROM");
+                    var romData = RomData.InitROM(machineType, _systemRom);
+                    _machine.InitROM(romData);
                     break;
             }
         }

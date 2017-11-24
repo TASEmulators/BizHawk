@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ushort high = CPU.Regs[6];
 
             // combine the low byte (passed in as port) and the high byte (maybe not needed)
-            ushort word = Convert.ToUInt16(((byte)port << 8 | (byte)high));
+            ushort word = Convert.ToUInt16((port << 8 | high));
 
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
@@ -152,7 +152,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 
                 // Border - LSB 3 bits hold the border colour
                 BorderColour = value & BORDER_BIT;
-
+                /*
                 // Buzzer
                 var beepVal = (int)value & (EAR_BIT);
 
@@ -160,13 +160,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     beepVal = (int)value & (MIC_BIT);
 
                 //var micval = (int)value & (MIC_BIT);
-
+                
 
                 // if tape is not playing
                 BuzzerDevice.ProcessPulseValue(false, (beepVal) != 0);
+                */
 
                 // tape
                 //_tapeDevice.ProcessMicBit((data & 0x08) != 0);
+
+                BuzzerDevice.ProcessPulseValue(false, (value & 0x10) != 0);
+                TapeDevice.ProcessMicBit((value & 0x08) != 0);
             }
         }
     }

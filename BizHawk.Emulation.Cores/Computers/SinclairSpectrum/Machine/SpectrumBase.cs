@@ -13,12 +13,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The calling ZXSpectrum class (piped in via constructor)
         /// </summary>
-        protected ZXSpectrum Spectrum { get; set; }
+        public ZXSpectrum Spectrum { get; set; }
 
         /// <summary>
         /// Reference to the instantiated Z80 cpu (piped in via constructor)
         /// </summary>
-        protected Z80A CPU { get; set; }
+        public Z80A CPU { get; set; }
+
+        /// <summary>
+        /// ROM and extended info
+        /// </summary>
+        public RomData RomData { get; set; }
 
         /// <summary>
         /// The spectrum buzzer/beeper
@@ -34,6 +39,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// The spectrum datacorder device
         /// </summary>
         public virtual Tape TapeDevice { get; set; }
+
+        /// <summary>
+        /// The tape provider
+        /// </summary>
+        public virtual ITapeProvider TapeProvider { get; set; }
 
         /// <summary>
         /// Signs whether the frame has ended
@@ -111,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             BuzzerDevice.EndFrame();
 
-            
+            TapeDevice.CPUFrameCompleted();
 
             FrameCount++;
 

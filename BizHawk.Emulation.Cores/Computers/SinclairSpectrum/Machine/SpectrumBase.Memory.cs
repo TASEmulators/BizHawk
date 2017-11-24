@@ -13,9 +13,52 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     public abstract partial class SpectrumBase
     {
         /// <summary>
-        /// Byte array of total system memory (ROM + RAM + paging)
+        /// ROM Banks
+        /// </summary>        
+        public byte[] ROM0 = new byte[0x4000];
+        public byte[] ROM1 = new byte[0x4000];
+        public byte[] ROM2 = new byte[0x4000];
+        public byte[] ROM3 = new byte[0x4000];
+
+        /// <summary>
+        /// RAM Banks
         /// </summary>
-        public byte[] RAM { get; set; }
+        public byte[] RAM0 = new byte[0x4000];  // Bank 0
+        public byte[] RAM1 = new byte[0x4000];  // Bank 1
+        public byte[] RAM2 = new byte[0x4000];  // Bank 2
+        public byte[] RAM3 = new byte[0x4000];  // Bank 3
+        public byte[] RAM4 = new byte[0x4000];  // Bank 4
+        public byte[] RAM5 = new byte[0x4000];  // Bank 5
+        public byte[] RAM6 = new byte[0x4000];  // Bank 6
+        public byte[] RAM7 = new byte[0x4000];  // Bank 7
+
+        /// <summary>
+        /// Represents the addressable memory space of the spectrum
+        /// All banks for the emulated system should be added during initialisation
+        /// </summary>
+        public Dictionary<int, byte[]> Memory = new Dictionary<int, byte[]>();
+
+        /// <summary>
+        /// Simulates reading from the bus
+        /// Paging should be handled here
+        /// </summary>
+        /// <param name="addr"></param>
+        /// <returns></returns>
+        public virtual byte ReadBus(ushort addr)
+        {
+            throw new NotImplementedException("Must be overriden");
+        }
+
+        /// <summary>
+        /// Simulates writing to the bus
+        /// Paging should be handled here
+        /// </summary>
+        /// <param name="addr"></param>
+        /// <param name="value"></param>
+        public virtual void WriteBus(ushort addr, byte value)
+        {
+            throw new NotImplementedException("Must be overriden");
+        }
 
         /// <summary>
         /// Reads a byte of data from a specified memory address
@@ -25,16 +68,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public virtual byte ReadMemory(ushort addr)
         {
-            var data = RAM[addr];
-            if ((addr & 0xC000) == 0x4000)
-            {
-                // addr is in RAM not ROM - apply memory contention if neccessary
-                var delay = GetContentionValue(CurrentFrameCycle);
-                CPU.TotalExecutedCycles += delay;
-            }
-            return data;
+            throw new NotImplementedException("Must be overriden");
         }
-
+        /*
         /// <summary>
         /// Reads a byte of data from a specified memory address
         /// (with no memory contention)
@@ -43,9 +79,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public virtual byte PeekMemory(ushort addr)
         {
-            var data = RAM[addr];
+            var data = ReadBus(addr);
             return data;
         }
+        */
 
         /// <summary>
         /// Writes a byte of data to a specified memory address
@@ -55,44 +92,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public virtual void WriteMemory(ushort addr, byte value)
         {
-            if (addr < 0x4000)
-            {
-                // Do nothing - we cannot write to ROM
-                return;
-            }
-            else if (addr < 0xC000)
-            {
-                if (!CPU.IFF1)
-                {
-
-                }
-                // possible contended RAM
-                var delay = GetContentionValue(CurrentFrameCycle);
-                CPU.TotalExecutedCycles += delay;
-            }
-            else
-            {
-                // uncontended RAM - do nothing
-            }
-
-                /*
-
-            // Check whether memory is ROM or RAM
-            switch (addr & 0xC000)
-            {
-                case 0x0000:
-                    // Do nothing - we cannot write to ROM
-                    return;
-                case 0x4000:
-                    // Address is RAM - apply contention if neccessary
-                    var delay = GetContentionValue(_frameCycles);
-                    CPU.TotalExecutedCycles += delay;
-                    break;
-            }    
-            */        
-            RAM[addr] = value;
+            throw new NotImplementedException("Must be overriden");
         }
 
+        /*
         /// <summary>
         /// Writes a byte of data to a specified memory address
         /// (without contention)
@@ -106,9 +109,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // Do nothing - we cannot write to ROM
                 return;
             }
-            
-            RAM[addr] = value;
+
+            WriteBus(addr, value);
         }
+        */
 
         /// <summary>
         /// Fills memory from buffer
@@ -117,7 +121,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="startAddress"></param>
         public virtual void FillMemory(byte[] buffer, ushort startAddress)
         {
-            buffer?.CopyTo(RAM, startAddress);
+            //buffer?.CopyTo(RAM, startAddress);
+        }
+
+        /// <summary>
+        /// Sets up the ROM
+        /// </summary>
+        /// <param name="buffer"></param>
+        /// <param name="startAddress"></param>
+        public virtual void InitROM(RomData romData)
+        {
+            RomData = romData;
+            // for 16/48k machines only ROM0 is used (no paging)
+            RomData.RomBytes?.CopyTo(ROM0, 0);
         }
 
         /// <summary>
@@ -128,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public virtual byte FetchScreenMemory(ushort addr)
         {
-            var value = RAM[(addr & 0x3FFF) + 0x4000];
+            var value = RAM0[(addr & 0x3FFF)];// + 0x4000];
             return value;
         }
 
