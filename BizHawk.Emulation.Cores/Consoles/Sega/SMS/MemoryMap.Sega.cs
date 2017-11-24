@@ -132,8 +132,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		void InitSegaMapper()
 		{
-			ReadMemory = ReadMemorySega;
-			WriteMemory = WriteMemorySega;
+			ReadMemoryMapper = ReadMemorySega;
+			WriteMemoryMapper = WriteMemorySega;
 			MapMemory = MapMemorySega;
 			WriteMemorySega(0xFFFC, 0);
 			WriteMemorySega(0xFFFD, 0);
@@ -176,8 +176,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		void InitBiosMapper()
 		{
-			ReadMemory = ReadMemoryBIOS;
-			WriteMemory = WriteMemoryBIOS;
+			ReadMemoryMapper = ReadMemoryBIOS;
+			WriteMemoryMapper = WriteMemoryBIOS;
 			WriteMemorySega(0xFFFC, 0);
 			WriteMemorySega(0xFFFD, 0);
 			WriteMemorySega(0xFFFE, 1);
