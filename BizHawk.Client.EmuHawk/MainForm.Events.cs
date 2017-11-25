@@ -1765,6 +1765,7 @@ namespace BizHawk.Client.EmuHawk
 			SMSControllerPaddleToolStripMenuItem.Checked = ss.ControllerType == "Paddle";
 			SMSControllerLightPhaserToolStripMenuItem.Checked = ss.ControllerType == "Light Phaser";
 			SMSControllerSportsPadToolStripMenuItem.Checked = ss.ControllerType == "Sports Pad";
+			SMSControllerKeyboardToolStripMenuItem.Checked = ss.ControllerType == "Keyboard";
 			SMSenableBIOSToolStripMenuItem.Checked = ss.UseBIOS;
 			SMSEnableFMChipMenuItem.Checked = ss.EnableFM;
 			SMSOverclockMenuItem.Checked = ss.AllowOverlock;
@@ -1944,6 +1945,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var s = ((SMS)Emulator).GetSyncSettings();
 			s.ControllerType = "Sports Pad";
+			PutCoreSyncSettings(s);
+		}
+		
+		private void SMSControllerKeyboardToolStripMenuItem_Click(object sender, EventArgs e)
+		{
+			var s = ((SMS)Emulator).GetSyncSettings();
+			s.ControllerType = "Keyboard";
 			PutCoreSyncSettings(s);
 		}
 
