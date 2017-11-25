@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else if (addr < 0x4000)
 				{
-					value &= 0x3F;
+					value &= 0x7F;
 
 					// writing zero gets translated to 1
 					if (value == 0) { value = 1; }
@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else if (addr < 0x6000)
 				{
-					RAM_bank = value;
+					RAM_bank = value & 3;
 				}
 				else
 				{
