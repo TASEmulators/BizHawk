@@ -262,13 +262,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				cart_RAM = new byte[0x200];
 			}
 
-			Console.Write("RAM: ");Console.WriteLine(cart_RAM.Length);
-
 			mapper.Core = this;
 			mapper.Initialize();
 
 			if (cart_RAM != null)
 			{
+
+				Console.Write("RAM: "); Console.WriteLine(cart_RAM.Length);
+
 				if (_syncSettings.Use_SRAM)
 				{
 					// load cartRAM here
