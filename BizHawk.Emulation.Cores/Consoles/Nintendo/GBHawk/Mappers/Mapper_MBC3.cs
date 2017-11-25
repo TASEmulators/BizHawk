@@ -10,7 +10,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int ROM_bank;
 		public int RAM_bank;
 		public bool RAM_enable;
-		public bool sel_mode;
 		public int ROM_mask;
 		public int RAM_mask;
 		public byte[] RTC_regs = new byte[5];
@@ -18,13 +17,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool RTC_regs_latch_wr;
 		public int RTC_timer;
 		public int RTC_low_clock;
+		public bool halt;
 
 		public override void Initialize()
 		{
 			ROM_bank = 1;
 			RAM_bank = 0;
 			RAM_enable = false;
-			sel_mode = false;
 			ROM_mask = Core._rom.Length / 0x4000 - 1;
 
 			// some games have sizes that result in a degenerate ROM, account for it here
@@ -50,15 +49,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			if (addr < 0x4000)
 			{
-				// lowest bank is fixed, but is still effected by mode
-				if (sel_mode)
-				{
-					return Core._rom[(ROM_bank & 0x60) * 0x4000 + addr];
-				}
-				else
-				{
-					return Core._rom[addr];
-				}
+				return Core._rom[addr];
 			}
 			else if (addr < 0x8000)
 			{
@@ -150,6 +141,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					else if ((RAM_bank >= 8) && (RAM_bank < 0xC))
 					{
 						RTC_regs[RAM_bank - 8] = value;
+
+						halt = (RTC_regs[4] & 0x40) > 0;
 					}
 				}
 			}
@@ -167,45 +160,48 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public override void RTC_Tick()
 		{
-			RTC_timer++;
-
-			if (RTC_timer == 128)
+			if (!halt)
 			{
-				RTC_timer = 0;
+				RTC_timer++;
 
-				RTC_low_clock++;
-
-				if (RTC_low_clock == 32768)
+				if (RTC_timer == 128)
 				{
-					RTC_low_clock = 0;
+					RTC_timer = 0;
 
-					RTC_regs[0]++;
-					if (RTC_regs[0] > 59)
+					RTC_low_clock++;
+
+					if (RTC_low_clock == 32768)
 					{
-						RTC_regs[0] = 0;
-						RTC_regs[1]++;
-						if (RTC_regs[1] > 59)
-						{
-							RTC_regs[2]++;
-							if (RTC_regs[2] > 23)
-							{
-								RTC_regs[2] = 0;
-								if (RTC_regs[3] < 0xFF)
-								{
-									RTC_regs[3]++;
-								}
-								else
-								{
-									RTC_regs[3] = 0;
+						RTC_low_clock = 0;
 
-									if ((RTC_regs[4] & 1) == 0)
+						RTC_regs[0]++;
+						if (RTC_regs[0] > 59)
+						{
+							RTC_regs[0] = 0;
+							RTC_regs[1]++;
+							if (RTC_regs[1] > 59)
+							{
+								RTC_regs[2]++;
+								if (RTC_regs[2] > 23)
+								{
+									RTC_regs[2] = 0;
+									if (RTC_regs[3] < 0xFF)
 									{
-										RTC_regs[4] |= 1;
+										RTC_regs[3]++;
 									}
 									else
 									{
-										RTC_regs[4] &= 0xFE;
-										RTC_regs[4] |= 0x80;
+										RTC_regs[3] = 0;
+
+										if ((RTC_regs[4] & 1) == 0)
+										{
+											RTC_regs[4] |= 1;
+										}
+										else
+										{
+											RTC_regs[4] &= 0xFE;
+											RTC_regs[4] |= 0x80;
+										}
 									}
 								}
 							}
@@ -223,7 +219,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("RAM_Bank", ref RAM_bank);
 			ser.Sync("RAM_Mask", ref RAM_mask);
 			ser.Sync("RAM_enable", ref RAM_enable);
-			ser.Sync("sel_mode", ref sel_mode);
+			ser.Sync("halt", ref halt);
+			ser.Sync("RTC_regs", ref RTC_regs, false);
+			ser.Sync("RTC_regs_latch", ref RTC_regs_latch, false);
+			ser.Sync("RTC_regs_latch_wr", ref RTC_regs_latch_wr);
+			ser.Sync("RTC_timer", ref RTC_timer);
+			ser.Sync("RTC_low_clock", ref RTC_low_clock);
 		}
 	}
 }
