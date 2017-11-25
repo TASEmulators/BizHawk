@@ -262,8 +262,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				cart_RAM = new byte[0x200];
 			}
 
+			Console.Write("RAM: ");Console.WriteLine(cart_RAM.Length);
+
 			mapper.Core = this;
 			mapper.Initialize();
+
+			if (cart_RAM != null)
+			{
+				if (_syncSettings.Use_SRAM)
+				{
+					// load cartRAM here
+				}
+				else
+				{
+					for (int i = 0; i < cart_RAM.Length; i++)
+					{
+						cart_RAM[i] = 0xFF;
+					}
+				}
+			}
+			
 
 			// Extra RTC initialization for mbc3
 			if (mppr == "MBC3")

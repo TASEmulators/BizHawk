@@ -76,13 +76,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			[DisplayName("RTC Initial Time")]
-			[Description("Set the initial RTC time in terms of elapsed seconds.  Only used when RealTimeRTC is false.")]
+			[Description("Set the initial RTC time in terms of elapsed seconds.")]
 			[DefaultValue(0)]
 			public int RTCInitialTime
 			{
 				get { return _RTCInitialTime; }
 				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
 			}
+
+			[DisplayName("Use Existing SaveRAM")]
+			[Description("When true, existing SaveRAM will be loaded at boot up")]
+			[DefaultValue(false)]
+			public bool Use_SRAM { get; set; }
+
 
 			[JsonIgnore]
 			private int _RTCInitialTime;
