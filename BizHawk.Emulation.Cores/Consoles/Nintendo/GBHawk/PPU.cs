@@ -250,10 +250,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					Core.cpu.LY = LY;
 
+					// Automatically restore access to VRAM at this time (force end drawing)
+					// Who Framed Roger Rabbit seems to run into this.
+					VRAM_access_write = true;
+					VRAM_access_read = true;
+
 					if (LY == 144)
 					{
 						Core.in_vblank = true;
-
 					}
 				}
 
@@ -594,7 +598,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			
 			// before anything else, we have to check if windowing is in effect
-			if (LCDC.Bit(5) && !window_started && LY >= window_y && pixel_counter >= window_x - 7)
+			if (LCDC.Bit(5) && !window_started && (LY >= window_y) && (pixel_counter >= (window_x - 7)))
 			{
 				/*
 				Console.Write(LY);
