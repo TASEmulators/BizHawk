@@ -50,11 +50,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (arg.StartsWith("--load-state="))
 				{
-					cmdLoadState = arg.Substring(arg.IndexOf('=') + 1);
+					cmdLoadState = args[i].Substring(args[i].IndexOf('=') + 1);
 				}
 				else if (arg.StartsWith("--movie="))
 				{
-					cmdMovie = arg.Substring(arg.IndexOf('=') + 1);
+					cmdMovie = args[i].Substring(args[i].IndexOf('=') + 1);
 				}
 				else if (arg.StartsWith("--dump-type="))
 				{
@@ -75,7 +75,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (arg.StartsWith("--dump-name="))
 				{
-					cmdDumpName = arg.Substring(arg.IndexOf('=') + 1);
+					cmdDumpName = args[i].Substring(args[i].IndexOf('=') + 1);
 				}
 				else if (arg.StartsWith("--dump-length="))
 				{
@@ -95,7 +95,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (arg.StartsWith("--lua="))
 				{
-					luaScript = arg.Substring(arg.IndexOf('=') + 1);
+					luaScript = args[i].Substring(args[i].IndexOf('=') + 1);
 					luaConsole = true;
 				}
 				else if (arg.StartsWith("--luaconsole"))
