@@ -165,15 +165,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Marshal.Copy(temp, 0, iptr0, temp.Length);
 				Marshal.Copy(OAM, 0, iptr1, OAM.Length);
 
+				int[] cp2 = new int[8];
+				for (int i = 0; i < 4; i++)
+				{
+					cp2[i] = (int)color_palette[(ppu.obj_pal_0 >> (i * 2)) & 3];
+					cp2[i + 4] = (int)color_palette[(ppu.obj_pal_1 >> (i * 2)) & 3];
+				}
+				Marshal.Copy(cp2, 0, iptr2, cp2.Length);
+
 				int[] cp = new int[4];
 				for (int i = 0; i < 4; i++)
 				{
-					cp[i] = (int)color_palette[i];
+					cp[i] = (int)color_palette[(ppu.BGP >> (i * 2)) & 3];
 				}
-				Marshal.Copy(cp, 0, iptr2, color_palette.Length);
-				Marshal.Copy(cp, 0, iptr3, color_palette.Length);
+				Marshal.Copy(cp, 0, iptr3, cp.Length);
 
-				Console.WriteLine("here");
 
 				return new GPUMemoryAreas(iptr0, iptr1, iptr2, iptr3);
 			}
