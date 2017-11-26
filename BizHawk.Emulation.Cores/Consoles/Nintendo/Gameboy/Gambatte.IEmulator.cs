@@ -2,6 +2,7 @@
 using System.Diagnostics;
 
 using BizHawk.Emulation.Common;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 {
@@ -98,6 +99,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				LibGambatte.gambatte_destroy(GambatteState);
 				GambatteState = IntPtr.Zero;
 			}
+
+			_vram = IntPtr.Zero;
+			_oam = IntPtr.Zero;
+			_sppal = IntPtr.Zero;
+			_bgpal = IntPtr.Zero;
 
 			DisposeSound();
 		}

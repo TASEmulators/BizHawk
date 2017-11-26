@@ -408,12 +408,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region ppudebug
 
+		public IntPtr _vram = IntPtr.Zero;
+		public IntPtr _bgpal = IntPtr.Zero;
+		public IntPtr _sppal = IntPtr.Zero;
+		public IntPtr _oam = IntPtr.Zero;
+
 		public GPUMemoryAreas GetGPU()
-		{
-			IntPtr _vram = IntPtr.Zero;
-			IntPtr _bgpal = IntPtr.Zero;
-			IntPtr _sppal = IntPtr.Zero;
-			IntPtr _oam = IntPtr.Zero;
+		{		
 			int unused = 0;
 			if (!LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.vram, ref _vram, ref unused)
 				|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.bgpal, ref _bgpal, ref unused)
@@ -423,7 +424,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				throw new InvalidOperationException("Unexpected error in gambatte_getmemoryarea");
 			}
 			return new GPUMemoryAreas(_vram, _oam, _sppal, _bgpal);
-
 		}
 
 		/// <summary>
