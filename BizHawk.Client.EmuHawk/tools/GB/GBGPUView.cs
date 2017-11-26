@@ -87,7 +87,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_cgb = Gb.IsCGBMode();
 			_lcdc = 0;
-
 			_memory = Gb.GetGPU();
 
 			tilespal = _memory.Bgpal;
@@ -316,9 +315,11 @@ namespace BizHawk.Client.EmuHawk
 				int* thispal = pal + 4 * (cgb ? flags & 7 : flags >> 4 & 1);
 				if (cgb && flags.Bit(3))
 					tile += 8192;
+
 				DrawTileHv(tile, dest, pitch, thispal, hflip, vflip);
+
 				if (tall)
-					DrawTileHv((byte*)((int)tile ^ 16), dest + pitch * 8, pitch, thispal, hflip, vflip);
+					DrawTileHv(tile + 16, dest + pitch * 8, pitch, thispal, hflip, vflip);
 				dest += 8;
 			}
 			b.UnlockBits(lockdata);
@@ -465,7 +466,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				DrawOam(bmpViewOAM.BMP, _oam, _vram, _sppal, lcdc.Bit(2), _cgb);
 				bmpViewOAM.Refresh();
-			}
+			}		
 			// try to run the current mouseover, to refresh if the mouse is being held over a pane while the emulator runs
 			// this doesn't really work well; the update rate seems to be throttled
 			MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, Cursor.Position.X, Cursor.Position.Y, 0);

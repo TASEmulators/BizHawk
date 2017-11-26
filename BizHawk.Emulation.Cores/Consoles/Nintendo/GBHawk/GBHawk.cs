@@ -5,6 +5,9 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components.LR35902;
 using BizHawk.Common.NumberExtensions;
 
+using BizHawk.Emulation.Cores.Consoles.Nintendo.Gameboy;
+using System.Runtime.InteropServices;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	[Core(
@@ -13,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		isPorted: false,
 		isReleased: false)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
-	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable,
+	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, IGameboyCommon,
 	ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
 	{
 		// this register controls whether or not the GB BIOS is mapped into memory
@@ -121,8 +124,86 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Register<ITraceable>(_tracer);
 
 			SetupMemoryDomains();
-			HardReset();		
+			HardReset();
+
+			iptr0 = Marshal.AllocHGlobal(CHR_RAM.Length + BG_map_1.Length + BG_map_2.Length + 1);
+			iptr1 = Marshal.AllocHGlobal(OAM.Length + 1);
+			iptr2 = Marshal.AllocHGlobal(color_palette.Length * 2 + 1);
+			iptr3 = Marshal.AllocHGlobal(color_palette.Length + 1);
+
+			_scanlineCallback = null;
 		}
+
+		#region GPUViewer
+
+		public bool IsCGBMode() => false;
+
+		public IntPtr iptr0 = IntPtr.Zero;
+		public IntPtr iptr1 = IntPtr.Zero;
+		public IntPtr iptr2 = IntPtr.Zero;
+		public IntPtr iptr3 = IntPtr.Zero;
+
+		private GPUMemoryAreas _gpuMemory
+		{
+			get
+			{
+				byte[] temp = new byte[CHR_RAM.Length + BG_map_1.Length + BG_map_2.Length];
+
+				for (int i = 0; i < CHR_RAM.Length; i++)
+				{
+					temp[i] = CHR_RAM[i];
+				}
+				for (int i = 0; i < BG_map_1.Length; i++)
+				{
+					temp[CHR_RAM.Length + i] = BG_map_1[i];
+				}
+				for (int i = 0; i < BG_map_2.Length; i++)
+				{
+					temp[CHR_RAM.Length + BG_map_1.Length + i] = BG_map_2[i];
+				}
+
+				Marshal.Copy(temp, 0, iptr0, temp.Length);
+				Marshal.Copy(OAM, 0, iptr1, OAM.Length);
+
+				int[] cp = new int[4];
+				for (int i = 0; i < 4; i++)
+				{
+					cp[i] = (int)color_palette[i];
+				}
+				Marshal.Copy(cp, 0, iptr2, color_palette.Length);
+				Marshal.Copy(cp, 0, iptr3, color_palette.Length);
+
+				Console.WriteLine("here");
+
+				return new GPUMemoryAreas(iptr0, iptr1, iptr2, iptr3);
+			}
+		} 
+
+		public GPUMemoryAreas GetGPU() => _gpuMemory;
+
+		public ScanlineCallback _scanlineCallback;
+		public int _scanlineCallbackLine = 0;
+
+		public void SetScanlineCallback(ScanlineCallback callback, int line)
+		{
+			_scanlineCallback = callback;
+			_scanlineCallbackLine = line;
+
+			if (line == -2)
+			{
+				GetGPU();
+				_scanlineCallback(ppu.LCDC);
+			}
+		}
+
+		private PrinterCallback _printerCallback = null;
+
+		public void SetPrinterCallback(PrinterCallback callback)
+		{
+			_printerCallback = null;
+		}
+
+		#endregion
 
 		public DisplayType Region => DisplayType.NTSC;
 

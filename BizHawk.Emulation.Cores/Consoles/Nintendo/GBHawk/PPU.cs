@@ -222,6 +222,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// start the next scanline
 				if (cycle == 456)
 				{
+					// scanline callback
+					if ((LY + LY_inc) == Core._scanlineCallbackLine)
+					{
+						if (Core._scanlineCallback != null)
+						{
+							Core._scanlineCallback(LCDC);
+						}						
+					}
+
+
 					cycle = 0;
 					LY += LY_inc;
 					//Console.WriteLine(Core.cpu.TotalExecutedCycles);

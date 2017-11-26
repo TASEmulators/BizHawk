@@ -2,6 +2,7 @@
 using BizHawk.Emulation.Common;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -161,7 +162,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void Dispose()
 		{
-
+			Marshal.FreeHGlobal(iptr0);
+			Marshal.FreeHGlobal(iptr1);
+			Marshal.FreeHGlobal(iptr2);
+			Marshal.FreeHGlobal(iptr3);
 		}
 
 
