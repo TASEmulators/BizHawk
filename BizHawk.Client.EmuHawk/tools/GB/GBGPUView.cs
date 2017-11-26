@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int x = 0; x < 8; x++) // right to left
 				{
 					int color = loplane & 1 | hiplane & 2;
-					*dest-- = pal[color];
+					*dest-- = (int)(pal[color] | 0xFF000000);
 					loplane >>= 1;
 					hiplane >>= 1;
 				}
@@ -160,7 +160,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int x = 0; x < 8; x++) // right to left
 				{
 					int color = loplane & 1 | hiplane & 2;
-					*dest = pal[color];
+					*dest = (int)(pal[color] | 0xFF000000);
 					if (!hflip)
 						dest--;
 					else
@@ -342,7 +342,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (int py = 0; py < 4; py++)
 				{
-					*dest = *pal++;
+					*dest = (int)(*pal++ | 0xFF000000);
 					dest += pitch;
 				}
 				dest -= pitch * 4;
