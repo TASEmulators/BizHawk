@@ -227,6 +227,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						if (Core._scanlineCallback != null)
 						{
+							Core.GetGPU();
 							Core._scanlineCallback(LCDC);
 						}						
 					}
