@@ -32,7 +32,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if ((addr >= 0xA000) && (addr < 0xA200))
 			{
-				return Core.cart_RAM[addr - 0xA000];
+				if (RAM_enable)
+				{
+					return Core.cart_RAM[addr - 0xA000];
+				}
+				return 0xFF;
 			}
 			else
 			{
@@ -49,13 +53,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			if (addr < 0x2000)
 			{
-				RAM_enable = (addr & 0x100) > 0;
+				if ((addr & 0x100) == 0)
+				{
+					RAM_enable = ((value & 0xA) == 0xA) ? true : false;
+				}
 			}
 			else if (addr < 0x4000)
 			{
 				if ((addr & 0x100) > 0)
 				{
 					ROM_bank = value & 0xF;
+					if (ROM_bank==0) { ROM_bank = 1; }
 				}
 			}
 			else if ((addr >= 0xA000) && (addr < 0xA200))

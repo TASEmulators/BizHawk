@@ -9,8 +9,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public GBHawk Core { get; set; }
 
-		//public byte BGP_l;
-
 		// register variables
 		public byte LCDC;
 		public byte STAT;
@@ -41,6 +39,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool stat_line_old;
 		public int hbl_countdown;
 		// OAM scan
+		public bool DMA_OAM_access;
 		public bool OAM_access_read;
 		public bool OAM_access_write;
 		public int OAM_scan_index;
@@ -118,9 +117,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			switch (addr)
 			{
 				case 0xFF40: // LCDC
+					if (LCDC.Bit(7) && !value.Bit(7))
+					{
+						VRAM_access_read = true;
+						VRAM_access_write = true;
+						OAM_access_read = true;
+						OAM_access_write = true;
+					}
+
 					LCDC = value;
 					break; 
 				case 0xFF41: // STAT
+					// writing to STAT during mode 0 or 2 causes a STAT IRQ
+					if (LCDC.Bit(7))
+					{
+						if (((STAT & 3) == 0) || ((STAT & 3) == 1))
+						{
+							LYC_INT = true;
+						}
+					}
 					STAT = (byte)((value & 0xF8) | (STAT & 7) | 0x80);
 					break; 
 				case 0xFF42: // SCY
@@ -141,6 +156,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF46: // DMA 
 					DMA_addr = value;
 					DMA_start = true;
+					DMA_OAM_access = true;
 					DMA_clock = 0;
 					DMA_inc = 0;
 					break; 
@@ -169,14 +185,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (DMA_clock >= 4)
 				{
-					OAM_access_read = false;
-					OAM_access_write = false;
+					DMA_OAM_access = false;
 					if ((DMA_clock % 4) == 1)
 					{
 						// the cpu can't access memory during this time, but we still need the ppu to be able to.
 						DMA_start = false;
 						DMA_byte = Core.ReadMemory((ushort)((DMA_addr << 8) + DMA_inc));
-						DMA_start = true;
+						DMA_start = true; 
 					}
 					else if ((DMA_clock % 4) == 3)
 					{
@@ -197,8 +212,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				if (DMA_clock == 648)
 				{
-					OAM_access_read = true;
-					OAM_access_write = true;
 					DMA_start = false;
 				}
 			}
@@ -209,6 +222,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// start the next scanline
 				if (cycle == 456)
 				{
+					// scanline callback
+					if ((LY + LY_inc) == Core._scanlineCallbackLine)
+					{
+						if (Core._scanlineCallback != null)
+						{
+							Core.GetGPU();
+							Core._scanlineCallback(LCDC);
+						}						
+					}
+
+
 					cycle = 0;
 					LY += LY_inc;
 					//Console.WriteLine(Core.cpu.TotalExecutedCycles);
@@ -217,7 +241,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// here is where LY = LYC gets cleared (but only if LY isnt 0 as that's a special case
 					if (LY_inc == 1)
 					{
-						//LYC_INT = false;
+						LYC_INT = false;
 						STAT &= 0xFB;
 					}
 
@@ -237,10 +261,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					Core.cpu.LY = LY;
 
+					// Automatically restore access to VRAM at this time (force end drawing)
+					// Who Framed Roger Rabbit seems to run into this.
+					VRAM_access_write = true;
+					VRAM_access_read = true;
+
 					if (LY == 144)
 					{
 						Core.in_vblank = true;
-
 					}
 				}
 
@@ -415,9 +443,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// here LY=LYC will be asserted
 				if ((cycle == 4) && (LY != 0))
 				{
-					LYC_INT = false;
-					STAT &= 0xFB;
-
 					if (LY == LYC)
 					{
 						// set STAT coincidence FLAG and interrupt flag if it is enabled
@@ -431,8 +456,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			else
 			{
 				// screen disable sets STAT as though it were vblank, but there is no Stat IRQ asserted
-				STAT &= 0xFC;
-				STAT |= 0x01;
+				//STAT &= 0xFC;
+				//STAT |= 0x01;
+
+				STAT &= 0xF8;
 
 				VBL_INT = LYC_INT = HBL_INT = OAM_INT = false;
 
@@ -582,7 +609,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			
 			// before anything else, we have to check if windowing is in effect
-			if (LCDC.Bit(5) && !window_started && LY >= window_y && pixel_counter >= window_x - 7)
+			if (LCDC.Bit(5) && !window_started && (LY >= window_y) && (pixel_counter >= (window_x - 7)))
 			{
 				/*
 				Console.Write(LY);
@@ -637,7 +664,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						pixel = tile_data_latch[0].Bit(7 - (render_counter % 8)) ? 1 : 0;
 						pixel |= tile_data_latch[1].Bit(7 - (render_counter % 8)) ? 2 : 0;
-						pixel = (BGP >> (pixel * 2)) & 3;
+
+						int ref_pixel = pixel;
+						if (LCDC.Bit(0))
+						{
+							pixel = (BGP >> (pixel * 2)) & 3;
+						}
+						else
+						{
+							pixel = 0;
+						}
+						
+
 						// now we have the BG pixel, we next need the sprite pixel
 						if (!no_sprites)
 						{
@@ -682,9 +720,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								{
 									if (!sprite_attr.Bit(7))
 									{
-										if (s_pixel != 0) { use_sprite = true; }
+										use_sprite = true;
 									}
-									else if (pixel == 0)
+									else if (ref_pixel == 0)
 									{
 										use_sprite = true;
 									}
@@ -704,13 +742,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									else
 									{
 										pixel = (obj_pal_0 >> (s_pixel * 2)) & 3;
-									}
+									}							
 								}
 							}
 						}
 
 						// based on sprite priority and pixel values, pick a final pixel color
-						Core._vidbuffer[LY * 160 + pixel_counter] = (int)GBHawk.color_palette[pixel];
+						Core._vidbuffer[LY * 160 + pixel_counter] = (int)Core.color_palette[pixel];
 						pixel_counter++;
 
 						if (pixel_counter == 160)
@@ -1029,11 +1067,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			LY = 0;
 			LYC = 0;
 			DMA_addr = 0;
-			BGP = 0;
+			BGP = 0xFF;
 			obj_pal_0 = 0xFF;
 			obj_pal_1 = 0xFF;
-			window_y = 0;
-			window_x = 0;
+			window_y = 0x0;
+			window_x = 0x0;
 			LY_inc = 1;
 			no_scan = false;
 			OAM_access_read = true;
@@ -1150,6 +1188,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("write_sprite", ref write_sprite);
 			ser.Sync("no_scan", ref no_scan);
 
+			ser.Sync("DMA_OAM_access", ref DMA_OAM_access);
 			ser.Sync("OAM_access_read", ref OAM_access_read);
 			ser.Sync("OAM_access_write", ref OAM_access_write);
 			ser.Sync("VRAM_access_read", ref VRAM_access_read);

@@ -122,8 +122,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		void InitEEPROMMapper()
 		{
-			ReadMemory = ReadMemoryEEPROM;
-			WriteMemory = WriteMemoryEEPROM;
+			ReadMemoryMapper = ReadMemoryEEPROM;
+			WriteMemoryMapper = WriteMemoryEEPROM;
 			MapMemory = MapMemoryEEPROM;
 			WriteMemoryEEPROM(0xFFFC, 0);
 			WriteMemoryEEPROM(0xFFFD, 0);

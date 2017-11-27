@@ -2,6 +2,7 @@
 using BizHawk.Emulation.Common;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
@@ -12,7 +13,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
 		public byte controller_state;
-		public byte controller_state_old;
 		public bool in_vblank_old;
 		public bool in_vblank;
 		public bool vblank_rise;
@@ -20,6 +20,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void FrameAdvance(IController controller, bool render, bool rendersound)
 		{
 			//Console.WriteLine("-----------------------FRAME-----------------------");
+
+			//Update the color palette if a setting changed
+			if(_settings.Palette == GBSettings.PaletteType.BW)
+			{
+				color_palette[0] = color_palette_BW[0];
+				color_palette[1] = color_palette_BW[1];
+				color_palette[2] = color_palette_BW[2];
+				color_palette[3] = color_palette_BW[3];
+			}
+			else
+			{
+				color_palette[0] = color_palette_Gr[0];
+				color_palette[1] = color_palette_Gr[1];
+				color_palette[2] = color_palette_Gr[2];
+				color_palette[3] = color_palette_Gr[3];
+			}
+
 
 			if (_tracer.Enabled)
 			{
@@ -45,6 +62,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			do_frame();
 
+			if (_scanlineCallback != null)
+			{
+				GetGPU();
+				_scanlineCallback(ppu.LCDC);
+			}
+
 			if (_islag)
 			{
 				_lagcount++;
@@ -56,16 +79,55 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// gameboy frames can be variable lengths
 			// we want to end a frame when VBlank turns from false to true
 			int ticker = 0;
+
+			// check if new input changed the input register and triggered IRQ
+			byte contr_prev = input_register;
+
+			input_register &= 0xF0;
+			if ((input_register & 0x30) == 0x20)
+			{
+				input_register |= (byte)(controller_state & 0xF);
+			}
+			else if ((input_register & 0x30) == 0x10)
+			{
+				input_register |= (byte)((controller_state & 0xF0) >> 4);
+			}
+			else if ((input_register & 0x30) == 0x00)
+			{
+				// if both polls are set, then a bit is zero if either or both pins are zero
+				byte temp = (byte)((controller_state & 0xF) & ((controller_state & 0xF0) >> 4));
+				input_register |= temp;
+			}
+			else
+			{
+				input_register |= 0xF;
+			}
+
+			// check for interrupts
+
+			
+			if (((contr_prev & 8) > 0) && ((input_register & 8) == 0) ||
+				((contr_prev & 4) > 0) && ((input_register & 4) == 0) ||
+				((contr_prev & 2) > 0) && ((input_register & 2) == 0) ||
+				((contr_prev & 1) > 0) && ((input_register & 1) == 0))
+			{
+				if (REG_FFFF.Bit(4)) { cpu.FlagI = true; }
+				REG_FF0F |= 0x10;
+			}
+			
+
 			while (!vblank_rise && (ticker < 100000))
 			{
 				audio.tick();
 				timer.tick_1();
 				ppu.tick();
+				serialport.serial_transfer_tick();
+
+				if (Use_RTC) { mapper.RTC_Tick(); }
 
 				cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
 
 				timer.tick_2();
-
 
 				if (in_vblank && !in_vblank_old)
 				{
@@ -87,26 +149,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			InputCallbacks.Call();
 			controller_state = _controllerDeck.ReadPort1(controller);
-
-			// set interrupt flag if a pin went from high to low
-			if (controller_state < controller_state_old)
-			{
-				if (REG_FFFF.Bit(4)) { cpu.FlagI = true; }			
-				REG_FF0F |= 0x10; 
-			}
-
-			controller_state_old = controller_state;
-		}
-
-		public void serial_transfer()
-		{
-			if (serial_control.Bit(7) && !serial_start_old)
-			{
-				serial_start_old = true;
-
-				// transfer out on byte of data
-				// needs to be modelled
-			}
 		}
 
 		public int Frame => _frame;
@@ -126,7 +168,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void Dispose()
 		{
-
+			Marshal.FreeHGlobal(iptr0);
+			Marshal.FreeHGlobal(iptr1);
+			Marshal.FreeHGlobal(iptr2);
+			Marshal.FreeHGlobal(iptr3);
 		}
 
 
@@ -149,7 +194,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int VsyncNumerator => _frameHz;
 		public int VsyncDenominator => 1;
 
-		public static readonly uint[] color_palette = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
+		public static readonly uint[] color_palette_BW = { 0xFFFFFFFF , 0xFFAAAAAA, 0xFF555555, 0xFF000000 };
+		public static readonly uint[] color_palette_Gr = { 0xFFA4C505, 0xFF88A905, 0xFF1D551D, 0xFF052505 };
+
+		public uint[] color_palette = new uint[4];
 
 		#endregion
 	}

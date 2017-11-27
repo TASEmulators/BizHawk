@@ -51,6 +51,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			mapper.SyncState(ser);
 			timer.SyncState(ser);
 			ppu.SyncState(ser);
+			serialport.SyncState(ser);
 			audio.SyncState(ser);
 
 			ser.BeginSection("Gameboy");
@@ -61,18 +62,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_controllerDeck.SyncState(ser);
 
 			ser.Sync("controller_state", ref controller_state);
-			ser.Sync("controller_state_old", ref controller_state_old);
 			ser.Sync("in_vblank", ref in_vblank);
 			ser.Sync("in_vblank_old", ref in_vblank_old);	
 			ser.Sync("vblank_rise", ref vblank_rise);
 			ser.Sync("GB_bios_register", ref GB_bios_register);
 			ser.Sync("input_register", ref input_register);
 
-			ser.Sync("serial_control", ref serial_control);
-			ser.Sync("serial_data_out", ref serial_data_out);
-			ser.Sync("serial_data_in", ref serial_data_in);
-			ser.Sync("serial_start_old", ref serial_start_old);
-			
 			ser.Sync("REG_FFFF", ref REG_FFFF);
 			ser.Sync("REG_FF0F", ref REG_FF0F);
 			ser.Sync("enable_VBL", ref enable_VBL);
@@ -88,6 +83,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("BG_map_1", ref BG_map_1, false);
 			ser.Sync("BG_map_2", ref BG_map_2, false);
 			ser.Sync("OAM", ref OAM, false);
+
+			ser.Sync("Use_RTC", ref Use_RTC);
+
 			// probably a better way to do this
 			if (cart_RAM != null)
 			{

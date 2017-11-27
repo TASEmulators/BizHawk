@@ -85,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int SQ1_vol_per,			SQ2_vol_per,										NOISE_vol_per;
 		public int SQ1_intl_swp_cnt;
 		public int																			NOISE_LFSR;
-		public ushort SQ1_len_cntr, SQ2_len_cntr, WAVE_len_cntr, NOISE_len_cntr;
+		public ushort SQ1_len_cntr,		SQ2_len_cntr,			WAVE_len_cntr,				NOISE_len_cntr;
 		// computed
 		public int SQ1_output, SQ2_output, WAVE_output, NOISE_output;
 
@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ1_negate = (value & 8) > 0;
 						SQ1_shift = (byte)(value & 7);
 
-						if (!SQ1_negate && SQ1_calc_done) { SQ1_enable = false; }
+						if (!SQ1_negate && SQ1_calc_done) { SQ1_enable = false; SQ1_output = 0; }
 						break;
 					case 0xFF11:                                        // NR11 (sound length / wave pattern duty %)
 						Audio_Regs[NR11] = value;
@@ -192,8 +192,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ1_st_vol = (byte)((value & 0xF0) >> 4);
 						SQ1_env_add = (value & 8) > 0;
 						SQ1_per = (byte)(value & 7);
-						if (SQ1_per == 0) { SQ1_per = 8; }
-						if ((value & 0xF8) == 0) { SQ1_enable = SQ1_swp_enable = false; }
+						if ((value & 0xF8) == 0) { SQ1_enable = SQ1_swp_enable = false; SQ1_output = 0; }
 						break;
 					case 0xFF13:                                        // NR13 (freq low)
 						Audio_Regs[NR13] = value;
@@ -211,7 +210,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (!SQ1_len_en && ((value & 0x40) > 0) && (SQ1_len_cntr > 0))
 							{
 								SQ1_len_cntr--;
-								if ((SQ1_len_cntr == 0) && !SQ1_trigger) { SQ1_enable = SQ1_swp_enable = false; }
+								if ((SQ1_len_cntr == 0) && !SQ1_trigger) { SQ1_enable = SQ1_swp_enable = false; SQ1_output = 0; }
 							}
 						}
 
@@ -251,14 +250,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// disable channel if overflow
 								if ((uint)shadow_frq > 2047)
 								{
-									SQ1_enable = SQ1_swp_enable = false;
+									SQ1_enable = SQ1_swp_enable = false; SQ1_output = 0;
 								}
 
 								// set negate mode flag that disables channel is negate clerar
 								if (SQ1_negate) { SQ1_calc_done = true; }
 							}
 
-							if ((SQ1_vol_state == 0) && !SQ1_env_add) { SQ1_enable = SQ1_swp_enable = false; }
+							if ((SQ1_vol_state == 0) && !SQ1_env_add) { SQ1_enable = SQ1_swp_enable = false; SQ1_output = 0; }
 						}
 
 						SQ1_len_en = (value & 0x40) > 0;
@@ -274,8 +273,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ2_st_vol = (byte)((value & 0xF0) >> 4);
 						SQ2_env_add = (value & 8) > 0;
 						SQ2_per = (byte)(value & 7);
-						//if (SQ2_per == 0) { SQ2_per = 8; }
-						if ((value & 0xF8) == 0) { SQ2_enable = false; }
+						if ((value & 0xF8) == 0) { SQ2_enable = false; SQ2_output = 0; }
 						break;
 					case 0xFF18:                                        // NR23 (freq low)
 						Audio_Regs[NR23] = value;
@@ -293,7 +291,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (!SQ2_len_en && ((value & 0x40) > 0) && (SQ2_len_cntr > 0))
 							{
 								SQ2_len_cntr--;
-								if ((SQ2_len_cntr == 0) && !SQ2_trigger) { SQ2_enable = false; }
+								if ((SQ2_len_cntr == 0) && !SQ2_trigger) { SQ2_enable = false; SQ2_output = 0; }
 							}
 						}
 
@@ -310,16 +308,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							SQ2_intl_cntr = (2048 - SQ2_frq) * 4;
 							SQ2_vol_state = SQ2_st_vol;
 							SQ2_vol_per = (SQ2_per > 0) ? SQ2_per : 8;
-							if ((SQ2_vol_state == 0) && !SQ2_env_add) { SQ2_enable = false; }
+							if ((SQ2_vol_state == 0) && !SQ2_env_add) { SQ2_enable = false; SQ2_output = 0; }
 						}
 
 						SQ2_len_en = (value & 0x40) > 0;
-
 						break;
 					case 0xFF1A:                                        // NR30 (on/off)
 						Audio_Regs[NR30] = value;
 						WAVE_DAC_pow = (value & 0x80) > 0;
-						if (!WAVE_DAC_pow) { WAVE_enable = false; }
+						if (!WAVE_DAC_pow) { WAVE_enable = false; WAVE_output = 0; }
 						break;
 					case 0xFF1B:                                        // NR31 (length)
 						Audio_Regs[NR31] = value;
@@ -346,7 +343,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (!WAVE_len_en && ((value & 0x40) > 0) && (WAVE_len_cntr > 0))
 							{
 								WAVE_len_cntr--;
-								if ((WAVE_len_cntr == 0) && !WAVE_trigger) { WAVE_enable = false; }
+								if ((WAVE_len_cntr == 0) && !WAVE_trigger) { WAVE_enable = false; WAVE_output = 0; }
 							}
 						}
 
@@ -379,7 +376,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 							WAVE_intl_cntr = (2048 - WAVE_frq) * 2 + 6; // trigger delay for wave channel
 							WAVE_wave_cntr = 0;
-							if (!WAVE_DAC_pow) { WAVE_enable = false; }
+							if (!WAVE_DAC_pow) { WAVE_enable = false; WAVE_output = 0; }
 						}
 
 						WAVE_len_en = (value & 0x40) > 0;
@@ -395,8 +392,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						NOISE_st_vol = (byte)((value & 0xF0) >> 4);
 						NOISE_env_add = (value & 8) > 0;
 						NOISE_per = (byte)(value & 7);
-						//if (NOISE_per == 0) { NOISE_per = 8; }
-						if ((value & 0xF8) == 0) { NOISE_enable = false; }
+						if ((value & 0xF8) == 0) { NOISE_enable = false; NOISE_output = 0; }
 						break;
 					case 0xFF22:                                        // NR43 (shift)
 						Audio_Regs[NR43] = value;
@@ -413,7 +409,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (!NOISE_len_en && ((value & 0x40) > 0) && (NOISE_len_cntr > 0))
 							{
 								NOISE_len_cntr--;
-								if ((NOISE_len_cntr == 0) && !NOISE_trigger) { NOISE_enable = false; }
+								if ((NOISE_len_cntr == 0) && !NOISE_trigger) { NOISE_enable = false; NOISE_output = 0; }
 							}
 						}
 
@@ -431,7 +427,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							NOISE_vol_state = NOISE_st_vol;
 							NOISE_vol_per = (NOISE_per > 0) ? NOISE_per : 8;
 							NOISE_LFSR = 0x7FFF;
-							if ((NOISE_vol_state == 0) && !NOISE_env_add) { NOISE_enable = false; }
+							if ((NOISE_vol_state == 0) && !NOISE_env_add) { NOISE_enable = false; NOISE_output = 0; }
 						}
 
 						NOISE_len_en = (value & 0x40) > 0;
@@ -454,10 +450,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						AUD_CTRL_sq2_R_en = (value & 2) > 0;
 						AUD_CTRL_sq1_R_en = (value & 1) > 0;
 						break;
-					case 0xFF26:                                        // NR52 (ctrl)
+					case 0xFF26:                                        // NR52 (ctrl)						
+						// NOTE: Make sure to do the power off first since it will call the write_reg function again
+						if ((value & 0x80) == 0) { power_off(); }
 						AUD_CTRL_power = (value & 0x80) > 0;
-
-						if (!AUD_CTRL_power) { power_off(); }
 						break;
 
 					// wave ram table
@@ -548,12 +544,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				SQ1_intl_cntr--;
 				if (SQ1_intl_cntr == 0)
 				{
-					SQ1_intl_cntr = (2048 - SQ1_frq_shadow) * 4;
+					SQ1_intl_cntr = (2048 - SQ1_frq) * 4;
 					SQ1_duty_cntr++;
 					SQ1_duty_cntr &= 7;
 
 					SQ1_output = DUTY_CYCLES[SQ1_duty * 8 + SQ1_duty_cntr];
 					SQ1_output *= SQ1_vol_state;
+
+					// avoid aliasing at high frequenices
+					if (SQ1_frq > 0x7F0) { SQ1_output = 0; }
 				}
 			}
 
@@ -569,6 +568,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					SQ2_output = DUTY_CYCLES[SQ2_duty * 8 + SQ2_duty_cntr];
 					SQ2_output *= SQ2_vol_state;
+
+					// avoid aliasing at high frequenices
+					if (SQ2_frq > 0x7F0) { SQ2_output = 0; }
 				}
 			}
 
@@ -613,6 +615,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					WAVE_output = sample;
 
 					if (!WAVE_DAC_pow) { WAVE_output = 0; }
+
+					// avoid aliasing at high frequenices
+					if (WAVE_frq > 0x7F0) { WAVE_output = 0; }
 				}
 			}
 
@@ -664,9 +669,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				master_audio_clock = 0;
 				if (AudioClocks < 1500)
 				{
-					AudioSamples[AudioClocks] = (short)(L_final * 4);
+					AudioSamples[AudioClocks] = (short)(L_final * 20);
 					AudioClocks++;
-					AudioSamples[AudioClocks] = (short)(R_final * 4);
+					AudioSamples[AudioClocks] = (short)(R_final * 20);
 					AudioClocks++;
 				}
 			}
@@ -688,22 +693,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (SQ1_len_en && SQ1_len_cntr > 0)
 					{
 						SQ1_len_cntr--;
-						if (SQ1_len_cntr == 0) { SQ1_enable = SQ1_swp_enable = false; }
+						if (SQ1_len_cntr == 0) { SQ1_enable = SQ1_swp_enable = false; SQ1_output = 0; }
 					}
 					if (SQ2_len_en && SQ2_len_cntr > 0)
 					{
 						SQ2_len_cntr--;
-						if (SQ2_len_cntr == 0) { SQ2_enable = false; }
+						if (SQ2_len_cntr == 0) { SQ2_enable = false; SQ2_output = 0; }
 					}
 					if (WAVE_len_en && WAVE_len_cntr > 0)
 					{
 						WAVE_len_cntr--;
-						if (WAVE_len_cntr == 0) { WAVE_enable = false; }
+						if (WAVE_len_cntr == 0) { WAVE_enable = false; WAVE_output = 0; }
 					}
 					if (NOISE_len_en && NOISE_len_cntr > 0)
 					{
 						NOISE_len_cntr--;
-						if (NOISE_len_cntr == 0) { NOISE_enable = false; }
+						if (NOISE_len_cntr == 0) { NOISE_enable = false; NOISE_output = 0; }
 					}
 				}
 
@@ -728,7 +733,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							// disable channel if overflow
 							if ((uint)shadow_frq > 2047)
 							{
-								SQ1_enable = SQ1_swp_enable = false;
+								SQ1_enable = SQ1_swp_enable = false; SQ1_output = 0;
 							}
 							else
 							{
@@ -751,7 +756,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 									if ((uint)shadow_frq > 2047)
 									{
-										SQ1_enable = SQ1_swp_enable = false;
+										SQ1_enable = SQ1_swp_enable = false; SQ1_output = 0;
 									}
 								}
 							}
@@ -783,6 +788,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 						}
 					}
+
 					if (SQ2_per > 0)
 					{
 						SQ2_vol_per--;
@@ -804,6 +810,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 						}
 					}
+
 					if (NOISE_per > 0)
 					{
 						NOISE_vol_per--;
@@ -831,30 +838,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void power_off()
 		{
-			for (int i = 0; i < 21; i++)
+			for (int i = 0; i < 0x16; i++)
 			{
-				Audio_Regs[i] = 0;
+				WriteReg(0xFF10 + i, 0);		
 			}
 
-			// reset derived values 
-			sync_channels();
+			// duty and length are reset
+			SQ1_duty_cntr = SQ2_duty_cntr = 0;
 
 			// reset state variables
-			SQ1_enable = SQ1_swp_enable = false;
-			SQ2_enable = false;
-			WAVE_enable = false;
-			NOISE_enable = false;
+			SQ1_enable = SQ1_swp_enable = SQ2_enable = WAVE_enable = NOISE_enable = false;
 
-			SQ1_len_en = false;
-			SQ2_len_en = false;
-			WAVE_len_en = false;
-			NOISE_len_en = false;
+			SQ1_len_en = SQ2_len_en = WAVE_len_en = NOISE_len_en = false;
+
+			SQ1_output = SQ2_output = WAVE_output = NOISE_output = 0;
 
 			sequencer_len = 0;
 			sequencer_vol = 0;
 			sequencer_swp = 0;
-
-			master_audio_clock = 0;
 		}
 
 		public void Reset()
@@ -877,43 +878,82 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			ser.Sync("Audio_Regs", ref Audio_Regs, false);
 			ser.Sync("Wave_Ram", ref Wave_RAM, false);
-
-			// save state variables
-			ser.Sync("WAVE_can_get", ref WAVE_can_get);
+	
 			ser.Sync("SQ1_vol_done", ref SQ1_vol_done);
-			ser.Sync("SQ2_vol_done", ref SQ2_vol_done);
-			ser.Sync("NOISE_vol_done", ref NOISE_vol_done);
 			ser.Sync("SQ1_calc_done", ref SQ1_calc_done);
 			ser.Sync("SQ1_swp_enable", ref SQ1_swp_enable);
 			ser.Sync("SQ1_length_counter", ref SQ1_len_cntr);
-			ser.Sync("SQ2_length_counter", ref SQ2_len_cntr);
-			ser.Sync("WAVE_length_counter", ref WAVE_len_cntr);
-			ser.Sync("NOISE_length_counter", ref NOISE_len_cntr);
 			ser.Sync("SQ1_enable", ref SQ1_enable);
-			ser.Sync("SQ2_enable", ref SQ2_enable);
-			ser.Sync("WAVE_enable", ref WAVE_enable);
-			ser.Sync("NOISE_enable", ref NOISE_enable);
 			ser.Sync("SQ1_vol_state", ref SQ1_vol_state);
-			ser.Sync("SQ2_vol_state", ref SQ2_vol_state);
-			ser.Sync("NOISE_vol_state", ref NOISE_vol_state);
 			ser.Sync("SQ1_duty_cntr", ref SQ1_duty_cntr);
-			ser.Sync("SQ2_duty_cntr", ref SQ2_duty_cntr);
-			ser.Sync("WAVE_wave_cntr", ref WAVE_wave_cntr);
 			ser.Sync("SQ1_frq_shadow", ref SQ1_frq_shadow);
 			ser.Sync("SQ1_intl_cntr", ref SQ1_intl_cntr);
-			ser.Sync("SQ2_intl_cntr", ref SQ2_intl_cntr);
-			ser.Sync("WAVE_intl_cntr", ref WAVE_intl_cntr);
-			ser.Sync("NOISE_intl_cntr", ref NOISE_intl_cntr);
 			ser.Sync("SQ1_vol_per", ref SQ1_vol_per);
-			ser.Sync("SQ2_vol_per", ref SQ2_vol_per);
-			ser.Sync("NOISE_vol_per", ref NOISE_vol_per);
 			ser.Sync("SQ1_intl_swp_cnt", ref SQ1_intl_swp_cnt);
-			ser.Sync("NOISE_LFSR", ref NOISE_LFSR);
 			ser.Sync("SQ1_len_cntr", ref SQ1_len_cntr);
-			ser.Sync("SQ2_len_cntr", ref SQ2_len_cntr);
-			ser.Sync("WAVE_len_cntr", ref WAVE_len_cntr);
-			ser.Sync("NOISE_len_cntr", ref NOISE_len_cntr);
+			ser.Sync("SQ1_negate", ref SQ1_negate);
+			ser.Sync("SQ1_trigger", ref SQ1_trigger);
+			ser.Sync("SQ1_len_en", ref SQ1_len_en);
+			ser.Sync("SQ1_env_add", ref SQ1_env_add);
+			ser.Sync("SQ1_shift", ref SQ1_shift);
+			ser.Sync("SQ1_duty", ref SQ1_duty);
+			ser.Sync("SQ1_st_vol", ref SQ1_st_vol);
+			ser.Sync("SQ1_per", ref SQ1_per);
+			ser.Sync("SQ1_swp_prd", ref SQ1_swp_prd);
+			ser.Sync("SQ1_frq", ref SQ1_frq);
+			ser.Sync("SQ1_length", ref SQ1_length);
+			ser.Sync("SQ1_output", ref SQ1_output);
 
+			ser.Sync("SQ2_vol_done", ref SQ2_vol_done);
+			ser.Sync("SQ2_length_counter", ref SQ2_len_cntr);
+			ser.Sync("SQ2_enable", ref SQ2_enable);
+			ser.Sync("SQ2_vol_state", ref SQ2_vol_state);
+			ser.Sync("SQ2_duty_cntr", ref SQ2_duty_cntr);
+			ser.Sync("SQ2_intl_cntr", ref SQ2_intl_cntr);
+			ser.Sync("SQ2_vol_per", ref SQ2_vol_per);
+			ser.Sync("SQ2_len_cntr", ref SQ2_len_cntr);
+			ser.Sync("SQ2_trigger", ref SQ2_trigger);
+			ser.Sync("SQ2_len_en", ref SQ2_len_en);
+			ser.Sync("SQ2_env_add", ref SQ2_env_add);
+			ser.Sync("SQ2_duty", ref SQ2_duty);
+			ser.Sync("SQ2_st_vol", ref SQ2_st_vol);
+			ser.Sync("SQ2_per", ref SQ2_per);
+			ser.Sync("SQ2_frq", ref SQ2_frq);
+			ser.Sync("SQ2_length", ref SQ2_length);
+			ser.Sync("SQ2_output", ref SQ2_output);
+
+			ser.Sync("WAVE_can_get", ref WAVE_can_get);
+			ser.Sync("WAVE_length_counter", ref WAVE_len_cntr);
+			ser.Sync("WAVE_enable", ref WAVE_enable);
+			ser.Sync("WAVE_wave_cntr", ref WAVE_wave_cntr);
+			ser.Sync("WAVE_intl_cntr", ref WAVE_intl_cntr);
+			ser.Sync("WAVE_len_cntr", ref WAVE_len_cntr);
+			ser.Sync("WAVE_DAC_pow", ref WAVE_DAC_pow);
+			ser.Sync("WAVE_trigger", ref WAVE_trigger);
+			ser.Sync("WAVE_len_en", ref WAVE_len_en);
+			ser.Sync("WAVE_vol_code", ref WAVE_vol_code);
+			ser.Sync("WAVE_frq", ref WAVE_frq);
+			ser.Sync("WAVE_length", ref WAVE_length);
+			ser.Sync("WAVE_output", ref WAVE_output);
+
+			ser.Sync("NOISE_vol_done", ref NOISE_vol_done);
+			ser.Sync("NOISE_length_counter", ref NOISE_len_cntr);
+			ser.Sync("NOISE_enable", ref NOISE_enable);
+			ser.Sync("NOISE_vol_state", ref NOISE_vol_state);
+			ser.Sync("NOISE_intl_cntr", ref NOISE_intl_cntr);
+			ser.Sync("NOISE_vol_per", ref NOISE_vol_per);
+			ser.Sync("NOISE_LFSR", ref NOISE_LFSR);
+			ser.Sync("NOISE_len_cntr", ref NOISE_len_cntr);
+			ser.Sync("NOISE_wdth_md", ref NOISE_wdth_md);
+			ser.Sync("NOISE_trigger", ref NOISE_trigger);
+			ser.Sync("NOISE_len_en", ref NOISE_len_en);
+			ser.Sync("NOISE_env_add", ref NOISE_env_add);
+			ser.Sync("NOISE_clk_shft", ref NOISE_clk_shft);
+			ser.Sync("NOISE_div_code", ref NOISE_div_code);
+			ser.Sync("NOISE_st_vol", ref NOISE_st_vol);
+			ser.Sync("NOISE_per", ref NOISE_per);
+			ser.Sync("NOISE_length", ref NOISE_length);
+			ser.Sync("NOISE_output", ref NOISE_output);
 
 			ser.Sync("sequencer_len", ref sequencer_len);
 			ser.Sync("sequencer_vol", ref sequencer_vol);
@@ -921,93 +961,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("sequencer_tick", ref sequencer_tick);
 
 			ser.Sync("master_audio_clock", ref master_audio_clock);
-
-			// get derived state
-			if (ser.IsReader)
-			{
-				sync_channels();
-			}
-		}
-
-		public void sync_channels()
-		{
-
-			SQ1_swp_prd = (byte)((Audio_Regs[NR10] & 0x70) >> 4);
-			SQ1_negate = (Audio_Regs[NR10] & 8) > 0;
-			SQ1_shift = (byte)(Audio_Regs[NR10] & 7);
-
-			SQ1_duty = (byte)((Audio_Regs[NR11] & 0xC0) >> 6);
-			SQ1_length = (ushort)(64 - Audio_Regs[NR11] & 0x3F);
-
-			SQ1_st_vol = (byte)((Audio_Regs[NR12] & 0xF0) >> 4);
-			SQ1_env_add = (Audio_Regs[NR12] & 8) > 0;
-			SQ1_per = (byte)(Audio_Regs[NR12] & 7);
-
-			SQ1_frq &= 0x700;
-			SQ1_frq |= Audio_Regs[NR13];
-
-			SQ1_trigger = (Audio_Regs[NR14] & 0x80) > 0;
-			SQ1_len_en = (Audio_Regs[NR14] & 0x40) > 0;
-			SQ1_frq &= 0xFF;
-			SQ1_frq |= (ushort)((Audio_Regs[NR14] & 7) << 8);
-
-			SQ2_duty = (byte)((Audio_Regs[NR21] & 0xC0) >> 6);
-			SQ2_length = (ushort)(64 - Audio_Regs[NR21] & 0x3F);
-
-			SQ2_st_vol = (byte)((Audio_Regs[NR22] & 0xF0) >> 4);
-			SQ2_env_add = (Audio_Regs[NR22] & 8) > 0;
-			SQ2_per = (byte)(Audio_Regs[NR22] & 7);
-
-			SQ2_frq &= 0x700;
-			SQ2_frq |= Audio_Regs[NR23];
-
-			SQ2_trigger = (Audio_Regs[NR24] & 0x80) > 0;
-			SQ2_len_en = (Audio_Regs[NR24] & 0x40) > 0;
-			SQ2_frq &= 0xFF;
-			SQ2_frq |= (ushort)((Audio_Regs[NR24] & 7) << 8);
-
-			WAVE_DAC_pow = (Audio_Regs[NR30] & 0x80) > 0;
-
-			WAVE_length = (ushort)(256 - Audio_Regs[NR31]);
-
-			WAVE_vol_code = (byte)((Audio_Regs[NR32] & 0x60) >> 5);
-
-			WAVE_frq &= 0x700;
-			WAVE_frq |= Audio_Regs[NR33];
-
-			WAVE_trigger = (Audio_Regs[NR34] & 0x80) > 0;
-			WAVE_len_en = (Audio_Regs[NR34] & 0x40) > 0;
-			WAVE_frq &= 0xFF;
-			WAVE_frq |= (ushort)((Audio_Regs[NR34] & 7) << 8);
-
-			NOISE_length = (ushort)(64 - Audio_Regs[NR41] & 0x3F);
-
-			NOISE_st_vol = (byte)((Audio_Regs[NR42] & 0xF0) >> 4);
-			NOISE_env_add = (Audio_Regs[NR42] & 8) > 0;
-			NOISE_per = (byte)(Audio_Regs[NR42] & 7);
-
-			NOISE_clk_shft = (byte)((Audio_Regs[NR43] & 0xF0) >> 4);
-			NOISE_wdth_md = (Audio_Regs[NR43] & 8) > 0;
-			NOISE_div_code = (byte)(Audio_Regs[NR43] & 7);
-
-			WAVE_trigger = (Audio_Regs[NR44] & 0x80) > 0;
-			WAVE_len_en = (Audio_Regs[NR44] & 0x40) > 0;
-
-			AUD_CTRL_vin_L_en = (Audio_Regs[NR50] & 0x80) > 0;
-			AUD_CTRL_vol_L = (byte)((Audio_Regs[NR50] & 0x70) >> 4);
-			AUD_CTRL_vin_R_en = (Audio_Regs[NR50] & 8) > 0;
-			AUD_CTRL_vol_R = (byte)(Audio_Regs[NR50] & 7);
-
-			AUD_CTRL_noise_L_en = (Audio_Regs[NR51] & 0x80) > 0;
-			AUD_CTRL_wave_L_en = (Audio_Regs[NR51] & 0x40) > 0;
-			AUD_CTRL_sq2_L_en = (Audio_Regs[NR51] & 0x20) > 0;
-			AUD_CTRL_sq1_L_en = (Audio_Regs[NR51] & 0x10) > 0;
-			AUD_CTRL_noise_R_en = (Audio_Regs[NR51] & 8) > 0;
-			AUD_CTRL_wave_R_en = (Audio_Regs[NR51] & 4) > 0;
-			AUD_CTRL_sq2_R_en = (Audio_Regs[NR51] & 2) > 0;
-			AUD_CTRL_sq1_R_en = (Audio_Regs[NR51] & 1) > 0;
-
-			AUD_CTRL_power = (Audio_Regs[NR51] & 0x80) > 0;
 		}
 
 		public byte Read_NR52()

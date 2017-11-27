@@ -54,19 +54,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			Console.WriteLine(game.System);
 
-			byte[] BiosRom;
-
-			if (game.System == "GB")
-			{
-				BiosRom = comm.CoreFileProvider.GetFirmware("GB", "World", false);
-			}
-			else
-			{
-				BiosRom = comm.CoreFileProvider.GetFirmware("GBC", "World", false);
-			}
-
-			int bios_length = BiosRom == null ? 0 : BiosRom.Length;
-
 			try
 			{
 				_syncSettings = (GambatteSyncSettings)syncSettings ?? new GambatteSyncSettings();
@@ -82,25 +69,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					case GambatteSyncSettings.ConsoleModeType.GB:
 						flags |= LibGambatte.LoadFlags.FORCE_DMG;
-						// we need to change the BIOS to GB bios
-						if (game.System == "GBC")
-						{
-							BiosRom = comm.CoreFileProvider.GetFirmware("GB", "World", false);
-							bios_length = BiosRom.Length;
-						}
 						break;
 					case GambatteSyncSettings.ConsoleModeType.GBC:
-						BiosRom = comm.CoreFileProvider.GetFirmware("GBC", "World", false);
-						bios_length = BiosRom.Length;
 						break;
 					default:
 						if (game.System == "GB")
 							flags |= LibGambatte.LoadFlags.FORCE_DMG;
 						break;
 				}
-
-				// to disable BIOS loading into gambatte, just set bios_length to 0
-				bios_length = 0;
 
 				if (_syncSettings.GBACGB)
 				{
@@ -112,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
 				}
 
-				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, BiosRom, (uint)bios_length, GetCurrentTime(), flags) != 0)
+				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, GetCurrentTime(), flags) != 0)
 				{
 					throw new InvalidOperationException("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 				}
@@ -432,12 +408,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		#region ppudebug
 
+		public IntPtr _vram = IntPtr.Zero;
+		public IntPtr _bgpal = IntPtr.Zero;
+		public IntPtr _sppal = IntPtr.Zero;
+		public IntPtr _oam = IntPtr.Zero;
+
 		public GPUMemoryAreas GetGPU()
-		{
-			IntPtr _vram = IntPtr.Zero;
-			IntPtr _bgpal = IntPtr.Zero;
-			IntPtr _sppal = IntPtr.Zero;
-			IntPtr _oam = IntPtr.Zero;
+		{		
 			int unused = 0;
 			if (!LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.vram, ref _vram, ref unused)
 				|| !LibGambatte.gambatte_getmemoryarea(GambatteState, LibGambatte.MemoryAreas.bgpal, ref _bgpal, ref unused)
@@ -447,7 +424,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				throw new InvalidOperationException("Unexpected error in gambatte_getmemoryarea");
 			}
 			return new GPUMemoryAreas(_vram, _oam, _sppal, _bgpal);
-
 		}
 
 		/// <summary>

@@ -21,6 +21,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			RAM_enable = false;
 			sel_mode = false;
 			ROM_mask = Core._rom.Length / 0x4000 - 1;
+
+			// some games have sizes that result in a degenerate ROM, account for it here
+			if (ROM_mask > 4) { ROM_mask |= 3; }
+			
 			RAM_mask = 0;
 			if (Core.cart_RAM != null)
 			{
@@ -63,7 +67,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else
 				{
-					return 0;
+					return 0xFF;
 				}
 			}
 		}
@@ -79,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (addr < 0x2000)
 				{
-					RAM_enable = ((value & 0xA) == 0xA) ? true : false;
+					RAM_enable = (value & 0xA) == 0xA;
 				}
 				else if (addr < 0x4000)
 				{

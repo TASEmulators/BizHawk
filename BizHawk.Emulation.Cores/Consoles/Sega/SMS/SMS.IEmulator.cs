@@ -15,6 +15,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					return GGController;
 				}
 
+				// Sorta a hack but why not
+				PortDEEnabled = SyncSettings.ControllerType == "Keyboard";
+
 				switch(SyncSettings.ControllerType)
 				{
 					case "Paddle":
@@ -26,6 +29,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						return SMSLightPhaserController;
 					case "Sports Pad":
 						return SMSSportsPadController;
+					case "Keyboard":
+						return SMSKeyboardController;
 					default:
 						return SmsController;
 				}

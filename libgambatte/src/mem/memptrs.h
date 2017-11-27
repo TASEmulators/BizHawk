@@ -51,10 +51,6 @@ class MemPtrs {
 	unsigned char * rdisabledRamw() const { return wramdataend_         ; }
 	unsigned char * wdisabledRam()  const { return wramdataend_ + 0x2000; }
 public:
-	unsigned char *biosdata_;
-	unsigned char *notbiosdata_;
-	bool use_bios;
-
 	enum RamFlag { READ_EN = 1, WRITE_EN = 2, RTC_EN = 4 };
 	
 	MemPtrs();

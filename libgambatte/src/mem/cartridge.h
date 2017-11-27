@@ -67,10 +67,6 @@ public:
 	void setStatePtrs(SaveState &);
 	void loadState(const SaveState &);
 
-	bool use_bios;
-	bool using_bios;
-	unsigned loc_bios_length;
-	
 	bool loaded() const { return mbc.get(); }
 	
 	const unsigned char * rmem(unsigned area) const { return memptrs.rmem(area); }
@@ -101,14 +97,12 @@ public:
 
 	bool getMemoryArea(int which, unsigned char **data, int *length) const;
 
-	int loadROM(const char *romfiledata, unsigned romfilelength, const char *biosfiledata, unsigned biosfilelength, bool forceDmg, bool multicartCompat);
+	int loadROM(const char *romfiledata, unsigned romfilelength, bool forceDmg, bool multicartCompat);
 	const char * romTitle() const { return reinterpret_cast<const char *>(memptrs.romdata() + 0x134); }
 
 	void setRTCCallback(std::uint32_t (*callback)()) {
 		rtc.setRTCCallback(callback);
 	}
-
-	void bios_remap(int setting);
 
 	template<bool isReader>void SyncState(NewState *ns);
 };

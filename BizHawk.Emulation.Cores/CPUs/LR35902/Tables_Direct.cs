@@ -19,10 +19,10 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		private void INC_16(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{INC16,  src_l, src_h,
+						{IDLE,
 						IDLE,
 						IDLE,
-						IDLE,
+						INC16,  src_l, src_h,
 						IDLE,
 						IDLE,
 						IDLE,
@@ -33,10 +33,10 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		private void DEC_16(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{DEC16, src_l, src_h,
+						{IDLE,
 						IDLE,
 						IDLE,
-						IDLE,
+						DEC16, src_l, src_h,
 						IDLE,
 						IDLE,
 						IDLE,
@@ -46,10 +46,10 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		private void ADD_16(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{ADD16, dest_l, dest_h, src_l, src_h,
+						{IDLE,
 						IDLE,
 						IDLE,
-						IDLE,
+						ADD16, dest_l, dest_h, src_l, src_h,
 						IDLE,
 						IDLE,
 						IDLE,
@@ -76,15 +76,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 
 		private void HALT_()
 		{
-			if (!FlagI)
-			{
-				cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						IDLE,
-						HALT };
-			}
-			else
+			if (FlagI && (EI_pending == 0))
 			{
 				// if interrupts are disabled,
 				// a glitchy decrement to the program counter happens
@@ -93,6 +85,14 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						IDLE,
 						IDLE,
 						OP_G};
+			}
+			else
+			{
+				cur_instr = new ushort[]
+						{IDLE,
+						IDLE,
+						IDLE,
+						HALT };
 			}
 			
 		}

@@ -16,37 +16,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// Read Input
 				case 0xFF00:
 					_islag = false;
-
-					input_register &= 0xF0;
-					if ((input_register & 0x30) == 0x20)
-					{
-						input_register |= (byte)(controller_state & 0xF);
-					}
-					else if ((input_register & 0x30) == 0x10)
-					{
-						input_register |= (byte)((controller_state & 0xF0) >> 4);
-					}
-					else if ((input_register & 0x30) == 0x30)
-					{
-						// if both polls are set, then a bit is zero if either or both pins are zero
-						byte temp = (byte)((controller_state & 0xF) & ((controller_state & 0xF0) >> 4));
-						input_register |= temp;
-					}
-					else
-					{
-						input_register |= 0xF;
-					}
 					ret = input_register;
 					break;
 
 				// Serial data port
 				case 0xFF01:
-					ret = serial_data_in;
+					ret = serialport.ReadReg(addr);
 					break;
 
 				// Serial port control
 				case 0xFF02:
-					ret = serial_control;
+					ret = serialport.ReadReg(addr);
 					break;
 
 				// Timer Registers
@@ -143,18 +123,52 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				// select input
 				case 0xFF00:
-					input_register = (byte)(0xC0 | (value & 0x3F)); // top 2 bits always 1
+					input_register &= 0xCF;
+					input_register |= (byte)(value & 0x30); // top 2 bits always 1
+
+					// check for high to low transitions that trigger IRQs
+					byte contr_prev = input_register;
+
+					input_register &= 0xF0;
+					if ((input_register & 0x30) == 0x20)
+					{
+						input_register |= (byte)(controller_state & 0xF);
+					}
+					else if ((input_register & 0x30) == 0x10)
+					{
+						input_register |= (byte)((controller_state & 0xF0) >> 4);
+					}
+					else if ((input_register & 0x30) == 0x00)
+					{
+						// if both polls are set, then a bit is zero if either or both pins are zero
+						byte temp = (byte)((controller_state & 0xF) & ((controller_state & 0xF0) >> 4));
+						input_register |= temp;
+					}
+					else
+					{
+						input_register |= 0xF;
+					}
+					
+					// check for interrupts
+					if (((contr_prev & 8) > 0) && ((input_register & 8) == 0) ||
+						((contr_prev & 4) > 0) && ((input_register & 4) == 0) ||
+						((contr_prev & 2) > 0) && ((input_register & 2) == 0) ||
+						((contr_prev & 1) > 0) && ((input_register & 1) == 0))
+					{
+						if (REG_FFFF.Bit(4)) { cpu.FlagI = true; }
+						REG_FF0F |= 0x10;
+					}
+					
 					break;
 
 				// Serial data port
 				case 0xFF01:
-					serial_data_out = value;
-					serial_data_in = serial_data_out;
+					serialport.WriteReg(addr, value);
 					break;
 
 				// Serial port control
 				case 0xFF02:
-					serial_control = (byte)(0x7E | (value & 0x81)); // middle six bits always 1
+					serialport.WriteReg(addr, value);
 					break;
 
 				// Timer Registers
@@ -277,7 +291,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void Register_Reset()
 		{
 			input_register = 0xCF; // not reading any input
-			serial_control = 0x7E;
 		}
 	}
 }

@@ -38,6 +38,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public class GBSettings
 		{
+			public enum PaletteType
+			{
+				BW,
+				Gr
+			}
+
+			[DisplayName("Console Mode")]
+			[Description("Pick which console to run, 'Auto' chooses from ROM header, 'GB' and 'GBC' chooses the respective system")]
+			[DefaultValue(PaletteType.BW)]
+			public PaletteType Palette { get; set; }
+
+
 			public GBSettings Clone()
 			{
 				return (GBSettings)MemberwiseClone();
@@ -62,6 +74,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					_port1 = value;
 				}
 			}
+
+			[DisplayName("RTC Initial Time")]
+			[Description("Set the initial RTC time in terms of elapsed seconds.")]
+			[DefaultValue(0)]
+			public int RTCInitialTime
+			{
+				get { return _RTCInitialTime; }
+				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
+			}
+
+			[DisplayName("Use Existing SaveRAM")]
+			[Description("When true, existing SaveRAM will be loaded at boot up")]
+			[DefaultValue(false)]
+			public bool Use_SRAM { get; set; }
+
+
+			[JsonIgnore]
+			private int _RTCInitialTime;
+
 
 			public GBSyncSettings Clone()
 			{

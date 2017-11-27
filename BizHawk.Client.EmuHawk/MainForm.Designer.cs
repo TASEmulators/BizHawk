@@ -450,6 +450,7 @@
             this.SMSControllerPaddleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SMSControllerLightPhaserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.SMSControllerSportsPadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SMSControllerKeyboardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -2584,7 +2585,8 @@
             this.SMSControllerStandardToolStripMenuItem,
             this.SMSControllerPaddleToolStripMenuItem,
             this.SMSControllerLightPhaserToolStripMenuItem,
-			this.SMSControllerSportsPadToolStripMenuItem});
+			this.SMSControllerSportsPadToolStripMenuItem,
+			this.SMSControllerKeyboardToolStripMenuItem});
             // 
             // SMSControllerStandardToolStripMenuItem
             // 
@@ -2609,6 +2611,12 @@
 			this.SMSControllerSportsPadToolStripMenuItem.Name = "SMSControllerSportsPadToolStripMenuItem";
 			this.SMSControllerSportsPadToolStripMenuItem.Text = "Sports Pad";
 			this.SMSControllerSportsPadToolStripMenuItem.Click += new System.EventHandler(this.SMSControllerSportsPadToolStripMenuItem_Click);
+			// 
+			// SMSControllerKeyboardToolStripMenuItem
+			// 
+			this.SMSControllerKeyboardToolStripMenuItem.Name = "SMSControllerKeyboardToolStripMenuItem";
+			this.SMSControllerKeyboardToolStripMenuItem.Text = "Keyboard";
+			this.SMSControllerKeyboardToolStripMenuItem.Click += new System.EventHandler(this.SMSControllerKeyboardToolStripMenuItem_Click);
 
 			// 
 			// SMSdisplayPalToolStripMenuItem
@@ -4445,5 +4453,6 @@
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerPaddleToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerLightPhaserToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerSportsPadToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSControllerKeyboardToolStripMenuItem;
 	}
 }
