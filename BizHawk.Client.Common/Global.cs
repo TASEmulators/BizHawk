@@ -149,6 +149,8 @@ namespace BizHawk.Client.Common
 						return SystemInfo.VirtualBoy;
 					case "NGP":
 						return SystemInfo.NeoGeoPocket;
+                    case "ZXSpectrum":
+                        return SystemInfo.ZXSpectrum;
 				}
 			}
 		}

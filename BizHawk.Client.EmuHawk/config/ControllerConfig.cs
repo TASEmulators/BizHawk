@@ -176,7 +176,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (buckets[0].Count > 0)
 				{
-					string tabname = Global.Emulator.SystemId == "C64" ? "Keyboard" : "Console"; // hack
+					string tabname = (Global.Emulator.SystemId == "C64" || Global.Emulator.SystemId == "ZXSpectrum") ? "Keyboard" : "Console"; // hack
 					tt.TabPages.Add(tabname);
 					tt.TabPages[pageidx].Controls.Add(createpanel(settings, buckets[0], tt.Size));
 				}

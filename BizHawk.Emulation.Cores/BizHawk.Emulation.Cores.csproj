@@ -256,6 +256,49 @@
     <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
     <Compile Include="Computers\Commodore64\SaveState.cs" />
     <Compile Include="Computers\Commodore64\User\UserPortDevice.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Buzzer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\DefaultTapeProvider.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\IKeyboard.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\ISaveToTapeProvider.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\ISupportsTapeBlockPlayback.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\ISupportsTapeBlockSetPlayback.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\ITapeContentProvider.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\ITapeData.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\ITapeDataSerialization.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\ITapeProvider.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\TapeBlockSetPlayer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\TapeDataBlockPlayer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\TapeFilePlayer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\MachineType.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Input.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Port.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Memory.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Sound.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TAP\TapDataBlock.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TAP\TapPlayer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TAP\TapReader.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TZX\BlockAbstraction.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TZX\DataBlocks.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TZX\Info.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TZX\Types.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TZX\TzxException.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TZX\TzxHeader.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TZX\TzxPlayer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TZX\TzxReader.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Pulse.cs" />
+    <Compile Include="Computers\SinclairSpectrum\RomData.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Tape.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Controllers.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IDebuggable.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IEmulator.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IInputPollable.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IMemoryDomains.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.ISettable.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IStatable.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Util.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs">
       <DependentUpon>Atari2600.cs</DependentUpon>
@@ -1331,6 +1374,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Screen.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Keyboard.cs" />
+    <None Include="Computers\SinclairSpectrum\readme.md" />
     <None Include="Consoles\Atari\docs\stella.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech2.pdf" />
@@ -1341,6 +1387,7 @@
     <None Include="Resources\dmg_boot.bin.gz" />
     <None Include="Resources\sgb-cart-present.spc.gz" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>

@@ -188,6 +188,11 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public static SystemInfo NeoGeoPocket { get; } = new SystemInfo("Neo-Geo Pocket", CoreSystem.NeoGeoPocket, 1);
 
+        /// <summary>
+        /// Gets the <see cref="SystemInfo"/> instance for ZXSpectrum
+        /// </summary>
+        public static SystemInfo ZXSpectrum { get; } = new SystemInfo("ZX Spectrum", CoreSystem.ZXSpectrum, 2);
+
 		#endregion Get SystemInfo
 
 		/// <summary>
