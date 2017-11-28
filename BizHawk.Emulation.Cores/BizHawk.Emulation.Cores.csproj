@@ -1373,6 +1373,7 @@
   <ItemGroup>
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Screen.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Keyboard.cs" />
+    <None Include="Computers\SinclairSpectrum\readme.md" />
     <None Include="Consoles\Atari\docs\stella.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech2.pdf" />
