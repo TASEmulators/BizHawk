@@ -5,6 +5,10 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// This class recognizes .TZX and .TAP files, and playes back
+    /// the content accordingly.
+    /// </summary>
     public class TapeFilePlayer : ISupportsTapeBlockPlayback
     {
         private readonly BinaryReader _reader;

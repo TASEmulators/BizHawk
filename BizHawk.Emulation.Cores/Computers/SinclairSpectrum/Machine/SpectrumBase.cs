@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Common;
+﻿using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
 using System;
 
@@ -105,14 +106,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 var lastCycle = CurrentFrameCycle;
                 RenderScreen(LastRenderedULACycle + 1, lastCycle);
                 LastRenderedULACycle = lastCycle;
-
-                // test
-                if (CPU.IFF1)
-                {
-                    //Random rnd = new Random();
-                    //ushort rU = (ushort)rnd.Next(0x4000, 0x8000);
-                    //PokeMemory(rU, (byte)rnd.Next(7));
-                }                
+      
             }
 
             // we have reached the end of a frame
@@ -137,30 +131,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             RenderScreen(0, OverFlow);
         }
-
-        /// <summary>
-        /// Executes one cycle of the emulated machine
-        /// </summary>
-        public virtual void ExecuteCycle()
-        {  
-            // check for interrupt
-            CheckForInterrupt(CurrentFrameCycle);
-
-            // run a single CPU instruction
-            CPU.ExecuteOne();
-
-            // run a rendering cycle according to the current CPU cycle count
-            var lastCycle = CurrentFrameCycle;
-            RenderScreen(LastRenderedULACycle + 1, lastCycle);
-
-            // has the frame completed?
-            FrameCompleted = CurrentFrameCycle >= UlaFrameCycleCount;
-
-            if (CurrentFrameCycle > 50000)
-            {
-
-            }
-        }
         
         /// <summary>
         /// Hard reset of the emulated machine
@@ -168,8 +138,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public virtual void HardReset()
         {            
             ResetBorder();
-            ResetInterrupt();
-            
+            ResetInterrupt();            
         }
 
         /// <summary>
@@ -179,6 +148,81 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             ResetBorder();
             ResetInterrupt();
+        }
+
+        public void SyncState(Serializer ser)
+        {
+            ser.BeginSection("ZXMachine");
+            ser.Sync("FrameCompleted", ref FrameCompleted);
+            ser.Sync("OverFlow", ref OverFlow);
+            ser.Sync("FrameCount", ref FrameCount);
+            ser.Sync("_frameCycles", ref _frameCycles);
+            ser.Sync("LastFrameStartCPUTick", ref LastFrameStartCPUTick);
+            ser.Sync("LastULAOutByte", ref LastULAOutByte);
+            ser.Sync("_flashPhase", ref _flashPhase);
+            ser.Sync("_frameBuffer", ref _frameBuffer, false);
+            ser.Sync("_flashOffColors", ref _flashOffColors, false);
+            ser.Sync("_flashOnColors", ref _flashOnColors, false);
+            ser.Sync("InterruptCycle", ref InterruptCycle);
+            ser.Sync("InterruptRaised", ref InterruptRaised);
+            ser.Sync("InterruptRevoked", ref InterruptRevoked);
+            ser.Sync("UlaFrameCycleCount", ref UlaFrameCycleCount);
+            ser.Sync("FirstScreenPixelCycle", ref FirstScreenPixelCycle);
+            ser.Sync("FirstDisplayPixelCycle", ref FirstDisplayPixelCycle);
+            ser.Sync("FirstPixelCycleInLine", ref FirstPixelCycleInLine);
+            ser.Sync("AttributeDataPrefetchTime", ref AttributeDataPrefetchTime);
+            ser.Sync("PixelDataPrefetchTime", ref PixelDataPrefetchTime);
+            ser.Sync("ScreenLineTime", ref ScreenLineTime);
+            ser.Sync("NonVisibleBorderRightTime", ref NonVisibleBorderRightTime);
+            ser.Sync("BorderRightTime", ref BorderRightTime);
+            ser.Sync("DisplayLineTime", ref DisplayLineTime);
+            ser.Sync("BorderLeftTime", ref BorderLeftTime);
+            ser.Sync("HorizontalBlankingTime", ref HorizontalBlankingTime);
+            ser.Sync("ScreenWidth", ref ScreenWidth);
+            ser.Sync("BorderRightPixels", ref BorderRightPixels);
+            ser.Sync("BorderLeftPixels", ref BorderLeftPixels);
+            ser.Sync("FirstDisplayLine", ref FirstDisplayLine);
+            ser.Sync("ScreenLines", ref ScreenLines);
+            ser.Sync("NonVisibleBorderBottomLines", ref NonVisibleBorderBottomLines);
+            ser.Sync("BorderBottomLines", ref BorderBottomLines);
+            ser.Sync("BorderTopLines", ref BorderTopLines);
+            ser.Sync("NonVisibleBorderTopLines", ref NonVisibleBorderTopLines);
+            ser.Sync("VerticalSyncLines", ref VerticalSyncLines);
+            ser.Sync("FlashToggleFrames", ref FlashToggleFrames);
+            ser.Sync("DisplayLines", ref DisplayLines);
+            ser.Sync("DisplayWidth", ref DisplayWidth);
+            ser.Sync("_pixelByte1", ref _pixelByte1);
+            ser.Sync("_pixelByte2", ref _pixelByte2);
+            ser.Sync("_attrByte1", ref _attrByte1);
+            ser.Sync("_attrByte2", ref _attrByte2);
+            ser.Sync("_xPos", ref _xPos);
+            ser.Sync("_yPos", ref _yPos);
+            ser.Sync("DisplayWidth", ref DisplayWidth);
+            ser.Sync("DisplayWidth", ref DisplayWidth);
+            ser.Sync("DisplayWidth", ref DisplayWidth);
+            ser.Sync("DisplayWidth", ref DisplayWidth);
+            ser.Sync("_borderColour", ref _borderColour);
+            ser.Sync("ROM0", ref ROM0, false);
+            ser.Sync("ROM1", ref ROM1, false);
+            ser.Sync("ROM2", ref ROM2, false);
+            ser.Sync("ROM3", ref ROM3, false);
+            ser.Sync("RAM0", ref RAM0, false);
+            ser.Sync("RAM1", ref RAM1, false);
+            ser.Sync("RAM2", ref RAM2, false);
+            ser.Sync("RAM3", ref RAM3, false);
+            ser.Sync("RAM4", ref RAM4, false);
+            ser.Sync("RAM5", ref RAM5, false);
+            ser.Sync("RAM6", ref RAM6, false);
+            ser.Sync("RAM7", ref RAM7, false);
+
+            RomData.SyncState(ser);
+            KeyboardDevice.SyncState(ser);
+            BuzzerDevice.SyncState(ser);
+            TapeDevice.SyncState(ser);
+
+            ser.EndSection();
+
+            ReInitMemory();
         }
     }
 }

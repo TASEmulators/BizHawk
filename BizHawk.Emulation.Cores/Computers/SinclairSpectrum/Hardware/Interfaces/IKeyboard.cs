@@ -1,5 +1,7 @@
 ﻿
 
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     /// <summary>
@@ -61,5 +63,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="key"></param>
         /// <returns></returns>
         byte GetByteFromKeyMatrix(string key);
+
+        void SyncState(Serializer ser);
     }
 }

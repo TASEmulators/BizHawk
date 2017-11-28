@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Cores.Components.Z80A;
+﻿using BizHawk.Common;
+using BizHawk.Emulation.Cores.Components.Z80A;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,14 +79,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public const int DATA_BUFFER_LENGTH = 0x10000;
 
         /// <summary>
-        /// Gets the TZX tape content provider
+        /// Gets the tape content provider
         /// </summary>
-        public ITapeContentProvider ContentProvider { get; }
-
-        /// <summary>
-        /// Gets the tape Save provider
-        /// </summary>
-        public ISaveToTapeProvider SaveToTapeProvider { get; }
+        public ITapeProvider TapeProvider { get; }
 
         /// <summary>
         /// The TapeFilePlayer that can playback tape content
@@ -98,6 +94,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public TapeOperationMode CurrentMode => _currentMode;
 
 
+        private bool _fastLoad = false;
+
+
         public virtual void Init(SpectrumBase machine)
         {
             _machine = machine;
@@ -106,15 +105,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             Reset();
         }
 
-        public Tape(ITapeContentProvider contentProvider, ISaveToTapeProvider saveToTapeProvider)
+        public Tape(ITapeProvider tapeProvider)
         {
-            ContentProvider = contentProvider;
-            SaveToTapeProvider = saveToTapeProvider;
+            TapeProvider = tapeProvider;
         }
 
         public virtual void Reset()
         {
-            ContentProvider?.Reset();
+            TapeProvider?.Reset();
             _tapePlayer = null;
             _currentMode = TapeOperationMode.Passive;
             _savePhase = SavePhase.None;
@@ -125,17 +123,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             SetTapeMode();
             if (CurrentMode == TapeOperationMode.Load
-                //&& HostVm.ExecuteCycleOptions.FastTapeMode
+                && _fastLoad
                 && TapeFilePlayer != null
                 && TapeFilePlayer.PlayPhase != PlayPhase.Completed
-                && _machine.Spectrum.Get16BitPC() == _machine.RomData.LoadBytesRoutineAddress)
+                && _cpu.RegPC == 1529) //_machine.RomData.LoadBytesRoutineAddress)
             {
-                /*
+                
                 if (FastLoadFromTzx())
                 {
-                    FastLoadCompleted?.Invoke(this, EventArgs.Empty);
+                    //FastLoadCompleted?.Invoke(this, EventArgs.Empty);
                 }
-                */
+                
             }
         }
 
@@ -148,27 +146,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             switch (_currentMode)
             {
                 case TapeOperationMode.Passive:
-                    if (_machine.Spectrum.Get16BitPC() == _machine.RomData.LoadBytesRoutineAddress)
+                    if (_cpu.RegPC == 1523) // _machine.RomData.LoadBytesRoutineAddress) //1529
                     {
                         EnterLoadMode();
                     }
-                    else if (_machine.Spectrum.Get16BitPC() == _machine.RomData.SaveBytesRoutineAddress)
+                    else if (_cpu.RegPC == 2416) // _machine.RomData.SaveBytesRoutineAddress)
                     {
                         EnterSaveMode();
                     }
 
-                    var res = _machine.Spectrum.Get16BitPC();
+                    var res = _cpu.RegPC;
+                    var res2 = _machine.Spectrum.RegPC;
 
                     return;
                 case TapeOperationMode.Save:
-                    if (_machine.Spectrum.Get16BitPC() == ERROR_ROM_ADDRESS 
+                    if (_cpu.RegPC == ERROR_ROM_ADDRESS
                         || (int)(_cpu.TotalExecutedCycles - _lastMicBitActivityCycle) > SAVE_STOP_SILENCE)
                     {
                         LeaveSaveMode();
                     }
                     return;
                 case TapeOperationMode.Load:
-                    if ((_tapePlayer?.Eof ?? false) || _machine.Spectrum.Get16BitPC() == ERROR_ROM_ADDRESS) 
+                    if ((_tapePlayer?.Eof ?? false) || _cpu.RegPC == ERROR_ROM_ADDRESS)
                     {
                         LeaveLoadMode();
                     }
@@ -188,7 +187,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _pilotPulseCount = 0;
             _prevDataPulse = MicPulseType.None;
             _dataBlockCount = 0;
-            SaveToTapeProvider?.CreateTapeFile();
+            TapeProvider?.CreateTapeFile();
         }
 
         /// <summary>
@@ -197,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         private void LeaveSaveMode()
         {
             _currentMode = TapeOperationMode.Passive;
-            SaveToTapeProvider?.FinalizeTapeFile();
+            TapeProvider?.FinalizeTapeFile();
         }
 
         /// <summary>
@@ -207,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             _currentMode = TapeOperationMode.Load;
 
-            var contentReader = ContentProvider?.GetTapeContent();
+            var contentReader = TapeProvider?.GetTapeContent();
             if (contentReader == null) return;
 
             // --- Play the content
@@ -224,8 +223,114 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             _currentMode = TapeOperationMode.Passive;
             _tapePlayer = null;
-            ContentProvider?.Reset();
+            TapeProvider?.Reset();
             _buzzer.SetTapeMode(false);
+        }
+
+        /// <summary>
+        /// Loads the next TZX player block instantly without emulation
+        /// EAR bit processing
+        /// </summary>
+        /// <returns>True, if fast load is operative</returns>
+        private bool FastLoadFromTzx()
+        {
+            var c = _machine.Spectrum;
+
+            var blockType = TapeFilePlayer.CurrentBlock.GetType();
+            bool canFlash = TapeFilePlayer.CurrentBlock is ITapeData;
+
+            // --- Check, if we can load the current block in a fast way
+            if (!(TapeFilePlayer.CurrentBlock is ITapeData)
+                || TapeFilePlayer.PlayPhase == PlayPhase.Completed)
+            {
+                // --- We cannot play this block
+                return false;
+            }
+
+            var currentData = TapeFilePlayer.CurrentBlock as ITapeData;
+
+            var regs = _cpu.Regs;
+
+            //regs.AF = regs._AF_;
+            //c.Set16BitAF(c.Get16BitAF_());
+            _cpu.A = _cpu.A_s;
+            _cpu.F = _cpu.F_s;
+
+            // --- Check if the operation is LOAD or VERIFY
+            var isVerify = (c.RegAF & 0xFF01) == 0xFF00;
+
+            // --- At this point IX contains the address to load the data, 
+            // --- DE shows the #of bytes to load. A contains 0x00 for header, 
+            // --- 0xFF for data block
+            var data = currentData.Data;
+            if (data[0] != regs[_cpu.A])
+            {
+                // --- This block has a different type we're expecting
+                regs[_cpu.A] = (byte)(regs[_cpu.A] ^ regs[_cpu.L]);
+                regs[_cpu.F] &= (byte)ZXSpectrum.FlagsResetMask.Z;
+                regs[_cpu.F] &= (byte)ZXSpectrum.FlagsResetMask.C;
+                c.RegPC = _machine.RomData.LoadBytesInvalidHeaderAddress;
+
+                // --- Get the next block
+                TapeFilePlayer.NextBlock(_cpu.TotalExecutedCycles);
+                return true;
+            }
+
+            // --- It is time to load the block
+            var curIndex = 1;
+            //var memory = _machine.me MemoryDevice;
+            regs[_cpu.H] = regs[_cpu.A];
+            while (c.RegDE > 0)
+            {
+                var de16 = c.RegDE;
+                var ix16 = c.RegIX;
+                if (curIndex > data.Length - 1)
+                {
+                    // --- No more data to read
+                    //break;
+                }
+
+                regs[_cpu.L] = data[curIndex];
+                if (isVerify && regs[_cpu.L] != _machine.ReadBus(c.RegIX))
+                {
+                    // --- Verify failed
+                    regs[_cpu.A] = (byte)(_machine.ReadBus(c.RegIX) ^ regs[_cpu.L]);
+                    regs[_cpu.F] &= (byte)ZXSpectrum.FlagsResetMask.Z;
+                    regs[_cpu.F] &= (byte)ZXSpectrum.FlagsResetMask.C;
+                    c.RegPC = _machine.RomData.LoadBytesInvalidHeaderAddress;
+                    return true;
+                }
+
+                // --- Store the loaded data byte
+                _machine.WriteBus(c.RegIX, (byte)regs[_cpu.L]);
+                regs[_cpu.H] ^= regs[_cpu.L];
+                curIndex++;
+                //regs.IX++;
+                //c.Set16BitIX((ushort)((int)c.Get16BitIX() + 1));
+                c.RegIX++;
+                //regs.DE--;
+                //c.Set16BitDE((ushort)((int)c.Get16BitDE() - 1));
+                //_cpu.Regs[_cpu.E]--;
+                c.RegDE--;
+                var te = c.RegDE;
+            }
+
+            // --- Check the parity byte at the end of the data stream
+            if (curIndex > data.Length - 1 || regs[_cpu.H] != data[curIndex])
+            {
+                // --- Carry is reset to sign an error
+                regs[_cpu.F] &= (byte)ZXSpectrum.FlagsResetMask.C;
+            }
+            else
+            {
+                // --- Carry is set to sign success
+                regs[_cpu.F] |= (byte)ZXSpectrum.FlagsSetMask.C;
+            }
+            c.RegPC = _machine.RomData.LoadBytesResumeAddress;
+
+            // --- Get the next block
+            TapeFilePlayer.NextBlock(_cpu.TotalExecutedCycles);
+            return true;
         }
 
 
@@ -398,13 +503,34 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 sb.Append((char)_dataBuffer[i]);
                             }
                             var name = sb.ToString().TrimEnd();
-                            SaveToTapeProvider?.SetName(name);
+                            TapeProvider?.SetName(name);
                         }
-                        SaveToTapeProvider?.SaveTapeBlock(dataBlock);
+                        TapeProvider?.SaveTapeBlock(dataBlock);
                     }
                     break;
             }
             _savePhase = nextPhase;
+        }
+
+        public void SyncState(Serializer ser)
+        {
+            ser.BeginSection("TapeDevice");
+            ser.Sync("_micBitState", ref _micBitState);
+            ser.Sync("_lastMicBitActivityCycle", ref _lastMicBitActivityCycle);
+            ser.Sync("_pilotPulseCount", ref _pilotPulseCount);
+            ser.Sync("_bitOffset", ref _bitOffset);
+            ser.Sync("_dataByte", ref _dataByte);
+            ser.Sync("_dataLength", ref _dataLength);
+            ser.Sync("_dataBlockCount", ref _dataBlockCount);
+            ser.Sync("_dataBuffer", ref _dataBuffer, false);
+            ser.SyncEnum<TapeOperationMode>("_currentMode", ref _currentMode);
+            ser.SyncEnum<SavePhase>("_savePhase", ref _savePhase);
+            ser.SyncEnum<MicPulseType>("_prevDataPulse", ref _prevDataPulse);
+            /*
+        private TapeFilePlayer _tapePlayer;
+        */
+
+            ser.EndSection();
         }
     }
 

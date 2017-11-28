@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public string SaveFileFolder { get; }
 
-       
+
 
         public DefaultTapeProvider(byte[] file, string saveFolder = null)
         {
@@ -40,14 +40,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// The component provider should be able to reset itself
         /// </summary>
         ///
-        /*
-        public override void Reset()
+
+        public void Reset()
         {
             _dataBlockCount = 0;
             _suggestedName = null;
             _fullFileName = null;
         }
-        */
+
 
         /// <summary>
         /// Tha tape set to load the content from

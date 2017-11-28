@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BizHawk.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,10 +13,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     public class Keyboard48 : IKeyboard
     {
         public SpectrumBase _machine { get; set; }
-        public string[] KeyboardMatrix { get; set; }
-        private readonly byte[] LineStatus;
+        private  byte[] LineStatus;
         public bool Issue2 { get; set; }
+        private string[] _keyboardMatrix;
 
+        public string[] KeyboardMatrix
+        {
+            get { return _keyboardMatrix; }
+            set { _keyboardMatrix = value; }
+        }
 
         public Keyboard48(SpectrumBase machine)
         {
@@ -51,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             var lineMask = 1 << keyByte % 5;
 
             LineStatus[lineIndex] = isPressed ? (byte)(LineStatus[lineIndex] | lineMask)
-                : (byte)(LineStatus[lineIndex] & ~lineMask);			
+                : (byte)(LineStatus[lineIndex] & ~lineMask);
         }
 
 		public bool GetKeyStatus(string key)
@@ -64,18 +70,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 		public byte GetLineStatus(byte lines)
         {
-            byte status = 0;
-            lines = (byte)~lines;
-            var lineIndex = 0;
-			while (lines > 0)
+            lock(this)
             {
-                if ((lines & 0x01) != 0)
-                    status |= LineStatus[lineIndex];
-                lineIndex++;
-                lines >>= 1;
+                byte status = 0;
+                lines = (byte)~lines;
+                var lineIndex = 0;
+                while (lines > 0)
+                {
+                    if ((lines & 0x01) != 0)
+                        status |= LineStatus[lineIndex];
+                    lineIndex++;
+                    lines >>= 1;
+                }
+                var result = (byte)~status;
+
+                return result;
             }
-            var result = (byte)~status;
-            return result;
         }
 
 		public byte ReadKeyboardByte(ushort addr)
@@ -87,6 +97,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             int index = Array.IndexOf(KeyboardMatrix, key);
             return (byte)index;
+        }
+
+        public void SyncState(Serializer ser)
+        {
+            ser.BeginSection("Keyboard");
+            ser.Sync("LineStatus", ref LineStatus, false);
+            ser.EndSection();
         }
     }
 }

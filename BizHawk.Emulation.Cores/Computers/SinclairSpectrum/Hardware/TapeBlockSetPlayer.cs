@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// The cycle count of the CPU when playing starts
         /// </summary>
         public long StartCycle { get; private set; }
-        
+
         public TapeBlockSetPlayer(List<ISupportsTapeBlockPlayback> dataBlocks)
         {
             DataBlocks = dataBlocks;

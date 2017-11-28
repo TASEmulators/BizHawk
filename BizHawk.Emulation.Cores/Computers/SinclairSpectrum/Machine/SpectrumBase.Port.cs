@@ -56,58 +56,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // read keyboard input
                 if (high != 0)
                     result = KeyboardDevice.GetLineStatus((byte)high);
-
-                var ear = TapeDevice.GetEarBit(CurrentFrameCycle);
+                
+                var ear = TapeDevice.GetEarBit(CPU.TotalExecutedCycles);
                 if (!ear)
                 {
                     result = (byte)(result & Convert.ToInt32("10111111", 2));
                 }
-
-                /*
-
-                bool tapeIsPlaying = false;
-                int tapeBit = 0;
-
-                if (tapeIsPlaying)
-                {
-                    if (tapeBit == 0)
-                    {
-                        // reset is EAR ON
-                        result = (byte)(result & ~(TAPE_BIT));
-                    }
-                    else
-                    {
-                        // set is EAR OFF
-                        result |= TAPE_BIT;
-                    }
-                }
-                else
-                {
-                    if ((LastULAOutByte & (EAR_BIT + MIC_BIT)) == 0)
-                    {
-                        result = (byte)(result & ~(TAPE_BIT));
-                    }
-                    else
-                    {
-                        result |= TAPE_BIT;
-                    }
-                }
-                /*
-                // read EAR pulse from tape device
-                //todo
-                
-                bool earBit = false;
-
-                if (earBit)
-                    tapeBit = Convert.ToInt32("11111111", 2);
-                else
-                    tapeBit = Convert.ToInt32("10111111", 2);
-
-                //var earBit = _tapeDevice.GetEarBit(_cpu.Tacts);
-
-                if (!earBit)
-                    result = (byte)(result & tapeBit);
-                */
             }
             else
             {
@@ -152,25 +106,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 
                 // Border - LSB 3 bits hold the border colour
                 BorderColour = value & BORDER_BIT;
-                /*
-                // Buzzer
-                var beepVal = (int)value & (EAR_BIT);
-
-                if (((int)value & MIC_BIT) == 0)
-                    beepVal = (int)value & (MIC_BIT);
-
-                //var micval = (int)value & (MIC_BIT);
                 
+                // Buzzer
+                BuzzerDevice.ProcessPulseValue(false, (value & EAR_BIT) != 0);
 
-                // if tape is not playing
-                BuzzerDevice.ProcessPulseValue(false, (beepVal) != 0);
-                */
-
-                // tape
-                //_tapeDevice.ProcessMicBit((data & 0x08) != 0);
-
-                BuzzerDevice.ProcessPulseValue(false, (value & 0x10) != 0);
-                TapeDevice.ProcessMicBit((value & 0x08) != 0);
+                // Tape
+                TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
             }
         }
     }

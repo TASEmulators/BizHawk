@@ -43,5 +43,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// TZX blocks are written.
         /// </summary>
         void FinalizeTapeFile();
+
+        /// <summary>
+        /// Provider can reset itself
+        /// </summary>
+        void Reset();
+
     }
 }

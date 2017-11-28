@@ -144,8 +144,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public virtual byte FetchScreenMemory(ushort addr)
         {
-            var value = RAM0[(addr & 0x3FFF)];// + 0x4000];
+            //var value = RAM0[(addr & 0x3FFF)];// + 0x4000];
+            var value = ReadBus((ushort)((addr & 0x3FFF) + 0x4000));
             return value;
+        }
+
+        /// <summary>
+        /// Helper function to refresh memory array (probably not the best way to do things)
+        /// </summary>
+        public virtual void ReInitMemory()
+        {
+            throw new NotImplementedException("Must be overriden");
         }
 
         /// <summary>

@@ -48,10 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             [DefaultValue(BorderType.Full)]
             public BorderType BorderType { get; set; }
 
-            [DisplayName("Tape Load Speed")]
-            [Description("Select how fast the spectrum loads the game from tape")]
-            [DefaultValue(TapeLoadSpeed.Accurate)]
-            public TapeLoadSpeed TapeLoadSpeed { get; set; }
+            
 
             public ZXSpectrumSettings Clone()
             {
@@ -66,6 +63,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public class ZXSpectrumSyncSettings
         {
+            [DisplayName("Tape Load Speed")]
+            [Description("Select how fast the spectrum loads the game from tape")]
+            [DefaultValue(TapeLoadSpeed.Accurate)]
+            public TapeLoadSpeed TapeLoadSpeed { get; set; }
+
             public ZXSpectrumSyncSettings Clone()
             {
                 return (ZXSpectrumSyncSettings)MemberwiseClone();

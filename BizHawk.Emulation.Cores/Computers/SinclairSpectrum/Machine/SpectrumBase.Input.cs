@@ -6,17 +6,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// </summary>
     public abstract partial class SpectrumBase
     {
-        private readonly bool[] _keyboardPressed = new bool[64];
-        int _pollIndex;
-        private bool _restorePressed;
+        string Play = "Play Tape";
+        string Stop = "Stop Tape";
+        string RTZ = "RTZ Tape";
+        string Record = "Record Tape";
 
-        
         public void PollInput()
         {
             Spectrum.InputCallbacks.Call();
-
-            // scan keyboard
-            _pollIndex = 0;
 
             for (var i = 0; i < KeyboardDevice.KeyboardMatrix.Length; i++)
             {                
@@ -24,8 +21,26 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 bool prevState = KeyboardDevice.GetKeyStatus(key);
                 bool currState = Spectrum._controller.IsPressed(key);
 
-                //if (currState != prevState)
+                if (currState != prevState)
                     KeyboardDevice.SetKeyStatus(key, currState);
+            }
+
+            // Tape control
+            if (Spectrum._controller.IsPressed(Play))
+            {
+
+            }
+            if (Spectrum._controller.IsPressed(Stop))
+            {
+
+            }
+            if (Spectrum._controller.IsPressed(RTZ))
+            {
+
+            }
+            if (Spectrum._controller.IsPressed(Record))
+            {
+
             }
         }
     }

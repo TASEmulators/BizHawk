@@ -290,7 +290,7 @@ namespace BizHawk.Client.Common
 			new PathEntry { System = "C64", SystemDisplayName = "Commodore 64", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },
 			new PathEntry { System = "C64", SystemDisplayName = "Commodore 64", Type = "Cheats", Path = Path.Combine(".", "Cheats"), Ordinal = 5 },
 
-            new PathEntry { System = "ZXSpectrum", SystemDisplayName = "Sinclair ZX Spectrum", Type = "Base", Path = Path.Combine(".", "C64"), Ordinal = 0 },
+            new PathEntry { System = "ZXSpectrum", SystemDisplayName = "Sinclair ZX Spectrum", Type = "Base", Path = Path.Combine(".", "ZXSpectrum"), Ordinal = 0 },
             new PathEntry { System = "ZXSpectrum", SystemDisplayName = "Sinclair ZX Spectrum", Type = "ROM", Path = ".", Ordinal = 1 },
             new PathEntry { System = "ZXSpectrum", SystemDisplayName = "Sinclair ZX Spectrum", Type = "Savestates",  Path = Path.Combine(".", "State"), Ordinal = 2 },
             new PathEntry { System = "ZXSpectrum", SystemDisplayName = "Sinclair ZX Spectrum", Type = "Screenshots", Path = Path.Combine(".", "Screenshots"), Ordinal = 4 },

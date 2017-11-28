@@ -1,8 +1,10 @@
 ﻿
+using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -19,20 +21,49 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Supplied values are right for 48K spectrum
         /// These will deviate for 128k and up (as there are more T-States per frame)
         /// </summary>
-        public int SampleRate = 44100; //35000;
-        public int SamplesPerFrame = 882; //699;
-        public int TStatesPerSample = 79; //100;
+        //public int SampleRate = 44100; //35000;
+        //public int SamplesPerFrame = 882; //699;
+        //public int TStatesPerSample = 79; //100;
+        
+        /// <summary>
+        /// Sample Rate 
+        /// This usually has to be 44100 for ISoundProvider
+        /// </summary>
+        public int SampleRate
+        {
+            get { return _sampleRate; }
+            set { _sampleRate = value; }
+        }
+        
+        /// <summary>
+        /// Number of samples in one frame
+        /// </summary>
+        public int SamplesPerFrame
+        {
+            get { return _samplesPerFrame; }
+            set { _samplesPerFrame = value; }
+        }
 
-        public BlipBuffer BlipL { get; set; }
-        public BlipBuffer BlipR { get; set; }
+        /// <summary>
+        /// Number of TStates in each sample
+        /// </summary>
+        public int TStatesPerSample
+        {
+            get { return _tStatesPerSample; }
+            set { _tStatesPerSample = value; }
+        }
 
         private SpectrumBase _machine;
 
+        /// <summary>
+        /// State fields
+        /// </summary>
         private long _frameStart;
         private bool _tapeMode;
         private int _tStatesPerFrame;
-
-        public SpeexResampler resampler { get; set; }
+        private int _sampleRate;
+        private int _samplesPerFrame;
+        private int _tStatesPerSample;
 
         /// <summary>
         /// Pulses collected during the last frame
@@ -42,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The last pulse
         /// </summary>
-        public bool LastPulse { get; private set; }
+        public bool LastPulse { get; set; }
 
         /// <summary>
         /// The last T-State (cpu cycle) that the last pulse was received
@@ -59,9 +90,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Initialises the buzzer
         /// </summary>
-        public void Init()
+        public void Init(int sampleRate, int tStatesPerFrame)
         {
-            _tStatesPerFrame = _machine.UlaFrameCycleCount;
+            _sampleRate = sampleRate;
+            _tStatesPerFrame = tStatesPerFrame;
+
+            // get divisors
+            var divs = from a in Enumerable.Range(2, _tStatesPerFrame / 2)
+                       where _tStatesPerFrame % a == 0
+                       select a;
+
+            // get the highest int value under 120 (this will be TStatesPerSample)
+            _tStatesPerSample = divs.Where(a => a < 100).Last();
+
+            // get _samplesPerFrame
+            _samplesPerFrame = _tStatesPerFrame / _tStatesPerSample;
+
             Pulses = new List<Pulse>(1000);  
         }
 
@@ -206,16 +250,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public void GetSamplesAsync(short[] samples)
         {
-            throw new NotSupportedException("Async is not available");
-            short[] stereoBuffer = new short[soundBuffer.Length * 2];
-            int index = 0;
-            for (int i = 0; i < soundBufferContains; i++)
-            {
-                stereoBuffer[index++] = soundBuffer[i];
-                stereoBuffer[index++] = soundBuffer[i];
-            }
-
-            samples = stereoBuffer;
+            throw new NotSupportedException("Async is not available");            
         }
 
         public void DiscardSamples()
@@ -241,5 +276,24 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #endregion
 
+        
+        public void SyncState(Serializer ser)
+        {
+            ser.BeginSection("Buzzer");
+            ser.Sync("_frameStart", ref _frameStart);
+            ser.Sync("_tapeMode", ref _tapeMode);
+            ser.Sync("_tStatesPerFrame", ref _tStatesPerFrame);
+            ser.Sync("_sampleRate", ref _sampleRate);
+            ser.Sync("_samplesPerFrame", ref _samplesPerFrame);
+            ser.Sync("_tStatesPerSample", ref _tStatesPerSample);
+
+            ser.Sync("soundBuffer", ref soundBuffer, false);
+            ser.Sync("soundBufferContains", ref soundBufferContains);
+            ser.EndSection();
+        }
+        
+
     }
+
+    
 }
