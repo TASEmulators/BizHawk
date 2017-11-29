@@ -49,13 +49,23 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             throw new NotImplementedException("Must be overriden");
         }
 
-        /// <summary>
-        /// Simulates writing to the bus
-        /// Paging should be handled here
-        /// </summary>
-        /// <param name="addr"></param>
-        /// <param name="value"></param>
-        public virtual void WriteBus(ushort addr, byte value)
+		/// <summary>
+		/// Pushes a value onto the data bus that should be valid as long as the interrupt is true
+		/// </summary>
+		/// <param name="addr"></param>
+		/// <returns></returns>
+		public virtual byte PushBus()
+		{
+			throw new NotImplementedException("Must be overriden");
+		}
+
+		/// <summary>
+		/// Simulates writing to the bus
+		/// Paging should be handled here
+		/// </summary>
+		/// <param name="addr"></param>
+		/// <param name="value"></param>
+		public virtual void WriteBus(ushort addr, byte value)
         {
             throw new NotImplementedException("Must be overriden");
         }
