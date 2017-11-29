@@ -128,8 +128,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			iptr0 = Marshal.AllocHGlobal(CHR_RAM.Length + BG_map_1.Length + BG_map_2.Length + 1);
 			iptr1 = Marshal.AllocHGlobal(OAM.Length + 1);
-			iptr2 = Marshal.AllocHGlobal(color_palette.Length * 2 + 1);
-			iptr3 = Marshal.AllocHGlobal(color_palette.Length + 1);
+			iptr2 = Marshal.AllocHGlobal(color_palette.Length * 2 * 8 + 1);
+			iptr3 = Marshal.AllocHGlobal(color_palette.Length * 8 + 1);
 
 			_scanlineCallback = null;
 		}

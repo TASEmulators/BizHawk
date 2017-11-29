@@ -250,6 +250,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						LY_inc = 1;
 						Core.in_vblank = false;
 						VBL_INT = false;
+						if (STAT.Bit(3)) { HBL_INT = true; }
+						
+						STAT &= 0xFC;
 
 						// special note here, the y coordiate of the window is kept if the window is deactivated
 						// meaning it will pick up where it left off if re-enabled later
