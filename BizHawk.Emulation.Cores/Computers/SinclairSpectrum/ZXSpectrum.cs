@@ -52,7 +52,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _cpu.ReadMemory = _machine.ReadMemory;
             _cpu.WriteMemory = _machine.WriteMemory;
             _cpu.ReadHardware = _machine.ReadPort;
-            _cpu.WriteHardware = _machine.WritePort;            
+            _cpu.WriteHardware = _machine.WritePort;
+			_cpu.FetchDB = _machine.PushBus;           
 
             ser.Register<ITraceable>(_tracer);
             ser.Register<IDisassemblable>(_cpu);
@@ -69,13 +70,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 DISA d = new DISA();
                 ushort size;
-                d.Dis = _cpu.Disassemble((ushort)i, _machine.ReadMemory, out size);
-                d.Size = size;
-                disas.Add(d);
-                romDis.Add(d.Dis);
+                //d.Dis = _cpu.Disassemble((ushort)i, _machine.ReadMemory, out size);
+               // d.Size = size;
+               // disas.Add(d);
+                //romDis.Add(d.Dis);
                 //i = i + size - 1;
                 //romDis.Add(s);
             }
+
+			SetupMemoryDomains();
         }
 
         public class DISA
