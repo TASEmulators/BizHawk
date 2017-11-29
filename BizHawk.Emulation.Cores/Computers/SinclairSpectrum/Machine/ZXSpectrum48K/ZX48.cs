@@ -93,13 +93,23 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             return bank[index];
         }
 
-        /// <summary>
-        /// Simulates writing to the bus (no contention)
-        /// Paging should be handled here
-        /// </summary>
-        /// <param name="addr"></param>
-        /// <param name="value"></param>
-        public override void WriteBus(ushort addr, byte value)
+		/// <summary>
+		///  Pushes a value onto the data bus that should be valid as long as the interrupt is true
+		/// </summary>
+		/// <param name="addr"></param>
+		/// <returns></returns>
+		public override byte PushBus()
+		{
+			return 0xFF;
+		}
+
+		/// <summary>
+		/// Simulates writing to the bus (no contention)
+		/// Paging should be handled here
+		/// </summary>
+		/// <param name="addr"></param>
+		/// <param name="value"></param>
+		public override void WriteBus(ushort addr, byte value)
         {
             int divisor = addr / 0x4000;
             // paging logic goes here
