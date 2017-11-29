@@ -74,6 +74,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort SET_FL_IR = 59;
 		public const ushort I_BIT = 60;
 		public const ushort HL_BIT = 61;
+		public const ushort FTCH_DB = 62;
 
 		public byte temp_R;
 
@@ -105,6 +106,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// Hardware I/O Port Access
 		public Func<ushort, byte> ReadHardware;
 		public Action<ushort, byte> WriteHardware;
+
+		// Data BUs
+		// Interrupting Devices are responsible for putting a value onto the data bus
+		// for as long as the interrupt is valid
+		public Func<byte> FetchDB;
 
 		//this only calls when the first byte of an instruction is fetched.
 		public Action<ushort> OnExecFetch;
@@ -339,6 +345,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 				case HALT:
 					halted = true;
+					// NOTE: Check how halt state effects the DB
+					Regs[DB] = 0xFF;
+
 					if (EI_pending > 0)
 					{
 						EI_pending--;
@@ -594,6 +603,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					break;
 				case SET_FL_IR:
 					SET_FL_IR_Func(cur_instr[instr_pntr++]);
+					break;
+				case FTCH_DB:
+					FTCH_DB_Func();
 					break;
 			}
 			totalExecutedCycles++;

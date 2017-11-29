@@ -8,31 +8,37 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public void Read_Func(ushort dest, ushort src_l, ushort src_h)
 		{
 			Regs[dest] = ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
+			Regs[DB] = Regs[dest];
 		}
 
 		public void I_Read_Func(ushort dest, ushort src_l, ushort src_h, ushort inc)
 		{
 			Regs[dest] = ReadMemory((ushort)((Regs[src_l] | (Regs[src_h] << 8)) + inc));
+			Regs[DB] = Regs[dest];
 		}
 
 		public void Write_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
+			Regs[DB] = Regs[src];
 			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
 		}
 
 		public void I_Write_Func(ushort dest_l, ushort dest_h, ushort inc,  ushort src)
 		{
+			Regs[DB] = Regs[src];
 			WriteMemory((ushort)((Regs[dest_l] | (Regs[dest_h] << 8)) + inc), (byte)Regs[src]);
 		}
 
 		public void OUT_Func(ushort dest, ushort src)
 		{
+			Regs[DB] = Regs[src];
 			WriteHardware(Regs[dest], (byte)(Regs[src]));
 		}
 
 		public void IN_Func(ushort dest, ushort src)
 		{
 			Regs[dest] = ReadHardware(Regs[src]);
+			Regs[DB] = Regs[dest];
 		}
 
 		public void TR_Func(ushort dest, ushort src)
@@ -737,6 +743,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				Flag5 = (Regs[A] & 0x02) != 0;
 				Flag3 = (Regs[A] & 0x08) != 0;
 			}
+		}
+
+		public void FTCH_DB_Func()
+		{
+			Regs[DB] = FetchDB();
 		}
 	}
 }
