@@ -72,8 +72,9 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			if (SaveRAM != null)
 			{
 				ser.Sync("SaveRAM", ref SaveRAM, false);
-				ser.Sync("SaveRamBank", ref SaveRamBank);
 			}
+
+			ser.Sync("SaveRamBank", ref SaveRamBank);
 
 			if (ExtRam != null)
 			{
