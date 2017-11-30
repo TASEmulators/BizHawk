@@ -3,6 +3,7 @@ using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80A;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -29,13 +30,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             _cpu = new Z80A();
 
-            _tracer = new TraceBuffer { Header = _cpu.TraceHeader };     
-            
+            _tracer = new TraceBuffer { Header = _cpu.TraceHeader };
+
+            _file = file;
+
             switch (Settings.MachineType)
             {
                 case MachineType.ZXSpectrum48:
                     ControllerDefinition = ZXSpectrumControllerDefinition48;                    
-                    Init(MachineType.ZXSpectrum48, Settings.BorderType, SyncSettings.TapeLoadSpeed, file);
+                    Init(MachineType.ZXSpectrum48, Settings.BorderType, SyncSettings.TapeLoadSpeed, _file);
                     break;
                 default:
                     throw new InvalidOperationException("Machine not yet emulated");
@@ -62,46 +65,30 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             HardReset();
 
-            
-
-            List<string> romDis = new List<string>();
-            List<DISA> disas = new List<DISA>();
-            for (int i = 0x00; i < 0x4000; i++)
-            {
-                DISA d = new DISA();
-                ushort size;
-                //d.Dis = _cpu.Disassemble((ushort)i, _machine.ReadMemory, out size);
-               // d.Size = size;
-               // disas.Add(d);
-                //romDis.Add(d.Dis);
-                //i = i + size - 1;
-                //romDis.Add(s);
-            }
-
 			SetupMemoryDomains();
         }
-
-        public class DISA
-        {
-            public ushort Size { get; set; }
-            public string Dis { get; set; }
-        }
-
-        //private int _cyclesPerFrame;
-
+                
         public Action HardReset;
         public Action SoftReset;
 
         private readonly Z80A _cpu;
-        //private byte[] _systemRom;
         private readonly TraceBuffer _tracer;
         public IController _controller;
         private SpectrumBase _machine;
 
         private byte[] _file;
 
+
+        public bool DiagRom = false;
+
         private byte[] GetFirmware(int length, params string[] names)
         {
+            if (DiagRom & File.Exists(Directory.GetCurrentDirectory() + @"\DiagROM.v28"))
+            {
+                var rom = File.ReadAllBytes(Directory.GetCurrentDirectory() + @"\DiagROM.v28");
+                return rom;
+            }
+
             var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware("ZXSpectrum", n, false)).FirstOrDefault(b => b != null && b.Length == length);
             if (result == null)
             {
