@@ -34,8 +34,10 @@ namespace BizHawk.Client.EmuHawk
 
 			MemStateGapDividerNumeric.Maximum = Statable.SaveStateBinary().Length / 1024 / 2 + 1;
 			MemStateGapDividerNumeric.Minimum = Statable.SaveStateBinary().Length / 1024 / 16;
-			MemStateGapDividerNumeric.Value = _settings.MemStateGapDivider < MemStateGapDividerNumeric.Minimum ?
-				MemStateGapDividerNumeric.Minimum : _settings.MemStateGapDivider;
+
+			// props to .net for this amazing Clamp() implementation
+			MemStateGapDividerNumeric.Value = Math.Min(Math.Max(_settings.MemStateGapDivider,
+				MemStateGapDividerNumeric.Minimum), MemStateGapDividerNumeric.Maximum);
 
 			FileStateGapNumeric.Value = _settings.FileStateGap;
 			SavestateSizeLabel.Text = Math.Round(_stateSizeMb, 2).ToString() + " MB";
