@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             switch (Settings.MachineType)
             {
                 case MachineType.ZXSpectrum48:
-                    ControllerDefinition = ZXSpectrumControllerDefinition48;                    
+                    ControllerDefinition = ZXSpectrumControllerDefinition;                    
                     Init(MachineType.ZXSpectrum48, Settings.BorderType, SyncSettings.TapeLoadSpeed, _file);
                     break;
                 default:

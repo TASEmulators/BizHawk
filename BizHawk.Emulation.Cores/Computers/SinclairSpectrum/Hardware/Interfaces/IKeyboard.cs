@@ -20,14 +20,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         string[] KeyboardMatrix { get; set; }
 
         /// <summary>
-        /// For 16/48k models
+        /// Other keyboard keys that are not in the matrix
+        /// (usually keys derived from key combos)
         /// </summary>
-        bool Issue2 { get; set; }
+        string[] NonMatrixKeys { get; set; }
 
         /// <summary>
-        /// The current keyboard line status
+        /// Represents the spectrum key state
         /// </summary>
-        //byte[] LineStatus { get; set; }
+        int[] KeyLine { get; set; }
+
+        /// <summary>
+        /// There are some slight differences in how PortIN and PortOUT functions
+        /// between Issue2 and Issue3 keyboards (16k/48k spectrum only)
+        /// It is possible that some very old games require Issue2 emulation
+        /// </summary>
+        bool IsIssue2Keyboard { get; set; }
 
         /// <summary>
         /// Sets the spectrum key status
@@ -63,6 +71,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="key"></param>
         /// <returns></returns>
         byte GetByteFromKeyMatrix(string key);
+
+
 
         void SyncState(Serializer ser);
     }

@@ -15,14 +15,29 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             Spectrum.InputCallbacks.Call();
 
-            for (var i = 0; i < KeyboardDevice.KeyboardMatrix.Length; i++)
-            {                
-                string key = KeyboardDevice.KeyboardMatrix[i];
-                bool prevState = KeyboardDevice.GetKeyStatus(key);
-                bool currState = Spectrum._controller.IsPressed(key);
+            lock (this)
+            {
+                // parse single keyboard matrix keys
+                for (var i = 0; i < KeyboardDevice.KeyboardMatrix.Length; i++)
+                {
+                    string key = KeyboardDevice.KeyboardMatrix[i];
+                    //bool prevState = KeyboardDevice.GetKeyStatus(key);
+                    bool currState = Spectrum._controller.IsPressed(key);
 
-                if (currState != prevState)
+                    //if (currState != prevState)
                     KeyboardDevice.SetKeyStatus(key, currState);
+                }
+
+                // non matrix keys
+                foreach (string k in KeyboardDevice.NonMatrixKeys)
+                {
+                    if (!k.StartsWith("Key"))
+                        continue;
+
+                    bool currState = Spectrum._controller.IsPressed(k);
+
+                    KeyboardDevice.SetKeyStatus(k, currState);
+                }
             }
 
             // Tape control
@@ -45,3 +60,4 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
     }
 }
+
