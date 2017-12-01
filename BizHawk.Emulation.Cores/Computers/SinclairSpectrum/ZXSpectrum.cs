@@ -56,7 +56,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _cpu.WriteMemory = _machine.WriteMemory;
             _cpu.ReadHardware = _machine.ReadPort;
             _cpu.WriteHardware = _machine.WritePort;
-			_cpu.FetchDB = _machine.PushBus;           
+			_cpu.FetchDB = _machine.PushBus;   
 
             ser.Register<ITraceable>(_tracer);
             ser.Register<IDisassemblable>(_cpu);

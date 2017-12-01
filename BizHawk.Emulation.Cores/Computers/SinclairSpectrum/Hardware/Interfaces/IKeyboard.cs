@@ -31,6 +31,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         int[] KeyLine { get; set; }
 
         /// <summary>
+        /// Resets the line status
+        /// </summary>
+        void ResetLineStatus();
+
+        /// <summary>
         /// There are some slight differences in how PortIN and PortOUT functions
         /// between Issue2 and Issue3 keyboards (16k/48k spectrum only)
         /// It is possible that some very old games require Issue2 emulation

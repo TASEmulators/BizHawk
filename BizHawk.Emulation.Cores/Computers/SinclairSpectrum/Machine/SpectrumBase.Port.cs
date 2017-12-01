@@ -33,17 +33,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // combine the low byte (passed in as port) and the high byte (maybe not needed)
             //ushort word = Convert.ToUInt16((port << 8 | high));
+
             int word = (high << 8) + port;
+
+            //port += (ushort)(CPU.Regs[CPU.A] << 8);
 
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
-            bool lowBitReset = (port & 0x0001) == 0;
+            bool lowBitReset = (word & 0x0001) == 0;            
 
             // Kempston Joystick
             //not implemented yet        
 
-            if (lowBitReset)
-            {
+            if (port == 254)
+            {                
                 // Even I/O address so get input
                 // The high byte indicates which half-row of keys is being polled
                 /*
@@ -54,33 +57,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                   0xf7fe  1, 2, 3, 4, 5                0x7ffe  SPACE, SYM SHFT, M, N, B
                 */
 
-                if ((word & 0x8000) == 0)
+                if (high == 0xfe)
+                    result &= KeyboardDevice.KeyLine[0];
+                if (high == 0xfd)
+                    result &= KeyboardDevice.KeyLine[1];
+                if (high == 0xfb)
+                    result &= KeyboardDevice.KeyLine[2];
+                if (high == 0xf7)
+                    result &= KeyboardDevice.KeyLine[3];
+                if (high == 0xef)
+                    result &= KeyboardDevice.KeyLine[4];
+                if (high == 0xdf)
+                    result &= KeyboardDevice.KeyLine[5];
+                if (high == 0xbf)
+                    result &= KeyboardDevice.KeyLine[6];
+                if (high == 0x7f)
                     result &= KeyboardDevice.KeyLine[7];
 
-                if ((word & 0x4000) == 0)
-                    result &= KeyboardDevice.KeyLine[6];
-
-                if ((word & 0x2000) == 0)
-                    result &= KeyboardDevice.KeyLine[5];
-
-                if ((word & 0x1000) == 0)
-                    result &= KeyboardDevice.KeyLine[4];
-
-                if ((word & 0x800) == 0)
-                    result &= KeyboardDevice.KeyLine[3];
-
-                if ((word & 0x400) == 0)
-                    result &= KeyboardDevice.KeyLine[2];
-
-                if ((word & 0x200) == 0)
-                    result &= KeyboardDevice.KeyLine[1];
-
-                if ((word & 0x100) == 0)
-                    result &= KeyboardDevice.KeyLine[0];
 
                 result = result & 0x1f; //mask out lower 4 bits
                 result = result | 0xa0; //set bit 5 & 7 to 1
 
+                
                 if (TapeDevice.CurrentMode == TapeOperationMode.Load)
                 {
                     if (!TapeDevice.GetEarBit(CPU.TotalExecutedCycles))
@@ -128,6 +126,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     result = (byte)(result & Convert.ToInt32("10111111", 2));
                 }
                 */
+                
             }
             else
             {
@@ -140,8 +139,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // if unused port the floating memory bus should be returned (still todo)
             }
-
-            return (byte)(result & 0xff);
+            
+            return (byte)result;
         }
 
         /// <summary>
