@@ -266,6 +266,7 @@
     <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\ITapeData.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\ITapeDataSerialization.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\ITapeProvider.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\KempstonJoystick.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\TapeBlockSetPlayer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\TapeDataBlockPlayer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\TapeFilePlayer.cs" />

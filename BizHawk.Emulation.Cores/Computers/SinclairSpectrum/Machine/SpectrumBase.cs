@@ -47,6 +47,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public virtual ITapeProvider TapeProvider { get; set; }
 
         /// <summary>
+        /// Kempston joystick
+        /// </summary>
+        public virtual KempstonJoystick KempstonDevice { get; set; }
+
+        /// <summary>
         /// Signs whether the frame has ended
         /// </summary>
         public bool FrameCompleted;

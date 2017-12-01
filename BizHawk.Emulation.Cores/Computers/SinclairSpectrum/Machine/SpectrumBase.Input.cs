@@ -42,6 +42,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
             }
 
+            // J1
+            foreach (string j in KempstonDevice._bitPos)
+            {
+                bool prevState = KempstonDevice.GetJoyInput(j);
+                bool currState = Spectrum._controller.IsPressed(j);
+
+                if (currState != prevState)
+                    KempstonDevice.SetJoyInput(j, currState);
+            }
+
             // Tape control
             if (Spectrum._controller.IsPressed(Play))
             {

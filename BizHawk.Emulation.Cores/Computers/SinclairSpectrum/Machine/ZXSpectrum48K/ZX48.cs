@@ -41,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             BuzzerDevice.Init(44100, UlaFrameCycleCount);
 
             KeyboardDevice = new Keyboard48(this);
+            KempstonDevice = new KempstonJoystick(this);
 
             TapeProvider = new DefaultTapeProvider(file);
 

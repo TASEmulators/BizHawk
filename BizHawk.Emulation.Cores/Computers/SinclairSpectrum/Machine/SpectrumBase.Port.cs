@@ -33,9 +33,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ContendPort((ushort)port);                      
 
             // Kempston Joystick
-            if (port == 0x1f)
+            if ((port & 0xe0) == 0 || (port & 0x20) == 0)
             {
-
+                return (byte)KempstonDevice.JoyLine;
             }  
             else if (lowBitReset)
             {
