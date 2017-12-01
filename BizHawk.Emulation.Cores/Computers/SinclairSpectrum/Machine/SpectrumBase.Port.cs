@@ -30,8 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = (port & 0x0001) == 0;
 
-            ContendPort((ushort)port);
-                      
+            ContendPort((ushort)port);                      
 
             // Kempston Joystick
             if (port == 0x1f)
@@ -48,27 +47,31 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                   0xfdfe  A, S, D, F, G                0xdffe  P, O, I, U, Y
                   0xfbfe  Q, W, E, R, T                0xbffe  ENTER, L, K, J, H
                   0xf7fe  1, 2, 3, 4, 5                0x7ffe  SPACE, SYM SHFT, M, N, B
-                */
+                */                
 
-                result &= KeyboardDevice.GetLineStatus((byte)(port >> 8));
-                /*
-                if (high == 0xfe)
-                    result &= KeyboardDevice.KeyLine[0];
-                if (high == 0xfd)
-                    result &= KeyboardDevice.KeyLine[1];
-                if (high == 0xfb)
-                    result &= KeyboardDevice.KeyLine[2];
-                if (high == 0xf7)
-                    result &= KeyboardDevice.KeyLine[3];
-                if (high == 0xef)
-                    result &= KeyboardDevice.KeyLine[4];
-                if (high == 0xdf)
-                    result &= KeyboardDevice.KeyLine[5];
-                if (high == 0xbf)
-                    result &= KeyboardDevice.KeyLine[6];
-                if (high == 0x7f)
+                if ((port & 0x8000) == 0)
                     result &= KeyboardDevice.KeyLine[7];
-*/
+
+                if ((port & 0x4000) == 0)
+                    result &= KeyboardDevice.KeyLine[6];
+
+                if ((port & 0x2000) == 0)
+                    result &= KeyboardDevice.KeyLine[5];
+
+                if ((port & 0x1000) == 0)
+                    result &= KeyboardDevice.KeyLine[4];
+
+                if ((port & 0x800) == 0)
+                    result &= KeyboardDevice.KeyLine[3];
+
+                if ((port & 0x400) == 0)
+                    result &= KeyboardDevice.KeyLine[2];
+
+                if ((port & 0x200) == 0)
+                    result &= KeyboardDevice.KeyLine[1];
+
+                if ((port & 0x100) == 0)
+                    result &= KeyboardDevice.KeyLine[0];
 
                 result = result & 0x1f; //mask out lower 4 bits
                 result = result | 0xa0; //set bit 5 & 7 to 1
@@ -110,17 +113,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         }
                     }
                 }
-                /*
-                // read keyboard input
-                if (high != 0)
-                    result &= KeyboardDevice.GetLineStatus((byte)high);
-                
-                var ear = TapeDevice.GetEarBit(CPU.TotalExecutedCycles);
-                if (!ear)
-                {
-                    result = (byte)(result & Convert.ToInt32("10111111", 2));
-                }
-                */
                 
             }
             else

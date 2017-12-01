@@ -77,21 +77,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             LineStatus = new byte[8];
             _keyLine = new int[] { 255, 255, 255, 255, 255, 255, 255, 255 };
-            IsIssue2Keyboard = false;
+            IsIssue2Keyboard = true;
         }
 
         public void SetKeyStatus(string key, bool isPressed)
         {
             int k = GetByteFromKeyMatrix(key);
-
-            /*
-            byte keyByte = GetByteFromKeyMatrix(key);
-            var lineIndex = keyByte / 5;
-            var lineMask = 1 << keyByte % 5;
-
-            LineStatus[lineIndex] = isPressed ? (byte)(LineStatus[lineIndex] | lineMask)
-                : (byte)(LineStatus[lineIndex] & ~lineMask);
-                */
+            
             if (k != 255)
             {
                 var lineIndex = k / 5;
