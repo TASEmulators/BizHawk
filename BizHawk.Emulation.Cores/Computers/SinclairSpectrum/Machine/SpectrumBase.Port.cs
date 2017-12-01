@@ -24,29 +24,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public virtual byte ReadPort(ushort port)
         {
-            CPU.TotalExecutedCycles += 4;
-
             int result = 0xFF;
-
-            // get the high byte from Regs[6]
-            ushort high = CPU.Regs[6];
-
-            // combine the low byte (passed in as port) and the high byte (maybe not needed)
-            //ushort word = Convert.ToUInt16((port << 8 | high));
-
-            int word = (high << 8) + port;
-
-            //port += (ushort)(CPU.Regs[CPU.A] << 8);
 
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
-            bool lowBitReset = (word & 0x0001) == 0;            
+            bool lowBitReset = (port & 0x0001) == 0;
+
+            ContendPort((ushort)port);
+                      
 
             // Kempston Joystick
-            //not implemented yet        
+            if (port == 0x1f)
+            {
 
-            if (port == 254)
-            {                
+            }  
+            else if (lowBitReset)
+            {
                 // Even I/O address so get input
                 // The high byte indicates which half-row of keys is being polled
                 /*
@@ -57,6 +50,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                   0xf7fe  1, 2, 3, 4, 5                0x7ffe  SPACE, SYM SHFT, M, N, B
                 */
 
+                result &= KeyboardDevice.GetLineStatus((byte)(port >> 8));
+                /*
                 if (high == 0xfe)
                     result &= KeyboardDevice.KeyLine[0];
                 if (high == 0xfd)
@@ -73,7 +68,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     result &= KeyboardDevice.KeyLine[6];
                 if (high == 0x7f)
                     result &= KeyboardDevice.KeyLine[7];
-
+*/
 
                 result = result & 0x1f; //mask out lower 4 bits
                 result = result | 0xa0; //set bit 5 & 7 to 1
@@ -150,11 +145,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public virtual void WritePort(ushort port, byte value)
         {
-            CPU.TotalExecutedCycles += 4;
-
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
-            bool lowBitReset = (port & 0x0001) == 0;
+            bool lowBitReset = (port & 0x01) == 0;
+
+            ContendPort(port);
 
             // Only even addresses address the ULA
             if (lowBitReset)
@@ -177,6 +172,29 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // Tape
                 TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
+            }
+        }
+
+        /// <summary>
+        /// Apply I/O contention if necessary
+        /// </summary>
+        /// <param name="port"></param>
+        public virtual void ContendPort(ushort port)
+        {
+            var lowBit = (port & 0x0001) != 0;
+            var ulaHigh = (port & 0xc000) == 0x4000;
+            var cfc = CurrentFrameCycle;
+            if (cfc < 1)
+                cfc = 1;
+            
+            if (ulaHigh)
+            {
+                CPU.TotalExecutedCycles += GetContentionValue(cfc - 1);
+            }                
+            else
+            {
+                if (!lowBit)
+                    CPU.TotalExecutedCycles += GetContentionValue(cfc);
             }
         }
     }

@@ -273,8 +273,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         public byte GetLineStatus(byte lines)
-        {
-            
+        {            
             lock(this)
             {
                 byte status = 0;
@@ -287,7 +286,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     lineIndex++;
                     lines >>= 1;
                 }
-                var result = (byte)~status;
+                var result = (byte)status;
 
                 return result;
             }
