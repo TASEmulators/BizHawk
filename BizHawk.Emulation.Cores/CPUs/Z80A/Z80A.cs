@@ -578,10 +578,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					iff1 = iff2;
 					break;
 				case OUT:
-					OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case IN:
-					IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case NEG:
 					NEG_8_Func(cur_instr[instr_pntr++]);

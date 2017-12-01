@@ -29,15 +29,15 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			WriteMemory((ushort)((Regs[dest_l] | (Regs[dest_h] << 8)) + inc), (byte)Regs[src]);
 		}
 
-		public void OUT_Func(ushort dest, ushort src)
+		public void OUT_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
 			Regs[DB] = Regs[src];
-			WriteHardware(Regs[dest], (byte)(Regs[src]));
+			WriteHardware((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)(Regs[src]));
 		}
 
-		public void IN_Func(ushort dest, ushort src)
+		public void IN_Func(ushort dest, ushort src_l, ushort src_h)
 		{
-			Regs[dest] = ReadHardware(Regs[src]);
+			Regs[dest] = ReadHardware((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
 		}
 
