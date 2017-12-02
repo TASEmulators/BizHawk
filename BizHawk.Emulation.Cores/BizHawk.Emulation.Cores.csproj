@@ -664,6 +664,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\BxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Camerica.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CamericaGoldenFive.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper063.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Mapper043.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Cony.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CoolBoy.cs" />
