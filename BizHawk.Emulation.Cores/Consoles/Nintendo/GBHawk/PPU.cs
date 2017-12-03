@@ -88,6 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int window_y_tile;
 		public int window_x_tile;
 		public int window_y_tile_inc;
+		public int window_x_latch;
 
 		public byte ReadReg(int addr)
 		{
@@ -387,7 +388,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						{
 							if (cycle == 4)
 							{
-								// apparently, writes can make it to OAm one cycle longer then reads
+								// apparently, writes can make it to OAM one cycle longer then reads
 								OAM_access_write = false;
 
 								// here mode 2 will be set to true and interrupts fired if enabled
@@ -576,6 +577,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				OAM_access_write = true;
 				VRAM_access_read = false;
 
+				// window X is latched for the scanline, mid-line changes have no effect
+				window_x_latch = window_x;
+
 				OAM_scan_index = 0;
 				read_case = 0;
 				internal_cycle = 0;
@@ -602,9 +606,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				window_started = false;
 
-				// calculate the row number of the tiles to be fetched
-				y_tile = ((int)Math.Floor((float)(scroll_y + LY) / 8)) % 32;
-
 				if (SL_sprites_index == 0)
 				{
 					no_sprites = true;
@@ -612,18 +613,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			
 			// before anything else, we have to check if windowing is in effect
-			if (LCDC.Bit(5) && !window_started && (LY >= window_y) && (pixel_counter >= (window_x - 7)))
+			if (LCDC.Bit(5) && !window_started && (LY >= window_y) && (pixel_counter >= (window_x_latch - 7)) && (window_x_latch < 167))
 			{
 				/*
 				Console.Write(LY);
 				Console.Write(" ");
-				Console.Write(window_y);
+				Console.Write(cycle);
 				Console.Write(" ");
 				Console.Write(window_y_tile_inc);
 				Console.Write(" ");
-				Console.WriteLine(scroll_y);
+				Console.Write(window_x_latch);
+				Console.Write(" ");
+				Console.WriteLine(pixel_counter);
 				*/
-				if (pixel_counter == 0 && window_x <= 7)
+				if (pixel_counter == 0 && window_x_latch <= 7)
 				{
 					// if the window starts at zero, we still do the first access to the BG
 					// but then restart all over again at the window
@@ -637,7 +640,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				window_counter = 0;
 
-				window_x_tile = (int)Math.Floor((float)(pixel_counter - (window_x - 7)) / 8);
+				window_x_tile = (int)Math.Floor((float)(pixel_counter - (window_x_latch - 7)) / 8);
 				
 				window_tile_inc = 0;
 				window_started = true;
@@ -757,7 +760,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (pixel_counter == 160)
 						{
 							read_case = 8;
-							hbl_countdown = 4;
+							hbl_countdown = 6;
 						}
 					}
 					render_counter++;
@@ -778,6 +781,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 0: // read a background tile
 						if ((internal_cycle % 2) == 0)
 						{
+							// calculate the row number of the tiles to be fetched
+							y_tile = ((int)Math.Floor((float)(scroll_y + LY) / 8)) % 32;
 
 							temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
 							tile_byte = LCDC.Bit(3) ? Core.BG_map_2[temp_fetch] : Core.BG_map_1[temp_fetch];
@@ -1075,6 +1080,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			obj_pal_1 = 0xFF;
 			window_y = 0x0;
 			window_x = 0x0;
+			window_x_latch = 0xFF;
 			LY_inc = 1;
 			no_scan = false;
 			OAM_access_read = true;
@@ -1234,6 +1240,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("window_y_tile", ref window_y_tile);
 			ser.Sync("window_x_tile", ref window_x_tile);
 			ser.Sync("window_y_tile_inc", ref window_y_tile_inc);
+			ser.Sync("window_x_latch", ref window_x_latch);
 		}
 	}
 }
