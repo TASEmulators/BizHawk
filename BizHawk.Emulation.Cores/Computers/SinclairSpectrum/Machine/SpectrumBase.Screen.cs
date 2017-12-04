@@ -38,7 +38,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The main screen buffer
         /// </summary>
-        protected byte[] _frameBuffer;
+        protected int[] _frameBuffer;
 
         /// <summary>
         /// Pixel and attribute info stored while rendering the screen
@@ -531,8 +531,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         protected virtual void SetPixels(int colorIndex1, int colorIndex2)
         {
             var pos = _yPos * ScreenWidth + _xPos;
-            _frameBuffer[pos++] = (byte)colorIndex1;
-            _frameBuffer[pos] = (byte)colorIndex2;
+            _frameBuffer[pos++] = ULAPalette[colorIndex1];
+            _frameBuffer[pos] = ULAPalette[colorIndex2];
         }
 
         /// <summary>
@@ -785,7 +785,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             //BorderDevice.Reset();
             _flashPhase = false;
 
-            _frameBuffer = new byte[ScreenWidth * ScreenLines];
+            _frameBuffer = new int[ScreenWidth * ScreenLines];
 
             InitULACycleTable();
 
@@ -912,6 +912,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		*/
 		public int[] GetVideoBuffer()
         {
+            return _frameBuffer;
+
 			// convert the generated _framebuffer into ARGB colours via the ULAPalette
             int[] trans = new int[_frameBuffer.Length];
             for (int i = 0; i < _frameBuffer.Length; i++)
