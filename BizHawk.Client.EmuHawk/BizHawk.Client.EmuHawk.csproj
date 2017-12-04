@@ -1197,6 +1197,7 @@
     <Compile Include="tools\VirtualPads\schema\SnesSchema.cs" />
     <Compile Include="tools\VirtualPads\schema\VirtualBoySchema.cs" />
     <Compile Include="tools\VirtualPads\schema\WonderSwanSchema.cs" />
+    <Compile Include="tools\VirtualPads\schema\ZXSpectrumSchema.cs" />
     <Compile Include="tools\VirtualPads\VirtualPad.cs">
       <SubType>UserControl</SubType>
     </Compile>
