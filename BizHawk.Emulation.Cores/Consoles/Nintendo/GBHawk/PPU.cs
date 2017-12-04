@@ -79,6 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int index_used;
 		public int sprite_ordered_index;
 		public int bottom_index;
+		public bool blank_frame;
 
 		// windowing state
 		public int window_counter;
@@ -124,6 +125,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						VRAM_access_write = true;
 						OAM_access_read = true;
 						OAM_access_write = true;
+					}
+
+					if (!LCDC.Bit(7) && value.Bit(7))
+					{
+						// don't draw for one frame after turning on
+						blank_frame = true;
 					}
 
 					LCDC = value;
@@ -176,7 +183,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF4B: // WX
 					window_x = value;
 					break;
-			}
+			}			
 		}
 
 		public void tick()
@@ -232,7 +239,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							Core._scanlineCallback(LCDC);
 						}						
 					}
-
 
 					cycle = 0;
 					LY += LY_inc;
@@ -1232,6 +1238,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("index_used", ref index_used);
 			ser.Sync("sprite_ordered_index", ref sprite_ordered_index);
 			ser.Sync("bottom_index", ref bottom_index);
+			ser.Sync("blank_frame", ref blank_frame);
 
 			ser.Sync("window_counter", ref window_counter);
 			ser.Sync("window_pre_render", ref window_pre_render);

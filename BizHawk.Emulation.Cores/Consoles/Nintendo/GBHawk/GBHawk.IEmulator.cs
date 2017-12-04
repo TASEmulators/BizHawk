@@ -116,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			
 
-			while (!vblank_rise && (ticker < 100000))
+			while (!vblank_rise)
 			{
 				audio.tick();
 				timer.tick_1();
@@ -133,7 +133,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					vblank_rise = true;
 				}
+
 				ticker++;
+				if (ticker > 10000000) { throw new Exception("ERROR: Unable to Resolve Frame"); }
+
 				in_vblank_old = in_vblank;
 			}
 
@@ -183,7 +186,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int[] GetVideoBuffer()
 		{
-			return _vidbuffer;
+			if (ppu.blank_frame)
+			{
+				for (int i = 0; i < _vidbuffer.Length; i++)
+				{
+					_vidbuffer[i] = (int)color_palette[0];
+				}
+				ppu.blank_frame = false;
+			}
+			return _vidbuffer;		
 		}
 
 		public int VirtualWidth => 160;
