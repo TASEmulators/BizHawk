@@ -30,24 +30,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public bool PutSyncSettings(ZXSpectrumSyncSettings o)
         {
+            bool ret = ZXSpectrumSyncSettings.NeedsReboot(SyncSettings, o);
             SyncSettings = o;
-            return false;
+            return ret;
         }
 
         
 
         public class ZXSpectrumSettings
         {
-            [DisplayName("Spectrum model")]
-            [Description("The model of spectrum to be emulated")]
-            [DefaultValue(MachineType.ZXSpectrum48)]
-            public MachineType MachineType { get; set; }
-
-            [DisplayName("Border type")]
-            [Description("Select how to show the border area")]
-            [DefaultValue(BorderType.Full)]
-            public BorderType BorderType { get; set; }
-
+            [DisplayName("Auto-load tape")]
+            [Description("Auto or manual tape operation")]
+            [DefaultValue(true)]
+            public bool AutoLoadTape { get; set; }
             
 
             public ZXSpectrumSettings Clone()
@@ -63,6 +58,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public class ZXSpectrumSyncSettings
         {
+            [DisplayName("Spectrum model")]
+            [Description("The model of spectrum to be emulated")]
+            [DefaultValue(MachineType.ZXSpectrum48)]
+            public MachineType MachineType { get; set; }
+
+            [DisplayName("Border type")]
+            [Description("Select how to show the border area")]
+            [DefaultValue(BorderType.Full)]
+            public BorderType BorderType { get; set; }
+
             [DisplayName("Tape Load Speed")]
             [Description("Select how fast the spectrum loads the game from tape")]
             [DefaultValue(TapeLoadSpeed.Accurate)]
@@ -71,6 +76,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             public ZXSpectrumSyncSettings Clone()
             {
                 return (ZXSpectrumSyncSettings)MemberwiseClone();
+            }
+
+            public ZXSpectrumSyncSettings()
+            {
+                SettingsUtil.SetDefaultValues(this);
+            }
+
+            public static bool NeedsReboot(ZXSpectrumSyncSettings x, ZXSpectrumSyncSettings y)
+            {
+                return !DeepEquality.DeepEquals(x, y);
             }
         }
 

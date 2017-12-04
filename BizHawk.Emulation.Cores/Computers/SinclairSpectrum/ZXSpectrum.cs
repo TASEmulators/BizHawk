@@ -34,11 +34,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             _file = file;
 
-            switch (Settings.MachineType)
+            switch (SyncSettings.MachineType)
             {
                 case MachineType.ZXSpectrum48:
                     ControllerDefinition = ZXSpectrumControllerDefinition;                    
-                    Init(MachineType.ZXSpectrum48, Settings.BorderType, SyncSettings.TapeLoadSpeed, _file);
+                    Init(MachineType.ZXSpectrum48, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _file);
                     break;
                 default:
                     throw new InvalidOperationException("Machine not yet emulated");

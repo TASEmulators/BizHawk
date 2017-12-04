@@ -2435,11 +2435,25 @@ namespace BizHawk.Client.EmuHawk
 			new IntvControllerSettings().ShowDialog();
 		}
 
-		#endregion
+        #endregion
 
-		#region Help
+        #region ZXSpectrum
 
-		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
+        private void zXSpectrumToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+
+        }
+
+        private void preferencesToolStripMenuItem4_Click(object sender, EventArgs e)
+        {
+            GenericCoreConfig.DoDialog(this, "ZXSpectrum Settings");
+        }
+
+        #endregion
+
+        #region Help
+
+        private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}

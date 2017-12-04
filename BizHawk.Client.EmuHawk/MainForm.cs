@@ -1719,6 +1719,7 @@ namespace BizHawk.Client.EmuHawk
 			sNESToolStripMenuItem.Visible = false;
 			neoGeoPocketToolStripMenuItem.Visible = false;
 			pCFXToolStripMenuItem.Visible = false;
+            zXSpectrumToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
@@ -1816,6 +1817,9 @@ namespace BizHawk.Client.EmuHawk
 				case "PCFX":
 					pCFXToolStripMenuItem.Visible = true;
 					break;
+                case "ZXSpectrum":
+                    zXSpectrumToolStripMenuItem.Visible = true;
+                    break;
 			}
 		}
 
@@ -4295,7 +4299,9 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
 		}
 
-		private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
+        
+
+        private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
 		{
 			var isRewinding = false;
 
