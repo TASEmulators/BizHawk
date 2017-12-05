@@ -38,6 +38,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public Buzzer BuzzerDevice { get; set; }
 
         /// <summary>
+        /// Device representing the AY-3-8912 chip found in the 128k and up spectrums
+        /// </summary>
+        public AYSound AYDevice { get; set; }
+
+        /// <summary>
         /// The spectrum keyboard
         /// </summary>
         public virtual IKeyboard KeyboardDevice { get; set; }
@@ -231,9 +236,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             BuzzerDevice.SyncState(ser);
             TapeDevice.SyncState(ser);
 
+            if (AYDevice != null)
+                AYDevice.SyncState(ser);
+
             ser.EndSection();
 
-            ReInitMemory();
+            //ReInitMemory();
         }
     }
 }

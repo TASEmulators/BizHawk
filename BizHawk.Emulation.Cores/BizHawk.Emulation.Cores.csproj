@@ -256,6 +256,7 @@
     <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
     <Compile Include="Computers\Commodore64\SaveState.cs" />
     <Compile Include="Computers\Commodore64\User\UserPortDevice.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\AYSound.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Buzzer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\DefaultTapeProvider.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\IKeyboard.cs" />
@@ -270,6 +271,7 @@
     <Compile Include="Computers\SinclairSpectrum\Hardware\TapeBlockSetPlayer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\TapeDataBlockPlayer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\TapeFilePlayer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\SoundProviderMixer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\MachineType.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Input.cs" />
@@ -307,6 +309,7 @@
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IInputPollable.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IMemoryDomains.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.ISettable.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.ISoundProvider.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IStatable.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Util.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
