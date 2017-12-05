@@ -276,9 +276,11 @@
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Port.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Memory.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Sound.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2\ZX128Plus2.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Memory.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Port.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Screen.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Memory.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\TAP\TapDataBlock.cs" />

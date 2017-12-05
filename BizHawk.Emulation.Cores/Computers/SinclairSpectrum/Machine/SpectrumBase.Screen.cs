@@ -765,7 +765,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Initialises the screen configuration calculations
         /// </summary>
-        protected virtual void InitScreenConfig()
+        public virtual void InitScreenConfig()
         {
             ScreenLines = BorderTopLines + DisplayLines + BorderBottomLines;
             FirstDisplayLine = VerticalSyncLines + NonVisibleBorderTopLines + BorderTopLines;
