@@ -179,7 +179,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// The time of displaying right part of the border.
         /// Given in Z80 clock cycles.
         /// </summary>
-        protected int BorderRightTime = 24;
+        protected int BorderRightTime  = 24;
 
         /// <summary>
         /// The time used to render the nonvisible right part of the border.
@@ -900,6 +900,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public int VsyncNumerator
         {
             get { return 3500000; }
+            set { }
         }
 
         public int VsyncDenominator

@@ -71,6 +71,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     RD.LoadBytesResumeAddress = 0x05E2;
                     RD.LoadBytesInvalidHeaderAddress = 0x05B6;
                     break;
+
+                case MachineType.ZXSpectrum128:
+                    RD.SaveBytesRoutineAddress = 0x04C2;
+                    RD.SaveBytesResumeAddress = 0x0000;
+                    RD.LoadBytesRoutineAddress = 0x0808; //0x0556; //0x056C;
+                    RD.LoadBytesResumeAddress = 0x05E2;
+                    RD.LoadBytesInvalidHeaderAddress = 0x05B6;
+                    break;
             }
 
             return RD;

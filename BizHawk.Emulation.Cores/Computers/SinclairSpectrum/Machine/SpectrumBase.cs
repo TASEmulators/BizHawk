@@ -10,7 +10,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// * Main properties / fields / contruction*
     /// </summary>
     public abstract partial class SpectrumBase
-    {    
+    {
+
+        public bool ROMPaged { get; set; }
+        public bool SHADOWPaged { get; set; }
+        public int RAMPaged { get; set; }
+        public bool PagingDisabled { get; set; }
+
         /// <summary>
         /// The calling ZXSpectrum class (piped in via constructor)
         /// </summary>
