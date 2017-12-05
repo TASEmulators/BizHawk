@@ -277,6 +277,9 @@
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Memory.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Sound.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2\ZX128Plus2.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus3\ZX128Plus3.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus3\ZX128Plus3.Memory.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus3\ZX128Plus3.Port.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Memory.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Port.cs" />
