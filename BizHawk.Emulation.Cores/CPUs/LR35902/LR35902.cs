@@ -252,7 +252,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					SET_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case EI:
-					EI_pending = 2;
+					if (EI_pending == 0) { EI_pending = 2; }
 					break;
 				case DI:
 					interrupts_enabled = false;
