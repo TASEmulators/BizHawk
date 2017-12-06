@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		EDetectionOrigin origin = EDetectionOrigin.None;
 		int sprdma_countdown;
 
-		bool _irq_apu; //various irq signals that get merged to the cpu irq pin
+		public bool _irq_apu; //various irq signals that get merged to the cpu irq pin
 		
 		/// <summary>clock speed of the main cpu in hz</summary>
 		public int cpuclockrate { get; private set; }
