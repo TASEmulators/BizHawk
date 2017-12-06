@@ -188,8 +188,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void tick()
 		{
-			// tick DMA
-			if (DMA_start)
+			// tick DMA, note that DMA is halted when the CPU is halted
+			if (DMA_start && !Core.cpu.halted)
 			{
 				if (DMA_clock >= 4)
 				{
@@ -221,6 +221,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (DMA_clock == 648)
 				{
 					DMA_start = false;
+					DMA_OAM_access = true;
 				}
 			}
 
@@ -534,14 +535,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					if (OAM_scan_index < 40)
 					{
+						ushort temp = DMA_OAM_access ? Core.OAM[OAM_scan_index * 4] : (ushort)0xFF;
 						// (sprite Y - 16) equals LY, we have a sprite
-						if ((Core.OAM[OAM_scan_index * 4] - 16) <= LY &&
-							((Core.OAM[OAM_scan_index * 4] - 16) + 8 + (LCDC.Bit(2) ? 8 : 0)) > LY)
+						if ((temp - 16) <= LY &&
+							((temp - 16) + 8 + (LCDC.Bit(2) ? 8 : 0)) > LY)
 						{
 							// always pick the first 10 in range sprites
 							if (SL_sprites_index < 10)
 							{
-								SL_sprites[SL_sprites_index * 4] = Core.OAM[OAM_scan_index * 4];
+								SL_sprites[SL_sprites_index * 4] = temp;
 
 								write_sprite = 1;
 							}
@@ -559,7 +561,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else
 				{
-					SL_sprites[SL_sprites_index * 4 + write_sprite] = Core.OAM[OAM_scan_index * 4 + write_sprite];
+					ushort temp2 = DMA_OAM_access ? Core.OAM[OAM_scan_index * 4 + write_sprite] : (ushort)0xFF;
+					SL_sprites[SL_sprites_index * 4 + write_sprite] = temp2;
 					write_sprite++;
 
 					if (write_sprite == 4)
