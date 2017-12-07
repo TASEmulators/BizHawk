@@ -203,14 +203,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else if ((DMA_clock % 4) == 3)
 					{
-						if ((DMA_inc % 4) == 3)
-						{
-							Core.OAM[DMA_inc] = DMA_byte;
-						}
-						else
-						{
-							Core.OAM[DMA_inc] = DMA_byte;
-						}
+						Core.OAM[DMA_inc] = DMA_byte;
 
 						if (DMA_inc < (0xA0 - 1)) { DMA_inc++; }
 					}
@@ -424,10 +417,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							// render the screen and handle hblank
 							render(cycle - 80);
 						}
-					}
-					
+					}					
 				}
-
 
 				if ((LY_inc == 0))
 				{
@@ -466,10 +457,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else
 			{
-				// screen disable sets STAT as though it were vblank, but there is no Stat IRQ asserted
-				//STAT &= 0xFC;
-				//STAT |= 0x01;
-
 				STAT &= 0xF8;
 
 				VBL_INT = LYC_INT = HBL_INT = OAM_INT = false;
@@ -497,7 +484,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			// process latch delays
 			//latch_delay();
-
 		}
 
 		// might be needed, not sure yet
@@ -795,7 +781,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 							temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
 							tile_byte = LCDC.Bit(3) ? Core.BG_map_2[temp_fetch] : Core.BG_map_1[temp_fetch];
-
 						}
 						else
 						{

@@ -37,7 +37,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				color_palette[3] = color_palette_Gr[3];
 			}
 
-
 			if (_tracer.Enabled)
 			{
 				cpu.TraceCallback = s => _tracer.Put(s);
@@ -103,9 +102,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				input_register |= 0xF;
 			}
 
-			// check for interrupts
-
-			
+			// check for interrupts			
 			if (((contr_prev & 8) > 0) && ((input_register & 8) == 0) ||
 				((contr_prev & 4) > 0) && ((input_register & 4) == 0) ||
 				((contr_prev & 2) > 0) && ((input_register & 2) == 0) ||
@@ -115,7 +112,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				REG_FF0F |= 0x10;
 			}
 			
-
 			while (!vblank_rise)
 			{
 				audio.tick();
@@ -176,7 +172,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			Marshal.FreeHGlobal(iptr2);
 			Marshal.FreeHGlobal(iptr3);
 		}
-
 
 		#region Video provider
 
