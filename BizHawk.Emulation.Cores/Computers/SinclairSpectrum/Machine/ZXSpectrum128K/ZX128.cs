@@ -21,15 +21,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             Spectrum = spectrum;
             CPU = cpu;
 
-            ROMPaged = false;
+            ROMPaged = 0;
             SHADOWPaged = false;
             RAMPaged = 0;
             PagingDisabled = false;
 
             // init addressable memory from ROM and RAM banks
             ReInitMemory();
-
-            //RAM = new byte[0x4000 + 0xC000];
 
             //DisplayLineTime = 132;
             VsyncNumerator = 3546900;
@@ -42,7 +40,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             BuzzerDevice = new Buzzer(this);
             BuzzerDevice.Init(44100, UlaFrameCycleCount);
 
-            AYDevice = new AYSound();
+            AYDevice = new AY38912();
+            AYDevice.Init(44100, UlaFrameCycleCount);
 
             KeyboardDevice = new Keyboard48(this);
             KempstonDevice = new KempstonJoystick(this);

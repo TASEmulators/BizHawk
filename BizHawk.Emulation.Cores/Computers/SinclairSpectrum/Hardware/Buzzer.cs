@@ -94,6 +94,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             _sampleRate = sampleRate;
             _tStatesPerFrame = tStatesPerFrame;
+            _tStatesPerSample = 79;
+            _samplesPerFrame = _tStatesPerFrame / _tStatesPerSample;
+
+            /*
 
             // get divisors
             var divs = from a in Enumerable.Range(2, _tStatesPerFrame / 2)
@@ -105,6 +109,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // get _samplesPerFrame
             _samplesPerFrame = _tStatesPerFrame / _tStatesPerSample;
+            */
 
             Pulses = new List<Pulse>(1000);  
         }
@@ -265,13 +270,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             short[] stereoBuffer = new short[soundBufferContains * 2];
             int index = 0;
             for (int i = 0; i < soundBufferContains; i++)
-            {
+            {                
                 stereoBuffer[index++] = soundBuffer[i];
-                stereoBuffer[index++] = soundBuffer[i];
+                stereoBuffer[index++] = soundBuffer[i];                                
             }
-
+            
             samples = stereoBuffer;
-            nsamp = soundBufferContains;
+            nsamp = _samplesPerFrame; // soundBufferContains;
         }
 
         #endregion

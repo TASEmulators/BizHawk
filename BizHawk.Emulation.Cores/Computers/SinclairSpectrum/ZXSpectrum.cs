@@ -74,7 +74,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (_machine.AYDevice != null)
                 SoundMixer.AddSource(_machine.AYDevice);
 
-            ser.Register<ISoundProvider>(SoundMixer);
+            //SoundMixer.DisableSource(_machine.BuzzerDevice);
+
+            dcf = new DCFilter(SoundMixer, 1024);
+
+            
+
+            ser.Register<ISoundProvider>(dcf);
+            //ser.Register<ISoundProvider>(_machine.AYDevice);
+
+            
 
             HardReset();
 
@@ -88,6 +97,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         private readonly TraceBuffer _tracer;
         public IController _controller;
         private SpectrumBase _machine;
+
+        private DCFilter dcf;
 
         private byte[] _file;
 

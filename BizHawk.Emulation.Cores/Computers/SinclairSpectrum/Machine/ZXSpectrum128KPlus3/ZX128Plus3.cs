@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             Spectrum = spectrum;
             CPU = cpu;
 
-            ROMPaged = false;
+            ROMPaged = 0;
             SHADOWPaged = false;
             RAMPaged = 0;
             PagingDisabled = false;
@@ -41,6 +41,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             BuzzerDevice = new Buzzer(this);
             BuzzerDevice.Init(44100, UlaFrameCycleCount);
+
+            AYDevice = new AY38912();
+            AYDevice.Init(44100, UlaFrameCycleCount);
 
             KeyboardDevice = new Keyboard48(this);
             KempstonDevice = new KempstonJoystick(this);

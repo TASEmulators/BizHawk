@@ -12,10 +12,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     public abstract partial class SpectrumBase
     {
 
-        public bool ROMPaged { get; set; }
-        public bool SHADOWPaged { get; set; }
-        public int RAMPaged { get; set; }
-        public bool PagingDisabled { get; set; }
+        protected int ROMPaged = 0;
+        protected bool SHADOWPaged;
+        protected int RAMPaged;
+        protected bool PagingDisabled;
 
         /// <summary>
         /// The calling ZXSpectrum class (piped in via constructor)
@@ -40,7 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Device representing the AY-3-8912 chip found in the 128k and up spectrums
         /// </summary>
-        public AYSound AYDevice { get; set; }
+        public AY38912 AYDevice { get; set; }
 
         /// <summary>
         /// The spectrum keyboard
@@ -100,6 +100,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         protected const int MIC_BIT = 0x08;
         protected const int TAPE_BIT = 0x40;
 
+        protected const int AY_SAMPLE_RATE = 16;
+
         /// <summary>
         /// Executes a single frame
         /// </summary>
@@ -107,8 +109,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             FrameCompleted = false;
             BuzzerDevice.StartFrame();
-
+            if (AYDevice != null)
+                AYDevice.StartFrame();
             PollInput();
+
+            var curr = CPU.TotalExecutedCycles;
 
             while (CurrentFrameCycle <= UlaFrameCycleCount)
             {
@@ -122,14 +127,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 var lastCycle = CurrentFrameCycle;
                 RenderScreen(LastRenderedULACycle + 1, lastCycle);
                 LastRenderedULACycle = lastCycle;
-      
-            }
 
+                // update AY
+                if (AYDevice != null)
+                    AYDevice.UpdateSound(CurrentFrameCycle);
+            }
+            
             // we have reached the end of a frame
             LastFrameStartCPUTick = CPU.TotalExecutedCycles - OverFlow;
             LastRenderedULACycle = OverFlow;
 
-            BuzzerDevice.EndFrame();
+            BuzzerDevice.EndFrame();            
 
             TapeDevice.CPUFrameCompleted();
 
@@ -234,14 +242,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             RomData.SyncState(ser);
             KeyboardDevice.SyncState(ser);
             BuzzerDevice.SyncState(ser);
-            TapeDevice.SyncState(ser);
 
             if (AYDevice != null)
                 AYDevice.SyncState(ser);
 
+            TapeDevice.SyncState(ser);
+
             ser.EndSection();
 
-            //ReInitMemory();
+            ReInitMemory();
         }
     }
 }

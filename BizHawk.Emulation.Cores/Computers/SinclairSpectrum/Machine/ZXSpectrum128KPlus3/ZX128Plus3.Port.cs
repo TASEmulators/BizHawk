@@ -140,11 +140,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 if ((value & 0x10) != 0)
                 {
                     // 48k ROM
-                    ROMPaged = true;
+                    ROMPaged = 1;
                 }
                 else
                 {
-                    ROMPaged = false;
+                    ROMPaged = 0;
                 }
 
                 // Bit 5 signifies that paging is disabled until next reboot

@@ -8,6 +8,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     public partial class ZX128 : SpectrumBase
     {
+        private int AYTStates = 0;
+
         /// <summary>
         /// Reads a byte of data from a specified port address
         /// </summary>
@@ -112,11 +114,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // (e.g. the AY sound chip in a 128k spectrum
 
                 // AY register activate
-                // Kemptson Mouse
+                if ((port & 0xc002) == 0xc000)
+                {
+                    result = (int)AYDevice.PortRead();
+                }
+
+                // Kempston Mouse
 
 
                 // if unused port the floating memory bus should be returned (still todo)
             }
+
+            CPU.TotalExecutedCycles += 3;
 
             return (byte)result;
         }
@@ -128,6 +137,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WritePort(ushort port, byte value)
         {
+            int currT = CPU.TotalExecutedCycles;
+
             // paging
             if (port == 0x7ffd)
             {
@@ -140,11 +151,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 if ((value & 0x10) != 0)
                 {
                     // 48k ROM
-                    ROMPaged = true;
+                    ROMPaged = 1;
                 }
                 else
                 {
-                    ROMPaged = false;
+                    ROMPaged = 0;
                 }
 
                 // Bit 5 signifies that paging is disabled until next reboot
@@ -183,6 +194,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // Tape
                 TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
             }
+
+            // Active AY Register
+            if ((port & 0xc002) == 0xc000)
+            {
+                var reg = value & 0x0f;
+                AYDevice.SelectedRegister = reg;
+                CPU.TotalExecutedCycles += 3;
+            }
+
+            // AY Write
+            if ((port & 0xc002) == 0x8000)
+            {
+                AYDevice.PortWrite(value);
+                CPU.TotalExecutedCycles += 3;
+            }            
         }
     }
 }

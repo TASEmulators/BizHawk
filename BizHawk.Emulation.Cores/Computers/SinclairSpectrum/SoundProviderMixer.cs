@@ -60,6 +60,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             else if (sp.Count() > 1)
                 foreach (var s in sp)
                     SoundProviders.Remove(s);
+
+            EqualizeVolumes();
         }
 
         public void EqualizeVolumes()
@@ -119,6 +121,38 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             if (!sameCount)
             {
+                // get the highest number of samples
+                int max = SoundProviders.Aggregate((i, j) => i.Buffer.Length > j.Buffer.Length ? i : j).Buffer.Length;
+
+                nsamp = max;
+                samples = new short[nsamp * 2];
+
+                // take a pass at populating the samples array for each provider
+                foreach (var sp in SoundProviders)
+                {
+                    short sectorVal = 0;
+                    int pos = 0;
+                    for (int i = 0; i < sp.Buffer.Length; i++)
+                    {
+                        if (sp.Buffer[i] > sp.MaxVolume)
+                            sectorVal = (short)sp.MaxVolume;
+                        else
+                        {
+                            if (sp.SoundProvider is AY38912)
+                            {
+                                // boost audio
+                                sectorVal += (short)(sp.Buffer[i] * 2);
+                            }
+                            else
+                            {
+                                sectorVal += sp.Buffer[i];
+                            }
+                        }
+
+                        samples[pos++] += sectorVal;
+                    }
+                }
+                /*
                 int divisor = 1;
                 int highestCount = 0;
 
@@ -167,6 +201,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         }
                     }
                 }
+                */
             }
             else
             {
@@ -181,7 +216,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         if (sp.Buffer[i] > sp.MaxVolume)
                             sectorVal += (short)sp.MaxVolume;
                         else
-                            sectorVal += sp.Buffer[i];
+                        {
+                            if (sp.SoundProvider is AY38912)
+                            {
+                                // boost audio
+                                sectorVal += (short)(sp.Buffer[i] * 2);
+                            }
+                            else
+                            {
+                                sectorVal += sp.Buffer[i];
+                            }                            
+                        }                            
                     }
 
                     samples[i] = sectorVal;

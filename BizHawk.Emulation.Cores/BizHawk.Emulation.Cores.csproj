@@ -256,7 +256,7 @@
     <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
     <Compile Include="Computers\Commodore64\SaveState.cs" />
     <Compile Include="Computers\Commodore64\User\UserPortDevice.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Hardware\AYSound.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\AY38912.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Buzzer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\DefaultTapeProvider.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\IKeyboard.cs" />

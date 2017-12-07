@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 // ROM 0x000
                 case 0:
-                    if (!ROMPaged)
+                    if (ROMPaged == 0)
                         result = Memory[0][addr % 0x4000];
                     else
                         result = Memory[1][addr % 0x4000];
@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 // ROM 0x000
                 case 0:
-                    if (!ROMPaged)
+                    if (ROMPaged == 0)
                         Memory[0][addr % 0x4000] = value;
                     else
                         Memory[1][addr % 0x4000] = value;
