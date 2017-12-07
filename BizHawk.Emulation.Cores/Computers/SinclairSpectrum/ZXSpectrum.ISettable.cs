@@ -24,7 +24,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public bool PutSettings(ZXSpectrumSettings o)
         {
+            if (SoundMixer != null)
+                SoundMixer.Stereo = o.StereoSound;
+
             Settings = o;
+
             return false;
         }
 
@@ -39,11 +43,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public class ZXSpectrumSettings
         {
-            [DisplayName("Auto-load tape")]
-            [Description("Auto or manual tape operation")]
+            [DisplayName("Stereo Sound")]
+            [Description("Turn stereo sound on or off")]
             [DefaultValue(true)]
-            public bool AutoLoadTape { get; set; }
-            
+            public bool StereoSound { get; set; }
+
 
             public ZXSpectrumSettings Clone()
             {
@@ -72,6 +76,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             [Description("Select how fast the spectrum loads the game from tape")]
             [DefaultValue(TapeLoadSpeed.Accurate)]
             public TapeLoadSpeed TapeLoadSpeed { get; set; }
+
+            [DisplayName("Auto-load tape")]
+            [Description("Auto or manual tape operation")]
+            [DefaultValue(true)]
+            public bool AutoLoadTape { get; set; }
 
             public ZXSpectrumSyncSettings Clone()
             {

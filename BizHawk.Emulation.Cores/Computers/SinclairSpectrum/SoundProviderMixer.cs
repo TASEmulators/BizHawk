@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// <summary>
     /// My attempt at mixing multiple ISoundProvider sources together and outputting another ISoundProvider
     /// Currently only supports SyncSoundMode.Sync
-    /// Attached ISoundProvider sources must already be stereo 44.1khz
+    /// Attached ISoundProvider sources must already be stereo 44.1khz and ideally sound buffers should be the same length
     /// </summary>
     internal sealed class SoundProviderMixer : ISoundProvider
     {
@@ -20,11 +20,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             public int NSamp { get; set; }
         }
 
+        private bool _stereo = true;
+        public bool Stereo
+        {
+            get { return _stereo; }
+            set { _stereo = value; }
+        }
+
         private readonly List<Provider> SoundProviders;
-
-        private short[] _buffer;
-        private int _nSamp;
-
+        
         public SoundProviderMixer(params ISoundProvider[] soundProviders)
         {
             SoundProviders = new List<Provider>();
@@ -119,40 +123,51 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             var firstEntry = SoundProviders.First();
             bool sameCount = SoundProviders.All(s => s.NSamp == firstEntry.NSamp);
 
-            if (!sameCount)
+            
+            if (sameCount)
             {
-                // get the highest number of samples
-                int max = SoundProviders.Aggregate((i, j) => i.Buffer.Length > j.Buffer.Length ? i : j).Buffer.Length;
-
-                nsamp = max;
+                nsamp = firstEntry.NSamp;
                 samples = new short[nsamp * 2];
 
-                // take a pass at populating the samples array for each provider
-                foreach (var sp in SoundProviders)
+                if (_stereo)
                 {
-                    short sectorVal = 0;
-                    int pos = 0;
-                    for (int i = 0; i < sp.Buffer.Length; i++)
+                    for (int i = 0; i < samples.Length; i++)
                     {
-                        if (sp.Buffer[i] > sp.MaxVolume)
-                            sectorVal = (short)sp.MaxVolume;
-                        else
+                        short sectorVal = 0;
+                        foreach (var sp in SoundProviders)
                         {
-                            if (sp.SoundProvider is AY38912)
-                            {
-                                // boost audio
-                                sectorVal += (short)(sp.Buffer[i] * 2);
-                            }
+                            if (sp.Buffer[i] > sp.MaxVolume)
+                                sectorVal += (short)sp.MaxVolume;
                             else
                             {
                                 sectorVal += sp.Buffer[i];
                             }
                         }
 
-                        samples[pos++] += sectorVal;
+                        samples[i] = sectorVal;
                     }
                 }
-                /*
+                else
+                {
+                    // convert to mono
+                    for (int i = 0; i < samples.Length; i += 2)
+                    {
+                        short s = 0;
+                        foreach (var sp in SoundProviders)
+                        {
+                            s += (short)((sp.Buffer[i] + sp.Buffer[i + 1]) / 2);
+                        }
+
+                        samples[i] = s;
+                        samples[i + 1] = s;
+                    }
+                }
+            }
+
+            else if (!sameCount)
+            {
+                // this is a pretty poor implementation that doesnt work very well
+                // ideally soundproviders should ensure that their number of samples is identical       
                 int divisor = 1;
                 int highestCount = 0;
 
@@ -194,27 +209,30 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             sectorVal = (short)sp.MaxVolume;
                         else
                             sectorVal = sp.Buffer[i];
-                        
+
                         for (int s = 0; s < divisor; s++)
                         {
                             samples[pos++] += sectorVal;
                         }
                     }
                 }
-                */
-            }
-            else
-            {
-                nsamp = firstEntry.NSamp;
+
+                /*
+                // get the highest number of samples
+                int max = SoundProviders.Aggregate((i, j) => i.Buffer.Length > j.Buffer.Length ? i : j).Buffer.Length;
+
+                nsamp = max;
                 samples = new short[nsamp * 2];
 
-                for (int i = 0; i < samples.Length; i++)
+                // take a pass at populating the samples array for each provider
+                foreach (var sp in SoundProviders)
                 {
                     short sectorVal = 0;
-                    foreach (var sp in SoundProviders)
+                    int pos = 0;
+                    for (int i = 0; i < sp.Buffer.Length; i++)
                     {
                         if (sp.Buffer[i] > sp.MaxVolume)
-                            sectorVal += (short)sp.MaxVolume;
+                            sectorVal = (short)sp.MaxVolume;
                         else
                         {
                             if (sp.SoundProvider is AY38912)
@@ -225,12 +243,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             else
                             {
                                 sectorVal += sp.Buffer[i];
-                            }                            
-                        }                            
-                    }
+                            }
+                        }
 
-                    samples[i] = sectorVal;
+                        samples[pos++] += sectorVal;
+                    }
                 }
+               */
+
             }
         }
 

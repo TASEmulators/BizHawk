@@ -206,12 +206,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 for (var i = firstSample; i < currentEnd + pulse.Length; i += TStatesPerSample)
                 {
-                    samples[sampleIndex++] = pulse.State ? (short)(short.MaxValue / 2) : (short)0;
-
-                    //resampler.EnqueueSample(samples[sampleIndex - 1], samples[sampleIndex - 1]);
-                    
-                }
-                    
+                    if (_tapeMode)
+                        samples[sampleIndex++] = pulse.State ? (short)(short.MaxValue / 6) : (short)0;
+                    else
+                        samples[sampleIndex++] = pulse.State ? (short)(short.MaxValue / 2) : (short)0;
+                }                   
 
                 currentEnd += pulse.Length;
             }

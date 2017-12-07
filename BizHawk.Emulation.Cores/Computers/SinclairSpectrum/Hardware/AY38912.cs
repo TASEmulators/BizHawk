@@ -265,7 +265,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         private byte envelopeClock = 0;
         private int selectedRegister;
         public ushort soundSampleCounter;
-        private bool stereoSound = true;
+        private bool stereoSound = false;
         private bool sustaining;
         private bool sustain;
         private bool alternate;
@@ -314,15 +314,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 ChannelCenter = 1;
                 ChannelRight = 2;
             }
-        }
-
-        /// <summary>
-        /// Set whether sound output is stereo or mono
-        /// </summary>
-        public bool StereoSound
-        {
-            get { return stereoSound; }
-            set { stereoSound = value; }
         }
 
         /// <summary>
@@ -453,18 +444,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         private void EndSampleAY()
         {
-            if (stereoSound)
-            {
-                averagedChannelSamples[0] = (short)((averagedChannelSamples[ChannelLeft] + averagedChannelSamples[ChannelCenter]) / soundSampleCounter);
-                averagedChannelSamples[1] = (short)((averagedChannelSamples[ChannelRight] + averagedChannelSamples[ChannelCenter]) / soundSampleCounter);
-                averagedChannelSamples[2] = 0;// beeperSound;
-            }
-            else
-            {
-                averagedChannelSamples[0] = (short)((averagedChannelSamples[ChannelLeft] + averagedChannelSamples[ChannelCenter] + averagedChannelSamples[ChannelRight]) / soundSampleCounter);
-                averagedChannelSamples[1] = (short)((averagedChannelSamples[ChannelLeft] + averagedChannelSamples[ChannelCenter] + averagedChannelSamples[ChannelRight]) / soundSampleCounter);
-                averagedChannelSamples[2] = 0;// (averagedChannelSamples[ChannelLeft] + averagedChannelSamples[ChannelCenter] + averagedChannelSamples[ChannelRight]) / soundSampleCounter + beeperSound;
-            }
+            averagedChannelSamples[0] = (short)((averagedChannelSamples[ChannelLeft] + averagedChannelSamples[ChannelCenter]) / soundSampleCounter);
+            averagedChannelSamples[1] = (short)((averagedChannelSamples[ChannelRight] + averagedChannelSamples[ChannelCenter]) / soundSampleCounter);
+            
             soundSampleCounter = 0;
         }
 
