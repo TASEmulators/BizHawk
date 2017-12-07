@@ -103,7 +103,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public enum BorderType
         {
+            /// <summary>
+            /// How it was originally back in the day
+            /// </summary>
             Full,
+
+            /// <summary>
+            /// Top and bottom border removed so that the result is *almost* 16:9
+            /// </summary>
             Widescreen,
         }
 
