@@ -36,6 +36,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             switch (SyncSettings.MachineType)
             {
+                case MachineType.ZXSpectrum16:
+                    ControllerDefinition = ZXSpectrumControllerDefinition;
+                    Init(MachineType.ZXSpectrum16, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _file);
+                    break;
                 case MachineType.ZXSpectrum48:
                     ControllerDefinition = ZXSpectrumControllerDefinition;                    
                     Init(MachineType.ZXSpectrum48, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _file);
@@ -132,6 +136,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // setup the emulated model based on the MachineType
             switch (machineType)
             {
+                case MachineType.ZXSpectrum16:
+                    _machine = new ZX16(this, _cpu, file);
+                    var _systemRom16 = GetFirmware(0x4000, "48ROM");
+                    var romData16 = RomData.InitROM(machineType, _systemRom16);
+                    _machine.InitROM(romData16);
+                    break;
                 case MachineType.ZXSpectrum48:
                     _machine = new ZX48(this, _cpu, file);
                     var _systemRom = GetFirmware(0x4000, "48ROM");

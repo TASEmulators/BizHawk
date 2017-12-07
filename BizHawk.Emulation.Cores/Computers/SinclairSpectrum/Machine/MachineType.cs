@@ -9,6 +9,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     public enum MachineType
     {
         /// <summary>
+        /// Original Sinclair Spectrum 16K model
+        /// </summary>
+        ZXSpectrum16,
+
+        /// <summary>
         /// Sinclair Spectrum 48K model
         /// </summary>
         ZXSpectrum48,
