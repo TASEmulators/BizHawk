@@ -11,11 +11,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// </summary>
     public abstract partial class SpectrumBase
     {
-
+        // 128 and up only
         protected int ROMPaged = 0;
         protected bool SHADOWPaged;
         protected int RAMPaged;
         protected bool PagingDisabled;
+
+        // +3/+2A only
+        protected bool SpecialPagingMode;
+        protected int PagingConfiguration;
 
         /// <summary>
         /// The calling ZXSpectrum class (piped in via constructor)
@@ -238,6 +242,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Sync("RAM5", ref RAM5, false);
             ser.Sync("RAM6", ref RAM6, false);
             ser.Sync("RAM7", ref RAM7, false);
+            ser.Sync("ROMPaged", ref ROMPaged);
+            ser.Sync("SHADOWPaged", ref SHADOWPaged);
+            ser.Sync("RAMPaged", ref RAMPaged);
+            ser.Sync("PagingDisabled", ref PagingDisabled);
+            ser.Sync("SpecialPagingMode", ref SpecialPagingMode);
+            ser.Sync("PagingConfiguration", ref PagingConfiguration);
 
             RomData.SyncState(ser);
             KeyboardDevice.SyncState(ser);

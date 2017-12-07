@@ -29,8 +29,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // init addressable memory from ROM and RAM banks
             ReInitMemory();
 
-            //RAM = new byte[0x4000 + 0xC000];
-
             //DisplayLineTime = 132;
             VsyncNumerator = 3546900;
 

@@ -913,13 +913,44 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		*/
 		public int[] GetVideoBuffer()
         {
-            return _frameBuffer;
+            /*
+            switch(Spectrum.SyncSettings.BorderType)
+            {
+                case ZXSpectrum.BorderType.Full:                
+                    return _frameBuffer;
 
-			// convert the generated _framebuffer into ARGB colours via the ULAPalette
-            int[] trans = new int[_frameBuffer.Length];
-            for (int i = 0; i < _frameBuffer.Length; i++)
-                trans[i] = ULAPalette[_frameBuffer[i]];
-            return trans; //_frameBuffer;
+                case ZXSpectrum.BorderType.Small:
+                    // leave only 10 border units all around
+                    int[] smlBuff = new int[(ScreenWidth - 30) * (DisplayLines - 30)];
+                    int index = 0;
+                    int brdCount = 0;
+                    // skip top and bottom
+                    for (int i = ScreenWidth * 30; i < smlBuff.Length - ScreenWidth * 30; i++)
+                    {
+                        if (brdCount < 30)
+                        {
+                            brdCount++;
+                            continue;
+                        }
+                        if (brdCount > ScreenWidth - 30)
+                        {
+                            brdCount++;
+                            continue;
+                        }
+
+                        smlBuff[index] = _frameBuffer[i];
+                        index++;
+                        brdCount++;
+                    }
+
+                    return smlBuff;
+
+                case ZXSpectrum.BorderType.Medium:
+                    break;
+            }
+            */
+            return _frameBuffer;
+            
         }
 
         #endregion

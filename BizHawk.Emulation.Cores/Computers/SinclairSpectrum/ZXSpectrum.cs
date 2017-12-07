@@ -48,6 +48,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     ControllerDefinition = ZXSpectrumControllerDefinition;
                     Init(MachineType.ZXSpectrum128Plus2, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _file);
                     break;
+                case MachineType.ZXSpectrum128Plus3:
+                    ControllerDefinition = ZXSpectrumControllerDefinition;
+                    Init(MachineType.ZXSpectrum128Plus3, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _file);
+                    break;
                 default:
                     throw new InvalidOperationException("Machine not yet emulated");
             }       
@@ -145,6 +149,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     var _systemRomP2 = GetFirmware(0x8000, "PLUS2ROM");
                     var romDataP2 = RomData.InitROM(machineType, _systemRomP2);
                     _machine.InitROM(romDataP2);
+                    break;
+                case MachineType.ZXSpectrum128Plus3:
+                    _machine = new ZX128Plus3(this, _cpu, file);
+                    var _systemRomP3 = GetFirmware(0x10000, "PLUS3ROM");
+                    var romDataP3 = RomData.InitROM(machineType, _systemRomP3);
+                    _machine.InitROM(romDataP3);
                     break;
             }
         }

@@ -9,8 +9,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     public partial class ZXSpectrum
     {
-        private FakeSyncSound _fakeSyncSound;
-        private IAsyncSoundProvider ActiveSoundProvider;
         private SoundProviderMixer SoundMixer;
     }
 }

@@ -79,30 +79,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         result |= (TAPE_BIT);       // set is EAR Off
                     }
                 }
+                else if ((LastULAOutByte & 0x10) == 0)
+                {
+                    result &= ~(0x40);                   
+                }
                 else
                 {
-                    if (KeyboardDevice.IsIssue2Keyboard)
-                    {
-                        if ((LastULAOutByte & (EAR_BIT + MIC_BIT)) == 0)
-                        {
-                            result &= ~(TAPE_BIT);
-                        }
-                        else
-                        {
-                            result |= TAPE_BIT;
-                        }
-                    }
-                    else
-                    {
-                        if ((LastULAOutByte & EAR_BIT) == 0)
-                        {
-                            result &= ~(TAPE_BIT);
-                        }
-                        else
-                        {
-                            result |= TAPE_BIT;
-                        }
-                    }
+                    result |= 0x40;
                 }
 
             }
@@ -111,9 +94,35 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // devices other than the ULA will respond here
                 // (e.g. the AY sound chip in a 128k spectrum
 
-                // AY register activate
-                // Kemptson Mouse
+                // AY register activate - on +3/2a both FFFD and BFFD active AY
+                if ((port & 0xc002) == 0xc000)
+                {
+                    result = (int)AYDevice.PortRead();
+                }
+                else if ((port & 0xc002) == 0x8000)
+                {
+                    result = (int)AYDevice.PortRead();
+                }
 
+                // Kempston Mouse
+
+
+                else if ((port & 0xF002) == 0x2000) //Is bit 12 set and bits 13,14,15 and 1 reset?
+                {
+                    //result = udpDrive.DiskStatusRead();
+                }
+                else if ((port & 0xF002) == 0x3000)
+                {
+                    //result = udpDrive.DiskReadByte();
+                }
+
+                else if ((port & 0xF002) == 0x0)
+                {
+                    if (PagingDisabled)
+                        result = 0x1;
+                    else
+                        result = 0xff;
+                }
 
                 // if unused port the floating memory bus should be returned (still todo)
             }
@@ -128,33 +137,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WritePort(ushort port, byte value)
         {
-            // paging
-            if (port == 0x7ffd)
-            {
-                // Bits 0, 1, 2 select the RAM page
-                var rp = value & 0x07;
-                if (rp < 8)
-                    RAMPaged = rp;
-
-                // ROM page
-                if ((value & 0x10) != 0)
-                {
-                    // 48k ROM
-                    ROMPaged = 1;
-                }
-                else
-                {
-                    ROMPaged = 0;
-                }
-
-                // Bit 5 signifies that paging is disabled until next reboot
-                if ((value & 0x20) != 0)
-                    PagingDisabled = true;
-
-
-                return;
-            }
-
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = (port & 0x01) == 0;
@@ -183,6 +165,131 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // Tape
                 TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
             }
+
+            else
+            {
+                // AY Register activation
+                if ((port & 0xc002) == 0xc000)
+                {
+                    var reg = value & 0x0f;
+                    AYDevice.SelectedRegister = reg;
+                    CPU.TotalExecutedCycles += 3;
+                }
+                else
+                {
+                    if ((port & 0xC002) == 0x8000)
+                    {
+                        AYDevice.PortWrite(value);
+                        CPU.TotalExecutedCycles += 3;
+                    }
+                    else
+                    {
+                        if ((port & 0xC002) == 0x4000) //Are bits 1 and 15 reset and bit 14 set?
+                        {
+                            // memory paging activate
+                            if (PagingDisabled)
+                                return;
+
+                            // bit 5 handles paging disable (48k mode, persistent until next reboot)
+                            if ((value & 0x20) != 0)
+                            {
+                                PagingDisabled = true;
+                            }
+
+                            // shadow screen
+                            if ((value & 0x08) != 0)
+                            {
+                                SHADOWPaged = true;
+                            }
+                            else
+                            {
+                                SHADOWPaged = false;
+                            }
+                        }
+                        else
+                        {
+                            //Extra Memory Paging feature activate
+                            if ((port & 0xF002) == 0x1000) //Is bit 12 set and bits 13,14,15 and 1 reset?
+                            {
+                                if (PagingDisabled)
+                                    return;
+
+                                // set disk motor state
+                                //todo
+
+                                if ((value & 0x08) != 0)
+                                {
+                                    //diskDriveState |= (1 << 4);
+                                }
+                                else
+                                {
+                                    //diskDriveState &= ~(1 << 4);
+                                }
+
+                                if ((value & 0x1) != 0)
+                                {
+                                    // activate special paging mode
+                                    SpecialPagingMode = true;
+                                    PagingConfiguration = (value & 0x6 >> 1);
+                                }
+                                else
+                                {
+                                    // normal paging mode
+                                    SpecialPagingMode = false;
+                                }
+                            }
+                            else
+                            {
+                                // disk write port
+                                if ((port & 0xF002) == 0x3000) //Is bit 12 set and bits 13,14,15 and 1 reset?
+                                {
+                                    //udpDrive.DiskWriteByte((byte)(val & 0xff));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            // paging
+            if (port == 0x7ffd)
+            {
+                if (PagingDisabled)
+                    return;
+
+                LastULAOutByte = value;
+
+                
+                    
+
+
+
+                    // Bits 0, 1, 2 select the RAM page
+                    var rp = value & 0x07;
+                if (rp < 8)
+                    RAMPaged = rp;
+
+                // ROM page
+                if ((value & 0x10) != 0)
+                {
+                    // 48k ROM
+                    ROMPaged = 1;
+                }
+                else
+                {
+                    ROMPaged = 0;
+                }
+
+                // Bit 5 signifies that paging is disabled until next reboot
+                if ((value & 0x20) != 0)
+                    PagingDisabled = true;
+
+
+                return;
+            }
+
+            
         }
     }
 }
