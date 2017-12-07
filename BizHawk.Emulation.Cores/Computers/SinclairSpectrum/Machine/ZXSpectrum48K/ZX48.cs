@@ -16,14 +16,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         /// <param name="spectrum"></param>
         /// <param name="cpu"></param>
-        public ZX48(ZXSpectrum spectrum, Z80A cpu, byte[] file)
+        public ZX48(ZXSpectrum spectrum, Z80A cpu, ZXSpectrum.BorderType borderType, byte[] file)
         {
             Spectrum = spectrum;
             CPU = cpu;
 
             ReInitMemory();
             
-            InitScreenConfig();
+            InitScreenConfig(borderType);
             InitScreen();
 
             ResetULACycle();

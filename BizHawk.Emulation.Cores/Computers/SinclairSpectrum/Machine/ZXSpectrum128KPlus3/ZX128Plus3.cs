@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         /// <param name="spectrum"></param>
         /// <param name="cpu"></param>
-        public ZX128Plus3(ZXSpectrum spectrum, Z80A cpu, byte[] file)
+        public ZX128Plus3(ZXSpectrum spectrum, Z80A cpu, ZXSpectrum.BorderType borderType, byte[] file)
         {
             Spectrum = spectrum;
             CPU = cpu;
@@ -30,9 +30,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ReInitMemory();
 
             //DisplayLineTime = 132;
-            VsyncNumerator = 3546900;
+            //VsyncNumerator = 3546900;
 
-            InitScreenConfig();
+            InitScreenConfig(borderType);
             InitScreen();
 
             ResetULACycle();

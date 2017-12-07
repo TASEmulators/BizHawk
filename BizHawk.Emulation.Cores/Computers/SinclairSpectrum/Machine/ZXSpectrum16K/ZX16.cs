@@ -16,8 +16,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         /// <param name="spectrum"></param>
         /// <param name="cpu"></param>
-        public ZX16(ZXSpectrum spectrum, Z80A cpu, byte[] file) 
-            : base(spectrum, cpu, file)
+        public ZX16(ZXSpectrum spectrum, Z80A cpu, ZXSpectrum.BorderType borderType, byte[] file) 
+            : base(spectrum, cpu, borderType, file)
         {
 
         }

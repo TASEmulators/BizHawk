@@ -151,7 +151,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// The number of border pixels to the right of the display
         /// </summary>
         protected int BorderRightPixels = 48;
-
+        
         /// <summary>
         /// The total width of the screen in pixels
         /// </summary>
@@ -765,8 +765,25 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Initialises the screen configuration calculations
         /// </summary>
-        public virtual void InitScreenConfig()
+        public virtual void InitScreenConfig(ZXSpectrum.BorderType border_type)
         {
+            switch (border_type)
+            {
+                case ZXSpectrum.BorderType.Full:
+                    BorderTopLines = 48;
+                    BorderBottomLines = 48;
+                    NonVisibleBorderTopLines = 8;
+                    NonVisibleBorderBottomLines = 8;
+                    break;
+
+                case ZXSpectrum.BorderType.Widescreen:
+                    BorderTopLines = 0;
+                    BorderBottomLines = 0;
+                    NonVisibleBorderTopLines = 8 + 48;
+                    NonVisibleBorderBottomLines = 8 + 48;
+                    break;
+            }
+
             ScreenLines = BorderTopLines + DisplayLines + BorderBottomLines;
             FirstDisplayLine = VerticalSyncLines + NonVisibleBorderTopLines + BorderTopLines;
             LastDisplayLine = FirstDisplayLine + DisplayLines - 1;
@@ -907,11 +924,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             get { return UlaFrameCycleCount; }
         }
-		/*
+        /*
         public int VsyncNumerator => NullVideo.DefaultVsyncNum;
         public int VsyncDenominator => NullVideo.DefaultVsyncDen;
 		*/
-		public int[] GetVideoBuffer()
+        public int[] GetVideoBuffer()
         {
             /*
             switch(Spectrum.SyncSettings.BorderType)

@@ -104,8 +104,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public enum BorderType
         {
             Full,
-            Medium,
-            Small
+            Widescreen,
         }
 
         /// <summary>
