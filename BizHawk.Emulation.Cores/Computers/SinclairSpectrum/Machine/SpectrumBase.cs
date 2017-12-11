@@ -203,6 +203,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             RomData.SyncState(ser);
             KeyboardDevice.SyncState(ser);
             BuzzerDevice.SyncState(ser);
+            ULADevice.SyncState(ser);
 
             if (AYDevice != null)
                 AYDevice.SyncState(ser);
