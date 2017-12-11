@@ -6,11 +6,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     /// <summary>
     /// Another ULA implementation (maybe it will be more performant & accurate)
+    /// -edit: it is :)
     /// </summary>
     public abstract class ULABase : IVideoProvider
     {
-        #region ULA Configuration
-
         #region General
 
         /// <summary>
@@ -62,15 +61,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             Colors.ARGB(0xFF, 0xFF, 0x00), // Bright Yellow
             Colors.ARGB(0xFF, 0xFF, 0xFF), // Bright White
         };
-
-        #endregion
-
-        #region Interrupts
-
-        /// <summary>
-        /// The number of T-States that the INT pin is simulated to be held low
-        /// </summary>
-        public int InterruptPeriod;
 
         #endregion
 
@@ -141,6 +131,23 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Signs whether the colour flash is ON or OFF
         /// </summary>
         protected bool flashOn = false;
+
+
+        protected int flashCounter;
+        public int FlashCounter
+        {
+            get { return flashCounter; }
+            set
+            {
+                flashCounter = value;
+            }
+        }
+
+
+        /// <summary>
+        /// Internal frame counter used for flasher operations
+        /// </summary>
+        protected int frameCounter = 0;
 
         /// <summary>
         /// Last 8-bit bitmap read from display memory
@@ -230,9 +237,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         protected int AttributeLength;
 
+        /// <summary>
+        /// Raised when ULA has finished painting the entire screen
+        /// </summary>
+        public bool needsPaint = false;
+
         #endregion
 
         #region Interrupt
+
+        /// <summary>
+        /// The number of T-States that the INT pin is simulated to be held low
+        /// </summary>
+        public int InterruptPeriod;
 
         /// <summary>
         /// The longest instruction cycle count
@@ -282,9 +299,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // interrupt should have already been raised and the cpu may or
                 // may not have caught it. The time has passed so revoke the signal
                 InterruptRevoked = true;
-                //CPU.IFF1 = true;
                 _machine.CPU.FlagI = false;
-                //CPU.NonMaskableInterruptPending = true;
                 
             }
 
@@ -295,34 +310,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 return;
             }
 
-            // if CPU is masking the interrupt do not raise it
-            //if (!CPU.IFF1)
-            //return;
-
             // Raise the interrupt
             InterruptRaised = true;
-            //CPU.IFF1 = false;
-            //CPU.IFF2 = false;
             _machine.CPU.FlagI = true;
-            //FrameCount++;
-            ULAUpdateStart();
 
+            // Signal the start of ULA processing
+            ULAUpdateStart();
         }
 
-        #endregion
-
-        #endregion
+        #endregion        
 
         #region Construction & Initialisation
 
         public ULABase(SpectrumBase machine)
         {
             _machine = machine;
-        }
-
-        public virtual void Init()
-        {
-            
         }
 
         #endregion
@@ -379,6 +381,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ULAByteCtr = 0;
             screenByteCtr = DisplayStart;
             lastTState = actualULAStart;
+            needsPaint = true;
+
+            flashCounter++;
+
+            if (flashCounter > 15)
+            {
+                flashOn = !flashOn;
+                flashCounter = 0;
+            }
         }
 
         /// <summary>
@@ -406,6 +417,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
         }
 
+        /// <summary>
+        /// Updates the screen buffer based on the number of T-States supplied
+        /// </summary>
+        /// <param name="_tstates"></param>
         public virtual void UpdateScreenBuffer(int _tstates)
         {
             if (_tstates < actualULAStart)
@@ -415,6 +430,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             else if (_tstates >= FrameLength)
             {
                 _tstates = FrameLength - 1;
+
+                needsPaint = true;
             }
 
             //the additional 1 tstate is required to get correct number of bytes to output in ircontention.sna
@@ -538,6 +555,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public int[] GetVideoBuffer()
         {
             return ScreenBuffer;
+        }
+
+        #endregion
+
+        #region IStatable
+
+        public void SyncState(Serializer ser)
+        {
+            ser.BeginSection("ULA");
+            ser.Sync("ScreenBuffer", ref ScreenBuffer, false);
+            ser.Sync("FrameLength", ref FrameLength);
+            ser.Sync("ClockSpeed", ref ClockSpeed);
+            ser.Sync("LateTiming", ref LateTiming);
+            ser.Sync("borderColour", ref borderColour);
+            ser.EndSection();
         }
 
         #endregion

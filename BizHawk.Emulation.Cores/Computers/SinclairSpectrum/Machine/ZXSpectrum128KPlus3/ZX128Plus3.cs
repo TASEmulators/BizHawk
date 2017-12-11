@@ -29,19 +29,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // init addressable memory from ROM and RAM banks
             ReInitMemory();
 
-            //DisplayLineTime = 132;
-            //VsyncNumerator = 3546900;
-
-            InitScreenConfig(borderType);
-            InitScreen();
-
-            ResetULACycle();
+            ULADevice = new ULA48(this);
 
             BuzzerDevice = new Buzzer(this);
-            BuzzerDevice.Init(44100, UlaFrameCycleCount);
+            BuzzerDevice.Init(44100, ULADevice.FrameLength);
 
             AYDevice = new AY38912();
-            AYDevice.Init(44100, UlaFrameCycleCount);
+            AYDevice.Init(44100, ULADevice.FrameLength);
 
             KeyboardDevice = new Keyboard48(this);
             KempstonDevice = new KempstonJoystick(this);

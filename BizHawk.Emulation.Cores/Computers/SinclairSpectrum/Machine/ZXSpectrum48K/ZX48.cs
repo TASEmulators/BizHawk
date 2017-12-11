@@ -25,13 +25,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             ULADevice = new ULA48(this);
 
-            InitScreenConfig(borderType);
-            InitScreen();
-
-            ResetULACycle();
-
             BuzzerDevice = new Buzzer(this);
-            BuzzerDevice.Init(44100, UlaFrameCycleCount);
+            BuzzerDevice.Init(44100, ULADevice.FrameLength);
 
             KeyboardDevice = new Keyboard48(this);
             KempstonDevice = new KempstonJoystick(this);

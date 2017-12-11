@@ -30,28 +30,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="port"></param>
         /// <param name="value"></param>
         public abstract void WritePort(ushort port, byte value);
-
-        /// <summary>
-        /// Apply I/O contention if necessary
-        /// </summary>
-        /// <param name="port"></param>
-        public virtual void ContendPort(ushort port)
-        {
-            var lowBit = (port & 0x0001) != 0;
-            var ulaHigh = (port & 0xc000) == 0x4000;
-            var cfc = CurrentFrameCycle;
-            if (cfc < 1)
-                cfc = 1;
-            
-            if (ulaHigh)
-            {
-                CPU.TotalExecutedCycles += GetContentionValue(cfc - 1);
-            }                
-            else
-            {
-                if (!lowBit)
-                    CPU.TotalExecutedCycles += GetContentionValue(cfc);
-            }
-        }
+        
     }
 }

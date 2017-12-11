@@ -307,7 +307,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     default:
                         break;
                 }
-            }            
+            }
+
+            // update ULA screen buffer if necessary
+            if ((addr & 49152) == 16384)
+                ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
         }
 
         /// <summary>
@@ -318,13 +322,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadMemory(ushort addr)
         {
+            if (ULADevice.IsContended(addr))
+                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
+            
             var data = ReadBus(addr);
-            if ((addr & 0xC000) == 0x4000)
-            {
-                // addr is in RAM not ROM - apply memory contention if neccessary
-                var delay = GetContentionValue(CurrentFrameCycle);
-                CPU.TotalExecutedCycles += delay;
-            }
             return data;
         }
 
@@ -336,18 +337,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WriteMemory(ushort addr, byte value)
         {
-            if (addr < 0x4000)
-            {
-                // Do nothing - we cannot write to ROM
-                return;
-            }
-            else if (addr < 0xC000)
-            {
-                // possible contended RAM
-                var delay = GetContentionValue(CurrentFrameCycle);
-                CPU.TotalExecutedCycles += delay;
-            }
-
+            // apply contention if necessary
+            if (ULADevice.IsContended(addr))
+                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
+            
             WriteBus(addr, value);
         }
 

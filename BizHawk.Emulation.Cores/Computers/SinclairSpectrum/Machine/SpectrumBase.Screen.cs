@@ -27,6 +27,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         copies or substantial portions of the Software.
      */
 
+        /*
+
     /// <summary>
     /// The abstract class that all emulated models will inherit from
     /// * Screen *
@@ -927,7 +929,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /*
         public int VsyncNumerator => NullVideo.DefaultVsyncNum;
         public int VsyncDenominator => NullVideo.DefaultVsyncDen;
-		*/
+		
         public int[] GetVideoBuffer()
         {
             /*
@@ -965,7 +967,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 case ZXSpectrum.BorderType.Medium:
                     break;
             }
-            */
+           
             return _frameBuffer;
             
         }
@@ -973,4 +975,5 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         #endregion
 
     }
+    */
 }

@@ -106,17 +106,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Helper function to refresh memory array (probably not the best way to do things)
         /// </summary>
         public abstract void ReInitMemory();
-
-        /// <summary>
-        /// Returns the memory contention value for the specified T-State (cycle)
-        /// The ZX Spectrum memory access is contended when the ULA is accessing the lower 16k of RAM
-        /// </summary>
-        /// <param name="Cycle"></param>
-        /// <returns></returns>
-        public virtual byte GetContentionValue(int cycle)
-        {
-            var val = _renderingCycleTable[cycle % UlaFrameCycleCount].ContentionDelay;
-            return val;
-        }
+        
     }
 }

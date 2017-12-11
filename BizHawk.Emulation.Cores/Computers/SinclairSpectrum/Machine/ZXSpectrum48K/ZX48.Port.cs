@@ -21,7 +21,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = (port & 0x0001) == 0;
 
-            ContendPort((ushort)port);
+            ULADevice.Contend(port);
 
             // Kempston Joystick
             if ((port & 0xe0) == 0 || (port & 0x20) == 0)
@@ -159,8 +159,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // Tape
                 TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
-
-                CPU.TotalExecutedCycles += 3;
+                
             }
         }
     }

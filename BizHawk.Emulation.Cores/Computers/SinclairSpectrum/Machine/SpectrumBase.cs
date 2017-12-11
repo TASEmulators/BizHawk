@@ -120,10 +120,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             BuzzerDevice.StartFrame();
             if (AYDevice != null)
                 AYDevice.StartFrame();
+
             PollInput();
-
-            var curr = CPU.TotalExecutedCycles;
-
+            
             while (CurrentFrameCycle <= ULADevice.FrameLength) // UlaFrameCycleCount)
             {
                 // check for interrupt
@@ -132,13 +131,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // run a single CPU instruction
                 CPU.ExecuteOne();
 
-                // run a rendering cycle according to the current CPU cycle count
-                /*
-                var lastCycle = CurrentFrameCycle;
-                RenderScreen(LastRenderedULACycle + 1, lastCycle);
-                LastRenderedULACycle = lastCycle;
-                */
-
                 // update AY
                 if (AYDevice != null)
                     AYDevice.UpdateSound(CurrentFrameCycle);
@@ -146,9 +138,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             
             // we have reached the end of a frame
             LastFrameStartCPUTick = CPU.TotalExecutedCycles - OverFlow;
-            LastRenderedULACycle = OverFlow;
 
-            ULADevice.UpdateScreenBuffer(ULADevice.FrameLength);
+            // paint the buffer if needed
+            if (ULADevice.needsPaint)
+                ULADevice.UpdateScreenBuffer(ULADevice.FrameLength);
 
             BuzzerDevice.EndFrame();            
 
@@ -157,16 +150,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             FrameCount++;
 
             // setup for next frame
-            OverFlow = CurrentFrameCycle % UlaFrameCycleCount;
             ULADevice.ResetInterrupt();
             FrameCompleted = true;
-
-            if (FrameCount % FlashToggleFrames == 0)
-            {
-                _flashPhase = !_flashPhase;
-            }
-
-            //RenderScreen(0, OverFlow);
         }
         
         /// <summary>
@@ -174,8 +159,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public virtual void HardReset()
         {            
-            ResetBorder();
-            ResetInterrupt();            
+            //ResetBorder();
+            ULADevice.ResetInterrupt();            
         }
 
         /// <summary>
@@ -183,8 +168,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public virtual void SoftReset()
         {
-            ResetBorder();
-            ResetInterrupt();
+            //ResetBorder();
+            ULADevice.ResetInterrupt();
         }
 
         public void SyncState(Serializer ser)
@@ -195,50 +180,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Sync("FrameCount", ref FrameCount);
             ser.Sync("_frameCycles", ref _frameCycles);
             ser.Sync("LastFrameStartCPUTick", ref LastFrameStartCPUTick);
-            ser.Sync("LastULAOutByte", ref LastULAOutByte);
-            ser.Sync("_flashPhase", ref _flashPhase);
-            ser.Sync("_frameBuffer", ref _frameBuffer, false);
-            ser.Sync("_flashOffColors", ref _flashOffColors, false);
-            ser.Sync("_flashOnColors", ref _flashOnColors, false);
-            ser.Sync("InterruptCycle", ref InterruptCycle);
-            ser.Sync("InterruptRaised", ref InterruptRaised);
-            ser.Sync("InterruptRevoked", ref InterruptRevoked);
-            ser.Sync("UlaFrameCycleCount", ref UlaFrameCycleCount);
-            ser.Sync("FirstScreenPixelCycle", ref FirstScreenPixelCycle);
-            ser.Sync("FirstDisplayPixelCycle", ref FirstDisplayPixelCycle);
-            ser.Sync("FirstPixelCycleInLine", ref FirstPixelCycleInLine);
-            ser.Sync("AttributeDataPrefetchTime", ref AttributeDataPrefetchTime);
-            ser.Sync("PixelDataPrefetchTime", ref PixelDataPrefetchTime);
-            ser.Sync("ScreenLineTime", ref ScreenLineTime);
-            ser.Sync("NonVisibleBorderRightTime", ref NonVisibleBorderRightTime);
-            ser.Sync("BorderRightTime", ref BorderRightTime);
-            ser.Sync("DisplayLineTime", ref DisplayLineTime);
-            ser.Sync("BorderLeftTime", ref BorderLeftTime);
-            ser.Sync("HorizontalBlankingTime", ref HorizontalBlankingTime);
-            ser.Sync("ScreenWidth", ref ScreenWidth);
-            ser.Sync("BorderRightPixels", ref BorderRightPixels);
-            ser.Sync("BorderLeftPixels", ref BorderLeftPixels);
-            ser.Sync("FirstDisplayLine", ref FirstDisplayLine);
-            ser.Sync("ScreenLines", ref ScreenLines);
-            ser.Sync("NonVisibleBorderBottomLines", ref NonVisibleBorderBottomLines);
-            ser.Sync("BorderBottomLines", ref BorderBottomLines);
-            ser.Sync("BorderTopLines", ref BorderTopLines);
-            ser.Sync("NonVisibleBorderTopLines", ref NonVisibleBorderTopLines);
-            ser.Sync("VerticalSyncLines", ref VerticalSyncLines);
-            ser.Sync("FlashToggleFrames", ref FlashToggleFrames);
-            ser.Sync("DisplayLines", ref DisplayLines);
-            ser.Sync("DisplayWidth", ref DisplayWidth);
-            ser.Sync("_pixelByte1", ref _pixelByte1);
-            ser.Sync("_pixelByte2", ref _pixelByte2);
-            ser.Sync("_attrByte1", ref _attrByte1);
-            ser.Sync("_attrByte2", ref _attrByte2);
-            ser.Sync("_xPos", ref _xPos);
-            ser.Sync("_yPos", ref _yPos);
-            ser.Sync("DisplayWidth", ref DisplayWidth);
-            ser.Sync("DisplayWidth", ref DisplayWidth);
-            ser.Sync("DisplayWidth", ref DisplayWidth);
-            ser.Sync("DisplayWidth", ref DisplayWidth);
-            ser.Sync("_borderColour", ref _borderColour);
+            ser.Sync("LastULAOutByte", ref LastULAOutByte);            
             ser.Sync("ROM0", ref ROM0, false);
             ser.Sync("ROM1", ref ROM1, false);
             ser.Sync("ROM2", ref ROM2, false);

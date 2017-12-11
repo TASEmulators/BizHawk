@@ -8,8 +8,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     public partial class ZX128 : SpectrumBase
     {
-        private int AYTStates = 0;
-
         /// <summary>
         /// Reads a byte of data from a specified port address
         /// </summary>
@@ -23,7 +21,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = (port & 0x0001) == 0;
 
-            ContendPort((ushort)port);
+            ULADevice.Contend(port);
+            CPU.TotalExecutedCycles++;
 
             // Kempston Joystick
             if ((port & 0xe0) == 0 || (port & 0x20) == 0)
@@ -124,9 +123,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // if unused port the floating memory bus should be returned (still todo)
             }
-
-            CPU.TotalExecutedCycles += 3;
-
+            
             return (byte)result;
         }
 
@@ -170,13 +167,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = (port & 0x01) == 0;
 
-            ContendPort(port);
+            ULADevice.Contend(port);
 
             // Only even addresses address the ULA
             if (lowBitReset)
             {
                 // store the last OUT byte
                 LastULAOutByte = value;
+                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
 
                 /*
                     Bit   7   6   5   4   3   2   1   0
@@ -186,13 +184,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 */
 
                 // Border - LSB 3 bits hold the border colour
-                BorderColour = value & BORDER_BIT;
+                if (ULADevice.borderColour != (value & BORDER_BIT))
+                    ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
+
+                ULADevice.borderColour = value & BORDER_BIT;
 
                 // Buzzer
                 BuzzerDevice.ProcessPulseValue(false, (value & EAR_BIT) != 0);
 
                 // Tape
                 TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
+                
             }
 
             // Active AY Register
