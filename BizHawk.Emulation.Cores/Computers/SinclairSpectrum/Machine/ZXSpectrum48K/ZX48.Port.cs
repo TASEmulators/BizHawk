@@ -30,6 +30,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             else if (lowBitReset)
             {
+                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
+
                 // Even I/O address so get input
                 // The high byte indicates which half-row of keys is being polled
                 /*
@@ -115,7 +117,27 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // Kemptson Mouse
 
 
-                // if unused port the floating memory bus should be returned (still todo)
+                // if unused port the floating memory bus should be returned
+
+                // Floating bus is read on the previous cycle
+                int _tStates = CurrentFrameCycle - 1;
+
+                // if we are on the top or bottom border return 0xff
+                if ((_tStates < ULADevice.contentionStartPeriod) || (_tStates > ULADevice.contentionEndPeriod))
+                {
+                    result = 0xff;
+                }
+                else
+                {
+                    if (ULADevice.floatingBusTable[_tStates] < 0)
+                    {
+                        result = 0xff;
+                    }
+                    else
+                    {
+                        result = ReadBus((ushort)ULADevice.floatingBusTable[_tStates]);
+                    }
+                }
             }
 
             return (byte)result;

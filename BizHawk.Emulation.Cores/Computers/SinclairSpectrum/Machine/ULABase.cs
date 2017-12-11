@@ -69,11 +69,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// T-State at which to start applying contention
         /// </summary>
-        protected int contentionStartPeriod;
+        public int contentionStartPeriod;
         /// <summary>
         /// T-State at which to end applying contention
         /// </summary>
-        protected int contentionEndPeriod;
+        public int contentionEndPeriod;
         /// <summary>
         /// T-State memory contention delay mapping
         /// </summary>
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Table that stores T-State to screen/attribute address values
         /// </summary>
-        protected short[] floatingBusTable;
+        public short[] floatingBusTable;
         /// <summary>
         /// Cycle at which the last render update took place
         /// </summary>
