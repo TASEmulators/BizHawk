@@ -43,10 +43,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             attr = new short[DisplayLength]; //6144 bytes of display memory will be mapped
 
-            BufferWidth = ScreenWidth + BorderLeftWidth + BorderRightWidth;
-            BufferHeight = ScreenHeight + BorderTopHeight + BorderBottomHeight;
-            VirtualHeight = BufferHeight;
-            VirtualWidth = BufferWidth;
+            SetupScreenSize();
 
             Reset();
         }

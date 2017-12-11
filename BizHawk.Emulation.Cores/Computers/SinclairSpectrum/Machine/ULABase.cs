@@ -325,6 +325,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public ULABase(SpectrumBase machine)
         {
             _machine = machine;
+            borderType = _machine.Spectrum.SyncSettings.BorderType;
         }
 
         #endregion
@@ -554,8 +555,157 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public int[] GetVideoBuffer()
         {
+            switch (borderType)
+            {
+                // Full side borders, no top or bottom border (giving *almost* 16:9 output)
+                case ZXSpectrum.BorderType.Widescreen:
+                    // we are cropping out the top and bottom borders
+                    var startPixelsToCrop = ScanLineWidth * BorderTopHeight;
+                    var endPixelsToCrop = ScanLineWidth * BorderBottomHeight;
+                    int index = 0;
+                    for (int i = startPixelsToCrop; i < ScreenBuffer.Length - endPixelsToCrop; i++)
+                    {
+                        croppedBuffer[index++] = ScreenBuffer[i];
+                    }
+                    return croppedBuffer;
+
+                // The full spectrum border
+                case ZXSpectrum.BorderType.Full:
+                    return ScreenBuffer;
+
+                case ZXSpectrum.BorderType.Medium:
+                    // all border sizes now 24
+                    var lR = BorderLeftWidth - 24;
+                    var rR = BorderRightWidth - 24;
+                    var tR = BorderTopHeight - 24;
+                    var bR = BorderBottomHeight - 24;
+                    var startP = ScanLineWidth * tR;
+                    var endP = ScanLineWidth * bR;
+
+                    int index2 = 0;
+                    // line by line
+                    for (int i = startP; i < ScreenBuffer.Length - endP; i += ScreenWidth + BorderLeftWidth + BorderRightWidth)
+                    {
+                        // each pixel in each line
+                        for (int p = lR; p < ScreenWidth + BorderLeftWidth + BorderRightWidth - rR; p++)
+                        {
+                            if (index2 == croppedBuffer.Length)
+                                break;
+                            croppedBuffer[index2++] = ScreenBuffer[i + p];
+                        }
+                    }
+
+                    return croppedBuffer;
+
+                case ZXSpectrum.BorderType.Small:
+                    // all border sizes now 24
+                    var lR_ = BorderLeftWidth - 10;
+                    var rR_ = BorderRightWidth - 10;
+                    var tR_ = BorderTopHeight - 10;
+                    var bR_ = BorderBottomHeight - 10;
+                    var startP_ = ScanLineWidth * tR_;
+                    var endP_ = ScanLineWidth * bR_;
+
+                    int index2_ = 0;
+                    // line by line
+                    for (int i = startP_; i < ScreenBuffer.Length - endP_; i += ScreenWidth + BorderLeftWidth + BorderRightWidth)
+                    {
+                        // each pixel in each line
+                        for (int p = lR_; p < ScreenWidth + BorderLeftWidth + BorderRightWidth - rR_; p++)
+                        {
+                            if (index2_ == croppedBuffer.Length)
+                                break;
+                            croppedBuffer[index2_++] = ScreenBuffer[i + p];
+                        }
+                    }
+
+                    return croppedBuffer;
+
+                case ZXSpectrum.BorderType.None:
+                    // all border sizes now 24
+                    var lR__ = BorderLeftWidth;
+                    var rR__ = BorderRightWidth;
+                    var tR__ = BorderTopHeight;
+                    var bR__ = BorderBottomHeight;
+                    var startP__ = ScanLineWidth * tR__;
+                    var endP__ = ScanLineWidth * bR__;
+
+                    int index2__ = 0;
+                    // line by line
+                    for (int i = startP__; i < ScreenBuffer.Length - endP__; i += ScreenWidth + BorderLeftWidth + BorderRightWidth)
+                    {
+                        // each pixel in each line
+                        for (int p = lR__; p < ScreenWidth + BorderLeftWidth + BorderRightWidth - rR__; p++)
+                        {
+                            if (index2__ == croppedBuffer.Length)
+                                break;
+                            croppedBuffer[index2__++] = ScreenBuffer[i + p];
+                        }
+                    }
+
+                    return croppedBuffer;
+            }
+
             return ScreenBuffer;
         }
+
+        protected void SetupScreenSize()
+        {
+            switch (borderType)
+            {
+                case ZXSpectrum.BorderType.Full:
+                    BufferWidth = ScreenWidth + BorderLeftWidth + BorderRightWidth;
+                    BufferHeight = ScreenHeight + BorderTopHeight + BorderBottomHeight;
+                    VirtualHeight = BufferHeight;
+                    VirtualWidth = BufferWidth;
+                    ScreenBuffer = new int[BufferWidth * BufferHeight];
+                    break;
+
+                case ZXSpectrum.BorderType.Widescreen:
+                    BufferWidth = ScreenWidth + BorderLeftWidth + BorderRightWidth;
+                    BufferHeight = ScreenHeight;
+                    VirtualHeight = BufferHeight;
+                    VirtualWidth = BufferWidth;
+                    croppedBuffer = new int[BufferWidth * BufferHeight];
+                    break;
+
+                case ZXSpectrum.BorderType.Medium:
+                    BufferWidth = ScreenWidth + (24) + (24);
+                    BufferHeight = ScreenHeight + (24) + (24);
+                    VirtualHeight = BufferHeight;
+                    VirtualWidth = BufferWidth;
+                    croppedBuffer = new int[BufferWidth * BufferHeight];
+                    break;
+
+                case ZXSpectrum.BorderType.Small:
+                    BufferWidth = ScreenWidth + (10) + (10);
+                    BufferHeight = ScreenHeight + (10) + (10);
+                    VirtualHeight = BufferHeight;
+                    VirtualWidth = BufferWidth;
+                    croppedBuffer = new int[BufferWidth * BufferHeight];
+                    break;
+
+                case ZXSpectrum.BorderType.None:
+                    BufferWidth = ScreenWidth;
+                    BufferHeight = ScreenHeight;
+                    VirtualHeight = BufferHeight;
+                    VirtualWidth = BufferWidth;
+                    croppedBuffer = new int[BufferWidth * BufferHeight];
+                    break;
+            }
+        }
+
+        protected int[] croppedBuffer;
+
+        private ZXSpectrum.BorderType _borderType;
+
+        public ZXSpectrum.BorderType borderType
+        {
+            get { return _borderType; }
+            set { _borderType = value; }
+        }
+
+
 
         #endregion
 

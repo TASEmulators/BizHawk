@@ -109,6 +109,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             Full,
 
             /// <summary>
+            /// All borders 24px
+            /// </summary>
+            Medium,
+
+            /// <summary>
+            /// All borders 10px
+            /// </summary>
+            Small,
+
+            /// <summary>
+            /// No border at all
+            /// </summary>
+            None,
+
+            /// <summary>
             /// Top and bottom border removed so that the result is *almost* 16:9
             /// </summary>
             Widescreen,

@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // init addressable memory from ROM and RAM banks
             ReInitMemory();
 
-            ULADevice = new ULA48(this);
+            ULADevice = new ULA128(this);
 
             BuzzerDevice = new Buzzer(this);
             BuzzerDevice.Init(44100, ULADevice.FrameLength);
