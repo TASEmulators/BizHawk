@@ -4,19 +4,22 @@ At this moment this is still *very* experimental and needs a lot more work.
 
 ### Implemented and sorta working
 * IEmulator
-* ZX Spectrum 48k model
+* ZX Spectrum 48k, 128k & Plus2 models
 * ULA video output (implementing IVideoProvider)
 * ULA Mode 1 VBLANK interrupt generation
 * IM2 Interrupts and DataBus implementation (thanks Aloysha)
 * Beeper/Buzzer output (implementing ISoundProvider)
+* AY-3-8912 sound chip implementation
 * Keyboard input (implementing IInputPollable)
 * Kempston joystick (mapped to J1 currently)
 * Tape device that will load spectrum games in realtime (*.tzx and *.tap)
 * IStatable (although this is not currently working/implemented properly during tape load operations)
+* ISettable core settings
 * IMemoryDomains (I think)
 
-### Some progress
-* ISettable - There are some Settings and SyncSettings instantiated, although they are not really used and I haven't yet figured out how to wire these up to the front-end yet
+### Work in progress
+* Exact emulator timings
+* Floating memory bus emulation
 
 ### Not working
 * IDebuggable
