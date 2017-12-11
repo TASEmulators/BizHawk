@@ -22,7 +22,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             CPU = cpu;
 
             ReInitMemory();
-            
+
+            ULADevice = new ULA48(this);
+
             InitScreenConfig(borderType);
             InitScreen();
 

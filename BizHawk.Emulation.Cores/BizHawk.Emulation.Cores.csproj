@@ -271,7 +271,9 @@
     <Compile Include="Computers\SinclairSpectrum\Hardware\TapeBlockSetPlayer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\TapeDataBlockPlayer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\TapeFilePlayer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ULABase.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum16K\ZX16.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.ULA.cs" />
     <Compile Include="Computers\SinclairSpectrum\SoundProviderMixer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\MachineType.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.cs" />

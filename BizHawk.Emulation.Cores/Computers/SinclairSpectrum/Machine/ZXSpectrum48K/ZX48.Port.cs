@@ -132,13 +132,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = (port & 0x01) == 0;
 
-            ContendPort(port);
+            ULADevice.Contend(port);
 
             // Only even addresses address the ULA
             if (lowBitReset)
             {
                 // store the last OUT byte
                 LastULAOutByte = value;
+                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
 
                 /*
                     Bit   7   6   5   4   3   2   1   0
@@ -148,13 +149,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 */
 
                 // Border - LSB 3 bits hold the border colour
-                BorderColour = value & BORDER_BIT;
+                if (ULADevice.borderColour != (value & BORDER_BIT))
+                    ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
+
+                ULADevice.borderColour = value & BORDER_BIT;
 
                 // Buzzer
                 BuzzerDevice.ProcessPulseValue(false, (value & EAR_BIT) != 0);
 
                 // Tape
                 TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
+
+                CPU.TotalExecutedCycles += 3;
             }
         }
     }

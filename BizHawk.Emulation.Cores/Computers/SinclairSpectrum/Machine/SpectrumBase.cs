@@ -37,6 +37,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public RomData RomData { get; set; }
 
         /// <summary>
+        /// The emulated ULA device
+        /// </summary>
+        public ULABase ULADevice { get; set; }
+
+        /// <summary>
         /// The spectrum buzzer/beeper
         /// </summary>
         public Buzzer BuzzerDevice { get; set; }
@@ -119,18 +124,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             var curr = CPU.TotalExecutedCycles;
 
-            while (CurrentFrameCycle <= UlaFrameCycleCount)
+            while (CurrentFrameCycle <= ULADevice.FrameLength) // UlaFrameCycleCount)
             {
                 // check for interrupt
-                CheckForInterrupt(CurrentFrameCycle);
+                ULADevice.CheckForInterrupt(CurrentFrameCycle);
 
                 // run a single CPU instruction
                 CPU.ExecuteOne();
 
                 // run a rendering cycle according to the current CPU cycle count
+                /*
                 var lastCycle = CurrentFrameCycle;
                 RenderScreen(LastRenderedULACycle + 1, lastCycle);
                 LastRenderedULACycle = lastCycle;
+                */
 
                 // update AY
                 if (AYDevice != null)
@@ -141,6 +148,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             LastFrameStartCPUTick = CPU.TotalExecutedCycles - OverFlow;
             LastRenderedULACycle = OverFlow;
 
+            ULADevice.UpdateScreenBuffer(ULADevice.FrameLength);
+
             BuzzerDevice.EndFrame();            
 
             TapeDevice.CPUFrameCompleted();
@@ -149,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // setup for next frame
             OverFlow = CurrentFrameCycle % UlaFrameCycleCount;
-            ResetInterrupt();
+            ULADevice.ResetInterrupt();
             FrameCompleted = true;
 
             if (FrameCount % FlashToggleFrames == 0)
@@ -157,7 +166,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 _flashPhase = !_flashPhase;
             }
 
-            RenderScreen(0, OverFlow);
+            //RenderScreen(0, OverFlow);
         }
         
         /// <summary>

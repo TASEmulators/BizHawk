@@ -63,6 +63,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             var bank = Memory[divisor];
             var index = addr % 0x4000;
             bank[index] = value;
+            
+            // update ULA screen buffer if necessary
+            if ((addr & 49152) == 16384)
+                ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
         }
 
         /// <summary>
@@ -96,13 +100,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // Do nothing - we cannot write to ROM
                 return;
             }
+            /*
             else if (addr < 0xC000)
             {
                 // possible contended RAM
                 var delay = GetContentionValue(CurrentFrameCycle);
                 CPU.TotalExecutedCycles += delay;
             }
+            */
 
+            // apply contention if necessry
+            if (ULADevice.IsContended(addr))
+                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
+           
             WriteBus(addr, value);
         }
 
