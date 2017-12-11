@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         // 128 and up only
         protected int ROMPaged = 0;
         protected bool SHADOWPaged;
-        protected int RAMPaged;
+        public int RAMPaged;
         protected bool PagingDisabled;
 
         // +3/+2A only

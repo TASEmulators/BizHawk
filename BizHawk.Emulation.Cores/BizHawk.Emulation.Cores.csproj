@@ -272,6 +272,7 @@
     <Compile Include="Computers\SinclairSpectrum\Hardware\TapeDataBlockPlayer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\TapeFilePlayer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ULABase.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.ULA.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum16K\ZX16.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.ULA.cs" />
     <Compile Include="Computers\SinclairSpectrum\SoundProviderMixer.cs" />
@@ -288,7 +289,6 @@
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Memory.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Port.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Screen.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Memory.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\TAP\TapDataBlock.cs" />
@@ -1390,7 +1390,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Screen.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Keyboard.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Port.cs" />
     <None Include="Computers\SinclairSpectrum\readme.md" />

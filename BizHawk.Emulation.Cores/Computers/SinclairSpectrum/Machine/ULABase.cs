@@ -514,7 +514,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public int BackgroundColor
         {
-            get { return ULAPalette[borderColour]; }
+            get { return ULAPalette[7]; } //ULAPalette[borderColour]; }
         }
 
         public int VirtualWidth
