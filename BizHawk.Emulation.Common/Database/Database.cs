@@ -308,6 +308,7 @@ namespace BizHawk.Emulation.Common
                     break;
 
                 case ".TAP":
+                    
                     byte[] head = File.ReadAllBytes(fileName).Take(8).ToArray();
                     if (System.Text.Encoding.Default.GetString(head).Contains("C64-TAPE"))
                         game.System = "C64";

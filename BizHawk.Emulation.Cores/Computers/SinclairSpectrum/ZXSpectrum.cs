@@ -1,6 +1,8 @@
-﻿using BizHawk.Emulation.Common;
+﻿using BizHawk.Common;
+using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Emulation.Cores.Properties;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -121,6 +123,32 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 return rom;
             }
 
+            // Amstrad licensed ROMs are free to distribute and shipped with BizHawk
+            byte[] embeddedRom = new byte[length];
+            bool embeddedFound = true;
+            switch (names.FirstOrDefault())
+            {
+                case "48ROM":
+                    embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_48_ROM));
+                    break;
+                case "128ROM":
+                    embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_128_ROM));
+                    break;
+                case "PLUS2ROM":
+                    embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus2_rom));
+                    break;
+                case "PLUS3ROM":
+                    embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus3_rom));
+                    break;
+                default:
+                    embeddedFound = false;
+                    break;
+            }
+
+            if (embeddedFound)
+                return embeddedRom;
+
+            // Embedded ROM not found, maybe this is a peripheral ROM?
             var result = names.Select(n => CoreComm.CoreFileProvider.GetFirmware("ZXSpectrum", n, false)).FirstOrDefault(b => b != null && b.Length == length);
             if (result == null)
             {

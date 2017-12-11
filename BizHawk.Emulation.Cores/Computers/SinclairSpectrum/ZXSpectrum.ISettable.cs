@@ -116,6 +116,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         /// <summary>
         /// The speed at which the tape is loaded
+        /// NOT IN USE YET
         /// </summary>
         public enum TapeLoadSpeed
         {

@@ -89,5 +89,45 @@ namespace BizHawk.Emulation.Cores.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ZX_128_ROM {
+            get {
+                object obj = ResourceManager.GetObject("ZX_128_ROM", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ZX_48_ROM {
+            get {
+                object obj = ResourceManager.GetObject("ZX_48_ROM", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ZX_plus2_rom {
+            get {
+                object obj = ResourceManager.GetObject("ZX_plus2_rom", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ZX_plus3_rom {
+            get {
+                object obj = ResourceManager.GetObject("ZX_plus3_rom", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

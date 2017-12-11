@@ -1399,8 +1399,12 @@
     <None Include="Consoles\Nintendo\NES\Docs\BoardTable.xlsx" />
     <None Include="Consoles\Nintendo\NES\Docs\MapperCompatibilityList.url" />
     <None Include="Consoles\Nintendo\NES\Docs\nesasm.pdf" />
+    <None Include="Resources\128.ROM.gz" />
+    <None Include="Resources\48.ROM.gz" />
     <None Include="Resources\cgb_boot.bin.gz" />
     <None Include="Resources\dmg_boot.bin.gz" />
+    <None Include="Resources\plus2.rom.gz" />
+    <None Include="Resources\plus3.rom.gz" />
     <None Include="Resources\sgb-cart-present.spc.gz" />
   </ItemGroup>
   <ItemGroup />
