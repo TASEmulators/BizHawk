@@ -27,11 +27,14 @@ namespace BizHawk.Client.EmuHawk
 		public bool luaConsole = false;
 		public int socket_port = 9999;
 		public string socket_ip = null;
+		public string mmf_filename = null;
+		public string URL_get = null;
+		public string URL_post = null;
 
-		public void parseArguments(string[] args)
-			
+		public void ParseArguments(string[] args)
+
 		{
-			for (int i = 0; i<args.Length; i++)
+			for (int i = 0; i < args.Length; i++)
 			{
 				// For some reason sometimes visual studio will pass this to us on the commandline. it makes no sense.
 				if (args[i] == ">")
@@ -62,8 +65,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (arg.StartsWith("--dump-frames="))
 				{
-					var list = arg.Substring(arg.IndexOf('=') + 1);
-					var items = list.Split(',');
+					string list = arg.Substring(arg.IndexOf('=') + 1);
+					string[] items = list.Split(',');
 					_currAviWriterFrameList = new HashSet<int>();
 					foreach (string item in items)
 					{
@@ -110,10 +113,54 @@ namespace BizHawk.Client.EmuHawk
 				{
 					socket_ip = arg.Substring(arg.IndexOf('=') + 1);
 				}
+				else if (arg.StartsWith("--mmf="))
+				{
+					mmf_filename = args[i].Substring(args[i].IndexOf('=') + 1);
+				}
+				else if (arg.StartsWith("--url_get="))
+				{
+					URL_get = args[i].Substring(args[i].IndexOf('=') + 1);
+				}
+				else if (arg.StartsWith("--url_post="))
+				{
+					URL_post = args[i].Substring(args[i].IndexOf('=') + 1);
+				}
 				else
 				{
 					cmdRom = args[i];
 				}
+			}
+			////initialize HTTP communication
+			if (URL_get != null || URL_post != null)
+			{
+				if (URL_get != null)
+				{
+					GlobalWin.httpCommunication.initialized = true;
+					GlobalWin.httpCommunication.SetGetUrl(URL_get);
+				}
+				if (URL_post != null)
+				{
+					GlobalWin.httpCommunication.initialized = true;
+					GlobalWin.httpCommunication.SetPostUrl(URL_post);
+				}
+			}
+			//inititalize socket server
+			if (socket_ip != null && socket_port > -1)
+			{
+				GlobalWin.socketServer.initialized = true;
+				GlobalWin.socketServer.SetIp(socket_ip, socket_port);
+			}
+			else if (socket_ip != null)
+			{
+				GlobalWin.socketServer.initialized = true;
+				GlobalWin.socketServer.SetIp(socket_ip);
+			}
+			
+			//initialize mapped memory files
+			if (mmf_filename != null)
+			{
+				GlobalWin.memoryMappedFiles.initialized = true;
+				GlobalWin.memoryMappedFiles.SetFilename(mmf_filename);
 			}
 		}
 	}
