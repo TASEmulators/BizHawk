@@ -41,34 +41,34 @@ namespace BizHawk.Client.EmuHawk
 			return list.ToString();
 		}
 
-		[LuaMethod("SocketServerScreenShot", "sends a screenshot to the Socket server")]
+		[LuaMethod("socketServerScreenShot", "sends a screenshot to the Socket server")]
 		public string SocketServerScreenShot()
 		{
 			return GlobalWin.socketServer.SendScreenshot();
 		}
-		[LuaMethod("SocketServerScreenShotResponse", "sends a screenshot to the Socket server and retrieves the response")]
+		[LuaMethod("socketServerScreenShotResponse", "sends a screenshot to the Socket server and retrieves the response")]
 		public string SocketServerScreenShotResponse()
 		{
 			return GlobalWin.socketServer.SendScreenshot(1000).ToString();
 		}
 
-		[LuaMethod("SocketServerSend", "sends a string to the Socket server")]
+		[LuaMethod("socketServerSend", "sends a string to the Socket server")]
 		public string SocketServerSend(string SendString)
 		{
 			return "Sent : " + GlobalWin.socketServer.SendString(SendString).ToString() + " bytes";
 		}
-		[LuaMethod("SocketServerResponse", "receives a message from the Socket server")]
+		[LuaMethod("socketServerResponse", "receives a message from the Socket server")]
 		public string SocketServerResponse()
 		{
 			return GlobalWin.socketServer.ReceiveMessage();
 		}
 
-		[LuaMethod("SocketServerSuccessful", "returns the status of the last Socket server action")]
+		[LuaMethod("socketServerSuccessful", "returns the status of the last Socket server action")]
 		public bool SocketServerSuccessful()
 		{
 			return GlobalWin.socketServer.Successful();
 		}
-		[LuaMethod("SocketServerSetTimeout", "sets the timeout in milliseconds for receiving messages")]
+		[LuaMethod("socketServerSetTimeout", "sets the timeout in milliseconds for receiving messages")]
 		public void SocketServerSetTimeout(int timeout)
 		{
 			GlobalWin.socketServer.SetTimeout(timeout);

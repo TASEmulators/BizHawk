@@ -9,8 +9,8 @@ function get_baseline()
 	t = os.clock()
 
 	while i > 0 do
-		emu.frameadvance();
-		i = i - 1;
+		emu.frameadvance()
+		i = i - 1
 	end
 	baseline = os.clock() - t
 	print('Baseline:            ' .. round(baseline, 3) .. " secs")
@@ -22,9 +22,9 @@ function test_mmf()
 	client.reboot_core()
 	t = os.clock()
 	while i > 0 do
-		emu.frameadvance();
+		emu.frameadvance()
 		comm.mmfScreenshot()
-		i = i - 1;
+		i = i - 1
 	end
 	print('Memory mapped files: ' .. round((os.clock() - t - baseline), 3) .. " secs")
 end
@@ -38,7 +38,7 @@ function test_http()
 	while i > 0 do
 		emu.frameadvance()
 		comm.httpTestGet()
-		i = i - 1;
+		i = i - 1
 	end
 	print('HTTP get:            ' ..  round((os.clock() - t - baseline), 3) .. " secs")
 	
@@ -49,7 +49,7 @@ function test_http()
 	while i > 0 do
 		emu.frameadvance()
 		comm.httpPostScreenshot()
-		i = i - 1;
+		i = i - 1
 	end
 	print('HTTP post:           ' ..  round((os.clock() - t - baseline), 3) .. " secs")
 
@@ -62,8 +62,8 @@ function test_socket()
 	t = os.clock()
 	while i > 0 do
 		emu.frameadvance()
-		comm.SocketServerScreenShot()
-		i = i - 1;
+		comm.socketServerScreenShot()
+		i = i - 1
 	end
 	print('Socket server:       ' ..  round((os.clock() - t - baseline), 3) .. " secs")
 end
@@ -71,23 +71,23 @@ end
 function test_socketresponse()
 	best_time = -100
 	timeouts = {1, 2, 3, 4, 5, 10, 20, 25, 50, 100, 250, 500, 1000}
-	comm.SocketServerSetTimeout(1000);
-	resp = comm.SocketServerScreenShotResponse()
+	comm.socketServerSetTimeout(1000)
+	resp = comm.socketServerScreenShotResponse()
 	for t, timeout in ipairs(timeouts) do
-		comm.SocketServerSetTimeout(timeout);
+		comm.socketServerSetTimeout(timeout)
 		client.reboot_core()
 		print("Trying to find minimal timeout for Socket server")
 		i = 100
 		t = os.clock()
 		while i > 0 do
 			emu.frameadvance()
-			resp = comm.SocketServerScreenShotResponse()
+			resp = comm.socketServerScreenShotResponse()
 			if resp ~= 'ack' then
 				i = -100
 				print(resp)
 				print("Failed to a get a proper response")
 			end
-			i = i - 1;
+			i = i - 1
 		end
 		if i > -100 then
 			print("Best timeout: " .. timeout .. " msecs")
@@ -113,7 +113,7 @@ function test_http_response()
 			i = 0
 			err = true
 		end
-		i = i - 1;
+		i = i - 1
 	end
 	if not err then
 		print("HTTP GET looks fine: No errors occurred")
@@ -121,7 +121,7 @@ function test_http_response()
 	
 	client.reboot_core()
 	i = 100
-	err = false;
+	err = false
 	while i > 0 do
 		emu.frameadvance()
 		resp = comm.httpPostScreenshot()
@@ -131,7 +131,7 @@ function test_http_response()
 			i = 0
 			err = true
 		end
-		i = i - 1;
+		i = i - 1
 	end
 	if not err then
 		print("HTTP POST looks fine: No errors occurred")
