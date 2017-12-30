@@ -615,8 +615,8 @@ int Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, const bo
 			break;
 		}
 		
-		//cgb = header[0x0143] >> 7 & (1 ^ forceDmg);
-		cgb = forceDmg ? false : true;
+		cgb = header[0x0143] >> 7 & (1 ^ forceDmg);
+		//cgb = forceDmg ? false : true;
 		std::printf("cgb: %d\n", cgb);
 	}
 
