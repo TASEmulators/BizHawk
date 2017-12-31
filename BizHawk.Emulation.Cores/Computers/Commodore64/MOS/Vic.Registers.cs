@@ -99,7 +99,7 @@
 					return 0x01 | ((_pointerVm & 0x3C00) >> 6) |
 							  ((_pointerCb & 0x7) << 1);
 				case 0x19:
-					return 0x70 | (_intRaster ? 0x01 : 0x00) |
+					return 0x70 | (_rasterInterruptTriggered ? 0x01 : 0x00) |
 							  (_intSpriteDataCollision ? 0x02 : 0x00) |
 							  (_intSpriteCollision ? 0x04 : 0x00) |
 							  (_intLightPen ? 0x08 : 0x00) |

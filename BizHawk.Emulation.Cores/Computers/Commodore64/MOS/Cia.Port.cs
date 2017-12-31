@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				_ret = ~ddrb & 0xFF;
 				_tst = (pra | ~ddra) & GetJoystick2();
 				_ret &= GetKeyboardRows(_tst);
-				return (_ret | (prb & ddrb)) & GetJoystick1();
+				return (_ret | (prb & ddrb)) & (GetJoystick1() | (~pra & 0x1F));
 			}
 		}
 
