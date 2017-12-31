@@ -138,12 +138,13 @@
 
 					// we want to only flush the filter when the filter is actually changed, that way
 					// the FFT will not be impacted by small sample sizes from other changes
-					if (addr == 15 || addr == 16 || addr==17)
+					if ((addr == 0x15) || (addr == 0x16) || (addr == 0x17))
 					{
 						Flush(true);
 					}
-					else if (addr==18)
+					else if (addr == 0x18)
 					{
+						
 						// note: we only want to flush the filter here if the filter components are changing
 						bool temp1 = (val & 0x10) != 0;
 						bool temp2 = (val & 0x20) != 0;

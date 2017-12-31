@@ -49,8 +49,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 			{
 				_mixer = _outputBuffer_not_filtered[i] + _outputBuffer_filtered[i];
 				_mixer = _mixer >> 7;
-				_mixer = (_mixer * _volume) >> 4;
-				_mixer -= _volume << 8;
+				_mixer = (_mixer * _volume_at_sample_time[i]) >> 4;
+				_mixer -= _volume_at_sample_time[i] << 8;
 
 				if (_mixer > 0x7FFF)
 				{
