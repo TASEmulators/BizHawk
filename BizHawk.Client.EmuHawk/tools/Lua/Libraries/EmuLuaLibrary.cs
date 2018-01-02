@@ -18,7 +18,6 @@ namespace BizHawk.Client.EmuHawk
 		public EmuLuaLibrary()
 		{
 			Docs = new LuaDocumentation();
-			//if(NLua.Lua.WhichLua == "NLua")
 			_lua["keepalives"] = _lua.NewTable();
 		}
 
@@ -178,8 +177,6 @@ namespace BizHawk.Client.EmuHawk
 			var content = File.ReadAllText(file);
 			var main = lua.LoadString(content, "main");
 			lua.Push(main); // push main function on to stack for subsequent resuming
-			//if (NLua.Lua.WhichLua == "NLua")
-			{
 			_lua.GetTable("keepalives")[lua] = 1;
 			_lua.Pop();
 			return lua;
@@ -189,7 +186,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_currThread = _lua.NewThread();
 			_currThread.DoString(command);
-			//if (NLua.Lua.WhichLua == "NLua")
 			_lua.Pop();
 		}
 
