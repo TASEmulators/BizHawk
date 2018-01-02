@@ -67,7 +67,7 @@ namespace BizHawk.Bizware.BizwareGL
 				x += bfc.XAdvance;
 			}
 
-			return new sd.SizeF(ox, y);
+			return new sd.SizeF(Math.Max(x, ox), y);
 		}
 
 		public void RenderString(IGuiRenderer renderer, float x, float y, string str)
