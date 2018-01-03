@@ -3004,11 +3004,6 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.CheatList.Pulse();
 
-				if (!PauseAvi)
-				{
-					AvFrameAdvance();
-				}
-
 				if (IsLagFrame && Global.Config.AutofireLagFrames)
 				{
 					Global.AutoFireController.IncrementStarts();
@@ -3030,6 +3025,11 @@ namespace BizHawk.Client.EmuHawk
 				else
 				{
 					UpdateToolsAfter(SuppressLua);
+				}
+
+				if (!PauseAvi)
+				{
+					AvFrameAdvance();
 				}
 
 				if (GlobalWin.Tools.IsLoaded<TAStudio>() &&
