@@ -154,6 +154,18 @@ namespace BizHawk.Client.EmuHawk
 			return GlobalWin.MainForm.EmulatorPaused;
 		}
 
+		[LuaMethodAttributes("isturbo", "Returns true if emulator is in turbo mode, otherwise, false")]
+		public static bool IsTurbo()
+		{
+			return GlobalWin.MainForm.IsTurboing;
+		}
+
+		[LuaMethodAttributes("isseeking", "Returns true if emulator is seeking, otherwise, false")]
+		public static bool IsSeeking()
+		{
+			return GlobalWin.MainForm.IsSeeking;
+		}
+
 		[LuaMethodAttributes("opencheats", "opens the Cheats dialog")]
 		public static void OpenCheats()
 		{

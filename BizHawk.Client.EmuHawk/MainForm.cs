@@ -665,8 +665,8 @@ namespace BizHawk.Client.EmuHawk
 		public bool IsSeeking => PauseOnFrame.HasValue;
 
 		private bool IsTurboSeeking => PauseOnFrame.HasValue && Global.Config.TurboSeek;
-		
-		private bool IsTurboing => Global.ClientControls["Turbo"] || IsTurboSeeking;
+
+		public bool IsTurboing => Global.ClientControls["Turbo"] || IsTurboSeeking;
 
 		#endregion
 
