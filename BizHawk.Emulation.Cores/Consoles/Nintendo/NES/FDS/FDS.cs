@@ -360,7 +360,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					timervalue--;
 				}
-				if (timervalue == 0)
+				else
 				{
 					timervalue = timerlatch;
 					timerirq = true;
