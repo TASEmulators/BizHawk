@@ -111,6 +111,9 @@ namespace BizHawk.Client.EmuHawk
 		/// </summary>
 		public void SetVisibleIndex(int? indexThatMustBeVisible = null)
 		{
+			if (TasView.AlwaysScroll && _leftButtonHeld)
+				return;
+
 			if (!indexThatMustBeVisible.HasValue)
 			{
 				indexThatMustBeVisible = Emulator.Frame;
