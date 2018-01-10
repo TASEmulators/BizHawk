@@ -150,7 +150,6 @@ namespace BizHawk.Client.EmuHawk
 			if (MarkerView.AnyRowsSelected)
 			{
 				SelectedMarkers.ForEach(i => Markers.Remove(i));
-				MarkerInputRoll.DeselectAll();
 				Tastudio.RefreshDialog();
 				MarkerView_SelectedIndexChanged(null, null);
 			}
@@ -190,6 +189,7 @@ namespace BizHawk.Client.EmuHawk
 				UpdateValues();
 			}
 
+			MarkerView.ScrollToIndex(Markers.Count() - 1);
 			Tastudio.RefreshDialog();
 		}
 
