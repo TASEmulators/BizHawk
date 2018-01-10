@@ -742,7 +742,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				CurrentTasMovie.Markers.Remove(m);
 			}
-
+			MarkerControl.ShrinkSelection();
 			RefreshDialog();
 		}
 
