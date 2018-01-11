@@ -207,7 +207,11 @@
 				case 0x19:
 					// interrupts are cleared by writing a 1
 					if ((val & 0x01) != 0)
+					{
 						_intRaster = false;
+						_rasterInterruptTriggered = false;
+					}
+						
 					if ((val & 0x02) != 0)
 						_intSpriteDataCollision = false;
 					if ((val & 0x04) != 0)
