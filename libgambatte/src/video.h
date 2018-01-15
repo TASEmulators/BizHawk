@@ -147,8 +147,8 @@ class LCD {
 	static void setDmgPalette(unsigned long *palette, const unsigned long *dmgColors, unsigned data);
 	void setDmgPaletteColor(unsigned index, unsigned long rgb32);
 
-	unsigned long gbcToRgb32(const unsigned bgr15);
-	void doCgbColorChange(unsigned char *const pdata, unsigned long *const palette, unsigned index, const unsigned data);
+	unsigned long gbcToRgb32(const unsigned bgr15, bool trueColor);
+	void doCgbColorChange(unsigned char *const pdata, unsigned long *const palette, unsigned index, const unsigned data, bool trueColor);
 
 	void refreshPalettes();
 	void setDBuffer();
@@ -175,6 +175,9 @@ public:
 	void setCgbPalette(unsigned *lut);
 	void setVideoBuffer(uint_least32_t *videoBuf, int pitch);
 	void setLayers(unsigned mask) { ppu.setLayers(mask); }
+	void setCgb(bool cgb);
+	void copyCgbPalettesToDmg();
+	void blackScreen();
 
 	int debugGetLY() const { return ppu.lyCounter().ly(); }
 
@@ -267,6 +270,7 @@ public:
 	
 	bool isCgb() const { return ppu.cgb(); }
 	bool isDoubleSpeed() const { return ppu.lyCounter().isDoubleSpeed(); }
+	bool isTrueColors() const { return ppu.trueColors(); }
 
 	unsigned long *bgPalette() { return ppu.bgPalette(); }
 	unsigned long *spPalette() { return ppu.spPalette(); }

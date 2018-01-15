@@ -93,6 +93,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					throw new InvalidOperationException("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 				}
 
+				if ((flags & LibGambatte.LoadFlags.FORCE_DMG) == LibGambatte.LoadFlags.FORCE_DMG)
+				{
+					byte[] Bios = comm.CoreFileProvider.GetFirmware("GB", "World", false, "BIOS Not Found, Cannot Load");
+
+					if (LibGambatte.gambatte_loaddmgbios(GambatteState, Bios) != 0)
+					{
+						throw new InvalidOperationException("gambatte_loaddmgbios() returned non-zero (bios error)");
+					}
+				}
+				else
+				{
+					byte[] Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", false, "BIOS Not Found, Cannot Load");
+
+					if (LibGambatte.gambatte_loadgbcbios(GambatteState, Bios) != 0)
+					{
+						throw new InvalidOperationException("gambatte_loadgbcbios() returned non-zero (bios error)");
+					}
+				}				
+
 				// set real default colors (before anyone mucks with them at all)
 				PutSettings((GambatteSettings)settings ?? new GambatteSettings());
 

@@ -38,8 +38,10 @@ class MemPtrs {
 	unsigned char *memchunk_;
 	unsigned char *rambankdata_;
 	unsigned char *wramdataend_;
-
+	
 	OamDmaSrc oamDmaSrc_;
+
+	unsigned curRomBank_;
 
 	int memchunk_len;
 	int memchunk_saveoffs;
@@ -61,7 +63,7 @@ public:
 	unsigned char * wmem(unsigned area) const { return wmem_[area]; }
 	unsigned char * vramdata() const { return rambankdata_ - 0x4000; }
 	unsigned char * vramdataend() const { return rambankdata_; }
-	unsigned char * romdata() const { return memchunk_ + 0x4000;}
+	unsigned char * romdata() const { return memchunk_ + 0x4000; }
 	unsigned char * romdata(unsigned area) const { return romdata_[area]; }
 	unsigned char * romdataend() const { return rambankdata_ - 0x4000; }
 	unsigned char * wramdata(unsigned area) const { return wramdata_[area]; }
@@ -73,7 +75,8 @@ public:
 	unsigned char * wsrambankptr() const { return wsrambankptr_; }
 	unsigned char * vrambankptr() const { return vrambankptr_; }
 	OamDmaSrc oamDmaSrc() const { return oamDmaSrc_; }
-	
+	unsigned curRomBank() const { return curRomBank_; }
+
 	void setRombank0(unsigned bank);
 	void setRombank(unsigned bank);
 	void setRambank(unsigned ramFlags, unsigned rambank);
