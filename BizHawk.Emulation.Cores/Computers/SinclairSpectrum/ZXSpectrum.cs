@@ -60,9 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     break;
                 default:
                     throw new InvalidOperationException("Machine not yet emulated");
-            }       
-
-            
+            }  
             
             _cpu.MemoryCallbacks = MemoryCallbacks;
 
@@ -84,14 +82,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (_machine.AYDevice != null)
                 SoundMixer.AddSource(_machine.AYDevice);
 
-            //SoundMixer.DisableSource(_machine.BuzzerDevice);
-
-            dcf = new DCFilter(SoundMixer, 1024);
-
-            
-
+            dcf = new DCFilter(SoundMixer, 256);
             ser.Register<ISoundProvider>(dcf);
-            //ser.Register<ISoundProvider>(_machine.AYDevice);
 
             
 
@@ -108,10 +100,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public IController _controller;
         private SpectrumBase _machine;
 
+        private SoundProviderMixer SoundMixer;
+
         private DCFilter dcf;
 
         private byte[] _file;
-
 
         public bool DiagRom = false;
 

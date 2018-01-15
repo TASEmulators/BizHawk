@@ -1,4 +1,5 @@
 ﻿
+using BizHawk.Common;
 using System.IO;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -1144,12 +1145,23 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Lenght of block data
         /// </summary>
-        public ushort DataLength { get; set; }
+        private ushort dataLength;
+        public ushort DataLength
+        {
+            get { return dataLength; }
+            set { dataLength = value; }
+        }
 
         /// <summary>
         /// Block Data
         /// </summary>
-        public byte[] Data { get; set; }
+        private byte[] data;
+        public byte[] Data
+        {
+            get { return data; }
+            set { data = value; }
+        }
+
 
         /// <summary>
         /// The ID of the block
@@ -1222,6 +1234,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// The EAR bit value to play back
         /// </returns>
         public bool GetEarBit(long currentCycle) => _player.GetEarBit(currentCycle);
+
+        public void SyncState(Serializer ser)
+        {
+            ser.BeginSection("TzxStandardSpeedDataBlock");
+
+            ser.Sync("dataLength", ref dataLength);
+            ser.Sync("data", ref data, false);
+
+            ser.EndSection();
+        }
     }
 
     /// <summary>

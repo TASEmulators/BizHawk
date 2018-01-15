@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BizHawk.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,5 +36,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// The EAR bit value to play back
         /// </returns>
         bool GetEarBit(long currentCycle);
+
+
+        void SyncState(Serializer ser);
     }
 }

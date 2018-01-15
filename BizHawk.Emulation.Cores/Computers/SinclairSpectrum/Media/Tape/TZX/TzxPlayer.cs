@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using BizHawk.Common;
+using System.IO;
 using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -79,5 +80,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         /// <param name="currentTact">Tacts time to start the next block</param>
         public void NextBlock(long currentTact) => _player.NextBlock(currentTact);
+
+
+        public void SyncState(Serializer ser)
+        {
+            ser.BeginSection("TzxPlayer");
+
+            _player.SyncState(ser);
+
+            ser.EndSection();
+        }
     }
 }

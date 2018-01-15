@@ -526,9 +526,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.SyncEnum<TapeOperationMode>("_currentMode", ref _currentMode);
             ser.SyncEnum<SavePhase>("_savePhase", ref _savePhase);
             ser.SyncEnum<MicPulseType>("_prevDataPulse", ref _prevDataPulse);
-            /*
-        private TapeFilePlayer _tapePlayer;
-        */
 
             ser.EndSection();
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BizHawk.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     {
         private readonly BinaryReader _reader;
         private TapeBlockSetPlayer _player;
+        private int _numberOfDataBlocks;
 
         /// <summary>
         /// Data blocks to play back
@@ -113,5 +115,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         /// <param name="currentTact">Tacts time to start the next block</param>
         public void NextBlock(long currentCycle) => _player.NextBlock(currentCycle);
+
+        public void SyncState(Serializer ser)
+        {
+            ser.BeginSection("TapeFilePlayer");
+            ReadContent();
+            ser.Sync("_numberOfDataBlocks", ref _numberOfDataBlocks);
+            _player.SyncState(ser);        
+            ser.EndSection();
+        }
     }
 }

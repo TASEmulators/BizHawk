@@ -1,4 +1,6 @@
 ﻿
+using BizHawk.Common;
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     /// <summary>
@@ -9,20 +11,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Pause after this block (default: 1000ms)
         /// </summary>
-        public ushort PauseAfter { get; }
+        private ushort pauseAfter;
+        public ushort PauseAfter
+        {
+            get { return pauseAfter; }
+        }
 
         /// <summary>
         /// Block Data
         /// </summary>
-        public byte[] Data { get; }
+        private byte[] data;
+        public byte[] Data
+        {
+            get { return data; }
+        }
 
         /// <summary>
         /// Initializes a new instance
         /// </summary>
-        public TapeDataBlockPlayer(byte[] data, ushort pauseAfter)
+        public TapeDataBlockPlayer(byte[] _data, ushort _pauseAfter)
         {
-            PauseAfter = pauseAfter;
-            Data = data;
+            pauseAfter = _pauseAfter;
+            data = _data;
         }
 
         /// <summary>
@@ -82,27 +92,52 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The index of the currently playing byte
         /// </summary>
-        public int ByteIndex { get; private set; }
+        private int byteIndex;
+        public int ByteIndex
+        {
+            get { return byteIndex; }
+            set { byteIndex = value; }
+        }
 
         /// <summary>
         /// The mask of the currently playing bit in the current byte
         /// </summary>
-        public byte BitMask { get; private set; }
+        private byte bitMask;
+        public byte BitMask
+        {
+            get { return bitMask; }
+            set { bitMask = value; }
+        }
 
         /// <summary>
         /// The current playing phase
         /// </summary>
-        public PlayPhase PlayPhase { get; private set; }
+        private PlayPhase playPhase;
+        public PlayPhase PlayPhase
+        {
+            get { return playPhase; }
+            set { playPhase = value; }
+        }
 
         /// <summary>
         /// The cycle count of the CPU when playing starts
         /// </summary>
-        public long StartCycle { get; private set; }
+        private long startCycle;
+        public long StartCycle
+        {
+            get { return startCycle; }
+            set { startCycle = value; }
+        }
 
         /// <summary>
         /// Last cycle queried
         /// </summary>
-        public long LastCycle { get; private set; }
+        private long lastCycle;
+        public long LastCycle
+        {
+            get { return lastCycle; }
+            set { lastCycle = value; }
+        }
 
         /// <summary>
         /// Initializes the player
@@ -213,6 +248,32 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 PlayPhase = PlayPhase.Completed;
             }
             return true;
+        }
+
+
+        public void SyncState(Serializer ser)
+        {
+            ser.BeginSection("TapeDataBlockPlayer");
+
+            ser.Sync("pauseAfter", ref pauseAfter);
+            ser.Sync("data", ref data, false);
+
+            ser.Sync("_pilotEnds", ref _pilotEnds);
+            ser.Sync("_sync1Ends", ref _sync1Ends);
+            ser.Sync("_sync2Ends", ref _sync2Ends);
+            ser.Sync("_bitStarts", ref _bitStarts);
+            ser.Sync("_bitPulseLength", ref _bitPulseLength);
+            ser.Sync("_currentBit", ref _currentBit);
+            ser.Sync("_termSyncEnds", ref _termSyncEnds);
+            ser.Sync("_pauseEnds", ref _pauseEnds);
+
+            ser.Sync("byteIndex", ref byteIndex);
+            ser.Sync("bitMask", ref bitMask);
+            ser.SyncEnum<PlayPhase>("playPhase", ref playPhase);
+            ser.Sync("startCycle", ref startCycle);
+            ser.Sync("lastCycle", ref lastCycle);
+            
+            ser.EndSection();
         }
     }
 }

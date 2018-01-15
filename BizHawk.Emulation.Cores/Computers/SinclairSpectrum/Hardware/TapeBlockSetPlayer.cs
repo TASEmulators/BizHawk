@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BizHawk.Common;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -15,27 +16,56 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Signs that the player completed playing back the file
         /// </summary>
-        public bool Eof { get; private set; }
+        private bool eof;
+        public bool Eof
+        {
+            get { return eof; }
+            set { eof = value; }
+        }
+
 
         /// <summary>
         /// Gets the currently playing block's index
         /// </summary>
-        public int CurrentBlockIndex { get; private set; }
+        private int currentBlockIndex;
+        public int CurrentBlockIndex
+        {
+            get { return currentBlockIndex; }
+            set { currentBlockIndex = value; }
+        }
 
         /// <summary>
         /// The current playable block
         /// </summary>
-        public ISupportsTapeBlockPlayback CurrentBlock => DataBlocks[CurrentBlockIndex];
+        private ISupportsTapeBlockPlayback currentBlock;
+        public ISupportsTapeBlockPlayback CurrentBlock
+        {
+            get { return DataBlocks[CurrentBlockIndex]; }
+            //set { currentBlock = value; }
+        }
+
 
         /// <summary>
         /// The current playing phase
         /// </summary>
-        public PlayPhase PlayPhase { get; private set; }
+        private PlayPhase playPhase;
+        public PlayPhase PlayPhase
+        {
+            get { return playPhase; }
+            set { playPhase = value; }
+        }
+
 
         /// <summary>
         /// The cycle count of the CPU when playing starts
         /// </summary>
-        public long StartCycle { get; private set; }
+        private long startCycle;
+        public long StartCycle
+        {
+            get { return startCycle; }
+            set { startCycle = value; }
+        }
+
 
         public TapeBlockSetPlayer(List<ISupportsTapeBlockPlayback> dataBlocks)
         {
@@ -97,6 +127,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             CurrentBlockIndex++;
             CurrentBlock.InitPlay(currentCycle);
+        }
+
+        public void SyncState(Serializer ser)
+        {
+            ser.BeginSection("TapeBlockSetPlayer");
+            ser.Sync("eof", ref eof);
+            ser.Sync("currentBlockIndex", ref currentBlockIndex);
+            ser.SyncEnum<PlayPhase>("playPhase", ref playPhase);
+            ser.Sync("startCycle", ref startCycle);
+            currentBlock.SyncState(ser);
+            ser.EndSection();
         }
     }
 }

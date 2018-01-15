@@ -142,7 +142,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // paint the buffer if needed
             if (ULADevice.needsPaint)
                 ULADevice.UpdateScreenBuffer(ULADevice.FrameLength);
-
+            
             BuzzerDevice.EndFrame();            
 
             TapeDevice.CPUFrameCompleted();

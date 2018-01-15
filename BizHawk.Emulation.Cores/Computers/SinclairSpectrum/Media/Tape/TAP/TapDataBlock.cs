@@ -1,4 +1,5 @@
 ﻿
+using BizHawk.Common;
 using System.IO;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -16,7 +17,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Block Data
         /// </summary>
-        public byte[] Data { get; private set; }
+        private byte[] data;
+        public byte[] Data
+        {
+            get { return data; }
+            set { data = value; }
+        }
 
         /// <summary>
         /// Pause after this block (given in milliseconds)
@@ -86,5 +92,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// The EAR bit value to play back
         /// </returns>
         public bool GetEarBit(long currentTact) => _player.GetEarBit(currentTact);
+
+        public void SyncState(Serializer ser)
+        {
+            ser.BeginSection("TapDataBlock");
+
+            ser.Sync("data", ref data, false);
+
+            ser.EndSection();
+        }
     }
 }

@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public string SystemId => "ZXSpectrum";
 
-        public bool DeterministicEmulation => false;
+        public bool DeterministicEmulation => true;
 
         public void ResetCounters()
         {
