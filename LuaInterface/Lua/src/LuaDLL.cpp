@@ -1,21 +1,25 @@
-
-using namespace System;
-using namespace System::Runtime::InteropServices;
-using namespace System::Reflection;
-using namespace System::Collections;
-using namespace System::Text;
-using namespace System::Security;
-
 // #include <vcclr.h>
 // #define _WINNT_
 // #include <WinDef.h>
-#include <vcclr.h>
+// #include <vcclr.h>
 // #include <atlstr.h>
-#include <stdio.h>
-#using <mscorlib.dll>
-#include <string.h>
 
-#define LUA_BUILD_AS_DLL
+/**
+ * lsthiros 1/15/2018 - Large rewrite for mono portability:
+ * Rewrote most of this file to get rid of all traces of Managed C++
+ * and all of its associated anti-patterns. Rewrote functions such
+ * that they could be easily extracted with tool like SWIG to generate
+ * robust bindings for Mono/.net. Callbacks from lua to C# were tricky
+ * but were handled via lua's upvalue system that allows closure
+ * behaviour in C/C++.
+ */
+
+#include "LuaDLL.hpp"
+
+#include <stdio.h>
+#include <string>
+
+// #define LUA_BUILD_AS_DLL
 #define LUA_LIB
 #define LUA_CORE
 #define lua_c
@@ -24,12 +28,13 @@ using namespace System::Security;
 
 extern "C"
 {
-#include "lua.h"
 #include "lualib.h"
 #include "lauxlib.h"
 
 	
-
+/**
+ * Make these available in an interface
+ */
 int iuplua_open(lua_State * L);
 int iupcontrolslua_open(lua_State * L);
 int luaopen_winapi(lua_State * L);
@@ -60,63 +65,10 @@ static void luaperks(lua_State *L)
 // Not sure of the purpose of this, but I'm keeping it -kevinh
 static int tag = 0;
 
-namespace Lua511 
+namespace Lua511
 {
-
-
 #if 1
-#undef LUA_TNONE
-#undef LUA_TNIL
-#undef LUA_TNUMBER
-#undef LUA_TSTRING
-#undef LUA_TBOOLEAN
-#undef LUA_TTABLE
-#undef LUA_TFUNCTION
-#undef LUA_TUSERDATA
-#undef LUA_TLIGHTUSERDATA
 
-	/*
-	 * Lua types for the API, returned by lua_type function
-	 */
-	public enum class LuaTypes 
-	{
-		LUA_TNONE=-1,
-		LUA_TNIL=0,
-		LUA_TNUMBER=3,
-		LUA_TSTRING=4,
-		LUA_TBOOLEAN=1,
-		LUA_TTABLE=5,
-		LUA_TFUNCTION=6,
-		LUA_TUSERDATA=7,
-		LUA_TLIGHTUSERDATA=2
-	};
-
-#endif
-
-#if 1
-#undef LUA_GCSTOP
-#undef LUA_GCRESTART
-#undef LUA_GCCOLLECT
-#undef LUA_GCCOUNT
-#undef LUA_GCCOUNTB
-#undef LUA_GCSTEP
-#undef LUA_GCSETPAUSE
-#undef LUA_GCSETSTEPMUL
-
-	/*
-	 * Lua Garbage Collector options (param "what")
-	 */
-	public enum class LuaGCOptions
-	{
-		LUA_GCSTOP = 0,
-		LUA_GCRESTART = 1,
-		LUA_GCCOLLECT = 2,
-		LUA_GCCOUNT = 3,
-		LUA_GCCOUNTB = 4,
-		LUA_GCSTEP = 5,
-		LUA_GCSETPAUSE = 6,
-		LUA_GCSETSTEPMUL = 7,
-	};
 #endif
 
 #undef LUA_REGISTRYINDEX
@@ -126,138 +78,103 @@ namespace Lua511
 	/*
 	 * Special stack indexes
 	 */
-	public enum class LuaIndexes 
+	typedef enum LuaIndexes
 	{
 		LUA_REGISTRYINDEX=-10000,
 		LUA_ENVIRONINDEX=-10001,	
 		LUA_GLOBALSINDEX=-10002	
-	};
+	} LuaIndexes;
+    
+    // lsthiros 1/15/2018 - Removed "if 0"'d code. Didn't look like it would ever be useful.
+    
+    // lsthiros 1/15/2018 - Removed old Managed C++ delegates. They aren't portable at all, and
+    // Managed C++ is all but deprecated at this point.
+    static LuaHook *hookBack = NULL;
+    static LuaCallback *panic_cb = NULL;
 
-
-#if 0
-	/*
-	 * Structure used by the chunk reader
-	 */
-	// [ StructLayout( LayoutKind.Sequential )]
-	public ref struct ReaderInfo
-	{
-		public String^ chunkData;
-		public bool finished;
-	};
-
-
-	/*
-	 * Delegate for chunk readers used with lua_load
-	 */
-	public delegate String^ LuaChunkReader(IntPtr luaState, ReaderInfo ^data, uint size);
-#endif
-
-	/*
-	 * Delegate for functions passed to Lua as function pointers
-	 */
-	[System::Runtime::InteropServices::UnmanagedFunctionPointer(CallingConvention::Cdecl)]
-	public delegate int LuaCSFunction(IntPtr luaState);
-
-   // delegate for lua debug hook callback (by Reinhard Ostermeier)
-	[System::Runtime::InteropServices::UnmanagedFunctionPointer(CallingConvention::Cdecl)]
-   public delegate void LuaHookFunction(IntPtr luaState, IntPtr luaDebug);
-
-
-	// To fix the strings:
-	// http://support.microsoft.com/kb/311259
-
-	public ref class LuaDLL 
-	{
+    // lsthiros 1/15/2018 - Class definition moved to header file. Managed C++ antipatterns were
+    // forcing it to stay here earlier.
 		// steffenj: BEGIN additional Lua API functions new in Lua 5.1
-	public:
-
-#define toState		((lua_State *) luaState.ToPointer())
-
-		static int lua_gc(IntPtr luaState, LuaGCOptions what, int data)
+        int LuaDLL::lua_gc(lua_State *luaState, LuaGCOptions what, int data)
 		{
-			return ::lua_gc(toState, (int) what, data);
+			return ::lua_gc(luaState, (int) what, data);
 		}
 
-		static String^ lua_typename(IntPtr luaState, LuaTypes type)
+        std::string LuaDLL::lua_typename(lua_State *luaState, LuaTypes type)
 		{
-			return gcnew String(::lua_typename(toState, (int) type));
+            return std::string(::lua_typename(luaState, (int) type));
 		}
 
 #undef luaL_typename
 
-		static String^ luaL_typename(IntPtr luaState, int stackPos)
+         std::string LuaDLL::luaL_typename(lua_State *luaState, int stackPos)
 		{
 			return lua_typename(luaState, lua_type(luaState, stackPos));
 		}
 
-		static void luaL_error(IntPtr luaState, String^ message)
+        void LuaDLL::luaL_error(lua_State *luaState, std::string *message)
 		{
-			char *cs = (char *) Marshal::StringToHGlobalAnsi(message).ToPointer();
-
-			::luaL_error(toState, cs);
-			Marshal::FreeHGlobal(IntPtr(cs));
+			const char *cs = message->c_str();
+            ::luaL_error(luaState, cs);
 		}
 
-        static void luaL_where(IntPtr luaState, int level)
+        void LuaDLL::luaL_where(lua_State *luaState, int level)
 		{
-			::luaL_where(toState, level);
+            ::luaL_where(luaState, level);
 		}
 
 
 		// Not yet wrapped
-		// static String^ luaL_gsub(IntPtr luaState, String^ str, String^ pattern, String^ replacement);
+		// static std::string luaL_gsub(lua_State *luaState, std::string str, std::string pattern, std::string replacement);
 
 #if 0
 		// the functions below are still untested
-		static void lua_getfenv(IntPtr luaState, int stackPos);
-		static int lua_isfunction(IntPtr luaState, int stackPos);
-		static int lua_islightuserdata(IntPtr luaState, int stackPos);
-		static int lua_istable(IntPtr luaState, int stackPos);
-		static int lua_isuserdata(IntPtr luaState, int stackPos);
-		static int lua_lessthan(IntPtr luaState, int stackPos1, int stackPos2);
-		static int lua_rawequal(IntPtr luaState, int stackPos1, int stackPos2);
-		static int lua_setfenv(IntPtr luaState, int stackPos);
-		static void lua_setfield(IntPtr luaState, int stackPos, String^ name);
-		static int luaL_callmeta(IntPtr luaState, int stackPos, String^ name);
+		static void lua_getfenv(lua_State *luaState, int stackPos);
+		static int lua_isfunction(lua_State *luaState, int stackPos);
+		static int lua_islightuserdata(lua_State *luaState, int stackPos);
+		static int lua_istable(lua_State *luaState, int stackPos);
+		static int lua_isuserdata(lua_State *luaState, int stackPos);
+		static int lua_lessthan(lua_State *luaState, int stackPos1, int stackPos2);
+		static int lua_rawequal(lua_State *luaState, int stackPos1, int stackPos2);
+		static int lua_setfenv(lua_State *luaState, int stackPos);
+		static void lua_setfield(lua_State *luaState, int stackPos, std::string name);
+		static int luaL_callmeta(lua_State *luaState, int stackPos, std::string name);
 		// steffenj: END additional Lua API functions new in Lua 5.1
 #endif
 
 		// steffenj: BEGIN Lua 5.1.1 API change (lua_open replaced by luaL_newstate)
-		static IntPtr luaL_newstate()
+		lua_State *LuaDLL::luaL_newstate()
 		{
-			return IntPtr(::luaL_newstate());
+			return ::luaL_newstate();
 		}
 
-		static void lua_close(IntPtr luaState)
+		void LuaDLL::lua_close(lua_State *luaState)
 		{
-			::lua_close(toState);
+			::lua_close(luaState);
 		}
 
 		// steffenj: BEGIN Lua 5.1.1 API change (new function luaL_openlibs)
-		static void luaL_openlibs(IntPtr luaState)
+		void LuaDLL::luaL_openlibs(lua_State *luaState)
 		{
-			::luaL_openlibs(toState);
-			::luaperks(toState);
+            ::luaL_openlibs(luaState);
+            ::luaperks(luaState);
 		}
 
 		// Not yet wrapped
-		// static int lua_objlen(IntPtr luaState, int stackPos);
+		// static int lua_objlen(lua_State *luaState, int stackPos);
 
 		// steffenj: END Lua 5.1.1 API change (lua_strlen is now lua_objlen)
-		// steffenj: BEGIN Lua 5.1.1 API change (lua_doString^ is now a macro luaL_dostring)
-		static int luaL_loadstring(IntPtr luaState, String^ chunk)
+		// steffenj: BEGIN Lua 5.1.1 API change (lua_dostd::string is now a macro luaL_dostring)
+        int LuaDLL::luaL_loadstring(lua_State *luaState, std::string *chunk)
 		{
-			char *cs = (char *) Marshal::StringToHGlobalAnsi(chunk).ToPointer();
-
-			int result = ::luaL_loadstring(toState, cs);
-			Marshal::FreeHGlobal(IntPtr(cs));
-
+			const char *cs = chunk->c_str();
+            int result = ::luaL_loadstring(luaState, cs);
 			return result;
 		}
 
 #undef luaL_dostring
 
-		static int luaL_dostring(IntPtr luaState, String^ chunk)
+        int LuaDLL::luaL_dostring(lua_State *luaState, std::string *chunk)
 		{
 			int result = luaL_loadstring(luaState, chunk);
 			if (result != 0)
@@ -266,22 +183,22 @@ namespace Lua511
 			return lua_pcall(luaState, 0, -1, 0);
 		}
 
-		/// <summary>DEPRECATED - use luaL_dostring(IntPtr luaState, string chunk) instead!</summary>
-		static int lua_dostring(IntPtr luaState, String^ chunk)
+		/// <summary>DEPRECATED - use luaL_dostring(lua_State *luaState, string chunk) instead!</summary>
+        int LuaDLL::lua_dostring(lua_State *luaState, std::string *chunk)
 		{
 			return luaL_dostring(luaState, chunk);
 		}
 
 		// steffenj: END Lua 5.1.1 API change (lua_dostring is now a macro luaL_dostring)
 		// steffenj: BEGIN Lua 5.1.1 API change (lua_newtable is gone, lua_createtable is new)
-		static void lua_createtable(IntPtr luaState, int narr, int nrec)
+		void LuaDLL::lua_createtable(lua_State *luaState, int narr, int nrec)
 		{
-			::lua_createtable(toState, narr, nrec);
+			::lua_createtable(luaState, narr, nrec);
 		}
 
 #undef lua_newtable
 		
-		static void lua_newtable(IntPtr luaState)
+		void LuaDLL::lua_newtable(lua_State *luaState)
 		{
 			lua_createtable(luaState, 0, 0);
 		}
@@ -290,287 +207,282 @@ namespace Lua511
 
 		// steffenj: END Lua 5.1.1 API change (lua_newtable is gone, lua_createtable is new)
 		// steffenj: BEGIN Lua 5.1.1 API change (lua_dofile now in LuaLib as luaL_dofile macro)
-		static int luaL_dofile(IntPtr luaState, String^ fileName)
+        int LuaDLL::luaL_dofile(lua_State *luaState, std::string *fileName)
 		{
-			char *cs = (char *) Marshal::StringToHGlobalAnsi(fileName).ToPointer();
+			const char *cs = fileName->c_str();
 
-			int result = ::luaL_loadfile(toState, cs);
-			
-			//CP: Free filename string before return to ensure a file that isnt found still has the string freed (submitted by paul moore)
-			//link: http://luaforge.net/forum/forum.php?thread_id=2825&forum_id=145
-			Marshal::FreeHGlobal(IntPtr(cs));
+			int result = ::luaL_loadfile(luaState, cs);
 
 			if (result != 0)
 				return result;
 
-			return ::lua_pcall(toState, 0, -1, 0);
+			return ::lua_pcall(luaState, 0, -1, 0);
 		}
 
 #undef lua_getglobal
 
 		// steffenj: END Lua 5.1.1 API change (lua_dofile now in LuaLib as luaL_dofile)
-		static void lua_getglobal(IntPtr luaState, String^ name) 
+        void LuaDLL::lua_getglobal(lua_State *luaState, std::string *name)
 		{
 			lua_pushstring(luaState, name);
-			::lua_gettable(toState, (int) LuaIndexes::LUA_GLOBALSINDEX);
+			::lua_gettable(luaState, (int) LuaIndexes::LUA_GLOBALSINDEX);
 		}
 
 #undef lua_setglobal
 
-		static void lua_setglobal(IntPtr luaState, String^ name)
+        void LuaDLL::lua_setglobal(lua_State *luaState, std::string *name)
 		{
 			lua_pushstring(luaState,name);
 			lua_insert(luaState,-2);
 			lua_settable(luaState, (int) LuaIndexes::LUA_GLOBALSINDEX);
 		}
 
-		static void lua_settop(IntPtr luaState, int newTop)
+		void LuaDLL::lua_settop(lua_State *luaState, int newTop)
 		{
-			::lua_settop(toState, newTop);
+			::lua_settop(luaState, newTop);
 		}
 
 
 #undef lua_pop
 
-		static void lua_pop(IntPtr luaState, int amount)
+		void LuaDLL::lua_pop(lua_State *luaState, int amount)
 		{
-			lua_settop(luaState, -(amount) - 1);
+            LuaDLL::lua_settop(luaState, -(amount) - 1);
 		}
 
-		static void lua_insert(IntPtr luaState, int newTop)
+		void LuaDLL::lua_insert(lua_State *luaState, int newTop)
 		{
-			::lua_insert(toState, newTop);
+			::lua_insert(luaState, newTop);
 		}
 
-		static void lua_remove(IntPtr luaState, int index)
+		void LuaDLL::lua_remove(lua_State *luaState, int index)
 		{
-			::lua_remove(toState, index);
+			::lua_remove(luaState, index);
 		}
 
-		static void lua_gettable(IntPtr luaState, int index)
+		void LuaDLL::lua_gettable(lua_State *luaState, int index)
 		{
-			::lua_gettable(toState, index);
-		}
-
-
-		static void lua_rawget(IntPtr luaState, int index)
-		{
-			::lua_rawget(toState, index);
+			::lua_gettable(luaState, index);
 		}
 
 
-		static void lua_settable(IntPtr luaState, int index)
+		void LuaDLL::lua_rawget(lua_State *luaState, int index)
 		{
-			::lua_settable(toState, index);
+			::lua_rawget(luaState, index);
 		}
 
 
-		static void lua_rawset(IntPtr luaState, int index)
+		void LuaDLL::lua_settable(lua_State *luaState, int index)
 		{
-			::lua_rawset(toState, index);
-		}
-
-		static IntPtr lua_newthread(IntPtr luaState)
-		{
-			return IntPtr(::lua_newthread(toState));
-		}
-
-		static int lua_resume(IntPtr luaState, int narg)
-		{
-			return ::lua_resume(toState, narg);
-		}
-
-		static int lua_yield(IntPtr luaState, int nresults)
-		{
-			return ::lua_yield(toState, nresults);
+			::lua_settable(luaState, index);
 		}
 
 
-		static void lua_setmetatable(IntPtr luaState, int objIndex)
+		void LuaDLL::lua_rawset(lua_State *luaState, int index)
 		{
-			::lua_setmetatable(toState, objIndex);
+			::lua_rawset(luaState, index);
+		}
+
+		lua_State *LuaDLL::lua_newthread(lua_State *luaState)
+		{
+			return ::lua_newthread(luaState);
+		}
+
+		int LuaDLL::lua_resume(lua_State *luaState, int narg)
+		{
+			return ::lua_resume(luaState, narg);
+		}
+
+		int LuaDLL::lua_yield(lua_State *luaState, int nresults)
+		{
+			return ::lua_yield(luaState, nresults);
 		}
 
 
-		static int lua_getmetatable(IntPtr luaState, int objIndex)
+		void lua_setmetatable(lua_State *luaState, int objIndex)
 		{
-			return ::lua_getmetatable(toState, objIndex);
+			::lua_setmetatable(luaState, objIndex);
 		}
 
 
-		static int lua_equal(IntPtr luaState, int index1, int index2)
+		int LuaDLL::lua_getmetatable(lua_State *luaState, int objIndex)
 		{
-			return ::lua_equal(toState, index1, index2);
+			return ::lua_getmetatable(luaState, objIndex);
 		}
 
 
-		static void lua_pushvalue(IntPtr luaState, int index)
+		int LuaDLL::lua_equal(lua_State *luaState, int index1, int index2)
 		{
-			::lua_pushvalue(toState, index);
+			return ::lua_equal(luaState, index1, index2);
 		}
 
 
-		static void lua_replace(IntPtr luaState, int index)
+		void LuaDLL::lua_pushvalue(lua_State *luaState, int index)
 		{
-			::lua_replace(toState, index);
-		}
-
-		static int lua_gettop(IntPtr luaState)
-		{
-			return ::lua_gettop(toState);
+			::lua_pushvalue(luaState, index);
 		}
 
 
-		static LuaTypes lua_type(IntPtr luaState, int index)
+		void LuaDLL::lua_replace(lua_State *luaState, int index)
 		{
-			return (LuaTypes) ::lua_type(toState, index);
+			::lua_replace(luaState, index);
+		}
+
+		int LuaDLL::lua_gettop(lua_State *luaState)
+		{
+			return ::lua_gettop(luaState);
+		}
+
+
+		LuaTypes LuaDLL::lua_type(lua_State *luaState, int index)
+		{
+			return (LuaTypes) ::lua_type(luaState, index);
 		}
 
 #undef lua_isnil
 
-		static bool lua_isnil(IntPtr luaState, int index)
+		bool LuaDLL::lua_isnil(lua_State *luaState, int index)
 		{
 			return lua_type(luaState,index)==LuaTypes::LUA_TNIL;
 		}
 
-		static bool lua_isnumber(IntPtr luaState, int index)
+		bool LuaDLL::lua_isnumber(lua_State *luaState, int index)
 		{
 			return lua_type(luaState,index)==LuaTypes::LUA_TNUMBER;
 		}
 
 #undef lua_isboolean
 
-		static bool lua_isboolean(IntPtr luaState, int index) 
+		bool LuaDLL::lua_isboolean(lua_State *luaState, int index)
 		{
-			return lua_type(luaState,index)==LuaTypes::LUA_TBOOLEAN;
+            return LuaDLL::lua_type(luaState,index)==LuaTypes::LUA_TBOOLEAN;
 		}
 
-		static int luaL_ref(IntPtr luaState, int registryIndex)
+    int LuaDLL::luaL_ref(lua_State *luaState, int registryIndex)
 		{
-			return ::luaL_ref(toState, registryIndex);
+			return ::luaL_ref(luaState, registryIndex);
 		}
 
 #undef lua_ref
 
-		static int lua_ref(IntPtr luaState, int lockRef)
+		int LuaDLL::lua_ref(lua_State *luaState, int lockRef)
 		{
 			if(lockRef!=0) 
 			{
-				return luaL_ref(luaState, (int) LuaIndexes::LUA_REGISTRYINDEX);
+                return LuaDLL::luaL_ref(luaState, (int) LuaIndexes::LUA_REGISTRYINDEX);
 			} 
 			else return 0;
 		}
 
-		static void lua_rawgeti(IntPtr luaState, int tableIndex, int index)
+		void LuaDLL::lua_rawgeti(lua_State *luaState, int tableIndex, int index)
 		{
-			::lua_rawgeti(toState, tableIndex, index);
+			::lua_rawgeti(luaState, tableIndex, index);
 		}
 
-		static void lua_rawseti(IntPtr luaState, int tableIndex, int index)
+		void LuaDLL::lua_rawseti(lua_State *luaState, int tableIndex, int index)
 		{
-			::lua_rawseti(toState, tableIndex, index);
-		}
-
-
-		static IntPtr lua_newuserdata(IntPtr luaState, int size)
-		{
-			return IntPtr(::lua_newuserdata(toState, size));
+			::lua_rawseti(luaState, tableIndex, index);
 		}
 
 
-		static IntPtr lua_touserdata(IntPtr luaState, int index)
+		void *LuaDLL::lua_newuserdata(lua_State *luaState, int size)
 		{
-			return IntPtr(::lua_touserdata(toState, index));
+			return ::lua_newuserdata(luaState, size);
+		}
+
+
+		void *LuaDLL::lua_touserdata(lua_State *luaState, int index)
+		{
+			return ::lua_touserdata(luaState, index);
 		}
 
 #undef lua_getref
 
-		static void lua_getref(IntPtr luaState, int reference)
+		void LuaDLL::lua_getref(lua_State *luaState, int reference)
 		{
 			lua_rawgeti(luaState, (int) LuaIndexes::LUA_REGISTRYINDEX,reference);
 		}
 
 		// Unwrapped
-		// static void luaL_unref(IntPtr luaState, int registryIndex, int reference);
+		// void luaL_unref(lua_State *luaState, int registryIndex, int reference);
 
 #undef lua_unref
 
-		static void lua_unref(IntPtr luaState, int reference) 
+		void LuaDLL::lua_unref(lua_State *luaState, int reference)
 		{
-			::luaL_unref(toState, (int) LuaIndexes::LUA_REGISTRYINDEX,reference);
+			::luaL_unref(luaState, (int) LuaIndexes::LUA_REGISTRYINDEX,reference);
 		}
 
-		static bool lua_isstring(IntPtr luaState, int index)
+		bool LuaDLL::lua_isstring(lua_State *luaState, int index)
 		{
-			return ::lua_isstring(toState, index) != 0;
-		}
-
-
-		static bool lua_iscfunction(IntPtr luaState, int index)
-		{
-			return ::lua_iscfunction(toState, index) != 0;
-		}
-
-		static void lua_pushnil(IntPtr luaState)
-		{
-			::lua_pushnil(toState);
+			return ::lua_isstring(luaState, index) != 0;
 		}
 
 
-
-		static void lua_call(IntPtr luaState, int nArgs, int nResults)
+		bool LuaDLL::lua_iscfunction(lua_State *luaState, int index)
 		{
-			::lua_call(toState, nArgs, nResults);
+			return ::lua_iscfunction(luaState, index) != 0;
 		}
 
-		static int lua_pcall(IntPtr luaState, int nArgs, int nResults, int errfunc)
+		void LuaDLL::lua_pushnil(lua_State *luaState)
+		{
+			::lua_pushnil(luaState);
+		}
+
+
+
+		void LuaDLL::lua_call(lua_State *luaState, int nArgs, int nResults)
+		{
+			::lua_call(luaState, nArgs, nResults);
+		}
+
+		int LuaDLL::lua_pcall(lua_State *luaState, int nArgs, int nResults, int errfunc)
 		{			
-			return ::lua_pcall(toState, nArgs, nResults, errfunc);
+			return ::lua_pcall(luaState, nArgs, nResults, errfunc);
 		}
 
-		// static int lua_rawcall(IntPtr luaState, int nArgs, int nResults)
+		// static int lua_rawcall(lua_State *luaState, int nArgs, int nResults)
 
-		static IntPtr lua_tocfunction(IntPtr luaState, int index)
+		lua_CFunction LuaDLL::lua_tocfunction(lua_State *luaState, int index)
 		{
-			return IntPtr(::lua_tocfunction(toState, index));
+			return ::lua_tocfunction(luaState, index);
 		}
 
-		static double lua_tonumber(IntPtr luaState, int index)
+		double LuaDLL::lua_tonumber(lua_State *luaState, int index)
 		{
-			return ::lua_tonumber(toState, index);
+			return ::lua_tonumber(luaState, index);
 		}
 
 
-		static bool lua_toboolean(IntPtr luaState, int index)
+		bool LuaDLL::lua_toboolean(lua_State *luaState, int index)
 		{
-			return ::lua_toboolean(toState, index);
+			return ::lua_toboolean(luaState, index);
 		}
 
 		// unwrapped
 		// was out strLen
-		// static IntPtr lua_tolstring(IntPtr luaState, int index, [Out] int ^ strLen);
+		// lua_State *lua_tolstring(lua_State *luaState, int index, [Out] int ^ strLen);
 
 #undef lua_tostring
 
-		static String^ lua_tostring(IntPtr luaState, int index)
+        std::string LuaDLL::lua_tostring(lua_State *luaState, int index)
 		{
 #if 1
 			// FIXME use the same format string as lua i.e. LUA_NUMBER_FMT
-			LuaTypes t = lua_type(luaState,index);
+            LuaTypes t = LuaDLL::lua_type(luaState,index);
 			
 			if(t == LuaTypes::LUA_TNUMBER)
-				return String::Format("{0}", lua_tonumber(luaState, index));
+                return std::to_string(LuaDLL::lua_tonumber(luaState, index));
 			else if(t == LuaTypes::LUA_TSTRING)
 			{
 				size_t strlen;
 
-				const char *str = ::lua_tolstring(toState, index, &strlen);
-				return Marshal::PtrToStringAnsi(IntPtr((char *) str), strlen);
+                return std::string(::lua_tolstring(luaState, index, &strlen));
 			}
 			else if(t == LuaTypes::LUA_TNIL)
 				return nullptr;			// treat lua nulls to as C# nulls
 			else
-				return gcnew String("0");	// Because luaV_tostring does this
+				return "0";	// Because luaV_tostring does this
 #else
 			
 
@@ -578,7 +490,7 @@ namespace Lua511
 
 			// Note!  This method will _change_ the representation of the object on the stack to a string.
 			// We do not want this behavior so we do the conversion ourselves
-			const char *str = ::lua_tolstring(toState, index, &strlen);
+			const char *str = ::lua_tolstring(luaState, index, &strlen);
             if (str)
 				return Marshal::PtrToStringAnsi(IntPtr((char *) str), strlen);
             else
@@ -586,132 +498,102 @@ namespace Lua511
 #endif
 		}
 
-        static void lua_atpanic(IntPtr luaState, LuaCSFunction^ panicf)
+        int LuaDLL::__panic_cb(lua_State *l) {
+            return panic_cb->runCallback(l);
+        }
+    
+    
+        void LuaDLL::lua_atpanic(lua_State *luaState, LuaCallback *panicf)
 		{
-			IntPtr p = Marshal::GetFunctionPointerForDelegate(panicf);
-			::lua_atpanic(toState, (lua_CFunction) p.ToPointer());
+            panic_cb = panicf;
+			::lua_atpanic(luaState, (lua_CFunction) panic_cb);
+		}
+    
+    
+        int LuaDLL::__csCallbackWrapper(lua_State *l) {
+            LuaCallback *fn = (LuaCallback*)::lua_touserdata(l, lua_upvalueindex(1));
+            return fn->runCallback(l);
+        }
+    
+    
+		// lsthiros 1/15/2018 - leave stdcall and marshalling to SWIG.
+    void LuaDLL::lua_pushstdcallcfunction(lua_State *luaState, LuaCallback *function)
+		{
+            lua_pushlightuserdata(luaState, function);
+            lua_pushcclosure(luaState, &__csCallbackWrapper, 1);
+		}
+    
+
+    void LuaDLL::lua_pushnumber(lua_State *luaState, double number)
+		{
+			::lua_pushnumber(luaState, number);
 		}
 
-#if 0
-		// no longer needed - all our functions are now stdcall calling convention
-		static int stdcall_closure(lua_State *L) {
-		  lua_CFunction fn = (lua_CFunction)lua_touserdata(L, lua_upvalueindex(1));
-		  return fn(L);
-		}
-#endif
-		
-		static void lua_pushstdcallcfunction(IntPtr luaState, LuaCSFunction^ function)
+    void LuaDLL::lua_pushboolean(lua_State *luaState, bool value)
 		{
-			IntPtr p = Marshal::GetFunctionPointerForDelegate(function);
-			lua_pushcfunction(toState, (lua_CFunction) p.ToPointer());
-		}
-
-
-#if 0
-		// not yet implemented
-        static void lua_atlock(IntPtr luaState, LuaCSFunction^ lockf)
-		{
-			IntPtr p = Marshal::GetFunctionPointerForDelegate(lockf);
-			::lua_atlock(toState, (lua_CFunction) p.ToPointer());
-		}
-
-        static void lua_atunlock(IntPtr luaState, LuaCSFunction^ unlockf);
-#endif
-
-		static void lua_pushnumber(IntPtr luaState, double number)
-		{
-			::lua_pushnumber(toState, number);
-		}
-
-		static void lua_pushboolean(IntPtr luaState, bool value)
-		{
-			::lua_pushboolean(toState, value);
-		}
-
-#if 0
-		// Not yet wrapped
-		static void lua_pushlstring(IntPtr luaState, String^ str, int size)
-		{
-			char *cs = (char *) Marshal::StringToHGlobalAnsi(str).ToPointer();
-
-			//
-
-			Marshal::FreeHGlobal(IntPtr(cs));
-		}
-#endif
-
-
-		static void lua_pushstring(IntPtr luaState, String^ str)
-		{
-			char *cs = (char *) Marshal::StringToHGlobalAnsi(str).ToPointer();
-
-			::lua_pushstring(toState, cs);
-
-			Marshal::FreeHGlobal(IntPtr(cs));
+			::lua_pushboolean(luaState, value);
 		}
 
 
-		static int luaL_newmetatable(IntPtr luaState, String^ meta)
+    void LuaDLL::lua_pushstring(lua_State *luaState, std::string *str)
 		{
-			char *cs = (char *) Marshal::StringToHGlobalAnsi(meta).ToPointer();
+			const char *cs = str->c_str();
+			::lua_pushstring(luaState, cs);
+		}
 
-			int result = ::luaL_newmetatable(toState, cs);
 
-			Marshal::FreeHGlobal(IntPtr(cs));
-
+    int LuaDLL::luaL_newmetatable(lua_State *luaState, std::string *meta)
+		{
+			const char *cs = meta->c_str();
+			int result = ::luaL_newmetatable(luaState, cs);
+            
 			return result;
 		}
 
 
 		// steffenj: BEGIN Lua 5.1.1 API change (luaL_getmetatable is now a macro using lua_getfield)
-		static void lua_getfield(IntPtr luaState, int stackPos, String^ meta)
+    void LuaDLL::lua_getfield(lua_State *luaState, int stackPos, std::string *meta)
 		{
-			char *cs = (char *) Marshal::StringToHGlobalAnsi(meta).ToPointer();
-
-			::lua_getfield(toState, stackPos, cs);
-
-			Marshal::FreeHGlobal(IntPtr(cs));
+			const char *cs = meta->c_str();
+			::lua_getfield(luaState, stackPos, cs);
 		}
 
 #undef luaL_getmetatable
 
-		static void luaL_getmetatable(IntPtr luaState, String^ meta)
+    void LuaDLL::luaL_getmetatable(lua_State *luaState, std::string *meta)
 		{
 			lua_getfield(luaState, (int) LuaIndexes::LUA_REGISTRYINDEX, meta);
 		}
 
-		static IntPtr luaL_checkudata(IntPtr luaState, int stackPos, String^ meta)
+    void *LuaDLL::luaL_checkudata(lua_State *luaState, int stackPos, std::string *meta)
 		{
-			char *cs = (char *) Marshal::StringToHGlobalAnsi(meta).ToPointer();
+			const char *cs = meta->c_str();
 
-			void *result = ::luaL_checkudata(toState, stackPos, cs);
+			void *result = ::luaL_checkudata(luaState, stackPos, cs);
 
-			Marshal::FreeHGlobal(IntPtr(cs));
-
-			return IntPtr(result);
+			return result;
 		}
 
-		static bool luaL_getmetafield(IntPtr luaState, int stackPos, String^ field)
+    bool LuaDLL::luaL_getmetafield(lua_State *luaState, int stackPos, std::string *field)
 		{
-			char *cs = (char *) Marshal::StringToHGlobalAnsi(field).ToPointer();
-
-			int result = ::luaL_getmetafield(toState, stackPos, cs);
-
-			Marshal::FreeHGlobal(IntPtr(cs));
+            const char *cs = field->c_str();
+			int result = ::luaL_getmetafield(luaState, stackPos, cs);
 
 			return result != 0;
 		}
 
 		// wrapper not yet implemented
-		// static int lua_load(IntPtr luaState, LuaChunkReader chunkReader, ref ReaderInfo data, String^ chunkName);
+		// static int lua_load(lua_State *luaState, LuaChunkReader chunkReader, ref ReaderInfo data, std::string chunkName);
 
-		static int luaL_loadbuffer(IntPtr luaState, String^ buff, String^ name)
+		int LuaDLL::luaL_loadbuffer(lua_State *luaState, std::string *buff, std::string *name)
 		{
+#warning Need to implement luaL_loadbuffer
+#if 0
 			//zero 23-may-2016 - get rid of this GARBAGE. lua can load UTF-8, why not use that?
 			//char *cs1 = (char *) Marshal::StringToHGlobalAnsi(buff).ToPointer();
 			//char *cs2 = (char *) Marshal::StringToHGlobalAnsi(name).ToPointer();
 			////CP: fix for MBCS, changed to use cs1's length (reported by qingrui.li)
-			//int result = ::luaL_loadbuffer(toState, cs1, strlen(cs1), cs2);
+			//int result = ::luaL_loadbuffer(luaState, cs1, strlen(cs1), cs2);
 			//Marshal::FreeHGlobal(IntPtr(cs1));
 			//Marshal::FreeHGlobal(IntPtr(cs2));
 
@@ -722,150 +604,130 @@ namespace Lua511
 			if(buff->Length != 0) { p_buff = &_buff[0]; lbuff = (char*)(System::Byte*)p_buff; }
 			if(name->Length != 0) { p_name= &_name[0]; lname = (char*)(System::Byte*)p_name; }
 
-			return ::luaL_loadbuffer(toState, lbuff, _buff->Length, lname);
+			return ::luaL_loadbuffer(luaState, lbuff, _buff->Length, lname);
+#else
+            return 0;
+#endif
 		}
 
-		static int luaL_loadfile(IntPtr luaState, String^ filename)
+		int LuaDLL::luaL_loadfile(lua_State *luaState, std::string *filename)
 		{
-			char *cs = (char *) Marshal::StringToHGlobalAnsi(filename).ToPointer();
-			int result = ::luaL_loadfile(toState, cs);
-
-			Marshal::FreeHGlobal(IntPtr(cs));
+			const char *cs = filename->c_str();
+			int result = ::luaL_loadfile(luaState, cs);
 
 			return result;
 		}
 
-		static void lua_error(IntPtr luaState)
+		void LuaDLL::lua_error(lua_State *luaState)
 		{
-			::lua_error(toState);
+			::lua_error(luaState);
 		}
 
 
-		static bool lua_checkstack(IntPtr luaState,int extra)
+		bool LuaDLL::lua_checkstack(lua_State *luaState,int extra)
 		{
-			return ::lua_checkstack(toState, extra) != 0;
+			return ::lua_checkstack(luaState, extra) != 0;
 		}
 
 
-		static int lua_next(IntPtr luaState,int index)
+		int LuaDLL::lua_next(lua_State *luaState,int index)
 		{
-			return ::lua_next(toState, index);
+			return ::lua_next(luaState, index);
 		}
 
 
 
 
-		static void lua_pushlightuserdata(IntPtr luaState, IntPtr udata)
+		void LuaDLL::lua_pushlightuserdata(lua_State *luaState, void *udata)
 		{
-			::lua_pushlightuserdata(toState, udata.ToPointer());
+			::lua_pushlightuserdata(luaState, udata);
 		}
 
-		static int luanet_rawnetobj(IntPtr luaState,int obj)
+		int LuaDLL::luanet_rawnetobj(lua_State *luaState,int obj)
 		{
-			int *udata= (int *) lua_touserdata(luaState, obj).ToPointer();
+            int *udata= (int *) LuaDLL::lua_touserdata(luaState, obj);
 			if(udata!=NULL) return *udata;
 			return -1;
 		}
 
 
       // lua debug hook functions added by Reinhard Ostermeier
-
-      static int lua_sethook(IntPtr luaState, LuaHookFunction^ func, int mask, int count)
+        int LuaDLL::__lua_hookback(lua_State *l, lua_State *debug) {
+            return hookBack->runHook(l, debug);
+        }
+        
+        
+      int LuaDLL::lua_sethook(lua_State *luaState, LuaHook *hook, int mask, int count)
       {
-         IntPtr p;
-         if (func == nullptr)
-         {
-            p = IntPtr::Zero;
-         }
-         else
-         {
-            p = Marshal::GetFunctionPointerForDelegate(func);
-         }
-         return ::lua_sethook(toState, (lua_Hook)p.ToPointer(), mask, count);
+         return ::lua_sethook(luaState, (lua_Hook)__lua_hookback, mask, count);
       }
 
-      static int lua_gethookmask(IntPtr luaState)
+      int LuaDLL::lua_gethookmask(lua_State *luaState)
       {
-         return ::lua_gethookmask(toState);
+         return ::lua_gethookmask(luaState);
       }
 
-      static int lua_gethookcount(IntPtr luaState)
+      int LuaDLL::lua_gethookcount(lua_State *luaState)
       {
-         return ::lua_gethookcount(toState);
+         return ::lua_gethookcount(luaState);
       }
 
-      static int lua_getstack(IntPtr luaState, int level, IntPtr luaDebug)
+      int LuaDLL::lua_getstack(lua_State *luaState, int level, lua_State *luaDebug)
       {
-         return ::lua_getstack(toState, level, (lua_Debug*)luaDebug.ToPointer());
+         return ::lua_getstack(luaState, level, (lua_Debug*)luaDebug);
       }
 
-      static int lua_getinfo(IntPtr luaState, String^ what, IntPtr luaDebug)
+      int LuaDLL::lua_getinfo(lua_State *luaState, std::string *what, lua_State *luaDebug)
       {
-         char *cs = (char *) Marshal::StringToHGlobalAnsi(what).ToPointer();
-         int ret = ::lua_getinfo(toState, cs, (lua_Debug*)luaDebug.ToPointer());
-			Marshal::FreeHGlobal(IntPtr(cs));
+          const char *cs = (char *) what->c_str();
+         int ret = ::lua_getinfo(luaState, cs, (lua_Debug*)luaDebug);
          return ret;
       }
 
-      static String^ lua_getlocal(IntPtr luaState, IntPtr luaDebug, int n)
-      {
-         const char* str = ::lua_getlocal(toState, (lua_Debug*)luaDebug.ToPointer(), n);
+     std::string LuaDLL::lua_getlocal(lua_State *luaState, lua_State *luaDebug, int n)
+     {
+         const char* str = ::lua_getlocal(luaState, (lua_Debug*)luaDebug, n);
          if (str == NULL)
          {
             return nullptr;
          }
-         else
-         {
-            return gcnew String(str);
-         }
+          return std::string(str);
       }
 
-      static String^ lua_setlocal(IntPtr luaState, IntPtr luaDebug, int n)
+      std::string LuaDLL::lua_setlocal(lua_State *luaState, lua_State *luaDebug, int n)
       {
-         const char* str = ::lua_setlocal(toState, (lua_Debug*)luaDebug.ToPointer(), n);
+         const char* str = ::lua_setlocal(luaState, (lua_Debug*)luaDebug, n);
          if(str == NULL)
          {
             return nullptr;
          }
-         else
-         {
-            return gcnew String(str);
-         }
+         return std::string(str);
       }
 
-      static String^ lua_getupvalue(IntPtr luaState, int funcindex, int n)
+      std::string LuaDLL::lua_getupvalue(lua_State *luaState, int funcindex, int n)
       {
-         const char* str = ::lua_getupvalue(toState, funcindex, n);
+         const char* str = ::lua_getupvalue(luaState, funcindex, n);
          if(str == NULL)
          {
             return nullptr;
          }
-         else
-         {
-            return gcnew String(str);
-         }
+          return std::string(str);
       }
 
-      static String^ lua_setupvalue(IntPtr luaState, int funcindex, int n)
+      std::string LuaDLL::lua_setupvalue(lua_State *luaState, int funcindex, int n)
       {
-         const char* str = ::lua_setupvalue(toState, funcindex, n);
+         const char* str = ::lua_setupvalue(luaState, funcindex, n);
          if(str == NULL)
          {
             return nullptr;
          }
-         else
-         {
-            return gcnew String(str);
-         }
+         
+          return std::string(str);
       }
-
-      // end of lua debug hook functions
-
-private:
-
+    
 		// Starting with 5.1 the auxlib version of checkudata throws an exception if the type isn't right
 		// Instead, we want to run our own version that checks the type and just returns null for failure
-		static void *checkudata_raw(lua_State *L, int ud, const char *tname)
+       void *LuaDLL::checkudata_raw(lua_State *L, int ud, const char *tname)
 		{
 			void *p = ::lua_touserdata(L, ud);
 
@@ -891,30 +753,25 @@ private:
 		  
 		  return NULL;
 		}
-
-
-public:
-
-		static int luanet_checkudata(IntPtr luaState, int ud, String ^tname)
+    
+    
+        int LuaDLL::luanet_checkudata(lua_State *luaState, int ud, std::string *tname)
 		{
-			char *cs = (char *) Marshal::StringToHGlobalAnsi(tname).ToPointer();
-
-		    int *udata=(int*) checkudata_raw(toState, ud, cs);
-
-			Marshal::FreeHGlobal(IntPtr(cs));
+			const char *cs = tname->c_str();
+		    int *udata=(int*) checkudata_raw(luaState, ud, cs);
 
 		    if(udata!=NULL) return *udata;
 		    return -1;
 		}
 
 
-		static bool luaL_checkmetatable(IntPtr luaState,int index)
+		bool LuaDLL::luaL_checkmetatable(lua_State *luaState,int index)
 		{
 			int retVal=0;
 
 			if(lua_getmetatable(luaState,index)!=0) 
 			{
-				lua_pushlightuserdata(luaState, IntPtr(&tag));
+				lua_pushlightuserdata(luaState, &tag);
 				lua_rawget(luaState, -2);
 				retVal = !lua_isnil(luaState, -1);
 				lua_settop(luaState, -3);
@@ -922,18 +779,18 @@ public:
 			return retVal;
 		}
 
-		static IntPtr luanet_gettag() 
+		int *LuaDLL::luanet_gettag()
 		{
-			return IntPtr(&tag);
+			return &tag;
 		}
 
-		static void luanet_newudata(IntPtr luaState,int val)
+		void LuaDLL::luanet_newudata(lua_State *luaState,int val)
 		{
-			int* pointer=(int*) lua_newuserdata(luaState, sizeof(int)).ToPointer();
+			int* pointer=(int*) lua_newuserdata(luaState, sizeof(int));
 			*pointer=val;
 		}
 
-		static int luanet_tonetobject(IntPtr luaState,int index)
+		int LuaDLL::luanet_tonetobject(lua_State *luaState,int index)
 		{
 			int *udata;
 
@@ -941,27 +798,18 @@ public:
 			{
 				if(luaL_checkmetatable(luaState, index)) 
 				{
-				udata=(int*) lua_touserdata(luaState,index).ToPointer();
+				udata=(int*) lua_touserdata(luaState,index);
 				if(udata!=NULL) 
 					return *udata; 
 				}
 
-			udata=(int*)checkudata_raw(toState,index, "luaNet_class");
+			udata=(int*)checkudata_raw(luaState,index, "luaNet_class");
 			if(udata!=NULL) return *udata;
-			udata=(int*)checkudata_raw(toState,index, "luaNet_searchbase");
+			udata=(int*)checkudata_raw(luaState,index, "luaNet_searchbase");
 			if(udata!=NULL) return *udata;
-			udata=(int*)checkudata_raw(toState,index, "luaNet_function");
+			udata=(int*)checkudata_raw(luaState,index, "luaNet_function");
 			if(udata!=NULL) return *udata;
 			}
 			return -1;
 		}
-
-
-#if 0
-
-
-		[DllImport(STUBDLL,CallingConvention=CallingConvention.Cdecl)]
-		
-#endif
-	};
 }
