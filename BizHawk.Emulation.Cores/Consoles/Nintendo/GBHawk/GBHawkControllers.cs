@@ -44,12 +44,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte Read(IController c)
 		{
 			byte result = 0xFF;
-			for (int i = 0; i < 8; i++)
+
+			if (c.IsPressed(Definition.BoolButtons[0]))
 			{
-				if (c.IsPressed(Definition.BoolButtons[i]))
-				{
-					result -= (byte)(1 << i);
-				}
+				result -= 4;
+			}
+			if (c.IsPressed(Definition.BoolButtons[1]))
+			{
+				result -= 8;
+			}
+			if (c.IsPressed(Definition.BoolButtons[2]))
+			{
+				result -= 2;
+			}
+			if (c.IsPressed(Definition.BoolButtons[3]))
+			{
+				result -= 1;
+			}
+			if (c.IsPressed(Definition.BoolButtons[4]))
+			{
+				result -= 128;
+			}
+			if (c.IsPressed(Definition.BoolButtons[5]))
+			{
+				result -= 64;
+			}
+			if (c.IsPressed(Definition.BoolButtons[6]))
+			{
+				result -= 32;
+			}
+			if (c.IsPressed(Definition.BoolButtons[7]))
+			{
+				result -= 16;
 			}
 
 			return result;
