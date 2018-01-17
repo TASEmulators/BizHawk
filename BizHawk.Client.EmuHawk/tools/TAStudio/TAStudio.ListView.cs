@@ -52,7 +52,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool MouseButtonHeld => _rightClickFrame != -1 || _leftButtonHeld;
 
-		private bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
+		public bool _triggerAutoRestore; // If true, autorestore will be called on mouse up
 		private bool? _autoRestorePaused = null;
 		private int? _seekStartFrame = null;
 		private bool _unpauseAfterSeeking = false;
@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 		public AutoPatternBool[] BoolPatterns;
 		public AutoPatternFloat[] FloatPatterns;
 
-		private void JumpToGreenzone()
+		public void JumpToGreenzone()
 		{
 			if (Emulator.Frame > CurrentTasMovie.LastValidFrame)
 			{

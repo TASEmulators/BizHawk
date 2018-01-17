@@ -13,6 +13,10 @@ namespace BizHawk.Client.EmuHawk
 	[LuaLibrary(released: true)]
 	public sealed class TastudioLuaLibrary : LuaLibraryBase
 	{
+		public TasMovie CurrentTasMovie => Global.MovieSession.Movie as TasMovie;
+
+
+
 		public TastudioLuaLibrary(Lua lua)
 			: base(lua) { }
 
@@ -358,6 +362,24 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			return table;
+		}
+
+		[LuaMethod("setinput","Sets input")]
+		public void SetInput(int frame, string button, bool pressing)
+		{
+			CurrentTasMovie.SetBoolState(frame, button, pressing);
+			Tastudio._triggerAutoRestore = true;
+			Tastudio.JumpToGreenzone();
+			Tastudio.RefreshDialog();
+		}
+
+		[LuaMethod("setanaloginput","Sets analog input")]
+		public void SetAnalogInput(int frame, string button, float value)
+		{
+			CurrentTasMovie.SetFloatState(frame, button, value);
+			Tastudio._triggerAutoRestore = true;
+			Tastudio.JumpToGreenzone();
+			Tastudio.RefreshDialog();
 		}
 	}
 }
