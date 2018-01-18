@@ -59,6 +59,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int tile_byte;
 		public int sprite_fetch_cycles;
 		public bool fetch_sprite;
+		public bool fetch_sprite_01;
+		public bool going_to_fetch;
+		public int sprite_fetch_counter;
+		public bool glitchy_eval;
+		public byte[] sprite_attr_list = new byte[160];
+		public byte[] sprite_pixel_list = new byte[160];
+		public byte[] sprite_present_list = new byte[160];
 		public int temp_fetch;
 		public int tile_inc;
 		public bool pre_render;
@@ -74,11 +81,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte[] sprite_sel = new byte[2];
 		public int sl_use_index;
 		public bool no_sprites;
-		public int sprite_fetch_index;
 		public int[] SL_sprites_ordered = new int[40]; // (x_end, data_low, data_high, attr)
-		public int index_used;
+		public int evaled_sprites;
 		public int sprite_ordered_index;
-		public int bottom_index;
 		public bool blank_frame;
 
 		// windowing state
@@ -582,11 +587,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				tile_inc = 0;
 				pixel_counter = 0;
 				sl_use_index = 0;
-				index_used = 0;
-				bottom_index = 0;
-				sprite_ordered_index = 0;
 				fetch_sprite = false;
+				fetch_sprite_01 = false;
+				going_to_fetch = false;
 				no_sprites = false;
+				glitchy_eval = false;
+				evaled_sprites = 0;
 
 				window_pre_render = false;
 				if (window_started && LCDC.Bit(5))
@@ -601,12 +607,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				window_started = false;
 
-				if (SL_sprites_index == 0)
-				{
-					no_sprites = true;
-				}
+				if (SL_sprites_index == 0) { no_sprites = true; }
+				// it is much easier to process sprites if we order them according to the rules of sprite priority first
+				if (!no_sprites) { reorder_and_assemble_sprites(); }
+
 			}
-			
+
 			// before anything else, we have to check if windowing is in effect
 			if (LCDC.Bit(5) && !window_started && (LY >= window_y) && (pixel_counter >= (window_x_latch - 7)) && (window_x_latch < 167))
 			{
@@ -643,132 +649,109 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			
 			if (!pre_render && !fetch_sprite && !window_pre_render)
 			{
-				// start by fetching all the sprites that need to be fetched
-				if (!no_sprites)
+				// start shifting data into the LCD
+				if (render_counter >= (render_offset + 8))
 				{
-					for (int i = 0; i < SL_sprites_index; i++)
+					pixel = tile_data_latch[0].Bit(7 - (render_counter % 8)) ? 1 : 0;
+					pixel |= tile_data_latch[1].Bit(7 - (render_counter % 8)) ? 2 : 0;
+
+					int ref_pixel = pixel;
+					if (LCDC.Bit(0))
 					{
-						if ((pixel_counter >= (SL_sprites[i * 4 + 1] - 8)) &&
-							(pixel_counter < SL_sprites[i * 4 + 1]) &&
-							!index_used.Bit(i))
-						{
-							fetch_sprite = true;
-							sprite_fetch_index = 0;
-						}
+						pixel = (BGP >> (pixel * 2)) & 3;
 					}
-				}
-
-				if (!fetch_sprite)
-				{
-					// start shifting data into the LCD
-					if (render_counter >= (render_offset + 8))
+					else
 					{
-						pixel = tile_data_latch[0].Bit(7 - (render_counter % 8)) ? 1 : 0;
-						pixel |= tile_data_latch[1].Bit(7 - (render_counter % 8)) ? 2 : 0;
-
-						int ref_pixel = pixel;
-						if (LCDC.Bit(0))
-						{
-							pixel = (BGP >> (pixel * 2)) & 3;
-						}
-						else
-						{
-							pixel = 0;
-						}
+						pixel = 0;
+					}
 						
+					// now we have the BG pixel, we next need the sprite pixel
+					if (!no_sprites)
+					{
+						bool have_sprite = false;
+						int s_pixel = 0;
+						int sprite_attr = 0;
 
-						// now we have the BG pixel, we next need the sprite pixel
-						if (!no_sprites)
+						if (sprite_present_list[pixel_counter] == 1)
 						{
-							bool have_sprite = false;
-							int i = bottom_index;
-							int s_pixel = 0;
-							int sprite_attr = 0;
-
-							while (i < sprite_ordered_index)
-							{
-								if (SL_sprites_ordered[i * 4] == pixel_counter)
-								{
-									bottom_index++;
-									if (bottom_index == SL_sprites_index) { no_sprites = true; }
-								}
-								else if (!have_sprite)
-								{
-									// we can use the current sprite, so pick out a pixel for it
-									int t_index = pixel_counter - (SL_sprites_ordered[i * 4] - 8);
-
-									t_index = 7 - t_index;
-									
-									sprite_data[0] = (byte)((SL_sprites_ordered[i * 4 + 1] >> t_index) & 1);
-									sprite_data[1] = (byte)(((SL_sprites_ordered[i * 4 + 2] >> t_index) & 1) << 1);
-
-									s_pixel = sprite_data[0] + sprite_data[1];
-									sprite_attr = SL_sprites_ordered[i * 4 + 3];
-
-									// pixel color of 0 is transparent, so if this is the case we dont have a pixel
-									if (s_pixel != 0)
-									{
-										have_sprite = true;
-									}
-								}
-								i++;
-							}
-
-							if (have_sprite)
-							{
-								bool use_sprite = false;
-								if (LCDC.Bit(1))
-								{
-									if (!sprite_attr.Bit(7))
-									{
-										use_sprite = true;
-									}
-									else if (ref_pixel == 0)
-									{
-										use_sprite = true;
-									}
-
-									if (!LCDC.Bit(0))
-									{
-										use_sprite = true;
-									}
-								}
-
-								if (use_sprite)
-								{
-									if (sprite_attr.Bit(4))
-									{
-										pixel = (obj_pal_1 >> (s_pixel * 2)) & 3;
-									}
-									else
-									{
-										pixel = (obj_pal_0 >> (s_pixel * 2)) & 3;
-									}							
-								}
-							}
+							have_sprite = true;
+							s_pixel = sprite_pixel_list[pixel_counter];
+							sprite_attr = sprite_attr_list[pixel_counter];
 						}
 
-						// based on sprite priority and pixel values, pick a final pixel color
-						Core._vidbuffer[LY * 160 + pixel_counter] = (int)Core.color_palette[pixel];
-						pixel_counter++;
-
-						if (pixel_counter == 160)
+						if (have_sprite)
 						{
-							read_case = 8;
-							hbl_countdown = 6;
+							bool use_sprite = false;
+							if (LCDC.Bit(1))
+							{
+								if (!sprite_attr.Bit(7))
+								{
+									use_sprite = true;
+								}
+								else if (ref_pixel == 0)
+								{
+									use_sprite = true;
+								}
+
+								if (!LCDC.Bit(0))
+								{
+									use_sprite = true;
+								}
+							}
+
+							if (use_sprite)
+							{
+								if (sprite_attr.Bit(4))
+								{
+									pixel = (obj_pal_1 >> (s_pixel * 2)) & 3;
+								}
+								else
+								{
+									pixel = (obj_pal_0 >> (s_pixel * 2)) & 3;
+								}							
+							}
 						}
 					}
-					render_counter++;
+
+					// based on sprite priority and pixel values, pick a final pixel color
+					Core._vidbuffer[LY * 160 + pixel_counter] = (int)Core.color_palette[pixel];
+					pixel_counter++;
+
+					if (pixel_counter == 160)
+					{
+						read_case = 8;
+						hbl_countdown = 7;
+					}
 				}
+				render_counter++;
 			}
 
 			if (!fetch_sprite)
 			{
-				if (latch_new_data)
+				if (!pre_render)
 				{
-					latch_new_data = false;
-					tile_data_latch[0] = tile_data[0];
-					tile_data_latch[1] = tile_data[1];
+					// before we go on to read case 3, we need to know if we stall there or not
+					// Gekkio's tests show that if sprites are at position 0 or 1 (mod 8) 
+					// then it takes an extra cycle (1 or 2 more t-states) to process them
+
+					if (!no_sprites && (pixel_counter < 160))
+					{
+						for (int i = 0; i < SL_sprites_index; i++)
+						{
+							if ((pixel_counter >= (SL_sprites[i * 4 + 1] - 8)) &&
+								(pixel_counter < (SL_sprites[i * 4 + 1])) && 
+								!evaled_sprites.Bit(i))
+							{
+								going_to_fetch = true;
+								fetch_sprite = true;
+
+								if ((SL_sprites[i * 4 + 1] % 8) < 2)
+								{
+									fetch_sprite_01 = true;
+								}
+							}
+						}
+					}
 				}
 
 				switch (read_case)
@@ -856,15 +839,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// here we set up rendering
 								pre_render = false;
 								render_offset = scroll_x % 8;
-								render_counter = -1;
+								render_counter = 0; // -1;
 								latch_counter = 0;
 								read_case = 0;
+
+								// here we also do a glitchy sprite evaluation for sprites with x=0
+								if (!no_sprites)
+								{
+									for (int i = 0; i < SL_sprites_index; i++)
+									{
+										if (SL_sprites[i * 4 + 1] == 0)
+										{
+											going_to_fetch = true;
+											fetch_sprite = true;
+											glitchy_eval = true;
+
+											if ((SL_sprites[i * 4 + 1] % 8) < 2)
+											{
+												fetch_sprite_01 = true;
+											}
+										}
+									}
+								}
 							}
 							else
 							{
 								read_case = 3;
 							}
-
 						}
 						break;
 
@@ -959,13 +960,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// here we set up rendering
 								window_pre_render = false;
 								render_offset = 0;
-								render_counter = -1;
+								render_counter = 0; // -1;
 								latch_counter = 0;
 								read_case = 4;
 							}
 							else
 							{
 								read_case = 7;
+
 							}
 						}
 						window_counter++;
@@ -1009,54 +1011,69 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 				}
 				internal_cycle++;
+
+				if (latch_new_data)
+				{
+					latch_new_data = false;
+					tile_data_latch[0] = tile_data[0];
+					tile_data_latch[1] = tile_data[1];
+				}
 			}
 
+			// every in range sprite takes 6 cycles to process
+			// sprites located at x=0 still take 6 cycles to process even though they don't appear on screen
+			// sprites above x=168 do not take any cycles to process however
 			if (fetch_sprite)
 			{
-				if (sprite_fetch_index < SL_sprites_index)
+				if (going_to_fetch)
 				{
-					if (pixel_counter != 0) { 
-						if ((pixel_counter == (SL_sprites[sprite_fetch_index * 4 + 1] - 8)) &&
-								//(pixel_counter < SL_sprites[sprite_fetch_index * 4 + 1]) &&
-								!index_used.Bit(sprite_fetch_index))
-						{
-							sl_use_index = sprite_fetch_index;
-							process_sprite();
-							SL_sprites_ordered[sprite_ordered_index * 4] = SL_sprites[sprite_fetch_index * 4 + 1];
-							SL_sprites_ordered[sprite_ordered_index * 4 + 1] = sprite_sel[0];
-							SL_sprites_ordered[sprite_ordered_index * 4 + 2] = sprite_sel[1];
-							SL_sprites_ordered[sprite_ordered_index * 4 + 3] = SL_sprites[sprite_fetch_index * 4 + 3];
-							sprite_ordered_index++;
-							index_used |= (1 << sl_use_index);
-						}
-						sprite_fetch_index++;
-						if (sprite_fetch_index == SL_sprites_index) { fetch_sprite = false; }
-					}
-					else
+					going_to_fetch = false;
+					sprite_fetch_counter = 0;
+
+					if (fetch_sprite_01)
 					{
-						// whan pixel counter is 0, we want to scan all the points before 0 as well
-						// certainly non-physical but good enough for now
-						for (int j = -7; j < 1; j++)
+						sprite_fetch_counter += 2;
+						fetch_sprite_01 = false;
+					}
+
+					// at this time it is unknown what each cycle does, but we only need to accurately keep track of cycles
+					for (int i = 0; i < SL_sprites_index; i++)
+					{
+						if (glitchy_eval && (SL_sprites[i * 4 + 1] == 0))
 						{
-							for (int i = 0; i < SL_sprites_index; i++)
-							{	
-								if ((j == (SL_sprites[i * 4 + 1] - 8)) &&
-								!index_used.Bit(i))
-								{
-									sl_use_index = i;
-									process_sprite();
-									SL_sprites_ordered[sprite_ordered_index * 4] = SL_sprites[i * 4 + 1];
-									SL_sprites_ordered[sprite_ordered_index * 4 + 1] = sprite_sel[0];
-									SL_sprites_ordered[sprite_ordered_index * 4 + 2] = sprite_sel[1];
-									SL_sprites_ordered[sprite_ordered_index * 4 + 3] = SL_sprites[i * 4 + 3];
-									sprite_ordered_index++;
-									index_used |= (1 << sl_use_index);
-								}
-							}
+							sprite_fetch_counter += 6;
+							evaled_sprites |= (1 << i);
 						}
+
+						else if ((pixel_counter >= (SL_sprites[i * 4 + 1] - 8)) &&
+								(pixel_counter < (SL_sprites[i * 4 + 1])) &&
+								!evaled_sprites.Bit(i))
+						{
+							sprite_fetch_counter += 6;
+							evaled_sprites |= (1 << i);
+
+							//Console.Write(SL_sprites[i * 4 + 1]);
+							//Console.Write(" ");
+						}
+					}
+
+					// if we didn't evaluate all the sprites immediately, 2 more cycles are added to restart it
+					if (evaled_sprites != (Math.Pow(2,SL_sprites_index) - 1))
+					{
+						sprite_fetch_counter += 2;
+					}
+
+					glitchy_eval = false;
+					//Console.WriteLine(sprite_fetch_counter);
+				}
+				else
+				{
+					sprite_fetch_counter--;
+					if (sprite_fetch_counter == 0)
+					{
 						fetch_sprite = false;
 					}
-				}
+				}				
 			}
 		}
 
@@ -1081,6 +1098,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			VRAM_access_read = true;
 			OAM_access_write = true;
 			VRAM_access_write = true;
+			DMA_OAM_access = true;
 
 			cycle = 0;
 			LYC_INT = false;
@@ -1156,6 +1174,81 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
+		// order sprites according to x coordinate
+		// note that for sprites of equal x coordinate, priority goes to first on the list
+		public void reorder_and_assemble_sprites()
+		{
+			sprite_ordered_index = 0;
+			/*
+			for (int i = 0; i < SL_sprites_index; i++)
+			{
+				Console.Write(SL_sprites[i * 4 + 1]);
+				Console.Write(" ");
+			}
+			Console.WriteLine(" ");
+			*/
+			for (int i = 0; i < 256; i++)
+			{
+				for (int j = 0; j < SL_sprites_index; j++)
+				{
+					if (SL_sprites[j * 4 + 1] == i)
+					{
+						sl_use_index = j;
+						process_sprite();
+						SL_sprites_ordered[sprite_ordered_index * 4] = SL_sprites[j * 4 + 1];
+						SL_sprites_ordered[sprite_ordered_index * 4 + 1] = sprite_sel[0];
+						SL_sprites_ordered[sprite_ordered_index * 4 + 2] = sprite_sel[1];
+						SL_sprites_ordered[sprite_ordered_index * 4 + 3] = SL_sprites[j * 4 + 3];
+						sprite_ordered_index++;
+					}
+				}
+			}
+
+			bool have_pixel = false;
+			byte s_pixel = 0;
+			byte sprite_attr = 0;
+
+			for (int i = 0; i < 160; i++)
+			{
+				have_pixel = false;
+				for (int j = 0; j < SL_sprites_index; j++)
+				{
+					if ((i >= (SL_sprites_ordered[j * 4] - 8)) &&
+						(i < SL_sprites_ordered[j * 4]) &&
+						!have_pixel)
+					{
+						// we can use the current sprite, so pick out a pixel for it
+						int t_index = i - (SL_sprites_ordered[j * 4] - 8);
+
+						t_index = 7 - t_index;
+
+						sprite_data[0] = (byte)((SL_sprites_ordered[j * 4 + 1] >> t_index) & 1);
+						sprite_data[1] = (byte)(((SL_sprites_ordered[j * 4 + 2] >> t_index) & 1) << 1);
+
+						s_pixel = (byte)(sprite_data[0] + sprite_data[1]);
+						sprite_attr = (byte)SL_sprites_ordered[j * 4 + 3];
+
+						// pixel color of 0 is transparent, so if this is the case we dont have a pixel
+						if (s_pixel != 0)
+						{
+							have_pixel = true;
+						}
+					}
+				}
+
+				if (have_pixel)
+				{
+					sprite_present_list[i] = 1;
+					sprite_pixel_list[i] = s_pixel;
+					sprite_attr_list[i] = sprite_attr;
+				}
+				else
+				{
+					sprite_present_list[i] = 0;
+				}
+			}
+		}
+
 		public void SyncState(Serializer ser)
 		{
 			ser.Sync("LCDC", ref LCDC);
@@ -1206,6 +1299,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("tile_byte", ref tile_byte);
 			ser.Sync("sprite_fetch_cycles", ref sprite_fetch_cycles);
 			ser.Sync("fetch_sprite", ref fetch_sprite);
+			ser.Sync("fetch_sprite_01", ref fetch_sprite_01);
+			ser.Sync("going_to_fetch", ref going_to_fetch);
+			ser.Sync("sprite_fetch_counter", ref sprite_fetch_counter);
+			ser.Sync("sprite_attr_list", ref sprite_attr_list, false);
+			ser.Sync("sprite_pixel_list", ref sprite_pixel_list, false);
+			ser.Sync("sprite_present_list", ref sprite_present_list, false);		
 			ser.Sync("temp_fetch", ref temp_fetch);
 			ser.Sync("tile_inc", ref tile_inc);
 			ser.Sync("pre_render", ref pre_render);
@@ -1221,11 +1320,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("sl_use_index", ref sl_use_index);
 			ser.Sync("sprite_sel", ref sprite_sel, false);
 			ser.Sync("no_sprites", ref no_sprites);
-			ser.Sync("sprite_fetch_index", ref sprite_fetch_index);
+			ser.Sync("evaled_sprites", ref evaled_sprites);
 			ser.Sync("SL_sprites_ordered", ref SL_sprites_ordered, false);
-			ser.Sync("index_used", ref index_used);
 			ser.Sync("sprite_ordered_index", ref sprite_ordered_index);
-			ser.Sync("bottom_index", ref bottom_index);
 			ser.Sync("blank_frame", ref blank_frame);
 
 			ser.Sync("window_counter", ref window_counter);
