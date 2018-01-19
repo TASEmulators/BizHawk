@@ -365,22 +365,36 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("setinput","Sets input")]
 		public void SetInput(int frame, string button, bool value)
 		{
-			if (CurrentTasMovie.BoolIsPressed(frame, button) == value)
+			if (frame < CurrentTasMovie.FrameCount)
+			{
+				if (CurrentTasMovie.BoolIsPressed(frame, button) != value)
+				{
+					CurrentTasMovie.SetBoolState(frame, button, value);
+					Tastudio.JumpToGreenzone();
+					Tastudio.DoAutoRestore();
+				}
+			}
+			else
 			{
 				CurrentTasMovie.SetBoolState(frame, button, value);
-				Tastudio.JumpToGreenzone();
-				Tastudio.DoAutoRestore();
 			}
 		}
 
 		[LuaMethod("setanaloginput","Sets analog input")]
 		public void SetAnalogInput(int frame, string button, float value)
 		{
-			if (CurrentTasMovie.GetFloatState(frame, button) != value)
+			if (frame < CurrentTasMovie.FrameCount)
+			{
+				if (CurrentTasMovie.GetFloatState(frame, button) != value)
+				{
+					CurrentTasMovie.SetFloatState(frame, button, value);
+					Tastudio.JumpToGreenzone();
+					Tastudio.DoAutoRestore();
+				}
+			}
+			else
 			{
 				CurrentTasMovie.SetFloatState(frame, button, value);
-				Tastudio.JumpToGreenzone();
-				Tastudio.DoAutoRestore();
 			}
 		}
 	}
