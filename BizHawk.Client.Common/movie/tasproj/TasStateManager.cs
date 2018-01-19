@@ -26,6 +26,13 @@ namespace BizHawk.Client.Common
 			InvalidateCallback?.Invoke(index);
 		}
 
+		public Action<int> LoadCallback { get; set; }
+
+		private void CallLoadCallback(int index)
+		{
+			LoadCallback?.Invoke(index);
+		}
+
 		private readonly List<StateManagerState> _lowPriorityStates = new List<StateManagerState>();
 		internal NDBDatabase NdbDatabase { get; set; }
 		private Guid _guid = Guid.NewGuid();
@@ -1041,6 +1048,7 @@ namespace BizHawk.Client.Common
 					SetState(kvp.Key, kvp.Value[branchHash].State);
 				}
 			}
+			CallLoadCallback(index);
 		}
 
 		#endregion

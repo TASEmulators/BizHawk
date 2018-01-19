@@ -243,6 +243,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethod("onbranchload","")]
+		public void OnBranchLoad(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.BranchLoadCallback = (int index) =>
+				{
+					luaf.Call(index);
+				};
+			}
+		}
+
 		[LuaMethod("getselection", "gets the currently selected frames")]
 		public LuaTable GetSelection()
 		{
