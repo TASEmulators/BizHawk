@@ -60,6 +60,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int sprite_fetch_cycles;
 		public bool fetch_sprite;
 		public bool fetch_sprite_01;
+		public bool fetch_sprite_4;
 		public bool going_to_fetch;
 		public int sprite_fetch_counter;
 		public bool glitchy_eval;
@@ -241,7 +242,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					cycle = 0;
 					LY += LY_inc;
-					//Console.WriteLine(Core.cpu.TotalExecutedCycles);
 					no_scan = false;
 
 					// here is where LY = LYC gets cleared (but only if LY isnt 0 as that's a special case
@@ -589,6 +589,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				sl_use_index = 0;
 				fetch_sprite = false;
 				fetch_sprite_01 = false;
+				fetch_sprite_4 = false;
 				going_to_fetch = false;
 				no_sprites = false;
 				glitchy_eval = false;
@@ -748,6 +749,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								if ((SL_sprites[i * 4 + 1] % 8) < 2)
 								{
 									fetch_sprite_01 = true;
+								}
+								if ((SL_sprites[i * 4 + 1] % 8) > 3)
+								{
+									fetch_sprite_4 = true;
 								}
 							}
 						}
@@ -1036,35 +1041,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						fetch_sprite_01 = false;
 					}
 
+					if (fetch_sprite_4)
+					{
+						sprite_fetch_counter -= 2;
+						fetch_sprite_4 = false;
+					}
+
+					int last_eval = 0;
+
 					// at this time it is unknown what each cycle does, but we only need to accurately keep track of cycles
 					for (int i = 0; i < SL_sprites_index; i++)
 					{
-						if (glitchy_eval && (SL_sprites[i * 4 + 1] == 0))
+						if (glitchy_eval)
 						{
-							sprite_fetch_counter += 6;
-							evaled_sprites |= (1 << i);
+							if (SL_sprites[i * 4 + 1] == 0)
+							{
+								sprite_fetch_counter += 6;
+								evaled_sprites |= (1 << i);
+								last_eval = SL_sprites[i * 4 + 1];
+							}
+						
 						}
-
 						else if ((pixel_counter >= (SL_sprites[i * 4 + 1] - 8)) &&
 								(pixel_counter < (SL_sprites[i * 4 + 1])) &&
 								!evaled_sprites.Bit(i))
 						{
 							sprite_fetch_counter += 6;
 							evaled_sprites |= (1 << i);
-
-							//Console.Write(SL_sprites[i * 4 + 1]);
-							//Console.Write(" ");
+							last_eval = SL_sprites[i * 4 + 1];
 						}
 					}
 
 					// if we didn't evaluate all the sprites immediately, 2 more cycles are added to restart it
 					if (evaled_sprites != (Math.Pow(2,SL_sprites_index) - 1))
 					{
-						sprite_fetch_counter += 2;
+						if ((last_eval % 8) == 0) { sprite_fetch_counter += 3; }
+						else if ((last_eval % 8) == 1) { sprite_fetch_counter += 2; }
+						else if ((last_eval % 8) == 2) { sprite_fetch_counter += 3; }
+						else if ((last_eval % 8) == 3) { sprite_fetch_counter += 2; }
+						else if ((last_eval % 8) == 4) { sprite_fetch_counter += 3; }
+						else { sprite_fetch_counter += 2; }
 					}
 
 					glitchy_eval = false;
-					//Console.WriteLine(sprite_fetch_counter);
 				}
 				else
 				{
@@ -1179,14 +1198,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void reorder_and_assemble_sprites()
 		{
 			sprite_ordered_index = 0;
-			/*
-			for (int i = 0; i < SL_sprites_index; i++)
-			{
-				Console.Write(SL_sprites[i * 4 + 1]);
-				Console.Write(" ");
-			}
-			Console.WriteLine(" ");
-			*/
+			
 			for (int i = 0; i < 256; i++)
 			{
 				for (int j = 0; j < SL_sprites_index; j++)
@@ -1300,6 +1312,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("sprite_fetch_cycles", ref sprite_fetch_cycles);
 			ser.Sync("fetch_sprite", ref fetch_sprite);
 			ser.Sync("fetch_sprite_01", ref fetch_sprite_01);
+			ser.Sync("fetch_sprite_4", ref fetch_sprite_4);
 			ser.Sync("going_to_fetch", ref going_to_fetch);
 			ser.Sync("sprite_fetch_counter", ref sprite_fetch_counter);
 			ser.Sync("sprite_attr_list", ref sprite_attr_list, false);
