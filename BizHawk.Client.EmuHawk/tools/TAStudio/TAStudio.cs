@@ -803,7 +803,7 @@ namespace BizHawk.Client.EmuHawk
 			_lastRefresh = Emulator.Frame;
 		}
 
-		private void DoAutoRestore()
+		public void DoAutoRestore()
 		{
 			if (Settings.AutoRestoreLastPosition && LastPositionFrame != -1)
 			{
