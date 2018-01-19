@@ -63,7 +63,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool fetch_sprite_4;
 		public bool going_to_fetch;
 		public int sprite_fetch_counter;
-		public bool glitchy_eval;
 		public byte[] sprite_attr_list = new byte[160];
 		public byte[] sprite_pixel_list = new byte[160];
 		public byte[] sprite_present_list = new byte[160];
@@ -585,14 +584,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				internal_cycle = 0;
 				pre_render = true;
 				tile_inc = 0;
-				pixel_counter = 0;
+				pixel_counter = -8;
 				sl_use_index = 0;
 				fetch_sprite = false;
 				fetch_sprite_01 = false;
 				fetch_sprite_4 = false;
 				going_to_fetch = false;
 				no_sprites = false;
-				glitchy_eval = false;
 				evaled_sprites = 0;
 
 				window_pre_render = false;
@@ -724,6 +722,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						hbl_countdown = 7;
 					}
 				}
+				else if ((render_counter >= render_offset) && (pixel_counter < 0))
+				{
+					pixel_counter++;
+				}
 				render_counter++;
 			}
 
@@ -844,28 +846,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// here we set up rendering
 								pre_render = false;
 								render_offset = scroll_x % 8;
-								render_counter = 0; // -1;
+								render_counter = 0;
 								latch_counter = 0;
 								read_case = 0;
-
-								// here we also do a glitchy sprite evaluation for sprites with x=0
-								if (!no_sprites)
-								{
-									for (int i = 0; i < SL_sprites_index; i++)
-									{
-										if (SL_sprites[i * 4 + 1] == 0)
-										{
-											going_to_fetch = true;
-											fetch_sprite = true;
-											glitchy_eval = true;
-
-											if ((SL_sprites[i * 4 + 1] % 8) < 2)
-											{
-												fetch_sprite_01 = true;
-											}
-										}
-									}
-								}
 							}
 							else
 							{
@@ -965,7 +948,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// here we set up rendering
 								window_pre_render = false;
 								render_offset = 0;
-								render_counter = 0; // -1;
+								render_counter = 0;
 								latch_counter = 0;
 								read_case = 4;
 							}
@@ -1052,17 +1035,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// at this time it is unknown what each cycle does, but we only need to accurately keep track of cycles
 					for (int i = 0; i < SL_sprites_index; i++)
 					{
-						if (glitchy_eval)
-						{
-							if (SL_sprites[i * 4 + 1] == 0)
-							{
-								sprite_fetch_counter += 6;
-								evaled_sprites |= (1 << i);
-								last_eval = SL_sprites[i * 4 + 1];
-							}
-						
-						}
-						else if ((pixel_counter >= (SL_sprites[i * 4 + 1] - 8)) &&
+						if ((pixel_counter >= (SL_sprites[i * 4 + 1] - 8)) &&
 								(pixel_counter < (SL_sprites[i * 4 + 1])) &&
 								!evaled_sprites.Bit(i))
 						{
@@ -1082,8 +1055,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						else if ((last_eval % 8) == 4) { sprite_fetch_counter += 3; }
 						else { sprite_fetch_counter += 2; }
 					}
-
-					glitchy_eval = false;
 				}
 				else
 				{
