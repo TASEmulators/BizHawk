@@ -71,19 +71,6 @@ namespace Lua511
 
 #endif
 
-#undef LUA_REGISTRYINDEX
-#undef LUA_ENVIRONINDEX
-#undef LUA_GLOBALSINDEX
-
-	/*
-	 * Special stack indexes
-	 */
-	typedef enum LuaIndexes
-	{
-		LUA_REGISTRYINDEX=-10000,
-		LUA_ENVIRONINDEX=-10001,	
-		LUA_GLOBALSINDEX=-10002	
-	} LuaIndexes;
     
     // lsthiros 1/15/2018 - Removed "if 0"'d code. Didn't look like it would ever be useful.
     
@@ -112,9 +99,9 @@ namespace Lua511
 			return lua_typename(luaState, lua_type(luaState, stackPos));
 		}
 
-        void LuaDLL::luaL_error(lua_State *luaState, std::string *message)
+        void LuaDLL::luaL_error(lua_State *luaState, const std::string &message)
 		{
-			const char *cs = message->c_str();
+			const char *cs = message.c_str();
             ::luaL_error(luaState, cs);
 		}
 
@@ -165,16 +152,16 @@ namespace Lua511
 
 		// steffenj: END Lua 5.1.1 API change (lua_strlen is now lua_objlen)
 		// steffenj: BEGIN Lua 5.1.1 API change (lua_dostd::string is now a macro luaL_dostring)
-        int LuaDLL::luaL_loadstring(lua_State *luaState, std::string *chunk)
+        int LuaDLL::luaL_loadstring(lua_State *luaState, const std::string &chunk)
 		{
-			const char *cs = chunk->c_str();
+			const char *cs = chunk.c_str();
             int result = ::luaL_loadstring(luaState, cs);
 			return result;
 		}
 
 #undef luaL_dostring
 
-        int LuaDLL::luaL_dostring(lua_State *luaState, std::string *chunk)
+        int LuaDLL::luaL_dostring(lua_State *luaState, const std::string &chunk)
 		{
 			int result = luaL_loadstring(luaState, chunk);
 			if (result != 0)
@@ -184,7 +171,7 @@ namespace Lua511
 		}
 
 		/// <summary>DEPRECATED - use luaL_dostring(lua_State *luaState, string chunk) instead!</summary>
-        int LuaDLL::lua_dostring(lua_State *luaState, std::string *chunk)
+        int LuaDLL::lua_dostring(lua_State *luaState, const std::string &chunk)
 		{
 			return luaL_dostring(luaState, chunk);
 		}
@@ -207,9 +194,9 @@ namespace Lua511
 
 		// steffenj: END Lua 5.1.1 API change (lua_newtable is gone, lua_createtable is new)
 		// steffenj: BEGIN Lua 5.1.1 API change (lua_dofile now in LuaLib as luaL_dofile macro)
-        int LuaDLL::luaL_dofile(lua_State *luaState, std::string *fileName)
+        int LuaDLL::luaL_dofile(lua_State *luaState, const std::string &fileName)
 		{
-			const char *cs = fileName->c_str();
+			const char *cs = fileName.c_str();
 
 			int result = ::luaL_loadfile(luaState, cs);
 
@@ -222,7 +209,7 @@ namespace Lua511
 #undef lua_getglobal
 
 		// steffenj: END Lua 5.1.1 API change (lua_dofile now in LuaLib as luaL_dofile)
-        void LuaDLL::lua_getglobal(lua_State *luaState, std::string *name)
+        void LuaDLL::lua_getglobal(lua_State *luaState, const std::string &name)
 		{
 			lua_pushstring(luaState, name);
 			::lua_gettable(luaState, (int) LuaIndexes::LUA_GLOBALSINDEX);
@@ -230,7 +217,7 @@ namespace Lua511
 
 #undef lua_setglobal
 
-        void LuaDLL::lua_setglobal(lua_State *luaState, std::string *name)
+        void LuaDLL::lua_setglobal(lua_State *luaState, const std::string &name)
 		{
 			lua_pushstring(luaState,name);
 			lua_insert(luaState,-2);
@@ -299,7 +286,7 @@ namespace Lua511
 		}
 
 
-		void lua_setmetatable(lua_State *luaState, int objIndex)
+        void LuaDLL::lua_setmetatable(lua_State *luaState, int objIndex)
 		{
 			::lua_setmetatable(luaState, objIndex);
 		}
@@ -443,10 +430,12 @@ namespace Lua511
 
 		// static int lua_rawcall(lua_State *luaState, int nArgs, int nResults)
 
+        /*
 		lua_CFunction LuaDLL::lua_tocfunction(lua_State *luaState, int index)
 		{
 			return ::lua_tocfunction(luaState, index);
 		}
+        */
 
 		double LuaDLL::lua_tonumber(lua_State *luaState, int index)
 		{
@@ -535,16 +524,16 @@ namespace Lua511
 		}
 
 
-    void LuaDLL::lua_pushstring(lua_State *luaState, std::string *str)
+    void LuaDLL::lua_pushstring(lua_State *luaState, const std::string &str)
 		{
-			const char *cs = str->c_str();
+			const char *cs = str.c_str();
 			::lua_pushstring(luaState, cs);
 		}
 
 
-    int LuaDLL::luaL_newmetatable(lua_State *luaState, std::string *meta)
+    int LuaDLL::luaL_newmetatable(lua_State *luaState, const std::string &meta)
 		{
-			const char *cs = meta->c_str();
+			const char *cs = meta.c_str();
 			int result = ::luaL_newmetatable(luaState, cs);
             
 			return result;
@@ -552,31 +541,31 @@ namespace Lua511
 
 
 		// steffenj: BEGIN Lua 5.1.1 API change (luaL_getmetatable is now a macro using lua_getfield)
-    void LuaDLL::lua_getfield(lua_State *luaState, int stackPos, std::string *meta)
+    void LuaDLL::lua_getfield(lua_State *luaState, int stackPos, const std::string &meta)
 		{
-			const char *cs = meta->c_str();
+			const char *cs = meta.c_str();
 			::lua_getfield(luaState, stackPos, cs);
 		}
 
 #undef luaL_getmetatable
 
-    void LuaDLL::luaL_getmetatable(lua_State *luaState, std::string *meta)
+    void LuaDLL::luaL_getmetatable(lua_State *luaState, const std::string &meta)
 		{
 			lua_getfield(luaState, (int) LuaIndexes::LUA_REGISTRYINDEX, meta);
 		}
 
-    void *LuaDLL::luaL_checkudata(lua_State *luaState, int stackPos, std::string *meta)
+    void *LuaDLL::luaL_checkudata(lua_State *luaState, int stackPos, const std::string &meta)
 		{
-			const char *cs = meta->c_str();
+			const char *cs = meta.c_str();
 
 			void *result = ::luaL_checkudata(luaState, stackPos, cs);
 
 			return result;
 		}
 
-    bool LuaDLL::luaL_getmetafield(lua_State *luaState, int stackPos, std::string *field)
+    bool LuaDLL::luaL_getmetafield(lua_State *luaState, int stackPos, const std::string &field)
 		{
-            const char *cs = field->c_str();
+            const char *cs = field.c_str();
 			int result = ::luaL_getmetafield(luaState, stackPos, cs);
 
 			return result != 0;
@@ -585,7 +574,7 @@ namespace Lua511
 		// wrapper not yet implemented
 		// static int lua_load(lua_State *luaState, LuaChunkReader chunkReader, ref ReaderInfo data, std::string chunkName);
 
-		int LuaDLL::luaL_loadbuffer(lua_State *luaState, std::string *buff, std::string *name)
+		int LuaDLL::luaL_loadbuffer(lua_State *luaState, const std::string &buff, const std::string &name)
 		{
 #warning Need to implement luaL_loadbuffer
 #if 0
@@ -610,9 +599,9 @@ namespace Lua511
 #endif
 		}
 
-		int LuaDLL::luaL_loadfile(lua_State *luaState, std::string *filename)
+		int LuaDLL::luaL_loadfile(lua_State *luaState, const std::string &filename)
 		{
-			const char *cs = filename->c_str();
+			const char *cs = filename.c_str();
 			int result = ::luaL_loadfile(luaState, cs);
 
 			return result;
@@ -677,9 +666,9 @@ namespace Lua511
          return ::lua_getstack(luaState, level, (lua_Debug*)luaDebug);
       }
 
-      int LuaDLL::lua_getinfo(lua_State *luaState, std::string *what, lua_State *luaDebug)
+      int LuaDLL::lua_getinfo(lua_State *luaState, const std::string &what, lua_State *luaDebug)
       {
-          const char *cs = (char *) what->c_str();
+          const char *cs = (char *) what.c_str();
          int ret = ::lua_getinfo(luaState, cs, (lua_Debug*)luaDebug);
          return ret;
       }
@@ -755,9 +744,9 @@ namespace Lua511
 		}
     
     
-        int LuaDLL::luanet_checkudata(lua_State *luaState, int ud, std::string *tname)
+        int LuaDLL::luanet_checkudata(lua_State *luaState, int ud, const std::string &tname)
 		{
-			const char *cs = tname->c_str();
+			const char *cs = tname.c_str();
 		    int *udata=(int*) checkudata_raw(luaState, ud, cs);
 
 		    if(udata!=NULL) return *udata;

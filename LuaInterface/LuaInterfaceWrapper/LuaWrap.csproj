@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2482457E-C134-48EA-8CBC-7931B96D7C2A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>LuaInterfaceWrapper</RootNamespace>
+    <AssemblyName>LuaInterfaceWrapper</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\Lua\src\wrapper\LuaWrap.cs">
+      <Link>LuaWrap.cs</Link>
+    </Compile>
+    <Compile Include="..\Lua\src\wrapper\LuaWrapPINVOKE.cs">
+      <Link>LuaWrapPINVOKE.cs</Link>
+    </Compile>
+    <Compile Include="..\Lua\src\wrapper\LuaDLL.cs">
+      <Link>LuaDLL.cs</Link>
+    </Compile>
+    <Compile Include="..\Lua\src\wrapper\LuaGCOptions.cs">
+      <Link>LuaGCOptions.cs</Link>
+    </Compile>
+    <Compile Include="..\Lua\src\wrapper\LuaTypes.cs">
+      <Link>LuaTypes.cs</Link>
+    </Compile>
+    <Compile Include="..\Lua\src\wrapper\LuaHook.cs">
+      <Link>LuaHook.cs</Link>
+    </Compile>
+    <Compile Include="..\Lua\src\wrapper\LuaCallback.cs">
+      <Link>LuaCallback.cs</Link>
+    </Compile>
+    <Compile Include="..\Lua\src\wrapper\LuaIndexes.cs">
+      <Link>LuaIndexes.cs</Link>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+</Project>

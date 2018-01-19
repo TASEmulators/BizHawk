@@ -6,7 +6,6 @@ namespace LuaInterface
     using System.Reflection;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using Lua511;
 
     /*
      * Cached method

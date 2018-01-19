@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Lua511;
 using System.Collections;
 
 namespace LuaInterface

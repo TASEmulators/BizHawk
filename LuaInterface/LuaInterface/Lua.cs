@@ -8,7 +8,6 @@ namespace LuaInterface
 	using System.Collections.Specialized;
 	using System.Reflection;
     using System.Threading;
-    using Lua511;
 
 	/*
 	 * Main class of LuaInterface
@@ -69,6 +68,8 @@ namespace LuaInterface
 		ObjectTranslator translator;
 
         LuaCSFunction panicCallback, lockCallback, unlockCallback;
+        LuaCSCaller panicCaller;
+        LuaHookCaller debugHookCaller;
 
         /// <summary>
         /// Used to ensure multiple .net threads all get serialized by this single lock for access to the lua stack/objects
@@ -85,7 +86,7 @@ namespace LuaInterface
 					init();
 				}
 		void init()
-		{
+        {
 			luaState = LuaDLL.luaL_newstate();	// steffenj: Lua 5.1.1 API change (lua_open is gone)
 			//LuaDLL.luaopen_base(luaState);	// steffenj: luaopen_* no longer used
 			LuaDLL.luaL_openlibs(luaState);		// steffenj: Lua 5.1.1 API change (luaopen_base is gone, just open all libs right here)
@@ -106,7 +107,8 @@ namespace LuaInterface
 
             // We need to keep this in a managed reference so the delegate doesn't get garbage collected
             panicCallback = new LuaCSFunction(PanicCallback);
-            LuaDLL.lua_atpanic(luaState, panicCallback);
+            panicCaller = new LuaCSCaller(panicCallback);
+            LuaDLL.lua_atpanic(luaState, panicCaller);
 
             //LuaDLL.lua_atlock(luaState, lockCallback = new LuaCSFunction(LockCallback));
             //LuaDLL.lua_atunlock(luaState, unlockCallback = new LuaCSFunction(UnlockCallback));
@@ -743,7 +745,8 @@ namespace LuaInterface
          if (hookCallback == null)
          {
             hookCallback = new LuaHookFunction(DebugHookCallback);
-            return LuaDLL.lua_sethook(luaState, hookCallback, (int)mask, count);
+                debugHookCaller = new LuaHookCaller(hookCallback);
+                return LuaDLL.lua_sethook(luaState, debugHookCaller, (int)mask, count);
          }
          return -1;
       }
@@ -943,7 +946,7 @@ namespace LuaInterface
       /// <author>Reinhard Ostermeier</author>
       public object Pop()
       {
-         int top = Lua511.LuaDLL.lua_gettop(luaState);
+         int top = LuaDLL.lua_gettop(luaState);
          return translator.popValues(luaState, top - 1)[0];
       }
 

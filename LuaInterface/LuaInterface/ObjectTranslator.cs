@@ -6,7 +6,6 @@ namespace LuaInterface
 	using System.Reflection;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using Lua511;
 
 	/*
 	 * Passes objects from the CLR to Lua and vice-versa
@@ -30,6 +29,8 @@ namespace LuaInterface
 
         internal EventHandlerContainer pendingEvents = new EventHandlerContainer();
 
+        private Dictionary<LuaCSFunction, LuaCSCaller> callbackRefs;
+
 		public ObjectTranslator(Lua interpreter,IntPtr luaState) 
 		{
 			this.interpreter=interpreter;
@@ -50,7 +51,22 @@ namespace LuaInterface
 			createClassMetatable(luaState);
 			createFunctionMetatable(luaState);
 			setGlobalFunctions(luaState);
+
+            callbackRefs = new Dictionary<LuaCSFunction, LuaCSCaller>();
 		}
+
+        private void pushWrappedFunction(IntPtr luaState, LuaCSFunction function) {
+            LuaCSCaller caller;
+            if (callbackRefs.ContainsKey(function))
+            {
+                caller = callbackRefs[function];
+            } else {
+                caller = new LuaCSCaller(function);
+                callbackRefs.Add(function, caller);
+            }
+
+            LuaDLL.lua_pushstdcallcfunction(luaState, caller);
+        }
 
 		/*
 		 * Sets up the list of objects in the Lua side
@@ -85,16 +101,16 @@ namespace LuaInterface
 		{
 			LuaDLL.luaL_newmetatable(luaState,"luaNet_searchbase");
 			LuaDLL.lua_pushstring(luaState,"__gc");
-			LuaDLL.lua_pushstdcallcfunction(luaState,metaFunctions.gcFunction);
+            pushWrappedFunction(luaState,metaFunctions.gcFunction);
 			LuaDLL.lua_settable(luaState,-3);
 			LuaDLL.lua_pushstring(luaState,"__tostring");
-			LuaDLL.lua_pushstdcallcfunction(luaState,metaFunctions.toStringFunction);
+            pushWrappedFunction(luaState,metaFunctions.toStringFunction);
 			LuaDLL.lua_settable(luaState,-3);
 			LuaDLL.lua_pushstring(luaState,"__index");
-			LuaDLL.lua_pushstdcallcfunction(luaState,metaFunctions.baseIndexFunction);
+            pushWrappedFunction(luaState,metaFunctions.baseIndexFunction);
 			LuaDLL.lua_settable(luaState,-3);
 			LuaDLL.lua_pushstring(luaState,"__newindex");
-			LuaDLL.lua_pushstdcallcfunction(luaState,metaFunctions.newindexFunction);
+            pushWrappedFunction(luaState,metaFunctions.newindexFunction);
 			LuaDLL.lua_settable(luaState,-3);
 			LuaDLL.lua_settop(luaState,-2);
 		}
@@ -105,19 +121,19 @@ namespace LuaInterface
 		{
 			LuaDLL.luaL_newmetatable(luaState,"luaNet_class");
 			LuaDLL.lua_pushstring(luaState,"__gc");
-			LuaDLL.lua_pushstdcallcfunction(luaState,metaFunctions.gcFunction);
+            pushWrappedFunction(luaState,metaFunctions.gcFunction);
 			LuaDLL.lua_settable(luaState,-3);
 			LuaDLL.lua_pushstring(luaState,"__tostring");
-			LuaDLL.lua_pushstdcallcfunction(luaState,metaFunctions.toStringFunction);
+            pushWrappedFunction(luaState,metaFunctions.toStringFunction);
 			LuaDLL.lua_settable(luaState,-3);
 			LuaDLL.lua_pushstring(luaState,"__index");
-			LuaDLL.lua_pushstdcallcfunction(luaState,metaFunctions.classIndexFunction);
+            pushWrappedFunction(luaState,metaFunctions.classIndexFunction);
 			LuaDLL.lua_settable(luaState,-3);
 			LuaDLL.lua_pushstring(luaState,"__newindex");
-			LuaDLL.lua_pushstdcallcfunction(luaState,metaFunctions.classNewindexFunction);
+            pushWrappedFunction(luaState,metaFunctions.classNewindexFunction);
 			LuaDLL.lua_settable(luaState,-3);
 			LuaDLL.lua_pushstring(luaState,"__call");
-			LuaDLL.lua_pushstdcallcfunction(luaState,metaFunctions.callConstructorFunction);
+            pushWrappedFunction(luaState,metaFunctions.callConstructorFunction);
 			LuaDLL.lua_settable(luaState,-3);
 			LuaDLL.lua_settop(luaState,-2);
 		}
@@ -126,19 +142,19 @@ namespace LuaInterface
 		 */
 		private void setGlobalFunctions(IntPtr luaState)
 		{
-			LuaDLL.lua_pushstdcallcfunction(luaState,metaFunctions.indexFunction);
+            pushWrappedFunction(luaState,metaFunctions.indexFunction);
 			LuaDLL.lua_setglobal(luaState,"get_object_member");
-			LuaDLL.lua_pushstdcallcfunction(luaState,importTypeFunction);
+            pushWrappedFunction(luaState,importTypeFunction);
 			LuaDLL.lua_setglobal(luaState,"import_type");
-			LuaDLL.lua_pushstdcallcfunction(luaState,loadAssemblyFunction);
+            pushWrappedFunction(luaState,loadAssemblyFunction);
 			LuaDLL.lua_setglobal(luaState,"load_assembly");
-			LuaDLL.lua_pushstdcallcfunction(luaState,registerTableFunction);
+            pushWrappedFunction(luaState,registerTableFunction);
 			LuaDLL.lua_setglobal(luaState,"make_object");
-			LuaDLL.lua_pushstdcallcfunction(luaState,unregisterTableFunction);
+            pushWrappedFunction(luaState,unregisterTableFunction);
 			LuaDLL.lua_setglobal(luaState,"free_object");
-			LuaDLL.lua_pushstdcallcfunction(luaState,getMethodSigFunction);
+            pushWrappedFunction(luaState,getMethodSigFunction);
 			LuaDLL.lua_setglobal(luaState,"get_method_bysig");
-			LuaDLL.lua_pushstdcallcfunction(luaState,getConstructorSigFunction);
+            pushWrappedFunction(luaState,getConstructorSigFunction);
 			LuaDLL.lua_setglobal(luaState,"get_constructor_bysig");
 		}
 		/*
@@ -148,10 +164,10 @@ namespace LuaInterface
 		{
 			LuaDLL.luaL_newmetatable(luaState,"luaNet_function");
 			LuaDLL.lua_pushstring(luaState,"__gc");
-			LuaDLL.lua_pushstdcallcfunction(luaState,metaFunctions.gcFunction);
+            pushWrappedFunction(luaState,metaFunctions.gcFunction);
 			LuaDLL.lua_settable(luaState,-3);
 			LuaDLL.lua_pushstring(luaState,"__call");
-			LuaDLL.lua_pushstdcallcfunction(luaState,metaFunctions.execDelegateFunction);
+            pushWrappedFunction(luaState,metaFunctions.execDelegateFunction);
 			LuaDLL.lua_settable(luaState,-3);
 			LuaDLL.lua_settop(luaState,-2);
 		}
@@ -492,13 +508,13 @@ namespace LuaInterface
 					LuaDLL.lua_rawget(luaState, (int) LuaIndexes.LUA_REGISTRYINDEX);
 					LuaDLL.lua_rawset(luaState,-3);
 					LuaDLL.lua_pushstring(luaState,"__gc");
-					LuaDLL.lua_pushstdcallcfunction(luaState,metaFunctions.gcFunction);
+                    pushWrappedFunction(luaState,metaFunctions.gcFunction);
 					LuaDLL.lua_rawset(luaState,-3);
 					LuaDLL.lua_pushstring(luaState,"__tostring");
-					LuaDLL.lua_pushstdcallcfunction(luaState,metaFunctions.toStringFunction);
+                    pushWrappedFunction(luaState,metaFunctions.toStringFunction);
 					LuaDLL.lua_rawset(luaState,-3);
 					LuaDLL.lua_pushstring(luaState,"__newindex");
-					LuaDLL.lua_pushstdcallcfunction(luaState,metaFunctions.newindexFunction);
+                    pushWrappedFunction(luaState,metaFunctions.newindexFunction);
 					LuaDLL.lua_rawset(luaState,-3);
 				}
 			}

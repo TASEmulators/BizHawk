@@ -200,6 +200,8 @@
     <Compile Include="MethodWrapper.cs" />
     <Compile Include="ObjectTranslator.cs" />
     <Compile Include="ProxyType.cs" />
+    <Compile Include="LuaCSCaller.cs" />
+    <Compile Include="LuaHookCaller.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -222,9 +224,9 @@
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Lua\src\lua514.vcxproj">
-      <Project>{0a82cc4c-9a27-461c-8db0-a65ac6393748}</Project>
-      <Name>lua51</Name>
+    <ProjectReference Include="..\LuaInterfaceWrapper\LuaWrap.csproj">
+      <Project>{2482457E-C134-48EA-8CBC-7931B96D7C2A}</Project>
+      <Name>LuaWrap</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

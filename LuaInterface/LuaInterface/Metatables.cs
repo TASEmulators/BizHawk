@@ -6,7 +6,6 @@ namespace LuaInterface
     using System.Reflection;
     using System.Diagnostics;
     using System.Collections.Generic;
-    using Lua511;
     using System.Runtime.InteropServices;
 
     /*

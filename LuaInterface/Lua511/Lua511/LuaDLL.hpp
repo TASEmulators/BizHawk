@@ -27,6 +27,21 @@ namespace Lua511 {
         virtual ~LuaHook() { }
         virtual int runHook(lua_State *l, lua_State *debug) { return 0; }
     };
+    
+    
+#undef LUA_REGISTRYINDEX
+#undef LUA_ENVIRONINDEX
+#undef LUA_GLOBALSINDEX
+    
+    /*
+     * Special stack indexes
+     */
+    typedef enum LuaIndexes
+    {
+        LUA_REGISTRYINDEX=-10000,
+        LUA_ENVIRONINDEX=-10001,
+        LUA_GLOBALSINDEX=-10002
+    } LuaIndexes;
 
 #undef LUA_TNONE
 #undef LUA_TNIL
@@ -85,23 +100,23 @@ namespace Lua511 {
         static std::string lua_typename(lua_State *luaState, LuaTypes type);
 #undef luaL_typename
         static std::string luaL_typename(lua_State *luaState, int stackPos);
-        static void luaL_error(lua_State *luaState, std::string *message);
+        static void luaL_error(lua_State *luaState, const std::string &message);
         static void luaL_where(lua_State *luaState, int level);
         static lua_State *luaL_newstate();
         static void lua_close(lua_State *luaState);
         static void luaL_openlibs(lua_State *luaState);
-        static int luaL_loadstring(lua_State *luaState, std::string *chunk);
+        static int luaL_loadstring(lua_State *luaState, const std::string &chunk);
 #undef luaL_dostring
-        static int luaL_dostring(lua_State *luaState, std::string *chunk);
-        static int lua_dostring(lua_State *luaState, std::string *chunk);
+        static int luaL_dostring(lua_State *luaState, const std::string &chunk);
+        static int lua_dostring(lua_State *luaState, const std::string &chunk);
         static void lua_createtable(lua_State *luaState, int narr, int nrec);
 #undef lua_newtable
         static void lua_newtable(lua_State *luaState);
-        static int luaL_dofile(lua_State *luaState, std::string *fileName);
+        static int luaL_dofile(lua_State *luaState, const std::string &fileName);
 #undef lua_getglobal
-        static void lua_getglobal(lua_State *luaState, std::string *name);
+        static void lua_getglobal(lua_State *luaState, const std::string &name);
 #undef lua_setglobal
-        static void lua_setglobal(lua_State *luaState, std::string *name);
+        static void lua_setglobal(lua_State *luaState, const std::string &name);
         static void lua_settop(lua_State *luaState, int newTop);
 #undef lua_pop
         static void lua_pop(lua_State *luaState, int amount);
@@ -142,7 +157,7 @@ namespace Lua511 {
         static void lua_pushnil(lua_State *luaState);
         static void lua_call(lua_State *luaState, int nArgs, int nResults);
         static int lua_pcall(lua_State *luaState, int nArgs, int nResults, int errfunc);
-        static lua_CFunction lua_tocfunction(lua_State *luaState, int index);
+        //static lua_CFunction lua_tocfunction(lua_State *luaState, int index);
         static double lua_tonumber(lua_State *luaState, int index);
         static bool lua_toboolean(lua_State *luaState, int index);
 #undef lua_tostring
@@ -151,15 +166,15 @@ namespace Lua511 {
         static void lua_pushstdcallcfunction(lua_State *luaState, LuaCallback *function);
         static void lua_pushnumber(lua_State *luaState, double number);
         static void lua_pushboolean(lua_State *luaState, bool value);
-        static void lua_pushstring(lua_State *luaState, std::string *str);
-        static int luaL_newmetatable(lua_State *luaState, std::string *meta);
-        static void lua_getfield(lua_State *luaState, int stackPos, std::string *meta);
+        static void lua_pushstring(lua_State *luaState, const std::string &str);
+        static int luaL_newmetatable(lua_State *luaState, const std::string &meta);
+        static void lua_getfield(lua_State *luaState, int stackPos, const std::string &meta);
 #undef luaL_getmetatable
-        static void luaL_getmetatable(lua_State *luaState, std::string *meta);
-        static void *luaL_checkudata(lua_State *luaState, int stackPos, std::string *meta);
-        static bool luaL_getmetafield(lua_State *luaState, int stackPos, std::string *field);
-        static int luaL_loadbuffer(lua_State *luaState, std::string *buff, std::string *name);
-        static int luaL_loadfile(lua_State *luaState, std::string *filename);
+        static void luaL_getmetatable(lua_State *luaState, const std::string &meta);
+        static void *luaL_checkudata(lua_State *luaState, int stackPos, const std::string &meta);
+        static bool luaL_getmetafield(lua_State *luaState, int stackPos, const std::string &field);
+        static int luaL_loadbuffer(lua_State *luaState, const std::string &buff, const std::string &name);
+        static int luaL_loadfile(lua_State *luaState, const std::string &filename);
         static void lua_error(lua_State *luaState);
         static bool lua_checkstack(lua_State *luaState,int extra);
         static int lua_next(lua_State *luaState,int index);
@@ -169,12 +184,12 @@ namespace Lua511 {
         static int lua_gethookmask(lua_State *luaState);
         static int lua_gethookcount(lua_State *luaState);
         static int lua_getstack(lua_State *luaState, int level, lua_State *luaDebug);
-        static int lua_getinfo(lua_State *luaState, std::string *what, lua_State *luaDebug);
+        static int lua_getinfo(lua_State *luaState, const std::string &what, lua_State *luaDebug);
         static std::string lua_getlocal(lua_State *luaState, lua_State *luaDebug, int n);
         static std::string lua_setlocal(lua_State *luaState, lua_State *luaDebug, int n);
         static std::string lua_getupvalue(lua_State *luaState, int funcindex, int n);
         static std::string lua_setupvalue(lua_State *luaState, int funcindex, int n);
-        static int luanet_checkudata(lua_State *luaState, int ud, std::string *tname);
+        static int luanet_checkudata(lua_State *luaState, int ud, const std::string &tname);
         static bool luaL_checkmetatable(lua_State *luaState,int index);
         static int *luanet_gettag();
         static void luanet_newudata(lua_State *luaState,int val);
