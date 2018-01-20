@@ -34,6 +34,8 @@ namespace LuaInterface
 		public ObjectTranslator(Lua interpreter,IntPtr luaState) 
 		{
 			this.interpreter=interpreter;
+            callbackRefs = new Dictionary<LuaCSFunction, LuaCSCaller>();
+
 			typeChecker=new CheckType(this);
 			metaFunctions=new MetaFunctions(this);
 			assemblies=new List<Assembly>();
@@ -51,8 +53,6 @@ namespace LuaInterface
 			createClassMetatable(luaState);
 			createFunctionMetatable(luaState);
 			setGlobalFunctions(luaState);
-
-            callbackRefs = new Dictionary<LuaCSFunction, LuaCSCaller>();
 		}
 
         private void pushWrappedFunction(IntPtr luaState, LuaCSFunction function) {

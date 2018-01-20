@@ -576,27 +576,9 @@ namespace Lua511
 
 		int LuaDLL::luaL_loadbuffer(lua_State *luaState, const std::string &buff, const std::string &name)
 		{
-#warning Need to implement luaL_loadbuffer
-#if 0
-			//zero 23-may-2016 - get rid of this GARBAGE. lua can load UTF-8, why not use that?
-			//char *cs1 = (char *) Marshal::StringToHGlobalAnsi(buff).ToPointer();
-			//char *cs2 = (char *) Marshal::StringToHGlobalAnsi(name).ToPointer();
-			////CP: fix for MBCS, changed to use cs1's length (reported by qingrui.li)
-			//int result = ::luaL_loadbuffer(luaState, cs1, strlen(cs1), cs2);
-			//Marshal::FreeHGlobal(IntPtr(cs1));
-			//Marshal::FreeHGlobal(IntPtr(cs2));
-
-			array<System::Byte> ^ _buff = System::Text::Encoding::UTF8->GetBytes(buff);
-			array<System::Byte> ^ _name = System::Text::Encoding::UTF8->GetBytes(name);
-			char* lbuff = "", *lname = nullptr;
-			pin_ptr<System::Byte> p_buff, p_name;
-			if(buff->Length != 0) { p_buff = &_buff[0]; lbuff = (char*)(System::Byte*)p_buff; }
-			if(name->Length != 0) { p_name= &_name[0]; lname = (char*)(System::Byte*)p_name; }
-
-			return ::luaL_loadbuffer(luaState, lbuff, _buff->Length, lname);
-#else
-            return 0;
-#endif
+			// lsthiros 1/19/2018 - relying on SWIG string typemapping to simplify character
+            // buffer extraction.
+			return ::luaL_loadbuffer(luaState, buff.c_str(),buff.length(), name.c_str());
 		}
 
 		int LuaDLL::luaL_loadfile(lua_State *luaState, const std::string &filename)

@@ -8,16 +8,16 @@ OBJ=$(addprefix build/,$(SRC:=.o))
 all: build/libLuaWrap.dylib
 
 build/%.cpp.o: %.cpp
-	$(CXX) -m32 -std=c++11 -c -I$(dir $<) -o $@ $<
+	$(CXX) -g -m32 -std=c++11 -c -I$(dir $<) -o $@ $<
 
 build/Lua511_wrap.cxx.o: wrapper/Lua511_wrap.cxx
-	$(CXX) -m32 -std=c++11 -c -I$(dir $<) -o $@ $<
+	$(CXX) -g -m32 -std=c++11 -c -I$(dir $<) -o $@ $<
 
 build/%.c.o: %.c
-	$(CC) -m32 -c -o $@ $<
+	$(CC) -g -m32 -c -o $@ $<
 
 build/libLuaWrap.dylib: $(OBJ) build/Lua511_wrap.cxx.o
-	$(CXX) -m32 -shared -o $@ $^
+	$(CXX) -g -m32 -shared -o $@ $^
 
 clean:
 	rm -f build/*

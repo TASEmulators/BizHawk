@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuaInterface", "LuaInterfac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuaWrap", "LuaInterfaceWrapper\LuaWrap.csproj", "{2482457E-C134-48EA-8CBC-7931B96D7C2A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuaInterfaceTest", "LuaInterfaceTest\LuaInterfaceTest.csproj", "{253200CE-965A-4356-BA78-E99E335D6504}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,18 @@ Global
 		{2482457E-C134-48EA-8CBC-7931B96D7C2A}.Release-LUAPERKS|x64.Build.0 = Debug|Any CPU
 		{2482457E-C134-48EA-8CBC-7931B96D7C2A}.Release-LUAPERKS|x86.ActiveCfg = Debug|Any CPU
 		{2482457E-C134-48EA-8CBC-7931B96D7C2A}.Release-LUAPERKS|x86.Build.0 = Debug|Any CPU
+		{253200CE-965A-4356-BA78-E99E335D6504}.Debug|x64.ActiveCfg = Debug|x64
+		{253200CE-965A-4356-BA78-E99E335D6504}.Debug|x64.Build.0 = Debug|x64
+		{253200CE-965A-4356-BA78-E99E335D6504}.Debug|x86.ActiveCfg = Debug|x64
+		{253200CE-965A-4356-BA78-E99E335D6504}.Debug|x86.Build.0 = Debug|x64
+		{253200CE-965A-4356-BA78-E99E335D6504}.Release|x64.ActiveCfg = Release|x64
+		{253200CE-965A-4356-BA78-E99E335D6504}.Release|x64.Build.0 = Release|x64
+		{253200CE-965A-4356-BA78-E99E335D6504}.Release|x86.ActiveCfg = Release|x64
+		{253200CE-965A-4356-BA78-E99E335D6504}.Release|x86.Build.0 = Release|x64
+		{253200CE-965A-4356-BA78-E99E335D6504}.Release-LUAPERKS|x64.ActiveCfg = Debug|x64
+		{253200CE-965A-4356-BA78-E99E335D6504}.Release-LUAPERKS|x64.Build.0 = Debug|x64
+		{253200CE-965A-4356-BA78-E99E335D6504}.Release-LUAPERKS|x86.ActiveCfg = Debug|x64
+		{253200CE-965A-4356-BA78-E99E335D6504}.Release-LUAPERKS|x86.Build.0 = Debug|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
