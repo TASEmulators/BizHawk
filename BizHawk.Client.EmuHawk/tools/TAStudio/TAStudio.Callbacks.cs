@@ -12,6 +12,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public Action<int> GreenzoneInvalidatedCallback { get; set; }
 		public Action<int> BranchLoadCallback { get; set; }
+		public Action<int> BranchSaveCallback { get; set; }
+		public Action<int> BranchRemoveCallback { get; set; }
 
 		private Color? GetColorOverride(int index, InputRoll.RollColumn column)
 		{
@@ -36,6 +38,16 @@ namespace BizHawk.Client.EmuHawk
 		private void BranchLoad(int index)
 		{
 			BranchLoadCallback?.Invoke(index);
+		}
+
+		private void BranchSave(int index)
+		{
+			BranchSaveCallback?.Invoke(index);
+		}
+
+		private void BranchRemove(int index)
+		{
+			BranchRemoveCallback?.Invoke(index);
 		}
 	}
 }

@@ -13,8 +13,6 @@ namespace BizHawk.Client.EmuHawk
 	[LuaLibrary(released: true)]
 	public sealed class TastudioLuaLibrary : LuaLibraryBase
 	{
-		public TasMovie CurrentTasMovie => Global.MovieSession.Movie as TasMovie;
-
 		public TastudioLuaLibrary(Lua lua)
 			: base(lua) { }
 
@@ -243,12 +241,36 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethod("onbranchload","")]
+		[LuaMethod("onbranchload","called whenever a branch is loaded. luaf must be a function that takes the integer branch index as a parameter")]
 		public void OnBranchLoad(LuaFunction luaf)
 		{
 			if (Engaged())
 			{
 				Tastudio.BranchLoadCallback = (int index) =>
+				{
+					luaf.Call(index);
+				};
+			}
+		}
+
+		[LuaMethod("onbranchsave", "called whenever a branch is created or updated. luaf must be a function that takes the integer branch index as a parameter")]
+		public void OnBranchSave(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.BranchSaveCallback = (int index) =>
+				{
+					luaf.Call(index);
+				};
+			}
+		}
+
+		[LuaMethod("onbranchremove", "called whenever a branch is removed. luaf must be a function that takes the integer branch index as a parameter")]
+		public void OnBranchRemove(LuaFunction luaf)
+		{
+			if (Engaged())
+			{
+				Tastudio.BranchRemoveCallback = (int index) =>
 				{
 					luaf.Call(index);
 				};
@@ -377,36 +399,42 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("setinput","Sets input")]
 		public void SetInput(int frame, string button, bool value)
 		{
-			if (frame < CurrentTasMovie.FrameCount)
+			if (Engaged())
 			{
-				if (CurrentTasMovie.BoolIsPressed(frame, button) != value)
+				if (frame < Tastudio.CurrentTasMovie.FrameCount)
 				{
-					CurrentTasMovie.SetBoolState(frame, button, value);
-					Tastudio.JumpToGreenzone();
-					Tastudio.DoAutoRestore();
+					if (Tastudio.CurrentTasMovie.BoolIsPressed(frame, button) != value)
+					{
+						Tastudio.CurrentTasMovie.SetBoolState(frame, button, value);
+						Tastudio.JumpToGreenzone();
+						Tastudio.DoAutoRestore();
+					}
 				}
-			}
-			else
-			{
-				CurrentTasMovie.SetBoolState(frame, button, value);
+				else
+				{
+					Tastudio.CurrentTasMovie.SetBoolState(frame, button, value);
+				}
 			}
 		}
 
 		[LuaMethod("setanaloginput","Sets analog input")]
 		public void SetAnalogInput(int frame, string button, float value)
 		{
-			if (frame < CurrentTasMovie.FrameCount)
+			if (Engaged())
 			{
-				if (CurrentTasMovie.GetFloatState(frame, button) != value)
+				if (frame < Tastudio.CurrentTasMovie.FrameCount)
 				{
-					CurrentTasMovie.SetFloatState(frame, button, value);
-					Tastudio.JumpToGreenzone();
-					Tastudio.DoAutoRestore();
+					if (Tastudio.CurrentTasMovie.GetFloatState(frame, button) != value)
+					{
+						Tastudio.CurrentTasMovie.SetFloatState(frame, button, value);
+						Tastudio.JumpToGreenzone();
+						Tastudio.DoAutoRestore();
+					}
 				}
-			}
-			else
-			{
-				CurrentTasMovie.SetFloatState(frame, button, value);
+				else
+				{
+					Tastudio.CurrentTasMovie.SetFloatState(frame, button, value);
+				}
 			}
 		}
 	}
