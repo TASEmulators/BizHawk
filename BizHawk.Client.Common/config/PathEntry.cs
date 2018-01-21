@@ -155,6 +155,8 @@ namespace BizHawk.Client.Common
 
 		public string MoviesPathFragment => Global.Config.PathEntries["Global", "Movies"].Path;
 
+		public string MoviesBackupsPathFragment => Global.Config.PathEntries["Global", "Movie backups"].Path;
+
 		public string LuaPathFragment => Global.Config.PathEntries["Global", "Lua"].Path;
 
 		public string FirmwaresPathFragment => Global.Config.PathEntries["Global", "Firmware"].Path;
