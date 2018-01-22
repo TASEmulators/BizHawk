@@ -23,6 +23,32 @@ namespace BizHawk.Client.EmuHawk
 
 		private TAStudio Tastudio => GlobalWin.Tools.Get<TAStudio>() as TAStudio;
 
+		private struct PENDING_CHANGES
+		{
+			public LUA_CHANGE_TYPES type;
+			public INPUT_CHANGE_TYPES inputType;
+			public int frame;
+			public int number;
+			public string button;
+			public bool valueBool;
+			public float valueFloat;
+		};
+
+		public enum LUA_CHANGE_TYPES
+		{
+			INPUTCHANGE,
+			INSERTFRAMES,
+			DELETEFRAMES,
+		};
+
+		public enum INPUT_CHANGE_TYPES
+		{
+			BOOL,
+			FLOAT,
+		};
+
+		private List<PENDING_CHANGES> changeList = new List<PENDING_CHANGES>(); //TODO: Initialize it to empty list on a script reload, and have each script have it's own list
+		
 		[LuaMethod("engaged", "returns whether or not tastudio is currently engaged (active)")]
 		public bool Engaged()
 		{
@@ -295,38 +321,6 @@ namespace BizHawk.Client.EmuHawk
 			return table;
 		}
 
-		[LuaMethod("insertframes", "inserts the given number of blank frames at the given insertion frame")]
-		public void InsertNumFrames(int insertionFrame, int numberOfFrames)
-		{
-			if (Engaged())
-			{
-				if (insertionFrame < Tastudio.CurrentTasMovie.InputLogLength)
-				{
-					Tastudio.InsertNumFrames(insertionFrame, numberOfFrames);
-				}
-				else
-				{
-					Log(insertionFrame + " is out of range");
-				}
-			}
-		}
-
-		[LuaMethod("deleteframes", "deletes the given number of blank frames beginning at the given frame")]
-		public void DeleteFrames(int beginningFrame, int numberOfFrames)
-		{
-			if (Engaged())
-			{
-				if (beginningFrame < Tastudio.CurrentTasMovie.InputLogLength)
-				{
-					Tastudio.DeleteFrames(beginningFrame, numberOfFrames);
-				}
-				else
-				{
-					Log(beginningFrame + " is out of range");
-				}
-			}
-		}
-
 		public class TastudioBranchInfo
 		{
 			public string Id { get; set; }
@@ -396,46 +390,168 @@ namespace BizHawk.Client.EmuHawk
 			return table;
 		}
 
-		[LuaMethod("setinput","Sets input")]
-		public void SetInput(int frame, string button, bool value)
+		[LuaMethod("submitinputchange","")]
+		public void SubmitInputChange(int frame, string button, bool value)
 		{
 			if (Engaged())
 			{
-				if (frame < Tastudio.CurrentTasMovie.FrameCount)
+				if (frame >= 0)
 				{
-					if (Tastudio.CurrentTasMovie.BoolIsPressed(frame, button) != value)
+					PENDING_CHANGES newChange = new PENDING_CHANGES();
+
+					if (frame < Tastudio.CurrentTasMovie.InputLogLength)
 					{
-						Tastudio.CurrentTasMovie.SetBoolState(frame, button, value);
-						Tastudio.JumpToGreenzone();
-						Tastudio.DoAutoRestore();
+						if (Tastudio.CurrentTasMovie.BoolIsPressed(frame, button) != value) //Check if the button state is not already in the state the user set in the lua script
+						{
+							newChange.type = LUA_CHANGE_TYPES.INPUTCHANGE;
+							newChange.inputType = INPUT_CHANGE_TYPES.BOOL;
+							newChange.frame = frame;
+							newChange.button = button;
+							newChange.valueBool = value;
+
+							changeList.Add(newChange);
+						}
+						else
+						{
+							//Nothing to do here
+						}
 					}
-				}
-				else
-				{
-					Tastudio.CurrentTasMovie.SetBoolState(frame, button, value);
+					else
+					{
+						newChange.type = LUA_CHANGE_TYPES.INPUTCHANGE;
+						newChange.inputType = INPUT_CHANGE_TYPES.BOOL;
+						newChange.frame = frame;
+						newChange.button = button;
+						newChange.valueBool = value;
+
+						changeList.Add(newChange);
+					}
 				}
 			}
 		}
 
-		[LuaMethod("setanaloginput","Sets analog input")]
-		public void SetAnalogInput(int frame, string button, float value)
+		[LuaMethod("submitanalogchange","")]
+		public void SubmitAnalogChange(int frame, string button, float value)
 		{
 			if (Engaged())
 			{
-				if (frame < Tastudio.CurrentTasMovie.FrameCount)
+				if (frame >= 0)
 				{
-					if (Tastudio.CurrentTasMovie.GetFloatState(frame, button) != value)
+					PENDING_CHANGES newChange = new PENDING_CHANGES();
+
+					if (frame < Tastudio.CurrentTasMovie.InputLogLength)
 					{
-						Tastudio.CurrentTasMovie.SetFloatState(frame, button, value);
-						Tastudio.JumpToGreenzone();
-						Tastudio.DoAutoRestore();
+						if (Tastudio.CurrentTasMovie.GetFloatState(frame, button) != value) //Check if the button state is not already in the state the user set in the lua script
+						{
+							newChange.type = LUA_CHANGE_TYPES.INPUTCHANGE;
+							newChange.inputType = INPUT_CHANGE_TYPES.FLOAT;
+							newChange.frame = frame;
+							newChange.button = button;
+							newChange.valueFloat = value;
+
+							changeList.Add(newChange);
+						}
+						else
+						{
+							//Nothing to do here
+						}
+					}
+					else
+					{
+						newChange.type = LUA_CHANGE_TYPES.INPUTCHANGE;
+						newChange.inputType = INPUT_CHANGE_TYPES.FLOAT;
+						newChange.frame = frame;
+						newChange.button = button;
+						newChange.valueFloat = value;
+
+						changeList.Add(newChange);
 					}
 				}
-				else
+			}
+		}
+
+		[LuaMethod("submitinsertframes", "")]
+		public void SubmitInsertFrames(int frame, int number)
+		{
+			if (Engaged())
+			{
+				if (frame >= 0 && frame < Tastudio.CurrentTasMovie.InputLogLength && number > 0)
 				{
-					Tastudio.CurrentTasMovie.SetFloatState(frame, button, value);
+					PENDING_CHANGES newChange = new PENDING_CHANGES();
+
+					newChange.type = LUA_CHANGE_TYPES.INSERTFRAMES;
+					newChange.frame = frame;
+					newChange.number = number;
+
+					changeList.Add(newChange);
 				}
 			}
+		}
+
+		[LuaMethod("submitdeleteframes", "")]
+		public void SubmitDeleteFrames(int frame, int number)
+		{
+			if (Engaged())
+			{
+				if (frame >= 0 && frame < Tastudio.CurrentTasMovie.InputLogLength && number > 0)
+				{
+					PENDING_CHANGES newChange = new PENDING_CHANGES();
+
+					newChange.type = LUA_CHANGE_TYPES.DELETEFRAMES;
+					newChange.frame = frame;
+					newChange.number = number;
+
+					changeList.Add(newChange);
+				}
+			}
+		}
+
+		[LuaMethod("applyinputchanges", "")]
+		public void ApplyInputChanges()
+		{
+			if (Engaged())
+			{
+				if (changeList.Count > 0)
+				{
+					int size = changeList.Count;
+
+					for (int i = 0; i < size; i++)
+					{
+						switch (changeList[i].type)
+						{
+							case LUA_CHANGE_TYPES.INPUTCHANGE:
+								switch (changeList[i].inputType)
+								{
+									case INPUT_CHANGE_TYPES.BOOL:
+										Tastudio.CurrentTasMovie.SetBoolState(changeList[i].frame, changeList[i].button, changeList[i].valueBool);
+										break;
+									case INPUT_CHANGE_TYPES.FLOAT:
+										Tastudio.CurrentTasMovie.SetFloatState(changeList[i].frame, changeList[i].button, changeList[i].valueFloat);
+										break;
+								}
+								break;
+							case LUA_CHANGE_TYPES.INSERTFRAMES:
+								Tastudio.InsertNumFrames(changeList[i].frame, changeList[i].number);
+								break;
+							case LUA_CHANGE_TYPES.DELETEFRAMES:
+								Tastudio.DeleteFrames(changeList[i].frame, changeList[i].number);
+								break;
+						}
+					}
+					changeList.Clear();
+					Tastudio.JumpToGreenzone();
+					Tastudio.DoAutoRestore();
+				}
+
+
+			}
+		}
+
+		[LuaMethod("clearinputchanges","")]
+		public void ClearInputChanges()
+		{
+			if (Engaged())
+				changeList.Clear();
 		}
 	}
 }
