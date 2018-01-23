@@ -1214,11 +1214,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OpenLuaConsole()
 		{
-#if WINDOWS
 			GlobalWin.Tools.Load<LuaConsole>();
-#else
-			MessageBox.Show("Sorry, Lua is not supported on this platform.", "Lua not supported", MessageBoxButtons.OK, MessageBoxIcon.Error);
-#endif
 		}
 
 		public void NotifyLogWindowClosing()

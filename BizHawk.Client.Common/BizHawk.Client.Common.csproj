@@ -77,9 +77,6 @@
     <Reference Include="Ionic.Zip">
       <HintPath>..\References\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="LuaInterface">
-      <HintPath>..\References\$(Platform)\LuaInterface.dll</HintPath>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
@@ -100,6 +97,12 @@
     </Reference>
     <Reference Include="Newtonsoft.Json">
       <HintPath>..\References\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="LuaInterface">
+      <HintPath>..\LuaInterface\LuaInterface\obj\x86\Debug\LuaInterface.dll</HintPath>
+    </Reference>
+    <Reference Include="LuaInterfaceWrapper">
+      <HintPath>..\LuaInterface\LuaInterfaceWrapper\obj\Debug\LuaInterfaceWrapper.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
