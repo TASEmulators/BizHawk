@@ -72,7 +72,7 @@ GBEXPORT void gambatte_reset(GB *g, long long now)
 
 GBEXPORT void gambatte_setdmgpalettecolor(GB *g, unsigned palnum, unsigned colornum, unsigned rgb32)
 {
-	//g->setDmgPaletteColor(palnum, colornum, rgb32);
+	g->setDmgPaletteColor(palnum, colornum, rgb32);
 }
 
 GBEXPORT void gambatte_setcgbpalette(GB *g, unsigned *lut)

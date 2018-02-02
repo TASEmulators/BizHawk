@@ -97,6 +97,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				{
 					byte[] Bios = comm.CoreFileProvider.GetFirmware("GB", "World", true, "BIOS Not Found, Cannot Load");
 
+					IsCgb = false;
+
 					if (LibGambatte.gambatte_loaddmgbios(GambatteState, Bios) != 0)
 					{
 						throw new InvalidOperationException("gambatte_loaddmgbios() returned non-zero (bios error)");
@@ -105,6 +107,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 				else
 				{
 					byte[] Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
+
+					IsCgb = true;
 
 					if (LibGambatte.gambatte_loadgbcbios(GambatteState, Bios) != 0)
 					{
@@ -228,6 +232,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
+		public bool IsCgb { get; set; }
 
 		// all cycle counts are relative to a 2*1024*1024 mhz refclock
 
@@ -270,7 +275,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// </summary>
 		public bool IsCGBMode()
 		{
-			return LibGambatte.gambatte_iscgb(GambatteState);
+			//return LibGambatte.gambatte_iscgb(GambatteState);
+			return IsCgb;
 		}
 
 		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
