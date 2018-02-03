@@ -1146,7 +1146,7 @@ static void setInitialDmgIoamhram(unsigned char *const ioamhram) {
 
 } // anon namespace
 
-void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbMode, const bool trueColors, const std::uint32_t now) {
+void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbMode, const std::uint32_t now) {
 	static const unsigned char cgbObjpDump[0x40] = {
 		0x00, 0x00, 0xF2, 0xAB, 
 		0x61, 0xC2, 0xD9, 0xBA, 
@@ -1262,7 +1262,6 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.ppu.oldWy = state.mem.ioamhram.get()[0x14A];
 	state.ppu.pendingLcdstatIrq = false;
 	state.ppu.isCgb = cgb;
-	state.ppu.trueColors = !trueColors;
 
 	
 	state.spu.cycleCounter = 0; // spu.cycleCounter >> 12 & 7 represents the frame sequencer position.

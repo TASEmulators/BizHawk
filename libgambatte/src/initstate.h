@@ -22,7 +22,7 @@
 #include <cstdint>
 
 namespace gambatte {
-void setInitState(struct SaveState &state, bool cgb, bool gbaCgbMode, bool trueColors, std::uint32_t now);
+void setInitState(struct SaveState &state, bool cgb, bool gbaCgbMode, std::uint32_t now);
 }
 
 #endif

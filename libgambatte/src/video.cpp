@@ -36,13 +36,10 @@ void LCD::setCgbPalette(unsigned *lut) {
 	refreshPalettes();
 }
 
-unsigned long LCD::gbcToRgb32(const unsigned bgr15, bool trueColor) {
+unsigned long LCD::gbcToRgb32(const unsigned bgr15) {
 	unsigned long const r = bgr15       & 0x1F;
 	unsigned long const g = bgr15 >>  5 & 0x1F;
 	unsigned long const b = bgr15 >> 10 & 0x1F;
-
-	if (trueColor)
-		return (r << 19) | (g << 11) | (b << 3);
 
 	return cgbColorsRgb32[bgr15 & 0x7FFF];
 }
@@ -151,8 +148,8 @@ void LCD::loadState(const SaveState &state, const unsigned char *const oamram) {
 void LCD::refreshPalettes() {
 	if (ppu.cgb()) {
 		for (unsigned i = 0; i < 8 * 8; i += 2) {
-			ppu.bgPalette()[i >> 1] = gbcToRgb32( bgpData[i] |  bgpData[i + 1] << 8, isTrueColors());
-			ppu.spPalette()[i >> 1] = gbcToRgb32(objpData[i] | objpData[i + 1] << 8, isTrueColors());
+			ppu.bgPalette()[i >> 1] = gbcToRgb32( bgpData[i] |  bgpData[i + 1] << 8);
+			ppu.spPalette()[i >> 1] = gbcToRgb32(objpData[i] | objpData[i + 1] << 8);
 		}
 	} else {
 		setDmgPalette(ppu.bgPalette()    , dmgColorsRgb32    ,  bgpData[0]);
@@ -163,10 +160,10 @@ void LCD::refreshPalettes() {
 
 void LCD::copyCgbPalettesToDmg() {
 	for (unsigned i = 0; i < 4; i++) {
-		dmgColorsRgb32[i] = gbcToRgb32(bgpData[i * 2] | bgpData[i * 2 + 1] << 8, isTrueColors());
+		dmgColorsRgb32[i] = gbcToRgb32(bgpData[i * 2] | bgpData[i * 2 + 1] << 8);
 	}
 	for (unsigned i = 0; i < 8; i++) {
-		dmgColorsRgb32[i + 4] = gbcToRgb32(objpData[i * 2] | objpData[i * 2 + 1] << 8, isTrueColors());
+		dmgColorsRgb32[i + 4] = gbcToRgb32(objpData[i * 2] | objpData[i * 2 + 1] << 8);
 	}
 }
 
@@ -205,7 +202,7 @@ void LCD::updateScreen(const bool blanklcd, const unsigned long cycleCounter) {
 	update(cycleCounter);
 	
 	if (blanklcd && ppu.frameBuf().fb()) {
-		const unsigned long color = ppu.cgb() ? gbcToRgb32(0xFFFF, isTrueColors()) : dmgColorsRgb32[0];
+		const unsigned long color = ppu.cgb() ? gbcToRgb32(0xFFFF) : dmgColorsRgb32[0];
 		clear(ppu.frameBuf().fb(), color, ppu.frameBuf().pitch());
 	}
 }
@@ -319,23 +316,23 @@ bool LCD::cgbpAccessible(const unsigned long cycleCounter) {
 }
 
 void LCD::doCgbColorChange(unsigned char *const pdata,
-		unsigned long *const palette, unsigned index, const unsigned data, bool trueColor) {
+		unsigned long *const palette, unsigned index, const unsigned data) {
 	pdata[index] = data;
 	index >>= 1;
-	palette[index] = gbcToRgb32(pdata[index << 1] | pdata[(index << 1) + 1] << 8, trueColor);
+	palette[index] = gbcToRgb32(pdata[index << 1] | pdata[(index << 1) + 1] << 8);
 }
 
 void LCD::doCgbBgColorChange(unsigned index, const unsigned data, const unsigned long cycleCounter) {
 	if (cgbpAccessible(cycleCounter)) {
 		update(cycleCounter);
-		doCgbColorChange(bgpData, ppu.bgPalette(), index, data, isTrueColors());
+		doCgbColorChange(bgpData, ppu.bgPalette(), index, data);
 	}
 }
 
 void LCD::doCgbSpColorChange(unsigned index, const unsigned data, const unsigned long cycleCounter) {
 	if (cgbpAccessible(cycleCounter)) {
 		update(cycleCounter);
-		doCgbColorChange(objpData, ppu.spPalette(), index, data, isTrueColors());
+		doCgbColorChange(objpData, ppu.spPalette(), index, data);
 	}
 }
 

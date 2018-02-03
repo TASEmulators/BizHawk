@@ -94,7 +94,7 @@ void GB::reset(const std::uint32_t now) {
 		
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
-		setInitState(state, !(p_->loadflags & FORCE_DMG), p_->loadflags & GBA_CGB, p_->loadflags & TRUE_COLOR, now);
+		setInitState(state, !(p_->loadflags & FORCE_DMG), p_->loadflags & GBA_CGB, now);
 		p_->cpu.loadState(state);
 		if (length > 0)
 		{
@@ -150,7 +150,7 @@ int GB::load(const char *romfiledata, unsigned romfilelength, const std::uint32_
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
 		p_->loadflags = flags;
-		setInitState(state, !(flags & FORCE_DMG), flags & GBA_CGB, flags & TRUE_COLOR, now);
+		setInitState(state, !(flags & FORCE_DMG), flags & GBA_CGB, now);
 		p_->cpu.loadState(state);
 		//p_->cpu.loadSavedata();
 	}
