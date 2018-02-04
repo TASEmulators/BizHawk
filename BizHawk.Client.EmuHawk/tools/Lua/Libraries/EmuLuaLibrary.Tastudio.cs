@@ -23,10 +23,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private TAStudio Tastudio => GlobalWin.Tools.Get<TAStudio>() as TAStudio;
 
-		private struct PENDING_CHANGES
+		private struct PendingChanges
 		{
-			public LUA_CHANGE_TYPES type;
-			public INPUT_CHANGE_TYPES inputType;
+			public LuaChangeTypes type;
+			public InputChangeTypes inputType;
 			public int frame;
 			public int number;
 			public string button;
@@ -34,20 +34,20 @@ namespace BizHawk.Client.EmuHawk
 			public float valueFloat;
 		};
 
-		public enum LUA_CHANGE_TYPES
+		public enum LuaChangeTypes
 		{
-			INPUTCHANGE,
-			INSERTFRAMES,
-			DELETEFRAMES,
+			InputChange,
+			InsertFrames,
+			DeleteFrames,
 		};
 
-		public enum INPUT_CHANGE_TYPES
+		public enum InputChangeTypes
 		{
-			BOOL,
-			FLOAT,
+			Bool,
+			Float,
 		};
 
-		private List<PENDING_CHANGES> changeList = new List<PENDING_CHANGES>(); //TODO: Initialize it to empty list on a script reload, and have each script have it's own list
+		private List<PendingChanges> changeList = new List<PendingChanges>(); //TODO: Initialize it to empty list on a script reload, and have each script have it's own list
 		
 		[LuaMethod("engaged", "returns whether or not tastudio is currently engaged (active)")]
 		public bool Engaged()
@@ -397,14 +397,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame >= 0)
 				{
-					PENDING_CHANGES newChange = new PENDING_CHANGES();
+					PendingChanges newChange = new PendingChanges();
 
 					if (frame < Tastudio.CurrentTasMovie.InputLogLength)
 					{
 						if (Tastudio.CurrentTasMovie.BoolIsPressed(frame, button) != value) //Check if the button state is not already in the state the user set in the lua script
 						{
-							newChange.type = LUA_CHANGE_TYPES.INPUTCHANGE;
-							newChange.inputType = INPUT_CHANGE_TYPES.BOOL;
+							newChange.type = LuaChangeTypes.InputChange;
+							newChange.inputType = InputChangeTypes.Bool;
 							newChange.frame = frame;
 							newChange.button = button;
 							newChange.valueBool = value;
@@ -418,8 +418,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						newChange.type = LUA_CHANGE_TYPES.INPUTCHANGE;
-						newChange.inputType = INPUT_CHANGE_TYPES.BOOL;
+						newChange.type = LuaChangeTypes.InputChange;
+						newChange.inputType = InputChangeTypes.Bool;
 						newChange.frame = frame;
 						newChange.button = button;
 						newChange.valueBool = value;
@@ -437,14 +437,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame >= 0)
 				{
-					PENDING_CHANGES newChange = new PENDING_CHANGES();
+					PendingChanges newChange = new PendingChanges();
 
 					if (frame < Tastudio.CurrentTasMovie.InputLogLength)
 					{
 						if (Tastudio.CurrentTasMovie.GetFloatState(frame, button) != value) //Check if the button state is not already in the state the user set in the lua script
 						{
-							newChange.type = LUA_CHANGE_TYPES.INPUTCHANGE;
-							newChange.inputType = INPUT_CHANGE_TYPES.FLOAT;
+							newChange.type = LuaChangeTypes.InputChange;
+							newChange.inputType = InputChangeTypes.Float;
 							newChange.frame = frame;
 							newChange.button = button;
 							newChange.valueFloat = value;
@@ -458,8 +458,8 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						newChange.type = LUA_CHANGE_TYPES.INPUTCHANGE;
-						newChange.inputType = INPUT_CHANGE_TYPES.FLOAT;
+						newChange.type = LuaChangeTypes.InputChange;
+						newChange.inputType = InputChangeTypes.Float;
 						newChange.frame = frame;
 						newChange.button = button;
 						newChange.valueFloat = value;
@@ -477,9 +477,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame >= 0 && frame < Tastudio.CurrentTasMovie.InputLogLength && number > 0)
 				{
-					PENDING_CHANGES newChange = new PENDING_CHANGES();
+					PendingChanges newChange = new PendingChanges();
 
-					newChange.type = LUA_CHANGE_TYPES.INSERTFRAMES;
+					newChange.type = LuaChangeTypes.InsertFrames;
 					newChange.frame = frame;
 					newChange.number = number;
 
@@ -495,9 +495,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				if (frame >= 0 && frame < Tastudio.CurrentTasMovie.InputLogLength && number > 0)
 				{
-					PENDING_CHANGES newChange = new PENDING_CHANGES();
+					PendingChanges newChange = new PendingChanges();
 
-					newChange.type = LUA_CHANGE_TYPES.DELETEFRAMES;
+					newChange.type = LuaChangeTypes.DeleteFrames;
 					newChange.frame = frame;
 					newChange.number = number;
 
@@ -519,21 +519,21 @@ namespace BizHawk.Client.EmuHawk
 					{
 						switch (changeList[i].type)
 						{
-							case LUA_CHANGE_TYPES.INPUTCHANGE:
+							case LuaChangeTypes.InputChange:
 								switch (changeList[i].inputType)
 								{
-									case INPUT_CHANGE_TYPES.BOOL:
+									case InputChangeTypes.Bool:
 										Tastudio.CurrentTasMovie.SetBoolState(changeList[i].frame, changeList[i].button, changeList[i].valueBool);
 										break;
-									case INPUT_CHANGE_TYPES.FLOAT:
+									case InputChangeTypes.Float:
 										Tastudio.CurrentTasMovie.SetFloatState(changeList[i].frame, changeList[i].button, changeList[i].valueFloat);
 										break;
 								}
 								break;
-							case LUA_CHANGE_TYPES.INSERTFRAMES:
+							case LuaChangeTypes.InsertFrames:
 								Tastudio.InsertNumFrames(changeList[i].frame, changeList[i].number);
 								break;
-							case LUA_CHANGE_TYPES.DELETEFRAMES:
+							case LuaChangeTypes.DeleteFrames:
 								Tastudio.DeleteFrames(changeList[i].frame, changeList[i].number);
 								break;
 						}
