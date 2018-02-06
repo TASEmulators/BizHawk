@@ -239,7 +239,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		private void RenderScanLine()
 		{
-			if (VDC1.ActiveLine >= FrameHeight)
+			//if (VDC1.ActiveLine >= FrameHeight)
+			if ((VDC1.ActiveLine + VDC1.ViewStartLine) >= 262)
 				return;
 
 			InitializeScanLine(VDC1.ActiveLine);
@@ -265,10 +266,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			// Clear priority buffer
 			Array.Clear(PriorityBuffer, 0, FrameWidth);
-
 			// Initialize scanline to background color
 			for (int i = 0; i < FrameWidth; i++)
-				FrameBuffer[(scanline * FrameWidth) + i] = VCE.Palette[256];
+				FrameBuffer[((scanline + VDC1.ViewStartLine) * FrameWidth) + i] = VCE.Palette[256];
 		}
 
 		private unsafe void RenderBackgroundScanline(VDC vdc, byte priority, bool show)
