@@ -18,10 +18,10 @@
  ***************************************************************************/
 #include "cartridge.h"
 #include "../savestate.h"
+#include <algorithm>
 #include <cstdio>
 #include <cstring>
 #include <fstream>
-#include <algorithm>
 
 namespace gambatte {
 
@@ -615,8 +615,7 @@ int Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, const bo
 			break;
 		}
 		
-		//cgb = header[0x0143] >> 7 & (1 ^ forceDmg);
-		cgb = forceDmg ? false : true;
+		cgb = !forceDmg;
 		std::printf("cgb: %d\n", cgb);
 	}
 
@@ -625,19 +624,17 @@ int Cartridge::loadROM(const char *romfiledata, unsigned romfilelength, const bo
 	const std::size_t filesize = romfilelength; //rom->size();
 	rombanks = std::max(pow2ceil(filesize / 0x4000), 2u);
 	std::printf("rombanks: %u\n", static_cast<unsigned>(filesize / 0x4000));
-
+	
 	mbc.reset();
-
 	memptrs.reset(rombanks, rambanks, cgb ? 8 : 2);
 	rtc.set(false, 0);
 
 	//rom->rewind();
 	//rom->read(reinterpret_cast<char*>(memptrs.romdata()), (filesize / 0x4000) * 0x4000ul);
-	
 	std::memcpy(memptrs.romdata(), romfiledata, (filesize / 0x4000) * 0x4000ul);
 	std::memset(memptrs.romdata() + (filesize / 0x4000) * 0x4000ul, 0xFF, (rombanks - filesize / 0x4000) * 0x4000ul);
 	enforce8bit(memptrs.romdata(), rombanks * 0x4000ul);
-
+	
 	//if (rom->fail())
 	//	return -1;
 	

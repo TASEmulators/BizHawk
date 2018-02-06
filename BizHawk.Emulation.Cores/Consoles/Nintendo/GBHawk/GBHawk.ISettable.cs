@@ -44,8 +44,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Gr
 			}
 
-			[DisplayName("Console Mode")]
-			[Description("Pick which console to run, 'Auto' chooses from ROM header, 'GB' and 'GBC' chooses the respective system")]
+			[DisplayName("Color Mode")]
+			[Description("Pick Between Green scale and Grey scale colors")]
 			[DefaultValue(PaletteType.BW)]
 			public PaletteType Palette { get; set; }
 

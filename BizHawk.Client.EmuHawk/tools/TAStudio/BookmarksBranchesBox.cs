@@ -135,6 +135,7 @@ namespace BizHawk.Client.EmuHawk
 			Movie.AddBranch(branch);
 			BranchView.RowCount = Movie.BranchCount;
 			Movie.CurrentBranch = Movie.BranchCount - 1;
+			BranchView.ScrollToIndex(Movie.CurrentBranch);
 			BranchView.Refresh();
 			Tastudio.RefreshDialog();
 		}

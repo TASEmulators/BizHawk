@@ -38,6 +38,10 @@ class CPU {
 
 	bool skip;
 	
+	int *interruptAddresses;
+	int numInterruptAddresses;
+	int hitInterruptAddress;
+
 	void process(unsigned long cycles);
 	
 	void (*tracecallback)(void *);
@@ -96,7 +100,7 @@ public:
 		memory.setRTCCallback(callback);
 	}
 
-	void setLinkCallback(void (*callback)()) {
+	void setLinkCallback(void(*callback)()) {
 		memory.setLinkCallback(callback);
 	}
 	
@@ -120,6 +124,10 @@ public:
 		memory.setCgbPalette(lut);
 	}
 	
+	unsigned char* cgbBiosBuffer() { return memory.cgbBiosBuffer(); }
+	unsigned char* dmgBiosBuffer() { return memory.dmgBiosBuffer(); }
+	bool gbIsCgb() { return memory.gbIsCgb(); }
+
 	//unsigned char ExternalRead(unsigned short addr) { return memory.read(addr, cycleCounter_); }
 	unsigned char ExternalRead(unsigned short addr) { return memory.peek(addr); }
 	void ExternalWrite(unsigned short addr, unsigned char val) { memory.write_nocb(addr, val, cycleCounter_); }
@@ -127,6 +135,9 @@ public:
 	int LinkStatus(int which) { return memory.LinkStatus(which); }
 
 	void GetRegs(int *dest);
+
+	void SetInterruptAddresses(int *addrs, int numAddrs);
+	int GetHitInterruptAddress();
 
 	template<bool isReader>void SyncState(NewState *ns);
 };

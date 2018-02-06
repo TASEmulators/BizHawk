@@ -51,7 +51,7 @@ public:
 	enum LoadFlag {
 		FORCE_DMG        = 1, /**< Treat the ROM as not having CGB support regardless of what its header advertises. */
 		GBA_CGB          = 2, /**< Use GBA intial CPU register values when in CGB mode. */
-		MULTICART_COMPAT = 4  /**< Use heuristics to detect and support some multicart MBCs disguised as MBC1. */
+		MULTICART_COMPAT = 4, /**< Use heuristics to detect and support some multicart MBCs disguised as MBC1. */
 	};
 	
 	/** Load ROM image.
@@ -62,6 +62,9 @@ public:
 	  */
 	int load(const char *romfiledata, unsigned romfilelength, std::uint32_t now, unsigned flags = 0);
 	
+	int loadGBCBios(const char* biosfiledata);
+	int loadDMGBios(const char* biosfiledata);
+
 	/** Emulates until at least 'samples' stereo sound samples are produced in the supplied buffer,
 	  * or until a video frame has been drawn.
 	  *
@@ -109,7 +112,7 @@ public:
 	void setTraceCallback(void (*callback)(void *));
 	void setScanlineCallback(void (*callback)(), int sl);
 	void setRTCCallback(std::uint32_t (*callback)());
-	void setLinkCallback(void (*callback)());
+	void setLinkCallback(void(*callback)());
 
 	/** Returns true if the currently loaded ROM image is treated as having CGB support. */
 	bool isCgb() const;
@@ -134,6 +137,9 @@ public:
 	int LinkStatus(int which);
 
 	void GetRegs(int *dest);
+
+	void SetInterruptAddresses(int *addrs, int numAddrs);
+	int GetHitInterruptAddress();
 
 	template<bool isReader>void SyncState(NewState *ns);
 

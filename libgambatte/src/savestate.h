@@ -78,6 +78,10 @@ struct SaveState {
 		bool enableRam;
 		bool rambankMode;
 		bool hdmaTransfer;
+		bool biosMode;
+		bool cgbSwitching;
+		bool agbMode;
+		bool gbIsCgb;
 	} mem;
 	
 	struct PPU {
@@ -113,6 +117,7 @@ struct SaveState {
 		unsigned char wscx;
 		bool weMaster;
 		bool pendingLcdstatIrq;
+		bool isCgb;
 	} ppu;
 	
 	struct SPU {

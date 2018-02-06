@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		EDetectionOrigin origin = EDetectionOrigin.None;
 		int sprdma_countdown;
 
-		bool _irq_apu; //various irq signals that get merged to the cpu irq pin
+		public bool _irq_apu; //various irq signals that get merged to the cpu irq pin
 		
 		/// <summary>clock speed of the main cpu in hz</summary>
 		public int cpuclockrate { get; private set; }
@@ -288,6 +288,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ram[0xEC] = 0;
 					ram[0xED] = 0;
 				}
+
+				if (cart.DB_GameInfo.Hash == "00C50062A2DECE99580063777590F26A253AAB6B") // Silva Saga
+				{
+					for (int i = 0; i < Board.WRAM.Length; i++)
+					{
+						Board.WRAM[i] = 0xFF;
+					}
+
+				}
+
+				
 			}
 
 		}

@@ -41,6 +41,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private short[] _outputBuffer;
 		private int[] _outputBuffer_filtered;
 		private int[] _outputBuffer_not_filtered;
+		private int[] _volume_at_sample_time;
 		private int _outputBufferIndex;
 		private int filter_index;
 		private int last_filtered_value;
@@ -93,6 +94,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			_outputBuffer_filtered = new int[sampleRate];
 			_outputBuffer_not_filtered = new int[sampleRate];
+			_volume_at_sample_time = new int[sampleRate];
 		}
 
 		// ------------------------------------
@@ -190,6 +192,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					{
 						_outputBuffer_not_filtered[_outputBufferIndex] = temp_not_filtered;
 						_outputBuffer_filtered[_outputBufferIndex] = temp_filtered;
+						_volume_at_sample_time[_outputBufferIndex] = _volume;
 						_outputBufferIndex++;
 					}
 				}

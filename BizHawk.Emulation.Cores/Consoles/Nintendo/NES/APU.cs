@@ -1328,6 +1328,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}				
 
 				SyncIRQ();
+				nes._irq_apu = irq_pending;
 
 				// since the units run concurrently, the APU frame sequencer is ran last because
 				// it can change the ouput values of the pulse/triangle channels

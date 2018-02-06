@@ -32,34 +32,66 @@ namespace BizHawk.Bizware.BizwareGL
 		public sd.SizeF Measure(string str)
 		{
 			float x = 0;
+			float y = FontInfo.LineHeight;
+			float ox = x;
 			int len = str.Length;
+
 			for (int i = 0; i < len; i++)
 			{
-				Cyotek.Drawing.BitmapFont.Character c;
-				if (!FontInfo.Characters.TryGetValue(str[i], out c))
-					c = FontInfo.Characters[unchecked((char)-1)];
+				int c = str[i];
 
-				x += c.XAdvance;
+				if (c == '\r')
+				{
+					if (i != len - 1 && str[i + 1] == '\n')
+						i++;
+				}
+
+				if (c == '\r')
+				{
+					c = '\n';
+				}
+
+				if (c == '\n')
+				{
+					if (x > ox)
+						ox = x;
+					x = 0;
+					y += FontInfo.LineHeight;
+					continue;
+				}
+
+				Cyotek.Drawing.BitmapFont.Character bfc;
+				if (!FontInfo.Characters.TryGetValue((char)c, out bfc))
+					bfc = FontInfo.Characters[unchecked((char)-1)];
+
+				x += bfc.XAdvance;
 			}
 
-			return new sd.SizeF(x, FontInfo.LineHeight);
+			return new sd.SizeF(Math.Max(x, ox), y);
 		}
 
 		public void RenderString(IGuiRenderer renderer, float x, float y, string str)
 		{
 			float ox = x;
 			int len = str.Length;
+
 			for (int i = 0; i < len; i++)
 			{
 				int c = str[i];
+
 				if (c == '\r')
 				{
 					if (i != len - 1 && str[i + 1] == '\n')
 						i++;
 				}
-				if (c == '\r') c = '\n';
 
-				if(c == '\n') {
+				if (c == '\r')
+				{
+					c = '\n';
+				}
+
+				if(c == '\n')
+				{
 					x = ox;
 					y += FontInfo.LineHeight;
 					continue;

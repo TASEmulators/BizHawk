@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -34,8 +35,8 @@ namespace BizHawk.Client.EmuHawk
 
 			MemStateGapDividerNumeric.Maximum = Statable.SaveStateBinary().Length / 1024 / 2 + 1;
 			MemStateGapDividerNumeric.Minimum = Statable.SaveStateBinary().Length / 1024 / 16;
-			MemStateGapDividerNumeric.Value = _settings.MemStateGapDivider < MemStateGapDividerNumeric.Minimum ?
-				MemStateGapDividerNumeric.Minimum : _settings.MemStateGapDivider;
+			MemStateGapDividerNumeric.Value = NumberExtensions.Clamp(_settings.MemStateGapDivider,
+				MemStateGapDividerNumeric.Minimum, MemStateGapDividerNumeric.Maximum);
 
 			FileStateGapNumeric.Value = _settings.FileStateGap;
 			SavestateSizeLabel.Text = Math.Round(_stateSizeMb, 2).ToString() + " MB";

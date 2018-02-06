@@ -23,7 +23,7 @@
 namespace gambatte {
 
 CPU::CPU()
-: memory(Interrupter(SP, PC)),
+: memory(Interrupter(SP, PC), SP, PC),
   cycleCounter_(0),
   PC(0x100),
   SP(0xFFFE),
@@ -39,6 +39,7 @@ CPU::CPU()
   H(0x01),
   L(0x4D),
   skip(false),
+  numInterruptAddresses(),
   tracecallback(0)
 {
 }
@@ -111,6 +112,7 @@ void CPU::loadState(const SaveState &state) {
 #define HL() ( H << 8 | L )
 
 #define READ(dest, addr) do { (dest) = memory.read(addr, cycleCounter); cycleCounter += 4; } while (0)
+#define PEEK(dest, addr) do { (dest) = memory.read(addr, cycleCounter); } while(0)
 // #define PC_READ(dest, addr) do { (dest) = memory.pc_read(addr, cycleCounter); cycleCounter += 4; } while (0)
 #define PC_READ(dest) do { (dest) = memory.read_excb(PC, cycleCounter, false); PC = (PC + 1) & 0xFFFF; cycleCounter += 4; } while (0)
 #define PC_READ_FIRST(dest) do { (dest) = memory.read_excb(PC, cycleCounter, true); PC = (PC + 1) & 0xFFFF; cycleCounter += 4; } while (0)
@@ -298,7 +300,6 @@ void CPU::loadState(const SaveState &state) {
 	HF2 = u8; \
 	ZF = CF = A + HF2; \
 	A = ZF & 0xFF; \
-	calcHF(HF1, HF2); \
 } while (0)
 
 //adc a,r (4 cycles):
@@ -309,7 +310,6 @@ void CPU::loadState(const SaveState &state) {
 	HF2 = (CF & 0x100) | (u8); \
 	ZF = CF = (CF >> 8 & 1) + (u8) + A; \
 	A = ZF & 0xFF; \
-	calcHF(HF1, HF2); \
 } while (0)
 
 //sub a,r (4 cycles):
@@ -321,7 +321,6 @@ void CPU::loadState(const SaveState &state) {
 	ZF = CF = A - HF2; \
 	A = ZF & 0xFF; \
 	HF2 |= 0x400; \
-	calcHF(HF1, HF2); \
 } while (0)
 
 //sbc a,r (4 cycles):
@@ -332,7 +331,6 @@ void CPU::loadState(const SaveState &state) {
 	HF2 = 0x400 | (CF & 0x100) | (u8); \
 	ZF = CF = A - ((CF >> 8) & 1) - (u8); \
 	A = ZF & 0xFF; \
-	calcHF(HF1, HF2); \
 } while (0)
 
 //and a,r (4 cycles):
@@ -371,7 +369,6 @@ void CPU::loadState(const SaveState &state) {
 	HF2 = u8; \
 	ZF = CF = A - HF2; \
 	HF2 |= 0x400; \
-	calcHF(HF1, HF2); \
 } while (0)
 
 //inc r (4 cycles):
@@ -380,7 +377,6 @@ void CPU::loadState(const SaveState &state) {
 	HF2 = (r) | 0x800; \
 	ZF = (r) + 1; \
 	(r) = ZF & 0xFF; \
-	calcHF(HF1, HF2); \
 } while (0)
 
 //dec r (4 cycles):
@@ -389,7 +385,6 @@ void CPU::loadState(const SaveState &state) {
 	HF2 = (r) | 0xC00; \
 	ZF = (r) - 1; \
 	(r) = ZF & 0xFF; \
-	calcHF(HF1, HF2); \
 } while (0)
 
 //16-BIT ARITHMETIC
@@ -412,7 +407,6 @@ void CPU::loadState(const SaveState &state) {
 	CF = H + (CF >> 8) + (rh); \
 	H = CF & 0xFF; \
 	cycleCounter += 4; \
-	calcHF(HF1, HF2); \
 } while (0)
 
 //inc rr (8 cycles):
@@ -444,7 +438,6 @@ void CPU::loadState(const SaveState &state) {
 	ZF = 1; \
 	cycleCounter += 4; \
 	(sumout) = sp_plus_n_var_sum & 0xFFFF; \
-	calcHF(HF1, HF2); \
 } while (0)
 
 //JUMPS:
@@ -498,6 +491,7 @@ void CPU::loadState(const SaveState &state) {
 
 void CPU::process(const unsigned long cycles) {
 	memory.setEndtime(cycleCounter_, cycles);
+	hitInterruptAddress = 0;
 	memory.updateInput();
 
 	//unsigned char A = A_;
@@ -512,34 +506,50 @@ void CPU::process(const unsigned long cycles) {
 				cycleCounter += cycles + (-cycles & 3);
 			}
 		} else while (cycleCounter < memory.nextEventTime()) {
-			unsigned char opcode;
+			unsigned char opcode = 0x00;
 			
-			if (tracecallback) {
-				int result[14];
-				result[0] = cycleCounter;
-				result[1] = PC;
-				result[2] = SP;
-				result[3] = A;
-				result[4] = B;
-				result[5] = C;
-				result[6] = D;
-				result[7] = E;
-				result[8] = F();
-				result[9] = H;
-				result[10] = L;
-				result[11] = skip;
-				PC_READ_FIRST(opcode);
-				result[12] = opcode;
-				result[13] = memory.debugGetLY();
-				tracecallback((void *)result);
+			int FullPC = PC;
+
+			if (PC >= 0x4000 && PC <= 0x7FFF)
+				FullPC |= memory.curRomBank() << 16;
+
+			for (int i = 0; i < numInterruptAddresses; i++) {
+				if (FullPC == interruptAddresses[i]) {
+					hitInterruptAddress = interruptAddresses[i];
+					memory.setEndtime(cycleCounter, 0);
+					break;
+				}
 			}
-			else {
-				PC_READ_FIRST(opcode);
-			}
-			
-			if (skip) {
-				PC = (PC - 1) & 0xFFFF;
-				skip = false;
+
+			if (!hitInterruptAddress)
+			{
+				if (tracecallback) {
+					int result[14];
+					result[0] = cycleCounter;
+					result[1] = PC;
+					result[2] = SP;
+					result[3] = A;
+					result[4] = B;
+					result[5] = C;
+					result[6] = D;
+					result[7] = E;
+					result[8] = F();
+					result[9] = H;
+					result[10] = L;
+					result[11] = skip;
+					PC_READ_FIRST(opcode);
+					result[12] = opcode;
+					result[13] = memory.debugGetLY();
+					tracecallback((void *)result);
+				}
+				else {
+					PC_READ_FIRST(opcode);
+				}
+
+				if (skip) {
+					PC = (PC - 1) & 0xFFFF;
+					skip = false;
+				}
 			}
 			
 			switch (opcode) {
@@ -622,15 +632,23 @@ void CPU::process(const unsigned long cycles) {
 				//stop (4 cycles):
 				//Halt CPU and LCD display until button pressed:
 			case 0x10:
-				PC = (PC + 1) & 0xFFFF;
-				
-				cycleCounter = memory.stop(cycleCounter);
+				{
+					unsigned char followingByte;
+					PEEK(followingByte, PC);
+					PC = (PC + 1) & 0xFFFF;
 
-				if (cycleCounter < memory.nextEventTime()) {
-					const unsigned long cycles = memory.nextEventTime() - cycleCounter;
-					cycleCounter += cycles + (-cycles & 3);
+					//if (followingByte != 0x00) {
+						//memory.di();
+						//memory.blackScreen();
+					//}
+
+					cycleCounter = memory.stop(cycleCounter);
+
+					if (cycleCounter < memory.nextEventTime()) {
+						const unsigned long cycles = memory.nextEventTime() - cycleCounter;
+						cycleCounter += cycles + (-cycles & 3);
+					}
 				}
-				
 				break;
 			case 0x11:
 				ld_rr_nn(D, E);
@@ -886,7 +904,6 @@ void CPU::process(const unsigned long cycles) {
 					ZF = HF2 + 1;
 					WRITE(addr, ZF & 0xFF);
 					HF2 |= 0x800;
-					calcHF(HF1, HF2); 
 				}
 				break;
 
@@ -900,7 +917,6 @@ void CPU::process(const unsigned long cycles) {
 					ZF = HF2 - 1;
 					WRITE(addr, ZF & 0xFF);
 					HF2 |= 0xC00;
-					calcHF(HF1, HF2); 
 				}
 				break;
 
@@ -943,7 +959,6 @@ void CPU::process(const unsigned long cycles) {
 				CF += H;
 				H = CF & 0xFF;
 				cycleCounter += 4;
-				calcHF(HF1, HF2); 
 				break;
 
 				//ldd a,(hl) (8 cycles):
@@ -1440,7 +1455,6 @@ void CPU::process(const unsigned long cycles) {
 			case 0xBF:
 				CF = ZF = 0;
 				HF2 = 0x400;
-				calcHF(HF1, HF2); \
 				break;
 
 				//ret nz (20;8 cycles):
@@ -2868,6 +2882,17 @@ void CPU::GetRegs(int *dest)
 	dest[7] = F();
 	dest[8] = H;
 	dest[9] = L;
+}
+
+void CPU::SetInterruptAddresses(int *addrs, int numAddrs)
+{
+	interruptAddresses = addrs;
+	numInterruptAddresses = numAddrs;
+}
+
+int CPU::GetHitInterruptAddress()
+{
+	return hitInterruptAddress;
 }
 
 SYNCFUNC(CPU)
