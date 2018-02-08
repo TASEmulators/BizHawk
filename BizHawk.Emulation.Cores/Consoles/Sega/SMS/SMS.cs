@@ -69,6 +69,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				CoreComm.Notify("Region was forced to Japan for game compatibility.");
 			}
 
+			if (game["Korea"] && RegionStr != "Korea")
+			{
+				RegionStr = "Korea";
+				CoreComm.Notify("Region was forced to Korea for game compatibility.");
+			}
+
 			if ((game.NotInDatabase || game["FM"]) && SyncSettings.EnableFM && !IsGameGear)
 			{
 				HasYM2413 = true;
@@ -385,6 +391,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 		
-		private readonly string[] validRegions = { "Export", "Japan", "Auto" , "Korea" };
+		private readonly string[] validRegions = { "Export", "Japan", "Korea" , "Auto"  };
 	}
 }

@@ -36,6 +36,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			int ActiveDisplayStartLine = DisplayStartLine;
 
+			Console.WriteLine(ActiveDisplayStartLine + Registers[VDW] + 1);
+			Console.WriteLine(Registers[5]);
+
 			while (true)
 			{
 				int VBlankLine = ActiveDisplayStartLine + Registers[VDW] + 1;
