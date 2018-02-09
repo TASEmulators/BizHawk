@@ -272,7 +272,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.BranchLoadCallback = (int index) =>
+				Tastudio.BranchLoadedCallback = (int index) =>
 				{
 					luaf.Call(index);
 				};
@@ -284,7 +284,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.BranchSaveCallback = (int index) =>
+				Tastudio.BranchSavedCallback = (int index) =>
 				{
 					luaf.Call(index);
 				};
@@ -296,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (Engaged())
 			{
-				Tastudio.BranchRemoveCallback = (int index) =>
+				Tastudio.BranchRemovedCallback = (int index) =>
 				{
 					luaf.Call(index);
 				};

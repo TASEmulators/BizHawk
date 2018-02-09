@@ -533,9 +533,9 @@ namespace BizHawk.Client.EmuHawk
 			TasMovie newMovie = new TasMovie(startsFromSavestate, _seekBackgroundWorker);
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			newMovie.Filename = file.FullName;
-			newMovie.TasStateManager.LoadCallback = BranchLoad;
-			newMovie.TasStateManager.SaveCallback = BranchSave;
-			newMovie.TasStateManager.RemoveCallback = BranchRemove;
+			//newMovie
+		//	newMovie.TasStateManager.SaveCallback = BranchSave;
+		//	newMovie.TasStateManager.RemoveCallback = BranchRemove;
 
 			if (!HandleMovieLoadStuff(newMovie))
 			{
@@ -585,11 +585,15 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.MovieSession.Movie = new TasMovie(false, _seekBackgroundWorker);
 				var stateManager = ((TasMovie)Global.MovieSession.Movie).TasStateManager;
+				
 				stateManager.MountWriteAccess();
 				stateManager.InvalidateCallback = GreenzoneInvalidated;
-				stateManager.LoadCallback = BranchLoad;
-				stateManager.SaveCallback = BranchSave;
-				stateManager.RemoveCallback = BranchRemove;
+
+				
+				//LoadCallback = BranchLoaded;
+				//SaveCallback = BranchSaved;
+				//RemoveCallback = BranchRemoved;
+
 				CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 				CurrentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 				CurrentTasMovie.PopulateWithDefaultHeaderValues();

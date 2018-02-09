@@ -28,6 +28,27 @@ namespace BizHawk.Client.EmuHawk
 			Load, Update, Text, Remove, None
 		}
 
+		public Action<int> LoadedCallback { get; set; }
+
+		private void CallLoadedCallback(int index)
+		{
+			LoadedCallback?.Invoke(index);
+		}
+
+		public Action<int> SavedCallback { get; set; }
+
+		private void CallSavedCallback(int index)
+		{
+			SavedCallback?.Invoke(index);
+		}
+
+		public Action<int> RemovedCallback { get; set; }
+
+		private void CallRemovedCallback(int index)
+		{
+			RemovedCallback?.Invoke(index);
+		}
+
 		public TAStudio Tastudio { get; set; }
 
 		public int HoverInterval
@@ -154,6 +175,8 @@ namespace BizHawk.Client.EmuHawk
 
 		private TasBranch CreateBranch()
 		{
+			CallSavedCallback(Tastudio.CurrentTasMovie.BranchCount - 1);
+
 			return new TasBranch
 			{
 				Frame = Tastudio.Emulator.Frame,
@@ -176,12 +199,18 @@ namespace BizHawk.Client.EmuHawk
 			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.OSDFrameBuffer), Tastudio.VideoProvider);
 			GlobalWin.MainForm.PauseOnFrame = null;
 			Tastudio.RefreshDialog();
+
+			int index = Tastudio.CurrentTasMovie.Branches.IndexOf(branch);
+			CallLoadedCallback(index);
 		}
 
 		private void UpdateBranch(TasBranch branch)
 		{
 			Movie.UpdateBranch(branch, CreateBranch());
 			Tastudio.RefreshDialog();
+
+			int index = Tastudio.CurrentTasMovie.Branches.IndexOf(branch);
+			CallSavedCallback(index);
 		}
 
 		private void LoadSelectedBranch()
@@ -317,6 +346,8 @@ namespace BizHawk.Client.EmuHawk
 
 				Tastudio.RefreshDialog();
 				GlobalWin.OSD.AddMessage("Removed branch " + index.ToString());
+
+				CallRemovedCallback(index);
 			}
 		}
 

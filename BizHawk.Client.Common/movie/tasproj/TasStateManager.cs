@@ -26,27 +26,6 @@ namespace BizHawk.Client.Common
 			InvalidateCallback?.Invoke(index);
 		}
 
-		public Action<int> LoadCallback { get; set; }
-
-		private void CallLoadCallback(int index)
-		{
-			LoadCallback?.Invoke(index);
-		}
-
-		public Action<int> SaveCallback { get; set; }
-
-		private void CallSaveCallback(int index)
-		{
-			SaveCallback?.Invoke(index);
-		}
-
-		public Action<int> RemoveCallback { get; set; }
-
-		private void CallRemoveCallback(int index)
-		{
-			RemoveCallback?.Invoke(index);
-		}
-
 		private readonly List<StateManagerState> _lowPriorityStates = new List<StateManagerState>();
 		internal NDBDatabase NdbDatabase { get; set; }
 		private Guid _guid = Guid.NewGuid();
@@ -952,7 +931,6 @@ namespace BizHawk.Client.Common
 				// We aren't creating any new states, just adding a reference to an already-existing one; so Used doesn't need to be updated.
 				stateList.Add(branchHash, kvp.Value);
 			}
-			CallSaveCallback(_movie.BranchCount - 1);
 		}
 
 		public void RemoveBranch(int index)
@@ -983,7 +961,6 @@ namespace BizHawk.Client.Common
 					_branchStates.Remove(kvp.Key);
 				}
 			}
-			CallRemoveCallback(index);
 		}
 
 		public void UpdateBranch(int index)
@@ -1039,14 +1016,12 @@ namespace BizHawk.Client.Common
 
 				stateList.Add(branchHash, kvp.Value);
 			}
-			CallSaveCallback(index);
 		}
 
 		public void LoadBranch(int index)
 		{
 			if (index == -1) // backup branch is outsider
-			{
-				CallLoadCallback(index);
+			{	
 				return;
 			}
 
@@ -1066,7 +1041,6 @@ namespace BizHawk.Client.Common
 					SetState(kvp.Key, kvp.Value[branchHash].State);
 				}
 			}
-			CallLoadCallback(index);
 		}
 
 		#endregion
