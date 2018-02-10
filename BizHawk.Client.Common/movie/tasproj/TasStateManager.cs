@@ -1021,7 +1021,7 @@ namespace BizHawk.Client.Common
 		public void LoadBranch(int index)
 		{
 			if (index == -1) // backup branch is outsider
-			{
+			{	
 				return;
 			}
 
