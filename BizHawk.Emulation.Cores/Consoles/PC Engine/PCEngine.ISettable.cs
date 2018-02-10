@@ -31,6 +31,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 
 			Settings = o;
+
+			CoreComm.ScreenLogicalOffsetY = Settings.Top_Line;
+
 			return ret;
 		}
 
@@ -41,7 +44,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			return ret;
 		}
 
-		internal PCESettings Settings;
+		public PCESettings Settings;
 		private PCESyncSettings _syncSettings;
 
 		public class PCESettings
@@ -50,6 +53,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			public bool ShowOBJ1 = true;
 			public bool ShowBG2 = true;
 			public bool ShowOBJ2 = true;
+
+			// cropping settings
+			public int Top_Line = 18;
+			public int Bottom_Line = 252;
 
 			// these three require core reboot to use
 			public bool SpriteLimit = false;
