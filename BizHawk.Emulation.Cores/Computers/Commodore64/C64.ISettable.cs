@@ -52,22 +52,32 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		public class C64SyncSettings
 		{
 			[DisplayName("VIC type")]
-			[Description("Set the type of video chip to use")]
+			[Description("Set the type of video chip to use\n" +
+				"PAL: ~50hz. All PAL games will expect this configuration.\n" +
+				"NTSC: ~60hz.This is the most common NTSC configuration. Every NTSC game should work with this configuration.\n" +
+				"NTSCOld: ~60hz.This was used in the very earliest systems and will exhibit problems on most modern games.\n" +
+				"Drean: ~60hz.This was manufactured for a very specific market and is not very compatible with timing sensitive games.\n")]
 			[DefaultValue(VicType.Pal)]
 			public VicType VicType { get; set; }
 
 			[DisplayName("SID type")]
-			[Description("Set the type of sound chip to use")]
+			[Description("Set the type of sound chip to use\n" +
+				"OldR2, OldR3, OldR4AR: Original 6581 SID chip.\n" +
+				"NewR5: Updated 8580 SID chip.\n" +
+				"")]
 			[DefaultValue(SidType.OldR2)]
 			public SidType SidType { get; set; }
 
 			[DisplayName("Tape drive type")]
-			[Description("Set the type of tape drive attached")]
+			[Description("Set the type of tape drive attached\n" +
+				"1531: Original Datasette device.")]
 			[DefaultValue(TapeDriveType.None)]
 			public TapeDriveType TapeDriveType { get; set; }
 
 			[DisplayName("Disk drive type")]
-			[Description("Set the type of disk drive attached")]
+			[Description("Set the type of disk drive attached\n" +
+				"1541: Original disk drive and ROM.\n" +
+				"1541 - II: Improved model with some ROM bugfixes.")]
 			[DefaultValue(DiskDriveType.None)]
 			public DiskDriveType DiskDriveType { get; set; }
 
