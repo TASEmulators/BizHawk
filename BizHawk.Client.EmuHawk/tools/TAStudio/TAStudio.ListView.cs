@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 		public AutoPatternBool[] BoolPatterns;
 		public AutoPatternFloat[] FloatPatterns;
 
-		private void JumpToGreenzone()
+		public void JumpToGreenzone()
 		{
 			if (Emulator.Frame > CurrentTasMovie.LastValidFrame)
 			{
