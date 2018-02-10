@@ -180,7 +180,7 @@ namespace BizHawk.Client.EmuHawk
 			this.DiskCapacityNumeric.Enabled = false;
 			this.DiskCapacityNumeric.Location = new System.Drawing.Point(24, 241);
 			this.DiskCapacityNumeric.Maximum = new decimal(new int[] {
-            1,
+            16384,
             0,
             0,
             0});

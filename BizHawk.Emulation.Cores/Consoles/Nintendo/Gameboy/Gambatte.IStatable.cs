@@ -38,6 +38,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			writer.Write(Frame);
 			writer.Write(frameOverflow);
 			writer.Write(_cycleCount);
+			writer.Write(IsCgb);
 		}
 
 		public void LoadStateBinary(BinaryReader reader)
@@ -61,6 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			Frame = reader.ReadInt32();
 			frameOverflow = reader.ReadUInt32();
 			_cycleCount = reader.ReadUInt64();
+			IsCgb = reader.ReadBoolean();
 		}
 
 		public byte[] SaveStateBinary()
@@ -84,7 +86,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		private void NewSaveCoreSetBuff()
 		{
 			_savebuff = new byte[LibGambatte.gambatte_newstatelen(GambatteState)];
-			_savebuff2 = new byte[_savebuff.Length + 4 + 21];
+			_savebuff2 = new byte[_savebuff.Length + 4 + 21 + 1];
 		}
 
 		private readonly JsonSerializer ser = new JsonSerializer { Formatting = Formatting.Indented };
@@ -97,6 +99,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			public bool IsLagFrame;
 			public ulong _cycleCount;
 			public uint frameOverflow;
+			public bool IsCgb;
 		}
 
 		internal TextState<TextStateData> SaveState()
@@ -110,6 +113,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			s.ExtraData.Frame = Frame;
 			s.ExtraData.frameOverflow = frameOverflow;
 			s.ExtraData._cycleCount = _cycleCount;
+			s.ExtraData.IsCgb = IsCgb;
 			return s;
 		}
 
@@ -123,6 +127,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			Frame = s.ExtraData.Frame;
 			frameOverflow = s.ExtraData.frameOverflow;
 			_cycleCount = s.ExtraData._cycleCount;
+			IsCgb = s.ExtraData.IsCgb;
 		}
 	}
 }

@@ -111,8 +111,15 @@
 					break;
 				case 0x19: result = _potX; break;
 				case 0x1A: result = _potY; break;
-				case 0x1B: result = _voiceOutput2 >> 4; break;
-				case 0x1C: result = _envelopeOutput2; break;
+				// these two registers are reading the sound output in real time, so we need to flush the output here
+				case 0x1B:
+					Flush(false);
+					result = _voiceOutput2 >> 4;
+					break;
+				case 0x1C:
+					Flush(false);
+					result = _envelopeOutput2;
+					break;
 			}
 
 			return result;

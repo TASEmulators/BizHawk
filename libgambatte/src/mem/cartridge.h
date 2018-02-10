@@ -66,7 +66,7 @@ class Cartridge {
 public:
 	void setStatePtrs(SaveState &);
 	void loadState(const SaveState &);
-
+	
 	bool loaded() const { return mbc.get(); }
 	
 	const unsigned char * rmem(unsigned area) const { return memptrs.rmem(area); }
@@ -79,7 +79,8 @@ public:
 	unsigned char * wsrambankptr() const { return memptrs.wsrambankptr(); }
 	unsigned char * vrambankptr() const { return memptrs.vrambankptr(); }
 	OamDmaSrc oamDmaSrc() const { return memptrs.oamDmaSrc(); }
-	
+	unsigned curRomBank() const { return memptrs.curRomBank(); }
+
 	void setVrambank(unsigned bank) { memptrs.setVrambank(bank); }
 	void setWrambank(unsigned bank) { memptrs.setWrambank(bank); }
 	void setOamDmaSrc(OamDmaSrc oamDmaSrc) { memptrs.setOamDmaSrc(oamDmaSrc); }

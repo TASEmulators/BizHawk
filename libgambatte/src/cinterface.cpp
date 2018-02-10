@@ -35,6 +35,18 @@ GBEXPORT int gambatte_load(GB *g, const char *romfiledata, unsigned romfilelengt
 	return ret;
 }
 
+GBEXPORT int gambatte_loadgbcbios(GB* g, const char* biosfiledata)
+{
+	int ret = g->loadGBCBios(biosfiledata);
+	return ret;
+}
+
+GBEXPORT int gambatte_loaddmgbios(GB* g, const char* biosfiledata)
+{
+	int ret = g->loadDMGBios(biosfiledata);
+	return ret;
+}
+
 GBEXPORT int gambatte_runfor(GB *g, short *soundbuf, unsigned *samples)
 {
 	unsigned sampv = *samples;
@@ -109,7 +121,7 @@ GBEXPORT void gambatte_setrtccallback(GB *g, unsigned int (*callback)())
 	g->setRTCCallback(callback);
 }
 
-GBEXPORT void gambatte_setlinkcallback(GB *g, void (*callback)())
+GBEXPORT void gambatte_setlinkcallback(GB *g, void(*callback)())
 {
 	g->setLinkCallback(callback);
 }
@@ -200,4 +212,14 @@ GBEXPORT int gambatte_linkstatus(GB *g, int which)
 GBEXPORT void gambatte_getregs(GB *g, int *dest)
 {
 	g->GetRegs(dest);
+}
+
+GBEXPORT void gambatte_setinterruptaddresses(GB *g, int *addrs, int numAddrs)
+{
+	g->SetInterruptAddresses(addrs, numAddrs);
+}
+
+GBEXPORT int gambatte_gethitinterruptaddress(GB *g)
+{
+	return g->GetHitInterruptAddress();
 }

@@ -26,12 +26,12 @@
 namespace gambatte {
 struct GB::Priv {
 	CPU cpu;
-	bool gbaCgbMode;
+	unsigned loadflags;
 	unsigned layersMask;
 
 	uint_least32_t vbuff[160*144];
 	
-	Priv() : gbaCgbMode(false), layersMask(LAYER_MASK_BG | LAYER_MASK_OBJ)
+	Priv() : loadflags(0), layersMask(LAYER_MASK_BG | LAYER_MASK_OBJ)
 	{
 	}
 
@@ -94,8 +94,7 @@ void GB::reset(const std::uint32_t now) {
 		
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
-
-		setInitState(state, p_->cpu.isCgb(), p_->gbaCgbMode, now);
+		setInitState(state, !(p_->loadflags & FORCE_DMG), p_->loadflags & GBA_CGB, now);
 		p_->cpu.loadState(state);
 		if (length > 0)
 		{
@@ -146,16 +145,27 @@ int GB::load(const char *romfiledata, unsigned romfilelength, const std::uint32_
 	//	p_->cpu.saveSavedata();
 	
 	const int failed = p_->cpu.load(romfiledata, romfilelength, flags & FORCE_DMG, flags & MULTICART_COMPAT);
-
+	
 	if (!failed) {
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
-		setInitState(state, p_->cpu.isCgb(), p_->gbaCgbMode = flags & GBA_CGB, now);
+		p_->loadflags = flags;
+		setInitState(state, !(flags & FORCE_DMG), flags & GBA_CGB, now);
 		p_->cpu.loadState(state);
 		//p_->cpu.loadSavedata();
 	}
 	
 	return failed;
+}
+
+int GB::loadGBCBios(const char* biosfiledata) {
+	memcpy(p_->cpu.cgbBiosBuffer(), biosfiledata, 0x900);
+	return 0;
+}
+
+int GB::loadDMGBios(const char* biosfiledata) {
+	memcpy(p_->cpu.dmgBiosBuffer(), biosfiledata, 0x100);
+	return 0;
 }
 
 bool GB::isCgb() const {
@@ -228,10 +238,20 @@ void GB::GetRegs(int *dest) {
 	p_->cpu.GetRegs(dest);
 }
 
+void GB::SetInterruptAddresses(int *addrs, int numAddrs)
+{
+	p_->cpu.SetInterruptAddresses(addrs, numAddrs);
+}
+
+int GB::GetHitInterruptAddress()
+{
+	return p_->cpu.GetHitInterruptAddress();
+}
+
 SYNCFUNC(GB)
 {
 	SSS(p_->cpu);
-	NSS(p_->gbaCgbMode);
+	NSS(p_->loadflags);
 	NSS(p_->vbuff);
 }
 

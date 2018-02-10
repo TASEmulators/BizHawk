@@ -274,7 +274,8 @@
             this.SMSregionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SMSregionExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SMSregionJapanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SMSregionAutoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SMSregionKoreaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SMSregionAutoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SMSdisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SMSdisplayNtscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SMSdisplayPalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -2534,7 +2535,8 @@
             this.SMSregionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SMSregionExportToolStripMenuItem,
             this.SMSregionJapanToolStripMenuItem,
-            this.SMSregionAutoToolStripMenuItem});
+			this.SMSregionKoreaToolStripMenuItem,
+			this.SMSregionAutoToolStripMenuItem});
             this.SMSregionToolStripMenuItem.Name = "SMSregionToolStripMenuItem";
             this.SMSregionToolStripMenuItem.Size = new System.Drawing.Size(277, 22);
             this.SMSregionToolStripMenuItem.Text = "Region";
@@ -2552,10 +2554,17 @@
             this.SMSregionJapanToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.SMSregionJapanToolStripMenuItem.Text = "Japan";
             this.SMSregionJapanToolStripMenuItem.Click += new System.EventHandler(this.SMS_RegionJapan_Click);
-            // 
-            // SMSregionAutoToolStripMenuItem
-            // 
-            this.SMSregionAutoToolStripMenuItem.Name = "SMSregionAutoToolStripMenuItem";
+			// 
+			// SMSregionKoreaToolStripMenuItem
+			// 
+			this.SMSregionKoreaToolStripMenuItem.Name = "SMSregionKoreaToolStripMenuItem";
+			this.SMSregionKoreaToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+			this.SMSregionKoreaToolStripMenuItem.Text = "Korea";
+			this.SMSregionKoreaToolStripMenuItem.Click += new System.EventHandler(this.SMS_RegionKorea_Click);
+			// 
+			// SMSregionAutoToolStripMenuItem
+			// 
+			this.SMSregionAutoToolStripMenuItem.Name = "SMSregionAutoToolStripMenuItem";
             this.SMSregionAutoToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.SMSregionAutoToolStripMenuItem.Text = "Auto";
             this.SMSregionAutoToolStripMenuItem.Click += new System.EventHandler(this.SMS_RegionAuto_Click);
@@ -4298,6 +4307,7 @@
 		private System.Windows.Forms.ToolStripMenuItem SMSregionToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSregionExportToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSregionJapanToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSregionKoreaToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSregionAutoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSdisplayToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSdisplayNtscToolStripMenuItem;

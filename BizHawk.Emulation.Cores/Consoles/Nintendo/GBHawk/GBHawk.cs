@@ -88,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
 			_controllerDeck = new GBHawkControllerDeck(_syncSettings.Port1);
 
-			byte[] Bios = comm.CoreFileProvider.GetFirmware("GB", "World", false, "BIOS Not Found, Cannot Load");
+			byte[] Bios = comm.CoreFileProvider.GetFirmware("GB", "World", true, "BIOS Not Found, Cannot Load");
 
 			if (Bios == null)
 			{

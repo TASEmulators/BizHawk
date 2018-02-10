@@ -34,9 +34,13 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (MultiResHack > 0 && render)
 				Array.Clear(FrameBuffer, 0, FrameBuffer.Length);
 
+			int ActiveDisplayStartLine = DisplayStartLine;
+
+			Console.WriteLine(ActiveDisplayStartLine + Registers[VDW] + 1);
+			Console.WriteLine(Registers[5]);
+
 			while (true)
 			{
-				int ActiveDisplayStartLine = DisplayStartLine;
 				int VBlankLine = ActiveDisplayStartLine + Registers[VDW] + 1;
 				if (VBlankLine > 261)
 					VBlankLine = 261;
@@ -106,7 +110,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public void RenderScanLine()
 		{
-			if (ActiveLine >= FrameHeight)
+			if ((ActiveLine + ViewStartLine) >= 262)
 				return;
 
 			RenderBackgroundScanline(pce.Settings.ShowBG1);
@@ -124,7 +128,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				int p = vce.Palette[256];
 				fixed (int* FBptr = FrameBuffer)
 				{
-					int* dst = FBptr + ActiveLine * FramePitch;
+					int* dst = FBptr + (ActiveLine + ViewStartLine) * FramePitch;
 					for (int i = 0; i < FrameWidth; i++)
 						*dst++ = p;
 				}
@@ -148,7 +152,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				// pointer to the BAT and the framebuffer for this line
 				ushort* BatRow = VRAMptr + yTile * BatWidth;
-				int* dst = FBptr + ActiveLine * FramePitch;
+				int* dst = FBptr + (ActiveLine + ViewStartLine) * FramePitch;
 
 				// parameters that change per tile
 				ushort BatEnt;
@@ -202,7 +206,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (BackgroundEnabled == false)
 			{
 				for (int i = 0; i < FrameWidth; i++)
-					FrameBuffer[(ActiveLine * FramePitch) + i] = vce.Palette[256];
+					FrameBuffer[((ActiveLine + ViewStartLine) * FramePitch) + i] = vce.Palette[256];
 				return;
 			}
 
@@ -226,10 +230,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 				byte c = PatternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
 				if (c == 0)
-					FrameBuffer[(ActiveLine * FramePitch) + x] = vce.Palette[0];
+					FrameBuffer[((ActiveLine + ViewStartLine) * FramePitch) + x] = vce.Palette[0];
 				else
 				{
-					FrameBuffer[(ActiveLine * FramePitch) + x] = show ? vce.Palette[paletteBase + c] : vce.Palette[0];
+					FrameBuffer[((ActiveLine + ViewStartLine) * FramePitch) + x] = show ? vce.Palette[paletteBase + c] : vce.Palette[0];
 					PriorityBuffer[x] = 1;
 				}
 			}
@@ -361,7 +365,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 							{
 								InterSpritePriorityBuffer[xs] = 1;
 								if ((priority || PriorityBuffer[xs] == 0) && show)
-									FrameBuffer[(ActiveLine * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
+									FrameBuffer[((ActiveLine + ViewStartLine) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
 							}
 						}
 					}
@@ -378,7 +382,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 							{
 								InterSpritePriorityBuffer[xs] = 1;
 								if ((priority || PriorityBuffer[xs] == 0) && show)
-									FrameBuffer[(ActiveLine * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
+									FrameBuffer[((ActiveLine + ViewStartLine) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
 							}
 
 						}
@@ -399,7 +403,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 							{
 								InterSpritePriorityBuffer[xs] = 1;
 								if ((priority || PriorityBuffer[xs] == 0) && show)
-									FrameBuffer[(ActiveLine * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
+									FrameBuffer[((ActiveLine + ViewStartLine) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
 							}
 						}
 						if (width == 32)
@@ -415,7 +419,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 								{
 									InterSpritePriorityBuffer[xs] = 1;
 									if ((priority || PriorityBuffer[xs] == 0) && show)
-										FrameBuffer[(ActiveLine * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
+										FrameBuffer[((ActiveLine + ViewStartLine) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
 								}
 							}
 						}
@@ -424,10 +428,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			}
 		}
 
-		private int FramePitch = 256;
-		private int FrameWidth = 256;
-		private int FrameHeight = 240;
-		private int[] FrameBuffer = new int[256 * 240];
+		private int FramePitch = 320;
+		private int FrameWidth = 320;
+		private int FrameHeight = 262;
+		private int[] FrameBuffer = new int[320 * 262];
 
 		// IVideoProvider implementation
 		public int[] GetVideoBuffer()
