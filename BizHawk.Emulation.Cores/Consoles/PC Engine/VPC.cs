@@ -241,7 +241,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		{
 			if (((VDC1.ActiveLine + VDC1.ViewStartLine) >= PCE.Settings.Bottom_Line) ||
 				((VDC1.ActiveLine + VDC1.ViewStartLine) < PCE.Settings.Top_Line))
-				InitializeScanLine(VDC1.ActiveLine);
+			{
+				return;
+			}
+			InitializeScanLine(VDC1.ActiveLine);
 
 			switch (EffectivePriorityMode)
 			{
