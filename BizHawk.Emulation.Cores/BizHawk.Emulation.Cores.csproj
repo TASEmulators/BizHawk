@@ -258,6 +258,14 @@
     <Compile Include="Computers\Commodore64\User\UserPortDevice.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\AY38912.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Buzzer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\CassetteDevice\CassetteDevice.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\CassetteDevice\Datacorder.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\CassetteDevice\MicPulseType.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\CassetteDevice\PlayPhase.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\CassetteDevice\SavePhase.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\CassetteDevice\SpectrumTapeHeader.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\CassetteDevice\TapeFormat.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\CassetteDevice\TapeOperationMode.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\DefaultTapeProvider.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\IKeyboard.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\ISaveToTapeProvider.cs" />

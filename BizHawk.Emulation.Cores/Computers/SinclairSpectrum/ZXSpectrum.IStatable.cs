@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _cpu.SyncState(ser);
 
             ser.BeginSection("ZXSpectrum");
-            _cpu.SyncState(ser);
+            //_cpu.SyncState(ser);
             _machine.SyncState(ser);
             ser.Sync("Frame", ref _machine.FrameCount);
             ser.Sync("LagCount", ref _lagCount);

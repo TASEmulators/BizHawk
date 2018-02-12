@@ -136,8 +136,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public enum TapeLoadSpeed
         {
             Accurate,
-            Fast,
-            Fastest
+            //Fast,
+            //Fastest
         }
     }
 }
