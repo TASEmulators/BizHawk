@@ -59,12 +59,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The spectrum datacorder device
         /// </summary>
-        public virtual Tape TapeDevice { get; set; }
+        public virtual DatacorderDevice TapeDevice { get; set; }
 
         /// <summary>
         /// The tape provider
         /// </summary>
-        public virtual ITapeProvider TapeProvider { get; set; }
+        //public virtual ITapeProvider TapeProvider { get; set; }
 
         /// <summary>
         /// Kempston joystick
@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             
             BuzzerDevice.EndFrame();            
 
-            TapeDevice.CPUFrameCompleted();
+            //TapeDevice.CPUFrameCompleted();
 
             FrameCount++;
 

@@ -40,10 +40,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             KeyboardDevice = new Keyboard48(this);
             KempstonDevice = new KempstonJoystick(this);
 
-            TapeProvider = new DefaultTapeProvider(file);
+            //TapeProvider = new DefaultTapeProvider(file);
 
-            TapeDevice = new Tape(TapeProvider);
+            TapeDevice = new DatacorderDevice();
             TapeDevice.Init(this);
+            TapeDevice.LoadTape(file);
         }
 
         #endregion

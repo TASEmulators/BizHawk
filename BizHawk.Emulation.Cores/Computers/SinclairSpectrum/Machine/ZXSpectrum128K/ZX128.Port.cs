@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 result = result | 0xa0; //set bit 5 & 7 to 1
 
 
-                if (TapeDevice.CurrentMode == TapeOperationMode.Load)
+                if (TapeDevice.TapeIsPlaying)//.CurrentMode == TapeOperationMode.Load)
                 {
                     if (!TapeDevice.GetEarBit(CPU.TotalExecutedCycles))
                     {
@@ -193,7 +193,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 BuzzerDevice.ProcessPulseValue(false, (value & EAR_BIT) != 0);
 
                 // Tape
-                TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
+                //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
                 
             }
 

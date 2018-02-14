@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BizHawk.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,17 +15,32 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Either the TZX block ID, or -1 in the case of non-tzx blocks
         /// </summary>
-        public int BlockID = -1;
+        private int _blockID = -1;
+        public int BlockID
+        {
+            get { return _blockID; }
+            set { _blockID = value; }
+        }
 
         /// <summary>
         /// Description of the block
         /// </summary>
-        public string BlockDescription { get; set; }
+        private string _blockDescription;
+        public string BlockDescription
+        {
+            get { return _blockDescription; }
+            set { _blockDescription = value; }
+        }
 
         /// <summary>
         /// Byte array containing the raw block data
         /// </summary>
-        public byte[] BlockData = null;
+        private byte[] _blockData;
+        public byte[] BlockData
+        {
+            get { return _blockData; }
+            set { _blockData = value; }
+        }
 
         /// <summary>
         /// List containing the pulse timing values
@@ -35,7 +51,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Command that is raised by this data block
         /// (that may or may not need to be acted on)
         /// </summary>
-        public TapeCommand Command = TapeCommand.NONE;
+        private TapeCommand _command = TapeCommand.NONE;
+        public TapeCommand Command
+        {
+            get { return _command; }
+            set { _command = value; }
+        }
 
         /// <summary>
         /// Returns the data periods as an array
@@ -60,6 +81,35 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 return;
 
             DataPeriods = periodArray.ToList();
+        }
+
+        /// <summary>
+        /// Bizhawk state serialization
+        /// </summary>
+        /// <param name="ser"></param>
+        public void SyncState(Serializer ser, int blockPosition)
+        {
+            ser.BeginSection("DataBlock" + blockPosition);
+
+            ser.Sync("_blockID", ref _blockID);
+            ser.SyncFixedString("_blockDescription", ref _blockDescription, 50);
+            ser.Sync("_blockData", ref _blockData, true);
+            ser.SyncEnum("_command", ref _command);
+
+            int[] tempArray = null;
+
+            if (ser.IsWriter)
+            {
+                tempArray = GetDataPeriodsArray();
+                ser.Sync("_periods", ref tempArray, true);
+            }
+            else
+            {
+                ser.Sync("_periods", ref tempArray, true);
+                SetDataPeriodsArray(tempArray);
+            }
+
+            ser.EndSection();
         }
     }
 }

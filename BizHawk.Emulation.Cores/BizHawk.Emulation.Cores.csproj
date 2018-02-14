@@ -258,6 +258,7 @@
     <Compile Include="Computers\Commodore64\User\UserPortDevice.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\AY38912.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Buzzer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Datacorder\DatacorderDevice.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\DefaultTapeProvider.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\IKeyboard.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Interfaces\ISaveToTapeProvider.cs" />
@@ -279,6 +280,7 @@
     <Compile Include="Computers\SinclairSpectrum\Media\MediaSerializer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\TapeCommand.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\TapeDataBlock.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TapSerializer.cs" />
     <Compile Include="Computers\SinclairSpectrum\SoundProviderMixer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\MachineType.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.cs" />

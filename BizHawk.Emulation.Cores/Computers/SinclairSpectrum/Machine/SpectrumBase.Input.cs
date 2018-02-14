@@ -55,15 +55,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Tape control
             if (Spectrum._controller.IsPressed(Play))
             {
-
+                TapeDevice.Play();
             }
             if (Spectrum._controller.IsPressed(Stop))
             {
-
+                TapeDevice.Stop();
             }
             if (Spectrum._controller.IsPressed(RTZ))
             {
-
+                TapeDevice.RTZ();
             }
             if (Spectrum._controller.IsPressed(Record))
             {
