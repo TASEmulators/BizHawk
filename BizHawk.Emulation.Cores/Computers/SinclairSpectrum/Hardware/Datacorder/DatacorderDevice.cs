@@ -280,7 +280,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public bool GetEarBit(long cpuCycle)
         {
             // decide how many cycles worth of data we are capturing
-            int cycles = Convert.ToInt32(cpuCycle - _lastCycle);
+            long cycles = cpuCycle - _lastCycle;
 
             // check whether tape is actually playing
             if (_tapeIsPlaying == false)
@@ -313,6 +313,31 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 if (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count())
                 {
                     // we have reached the end of the current block
+
+                    // check for any commands
+                    var command = _dataBlocks[_currentDataBlockIndex].Command;
+                    var block = _dataBlocks[_currentDataBlockIndex];
+                    switch (command)
+                    {
+                        // Stop the tape command found - if this is the end of the tape RTZ
+                        // otherwise just STOP and move to the next block
+                        case TapeCommand.STOP_THE_TAPE:
+                            if (_currentDataBlockIndex >= _dataBlocks.Count())
+                                RTZ();
+                            else
+                            {
+                                Stop();
+                            }
+                            break;
+                        case TapeCommand.STOP_THE_TAPE_48K:
+                            if (_currentDataBlockIndex >= _dataBlocks.Count())
+                                RTZ();
+                            else
+                            {
+                                Stop();
+                            }
+                            break;
+                    }
 
                     // skip any empty blocks
                     while (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count())
