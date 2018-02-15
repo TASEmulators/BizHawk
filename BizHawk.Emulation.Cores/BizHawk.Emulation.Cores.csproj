@@ -281,6 +281,7 @@
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\TapeCommand.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\TapeDataBlock.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\TapSerializer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TzxSerializer.cs" />
     <Compile Include="Computers\SinclairSpectrum\SoundProviderMixer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\MachineType.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.cs" />

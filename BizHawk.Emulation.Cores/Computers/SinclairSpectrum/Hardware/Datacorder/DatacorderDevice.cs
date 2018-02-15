@@ -233,12 +233,25 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="tapeData"></param>
         public void LoadTape(byte[] tapeData)
         {
+            // attempt TZX deserialization
+            TzxSerializer tzxSer = new TzxSerializer(this);
+            try
+            {
+                tzxSer.DeSerialize(tapeData);
+                return;
+            }
+            catch (Exception ex)
+            {
+                // TAP format not detected
+                var e = ex;
+            }
+
             // attempt TAP deserialization
             TapSerializer tapSer = new TapSerializer(this);
-
             try
             {
                 tapSer.DeSerialize(tapeData);
+                return;
             }
             catch (Exception ex)
             {

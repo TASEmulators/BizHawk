@@ -126,6 +126,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                checksum (checkbittoggle would be a better name!).............^^
             */
 
+            // clear existing tape blocks
+            _datacorder.DataBlocks.Clear();
 
             // convert bytearray to memory stream
             MemoryStream stream = new MemoryStream(data);
@@ -174,7 +176,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     }
                 }
 
-                // process the flag byte
+                // process the type byte
                 /*  (The type is 0,1,2 or 3 for a Program, Number array, Character array or Code file. 
                     A SCREEN$ file is regarded as a Code file with start address 16384 and length 6912 decimal. 
                     If the file is a Program file, parameter 1 holds the autostart line number (or a number >=32768 if no LINE parameter was given) 
@@ -206,9 +208,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     StringBuilder sb = new StringBuilder();
                     sb.Append(type + ": ");
                     sb.Append(fileName + " ");
-                    sb.Append(GetUInt16(blockdata, 14));
+                    sb.Append(GetWordValue(blockdata, 14));
                     sb.Append(":");
-                    sb.Append(GetUInt16(blockdata, 12));
+                    sb.Append(GetWordValue(blockdata, 12));
                     description = sb.ToString();
                 }
                 else if (blockdata[0] == 0xFF)
@@ -223,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     description += string.Format(", crc {0}", ((crc != 0) ? string.Format("bad (#{0:X2}!=#{1:X2})", crcFile, crcValue) : "ok"));
                 }
 
-                tdb.BlockDescription = description;
+                tdb.BlockDescription = BlockType.Standard_Speed_Data_Block;
 
                 // calculate the data periods for this block
                 int pilotLength = 0;

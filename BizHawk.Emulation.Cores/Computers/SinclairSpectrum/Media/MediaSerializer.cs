@@ -92,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="buf"></param>
         /// <param name="offsetIndex"></param>
         /// <returns></returns>
-        protected static ushort GetUInt16(byte[] buf, int offsetIndex)
+        protected static ushort GetWordValue(byte[] buf, int offsetIndex)
         {
             return (ushort)(buf[offsetIndex] | buf[offsetIndex + 1] << 8);
         }
@@ -103,7 +103,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="buf"></param>
         /// <param name="offsetIndex"></param>
         /// <param name="value"></param>
-        protected static void setUint16(byte[] buf, int offsetIndex, ushort value)
+        protected static void SetWordValue(byte[] buf, int offsetIndex, ushort value)
         {
             buf[offsetIndex] = (byte)value;
             buf[offsetIndex + 1] = (byte)(value >> 8);
