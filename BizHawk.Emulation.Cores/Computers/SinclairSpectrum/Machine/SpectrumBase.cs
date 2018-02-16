@@ -123,7 +123,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             PollInput();
             
-            while (CurrentFrameCycle <= ULADevice.FrameLength) // UlaFrameCycleCount)
+            while (CurrentFrameCycle < ULADevice.FrameLength) // UlaFrameCycleCount)
             {
                 // check for interrupt
                 ULADevice.CheckForInterrupt(CurrentFrameCycle);

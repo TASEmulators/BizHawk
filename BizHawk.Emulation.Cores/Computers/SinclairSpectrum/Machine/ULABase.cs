@@ -254,7 +254,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The longest instruction cycle count
         /// </summary>
-        protected const int LONGEST_OP_CYCLES = 23;
+        protected int LongestOperationCycles = 23;
 
         /// <summary>
         /// Signs that an interrupt has been raised in this frame.
@@ -288,19 +288,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 return;
             }
 
-            if (currentCycle < InterruptPeriod)
+            if (currentCycle < LongestOperationCycles)// InterruptPeriod)
             {
                 // interrupt does not need to be raised yet
                 return;
             }
 
-            if (currentCycle > InterruptPeriod + LONGEST_OP_CYCLES)
+            if (currentCycle >= InterruptPeriod + LongestOperationCycles)
             {
                 // interrupt should have already been raised and the cpu may or
                 // may not have caught it. The time has passed so revoke the signal
                 InterruptRevoked = true;
                 _machine.CPU.FlagI = false;
-                
+                return;
             }
 
             if (InterruptRaised)
