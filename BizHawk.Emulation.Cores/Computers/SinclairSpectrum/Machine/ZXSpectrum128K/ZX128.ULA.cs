@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             : base(machine)
         {
             InterruptPeriod = 36;
-            LongestOperationCycles = 23;
+            LongestOperationCycles = 64 + 2;
             FrameLength = 70908;
             ClockSpeed = 3546900;
 
