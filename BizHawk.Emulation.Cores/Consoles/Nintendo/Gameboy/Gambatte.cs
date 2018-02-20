@@ -63,6 +63,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				real_rtc_time = !DeterministicEmulation && _syncSettings.RealTimeRTC;
 
+				DivInternal = _syncSettings.GetInitialDivInternal();
+
 				LibGambatte.LoadFlags flags = 0;
 
 				switch (_syncSettings.ConsoleMode)
@@ -88,7 +90,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
 				}
 
-				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, GetCurrentTime(), flags) != 0)
+				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, GetCurrentTime(), flags, DivInternal) != 0)
 				{
 					throw new InvalidOperationException("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 				}
@@ -171,6 +173,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// whatever keys are currently depressed
 		/// </summary>
 		private LibGambatte.Buttons CurrentButtons = 0;
+
+		private uint DivInternal = 0;
 
 		#region RTC
 
@@ -322,7 +326,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			if (controller.IsPressed("Power"))
 			{
-				LibGambatte.gambatte_reset(GambatteState, GetCurrentTime());
+				LibGambatte.gambatte_reset(GambatteState, GetCurrentTime(), DivInternal);
 			}
 
 			if (Tracer.Enabled)

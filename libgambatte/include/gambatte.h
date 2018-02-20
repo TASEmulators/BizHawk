@@ -60,7 +60,7 @@ public:
 	  * @param flags    ORed combination of LoadFlags.
 	  * @return 0 on success, negative value on failure.
 	  */
-	int load(const char *romfiledata, unsigned romfilelength, std::uint32_t now, unsigned flags = 0);
+	int load(const char *romfiledata, unsigned romfilelength, std::uint32_t now, unsigned flags, unsigned div);
 	
 	int loadGBCBios(const char* biosfiledata);
 	int loadDMGBios(const char* biosfiledata);
@@ -93,7 +93,7 @@ public:
 	/** Reset to initial state.
 	  * Equivalent to reloading a ROM image, or turning a Game Boy Color off and on again.
 	  */
-	void reset(std::uint32_t now);
+	void reset(std::uint32_t now, unsigned div);
 	
 	/** @param palNum 0 <= palNum < 3. One of BG_PALETTE, SP1_PALETTE and SP2_PALETTE.
 	  * @param colorNum 0 <= colorNum < 4

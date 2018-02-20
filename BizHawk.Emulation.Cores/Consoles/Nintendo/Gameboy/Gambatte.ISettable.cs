@@ -132,6 +132,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			[DeepEqualsIgnore]
 			private bool _equalLengthFrames;
 
+			[DisplayName("Initial DIV offset")]
+			[Description("Internal.  Probably doesn't work.  Leave this set to 0.  Accepts values from 0 to 65532 in steps of 4")]
+			[DefaultValue(0)]
+			public int InitialDiv { get; set; }
+
 			public GambatteSyncSettings()
 			{
 				SettingsUtil.SetDefaultValues(this);
@@ -145,6 +150,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			public static bool NeedsReboot(GambatteSyncSettings x, GambatteSyncSettings y)
 			{
 				return !DeepEquality.DeepEquals(x, y);
+			}
+
+			public uint GetInitialDivInternal()
+			{
+				return (uint)(InitialDiv & 0xfffc);
 			}
 		}
 	}

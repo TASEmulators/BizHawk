@@ -1146,7 +1146,7 @@ static void setInitialDmgIoamhram(unsigned char *const ioamhram) {
 
 } // anon namespace
 
-void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbMode, const std::uint32_t now) {
+void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbMode, const std::uint32_t now, const unsigned div) {
 	static const unsigned char cgbObjpDump[0x40] = {
 		0x00, 0x00, 0xF2, 0xAB, 
 		0x61, 0xC2, 0xD9, 0xBA, 
@@ -1198,7 +1198,7 @@ void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbM
 	state.mem.ioamhram.ptr[0x140] = 0;
 	state.mem.ioamhram.ptr[0x144] = 0x00;
 	
-	state.mem.divLastUpdate = 0;
+	state.mem.divLastUpdate = 0 - div;
 	state.mem.timaLastUpdate = 0;
 	state.mem.tmatime = DISABLED_TIME;
 	state.mem.nextSerialtime = DISABLED_TIME;
