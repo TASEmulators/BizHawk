@@ -14,8 +14,6 @@ namespace BizHawk.Client.Common
 			DiskCapacitymb = 1; // not working yet
 			MemStateGapDivider = 64;
 			FileStateGap = 4;
-			BranchStatesInTasproj = false;
-			EraseBranchStatesFirst = true;
 		}
 
 		public TasStateManagerSettings(TasStateManagerSettings settings)
@@ -25,8 +23,6 @@ namespace BizHawk.Client.Common
 			DiskCapacitymb = settings.DiskCapacitymb;
 			MemStateGapDivider = settings.MemStateGapDivider;
 			FileStateGap = settings.FileStateGap;
-			BranchStatesInTasproj = settings.BranchStatesInTasproj;
-			EraseBranchStatesFirst = settings.EraseBranchStatesFirst;
 		}
 
 		/// <summary>
@@ -72,20 +68,6 @@ namespace BizHawk.Client.Common
 		public int FileStateGap { get; set; }
 
 		/// <summary>
-		/// Gets or sets a value indicating whether or not to save branch states into the movie file
-		/// </summary>
-		[DisplayName("Put branch states to .tasproj")]
-		[Description("Put branch states to .tasproj")]
-		public bool BranchStatesInTasproj { get; set; }
-
-		/// <summary>
-		/// Gets or sets a value indicating whether or not to erase branch states before greenzone states when capacity is met
-		/// </summary>
-		[DisplayName("Erase branch states first")]
-		[Description("Erase branch states before greenzone states when capacity is met")]
-		public bool EraseBranchStatesFirst { get; set; }
-
-		/// <summary>
 		/// The total state capacity in bytes.
 		/// </summary>
 		[JsonIgnore]
@@ -106,8 +88,6 @@ namespace BizHawk.Client.Common
 			sb.AppendLine(DiskSaveCapacitymb.ToString());
 			sb.AppendLine(Capacitymb.ToString());
 			sb.AppendLine(DiskCapacitymb.ToString());
-			sb.AppendLine(BranchStatesInTasproj.ToString());
-			sb.AppendLine(EraseBranchStatesFirst.ToString());
 			sb.AppendLine(FileStateGap.ToString());
 			sb.AppendLine(MemStateGapDivider.ToString());
 
@@ -136,8 +116,6 @@ namespace BizHawk.Client.Common
 					int i = 2;
 
 					DiskCapacitymb = lines.Length > i ? int.Parse(lines[i++]) : 1;
-					BranchStatesInTasproj = lines.Length > i && bool.Parse(lines[i++]);
-					EraseBranchStatesFirst = lines.Length <= i || bool.Parse(lines[i++]);
 					FileStateGap = lines.Length > i ? int.Parse(lines[i++]) : 4;
 					FileStateGap = lines.Length > i ? int.Parse(lines[i++]) : 64;
 				}

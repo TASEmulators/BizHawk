@@ -157,7 +157,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			// States can't be easily moved over, because they contain the frame number.
 			// TODO? I'm not sure how this would be done.
 			tas.TasStateManager.MountWriteAccess();
-			old.TasStateManager.Clear();
+			old.TasStateManager.ClearStateHistory();
 
 			// Lag Log
 			tas.TasLagLog.FromLagLog(old.TasLagLog);
@@ -221,7 +221,7 @@ namespace BizHawk.Client.Common.MovieConversionExtensions
 			}
 
 			var tas = new TasMovie(newFilename, true) { SaveRam = saveRam };
-			tas.TasStateManager.Clear();
+			tas.TasStateManager.ClearStateHistory();
 			tas.ClearLagLog();
 
 			var entries = old.GetLogEntries();
