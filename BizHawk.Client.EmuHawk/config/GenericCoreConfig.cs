@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
+using System.Reflection;
+using System.ComponentModel;
 using BizHawk.Client.Common;
 using BizHawk.Emulation.Common;
 
@@ -31,6 +33,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_s != null)
 			{
 				propertyGrid1.SelectedObject = _s;
+				ChangeDescriptionHeight(propertyGrid1);
 			}
 			else
 			{
@@ -40,6 +43,7 @@ namespace BizHawk.Client.EmuHawk
 			if (_ss != null)
 			{
 				propertyGrid2.SelectedObject = _ss;
+				ChangeDescriptionHeight(propertyGrid2);
 			}
 			else
 			{
@@ -55,6 +59,36 @@ namespace BizHawk.Client.EmuHawk
 		private GenericCoreConfig()
 			: this(false, false)
 		{
+		}
+
+		private static void ChangeDescriptionHeight(PropertyGrid grid)
+		{
+			if (grid == null)
+				throw new ArgumentNullException("grid");
+
+			int maxlen = 0;
+			string desc = "";
+
+			foreach (PropertyDescriptor property in TypeDescriptor.GetProperties(grid.SelectedObject))
+			{
+				if (property.Description.Length > maxlen)
+				{
+					maxlen = property.Description.Length;
+					desc = property.Description;
+				}
+			}
+
+			foreach (Control control in grid.Controls)
+			{
+				if (control.GetType().Name == "DocComment")
+				{
+					FieldInfo field = control.GetType().GetField("userSized", BindingFlags.Instance | BindingFlags.NonPublic);
+					field.SetValue(control, true);
+					int height = (int)System.Drawing.Graphics.FromHwnd(control.Handle).MeasureString(desc, control.Font, grid.Width).Height;
+					control.Height = Math.Max(20, height) + 16; // magic for now
+					return;
+				}
+			}
 		}
 
 		private void OkBtn_Click(object sender, EventArgs e)

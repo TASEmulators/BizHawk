@@ -121,13 +121,13 @@ namespace BizHawk.Client.Common
 			{
 				case 0:
 				case 8:
-					info.Player1Type = OctoshockDll.ePeripheralType.None;
+					info.Player2Type = OctoshockDll.ePeripheralType.None;
 					break;
 				case 4:
-					info.Player1Type = OctoshockDll.ePeripheralType.Pad;
+					info.Player2Type = OctoshockDll.ePeripheralType.Pad;
 					break;
 				case 7:
-					info.Player1Type = OctoshockDll.ePeripheralType.DualShock;
+					info.Player2Type = OctoshockDll.ePeripheralType.DualShock;
 					break;
 				default:
 					Result.Errors.Add("Movie has unrecognised controller type for Player 2.");
