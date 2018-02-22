@@ -367,7 +367,6 @@ namespace BizHawk.Client.EmuHawk
 				if (columnName == FrameColumnName)
 				{
 					CurrentTasMovie.Markers.Add(TasView.LastSelectedIndex.Value, "");
-					RefreshDialog();
 				}
 				else if (columnName != CursorColumnName)
 				{
@@ -376,18 +375,29 @@ namespace BizHawk.Client.EmuHawk
 
 					if (Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.Contains(buttonName))
 					{
-						// nifty taseditor logic
-						bool allPressed = true;
-						foreach (var index in TasView.SelectedRows)
+						if (Control.ModifierKeys != Keys.Alt)
 						{
-							if ((index == CurrentTasMovie.FrameCount) // last movie frame can't have input, but can be selected
-								|| (!CurrentTasMovie.BoolIsPressed(index, buttonName)))
+							// nifty taseditor logic
+							bool allPressed = true;
+							foreach (var index in TasView.SelectedRows)
 							{
-								allPressed = false;
-								break;
+								if ((index == CurrentTasMovie.FrameCount) // last movie frame can't have input, but can be selected
+									|| (!CurrentTasMovie.BoolIsPressed(index, buttonName)))
+								{
+									allPressed = false;
+									break;
+								}
+							}
+							CurrentTasMovie.SetBoolStates(frame, TasView.SelectedRows.Count(), buttonName, !allPressed);
+						}
+						else
+						{
+							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
+							foreach (var index in TasView.SelectedRows)
+							{
+								CurrentTasMovie.SetBoolState(index, buttonName, BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue());
 							}
 						}
-						CurrentTasMovie.SetBoolStates(frame, TasView.SelectedRows.Count(), buttonName, !allPressed);
 					}
 					else
 					{
@@ -397,8 +407,8 @@ namespace BizHawk.Client.EmuHawk
 
 					_triggerAutoRestore = true;
 					JumpToGreenzone();
-					RefreshDialog();
 				}
+				RefreshDialog();
 			}
 		}
 
