@@ -1421,13 +1421,30 @@ namespace BizHawk.Client.EmuHawk
 
 		private void TasView_KeyDown(object sender, KeyEventArgs e)
 		{
-			if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Left) // Ctrl + Left
+			//taseditor uses Ctrl for selection and Shift for framecourser
+			if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.PageUp) // Shift + Page Up
 			{
 				GoToPreviousMarker();
 			}
-			else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Right) // Ctrl + Right
+			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.PageDown) // Shift + Page Down
 			{
 				GoToNextMarker();
+			}
+			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Home) // Shift + Home
+			{
+				GoToFrame(0);
+			}
+			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.End) // Shift + End
+			{
+				GoToFrame(CurrentTasMovie.InputLogLength-1);
+			}
+			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Shift + Up
+			{
+				GoToPreviousFrame();
+			}
+			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Shift + Down
+			{
+				GoToNextFrame();
 			}
 
 			if (FloatEditingMode && e.KeyCode != Keys.Right
