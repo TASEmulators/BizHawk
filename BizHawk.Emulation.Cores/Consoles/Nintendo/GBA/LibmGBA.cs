@@ -58,6 +58,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		public static extern bool BizAdvance(IntPtr ctx, LibVBANext.Buttons keys, int[] vbuff, ref int nsamp, short[] sbuff,
 			long time, short gyrox, short gyroy, short gyroz, byte luma);
 
+		[DllImport(dll, CallingConvention = cc)]
+		public static extern void BizSetPalette(IntPtr ctx, int[] palette);
+
 		[StructLayout(LayoutKind.Sequential)]
 		public class MemoryAreas
 		{
