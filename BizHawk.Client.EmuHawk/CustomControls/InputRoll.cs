@@ -1106,7 +1106,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						// do marker drag here
 					}
-					else if (ModifierKeys == Keys.Shift)
+					else if (ModifierKeys == Keys.Shift && CurrentCell.Column.Name == "FrameColumn")
 					{
 						if (_selectedItems.Any())
 						{
@@ -1175,7 +1175,7 @@ namespace BizHawk.Client.EmuHawk
 							SelectCell(CurrentCell);
 						}
 					}
-					else if (ModifierKeys == Keys.Control)
+					else if (ModifierKeys == Keys.Control && CurrentCell.Column.Name == "FrameColumn")
 					{
 						SelectCell(CurrentCell, toggle: true);
 					}
