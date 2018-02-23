@@ -520,7 +520,7 @@
             this.label47.Name = "label47";
             this.label47.Size = new System.Drawing.Size(275, 13);
             this.label47.TabIndex = 14;
-            this.label47.Text = "(GLideN64 is the newest and the most powerful plugin, recommended for TASing)";
+            this.label47.Text = "(GLideN64 is the newest pluging and has the highest compatibility)";
             // 
             // label2
             // 
