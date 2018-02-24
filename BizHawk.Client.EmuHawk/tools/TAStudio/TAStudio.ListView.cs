@@ -608,11 +608,10 @@ namespace BizHawk.Client.EmuHawk
 						_startBoolDrawColumn = buttonName;
 
 						_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
-						if (applyPatternToPaintedInputToolStripMenuItem.Checked && (!onlyOnAutoFireColumnsToolStripMenuItem.Checked
-							|| TasView.CurrentCell.Column.Emphasis))
+						if (Control.ModifierKeys == Keys.Alt)
 						{
 							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
-							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue();
+							//BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue();
 							_patternPaint = true;
 						}
 						else
@@ -1060,10 +1059,11 @@ namespace BizHawk.Client.EmuHawk
 
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
-					for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
+					bool setVal = _boolPaintState;
+
+					if (_patternPaint && _boolPaintState)
 					{
-						bool setVal = _boolPaintState;
-						if (_patternPaint && _boolPaintState)
+						for (int i = startVal; i < endVal; i++) //Pattern drawing won't work with <=
 						{
 							if (CurrentTasMovie[frame].Lagged.HasValue && CurrentTasMovie[frame].Lagged.Value)
 							{
@@ -1073,12 +1073,17 @@ namespace BizHawk.Client.EmuHawk
 							{
 								setVal = BoolPatterns[ControllerType.BoolButtons.IndexOf(_startBoolDrawColumn)].GetNextValue();
 							}
+							CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal);
 						}
-
-						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
-						JumpToGreenzone();
 					}
-
+					else
+					{
+						for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
+						{
+							CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
+							JumpToGreenzone();
+						}
+					}
 					if (!Settings.AutoRestoreOnMouseUpOnly)
 					{
 						_triggerAutoRestore = true;
