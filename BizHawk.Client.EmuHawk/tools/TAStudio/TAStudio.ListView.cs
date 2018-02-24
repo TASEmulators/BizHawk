@@ -23,6 +23,7 @@ namespace BizHawk.Client.EmuHawk
 		private bool _startSelectionDrag;
 		private bool _selectionDragState;
 		private bool _supressContextMenu;
+		private int _startrow;
 
 		// Editing analog input
 		private string _floatEditColumn = "";
@@ -608,11 +609,13 @@ namespace BizHawk.Client.EmuHawk
 						_startBoolDrawColumn = buttonName;
 
 						_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
-						if (Control.ModifierKeys == Keys.Alt)
+						if (Control.ModifierKeys == Keys.Alt || (applyPatternToPaintedInputToolStripMenuItem.Checked && (!onlyOnAutoFireColumnsToolStripMenuItem.Checked
+							|| TasView.CurrentCell.Column.Emphasis)))
 						{
 							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
 							//BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue();
 							_patternPaint = true;
+							_startrow = TasView.CurrentCell.RowIndex.Value;
 						}
 						else
 						{
@@ -913,6 +916,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				startVal = e.NewCell.RowIndex.Value;
 				endVal = e.OldCell.RowIndex.Value;
+				if(_patternPaint)
+				{
+					endVal = _startrow;
+				}
 			}
 
 			if (_startCursorDrag && !Mainform.IsSeeking)
@@ -1059,7 +1066,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
-					bool setVal = _boolPaintState;
+					bool setVal;// = _boolPaintState;
 
 					if (_patternPaint && _boolPaintState)
 					{
@@ -1075,9 +1082,12 @@ namespace BizHawk.Client.EmuHawk
 							}
 							CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal);
 						}
+						JumpToGreenzone();
 					}
 					else
 					{
+						setVal = _boolPaintState;
+
 						for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
 						{
 							CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
