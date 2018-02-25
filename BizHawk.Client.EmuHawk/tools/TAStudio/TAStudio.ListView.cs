@@ -911,6 +911,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				startVal = e.OldCell.RowIndex.Value;
 				endVal = e.NewCell.RowIndex.Value;
+				if (_patternPaint)
+				{
+					endVal--;
+				}
 			}
 			else
 			{
@@ -1066,11 +1070,13 @@ namespace BizHawk.Client.EmuHawk
 
 				if (e.OldCell.RowIndex.HasValue && e.NewCell.RowIndex.HasValue)
 				{
-					bool setVal;// = _boolPaintState;
+					
 
-					if (_patternPaint && _boolPaintState)
+					for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
 					{
-						for (int i = startVal; i < endVal; i++) //Pattern drawing won't work with <=
+						bool setVal = _boolPaintState;
+
+						if (_patternPaint && _boolPaintState)
 						{
 							if (CurrentTasMovie[frame].Lagged.HasValue && CurrentTasMovie[frame].Lagged.Value)
 							{
@@ -1080,20 +1086,12 @@ namespace BizHawk.Client.EmuHawk
 							{
 								setVal = BoolPatterns[ControllerType.BoolButtons.IndexOf(_startBoolDrawColumn)].GetNextValue();
 							}
-							CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal);
 						}
+
+						CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column		
 						JumpToGreenzone();
 					}
-					else
-					{
-						setVal = _boolPaintState;
 
-						for (int i = startVal; i <= endVal; i++) // Inclusive on both ends (drawing up or down)
-						{
-							CurrentTasMovie.SetBoolState(i, _startBoolDrawColumn, setVal); // Notice it uses new row, old column, you can only paint across a single column
-							JumpToGreenzone();
-						}
-					}
 					if (!Settings.AutoRestoreOnMouseUpOnly)
 					{
 						_triggerAutoRestore = true;
