@@ -289,55 +289,54 @@ namespace BizHawk.Client.Common
 		/// <summary>
 		/// Deletes/moves states to follow the state storage size limits.
 		/// Used after changing the settings too.
+		/// TODO: don't miss states on region borders
 		/// </summary>
 		public void LimitStateCount()
 		{
-			if (Used + _expectedStateSize > Settings.Cap
-				|| DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024
-				|| DateTime.Now.Ticks > _stateCleanupTime)
+			if (Used + _expectedStateSize > Settings.Cap || DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024)
 			{
-				// rely on frames, because relying on indexes while changing the collection is ugly
-				List<int> framesToClear = new List<int>();
-
-				// we have 5 greenzone regions, the last one we do not touch
+				// we have 5 greenzone regions (by powers of 2), the closest one we do not touch
 				int regionSize = _maxStates / 5;
+				int lastClearedFrame = 1;
 
-				// drop states from previous regions, increasing the gap for each one, make sure to ignore state 0
-				for (int gap = 2, last = _states.ToList().Count; gap <= 16; gap <<= 1)
+				// iterate through regions (region frame sizes increase by 2)
+				for (int borderIndex = GetStateIndexByFrame(Global.Emulator.Frame) - regionSize, mult = 2; borderIndex > 0; mult *= 2)
 				{
-					// last egion index
-					last -= regionSize;
-					if (last < 1)
-					{
-						return;
-					}
+					int nextBorderIndex = borderIndex - regionSize * mult;
+					if (nextBorderIndex <= 0)
+						nextBorderIndex = 1; // reached greenzone end
 
-					// first region index
-					int first = last - regionSize;
-					if (first < 1)
+					// iterate through states. i > 0 because nextBorderIndex > 0
+					for (int i = borderIndex; i > nextBorderIndex; i--)
 					{
-						first = 1;
-					}
+						int minStep = mult * StateFrequency;
+						int curFrame = GetStateFrameByIndex(i);
+						int nextFrame = GetStateFrameByIndex(i - 1);
 
-					// iterate through the region and record states' frames
-					for (int i = last; i >= first; i--)
-					{
-						if ((i & (gap - 1)) > 0)
+						if (curFrame - nextFrame < minStep)
 						{
-							framesToClear.Add(_states.ElementAt(i).Key);
+							RemoveState(nextFrame);
+							lastClearedFrame = nextFrame;
 						}
+						else
+							continue;
 					}
+
+					if (nextBorderIndex == 1)
+						return;
+
+					borderIndex = nextBorderIndex;
 				}
 
-				if (framesToClear.Any())
+				// finish off whatever we've missed
+				List<KeyValuePair<int, StateManagerState>> leftoverStates = _states
+					.Where(s => s.Key > 0 && s.Key < lastClearedFrame)
+					.ToList();
+
+				foreach (var state in leftoverStates)
 				{
-					foreach (var frame in framesToClear)
-					{
-						RemoveState(frame);
-					}
+					RemoveState(state.Key);
 				}
-
-				_stateCleanupTime = DateTime.Now.Ticks + _stateCleanupPeriod;
 			}
 		}
 
@@ -487,6 +486,26 @@ namespace BizHawk.Client.Common
 			var s = _states.LastOrDefault(state => state.Key < frame);
 
 			return this[s.Key];
+		}
+
+		/// <summary>
+		/// Returns index of the state right above the given frame
+		/// </summary>
+		/// <param name="frame"></param>
+		/// <returns></returns>
+		public int GetStateIndexByFrame(int frame)
+		{
+			return _states.IndexOfKey(GetStateClosestToFrame(frame).Key);
+		}
+
+		/// <summary>
+		/// Returns frame of the state at the given index
+		/// </summary>
+		/// <param name="index"></param>
+		/// <returns></returns>
+		public int GetStateFrameByIndex(int index)
+		{
+			return _states.ElementAt(index).Key;
 		}
 
 		private ulong _used;
