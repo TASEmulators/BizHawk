@@ -900,6 +900,11 @@ namespace BizHawk.Client.EmuHawk
 				return;
 			}
 
+			if (!MouseButtonHeld)
+			{
+				return;
+			}
+
 			// skip rerecord counting on drawing entirely, mouse down is enough
 			// avoid introducing another global
 			bool wasCountingRerecords = Global.MovieSession.Movie.IsCountingRerecords;
@@ -1146,39 +1151,43 @@ namespace BizHawk.Client.EmuHawk
 		private void TasView_MouseMove(object sender, MouseEventArgs e)
 		{
 			// For float editing
-			int increment = (_floatEditYPos - e.Y) / 4;
-			if (_floatEditYPos == -1)
-				return;
-
-			float value = _floatPaintState + increment;
-			ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
-				[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(_floatEditColumn)];
-
-			// Range for N64 Y axis has max -128 and min 127. That should probably be fixed in ControllerDefinition.cs.
-			// SuuperW: I really don't think changing it would break anything, but adelikat isn't so sure.
-			float rMax = range.Max;
-			float rMin = range.Min;
-			if (rMax < rMin)
+			if (FloatEditingMode)
 			{
-				rMax = range.Min;
-				rMin = range.Max;
-			}
+				int increment = (_floatEditYPos - e.Y) / 4;
+				if (_floatEditYPos == -1)
+					return;
 
-			if (value > rMax)
-			{
-				value = rMax;
-			}
-			else if (value < rMin)
-			{
-				value = rMin;
-			}
+				float value = _floatPaintState + increment;
+				ControllerDefinition.FloatRange range = Global.MovieSession.MovieControllerAdapter.Definition.FloatRanges
+					[Global.MovieSession.MovieControllerAdapter.Definition.FloatControls.IndexOf(_floatEditColumn)];
 
-			CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
-			_floatTypedValue = value.ToString();
+				// Range for N64 Y axis has max -128 and min 127. That should probably be fixed in ControllerDefinition.cs.
+				// SuuperW: I really don't think changing it would break anything, but adelikat isn't so sure.
+				float rMax = range.Max;
+				float rMin = range.Min;
+				if (rMax < rMin)
+				{
+					rMax = range.Min;
+					rMin = range.Max;
+				}
 
-			_triggerAutoRestore = true;
-			JumpToGreenzone();
-			DoTriggeredAutoRestoreIfNeeded();
+				if (value > rMax)
+				{
+					value = rMax;
+				}
+				else if (value < rMin)
+				{
+					value = rMin;
+				}
+
+				CurrentTasMovie.SetFloatState(_floatEditRow, _floatEditColumn, value);
+				_floatTypedValue = value.ToString();
+
+				_triggerAutoRestore = true;
+				JumpToGreenzone();
+				DoTriggeredAutoRestoreIfNeeded();
+
+			}
 			RefreshDialog();
 		}
 
