@@ -593,7 +593,7 @@ namespace BizHawk.Client.EmuHawk
 						_selectionDragState = TasView.SelectedRows.Contains(frame);
 					}
 				}
-				else // User changed input
+				else if (TasView.CurrentCell.Column.Type != InputRoll.RollColumn.InputType.Text)// User changed input
 				{
 					bool wasPaused = Mainform.EmulatorPaused;
 
