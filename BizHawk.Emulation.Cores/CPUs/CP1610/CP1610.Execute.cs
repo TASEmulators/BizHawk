@@ -245,7 +245,10 @@ namespace BizHawk.Emulation.Cores.Components.CP1610
 					Interruptible = true;
 					break;
 				case 0x005: // TCI
-					throw new ArgumentException(UNEXPECTED_TCI);
+					cycles = 4;
+					Interruptible = false;
+					Console.WriteLine(UNEXPECTED_TCI);
+					break;
 				case 0x006: // CLRC
 					FlagC = false;
 					cycles = 4;
