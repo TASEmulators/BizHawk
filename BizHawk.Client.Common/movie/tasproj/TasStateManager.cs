@@ -63,7 +63,7 @@ namespace BizHawk.Client.Common
 				SetState(0, _movie.BinarySavestate);
 			}
 
-			_decay = new StateManagerDecay(_movie.TasStateManager, _maxStates, 4);
+			_decay = new StateManagerDecay(this);
 		}
 
 		public void Dispose()
@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 					((int)_expectedStateSize / Settings.MemStateGapDivider / 1024),
 					_minFrequency, _maxFrequency);
 
-			//_decay.UpdateSettings(_maxStates, 4);
+			_decay.UpdateSettings(_maxStates, 4);
 		}
 
 		/// <summary>
@@ -292,9 +292,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LimitStateCount()
 		{
-			while (Used + _expectedStateSize > Settings.Cap || DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024)
+			if (StateCount > _maxStates || DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024)
 			{
-				//_decay.Trigger(1);
+				_decay.Trigger(StateCount - _maxStates);
 			}
 		}
 

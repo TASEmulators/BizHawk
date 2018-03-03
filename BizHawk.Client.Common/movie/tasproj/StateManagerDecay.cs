@@ -32,6 +32,7 @@
 
 *****************************************************************************************/
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BizHawk.Client.Common
 {
@@ -57,71 +58,88 @@ namespace BizHawk.Client.Common
 			AlignedSpread
 		}
 
-		public StateManagerDecay(TasStateManager tsm, int capacity, int bits)
+		public StateManagerDecay(TasStateManager tsm)
 		{
 			_tsm = tsm;
 			_zeros = new List<int>();
-
-			UpdateSettings(capacity, bits);
 		}
 
 		public void Trigger(int decayStates)
 		{
-			if (_tsm.StateCount <= 1)
+			if (_tsm.StateCount <= 1 || decayStates <= 1)
 				return;
 
 			DecayDirection direction = DecayDirection.Forward;
-			PriorityFormula formula = PriorityFormula.Spread;
+			PriorityFormula formula = PriorityFormula.AlignedSpread;
+
 			int baseStateIndex = _tsm.GetStateIndexByFrame(Global.Emulator.Frame);
-			int bestForwardPriority = -1;
-			int bestForwardFrame = -1;
-			int bestBackwardPriority = -1;
-			int bestBackwardFrame = -1;
+			int baseStateFrame = _tsm.GetStateFrameByIndex(baseStateIndex);
 
-			for (; decayStates > 0; decayStates--)
+			// priority is key, frame is value
+			SortedList<int, int> ForwardFamePriorities = new SortedList<int, int>();
+			SortedList<int, int> BackwardFamePriorities = new SortedList<int, int>();
+
+			// add default values to compare to
+			ForwardFamePriorities.Add(0, 0);
+			BackwardFamePriorities.Add(0, 0);
+
+			if (direction == DecayDirection.Forward || direction == DecayDirection.Bothway)
 			{
-				if (direction == DecayDirection.Forward || direction == DecayDirection.Bothway)
+				for (int currentStateIndex = 1; currentStateIndex < baseStateIndex; currentStateIndex++)
 				{
-					for (int currentStateIndex = 0; currentStateIndex < baseStateIndex; currentStateIndex++)
+					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
+					int zeroCount = _zeros[currentFrame & _mask];
+					int priority = ((baseStateFrame - currentFrame) >> zeroCount);
+
+					if (formula == PriorityFormula.AlignedSpread)
 					{
-						int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
-						int zeroCount = _zeros[currentFrame & _mask];
-						int priority = ((baseStateIndex - currentFrame) >> zeroCount);
-
-						if (formula == PriorityFormula.AlignedSpread)
-							priority -= ((_base * ((1 << zeroCount) * 2 - 1)) >> zeroCount);
-
-						if (priority > bestForwardPriority)
-						{
-							bestForwardPriority = priority;
-							bestForwardFrame = currentFrame;
-						}
+						priority -= ((_base * ((1 << zeroCount) * 2 - 1)) >> zeroCount);
 					}
 
-					if (bestForwardFrame != -1)
-						_tsm.RemoveState(bestForwardFrame);
+					if (priority > ForwardFamePriorities.Last().Key)
+					{
+						ForwardFamePriorities.Add(priority, currentFrame);
+					}
 				}
+			}
 
-				if (direction == DecayDirection.Backward || direction == DecayDirection.Bothway)
+			if (direction == DecayDirection.Backward || direction == DecayDirection.Bothway)
+			{
+				for (int currentStateIndex = _tsm.StateCount - 1; currentStateIndex > baseStateIndex; currentStateIndex--)
 				{
-					for (int currentStateIndex = _tsm.StateCount - 1; currentStateIndex > baseStateIndex; currentStateIndex--)
+					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
+					int zeroCount = _zeros[currentFrame & _mask];
+					int priority = ((currentFrame - baseStateFrame) >> zeroCount);
+
+					if (formula == PriorityFormula.AlignedSpread)
 					{
-						int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
-						int zeroCount = _zeros[currentFrame & _mask];
-						int priority = ((baseStateIndex - currentFrame) >> zeroCount);
-
-						if (formula == PriorityFormula.AlignedSpread)
-							priority -= ((_base * ((1 << zeroCount) * 2 - 1)) >> zeroCount);
-
-						if (priority > bestBackwardPriority)
-						{
-							bestBackwardPriority = priority;
-							bestBackwardFrame = currentFrame;
-						}
+						priority -= ((_base * ((1 << zeroCount) * 2 - 1)) >> zeroCount);
 					}
 
-					if (bestBackwardFrame != -1)
-						_tsm.RemoveState(bestBackwardFrame);
+					if (priority > ForwardFamePriorities.Last().Key)
+					{
+						BackwardFamePriorities.Add(priority, currentFrame);
+					}
+				}
+			}
+
+			for (; decayStates > 0;)
+			{
+				if (ForwardFamePriorities.Count > 1)
+				{
+					_tsm.RemoveState(ForwardFamePriorities.Last().Value);
+					decayStates--;
+				}
+				else if (BackwardFamePriorities.Count > 1)
+				{
+					_tsm.RemoveState(BackwardFamePriorities.Last().Value);
+					decayStates--;
+				}
+				else
+				{
+					// todo: this should never happen!!!
+					_tsm.RemoveState(_tsm.GetStateFrameByIndex(1));
+					decayStates--;
 				}
 			}
 		}
@@ -132,10 +150,12 @@ namespace BizHawk.Client.Common
 			_capacity = capacity;
 			_mask = (1 << _bits) - 1;
 			_base = (_capacity + _bits / 2) / (_bits + 1);
-			_zeros[0] = _bits;
+			_zeros.Add(_bits);
 
 			for (int i = 1; i < (1 << _bits); i++)
 			{
+				_zeros.Add(0);
+
 				for (int j = i; j > 0; j >>= 1)
 				{
 					if ((j & 1) > 0)
