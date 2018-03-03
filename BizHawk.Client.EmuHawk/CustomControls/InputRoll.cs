@@ -1179,7 +1179,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						SelectCell(CurrentCell, toggle: true);
 					}
-					else
+					else if (ModifierKeys != Keys.Shift)
 					{
 						var hadIndex = _selectedItems.Any();
 						_selectedItems.Clear();

@@ -599,17 +599,10 @@ namespace BizHawk.Client.EmuHawk
 
 					if (Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.Contains(buttonName))
 					{
-						CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Bool " + buttonName + " from frame " + frame);
-
-						CurrentTasMovie.ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
-						_triggerAutoRestore = true;
-						JumpToGreenzone();
-						RefreshDialog();
-
+						_patternPaint = false;
 						_startBoolDrawColumn = buttonName;
 
-						_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
-						if (Control.ModifierKeys == Keys.Alt || (applyPatternToPaintedInputToolStripMenuItem.Checked && (!onlyOnAutoFireColumnsToolStripMenuItem.Checked
+						if ((Control.ModifierKeys == Keys.Alt && Control.ModifierKeys != Keys.Shift) || (applyPatternToPaintedInputToolStripMenuItem.Checked && (!onlyOnAutoFireColumnsToolStripMenuItem.Checked
 							|| TasView.CurrentCell.Column.Emphasis)))
 						{
 							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
@@ -617,9 +610,45 @@ namespace BizHawk.Client.EmuHawk
 							_patternPaint = true;
 							_startrow = TasView.CurrentCell.RowIndex.Value;
 						}
+						else if (Control.ModifierKeys == Keys.Shift && Control.ModifierKeys != Keys.Alt) // TODO: Clicking above selection
+						{
+							int firstSel = TasView.SelectedRows.First();
+
+							if (frame <= firstSel)
+							{
+								firstSel = frame;
+								frame = TasView.SelectedRows.First();
+							}
+
+							bool allPressed = true;
+							for (int i = firstSel; i <= frame; i++)
+							{
+								if ((i == CurrentTasMovie.FrameCount) // last movie frame can't have input, but can be selected
+									|| (!CurrentTasMovie.BoolIsPressed(i, buttonName)))
+								{
+									allPressed = false;
+									break;
+								}
+							}
+							CurrentTasMovie.SetBoolStates(firstSel, (frame - firstSel) + 1, buttonName, !allPressed);
+							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
+							_triggerAutoRestore = true;
+							JumpToGreenzone();
+							RefreshDialog();
+						}
+						else if (Control.ModifierKeys == Keys.Shift && Control.ModifierKeys == Keys.Alt) //Does not work?
+						{
+							// TODO: Pattern drawing from selection to current cell
+						}
 						else
 						{
-							_patternPaint = false;
+							CurrentTasMovie.ChangeLog.BeginNewBatch("Paint Bool " + buttonName + " from frame " + frame);
+
+							CurrentTasMovie.ToggleBoolState(TasView.CurrentCell.RowIndex.Value, buttonName);
+							_boolPaintState = CurrentTasMovie.BoolIsPressed(frame, buttonName);
+							_triggerAutoRestore = true;
+							JumpToGreenzone();
+							RefreshDialog();
 						}
 
 						if (!Settings.AutoRestoreOnMouseUpOnly)
