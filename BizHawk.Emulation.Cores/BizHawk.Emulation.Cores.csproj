@@ -415,6 +415,7 @@
     <Compile Include="Consoles\Coleco\ColecoVision.ISoundProvider.cs">
       <DependentUpon>ColecoVision.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Coleco\AY_3_8910.cs" />
     <Compile Include="Consoles\Coleco\TMS9918A.cs" />
     <Compile Include="Consoles\Coleco\ColecoControllerDeck.cs" />
     <Compile Include="Consoles\Coleco\ColecoControllers.cs" />

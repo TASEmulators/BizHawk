@@ -2206,6 +2206,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ss = ((ColecoVision)Emulator).GetSyncSettings();
 			ColecoSkipBiosMenuItem.Checked = ss.SkipBiosIntro;
+			ColecoUseSGMMenuItem.Checked = ss.UseSGM;
 			ColecoControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
 		}
 
@@ -2213,6 +2214,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ss = ((ColecoVision)Emulator).GetSyncSettings();
 			ss.SkipBiosIntro ^= true;
+			PutCoreSyncSettings(ss);
+		}
+
+		private void ColecoUseSGMMenuItem_Click(object sender, EventArgs e)
+		{
+			var ss = ((ColecoVision)Emulator).GetSyncSettings();
+			ss.UseSGM ^= true;
 			PutCoreSyncSettings(ss);
 		}
 

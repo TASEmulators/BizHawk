@@ -51,6 +51,14 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 		}
 
+		public bool use_SGM = false;
+		public bool is_MC = false;
+		public int MC_bank = 0;
+		public bool enable_SGM_high = false;
+		public bool enable_SGM_low = false;
+		public byte port_0x53, port_0x7F;
+
+
 		public int Frame => _frame;
 
 		public string SystemId => "Coleco";
