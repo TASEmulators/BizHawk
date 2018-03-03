@@ -26,7 +26,7 @@ namespace BizHawk.Client.Common
 		{
 			InvalidateCallback?.Invoke(index);
 		}
-		
+
 		internal NDBDatabase NdbDatabase { get; set; }
 		private Guid _guid = Guid.NewGuid();
 		private SortedList<int, StateManagerState> _states = new SortedList<int, StateManagerState>();
@@ -40,12 +40,10 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		private long _stateCleanupTime;
-		private readonly long _stateCleanupPeriod = 10000;
-
 		private bool _isMountedForWrite;
 		private readonly TasMovie _movie;
 
+		private StateManagerDecay _decay;
 		private ulong _expectedStateSize;
 		private int _stateFrequency;
 		private readonly int _minFrequency = 1;
@@ -65,7 +63,7 @@ namespace BizHawk.Client.Common
 				SetState(0, _movie.BinarySavestate);
 			}
 
-			_stateCleanupTime = DateTime.Now.Ticks + _stateCleanupPeriod;
+			_decay = new StateManagerDecay(_movie.TasStateManager, _maxStates, 4);
 		}
 
 		public void Dispose()
@@ -79,6 +77,8 @@ namespace BizHawk.Client.Common
 			_stateFrequency = NumberExtensions.Clamp(
 					((int)_expectedStateSize / Settings.MemStateGapDivider / 1024),
 					_minFrequency, _maxFrequency);
+
+			//_decay.UpdateSettings(_maxStates, 4);
 		}
 
 		/// <summary>
@@ -110,7 +110,7 @@ namespace BizHawk.Client.Common
 
 			NdbDatabase = new NDBDatabase(StatePath, Settings.DiskCapacitymb * 1024 * 1024, (int)_expectedStateSize);
 		}
-
+		
 		public TasStateManagerSettings Settings { get; set; }
 
 		/// <summary>
@@ -263,8 +263,8 @@ namespace BizHawk.Client.Common
 			return _movie.Markers.IsMarker(frame + 1);
 		}
 
-		private void RemoveState(int frame)
-		{			
+		public void RemoveState(int frame)
+		{
 			int index = _states.IndexOfKey(frame);
 
 			if (frame < 1 || index < 1)
@@ -292,88 +292,93 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LimitStateCount()
 		{
-			if (Used + _expectedStateSize > Settings.Cap || DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024)
+			while (Used + _expectedStateSize > Settings.Cap || DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024)
 			{
-				// feos: this GREENZONE DECAY algo is critically important (and crazy), so I'll explain it fully here
-				// we force decay gap between memory-based states that increases for every new region
-				// regions start from the state right above the current frame (or right below for forward decay)
-				// we use powers of 2 to determine decay gap size and region length
-				// amount of regions and their lengths depend on how many powers of 2 we want to use
-				// we use 5 powers of 2, from 0 to 4. decay gap goes 0, 1, 3, 7, 15 (in reality, not perfectly so)
-				// 1 decay gap unit is 1 frame * minimal state frequency
-				// first region has no decay gaps, the length of that region in fceux is called "greenzone capacity"
-				// every next region is twice longer than its predecessor, but it has the same amount of states (approximately)
-				// states beyond last region are erased, except for state at frame 0
-				// algo works in both directions, alternating between them on every call
-				// it removes as many states is its pattern needs, which allows for cooldown before cap is about to get hit again
-				// todo: this is still imperfect, even though probably usable already
+				//_decay.Trigger(1);
+			}
+		}
 
-				_greenzoneDecayCall++;
+		private void DecayAlgo()
+		{
+			// feos: this GREENZONE DECAY algo is critically important (and crazy), so I'll explain it fully here
+			// we force decay gap between memory-based states that increases for every new region
+			// regions start from the state right above the current frame (or right below for forward decay)
+			// we use powers of 2 to determine decay gap size and region length
+			// amount of regions and their lengths depend on how many powers of 2 we want to use
+			// we use 5 powers of 2, from 0 to 4. decay gap goes 0, 1, 3, 7, 15 (in reality, not perfectly so)
+			// 1 decay gap unit is 1 frame * minimal state frequency
+			// first region has no decay gaps, the length of that region in fceux is called "greenzone capacity"
+			// every next region is twice longer than its predecessor, but it has the same amount of states (approximately)
+			// states beyond last region are erased, except for state at frame 0
+			// algo works in both directions, alternating between them on every call
+			// it removes as many states is its pattern needs, which allows for cooldown before cap is about to get hit again
+			// todo: this is still imperfect, even though probably usable already
 
-				int regionStates = _maxStates / 5;
-				int baseIndex = GetStateIndexByFrame(Global.Emulator.Frame);
-				int direction = 1; // negative for forward decay
+			_greenzoneDecayCall++;
 
-				if (_greenzoneDecayCall % 2 == 0)
+			int regionStates = _maxStates / 5;
+			int baseIndex = GetStateIndexByFrame(Global.Emulator.Frame);
+			int direction = 1; // negative for forward decay
+
+			if (_greenzoneDecayCall % 2 == 0)
+			{
+				baseIndex++;
+				direction = -1;
+			}
+
+			int lastStateFrame = -1;
+
+			for (int mult = 2, currentStateIndex = baseIndex - regionStates * direction; mult <= 16; mult *= 2)
+			{
+				int gap = _stateFrequency * mult;
+				int regionFrames = regionStates * gap;
+
+				for (; ; currentStateIndex -= direction)
 				{
-					baseIndex++;
-					direction = -1;
-				}
+					// are we out of states yet?
+					if (direction > 0 && currentStateIndex <= 1 ||
+						direction < 0 && currentStateIndex >= _states.Count - 1)
+						return;
 
-				int lastStateFrame = -1;
+					int nextStateIndex = currentStateIndex - direction;
+					NumberExtensions.Clamp(nextStateIndex, 1, _states.Count - 1);
 
-				for (int mult = 2, currentStateIndex = baseIndex - regionStates * direction; mult <= 16; mult *= 2)
-				{
-					int gap = _stateFrequency * mult;
-					int regionFrames = regionStates * gap;
-					
-					for (; ; currentStateIndex -= direction)
+					int currentStateFrame = GetStateFrameByIndex(currentStateIndex);
+					int nextStateFrame = GetStateFrameByIndex(nextStateIndex);
+					int frameDiff = Math.Max(currentStateFrame, nextStateFrame) - Math.Min(currentStateFrame, nextStateFrame);
+					lastStateFrame = currentStateFrame;
+
+					if (frameDiff < gap)
 					{
-						// are we out of states yet?
-						if (direction > 0 && currentStateIndex <= 1 ||
-							direction < 0 && currentStateIndex >= _states.Count - 1)
-							return;
+						RemoveState(nextStateFrame);
 
-						int nextStateIndex = currentStateIndex - direction;
-						NumberExtensions.Clamp(nextStateIndex, 1, _states.Count - 1);
-
-						int currentStateFrame = GetStateFrameByIndex(currentStateIndex);
-						int nextStateFrame = GetStateFrameByIndex(nextStateIndex);
-						int frameDiff = Math.Max(currentStateFrame, nextStateFrame) - Math.Min(currentStateFrame, nextStateFrame);
-						lastStateFrame = currentStateFrame;
-
-						if (frameDiff < gap)
-						{
-							RemoveState(nextStateFrame);
-
-							// when going forward, we don't remove the state before current
-							// but current changes anyway, so compensate for that here
-							if (direction < 0)
-								currentStateIndex--;
-						}
-						else
-						{
-							regionFrames -= frameDiff;
-							if (regionFrames <= 0)
-								break;
-						}
+						// when going forward, we don't remove the state before current
+						// but current changes anyway, so compensate for that here
+						if (direction < 0)
+							currentStateIndex--;
 					}
-				}
-
-				// finish off whatever we've missed
-				if (lastStateFrame > -1)
-				{
-					List<KeyValuePair<int, StateManagerState>> leftoverStates;
-
-					if (direction > 0)
-						leftoverStates = _states.Where(s => s.Key > 0 && s.Key < lastStateFrame).ToList();
 					else
-						leftoverStates = _states.Where(s => s.Key > lastStateFrame && s.Key < LastEmulatedFrame).ToList();
-
-					foreach (var state in leftoverStates)
 					{
-						RemoveState(state.Key);
+						regionFrames -= frameDiff;
+						if (regionFrames <= 0)
+							break;
 					}
+				}
+			}
+
+			// finish off whatever we've missed
+			if (lastStateFrame > -1)
+			{
+				List<KeyValuePair<int, StateManagerState>> leftoverStates;
+
+				if (direction > 0)
+					leftoverStates = _states.Where(s => s.Key > 0 && s.Key < lastStateFrame).ToList();
+				else
+					leftoverStates = _states.Where(s => s.Key > lastStateFrame && s.Key < LastEmulatedFrame).ToList();
+
+				foreach (var state in leftoverStates)
+				{
+					RemoveState(state.Key);
 				}
 			}
 		}
@@ -483,7 +488,7 @@ namespace BizHawk.Client.Common
 				{
 					continue;
 				}
-				
+
 				KeyValuePair<int, StateManagerState> kvp = _states.ElementAt(i);
 				bw.Write(kvp.Key);
 				bw.Write(kvp.Value.Length);
