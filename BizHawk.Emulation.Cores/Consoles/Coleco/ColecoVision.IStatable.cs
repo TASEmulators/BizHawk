@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			SGM_sound.SyncState(ser);
 			ser.Sync("UseSGM", ref use_SGM);
 			ser.Sync("is_MC", ref is_MC);
+			ser.Sync("MC_bank", ref MC_bank);
 			ser.Sync("EnableSGMhigh", ref enable_SGM_high);
 			ser.Sync("EnableSGMlow", ref enable_SGM_low);
 			ser.Sync("Port_0x53", ref port_0x53);
