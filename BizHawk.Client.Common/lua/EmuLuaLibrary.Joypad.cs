@@ -151,8 +151,8 @@ namespace BizHawk.Client.Common
 			catch
 			{
 				 /*Eat it*/
-	}
-}
+			}
+		}
 
 		[LuaMethodExample("setanalog", "joypad.setanalog( { [ \"Tilt X\" ] = true, [ \"Tilt Y\" ] = false } );")]
 		[LuaMethod("setanalog", "sets the given analog controls to their provided values for the current frame. Note that unlike set() there is only the logic of overriding with the given value.")]
