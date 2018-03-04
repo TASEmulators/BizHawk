@@ -23,11 +23,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private bool Mode3Bit => (Registers[1] & 8) > 0;
 		private bool EnableDoubledSprites => (Registers[1] & 1) > 0;
 		private bool EnableLargeSprites => (Registers[1] & 2) > 0;
-		private bool EnableInterrupts => (Registers[1] & 32) > 0;
+		public bool EnableInterrupts => (Registers[1] & 32) > 0;
 		private bool DisplayOn => (Registers[1] & 64) > 0;
 		private bool Mode16k => (Registers[1] & 128) > 0;
 
-		private bool InterruptPending
+		public bool InterruptPending
 		{
 			get { return (StatusByte & 0x80) != 0; }
 			set { StatusByte = (byte)((StatusByte & ~0x02) | (value ? 0x80 : 0x00)); }
@@ -38,38 +38,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private int SpritePatternGeneratorBase;
 		private int TmsPatternNameTableBase;
 		private int TmsSpriteAttributeBase;
-
-		public void ExecuteFrame(bool Int_pending)
-		{
-			for (int scanLine = 0; scanLine < 262; scanLine++)
-			{
-				RenderScanline(scanLine);
-				
-				if (scanLine == 192)
-				{
-					
-					InterruptPending = true;
-
-					if (EnableInterrupts)
-						Cpu.NonMaskableInterrupt = true;
-				}
-
-				for (int i = 0; i < 228; i++)
-				{
-					Cpu.ExecuteOne();
-				}
-				
-				Cpu.FlagI = false;
-				if (Int_pending && scanLine==50)
-				{
-					if (EnableInterrupts)
-					{
-						Cpu.FlagI = true;
-						Int_pending = false;
-					} 
-				}
-			}
-		}
 
 		public void WriteVdpControl(byte value)
 		{
@@ -172,7 +140,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			else TmsMode = 0;
 		}
 
-		private void RenderScanline(int scanLine)
+		public void RenderScanline(int scanLine)
 		{
 			if (scanLine >= 192)
 				return;

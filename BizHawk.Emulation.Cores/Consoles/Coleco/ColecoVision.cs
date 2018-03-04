@@ -33,11 +33,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				MemoryCallbacks = MemoryCallbacks
 			};
 
-			PSG = new SN76489();
-			_fakeSyncSound = new FakeSyncSound(PSG, 735);
-			ser.Register<ISoundProvider>(_fakeSyncSound);
-
-			SGM_sound = new AY_3_8910();
+			PSG = new SN76489col();
+			SGM_sound = new AY_3_8910_SGM();
 
 			ControllerDeck = new ColecoVisionControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
@@ -61,7 +58,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.Register<ITraceable>(_tracer);
 
 			use_SGM = _syncSettings.UseSGM;
-			Console.WriteLine(use_SGM);
+			Console.WriteLine("Using the Super Game Module");
 		}
 
 		private readonly Z80A _cpu;
@@ -147,7 +144,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 				if (port == 0x52)
 				{
-					return SGM_sound.Register[SGM_sound.port_sel];
+					return SGM_sound.ReadReg();
 				}
 
 				if (port == 0x53)
@@ -196,7 +193,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			if (port >= 0xE0)
 			{
-				PSG.WritePsgData(value, _cpu.TotalExecutedCycles);
+				PSG.WriteReg(value);
 			}
 
 			if (use_SGM)
@@ -208,7 +205,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 				if (port == 0x51)
 				{
-					SGM_sound.Register[SGM_sound.port_sel] = value;
+					SGM_sound.WriteReg(value);
 				}
 
 				if (port == 0x53)

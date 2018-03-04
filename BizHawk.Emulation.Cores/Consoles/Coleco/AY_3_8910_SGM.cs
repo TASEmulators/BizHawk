@@ -6,23 +6,19 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
-	public sealed class AY_3_8910 : ISoundProvider
+	public sealed class AY_3_8910_SGM
 	{
-		private readonly BlipBuffer _blip = new BlipBuffer(4096);
-		private short[] _sampleBuffer = new short[0];
+		public short[] _sampleBuffer = new short[4096];
+		private short current_sample;
 
-
-		public AY_3_8910()
+		public AY_3_8910_SGM()
 		{
-			_blip.SetRates(894866 / 4.0, 44100);
 			Reset();
 		}
 
 		public byte[] Register = new byte[16];
 
 		public byte port_sel;
-
-		public int total_clock; // TODO: what is this used for?
 
 		public void Reset()
 		{
@@ -40,51 +36,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public void DiscardSamples()
 		{
-			_blip.Clear();
 			_sampleClock = 0;
 		}
 
-		public void GetSamplesAsync(short[] samples)
+		public void Sample()
 		{
-			throw new NotSupportedException("Async is not available");
-		}
-
-		public bool CanProvideAsync => false;
-
-		public SyncSoundMode SyncMode => SyncSoundMode.Sync;
-
-		public void SetSyncMode(SyncSoundMode mode)
-		{
-			if (mode != SyncSoundMode.Sync)
-			{
-				throw new InvalidOperationException("Only Sync mode is supported.");
-			}
-		}
-
-		public void GetSamplesSync(out short[] samples, out int nsamp)
-		{
-			_blip.EndFrame((uint)_sampleClock);
-			_sampleClock = 0;
-
-			nsamp = _blip.SamplesAvailable();
-			int targetLength = nsamp * 2;
-			if (_sampleBuffer.Length != targetLength)
-			{
-				_sampleBuffer = new short[targetLength];
-			}
-
-			_blip.ReadSamplesLeft(_sampleBuffer, nsamp);
-			for (int i = 0; i < _sampleBuffer.Length; i += 2)
-			{
-				_sampleBuffer[i + 1] = _sampleBuffer[i];
-			}
-
-			samples = _sampleBuffer;
-		}
-
-		public void GetSamples(short[] samples)
-		{
-			throw new Exception();
+			_sampleBuffer[_sampleClock] = current_sample;
+			_sampleClock++;
 		}
 
 		private static readonly int[] VolumeTable =
@@ -94,7 +52,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		};
 
 		private int _sampleClock;
-		private int _latchedSample;
 
 		private int TotalExecutedCycles;
 		private int PendingCycles;
@@ -116,9 +73,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private int noise_clock;
 		private int noise_per;
 		private int noise = 0x1;
-
-		public Func<byte, bool, byte> ReadMemory;
-		public Func<byte, byte, bool, bool> WriteMemory;
 
 		public void SyncState(Serializer ser)
 		{
@@ -147,32 +101,32 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.EndSection();
 		}
 
-		public byte ReadPSG()
+		public byte ReadReg()
 		{
 			return Register[port_sel];
 		}
 
 		private void sync_psg_state()
 		{
-			sq_per_A = (Register[0] & 0xFF) | (((Register[4] & 0xF) << 8));
+			sq_per_A = (Register[0] & 0xFF) | (((Register[1] & 0xF) << 8));
 			if (sq_per_A == 0)
 			{
 				sq_per_A = 0x1000;
 			}
 
-			sq_per_B = (Register[1] & 0xFF) | (((Register[5] & 0xF) << 8));
+			sq_per_B = (Register[2] & 0xFF) | (((Register[3] & 0xF) << 8));
 			if (sq_per_B == 0)
 			{
 				sq_per_B = 0x1000;
 			}
 
-			sq_per_C = (Register[2] & 0xFF) | (((Register[6] & 0xF) << 8));
+			sq_per_C = (Register[4] & 0xFF) | (((Register[5] & 0xF) << 8));
 			if (sq_per_C == 0)
 			{
 				sq_per_C = 0x1000;
 			}
 
-			env_per = (Register[3] & 0xFF) | (((Register[7] & 0xFF) << 8));
+			env_per = (Register[11] & 0xFF) | (((Register[12] & 0xFF) << 8));
 			if (env_per == 0)
 			{
 				env_per = 0x10000;
@@ -180,20 +134,20 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			env_per *= 2;
 
-			A_on = Register[8].Bit(0);
-			B_on = Register[8].Bit(1);
-			C_on = Register[8].Bit(2);
-			A_noise = Register[8].Bit(3);
-			B_noise = Register[8].Bit(4);
-			C_noise = Register[8].Bit(5);
+			A_on = Register[7].Bit(0);
+			B_on = Register[7].Bit(1);
+			C_on = Register[7].Bit(2);
+			A_noise = Register[7].Bit(3);
+			B_noise = Register[7].Bit(4);
+			C_noise = Register[7].Bit(5);
 
-			noise_per = Register[9] & 0x1F;
+			noise_per = Register[6] & 0x1F;
 			if (noise_per == 0)
 			{
 				noise_per = 0x20;
 			}
 
-			var shape_select = Register[10] & 0xF;
+			var shape_select = Register[13] & 0xF;
 
 			if (shape_select < 4)
 				env_shape = 0;
@@ -202,55 +156,44 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			else
 				env_shape = 2 + (shape_select - 8);
 
-			vol_A = Register[11] & 0xF;
-			env_vol_A = (Register[11] >> 4) & 0x3;
+			vol_A = Register[8] & 0xF;
+			env_vol_A = (Register[8] >> 4) & 0x1;
 
-			vol_B = Register[12] & 0xF;
-			env_vol_B = (Register[12] >> 4) & 0x3;
+			vol_B = Register[9] & 0xF;
+			env_vol_B = (Register[9] >> 4) & 0x1;
 
-			vol_C = Register[13] & 0xF;
-			env_vol_C = (Register[13] >> 4) & 0x3;
+			vol_C = Register[10] & 0xF;
+			env_vol_C = (Register[10] >> 4) & 0x1;
 		}
 
-		public bool WritePSG(byte value)
+		public void WriteReg(byte value)
 		{
-				value &= 0xFF;
+			value &= 0xFF;
 
-				if (port_sel == 4 || port_sel == 5 || port_sel == 6 || port_sel == 10)
-					value &= 0xF;
+			Register[port_sel] = value;
 
-				if (port_sel == 9)
-					value &= 0x1F;
+			sync_psg_state();
 
-				if (port_sel == 11 || port_sel == 12 || port_sel == 13)
-					value &= 0x3F;
+			if (port_sel == 13)
+			{
+				env_clock = env_per;
 
-				Register[port_sel] = value;
-
-				sync_psg_state();
-
-				if (port_sel == 10)
+				if (env_shape == 0 || env_shape == 2 || env_shape == 3 || env_shape == 4 || env_shape == 5)
 				{
-					env_clock = env_per;
-
-					if (env_shape == 0 || env_shape == 2 || env_shape == 3 || env_shape == 4 || env_shape == 5)
-					{
-						env_E = 15;
-						E_up_down = -1;
-					}
-					else
-					{
-						env_E = 0;
-						E_up_down = 1;
-					}
+					env_E = 15;
+					E_up_down = -1;
 				}
-
-				return true;
+				else
+				{
+					env_E = 0;
+					E_up_down = 1;
+				}
+			}
 		}
 
 		public void generate_sound(int cycles_to_do)
 		{
-			// there are 4 cpu cycles for every psg cycle
+			// there are 8 cpu cycles for every psg cycle
 			bool sound_out_A;
 			bool sound_out_B;
 			bool sound_out_C;
@@ -259,11 +202,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			{
 				psg_clock++;
 
-				if (psg_clock == 4)
+				if (psg_clock == 8)
 				{
 					psg_clock = 0;
-
-					total_clock++;
 
 					clock_A--;
 					clock_B--;
@@ -355,10 +296,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 					}
 					else
 					{
-						int shift_A = 3 - env_vol_A;
-						if (shift_A < 0)
-							shift_A = 0;
-						v = (short)(sound_out_A ? (VolumeTable[env_E] >> shift_A) : 0);
+						v = (short)(sound_out_A ? VolumeTable[env_E] : 0);
 					}
 
 					if (env_vol_B == 0)
@@ -368,10 +306,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 					}
 					else
 					{
-						int shift_B = 3 - env_vol_B;
-						if (shift_B < 0)
-							shift_B = 0;
-						v += (short)(sound_out_B ? (VolumeTable[env_E] >> shift_B) : 0);
+						v += (short)(sound_out_B ? VolumeTable[env_E] : 0);
 					}
 
 					if (env_vol_C == 0)
@@ -380,19 +315,10 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 					}
 					else
 					{
-						int shift_C = 3 - env_vol_C;
-						if (shift_C < 0)
-							shift_C = 0;
-						v += (short)(sound_out_C ? (VolumeTable[env_E] >> shift_C) : 0);
+						v += (short)(sound_out_C ? VolumeTable[env_E] : 0);
 					}
 
-					if (v != _latchedSample)
-					{
-						_blip.AddDelta((uint)_sampleClock, v - _latchedSample);
-						_latchedSample = v;
-					}
-
-					_sampleClock++;
+					current_sample = (short)v;
 				}
 			}
 		}
