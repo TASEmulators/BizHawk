@@ -548,7 +548,9 @@ namespace BizHawk.Client.Common
 		/// <returns></returns>
 		public int GetStateFrameByIndex(int index)
 		{
-			return _states.ElementAt(index).Key;
+			// feos: this is called super often by decay
+			// this method is hundred times faster than _states.ElementAt(index).Key
+			return _states.Keys[index];
 		}
 
 		private ulong _used;
