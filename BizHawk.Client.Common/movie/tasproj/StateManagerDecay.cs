@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 
 		public void Trigger(int decayStates)
 		{
-			if (_tsm.StateCount <= 1 || decayStates <= 1)
+			if (_tsm.StateCount <= 1 || decayStates < 1)
 				return;
 
 			DecayDirection direction = DecayDirection.Forward;
@@ -137,7 +137,6 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					// todo: this should never happen!!!
 					_tsm.RemoveState(_tsm.GetStateFrameByIndex(1));
 					decayStates--;
 				}
