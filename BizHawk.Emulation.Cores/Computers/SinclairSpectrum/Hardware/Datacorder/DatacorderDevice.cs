@@ -2,6 +2,7 @@
 using BizHawk.Emulation.Cores.Components.Z80A;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -120,6 +121,88 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// 'load' mode and auto-play the tape if neccesary
         /// </summary>
         public bool AutoPlay { get; set; }
+
+        #endregion
+
+        #region Emulator    
+        
+        /// <summary>
+        /// This is the address the that ROM will jump to when the spectrum has quit tape playing
+        /// </summary>
+        public const ushort ERROR_ROM_ADDRESS = 0x0008;
+
+        Stopwatch sw = new Stopwatch();
+
+        /// <summary>
+        /// Should be fired at the end of every frame
+        /// Primary purpose is to detect tape traps and manage auto play (if/when this is ever implemented)
+        /// </summary>
+        public void EndFrame()
+        {
+            if (TapeIsPlaying)
+            {
+                
+                // check whether we need to auto-stop the tape
+                if (IsMachineAtErrorAddress())
+                {
+                    _machine.Spectrum.OSD_TapeStoppedAuto();
+                    Stop();
+                }    
+                               
+            }
+            else
+            {
+                // the tape is not playing - check to see if we need to autostart the tape
+                if (IsMachineInLoadMode())
+                {
+                    _machine.Spectrum.OSD_TapePlayingAuto();
+                    Play();
+                    //sw.Start();
+                }
+            }
+            /*
+            if (TapeIsPlaying && sw.IsRunning)
+            {
+                if (!IsMachineInLoadMode() && sw.ElapsedMilliseconds == 2000)
+                {
+                    sw.Stop();
+                    sw.Reset();
+                    _machine.Spectrum.OSD_TapeStoppedAuto();
+                    Stop();
+                }
+            }
+            */
+        }
+
+        /// <summary>
+        /// Checks whether the machine is in a state that is waiting to load tape content
+        /// </summary>
+        /// <returns></returns>
+        public bool IsMachineInLoadMode()
+        {
+            if (!_machine.Spectrum.Settings.AutoLoadTape)
+                return false;
+
+            if (_cpu.RegPC == 1523)
+                return true;
+
+            return false;
+        }
+
+        /// <summary>
+        /// Checks whether the machine has reached the error rom address (and the tape needs to be stopped)
+        /// </summary>
+        /// <returns></returns>
+        private bool IsMachineAtErrorAddress()
+        {
+            //if (!_machine.Spectrum.Settings.AutoLoadTape)
+                //return false;
+
+            if (_cpu.RegPC == 64464) // 40620) // ERROR_ROM_ADDRESS)
+                return true;
+            else
+                return false;
+        }
 
         #endregion
 
@@ -277,6 +360,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #region Tape Device Methods
 
+        private bool initialBlockPlayed = false;
+
         /// <summary>
         /// Simulates the spectrum 'EAR' input reading data from the tape
         /// </summary>
@@ -284,6 +369,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public bool GetEarBit(long cpuCycle)
         {
+
+
             // decide how many cycles worth of data we are capturing
             long cycles = cpuCycle - _lastCycle;
 
@@ -312,6 +399,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // flip the current state
                 currentState = !currentState;
 
+                if (_position == 0)
+                {
+                    // start of block
+                    // notify about the current block
+
+                    var bl = _dataBlocks[_currentDataBlockIndex];
+
+                    StringBuilder sbd = new StringBuilder();
+                    sbd.Append("(");
+                    sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count());
+                    sbd.Append(") : ");
+                    //sbd.Append("ID" + bl.BlockID.ToString("X2") + " - ");
+                    sbd.Append(bl.BlockDescription);
+                    if (bl.MetaData.Count > 0)
+                    {
+                        sbd.Append(" - ");
+                        sbd.Append(bl.MetaData.First().Key + ": " + bl.MetaData.First().Value);
+                    }
+                    _machine.Spectrum.OSD_TapePlayingBlockInfo(sbd.ToString());
+                }
+
+
                 // increment the current period position
                 _position++;
                 
@@ -327,6 +436,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         // Stop the tape command found - if this is the end of the tape RTZ
                         // otherwise just STOP and move to the next block
                         case TapeCommand.STOP_THE_TAPE:
+
+                            _machine.Spectrum.OSD_TapeStoppedAuto();
+
                             if (_currentDataBlockIndex >= _dataBlocks.Count())
                                 RTZ();
                             else
@@ -335,18 +447,50 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             }
                             break;
                         case TapeCommand.STOP_THE_TAPE_48K:
-                            if (_currentDataBlockIndex >= _dataBlocks.Count())
-                                RTZ();
-                            else
+
+                            if ((_machine.GetType() != typeof(ZX128) &&
+                                _machine.GetType() != typeof(ZX128Plus2) &&
+                                _machine.GetType() != typeof(ZX128Plus3)) ||
+                                (_machine.GetType() == typeof(ZX128) || 
+                                _machine.GetType() != typeof(ZX128Plus2) || 
+                                _machine.GetType() != typeof(ZX128Plus3)) &&
+                                _machine._ROMpaged == 1)
                             {
-                                Stop();
+                                _machine.Spectrum.OSD_TapeStoppedAuto();
+
+                                if (_currentDataBlockIndex >= _dataBlocks.Count())
+                                    RTZ();
+                                else
+                                {
+                                    Stop();
+                                }
+                               
                             }
                             break;
                     }
 
+                    if (_dataBlocks[_currentDataBlockIndex].DataPeriods.Count() == 0)
+                    {
+                        // notify about the current block (we are skipping it because its empty)
+                        var bl = _dataBlocks[_currentDataBlockIndex];
+                        StringBuilder sbd = new StringBuilder();
+                        sbd.Append("(");
+                        sbd.Append((_currentDataBlockIndex + 1) + " of " + _dataBlocks.Count());
+                        sbd.Append(") : ");
+                        //sbd.Append("ID" + bl.BlockID.ToString("X2") + " - ");
+                        sbd.Append(bl.BlockDescription);
+                        if (bl.MetaData.Count > 0)
+                    {
+                        sbd.Append(" - ");
+                        sbd.Append(bl.MetaData.First().Key + ": " + bl.MetaData.First().Value);
+                    }
+                        _machine.Spectrum.OSD_TapePlayingSkipBlockInfo(sbd.ToString());
+
+                    }
+
                     // skip any empty blocks
                     while (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count())
-                    {
+                    {                       
                         _position = 0;
                         _currentDataBlockIndex++;
                         if (_currentDataBlockIndex >= _dataBlocks.Count())
@@ -380,12 +524,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #endregion
 
-        #region Media Serialization
-
-
-
-        #endregion
-
         #region State Serialization
 
         private int _tempBlockCount;
@@ -403,6 +541,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Sync("_tapeIsPlaying", ref _tapeIsPlaying);
             ser.Sync("_lastCycle", ref _lastCycle);
             ser.Sync("_waitEdge", ref _waitEdge);
+            //ser.Sync("_initialBlockPlayed", ref initialBlockPlayed);
             ser.Sync("currentState", ref currentState);
 
             //_dataBlocks

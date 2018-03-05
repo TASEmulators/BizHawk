@@ -129,14 +129,56 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void OSD_TapeStoppedAuto()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("STOPPED (Auto Tape Trap) (" + _machine.TapeMediaIndex + ": " + _gameInfo[_machine.TapeMediaIndex].Name + ")");
+            sb.Append("STOPPED (Auto Tape Trap Detected)");
+
+            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+        }
+
+        /// <summary>
+        /// Tape message that is fired when a tape is started automatically
+        /// </summary>
+        public void OSD_TapePlayingAuto()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("PLAYING (Auto Tape Trap Detected)");
+
+            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+        }
+
+        /// <summary>
+        /// Tape message that is fired when a new block starts playing
+        /// </summary>
+        public void OSD_TapePlayingBlockInfo(string blockinfo)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("...Starting Block "+ blockinfo);
+
+            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+        }
+
+        /// <summary>
+        /// Tape message that is fired when a tape block is skipped (because it is empty)
+        /// </summary>
+        public void OSD_TapePlayingSkipBlockInfo(string blockinfo)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("...Skipping Empty Block " + blockinfo);
+
+            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+        }
+
+        /// <summary>
+        /// Tape message that is fired when a tape is started automatically
+        /// </summary>
+        public void OSD_TapeEndDetected(string blockinfo)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("...Skipping Empty Block " + blockinfo);
 
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
         }
 
         #endregion
-
-
 
         /// <summary>
         /// Checks whether message category is allowed to be sent

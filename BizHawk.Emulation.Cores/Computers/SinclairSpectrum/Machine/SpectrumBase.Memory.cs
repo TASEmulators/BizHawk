@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public byte[] ROM1 = new byte[0x4000];
         public byte[] ROM2 = new byte[0x4000];
         public byte[] ROM3 = new byte[0x4000];
-
+        
         /// <summary>
         /// RAM Banks
         /// </summary>

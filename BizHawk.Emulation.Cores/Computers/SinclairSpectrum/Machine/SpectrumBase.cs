@@ -12,7 +12,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     public abstract partial class SpectrumBase
     {
         // 128 and up only
-        protected int ROMPaged = 0;
+        //protected int ROMPaged = 0;
+
+        protected int ROMPaged;
+
+        public int _ROMpaged
+        {
+            get { return ROMPaged; }
+            set { ROMPaged = value; }
+        }
+
+
         protected bool SHADOWPaged;
         public int RAMPaged;
         protected bool PagingDisabled;
@@ -151,6 +161,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // setup for next frame
             ULADevice.ResetInterrupt();
+
+            TapeDevice.EndFrame();
+
             FrameCompleted = true;
         }
         

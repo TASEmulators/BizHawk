@@ -43,6 +43,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public class ZXSpectrumSettings
         {
+            [DisplayName("Auto-load/stop tape")]
+            [Description("Auto or manual tape operation. Auto will attempt to detect CPU tape traps and automatically Stop/Start the tape")]
+            [DefaultValue(true)]
+            public bool AutoLoadTape { get; set; }
+
             [DisplayName("Stereo Sound")]
             [Description("Turn stereo sound on or off")]
             [DefaultValue(true)]
@@ -80,12 +85,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             [DisplayName("Tape Load Speed")]
             [Description("Select how fast the spectrum loads the game from tape")]
             [DefaultValue(TapeLoadSpeed.Accurate)]
-            public TapeLoadSpeed TapeLoadSpeed { get; set; }
-
-            [DisplayName("Auto-load tape")]
-            [Description("Auto or manual tape operation")]
-            [DefaultValue(true)]
-            public bool AutoLoadTape { get; set; }
+            public TapeLoadSpeed TapeLoadSpeed { get; set; }            
 
             public ZXSpectrumSyncSettings Clone()
             {
