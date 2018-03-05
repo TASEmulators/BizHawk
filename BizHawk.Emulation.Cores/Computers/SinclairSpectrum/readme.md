@@ -16,11 +16,11 @@ At the moment this is very experimental and is still actively being worked on.
 * Most tape protection/loading schemes that I've tested are currently working (see caveat below)
 * IStatable
 * ISettable core settings
+* Tape auto-loading routines (as a setting)
 
 ### Work in progress
 * Exact emulator timings
 * Floating memory bus emulation
-* Tape auto-loading routines (currently you have to manually start and stop the virtual tape device)
 * TASStudio (need to verify that this works as it should)
 
 ### Not working
