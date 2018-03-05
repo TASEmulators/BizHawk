@@ -401,6 +401,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Sync("currentState", ref currentState);
 
             //_dataBlocks
+            /*
             ser.BeginSection("Datablocks");
 
             if (ser.IsWriter)
@@ -417,11 +418,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 ser.Sync("_tempBlockCount", ref _tempBlockCount);
             }
-
+           
             
 
             ser.EndSection();          
-
+             */
 
             ser.EndSection();
         }

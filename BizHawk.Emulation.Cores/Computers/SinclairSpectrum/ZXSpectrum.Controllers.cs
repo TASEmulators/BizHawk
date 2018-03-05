@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // Keyboard - row 5
                 "Key Symbol Shift", "Key Semi-Colon", "Key Quote", "Key Left Cursor", "Key Right Cursor", "Key Space", "Key Up Cursor", "Key Down Cursor", "Key Comma",
                 // Tape functions
-                "Play Tape", "Stop Tape", "RTZ Tape", "Record Tape"
+                "Play Tape", "Stop Tape", "RTZ Tape", "Record Tape", "Insert Next Tape", "Insert Previous Tape"
             }
         };
     }

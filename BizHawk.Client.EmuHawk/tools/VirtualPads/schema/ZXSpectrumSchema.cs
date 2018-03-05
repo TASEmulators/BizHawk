@@ -233,7 +233,24 @@ namespace BizHawk.Client.EmuHawk
                         Icon = Properties.Resources.BackMore,
                         Location = new Point(83, 22),
                         Type = PadSchema.PadInputType.Boolean
-                    }
+                    },
+                     new PadSchema.ButtonSchema
+                    {
+                        Name = "Insert Next Tape",
+                        DisplayName = "NEXT TAPE",
+                        //Icon = Properties.Resources.MoveRight,
+                        Location = new Point(23, 52),
+                        Type = PadSchema.PadInputType.Boolean
+                    },
+                    new PadSchema.ButtonSchema
+                    {
+                        Name = "Insert Previous Tape",
+                        DisplayName = "PREV TAPE",
+                        //Icon = Properties.Resources.MoveLeft,
+                        Location = new Point(100, 52),
+                        Type = PadSchema.PadInputType.Boolean
+                    },
+                                  
                 }
             };
         }

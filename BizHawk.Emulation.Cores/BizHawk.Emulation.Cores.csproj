@@ -1378,6 +1378,7 @@
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Keyboard.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Port.cs" />
     <None Include="Computers\SinclairSpectrum\readme.md" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Media.cs" />
     <None Include="Consoles\Atari\docs\stella.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech2.pdf" />

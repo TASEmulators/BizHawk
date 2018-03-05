@@ -208,6 +208,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (AYDevice != null)
                 AYDevice.SyncState(ser);
 
+            ser.Sync("tapeMediaIndex", ref tapeMediaIndex);
+            TapeMediaIndex = tapeMediaIndex;
+
+            ser.Sync("diskMediaIndex", ref diskMediaIndex);
+            DiskMediaIndex = diskMediaIndex;
+
             TapeDevice.SyncState(ser);
 
             ser.EndSection();

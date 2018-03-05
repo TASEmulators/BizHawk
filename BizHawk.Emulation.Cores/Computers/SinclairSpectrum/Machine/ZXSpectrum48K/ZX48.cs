@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         /// <param name="spectrum"></param>
         /// <param name="cpu"></param>
-        public ZX48(ZXSpectrum spectrum, Z80A cpu, ZXSpectrum.BorderType borderType, byte[] file)
+        public ZX48(ZXSpectrum spectrum, Z80A cpu, ZXSpectrum.BorderType borderType, List<byte[]> files)
         {
             Spectrum = spectrum;
             CPU = cpu;
@@ -31,11 +31,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             KeyboardDevice = new Keyboard48(this);
             KempstonDevice = new KempstonJoystick(this);
 
-            //TapeProvider = new DefaultTapeProvider(file);
-
             TapeDevice = new DatacorderDevice();
             TapeDevice.Init(this);
-            TapeDevice.LoadTape(file);
+
+            InitializeMedia(files);
+
+            //TapeDevice.LoadTape(file);
         }
 
         #endregion

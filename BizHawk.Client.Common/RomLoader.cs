@@ -661,7 +661,8 @@ namespace BizHawk.Client.Common
                                 case "ZXSpectrum":
                                     nextEmulator = new ZXSpectrum(
                                         nextComm,
-                                        xmlGame.Assets.Select(a => a.Value).First(),
+                                        xmlGame.Assets.Select(a => a.Value), //.First(),
+                                        GameInfo.NullInstance,
                                         (ZXSpectrum.ZXSpectrumSettings)GetCoreSettings<ZXSpectrum>(),
                                         (ZXSpectrum.ZXSpectrumSyncSettings)GetCoreSyncSettings<ZXSpectrum>());
                                     break;
@@ -999,7 +1000,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = c64;
 								break;
                             case "ZXSpectrum":
-                                var zx = new ZXSpectrum(nextComm, rom.FileData, GetCoreSettings<ZXSpectrum>(), GetCoreSyncSettings<ZXSpectrum>());
+                                var zx = new ZXSpectrum(nextComm, Enumerable.Repeat(rom.RomData, 1), rom.GameInfo, GetCoreSettings<ZXSpectrum>(), GetCoreSyncSettings<ZXSpectrum>());
                                 nextEmulator = zx;
                                 break;
 							case "GBA":

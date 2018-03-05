@@ -10,6 +10,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         string Stop = "Stop Tape";
         string RTZ = "RTZ Tape";
         string Record = "Record Tape";
+        string NextTape = "Insert Next Tape";
+        string PrevTape = "Insert Previous Tape";
 
         public void PollInput()
         {
@@ -68,6 +70,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (Spectrum._controller.IsPressed(Record))
             {
 
+            }
+            if (Spectrum._controller.IsPressed(NextTape))
+            {
+                TapeMediaIndex++;
+            }
+            if (Spectrum._controller.IsPressed(PrevTape))
+            {
+                TapeMediaIndex--;
             }
         }
     }
