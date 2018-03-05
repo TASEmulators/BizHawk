@@ -48,6 +48,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             [DefaultValue(true)]
             public bool StereoSound { get; set; }
 
+            [DisplayName("Core OSD Message Verbosity")]
+            [Description("Full: Display all GUI messages\nMedium: Display only emulator/device generated messages\nNone: Show no messages")]
+            [DefaultValue(OSDVerbosity.Medium)]
+            public OSDVerbosity OSDMessageVerbosity { get; set; }
+
 
             public ZXSpectrumSettings Clone()
             {
@@ -96,6 +101,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 return !DeepEquality.DeepEquals(x, y);
             }
+        }
+
+        public enum OSDVerbosity
+        {
+            /// <summary>
+            /// Show all OSD messages
+            /// </summary>
+            Full,
+            /// <summary>
+            /// Only show machine/device generated messages
+            /// </summary>
+            Medium,
+            /// <summary>
+            /// No core-driven OSD messages
+            /// </summary>
+            None
         }
 
         /// <summary>

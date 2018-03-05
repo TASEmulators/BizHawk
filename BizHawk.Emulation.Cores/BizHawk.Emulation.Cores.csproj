@@ -296,6 +296,7 @@
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IMemoryDomains.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.ISettable.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IStatable.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Messaging.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Util.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs">

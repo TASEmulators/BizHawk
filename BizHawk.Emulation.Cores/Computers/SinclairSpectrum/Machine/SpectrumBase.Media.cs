@@ -56,6 +56,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				
                 // load the media into the tape device
                 tapeMediaIndex = result;
+                // fire osd message
+                Spectrum.OSD_TapeInserted();
                 LoadTapeMedia();
             }
         }
@@ -103,6 +105,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             mediaImages = files;
             LoadAllMedia();
+            Spectrum.OSD_TapeInit();
         }
 
 		/// <summary>

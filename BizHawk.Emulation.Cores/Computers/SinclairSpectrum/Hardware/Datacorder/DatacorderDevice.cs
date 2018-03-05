@@ -133,6 +133,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (_tapeIsPlaying)
                 return;
 
+            _machine.Spectrum.OSD_TapePlaying();
+
             // update the lastCycle
             _lastCycle = _cpu.TotalExecutedCycles;
 
@@ -183,6 +185,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (!_tapeIsPlaying)
                 return;
 
+            _machine.Spectrum.OSD_TapeStopped();
+
             // sign that the tape is no longer playing
             _tapeIsPlaying = false;
 
@@ -224,6 +228,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void RTZ()
         {            
             Stop();
+            _machine.Spectrum.OSD_TapeRTZ();
             _currentDataBlockIndex = 0;
         }
 

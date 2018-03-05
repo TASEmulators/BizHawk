@@ -659,10 +659,17 @@ namespace BizHawk.Client.Common
 										(C64.C64SyncSettings)GetCoreSyncSettings<C64>());
 									break;
                                 case "ZXSpectrum":
+
+                                    List<GameInfo> zxGI = new List<GameInfo>();
+                                    foreach (var a in xmlGame.Assets)
+                                    {
+                                        zxGI.Add(new GameInfo { Name = Path.GetFileNameWithoutExtension(a.Key) });
+                                    }
+
                                     nextEmulator = new ZXSpectrum(
                                         nextComm,
                                         xmlGame.Assets.Select(a => a.Value), //.First(),
-                                        GameInfo.NullInstance,
+                                        zxGI, // GameInfo.NullInstance,
                                         (ZXSpectrum.ZXSpectrumSettings)GetCoreSettings<ZXSpectrum>(),
                                         (ZXSpectrum.ZXSpectrumSyncSettings)GetCoreSyncSettings<ZXSpectrum>());
                                     break;
@@ -1000,7 +1007,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = c64;
 								break;
                             case "ZXSpectrum":
-                                var zx = new ZXSpectrum(nextComm, Enumerable.Repeat(rom.RomData, 1), rom.GameInfo, GetCoreSettings<ZXSpectrum>(), GetCoreSyncSettings<ZXSpectrum>());
+                                var zx = new ZXSpectrum(nextComm, Enumerable.Repeat(rom.RomData, 1), Enumerable.Repeat(rom.GameInfo, 1).ToList(), GetCoreSettings<ZXSpectrum>(), GetCoreSyncSettings<ZXSpectrum>());
                                 nextEmulator = zx;
                                 break;
 							case "GBA":

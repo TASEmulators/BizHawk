@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     public partial class ZXSpectrum : IDebuggable, IInputPollable, IStatable, IRegionable
     {
         [CoreConstructor("ZXSpectrum")]
-        public ZXSpectrum(CoreComm comm, IEnumerable<byte[]> files, GameInfo game, object settings, object syncSettings)
+        public ZXSpectrum(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, object settings, object syncSettings)
         {
             PutSyncSettings((ZXSpectrumSyncSettings)syncSettings ?? new ZXSpectrumSyncSettings());
             PutSettings((ZXSpectrumSettings)settings ?? new ZXSpectrumSettings());
@@ -29,6 +29,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             InputCallbacks = new InputCallbackSystem();
 
             CoreComm = comm;
+
+            _gameInfo = game;
 
             _cpu = new Z80A();
 
@@ -100,6 +102,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         private readonly TraceBuffer _tracer;
         public IController _controller;
         private SpectrumBase _machine;
+
+        private List<GameInfo> _gameInfo;
 
         private SoundProviderMixer SoundMixer;
 
