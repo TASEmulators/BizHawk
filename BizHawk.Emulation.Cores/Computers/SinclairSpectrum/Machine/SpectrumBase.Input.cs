@@ -208,7 +208,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Signs whether input read has been requested
         /// </summary>
-        protected bool InputRead { get; set; }
+        private bool inputRead;
+        public bool InputRead
+        {
+            get { return inputRead; }
+            set { inputRead = value; }
+        }
+
     }
 }
 

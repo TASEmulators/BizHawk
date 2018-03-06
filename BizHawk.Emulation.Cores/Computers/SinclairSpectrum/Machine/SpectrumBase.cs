@@ -211,6 +211,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Sync("OverFlow", ref OverFlow);
             ser.Sync("FrameCount", ref FrameCount);
             ser.Sync("_frameCycles", ref _frameCycles);
+            ser.Sync("inputRead", ref inputRead);
             ser.Sync("LastFrameStartCPUTick", ref LastFrameStartCPUTick);
             ser.Sync("LastULAOutByte", ref LastULAOutByte);            
             ser.Sync("ROM0", ref ROM0, false);
