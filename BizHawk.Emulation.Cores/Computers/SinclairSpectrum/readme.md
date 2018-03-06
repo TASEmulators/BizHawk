@@ -11,7 +11,8 @@ At the moment this is very experimental and is still actively being worked on.
 * Beeper/Buzzer output (implementing ISoundProvider)
 * AY-3-8912 sound chip implementation
 * Keyboard input (implementing IInputPollable)
-* Kempston joystick (mapped to J1 currently)
+* Default keyboard keymappings
+* Kempston, Cursor and Sinclair (Left & Right) joysticks emulated
 * Tape device that will load spectrum games in realtime (*.tzx and *.tap)
 * Most tape protection/loading schemes that I've tested are currently working (see caveat below)
 * IStatable
@@ -26,7 +27,6 @@ At the moment this is very experimental and is still actively being worked on.
 ### Not working
 * IDebuggable (probably IMemoryDomains is setup incorrectly)
 * ZX Spectrum Plus3 emulation
-* Default keyboard keymappings (you have to configure yourself in the core controller settings)
 
 ### Known bugs
 * Audible 'popping' from the emulated buzzer after a load state operation (maybe this is a normal thing)

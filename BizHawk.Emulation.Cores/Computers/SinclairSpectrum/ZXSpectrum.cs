@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         //private byte[] _file;
         private readonly List<byte[]> _files;
 
-        public bool DiagRom = true;
+        public bool DiagRom = false;
 
         private byte[] GetFirmware(int length, params string[] names)
         {
