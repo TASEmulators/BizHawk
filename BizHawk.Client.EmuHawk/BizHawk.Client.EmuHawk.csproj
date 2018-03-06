@@ -1786,6 +1786,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\ZXSpectrumKeyboard.bmp" />
     <None Include="images\WSW.png" />
     <None Include="images\WNW.png" />
     <None Include="images\SW.png" />
@@ -2110,6 +2111,7 @@
     <None Include="images\ENE.png" />
     <None Include="images\ESE.png" />
     <None Include="images\ControllerImages\NGPController.png" />
+    <Content Include="config\ControllerImages\ZXSpectrumKeyboards.png" />
     <Content Include="images\logo.ico" />
     <None Include="images\Paste.png" />
     <None Include="images\reboot.png" />
