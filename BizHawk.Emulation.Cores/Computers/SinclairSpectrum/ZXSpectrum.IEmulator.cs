@@ -13,6 +13,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {            
             _controller = controller;
 
+            _isLag = true;
+
             if (_tracer.Enabled)
             {
                 _cpu.TraceCallback = s => _tracer.Put(s);
@@ -23,6 +25,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             _machine.ExecuteFrame();
+
+            if (_isLag)
+            {
+                _lagCount++;
+            }
         }
 
         public int Frame => _machine.FrameCount;

@@ -21,6 +21,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public IInputCallbackSystem InputCallbacks { get; }
 
         private int _lagCount = 0;
-        private bool _isLag = true;
+        private bool _isLag = false;
     }
 }

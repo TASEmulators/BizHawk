@@ -204,6 +204,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             return JoystickCollection.Where(a => a.JoyType == type).FirstOrDefault();
         }
+
+        /// <summary>
+        /// Signs whether input read has been requested
+        /// </summary>
+        protected bool InputRead { get; set; }
     }
 }
 

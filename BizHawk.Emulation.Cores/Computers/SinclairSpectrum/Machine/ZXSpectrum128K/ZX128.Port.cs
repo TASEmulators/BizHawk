@@ -15,6 +15,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadPort(ushort port)
         {
+            InputRead = true;
+
             int result = 0xFF;
 
             // Check whether the low bit is reset
@@ -29,6 +31,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 if (LocateUniqueJoystick(JoystickType.Kempston) != null)
                     return (byte)((KempstonJoystick)LocateUniqueJoystick(JoystickType.Kempston) as KempstonJoystick).JoyLine;
+
+                InputRead = true;
             }
             else if (lowBitReset)
             {
@@ -43,28 +47,45 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 */
 
                 if ((port & 0x8000) == 0)
+                {
                     result &= KeyboardDevice.KeyLine[7];
+                }
 
                 if ((port & 0x4000) == 0)
+                { 
                     result &= KeyboardDevice.KeyLine[6];
+                }
 
                 if ((port & 0x2000) == 0)
+                {
                     result &= KeyboardDevice.KeyLine[5];
+                }                    
 
                 if ((port & 0x1000) == 0)
+                {
                     result &= KeyboardDevice.KeyLine[4];
-
+                }
+                    
                 if ((port & 0x800) == 0)
+                {
                     result &= KeyboardDevice.KeyLine[3];
+                }                    
 
                 if ((port & 0x400) == 0)
+                {
                     result &= KeyboardDevice.KeyLine[2];
+                }                    
 
                 if ((port & 0x200) == 0)
+                {
                     result &= KeyboardDevice.KeyLine[1];
+                }                    
 
                 if ((port & 0x100) == 0)
+                {
                     result &= KeyboardDevice.KeyLine[0];
+                }
+                    
 
                 result = result & 0x1f; //mask out lower 4 bits
                 result = result | 0xa0; //set bit 5 & 7 to 1

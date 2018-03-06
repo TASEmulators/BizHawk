@@ -140,6 +140,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public virtual void ExecuteFrame()
         {
+            InputRead = false;
+
             FrameCompleted = false;
             BuzzerDevice.StartFrame();
             if (AYDevice != null)
@@ -179,6 +181,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             TapeDevice.EndFrame();
 
             FrameCompleted = true;
+
+            // is this a lag frame?
+            Spectrum.IsLagFrame = !InputRead;
         }
         
         /// <summary>
