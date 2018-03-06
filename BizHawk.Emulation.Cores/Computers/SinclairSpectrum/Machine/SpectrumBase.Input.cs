@@ -186,11 +186,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     return new KempstonJoystick(this, playerNumber);
                 case JoystickType.Cursor:
                     return new CursorJoystick(this, playerNumber);
-                case JoystickType.SinclairPORT1:
+                case JoystickType.SinclairLEFT:
                     return new SinclairJoystick1(this, playerNumber);
-                case JoystickType.SinclairPORT2:
+                case JoystickType.SinclairRIGHT:
                     return new SinclairJoystick2(this, playerNumber);
-                case JoystickType.None:
+                case JoystickType.NULL:
                     return new NullJoystick(this, playerNumber);
             }
 

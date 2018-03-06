@@ -13,7 +13,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The one ZX Hawk ControllerDefinition
         /// </summary>
-        public static ControllerDefinition ZXSpectrumControllerDefinition
+        public ControllerDefinition ZXSpectrumControllerDefinition
         {
             get
             {
@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 foreach (var s in joys1)
                 {
                     definition.BoolButtons.Add(s);
-                    definition.CategoryLabels[s] = "Joystick 1";
+                    definition.CategoryLabels[s] = "J1 (" + ((ZXSpectrumSyncSettings)SyncSettings as ZXSpectrumSyncSettings).JoystickType1.ToString() + ")";
                 }
 
                 List<string> joys2 = new List<string>
@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 foreach (var s in joys2)
                 {
                     definition.BoolButtons.Add(s);
-                    definition.CategoryLabels[s] = "Joystick 2";
+                    definition.CategoryLabels[s] = "J2 (" + ((ZXSpectrumSyncSettings)SyncSettings as ZXSpectrumSyncSettings).JoystickType2.ToString() + ")";
                 }
 
                 List<string> joys3 = new List<string>
@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 foreach (var s in joys3)
                 {
                     definition.BoolButtons.Add(s);
-                    definition.CategoryLabels[s] = "Joystick 3";
+                    definition.CategoryLabels[s] = "J3 (" + ((ZXSpectrumSyncSettings)SyncSettings as ZXSpectrumSyncSettings).JoystickType3.ToString() + ")";
                 }
 
                 // keyboard
@@ -137,10 +137,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// </summary>
     public enum JoystickType
     {
-        None,
+        NULL,
         Kempston,
-        SinclairPORT1,
-        SinclairPORT2,
+        SinclairLEFT,
+        SinclairRIGHT,
         Cursor
     }
 }

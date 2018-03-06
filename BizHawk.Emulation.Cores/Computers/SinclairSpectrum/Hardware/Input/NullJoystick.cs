@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #region IJoystick
 
-        public JoystickType JoyType => JoystickType.None;
+        public JoystickType JoyType => JoystickType.NULL;
 
         public string[] ButtonCollection { get; set; }
 

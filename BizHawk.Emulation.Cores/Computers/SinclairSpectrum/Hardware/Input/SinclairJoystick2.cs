@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #region IJoystick
 
-        public JoystickType JoyType => JoystickType.SinclairPORT1;
+        public JoystickType JoyType => JoystickType.SinclairRIGHT;
 
         public string[] ButtonCollection { get; set; }
 

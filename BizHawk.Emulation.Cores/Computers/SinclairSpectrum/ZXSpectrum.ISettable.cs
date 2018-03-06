@@ -94,12 +94,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             [DisplayName("Joystick 2")]
             [Description("The emulated joystick assigned to P2 (SHOULD BE UNIQUE TYPE!)")]
-            [DefaultValue(JoystickType.SinclairPORT1)]
+            [DefaultValue(JoystickType.SinclairLEFT)]
             public JoystickType JoystickType2 { get; set; }
 
             [DisplayName("Joystick 3")]
             [Description("The emulated joystick assigned to P3 (SHOULD BE UNIQUE TYPE!)")]
-            [DefaultValue(JoystickType.SinclairPORT2)]
+            [DefaultValue(JoystickType.SinclairRIGHT)]
             public JoystickType JoystickType3 { get; set; }
 
 
