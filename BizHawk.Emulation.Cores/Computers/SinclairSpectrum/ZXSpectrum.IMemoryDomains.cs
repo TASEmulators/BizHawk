@@ -8,7 +8,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     public partial class ZXSpectrum //: IMemoryDomains
     {
-        private MemoryDomainList memoryDomains;
+        internal IMemoryDomains memoryDomains;
         private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();
         private bool _memoryDomainsInit = false;
 
@@ -42,8 +42,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             (ServiceProvider as BasicServiceProvider).Register<IMemoryDomains>(memoryDomains);
 
             _memoryDomainsInit = true;
-
-
         }
 
         private void SyncAllByteArrayDomains()
