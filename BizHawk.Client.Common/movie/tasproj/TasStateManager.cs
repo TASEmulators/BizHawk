@@ -78,7 +78,7 @@ namespace BizHawk.Client.Common
 					((int)_expectedStateSize / Settings.MemStateGapDivider / 1024),
 					_minFrequency, _maxFrequency);
 
-			_decay.UpdateSettings(_maxStates, 4);
+			_decay.UpdateSettings(_maxStates, _stateFrequency, 4);
 		}
 
 		/// <summary>
@@ -374,7 +374,7 @@ namespace BizHawk.Client.Common
 				if (direction > 0)
 					leftoverStates = _states.Where(s => s.Key > 0 && s.Key < lastStateFrame).ToList();
 				else
-					leftoverStates = _states.Where(s => s.Key > lastStateFrame && s.Key < LastEmulatedFrame).ToList();
+					leftoverStates = _states.Where(s => s.Key > lastStateFrame && s.Key < LastStatedFrame).ToList();
 
 				foreach (var state in leftoverStates)
 				{
@@ -613,7 +613,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		public int LastEmulatedFrame
+		public int LastStatedFrame
 		{
 			get
 			{
