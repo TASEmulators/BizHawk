@@ -1381,7 +1381,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Keyboard.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Input\StandardKeyboard.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Port.cs" />
     <None Include="Computers\SinclairSpectrum\readme.md" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Media.cs" />

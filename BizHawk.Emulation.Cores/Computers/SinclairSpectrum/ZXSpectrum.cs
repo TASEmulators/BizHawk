@@ -20,10 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     {
         [CoreConstructor("ZXSpectrum")]
         public ZXSpectrum(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, object settings, object syncSettings)
-        {
-            PutSyncSettings((ZXSpectrumSyncSettings)syncSettings ?? new ZXSpectrumSyncSettings());
-            PutSettings((ZXSpectrumSettings)settings ?? new ZXSpectrumSettings());
-
+        {            
             var ser = new BasicServiceProvider(this);
             ServiceProvider = ser;    
             InputCallbacks = new InputCallbackSystem();
@@ -39,7 +36,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             //_file = file;
             _files = files?.ToList() ?? new List<byte[]>();
 
-            List<JoystickType> joysticks = new List<JoystickType>();
+            if (settings == null)
+                settings = new ZXSpectrumSettings();
+            if (syncSettings == null)
+                syncSettings = new ZXSpectrumSyncSettings();
+
+            PutSyncSettings((ZXSpectrumSyncSettings)syncSettings ?? new ZXSpectrumSyncSettings());
+            PutSettings((ZXSpectrumSettings)settings ?? new ZXSpectrumSettings());
+
+            List <JoystickType> joysticks = new List<JoystickType>();
             joysticks.Add(((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).JoystickType1);
             joysticks.Add(((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).JoystickType2);
             joysticks.Add(((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).JoystickType3);

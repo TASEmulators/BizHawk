@@ -530,7 +530,9 @@
       "Record Tape": "",
       "Key Quote": "Shift+D2",
       "Insert Next Tape": "F6",
-      "Insert Previous Tape": "F5"
+      "Insert Previous Tape": "F5",
+	  "Next Tape Block": "F8",
+	  "Prev Tape Block": "F7"
     },
     "Intellivision Controller": {
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",

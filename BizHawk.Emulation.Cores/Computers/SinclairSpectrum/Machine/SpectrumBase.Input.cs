@@ -40,7 +40,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
 
                 // non matrix keys
-                /*
                 foreach (string k in KeyboardDevice.NonMatrixKeys)
                 {
                     if (!k.StartsWith("Key"))
@@ -50,7 +49,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                     KeyboardDevice.SetKeyStatus(k, currState);
                 }
-                */
 
                 // J1
                 foreach (string j in JoystickCollection[0].ButtonCollection)

@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// <summary>
     /// The 48k keyboard device
     /// </summary>
-    public class Keyboard48 : IKeyboard
+    public class StandardKeyboard : IKeyboard
     {
         public SpectrumBase _machine { get; set; }
         private byte[] LineStatus;
@@ -43,7 +43,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             set { _nonMatrixKeys = value; }
         }
 
-        public Keyboard48(SpectrumBase machine)
+        public StandardKeyboard(SpectrumBase machine)
         {
             _machine = machine;
 
@@ -68,13 +68,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             };
 
             var nonMatrix = new List<string>();
-            /*
-            foreach (var key in ZXSpectrum.ZXSpectrumControllerDefinition.BoolButtons)
+            
+            foreach (var key in _machine.Spectrum.ZXSpectrumControllerDefinition.BoolButtons)
             {
                 if (!KeyboardMatrix.Any(s => s == key))
                     nonMatrix.Add(key);
             }
-            */
+           
             NonMatrixKeys = nonMatrix.ToArray();
 
             LineStatus = new byte[8];

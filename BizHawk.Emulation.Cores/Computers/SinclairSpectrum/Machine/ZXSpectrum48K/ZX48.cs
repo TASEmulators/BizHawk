@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             BuzzerDevice = new Buzzer(this);
             BuzzerDevice.Init(44100, ULADevice.FrameLength);
 
-            KeyboardDevice = new Keyboard48(this);
+            KeyboardDevice = new StandardKeyboard(this);
 
             InitJoysticks(joysticks);
 

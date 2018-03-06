@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             AYDevice = new AY38912();
             AYDevice.Init(44100, ULADevice.FrameLength);
 
-            KeyboardDevice = new Keyboard48(this);
+            KeyboardDevice = new StandardKeyboard(this);
 
             InitJoysticks(joysticks);
             //KempstonDevice = new KempstonJoystick(this);
