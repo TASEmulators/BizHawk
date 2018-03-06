@@ -26,7 +26,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Kempston Joystick
             if ((port & 0xe0) == 0 || (port & 0x20) == 0)
             {
-                return (byte)KempstonDevice.JoyLine;
+                if (LocateUniqueJoystick(JoystickType.Kempston) != null)
+                    return (byte)((KempstonJoystick)LocateUniqueJoystick(JoystickType.Kempston) as KempstonJoystick).JoyLine;
             }
             else if (lowBitReset)
             {

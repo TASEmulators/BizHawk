@@ -7,14 +7,17 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
-    public class KempstonJoystick : IJoystick
+    /// <summary>
+    /// A null joystick object
+    /// </summary>
+    public class NullJoystick : IJoystick
     {
         private int _joyLine;
         private SpectrumBase _machine;
 
         #region Construction
 
-        public KempstonJoystick(SpectrumBase machine, int playerNumber)
+        public NullJoystick(SpectrumBase machine, int playerNumber)
         {
             _machine = machine;
             _joyLine = 0;
@@ -22,11 +25,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             ButtonCollection = new List<string>
             {
-                "P" + _playerNumber + " Right",
-                "P" + _playerNumber + " Left",
-                "P" + _playerNumber + " Down",
-                "P" + _playerNumber + " Up",
-                "P" + _playerNumber + " Button",
+
             }.ToArray();
         }
 
@@ -34,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #region IJoystick
 
-        public JoystickType JoyType => JoystickType.Kempston;
+        public JoystickType JoyType => JoystickType.None;
 
         public string[] ButtonCollection { get; set; }
 

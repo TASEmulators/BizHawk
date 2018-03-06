@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         /// <param name="spectrum"></param>
         /// <param name="cpu"></param>
-        public ZX48(ZXSpectrum spectrum, Z80A cpu, ZXSpectrum.BorderType borderType, List<byte[]> files)
+        public ZX48(ZXSpectrum spectrum, Z80A cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
         {
             Spectrum = spectrum;
             CPU = cpu;
@@ -29,7 +29,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             BuzzerDevice.Init(44100, ULADevice.FrameLength);
 
             KeyboardDevice = new Keyboard48(this);
-            KempstonDevice = new KempstonJoystick(this);
+
+            InitJoysticks(joysticks);
+
+            //KempstonDevice = new KempstonJoystick(this);
 
             TapeDevice = new DatacorderDevice();
             TapeDevice.Init(this);

@@ -85,7 +85,23 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             [DisplayName("Tape Load Speed")]
             [Description("Select how fast the spectrum loads the game from tape")]
             [DefaultValue(TapeLoadSpeed.Accurate)]
-            public TapeLoadSpeed TapeLoadSpeed { get; set; }            
+            public TapeLoadSpeed TapeLoadSpeed { get; set; }
+
+            [DisplayName("Joystick 1")]
+            [Description("The emulated joystick assigned to P1 (SHOULD BE UNIQUE TYPE!)")]
+            [DefaultValue(JoystickType.Kempston)]
+            public JoystickType JoystickType1 { get; set; }
+
+            [DisplayName("Joystick 2")]
+            [Description("The emulated joystick assigned to P2 (SHOULD BE UNIQUE TYPE!)")]
+            [DefaultValue(JoystickType.SinclairPORT1)]
+            public JoystickType JoystickType2 { get; set; }
+
+            [DisplayName("Joystick 3")]
+            [Description("The emulated joystick assigned to P3 (SHOULD BE UNIQUE TYPE!)")]
+            [DefaultValue(JoystickType.SinclairPORT2)]
+            public JoystickType JoystickType3 { get; set; }
+
 
             public ZXSpectrumSyncSettings Clone()
             {

@@ -68,11 +68,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             };
 
             var nonMatrix = new List<string>();
+            /*
             foreach (var key in ZXSpectrum.ZXSpectrumControllerDefinition.BoolButtons)
             {
                 if (!KeyboardMatrix.Any(s => s == key))
                     nonMatrix.Add(key);
             }
+            */
             NonMatrixKeys = nonMatrix.ToArray();
 
             LineStatus = new byte[8];

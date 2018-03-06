@@ -2,6 +2,7 @@
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
 using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -72,14 +73,27 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public virtual DatacorderDevice TapeDevice { get; set; }
 
         /// <summary>
-        /// The tape provider
+        /// Holds the currently selected joysticks
         /// </summary>
-        //public virtual ITapeProvider TapeProvider { get; set; }
+        public virtual IJoystick[] JoystickCollection { get; set; }
+
+        /*
+        /// <summary>
+        /// Joystick device 1
+        /// </summary>
+        public virtual IJoystick Joystick1 { get; set; }
 
         /// <summary>
-        /// Kempston joystick
+        /// Joystick device 2
         /// </summary>
-        public virtual KempstonJoystick KempstonDevice { get; set; }
+        public virtual IJoystick Joystick2 { get; set; }
+
+        /// <summary>
+        /// Joystick device 3
+        /// </summary>
+        public virtual IJoystick Joystick3 { get; set; }
+
+    */
 
         /// <summary>
         /// Signs whether the frame has ended

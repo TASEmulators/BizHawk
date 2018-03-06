@@ -1,4 +1,7 @@
 ﻿
+using System.Collections.Generic;
+using System.Linq;
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     /// <summary>
@@ -37,6 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
 
                 // non matrix keys
+                /*
                 foreach (string k in KeyboardDevice.NonMatrixKeys)
                 {
                     if (!k.StartsWith("Key"))
@@ -46,17 +50,40 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                     KeyboardDevice.SetKeyStatus(k, currState);
                 }
+                */
+
+                // J1
+                foreach (string j in JoystickCollection[0].ButtonCollection)
+                {
+                    bool prevState = JoystickCollection[0].GetJoyInput(j);
+                    bool currState = Spectrum._controller.IsPressed(j);
+
+                    if (currState != prevState)
+                        JoystickCollection[0].SetJoyInput(j, currState);
+                }
+
+                // J2
+                foreach (string j in JoystickCollection[1].ButtonCollection)
+                {
+                    bool prevState = JoystickCollection[1].GetJoyInput(j);
+                    bool currState = Spectrum._controller.IsPressed(j);
+
+                    if (currState != prevState)
+                        JoystickCollection[1].SetJoyInput(j, currState);
+                }
+
+                // J3
+                foreach (string j in JoystickCollection[2].ButtonCollection)
+                {
+                    bool prevState = JoystickCollection[2].GetJoyInput(j);
+                    bool currState = Spectrum._controller.IsPressed(j);
+
+                    if (currState != prevState)
+                        JoystickCollection[2].SetJoyInput(j, currState);
+                }
             }
 
-            // J1
-            foreach (string j in KempstonDevice._bitPos)
-            {
-                bool prevState = KempstonDevice.GetJoyInput(j);
-                bool currState = Spectrum._controller.IsPressed(j);
-
-                if (currState != prevState)
-                    KempstonDevice.SetJoyInput(j, currState);
-            }
+            
 
             // Tape control
             if (Spectrum._controller.IsPressed(Play))
@@ -122,6 +149,62 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             else
                 pressed_PrevTape = false;
+        }
+
+        /// <summary>
+        /// Instantiates the joysticks array
+        /// </summary>
+        /// <param name="joys"></param>
+        protected void InitJoysticks(List<JoystickType> joys)
+        {
+            List<IJoystick> jCollection = new List<IJoystick>();
+
+            for (int i = 0; i < joys.Count(); i++)
+            {
+                jCollection.Add(InstantiateJoystick(joys[i], i + 1));
+            }
+
+            JoystickCollection = jCollection.ToArray();
+
+            for (int i = 0; i < JoystickCollection.Length; i++)
+            {
+                Spectrum.OSD_FireInputMessage("Joystick " + (i + 1) + ": " + JoystickCollection[i].JoyType.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Instantiates a new IJoystick object
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="playerNumber"></param>
+        /// <returns></returns>
+        public IJoystick InstantiateJoystick(JoystickType type, int playerNumber)
+        {
+            switch (type)
+            {
+                case JoystickType.Kempston:
+                    return new KempstonJoystick(this, playerNumber);
+                case JoystickType.Cursor:
+                    return new CursorJoystick(this, playerNumber);
+                case JoystickType.SinclairPORT1:
+                    return new SinclairJoystick1(this, playerNumber);
+                case JoystickType.SinclairPORT2:
+                    return new SinclairJoystick2(this, playerNumber);
+                case JoystickType.None:
+                    return new NullJoystick(this, playerNumber);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns a IJoystick object depending on the type (or null if not found)
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        protected IJoystick LocateUniqueJoystick(JoystickType type)
+        {
+            return JoystickCollection.Where(a => a.JoyType == type).FirstOrDefault();
         }
     }
 }

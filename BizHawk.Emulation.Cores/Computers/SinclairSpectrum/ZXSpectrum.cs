@@ -39,27 +39,32 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             //_file = file;
             _files = files?.ToList() ?? new List<byte[]>();
 
+            List<JoystickType> joysticks = new List<JoystickType>();
+            joysticks.Add(((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).JoystickType1);
+            joysticks.Add(((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).JoystickType2);
+            joysticks.Add(((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).JoystickType3);
+
             switch (SyncSettings.MachineType)
             {
                 case MachineType.ZXSpectrum16:
                     ControllerDefinition = ZXSpectrumControllerDefinition;
-                    Init(MachineType.ZXSpectrum16, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files);
+                    Init(MachineType.ZXSpectrum16, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files, joysticks);
                     break;
                 case MachineType.ZXSpectrum48:
                     ControllerDefinition = ZXSpectrumControllerDefinition;                    
-                    Init(MachineType.ZXSpectrum48, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files);
+                    Init(MachineType.ZXSpectrum48, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files, joysticks);
                     break;
                 case MachineType.ZXSpectrum128:
                     ControllerDefinition = ZXSpectrumControllerDefinition;
-                    Init(MachineType.ZXSpectrum128, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files);
+                    Init(MachineType.ZXSpectrum128, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files, joysticks);
                     break;
                 case MachineType.ZXSpectrum128Plus2:
                     ControllerDefinition = ZXSpectrumControllerDefinition;
-                    Init(MachineType.ZXSpectrum128Plus2, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files);
+                    Init(MachineType.ZXSpectrum128Plus2, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files, joysticks);
                     break;
                 case MachineType.ZXSpectrum128Plus3:
                     ControllerDefinition = ZXSpectrumControllerDefinition;
-                    Init(MachineType.ZXSpectrum128Plus3, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files);
+                    Init(MachineType.ZXSpectrum128Plus3, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files, joysticks);
                     break;
                 default:
                     throw new InvalidOperationException("Machine not yet emulated");
@@ -101,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         private readonly Z80A _cpu;
         private readonly TraceBuffer _tracer;
         public IController _controller;
-        private SpectrumBase _machine;
+        public SpectrumBase _machine;
 
         private List<GameInfo> _gameInfo;
 
@@ -112,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         //private byte[] _file;
         private readonly List<byte[]> _files;
 
-        public bool DiagRom = false;
+        public bool DiagRom = true;
 
         private byte[] GetFirmware(int length, params string[] names)
         {
@@ -158,37 +163,37 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
 
-        private void Init(MachineType machineType, BorderType borderType, TapeLoadSpeed tapeLoadSpeed, List<byte[]> files)
+        private void Init(MachineType machineType, BorderType borderType, TapeLoadSpeed tapeLoadSpeed, List<byte[]> files, List<JoystickType> joys)
         {
             // setup the emulated model based on the MachineType
             switch (machineType)
             {
                 case MachineType.ZXSpectrum16:
-                    _machine = new ZX16(this, _cpu, borderType, files);
+                    _machine = new ZX16(this, _cpu, borderType, files, joys);
                     var _systemRom16 = GetFirmware(0x4000, "48ROM");
                     var romData16 = RomData.InitROM(machineType, _systemRom16);
                     _machine.InitROM(romData16);
                     break;
                 case MachineType.ZXSpectrum48:
-                    _machine = new ZX48(this, _cpu, borderType, files);
+                    _machine = new ZX48(this, _cpu, borderType, files, joys);
                     var _systemRom = GetFirmware(0x4000, "48ROM");
                     var romData = RomData.InitROM(machineType, _systemRom);
                     _machine.InitROM(romData);
                     break;
                 case MachineType.ZXSpectrum128:
-                    _machine = new ZX128(this, _cpu, borderType, files);
+                    _machine = new ZX128(this, _cpu, borderType, files, joys);
                     var _systemRom128 = GetFirmware(0x8000, "128ROM");
                     var romData128 = RomData.InitROM(machineType, _systemRom128);
                     _machine.InitROM(romData128);
                     break;
                 case MachineType.ZXSpectrum128Plus2:
-                    _machine = new ZX128Plus2(this, _cpu, borderType, files);
+                    _machine = new ZX128Plus2(this, _cpu, borderType, files, joys);
                     var _systemRomP2 = GetFirmware(0x8000, "PLUS2ROM");
                     var romDataP2 = RomData.InitROM(machineType, _systemRomP2);
                     _machine.InitROM(romDataP2);
                     break;
                 case MachineType.ZXSpectrum128Plus3:
-                    _machine = new ZX128Plus3(this, _cpu, borderType, files);
+                    _machine = new ZX128Plus3(this, _cpu, borderType, files, joys);
                     var _systemRomP3 = GetFirmware(0x10000, "PLUS3ROM");
                     var romDataP3 = RomData.InitROM(machineType, _systemRomP3);
                     _machine.InitROM(romDataP3);

@@ -1,6 +1,10 @@
-﻿
-using BizHawk.Emulation.Common;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+
+using BizHawk.Common;
+using BizHawk.Common.ReflectionExtensions;
+using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -17,16 +21,40 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 definition.Name = "ZXSpectrum Controller";
 
                 // joysticks
-                List<string> joys = new List<string>
+                List<string> joys1 = new List<string>
                 {
-                    // Kempston Joystick (P1)
+                    // P1 Joystick
                     "P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 Button",
                 };
 
-                foreach (var s in joys)
+                foreach (var s in joys1)
                 {
                     definition.BoolButtons.Add(s);
-                    definition.CategoryLabels[s] = "Kempton Joystick";
+                    definition.CategoryLabels[s] = "Joystick 1";
+                }
+
+                List<string> joys2 = new List<string>
+                {
+                    // P2 Joystick
+                    "P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 Button",
+                };
+
+                foreach (var s in joys2)
+                {
+                    definition.BoolButtons.Add(s);
+                    definition.CategoryLabels[s] = "Joystick 2";
+                }
+
+                List<string> joys3 = new List<string>
+                {
+                    // P3 Joystick
+                    "P3 Up", "P3 Down", "P3 Left", "P3 Right", "P3 Button",
+                };
+
+                foreach (var s in joys3)
+                {
+                    definition.BoolButtons.Add(s);
+                    definition.CategoryLabels[s] = "Joystick 3";
                 }
 
                 // keyboard
@@ -71,6 +99,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
         }
 
+        
+
         /*
         /// <summary>
         /// Controller mapping includes all keyboard keys from the following models:
@@ -100,5 +130,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         };
 
     */
+    }
+
+    /// <summary>
+    /// The possible joystick types
+    /// </summary>
+    public enum JoystickType
+    {
+        None,
+        Kempston,
+        SinclairPORT1,
+        SinclairPORT2,
+        Cursor
     }
 }
