@@ -17,6 +17,7 @@ At the moment this is very experimental and is still actively being worked on.
 * Most tape protection/loading schemes that I've tested are currently working (see caveat below)
 * IStatable
 * ISettable core settings
+* IDebuggable (for what it's worth)
 * Tape auto-loading routines (as a setting)
 
 ### Work in progress
@@ -25,7 +26,6 @@ At the moment this is very experimental and is still actively being worked on.
 * TASStudio (need to verify that this works as it should)
 
 ### Not working
-* IDebuggable (probably IMemoryDomains is setup incorrectly)
 * ZX Spectrum Plus3 emulation
 
 ### Known bugs
