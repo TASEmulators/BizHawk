@@ -55,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The spectrum buzzer/beeper
         /// </summary>
-        public Buzzer BuzzerDevice { get; set; }
+        public IBeeperDevice BuzzerDevice { get; set; }
 
         /// <summary>
         /// Device representing the AY-3-8912 chip found in the 128k and up spectrums

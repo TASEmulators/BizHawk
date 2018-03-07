@@ -32,14 +32,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             InitJoysticks(joysticks);
 
-            //KempstonDevice = new KempstonJoystick(this);
-
             TapeDevice = new DatacorderDevice();
             TapeDevice.Init(this);
 
             InitializeMedia(files);
-
-            //TapeDevice.LoadTape(file);
         }
 
         #endregion

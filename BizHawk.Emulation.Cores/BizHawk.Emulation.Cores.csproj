@@ -266,6 +266,7 @@
     <Compile Include="Computers\SinclairSpectrum\Hardware\Datacorder\DatacorderDevice.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\IKeyboard.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\KempstonJoystick.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\IBeeperDevice.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ULABase.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.ULA.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum16K\ZX16.cs" />

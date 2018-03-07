@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         private SpectrumBase _machine { get; set; }
         private Z80A _cpu { get; set; }
-        private Buzzer _buzzer { get; set; }
+        private IBeeperDevice _buzzer { get; set; }
 
         /// <summary>
         /// Default constructor
@@ -369,8 +369,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public bool GetEarBit(long cpuCycle)
         {
-
-
             // decide how many cycles worth of data we are capturing
             long cycles = cpuCycle - _lastCycle;
 

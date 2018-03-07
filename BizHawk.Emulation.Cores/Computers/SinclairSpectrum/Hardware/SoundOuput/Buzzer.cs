@@ -15,7 +15,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// For the purposes of emulation this devices is locked to a frame
     /// a list of Pulses is built up over the course of the frame and outputted at the end of the frame
     /// </summary>
-    public class Buzzer : ISoundProvider
+    public class Buzzer : ISoundProvider, IBeeperDevice
     {
         /// <summary>
         /// Supplied values are right for 48K spectrum
@@ -99,6 +99,30 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             /*
 
+            // set the tstatesperframe
+            _tStatesPerFrame = tStatesPerFrame;
+
+            // calculate actual refresh rate
+            double refresh = (double)_machine.ULADevice.ClockSpeed / (double)_tStatesPerFrame;
+
+            // how many samples per frame are expected by ISoundProvider (at 44.1KHz)
+            _samplesPerFrame = 880;// (int)((double)sampleRate / (double)refresh);
+
+            // set the sample rate
+            _sampleRate = sampleRate;
+
+            // calculate samples per frame (what ISoundProvider will be expecting at 44100)
+            //_samplesPerFrame = (int)((double)_tStatesPerFrame / (double)refresh);
+
+            // calculate tstates per sameple
+            _tStatesPerSample = 79;// _tStatesPerFrame / _samplesPerFrame;
+
+            /*
+
+           
+
+            
+
             // get divisors
             var divs = from a in Enumerable.Range(2, _tStatesPerFrame / 2)
                        where _tStatesPerFrame % a == 0
@@ -109,8 +133,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // get _samplesPerFrame
             _samplesPerFrame = _tStatesPerFrame / _tStatesPerSample;
-            */
-
+            
+    */
             Pulses = new List<Pulse>(1000);  
         }
 

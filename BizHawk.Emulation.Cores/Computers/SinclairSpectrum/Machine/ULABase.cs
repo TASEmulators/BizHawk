@@ -445,7 +445,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             //the additional 1 tstate is required to get correct number of bytes to output in ircontention.sna
-            elapsedTStates = (_tstates + 1 - lastTState);
+            elapsedTStates = (_tstates + 1 - lastTState) - 1;
 
             //It takes 4 tstates to write 1 byte. Or, 2 pixels per t-state.
 

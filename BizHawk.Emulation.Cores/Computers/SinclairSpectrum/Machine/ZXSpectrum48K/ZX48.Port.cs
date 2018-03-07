@@ -17,6 +17,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             InputRead = true;
 
+            // It takes four T states for the Z80 to read a value from an I/O port, or write a value to a port
+            // (not including added ULA contention)
+            // The Bizhawk Z80A implementation appears to not consume any T-States for this operation
+            PortContention(4);
+
             int result = 0xFF;
 
             // Check whether the low bit is reset
@@ -171,6 +176,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WritePort(ushort port, byte value)
         {
+            // It takes four T states for the Z80 to read a value from an I/O port, or write a value to a port
+            // (not including added ULA contention)
+            // The Bizhawk Z80A implementation appears to not consume any T-States for this operation
+            PortContention(4);
+
+
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = (port & 0x01) == 0;

@@ -310,7 +310,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             // update ULA screen buffer if necessary
-            if ((addr & 49152) == 16384)
+            if ((addr & 49152) == 16384 && _render)
                 ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
         }
 

@@ -40,7 +40,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             KeyboardDevice = new StandardKeyboard(this);
 
             InitJoysticks(joysticks);
-            //KempstonDevice = new KempstonJoystick(this);
 
             TapeDevice = new DatacorderDevice();
             TapeDevice.Init(this);
