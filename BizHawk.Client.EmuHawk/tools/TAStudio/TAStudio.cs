@@ -940,7 +940,7 @@ namespace BizHawk.Client.EmuHawk
 			SplicerStatusLabel.Text =
 				"Selected: " + TasView.SelectedRows.Count() + " frame" +
 				(TasView.SelectedRows.Count() == 1 ? "" : "s") +
-				//", State count: " + CurrentTasMovie.TasStateManager.StateCount.ToString();
+				//", State count: " + CurrentTasMovie.TasStateManager.StateCount.ToString() +
 				", Clipboard: " + (_tasClipboard.Any() ? _tasClipboard.Count + " frame" +
 				(_tasClipboard.Count == 1 ? "" : "s") : "empty");
 		}

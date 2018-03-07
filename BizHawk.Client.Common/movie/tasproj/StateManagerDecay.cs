@@ -42,36 +42,31 @@ namespace BizHawk.Client.Common
 		private List<int> _zeros;	// amount of least significant zeros in bitwise view (also max step)
 		private int _bits;			// size of _zeros = 2 raised to the power of _bits
 		private int _mask;			// for remainder calculation using bitwise instead of division
-		private int _base;			// repeat count (like fceux's capacity). only used by aligned spread
+		private int _base;			// repeat count (like fceux's capacity). only used by aligned algo
 		private int _capacity;		// total amount of savestates
-		private int _step;			// TODO: initial memory state gap
+		private int _step;			// initial memory state gap
 		private bool _align;
 
 		public StateManagerDecay(TasStateManager tsm)
 		{
 			_tsm = tsm;
-			_zeros = new List<int>();
 			_align = false;
 		}
 
 		public void Trigger(int decayStates)
 		{
-			if (_tsm.StateCount <= 1 || decayStates < 1)
-				return;
-
-			int baseStateIndex = _tsm.GetStateIndexByFrame(Global.Emulator.Frame);
-			int baseStateFrame = _tsm.GetStateFrameByIndex(baseStateIndex);	
-
-			for (; decayStates > 0;)
-			{		
+			for (; decayStates > 0 && _tsm.StateCount > 1;)
+			{
+				int baseStateIndex = _tsm.GetStateIndexByFrame(Global.Emulator.Frame);
+				int baseStateFrame = _tsm.GetStateFrameByIndex(baseStateIndex) / _step;	
 				int forwardPriority = -1000000;
 				int backwardPriority = -1000000;
-				int forwardFrame = 0;
-				int backwardFrame = 0;
+				int forwardFrame = -1;
+				int backwardFrame = -1;
 
 				for (int currentStateIndex = 1; currentStateIndex < baseStateIndex; currentStateIndex++)
 				{
-					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
+					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex) / _step;
 					int zeroCount = _zeros[currentFrame & _mask];
 					int priority = ((baseStateFrame - currentFrame) >> zeroCount);
 
@@ -87,7 +82,7 @@ namespace BizHawk.Client.Common
 
 				for (int currentStateIndex = _tsm.StateCount - 1; currentStateIndex > baseStateIndex; currentStateIndex--)
 				{
-					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
+					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex) / _step;
 					int zeroCount = _zeros[currentFrame & _mask];
 					int priority = ((currentFrame - baseStateFrame) >> zeroCount);
 
@@ -101,23 +96,23 @@ namespace BizHawk.Client.Common
 					}
 				}
 
-				if (forwardFrame > 0 && backwardFrame > 0)
+				if (forwardFrame > -1 && backwardFrame > -1)
 				{
 					if (baseStateFrame - forwardFrame > backwardFrame - baseStateFrame)
-						_tsm.RemoveState(forwardFrame);
+						_tsm.RemoveState(forwardFrame * _step);
 					else
-						_tsm.RemoveState(backwardFrame);
+						_tsm.RemoveState(backwardFrame * _step);
 
 					decayStates--;
 				}
-				else if (forwardFrame > 0)
+				else if (forwardFrame > -1)
 				{
-					_tsm.RemoveState(forwardFrame);
+					_tsm.RemoveState(forwardFrame * _step);
 					decayStates--;
 				}
-				else if (backwardFrame > 0)
+				else if (backwardFrame > -1)
 				{
-					_tsm.RemoveState(backwardFrame);
+					_tsm.RemoveState(backwardFrame * _step);
 					decayStates--;
 				}
 			}
@@ -130,6 +125,7 @@ namespace BizHawk.Client.Common
 			_bits = bits;
 			_mask = (1 << _bits) - 1;
 			_base = (_capacity + _bits / 2) / (_bits + 1);
+			_zeros = new List<int>();
 			_zeros.Add(_bits);
 
 			for (int i = 1; i < (1 << _bits); i++)
