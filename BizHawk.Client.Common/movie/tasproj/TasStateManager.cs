@@ -292,9 +292,9 @@ namespace BizHawk.Client.Common
 		/// </summary>
 		public void LimitStateCount()
 		{
-			if (StateCount > _maxStates || DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024)
+			if (StateCount + 1 > _maxStates || DiskUsed > (ulong)Settings.DiskCapacitymb * 1024 * 1024)
 			{
-				_decay.Trigger(StateCount - _maxStates);
+				_decay.Trigger(StateCount + 1 - _maxStates);
 			}
 		}
 
