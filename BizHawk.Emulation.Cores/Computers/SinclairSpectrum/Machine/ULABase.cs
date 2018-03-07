@@ -315,7 +315,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _machine.CPU.FlagI = true;
 
             // Signal the start of ULA processing
-            ULAUpdateStart();
+            if (_machine._render)
+                ULAUpdateStart();
+
+            CalcFlashCounter();
         }
 
         #endregion        
@@ -383,7 +386,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             screenByteCtr = DisplayStart;
             lastTState = actualULAStart;
             needsPaint = true;
+        }
 
+        /// <summary>
+        /// Flash processing
+        /// </summary>
+        public void CalcFlashCounter()
+        {
             flashCounter++;
 
             if (flashCounter > 15)

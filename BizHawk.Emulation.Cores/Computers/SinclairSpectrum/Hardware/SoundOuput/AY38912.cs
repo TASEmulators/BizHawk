@@ -60,6 +60,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _tStatesPerSample = 79;
             _samplesPerFrame = _tStatesPerFrame / _tStatesPerSample;
             _AYCyclesPerFrame = _tStatesPerFrame / AY_SAMPLE_RATE;
+
+            _samples = new short[_samplesPerFrame * 2];
+            _nsamp = _samplesPerFrame;
         }
 
         #endregion
@@ -110,11 +113,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             
             // the stereo _samples buffer should already have been processed as a part of
             // ISoundProvider at the end of the last frame
-            _samples = new short[_samplesPerFrame * 2];
-            _nsamp = _samplesPerFrame;
+            //_samples = new short[_samplesPerFrame * 2];
+            //_nsamp = _samplesPerFrame;
             _sampleCounter = 0;
 
-            Init(44100, _tStatesPerFrame);
+            //Init(44100, _tStatesPerFrame);
         }
 
         public void EndFrame()

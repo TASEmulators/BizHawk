@@ -18,6 +18,7 @@ At the moment this is very experimental and is still actively being worked on.
 * IStatable
 * ISettable core settings
 * IDebuggable (for what it's worth)
+* DeterministicEmulation as a SyncSetting
 * Tape auto-loading routines (as a setting)
 
 ### Work in progress

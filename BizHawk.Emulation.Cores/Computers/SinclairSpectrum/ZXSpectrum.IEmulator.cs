@@ -13,6 +13,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {            
             _controller = controller;
 
+            bool ren = render;
+            bool renSound = renderSound;
+
+            if (DeterministicEmulation)
+            {
+                ren = true;
+                renSound = true;
+            }
+
             _isLag = true;
 
             if (_tracer.Enabled)
@@ -24,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 _cpu.TraceCallback = null;
             }
 
-            _machine.ExecuteFrame();
+            _machine.ExecuteFrame(ren, renSound);
 
             if (_isLag)
             {
@@ -36,7 +45,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public string SystemId => "ZXSpectrum";
 
-        public bool DeterministicEmulation => true;
+        private bool deterministicEmulation;
+        public bool DeterministicEmulation
+        {
+            get { return deterministicEmulation; }
+        }
+
+        //public bool DeterministicEmulation => true;
 
         public void ResetCounters()
         {

@@ -123,6 +123,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="earPulse"></param>
         public void ProcessPulseValue(bool fromTape, bool earPulse)
         {
+            if (!_machine._renderSound)
+                return;
+
             if (!fromTape && _tapeMode)
             {
                 // tape mode is active but the pulse value came from an OUT instruction

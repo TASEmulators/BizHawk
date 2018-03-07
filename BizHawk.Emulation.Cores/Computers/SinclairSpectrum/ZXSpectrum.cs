@@ -50,6 +50,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             joysticks.Add(((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).JoystickType2);
             joysticks.Add(((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).JoystickType3);
 
+            deterministicEmulation = ((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).DeterministicEmulation;
+
             switch (SyncSettings.MachineType)
             {
                 case MachineType.ZXSpectrum16:

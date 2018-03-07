@@ -76,25 +76,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Holds the currently selected joysticks
         /// </summary>
         public virtual IJoystick[] JoystickCollection { get; set; }
-
-        /*
-        /// <summary>
-        /// Joystick device 1
-        /// </summary>
-        public virtual IJoystick Joystick1 { get; set; }
-
-        /// <summary>
-        /// Joystick device 2
-        /// </summary>
-        public virtual IJoystick Joystick2 { get; set; }
-
-        /// <summary>
-        /// Joystick device 3
-        /// </summary>
-        public virtual IJoystick Joystick3 { get; set; }
-
-    */
-
+        
         /// <summary>
         /// Signs whether the frame has ended
         /// </summary>
@@ -126,6 +108,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public virtual int CurrentFrameCycle => CPU.TotalExecutedCycles - LastFrameStartCPUTick;
 
         /// <summary>
+        /// Non-Deterministic bools
+        /// </summary>
+        public bool _render;
+        public bool _renderSound;
+
+        /// <summary>
         /// Mask constants
         /// </summary>
         protected const int BORDER_BIT = 0x07;
@@ -138,14 +126,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Executes a single frame
         /// </summary>
-        public virtual void ExecuteFrame()
+        public virtual void ExecuteFrame(bool render, bool renderSound)
         {
             InputRead = false;
+            _render = render;
+            _renderSound = renderSound;
 
             FrameCompleted = false;
-            BuzzerDevice.StartFrame();
-            if (AYDevice != null)
-                AYDevice.StartFrame();
+
+            if (_renderSound)
+            {
+                BuzzerDevice.StartFrame();
+                if (AYDevice != null)
+                    AYDevice.StartFrame();
+            }
 
             PollInput();
             
@@ -158,18 +152,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 CPU.ExecuteOne();
 
                 // update AY
-                if (AYDevice != null)
-                    AYDevice.UpdateSound(CurrentFrameCycle);
+                if (_renderSound)
+                {
+                    if (AYDevice != null)
+                        AYDevice.UpdateSound(CurrentFrameCycle);
+                }                
             }
             
             // we have reached the end of a frame
             LastFrameStartCPUTick = CPU.TotalExecutedCycles - OverFlow;
 
             // paint the buffer if needed
-            if (ULADevice.needsPaint)
+            if (ULADevice.needsPaint && _render)
                 ULADevice.UpdateScreenBuffer(ULADevice.FrameLength);
             
-            BuzzerDevice.EndFrame();            
+            if (_renderSound)
+                BuzzerDevice.EndFrame();            
 
             //TapeDevice.CPUFrameCompleted();
 

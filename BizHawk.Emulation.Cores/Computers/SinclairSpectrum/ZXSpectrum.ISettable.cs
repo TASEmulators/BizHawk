@@ -72,6 +72,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public class ZXSpectrumSyncSettings
         {
+            [DisplayName("Deterministic Emulation")]
+            [Description("If true, the core agrees to behave in a completely deterministic manner")]
+            [DefaultValue(true)]
+            public bool DeterministicEmulation { get; set; }
+
             [DisplayName("Spectrum model")]
             [Description("The model of spectrum to be emulated")]
             [DefaultValue(MachineType.ZXSpectrum48)]
