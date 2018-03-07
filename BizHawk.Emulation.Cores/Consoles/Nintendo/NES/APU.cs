@@ -556,7 +556,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.Sync("linear_counter_reload", ref linear_counter_reload);
 				ser.Sync("control_flag", ref control_flag);
 				ser.Sync("timer_cnt", ref timer_cnt);
-				ser.Sync("halt_flag", ref reload_flag);
+				ser.Sync("reload_flag", ref reload_flag);
 				ser.Sync("len_cnt", ref len_cnt);
 
 				ser.Sync("lenctr_en", ref lenctr_en);

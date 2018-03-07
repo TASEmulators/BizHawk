@@ -745,7 +745,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					// now that we have a sprite, we can fill in the next scnaline's sprite pixels with it
 					// this saves quite a bit of processing compared to checking each pixel
 
-					if (s < soam_index_prev)
+					if (s < soam_index_prev && (ppur.status.sl != 0) && (ppur.status.sl != 240))
 					{
 						int temp_x = t_oam[s].oam_x;
 						for (int i = 0; (temp_x + i) < 256 && i < 8; i++)
@@ -845,18 +845,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 								}
 
 								int temp_x = t_oam[s].oam_x;
-								for (int i = 0; (temp_x + i) < 256 && i < 8; i++)
+								if ((ppur.status.sl != 0) && (ppur.status.sl != 240))
 								{
-									if (sl_sprites[256 + temp_x + i] == 0)
+									for (int i = 0; (temp_x + i) < 256 && i < 8; i++)
 									{
-										if (t_oam[s].patterns_0.Bit(i) || t_oam[s].patterns_1.Bit(i))
+										if (sl_sprites[256 + temp_x + i] == 0)
 										{
-											int spixel = t_oam[s].patterns_0.Bit(i) ? 1 : 0;
-											spixel |= (t_oam[s].patterns_1.Bit(i) ? 2 : 0);
+											if (t_oam[s].patterns_0.Bit(i) || t_oam[s].patterns_1.Bit(i))
+											{
+												int spixel = t_oam[s].patterns_0.Bit(i) ? 1 : 0;
+												spixel |= (t_oam[s].patterns_1.Bit(i) ? 2 : 0);
 
-											sl_sprites[temp_x + i] = (byte)s;
-											sl_sprites[256 + temp_x + i] = (byte)spixel;
-											sl_sprites[512 + temp_x + i] = t_oam[s].oam_attr;
+												sl_sprites[temp_x + i] = (byte)s;
+												sl_sprites[256 + temp_x + i] = (byte)spixel;
+												sl_sprites[512 + temp_x + i] = t_oam[s].oam_attr;
+											}
 										}
 									}
 								}
