@@ -609,8 +609,9 @@ namespace BizHawk.Client.EmuHawk
 							//BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue();
 							_patternPaint = true;
 							_startrow = TasView.CurrentCell.RowIndex.Value;
+							_boolPaintState = !CurrentTasMovie.BoolIsPressed(frame, buttonName);
 						}
-						else if (Control.ModifierKeys == Keys.Shift && Control.ModifierKeys != Keys.Alt) // TODO: Clicking above selection
+						else if (Control.ModifierKeys == Keys.Shift && Control.ModifierKeys != Keys.Alt)
 						{
 							int firstSel = TasView.SelectedRows.First();
 
