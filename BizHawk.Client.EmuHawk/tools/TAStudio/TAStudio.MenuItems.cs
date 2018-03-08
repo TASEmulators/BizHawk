@@ -25,6 +25,10 @@ namespace BizHawk.Client.EmuHawk
 			SaveTASMenuItem.Enabled =
 				!string.IsNullOrWhiteSpace(CurrentTasMovie.Filename) &&
 				(CurrentTasMovie.Filename != DefaultTasProjName());
+
+			saveSelectionToMacroToolStripMenuItem.Enabled =
+				placeMacroAtSelectionToolStripMenuItem.Enabled =
+				TasView.AnyRowsSelected;
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
