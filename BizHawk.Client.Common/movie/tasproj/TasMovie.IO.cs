@@ -66,7 +66,7 @@ namespace BizHawk.Client.Common
 
 				bs.PutLump(BinaryStateLump.Session, tw => tw.WriteLine(Session.ToString()));
 
-				if (_stateManager.Settings.SaveStateHistory)
+				if (_stateManager.Settings.SaveStateHistory && !backup)
 				{
 					bs.PutLump(BinaryStateLump.StateHistory, (BinaryWriter bw) => _stateManager.Save(bw));
 				}
