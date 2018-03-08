@@ -289,18 +289,19 @@ namespace BizHawk.Client.EmuHawk
 		private void EditSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			DeselectMenuItem.Enabled =
-			SelectBetweenMarkersMenuItem.Enabled =
-			CopyMenuItem.Enabled =
-			CutMenuItem.Enabled =
-			ClearFramesMenuItem.Enabled =
-			DeleteFramesMenuItem.Enabled =
-			CloneFramesMenuItem.Enabled =
-			TruncateMenuItem.Enabled =
+				SelectBetweenMarkersMenuItem.Enabled =
+				CopyMenuItem.Enabled =
+				CutMenuItem.Enabled =
+				ClearFramesMenuItem.Enabled =
+				DeleteFramesMenuItem.Enabled =
+				CloneFramesMenuItem.Enabled =
+				TruncateMenuItem.Enabled =
 				TasView.AnyRowsSelected;
+
 			ReselectClipboardMenuItem.Enabled =
 				PasteMenuItem.Enabled =
 				PasteInsertMenuItem.Enabled =
-				_tasClipboard.Any();
+				Clipboard.GetDataObject().GetDataPresent(DataFormats.StringFormat) && TasView.AnyRowsSelected;
 
 			ClearGreenzoneMenuItem.Enabled =
 				CurrentTasMovie != null && CurrentTasMovie.TasStateManager.Any();
@@ -1296,6 +1297,10 @@ namespace BizHawk.Client.EmuHawk
 				InsertNumFramesContextMenuItem.Enabled =
 				TruncateContextMenuItem.Enabled =
 				TasView.AnyRowsSelected;
+
+			pasteToolStripMenuItem.Enabled =
+				pasteInsertToolStripMenuItem.Enabled =
+				Clipboard.GetDataObject().GetDataPresent(DataFormats.StringFormat) && TasView.AnyRowsSelected;
 
 			StartNewProjectFromNowMenuItem.Visible =
 				TasView.SelectedRows.Count() == 1
