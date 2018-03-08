@@ -553,5 +553,14 @@ namespace BizHawk.Client.EmuHawk
 			if (Engaged())
 				changeList.Clear();
 		}
+
+		[LuaMethod("addcolumn", "")]
+		public void AddColumn(string name, string text, int width)
+		{
+			if (Engaged())
+			{
+				Tastudio.AddColumn(name, text, width, InputRoll.RollColumn.InputType.Text);
+			}
+		}
 	}
 }
