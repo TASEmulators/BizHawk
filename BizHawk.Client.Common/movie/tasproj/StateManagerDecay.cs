@@ -67,6 +67,10 @@ namespace BizHawk.Client.Common
 				for (int currentStateIndex = 1; currentStateIndex < baseStateIndex; currentStateIndex++)
 				{
 					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex) / _step;
+
+					if (_tsm.StateIsMarker(currentFrame * _step))
+						continue;
+
 					int zeroCount = _zeros[currentFrame & _mask];
 					int priority = ((baseStateFrame - currentFrame) >> zeroCount);
 
@@ -83,6 +87,10 @@ namespace BizHawk.Client.Common
 				for (int currentStateIndex = _tsm.StateCount - 1; currentStateIndex > baseStateIndex; currentStateIndex--)
 				{
 					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex) / _step;
+
+					if (_tsm.StateIsMarker(currentFrame * _step))
+						continue;
+
 					int zeroCount = _zeros[currentFrame & _mask];
 					int priority = ((currentFrame - baseStateFrame) >> zeroCount);
 
