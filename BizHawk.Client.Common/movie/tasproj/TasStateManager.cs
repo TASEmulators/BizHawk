@@ -306,21 +306,22 @@ namespace BizHawk.Client.Common
 			// still leave marker states
 			for (int i = 1; i < _states.Count; i++)
 			{
-				if (_movie.Markers.IsMarker(_states.ElementAt(i).Key + 1)
-					|| _states.ElementAt(i).Key % _fileStateGap == 0)
+				int frame = GetStateFrameByIndex(i);
+
+				if (StateIsMarker(frame) || frame % _fileStateGap < _stateFrequency)
 				{
 					continue;
 				}
 
 				ret.Add(i);
 
-				if (_states.ElementAt(i).Value.IsOnDisk)
+				if (_states.Values[i].IsOnDisk)
 				{
 					saveUsed -= _expectedStateSize;
 				}
 				else
 				{
-					saveUsed -= (ulong)_states.ElementAt(i).Value.Length;
+					saveUsed -= (ulong)_states.Values[i].Length;
 				}
 			}
 
@@ -331,13 +332,12 @@ namespace BizHawk.Client.Common
 			{
 				do
 				{
-					index++;
-					if (index >= _states.Count)
+					if (++index >= _states.Count)
 					{
 						break;
 					}
 				}
-				while (_movie.Markers.IsMarker(_states.ElementAt(index).Key + 1));
+				while (StateIsMarker(GetStateFrameByIndex(index)));
 
 				if (index >= _states.Count)
 				{
@@ -346,13 +346,13 @@ namespace BizHawk.Client.Common
 
 				ret.Add(index);
 
-				if (_states.ElementAt(index).Value.IsOnDisk)
+				if (_states.Values[index].IsOnDisk)
 				{
 					saveUsed -= _expectedStateSize;
 				}
 				else
 				{
-					saveUsed -= (ulong)_states.ElementAt(index).Value.Length;
+					saveUsed -= (ulong)_states.Values[index].Length;
 				}
 			}
 
@@ -360,19 +360,18 @@ namespace BizHawk.Client.Common
 			index = 0;
 			while (saveUsed > (ulong)Settings.DiskSaveCapacitymb * 1024 * 1024)
 			{
-				index++;
-				if (!ret.Contains(index))
+				if (!ret.Contains(++index))
 				{
 					ret.Add(index);
 				}
 
-				if (_states.ElementAt(index).Value.IsOnDisk)
+				if (_states.Values[index].IsOnDisk)
 				{
 					saveUsed -= _expectedStateSize;
 				}
 				else
 				{
-					saveUsed -= (ulong)_states.ElementAt(index).Value.Length;
+					saveUsed -= (ulong)_states.Values[index].Length;
 				}
 			}
 
@@ -400,8 +399,8 @@ namespace BizHawk.Client.Common
 		public void Save(BinaryWriter bw)
 		{
 			List<int> noSave = ExcludeStates();
-
 			bw.Write(_states.Count - noSave.Count);
+
 			for (int i = 0; i < _states.Count; i++)
 			{
 				if (noSave.Contains(i))
@@ -419,9 +418,11 @@ namespace BizHawk.Client.Common
 		public void Load(BinaryReader br)
 		{
 			_states.Clear();
+
 			try
 			{
 				int nstates = br.ReadInt32();
+
 				for (int i = 0; i < nstates; i++)
 				{
 					int frame = br.ReadInt32();
