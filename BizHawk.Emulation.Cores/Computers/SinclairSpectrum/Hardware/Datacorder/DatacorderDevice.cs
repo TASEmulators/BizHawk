@@ -316,6 +316,66 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
+        /// Performs a block skip operation on the current tape
+        /// TRUE:   skip forward
+        /// FALSE:  skip backward
+        /// </summary>
+        /// <param name="skipForward"></param>
+        public void SkipBlock(bool skipForward)
+        {
+            int blockCount = _dataBlocks.Count;
+            int targetBlockId = _currentDataBlockIndex;
+
+            if (skipForward)
+            {
+                if (_currentDataBlockIndex == blockCount - 1)
+                {
+                    // last block, go back to beginning
+                    targetBlockId = 0;
+                }
+                else
+                {
+                    targetBlockId++;
+                }
+            }
+            else
+            {
+                if (_currentDataBlockIndex == 0)
+                {
+                    // already first block, goto last block
+                    targetBlockId = blockCount - 1;
+                }
+                else
+                {
+                    targetBlockId--;
+                }
+            }
+
+            var bl = _dataBlocks[targetBlockId];
+
+            StringBuilder sbd = new StringBuilder();
+            sbd.Append("(");
+            sbd.Append((targetBlockId + 1) + " of " + _dataBlocks.Count());
+            sbd.Append(") : ");
+            //sbd.Append("ID" + bl.BlockID.ToString("X2") + " - ");
+            sbd.Append(bl.BlockDescription);
+            if (bl.MetaData.Count > 0)
+            {
+                sbd.Append(" - ");
+                sbd.Append(bl.MetaData.First().Key + ": " + bl.MetaData.First().Value);
+                //sbd.Append("\n");
+                //sbd.Append(bl.MetaData.Skip(1).First().Key + ": " + bl.MetaData.Skip(1).First().Value);
+            }
+
+            if (skipForward)
+                _machine.Spectrum.OSD_TapeNextBlock(sbd.ToString());
+            else
+                _machine.Spectrum.OSD_TapePrevBlock(sbd.ToString());
+
+            CurrentDataBlockIndex = targetBlockId;
+        }
+
+        /// <summary>
         /// Inserts a new tape and sets up the tape device accordingly
         /// </summary>
         /// <param name="tapeData"></param>

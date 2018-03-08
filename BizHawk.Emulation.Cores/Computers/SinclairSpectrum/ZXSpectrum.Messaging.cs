@@ -178,6 +178,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
         }
 
+        /// <summary>
+        /// Tape message that is fired when user has manually skipped to the next block
+        /// </summary>
+        public void OSD_TapeNextBlock(string blockinfo)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Manual Skip Next " + blockinfo);
+
+            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+        }
+
+        /// <summary>
+        /// Tape message that is fired when user has manually skipped to the next block
+        /// </summary>
+        public void OSD_TapePrevBlock(string blockinfo)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Manual Skip Prev " + blockinfo);
+
+            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+        }
+
         #endregion
 
         /// <summary>

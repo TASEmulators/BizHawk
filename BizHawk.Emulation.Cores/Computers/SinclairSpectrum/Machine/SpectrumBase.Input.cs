@@ -15,12 +15,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         string Record = "Record Tape";
         string NextTape = "Insert Next Tape";
         string PrevTape = "Insert Previous Tape";
+        string NextBlock = "Next Tape Block";
+        string PrevBlock = "Prev Tape Block";
 
         bool pressed_Play = false;
         bool pressed_Stop = false;
         bool pressed_RTZ = false;
         bool pressed_NextTape = false;
         bool pressed_PrevTape = false;
+        bool pressed_NextBlock = false;
+        bool pressed_PrevBlock = false;
 
         public void PollInput()
         {
@@ -147,6 +151,30 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             else
                 pressed_PrevTape = false;
+
+            if (Spectrum._controller.IsPressed(NextBlock))
+            {
+                if (!pressed_NextBlock)
+                {
+                    Spectrum.OSD_FireInputMessage(NextBlock);
+                    TapeDevice.SkipBlock(true);
+                    pressed_NextBlock = true;
+                }
+            }
+            else
+                pressed_NextBlock = false;
+
+            if (Spectrum._controller.IsPressed(PrevBlock))
+            {
+                if (!pressed_PrevBlock)
+                {
+                    Spectrum.OSD_FireInputMessage(PrevBlock);
+                    TapeDevice.SkipBlock(false);
+                    pressed_PrevBlock = true;
+                }
+            }
+            else
+                pressed_PrevBlock = false;
         }
 
         /// <summary>
