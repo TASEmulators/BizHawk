@@ -183,11 +183,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 {
                     if (AYDevice != null)
                         AYDevice.UpdateSound(CurrentFrameCycle);
-                }       
-                
-                if (SHADOWPaged)
-                {
-
                 }         
             }
             

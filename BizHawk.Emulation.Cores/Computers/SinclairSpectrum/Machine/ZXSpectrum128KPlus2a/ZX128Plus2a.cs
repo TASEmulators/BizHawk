@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
-    public partial class ZX128Plus3 : SpectrumBase
+    public partial class ZX128Plus2a : SpectrumBase
     {
         #region Construction
 
@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         /// <param name="spectrum"></param>
         /// <param name="cpu"></param>
-        public ZX128Plus3(ZXSpectrum spectrum, Z80A cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
+        public ZX128Plus2a(ZXSpectrum spectrum, Z80A cpu, ZXSpectrum.BorderType borderType, List<byte[]> files, List<JoystickType> joysticks)
         {
             Spectrum = spectrum;
             CPU = cpu;
@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // init addressable memory from ROM and RAM banks
             ReInitMemory();
 
-            ULADevice = new ULAPlus3(this);
+            ULADevice = new ULAPlus2a(this);
 
             BuzzerDevice = new Buzzer(this);
             BuzzerDevice.Init(44100, ULADevice.FrameLength);

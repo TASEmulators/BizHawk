@@ -29,6 +29,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         ZXSpectrum128Plus2,
 
         /// <summary>
+        /// Sinclair Spectrum 128 +2a model (same as the +3 just without disk drive)
+        /// </summary>
+        ZXSpectrum128Plus2a,
+
+        /// <summary>
         /// Sinclair Spectrum 128 +3 model
         /// </summary>
         ZXSpectrum128Plus3

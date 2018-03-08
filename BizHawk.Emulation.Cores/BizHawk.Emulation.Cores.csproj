@@ -268,6 +268,11 @@
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\KempstonJoystick.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\IBeeperDevice.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ULABase.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.Memory.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.Port.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.ULA.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus3\ZX128Plus3.ULA.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.ULA.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum16K\ZX16.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.ULA.cs" />
@@ -1397,8 +1402,12 @@
     <None Include="Resources\cgb_boot.bin.gz" />
     <None Include="Resources\dmg_boot.bin.gz" />
     <None Include="Resources\plus2.rom.gz" />
-    <None Include="Resources\plus3.rom.gz" />
+    <None Include="Resources\plus2a.rom.gz" />
     <None Include="Resources\sgb-cart-present.spc.gz" />
+    <None Include="Resources\Spectrum3_V4-0_ROM0.bin.gz" />
+    <None Include="Resources\Spectrum3_V4-0_ROM1.bin.gz" />
+    <None Include="Resources\Spectrum3_V4-0_ROM2.bin.gz" />
+    <None Include="Resources\Spectrum3_V4-0_ROM3.bin.gz" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

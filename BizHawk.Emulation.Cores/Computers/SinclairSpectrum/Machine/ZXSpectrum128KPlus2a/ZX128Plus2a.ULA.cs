@@ -1,17 +1,17 @@
 ﻿
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
-    class ULA48 : ULABase
+    class ULAPlus2a : ULABase
     {
         #region Construction
 
-        public ULA48(SpectrumBase machine)
+        public ULAPlus2a(SpectrumBase machine)
             : base(machine)
         {
-            InterruptPeriod = 32;
-            LongestOperationCycles = 64;
-            FrameLength = 69888;
-            ClockSpeed = 3500000;
+            InterruptPeriod = 36;
+            LongestOperationCycles = 64 + 2;
+            FrameLength = 70908;
+            ClockSpeed = 3546900;
 
             contentionTable = new byte[70930];
             floatingBusTable = new short[70930];
@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             borderColour = 7;
             ScanLineWidth = BorderLeftWidth + ScreenWidth + BorderRightWidth;
 
-            TstatesPerScanline = 224;
+            TstatesPerScanline = 228;
             TstateAtTop = BorderTopHeight * TstatesPerScanline;
             TstateAtBottom = BorderBottomHeight * TstatesPerScanline;
             tstateToDisp = new short[FrameLength];
@@ -55,12 +55,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public override void Reset()
         {
-            contentionStartPeriod = 14335; // + LateTiming;
+            contentionStartPeriod = 14361; // + LateTiming;
             contentionEndPeriod = contentionStartPeriod + (ScreenHeight * TstatesPerScanline);
-            screen = _machine.Memory[1];
+            screen = _machine.Memory[9];
             screenByteCtr = DisplayStart;
             ULAByteCtr = 0;
-            actualULAStart = 14340 - 24 - (TstatesPerScanline * BorderTopHeight);// + LateTiming;
+            actualULAStart = 14365 - 24 - (TstatesPerScanline * BorderTopHeight);// + LateTiming;
             lastTState = actualULAStart;
             BuildAttributeMap();
             BuildContentionTable();
@@ -72,8 +72,27 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public override bool IsContended(int addr)
         {
-            if ((addr & 49152) == 16384)
+            addr = addr & 0xc000;
+
+            if (addr == 0x4000)
+            {
+                // low port contention
                 return true;
+            }
+
+            if (addr == 0xc000)
+            {
+                // high port contention - check for contended bank paged in
+                switch (_machine.RAMPaged)
+                {
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        return true;
+                }
+            }
+
             return false;
         }
 
@@ -82,9 +101,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             int t = contentionStartPeriod;
             while (t < contentionEndPeriod)
             {
+                contentionTable[t++] = 1;
+                contentionTable[t++] = 0;
+
                 //for 128 t-states
                 for (int i = 0; i < 128; i += 8)
                 {
+                    contentionTable[t++] = 7;
                     contentionTable[t++] = 6;
                     contentionTable[t++] = 5;
                     contentionTable[t++] = 4;
@@ -92,9 +115,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     contentionTable[t++] = 2;
                     contentionTable[t++] = 1;
                     contentionTable[t++] = 0;
-                    contentionTable[t++] = 0;
                 }
-                t += (TstatesPerScanline - 128); //24 tstates of right border + left border + 48 tstates of retrace
+                t += (TstatesPerScanline - 128) - 2;
             }
 
             //build top half of tstateToDisp table
@@ -105,26 +127,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             //next 48 are actual border
             while (t < actualULAStart + (TstateAtTop))
             {
-                //border(24t) + screen (128t) + border(24t) = 176 tstates
                 for (int g = 0; g < 176; g++)
                     tstateToDisp[t++] = 1;
 
-                //horizontal retrace
                 for (int g = 176; g < TstatesPerScanline; g++)
                     tstateToDisp[t++] = 0;
             }
 
-            //build middle half of display
+            //build middle half
             int _x = 0;
             int _y = 0;
             int scrval = 2;
             while (t < actualULAStart + (TstateAtTop) + (ScreenHeight * TstatesPerScanline))
             {
-                //left border
                 for (int g = 0; g < 24; g++)
                     tstateToDisp[t++] = 1;
 
-                //screen
                 for (int g = 24; g < 24 + 128; g++)
                 {
                     //Map screenaddr to tstate
@@ -135,14 +153,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     }
                     tstateToDisp[t++] = (short)scrval;
                 }
+
                 _y++;
 
-                //right border
                 for (int g = 24 + 128; g < 24 + 128 + 24; g++)
                     tstateToDisp[t++] = 1;
 
-                //horizontal retrace
-                for (int g = 24 + 128 + 24; g < 24 + 128 + 24 + 48; g++)
+                for (int g = 24 + 128 + 24; g < 24 + 128 + 24 + 52; g++)
                     tstateToDisp[t++] = 0;
             }
 
@@ -151,27 +168,26 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 for (int j = 0; j < 128; j += 8)
                 {
-                    floatingBusTable[h] = tstateToDisp[h + 2];                          //screen address
-                    floatingBusTable[h + 1] = attr[(tstateToDisp[h + 2] - 16384)];      //attr address
-                    floatingBusTable[h + 2] = tstateToDisp[h + 2 + 4];                  //screen address + 1
-                    floatingBusTable[h + 3] = attr[(tstateToDisp[h + 2 + 4] - 16384)];  //attr address + 1
+                    floatingBusTable[h] = tstateToDisp[h + 2];
+                    floatingBusTable[h + 1] = attr[(tstateToDisp[h + 2] - 16384)];
+                    floatingBusTable[h + 2] = tstateToDisp[h + 2 + 4];
+                    floatingBusTable[h + 3] = attr[(tstateToDisp[h + 2 + 4] - 16384)];
                     h += 8;
                 }
                 h += TstatesPerScanline - 128;
             }
 
-            //build bottom border
+            //build bottom half
             while (t < actualULAStart + (TstateAtTop) + (ScreenHeight * TstatesPerScanline) + (TstateAtBottom))
             {
-                //border(24t) + screen (128t) + border(24t) = 176 tstates
                 for (int g = 0; g < 176; g++)
                     tstateToDisp[t++] = 1;
 
-                //horizontal retrace
                 for (int g = 176; g < TstatesPerScanline; g++)
                     tstateToDisp[t++] = 0;
             }
         }
+
 
         #endregion
 

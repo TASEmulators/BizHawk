@@ -70,6 +70,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     ControllerDefinition = ZXSpectrumControllerDefinition;
                     Init(MachineType.ZXSpectrum128Plus2, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files, joysticks);
                     break;
+                case MachineType.ZXSpectrum128Plus2a:
+                    ControllerDefinition = ZXSpectrumControllerDefinition;
+                    Init(MachineType.ZXSpectrum128Plus2a, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files, joysticks);
+                    break;
                 case MachineType.ZXSpectrum128Plus3:
                     ControllerDefinition = ZXSpectrumControllerDefinition;
                     Init(MachineType.ZXSpectrum128Plus3, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files, joysticks);
@@ -158,8 +162,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 case "PLUS2ROM":
                     embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus2_rom));
                     break;
+                case "PLUS2AROM":
+                    embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus2a_rom));
+                    break;
                 case "PLUS3ROM":
-                    embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.ZX_plus3_rom));
+                    byte[] r0 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM0_bin));
+                    byte[] r1 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM1_bin));
+                    byte[] r2 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM2_bin));
+                    byte[] r3 = Util.DecompressGzipFile(new MemoryStream(Resources.Spectrum3_V4_0_ROM3_bin));
+                    embeddedRom = r0.Concat(r1).Concat(r2).Concat(r3).ToArray();
                     break;
                 default:
                     embeddedFound = false;
@@ -208,6 +219,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     var _systemRomP2 = GetFirmware(0x8000, "PLUS2ROM");
                     var romDataP2 = RomData.InitROM(machineType, _systemRomP2);
                     _machine.InitROM(romDataP2);
+                    break;
+                case MachineType.ZXSpectrum128Plus2a:
+                    _machine = new ZX128Plus2a(this, _cpu, borderType, files, joys);
+                    var _systemRomP4 = GetFirmware(0x10000, "PLUS2AROM");
+                    var romDataP4 = RomData.InitROM(machineType, _systemRomP4);
+                    _machine.InitROM(romDataP4);
                     break;
                 case MachineType.ZXSpectrum128Plus3:
                     _machine = new ZX128Plus3(this, _cpu, borderType, files, joys);

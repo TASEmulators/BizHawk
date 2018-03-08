@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
-    public partial class ZX128Plus3 : SpectrumBase
+    public partial class ZX128Plus2a : SpectrumBase
     {
         /// <summary>
         /// Reads a byte of data from a specified port address
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // Kempston Mouse
 
-
+                /*
                 else if ((port & 0xF002) == 0x2000) //Is bit 12 set and bits 13,14,15 and 1 reset?
                 {
                     //result = udpDrive.DiskStatusRead();
@@ -149,6 +149,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     else
                         result = 0xff;
                 }
+                */
 
                 // if unused port the floating memory bus should be returned (still todo)
             }
