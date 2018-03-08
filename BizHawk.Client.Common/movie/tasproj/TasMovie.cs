@@ -16,29 +16,24 @@ namespace BizHawk.Client.Common
 		private readonly TasStateManager _stateManager;
 		private readonly TasLagLog _lagLog = new TasLagLog();
 		private readonly Dictionary<int, IController> _inputStateCache = new Dictionary<int, IController>();
-
 		private BackgroundWorker _progressReportWorker;
-
-		public new const string Extension = "tasproj";
-		public const string DefaultProjectName = "default";
-
-		public bool LastPositionStable { get; set; } = true;
-		public string NewBranchText { get; set; } = "";
 
 		public readonly IStringLog VerificationLog = StringLogUtil.MakeStringLog(); // For movies that do not begin with power-on, this is the input required to get into the initial state
 		public readonly TasBranchCollection Branches = new TasBranchCollection();
 		public readonly TasSession Session;
 
-		public TasLagLog TasLagLog => _lagLog;
-
-		public IStringLog InputLog => Log;
-
+		public new const string Extension = "tasproj";
+		public const string DefaultProjectName = "default";
+		public string NewBranchText { get; set; } = "";
+		public int LastEditedFrame { get; set; } = -1;
+		public bool LastPositionStable { get; set; } = true;
 		public TasMovieMarkerList Markers { get; private set; }
-
 		public bool BindMarkersToInput { get; set; }
 		public bool UseInputCache { get; set; }
 		public int CurrentBranch { get; set; }
 
+		public TasLagLog TasLagLog => _lagLog;
+		public IStringLog InputLog => Log;
 		public int BranchCount => Branches.Count;
 		public int LastValidFrame => _lagLog.LastValidFrame;
 		public override string PreferredExtension => Extension;
@@ -155,7 +150,8 @@ namespace BizHawk.Client.Common
 		{
 			var anyInvalidated = _lagLog.RemoveFrom(frame);
 			_stateManager.Invalidate(frame + 1);
-			Changes = true; // TODO check if this actually removed anything before flagging changes
+			Changes = anyInvalidated;
+			LastEditedFrame = frame;
 
 			if (anyInvalidated && Global.MovieSession.Movie.IsCountingRerecords)
 			{
@@ -239,7 +235,7 @@ namespace BizHawk.Client.Common
 
 			if (!_stateManager.HasState(Global.Emulator.Frame))
 			{
-				_stateManager.Capture();
+				_stateManager.Capture(Global.Emulator.Frame == LastEditedFrame - 1);
 			}
 		}
 

@@ -34,7 +34,7 @@ namespace BizHawk.Client.EmuHawk
 				_settings.DiskSaveCapacitymb : MemCapacityNumeric.Maximum;
 
 			MemStateGapDividerNumeric.Maximum = Statable.SaveStateBinary().Length / 1024 / 2 + 1;
-			MemStateGapDividerNumeric.Minimum = Statable.SaveStateBinary().Length / 1024 / 16;
+			MemStateGapDividerNumeric.Minimum = Math.Max(Statable.SaveStateBinary().Length / 1024 / 16, 1);
 			MemStateGapDividerNumeric.Value = NumberExtensions.Clamp(_settings.MemStateGapDivider,
 				MemStateGapDividerNumeric.Minimum, MemStateGapDividerNumeric.Maximum);
 
