@@ -21,6 +21,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		private int _pixBufferBorderIndex;
 
 		// palette
+		// feos: these are the colors that come from pepto's final render at http://www.pepto.de/projects/colorvic/
+		// these colors are also default at http://www.colodore.com/
+		// colors from Vice's colodore.vpl, that were used here since the recent update, are somehow different
+		// I'm using the colors from pepto's render. long term, this should have some adjustment options
 		private static readonly int[] Palette =
 		{
 			Colors.ARGB(0x00, 0x00, 0x00),
