@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 {
                     // ROM 0x000
                     case 0:
-                        result = Memory[ROMPaged][addr % 0x4000];
+                        result = Memory[_ROMpaged][addr % 0x4000];
                         break;
 
                     // RAM 0x4000 (RAM5 - Bank5 or shadow bank RAM7)
@@ -405,6 +405,33 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 Memory[11] = RAM7;
             else
                 Memory.Add(11, RAM7);
+        }
+
+        /// <summary>
+        /// ULA reads the memory at the specified address
+        /// (No memory contention)
+        /// Will read RAM5 (screen0) by default, unless RAM7 (screen1) is selected as output
+        /// </summary>
+        /// <param name="addr"></param>
+        /// <returns></returns>
+        public override byte FetchScreenMemory(ushort addr)
+        {
+            byte value = new byte();
+
+            if (SHADOWPaged && !PagingDisabled)
+            {
+                // shadow screen should be outputted
+                // this lives in RAM7
+                value = RAM7[addr & 0x3FFF];
+            }
+            else
+            {
+                // shadow screen is not set to display or paging is disabled (probably in 48k mode) 
+                // (use screen0 at RAM5)
+                value = RAM5[addr & 0x3FFF];
+            }
+
+            return value;
         }
 
         /// <summary>

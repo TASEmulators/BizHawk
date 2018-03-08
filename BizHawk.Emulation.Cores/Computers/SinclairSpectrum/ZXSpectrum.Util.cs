@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -247,6 +248,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             /// Combination of R3, and R5
             /// </summary>
             R3R5 = R3 | R5
+        }
+
+        /// <summary>
+        /// Helper method that returns a single INT32 from a BitArray
+        /// </summary>
+        /// <param name="bitarray"></param>
+        /// <returns></returns>
+        public static int GetIntFromBitArray(BitArray bitArray)
+        {
+            if (bitArray.Length > 32)
+                throw new ArgumentException("Argument length shall be at most 32 bits.");
+
+            int[] array = new int[1];
+            bitArray.CopyTo(array, 0);
+            return array[0];
         }
     }
 }

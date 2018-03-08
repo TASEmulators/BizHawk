@@ -12,25 +12,52 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// </summary>
     public abstract partial class SpectrumBase
     {
-        // 128 and up only
-        //protected int ROMPaged = 0;
-
+        /// <summary>
+        /// Index of the currently paged ROM
+        /// </summary>
         protected int ROMPaged;
-
-        public int _ROMpaged
+        public virtual int _ROMpaged
         {
             get { return ROMPaged; }
             set { ROMPaged = value; }
         }
 
-
+        /// <summary>
+        /// Signs that the shadow screen has been paged in
+        /// </summary>
         protected bool SHADOWPaged;
+
+        /// <summary>
+        /// Index of the current RAM page
+        /// </summary>
         public int RAMPaged;
+
+        /// <summary>
+        /// Signs that all paging is disabled
+        /// </summary>
         protected bool PagingDisabled;
 
         // +3/+2A only
+
+        protected bool ROMhigh = false;
+        protected bool ROMlow = false;
+
+        /// <summary>
+        /// Signs that the +2a/+3 special paging mode is activated
+        /// </summary>
         protected bool SpecialPagingMode;
+
+        /// <summary>
+        /// Index of the current special paging config
+        /// </summary>
         protected int PagingConfiguration;
+
+        /// <summary>
+        /// Signs whether the disk motor is on or off
+        /// </summary>
+        protected bool DiskMotorState;
+
+        protected bool PrinterPortStrobe;
 
         /// <summary>
         /// The calling ZXSpectrum class (piped in via constructor)
@@ -156,7 +183,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 {
                     if (AYDevice != null)
                         AYDevice.UpdateSound(CurrentFrameCycle);
-                }                
+                }       
+                
+                if (SHADOWPaged)
+                {
+
+                }         
             }
             
             // we have reached the end of a frame

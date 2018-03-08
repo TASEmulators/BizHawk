@@ -77,6 +77,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 default:
                     throw new InvalidOperationException("Machine not yet emulated");
             }  
+
+            
             
             _cpu.MemoryCallbacks = MemoryCallbacks;
 
@@ -125,13 +127,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         //private byte[] _file;
         private readonly List<byte[]> _files;
 
-        public bool DiagRom = false;
+        public bool DiagRom = true;
+
+        private List<string> diagRoms = new List<string>
+        {
+            @"\DiagROM.v28",
+            @"\zx-diagnostics\testrom.bin"
+        };
+        private int diagIndex = 1;
 
         private byte[] GetFirmware(int length, params string[] names)
         {
-            if (DiagRom & File.Exists(Directory.GetCurrentDirectory() + @"\DiagROM.v28"))
+            if (DiagRom & File.Exists(Directory.GetCurrentDirectory() + diagRoms[diagIndex]))
             {
-                var rom = File.ReadAllBytes(Directory.GetCurrentDirectory() + @"\DiagROM.v28");
+                var rom = File.ReadAllBytes(Directory.GetCurrentDirectory() + diagRoms[diagIndex]);
                 return rom;
             }
 
@@ -205,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     var _systemRomP3 = GetFirmware(0x10000, "PLUS3ROM");
                     var romDataP3 = RomData.InitROM(machineType, _systemRomP3);
                     _machine.InitROM(romDataP3);
-                    System.Windows.Forms.MessageBox.Show("+3 is not working at all yet :/");
+                    //System.Windows.Forms.MessageBox.Show("+3 is not working at all yet :/");
                     break;
             }
         }

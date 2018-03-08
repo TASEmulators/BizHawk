@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -158,11 +159,144 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WritePort(ushort port, byte value)
         {
+            // get a BitArray of the port
+            BitArray portBits = new BitArray(BitConverter.GetBytes(port));
+            // get a BitArray of the value byte
+            BitArray bits = new BitArray(new byte[] { value });
+
             // Check whether the low bit is reset
-            // Technically the ULA should respond to every even I/O address
-            bool lowBitReset = (port & 0x01) == 0;
+            bool lowBitReset = !portBits[0]; // (port & 0x01) == 0;
 
             ULADevice.Contend(port);
+
+            // port 0x7ffd - hardware should only respond when bits 1 & 15 are reset and bit 14 is set
+            if (port == 0x7ffd)
+            {
+                if (!PagingDisabled)
+                {
+                    // bits 0, 1, 2 select the RAM page
+                    var rp = value & 0x07;
+                    if (rp < 8)
+                        RAMPaged = rp;
+
+                    // bit 3 controls shadow screen
+                    SHADOWPaged = bits[3];
+
+                    // Bit 5 set signifies that paging is disabled until next reboot
+                    PagingDisabled = bits[5];
+
+                    // portbit 4 is the LOW BIT of the ROM selection
+                    ROMlow = bits[4];
+                }                         
+            }
+            // port 0x1ffd - hardware should only respond when bits 1, 13, 14 & 15 are reset and bit 12 is set
+            else if (port == 0x1ffd)
+            {
+                if (!PagingDisabled)
+                {
+                    if (bits[0])
+                    {
+                        // special paging is not enabled - get the ROMpage high byte
+                        ROMhigh = bits[2];
+
+                        // set the special paging mode flag
+                        SpecialPagingMode = false;
+                    }
+                    else
+                    {
+                        // special paging is enabled
+                        // this is decided based on combinations of bits 1 & 2
+                        // Config 0 = Bit1-0 Bit2-0
+                        // Config 1 = Bit1-1 Bit2-0
+                        // Config 2 = Bit1-0 Bit2-1
+                        // Config 3 = Bit1-1 Bit2-1
+                        BitArray confHalfNibble = new BitArray(2);
+                        confHalfNibble[0] = bits[1];
+                        confHalfNibble[1] = bits[2];
+
+                        // set special paging configuration
+                        PagingConfiguration = ZXSpectrum.GetIntFromBitArray(confHalfNibble);
+
+                        // set the special paging mode flag
+                        SpecialPagingMode = true;
+                    }
+                }
+
+                // bit 3 controls the disk motor (1=on, 0=off)
+                DiskMotorState = bits[3];
+
+                // bit 4 is the printer port strobe
+                PrinterPortStrobe = bits[4];
+            }
+            /*
+            // port 0x7ffd - hardware should only respond when bits 1 & 15 are reset and bit 14 is set
+            if (!portBits[1] && !portBits[15] && portBits[14])
+            {
+                // paging (skip if paging has been disabled - paging can then only happen after a machine hard reset)
+                if (!PagingDisabled)
+                {
+                    // bit 0 specifies the paging mode
+                    SpecialPagingMode = bits[0];
+
+                    if (!SpecialPagingMode)
+                    {
+                        // we are in normal mode
+                        // portbit 4 is the LOW BIT of the ROM selection
+                        BitArray romHalfNibble = new BitArray(2);
+                        romHalfNibble[0] = portBits[4];
+
+                        // value bit 2 is the high bit of the ROM selection
+                        romHalfNibble[1] = bits[2];
+
+                        // value bit 1 is ignored in normal paging mode
+
+                        // set the ROMPage
+                        ROMPaged = ZXSpectrum.GetIntFromBitArray(romHalfNibble);
+
+
+                        
+
+                        // bit 3 controls shadow screen
+                        SHADOWPaged = bits[3];
+
+                        // Bit 5 set signifies that paging is disabled until next reboot
+                        PagingDisabled = bits[5];
+                    }
+                }
+            }
+
+            // port 0x1ffd - special paging mode
+            // hardware should only respond when bits 1, 13, 14 & 15 are reset and bit 12 is set
+            if (!portBits[1] && portBits[12] && !portBits[13] && !portBits[14] && !portBits[15])
+            {
+                if (!PagingDisabled && SpecialPagingMode)
+                {
+                    // process special paging
+                    // this is decided based on combinations of bits 1 & 2
+                    // Config 0 = Bit1-0 Bit2-0
+                    // Config 1 = Bit1-1 Bit2-0
+                    // Config 2 = Bit1-0 Bit2-1
+                    // Config 3 = Bit1-1 Bit2-1
+                    BitArray confHalfNibble = new BitArray(2);
+                    confHalfNibble[0] = bits[1];
+                    confHalfNibble[1] = bits[2];
+
+                    // set special paging configuration
+                    PagingConfiguration = ZXSpectrum.GetIntFromBitArray(confHalfNibble);
+
+                    // last value should be saved at 0x5b67 (23399) - not sure if this is actually needed
+                    WriteBus(0x5b67, value);
+                }
+
+                // bit 3 controls the disk motor (1=on, 0=off)
+                DiskMotorState = bits[3];
+
+                // bit 4 is the printer port strobe
+                PrinterPortStrobe = bits[4];
+            }
+
+            */
+
 
             // Only even addresses address the ULA
             if (lowBitReset)
@@ -206,6 +340,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         AYDevice.PortWrite(value);
                         CPU.TotalExecutedCycles += 3;
                     }
+
+                    /*
+
                     else
                     {
                         if ((port & 0xC002) == 0x4000) //Are bits 1 and 15 reset and bit 14 set?
@@ -272,48 +409,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             }
                         }
                     }
+                    */
                 }
             }
 
-
-            // paging
-            if (port == 0x7ffd)
-            {
-                if (PagingDisabled)
-                    return;
-
-                LastULAOutByte = value;
-
-                
-                    
-
-
-
-                    // Bits 0, 1, 2 select the RAM page
-                    var rp = value & 0x07;
-                if (rp < 8)
-                    RAMPaged = rp;
-
-                // ROM page
-                if ((value & 0x10) != 0)
-                {
-                    // 48k ROM
-                    ROMPaged = 1;
-                }
-                else
-                {
-                    ROMPaged = 0;
-                }
-
-                // Bit 5 signifies that paging is disabled until next reboot
-                if ((value & 0x20) != 0)
-                    PagingDisabled = true;
-
-
-                return;
-            }
+            LastULAOutByte = value;
 
             
+
+            
+        }
+
+        /// <summary>
+        /// +3 and 2a overidden method
+        /// </summary>
+        public override int _ROMpaged
+        {
+            get
+            {
+                // calculate the ROMpage from the high and low bits
+                return ZXSpectrum.GetIntFromBitArray(new BitArray(new bool[] { ROMlow, ROMhigh }));
+            }
+            set { ROMPaged = value; }
         }
     }
 }

@@ -87,7 +87,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Sets up the ROM
         /// </summary>
         /// <param name="buffer"></param>
-        /// <param name="startAddress"></param>
         public abstract void InitROM(RomData romData);
 
         /// <summary>
