@@ -2985,7 +2985,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (IsTurboing)
 				{
-					GlobalWin.Tools.FastUpdateAfter();
+					GlobalWin.Tools.FastUpdateAfter(SuppressLua);
 				}
 				else
 				{

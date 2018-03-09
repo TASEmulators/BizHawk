@@ -694,9 +694,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		public void FastUpdateAfter()
+		public void FastUpdateAfter(bool fromLua = false)
 		{
-			if (Global.Config.RunLuaDuringTurbo && Has<LuaConsole>())
+			if (!fromLua && Global.Config.RunLuaDuringTurbo && Has<LuaConsole>())
 			{
 				LuaConsole.ResumeScripts(true);
 			}
