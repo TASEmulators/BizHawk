@@ -120,12 +120,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Signs whether the device should autodetect when the Z80 has entered into
         /// 'load' mode and auto-play the tape if neccesary
         /// </summary>
-        public bool AutoPlay { get; set; }
+        private bool _autoPlay;
+        public bool AutoPlay
+        {
+            get { return _machine.Spectrum.Settings.AutoLoadTape; }
+            set { _autoPlay = value; MonitorReset(); }
+        }
+
 
         #endregion
 
         #region Emulator    
-        
+
         /// <summary>
         /// This is the address the that ROM will jump to when the spectrum has quit tape playing
         /// </summary>
@@ -138,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Primary purpose is to detect tape traps and manage auto play (if/when this is ever implemented)
         /// </summary>
         public void EndFrame()
-        {
+        {/*
             if (TapeIsPlaying)
             {
                 
@@ -172,6 +178,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
             }
             */
+
+            MonitorFrame();
         }
 
         /// <summary>
@@ -302,7 +310,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // update the lastCycle
             _lastCycle = _cpu.TotalExecutedCycles;
-
         }
 
         /// <summary>
@@ -419,9 +426,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         #endregion
 
         #region Tape Device Methods
-
-        private bool initialBlockPlayed = false;
-
+        
         /// <summary>
         /// Simulates the spectrum 'EAR' input reading data from the tape
         /// </summary>
@@ -582,6 +587,105 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #endregion
 
+        #region TapeMonitor
+
+        private long _lastINCycle = 0;
+        private int _monitorCount;
+        private int _monitorTimeOut;
+        private ushort _monitorLastPC;
+        private ushort[] _monitorLastRegs = new ushort[7];
+
+        /// <summary>
+        /// Resets the TapeMonitor
+        /// </summary>
+        private void MonitorReset()
+        {
+            _lastINCycle = 0;
+            _monitorCount = 0;
+            _monitorLastPC = 0;
+            _monitorLastRegs = null;
+        }
+
+        /// <summary>
+        /// An iteration of the monitor process
+        /// </summary>
+        public void MonitorRead()
+        {
+            long cpuCycle = _cpu.TotalExecutedCycles;
+            int delta = (int)(cpuCycle - _lastINCycle);
+            _lastINCycle = cpuCycle;
+
+            var nRegs = new ushort[]
+            {
+                _cpu.Regs[_cpu.A],
+                _cpu.Regs[_cpu.B],
+                _cpu.Regs[_cpu.C],
+                _cpu.Regs[_cpu.D],
+                _cpu.Regs[_cpu.E],
+                _cpu.Regs[_cpu.H],
+                _cpu.Regs[_cpu.L]
+            };
+
+            if (delta > 0 &&
+                delta < 96 &&
+                _cpu.RegPC == _monitorLastPC &&
+                _monitorLastRegs != null)
+            {
+                int dCnt = 0;
+                int dVal = 0;
+
+                for (int i = 0; i < nRegs.Length; i++)
+                {
+                    if (_monitorLastRegs[i] != nRegs[i])
+                    {
+                        dVal = _monitorLastRegs[i] - nRegs[i];
+                        dCnt++;
+                    }
+                }
+
+                if (dCnt == 1 &&
+                    (dVal == 1 || dVal == -1))
+                {
+                    _monitorCount++;
+
+                    if (_monitorCount >= 8 && _machine.Spectrum.Settings.AutoLoadTape)
+                    {
+                        if (!_tapeIsPlaying)
+                        {
+                            Play();
+                            _machine.Spectrum.OSD_TapePlayingAuto();
+                        }
+
+                        _monitorTimeOut = 50;
+                    }
+                }
+                else
+                {
+                    _monitorCount = 0;
+                }
+            }
+
+            _monitorLastRegs = nRegs;
+            _monitorLastPC = _cpu.RegPC;
+        }
+
+
+        private void MonitorFrame()
+        {
+            if (_tapeIsPlaying && _machine.Spectrum.Settings.AutoLoadTape)
+            {
+                _monitorTimeOut--;
+
+                if (_monitorTimeOut < 0)
+                {
+                    Stop();
+                    _machine.Spectrum.OSD_TapeStoppedAuto();
+                }
+            }
+        }
+
+        #endregion
+
         #region State Serialization
 
         private int _tempBlockCount;
@@ -593,39 +697,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("DatacorderDevice");
-
             ser.Sync("_currentDataBlockIndex", ref _currentDataBlockIndex);
             ser.Sync("_position", ref _position);
             ser.Sync("_tapeIsPlaying", ref _tapeIsPlaying);
             ser.Sync("_lastCycle", ref _lastCycle);
             ser.Sync("_waitEdge", ref _waitEdge);
-            //ser.Sync("_initialBlockPlayed", ref initialBlockPlayed);
             ser.Sync("currentState", ref currentState);
-
-            //_dataBlocks
-            /*
-            ser.BeginSection("Datablocks");
-
-            if (ser.IsWriter)
-            {
-                _tempBlockCount = _dataBlocks.Count();
-                ser.Sync("_tempBlockCount", ref _tempBlockCount);
-
-                for (int i = 0; i < _tempBlockCount; i++)
-                {
-                    _dataBlocks[i].SyncState(ser, i);
-                }
-            }
-            else
-            {
-                ser.Sync("_tempBlockCount", ref _tempBlockCount);
-            }
-           
-            
-
-            ser.EndSection();          
-             */
-
+            ser.Sync("_lastINCycle", ref _lastINCycle);
+            ser.Sync("_monitorCount", ref _monitorCount);
+            ser.Sync("_monitorTimeOut", ref _monitorTimeOut);
+            ser.Sync("_monitorLastPC", ref _monitorLastPC);
+            ser.Sync("_monitorLastRegs", ref _monitorLastRegs, false);
             ser.EndSection();
         }
 

@@ -95,6 +95,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 result = result & 0x1f; //mask out lower 4 bits
                 result = result | 0xa0; //set bit 5 & 7 to 1
 
+                TapeDevice.MonitorRead();
 
                 if (TapeDevice.TapeIsPlaying)//.CurrentMode == TapeOperationMode.Load)
                 {
