@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			ser.BeginSection("Coleco");		
 			_vdp.SyncState(ser);
+			ControllerDeck.SyncState(ser);
 			PSG.SyncState(ser);
 			SGM_sound.SyncState(ser);
 			ser.Sync("UseSGM", ref use_SGM);
@@ -69,6 +70,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.Sync("Frame", ref _frame);
 			ser.Sync("LagCount", ref _lagCount);
 			ser.Sync("IsLag", ref _isLag);
+
 			ser.EndSection();
 
 			if (ser.IsReader)

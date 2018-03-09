@@ -1,5 +1,6 @@
 ﻿using BizHawk.Emulation.Common;
 using BizHawk.Common.NumberExtensions;
+using System;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
@@ -25,8 +26,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			}
 
 			_frame++;
-			_isLag = true;
 
+			_isLag = true;
 			if (_tracer.Enabled)
 			{
 				_cpu.TraceCallback = s => _tracer.Put(s);
@@ -35,10 +36,42 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			{
 				_cpu.TraceCallback = null;
 			}
-			byte tempRet1 = ControllerDeck.ReadPort1(controller, true, true);
-			byte tempRet2 = ControllerDeck.ReadPort2(controller, true, true);
+			byte tempRet1 = ControllerDeck.ReadPort1(controller, true, false);
+			byte tempRet2 = ControllerDeck.ReadPort2(controller, true, false);
 
-			bool intPending = (!tempRet1.Bit(4)) | (!tempRet2.Bit(4));
+			bool intPending = false;
+
+			// the return values represent the controller's current state, but the sampling rate is not high enough
+			// to catch all changes in wheel orientation
+			// so we use the wheel variable and interpolate between frames
+
+			// first determine how many degrees the wheels changed, and how many regions have been traversed
+			float change1 = (float)(((ControllerDeck.wheel1 - ControllerDeck.temp_wheel1) % 180) / 1.25);
+			float change2 = (float)(((ControllerDeck.wheel2 - ControllerDeck.temp_wheel2) % 180) / 1.25);
+
+			// special cases
+			if ((ControllerDeck.temp_wheel1 > 270) && (ControllerDeck.wheel1 < 90))
+			{
+				change1 = (float)((ControllerDeck.wheel1 + (360 - ControllerDeck.temp_wheel1)) / 1.25);
+			}
+
+			if ((ControllerDeck.wheel1 > 270) && (ControllerDeck.temp_wheel1 < 90))
+			{
+				change1 = -(float)((ControllerDeck.temp_wheel1 + (360 - ControllerDeck.wheel1)) / 1.25);
+			}
+
+			if ((ControllerDeck.temp_wheel2 > 270) && (ControllerDeck.wheel2 < 90))
+			{
+				change2 = (float)((ControllerDeck.wheel2 + (360 - ControllerDeck.temp_wheel2)) / 1.25);
+			}
+
+			if ((ControllerDeck.wheel2 > 270) && (ControllerDeck.temp_wheel2 < 90))
+			{
+				change2 = -(float)((ControllerDeck.temp_wheel2 + (360 - ControllerDeck.wheel2)) / 1.25);
+			}
+
+			int changes_1 = change1 > 0 ? (int)Math.Floor(change1) : (int)Math.Ceiling(change1);
+			int changes_2 = change2 > 0 ? (int)Math.Floor(change2) : (int)Math.Ceiling(change2);
 
 			for (int scanLine = 0; scanLine < 262; scanLine++)
 			{
@@ -66,8 +99,45 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 					}
 				}
 
+				// starting from scanline 20, changes to the wheel are added once per scanline (up to 144)
+				if (scanLine > 20)
+				{
+					if (changes_1 != 0)
+					{
+						if (changes_1 > 0)
+						{
+							ControllerDeck.temp_wheel1 = (float)((ControllerDeck.temp_wheel1 + 1.25) % 360);
+							changes_1--;
+						}
+						else
+						{
+							ControllerDeck.temp_wheel1 = (float)((ControllerDeck.temp_wheel1 - 1.25) % 360);
+							changes_1++;
+						}
+					}
+
+					if (changes_2 != 0)
+					{
+						if (changes_2 > 0)
+						{
+							ControllerDeck.temp_wheel2 = (float)((ControllerDeck.temp_wheel2 + 1.25) % 360);
+							changes_2--;
+						}
+						else
+						{
+							ControllerDeck.temp_wheel2 = (float)((ControllerDeck.temp_wheel2 - 1.25) % 360);
+							changes_2++;
+						}
+					}
+				}
+
+				tempRet1 = ControllerDeck.ReadPort1(controller, true, true);
+				tempRet2 = ControllerDeck.ReadPort2(controller, true, true);
+
+				intPending = (!tempRet1.Bit(4) && temp_1_prev) | (!tempRet2.Bit(4) && temp_2_prev);
+
 				_cpu.FlagI = false;
-				if (intPending && scanLine == 50)
+				if (intPending)
 				{
 					if (_vdp.EnableInterrupts)
 					{
@@ -75,7 +145,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 						intPending = false;
 					}
 				}
+
+				temp_1_prev = tempRet1.Bit(4);
+				temp_2_prev = tempRet2.Bit(4);
 			}
+
+			ControllerDeck.temp_wheel1 = ControllerDeck.wheel1;
+			ControllerDeck.temp_wheel2 = ControllerDeck.wheel2;
 
 			if (_isLag)
 			{

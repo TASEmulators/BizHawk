@@ -71,6 +71,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public byte[] SGM_high_RAM = new byte[0x6000];
 		public byte[] SGM_low_RAM = new byte[0x2000];
 
+		public bool temp_1_prev, temp_2_prev;
+
 		private int _frame;
 		private IController _controller;
 
@@ -245,13 +247,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			byte retval;
 			if (_inputPortSelection == InputPortMode.Left)
 			{
-				retval = ControllerDeck.ReadPort1(_controller, true, false);
+				retval = ControllerDeck.ReadPort1(_controller, true, true);
 				return retval;
 			}
 
 			if (_inputPortSelection == InputPortMode.Right)
 			{
-				retval = ControllerDeck.ReadPort1(_controller, false, false);
+				retval = ControllerDeck.ReadPort1(_controller, false, true);
 				return retval;
 			}
 
@@ -264,13 +266,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			byte retval;
 			if (_inputPortSelection == InputPortMode.Left)
 			{
-				retval = ControllerDeck.ReadPort2(_controller, true, false);
+				retval = ControllerDeck.ReadPort2(_controller, true, true);
 				return retval;
 			}
 
 			if (_inputPortSelection == InputPortMode.Right)
 			{
-				retval = ControllerDeck.ReadPort2(_controller, false, false);
+				retval = ControllerDeck.ReadPort2(_controller, false, true);
 				return retval;
 			}
 
