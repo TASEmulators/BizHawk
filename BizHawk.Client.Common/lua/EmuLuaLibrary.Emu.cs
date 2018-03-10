@@ -69,7 +69,7 @@ namespace BizHawk.Client.Common
 			return Emulator.Frame;
 		}
 
-		[LuaMethodExample("disassemble", "local obemudis = emu.disassemble( uint  pc );")]
+		[LuaMethodExample("disassemble", "local obemudis = emu.disassemble( 0x8000 );")]
 		[LuaMethod("disassemble", "Returns the disassembly object (disasm string and length int) for the given PC address. Uses System Bus domain if no domain name provided")]
 		public object Disassemble(uint pc, string name = "")
 		{

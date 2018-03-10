@@ -76,7 +76,7 @@ namespace BizHawk.Client.Common
 			return base.ReadByteRange(addr, length);
 		}
 
-		[LuaMethodExample("writebyterange", "mainmemory.writebyterange( nluatable memoryblock <<!DUPPA!>> );")]
+		[LuaMethodExample("writebyterange", "")]
 		[LuaMethod("writebyterange", "Writes the given values to the given addresses as unsigned bytes")]
 		public void WriteByteRange(LuaTable memoryblock)
 		{
