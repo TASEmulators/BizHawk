@@ -1401,14 +1401,14 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Right) // Ctrl + Right
 				{
-					if (SelectedRows.Any() && LetKeysModifySelection)
+					if (SelectedRows.Any() && LetKeysModifySelection && SelectedRows.Last() < _rowCount - 1)
 					{
 						SelectRow(SelectedRows.Last() + 1, true);
 					}
 				}
 				else if (e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Left) // Ctrl + Shift + Left
 				{
-					if (SelectedRows.Any() && LetKeysModifySelection)
+					if (SelectedRows.Any() && LetKeysModifySelection && SelectedRows.First() > 0)
 					{
 						SelectRow(SelectedRows.First() - 1, true);
 					}
