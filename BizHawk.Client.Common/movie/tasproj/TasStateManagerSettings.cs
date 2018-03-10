@@ -117,7 +117,7 @@ namespace BizHawk.Client.Common
 
 					DiskCapacitymb = lines.Length > i ? int.Parse(lines[i++]) : 1;
 					FileStateGap = lines.Length > i ? int.Parse(lines[i++]) : 4;
-					FileStateGap = lines.Length > i ? int.Parse(lines[i++]) : 64;
+					MemStateGapDivider = lines.Length > i ? int.Parse(lines[i++]) : 64;
 				}
 				catch (Exception) // TODO: this is bad
 				{
