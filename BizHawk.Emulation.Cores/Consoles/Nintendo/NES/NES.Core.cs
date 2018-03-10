@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		// cheat addr index tracker
 		// disables all cheats each frame
-		public int[] cheat_indexes = new int[500];
+		public int[] cheat_indexes = new int[0x10000];
 		public int num_cheats;
 
 		// new input system

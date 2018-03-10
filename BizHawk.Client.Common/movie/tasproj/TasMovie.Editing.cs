@@ -372,7 +372,7 @@ namespace BizHawk.Client.Common
 			}
 
 			Changes = true;
-			InvalidateAfter(frame - 1);
+			InvalidateAfter(frame);
 
 			ChangeLog.SetGeneralRedo();
 			if (endBatch)

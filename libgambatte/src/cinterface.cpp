@@ -29,9 +29,9 @@ GBEXPORT void gambatte_destroy(GB *g)
 	delete g;
 }
 
-GBEXPORT int gambatte_load(GB *g, const char *romfiledata, unsigned romfilelength, long long now, unsigned flags)
+GBEXPORT int gambatte_load(GB *g, const char *romfiledata, unsigned romfilelength, long long now, unsigned flags, unsigned div)
 {
-	int ret = g->load(romfiledata, romfilelength, now, flags);
+	int ret = g->load(romfiledata, romfilelength, now, flags, div);
 	return ret;
 }
 
@@ -65,9 +65,9 @@ GBEXPORT void gambatte_setlayers(GB *g, unsigned mask)
 	g->setLayers(mask);
 }
 
-GBEXPORT void gambatte_reset(GB *g, long long now)
+GBEXPORT void gambatte_reset(GB *g, long long now, unsigned div)
 {
-	g->reset(now);
+	g->reset(now, div);
 }
 
 GBEXPORT void gambatte_setdmgpalettecolor(GB *g, unsigned palnum, unsigned colornum, unsigned rgb32)

@@ -479,7 +479,7 @@ namespace BizHawk.Client.EmuHawk
 			SetUpToolStripColumns();
 		}
 
-		private void AddColumn(string columnName, string columnText, int columnWidth, InputRoll.RollColumn.InputType columnType = InputRoll.RollColumn.InputType.Boolean)
+		public void AddColumn(string columnName, string columnText, int columnWidth, InputRoll.RollColumn.InputType columnType = InputRoll.RollColumn.InputType.Boolean)
 		{
 			if (TasView.AllColumns[columnName] == null)
 			{
@@ -807,6 +807,7 @@ namespace BizHawk.Client.EmuHawk
 
 			TasView.Refresh();
 
+			//SetSplicer();
 			CurrentTasMovie.FlushInputCache();
 			CurrentTasMovie.UseInputCache = false;
 
@@ -939,6 +940,7 @@ namespace BizHawk.Client.EmuHawk
 			SplicerStatusLabel.Text =
 				"Selected: " + TasView.SelectedRows.Count() + " frame" +
 				(TasView.SelectedRows.Count() == 1 ? "" : "s") +
+				//", State count: " + CurrentTasMovie.TasStateManager.StateCount.ToString() +
 				", Clipboard: " + (_tasClipboard.Any() ? _tasClipboard.Count + " frame" +
 				(_tasClipboard.Count == 1 ? "" : "s") : "empty");
 		}

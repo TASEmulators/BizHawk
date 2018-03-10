@@ -564,7 +564,7 @@ E7F86C049E4BD8B26844FF62BD067D57		Wonder Boy III - The Dragon's Trap (UE)	SMS	Wo
 16BE61F4DE705CDD636D1FB1662E24DE		Wonder Boy in Monster Land (UE) (Beta)	SMS	Wonder Boy Series;Arcade	FM	USA;Europe
 5837764C172C8C43C8C7B21F2144CF27		Wonder Boy in Monster World (E)	SMS	Wonder Boy Series		Europe
 311AA03DCAB8EDCF9891397AC3297B72		Wonder Boy in Monster World (E) (Beta)	SMS	Wonder Boy Series		Europe
-8883790D3B3D4FED9A845D63AA251786		Wonder Boy in Monster World (J)	SMS	Wonder Boy Series		Japan
+8883790D3B3D4FED9A845D63AA251786		Wonder Boy in Monster World (J)	SMS	Wonder Boy Series	FM	Japan
 7E805AA51BFB5F206C950A32EBCDAB7C		Wonder Boy (UE)	SMS	Wonder Boy Series		USA;Europe
 A4E48850BF8799CFAC74B1D33F5900B5		Wonder Boy (JE)	SMS	Wonder Boy Series		Europe;Japan
 C53091E60B5BD473142CA231DD96F6EB		Wonsiin (K)	SMS		MSXMapper	Korea

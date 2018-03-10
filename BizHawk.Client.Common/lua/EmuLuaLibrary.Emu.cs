@@ -349,5 +349,11 @@ namespace BizHawk.Client.Common
 
 			return "";
 		}
+
+		[LuaMethod("getluacore", "returns the name of the Lua core currently in use")]
+		public string GetLuaBackend()
+		{
+			return Lua.WhichLua;
+		}
 	}
 }

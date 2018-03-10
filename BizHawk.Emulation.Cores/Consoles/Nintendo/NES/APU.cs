@@ -539,7 +539,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			int linear_counter_reload, control_flag;
 			// reg1 (n/a)
 			// reg2/3
-			int timer_cnt, halt_flag, len_cnt;
+			int timer_cnt, reload_flag, len_cnt;
 			public bool halt_2;
 			// misc..
 			int lenctr_en;
@@ -556,7 +556,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ser.Sync("linear_counter_reload", ref linear_counter_reload);
 				ser.Sync("control_flag", ref control_flag);
 				ser.Sync("timer_cnt", ref timer_cnt);
-				ser.Sync("halt_flag", ref halt_flag);
+				ser.Sync("reload_flag", ref reload_flag);
 				ser.Sync("len_cnt", ref len_cnt);
 
 				ser.Sync("lenctr_en", ref lenctr_en);
@@ -580,6 +580,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public void WriteReg(int addr, byte val)
 			{
 				// Console.WriteLine("tri writes addr={0}, val={1:x2}", addr, val);
+
 				switch (addr)
 				{
 					case 0:
@@ -605,7 +606,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						{
 							len_cnt = LENGTH_TABLE[(val >> 3) & 0x1F];
 						}
-						halt_flag = 1;
+						reload_flag = 1;
 
 						// allow the lenctr_en to kill the len_cnt
 						set_lenctr_en(lenctr_en);
@@ -669,14 +670,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			public void clock_length_and_sweep()
 			{
 				// env_loopdoubles as "halt length counter"
-				if (len_cnt > 0 && halt_flag == 0)
+				if (len_cnt > 0 && control_flag == 0)
 					len_cnt--;
 			}
 
 			public void clock_linear_counter()
 			{
-				//	Console.WriteLine("linear_counter: {0}", linear_counter);
-				if (halt_flag == 1)
+				//Console.WriteLine("linear_counter: {0}", linear_counter);
+				if (reload_flag == 1)
 				{
 					linear_counter = linear_counter_reload;
 				}
@@ -685,7 +686,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					linear_counter--;
 				}
 
-				halt_flag = control_flag;
+				if (control_flag == 0) { reload_flag = 0; }
 			}
 		} // class TriangleUnit
 

@@ -25,6 +25,10 @@ namespace BizHawk.Client.EmuHawk
 			SaveTASMenuItem.Enabled =
 				!string.IsNullOrWhiteSpace(CurrentTasMovie.Filename) &&
 				(CurrentTasMovie.Filename != DefaultTasProjName());
+
+			saveSelectionToMacroToolStripMenuItem.Enabled =
+				placeMacroAtSelectionToolStripMenuItem.Enabled =
+				TasView.AnyRowsSelected;
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -289,18 +293,19 @@ namespace BizHawk.Client.EmuHawk
 		private void EditSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			DeselectMenuItem.Enabled =
-			SelectBetweenMarkersMenuItem.Enabled =
-			CopyMenuItem.Enabled =
-			CutMenuItem.Enabled =
-			ClearFramesMenuItem.Enabled =
-			DeleteFramesMenuItem.Enabled =
-			CloneFramesMenuItem.Enabled =
-			TruncateMenuItem.Enabled =
+				SelectBetweenMarkersMenuItem.Enabled =
+				CopyMenuItem.Enabled =
+				CutMenuItem.Enabled =
+				ClearFramesMenuItem.Enabled =
+				DeleteFramesMenuItem.Enabled =
+				CloneFramesMenuItem.Enabled =
+				TruncateMenuItem.Enabled =
 				TasView.AnyRowsSelected;
+
 			ReselectClipboardMenuItem.Enabled =
 				PasteMenuItem.Enabled =
 				PasteInsertMenuItem.Enabled =
-				_tasClipboard.Any();
+				Clipboard.GetDataObject().GetDataPresent(DataFormats.StringFormat) && TasView.AnyRowsSelected;
 
 			ClearGreenzoneMenuItem.Enabled =
 				CurrentTasMovie != null && CurrentTasMovie.TasStateManager.Any();
@@ -764,7 +769,7 @@ namespace BizHawk.Client.EmuHawk
 
 			GoToFrame(0);
 			int lastState = 0;
-			int goToFrame = CurrentTasMovie.TasStateManager.LastEmulatedFrame;
+			int goToFrame = CurrentTasMovie.TasStateManager.LastStatedFrame;
 			do
 			{
 				Mainform.FrameAdvance();
@@ -1014,6 +1019,7 @@ namespace BizHawk.Client.EmuHawk
 				Location = this.ChildPointToScreen(TasView),
 				Statable = this.StatableEmulator
 			}.ShowDialog();
+			CurrentTasMovie.TasStateManager.UpdateStateFrequency();
 			CurrentTasMovie.TasStateManager.LimitStateCount();
 			UpdateChangesIndicator();
 		}
@@ -1295,6 +1301,10 @@ namespace BizHawk.Client.EmuHawk
 				InsertNumFramesContextMenuItem.Enabled =
 				TruncateContextMenuItem.Enabled =
 				TasView.AnyRowsSelected;
+
+			pasteToolStripMenuItem.Enabled =
+				pasteInsertToolStripMenuItem.Enabled =
+				Clipboard.GetDataObject().GetDataPresent(DataFormats.StringFormat) && TasView.AnyRowsSelected;
 
 			StartNewProjectFromNowMenuItem.Visible =
 				TasView.SelectedRows.Count() == 1

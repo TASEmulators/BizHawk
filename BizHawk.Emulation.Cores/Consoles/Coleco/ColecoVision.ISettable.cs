@@ -46,6 +46,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public class ColecoSyncSettings
 		{
 			public bool SkipBiosIntro { get; set; }
+			public bool UseSGM { get; set; }
 
 			private string _port1 = ColecoVisionControllerDeck.DefaultControllerName;
 			private string _port2 = ColecoVisionControllerDeck.DefaultControllerName;
