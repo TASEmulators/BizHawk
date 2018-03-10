@@ -52,7 +52,7 @@ namespace BizHawk.Client.Common
 			return octal;
 		}
 
-		[LuaMethodExample("trim" , "local stbiztri = bizstring.trim( \"Some trim string\t \" );")]
+		[LuaMethodExample("trim", "local stbiztri = bizstring.trim( \"Some trim string\t \" );")]
 		[LuaMethod("trim", "returns a string that trims whitespace on the left and right ends of the string")]
 		public static string Trim(string str)
 		{

@@ -346,7 +346,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GlobalWin.MainForm.TogglePause();
 		}
-		
+
 		[LuaMethodExample("transformPointX", "local inclitra = client.transformPointX( 16 );")]
 		[LuaMethod("transformPointX", "Transforms an x-coordinate in emulator space to an x-coordinate in client space")]
 		public static int TransformPointX(int x)
@@ -409,7 +409,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod("gettool", "Returns an object that represents a tool of the given name (not case sensitive). If the tool is not open, it will be loaded if available. Use gettools to get a list of names")]
 		public LuaTable GetTool(string name)
 		{
-			var toolType  = ReflectionUtil.GetTypeByName(name)
+			var toolType = ReflectionUtil.GetTypeByName(name)
 				.FirstOrDefault(x => typeof(IToolForm).IsAssignableFrom(x) && !x.IsInterface);
 
 			if (toolType != null)

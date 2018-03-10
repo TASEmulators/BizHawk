@@ -150,7 +150,7 @@ namespace BizHawk.Client.Common
 			}
 			catch
 			{
-				 /*Eat it*/
+				/*Eat it*/
 			}
 		}
 

@@ -63,7 +63,7 @@ namespace BizHawk.Client.Common
 			return GetSettings().ShowBG4_1;
 		}
 
-		[LuaMethodExample("getlayer_obj_1" , "if ( snes.getlayer_obj_1( ) ) then\r\n\tconsole.log( \"Returns whether the obj 1 layer is displayed\" );\r\nend;")]
+		[LuaMethodExample("getlayer_obj_1", "if ( snes.getlayer_obj_1( ) ) then\r\n\tconsole.log( \"Returns whether the obj 1 layer is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_obj_1", "Returns whether the obj 1 layer is displayed")]
 		public bool GetLayerObj1()
 		{
@@ -127,7 +127,7 @@ namespace BizHawk.Client.Common
 			PutSettings(s);
 		}
 
-		[LuaMethodExample("setlayer_obj_1" , "snes.setlayer_obj_1( true );")]
+		[LuaMethodExample("setlayer_obj_1", "snes.setlayer_obj_1( true );")]
 		[LuaMethod("setlayer_obj_1", "Sets whether the obj 1 layer is displayed")]
 		public void SetLayerObj1(bool value)
 		{

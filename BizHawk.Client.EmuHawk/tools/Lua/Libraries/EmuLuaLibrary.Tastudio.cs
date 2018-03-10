@@ -48,7 +48,7 @@ namespace BizHawk.Client.EmuHawk
 		};
 
 		private List<PendingChanges> changeList = new List<PendingChanges>(); //TODO: Initialize it to empty list on a script reload, and have each script have it's own list
-		
+
 		[LuaMethodExample("engaged", "if ( tastudio.engaged( ) ) then\r\n\tconsole.log( \"returns whether or not tastudio is currently engaged ( active )\" );\r\nend;")]
 		[LuaMethod("engaged", "returns whether or not tastudio is currently engaged (active)")]
 		public bool Engaged()
@@ -63,7 +63,7 @@ namespace BizHawk.Client.EmuHawk
 			return Tastudio.TasPlaybackBox.RecordingMode;
 		}
 
-		[LuaMethodExample("setrecording" , "tastudio.setrecording( true );")]
+		[LuaMethodExample("setrecording", "tastudio.setrecording( true );")]
 		[LuaMethod("setrecording", "sets the recording mode on/off depending on the parameter")]
 		public void SetRecording(bool val)
 		{
@@ -73,14 +73,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("togglerecording" , "tastudio.togglerecording( );")]
+		[LuaMethodExample("togglerecording", "tastudio.togglerecording( );")]
 		[LuaMethod("togglerecording", "toggles tastudio recording mode on/off depending on its current state")]
 		public void SetRecording()
 		{
 			Tastudio.ToggleReadOnly();
 		}
 
-		[LuaMethodExample("setbranchtext" , "tastudio.setbranchtext( \"Some text\", 1 );")]
+		[LuaMethodExample("setbranchtext", "tastudio.setbranchtext( \"Some text\", 1 );")]
 		[LuaMethod("setbranchtext", "adds the given message to the existing branch, or to the branch that will be created next if branch index is not specified")]
 		public void SetBranchText(string text, int? index = null)
 		{
@@ -94,7 +94,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("getmarker" , "local sttasget = tastudio.getmarker( 500 );")]
+		[LuaMethodExample("getmarker", "local sttasget = tastudio.getmarker( 500 );")]
 		[LuaMethod("getmarker", "returns the marker text at the given frame, or an empty string if there is no marker for the given frame")]
 		public string GetMarker(int frame)
 		{
@@ -106,11 +106,11 @@ namespace BizHawk.Client.EmuHawk
 					return marker.Message;
 				}
 			}
-			
+
 			return "";
 		}
 
-		[LuaMethodExample("removemarker" , "tastudio.removemarker( 500 );")]
+		[LuaMethodExample("removemarker", "tastudio.removemarker( 500 );")]
 		[LuaMethod("removemarker", "if there is a marker for the given frame, it will be removed")]
 		public void RemoveMarker(int frame)
 		{
@@ -125,7 +125,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("setmarker" , "tastudio.setmarker( 500, \"Some message\" );")]
+		[LuaMethodExample("setmarker", "tastudio.setmarker( 500, \"Some message\" );")]
 		[LuaMethod("setmarker", "Adds or sets a marker at the given frame, with an optional message")]
 		public void SetMarker(int frame, string message = null)
 		{
@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("islag" , "local botasisl = tastudio.islag( 500 );")]
+		[LuaMethodExample("islag", "local botasisl = tastudio.islag( 500 );")]
 		[LuaMethod("islag", "Returns whether or not the given frame was a lag frame, null if unknown")]
 		public bool? IsLag(int frame)
 		{
@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 			return null;
 		}
 
-		[LuaMethodExample("setlag" , "tastudio.setlag( 500, true );")]
+		[LuaMethodExample("setlag", "tastudio.setlag( 500, true );")]
 		[LuaMethod("setlag", "Sets the lag information for the given frame, if the frame does not exist in the lag log, it will be added. If the value is null, the lag information for that frame will be removed")]
 		public void SetLag(int frame, bool? value)
 		{
@@ -169,7 +169,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("hasstate" , "if ( tastudio.hasstate( 500 ) ) then\r\n\tconsole.log( \"Returns whether or not the given frame has a savestate associated with it\" );\r\nend;")]
+		[LuaMethodExample("hasstate", "if ( tastudio.hasstate( 500 ) ) then\r\n\tconsole.log( \"Returns whether or not the given frame has a savestate associated with it\" );\r\nend;")]
 		[LuaMethod("hasstate", "Returns whether or not the given frame has a savestate associated with it")]
 		public bool HasState(int frame)
 		{
@@ -184,7 +184,7 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		[LuaMethodExample("setplayback" , "tastudio.setplayback( 1500 );")]
+		[LuaMethodExample("setplayback", "tastudio.setplayback( 1500 );")]
 		[LuaMethod("setplayback", "Seeks the given frame (a number) or marker (a string)")]
 		public void SetPlayback(object frame)
 		{
@@ -213,7 +213,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("onqueryitembg" , "tastudio.onqueryitembg( function( currentindex, itemname )\r\n\tconsole.log( \"called during the background draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
+		[LuaMethodExample("onqueryitembg", "tastudio.onqueryitembg( function( currentindex, itemname )\r\n\tconsole.log( \"called during the background draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
 		[LuaMethod("onqueryitembg", "called during the background draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)")]
 		public void OnQueryItemBg(LuaFunction luaf)
 		{
@@ -234,7 +234,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("onqueryitemtext" , "tastudio.onqueryitemtext( function( currentindex, itemname )\r\n\tconsole.log( \"called during the text draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
+		[LuaMethodExample("onqueryitemtext", "tastudio.onqueryitemtext( function( currentindex, itemname )\r\n\tconsole.log( \"called during the text draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
 		[LuaMethod("onqueryitemtext", "called during the text draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)")]
 		public void OnQueryItemText(LuaFunction luaf)
 		{
@@ -249,7 +249,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("onqueryitemicon" , "tastudio.onqueryitemicon( function( currentindex, itemname )\r\n\tconsole.log( \"called during the icon draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
+		[LuaMethodExample("onqueryitemicon", "tastudio.onqueryitemicon( function( currentindex, itemname )\r\n\tconsole.log( \"called during the icon draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)\" );\r\nend );")]
 		[LuaMethod("onqueryitemicon", "called during the icon draw event of the tastudio listview. luaf must be a function that takes 2 params: index, column.  The first is the integer row index of the listview, and the 2nd is the string column name. luaf should return a value that can be parsed into a .NET Color object (string color name, or integer value)")]
 		public void OnQueryItemIcon(LuaFunction luaf)
 		{
@@ -270,7 +270,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("ongreenzoneinvalidated" , "tastudio.ongreenzoneinvalidated( function( currentindex, itemname )\r\n\tconsole.log( \"called whenever the greenzone is invalidated and returns the first frame that was invalidated\" );\r\nend );")]
+		[LuaMethodExample("ongreenzoneinvalidated", "tastudio.ongreenzoneinvalidated( function( currentindex, itemname )\r\n\tconsole.log( \"called whenever the greenzone is invalidated and returns the first frame that was invalidated\" );\r\nend );")]
 		[LuaMethod("ongreenzoneinvalidated", "called whenever the greenzone is invalidated and returns the first frame that was invalidated")]
 		public void OnGreenzoneInvalidated(LuaFunction luaf)
 		{
@@ -283,8 +283,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("onbranchload" , "tastudio.ongreenzoneinvalidated( function( currentindex, itemname )\r\n\tconsole.log( \"called whenever the greenzone is invalidated and returns the first frame that was invalidated\" );\r\nend );")]
-		[LuaMethod("onbranchload","called whenever a branch is loaded. luaf must be a function that takes the integer branch index as a parameter")]
+		[LuaMethodExample("onbranchload", "tastudio.ongreenzoneinvalidated( function( currentindex, itemname )\r\n\tconsole.log( \"called whenever the greenzone is invalidated and returns the first frame that was invalidated\" );\r\nend );")]
+		[LuaMethod("onbranchload", "called whenever a branch is loaded. luaf must be a function that takes the integer branch index as a parameter")]
 		public void OnBranchLoad(LuaFunction luaf)
 		{
 			if (Engaged())
@@ -296,7 +296,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample( "onbranchsave", "")]
+		[LuaMethodExample("onbranchsave", "")]
 		[LuaMethod("onbranchsave", "called whenever a branch is created or updated. luaf must be a function that takes the integer branch index as a parameter")]
 		public void OnBranchSave(LuaFunction luaf)
 		{
@@ -309,7 +309,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("onbranchremove" , "")]
+		[LuaMethodExample("onbranchremove", "")]
 		[LuaMethod("onbranchremove", "called whenever a branch is removed. luaf must be a function that takes the integer branch index as a parameter")]
 		public void OnBranchRemove(LuaFunction luaf)
 		{
@@ -322,7 +322,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("getselection" , "local nltasget = tastudio.getselection( );")]
+		[LuaMethodExample("getselection", "local nltasget = tastudio.getselection( );")]
 		[LuaMethod("getselection", "gets the currently selected frames")]
 		public LuaTable GetSelection()
 		{
@@ -348,7 +348,7 @@ namespace BizHawk.Client.EmuHawk
 			public string Text { get; set; }
 		}
 
-		[LuaMethodExample("getbranches" , "local nltasget = tastudio.getbranches( );")]
+		[LuaMethodExample("getbranches", "local nltasget = tastudio.getbranches( );")]
 		[LuaMethod("getbranches", "Returns a list of the current tastudio branches.  Each entry will have the Id, Frame, and Text properties of the branch")]
 		public LuaTable GetBranches()
 		{
@@ -374,7 +374,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 
-		[LuaMethodExample("getbranchinput" , "local nltasget = tastudio.getbranchinput( \"97021544-2454-4483-824f-47f75e7fcb6a\", 500 );")]
+		[LuaMethodExample("getbranchinput", "local nltasget = tastudio.getbranchinput( \"97021544-2454-4483-824f-47f75e7fcb6a\", 500 );")]
 		[LuaMethod("getbranchinput", "Gets the controller state of the given frame with the given branch identifier")]
 		public LuaTable GetBranchInput(string branchId, int frame)
 		{
@@ -388,7 +388,7 @@ namespace BizHawk.Client.EmuHawk
 					if (frame < branch.InputLog.Count)
 					{
 						var input = branch.InputLog[frame];
-						
+
 						var adapter = new Bk2ControllerAdapter
 						{
 							Definition = Global.MovieSession.MovieControllerAdapter.Definition
@@ -412,8 +412,8 @@ namespace BizHawk.Client.EmuHawk
 			return table;
 		}
 
-		[LuaMethodExample("submitinputchange" , "")]
-		[LuaMethod("submitinputchange","")]
+		[LuaMethodExample("submitinputchange", "")]
+		[LuaMethod("submitinputchange", "")]
 		public void SubmitInputChange(int frame, string button, bool value)
 		{
 			if (Engaged())
@@ -453,8 +453,8 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("submitanalogchange" , "")]
-		[LuaMethod("submitanalogchange","")]
+		[LuaMethodExample("submitanalogchange", "")]
+		[LuaMethod("submitanalogchange", "")]
 		public void SubmitAnalogChange(int frame, string button, float value)
 		{
 			if (Engaged())
@@ -494,7 +494,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample( "submitinsertframes", "")]
+		[LuaMethodExample("submitinsertframes", "")]
 		[LuaMethod("submitinsertframes", "")]
 		public void SubmitInsertFrames(int frame, int number)
 		{
@@ -513,7 +513,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("submitdeleteframes" , "")]
+		[LuaMethodExample("submitdeleteframes", "")]
 		[LuaMethod("submitdeleteframes", "")]
 		public void SubmitDeleteFrames(int frame, int number)
 		{
@@ -532,7 +532,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample( "applyinputchanges", "")]
+		[LuaMethodExample("applyinputchanges", "")]
 		[LuaMethod("applyinputchanges", "")]
 		public void ApplyInputChanges()
 		{
@@ -575,7 +575,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample("clearinputchanges", "")]
-		[LuaMethod("clearinputchanges","")]
+		[LuaMethod("clearinputchanges", "")]
 		public void ClearInputChanges()
 		{
 			if (Engaged())

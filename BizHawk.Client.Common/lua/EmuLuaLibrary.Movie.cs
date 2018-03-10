@@ -124,17 +124,17 @@ namespace BizHawk.Client.Common
 			{
 				return "FINISHED";
 			}
-			
+
 			if (Global.MovieSession.Movie.IsPlaying)
 			{
 				return "PLAY";
 			}
-			
+
 			if (Global.MovieSession.Movie.IsRecording)
 			{
 				return "RECORD";
 			}
-			
+
 			return "INACTIVE";
 		}
 

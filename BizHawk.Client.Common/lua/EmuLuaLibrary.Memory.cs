@@ -164,7 +164,7 @@ namespace BizHawk.Client.Common
 			WriteUnsignedByte(addr, value, domain);
 		}
 
-		[LuaMethodExample("readbyterange" , "local nlmemrea = memory.readbyterange( 0x100, 30, mainmemory.getname( ) );")]
+		[LuaMethodExample("readbyterange", "local nlmemrea = memory.readbyterange( 0x100, 30, mainmemory.getname( ) );")]
 		[LuaMethod("readbyterange", "Reads the address range that starts from address, and is length long. Returns the result into a table of key value pairs (where the address is the key).")]
 		public new LuaTable ReadByteRange(int addr, int length, string domain = null)
 		{
@@ -309,7 +309,7 @@ namespace BizHawk.Client.Common
 			return ReadSignedBig(addr, 3, domain);
 		}
 
-		[LuaMethodExample("write_s24_be" , "memory.write_s24_be( 0x100, -1000, mainmemory.getname( ) );")]
+		[LuaMethodExample("write_s24_be", "memory.write_s24_be( 0x100, -1000, mainmemory.getname( ) );")]
 		[LuaMethod("write_s24_be", "write signed 24 bit value, big endian")]
 		public void WriteS24Big(int addr, int value, string domain = null)
 		{

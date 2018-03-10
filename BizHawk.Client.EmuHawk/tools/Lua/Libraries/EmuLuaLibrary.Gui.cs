@@ -200,7 +200,7 @@ namespace BizHawk.Client.EmuHawk
 				try
 				{
 					var pointsArr = new Point[4];
-					
+
 					var i = 0;
 					foreach (LuaTable point in points.Values)
 					{
