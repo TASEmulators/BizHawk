@@ -139,11 +139,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				_cpu.FlagI = false;
 				if (intPending)
 				{
-					if (_vdp.EnableInterrupts)
-					{
-						_cpu.FlagI = true;
-						intPending = false;
-					}
+					_cpu.FlagI = true;
+					intPending = false;
 				}
 
 				temp_1_prev = tempRet1.Bit(4);

@@ -154,10 +154,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			if (leftMode)
 			{
-				byte retval = 0x4B;
+
+				byte retval = 0x4F;
 				
 				if (c.IsPressed(Definition.BoolButtons[0])) retval &= 0x3F;
-
+				
 				int x = (int)c.GetFloat(Definition.FloatControls[0]);
 				int y = (int)c.GetFloat(Definition.FloatControls[1]);
 
@@ -198,55 +199,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 
 				retval |= temp2;
-
+				
 				return retval;
 			}
 			else
 			{
-				byte retval = 0x4B;
-				if (c.IsPressed(Definition.BoolButtons[0])) retval &= 0x3F;
+				byte retval = 0x7F;
 
-				int x = (int)c.GetFloat(Definition.FloatControls[0]);
-				int y = (int)c.GetFloat(Definition.FloatControls[1]);
-
-				float angle;
-
-				if (updateWheel)
-				{
-					angle = wheelAngle;
-				}
-				else
-				{
-					angle = CalcDirection(x, y);
-				}
-
-				byte temp2 = 0;
-
-				int temp1 = (int)Math.Floor(angle / 1.25);				
-				temp1 = temp1 % 4;
-
-				if (temp1 == 0)
-				{
-					temp2 = 0x10;
-				}
-
-				if (temp1 == 1)
-				{
-					temp2 = 0x30;
-				}
-				if (temp1 == 2)
-				{
-					temp2 = 0x20;
-				}
-
-				if (temp1 == 3)
-				{
-					temp2 = 0x00;
-				}
-
-
-				retval |= temp2;
-				
 				return retval;
 			}
 		}
