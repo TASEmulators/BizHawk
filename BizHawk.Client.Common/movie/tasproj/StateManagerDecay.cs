@@ -53,6 +53,7 @@ namespace BizHawk.Client.Common
 			_align = false;
 		}
 
+		// todo: go through all states once, remove as many as we need. refactor to not need goto
 		public void Trigger(int decayStates)
 		{
 			for (; decayStates > 0 && _tsm.StateCount > 1;)
@@ -71,6 +72,15 @@ namespace BizHawk.Client.Common
 					if (_tsm.StateIsMarker(currentFrame))
 					{
 						continue;
+					}
+					else if (currentFrame % _step > 0)
+					{
+						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
+						_tsm.RemoveState(currentFrame);
+						decayStates--;
+
+						// this is the kind of highly complex loops that might justify goto
+						goto next_state;
 					}
 					else
 					{
@@ -96,9 +106,22 @@ namespace BizHawk.Client.Common
 				{
 					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex) / _step;
 
-					if (_tsm.StateIsMarker(currentFrame * _step))
+					if (_tsm.StateIsMarker(currentFrame))
 					{
 						continue;
+					}
+					else if (currentFrame % _step > 0)
+					{
+						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
+						_tsm.RemoveState(currentFrame);
+						decayStates--;
+
+						// this is the kind of highly complex loops that might justify goto
+						goto next_state;
+					}
+					else
+					{
+						currentFrame /= _step;
 					}
 
 					int zeroCount = _zeros[currentFrame & _mask];
@@ -139,6 +162,15 @@ namespace BizHawk.Client.Common
 					_tsm.RemoveState(backwardFrame * _step);
 					decayStates--;
 				}
+				else
+				{
+					// we're very sorry about failing to find states to remove, but we can't go beyond capacity, so remove at least something
+					// this shouldn't happen, but if we don't do it here, nothing good will happen either
+					_tsm.RemoveState(_tsm.GetStateFrameByIndex(1));
+				}
+
+				// this is the kind of highly complex loops that might justify goto
+				next_state:;
 			}
 		}
 
