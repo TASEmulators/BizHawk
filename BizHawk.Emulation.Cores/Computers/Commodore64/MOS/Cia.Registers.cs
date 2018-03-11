@@ -1,4 +1,7 @@
-﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
+﻿using BizHawk.Common.NumberExtensions;
+using System;
+
+namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 {
 	public sealed partial class Cia
 	{
@@ -154,7 +157,7 @@
 					break;
 				case 0xC:
 					WriteRegister(addr, val);
-					TriggerInterrupt(8);
+					// TriggerInterrupt(8); 				
 					break;
 				case 0xD:
 					if ((val & 0x80) != 0)
