@@ -66,11 +66,15 @@ namespace BizHawk.Client.Common
 
 				for (int currentStateIndex = 1; currentStateIndex < baseStateIndex; currentStateIndex++)
 				{
-					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex) / _step;
+					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
 
-					if (_tsm.StateIsMarker(currentFrame * _step))
+					if (_tsm.StateIsMarker(currentFrame))
 					{
 						continue;
+					}
+					else
+					{
+						currentFrame /= _step;
 					}
 
 					int zeroCount = _zeros[currentFrame & _mask];
