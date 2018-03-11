@@ -1372,7 +1372,7 @@ namespace BizHawk.Client.EmuHawk
 				// Selection courser
 				else if (e.Control && !e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Ctrl + Up
 				{
-					if (SelectedRows.Any() && LetKeysModifySelection)
+					if (SelectedRows.Any() && LetKeysModifySelection && SelectedRows.First() > 0)
 					{
 						foreach (var row in SelectedRows.ToList())
 						{
