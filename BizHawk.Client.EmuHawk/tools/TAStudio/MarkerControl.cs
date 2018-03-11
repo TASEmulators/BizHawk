@@ -98,10 +98,12 @@ namespace BizHawk.Client.EmuHawk
 		private void MarkerContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			EditMarkerToolStripMenuItem.Enabled =
-			RemoveMarkerToolStripMenuItem.Enabled =
-			JumpToMarkerToolStripMenuItem.Enabled =
-			ScrollToMarkerToolStripMenuItem.Enabled =
+				RemoveMarkerToolStripMenuItem.Enabled =
 				MarkerInputRoll.AnyRowsSelected && MarkerView.SelectedRows.First() != 0;
+
+			JumpToMarkerToolStripMenuItem.Enabled =
+				ScrollToMarkerToolStripMenuItem.Enabled =
+				MarkerInputRoll.AnyRowsSelected;
 		}
 
 		private void ScrollToMarkerToolStripMenuItem_Click(object sender, EventArgs e)
@@ -259,10 +261,12 @@ namespace BizHawk.Client.EmuHawk
 		private void MarkerView_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			EditMarkerButton.Enabled =
-			RemoveMarkerButton.Enabled =
-			JumpToMarkerButton.Enabled =
-			ScrollToMarkerButton.Enabled =
+				RemoveMarkerButton.Enabled =
 				MarkerInputRoll.AnyRowsSelected && MarkerView.SelectedRows.First() != 0;
+
+			JumpToMarkerButton.Enabled =
+				ScrollToMarkerButton.Enabled =
+				MarkerInputRoll.AnyRowsSelected;
 		}
 
 		private List<TasMovieMarker> SelectedMarkers
