@@ -987,7 +987,7 @@ namespace BizHawk.Client.Common
 								nextEmulator = new A7800Hawk(nextComm, game, rom.RomData, gamedbpath, GetCoreSettings<A7800Hawk>(), GetCoreSyncSettings<A7800Hawk>());
 								break;
 							case "C64":
-								var c64 = new C64(nextComm, Enumerable.Repeat(rom.RomData, 1), rom.GameInfo, GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());
+								var c64 = new C64(nextComm, Enumerable.Repeat(rom.FileData, 1), rom.GameInfo, GetCoreSettings<C64>(), GetCoreSyncSettings<C64>());
 								nextEmulator = c64;
 								break;
 							case "GBA":
