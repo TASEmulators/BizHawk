@@ -200,6 +200,46 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
         }
 
+        /// <summary>
+        /// Tape message that prints the current status of the tape device
+        /// </summary>
+        public void OSD_ShowTapeStatus()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Status: ");
+
+            if (_machine.TapeDevice.TapeIsPlaying)
+                sb.Append("PLAYING");
+            else
+                sb.Append("STOPPED");
+
+            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+            sb.Clear();
+
+            sb.Append("Tape: " + _machine.TapeMediaIndex + ": " + _gameInfo[_machine.TapeMediaIndex].Name);
+            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+            sb.Clear();
+
+            sb.Append("Block: ");
+            sb.Append("(" + (_machine.TapeDevice.CurrentDataBlockIndex + 1) + 
+                " of " + _machine.TapeDevice.DataBlocks.Count() + ") " + 
+                _machine.TapeDevice.DataBlocks[_machine.TapeDevice.CurrentDataBlockIndex].BlockDescription);
+            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+            sb.Clear();
+            
+            sb.Append("Block Pos: ");
+
+            int pos = _machine.TapeDevice.Position;
+            int end = _machine.TapeDevice.DataBlocks[_machine.TapeDevice.CurrentDataBlockIndex].DataPeriods.Count;
+            double p =  0; 
+            if (end != 0)
+                p = ((double)pos / (double)end) * (double)100;
+
+            sb.Append(p.ToString("N0") + "%");
+            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+            sb.Clear();
+        }
+
         #endregion
 
         /// <summary>

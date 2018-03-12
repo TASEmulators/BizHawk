@@ -137,8 +137,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public const ushort ERROR_ROM_ADDRESS = 0x0008;
 
-        Stopwatch sw = new Stopwatch();
-
         /// <summary>
         /// Should be fired at the end of every frame
         /// Primary purpose is to detect tape traps and manage auto play (if/when this is ever implemented)
@@ -373,6 +371,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // decide how many cycles worth of data we are capturing
             long cycles = cpuCycle - _lastCycle;
 
+            bool is48k = _machine.IsIn48kMode();
+
             // check whether tape is actually playing
             if (_tapeIsPlaying == false)
             {
@@ -398,11 +398,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // flip the current state
                 currentState = !currentState;
 
-                if (_position == 0)
+                if (_position == 0 && _tapeIsPlaying)
                 {
                     // start of block
-                    // notify about the current block
 
+                    // notify about the current block
                     var bl = _dataBlocks[_currentDataBlockIndex];
 
                     StringBuilder sbd = new StringBuilder();
@@ -427,47 +427,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 {
                     // we have reached the end of the current block
 
-                    // check for any commands
-                    var command = _dataBlocks[_currentDataBlockIndex].Command;
-                    var block = _dataBlocks[_currentDataBlockIndex];
-                    switch (command)
-                    {
-                        // Stop the tape command found - if this is the end of the tape RTZ
-                        // otherwise just STOP and move to the next block
-                        case TapeCommand.STOP_THE_TAPE:
-
-                            _machine.Spectrum.OSD_TapeStoppedAuto();
-
-                            if (_currentDataBlockIndex >= _dataBlocks.Count())
-                                RTZ();
-                            else
-                            {
-                                Stop();
-                            }
-                            break;
-                        case TapeCommand.STOP_THE_TAPE_48K:
-
-                            if ((_machine.GetType() != typeof(ZX128) &&
-                                _machine.GetType() != typeof(ZX128Plus2) &&
-                                _machine.GetType() != typeof(ZX128Plus3)) ||
-                                (_machine.GetType() == typeof(ZX128) || 
-                                _machine.GetType() != typeof(ZX128Plus2) || 
-                                _machine.GetType() != typeof(ZX128Plus3)) &&
-                                _machine._ROMpaged == 1)
-                            {
-                                _machine.Spectrum.OSD_TapeStoppedAuto();
-
-                                if (_currentDataBlockIndex >= _dataBlocks.Count())
-                                    RTZ();
-                                else
-                                {
-                                    Stop();
-                                }
-                               
-                            }
-                            break;
-                    }
-
                     if (_dataBlocks[_currentDataBlockIndex].DataPeriods.Count() == 0)
                     {
                         // notify about the current block (we are skipping it because its empty)
@@ -487,11 +446,77 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                     }
 
-                    // skip any empty blocks
+                    // skip any empty blocks (and process any command blocks)
                     while (_position >= _dataBlocks[_currentDataBlockIndex].DataPeriods.Count())
-                    {                       
+                    {
+                        // check for any commands
+                        var command = _dataBlocks[_currentDataBlockIndex].Command;
+                        var block = _dataBlocks[_currentDataBlockIndex];
+                        bool shouldStop = false;
+                        switch (command)
+                        {
+                            // Stop the tape command found - if this is the end of the tape RTZ
+                            // otherwise just STOP and move to the next block
+                            case TapeCommand.STOP_THE_TAPE:
+
+                                _machine.Spectrum.OSD_TapeStoppedAuto();
+
+                                if (_currentDataBlockIndex >= _dataBlocks.Count())
+                                    RTZ();
+                                else
+                                {
+                                    Stop();
+                                }
+
+                                _monitorTimeOut = 2000;
+
+                                break;
+                            case TapeCommand.STOP_THE_TAPE_48K:
+                                if (is48k)
+                                {
+                                    _machine.Spectrum.OSD_TapeStoppedAuto();
+
+                                    if (_currentDataBlockIndex >= _dataBlocks.Count())
+                                        RTZ();
+                                    else
+                                    {
+                                        Stop();
+                                    }
+
+                                    _monitorTimeOut = 2000;
+                                }
+                                /*
+                                if ((_machine.GetType() != typeof(ZX128) &&
+                                    _machine.GetType() != typeof(ZX128Plus2) &&
+                                    _machine.GetType() != typeof(ZX128Plus3)) ||
+                                    (_machine.GetType() == typeof(ZX128) ||
+                                    _machine.GetType() != typeof(ZX128Plus2) ||
+                                    _machine.GetType() != typeof(ZX128Plus3)) &&
+                                    _machine._ROMpaged == 1)
+                                {
+                                    _machine.Spectrum.OSD_TapeStoppedAuto();
+
+                                    if (_currentDataBlockIndex >= _dataBlocks.Count())
+                                        RTZ();
+                                    else
+                                    {
+                                        Stop();
+                                    }
+
+                                    _monitorTimeOut = 2000;
+                                }
+                                */
+                                break;
+                        }
+
+                        if (shouldStop)
+                            break;
+
                         _position = 0;
                         _currentDataBlockIndex++;
+
+                        
+
                         if (_currentDataBlockIndex >= _dataBlocks.Count())
                         {
                             break;
@@ -584,7 +609,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 {
                     _monitorCount++;
 
-                    if (_monitorCount >= 8 && _machine.Spectrum.Settings.AutoLoadTape)
+                    if (_monitorCount >= 16 && _cpu.RegPC == 1523 && _machine.Spectrum.Settings.AutoLoadTape)
                     {
                         if (!_tapeIsPlaying)
                         {
@@ -592,7 +617,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             _machine.Spectrum.OSD_TapePlayingAuto();
                         }
 
-                        _monitorTimeOut = 500;
+                        _monitorTimeOut = 90;
                     }
                 }
                 else

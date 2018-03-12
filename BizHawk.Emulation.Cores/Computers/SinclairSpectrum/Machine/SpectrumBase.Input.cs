@@ -17,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         string PrevTape = "Insert Previous Tape";
         string NextBlock = "Next Tape Block";
         string PrevBlock = "Prev Tape Block";
+        string TapeStatus = "Get Tape Status";
 
         bool pressed_Play = false;
         bool pressed_Stop = false;
@@ -25,6 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         bool pressed_PrevTape = false;
         bool pressed_NextBlock = false;
         bool pressed_PrevBlock = false;
+        bool pressed_TapeStatus = false;
 
         public void PollInput()
         {
@@ -84,8 +86,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         JoystickCollection[2].SetJoyInput(j, currState);
                 }
             }
-
-            
 
             // Tape control
             if (Spectrum._controller.IsPressed(Play))
@@ -175,6 +175,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             else
                 pressed_PrevBlock = false;
+
+            if (Spectrum._controller.IsPressed(TapeStatus))
+            {
+                if (!pressed_TapeStatus)
+                {
+                    //Spectrum.OSD_FireInputMessage(TapeStatus);
+                    Spectrum.OSD_ShowTapeStatus();
+                    pressed_TapeStatus = true;
+                }
+            }
+            else
+                pressed_TapeStatus = false;
         }
 
         /// <summary>

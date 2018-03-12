@@ -86,7 +86,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 List<string> tape = new List<string>
                 {
                     // Tape functions
-                    "Play Tape", "Stop Tape", "RTZ Tape", "Record Tape", "Insert Next Tape", "Insert Previous Tape", "Next Tape Block", "Prev Tape Block"
+                    "Play Tape", "Stop Tape", "RTZ Tape", "Record Tape", "Insert Next Tape",
+                    "Insert Previous Tape", "Next Tape Block", "Prev Tape Block", "Get Tape Status"
                 };
 
                 foreach (var s in tape)

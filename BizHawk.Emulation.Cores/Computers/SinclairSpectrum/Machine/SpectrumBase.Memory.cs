@@ -105,6 +105,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Helper function to refresh memory array (probably not the best way to do things)
         /// </summary>
         public abstract void ReInitMemory();
+
+        /// <summary>
+        /// Detects whether the 48k rom is resident (or paged in) at 0x0001
+        /// </summary>
+        /// <returns></returns>
+        public virtual bool IsIn48kMode()
+        {
+            var data = ReadBus(0x0001);
+            if (data == 0xaf)
+                return true;
+
+            return false;
+        }
         
     }
 }
