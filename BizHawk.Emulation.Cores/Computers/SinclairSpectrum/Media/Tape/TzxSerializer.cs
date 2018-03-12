@@ -268,6 +268,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             t.DataPeriods = new List<int>();
 
             int pauseLen = GetWordValue(data, _position);
+
             int blockLen = GetWordValue(data, _position + 2);
 
             _position += 4;

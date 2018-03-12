@@ -17,18 +17,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             InputRead = true;
 
-            // It takes four T states for the Z80 to read a value from an I/O port, or write a value to a port
-            // (not including added ULA contention)
-            // The Bizhawk Z80A implementation appears to not consume any T-States for this operation
-            PortContention(4);
+            // process IO contention
+            ContendPortAddress(port);
 
             int result = 0xFF;
 
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = (port & 0x0001) == 0;
-
-            ULADevice.Contend(port);
 
             // Kempston Joystick
             if ((port & 0xe0) == 0 || (port & 0x20) == 0)
@@ -90,12 +86,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 if ((port & 0x100) == 0)
                 {
                     result &= KeyboardDevice.KeyLine[0];
-                }                    
+                }
+
+                TapeDevice.MonitorRead();
+
+                var earBit = TapeDevice.GetEarBit(CPU.TotalExecutedCycles);
+
+                if (!earBit)
+                {
+                    result &= 0xbf;
+                }
+
+                /*
 
                 result = result & 0x1f; //mask out lower 4 bits
                 result = result | 0xa0; //set bit 5 & 7 to 1
-
-                TapeDevice.MonitorRead();
+                
 
                 if (TapeDevice.TapeIsPlaying)//.CurrentMode == TapeOperationMode.Load)
                 {
@@ -133,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         }
                     }
                 }
-
+                */
             }
             else
             {
@@ -177,45 +183,37 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WritePort(ushort port, byte value)
         {
-            // It takes four T states for the Z80 to read a value from an I/O port, or write a value to a port
-            // (not including added ULA contention)
-            // The Bizhawk Z80A implementation appears to not consume any T-States for this operation
-            PortContention(4);
-
+            // process IO contention
+            ContendPortAddress(port);
 
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
-            bool lowBitReset = (port & 0x01) == 0;
+            if ((port & 0x0001) != 0)
+                return;
 
-            ULADevice.Contend(port);
+            // store the last OUT byte
+            LastULAOutByte = value;
 
-            // Only even addresses address the ULA
-            if (lowBitReset)
-            {
-                // store the last OUT byte
-                LastULAOutByte = value;
-                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
+            /*
+                Bit   7   6   5   4   3   2   1   0
+                    +-------------------------------+
+                    |   |   |   | E | M |   Border  |
+                    +-------------------------------+
+            */
 
-                /*
-                    Bit   7   6   5   4   3   2   1   0
-                        +-------------------------------+
-                        |   |   |   | E | M |   Border  |
-                        +-------------------------------+
-                */
+            // Border - LSB 3 bits hold the border colour
+            if (ULADevice.borderColour != (value & BORDER_BIT))
+                ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
 
-                // Border - LSB 3 bits hold the border colour
-                if (ULADevice.borderColour != (value & BORDER_BIT))
-                    ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
+            ULADevice.borderColour = value & BORDER_BIT;
 
-                ULADevice.borderColour = value & BORDER_BIT;
+            // Buzzer
+            BuzzerDevice.ProcessPulseValue(false, (value & EAR_BIT) != 0);
 
-                // Buzzer
-                BuzzerDevice.ProcessPulseValue(false, (value & EAR_BIT) != 0);
-
-                // Tape
-                //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
+            // Tape
+            //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
                 
-            }
         }
+       
     }
 }

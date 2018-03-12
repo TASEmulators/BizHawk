@@ -144,72 +144,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Primary purpose is to detect tape traps and manage auto play (if/when this is ever implemented)
         /// </summary>
         public void EndFrame()
-        {/*
-            if (TapeIsPlaying)
-            {
-                
-                // check whether we need to auto-stop the tape
-                if (IsMachineAtErrorAddress())
-                {
-                    _machine.Spectrum.OSD_TapeStoppedAuto();
-                    Stop();
-                }    
-                               
-            }
-            else
-            {
-                // the tape is not playing - check to see if we need to autostart the tape
-                if (IsMachineInLoadMode())
-                {
-                    _machine.Spectrum.OSD_TapePlayingAuto();
-                    Play();
-                    //sw.Start();
-                }
-            }
-            /*
-            if (TapeIsPlaying && sw.IsRunning)
-            {
-                if (!IsMachineInLoadMode() && sw.ElapsedMilliseconds == 2000)
-                {
-                    sw.Stop();
-                    sw.Reset();
-                    _machine.Spectrum.OSD_TapeStoppedAuto();
-                    Stop();
-                }
-            }
-            */
-
+        {
             MonitorFrame();
-        }
-
-        /// <summary>
-        /// Checks whether the machine is in a state that is waiting to load tape content
-        /// </summary>
-        /// <returns></returns>
-        public bool IsMachineInLoadMode()
-        {
-            if (!_machine.Spectrum.Settings.AutoLoadTape)
-                return false;
-
-            if (_cpu.RegPC == 1523)
-                return true;
-
-            return false;
-        }
-
-        /// <summary>
-        /// Checks whether the machine has reached the error rom address (and the tape needs to be stopped)
-        /// </summary>
-        /// <returns></returns>
-        private bool IsMachineAtErrorAddress()
-        {
-            //if (!_machine.Spectrum.Settings.AutoLoadTape)
-                //return false;
-
-            if (_cpu.RegPC == 64464) // 40620) // ERROR_ROM_ADDRESS)
-                return true;
-            else
-                return false;
         }
 
         #endregion
@@ -656,7 +592,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             _machine.Spectrum.OSD_TapePlayingAuto();
                         }
 
-                        _monitorTimeOut = 50;
+                        _monitorTimeOut = 500;
                     }
                 }
                 else
@@ -676,6 +612,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 _monitorTimeOut--;
 
+                if (_monitorTimeOut < 2)
+                {
+
+                }
+
                 if (_monitorTimeOut < 0)
                 {
                     Stop();
@@ -687,8 +628,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         #endregion
 
         #region State Serialization
-
-        private int _tempBlockCount;
 
         /// <summary>
         /// Bizhawk state serialization
