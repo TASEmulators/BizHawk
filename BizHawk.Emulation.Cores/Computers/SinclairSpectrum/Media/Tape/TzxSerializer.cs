@@ -268,7 +268,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             t.DataPeriods = new List<int>();
 
             int pauseLen = GetWordValue(data, _position);
-
+            if (pauseLen == 0)
+                pauseLen = 1000;
             int blockLen = GetWordValue(data, _position + 2);
 
             _position += 4;
@@ -276,7 +277,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             byte[] tmp = new byte[blockLen];
             tmp = data.Skip(_position).Take(blockLen).ToArray();
 
-            var t2 = DecodeDataBlock(t, tmp, DataBlockType.Standard, 1000);          
+            var t2 = DecodeDataBlock(t, tmp, DataBlockType.Standard, pauseLen);          
 
             // add the block
             _datacorder.DataBlocks.Add(t2);
