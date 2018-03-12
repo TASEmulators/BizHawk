@@ -484,28 +484,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                     }
 
                                     _monitorTimeOut = 2000;
-                                }
-                                /*
-                                if ((_machine.GetType() != typeof(ZX128) &&
-                                    _machine.GetType() != typeof(ZX128Plus2) &&
-                                    _machine.GetType() != typeof(ZX128Plus3)) ||
-                                    (_machine.GetType() == typeof(ZX128) ||
-                                    _machine.GetType() != typeof(ZX128Plus2) ||
-                                    _machine.GetType() != typeof(ZX128Plus3)) &&
-                                    _machine._ROMpaged == 1)
-                                {
-                                    _machine.Spectrum.OSD_TapeStoppedAuto();
-
-                                    if (_currentDataBlockIndex >= _dataBlocks.Count())
-                                        RTZ();
-                                    else
-                                    {
-                                        Stop();
-                                    }
-
-                                    _monitorTimeOut = 2000;
-                                }
-                                */
+                                }                                
                                 break;
                         }
 
@@ -514,8 +493,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                         _position = 0;
                         _currentDataBlockIndex++;
-
-                        
 
                         if (_currentDataBlockIndex >= _dataBlocks.Count())
                         {

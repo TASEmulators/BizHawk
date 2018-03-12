@@ -374,71 +374,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             
             WriteBus(addr, value);
         }
-        /*
-        public override void ReInitMemory()
-        {
-            if (Memory.ContainsKey(0))
-                Memory[0] = ROM0;
-            else
-                Memory.Add(0, ROM0);
-
-            if (Memory.ContainsKey(1))
-                Memory[1] = ROM1;
-            else
-                Memory.Add(1, ROM1);
-
-            if (Memory.ContainsKey(2))
-                Memory[2] = ROM2;
-            else
-                Memory.Add(2, ROM2);
-
-            if (Memory.ContainsKey(3))
-                Memory[3] = ROM3;
-            else
-                Memory.Add(3, ROM3);
-
-            if (Memory.ContainsKey(4))
-                Memory[4] = RAM0;
-            else
-                Memory.Add(4, RAM0);
-
-            if (Memory.ContainsKey(5))
-                Memory[5] = RAM1;
-            else
-                Memory.Add(5, RAM1);
-
-            if (Memory.ContainsKey(6))
-                Memory[6] = RAM2;
-            else
-                Memory.Add(6, RAM2);
-
-            if (Memory.ContainsKey(7))
-                Memory[7] = RAM3;
-            else
-                Memory.Add(7, RAM3);
-
-            if (Memory.ContainsKey(8))
-                Memory[8] = RAM4;
-            else
-                Memory.Add(8, RAM4);
-
-            if (Memory.ContainsKey(9))
-                Memory[9] = RAM5;
-            else
-                Memory.Add(9, RAM5);
-
-            if (Memory.ContainsKey(10))
-                Memory[10] = RAM6;
-            else
-                Memory.Add(10, RAM6);
-
-            if (Memory.ContainsKey(11))
-                Memory[11] = RAM7;
-            else
-                Memory.Add(11, RAM7);
-        }
-        */
-
+       
         /// <summary>
         /// ULA reads the memory at the specified address
         /// (No memory contention)

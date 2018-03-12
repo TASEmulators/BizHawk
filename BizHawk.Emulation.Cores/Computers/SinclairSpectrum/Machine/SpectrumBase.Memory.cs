@@ -102,21 +102,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
-        /// Helper function to refresh memory array (probably not the best way to do things)
-        /// </summary>
-        //public abstract void ReInitMemory();
-
-        /// <summary>
-        /// Detects whether the 48k rom is resident (or paged in) at 0x0001
+        /// Detects whether this is a 48k machine (or a 128k in 48k mode)
         /// </summary>
         /// <returns></returns>
         public virtual bool IsIn48kMode()
         {
-            var data = ReadBus(0x0001);
-            if (data == 0xaf)
+            if (this.GetType() == typeof(ZX48) ||
+                this.GetType() == typeof(ZX16) ||
+                PagingDisabled)
+            {
                 return true;
-
-            return false;
+            }
+            else
+                return false;
         }
         
     }

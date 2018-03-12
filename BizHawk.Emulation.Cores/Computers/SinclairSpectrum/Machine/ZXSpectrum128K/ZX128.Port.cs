@@ -48,16 +48,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // process tape INs
                 TapeDevice.ReadPort(port, ref result);
             }
+            else if ((port & 0xc002) == 0xc000)
+            {
+                // AY sound chip
+                result = (int)AYDevice.PortRead();
+            }
             else
             {
                 // devices other than the ULA will respond here
-                // (e.g. the AY sound chip in a 128k spectrum)
-
-                // AY register activate
-                if ((port & 0xc002) == 0xc000)
-                {
-                    result = (int)AYDevice.PortRead();
-                }
 
                 // Kempston Mouse (not implemented yet)
 
