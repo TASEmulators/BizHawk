@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// <summary>
     /// Represents the tape device (or build-in datacorder as it was called +2 and above)
     /// </summary>
-    public class DatacorderDevice
+    public class DatacorderDevice : IPortIODevice
     {
         #region Construction
 
@@ -623,6 +623,77 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     _machine.Spectrum.OSD_TapeStoppedAuto();
                 }
             }
+        }
+
+        #endregion
+
+        #region IPortIODevice
+
+        /// <summary>
+        /// Mask constants
+        /// </summary>
+        private const int TAPE_BIT = 0x40;
+        private const int EAR_BIT = 0x10;
+        private const int MIC_BIT = 0x08;
+
+        /// <summary>
+        /// Device responds to an IN instruction
+        /// </summary>
+        /// <param name="port"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        public bool ReadPort(ushort port, ref int result)
+        {
+            if (TapeIsPlaying)
+            {
+                if (GetEarBit(_cpu.TotalExecutedCycles))
+                {
+                    result &= ~(TAPE_BIT);      // reset is EAR ON
+                }
+                else
+                {
+                    result |= (TAPE_BIT);       // set is EAR Off
+                }
+            }
+            else
+            {
+                if (_machine.KeyboardDevice.IsIssue2Keyboard)
+                {
+                    if ((_machine.LASTULAOutByte & (EAR_BIT + MIC_BIT)) == 0)
+                    {
+                        result &= ~(TAPE_BIT);
+                    }
+                    else
+                    {
+                        result |= (TAPE_BIT);
+                    }
+                }
+                else
+                {
+                    if ((_machine.LASTULAOutByte & EAR_BIT) == 0)
+                    {
+                        result &= ~(TAPE_BIT);
+                    }
+                    else
+                    {
+                        result |= TAPE_BIT;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Device responds to an OUT instruction
+        /// </summary>
+        /// <param name="port"></param>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        public bool WritePort(ushort port, int result)
+        {
+            // not implemented yet
+            return false;
         }
 
         #endregion

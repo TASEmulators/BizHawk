@@ -16,7 +16,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadPort(ushort port)
         {
-            InputRead = true;
+            // process IO contention
+            ContendPortAddress(port);
 
             int result = 0xFF;
 
@@ -24,9 +25,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = (port & 0x0001) == 0;
 
-            ULADevice.Contend(port);
-
-            // Kempston Joystick
+            // Kempston joystick input takes priority over all other input
+            // if this is detected just return the kempston byte
             if ((port & 0xe0) == 0 || (port & 0x20) == 0)
             {
                 if (LocateUniqueJoystick(JoystickType.Kempston) != null)
@@ -36,82 +36,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             else if (lowBitReset)
             {
-                // Even I/O address so get input
-                // The high byte indicates which half-row of keys is being polled
-                /*
-                  IN:    Reads keys (bit 0 to bit 4 inclusive)
-                  0xfefe  SHIFT, Z, X, C, V            0xeffe  0, 9, 8, 7, 6
-                  0xfdfe  A, S, D, F, G                0xdffe  P, O, I, U, Y
-                  0xfbfe  Q, W, E, R, T                0xbffe  ENTER, L, K, J, H
-                  0xf7fe  1, 2, 3, 4, 5                0x7ffe  SPACE, SYM SHFT, M, N, B
-                */
-
-                if ((port & 0x8000) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[7];
-                }                    
-
-                if ((port & 0x4000) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[6];
-                }                    
-
-                if ((port & 0x2000) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[5];
-                }                    
-
-                if ((port & 0x1000) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[4];
-                }                    
-
-                if ((port & 0x800) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[3];
-                }                    
-
-                if ((port & 0x400) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[2];
-                }                    
-
-                if ((port & 0x200) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[1];
-                }                    
-
-                if ((port & 0x100) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[0];
-                }                    
-
-                result = result & 0x1f; //mask out lower 4 bits
-                result = result | 0xa0; //set bit 5 & 7 to 1
-
+                // Even I/O address so get input from keyboard
+                KeyboardDevice.ReadPort(port, ref result);
 
                 TapeDevice.MonitorRead();
 
-                if (TapeDevice.TapeIsPlaying)//.CurrentMode == TapeOperationMode.Load)
-                {
-                    if (!TapeDevice.GetEarBit(CPU.TotalExecutedCycles))
-                    {
-                        result &= ~(TAPE_BIT);      // reset is EAR ON
-                    }
-                    else
-                    {
-                        result |= (TAPE_BIT);       // set is EAR Off
-                    }
-                }
-                else if ((LastULAOutByte & 0x10) == 0)
-                {
-                    result &= ~(0x40);                   
-                }
-                else
-                {
-                    result |= 0x40;
-                }
+                // not a lagframe
+                InputRead = true;
 
+                // tape loading monitor cycle
+                TapeDevice.MonitorRead();
+
+                // process tape INs
+                TapeDevice.ReadPort(port, ref result);
             }
             else
             {
@@ -128,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     result = (int)AYDevice.PortRead();
                 }
 
-                // Kempston Mouse
+                // Kempston Mouse (not implemented yet)
 
 
                 else if ((port & 0xF002) == 0x2000) //Is bit 12 set and bits 13,14,15 and 1 reset?
@@ -165,6 +102,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WritePort(ushort port, byte value)
         {
+            // process IO contention
+            ContendPortAddress(port);
+
             // get a BitArray of the port
             BitArray portBits = new BitArray(BitConverter.GetBytes(port));
             // get a BitArray of the value byte
@@ -172,8 +112,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // Check whether the low bit is reset
             bool lowBitReset = !portBits[0]; // (port & 0x01) == 0;
-
-            ULADevice.Contend(port);
 
             // port 0x7ffd - hardware should only respond when bits 1 & 15 are reset and bit 14 is set
             if (port == 0x7ffd)
@@ -234,76 +172,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // bit 4 is the printer port strobe
                 PrinterPortStrobe = bits[4];
             }
-            /*
-            // port 0x7ffd - hardware should only respond when bits 1 & 15 are reset and bit 14 is set
-            if (!portBits[1] && !portBits[15] && portBits[14])
-            {
-                // paging (skip if paging has been disabled - paging can then only happen after a machine hard reset)
-                if (!PagingDisabled)
-                {
-                    // bit 0 specifies the paging mode
-                    SpecialPagingMode = bits[0];
-
-                    if (!SpecialPagingMode)
-                    {
-                        // we are in normal mode
-                        // portbit 4 is the LOW BIT of the ROM selection
-                        BitArray romHalfNibble = new BitArray(2);
-                        romHalfNibble[0] = portBits[4];
-
-                        // value bit 2 is the high bit of the ROM selection
-                        romHalfNibble[1] = bits[2];
-
-                        // value bit 1 is ignored in normal paging mode
-
-                        // set the ROMPage
-                        ROMPaged = ZXSpectrum.GetIntFromBitArray(romHalfNibble);
-
-
-                        
-
-                        // bit 3 controls shadow screen
-                        SHADOWPaged = bits[3];
-
-                        // Bit 5 set signifies that paging is disabled until next reboot
-                        PagingDisabled = bits[5];
-                    }
-                }
-            }
-
-            // port 0x1ffd - special paging mode
-            // hardware should only respond when bits 1, 13, 14 & 15 are reset and bit 12 is set
-            if (!portBits[1] && portBits[12] && !portBits[13] && !portBits[14] && !portBits[15])
-            {
-                if (!PagingDisabled && SpecialPagingMode)
-                {
-                    // process special paging
-                    // this is decided based on combinations of bits 1 & 2
-                    // Config 0 = Bit1-0 Bit2-0
-                    // Config 1 = Bit1-1 Bit2-0
-                    // Config 2 = Bit1-0 Bit2-1
-                    // Config 3 = Bit1-1 Bit2-1
-                    BitArray confHalfNibble = new BitArray(2);
-                    confHalfNibble[0] = bits[1];
-                    confHalfNibble[1] = bits[2];
-
-                    // set special paging configuration
-                    PagingConfiguration = ZXSpectrum.GetIntFromBitArray(confHalfNibble);
-
-                    // last value should be saved at 0x5b67 (23399) - not sure if this is actually needed
-                    WriteBus(0x5b67, value);
-                }
-
-                // bit 3 controls the disk motor (1=on, 0=off)
-                DiskMotorState = bits[3];
-
-                // bit 4 is the printer port strobe
-                PrinterPortStrobe = bits[4];
-            }
-
-            */
-
-
+            
             // Only even addresses address the ULA
             if (lowBitReset)
             {
@@ -346,84 +215,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         AYDevice.PortWrite(value);
                         CPU.TotalExecutedCycles += 3;
                     }
-
-                    /*
-
-                    else
-                    {
-                        if ((port & 0xC002) == 0x4000) //Are bits 1 and 15 reset and bit 14 set?
-                        {
-                            // memory paging activate
-                            if (PagingDisabled)
-                                return;
-
-                            // bit 5 handles paging disable (48k mode, persistent until next reboot)
-                            if ((value & 0x20) != 0)
-                            {
-                                PagingDisabled = true;
-                            }
-
-                            // shadow screen
-                            if ((value & 0x08) != 0)
-                            {
-                                SHADOWPaged = true;
-                            }
-                            else
-                            {
-                                SHADOWPaged = false;
-                            }
-                        }
-                        else
-                        {
-                            //Extra Memory Paging feature activate
-                            if ((port & 0xF002) == 0x1000) //Is bit 12 set and bits 13,14,15 and 1 reset?
-                            {
-                                if (PagingDisabled)
-                                    return;
-
-                                // set disk motor state
-                                //todo
-
-                                if ((value & 0x08) != 0)
-                                {
-                                    //diskDriveState |= (1 << 4);
-                                }
-                                else
-                                {
-                                    //diskDriveState &= ~(1 << 4);
-                                }
-
-                                if ((value & 0x1) != 0)
-                                {
-                                    // activate special paging mode
-                                    SpecialPagingMode = true;
-                                    PagingConfiguration = (value & 0x6 >> 1);
-                                }
-                                else
-                                {
-                                    // normal paging mode
-                                    SpecialPagingMode = false;
-                                }
-                            }
-                            else
-                            {
-                                // disk write port
-                                if ((port & 0xF002) == 0x3000) //Is bit 12 set and bits 13,14,15 and 1 reset?
-                                {
-                                    //udpDrive.DiskWriteByte((byte)(val & 0xff));
-                                }
-                            }
-                        }
-                    }
-                    */
                 }
             }
 
             LastULAOutByte = value;
-
-            
-
-            
         }
 
         /// <summary>
@@ -444,6 +239,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 return rp;
             }
             set { ROMPaged = value; }
+        }
+
+        /// <summary>
+        /// Override port contention
+        /// +3/2a does not have the same ULA IO contention
+        /// </summary>
+        /// <param name="addr"></param>
+        public override void ContendPortAddress(ushort addr)
+        {
+            CPU.TotalExecutedCycles += 4;
         }
     }
 }

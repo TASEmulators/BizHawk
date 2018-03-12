@@ -16,12 +16,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadPort(ushort port)
         {
-            InputRead = true;
-
-            // It takes four T states for the Z80 to read a value from an I/O port, or write a value to a port
-            // (not including added ULA contention)
-            // The Bizhawk Z80A implementation appears to not consume any T-States for this operation
-            PortContention(4);
+            // process IO contention
+            ContendPortAddress(port);
 
             int result = 0xFF;
 
@@ -29,10 +25,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = (port & 0x0001) == 0;
 
-            ULADevice.Contend(port);
-            //CPU.TotalExecutedCycles++;
-
-            // Kempston Joystick
+            // Kempston joystick input takes priority over all other input
+            // if this is detected just return the kempston byte
             if ((port & 0xe0) == 0 || (port & 0x20) == 0)
             {
                 if (LocateUniqueJoystick(JoystickType.Kempston) != null)
@@ -42,104 +36,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             else if (lowBitReset)
             {
-                // Even I/O address so get input
-                // The high byte indicates which half-row of keys is being polled
-                /*
-                  IN:    Reads keys (bit 0 to bit 4 inclusive)
-                  0xfefe  SHIFT, Z, X, C, V            0xeffe  0, 9, 8, 7, 6
-                  0xfdfe  A, S, D, F, G                0xdffe  P, O, I, U, Y
-                  0xfbfe  Q, W, E, R, T                0xbffe  ENTER, L, K, J, H
-                  0xf7fe  1, 2, 3, 4, 5                0x7ffe  SPACE, SYM SHFT, M, N, B
-                */
+                // Even I/O address so get input from keyboard
+                KeyboardDevice.ReadPort(port, ref result);
 
-                if ((port & 0x8000) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[7];
-                }
+                // not a lagframe
+                InputRead = true;
 
-                if ((port & 0x4000) == 0)
-                { 
-                    result &= KeyboardDevice.KeyLine[6];
-                }
-
-                if ((port & 0x2000) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[5];
-                }                    
-
-                if ((port & 0x1000) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[4];
-                }
-                    
-                if ((port & 0x800) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[3];
-                }                    
-
-                if ((port & 0x400) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[2];
-                }                    
-
-                if ((port & 0x200) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[1];
-                }                    
-
-                if ((port & 0x100) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[0];
-                }
-                    
-
-                result = result & 0x1f; //mask out lower 4 bits
-                result = result | 0xa0; //set bit 5 & 7 to 1
-
+                // tape loading monitor cycle
                 TapeDevice.MonitorRead();
 
-                if (TapeDevice.TapeIsPlaying)//.CurrentMode == TapeOperationMode.Load)
-                {
-                    if (!TapeDevice.GetEarBit(CPU.TotalExecutedCycles))
-                    {
-                        result &= ~(TAPE_BIT);      // reset is EAR ON
-                    }
-                    else
-                    {
-                        result |= (TAPE_BIT);       // set is EAR Off
-                    }
-                }
-                else
-                {
-                    if (KeyboardDevice.IsIssue2Keyboard)
-                    {
-                        if ((LastULAOutByte & (EAR_BIT + MIC_BIT)) == 0)
-                        {
-                            result &= ~(TAPE_BIT);
-                        }
-                        else
-                        {
-                            result |= TAPE_BIT;
-                        }
-                    }
-                    else
-                    {
-                        if ((LastULAOutByte & EAR_BIT) == 0)
-                        {
-                            result &= ~(TAPE_BIT);
-                        }
-                        else
-                        {
-                            result |= TAPE_BIT;
-                        }
-                    }
-                }
-
+                // process tape INs
+                TapeDevice.ReadPort(port, ref result);
             }
             else
             {
                 // devices other than the ULA will respond here
-                // (e.g. the AY sound chip in a 128k spectrum
+                // (e.g. the AY sound chip in a 128k spectrum)
 
                 // AY register activate
                 if ((port & 0xc002) == 0xc000)
@@ -147,11 +59,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     result = (int)AYDevice.PortRead();
                 }
 
-                // Kempston Mouse
+                // Kempston Mouse (not implemented yet)
 
 
-                // if unused port the floating memory bus should be returned
-
+                // If this is an unused port the floating memory bus should be returned
                 // Floating bus is read on the previous cycle
                 int _tStates = CurrentFrameCycle - 1;
 
@@ -183,6 +94,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WritePort(ushort port, byte value)
         {
+            // process IO contention
+            ContendPortAddress(port);
+
             // get a BitArray of the port
             BitArray portBits = new BitArray(BitConverter.GetBytes(port));
             // get a BitArray of the value byte
@@ -224,8 +138,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = !portBits[0]; // (port & 0x01) == 0;
-
-            ULADevice.Contend(port);
 
             // Only even addresses address the ULA
             if (lowBitReset)

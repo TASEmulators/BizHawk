@@ -256,7 +256,8 @@
     <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
     <Compile Include="Computers\Commodore64\SaveState.cs" />
     <Compile Include="Computers\Commodore64\User\UserPortDevice.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Hardware\Input\IJoystick.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IJoystick.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IPortIODevice.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\CursorJoystick.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\SinclairJoystick2.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\SinclairJoystick1.cs" />
@@ -264,9 +265,9 @@
     <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\AY38912.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\Buzzer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Datacorder\DatacorderDevice.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Hardware\Input\IKeyboard.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IKeyboard.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\KempstonJoystick.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\IBeeperDevice.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IBeeperDevice.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ULABase.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.Memory.cs" />

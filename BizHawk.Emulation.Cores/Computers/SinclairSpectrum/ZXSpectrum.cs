@@ -86,8 +86,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             
             _cpu.MemoryCallbacks = MemoryCallbacks;
 
-            HardReset = _machine.HardReset;
-            SoftReset = _machine.SoftReset;
+            //HardReset = _machine.HardReset;
+            //SoftReset = _machine.SoftReset;
 
             _cpu.FetchMemory = _machine.ReadMemory;
             _cpu.ReadMemory = _machine.ReadMemory;
@@ -109,13 +109,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             
 
-            HardReset();
+            //HardReset();
 
 			SetupMemoryDomains();
         }
                 
-        public Action HardReset;
-        public Action SoftReset;
+        //public Action HardReset;
+        //public Action SoftReset;
 
         private readonly Z80A _cpu;
         private readonly TraceBuffer _tracer;

@@ -16,6 +16,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// The last OUT data that was sent to the ULA
         /// </summary>
         protected byte LastULAOutByte;
+        public byte LASTULAOutByte
+        {
+            get { return LastULAOutByte; }
+            set { LastULAOutByte = value; }
+        }
+
 
         /// <summary>
         /// Reads a byte of data from a specified port address
@@ -42,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         /// <summary>
         /// Simulates IO port contention based on the supplied address
-        /// This method is for 48k machines and should be overridden for other models
+        /// This method is for 48k and 128k/+2 machines only and should be overridden for other models
         /// </summary>
         /// <param name="addr"></param>
         public virtual void ContendPortAddress(ushort addr)

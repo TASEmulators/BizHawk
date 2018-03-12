@@ -16,7 +16,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadPort(ushort port)
         {
-            InputRead = true;
+            // process IO contention
+            ContendPortAddress(port);
 
             int result = 0xFF;
 
@@ -24,9 +25,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = (port & 0x0001) == 0;
 
-            ULADevice.Contend(port);
-
-            // Kempston Joystick
+            // Kempston joystick input takes priority over all other input
+            // if this is detected just return the kempston byte
             if ((port & 0xe0) == 0 || (port & 0x20) == 0)
             {
                 if (LocateUniqueJoystick(JoystickType.Kempston) != null)
@@ -36,81 +36,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             else if (lowBitReset)
             {
-                // Even I/O address so get input
-                // The high byte indicates which half-row of keys is being polled
-                /*
-                  IN:    Reads keys (bit 0 to bit 4 inclusive)
-                  0xfefe  SHIFT, Z, X, C, V            0xeffe  0, 9, 8, 7, 6
-                  0xfdfe  A, S, D, F, G                0xdffe  P, O, I, U, Y
-                  0xfbfe  Q, W, E, R, T                0xbffe  ENTER, L, K, J, H
-                  0xf7fe  1, 2, 3, 4, 5                0x7ffe  SPACE, SYM SHFT, M, N, B
-                */
-
-                if ((port & 0x8000) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[7];
-                }                    
-
-                if ((port & 0x4000) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[6];
-                }                    
-
-                if ((port & 0x2000) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[5];
-                }                    
-
-                if ((port & 0x1000) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[4];
-                }                    
-
-                if ((port & 0x800) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[3];
-                }                    
-
-                if ((port & 0x400) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[2];
-                }                    
-
-                if ((port & 0x200) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[1];
-                }                    
-
-                if ((port & 0x100) == 0)
-                {
-                    result &= KeyboardDevice.KeyLine[0];
-                }                    
-
-                result = result & 0x1f; //mask out lower 4 bits
-                result = result | 0xa0; //set bit 5 & 7 to 1
+                // Even I/O address so get input from keyboard
+                KeyboardDevice.ReadPort(port, ref result);
 
                 TapeDevice.MonitorRead();
 
-                if (TapeDevice.TapeIsPlaying)//.CurrentMode == TapeOperationMode.Load)
-                {
-                    if (!TapeDevice.GetEarBit(CPU.TotalExecutedCycles))
-                    {
-                        result &= ~(TAPE_BIT);      // reset is EAR ON
-                    }
-                    else
-                    {
-                        result |= (TAPE_BIT);       // set is EAR Off
-                    }
-                }
-                else if ((LastULAOutByte & 0x10) == 0)
-                {
-                    result &= ~(0x40);                   
-                }
-                else
-                {
-                    result |= 0x40;
-                }
+                // not a lagframe
+                InputRead = true;
 
+                // tape loading monitor cycle
+                TapeDevice.MonitorRead();
+
+                // process tape INs
+                TapeDevice.ReadPort(port, ref result);
             }
             else
             {
@@ -444,6 +382,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 return rp;
             }
             set { ROMPaged = value; }
+        }
+
+        /// <summary>
+        /// Override port contention
+        /// +3/2a does not have the same ULA IO contention
+        /// </summary>
+        /// <param name="addr"></param>
+        public override void ContendPortAddress(ushort addr)
+        {
+            CPU.TotalExecutedCycles += 4;
         }
     }
 }
