@@ -75,12 +75,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         switch (PagingConfiguration)
                         {
                             case 0:
-                                result = Memory[4][addr % 0x4000];
+                                result = RAM0[addr % 0x4000];
                                 break;
                             case 1:
                             case 2:
                             case 3:
-                                result = Memory[8][addr % 0x4000];
+                                result = RAM4[addr % 0x4000];
                                 break;
                         }
                         break;
@@ -88,14 +88,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         switch (PagingConfiguration)
                         {
                             case 0:
-                                result = Memory[5][addr % 0x4000];
+                                result = RAM1[addr % 0x4000];
                                 break;
                             case 1:
-                            case 2:                            
-                                result = Memory[9][addr % 0x4000];
+                            case 2:
+                                result = RAM5[addr % 0x4000];
                                 break;
                             case 3:
-                                result = Memory[11][addr % 0x4000];
+                                result = RAM7[addr % 0x4000];
                                 break;
                         }
                         break;
@@ -103,12 +103,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         switch (PagingConfiguration)
                         {
                             case 0:
-                                result = Memory[6][addr % 0x4000];
+                                result = RAM0[addr % 0x4000];
                                 break;
                             case 1:
                             case 2:
                             case 3:
-                                result = Memory[10][addr % 0x4000];
+                                result = RAM6[addr % 0x4000];
                                 break;
                         }
                         break;
@@ -118,10 +118,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             case 0:
                             case 2:
                             case 3:
-                                result = Memory[7][addr % 0x4000];
+                                result = RAM3[addr % 0x4000];
                                 break;
                             case 1:
-                                result = Memory[11][addr % 0x4000];
+                                result = RAM7[addr % 0x4000];
                                 break;
                         }
                         break;
@@ -133,17 +133,31 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 {
                     // ROM 0x000
                     case 0:
-                        result = Memory[_ROMpaged][addr % 0x4000];
+                        switch (_ROMpaged)
+                        {
+                            case 0:
+                                result = ROM0[addr % 0x4000];
+                                break;
+                            case 1:
+                                result = ROM1[addr % 0x4000];
+                                break;
+                            case 2:
+                                result = ROM2[addr % 0x4000];
+                                break;
+                            case 3:
+                                result = ROM3[addr % 0x4000];
+                                break;
+                        }
                         break;
 
                     // RAM 0x4000 (RAM5 - Bank5 always)
                     case 1:
-                        result = Memory[9][addr % 0x4000];
+                        result = RAM5[addr % 0x4000];
                         break;
 
                     // RAM 0x8000 (RAM2 - Bank2)
                     case 2:
-                        result = Memory[6][addr % 0x4000];
+                        result = RAM2[addr % 0x4000];
                         break;
 
                     // RAM 0xc000 (any ram bank 0 - 7 may be paged in - default bank0)
@@ -151,28 +165,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         switch (RAMPaged)
                         {
                             case 0:
-                                result = Memory[4][addr % 0x4000];
+                                result = RAM0[addr % 0x4000];
                                 break;
                             case 1:
-                                result = Memory[5][addr % 0x4000];
+                                result = RAM1[addr % 0x4000];
                                 break;
                             case 2:
-                                result = Memory[6][addr % 0x4000];
+                                result = RAM2[addr % 0x4000];
                                 break;
                             case 3:
-                                result = Memory[7][addr % 0x4000];
+                                result = RAM3[addr % 0x4000];
                                 break;
                             case 4:
-                                result = Memory[8][addr % 0x4000];
+                                result = RAM4[addr % 0x4000];
                                 break;
                             case 5:
-                                result = Memory[9][addr % 0x4000];
+                                result = RAM5[addr % 0x4000];
                                 break;
                             case 6:
-                                result = Memory[10][addr % 0x4000];
+                                result = RAM6[addr % 0x4000];
                                 break;
                             case 7:
-                                result = Memory[11][addr % 0x4000];
+                                result = RAM7[addr % 0x4000];
                                 break;
                         }
                         break;
@@ -203,12 +217,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         switch (PagingConfiguration)
                         {
                             case 0:
-                                Memory[4][addr % 0x4000] = value;
+                                RAM0[addr % 0x4000] = value;
                                 break;
                             case 1:
                             case 2:
                             case 3:
-                                Memory[8][addr % 0x4000] = value;
+                                RAM4[addr % 0x4000] = value;
                                 break;
                         }
                         break;
@@ -216,14 +230,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         switch (PagingConfiguration)
                         {
                             case 0:
-                                Memory[5][addr % 0x4000] = value;
+                                RAM1[addr % 0x4000] = value;
                                 break;
                             case 1:
                             case 2:
-                                Memory[9][addr % 0x4000] = value;
+                                RAM5[addr % 0x4000] = value;
                                 break;
                             case 3:
-                               Memory[11][addr % 0x4000] = value;
+                                RAM7[addr % 0x4000] = value;
                                 break;
                         }
                         break;
@@ -231,12 +245,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         switch (PagingConfiguration)
                         {
                             case 0:
-                                Memory[6][addr % 0x4000] = value;
+                                RAM2[addr % 0x4000] = value;
                                 break;
                             case 1:
                             case 2:
                             case 3:
-                                Memory[10][addr % 0x4000] = value;
+                                RAM6[addr % 0x4000] = value;
                                 break;
                         }
                         break;
@@ -246,10 +260,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             case 0:
                             case 2:
                             case 3:
-                                Memory[7][addr % 0x4000] = value;
+                                RAM3[addr % 0x4000] = value;
                                 break;
                             case 1:
-                                Memory[11][addr % 0x4000] = value;
+                                RAM7[addr % 0x4000] = value;
                                 break;
                         }
                         break;
@@ -261,17 +275,34 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 {
                     // ROM 0x000
                     case 0:
-                        Memory[_ROMpaged][addr % 0x4000] = value;
+                        /*
+                        switch (_ROMpaged)
+                        {
+                            // cannot write to ROMs
+                            case 0:
+                                ROM0[addr % 0x4000] = value;
+                                break;
+                            case 1:
+                                ROM1[addr % 0x4000] = value;
+                                break;
+                            case 2:
+                                ROM2[addr % 0x4000] = value;
+                                break;
+                            case 3:
+                                ROM3[addr % 0x4000] = value;
+                                break;
+                        }
+                        */
                         break;
 
                     // RAM 0x4000 (RAM5 - Bank5 only)
                     case 1:
-                        Memory[9][addr % 0x4000] = value;
+                        RAM5[addr % 0x4000] = value;
                         break;
 
                     // RAM 0x8000 (RAM2 - Bank2)
                     case 2:
-                        Memory[6][addr % 0x4000] = value;
+                        RAM2[addr % 0x4000] = value;
                         break;
 
                     // RAM 0xc000 (any ram bank 0 - 7 may be paged in - default bank0)
@@ -279,28 +310,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         switch (RAMPaged)
                         {
                             case 0:
-                                Memory[4][addr % 0x4000] = value;
+                                RAM0[addr % 0x4000] = value;
                                 break;
                             case 1:
-                                Memory[5][addr % 0x4000] = value;
+                                RAM1[addr % 0x4000] = value;
                                 break;
                             case 2:
-                                Memory[6][addr % 0x4000] = value;
+                                RAM2[addr % 0x4000] = value;
                                 break;
                             case 3:
-                                Memory[7][addr % 0x4000] = value;
+                                RAM3[addr % 0x4000] = value;
                                 break;
                             case 4:
-                                Memory[8][addr % 0x4000] = value;
+                                RAM4[addr % 0x4000] = value;
                                 break;
                             case 5:
-                                Memory[9][addr % 0x4000] = value;
+                                RAM5[addr % 0x4000] = value;
                                 break;
                             case 6:
-                                Memory[10][addr % 0x4000] = value;
+                                RAM6[addr % 0x4000] = value;
                                 break;
                             case 7:
-                                Memory[11][addr % 0x4000] = value;
+                                RAM7[addr % 0x4000] = value;
                                 break;
                         }
                         break;
@@ -343,7 +374,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             
             WriteBus(addr, value);
         }
-
+        /*
         public override void ReInitMemory()
         {
             if (Memory.ContainsKey(0))
@@ -406,6 +437,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             else
                 Memory.Add(11, RAM7);
         }
+        */
 
         /// <summary>
         /// ULA reads the memory at the specified address

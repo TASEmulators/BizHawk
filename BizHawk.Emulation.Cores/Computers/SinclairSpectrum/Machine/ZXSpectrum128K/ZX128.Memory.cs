@@ -49,24 +49,25 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             int divisor = addr / 0x4000;
             byte result = 0xff;
+
             switch (divisor)
             {
                 // ROM 0x000
                 case 0:
                     if (ROMPaged == 0)
-                        result = Memory[0][addr % 0x4000];
+                        result = ROM0[addr % 0x4000];
                     else
-                        result = Memory[1][addr % 0x4000];
+                        result = ROM1[addr % 0x4000];
                     break;
 
-                // RAM 0x4000 (RAM5 - Bank5 or shadow bank RAM7)
+                // RAM 0x4000 (RAM5 - Bank5)
                 case 1:
-                    result = Memory[7][addr % 0x4000];
+                    result = RAM5[addr % 0x4000];
                     break;
 
                 // RAM 0x8000 (RAM2 - Bank2)
                 case 2:
-                    result = Memory[4][addr % 0x4000];
+                    result = RAM2[addr % 0x4000];
                     break;
 
                 // RAM 0xc000 (any ram bank 0 - 7 may be paged in - default bank0)
@@ -74,28 +75,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     switch (RAMPaged)
                     {
                         case 0:
-                            result = Memory[2][addr % 0x4000];
+                            result = RAM0[addr % 0x4000];
                             break;
                         case 1:
-                            result = Memory[3][addr % 0x4000];
+                            result = RAM1[addr % 0x4000];
                             break;
                         case 2:
-                            result = Memory[4][addr % 0x4000];
+                            result = RAM2[addr % 0x4000];
                             break;
                         case 3:
-                            result = Memory[5][addr % 0x4000];
+                            result = RAM3[addr % 0x4000];
                             break;
                         case 4:
-                            result = Memory[6][addr % 0x4000];
+                            result = RAM4[addr % 0x4000];
                             break;
                         case 5:
-                            result = Memory[7][addr % 0x4000];
+                            result = RAM5[addr % 0x4000];
                             break;
                         case 6:
-                            result = Memory[8][addr % 0x4000];
+                            result = RAM6[addr % 0x4000];
                             break;
                         case 7:
-                            result = Memory[9][addr % 0x4000];
+                            result = RAM7[addr % 0x4000];
                             break;
                     }
                     break;
@@ -115,24 +116,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public override void WriteBus(ushort addr, byte value)
         {
             int divisor = addr / 0x4000;
+
             switch (divisor)
             {
                 // ROM 0x000
                 case 0:
+                    // cannot write to ROMs
+                    /*
                     if (ROMPaged == 0)
-                        Memory[0][addr % 0x4000] = value;
+                        ROM0[addr % 0x4000] = value;
                     else
-                        Memory[1][addr % 0x4000] = value;
+                        ROM1[addr % 0x4000] = value;
+                        */
                     break;
 
                 // RAM 0x4000 (RAM5 - Bank5 or shadow bank RAM7)
                 case 1:
-                    Memory[7][addr % 0x4000] = value;
+                    RAM5[addr % 0x4000] = value;
                     break;
 
                 // RAM 0x8000 (RAM2 - Bank2)
                 case 2:
-                    Memory[4][addr % 0x4000] = value;
+                    RAM2[addr % 0x4000] = value;
                     break;
 
                 // RAM 0xc000 (any ram bank 0 - 7 may be paged in - default bank0)
@@ -140,28 +145,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     switch (RAMPaged)
                     {
                         case 0:
-                            Memory[2][addr % 0x4000] = value;
+                            RAM0[addr % 0x4000] = value;
                             break;
                         case 1:
-                            Memory[3][addr % 0x4000] = value;
+                            RAM1[addr % 0x4000] = value;
                             break;
                         case 2:
-                            Memory[4][addr % 0x4000] = value;
+                            RAM2[addr % 0x4000] = value;
                             break;
                         case 3:
-                            Memory[5][addr % 0x4000] = value;
+                            RAM3[addr % 0x4000] = value;
                             break;
                         case 4:
-                            Memory[6][addr % 0x4000] = value;
+                            RAM4[addr % 0x4000] = value;
                             break;
                         case 5:
-                            Memory[7][addr % 0x4000] = value;
+                            RAM5[addr % 0x4000] = value;
                             break;
                         case 6:
-                            Memory[8][addr % 0x4000] = value;
+                            RAM6[addr % 0x4000] = value;
                             break;
                         case 7:
-                            Memory[9][addr % 0x4000] = value;
+                            RAM7[addr % 0x4000] = value;
                             break;
                     }
                     break;
@@ -203,7 +208,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             WriteBus(addr, value);
         }
-
+        /*
         public override void ReInitMemory()
         {
             if (Memory.ContainsKey(0))
@@ -256,6 +261,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             else
                 Memory.Add(9, RAM7);
         }
+        */
 
         /// <summary>
         /// ULA reads the memory at the specified address

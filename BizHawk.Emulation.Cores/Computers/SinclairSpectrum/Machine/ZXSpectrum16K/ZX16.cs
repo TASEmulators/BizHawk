@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             WriteBus(addr, value);
         }
-
+        /*
         public override void ReInitMemory()
         {
             if (Memory.ContainsKey(0))
@@ -132,6 +132,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             else
                 Memory.Add(1, RAM1);            
         }
+        */
 
         /// <summary>
         /// Sets up the ROM

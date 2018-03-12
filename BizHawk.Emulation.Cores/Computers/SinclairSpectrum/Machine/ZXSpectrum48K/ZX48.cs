@@ -21,8 +21,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             Spectrum = spectrum;
             CPU = cpu;
 
-            ReInitMemory();
-
             ULADevice = new ULA48(this);
 
             BuzzerDevice = new Buzzer(this);

@@ -42,11 +42,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public override byte ReadBus(ushort addr)
         {
             int divisor = addr / 0x4000;
+            var index = addr % 0x4000;
+
             // paging logic goes here
 
-            var bank = Memory[divisor];
-            var index = addr % 0x4000;
-            return bank[index];
+            switch (divisor)
+            {
+                case 0: return ROM0[index];
+                case 1: return RAM0[index];
+                case 2: return RAM1[index];
+                case 3: return RAM2[index];
+                default: return 0;
+            }
         }        
 
         /// <summary>
@@ -58,11 +65,25 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public override void WriteBus(ushort addr, byte value)
         {
             int divisor = addr / 0x4000;
+            var index = addr % 0x4000;
+
             // paging logic goes here
 
-            var bank = Memory[divisor];
-            var index = addr % 0x4000;
-            bank[index] = value;
+            switch (divisor)
+            {
+                case 0:
+                    // cannot write to ROM
+                    break;
+                case 1:
+                    RAM0[index] = value;
+                    break;
+                case 2:
+                    RAM1[index] = value;
+                    break;
+                case 3:
+                    RAM2[index] = value;
+                    break;
+            }
             
             // update ULA screen buffer if necessary
             if ((addr & 49152) == 16384 && _render)
@@ -100,6 +121,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             WriteBus(addr, value);
         }
 
+        /*
         public override void ReInitMemory()
         {
             if (Memory.ContainsKey(0))
@@ -127,6 +149,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             else
                 Memory.Add(4, RAM3);
         }
+        */
 
         /// <summary>
         /// Sets up the ROM

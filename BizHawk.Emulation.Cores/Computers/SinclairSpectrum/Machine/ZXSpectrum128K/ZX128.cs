@@ -26,9 +26,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             RAMPaged = 0;
             PagingDisabled = false;
 
-            // init addressable memory from ROM and RAM banks
-            ReInitMemory();
-
             ULADevice = new ULA128(this);
 
             BuzzerDevice = new Buzzer(this);

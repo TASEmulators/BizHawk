@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             contentionStartPeriod = 14335; // + LateTiming;
             contentionEndPeriod = contentionStartPeriod + (ScreenHeight * TstatesPerScanline);
-            screen = _machine.Memory[1];
+            screen = _machine.RAM0;
             screenByteCtr = DisplayStart;
             ULAByteCtr = 0;
             actualULAStart = 14340 - 24 - (TstatesPerScanline * BorderTopHeight);// + LateTiming;

@@ -194,9 +194,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 ULADevice.UpdateScreenBuffer(ULADevice.FrameLength);
             
             if (_renderSound)
-                BuzzerDevice.EndFrame();            
-
-            //TapeDevice.CPUFrameCompleted();
+                BuzzerDevice.EndFrame();         
 
             FrameCount++;
 
@@ -276,7 +274,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             ser.EndSection();
 
-            ReInitMemory();
+            //ReInitMemory();
         }
     }
 }

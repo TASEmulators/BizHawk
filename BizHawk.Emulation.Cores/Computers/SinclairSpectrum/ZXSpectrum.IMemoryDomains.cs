@@ -45,8 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         private void SyncAllByteArrayDomains()
-        {          
-              
+        {       
             SyncByteArrayDomain("ROM0", _machine.ROM0);
             SyncByteArrayDomain("ROM1", _machine.ROM1);
             SyncByteArrayDomain("ROM2", _machine.ROM2);
@@ -58,8 +57,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             SyncByteArrayDomain("RAM4", _machine.RAM4);
             SyncByteArrayDomain("RAM5", _machine.RAM5);
             SyncByteArrayDomain("RAM6", _machine.RAM6);
-            SyncByteArrayDomain("RAM7", _machine.RAM7);   
-                  
+            SyncByteArrayDomain("RAM7", _machine.RAM7);  
         }
 
         private void SyncByteArrayDomain(string name, byte[] data)
