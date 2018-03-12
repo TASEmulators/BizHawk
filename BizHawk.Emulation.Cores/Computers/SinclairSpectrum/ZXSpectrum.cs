@@ -18,7 +18,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     [ServiceNotApplicable(typeof(IDriveLight))]
     public partial class ZXSpectrum : IDebuggable, IInputPollable, IStatable, IRegionable
     {
-        [CoreConstructor("ZXSpectrum")]
         public ZXSpectrum(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, object settings, object syncSettings)
         {            
             var ser = new BasicServiceProvider(this);

@@ -32,7 +32,8 @@ namespace BizHawk.Emulation.Common
 
 			new SystemInfo { SystemId = "C64", FullName = "Commodore 64" },
 			new SystemInfo { SystemId = "AppleII", FullName = "Apple II" },
-			new SystemInfo { SystemId = "INTV", FullName = "Intellivision" }
+			new SystemInfo { SystemId = "INTV", FullName = "Intellivision" },
+            new SystemInfo { SystemId = "ZXSpectrum", FullName = "Sinclair ZX Spectrum" }
 		};
 
 		public SystemInfo this[string systemId]

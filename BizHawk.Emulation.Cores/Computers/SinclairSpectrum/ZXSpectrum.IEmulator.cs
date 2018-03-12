@@ -41,7 +41,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
         }
 
-        public int Frame => _machine.FrameCount;
+        public int Frame
+        {
+            get
+            {
+                if (_machine == null)
+                    return 0;
+                else
+                    return _machine.FrameCount;
+            }
+        }
 
         public string SystemId => "ZXSpectrum";
 
