@@ -1492,14 +1492,15 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Up) // Shift + Up
 			{
-				GoToPreviousFrame();
+				//GoToPreviousFrame();
 			}
 			else if (!e.Control && e.Shift && !e.Alt && e.KeyCode == Keys.Down) // Shift + Down
 			{
-				GoToNextFrame();
+				//GoToNextFrame();
 			}
 
-			if (FloatEditingMode && e.KeyCode != Keys.Right
+			if (FloatEditingMode
+				&& e.KeyCode != Keys.Right
 				&& e.KeyCode != Keys.Left
 				&& e.KeyCode != Keys.Up
 				&& e.KeyCode != Keys.Down)
