@@ -159,8 +159,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				
 				if (c.IsPressed(Definition.BoolButtons[0])) retval &= 0x3F;
 				
-				int x = (int)c.GetFloat(Definition.FloatControls[0]);
-				int y = (int)c.GetFloat(Definition.FloatControls[1]);
+				float x = c.GetFloat(Definition.FloatControls[0]);
+				float y = c.GetFloat(Definition.FloatControls[1]);
 
 				float angle;
 				
@@ -223,7 +223,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		// x and y are both assumed to be in [-127, 127]
 		// x increases from left to right
 		// y increases from top to bottom
-		private static float CalcDirection(int x, int y)
+		private static float CalcDirection(float x, float y)
 		{
 			y = -y; // vflip to match the arrangement of FloatControllerButtons
 
@@ -243,10 +243,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public float UpdateWheel(IController c)
 		{
-			int x = (int)c.GetFloat(Definition.FloatControls[0]);
-			int y = (int)c.GetFloat(Definition.FloatControls[1]);
-			return CalcDirection(x, y);
-			
+			float x = c.GetFloat(Definition.FloatControls[0]);
+			float y = c.GetFloat(Definition.FloatControls[1]);
+			return CalcDirection(x, y);		
 		}
 	}
 
@@ -281,8 +280,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				if (c.IsPressed(Definition.BoolButtons[3])) retval &= 0xF7;
 				if (c.IsPressed(Definition.BoolButtons[4])) retval &= 0x3F;
 
-				int x = (int)c.GetFloat(Definition.FloatControls[0]);
-				int y = (int)c.GetFloat(Definition.FloatControls[1]);
+				float x = c.GetFloat(Definition.FloatControls[0]);
+				float y = c.GetFloat(Definition.FloatControls[1]);
 
 				float angle;
 
@@ -368,7 +367,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		// x and y are both assumed to be in [-127, 127]
 		// x increases from left to right
 		// y increases from top to bottom
-		private static float CalcDirection(int x, int y)
+		private static float CalcDirection(float x, float y)
 		{
 			y = -y; // vflip to match the arrangement of FloatControllerButtons
 
@@ -388,7 +387,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public float UpdateWheel(IController c)
 		{
-			return 0;
+			float x = c.GetFloat(Definition.FloatControls[0]);
+			float y = c.GetFloat(Definition.FloatControls[1]);
+			return CalcDirection(x, y);
 		}
 	}
 }
