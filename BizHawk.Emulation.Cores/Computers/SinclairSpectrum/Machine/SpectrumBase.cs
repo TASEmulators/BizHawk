@@ -42,7 +42,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Device representing the AY-3-8912 chip found in the 128k and up spectrums
         /// </summary>
-        public AY38912 AYDevice { get; set; }
+        public IPSG AYDevice { get; set; }
 
         /// <summary>
         /// The spectrum keyboard

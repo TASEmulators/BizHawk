@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
-    public class AY38912 : ISoundProvider
+    public class AY38912 : IPSG
     {
         private int _tStatesPerFrame;
         private int _sampleRate;

@@ -258,6 +258,7 @@
     <Compile Include="Computers\Commodore64\User\UserPortDevice.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IJoystick.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IPortIODevice.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IPSG.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\CursorJoystick.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\SinclairJoystick2.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\SinclairJoystick1.cs" />

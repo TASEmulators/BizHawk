@@ -594,7 +594,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             _machine.Spectrum.OSD_TapePlayingAuto();
                         }
 
-                        _monitorTimeOut = 90;
+                        _monitorTimeOut = 50;
                     }
                 }
                 else
