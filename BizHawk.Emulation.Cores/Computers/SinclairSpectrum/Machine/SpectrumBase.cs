@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (_renderSound)
             {
                 BuzzerDevice.StartFrame();
-                if (AYDevice != null)
+                if (AYDevice != null && !PagingDisabled)
                     AYDevice.StartFrame();
             }
 
@@ -157,7 +157,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // update AY
                 if (_renderSound)
                 {
-                    if (AYDevice != null && CPU.RegPC != 1523)
+                    if (AYDevice != null && !PagingDisabled)
                     {
                         AYDevice.UpdateSound(CurrentFrameCycle);                            
                     }                        
