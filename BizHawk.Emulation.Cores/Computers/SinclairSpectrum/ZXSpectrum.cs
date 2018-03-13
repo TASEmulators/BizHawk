@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         isPorted: false,
         isReleased: false)]
     [ServiceNotApplicable(typeof(IDriveLight))]
-    public partial class ZXSpectrum : IDebuggable, IInputPollable, IStatable, IRegionable
+    public partial class ZXSpectrum : IRegionable
     {
         public ZXSpectrum(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, object settings, object syncSettings)
         {            
@@ -85,8 +85,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             
             _cpu.MemoryCallbacks = MemoryCallbacks;
 
-            //HardReset = _machine.HardReset;
-            //SoftReset = _machine.SoftReset;
+            HardReset = _machine.HardReset;
+            SoftReset = _machine.SoftReset;
 
             _cpu.FetchMemory = _machine.ReadMemory;
             _cpu.ReadMemory = _machine.ReadMemory;
@@ -102,19 +102,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             SoundMixer = new SoundProviderMixer((ISoundProvider)_machine.BuzzerDevice);
             if (_machine.AYDevice != null)
                 SoundMixer.AddSource(_machine.AYDevice);
-
-            //dcf = new DCFilter(SoundMixer, 256);
+            
             ser.Register<ISoundProvider>(SoundMixer);
-
             
 
-            //HardReset();
+            HardReset();
 
 			SetupMemoryDomains();
         }
                 
-        //public Action HardReset;
-        //public Action SoftReset;
+        public Action HardReset;
+        public Action SoftReset;
 
         private readonly Z80A _cpu;
         private readonly TraceBuffer _tracer;
@@ -123,11 +121,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         private List<GameInfo> _gameInfo;
 
-        private SoundProviderMixer SoundMixer;
-
-        private DCFilter dcf;
-
-        //private byte[] _file;
+        private SoundProviderMixer SoundMixer;        
+        
         private readonly List<byte[]> _files;
 
         public bool DiagRom = false;

@@ -99,8 +99,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public override byte ReadMemory(ushort addr)
         {
             if (ULADevice.IsContended(addr))
-                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
-            
+                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];            
 
             var data = ReadBus(addr);
             return data;

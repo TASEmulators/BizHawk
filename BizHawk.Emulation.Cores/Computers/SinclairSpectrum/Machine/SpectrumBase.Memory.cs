@@ -33,12 +33,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public byte[] RAM7 = new byte[0x4000];  // Bank 7
 
         /// <summary>
-        /// Represents the addressable memory space of the spectrum
-        /// All banks for the emulated system should be added during initialisation
-        /// </summary>
-        public Dictionary<int, byte[]> Memory = new Dictionary<int, byte[]>();
-
-        /// <summary>
         /// Simulates reading from the bus
         /// Paging should be handled here
         /// </summary>

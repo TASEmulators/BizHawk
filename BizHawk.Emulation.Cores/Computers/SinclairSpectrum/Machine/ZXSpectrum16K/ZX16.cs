@@ -51,17 +51,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public override byte ReadBus(ushort addr)
         {
             int divisor = addr / 0x4000;
+            var index = addr % 0x4000;
+
             // paging logic goes here
 
-            if (divisor > 1)
+            switch (divisor)
             {
-                // memory does not exist
-                return 0xff;
+                case 0: return ROM0[index];
+                case 1: return RAM0[index];
+                default:
+                    // memory does not exist
+                    return 0xff;
             }
-
-            var bank = Memory[divisor];
-            var index = addr % 0x4000;
-            return bank[index];
         }
 
         /// <summary>
@@ -73,17 +74,23 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public override void WriteBus(ushort addr, byte value)
         {
             int divisor = addr / 0x4000;
+            var index = addr % 0x4000;
+
             // paging logic goes here
 
-            if (divisor > 1)
+            switch (divisor)
             {
-                // memory does not exist
-                return;
+                case 0:
+                    // cannot write to ROM
+                    break;
+                case 1:
+                    RAM0[index] = value;
+                    break;
             }
 
-            var bank = Memory[divisor];
-            var index = addr % 0x4000;
-            bank[index] = value;
+            // update ULA screen buffer if necessary
+            if ((addr & 49152) == 16384 && _render)
+                ULADevice.UpdateScreenBuffer(CurrentFrameCycle);            
         }
 
         /// <summary>
@@ -96,8 +103,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             if (ULADevice.IsContended(addr))
                 CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
-
-            CPU.TotalExecutedCycles += 3;
 
             var data = ReadBus(addr);
             return data;
@@ -115,25 +120,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (ULADevice.IsContended(addr))
                 CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
 
-            CPU.TotalExecutedCycles += 3;
-
             WriteBus(addr, value);
         }
-        /*
-        public override void ReInitMemory()
-        {
-            if (Memory.ContainsKey(0))
-                Memory[0] = ROM0;
-            else
-                Memory.Add(0, ROM0);
-
-            if (Memory.ContainsKey(1))
-                Memory[1] = RAM1;
-            else
-                Memory.Add(1, RAM1);            
-        }
-        */
-
+        
         /// <summary>
         /// Sets up the ROM
         /// </summary>
