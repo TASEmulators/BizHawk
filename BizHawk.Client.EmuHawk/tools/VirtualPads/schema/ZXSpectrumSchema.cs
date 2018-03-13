@@ -11,19 +11,21 @@ namespace BizHawk.Client.EmuHawk
     {
         public IEnumerable<PadSchema> GetPadSchemas(IEmulator core)
         {
-            yield return KempstonJoystick(1);
+            yield return Joystick(1);
+            yield return Joystick(2);
+            yield return Joystick(3);
             yield return Keyboard();
-            yield return TapeDevice();
+            //yield return TapeDevice();
         }
 
-        private static PadSchema KempstonJoystick(int controller)
+        private static PadSchema Joystick(int controller)
         {
             return new PadSchema
             {
-                DisplayName = "Player " + controller + " (Kempton Joystick)",
+                DisplayName = "Joystick " + controller,
                 IsConsole = false,
                 DefaultSize = new Size(174, 74),
-                MaxSize = new Size(174, 74),
+                MaxSize = new Size(174, 74),                
                 Buttons = new[]
                 {
                     new PadSchema.ButtonSchema
