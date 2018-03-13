@@ -614,15 +614,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 _monitorTimeOut--;
 
-                if (_monitorTimeOut < 2)
-                {
-
-                }
-
                 if (_monitorTimeOut < 0)
                 {
-                    Stop();
-                    _machine.Spectrum.OSD_TapeStoppedAuto();
+                    //Stop();
+                    //_machine.Spectrum.OSD_TapeStoppedAuto();
                 }
             }
         }
