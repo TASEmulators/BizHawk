@@ -12,52 +12,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// </summary>
     public abstract partial class SpectrumBase
     {
-        /// <summary>
-        /// Index of the currently paged ROM
-        /// </summary>
-        protected int ROMPaged;
-        public virtual int _ROMpaged
-        {
-            get { return ROMPaged; }
-            set { ROMPaged = value; }
-        }
-
-        /// <summary>
-        /// Signs that the shadow screen has been paged in
-        /// </summary>
-        protected bool SHADOWPaged;
-
-        /// <summary>
-        /// Index of the current RAM page
-        /// </summary>
-        public int RAMPaged;
-
-        /// <summary>
-        /// Signs that all paging is disabled
-        /// </summary>
-        protected bool PagingDisabled;
-
-        // +3/+2A only
-
-        protected bool ROMhigh = false;
-        protected bool ROMlow = false;
-
-        /// <summary>
-        /// Signs that the +2a/+3 special paging mode is activated
-        /// </summary>
-        protected bool SpecialPagingMode;
-
-        /// <summary>
-        /// Index of the current special paging config
-        /// </summary>
-        protected int PagingConfiguration;
-
-        /// <summary>
-        /// Signs whether the disk motor is on or off
-        /// </summary>
-        protected bool DiskMotorState;
-
-        protected bool PrinterPortStrobe;
+        #region Devices
 
         /// <summary>
         /// The calling ZXSpectrum class (piped in via constructor)
@@ -103,7 +58,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Holds the currently selected joysticks
         /// </summary>
         public virtual IJoystick[] JoystickCollection { get; set; }
-        
+
+        /// <summary>
+        /// Signs whether the disk motor is on or off
+        /// </summary>
+        protected bool DiskMotorState;
+
+        /// <summary>
+        /// +3/2a printer port strobe
+        /// </summary>
+        protected bool PrinterPortStrobe;
+
+        #endregion
+
+        #region Emulator State
+
         /// <summary>
         /// Signs whether the frame has ended
         /// </summary>
@@ -140,15 +109,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public bool _render;
         public bool _renderSound;
 
+        #endregion
+
+        #region Constants
+
         /// <summary>
-        /// Mask constants
+        /// Mask constants & misc
         /// </summary>
         protected const int BORDER_BIT = 0x07;
         protected const int EAR_BIT = 0x10;
         protected const int MIC_BIT = 0x08;
         protected const int TAPE_BIT = 0x40;
-
         protected const int AY_SAMPLE_RATE = 16;
+
+        #endregion
+
+        #region Emulation Loop
 
         /// <summary>
         /// Executes a single frame
@@ -169,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             PollInput();
-            
+
             while (CurrentFrameCycle < ULADevice.FrameLength) // UlaFrameCycleCount)
             {
                 // check for interrupt
@@ -183,18 +159,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 {
                     if (AYDevice != null)
                         AYDevice.UpdateSound(CurrentFrameCycle);
-                }         
+                }
             }
-            
+
             // we have reached the end of a frame
             LastFrameStartCPUTick = CPU.TotalExecutedCycles - OverFlow;
 
             // paint the buffer if needed
             if (ULADevice.needsPaint && _render)
                 ULADevice.UpdateScreenBuffer(ULADevice.FrameLength);
-            
+
             if (_renderSound)
-                BuzzerDevice.EndFrame();         
+                BuzzerDevice.EndFrame();
 
             FrameCount++;
 
@@ -208,14 +184,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // is this a lag frame?
             Spectrum.IsLagFrame = !InputRead;
         }
-        
+
+        #endregion
+
+        #region Reset Functions
+
         /// <summary>
         /// Hard reset of the emulated machine
         /// </summary>
         public virtual void HardReset()
-        {            
+        {
             //ResetBorder();
-            ULADevice.ResetInterrupt();            
+            ULADevice.ResetInterrupt();
         }
 
         /// <summary>
@@ -227,6 +207,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ULADevice.ResetInterrupt();
         }
 
+        #endregion
+
+        #region IStatable
+
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("ZXMachine");
@@ -236,7 +220,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Sync("_frameCycles", ref _frameCycles);
             ser.Sync("inputRead", ref inputRead);
             ser.Sync("LastFrameStartCPUTick", ref LastFrameStartCPUTick);
-            ser.Sync("LastULAOutByte", ref LastULAOutByte);            
+            ser.Sync("LastULAOutByte", ref LastULAOutByte);
             ser.Sync("ROM0", ref ROM0, false);
             ser.Sync("ROM1", ref ROM1, false);
             ser.Sync("ROM2", ref ROM2, false);
@@ -273,8 +257,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             TapeDevice.SyncState(ser);
 
             ser.EndSection();
-
-            //ReInitMemory();
         }
+
+        #endregion
     }
 }

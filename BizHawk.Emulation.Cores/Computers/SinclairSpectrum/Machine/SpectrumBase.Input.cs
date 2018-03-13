@@ -28,6 +28,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         bool pressed_PrevBlock = false;
         bool pressed_TapeStatus = false;
 
+        /// <summary>
+        /// Cycles through all the input callbacks
+        /// This should be done once per frame
+        /// </summary>
         public void PollInput()
         {
             Spectrum.InputCallbacks.Call();
@@ -247,6 +251,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         /// <summary>
         /// Signs whether input read has been requested
+        /// This forms part of the IEmulator LagFrame implementation
         /// </summary>
         private bool inputRead;
         public bool InputRead
