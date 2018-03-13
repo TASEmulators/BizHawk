@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     msg += "\n";
                     msg += "Saved Configuration:    " + tmpM.ToString();
                     msg += "\n\n";
-                    msg += "If you with to load this SaveState ensure that you have to correct machine configuration selected, reboot the core, then try again.";
+                    msg += "If you with to load this SaveState ensure that you have the correct machine configuration selected, reboot the core, then try again.";
                     CoreComm.ShowMessage(msg);
                     _machineType = tmpM;
                 }
