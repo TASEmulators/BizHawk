@@ -137,9 +137,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         {
                             case 0:
                                 result = ROM0[addr % 0x4000];
+                                TestForTapeTraps(addr % 0x4000);
                                 break;
                             case 1:
                                 result = ROM1[addr % 0x4000];
+                                TestForTapeTraps(addr % 0x4000);
                                 break;
                             case 2:
                                 result = ROM2[addr % 0x4000];

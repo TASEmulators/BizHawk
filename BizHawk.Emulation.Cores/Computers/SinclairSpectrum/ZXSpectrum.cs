@@ -15,8 +15,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         "Asnivor",
         isPorted: false,
         isReleased: false)]
-    [ServiceNotApplicable(typeof(IDriveLight))]
-    public partial class ZXSpectrum : IRegionable
+    public partial class ZXSpectrum : IRegionable, IDriveLight
     {
         public ZXSpectrum(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, object settings, object syncSettings)
         {            
@@ -238,6 +237,30 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #endregion
 
+        #region IDriveLight
+
+        public bool DriveLightEnabled
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public bool DriveLightOn
+        {
+            get
+            {
+                if (_machine != null &&
+                    _machine.TapeDevice != null &&
+                    _machine.TapeDevice.TapeIsPlaying)
+                    return true;
+
+                return false;
+            }
+        }
+
+        #endregion
 
     }
 }

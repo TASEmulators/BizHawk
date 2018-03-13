@@ -176,6 +176,39 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 return false;
         }
 
+
+        public virtual void TestForTapeTraps(int addr)
+        {
+            if (!TapeDevice.TapeIsPlaying)
+            {
+                if (addr == 8)
+                {
+                    TapeDevice?.AutoStopTape();
+                    return;
+                }
+
+                if (addr == 4223)
+                {
+                    TapeDevice?.AutoStopTape();
+                    return;
+                }
+
+                if (addr == 83)
+                {
+                    TapeDevice?.AutoStopTape();
+                    return;
+                }
+            }
+            else
+            {
+                if (addr == 1366)
+                {
+                    TapeDevice?.AutoStartTape();
+                    return;
+                }
+            }
+        }
+
         #endregion
     }
 }

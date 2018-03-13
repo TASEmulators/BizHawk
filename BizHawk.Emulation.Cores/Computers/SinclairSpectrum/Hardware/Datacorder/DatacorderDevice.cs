@@ -548,7 +548,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// An iteration of the monitor process
         /// </summary>
         public void MonitorRead()
-        {
+        {      
             long cpuCycle = _cpu.TotalExecutedCycles;
             int delta = (int)(cpuCycle - _lastINCycle);
             _lastINCycle = cpuCycle;
@@ -607,11 +607,30 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _monitorLastPC = _cpu.RegPC;
         }
 
+        public void AutoStopTape()
+        {
+            if (!_tapeIsPlaying)
+                return;
+
+            Stop();
+            _machine.Spectrum.OSD_TapeStoppedAuto();
+        }
+
+        public void AutoStartTape()
+        {
+            if (_tapeIsPlaying)
+                return;
+
+            Play();
+            _machine.Spectrum.OSD_TapePlayingAuto();
+        }
 
         private void MonitorFrame()
         {
+            /*
             if (_tapeIsPlaying && _machine.Spectrum.Settings.AutoLoadTape)
             {
+
                 _monitorTimeOut--;
 
                 if (_monitorTimeOut < 0)
@@ -620,6 +639,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     //_machine.Spectrum.OSD_TapeStoppedAuto();
                 }
             }
+            */
         }
 
         #endregion

@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 InputRead = true;
 
                 // tape loading monitor cycle
-                TapeDevice.MonitorRead();
+                //TapeDevice.MonitorRead();
 
                 // process tape INs
                 TapeDevice.ReadPort(port, ref result);

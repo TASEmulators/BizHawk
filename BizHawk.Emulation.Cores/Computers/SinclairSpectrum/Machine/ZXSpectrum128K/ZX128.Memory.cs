@@ -54,6 +54,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 // ROM 0x000
                 case 0:
+                    TestForTapeTraps(addr % 0x4000);
+
                     if (ROMPaged == 0)
                         result = ROM0[addr % 0x4000];
                     else

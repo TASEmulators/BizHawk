@@ -57,7 +57,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             switch (divisor)
             {
-                case 0: return ROM0[index];
+                case 0:
+                    TestForTapeTraps(addr % 0x4000);
+                    return ROM0[index];
                 case 1: return RAM0[index];
                 default:
                     // memory does not exist
