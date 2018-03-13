@@ -73,6 +73,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			int changes_1 = change1 > 0 ? (int)Math.Floor(change1) : (int)Math.Ceiling(change1);
 			int changes_2 = change2 > 0 ? (int)Math.Floor(change2) : (int)Math.Ceiling(change2);
 
+			
+
 			for (int scanLine = 0; scanLine < 262; scanLine++)
 			{
 				_vdp.RenderScanline(scanLine);
@@ -92,11 +94,20 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 					_cpu.ExecuteOne();
 
 					// pick out sound samples from the sound devies twice per scanline
-					if ((i==76) || (i==152))
+					int v = PSG.Sample();
+
+					if (use_SGM)
 					{
-						PSG.Sample();
-						if (use_SGM) { SGM_sound.Sample(); }
+						v += SGM_sound.Sample();
 					}
+
+					if (v != _latchedSample)
+					{
+						_blip.AddDelta((uint)_sampleClock, v - _latchedSample);
+						_latchedSample = v;
+					}
+
+					_sampleClock++;	
 				}
 
 				// starting from scanline 20, changes to the wheel are added once per scanline (up to 144)
@@ -163,6 +174,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public bool enable_SGM_low = false;
 		public byte port_0x53, port_0x7F;
 
+		public int _sampleClock = 0;
+		public int _latchedSample = 0;
 
 		public int Frame => _frame;
 

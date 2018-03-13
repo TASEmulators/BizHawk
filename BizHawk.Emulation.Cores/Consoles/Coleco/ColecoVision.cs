@@ -35,6 +35,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			PSG = new SN76489col();
 			SGM_sound = new AY_3_8910_SGM();
+			_blip.SetRates(3579545, 44100);
 
 			ControllerDeck = new ColecoVisionControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
