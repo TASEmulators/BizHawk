@@ -155,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 
-			argParse.parseArguments(args);
+			argParse.ParseArguments(args);
 
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
