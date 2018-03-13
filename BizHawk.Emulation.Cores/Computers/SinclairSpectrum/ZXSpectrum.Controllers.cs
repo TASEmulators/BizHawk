@@ -83,6 +83,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
 
                 // Datacorder (tape device)
+                List<string> power = new List<string>
+                {
+                    // Tape functions
+                    "Soft Reset", "Hard Reset"
+                };
+
+                foreach (var s in power)
+                {
+                    definition.BoolButtons.Add(s);
+                    definition.CategoryLabels[s] = "Power";
+                }
+
+                // Datacorder (tape device)
                 List<string> tape = new List<string>
                 {
                     // Tape functions

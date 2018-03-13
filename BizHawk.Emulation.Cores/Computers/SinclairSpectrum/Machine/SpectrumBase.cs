@@ -207,6 +207,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             //ResetBorder();
             ULADevice.ResetInterrupt();
+            CPU.RegPC = 0;
         }
 
         #endregion

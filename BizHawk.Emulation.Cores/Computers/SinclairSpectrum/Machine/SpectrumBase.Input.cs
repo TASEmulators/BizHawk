@@ -19,6 +19,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         string PrevBlock = "Prev Tape Block";
         string TapeStatus = "Get Tape Status";
 
+        string HardResetStr = "Hard Reset";
+        string SoftResetStr = "Soft Reset";
+
         bool pressed_Play = false;
         bool pressed_Stop = false;
         bool pressed_RTZ = false;
@@ -27,6 +30,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         bool pressed_NextBlock = false;
         bool pressed_PrevBlock = false;
         bool pressed_TapeStatus = false;
+        bool pressed_HardReset = false;
+        bool pressed_SoftReset = false;
 
         /// <summary>
         /// Cycles through all the input callbacks
@@ -191,6 +196,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             else
                 pressed_TapeStatus = false;
+
+            if (Spectrum._controller.IsPressed(HardResetStr))
+            {
+                if (!pressed_HardReset)
+                {
+                    HardReset();
+                    pressed_HardReset = true;
+                }
+            }
+            else
+                pressed_HardReset = false;
+
+            if (Spectrum._controller.IsPressed(SoftResetStr))
+            {
+                if (!pressed_SoftReset)
+                {
+                    SoftReset();
+                    pressed_SoftReset = true;
+                }
+            }
+            else
+                pressed_SoftReset = false;
         }
 
         /// <summary>

@@ -50,19 +50,49 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 ms.Close();
                 core = ms.ToArray();
             }
-            _cpu.SyncState(ser);
 
-            ser.BeginSection("ZXSpectrum");
-            _machine.SyncState(ser);
-            ser.Sync("Frame", ref _machine.FrameCount);
-            ser.Sync("LagCount", ref _lagCount);
-            ser.Sync("IsLag", ref _isLag);
+            
 
-            ser.EndSection();
+            if (ser.IsWriter)
+            {
+                ser.SyncEnum("_machineType", ref _machineType);
 
+                _cpu.SyncState(ser);
+                ser.BeginSection("ZXSpectrum");                
+                _machine.SyncState(ser);
+                ser.Sync("Frame", ref _machine.FrameCount);
+                ser.Sync("LagCount", ref _lagCount);
+                ser.Sync("IsLag", ref _isLag);
+                ser.EndSection();
+            }
+                
             if (ser.IsReader)
             {
-                SyncAllByteArrayDomains();
+                var tmpM = _machineType;
+                ser.SyncEnum("_machineType", ref _machineType);
+                if (tmpM != _machineType)
+                {
+                    string msg = "SAVESTATE FAILED TO LOAD!!\n\n";
+                    msg += "Current Configuration: " + _machineType.ToString();
+                    msg += "\n";
+                    msg += "Saved Configuration:    " + tmpM.ToString();
+                    msg += "\n\n";
+                    msg += "If you with to load this SaveState ensure that you have to correct machine configuration selected, reboot the core, then try again.";
+                    CoreComm.ShowMessage(msg);
+                    _machineType = tmpM;
+                }
+                else
+                {
+                    _cpu.SyncState(ser);
+                    ser.BeginSection("ZXSpectrum");
+                    _machine.SyncState(ser);
+                    ser.Sync("Frame", ref _machine.FrameCount);
+                    ser.Sync("LagCount", ref _lagCount);
+                    ser.Sync("IsLag", ref _isLag);
+                    ser.EndSection();
+
+                    SyncAllByteArrayDomains();
+                }
             }
         }
     }

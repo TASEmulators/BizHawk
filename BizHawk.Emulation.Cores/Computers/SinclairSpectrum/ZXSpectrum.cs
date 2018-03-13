@@ -185,9 +185,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             return result;
         }
 
+        private MachineType _machineType;
 
         private void Init(MachineType machineType, BorderType borderType, TapeLoadSpeed tapeLoadSpeed, List<byte[]> files, List<JoystickType> joys)
         {
+            _machineType = machineType;
+
             // setup the emulated model based on the MachineType
             switch (machineType)
             {
