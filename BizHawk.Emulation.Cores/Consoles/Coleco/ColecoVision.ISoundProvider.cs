@@ -11,12 +11,12 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private SN76489col PSG;
 		private AY_3_8910_SGM SGM_sound;
 
-		private short[] _sampleBuffer = new short[0];
+		private readonly BlipBuffer _blip = new BlipBuffer(4096);
 
 		public void DiscardSamples()
 		{
-			SGM_sound.DiscardSamples();
-			PSG.DiscardSamples();
+			_blip.Clear();
+			_sampleClock = 0;
 		}
 
 		public void GetSamplesAsync(short[] samples)
@@ -38,26 +38,18 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			nsamp = 524;
+			_blip.EndFrame((uint)_sampleClock);
+			_sampleClock = 0;
 
+			nsamp = _blip.SamplesAvailable();
 			samples = new short[nsamp * 2];
 
-			for (int i = 0; i < nsamp; i++)
-			{
-				samples[i * 2] = PSG._sampleBuffer[i];
-				samples[i * 2 + 1] = PSG._sampleBuffer[i];
-			}
+			_blip.ReadSamples(samples, nsamp, true);
 
-			if (use_SGM)
+			for (int i = 0; i < nsamp * 2; i += 2)
 			{
-				for (int i = 0; i < nsamp; i++)
-				{
-					samples[i * 2] += SGM_sound._sampleBuffer[i];
-					samples[i * 2 + 1] += SGM_sound._sampleBuffer[i];
-				}
-			}
-
-			DiscardSamples();
+				samples[i + 1] = samples[i];
+			}				
 		}
 
 		public void GetSamples(short[] samples)

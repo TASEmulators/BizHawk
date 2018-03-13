@@ -9,7 +9,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public sealed class SN76489col
 	{
-		public short[] _sampleBuffer = new short[4096];
 		private short current_sample;
 
 		public SN76489col()
@@ -25,8 +24,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public bool noise_type;
 		public int noise_rate;
 		public bool noise_bit;
-
-		private int _sampleClock;
 
 		private int psg_clock;
 
@@ -47,19 +44,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			// reset the shift register
 			noise = 0x40000;
-
-			DiscardSamples();
 		}
 
-		public void DiscardSamples()
+		public int Sample()
 		{
-			_sampleClock = 0;
-		}
-
-		public void Sample()
-		{
-			_sampleBuffer[_sampleClock] = current_sample;
-			_sampleClock++;
+			return current_sample;
 		}
 
 		public void SyncState(Serializer ser)
@@ -81,7 +70,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.Sync("noise_bit", ref noise_bit);
 
 			ser.Sync("psg_clock", ref psg_clock);
-			ser.Sync("sample_clock", ref _sampleClock);
 
 			ser.Sync("A_up", ref A_up);
 			ser.Sync("B_up", ref B_up);

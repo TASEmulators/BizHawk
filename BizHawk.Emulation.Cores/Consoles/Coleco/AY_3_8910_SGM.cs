@@ -8,7 +8,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 {
 	public sealed class AY_3_8910_SGM
 	{
-		public short[] _sampleBuffer = new short[4096];
 		private short current_sample;
 
 		public AY_3_8910_SGM()
@@ -31,18 +30,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				Register[i] = 0x0000;
 			}
 			sync_psg_state();
-			DiscardSamples();
 		}
 
-		public void DiscardSamples()
+		public short Sample()
 		{
-			_sampleClock = 0;
-		}
-
-		public void Sample()
-		{
-			_sampleBuffer[_sampleClock] = current_sample;
-			_sampleClock++;
+			return current_sample;
 		}
 
 		private static readonly int[] VolumeTable =
@@ -51,10 +43,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			0x03C5, 0x0555, 0x078B, 0x0AAB, 0x0F16, 0x1555, 0x1E2B, 0x2AAA
 		};
 
-		private int _sampleClock;
-
-		private int TotalExecutedCycles;
-		private int PendingCycles;
 		private int psg_clock;
 		private int sq_per_A, sq_per_B, sq_per_C;
 		private int clock_A, clock_B, clock_C;
@@ -79,8 +67,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			ser.BeginSection("PSG");
 
 			ser.Sync("Register", ref Register, false);
-			ser.Sync("Toal_executed_cycles", ref TotalExecutedCycles);
-			ser.Sync("Pending_Cycles", ref PendingCycles);
 
 			ser.Sync("psg_clock", ref psg_clock);
 			ser.Sync("clock_A", ref clock_A);
@@ -296,9 +282,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 					}
 					else
 					{
-						v = (short)(sound_out_A ? VolumeTable[env_E] : 0);
+						v = (short)(sound_out_A ? VolumeTable[vol_A] : 0);
 					}
-
+					
 					if (env_vol_B == 0)
 					{
 						v += (short)(sound_out_B ? VolumeTable[vol_B] : 0);
@@ -317,7 +303,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 					{
 						v += (short)(sound_out_C ? VolumeTable[env_E] : 0);
 					}
-
+					
 					current_sample = (short)v;
 				}
 			}
