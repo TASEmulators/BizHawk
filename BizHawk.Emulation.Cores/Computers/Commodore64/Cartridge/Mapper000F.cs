@@ -119,6 +119,13 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 			_currentBank = _banks[_bankNumber];
 		}
 
+		public override int ReadDE00(int addr)
+		{
+			BankSet(0);
+
+			return 0;
+		}
+
 		public override void WriteDE00(int addr, int val)
 		{
 			BankSet(addr);
