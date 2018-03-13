@@ -5,8 +5,7 @@ using BizHawk.Emulation.Common;
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     /// <summary>
-    /// Another ULA implementation (maybe it will be more performant & accurate)
-    /// -edit: it is :)
+    /// ULA (Uncommitted Logic Array) implementation
     /// </summary>
     public abstract class ULABase : IVideoProvider
     {
@@ -732,7 +731,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         #endregion
-
 
         #region Attribution
 
