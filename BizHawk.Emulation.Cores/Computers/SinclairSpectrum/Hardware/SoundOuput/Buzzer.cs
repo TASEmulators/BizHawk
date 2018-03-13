@@ -236,7 +236,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     if (_tapeMode)
                         samples[sampleIndex++] = pulse.State ? (short)(short.MaxValue / 6) : (short)0;
                     else
-                        samples[sampleIndex++] = pulse.State ? (short)(short.MaxValue / 2) : (short)0;
+                        samples[sampleIndex++] = pulse.State ? (short)(short.MaxValue / 3) : (short)0;
                 }                   
 
                 currentEnd += pulse.Length;

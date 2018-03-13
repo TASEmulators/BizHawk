@@ -45,12 +45,39 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             EqualizeVolumes();
         }
 
+        public SoundProviderMixer(short maxVolume, params ISoundProvider[] soundProviders)
+        {
+            SoundProviders = new List<Provider>();
+
+            foreach (var s in soundProviders)
+            {
+                SoundProviders.Add(new Provider
+                {
+                    SoundProvider = s,
+                    MaxVolume = maxVolume,
+                });
+            }
+
+            EqualizeVolumes();
+        }
+
         public void AddSource(ISoundProvider source)
         {
             SoundProviders.Add(new Provider
             {
                 SoundProvider = source,
                 MaxVolume = short.MaxValue
+            });
+
+            EqualizeVolumes();
+        }
+
+        public void AddSource(ISoundProvider source, short maxVolume)
+        {
+            SoundProviders.Add(new Provider
+            {
+                SoundProvider = source,
+                MaxVolume = maxVolume
             });
 
             EqualizeVolumes();

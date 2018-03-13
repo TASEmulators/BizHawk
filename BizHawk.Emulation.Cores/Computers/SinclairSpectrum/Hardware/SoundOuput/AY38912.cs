@@ -2,8 +2,6 @@
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -69,9 +67,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public void UpdateSound(int currentFrameCycle)
         {
-            //if (currentFrameCycle >= _tStatesPerFrame)
-                //currentFrameCycle = _tStatesPerFrame;
-
             for (int i = 0; i < (currentFrameCycle / AY_SAMPLE_RATE) - _AYCount; i++)
             {
                 Update();
@@ -113,11 +108,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             
             // the stereo _samples buffer should already have been processed as a part of
             // ISoundProvider at the end of the last frame
-            //_samples = new short[_samplesPerFrame * 2];
-            //_nsamp = _samplesPerFrame;
             _sampleCounter = 0;
-
-            //Init(44100, _tStatesPerFrame);
         }
 
         public void EndFrame()
@@ -447,15 +438,25 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         private void EndSampleAY()
         {
-            averagedChannelSamples[0] = (short)((averagedChannelSamples[ChannelLeft] + averagedChannelSamples[ChannelCenter]) / soundSampleCounter);
-            averagedChannelSamples[1] = (short)((averagedChannelSamples[ChannelRight] + averagedChannelSamples[ChannelCenter]) / soundSampleCounter);
+            //averagedChannelSamples[0] = (short)((averagedChannelSamples[ChannelLeft] + 
+               // averagedChannelSamples[ChannelCenter] + 
+               // averagedChannelSamples[ChannelRight]) 
+               // / soundSampleCounter);
+
+           // averagedChannelSamples[1] = (short)((averagedChannelSamples[ChannelLeft] +
+               // averagedChannelSamples[ChannelCenter] +
+               // averagedChannelSamples[ChannelRight])
+               // / soundSampleCounter);
+
+            averagedChannelSamples[0] = (short)((averagedChannelSamples[ChannelLeft] + averagedChannelSamples[ChannelCenter] / 1.5) / soundSampleCounter);
+            averagedChannelSamples[1] = (short)((averagedChannelSamples[ChannelRight] + averagedChannelSamples[ChannelCenter] / 1.5) / soundSampleCounter);
             
             soundSampleCounter = 0;
         }
 
         private void SampleAY()
         {
-            int ah;
+            int ah;            
 
             ah = regs[AY_ENABLE];
 

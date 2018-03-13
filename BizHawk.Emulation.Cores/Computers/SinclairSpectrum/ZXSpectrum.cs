@@ -99,7 +99,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Register<IDisassemblable>(_cpu);
             ser.Register<IVideoProvider>(_machine.ULADevice);
 
-            SoundMixer = new SoundProviderMixer((ISoundProvider)_machine.BuzzerDevice);
+            SoundMixer = new SoundProviderMixer((int)(32767 / 10), (ISoundProvider)_machine.BuzzerDevice);
             if (_machine.AYDevice != null)
                 SoundMixer.AddSource(_machine.AYDevice);
             

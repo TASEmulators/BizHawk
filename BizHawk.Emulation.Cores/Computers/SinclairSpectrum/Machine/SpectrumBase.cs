@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             PollInput();
 
-            while (CurrentFrameCycle < ULADevice.FrameLength) // UlaFrameCycleCount)
+            while (CurrentFrameCycle < ULADevice.FrameLength)
             {
                 // check for interrupt
                 ULADevice.CheckForInterrupt(CurrentFrameCycle);
@@ -157,8 +157,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // update AY
                 if (_renderSound)
                 {
-                    if (AYDevice != null)
-                        AYDevice.UpdateSound(CurrentFrameCycle);
+                    if (AYDevice != null && CPU.RegPC != 1523)
+                    {
+                        AYDevice.UpdateSound(CurrentFrameCycle);                            
+                    }                        
                 }
             }
 
