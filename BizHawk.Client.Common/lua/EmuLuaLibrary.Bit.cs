@@ -44,35 +44,35 @@ namespace BizHawk.Client.Common
 			return val ^ amt;
 		}
 
-		[LuaMethodExample("lshift", "local uibitlsh = bit.lshift( 1000, -4 );")]
+		[LuaMethodExample("lshift", "local uibitlsh = bit.lshift( 1000, 4 );")]
 		[LuaMethod("lshift", "Logical shift left of 'val' by 'amt' bits")]
 		public static uint Lshift(uint val, int amt)
 		{
 			return val << amt;
 		}
 
-		[LuaMethodExample("rol", "local uibitrol = bit.rol( 1000, -4 );")]
+		[LuaMethodExample("rol", "local uibitrol = bit.rol( 1000, 4 );")]
 		[LuaMethod("rol", "Left rotate 'val' by 'amt' bits")]
 		public static uint Rol(uint val, int amt)
 		{
 			return (val << amt) | (val >> (32 - amt));
 		}
 
-		[LuaMethodExample("ror", "local uibitror = bit.ror( 1000, -4 );")]
+		[LuaMethodExample("ror", "local uibitror = bit.ror( 1000, 4 );")]
 		[LuaMethod("ror", "Right rotate 'val' by 'amt' bits")]
 		public static uint Ror(uint val, int amt)
 		{
 			return (val >> amt) | (val << (32 - amt));
 		}
 
-		[LuaMethodExample("rshift", "local uibitrsh = bit.rshift( 1000, -4 );")]
+		[LuaMethodExample("rshift", "local uibitrsh = bit.rshift( 1000, 4 );")]
 		[LuaMethod("rshift", "Logical shift right of 'val' by 'amt' bits")]
 		public static uint Rshift(uint val, int amt)
 		{
 			return (uint)(val >> amt);
 		}
 
-		[LuaMethodExample("arshift", "local inbitars = bit.arshift( -1000, -4 );")]
+		[LuaMethodExample("arshift", "local inbitars = bit.arshift( -1000, 4 );")]
 		[LuaMethod("arshift", "Arithmetic shift right of 'val' by 'amt' bits")]
 		public static int Arshift(int val, int amt)
 		{
