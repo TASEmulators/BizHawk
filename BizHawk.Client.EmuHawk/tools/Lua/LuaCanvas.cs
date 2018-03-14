@@ -33,6 +33,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodExample(
+			"setTitle",
+			"LuaCanvas.setTitle( \"Title\" );")]
 		[LuaMethod(
 			"setTitle",
 			"Sets the canvas window title")]
@@ -41,6 +44,9 @@ namespace BizHawk.Client.EmuHawk
 			Text = title;
 		}
 
+		[LuaMethodExample(
+			"setLocation",
+			"LuaCanvas.setLocation( 16, 32 );")]
 		[LuaMethod(
 			"setLocation",
 			"Sets the location of the canvas window")]
@@ -51,6 +57,9 @@ namespace BizHawk.Client.EmuHawk
 			Top = (int)y;
 		}
 
+		[LuaMethodExample(
+			"clear",
+			"LuaCanvas.clear( 0x000000FF );")]
 		[LuaMethod(
 			"clear",
 			"Clears the canvas")]
@@ -59,6 +68,9 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.Clear(color);
 		}
 
+		[LuaMethodExample(
+			"refresh",
+			"LuaCanvas.refresh( );")]
 		[LuaMethod(
 			"refresh",
 			"Redraws the canvas")]
@@ -67,6 +79,9 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.Refresh();
 		}
 
+		[LuaMethodExample(
+			"setDefaultForegroundColor",
+			"LuaCanvas.setDefaultForegroundColor( 0x000000FF );")]
 		[LuaMethod(
 			"setDefaultForegroundColor",
 			"Sets the default foreground color to use in drawing methods, white by default")]
@@ -75,6 +90,9 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.SetDefaultForegroundColor(color);
 		}
 
+		[LuaMethodExample(
+			"setDefaultBackgroundColor",
+			"LuaCanvas.setDefaultBackgroundColor( 0x000000FF );")]
 		[LuaMethod(
 			"setDefaultBackgroundColor",
 			"Sets the default background color to use in drawing methods, transparent by default")]
@@ -83,6 +101,9 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.SetDefaultBackgroundColor(color);
 		}
 
+		[LuaMethodExample(
+			"setDefaultTextBackground",
+			"LuaCanvas.setDefaultTextBackground( 0x000000FF );")]
 		[LuaMethod(
 			"setDefaultTextBackground",
 			"Sets the default backgroiund color to use in text drawing methods, half-transparent black by default")]
@@ -91,6 +112,9 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.SetDefaultTextBackground(color);
 		}
 
+		[LuaMethodExample(
+			"drawBezier",
+			"LuaCanvas.drawBezier( { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 0x000000FF );")]
 		[LuaMethod(
 			"drawBezier",
 			"Draws a Bezier curve using the table of coordinates provided in the given color")]
@@ -107,6 +131,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodExample(
+			"drawBox",
+			"LuaCanvas.drawBox( 16, 32, 162, 322, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawBox",
 			"Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height")]
@@ -123,6 +150,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodExample(
+			"drawEllipse",
+			"LuaCanvas.drawEllipse( 16, 32, 77, 99, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawEllipse",
 			"Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color")]
@@ -139,6 +169,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodExample(
+			"drawIcon",
+			"LuaCanvas.drawIcon( \"C:\\icon.ico\", 16, 32, 18, 24 );")]
 		[LuaMethod(
 			"drawIcon",
 			"draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
@@ -155,6 +188,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodExample(
+			"drawImage",
+			"LuaCanvas.drawImage( \"C:\\image.bmp\", 16, 32, 18, 24, false );")]
 		[LuaMethod(
 			"drawImage",
 			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
@@ -169,6 +205,9 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.DrawImage(path, x, y, width, height, cache);
 		}
 
+		[LuaMethodExample(
+			"clearImageCache",
+			"LuaCanvas.clearImageCache( );")]
 		[LuaMethod(
 			"clearImageCache",
 			"clears the image cache that is built up by using gui.drawImage, also releases the file handle for cached images")]
@@ -177,6 +216,9 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.ClearImageCache();
 		}
 
+		[LuaMethodExample(
+			"drawImageRegion",
+			"LuaCanvas.drawImageRegion( \"C:\\image.png\", 11, 22, 33, 44, 21, 43, 34, 45 );")]
 		[LuaMethod(
 			"drawImageRegion",
 			"draws a given region of an image file from the given path at the given coordinate, and optionally with the given size")]
@@ -191,6 +233,9 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.DrawImageRegion(path, source_x, source_y, source_width, source_height, dest_x, dest_y, dest_width, dest_height);
 		}
 
+		[LuaMethodExample(
+			"drawLine",
+			"LuaCanvas.drawLine( 161, 321, 162, 322, 0xFFFFFFFF );")]
 		[LuaMethod(
 			"drawLine",
 			"Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)")]
@@ -199,6 +244,9 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.DrawLine(x1, y1, x2, y2, color);
 		}
 
+		[LuaMethodExample(
+			"drawAxis",
+			"LuaCanvas.drawAxis( 16, 32, int size, 0xFFFFFFFF );")]
 		[LuaMethod(
 			"drawAxis",
 			"Draws an axis of the specified size at the coordinate pair.)")]
@@ -207,6 +255,9 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.DrawAxis(x, y, size, color);
 		}
 
+		[LuaMethodExample(
+			"drawArc",
+			"LuaCanvas.drawArc( 16, 32, 77, 99, 180, 90, 0x007F00FF );")]
 		[LuaMethod(
 			"drawArc",
 			"draws a Arc shape at the given coordinates and the given width and height"
@@ -216,6 +267,9 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.DrawArc(x, y, width, height, startangle, sweepangle, line);
 		}
 
+		[LuaMethodExample(
+			"drawPie",
+			"LuaCanvas.drawPie( 16, 32, 77, 99, 180, 90, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawPie",
 			"draws a Pie shape at the given coordinates and the given width and height")]
@@ -232,6 +286,9 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.DrawPie(x, y, width, height, startangle, sweepangle, line, background);
 		}
 
+		[LuaMethodExample(
+			"drawPixel", 
+			"LuaCanvas.drawPixel( 16, 32, 0xFFFFFFFF );")]
 		[LuaMethod(
 			"drawPixel",
 			"Draws a single pixel at the given coordinates in the given color. Color is optional (if not specified it will be drawn black)")]
@@ -248,6 +305,9 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[LuaMethodExample(
+			"drawPolygon", 
+			"LuaCanvas.drawPolygon( { 10, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawPolygon",
 			"Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). Line is the color of the polygon. Background is the optional fill color")]
@@ -265,6 +325,9 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 
+		[LuaMethodExample(
+			"drawRectangle",
+			"LuaCanvas.drawRectangle( 16, 32, 77, 99, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawRectangle",
 			"Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color")]
@@ -273,6 +336,9 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.DrawRectangle(x, y, width, height, line, background);
 		}
 
+		[LuaMethodExample(
+			"drawString", 
+			"LuaCanvas.drawString( 16, 32, \"Some message\", 0x7F0000FF, 0x00007FFF, 8, \"Arial Narrow\", \"bold\", \"center\", \"middle\" );")]
 		[LuaMethod(
 			"drawString",
 			"Alias of DrawText()")]
@@ -291,6 +357,9 @@ namespace BizHawk.Client.EmuHawk
 			luaPictureBox.DrawText(x, y, message, forecolor, backcolor, fontsize, fontfamily, fontstyle, horizalign, vertalign);
 		}
 
+		[LuaMethodExample(
+			"drawText", 
+			"LuaCanvas.drawText( 16, 32, \"Some message\", 0x7F0000FF, 0x00007FFF, 8, \"Arial Narrow\", \"bold\", \"center\", \"middle\" );")]
 		[LuaMethod(
 			"drawText",
 			"Draws the given message at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates.")]
@@ -311,6 +380,9 @@ namespace BizHawk.Client.EmuHawk
 
 
 		// It'd be great if these were simplified into 1 function, but I cannot figure out how to return a LuaTable from this class
+		[LuaMethodExample(
+			"getMouseX",
+			"local inLuaget = LuaCanvas.getMouseX( );")]
 		[LuaMethod(
 			"getMouseX",
 			"Returns an integer representation of the mouse X coordinate relative to the canvas window.")]
@@ -320,6 +392,9 @@ namespace BizHawk.Client.EmuHawk
 			return position.X;
 		}
 
+		[LuaMethodExample(
+			"getMouseY", 
+			"local inLuaget = LuaCanvas.getMouseY( );")]
 		[LuaMethod(
 			"getMouseY",
 			"Returns an integer representation of the mouse Y coordinate relative to the canvas window.")]
