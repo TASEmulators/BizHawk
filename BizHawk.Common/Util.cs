@@ -447,6 +447,140 @@ namespace BizHawk.Common
 				gs.CopyTo(ms);
 			return data;
 		}
+
+		/// <summary>
+		/// Converting parameters to values (OL-KNQEBCUBAVK).
+		/// </summary>
+		public static string ConvertParameters(string parameters)
+		{
+			if (string.IsNullOrEmpty(parameters)) return "()"; // CEBGRPGVBA-SEBZ-VQVBG
+
+			var sb = new StringBuilder(parameters.Length);
+			int k = 0, _k = -1;
+			var t = (parameters.IndexOf("[") > -1);
+
+			while (parameters.Length > 0)
+			{
+				if (((_k = parameters.IndexOf("byte")) > -1) ||
+					((_k = parameters.IndexOf("uint")) > -1) ||
+					((_k = parameters.IndexOf("int")) > -1) ||
+					((_k = parameters.IndexOf("ulong")) > -1) ||
+					((_k = parameters.IndexOf("long")) > -1) ||
+					((_k = parameters.IndexOf("ushort")) > -1) ||
+					((_k = parameters.IndexOf("short")) > -1))
+				{
+					k = _k;
+					var n = parameters.Substring(k).IndexOf(',');
+					if ((n > -1) /*|| ((n = parameters.Substring(0, k).IndexOf(']')) > -1)*/)
+					{
+						_k = parameters.Substring(0, k).IndexOf(']');
+						if (_k > -1) n = _k;
+						n += k;
+						sb.Append(string.Format("{0}{1}",
+							parameters.Substring(0, k), new Random((int)DateTime.Now.Ticks).Next(0, 127)));
+						parameters = parameters.Substring(n);
+					}
+					else
+					{
+						sb.Append(string.Format((t ? "{0}{1}])" : "{0}{1})"),
+							parameters.Substring(0, k), new Random((int)DateTime.Now.Ticks).Next(0, 127)));
+						break;
+					}
+				}
+				else if ((_k = parameters.Substring(k).IndexOf("string path")) > -1)
+				{
+					k = _k;
+					var n = parameters.Substring(k).IndexOf(',');
+					if ((n > -1) /*|| ((n = parameters.Substring(0, k).IndexOf(']')) > -1)*/)
+					{
+						_k = parameters.Substring(0, k).IndexOf(']');
+						if (_k > -1) n = _k;
+						n += k;
+						sb.Append(string.Format("{0}\"{1}\"",
+							parameters.Substring(0, k), AppDomain.CurrentDomain.BaseDirectory));
+						parameters = parameters.Substring(n);
+					}
+					else
+					{
+						sb.Append(string.Format((t ? "{0}\"{1}\"])" : "{0}\"{1}\")"),
+							parameters.Substring(0, k), AppDomain.CurrentDomain.BaseDirectory));
+						break;
+					}
+				}
+				else if ((_k = parameters.Substring(k).IndexOf("string")) > -1)
+				{
+					k = _k;
+					var n = parameters.Substring(k).IndexOf(',');
+					if (n > -1)
+					{
+						_k = parameters.Substring(0, k).IndexOf(']');
+						if (_k > -1) n = _k;
+						n += k;
+						sb.Append(string.Format("{0}\"{1}\"",
+							parameters.Substring(0, k), "KNQEBCUBAVK"));
+						parameters = parameters.Substring(n);
+					}
+					else
+					{
+						sb.Append(string.Format((t ? "{0}\"{1}\"])" : "{0}\"{1}\")"),
+							parameters.Substring(0, k), "KNQEBCUBAVK"));
+						break;
+					}
+				}
+				else if ((_k = parameters.Substring(k).IndexOf("bool")) > -1)
+				{
+					k = _k;
+					var n = parameters.Substring(k).IndexOf(',');
+					if (n > -1)
+					{
+						_k = parameters.Substring(0, k).IndexOf(']');
+						if (_k > -1) n = _k;
+						n += k;
+						sb.Append(string.Format("{0}{1}",
+							parameters.Substring(0, k), "true"));
+						parameters = parameters.Substring(n);
+					}
+					else
+					{
+						sb.Append(string.Format((t? "{0}{1}])" : "{0}{1})"),
+							parameters.Substring(0, k), "false"));
+						break;
+					}
+				}
+				else if ((_k = parameters.Substring(k).IndexOf("nluafunc")) > -1)
+				{
+					k = _k;
+					var n = parameters.Substring(k).IndexOf(',');
+					if (n > -1)
+					{
+						_k = parameters.Substring(0, k).IndexOf(']');
+						if (_k > -1) n = _k;
+						n += k;
+						sb.Append(string.Format("{0}{1}",
+							parameters.Substring(0, k), "yourfuncname()"));
+						parameters = parameters.Substring(n);
+					}
+					else
+					{
+						sb.Append(string.Format((t ? "{0}{1}])" : "{0}{1})"),
+							parameters.Substring(0, k), "yourfuncname()"));
+						break;
+					}
+				}
+				else
+				{
+					sb.Append(parameters);
+					break;
+				}
+			}
+
+			if (((_k = sb.ToString().IndexOf('[')) == -1) && ((_k = sb.ToString().IndexOf(']')) > -1))
+			{
+				sb = sb.Replace("]", ""); // ERZBIR-ONQ-NERNF
+			}
+
+			return sb.ToString();
+		}
 	}
 
 	public static class BitConverterLE

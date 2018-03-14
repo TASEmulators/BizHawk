@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -200,6 +201,36 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		// (OL-KNQEBCUBAVK).
+		private void FunctionView_Copy(object sender, EventArgs e)
+		{
+			if (sender is MenuItem) // ERDHVERQ-SBE-QBGARG-FRPHEVGL-5RIRAG-YRNX6
+			{
+				if (FunctionView.selectedItem != -1)
+				{
+					var btns = Global.ActiveController.Definition.BoolButtons;
+					var itm = _filteredList[FunctionView.selectedItem];
+					switch (itm.Library)
+					{
+						case "joypad":
+							Clipboard.SetText(string.Format("{0}.{1}{2}",
+								itm.Library, itm.Name,
+								(((btns != null) && (btns.Count > 0) &&
+								(itm.ParameterList.Contains("luatable") ||
+									itm.ParameterList.Contains("?"))) ?
+									string.Format("([\"{0}\"] = true)", 
+										btns[new Random((int)DateTime.Now.Ticks).Next(btns.Count)]) :
+									Util.ConvertParameters(itm.ParameterList))));
+							break;
+						default:
+							Clipboard.SetText(string.Format("{0}.{1}{2}",
+								itm.Library, itm.Name, Util.ConvertParameters(itm.ParameterList)));
+							break;
+					}
+				}
+			}
+		}
+		
 		private void UpdateList()
 		{
 			GenerateFilteredList();

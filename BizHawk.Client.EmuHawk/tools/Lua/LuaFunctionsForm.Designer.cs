@@ -82,6 +82,14 @@
 			this.ToWikiMarkupButton.Text = "Wiki markup to Clipboard";
 			this.ToWikiMarkupButton.UseVisualStyleBackColor = true;
 			this.ToWikiMarkupButton.Click += new System.EventHandler(this.ToWikiMarkupButton_Click);
+			//
+			// CopyMenu
+			//
+			this.CopyMenu = new System.Windows.Forms.ContextMenu(
+				new System.Windows.Forms.MenuItem[] {
+					new System.Windows.Forms.MenuItem("Copy")
+				});
+			this.CopyMenu.MenuItems[0].Click += new System.EventHandler(this.FunctionView_Copy);
 			// 
 			// FunctionView
 			// 
@@ -109,6 +117,7 @@
 			this.FunctionView.VirtualMode = true;
 			this.FunctionView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.FunctionView_ColumnClick);
 			this.FunctionView.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FunctionView_KeyDown);
+			this.FunctionView.ContextMenu = this.CopyMenu;
 			// 
 			// LibraryReturn
 			// 
@@ -170,5 +179,6 @@
 		private System.Windows.Forms.TextBox FilterBox;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button ToWikiMarkupButton;
+		private System.Windows.Forms.ContextMenu CopyMenu;
 	}
 }
