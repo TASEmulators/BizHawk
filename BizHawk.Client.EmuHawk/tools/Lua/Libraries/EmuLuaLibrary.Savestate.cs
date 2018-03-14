@@ -17,7 +17,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public override string Name => "savestate";
 
-		[LuaMethodExample("load", "savestate.load( \"C:\\state.bin\" );")]
+		[LuaMethodExample("savestate.load( \"C:\\state.bin\" );")]
 		[LuaMethod("load", "Loads a savestate with the given path")]
 		public void Load(string path)
 		{
@@ -31,7 +31,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("loadslot", "savestate.loadslot( 7 );")]
+		[LuaMethodExample("savestate.loadslot( 7 );")]
 		[LuaMethod("loadslot", "Loads the savestate at the given slot number (must be an integer between 0 and 9)")]
 		public void LoadSlot(int slotNum)
 		{
@@ -41,14 +41,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("save", "savestate.save( \"C:\\state.bin\" );")]
+		[LuaMethodExample("savestate.save( \"C:\\state.bin\" );")]
 		[LuaMethod("save", "Saves a state at the given path")]
 		public void Save(string path)
 		{
 			GlobalWin.MainForm.SaveState(path, path, true);
 		}
 
-		[LuaMethodExample("saveslot", "savestate.saveslot( 7 );")]
+		[LuaMethodExample("savestate.saveslot( 7 );")]
 		[LuaMethod("saveslot", "Saves a state at the given save slot (must be an integer between 0 and 9)")]
 		public void SaveSlot(int slotNum)
 		{

@@ -48,28 +48,28 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "emu";
 
-		[LuaMethodExample("displayvsync", "emu.displayvsync( true );")]
+		[LuaMethodExample("emu.displayvsync( true );")]
 		[LuaMethod("displayvsync", "Sets the display vsync property of the emulator")]
 		public static void DisplayVsync(bool enabled)
 		{
 			Global.Config.VSync = enabled;
 		}
 
-		[LuaMethodExample("frameadvance", "emu.frameadvance( );")]
+		[LuaMethodExample("emu.frameadvance( );")]
 		[LuaMethod("frameadvance", "Signals to the emulator to resume emulation. Necessary for any lua script while loop or else the emulator will freeze!")]
 		public void FrameAdvance()
 		{
 			FrameAdvanceCallback();
 		}
 
-		[LuaMethodExample("framecount", "local inemufra = emu.framecount( );")]
+		[LuaMethodExample("local inemufra = emu.framecount( );")]
 		[LuaMethod("framecount", "Returns the current frame count")]
 		public int FrameCount()
 		{
 			return Emulator.Frame;
 		}
 
-		[LuaMethodExample("disassemble", "local obemudis = emu.disassemble( 0x8000 );")]
+		[LuaMethodExample("local obemudis = emu.disassemble( 0x8000 );")]
 		[LuaMethod("disassemble", "Returns the disassembly object (disasm string and length int) for the given PC address. Uses System Bus domain if no domain name provided")]
 		public object Disassemble(uint pc, string name = "")
 		{
@@ -99,7 +99,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// TODO: what about 64 bit registers?
-		[LuaMethodExample("getregister", "local inemuget = emu.getregister( emu.getregisters( )[ 0 ] );")]
+		[LuaMethodExample("local inemuget = emu.getregister( emu.getregisters( )[ 0 ] );")]
 		[LuaMethod("getregister", "returns the value of a cpu register or flag specified by name. For a complete list of possible registers or flags for a given core, use getregisters")]
 		public int GetRegister(string name)
 		{
@@ -122,7 +122,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethodExample("getregisters", "local nlemuget = emu.getregisters( );")]
+		[LuaMethodExample("local nlemuget = emu.getregisters( );")]
 		[LuaMethod("getregisters", "returns the complete set of available flags and registers for a given core")]
 		public LuaTable GetRegisters()
 		{
@@ -148,7 +148,7 @@ namespace BizHawk.Client.Common
 			return table;
 		}
 
-		[LuaMethodExample("setregister", "emu.setregister( emu.getregisters( )[ 0 ], -1000 );")]
+		[LuaMethodExample("emu.setregister( emu.getregisters( )[ 0 ], -1000 );")]
 		[LuaMethod("setregister", "sets the given register name to the given value")]
 		public void SetRegister(string register, int value)
 		{
@@ -167,7 +167,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethodExample("totalexecutedcycles", "local inemutot = emu.totalexecutedcycles( );")]
+		[LuaMethodExample("local inemutot = emu.totalexecutedcycles( );")]
 		[LuaMethod("totalexecutedcycles", "gets the total number of executed cpu cycles")]
 		public int TotalExecutedycles()
 		{
@@ -188,14 +188,14 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethodExample("getsystemid", "local stemuget = emu.getsystemid( );")]
+		[LuaMethodExample("local stemuget = emu.getsystemid( );")]
 		[LuaMethod("getsystemid", "Returns the ID string of the current core loaded. Note: No ROM loaded will return the string NULL")]
 		public static string GetSystemId()
 		{
 			return Global.Game.System;
 		}
 
-		[LuaMethodExample("islagged", "if ( emu.islagged( ) ) then\r\n\tconsole.log( \"Returns whether or not the current frame is a lag frame\" );\r\nend;")]
+		[LuaMethodExample("if ( emu.islagged( ) ) then\r\n\tconsole.log( \"Returns whether or not the current frame is a lag frame\" );\r\nend;")]
 		[LuaMethod("islagged", "Returns whether or not the current frame is a lag frame")]
 		public bool IsLagged()
 		{
@@ -208,7 +208,7 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		[LuaMethodExample("setislagged", "emu.setislagged( true );")]
+		[LuaMethodExample("emu.setislagged( true );")]
 		[LuaMethod("setislagged", "Sets the lag flag for the current frame. If no value is provided, it will default to true")]
 		public void SetIsLagged(bool value = true)
 		{
@@ -222,7 +222,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethodExample("lagcount", "local inemulag = emu.lagcount( );")]
+		[LuaMethodExample("local inemulag = emu.lagcount( );")]
 		[LuaMethod("lagcount", "Returns the current lag count")]
 		public int LagCount()
 		{
@@ -235,7 +235,7 @@ namespace BizHawk.Client.Common
 			return 0;
 		}
 
-		[LuaMethodExample("setlagcount", "emu.setlagcount( 50 );")]
+		[LuaMethodExample("emu.setlagcount( 50 );")]
 		[LuaMethod("setlagcount", "Sets the current lag count")]
 		public void SetLagCount(int count)
 		{
@@ -249,21 +249,21 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethodExample("limitframerate", "emu.limitframerate( true );")]
+		[LuaMethodExample("emu.limitframerate( true );")]
 		[LuaMethod("limitframerate", "sets the limit framerate property of the emulator")]
 		public static void LimitFramerate(bool enabled)
 		{
 			Global.Config.ClockThrottle = enabled;
 		}
 
-		[LuaMethodExample("minimizeframeskip", "emu.minimizeframeskip( true );")]
+		[LuaMethodExample("emu.minimizeframeskip( true );")]
 		[LuaMethod("minimizeframeskip", "Sets the autominimizeframeskip value of the emulator")]
 		public static void MinimizeFrameskip(bool enabled)
 		{
 			Global.Config.AutoMinimizeSkipping = enabled;
 		}
 
-		[LuaMethodExample("setrenderplanes", "emu.setrenderplanes( true, false );")]
+		[LuaMethodExample("emu.setrenderplanes( true, false );")]
 		[LuaMethod("setrenderplanes", "Toggles the drawing of sprites and background planes. Set to false or nil to disable a pane, anything else will draw them")]
 		public void SetRenderPlanes(params bool[] luaParam)
 		{
@@ -338,14 +338,14 @@ namespace BizHawk.Client.Common
 			return true;
 		}
 
-		[LuaMethodExample("yield", "emu.yield( );")]
+		[LuaMethodExample("emu.yield( );")]
 		[LuaMethod("yield", "allows a script to run while emulation is paused and interact with the gui/main window in realtime ")]
 		public void Yield()
 		{
 			YieldCallback();
 		}
 
-		[LuaMethodExample("getdisplaytype", "local stemuget = emu.getdisplaytype();")]
+		[LuaMethodExample("local stemuget = emu.getdisplaytype();")]
 		[LuaMethod("getdisplaytype", "returns the display type (PAL vs NTSC) that the emulator is currently running in")]
 		public string GetDisplayType()
 		{
@@ -357,7 +357,7 @@ namespace BizHawk.Client.Common
 			return "";
 		}
 
-		[LuaMethodExample("getboardname", "local stemuget = emu.getboardname();")]
+		[LuaMethodExample("local stemuget = emu.getboardname();")]
 		[LuaMethod("getboardname", "returns (if available) the board name of the loaded ROM")]
 		public string GetBoardName()
 		{

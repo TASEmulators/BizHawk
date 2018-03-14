@@ -16,98 +16,98 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "bit";
 
-		[LuaMethodExample("band", "local uibitban = bit.band( 1000, 4 );")]
+		[LuaMethodExample("local uibitban = bit.band( 1000, 4 );")]
 		[LuaMethod("band", "Bitwise AND of 'val' against 'amt'")]
 		public static uint Band(uint val, uint amt)
 		{
 			return val & amt;
 		}
 
-		[LuaMethodExample("bnot", "local uibitbno = bit.bnot( 1000 );")]
+		[LuaMethodExample("local uibitbno = bit.bnot( 1000 );")]
 		[LuaMethod("bnot", "Bitwise NOT of 'val' against 'amt'")]
 		public static uint Bnot(uint val)
 		{
 			return ~val;
 		}
 
-		[LuaMethodExample("bor", "local uibitbor = bit.bor( 1000, 4 );")]
+		[LuaMethodExample("local uibitbor = bit.bor( 1000, 4 );")]
 		[LuaMethod("bor", "Bitwise OR of 'val' against 'amt'")]
 		public static uint Bor(uint val, uint amt)
 		{
 			return val | amt;
 		}
 
-		[LuaMethodExample("bxor", "local uibitbxo = bit.bxor( 1000, 4 );")]
+		[LuaMethodExample("local uibitbxo = bit.bxor( 1000, 4 );")]
 		[LuaMethod("bxor", "Bitwise XOR of 'val' against 'amt'")]
 		public static uint Bxor(uint val, uint amt)
 		{
 			return val ^ amt;
 		}
 
-		[LuaMethodExample("lshift", "local uibitlsh = bit.lshift( 1000, 4 );")]
+		[LuaMethodExample("local uibitlsh = bit.lshift( 1000, 4 );")]
 		[LuaMethod("lshift", "Logical shift left of 'val' by 'amt' bits")]
 		public static uint Lshift(uint val, int amt)
 		{
 			return val << amt;
 		}
 
-		[LuaMethodExample("rol", "local uibitrol = bit.rol( 1000, 4 );")]
+		[LuaMethodExample("local uibitrol = bit.rol( 1000, 4 );")]
 		[LuaMethod("rol", "Left rotate 'val' by 'amt' bits")]
 		public static uint Rol(uint val, int amt)
 		{
 			return (val << amt) | (val >> (32 - amt));
 		}
 
-		[LuaMethodExample("ror", "local uibitror = bit.ror( 1000, 4 );")]
+		[LuaMethodExample("local uibitror = bit.ror( 1000, 4 );")]
 		[LuaMethod("ror", "Right rotate 'val' by 'amt' bits")]
 		public static uint Ror(uint val, int amt)
 		{
 			return (val >> amt) | (val << (32 - amt));
 		}
 
-		[LuaMethodExample("rshift", "local uibitrsh = bit.rshift( 1000, 4 );")]
+		[LuaMethodExample("local uibitrsh = bit.rshift( 1000, 4 );")]
 		[LuaMethod("rshift", "Logical shift right of 'val' by 'amt' bits")]
 		public static uint Rshift(uint val, int amt)
 		{
 			return (uint)(val >> amt);
 		}
 
-		[LuaMethodExample("arshift", "local inbitars = bit.arshift( -1000, 4 );")]
+		[LuaMethodExample("local inbitars = bit.arshift( -1000, 4 );")]
 		[LuaMethod("arshift", "Arithmetic shift right of 'val' by 'amt' bits")]
 		public static int Arshift(int val, int amt)
 		{
 			return val >> amt;
 		}
 
-		[LuaMethodExample("check", "if ( bit.check( -12345, 35 ) ) then\r\n\tconsole.log( \"Returns result of bit 'pos' being set in 'num'\" );\r\nend;")]
+		[LuaMethodExample("if ( bit.check( -12345, 35 ) ) then\r\n\tconsole.log( \"Returns result of bit 'pos' being set in 'num'\" );\r\nend;")]
 		[LuaMethod("check", "Returns result of bit 'pos' being set in 'num'")]
 		public static bool Check(long num, int pos)
 		{
 			return (num & (1 << pos)) != 0;
 		}
 
-		[LuaMethodExample("set", "local uibitset = bit.set( 25, 35 );")]
+		[LuaMethodExample("local uibitset = bit.set( 25, 35 );")]
 		[LuaMethod("set", "Sets the bit 'pos' in 'num'")]
 		public static uint Set(uint num, int pos)
 		{
 			return (uint)(num | (uint)1 << pos);
 		}
 
-		[LuaMethodExample("clear", "local lobitcle = bit.clear( 25, 35 );")]
+		[LuaMethodExample("local lobitcle = bit.clear( 25, 35 );")]
 		[LuaMethod("clear", "Clears the bit 'pos' in 'num'")]
 		public static long Clear(uint num, int pos)
 		{
 			return num & ~(1 << pos);
 		}
 
-		[LuaMethodExample("byteswap_16", "local usbitbyt = bit.byteswap_16( 100 );")]
+		[LuaMethodExample("local usbitbyt = bit.byteswap_16( 100 );")]
 		[LuaMethod("byteswap_16", "Byte swaps 'short', i.e. bit.byteswap_16(0xFF00) would return 0x00FF")]
 		public static ushort Byteswap16(ushort val)
 		{
 			return (ushort)((val & 0xFFU) << 8 | (val & 0xFF00U) >> 8);
 		}
 
-		[LuaMethodExample("byteswap_32", "local uibitbyt = bit.byteswap_32( 1000 );")]
+		[LuaMethodExample("local uibitbyt = bit.byteswap_32( 1000 );")]
 		[LuaMethod("byteswap_32", "Byte swaps 'dword'")]
 		public static uint Byteswap32(uint val)
 		{
@@ -115,7 +115,7 @@ namespace BizHawk.Client.Common
 				(val & 0x00FF0000U) >> 8 | (val & 0xFF000000U) >> 24;
 		}
 
-		[LuaMethodExample("byteswap_64", "local ulbitbyt = bit.byteswap_64( 10000 );")]
+		[LuaMethodExample("local ulbitbyt = bit.byteswap_64( 10000 );")]
 		[LuaMethod("byteswap_64", "Byte swaps 'long'")]
 		public static ulong Byteswap64(ulong val)
 		{

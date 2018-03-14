@@ -13,7 +13,7 @@ namespace BizHawk.Client.Common
 
 		public override string Name => "joypad";
 
-		[LuaMethodExample("get", "local nljoyget = joypad.get( 1 );")]
+		[LuaMethodExample("local nljoyget = joypad.get( 1 );")]
 		[LuaMethod("get", "returns a lua table of the controller buttons pressed. If supplied, it will only return a table of buttons for the given controller")]
 		public LuaTable Get(int? controller = null)
 		{
@@ -51,7 +51,7 @@ namespace BizHawk.Client.Common
 		}
 
 		// TODO: what about float controls?
-		[LuaMethodExample("getimmediate", "local nljoyget = joypad.getimmediate( );")]
+		[LuaMethodExample("local nljoyget = joypad.getimmediate( );")]
 		[LuaMethod("getimmediate", "returns a lua table of any controller buttons currently pressed by the user")]
 		public LuaTable GetImmediate()
 		{
@@ -64,7 +64,7 @@ namespace BizHawk.Client.Common
 			return buttons;
 		}
 
-		[LuaMethodExample("setfrommnemonicstr", "joypad.setfrommnemonicstr( \"|    0,    0,    0,  100,...R..B....|\" );")]
+		[LuaMethodExample("joypad.setfrommnemonicstr( \"|    0,    0,    0,  100,...R..B....|\" );")]
 		[LuaMethod("setfrommnemonicstr", "sets the given buttons to their provided values for the current frame, string will be interpretted the same way an entry from a movie input log would be")]
 		public void SetFromMnemonicStr(string inputLogEntry)
 		{
@@ -89,7 +89,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethodExample("set", "joypad.set( { [\"Left\"] = true, [ \"A\" ] = true, [ \"B\" ] = true } );")]
+		[LuaMethodExample("joypad.set( { [\"Left\"] = true, [ \"A\" ] = true, [ \"B\" ] = true } );")]
 		[LuaMethod("set", "sets the given buttons to their provided values for the current frame")]
 		public void Set(LuaTable buttons, int? controller = null)
 		{
@@ -154,7 +154,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethodExample("setanalog", "joypad.setanalog( { [ \"Tilt X\" ] = true, [ \"Tilt Y\" ] = false } );")]
+		[LuaMethodExample("joypad.setanalog( { [ \"Tilt X\" ] = true, [ \"Tilt Y\" ] = false } );")]
 		[LuaMethod("setanalog", "sets the given analog controls to their provided values for the current frame. Note that unlike set() there is only the logic of overriding with the given value.")]
 		public void SetAnalog(LuaTable controls, object controller = null)
 		{

@@ -62,7 +62,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		[LuaMethodExample("addclick", "forms.addclick( 332, function()\r\n\tconsole.log( \"adds the given lua function as a click event to the given control\" );\r\nend );")]
+		[LuaMethodExample("forms.addclick( 332, function()\r\n\tconsole.log( \"adds the given lua function as a click event to the given control\" );\r\nend );")]
 		[LuaMethod("addclick", "adds the given lua function as a click event to the given control")]
 		public void AddClick(int handle, LuaFunction clickEvent)
 		{
@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("button", "local inforbut = forms.button( 333, \"Caption\", function()\r\n\tconsole.log( \"Creates a button control on the given form. The caption property will be the text value on the button. clickEvent is the name of a Lua function that will be invoked when the button is clicked. x, and y are the optional location parameters for the position of the button within the given form. The function returns the handle of the created button. Width and Height are optional, if not specified they will be a default size\" );\r\nend, 2, 48, 18, 24 );")]
+		[LuaMethodExample("local inforbut = forms.button( 333, \"Caption\", function()\r\n\tconsole.log( \"Creates a button control on the given form. The caption property will be the text value on the button. clickEvent is the name of a Lua function that will be invoked when the button is clicked. x, and y are the optional location parameters for the position of the button within the given form. The function returns the handle of the created button. Width and Height are optional, if not specified they will be a default size\" );\r\nend, 2, 48, 18, 24 );")]
 		[LuaMethod(
 			"button", "Creates a button control on the given form. The caption property will be the text value on the button. clickEvent is the name of a Lua function that will be invoked when the button is clicked. x, and y are the optional location parameters for the position of the button within the given form. The function returns the handle of the created button. Width and Height are optional, if not specified they will be a default size")]
 		public int Button(
@@ -115,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 			return (int)button.Handle;
 		}
 
-		[LuaMethodExample("checkbox", "local inforche = forms.checkbox( 333, \"Caption\", 2, 48 );")]
+		[LuaMethodExample("local inforche = forms.checkbox( 333, \"Caption\", 2, 48 );")]
 		[LuaMethod(
 			"checkbox", "Creates a checkbox control on the given form. The caption property will be the text of the checkbox. x and y are the optional location parameters for the position of the checkbox within the form")]
 		public int Checkbox(int formHandle, string caption, int? x = null, int? y = null)
@@ -138,7 +138,7 @@ namespace BizHawk.Client.EmuHawk
 			return (int)checkbox.Handle;
 		}
 
-		[LuaMethodExample("clearclicks", "forms.clearclicks( 332 );")]
+		[LuaMethodExample("forms.clearclicks( 332 );")]
 		[LuaMethod("clearclicks", "Removes all click events from the given widget at the specified handle")]
 		public void ClearClicks(int handle)
 		{
@@ -159,7 +159,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("destroy", "if ( forms.destroy( 332 ) ) then\r\n\tconsole.log( \"Closes and removes a Lua created form with the specified handle. If a dialog was found and removed true is returned, else false\" );\r\nend;")]
+		[LuaMethodExample("if ( forms.destroy( 332 ) ) then\r\n\tconsole.log( \"Closes and removes a Lua created form with the specified handle. If a dialog was found and removed true is returned, else false\" );\r\nend;")]
 		[LuaMethod("destroy", "Closes and removes a Lua created form with the specified handle. If a dialog was found and removed true is returned, else false")]
 		public bool Destroy(int handle)
 		{
@@ -177,7 +177,7 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		[LuaMethodExample("destroyall", "forms.destroyall();")]
+		[LuaMethodExample("forms.destroyall();")]
 		[LuaMethod("destroyall", "Closes and removes all Lua created dialogs")]
 		public void DestroyAll()
 		{
@@ -187,7 +187,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("dropdown", "local infordro = forms.dropdown(333, { \"item 1\", \"item2\" }, 2, 48, 18, 24);")]
+		[LuaMethodExample("local infordro = forms.dropdown(333, { \"item 1\", \"item2\" }, 2, 48, 18, 24);")]
 		[LuaMethod(
 			"dropdown", "Creates a dropdown (with a ComboBoxStyle of DropDownList) control on the given form. Dropdown items are passed via a lua table. Only the values will be pulled for the dropdown items, the keys are irrelevant. Items will be sorted alphabetically. x and y are the optional location parameters, and width and height are the optional size parameters.")]
 		public int Dropdown(
@@ -223,7 +223,7 @@ namespace BizHawk.Client.EmuHawk
 			return (int)dropdown.Handle;
 		}
 
-		[LuaMethodExample("getproperty", "local stforget = forms.getproperty(332, \"Property\");")]
+		[LuaMethodExample("local stforget = forms.getproperty(332, \"Property\");")]
 		[LuaMethod("getproperty", "returns a string representation of the value of a property of the widget at the given handle")]
 		public string GetProperty(int handle, string property)
 		{
@@ -254,7 +254,7 @@ namespace BizHawk.Client.EmuHawk
 			return "";
 		}
 
-		[LuaMethodExample("gettext", "local stforget = forms.gettext(332);")]
+		[LuaMethodExample("local stforget = forms.gettext(332);")]
 		[LuaMethod("gettext", "Returns the text property of a given form or control")]
 		public string GetText(int handle)
 		{
@@ -290,7 +290,7 @@ namespace BizHawk.Client.EmuHawk
 			return "";
 		}
 
-		[LuaMethodExample("ischecked", "if ( forms.ischecked( 332 ) ) then\r\n\tconsole.log( \"Returns the given checkbox's checked property\" );\r\nend;")]
+		[LuaMethodExample("if ( forms.ischecked( 332 ) ) then\r\n\tconsole.log( \"Returns the given checkbox's checked property\" );\r\nend;")]
 		[LuaMethod("ischecked", "Returns the given checkbox's checked property")]
 		public bool IsChecked(int handle)
 		{
@@ -319,7 +319,7 @@ namespace BizHawk.Client.EmuHawk
 			return false;
 		}
 
-		[LuaMethodExample("label", "local inforlab = forms.label( 333, \"Caption\", 2, 48, 18, 24, false );")]
+		[LuaMethodExample("local inforlab = forms.label( 333, \"Caption\", 2, 48, 18, 24, false );")]
 		[LuaMethod(
 			"label", "Creates a label control on the given form. The caption property is the text of the label. x, and y are the optional location parameters for the position of the label within the given form. The function returns the handle of the created label. Width and Height are optional, if not specified they will be a default size.")]
 		public int Label(
@@ -359,7 +359,7 @@ namespace BizHawk.Client.EmuHawk
 			return (int)label.Handle;
 		}
 
-		[LuaMethodExample("newform", "local infornew = forms.newform( 18, 24, \"Title\", function()\r\n\tconsole.log( \"creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created.\" );\r\nend );")]
+		[LuaMethodExample("local infornew = forms.newform( 18, 24, \"Title\", function()\r\n\tconsole.log( \"creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created.\" );\r\nend );")]
 		[LuaMethod(
 			"newform", "creates a new default dialog, if both width and height are specified it will create a dialog of the specified size. If title is specified it will be the caption of the dialog, else the dialog caption will be 'Lua Dialog'. The function will return an int representing the handle of the dialog created.")]
 		public int NewForm(int? width = null, int? height = null, string title = null, LuaFunction onClose = null)
@@ -395,7 +395,7 @@ namespace BizHawk.Client.EmuHawk
 			return (int)form.Handle;
 		}
 
-		[LuaMethodExample("openfile", "local stforope = forms.openfile( \"C:\\filename.bin\", \"C:\\\", \"All files ( *.* )|*.*\");")]
+		[LuaMethodExample("local stforope = forms.openfile( \"C:\\filename.bin\", \"C:\\\", \"All files ( *.* )|*.*\");")]
 		[LuaMethod(
 			"openfile", "Creates a standard openfile dialog with optional parameters for the filename, directory, and filter. The return value is the directory that the user picked. If they chose to cancel, it will return an empty string")]
 		public string OpenFile(string fileName = null, string initialDirectory = null, string filter = "All files (*.*)|*.*")
@@ -426,7 +426,7 @@ namespace BizHawk.Client.EmuHawk
 			return "";
 		}
 
-		[LuaMethodExample("pictureBox", "local inforpic = forms.pictureBox( 333, 2, 48, 18, 24 );")]
+		[LuaMethodExample("local inforpic = forms.pictureBox( 333, 2, 48, 18, 24 );")]
 		[LuaMethod(
 			"pictureBox",
 			"Creates a new drawing area in the form. Optionally the location in the form as well as the size of the drawing area can be specified. Returns the handle the component can be refered to with.")]
@@ -458,7 +458,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#region LuaPictureBox Methods
 
-		[LuaMethodExample("clear", "forms.clear( 334, 0x000000FF );")]
+		[LuaMethodExample("forms.clear( 334, 0x000000FF );")]
 		[LuaMethod(
 			"clear",
 			"Clears the canvas")]
@@ -490,7 +490,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("refresh", "forms.refresh( 334 );")]
+		[LuaMethodExample("forms.refresh( 334 );")]
 		[LuaMethod(
 			"refresh",
 			"Redraws the canvas")]
@@ -522,7 +522,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("setDefaultForegroundColor", "forms.setDefaultForegroundColor( 334, 0xFFFFFFFF );")]
+		[LuaMethodExample("forms.setDefaultForegroundColor( 334, 0xFFFFFFFF );")]
 		[LuaMethod(
 			"setDefaultForegroundColor",
 			"Sets the default foreground color to use in drawing methods, white by default")]
@@ -554,7 +554,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("setDefaultBackgroundColor", "forms.setDefaultBackgroundColor( 334, 0x000000FF );")]
+		[LuaMethodExample("forms.setDefaultBackgroundColor( 334, 0x000000FF );")]
 		[LuaMethod(
 			"setDefaultBackgroundColor",
 			"Sets the default background color to use in drawing methods, transparent by default")]
@@ -586,7 +586,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("setDefaultTextBackground", "forms.setDefaultTextBackground( 334, 0x000000FF );")]
+		[LuaMethodExample("forms.setDefaultTextBackground( 334, 0x000000FF );")]
 		[LuaMethod(
 			"setDefaultTextBackground",
 			"Sets the default backgroiund color to use in text drawing methods, half-transparent black by default")]
@@ -618,7 +618,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("drawBezier", "forms.drawBezier( 334, { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 0x000000FF );")]
+		[LuaMethodExample("forms.drawBezier( 334, { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 0x000000FF );")]
 		[LuaMethod(
 			"drawBezier",
 			"Draws a Bezier curve using the table of coordinates provided in the given color")]
@@ -650,7 +650,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("drawBox", "forms.drawBox( 334, 16, 32, 162, 322, 0x007F00FF, 0x7F7F7FFF );")]
+		[LuaMethodExample("forms.drawBox( 334, 16, 32, 162, 322, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawBox",
 			"Draws a rectangle on screen from x1/y1 to x2/y2. Same as drawRectangle except it receives two points intead of a point and width/height")]
@@ -682,7 +682,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("drawEllipse", "forms.drawEllipse( 334, 16, 32, 77, 99, 0x007F00FF, 0x7F7F7FFF );")]
+		[LuaMethodExample("forms.drawEllipse( 334, 16, 32, 77, 99, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawEllipse",
 			"Draws an ellipse at the given coordinates and the given width and height. Line is the color of the ellipse. Background is the optional fill color")]
@@ -714,7 +714,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("drawIcon", "forms.drawIcon( 334, \"C:\\icon.ico\", 16, 32, 18, 24 );")]
+		[LuaMethodExample("forms.drawIcon( 334, \"C:\\icon.ico\", 16, 32, 18, 24 );")]
 		[LuaMethod(
 			"drawIcon",
 			"draws an Icon (.ico) file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
@@ -746,7 +746,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("drawImage", "forms.drawImage( 334, \"C:\\image.png\", 16, 32, 18, 24, false );")]
+		[LuaMethodExample("forms.drawImage( 334, \"C:\\image.png\", 16, 32, 18, 24, false );")]
 		[LuaMethod(
 			"drawImage",
 			"draws an image file from the given path at the given coordinate. width and height are optional. If specified, it will resize the image accordingly")]
@@ -783,7 +783,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("clearImageCache", "forms.clearImageCache( 334 );")]
+		[LuaMethodExample("forms.clearImageCache( 334 );")]
 		[LuaMethod(
 			"clearImageCache",
 			"clears the image cache that is built up by using gui.drawImage, also releases the file handle for cached images")]
@@ -815,7 +815,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("drawImageRegion", "forms.drawImageRegion( 334, \"C:\\image.bmp\", 11, 22, 33, 44, 21, 43, 34, 45 );")]
+		[LuaMethodExample("forms.drawImageRegion( 334, \"C:\\image.bmp\", 11, 22, 33, 44, 21, 43, 34, 45 );")]
 		[LuaMethod(
 			"drawImageRegion",
 			"draws a given region of an image file from the given path at the given coordinate, and optionally with the given size")]
@@ -852,7 +852,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("drawLine", "forms.drawLine( 334, 161, 321, 162, 322, 0xFFFFFFFF );")]
+		[LuaMethodExample("forms.drawLine( 334, 161, 321, 162, 322, 0xFFFFFFFF );")]
 		[LuaMethod(
 			"drawLine",
 			"Draws a line from the first coordinate pair to the 2nd. Color is optional (if not specified it will be drawn black)")]
@@ -884,7 +884,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("drawAxis", "forms.drawAxis( 334, 16, 32, int size, 0xFFFFFFFF );")]
+		[LuaMethodExample("forms.drawAxis( 334, 16, 32, int size, 0xFFFFFFFF );")]
 		[LuaMethod(
 			"drawAxis",
 			"Draws an axis of the specified size at the coordinate pair.)")]
@@ -916,7 +916,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("drawArc", "forms.drawArc( 334, 16, 32, 77, 99, 180, 90, 0x007F00FF );")]
+		[LuaMethodExample("forms.drawArc( 334, 16, 32, 77, 99, 180, 90, 0x007F00FF );")]
 		[LuaMethod(
 			"drawArc",
 			"draws a Arc shape at the given coordinates and the given width and height"
@@ -949,7 +949,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("drawPie", "forms.drawPie( 334, 16, 32, 77, 99, 180, 90, 0x007F00FF, 0x7F7F7FFF );")]
+		[LuaMethodExample("forms.drawPie( 334, 16, 32, 77, 99, 180, 90, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawPie",
 			"draws a Pie shape at the given coordinates and the given width and height")]
@@ -990,7 +990,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("drawPixel", "forms.drawPixel( 334, 16, 32, 0xFFFFFFFF );")]
+		[LuaMethodExample("forms.drawPixel( 334, 16, 32, 0xFFFFFFFF );")]
 		[LuaMethod(
 			"drawPixel",
 			"Draws a single pixel at the given coordinates in the given color. Color is optional (if not specified it will be drawn black)")]
@@ -1022,7 +1022,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("drawPolygon", "forms.drawPolygon( 334, { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 0x007F00FF, 0x7F7F7FFF );")]
+		[LuaMethodExample("forms.drawPolygon( 334, { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawPolygon",
 			"Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). Line is the color of the polygon. Background is the optional fill color")]
@@ -1055,7 +1055,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 
-		[LuaMethodExample("drawRectangle", "forms.drawRectangle( 334, 16, 32, 77, 99, 0x007F00FF, 0x7F7F7FFF );")]
+		[LuaMethodExample("forms.drawRectangle( 334, 16, 32, 77, 99, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawRectangle",
 			"Draws a rectangle at the given coordinate and the given width and height. Line is the color of the box. Background is the optional fill color")]
@@ -1087,7 +1087,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("drawString", "forms.drawString( 334, 16, 32, \"Some message\", 0x7F0000FF, 0x00007FFF, 8, \"Arial Narrow\", \"bold\", \"center\", \"middle\" );")]
+		[LuaMethodExample("forms.drawString( 334, 16, 32, \"Some message\", 0x7F0000FF, 0x00007FFF, 8, \"Arial Narrow\", \"bold\", \"center\", \"middle\" );")]
 		[LuaMethod(
 			"drawString",
 			"Alias of DrawText()")]
@@ -1130,7 +1130,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("drawText", "forms.drawText( 334, 16, 32, \"Some message\", 0x7F0000FF, 0x00007FFF, 8, \"Arial Narrow\", \"bold\", \"center\", \"middle\" );")]
+		[LuaMethodExample("forms.drawText( 334, 16, 32, \"Some message\", 0x7F0000FF, 0x00007FFF, 8, \"Arial Narrow\", \"bold\", \"center\", \"middle\" );")]
 		[LuaMethod(
 			"drawText",
 			"Draws the given message at the given x,y coordinates and the given color. The default color is white. A fontfamily can be specified and is monospace generic if none is specified (font family options are the same as the .NET FontFamily class). The fontsize default is 12. The default font style is regular. Font style options are regular, bold, italic, strikethrough, underline. Horizontal alignment options are left (default), center, or right. Vertical alignment options are bottom (default), middle, or top. Alignment options specify which ends of the text will be drawn at the x and y coordinates.")]
@@ -1174,7 +1174,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// It'd be great if these were simplified into 1 function, but I cannot figure out how to return a LuaTable from this class
-		[LuaMethodExample("getMouseX", "local inforget = forms.getMouseX( 334 );")]
+		[LuaMethodExample("local inforget = forms.getMouseX( 334 );")]
 		[LuaMethod(
 			"getMouseX",
 			"Returns an integer representation of the mouse X coordinate relative to the PictureBox.")]
@@ -1209,7 +1209,7 @@ namespace BizHawk.Client.EmuHawk
 			return 0;
 		}
 
-		[LuaMethodExample("getMouseY", "local inforget = forms.getMouseY( 334 );")]
+		[LuaMethodExample("local inforget = forms.getMouseY( 334 );")]
 		[LuaMethod(
 			"getMouseY",
 			"Returns an integer representation of the mouse Y coordinate relative to the PictureBox.")]
@@ -1246,7 +1246,7 @@ namespace BizHawk.Client.EmuHawk
 
 		#endregion
 
-		[LuaMethodExample("setdropdownitems", "forms.setdropdownitems( 332, { \"item1\", \"item2\" } );")]
+		[LuaMethodExample("forms.setdropdownitems( 332, { \"item1\", \"item2\" } );")]
 		[LuaMethod("setdropdownitems", "Sets the items for a given dropdown box")]
 		public void SetDropdownItems(int handle, LuaTable items)
 		{
@@ -1282,7 +1282,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("setlocation", "forms.setlocation( 332, 16, 32 );")]
+		[LuaMethodExample("forms.setlocation( 332, 16, 32 );")]
 		[LuaMethod("setlocation", "Sets the location of a control or form by passing in the handle of the created object")]
 		public void SetLocation(int handle, int x, int y)
 		{
@@ -1306,7 +1306,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("setproperty", "forms.setproperty( 332, \"Property\", \"Property value\" );")]
+		[LuaMethodExample("forms.setproperty( 332, \"Property\", \"Property value\" );")]
 		[LuaMethod("setproperty", "Attempts to set the given property of the widget with the given value.  Note: not all properties will be able to be represented for the control to accept")]
 		public void SetProperty(int handle, string property, object value)
 		{
@@ -1362,14 +1362,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("createcolor", "local coforcre = forms.createcolor( 0x7F, 0x3F, 0x1F, 0xCF );")]
+		[LuaMethodExample("local coforcre = forms.createcolor( 0x7F, 0x3F, 0x1F, 0xCF );")]
 		[LuaMethod("createcolor", "Creates a color object useful with setproperty")]
 		public Color CreateColor(int r, int g, int b, int a)
 		{
 			return Color.FromArgb(a, r, g, b);
 		}
 
-		[LuaMethodExample("setsize", "forms.setsize( 332, 77, 99 );")]
+		[LuaMethodExample("forms.setsize( 332, 77, 99 );")]
 		[LuaMethod("setsize", "TODO")]
 		public void SetSize(int handle, int width, int height)
 		{
@@ -1393,7 +1393,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("settext", "forms.settext( 332, \"Caption\" );")]
+		[LuaMethodExample("forms.settext( 332, \"Caption\" );")]
 		[LuaMethod("settext", "Sets the text property of a control or form by passing in the handle of the created object")]
 		public void Settext(int handle, string caption)
 		{
@@ -1417,7 +1417,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("textbox", "local infortex = forms.textbox( 333, \"Caption\", 18, 24, \"HEX\", 2, 48, true, false, \"Both\" );")]
+		[LuaMethodExample("local infortex = forms.textbox( 333, \"Caption\", 18, 24, \"HEX\", 2, 48, true, false, \"Both\" );")]
 		[LuaMethod(
 			"textbox", "Creates a textbox control on the given form. The caption property will be the initial value of the textbox (default is empty). Width and Height are option, if not specified they will be a default size of 100, 20. Type is an optional property to restrict the textbox input. The available options are HEX, SIGNED, and UNSIGNED. Passing it null or any other value will set it to no restriction. x, and y are the optional location parameters for the position of the textbox within the given form. The function returns the handle of the created textbox. If true, the multiline will enable the standard winform multi-line property. If true, the fixedWidth options will create a fixed width font. Scrollbars is an optional property to specify which scrollbars to display. The available options are Vertical, Horizontal, Both, and None. Scrollbars are only shown on a multiline textbox")]
 		public int Textbox(

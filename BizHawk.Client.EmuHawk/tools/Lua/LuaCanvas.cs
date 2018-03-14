@@ -34,7 +34,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"setTitle",
 			"LuaCanvas.setTitle( \"Title\" );")]
 		[LuaMethod(
 			"setTitle",
@@ -45,7 +44,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"setLocation",
 			"LuaCanvas.setLocation( 16, 32 );")]
 		[LuaMethod(
 			"setLocation",
@@ -58,7 +56,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"clear",
 			"LuaCanvas.clear( 0x000000FF );")]
 		[LuaMethod(
 			"clear",
@@ -69,7 +66,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"refresh",
 			"LuaCanvas.refresh( );")]
 		[LuaMethod(
 			"refresh",
@@ -80,7 +76,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"setDefaultForegroundColor",
 			"LuaCanvas.setDefaultForegroundColor( 0x000000FF );")]
 		[LuaMethod(
 			"setDefaultForegroundColor",
@@ -91,7 +86,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"setDefaultBackgroundColor",
 			"LuaCanvas.setDefaultBackgroundColor( 0x000000FF );")]
 		[LuaMethod(
 			"setDefaultBackgroundColor",
@@ -102,7 +96,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"setDefaultTextBackground",
 			"LuaCanvas.setDefaultTextBackground( 0x000000FF );")]
 		[LuaMethod(
 			"setDefaultTextBackground",
@@ -113,7 +106,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"drawBezier",
 			"LuaCanvas.drawBezier( { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 0x000000FF );")]
 		[LuaMethod(
 			"drawBezier",
@@ -132,7 +124,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"drawBox",
 			"LuaCanvas.drawBox( 16, 32, 162, 322, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawBox",
@@ -151,7 +142,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"drawEllipse",
 			"LuaCanvas.drawEllipse( 16, 32, 77, 99, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawEllipse",
@@ -170,7 +160,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"drawIcon",
 			"LuaCanvas.drawIcon( \"C:\\icon.ico\", 16, 32, 18, 24 );")]
 		[LuaMethod(
 			"drawIcon",
@@ -189,7 +178,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"drawImage",
 			"LuaCanvas.drawImage( \"C:\\image.bmp\", 16, 32, 18, 24, false );")]
 		[LuaMethod(
 			"drawImage",
@@ -206,7 +194,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"clearImageCache",
 			"LuaCanvas.clearImageCache( );")]
 		[LuaMethod(
 			"clearImageCache",
@@ -217,7 +204,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"drawImageRegion",
 			"LuaCanvas.drawImageRegion( \"C:\\image.png\", 11, 22, 33, 44, 21, 43, 34, 45 );")]
 		[LuaMethod(
 			"drawImageRegion",
@@ -234,7 +220,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"drawLine",
 			"LuaCanvas.drawLine( 161, 321, 162, 322, 0xFFFFFFFF );")]
 		[LuaMethod(
 			"drawLine",
@@ -245,7 +230,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"drawAxis",
 			"LuaCanvas.drawAxis( 16, 32, int size, 0xFFFFFFFF );")]
 		[LuaMethod(
 			"drawAxis",
@@ -256,7 +240,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"drawArc",
 			"LuaCanvas.drawArc( 16, 32, 77, 99, 180, 90, 0x007F00FF );")]
 		[LuaMethod(
 			"drawArc",
@@ -268,7 +251,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"drawPie",
 			"LuaCanvas.drawPie( 16, 32, 77, 99, 180, 90, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawPie",
@@ -287,7 +269,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"drawPixel", 
 			"LuaCanvas.drawPixel( 16, 32, 0xFFFFFFFF );")]
 		[LuaMethod(
 			"drawPixel",
@@ -306,7 +287,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"drawPolygon", 
 			"LuaCanvas.drawPolygon( { 10, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawPolygon",
@@ -326,7 +306,6 @@ namespace BizHawk.Client.EmuHawk
 
 
 		[LuaMethodExample(
-			"drawRectangle",
 			"LuaCanvas.drawRectangle( 16, 32, 77, 99, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawRectangle",
@@ -337,7 +316,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"drawString", 
 			"LuaCanvas.drawString( 16, 32, \"Some message\", 0x7F0000FF, 0x00007FFF, 8, \"Arial Narrow\", \"bold\", \"center\", \"middle\" );")]
 		[LuaMethod(
 			"drawString",
@@ -358,7 +336,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"drawText", 
 			"LuaCanvas.drawText( 16, 32, \"Some message\", 0x7F0000FF, 0x00007FFF, 8, \"Arial Narrow\", \"bold\", \"center\", \"middle\" );")]
 		[LuaMethod(
 			"drawText",
@@ -381,7 +358,6 @@ namespace BizHawk.Client.EmuHawk
 
 		// It'd be great if these were simplified into 1 function, but I cannot figure out how to return a LuaTable from this class
 		[LuaMethodExample(
-			"getMouseX",
 			"local inLuaget = LuaCanvas.getMouseX( );")]
 		[LuaMethod(
 			"getMouseX",
@@ -393,7 +369,6 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		[LuaMethodExample(
-			"getMouseY", 
 			"local inLuaget = LuaCanvas.getMouseY( );")]
 		[LuaMethod(
 			"getMouseY",
