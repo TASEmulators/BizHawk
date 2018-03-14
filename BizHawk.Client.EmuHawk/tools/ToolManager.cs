@@ -490,7 +490,8 @@ namespace BizHawk.Client.EmuHawk
 					
 					if ((tool.IsHandleCreated && !tool.IsDisposed) || tool is RamWatch) // Hack for RAM Watch - in display watches mode it wants to keep running even closed, it will handle disposed logic
 					{
-						tool.Restart();
+						if (!tool.ToString().Contains("Lua Console"))
+							tool.Restart();
 					}
 				}
 				else
