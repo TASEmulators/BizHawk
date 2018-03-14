@@ -369,6 +369,7 @@ namespace BizHawk.Client.EmuHawk
 					//next, draw the immediate input.
 					//that is, whatever's being held down interactively right this moment even if the game is paused
 					//this includes things held down due to autohold or autofire
+					//I know, this is all really confusing
 					var immediate = InputStrImmediate();
 					g.DrawString(immediate, MessageFont, immediateColor, x, y);
 
@@ -377,7 +378,7 @@ namespace BizHawk.Client.EmuHawk
 					//basically we're tinting whatever's pressed because it's sticky specially
 					//in order to achieve this we want to avoid drawing anything pink that isnt actually held down right now
 					//so we make an AND adapter and combine it using immediate & sticky
-					var autoString = MakeStringFor(Global.AutofireStickyXORAdapter.And(Global.StickyXORAdapter.Or(Global.AutofireStickyXORAdapter)));
+					var autoString = MakeStringFor(Global.StickyXORAdapter.Source.Xor(Global.AutofireStickyXORAdapter).And(Global.AutofireStickyXORAdapter));
 					g.DrawString(autoString, MessageFont, autoColor, x, y);
 
 					//recolor everything that's changed from the previous input
