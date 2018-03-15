@@ -167,8 +167,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // paging
             if (port == 0x7ffd)
             {
-                if (PagingDisabled)
-                    return;
+                //if (PagingDisabled)
+                    //return;
 
                 // Bits 0, 1, 2 select the RAM page
                 var rp = value & 0x07;
@@ -177,6 +177,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // bit 3 controls shadow screen
                 SHADOWPaged = bits[3];
+
+                if (SHADOWPaged == false)
+                {
+
+                }
+                else
+                {
+
+                }
 
                 // ROM page
                 if (bits[4])
@@ -192,7 +201,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // Bit 5 set signifies that paging is disabled until next reboot
                 PagingDisabled = bits[5];
-                return;
             }
 
             // Check whether the low bit is reset
