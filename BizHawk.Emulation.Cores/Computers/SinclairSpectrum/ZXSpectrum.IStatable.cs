@@ -51,8 +51,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 core = ms.ToArray();
             }
 
-            
-
             if (ser.IsWriter)
             {
                 ser.SyncEnum("_machineType", ref _machineType);
@@ -70,12 +68,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 var tmpM = _machineType;
                 ser.SyncEnum("_machineType", ref _machineType);
-                if (tmpM != _machineType)
+                if (tmpM != _machineType && _machineType.ToString() != "72")
                 {
                     string msg = "SAVESTATE FAILED TO LOAD!!\n\n";
-                    msg += "Current Configuration: " + _machineType.ToString();
+                    msg += "Current Configuration: " + tmpM.ToString();
                     msg += "\n";
-                    msg += "Saved Configuration:    " + tmpM.ToString();
+                    msg += "Saved Configuration:    " + _machineType.ToString(); 
                     msg += "\n\n";
                     msg += "If you wish to load this SaveState ensure that you have the correct machine configuration selected, reboot the core, then try again.";
                     CoreComm.ShowMessage(msg);

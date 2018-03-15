@@ -16,11 +16,67 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadPort(ushort port)
         {
+            bool deviceAddressed = true;
+
             // process IO contention
             ContendPortAddress(port);
 
             int result = 0xFF;
 
+            // check AY
+            if (AYDevice.ReadPort(port, ref result))
+                return (byte)result;
+
+            // Kempston joystick input takes priority over all other input
+            // if this is detected just return the kempston byte
+            if ((port & 0xe0) == 0 || (port & 0x20) == 0)
+            {
+                if (LocateUniqueJoystick(JoystickType.Kempston) != null)
+                    return (byte)((KempstonJoystick)LocateUniqueJoystick(JoystickType.Kempston) as KempstonJoystick).JoyLine;
+
+                InputRead = true;
+            }
+            else
+            {
+                if (KeyboardDevice.ReadPort(port, ref result))
+                {
+                    // not a lagframe
+                    InputRead = true;
+
+                    // tape loading monitor cycle
+                    TapeDevice.MonitorRead();
+
+                    // process tape INs
+                    TapeDevice.ReadPort(port, ref result);
+                }
+                else
+                    deviceAddressed = false;
+            }
+
+            if (!deviceAddressed)
+            {
+                // If this is an unused port the floating memory bus should be returned
+                // Floating bus is read on the previous cycle
+                int _tStates = CurrentFrameCycle - 1;
+
+                // if we are on the top or bottom border return 0xff
+                if ((_tStates < ULADevice.contentionStartPeriod) || (_tStates > ULADevice.contentionEndPeriod))
+                {
+                    result = 0xff;
+                }
+                else
+                {
+                    if (ULADevice.floatingBusTable[_tStates] < 0)
+                    {
+                        result = 0xff;
+                    }
+                    else
+                    {
+                        result = ReadBus((ushort)ULADevice.floatingBusTable[_tStates]);
+                    }
+                }
+            }
+            /*
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = (port & 0x0001) == 0;
@@ -88,10 +144,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     else
                         result = 0xff;
                 }
-                */
+                *//*
 
                 // if unused port the floating memory bus should be returned (still todo)
             }
+        */
 
             return (byte)result;
         }
@@ -103,6 +160,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WritePort(ushort port, byte value)
         {
+            // process IO contention
+            ContendPortAddress(port);
+
             // get a BitArray of the port
             BitArray portBits = new BitArray(BitConverter.GetBytes(port));
             // get a BitArray of the value byte
@@ -111,7 +171,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Check whether the low bit is reset
             bool lowBitReset = !portBits[0]; // (port & 0x01) == 0;
 
-            ULADevice.Contend(port);
+            AYDevice.WritePort(port, value);
 
             // port 0x7ffd - hardware should only respond when bits 1 & 15 are reset and bit 14 is set
             if (port == 0x7ffd)
@@ -131,10 +191,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                     // portbit 4 is the LOW BIT of the ROM selection
                     ROMlow = bits[4];
-                }                         
+                }
             }
             // port 0x1ffd - hardware should only respond when bits 1, 13, 14 & 15 are reset and bit 12 is set
-            else if (port == 0x1ffd)
+            if (port == 0x1ffd)
             {
                 if (!PagingDisabled)
                 {
@@ -172,75 +232,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // bit 4 is the printer port strobe
                 PrinterPortStrobe = bits[4];
             }
-            /*
-            // port 0x7ffd - hardware should only respond when bits 1 & 15 are reset and bit 14 is set
-            if (!portBits[1] && !portBits[15] && portBits[14])
-            {
-                // paging (skip if paging has been disabled - paging can then only happen after a machine hard reset)
-                if (!PagingDisabled)
-                {
-                    // bit 0 specifies the paging mode
-                    SpecialPagingMode = bits[0];
-
-                    if (!SpecialPagingMode)
-                    {
-                        // we are in normal mode
-                        // portbit 4 is the LOW BIT of the ROM selection
-                        BitArray romHalfNibble = new BitArray(2);
-                        romHalfNibble[0] = portBits[4];
-
-                        // value bit 2 is the high bit of the ROM selection
-                        romHalfNibble[1] = bits[2];
-
-                        // value bit 1 is ignored in normal paging mode
-
-                        // set the ROMPage
-                        ROMPaged = ZXSpectrum.GetIntFromBitArray(romHalfNibble);
-
-
-                        
-
-                        // bit 3 controls shadow screen
-                        SHADOWPaged = bits[3];
-
-                        // Bit 5 set signifies that paging is disabled until next reboot
-                        PagingDisabled = bits[5];
-                    }
-                }
-            }
-
-            // port 0x1ffd - special paging mode
-            // hardware should only respond when bits 1, 13, 14 & 15 are reset and bit 12 is set
-            if (!portBits[1] && portBits[12] && !portBits[13] && !portBits[14] && !portBits[15])
-            {
-                if (!PagingDisabled && SpecialPagingMode)
-                {
-                    // process special paging
-                    // this is decided based on combinations of bits 1 & 2
-                    // Config 0 = Bit1-0 Bit2-0
-                    // Config 1 = Bit1-1 Bit2-0
-                    // Config 2 = Bit1-0 Bit2-1
-                    // Config 3 = Bit1-1 Bit2-1
-                    BitArray confHalfNibble = new BitArray(2);
-                    confHalfNibble[0] = bits[1];
-                    confHalfNibble[1] = bits[2];
-
-                    // set special paging configuration
-                    PagingConfiguration = ZXSpectrum.GetIntFromBitArray(confHalfNibble);
-
-                    // last value should be saved at 0x5b67 (23399) - not sure if this is actually needed
-                    WriteBus(0x5b67, value);
-                }
-
-                // bit 3 controls the disk motor (1=on, 0=off)
-                DiskMotorState = bits[3];
-
-                // bit 4 is the printer port strobe
-                PrinterPortStrobe = bits[4];
-            }
-
-            */
-
 
             // Only even addresses address the ULA
             if (lowBitReset)
@@ -268,100 +259,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
             }
 
-            else
-            {
-                // AY Register activation
-                if ((port & 0xc002) == 0xc000)
-                {
-                    var reg = value & 0x0f;
-                    AYDevice.SelectedRegister = reg;
-                    CPU.TotalExecutedCycles += 3;
-                }
-                else
-                {
-                    if ((port & 0xC002) == 0x8000)
-                    {
-                        AYDevice.PortWrite(value);
-                        CPU.TotalExecutedCycles += 3;
-                    }
-
-                    /*
-
-                    else
-                    {
-                        if ((port & 0xC002) == 0x4000) //Are bits 1 and 15 reset and bit 14 set?
-                        {
-                            // memory paging activate
-                            if (PagingDisabled)
-                                return;
-
-                            // bit 5 handles paging disable (48k mode, persistent until next reboot)
-                            if ((value & 0x20) != 0)
-                            {
-                                PagingDisabled = true;
-                            }
-
-                            // shadow screen
-                            if ((value & 0x08) != 0)
-                            {
-                                SHADOWPaged = true;
-                            }
-                            else
-                            {
-                                SHADOWPaged = false;
-                            }
-                        }
-                        else
-                        {
-                            //Extra Memory Paging feature activate
-                            if ((port & 0xF002) == 0x1000) //Is bit 12 set and bits 13,14,15 and 1 reset?
-                            {
-                                if (PagingDisabled)
-                                    return;
-
-                                // set disk motor state
-                                //todo
-
-                                if ((value & 0x08) != 0)
-                                {
-                                    //diskDriveState |= (1 << 4);
-                                }
-                                else
-                                {
-                                    //diskDriveState &= ~(1 << 4);
-                                }
-
-                                if ((value & 0x1) != 0)
-                                {
-                                    // activate special paging mode
-                                    SpecialPagingMode = true;
-                                    PagingConfiguration = (value & 0x6 >> 1);
-                                }
-                                else
-                                {
-                                    // normal paging mode
-                                    SpecialPagingMode = false;
-                                }
-                            }
-                            else
-                            {
-                                // disk write port
-                                if ((port & 0xF002) == 0x3000) //Is bit 12 set and bits 13,14,15 and 1 reset?
-                                {
-                                    //udpDrive.DiskWriteByte((byte)(val & 0xff));
-                                }
-                            }
-                        }
-                    }
-                    */
-                }
-            }
 
             LastULAOutByte = value;
-
-            
-
-            
         }
 
         /// <summary>

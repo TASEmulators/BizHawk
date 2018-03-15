@@ -16,14 +16,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadPort(ushort port)
         {
+            bool deviceAddressed = true;
+
             // process IO contention
             ContendPortAddress(port);
 
             int result = 0xFF;
 
-            // Check whether the low bit is reset
-            // Technically the ULA should respond to every even I/O address
-            bool lowBitReset = (port & 0x0001) == 0;
+            // check AY
+            if (AYDevice.ReadPort(port, ref result))
+                return (byte)result;
 
             // Kempston joystick input takes priority over all other input
             // if this is detected just return the kempston byte
@@ -34,62 +36,45 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 InputRead = true;
             }
-            else if (lowBitReset)
-            {
-                // Even I/O address so get input from keyboard
-                KeyboardDevice.ReadPort(port, ref result);
-
-                TapeDevice.MonitorRead();
-
-                // not a lagframe
-                InputRead = true;
-
-                // tape loading monitor cycle
-                TapeDevice.MonitorRead();
-
-                // process tape INs
-                TapeDevice.ReadPort(port, ref result);
-            }
             else
             {
-                // devices other than the ULA will respond here
-                // (e.g. the AY sound chip in a 128k spectrum
-
-                // AY register activate - on +3/2a both FFFD and BFFD active AY
-                if ((port & 0xc002) == 0xc000)
+                if (KeyboardDevice.ReadPort(port, ref result))
                 {
-                    result = (int)AYDevice.PortRead();
+                    // not a lagframe
+                    InputRead = true;
+
+                    // tape loading monitor cycle
+                    TapeDevice.MonitorRead();
+
+                    // process tape INs
+                    TapeDevice.ReadPort(port, ref result);
                 }
-                else if ((port & 0xc002) == 0x8000)
+                else
+                    deviceAddressed = false;
+            }
+
+            if (!deviceAddressed)
+            {
+                // If this is an unused port the floating memory bus should be returned
+                // Floating bus is read on the previous cycle
+                int _tStates = CurrentFrameCycle - 1;
+
+                // if we are on the top or bottom border return 0xff
+                if ((_tStates < ULADevice.contentionStartPeriod) || (_tStates > ULADevice.contentionEndPeriod))
                 {
-                    result = (int)AYDevice.PortRead();
+                    result = 0xff;
                 }
-
-                // Kempston Mouse (not implemented yet)
-
-
-                else if ((port & 0xF002) == 0x2000) //Is bit 12 set and bits 13,14,15 and 1 reset?
+                else
                 {
-                    //result = udpDrive.DiskStatusRead();
-
-                    // disk drive is not yet implemented - return a max status byte for the menu to load
-                    result = 255;
-                }
-                else if ((port & 0xF002) == 0x3000)
-                {
-                    //result = udpDrive.DiskReadByte();
-                    result = 0;
-                }
-
-                else if ((port & 0xF002) == 0x0)
-                {
-                    if (PagingDisabled)
-                        result = 0x1;
-                    else
+                    if (ULADevice.floatingBusTable[_tStates] < 0)
+                    {
                         result = 0xff;
+                    }
+                    else
+                    {
+                        result = ReadBus((ushort)ULADevice.floatingBusTable[_tStates]);
+                    }
                 }
-
-                // if unused port the floating memory bus should be returned (still todo)
             }
 
             return (byte)result;
@@ -113,6 +98,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Check whether the low bit is reset
             bool lowBitReset = !portBits[0]; // (port & 0x01) == 0;
 
+            AYDevice.WritePort(port, value);
+
             // port 0x7ffd - hardware should only respond when bits 1 & 15 are reset and bit 14 is set
             if (port == 0x7ffd)
             {
@@ -134,7 +121,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }                         
             }
             // port 0x1ffd - hardware should only respond when bits 1, 13, 14 & 15 are reset and bit 12 is set
-            else if (port == 0x1ffd)
+            if (port == 0x1ffd)
             {
                 if (!PagingDisabled)
                 {
@@ -199,25 +186,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
             }
 
-            else
-            {
-                // AY Register activation
-                if ((port & 0xc002) == 0xc000)
-                {
-                    var reg = value & 0x0f;
-                    AYDevice.SelectedRegister = reg;
-                    CPU.TotalExecutedCycles += 3;
-                }
-                else
-                {
-                    if ((port & 0xC002) == 0x8000)
-                    {
-                        AYDevice.PortWrite(value);
-                        CPU.TotalExecutedCycles += 3;
-                    }
-                }
-            }
-
+           
             LastULAOutByte = value;
         }
 

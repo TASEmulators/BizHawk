@@ -158,6 +158,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (_tapeIsPlaying)
                 return;
 
+            _machine.BuzzerDevice.SetTapeMode(true);
+
             _machine.Spectrum.OSD_TapePlaying();
 
             // update the lastCycle
@@ -209,6 +211,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             if (!_tapeIsPlaying)
                 return;
+
+            _machine.BuzzerDevice.SetTapeMode(false);
 
             _machine.Spectrum.OSD_TapeStopped();
 

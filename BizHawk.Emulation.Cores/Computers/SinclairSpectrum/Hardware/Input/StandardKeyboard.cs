@@ -339,6 +339,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             (for instance by XOR A/IN A,(FE)) is one, no key is pressed
             */
 
+            if ((port & 0x0001) != 0)
+                return false;
+
             if ((port & 0x8000) == 0)
             {
                 result &= KeyLine[7];

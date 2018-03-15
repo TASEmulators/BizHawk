@@ -101,7 +101,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             SoundMixer = new SoundProviderMixer((int)(32767 / 10), (ISoundProvider)_machine.BuzzerDevice);
             if (_machine.AYDevice != null)
                 SoundMixer.AddSource(_machine.AYDevice);
-            SoundMixer.Stereo = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).StereoSound;
+            //SoundMixer.Stereo = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).StereoSound;
+
+            if (_machine.AYDevice != null && _machine.AYDevice.GetType() == typeof(AYChip))
+            {
+                ((AYChip)_machine.AYDevice as AYChip).PanningConfiguration = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).AYPanConfig;
+            }
 
 
             ser.Register<ISoundProvider>(SoundMixer);

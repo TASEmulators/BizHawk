@@ -16,10 +16,68 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadPort(ushort port)
         {
+            bool deviceAddressed = true;
+
             // process IO contention
             ContendPortAddress(port);
 
             int result = 0xFF;
+
+            // check AY
+            if (AYDevice.ReadPort(port, ref result))
+                return (byte)result;
+
+            // Kempston joystick input takes priority over all other input
+            // if this is detected just return the kempston byte
+            if ((port & 0xe0) == 0 || (port & 0x20) == 0)
+            {
+                if (LocateUniqueJoystick(JoystickType.Kempston) != null)
+                    return (byte)((KempstonJoystick)LocateUniqueJoystick(JoystickType.Kempston) as KempstonJoystick).JoyLine;
+
+                InputRead = true;
+            }
+            else
+            {
+                if (KeyboardDevice.ReadPort(port, ref result))
+                {
+                    // not a lagframe
+                    InputRead = true;
+
+                    // tape loading monitor cycle
+                    TapeDevice.MonitorRead();
+
+                    // process tape INs
+                    TapeDevice.ReadPort(port, ref result);
+                }
+                else
+                    deviceAddressed = false;
+            }
+
+            if (!deviceAddressed)
+            {
+                // If this is an unused port the floating memory bus should be returned
+                // Floating bus is read on the previous cycle
+                int _tStates = CurrentFrameCycle - 1;
+
+                // if we are on the top or bottom border return 0xff
+                if ((_tStates < ULADevice.contentionStartPeriod) || (_tStates > ULADevice.contentionEndPeriod))
+                {
+                    result = 0xff;
+                }
+                else
+                {
+                    if (ULADevice.floatingBusTable[_tStates] < 0)
+                    {
+                        result = 0xff;
+                    }
+                    else
+                    {
+                        result = ReadBus((ushort)ULADevice.floatingBusTable[_tStates]);
+                    }
+                }
+            }
+
+            /*
 
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
@@ -81,7 +139,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     }
                 }
             }
-            
+
+            */
+
             return (byte)result;
         }
 
@@ -101,6 +161,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             BitArray bits = new BitArray(new byte[] { value });
 
             int currT = CPU.TotalExecutedCycles;
+
+            AYDevice.WritePort(port, value);
 
             // paging
             if (port == 0x7ffd)
@@ -164,7 +226,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
                 
             }
-
+            /*
             // Active AY Register
             if ((port & 0xc002) == 0xc000)
             {
@@ -178,7 +240,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 AYDevice.PortWrite(value);
                 CPU.TotalExecutedCycles += 3;
-            }            
+            }    
+            */        
         }
     }
 }

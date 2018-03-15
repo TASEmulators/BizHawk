@@ -11,7 +11,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// <summary>
     /// Represents a PSG device (in this case an AY-3-891x)
     /// </summary>
-    public interface IPSG : ISoundProvider
+    public interface IPSG : ISoundProvider, IPortIODevice
     {
         /// <summary>
         /// Initlization routine
@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Activates a register
         /// </summary>
         int SelectedRegister { get; set; }
-
+        
         /// <summary>
         /// Writes to the PSG
         /// </summary>
@@ -35,6 +35,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Reads from the PSG
         /// </summary>
         int PortRead();
+       
 
         /// <summary>
         /// Resets the PSG

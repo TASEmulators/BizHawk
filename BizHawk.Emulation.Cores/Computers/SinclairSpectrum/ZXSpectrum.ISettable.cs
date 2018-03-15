@@ -24,8 +24,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public bool PutSettings(ZXSpectrumSettings o)
         {
-            if (SoundMixer != null)
-                SoundMixer.Stereo = o.StereoSound;
+            //if (SoundMixer != null)
+                //SoundMixer.Stereo = o.StereoSound;
+
+            if (_machine != null && _machine.AYDevice != null && _machine.AYDevice.GetType() == typeof(AYChip))
+            {
+                ((AYChip)_machine.AYDevice as AYChip).PanningConfiguration = o.AYPanConfig;
+            }
 
             Settings = o;
 
@@ -48,10 +53,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             [DefaultValue(true)]
             public bool AutoLoadTape { get; set; }
 
+            /*
             [DisplayName("Stereo Sound")]
             [Description("Turn stereo sound on or off")]
             [DefaultValue(true)]
             public bool StereoSound { get; set; }
+            */
+
+            [DisplayName("AY-3-8912 Panning Config")]
+            [Description("Set the PSG panning configuration.\nThe chip has 3 audio channels that can be outputed in different configurations")]
+            [DefaultValue(AYChip.AYPanConfig.ABC)]
+            public AYChip.AYPanConfig AYPanConfig { get; set; }
 
             [DisplayName("Core OSD Message Verbosity")]
             [Description("Full: Display all GUI messages\nMedium: Display only emulator/device generated messages\nNone: Show no messages")]

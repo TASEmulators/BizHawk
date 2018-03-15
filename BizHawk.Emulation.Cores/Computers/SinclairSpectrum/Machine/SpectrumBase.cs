@@ -140,7 +140,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (_renderSound)
             {
                 BuzzerDevice.StartFrame();
-                if (AYDevice != null && !PagingDisabled)
+                if (AYDevice != null)
                     AYDevice.StartFrame();
             }
 
@@ -155,11 +155,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 CPU.ExecuteOne();
 
                 // update AY
+                int ayCnt = 0;
                 if (_renderSound)
                 {
-                    if (AYDevice != null && !PagingDisabled)
+                    if (AYDevice != null)
                     {
-                        AYDevice.UpdateSound(CurrentFrameCycle);                            
+                        //AYDevice.UpdateSound(CurrentFrameCycle);
+                        if (ayCnt > 10)
+                        {
+                            //AYDevice.UpdateSound(CurrentFrameCycle);
+                            ayCnt = 0;
+                        }                                                   
                     }                        
                 }
             }
@@ -173,6 +179,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             if (_renderSound)
                 BuzzerDevice.EndFrame();
+
+            if (AYDevice != null)
+                AYDevice.EndFrame();
 
             FrameCount++;
 
