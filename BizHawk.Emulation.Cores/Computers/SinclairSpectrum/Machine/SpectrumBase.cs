@@ -251,8 +251,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Sync("PagingDisabled", ref PagingDisabled);
             ser.Sync("SpecialPagingMode", ref SpecialPagingMode);
             ser.Sync("PagingConfiguration", ref PagingConfiguration);
-            //ser.Sync("ROMhigh", ref ROMhigh);
-            //ser.Sync("ROMlow", ref ROMlow);
+            ser.Sync("ROMhigh", ref ROMhigh);
+            ser.Sync("ROMlow", ref ROMlow);
 
             RomData.SyncState(ser);
             KeyboardDevice.SyncState(ser);
