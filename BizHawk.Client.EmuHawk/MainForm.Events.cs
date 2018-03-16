@@ -2459,6 +2459,11 @@ namespace BizHawk.Client.EmuHawk
             new ZXSpectrumCoreEmulationSettings().ShowDialog();
         }
 
+        private void ZXSpectrumNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
+        {
+            new ZXSpectrumNonSyncSettings().ShowDialog();
+        }
+
         #endregion
 
         #region Help

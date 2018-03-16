@@ -44,7 +44,7 @@
             // OkBtn
             // 
             this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OkBtn.Location = new System.Drawing.Point(247, 485);
+            this.OkBtn.Location = new System.Drawing.Point(247, 393);
             this.OkBtn.Name = "OkBtn";
             this.OkBtn.Size = new System.Drawing.Size(60, 23);
             this.OkBtn.TabIndex = 3;
@@ -56,7 +56,7 @@
             // 
             this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelBtn.Location = new System.Drawing.Point(313, 485);
+            this.CancelBtn.Location = new System.Drawing.Point(313, 393);
             this.CancelBtn.Name = "CancelBtn";
             this.CancelBtn.Size = new System.Drawing.Size(60, 23);
             this.CancelBtn.TabIndex = 4;
@@ -150,7 +150,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelBtn;
-            this.ClientSize = new System.Drawing.Size(385, 520);
+            this.ClientSize = new System.Drawing.Size(385, 428);
             this.Controls.Add(this.lblBorderInfo);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.borderTypecomboBox1);

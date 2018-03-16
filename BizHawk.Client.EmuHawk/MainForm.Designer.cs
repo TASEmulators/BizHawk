@@ -380,6 +380,7 @@
             this.FeaturesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zXSpectrumToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ZXSpectrumCoreEmulationSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ZXSpectrumControllerConfigurationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.preferencesToolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.Atari7800HawkCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -454,7 +455,7 @@
             this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-            this.ZXSpectrumCoreEmulationSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ZXSpectrumNonSyncSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -3381,11 +3382,19 @@
             this.zXSpectrumToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ZXSpectrumCoreEmulationSettingsMenuItem,
             this.ZXSpectrumControllerConfigurationMenuItem,
+            this.ZXSpectrumNonSyncSettingsMenuItem,
             this.preferencesToolStripMenuItem4});
             this.zXSpectrumToolStripMenuItem.Name = "zXSpectrumToolStripMenuItem";
             this.zXSpectrumToolStripMenuItem.Size = new System.Drawing.Size(87, 19);
             this.zXSpectrumToolStripMenuItem.Text = "ZX Spectrum";
             this.zXSpectrumToolStripMenuItem.DropDownOpened += new System.EventHandler(this.zXSpectrumToolStripMenuItem_DropDownOpened);
+            // 
+            // ZXSpectrumCoreEmulationSettingsMenuItem
+            // 
+            this.ZXSpectrumCoreEmulationSettingsMenuItem.Name = "ZXSpectrumCoreEmulationSettingsMenuItem";
+            this.ZXSpectrumCoreEmulationSettingsMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.ZXSpectrumCoreEmulationSettingsMenuItem.Text = "Core Emulation Settings";
+            this.ZXSpectrumCoreEmulationSettingsMenuItem.Click += new System.EventHandler(this.ZXSpectrumCoreEmulationSettingsMenuItem_Click);
             // 
             // ZXSpectrumControllerConfigurationMenuItem
             // 
@@ -4027,12 +4036,12 @@
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
             // 
-            // ZXSpectrumCoreEmulationSettingsMenuItem
+            // ZXSpectrumNonSyncSettingsMenuItem
             // 
-            this.ZXSpectrumCoreEmulationSettingsMenuItem.Name = "ZXSpectrumCoreEmulationSettingsMenuItem";
-            this.ZXSpectrumCoreEmulationSettingsMenuItem.Size = new System.Drawing.Size(201, 22);
-            this.ZXSpectrumCoreEmulationSettingsMenuItem.Text = "Core Emulation Settings";
-            this.ZXSpectrumCoreEmulationSettingsMenuItem.Click += new System.EventHandler(this.ZXSpectrumCoreEmulationSettingsMenuItem_Click);
+            this.ZXSpectrumNonSyncSettingsMenuItem.Name = "ZXSpectrumNonSyncSettingsMenuItem";
+            this.ZXSpectrumNonSyncSettingsMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.ZXSpectrumNonSyncSettingsMenuItem.Text = "Non-Sync Settings";
+            this.ZXSpectrumNonSyncSettingsMenuItem.Click += new System.EventHandler(this.ZXSpectrumNonSyncSettingsMenuItem_Click);
             // 
             // MainForm
             // 
@@ -4500,5 +4509,6 @@
         private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem4;
         private System.Windows.Forms.ToolStripMenuItem ZXSpectrumControllerConfigurationMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ZXSpectrumCoreEmulationSettingsMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumNonSyncSettingsMenuItem;
     }
 }

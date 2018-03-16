@@ -497,6 +497,12 @@
     <Compile Include="config\TI83\TI83PaletteConfig.Designer.cs">
       <DependentUpon>TI83PaletteConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumNonSyncSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumNonSyncSettings.Designer.cs">
+      <DependentUpon>ZXSpectrumNonSyncSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\ZXSpectrum\ZXSpectrumCoreEmulationSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1406,6 +1412,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\TI83\TI83PaletteConfig.resx">
       <DependentUpon>TI83PaletteConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumNonSyncSettings.resx">
+      <DependentUpon>ZXSpectrumNonSyncSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumCoreEmulationSettings.resx">
       <DependentUpon>ZXSpectrumCoreEmulationSettings.cs</DependentUpon>
