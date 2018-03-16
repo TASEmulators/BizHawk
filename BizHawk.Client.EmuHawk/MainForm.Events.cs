@@ -2444,10 +2444,12 @@ namespace BizHawk.Client.EmuHawk
 
         }
 
+        
         private void preferencesToolStripMenuItem4_Click(object sender, EventArgs e)
         {
             GenericCoreConfig.DoDialog(this, "ZXSpectrum Settings");
         }
+        
 
         private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
         {
