@@ -179,7 +179,7 @@
             // 
             this.FrameNumeric.Location = new System.Drawing.Point(78, 19);
             this.FrameNumeric.Maximum = new decimal(new int[] {
-            999999,
+            2147483647,
             0,
             0,
             0});
