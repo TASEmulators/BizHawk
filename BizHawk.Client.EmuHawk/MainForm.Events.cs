@@ -2449,6 +2449,11 @@ namespace BizHawk.Client.EmuHawk
             GenericCoreConfig.DoDialog(this, "ZXSpectrum Settings");
         }
 
+        private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
+        {
+            new ZXSpectrumJoystickSettings().ShowDialog();
+        }
+
         #endregion
 
         #region Help

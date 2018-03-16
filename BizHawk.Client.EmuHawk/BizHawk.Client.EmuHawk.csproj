@@ -497,6 +497,12 @@
     <Compile Include="config\TI83\TI83PaletteConfig.Designer.cs">
       <DependentUpon>TI83PaletteConfig.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumJoystickSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumJoystickSettings.Designer.cs">
+      <DependentUpon>ZXSpectrumJoystickSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="CoreFeatureAnalysis.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1394,6 +1400,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\TI83\TI83PaletteConfig.resx">
       <DependentUpon>TI83PaletteConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumJoystickSettings.resx">
+      <DependentUpon>ZXSpectrumJoystickSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="CoreFeatureAnalysis.resx">
       <DependentUpon>CoreFeatureAnalysis.cs</DependentUpon>

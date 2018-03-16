@@ -380,6 +380,7 @@
             this.FeaturesMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AboutMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.zXSpectrumToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.preferencesToolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
             this.Atari7800HawkCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainStatusBar = new StatusStripEx();
             this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
@@ -452,7 +453,7 @@
             this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-            this.preferencesToolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
+            this.ZXSpectrumControllerConfigurationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -3237,7 +3238,7 @@
             this.C64DisksSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripSeparator36});
             this.C64DisksSubMenu.Name = "C64DisksSubMenu";
-            this.C64DisksSubMenu.Size = new System.Drawing.Size(125, 22);
+            this.C64DisksSubMenu.Size = new System.Drawing.Size(152, 22);
             this.C64DisksSubMenu.Text = "Disks";
             this.C64DisksSubMenu.DropDownOpened += new System.EventHandler(this.C64DisksSubMenu_DropDownOpened);
             // 
@@ -3249,7 +3250,7 @@
             // C64SettingsMenuItem
             // 
             this.C64SettingsMenuItem.Name = "C64SettingsMenuItem";
-            this.C64SettingsMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.C64SettingsMenuItem.Size = new System.Drawing.Size(152, 22);
             this.C64SettingsMenuItem.Text = "&Settings...";
             this.C64SettingsMenuItem.Click += new System.EventHandler(this.C64SettingsMenuItem_Click);
             // 
@@ -3281,7 +3282,7 @@
             // preferencesToolStripMenuItem
             // 
             this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
-            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
+            this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.preferencesToolStripMenuItem.Text = "Preferences...";
             this.preferencesToolStripMenuItem.Click += new System.EventHandler(this.preferencesToolStripMenuItem_Click);
             // 
@@ -3296,7 +3297,7 @@
             // preferencesToolStripMenuItem3
             // 
             this.preferencesToolStripMenuItem3.Name = "preferencesToolStripMenuItem3";
-            this.preferencesToolStripMenuItem3.Size = new System.Drawing.Size(144, 22);
+            this.preferencesToolStripMenuItem3.Size = new System.Drawing.Size(152, 22);
             this.preferencesToolStripMenuItem3.Text = "Preferences...";
             this.preferencesToolStripMenuItem3.Click += new System.EventHandler(this.preferencesToolStripMenuItem3_Click);
             // 
@@ -3326,7 +3327,7 @@
             // preferencesToolStripMenuItem2
             // 
             this.preferencesToolStripMenuItem2.Name = "preferencesToolStripMenuItem2";
-            this.preferencesToolStripMenuItem2.Size = new System.Drawing.Size(152, 22);
+            this.preferencesToolStripMenuItem2.Size = new System.Drawing.Size(144, 22);
             this.preferencesToolStripMenuItem2.Text = "Preferences...";
             this.preferencesToolStripMenuItem2.Click += new System.EventHandler(this.preferencesToolStripMenuItem2_Click);
             // 
@@ -3346,7 +3347,7 @@
             // 
             this.OnlineHelpMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Help;
             this.OnlineHelpMenuItem.Name = "OnlineHelpMenuItem";
-            this.OnlineHelpMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.OnlineHelpMenuItem.Size = new System.Drawing.Size(152, 22);
             this.OnlineHelpMenuItem.Text = "&Online Help...";
             this.OnlineHelpMenuItem.Click += new System.EventHandler(this.OnlineHelpMenuItem_Click);
             // 
@@ -3354,7 +3355,7 @@
             // 
             this.ForumsMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.TAStudio;
             this.ForumsMenuItem.Name = "ForumsMenuItem";
-            this.ForumsMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.ForumsMenuItem.Size = new System.Drawing.Size(152, 22);
             this.ForumsMenuItem.Text = "Forums...";
             this.ForumsMenuItem.Click += new System.EventHandler(this.ForumsMenuItem_Click);
             // 
@@ -3362,7 +3363,7 @@
             // 
             this.FeaturesMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.kitchensink;
             this.FeaturesMenuItem.Name = "FeaturesMenuItem";
-            this.FeaturesMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.FeaturesMenuItem.Size = new System.Drawing.Size(152, 22);
             this.FeaturesMenuItem.Text = "&Features";
             this.FeaturesMenuItem.Click += new System.EventHandler(this.FeaturesMenuItem_Click);
             // 
@@ -3370,18 +3371,26 @@
             // 
             this.AboutMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.CorpHawkSmall;
             this.AboutMenuItem.Name = "AboutMenuItem";
-            this.AboutMenuItem.Size = new System.Drawing.Size(146, 22);
+            this.AboutMenuItem.Size = new System.Drawing.Size(152, 22);
             this.AboutMenuItem.Text = "&About";
             this.AboutMenuItem.Click += new System.EventHandler(this.AboutMenuItem_Click);
             // 
             // zXSpectrumToolStripMenuItem
             // 
             this.zXSpectrumToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ZXSpectrumControllerConfigurationMenuItem,
             this.preferencesToolStripMenuItem4});
             this.zXSpectrumToolStripMenuItem.Name = "zXSpectrumToolStripMenuItem";
             this.zXSpectrumToolStripMenuItem.Size = new System.Drawing.Size(87, 19);
             this.zXSpectrumToolStripMenuItem.Text = "ZX Spectrum";
             this.zXSpectrumToolStripMenuItem.DropDownOpened += new System.EventHandler(this.zXSpectrumToolStripMenuItem_DropDownOpened);
+            // 
+            // preferencesToolStripMenuItem4
+            // 
+            this.preferencesToolStripMenuItem4.Name = "preferencesToolStripMenuItem4";
+            this.preferencesToolStripMenuItem4.Size = new System.Drawing.Size(192, 22);
+            this.preferencesToolStripMenuItem4.Text = "Preferences";
+            this.preferencesToolStripMenuItem4.Click += new System.EventHandler(this.preferencesToolStripMenuItem4_Click);
             // 
             // Atari7800HawkCoreMenuItem
             // 
@@ -4009,12 +4018,12 @@
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
             // 
-            // preferencesToolStripMenuItem4
+            // ZXSpectrumControllerConfigurationMenuItem
             // 
-            this.preferencesToolStripMenuItem4.Name = "preferencesToolStripMenuItem4";
-            this.preferencesToolStripMenuItem4.Size = new System.Drawing.Size(152, 22);
-            this.preferencesToolStripMenuItem4.Text = "Preferences";
-            this.preferencesToolStripMenuItem4.Click += new System.EventHandler(this.preferencesToolStripMenuItem4_Click);
+            this.ZXSpectrumControllerConfigurationMenuItem.Name = "ZXSpectrumControllerConfigurationMenuItem";
+            this.ZXSpectrumControllerConfigurationMenuItem.Size = new System.Drawing.Size(192, 22);
+            this.ZXSpectrumControllerConfigurationMenuItem.Text = "Joystick Configuration";
+            this.ZXSpectrumControllerConfigurationMenuItem.Click += new System.EventHandler(this.ZXSpectrumControllerConfigurationMenuItem_Click);
             // 
             // MainForm
             // 
@@ -4480,5 +4489,6 @@
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerKeyboardToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zXSpectrumToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem preferencesToolStripMenuItem4;
+        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumControllerConfigurationMenuItem;
     }
 }

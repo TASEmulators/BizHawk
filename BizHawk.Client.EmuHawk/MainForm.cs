@@ -4297,9 +4297,7 @@ namespace BizHawk.Client.EmuHawk
 		private void preferencesToolStripMenuItem3_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
-		}
-
-        
+		}        
 
         private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
 		{
