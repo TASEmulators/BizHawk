@@ -419,7 +419,7 @@
 		private void IN_OP_R(ushort operation, ushort repeat_instr)
 		{
 			cur_instr = new ushort[]
-						{IN, ALU, C,
+						{IN, ALU, C, B,
 						IDLE,
 						WR, L, H, ALU,
 						IDLE,
@@ -438,7 +438,7 @@
 			cur_instr = new ushort[]
 						{RD, ALU, L, H,
 						IDLE,
-						OUT, C, ALU,
+						OUT, C, B, ALU,
 						IDLE,
 						IDLE,
 						operation, L, H,
