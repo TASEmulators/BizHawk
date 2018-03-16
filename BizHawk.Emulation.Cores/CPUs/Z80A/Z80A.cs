@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public Func<ushort, byte> ReadHardware;
 		public Action<ushort, byte> WriteHardware;
 
-		// Data BUs
+		// Data Bus
 		// Interrupting Devices are responsible for putting a value onto the data bus
 		// for as long as the interrupt is valid
 		public Func<byte> FetchDB;
@@ -196,9 +196,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 								INTERRUPT_1();
 								break;
 							case 2:
-								// Low byte of interrupt vector comes from data bus
-								// We'll assume it's zero for now
-								INTERRUPT_2(0);
+								INTERRUPT_2();
 								break;
 						}
 						IRQCallback();
@@ -321,9 +319,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 									INTERRUPT_1();
 									break;
 								case 2:
-									// Low byte of interrupt vector comes from data bus
-									// We'll assume it's zero for now
-									INTERRUPT_2(0);
+									INTERRUPT_2();
 									break;
 							}
 							IRQCallback();
@@ -391,9 +387,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 								INTERRUPT_1();
 								break;
 							case 2:
-								// Low byte of interrupt vector comes from data bus
-								// We'll assume it's zero for now
-								INTERRUPT_2(0);
+								INTERRUPT_2();
 								break;
 						}
 						IRQCallback();
@@ -663,8 +657,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					FlagI ? "E" : "e")
 			};
 		}
-		// State Save/Load
 
+		// State Save/Load
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("Z80A");
