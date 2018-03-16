@@ -650,32 +650,32 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         _countE = 0;
                         _eState += +_eDirection;
 
-                        var mask = (1 << _registers[AY_E_SHAPE]);
-
                         if ((_eState & ~31) != 0)
                         {
+                            var mask = (1 << _registers[AY_E_SHAPE]);
+
                             if ((mask & ((1 << 0) | (1 << 1) | (1 << 2) | 
                                 (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | 
                                 (1 << 7) | (1 << 9) | (1 << 15))) != 0)
                             {
                                 _eState = _eDirection = 0;
                             }
-                        }
-                        else if ((mask & ((1 << 8) | (1 << 12))) != 0)
-                        {
-                            _eState &= 31;
-                        }
-                        else if ((mask & ((1 << 10) | (1 << 14))) != 0)
-                        {
-                            _eDirection = -_eDirection;
-                            _eState += _eDirection;
-                        }
-                        else
-                        {
-                            // 11,13
-                            _eState = 31;
-                            _eDirection = 0;
-                        }
+                            else if ((mask & ((1 << 8) | (1 << 12))) != 0)
+                            {
+                                _eState &= 31;
+                            }
+                            else if ((mask & ((1 << 10) | (1 << 14))) != 0)
+                            {
+                                _eDirection = -_eDirection;
+                                _eState += _eDirection;
+                            }
+                            else
+                            {
+                                // 11,13
+                                _eState = 31;
+                                _eDirection = 0;
+                            }
+                        }                        
                     }
                 }
 
