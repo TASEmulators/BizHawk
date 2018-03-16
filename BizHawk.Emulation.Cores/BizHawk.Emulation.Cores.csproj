@@ -42,7 +42,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <!--<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>-->
+    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
@@ -55,7 +56,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <!--<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>-->
+    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
@@ -413,6 +415,8 @@
     <Compile Include="Consoles\Coleco\ColecoVision.ISoundProvider.cs">
       <DependentUpon>ColecoVision.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Coleco\AY_3_8910_SGM.cs" />
+    <Compile Include="Consoles\Coleco\SN76489col.cs" />
     <Compile Include="Consoles\Coleco\TMS9918A.cs" />
     <Compile Include="Consoles\Coleco\ColecoControllerDeck.cs" />
     <Compile Include="Consoles\Coleco\ColecoControllers.cs" />
@@ -581,6 +585,38 @@
       <DependentUpon>VBANext.cs</DependentUpon>
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Audio.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_Sachen_MMC2.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_Sachen_MMC1.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\SerialPort.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IDebuggable.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IEmulator.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IInputPollable.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IMemoryDomains.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.ISaveRam.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.ISettable.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IStatable.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawkControllerDeck.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawkControllers.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\HW_Registers.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\MapperBase.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_Camera.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_Default.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_HuC1.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_HuC3.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_MBC1_Multi.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_MBC1.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_MBC2.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_MBC3.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_MBC5.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_MBC6.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_MBC7.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_MMM01.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_TAMA5.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\MemoryMap.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\PPU.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\Timer.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.GLideN64.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64.IDebuggable.cs">
       <DependentUpon>N64.cs</DependentUpon>
@@ -632,6 +668,8 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\BxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Camerica.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CamericaGoldenFive.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper063.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper043.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Cony.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CoolBoy.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\DatachBarcode.cs" />
@@ -752,7 +790,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper049.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper052.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper074.cs" />
-		<Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper114.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper114.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper115.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper121.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\MMC3_family\Mapper123.cs" />
@@ -827,6 +865,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Taito_X1_017.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN-800032.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN_800008.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL_SMB2J.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF-DREAMTECH01.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-12-IN-1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-190in1.cs" />
@@ -1161,6 +1200,14 @@
     <Compile Include="CPUs\CP1610\CP1610.Disassembler.cs" />
     <Compile Include="CPUs\CP1610\CP1610.Execute.cs" />
     <Compile Include="CPUs\HuC6280\HuC6280_CDL.cs" />
+    <Compile Include="CPUs\LR35902\Execute.cs" />
+    <Compile Include="CPUs\LR35902\Interrupts.cs" />
+    <Compile Include="CPUs\LR35902\LR35902.cs" />
+    <Compile Include="CPUs\LR35902\NewDisassembler.cs" />
+    <Compile Include="CPUs\LR35902\Operations.cs" />
+    <Compile Include="CPUs\LR35902\Registers.cs" />
+    <Compile Include="CPUs\LR35902\Tables_Direct.cs" />
+    <Compile Include="CPUs\LR35902\Tables_Indirect.cs" />
     <Compile Include="CPUs\W65816\Disassembler.cs" />
     <Compile Include="CPUs\68000\Diassembler.cs" />
     <Compile Include="CPUs\68000\Instructions\BitArithemetic.cs" />
@@ -1186,12 +1233,6 @@
     <Compile Include="CPUs\x86\Execute.cs" />
     <Compile Include="CPUs\x86\Timing.cs" />
     <Compile Include="CPUs\x86\x86.cs" />
-    <Compile Include="CPUs\Z80-GB\Execute.cs" />
-    <Compile Include="CPUs\Z80-GB\Interrupts.cs" />
-    <Compile Include="CPUs\Z80-GB\NewDisassembler.cs" />
-    <Compile Include="CPUs\Z80-GB\Registers.cs" />
-    <Compile Include="CPUs\Z80-GB\Tables.cs" />
-    <Compile Include="CPUs\Z80-GB\Z80.cs" />
     <Compile Include="CPUs\Z80A\NewDisassembler.cs" />
     <Compile Include="CPUs\Z80A\Execute.cs" />
     <Compile Include="CPUs\Z80A\Interrupts.cs" />

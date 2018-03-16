@@ -8,6 +8,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	{
 		private ByteBuffer EXPREGS = new ByteBuffer(2);
 
+		private int prg_mask_16;
+
 		private byte[] sec = { 0, 3, 1, 5, 6, 7, 2, 4 };
 
 		public override bool Configure(NES.EDetectionOrigin origin)
@@ -23,6 +25,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			BaseSetup();
 			SetMirrorType(EMirrorType.Horizontal);
 			mmc3.MMC3Type = MMC3.EMMC3Type.MMC3A;
+			prg_mask_16 = Cart.prg_size / 16 - 1;
 			return true;
 		}
 
@@ -92,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			if ((EXPREGS[0] & 0x80) > 0)
 			{
-				var bank = (EXPREGS[0] & 0x1F);
+				var bank = EXPREGS[0] & 0x1F & prg_mask_16;
 				return ROM[(bank << 14) + (addr & 0x3FFF)];
 			}
 			else

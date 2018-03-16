@@ -48,28 +48,36 @@ namespace BizHawk.Client.EmuHawk
 			this.DiskCapacityNumeric = new System.Windows.Forms.NumericUpDown();
 			this.label5 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
-			this.SaveCapacityNumeric = new System.Windows.Forms.NumericUpDown();
+			this.FileCapacityNumeric = new System.Windows.Forms.NumericUpDown();
 			this.label7 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
 			this.label9 = new System.Windows.Forms.Label();
 			this.NumSaveStatesLabel = new System.Windows.Forms.Label();
-			this.BranchStatesInTasproj = new System.Windows.Forms.CheckBox();
-			this.EraseBranchStatesFirst = new System.Windows.Forms.CheckBox();
-			this.StateGap = new System.Windows.Forms.NumericUpDown();
+			this.FileStateGapNumeric = new System.Windows.Forms.NumericUpDown();
 			this.label10 = new System.Windows.Forms.Label();
 			this.label11 = new System.Windows.Forms.Label();
-			this.NumFramesLabel = new System.Windows.Forms.Label();
+			this.FileNumFramesLabel = new System.Windows.Forms.Label();
+			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.label14 = new System.Windows.Forms.Label();
+			this.MemFramesLabel = new System.Windows.Forms.Label();
+			this.label13 = new System.Windows.Forms.Label();
+			this.MemStateGapDividerNumeric = new System.Windows.Forms.NumericUpDown();
+			this.label12 = new System.Windows.Forms.Label();
+			this.groupBox2 = new System.Windows.Forms.GroupBox();
 			((System.ComponentModel.ISupportInitialize)(this.MemCapacityNumeric)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.DiskCapacityNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.SaveCapacityNumeric)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.StateGap)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.FileCapacityNumeric)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.FileStateGapNumeric)).BeginInit();
+			this.groupBox1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.MemStateGapDividerNumeric)).BeginInit();
+			this.groupBox2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// CancelBtn
 			// 
 			this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.CancelBtn.Location = new System.Drawing.Point(217, 220);
+			this.CancelBtn.Location = new System.Drawing.Point(242, 225);
 			this.CancelBtn.Name = "CancelBtn";
 			this.CancelBtn.Size = new System.Drawing.Size(60, 23);
 			this.CancelBtn.TabIndex = 0;
@@ -80,7 +88,7 @@ namespace BizHawk.Client.EmuHawk
 			// OkBtn
 			// 
 			this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.OkBtn.Location = new System.Drawing.Point(151, 220);
+			this.OkBtn.Location = new System.Drawing.Point(176, 225);
 			this.OkBtn.Name = "OkBtn";
 			this.OkBtn.Size = new System.Drawing.Size(60, 23);
 			this.OkBtn.TabIndex = 1;
@@ -90,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// MemCapacityNumeric
 			// 
-			this.MemCapacityNumeric.Location = new System.Drawing.Point(15, 49);
+			this.MemCapacityNumeric.Location = new System.Drawing.Point(12, 36);
 			this.MemCapacityNumeric.Maximum = new decimal(new int[] {
             1024,
             0,
@@ -114,20 +122,20 @@ namespace BizHawk.Client.EmuHawk
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(70, 52);
+			this.label1.Location = new System.Drawing.Point(73, 39);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(21, 13);
+			this.label1.Size = new System.Drawing.Size(23, 13);
 			this.label1.TabIndex = 4;
-			this.label1.Text = "mb";
+			this.label1.Text = "MB";
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(12, 32);
+			this.label2.Location = new System.Drawing.Point(9, 19);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(88, 13);
+			this.label2.Size = new System.Drawing.Size(48, 13);
 			this.label2.TabIndex = 5;
-			this.label2.Text = "Memory Capacity";
+			this.label2.Text = "Capacity";
 			// 
 			// label3
 			// 
@@ -150,7 +158,7 @@ namespace BizHawk.Client.EmuHawk
 			// label4
 			// 
 			this.label4.AutoSize = true;
-			this.label4.Location = new System.Drawing.Point(12, 136);
+			this.label4.Location = new System.Drawing.Point(160, 9);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(84, 13);
 			this.label4.TabIndex = 8;
@@ -159,17 +167,19 @@ namespace BizHawk.Client.EmuHawk
 			// NumStatesLabel
 			// 
 			this.NumStatesLabel.AutoSize = true;
-			this.NumStatesLabel.Location = new System.Drawing.Point(99, 136);
+			this.NumStatesLabel.Location = new System.Drawing.Point(250, 9);
 			this.NumStatesLabel.Name = "NumStatesLabel";
-			this.NumStatesLabel.Size = new System.Drawing.Size(25, 13);
+			this.NumStatesLabel.Size = new System.Drawing.Size(13, 13);
 			this.NumStatesLabel.TabIndex = 9;
-			this.NumStatesLabel.Text = "1kb";
+			this.NumStatesLabel.Text = "1";
 			// 
 			// DiskCapacityNumeric
 			// 
-			this.DiskCapacityNumeric.Location = new System.Drawing.Point(15, 113);
+			this.DiskCapacityNumeric.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.DiskCapacityNumeric.Enabled = false;
+			this.DiskCapacityNumeric.Location = new System.Drawing.Point(24, 215);
 			this.DiskCapacityNumeric.Maximum = new decimal(new int[] {
-            65536,
+            16384,
             0,
             0,
             0});
@@ -182,7 +192,7 @@ namespace BizHawk.Client.EmuHawk
 			this.DiskCapacityNumeric.Size = new System.Drawing.Size(55, 20);
 			this.DiskCapacityNumeric.TabIndex = 3;
 			this.DiskCapacityNumeric.Value = new decimal(new int[] {
-            512,
+            1,
             0,
             0,
             0});
@@ -190,62 +200,66 @@ namespace BizHawk.Client.EmuHawk
 			// 
 			// label5
 			// 
+			this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label5.AutoSize = true;
-			this.label5.Location = new System.Drawing.Point(70, 116);
+			this.label5.Enabled = false;
+			this.label5.Location = new System.Drawing.Point(79, 218);
 			this.label5.Name = "label5";
-			this.label5.Size = new System.Drawing.Size(21, 13);
+			this.label5.Size = new System.Drawing.Size(23, 13);
 			this.label5.TabIndex = 4;
-			this.label5.Text = "mb";
+			this.label5.Text = "MB";
 			// 
 			// label6
 			// 
+			this.label6.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label6.AutoSize = true;
-			this.label6.Location = new System.Drawing.Point(12, 96);
+			this.label6.Enabled = false;
+			this.label6.Location = new System.Drawing.Point(21, 198);
 			this.label6.Name = "label6";
 			this.label6.Size = new System.Drawing.Size(72, 13);
 			this.label6.TabIndex = 5;
 			this.label6.Text = "Disk Capacity";
 			// 
-			// SaveCapacityNumeric
+			// FileCapacityNumeric
 			// 
-			this.SaveCapacityNumeric.Location = new System.Drawing.Point(150, 49);
-			this.SaveCapacityNumeric.Maximum = new decimal(new int[] {
+			this.FileCapacityNumeric.Location = new System.Drawing.Point(12, 36);
+			this.FileCapacityNumeric.Maximum = new decimal(new int[] {
             65536,
             0,
             0,
             0});
-			this.SaveCapacityNumeric.Name = "SaveCapacityNumeric";
-			this.SaveCapacityNumeric.Size = new System.Drawing.Size(55, 20);
-			this.SaveCapacityNumeric.TabIndex = 3;
-			this.SaveCapacityNumeric.Value = new decimal(new int[] {
+			this.FileCapacityNumeric.Name = "FileCapacityNumeric";
+			this.FileCapacityNumeric.Size = new System.Drawing.Size(55, 20);
+			this.FileCapacityNumeric.TabIndex = 3;
+			this.FileCapacityNumeric.Value = new decimal(new int[] {
             512,
             0,
             0,
             0});
-			this.SaveCapacityNumeric.ValueChanged += new System.EventHandler(this.SaveCapacityNumeric_ValueChanged);
+			this.FileCapacityNumeric.ValueChanged += new System.EventHandler(this.SaveCapacityNumeric_ValueChanged);
 			// 
 			// label7
 			// 
 			this.label7.AutoSize = true;
-			this.label7.Location = new System.Drawing.Point(205, 52);
+			this.label7.Location = new System.Drawing.Point(73, 39);
 			this.label7.Name = "label7";
-			this.label7.Size = new System.Drawing.Size(21, 13);
+			this.label7.Size = new System.Drawing.Size(23, 13);
 			this.label7.TabIndex = 4;
-			this.label7.Text = "mb";
+			this.label7.Text = "MB";
 			// 
 			// label8
 			// 
 			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(147, 32);
+			this.label8.Location = new System.Drawing.Point(9, 19);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(112, 13);
+			this.label8.Size = new System.Drawing.Size(48, 13);
 			this.label8.TabIndex = 5;
-			this.label8.Text = "Project Save Capacity";
+			this.label8.Text = "Capacity";
 			// 
 			// label9
 			// 
 			this.label9.AutoSize = true;
-			this.label9.Location = new System.Drawing.Point(147, 72);
+			this.label9.Location = new System.Drawing.Point(9, 59);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(84, 13);
 			this.label9.TabIndex = 8;
@@ -254,82 +268,150 @@ namespace BizHawk.Client.EmuHawk
 			// NumSaveStatesLabel
 			// 
 			this.NumSaveStatesLabel.AutoSize = true;
-			this.NumSaveStatesLabel.Location = new System.Drawing.Point(234, 72);
+			this.NumSaveStatesLabel.Location = new System.Drawing.Point(96, 59);
 			this.NumSaveStatesLabel.Name = "NumSaveStatesLabel";
-			this.NumSaveStatesLabel.Size = new System.Drawing.Size(25, 13);
+			this.NumSaveStatesLabel.Size = new System.Drawing.Size(13, 13);
 			this.NumSaveStatesLabel.TabIndex = 9;
-			this.NumSaveStatesLabel.Text = "1kb";
+			this.NumSaveStatesLabel.Text = "1";
 			// 
-			// BranchStatesInTasproj
+			// FileStateGapNumeric
 			// 
-			this.BranchStatesInTasproj.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.BranchStatesInTasproj.AutoSize = true;
-			this.BranchStatesInTasproj.Location = new System.Drawing.Point(15, 165);
-			this.BranchStatesInTasproj.Name = "BranchStatesInTasproj";
-			this.BranchStatesInTasproj.Size = new System.Drawing.Size(158, 17);
-			this.BranchStatesInTasproj.TabIndex = 10;
-			this.BranchStatesInTasproj.Text = "Put branch states to .tasproj";
-			this.BranchStatesInTasproj.UseVisualStyleBackColor = true;
-			this.BranchStatesInTasproj.CheckedChanged += new System.EventHandler(this.BranchStatesInTasproj_CheckedChanged);
-			// 
-			// EraseBranchStatesFirst
-			// 
-			this.EraseBranchStatesFirst.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.EraseBranchStatesFirst.AutoSize = true;
-			this.EraseBranchStatesFirst.Checked = true;
-			this.EraseBranchStatesFirst.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.EraseBranchStatesFirst.Location = new System.Drawing.Point(15, 190);
-			this.EraseBranchStatesFirst.Name = "EraseBranchStatesFirst";
-			this.EraseBranchStatesFirst.Size = new System.Drawing.Size(139, 17);
-			this.EraseBranchStatesFirst.TabIndex = 11;
-			this.EraseBranchStatesFirst.Text = "Erase branch states first";
-			this.EraseBranchStatesFirst.UseVisualStyleBackColor = true;
-			this.EraseBranchStatesFirst.CheckedChanged += new System.EventHandler(this.EraseBranchStatesFIrst_CheckedChanged);
-			// 
-			// StateGap
-			// 
-			this.StateGap.Location = new System.Drawing.Point(151, 112);
-			this.StateGap.Maximum = new decimal(new int[] {
+			this.FileStateGapNumeric.Location = new System.Drawing.Point(12, 100);
+			this.FileStateGapNumeric.Maximum = new decimal(new int[] {
             8,
             0,
             0,
             0});
-			this.StateGap.Name = "StateGap";
-			this.StateGap.Size = new System.Drawing.Size(55, 20);
-			this.StateGap.TabIndex = 12;
-			this.StateGap.Value = new decimal(new int[] {
+			this.FileStateGapNumeric.Name = "FileStateGapNumeric";
+			this.FileStateGapNumeric.Size = new System.Drawing.Size(55, 20);
+			this.FileStateGapNumeric.TabIndex = 12;
+			this.FileStateGapNumeric.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
-			this.StateGap.ValueChanged += new System.EventHandler(this.StateGap_ValueChanged);
+			this.FileStateGapNumeric.ValueChanged += new System.EventHandler(this.FileStateGap_ValueChanged);
 			// 
 			// label10
 			// 
 			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(148, 96);
+			this.label10.Location = new System.Drawing.Point(9, 84);
 			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(91, 13);
+			this.label10.Size = new System.Drawing.Size(55, 13);
 			this.label10.TabIndex = 13;
-			this.label10.Text = "Project State Gap";
+			this.label10.Text = "State Gap";
 			// 
 			// label11
 			// 
 			this.label11.AutoSize = true;
-			this.label11.Location = new System.Drawing.Point(147, 135);
+			this.label11.Location = new System.Drawing.Point(8, 123);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(61, 13);
 			this.label11.TabIndex = 14;
 			this.label11.Text = "State every";
 			// 
-			// NumFramesLabel
+			// FileNumFramesLabel
 			// 
-			this.NumFramesLabel.AutoSize = true;
-			this.NumFramesLabel.Location = new System.Drawing.Point(204, 135);
-			this.NumFramesLabel.Name = "NumFramesLabel";
-			this.NumFramesLabel.Size = new System.Drawing.Size(47, 13);
-			this.NumFramesLabel.TabIndex = 15;
-			this.NumFramesLabel.Text = "0 frames";
+			this.FileNumFramesLabel.AutoSize = true;
+			this.FileNumFramesLabel.Location = new System.Drawing.Point(65, 123);
+			this.FileNumFramesLabel.Name = "FileNumFramesLabel";
+			this.FileNumFramesLabel.Size = new System.Drawing.Size(47, 13);
+			this.FileNumFramesLabel.TabIndex = 15;
+			this.FileNumFramesLabel.Text = "0 frames";
+			// 
+			// groupBox1
+			// 
+			this.groupBox1.Controls.Add(this.label14);
+			this.groupBox1.Controls.Add(this.MemFramesLabel);
+			this.groupBox1.Controls.Add(this.label13);
+			this.groupBox1.Controls.Add(this.MemStateGapDividerNumeric);
+			this.groupBox1.Controls.Add(this.label12);
+			this.groupBox1.Controls.Add(this.label2);
+			this.groupBox1.Controls.Add(this.MemCapacityNumeric);
+			this.groupBox1.Controls.Add(this.label1);
+			this.groupBox1.Location = new System.Drawing.Point(12, 34);
+			this.groupBox1.Name = "groupBox1";
+			this.groupBox1.Size = new System.Drawing.Size(143, 147);
+			this.groupBox1.TabIndex = 16;
+			this.groupBox1.TabStop = false;
+			this.groupBox1.Text = "Memory Usage";
+			// 
+			// label14
+			// 
+			this.label14.AutoSize = true;
+			this.label14.Location = new System.Drawing.Point(73, 102);
+			this.label14.Name = "label14";
+			this.label14.Size = new System.Drawing.Size(21, 13);
+			this.label14.TabIndex = 17;
+			this.label14.Text = "KB";
+			// 
+			// MemFramesLabel
+			// 
+			this.MemFramesLabel.AutoSize = true;
+			this.MemFramesLabel.Location = new System.Drawing.Point(66, 123);
+			this.MemFramesLabel.Name = "MemFramesLabel";
+			this.MemFramesLabel.Size = new System.Drawing.Size(47, 13);
+			this.MemFramesLabel.TabIndex = 16;
+			this.MemFramesLabel.Text = "0 frames";
+			// 
+			// label13
+			// 
+			this.label13.AutoSize = true;
+			this.label13.Location = new System.Drawing.Point(9, 123);
+			this.label13.Name = "label13";
+			this.label13.Size = new System.Drawing.Size(61, 13);
+			this.label13.TabIndex = 15;
+			this.label13.Text = "State every";
+			// 
+			// MemStateGapDividerNumeric
+			// 
+			this.MemStateGapDividerNumeric.Location = new System.Drawing.Point(12, 100);
+			this.MemStateGapDividerNumeric.Maximum = new decimal(new int[] {
+            1024,
+            0,
+            0,
+            0});
+			this.MemStateGapDividerNumeric.Minimum = new decimal(new int[] {
+            64,
+            0,
+            0,
+            0});
+			this.MemStateGapDividerNumeric.Name = "MemStateGapDividerNumeric";
+			this.MemStateGapDividerNumeric.Size = new System.Drawing.Size(55, 20);
+			this.MemStateGapDividerNumeric.TabIndex = 7;
+			this.MemStateGapDividerNumeric.Value = new decimal(new int[] {
+            65,
+            0,
+            0,
+            0});
+			this.MemStateGapDividerNumeric.ValueChanged += new System.EventHandler(this.MemStateGapDivider_ValueChanged);
+			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Location = new System.Drawing.Point(9, 84);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(91, 13);
+			this.label12.TabIndex = 6;
+			this.label12.Text = "State Gap Divider";
+			// 
+			// groupBox2
+			// 
+			this.groupBox2.Controls.Add(this.label8);
+			this.groupBox2.Controls.Add(this.FileCapacityNumeric);
+			this.groupBox2.Controls.Add(this.FileNumFramesLabel);
+			this.groupBox2.Controls.Add(this.label7);
+			this.groupBox2.Controls.Add(this.label11);
+			this.groupBox2.Controls.Add(this.label9);
+			this.groupBox2.Controls.Add(this.label10);
+			this.groupBox2.Controls.Add(this.NumSaveStatesLabel);
+			this.groupBox2.Controls.Add(this.FileStateGapNumeric);
+			this.groupBox2.Location = new System.Drawing.Point(163, 34);
+			this.groupBox2.Name = "groupBox2";
+			this.groupBox2.Size = new System.Drawing.Size(138, 147);
+			this.groupBox2.TabIndex = 17;
+			this.groupBox2.TabStop = false;
+			this.groupBox2.Text = "Project File";
 			// 
 			// StateHistorySettingsForm
 			// 
@@ -337,28 +419,16 @@ namespace BizHawk.Client.EmuHawk
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.CancelButton = this.CancelBtn;
-			this.ClientSize = new System.Drawing.Size(289, 255);
-			this.Controls.Add(this.NumFramesLabel);
-			this.Controls.Add(this.label11);
-			this.Controls.Add(this.label10);
-			this.Controls.Add(this.StateGap);
-			this.Controls.Add(this.EraseBranchStatesFirst);
-			this.Controls.Add(this.BranchStatesInTasproj);
-			this.Controls.Add(this.NumSaveStatesLabel);
-			this.Controls.Add(this.NumStatesLabel);
-			this.Controls.Add(this.label9);
-			this.Controls.Add(this.label4);
-			this.Controls.Add(this.SavestateSizeLabel);
-			this.Controls.Add(this.label3);
-			this.Controls.Add(this.label8);
-			this.Controls.Add(this.label7);
-			this.Controls.Add(this.label6);
-			this.Controls.Add(this.label5);
-			this.Controls.Add(this.SaveCapacityNumeric);
-			this.Controls.Add(this.label2);
+			this.ClientSize = new System.Drawing.Size(315, 260);
+			this.Controls.Add(this.groupBox2);
+			this.Controls.Add(this.groupBox1);
 			this.Controls.Add(this.DiskCapacityNumeric);
-			this.Controls.Add(this.label1);
-			this.Controls.Add(this.MemCapacityNumeric);
+			this.Controls.Add(this.label5);
+			this.Controls.Add(this.SavestateSizeLabel);
+			this.Controls.Add(this.label6);
+			this.Controls.Add(this.label4);
+			this.Controls.Add(this.label3);
+			this.Controls.Add(this.NumStatesLabel);
 			this.Controls.Add(this.OkBtn);
 			this.Controls.Add(this.CancelBtn);
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -369,8 +439,13 @@ namespace BizHawk.Client.EmuHawk
 			this.Load += new System.EventHandler(this.StateHistorySettings_Load);
 			((System.ComponentModel.ISupportInitialize)(this.MemCapacityNumeric)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.DiskCapacityNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.SaveCapacityNumeric)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.StateGap)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.FileCapacityNumeric)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.FileStateGapNumeric)).EndInit();
+			this.groupBox1.ResumeLayout(false);
+			this.groupBox1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.MemStateGapDividerNumeric)).EndInit();
+			this.groupBox2.ResumeLayout(false);
+			this.groupBox2.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -388,16 +463,21 @@ namespace BizHawk.Client.EmuHawk
 		private NumericUpDown DiskCapacityNumeric;
 		private Label label5;
 		private Label label6;
-		private NumericUpDown SaveCapacityNumeric;
+		private NumericUpDown FileCapacityNumeric;
 		private Label label7;
 		private Label label8;
 		private Label label9;
 		private Label NumSaveStatesLabel;
-		private CheckBox BranchStatesInTasproj;
-		private CheckBox EraseBranchStatesFirst;
-		private NumericUpDown StateGap;
+		private NumericUpDown FileStateGapNumeric;
 		private Label label10;
 		private Label label11;
-		private Label NumFramesLabel;
+		private Label FileNumFramesLabel;
+		private GroupBox groupBox1;
+		private NumericUpDown MemStateGapDividerNumeric;
+		private Label label12;
+		private GroupBox groupBox2;
+		private Label MemFramesLabel;
+		private Label label13;
+		private Label label14;
 	}
 }

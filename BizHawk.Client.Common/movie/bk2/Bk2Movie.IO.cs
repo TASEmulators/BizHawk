@@ -20,9 +20,10 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
+			var backupDir = PathManager.MakeAbsolutePath(Global.Config.PathEntries.MoviesBackupsPathFragment, null);
 			var backupName = Filename;
 			backupName = backupName.Insert(Filename.LastIndexOf("."), $".{DateTime.Now:yyyy-MM-dd HH.mm.ss}");
-			backupName = Path.Combine(Global.Config.PathEntries["Global", "Movie backups"].Path, Path.GetFileName(backupName));
+			backupName = Path.Combine(backupDir, Path.GetFileName(backupName));
 
 			var directoryInfo = new FileInfo(backupName).Directory;
 			if (directoryInfo != null)

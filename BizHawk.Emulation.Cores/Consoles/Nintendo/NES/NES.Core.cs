@@ -24,7 +24,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		EDetectionOrigin origin = EDetectionOrigin.None;
 		int sprdma_countdown;
 
-		bool _irq_apu; //various irq signals that get merged to the cpu irq pin
+		public bool _irq_apu; //various irq signals that get merged to the cpu irq pin
 		
 		/// <summary>clock speed of the main cpu in hz</summary>
 		public int cpuclockrate { get; private set; }
@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		// cheat addr index tracker
 		// disables all cheats each frame
-		public int[] cheat_indexes = new int[500];
+		public int[] cheat_indexes = new int[0x10000];
 		public int num_cheats;
 
 		// new input system
@@ -288,6 +288,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 					ram[0xEC] = 0;
 					ram[0xED] = 0;
 				}
+
+				if (cart.DB_GameInfo.Hash == "00C50062A2DECE99580063777590F26A253AAB6B") // Silva Saga
+				{
+					for (int i = 0; i < Board.WRAM.Length; i++)
+					{
+						Board.WRAM[i] = 0xFF;
+					}
+
+				}
+
+				
 			}
 
 		}
@@ -859,7 +870,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void ExecFetch(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr);
+			MemoryCallbacks.CallExecutes(addr, "System Bus");
 		}
 
 		public byte ReadMemory(ushort addr)
@@ -904,7 +915,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				ret = sysbus_watch[addr].ApplyGameGenie(ret);
 			}
 
-			MemoryCallbacks.CallReads(addr);
+			MemoryCallbacks.CallReads(addr, "System Bus");
 
 			DB = ret;
 			return ret;
@@ -959,7 +970,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				Board.WritePRG(addr - 0x8000, value);
 			}
 
-			MemoryCallbacks.CallWrites(addr);
+			MemoryCallbacks.CallWrites(addr, "System Bus");
 		}
 
 		// the palette for each VS game needs to be chosen explicitly since there are 6 different ones.

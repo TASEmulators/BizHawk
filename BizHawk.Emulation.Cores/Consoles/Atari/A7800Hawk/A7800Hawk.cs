@@ -168,6 +168,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					else
 					{
 						s_mapper = "1";
+					}
+					
+					if (cart_2.Bit(2))
+					{
+						cart_RAM = 8;
 					}					
 				}
 				else
@@ -268,7 +273,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private void ExecFetch(ushort addr)
 		{
-			MemoryCallbacks.CallExecutes(addr);
+			MemoryCallbacks.CallExecutes(addr, "System Bus");
 		}
 
 		private void Reset_Mapper(string m)

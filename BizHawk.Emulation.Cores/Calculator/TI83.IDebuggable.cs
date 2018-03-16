@@ -132,7 +132,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 			}
 		}
 
-		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem();
+		public IMemoryCallbackSystem MemoryCallbacks { get; } = new MemoryCallbackSystem(new[] { "System Bus" });
 
 		[FeatureNotImplemented]
 		public void Step(StepType type)

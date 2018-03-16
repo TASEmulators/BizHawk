@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 			OctoshockDll.shock_SetRegister_CPU(psx, index, (uint)value);
 		}
 
-		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem();
+		private readonly MemoryCallbackSystem _memoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" }); // Note: there is no system bus memory domain, but there's also no hard rule that the memory callback system domains have to correspond to actual domains in MemoryDomains, that could be good, or bad, but something to be careful about
 		public IMemoryCallbackSystem MemoryCallbacks { get { return _memoryCallbacks; } }
 
 		public bool CanStep(StepType type) { return false; }

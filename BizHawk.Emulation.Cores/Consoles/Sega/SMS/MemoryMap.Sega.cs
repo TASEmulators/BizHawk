@@ -30,7 +30,32 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				if ((Port3E & 0x48) == 0x48) // cart and bios disabled, return empty bus
 					ret = 0xFF;
 				else if (BiosMapped && BiosRom != null)
-					ret = BiosRom[address & 0x1FFF];
+				{
+					if (BiosRom.Length == 0x2000)
+					{
+						ret = BiosRom[address & 0x1FFF];
+					}
+					else
+					{
+						// korean BIOS (and a couple of rarer BIOses) use memory slot 2 mechanics as needed
+						if (address < 0x8000)
+						{
+							return BiosRom[address];
+						}
+						else
+						{
+							switch (SaveRamBank)
+							{
+								case 0: ret = BiosRom[(Bios_bank * BankSize) + (address & BankSizeMask)]; break;
+								case 1: if (SaveRAM != null) ret = SaveRAM[(address & BankSizeMask) % SaveRAM.Length]; break;
+								case 2: if (SaveRAM != null) ret = SaveRAM[(BankSize + (address & BankSizeMask)) % SaveRAM.Length]; break;
+								default:
+									ret = SystemRam[address & RamSizeMask];
+									break;
+							}
+						}
+					}
+				}
 				else if (address < 1024)
 					ret = RomData[address];
 				else if (address < 0x4000)
@@ -125,20 +150,31 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				}
 				else if (address == 0xFFFD) RomBank0 = (byte)(value % RomBanks);
 				else if (address == 0xFFFE) RomBank1 = (byte)(value % RomBanks);
-				else if (address == 0xFFFF) RomBank2 = (byte)(value % RomBanks);
+				else if (address == 0xFFFF)
+				{
+					if (BiosMapped)
+					{
+						Bios_bank = (byte)value;
+					}
+					else
+					{
+						RomBank2 = (byte)(value % RomBanks);
+					}					
+				}
 				return;
 			}
 		}
 
 		void InitSegaMapper()
 		{
-			ReadMemory = ReadMemorySega;
-			WriteMemory = WriteMemorySega;
+			ReadMemoryMapper = ReadMemorySega;
+			WriteMemoryMapper = WriteMemorySega;
 			MapMemory = MapMemorySega;
 			WriteMemorySega(0xFFFC, 0);
 			WriteMemorySega(0xFFFD, 0);
 			WriteMemorySega(0xFFFE, 1);
 			WriteMemorySega(0xFFFF, 2);
+			Bios_bank = 2;
 		}
 
 		// Mapper when loading a BIOS as a ROM (simulating no cart loaded)
@@ -176,8 +212,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		void InitBiosMapper()
 		{
-			ReadMemory = ReadMemoryBIOS;
-			WriteMemory = WriteMemoryBIOS;
+			ReadMemoryMapper = ReadMemoryBIOS;
+			WriteMemoryMapper = WriteMemoryBIOS;
 			WriteMemorySega(0xFFFC, 0);
 			WriteMemorySega(0xFFFD, 0);
 			WriteMemorySega(0xFFFE, 1);

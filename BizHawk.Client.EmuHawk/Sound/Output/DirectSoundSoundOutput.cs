@@ -117,6 +117,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public int CalculateSamplesNeeded()
 		{
+			if (_deviceBuffer.Status == BufferStatus.BufferLost) return 0;
+
 			long currentWriteTime = Stopwatch.GetTimestamp();
 			int playCursor = _deviceBuffer.CurrentPlayPosition;
 			int writeCursor = _deviceBuffer.CurrentWritePosition;

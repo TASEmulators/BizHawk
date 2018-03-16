@@ -23,7 +23,8 @@
     <DebugType>full</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
+    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
@@ -35,7 +36,8 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <!--<CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>-->
+    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
@@ -182,6 +184,7 @@
     </Compile>
     <Compile Include="movie\bk2\StringLogs.cs" />
     <Compile Include="movie\import\PXMImport.cs" />
+    <Compile Include="movie\tasproj\StateManagerDecay.cs" />
     <Compile Include="movie\tasproj\StateManagerState.cs" />
     <Compile Include="movie\tasproj\TasBranch.cs" />
     <Compile Include="movie\tasproj\TasMovie.History.cs" />
@@ -268,6 +271,7 @@
     <Compile Include="tools\Watch\SeparatorWatch.cs" />
     <Compile Include="tools\Watch\Watch.cs" />
     <Compile Include="tools\Watch\WatchList\WatchChangeCountComparer.cs" />
+    <Compile Include="tools\Watch\WatchList\WatchDisplayTypeComparer.cs" />
     <Compile Include="tools\Watch\WatchList\WatchEqualityComparer.cs" />
     <Compile Include="tools\Watch\WatchList\WatchDomainComparer.cs" />
     <Compile Include="tools\Watch\WatchList\WatchAddressComparer.cs" />

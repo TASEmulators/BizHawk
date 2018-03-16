@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 				});
 			}
 
-			if (tapeDriveEnabled)
+			if (tapeDriveEnabled && (_board.TapeDrive.TapeDataDomain != null))
 			{
 				domains.AddRange(new[]
 				{

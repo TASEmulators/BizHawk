@@ -15,6 +15,12 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 				http://frodo.cebix.net/
 		*/
 
+
+		// operation of the interrupt at the serial data port occurs in 2 instances:
+		// 1. Being in output mode and having a complete transfer as defined by clocking of timer A
+		// 2. Being in input mode and receiving 8 clocks from the /CNT pin
+		// This is TODO
+
 		private enum TimerState
 		{
 			Stop = 0,

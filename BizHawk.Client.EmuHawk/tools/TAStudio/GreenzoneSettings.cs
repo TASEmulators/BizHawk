@@ -3,6 +3,7 @@ using System.Windows.Forms;
 
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
+using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -24,20 +25,20 @@ namespace BizHawk.Client.EmuHawk
 			_stateSizeMb = Statable.SaveStateBinary().Length / (decimal)1024 / (decimal)1024;
 
 			MemCapacityNumeric.Maximum = 1024 * 8;
+			MemCapacityNumeric.Minimum = _stateSizeMb + 1;
 
-			MemCapacityNumeric.Value = _settings.Capacitymb < MemCapacityNumeric.Maximum ?
-				_settings.Capacitymb : MemCapacityNumeric.Maximum;
-			DiskCapacityNumeric.Value = _settings.DiskCapacitymb < MemCapacityNumeric.Maximum ?
-				_settings.DiskCapacitymb : MemCapacityNumeric.Maximum;
-			SaveCapacityNumeric.Value = _settings.DiskSaveCapacitymb < MemCapacityNumeric.Maximum ?
-				_settings.DiskSaveCapacitymb : MemCapacityNumeric.Maximum;
+			MemStateGapDividerNumeric.Maximum = Statable.SaveStateBinary().Length / 1024 / 2 + 1;
+			MemStateGapDividerNumeric.Minimum = Math.Max(Statable.SaveStateBinary().Length / 1024 / 16, 1);
 
-			StateGap.Value = _settings.StateGap;
-			SavestateSizeLabel.Text = Math.Round(_stateSizeMb, 2).ToString() + " mb";
+			MemCapacityNumeric.Value = NumberExtensions.Clamp(_settings.Capacitymb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
+			DiskCapacityNumeric.Value = NumberExtensions.Clamp(_settings.DiskCapacitymb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
+			FileCapacityNumeric.Value = NumberExtensions.Clamp(_settings.DiskSaveCapacitymb, MemCapacityNumeric.Minimum, MemCapacityNumeric.Maximum);
+			MemStateGapDividerNumeric.Value = NumberExtensions.Clamp(_settings.MemStateGapDivider, MemStateGapDividerNumeric.Minimum, MemStateGapDividerNumeric.Maximum);
+
+			FileStateGapNumeric.Value = _settings.FileStateGap;
+			SavestateSizeLabel.Text = Math.Round(_stateSizeMb, 2).ToString() + " MB";
 			CapacityNumeric_ValueChanged(null, null);
 			SaveCapacityNumeric_ValueChanged(null, null);
-			BranchStatesInTasproj.Checked = _settings.BranchStatesInTasproj;
-			EraseBranchStatesFirst.Checked = _settings.EraseBranchStatesFirst;
 		}
 
 		private int MaxStatesInCapacity => (int)Math.Floor(MemCapacityNumeric.Value / _stateSizeMb)
@@ -47,8 +48,9 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_settings.Capacitymb = (int)MemCapacityNumeric.Value;
 			_settings.DiskCapacitymb = (int)DiskCapacityNumeric.Value;
-			_settings.DiskSaveCapacitymb = (int)SaveCapacityNumeric.Value;
-			_settings.StateGap = (int)StateGap.Value;
+			_settings.DiskSaveCapacitymb = (int)FileCapacityNumeric.Value;
+			_settings.MemStateGapDivider = (int)MemStateGapDividerNumeric.Value;
+			_settings.FileStateGap = (int)FileStateGapNumeric.Value;
 			DialogResult = DialogResult.OK;
 			Close();
 		}
@@ -68,24 +70,26 @@ namespace BizHawk.Client.EmuHawk
 
 		private void SaveCapacityNumeric_ValueChanged(object sender, EventArgs e)
 		{
-			NumSaveStatesLabel.Text = ((int)Math.Floor(SaveCapacityNumeric.Value / _stateSizeMb)).ToString();
+			NumSaveStatesLabel.Text = ((int)Math.Floor(FileCapacityNumeric.Value / _stateSizeMb)).ToString();
 		}
 
-		private void BranchStatesInTasproj_CheckedChanged(object sender, EventArgs e)
+		private void FileStateGap_ValueChanged(object sender, EventArgs e)
 		{
-			_settings.BranchStatesInTasproj = BranchStatesInTasproj.Checked;
-		}
-
-		private void EraseBranchStatesFIrst_CheckedChanged(object sender, EventArgs e)
-		{
-			_settings.EraseBranchStatesFirst = EraseBranchStatesFirst.Checked;
-		}
-
-		private void StateGap_ValueChanged(object sender, EventArgs e)
-		{
-			NumFramesLabel.Text = StateGap.Value == 0
+			FileNumFramesLabel.Text = FileStateGapNumeric.Value == 0
 				? "frame"
-				: $"{1 << (int)StateGap.Value} frames";
+				: $"{1 << (int)FileStateGapNumeric.Value} frames";
+		}
+
+		private void MemStateGapDivider_ValueChanged(object sender, EventArgs e)
+		{
+			int val = (int)(Statable.SaveStateBinary().Length / MemStateGapDividerNumeric.Value / 1024);
+
+			if (val <= 1)
+				MemStateGapDividerNumeric.Maximum = MemStateGapDividerNumeric.Value;
+
+			MemFramesLabel.Text = val <= 1
+				? "frame"
+				: $"{val} frames";
 		}
 	}
 }

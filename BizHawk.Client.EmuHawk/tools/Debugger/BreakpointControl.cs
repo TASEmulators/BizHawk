@@ -144,7 +144,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public void AddBreakpoint(uint address, uint mask, MemoryCallbackType type)
 		{
-			_breakpoints.Add(Core, address, mask, type);
+			_breakpoints.Add(Core, MemoryDomains.SystemBus.Name, address, mask, type);
 
 			BreakpointView.ItemCount = _breakpoints.Count;
 			UpdateBreakpointRemoveButton();
@@ -157,7 +157,7 @@ namespace BizHawk.Client.EmuHawk
 
 			if (b.ShowHawkDialog() == DialogResult.OK)
 			{
-				_breakpoints.Add(Core, b.Address, b.AddressMask, b.BreakType);
+				_breakpoints.Add(Core, MemoryDomains.SystemBus.Name, b.Address, b.AddressMask, b.BreakType);
 			}
 
 			BreakpointView.ItemCount = _breakpoints.Count;
@@ -170,7 +170,7 @@ namespace BizHawk.Client.EmuHawk
 		public void AddSeekBreakpoint(uint pcVal, int pcBitSize)
 		{
 			var name = SeekName + pcVal.ToHexString(pcBitSize / 4);
-			_breakpoints.Add(new Breakpoint(name, true, Core, SeekCallback, pcVal, 0xFFFFFFFF, MemoryCallbackType.Execute));
+			_breakpoints.Add(new Breakpoint(name, true, Core, MemoryDomains.SystemBus.Name, SeekCallback, pcVal, 0xFFFFFFFF, MemoryCallbackType.Execute));
 		}
 
 		public void RemoveCurrentSeek()
@@ -284,7 +284,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (b.ShowHawkDialog() == DialogResult.OK)
 				{
-					_breakpoints.Add(new Breakpoint(Core, breakpoint.Callback, b.Address, b.AddressMask, b.BreakType, breakpoint.Active));
+					_breakpoints.Add(new Breakpoint(Core, MemoryDomains.SystemBus.Name, breakpoint.Callback, b.Address, b.AddressMask, b.BreakType, breakpoint.Active));
 				}
 			}
 

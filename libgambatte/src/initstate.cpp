@@ -1041,11 +1041,11 @@ static void setInitialCgbIoamhram(unsigned char *const ioamhram) {
 	};
 	
 	static const unsigned char ffxxDump[0x100] = {
-		0xCF, 0x00, 0x7C, 0xFF, 0x44, 0x00, 0x00, 0xF8,
+		0xCF, 0x00, 0x7C, 0xFF, 0x00, 0x00, 0x00, 0xF8,
 		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xE1,
-		0x80, 0xBF, 0xF3, 0xFF, 0xBF, 0xFF, 0x3F, 0x00,
+		0x80, 0x3F, 0x00, 0xFF, 0xBF, 0xFF, 0x3F, 0x00,
 		0xFF, 0xBF, 0x7F, 0xFF, 0x9F, 0xFF, 0xBF, 0xFF,
-		0xFF, 0x00, 0x00, 0xBF, 0x77, 0xF3, 0xF1, 0xFF,
+		0xFF, 0x00, 0x00, 0xBF, 0x00, 0x00, 0x70, 0xFF,
 		0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
 		0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF,
 		0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF,
@@ -1146,337 +1146,178 @@ static void setInitialDmgIoamhram(unsigned char *const ioamhram) {
 
 } // anon namespace
 
-void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbMode, const std::uint32_t now, bool boot_bios) {
+void gambatte::setInitState(SaveState &state, const bool cgb, const bool gbaCgbMode, const std::uint32_t now, const unsigned div) {
 	static const unsigned char cgbObjpDump[0x40] = {
-		0x00, 0x00, 0xF2, 0xAB,
-		0x61, 0xC2, 0xD9, 0xBA,
-		0x88, 0x6E, 0xDD, 0x63,
-		0x28, 0x27, 0xFB, 0x9F,
-		0x35, 0x42, 0xD6, 0xD4,
-		0x50, 0x48, 0x57, 0x5E,
-		0x23, 0x3E, 0x3D, 0xCA,
-		0x71, 0x21, 0x37, 0xC0,
-		0xC6, 0xB3, 0xFB, 0xF9,
-		0x08, 0x00, 0x8D, 0x29,
-		0xA3, 0x20, 0xDB, 0x87,
-		0x62, 0x05, 0x5D, 0xD4,
-		0x0E, 0x08, 0xFE, 0xAF,
-		0x20, 0x02, 0xD7, 0xFF,
-		0x07, 0x6A, 0x55, 0xEC,
+		0x00, 0x00, 0xF2, 0xAB, 
+		0x61, 0xC2, 0xD9, 0xBA, 
+		0x88, 0x6E, 0xDD, 0x63, 
+		0x28, 0x27, 0xFB, 0x9F, 
+		0x35, 0x42, 0xD6, 0xD4, 
+		0x50, 0x48, 0x57, 0x5E, 
+		0x23, 0x3E, 0x3D, 0xCA, 
+		0x71, 0x21, 0x37, 0xC0, 
+		0xC6, 0xB3, 0xFB, 0xF9, 
+		0x08, 0x00, 0x8D, 0x29, 
+		0xA3, 0x20, 0xDB, 0x87, 
+		0x62, 0x05, 0x5D, 0xD4, 
+		0x0E, 0x08, 0xFE, 0xAF, 
+		0x20, 0x02, 0xD7, 0xFF, 
+		0x07, 0x6A, 0x55, 0xEC, 
 		0x83, 0x40, 0x0B, 0x77
 	};
-
-	if (boot_bios)
-	{
-		state.cpu.PC = 0x00;
-		state.cpu.SP = 0xFFFE;
-		state.cpu.A = 0;
-		state.cpu.B = 0;
-		state.cpu.C = 0x0;
-		state.cpu.D = 0x0;
-		state.cpu.E = 0x0;
-		state.cpu.F = 0x0;
-		state.cpu.H = 0x0;
-		state.cpu.L = 0x0;
-		state.cpu.skip = false;
-		state.cpu.cycleCounter = 0;
-		state.mem.ioamhram.ptr[0x140] = 0x00;
-		state.mem.ioamhram.ptr[0x104] = 0x00;
-		state.mem.using_bios = true;
-
-		std::memset(state.mem.sram.ptr, 0xFF, state.mem.sram.getSz());
-
-		if (cgb) {
-			setInitialCgbWram(state.mem.wram.ptr);
-		}
-		else {
-			setInitialDmgWram(state.mem.wram.ptr);
-		}
-
-		if (cgb) {
-			setInitialCgbIoamhram(state.mem.ioamhram.ptr);
-		}
-		else {
-			setInitialDmgIoamhram(state.mem.ioamhram.ptr);
-		}
-
-		state.mem.ioamhram.ptr[0x144] = 0x00;
-
-		state.mem.divLastUpdate = 0;
-		state.mem.timaLastUpdate = 0;
-		state.mem.tmatime = DISABLED_TIME;
-		state.mem.nextSerialtime = DISABLED_TIME;
-		state.mem.lastOamDmaUpdate = DISABLED_TIME;
-		state.mem.unhaltTime = DISABLED_TIME;
-		state.mem.minIntTime = 0;
-		state.mem.rombank = 1;
-		state.mem.dmaSource = 0;
-		state.mem.dmaDestination = 0;
-		state.mem.rambank = 0;
-		state.mem.oamDmaPos = 0x0;
-		state.mem.IME = false;
-		state.mem.halted = false;
-		state.mem.enableRam = false;
-		state.mem.rambankMode = false;
-		state.mem.hdmaTransfer = false;
-
-
-		for (unsigned i = 0x00; i < 0x40; i += 0x02) {
-			state.ppu.bgpData.ptr[i] = 0xFF;
-			state.ppu.bgpData.ptr[i + 1] = 0x7F;
-		}
-
-		std::memcpy(state.ppu.objpData.ptr, cgbObjpDump, sizeof(cgbObjpDump));
-
-		if (!cgb) {
-			state.ppu.bgpData.ptr[0] = state.mem.ioamhram.get()[0x147];
-			state.ppu.objpData.ptr[0] = state.mem.ioamhram.get()[0x148];
-			state.ppu.objpData.ptr[1] = state.mem.ioamhram.get()[0x149];
-		}
-
-		for (unsigned pos = 0; pos < 80; ++pos)
-			state.ppu.oamReaderBuf.ptr[pos] = state.mem.ioamhram.ptr[(pos * 2 & ~3) | (pos & 1)];
-
-		std::fill_n(state.ppu.oamReaderSzbuf.ptr, 40, false);
-		std::memset(state.ppu.spAttribList, 0, sizeof(state.ppu.spAttribList));
-		std::memset(state.ppu.spByte0List, 0, sizeof(state.ppu.spByte0List));
-		std::memset(state.ppu.spByte1List, 0, sizeof(state.ppu.spByte1List));
-		state.ppu.videoCycles = cgb ? 144 * 456ul + 164 : 153 * 456ul + 396;
-		state.ppu.enableDisplayM0Time = 0;
-		state.ppu.winYPos = 0;
-		state.ppu.xpos = 0;
-		state.ppu.endx = 0;
-		state.ppu.reg0 = 0;
-		state.ppu.reg1 = 0;
-		state.ppu.tileword = 0;
-		state.ppu.ntileword = 0;
-		state.ppu.attrib = 0;
-		state.ppu.nattrib = 0;
-		state.ppu.state = 0;
-		state.ppu.nextSprite = 0;
-		state.ppu.currentSprite = 0;
-		state.ppu.lyc = 0;
-		state.ppu.m0lyc = 0;
-		state.ppu.weMaster = false;
-		state.ppu.winDrawState = 0;
-		state.ppu.wscx = 0;
-		state.ppu.lastM0Time = 0;
-		state.ppu.nextM0Irq = 0;
-		state.ppu.oldWy = 0;
-		state.ppu.pendingLcdstatIrq = false;
-
-		state.spu.cycleCounter = 0;
-
-		state.spu.ch1.sweep.counter = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch1.sweep.shadow = 0;
-		state.spu.ch1.sweep.nr0 = 0;
-		state.spu.ch1.sweep.negging = false;
-		state.spu.ch1.duty.nextPosUpdate = 0;
-		state.spu.ch1.duty.nr3 = 0;
-		state.spu.ch1.duty.pos = 0;
-		state.spu.ch1.env.counter = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch1.env.volume = 0;
-		state.spu.ch1.lcounter.counter = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch1.lcounter.lengthCounter = 0x0;
-		state.spu.ch1.nr4 = 0;
-		state.spu.ch1.master = false;
-
-		state.spu.ch2.duty.nextPosUpdate = 0;
-		state.spu.ch2.duty.nr3 = 0;
-		state.spu.ch2.duty.pos = 0;
-		state.spu.ch2.env.counter = 0;
-		state.spu.ch2.env.volume = 0;
-		state.spu.ch2.lcounter.counter = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch2.lcounter.lengthCounter = 0x0;
-		state.spu.ch2.nr4 = 0;
-		state.spu.ch2.master = false;
-
-		for (unsigned i = 0; i < 0x10; ++i)
-			state.spu.ch3.waveRam.ptr[i] = 0;
-
-		state.spu.ch3.lcounter.counter = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch3.lcounter.lengthCounter = 0x0;
-		state.spu.ch3.waveCounter = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch3.lastReadTime = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch3.nr3 = 0;
-		state.spu.ch3.nr4 = 0;
-		state.spu.ch3.wavePos = 0;
-		state.spu.ch3.sampleBuf = 0;
-		state.spu.ch3.master = false;
-
-		state.spu.ch4.lfsr.counter = 0;
-		state.spu.ch4.lfsr.reg = 0;
-		state.spu.ch4.env.counter = 0;
-		state.spu.ch4.env.volume = 0;
-		state.spu.ch4.lcounter.counter = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch4.lcounter.lengthCounter = 0x0;
-		state.spu.ch4.nr4 = 0;
-		state.spu.ch4.master = false;
-
-		state.rtc.baseTime = now;
-		state.rtc.haltTime = state.rtc.baseTime;
-		state.rtc.dataDh = 0;
-		state.rtc.dataDl = 0;
-		state.rtc.dataH = 0;
-		state.rtc.dataM = 0;
-		state.rtc.dataS = 0;
-		state.rtc.lastLatchData = false;
-	}
-	else
-	{
-		state.cpu.PC = 0x100;
-		state.cpu.SP = 0xFFFE;
-		state.cpu.A = cgb * 0x10 | 0x01;
-		state.cpu.B = cgb & gbaCgbMode;
-		state.cpu.C = 0x13;
-		state.cpu.D = 0x00;
-		state.cpu.E = 0xD8;
-		state.cpu.F = 0xB0;
-		state.cpu.H = 0x01;
-		state.cpu.L = 0x4D;
-		state.cpu.skip = false;
-		setInitialVram(state.mem.vram.ptr, cgb);
-		state.cpu.cycleCounter = cgb ? 0x102A0 : 0x102A0 + 0x8D2C;
 	
+	state.cpu.cycleCounter = 8;
+	state.cpu.PC = 0;
+	state.cpu.SP = 0;
+	state.cpu.A = 0;
+	state.cpu.B = 0;
+	state.cpu.C = 0;
+	state.cpu.D = 0;
+	state.cpu.E = 0;
+	state.cpu.F = 0;
+	state.cpu.H = 0;
+	state.cpu.L = 0;
+	state.cpu.skip = false;
+	state.mem.biosMode = true;
+	state.mem.cgbSwitching = false;
+	state.mem.agbMode = gbaCgbMode;
 
-		std::memset(state.mem.sram.ptr, 0xFF, state.mem.sram.getSz());
+	std::memset(state.mem.sram.ptr, 0xFF, state.mem.sram.getSz());
+	
+	setInitialVram(state.mem.vram.ptr, cgb);
 
-		if (cgb) {
-			setInitialCgbWram(state.mem.wram.ptr);
-		}
-		else {
-			setInitialDmgWram(state.mem.wram.ptr);
-		}
-
-		if (cgb) {
-			setInitialCgbIoamhram(state.mem.ioamhram.ptr);
-		}
-		else {
-			setInitialDmgIoamhram(state.mem.ioamhram.ptr);
-		}
-
-		state.mem.ioamhram.ptr[0x140] = 0x91;
-		state.mem.ioamhram.ptr[0x104] = 0x1C;
-		state.mem.ioamhram.ptr[0x144] = 0x00;
-
-		state.mem.divLastUpdate = 0;
-		state.mem.timaLastUpdate = 0;
-		state.mem.tmatime = DISABLED_TIME;
-		state.mem.nextSerialtime = DISABLED_TIME;
-		state.mem.lastOamDmaUpdate = DISABLED_TIME;
-		state.mem.unhaltTime = DISABLED_TIME;
-		state.mem.minIntTime = 0;
-		state.mem.rombank = 1;
-		state.mem.dmaSource = 0;
-		state.mem.dmaDestination = 0;
-		state.mem.rambank = 0;
-		state.mem.oamDmaPos = 0xFE;
-		state.mem.IME = false;
-		state.mem.halted = false;
-		state.mem.enableRam = false;
-		state.mem.rambankMode = false;
-		state.mem.hdmaTransfer = false;
-
-
-		for (unsigned i = 0x00; i < 0x40; i += 0x02) {
-			state.ppu.bgpData.ptr[i] = 0xFF;
-			state.ppu.bgpData.ptr[i + 1] = 0x7F;
-		}
-
-		std::memcpy(state.ppu.objpData.ptr, cgbObjpDump, sizeof(cgbObjpDump));
-
-		if (!cgb) {
-			state.ppu.bgpData.ptr[0] = state.mem.ioamhram.get()[0x147];
-			state.ppu.objpData.ptr[0] = state.mem.ioamhram.get()[0x148];
-			state.ppu.objpData.ptr[1] = state.mem.ioamhram.get()[0x149];
-		}
-
-		for (unsigned pos = 0; pos < 80; ++pos)
-			state.ppu.oamReaderBuf.ptr[pos] = state.mem.ioamhram.ptr[(pos * 2 & ~3) | (pos & 1)];
-
-		std::fill_n(state.ppu.oamReaderSzbuf.ptr, 40, false);
-		std::memset(state.ppu.spAttribList, 0, sizeof(state.ppu.spAttribList));
-		std::memset(state.ppu.spByte0List, 0, sizeof(state.ppu.spByte0List));
-		std::memset(state.ppu.spByte1List, 0, sizeof(state.ppu.spByte1List));
-		state.ppu.videoCycles = cgb ? 144 * 456ul + 164 : 153 * 456ul + 396;
-		state.ppu.enableDisplayM0Time = state.cpu.cycleCounter;
-		state.ppu.winYPos = 0xFF;
-		state.ppu.xpos = 0;
-		state.ppu.endx = 0;
-		state.ppu.reg0 = 0;
-		state.ppu.reg1 = 0;
-		state.ppu.tileword = 0;
-		state.ppu.ntileword = 0;
-		state.ppu.attrib = 0;
-		state.ppu.nattrib = 0;
-		state.ppu.state = 0;
-		state.ppu.nextSprite = 0;
-		state.ppu.currentSprite = 0;
-		state.ppu.lyc = state.mem.ioamhram.get()[0x145];
-		state.ppu.m0lyc = state.mem.ioamhram.get()[0x145];
-		state.ppu.weMaster = false;
-		state.ppu.winDrawState = 0;
-		state.ppu.wscx = 0;
-		state.ppu.lastM0Time = 1234;
-		state.ppu.nextM0Irq = 0;
-		state.ppu.oldWy = state.mem.ioamhram.get()[0x14A];
-		state.ppu.pendingLcdstatIrq = false;
-
-		state.spu.cycleCounter = 0x1000 | (state.cpu.cycleCounter >> 1 & 0xFFF); // spu.cycleCounter >> 12 & 7 represents the frame sequencer position.
-
-		state.spu.ch1.sweep.counter = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch1.sweep.shadow = 0;
-		state.spu.ch1.sweep.nr0 = 0;
-		state.spu.ch1.sweep.negging = false;
-		state.spu.ch1.duty.nextPosUpdate = (state.spu.cycleCounter & ~1) + 2048 * 2;
-		state.spu.ch1.duty.nr3 = 0;
-		state.spu.ch1.duty.pos = 0;
-		state.spu.ch1.env.counter = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch1.env.volume = 0;
-		state.spu.ch1.lcounter.counter = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch1.lcounter.lengthCounter = 0x40;
-		state.spu.ch1.nr4 = 0;
-		state.spu.ch1.master = true;
-
-		state.spu.ch2.duty.nextPosUpdate = (state.spu.cycleCounter & ~1) + 2048 * 2;
-		state.spu.ch2.duty.nr3 = 0;
-		state.spu.ch2.duty.pos = 0;
-		state.spu.ch2.env.counter = state.spu.cycleCounter - ((state.spu.cycleCounter - 0x1000) & 0x7FFF) + 8ul * 0x8000;
-		state.spu.ch2.env.volume = 0;
-		state.spu.ch2.lcounter.counter = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch2.lcounter.lengthCounter = 0x40;
-		state.spu.ch2.nr4 = 0;
-		state.spu.ch2.master = false;
-
-		for (unsigned i = 0; i < 0x10; ++i)
-			state.spu.ch3.waveRam.ptr[i] = state.mem.ioamhram.get()[0x130 + i];
-
-		state.spu.ch3.lcounter.counter = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch3.lcounter.lengthCounter = 0x100;
-		state.spu.ch3.waveCounter = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch3.lastReadTime = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch3.nr3 = 0;
-		state.spu.ch3.nr4 = 0;
-		state.spu.ch3.wavePos = 0;
-		state.spu.ch3.sampleBuf = 0;
-		state.spu.ch3.master = false;
-
-		state.spu.ch4.lfsr.counter = state.spu.cycleCounter + 4;
-		state.spu.ch4.lfsr.reg = 0xFF;
-		state.spu.ch4.env.counter = state.spu.cycleCounter - ((state.spu.cycleCounter - 0x1000) & 0x7FFF) + 8ul * 0x8000;
-		state.spu.ch4.env.volume = 0;
-		state.spu.ch4.lcounter.counter = SoundUnit::COUNTER_DISABLED;
-		state.spu.ch4.lcounter.lengthCounter = 0x40;
-		state.spu.ch4.nr4 = 0;
-		state.spu.ch4.master = false;
-
-		state.rtc.baseTime = now;
-		state.rtc.haltTime = state.rtc.baseTime;
-		state.rtc.dataDh = 0;
-		state.rtc.dataDl = 0;
-		state.rtc.dataH = 0;
-		state.rtc.dataM = 0;
-		state.rtc.dataS = 0;
-		state.rtc.lastLatchData = false;
+	if (cgb) {
+		setInitialCgbWram(state.mem.wram.ptr);
+		setInitialCgbIoamhram(state.mem.ioamhram.ptr);
+	} else {
+		setInitialDmgWram(state.mem.wram.ptr);
+		setInitialDmgIoamhram(state.mem.ioamhram.ptr);
 	}
+	
+	state.mem.ioamhram.ptr[0x104] = 0;
+	state.mem.ioamhram.ptr[0x140] = 0;
+	state.mem.ioamhram.ptr[0x144] = 0x00;
+	
+	state.mem.divLastUpdate = 0 - div;
+	state.mem.timaLastUpdate = 0;
+	state.mem.tmatime = DISABLED_TIME;
+	state.mem.nextSerialtime = DISABLED_TIME;
+	state.mem.lastOamDmaUpdate = DISABLED_TIME;
+	state.mem.unhaltTime = DISABLED_TIME;
+	state.mem.minIntTime = 0;
+	state.mem.rombank = 1;
+	state.mem.dmaSource = 0;
+	state.mem.dmaDestination = 0;
+	state.mem.rambank = 0;
+	state.mem.oamDmaPos = 0xFE;
+	state.mem.IME = false;
+	state.mem.halted = false;
+	state.mem.enableRam = false;
+	state.mem.rambankMode = false;
+	state.mem.hdmaTransfer = false;
+	state.mem.gbIsCgb = cgb;
+
+	
+	for (unsigned i = 0x00; i < 0x40; i += 0x02) {
+		state.ppu.bgpData.ptr[i    ] = 0xFF;
+		state.ppu.bgpData.ptr[i + 1] = 0x7F;
+	}
+	
+	std::memcpy(state.ppu.objpData.ptr, cgbObjpDump, sizeof(cgbObjpDump));
+	
+	if (!cgb) {
+		state.ppu.bgpData.ptr[0] = state.mem.ioamhram.get()[0x147];
+		state.ppu.objpData.ptr[0] = state.mem.ioamhram.get()[0x148];
+		state.ppu.objpData.ptr[1] = state.mem.ioamhram.get()[0x149];
+	}
+	
+	for (unsigned pos = 0; pos < 80; ++pos)
+		state.ppu.oamReaderBuf.ptr[pos] = state.mem.ioamhram.ptr[(pos * 2 & ~3) | (pos & 1)];
+	
+	std::fill_n(state.ppu.oamReaderSzbuf.ptr, 40, false);
+	std::memset(state.ppu.spAttribList, 0, sizeof(state.ppu.spAttribList));
+	std::memset(state.ppu.spByte0List, 0, sizeof(state.ppu.spByte0List));
+	std::memset(state.ppu.spByte1List, 0, sizeof(state.ppu.spByte1List));
+	state.ppu.videoCycles = 0;
+	state.ppu.enableDisplayM0Time = state.cpu.cycleCounter;
+	state.ppu.winYPos = 0xFF;
+	state.ppu.xpos = 0;
+	state.ppu.endx = 0;
+	state.ppu.reg0 = 0;
+	state.ppu.reg1 = 0;
+	state.ppu.tileword = 0;
+	state.ppu.ntileword = 0;
+	state.ppu.attrib = 0;
+	state.ppu.nattrib = 0;
+	state.ppu.state = 0;
+	state.ppu.nextSprite = 0;
+	state.ppu.currentSprite = 0;
+	state.ppu.lyc   = state.mem.ioamhram.get()[0x145];
+	state.ppu.m0lyc = state.mem.ioamhram.get()[0x145];
+	state.ppu.weMaster = false;
+	state.ppu.winDrawState = 0;
+	state.ppu.wscx = 0;
+	state.ppu.lastM0Time = 1234;
+	state.ppu.nextM0Irq = 0;
+	state.ppu.oldWy = state.mem.ioamhram.get()[0x14A];
+	state.ppu.pendingLcdstatIrq = false;
+	state.ppu.isCgb = cgb;
+
+	
+	state.spu.cycleCounter = 0; // spu.cycleCounter >> 12 & 7 represents the frame sequencer position.
+	
+	state.spu.ch1.sweep.counter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch1.sweep.shadow = 0;
+	state.spu.ch1.sweep.nr0 = 0;
+	state.spu.ch1.sweep.negging = false;
+	state.spu.ch1.duty.nextPosUpdate = (state.spu.cycleCounter & ~1ul) + 37 * 2;
+	state.spu.ch1.duty.nr3 = 0;
+	state.spu.ch1.duty.pos = 0;
+	state.spu.ch1.env.counter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch1.env.volume = 0;
+	state.spu.ch1.lcounter.counter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch1.lcounter.lengthCounter = 0;
+	state.spu.ch1.nr4 = 0;
+	state.spu.ch1.master = true;
+	
+	state.spu.ch2.duty.nextPosUpdate = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch2.duty.nr3 = 0;
+	state.spu.ch2.duty.pos = 0;
+	state.spu.ch2.env.counter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch2.env.volume = 0;
+	state.spu.ch2.lcounter.counter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch2.lcounter.lengthCounter = 0;
+	state.spu.ch2.nr4 = 0;
+	state.spu.ch2.master = false;
+	
+	for (unsigned i = 0; i < 0x10; ++i)
+		state.spu.ch3.waveRam.ptr[i] = state.mem.ioamhram.get()[0x130 + i];
+	
+	state.spu.ch3.lcounter.counter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch3.lcounter.lengthCounter = 0x100;
+	state.spu.ch3.waveCounter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch3.lastReadTime = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch3.nr3 = 0;
+	state.spu.ch3.nr4 = 0;
+	state.spu.ch3.wavePos = 0;
+	state.spu.ch3.sampleBuf = 0;
+	state.spu.ch3.master = false;
+	
+	state.spu.ch4.lfsr.counter = state.spu.cycleCounter + 4;
+	state.spu.ch4.lfsr.reg = 0xFF;
+	state.spu.ch4.env.counter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch4.env.volume = 0;
+	state.spu.ch4.lcounter.counter = SoundUnit::COUNTER_DISABLED;
+	state.spu.ch4.lcounter.lengthCounter = 0;
+	state.spu.ch4.nr4 = 0;
+	state.spu.ch4.master = false;
+	
+	state.rtc.baseTime = now;
+	state.rtc.haltTime = state.rtc.baseTime;
+	state.rtc.dataDh = 0;
+	state.rtc.dataDl = 0;
+	state.rtc.dataH = 0;
+	state.rtc.dataM = 0;
+	state.rtc.dataS = 0;
+	state.rtc.lastLatchData = false;
 }

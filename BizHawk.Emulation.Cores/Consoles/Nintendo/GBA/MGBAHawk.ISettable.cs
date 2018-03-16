@@ -3,6 +3,8 @@ using System.ComponentModel;
 
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using System.ComponentModel.DataAnnotations;
+using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBA
 {
@@ -31,6 +33,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			if (o.PlayChA) smask |= LibmGBA.Sounds.CHA;
 			if (o.PlayChB) smask |= LibmGBA.Sounds.CHB;
 			LibmGBA.BizSetSoundMask(_core, smask);
+
+			var palette = new int[65536];
+			GBColors.ColorType c = GBColors.ColorType.vivid;
+			switch (o.ColorType)
+			{
+				case Settings.ColorTypes.Gambatte: c = GBColors.ColorType.gambatte; break;
+				case Settings.ColorTypes.Vivid: c = GBColors.ColorType.vivid; break;
+				case Settings.ColorTypes.VbaVivid: c = GBColors.ColorType.vbavivid; break;
+				case Settings.ColorTypes.VbaGbNew: c = GBColors.ColorType.vbagbnew; break;
+				case Settings.ColorTypes.VbaGbOld: c = GBColors.ColorType.vbabgbold; break;
+				case Settings.ColorTypes.BizhawkGba: c = GBColors.ColorType.gba; break;
+			}
+			GBColors.GetLut(c, palette);
+			for (var i = 32768; i < 65536; i++)
+				palette[i] = palette[i - 32768];
+			LibmGBA.BizSetPalette(_core, palette);
 
 			_settings = o;
 			return false;
@@ -83,6 +101,27 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 			[DisplayName("Play Direct Sound B")]
 			[DefaultValue(true)]
 			public bool PlayChB { get; set; }
+
+			public enum ColorTypes
+			{
+				[Display(Name = "Gambatte CGB")]
+				Gambatte,
+				[Display(Name = "Vivid")]
+				Vivid,
+				[Display(Name = "VBA Vivid")]
+				VbaVivid,
+				[Display(Name = "VBA GB")]
+				VbaGbNew,
+				[Display(Name = "VBA GB (Old)")]
+				VbaGbOld,
+				[Display(Name = "Bizhawk GBA")]
+				BizhawkGba
+			}
+
+			[DisplayName("Color Type")]
+			[DefaultValue(ColorTypes.Vivid)]
+			[TypeConverter(typeof(DescribableEnumConverter))]
+			public ColorTypes ColorType { get; set; }
 
 			public Settings Clone()
 			{

@@ -23,11 +23,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private bool Mode3Bit => (Registers[1] & 8) > 0;
 		private bool EnableDoubledSprites => (Registers[1] & 1) > 0;
 		private bool EnableLargeSprites => (Registers[1] & 2) > 0;
-		private bool EnableInterrupts => (Registers[1] & 32) > 0;
+		public bool EnableInterrupts => (Registers[1] & 32) > 0;
 		private bool DisplayOn => (Registers[1] & 64) > 0;
 		private bool Mode16k => (Registers[1] & 128) > 0;
 
-		private bool InterruptPending
+		public bool InterruptPending
 		{
 			get { return (StatusByte & 0x80) != 0; }
 			set { StatusByte = (byte)((StatusByte & ~0x02) | (value ? 0x80 : 0x00)); }
@@ -38,38 +38,6 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		private int SpritePatternGeneratorBase;
 		private int TmsPatternNameTableBase;
 		private int TmsSpriteAttributeBase;
-
-		public void ExecuteFrame(bool Int_pending)
-		{
-			for (int scanLine = 0; scanLine < 262; scanLine++)
-			{
-				RenderScanline(scanLine);
-				
-				if (scanLine == 192)
-				{
-					
-					InterruptPending = true;
-
-					if (EnableInterrupts)
-						Cpu.NonMaskableInterrupt = true;
-				}
-
-				for (int i = 0; i < 228; i++)
-				{
-					Cpu.ExecuteOne();
-				}
-				
-				Cpu.FlagI = false;
-				if (Int_pending && scanLine==50)
-				{
-					if (EnableInterrupts)
-					{
-						Cpu.FlagI = true;
-						Int_pending = false;
-					} 
-				}
-			}
-		}
 
 		public void WriteVdpControl(byte value)
 		{
@@ -170,12 +138,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			else if (Mode2Bit) TmsMode = 2;
 			else if (Mode3Bit) TmsMode = 3;
 			else TmsMode = 0;
-
-			if (TmsMode == 1)
-				throw new Exception("TMS video mode 1! please tell vecna which game uses this!");
 		}
 
-		private void RenderScanline(int scanLine)
+		public void RenderScanline(int scanLine)
 		{
 			if (scanLine >= 192)
 				return;
@@ -195,7 +160,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				RenderBackgroundM3(scanLine);
 				RenderTmsSprites(scanLine);
 			}
-			// This may seem silly but if I ever implement mode 1, sprites are not rendered in that.
+			else if (TmsMode == 1)
+			{
+				RenderBackgroundM1(scanLine);
+				// no sprites (text mode)
+			}
 		}
 
 		private void RenderBackgroundM0(int scanLine)
@@ -230,6 +199,39 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				FrameBuffer[FrameBufferOffset++] = ((pv & 0x04) > 0) ? fgColor : bgColor;
 				FrameBuffer[FrameBufferOffset++] = ((pv & 0x02) > 0) ? fgColor : bgColor;
 				FrameBuffer[FrameBufferOffset++] = ((pv & 0x01) > 0) ? fgColor : bgColor;
+			}
+		}
+
+		private void RenderBackgroundM1(int scanLine)
+		{
+			if (DisplayOn == false)
+			{
+				Array.Clear(FrameBuffer, scanLine * 256, 256);
+				return;
+			}
+
+			int yc = scanLine / 8;
+			int yofs = scanLine % 8;
+			int FrameBufferOffset = scanLine * 256;
+			int PatternNameOffset = TmsPatternNameTableBase + (yc * 40);
+			int ScreenBGColor = PaletteTMS9918[Registers[7] & 0x0F];
+
+			for (int xc = 0; xc < 40; xc++)
+			{
+				int pn = VRAM[PatternNameOffset++];
+				int pv = VRAM[PatternGeneratorBase + (pn * 8) + yofs];
+				int colorEntry = Registers[7];
+				int fgIndex = (colorEntry >> 4) & 0x0F;
+				int bgIndex = colorEntry & 0x0F;
+				int fgColor = fgIndex == 0 ? ScreenBGColor : PaletteTMS9918[fgIndex];
+				int bgColor = bgIndex == 0 ? ScreenBGColor : PaletteTMS9918[bgIndex];
+
+				FrameBuffer[FrameBufferOffset++] = ((pv & 0x80) > 0) ? fgColor : bgColor;
+				FrameBuffer[FrameBufferOffset++] = ((pv & 0x40) > 0) ? fgColor : bgColor;
+				FrameBuffer[FrameBufferOffset++] = ((pv & 0x20) > 0) ? fgColor : bgColor;
+				FrameBuffer[FrameBufferOffset++] = ((pv & 0x10) > 0) ? fgColor : bgColor;
+				FrameBuffer[FrameBufferOffset++] = ((pv & 0x08) > 0) ? fgColor : bgColor;
+				FrameBuffer[FrameBufferOffset++] = ((pv & 0x04) > 0) ? fgColor : bgColor;
 			}
 		}
 

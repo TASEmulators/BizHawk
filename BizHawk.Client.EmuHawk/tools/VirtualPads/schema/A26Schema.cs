@@ -39,6 +39,8 @@ namespace BizHawk.Client.EmuHawk
 					return StandardController(controller);
 				case Atari2600ControllerTypes.Paddle:
 					return PaddleController(controller);
+				case Atari2600ControllerTypes.Driving:
+					return DrivingController(controller);
 			}
 		}
 
@@ -133,6 +135,47 @@ namespace BizHawk.Client.EmuHawk
 					{
 						Name = "P" + controller + " Paddle X 2",
 						DisplayName = "Paddle X 2",
+						Location = new Point(193, 17),
+						Type = PadSchema.PadInputType.FloatSingle,
+						TargetSize = new Size(128, 69),
+						MaxValue = 127,
+						MinValue = -127
+					},
+				}
+			};
+		}
+
+		private static PadSchema DrivingController(int controller)
+		{
+			return new PadSchema
+			{
+				DisplayName = "Player " + controller,
+				IsConsole = false,
+				DefaultSize = new Size(334, 94),
+				MaxSize = new Size(334, 94),
+				Buttons = new[]
+				{
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Button",
+						DisplayName = "B1",
+						Location = new Point(5, 24),
+						Type = PadSchema.PadInputType.Boolean
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Wheel X 1",
+						DisplayName = "Wheel X 1",
+						Location = new Point(55, 17),
+						Type = PadSchema.PadInputType.FloatSingle,
+						TargetSize = new Size(128, 69),
+						MaxValue = 127,
+						MinValue = -127
+					},
+					new PadSchema.ButtonSchema
+					{
+						Name = "P" + controller + " Wheel X 2",
+						DisplayName = "Wheel X 2",
 						Location = new Point(193, 17),
 						Type = PadSchema.PadInputType.FloatSingle,
 						TargetSize = new Size(128, 69),

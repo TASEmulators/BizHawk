@@ -14,8 +14,14 @@ namespace BizHawk.Emulation.Common
 	/// <seealso cref="IMemoryCallbackSystem" />
 	public class MemoryCallbackSystem : IMemoryCallbackSystem
 	{
-		public MemoryCallbackSystem()
+		public MemoryCallbackSystem(string[] availableScopes)
 		{
+			if (availableScopes == null)
+			{
+				availableScopes = new[] { "System Bus" };
+			}
+
+			AvailableScopes = availableScopes;
 			ExecuteCallbacksAvailable = true;
 
 			_reads.CollectionChanged += OnCollectionChanged;
@@ -35,8 +41,15 @@ namespace BizHawk.Emulation.Common
 
 		public bool ExecuteCallbacksAvailable { get; }
 
+		public string[] AvailableScopes { get; }
+
 		public void Add(IMemoryCallback callback)
 		{
+			if (!AvailableScopes.Contains(callback.Scope))
+			{
+				throw new InvalidOperationException($"{callback.Scope} is not currently supported for callbacks");
+			}
+
 			switch (callback.Type)
 			{
 				case MemoryCallbackType.Execute:
@@ -61,38 +74,38 @@ namespace BizHawk.Emulation.Common
 			_empty = false;
 		}
 
-		private static void Call(ObservableCollection<IMemoryCallback> cbs, uint addr)
+		private static void Call(ObservableCollection<IMemoryCallback> cbs, uint addr, string scope)
 		{
 			for (int i = 0; i < cbs.Count; i++)
 			{
-				if (!cbs[i].Address.HasValue || cbs[i].Address == (addr & cbs[i].AddressMask))
+				if (!cbs[i].Address.HasValue || (cbs[i].Scope == scope && cbs[i].Address == (addr & cbs[i].AddressMask)))
 				{
 					cbs[i].Callback();
 				}
 			}
 		}
 
-		public void CallReads(uint addr)
+		public void CallReads(uint addr, string scope)
 		{
 			if (_hasReads)
 			{
-				Call(_reads, addr);
+				Call(_reads, addr, scope);
 			}
 		}
 
-		public void CallWrites(uint addr)
+		public void CallWrites(uint addr, string scope)
 		{
 			if (_hasWrites)
 			{
-				Call(_writes, addr);
+				Call(_writes, addr, scope);
 			}
 		}
 
-		public void CallExecutes(uint addr)
+		public void CallExecutes(uint addr, string scope)
 		{
 			if (_hasExecutes)
 			{
-				Call(_execs, addr);
+				Call(_execs, addr, scope);
 			}
 		}
 
@@ -101,6 +114,21 @@ namespace BizHawk.Emulation.Common
 		public bool HasWrites => _hasWrites;
 
 		public bool HasExecutes => _hasExecutes;
+
+		public bool HasReadsForScope(string scope)
+		{
+			return _reads.Where(e => e.Scope == scope).Any();
+		}
+
+		public bool HasWritesForScope(string scope)
+		{
+			return _writes.Where(e => e.Scope == scope).Any();
+		}
+
+		public bool HasExecutesForScope(string scope)
+		{
+			return _execs.Where(e => e.Scope == scope).Any();
+		}
 
 		private void UpdateHasVariables()
 		{
@@ -273,7 +301,7 @@ namespace BizHawk.Emulation.Common
 
 	public class MemoryCallback : IMemoryCallback
 	{
-		public MemoryCallback(MemoryCallbackType type, string name, Action callback, uint? address, uint? mask)
+		public MemoryCallback(string scope, MemoryCallbackType type, string name, Action callback, uint? address, uint? mask)
 		{
 			if (type == MemoryCallbackType.Execute && !address.HasValue)
 			{
@@ -285,6 +313,7 @@ namespace BizHawk.Emulation.Common
 			Callback = callback;
 			Address = address;
 			AddressMask = mask ?? 0xFFFFFFFF;
+			Scope = scope;
 		}
 
 		public MemoryCallbackType Type { get; }
@@ -292,5 +321,6 @@ namespace BizHawk.Emulation.Common
 		public Action Callback { get; }
 		public uint? Address { get; }
 		public uint? AddressMask { get; }
+		public string Scope { get; }
 	}
 }

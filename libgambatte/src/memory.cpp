@@ -24,7 +24,7 @@
 
 namespace gambatte {
 
-Memory::Memory(const Interrupter &interrupter_in)
+Memory::Memory(const Interrupter &interrupter_in, unsigned short &sp, unsigned short &pc)
 : readCallback(0),
   writeCallback(0),
   execCallback(0),
@@ -41,7 +41,9 @@ Memory::Memory(const Interrupter &interrupter_in)
   serialCnt(0),
   blanklcd(false),
   LINKCABLE(false),
-  linkClockTrigger(false)
+  linkClockTrigger(false),
+  SP(sp),
+  PC(pc)
 {
 	intreq.setEventTime<BLIT>(144*456ul);
 	intreq.setEventTime<END>(0);
@@ -61,6 +63,10 @@ static inline int serialCntFrom(const unsigned long cyclesUntilDone, const bool 
 }
 
 void Memory::loadState(const SaveState &state) {
+	biosMode = state.mem.biosMode;
+	cgbSwitching = state.mem.cgbSwitching;
+	agbMode = state.mem.agbMode;
+	gbIsCgb_ = state.mem.gbIsCgb;
 	sound.loadState(state);
 	display.loadState(state, state.mem.oamDmaPos < 0xA0 ? cart.rdisabledRam() : ioamhram);
 	tima.loadState(state, TimaInterruptRequester(intreq));
@@ -260,7 +266,7 @@ unsigned long Memory::event(unsigned long cycleCounter) {
 		break;
 	case INTERRUPTS:
 		if (halted()) {
-			if (isCgb())
+			if (gbIsCgb_)
 				cycleCounter += 4;
 			
 			intreq.unhalt();
@@ -269,17 +275,33 @@ unsigned long Memory::event(unsigned long cycleCounter) {
 		
 		if (ime()) {
 			unsigned address;
-			const unsigned pendingIrqs = intreq.pendingIrqs();
+
+			cycleCounter += 12;
+			display.update(cycleCounter);
+			SP = (SP - 2) & 0xFFFF;
+			write(SP + 1, PC >> 8, cycleCounter);
+			unsigned ie = intreq.iereg();
+
+			cycleCounter += 4;
+			display.update(cycleCounter);
+			write(SP, PC & 0xFF, cycleCounter);
+			const unsigned pendingIrqs = ie & intreq.ifreg();
+
+			cycleCounter += 4;
+			display.update(cycleCounter);
 			const unsigned n = pendingIrqs & -pendingIrqs;
 			
-			if (n < 8) {
+			if (n == 0) {
+				address = 0;
+			}
+			else if (n < 8) {
 				static const unsigned char lut[] = { 0x40, 0x48, 0x48, 0x50 };
 				address = lut[n-1];
 			} else
 				address = 0x50 + n;
 			
 			intreq.ackIrq(n);
-			cycleCounter = interrupter.interrupt(address, cycleCounter, *this);
+			PC = address;
 		}
 		
 		break;
@@ -306,10 +328,19 @@ unsigned long Memory::stop(unsigned long cycleCounter) {
 		// when switching speed, it seems that the CPU spontaneously restarts soon?
 		// otherwise, the cpu should be allowed to stay halted as long as needed
 		// so only execute this line when switching speed
+		intreq.halt();
 		intreq.setEventTime<UNHALT>(cycleCounter + 0x20000 + isDoubleSpeed() * 8);
 	}
-	
-	intreq.halt();
+	else {
+		if ((ioamhram[0x100] & 0x30) == 0x30) {
+			di();
+			intreq.halt();
+		}
+		else {
+			intreq.halt();
+			intreq.setEventTime<UNHALT>(cycleCounter + 0x20000 + isDoubleSpeed() * 8);
+		}
+	}
 
 	return cycleCounter;
 }
@@ -861,7 +892,11 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 	case 0x4B:
 		display.wxChange(data, cycleCounter);
 		break;
-
+	case 0x4C:
+		if (biosMode) {
+			//flagClockReq(&intreq);
+		}
+		break;
 	case 0x4D:
 		if (isCgb())
 			ioamhram[0x14D] = (ioamhram[0x14D] & ~1u) | (data & 1);		return;
@@ -873,9 +908,12 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 
 		return;
 	case 0x50:
-		// this is the register that turns off the bootrom
-		// it can only ever be written to once (with 1) once boot rom finishes
-		cart.bios_remap(data);
+		biosMode = false;
+		if (cgbSwitching) {
+			display.copyCgbPalettesToDmg();
+			display.setCgb(false);
+			cgbSwitching = false;
+		}
 		return;
 	case 0x51:
 		dmaSource = data << 8 | (dmaSource & 0xFF);
@@ -946,8 +984,8 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 
 		return;
 	case 0x6C:
-		if (isCgb())
-			ioamhram[0x16C] = data | 0xFE;
+		ioamhram[0x16C] = data | 0xFE;
+		cgbSwitching = true;
 
 		return;
 	case 0x70:
@@ -1016,8 +1054,8 @@ void Memory::nontrivial_write(const unsigned P, const unsigned data, const unsig
 		ioamhram[P - 0xFE00] = data;
 }
 
-int Memory::loadROM(const char *romfiledata, unsigned romfilelength, const char *biosfiledata, unsigned biosfilelength, const bool forceDmg, const bool multicartCompat) {
-	if (const int fail = cart.loadROM(romfiledata, romfilelength, biosfiledata, biosfilelength, forceDmg, multicartCompat))
+int Memory::loadROM(const char *romfiledata, unsigned romfilelength, const bool forceDmg, const bool multicartCompat) {
+	if (const int fail = cart.loadROM(romfiledata, romfilelength, forceDmg, multicartCompat))
 		return fail;
 
 	sound.init(cart.isCgb());
@@ -1099,6 +1137,10 @@ SYNCFUNC(Memory)
 	NSS(ioamhram);
 	NSS(divLastUpdate);
 	NSS(lastOamDmaUpdate);
+	NSS(biosMode);
+	NSS(cgbSwitching);
+	NSS(agbMode);
+	NSS(gbIsCgb_);
 
 	SSS(intreq);
 	SSS(tima);

@@ -89,6 +89,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			ResetInterrupts();
 			TotalExecutedCycles = 0;
 			cur_instr = new ushort[] { OP };
+			instr_pntr = 0;
 			NO_prefix = true;
 		}
 
@@ -608,7 +609,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		public TraceInfo State(bool disassemble = true)
 		{
-			ushort bytes_read = 0;
+			int bytes_read = 0;
 
 			string disasm = disassemble ? Disassemble(RegPC, ReadMemory, out bytes_read) : "---";
 			string byte_code = null;

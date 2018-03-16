@@ -393,7 +393,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			"NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", "NOP", //0x100
 		};
 
-		public string Disassemble(ushort addr, Func<ushort, byte> read, out ushort size)
+		public string Disassemble(ushort addr, Func<ushort, byte> read, out int size)
 		{
 			ushort start_addr = addr;
 			ushort extra_inc = 0;
@@ -434,7 +434,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			addr += extra_inc;
 
-			size = (ushort)(addr - start_addr);
+			size = addr - start_addr;
 			return temp;
 		}
 
@@ -458,10 +458,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		public string Disassemble(MemoryDomain m, uint addr, out int length)
 		{
-			int loc = (int)addr;
-			ushort unused = 0;
-			string ret = Disassemble((ushort) addr, a => m.PeekByte(a), out unused);
-			length = loc - (int)addr;
+			string ret = Disassemble((ushort)addr, a => m.PeekByte(a), out length);
 			return ret;
 		}
 

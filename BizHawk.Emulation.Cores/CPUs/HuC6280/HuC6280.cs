@@ -230,7 +230,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		{
 			byte page = MPR[address >> 13];
 			var result = ReadMemory21((page << 13) | (address & 0x1FFF));
-			MemoryCallbacks.CallReads(address);
+			MemoryCallbacks.CallReads(address, "System Bus");
 			return result;
 		}
 
@@ -238,7 +238,7 @@ namespace BizHawk.Emulation.Cores.Components.H6280
 		{
 			byte page = MPR[address >> 13];
 			WriteMemory21((page << 13) | (address & 0x1FFF), value);
-			MemoryCallbacks.CallWrites(address);
+			MemoryCallbacks.CallWrites(address, "System Bus");
 		}
 
 		private ushort ReadWord(ushort address)

@@ -87,7 +87,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_cgb = Gb.IsCGBMode();
 			_lcdc = 0;
-
 			_memory = Gb.GetGPU();
 
 			tilespal = _memory.Bgpal;
@@ -129,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int x = 0; x < 8; x++) // right to left
 				{
 					int color = loplane & 1 | hiplane & 2;
-					*dest-- = pal[color];
+					*dest-- = (int)(pal[color] | 0xFF000000);
 					loplane >>= 1;
 					hiplane >>= 1;
 				}
@@ -161,7 +160,7 @@ namespace BizHawk.Client.EmuHawk
 				for (int x = 0; x < 8; x++) // right to left
 				{
 					int color = loplane & 1 | hiplane & 2;
-					*dest = pal[color];
+					*dest = (int)(pal[color] | 0xFF000000);
 					if (!hflip)
 						dest--;
 					else
@@ -316,9 +315,11 @@ namespace BizHawk.Client.EmuHawk
 				int* thispal = pal + 4 * (cgb ? flags & 7 : flags >> 4 & 1);
 				if (cgb && flags.Bit(3))
 					tile += 8192;
+
 				DrawTileHv(tile, dest, pitch, thispal, hflip, vflip);
+
 				if (tall)
-					DrawTileHv((byte*)((int)tile ^ 16), dest + pitch * 8, pitch, thispal, hflip, vflip);
+					DrawTileHv(tile + 16, dest + pitch * 8, pitch, thispal, hflip, vflip);
 				dest += 8;
 			}
 			b.UnlockBits(lockdata);
@@ -341,7 +342,7 @@ namespace BizHawk.Client.EmuHawk
 			{
 				for (int py = 0; py < 4; py++)
 				{
-					*dest = *pal++;
+					*dest = (int)(*pal++ | 0xFF000000);
 					dest += pitch;
 				}
 				dest -= pitch * 4;
@@ -465,7 +466,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				DrawOam(bmpViewOAM.BMP, _oam, _vram, _sppal, lcdc.Bit(2), _cgb);
 				bmpViewOAM.Refresh();
-			}
+			}		
 			// try to run the current mouseover, to refresh if the mouse is being held over a pane while the emulator runs
 			// this doesn't really work well; the update rate seems to be throttled
 			MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, Cursor.Position.X, Cursor.Position.Y, 0);

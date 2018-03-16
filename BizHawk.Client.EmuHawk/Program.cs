@@ -30,19 +30,22 @@ namespace BizHawk.Client.EmuHawk
 			//but oddly it lets us proceed and we'll then catch it here
 			var d3dx9 = Win32.LoadLibrary("d3dx9_43.dll");
 			var vc2015 = Win32.LoadLibrary("vcruntime140.dll");
+			var vc2012 = Win32.LoadLibrary("msvcr120.dll"); //TODO - check version?
 			var vc2010 = Win32.LoadLibrary("msvcr100.dll"); //TODO - check version?
 			var vc2010p = Win32.LoadLibrary("msvcp100.dll");
 			bool fail = false, warn = false;
 			warn |= d3dx9 == IntPtr.Zero;
 			fail |= vc2015 == IntPtr.Zero;
 			fail |= vc2010 == IntPtr.Zero;
+			fail |= vc2012 == IntPtr.Zero;
 			fail |= vc2010p == IntPtr.Zero;
 			if (fail || warn)
 			{
 				var sw = new System.IO.StringWriter();
-				sw.WriteLine("[ OK ] .Net 4.0 (You couldn't even get here without it)");
+				sw.WriteLine("[ OK ] .Net 4.6.1 (You couldn't even get here without it)");
 				sw.WriteLine("[{0}] Direct3d 9", d3dx9 == IntPtr.Zero ? "FAIL" : " OK ");
 				sw.WriteLine("[{0}] Visual C++ 2010 SP1 Runtime", (vc2010 == IntPtr.Zero || vc2010p == IntPtr.Zero) ? "FAIL" : " OK ");
+				sw.WriteLine("[{0}] Visual C++ 2012 Runtime", (vc2012 == IntPtr.Zero) ? "FAIL" : " OK ");
 				sw.WriteLine("[{0}] Visual C++ 2015 Runtime", (vc2015 == IntPtr.Zero) ? "FAIL" : " OK ");
 				var str = sw.ToString();
 				var box = new BizHawk.Client.EmuHawk.CustomControls.PrereqsAlert(!fail);
@@ -55,6 +58,7 @@ namespace BizHawk.Client.EmuHawk
 
 			Win32.FreeLibrary(d3dx9);
 			Win32.FreeLibrary(vc2015);
+			Win32.FreeLibrary(vc2012);
 			Win32.FreeLibrary(vc2010);
 			Win32.FreeLibrary(vc2010p);
 

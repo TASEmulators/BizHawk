@@ -57,7 +57,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="flags">ORed combination of LoadFlags.</param>
 		/// <returns>0 on success, negative value on failure.</returns>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern int gambatte_load(IntPtr core, byte[] romdata, uint length, byte[] biosdata, uint bioslength, long now, LoadFlags flags);
+		public static extern int gambatte_load(IntPtr core, byte[] romdata, uint length, long now, LoadFlags flags, uint div);
+
+		/// <summary>
+		/// Load GB BIOS image.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="biosdata">the bios data, can be disposed of once this function returns</param>
+		/// <returns>0 on success, negative value on failure.</returns>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int gambatte_loaddmgbios(IntPtr core, byte[] biosdata);
+
+		/// <summary>
+		/// Load GBC BIOS image.
+		/// </summary>
+		/// <param name="core">opaque state pointer</param>
+		/// <param name="biosdata">the bios data, can be disposed of once this function returns</param>
+		/// <returns>0 on success, negative value on failure.</returns>
+		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
+		public static extern int gambatte_loadgbcbios(IntPtr core, byte[] biosdata);
 
 		/// <summary>
 		/// Emulates until at least 'samples' stereo sound samples are produced in the supplied buffer,
@@ -106,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// <param name="core">opaque state pointer</param>
 		/// <param name="now">RTC time when the reset occurs</param>
 		[DllImport("libgambatte.dll", CallingConvention = CallingConvention.Cdecl)]
-		public static extern void gambatte_reset(IntPtr core, long now);
+		public static extern void gambatte_reset(IntPtr core, long now, uint div);
 
 		/// <summary>
 		/// palette type for gambatte_setdmgpalettecolor

@@ -1630,6 +1630,7 @@ void PPU::loadState(const SaveState &ss, const unsigned char *const oamram) {
 	p_.weMaster = ss.ppu.weMaster;
 	p_.winDrawState = ss.ppu.winDrawState & (WIN_DRAW_START | WIN_DRAW_STARTED);
 	p_.lastM0Time = p_.now - ss.ppu.lastM0Time;
+	p_.cgb = ss.ppu.isCgb;
 	loadSpriteList(p_, ss);
 	
 	if (m3loopState && videoCycles < 144 * 456L && p_.xpos < 168

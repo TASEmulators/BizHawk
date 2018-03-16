@@ -112,11 +112,12 @@ namespace BizHawk.Client.Common
 					case "SNES":
 						return SystemInfo.SNES;
 					case "GB":
+						/*
 						if ((Emulator as IGameboyCommon).IsCGBMode())
 						{
 							return SystemInfo.GBC;
 						}
-
+						*/
 						return SystemInfo.GB;
 					case "A26":
 						return SystemInfo.Atari2600;

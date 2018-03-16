@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			Resolver = new DynamicLibraryImportResolver(LibQuickNES.dllname);
 			QN = BizInvoker.GetInvoker<LibQuickNES>(Resolver, CallingConventionAdapters.Native);
+			QN.qn_setup_mappers();
 		}
 
 		[CoreConstructor("NES")]
@@ -427,6 +428,8 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 			"ED8ACE4BDA8DAA9832E12D59911A942B8C105A46", // Jajamaru Ninpou Chou (J) [hM04]
 			"123045D5E8CF038C2FD396BD266EEF96DAFF9BCD", // Jikuu Yuuden - Debias (J) [o1]
 			"123045D5E8CF038C2FD396BD266EEF96DAFF9BCD", // Jikuu Yuuden - Debias (J) [!]
+			"76DB18B90FB2B76FA685D6462846ED3A92F5CBD4", // Joe and Mac (U) [!] 
+			"7E1C9F23BF9BECB7831459598339A4DC9A3CECFC", // Joe and Mac (E) [!]
 			"A654DE12A59D07BAFF30DD6CB5E1AD05EB20B2D7", // Jumpy Demo by Rwin (PD)
 			"DE42818873470458DF29F515A193F536A0642EA8", // Kamikaze Mario DX Plus V1
 			"BFECB191CFD480B14B7169441DB3D389A4B634D2", // Kamikaze Mario DX Plus V1

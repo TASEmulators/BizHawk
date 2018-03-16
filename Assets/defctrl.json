@@ -755,13 +755,96 @@
       "Reset": "J1 B9, X1 Back",
       "Pause": "J1 B10, X1 Start"
     },
-	"SMS Sports Pad Controller": {
+    "SMS Sports Pad Controller": {
       "P1 Up": "UpArrow, J1 POV1U",
       "P1 Down": "DownArrow, J1 POV1D",
       "P1 Left": "LeftArrow, J1 POV1L",
       "P1 Right": "RightArrow, J1 POV1R",
       "P1 B1": "Z, J1 B1, X1 X",
       "P1 B2": "X, J1 B2, X1 A",
+      "Reset": "J1 B9, X1 Back",
+      "Pause": "J1 B10, X1 Start",
+      "P2 Up": "",
+      "P2 Down": "",
+      "P2 Left": "",
+      "P2 Right": "",
+      "P2 B1": "",
+      "P2 B2": ""
+    },
+    "SMS Keyboard Controller": {
+      "Key 1": "D1",
+      "Key 2": "D2",
+      "Key 3": "D3",
+      "Key 4": "D4",
+      "Key 5": "D5",
+      "Key 6": "D6",
+      "Key 7": "D7",
+      "Key 8": "D8",
+      "Key 9": "D9",
+      "Key 0": "D0",
+      "Key Minus": "Minus",
+      "Key Caret": "Equals",
+      "Key Yen": "Backspace",
+      "Key Break": "Delete",
+      
+      "Key Function": "Tab",
+      "Key Q": "Q",
+      "Key W": "W",
+      "Key E": "E",
+      "Key R": "R",
+      "Key T": "T",
+      "Key Y": "Y",
+      "Key U": "U",
+      "Key I": "I",
+      "Key O": "O",
+      "Key P": "P",
+      "Key At": "LeftBracket",
+      "Key Left Bracket": "RightBracket",
+      "Key Return": "Return",
+      "Key Up Arrow": "UpArrow",
+      
+      "Key Control": "CapsLock",
+      "Key A": "A",
+      "Key S": "S",
+      "Key D": "D",
+      "Key F": "F",
+      "Key G": "G",
+      "Key H": "H",
+      "Key J": "J",
+      "Key K": "K",
+      "Key L": "L",
+      "Key Semicolon": "Semicolon",
+      "Key Colon": "Apostrophe",
+      "Key Right Bracket": "Backslash",
+      "Key Left Arrow": "LeftArrow",
+      "Key Right Arrow": "RightArrow",
+      
+      "Key Shift": "LeftShift",
+      "Key Z": "Z",
+      "Key X": "X",
+      "Key C": "C",
+      "Key V": "V",
+      "Key B": "B",
+      "Key N": "N",
+      "Key M": "M",
+      "Key Comma": "Comma",
+      "Key Period": "Period",
+      "Key Slash": "Slash",
+      "Key PI": "RightShift",
+      "Key Down Arrow": "DownArrow",
+      
+      "Key Graph": "PageUp",
+      "Key Kana": "PageDown",
+      "Key Space": "Space",
+      "Key Home/Clear": "Home",
+      "Key Insert/Delete": "Insert",
+      
+      "P1 Up": "J1 POV1U, X1 DpadUp, X1 LStickUp",
+      "P1 Down": "J1 POV1D, X1 DpadDown, X1 LStickDown",
+      "P1 Left": "J1 POV1L, X1 DpadLeft, X1 LStickLeft",
+      "P1 Right": "J1 POV1R, X1 DpadRight, X1 LStickRight",
+      "P1 B1": "J1 B1, X1 X",
+      "P1 B2": "J1 B2, X1 A",
       "Reset": "J1 B9, X1 Back",
       "Pause": "J1 B10, X1 Start",
       "P2 Up": "",
@@ -1615,23 +1698,23 @@
         "Deadzone": 0.0
       }
     },
-	"SMS Sports Pad Controller": {
+    "SMS Sports Pad Controller": {
       "P1 X": {
         "Value": "X1 LeftThumbX",
         "Mult": 1.0,
         "Deadzone": 0.1
       },
-	    "P1 Y": {
+        "P1 Y": {
         "Value": "X1 LeftThumbY",
         "Mult": -1.0,
         "Deadzone": 0.1
       },
-	    "P2 X": {
+        "P2 X": {
         "Value": "X2 LeftThumbX",
         "Mult": 1.0,
         "Deadzone": 0.1
       },
-	    "P2 Y": {
+        "P2 Y": {
         "Value": "X2 LeftThumbY",
         "Mult": -1.0,
         "Deadzone": 0.1

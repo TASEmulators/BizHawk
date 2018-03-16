@@ -37,24 +37,28 @@ namespace BizHawk.Client.Common
 			Genesis?.PutSettings(settings);
 		}
 
+		[LuaMethodExample("if ( genesis.getlayer_bga( ) ) then\r\n\tconsole.log( \"Returns whether the bg layer A is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_bga", "Returns whether the bg layer A is displayed")]
 		public bool GetLayerBgA()
 		{
 			return GetSettings().DrawBGA;
 		}
 
+		[LuaMethodExample("if ( genesis.getlayer_bgb( ) ) then\r\n\tconsole.log( \"Returns whether the bg layer B is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_bgb", "Returns whether the bg layer B is displayed")]
 		public bool GetLayerBgB()
 		{
 			return GetSettings().DrawBGB;
 		}
 
+		[LuaMethodExample("if ( genesis.getlayer_bgw( ) ) then\r\n\tconsole.log( \"Returns whether the bg layer W is displayed\" );\r\nend;")]
 		[LuaMethod("getlayer_bgw", "Returns whether the bg layer W is displayed")]
 		public bool GetLayerBgW()
 		{
 			return GetSettings().DrawBGW;
 		}
 
+		[LuaMethodExample("genesis.setlayer_bga( true );")]
 		[LuaMethod("setlayer_bga", "Sets whether the bg layer A is displayed")]
 		public void SetLayerBgA(bool value)
 		{
@@ -63,6 +67,7 @@ namespace BizHawk.Client.Common
 			PutSettings(s);
 		}
 
+		[LuaMethodExample("genesis.setlayer_bgb( true );")]
 		[LuaMethod("setlayer_bgb", "Sets whether the bg layer B is displayed")]
 		public void SetLayerBgB(bool value)
 		{
@@ -71,6 +76,7 @@ namespace BizHawk.Client.Common
 			PutSettings(s);
 		}
 
+		[LuaMethodExample("genesis.setlayer_bgw( true );")]
 		[LuaMethod("setlayer_bgw", "Sets whether the bg layer W is displayed")]
 		public void SetLayerBgW(bool value)
 		{

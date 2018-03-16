@@ -18,6 +18,12 @@ struct SMP : public Processor, public SMPcore {
   ~SMP();
 	void initialize();
 
+  struct Debugger {
+    hook<void (uint16)> op_exec;
+    hook<void (uint16)> op_read;
+    hook<void (uint16, uint8)> op_write;
+  } debugger;
+
 privileged:
   #include "memory/memory.hpp"
   #include "timing/timing.hpp"
@@ -50,12 +56,6 @@ privileged:
   static void Enter();
 
   friend class SMPcore;
-
-  struct Debugger {
-    hook<void (uint16)> op_exec;
-    hook<void (uint16)> op_read;
-    hook<void (uint16, uint8)> op_write;
-  } debugger;
 };
 
 extern SMP smp;

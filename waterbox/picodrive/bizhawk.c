@@ -253,7 +253,7 @@ ECL_EXPORT void GetMemoryAreas(MemoryArea *m)
 	m[5].Data = Pico.rom;
 	m[5].Name = "MD CART";
 	m[5].Size = Pico.romsize;
-	m[5].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_SWAPPED;
+	m[5].Flags = MEMORYAREA_FLAGS_WORDSIZE2 | MEMORYAREA_FLAGS_SWAPPED | MEMORYAREA_FLAGS_YUGEENDIAN;
 
 	if (Pico32xMem)
 	{

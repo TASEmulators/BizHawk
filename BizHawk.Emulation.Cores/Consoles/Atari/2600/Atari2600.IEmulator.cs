@@ -1,4 +1,5 @@
 ﻿using BizHawk.Emulation.Common;
+using System;
 
 namespace BizHawk.Emulation.Cores.Atari.Atari2600
 {
@@ -41,9 +42,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				_rightDifficultySwitchHeld = false;
 			}
 
+			int count = 0;
 			while (!_tia.New_Frame)
 			{
 				Cycle();
+				count++;
+				if (count > 1000000) { throw new Exception("ERROR: Unable to resolve Frame. Please Report."); }
 			}
 
 			_tia.New_Frame = false;

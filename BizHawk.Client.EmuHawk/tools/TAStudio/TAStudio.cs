@@ -479,7 +479,7 @@ namespace BizHawk.Client.EmuHawk
 			SetUpToolStripColumns();
 		}
 
-		private void AddColumn(string columnName, string columnText, int columnWidth, InputRoll.RollColumn.InputType columnType = InputRoll.RollColumn.InputType.Boolean)
+		public void AddColumn(string columnName, string columnText, int columnWidth, InputRoll.RollColumn.InputType columnType = InputRoll.RollColumn.InputType.Boolean)
 		{
 			if (TasView.AllColumns[columnName] == null)
 			{
@@ -534,6 +534,10 @@ namespace BizHawk.Client.EmuHawk
 			newMovie.TasStateManager.InvalidateCallback = GreenzoneInvalidated;
 			newMovie.Filename = file.FullName;
 
+			BookMarkControl.LoadedCallback = BranchLoaded;
+			BookMarkControl.SavedCallback = BranchSaved;
+			BookMarkControl.RemovedCallback = BranchRemoved;
+
 			if (!HandleMovieLoadStuff(newMovie))
 			{
 				return false;
@@ -582,8 +586,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Global.MovieSession.Movie = new TasMovie(false, _seekBackgroundWorker);
 				var stateManager = ((TasMovie)Global.MovieSession.Movie).TasStateManager;
+				
 				stateManager.MountWriteAccess();
 				stateManager.InvalidateCallback = GreenzoneInvalidated;
+
+				BookMarkControl.LoadedCallback = BranchLoaded;
+				BookMarkControl.SavedCallback = BranchSaved;
+				BookMarkControl.RemovedCallback = BranchRemoved;
+
 				CurrentTasMovie.PropertyChanged += TasMovie_OnPropertyChanged;
 				CurrentTasMovie.Filename = DefaultTasProjName(); // TODO don't do this, take over any mainform actions that can crash without a filename
 				CurrentTasMovie.PopulateWithDefaultHeaderValues();
@@ -797,13 +807,14 @@ namespace BizHawk.Client.EmuHawk
 
 			TasView.Refresh();
 
+			SetSplicer();
 			CurrentTasMovie.FlushInputCache();
 			CurrentTasMovie.UseInputCache = false;
 
 			_lastRefresh = Emulator.Frame;
 		}
 
-		private void DoAutoRestore()
+		public void DoAutoRestore()
 		{
 			if (Settings.AutoRestoreLastPosition && LastPositionFrame != -1)
 			{
@@ -929,6 +940,7 @@ namespace BizHawk.Client.EmuHawk
 			SplicerStatusLabel.Text =
 				"Selected: " + TasView.SelectedRows.Count() + " frame" +
 				(TasView.SelectedRows.Count() == 1 ? "" : "s") +
+				", States: " + CurrentTasMovie.TasStateManager.StateCount.ToString() +
 				", Clipboard: " + (_tasClipboard.Any() ? _tasClipboard.Count + " frame" +
 				(_tasClipboard.Count == 1 ? "" : "s") : "empty");
 		}

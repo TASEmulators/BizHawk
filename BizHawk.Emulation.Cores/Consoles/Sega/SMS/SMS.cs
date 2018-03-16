@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			Settings = (SMSSettings)settings ?? new SMSSettings();
 			SyncSettings = (SMSSyncSettings)syncSettings ?? new SMSSyncSettings();
 			CoreComm = comm;
-			MemoryCallbacks = new MemoryCallbackSystem();
+			MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
 			IsGameGear = game.System == "GG";
 			IsSG1000 = game.System == "SG";
@@ -69,6 +69,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				CoreComm.Notify("Region was forced to Japan for game compatibility.");
 			}
 
+			if (game["Korea"] && RegionStr != "Korea")
+			{
+				RegionStr = "Korea";
+				CoreComm.Notify("Region was forced to Korea for game compatibility.");
+			}
+
 			if ((game.NotInDatabase || game["FM"]) && SyncSettings.EnableFM && !IsGameGear)
 			{
 				HasYM2413 = true;
@@ -78,10 +84,11 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			{
 				ReadHardware = ReadPort,
 				WriteHardware = WritePort,
-				FetchMemory = ReadMemory,
+				FetchMemory = FetchMemory,
 				ReadMemory = ReadMemory,
 				WriteMemory = WriteMemory,
-				MemoryCallbacks = MemoryCallbacks
+				MemoryCallbacks = MemoryCallbacks,
+				OnExecFetch = OnExecMemory
 			};
 
 			Vdp = new VDP(this, Cpu, IsGameGear ? VdpMode.GameGear : VdpMode.SMS, Region);
@@ -194,6 +201,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		// ROM
 		private byte[] RomData;
 		private byte RomBank0, RomBank1, RomBank2, RomBank3;
+		private byte Bios_bank;
 		private byte RomBanks;
 		private byte[] BiosRom;
 
@@ -207,6 +215,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		public bool IsSG1000 { get; set; }
 
 		private bool HasYM2413 = false;
+		private bool PortDEEnabled = false;
 		private IController _controller;
 
 		private int _frame = 0;
@@ -215,6 +224,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		private byte Port02 = 0xFF;
 		private byte Port3E = 0xAF;
 		private byte Port3F = 0xFF;
+		private byte PortDE = 0x00;
 
 		private byte ForceStereoByte = 0xAD;
 		private bool IsGame3D = false;
@@ -238,6 +248,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				return "Export";
 			if (gameRegion.IndexOf("Australia") >= 0)
 				return "Export";
+			if (gameRegion.IndexOf("Korea") >= 0)
+				return "Korea";
 			return "Japan";
 		}
 
@@ -249,15 +261,39 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			return DisplayType.NTSC;
 		}
 
+		private byte ReadMemory(ushort addr)
+		{
+			MemoryCallbacks.CallReads(addr, "System Bus");
+
+			return ReadMemoryMapper(addr);
+		}
+
+		private void WriteMemory(ushort addr, byte value)
+		{
+			WriteMemoryMapper(addr, value);
+
+			MemoryCallbacks.CallWrites(addr, "System Bus");
+		}
+
+		private byte FetchMemory(ushort addr)
+		{
+			return ReadMemoryMapper(addr);
+		}
+
+		private void OnExecMemory(ushort addr)
+		{
+			MemoryCallbacks.CallExecutes(addr, "System Bus");
+		}
+
 		/// <summary>
 		/// The ReadMemory callback for the mapper
 		/// </summary>
-		private Func<ushort, byte> ReadMemory;
+		private Func<ushort, byte> ReadMemoryMapper;
 
 		/// <summary>
 		/// The WriteMemory callback for the wrapper
 		/// </summary>
-		private Action<ushort, byte> WriteMemory;
+		private Action<ushort, byte> WriteMemoryMapper;
 
 		/// <summary>
 		/// A dummy FetchMemory that simply reads the memory
@@ -305,6 +341,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				case 0xDC: return ReadControls1();
 				case 0xC1:
 				case 0xDD: return ReadControls2();
+				case 0xDE: return PortDEEnabled ? PortDE : (byte)0xFF;
 				case 0xF2: return HasYM2413 ? YM2413.DetectionValue : (byte)0xFF;
 				default: return 0xFF;
 			}
@@ -333,6 +370,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				else
 					Vdp.WriteVdpControl(value);
 			}
+			else if (port == 0xDE && PortDEEnabled) PortDE = value;
 			else if (port == 0xF0 && HasYM2413) YM2413.RegisterLatch = value;
 			else if (port == 0xF1 && HasYM2413) YM2413.Write(value);
 			else if (port == 0xF2 && HasYM2413) YM2413.DetectionValue = value;
@@ -353,6 +391,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 		
-		private readonly string[] validRegions = { "Export", "Japan", "Auto" };
+		private readonly string[] validRegions = { "Export", "Japan", "Korea" , "Auto"  };
 	}
 }

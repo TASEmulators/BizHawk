@@ -48,23 +48,31 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 
 		public TraceInfo State(bool disassemble = true)
 		{
-			int notused;
+			if (!disassemble)
+			{
+				return new TraceInfo {
+					Disassembly = "",
+					RegisterInfo = ""
+				};
+			}
+
+			int length;
+			string rawbytes = "";
+			string disasm = Disassemble(PC, out length);
+
+			for (int i = 0; i < length; i++)
+			{
+				rawbytes += string.Format(" {0:X2}", PeekMemory((ushort)(PC + i)));
+			}
 
 			return new TraceInfo
 			{
 				Disassembly = string.Format(
-					"{0:X4}:  {1:X2}  {2} ",
-					PC,
-					PeekMemory(PC),
-					disassemble ? Disassemble(PC, out notused) : "---").PadRight(26),
+					"{0:X4}: {1,-9}  {2} ",
+					PC, rawbytes, disasm).PadRight(32),
 				RegisterInfo = string.Format(
-					"A:{0:X2} X:{1:X2} Y:{2:X2} P:{3:X2} SP:{4:X2} Cy:{5} {6}{7}{8}{9}{10}{11}{12}{13}",
-					A,
-					X,
-					Y,
-					P,
-					S,
-					TotalExecutedCycles,
+					"A:{0:X2} X:{1:X2} Y:{2:X2} SP:{4:X2} P:{3:X2} {6}{7}{8}{9}{10}{11}{12}{13} Cy:{5}",
+					A, X, Y, P, S, TotalExecutedCycles,
 					FlagN ? "N" : "n",
 					FlagV ? "V" : "v",
 					FlagT ? "T" : "t",

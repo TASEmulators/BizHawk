@@ -73,12 +73,13 @@ namespace BizHawk.Client.EmuHawk
 					new Column { Name = WatchList.PREV, Visible = false, Index = 2, Width = 59 },
 					new Column { Name = WatchList.CHANGES, Visible = true, Index = 3, Width = 55 },
 					new Column { Name = WatchList.DIFF, Visible = false, Index = 4, Width = 59 },
-					new Column { Name = WatchList.DOMAIN, Visible = true, Index = 5, Width = 55 },
-					new Column { Name = WatchList.NOTES, Visible = true, Index = 6, Width = 128 },
+					new Column { Name = WatchList.TYPE, Visible = false, Index = 5, Width = 55 },
+					new Column { Name = WatchList.DOMAIN, Visible = true, Index = 6, Width = 55 },
+					new Column { Name = WatchList.NOTES, Visible = true, Index = 7, Width = 128 },
 				};
 			}
 
-			public ColumnList Columns { get; }
+			public ColumnList Columns { get; set; }
 		}
 
 		private IEnumerable<int> SelectedIndices => WatchListView.SelectedIndices.Cast<int>();
@@ -428,6 +429,39 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		private string ComputeDisplayType(Watch w)
+		{
+			String s = w.Size == WatchSize.Byte ? "1" : (w.Size == WatchSize.Word ? "2" : "4");
+			switch (w.Type)
+			{
+				case Common.DisplayType.Binary:
+					s += "b";
+					break;
+				case Common.DisplayType.FixedPoint_12_4:
+					s += "F";
+					break;
+				case Common.DisplayType.FixedPoint_16_16:
+					s += "F6";
+					break;
+				case Common.DisplayType.FixedPoint_20_12:
+					s += "F2";
+					break;
+				case Common.DisplayType.Float:
+					s += "f";
+					break;
+				case Common.DisplayType.Hex:
+					s += "h";
+					break;
+				case Common.DisplayType.Signed:
+					s += "s";
+					break;
+				case Common.DisplayType.Unsigned:
+					s += "u";
+					break;
+			}
+			return s + (w.BigEndian ? "B" : "L");
+		}
+
 		private string GetColumnValue(string name, int index)
 		{
 			switch (name)
@@ -444,6 +478,8 @@ namespace BizHawk.Client.EmuHawk
 					return _watches[index].ChangeCount.ToString();
 				case WatchList.DIFF:
 					return _watches[index].Diff;
+				case WatchList.TYPE:
+					return ComputeDisplayType(_watches[index]);
 				case WatchList.DOMAIN:
 					return _watches[index].Domain.Name;
 				case WatchList.NOTES:
@@ -618,6 +654,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
 				case WatchList.DIFF:
 					text = _watches[index].Diff;
+					break;
+				case WatchList.TYPE:
+					text = ComputeDisplayType(_watches[index]);
 					break;
 				case WatchList.DOMAIN:
 					text = _watches[index].Domain.Name;

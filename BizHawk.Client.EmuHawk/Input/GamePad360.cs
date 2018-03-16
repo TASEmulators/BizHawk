@@ -165,11 +165,19 @@ namespace BizHawk.Client.EmuHawk
 		public IEnumerable<Tuple<string, float>> GetFloats()
 		{
 			var g = state.Gamepad;
-			const float f = 3.2768f;
+
+			//constant for adapting a +/- 32768 range to a +/-10000-based range
+			const float f = 32768 / 10000.0f;
+
+			//constant for adapting a 0-255 range to a 0-10000-based range
+			const float f255 = 255 / 10000.0f;
+
 			yield return new Tuple<string, float>("LeftThumbX", g.sThumbLX / f);
 			yield return new Tuple<string, float>("LeftThumbY", g.sThumbLY / f);
 			yield return new Tuple<string, float>("RightThumbX", g.sThumbRX / f);
 			yield return new Tuple<string, float>("RightThumbY", g.sThumbRY / f);
+			yield return new Tuple<string, float>("LeftTrigger", g.bLeftTrigger / f255);
+			yield return new Tuple<string, float>("RightTrigger", g.bRightTrigger / f255);
 			yield break;
 		}
 

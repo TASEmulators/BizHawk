@@ -90,6 +90,35 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		};
 
+		public static readonly ControllerDefinition SMSKeyboardController = new ControllerDefinition
+		{
+			Name = "SMS Keyboard Controller",
+			BoolButtons =
+			{
+				"Key 1", "Key 2", "Key 3", "Key 4", "Key 5", "Key 6", "Key 7", "Key 8", "Key 9", "Key 0", "Key Minus", "Key Caret", "Key Yen", "Key Break",
+				"Key Function", "Key Q", "Key W", "Key E", "Key R", "Key T", "Key Y", "Key U", "Key I", "Key O", "Key P", "Key At", "Key Left Bracket", "Key Return", "Key Up Arrow",
+				"Key Control", "Key A", "Key S", "Key D", "Key F", "Key G", "Key H", "Key J", "Key K", "Key L", "Key Semicolon", "Key Colon", "Key Right Bracket", "Key Left Arrow", "Key Right Arrow",
+				"Key Shift", "Key Z", "Key X", "Key C", "Key V", "Key B", "Key N", "Key M", "Key Comma", "Key Period", "Key Slash", "Key PI", "Key Down Arrow",
+				"Key Graph", "Key Kana", "Key Space", "Key Home/Clear", "Key Insert/Delete",
+
+				"Reset", "Pause",
+				"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B1", "P1 B2",
+				"P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B1", "P2 B2"
+			}
+		};
+
+		private static readonly string[] KeyboardMap =
+		{
+			"Key 1", "Key Q", "Key A", "Key Z", "Key Kana", "Key Comma", "Key K", "Key I", "Key 8", null, null, null,
+			"Key 2", "Key W", "Key S", "Key X", "Key Space", "Key Period", "Key L", "Key O", "Key 9", null, null, null,
+			"Key 3", "Key E", "Key D", "Key C", "Key Home/Clear", "Key Slash", "Key Semicolon", "Key P", "Key 0", null, null, null,
+			"Key 4", "Key R", "Key F", "Key V", "Key Insert/Delete", "Key PI", "Key Colon", "Key At", "Key Minus", null, null, null,
+			"Key 5", "Key T", "Key G", "Key B", null, "Key Down Arrow", "Key Right Bracket", "Key Left Bracket", "Key Caret", null, null, null,
+			"Key 6", "Key Y", "Key H", "Key N", null, "Key Left Arrow", "Key Return", null, "Key Yen", null, null, "Key Function",
+			"Key 7", "Key U", "Key J", "Key M", null, "Key Right Arrow", "Key Up Arrow", null, "Key Break", "Key Graph", "Key Control", "Key Shift",
+			"P1 Up", "P1 Down", "P1 Left", "P1 Right", "P1 B1", "P1 B2", "P2 Up", "P2 Down", "P2 Left", "P2 Right", "P2 B1", "P2 B2"
+		};
+
 		const int PaddleMin = 0;
 		const int PaddleMax = 255;
 		const int SportsPadMin = -64;
@@ -209,13 +238,14 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						else
 							p2Y = (int)_controller.GetFloat("P2 Y");
 
-						if(_region == "Japan")
+						if (_region == "Japan")
 						{
 							p1X += 128;
 							p1Y += 128;
 							p2X += 128;
 							p2Y += 128;
-						} else
+						}
+						else
 						{
 							p1X *= -1;
 							p1Y *= -1;
@@ -320,6 +350,22 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						}
 
 						PostsetControllerState(1);
+					}
+					break;
+
+				case "Keyboard":
+					{
+						// use keyboard map to get each bit
+
+						for (int bit = 0; bit < 8; ++bit)
+						{
+							string key = KeyboardMap[(PortDE & 0x07) * 12 + bit];
+
+							if (key != null && _controller.IsPressed(key))
+							{
+								value &= (byte)~(1 << bit);
+							}
+						}
 					}
 					break;
 
@@ -461,6 +507,24 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 						}
 
 						PostsetControllerState(2);
+					}
+					break;
+
+				case "Keyboard":
+					{
+						value &= 0x7F;
+
+						// use keyboard map to get each bit
+
+						for (int bit = 0; bit < 4; ++bit)
+						{
+							string key = KeyboardMap[(PortDE & 0x07) * 12 + bit + 8];
+
+							if (key != null && _controller.IsPressed(key))
+							{
+								value &= (byte)~(1 << bit);
+							}
+						}
 					}
 					break;
 

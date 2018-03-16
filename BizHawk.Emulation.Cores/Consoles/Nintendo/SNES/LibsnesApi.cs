@@ -151,6 +151,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		public Action<uint> ReadHook, ExecHook;
 		public Action<uint, byte> WriteHook;
 
+		public Action<uint> ReadHook_SMP, ExecHook_SMP;
+		public Action<uint, byte> WriteHook_SMP;
+
 		public enum eCDLog_AddrType
 		{
 			CARTROM, CARTRAM, WRAM, APURAM,
