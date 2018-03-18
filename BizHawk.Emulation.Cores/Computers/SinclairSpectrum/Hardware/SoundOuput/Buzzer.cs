@@ -60,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         private long _frameStart;
         private bool _tapeMode;
-        private int _tStatesPerFrame;
+        private long _tStatesPerFrame;
         private int _sampleRate;
         private int _samplesPerFrame;
         private int _tStatesPerSample;
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The last T-State (cpu cycle) that the last pulse was received
         /// </summary>
-        public int LastPulseTState { get; set; }
+        public long LastPulseTState { get; set; }
 
         #region Construction & Initialisation
 
@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _sampleRate = sampleRate;
             _tStatesPerFrame = tStatesPerFrame;
             _tStatesPerSample = 79;
-            _samplesPerFrame = _tStatesPerFrame / _tStatesPerSample;
+            _samplesPerFrame = (int)_tStatesPerFrame / _tStatesPerSample;
 
             /*
 

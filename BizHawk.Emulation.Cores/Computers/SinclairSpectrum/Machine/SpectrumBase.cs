@@ -91,17 +91,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The current cycle (T-State) that we are at in the frame
         /// </summary>
-        public int _frameCycles;
+        public long _frameCycles;
 
         /// <summary>
         /// Stores where we are in the frame after each CPU cycle
         /// </summary>
-        public int LastFrameStartCPUTick;
+        public long LastFrameStartCPUTick;
 
         /// <summary>
         /// Gets the current frame cycle according to the CPU tick count
         /// </summary>
-        public virtual int CurrentFrameCycle => CPU.TotalExecutedCycles - LastFrameStartCPUTick;
+        public virtual long CurrentFrameCycle => CPU.TotalExecutedCycles - LastFrameStartCPUTick;
 
         /// <summary>
         /// Non-Deterministic bools

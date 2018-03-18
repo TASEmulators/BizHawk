@@ -21,6 +21,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Pulse length in Z80 T-States (cycles)
         /// </summary>
-        public int Length { get; set; }
+        public long Length { get; set; }
     }
 }

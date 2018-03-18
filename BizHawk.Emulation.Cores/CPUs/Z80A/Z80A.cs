@@ -602,7 +602,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					FTCH_DB_Func();
 					break;
 			}
-			totalExecutedCycles++;
+			TotalExecutedCycles++;
 		}
 
 		// tracer stuff
@@ -669,7 +669,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			ser.Sync("IFF1", ref iff1);
 			ser.Sync("IFF2", ref iff2);
 			ser.Sync("Halted", ref halted);
-			ser.Sync("ExecutedCycles", ref totalExecutedCycles);
+			ser.Sync("ExecutedCycles", ref TotalExecutedCycles);
 			ser.Sync("EI_pending", ref EI_pending);
 
 			ser.Sync("instruction_pointer", ref instr_pntr);

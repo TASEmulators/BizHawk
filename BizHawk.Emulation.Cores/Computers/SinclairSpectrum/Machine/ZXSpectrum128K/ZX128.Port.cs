@@ -57,7 +57,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 // If this is an unused port the floating memory bus should be returned
                 // Floating bus is read on the previous cycle
-                int _tStates = CurrentFrameCycle - 1;
+                long _tStates = CurrentFrameCycle - 1;
 
                 // if we are on the top or bottom border return 0xff
                 if ((_tStates < ULADevice.contentionStartPeriod) || (_tStates > ULADevice.contentionEndPeriod))
@@ -160,7 +160,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // get a BitArray of the value byte
             BitArray bits = new BitArray(new byte[] { value });
 
-            int currT = CPU.TotalExecutedCycles;
+            long currT = CPU.TotalExecutedCycles;
 
             AYDevice.WritePort(port, value);
 

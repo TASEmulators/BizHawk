@@ -142,6 +142,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             throw new NotImplementedException();
         }
 
-        public int TotalExecutedCycles => _cpu.TotalExecutedCycles;
+        public int TotalExecutedCycles => (int)_cpu.TotalExecutedCycles;
     }
 }

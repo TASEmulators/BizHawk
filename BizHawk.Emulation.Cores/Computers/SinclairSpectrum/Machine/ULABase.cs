@@ -105,11 +105,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Cycle at which the last render update took place
         /// </summary>
-        protected int lastTState;
+        protected long lastTState;
         /// <summary>
         /// T-States elapsed since last render update
         /// </summary>
-        protected int elapsedTStates;
+        protected long elapsedTStates;
         /// <summary>
         /// T-State of top left raster pixel
         /// </summary>
@@ -279,7 +279,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Generates an interrupt in the current phase if needed
         /// </summary>
         /// <param name="currentCycle"></param>
-        public virtual void CheckForInterrupt(int currentCycle)
+        public virtual void CheckForInterrupt(long currentCycle)
         {
             if (InterruptRevoked)
             {
@@ -430,7 +430,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Updates the screen buffer based on the number of T-States supplied
         /// </summary>
         /// <param name="_tstates"></param>
-        public virtual void UpdateScreenBuffer(int _tstates)
+        public virtual void UpdateScreenBuffer(long _tstates)
         {
             if (_tstates < actualULAStart)
             {
@@ -448,7 +448,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             //It takes 4 tstates to write 1 byte. Or, 2 pixels per t-state.
 
-            int numBytes = (elapsedTStates >> 2) + ((elapsedTStates % 4) > 0 ? 1 : 0);
+            long numBytes = (elapsedTStates >> 2) + ((elapsedTStates % 4) > 0 ? 1 : 0);
 
             int pixelData;
             int pixel2Data = 0xff;
