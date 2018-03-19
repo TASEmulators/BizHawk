@@ -207,8 +207,31 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public virtual void HardReset()
         {
-            //ResetBorder();
             ULADevice.ResetInterrupt();
+            ROMPaged = 0;
+            SpecialPagingMode = false;
+            RAMPaged = 0;
+            CPU.RegPC = 0;
+
+            Spectrum.SetCpuRegister("SP", 0xFFFF);
+            Spectrum.SetCpuRegister("IY", 0xFFFF);
+            Spectrum.SetCpuRegister("IX", 0xFFFF);
+            Spectrum.SetCpuRegister("AF", 0xFFFF);
+            Spectrum.SetCpuRegister("BC", 0xFFFF);
+            Spectrum.SetCpuRegister("DE", 0xFFFF);
+            Spectrum.SetCpuRegister("HL", 0xFFFF);
+            Spectrum.SetCpuRegister("SP", 0xFFFF);
+            Spectrum.SetCpuRegister("Shadow AF", 0xFFFF);
+            Spectrum.SetCpuRegister("Shadow BC", 0xFFFF);
+            Spectrum.SetCpuRegister("Shadow DE", 0xFFFF);
+            Spectrum.SetCpuRegister("Shadow HL", 0xFFFF);
+
+            CPU.Regs[CPU.I] = 0;
+            CPU.Regs[CPU.R] = 0;
+
+            TapeDevice.Reset();
+            if (AYDevice != null)
+                AYDevice.Reset();
         }
 
         /// <summary>
@@ -216,9 +239,31 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public virtual void SoftReset()
         {
-            //ResetBorder();
-            ULADevice.ResetInterrupt();
+             ULADevice.ResetInterrupt();
+            ROMPaged = 0;
+            SpecialPagingMode = false;
+            RAMPaged = 0;
             CPU.RegPC = 0;
+
+            Spectrum.SetCpuRegister("SP", 0xFFFF);
+            Spectrum.SetCpuRegister("IY", 0xFFFF);
+            Spectrum.SetCpuRegister("IX", 0xFFFF);
+            Spectrum.SetCpuRegister("AF", 0xFFFF);
+            Spectrum.SetCpuRegister("BC", 0xFFFF);
+            Spectrum.SetCpuRegister("DE", 0xFFFF);
+            Spectrum.SetCpuRegister("HL", 0xFFFF);
+            Spectrum.SetCpuRegister("SP", 0xFFFF);
+            Spectrum.SetCpuRegister("Shadow AF", 0xFFFF);
+            Spectrum.SetCpuRegister("Shadow BC", 0xFFFF);
+            Spectrum.SetCpuRegister("Shadow DE", 0xFFFF);
+            Spectrum.SetCpuRegister("Shadow HL", 0xFFFF);
+
+            CPU.Regs[CPU.I] = 0;
+            CPU.Regs[CPU.R] = 0;
+
+            TapeDevice.Reset();
+            if (AYDevice != null)
+                AYDevice.Reset();
         }
 
         #endregion
