@@ -9,7 +9,7 @@ At the moment this is experimental and is still being worked on.
 * ULA Mode 1 VBLANK interrupt generation
 * IM2 Interrupts and DataBus implementation (thanks Aloysha)
 * Beeper/Buzzer output (implementing ISoundProvider)
-* AY-3-8912 sound chip implementation (stereo or mono options available as a setting)
+* AY-3-8912 sound chip implementation (multiple stereo or mono  panning options available as a setting)
 * Keyboard input (implementing IInputPollable)
 * Default keyboard keymappings
 * Kempston, Cursor and Sinclair (Left & Right) joysticks emulated
