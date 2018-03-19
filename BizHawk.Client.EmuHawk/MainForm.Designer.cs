@@ -272,7 +272,8 @@
             this.SMSregionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SMSregionExportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SMSregionJapanToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.SMSregionAutoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SMSregionKoreaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.SMSregionAutoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SMSdisplayToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SMSdisplayNtscToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.SMSdisplayPalToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -338,7 +339,8 @@
             this.ColecoControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator35 = new System.Windows.Forms.ToolStripSeparator();
             this.ColecoSkipBiosMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.N64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.ColecoUseSGMMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.N64SubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.N64PluginSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.N64ControllerSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator23 = new System.Windows.Forms.ToolStripSeparator();
@@ -2533,7 +2535,8 @@
             this.SMSregionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.SMSregionExportToolStripMenuItem,
             this.SMSregionJapanToolStripMenuItem,
-            this.SMSregionAutoToolStripMenuItem});
+			this.SMSregionKoreaToolStripMenuItem,
+			this.SMSregionAutoToolStripMenuItem});
             this.SMSregionToolStripMenuItem.Name = "SMSregionToolStripMenuItem";
             this.SMSregionToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
             this.SMSregionToolStripMenuItem.Text = "Region";
@@ -2551,10 +2554,17 @@
             this.SMSregionJapanToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.SMSregionJapanToolStripMenuItem.Text = "Japan";
             this.SMSregionJapanToolStripMenuItem.Click += new System.EventHandler(this.SMS_RegionJapan_Click);
-            // 
-            // SMSregionAutoToolStripMenuItem
-            // 
-            this.SMSregionAutoToolStripMenuItem.Name = "SMSregionAutoToolStripMenuItem";
+			// 
+			// SMSregionKoreaToolStripMenuItem
+			// 
+			this.SMSregionKoreaToolStripMenuItem.Name = "SMSregionKoreaToolStripMenuItem";
+			this.SMSregionKoreaToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+			this.SMSregionKoreaToolStripMenuItem.Text = "Korea";
+			this.SMSregionKoreaToolStripMenuItem.Click += new System.EventHandler(this.SMS_RegionKorea_Click);
+			// 
+			// SMSregionAutoToolStripMenuItem
+			// 
+			this.SMSregionAutoToolStripMenuItem.Name = "SMSregionAutoToolStripMenuItem";
             this.SMSregionAutoToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.SMSregionAutoToolStripMenuItem.Text = "Auto";
             this.SMSregionAutoToolStripMenuItem.Click += new System.EventHandler(this.SMS_RegionAuto_Click);
@@ -3029,7 +3039,8 @@
             this.ColecoSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ColecoControllerSettingsMenuItem,
             this.toolStripSeparator35,
-            this.ColecoSkipBiosMenuItem});
+            this.ColecoSkipBiosMenuItem,
+			this.ColecoUseSGMMenuItem});
             this.ColecoSubMenu.Name = "ColecoSubMenu";
             this.ColecoSubMenu.Size = new System.Drawing.Size(56, 19);
             this.ColecoSubMenu.Text = "&Coleco";
@@ -3054,10 +3065,17 @@
             this.ColecoSkipBiosMenuItem.Size = new System.Drawing.Size(253, 22);
             this.ColecoSkipBiosMenuItem.Text = "&Skip BIOS intro (When Applicable)";
             this.ColecoSkipBiosMenuItem.Click += new System.EventHandler(this.ColecoSkipBiosMenuItem_Click);
-            // 
-            // N64SubMenu
-            // 
-            this.N64SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			// 
+			// ColecoUseSGMMenuItem
+			// 
+			this.ColecoUseSGMMenuItem.Name = "ColecoUseSGMMenuItem";
+			this.ColecoUseSGMMenuItem.Size = new System.Drawing.Size(253, 22);
+			this.ColecoUseSGMMenuItem.Text = "&Use the Super Game Module";
+			this.ColecoUseSGMMenuItem.Click += new System.EventHandler(this.ColecoUseSGMMenuItem_Click);
+			// 
+			// N64SubMenu
+			// 
+			this.N64SubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.N64PluginSettingsMenuItem,
             this.N64ControllerSettingsMenuItem,
             this.toolStripSeparator23,
@@ -4290,6 +4308,7 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator28;
 		private System.Windows.Forms.ToolStripMenuItem ColecoSubMenu;
 		private System.Windows.Forms.ToolStripMenuItem ColecoSkipBiosMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem ColecoUseSGMMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem ColecoControllerSettingsMenuItem;
 		private System.Windows.Forms.ToolStripStatusLabel LedLightStatusLabel;
 		private System.Windows.Forms.ToolStripMenuItem GBASubMenu;
@@ -4340,6 +4359,7 @@
 		private System.Windows.Forms.ToolStripMenuItem SMSregionToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSregionExportToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSregionJapanToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem SMSregionKoreaToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSregionAutoToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSdisplayToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSdisplayNtscToolStripMenuItem;

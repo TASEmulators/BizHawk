@@ -13,9 +13,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 	/// </summary>
 	public interface IPort
 	{
-		byte Read(IController c, bool leftMode, int wheel);
+		byte Read(IController c, bool leftMode, bool updateWheel, float wheelAngle);
 
-		int UpdateWheel(IController c, int wheel);
+		float UpdateWheel(IController c);
 
 		ControllerDefinition Definition { get; }
 
@@ -36,7 +36,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			};
 		}
 
-		public byte Read(IController c, bool left_mode, int wheel)
+		public byte Read(IController c, bool left_mode, bool updateWheel, float wheelAngle)
 		{
 			return 0x7F; // needs checking
 		}
@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public int PortNum { get; }
 
-		public int UpdateWheel(IController c, int wheel)
+		public float UpdateWheel(IController c)
 		{
 			return 0;
 		}
@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public int PortNum { get; }
 
-		public byte Read(IController c, bool leftMode, int wheel)
+		public byte Read(IController c, bool leftMode, bool updateWheel, float wheelAngle)
 		{
 			if (leftMode)
 			{
@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			"Key 6", "Key 7", "Key 8", "Key 9", "Pound", "Star"
 		};
 
-		public int UpdateWheel(IController c, int wheel)
+		public float UpdateWheel(IController c)
 		{
 			return 0;
 		}
@@ -150,29 +150,62 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public ControllerDefinition Definition { get; }
 
-		public byte Read(IController c, bool leftMode, int wheel)
+		public byte Read(IController c, bool leftMode, bool updateWheel, float wheelAngle)
 		{
 			if (leftMode)
 			{
-				byte retval = 0x4B;
+
+				byte retval = 0x4F;
 				
 				if (c.IsPressed(Definition.BoolButtons[0])) retval &= 0x3F;
+				
+				float x = c.GetFloat(Definition.FloatControls[0]);
+				float y = c.GetFloat(Definition.FloatControls[1]);
 
-				int x = (int)c.GetFloat(Definition.FloatControls[0]);
-				int y = (int)c.GetFloat(Definition.FloatControls[1]);
-				retval |= CalcDirection(x, y);
+				float angle;
+				
+				if (updateWheel)
+				{
+					angle = wheelAngle;
+				} 
+				else
+				{
+					angle = CalcDirection(x, y);
+				}
+				
+				byte temp2 = 0;
+
+				int temp1 = (int)Math.Floor(angle / 1.25);
+				temp1 = temp1 % 4;
+
+				if (temp1 == 0)
+				{
+					temp2 = 0x10;
+				}
+
+				if (temp1 == 1)
+				{
+					temp2 = 0x30;
+				}
+				if (temp1 == 2)
+				{
+					temp2 = 0x20;
+				}
+
+				if (temp1 == 3)
+				{
+					temp2 = 0x00;
+				}
+
+
+				retval |= temp2;
 				
 				return retval;
 			}
 			else
 			{
-				byte retval = 0x4B;
-				if (c.IsPressed(Definition.BoolButtons[0])) retval &= 0x3F;
+				byte retval = 0x7F;
 
-				int x = (int)c.GetFloat(Definition.FloatControls[0]);
-				int y = (int)c.GetFloat(Definition.FloatControls[1]);
-				retval |= CalcDirection(x, y);
-				
 				return retval;
 			}
 		}
@@ -190,36 +223,29 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		// x and y are both assumed to be in [-127, 127]
 		// x increases from left to right
 		// y increases from top to bottom
-		private static byte CalcDirection(int x, int y)
+		private static float CalcDirection(float x, float y)
 		{
 			y = -y; // vflip to match the arrangement of FloatControllerButtons
 
-			if (y >= 0 && x > 0)
+			// the wheel is arranged in a grey coded configuration of sensitivity ~2.5 degrees
+			// for each signal
+			// so overall the value returned changes every 1.25 degrees
+
+			float angle = (float)(Math.Atan2(y, x) * 180.0/Math.PI);
+
+			if (angle < 0)
 			{
-				return 0x10;
+				angle = 360 + angle;
 			}
 
-			if (y >= 0 && x <= 0)
-			{
-				return 0x30;
-			}
-			if (y < 0 && x <= 0)
-			{
-				return 0x20;
-			}
-
-			if (y < 0 && x > 0)
-			{
-				return 0x00;
-			}
-
-			Console.WriteLine("Error");
-			return 0x1F;
+			return angle;
 		}
 
-		public int UpdateWheel(IController c, int wheel)
+		public float UpdateWheel(IController c)
 		{
-			return 0;
+			float x = c.GetFloat(Definition.FloatControls[0]);
+			float y = c.GetFloat(Definition.FloatControls[1]);
+			return CalcDirection(x, y);		
 		}
 	}
 
@@ -243,7 +269,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		public ControllerDefinition Definition { get; private set; }
 
-		public byte Read(IController c, bool left_mode, int wheel)
+		public byte Read(IController c, bool left_mode, bool updateWheel, float wheelAngle)
 		{
 			if (left_mode)
 			{
@@ -254,7 +280,45 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				if (c.IsPressed(Definition.BoolButtons[3])) retval &= 0xF7;
 				if (c.IsPressed(Definition.BoolButtons[4])) retval &= 0x3F;
 
-				retval |= CalcDirection(wheel);
+				float x = c.GetFloat(Definition.FloatControls[0]);
+				float y = c.GetFloat(Definition.FloatControls[1]);
+
+				float angle;
+
+				if (updateWheel)
+				{
+					angle = wheelAngle;
+				}
+				else
+				{
+					angle = CalcDirection(x, y);
+				}
+
+				byte temp2 = 0;
+
+				int temp1 = (int)Math.Floor(angle / 1.25);
+				temp1 = temp1 % 4;
+
+				if (temp1 == 0)
+				{
+					temp2 = 0x10;
+				}
+
+				if (temp1 == 1)
+				{
+					temp2 = 0x30;
+				}
+				if (temp1 == 2)
+				{
+					temp2 = 0x20;
+				}
+
+				if (temp1 == 3)
+				{
+					temp2 = 0x00;
+				}
+
+				retval |= temp2;
 
 				return retval;
 			}
@@ -300,53 +364,32 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			"Purple", "Blue"
 		};
 
-		// positive x represents spinning to the right, negative spinning to the left
-		private static byte CalcDirection(int wheel)
+		// x and y are both assumed to be in [-127, 127]
+		// x increases from left to right
+		// y increases from top to bottom
+		private static float CalcDirection(float x, float y)
 		{
-			byte retval = 0;
+			y = -y; // vflip to match the arrangement of FloatControllerButtons
 
-			if (wheel >= 0 && wheel < 180)
+			// the wheel is arranged in a grey coded configuration of sensitivity ~2.5 degrees
+			// for each signal
+			// so overall the value returned changes every 1.25 degrees
+
+			float angle = (float)(Math.Atan2(y, x) * 180.0 / Math.PI);
+
+			if (angle < 0)
 			{
-				retval = 0x00;
+				angle = 360 + angle;
 			}
 
-			if (wheel >= 180 && wheel < 360)
-			{
-				retval = 0x10;
-			}
-
-			if (wheel < 0 && wheel > -180)
-			{
-				retval = 0x20;
-			}
-
-			if (wheel <= -180 && wheel > -360)
-			{
-				retval = 0x30;
-			}
-
-			return retval;
+			return angle;
 		}
 
-		public int UpdateWheel(IController c, int wheel)
+		public float UpdateWheel(IController c)
 		{
-			int x = (int)c.GetFloat(Definition.FloatControls[0]);
-
-			int diff = -x;
-
-			wheel += diff;
-
-			if (wheel >= 360)
-			{
-				wheel = wheel - 360;
-			}
-
-			if (wheel <= -360)
-			{
-				wheel = wheel + 360;
-			}
-
-			return wheel;
+			float x = c.GetFloat(Definition.FloatControls[0]);
+			float y = c.GetFloat(Definition.FloatControls[1]);
+			return CalcDirection(x, y);
 		}
 	}
 }

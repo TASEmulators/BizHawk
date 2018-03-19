@@ -81,7 +81,7 @@ void GB::blitTo(gambatte::uint_least32_t *videoBuf, int pitch)
 	}
 }
 
-void GB::reset(const std::uint32_t now) {
+void GB::reset(const std::uint32_t now, const unsigned div) {
 	if (p_->cpu.loaded()) {
 		
 		int length = p_->cpu.saveSavedataLength();
@@ -94,7 +94,7 @@ void GB::reset(const std::uint32_t now) {
 		
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
-		setInitState(state, !(p_->loadflags & FORCE_DMG), p_->loadflags & GBA_CGB, now);
+		setInitState(state, !(p_->loadflags & FORCE_DMG), p_->loadflags & GBA_CGB, now, div);
 		p_->cpu.loadState(state);
 		if (length > 0)
 		{
@@ -140,7 +140,7 @@ void GB::setLinkCallback(void(*callback)()) {
 	p_->cpu.setLinkCallback(callback);
 }
 
-int GB::load(const char *romfiledata, unsigned romfilelength, const std::uint32_t now, const unsigned flags) {
+int GB::load(const char *romfiledata, unsigned romfilelength, const std::uint32_t now, const unsigned flags, const unsigned div) {
 	//if (p_->cpu.loaded())
 	//	p_->cpu.saveSavedata();
 	
@@ -150,7 +150,7 @@ int GB::load(const char *romfiledata, unsigned romfilelength, const std::uint32_
 		SaveState state;
 		p_->cpu.setStatePtrs(state);
 		p_->loadflags = flags;
-		setInitState(state, !(flags & FORCE_DMG), flags & GBA_CGB, now);
+		setInitState(state, !(flags & FORCE_DMG), flags & GBA_CGB, now, div);
 		p_->cpu.loadState(state);
 		//p_->cpu.loadSavedata();
 	}

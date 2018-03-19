@@ -159,6 +159,8 @@ namespace BizHawk.Client.Common
 
 		#endregion
 
+
+		[LuaMethodExample("local steveonf = event.onframeend(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onframeend", "Calls the given lua function at the end of each frame, after all emulation and drawing has completed. Note: this is the default behavior of lua scripts")]
 		public string OnFrameEnd(LuaFunction luaf, string name = null)
 		{
@@ -167,6 +169,7 @@ namespace BizHawk.Client.Common
 			return nlf.Guid.ToString();
 		}
 
+		[LuaMethodExample("local steveonf = event.onframestart(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function at the beginning of each frame before any emulation and drawing occurs\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onframestart", "Calls the given lua function at the beginning of each frame before any emulation and drawing occurs")]
 		public string OnFrameStart(LuaFunction luaf, string name = null)
 		{
@@ -175,6 +178,7 @@ namespace BizHawk.Client.Common
 			return nlf.Guid.ToString();
 		}
 
+		[LuaMethodExample("local steveoni = event.oninputpoll(\r\n\tfunction()\r\n\t\tconsole.log( \"Calls the given lua function after each time the emulator core polls for input\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("oninputpoll", "Calls the given lua function after each time the emulator core polls for input")]
 		public string OnInputPoll(LuaFunction luaf, string name = null)
 		{
@@ -204,6 +208,7 @@ namespace BizHawk.Client.Common
 			Log($"Error: {Emulator.Attributes().CoreName} does not yet implement input polling callbacks");
 		}
 
+		[LuaMethodExample("local steveonl = event.onloadstate(\r\n\tfunction()\r\n\tconsole.log( \"Fires after a state is loaded. Receives a lua function name, and registers it to the event immediately following a successful savestate event\" );\r\nend\", \"Frame name\" );")]
 		[LuaMethod("onloadstate", "Fires after a state is loaded. Receives a lua function name, and registers it to the event immediately following a successful savestate event")]
 		public string OnLoadState(LuaFunction luaf, string name = null)
 		{
@@ -212,6 +217,7 @@ namespace BizHawk.Client.Common
 			return nlf.Guid.ToString();
 		}
 
+		[LuaMethodExample("local steveonm = event.onmemoryexecute(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is executed by the core\" );\r\n\tend\r\n\t, 0x200, \"Frame name\", \"System Bus\" );")]
 		[LuaMethod("onmemoryexecute", "Fires after the given address is executed by the core")]
 		public string OnMemoryExecute(LuaFunction luaf, uint address, string name = null, string domain = null)
 		{
@@ -251,6 +257,7 @@ namespace BizHawk.Client.Common
 			return Guid.Empty.ToString();
 		}
 
+		[LuaMethodExample("local steveonm = event.onmemoryread(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is read by the core. If no address is given, it will attach to every memory read\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
 		[LuaMethod("onmemoryread", "Fires after the given address is read by the core. If no address is given, it will attach to every memory read")]
 		public string OnMemoryRead(LuaFunction luaf, uint? address = null, string name = null, string domain = null)
 		{
@@ -289,6 +296,7 @@ namespace BizHawk.Client.Common
 			return Guid.Empty.ToString();
 		}
 
+		[LuaMethodExample("local steveonm = event.onmemorywrite(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the given address is written by the core. If no address is given, it will attach to every memory write\" );\r\n\tend\r\n\t, 0x200, \"Frame name\" );")]
 		[LuaMethod("onmemorywrite", "Fires after the given address is written by the core. If no address is given, it will attach to every memory write")]
 		public string OnMemoryWrite(LuaFunction luaf, uint? address = null, string name = null, string domain = null)
 		{
@@ -327,6 +335,7 @@ namespace BizHawk.Client.Common
 			return Guid.Empty.ToString();
 		}
 
+		[LuaMethodExample("local steveons = event.onsavestate(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after a state is saved\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onsavestate", "Fires after a state is saved")]
 		public string OnSaveState(LuaFunction luaf, string name = null)
 		{
@@ -335,6 +344,7 @@ namespace BizHawk.Client.Common
 			return nlf.Guid.ToString();
 		}
 
+		[LuaMethodExample("local steveone = event.onexit(\r\n\tfunction()\r\n\t\tconsole.log( \"Fires after the calling script has stopped\" );\r\n\tend\r\n\t, \"Frame name\" );")]
 		[LuaMethod("onexit", "Fires after the calling script has stopped")]
 		public string OnExit(LuaFunction luaf, string name = null)
 		{
@@ -343,6 +353,7 @@ namespace BizHawk.Client.Common
 			return nlf.Guid.ToString();
 		}
 
+		[LuaMethodExample("if ( event.unregisterbyid( \"4d1810b7 - 0d28 - 4acb - 9d8b - d87721641551\" ) ) then\r\n\tconsole.log( \"Removes the registered function that matches the guid.If a function is found and remove the function will return true.If unable to find a match, the function will return false.\" );\r\nend;")]
 		[LuaMethod("unregisterbyid", "Removes the registered function that matches the guid. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
 		public bool UnregisterById(string guid)
 		{
@@ -355,6 +366,7 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
+		[LuaMethodExample("if ( event.unregisterbyname( \"Function name\" ) ) then\r\n\tconsole.log( \"Removes the first registered function that matches Name.If a function is found and remove the function will return true.If unable to find a match, the function will return false.\" );\r\nend;")]
 		[LuaMethod("unregisterbyname", "Removes the first registered function that matches Name. If a function is found and remove the function will return true. If unable to find a match, the function will return false.")]
 		public bool UnregisterByName(string name)
 		{

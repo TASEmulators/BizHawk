@@ -23,6 +23,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		{
 			Resolver = new DynamicLibraryImportResolver(LibQuickNES.dllname);
 			QN = BizInvoker.GetInvoker<LibQuickNES>(Resolver, CallingConventionAdapters.Native);
+			QN.qn_setup_mappers();
 		}
 
 		[CoreConstructor("NES")]

@@ -155,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 
-			argParse.parseArguments(args);
+			argParse.ParseArguments(args);
 
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
@@ -2990,7 +2990,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (IsTurboing)
 				{
-					GlobalWin.Tools.FastUpdateAfter();
+					GlobalWin.Tools.FastUpdateAfter(SuppressLua);
 				}
 				else
 				{

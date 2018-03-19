@@ -235,6 +235,28 @@ namespace BizHawk.Client.EmuHawk
 			return str.Select(Convert.ToByte).ToArray();
 		}
 
+		public byte[] ConvertHexStringToByteArray(string str)
+		{
+			if (string.IsNullOrWhiteSpace(str)) {
+				return new byte[0];
+			}
+
+			// TODO: Better method of handling this?
+			if (str.Length % 2 == 1)
+			{
+				str += "0";
+			}
+
+			byte[] bytes = new byte[str.Length / 2];
+			
+			for (int i = 0; i < str.Length; i += 2)
+			{
+				bytes[i / 2] = Convert.ToByte(str.Substring(i, 2), 16);
+			}
+			
+			return bytes;
+		}
+
 		public void FindNext(string value, bool wrap)
 		{
 			long found = -1;
@@ -261,16 +283,20 @@ namespace BizHawk.Client.EmuHawk
 				startByte = _addressHighlighted + DataSize;
 			}
 
+			byte[] searchBytes = ConvertHexStringToByteArray(search);
 			for (var i = startByte; i < (_domain.Size - numByte); i++)
 			{
-				var ramblock = new StringBuilder();
+				bool differenceFound = false;
 				for (var j = 0; j < numByte; j++)
 				{
-					ramblock.Append(string.Format("{0:X2}", (int)_domain.PeekByte(i + j)));
+					if (_domain.PeekByte(i + j) != searchBytes[j])
+					{
+						differenceFound = true;
+						break;
+					}
 				}
 
-				var block = ramblock.ToString().ToUpper();
-				if (search == block)
+				if (!differenceFound)
 				{
 					found = i;
 					break;
@@ -313,16 +339,19 @@ namespace BizHawk.Client.EmuHawk
 				startByte = _addressHighlighted - 1;
 			}
 
+			byte[] searchBytes = ConvertHexStringToByteArray(search);
 			for (var i = startByte; i >= 0; i--)
 			{
-				var ramblock = new StringBuilder();
+				bool differenceFound = false;
 				for (var j = 0; j < numByte; j++)
 				{
-					ramblock.Append(string.Format("{0:X2}", (int)_domain.PeekByte(i + j)));
+					if (_domain.PeekByte(i + j) != searchBytes[j]) {
+						differenceFound = true;
+						break;
+					}
 				}
 
-				var block = ramblock.ToString().ToUpper();
-				if (search == block)
+				if (!differenceFound)
 				{
 					found = i;
 					break;
