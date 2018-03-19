@@ -137,6 +137,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		private void WriteHardware(ushort addr, byte value)
 		{
+			addr &= 0xFF;
+
 			switch (addr)
 			{
 				case 0: // PORT_LINK
@@ -232,6 +234,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		private byte ReadHardware(ushort addr)
 		{
+			addr &= 0xFF;
+
 			switch (addr)
 			{
 				case 0: // PORT_LINK

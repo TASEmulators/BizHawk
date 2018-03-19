@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		public int TotalExecutedCycles
 		{
-			get { return Cpu.TotalExecutedCycles; }
+			get { return (int)Cpu.TotalExecutedCycles; }
 		}
 	}
 }

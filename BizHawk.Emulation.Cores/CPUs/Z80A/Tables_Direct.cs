@@ -452,13 +452,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						RD, ALU, PCl, PCh,
+						RD, Z, PCl, PCh,
 						IDLE,
 						INC16, PCl, PCh,
 						TR, W, A,
-						OUT, ALU, A,
-						TR, Z, ALU,
-						INC16, Z, ALU,
+						OUT, Z, W, A,
+						IDLE,
+						INC16, Z, W,
 						IDLE,
 						IDLE,
 						OP};
@@ -469,9 +469,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						OUT, dest, src,
-						IDLE,
 						TR16, Z, W, C, B,
+						OUT, Z, W, src,
+						IDLE,					
 						INC16, Z, W,
 						IDLE,
 						OP};
@@ -481,12 +481,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						RD, ALU, PCl, PCh,
+						RD, Z, PCl, PCh,
 						IDLE,
 						INC16, PCl, PCh,
 						TR, W, A,
-						IN, A, ALU,
-						TR, Z, ALU,
+						IN, A, Z, W,
+						IDLE,
 						INC16, Z, W,
 						IDLE,
 						IDLE,
@@ -498,7 +498,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IN, dest, src,
+						IN, dest, src, B,
 						IDLE,
 						TR16, Z, W, C, B,
 						INC16, Z, W,

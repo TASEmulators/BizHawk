@@ -74,6 +74,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort SET_FL_IR = 59;
 		public const ushort I_BIT = 60;
 		public const ushort HL_BIT = 61;
+		public const ushort FTCH_DB = 62;
 
 		public byte temp_R;
 
@@ -105,6 +106,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// Hardware I/O Port Access
 		public Func<ushort, byte> ReadHardware;
 		public Action<ushort, byte> WriteHardware;
+
+		// Data Bus
+		// Interrupting Devices are responsible for putting a value onto the data bus
+		// for as long as the interrupt is valid
+		public Func<byte> FetchDB;
 
 		//this only calls when the first byte of an instruction is fetched.
 		public Action<ushort> OnExecFetch;
@@ -190,9 +196,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 								INTERRUPT_1();
 								break;
 							case 2:
-								// Low byte of interrupt vector comes from data bus
-								// We'll assume it's zero for now
-								INTERRUPT_2(0);
+								INTERRUPT_2();
 								break;
 						}
 						IRQCallback();
@@ -315,9 +319,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 									INTERRUPT_1();
 									break;
 								case 2:
-									// Low byte of interrupt vector comes from data bus
-									// We'll assume it's zero for now
-									INTERRUPT_2(0);
+									INTERRUPT_2();
 									break;
 							}
 							IRQCallback();
@@ -339,6 +341,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 				case HALT:
 					halted = true;
+					// NOTE: Check how halt state effects the DB
+					Regs[DB] = 0xFF;
+
 					if (EI_pending > 0)
 					{
 						EI_pending--;
@@ -382,9 +387,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 								INTERRUPT_1();
 								break;
 							case 2:
-								// Low byte of interrupt vector comes from data bus
-								// We'll assume it's zero for now
-								INTERRUPT_2(0);
+								INTERRUPT_2();
 								break;
 						}
 						IRQCallback();
@@ -569,10 +572,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					iff1 = iff2;
 					break;
 				case OUT:
-					OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case IN:
-					IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case NEG:
 					NEG_8_Func(cur_instr[instr_pntr++]);
@@ -595,8 +598,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				case SET_FL_IR:
 					SET_FL_IR_Func(cur_instr[instr_pntr++]);
 					break;
+				case FTCH_DB:
+					FTCH_DB_Func();
+					break;
 			}
-			totalExecutedCycles++;
+			TotalExecutedCycles++;
 		}
 
 		// tracer stuff
@@ -651,8 +657,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					FlagI ? "E" : "e")
 			};
 		}
-		// State Save/Load
 
+		// State Save/Load
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("Z80A");
@@ -663,7 +669,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			ser.Sync("IFF1", ref iff1);
 			ser.Sync("IFF2", ref iff2);
 			ser.Sync("Halted", ref halted);
-			ser.Sync("ExecutedCycles", ref totalExecutedCycles);
+			ser.Sync("ExecutedCycles", ref TotalExecutedCycles);
 			ser.Sync("EI_pending", ref EI_pending);
 
 			ser.Sync("instruction_pointer", ref instr_pntr);

@@ -4,8 +4,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 {
 	public partial class Z80A
 	{
-		private int totalExecutedCycles;
-		public int TotalExecutedCycles { get { return totalExecutedCycles; } set { totalExecutedCycles = value; } }
+		public long TotalExecutedCycles;
 
 		private int EI_pending;
 

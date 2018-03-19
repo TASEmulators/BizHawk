@@ -21,15 +21,15 @@ namespace BizHawk.Emulation.Cores.Components
 			const int SampleRate = 44100;
 			private static readonly byte[] LogScale = { 0, 10, 13, 16, 20, 26, 32, 40, 51, 64, 81, 102, 128, 161, 203, 255 };
 
-			public void Mix(short[] samples, int start, int len, int maxVolume)
+			public void Mix(short[] samples, long start, long len, int maxVolume)
 			{
 				if (Volume == 0) return;
 
 				float adjustedWaveLengthInSamples = SampleRate / (Noise ? (Frequency / (float)Wave.Length) : Frequency);
 				float moveThroughWaveRate = Wave.Length / adjustedWaveLengthInSamples;
 
-				int end = start + len;
-				for (int i = start; i < end; )
+				long end = start + len;
+				for (long i = start; i < end; )
 				{
 					short value = Wave[(int)WaveOffset];
 
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Components
 		public byte PsgLatch;
 
 		private readonly Queue<QueuedCommand> commands = new Queue<QueuedCommand>(256);
-		int frameStartTime, frameStopTime;
+		long frameStartTime, frameStopTime;
 
 		const int PsgBase = 111861;
 
@@ -84,7 +84,7 @@ namespace BizHawk.Emulation.Cores.Components
 			}
 		}
 
-		public void BeginFrame(int cycles)
+		public void BeginFrame(long cycles)
 		{
 			while (commands.Count > 0)
 			{
@@ -94,12 +94,12 @@ namespace BizHawk.Emulation.Cores.Components
 			frameStartTime = cycles;
 		}
 
-		public void EndFrame(int cycles)
+		public void EndFrame(long cycles)
 		{
 			frameStopTime = cycles;
 		}
 
-		public void WritePsgData(byte value, int cycles)
+		public void WritePsgData(byte value, long cycles)
 		{
 			commands.Enqueue(new QueuedCommand { Value = value, Time = cycles - frameStartTime });
 		}
@@ -227,15 +227,15 @@ namespace BizHawk.Emulation.Cores.Components
 		public void DiscardSamples() { commands.Clear(); }
 		public void GetSamples(short[] samples)
 		{
-			int elapsedCycles = frameStopTime - frameStartTime;
+			long elapsedCycles = frameStopTime - frameStartTime;
 			if (elapsedCycles == 0)
 				elapsedCycles = 1; // hey it's better than diving by zero
 
-			int start = 0;
+			long start = 0;
 			while (commands.Count > 0)
 			{
 				var cmd = commands.Dequeue();
-				int pos = ((cmd.Time * samples.Length) / elapsedCycles) & ~1;
+				long pos = ((cmd.Time * samples.Length) / elapsedCycles) & ~1;
 				GetSamplesImmediate(samples, start, pos - start);
 				start = pos;
 				WritePsgDataImmediate(cmd.Value);
@@ -243,16 +243,16 @@ namespace BizHawk.Emulation.Cores.Components
 			GetSamplesImmediate(samples, start, samples.Length - start);
 		}
 
-		public void GetSamplesImmediate(short[] samples, int start, int len)
+		public void GetSamplesImmediate(short[] samples, long start, long len)
 		{
-			for (int i = 0; i < 4; i++)
+			for (long i = 0; i < 4; i++)
 				Channels[i].Mix(samples, start, len, MaxVolume);
 		}
 
 		class QueuedCommand
 		{
 			public byte Value;
-			public int Time;
+			public long Time;
 		}
 	}
 }
