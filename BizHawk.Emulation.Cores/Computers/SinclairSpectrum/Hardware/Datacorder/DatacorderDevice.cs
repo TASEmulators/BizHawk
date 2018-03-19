@@ -103,12 +103,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         private long _lastCycle = 0;
 
         /// <summary>
-        /// 
+        /// Edge
         /// </summary>
         private int _waitEdge = 0;
 
         /// <summary>
-        /// 
+        /// Current tapebit state
         /// </summary>
         private bool currentState = false;
 
@@ -131,11 +131,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         #endregion
 
         #region Emulator    
-
-        /// <summary>
-        /// This is the address the that ROM will jump to when the spectrum has quit tape playing
-        /// </summary>
-        public const ushort ERROR_ROM_ADDRESS = 0x0008;
 
         /// <summary>
         /// Should be fired at the end of every frame
@@ -522,7 +517,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _lastCycle = cpuCycle - (long)cycles;
 
             // play the buzzer
-            _buzzer.ProcessPulseValue(true, currentState);
+            _buzzer.ProcessPulseValue(false, currentState);
 
             return currentState;
         }
@@ -598,7 +593,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             _machine.Spectrum.OSD_TapePlayingAuto();
                         }
 
-                        _monitorTimeOut = 50;
+                        _monitorTimeOut = 250;
                     }
                 }
                 else
@@ -613,7 +608,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public void AutoStopTape()
         {
-            if (!_tapeIsPlaying)
+            if (_tapeIsPlaying)
+                return;
+
+            if (!_machine.Spectrum.Settings.AutoLoadTape)
                 return;
 
             Stop();
@@ -625,25 +623,27 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (_tapeIsPlaying)
                 return;
 
+            if (!_machine.Spectrum.Settings.AutoLoadTape)
+                return;
+
             Play();
             _machine.Spectrum.OSD_TapePlayingAuto();
         }
 
         private void MonitorFrame()
         {
-            /*
             if (_tapeIsPlaying && _machine.Spectrum.Settings.AutoLoadTape)
             {
-
                 _monitorTimeOut--;
 
                 if (_monitorTimeOut < 0)
                 {
+                    // does not work properly - disabled for now (handled elsewhere)
+
                     //Stop();
                     //_machine.Spectrum.OSD_TapeStoppedAuto();
                 }
             }
-            */
         }
 
         #endregion
@@ -665,6 +665,23 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public bool ReadPort(ushort port, ref int result)
         {
+            if (TapeIsPlaying)
+            {
+                GetEarBit(_cpu.TotalExecutedCycles);
+            }
+            if (currentState)
+            {
+                result |= TAPE_BIT;
+            }
+            else
+            {
+                result &= ~TAPE_BIT;
+            }
+
+            MonitorRead();
+
+            /*
+
             if (TapeIsPlaying)
             {
                 if (GetEarBit(_cpu.TotalExecutedCycles))
@@ -702,6 +719,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
             }
 
+    */
+
             return true;
         }
 
@@ -713,8 +732,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public bool WritePort(ushort port, int result)
         {
-            // not implemented yet
-            return false;
+            if (!TapeIsPlaying)
+            {
+                currentState = ((byte)result & 0x10) != 0;
+            }
+
+            return true;
         }
 
         #endregion

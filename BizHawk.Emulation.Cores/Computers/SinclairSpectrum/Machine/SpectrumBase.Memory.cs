@@ -176,32 +176,54 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 return false;
         }
 
-
+        /// <summary>
+        /// Monitors ROM access
+        /// Used to auto start/stop the tape device when appropriate
+        /// </summary>
+        /// <param name="addr"></param>
         public virtual void TestForTapeTraps(int addr)
         {
-            if (!TapeDevice.TapeIsPlaying)
+            if (TapeDevice.TapeIsPlaying)
             {
+                // THE 'ERROR' RESTART
                 if (addr == 8)
                 {
                     TapeDevice?.AutoStopTape();
                     return;
                 }
 
+                // THE 'ED-ERROR' SUBROUTINE
                 if (addr == 4223)
                 {
                     TapeDevice?.AutoStopTape();
                     return;
                 }
 
+                // THE 'ERROR-2' ROUTINE
                 if (addr == 83)
                 {
                     TapeDevice?.AutoStopTape();
                     return;
                 }
+
+                // THE 'MASKABLE INTERRUPT' ROUTINE
+                if (addr == 56)
+                {
+                    //TapeDevice?.AutoStopTape();
+                    return;
+                }
             }
             else
             {
+                // THE 'LD-BYTES' SUBROUTINE
                 if (addr == 1366)
+                {
+                    TapeDevice?.AutoStartTape();
+                    return;
+                }
+
+                // THE 'LD-EDGE-2' AND 'LD-EDGE-1' SUBROUTINES
+                if (addr == 1507)
                 {
                     TapeDevice?.AutoStartTape();
                     return;

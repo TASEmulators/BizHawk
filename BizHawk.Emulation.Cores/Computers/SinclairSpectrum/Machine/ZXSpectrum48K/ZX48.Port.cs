@@ -40,10 +40,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 KeyboardDevice.ReadPort(port, ref result);
 
                 // not a lagframe
-                InputRead = true;
-
-                // tape loading monitor cycle
-                TapeDevice.MonitorRead();                
+                InputRead = true;           
 
                 // process tape INs
                 TapeDevice.ReadPort(port, ref result);
@@ -120,9 +117,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Buzzer
             BuzzerDevice.ProcessPulseValue(false, (value & EAR_BIT) != 0);
 
+            // Tape
+            TapeDevice.WritePort(port, value);
+
             // Tape mic processing (not implemented yet)
             //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
-                
+
         }
        
     }
