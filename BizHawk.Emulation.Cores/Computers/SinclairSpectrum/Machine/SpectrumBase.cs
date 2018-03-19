@@ -137,6 +137,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             FrameCompleted = false;
 
+            TapeDevice.StartFrame();
+
             if (_renderSound)
             {
                 BuzzerDevice.StartFrame();

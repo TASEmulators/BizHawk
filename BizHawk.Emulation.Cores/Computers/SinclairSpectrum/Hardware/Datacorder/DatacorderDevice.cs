@@ -1,6 +1,7 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -139,6 +140,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void EndFrame()
         {
             MonitorFrame();
+        }
+
+        public void StartFrame()
+        {
+            //if (TapeIsPlaying && AutoPlay)
+                //FlashLoad();
         }
 
         #endregion
@@ -520,6 +527,105 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _buzzer.ProcessPulseValue(false, currentState);
 
             return currentState;
+        }
+
+        /// <summary>
+        /// Flash loading implementation
+        /// (Deterministic Emulation must be FALSE)
+        /// </summary>
+        private bool FlashLoad()
+        {
+            // deterministic emulation must = false
+            //if (_machine.Spectrum.SyncSettings.DeterministicEmulation)
+            //return;
+
+            var util = _machine.Spectrum;
+
+            if (_currentDataBlockIndex < 0)
+                _currentDataBlockIndex = 0;
+
+            if (_currentDataBlockIndex >= DataBlocks.Count)
+                return false;            
+
+            //var val = GetEarBit(_cpu.TotalExecutedCycles);
+            //_buzzer.ProcessPulseValue(true, val);
+
+            ushort addr = _cpu.RegPC;
+
+            if (_machine.Spectrum.SyncSettings.DeterministicEmulation)
+            {
+
+            }
+
+            var tb = DataBlocks[_currentDataBlockIndex];
+            var tData = tb.BlockData;
+
+            if (tData == null || tData.Length < 2)
+            {
+                // skip this
+                return false;
+            }
+
+            var toRead = tData.Length - 1;
+
+            if (toRead < _cpu.Regs[_cpu.E] + (_cpu.Regs[_cpu.D] << 8))
+            {
+
+            }
+            else
+            {
+                toRead = _cpu.Regs[_cpu.E] + (_cpu.Regs[_cpu.D] << 8);
+            }
+
+            if (toRead <= 0)
+                return false;
+
+            var parity = tData[0];
+
+            if (parity != _cpu.Regs[_cpu.F_s] + (_cpu.Regs[_cpu.A_s] << 8) >> 8)
+                return false;
+
+            util.SetCpuRegister("Shadow AF", 0x0145);
+
+            for (var i = 0; i < toRead; i++)
+            {
+                var v = tData[i + 1];
+                _cpu.Regs[_cpu.L] = v;
+                parity ^= v;
+                var d = (ushort)(_cpu.Regs[_cpu.Ixl] + (_cpu.Regs[_cpu.Ixh] << 8) + 1);
+                _machine.WriteBus(d, v);
+            }
+            var pc = (ushort)0x05DF;
+
+            if (_cpu.Regs[_cpu.E] + (_cpu.Regs[_cpu.D] << 8) == toRead &&
+                toRead + 1 < tData.Length)
+            {
+                var v = tData[toRead + 1];
+                _cpu.Regs[_cpu.L] = v;
+                parity ^= v;
+                _cpu.Regs[_cpu.B] = 0xB0;
+            }
+            else
+            {
+                _cpu.Regs[_cpu.L] = 1;
+                _cpu.Regs[_cpu.B] = 0;
+                _cpu.Regs[_cpu.F] = 0x50;
+                _cpu.Regs[_cpu.A] = parity;
+                pc = 0x05EE;
+            }
+
+            _cpu.Regs[_cpu.H] = parity;
+            var de = _cpu.Regs[_cpu.E] + (_cpu.Regs[_cpu.D] << 8);
+            util.SetCpuRegister("DE", de - toRead);
+            var ix = _cpu.Regs[_cpu.Ixl] + (_cpu.Regs[_cpu.Ixh] << 8);
+            util.SetCpuRegister("IX", ix + toRead);
+
+            util.SetCpuRegister("PC", pc);
+
+            _currentDataBlockIndex++;
+
+            return true;
+           
         }
 
         #endregion
