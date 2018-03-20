@@ -37,5 +37,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         #endregion
+
+        #region Reset
+
+        public override void HardReset()
+        {
+            base.HardReset();
+
+            Random rn = new Random();
+            for (int d = 0; d < 6912; d++)
+            {
+                RAM0[d] = (byte)rn.Next(255);
+            }
+        }
+        
+        #endregion
     }
 }

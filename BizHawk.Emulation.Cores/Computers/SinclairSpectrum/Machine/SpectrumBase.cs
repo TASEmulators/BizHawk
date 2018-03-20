@@ -232,6 +232,26 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             TapeDevice.Reset();
             if (AYDevice != null)
                 AYDevice.Reset();
+
+            byte[][] rams = new byte[][]
+            {
+                RAM0,
+                RAM1,
+                RAM2,
+                RAM3,
+                RAM4,
+                RAM5,
+                RAM6,
+                RAM7
+            };
+
+            foreach (var r in rams)
+            {
+                for (int i = 0; i < r.Length; i++)
+                {
+                    r[i] = 0x00;
+                }
+            }
         }
 
         /// <summary>
@@ -264,6 +284,26 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             TapeDevice.Reset();
             if (AYDevice != null)
                 AYDevice.Reset();
+
+            byte[][] rams = new byte[][]
+            {
+                RAM0,
+                RAM1,
+                RAM2,
+                RAM3,
+                RAM4,
+                RAM5,
+                RAM6,
+                RAM7
+            };
+
+            foreach (var r in rams)
+            {
+                for (int i = 0; i < r.Length; i++)
+                {
+                    r[i] = 0x00;
+                }
+            }
         }
 
         #endregion
