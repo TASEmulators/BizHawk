@@ -307,7 +307,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ULADevice.SyncState(ser);
 
             if (AYDevice != null)
+            {
                 AYDevice.SyncState(ser);
+                ((AYChip)AYDevice as AYChip).PanningConfiguration = Spectrum.Settings.AYPanConfig;
+            }
+                
 
             ser.Sync("tapeMediaIndex", ref tapeMediaIndex);
             TapeMediaIndex = tapeMediaIndex;

@@ -503,7 +503,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         private static List<uint[]> PanTabs = new List<uint[]>
         {
             // MONO
-            new uint[] { 100,100, 100,100, 100,100 },
+            new uint[] { 66,66, 66,66, 66,66 },
             // ABC
             new uint[] { 100,10,  66,66,   10,100 },
             // ACB
