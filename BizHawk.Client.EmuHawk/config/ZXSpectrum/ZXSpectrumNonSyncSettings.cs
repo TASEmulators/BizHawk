@@ -30,19 +30,30 @@ namespace BizHawk.Client.EmuHawk
 			{
 				panTypecomboBox1.Items.Add(val);
             }
-            panTypecomboBox1.SelectedItem = _settings.AYPanConfig.ToString();            
+            panTypecomboBox1.SelectedItem = _settings.AYPanConfig.ToString();
+
+            // OSD Message Verbosity
+            var osdTypes = Enum.GetNames(typeof(ZXSpectrum.OSDVerbosity));     
+            foreach (var val in osdTypes)
+            {
+                osdMessageVerbositycomboBox1.Items.Add(val);
+            }
+            osdMessageVerbositycomboBox1.SelectedItem = _settings.OSDMessageVerbosity.ToString();
+            UpdateOSDNotes((ZXSpectrum.OSDVerbosity)Enum.Parse(typeof(ZXSpectrum.OSDVerbosity), osdMessageVerbositycomboBox1.SelectedItem.ToString()));
         }
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
             bool changed =
                 _settings.AutoLoadTape != autoLoadcheckBox1.Checked
-                || _settings.AYPanConfig.ToString() != panTypecomboBox1.SelectedItem.ToString();
+                || _settings.AYPanConfig.ToString() != panTypecomboBox1.SelectedItem.ToString()
+                || _settings.OSDMessageVerbosity.ToString() != osdMessageVerbositycomboBox1.SelectedItem.ToString();
 
             if (changed)
 			{
                 _settings.AutoLoadTape = autoLoadcheckBox1.Checked;
                 _settings.AYPanConfig = (AYChip.AYPanConfig)Enum.Parse(typeof(AYChip.AYPanConfig), panTypecomboBox1.SelectedItem.ToString());
+                _settings.OSDMessageVerbosity = (ZXSpectrum.OSDVerbosity)Enum.Parse(typeof(ZXSpectrum.OSDVerbosity), osdMessageVerbositycomboBox1.SelectedItem.ToString());
 
                 GlobalWin.MainForm.PutCoreSettings(_settings);
 
@@ -62,5 +73,27 @@ namespace BizHawk.Client.EmuHawk
 			DialogResult = DialogResult.Cancel;
 			Close();
 		}
+
+        private void UpdateOSDNotes(ZXSpectrum.OSDVerbosity type)
+        {
+            switch (type)
+            {
+                case ZXSpectrum.OSDVerbosity.Full:
+                    lblOSDVerbinfo.Text = "Show all OSD messages";
+                    break;
+                case ZXSpectrum.OSDVerbosity.Medium:
+                    lblOSDVerbinfo.Text = "Only show machine/device generated messages";
+                    break;
+                case ZXSpectrum.OSDVerbosity.None:
+                    lblOSDVerbinfo.Text = "No core-driven OSD messages";
+                    break;
+            }
+        }
+
+        private void OSDComboBox_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            ComboBox cb = sender as ComboBox;
+            UpdateOSDNotes((ZXSpectrum.OSDVerbosity)Enum.Parse(typeof(ZXSpectrum.OSDVerbosity), cb.SelectedItem.ToString()));
+        }
     }
 }
