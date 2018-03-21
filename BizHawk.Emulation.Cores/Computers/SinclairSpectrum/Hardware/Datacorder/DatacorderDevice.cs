@@ -193,6 +193,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 if (_currentDataBlockIndex >= _dataBlocks.Count)
                 {
                     // end of tape reached. Rewind to beginning
+                    AutoStopTape();
                     RTZ();
                     return;
                 }
@@ -736,6 +737,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _machine.Spectrum.OSD_TapePlayingAuto();
         }
 
+        public int MaskableInterruptCount = 0;
+
         private void MonitorFrame()
         {
             if (_tapeIsPlaying && _machine.Spectrum.Settings.AutoLoadTape)
@@ -770,7 +773,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     AutoStopTape();
                     _lastCycle = _cpu.TotalExecutedCycles;
 
-                    MonitorReset();
+                    //MonitorReset();
                 }
             }
         }
@@ -805,6 +808,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             else
             {
                 result &= ~TAPE_BIT;
+            }
+
+            if (!TapeIsPlaying)
+            {
+                MonitorRead();
             }
 
             MonitorRead();
