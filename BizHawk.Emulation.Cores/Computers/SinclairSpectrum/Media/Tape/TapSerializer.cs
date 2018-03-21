@@ -288,6 +288,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 int actualPause = PAUSE_MS * 1000;
                 dataPeriods.Add(actualPause);
 
+                // default pause for tap files
+                tdb.PauseInMS = 1000;
+
                 // add to the tapedatablock object
                 tdb.DataPeriods = dataPeriods;
 

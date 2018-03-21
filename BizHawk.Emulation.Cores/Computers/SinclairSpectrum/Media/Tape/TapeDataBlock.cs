@@ -127,6 +127,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
+        /// The defined post-block pause
+        /// </summary>
+        private int _pauseInMS;
+        public int PauseInMS
+        {
+            get { return _pauseInMS; }
+            set { _pauseInMS = value; }
+        }
+
+
+        /// <summary>
         /// Returns the data periods as an array
         /// (primarily to aid in bizhawk state serialization)
         /// </summary>

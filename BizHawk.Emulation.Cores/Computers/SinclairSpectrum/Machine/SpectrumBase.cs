@@ -154,22 +154,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 ULADevice.CheckForInterrupt(CurrentFrameCycle);
 
                 // run a single CPU instruction
-                CPU.ExecuteOne();
-
-                // update AY
-                int ayCnt = 0;
-                if (_renderSound)
-                {
-                    if (AYDevice != null)
-                    {
-                        //AYDevice.UpdateSound(CurrentFrameCycle);
-                        if (ayCnt > 10)
-                        {
-                            //AYDevice.UpdateSound(CurrentFrameCycle);
-                            ayCnt = 0;
-                        }                                                   
-                    }                        
-                }
+                CPU.ExecuteOne();                
             }
 
             // we have reached the end of a frame

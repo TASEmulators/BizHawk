@@ -270,6 +270,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             int pauseLen = GetWordValue(data, _position);
             if (pauseLen == 0)
                 pauseLen = 1000;
+
+            t.PauseInMS = pauseLen;
+
             int blockLen = GetWordValue(data, _position + 2);
 
             _position += 4;
@@ -331,6 +334,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             var t2 = DecodeDataBlock(t, tmp, DataBlockType.Turbo, pause, pilotTL, pilotPL, sync1P, sync2P, bit0P, bit1P, bitinbyte);
 
+            t.PauseInMS = pause;
+
             // add the block
             _datacorder.DataBlocks.Add(t2);
 
@@ -355,6 +360,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             t.BlockID = 0x12;
             t.BlockDescription = BlockType.Pure_Tone;
             t.DataPeriods = new List<int>();
+            t.PauseInMS = 0;
 
             // get values
             int pulseLength = GetWordValue(data, _position);
@@ -391,6 +397,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             t.BlockID = 0x13;
             t.BlockDescription = BlockType.Pulse_Sequence;
             t.DataPeriods = new List<int>();
+
+            t.PauseInMS = 0;
 
             // get pulse count           
             int pulseCount = data[_position];
@@ -448,6 +456,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             tmp = data.Skip(_position).Take(blockLen).ToArray();
 
             var t2 = DecodeDataBlock(t, tmp, DataBlockType.Pure, pause, pilotTL, pilotPL, sync1P, sync2P, bit0P, bit1P, bitinbyte);
+
+            t.PauseInMS = pause;
 
             // add the block
             _datacorder.DataBlocks.Add(t2);
@@ -549,6 +559,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 t.DataPeriods.Add(3500 * pauseAfterBlock);
             }
+
+            t.PauseInMS = pauseAfterBlock;
             
             // increment position
             _position++;
@@ -673,6 +685,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 //t.BlockDescription = "[STOP THE TAPE]";
             }
 
+            t.PauseInMS = pauseDuration;
+
             if (pauseDuration == 0)
             {
                 // issue stop the tape command
@@ -722,11 +736,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             //t.BlockDescription = "[GROUP: " + name + "]";
             t.Command = TapeCommand.BEGIN_GROUP;
 
+            t.PauseInMS = 0;
+
             // add to tape
             _datacorder.DataBlocks.Add(t);
 
             // advance to next block 
             _position += nameLength;
+
+            ;
         }
         #endregion
 
@@ -741,6 +759,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             t.DataPeriods = new List<int>();
             t.BlockDescription = BlockType.Group_End;
             t.Command = TapeCommand.END_GROUP;
+
+            t.PauseInMS = 0;
 
             // add to tape
             _datacorder.DataBlocks.Add(t);
@@ -787,6 +807,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             //t.BlockDescription = "[JUMP BLOCK - " + result +"]";
 
+            t.PauseInMS = 0;
+
             // add to tape
             _datacorder.DataBlocks.Add(t);
 
@@ -823,6 +845,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // update description
             //t.BlockDescription = "[LOOP START - " + numberOfRepetitions + " times]";
+
+            t.PauseInMS = 0;
 
             // add to tape
             _datacorder.DataBlocks.Add(t);
@@ -899,6 +923,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             t.BlockDescription = BlockType.Call_Sequence;
 
             int blockSize = 2 + 2 * GetWordValue(data, _position);
+            t.PauseInMS = 0;
+
 
             // add to tape
             _datacorder.DataBlocks.Add(t);
@@ -921,6 +947,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             t.BlockID = 0x27;
             t.DataPeriods = new List<int>();
             t.BlockDescription = BlockType.Return_From_Sequence;
+            t.PauseInMS = 0;
+
 
             // add to tape
             _datacorder.DataBlocks.Add(t);
@@ -956,6 +984,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             int blockSize = 2 + GetWordValue(data, _position);
 
+            t.PauseInMS = 0;
+
             // add to tape
             _datacorder.DataBlocks.Add(t);
 
@@ -982,6 +1012,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             int blockSize = 4 + GetWordValue(data, _position);
 
+            t.PauseInMS = 0;
+
             // add to tape
             _datacorder.DataBlocks.Add(t);
 
@@ -1004,6 +1036,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             t.BlockID = 0x2B;
             t.DataPeriods = new List<int>();
             t.BlockDescription = BlockType.Set_Signal_Level;
+
+            t.PauseInMS = 0;
 
             // add to tape
             _datacorder.DataBlocks.Add(t);
@@ -1036,6 +1070,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _position++;
 
             string desc = Encoding.ASCII.GetString(data, _position, textLen);
+
+            t.PauseInMS = 0;
 
             //t.BlockDescription = "[" + desc + "]";
 
@@ -1080,6 +1116,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             t.Command = TapeCommand.SHOW_MESSAGE;
 
             //t.BlockDescription = "[MESSAGE: " + desc + "]";
+
+            t.PauseInMS = 0;
 
             // add to tape
             _datacorder.DataBlocks.Add(t);
@@ -1186,6 +1224,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 string val = Encoding.ASCII.GetString(data, _position, strLen);
                 //t.BlockDescription += val + " \n";
 
+                t.PauseInMS = 0;
+
                 // advance to next string block
                 _position += strLen;
             }
@@ -1232,6 +1272,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             t.DataPeriods = new List<int>();
             t.BlockDescription = BlockType.Hardware_Type;
 
+            t.PauseInMS = 0;
+
             _position += 2;
             int blockLen = GetWordValue(data, 0);
 
@@ -1258,6 +1300,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             t.BlockID = 0x35;
             t.DataPeriods = new List<int>();
             t.BlockDescription = BlockType.Custom_Info_Block;
+
+            t.PauseInMS = 0;
 
             string info = Encoding.ASCII.GetString(data, _position, 0x10);
             //t.BlockDescription = "[CUSTOM INFO: " + info + "]";
@@ -1291,6 +1335,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             t.BlockID = 0x5A;
             t.DataPeriods = new List<int>();
             t.BlockDescription = BlockType.Glue_Block;
+
+            t.PauseInMS = 0;
 
             // add to tape
             _datacorder.DataBlocks.Add(t);

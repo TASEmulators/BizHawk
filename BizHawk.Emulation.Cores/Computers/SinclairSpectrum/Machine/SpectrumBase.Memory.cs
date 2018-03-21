@@ -188,21 +188,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // THE 'ERROR' RESTART
                 if (addr == 8)
                 {
-                    TapeDevice?.AutoStopTape();
+                    //TapeDevice?.AutoStopTape();
                     return;
                 }
 
                 // THE 'ED-ERROR' SUBROUTINE
                 if (addr == 4223)
                 {
-                    TapeDevice?.AutoStopTape();
+                    //TapeDevice?.AutoStopTape();
                     return;
                 }
 
                 // THE 'ERROR-2' ROUTINE
                 if (addr == 83)
                 {
-                    TapeDevice?.AutoStopTape();
+                    //TapeDevice?.AutoStopTape();
                     return;
                 }
 
@@ -218,14 +218,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // THE 'LD-BYTES' SUBROUTINE
                 if (addr == 1366)
                 {
-                    TapeDevice?.AutoStartTape();
+                    //TapeDevice?.AutoStartTape();
                     return;
                 }
 
                 // THE 'LD-EDGE-2' AND 'LD-EDGE-1' SUBROUTINES
                 if (addr == 1507)
                 {
-                    TapeDevice?.AutoStartTape();
+                    //TapeDevice?.AutoStartTape();
                     return;
                 }
             }

@@ -691,7 +691,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 {
                     _monitorCount++;
 
-                    if (_monitorCount >= 16 && _cpu.RegPC == 1523 && _machine.Spectrum.Settings.AutoLoadTape)
+                    if (_monitorCount >= 16 && _machine.Spectrum.Settings.AutoLoadTape)
                     {
                         if (!_tapeIsPlaying)
                         {
@@ -714,7 +714,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public void AutoStopTape()
         {
-            if (_tapeIsPlaying)
+            if (!_tapeIsPlaying)
                 return;
 
             if (!_machine.Spectrum.Settings.AutoLoadTape)
@@ -748,6 +748,29 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                     //Stop();
                     //_machine.Spectrum.OSD_TapeStoppedAuto();
+                }
+
+                // number of t-states since last IN operation
+                long diff = _machine.CPU.TotalExecutedCycles - _lastINCycle;
+
+                // pause in ms at the end of the current block
+                int blockPause = DataBlocks[_currentDataBlockIndex].PauseInMS;
+
+                // timeout in t-states (equiv. to blockpause)
+                int timeout = ((_machine.ULADevice.FrameLength * 50) / 1000) * blockPause;
+
+                // dont use autostop detection if block has no pause at the end
+                if (timeout == 0)
+                    return;
+
+                if (diff >= timeout * 2)
+                {
+                    // There have been no attempted tape reads by the CPU within the double timeout period
+                    // Autostop the tape
+                    AutoStopTape();
+                    _lastCycle = _cpu.TotalExecutedCycles;
+
+                    MonitorReset();
                 }
             }
         }
