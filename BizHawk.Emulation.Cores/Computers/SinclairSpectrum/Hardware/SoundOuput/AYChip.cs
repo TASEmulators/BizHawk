@@ -145,8 +145,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             set
             {
-                value = Math.Max(0, value);
-                value = Math.Max(100, value);
+                //value = Math.Max(0, value);
+                //value = Math.Max(100, value);
                 if (_volume == value)
                 {
                     return;
@@ -503,7 +503,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         private static List<uint[]> PanTabs = new List<uint[]>
         {
             // MONO
-            new uint[] { 66,66, 66,66, 66,66 },
+            new uint[] { 50,50, 50,50, 50,50 },
             // ABC
             new uint[] { 100,10,  66,66,   10,100 },
             // ACB
@@ -553,7 +553,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         private void UpdateVolume()
         {
-            var vol = (ulong)0xFFFF * (ulong)_volume / 100UL;
+            var vol = ((ulong)0xFFFF * (ulong)_volume / 100UL) - 20000 ;
             _volumeTables = new uint[6][];
 
             // parent array
@@ -793,6 +793,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 ser.Sync("volTable" + i, ref _volumeTables[i], false);
             }
+            
+            if (ser.IsReader)
+                _volume = _machine.Spectrum.Settings.AYVolume;
 
             ser.EndSection();
         }
