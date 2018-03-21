@@ -2482,6 +2482,11 @@ namespace BizHawk.Client.EmuHawk
             new ZXSpectrumNonSyncSettings().ShowDialog();
         }
 
+        private void ZXSpectrumAudioSettingsMenuItem_Click(object sender, EventArgs e)
+        {
+            new ZXSpectrumAudioSettings().ShowDialog();
+        }
+
         #endregion
 
         #region Help

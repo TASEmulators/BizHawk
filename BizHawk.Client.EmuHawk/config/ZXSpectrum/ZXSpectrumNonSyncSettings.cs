@@ -24,14 +24,6 @@ namespace BizHawk.Client.EmuHawk
             // autoload tape
             autoLoadcheckBox1.Checked = _settings.AutoLoadTape;
 
-            // AY panning config
-            var panTypes = Enum.GetNames(typeof(AYChip.AYPanConfig));
-			foreach (var val in panTypes)
-			{
-				panTypecomboBox1.Items.Add(val);
-            }
-            panTypecomboBox1.SelectedItem = _settings.AYPanConfig.ToString();
-
             // OSD Message Verbosity
             var osdTypes = Enum.GetNames(typeof(ZXSpectrum.OSDVerbosity));     
             foreach (var val in osdTypes)
@@ -46,13 +38,11 @@ namespace BizHawk.Client.EmuHawk
 		{
             bool changed =
                 _settings.AutoLoadTape != autoLoadcheckBox1.Checked
-                || _settings.AYPanConfig.ToString() != panTypecomboBox1.SelectedItem.ToString()
                 || _settings.OSDMessageVerbosity.ToString() != osdMessageVerbositycomboBox1.SelectedItem.ToString();
 
             if (changed)
 			{
                 _settings.AutoLoadTape = autoLoadcheckBox1.Checked;
-                _settings.AYPanConfig = (AYChip.AYPanConfig)Enum.Parse(typeof(AYChip.AYPanConfig), panTypecomboBox1.SelectedItem.ToString());
                 _settings.OSDMessageVerbosity = (ZXSpectrum.OSDVerbosity)Enum.Parse(typeof(ZXSpectrum.OSDVerbosity), osdMessageVerbositycomboBox1.SelectedItem.ToString());
 
                 GlobalWin.MainForm.PutCoreSettings(_settings);

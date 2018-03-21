@@ -106,6 +106,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (_machine.AYDevice != null && _machine.AYDevice.GetType() == typeof(AYChip))
             {
                 ((AYChip)_machine.AYDevice as AYChip).PanningConfiguration = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).AYPanConfig;
+                _machine.AYDevice.Volume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).AYVolume;
+            }
+
+            if (_machine.BuzzerDevice != null)
+            {
+                ((Buzzer)_machine.BuzzerDevice as Buzzer).TapeVolume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).TapeVolume;
+                ((Buzzer)_machine.BuzzerDevice as Buzzer).EarVolume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).EarVolume;
             }
 
 

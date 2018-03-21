@@ -53,6 +53,69 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             set { _tStatesPerSample = value; }
         }
 
+        /// <summary>
+        /// The tape loading volume
+        /// Accepts an int 0-100 value
+        /// </summary>
+        private int _tapeVolume;
+        public int TapeVolume
+        {
+            get
+            {
+                return VolumeConverterOut(_tapeVolume);
+            }
+            set
+            {
+                _tapeVolume = VolumeConverterIn(value);
+            }
+        }
+
+        /// <summary>
+        /// The EAR beeper volume
+        /// </summary>
+        private int _earVolume;
+        public int EarVolume
+        {
+            get
+            {
+                return VolumeConverterOut(_earVolume);
+            }
+            set
+            {
+                _earVolume = VolumeConverterIn(value);
+            }
+        }
+
+        /// <summary>
+        /// Takes an int 0-100 and returns the relevant short volume to output
+        /// </summary>
+        /// <param name="vol"></param>
+        /// <returns></returns>
+        private int VolumeConverterIn(int vol)
+        {
+            int maxLimit = short.MaxValue / 3;
+            int increment = maxLimit / 100;
+
+            return vol * increment;
+        }
+
+        /// <summary>
+        /// Takes an short volume and returns the relevant int value 0-100
+        /// </summary>
+        /// <param name="vol"></param>
+        /// <returns></returns>
+        private int VolumeConverterOut(int shortvol)
+        {
+            int maxLimit = short.MaxValue / 3;
+            int increment = maxLimit / 100;
+
+            if (shortvol > maxLimit)
+                shortvol = maxLimit;
+
+            return shortvol / increment;
+        }
+
+
         private SpectrumBase _machine;
 
         /// <summary>
@@ -234,9 +297,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 for (var i = firstSample; i < currentEnd + pulse.Length; i += TStatesPerSample)
                 {
                     if (_tapeMode)
-                        samples[sampleIndex++] = pulse.State ? (short)(short.MaxValue / 6) : (short)0;
+                        samples[sampleIndex++] = pulse.State ? (short)(_tapeVolume) : (short)0;
                     else
-                        samples[sampleIndex++] = pulse.State ? (short)(short.MaxValue / 3) : (short)0;
+                        samples[sampleIndex++] = pulse.State ? (short)(_earVolume) : (short)0;
                 }                   
 
                 currentEnd += pulse.Length;

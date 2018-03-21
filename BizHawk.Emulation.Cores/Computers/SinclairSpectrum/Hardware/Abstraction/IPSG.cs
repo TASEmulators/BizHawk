@@ -43,6 +43,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         void Reset();
 
         /// <summary>
+        /// The volume of the AY chip
+        /// </summary>
+        int Volume { get; set; }
+
+        /// <summary>
         /// Called at the start of a frame
         /// </summary>
         void StartFrame();

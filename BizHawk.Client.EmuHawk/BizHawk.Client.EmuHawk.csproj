@@ -51,7 +51,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
-   <!--<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>-->
+    <!--<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>-->
     <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
@@ -502,6 +502,12 @@
     </Compile>
     <Compile Include="config\TI83\TI83PaletteConfig.Designer.cs">
       <DependentUpon>TI83PaletteConfig.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumAudioSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumAudioSettings.Designer.cs">
+      <DependentUpon>ZXSpectrumAudioSettings.cs</DependentUpon>
     </Compile>
     <Compile Include="config\ZXSpectrum\ZXSpectrumNonSyncSettings.cs">
       <SubType>Form</SubType>
@@ -1421,6 +1427,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\TI83\TI83PaletteConfig.resx">
       <DependentUpon>TI83PaletteConfig.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumAudioSettings.resx">
+      <DependentUpon>ZXSpectrumAudioSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumNonSyncSettings.resx">
       <DependentUpon>ZXSpectrumNonSyncSettings.cs</DependentUpon>

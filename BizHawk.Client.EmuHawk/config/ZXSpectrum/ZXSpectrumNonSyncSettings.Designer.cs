@@ -33,9 +33,6 @@
             this.CancelBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.autoLoadcheckBox1 = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.panTypecomboBox1 = new System.Windows.Forms.ComboBox();
-            this.lblBorderInfo = new System.Windows.Forms.Label();
             this.lblAutoLoadText = new System.Windows.Forms.Label();
             this.lblOSDVerbinfo = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -45,7 +42,7 @@
             // OkBtn
             // 
             this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OkBtn.Location = new System.Drawing.Point(247, 215);
+            this.OkBtn.Location = new System.Drawing.Point(247, 145);
             this.OkBtn.Name = "OkBtn";
             this.OkBtn.Size = new System.Drawing.Size(60, 23);
             this.OkBtn.TabIndex = 3;
@@ -57,7 +54,7 @@
             // 
             this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelBtn.Location = new System.Drawing.Point(313, 215);
+            this.CancelBtn.Location = new System.Drawing.Point(313, 145);
             this.CancelBtn.Name = "CancelBtn";
             this.CancelBtn.Size = new System.Drawing.Size(60, 23);
             this.CancelBtn.TabIndex = 4;
@@ -84,37 +81,6 @@
             this.autoLoadcheckBox1.Text = "Auto-Load Tape";
             this.autoLoadcheckBox1.UseVisualStyleBackColor = true;
             // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 97);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(135, 13);
-            this.label2.TabIndex = 23;
-            this.label2.Text = "AY-3-8912 Panning Config:";
-            // 
-            // panTypecomboBox1
-            // 
-            this.panTypecomboBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panTypecomboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.panTypecomboBox1.FormattingEnabled = true;
-            this.panTypecomboBox1.Location = new System.Drawing.Point(12, 113);
-            this.panTypecomboBox1.Name = "panTypecomboBox1";
-            this.panTypecomboBox1.Size = new System.Drawing.Size(157, 21);
-            this.panTypecomboBox1.TabIndex = 22;
-            // 
-            // lblBorderInfo
-            // 
-            this.lblBorderInfo.Font = new System.Drawing.Font("Lucida Console", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblBorderInfo.Location = new System.Drawing.Point(175, 106);
-            this.lblBorderInfo.Name = "lblBorderInfo";
-            this.lblBorderInfo.Size = new System.Drawing.Size(196, 37);
-            this.lblBorderInfo.TabIndex = 24;
-            this.lblBorderInfo.Text = "Selects a particular panning configuration for the 3ch AY-3-8912 Programmable Sou" +
-    "nd Generator (128K models only)";
-            this.lblBorderInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // lblAutoLoadText
             // 
             this.lblAutoLoadText.Font = new System.Drawing.Font("Lucida Console", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -129,7 +95,7 @@
             // lblOSDVerbinfo
             // 
             this.lblOSDVerbinfo.Font = new System.Drawing.Font("Lucida Console", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblOSDVerbinfo.Location = new System.Drawing.Point(175, 174);
+            this.lblOSDVerbinfo.Location = new System.Drawing.Point(175, 107);
             this.lblOSDVerbinfo.Name = "lblOSDVerbinfo";
             this.lblOSDVerbinfo.Size = new System.Drawing.Size(196, 21);
             this.lblOSDVerbinfo.TabIndex = 28;
@@ -139,7 +105,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 158);
+            this.label4.Location = new System.Drawing.Point(12, 91);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(125, 13);
             this.label4.TabIndex = 27;
@@ -151,7 +117,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.osdMessageVerbositycomboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.osdMessageVerbositycomboBox1.FormattingEnabled = true;
-            this.osdMessageVerbositycomboBox1.Location = new System.Drawing.Point(12, 174);
+            this.osdMessageVerbositycomboBox1.Location = new System.Drawing.Point(12, 107);
             this.osdMessageVerbositycomboBox1.Name = "osdMessageVerbositycomboBox1";
             this.osdMessageVerbositycomboBox1.Size = new System.Drawing.Size(157, 21);
             this.osdMessageVerbositycomboBox1.TabIndex = 26;
@@ -163,14 +129,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelBtn;
-            this.ClientSize = new System.Drawing.Size(385, 250);
+            this.ClientSize = new System.Drawing.Size(385, 180);
             this.Controls.Add(this.lblOSDVerbinfo);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.osdMessageVerbositycomboBox1);
             this.Controls.Add(this.lblAutoLoadText);
-            this.Controls.Add(this.lblBorderInfo);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.panTypecomboBox1);
             this.Controls.Add(this.autoLoadcheckBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.CancelBtn);
@@ -191,9 +154,6 @@
         private System.Windows.Forms.Button CancelBtn;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox autoLoadcheckBox1;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.ComboBox panTypecomboBox1;
-        private System.Windows.Forms.Label lblBorderInfo;
         private System.Windows.Forms.Label lblAutoLoadText;
         private System.Windows.Forms.Label lblOSDVerbinfo;
         private System.Windows.Forms.Label label4;
