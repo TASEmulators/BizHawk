@@ -412,7 +412,9 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			// figure out proper read delay later
 			// 10000 fixes Mugen Senshi Valis, which runs code in a timed loop, expecting a certain number of VBlanks
 			// to happen before reading is complete
-			DataReadWaitTimer = pce.Cpu.TotalExecutedCycles + 10000; 
+			// 175000 fixes 4 in 1 CD, loading Gate of Thunder
+			// which expects a certain number of timer interrupts to happen before loading is complete
+			DataReadWaitTimer = pce.Cpu.TotalExecutedCycles + 175000; 
 			pce.CDAudio.Stop();
 		}
 
