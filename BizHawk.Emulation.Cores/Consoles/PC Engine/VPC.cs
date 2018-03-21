@@ -175,7 +175,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					}
 				}
 
-				CPU.Execute(VDC1.HBlankCycles);
+				CPU.Execute(24);
 
 				if (InActiveDisplay)
 				{
@@ -203,9 +203,15 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						VDC2.BackgroundY++;
 						VDC2.BackgroundY &= 0x01FF;
 					}
+				}
 
+				CPU.Execute(VDC1.HBlankCycles - 24);
+
+				if (InActiveDisplay)
+				{
 					if (render) RenderScanLine();
 				}
+
 
 				if (ScanLine == VBlankLine && VDC1.VBlankInterruptEnabled)
 					VDC1.StatusByte |= VDC.StatusVerticalBlanking;

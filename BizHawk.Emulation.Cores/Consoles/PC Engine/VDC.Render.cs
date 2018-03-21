@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					}
 				}
 
-				cpu.Execute(HBlankCycles);
+				cpu.Execute(24);
 
 				if (InActiveDisplay)
 				{
@@ -92,11 +92,16 @@ namespace BizHawk.Emulation.Cores.PCEngine
 							BackgroundY = Registers[BYR];
 							latch_bgy = false;
 						}
-
 						BackgroundY++;
 						BackgroundY &= 0x01FF;
+						
 					}
+				}
 
+				cpu.Execute(HBlankCycles - 24);
+
+				if (InActiveDisplay)
+				{
 					if (render) RenderScanLine();
 				}
 

@@ -323,6 +323,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			ser.Sync("ScanLine", ref ScanLine);
 			ser.Sync("BackgroundY", ref BackgroundY);
+			ser.Sync("latch_bgy", ref latch_bgy);
 			ser.Sync("RCRCounter", ref RCRCounter);
 			ser.Sync("ActiveLine", ref ActiveLine);
 			ser.EndSection();
