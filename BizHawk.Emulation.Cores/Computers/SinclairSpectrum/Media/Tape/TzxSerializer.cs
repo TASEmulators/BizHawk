@@ -1274,14 +1274,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             t.PauseInMS = 0;
 
-            _position += 2;
-            int blockLen = GetWordValue(data, 0);
+            // first byte contains number of HWINFOs
+            int infos = data[_position];
+
+            _position += 1;
+
+            // now starts the HW infos (each block 3 bytes)
+            for (int i = 0; i < infos; i++)
+            {
+                _position += 3;
+            }
 
             // add to tape
             _datacorder.DataBlocks.Add(t);
-
-            // advance to next block 
-            _position += blockLen;
         }
         #endregion
 
