@@ -700,7 +700,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             _machine.Spectrum.OSD_TapePlayingAuto();
                         }
 
-                        _monitorTimeOut = 250;
+                        _monitorTimeOut = 50;
                     }
                 }
                 else
@@ -747,17 +747,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 if (_monitorTimeOut < 0)
                 {
-                    // does not work properly - disabled for now (handled elsewhere)
-
-                    //Stop();
-                    //_machine.Spectrum.OSD_TapeStoppedAuto();
+                    AutoStopTape();
+                    return;
                 }
+
+                // fallback in case usual monitor detection methods do not work
 
                 // number of t-states since last IN operation
                 long diff = _machine.CPU.TotalExecutedCycles - _lastINCycle;
 
+                // get current datablock
+                var block = DataBlocks[_currentDataBlockIndex];
+
                 // pause in ms at the end of the current block
-                int blockPause = DataBlocks[_currentDataBlockIndex].PauseInMS;
+                int blockPause = block.PauseInMS;
 
                 // timeout in t-states (equiv. to blockpause)
                 int timeout = ((_machine.ULADevice.FrameLength * 50) / 1000) * blockPause;
@@ -772,8 +775,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     // Autostop the tape
                     AutoStopTape();
                     _lastCycle = _cpu.TotalExecutedCycles;
-
-                    //MonitorReset();
                 }
             }
         }
