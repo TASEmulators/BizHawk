@@ -155,7 +155,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			};
 
-			argParse.parseArguments(args);
+			argParse.ParseArguments(args);
 
 			Database.LoadDatabase(Path.Combine(PathManager.GetExeDirectoryAbsolute(), "gamedb", "gamedb.txt"));
 
@@ -609,7 +609,7 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool IsTurboSeeking => PauseOnFrame.HasValue && Global.Config.TurboSeek;
 
-		private bool IsTurboing => Global.ClientControls["Turbo"] || IsTurboSeeking;
+		public bool IsTurboing => Global.ClientControls["Turbo"] || IsTurboSeeking;
 
 		#endregion
 
@@ -1719,6 +1719,7 @@ namespace BizHawk.Client.EmuHawk
 			sNESToolStripMenuItem.Visible = false;
 			neoGeoPocketToolStripMenuItem.Visible = false;
 			pCFXToolStripMenuItem.Visible = false;
+            zXSpectrumToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
@@ -1816,6 +1817,9 @@ namespace BizHawk.Client.EmuHawk
 				case "PCFX":
 					pCFXToolStripMenuItem.Visible = true;
 					break;
+                case "ZXSpectrum":
+                    zXSpectrumToolStripMenuItem.Visible = true;
+                    break;
 			}
 		}
 
@@ -2077,7 +2081,7 @@ namespace BizHawk.Client.EmuHawk
 				if (VersionInfo.DeveloperBuild)
 				{
 					return FormatFilter(
-						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.mds;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.32x;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.vb;*.ngp;*.ngc;*.psf;*.minipsf;*.nsf;%ARCH%",
+						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.mds;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.32x;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.vb;*.ngp;*.ngc;*.psf;*.minipsf;*.nsf;*.tzx;%ARCH%",
 						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
 						"Disc Images", "*.cue;*.ccd;*.mds;*.m3u",
 						"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
@@ -2105,6 +2109,7 @@ namespace BizHawk.Client.EmuHawk
 						"Apple II", "*.dsk;*.do;*.po;%ARCH%",
 						"Virtual Boy", "*.vb;%ARCH%",
 						"Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%",
+                        "Sinclair ZX Spectrum", "*.tzx;*.tap;%ARCH%",
 						"All Files", "*.*");
 				}
 
@@ -2969,11 +2974,6 @@ namespace BizHawk.Client.EmuHawk
 
 				Global.CheatList.Pulse();
 
-				if (!PauseAvi)
-				{
-					AvFrameAdvance();
-				}
-
 				if (IsLagFrame && Global.Config.AutofireLagFrames)
 				{
 					Global.AutoFireController.IncrementStarts();
@@ -2990,11 +2990,16 @@ namespace BizHawk.Client.EmuHawk
 
 				if (IsTurboing)
 				{
-					GlobalWin.Tools.FastUpdateAfter();
+					GlobalWin.Tools.FastUpdateAfter(SuppressLua);
 				}
 				else
 				{
 					UpdateToolsAfter(SuppressLua);
+				}
+
+				if (!PauseAvi)
+				{
+					AvFrameAdvance();
 				}
 
 				if (GlobalWin.Tools.IsLoaded<TAStudio>() &&
@@ -4294,7 +4299,7 @@ namespace BizHawk.Client.EmuHawk
 			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
 		}
 
-		private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
+        private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
 		{
 			var isRewinding = false;
 

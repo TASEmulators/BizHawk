@@ -42,7 +42,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <!--<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>-->
+    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
@@ -55,7 +56,8 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <!--<CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>-->
+    <CodeAnalysisRuleSet Condition=" '$(OS)' == 'Windows_NT' ">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisIgnoreBuiltInRuleSets>false</CodeAnalysisIgnoreBuiltInRuleSets>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
   </PropertyGroup>
@@ -256,6 +258,61 @@
     <Compile Include="Computers\Commodore64\MOS\Vic.VideoProvider.cs" />
     <Compile Include="Computers\Commodore64\SaveState.cs" />
     <Compile Include="Computers\Commodore64\User\UserPortDevice.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IJoystick.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IPortIODevice.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IPSG.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Input\CursorJoystick.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Input\SinclairJoystick2.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Input\SinclairJoystick1.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Input\NullJoystick.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\AYChip.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\Buzzer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Datacorder\DatacorderDevice.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IKeyboard.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Input\KempstonJoystick.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IBeeperDevice.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ULABase.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.Memory.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.Port.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.ULA.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus3\ZX128Plus3.ULA.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.ULA.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum16K\ZX16.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.ULA.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\MediaSerializationType.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\MediaSerializer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TapeCommand.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TapeDataBlock.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TapSerializer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TzxSerializer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\SoundProviderMixer.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\MachineType.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Input.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Port.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Memory.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2\ZX128Plus2.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus3\ZX128Plus3.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus3\ZX128Plus3.Memory.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus3\ZX128Plus3.Port.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Memory.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Port.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Memory.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\Pulse.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Rom\RomData.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Controllers.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IDebuggable.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IEmulator.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IInputPollable.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IMemoryDomains.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.ISettable.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IStatable.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Messaging.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Util.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.cs" />
     <Compile Include="Consoles\Atari\2600\Atari2600.Core.cs">
       <DependentUpon>Atari2600.cs</DependentUpon>
@@ -413,6 +470,8 @@
     <Compile Include="Consoles\Coleco\ColecoVision.ISoundProvider.cs">
       <DependentUpon>ColecoVision.cs</DependentUpon>
     </Compile>
+    <Compile Include="Consoles\Coleco\AY_3_8910_SGM.cs" />
+    <Compile Include="Consoles\Coleco\SN76489col.cs" />
     <Compile Include="Consoles\Coleco\TMS9918A.cs" />
     <Compile Include="Consoles\Coleco\ColecoControllerDeck.cs" />
     <Compile Include="Consoles\Coleco\ColecoControllers.cs" />
@@ -664,6 +723,8 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\BxROM.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Camerica.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CamericaGoldenFive.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper063.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\Mapper043.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\Cony.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\CoolBoy.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\DatachBarcode.cs" />
@@ -859,6 +920,7 @@
     <Compile Include="Consoles\Nintendo\NES\Boards\Taito_X1_017.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN-800032.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\TENGEN_800008.cs" />
+    <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_UNL_SMB2J.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF-DREAMTECH01.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-12-IN-1.cs" />
     <Compile Include="Consoles\Nintendo\NES\Boards\UNIF\UNIF_BMC-190in1.cs" />
@@ -1331,16 +1393,29 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Computers\SinclairSpectrum\Hardware\Input\StandardKeyboard.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Port.cs" />
+    <None Include="Computers\SinclairSpectrum\readme.md" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Media.cs" />
     <None Include="Consoles\Atari\docs\stella.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech1.pdf" />
     <None Include="Consoles\Coleco\docs\colecovision tech2.pdf" />
     <None Include="Consoles\Nintendo\NES\Docs\BoardTable.xlsx" />
     <None Include="Consoles\Nintendo\NES\Docs\MapperCompatibilityList.url" />
     <None Include="Consoles\Nintendo\NES\Docs\nesasm.pdf" />
+    <None Include="Resources\128.ROM.gz" />
+    <None Include="Resources\48.ROM.gz" />
     <None Include="Resources\cgb_boot.bin.gz" />
     <None Include="Resources\dmg_boot.bin.gz" />
+    <None Include="Resources\plus2.rom.gz" />
+    <None Include="Resources\plus2a.rom.gz" />
     <None Include="Resources\sgb-cart-present.spc.gz" />
+    <None Include="Resources\Spectrum3_V4-0_ROM0.bin.gz" />
+    <None Include="Resources\Spectrum3_V4-0_ROM1.bin.gz" />
+    <None Include="Resources\Spectrum3_V4-0_ROM2.bin.gz" />
+    <None Include="Resources\Spectrum3_V4-0_ROM3.bin.gz" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent Condition=" '$(OS)' == 'Windows_NT' ">"$(SolutionDir)subwcrev.bat" "$(ProjectDir)"</PreBuildEvent>

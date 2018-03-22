@@ -83,28 +83,27 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		}
 
 		// Interrupt mode 2 uses the I vector combined with a byte on the data bus
-		// Again for now we assume only a 0 on the data bus and jump to (0xI00)
-		private void INTERRUPT_2(ushort src)
+		private void INTERRUPT_2()
 		{
 			cur_instr = new ushort[]
 						{IDLE,
+						IDLE,
+						FTCH_DB,
+						TR, Z, DB,
+						TR, W, I,						
 						IDLE,
 						DEC16, SPl, SPh,
 						WR, SPl, SPh, PCh,
 						IDLE,
 						DEC16, SPl, SPh,
-						WR, SPl, SPh, PCl,
-						IDLE,					
-						ASGN, PCl, 0,
-						TR, PCh, I,
-						IDLE,					
+						WR, SPl, SPh, PCl,										
 						IDLE,
-						RD, Z, PCl, PCh,
-						INC16, PCl, PCh,
+						RD, PCl, Z, W,
+						INC16, Z, W,
 						IDLE,
-						RD, W, PCl, PCh,
+						RD, PCh, Z, W,
 						IDLE,
-						TR16, PCl, PCh, Z, W,
+						IDLE,
 						OP };
 		}
 

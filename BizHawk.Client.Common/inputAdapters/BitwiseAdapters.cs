@@ -27,6 +27,32 @@ namespace BizHawk.Client.Common
 		internal IController SourceAnd { get; set; }
 	}
 
+	public class XorAdapter : IController
+	{
+		public ControllerDefinition Definition => Source.Definition;
+
+		public bool IsPressed(string button)
+		{
+			if (Source != null && SourceXor != null)
+			{
+				return Source.IsPressed(button) ^ SourceXor.IsPressed(button);
+			}
+
+			return false;
+		}
+
+		// pass floats solely from the original source
+		// this works in the code because SourceOr is the autofire controller
+		public float GetFloat(string name)
+		{
+			return Source.GetFloat(name);
+		}
+
+		internal IController Source { get; set; }
+		internal IController SourceXor { get; set; }
+	}
+
+
 	public class ORAdapter : IController
 	{
 		public ControllerDefinition Definition => Source.Definition;

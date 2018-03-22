@@ -37,6 +37,10 @@ void LCD::setCgbPalette(unsigned *lut) {
 }
 
 unsigned long LCD::gbcToRgb32(const unsigned bgr15) {
+	unsigned long const r = bgr15       & 0x1F;
+	unsigned long const g = bgr15 >>  5 & 0x1F;
+	unsigned long const b = bgr15 >> 10 & 0x1F;
+
 	return cgbColorsRgb32[bgr15 & 0x7FFF];
 }
 
@@ -64,6 +68,10 @@ void LCD::reset(const unsigned char *const oamram, const unsigned char *vram, co
 	ppu.reset(oamram, vram, cgb);
 	lycIrq.setCgb(cgb);
 	refreshPalettes();
+}
+
+void LCD::setCgb(bool cgb) {
+	ppu.setCgb(cgb);
 }
 
 static unsigned long mode2IrqSchedule(const unsigned statReg, const LyCounter &lyCounter, const unsigned long cycleCounter) {
@@ -147,6 +155,32 @@ void LCD::refreshPalettes() {
 		setDmgPalette(ppu.bgPalette()    , dmgColorsRgb32    ,  bgpData[0]);
 		setDmgPalette(ppu.spPalette()    , dmgColorsRgb32 + 4, objpData[0]);
 		setDmgPalette(ppu.spPalette() + 4, dmgColorsRgb32 + 8, objpData[1]);
+	}
+}
+
+void LCD::copyCgbPalettesToDmg() {
+	for (unsigned i = 0; i < 4; i++) {
+		dmgColorsRgb32[i] = gbcToRgb32(bgpData[i * 2] | bgpData[i * 2 + 1] << 8);
+	}
+	for (unsigned i = 0; i < 8; i++) {
+		dmgColorsRgb32[i + 4] = gbcToRgb32(objpData[i * 2] | objpData[i * 2 + 1] << 8);
+	}
+}
+
+void LCD::blackScreen() {
+	if (ppu.cgb()) {
+		for (unsigned i = 0; i < 8 * 8; i += 2) {
+			ppu.bgPalette()[i >> 1] = 0;
+			ppu.spPalette()[i >> 1] = 0;
+		}
+	}
+	else {
+		for (unsigned i = 0; i < 4; i++) {
+			dmgColorsRgb32[i] = 0;
+		}
+		for (unsigned i = 0; i < 8; i++) {
+			dmgColorsRgb32[i + 4] = 0;
+		}
 	}
 }
 

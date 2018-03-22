@@ -79,7 +79,7 @@ namespace BizHawk.Client.EmuHawk
 				};
 			}
 
-			public ColumnList Columns { get; }
+			public ColumnList Columns { get; set; }
 		}
 
 		private IEnumerable<int> SelectedIndices => WatchListView.SelectedIndices.Cast<int>();

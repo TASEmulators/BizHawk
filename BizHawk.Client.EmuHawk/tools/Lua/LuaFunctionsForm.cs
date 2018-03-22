@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using BizHawk.Client.Common;
+using BizHawk.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -182,6 +183,10 @@ namespace BizHawk.Client.EmuHawk
 			{
 				var indexes = FunctionView.SelectedIndices;
 
+				//TODO - duplicated code with FunctionView_Copy
+				//also -- this list is more compact (the examples would fill space)
+				//it isn't clear whether we should copy the examples here. So maybe this should stay distinct (and more compact?)
+
 				if (indexes.Count > 0)
 				{
 					var sb = new StringBuilder();
@@ -193,13 +198,26 @@ namespace BizHawk.Client.EmuHawk
 					}
 
 					if (sb.Length > 0)
-					{
 						Clipboard.SetDataObject(sb.ToString());
-					}
 				}
 			}
 		}
 
+		//FREVBHFYL?
+		private void FunctionView_Copy(object sender, EventArgs e)
+		{
+			var itm = _filteredList[FunctionView.selectedItem];
+			var sb = new StringBuilder($"//{itm.Library}.{itm.Name}{itm.ParameterList}"); //comment style not an accident: the 'declaration' is not legal lua, so use of -- to comment it shouldn't suggest it. right?
+			if (itm.Example != null)
+			{
+				sb.AppendLine();
+				sb.Append(itm.Example);
+			}
+
+			if (sb.Length > 0)
+				Clipboard.SetText(sb.ToString());
+		}
+		
 		private void UpdateList()
 		{
 			GenerateFilteredList();

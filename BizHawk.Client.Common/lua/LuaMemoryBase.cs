@@ -177,7 +177,7 @@ namespace BizHawk.Client.Common
 			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 			var lastAddr = length + addr;
 			var table = Lua.NewTable();
-			if (lastAddr < d.Size)
+			if (lastAddr <= d.Size)
 			{
 				for (var i = 0; i < length; i++)
 				{

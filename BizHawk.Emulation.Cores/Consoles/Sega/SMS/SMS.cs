@@ -69,6 +69,12 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				CoreComm.Notify("Region was forced to Japan for game compatibility.");
 			}
 
+			if (game["Korea"] && RegionStr != "Korea")
+			{
+				RegionStr = "Korea";
+				CoreComm.Notify("Region was forced to Korea for game compatibility.");
+			}
+
 			if ((game.NotInDatabase || game["FM"]) && SyncSettings.EnableFM && !IsGameGear)
 			{
 				HasYM2413 = true;
@@ -195,6 +201,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		// ROM
 		private byte[] RomData;
 		private byte RomBank0, RomBank1, RomBank2, RomBank3;
+		private byte Bios_bank;
 		private byte RomBanks;
 		private byte[] BiosRom;
 
@@ -241,6 +248,8 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				return "Export";
 			if (gameRegion.IndexOf("Australia") >= 0)
 				return "Export";
+			if (gameRegion.IndexOf("Korea") >= 0)
+				return "Korea";
 			return "Japan";
 		}
 
@@ -382,6 +391,6 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			}
 		}
 		
-		private readonly string[] validRegions = { "Export", "Japan", "Auto" };
+		private readonly string[] validRegions = { "Export", "Japan", "Korea" , "Auto"  };
 	}
 }

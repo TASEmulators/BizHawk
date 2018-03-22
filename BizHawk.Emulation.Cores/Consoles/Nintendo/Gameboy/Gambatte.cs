@@ -63,6 +63,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 				real_rtc_time = !DeterministicEmulation && _syncSettings.RealTimeRTC;
 
+				DivInternal = _syncSettings.GetInitialDivInternal();
+
 				LibGambatte.LoadFlags flags = 0;
 
 				switch (_syncSettings.ConsoleMode)
@@ -88,10 +90,33 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 					flags |= LibGambatte.LoadFlags.MULTICART_COMPAT;
 				}
 
-				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, GetCurrentTime(), flags) != 0)
+				if (LibGambatte.gambatte_load(GambatteState, file, (uint)file.Length, GetCurrentTime(), flags, DivInternal) != 0)
 				{
 					throw new InvalidOperationException("gambatte_load() returned non-zero (is this not a gb or gbc rom?)");
 				}
+
+				if ((flags & LibGambatte.LoadFlags.FORCE_DMG) == LibGambatte.LoadFlags.FORCE_DMG)
+				{
+					byte[] Bios = comm.CoreFileProvider.GetFirmware("GB", "World", true, "BIOS Not Found, Cannot Load");
+
+					IsCgb = false;
+
+					if (LibGambatte.gambatte_loaddmgbios(GambatteState, Bios) != 0)
+					{
+						throw new InvalidOperationException("gambatte_loaddmgbios() returned non-zero (bios error)");
+					}
+				}
+				else
+				{
+					byte[] Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
+
+					IsCgb = true;
+
+					if (LibGambatte.gambatte_loadgbcbios(GambatteState, Bios) != 0)
+					{
+						throw new InvalidOperationException("gambatte_loadgbcbios() returned non-zero (bios error)");
+					}
+				}				
 
 				// set real default colors (before anyone mucks with them at all)
 				PutSettings((GambatteSettings)settings ?? new GambatteSettings());
@@ -148,6 +173,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// whatever keys are currently depressed
 		/// </summary>
 		private LibGambatte.Buttons CurrentButtons = 0;
+
+		private uint DivInternal = 0;
 
 		#region RTC
 
@@ -209,6 +236,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public int LagCount { get; set; }
 		public bool IsLagFrame { get; set; }
+		public bool IsCgb { get; set; }
 
 		// all cycle counts are relative to a 2*1024*1024 mhz refclock
 
@@ -251,7 +279,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// </summary>
 		public bool IsCGBMode()
 		{
-			return LibGambatte.gambatte_iscgb(GambatteState);
+			//return LibGambatte.gambatte_iscgb(GambatteState);
+			return IsCgb;
 		}
 
 		private InputCallbackSystem _inputCallbacks = new InputCallbackSystem();
@@ -297,7 +326,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			if (controller.IsPressed("Power"))
 			{
-				LibGambatte.gambatte_reset(GambatteState, GetCurrentTime());
+				LibGambatte.gambatte_reset(GambatteState, GetCurrentTime(), DivInternal);
 			}
 
 			if (Tracer.Enabled)

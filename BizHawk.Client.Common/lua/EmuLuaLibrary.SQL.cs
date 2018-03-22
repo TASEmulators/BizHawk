@@ -21,7 +21,8 @@ namespace BizHawk.Client.Common
 		SQLiteConnection m_dbConnection;
 		string connectionString;
 
-		[LuaMethod("createdatabase","Creates a SQLite Database. Name should end with .db")]
+		[LuaMethodExample("local stSQLcre = SQL.createdatabase( \"eg_db\" );")]
+		[LuaMethod("createdatabase", "Creates a SQLite Database. Name should end with .db")]
 		public string CreateDatabase(string name)
 		{
 			try
@@ -37,6 +38,7 @@ namespace BizHawk.Client.Common
 		}
 
 
+		[LuaMethodExample("local stSQLope = SQL.opendatabase( \"eg_db\" );")]
 		[LuaMethod("opendatabase", "Opens a SQLite database. Name should end with .db")]
 		public string OpenDatabase(string name)
 		{
@@ -54,15 +56,16 @@ namespace BizHawk.Client.Common
 				m_dbConnection.Close();
 				return "Database Opened Successfully";
 			}
-			catch(SQLiteException sqlEX)
+			catch (SQLiteException sqlEX)
 			{
 				return sqlEX.Message;
 			}
 		}
 
+		[LuaMethodExample("local stSQLwri = SQL.writecommand( \"CREATE TABLE eg_tab ( eg_tab_id integer PRIMARY KEY, eg_tab_row_name text NOT NULL ); INSERT INTO eg_tab ( eg_tab_id, eg_tab_row_name ) VALUES ( 1, 'Example table row' );\" );")]
 		[LuaMethod("writecommand", "Runs a SQLite write command which includes CREATE,INSERT, UPDATE. " +
 			"Ex: create TABLE rewards (ID integer  PRIMARY KEY, action VARCHAR(20)) ")]
-		public string WriteCommand(string query="")
+		public string WriteCommand(string query = "")
 		{
 			if (query == "")
 			{
@@ -83,18 +86,19 @@ namespace BizHawk.Client.Common
 			{
 				return "Database not open.";
 			}
-			catch(SQLiteException sqlEX)
+			catch (SQLiteException sqlEX)
 			{
 				m_dbConnection.Close();
 				return sqlEX.Message;
 			}
 		}
 
+		[LuaMethodExample("local obSQLrea = SQL.readcommand( \"SELECT * FROM eg_tab WHERE eg_tab_id = 1;\" );")]
 		[LuaMethod("readcommand", "Run a SQLite read command which includes Select. Returns all rows into a LuaTable." +
 			"Ex: select * from rewards")]
-		public dynamic ReadCommand(string query="")
+		public dynamic ReadCommand(string query = "")
 		{
-			if (query=="")
+			if (query == "")
 			{
 				return "query is empty";
 			}
@@ -102,10 +106,10 @@ namespace BizHawk.Client.Common
 			{
 				var table = Lua.NewTable();
 				m_dbConnection.Open();
-				string sql = "PRAGMA read_uncommitted =1;"+query;
+				string sql = "PRAGMA read_uncommitted =1;" + query;
 				SQLiteCommand command = new SQLiteCommand(sql, m_dbConnection);
 				SQLiteDataReader reader = command.ExecuteReader();
-				bool rows=reader.HasRows;
+				bool rows = reader.HasRows;
 				long rowCount = 0;
 				var columns = new List<string>();
 				for (int i = 0; i < reader.FieldCount; ++i) //Add all column names into list
@@ -113,16 +117,16 @@ namespace BizHawk.Client.Common
 					columns.Add(reader.GetName(i));
 				}
 				while (reader.Read())
-				{   
+				{
 					for (int i = 0; i < reader.FieldCount; ++i)
 					{
-						table[columns[i]+" "+rowCount.ToString()] = reader.GetValue(i);
+						table[columns[i] + " " + rowCount.ToString()] = reader.GetValue(i);
 					}
 					rowCount += 1;
 				}
 				reader.Close();
 				m_dbConnection.Close();
-				if (rows==false)
+				if (rows == false)
 				{
 					return "No rows found";
 				}

@@ -214,7 +214,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			disk = null;
 			state = RamAdapterState.IDLE;
 			SetCycles();
-			Console.WriteLine("FDS: Disk ejected");
+			//Console.WriteLine("FDS: Disk ejected");
 			DriveLightCallback?.Invoke(false);
 		}
 
@@ -234,7 +234,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			this.writeprotect = writeprotect;
 			state = RamAdapterState.INSERTING;
 			SetCycles();
-			Console.WriteLine("FDS: Disk Inserted");
+			//Console.WriteLine("FDS: Disk Inserted");
 			originaldisk = (byte[])disk.Clone();
 			DriveLightCallback?.Invoke(false);
 		}
@@ -388,7 +388,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				}
 			}
 			if ((value & 2) != 0)
+			{
 				transferreset = true;
+			}
+			else
+			{
+				transferreset = false;
+			}
+				
 			if ((cached4025 & 0x40) == 0 && (value & 0x40) != 0)
 			{
 				lookingforendofgap = true;
@@ -469,6 +476,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			if (disk != null && state != RamAdapterState.INSERTING && !writeprotect)
 				ret &= unchecked((byte)~0x04);
 
+			//Console.Write(state);
+
 			return ret;
 		}
 
@@ -491,9 +500,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							Write();
 						if (diskpos >= disksize)
 						{
-							// Console.WriteLine("FDS: End of Disk");
+							//Console.WriteLine("FDS: End of Disk");
 							state = RamAdapterState.RESET;
-							transferreset = false;
+							//transferreset = false;
 							//numcrc = 0;
 							DriveLightCallback?.Invoke(false);
 						}
@@ -505,9 +514,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						state = RamAdapterState.IDLE;
 						diskpos = 0;
 						SetCycles();
-						transferreset = false;
+						//transferreset = false;
 						//numcrc = 0;
-						// Console.WriteLine("FDS: Return or Insert Complete");
+						//Console.WriteLine("FDS: Return or Insert Complete");
 						DriveLightCallback?.Invoke(false);
 						break;
 					case RamAdapterState.SPINUP:

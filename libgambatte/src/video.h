@@ -175,6 +175,9 @@ public:
 	void setCgbPalette(unsigned *lut);
 	void setVideoBuffer(uint_least32_t *videoBuf, int pitch);
 	void setLayers(unsigned mask) { ppu.setLayers(mask); }
+	void setCgb(bool cgb);
+	void copyCgbPalettesToDmg();
+	void blackScreen();
 
 	int debugGetLY() const { return ppu.lyCounter().ly(); }
 

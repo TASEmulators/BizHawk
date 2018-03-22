@@ -137,17 +137,6 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 
 						// call interrupt processor 
 						// lowest bit set is highest priority
-						
-						if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; }
-						else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; }
-						else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { int_src = 2; }
-						else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { int_src = 3; }
-						else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; }
-						else { /*Console.WriteLine("No source"); }*/ throw new Exception("Interrupt without Source"); }
-						
-
-						if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
-
 						INTERRUPT_();
 					}
 					else
@@ -252,7 +241,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					SET_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case EI:
-					EI_pending = 2;
+					if (EI_pending == 0) { EI_pending = 2; }
 					break;
 				case DI:
 					interrupts_enabled = false;
@@ -286,18 +275,6 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						}
 						halted = false;
 						// call interrupt processor 
-						instr_pntr = 0;
-						// lowest bit set is highest priority
-						
-						if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; }
-						else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; }
-						else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { int_src = 2; }
-						else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { int_src = 3; }
-						else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; }
-						else { /*Console.WriteLine("No source"); } */throw new Exception("Interrupt without Source"); }
-						
-						if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
-
 						INTERRUPT_();
 					}
 					else if (FlagI)
@@ -315,17 +292,16 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						if (OnExecFetch != null) OnExecFetch(RegPC);
 						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
 						FetchInstruction(ReadMemory(RegPC++));
-						instr_pntr = 0;
 					}
 					else
 					{
-						instr_pntr = 0;
 						cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
 						IDLE,
 						HALT };
 					}
+					instr_pntr = 0;
 					break;
 				case STOP:
 					stopped = true;
@@ -387,43 +363,14 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 				case INT_GET:
 					// check if any interrupts got cancelled along the way
 					// interrupt src = 5 sets the PC to zero as observed
-					if (int_src == 0) 
-					{
-						if (interrupt_enable.Bit(0)) { interrupt_src -= 1; }
-						else { int_src = 5; }
-					}
-					if (int_src == 1)
-					{
-						if (interrupt_enable.Bit(1)) { interrupt_src -= 2; }
-						else { int_src = 5; }
-					}
-					if (int_src == 2)
-					{
-						if (interrupt_enable.Bit(2)) { interrupt_src -= 4; }
-						else { int_src = 5; }
-					}
-					if (int_src == 3)
-					{
-						if (interrupt_enable.Bit(3)) { interrupt_src -= 8; }
-						else { int_src = 5; }
-					}
-					if (int_src == 4)
-					{
-						if (interrupt_enable.Bit(4)) { interrupt_src -= 16; }
-						else { int_src = 5; }
-					}
 
-					// if we lost the interrupt, find the next highest interrupt, if any
-					if (int_src == 5)
-					{
-						if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; interrupt_src -= 1; }
-						else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; interrupt_src -= 2; }
-						else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { int_src = 2; interrupt_src -= 4; }
-						else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { int_src = 3; interrupt_src -= 8; }
-						else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; interrupt_src -= 16; }
-						else { int_src = 5; }
-					}
-
+					if (interrupt_src.Bit(0) && interrupt_enable.Bit(0)) { int_src = 0; interrupt_src -= 1; }
+					else if (interrupt_src.Bit(1) && interrupt_enable.Bit(1)) { int_src = 1; interrupt_src -= 2; }
+					else if (interrupt_src.Bit(2) && interrupt_enable.Bit(2)) { int_src = 2; interrupt_src -= 4; }
+					else if (interrupt_src.Bit(3) && interrupt_enable.Bit(3)) { int_src = 3; interrupt_src -= 8; }
+					else if (interrupt_src.Bit(4) && interrupt_enable.Bit(4)) { int_src = 4; interrupt_src -= 16; }
+					else { int_src = 5; }
+						
 					if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
 
 					Regs[cur_instr[instr_pntr++]] = INT_vectors[int_src];

@@ -33,36 +33,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void WritePRG(int addr, byte value)
 		{
-			if (addr < 0x1000) // 0x8000 - 0x8FFF
-			{
-				base.WritePRG(addr & 1, Unscramble(value));
-			}
+			value = Unscramble(value);
 
-			else if (addr == 0x1000) // 9000 = 8001
+			if (addr == 0x1000) // 9000 = 8001
 			{
-				base.WritePRG(1, Unscramble(value));
+				base.WritePRG(1, value);
 			}
-
-			else if (addr == 0x2000) // A000 = 8000)
-			{
-				base.WritePRG(0, Unscramble(value));
-			}
-
 			else if (addr == 0x5000) // D000 = C001
 			{
-				base.WritePRG(0x4001, Unscramble(value));
+				base.WritePRG(0x4001, value);
 			}
-
-			else if (addr >= 0x6000 && addr < 0x7000) // 0xE0000 - 0xEFFF
+			else if (addr == 0x7000) // F000 = E001
 			{
-				base.WritePRG(addr & 1, Unscramble(value));
+				base.WritePRG(0x6001, value);
 			}
-
-			else if (addr == 0x7000) // F000
-			{
-				base.WritePRG(0x6001, Unscramble(value));
-			}
-
 			else
 			{
 				base.WritePRG(addr, value);

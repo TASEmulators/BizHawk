@@ -69,6 +69,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			for (int i = 0; i < NumSides; i++)
 				ser.Sync("diskdiffs" + i, ref diskdiffs[i], true);
 			ser.Sync("_timerirq", ref _timerirq);
+			ser.Sync("timer_irq_active", ref timer_irq_active);
+			ser.Sync("timerirq_cd", ref timerirq_cd);
 			ser.Sync("_diskirq", ref _diskirq);
 			ser.Sync("diskenable", ref diskenable);
 			ser.Sync("soundenable", ref soundenable);
@@ -237,7 +239,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		}
 		bool diskirq { get { return _diskirq; } set { _diskirq = value; SetIRQ(); } }
 		bool timerirq { get { return _timerirq; } set { _timerirq = value; SetIRQ(); } }
-
+		int timerirq_cd;
+		bool timer_irq_active;
 
 		public override void WriteEXP(int addr, byte value)
 		{
@@ -270,14 +273,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						}
 						else
 						{
-							_timerirq = false;
+							timerirq = false;
+							timer_irq_active = false;
 						}
 					}
 					
 					break;
 				case 0x0023:
 					diskenable = (value & 1) != 0;
-					if (!diskenable) { _timerirq = false; }
+					if (!diskenable)
+					{
+						timerirq = false;
+						timer_irq_active = false;
+					}
 					soundenable = (value & 2) != 0;
 					break;
 				case 0x0024:
@@ -315,6 +323,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 							ret |= 1;
 						ret |= (byte)tmp;
 						timerirq = false;
+						timer_irq_active = false;
 					}
 					break;
 				case 0x0031:
@@ -360,16 +369,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 				{
 					timervalue--;
 				}
-				if (timervalue == 0)
+				else
 				{
 					timervalue = timerlatch;
-					timerirq = true;
+					//timerirq = true;
 					if ((timerreg & 1) == 0)
 					{
 						timerreg -= 2;
 					}
+
+					if (!timer_irq_active)
+					{
+						timer_irq_active = true;
+						timerirq_cd = 3;
+					}
+
 				}
 			}
+
+			if (timerirq_cd > 0)
+			{
+				timerirq_cd--;
+			}
+
+			if ((timerirq_cd == 0) && (timer_irq_active))
+			{
+				timerirq = true;
+			}
+
 			audio.Clock();
 		}
 

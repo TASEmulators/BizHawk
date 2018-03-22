@@ -188,11 +188,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ1_len_cntr = SQ1_length;
 						break;
 					case 0xFF12:                                        // NR12 (envelope)
-						Audio_Regs[NR12] = value;
 						SQ1_st_vol = (byte)((value & 0xF0) >> 4);
 						SQ1_env_add = (value & 8) > 0;
 						SQ1_per = (byte)(value & 7);
+
+						// several glitchy effects happen when writing to NRx2 during audio playing
+						if (((Audio_Regs[NR12] & 7) == 0) && !SQ1_vol_done) { SQ1_vol_state++; }
+						else if ((Audio_Regs[NR12] & 8) == 0) { SQ1_vol_state += 2; }
+
+						if (((Audio_Regs[NR12] ^ value) & 8) > 0) { SQ1_vol_state = (byte)(0x10 - SQ1_vol_state); }
+
+						SQ1_vol_state &= 0xF;
+
 						if ((value & 0xF8) == 0) { SQ1_enable = SQ1_swp_enable = false; SQ1_output = 0; }
+						Audio_Regs[NR12] = value;
 						break;
 					case 0xFF13:                                        // NR13 (freq low)
 						Audio_Regs[NR13] = value;
@@ -269,11 +278,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						SQ2_len_cntr = SQ2_length;
 						break;
 					case 0xFF17:                                        // NR22 (envelope)
-						Audio_Regs[NR22] = value;
 						SQ2_st_vol = (byte)((value & 0xF0) >> 4);
 						SQ2_env_add = (value & 8) > 0;
 						SQ2_per = (byte)(value & 7);
+
+						// several glitchy effects happen when writing to NRx2 during audio playing
+						if (((Audio_Regs[NR22] & 7) == 0) && !SQ2_vol_done) { SQ2_vol_state++; }						
+						else if ((Audio_Regs[NR22] & 8) == 0) { SQ2_vol_state += 2; }
+							
+						if (((Audio_Regs[NR22] ^ value) & 8) > 0) { SQ2_vol_state = (byte)(0x10 - SQ2_vol_state); }
+							
+						SQ2_vol_state &= 0xF;
 						if ((value & 0xF8) == 0) { SQ2_enable = false; SQ2_output = 0; }
+						Audio_Regs[NR22] = value;
 						break;
 					case 0xFF18:                                        // NR23 (freq low)
 						Audio_Regs[NR23] = value;
@@ -388,11 +405,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						NOISE_len_cntr = NOISE_length;
 						break;
 					case 0xFF21:                                        // NR42 (envelope)
-						Audio_Regs[NR42] = value;
 						NOISE_st_vol = (byte)((value & 0xF0) >> 4);
 						NOISE_env_add = (value & 8) > 0;
 						NOISE_per = (byte)(value & 7);
+
+						// several glitchy effects happen when writing to NRx2 during audio playing
+						if (((Audio_Regs[NR42] & 7) == 0) && !NOISE_vol_done) { NOISE_vol_state++; }
+						else if ((Audio_Regs[NR42] & 8) == 0) { NOISE_vol_state += 2; }
+
+						if (((Audio_Regs[NR42] ^ value) & 8) > 0) { NOISE_vol_state = (byte)(0x10 - NOISE_vol_state); }
+
+						NOISE_vol_state &= 0xF;
 						if ((value & 0xF8) == 0) { NOISE_enable = false; NOISE_output = 0; }
+						Audio_Regs[NR42] = value;
 						break;
 					case 0xFF22:                                        // NR43 (shift)
 						Audio_Regs[NR43] = value;
@@ -961,7 +986,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("sequencer_tick", ref sequencer_tick);
 
 			ser.Sync("master_audio_clock", ref master_audio_clock);
-		}
+
+			ser.Sync("AUD_CTRL_vin_L_en", ref AUD_CTRL_vin_L_en);
+			ser.Sync("AUD_CTRL_vin_R_en", ref AUD_CTRL_vin_R_en);
+			ser.Sync("AUD_CTRL_sq1_L_en", ref AUD_CTRL_sq1_L_en);
+			ser.Sync("AUD_CTRL_sq2_L_en", ref AUD_CTRL_sq2_L_en);
+			ser.Sync("AUD_CTRL_wave_L_en", ref AUD_CTRL_wave_L_en);
+			ser.Sync("AUD_CTRL_noise_L_en", ref AUD_CTRL_noise_L_en);
+			ser.Sync("AUD_CTRL_sq1_R_en", ref AUD_CTRL_sq1_R_en);
+			ser.Sync("AUD_CTRL_sq2_R_en", ref AUD_CTRL_sq2_R_en);
+			ser.Sync("AUD_CTRL_wave_R_en", ref AUD_CTRL_wave_R_en);
+			ser.Sync("AUD_CTRL_noise_R_en", ref AUD_CTRL_noise_R_en);
+			ser.Sync("AUD_CTRL_power", ref AUD_CTRL_power);
+			ser.Sync("AUD_CTRL_vol_L", ref AUD_CTRL_vol_L);
+			ser.Sync("AUD_CTRL_vol_R", ref AUD_CTRL_vol_R);
+	}
 
 		public byte Read_NR52()
 		{

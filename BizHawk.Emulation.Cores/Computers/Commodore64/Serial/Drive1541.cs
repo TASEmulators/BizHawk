@@ -54,7 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		public override void SyncState(Serializer ser)
 		{
 			ser.BeginSection("Disk");
-			_disk.SyncState(ser);
+			if (_disk != null) { _disk.SyncState(ser); }
 			ser.EndSection();
 
 			ser.Sync("BitHistory", ref _bitHistory);

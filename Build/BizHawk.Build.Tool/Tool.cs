@@ -18,6 +18,7 @@ namespace BizHawk.Build.Tool
 				case "GIT_REV": SVN_REV(false,cmdArgs); break;
 				case "NXCOMPAT": NXCOMPAT(cmdArgs); break;
 				case "LARGEADDRESS": LARGEADDRESS(cmdArgs); break;
+				case "TIMESTAMP": TIMESTAMP(cmdArgs); break;
 			}
 		}
 
@@ -113,6 +114,15 @@ namespace BizHawk.Build.Tool
 			}
 		}
 
+		//clears the timestamp in PE header (for deterministic builds)
+		static void TIMESTAMP(string[] args)
+		{
+			using (var fs = new FileStream(args[0], FileMode.Open, FileAccess.ReadWrite, FileShare.Read))
+			{
+				fs.Position = 0x88;
+				fs.WriteByte(0); fs.WriteByte(0); fs.WriteByte(0); fs.WriteByte(0);
+			}
+		}
 
 		//sets NXCOMPAT bit in PE header
 		static void NXCOMPAT(string[] args)

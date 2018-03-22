@@ -295,7 +295,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			return PathManager.MakeAbsolutePath(Path.Combine(
 				Global.Config.PathEntries["Global", "Macros"].Path,
-				Global.Game.Name), null);
+				PathManager.FilesystemSafeName(Global.Game)), null);
 		}
 
 		#endregion

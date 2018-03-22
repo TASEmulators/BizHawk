@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		{
 			get 
 			{
-				return false;
+				return (_hsbios != null);
 			}	
 		}
 	}

@@ -274,9 +274,13 @@ namespace BizHawk.Client.EmuHawk
 				SourceStickyOr = Global.AutofireStickyXORAdapter
 			};
 
-			var lg = Global.MovieSession.LogGeneratorInstance();
-			lg.SetSource(stickyOr);
+			return MakeStringFor(stickyOr);
+		}
 
+		private string MakeStringFor(IController controller)
+		{
+			var lg = Global.MovieSession.LogGeneratorInstance();
+			lg.SetSource(controller);
 			return lg.GenerateInputDisplay();
 		}
 
@@ -345,28 +349,41 @@ namespace BizHawk.Client.EmuHawk
 
 				else // TODO: message config -- allow setting of "previous", "mixed", and "auto"
 				{
+					var previousColor = Color.Orange;
+					Color immediateColor = Color.FromArgb(Global.Config.MessagesColor);
+					var autoColor = Color.Pink;
+					var changedColor = Color.PeachPuff;
+
+					//we need some kind of string for calculating position when right-anchoring, of something like that
 					var bgStr = InputStrOrAll();
 					var x = GetX(g, Global.Config.DispInpx, Global.Config.DispInpanchor, bgStr);
 					var y = GetY(g, Global.Config.DispInpy, Global.Config.DispInpanchor, bgStr);
-					g.DrawString(bgStr, MessageFont, Color.Black, x + 1, y + 1);
 
-					
+					//now, we're going to render these repeatedly, with higher-priority things overriding
 
+					//first display previous frame's input.
+					//note: that's only available in case we're working on a movie
 					var previousStr = InputPrevious();
-					var pColor = Color.Orange;
-					g.DrawString(previousStr, MessageFont, pColor, x, y);
+					g.DrawString(previousStr, MessageFont, previousColor, x, y);
 
-
+					//next, draw the immediate input.
+					//that is, whatever's being held down interactively right this moment even if the game is paused
+					//this includes things held down due to autohold or autofire
+					//I know, this is all really confusing
 					var immediate = InputStrImmediate();
-					Color immediateColor = Color.FromArgb(Global.Config.MessagesColor);
 					g.DrawString(immediate, MessageFont, immediateColor, x, y);
 
-					var immediateOverlay = MakeIntersectImmediatePrevious();
-					var oColor = Color.PeachPuff;
-					g.DrawString(immediateOverlay, MessageFont, oColor, x, y);
+					//next draw anything that's pressed because it's sticky.
+					//this applies to autofire and autohold both. somehow. I dont understand it.
+					//basically we're tinting whatever's pressed because it's sticky specially
+					//in order to achieve this we want to avoid drawing anything pink that isnt actually held down right now
+					//so we make an AND adapter and combine it using immediate & sticky
+					var autoString = MakeStringFor(Global.StickyXORAdapter.Source.Xor(Global.AutofireStickyXORAdapter).And(Global.AutofireStickyXORAdapter));
+					g.DrawString(autoString, MessageFont, autoColor, x, y);
 
-					var autoString = InputStrSticky();
-					g.DrawString(autoString, MessageFont, Color.Pink, x, y);
+					//recolor everything that's changed from the previous input
+					var immediateOverlay = MakeIntersectImmediatePrevious();
+					g.DrawString(immediateOverlay, MessageFont, changedColor, x, y);
 				}
 			}
 

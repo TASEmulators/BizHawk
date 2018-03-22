@@ -1757,6 +1757,7 @@ namespace BizHawk.Client.EmuHawk
 			var ss = ((SMS)Emulator).GetSyncSettings();
 			SMSregionExportToolStripMenuItem.Checked = ss.ConsoleRegion == "Export";
 			SMSregionJapanToolStripMenuItem.Checked = ss.ConsoleRegion == "Japan";
+			SMSregionKoreaToolStripMenuItem.Checked = ss.ConsoleRegion == "Korea";
 			SMSregionAutoToolStripMenuItem.Checked = ss.ConsoleRegion == "Auto";
 			SMSdisplayNtscToolStripMenuItem.Checked = ss.DisplayType == "NTSC";
 			SMSdisplayPalToolStripMenuItem.Checked = ss.DisplayType == "PAL";
@@ -1811,6 +1812,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ss = ((SMS)Emulator).GetSyncSettings();
 			ss.ConsoleRegion = "Japan";
+			PutCoreSyncSettings(ss);
+		}
+
+		private void SMS_RegionKorea_Click(object sender, EventArgs e)
+		{
+			var ss = ((SMS)Emulator).GetSyncSettings();
+			ss.ConsoleRegion = "Korea";
 			PutCoreSyncSettings(ss);
 		}
 
@@ -2198,6 +2206,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ss = ((ColecoVision)Emulator).GetSyncSettings();
 			ColecoSkipBiosMenuItem.Checked = ss.SkipBiosIntro;
+			ColecoUseSGMMenuItem.Checked = ss.UseSGM;
 			ColecoControllerSettingsMenuItem.Enabled = !Global.MovieSession.Movie.IsActive;
 		}
 
@@ -2205,6 +2214,13 @@ namespace BizHawk.Client.EmuHawk
 		{
 			var ss = ((ColecoVision)Emulator).GetSyncSettings();
 			ss.SkipBiosIntro ^= true;
+			PutCoreSyncSettings(ss);
+		}
+
+		private void ColecoUseSGMMenuItem_Click(object sender, EventArgs e)
+		{
+			var ss = ((ColecoVision)Emulator).GetSyncSettings();
+			ss.UseSGM ^= true;
 			PutCoreSyncSettings(ss);
 		}
 
@@ -2435,11 +2451,47 @@ namespace BizHawk.Client.EmuHawk
 			new IntvControllerSettings().ShowDialog();
 		}
 
-		#endregion
+        #endregion
 
-		#region Help
+        #region ZXSpectrum
 
-		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
+        private void zXSpectrumToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+
+        }
+
+        
+        private void preferencesToolStripMenuItem4_Click(object sender, EventArgs e)
+        {
+            GenericCoreConfig.DoDialog(this, "ZXSpectrum Settings");
+        }
+        
+
+        private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
+        {
+            new ZXSpectrumJoystickSettings().ShowDialog();
+        }
+
+        private void ZXSpectrumCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
+        {
+            new ZXSpectrumCoreEmulationSettings().ShowDialog();
+        }
+
+        private void ZXSpectrumNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
+        {
+            new ZXSpectrumNonSyncSettings().ShowDialog();
+        }
+
+        private void ZXSpectrumAudioSettingsMenuItem_Click(object sender, EventArgs e)
+        {
+            new ZXSpectrumAudioSettings().ShowDialog();
+        }
+
+        #endregion
+
+        #region Help
+
+        private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}

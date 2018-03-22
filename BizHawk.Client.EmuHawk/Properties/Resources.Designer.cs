@@ -489,7 +489,7 @@ namespace BizHawk.Client.EmuHawk.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
@@ -3435,6 +3435,16 @@ namespace BizHawk.Client.EmuHawk.Properties {
         internal static System.Drawing.Bitmap YellowUp {
             get {
                 object obj = ResourceManager.GetObject("YellowUp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap ZXSpectrumKeyboards {
+            get {
+                object obj = ResourceManager.GetObject("ZXSpectrumKeyboards", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

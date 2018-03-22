@@ -1,6 +1,7 @@
 ﻿using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80A;
+using System;
 
 namespace BizHawk.Emulation.Cores.ColecoVision
 {
@@ -32,9 +33,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				MemoryCallbacks = MemoryCallbacks
 			};
 
-			PSG = new SN76489();
-			_fakeSyncSound = new FakeSyncSound(PSG, 735);
-			ser.Register<ISoundProvider>(_fakeSyncSound);
+			PSG = new SN76489col();
+			SGM_sound = new AY_3_8910_SGM();
+			_blip.SetRates(3579545, 44100);
 
 			ControllerDeck = new ColecoVisionControllerDeck(_syncSettings.Port1, _syncSettings.Port2);
 
@@ -56,6 +57,9 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			_tracer.Header = _cpu.TraceHeader;
 			ser.Register<IDisassemblable>(_cpu);
 			ser.Register<ITraceable>(_tracer);
+
+			use_SGM = _syncSettings.UseSGM;
+			Console.WriteLine("Using the Super Game Module");
 		}
 
 		private readonly Z80A _cpu;
@@ -65,6 +69,11 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private byte[] _romData;
 		private byte[] _ram = new byte[1024];
+		public byte[] SGM_high_RAM = new byte[0x6000];
+		public byte[] SGM_low_RAM = new byte[0x2000];
+
+		public bool temp_1_prev, temp_2_prev;
+
 		private int _frame;
 		private IController _controller;
 
@@ -79,10 +88,22 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private void LoadRom(byte[] rom, bool skipbios)
 		{
-			_romData = new byte[0x8000];
-			for (int i = 0; i < 0x8000; i++)
+			if (rom.Length <= 32768)
 			{
-				_romData[i] = rom[i % rom.Length];
+				_romData = new byte[0x8000];
+				for (int i = 0; i < 0x8000; i++)
+				{
+					_romData[i] = rom[i % rom.Length];
+				}
+			}
+			else
+			{
+				// all original ColecoVision games had 32k or less of ROM
+				// so, if we have more then that, we must be using a MegaCart mapper
+				is_MC = true;
+
+				_romData = rom;
+
 			}
 
 			// hack to skip colecovision title screen
@@ -115,6 +136,29 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				}
 
 				return ReadController2();
+			}
+
+			if (use_SGM)
+			{
+				if (port == 0x50)
+				{
+					return SGM_sound.port_sel;
+				}
+
+				if (port == 0x52)
+				{
+					return SGM_sound.ReadReg();
+				}
+
+				if (port == 0x53)
+				{
+					return port_0x53;
+				}
+
+				if (port == 0x7F)
+				{
+					return port_0x7F;
+				}
 			}
 
 			return 0xFF;
@@ -152,7 +196,49 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 			if (port >= 0xE0)
 			{
-				PSG.WritePsgData(value, _cpu.TotalExecutedCycles);
+				PSG.WriteReg(value);
+			}
+
+			if (use_SGM)
+			{
+				if (port == 0x50)
+				{
+					SGM_sound.port_sel = (byte)(value & 0xF);
+				}
+
+				if (port == 0x51)
+				{
+					SGM_sound.WriteReg(value);
+				}
+
+				if (port == 0x53)
+				{
+					if ((value & 1) > 0)
+					{
+						enable_SGM_high = true;
+					}
+					else
+					{
+						// NOTE: the documentation states that you shouldn't turn RAM back off once enabling it
+						// so we won't do anything here
+					}
+
+					port_0x53 = value;
+				}
+
+				if (port == 0x7F)
+				{
+					if (value == 0xF)
+					{
+						enable_SGM_low = false;
+					}
+					else if (value == 0xD)
+					{
+						enable_SGM_low = true;
+					}
+
+					port_0x7F = value;
+				}
 			}
 		}
 
@@ -162,13 +248,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			byte retval;
 			if (_inputPortSelection == InputPortMode.Left)
 			{
-				retval = ControllerDeck.ReadPort1(_controller, true, false);
+				retval = ControllerDeck.ReadPort1(_controller, true, true);
 				return retval;
 			}
 
 			if (_inputPortSelection == InputPortMode.Right)
 			{
-				retval = ControllerDeck.ReadPort1(_controller, false, false);
+				retval = ControllerDeck.ReadPort1(_controller, false, true);
 				return retval;
 			}
 
@@ -181,13 +267,13 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 			byte retval;
 			if (_inputPortSelection == InputPortMode.Left)
 			{
-				retval = ControllerDeck.ReadPort2(_controller, true, false);
+				retval = ControllerDeck.ReadPort2(_controller, true, true);
 				return retval;
 			}
 
 			if (_inputPortSelection == InputPortMode.Right)
 			{
-				retval = ControllerDeck.ReadPort2(_controller, false, false);
+				retval = ControllerDeck.ReadPort2(_controller, false, true);
 				return retval;
 			}
 
@@ -198,17 +284,57 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		{
 			if (addr >= 0x8000)
 			{
-				return _romData[addr & 0x7FFF];
+				if (!is_MC)
+				{
+					return _romData[addr & 0x7FFF];
+				}
+				else
+				{
+					// reading from 0xFFC0 to 0xFFFF triggers bank switching
+					// I don't know if it happens before or after the read though
+
+					if (addr >= 0xFFC0)
+					{
+						MC_bank = (addr - 0xFFC0) & (_romData.Length / 0x4000 - 1);
+					}
+					
+					// the first 16K of the map is always the last 16k of the ROM
+					if (addr < 0xC000)
+					{
+						return _romData[_romData.Length - 0x4000 + (addr - 0x8000)];
+					}
+					else
+					{
+						return _romData[MC_bank * 0x4000 + (addr - 0xC000)];
+					}
+				}
 			}
 
-			if (addr >= 0x6000)
+			if (!enable_SGM_high)
 			{
-				return _ram[addr & 1023];
+				if (addr >= 0x6000)
+				{
+					return _ram[addr & 1023];
+				}
+			}
+			else
+			{
+				if (addr >= 0x2000)
+				{
+					return SGM_high_RAM[addr - 0x2000];
+				}
 			}
 
 			if (addr < 0x2000)
 			{
-				return _biosRom[addr];
+				if (!enable_SGM_low)
+				{
+					return _biosRom[addr];
+				}
+				else
+				{
+					return SGM_low_RAM[addr];
+				}
 			}
 
 			////Console.WriteLine("Unhandled read at {0:X4}", addr);
@@ -217,11 +343,28 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 
 		private void WriteMemory(ushort addr, byte value)
 		{
-			if (addr >= 0x6000 && addr < 0x8000)
+			if (!enable_SGM_high)
 			{
-				_ram[addr & 1023] = value;
+				if (addr >= 0x6000 && addr < 0x8000)
+				{
+					_ram[addr & 1023] = value;
+				}
+			}
+			else
+			{
+				if (addr >= 0x2000 && addr < 0x8000)
+				{
+					SGM_high_RAM[addr - 0x2000] = value;
+				}
 			}
 
+			if (addr < 0x2000)
+			{
+				if (enable_SGM_low)
+				{
+					SGM_low_RAM[addr] = value;
+				}
+			}
 			////Console.WriteLine("Unhandled write at {0:X4}:{1:X2}", addr, value);
 		}
 

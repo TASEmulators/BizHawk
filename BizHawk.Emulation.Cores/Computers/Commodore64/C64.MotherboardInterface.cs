@@ -1,4 +1,6 @@
-﻿namespace BizHawk.Emulation.Cores.Computers.Commodore64
+﻿using System;
+
+namespace BizHawk.Emulation.Cores.Computers.Commodore64
 {
 	public sealed partial class Motherboard
 	{
@@ -155,12 +157,12 @@
 
 		private int Sid_ReadPotX()
 		{
-			return 0;
+			return 255;
 		}
 
 		private int Sid_ReadPotY()
 		{
-			return 0;
+			return 255;
 		}
 
 		private int Vic_ReadMemory(int addr)

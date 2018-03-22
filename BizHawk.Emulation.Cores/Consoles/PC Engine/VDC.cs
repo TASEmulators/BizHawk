@@ -48,7 +48,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public int RequestedFrameWidth => ((Registers[HDR] & 0x3F) + 1) * 8;
 		public int RequestedFrameHeight => (Registers[VDW] & 0x1FF) + 1;
-		public int DisplayStartLine => (Registers[VPR] >> 8) + (Registers[VPR] & 0x1F);
+		public int DisplayStartLine => (Registers[VPR] >> 8) + 3 + (Registers[VPR] & 0x1F);
 
 		private const int MAWR = 0;  // Memory Address Write Register
 		private const int MARR = 1;  // Memory Address Read Register
@@ -117,8 +117,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				Registers[RegisterLatch] &= 0xFF00;
 				Registers[RegisterLatch] |= value;
 
-				if (RegisterLatch == BYR)
-					BackgroundY = Registers[BYR] & 0x1FF;
+				if (RegisterLatch == BYR) { latch_bgy = true; }
+					//BackgroundY = Registers[BYR] & 0x1FF;
 
 				RegisterCommit(RegisterLatch, msbComplete: false);
 			}
@@ -153,23 +153,26 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					break;
 				case BYR:
 					Registers[BYR] &= 0x1FF;
-					BackgroundY = Registers[BYR];
+					latch_bgy = true;
+					//BackgroundY = Registers[BYR];
 					break;
 				case HDR: // Horizontal Display Register - update framebuffer size
 					FrameWidth = RequestedFrameWidth;
 					FramePitch = MultiResHack == 0 ? FrameWidth : MultiResHack;
-					if (FrameBuffer.Length != FramePitch * FrameHeight)
-						FrameBuffer = new int[FramePitch * FrameHeight];
+					//if (FrameBuffer.Length != FramePitch * FrameHeight)
+						//FrameBuffer = new int[FramePitch * FrameHeight];
+					FrameBuffer = new int[320 * 262];
 					break;
 				case VDW: // Vertical Display Word? - update framebuffer size
-					FrameHeight = RequestedFrameHeight;
+					//FrameHeight = RequestedFrameHeight;
 					FrameWidth = RequestedFrameWidth;
-					if (FrameHeight > 242)
-						FrameHeight = 242;
+					//if (FrameHeight > 242)
+						//FrameHeight = 242;
 					if (MultiResHack != 0)
 						FramePitch = MultiResHack;
-					if (FrameBuffer.Length != FramePitch * FrameHeight)
-						FrameBuffer = new int[FramePitch * FrameHeight];
+					//if (FrameBuffer.Length != FramePitch * FrameHeight)
+						//FrameBuffer = new int[FramePitch * FrameHeight];
+					FrameBuffer = new int[320 * 262];
 					break;
 				case LENR: // Initiate DMA transfer
 					if (!msbComplete) break;
@@ -320,6 +323,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 			ser.Sync("ScanLine", ref ScanLine);
 			ser.Sync("BackgroundY", ref BackgroundY);
+			ser.Sync("latch_bgy", ref latch_bgy);
 			ser.Sync("RCRCounter", ref RCRCounter);
 			ser.Sync("ActiveLine", ref ActiveLine);
 			ser.EndSection();

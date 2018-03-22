@@ -153,6 +153,9 @@ namespace BizHawk.Emulation.Cores.Intellivision
 			else if (reg < 0x20)
 			{
 				value = (ushort)((value & 0x3FF) | 0x3C00);
+
+				// self interactions can never be set, even by writing directly
+				value &= (ushort)(0xFFFF - (1 << (reg - 0x18)));
 			}
 			else if (reg < 0x28)
 			{
