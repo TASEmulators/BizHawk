@@ -221,12 +221,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			in_vblank = true; // we start off in vblank since the LCD is off
 			in_vblank_old = true;
 
-			// Start off with RAM all 0xFF (the game 'X' (proto) expects this)
-			for (int i = 0; i < RAM.Length; i++)
-			{
-				RAM[i] = 0xFF;
-			}
-
 			Register_Reset();
 			timer.Reset();
 			ppu.Reset();
@@ -332,6 +326,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 				case 5:
 					cart_RAM = new byte[0x10000];
+					break;
+				case 0:
+					Console.WriteLine("Mapper Number indicates Battery Backed RAM but none present.");
+					Console.WriteLine("Disabling Battery Setting.");
+					has_bat = false;
 					break;
 			}
 
