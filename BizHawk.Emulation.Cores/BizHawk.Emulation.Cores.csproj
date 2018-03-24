@@ -645,13 +645,27 @@
     <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_Sachen_MMC1.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\SerialPort.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.cs" />
-    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IDebuggable.cs" />
-    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IEmulator.cs" />
-    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IInputPollable.cs" />
-    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IMemoryDomains.cs" />
-    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.ISaveRam.cs" />
-    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.ISettable.cs" />
-    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IStatable.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IDebuggable.cs">
+      <DependentUpon>GBHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IEmulator.cs">
+      <DependentUpon>GBHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IInputPollable.cs">
+      <DependentUpon>GBHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IMemoryDomains.cs">
+      <DependentUpon>GBHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.ISaveRam.cs">
+      <DependentUpon>GBHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.ISettable.cs">
+      <DependentUpon>GBHawk.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.IStatable.cs">
+      <DependentUpon>GBHawk.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\GBHawk\GBHawkControllerDeck.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\GBHawkControllers.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\HW_Registers.cs" />
@@ -671,6 +685,12 @@
     <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_TAMA5.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\MemoryMap.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\PPU.cs" />
+	<Compile Include="Consoles\Nintendo\GBHawk\GBC_PPU.cs">
+	  <DependentUpon>PPU.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Consoles\Nintendo\GBHawk\GB_PPU.cs">
+	  <DependentUpon>PPU.cs</DependentUpon>
+    </Compile>
     <Compile Include="Consoles\Nintendo\GBHawk\Timer.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64SyncSettings.GLideN64.cs" />
     <Compile Include="Consoles\Nintendo\N64\N64.IDebuggable.cs">

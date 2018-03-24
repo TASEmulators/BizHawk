@@ -980,8 +980,15 @@ namespace BizHawk.Client.Common
 								break;
 							case "GBC":
 								if (!Global.Config.GB_AsSGB)
-								{	
-									core = CoreInventory.Instance["GBC", "Gambatte"];
+								{
+									if (Global.Config.GB_UseGBHawk)
+									{
+										core = CoreInventory.Instance["GBC", "GBHawk"];
+									}
+									else
+									{
+										core = CoreInventory.Instance["GBC", "Gambatte"];
+									}
 								}
 								else
 								{

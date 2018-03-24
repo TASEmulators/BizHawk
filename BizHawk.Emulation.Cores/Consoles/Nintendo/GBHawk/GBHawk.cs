@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public Audio audio;
 		public SerialPort serialport;
 
-		[CoreConstructor("GB")]
+		[CoreConstructor("GB", "GBC")]
 		public GBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
 		{
 			var ser = new BasicServiceProvider(this);
@@ -77,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				DummyReadMemory = ReadMemory,
 				OnExecFetch = ExecFetch
 			};
-			ppu = new PPU();
+			
 			timer = new Timer();
 			audio = new Audio();
 			serialport = new SerialPort();
@@ -88,13 +88,39 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_syncSettings = (GBSyncSettings)syncSettings ?? new GBSyncSettings();
 			_controllerDeck = new GBHawkControllerDeck(_syncSettings.Port1);
 
-			byte[] Bios = comm.CoreFileProvider.GetFirmware("GB", "World", true, "BIOS Not Found, Cannot Load");
+			byte[] Bios = null;
+
+			// Load up a BIOS and initialize the correct PPU
+			if (_syncSettings.ConsoleMode == GBSyncSettings.ConsoleModeType.Auto)
+			{
+				if (game.System == "GB")
+				{
+					Bios = comm.CoreFileProvider.GetFirmware("GB", "World", true, "BIOS Not Found, Cannot Load");
+					ppu = new GB_PPU();
+				}
+				else
+				{
+					Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
+					ppu = new GBC_PPU();
+				}
+				
+			}
+			else if (_syncSettings.ConsoleMode == GBSyncSettings.ConsoleModeType.GB)
+			{
+				Bios = comm.CoreFileProvider.GetFirmware("GB", "World", true, "BIOS Not Found, Cannot Load");
+				ppu = new GB_PPU();
+			}
+			else
+			{
+				Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
+				ppu = new GBC_PPU();
+			}			
 
 			if (Bios == null)
 			{
 				throw new MissingFirmwareException("Missing Gamboy Bios");
 			}
-				
+
 			_bios = Bios;
 
 			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);

@@ -75,6 +75,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 			}
 
+			public enum ConsoleModeType
+			{
+				Auto,
+				GB,
+				GBC
+			}
+
+			[DisplayName("Console Mode")]
+			[Description("Pick which console to run, 'Auto' chooses from ROM extension, 'GB' and 'GBC' chooses the respective system")]
+			[DefaultValue(ConsoleModeType.Auto)]
+			public ConsoleModeType ConsoleMode { get; set; }
+
 			[DisplayName("RTC Initial Time")]
 			[Description("Set the initial RTC time in terms of elapsed seconds.")]
 			[DefaultValue(0)]

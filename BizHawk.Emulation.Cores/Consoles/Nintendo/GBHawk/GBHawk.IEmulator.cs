@@ -50,8 +50,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (controller.IsPressed("Power"))
 			{
-				// it seems that theMachine.Reset() doesn't clear ram, etc
-				// this should leave hsram intact but clear most other things
 				HardReset();
 			}
 
@@ -114,15 +112,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			
 			while (!vblank_rise)
 			{
+				// These things do not change speed in GBC double spped mode
 				audio.tick();
-				timer.tick_1();
 				ppu.tick();
-				serialport.serial_transfer_tick();
-
 				if (Use_RTC) { mapper.RTC_Tick(); }
 
+				// These things all tick twice as fast in GBC double speed mode
+				ppu.DMA_tick();
+				timer.tick_1();				
+				serialport.serial_transfer_tick();				
 				cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
-
 				timer.tick_2();
 
 				if (in_vblank && !in_vblank_old)
@@ -137,11 +136,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			vblank_rise = false;
-		}
-
-		public void RunCPUCycle()
-		{
-			
 		}
 
 		public void GetControllerState(IController controller)
