@@ -57,6 +57,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		public ushort int_src;
 		public int stop_time;
 		public bool stop_check;
+		public bool is_GBC; // GBC automatically adds a NOP to avoid the HALT bug (according to Sinimas)
 
 		private void ResetInterrupts()
 		{

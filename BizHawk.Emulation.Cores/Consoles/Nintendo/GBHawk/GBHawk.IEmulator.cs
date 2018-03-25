@@ -117,20 +117,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				ppu.tick();
 				if (Use_RTC) { mapper.RTC_Tick(); }
 
-				// These things all tick twice as fast in GBC double speed mode
-				ppu.DMA_tick();
-				timer.tick_1();				
-				serialport.serial_transfer_tick();				
-				cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
-				timer.tick_2();
-
-				if (double_speed)
+				if (!HDMA_transfer)
 				{
+					// These things all tick twice as fast in GBC double speed mode
 					ppu.DMA_tick();
 					timer.tick_1();
 					serialport.serial_transfer_tick();
 					cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
 					timer.tick_2();
+
+					if (double_speed)
+					{
+						ppu.DMA_tick();
+						timer.tick_1();
+						serialport.serial_transfer_tick();
+						cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
+						timer.tick_2();
+					}
 				}
 
 				if (in_vblank && !in_vblank_old)

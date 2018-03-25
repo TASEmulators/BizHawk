@@ -16,11 +16,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte HDMA_src_lo;
 		public byte HDMA_dest_hi;
 		public byte HDMA_dest_lo;
-		public byte HDMA_ctrl;
+		public byte HDMA_ctrl
+		{
+			get { return (byte)(((HDMA_active ? 0 : 1) << 7) | ((HDMA_length >> 16) - 1)); }
+		}
+
 
 		// controls for tile attributes
 		public byte tile_attr_byte;
 		public int VRAM_sel;
+		public bool HDMA_active;
+		public bool HDMA_mode;
+		public ushort cur_DMA_src;
+		public ushort cur_DMA_dest;
+		public int HDMA_length;
+		public int HDMA_countdown;
 
 		public override byte ReadReg(int addr)
 		{
@@ -140,7 +150,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					HDMA_dest_lo = value;
 					break;
 				case 0xFF55: // HDMA5
-					HDMA_ctrl = value;
+					if (!HDMA_active)
+					{
+						HDMA_mode = value.Bit(7);
+						HDMA_countdown = 4;
+						if (value.Bit(7))
+						{
+							// HDMA during HBlank only
+							HDMA_active = true;
+						}
+						else
+						{
+							// HDMA immediately
+							HDMA_active = true;
+							Core.HDMA_transfer = true;
+						}
+
+						// latch read locations
+						cur_DMA_dest = (ushort)(((HDMA_dest_hi & 0x1F) << 8) | (HDMA_dest_lo & 0xF0));
+						cur_DMA_src = (ushort)(((HDMA_src_hi & 0xFF) << 8) | (HDMA_src_lo & 0xF0));
+
+						HDMA_length = ((HDMA_ctrl & 0x7F) + 1) * 16;
+					}
+					else
+					{
+						//terminate the transfer
+						if (!value.Bit(7))
+						{
+							HDMA_active = false;
+						}
+					}
+
 					break;
 				case 0xFF68: // BGPI
 					BG_pal_index = value;
@@ -159,6 +199,71 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public override void tick()
 		{
+			// Do HDMA ticks
+			if (HDMA_active)
+			{
+				if (HDMA_countdown == 0)
+				{
+
+					if (!HDMA_mode)
+					{
+						// immediately transfer bytes, 2 bytes per cycles
+						if (HDMA_length > 0)
+						{
+							Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = Core.ReadMemory(cur_DMA_src);
+							cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
+							cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
+							HDMA_length--;
+							Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = Core.ReadMemory(cur_DMA_src);
+							cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
+							cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
+							HDMA_length--;
+
+							if (HDMA_length == 0)
+							{
+								HDMA_active = false;
+								Core.HDMA_transfer = false;
+							}
+						}
+					}
+					else
+					{
+						// only transfer during mode 3, otherwise
+						if ((STAT & 3) == 3)
+						{
+							Core.HDMA_transfer = true;
+
+							if (HDMA_length > 0)
+							{
+								Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = Core.ReadMemory(cur_DMA_src);
+								cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
+								cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
+								HDMA_length--;
+								Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = Core.ReadMemory(cur_DMA_src);
+								cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
+								cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
+								HDMA_length--;
+
+								if (HDMA_length == 0)
+								{
+									HDMA_active = false;
+									Core.HDMA_transfer = false;
+								}
+							}
+						}
+						else
+						{
+							Core.HDMA_transfer = false;
+						}
+					}
+				}
+				else
+				{
+					HDMA_countdown--;
+				}
+			}
+			
+			
 			// the ppu only does anything if it is turned on via bit 7 of LCDC
 			if (LCDC.Bit(7))
 			{
@@ -1180,10 +1285,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("HDMA_src_lo", ref HDMA_src_lo);
 			ser.Sync("HDMA_dest_hi", ref HDMA_dest_hi);
 			ser.Sync("HDMA_dest_lo", ref HDMA_dest_lo);
-			ser.Sync("HDMA_ctrl", ref HDMA_ctrl);
 
 			ser.Sync("tile_attr_byte", ref tile_attr_byte);
 			ser.Sync("VRAM_sel", ref VRAM_sel);
+			ser.Sync("HDMA_active", ref HDMA_active);
+			ser.Sync("HDMA_mode", ref HDMA_mode);
+			ser.Sync("cur_DMA_src", ref cur_DMA_src);
+			ser.Sync("cur_DMA_dest", ref cur_DMA_dest);
+			ser.Sync("HDMA_length", ref HDMA_length);
+			ser.Sync("HDMA_countdown", ref HDMA_countdown);
 
 			base.SyncState(ser);
 		}

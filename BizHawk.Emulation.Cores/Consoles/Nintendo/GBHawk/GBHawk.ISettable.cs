@@ -87,6 +87,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			[DefaultValue(ConsoleModeType.Auto)]
 			public ConsoleModeType ConsoleMode { get; set; }
 
+			[DisplayName("CGB in GBA")]
+			[Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]
+			[DefaultValue(false)]
+			public bool GBACGB { get; set; }
+
 			[DisplayName("RTC Initial Time")]
 			[Description("Set the initial RTC time in terms of elapsed seconds.")]
 			[DefaultValue(0)]

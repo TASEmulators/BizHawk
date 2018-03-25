@@ -56,9 +56,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool is_GBC;
 		public bool double_speed;
 		public bool speed_switch;
+		public bool HDMA_transfer; // stalls CPU when in progress
 
-		public readonly byte[] _rom;
-		public readonly byte[] _bios;	
+		public byte[] _bios;
+		public readonly byte[] _rom;		
 		public readonly byte[] header = new byte[0x50];
 
 		public byte[] cart_RAM;
@@ -77,6 +78,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public Timer timer;
 		public Audio audio;
 		public SerialPort serialport;
+
+		private static byte[] GBA_override = { 0xFF, 0x00, 0xCD, 0x03, 0x35, 0xAA, 0x31, 0x90, 0x94, 0x00, 0x00, 0x00, 0x00 };
 
 		[CoreConstructor("GB", "GBC")]
 		public GBHawk(CoreComm comm, GameInfo game, byte[] rom, /*string gameDbFn,*/ object settings, object syncSettings)
@@ -139,6 +142,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			_bios = Bios;
+
+			// Here we modify the BIOS if GBA mode is set (credit to ExtraTricky)
+			if (is_GBC && _syncSettings.GBACGB)
+			{
+				for (int i = 0; i < 13; i++)
+				{
+					_bios[i + 0xF3] = (byte)((GBA_override[i] + _bios[i + 0xF3]) & 0xFF);
+				}
+			}
+
+			// CPU needs to know about GBC status too
+			cpu.is_GBC = is_GBC;
 
 			Buffer.BlockCopy(rom, 0x100, header, 0, 0x50);
 

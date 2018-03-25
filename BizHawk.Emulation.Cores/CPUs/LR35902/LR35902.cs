@@ -480,6 +480,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			ser.Sync("int_src", ref int_src);
 			ser.Sync("stop_time", ref stop_time);
 			ser.Sync("stop_check", ref stop_check);
+			ser.Sync("is_GBC", ref is_GBC);
 
 			ser.Sync("instruction_pointer", ref instr_pntr);
 			ser.Sync("current instruction", ref cur_instr, false);
