@@ -36,12 +36,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 
 		// memory domains
-		public byte[] RAM = new byte[0x2000];
+		public byte[] RAM = new byte[0x8000]; // only 0x2000 available to GB
 		public byte[] ZP_RAM = new byte[0x80];
-		public byte[] CHR_RAM = new byte[0x1800];
-		public byte[] BG_map_1 = new byte[0x400];
-		public byte[] BG_map_2 = new byte[0x400];
+		/* 
+		 * VRAM is arranged as: 
+		 * 0x1800 Tiles
+		 * 0x400 BG Map 1
+		 * 0x400 BG Map 2
+		 * 0x1800 Tiles
+		 * 0x400 CA Map 1
+		 * 0x400 CA Map 2
+		 * Only the top set is available in GB (i.e. VRAM_Bank = 0)
+		 */
+		public byte[] VRAM = new byte[0x4000];
 		public byte[] OAM = new byte[0xA0];
+
+		public int RAM_Bank;
+		public byte VRAM_Bank;
+		public bool is_GBC;
+		public bool double_speed;
+		public bool speed_switch;
 
 		public readonly byte[] _rom;
 		public readonly byte[] _bios;	
@@ -75,7 +89,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				WriteMemory = WriteMemory,
 				PeekMemory = PeekMemory,
 				DummyReadMemory = ReadMemory,
-				OnExecFetch = ExecFetch
+				OnExecFetch = ExecFetch,
+				SpeedFunc = SpeedFunc,
 			};
 			
 			timer = new Timer();
@@ -102,6 +117,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
 					ppu = new GBC_PPU();
+					is_GBC = true;
 				}
 				
 			}
@@ -114,6 +130,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
 				ppu = new GBC_PPU();
+				is_GBC = true;
 			}			
 
 			if (Bios == null)
@@ -152,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			SetupMemoryDomains();
 			HardReset();
 
-			iptr0 = Marshal.AllocHGlobal(CHR_RAM.Length + BG_map_1.Length + BG_map_2.Length + 1);
+			iptr0 = Marshal.AllocHGlobal(VRAM.Length + 1);
 			iptr1 = Marshal.AllocHGlobal(OAM.Length + 1);
 			iptr2 = Marshal.AllocHGlobal(color_palette.Length * 2 * 8 + 1);
 			iptr3 = Marshal.AllocHGlobal(color_palette.Length * 8 + 1);
@@ -173,22 +190,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			get
 			{
-				byte[] temp = new byte[CHR_RAM.Length + BG_map_1.Length + BG_map_2.Length];
-
-				for (int i = 0; i < CHR_RAM.Length; i++)
-				{
-					temp[i] = CHR_RAM[i];
-				}
-				for (int i = 0; i < BG_map_1.Length; i++)
-				{
-					temp[CHR_RAM.Length + i] = BG_map_1[i];
-				}
-				for (int i = 0; i < BG_map_2.Length; i++)
-				{
-					temp[CHR_RAM.Length + BG_map_1.Length + i] = BG_map_2[i];
-				}
-
-				Marshal.Copy(temp, 0, iptr0, temp.Length);
+				Marshal.Copy(VRAM, 0, iptr0, VRAM.Length);
 				Marshal.Copy(OAM, 0, iptr1, OAM.Length);
 
 				int[] cp2 = new int[8];
@@ -246,6 +248,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			GB_bios_register = 0; // bios enable
 			in_vblank = true; // we start off in vblank since the LCD is off
 			in_vblank_old = true;
+
+			RAM_Bank = 1; // RAM bank always starts as 1 (even writing zero still sets 1)
 
 			Register_Reset();
 			timer.Reset();

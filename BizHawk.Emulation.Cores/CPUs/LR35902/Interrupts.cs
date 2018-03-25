@@ -55,6 +55,8 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		private static ushort[] INT_vectors = new ushort[] {0x40, 0x48, 0x50, 0x58, 0x60, 0x00};
 
 		public ushort int_src;
+		public int stop_time;
+		public bool stop_check;
 
 		private void ResetInterrupts()
 		{

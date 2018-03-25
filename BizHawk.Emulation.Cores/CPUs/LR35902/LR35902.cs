@@ -68,6 +68,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			ResetRegisters();
 			ResetInterrupts();
 			TotalExecutedCycles = 0;
+			stop_check = false;
 			cur_instr = new ushort[] { OP };
 		}
 
@@ -77,6 +78,9 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		public Action<ushort, byte> WriteMemory;
 		public Func<ushort, byte> PeekMemory;
 		public Func<ushort, byte> DummyReadMemory;
+
+		// Special Function for Speed switching executed on a STOP
+		public Func<int, int> SpeedFunc;
 
 		//this only calls when the first byte of an instruction is fetched.
 		public Action<ushort> OnExecFetch;
@@ -306,7 +310,45 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 				case STOP:
 					stopped = true;
 
-					if (interrupt_src.Bit(4)) // button pressed, not actually an interrupt though
+					if (!stop_check)
+					{
+						stop_time = SpeedFunc(0);
+						stop_check = true;
+					}
+					
+					if (stop_time > 0)
+					{
+						stop_time--;
+						if (stop_time == 0)
+						{
+							if (TraceCallback != null)
+							{
+								TraceCallback(new TraceInfo
+								{
+									Disassembly = "====un-stop====",
+									RegisterInfo = ""
+								});
+							}
+
+							stopped = false;
+							if (OnExecFetch != null) OnExecFetch(RegPC);
+							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+							FetchInstruction(ReadMemory(RegPC++));
+							instr_pntr = 0;
+
+							stop_check = false;
+						}
+						else
+						{
+							instr_pntr = 0;
+							cur_instr = new ushort[]
+							{IDLE,
+							IDLE,
+							IDLE,
+							STOP };
+						}
+					}
+					else if (interrupt_src.Bit(4)) // button pressed, not actually an interrupt though
 					{
 						if (TraceCallback != null)
 						{
@@ -322,6 +364,8 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
 						FetchInstruction(ReadMemory(RegPC++));
 						instr_pntr = 0;
+
+						stop_check = false;
 					}
 					else
 					{
@@ -434,6 +478,8 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			ser.Sync("ExecutedCycles", ref totalExecutedCycles);
 			ser.Sync("EI_pending", ref EI_pending);
 			ser.Sync("int_src", ref int_src);
+			ser.Sync("stop_time", ref stop_time);
+			ser.Sync("stop_check", ref stop_check);
 
 			ser.Sync("instruction_pointer", ref instr_pntr);
 			ser.Sync("current instruction", ref cur_instr, false);

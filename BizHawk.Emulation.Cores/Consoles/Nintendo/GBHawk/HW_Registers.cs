@@ -99,9 +99,64 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					ret = ppu.ReadReg(addr);
 					break;
 
+				// Speed Control for GBC
+				case 0xFF4D:
+					if (is_GBC)
+					{
+						ret = (byte)(((double_speed ? 1 : 0) << 7) + ((speed_switch ? 1 : 0)));
+					}
+					else
+					{
+						ret = 0xFF;
+					}
+					break;
+
+				case 0xFF4F: // VBK
+					if (is_GBC)
+					{
+						ret = VRAM_Bank;
+					}
+					else
+					{
+						ret = 0xFF;
+					}
+					break;
+
 				// Bios control register. Not sure if it is readable
 				case 0xFF50:
 					ret = 0xFF;
+					break;
+
+				// PPU Regs for GBC
+				case 0xFF51:
+				case 0xFF52:
+				case 0xFF53:
+				case 0xFF54:
+				case 0xFF55:
+				case 0xFF68:
+				case 0xFF69:
+				case 0xFF6A:
+				case 0xFF6B:
+					if (is_GBC)
+					{
+						ret = ppu.ReadReg(addr);
+					}
+					else
+					{
+						ret = 0xFF;
+					}
+					break;
+
+				// Speed Control for GBC
+				case 0xFF70:
+					if (is_GBC)
+					{
+						ret = (byte)RAM_Bank;
+					}
+					else
+					{
+						ret = 0xFF;
+					}
 					break;
 
 				// interrupt control register
@@ -254,6 +309,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					ppu.WriteReg(addr, value);
 					break;
 
+				// Speed Control for GBC
+				case 0xFF4D:
+					if (is_GBC)
+					{
+						speed_switch = (value & 1) > 0;
+					}
+					break;
+
+				// VBK
+				case 0xFF4F:
+					if (is_GBC)
+					{
+						VRAM_Bank = (byte)(value & 1);
+					}
+					break;
+
 				// Bios control register. Writing 1 permanently disables BIOS until a power cycle occurs
 				case 0xFF50:
 					//Console.WriteLine(value);
@@ -261,6 +332,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						GB_bios_register = value;
 					}			
+					break;
+
+				// PPU Regs for GBC
+				case 0xFF51:
+				case 0xFF52:
+				case 0xFF53:
+				case 0xFF54:
+				case 0xFF55:
+				case 0xFF68:
+				case 0xFF69:
+				case 0xFF6A:
+				case 0xFF6B:
+					if (is_GBC)
+					{
+						ppu.WriteReg(addr, value);
+					}
+					break;
+
+				// RAM Bank in GBC mode
+				case 0xFF70:
+					//Console.WriteLine(value);
+					if (is_GBC)
+					{
+						RAM_Bank = value & 7;
+						if (RAM_Bank == 0) { RAM_Bank = 1; }
+					}
 					break;
 
 				// interrupt control register

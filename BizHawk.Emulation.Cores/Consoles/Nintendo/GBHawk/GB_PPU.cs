@@ -582,7 +582,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							y_tile = ((int)Math.Floor((float)(scroll_y + LY) / 8)) % 32;
 
 							temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
-							tile_byte = LCDC.Bit(3) ? Core.BG_map_2[temp_fetch] : Core.BG_map_1[temp_fetch];
+							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch];
 						}
 						else
 						{
@@ -605,7 +605,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 							if (LCDC.Bit(4))
 							{
-								tile_data[0] = Core.CHR_RAM[tile_byte * 16 + y_scroll_offset * 2];
+								tile_data[0] = Core.VRAM[tile_byte * 16 + y_scroll_offset * 2];
 							}
 							else
 							{
@@ -614,7 +614,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								{
 									tile_byte -= 256;
 								}
-								tile_data[0] = Core.CHR_RAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2];
+								tile_data[0] = Core.VRAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2];
 							}
 
 						}
@@ -637,7 +637,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									tile_byte += 256;
 								}
 
-								tile_data[1] = Core.CHR_RAM[tile_byte * 16 + y_scroll_offset * 2 + 1];
+								tile_data[1] = Core.VRAM[tile_byte * 16 + y_scroll_offset * 2 + 1];
 							}
 							else
 							{
@@ -647,7 +647,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									tile_byte -= 256;
 								}
 
-								tile_data[1] = Core.CHR_RAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
+								tile_data[1] = Core.VRAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
 							}
 
 						}
@@ -685,7 +685,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if ((window_counter % 2) == 0)
 						{
 							temp_fetch = window_y_tile * 32 + (window_x_tile + window_tile_inc) % 32;
-							tile_byte = LCDC.Bit(6) ? Core.BG_map_2[temp_fetch] : Core.BG_map_1[temp_fetch];
+							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(6) ? 1 : 0) * 0x400 + temp_fetch]; ;
 						}
 						else
 						{
@@ -706,7 +706,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (LCDC.Bit(4))
 							{
 								
-								tile_data[0] = Core.CHR_RAM[tile_byte * 16 + y_scroll_offset * 2];
+								tile_data[0] = Core.VRAM[tile_byte * 16 + y_scroll_offset * 2];
 								
 							}
 							else
@@ -717,7 +717,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									tile_byte -= 256;
 								}
 								
-								tile_data[0] = Core.CHR_RAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2];
+								tile_data[0] = Core.VRAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2];
 							}
 						}
 						else
@@ -739,7 +739,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									tile_byte += 256;
 								}
 
-								tile_data[1] = Core.CHR_RAM[tile_byte * 16 + y_scroll_offset * 2 + 1];
+								tile_data[1] = Core.VRAM[tile_byte * 16 + y_scroll_offset * 2 + 1];
 							}
 							else
 							{
@@ -749,7 +749,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									tile_byte -= 256;
 								}
 
-								tile_data[1] = Core.CHR_RAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
+								tile_data[1] = Core.VRAM[0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
 							}
 
 						}
@@ -877,6 +877,279 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 				}				
 			}
+		}
+
+		public override void process_sprite()
+		{
+			int y;
+
+			if (SL_sprites[sl_use_index * 4 + 3].Bit(6))
+			{
+				if (LCDC.Bit(2))
+				{
+					y = LY - (SL_sprites[sl_use_index * 4] - 16);
+					y = 15 - y;
+					sprite_sel[0] = Core.VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2];
+					sprite_sel[1] = Core.VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2 + 1];
+				}
+				else
+				{
+					y = LY - (SL_sprites[sl_use_index * 4] - 16);
+					y = 7 - y;
+					sprite_sel[0] = Core.VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2];
+					sprite_sel[1] = Core.VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2 + 1];
+				}
+			}
+			else
+			{
+				if (LCDC.Bit(2))
+				{
+					y = LY - (SL_sprites[sl_use_index * 4] - 16);
+					sprite_sel[0] = Core.VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2];
+					sprite_sel[1] = Core.VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2 + 1];
+				}
+				else
+				{
+					y = LY - (SL_sprites[sl_use_index * 4] - 16);
+					sprite_sel[0] = Core.VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2];
+					sprite_sel[1] = Core.VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2 + 1];
+				}
+			}
+
+			if (SL_sprites[sl_use_index * 4 + 3].Bit(5))
+			{
+				int b0, b1, b2, b3, b4, b5, b6, b7 = 0;
+				for (int i = 0; i < 2; i++)
+				{
+					b0 = (sprite_sel[i] & 0x01) << 7;
+					b1 = (sprite_sel[i] & 0x02) << 5;
+					b2 = (sprite_sel[i] & 0x04) << 3;
+					b3 = (sprite_sel[i] & 0x08) << 1;
+					b4 = (sprite_sel[i] & 0x10) >> 1;
+					b5 = (sprite_sel[i] & 0x20) >> 3;
+					b6 = (sprite_sel[i] & 0x40) >> 5;
+					b7 = (sprite_sel[i] & 0x80) >> 7;
+
+					sprite_sel[i] = (byte)(b0 | b1 | b2 | b3 | b4 | b5 | b6 | b7);
+				}
+			}
+		}
+
+		// normal DMA moves twice as fast in double speed mode on GBC
+		// So give it it's own function so we can seperate it from PPU tick
+		public override void DMA_tick()
+		{
+			// Note that DMA is halted when the CPU is halted
+			if (DMA_start && !Core.cpu.halted)
+			{
+				if (DMA_clock >= 4)
+				{
+					DMA_OAM_access = false;
+					if ((DMA_clock % 4) == 1)
+					{
+						// the cpu can't access memory during this time, but we still need the ppu to be able to.
+						DMA_start = false;
+						// Gekkio reports that A14 being high on DMA transfers always represent WRAM accesses
+						// So transfers nominally from higher memory areas are actually still from there (i.e. FF -> DF)
+						byte DMA_actual = DMA_addr;
+						if (DMA_addr > 0xDF) { DMA_actual &= 0xDF; }
+						DMA_byte = Core.ReadMemory((ushort)((DMA_actual << 8) + DMA_inc));
+						DMA_start = true;
+					}
+					else if ((DMA_clock % 4) == 3)
+					{
+						Core.OAM[DMA_inc] = DMA_byte;
+
+						if (DMA_inc < (0xA0 - 1)) { DMA_inc++; }
+					}
+				}
+
+				DMA_clock++;
+
+				if (DMA_clock == 648)
+				{
+					DMA_start = false;
+					DMA_OAM_access = true;
+				}
+			}
+		}
+
+		// order sprites according to x coordinate
+		// note that for sprites of equal x coordinate, priority goes to first on the list
+		public override void reorder_and_assemble_sprites()
+		{
+			sprite_ordered_index = 0;
+
+			for (int i = 0; i < 256; i++)
+			{
+				for (int j = 0; j < SL_sprites_index; j++)
+				{
+					if (SL_sprites[j * 4 + 1] == i)
+					{
+						sl_use_index = j;
+						process_sprite();
+						SL_sprites_ordered[sprite_ordered_index * 4] = SL_sprites[j * 4 + 1];
+						SL_sprites_ordered[sprite_ordered_index * 4 + 1] = sprite_sel[0];
+						SL_sprites_ordered[sprite_ordered_index * 4 + 2] = sprite_sel[1];
+						SL_sprites_ordered[sprite_ordered_index * 4 + 3] = SL_sprites[j * 4 + 3];
+						sprite_ordered_index++;
+					}
+				}
+			}
+
+			bool have_pixel = false;
+			byte s_pixel = 0;
+			byte sprite_attr = 0;
+
+			for (int i = 0; i < 160; i++)
+			{
+				have_pixel = false;
+				for (int j = 0; j < SL_sprites_index; j++)
+				{
+					if ((i >= (SL_sprites_ordered[j * 4] - 8)) &&
+						(i < SL_sprites_ordered[j * 4]) &&
+						!have_pixel)
+					{
+						// we can use the current sprite, so pick out a pixel for it
+						int t_index = i - (SL_sprites_ordered[j * 4] - 8);
+
+						t_index = 7 - t_index;
+
+						sprite_data[0] = (byte)((SL_sprites_ordered[j * 4 + 1] >> t_index) & 1);
+						sprite_data[1] = (byte)(((SL_sprites_ordered[j * 4 + 2] >> t_index) & 1) << 1);
+
+						s_pixel = (byte)(sprite_data[0] + sprite_data[1]);
+						sprite_attr = (byte)SL_sprites_ordered[j * 4 + 3];
+
+						// pixel color of 0 is transparent, so if this is the case we dont have a pixel
+						if (s_pixel != 0)
+						{
+							have_pixel = true;
+						}
+					}
+				}
+
+				if (have_pixel)
+				{
+					sprite_present_list[i] = 1;
+					sprite_pixel_list[i] = s_pixel;
+					sprite_attr_list[i] = sprite_attr;
+				}
+				else
+				{
+					sprite_present_list[i] = 0;
+				}
+			}
+		}
+
+		public override void OAM_scan(int OAM_cycle)
+		{
+			// we are now in STAT mode 2
+			// TODO: maybe stat mode 2 flags are set at cycle 0 on visible scanlines?
+			if (OAM_cycle == 0)
+			{
+				OAM_access_read = false;
+
+				OAM_scan_index = 0;
+				SL_sprites_index = 0;
+				write_sprite = 0;
+			}
+
+			// the gameboy has 80 cycles to scan through 40 sprites, picking out the first 10 it finds to draw
+			// the following is a guessed at implmenentation based on how NES does it, it's probably pretty close
+			if (OAM_cycle < 10)
+			{
+				// start by clearing the sprite table (probably just clears X on hardware, but let's be safe here.)
+				SL_sprites[OAM_cycle * 4] = 0;
+				SL_sprites[OAM_cycle * 4 + 1] = 0;
+				SL_sprites[OAM_cycle * 4 + 2] = 0;
+				SL_sprites[OAM_cycle * 4 + 3] = 0;
+			}
+			else
+			{
+				if (write_sprite == 0)
+				{
+					if (OAM_scan_index < 40)
+					{
+						ushort temp = DMA_OAM_access ? Core.OAM[OAM_scan_index * 4] : (ushort)0xFF;
+						// (sprite Y - 16) equals LY, we have a sprite
+						if ((temp - 16) <= LY &&
+							((temp - 16) + 8 + (LCDC.Bit(2) ? 8 : 0)) > LY)
+						{
+							// always pick the first 10 in range sprites
+							if (SL_sprites_index < 10)
+							{
+								SL_sprites[SL_sprites_index * 4] = temp;
+
+								write_sprite = 1;
+							}
+							else
+							{
+								// if we already have 10 sprites, there's nothing to do, increment the index
+								OAM_scan_index++;
+							}
+						}
+						else
+						{
+							OAM_scan_index++;
+						}
+					}
+				}
+				else
+				{
+					ushort temp2 = DMA_OAM_access ? Core.OAM[OAM_scan_index * 4 + write_sprite] : (ushort)0xFF;
+					SL_sprites[SL_sprites_index * 4 + write_sprite] = temp2;
+					write_sprite++;
+
+					if (write_sprite == 4)
+					{
+						write_sprite = 0;
+						SL_sprites_index++;
+						OAM_scan_index++;
+					}
+				}
+			}
+		}
+
+		public override void Reset()
+		{
+			LCDC = 0;
+			STAT = 0x80;
+			scroll_y = 0;
+			scroll_x = 0;
+			LY = 0;
+			LYC = 0;
+			DMA_addr = 0xFF;
+			BGP = 0xFF;
+			obj_pal_0 = 0xFF;
+			obj_pal_1 = 0xFF;
+			window_y = 0x0;
+			window_x = 0x0;
+			window_x_latch = 0xFF;
+			LY_inc = 1;
+			no_scan = false;
+			OAM_access_read = true;
+			VRAM_access_read = true;
+			OAM_access_write = true;
+			VRAM_access_write = true;
+			DMA_OAM_access = true;
+
+			cycle = 0;
+			LYC_INT = false;
+			HBL_INT = false;
+			VBL_INT = false;
+			OAM_INT = false;
+
+			stat_line = false;
+			stat_line_old = false;
+
+			window_counter = 0;
+			window_pre_render = false;
+			window_started = false;
+			window_tile_inc = 0;
+			window_y_tile = 0;
+			window_x_tile = 0;
+			window_y_tile_inc = 0;
 		}
 	}
 }

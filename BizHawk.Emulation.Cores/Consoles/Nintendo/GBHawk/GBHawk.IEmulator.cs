@@ -124,18 +124,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
 				timer.tick_2();
 
+				if (double_speed)
+				{
+					ppu.DMA_tick();
+					timer.tick_1();
+					serialport.serial_transfer_tick();
+					cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
+					timer.tick_2();
+				}
+
 				if (in_vblank && !in_vblank_old)
 				{
 					vblank_rise = true;
 				}
 
 				ticker++;
-				if (ticker > 10000000) { throw new Exception("ERROR: Unable to Resolve Frame"); }
+				if (ticker > 10000000) { vblank_rise = true; }//throw new Exception("ERROR: Unable to Resolve Frame"); }
 
 				in_vblank_old = in_vblank;
 			}
 
 			vblank_rise = false;
+		}
+
+		// Switch Speed (GBC only)
+		public int SpeedFunc(int temp)
+		{
+			if (is_GBC)
+			{
+				if (speed_switch)
+				{
+					speed_switch = false;
+
+					int ret = double_speed ? 50000 : 25000; // actual time needs checking
+					double_speed = !double_speed;
+					return ret;
+				}
+
+				// if we are not switching speed, return 0
+				return 0;
+			}
+
+			// if we are in GB mode, return 0 indicating not switching speed
+			return 0;
 		}
 
 		public void GetControllerState(IController controller)
