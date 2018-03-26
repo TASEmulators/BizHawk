@@ -74,71 +74,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
             }
 
-            /*
-
-            // Check whether the low bit is reset
-            // Technically the ULA should respond to every even I/O address
-            bool lowBitReset = (port & 0x0001) == 0;
-
-            // Kempston joystick input takes priority over all other input
-            // if this is detected just return the kempston byte
-            if ((port & 0xe0) == 0 || (port & 0x20) == 0)
-            {
-                if (LocateUniqueJoystick(JoystickType.Kempston) != null)
-                    return (byte)((KempstonJoystick)LocateUniqueJoystick(JoystickType.Kempston) as KempstonJoystick).JoyLine;
-
-                InputRead = true;
-            }
-            else if (lowBitReset)
-            {
-                // Even I/O address so get input from keyboard
-                KeyboardDevice.ReadPort(port, ref result);
-
-                // not a lagframe
-                InputRead = true;
-
-                // tape loading monitor cycle
-                TapeDevice.MonitorRead();
-
-                // process tape INs
-                TapeDevice.ReadPort(port, ref result);
-            }
-            else if ((port & 0xc002) == 0xc000)
-            {
-                // AY sound chip
-                result = (int)AYDevice.PortRead();
-            }
-            else
-            {
-                // devices other than the ULA will respond here
-
-                // Kempston Mouse (not implemented yet)
-
-
-                // If this is an unused port the floating memory bus should be returned
-                // Floating bus is read on the previous cycle
-                int _tStates = CurrentFrameCycle - 1;
-
-                // if we are on the top or bottom border return 0xff
-                if ((_tStates < ULADevice.contentionStartPeriod) || (_tStates > ULADevice.contentionEndPeriod))
-                {
-                    result = 0xff;
-                }
-                else
-                {
-                    if (ULADevice.floatingBusTable[_tStates] < 0)
-                    {
-                        result = 0xff;
-                    }
-                    else
-                    {
-                        result = ReadBus((ushort)ULADevice.floatingBusTable[_tStates]);
-                    }
-                }
-            }
-
-            */
-
             return (byte)result;
         }
 
@@ -157,47 +92,45 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // get a BitArray of the value byte
             BitArray bits = new BitArray(new byte[] { value });
 
-            long currT = CPU.TotalExecutedCycles;
-
+            // handle AY port writes
             AYDevice.WritePort(port, value);
 
-            // paging
-            if (port == 0x7ffd)
+            // memory paging
+            // this is controlled by writes to port 0x7ffd
+            // but it is only partially decoded so it actually responds to any port with bits 1 and 15 reset
+            if (portBits[1] == false && portBits[15] == false)
             {
-                //if (PagingDisabled)
-                    //return;
-
-                // Bits 0, 1, 2 select the RAM page
-                var rp = value & 0x07;
-                if (rp < 8)
-                    RAMPaged = rp;
-
-                // bit 3 controls shadow screen
-                SHADOWPaged = bits[3];
-
-                if (SHADOWPaged == false)
+                // if paging is disabled then all writes to this port are ignored until the next reboot
+                if (!PagingDisabled)
                 {
+                    // Bits 0, 1, 2 select the RAM page
+                    var rp = value & 0x07;
+                    if (RAMPaged != rp && rp < 8)
+                        RAMPaged = rp;
 
+                    // bit 3 controls shadow screen
+                    if (SHADOWPaged != bits[3])
+                        SHADOWPaged = bits[3];
+
+                    // ROM page
+                    if (bits[4])
+                    {
+                        // 48k basic rom
+                        ROMPaged = 1;
+                    }
+                    else
+                    {
+                        // 128k editor and menu system
+                        ROMPaged = 0;
+                    }
+
+                    // Bit 5 set signifies that paging is disabled until next reboot
+                    PagingDisabled = bits[5];
                 }
                 else
                 {
-
+                    // no changes to paging
                 }
-
-                // ROM page
-                if (bits[4])
-                {
-                    // 48k basic rom
-                    ROMPaged = 1;
-                }
-                else
-                {
-                    // 128k editor and menu system
-                    ROMPaged = 0;
-                }
-
-                // Bit 5 set signifies that paging is disabled until next reboot
-                PagingDisabled = bits[5];
             }
 
             // Check whether the low bit is reset
@@ -229,25 +162,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 TapeDevice.WritePort(port, value);
 
                 // Tape
-                //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
-                
-            }
-            /*
-            // Active AY Register
-            if ((port & 0xc002) == 0xc000)
-            {
-                var reg = value & 0x0f;
-                AYDevice.SelectedRegister = reg;
-                CPU.TotalExecutedCycles += 3;
-            }
-
-            // AY Write
-            if ((port & 0xc002) == 0x8000)
-            {
-                AYDevice.PortWrite(value);
-                CPU.TotalExecutedCycles += 3;
+                //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);                
             }    
-            */        
         }
     }
 }
