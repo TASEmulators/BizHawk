@@ -630,6 +630,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             t.BlockDescription = BlockType.CSW_Recording;
             t.DataPeriods = new List<int>();
 
+            int blockLen = GetInt32(data, _position);
+            _position += 4;
+
+            _position += blockLen;
+
             // add the block
             _datacorder.DataBlocks.Add(t);
         }
@@ -814,8 +819,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // advance to next block 
             _position += nameLength;
-
-            ;
         }
         #endregion
 
@@ -852,6 +855,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         All blocks are included in the block count!.           */
         private void ProcessBlockID23(byte[] data)
         {
+            // not implemented properly
+
             TapeDataBlock t = new TapeDataBlock();
             t.BlockID = 0x23;
             t.DataPeriods = new List<int>();
@@ -1450,14 +1455,40 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         #region ID 16 - C64 ROM Type Data Block
         private void ProcessBlockID16(byte[] data)
         {
+            // zxhawk will not implement this block. it will however handle it so subsequent blocks can be parsed
+            TapeDataBlock t = new TapeDataBlock();
+            t.BlockID = 0x16;
+            t.DataPeriods = new List<int>();
+            t.BlockDescription = BlockType.C64_ROM_Type_Data_Block;
 
+            t.PauseInMS = 0;
+
+            // add to tape
+            _datacorder.DataBlocks.Add(t);
+
+            // advance to next block 
+            int blockLen = GetInt32(data, _position);
+            _position += blockLen;
         }
         #endregion
 
         #region ID 17 - C64 Turbo Tape Data Block
         private void ProcessBlockID17(byte[] data)
         {
+            // zxhawk will not implement this block. it will however handle it so subsequent blocks can be parsed
+            TapeDataBlock t = new TapeDataBlock();
+            t.BlockID = 0x17;
+            t.DataPeriods = new List<int>();
+            t.BlockDescription = BlockType.C64_Turbo_Tape_Data_Block;
 
+            t.PauseInMS = 0;
+
+            // add to tape
+            _datacorder.DataBlocks.Add(t);
+
+            // advance to next block 
+            int blockLen = GetInt32(data, _position);
+            _position += blockLen;
         }
         #endregion
 
