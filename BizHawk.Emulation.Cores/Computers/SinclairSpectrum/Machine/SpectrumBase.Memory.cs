@@ -211,13 +211,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // 
                 if (addr == 56)
                 {
-                    TapeDevice.MaskableInterruptCount++;
+                    //TapeDevice.MaskableInterruptCount++;
 
-                    if (TapeDevice.MaskableInterruptCount > 20)
-                    {
-                        TapeDevice.MaskableInterruptCount = 0;
-                        TapeDevice.AutoStopTape();
-                    }
+                    //if (TapeDevice.MaskableInterruptCount > 50)
+                    //{
+                        //TapeDevice.MaskableInterruptCount = 0;
+                        //TapeDevice.AutoStopTape();
+                    //}
 
                     //TapeDevice?.AutoStopTape();
                     return;
