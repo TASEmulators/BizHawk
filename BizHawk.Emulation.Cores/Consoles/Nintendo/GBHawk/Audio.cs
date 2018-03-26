@@ -155,7 +155,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF3F:
 					if (WAVE_enable)
 					{
-						if (WAVE_can_get) { ret = Wave_RAM[WAVE_wave_cntr >> 1]; }
+						if (WAVE_can_get || Core.is_GBC) { ret = Wave_RAM[WAVE_wave_cntr >> 1]; }
 						else { ret = 0xFF; }						
 					}
 					else { ret = Wave_RAM[addr & 0x0F]; }
@@ -367,7 +367,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (WAVE_trigger)
 						{
 							// some corruption occurs if triggering while reading
-							if (WAVE_enable && WAVE_intl_cntr == 2)
+							if (WAVE_enable && (WAVE_intl_cntr == 2) && !Core.is_GBC)
 							{
 								// we want to use the previous wave cntr value since it was just incremented
 								int t_wave_cntr = (WAVE_wave_cntr + 1) & 31;
@@ -500,7 +500,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 0xFF3F:
 						if (WAVE_enable)
 						{
-							if (WAVE_can_get) { Wave_RAM[WAVE_wave_cntr >> 1] = value; }
+							if (WAVE_can_get || Core.is_GBC) { Wave_RAM[WAVE_wave_cntr >> 1] = value; }
 						}
 						else { Wave_RAM[addr & 0xF] = value; }
 
@@ -508,25 +508,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 			}
 			// when power is off, only length counters and waveRAM are effected by writes
+			// ON GBC, length counters cannot be written to either
 			else
 			{
 				switch (addr)
 				{
 					case 0xFF11:                                        // NR11 (sound length / wave pattern duty %)
-						SQ1_length = (ushort)(64 - (value & 0x3F));
-						SQ1_len_cntr = SQ1_length;
+						if (!Core.is_GBC)
+						{
+							SQ1_length = (ushort)(64 - (value & 0x3F));
+							SQ1_len_cntr = SQ1_length;
+						}
 						break;
 					case 0xFF16:                                        // NR21 (sound length / wave pattern duty %)		
-						SQ2_length = (ushort)(64 - (value & 0x3F));
-						SQ2_len_cntr = SQ2_length;
+						if (!Core.is_GBC)
+						{
+							SQ2_length = (ushort)(64 - (value & 0x3F));
+							SQ2_len_cntr = SQ2_length;
+						}
 						break;
 					case 0xFF1B:                                        // NR31 (length)
-						WAVE_length = (ushort)(256 - value);
-						WAVE_len_cntr = WAVE_length;
+						if (!Core.is_GBC)
+						{
+							WAVE_length = (ushort)(256 - value);
+							WAVE_len_cntr = WAVE_length;
+						}
 						break;
 					case 0xFF20:                                        // NR41 (length)
-						NOISE_length = (ushort)(64 - (value & 0x3F));
-						NOISE_len_cntr = NOISE_length;
+						if (!Core.is_GBC)
+						{
+							NOISE_length = (ushort)(64 - (value & 0x3F));
+							NOISE_len_cntr = NOISE_length;
+						}
 						break;
 					case 0xFF26:                                        // NR52 (ctrl)
 						AUD_CTRL_power = (value & 0x80) > 0;
@@ -865,7 +878,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			for (int i = 0; i < 0x16; i++)
 			{
-				WriteReg(0xFF10 + i, 0);		
+				WriteReg(0xFF10 + i, 0);
 			}
 
 			// duty and length are reset
@@ -877,6 +890,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			SQ1_len_en = SQ2_len_en = WAVE_len_en = NOISE_len_en = false;
 
 			SQ1_output = SQ2_output = WAVE_output = NOISE_output = 0;
+
+			// on GBC, lengths are also reset
+			if (Core.is_GBC)
+			{ 
+				SQ1_length = SQ2_length = WAVE_length = NOISE_length = 0;
+				SQ1_len_cntr = SQ2_len_cntr = WAVE_len_cntr = NOISE_len_cntr = 0;
+			}
 
 			sequencer_len = 0;
 			sequencer_vol = 0;
