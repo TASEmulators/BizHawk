@@ -362,7 +362,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             int bitinbyte = data[_position + 12];
             int pause = GetWordValue(data, _position + 13);
 
+
             int blockLen = 0xFFFFFF & GetInt32(data, _position + 0x0F);
+
+            byte[] bLenArr = data.Skip(_position + 0x0F).Take(3).ToArray();
 
             _position += 0x12;
 
@@ -1526,7 +1529,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // dont get description info for Pure Data Blocks
             if (dataBlockType != DataBlockType.Pure)
             {
-                if (blockdata[0] == 0x00 && blockSize == 19 && (blockdata[1] == 0x00) || blockdata[1] == 3)
+                if (blockdata[0] == 0x00 && blockSize == 19 && (blockdata[1] == 0x00) || (blockdata[1] == 3 && blockdata.Length > 3))
                 {
                     // This is the program header
                     string fileName = Encoding.ASCII.GetString(blockdata.Skip(2).Take(10).ToArray()).Trim();
@@ -1556,12 +1559,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 {
                     // this is a data block
                     description = "Data Block " + (blockSize - 2) + "bytes";
-                    block.AddMetaData(BlockDescriptorTitle.Data_Bytes, (blockSize - 2).ToString() + " Bytes");
+                    block.AddMetaData(BlockDescriptorTitle.Data_Bytes, (blockSize).ToString() + " Bytes");
                 }
                 else
                 {
                     // other type
-                    description = string.Format("#{0} block, {1} bytes", blockdata[0].ToString("X2"), blockSize - 2);
+                    description = string.Format("#{0} block, {1} bytes", blockdata[0].ToString("X2"), blockSize);
                     //description += string.Format(", crc {0}", ((crc != 0) ? string.Format("bad (#{0:X2}!=#{1:X2})", crcFile, crcValue) : "ok"));
                     block.AddMetaData(BlockDescriptorTitle.Undefined, description);
                 }                
