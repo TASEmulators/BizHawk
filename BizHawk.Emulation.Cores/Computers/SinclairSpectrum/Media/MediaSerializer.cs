@@ -58,6 +58,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 "DeSerialize operation is not implemented for this serializer");
         }
 
+        /// <summary>
+        /// Serializer does a quick check, returns TRUE if file is detected as this type
+        /// </summary>
+        /// <param name="data"></param>
+        public virtual bool CheckType(byte[] data)
+        {
+            throw new NotImplementedException(this.GetType().ToString() +
+                "Check type operation is not implemented for this serializer");
+        }
+
         #region Static Tools
 
         /// <summary>

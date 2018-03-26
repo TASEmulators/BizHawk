@@ -61,6 +61,43 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         #endregion
 
         /// <summary>
+        /// Returns TRUE if tzx header is detected
+        /// </summary>
+        /// <param name="data"></param>
+        public override bool CheckType(byte[] data)
+        {
+            /*
+            // TZX Header
+            length: 10 bytes
+            Offset  Value       Type        Description
+            0x00    "ZXTape!"   ASCII[7]    TZX signature
+            0x07    0x1A        BYTE        End of text file marker
+            0x08    1           BYTE        TZX major revision number
+            0x09    20          BYTE        TZX minor revision number
+            */
+
+            // check whether this is a valid tzx format file by looking at the identifier in the header
+            // (first 7 bytes of the file)
+            string ident = Encoding.ASCII.GetString(data, 0, 7);
+            // and 'end of text' marker
+            byte eotm = data[7];
+
+            // version info
+            int majorVer = data[8];
+            int minorVer = data[9];
+
+            if (ident != "ZXTape!" || eotm != 0x1A)
+            {
+                // this is not a valid TZX format file
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        /// <summary>
         /// DeSerialization method
         /// </summary>
         /// <param name="data"></param>

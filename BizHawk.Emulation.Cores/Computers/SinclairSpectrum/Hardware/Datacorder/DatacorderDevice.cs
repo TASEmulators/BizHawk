@@ -329,30 +329,39 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="tapeData"></param>
         public void LoadTape(byte[] tapeData)
         {
-            // attempt TZX deserialization
+            // check TZX first
             TzxSerializer tzxSer = new TzxSerializer(this);
-            try
+            if (tzxSer.CheckType(tapeData))
             {
-                tzxSer.DeSerialize(tapeData);
-                return;
+                // this file has a tzx header - attempt serialization
+                try
+                {
+                    tzxSer.DeSerialize(tapeData);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    // exception during operation
+                    var e = ex;
+                    throw new Exception(this.GetType().ToString() +
+                    "\n\nTape image file has a valid TZX header, but threw an exception whilst data was being parsed.\n\n" + e.ToString());
+                }
             }
-            catch (Exception ex)
+            else
             {
-                // TAP format not detected
-                var e = ex;
-            }
-
-            // attempt TAP deserialization
-            TapSerializer tapSer = new TapSerializer(this);
-            try
-            {
-                tapSer.DeSerialize(tapeData);
-                return;
-            }
-            catch (Exception ex)
-            {
-                // TAP format not detected
-                var e = ex;
+                TapSerializer tapSer = new TapSerializer(this);
+                try
+                {
+                    tapSer.DeSerialize(tapeData);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    // exception during operation
+                    var e = ex;
+                    throw new Exception(this.GetType().ToString() +
+                    "\n\nAn exception was thrown whilst data from this tape image was being parsed as TAP.\n\n" + e.ToString());
+                }
             }
         }
 
