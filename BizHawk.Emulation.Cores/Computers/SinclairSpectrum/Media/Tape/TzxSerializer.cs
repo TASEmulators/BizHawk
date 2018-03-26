@@ -697,7 +697,38 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         ----                                                    */
         private void ProcessBlockID19(byte[] data)
         {
-            string test = "dgfg";
+            // not currently implemented properly
+
+            TapeDataBlock t = new TapeDataBlock();
+            t.BlockID = 0x19;
+            t.BlockDescription = BlockType.Generalized_Data_Block;
+            t.DataPeriods = new List<int>();
+
+            int blockLen = GetInt32(data, _position);
+            _position += 4;
+
+            int pause = GetWordValue(data, _position);
+            _position += 2;
+
+            int totp = GetInt32(data, _position);
+            _position += 4;
+
+            int npp = data[_position++];
+
+            int asp = data[_position++];
+
+            int totd = GetInt32(data, _position);
+            _position += 4;
+
+            int npd = data[_position++];
+
+            int asd = data[_position++];
+
+            // add the block
+            _datacorder.DataBlocks.Add(t);
+
+            // advance the position to the next block
+            _position += blockLen;
         }
         #endregion
 
