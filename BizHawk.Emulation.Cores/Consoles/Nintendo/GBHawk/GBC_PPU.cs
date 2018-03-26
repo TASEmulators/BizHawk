@@ -31,6 +31,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public ushort cur_DMA_dest;
 		public int HDMA_length;
 		public int HDMA_countdown;
+		public int HBL_HDMA_count;
+		public int last_HBL;
+		public bool HBL_HDMA_go;
+		public bool HBL_test;
 
 		public override byte ReadReg(int addr)
 		{
@@ -158,6 +162,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						{
 							// HDMA during HBlank only
 							HDMA_active = true;
+							HBL_HDMA_count = 0x10;
+							last_HBL = LY;
+							HBL_test = true;
+							HBL_HDMA_go = false;
 						}
 						else
 						{
@@ -228,8 +236,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else
 					{
-						// only transfer during mode 3, otherwise
-						if ((STAT & 3) == 3)
+						// only transfer during mode 3, and only 16 bytes at a time
+						if (((STAT & 3) == 3) && (LY != last_HBL) && HBL_test)
+						{
+							HBL_HDMA_go = true;
+							HBL_test = false;
+						}
+
+						if (HBL_HDMA_go && (HBL_HDMA_count > 0))
 						{
 							Core.HDMA_transfer = true;
 
@@ -239,15 +253,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
 								cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
 								HDMA_length--;
+								HBL_HDMA_count--;
 								Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = Core.ReadMemory(cur_DMA_src);
 								cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
 								cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
 								HDMA_length--;
+								HBL_HDMA_count--;
 
 								if (HDMA_length == 0)
 								{
 									HDMA_active = false;
 									Core.HDMA_transfer = false;
+								}
+
+								if ((HBL_HDMA_count == 0) && (HDMA_length != 0))
+								{
+									HBL_test = true;
+									last_HBL = LY;
+									HBL_HDMA_count = 0x10;
 								}
 							}
 						}
@@ -1294,6 +1317,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("cur_DMA_dest", ref cur_DMA_dest);
 			ser.Sync("HDMA_length", ref HDMA_length);
 			ser.Sync("HDMA_countdown", ref HDMA_countdown);
+			ser.Sync("HBL_HDMA_count", ref HBL_HDMA_count);
+			ser.Sync("last_HBL", ref last_HBL);
+			ser.Sync("HBL_HDMA_go", ref HBL_HDMA_go);
+			ser.Sync("HBL_test", ref HBL_test);
 
 			base.SyncState(ser);
 		}

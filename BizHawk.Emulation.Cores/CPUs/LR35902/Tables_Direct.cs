@@ -76,25 +76,42 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 
 		private void HALT_()
 		{
+
 			if (FlagI && (EI_pending == 0))
 			{
-				// if interrupts are disabled,
-				// a glitchy decrement to the program counter happens
-				cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						IDLE,
-						OP_G};
+
+				if (is_GBC)
+				{
+					// in GBC mode, the HALT bug is worked around by simply adding a NOP
+					// so it just takes 4 cycles longer to reach the next instruction
+					cur_instr = new ushort[]
+							{IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							OP};
+				}
+				else
+				{	// if interrupts are disabled,
+					// a glitchy decrement to the program counter happens
+					cur_instr = new ushort[]
+							{IDLE,
+							IDLE,
+							IDLE,
+							OP_G};
+				}
 			}
 			else
 			{
 				cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
-						IDLE,
-						HALT };
-			}
-			
+					IDLE,
+					IDLE,
+					HALT };
+			}	
 		}
 
 		private void JR_COND(bool cond)
