@@ -222,6 +222,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		private byte Port01 = 0xFF;
 		private byte Port02 = 0xFF;
+		private byte Port05 = 0x00;
 		private byte Port3E = 0xAF;
 		private byte Port3F = 0xFF;
 		private byte PortDE = 0x00;
@@ -315,7 +316,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 					case 0x02: return Port02;
 					case 0x03: return 0x00;
 					case 0x04: return 0xFF;
-					case 0x05: return 0x00;
+					case 0x05: return Port05;
 					case 0x06: return 0xFF;
 					case 0x3E: return Port3E;
 					default: return 0xFF;
@@ -356,6 +357,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				{
 					case 0x01: Port01 = value; break;
 					case 0x02: Port02 = value; break;
+					case 0x05: Port05 = value; break;
 					case 0x06: PSG.StereoPanning = value; break;
 					case 0x3E: Port3E = value; break;
 					case 0x3F: Port3F = value; break;
