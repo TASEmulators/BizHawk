@@ -101,6 +101,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             SoundMixer = new SoundProviderMixer((int)(32767 / 10), (ISoundProvider)_machine.BuzzerDevice);
             if (_machine.AYDevice != null)
                 SoundMixer.AddSource(_machine.AYDevice);
+            if (_machine.TapeBuzzer != null)
+                SoundMixer.AddSource((ISoundProvider)_machine.TapeBuzzer);
             //SoundMixer.Stereo = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).StereoSound;
 
             if (_machine.AYDevice != null && _machine.AYDevice.GetType() == typeof(AYChip))
@@ -113,6 +115,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 ((Buzzer)_machine.BuzzerDevice as Buzzer).TapeVolume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).TapeVolume;
                 ((Buzzer)_machine.BuzzerDevice as Buzzer).EarVolume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).EarVolume;
+            }
+
+            if (_machine.TapeBuzzer != null)
+            {
+                ((Buzzer)_machine.TapeBuzzer as Buzzer).TapeVolume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).TapeVolume;
+                //((Buzzer)_machine.TapeBuzzer as Buzzer).EarVolume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).EarVolume;
             }
 
 

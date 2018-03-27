@@ -26,7 +26,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public DatacorderDevice()
         {
-            
+
         }
 
         /// <summary>
@@ -37,12 +37,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             _machine = machine;
             _cpu = _machine.CPU;
-            _buzzer = machine.BuzzerDevice;
+            _buzzer = machine.TapeBuzzer;
         }
+
+
 
         #endregion
 
         #region State Information
+
+        /// <summary>
+        /// Internal counter used to trigger tape buzzer output
+        /// </summary>
+        private int counter = 0;
 
         /// <summary>
         /// The index of the current tape data block that is loaded
@@ -145,7 +152,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void StartFrame()
         {
             //if (TapeIsPlaying && AutoPlay)
-                //FlashLoad();
+            //FlashLoad();
+
+            _buzzer.ProcessPulseValue(true, currentState);
         }
 
         #endregion
@@ -160,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (_tapeIsPlaying)
                 return;
 
-            _machine.BuzzerDevice.SetTapeMode(true);
+            _buzzer.SetTapeMode(true);
 
             _machine.Spectrum.OSD_TapePlaying();
 
@@ -215,7 +224,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (!_tapeIsPlaying)
                 return;
 
-            _machine.BuzzerDevice.SetTapeMode(false);
+            _buzzer.SetTapeMode(false);
 
             _machine.Spectrum.OSD_TapeStopped();
 
@@ -376,6 +385,27 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         #endregion
 
         #region Tape Device Methods
+
+
+        
+
+        /// <summary>
+        /// Runs every frame
+        /// </summary>
+        public void TapeCycle()
+        {            
+            if (TapeIsPlaying)
+            {
+                counter++;
+
+                if (counter > 50)
+                {
+                    counter = 0;
+                    bool state = GetEarBit(_machine.CPU.TotalExecutedCycles);
+                    _buzzer.ProcessPulseValue(false, state);
+                }
+            }
+        }
         
         /// <summary>
         /// Simulates the spectrum 'EAR' input reading data from the tape
@@ -534,7 +564,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _lastCycle = cpuCycle - (long)cycles;
 
             // play the buzzer
-            _buzzer.ProcessPulseValue(false, currentState);
+            //_buzzer.ProcessPulseValue(false, currentState);
 
             return currentState;
         }
@@ -898,6 +928,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("DatacorderDevice");
+            ser.Sync("counter", ref counter);
             ser.Sync("_currentDataBlockIndex", ref _currentDataBlockIndex);
             ser.Sync("_position", ref _position);
             ser.Sync("_tapeIsPlaying", ref _tapeIsPlaying);

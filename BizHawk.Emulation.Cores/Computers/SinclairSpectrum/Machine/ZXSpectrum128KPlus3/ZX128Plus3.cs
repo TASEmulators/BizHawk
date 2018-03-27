@@ -31,6 +31,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             BuzzerDevice = new Buzzer(this);
             BuzzerDevice.Init(44100, ULADevice.FrameLength);
 
+            TapeBuzzer = new Buzzer(this);
+            TapeBuzzer.Init(44100, ULADevice.FrameLength);
+
             AYDevice = new AYChip(this);
             AYDevice.Init(44100, ULADevice.FrameLength);
 

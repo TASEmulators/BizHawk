@@ -40,6 +40,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public IBeeperDevice BuzzerDevice { get; set; }
 
         /// <summary>
+        /// A second beeper for the tape
+        /// </summary>
+        public IBeeperDevice TapeBuzzer { get; set; }
+
+        /// <summary>
         /// Device representing the AY-3-8912 chip found in the 128k and up spectrums
         /// </summary>
         public IPSG AYDevice { get; set; }
@@ -142,6 +147,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (_renderSound)
             {
                 BuzzerDevice.StartFrame();
+                TapeBuzzer.StartFrame();
                 if (AYDevice != null)
                     AYDevice.StartFrame();
             }
@@ -154,7 +160,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 ULADevice.CheckForInterrupt(CurrentFrameCycle);
 
                 // run a single CPU instruction
-                CPU.ExecuteOne();                
+                CPU.ExecuteOne();
+
+                // cycle the tape device
+                TapeDevice.TapeCycle();
             }
 
             // we have reached the end of a frame
@@ -165,7 +174,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 ULADevice.UpdateScreenBuffer(ULADevice.FrameLength);
 
             if (_renderSound)
+            {
                 BuzzerDevice.EndFrame();
+                TapeBuzzer.EndFrame();
+            }
 
             if (AYDevice != null)
                 AYDevice.EndFrame();
@@ -329,6 +341,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             RomData.SyncState(ser);
             KeyboardDevice.SyncState(ser);
             BuzzerDevice.SyncState(ser);
+            TapeBuzzer.SyncState(ser);
             ULADevice.SyncState(ser);
 
             if (AYDevice != null)
@@ -336,7 +349,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 AYDevice.SyncState(ser);
                 ((AYChip)AYDevice as AYChip).PanningConfiguration = Spectrum.Settings.AYPanConfig;
             }
-                
 
             ser.Sync("tapeMediaIndex", ref tapeMediaIndex);
             TapeMediaIndex = tapeMediaIndex;
