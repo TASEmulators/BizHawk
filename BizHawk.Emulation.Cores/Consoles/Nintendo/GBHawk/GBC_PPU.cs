@@ -7,15 +7,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	public class GBC_PPU : PPU
 	{
-		// these are the uniquely GBC variables
-		public byte BG_pal_index;
-		public byte pal_transfer_byte;
-		public byte spr_pal_index;
-		public byte spr_transfer_byte;
+		public uint[] BG_palette = new uint[32];
+		public uint[] OBJ_palette = new uint[32];
+
+		// individual byte used in palette colors
+		public byte[] BG_bytes = new byte[64];
+		public byte[] OBJ_bytes = new byte[64];
+		public bool BG_bytes_inc;
+		public bool OBJ_bytes_inc;
+		public byte BG_bytes_index;
+		public byte OBJ_bytes_index;
+		public byte BG_transfer_byte;
+		public byte OBJ_transfer_byte;
+
+		// HDMA is unique to GBC, do it as part of the PPU tick
 		public byte HDMA_src_hi;
 		public byte HDMA_src_lo;
 		public byte HDMA_dest_hi;
 		public byte HDMA_dest_lo;
+
+		// accessors for derived values
+		public byte BG_pal_ret
+		{
+			get { return (byte)(((BG_bytes_inc ? 1 : 0) << 7) | (BG_bytes_index & 0x3F)); }
+		}
+
+		public byte OBJ_pal_ret
+		{
+			get { return (byte)(((OBJ_bytes_inc ? 1 : 0) << 7) | (BG_bytes_index & 0x1F)); }
+		}
+
 		public byte HDMA_ctrl
 		{
 			get { return (byte)(((HDMA_active ? 0 : 1) << 7) | ((HDMA_length >> 16) - 1)); }
@@ -23,8 +44,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 
 		// controls for tile attributes
-		public byte tile_attr_byte;
 		public int VRAM_sel;
+		public bool BG_V_flip;
 		public bool HDMA_active;
 		public bool HDMA_mode;
 		public ushort cur_DMA_src;
@@ -61,10 +82,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF53: ret = HDMA_dest_hi;			break; // HDMA3
 				case 0xFF54: ret = HDMA_dest_lo;			break; // HDMA4
 				case 0xFF55: ret = HDMA_ctrl;				break; // HDMA5
-				case 0xFF68: ret = BG_pal_index;			break; // BGPI
-				case 0xFF69: ret = pal_transfer_byte;		break; // BGPD
-				case 0xFF6A: ret = spr_pal_index;			break; // OBPI
-				case 0xFF6B: ret = spr_transfer_byte;		break; // OBPD
+				case 0xFF68: ret = BG_pal_ret;				break; // BGPI
+				case 0xFF69: ret = BG_transfer_byte;		break; // BGPD
+				case 0xFF6A: ret = OBJ_pal_ret;				break; // OBPI
+				case 0xFF6B: ret = OBJ_transfer_byte;		break; // OBPD
 			}
 
 			return ret;
@@ -191,16 +212,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					break;
 				case 0xFF68: // BGPI
-					BG_pal_index = value;
+					BG_bytes_index = (byte)(value & 0x3F);
+					BG_bytes_inc = ((value & 0x80) == 0x80);
 					break;
 				case 0xFF69: // BGPD
-					pal_transfer_byte = value;
+					BG_transfer_byte = value;
+					BG_bytes[BG_bytes_index] = value;
+
+					// change the appropriate palette color
+					color_compute_BG();
+
+					if (BG_bytes_inc) { BG_bytes_index++; BG_bytes_index &= 0x3F; }
 					break;
 				case 0xFF6A: // OBPI
-					spr_pal_index = value;
+					OBJ_bytes_index = (byte)(value & 0x3F);
+					OBJ_bytes_inc = ((value & 0x80) == 0x80);
 					break;
 				case 0xFF6B: // OBPD
-					spr_transfer_byte = value;
+					OBJ_transfer_byte = value;
+					OBJ_bytes[OBJ_bytes_index] = value;
+
+					// change the appropriate palette color
+					color_compute_OBJ();
+
+					if (OBJ_bytes_inc) { OBJ_bytes_index++; OBJ_bytes_index &= 0x3F; }
 					break;
 			}			
 		}
@@ -237,7 +272,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					else
 					{
 						// only transfer during mode 3, and only 16 bytes at a time
-						if (((STAT & 3) == 3) && (LY != last_HBL) && HBL_test)
+						if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test)
 						{
 							HBL_HDMA_go = true;
 							HBL_test = false;
@@ -646,24 +681,38 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// start shifting data into the LCD
 				if (render_counter >= (render_offset + 8))
 				{
-					pixel = tile_data_latch[0].Bit(7 - (render_counter % 8)) ? 1 : 0;
-					pixel |= tile_data_latch[1].Bit(7 - (render_counter % 8)) ? 2 : 0;
-
-					int ref_pixel = pixel;
-					if (LCDC.Bit(0))
+					if (tile_data_latch[2].Bit(5))
 					{
-						pixel = (BGP >> (pixel * 2)) & 3;
+						pixel = tile_data_latch[0].Bit(render_counter % 8) ? 1 : 0;
+						pixel |= tile_data_latch[1].Bit(render_counter % 8) ? 2 : 0;
 					}
 					else
 					{
-						pixel = 0;
+						pixel = tile_data_latch[0].Bit(7 - (render_counter % 8)) ? 1 : 0;
+						pixel |= tile_data_latch[1].Bit(7 - (render_counter % 8)) ? 2 : 0;
 					}
-						
+
+					int ref_pixel = pixel;
+
+					if (LCDC.Bit(0))
+					{
+						//pixel = (BGP >> (pixel * 2)) & 3;
+					}
+					else
+					{
+						//pixel = 0;
+					}
+
+					int pal_num = tile_data_latch[2] & 0x7;
+
+					bool use_sprite = false;
+
+					int s_pixel = 0;
+
 					// now we have the BG pixel, we next need the sprite pixel
 					if (!no_sprites)
 					{
-						bool have_sprite = false;
-						int s_pixel = 0;
+						bool have_sprite = false;					
 						int sprite_attr = 0;
 
 						if (sprite_present_list[pixel_counter] == 1)
@@ -675,7 +724,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 						if (have_sprite)
 						{
-							bool use_sprite = false;
 							if (LCDC.Bit(1))
 							{
 								if (!sprite_attr.Bit(7))
@@ -695,6 +743,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 							if (use_sprite)
 							{
+								pal_num = sprite_attr & 7;
+
+								/*
 								if (sprite_attr.Bit(4))
 								{
 									pixel = (obj_pal_1 >> (s_pixel * 2)) & 3;
@@ -702,13 +753,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								else
 								{
 									pixel = (obj_pal_0 >> (s_pixel * 2)) & 3;
-								}							
+								}	
+								*/						
 							}
 						}
 					}
 
 					// based on sprite priority and pixel values, pick a final pixel color
-					Core._vidbuffer[LY * 160 + pixel_counter] = (int)Core.color_palette[pixel];
+					if (use_sprite)
+					{
+						Core._vidbuffer[LY * 160 + pixel_counter] = (int)OBJ_palette[pal_num * 4 + s_pixel];
+					}
+					else
+					{
+						Core._vidbuffer[LY * 160 + pixel_counter] = (int)BG_palette[pal_num * 4 + pixel];
+					}
+					
 					pixel_counter++;
 
 					if (pixel_counter == 160)
@@ -766,8 +826,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 							temp_fetch = y_tile * 32 + (x_tile + tile_inc) % 32;
 							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch];						
-							tile_attr_byte = Core.VRAM[0x3800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch];
-							VRAM_sel = tile_attr_byte.Bit(3) ? 1 : 0;
+							tile_data[2] = Core.VRAM[0x3800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch];
+							VRAM_sel = tile_data[2].Bit(3) ? 1 : 0;
+							BG_V_flip = tile_data[2].Bit(6);
 						}
 						else
 						{
@@ -787,6 +848,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if ((internal_cycle % 2) == 0)
 						{
 							y_scroll_offset = (scroll_y + LY) % 8;
+
+							if (BG_V_flip)
+							{
+								y_scroll_offset = 7 - y_scroll_offset;
+							}
 
 							if (LCDC.Bit(4))
 							{
@@ -813,6 +879,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if ((internal_cycle % 2) == 0)
 						{
 							y_scroll_offset = (scroll_y + LY) % 8;
+
+							if (BG_V_flip)
+							{
+								y_scroll_offset = 7 - y_scroll_offset;
+							}
 
 							if (LCDC.Bit(4))
 							{
@@ -871,8 +942,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						{
 							temp_fetch = window_y_tile * 32 + (window_x_tile + window_tile_inc) % 32;
 							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(6) ? 1 : 0) * 0x400 + temp_fetch];
-							tile_attr_byte = Core.VRAM[0x3800 + (LCDC.Bit(6) ? 1 : 0) * 0x400 + temp_fetch];
-							VRAM_sel = tile_attr_byte.Bit(3) ? 1 : 0;
+							tile_data[2] = Core.VRAM[0x3800 + (LCDC.Bit(6) ? 1 : 0) * 0x400 + temp_fetch];
+							VRAM_sel = tile_data[2].Bit(3) ? 1 : 0;
 						}
 						else
 						{
@@ -889,6 +960,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if ((window_counter % 2) == 0)
 						{
 							y_scroll_offset = (window_y_tile_inc) % 8;
+
+							if (BG_V_flip)
+							{
+								y_scroll_offset = 7 - y_scroll_offset;
+							}
 
 							if (LCDC.Bit(4))
 							{
@@ -918,6 +994,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if ((window_counter % 2) == 0)
 						{
 							y_scroll_offset = (window_y_tile_inc) % 8;
+
+							if (BG_V_flip)
+							{
+								y_scroll_offset = 7 - y_scroll_offset;
+							}
+
 							if (LCDC.Bit(4))
 							{
 								// if LCDC somehow changed between the two reads, make sure we have a positive number
@@ -1004,6 +1086,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					latch_new_data = false;
 					tile_data_latch[0] = tile_data[0];
 					tile_data_latch[1] = tile_data[1];
+					tile_data_latch[2] = tile_data[2];
 				}
 			}
 
@@ -1069,6 +1152,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public override void process_sprite()
 		{
 			int y;
+			int VRAM_temp = SL_sprites[sl_use_index * 4 + 3].Bit(3) ? 1 : 0;
 
 			if (SL_sprites[sl_use_index * 4 + 3].Bit(6))
 			{
@@ -1076,15 +1160,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					y = LY - (SL_sprites[sl_use_index * 4] - 16);
 					y = 15 - y;
-					sprite_sel[0] = Core.VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2];
-					sprite_sel[1] = Core.VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2 + 1];
+					sprite_sel[0] = Core.VRAM[(VRAM_temp * 0x2000) + (SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2];
+					sprite_sel[1] = Core.VRAM[(VRAM_temp * 0x2000) + (SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2 + 1];
 				}
 				else
 				{
 					y = LY - (SL_sprites[sl_use_index * 4] - 16);
 					y = 7 - y;
-					sprite_sel[0] = Core.VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2];
-					sprite_sel[1] = Core.VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2 + 1];
+					sprite_sel[0] = Core.VRAM[(VRAM_temp * 0x2000) + SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2];
+					sprite_sel[1] = Core.VRAM[(VRAM_temp * 0x2000) + SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2 + 1];
 				}
 			}
 			else
@@ -1092,14 +1176,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (LCDC.Bit(2))
 				{
 					y = LY - (SL_sprites[sl_use_index * 4] - 16);
-					sprite_sel[0] = Core.VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2];
-					sprite_sel[1] = Core.VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2 + 1];
+					sprite_sel[0] = Core.VRAM[(VRAM_temp * 0x2000) + (SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2];
+					sprite_sel[1] = Core.VRAM[(VRAM_temp * 0x2000) + (SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2 + 1];
 				}
 				else
 				{
 					y = LY - (SL_sprites[sl_use_index * 4] - 16);
-					sprite_sel[0] = Core.VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2];
-					sprite_sel[1] = Core.VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2 + 1];
+					sprite_sel[0] = Core.VRAM[(VRAM_temp * 0x2000) + SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2];
+					sprite_sel[1] = Core.VRAM[(VRAM_temp * 0x2000) + SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2 + 1];
 				}
 			}
 
@@ -1298,19 +1382,69 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
+		public void color_compute_BG()
+		{
+			uint R;
+			uint G;
+			uint B;
+
+			if ((BG_bytes_index % 2) == 0)
+			{
+				R = (uint)(BG_bytes[BG_bytes_index] & 0x1F);
+				G = (uint)(((BG_bytes[BG_bytes_index] & 0xE0) | ((BG_bytes[BG_bytes_index + 1] & 0x03) << 8)) >> 5);
+				B = (uint)((BG_bytes[BG_bytes_index + 1] & 0x7C) >> 2);
+			}
+			else
+			{
+				R = (uint)(BG_bytes[BG_bytes_index - 1] & 0x1F);
+				G = (uint)(((BG_bytes[BG_bytes_index - 1] & 0xE0) | ((BG_bytes[BG_bytes_index] & 0x03) << 8)) >> 5);
+				B = (uint)((BG_bytes[BG_bytes_index] & 0x7C) >> 2);
+			}
+
+			uint retR = ((R * 13 + G * 2 + B) >> 1) & 0xFF;
+			uint retG = ((G * 3 + B) << 1) & 0xFF;
+			uint retB = ((R * 3 + G * 2 + B * 11) >> 1) & 0xFF;
+
+			BG_palette[BG_bytes_index >> 1] = (uint)(0xFF000000 | (retR << 16) | (retG << 8) | retB);
+		}
+
+		public void color_compute_OBJ()
+		{
+			uint R;
+			uint G;
+			uint B;
+
+			if ((OBJ_bytes_index % 2) == 0)
+			{
+				R = (uint)(OBJ_bytes[OBJ_bytes_index] & 0x1F);
+				G = (uint)(((OBJ_bytes[OBJ_bytes_index] & 0xE0) | ((OBJ_bytes[OBJ_bytes_index + 1] & 0x03) << 8)) >> 5);
+				B = (uint)((OBJ_bytes[OBJ_bytes_index + 1] & 0x7C) >> 2);
+			}
+			else
+			{
+				R = (uint)(OBJ_bytes[OBJ_bytes_index - 1] & 0x1F);
+				G = (uint)(((OBJ_bytes[OBJ_bytes_index - 1] & 0xE0) | ((OBJ_bytes[OBJ_bytes_index] & 0x03) << 8)) >> 5);
+				B = (uint)((OBJ_bytes[OBJ_bytes_index] & 0x7C) >> 2);
+			}
+
+			uint retR = ((R * 13 + G * 2 + B) >> 1) & 0xFF;
+			uint retG = ((G * 3 + B) << 1) & 0xFF;
+			uint retB = ((R * 3 + G * 2 + B * 11) >> 1) & 0xFF;
+
+			OBJ_palette[OBJ_bytes_index >> 1] = (uint)(0xFF000000 | (retR << 16) | (retG << 8) | retB);
+		}
+
 		public override void SyncState(Serializer ser)
 		{
-			ser.Sync("BG_pal_index", ref BG_pal_index);
-			ser.Sync("pal_transfer_byte", ref pal_transfer_byte);
-			ser.Sync("spr_pal_index", ref spr_pal_index);
-			ser.Sync("spr_transfer_byte", ref spr_transfer_byte);
+			ser.Sync("pal_transfer_byte", ref BG_transfer_byte);
+			ser.Sync("spr_transfer_byte", ref OBJ_transfer_byte);
 			ser.Sync("HDMA_src_hi", ref HDMA_src_hi);
 			ser.Sync("HDMA_src_lo", ref HDMA_src_lo);
 			ser.Sync("HDMA_dest_hi", ref HDMA_dest_hi);
 			ser.Sync("HDMA_dest_lo", ref HDMA_dest_lo);
 
-			ser.Sync("tile_attr_byte", ref tile_attr_byte);
 			ser.Sync("VRAM_sel", ref VRAM_sel);
+			ser.Sync("BG_V_flip", ref BG_V_flip);
 			ser.Sync("HDMA_active", ref HDMA_active);
 			ser.Sync("HDMA_mode", ref HDMA_mode);
 			ser.Sync("cur_DMA_src", ref cur_DMA_src);
@@ -1321,6 +1455,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("last_HBL", ref last_HBL);
 			ser.Sync("HBL_HDMA_go", ref HBL_HDMA_go);
 			ser.Sync("HBL_test", ref HBL_test);
+
+			ser.Sync("BG_palette", ref BG_palette, false);
+			ser.Sync("OBJ_palette", ref OBJ_palette, false);
+
+			ser.Sync("BG_bytes", ref BG_bytes, false);
+			ser.Sync("OBJ_bytes", ref OBJ_bytes, false);
+			ser.Sync("BG_bytes_inc", ref BG_bytes_inc);
+			ser.Sync("OBJ_bytes_inc", ref OBJ_bytes_inc);
+			ser.Sync("BG_bytes_index", ref BG_bytes_index);
+			ser.Sync("OBJ_bytes_index", ref OBJ_bytes_index);
 
 			base.SyncState(ser);
 		}

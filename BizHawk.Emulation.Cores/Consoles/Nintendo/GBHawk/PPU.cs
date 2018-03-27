@@ -69,8 +69,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int temp_fetch;
 		public int tile_inc;
 		public bool pre_render;
-		public byte[] tile_data = new byte[2];
-		public byte[] tile_data_latch = new byte[2];
+		public byte[] tile_data = new byte[3];
+		public byte[] tile_data_latch = new byte[3];
 		public int latch_counter;
 		public bool latch_new_data;
 		public int render_counter;
