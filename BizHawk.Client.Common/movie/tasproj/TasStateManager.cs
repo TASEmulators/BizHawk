@@ -271,7 +271,7 @@ namespace BizHawk.Client.Common
 				return;
 			}
 
-			StateManagerState state = _states.ElementAt(index).Value;
+			StateManagerState state = _states.Values[index];
 
 			if (state.IsOnDisk)
 			{
@@ -407,11 +407,10 @@ namespace BizHawk.Client.Common
 				{
 					continue;
 				}
-
-				KeyValuePair<int, StateManagerState> kvp = _states.ElementAt(i);
-				bw.Write(kvp.Key);
-				bw.Write(kvp.Value.Length);
-				bw.Write(kvp.Value.State);
+				
+				bw.Write(_states.Keys[i]);
+				bw.Write(_states.Values[i].Length);
+				bw.Write(_states.Values[i].State);
 			}
 		}
 
