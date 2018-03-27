@@ -338,7 +338,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Sync("ROMhigh", ref ROMhigh);
             ser.Sync("ROMlow", ref ROMlow);
 
-            RomData.SyncState(ser);
             KeyboardDevice.SyncState(ser);
             BuzzerDevice.SyncState(ser);
             TapeBuzzer.SyncState(ser);
