@@ -11,13 +11,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     {
         void Init(int sampleRate, int tStatesPerFrame);
 
-        void ProcessPulseValue(bool fromTape, bool earPulse);
+        void ProcessPulseValue(bool pulse);
 
         void StartFrame();
 
         void EndFrame();
-
-        void SetTapeMode(bool tapeMode);
 
         void SyncState(Serializer ser);
     }

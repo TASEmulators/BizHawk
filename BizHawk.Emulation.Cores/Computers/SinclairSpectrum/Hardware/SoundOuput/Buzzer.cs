@@ -1,10 +1,8 @@
 ﻿
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -14,30 +12,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// 
     /// For the purposes of emulation this devices is locked to a frame
     /// a list of Pulses is built up over the course of the frame and outputted at the end of the frame
+    /// 
+    /// ZXHawk instantiates multiples of these buzzers to achieve separation between tape and spectrum audio output
     /// </summary>
     public class Buzzer : ISoundProvider, IBeeperDevice
     {
-        /// <summary>
-        /// Supplied values are right for 48K spectrum
-        /// These will deviate for 128k and up (as there are more T-States per frame)
-        /// </summary>
-        //public int SampleRate = 44100; //35000;
-        //public int SamplesPerFrame = 882; //699;
-        //public int TStatesPerSample = 79; //100;
-        
+        #region Fields and Properties
+
         /// <summary>
         /// Sample Rate 
         /// This usually has to be 44100 for ISoundProvider
         /// </summary>
+        private int _sampleRate;
         public int SampleRate
         {
             get { return _sampleRate; }
             set { _sampleRate = value; }
         }
-        
+
         /// <summary>
         /// Number of samples in one frame
         /// </summary>
+        private int _samplesPerFrame;
         public int SamplesPerFrame
         {
             get { return _samplesPerFrame; }
@@ -47,6 +43,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Number of TStates in each sample
         /// </summary>
+        private int _tStatesPerSample;
         public int TStatesPerSample
         {
             get { return _tStatesPerSample; }
@@ -54,37 +51,55 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
-        /// The tape loading volume
+        /// Buzzer volume
         /// Accepts an int 0-100 value
         /// </summary>
-        private int _tapeVolume;
-        public int TapeVolume
+        private int _volume;
+        public int Volume
         {
             get
             {
-                return VolumeConverterOut(_tapeVolume);
+                return VolumeConverterOut(_volume);
             }
             set
             {
-                _tapeVolume = VolumeConverterIn(value);
+                _volume = VolumeConverterIn(value);
             }
         }
 
         /// <summary>
-        /// The EAR beeper volume
+        /// The number of cpu cycles per frame
         /// </summary>
-        private int _earVolume;
-        public int EarVolume
-        {
-            get
-            {
-                return VolumeConverterOut(_earVolume);
-            }
-            set
-            {
-                _earVolume = VolumeConverterIn(value);
-            }
-        }
+        private long _tStatesPerFrame;
+
+        /// <summary>
+        /// The cycle at which the frame starts
+        /// </summary>
+        private long _frameStart;
+
+        /// <summary>
+        /// The parent emulated machine
+        /// </summary>
+        private SpectrumBase _machine;
+
+        /// <summary>
+        /// Pulses collected during the last frame
+        /// </summary>
+        public List<Pulse> Pulses { get; private set; }
+
+        /// <summary>
+        /// The last pulse
+        /// </summary>
+        public bool LastPulse { get; set; }
+
+        /// <summary>
+        /// The last T-State (cpu cycle) that the last pulse was received
+        /// </summary>
+        public long LastPulseTState { get; set; }
+
+        #endregion
+
+        #region Private Methods
 
         /// <summary>
         /// Takes an int 0-100 and returns the relevant short volume to output
@@ -115,33 +130,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             return shortvol / increment;
         }
 
-
-        private SpectrumBase _machine;
-
-        /// <summary>
-        /// State fields
-        /// </summary>
-        private long _frameStart;
-        private bool _tapeMode;
-        private long _tStatesPerFrame;
-        private int _sampleRate;
-        private int _samplesPerFrame;
-        private int _tStatesPerSample;
-
-        /// <summary>
-        /// Pulses collected during the last frame
-        /// </summary>
-        public List<Pulse> Pulses { get; private set; }
-
-        /// <summary>
-        /// The last pulse
-        /// </summary>
-        public bool LastPulse { get; set; }
-
-        /// <summary>
-        /// The last T-State (cpu cycle) that the last pulse was received
-        /// </summary>
-        public long LastPulseTState { get; set; }
+        #endregion
 
         #region Construction & Initialisation
 
@@ -159,75 +148,31 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _tStatesPerFrame = tStatesPerFrame;
             _tStatesPerSample = 79;
             _samplesPerFrame = (int)_tStatesPerFrame / _tStatesPerSample;
-
-            /*
-
-            // set the tstatesperframe
-            _tStatesPerFrame = tStatesPerFrame;
-
-            // calculate actual refresh rate
-            double refresh = (double)_machine.ULADevice.ClockSpeed / (double)_tStatesPerFrame;
-
-            // how many samples per frame are expected by ISoundProvider (at 44.1KHz)
-            _samplesPerFrame = 880;// (int)((double)sampleRate / (double)refresh);
-
-            // set the sample rate
-            _sampleRate = sampleRate;
-
-            // calculate samples per frame (what ISoundProvider will be expecting at 44100)
-            //_samplesPerFrame = (int)((double)_tStatesPerFrame / (double)refresh);
-
-            // calculate tstates per sameple
-            _tStatesPerSample = 79;// _tStatesPerFrame / _samplesPerFrame;
-
-            /*
-
-           
-
             
-
-            // get divisors
-            var divs = from a in Enumerable.Range(2, _tStatesPerFrame / 2)
-                       where _tStatesPerFrame % a == 0
-                       select a;
-
-            // get the highest int value under 120 (this will be TStatesPerSample)
-            _tStatesPerSample = divs.Where(a => a < 100).Last();
-
-            // get _samplesPerFrame
-            _samplesPerFrame = _tStatesPerFrame / _tStatesPerSample;
-            
-    */
             Pulses = new List<Pulse>(1000);  
         }
 
         #endregion
 
+        #region IBeeperDevice
+
         /// <summary>
-        /// When the pulse value from the EAR output changes it is processed here
+        /// When the pulse value changes it is processed here
         /// </summary>
-        /// <param name="fromTape"></param>
-        /// <param name="earPulse"></param>
-        public void ProcessPulseValue(bool fromTape, bool earPulse)
+        /// <param name="pulse"></param>
+        public void ProcessPulseValue(bool pulse)
         {
             if (!_machine._renderSound)
                 return;
 
-            if (!fromTape && _tapeMode)
-            {
-                // tape mode is active but the pulse value came from an OUT instruction
-                // do not process the value
-                //return;
-            }
-
-            if (earPulse == LastPulse)
+            if (pulse == LastPulse)
             {
                 // no change detected
                 return;
             }
 
             // set the lastpulse
-            LastPulse = earPulse;
+            LastPulse = pulse;
 
             // get where we are in the frame
             var currentULACycle = _machine.CurrentFrameCycle;
@@ -244,7 +189,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // add the pulse
                 Pulse p = new Pulse
                 {
-                    State = !earPulse,
+                    State = !pulse,
                     Length = length
                 };
                 Pulses.Add(p);
@@ -259,7 +204,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public void StartFrame()
         {
-            //DiscardSamples();
             Pulses.Clear();
             LastPulseTState = 0;
         }
@@ -296,11 +240,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 for (var i = firstSample; i < currentEnd + pulse.Length; i += TStatesPerSample)
                 {
-                    if (_tapeMode)
-                        samples[sampleIndex++] = pulse.State ? (short)(_tapeVolume) : (short)0;
-                    else
-                        samples[sampleIndex++] = pulse.State ? (short)(_earVolume) : (short)0;
-                }                   
+                    samples[sampleIndex++] = pulse.State ? (short)(_volume) : (short)0;
+                }
 
                 currentEnd += pulse.Length;
             }
@@ -316,16 +257,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _frameStart += _tStatesPerFrame;
         }
 
-        /// <summary>
-        /// When the spectrum is set to receive tape input, the EAR output on the ULA is disabled
-        /// (so no buzzer sound is emitted)
-        /// </summary>
-        /// <param name="tapeMode"></param>
-        public void SetTapeMode(bool tapeMode)
-        {
-            _tapeMode = tapeMode;
-        }
-
+        #endregion
 
         #region ISoundProvider
 
@@ -370,24 +302,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #endregion
 
-        
+        #region State Serialization
+
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("Buzzer");
             ser.Sync("_frameStart", ref _frameStart);
-            ser.Sync("_tapeMode", ref _tapeMode);
             ser.Sync("_tStatesPerFrame", ref _tStatesPerFrame);
             ser.Sync("_sampleRate", ref _sampleRate);
             ser.Sync("_samplesPerFrame", ref _samplesPerFrame);
             ser.Sync("_tStatesPerSample", ref _tStatesPerSample);
-
             ser.Sync("soundBuffer", ref soundBuffer, false);
             ser.Sync("soundBufferContains", ref soundBufferContains);
             ser.EndSection();
         }
-        
 
+        #endregion
     }
-
-    
 }

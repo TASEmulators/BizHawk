@@ -33,8 +33,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }                
             if (_machine != null && _machine.BuzzerDevice != null)
             {
-                ((Buzzer)_machine.BuzzerDevice as Buzzer).TapeVolume = o.TapeVolume;
-                ((Buzzer)_machine.BuzzerDevice as Buzzer).EarVolume = o.EarVolume;
+                ((Buzzer)_machine.BuzzerDevice as Buzzer).Volume = o.EarVolume;
+            }
+            if (_machine != null && _machine.TapeBuzzer != null)
+            {
+                ((Buzzer)_machine.TapeBuzzer as Buzzer).Volume = o.TapeVolume;
             }
 
             Settings = o;

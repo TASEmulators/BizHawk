@@ -151,10 +151,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public void StartFrame()
         {
-            //if (TapeIsPlaying && AutoPlay)
-            //FlashLoad();
-
-            _buzzer.ProcessPulseValue(true, currentState);
+            //_buzzer.ProcessPulseValue(currentState);
         }
 
         #endregion
@@ -168,8 +165,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             if (_tapeIsPlaying)
                 return;
-
-            _buzzer.SetTapeMode(true);
 
             _machine.Spectrum.OSD_TapePlaying();
 
@@ -223,8 +218,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             if (!_tapeIsPlaying)
                 return;
-
-            _buzzer.SetTapeMode(false);
 
             _machine.Spectrum.OSD_TapeStopped();
 
@@ -384,16 +377,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #endregion
 
-        #region Tape Device Methods
-
-
-        
+        #region Tape Device Methods        
 
         /// <summary>
-        /// Runs every frame
+        /// Is called every cpu cycle but runs every 50 t-states
+        /// This enables the tape devices to play out even if the spectrum itself is not
+        /// requesting tape data
         /// </summary>
         public void TapeCycle()
-        {            
+        {              
             if (TapeIsPlaying)
             {
                 counter++;
@@ -402,7 +394,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 {
                     counter = 0;
                     bool state = GetEarBit(_machine.CPU.TotalExecutedCycles);
-                    _buzzer.ProcessPulseValue(false, state);
+                    _buzzer.ProcessPulseValue(state);
                 }
             }
         }
