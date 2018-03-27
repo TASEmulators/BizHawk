@@ -9,6 +9,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public GBHawk Core { get; set; }
 
+		public uint[] BG_palette = new uint[32];
+		public uint[] OBJ_palette = new uint[32];
+
 		// register variables
 		public byte LCDC;
 		public byte STAT;
@@ -154,6 +157,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public virtual void SyncState(Serializer ser)
 		{
+
+			ser.Sync("BG_palette", ref BG_palette, false);
+			ser.Sync("OBJ_palette", ref OBJ_palette, false);
+
 			ser.Sync("LCDC", ref LCDC);
 			ser.Sync("STAT", ref STAT);
 			ser.Sync("scroll_y", ref scroll_y);

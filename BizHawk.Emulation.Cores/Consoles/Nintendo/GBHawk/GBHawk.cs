@@ -186,15 +186,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			iptr0 = Marshal.AllocHGlobal(VRAM.Length + 1);
 			iptr1 = Marshal.AllocHGlobal(OAM.Length + 1);
-			iptr2 = Marshal.AllocHGlobal(color_palette.Length * 2 * 8 + 1);
-			iptr3 = Marshal.AllocHGlobal(color_palette.Length * 8 + 1);
+			iptr2 = Marshal.AllocHGlobal(color_palette.Length * 8 * 8 + 1);
+			iptr3 = Marshal.AllocHGlobal(color_palette.Length * 8 * 8 + 1);
 
 			_scanlineCallback = null;
 		}
 
 		#region GPUViewer
 
-		public bool IsCGBMode() => false;
+		public bool IsCGBMode() => is_GBC;
 
 		public IntPtr iptr0 = IntPtr.Zero;
 		public IntPtr iptr1 = IntPtr.Zero;
@@ -208,21 +208,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Marshal.Copy(VRAM, 0, iptr0, VRAM.Length);
 				Marshal.Copy(OAM, 0, iptr1, OAM.Length);
 
-				int[] cp2 = new int[8];
-				for (int i = 0; i < 4; i++)
+				if (is_GBC)
 				{
-					cp2[i] = (int)color_palette[(ppu.obj_pal_0 >> (i * 2)) & 3];
-					cp2[i + 4] = (int)color_palette[(ppu.obj_pal_1 >> (i * 2)) & 3];
-				}
-				Marshal.Copy(cp2, 0, iptr2, cp2.Length);
+					int[] cp2 = new int[32];
+					int[] cp = new int[32];
+					for (int i = 0; i < 32; i++)
+					{
+						cp2[i] = (int)ppu.OBJ_palette[i];
+						cp[i] = (int)ppu.BG_palette[i];
+					}
 
-				int[] cp = new int[4];
-				for (int i = 0; i < 4; i++)
+					Marshal.Copy(cp2, 0, iptr2, ppu.OBJ_palette.Length);
+					Marshal.Copy(cp, 0, iptr3, ppu.BG_palette.Length);
+				}
+				else
 				{
-					cp[i] = (int)color_palette[(ppu.BGP >> (i * 2)) & 3];
-				}
-				Marshal.Copy(cp, 0, iptr3, cp.Length);
+					int[] cp2 = new int[8];
+					for (int i = 0; i < 4; i++)
+					{
+						cp2[i] = (int)color_palette[(ppu.obj_pal_0 >> (i * 2)) & 3];
+						cp2[i + 4] = (int)color_palette[(ppu.obj_pal_1 >> (i * 2)) & 3];
+					}
+					Marshal.Copy(cp2, 0, iptr2, cp2.Length);
 
+					int[] cp = new int[4];
+					for (int i = 0; i < 4; i++)
+					{
+						cp[i] = (int)color_palette[(ppu.BGP >> (i * 2)) & 3];
+					}
+					Marshal.Copy(cp, 0, iptr3, cp.Length);
+				}
 
 				return new GPUMemoryAreas(iptr0, iptr1, iptr2, iptr3);
 			}

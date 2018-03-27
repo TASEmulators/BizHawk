@@ -40,8 +40,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					_rom.Length,
 					MemoryDomain.Endian.Little,
 					addr => _rom[addr],
-					(addr, value) => ZP_RAM[addr] = value,
+					(addr, value) => _rom[addr] = value,
 					1),
+				new MemoryDomainDelegate(
+					"VRAM",
+					VRAM.Length,
+					MemoryDomain.Endian.Little,
+					addr => VRAM[addr],
+					(addr, value) => VRAM[addr] = value,
+					1)
 			};
 
 			if (cart_RAM != null)

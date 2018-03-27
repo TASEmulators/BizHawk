@@ -7,9 +7,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	public class GBC_PPU : PPU
 	{
-		public uint[] BG_palette = new uint[32];
-		public uint[] OBJ_palette = new uint[32];
-
 		// individual byte used in palette colors
 		public byte[] BG_bytes = new byte[64];
 		public byte[] OBJ_bytes = new byte[64];
@@ -739,6 +736,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								{
 									use_sprite = true;
 								}
+
+								// There is another priority bit in GBC, that can still override sprite priority
+								if (LCDC.Bit(0) && tile_data_latch[2].Bit(7))
+								{
+									use_sprite = false;
+								}
 							}
 
 							if (use_sprite)
@@ -1456,9 +1459,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("HBL_HDMA_go", ref HBL_HDMA_go);
 			ser.Sync("HBL_test", ref HBL_test);
 
-			ser.Sync("BG_palette", ref BG_palette, false);
-			ser.Sync("OBJ_palette", ref OBJ_palette, false);
-
 			ser.Sync("BG_bytes", ref BG_bytes, false);
 			ser.Sync("OBJ_bytes", ref OBJ_bytes, false);
 			ser.Sync("BG_bytes_inc", ref BG_bytes_inc);
@@ -1468,5 +1468,71 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			base.SyncState(ser);
 		}
+
+		public override void Reset()
+		{
+			LCDC = 0;
+			STAT = 0x80;
+			scroll_y = 0;
+			scroll_x = 0;
+			LY = 0;
+			LYC = 0;
+			DMA_addr = 0xFF;
+			BGP = 0xFF;
+			obj_pal_0 = 0xFF;
+			obj_pal_1 = 0xFF;
+			window_y = 0x0;
+			window_x = 0x0;
+			window_x_latch = 0xFF;
+			LY_inc = 1;
+			no_scan = false;
+			OAM_access_read = true;
+			VRAM_access_read = true;
+			OAM_access_write = true;
+			VRAM_access_write = true;
+			DMA_OAM_access = true;
+
+			cycle = 0;
+			LYC_INT = false;
+			HBL_INT = false;
+			VBL_INT = false;
+			OAM_INT = false;
+
+			stat_line = false;
+			stat_line_old = false;
+
+			window_counter = 0;
+			window_pre_render = false;
+			window_started = false;
+			window_tile_inc = 0;
+			window_y_tile = 0;
+			window_x_tile = 0;
+			window_y_tile_inc = 0;
+
+			BG_bytes_inc = false;
+			OBJ_bytes_inc = false;
+			BG_bytes_index = 0;
+			OBJ_bytes_index = 0;
+			BG_transfer_byte = 0;
+			OBJ_transfer_byte = 0;
+
+			HDMA_src_hi = 0;
+			HDMA_src_lo = 0;
+			HDMA_dest_hi = 0;
+			HDMA_dest_lo = 0;
+
+			VRAM_sel = 0;
+			BG_V_flip = false;
+			HDMA_active = false;
+			HDMA_mode = false;
+			cur_DMA_src = 0;
+			cur_DMA_dest = 0;
+			HDMA_length = 0;
+			HDMA_countdown = 0;
+			HBL_HDMA_count = 0;
+			last_HBL = 0;
+			HBL_HDMA_go = false;
+			HBL_test = false;
+	}
 	}
 }
