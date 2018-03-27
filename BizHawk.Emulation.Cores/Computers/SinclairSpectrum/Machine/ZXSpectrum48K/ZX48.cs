@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             InitJoysticks(joysticks);
 
-            TapeDevice = new DatacorderDevice();
+            TapeDevice = new DatacorderDevice(spectrum.SyncSettings.AutoLoadTape);
             TapeDevice.Init(this);
 
             InitializeMedia(files);

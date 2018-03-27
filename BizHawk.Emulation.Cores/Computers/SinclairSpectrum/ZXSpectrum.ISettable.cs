@@ -54,11 +54,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public class ZXSpectrumSettings
         {
-            [DisplayName("Auto-load/stop tape")]
-            [Description("Auto or manual tape operation. Auto will attempt to detect CPU tape traps and automatically Stop/Start the tape")]
-            [DefaultValue(true)]
-            public bool AutoLoadTape { get; set; }
-
             [DisplayName("AY-3-8912 Panning Config")]
             [Description("Set the PSG panning configuration.\nThe chip has 3 audio channels that can be outputed in different configurations")]
             [DefaultValue(AYChip.AYPanConfig.ABC)]
@@ -132,6 +127,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             [Description("The emulated joystick assigned to P3 (SHOULD BE UNIQUE TYPE!)")]
             [DefaultValue(JoystickType.SinclairRIGHT)]
             public JoystickType JoystickType3 { get; set; }
+
+            [DisplayName("Auto-load/stop tape")]
+            [Description("Auto or manual tape operation. Auto will attempt to detect CPU tape traps and automatically Stop/Start the tape")]
+            [DefaultValue(true)]
+            public bool AutoLoadTape { get; set; }
 
 
             public ZXSpectrumSyncSettings Clone()

@@ -21,8 +21,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			_settings = ((ZXSpectrum)Global.Emulator).GetSettings().Clone();
 
-            // autoload tape
-            autoLoadcheckBox1.Checked = _settings.AutoLoadTape;
+            
 
             // OSD Message Verbosity
             var osdTypes = Enum.GetNames(typeof(ZXSpectrum.OSDVerbosity));     
@@ -36,13 +35,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private void OkBtn_Click(object sender, EventArgs e)
 		{
-            bool changed =
-                _settings.AutoLoadTape != autoLoadcheckBox1.Checked
-                || _settings.OSDMessageVerbosity.ToString() != osdMessageVerbositycomboBox1.SelectedItem.ToString();
+            bool changed =                
+                _settings.OSDMessageVerbosity.ToString() != osdMessageVerbositycomboBox1.SelectedItem.ToString();
 
             if (changed)
 			{
-                _settings.AutoLoadTape = autoLoadcheckBox1.Checked;
                 _settings.OSDMessageVerbosity = (ZXSpectrum.OSDVerbosity)Enum.Parse(typeof(ZXSpectrum.OSDVerbosity), osdMessageVerbositycomboBox1.SelectedItem.ToString());
 
                 GlobalWin.MainForm.PutCoreSettings(_settings);

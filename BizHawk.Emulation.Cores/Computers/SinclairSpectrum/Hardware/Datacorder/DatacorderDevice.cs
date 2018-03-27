@@ -24,9 +24,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Default constructor
         /// </summary>
-        public DatacorderDevice()
+        public DatacorderDevice(bool autoplay)
         {
-
+            _autoPlay = autoplay;
         }
 
         /// <summary>
@@ -39,8 +39,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _cpu = _machine.CPU;
             _buzzer = machine.TapeBuzzer;
         }
-
-
 
         #endregion
 
@@ -129,12 +127,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// 'load' mode and auto-play the tape if neccesary
         /// </summary>
         private bool _autoPlay;
-        public bool AutoPlay
-        {
-            get { return _machine.Spectrum.Settings.AutoLoadTape; }
-            set { _autoPlay = value; MonitorReset(); }
-        }
-
 
         #endregion
 
@@ -428,7 +420,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             // process the cycles based on the waitEdge
-            while (cycles >= _waitEdge)
+             while (cycles >= _waitEdge)
             {
                 // decrement cycles
                 cycles -= _waitEdge;
@@ -723,7 +715,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 {
                     _monitorCount++;
 
-                    if (_monitorCount >= 16 && _machine.Spectrum.Settings.AutoLoadTape)
+                    if (_monitorCount >= 16 && _autoPlay)
                     {
                         if (!_tapeIsPlaying)
                         {
@@ -749,7 +741,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (!_tapeIsPlaying)
                 return;
 
-            if (!_machine.Spectrum.Settings.AutoLoadTape)
+            if (!_autoPlay)
                 return;
 
             Stop();
@@ -761,7 +753,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (_tapeIsPlaying)
                 return;
 
-            if (!_machine.Spectrum.Settings.AutoLoadTape)
+            if (!_autoPlay)
                 return;
 
             Play();
@@ -772,7 +764,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         private void MonitorFrame()
         {
-            if (_tapeIsPlaying && _machine.Spectrum.Settings.AutoLoadTape)
+            if (_tapeIsPlaying && _autoPlay)
             {
                 _monitorTimeOut--;
 

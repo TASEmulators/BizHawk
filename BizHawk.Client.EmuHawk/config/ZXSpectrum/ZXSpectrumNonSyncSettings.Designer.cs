@@ -32,8 +32,6 @@
             this.OkBtn = new System.Windows.Forms.Button();
             this.CancelBtn = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.autoLoadcheckBox1 = new System.Windows.Forms.CheckBox();
-            this.lblAutoLoadText = new System.Windows.Forms.Label();
             this.lblOSDVerbinfo = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.osdMessageVerbositycomboBox1 = new System.Windows.Forms.ComboBox();
@@ -42,7 +40,7 @@
             // OkBtn
             // 
             this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OkBtn.Location = new System.Drawing.Point(247, 145);
+            this.OkBtn.Location = new System.Drawing.Point(247, 142);
             this.OkBtn.Name = "OkBtn";
             this.OkBtn.Size = new System.Drawing.Size(60, 23);
             this.OkBtn.TabIndex = 3;
@@ -54,7 +52,7 @@
             // 
             this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelBtn.Location = new System.Drawing.Point(313, 145);
+            this.CancelBtn.Location = new System.Drawing.Point(313, 142);
             this.CancelBtn.Name = "CancelBtn";
             this.CancelBtn.Size = new System.Drawing.Size(60, 23);
             this.CancelBtn.TabIndex = 4;
@@ -70,27 +68,6 @@
             this.label1.Size = new System.Drawing.Size(185, 13);
             this.label1.TabIndex = 17;
             this.label1.Text = "ZX Spectrum Misc Non-Sync Settings";
-            // 
-            // autoLoadcheckBox1
-            // 
-            this.autoLoadcheckBox1.AutoSize = true;
-            this.autoLoadcheckBox1.Location = new System.Drawing.Point(15, 52);
-            this.autoLoadcheckBox1.Name = "autoLoadcheckBox1";
-            this.autoLoadcheckBox1.Size = new System.Drawing.Size(103, 17);
-            this.autoLoadcheckBox1.TabIndex = 21;
-            this.autoLoadcheckBox1.Text = "Auto-Load Tape";
-            this.autoLoadcheckBox1.UseVisualStyleBackColor = true;
-            // 
-            // lblAutoLoadText
-            // 
-            this.lblAutoLoadText.Font = new System.Drawing.Font("Lucida Console", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblAutoLoadText.Location = new System.Drawing.Point(175, 46);
-            this.lblAutoLoadText.Name = "lblAutoLoadText";
-            this.lblAutoLoadText.Size = new System.Drawing.Size(196, 30);
-            this.lblAutoLoadText.TabIndex = 25;
-            this.lblAutoLoadText.Text = "When enabled ZXHawk will attempt to control the tape device automatically when th" +
-    "e correct traps are detected";
-            this.lblAutoLoadText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblOSDVerbinfo
             // 
@@ -129,12 +106,10 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelBtn;
-            this.ClientSize = new System.Drawing.Size(385, 180);
+            this.ClientSize = new System.Drawing.Size(385, 177);
             this.Controls.Add(this.lblOSDVerbinfo);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.osdMessageVerbositycomboBox1);
-            this.Controls.Add(this.lblAutoLoadText);
-            this.Controls.Add(this.autoLoadcheckBox1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.CancelBtn);
             this.Controls.Add(this.OkBtn);
@@ -153,8 +128,6 @@
         private System.Windows.Forms.Button OkBtn;
         private System.Windows.Forms.Button CancelBtn;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckBox autoLoadcheckBox1;
-        private System.Windows.Forms.Label lblAutoLoadText;
         private System.Windows.Forms.Label lblOSDVerbinfo;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.ComboBox osdMessageVerbositycomboBox1;
