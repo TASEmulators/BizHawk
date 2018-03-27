@@ -12,6 +12,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public uint[] BG_palette = new uint[32];
 		public uint[] OBJ_palette = new uint[32];
 
+
+		public bool HDMA_active;
+
 		// register variables
 		public byte LCDC;
 		public byte STAT;
@@ -160,6 +163,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			ser.Sync("BG_palette", ref BG_palette, false);
 			ser.Sync("OBJ_palette", ref OBJ_palette, false);
+			ser.Sync("HDMA_active", ref HDMA_active);
 
 			ser.Sync("LCDC", ref LCDC);
 			ser.Sync("STAT", ref STAT);

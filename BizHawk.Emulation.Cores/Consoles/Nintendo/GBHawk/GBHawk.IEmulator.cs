@@ -135,6 +135,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						timer.tick_2();
 					}
 				}
+				else
+				{
+					cpu.TotalExecutedCycles++;
+					if (double_speed)
+					{
+						cpu.TotalExecutedCycles++;
+					}
+				}
 
 				if (in_vblank && !in_vblank_old)
 				{

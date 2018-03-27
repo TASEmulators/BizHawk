@@ -101,6 +101,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
 			}
 
+			[DisplayName("Timer Div Initial Time")]
+			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
+			[DefaultValue(0)]
+			public int DivInitialTime
+			{
+				get { return _DivInitialTime; }
+				set { _DivInitialTime = Math.Min((ushort)65535, (ushort)value); }
+			}
+
 			[DisplayName("Use Existing SaveRAM")]
 			[Description("When true, existing SaveRAM will be loaded at boot up")]
 			[DefaultValue(false)]
@@ -109,6 +118,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			[JsonIgnore]
 			private int _RTCInitialTime;
+			[JsonIgnore]
+			private ushort _DivInitialTime;
 
 
 			public GBSyncSettings Clone()

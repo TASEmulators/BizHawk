@@ -43,7 +43,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		// controls for tile attributes
 		public int VRAM_sel;
 		public bool BG_V_flip;
-		public bool HDMA_active;
 		public bool HDMA_mode;
 		public ushort cur_DMA_src;
 		public ushort cur_DMA_dest;
@@ -196,7 +195,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						cur_DMA_dest = (ushort)(((HDMA_dest_hi & 0x1F) << 8) | (HDMA_dest_lo & 0xF0));
 						cur_DMA_src = (ushort)(((HDMA_src_hi & 0xFF) << 8) | (HDMA_src_lo & 0xF0));
 
-						HDMA_length = ((HDMA_ctrl & 0x7F) + 1) * 16;
+						HDMA_length = ((value & 0x7F) + 1) * 16;
 					}
 					else
 					{
@@ -244,17 +243,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (HDMA_countdown == 0)
 				{
-
 					if (!HDMA_mode)
 					{
 						// immediately transfer bytes, 2 bytes per cycles
 						if (HDMA_length > 0)
 						{
-							Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = Core.ReadMemory(cur_DMA_src);
+							Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = Core.ReadMemory(cur_DMA_src); 
 							cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
 							cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
 							HDMA_length--;
-							Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = Core.ReadMemory(cur_DMA_src);
+
+							Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = Core.ReadMemory(cur_DMA_src); 
 							cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
 							cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
 							HDMA_length--;
@@ -268,7 +267,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else
 					{
-						// only transfer during mode 3, and only 16 bytes at a time
+						// only transfer during mode 0, and only 16 bytes at a time
 						if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test)
 						{
 							HBL_HDMA_go = true;
@@ -286,6 +285,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
 								HDMA_length--;
 								HBL_HDMA_count--;
+
 								Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = Core.ReadMemory(cur_DMA_src);
 								cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
 								cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
@@ -303,6 +303,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									HBL_test = true;
 									last_HBL = LY;
 									HBL_HDMA_count = 0x10;
+									HBL_HDMA_go = false;
 								}
 							}
 						}
@@ -1448,7 +1449,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			ser.Sync("VRAM_sel", ref VRAM_sel);
 			ser.Sync("BG_V_flip", ref BG_V_flip);
-			ser.Sync("HDMA_active", ref HDMA_active);
 			ser.Sync("HDMA_mode", ref HDMA_mode);
 			ser.Sync("cur_DMA_src", ref cur_DMA_src);
 			ser.Sync("cur_DMA_dest", ref cur_DMA_dest);
