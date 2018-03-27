@@ -526,7 +526,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The current volume
         /// </summary>
-        private int _volume = 50;
+        private int _volume = 75;
 
         /// <summary>
         /// Volume tables state
@@ -553,7 +553,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         private void UpdateVolume()
         {
-            var vol = ((ulong)0xFFFF * (ulong)_volume / 100UL) - 20000 ;
+            int upperFloor = 40000;
+            var inc = (0xFFFF - upperFloor) / 100;
+
+            var vol = inc * _volume; // ((ulong)0xFFFF * (ulong)_volume / 100UL) - 20000 ;
             _volumeTables = new uint[6][];
 
             // parent array
