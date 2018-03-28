@@ -160,15 +160,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// These are GBC specific Regs
 				case 0xFF51: // HDMA1
 					HDMA_src_hi = value;
+					cur_DMA_src = (ushort)(((HDMA_src_hi & 0xFF) << 8) | (cur_DMA_src & 0xF0));
 					break;
 				case 0xFF52: // HDMA2
 					HDMA_src_lo = value;
+					cur_DMA_src = (ushort)((cur_DMA_src & 0xFF00) | (HDMA_src_lo & 0xF0));
 					break;
 				case 0xFF53: // HDMA3
 					HDMA_dest_hi = value;
+					cur_DMA_dest = (ushort)(((HDMA_dest_hi & 0x1F) << 8) | (cur_DMA_dest & 0xF0));
 					break;
 				case 0xFF54: // HDMA4
 					HDMA_dest_lo = value;
+					cur_DMA_dest = (ushort)((cur_DMA_dest & 0xFF00) | (HDMA_dest_lo & 0xF0));
 					break;
 				case 0xFF55: // HDMA5
 					if (!HDMA_active)
@@ -180,7 +184,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							// HDMA during HBlank only
 							HDMA_active = true;
 							HBL_HDMA_count = 0x10;
-							last_HBL = LY;
+
+							// TODO: DOES HDMA start if triggered in mode 0 immediately? (for now assume no)
+							if ((STAT & 3) == 0)
+							{
+								last_HBL = LY;
+							}
+							else
+							{
+								last_HBL = LY - 1;
+							}
+							
 							HBL_test = true;
 							HBL_HDMA_go = false;
 						}
@@ -190,10 +204,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							HDMA_active = true;
 							Core.HDMA_transfer = true;
 						}
-
-						// latch read locations
-						cur_DMA_dest = (ushort)(((HDMA_dest_hi & 0x1F) << 8) | (HDMA_dest_lo & 0xF0));
-						cur_DMA_src = (ushort)(((HDMA_src_hi & 0xFF) << 8) | (HDMA_src_lo & 0xF0));
 
 						HDMA_length = ((value & 0x7F) + 1) * 16;
 					}
