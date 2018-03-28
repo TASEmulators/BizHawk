@@ -309,6 +309,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					ppu.WriteReg(addr, value);
 					break;
 
+				// GBC compatibility register (I think)
+				case 0xFF4C:
+					if (value != 0xC0)
+					{
+						GBC_compat = false;
+					}
+					break;
+
 				// Speed Control for GBC
 				case 0xFF4D:
 					if (is_GBC)
@@ -381,6 +389,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// if no bits are in common between flags and enables, de-assert the IRQ
 					if (((REG_FF0F & 0x1F) & REG_FFFF) == 0) { cpu.FlagI = false; }
 
+					break;
+
+				default:
+					Console.Write(addr);
+					Console.Write(" ");
+					Console.WriteLine(value);
 					break;
 			}
 		}

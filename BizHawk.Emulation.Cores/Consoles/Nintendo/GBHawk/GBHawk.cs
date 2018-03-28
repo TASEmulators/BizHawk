@@ -54,6 +54,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int RAM_Bank;
 		public byte VRAM_Bank;
 		public bool is_GBC;
+		public bool GBC_compat; // compatibility mode for GB games played on GBC
 		public bool double_speed;
 		public bool speed_switch;
 		public bool HDMA_transfer; // stalls CPU when in progress
@@ -276,6 +277,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		private void HardReset()
 		{
 			GB_bios_register = 0; // bios enable
+			GBC_compat = true;
 			in_vblank = true; // we start off in vblank since the LCD is off
 			in_vblank_old = true;
 

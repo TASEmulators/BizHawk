@@ -679,7 +679,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// start shifting data into the LCD
 				if (render_counter >= (render_offset + 8))
 				{
-					if (tile_data_latch[2].Bit(5))
+					if (tile_data_latch[2].Bit(5) && Core.GBC_compat)
 					{
 						pixel = tile_data_latch[0].Bit(render_counter % 8) ? 1 : 0;
 						pixel |= tile_data_latch[1].Bit(render_counter % 8) ? 2 : 0;
@@ -692,13 +692,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					int ref_pixel = pixel;
 
-					if (LCDC.Bit(0))
+					if (!Core.GBC_compat)
 					{
-						//pixel = (BGP >> (pixel * 2)) & 3;
-					}
-					else
-					{
-						//pixel = 0;
+						if (LCDC.Bit(0))
+						{
+							pixel = (BGP >> (pixel * 2)) & 3;
+						}
+						else
+						{
+							pixel = 0;
+						}
 					}
 
 					int pal_num = tile_data_latch[2] & 0x7;
@@ -739,7 +742,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 
 								// There is another priority bit in GBC, that can still override sprite priority
-								if (LCDC.Bit(0) && tile_data_latch[2].Bit(7))
+								if (LCDC.Bit(0) && tile_data_latch[2].Bit(7) && Core.GBC_compat)
 								{
 									use_sprite = false;
 								}
@@ -749,28 +752,45 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								pal_num = sprite_attr & 7;
 
-								/*
-								if (sprite_attr.Bit(4))
+								if (!Core.GBC_compat)
 								{
-									pixel = (obj_pal_1 >> (s_pixel * 2)) & 3;
-								}
-								else
-								{
-									pixel = (obj_pal_0 >> (s_pixel * 2)) & 3;
-								}	
-								*/						
+									pal_num = sprite_attr.Bit(4) ? 1 : 0;
+
+									if (sprite_attr.Bit(4))
+									{
+										pixel = (obj_pal_1 >> (s_pixel * 2)) & 3;
+									}
+									else
+									{
+										pixel = (obj_pal_0 >> (s_pixel * 2)) & 3;
+									}
+								}						
 							}
 						}
 					}
 
 					// based on sprite priority and pixel values, pick a final pixel color
-					if (use_sprite)
+					if (Core.GBC_compat)
 					{
-						Core._vidbuffer[LY * 160 + pixel_counter] = (int)OBJ_palette[pal_num * 4 + s_pixel];
+						if (use_sprite)
+						{
+							Core._vidbuffer[LY * 160 + pixel_counter] = (int)OBJ_palette[pal_num * 4 + s_pixel];
+						}
+						else
+						{
+							Core._vidbuffer[LY * 160 + pixel_counter] = (int)BG_palette[pal_num * 4 + pixel];
+						}
 					}
 					else
 					{
-						Core._vidbuffer[LY * 160 + pixel_counter] = (int)BG_palette[pal_num * 4 + pixel];
+						if (use_sprite)
+						{
+							Core._vidbuffer[LY * 160 + pixel_counter] = (int)OBJ_palette[pal_num * 4 + pixel];
+						}
+						else
+						{
+							Core._vidbuffer[LY * 160 + pixel_counter] = (int)BG_palette[pixel];
+						}						
 					}
 					
 					pixel_counter++;
@@ -832,7 +852,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch];						
 							tile_data[2] = Core.VRAM[0x3800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch];
 							VRAM_sel = tile_data[2].Bit(3) ? 1 : 0;
-							BG_V_flip = tile_data[2].Bit(6);
+							BG_V_flip = tile_data[2].Bit(6) & Core.GBC_compat;
 						}
 						else
 						{
@@ -948,6 +968,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(6) ? 1 : 0) * 0x400 + temp_fetch];
 							tile_data[2] = Core.VRAM[0x3800 + (LCDC.Bit(6) ? 1 : 0) * 0x400 + temp_fetch];
 							VRAM_sel = tile_data[2].Bit(3) ? 1 : 0;
+							BG_V_flip = tile_data[2].Bit(6) & Core.GBC_compat;
 						}
 						else
 						{

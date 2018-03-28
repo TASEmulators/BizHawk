@@ -87,6 +87,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("RAM_Bank", ref RAM_Bank);
 			ser.Sync("VRAM_Bank", ref VRAM_Bank);
 			ser.Sync("is_GBC", ref is_GBC);
+			ser.Sync("GBC_compat", ref GBC_compat);
 			ser.Sync("double_speed", ref double_speed);
 			ser.Sync("speed_switch", ref speed_switch);
 			ser.Sync("HDMA_transfer", ref HDMA_transfer);
