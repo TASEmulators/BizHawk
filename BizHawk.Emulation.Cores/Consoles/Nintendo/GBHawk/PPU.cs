@@ -96,6 +96,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int window_counter;
 		public bool window_pre_render;
 		public bool window_started;
+		public bool window_is_reset;
 		public int window_tile_inc;
 		public int window_y_tile;
 		public int window_x_tile;
@@ -243,6 +244,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("window_counter", ref window_counter);
 			ser.Sync("window_pre_render", ref window_pre_render);
 			ser.Sync("window_started", ref window_started);
+			ser.Sync("window_is_reset", ref window_is_reset);
 			ser.Sync("window_tile_inc", ref window_tile_inc);
 			ser.Sync("window_y_tile", ref window_y_tile);
 			ser.Sync("window_x_tile", ref window_x_tile);

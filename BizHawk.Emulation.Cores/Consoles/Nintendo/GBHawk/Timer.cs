@@ -144,7 +144,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void Reset()
 		{
-			divider_reg = 0;
+			divider_reg = Core._syncSettings._DivInitialTime;
 			timer_reload = 0;
 			timer = 0;
 			timer_old = 0;

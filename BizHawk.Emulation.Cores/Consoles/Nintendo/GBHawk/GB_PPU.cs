@@ -146,6 +146,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						window_y_tile = 0;
 						window_y_tile_inc = 0;
 						window_started = false;
+						window_is_reset = true;
 					}
 
 					Core.cpu.LY = LY;
@@ -406,7 +407,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				evaled_sprites = 0;
 
 				window_pre_render = false;
-				if (window_started && LCDC.Bit(5))
+
+				// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
+				if ((window_started && LCDC.Bit(5)) || (window_is_reset && !LCDC.Bit(5) && (LY > window_y)))
 				{
 					window_y_tile_inc++;
 					if (window_y_tile_inc==8)
@@ -456,6 +459,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				
 				window_tile_inc = 0;
 				window_started = true;
+				window_is_reset = false;
 			}
 			
 			if (!pre_render && !fetch_sprite && !window_pre_render)
@@ -1146,6 +1150,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			window_counter = 0;
 			window_pre_render = false;
 			window_started = false;
+			window_is_reset = true;
 			window_tile_inc = 0;
 			window_y_tile = 0;
 			window_x_tile = 0;
