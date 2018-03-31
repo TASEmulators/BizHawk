@@ -216,7 +216,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		private bool HasYM2413 = false;
 		private bool PortDEEnabled = false;
-		private IController _controller;
+		private IController _controller = NullController.Instance;
 
 		private int _frame = 0;
 

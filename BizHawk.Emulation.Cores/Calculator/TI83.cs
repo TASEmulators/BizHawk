@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		private readonly byte[] _rom;
 
 		// configuration
-		private IController _controller;
+		private IController _controller = NullController.Instance;
 
 		private byte[] _ram;
 		private byte[] _vram = new byte[0x300];

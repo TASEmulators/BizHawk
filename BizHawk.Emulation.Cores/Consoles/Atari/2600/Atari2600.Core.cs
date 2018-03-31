@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private MapperBase _mapper;
 		private byte[] _ram;
 
-		private IController _controller;
+		private IController _controller = NullController.Instance;
 		private int _frame;
 		private int _lastAddress;
 

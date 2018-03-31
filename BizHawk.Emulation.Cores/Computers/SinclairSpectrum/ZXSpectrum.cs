@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         private readonly Z80A _cpu;
         private readonly TraceBuffer _tracer;
-        public IController _controller;
+        public IController _controller = NullController.Instance;
         public SpectrumBase _machine;
 
         private List<GameInfo> _gameInfo;

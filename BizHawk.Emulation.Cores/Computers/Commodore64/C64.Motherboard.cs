@@ -29,7 +29,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 		// ports
 		public readonly CartridgePort CartPort;
 		public readonly CassettePort Cassette;
-		public IController Controller;
+		public IController Controller = NullController.Instance;
 		public readonly SerialPort Serial;
 		public readonly TapeDrive TapeDrive;
 		public readonly UserPort User;

@@ -309,7 +309,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int VsyncNum { get; set; }
 		private int VsyncDen { get; set; }
 
-		private IController _controller;
+		private IController _controller = NullController.Instance;
 
 		bool resetSignal;
 		bool hardResetSignal;
