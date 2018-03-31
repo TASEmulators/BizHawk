@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 						break;
 				}
 
-				if (!Core.gpgx_init(romextension, LoadCallback, _syncSettings.UseSixButton, system_a, system_b, _syncSettings.Region, _settings.GetNativeSettings()))
+				if (!Core.gpgx_init(romextension, LoadCallback, _syncSettings.UseSixButton, system_a, system_b, _syncSettings.Region, _syncSettings.GetNativeSettings()))
 					throw new Exception("gpgx_init() failed");
 
 				{
