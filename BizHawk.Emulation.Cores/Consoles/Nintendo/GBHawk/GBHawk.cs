@@ -367,6 +367,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				mapper = new MapperMBC1Multi();
 			}
 
+			// special case for bootlegs
+			if ((_rom.HashMD5(0, _rom.Length) == "CAE0998A899DF2EE6ABA8E7695C2A096"))
+			{
+				Console.WriteLine("Using RockMan 8 (Unlicensed) Mapper");
+				mapper = new MapperRM8();
+			}
+
 			Console.Write("Mapper: ");
 			Console.WriteLine(mppr);
 
@@ -413,7 +420,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (cart_RAM != null)
 			{
-
 				Console.Write("RAM: "); Console.WriteLine(cart_RAM.Length);
 
 				for (int i = 0; i < cart_RAM.Length; i++)
@@ -422,7 +428,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 			}
 			
-
 			// Extra RTC initialization for mbc3
 			if (mppr == "MBC3")
 			{
