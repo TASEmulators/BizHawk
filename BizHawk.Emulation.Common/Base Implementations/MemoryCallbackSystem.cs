@@ -33,8 +33,6 @@ namespace BizHawk.Emulation.Common
 		private readonly ObservableCollection<IMemoryCallback> _writes = new ObservableCollection<IMemoryCallback>();
 		private readonly ObservableCollection<IMemoryCallback> _execs = new ObservableCollection<IMemoryCallback>();
 
-		private bool _empty = true;
-
 		private bool _hasReads;
 		private bool _hasWrites;
 		private bool _hasExecutes;
@@ -54,24 +52,19 @@ namespace BizHawk.Emulation.Common
 			{
 				case MemoryCallbackType.Execute:
 					_execs.Add(callback);
-					_hasExecutes = true;
 					break;
 				case MemoryCallbackType.Read:
 					_reads.Add(callback);
-					_hasReads = true;
 					break;
 				case MemoryCallbackType.Write:
 					_writes.Add(callback);
-					_hasWrites = true;
 					break;
 			}
 
-			if (_empty)
+			if (UpdateHasVariables())
 			{
 				Changes();
 			}
-
-			_empty = false;
 		}
 
 		private static void Call(ObservableCollection<IMemoryCallback> cbs, uint addr, string scope)
@@ -130,11 +123,17 @@ namespace BizHawk.Emulation.Common
 			return _execs.Where(e => e.Scope == scope).Any();
 		}
 
-		private void UpdateHasVariables()
+		private bool UpdateHasVariables()
 		{
+			bool hadReads = _hasReads;
+			bool hadWrites = _hasWrites;
+			bool hadExecutes = _hasExecutes;
+
 			_hasReads = _reads.Count > 0;
 			_hasWrites = _writes.Count > 0;
 			_hasExecutes = _execs.Count > 0;
+
+			return (_hasReads != hadReads || _hasWrites != hadWrites || _hasExecutes != hadExecutes);
 		}
 
 		private int RemoveInternal(Action action)
@@ -158,8 +157,6 @@ namespace BizHawk.Emulation.Common
 				_execs.Remove(exec);
 			}
 
-			UpdateHasVariables();
-
 			return readsToRemove.Count + writesToRemove.Count + execsToRemove.Count;
 		}
 
@@ -167,13 +164,10 @@ namespace BizHawk.Emulation.Common
 		{
 			if (RemoveInternal(action) > 0)
 			{
-				bool newEmpty = !HasReads && !HasWrites && !HasExecutes;
-				if (newEmpty != _empty)
+				if (UpdateHasVariables())
 				{
 					Changes();
 				}
-
-				_empty = newEmpty;
 			}
 		}
 
@@ -187,16 +181,11 @@ namespace BizHawk.Emulation.Common
 
 			if (changed)
 			{
-				bool newEmpty = !HasReads && !HasWrites && !HasExecutes;
-				if (newEmpty != _empty)
+				if (UpdateHasVariables())
 				{
 					Changes();
 				}
-
-				_empty = newEmpty;
 			}
-
-			UpdateHasVariables();
 		}
 
 		public void Clear()
@@ -217,14 +206,10 @@ namespace BizHawk.Emulation.Common
 				_execs.RemoveAt(i);
 			}
 
-			if (!_empty)
+			if (UpdateHasVariables())
 			{
 				Changes();
 			}
-
-			_empty = true;
-
-			UpdateHasVariables();
 		}
 
 		public delegate void ActiveChangedEventHandler();
