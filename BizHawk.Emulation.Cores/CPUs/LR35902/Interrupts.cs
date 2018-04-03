@@ -52,6 +52,35 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						OP };
 		}
 
+		private void INTERRUPT_GBC_NOP()
+		{
+			cur_instr = new ushort[]
+						{IDLE,
+						IDLE,
+						IDLE,
+						IDLE,
+						IDLE,
+						DEC16, SPl, SPh,
+						IDLE,
+						WR, SPl, SPh, PCh,
+						IDLE,
+						INT_GET, W,// NOTE: here is where we check for a cancelled IRQ
+						DEC16, SPl, SPh,
+						WR, SPl, SPh, PCl,
+						IDLE,
+						IDLE,
+						IDLE,
+						IDLE,
+						TR, PCl, W,
+						ASGN, PCh, 0,
+						IDLE,
+						IDLE,
+						IDLE,
+						IDLE,
+						IDLE,
+						OP };
+		}
+
 		private static ushort[] INT_vectors = new ushort[] {0x40, 0x48, 0x50, 0x58, 0x60, 0x00};
 
 		public ushort int_src;

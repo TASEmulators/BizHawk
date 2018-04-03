@@ -4,7 +4,7 @@ using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	// Default mapper with no bank switching
+	// MBC5, common mapper for GBC games
 	public class MapperMBC5 : MapperBase
 	{
 		public int ROM_bank;

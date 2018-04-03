@@ -79,7 +79,6 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 
 			if (FlagI && (EI_pending == 0))
 			{
-
 				if (is_GBC)
 				{
 					// in GBC mode, the HALT bug is worked around by simply adding a NOP

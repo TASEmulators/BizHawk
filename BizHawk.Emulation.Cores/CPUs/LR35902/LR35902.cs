@@ -279,18 +279,21 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							});
 						}
 						halted = false;
-						 
+						
 						if (is_GBC)
 						{
 							// call the interrupt processor after 4 extra cycles
+							/*
 							cur_instr = new ushort[]
 										{IDLE,
 										IDLE,
 										IDLE,
 										GBC_INTERRUPT };
+										*/
+							INTERRUPT_GBC_NOP();
 						}
 						else
-						{
+						{					
 							// call interrupt processor
 							INTERRUPT_();
 						}					
@@ -309,6 +312,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						halted = false;
 						if (OnExecFetch != null) OnExecFetch(RegPC);
 						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+						
 						if (is_GBC)
 						{
 							// extra 4 cycles for GBC
@@ -319,7 +323,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 										OP };
 						}
 						else
-						{
+						{					
 							FetchInstruction(ReadMemory(RegPC++));
 						}					
 					}
@@ -335,7 +339,6 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					break;
 				case STOP:
 					stopped = true;
-
 					if (!stop_check)
 					{
 						stop_time = SpeedFunc(0);

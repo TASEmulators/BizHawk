@@ -22,6 +22,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte HDMA_src_lo;
 		public byte HDMA_dest_hi;
 		public byte HDMA_dest_lo;
+		public int HDMA_tick;
+		public byte HDMA_byte;
 
 		// accessors for derived values
 		public byte BG_pal_ret
@@ -179,6 +181,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						HDMA_mode = value.Bit(7);
 						HDMA_countdown = 4;
+						HDMA_tick = 0;
 						if (value.Bit(7))
 						{
 							// HDMA during HBlank only
@@ -253,59 +256,47 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (HDMA_countdown == 0)
 				{
-					if (!HDMA_mode)
+					if (HDMA_length > 0)
 					{
-						// immediately transfer bytes, 2 bytes per cycles
-						if (HDMA_length > 0)
+						if (!HDMA_mode)
 						{
-							Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = Core.ReadMemory(cur_DMA_src); 
-							cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
-							cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
-							HDMA_length--;
-
-							Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = Core.ReadMemory(cur_DMA_src); 
-							cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
-							cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
-							HDMA_length--;
-
-							if (HDMA_length == 0)
+							// immediately transfer bytes, 2 bytes per cycles
+							if ((HDMA_tick % 2) == 0)
 							{
-								HDMA_active = false;
-								Core.HDMA_transfer = false;
+								HDMA_byte = Core.ReadMemory(cur_DMA_src);
+							}
+							else
+							{
+								Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = HDMA_byte;
+								cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
+								cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
+								HDMA_length--;
 							}
 						}
-					}
-					else
-					{
-						// only transfer during mode 0, and only 16 bytes at a time
-						if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test)
+						else
 						{
-							HBL_HDMA_go = true;
-							HBL_test = false;
-						}
-
-						if (HBL_HDMA_go && (HBL_HDMA_count > 0))
-						{
-							Core.HDMA_transfer = true;
-
-							if (HDMA_length > 0)
+							// only transfer during mode 0, and only 16 bytes at a time
+							if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test)
 							{
-								Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = Core.ReadMemory(cur_DMA_src);
-								cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
-								cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
-								HDMA_length--;
-								HBL_HDMA_count--;
+								HBL_HDMA_go = true;
+								HBL_test = false;
+							}
 
-								Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = Core.ReadMemory(cur_DMA_src);
-								cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
-								cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
-								HDMA_length--;
-								HBL_HDMA_count--;
+							if (HBL_HDMA_go && (HBL_HDMA_count > 0))
+							{
+								Core.HDMA_transfer = true;
 
-								if (HDMA_length == 0)
+								if ((HDMA_tick % 2) == 0)
 								{
-									HDMA_active = false;
-									Core.HDMA_transfer = false;
+									HDMA_byte = Core.ReadMemory(cur_DMA_src);
+								}
+								else
+								{
+									Core.VRAM[(Core.VRAM_Bank * 0x2000) + cur_DMA_dest] = HDMA_byte;
+									cur_DMA_dest = (ushort)((cur_DMA_dest + 1) & 0x1FFF);
+									cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
+									HDMA_length--;
+									HBL_HDMA_count--;
 								}
 
 								if ((HBL_HDMA_count == 0) && (HDMA_length != 0))
@@ -316,11 +307,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									HBL_HDMA_go = false;
 								}
 							}
+							else
+							{
+								Core.HDMA_transfer = false;
+							}
 						}
-						else
-						{
-							Core.HDMA_transfer = false;
-						}
+
+						HDMA_tick++;
+					}
+					else
+					{
+						HDMA_active = false;
+						Core.HDMA_transfer = false;
 					}
 				}
 				else
@@ -1481,6 +1479,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("HDMA_src_lo", ref HDMA_src_lo);
 			ser.Sync("HDMA_dest_hi", ref HDMA_dest_hi);
 			ser.Sync("HDMA_dest_lo", ref HDMA_dest_lo);
+			ser.Sync("HDMA_tick", ref HDMA_tick);
+			ser.Sync("HDMA_byte", ref HDMA_byte);
 
 			ser.Sync("VRAM_sel", ref VRAM_sel);
 			ser.Sync("BG_V_flip", ref BG_V_flip);
