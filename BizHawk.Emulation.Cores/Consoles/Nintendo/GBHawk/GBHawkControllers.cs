@@ -119,7 +119,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
 				FloatControls = { "P" + PortNum + " Tilt X", "P" + PortNum + " Tilt Y" },
-				FloatRanges = { new[] { -127.0f, 0, 127.0f }, new[] { -127.0f, 0, 127.0f } }
+				FloatRanges = { new[] { -45.0f, 0, 45.0f }, new[] { -45.0f, 0, 45.0f } }
 			};
 		}
 
@@ -167,14 +167,23 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			return result;
 		}
 
+		// acc x is the result of rotating around body y AFTER rotating around body x
+		// therefore this control scheme gives decreasing sensitivity in X as Y rotation inscreases 
 		public ushort ReadAccX(IController c)
 		{
-			return 0;
+			double theta = c.GetFloat(Definition.FloatControls[1]) * Math.PI / 180.0;
+			double phi = c.GetFloat(Definition.FloatControls[0]) * Math.PI / 180.0;
+
+			float temp = (float)(Math.Cos(theta) * Math.Sin(phi));
+
+			return (ushort)(0x81D0 - Math.Floor(temp * 125));
 		}
 
+		// acc y is just the sine of the angle
 		public ushort ReadAccY(IController c)
 		{
-			return 0;
+			float temp = (float)Math.Sin(c.GetFloat(Definition.FloatControls[1]) * Math.PI / 180.0);
+			return (ushort)(0x81D0 - Math.Floor(temp * 125));			
 		}
 
 		private static readonly string[] BaseDefinition =

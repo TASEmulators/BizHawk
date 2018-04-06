@@ -17,6 +17,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte acc_y_high;
 		public bool is_erased;
 
+		// EEPROM related
+		public bool CS_prev;
+		public bool CLK_prev;
+		public bool DI_prev;
+		public bool DO;
+		public bool instr_read;
+		public bool perf_instr;
+		public int instr_bit_counter;
+		public int instr;
+		public bool WR_EN;
+		public int EE_addr;
+		public int instr_case;
+		public int instr_clocks;
+		public int EE_value;
+		public int countdown;
+		public bool countdown_start;
+
+
 		public override void Initialize()
 		{
 			ROM_bank = 1;
@@ -80,6 +98,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				{
 					value &= 0xFF;
 
+					//Console.WriteLine(Core.cpu.TotalExecutedCycles);
+					//Console.WriteLine(value);
+
 					ROM_bank &= 0x100;
 					ROM_bank |= value;
 					ROM_bank &= ROM_mask;
@@ -117,32 +138,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("acc_y_low", ref acc_y_low);
 			ser.Sync("acc_y_high", ref acc_y_high);
 			ser.Sync("is_erased", ref is_erased);
-		}
 
-		public void Register_Access_Write(ushort addr, byte value)
-		{
-			if ((addr & 0xA0F0) == 0xA000)
-			{
-				if (value == 0x55)
-				{
-					is_erased = true;
-					acc_x_low = 0;
-					acc_x_high = 0x80;
-					acc_y_low = 0;
-					acc_y_high = 0x80;
-				}
-			}
-			else if ((addr & 0xA0F0) == 0xA010)
-			{
-				if ((value == 0xAA) && is_erased)
-				{
-					// latch new accelerometer values
-				}
-			}
-			else if ((addr & 0xA0F0) == 0xA080)
-			{
-				
-			}
+			ser.Sync("CS_prev", ref CS_prev);
+			ser.Sync("CLK_prev", ref CLK_prev);
+			ser.Sync("DI_prev", ref DI_prev);
+			ser.Sync("DO", ref DO);
+			ser.Sync("instr_read", ref instr_read);
+			ser.Sync("perf_instr", ref perf_instr);
+			ser.Sync("instr_bit_counter", ref instr_bit_counter);
+			ser.Sync("instr", ref instr);
+			ser.Sync("WR_EN", ref WR_EN);
+			ser.Sync("EE_addr", ref EE_addr);
+			ser.Sync("instr_case", ref instr_case);
+			ser.Sync("instr_clocks", ref instr_clocks);
+			ser.Sync("EE_value", ref EE_value);
+			ser.Sync("countdown", ref countdown);
+			ser.Sync("countdown_start", ref countdown_start);
 		}
 
 		public byte Register_Access_Read(ushort addr)
@@ -181,7 +192,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if ((addr & 0xA0F0) == 0xA080)
 			{
-				return 0xFF;
+				return (byte)((CS_prev ? 0x80 : 0) |
+							(CLK_prev ? 0x40 : 0) |
+							(DI_prev ? 2 : 0) |
+							(DO ? 1 : 0));
 			}
 			else
 			{
@@ -189,6 +203,240 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
+		public void Register_Access_Write(ushort addr, byte value)
+		{
+			if ((addr & 0xA0F0) == 0xA000)
+			{
+				if (value == 0x55)
+				{
+					is_erased = true;
+					acc_x_low = 0;
+					acc_x_high = 0x80;
+					acc_y_low = 0;
+					acc_y_high = 0x80;
+				}
+			}
+			else if ((addr & 0xA0F0) == 0xA010)
+			{
+				if ((value == 0xAA) && is_erased)
+				{
+					// latch new accelerometer values
+					acc_x_low = (byte)(Core.Acc_X_state & 0xFF);
+					acc_x_high = (byte)((Core.Acc_X_state & 0xFF00) >> 8);
+					acc_y_low = (byte)(Core.Acc_Y_state & 0xFF);
+					acc_y_high = (byte)((Core.Acc_Y_state & 0xFF00) >> 8);
+				}
+			}
+			else if ((addr & 0xA0F0) == 0xA080)
+			{
+				// EEPROM writes
+				EEPROM_write(value);
+			}
+		}
 
+		private void EEPROM_write(byte value)
+		{
+			bool CS = value.Bit(7);
+			bool CLK = value.Bit(6);
+			bool DI = value.Bit(1);
+
+			// if we deselect the chip, complete instructions or countdown and stop
+			if (!CS)
+			{
+				CS_prev = CS;
+				CLK_prev = CLK;
+				DI_prev = DI;
+
+				DO = true;
+				countdown_start = false;
+			}
+
+			if (!instr_read && !perf_instr)
+			{
+				// if we aren't performing an operation or reading an incoming instruction, we are waiting for one
+				// this is signalled by CS and DI both being 1 while CLK goes from 0 to 1
+				if (CLK && !CLK_prev && DI && CS)
+				{
+					instr_read = true;
+					instr_bit_counter = 0;
+					instr = 0;
+					DO = false;
+					Console.Write("Initiating command: ");
+					Console.WriteLine(Core.cpu.TotalExecutedCycles);
+				}
+			}
+			else if (instr_read && CLK && !CLK_prev)
+			{
+				// all instructions are 10 bits long
+				instr = (instr << 1) | ((value & 2) >> 1);
+
+				instr_bit_counter++;
+				if (instr_bit_counter == 10)
+				{
+					instr_read = false;
+					perf_instr = true;
+					instr_clocks = 0;
+					EE_addr = instr & 0x7F;
+					EE_value = 0;
+
+
+
+					switch (instr & 0x300)
+					{
+						case 0x0:
+							switch (instr & 0xC0)
+							{
+								case 0x0: // disable writes
+									instr_case = 0;
+									break;
+								case 0x40: // fill mem with value
+									instr_case = 1;
+									break;
+								case 0x80: // fill mem with FF
+									instr_case = 2;
+									break;
+								case 0xC0: // enable writes
+									instr_case = 3;
+									break;
+							}
+							break;
+						case 0x100: // write to address
+							instr_case = 4;
+							break;
+						case 0x200: // read from address
+							instr_case = 5;
+							break;
+						case 0x300: // set address to FF
+							instr_case = 6;
+							break;
+
+					}
+
+					Console.Write("Selected Command: ");
+					Console.Write(instr_case);
+					Console.Write(" ");
+					Console.WriteLine(Core.cpu.TotalExecutedCycles);
+				}
+			}
+			else if (perf_instr && CLK && !CLK_prev)
+			{
+				switch (instr_case)
+				{
+					case 0:
+						WR_EN = false;
+						instr_case = 7;
+						countdown = 8;
+						break;
+					case 1:
+						if (instr_clocks < 16)
+						{
+							EE_value = (EE_value << 1) | ((value & 2) >> 1);
+						}
+						else
+						{
+							if (WR_EN)
+							{
+								for (int i = 0; i < 128; i++)
+								{
+									Core.cart_RAM[i * 2] = (byte)(EE_value & 0xFF);
+									Core.cart_RAM[i * 2 + 1] = (byte)((EE_value & 0xFF00) >> 8);
+								}
+							}
+							instr_case = 7;
+							countdown = 8;
+						}
+						break;
+					case 2:
+						if (WR_EN)
+						{
+							for (int i = 0; i < 256; i++)
+							{
+								Core.cart_RAM[i] = 0xFF;
+							}
+						}
+						instr_case = 7;
+						countdown = 8;
+						break;
+					case 3:
+						WR_EN = true;
+						instr_case = 7;
+						countdown = 8;
+						break;
+					case 4:
+						if (instr_clocks < 16)
+						{
+							EE_value = (EE_value << 1) | ((value & 2) >> 1);
+						}
+						else
+						{
+							if (WR_EN)
+							{
+								Core.cart_RAM[EE_addr * 2] = (byte)(EE_value & 0xFF);
+								Core.cart_RAM[EE_addr * 2 + 1] = (byte)((EE_value & 0xFF00) >> 8);
+							}
+							instr_case = 7;
+							countdown = 8;
+						}
+						break;
+					case 5:
+						if (instr_clocks < 16)
+						{
+							if ((instr_clocks >= 0) && (instr_clocks <= 7))
+							{
+								DO = (Core.cart_RAM[EE_addr * 2 + 1] >> (8 - instr_clocks)) == 1 ? true : false;
+							}
+							else if ((instr_clocks >= 8) && (instr_clocks <= 15))
+							{
+								DO = (Core.cart_RAM[EE_addr * 2] >> (8 - instr_clocks)) == 1 ? true : false;
+							}
+						}
+						else
+						{
+							instr_case = 7;
+							countdown = 8;
+						}
+						
+						break;
+					case 6:
+						if (WR_EN)
+						{
+							Core.cart_RAM[EE_addr * 2] = 0xFF;
+							Core.cart_RAM[EE_addr * 2 + 1] = 0xFF;
+						}
+						instr_case = 7;
+						countdown = 8;
+						break;
+					case 7:
+						// completed operations take time, so countdown a bit here. 
+						// not cycle accurate for operations like writing to all of the EEPROM, but good enough
+
+						break;
+				}
+
+				if (instr_case == 7)
+				{
+					perf_instr = false;
+					countdown_start = true;
+				}
+
+				instr_clocks++;
+			}
+			else if (countdown_start)
+			{
+				countdown--;
+				if (countdown == 0)
+				{
+					countdown_start = false;
+					DO = true;
+
+					Console.Write("Command Complete: ");
+					Console.WriteLine(Core.cpu.TotalExecutedCycles);
+				}
+			}
+
+			CS_prev = CS;
+			CLK_prev = CLK;
+			DI_prev = DI;
+		}
 	}
 }

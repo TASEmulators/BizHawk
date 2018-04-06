@@ -361,7 +361,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// RAM Bank in GBC mode
 				case 0xFF70:
 					//Console.WriteLine(value);
-					if (is_GBC && !ppu.HDMA_active)
+					if (is_GBC)
 					{
 						RAM_Bank = value & 7;
 						if (RAM_Bank == 0) { RAM_Bank = 1; }

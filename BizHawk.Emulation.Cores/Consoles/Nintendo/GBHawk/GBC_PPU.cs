@@ -230,7 +230,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					// change the appropriate palette color
 					color_compute_BG();
-
 					if (BG_bytes_inc) { BG_bytes_index++; BG_bytes_index &= 0x3F; }
 					break;
 				case 0xFF6A: // OBPI
@@ -272,11 +271,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								cur_DMA_src = (ushort)((cur_DMA_src + 1) & 0xFFFF);
 								HDMA_length--;
 							}
+
+							HDMA_tick++;
 						}
 						else
 						{
 							// only transfer during mode 0, and only 16 bytes at a time
-							if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test)
+							if (((STAT & 3) == 0) && (LY != last_HBL) && HBL_test && (LY_inc == 1))
 							{
 								HBL_HDMA_go = true;
 								HBL_test = false;
@@ -306,14 +307,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 									HBL_HDMA_count = 0x10;
 									HBL_HDMA_go = false;
 								}
+
+								HDMA_tick++;
 							}
 							else
 							{
 								Core.HDMA_transfer = false;
 							}
-						}
-
-						HDMA_tick++;
+						}					
 					}
 					else
 					{

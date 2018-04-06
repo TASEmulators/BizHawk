@@ -415,10 +415,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				cart_RAM = new byte[0x200];
 			}
 
+			// mbc7 has 256 bytes of RAM, regardless of any header info
+			if (mppr == "MBC7")
+			{
+				cart_RAM = new byte[0x100];
+				has_bat = true;
+			}
+
 			mapper.Core = this;
 			mapper.Initialize();
 
-			if (cart_RAM != null)
+			if (cart_RAM != null && (mppr != "MBC7"))
 			{
 				Console.Write("RAM: "); Console.WriteLine(cart_RAM.Length);
 

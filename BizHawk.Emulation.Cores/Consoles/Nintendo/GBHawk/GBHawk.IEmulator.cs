@@ -13,6 +13,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
 		public byte controller_state;
+		public ushort Acc_X_state;
+		public ushort Acc_Y_state;
 		public bool in_vblank_old;
 		public bool in_vblank;
 		public bool vblank_rise;
@@ -188,6 +190,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			InputCallbacks.Call();
 			controller_state = _controllerDeck.ReadPort1(controller);
+
+			Acc_X_state = _controllerDeck.ReadAccX1(controller);
+			Acc_Y_state = _controllerDeck.ReadAccY1(controller);
 		}
 
 		public int Frame => _frame;

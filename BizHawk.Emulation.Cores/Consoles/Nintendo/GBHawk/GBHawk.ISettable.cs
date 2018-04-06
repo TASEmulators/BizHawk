@@ -58,20 +58,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public class GBSyncSettings
 		{
-			private string _port1 = GBHawkControllerDeck.DefaultControllerName;
+			[JsonIgnore]
+			public string Port1 = GBHawkControllerDeck.DefaultControllerName;
+
+			public enum ControllerType
+			{
+				Default,
+				Kirby
+			}
 
 			[JsonIgnore]
-			public string Port1
+			private ControllerType _GBController;
+
+			[DisplayName("Controller")]
+			[Description("Select Controller Type")]
+			[DefaultValue(ControllerType.Default)]
+			public ControllerType GBController
 			{
-				get { return _port1; }
+				get { return _GBController; }
 				set
 				{
-					if (!GBHawkControllerDeck.ValidControllerTypes.ContainsKey(value))
-					{
-						throw new InvalidOperationException("Invalid controller type: " + value);
-					}
+					if (value == ControllerType.Default) { Port1 = GBHawkControllerDeck.DefaultControllerName; }
+					else { Port1 = "Gameboy Controller + Kirby"; }
 
-					_port1 = value;
+					_GBController = value;
 				}
 			}
 
