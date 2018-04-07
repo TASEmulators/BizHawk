@@ -209,10 +209,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (value == 0x55)
 				{
+					//Console.WriteLine("Erasing ACC");
+
 					is_erased = true;
-					acc_x_low = 0;
+					acc_x_low = 0x00;
 					acc_x_high = 0x80;
-					acc_y_low = 0;
+					acc_y_low = 0x00;
 					acc_y_high = 0x80;
 				}
 			}
@@ -221,6 +223,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if ((value == 0xAA) && is_erased)
 				{
 					// latch new accelerometer values
+					//Console.WriteLine("Latching ACC");
 					acc_x_low = (byte)(Core.Acc_X_state & 0xFF);
 					acc_x_high = (byte)((Core.Acc_X_state & 0xFF00) >> 8);
 					acc_y_low = (byte)(Core.Acc_Y_state & 0xFF);
@@ -249,6 +252,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				DO = true;
 				countdown_start = false;
+				perf_instr = false;
+				instr_read = false;
+
+				//Console.Write("Chip De-selected: ");
+				//Console.WriteLine(Core.cpu.TotalExecutedCycles);
 			}
 
 			if (!instr_read && !perf_instr)
@@ -261,8 +269,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					instr_bit_counter = 0;
 					instr = 0;
 					DO = false;
-					Console.Write("Initiating command: ");
-					Console.WriteLine(Core.cpu.TotalExecutedCycles);
+					//Console.Write("Initiating command: ");
+					//Console.WriteLine(Core.cpu.TotalExecutedCycles);
 				}
 			}
 			else if (instr_read && CLK && !CLK_prev)
@@ -274,12 +282,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (instr_bit_counter == 10)
 				{
 					instr_read = false;
-					perf_instr = true;
 					instr_clocks = 0;
 					EE_addr = instr & 0x7F;
 					EE_value = 0;
-
-
 
 					switch (instr & 0x300)
 					{
@@ -288,51 +293,70 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								case 0x0: // disable writes
 									instr_case = 0;
+									WR_EN = false;
+									DO = true;
 									break;
 								case 0x40: // fill mem with value
 									instr_case = 1;
+									perf_instr = true;
 									break;
 								case 0x80: // fill mem with FF
 									instr_case = 2;
+									if (WR_EN)
+									{
+										for (int i = 0; i < 256; i++)
+										{
+											Core.cart_RAM[i] = 0xFF;
+										}
+									}
+									DO = true;
 									break;
 								case 0xC0: // enable writes
 									instr_case = 3;
+									WR_EN = true;
+									DO = true;
 									break;
 							}
 							break;
 						case 0x100: // write to address
 							instr_case = 4;
+							perf_instr = true;
 							break;
 						case 0x200: // read from address
 							instr_case = 5;
+							perf_instr = true;
 							break;
 						case 0x300: // set address to FF
 							instr_case = 6;
+							if (WR_EN)
+							{
+								Core.cart_RAM[EE_addr * 2] = 0xFF;
+								Core.cart_RAM[EE_addr * 2 + 1] = 0xFF;
+							}
+							DO = true;
 							break;
-
 					}
 
-					Console.Write("Selected Command: ");
-					Console.Write(instr_case);
-					Console.Write(" ");
-					Console.WriteLine(Core.cpu.TotalExecutedCycles);
+					//Console.Write("Selected Command: ");
+					//Console.Write(instr_case);
+					//Console.Write(" ");
+					//Console.WriteLine(Core.cpu.TotalExecutedCycles);
 				}
 			}
 			else if (perf_instr && CLK && !CLK_prev)
 			{
+				//Console.Write("Command In progress, Cycle: ");
+				//Console.Write(instr_clocks);
+				//Console.Write(" ");
+				//Console.WriteLine(Core.cpu.TotalExecutedCycles);
+
+				// for commands that require additional clocking
 				switch (instr_case)
 				{
-					case 0:
-						WR_EN = false;
-						instr_case = 7;
-						countdown = 8;
-						break;
 					case 1:
-						if (instr_clocks < 16)
-						{
-							EE_value = (EE_value << 1) | ((value & 2) >> 1);
-						}
-						else
+						EE_value = (EE_value << 1) | ((value & 2) >> 1);
+
+						if (instr_clocks == 15)
 						{
 							if (WR_EN)
 							{
@@ -346,28 +370,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							countdown = 8;
 						}
 						break;
-					case 2:
-						if (WR_EN)
-						{
-							for (int i = 0; i < 256; i++)
-							{
-								Core.cart_RAM[i] = 0xFF;
-							}
-						}
-						instr_case = 7;
-						countdown = 8;
-						break;
-					case 3:
-						WR_EN = true;
-						instr_case = 7;
-						countdown = 8;
-						break;
+
 					case 4:
-						if (instr_clocks < 16)
-						{
-							EE_value = (EE_value << 1) | ((value & 2) >> 1);
-						}
-						else
+						EE_value = (EE_value << 1) | ((value & 2) >> 1);
+
+						if (instr_clocks == 15)
 						{
 							if (WR_EN)
 							{
@@ -378,34 +385,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							countdown = 8;
 						}
 						break;
+
 					case 5:
-						if (instr_clocks < 16)
+						if ((instr_clocks >= 0) && (instr_clocks <= 7))
 						{
-							if ((instr_clocks >= 0) && (instr_clocks <= 7))
-							{
-								DO = (Core.cart_RAM[EE_addr * 2 + 1] >> (8 - instr_clocks)) == 1 ? true : false;
-							}
-							else if ((instr_clocks >= 8) && (instr_clocks <= 15))
-							{
-								DO = (Core.cart_RAM[EE_addr * 2] >> (8 - instr_clocks)) == 1 ? true : false;
-							}
+							DO = ((Core.cart_RAM[EE_addr * 2 + 1] >> (7 - instr_clocks)) & 1) == 1 ? true : false;
 						}
-						else
+						else if ((instr_clocks >= 8) && (instr_clocks <= 15))
+						{
+							DO = ((Core.cart_RAM[EE_addr * 2] >> (15 - instr_clocks)) & 1) == 1 ? true : false;
+						}
+
+						if (instr_clocks == 15)
 						{
 							instr_case = 7;
 							countdown = 8;
-						}
-						
+						}				
 						break;
+
 					case 6:
-						if (WR_EN)
-						{
-							Core.cart_RAM[EE_addr * 2] = 0xFF;
-							Core.cart_RAM[EE_addr * 2 + 1] = 0xFF;
-						}
+
 						instr_case = 7;
 						countdown = 8;
 						break;
+
 					case 7:
 						// completed operations take time, so countdown a bit here. 
 						// not cycle accurate for operations like writing to all of the EEPROM, but good enough
@@ -429,8 +432,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					countdown_start = false;
 					DO = true;
 
-					Console.Write("Command Complete: ");
-					Console.WriteLine(Core.cpu.TotalExecutedCycles);
+					//Console.Write("Command Complete: ");
+					//Console.WriteLine(Core.cpu.TotalExecutedCycles);
 				}
 			}
 
