@@ -493,7 +493,7 @@ namespace BizHawk.Client.EmuHawk
 					Close();
 				}
 
-				if (_exit)
+				if (_windowClosedAndSafeToExitProcess)
 				{
 					break;
 				}
@@ -1370,7 +1370,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _avwriterResizeh;
 		private bool _avwriterpad;
 
-		private bool _exit;
+		private bool _windowClosedAndSafeToExitProcess;
 		private int _exitCode;
 		private bool _exitRequestPending;
 		private bool _runloopFrameProgress;
@@ -3427,7 +3427,7 @@ namespace BizHawk.Client.EmuHawk
 						StopAv();
 						if (argParse._autoCloseOnDump)
 						{
-							_exit = true;
+							_exitRequestPending = true;
 						}
 					}
 				}

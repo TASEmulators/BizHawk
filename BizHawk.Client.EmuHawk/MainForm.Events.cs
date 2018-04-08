@@ -695,12 +695,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CloseEmulator()
 		{
-			_exit = true;
+			_exitRequestPending = true;
 		}
 
 		public void CloseEmulator(int exitCode)
 		{
-			_exit = true;
+			_exitRequestPending = true;
 			_exitCode = exitCode;
 		}
 
@@ -2947,7 +2947,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnClosed(EventArgs e)
 		{
-			_exit = true;
+			_windowClosedAndSafeToExitProcess = true;
 			base.OnClosed(e);
 		}
 
