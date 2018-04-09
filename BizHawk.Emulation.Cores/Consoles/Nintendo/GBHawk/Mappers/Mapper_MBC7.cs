@@ -66,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (addr < 0xB000)
 			{
-				if (RAM_enable_2)
+				if (RAM_enable_1 && RAM_enable_2)
 				{
 					return Register_Access_Read(addr);
 				}
@@ -107,15 +107,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else if (addr < 0x6000)
 				{
-					if (RAM_enable_1)
-					{
-						RAM_enable_2 = (value & 0xF0) == 0x40;
-					}				
+					RAM_enable_2 = (value & 0xF0) == 0x40;		
 				}
 			}
 			else
 			{
-				if (RAM_enable_2)
+				if (RAM_enable_1 && RAM_enable_2)
 				{
 					Register_Access_Write(addr, value);
 				}
