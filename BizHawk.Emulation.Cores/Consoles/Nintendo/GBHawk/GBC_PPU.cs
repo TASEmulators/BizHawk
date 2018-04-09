@@ -1289,19 +1289,37 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			sprite_ordered_index = 0;
 
-			for (int i = 0; i < 256; i++)
+			// In CGB mode, sprites are ordered solely based on their position in OAM, so they are already ordered
+
+			if (Core.GBC_compat)
 			{
 				for (int j = 0; j < SL_sprites_index; j++)
 				{
-					if (SL_sprites[j * 4 + 1] == i)
+					sl_use_index = j;
+					process_sprite();
+					SL_sprites_ordered[sprite_ordered_index * 4] = SL_sprites[j * 4 + 1];
+					SL_sprites_ordered[sprite_ordered_index * 4 + 1] = sprite_sel[0];
+					SL_sprites_ordered[sprite_ordered_index * 4 + 2] = sprite_sel[1];
+					SL_sprites_ordered[sprite_ordered_index * 4 + 3] = SL_sprites[j * 4 + 3];
+					sprite_ordered_index++;
+				}
+			}
+			else
+			{
+				for (int i = 0; i < 256; i++)
+				{
+					for (int j = 0; j < SL_sprites_index; j++)
 					{
-						sl_use_index = j;
-						process_sprite();
-						SL_sprites_ordered[sprite_ordered_index * 4] = SL_sprites[j * 4 + 1];
-						SL_sprites_ordered[sprite_ordered_index * 4 + 1] = sprite_sel[0];
-						SL_sprites_ordered[sprite_ordered_index * 4 + 2] = sprite_sel[1];
-						SL_sprites_ordered[sprite_ordered_index * 4 + 3] = SL_sprites[j * 4 + 3];
-						sprite_ordered_index++;
+						if (SL_sprites[j * 4 + 1] == i)
+						{
+							sl_use_index = j;
+							process_sprite();
+							SL_sprites_ordered[sprite_ordered_index * 4] = SL_sprites[j * 4 + 1];
+							SL_sprites_ordered[sprite_ordered_index * 4 + 1] = sprite_sel[0];
+							SL_sprites_ordered[sprite_ordered_index * 4 + 2] = sprite_sel[1];
+							SL_sprites_ordered[sprite_ordered_index * 4 + 3] = SL_sprites[j * 4 + 3];
+							sprite_ordered_index++;
+						}
 					}
 				}
 			}
