@@ -94,7 +94,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("speed_switch", ref speed_switch);
 			ser.Sync("HDMA_transfer", ref HDMA_transfer);
 
-			ser.Sync("Use_RTC", ref Use_RTC);
+			ser.Sync("Use_MT", ref Use_MT);
+			ser.Sync("addr_access", ref addr_access);
 
 			// probably a better way to do this
 			if (cart_RAM != null)

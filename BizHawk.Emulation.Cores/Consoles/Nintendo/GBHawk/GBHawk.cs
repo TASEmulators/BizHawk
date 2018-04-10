@@ -68,7 +68,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		private int _frame = 0;
 
-		public bool Use_RTC;
+		public bool Use_MT;
+		public ushort addr_access;
 
 		public MapperBase mapper;
 
@@ -373,6 +374,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Console.WriteLine("Using RockMan 8 (Unlicensed) Mapper");
 				mapper = new MapperRM8();
 			}
+			if ((_rom.HashMD5(0, _rom.Length) == "D3C1924D847BC5D125BF54C2076BE27A"))
+			{
+				Console.WriteLine("Using Sachen 1 (Unlicensed) Mapper");
+				mapper = new MapperSachen1();
+				mppr = "Schn1";
+			}
 
 			Console.Write("Mapper: ");
 			Console.WriteLine(mppr);
@@ -407,6 +414,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if ((mppr == "Schn1") || (mppr == "Schn2"))
 			{
 				cart_RAM = null;
+				Use_MT = true;
 			}
 
 			// mbc2 carts have built in RAM
@@ -438,7 +446,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// Extra RTC initialization for mbc3
 			if (mppr == "MBC3")
 			{
-				Use_RTC = true;
+				Use_MT = true;
 				int days = (int)Math.Floor(_syncSettings.RTCInitialTime / 86400.0);
 
 				int days_upper = ((days & 0x100) >> 8) | ((days & 0x200) >> 2);

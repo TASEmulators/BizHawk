@@ -117,7 +117,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// These things do not change speed in GBC double spped mode
 				audio.tick();
 				ppu.tick();
-				if (Use_RTC) { mapper.RTC_Tick(); }
+				if (Use_MT) { mapper.Mapper_Tick(); }
 
 				if (!HDMA_transfer)
 				{
