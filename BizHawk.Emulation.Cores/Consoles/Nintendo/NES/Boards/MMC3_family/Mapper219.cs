@@ -1,4 +1,5 @@
 ﻿using System;
+using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Nintendo.NES
 {
@@ -142,6 +143,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			}
 			else
 				base.WritePPU(addr, value);
+		}
+
+		public override void SyncState(Serializer ser)
+		{
+			ser.Sync("exregs", ref exregs, false);
+			ser.Sync("prgregs", ref prgregs, false);
+			ser.Sync("chrregs", ref chrregs, false);
+			ser.Sync("bits_rev", ref bits_rev);
+			ser.Sync("reg_value", ref reg_value);
+
+			base.SyncState(ser);
 		}
 	}
 }
