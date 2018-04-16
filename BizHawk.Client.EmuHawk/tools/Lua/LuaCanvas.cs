@@ -291,7 +291,7 @@ namespace BizHawk.Client.EmuHawk
 		[LuaMethod(
 			"drawPolygon",
 			"Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). Line is the color of the polygon. Background is the optional fill color")]
-		public void DrawPolygon(LuaTable points, int x = 0, int y = 0, Color? line = null, Color? background = null)
+		public void DrawPolygon(LuaTable points, int? x = null, int? y = null, Color? line = null, Color? background = null)
 		{
 			try
 			{
