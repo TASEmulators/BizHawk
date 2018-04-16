@@ -255,13 +255,13 @@ namespace BizHawk.Client.EmuHawk
 			boxBackground.DrawLine(GetPen(color ?? _defaultForeground), x, y, x + 0.1F, y);
 		}
 
-		public void DrawPolygon(LuaTable points, Color? line = null, Color? background = null)
+		public void DrawPolygon(LuaTable points, int x = 0, int y = 0, Color? line = null, Color? background = null)
 		{
 			var pointsArr = new Point[points.Values.Count];
 			var i = 0;
 			foreach (LuaTable point in points.Values)
 			{
-				pointsArr[i] = new Point((int)(double)(point[1]), (int)(double)(point[2]));
+				pointsArr[i] = new Point((int)(double)(point[1]) + x, (int)(double)(point[2]) + y);
 				i++;
 			}
 

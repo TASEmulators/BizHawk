@@ -1022,11 +1022,11 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		[LuaMethodExample("forms.drawPolygon( 334, { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 0x007F00FF, 0x7F7F7FFF );")]
+		[LuaMethodExample("forms.drawPolygon( 334, { { 5, 10 }, { 10, 10 }, { 10, 20 }, { 5, 20 } }, 10, 30, 0x007F00FF, 0x7F7F7FFF );")]
 		[LuaMethod(
 			"drawPolygon",
-			"Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). Line is the color of the polygon. Background is the optional fill color")]
-		public void DrawPolygon(int componentHandle, LuaTable points, Color? line = null, Color? background = null)
+			"Draws a polygon using the table of coordinates specified in points. This should be a table of tables(each of size 2). If x or y is passed, the polygon will be translated by the passed coordinate pair. Line is the color of the polygon. Background is the optional fill color")]
+		public void DrawPolygon(int componentHandle, LuaTable points, int x = 0, int y = 0, Color? line = null, Color? background = null)
 		{
 			try
 			{
@@ -1043,7 +1043,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (control is LuaPictureBox)
 						{
-							(control as LuaPictureBox).DrawPolygon(points, line, background);
+							(control as LuaPictureBox).DrawPolygon(points, line, x, y, background);
 						}
 					}
 				}
