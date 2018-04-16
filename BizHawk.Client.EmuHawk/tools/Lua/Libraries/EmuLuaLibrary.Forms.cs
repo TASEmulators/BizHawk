@@ -1043,7 +1043,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						if (control is LuaPictureBox)
 						{
-							(control as LuaPictureBox).DrawPolygon(points, line, x, y, background);
+							(control as LuaPictureBox).DrawPolygon(points, x, y, line, background);
 						}
 					}
 				}

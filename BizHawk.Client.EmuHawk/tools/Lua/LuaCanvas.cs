@@ -295,7 +295,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			try
 			{
-				luaPictureBox.DrawPolygon(points, line, x, y, background);
+				luaPictureBox.DrawPolygon(points, x, y, line, background);
 			}
 			catch (Exception ex)
 			{
