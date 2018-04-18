@@ -39,6 +39,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			Regs[dest] = ReadHardware((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
+
+			FlagZ = Regs[dest] == 0;
+			FlagP = TableParity[Regs[dest]];
+			FlagH = false;
+			FlagN = false;
+			FlagS = Regs[dest].Bit(7);
+			Flag5 = Regs[dest].Bit(5);
+			Flag3 = Regs[dest].Bit(3);
 		}
 
 		public void TR_Func(ushort dest, ushort src)
