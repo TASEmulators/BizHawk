@@ -159,6 +159,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public byte p, nothing;
 			public uint aa, rd;
 			public byte sp, dp, db, mdr;
+			public ushort vcounter, hcounter;
 		}
 
 		public struct LayerEnables
