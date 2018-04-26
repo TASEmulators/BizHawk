@@ -1046,12 +1046,208 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 //  Receiving command parameter bytes
                 //----------------------------------------
                 case Phase.Command:
+
+                    // store the parameter in the command buffer
+                    CommBuffer[CommCounter] = LastByteReceived;
+
+                    // process parameter byte
+                    ParseParamByteStandard(CommCounter);
+
+                    // increment command parameter counter
+                    CommCounter++;
+
+                    // was that the last parameter byte?
+                    if (CommCounter == ActiveCommand.ParameterByteCount)
+                    {
+                        // all parameter bytes received - setup for execution phase
+
+                        // clear exec buffer and status registers
+                        ClearExecBuffer();
+                        Status0 = 0;
+                        Status1 = 0;
+                        Status2 = 0;
+                        Status3 = 0;
+
+                        // temp sector index
+                        byte secIdx = ActiveCommandParams.Sector;
+
+                        // do we have a valid disk inserted?
+                        if (!ActiveDrive.FLAG_READY)
+                        {
+                            // no disk, no tracks or motor is not on
+                            SetBit(SR0_IC0, ref Status0);
+                            SetBit(SR0_NR, ref Status0);
+
+                            CommitResultCHRN();
+                            CommitResultStatus();
+                            //ResBuffer[RS_ST0] = Status0;
+
+                            // move to result phase
+                            ActivePhase = Phase.Result;
+                            break;
+                        }
+
+                        int buffPos = 0;
+                        int sectorSize = 0;
+                        int maxTransferCap = 0;
+
+                        // calculate requested size of data required
+                        if (ActiveCommandParams.SectorSize == 0)
+                        {
+                            // When N=0, then DTL defines the data length which the FDC must treat as a sector. If DTL is smaller than the actual 
+                            // data length in a sector, the data beyond DTL in the sector is not sent to the Data Bus. The FDC reads (internally) 
+                            // the complete sector performing the CRC check and, depending upon the manner of command termination, may perform 
+                            // a Multi-Sector Read Operation.
+                            sectorSize = ActiveCommandParams.DTL;
+
+                            // calculate maximum transfer capacity
+                            if (!CMD_FLAG_MF)
+                                maxTransferCap = 3328;
+                        }
+                        else
+                        {
+                            // When N is non - zero, then DTL has no meaning and should be set to ffh
+                            ActiveCommandParams.DTL = 0xFF;
+
+                            // calculate maximum transfer capacity
+                            switch (ActiveCommandParams.SectorSize)
+                            {
+                                case 1:
+                                    if (CMD_FLAG_MF)
+                                        maxTransferCap = 6656;
+                                    else
+                                        maxTransferCap = 3840;
+                                    break;
+                                case 2:
+                                    if (CMD_FLAG_MF)
+                                        maxTransferCap = 7680;
+                                    else
+                                        maxTransferCap = 4096;
+                                    break;
+                                case 3:
+                                    if (CMD_FLAG_MF)
+                                        maxTransferCap = 8192;
+                                    else
+                                        maxTransferCap = 4096;
+                                    break;
+                            }
+
+                            sectorSize = 0x80 << ActiveCommandParams.SectorSize;
+                        }
+
+                        // get the current track
+                        var track = ActiveDrive.Disk.DiskTracks.Where(a => a.TrackNumber == ActiveDrive.CurrentTrackID).FirstOrDefault();
+
+                        if (track == null || track.NumberOfSectors <= 0)
+                        {
+                            // track could not be found
+                            SetBit(SR0_IC0, ref Status0);
+                            SetBit(SR0_NR, ref Status0);
+
+                            CommitResultCHRN();
+                            CommitResultStatus();
+
+                            //ResBuffer[RS_ST0] = Status0;
+
+                            // move to result phase
+                            ActivePhase = Phase.Result;
+                            break;
+                        }
+
+                        FloppyDisk.Sector sector = null;
+                        ActiveDrive.SectorIndex = 0;
+
+                        int secCount = 0;
+
+                        // read the whole track
+                        for (int i = 0; i < track.Sectors.Length; i++)
+                        {
+                            if (secCount > ActiveCommandParams.EOT)
+                            {
+                                break;
+                            }
+
+                            var sec = track.Sectors[i];
+                            for (int b = 0; b < sec.ActualData.Length; b++)
+                            {
+                                ExecBuffer[buffPos++] = sec.ActualData[b];
+                            }
+
+                            // end of sector - compare IDs
+                            if (sec.TrackNumber != ActiveCommandParams.Cylinder ||
+                                sec.SideNumber != ActiveCommandParams.Head ||
+                                sec.SectorID != ActiveCommandParams.Sector ||
+                                sec.SectorSize != ActiveCommandParams.SectorSize)
+                            {
+                                SetBit(SR1_ND, ref Status1);
+                            }
+
+                            secCount++;
+                            ActiveDrive.SectorIndex = i;
+                        }
+
+                        if (secCount == ActiveCommandParams.EOT)
+                        {
+                            // this was the last sector to read
+                            // or termination requested
+
+                            int keyIndex = 0;
+                            for (int i = 0; i < track.Sectors.Length; i++)
+                            {
+                                if (track.Sectors[i].SectorID == track.Sectors[ActiveDrive.SectorIndex].SectorID)
+                                {
+                                    keyIndex = i;
+                                    break;
+                                }
+                            }
+
+                            if (keyIndex == track.Sectors.Length - 1)
+                            {
+                                // last sector on the cylinder, set EN
+                                SetBit(SR1_EN, ref Status1);
+
+                                // increment cylinder
+                                ActiveCommandParams.Cylinder++;
+
+                                // reset sector
+                                ActiveCommandParams.Sector = 1;
+                                ActiveDrive.SectorIndex = 0;
+                            }
+                            else
+                            {
+                                ActiveDrive.SectorIndex++;
+                            }
+
+                            UnSetBit(SR0_IC1, ref Status0);
+                            UnSetBit(SR0_IC0, ref Status0);
+
+                            CommitResultCHRN();
+                            CommitResultStatus();
+                            ActivePhase = Phase.Execution;
+                        }                            
+
+                        if (ActivePhase == Phase.Execution)
+                        {
+                            ExecLength = buffPos;
+                            ExecCounter = buffPos;
+
+                            DriveLight = true;
+                        }
+                    }
+
                     break;
 
                 //----------------------------------------
                 //  FDC in execution phase reading/writing bytes
                 //----------------------------------------
                 case Phase.Execution:
+
+                    var index = ExecLength - ExecCounter;
+
+                    LastSectorDataReadByte = ExecBuffer[index];
+
+                    ExecCounter--;
+
                     break;
 
                 //----------------------------------------
