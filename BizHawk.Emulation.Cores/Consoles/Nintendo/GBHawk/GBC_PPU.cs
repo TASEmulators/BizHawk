@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte OBJ_pal_ret
 		{
-			get { return (byte)(((OBJ_bytes_inc ? 1 : 0) << 7) | (BG_bytes_index & 0x1F)); }
+			get { return (byte)(((OBJ_bytes_inc ? 1 : 0) << 7) | (OBJ_bytes_index & 0x3F)); }
 		}
 
 		public byte HDMA_ctrl
@@ -61,29 +61,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			switch (addr)
 			{		
-				case 0xFF40: ret = LCDC;					break; // LCDC
-				case 0xFF41: ret = STAT;					break; // STAT
-				case 0xFF42: ret = scroll_y;				break; // SCY
-				case 0xFF43: ret = scroll_x;				break; // SCX
-				case 0xFF44: ret = LY;						break; // LY
-				case 0xFF45: ret = LYC;						break; // LYC
-				case 0xFF46: ret = DMA_addr;				break; // DMA 
-				case 0xFF47: ret = BGP;						break; // BGP
-				case 0xFF48: ret = obj_pal_0;				break; // OBP0
-				case 0xFF49: ret = obj_pal_1;				break; // OBP1
-				case 0xFF4A: ret = window_y;				break; // WY
-				case 0xFF4B: ret = window_x;				break; // WX
+				case 0xFF40: ret = LCDC;							break; // LCDC
+				case 0xFF41: ret = STAT;							break; // STAT
+				case 0xFF42: ret = scroll_y;						break; // SCY
+				case 0xFF43: ret = scroll_x;						break; // SCX
+				case 0xFF44: ret = LY;								break; // LY
+				case 0xFF45: ret = LYC;								break; // LYC
+				case 0xFF46: ret = DMA_addr;						break; // DMA 
+				case 0xFF47: ret = BGP;								break; // BGP
+				case 0xFF48: ret = obj_pal_0;						break; // OBP0
+				case 0xFF49: ret = obj_pal_1;						break; // OBP1
+				case 0xFF4A: ret = window_y;						break; // WY
+				case 0xFF4B: ret = window_x;						break; // WX
 
 				// These are GBC specific Regs
-				case 0xFF51: ret = HDMA_src_hi;				break; // HDMA1
-				case 0xFF52: ret = HDMA_src_lo;				break; // HDMA2
-				case 0xFF53: ret = HDMA_dest_hi;			break; // HDMA3
-				case 0xFF54: ret = HDMA_dest_lo;			break; // HDMA4
-				case 0xFF55: ret = HDMA_ctrl;				break; // HDMA5
-				case 0xFF68: ret = BG_pal_ret;				break; // BGPI
-				case 0xFF69: ret = BG_transfer_byte;		break; // BGPD
-				case 0xFF6A: ret = OBJ_pal_ret;				break; // OBPI
-				case 0xFF6B: ret = OBJ_transfer_byte;		break; // OBPD
+				case 0xFF51: ret = HDMA_src_hi;						break; // HDMA1
+				case 0xFF52: ret = HDMA_src_lo;						break; // HDMA2
+				case 0xFF53: ret = HDMA_dest_hi;					break; // HDMA3
+				case 0xFF54: ret = HDMA_dest_lo;					break; // HDMA4
+				case 0xFF55: ret = HDMA_ctrl;						break; // HDMA5
+				case 0xFF68: ret = BG_pal_ret;						break; // BGPI
+				case 0xFF69: ret = BG_bytes[BG_bytes_index];		break; // BGPD
+				case 0xFF6A: ret = OBJ_pal_ret;						break; // OBPI
+				case 0xFF6B: ret = OBJ_bytes[OBJ_bytes_index];		break; // OBPD
 			}
 
 			return ret;

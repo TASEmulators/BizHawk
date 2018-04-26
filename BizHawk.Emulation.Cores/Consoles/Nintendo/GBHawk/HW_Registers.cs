@@ -311,8 +311,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				// GBC compatibility register (I think)
 				case 0xFF4C:
-					if (value != 0xC0)
+					if ((value != 0xC0) && (value != 0x80))
 					{
+						Console.Write("GBC Compatibility? ");
+						Console.WriteLine(value);
 						GBC_compat = false;
 					}
 					break;
