@@ -10,13 +10,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// <summary>
     /// Reponsible for TAP format serializaton
     /// </summary>
-    public class TapSerializer : MediaSerializer
+    public class TapConverter : MediaConverter
     {
         /// <summary>
         /// The type of serializer
         /// </summary>
-        private MediaSerializationType _formatType = MediaSerializationType.TAP;
-        public override MediaSerializationType FormatType
+        private MediaConverterType _formatType = MediaConverterType.TAP;
+        public override MediaConverterType FormatType
         {
             get
             {
@@ -25,20 +25,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
-        /// Signs whether this class can be used to serialize
+        /// Signs whether this class can be used to read the data format
         /// </summary>
-        public override bool IsSerializer { get { return false; } }
+        public override bool IsReader { get { return true; } }
 
         /// <summary>
-        /// Signs whether this class can be used to de-serialize
+        /// Signs whether this class can be used to write the data format
         /// </summary>
-        public override bool IsDeSerializer { get { return true; } }
+        public override bool IsWriter { get { return false; } }
 
         #region Construction
 
         private DatacorderDevice _datacorder;
 
-        public TapSerializer(DatacorderDevice _tapeDevice)
+        public TapConverter(DatacorderDevice _tapeDevice)
         {
             _datacorder = _tapeDevice;
         }
@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// DeSerialization method
         /// </summary>
         /// <param name="data"></param>
-        public override void DeSerialize(byte[] data)
+        public override void Read(byte[] data)
         {
             /*
                 The .TAP files contain blocks of tape-saved data. All blocks start with two bytes specifying how many bytes will follow (not counting the two length bytes). Then raw tape data follows, including the flag and checksum bytes. The checksum is the bitwise XOR of all bytes including the flag byte. For example, when you execute the line SAVE "ROM" CODE 0,2 this will result:

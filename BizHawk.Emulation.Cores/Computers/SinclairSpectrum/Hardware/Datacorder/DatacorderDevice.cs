@@ -324,13 +324,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void LoadTape(byte[] tapeData)
         {
             // check TZX first
-            TzxSerializer tzxSer = new TzxSerializer(this);
+            TzxConverter tzxSer = new TzxConverter(this);
             if (tzxSer.CheckType(tapeData))
             {
                 // this file has a tzx header - attempt serialization
                 try
                 {
-                    tzxSer.DeSerialize(tapeData);
+                    tzxSer.Read(tapeData);
                     return;
                 }
                 catch (Exception ex)
@@ -343,10 +343,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             else
             {
-                TapSerializer tapSer = new TapSerializer(this);
+                TapConverter tapSer = new TapConverter(this);
                 try
                 {
-                    tapSer.DeSerialize(tapeData);
+                    tapSer.Read(tapeData);
                     return;
                 }
                 catch (Exception ex)

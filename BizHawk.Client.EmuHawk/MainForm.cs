@@ -2109,7 +2109,7 @@ namespace BizHawk.Client.EmuHawk
 						"Apple II", "*.dsk;*.do;*.po;%ARCH%",
 						"Virtual Boy", "*.vb;%ARCH%",
 						"Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%",
-                        "Sinclair ZX Spectrum", "*.tzx;*.tap;%ARCH%",
+                        "Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;%ARCH%",
 						"All Files", "*.*");
 				}
 

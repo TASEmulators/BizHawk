@@ -60,6 +60,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public virtual DatacorderDevice TapeDevice { get; set; }
 
         /// <summary>
+        /// The +3 built-in disk drive
+        /// </summary>
+        public virtual NECUPD765 UPDDiskDevice { get; set; }
+
+        /// <summary>
         /// Holds the currently selected joysticks
         /// </summary>
         public virtual IJoystick[] JoystickCollection { get; set; }
@@ -67,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Signs whether the disk motor is on or off
         /// </summary>
-        protected bool DiskMotorState;
+        //protected bool DiskMotorState;
 
         /// <summary>
         /// +3/2a printer port strobe
@@ -347,6 +352,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 AYDevice.SyncState(ser);
                 ((AYChip)AYDevice as AYChip).PanningConfiguration = Spectrum.Settings.AYPanConfig;
+            }
+
+            if (UPDDiskDevice != null)
+            {
+                UPDDiskDevice.SyncState(ser);
             }
 
             ser.Sync("tapeMediaIndex", ref tapeMediaIndex);

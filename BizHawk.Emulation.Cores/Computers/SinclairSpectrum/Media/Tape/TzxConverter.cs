@@ -10,13 +10,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// <summary>
     /// Reponsible for TZX format serializaton
     /// </summary>
-    public class TzxSerializer : MediaSerializer
+    public class TzxConverter : MediaConverter
     {
         /// <summary>
         /// The type of serializer
         /// </summary>
-        private MediaSerializationType _formatType = MediaSerializationType.TZX;
-        public override MediaSerializationType FormatType
+        private MediaConverterType _formatType = MediaConverterType.TZX;
+        public override MediaConverterType FormatType
         {
             get
             {
@@ -25,14 +25,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
-        /// Signs whether this class can be used to serialize
+        /// Signs whether this class can be used to read the data format
         /// </summary>
-        public override bool IsSerializer { get { return false; } }
+        public override bool IsReader { get { return true; } }
 
         /// <summary>
-        /// Signs whether this class can be used to de-serialize
+        /// Signs whether this class can be used to write the data format
         /// </summary>
-        public override bool IsDeSerializer { get { return true; } }
+        public override bool IsWriter { get { return false; } }
 
         /// <summary>
         /// Working list of generated tape data blocks
@@ -53,7 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         private DatacorderDevice _datacorder;
 
-        public TzxSerializer(DatacorderDevice _tapeDevice)
+        public TzxConverter(DatacorderDevice _tapeDevice)
         {
             _datacorder = _tapeDevice;
         }
@@ -101,7 +101,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// DeSerialization method
         /// </summary>
         /// <param name="data"></param>
-        public override void DeSerialize(byte[] data)
+        public override void Read(byte[] data)
         {
             // clear existing tape blocks
             _datacorder.DataBlocks.Clear();

@@ -8,8 +8,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     public abstract partial class SpectrumBase
     {
-		// until +3 disk drive is emulated, we assume that incoming files are tape images
-
 		/// <summary>
         /// The tape or disk image(s) that are passed in from the main ZXSpectrum class
         /// </summary>
@@ -18,12 +16,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 		/// <summary>
         /// Tape images
         /// </summary>
-		protected List<byte[]> tapeImages { get; set; }
+		public List<byte[]> tapeImages { get; set; }
 
 		/// <summary>
         /// Disk images
         /// </summary>
-		protected List<byte[]> diskImages { get; set; }
+		public List<byte[]> diskImages { get; set; }
 
 		/// <summary>
         /// The index of the currently 'loaded' tape image
@@ -93,6 +91,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 				                
                 // load the media into the disk device
                 diskMediaIndex = result;
+
+                // fire osd message
+                Spectrum.OSD_DiskInserted();
+
                 LoadDiskMedia();
             }
         }
@@ -105,7 +107,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             mediaImages = files;
             LoadAllMedia();
-            Spectrum.OSD_TapeInit();
         }
 
 		/// <summary>
@@ -116,17 +117,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             tapeImages = new List<byte[]>();
             diskImages = new List<byte[]>();
 
-			foreach (var m in mediaImages)
+            int cnt = 0;
+            foreach (var m in mediaImages)
             {
-				switch (IdentifyMedia(m))
+                switch (IdentifyMedia(m))
                 {
                     case SpectrumMediaType.Tape:
                         tapeImages.Add(m);
+                        Spectrum._tapeInfo.Add(Spectrum._gameInfo[cnt]);
                         break;
                     case SpectrumMediaType.Disk:
                         diskImages.Add(m);
+                        Spectrum._diskInfo.Add(Spectrum._gameInfo[cnt]);
                         break;
                 }
+
+                cnt++;
             }
 
             if (tapeImages.Count > 0)
@@ -149,7 +155,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         protected void LoadDiskMedia()
         {
-            throw new NotImplementedException("+3 disk drive device not yet implemented");
+            if (this.GetType() != typeof(ZX128Plus3))
+            {
+                Spectrum.CoreComm.ShowMessage("You are trying to load one of more disk images.\n\n Please select ZX Spectrum +3 emulation immediately and reboot the core");
+                return;
+            }
+            else
+            {
+                //Spectrum.CoreComm.ShowMessage("You are attempting to load a disk into the +3 disk drive.\n\nThis DOES NOT currently work properly but IS under active development.");
+            }
+
+            UPDDiskDevice.FDD_LoadDisk(diskImages[diskMediaIndex]);
         }
 
         /// <summary>

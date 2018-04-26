@@ -62,6 +62,33 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #endregion
 
+        #region DiskDevice Message Methods
+
+        /// <summary>
+        /// Disk message that is fired on core init
+        /// </summary>
+        public void OSD_DiskInit()
+        {
+            StringBuilder sb = new StringBuilder();
+            if (_machine.diskImages != null)
+            {
+                sb.Append("Disk Media Imported (count: " + _machine.diskImages.Count() + ")");
+                SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Emulator);
+            }
+        }
+
+        /// <summary>
+        /// Disk message that is fired when a new disk is inserted into the drive
+        /// </summary>
+        public void OSD_DiskInserted()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("DISK INSERTED (" + _machine.DiskMediaIndex + ": " + _diskInfo[_machine.DiskMediaIndex].Name + ")");
+            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+        }
+
+        #endregion
+
         #region TapeDevice Message Methods
 
         /// <summary>
@@ -69,12 +96,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public void OSD_TapeInit()
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append("Tape Media Imported (count: " + _gameInfo.Count() + ")");
-            sb.Append("\n");
-            for (int i = 0; i < _gameInfo.Count(); i++)
-                sb.Append(i.ToString() + ": " + _gameInfo[i].Name + "\n");
+            if (_tapeInfo.Count == 0)
+                return;
 
+            StringBuilder sb = new StringBuilder();
+            sb.Append("Tape Media Imported (count: " + _tapeInfo.Count() + ")");
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Emulator);
         }
 
@@ -83,8 +109,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public void OSD_TapePlaying()
         {
+            if (_tapeInfo.Count == 0)
+                return;
+
             StringBuilder sb = new StringBuilder();
-            sb.Append("PLAYING (" + _machine.TapeMediaIndex + ": " + _gameInfo[_machine.TapeMediaIndex].Name + ")");
+            sb.Append("PLAYING (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
 
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
         }
@@ -94,8 +123,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public void OSD_TapeStopped()
         {
+            if (_tapeInfo.Count == 0)
+                return;
+
             StringBuilder sb = new StringBuilder();
-            sb.Append("STOPPED (" + _machine.TapeMediaIndex + ": " + _gameInfo[_machine.TapeMediaIndex].Name + ")");
+            sb.Append("STOPPED (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
 
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
         }
@@ -105,8 +137,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public void OSD_TapeRTZ()
         {
+            if (_tapeInfo.Count == 0)
+                return;
+
             StringBuilder sb = new StringBuilder();
-            sb.Append("REWOUND (" + _machine.TapeMediaIndex + ": " + _gameInfo[_machine.TapeMediaIndex].Name + ")");
+            sb.Append("REWOUND (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
 
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
         }
@@ -116,8 +151,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public void OSD_TapeInserted()
         {
+            if (_tapeInfo.Count == 0)
+                return;
+
             StringBuilder sb = new StringBuilder();
-            sb.Append("TAPE INSERTED (" + _machine.TapeMediaIndex + ": " + _gameInfo[_machine.TapeMediaIndex].Name + ")");
+            sb.Append("TAPE INSERTED (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
 
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
         }
@@ -129,6 +167,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void OSD_TapeStoppedAuto()
         {
             StringBuilder sb = new StringBuilder();
+
+            if (_tapeInfo.Count == 0)
+            {
+                sb.Append("No Tape Loaded");
+                SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+                return;
+            }
+
+
             sb.Append("STOPPED (Auto Tape Trap Detected)");
 
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
@@ -140,6 +187,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void OSD_TapePlayingAuto()
         {
             StringBuilder sb = new StringBuilder();
+
+            if (_tapeInfo.Count == 0)
+            {
+                sb.Append("No Tape Loaded");
+                SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+                return;
+            }
+
+
             sb.Append("PLAYING (Auto Tape Trap Detected)");
 
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
@@ -151,7 +207,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void OSD_TapePlayingBlockInfo(string blockinfo)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("...Starting Block "+ blockinfo);
+
+            if (_tapeInfo.Count == 0)
+            {
+                sb.Append("No Tape Loaded");
+                SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+                return;
+            }
+
+
+            sb.Append("...Starting Block " + blockinfo);
 
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
         }
@@ -162,6 +227,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void OSD_TapePlayingSkipBlockInfo(string blockinfo)
         {
             StringBuilder sb = new StringBuilder();
+
+            if (_tapeInfo.Count == 0)
+            {
+                sb.Append("No Tape Loaded");
+                SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+                return;
+            }
+
+
             sb.Append("...Skipping Empty Block " + blockinfo);
 
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
@@ -173,6 +247,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void OSD_TapeEndDetected(string blockinfo)
         {
             StringBuilder sb = new StringBuilder();
+
+            if (_tapeInfo.Count == 0)
+            {
+                sb.Append("No Tape Loaded");
+                SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+                return;
+            }
+
+
             sb.Append("...Skipping Empty Block " + blockinfo);
 
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
@@ -184,6 +267,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void OSD_TapeNextBlock(string blockinfo)
         {
             StringBuilder sb = new StringBuilder();
+
+            if (_tapeInfo.Count == 0)
+            {
+                sb.Append("No Tape Loaded");
+                SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+                return;
+            }
+
+
             sb.Append("Manual Skip Next " + blockinfo);
 
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
@@ -195,6 +287,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void OSD_TapePrevBlock(string blockinfo)
         {
             StringBuilder sb = new StringBuilder();
+
+            if (_tapeInfo.Count == 0)
+            {
+                sb.Append("No Tape Loaded");
+                SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+                return;
+            }
+
+
             sb.Append("Manual Skip Prev " + blockinfo);
 
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
@@ -206,6 +307,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void OSD_ShowTapeStatus()
         {
             StringBuilder sb = new StringBuilder();
+
+            if (_tapeInfo.Count == 0)
+            {
+                sb.Append("No Tape Loaded");
+                SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+                return;
+            }
+
             sb.Append("Status: ");
 
             if (_machine.TapeDevice.TapeIsPlaying)
@@ -216,22 +325,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
             sb.Clear();
 
-            sb.Append("Tape: " + _machine.TapeMediaIndex + ": " + _gameInfo[_machine.TapeMediaIndex].Name);
+            sb.Append("Tape: " + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name);
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
             sb.Clear();
 
             sb.Append("Block: ");
-            sb.Append("(" + (_machine.TapeDevice.CurrentDataBlockIndex + 1) + 
-                " of " + _machine.TapeDevice.DataBlocks.Count() + ") " + 
+            sb.Append("(" + (_machine.TapeDevice.CurrentDataBlockIndex + 1) +
+                " of " + _machine.TapeDevice.DataBlocks.Count() + ") " +
                 _machine.TapeDevice.DataBlocks[_machine.TapeDevice.CurrentDataBlockIndex].BlockDescription);
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
             sb.Clear();
-            
+
             sb.Append("Block Pos: ");
 
             int pos = _machine.TapeDevice.Position;
             int end = _machine.TapeDevice.DataBlocks[_machine.TapeDevice.CurrentDataBlockIndex].DataPeriods.Count;
-            double p =  0; 
+            double p = 0;
             if (end != 0)
                 p = ((double)pos / (double)end) * (double)100;
 

@@ -36,6 +36,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 InputRead = true;
             }
+            else if (UPDDiskDevice.ReadPort(port, ref result))
+            {
+                return (byte)result;
+            }
             else
             {
                 if (KeyboardDevice.ReadPort(port, ref result))
@@ -97,6 +101,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             AYDevice.WritePort(port, value);
 
+            UPDDiskDevice.WritePort(port, value);
+
             // port 0x7ffd - hardware should only respond when bits 1 & 15 are reset and bit 14 is set
             if (port == 0x7ffd)
             {
@@ -149,9 +155,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         SpecialPagingMode = true;
                     }
                 }
-
-                // bit 3 controls the disk motor (1=on, 0=off)
-                DiskMotorState = bits[3];
 
                 // bit 4 is the printer port strobe
                 PrinterPortStrobe = bits[4];

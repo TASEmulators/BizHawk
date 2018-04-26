@@ -6,21 +6,20 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
-    /*
     /// <summary>
     /// Abtract class that represents all Media Serializers
     /// </summary>
-    public abstract class MediaSerializer
+    public abstract class MediaConverter
     {
         /// <summary>
         /// The type of serializer
         /// </summary>
-        public abstract MediaSerializationType FormatType { get; }
+        public abstract MediaConverterType FormatType { get; }
 
         /// <summary>
-        /// Signs whether this class can be used to serialize
+        /// Signs whether this class can be used to read the data format
         /// </summary>
-        public virtual bool IsSerializer
+        public virtual bool IsReader
         {
             get
             {
@@ -29,9 +28,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
-        /// Signs whether this class can be used to de-serialize
+        /// Signs whether this class can be used to write the data format
         /// </summary>
-        public virtual bool IsDeSerializer
+        public virtual bool IsWriter
         {
             get
             {
@@ -43,20 +42,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Serialization method
         /// </summary>
         /// <param name="data"></param>
-        public virtual void Serialize(byte[] data)
+        public virtual void Read(byte[] data)
         {
             throw new NotImplementedException(this.GetType().ToString() + 
-                "Serialize operation is not implemented for this serializer");
+                "Read operation is not implemented for this converter");
         }
 
         /// <summary>
         /// DeSerialization method
         /// </summary>
         /// <param name="data"></param>
-        public virtual void DeSerialize(byte[] data)
+        public virtual void Write(byte[] data)
         {
             throw new NotImplementedException(this.GetType().ToString() + 
-                "DeSerialize operation is not implemented for this serializer");
+                "Write operation is not implemented for this converter");
         }
 
         /// <summary>
@@ -66,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public virtual bool CheckType(byte[] data)
         {
             throw new NotImplementedException(this.GetType().ToString() +
-                "Check type operation is not implemented for this serializer");
+                "Check type operation is not implemented for this converter");
         }
 
         #region Static Tools
@@ -76,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        protected static byte[] GetBytes(int value)
+        public static byte[] GetBytes(int value)
         {
             byte[] buf = new byte[4];
             buf[0] = (byte)value;
@@ -92,7 +91,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="buf"></param>
         /// <param name="offsetIndex"></param>
         /// <returns></returns>
-        protected static int GetInt32(byte[] buf, int offsetIndex)
+       public static int GetInt32(byte[] buf, int offsetIndex)
         {
             return buf[offsetIndex] | buf[offsetIndex + 1] << 8 | buf[offsetIndex + 2] << 16 | buf[offsetIndex + 3] << 24;
         }
@@ -103,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="buf"></param>
         /// <param name="offsetIndex"></param>
         /// <returns></returns>
-        protected static ushort GetWordValue(byte[] buf, int offsetIndex)
+        public static ushort GetWordValue(byte[] buf, int offsetIndex)
         {
             return (ushort)(buf[offsetIndex] | buf[offsetIndex + 1] << 8);
         }
@@ -114,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="buf"></param>
         /// <param name="offsetIndex"></param>
         /// <param name="value"></param>
-        protected static void SetWordValue(byte[] buf, int offsetIndex, ushort value)
+        public static void SetWordValue(byte[] buf, int offsetIndex, ushort value)
         {
             buf[offsetIndex] = (byte)value;
             buf[offsetIndex + 1] = (byte)(value >> 8);
@@ -122,5 +121,4 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #endregion
     }
-    */
 }

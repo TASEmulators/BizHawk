@@ -223,9 +223,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     }
                 }
 
-                // bit 3 controls the disk motor (1=on, 0=off)
-                DiskMotorState = bits[3];
-
                 // bit 4 is the printer port strobe
                 PrinterPortStrobe = bits[4];
             }
