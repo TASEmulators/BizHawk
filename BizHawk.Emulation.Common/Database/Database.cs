@@ -341,8 +341,9 @@ namespace BizHawk.Emulation.Common
 
 				case ".DSK":
                     byte[] head2 = romData.Take(20).ToArray();
-                    if (System.Text.Encoding.Default.GetString(head2).ToUpper().Contains("EXTENDED CPC DSK") ||
-                        System.Text.Encoding.Default.GetString(head2).ToUpper().Contains("MV - CPCEMU"))
+                    string ident = System.Text.Encoding.Default.GetString(head2);
+                    if (ident.ToUpper().Contains("EXTENDED CPC DSK") ||
+                        ident.ToUpper().Contains("MV - CPCEMU"))
                         game.System = "ZXSpectrum";
                     else
                         game.System = "AppleII";
