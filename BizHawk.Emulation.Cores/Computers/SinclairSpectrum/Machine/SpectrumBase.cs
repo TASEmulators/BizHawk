@@ -147,12 +147,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             FrameCompleted = false;
 
-            TapeDevice.StartFrame();
+            if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
+                TapeDevice.StartFrame();
 
             if (_renderSound)
             {
                 BuzzerDevice.StartFrame();
                 TapeBuzzer.StartFrame();
+
                 if (AYDevice != null)
                     AYDevice.StartFrame();
             }
@@ -168,7 +170,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 CPU.ExecuteOne();
 
                 // cycle the tape device
-                TapeDevice.TapeCycle();
+                if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
+                    TapeDevice.TapeCycle();
             }
 
             // we have reached the end of a frame
@@ -192,7 +195,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // setup for next frame
             ULADevice.ResetInterrupt();
 
-            TapeDevice.EndFrame();
+            if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
+                TapeDevice.EndFrame();
 
             FrameCompleted = true;
 

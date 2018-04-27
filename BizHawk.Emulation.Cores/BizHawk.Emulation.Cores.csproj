@@ -293,11 +293,7 @@
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.ULA.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Disk\CPCExtendedFloppyDisk.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Disk\CPCFloppyDisk.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Media\Disk\DiskImage.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Disk\DiskType.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Media\Disk\DskConverter.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Media\Disk\Sector.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Media\Disk\Track.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\MediaConverter.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\MediaConverterType.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\MediaSerializer.cs" />

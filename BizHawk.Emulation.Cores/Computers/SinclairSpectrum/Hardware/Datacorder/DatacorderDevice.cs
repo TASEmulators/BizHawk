@@ -836,10 +836,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             if (!TapeIsPlaying)
             {
-                MonitorRead();
+                if (_machine.UPDDiskDevice == null || !_machine.UPDDiskDevice.FDD_IsDiskLoaded)
+                    MonitorRead();
             }
-
-            MonitorRead();
+            if (_machine.UPDDiskDevice == null || !_machine.UPDDiskDevice.FDD_IsDiskLoaded)
+                MonitorRead();
 
             /*
 
