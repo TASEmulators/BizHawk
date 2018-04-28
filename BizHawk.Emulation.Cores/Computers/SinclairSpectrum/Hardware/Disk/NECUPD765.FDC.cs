@@ -531,7 +531,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             }
 
                             // read the sector
-                            for (int i = 0; i < sectorSize; i++)
+                            for (int i = 0; i < sector.DataLen; i++)
                             {
                                 ExecBuffer[buffPos++] = sector.ActualData[i];
                             }
@@ -2947,7 +2947,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             return StatusMain;            
         }
-
+        private int testCount = 0;
         /// <summary>
         /// Handles CPU reading from the data register
         /// </summary>

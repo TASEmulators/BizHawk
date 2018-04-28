@@ -131,8 +131,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 pos += DiskHeader.TrackSizes[i];
             }
 
-            // run speedlock detector
-            SpeedlockDetection();
+            // run protection scheme detector
+            ParseProtection();
 
             return true;
         }

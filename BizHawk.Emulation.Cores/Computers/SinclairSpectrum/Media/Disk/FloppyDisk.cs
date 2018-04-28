@@ -103,6 +103,127 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
+        /// Examines the floppydisk data to work out what protection (if any) is present
+        /// If possible it will also fix the disk data for this protection
+        /// This should be run at the end of the ParseDisk() method
+        /// </summary>
+        public virtual void ParseProtection()
+        {
+            int[] weakArr = new int[2];
+
+            // speedlock
+            if (DetectSpeedlock(ref weakArr))
+            {
+                Protection = ProtectionType.Speedlock;
+
+                Sector sec = DiskTracks[0].Sectors[1];
+                if (!sec.ContainsMultipleWeakSectors)
+                {
+                    byte[] origData = sec.SectorData.ToArray();
+                    List<byte> data = new List<byte>();
+                    for (int m = 0; m < 3; m++)
+                    {
+                        for (int i = 0; i < 512; i++)
+                        {
+                            // deterministic 'random' implementation
+                            int n = origData[i] + m + 1;
+                            if (n > 0xff)
+                                n = n - 0xff;
+                            else if (n < 0)
+                                n = 0xff + n;
+
+                            byte nByte = (byte)n;
+
+                            if (m == 0)
+                            {
+                                data.Add(origData[i]);
+                                continue;
+                            }
+
+                            if (i < weakArr[0])
+                            {
+                                data.Add(origData[i]);
+                            }
+                            
+                            else if (weakArr[1] > 0)
+                            {
+                                data.Add(nByte);
+                                weakArr[1]--;
+                            }
+                            
+                            else
+                            {
+                                data.Add(origData[i]);
+                            }
+                        }
+                    }
+
+                    sec.SectorData = data.ToArray();
+                    sec.ActualDataByteLength = data.Count();
+                    sec.ContainsMultipleWeakSectors = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Detect speedlock weak sector
+        /// </summary>
+        /// <param name="weak"></param>
+        /// <returns></returns>
+        public bool DetectSpeedlock(ref int[] weak)
+        {
+            // always must have track 0 containing 9 sectors
+            if (DiskTracks[0].Sectors.Length != 9)
+                return false;
+
+            // check for SPEEDLOCK ident in sector 0
+            string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[0].SectorData, 0, DiskTracks[0].Sectors[0].SectorData.Length);
+            if (!ident.ToUpper().Contains("SPEEDLOCK"))
+                return false;
+
+            // check for correct sector 0 lengths
+            if (DiskTracks[0].Sectors[0].SectorSize != 2 ||
+                DiskTracks[0].Sectors[0].SectorData.Length < 0x200)
+                return false;
+
+            // sector[1] (SectorID 2) contains the weak sectors
+            Sector sec = DiskTracks[0].Sectors[1];
+
+            // check for correct sector 1 lengths
+            if (sec.SectorSize != 2 ||
+                sec.SectorData.Length < 0x200)
+                return false;
+
+            // secID 2 needs a CRC error
+            if (!(sec.Status1.Bit(5) || sec.Status2.Bit(5)))
+                return false;
+
+            // check for filler
+            bool startFillerFound = true;
+            for (int i = 0; i < 250; i++)
+            {
+                if (sec.SectorData[i] != sec.SectorData[i + 1])
+                {
+                    startFillerFound = false;
+                    break;
+                }
+            }
+
+            if (!startFillerFound)
+            {
+                weak[0] = 0;
+                weak[1] = 0x200;
+            }
+            else
+            {
+                weak[0] = 0x150;
+                weak[1] = 0x20;
+            }
+
+            return true;
+        }
+
+        /// <summary>
         /// Should be run at the end of the ParseDisk process
         /// If speedlock is detected the flag is set in the disk image
         /// </summary>
@@ -327,6 +448,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             public byte[] SectorData { get; set; }
             public bool ContainsMultipleWeakSectors { get; set; }
 
+            public int DataLen
+            {
+                get
+                {
+                    if (!ContainsMultipleWeakSectors)
+                    {
+                        return ActualDataByteLength;
+                    }
+                    else
+                    {
+                        return ActualDataByteLength / (ActualDataByteLength / (0x80 << SectorSize));
+                    }
+                }
+            }
+
+
             public int RandSecCounter = 0;
 
             public byte[] ActualData
@@ -343,7 +480,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             l.AddRange(SectorData);
                             for (int i = 0; i < size - ActualDataByteLength; i++)
                             {
-                                l.Add(0xe5);
+                                //l.Add(SectorData[i]);
+                                l.Add(SectorData.Last());
                             }
 
                             return l.ToArray();
