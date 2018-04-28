@@ -12,6 +12,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public GBHawk Core { get; set; }
 
+		private readonly BlipBuffer _blip_L = new BlipBuffer(15000);
+		private readonly BlipBuffer _blip_R = new BlipBuffer(15000);
+
 		public static int[] DUTY_CYCLES = new int[] {0, 0, 0, 0, 0, 0, 0, 1,
 													 1, 0, 0, 0, 0, 0, 0, 1,
 													 1, 0, 0, 0, 0, 1, 1, 1,
@@ -106,7 +109,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int sequencer_len, sequencer_vol, sequencer_swp, sequencer_tick;
 
+		public byte sample;
+
 		public int master_audio_clock;
+
+		public int latched_sample_L, latched_sample_R;
 
 		public byte ReadReg(int addr)
 		{
@@ -502,7 +509,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						{
 							if (WAVE_can_get || Core.is_GBC) { Wave_RAM[WAVE_wave_cntr >> 1] = value; }
 						}
-						else { Wave_RAM[addr & 0xF] = value; }
+						else
+						{
+							Wave_RAM[addr & 0xF] = value;
+						}
 
 						break;
 				}
@@ -620,13 +630,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				if (WAVE_intl_cntr == 0)
 				{
-					WAVE_intl_cntr = (2048 - WAVE_frq) * 2;
-					WAVE_wave_cntr++;
-					WAVE_wave_cntr &= 0x1F;
-
 					WAVE_can_get = true;
 
-					byte sample = Wave_RAM[WAVE_wave_cntr >> 1];
+					WAVE_intl_cntr = (2048 - WAVE_frq) * 2;
 
 					if ((WAVE_wave_cntr & 1) == 0)
 					{
@@ -651,6 +657,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 
 					WAVE_output = sample;
+
+					// NOTE: The sample buffer is only reloaded after the current sample is played, even if just triggered
+					WAVE_wave_cntr++;
+					WAVE_wave_cntr &= 0x1F;
+					sample = Wave_RAM[WAVE_wave_cntr >> 1];
 
 					if (!WAVE_DAC_pow) { WAVE_output = 0; }
 
@@ -697,22 +708,22 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (AUD_CTRL_wave_R_en) { R_final += WAVE_output; }
 			if (AUD_CTRL_noise_R_en) { R_final += NOISE_output; }
 
-			L_final *= (AUD_CTRL_vol_L + 1);
-			R_final *= (AUD_CTRL_vol_R + 1);
+			L_final *= (AUD_CTRL_vol_L + 1) * 40;
+			R_final *= (AUD_CTRL_vol_R + 1) * 40;
 
-			// send out an actual sample every 94 cycles
-			master_audio_clock++;
-			if (master_audio_clock == 94)
+			if (L_final != latched_sample_L)
 			{
-				master_audio_clock = 0;
-				if (AudioClocks < 1500)
-				{
-					AudioSamples[AudioClocks] = (short)(L_final * 20);
-					AudioClocks++;
-					AudioSamples[AudioClocks] = (short)(R_final * 20);
-					AudioClocks++;
-				}
+				_blip_L.AddDelta((uint)master_audio_clock, L_final - latched_sample_L);
+				latched_sample_L = L_final;
 			}
+
+			if (R_final != latched_sample_R)
+			{
+				_blip_R.AddDelta((uint)master_audio_clock, R_final - latched_sample_R);
+				latched_sample_R = R_final;
+			}
+
+			master_audio_clock++;
 
 			// frame sequencer ticks at a rate of 512 hz (or every time a 13 bit counter rolls over)
 			sequencer_tick++;
@@ -905,9 +916,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void Reset()
 		{
-			Wave_RAM = new byte[] { 0x84, 0x40, 0x43, 0xAA, 0x2D, 0x78, 0x92, 0x3C,
+			if (Core.is_GBC)
+			{
+				Wave_RAM = new byte[] { 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF,
+									0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF };
+			}
+			else
+			{
+				Wave_RAM = new byte[] { 0x84, 0x40, 0x43, 0xAA, 0x2D, 0x78, 0x92, 0x3C,
 									0x60, 0x59, 0x59, 0xB0, 0x34, 0xB8, 0x2E, 0xDA };
-
+			}
+			
 			Audio_Regs = new byte[21];
 
 			AudioClocks = 0;
@@ -917,6 +936,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			sequencer_swp = 0;
 			sequencer_vol = 0;
 			sequencer_tick = 0;
+
+			sample = 0;
+
+			_blip_L.SetRates(4194304, 44100);
+			_blip_R.SetRates(4194304, 44100);
 		}
 
 		public void SyncState(Serializer ser)
@@ -1007,6 +1031,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			ser.Sync("master_audio_clock", ref master_audio_clock);
 
+			ser.Sync("sample", ref sample);
+			ser.Sync("latched_sample_L", ref latched_sample_L);
+			ser.Sync("latched_sample_R", ref latched_sample_R);
+
 			ser.Sync("AUD_CTRL_vin_L_en", ref AUD_CTRL_vin_L_en);
 			ser.Sync("AUD_CTRL_vin_R_en", ref AUD_CTRL_vin_R_en);
 			ser.Sync("AUD_CTRL_sq1_L_en", ref AUD_CTRL_sq1_L_en);
@@ -1037,7 +1065,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool CanProvideAsync => false;
 
 		public int AudioClocks;
-		public short[] AudioSamples = new short[1500];
+		public short[] AudioSamples = new short[150000];
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -1051,17 +1079,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			nsamp = AudioClocks / 2;
-			short[] temp_samp = new short[AudioClocks];
+			_blip_L.EndFrame((uint)master_audio_clock);
+			_blip_R.EndFrame((uint)master_audio_clock);
+			
+			nsamp = _blip_R.SamplesAvailable();
 
-			for (int i = 0; i < AudioClocks; i++)
-			{
-				temp_samp[i] = AudioSamples[i];
-			}
+			samples = new short[nsamp * 2];
 
-			samples = temp_samp;
+			_blip_L.ReadSamplesLeft(samples, nsamp);
+			_blip_R.ReadSamplesRight(samples, nsamp);
 
 			AudioClocks = 0;
+			master_audio_clock = 0;
+
 		}
 
 		public void GetSamplesAsync(short[] samples)
@@ -1072,6 +1102,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void DiscardSamples()
 		{
 			AudioClocks = 0;
+			_blip_L.Clear();
+			_blip_R.Clear();
+			master_audio_clock = 0;
 		}
 
 		private void GetSamples(short[] samples)
@@ -1080,5 +1113,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 
 		#endregion
+
+		public void DisposeSound()
+		{
+			_blip_L.Dispose();
+			_blip_R.Dispose();
+		}
 	}
 }
