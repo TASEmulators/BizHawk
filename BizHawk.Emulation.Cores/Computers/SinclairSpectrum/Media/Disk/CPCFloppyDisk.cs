@@ -31,7 +31,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // look for standard magic string
             string ident = Encoding.ASCII.GetString(data, 0, 16);
 
-            if (!ident.ToUpper().Contains("MV - CPCEMU"))
+            if (!ident.ToUpper().Contains("MV - CPC"))
             {
                 // incorrect format
                 return false;
