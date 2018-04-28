@@ -172,11 +172,12 @@ namespace BizHawk.Client.Common
 					}
 					else if (def.FloatControls.Contains(key))
 					{
-						var temp = trimmed.Substring(iterator, 5);
+						var commaIndex = trimmed.Substring(iterator).IndexOf(',');
+						var temp = trimmed.Substring(iterator, commaIndex);
 						var val = int.Parse(temp.Trim());
 						_myFloatControls[key] = val;
 
-						iterator += 6;
+						iterator += commaIndex + 1;
 					}
 				}
 			}
