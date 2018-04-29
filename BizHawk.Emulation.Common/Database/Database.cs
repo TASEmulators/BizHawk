@@ -343,7 +343,7 @@ namespace BizHawk.Emulation.Common
                     byte[] head2 = romData.Take(20).ToArray();
                     string ident = System.Text.Encoding.Default.GetString(head2);
                     if (ident.ToUpper().Contains("EXTENDED CPC DSK") ||
-                        ident.ToUpper().Contains("MV - CPCEMU"))
+                        ident.ToUpper().Contains("MV - CPC"))
                         game.System = "ZXSpectrum";
                     else
                         game.System = "AppleII";

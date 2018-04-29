@@ -178,7 +178,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             string hdr = Encoding.ASCII.GetString(data.Take(16).ToArray());
 
 			// disk checking first
-			if (hdr.ToUpper().Contains("EXTENDED CPC DSK"))
+			if (hdr.ToUpper().Contains("EXTENDED CPC DSK") || hdr.ToUpper().Contains("MV - CPC"))
             {
                 // spectrum .dsk disk file
                 return SpectrumMediaType.Disk;
