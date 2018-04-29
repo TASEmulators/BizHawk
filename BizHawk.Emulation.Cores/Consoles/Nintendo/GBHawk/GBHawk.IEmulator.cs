@@ -156,7 +156,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 
 				ticker++;
-				if (ticker > 10000000) { vblank_rise = true; }//throw new Exception("ERROR: Unable to Resolve Frame"); }
+				//if (ticker > 10000000) { vblank_rise = true; }//throw new Exception("ERROR: Unable to Resolve Frame"); }
 
 				in_vblank_old = in_vblank;
 			}
@@ -216,6 +216,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			Marshal.FreeHGlobal(iptr1);
 			Marshal.FreeHGlobal(iptr2);
 			Marshal.FreeHGlobal(iptr3);
+
+			audio.DisposeSound();
 		}
 
 		#region Video provider
