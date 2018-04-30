@@ -163,6 +163,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     sec.ContainsMultipleWeakSectors = true;
                 }
             }
+            else if (DetectAlkatraz(ref weakArr))
+            {
+                Protection = ProtectionType.Alkatraz;
+            }
+            else if (DetectPaulOwens(ref weakArr))
+            {
+                Protection = ProtectionType.PaulOwens;
+            }
         }
 
         /// <summary>
@@ -219,6 +227,72 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 weak[0] = 0x150;
                 weak[1] = 0x20;
             }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Detect speedlock weak sector
+        /// </summary>
+        /// <param name="weak"></param>
+        /// <returns></returns>
+        public bool DetectAlkatraz(ref int[] weak)
+        {
+            // check for ALKATRAZ ident in sector 0
+            string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[0].SectorData, 0, DiskTracks[0].Sectors[0].SectorData.Length);
+            if (!ident.ToUpper().Contains("ALKATRAZ PROTECTION SYSTEM"))
+                return false;
+
+            // Alkatraz protection appears to revolve around a track on the disk with 18 sectors,
+            // (track position is not consistent) with the sector ID info being incorrect:
+            //      TrackID is consistent between the sectors although is usually high (233, 237 etc)
+            //      SideID is fairly random looking but with all IDs being even
+            //      SectorID is also fairly random looking but contains both odd and even numbers
+            //            
+            // There doesnt appear to be any CRC errors in this track, but the sector size is always 1 (256 bytes)
+            // Each sector contains different filler byte
+            // Presumably all of this weird data needs to be read correctly for decryption to succeed and the game to load
+
+            // Immediately following this track are a number of tracks and sectors with a DAM set.
+            // This presumably has something to do with the protection scheme
+            
+            // Finally, when the 18 sector track is read, the CPU supplies a strange GAP3 value (10).
+            // Perhaps the alkatraz protection scheme is reading the ID marks as sector data because of this?
+
+
+            foreach (var t in DiskTracks)
+            {
+                foreach (var s in t.Sectors)
+                {
+                    if (s.Status1 > 0 || s.Status2 > 0)
+                    {
+                        string tvcv = "";
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Detect speedlock weak sector
+        /// </summary>
+        /// <param name="weak"></param>
+        /// <returns></returns>
+        public bool DetectPaulOwens(ref int[] weak)
+        {
+            // check for PAUL OWENS ident in sector 2
+            string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[2].SectorData, 0, DiskTracks[0].Sectors[2].SectorData.Length);
+            if (!ident.ToUpper().Contains("PAUL OWENS"))
+                return false;
+
+            /* Paul Owens protection appears to exibit the following things:
+             *  
+             * *    There are more than 10 cylinders
+             * *    Cylinder 1 has no sector data
+             * *    The sector ID infomation in most cases contains incorrect track IDs
+             * *    Track 0 is pretty much the only track that appears to be standard (assume this is the boot track)
+             * */
 
             return true;
         }
@@ -528,7 +602,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     public enum ProtectionType
     {
         None,
-        Speedlock
+        Speedlock,
+        Alkatraz,
+        Hexagon,
+        Frontier,
+        PaulOwens
     }
 
 }

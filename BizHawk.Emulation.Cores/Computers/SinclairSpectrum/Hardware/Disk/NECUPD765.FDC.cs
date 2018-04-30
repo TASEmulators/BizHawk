@@ -394,6 +394,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         // temp sector index
                         byte secIdx = ActiveCommandParams.Sector;
 
+                        // hack for when another drive (non-existent) is being called
+                        if (ActiveDrive.ID != 0)
+                            DiskDriveIndex = 0; 
+
                         // do we have a valid disk inserted?
                         if (!ActiveDrive.FLAG_READY)
                         {
