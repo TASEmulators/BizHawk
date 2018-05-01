@@ -2669,7 +2669,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     {
                         // interrupt has been raised for this drive
                         // acknowledge
-                        ActiveDrive.SeekStatus = SEEK_INTACKNOWLEDGED;
+                        ActiveDrive.SeekStatus = SEEK_IDLE;// SEEK_INTACKNOWLEDGED;
 
                         // result length 2
                         ResLength = 2;
@@ -2680,6 +2680,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         // second byte is the current track id
                         ResBuffer[1] = ActiveDrive.CurrentTrackID;
                     }
+                    /*
                     else if (ActiveDrive.SeekStatus == SEEK_INTACKNOWLEDGED)
                     {
                         // DriveA interrupt has already been acknowledged
@@ -2689,7 +2690,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         Status0 = 192;
                         ResBuffer[0] = Status0;
                     }
-                    else if (ActiveDrive.SeekStatus == SEEK_IDLE)
+                    */
+                    else //if (ActiveDrive.SeekStatus == SEEK_IDLE)
                     {
                         // SIS with no interrupt
                         ResLength = 1;
