@@ -22,8 +22,46 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     {
 
         public string outputfile = @"D:\Dropbox\Dropbox\_Programming\TASVideos\BizHawk\output\zxhawkio-" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv";
-        public string outputString = "STATUS,WRITE,READ\r\n";
+        public string outputString = "STATUS,WRITE,READ,CODE,MT,MF,SK,CMDCNT,RESCNT,EXECCNT,EXECLEN\r\n";
         public bool writeDebug = false;
+
+        /*
+         * Status read
+         * Data write
+         * Data read
+         * CMD code
+         * CMD string
+         * MT flag
+         * MK flag
+         * SK flag
+         * */
+        private string[] workingArr = new string[3];
+
+        private void BuildCSVLine()
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < 3; i++)
+            {
+                sb.Append(workingArr[i]);
+                sb.Append(",");
+                workingArr[i] = "";
+            }
+
+            sb.Append(ActiveCommand.CommandCode).Append(",");
+            
+            sb.Append(CMD_FLAG_MT).Append(",");
+            sb.Append(CMD_FLAG_MF).Append(",");
+            sb.Append(CMD_FLAG_SK).Append(",");
+
+            sb.Append(CommCounter).Append(",");
+            sb.Append(ResCounter).Append(",");
+            sb.Append(ExecCounter).Append(",");
+            sb.Append(ExecLength);
+
+            sb.Append("\r\n");
+
+            outputString += sb.ToString();
+        }
 
         /// <summary>
         /// Device responds to an IN instruction
@@ -40,7 +78,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // Z80 is trying to read from the data register
                 data = ReadDataRegister();
                 if (writeDebug)
-                    outputString += ",," + data + "\r\n";
+                {
+                    workingArr[2] = data.ToString();
+                    //outputString += ",," + data + "," + ActiveCommand.CommandCode + "\r\n";
+                    BuildCSVLine();
+                }
+                    
                 return true;
             }
 
@@ -50,7 +93,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // this can happen at any time
                 data = ReadMainStatus();
                 if (writeDebug)
-                    outputString += data + ",,\r\n";
+                {
+                    //outputString += data + ",,," + ActiveCommand.CommandCode + "\r\n";
+                    workingArr[0] = data.ToString();
+                    BuildCSVLine();
+                    //System.IO.File.WriteAllText(outputfile, outputString);
+                }
+                    
                 return true;
             }
 
@@ -73,8 +122,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 WriteDataRegister((byte)data);
                 if (writeDebug)
                 {
-                    outputString += "," + data + ",\r\n";
-                    System.IO.File.WriteAllText(outputfile, outputString);
+                    //outputString += "," + data + ",," + ActiveCommand.CommandCode + "\r\n";
+                    workingArr[1] = data.ToString();
+                    BuildCSVLine();
+                    //System.IO.File.WriteAllText(outputfile, outputString);
                 }
                     
                 return true;

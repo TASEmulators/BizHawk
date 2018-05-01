@@ -165,6 +165,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         private bool ND;
 
         /// <summary>
+        /// In lieu of actual timing, this will count status reads in execution phase
+        /// where the CPU hasnt actually read any bytes
+        /// </summary>
+        private int OverrunCounter;
+
+        /// <summary>
         /// Signs that the the controller is ready
         /// </summary>
         //public bool FDC_FLAG_RQM;
@@ -644,7 +650,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                     LastSectorDataReadByte = ExecBuffer[index];
 
-                    ExecCounter--;
+                    OverrunCounter--;
+                    ExecCounter--;                    
 
                     break;
 
@@ -1064,7 +1071,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                     LastSectorDataReadByte = ExecBuffer[index];
 
+                    OverrunCounter--;
                     ExecCounter--;
+                    
                     break;
 
                 //----------------------------------------
@@ -1397,7 +1406,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                     LastSectorDataReadByte = ExecBuffer[index];
 
-                    ExecCounter--;
+                    OverrunCounter--;
+                    ExecCounter--;                    
 
                     break;
 
@@ -3095,6 +3105,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     SetBit(MSR_EXM, ref StatusMain);
                     SetBit(MSR_CB, ref StatusMain);
 
+                    // overrun detection                    
+                    OverrunCounter++;
+                    if (OverrunCounter >= 64)
+                    {
+                        // CPU has read the status register 64 times without reading the data register
+                        // switch the current command into result phase
+                        ActivePhase = Phase.Result;
+
+                        // reset the overun counter
+                        OverrunCounter = 0;
+                    }
+
                     break;
                 case Phase.Result:
                     SetBit(MSR_DIO, ref StatusMain);
@@ -3226,25 +3248,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             CommCounter = 0;
             ResCounter = 0;
 
-            // controller is expecting the first command byte
-            BitArray bi = new BitArray(new byte[] { cmdByte });
+            // get the first 4 bytes
+            byte cByte = (byte)(cmdByte & 0x0f);
 
-            // save command flags
-            // skip
-            CMD_FLAG_SK = bi[5];
-            // multitrack
-            CMD_FLAG_MT = bi[7];
-            // MFM mode
-            CMD_FLAG_MF = bi[6];
+            // get MT, MD and SK states
+            CMD_FLAG_MT = cmdByte.Bit(7);
+            CMD_FLAG_MF = cmdByte.Bit(6);
+            CMD_FLAG_SK = cmdByte.Bit(5);
 
-            // remove flags from command byte
-            bi[5] = false;
-            bi[6] = false;
-            bi[7] = false;
-
-            byte[] bytes = new byte[1];
-            bi.CopyTo(bytes, 0);
-            cmdByte = bytes[0];
+            cmdByte = cByte;
 
             // lookup the command
             var cmd = CommandList.Where(a => a.CommandCode == cmdByte).FirstOrDefault();
@@ -3261,6 +3273,25 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // check validity of command byte flags
                 // if a flag is set but not valid for this command then it is invalid
+                bool invalid = false;
+
+                if (!ActiveCommand.MT)
+                    if (CMD_FLAG_MT)
+                        invalid = true;
+                if (!ActiveCommand.MF)
+                    if (CMD_FLAG_MF)
+                        invalid = true;
+                if (!ActiveCommand.SK)
+                    if (CMD_FLAG_SK)
+                        invalid = true;
+
+                if (invalid)
+                {
+                    // command byte included spurious bit 5,6 or 7 flags
+                    CMDIndex = CommandList.Count() - 1;
+                }
+
+                /*
                 if ((CMD_FLAG_MF && !ActiveCommand.MF) ||
                     (CMD_FLAG_MT && !ActiveCommand.MT) ||
                     (CMD_FLAG_SK && !ActiveCommand.SK))
@@ -3268,6 +3299,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     // command byte included spurious bit 5,6 or 7 flags
                     CMDIndex = CommandList.Count() - 1;
                 }
+                */
             }
 
             CommCounter = 0;

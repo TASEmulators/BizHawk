@@ -171,6 +171,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 Protection = ProtectionType.PaulOwens;
             }
+            else if (DetectHexagon(ref weakArr))
+            {
+                Protection = ProtectionType.Hexagon;
+            }
         }
 
         /// <summary>
@@ -180,6 +184,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public bool DetectSpeedlock(ref int[] weak)
         {
+            // SPEEDLOCK NOTES (-asni 2018-05-01)
+            // ---------------------------------
+            // Speedlock is one of the more common +3 disk protections and there are a few different versions
+            // Usually, track 0 sector 1 (ID 2) has data CRC errors that result in certain bytes returning a different value every time they are read
+            // Speedlock will generally read this track a number of times during the load process
+            // and if the correct bytes are not different between reads, the load fails
+
             // always must have track 0 containing 9 sectors
             if (DiskTracks[0].Sectors.Length != 9)
                 return false;
@@ -232,7 +243,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
-        /// Detect speedlock weak sector
+        /// Detect Alkatraz
         /// </summary>
         /// <param name="weak"></param>
         /// <returns></returns>
@@ -265,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
-        /// Detect speedlock weak sector
+        /// Detect Paul Owens
         /// </summary>
         /// <param name="weak"></param>
         /// <returns></returns>
@@ -291,6 +302,41 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             return true;
         }
+
+        /// <summary>
+        /// Detect Hexagon copy protection
+        /// </summary>
+        /// <param name="weak"></param>
+        /// <returns></returns>
+        public bool DetectHexagon(ref int[] weak)
+        {
+            if (DiskTracks[0].Sectors.Length != 10 || DiskTracks[0].Sectors[8].ActualDataByteLength != 512)
+                return false;
+
+            // check for Hexagon ident in sector 8
+            string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[8].SectorData, 0, DiskTracks[0].Sectors[8].SectorData.Length);
+            if (ident.ToUpper().Contains("GON DISK PROT"))
+                return true;
+
+            // hexagon protection may not be labelled as such
+            var track = DiskTracks[1];
+            var sector = track.Sectors[0];
+
+            if (sector.SectorSize == 6 && sector.Status1 == 0x20 && sector.Status2 == 0x60)
+            {
+                if (track.Sectors.Length == 1)
+                    return true;
+            }
+
+
+            // Hexagon Copy Protection Notes (-asni 2018-05-01)
+            // ---------------------------------------------------
+            //
+            // 
+
+            return false;
+        }
+
         /*
         /// <summary>
         /// Should be run at the end of the ParseDisk process
