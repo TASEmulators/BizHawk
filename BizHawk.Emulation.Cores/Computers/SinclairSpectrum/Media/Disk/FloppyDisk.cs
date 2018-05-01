@@ -203,8 +203,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 return false;
 
             // secID 2 needs a CRC error
-            if (!(sec.Status1.Bit(5) || sec.Status2.Bit(5)))
-                return false;
+            //if (!(sec.Status1.Bit(5) || sec.Status2.Bit(5)))
+                //return false;
 
             // check for filler
             bool startFillerFound = true;

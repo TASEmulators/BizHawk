@@ -818,8 +818,125 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             // we dont need EN
                             UnSetBit(SR1_EN, ref Status1);
 
-                            // If SK=1, the FDC skips the sector with the Deleted Data Address Mark and reads the next sector. 
-                            // The CRC bits in the deleted data field are not checked when SK=1
+                            // invert CM for read deleted data command
+                            if (Status2.Bit(SR2_CM))
+                                UnSetBit(SR2_CM, ref Status2);
+                            else
+                                SetBit(SR2_CM, ref Status2);
+
+                            // skip flag is set and no DAM found
+                            if (CMD_FLAG_SK && Status2.Bit(SR2_CM))
+                            {
+                                if (ActiveCommandParams.Sector != ActiveCommandParams.EOT)
+                                {
+                                    // increment the sector ID and search again
+                                    ActiveCommandParams.Sector++;
+                                    continue;
+                                }
+                                else
+                                {
+                                    // no execution phase
+                                    SetBit(SR0_IC0, ref Status0);
+                                    UnSetBit(SR0_IC1, ref Status0);
+
+                                    // result requires the actual track id, rather than the sector track id
+                                    ActiveCommandParams.Cylinder = track.TrackNumber;
+
+                                    CommitResultCHRN();
+                                    CommitResultStatus();
+                                    ActivePhase = Phase.Result;
+                                    break;
+                                }
+                            }
+                            // we can read this sector
+                            else
+                            {
+                                // if DAM is not set this will be the last sector to read
+                                if (Status2.Bit(SR2_CM))
+                                {
+                                    ActiveCommandParams.EOT = ActiveCommandParams.Sector;
+                                }
+
+                                if (!CMD_FLAG_SK && !Status2.Bit(SR2_CM) && 
+                                    ActiveDrive.Disk.Protection == ProtectionType.PaulOwens)
+                                {
+                                    ActiveCommandParams.EOT = ActiveCommandParams.Sector;
+                                    SetBit(SR2_CM, ref Status2);
+                                    SetBit(SR0_IC0, ref Status0);
+                                    UnSetBit(SR0_IC1, ref Status0);
+                                    terminate = true;
+                                }
+
+                                // read the sector
+                                for (int i = 0; i < sectorSize; i++)
+                                {
+                                    ExecBuffer[buffPos++] = sector.ActualData[i];
+                                }
+
+                                if (sector.SectorID == ActiveCommandParams.EOT)
+                                {
+                                    // this was the last sector to read
+
+                                    SetBit(SR1_EN, ref Status1);
+
+                                    int keyIndex = 0;
+                                    for (int i = 0; i < track.Sectors.Length; i++)
+                                    {
+                                        if (track.Sectors[i].SectorID == sector.SectorID)
+                                        {
+                                            keyIndex = i;
+                                            break;
+                                        }
+                                    }
+
+                                    if (keyIndex == track.Sectors.Length - 1)
+                                    {
+                                        // last sector on the cylinder, set EN
+                                        SetBit(SR1_EN, ref Status1);
+
+                                        // increment cylinder
+                                        ActiveCommandParams.Cylinder++;
+
+                                        // reset sector
+                                        ActiveCommandParams.Sector = 1;
+                                        ActiveDrive.SectorIndex = 0;
+                                    }
+                                    else
+                                    {
+                                        ActiveDrive.SectorIndex++;
+                                    }
+
+                                    UnSetBit(SR0_IC1, ref Status0);
+                                    if (terminate)
+                                        SetBit(SR0_IC0, ref Status0);
+                                    else
+                                        UnSetBit(SR0_IC0, ref Status0);
+
+                                    SetBit(SR0_IC0, ref Status0);
+
+                                    // result requires the actual track id, rather than the sector track id
+                                    ActiveCommandParams.Cylinder = track.TrackNumber;
+
+                                    // remove CM (appears to be required to defeat Alkatraz copy protection)
+                                    UnSetBit(SR2_CM, ref Status2);
+
+                                    CommitResultCHRN();
+                                    CommitResultStatus();
+                                    ActivePhase = Phase.Execution;
+                                    break;
+                                }
+                                else
+                                {
+                                    // continue with multi-sector read operation
+                                    ActiveCommandParams.Sector++;
+                                    //ActiveDrive.SectorIndex++;
+                                }
+                            }
+                
+
+                            /*
+                            // If SK=1, the FDC skips the sector with the Data Address Mark and reads the next sector. 
+                            // The CRC bits in the data field are not checked when SK=1
                             if (CMD_FLAG_SK && !Status2.Bit(SR2_CM))
                             {
                                 if (ActiveCommandParams.Sector != ActiveCommandParams.EOT)
@@ -858,7 +975,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 terminate = true;
                             }
 
-                            if (!CMD_FLAG_SK && Status2.Bit(SR2_CM))
+                            if (!CMD_FLAG_SK && !Status2.Bit(SR2_CM))
                             {
                                 // deleted address mark was detected with NO skip flag set
                                 ActiveCommandParams.EOT = ActiveCommandParams.Sector;
@@ -927,6 +1044,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 ActiveCommandParams.Sector++;
                                 //ActiveDrive.SectorIndex++;
                             }
+                            */
                         }
 
                         if (ActivePhase == Phase.Execution)
@@ -1478,6 +1596,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             ResBuffer[RS_N] = data.SectorSize;
 
                             ResBuffer[RS_ST0] = Status0;
+
+                            // check for DAM & CRC
+                            //if (data.Status2.Bit(SR2_CM))
+                                //SetBit(SR2_CM, ref ResBuffer[RS_ST2]);
+
 
                             // increment the current sector
                             ActiveDrive.SectorIndex++;
@@ -2698,7 +2821,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     {
                         // interrupt has been raised for this drive
                         // acknowledge
-                        ActiveDrive.SeekStatus = SEEK_IDLE;// SEEK_INTACKNOWLEDGED;
+                        ActiveDrive.SeekStatus = SEEK_INTACKNOWLEDGED;
 
                         // result length 2
                         ResLength = 2;
@@ -2709,7 +2832,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         // second byte is the current track id
                         ResBuffer[1] = ActiveDrive.CurrentTrackID;
                     }
-                    /*
                     else if (ActiveDrive.SeekStatus == SEEK_INTACKNOWLEDGED)
                     {
                         // DriveA interrupt has already been acknowledged
@@ -2719,8 +2841,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         Status0 = 192;
                         ResBuffer[0] = Status0;
                     }
-                    */
-                    else //if (ActiveDrive.SeekStatus == SEEK_IDLE)
+                    else if (ActiveDrive.SeekStatus == SEEK_IDLE)
                     {
                         // SIS with no interrupt
                         ResLength = 1;
@@ -3507,7 +3628,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 GetBit(SR1_NW, Status1) ||
                 GetBit(SR1_OR, Status1) ||
                 GetBit(SR2_BC, Status2) ||
-                //GetBit(SR2_CM, Status2) ||
+                GetBit(SR2_CM, Status2) ||
                 GetBit(SR2_DD, Status2) ||
                 GetBit(SR2_MD, Status2) ||
                 GetBit(SR2_SN, Status2) ||
@@ -3527,7 +3648,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             else if (GetBit(SR2_CM, Status2))
             {
                 // DAM found - unset IC and US0
-                //UnSetBit(SR0_IC0, ref Status0);
+                UnSetBit(SR0_IC0, ref Status0);
                 UnSetBit(SR0_US0, ref Status0);
             }
 
