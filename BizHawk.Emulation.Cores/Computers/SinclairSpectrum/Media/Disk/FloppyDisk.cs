@@ -243,6 +243,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (!ident.ToUpper().Contains("ALKATRAZ PROTECTION SYSTEM"))
                 return false;
 
+            // ALKATRAZ NOTES (-asni 2018-05-01)
+            // ---------------------------------
             // Alkatraz protection appears to revolve around a track on the disk with 18 sectors,
             // (track position is not consistent) with the sector ID info being incorrect:
             //      TrackID is consistent between the sectors although is usually high (233, 237 etc)
@@ -251,25 +253,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             //            
             // There doesnt appear to be any CRC errors in this track, but the sector size is always 1 (256 bytes)
             // Each sector contains different filler byte
-            // Presumably all of this weird data needs to be read correctly for decryption to succeed and the game to load
+            // Once track 0 is loaded the CPU completely reads all the sectors in this track one-by-one.
+            // Data transferred during execution must be correct, also result ST0, ST1 and ST2 must be 64, 128 and 0 respectively
 
             // Immediately following this track are a number of tracks and sectors with a DAM set.
-            // This presumably has something to do with the protection scheme
-            
-            // Finally, when the 18 sector track is read, the CPU supplies a strange GAP3 value (10).
-            // Perhaps the alkatraz protection scheme is reading the ID marks as sector data because of this?
-
-
-            foreach (var t in DiskTracks)
-            {
-                foreach (var s in t.Sectors)
-                {
-                    if (s.Status1 > 0 || s.Status2 > 0)
-                    {
-                        string tvcv = "";
-                    }
-                }
-            }
+            // These are all read in sector by sector
+            // Again, Alkatraz appears to require that ST0, ST1, and ST2 result bytes are set to 64, 128 and 0 respectively
+            // (so the CM in ST2 needs to be reset)
 
             return true;
         }
@@ -286,17 +276,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (!ident.ToUpper().Contains("PAUL OWENS"))
                 return false;
 
-            /* Paul Owens protection appears to exibit the following things:
-             *  
-             * *    There are more than 10 cylinders
-             * *    Cylinder 1 has no sector data
-             * *    The sector ID infomation in most cases contains incorrect track IDs
-             * *    Track 0 is pretty much the only track that appears to be standard (assume this is the boot track)
-             * */
+            // Paul Owens Disk Protection Notes (-asni 2018-05-01)
+            // ---------------------------------------------------
+            //
+            // This scheme looks a little similar to Alkatraz with incorrect sector ID info in many places
+            // and deleted address marks (although these do not seem to show the strict relience on removing the CM mark from ST2 result that Alkatraz does)
+            // There are also data CRC errors but these dont look to be read more than once/checked for changes during load
+            // Main identifiers:
+            //
+            // * There are more than 10 cylinders
+            // * Cylinder 1 has no sector data
+            // * The sector ID infomation in most cases contains incorrect track IDs
+            // * Tracks 0 (boot) and 5 appear to be pretty much the only tracks that do not have incorrect sector ID marks
 
             return true;
         }
-
+        /*
         /// <summary>
         /// Should be run at the end of the ParseDisk process
         /// If speedlock is detected the flag is set in the disk image
@@ -304,9 +299,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         protected virtual void SpeedlockDetection()
         {
-            /*
-                Based on the information here:  http://simonowen.com/samdisk/plus3/      
-            */
 
             if (DiskTracks.Length == 0)
                 return;
@@ -397,6 +389,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             sec.ActualDataByteLength = data.Count();
 
         }
+        */
 
         /// <summary>
         /// Returns the track count for the disk

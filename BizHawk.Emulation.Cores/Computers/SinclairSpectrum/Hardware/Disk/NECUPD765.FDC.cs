@@ -497,6 +497,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 SetBit(SR1_ND, ref Status1);
                                 SetBit(SR0_IC0, ref Status0);
                                 UnSetBit(SR0_IC1, ref Status0);
+
+                                // result requires the actual track id, rather than the sector track id
+                                ActiveCommandParams.Cylinder = track.TrackNumber;
+
                                 CommitResultCHRN();
                                 CommitResultStatus();
                                 ActivePhase = Phase.Result;
@@ -527,6 +531,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                     // no execution phase
                                     SetBit(SR0_IC0, ref Status0);
                                     UnSetBit(SR0_IC1, ref Status0);
+
+                                    // result requires the actual track id, rather than the sector track id
+                                    ActiveCommandParams.Cylinder = track.TrackNumber;
+
                                     CommitResultCHRN();
                                     CommitResultStatus();
                                     ActivePhase = Phase.Result;
@@ -563,7 +571,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 // this was the last sector to read
                                 // or termination requested
 
-                                //SetBit(SR1_EN, ref Status1);
+                                SetBit(SR1_EN, ref Status1);
 
                                 int keyIndex = 0;
                                 for (int i = 0; i < track.Sectors.Length; i++)
@@ -597,6 +605,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                     SetBit(SR0_IC0, ref Status0);
                                 else
                                     UnSetBit(SR0_IC0, ref Status0);
+
+                                SetBit(SR0_IC0, ref Status0);
+
+                                // result requires the actual track id, rather than the sector track id
+                                ActiveCommandParams.Cylinder = track.TrackNumber;
 
                                 CommitResultCHRN();
                                 CommitResultStatus();
@@ -786,6 +799,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 SetBit(SR1_ND, ref Status1);
                                 SetBit(SR0_IC0, ref Status0);
                                 UnSetBit(SR0_IC1, ref Status0);
+
+                                // result requires the actual track id, rather than the sector track id
+                                ActiveCommandParams.Cylinder = track.TrackNumber;
+
                                 CommitResultCHRN();
                                 CommitResultStatus();
                                 ActivePhase = Phase.Result;
@@ -816,6 +833,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                     // no execution phase
                                     SetBit(SR0_IC0, ref Status0);
                                     UnSetBit(SR0_IC1, ref Status0);
+
+                                    // result requires the actual track id, rather than the sector track id
+                                    ActiveCommandParams.Cylinder = track.TrackNumber;
+
                                     CommitResultCHRN();
                                     CommitResultStatus();
                                     ActivePhase = Phase.Result;
@@ -837,7 +858,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 terminate = true;
                             }
 
-                            if (!CMD_FLAG_SK && !Status2.Bit(SR2_CM))
+                            if (!CMD_FLAG_SK && Status2.Bit(SR2_CM))
                             {
                                 // deleted address mark was detected with NO skip flag set
                                 ActiveCommandParams.EOT = ActiveCommandParams.Sector;
@@ -852,7 +873,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 // this was the last sector to read
                                 // or termination requested
 
-                                //SetBit(SR1_EN, ref Status1);
+                                SetBit(SR1_EN, ref Status1);
 
                                 int keyIndex = 0;
                                 for (int i = 0; i < track.Sectors.Length; i++)
@@ -886,6 +907,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                     SetBit(SR0_IC0, ref Status0);
                                 else
                                     UnSetBit(SR0_IC0, ref Status0);
+
+                                SetBit(SR0_IC0, ref Status0);
+
+                                // result requires the actual track id, rather than the sector track id
+                                ActiveCommandParams.Cylinder = track.TrackNumber;
+
+                                // remove CM (appears to be required to defeat Alkatraz copy protection)
+                                UnSetBit(SR2_CM, ref Status2);
 
                                 CommitResultCHRN();
                                 CommitResultStatus();
@@ -3478,7 +3507,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 GetBit(SR1_NW, Status1) ||
                 GetBit(SR1_OR, Status1) ||
                 GetBit(SR2_BC, Status2) ||
-                GetBit(SR2_CM, Status2) ||
+                //GetBit(SR2_CM, Status2) ||
                 GetBit(SR2_DD, Status2) ||
                 GetBit(SR2_MD, Status2) ||
                 GetBit(SR2_SN, Status2) ||
@@ -3498,7 +3527,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             else if (GetBit(SR2_CM, Status2))
             {
                 // DAM found - unset IC and US0
-                UnSetBit(SR0_IC0, ref Status0);
+                //UnSetBit(SR0_IC0, ref Status0);
                 UnSetBit(SR0_US0, ref Status0);
             }
 
