@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void OSD_DiskInit()
         {
             StringBuilder sb = new StringBuilder();
-            if (_machine.diskImages != null)
+            if (_machine.diskImages != null && _machine.UPDDiskDevice != null)
             {
                 sb.Append("Disk Media Imported (count: " + _machine.diskImages.Count() + ")");
                 SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Emulator);
@@ -83,8 +83,66 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void OSD_DiskInserted()
         {
             StringBuilder sb = new StringBuilder();
+
+            if (_machine.UPDDiskDevice == null)
+            {
+                sb.Append("No Drive Present");
+                SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
+                return;
+            }
+
             sb.Append("DISK INSERTED (" + _machine.DiskMediaIndex + ": " + _diskInfo[_machine.DiskMediaIndex].Name + ")");
-            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
+        }
+
+        /// <summary>
+        /// Tape message that prints the current status of the tape device
+        /// </summary>
+        public void OSD_ShowDiskStatus()
+        {
+            StringBuilder sb = new StringBuilder();
+
+            if (_machine.UPDDiskDevice == null)
+            {
+                sb.Append("No Drive Present");
+                SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
+                return;
+            }
+
+            if (_diskInfo.Count == 0)
+            {
+                sb.Append("No Disk Loaded");
+                SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
+                return;
+            }
+
+            if (_machine.UPDDiskDevice != null)
+            {
+                if (_machine.UPDDiskDevice.DiskPointer == null)
+                {
+                    sb.Append("No Disk Loaded");
+                    SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
+                    return;
+                }
+
+                sb.Append("Disk: " + _machine.DiskMediaIndex + ": " + _diskInfo[_machine.DiskMediaIndex].Name);
+                SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
+                sb.Clear();
+
+                sb.Append("Detected Protection: " + Enum.GetName(typeof(ProtectionType), _machine.UPDDiskDevice.DiskPointer.Protection));
+                SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
+                sb.Clear();
+
+                sb.Append("Status: ");
+
+                if (_machine.UPDDiskDevice.DriveLight)
+                    sb.Append("READING/WRITING DATA");
+                else
+                    sb.Append("UNKNOWN");
+
+                SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
+                sb.Clear();
+            }
         }
 
         #endregion

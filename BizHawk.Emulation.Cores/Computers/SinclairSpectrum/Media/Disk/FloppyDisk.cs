@@ -249,6 +249,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public bool DetectAlkatraz(ref int[] weak)
         {
+            try
+            {
+                var data1 = DiskTracks[0].Sectors[0].SectorData;
+                var data2 = DiskTracks[0].Sectors[0].SectorData.Length;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
             // check for ALKATRAZ ident in sector 0
             string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[0].SectorData, 0, DiskTracks[0].Sectors[0].SectorData.Length);
             if (!ident.ToUpper().Contains("ALKATRAZ PROTECTION SYSTEM"))
@@ -282,6 +292,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public bool DetectPaulOwens(ref int[] weak)
         {
+            try
+            {
+                var data1 = DiskTracks[0].Sectors[2].SectorData;
+                var data2 = DiskTracks[0].Sectors[2].SectorData.Length;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
             // check for PAUL OWENS ident in sector 2
             string ident = Encoding.ASCII.GetString(DiskTracks[0].Sectors[2].SectorData, 0, DiskTracks[0].Sectors[2].SectorData.Length);
             if (!ident.ToUpper().Contains("PAUL OWENS"))
@@ -310,6 +330,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public bool DetectHexagon(ref int[] weak)
         {
+            try
+            {
+                var data1 = DiskTracks[0].Sectors.Length;
+                var data2 = DiskTracks[0].Sectors[8].ActualDataByteLength;
+                var data3 = DiskTracks[0].Sectors[8].SectorData;
+                var data4 = DiskTracks[0].Sectors[8].SectorData.Length;
+                var data5 = DiskTracks[1].Sectors[0];
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
             if (DiskTracks[0].Sectors.Length != 10 || DiskTracks[0].Sectors[8].ActualDataByteLength != 512)
                 return false;
 

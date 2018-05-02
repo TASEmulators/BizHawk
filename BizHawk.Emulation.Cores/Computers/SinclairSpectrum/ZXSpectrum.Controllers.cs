@@ -82,7 +82,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     definition.CategoryLabels[s] = "Keyboard";
                 }
 
-                // Datacorder (tape device)
+                // Power functions
                 List<string> power = new List<string>
                 {
                     // Tape functions
@@ -107,6 +107,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 {
                     definition.BoolButtons.Add(s);
                     definition.CategoryLabels[s] = "Datacorder";
+                }
+
+                // Datacorder (tape device)
+                List<string> disk = new List<string>
+                {
+                    // Tape functions
+                    "Insert Next Disk", "Insert Previous Disk", /*"Eject Current Disk",*/ "Get Disk Status"
+                };
+
+                foreach (var s in disk)
+                {
+                    definition.BoolButtons.Add(s);
+                    definition.CategoryLabels[s] = "+3 Disk Drive";
                 }
 
                 return definition;

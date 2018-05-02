@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public void FDD_EjectDisk()
         {
-            DriveStates[DiskDriveIndex].FDD_EjectDisk();
+            DriveStates[0].FDD_EjectDisk();
         }
 
         /// <summary>
@@ -181,6 +181,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             get { return DriveStates[DiskDriveIndex].FDD_IsDiskLoaded; }            
         }
 
+        /// <summary>
+        /// Returns the disk object from drive 0
+        /// </summary>
+        public FloppyDisk DiskPointer
+        {
+            get { return DriveStates[0].Disk; }
+        }
+        
         public FloppyDisk Disk { get; set; }
 
         #endregion
