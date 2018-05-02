@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			[DisplayName("Timer Div Initial Time")]
 			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
-			[DefaultValue(0)]
+			[DefaultValue(8)]
 			public int DivInitialTime
 			{
 				get { return _DivInitialTime; }

@@ -58,6 +58,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		public const ushort EI_RETI = 43; // reti has no delay in interrupt enable
 		public const ushort INT_GET = 44;
 		public const ushort GBC_INTERRUPT = 45;
+		public const ushort HALT_CHK = 46; // when in halt mode, actually check I Flag here
 
 		public LR35902()
 		{
@@ -68,7 +69,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		{
 			ResetRegisters();
 			ResetInterrupts();
-			TotalExecutedCycles = 0;
+			TotalExecutedCycles = 8;
 			stop_check = false;
 			cur_instr = new ushort[] { OP };
 		}
@@ -255,6 +256,17 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 				case HALT:
 					halted = true;
 
+					bool temp = false;
+
+					if (cur_instr[instr_pntr++] == 1)
+					{
+						temp = FlagI;
+					}
+					else
+					{
+						temp = I_use;
+					}
+
 					if (EI_pending > 0 && !CB_prefix)
 					{
 						EI_pending--;
@@ -265,8 +277,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					}
 
 					// if the I flag is asserted at the time of halt, don't halt
-
-					if (FlagI && interrupts_enabled && !CB_prefix && !jammed)
+					if (temp && interrupts_enabled && !CB_prefix && !jammed)
 					{
 						interrupts_enabled = false;
 
@@ -298,7 +309,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							INTERRUPT_();
 						}					
 					}
-					else if (FlagI)
+					else if (temp)
 					{
 						// even if interrupt servicing is disabled, any interrupt flag raised still resumes execution
 						if (TraceCallback != null)
@@ -324,17 +335,44 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						}
 						else
 						{					
-							FetchInstruction(ReadMemory(RegPC++));
+							if (Halt_bug_3)
+							{
+								//special variant of halt bug where RegPC also isn't incremented post fetch
+								RegPC++;
+								FetchInstruction(ReadMemory(RegPC));
+								Halt_bug_3 = false;
+							}
+							else
+							{
+								FetchInstruction(ReadMemory(RegPC++));
+							}							
 						}					
 					}
 					else
 					{
-						cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						IDLE,
-						HALT };
+						if (skip_once)
+						{
+							cur_instr = new ushort[]
+										{IDLE,
+										IDLE,
+										IDLE,
+										HALT, 0 };
+
+							skip_once = false;
+						}
+						else
+						{
+							cur_instr = new ushort[]
+										{
+											IDLE,
+										HALT_CHK,
+										IDLE,
+										
+										HALT, 0 };
+						}
+						
 					}
+					I_use = false;
 					instr_pntr = 0;
 					break;
 				case STOP:
@@ -453,6 +491,18 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					INTERRUPT_();
 					instr_pntr = 0;
 					break;
+				case HALT_CHK:
+					// only used when exiting HALT from GBC, an extra NOP is added to avoid HALT bug
+					I_use = FlagI;
+					if (Halt_bug_2 && I_use)
+					{
+						RegPC--;
+
+						if (!interrupts_enabled) { Halt_bug_3 = true; }					
+					}
+					
+					Halt_bug_2 = false;
+					break;
 			}
 			totalExecutedCycles++;
 		}
@@ -506,8 +556,10 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			ser.Sync("NMI", ref nonMaskableInterrupt);
 			ser.Sync("NMIPending", ref nonMaskableInterruptPending);
 			ser.Sync("IM", ref interruptMode);
-			ser.Sync("IFF1", ref iff1);
-			ser.Sync("IFF2", ref iff2);
+			ser.Sync("I_use", ref I_use);
+			ser.Sync("skip_once", ref skip_once);
+			ser.Sync("Halt_bug_2", ref Halt_bug_2);
+			ser.Sync("Halt_bug_3", ref Halt_bug_3);
 			ser.Sync("Halted", ref halted);
 			ser.Sync("ExecutedCycles", ref totalExecutedCycles);
 			ser.Sync("EI_pending", ref EI_pending);

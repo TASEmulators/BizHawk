@@ -76,8 +76,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 
 		private void HALT_()
 		{
-
-			if (FlagI && (EI_pending == 0))
+			if (FlagI && (EI_pending == 0) && !interrupts_enabled)
 			{
 				if (is_GBC)
 				{
@@ -96,21 +95,31 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 				else
 				{	// if interrupts are disabled,
 					// a glitchy decrement to the program counter happens
-					cur_instr = new ushort[]
+					{
+						cur_instr = new ushort[]
 							{IDLE,
 							IDLE,
 							IDLE,
 							OP_G};
+					}
 				}
 			}
 			else
 			{
 				cur_instr = new ushort[]
-						{IDLE,
-					IDLE,
-					IDLE,
-					HALT };
-			}	
+						{
+						IDLE,						
+						HALT_CHK,
+						IDLE,
+						HALT, 1 };
+				skip_once = true;
+				// If the interrupt flag is not currently set, but it does get set in the first check
+				// then a bug is triggered 
+				// With interrupts enabled, this runs the halt command twice 
+				// when they are disabled, it reads the next byte twice
+				if (!FlagI) { Halt_bug_2 = true; }
+				
+			}
 		}
 
 		private void JR_COND(bool cond)

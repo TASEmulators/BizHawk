@@ -4,12 +4,6 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 {
 	public partial class LR35902
 	{
-		private bool iff1;
-		public bool IFF1 { get { return iff1; } set { iff1 = value; } }
-
-		private bool iff2;
-		public bool IFF2 { get { return iff2; } set { iff2 = value; } }
-
 		private bool nonMaskableInterrupt;
 		public bool NonMaskableInterrupt
 		{
@@ -87,11 +81,17 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		public int stop_time;
 		public bool stop_check;
 		public bool is_GBC; // GBC automatically adds a NOP to avoid the HALT bug (according to Sinimas)
+		public bool I_use; // in halt mode, the I flag is checked earlier then when deicision to IRQ is taken
+		public bool skip_once;
+		public bool Halt_bug_2;
+		public bool Halt_bug_3;
 
 		private void ResetInterrupts()
 		{
-			IFF1 = false;
-			IFF2 = false;
+			I_use = false;
+			skip_once = false;
+			Halt_bug_2 = false;
+			Halt_bug_3 = false;
 			NonMaskableInterrupt = false;
 			NonMaskableInterruptPending = false;
 			InterruptMode = 1;

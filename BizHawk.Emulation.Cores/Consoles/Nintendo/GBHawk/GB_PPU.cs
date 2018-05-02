@@ -75,7 +75,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break;
 				case 0xFF45:  // LYC
 					LYC = value;
-					if (LY != LYC) { STAT &= 0xFB; }
+					if (LCDC.Bit(7))
+					{
+						if (LY != LYC) { STAT &= 0xFB; }
+						else { STAT |= 0x4; /*if (STAT.Bit(6)) { LYC_INT = true; } */}
+					}				
 					break;
 				case 0xFF46: // DMA 
 					DMA_addr = value;
@@ -124,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					LY += LY_inc;
 					no_scan = false;
 
-					// here is where LY = LYC gets cleared (but only if LY isnt 0 as that's a special case
+					// here is where LY = LYC gets cleared (but only if LY isnt 0 as that's a special case)
 					if (LY_inc == 1)
 					{
 						LYC_INT = false;
@@ -177,7 +181,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					// also, the LCD does not enter mode 2 on scanline 0 when first turned on
 					no_scan = true;
-					cycle = 8;
+					cycle = 4;
 				}
 
 				// the VBL stat is continuously asserted
@@ -195,7 +199,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 					}
 
-					if ((cycle == 4) && (LY == 144)) {
+					if ((cycle == 0) && (LY == 144)) {
 
 						HBL_INT = false;
 
@@ -205,6 +209,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 						if (Core.REG_FFFF.Bit(0)) { Core.cpu.FlagI = true; }
 						Core.REG_FF0F |= 0x01;
+						//Console.WriteLine(Core.cpu.TotalExecutedCycles);
 					}
 
 					if ((LY >= 144) && (cycle == 4))
@@ -229,12 +234,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						// there is no mode 2  (presumably it missed the trigger)
 						// mode 3 is very short, probably in some self test mode before turning on?
 
-						if (cycle == 12)
+						if (cycle == 8)
 						{
-							LYC_INT = false;
-							STAT &= 0xFB;
+							if (LY != LYC)
+							{ 
+								LYC_INT = false;
+								STAT &= 0xFB;
+							}
 
-							if (LY == LYC)
+							if ((LY == LYC) && !STAT.Bit(2))
 							{
 								// set STAT coincidence FLAG and interrupt flag if it is enabled
 								STAT |= 0x04;
@@ -314,7 +322,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						STAT &= 0xFB;
 
 						// Special case of LY = LYC
-						if (LY == LYC)
+						if ((LY == LYC) && !STAT.Bit(2))
 						{
 							// set STAT coincidence FLAG and interrupt flag if it is enabled
 							STAT |= 0x04;
@@ -331,7 +339,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// here LY=LYC will be asserted
 				if ((cycle == 4) && (LY != 0))
 				{
-					if (LY == LYC)
+					if ((LY == LYC) && !STAT.Bit(2))
 					{
 						// set STAT coincidence FLAG and interrupt flag if it is enabled
 						STAT |= 0x04;
@@ -343,7 +351,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else
 			{
-				STAT &= 0xF8;
+				STAT &= 0xFC;
 
 				VBL_INT = LYC_INT = HBL_INT = OAM_INT = false;
 
