@@ -1242,7 +1242,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             t.DataPeriods = new List<int>();
             t.BlockDescription = BlockType.Archive_Info;
 
-            int blockLen = GetWordValue(data, 0);
+            int blockLen = GetWordValue(data, _position);
             _position += 2;
             int stringCount = data[_position++];
 
@@ -1591,37 +1591,89 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // dont get description info for Pure Data Blocks
             if (dataBlockType != DataBlockType.Pure)
             {
-                if (blockdata[0] == 0x00 && blockSize == 19 && (blockdata[1] == 0x00) || (blockdata[1] == 3 && blockdata.Length > 3))
+                if (blockdata[0] == 0x00 && blockSize == 19)
                 {
-                    // This is the program header
                     string fileName = Encoding.ASCII.GetString(blockdata.Skip(2).Take(10).ToArray()).Trim();
+                    string type = "Unknown Type";
+                    StringBuilder sb = new StringBuilder();
 
-                    string type = "";
-                    if (blockdata[0] == 0x00)
+                    var param1 = GetWordValue(blockdata, 12);
+                    var param2 = GetWordValue(blockdata, 14);
+
+                    // header block - examine first byte of header
+                    if (blockdata[1] == 0)
                     {
                         type = "Program";
-                        block.AddMetaData(BlockDescriptorTitle.Program, fileName);
+                        sb.Append(type + ": ");
+                        sb.Append(fileName + " ");
                     }
-                    else
+                    else if (blockdata[1] == 1)
                     {
-                        type = "Bytes";
-                        block.AddMetaData(BlockDescriptorTitle.Bytes, fileName);
+                        type = "NumArray";
+                        sb.Append(type + ": ");
+                        sb.Append(fileName + " ");
                     }
+                    else if (blockdata[1] == 2)
+                    {
+                        type = "CharArray";
+                        sb.Append(type + ": ");
+                        sb.Append(fileName + " ");
+                    }
+                    else if (blockdata[1] == 3)
+                    {
+                        type = "Code";
+                        sb.Append(type + ": ");
+                        sb.Append(fileName + " ");
+                    }
+                }
+                else if (blockdata[0] == 0xff)
+                {
+                    // data block
+                    description = "Data Block " + (blockSize - 2) + "bytes";
+                    block.AddMetaData(BlockDescriptorTitle.Data_Bytes, (blockSize - 2).ToString() + " Bytes");
+                }
+                else
+                {
+                    // some other type (turbo data etc..)
+                    description = string.Format("#{0} block, {1} bytes", blockdata[0].ToString("X2"), blockSize);
+                    //description += string.Format(", crc {0}", ((crc != 0) ? string.Format("bad (#{0:X2}!=#{1:X2})", crcFile, crcValue) : "ok"));
+                    block.AddMetaData(BlockDescriptorTitle.Undefined, description);
+                }
+                /*
+                if (blockdata[0] == 0x00 && blockSize == 19 && (blockdata[1] == 0x00) || (blockdata[1] == 3 && blockdata.Length > 3))
+                {
+                    if (dataBlockType != DataBlockType.Turbo)
+                    {
+                        // This is the program header
+                        string fileName = Encoding.ASCII.GetString(blockdata.Skip(2).Take(10).ToArray()).Trim();
 
-                    // now build the description string
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append(type + ": ");
-                    sb.Append(fileName + " ");
-                    sb.Append(GetWordValue(blockdata, 14));
-                    sb.Append(":");
-                    sb.Append(GetWordValue(blockdata, 12));
-                    description = sb.ToString();
+                        string type = "";
+                        if (blockdata[0] == 0x00)
+                        {
+                            type = "Program";
+                            block.AddMetaData(BlockDescriptorTitle.Program, fileName);
+                        }
+                        else
+                        {
+                            type = "Bytes";
+                            block.AddMetaData(BlockDescriptorTitle.Bytes, fileName);
+                        }
+
+                        // now build the description string
+                        StringBuilder sb = new StringBuilder();
+                        sb.Append(type + ": ");
+                        sb.Append(fileName + " ");
+                        sb.Append(GetWordValue(blockdata, 14));
+                        sb.Append(":");
+                        sb.Append(GetWordValue(blockdata, 12));
+                        description = sb.ToString();
+                    }
                 }
                 else if (blockdata[0] == 0xFF)
                 {
                     // this is a data block
                     description = "Data Block " + (blockSize - 2) + "bytes";
-                    block.AddMetaData(BlockDescriptorTitle.Data_Bytes, (blockSize).ToString() + " Bytes");
+                    block.AddMetaData(BlockDescriptorTitle.Data_Bytes, (blockSize - 2).ToString() + " Bytes");
                 }
                 else
                 {
@@ -1629,7 +1681,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     description = string.Format("#{0} block, {1} bytes", blockdata[0].ToString("X2"), blockSize);
                     //description += string.Format(", crc {0}", ((crc != 0) ? string.Format("bad (#{0:X2}!=#{1:X2})", crcFile, crcValue) : "ok"));
                     block.AddMetaData(BlockDescriptorTitle.Undefined, description);
-                }                
+                }  
+                */              
             }
 
             // update metadata
