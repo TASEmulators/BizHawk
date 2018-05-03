@@ -1681,6 +1681,81 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 //  Receiving command parameter bytes
                 //----------------------------------------
                 case Phase.Command:
+
+                    // store the parameter in the command buffer
+                    CommBuffer[CommCounter] = LastByteReceived;
+
+                    // process parameter byte
+                    ParseParamByteStandard(CommCounter);
+
+                    // increment command parameter counter
+                    CommCounter++;
+
+                    // was that the last parameter byte?
+                    if (CommCounter == ActiveCommand.ParameterByteCount)
+                    {
+                        // all parameter bytes received - setup for execution phase
+
+                        // clear exec buffer and status registers
+                        ClearExecBuffer();
+                        Status0 = 0;
+                        Status1 = 0;
+                        Status2 = 0;
+                        Status3 = 0;
+
+                        // temp sector index
+                        byte secIdx = ActiveCommandParams.Sector;
+
+                        // hack for when another drive (non-existent) is being called
+                        if (ActiveDrive.ID != 0)
+                            DiskDriveIndex = 0;
+
+                        // do we have a valid disk inserted?
+                        if (!ActiveDrive.FLAG_READY)
+                        {
+                            // no disk, no tracks or motor is not on
+                            SetBit(SR0_IC0, ref Status0);
+                            SetBit(SR0_NR, ref Status0);
+
+                            CommitResultCHRN();
+                            CommitResultStatus();
+                            //ResBuffer[RS_ST0] = Status0;
+
+                            // move to result phase
+                            ActivePhase = Phase.Result;
+                            break;
+                        }
+
+                        // check write protect tab
+                        if (ActiveDrive.FLAG_WRITEPROTECT)
+                        {
+                            SetBit(SR0_IC0, ref Status0);
+                            SetBit(SR1_NW, ref Status1);
+
+                            CommitResultCHRN();
+                            CommitResultStatus();
+                            //ResBuffer[RS_ST0] = Status0;
+
+                            // move to result phase
+                            ActivePhase = Phase.Result;
+                            break;
+                        }
+                        else
+                        {
+                            // not implemented yet
+                            SetBit(SR0_IC0, ref Status0);
+                            SetBit(SR1_NW, ref Status1);
+
+                            CommitResultCHRN();
+                            CommitResultStatus();
+                            //ResBuffer[RS_ST0] = Status0;
+
+                            // move to result phase
+                            ActivePhase = Phase.Result;
+                            break;
+                        }
+                    }
+
                     break;
 
                 //----------------------------------------
@@ -1819,6 +1894,81 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 //  Receiving command parameter bytes
                 //----------------------------------------
                 case Phase.Command:
+
+                    // store the parameter in the command buffer
+                    CommBuffer[CommCounter] = LastByteReceived;
+
+                    // process parameter byte
+                    ParseParamByteStandard(CommCounter);
+
+                    // increment command parameter counter
+                    CommCounter++;
+
+                    // was that the last parameter byte?
+                    if (CommCounter == ActiveCommand.ParameterByteCount)
+                    {
+                        // all parameter bytes received - setup for execution phase
+
+                        // clear exec buffer and status registers
+                        ClearExecBuffer();
+                        Status0 = 0;
+                        Status1 = 0;
+                        Status2 = 0;
+                        Status3 = 0;
+
+                        // temp sector index
+                        byte secIdx = ActiveCommandParams.Sector;
+
+                        // hack for when another drive (non-existent) is being called
+                        if (ActiveDrive.ID != 0)
+                            DiskDriveIndex = 0;
+
+                        // do we have a valid disk inserted?
+                        if (!ActiveDrive.FLAG_READY)
+                        {
+                            // no disk, no tracks or motor is not on
+                            SetBit(SR0_IC0, ref Status0);
+                            SetBit(SR0_NR, ref Status0);
+
+                            CommitResultCHRN();
+                            CommitResultStatus();
+                            //ResBuffer[RS_ST0] = Status0;
+
+                            // move to result phase
+                            ActivePhase = Phase.Result;
+                            break;
+                        }
+
+                        // check write protect tab
+                        if (ActiveDrive.FLAG_WRITEPROTECT)
+                        {
+                            SetBit(SR0_IC0, ref Status0);
+                            SetBit(SR1_NW, ref Status1);
+
+                            CommitResultCHRN();
+                            CommitResultStatus();
+                            //ResBuffer[RS_ST0] = Status0;
+
+                            // move to result phase
+                            ActivePhase = Phase.Result;
+                            break;
+                        }
+                        else
+                        {
+                            // not implemented yet
+                            SetBit(SR0_IC0, ref Status0);
+                            SetBit(SR1_NW, ref Status1);
+
+                            CommitResultCHRN();
+                            CommitResultStatus();
+                            //ResBuffer[RS_ST0] = Status0;
+
+                            // move to result phase
+                            ActivePhase = Phase.Result;
+                            break;
+                        }
+                    }
+
                     break;
 
                 //----------------------------------------
@@ -1979,6 +2129,81 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 //  Receiving command parameter bytes
                 //----------------------------------------
                 case Phase.Command:
+
+                    // store the parameter in the command buffer
+                    CommBuffer[CommCounter] = LastByteReceived;
+
+                    // process parameter byte
+                    ParseParamByteStandard(CommCounter);
+
+                    // increment command parameter counter
+                    CommCounter++;
+
+                    // was that the last parameter byte?
+                    if (CommCounter == ActiveCommand.ParameterByteCount)
+                    {
+                        // all parameter bytes received - setup for execution phase
+
+                        // clear exec buffer and status registers
+                        ClearExecBuffer();
+                        Status0 = 0;
+                        Status1 = 0;
+                        Status2 = 0;
+                        Status3 = 0;
+
+                        // temp sector index
+                        byte secIdx = ActiveCommandParams.Sector;
+
+                        // hack for when another drive (non-existent) is being called
+                        if (ActiveDrive.ID != 0)
+                            DiskDriveIndex = 0;
+
+                        // do we have a valid disk inserted?
+                        if (!ActiveDrive.FLAG_READY)
+                        {
+                            // no disk, no tracks or motor is not on
+                            SetBit(SR0_IC0, ref Status0);
+                            SetBit(SR0_NR, ref Status0);
+
+                            CommitResultCHRN();
+                            CommitResultStatus();
+                            //ResBuffer[RS_ST0] = Status0;
+
+                            // move to result phase
+                            ActivePhase = Phase.Result;
+                            break;
+                        }
+
+                        // check write protect tab
+                        if (ActiveDrive.FLAG_WRITEPROTECT)
+                        {
+                            SetBit(SR0_IC0, ref Status0);
+                            SetBit(SR1_NW, ref Status1);
+
+                            CommitResultCHRN();
+                            CommitResultStatus();
+                            //ResBuffer[RS_ST0] = Status0;
+
+                            // move to result phase
+                            ActivePhase = Phase.Result;
+                            break;
+                        }
+                        else
+                        {
+                            // not implemented yet
+                            SetBit(SR0_IC0, ref Status0);
+                            SetBit(SR1_NW, ref Status1);
+
+                            CommitResultCHRN();
+                            CommitResultStatus();
+                            //ResBuffer[RS_ST0] = Status0;
+
+                            // move to result phase
+                            ActivePhase = Phase.Result;
+                            break;
+                        }
+                    }
+
                     break;
 
                 //----------------------------------------
