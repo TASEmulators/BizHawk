@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte scroll_y;
 		public byte scroll_x;
 		public byte LY;
+		public byte LY_actual;
 		public byte LY_inc;
 		public byte LYC;
 		public byte DMA_addr;
@@ -68,6 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool fetch_sprite_01;
 		public bool fetch_sprite_4;
 		public bool going_to_fetch;
+		public bool first_fetch;
 		public int sprite_fetch_counter;
 		public byte[] sprite_attr_list = new byte[160];
 		public byte[] sprite_pixel_list = new byte[160];
@@ -171,6 +173,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("scroll_y", ref scroll_y);
 			ser.Sync("scroll_x", ref scroll_x);
 			ser.Sync("LY", ref LY);
+			ser.Sync("LY_actual", ref LY_actual);
 			ser.Sync("LYinc", ref LY_inc);
 			ser.Sync("LYC", ref LYC);
 			ser.Sync("DMA_addr", ref DMA_addr);
@@ -217,6 +220,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("fetch_sprite_01", ref fetch_sprite_01);
 			ser.Sync("fetch_sprite_4", ref fetch_sprite_4);
 			ser.Sync("going_to_fetch", ref going_to_fetch);
+			ser.Sync("first_fetch", ref first_fetch);
 			ser.Sync("sprite_fetch_counter", ref sprite_fetch_counter);
 			ser.Sync("sprite_attr_list", ref sprite_attr_list, false);
 			ser.Sync("sprite_pixel_list", ref sprite_pixel_list, false);

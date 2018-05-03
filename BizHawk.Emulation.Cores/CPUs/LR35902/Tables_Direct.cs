@@ -111,7 +111,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						IDLE,						
 						HALT_CHK,
 						IDLE,
-						HALT, 1 };
+						HALT, 0 };
 				skip_once = true;
 				// If the interrupt flag is not currently set, but it does get set in the first check
 				// then a bug is triggered 

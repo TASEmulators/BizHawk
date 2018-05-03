@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					x_tile = (int)Math.Floor((float)(scroll_x) / 8);
 					break; 
 				case 0xFF44: // LY
-					LY = 0; /*reset*/
+					LY = LY_actual = 0; /*reset*/
 					break;
 				case 0xFF45:  // LYC
 					LYC = value;
@@ -110,7 +110,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 			// the ppu only does anything if it is turned on via bit 7 of LCDC
 			if (LCDC.Bit(7))
-			{
+			{				
 				// start the next scanline
 				if (cycle == 456)
 				{
@@ -125,24 +125,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 
 					cycle = 0;
-					LY += LY_inc;
-					no_scan = false;
+					LY_actual = LY;
 
-					// here is where LY = LYC gets cleared (but only if LY isnt 0 as that's a special case)
-					if (LY_inc == 1)
-					{
-						LYC_INT = false;
-						STAT &= 0xFB;
-					}
+					no_scan = false;
 
 					if (LY == 0 && LY_inc == 0)
 					{
 						LY_inc = 1;
 						Core.in_vblank = false;
-						VBL_INT = false;
-						if (STAT.Bit(3)) { HBL_INT = true; }
-						
-						STAT &= 0xFC;
 
 						// special note here, the y coordiate of the window is kept if the window is deactivated
 						// meaning it will pick up where it left off if re-enabled later
@@ -153,8 +143,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						window_is_reset = true;
 					}
 
-					Core.cpu.LY = LY;
-
 					// Automatically restore access to VRAM at this time (force end drawing)
 					// Who Framed Roger Rabbit seems to run into this.
 					VRAM_access_write = true;
@@ -164,6 +152,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						Core.in_vblank = true;
 					}
+				}
+
+				if (cycle == 452)
+				{
+					LY += LY_inc;
+
+					// here is where LY = LYC gets cleared (but only if LY isnt 0 as that's a special case)
+					if (LY_inc == 1)
+					{
+						LYC_INT = false;
+						STAT &= 0xFB;
+					}
+					else
+					{
+						VBL_INT = false;
+						if (STAT.Bit(3)) { HBL_INT = true; }
+
+						STAT &= 0xFC;
+					}
+
+					Core.cpu.LY = LY;
+				}
+
+				if ((LY == 153) && (cycle == 0))
+				{
+					LY = 0;
+					LY_inc = 0;
+
 				}
 
 				// exit vblank if LCD went from off to on
@@ -185,21 +201,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 
 				// the VBL stat is continuously asserted
-				if ((LY >= 144))
+				if ((LY_actual >= 144))
 				{
 					if (STAT.Bit(4))
 					{
-						if ((cycle >= 4) && (LY == 144))
+						if ((cycle >= 0) && (LY_actual == 144))
 						{
 							VBL_INT = true;
 						}
-						else if (LY > 144)
+						else if (LY_actual > 144)
 						{
 							VBL_INT = true;
 						}
 					}
 
-					if ((cycle == 0) && (LY == 144)) {
+					if ((cycle == 0) && (LY_actual == 144)) {
 
 						HBL_INT = false;
 
@@ -209,19 +225,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 						if (Core.REG_FFFF.Bit(0)) { Core.cpu.FlagI = true; }
 						Core.REG_FF0F |= 0x01;
-						//Console.WriteLine(Core.cpu.TotalExecutedCycles);
 					}
 
-					if ((LY >= 144) && (cycle == 4))
+					if ((LY_actual >= 144) && (cycle == 0))
 					{
 						// a special case of OAM mode 2 IRQ assertion, even though PPU Mode still is 1
 						if (STAT.Bit(5)) { OAM_INT = true; }
 					}
 
-					if ((LY == 153) && (cycle == 8))
+					if ((LY_actual == 153) && (cycle == 4))
 					{
-						LY = 0;
-						LY_inc = 0;
+						LY_actual = 0;
 						Core.cpu.LY = LY;
 					}
 				}
@@ -234,7 +248,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						// there is no mode 2  (presumably it missed the trigger)
 						// mode 3 is very short, probably in some self test mode before turning on?
 
-						if (cycle == 8)
+						if (cycle == 4)
 						{
 							if (LY != LYC)
 							{ 
@@ -250,7 +264,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 						}
 
-						if (cycle == 84)
+						if (cycle == 80)
 						{
 
 							STAT &= 0xFC;
@@ -263,7 +277,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							VRAM_access_write = false;
 						}
 
-						if (cycle == 256)
+						if (cycle == 252)
 						{
 							STAT &= 0xFC;
 							OAM_INT = false;
@@ -278,9 +292,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else
 					{
-						if (cycle < 80)
+						if (cycle < 76)
 						{
-							if (cycle == 4)
+							if (cycle == 0)
 							{
 								// apparently, writes can make it to OAM one cycle longer then reads
 								OAM_access_write = false;
@@ -288,18 +302,28 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// here mode 2 will be set to true and interrupts fired if enabled
 								STAT &= 0xFC;
 								STAT |= 0x2;
-								if (STAT.Bit(5)) { OAM_INT = true; }
+								if (STAT.Bit(5))
+								{
+									OAM_INT = true;
+								}
 
 								HBL_INT = false;
 							}
 
-							// here OAM scanning is performed
-							OAM_scan(cycle);
-						}
-						else if (cycle >= 80 && LY < 144)
-						{
 
-							if (cycle == 84)
+							// here OAM scanning is performed
+							OAM_scan(cycle + 4);
+						}
+						else if ((cycle >= 76) && (LY_actual < 144))
+						{
+							if (cycle == 76)
+							{
+								OAM_access_read = false;
+								OAM_access_write = true;
+								VRAM_access_read = false;
+							}
+
+							if (cycle == 80)
 							{
 								STAT &= 0xFC;
 								STAT |= 0x03;
@@ -309,14 +333,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 
 							// render the screen and handle hblank
-							render(cycle - 80);
+							render(cycle - 76);
 						}
-					}					
+					}	
+					
+					if (cycle >= 452)
+					{
+						OAM_access_read = false;
+						OAM_scan(cycle - 452);
+					}				
 				}
 
 				if ((LY_inc == 0))
 				{
-					if (cycle == 12)
+					if (cycle == 8)
 					{
 						LYC_INT = false;
 						STAT &= 0xFB;
@@ -333,11 +363,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (STAT.Bit(5)) { OAM_INT = true; }
 					}
 
-					if (cycle == 92) { OAM_INT = false; }
+					if (cycle == 88) { OAM_INT = false; }
 				}
 
 				// here LY=LYC will be asserted
-				if ((cycle == 4) && (LY != 0))
+				if ((cycle == 0) && (LY_actual != 0))
 				{
 					if ((LY == LYC) && !STAT.Bit(2))
 					{
@@ -360,6 +390,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				LCD_was_off = true;
 
 				LY = 0;
+				LY_actual = 0;
 				Core.cpu.LY = LY;
 
 				cycle = 0;
@@ -367,7 +398,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			// assert the STAT IRQ line if the line went from zero to 1
 			stat_line = VBL_INT | LYC_INT | HBL_INT | OAM_INT;
-
+			/*
+			if (stat_line) {
+				Console.Write("OAM: ");
+				Console.Write(OAM_INT);
+				Console.Write(" LYC: ");
+				Console.Write(LYC_INT);
+				Console.Write(" VBL: ");
+				Console.Write(VBL_INT);
+				Console.Write(" HBL: ");
+				Console.Write(HBL_INT);
+				Console.WriteLine(Core.cpu.TotalExecutedCycles);
+			}
+			*/
 			if (stat_line && !stat_line_old)
 			{
 				if (Core.REG_FFFF.Bit(1)) { Core.cpu.FlagI = true; }
@@ -393,10 +436,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// i.e. just keeping track of the lowest x-value sprite
 			if (render_cycle == 0)
 			{
-				OAM_access_read = false;
-				OAM_access_write = true;
-				VRAM_access_read = false;
-
 				// window X is latched for the scanline, mid-line changes have no effect
 				window_x_latch = window_x;
 
@@ -411,6 +450,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				fetch_sprite_01 = false;
 				fetch_sprite_4 = false;
 				going_to_fetch = false;
+				first_fetch = true;
 				no_sprites = false;
 				evaled_sprites = 0;
 
@@ -543,7 +583,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (pixel_counter == 160)
 					{
 						read_case = 8;
-						hbl_countdown = 7;
+						hbl_countdown = 5;
 					}
 				}
 				else if ((render_counter >= render_offset) && (pixel_counter < 0))
@@ -840,7 +880,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				if (going_to_fetch)
 				{
 					going_to_fetch = false;
-					sprite_fetch_counter = 0;
+					sprite_fetch_counter = first_fetch ? 2 : 0;
+					first_fetch = false;
 
 					if (fetch_sprite_01)
 					{
@@ -1060,8 +1101,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// TODO: maybe stat mode 2 flags are set at cycle 0 on visible scanlines?
 			if (OAM_cycle == 0)
 			{
-				OAM_access_read = false;
-
 				OAM_scan_index = 0;
 				SL_sprites_index = 0;
 				write_sprite = 0;

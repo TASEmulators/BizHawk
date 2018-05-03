@@ -497,7 +497,6 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					if (Halt_bug_2 && I_use)
 					{
 						RegPC--;
-
 						if (!interrupts_enabled) { Halt_bug_3 = true; }					
 					}
 					
