@@ -368,20 +368,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 ((AYChip)AYDevice as AYChip).PanningConfiguration = Spectrum.Settings.AYPanConfig;
             }
 
-            if (UPDDiskDevice != null)
-            {
-                UPDDiskDevice.SyncState(ser);
-            }
-
             ser.Sync("tapeMediaIndex", ref tapeMediaIndex);
             if (ser.IsReader)
                 TapeMediaIndex = tapeMediaIndex;
+
+            TapeDevice.SyncState(ser);
 
             ser.Sync("diskMediaIndex", ref diskMediaIndex);
             if (ser.IsReader)
                 DiskMediaIndex = diskMediaIndex;
 
-            TapeDevice.SyncState(ser);
+            if (UPDDiskDevice != null)
+            {
+                UPDDiskDevice.SyncState(ser);
+            }
 
             ser.EndSection();
         }
