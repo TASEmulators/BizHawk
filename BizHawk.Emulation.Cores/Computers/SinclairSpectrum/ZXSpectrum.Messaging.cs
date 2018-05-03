@@ -129,7 +129,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
                 sb.Clear();
 
-                sb.Append("Detected Protection: " + Enum.GetName(typeof(ProtectionType), _machine.UPDDiskDevice.DiskPointer.Protection));
+                string protection = "None";
+                protection = Enum.GetName(typeof(ProtectionType), _machine.UPDDiskDevice.DiskPointer.Protection);
+                if (protection == "None")
+                    protection += " (OR UNKNOWN)";
+
+                sb.Append("Detected Protection: " + protection);
                 SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Disk);
                 sb.Clear();
 

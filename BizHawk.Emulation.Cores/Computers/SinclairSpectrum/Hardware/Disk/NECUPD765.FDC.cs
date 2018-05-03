@@ -598,7 +598,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                     ActiveCommandParams.Cylinder++;
 
                                     // reset sector
-                                    ActiveCommandParams.Sector = 1;
+                                    ActiveCommandParams.Sector = sector.SectorID; // 1;
                                     ActiveDrive.SectorIndex = 0;
                                 }
                                 else
@@ -1596,6 +1596,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             {
                                 // reset the index
                                 ActiveDrive.SectorIndex = 0;
+                            }
+
+                            if (ActiveDrive.SectorIndex == 0 && ActiveDrive.Disk.DiskTracks[ActiveDrive.CurrentTrackID].Sectors.Length > 1)
+                            {
+                                // looks like readid always skips the first sector on a track
+                                ActiveDrive.SectorIndex++;
                             }
 
                             // read the sector data
@@ -2710,8 +2716,24 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     // set seek flag
                     ActiveDrive.SeekStatus = SEEK_SEEK;
 
-                    // immediate seek
-                    ActiveDrive.CurrentTrackID = CommBuffer[CM_C];                    
+                    if (ActiveDrive.CurrentTrackID == CommBuffer[CM_C])
+                    {
+                        // we are already on the correct track
+                        ActiveDrive.SectorIndex = 0;
+                    }
+                    else
+                    {
+                        // immediate seek
+                        ActiveDrive.CurrentTrackID = CommBuffer[CM_C];
+
+                        ActiveDrive.SectorIndex = 0;
+
+                        if (ActiveDrive.Disk.DiskTracks[ActiveDrive.CurrentTrackID].Sectors.Length > 1)
+                        {
+                            // always read the first sector
+                            //ActiveDrive.SectorIndex++;
+                        }
+                    }             
 
                     // skip execution mode and go directly to idle
                     // result is determined by SIS command
@@ -2772,6 +2794,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     // immediate recalibration
                     ActiveDrive.TrackIndex = 0;
                     ActiveDrive.SectorIndex = 0;
+
+                    // recalibrate appears to always skip the first sector
+                    //if (ActiveDrive.Disk.DiskTracks[ActiveDrive.TrackIndex].Sectors.Length > 1)
+                        //ActiveDrive.SectorIndex++;
 
                     // set seek flag
                     ActiveDrive.SeekStatus = SEEK_RECALIBRATE;

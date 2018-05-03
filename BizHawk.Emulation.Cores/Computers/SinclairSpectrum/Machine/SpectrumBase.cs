@@ -204,14 +204,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             Spectrum.IsLagFrame = !InputRead;
 
             // FDC debug
-            /*
+            
             if (UPDDiskDevice != null && UPDDiskDevice.writeDebug)
             {
                 // only write UPD log every second
                 if (FrameCount % 10 == 0)
                     System.IO.File.WriteAllText(UPDDiskDevice.outputfile, UPDDiskDevice.outputString);
             }
-            */
+            
         }
 
         #endregion
