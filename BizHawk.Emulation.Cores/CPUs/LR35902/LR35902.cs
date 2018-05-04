@@ -301,7 +301,15 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 										IDLE,
 										GBC_INTERRUPT };
 										*/
-							INTERRUPT_GBC_NOP();
+							if (!Halt_bug_3)
+							{
+								INTERRUPT_GBC_NOP();							
+							}
+							else
+							{
+								INTERRUPT_();
+								Halt_bug_3 = false;
+							}
 						}
 						else
 						{					
@@ -324,16 +332,26 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						if (OnExecFetch != null) OnExecFetch(RegPC);
 						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
 						
+						
 						if (is_GBC)
 						{
 							// extra 4 cycles for GBC
-							cur_instr = new ushort[]
+							if (Halt_bug_3)
+							{
+								RegPC++;
+								FetchInstruction(ReadMemory(RegPC));
+								Halt_bug_3 = false;
+							}
+							else
+							{
+								cur_instr = new ushort[]
 										{IDLE,
 										IDLE,
 										IDLE,
 										OP };
+							}
 						}
-						else
+						else			
 						{					
 							if (Halt_bug_3)
 							{
@@ -363,11 +381,9 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						else
 						{
 							cur_instr = new ushort[]
-										{
-											IDLE,
+										{IDLE,
 										HALT_CHK,
-										IDLE,
-										
+										IDLE,										
 										HALT, 0 };
 						}
 						
@@ -492,12 +508,11 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					instr_pntr = 0;
 					break;
 				case HALT_CHK:
-					// only used when exiting HALT from GBC, an extra NOP is added to avoid HALT bug
 					I_use = FlagI;
 					if (Halt_bug_2 && I_use)
 					{
 						RegPC--;
-						if (!interrupts_enabled) { Halt_bug_3 = true; }					
+						Halt_bug_3 = true;
 					}
 					
 					Halt_bug_2 = false;

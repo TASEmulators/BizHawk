@@ -86,11 +86,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							{IDLE,
 							IDLE,
 							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							OP};
+							OP_G};
 				}
 				else
 				{	// if interrupts are disabled,
@@ -112,7 +108,8 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						HALT_CHK,
 						IDLE,
 						HALT, 0 };
-				skip_once = true;
+
+				if (!is_GBC) { skip_once = true; }
 				// If the interrupt flag is not currently set, but it does get set in the first check
 				// then a bug is triggered 
 				// With interrupts enabled, this runs the halt command twice 

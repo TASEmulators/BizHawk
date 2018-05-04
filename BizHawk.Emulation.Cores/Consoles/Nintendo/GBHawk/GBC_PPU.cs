@@ -402,7 +402,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					// also, the LCD does not enter mode 2 on scanline 0 when first turned on
 					no_scan = true;
-					cycle = 8;
+					cycle = 4;
 				}
 
 				// the VBL stat is continuously asserted
@@ -420,7 +420,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 					}
 
-					if ((cycle == 4) && (LY == 144)) {
+					if ((cycle == 0) && (LY == 144)) {
 
 						HBL_INT = false;
 
@@ -454,7 +454,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						// there is no mode 2  (presumably it missed the trigger)
 						// mode 3 is very short, probably in some self test mode before turning on?
 
-						if (cycle == 12)
+						if (cycle == 8)
 						{
 							LYC_INT = false;
 							STAT &= 0xFB;
