@@ -666,7 +666,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (!WAVE_DAC_pow) { WAVE_output = 0; }
 
 					// avoid aliasing at high frequenices
-					if (WAVE_frq > 0x7F0) { WAVE_output = 0; }
+					//if (WAVE_frq > 0x7F0) { WAVE_output = 0; }
 				}
 			}
 
@@ -689,7 +689,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						NOISE_LFSR |= (bit_lfsr << 6);
 					}
 
-					NOISE_output = NOISE_LFSR & 1;
+					NOISE_output = (NOISE_LFSR & 1) > 0 ? 0 : 1;
 					NOISE_output *= NOISE_vol_state;
 				}
 			}
