@@ -55,7 +55,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		{
 			private readonly A7800Hawk _a7800;
 
-			public CpuLink(A7800Hawk a7800) => _a7800 = a7800;
+			public CpuLink(A7800Hawk a7800)
+			{
+				_a7800 = a7800;
+			}
 
 			public byte DummyReadMemory(ushort address) => _a7800.ReadMemory(address);
 

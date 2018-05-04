@@ -19,7 +19,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		{
 			private readonly Chip6510 _chip;
 
-			public CpuLink(Chip6510 chip) => _chip = chip;
+			public CpuLink(Chip6510 chip)
+			{
+				_chip = chip;
+			}
 
 			public byte DummyReadMemory(ushort address) => unchecked((byte)_chip.Read(address));
 

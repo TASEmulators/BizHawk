@@ -8,7 +8,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		{
 			private readonly NES _nes;
 
-			public CpuLink(NES nes) => _nes = nes;
+			public CpuLink(NES nes)
+			{
+				_nes = nes;
+			}
 
 			public byte DummyReadMemory(ushort address) => _nes.ReadMemory(address);
 

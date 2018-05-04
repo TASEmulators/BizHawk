@@ -35,7 +35,10 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 		{
 			private readonly Drive1541 _drive;
 
-			public CpuLink(Drive1541 drive) => _drive = drive;
+			public CpuLink(Drive1541 drive)
+			{
+				_drive = drive;
+			}
 
 			public byte DummyReadMemory(ushort address) => unchecked((byte)_drive.Read(address));
 

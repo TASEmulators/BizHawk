@@ -37,7 +37,10 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		{
 			private readonly Atari2600 _atari2600;
 
-			public CpuLink(Atari2600 atari2600) => _atari2600 = atari2600;
+			public CpuLink(Atari2600 atari2600)
+			{
+				_atari2600 = atari2600;
+			}
 
 			public byte DummyReadMemory(ushort address) => _atari2600.ReadMemory(address);
 
