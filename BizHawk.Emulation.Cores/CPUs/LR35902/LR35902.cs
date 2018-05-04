@@ -57,8 +57,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		public const ushort RD_F = 42; // special read case to pop value into F
 		public const ushort EI_RETI = 43; // reti has no delay in interrupt enable
 		public const ushort INT_GET = 44;
-		public const ushort GBC_INTERRUPT = 45;
-		public const ushort HALT_CHK = 46; // when in halt mode, actually check I Flag here
+		public const ushort HALT_CHK = 45; // when in halt mode, actually check I Flag here
 
 		public LR35902()
 		{
@@ -294,13 +293,6 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						if (is_GBC)
 						{
 							// call the interrupt processor after 4 extra cycles
-							/*
-							cur_instr = new ushort[]
-										{IDLE,
-										IDLE,
-										IDLE,
-										GBC_INTERRUPT };
-										*/
 							if (!Halt_bug_3)
 							{
 								INTERRUPT_GBC_NOP();							
@@ -309,6 +301,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							{
 								INTERRUPT_();
 								Halt_bug_3 = false;
+								Console.WriteLine("Hit this");
 							}
 						}
 						else
@@ -501,11 +494,6 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					if ((interrupt_src & interrupt_enable) == 0) { FlagI = false; }
 
 					Regs[cur_instr[instr_pntr++]] = INT_vectors[int_src];
-					break;
-				case GBC_INTERRUPT:
-					// only used when exiting HALT from GBC, an extra NOP is added to avoid HALT bug
-					INTERRUPT_();
-					instr_pntr = 0;
 					break;
 				case HALT_CHK:
 					I_use = FlagI;

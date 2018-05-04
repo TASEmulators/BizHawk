@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (LCDC.Bit(7))
 					{
 						if (LY != LYC) { STAT &= 0xFB; }
-						else { STAT |= 0x4; /*if (STAT.Bit(6)) { LYC_INT = true; } */}
+						else { STAT |= 0x4; }
 					}				
 					break;
 				case 0xFF46: // DMA 
@@ -302,14 +302,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// here mode 2 will be set to true and interrupts fired if enabled
 								STAT &= 0xFC;
 								STAT |= 0x2;
-								if (STAT.Bit(5))
-								{
-									OAM_INT = true;
-								}
+								if (STAT.Bit(5)) { OAM_INT = true; }
 
 								HBL_INT = false;
 							}
-
 
 							// here OAM scanning is performed
 							OAM_scan(cycle + 4);
@@ -398,19 +394,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			// assert the STAT IRQ line if the line went from zero to 1
 			stat_line = VBL_INT | LYC_INT | HBL_INT | OAM_INT;
-			/*
-			if (stat_line) {
-				Console.Write("OAM: ");
-				Console.Write(OAM_INT);
-				Console.Write(" LYC: ");
-				Console.Write(LYC_INT);
-				Console.Write(" VBL: ");
-				Console.Write(VBL_INT);
-				Console.Write(" HBL: ");
-				Console.Write(HBL_INT);
-				Console.WriteLine(Core.cpu.TotalExecutedCycles);
-			}
-			*/
+
 			if (stat_line && !stat_line_old)
 			{
 				if (Core.REG_FFFF.Bit(1)) { Core.cpu.FlagI = true; }
