@@ -108,7 +108,7 @@ struct CPURegsComm {
 	u8 p, nothing;
 	u32 aa, rd;
 	u8 sp, dp, db, mdr;
-	u16 vcounter, hcounter;
+	u16 vcounter, hdot;
 }
 #ifndef _MSC_VER
 __attribute__((__packed__))
@@ -505,7 +505,7 @@ void QUERY_peek_cpu_regs() {
 	comm.cpuregs.vector = SNES::cpu.regs.vector;
 	comm.cpuregs.p = SNES::cpu.regs.p;
 	comm.cpuregs.vcounter = SNES::cpu.vcounter();
-	comm.cpuregs.hcounter = SNES::cpu.hcounter();
+	comm.cpuregs.hdot = SNES::cpu.hdot();
 	comm.cpuregs.nothing = 0;
 }
 void QUERY_peek_set_cdl() {
