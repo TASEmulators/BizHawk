@@ -705,6 +705,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// if the window starts at zero, we still do the first access to the BG
 					// but then restart all over again at the window
 					window_pre_render = true;
+					read_case = 4;
 				}
 				else
 				{
