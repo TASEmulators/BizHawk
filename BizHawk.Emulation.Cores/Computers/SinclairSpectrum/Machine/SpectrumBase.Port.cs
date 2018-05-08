@@ -52,6 +52,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="addr"></param>
         public virtual void ContendPortAddress(ushort addr)
         {
+            return;
+
             /*
             It takes four T states for the Z80 to read a value from an I/O port, or write a value to a port. As is the case with memory access, 
             this can be lengthened by the ULA. There are two effects which occur here:

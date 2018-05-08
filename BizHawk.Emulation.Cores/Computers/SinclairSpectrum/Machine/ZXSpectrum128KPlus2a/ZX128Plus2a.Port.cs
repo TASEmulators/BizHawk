@@ -287,7 +287,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="addr"></param>
         public override void ContendPortAddress(ushort addr)
         {
-            CPU.TotalExecutedCycles += 4;
+            //CPU.TotalExecutedCycles += 4;
         }
     }
 }
