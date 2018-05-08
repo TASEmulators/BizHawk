@@ -331,6 +331,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 try
                 {
                     tzxSer.Read(tapeData);
+                    // reset block index
+                    CurrentDataBlockIndex = 0;
                     return;
                 }
                 catch (Exception ex)
@@ -347,6 +349,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 try
                 {
                     tapSer.Read(tapeData);
+                    // reset block index
+                    CurrentDataBlockIndex = 0;
                     return;
                 }
                 catch (Exception ex)
