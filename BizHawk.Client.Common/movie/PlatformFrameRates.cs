@@ -61,7 +61,7 @@ namespace BizHawk.Client.Common
 			["C64_DREAN"] = PALNCarrier * 2 / 7 / 312 / 65,
 			["INTV"] = 59.92,
 
-            ["ZXSpectrum_PAL"] = 50
+            ["ZXSpectrum_PAL"] = 50.080128205
 
 			// according to ryphecha, using
 			// clocks[2] = { 53.693182e06, 53.203425e06 }; //ntsc console, pal console
