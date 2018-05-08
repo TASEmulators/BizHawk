@@ -28,16 +28,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // restore user settings to devices
             if (_machine != null && _machine.AYDevice != null)
             {
-                ((AYChip)_machine.AYDevice as AYChip).PanningConfiguration = o.AYPanConfig;
+                ((AY38912)_machine.AYDevice as AY38912).PanningConfiguration = o.AYPanConfig;
                 _machine.AYDevice.Volume = o.AYVolume;
             }                
             if (_machine != null && _machine.BuzzerDevice != null)
             {
-                ((Buzzer)_machine.BuzzerDevice as Buzzer).Volume = o.EarVolume;
+                ((Beeper)_machine.BuzzerDevice as Beeper).Volume = o.EarVolume;
             }
             if (_machine != null && _machine.TapeBuzzer != null)
             {
-                ((Buzzer)_machine.TapeBuzzer as Buzzer).Volume = o.TapeVolume;
+                ((Beeper)_machine.TapeBuzzer as Beeper).Volume = o.TapeVolume;
             }
 
             Settings = o;
@@ -56,8 +56,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             [DisplayName("AY-3-8912 Panning Config")]
             [Description("Set the PSG panning configuration.\nThe chip has 3 audio channels that can be outputed in different configurations")]
-            [DefaultValue(AYChip.AYPanConfig.ABC)]
-            public AYChip.AYPanConfig AYPanConfig { get; set; }
+            [DefaultValue(AY38912.AYPanConfig.ABC)]
+            public AY38912.AYPanConfig AYPanConfig { get; set; }
 
             [DisplayName("Core OSD Message Verbosity")]
             [Description("Full: Display all GUI messages\nMedium: Display only emulator/device generated messages\nNone: Show no messages")]

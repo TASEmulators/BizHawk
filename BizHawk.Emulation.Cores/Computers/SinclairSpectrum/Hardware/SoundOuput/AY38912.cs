@@ -1,12 +1,13 @@
-﻿
-using BizHawk.Common;
+﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
-    /*
     /// <summary>
     /// AY-3-8912 Emulated Device
     /// 
@@ -16,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// https://github.com/mkoloberdin/unrealspeccy/blob/master/sndrender/sndchip.cpp
     /// https://github.com/mkoloberdin/unrealspeccy/blob/master/sndrender/sndchip.h
     /// </summary>
-    public class AYChip : IPSG
+    public class AY38912 : IPSG
     {
         #region Device Fields
 
@@ -40,7 +41,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Main constructor
         /// </summary>
-        public AYChip(SpectrumBase machine)
+        public AY38912(SpectrumBase machine)
         {
             _machine = machine;
         }
@@ -54,7 +55,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             UpdateVolume();
             Reset();
         }
-        
+
         #endregion
 
         #region IPortIODevice
@@ -178,7 +179,31 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public void Reset()
         {
-            
+            /*
+            _noiseVal = 0x0FFFF;
+            _outABC = 0;
+            _outNoiseABC = 0;
+            _counterNoise = 0;
+            _counterA = 0;
+            _counterB = 0;
+            _counterC = 0;
+            _EnvelopeCounterBend = 0;
+
+            // clear all the registers
+            for (int i = 0; i < 14; i++)
+            {
+                SelectedRegister = i;
+                PortWrite(0);
+            }
+
+            randomSeed = 1;
+
+            // number of frames to update
+            var fr = (_audioBufferIndex * _tStatesPerFrame) / _audioBuffer.Length;
+
+            // update the audio buffer
+            BufferUpdate(fr);
+            */
         }
 
         /// <summary>
@@ -371,7 +396,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             The AY-3-8912 ignores bit 7 of this register.    
         */
-        /*
         /// </summary>
         private int[] _registers = new int[16];
 
@@ -474,7 +498,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Noise gen divider
         /// </summary>
         private int _dividerN;
-        
+
         /// <summary>
         /// Panning table list
         /// </summary>
@@ -597,7 +621,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             int toEnd = ((bufferLength * cycle) / _tStatesPerFrame);
 
             // loop through the number of samples we need to render
-            while(_audioBufferIndex < toEnd)
+            while (_audioBufferIndex < toEnd)
             {
                 // run the AY chip processing at the correct resolution
                 for (int i = 0; i < _tStatesPerSample / 14; i++)
@@ -636,8 +660,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         {
                             var mask = (1 << _registers[AY_E_SHAPE]);
 
-                            if ((mask & ((1 << 0) | (1 << 1) | (1 << 2) | 
-                                (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) | 
+                            if ((mask & ((1 << 0) | (1 << 1) | (1 << 2) |
+                                (1 << 3) | (1 << 4) | (1 << 5) | (1 << 6) |
                                 (1 << 7) | (1 << 9) | (1 << 15))) != 0)
                             {
                                 _eState = _eDirection = 0;
@@ -657,7 +681,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 _eState = 31;
                                 _eDirection = 0;
                             }
-                        }                        
+                        }
                     }
                 }
 
@@ -711,8 +735,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public void GetSamplesSync(out short[] samples, out int nsamp)
         {
-            nsamp = _samplesPerFrame;            
-            samples = _audioBuffer;            
+            nsamp = _samplesPerFrame;
+            samples = _audioBuffer;
             DiscardSamples();
         }
 
@@ -736,7 +760,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Sync("_tStatesPerSample", ref _tStatesPerSample);
             ser.Sync("_audioBufferIndex", ref _audioBufferIndex);
             ser.Sync("_audioBuffer", ref _audioBuffer, false);
-            
+
             ser.Sync("_registers", ref _registers, false);
             ser.Sync("_activeRegister", ref _activeRegister);
             ser.Sync("_bitA", ref _bitA);
@@ -751,7 +775,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Sync("_bit3", ref _bit3);
             ser.Sync("_bit4", ref _bit4);
             ser.Sync("_bit5", ref _bit5);
-            ser.Sync("_bitN", ref _bitN);            
+            ser.Sync("_bitN", ref _bitN);
             ser.Sync("_eMaskA", ref _eMaskA);
             ser.Sync("_eMaskB", ref _eMaskB);
             ser.Sync("_eMaskC", ref _eMaskC);
@@ -775,7 +799,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 ser.Sync("volTable" + i, ref _volumeTables[i], false);
             }
-            
+
             if (ser.IsReader)
                 _volume = _machine.Spectrum.Settings.AYVolume;
 
@@ -784,5 +808,4 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #endregion
     }
-    */
 }

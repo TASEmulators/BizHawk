@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /*
     /// <summary>
     /// Represents the piezoelectric buzzer used in the Spectrum to produce sound
     /// The beeper is controlled by rapidly toggling bit 4 of port &FE
@@ -146,8 +147,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             _sampleRate = sampleRate;
             _tStatesPerFrame = tStatesPerFrame;
-            _tStatesPerSample = 79;
-            _samplesPerFrame = (int)_tStatesPerFrame / _tStatesPerSample;
+            _tStatesPerSample = 99; // 79;
+            _samplesPerFrame = 705; // 882; // (int)_tStatesPerFrame / _tStatesPerSample;
             
             Pulses = new List<Pulse>(1000);  
         }
@@ -297,7 +298,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             
             samples = stereoBuffer;
-            nsamp = _samplesPerFrame; // soundBufferContains;
+            nsamp = soundBufferContains; // _samplesPerFrame; // soundBufferContains;
         }
 
         #endregion
@@ -319,4 +320,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #endregion
     }
+
+    */
 }

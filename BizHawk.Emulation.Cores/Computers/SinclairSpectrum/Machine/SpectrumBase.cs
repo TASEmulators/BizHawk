@@ -152,8 +152,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             if (_renderSound)
             {
-                BuzzerDevice.StartFrame();
-                TapeBuzzer.StartFrame();
+                //BuzzerDevice.StartFrame();
+                //TapeBuzzer.StartFrame();
 
                 if (AYDevice != null)
                     AYDevice.StartFrame();
@@ -183,8 +183,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             if (_renderSound)
             {
-                BuzzerDevice.EndFrame();
-                TapeBuzzer.EndFrame();
+                //BuzzerDevice.EndFrame();
+                //TapeBuzzer.EndFrame();
             }
 
             if (AYDevice != null)
@@ -365,7 +365,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (AYDevice != null)
             {
                 AYDevice.SyncState(ser);
-                ((AYChip)AYDevice as AYChip).PanningConfiguration = Spectrum.Settings.AYPanConfig;
+                ((AY38912)AYDevice as AY38912).PanningConfiguration = Spectrum.Settings.AYPanConfig;
             }
 
             ser.Sync("tapeMediaIndex", ref tapeMediaIndex);

@@ -28,13 +28,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             ULADevice = new ULAPlus3(this);
 
-            BuzzerDevice = new Buzzer(this);
+            BuzzerDevice = new Beeper(this);
             BuzzerDevice.Init(44100, ULADevice.FrameLength);
 
-            TapeBuzzer = new Buzzer(this);
+            TapeBuzzer = new Beeper(this);
             TapeBuzzer.Init(44100, ULADevice.FrameLength);
 
-            AYDevice = new AYChip(this);
+            AYDevice = new AY38912(this);
             AYDevice.Init(44100, ULADevice.FrameLength);
 
             KeyboardDevice = new StandardKeyboard(this);
