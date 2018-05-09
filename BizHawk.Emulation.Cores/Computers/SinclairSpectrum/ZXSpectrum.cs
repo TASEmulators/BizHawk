@@ -97,10 +97,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Register<IVideoProvider>(_machine.ULADevice);
 
             // initialize sound mixer and attach the various ISoundProvider devices
-            SoundMixer = new SoundProviderMixer((int)(32767 / 10), (ISoundProvider)_machine.BuzzerDevice);
-            SoundMixer.AddSource((ISoundProvider)_machine.TapeBuzzer);
+            SoundMixer = new SoundProviderMixer((int)(32767 / 10), "System Beeper", (ISoundProvider)_machine.BuzzerDevice);
+            SoundMixer.AddSource((ISoundProvider)_machine.TapeBuzzer, "Tape Audio");
             if (_machine.AYDevice != null)
-                SoundMixer.AddSource(_machine.AYDevice);
+                SoundMixer.AddSource(_machine.AYDevice, "AY-3-3912");
 
             // set audio device settings
             if (_machine.AYDevice != null && _machine.AYDevice.GetType() == typeof(AY38912))

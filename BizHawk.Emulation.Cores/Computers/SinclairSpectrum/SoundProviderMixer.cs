@@ -8,13 +8,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// <summary>
     /// My attempt at mixing multiple ISoundProvider sources together and outputting another ISoundProvider
     /// Currently only supports SyncSoundMode.Sync
-    /// Attached ISoundProvider sources must already be stereo 44.1khz and ideally sound buffers should be the same length
+    /// Attached ISoundProvider sources must already be stereo 44.1khz and ideally sound buffers should be the same length (882)
+    /// (if not, their buffer will be truncated/expanded)
     /// </summary>
     internal sealed class SoundProviderMixer : ISoundProvider
     {
         private class Provider
         {
             public ISoundProvider SoundProvider { get; set; }
+            public string ProviderDescription { get; set; }
             public int MaxVolume { get; set; }
             public short[] Buffer { get; set; }
             public int NSamp { get; set; }
@@ -45,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             EqualizeVolumes();
         }
 
-        public SoundProviderMixer(short maxVolume, params ISoundProvider[] soundProviders)
+        public SoundProviderMixer(short maxVolume, string description, params ISoundProvider[] soundProviders)
         {
             SoundProviders = new List<Provider>();
 
@@ -55,29 +57,32 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 {
                     SoundProvider = s,
                     MaxVolume = maxVolume,
+                    ProviderDescription = description
                 });
             }
 
             EqualizeVolumes();
         }
 
-        public void AddSource(ISoundProvider source)
+        public void AddSource(ISoundProvider source, string description)
         {
             SoundProviders.Add(new Provider
             {
                 SoundProvider = source,
-                MaxVolume = short.MaxValue
+                MaxVolume = short.MaxValue,
+                ProviderDescription = description
             });
 
             EqualizeVolumes();
         }
 
-        public void AddSource(ISoundProvider source, short maxVolume)
+        public void AddSource(ISoundProvider source, short maxVolume, string description)
         {
             SoundProviders.Add(new Provider
             {
                 SoundProvider = source,
-                MaxVolume = maxVolume
+                MaxVolume = maxVolume,
+                ProviderDescription = description
             });
 
             EqualizeVolumes();
@@ -150,134 +155,55 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             var firstEntry = SoundProviders.First();
             bool sameCount = SoundProviders.All(s => s.NSamp == firstEntry.NSamp);
 
-            
-            if (sameCount)
+            if (!sameCount)
             {
-                nsamp = firstEntry.NSamp;
-                samples = new short[nsamp * 2];
-
-                if (_stereo)
+                // this is a bit hacky, really all ISoundProviders should be supplying 44100 with 882 samples per frame.
+                // we will make sure this happens (no matter how it sounds)
+                if (SoundProviders.Count > 1)
                 {
-                    for (int i = 0; i < samples.Length; i++)
+                    for (int i = 0; i < SoundProviders.Count; i++)
                     {
-                        short sectorVal = 0;
-                        foreach (var sp in SoundProviders)
+                        int ns = SoundProviders[i].NSamp;
+                        short[] buff = new short[882 * 2];
+
+                        for (int b = 0; b < 882 * 2; b++)
                         {
-                            if (sp.Buffer[i] > sp.MaxVolume)
-                                sectorVal += (short)sp.MaxVolume;
-                            else
+                            if (b == SoundProviders[i].Buffer.Length - 1)
                             {
-                                sectorVal += sp.Buffer[i];
+                                // end of source buffer
+                                break;
                             }
+
+                            buff[b] = SoundProviders[i].Buffer[b];
                         }
 
-                        samples[i] = sectorVal;
+                        // save back to the soundprovider
+                        SoundProviders[i].NSamp = 882;
+                        SoundProviders[i].Buffer = buff;
                     }
                 }
                 else
                 {
-                    // convert to mono
-                    for (int i = 0; i < samples.Length; i += 2)
-                    {
-                        short s = 0;
-                        foreach (var sp in SoundProviders)
-                        {
-                            s += (short)((sp.Buffer[i] + sp.Buffer[i + 1]) / 2);
-                        }
-
-                        samples[i] = s;
-                        samples[i + 1] = s;
-                    }
+                    // just process what we have as-is
                 }
             }
 
-            else if (!sameCount)
+            // mix the soundproviders together
+            nsamp = 882;
+            samples = new short[nsamp * 2];
+
+            for (int i = 0; i < samples.Length; i++)
             {
-                // this is a pretty poor implementation that doesnt work very well
-                // ideally soundproviders should ensure that their number of samples is identical       
-                int divisor = 1;
-                int highestCount = 0;
-
-                // get the lowest divisor of all the soundprovider nsamps
-                for (int d = 2; d < 999; d++)
-                {
-                    bool divFound = false;
-                    foreach (var sp in SoundProviders)
-                    {
-                        if (sp.NSamp > highestCount)
-                            highestCount = sp.NSamp;
-
-                        if (sp.NSamp % d == 0)
-                            divFound = true;
-                        else
-                            divFound = false;
-                    }
-
-                    if (divFound)
-                    {
-                        divisor = d;
-                        break;
-                    }
-                }
-
-                // now we have the largest current number of samples among the providers
-                // along with a common divisor for all of them
-                nsamp = highestCount * divisor;
-                samples = new short[nsamp * 2];
-
-                // take a pass at populating the samples array for each provider
+                short sectorVal = 0;
                 foreach (var sp in SoundProviders)
                 {
-                    short sectorVal = 0;
-                    int pos = 0;
-                    for (int i = 0; i < sp.Buffer.Length; i++)
-                    {
-                        if (sp.Buffer[i] > sp.MaxVolume)
-                            sectorVal = (short)sp.MaxVolume;
-                        else
-                            sectorVal = sp.Buffer[i];
-
-                        for (int s = 0; s < divisor; s++)
-                        {
-                            samples[pos++] += sectorVal;
-                        }
-                    }
+                    if (sp.Buffer[i] > sp.MaxVolume)
+                        sectorVal += (short)sp.MaxVolume;
+                    else
+                        sectorVal += sp.Buffer[i];
                 }
 
-                /*
-                // get the highest number of samples
-                int max = SoundProviders.Aggregate((i, j) => i.Buffer.Length > j.Buffer.Length ? i : j).Buffer.Length;
-
-                nsamp = max;
-                samples = new short[nsamp * 2];
-
-                // take a pass at populating the samples array for each provider
-                foreach (var sp in SoundProviders)
-                {
-                    short sectorVal = 0;
-                    int pos = 0;
-                    for (int i = 0; i < sp.Buffer.Length; i++)
-                    {
-                        if (sp.Buffer[i] > sp.MaxVolume)
-                            sectorVal = (short)sp.MaxVolume;
-                        else
-                        {
-                            if (sp.SoundProvider is AY38912)
-                            {
-                                // boost audio
-                                sectorVal += (short)(sp.Buffer[i] * 2);
-                            }
-                            else
-                            {
-                                sectorVal += sp.Buffer[i];
-                            }
-                        }
-
-                        samples[pos++] += sectorVal;
-                    }
-                }
-               */
-
+                samples[i] = sectorVal;
             }
         }
 
