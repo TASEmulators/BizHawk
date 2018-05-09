@@ -225,7 +225,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             /// <summary>
             /// Disk is write protected (TRUE BY DEFAULT)
             /// </summary>
-            public bool FLAG_WRITEPROTECT = true;            
+            public bool FLAG_WRITEPROTECT = false;            
 
             /// <summary>
             /// Storage for recal steps

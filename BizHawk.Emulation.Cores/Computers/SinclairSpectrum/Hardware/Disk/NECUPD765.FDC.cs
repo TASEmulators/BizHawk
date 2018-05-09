@@ -47,53 +47,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// The currently active interrupt
         /// </summary>
         private InterruptState ActiveInterrupt = InterruptState.None;
-
-        /// <summary>
-        /// Stores the current data flow direction
-        /// </summary>
-        //private CommandDirection ActiveDirection = CommandDirection.IN;
-        /*
-        /// <summary>
-        /// Current raised status/error message
-        /// </summary>
-        private Status ActiveStatus
-        {
-            get { return _activeStatus; }
-            set
-            {
-                if (value == Status.None)
-                {
-                    // clear the active status flag
-                    _statusRaised = false;
-                }
-                else
-                    _statusRaised = true;
-                _activeStatus = value;
-            }
-        }
-        private Status _activeStatus;
-
-        /// <summary>
-        /// Signs whether there is an active status code raised
-        /// </summary>
-        private bool StatusRaised
-        {
-            get { return _statusRaised; }
-            set
-            {
-                if (value == false)
-                {
-                    // return to none status
-                    _activeStatus = Status.None;
-                }
-
-                // dont set true here
-            }
-        }
-        private bool _statusRaised;
-        */
-
-
         /// <summary>
         /// Command buffer
         /// This does not contain the initial command byte (only parameter bytes)
@@ -169,26 +122,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// where the CPU hasnt actually read any bytes
         /// </summary>
         private int OverrunCounter;
-
-        /// <summary>
-        /// Signs that the the controller is ready
-        /// </summary>
-        //public bool FDC_FLAG_RQM;
-
-        /// <summary>
-        /// When TRUE, a SCAN command is currently active
-        /// </summary>
-        //private bool FDC_FLAG_SCANNING;
-
-        /// <summary>
-        /// Set when a seek operation has completed on drive 0
-        /// </summary>
-        //private bool FDC_FLAG_SEEKCOMPLETED_0;
-
-        /// <summary>
-        /// Set when a seek operation is active on drive 0
-        /// </summary>
-        //private bool FDC_FLAG_SEEKACTIVE_0;
 
         /// <summary>
         /// Contains result bytes in result phase
@@ -347,7 +280,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             b7     FT  Fault (if supported: 1=Drive failure)
         */
         private byte Status3;
-
 
         #endregion
 
@@ -1742,16 +1674,38 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         }
                         else
                         {
-                            // not implemented yet
-                            SetBit(SR0_IC0, ref Status0);
-                            SetBit(SR1_NW, ref Status1);
 
-                            CommitResultCHRN();
-                            CommitResultStatus();
-                            //ResBuffer[RS_ST0] = Status0;
+                            // calculate the number of bytes to write
+                            int byteCounter = 0;
+                            byte startSecID = ActiveCommandParams.Sector;
+                            byte endSecID = ActiveCommandParams.EOT;
+                            bool lastSec = false;
 
-                            // move to result phase
-                            ActivePhase = Phase.Result;
+                            // get the first sector
+                            var track = ActiveDrive.Disk.DiskTracks[ActiveCommandParams.Cylinder];
+                            int secIndex = 0;
+                            for (int s = 0; s < track.Sectors.Length; s++)
+                            {
+                                if (track.Sectors[s].SectorID == endSecID)
+                                    lastSec = true;
+
+                                for (int i = 0; i < 0x80 << ActiveCommandParams.SectorSize; i++)
+                                {
+                                    byteCounter++;
+
+                                    if (i == (0x80 << ActiveCommandParams.SectorSize) - 1 && lastSec)
+                                    {
+                                        break;
+                                    }
+                                }
+
+                                if (lastSec)
+                                    break;
+                            }
+
+                            ExecCounter = byteCounter;
+                            ExecLength = byteCounter;
+                            ActivePhase = Phase.Execution;
                             break;
                         }
                     }
@@ -1762,6 +1716,53 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 //  FDC in execution phase reading/writing bytes
                 //----------------------------------------
                 case Phase.Execution:
+
+                    var index = ExecLength - ExecCounter;
+
+                    ExecBuffer[index] = LastSectorDataWriteByte;
+
+                    OverrunCounter--;
+                    ExecCounter--;
+
+                    if (ExecCounter <= 0)
+                    {
+                        int cnt = 0;
+
+                        // all data received
+                        byte startSecID = ActiveCommandParams.Sector;
+                        byte endSecID = ActiveCommandParams.EOT;
+                        bool lastSec = false;
+                        var track = ActiveDrive.Disk.DiskTracks[ActiveCommandParams.Cylinder];
+                        int secIndex = 0;
+
+                        for (int s = 0; s < track.Sectors.Length; s++)
+                        {
+                            if (cnt == ExecLength)
+                                break;
+
+                            ActiveCommandParams.Sector = track.Sectors[s].SectorID;
+
+                            if (track.Sectors[s].SectorID == endSecID)
+                                lastSec = true;
+
+                            int size = 0x80 << track.Sectors[s].SectorSize;
+
+                            for (int d = 0; d < size; d++)
+                            {
+                                track.Sectors[s].SectorData[d] = ExecBuffer[cnt++];
+                            }
+
+                            if (lastSec)
+                                break;
+                        }     
+
+                        SetBit(SR0_IC0, ref Status0);
+                        SetBit(SR1_EN, ref Status1);
+
+                        CommitResultCHRN();
+                        CommitResultStatus();
+                    }
+
                     break;
 
                 //----------------------------------------
@@ -3476,7 +3477,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     
                     // store the byte
                     LastSectorDataWriteByte = data;
-                    ActiveCommand.CommandDelegate();  
+                    ActiveCommand.CommandDelegate();
+
+                    if (ExecCounter <= 0)
+                    {
+                        // end of execution phase
+                        ActivePhase = Phase.Result;
+                    }
+
                     break;
                 //// result phase
                 case Phase.Result:
