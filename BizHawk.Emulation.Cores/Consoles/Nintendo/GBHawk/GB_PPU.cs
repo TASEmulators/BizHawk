@@ -335,7 +335,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					
 					if (cycle >= 452)
 					{
-						OAM_access_read = false;
+						if (LY != 144) { OAM_access_read = false; }
 						OAM_scan(cycle - 452);
 					}				
 				}
@@ -924,14 +924,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (LCDC.Bit(2))
 				{
-					y = LY - (SL_sprites[sl_use_index * 4] - 16);
+					y = LY_actual - (SL_sprites[sl_use_index * 4] - 16);
 					y = 15 - y;
 					sprite_sel[0] = Core.VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2];
 					sprite_sel[1] = Core.VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2 + 1];
 				}
 				else
 				{
-					y = LY - (SL_sprites[sl_use_index * 4] - 16);
+					y = LY_actual - (SL_sprites[sl_use_index * 4] - 16);
 					y = 7 - y;
 					sprite_sel[0] = Core.VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2];
 					sprite_sel[1] = Core.VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2 + 1];
@@ -941,13 +941,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (LCDC.Bit(2))
 				{
-					y = LY - (SL_sprites[sl_use_index * 4] - 16);
+					y = LY_actual - (SL_sprites[sl_use_index * 4] - 16);
 					sprite_sel[0] = Core.VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2];
 					sprite_sel[1] = Core.VRAM[(SL_sprites[sl_use_index * 4 + 2] & 0xFE) * 16 + y * 2 + 1];
 				}
 				else
 				{
-					y = LY - (SL_sprites[sl_use_index * 4] - 16);
+					y = LY_actual - (SL_sprites[sl_use_index * 4] - 16);
 					sprite_sel[0] = Core.VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2];
 					sprite_sel[1] = Core.VRAM[SL_sprites[sl_use_index * 4 + 2] * 16 + y * 2 + 1];
 				}

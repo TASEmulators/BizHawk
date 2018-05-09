@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// These things all tick twice as fast in GBC double speed mode
 					ppu.DMA_tick();
 					timer.tick_1();
-					serialport.serial_transfer_tick();
+					serialport.serial_transfer_tick();					
 					cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
 					timer.tick_2();
 

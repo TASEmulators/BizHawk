@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						INC16,  src_l, src_h,
 						IDLE,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						DEC16, src_l, src_h,
 						IDLE,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -52,7 +52,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						ADD16, dest_l, dest_h, src_l, src_h,
 						IDLE,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			cur_instr = new ushort[]
 						{operation, dest, src,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -134,7 +134,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							ASGN, Z, 0,
 							IDLE,
 							ADDS, PCl, PCh, W, Z,
-							IDLE,
+							HALT_CHK,
 							OP };
 			}
 			else
@@ -146,7 +146,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							RD, Z, PCl, PCh,
 							IDLE,
 							INC16, PCl, PCh,
-							IDLE,
+							HALT_CHK,
 							OP };
 			}
 		}
@@ -170,7 +170,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							TR, PCl, W,
 							IDLE,
 							TR, PCh, Z,
-							IDLE,
+							HALT_CHK,
 							OP };
 			}
 			else
@@ -186,7 +186,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							RD, Z, PCl, PCh,
 							IDLE,
 							INC16, PCl, PCh,
-							IDLE,
+							HALT_CHK,
 							OP };
 			}
 		}
@@ -208,7 +208,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						IDLE,
 						IDLE,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -229,7 +229,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						EI_RETI,
 						IDLE,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -257,7 +257,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							IDLE,
 							IDLE,
 							IDLE,
-							IDLE,
+							HALT_CHK,
 							OP };
 			}
 			else
@@ -269,7 +269,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							IDLE,
 							IDLE,
 							IDLE,
-							IDLE,
+							HALT_CHK,
 							OP };
 			}
 		}
@@ -298,10 +298,10 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							IDLE,							
 							IDLE,
 							DEC16, SPl, SPh,
-							WR, SPl, SPh, PCl,
-							IDLE,
+							WR, SPl, SPh, PCl,				
 							TR, PCl, W,
 							TR, PCh, Z,
+							HALT_CHK,
 							OP };
 			}
 			else
@@ -317,7 +317,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							RD, Z, PCl, PCh,
 							IDLE,
 							INC16, PCl, PCh,
-							IDLE,
+							HALT_CHK,
 							OP };
 			}
 		}
@@ -327,7 +327,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			cur_instr = new ushort[]
 						{operation, src,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -336,7 +336,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			cur_instr = new ushort[]
 						{operation, bit, src,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -357,7 +357,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						WR, SPl, SPh, src_l,
 						IDLE,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -379,7 +379,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							RD, src_h, SPl, SPh,
 							IDLE,
 							INC16, SPl, SPh,
-							IDLE,
+							HALT_CHK,
 							OP };
 			}
 			else
@@ -395,7 +395,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							RD, src_h, SPl, SPh,
 							IDLE,
 							INC16, SPl, SPh,
-							IDLE,
+							HALT_CHK,
 							OP };
 			} 
 		}
@@ -415,9 +415,9 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						IDLE,				
 						IDLE,
 						WR, SPl, SPh, PCl,
-						IDLE,
 						ASGN, PCh, 0,
 						ASGN, PCl, n,
+						HALT_CHK,
 						OP };
 		}
 
@@ -435,7 +435,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			cur_instr = new ushort[]
 						{DI,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -444,7 +444,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			cur_instr = new ushort[]
 						{EI,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -452,8 +452,8 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		{
 			cur_instr = new ushort[]
 						{TR, PCl, L,
-						IDLE,
 						TR, PCh, H,
+						HALT_CHK,
 						OP };
 		}
 
@@ -474,7 +474,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						ADDS, SPl, SPh, W, Z,
 						IDLE,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -487,7 +487,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						TR, SPl, L,
 						IDLE,
 						TR, SPh, H,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -500,11 +500,11 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						RD, W, PCl, PCh,
 						IDLE,
 						INC16, PCl, PCh,
-						IDLE,
 						TR, H, SPh,
 						TR, L, SPl,
 						ASGN, Z, 0,
 						ADDS, L, H, W, Z,
+						HALT_CHK,
 						OP };
 		}
 

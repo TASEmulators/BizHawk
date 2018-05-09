@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			ResetInterrupts();
 			TotalExecutedCycles = 8;
 			stop_check = false;
-			cur_instr = new ushort[] { OP };
+			cur_instr = new ushort[] { IDLE, IDLE, HALT_CHK, OP };
 		}
 
 		// Memory Access 
@@ -127,7 +127,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						}
 					}
 
-					if (FlagI && interrupts_enabled && !CB_prefix && !jammed)
+					if (I_use && interrupts_enabled && !CB_prefix && !jammed)
 					{
 						interrupts_enabled = false;
 
@@ -501,6 +501,8 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					{
 						RegPC--;
 						Halt_bug_3 = true;
+						Console.WriteLine("Halt_bug_3");
+						Console.WriteLine(totalExecutedCycles);
 					}
 					
 					Halt_bug_2 = false;

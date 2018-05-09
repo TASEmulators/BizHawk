@@ -93,6 +93,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					write_ignore = 4;
 					TMA_coincidence = true;
 
+				}
+				else if (pending_reload == 1 && !reload_block)
+				{
+
 					// set interrupts
 					if (Core.REG_FFFF.Bit(2)) { Core.cpu.FlagI = true; }
 					Core.REG_FF0F |= 0x04;

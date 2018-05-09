@@ -14,8 +14,8 @@
 						IDLE,
 						WR, src_l, src_h, Z,
 						IDLE,					
-						IDLE,						
 						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -32,7 +32,7 @@
 						WR, src_l, src_h, Z,
 						IDLE,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -45,7 +45,7 @@
 						RD, Z, src_l, src_h,
 						IDLE,
 						operation, bit, Z,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -56,9 +56,9 @@
 						IDLE,					
 						IDLE,
 						RD, Z, src_l, src_h,
-						IDLE,
 						operation, dest, Z,
 						INC16, src_l, src_h,
+						HALT_CHK,
 						OP };
 		}
 
@@ -71,7 +71,7 @@
 						RD, Z, src_l, src_h,
 						IDLE,
 						operation, dest, Z,
-						IDLE,									
+						HALT_CHK,
 						OP };
 		}
 
@@ -96,7 +96,7 @@
 						WR, W, Z, dest_h,
 						IDLE,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -109,7 +109,7 @@
 						WR, dest_l, dest_h, src,
 						IDLE,
 						INC16, dest_l, dest_h,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -122,7 +122,7 @@
 						WR, dest_l, dest_h, src,
 						IDLE,
 						DEC16, dest_l, dest_h,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -134,8 +134,8 @@
 						IDLE,
 						WR, dest_l, dest_h, src,
 						IDLE,
-						IDLE,						
 						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -152,7 +152,7 @@
 						WR, dest_l, dest_h, Z,
 						IDLE,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -165,7 +165,7 @@
 						RD, dest, src_l, src_h,
 						IDLE,
 						INC16, src_l, src_h,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -178,7 +178,7 @@
 						RD, dest, src_l, src_h,
 						IDLE,
 						INC16, src_l, src_h,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -191,7 +191,7 @@
 						RD, dest, src_l, src_h,
 						IDLE,
 						DEC16, src_l, src_h,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -208,7 +208,7 @@
 						RD, dest_h, src_l, src_h,
 						IDLE,
 						INC16, src_l, src_h,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -225,7 +225,7 @@
 						WR,  src_l, src_h, Z,
 						IDLE,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -242,7 +242,7 @@
 						WR, src_l, src_h, Z,
 						IDLE,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -259,8 +259,8 @@
 						ASGN, Z , 0xFF,
 						RD, dest, W, Z,
 						IDLE,					
-						IDLE,					
 						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -277,7 +277,7 @@
 						WR, W, Z, src,
 						IDLE,		
 						IDLE,
-						IDLE,						
+						HALT_CHK,
 						OP };
 		}
 
@@ -289,8 +289,8 @@
 						ASGN, Z , 0xFF,
 						RD, dest, C, Z,
 						IDLE,	
-						IDLE,	
 						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -302,8 +302,8 @@
 						ASGN, Z , 0xFF,
 						WR, C, Z, src,
 						IDLE,					
-						IDLE,					
 						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -323,8 +323,8 @@
 						IDLE,
 						RD, dest, W, Z,
 						IDLE,
-						IDLE,		
 						IDLE,
+						HALT_CHK,
 						OP };
 		}
 
@@ -345,7 +345,7 @@
 						WR, W, Z, src,
 						IDLE,
 						IDLE,
-						IDLE,
+						HALT_CHK,
 						OP };
 		}
 	}
