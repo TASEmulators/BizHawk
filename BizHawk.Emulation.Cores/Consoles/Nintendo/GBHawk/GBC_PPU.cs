@@ -825,6 +825,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						read_case = 8;
 						hbl_countdown = 5;
+						if (window_started)
+						{
+							hbl_countdown -= 2;
+						}
+					}
+					if (pixel_counter == 158 && window_started)
+					{
+						STAT &= 0xFC;
+						STAT |= 0x00;
+
+						if (STAT.Bit(3)) { HBL_INT = true; }
 					}
 				}
 				else if ((render_counter >= render_offset) && (pixel_counter < 0))
