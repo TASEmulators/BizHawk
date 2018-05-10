@@ -200,9 +200,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 _cmdIndex = value;
                 ActiveCommand = CommandList[_cmdIndex];
-
-                // clear command params
-                //ActiveCommandParams.Reset();
             }
         }
         private int _cmdIndex;
@@ -871,119 +868,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                     //ActiveDrive.SectorIndex++;
                                 }
                             }
-                
-
-                            /*
-                            // If SK=1, the FDC skips the sector with the Data Address Mark and reads the next sector. 
-                            // The CRC bits in the data field are not checked when SK=1
-                            if (CMD_FLAG_SK && !Status2.Bit(SR2_CM))
-                            {
-                                if (ActiveCommandParams.Sector != ActiveCommandParams.EOT)
-                                {
-                                    // increment the sector ID and search again
-                                    ActiveCommandParams.Sector++;
-                                    continue;
-                                }
-                                else
-                                {
-                                    // no execution phase
-                                    SetBit(SR0_IC0, ref Status0);
-                                    UnSetBit(SR0_IC1, ref Status0);
-
-                                    // result requires the actual track id, rather than the sector track id
-                                    ActiveCommandParams.Cylinder = track.TrackNumber;
-
-                                    CommitResultCHRN();
-                                    CommitResultStatus();
-                                    ActivePhase = Phase.Result;
-                                    break;
-                                }
-                            }
-
-                            // read the sector
-                            for (int i = 0; i < sectorSize; i++)
-                            {
-                                ExecBuffer[buffPos++] = sector.ActualData[i];
-                            }
-
-                            // any CRC errors?
-                            if (Status1.Bit(SR1_DE) || Status2.Bit(SR2_DD))
-                            {
-                                SetBit(SR0_IC0, ref Status0);
-                                UnSetBit(SR0_IC1, ref Status0);
-                                terminate = true;
-                            }
-
-                            if (!CMD_FLAG_SK && !Status2.Bit(SR2_CM))
-                            {
-                                // deleted address mark was detected with NO skip flag set
-                                ActiveCommandParams.EOT = ActiveCommandParams.Sector;
-                                SetBit(SR2_CM, ref Status2);
-                                SetBit(SR0_IC0, ref Status0);
-                                UnSetBit(SR0_IC1, ref Status0);
-                                terminate = true;
-                            }
-
-                            if (sector.SectorID == ActiveCommandParams.EOT || terminate)
-                            {
-                                // this was the last sector to read
-                                // or termination requested
-
-                                SetBit(SR1_EN, ref Status1);
-
-                                int keyIndex = 0;
-                                for (int i = 0; i < track.Sectors.Length; i++)
-                                {
-                                    if (track.Sectors[i].SectorID == sector.SectorID)
-                                    {
-                                        keyIndex = i;
-                                        break;
-                                    }
-                                }
-
-                                if (keyIndex == track.Sectors.Length - 1)
-                                {
-                                    // last sector on the cylinder, set EN
-                                    SetBit(SR1_EN, ref Status1);
-
-                                    // increment cylinder
-                                    ActiveCommandParams.Cylinder++;
-
-                                    // reset sector
-                                    ActiveCommandParams.Sector = 1;
-                                    ActiveDrive.SectorIndex = 0;
-                                }
-                                else
-                                {
-                                    ActiveDrive.SectorIndex++;
-                                }
-
-                                UnSetBit(SR0_IC1, ref Status0);
-                                if (terminate)
-                                    SetBit(SR0_IC0, ref Status0);
-                                else
-                                    UnSetBit(SR0_IC0, ref Status0);
-
-                                SetBit(SR0_IC0, ref Status0);
-
-                                // result requires the actual track id, rather than the sector track id
-                                ActiveCommandParams.Cylinder = track.TrackNumber;
-
-                                // remove CM (appears to be required to defeat Alkatraz copy protection)
-                                UnSetBit(SR2_CM, ref Status2);
-
-                                CommitResultCHRN();
-                                CommitResultStatus();
-                                ActivePhase = Phase.Execution;
-                                break;
-                            }
-                            else
-                            {
-                                // continue with multi-sector read operation
-                                ActiveCommandParams.Sector++;
-                                //ActiveDrive.SectorIndex++;
-                            }
-                            */
                         }
 
                         if (ActivePhase == Phase.Execution)
@@ -1014,108 +898,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 case Phase.Result:
                     break;
             }
-            /*
-            switch (iState)
-            {
-                //----------------------------------------
-                //  Receiving command parameter bytes
-                //----------------------------------------
-                case InstructionState.ReceivingParameters:
-
-                    // store the parameter in the command buffer
-                    CommBuffer[CommCounter] = LastByteReceived;
-
-                    // process parameter byte
-                    ParseParamByteStandard(CommCounter);
-
-                    // increment command parameter counter
-                    CommCounter++;
-
-                    // was that the last parameter byte?
-                    if (CommCounter == ActiveCommand.ParameterByteCount)
-                    {
-                        // all parameter bytes received
-                        // move to pre-execution
-                        ActiveCommand.CommandDelegate(InstructionState.PreExecution);
-                    }
-                    break;
-
-                //----------------------------------------
-                //  Pre-execution
-                //----------------------------------------
-                case InstructionState.PreExecution:
-                    // instruction is read/write
-                    SetupReadWriteCommand();
-                    break;
-
-                //----------------------------------------
-                //  Execution begins
-                //----------------------------------------
-                case InstructionState.StartExecute:
-                    StartReadWriteExecution();
-                    break;
-
-                //----------------------------------------
-                //  Write commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionWrite:
-                    // get the correct position in the sector buffer
-                    int dataIndex = ActiveCommandParams.SectorLength - ExecCounter;
-                    // write the byte
-                    ResBuffer[dataIndex] = LastSectorDataWriteByte;
-                    break;
-
-                //----------------------------------------
-                //  Read commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionRead:
-                    break;
-
-                //----------------------------------------
-                //  Setup for result phase
-                //----------------------------------------
-                case InstructionState.StartResult:
-                    CheckUnloadHead();
-                    if (ActivePhase != Phase.Idle)
-                        ActiveCommand.CommandDelegate(InstructionState.ProcessResult);
-
-                    // are there still result bytes to return?
-                    if (ResCounter < ResLength)
-                    {
-                        // set result phase
-                        SetPhase_Result();
-                    }
-                    else
-                    {
-                        // all result bytes have been sent
-                        // move to idle
-                        SetPhase_Idle();
-                    }
-
-                    // set RQM flag
-                    SetBit(MSR_RQM, ref StatusMain);
-                    break;
-
-                //----------------------------------------
-                //  Result processing
-                //----------------------------------------
-                case InstructionState.ProcessResult:
-                    // instruction is read/write
-                    ReadWriteCommandResult();
-                    break;
-
-                //----------------------------------------
-                //  Results sending
-                //----------------------------------------
-                case InstructionState.SendingResults:
-                    break;
-
-                //----------------------------------------
-                //  Instruction lifecycle completed
-                //----------------------------------------
-                case InstructionState.Completed:
-                    break;
-            }*/
         }
 
         /// <summary>
@@ -1349,108 +1131,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 case Phase.Result:
                     break;
             }
-            /*
-            switch (iState)
-            {
-                //----------------------------------------
-                //  Receiving command parameter bytes
-                //----------------------------------------
-                case InstructionState.ReceivingParameters:
-
-                    // store the parameter in the command buffer
-                    CommBuffer[CommCounter] = LastByteReceived;
-
-                    // process parameter byte
-                    ParseParamByteStandard(CommCounter);
-
-                    // increment command parameter counter
-                    CommCounter++;
-
-                    // was that the last parameter byte?
-                    if (CommCounter == ActiveCommand.ParameterByteCount)
-                    {
-                        // all parameter bytes received
-                        // move to pre-execution
-                        ActiveCommand.CommandDelegate(InstructionState.PreExecution);
-                    }
-                    break;
-
-                //----------------------------------------
-                //  Pre-execution
-                //----------------------------------------
-                case InstructionState.PreExecution:
-                    // instruction is read/write
-                    SetupReadWriteCommand();
-                    break;
-
-                //----------------------------------------
-                //  Execution begins
-                //----------------------------------------
-                case InstructionState.StartExecute:
-                    StartReadWriteExecution();
-                    break;
-
-                //----------------------------------------
-                //  Write commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionWrite:
-                    // get the correct position in the sector buffer
-                    int dataIndex = ActiveCommandParams.SectorLength - ExecCounter;
-                    // write the byte
-                    ResBuffer[dataIndex] = LastSectorDataWriteByte;
-                    break;
-
-                //----------------------------------------
-                //  Read commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionRead:
-                    break;
-
-                //----------------------------------------
-                //  Setup for result phase
-                //----------------------------------------
-                case InstructionState.StartResult:
-                    CheckUnloadHead();
-                    if (ActivePhase != Phase.Idle)
-                        ActiveCommand.CommandDelegate(InstructionState.ProcessResult);
-
-                    // are there still result bytes to return?
-                    if (ResCounter < ResLength)
-                    {
-                        // set result phase
-                        SetPhase_Result();
-                    }
-                    else
-                    {
-                        // all result bytes have been sent
-                        // move to idle
-                        SetPhase_Idle();
-                    }
-
-                    // set RQM flag
-                    SetBit(MSR_RQM, ref StatusMain);
-                    break;
-
-                //----------------------------------------
-                //  Result processing
-                //----------------------------------------
-                case InstructionState.ProcessResult:
-                    // instruction is read/write
-                    ReadWriteCommandResult();
-                    break;
-
-                //----------------------------------------
-                //  Results sending
-                //----------------------------------------
-                case InstructionState.SendingResults:
-                    break;
-
-                //----------------------------------------
-                //  Instruction lifecycle completed
-                //----------------------------------------
-                case InstructionState.Completed:
-                    break;
-            }*/
         }
 
         /// <summary>
@@ -1771,108 +1451,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 case Phase.Result:
                     break;
             }
-            /*
-            switch (iState)
-            {
-                //----------------------------------------
-                //  Receiving command parameter bytes
-                //----------------------------------------
-                case InstructionState.ReceivingParameters:
-
-                    // store the parameter in the command buffer
-                    CommBuffer[CommCounter] = LastByteReceived;
-
-                    // process parameter byte
-                    ParseParamByteStandard(CommCounter);
-
-                    // increment command parameter counter
-                    CommCounter++;
-
-                    // was that the last parameter byte?
-                    if (CommCounter == ActiveCommand.ParameterByteCount)
-                    {
-                        // all parameter bytes received
-                        // move to pre-execution
-                        ActiveCommand.CommandDelegate(InstructionState.PreExecution);
-                    }
-                    break;
-
-                //----------------------------------------
-                //  Pre-execution
-                //----------------------------------------
-                case InstructionState.PreExecution:
-                    // instruction is read/write
-                    SetupReadWriteCommand();
-                    break;
-
-                //----------------------------------------
-                //  Execution begins
-                //----------------------------------------
-                case InstructionState.StartExecute:
-                    StartReadWriteExecution();
-                    break;
-
-                //----------------------------------------
-                //  Write commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionWrite:
-                    // get the correct position in the sector buffer
-                    int dataIndex = ActiveCommandParams.SectorLength - ExecCounter;
-                    // write the byte
-                    ResBuffer[dataIndex] = LastSectorDataWriteByte;
-                    break;
-
-                //----------------------------------------
-                //  Read commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionRead:
-                    break;
-
-                //----------------------------------------
-                //  Setup for result phase
-                //----------------------------------------
-                case InstructionState.StartResult:
-                    CheckUnloadHead();
-                    if (ActivePhase != Phase.Idle)
-                        ActiveCommand.CommandDelegate(InstructionState.ProcessResult);
-
-                    // are there still result bytes to return?
-                    if (ResCounter < ResLength)
-                    {
-                        // set result phase
-                        SetPhase_Result();
-                    }
-                    else
-                    {
-                        // all result bytes have been sent
-                        // move to idle
-                        SetPhase_Idle();
-                    }
-
-                    // set RQM flag
-                    SetBit(MSR_RQM, ref StatusMain);
-                    break;
-
-                //----------------------------------------
-                //  Result processing
-                //----------------------------------------
-                case InstructionState.ProcessResult:
-                    // instruction is read/write
-                    ReadWriteCommandResult();
-                    break;
-
-                //----------------------------------------
-                //  Results sending
-                //----------------------------------------
-                case InstructionState.SendingResults:
-                    break;
-
-                //----------------------------------------
-                //  Instruction lifecycle completed
-                //----------------------------------------
-                case InstructionState.Completed:
-                    break;
-            }*/
         }
 
         /// <summary>
@@ -1984,130 +1562,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 case Phase.Result:
                     break;
             }
-            /*
-            switch (iState)
-            {
-                //----------------------------------------
-                //  Receiving command parameter bytes
-                //----------------------------------------
-                case InstructionState.ReceivingParameters:
-
-                    // store the parameter in the command buffer
-                    CommBuffer[CommCounter] = LastByteReceived;
-
-                    // process parameter byte
-                    byte currByte = CommBuffer[CommCounter];
-                    switch (CommCounter)
-                    {
-                        case CM_HEAD:
-                            ParseParamByteStandard(CommCounter);
-                            break;
-                        // N
-                        case 1:
-                            ActiveCommandParams.SectorSize = currByte;
-                            break;
-                        // SC (sectors per cylinder)
-                        case 2:
-                            ActiveCommandParams.SectorCount = currByte;
-                            break;
-                        // GPL
-                        case 3:
-                            ActiveCommandParams.Gap3Length = currByte;
-                            break;
-                        // filler
-                        case 4:
-                            ActiveCommandParams.Filler = currByte;
-                            break;
-                    }
-
-                    // increment command parameter counter
-                    CommCounter++;
-
-                    // was that the last parameter byte?
-                    if (CommCounter == ActiveCommand.ParameterByteCount)
-                    {
-                        // all parameter bytes received
-                        // move to pre-execution
-                        ActiveCommand.CommandDelegate(InstructionState.PreExecution);
-                    }
-                    break;
-
-                //----------------------------------------
-                //  Pre-execution
-                //----------------------------------------
-                case InstructionState.PreExecution:
-                    // instruction is read/write
-                    SetupReadWriteCommand();
-                    break;
-
-                //----------------------------------------
-                //  Execution begins
-                //----------------------------------------
-                case InstructionState.StartExecute:
-                    StartReadWriteExecution();
-                    break;
-
-                //----------------------------------------
-                //  Write commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionWrite:
-                    // get the correct position in the sector buffer
-                    int dataIndex = ActiveCommandParams.SectorLength - ExecCounter;
-                    // write the byte
-                    ResBuffer[dataIndex] = LastSectorDataWriteByte;
-                    break;
-
-                //----------------------------------------
-                //  Read commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionRead:
-                    break;
-
-                //----------------------------------------
-                //  Setup for result phase
-                //----------------------------------------
-                case InstructionState.StartResult:
-                    CheckUnloadHead();
-                    if (ActivePhase != Phase.Idle)
-                        ActiveCommand.CommandDelegate(InstructionState.ProcessResult);
-
-                    // are there still result bytes to return?
-                    if (ResCounter < ResLength)
-                    {
-                        // set result phase
-                        SetPhase_Result();
-                    }
-                    else
-                    {
-                        // all result bytes have been sent
-                        // move to idle
-                        SetPhase_Idle();
-                    }
-
-                    // set RQM flag
-                    SetBit(MSR_RQM, ref StatusMain);
-                    break;
-
-                //----------------------------------------
-                //  Result processing
-                //----------------------------------------
-                case InstructionState.ProcessResult:
-                    // instruction is read/write
-                    ReadWriteCommandResult();
-                    break;
-
-                //----------------------------------------
-                //  Results sending
-                //----------------------------------------
-                case InstructionState.SendingResults:
-                    break;
-
-                //----------------------------------------
-                //  Instruction lifecycle completed
-                //----------------------------------------
-                case InstructionState.Completed:
-                    break;
-            }*/
         }
 
         /// <summary>
@@ -2191,16 +1645,38 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         }
                         else
                         {
-                            // not implemented yet
-                            SetBit(SR0_IC0, ref Status0);
-                            SetBit(SR1_NW, ref Status1);
 
-                            CommitResultCHRN();
-                            CommitResultStatus();
-                            //ResBuffer[RS_ST0] = Status0;
+                            // calculate the number of bytes to write
+                            int byteCounter = 0;
+                            byte startSecID = ActiveCommandParams.Sector;
+                            byte endSecID = ActiveCommandParams.EOT;
+                            bool lastSec = false;
 
-                            // move to result phase
-                            ActivePhase = Phase.Result;
+                            // get the first sector
+                            var track = ActiveDrive.Disk.DiskTracks[ActiveCommandParams.Cylinder];
+                            int secIndex = 0;
+                            for (int s = 0; s < track.Sectors.Length; s++)
+                            {
+                                if (track.Sectors[s].SectorID == endSecID)
+                                    lastSec = true;
+
+                                for (int i = 0; i < 0x80 << ActiveCommandParams.SectorSize; i++)
+                                {
+                                    byteCounter++;
+
+                                    if (i == (0x80 << ActiveCommandParams.SectorSize) - 1 && lastSec)
+                                    {
+                                        break;
+                                    }
+                                }
+
+                                if (lastSec)
+                                    break;
+                            }
+
+                            ExecCounter = byteCounter;
+                            ExecLength = byteCounter;
+                            ActivePhase = Phase.Execution;
                             break;
                         }
                     }
@@ -2211,6 +1687,53 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 //  FDC in execution phase reading/writing bytes
                 //----------------------------------------
                 case Phase.Execution:
+
+                    var index = ExecLength - ExecCounter;
+
+                    ExecBuffer[index] = LastSectorDataWriteByte;
+
+                    OverrunCounter--;
+                    ExecCounter--;
+
+                    if (ExecCounter <= 0)
+                    {
+                        int cnt = 0;
+
+                        // all data received
+                        byte startSecID = ActiveCommandParams.Sector;
+                        byte endSecID = ActiveCommandParams.EOT;
+                        bool lastSec = false;
+                        var track = ActiveDrive.Disk.DiskTracks[ActiveCommandParams.Cylinder];
+                        int secIndex = 0;
+
+                        for (int s = 0; s < track.Sectors.Length; s++)
+                        {
+                            if (cnt == ExecLength)
+                                break;
+
+                            ActiveCommandParams.Sector = track.Sectors[s].SectorID;
+
+                            if (track.Sectors[s].SectorID == endSecID)
+                                lastSec = true;
+
+                            int size = 0x80 << track.Sectors[s].SectorSize;
+
+                            for (int d = 0; d < size; d++)
+                            {
+                                track.Sectors[s].SectorData[d] = ExecBuffer[cnt++];
+                            }
+
+                            if (lastSec)
+                                break;
+                        }
+
+                        SetBit(SR0_IC0, ref Status0);
+                        SetBit(SR1_EN, ref Status1);
+
+                        CommitResultCHRN();
+                        CommitResultStatus();
+                    }
+
                     break;
 
                 //----------------------------------------
@@ -2219,108 +1742,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 case Phase.Result:
                     break;
             }
-            /*
-            switch (iState)
-            {
-                //----------------------------------------
-                //  Receiving command parameter bytes
-                //----------------------------------------
-                case InstructionState.ReceivingParameters:
-
-                    // store the parameter in the command buffer
-                    CommBuffer[CommCounter] = LastByteReceived;
-
-                    // process parameter byte
-                    ParseParamByteStandard(CommCounter);
-
-                    // increment command parameter counter
-                    CommCounter++;
-
-                    // was that the last parameter byte?
-                    if (CommCounter == ActiveCommand.ParameterByteCount)
-                    {
-                        // all parameter bytes received
-                        // move to pre-execution
-                        ActiveCommand.CommandDelegate(InstructionState.PreExecution);
-                    }
-                    break;
-
-                //----------------------------------------
-                //  Pre-execution
-                //----------------------------------------
-                case InstructionState.PreExecution:
-                    // instruction is read/write
-                    SetupReadWriteCommand();
-                    break;
-
-                //----------------------------------------
-                //  Execution begins
-                //----------------------------------------
-                case InstructionState.StartExecute:
-                    StartReadWriteExecution();
-                    break;
-
-                //----------------------------------------
-                //  Write commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionWrite:
-                    // get the correct position in the sector buffer
-                    int dataIndex = ActiveCommandParams.SectorLength - ExecCounter;
-                    // write the byte
-                    ResBuffer[dataIndex] = LastSectorDataWriteByte;
-                    break;
-
-                //----------------------------------------
-                //  Read commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionRead:
-                    break;
-
-                //----------------------------------------
-                //  Setup for result phase
-                //----------------------------------------
-                case InstructionState.StartResult:
-                    CheckUnloadHead();
-                    if (ActivePhase != Phase.Idle)
-                        ActiveCommand.CommandDelegate(InstructionState.ProcessResult);
-
-                    // are there still result bytes to return?
-                    if (ResCounter < ResLength)
-                    {
-                        // set result phase
-                        SetPhase_Result();
-                    }
-                    else
-                    {
-                        // all result bytes have been sent
-                        // move to idle
-                        SetPhase_Idle();
-                    }
-
-                    // set RQM flag
-                    SetBit(MSR_RQM, ref StatusMain);
-                    break;
-
-                //----------------------------------------
-                //  Result processing
-                //----------------------------------------
-                case InstructionState.ProcessResult:
-                    // instruction is read/write
-                    ReadWriteCommandResult();
-                    break;
-
-                //----------------------------------------
-                //  Results sending
-                //----------------------------------------
-                case InstructionState.SendingResults:
-                    break;
-
-                //----------------------------------------
-                //  Instruction lifecycle completed
-                //----------------------------------------
-                case InstructionState.Completed:
-                    break;
-            }*/
         }
 
         #endregion
@@ -2361,126 +1782,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 case Phase.Result:
                     break;
             }
-            /*
-            switch (iState)
-            {
-                //----------------------------------------
-                //  Receiving command parameter bytes
-                //----------------------------------------
-                case InstructionState.ReceivingParameters:
-
-                    // store the parameter in the command buffer
-                    CommBuffer[CommCounter] = LastByteReceived;
-
-                    // process parameter byte
-                    ParseParamByteStandard(CommCounter);
-
-                    // use STP instead of DTL for scan commands
-                    if (CommCounter == CM_STP)
-                    {
-                        //ActiveCommandParams.SectorLength = 0;
-                        ActiveCommandParams.STP = LastByteReceived;
-                    }
-
-                    // increment command parameter counter
-                    CommCounter++;
-
-                    // was that the last parameter byte?
-                    if (CommCounter == ActiveCommand.ParameterByteCount)
-                    {
-                        // all parameter bytes received
-                        // move to pre-execution
-                        ActiveCommand.CommandDelegate(InstructionState.PreExecution);
-                    }
-                    break;
-
-                //----------------------------------------
-                //  Pre-execution
-                //----------------------------------------
-                case InstructionState.PreExecution:
-                    // instruction is read/write
-                    SetupReadWriteCommand();
-                    break;
-
-                //----------------------------------------
-                //  Execution begins
-                //----------------------------------------
-                case InstructionState.StartExecute:
-                    StartReadWriteExecution();
-                    break;
-
-                //----------------------------------------
-                //  Write commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionWrite:
-                    int dataIndex = ActiveCommandParams.SectorLength - ExecCounter;
-                    byte oldData = ResBuffer[dataIndex];
-
-                    if (LastSectorDataWriteByte != oldData)
-                    {
-                        if (LastSectorDataWriteByte != 255 &&
-                            oldData != 255)
-                        {
-                            // scan not equal
-                            UnSetBit(SR2_SH, ref Status2);
-
-                            // scan not satified
-                            SetBit(SR2_SN, ref Status2);
-                        }
-                    }
-                    break;
-
-                //----------------------------------------
-                //  Read commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionRead:
-                    break;
-
-                //----------------------------------------
-                //  Setup for result phase
-                //----------------------------------------
-                case InstructionState.StartResult:
-                    CheckUnloadHead();
-                    if (ActivePhase != Phase.Idle)
-                        ActiveCommand.CommandDelegate(InstructionState.ProcessResult);
-
-                    // are there still result bytes to return?
-                    if (ResCounter < ResLength)
-                    {
-                        // set result phase
-                        SetPhase_Result();
-                    }
-                    else
-                    {
-                        // all result bytes have been sent
-                        // move to idle
-                        SetPhase_Idle();
-                    }
-
-                    // set RQM flag
-                    SetBit(MSR_RQM, ref StatusMain);
-                    break;
-
-                //----------------------------------------
-                //  Result processing
-                //----------------------------------------
-                case InstructionState.ProcessResult:
-                    // instruction is read/write
-                    ReadWriteCommandResult();
-                    break;
-
-                //----------------------------------------
-                //  Results sending
-                //----------------------------------------
-                case InstructionState.SendingResults:
-                    break;
-
-                //----------------------------------------
-                //  Instruction lifecycle completed
-                //----------------------------------------
-                case InstructionState.Completed:
-                    break;
-            }*/
         }
 
         /// <summary>
@@ -2517,129 +1818,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 case Phase.Result:
                     break;
             }
-            /*
-            switch (iState)
-            {
-                //----------------------------------------
-                //  Receiving command parameter bytes
-                //----------------------------------------
-                case InstructionState.ReceivingParameters:
-
-                    // store the parameter in the command buffer
-                    CommBuffer[CommCounter] = LastByteReceived;
-
-                    // process parameter byte
-                    ParseParamByteStandard(CommCounter);
-
-                    // use STP instead of DTL for scan commands
-                    if (CommCounter == CM_STP)
-                    {
-                        //ActiveCommandParams.SectorLength = 0;
-                        ActiveCommandParams.STP = LastByteReceived;
-                    }
-
-                    // increment command parameter counter
-                    CommCounter++;
-
-                    // was that the last parameter byte?
-                    if (CommCounter == ActiveCommand.ParameterByteCount)
-                    {
-                        // all parameter bytes received
-                        // move to pre-execution
-                        ActiveCommand.CommandDelegate(InstructionState.PreExecution);
-                    }
-                    break;
-
-                //----------------------------------------
-                //  Pre-execution
-                //----------------------------------------
-                case InstructionState.PreExecution:
-                    // instruction is read/write
-                    SetupReadWriteCommand();
-                    break;
-
-                //----------------------------------------
-                //  Execution begins
-                //----------------------------------------
-                case InstructionState.StartExecute:
-                    StartReadWriteExecution();
-                    break;
-
-                //----------------------------------------
-                //  Write commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionWrite:
-                    int dataIndex = ActiveCommandParams.SectorLength - ExecCounter;
-                    byte oldData = ResBuffer[dataIndex];
-
-                    if (LastSectorDataWriteByte != oldData)
-                    {
-                        if (LastSectorDataWriteByte != 255 &&
-                            oldData != 255)
-                        {
-                            // scan not equal
-                            UnSetBit(SR2_SH, ref Status2);
-
-                            if (oldData > LastSectorDataWriteByte)
-                            {
-                                // scan not satified
-                                SetBit(SR2_SN, ref Status2);
-                            }
-                        }
-                    }
-                    break;
-
-                //----------------------------------------
-                //  Read commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionRead:
-                    break;
-
-                //----------------------------------------
-                //  Setup for result phase
-                //----------------------------------------
-                case InstructionState.StartResult:
-                    CheckUnloadHead();
-                    if (ActivePhase != Phase.Idle)
-                        ActiveCommand.CommandDelegate(InstructionState.ProcessResult);
-
-                    // are there still result bytes to return?
-                    if (ResCounter < ResLength)
-                    {
-                        // set result phase
-                        SetPhase_Result();
-                    }
-                    else
-                    {
-                        // all result bytes have been sent
-                        // move to idle
-                        SetPhase_Idle();
-                    }
-
-                    // set RQM flag
-                    SetBit(MSR_RQM, ref StatusMain);
-                    break;
-
-                //----------------------------------------
-                //  Result processing
-                //----------------------------------------
-                case InstructionState.ProcessResult:
-                    // instruction is read/write
-                    ReadWriteCommandResult();
-                    break;
-
-                //----------------------------------------
-                //  Results sending
-                //----------------------------------------
-                case InstructionState.SendingResults:
-                    break;
-
-                //----------------------------------------
-                //  Instruction lifecycle completed
-                //----------------------------------------
-                case InstructionState.Completed:
-                    break;
-            }*/
         }
 
         /// <summary>
@@ -2676,129 +1854,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 case Phase.Result:
                     break;
             }
-            /*
-            switch (iState)
-            {
-                //----------------------------------------
-                //  Receiving command parameter bytes
-                //----------------------------------------
-                case InstructionState.ReceivingParameters:
-
-                    // store the parameter in the command buffer
-                    CommBuffer[CommCounter] = LastByteReceived;
-
-                    // process parameter byte
-                    ParseParamByteStandard(CommCounter);
-
-                    // use STP instead of DTL for scan commands
-                    if (CommCounter == CM_STP)
-                    {
-                        //ActiveCommandParams.SectorLength = 0;
-                        ActiveCommandParams.STP = LastByteReceived;
-                    }
-
-                    // increment command parameter counter
-                    CommCounter++;
-
-                    // was that the last parameter byte?
-                    if (CommCounter == ActiveCommand.ParameterByteCount)
-                    {
-                        // all parameter bytes received
-                        // move to pre-execution
-                        ActiveCommand.CommandDelegate(InstructionState.PreExecution);
-                    }
-                    break;
-
-                //----------------------------------------
-                //  Pre-execution
-                //----------------------------------------
-                case InstructionState.PreExecution:
-                    // instruction is read/write
-                    SetupReadWriteCommand();
-                    break;
-
-                //----------------------------------------
-                //  Execution begins
-                //----------------------------------------
-                case InstructionState.StartExecute:
-                    StartReadWriteExecution();
-                    break;
-
-                //----------------------------------------
-                //  Write commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionWrite:
-                    int dataIndex = ActiveCommandParams.SectorLength - ExecCounter;
-                    byte oldData = ResBuffer[dataIndex];
-
-                    if (LastSectorDataWriteByte != oldData)
-                    {
-                        if (LastSectorDataWriteByte != 255 &&
-                            oldData != 255)
-                        {
-                            // scan not equal
-                            UnSetBit(SR2_SH, ref Status2);
-
-                            if (oldData < LastSectorDataWriteByte)
-                            {
-                                // scan not satified
-                                SetBit(SR2_SN, ref Status2);
-                            }
-                        }
-                    }
-                    break;
-
-                //----------------------------------------
-                //  Read commands during execution
-                //----------------------------------------
-                case InstructionState.ExecutionRead:
-                    break;
-
-                //----------------------------------------
-                //  Setup for result phase
-                //----------------------------------------
-                case InstructionState.StartResult:
-                    CheckUnloadHead();
-                    if (ActivePhase != Phase.Idle)
-                        ActiveCommand.CommandDelegate(InstructionState.ProcessResult);
-
-                    // are there still result bytes to return?
-                    if (ResCounter < ResLength)
-                    {
-                        // set result phase
-                        SetPhase_Result();
-                    }
-                    else
-                    {
-                        // all result bytes have been sent
-                        // move to idle
-                        SetPhase_Idle();
-                    }
-
-                    // set RQM flag
-                    SetBit(MSR_RQM, ref StatusMain);
-                    break;
-
-                //----------------------------------------
-                //  Result processing
-                //----------------------------------------
-                case InstructionState.ProcessResult:
-                    // instruction is read/write
-                    ReadWriteCommandResult();
-                    break;
-
-                //----------------------------------------
-                //  Results sending
-                //----------------------------------------
-                case InstructionState.SendingResults:
-                    break;
-
-                //----------------------------------------
-                //  Instruction lifecycle completed
-                //----------------------------------------
-                case InstructionState.Completed:
-                    break;
-            }*/
         }
 
         #endregion
@@ -3201,55 +2256,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     }
 
                     ResBuffer[0] = Status3;
-                    ActivePhase = Phase.Result;
-
-                    
-
-                    /*
-
-
-                    if (ActiveCommandParams.UnitSelect != 0)
-                    {
-                        // we only support 1 drive
-                        SetBit(SR3_FT, ref Status3);
-                    }
-                    else
-                    {
-                        // HD - only one side
-                        UnSetBit(SR3_HD, ref Status3);
-
-                        // write protect
-                        if (ActiveDrive.FLAG_WRITEPROTECT)
-                            SetBit(SR3_WP, ref Status3);
-
-                        // track 0
-                        if (ActiveDrive.FLAG_TRACK0)
-                            SetBit(SR3_T0, ref Status3);
-
-                        // rdy
-                        if (ActiveDrive.Disk != null)
-                            SetBit(SR3_RY, ref Status3);
-                    }
-
-                    ResBuffer[0] = Status3;
-                    ActivePhase = Phase.Result;
-
-                    */
-
-
-                    /*
-
-                    // ready
-                    if (ActiveDrive.FLAG_READY)
-                        SetBit(SR3_RY, ref Status3);
-                    else
-                    {
-                        // set WR if not ready
-                        SetBit(SR3_WP, ref Status3);
-                    }
-
-                    */
-
+                    ActivePhase = Phase.Result;                    
                     
                     break;
 
@@ -3376,6 +2383,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     UnSetBit(MSR_EXM, ref StatusMain);
                     break;
             }
+
+            //if (!CheckTiming())
+            //{
+            //    UnSetBit(MSR_EXM, ref StatusMain);
+            //}
 
             return StatusMain;            
         }
@@ -3589,35 +2601,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             return true;
         }
-        /*
-        /// <summary>
-        /// Processes written data bytes whilst in command phase
-        /// </summary>
-        /// <param name="data"></param>
-        private void ProcessCommand(byte data)
-        {            
-            // capture the parameter byte
-            CommBuffer[CommCounter] = data;
-
-            // process parameter byte
-            ActiveCommand.CommandDelegate(InstructionState.ReceivingParameters);
-
-            // increment command parameter counter
-            CommCounter++;
-
-            // was that the last parameter byte?
-            if (CommCounter == ActiveCommand.ParameterByteCount)
-            {
-                // clear down the counters
-                CommCounter = 0;
-                ResCounter = 0;
-
-                // all bytes received - execute the UPD command
-                //ActivePhase = Phase.Execution;
-                ActiveCommand.CommandDelegate(InstructionState.PreExecution);
-            }
-        }
-        */
 
         /// <summary>
         /// Parses the first 5 command argument bytes that are of the standard format
@@ -3680,158 +2663,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     break;
             }
         }
-        /*
-        /// <summary>
-        /// Initializes a read or write command in execution phase
-        /// Data bytes are going to be read to the CPU or written to the FDC
-        /// </summary>
-        private void SetupReadWriteCommand()
-        {
-            // set the active drive that this command is referring to
-            int US = ActiveCommandParams.UnitSelect;
-            DiskDriveIndex = US;
-
-            // clear everything in interrupt ST0 except for IC and US
-            UnSetBit(SR0_HD, ref ActiveDrive.IntStatus);
-            UnSetBit(SR0_NR, ref ActiveDrive.IntStatus);
-            UnSetBit(SR0_EC, ref ActiveDrive.IntStatus);
-            UnSetBit(SR0_SE, ref ActiveDrive.IntStatus);
-            
-            IndexPulseCounter = 0;
-            CMD_FLAG_MF = false;
-
-            // clear status registers
-            Status1 = 0;
-            Status2 = 0;
-
-            SectorID = 0;
-            SectorDelayCounter = -1;
-
-            // is the active drive ready?
-            if (!ActiveDrive.FLAG_READY)
-            {
-                ActiveStatus = Status.DriveNotReady;
-                ActiveCommand.CommandDelegate(InstructionState.StartResult);
-                return;
-            }
-
-            // is this a write command?
-            if (ActiveCommand.IsWrite)
-            {
-                // check write protection status
-                if (ActiveDrive.FLAG_WRITEPROTECT)
-                {
-                    ActiveStatus = Status.WriteProtected;
-                    ActiveCommand.CommandDelegate(InstructionState.StartResult);
-                    return;
-                }
-            }
-
-            // StartExecute
-            ActiveCommand.CommandDelegate(InstructionState.StartExecute);
-        }
-
-        /// <summary>
-        /// Starts the read/write execution phase
-        /// </summary>
-        private void StartReadWriteExecution()
-        {
-            // set execution phase
-            ActivePhase = Phase.Execution;
-
-            // set direction 
-            if (ActiveCommand.Direction == CommandDirection.IN)
-                UnSetBit(MSR_DIO, ref StatusMain);
-            else
-                SetBit(MSR_DIO, ref StatusMain);
-
-            // clear RQM flag
-            UnSetBit(MSR_RQM, ref StatusMain);
-
-            // setup HLT & HUT
-            if (HUT_Counter > 0)
-            {
-                HLT_Counter = 0;
-                HUT_Counter = 0;
-            }
-            else
-            {
-                HLT_Counter = HLT;
-                HUT_Counter = 0;
-            }
-
-            // we require 2 index pulses as standard
-            IndexPulseCounter = 2;
-
-            switch (ActiveCommand.CommandCode)
-            {                
-                case CC_WRITE_ID:
-                case CC_READ_DIAGNOSTIC:
-                    CMD_FLAG_MT = false;
-                    break;
-                default:
-                    CMD_FLAG_MT = true;
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Process standard result data for read/write commands (at the start of result phase)
-        /// </summary>
-        private void ReadWriteCommandResult()
-        {
-            // clear st0
-            Status0 = 0;
-
-            // HD
-            if (ActiveCommandParams.Side == 1)
-                SetBit(SR0_HD, ref Status0);
-            // US
-            switch (ActiveCommandParams.UnitSelect)
-            {
-                case 1:
-                    SetBit(SR0_US0, ref Status0);
-                    break;
-                case 2:
-                    SetBit(SR0_US1, ref Status0);
-                    break;
-                case 3:
-                    SetBit(SR0_US0, ref Status0);
-                    SetBit(SR0_US1, ref Status0);
-                    break;
-            }
-
-            if (ActiveStatus != Status.None)
-            {
-                Status0 |= 0x40;
-
-                // check for errors
-                switch (ActiveStatus)
-                {
-                    case Status.WriteProtected:
-                        SetBit(SR1_NW, ref Status1);
-                        break;
-                    case Status.SectorNotFound:
-                        SetBit(SR1_MA, ref Status1);
-                        SetBit(SR1_ND, ref Status1);
-                        break;
-                    case Status.DriveNotReady:
-                        SetBit(SR0_NR, ref Status0);
-                        break;
-                }
-            }
-
-            // populate result buffer
-            ResBuffer[RS_ST0] = Status0;
-            ResBuffer[RS_ST1] = Status1;
-            ResBuffer[RS_ST2] = Status2;
-            ResBuffer[RS_C] = ActiveCommandParams.Cylinder;
-            ResBuffer[RS_H] = ActiveCommandParams.Head;
-            ResBuffer[RS_R] = ActiveCommandParams.Sector;
-            ResBuffer[RS_N] = ActiveCommandParams.SectorSize;
-        }
-
-            */
 
         /// <summary>
         /// Clears the result buffer
@@ -3855,51 +2686,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
         }
 
-
-        /*
-        /// <summary>
-        /// Called when a write operation is asked for and we are in Execution phase
-        /// </summary>
-        /// <param name="data"></param>
-        private void ProcessExecutionWrite(byte data)
-        {
-            // check command direction
-            if (ActiveCommand.Direction == CommandDirection.IN)
-            {
-                if (FDC_FLAG_SCANNING)
-                {
-                    // scan command is being processed
-                    if (data != 255)
-                    {
-                        switch (ActiveCommand.CommandCode)
-                        {
-                            // scan equal
-                            case 0x11:
-                                break;
-                            // scan high or equal
-                            case 0x1d:
-                                break;
-                            // scan low or equal
-                            case 0x19:
-                                break;
-                        }
-                    }
-                }
-
-            }
-        }
-
-        /// <summary>
-        /// Called when a read operation is asked for and we are in Execution phase
-        /// </summary>
-        /// <param name="data"></param>
-        private byte ProcessExecutionRead()
-        {
-            byte result = 0xFF;
-
-            return result;
-        }
-        */
         /// <summary>
         /// Populates the result status registers
         /// </summary>
@@ -3945,52 +2731,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 UnSetBit(SR0_US0, ref Status0);
             }
 
-            /*
-            // initial defaults
-            SetBit(SR0_IC0, ref Status0);
-            SetBit(SR1_EN, ref Status1);
-
-            // check for read diag
-            if (ActiveCommand.CommandCode == 0x02)
-            {
-                // commit to result buffer
-                ResBuffer[RS_ST0] = Status0;
-                ResBuffer[RS_ST1] = Status1;
-                return;
-            }
-
-            // check for error bits
-            if (GetBit(SR1_DE, Status1) ||
-                GetBit(SR1_MA, Status1) ||
-                GetBit(SR1_ND, Status1) ||
-                GetBit(SR1_NW, Status1) ||
-                GetBit(SR1_OR, Status1) ||
-                GetBit(SR2_BC, Status2) ||
-                GetBit(SR2_CM, Status2) ||
-                GetBit(SR2_DD, Status2) ||
-                GetBit(SR2_MD, Status2) ||
-                GetBit(SR2_SN, Status2) ||
-                GetBit(SR2_WC, Status2))
-            {
-                // error bits set - unset end of track
-                UnSetBit(SR1_EN, ref Status1);
-            }
-
-            // check for data errors
-            if (GetBit(SR1_DE, Status1) ||
-                GetBit(SR2_DD, Status2))
-            {
-                // unset control mark
-                UnSetBit(SR2_CM, ref Status2);
-            }            
-            else if (GetBit(SR2_CM, Status2))
-            {
-                // DAM found - unset IC and US0
-                UnSetBit(SR0_IC0, ref Status0);
-                UnSetBit(SR0_US0, ref Status0);
-            }
-            */
-
             // commit to result buffer
             ResBuffer[RS_ST0] = Status0;
             ResBuffer[RS_ST1] = Status1;
@@ -4008,127 +2748,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ResBuffer[RS_R] = ActiveCommandParams.Sector;
             ResBuffer[RS_N] = ActiveCommandParams.SectorSize;
         }
-        /*
-        /// <summary>
-        /// Sets everything up ready to return the specified result byte format
-        /// </summary>
-        private void GetResult(ResultType resType)
-        {
-            switch (resType)
-            {
-                // return the standard 7 byte format
-                case ResultType.Standard:
-
-                    // status registers
-                    CommitResultStatus();
-
-                    // CHRN
-                    CommitResultCHRN();
-
-                    // make main status register ready
-                    // set FDC busy
-                    SetBit(MSR_CB, ref StatusMain);
-                    // set direction
-                    SetBit(MSR_DIO, ref StatusMain);
-                    // RQM ready
-                    SetBit(MSR_RQM, ref StatusMain);
-
-                    // update buffer counters
-                    CommCounter = 0;
-                    ResCounter = 0;
-
-                    // clear down status registers
-                    Status0 = 0;
-                    Status1 = 0;
-                    Status2 = 0;
-
-                    // move to result phase
-                    ActivePhase = Phase.Result;
-
-                    break;
-
-                // return 1 byte ST3
-                case ResultType.ST3:
-
-                    // commit ST3 to result buffer
-                    ResBuffer[0] = Status3;
-
-                    // make main status register ready
-                    // set FDC busy
-                    SetBit(MSR_CB, ref StatusMain);
-                    // set direction
-                    SetBit(MSR_DIO, ref StatusMain);
-                    // RQM ready
-                    SetBit(MSR_RQM, ref StatusMain);
-
-                    // update buffer counters
-                    CommCounter = 0;
-                    ResCounter = 0;
-
-                    // move to result phase
-                    ActivePhase = Phase.Result;
-
-                    break;
-
-                // return 1 byte ST0
-                case ResultType.ST0:
-
-                    // commit st0 to result buffer
-                    ResBuffer[0] = Status0;
-
-                    // make main status register ready
-                    // set FDC busy
-                    SetBit(MSR_CB, ref StatusMain);
-                    // set direction
-                    SetBit(MSR_DIO, ref StatusMain);
-                    // RQM ready
-                    SetBit(MSR_RQM, ref StatusMain);
-
-                    // update buffer counters
-                    CommCounter = 0;
-                    ResCounter = 0;
-
-                    // move to result phase
-                    ActivePhase = Phase.Result;
-
-                    break;
-
-                case ResultType.Interrupt:
-
-                    // commit st0 to result buffer
-                    ResBuffer[0] = Status0;
-
-                    // commit current track to result buffer
-                    ResBuffer[1] = (byte)FDD_CurrentCylinder;
-
-                    // make main status register ready
-                    // set FDC busy
-                    SetBit(MSR_CB, ref StatusMain);
-                    // set direction
-                    SetBit(MSR_DIO, ref StatusMain);
-                    // RQM ready
-                    SetBit(MSR_RQM, ref StatusMain);
-
-                    // move to result phase
-                    ActivePhase = Phase.Result;
-
-                    break;
-            }            
-        }
 
         /// <summary>
-        /// Sets everything up ready to return the standard 7 byte result format
+        /// Moves active phase into idle
         /// </summary>
-        private void GetResult()
-        {
-            GetResult(ResultType.Standard);
-        }
-
-    */
-
-            /// <summary>
-            /// Moves active phase into idle
-            /// </summary>
         public void SetPhase_Idle()
         {
             ActivePhase = Phase.Idle;
@@ -4176,14 +2799,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             UnSetBit(MSR_DIO, ref StatusMain);
             UnSetBit(MSR_CB, ref StatusMain);
             UnSetBit(MSR_EXM, ref StatusMain);
-
-            // active direction
-            //UnSetBit(MSR_DIO, ref StatusMain);
-            // CB
-            //SetBit(MSR_CB, ref StatusMain);
-            // RQM
-            //SetBit(MSR_RQM, ref StatusMain);
-
             CommCounter = 0;
             ResCounter = 0;
         }
@@ -4205,182 +2820,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             CommCounter = 0;
             ResCounter = 0;
         }
-        /*
-        /// <summary>
-        /// Runs the execution phase
-        /// This is called from the Drive Cycle routine
-        /// </summary>
-        private void ExecutionPhase()
-        {
-            // are we currently searching for a sector?
-            if (IndexPulseCounter > 0)
-            {
-                // if the drive ready?
-                if (!ActiveDrive.FLAG_READY)
-                {
-                    ActiveStatus = Status.DriveNotReady;
-                    ActiveCommand.CommandDelegate(InstructionState.StartResult);
-                    return;
-                }
-
-                // is the head loaded?
-                if (HLT_Counter > 0)
-                {
-                    return;
-                }
-
-                SectorDelayCounter--;
-
-                if (SectorDelayCounter < 0)
-                {
-                    // get next sector
-                    var ns = FDD_CurrentSector + 1;
-
-                    if (ns < 0)
-                    {
-                        ActiveStatus = Status.SectorNotFound;
-                    }
-                }
-
-
-                return;
-            }
-
-            // still bytes to process?
-            if (ExecCounter > 0)
-            {
-                if (SectorDelayCounter > 0)
-                {
-                    if (--SectorDelayCounter <= 0)
-                    {
-                        // we are at the sector data
-                        SetBit(MSR_RQM, ref StatusMain);
-                    }
-
-                    return;
-                }
-
-                // IO sector transfer
-                if (GetBit(MSR_RQM, StatusMain));
-                {
-                    // overrun
-                    SetBit(SR1_OR, ref Status1);
-
-                    if ((ActiveCommand.CommandCode & 19) == 1)
-                    {
-                        ResBuffer[ActiveCommandParams.SectorLength - ExecCounter] = 0;
-                    }
-                }
-
-                // decrement ExecCounter
-                ExecCounter--;
-
-                // has transfer completed?
-                if (ExecCounter <= 0)
-                {
-                    SectorDelayCounter = 2;
-                }
-                else
-                {
-                    // next byte
-                    SetBit(MSR_RQM, ref StatusMain);
-                }
-                return;
-            }            
-
-            if (SectorDelayCounter > 0)
-            {
-                if (--SectorDelayCounter > 0)
-                {
-                    // data crc delay
-                    return;
-                }
-            }
-
-            // check interrupt status
-            if (ActiveDrive.IntStatus >= 0xc0)
-            {
-                ActiveStatus = Status.DriveNotReady;
-                return;
-            }
-
-            // is this a write command?
-            if ((ActiveCommand.CommandCode & 19) == 1)
-            {
-                byte sr1 = 0;
-                byte sr2 = (byte)((ActiveCommand.CommandCode & 8) << 3);
-
-                // write sector !!!
-                // assume no error for now !!!
-
-                sr1 |= (byte)(sr1 & 0x25);
-                sr2 |= (byte)(sr2 & 0x21);
-            }
-
-            // increment sector id
-        }
-
-        /// <summary>
-        /// Unloads head in execution
-        /// </summary>
-        private void CheckUnloadHead()
-        {
-            if (ActivePhase != Phase.Idle && ActivePhase == Phase.Execution)
-            {
-                // unload head
-                HUT_Counter = HUT;
-                HLT_Counter = 0;
-            }
-        }
-        /*
-        /// <summary>
-        /// Starts processing the result phase
-        /// </summary>
-        private void ResultPhase()
-        {
-            if (ActivePhase != Phase.Idle)
-            {
-                if (ActivePhase == Phase.Execution)
-                {
-                    // unload head
-                    HUT_Counter = HUT;
-                    HLT_Counter = 0;
-                }
-
-                if (ActiveStatus == Status.Invalid)
-                {
-                    // default error st0
-                    ResBuffer[0] = 0x80;
-                    ResLength = 1;
-                }
-                else
-                {
-                    ActiveCommand.CommandDelegate(InstructionState.ProcessResult);
-                }
-            }
-
-            // are there still result bytes to return?
-            if (ResCounter < ResLength)
-            {
-                // set result phase
-                ActivePhase = Phase.Result;
-                // active direction
-                ActiveDirection = CommandDirection.OUT;
-            }
-            else
-            {
-                // all result bytes have been sent
-                // move to idle
-                ActivePhase = Phase.Idle;
-                // active direction
-                ActiveDirection = CommandDirection.IN;
-            }
-
-            // set RQM flag
-            FDC_FLAG_RQM = true;
-        }
-        */
-
 
         #endregion
     }

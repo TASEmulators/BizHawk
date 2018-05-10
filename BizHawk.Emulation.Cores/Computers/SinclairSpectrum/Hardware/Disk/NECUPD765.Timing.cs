@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             StatesPerDriveTick = TStatesPerDriveCycle;
 
         }
-
+        /*
         /// <summary>
         /// Called every cycle by the emulated machine
         /// Simulates the floppy drive and updates execution phase bits
@@ -117,6 +117,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             //RunDriveCycle();
         }
+        */
 
         /// <summary>
         /// Called by reads to the main status register

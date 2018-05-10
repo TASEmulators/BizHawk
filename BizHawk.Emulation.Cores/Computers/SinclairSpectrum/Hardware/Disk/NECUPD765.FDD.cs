@@ -228,12 +228,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             public bool FLAG_WRITEPROTECT = false;            
 
             /// <summary>
-            /// Storage for recal steps
-            /// One step for each indexpulse (track index) until track 0
-            /// </summary>
-            //public int RecalibrationCounter;
-
-            /// <summary>
             /// Storage for seek steps
             /// One step for each indexpulse (track index) until seeked track
             /// </summary>
@@ -310,21 +304,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             /// The current sector index in the Sectors array
             /// </summary>
             public int SectorIndex;
-
-            /// <summary>
-            /// The current command that the drive is processing
-            /// </summary>
-            //public DriveMainState CurrentState = DriveMainState.None;
-
-            /// <summary>
-            /// Current seek state
-            /// </summary>
-            //public SeekSubState SeekState = SeekSubState.Idle;
-
-            /// <summary>
-            /// Seek int state
-            /// </summary>
-            //public SeekIntStatus SeekIntState = SeekIntStatus.Normal;
 
             /// <summary>
             /// The currently loaded floppy disk
