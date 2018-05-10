@@ -505,6 +505,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public int StateCount => _states.Count;
+		public int LastEditedFrame => _movie.LastEditedFrame;
 
 		public bool Any()
 		{

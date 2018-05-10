@@ -79,7 +79,7 @@ namespace BizHawk.Client.Common
 					{
 						continue;
 					}
-					else if (currentFrame % _step > 0)
+					else if ((currentFrame % _step > 0) && (currentFrame + 1 != _tsm.LastEditedFrame))
 					{
 						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
 						if (_tsm.RemoveState(currentFrame))
@@ -120,7 +120,7 @@ namespace BizHawk.Client.Common
 					{
 						continue;
 					}
-					else if (currentFrame % _step > 0)
+					else if ((currentFrame % _step > 0) && (currentFrame + 1 != _tsm.LastEditedFrame))
 					{
 						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
 						if (_tsm.RemoveState(currentFrame))
