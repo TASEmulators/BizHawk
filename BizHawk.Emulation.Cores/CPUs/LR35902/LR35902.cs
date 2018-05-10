@@ -151,6 +151,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						FetchInstruction(ReadMemory(RegPC++));
 					}
 					instr_pntr = 0;
+					I_use = false;
 					break;
 				case RD:
 					Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -302,7 +303,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							{
 								INTERRUPT_();
 								Halt_bug_3 = false;
-								Console.WriteLine("Hit this");
+								Console.WriteLine("Hit INT");
 							}
 						}
 						else
@@ -335,6 +336,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 								RegPC++;
 								FetchInstruction(ReadMemory(RegPC));
 								Halt_bug_3 = false;
+								Console.WriteLine("Hit un");
 							}
 							else
 							{
