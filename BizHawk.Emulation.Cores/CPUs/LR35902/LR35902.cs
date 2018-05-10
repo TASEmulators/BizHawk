@@ -295,7 +295,8 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							// call the interrupt processor after 4 extra cycles
 							if (!Halt_bug_3)
 							{
-								INTERRUPT_GBC_NOP();							
+								INTERRUPT_GBC_NOP();
+								//INTERRUPT_();
 							}
 							else
 							{

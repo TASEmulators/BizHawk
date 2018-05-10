@@ -262,13 +262,13 @@ namespace BizHawk.Client.Common
 			return _movie.Markers.IsMarker(frame + 1);
 		}
 
-		public void RemoveState(int frame)
+		public bool RemoveState(int frame)
 		{
 			int index = _states.IndexOfKey(frame);
 
 			if (frame < 1 || index < 1)
 			{
-				return;
+				return false;
 			}
 
 			StateManagerState state = _states.Values[index];
@@ -283,6 +283,8 @@ namespace BizHawk.Client.Common
 			}
 
 			_states.RemoveAt(index);
+
+			return true;
 		}
 
 		/// <summary>
