@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public int TotalExecutedCycles
 		{
-			get { return cpu.TotalExecutedCycles; }
+			get { return (int)cpu.TotalExecutedCycles; }
 		}
 	}
 }
