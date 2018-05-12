@@ -37,7 +37,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// some of gekkio's tests require these to be accessible during DMA
 				if (addr < 0x4000)
 				{
-					return mapper.ReadMemory(addr); 
+					if (ppu.DMA_addr < 0x80)
+					{
+						return 0xFF;
+					}
+					else
+					{
+						return mapper.ReadMemory(addr);
+					}
 				}
 				else if ((addr >= 0xE000) && (addr < 0xF000))
 				{
@@ -265,7 +272,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// some of gekkio's tests require these to be accessible during DMA
 				if (addr < 0x4000)
 				{
-					return mapper.ReadMemory(addr);
+					if (ppu.DMA_addr < 0x80)
+					{
+						return 0xFF;
+					}
+					else
+					{
+						return mapper.ReadMemory(addr);
+					}
 				}
 				else if ((addr >= 0xE000) && (addr < 0xF000))
 				{
