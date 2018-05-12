@@ -42,10 +42,8 @@ class Memory {
 	bool cgbSwitching;
 	bool agbMode;
 	bool gbIsCgb_;
-	bool stopped;
 	unsigned short &SP;
 	unsigned short &PC;
-	unsigned long halttime;
 
 	void (*readCallback)(unsigned);
 	void (*writeCallback)(unsigned);
@@ -130,7 +128,7 @@ public:
 		return cc < intreq.eventTime(BLIT) ? -1 : static_cast<long>((cc - intreq.eventTime(BLIT)) >> isDoubleSpeed());
 	}
 
-	void halt(unsigned long cycleCounter) { halttime = cycleCounter; intreq.halt(); }
+	void halt() { intreq.halt(); }
 	void ei(unsigned long cycleCounter) { if (!ime()) { intreq.ei(cycleCounter); } }
 
 	void di() { intreq.di(); }
