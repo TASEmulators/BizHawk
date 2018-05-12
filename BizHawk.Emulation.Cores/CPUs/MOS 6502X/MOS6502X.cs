@@ -204,7 +204,7 @@ namespace BizHawk.Emulation.Cores.Components.M6502
 			private set { P = (byte)((P & ~0x80) | (value ? 0x80 : 0x00)); }
 		}
 
-		public int TotalExecutedCycles;
+		public long TotalExecutedCycles;
 
 		public Func<ushort, byte> ReadMemory;
 		public Func<ushort, byte> DummyReadMemory;

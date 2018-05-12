@@ -169,7 +169,7 @@ namespace BizHawk.Client.Common
 
 		[LuaMethodExample("local inemutot = emu.totalexecutedcycles( );")]
 		[LuaMethod("totalexecutedcycles", "gets the total number of executed cpu cycles")]
-		public int TotalExecutedycles()
+		public long TotalExecutedycles()
 		{
 			try
 			{

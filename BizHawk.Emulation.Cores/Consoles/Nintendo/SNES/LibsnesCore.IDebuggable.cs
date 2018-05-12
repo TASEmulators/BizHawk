@@ -69,7 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 
 		[FeatureNotImplemented]
-		public int TotalExecutedCycles
+		public long TotalExecutedCycles
 		{
 			get { throw new NotImplementedException(); }
 		}

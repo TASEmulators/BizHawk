@@ -89,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Sony.PSX
 		public void Step(StepType type) { throw new NotImplementedException(); }
 
 		[FeatureNotImplemented]
-		public int TotalExecutedCycles
+		public long TotalExecutedCycles
 		{
 			get { throw new NotImplementedException(); }
 		}

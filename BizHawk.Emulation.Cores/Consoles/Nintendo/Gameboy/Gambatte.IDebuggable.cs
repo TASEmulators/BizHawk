@@ -44,9 +44,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			throw new NotImplementedException();
 		}
 
-		public int TotalExecutedCycles
+		public long TotalExecutedCycles
 		{
-			get { return (int)Math.Max(_cycleCount, callbackCycleCount); }
+			get { return Math.Max((long)_cycleCount, (long)callbackCycleCount); }
 		}
 
 		private MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });

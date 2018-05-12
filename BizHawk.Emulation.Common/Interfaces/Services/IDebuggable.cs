@@ -41,7 +41,7 @@ namespace BizHawk.Emulation.Common
 		/// Gets the total number of CPU cycles since the beginning of the core's lifecycle
 		/// Note that the CPU in this case is the "main" CPU, for some cores that may be somewhat subjective
 		/// </summary>
-		int TotalExecutedCycles { get; } // TODO: this should probably be a long, but most cores were using int, oh well
+		long TotalExecutedCycles { get; } // TODO: this should probably be a long, but most cores were using int, oh well
 	}
 
 	public class RegisterValue

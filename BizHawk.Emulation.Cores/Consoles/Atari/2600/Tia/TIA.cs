@@ -106,7 +106,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private bool _doTicks;
 
 		private byte _hsyncCnt;
-		private int _capChargeStart;
+		private long _capChargeStart;
 		private bool _capCharging;
 		private bool _vblankEnabled;
 		private bool _vsyncEnabled;
