@@ -244,6 +244,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 		/// total cycles actually executed
 		/// </summary>
 		private ulong _cycleCount = 0;
+		private ulong callbackCycleCount = 0;
 
 		/// <summary>
 		/// number of extra cycles we overran in the last frame

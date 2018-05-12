@@ -45,6 +45,7 @@ CPU::CPU()
 }
 
 long CPU::runFor(const unsigned long cycles) {
+	memory.setBasetime(cycleCounter_);
 	process(cycles/* << memory.isDoubleSpeed()*/);
 	
 	const long csb = memory.cyclesSinceBlit(cycleCounter_);
