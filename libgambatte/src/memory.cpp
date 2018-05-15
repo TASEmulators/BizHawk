@@ -1143,6 +1143,8 @@ SYNCFUNC(Memory)
 	NSS(cgbSwitching);
 	NSS(agbMode);
 	NSS(gbIsCgb_);
+	NSS(stopped);
+	NSS(halttime);
 
 	SSS(intreq);
 	SSS(tima);

@@ -181,6 +181,7 @@ void Tima::doIrqEvent(const TimaInterruptRequester timaIrq) {
 SYNCFUNC(Tima)
 {
 	NSS(lastUpdate_);
+	NSS(basetime_);
 	NSS(tmatime_);
 	NSS(tima_);
 	NSS(tma_);
