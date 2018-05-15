@@ -45,6 +45,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		public bool FlagI;
 
+		public bool FlagW; // wait flag, when set to true reads / writes will be delayed
+
 		public bool FlagC
 		{
 			get { return (Regs[5] & 0x01) != 0; }
@@ -109,6 +111,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			{
 				Regs[i] = 0;
 			}
+
+			FlagI = false;
+			FlagW = false;
 		}
 
 		private bool[] TableParity;
@@ -125,8 +130,5 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				TableParity[i] = (Bits & 1) == 0;
 			}
 		}
-
-
-
 	}
 }
