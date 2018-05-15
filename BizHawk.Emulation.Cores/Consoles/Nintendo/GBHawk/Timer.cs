@@ -93,10 +93,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					write_ignore = 4;
 					TMA_coincidence = true;
 
-				}
-				else if (pending_reload == 1 && !reload_block)
-				{
-
 					// set interrupts
 					if (Core.REG_FFFF.Bit(2)) { Core.cpu.FlagI = true; }
 					Core.REG_FF0F |= 0x04;
@@ -135,11 +131,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				timer_old = timer;
 				timer++;
 
-				// if overflow, set the interrupt flag and reload the timer (4 clocks later)
+				// if overflow happens, set the interrupt flag and reload the timer (if applicable)
 				if (timer < timer_old)
 				{
-					pending_reload = 4;
-					reload_block = false;
+					if (timer_control.Bit(2))
+					{
+						pending_reload = 4;
+						reload_block = false;
+					}
+					else
+					{
+						//TODO: Check if timer still gets reloaded if TAC diabled causes overflow
+						if (Core.REG_FFFF.Bit(2)) { Core.cpu.FlagI = true; }
+						Core.REG_FF0F |= 0x04;
+					}				
 				}
 			}
 
