@@ -114,7 +114,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 				// then a bug is triggered 
 				// With interrupts enabled, this runs the halt command twice 
 				// when they are disabled, it reads the next byte twice
-				if (!FlagI) { Halt_bug_2 = true; }
+				if (!FlagI ||(FlagI && !interrupts_enabled)) { Halt_bug_2 = true; }
 				
 			}
 		}

@@ -310,6 +310,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						{					
 							// call interrupt processor
 							INTERRUPT_();
+							Halt_bug_3 = false;
 						}					
 					}
 					else if (temp)
@@ -324,15 +325,15 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							});
 						}
 						halted = false;
-						if (OnExecFetch != null) OnExecFetch(RegPC);
-						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
-						
-						
+
 						if (is_GBC)
 						{
 							// extra 4 cycles for GBC
 							if (Halt_bug_3)
 							{
+								if (OnExecFetch != null) OnExecFetch(RegPC);
+								if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+
 								RegPC++;
 								FetchInstruction(ReadMemory(RegPC));
 								Halt_bug_3 = false;
@@ -348,7 +349,10 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							}
 						}
 						else			
-						{					
+						{
+							if (OnExecFetch != null) OnExecFetch(RegPC);
+							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
+
 							if (Halt_bug_3)
 							{
 								//special variant of halt bug where RegPC also isn't incremented post fetch
