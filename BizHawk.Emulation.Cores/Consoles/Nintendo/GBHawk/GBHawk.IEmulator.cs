@@ -63,8 +63,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (_scanlineCallback != null)
 			{
-				GetGPU();
-				_scanlineCallback(ppu.LCDC);
+				if (_scanlineCallbackLine == -1)
+				{
+					GetGPU();
+					_scanlineCallback(ppu.LCDC);
+				}
 			}
 
 			if (_islag)

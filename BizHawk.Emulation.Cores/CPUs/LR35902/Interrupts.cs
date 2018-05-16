@@ -4,23 +4,6 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 {
 	public partial class LR35902
 	{
-		private bool nonMaskableInterrupt;
-		public bool NonMaskableInterrupt
-		{
-			get { return nonMaskableInterrupt; }
-			set { if (value && !nonMaskableInterrupt) NonMaskableInterruptPending = true; nonMaskableInterrupt = value; }
-		}
-
-		private bool nonMaskableInterruptPending;
-		public bool NonMaskableInterruptPending { get { return nonMaskableInterruptPending; } set { nonMaskableInterruptPending = value; } }
-
-		private int interruptMode;
-		public int InterruptMode
-		{
-			get { return interruptMode; }
-			set { if (value < 0 || value > 2) throw new ArgumentOutOfRangeException(); interruptMode = value; }
-		}
-
 		private void INTERRUPT_()
 		{
 			cur_instr = new ushort[]
@@ -92,9 +75,6 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			skip_once = false;
 			Halt_bug_2 = false;
 			Halt_bug_3 = false;
-			NonMaskableInterrupt = false;
-			NonMaskableInterruptPending = false;
-			InterruptMode = 1;
 		}
 	}
 }

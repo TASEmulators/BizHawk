@@ -28,12 +28,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte REG_FFFF;
 		// The unused bits in this register (interrupt flags) are always set
 		public byte REG_FF0F = 0xE0;
-		public bool enable_VBL;
-		public bool enable_STAT;
-		public bool enable_TIMO;
-		public bool enable_SER;
-		public bool enable_PRS;
-
 
 		// memory domains
 		public byte[] RAM = new byte[0x8000]; // only 0x2000 available to GB

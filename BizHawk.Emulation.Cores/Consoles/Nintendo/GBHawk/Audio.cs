@@ -107,7 +107,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte AUD_CTRL_vol_L;
 		public byte AUD_CTRL_vol_R;
 
-		public int sequencer_len, sequencer_vol, sequencer_swp, sequencer_tick;
+		public int sequencer_len, sequencer_vol, sequencer_swp;
 		public bool timer_bit_old;
 
 		public byte sample;
@@ -729,14 +729,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// frame sequencer ticks at a rate of 512 hz (or every time a 13 bit counter rolls over)
 			// the sequencer is actually the timer DIV register
 			// so if it's constantly written to, these values won't update
-			//sequencer_tick++;
-
-			//if (sequencer_tick == 8192)
 			bool check = Core.double_speed ? Core.timer.divider_reg.Bit(13) : Core.timer.divider_reg.Bit(12);
 			if (check && !timer_bit_old)
 			{
-				//sequencer_tick = 0;
-				
 				sequencer_vol++; sequencer_vol &= 0x7;
 				sequencer_len++; sequencer_len &= 0x7;
 				sequencer_swp++; sequencer_swp &= 0x7;
@@ -941,7 +936,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			sequencer_len = 0;
 			sequencer_swp = 0;
 			sequencer_vol = 0;
-			sequencer_tick = 0;
 
 			sample = 0;
 
@@ -1033,7 +1027,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("sequencer_len", ref sequencer_len);
 			ser.Sync("sequencer_vol", ref sequencer_vol);
 			ser.Sync("sequencer_swp", ref sequencer_swp);
-			ser.Sync("sequencer_tick", ref sequencer_tick);
 			ser.Sync("timer_bit_old", ref timer_bit_old);
 
 			ser.Sync("master_audio_clock", ref master_audio_clock);

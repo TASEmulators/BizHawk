@@ -72,11 +72,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			ser.Sync("REG_FFFF", ref REG_FFFF);
 			ser.Sync("REG_FF0F", ref REG_FF0F);
-			ser.Sync("enable_VBL", ref enable_VBL);
-			ser.Sync("enable_LCDC", ref enable_PRS);
-			ser.Sync("enable_TIMO", ref enable_TIMO);
-			ser.Sync("enable_SER", ref enable_SER);
-			ser.Sync("enable_STAT", ref enable_STAT);
 
 			// memory domains
 			ser.Sync("RAM", ref RAM, false);

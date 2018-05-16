@@ -373,11 +373,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				// interrupt control register
 				case 0xFFFF:
 					REG_FFFF = value;
-					enable_VBL = REG_FFFF.Bit(0);
-					enable_STAT = REG_FFFF.Bit(1);
-					enable_TIMO = REG_FFFF.Bit(2);
-					enable_SER = REG_FFFF.Bit(3);
-					enable_PRS = REG_FFFF.Bit(4);
 
 					// check if enabling any of the bits triggered an IRQ
 					for (int i = 0; i < 5; i++)

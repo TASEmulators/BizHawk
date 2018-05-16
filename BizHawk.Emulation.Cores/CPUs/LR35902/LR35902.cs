@@ -564,9 +564,6 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			ser.BeginSection("LR35902");
 			ser.Sync("Regs", ref Regs, false);
 			ser.Sync("IRQ", ref interrupts_enabled);
-			ser.Sync("NMI", ref nonMaskableInterrupt);
-			ser.Sync("NMIPending", ref nonMaskableInterruptPending);
-			ser.Sync("IM", ref interruptMode);
 			ser.Sync("I_use", ref I_use);
 			ser.Sync("skip_once", ref skip_once);
 			ser.Sync("Halt_bug_2", ref Halt_bug_2);
@@ -579,8 +576,8 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			ser.Sync("stop_check", ref stop_check);
 			ser.Sync("is_GBC", ref is_GBC);
 
-			ser.Sync("instruction_pointer", ref instr_pntr);
-			ser.Sync("current instruction", ref cur_instr, false);
+			ser.Sync("instr_pntr", ref instr_pntr);
+			ser.Sync("cur_instr", ref cur_instr, false);
 			ser.Sync("CB Preifx", ref CB_prefix);
 			ser.Sync("Stopped", ref stopped);
 			ser.Sync("opcode", ref opcode);
