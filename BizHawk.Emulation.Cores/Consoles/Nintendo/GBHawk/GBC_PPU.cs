@@ -825,17 +825,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						read_case = 8;
 						hbl_countdown = 5;
-						if (window_started)
-						{
-							hbl_countdown -= 2;
-						}
-					}
-					if (pixel_counter == 158 && window_started)
-					{
-						STAT &= 0xFC;
-						STAT |= 0x00;
-
-						if (STAT.Bit(3)) { HBL_INT = true; }
 					}
 				}
 				else if ((render_counter >= render_offset) && (pixel_counter < 0))
@@ -1009,10 +998,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
-							if (!window_pre_render)
-							{
-								window_tile_inc++;
-							}
+							window_tile_inc++;
 							read_case = 5;
 						}
 						window_counter++;
@@ -1089,10 +1075,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (window_pre_render)
 							{
 								// here we set up rendering
-								window_pre_render = false;
+								// unlike for the normal background case, there is no pre-render period for the window
+								// so start shifting in data to the screen right away
 								render_offset = 0;
-								render_counter = 0;
+								render_counter = 8;
 								latch_counter = 0;
+								latch_new_data = true;
+
+								window_pre_render = false;
 								read_case = 4;
 							}
 							else

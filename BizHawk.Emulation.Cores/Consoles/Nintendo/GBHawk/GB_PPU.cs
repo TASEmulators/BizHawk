@@ -701,10 +701,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else
 						{
-							if (!window_pre_render)
-							{
-								window_tile_inc++;
-							}
+							window_tile_inc++;
 							read_case = 5;
 						}
 						window_counter++;
@@ -770,10 +767,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (window_pre_render)
 							{
 								// here we set up rendering
-								window_pre_render = false;
+								// unlike for the normal background case, there is no pre-render period for the window
+								// so start shifting in data to the screen right away
 								render_offset = 0;
-								render_counter = 0;
+								render_counter = 8;
 								latch_counter = 0;
+								latch_new_data = true;
+
+								window_pre_render = false;
 								read_case = 4;
 							}
 							else
