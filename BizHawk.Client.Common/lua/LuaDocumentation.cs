@@ -59,7 +59,7 @@ __Types and notation__
 					sb
 						.AppendFormat("__{0}.{1}__%%%", func.Library, func.Name)
 						.AppendLine().AppendLine()
-						.AppendFormat("* {0} {1}.{2}{3}", func.ReturnType, func.Library, func.Name, func.ParameterList)
+						.AppendFormat("* {0} {1}.{2}{3}", func.ReturnType, func.Library, func.Name, func.ParameterList.Replace("[", "[[").Replace("]", "]]"))
 						.AppendLine().AppendLine()
 						.AppendFormat("* {0}", func.Description)
 						.AppendLine().AppendLine();
