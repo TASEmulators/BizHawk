@@ -10,10 +10,30 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 	public sealed partial class Chip6510
 	{
 		// ------------------------------------
-		private readonly MOS6502X _cpu;
+		private readonly MOS6502X<CpuLink> _cpu;
 		private bool _pinNmiLast;
 		private LatchedPort _port;
 		private bool _thisNmi;
+
+		private struct CpuLink : IMOS6502XLink
+		{
+			private readonly Chip6510 _chip;
+
+			public CpuLink(Chip6510 chip)
+			{
+				_chip = chip;
+			}
+
+			public byte DummyReadMemory(ushort address) => unchecked((byte)_chip.Read(address));
+
+			public void OnExecFetch(ushort address) { }
+
+			public byte PeekMemory(ushort address) => unchecked((byte)_chip.Peek(address));
+
+			public byte ReadMemory(ushort address) => unchecked((byte)_chip.Read(address));
+
+			public void WriteMemory(ushort address, byte value) => _chip.Write(address, value);
+		}
 
 		public Func<int, int> PeekMemory;
 		public Action<int, int> PokeMemory;
@@ -33,13 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 		public Chip6510()
 		{
 			// configure cpu r/w
-			_cpu = new MOS6502X
-			{
-				DummyReadMemory = CpuRead,
-				ReadMemory = CpuRead,
-				WriteMemory = CpuWrite,
-				PeekMemory = CpuPeek
-			};
+			_cpu = new MOS6502X<CpuLink>(new CpuLink(this));
 
 			// perform hard reset
 			HardReset();

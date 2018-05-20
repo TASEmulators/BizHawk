@@ -1301,6 +1301,7 @@
     <Compile Include="CPUs\LR35902\Registers.cs" />
     <Compile Include="CPUs\LR35902\Tables_Direct.cs" />
     <Compile Include="CPUs\LR35902\Tables_Indirect.cs" />
+    <Compile Include="CPUs\MOS 6502X\IMOS6502XLink.cs" />
     <Compile Include="CPUs\W65816\Disassembler.cs" />
     <Compile Include="CPUs\68000\Diassembler.cs" />
     <Compile Include="CPUs\68000\Instructions\BitArithemetic.cs" />
@@ -1441,6 +1442,7 @@
     <None Include="Consoles\Nintendo\NES\Docs\BoardTable.xlsx" />
     <None Include="Consoles\Nintendo\NES\Docs\MapperCompatibilityList.url" />
     <None Include="Consoles\Nintendo\NES\Docs\nesasm.pdf" />
+    <Compile Include="Consoles\Nintendo\NES\NES.CpuLink.cs" />
     <None Include="Resources\128.ROM.gz" />
     <None Include="Resources\48.ROM.gz" />
     <None Include="Resources\cgb_boot.bin.gz" />
