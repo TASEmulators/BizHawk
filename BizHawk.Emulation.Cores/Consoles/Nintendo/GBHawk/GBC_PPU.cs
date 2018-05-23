@@ -378,7 +378,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						window_y_tile = 0;
 						window_y_tile_inc = 0;
 						window_started = false;
-						window_is_reset = true;
+						if (!LCDC.Bit(5)) { window_is_reset = true; }
+						
 					}
 
 					// Automatically restore access to VRAM at this time (force end drawing)
@@ -1202,7 +1203,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public override void process_sprite()
 		{
 			int y;
-			int VRAM_temp = SL_sprites[sl_use_index * 4 + 3].Bit(3) ? 1 : 0;
+			int VRAM_temp = (SL_sprites[sl_use_index * 4 + 3].Bit(3) && Core.GBC_compat) ? 1 : 0;
 
 			if (SL_sprites[sl_use_index * 4 + 3].Bit(6))
 			{

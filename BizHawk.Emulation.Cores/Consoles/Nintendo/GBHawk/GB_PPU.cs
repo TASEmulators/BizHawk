@@ -153,7 +153,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						window_y_tile = 0;
 						window_y_tile_inc = 0;
 						window_started = false;
-						window_is_reset = true;
+						if (!LCDC.Bit(5)) { window_is_reset = true; }
 					}
 
 					// Automatically restore access to VRAM at this time (force end drawing)
