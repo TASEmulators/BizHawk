@@ -644,9 +644,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				no_sprites = false;
 				evaled_sprites = 0;
 				window_pre_render = false;
+				window_latch = LCDC.Bit(5);
 
 				// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
-				if ((window_started && LCDC.Bit(5)) || (window_is_reset && !LCDC.Bit(5) && (LY > window_y)))
+				if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY > window_y)))
 				{
 					window_y_tile_inc++;
 					if (window_y_tile_inc==8)
@@ -665,7 +666,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			// before anything else, we have to check if windowing is in effect
-			if (LCDC.Bit(5) && !window_started && (LY >= window_y) && (pixel_counter >= (window_x_latch - 7)) && (window_x_latch < 167))
+			if (window_latch && !window_started && (LY >= window_y) && (pixel_counter >= (window_x_latch - 7)) && (window_x_latch < 167))
 			{
 				/*
 				Console.Write(LY);

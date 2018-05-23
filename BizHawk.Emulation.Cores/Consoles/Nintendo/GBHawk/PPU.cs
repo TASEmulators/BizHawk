@@ -93,6 +93,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int evaled_sprites;
 		public int sprite_ordered_index;
 		public bool blank_frame;
+		public bool window_latch;
 
 		// windowing state
 		public int window_counter;
@@ -244,6 +245,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("SL_sprites_ordered", ref SL_sprites_ordered, false);
 			ser.Sync("sprite_ordered_index", ref sprite_ordered_index);
 			ser.Sync("blank_frame", ref blank_frame);
+			ser.Sync("window_latch", ref window_latch);
 
 			ser.Sync("window_counter", ref window_counter);
 			ser.Sync("window_pre_render", ref window_pre_render);

@@ -35,7 +35,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (ppu.DMA_start)
 			{
 				// some of gekkio's tests require these to be accessible during DMA
-				if (addr < 0x4000)
+				if (addr < 0x8000)
 				{
 					if (ppu.DMA_addr < 0x80)
 					{
@@ -270,7 +270,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (ppu.DMA_start)
 			{
 				// some of gekkio's tests require these to be accessible during DMA
-				if (addr < 0x4000)
+				if (addr < 0x8000)
 				{
 					if (ppu.DMA_addr < 0x80)
 					{
