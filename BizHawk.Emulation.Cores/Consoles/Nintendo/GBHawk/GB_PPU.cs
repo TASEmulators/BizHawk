@@ -449,19 +449,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Console.Write(" ");
 				Console.WriteLine(pixel_counter);
 				*/
-				if (pixel_counter == 0 && window_x_latch <= 7)
+				if (window_x_latch <= 7)
 				{
 					// if the window starts at zero, we still do the first access to the BG
 					// but then restart all over again at the window
-					window_pre_render = true;
+					read_case = 9;
 				}
 				else
 				{
 					// otherwise, just restart the whole process as if starting BG again
-					window_pre_render = true;
 					read_case = 4;
 				}
+				window_pre_render = true;
+
 				window_counter = 0;
+				render_counter = 0;
 
 				window_x_tile = (int)Math.Floor((float)(pixel_counter - (window_x_latch - 7)) / 8);
 				
@@ -470,7 +472,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				window_is_reset = false;
 			}
 			
-			if (!pre_render && !fetch_sprite && !window_pre_render)
+			if (!pre_render && !fetch_sprite)
 			{
 				// start shifting data into the LCD
 				if (render_counter >= (render_offset + 8))
@@ -546,7 +548,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						hbl_countdown = 5;
 					}
 				}
-				else if ((render_counter >= render_offset) && (pixel_counter < 0))
+				else if (pixel_counter < 0)
 				{
 					pixel_counter++;
 				}
@@ -602,10 +604,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (!pre_render)
 							{
 								tile_inc++;
-								if (window_pre_render)
-								{
-									read_case = 4;
-								}
 							}						
 						}
 						break;
@@ -780,7 +778,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							else
 							{
 								read_case = 7;
-
 							}
 						}
 						window_counter++;
@@ -800,7 +797,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						break;
 
 					case 8: // done reading, we are now in phase 0
-
 						pre_render = true;
 
 						// the other interrupts appear to be delayed by 1 CPU cycle, so do the same here
@@ -819,8 +815,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								VRAM_access_read = true;
 								VRAM_access_write = true;
 							}
-						}
-							
+						}						
+						break;
+
+					case 9:
+						// this is a degenerate case for starting the window at 0
+						// kevtris' timing doc indicates an additional normal BG access
+						// but this information is thrown away, so it's faster to do this then constantly check
+						// for it in read case 0
+						read_case = 4;
 						break;
 				}
 				internal_cycle++;

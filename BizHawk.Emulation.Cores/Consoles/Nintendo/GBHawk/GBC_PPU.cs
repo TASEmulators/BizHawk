@@ -616,6 +616,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public override void render(int render_cycle)
 		{
+		
 			// we are now in STAT mode 3
 			// NOTE: presumably the first necessary sprite is fetched at sprite evaulation
 			// i.e. just keeping track of the lowest x-value sprite
@@ -642,7 +643,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				first_fetch = true;
 				no_sprites = false;
 				evaled_sprites = 0;
-
 				window_pre_render = false;
 
 				// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
@@ -678,20 +678,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Console.Write(" ");
 				Console.WriteLine(pixel_counter);
 				*/
-				if (pixel_counter == 0 && window_x_latch <= 7)
+				if (window_x_latch <= 7)
 				{
 					// if the window starts at zero, we still do the first access to the BG
 					// but then restart all over again at the window
-					window_pre_render = true;
-					read_case = 4;
+					read_case = 9;
 				}
 				else
 				{
 					// otherwise, just restart the whole process as if starting BG again
-					window_pre_render = true;
 					read_case = 4;
 				}
+				window_pre_render = true;
+
 				window_counter = 0;
+				render_counter = 0;
 
 				window_x_tile = (int)Math.Floor((float)(pixel_counter - (window_x_latch - 7)) / 8);
 				
@@ -700,7 +701,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				window_is_reset = false;
 			}
 			
-			if (!pre_render && !fetch_sprite && !window_pre_render)
+			if (!pre_render && !fetch_sprite)
 			{
 				// start shifting data into the LCD
 				if (render_counter >= (render_offset + 8))
@@ -791,10 +792,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 										pixel = (obj_pal_0 >> (s_pixel * 2)) & 3;
 									}
 								}						
-							}
-						}
+							}						
+						}						
 					}
-
+					
 					// based on sprite priority and pixel values, pick a final pixel color
 					if (Core.GBC_compat)
 					{
@@ -827,13 +828,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						hbl_countdown = 5;
 					}
 				}
-				else if ((render_counter >= render_offset) && (pixel_counter < 0))
+				else if (pixel_counter < 0)
 				{
 					pixel_counter++;
 				}
 				render_counter++;
 			}
-
+			
 			if (!fetch_sprite)
 			{
 				if (!pre_render)
@@ -865,12 +866,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 					}
 				}
-
+				
 				switch (read_case)
 				{
 					case 0: // read a background tile
 						if ((internal_cycle % 2) == 0)
-						{
+						{						
 							// calculate the row number of the tiles to be fetched
 							y_tile = ((int)Math.Floor((float)(scroll_y + LY) / 8)) % 32;
 
@@ -878,6 +879,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch];						
 							tile_data[2] = Core.VRAM[0x3800 + (LCDC.Bit(3) ? 1 : 0) * 0x400 + temp_fetch];
 							VRAM_sel = tile_data[2].Bit(3) ? 1 : 0;
+							
 							BG_V_flip = tile_data[2].Bit(6) & Core.GBC_compat;
 						}
 						else
@@ -886,10 +888,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							if (!pre_render)
 							{
 								tile_inc++;
-								if (window_pre_render)
-								{
-									read_case = 4;
-								}
 							}						
 						}
 						break;
@@ -917,7 +915,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 								tile_data[0] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2];
 							}
-
 						}
 						else
 						{
@@ -942,7 +939,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								{
 									tile_byte += 256;
 								}
-
 								tile_data[1] = Core.VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2 + 1];
 							}
 							else
@@ -952,10 +948,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								{
 									tile_byte -= 256;
 								}
-
 								tile_data[1] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
 							}
-
 						}
 						else
 						{
@@ -989,12 +983,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					case 4: // read from window data
 						if ((window_counter % 2) == 0)
-						{
+						{						
 							temp_fetch = window_y_tile * 32 + (window_x_tile + window_tile_inc) % 32;
 							tile_byte = Core.VRAM[0x1800 + (LCDC.Bit(6) ? 1 : 0) * 0x400 + temp_fetch];
 							tile_data[2] = Core.VRAM[0x3800 + (LCDC.Bit(6) ? 1 : 0) * 0x400 + temp_fetch];
 							VRAM_sel = tile_data[2].Bit(3) ? 1 : 0;
-							BG_V_flip = tile_data[2].Bit(6) & Core.GBC_compat;
+							BG_V_flip = tile_data[2].Bit(6) & Core.GBC_compat;						
 						}
 						else
 						{
@@ -1015,10 +1009,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							}
 
 							if (LCDC.Bit(4))
-							{
-
-								tile_data[0] = Core.VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2];
-								
+							{								
+								tile_data[0] = Core.VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2];								
 							}
 							else
 							{
@@ -1026,9 +1018,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								if (tile_byte.Bit(7))
 								{
 									tile_byte -= 256;
-								}
-
-								tile_data[0] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2];
+								}								
+								tile_data[0] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2];								
 							}
 						}
 						else
@@ -1054,9 +1045,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								if (tile_byte < 0)
 								{
 									tile_byte += 256;
-								}
-
-								tile_data[1] = Core.VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2 + 1];
+								}							
+								tile_data[1] = Core.VRAM[(VRAM_sel * 0x2000) + tile_byte * 16 + y_scroll_offset * 2 + 1];								
 							}
 							else
 							{
@@ -1064,9 +1054,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								if (tile_byte.Bit(7) && tile_byte > 0)
 								{
 									tile_byte -= 256;
-								}
-
-								tile_data[1] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];
+								}								
+								tile_data[1] = Core.VRAM[(VRAM_sel * 0x2000) + 0x1000 + tile_byte * 16 + y_scroll_offset * 2 + 1];							
 							}
 
 						}
@@ -1088,7 +1077,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							else
 							{
 								read_case = 7;
-
 							}
 						}
 						window_counter++;
@@ -1127,12 +1115,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								VRAM_access_read = true;
 								VRAM_access_write = true;
 							}
-						}
-							
+						}					
+						break;
+
+					case 9:
+						// this is a degenerate case for starting the window at 0
+						// kevtris' timing doc indicates an additional normal BG access
+						// but this information is thrown away, so it's faster to do this then constantly check
+						// for it in read case 0
+						read_case = 4;
 						break;
 				}
 				internal_cycle++;
-
+				
 				if (latch_new_data)
 				{
 					latch_new_data = false;
@@ -1141,7 +1136,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					tile_data_latch[2] = tile_data[2];
 				}
 			}
-
+			
 			// every in range sprite takes 6 cycles to process
 			// sprites located at x=0 still take 6 cycles to process even though they don't appear on screen
 			// sprites above x=168 do not take any cycles to process however
@@ -1200,6 +1195,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 				}				
 			}
+			
 		}
 
 		public override void process_sprite()
