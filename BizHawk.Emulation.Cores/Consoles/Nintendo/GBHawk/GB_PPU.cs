@@ -128,12 +128,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					LY += LY_inc;
 					Core.cpu.LY = LY;
-					// here is where LY = LYC gets cleared (but only if LY isnt 0 as that's a special case)
-					if (LY_inc == 1)
-					{
-						LYC_INT = false;
-						STAT &= 0xFB;
-					}
 
 					no_scan = false;
 
@@ -218,7 +212,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (STAT.Bit(5)) { OAM_INT = true; }
 					}
 
-					if ((LY == 153) && (cycle == 8))
+					if ((LY == 153) && (cycle == 6))
 					{
 						LY = 0;
 						LY_inc = 0;
@@ -280,7 +274,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						if (cycle < 80)
 						{
-							if (cycle == 4)
+							if (cycle == 2)
+							{
+								if (LY != 0) { if (STAT.Bit(5)) { OAM_INT = true; } }
+							}
+							else if (cycle == 4)
 							{
 								// apparently, writes can make it to OAM one cycle longer then reads
 								OAM_access_write = false;
@@ -288,7 +286,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								// here mode 2 will be set to true and interrupts fired if enabled
 								STAT &= 0xFC;
 								STAT |= 0x2;
-								if (STAT.Bit(5)) { OAM_INT = true; }
+
+								if (LY == 0) { if (STAT.Bit(5)) { OAM_INT = true; } }
 
 								HBL_INT = false;
 							}
@@ -335,8 +334,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (cycle == 92) { OAM_INT = false; }
 				}
 
-				// here LY=LYC will be asserted
-				if ((cycle == 4) && (LY != 0))
+				// here LY=LYC will be asserted or cleared (but only if LY isnt 0 as that's a special case)
+				if ((cycle == 2) && (LY != 0))
+				{
+					if (LY_inc == 1)
+					{
+						LYC_INT = false;
+						STAT &= 0xFB;
+					}
+
+				}
+				else if ((cycle == 4) && (LY != 0))
 				{
 					if ((LY == LYC) && !STAT.Bit(2))
 					{

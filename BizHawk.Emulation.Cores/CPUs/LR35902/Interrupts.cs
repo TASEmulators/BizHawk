@@ -12,8 +12,8 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						IDLE,
 						WR, SPl, SPh, PCh,
 						IDLE,
-						INT_GET, W,// NOTE: here is where we check for a cancelled IRQ
 						DEC16, SPl, SPh,
+						INT_GET, W,// NOTE: here is where we check for a cancelled IRQ
 						WR, SPl, SPh, PCl,
 						IDLE,
 						IDLE,
