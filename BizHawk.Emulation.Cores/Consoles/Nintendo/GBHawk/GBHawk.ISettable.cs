@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			public enum ControllerType
 			{
 				Default,
-				Kirby
+				Tilt
 			}
 
 			[JsonIgnore]
@@ -79,7 +79,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				set
 				{
 					if (value == ControllerType.Default) { Port1 = GBHawkControllerDeck.DefaultControllerName; }
-					else { Port1 = "Gameboy Controller + Kirby"; }
+					else { Port1 = "Gameboy Controller + Tilt"; }
 
 					_GBController = value;
 				}

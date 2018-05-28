@@ -106,15 +106,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 	}
 
-	[DisplayName("Gameboy Controller + Kirby")]
-	public class StandardKirby : IPort
+	[DisplayName("Gameboy Controller + Tilt")]
+	public class StandardTilt : IPort
 	{
-		public StandardKirby(int portNum)
+		public StandardTilt(int portNum)
 		{
 			PortNum = portNum;
 			Definition = new ControllerDefinition
 			{
-				Name = "Gameboy Controller + Kirby",
+				Name = "Gameboy Controller + Tilt",
 				BoolButtons = BaseDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
@@ -124,6 +124,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 
 		public int PortNum { get; }
+
+		public float theta, phi, theta_prev, phi_prev; 
 
 		public ControllerDefinition Definition { get; }
 
@@ -171,19 +173,34 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		// therefore this control scheme gives decreasing sensitivity in X as Y rotation inscreases 
 		public ushort ReadAccX(IController c)
 		{
-			double theta = c.GetFloat(Definition.FloatControls[1]) * Math.PI / 180.0;
-			double phi = c.GetFloat(Definition.FloatControls[0]) * Math.PI / 180.0;
+			theta_prev = theta;
+			phi_prev = phi;
+
+			theta = (float)(c.GetFloat(Definition.FloatControls[1]) * Math.PI / 180.0);
+			phi = (float)(c.GetFloat(Definition.FloatControls[0]) * Math.PI / 180.0);
 
 			float temp = (float)(Math.Cos(theta) * Math.Sin(phi));
 
-			return (ushort)(0x81D0 - Math.Floor(temp * 125));
+			// here we add in rates of change parameters. 
+			// a typical rate of change for a fast rotation is guessed at 0.5 rad / frame
+			// since rotations about X have less of a moment arm compared to by, we take 1/5 of the effect as a baseline
+			float temp2 = (float)((phi - phi_prev) / 0.5 * 25);
+
+			return (ushort)(0x81D0 - Math.Floor(temp * 125) - temp2);
 		}
 
 		// acc y is just the sine of the angle
+		// we assume that ReadAccX is called first, which updates the the states 
 		public ushort ReadAccY(IController c)
 		{
-			float temp = (float)Math.Sin(c.GetFloat(Definition.FloatControls[1]) * Math.PI / 180.0);
-			return (ushort)(0x81D0 - Math.Floor(temp * 125));			
+			float temp = (float)Math.Sin(theta);
+
+			// here we add in rates of change parameters. 
+			// a typical rate of change for a fast rotation is guessed at 0.5 rad / frame
+			// further it will be assumed that the resulting acceleration is roughly eqvuivalent to gravity
+			float temp2 = (float)((theta - theta_prev)/0.5 * 125);
+
+			return (ushort)(0x81D0 - Math.Floor(temp * 125) + temp2);			
 		}
 
 		private static readonly string[] BaseDefinition =
@@ -193,7 +210,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void SyncState(Serializer ser)
 		{
-			//nothing
+			// since we need rate of change of angle, need to savestate them
+			ser.Sync("theta", ref theta);
 		}
 	}
 }
