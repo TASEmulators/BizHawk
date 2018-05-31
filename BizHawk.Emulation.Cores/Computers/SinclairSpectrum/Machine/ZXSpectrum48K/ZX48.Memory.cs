@@ -86,10 +86,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     RAM2[index] = value;
                     break;
             }
-            
-            // update ULA screen buffer if necessary
-            if ((addr & 49152) == 16384 && _render)
-                ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
         }
 
         /// <summary>
@@ -100,9 +96,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadMemory(ushort addr)
         {
-            if (ULADevice.IsContended(addr))
-                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];            
-
+            ContendMemory(addr);
             var data = ReadBus(addr);
             return data;
         }
@@ -115,11 +109,39 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WriteMemory(ushort addr, byte value)
         {
-            // apply contention if necessary
-            if (ULADevice.IsContended(addr))
-                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
-                       
+            // update ULA screen buffer if necessary BEFORE T1 write
+            if ((addr & 49152) == 16384 && _render)
+                ULADevice.RenderScreen((int)CurrentFrameCycle);
+
+            ContendMemory(addr);                       
             WriteBus(addr, value);
+        }
+
+        /// <summary>
+        /// Contends memory if necessary
+        /// </summary>
+        public override void ContendMemory(ushort addr)
+        {
+            if (IsContended(addr))
+            {
+                var delay = ULADevice.GetContentionValue((int)CurrentFrameCycle);
+                if (delay > 0)
+                {
+
+                }
+                CPU.TotalExecutedCycles += delay;
+            }
+        }
+
+        /// <summary>
+        /// Checks whether supplied address is in a potentially contended bank
+        /// </summary>
+        /// <param name="addr"></param>
+        public override bool IsContended(ushort addr)
+        {
+            if ((addr & 49152) == 16384)
+                return true;
+            return false;
         }
 
         /// <summary>

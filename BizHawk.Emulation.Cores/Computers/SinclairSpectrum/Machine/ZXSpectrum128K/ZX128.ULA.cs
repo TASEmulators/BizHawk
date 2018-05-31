@@ -1,6 +1,7 @@
 ﻿
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /*
     class ULA128 : ULABase
     {
         #region Construction
@@ -8,8 +9,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public ULA128(SpectrumBase machine)
             : base(machine)
         {
-            InterruptPeriod = 36;
-            LongestOperationCycles = 64 + 2;
+            InterruptStart = 0;
+            //LongestOperationCycles = 64 + 2;
             FrameLength = 70908;
             ClockSpeed = 3546900;
 
@@ -189,4 +190,5 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 
     }
+    */
 }

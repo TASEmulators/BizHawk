@@ -21,12 +21,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             Spectrum = spectrum;
             CPU = cpu;
 
+            CPUMon = new CPUMonitor(this);
+            CPUMon.machineType = MachineType.ZXSpectrum128Plus2a;
+
             ROMPaged = 0;
             SHADOWPaged = false;
             RAMPaged = 0;
             PagingDisabled = false;
 
-            ULADevice = new ULAPlus2a(this);
+            //ULADevice = new ULAPlus2a(this);
+            ULADevice = new Screen48(this); // still todo
 
             BuzzerDevice = new Beeper(this);
             BuzzerDevice.Init(44100, ULADevice.FrameLength);

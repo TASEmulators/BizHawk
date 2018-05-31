@@ -89,8 +89,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #endregion
 
-
-
         #region Memory Related Methods
 
         /// <summary>
@@ -153,8 +151,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public virtual byte FetchScreenMemory(ushort addr)
         {
             var value = ReadBus((ushort)((addr & 0x3FFF) + 0x4000));
+            //var value = ReadBus(addr);
             return value;
         }
+
+        /// <summary>
+        /// Contends memory if necessary
+        /// </summary>
+        public abstract void ContendMemory(ushort addr);
+
+        /// <summary>
+        /// Checks whether supplied address is in a potentially contended bank
+        /// </summary>
+        /// <param name="addr"></param>
+        public abstract bool IsContended(ushort addr);
 
         #endregion
 

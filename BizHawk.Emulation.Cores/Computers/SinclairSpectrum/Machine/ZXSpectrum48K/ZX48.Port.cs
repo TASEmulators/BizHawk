@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public override byte ReadPort(ushort port)
         {
             // process IO contention
-            ContendPortAddress(port);
+            ContendPort(port);
 
             int result = 0xFF;
 
@@ -56,6 +56,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 
                 // If this is an unused port the floating memory bus should be returned
+                ULADevice.ReadFloatingBus((int)CurrentFrameCycle, ref result);
+
+                /*
                 // Floating bus is read on the previous cycle
                 long _tStates = CurrentFrameCycle - 1;
 
@@ -75,6 +78,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         result = ReadBus((ushort)ULADevice.floatingBusTable[_tStates]);
                     }
                 }
+                */
             }
 
             return (byte)result;
@@ -88,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public override void WritePort(ushort port, byte value)
         {
             // process IO contention
-            ContendPortAddress(port);
+            ContendPort(port);
 
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
@@ -106,13 +110,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             */
 
             // Border - LSB 3 bits hold the border colour
-            if (ULADevice.borderColour != (value & BORDER_BIT))
-            {
-                // border value has changed - update the screen buffer
-                ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
-            }
-
-            ULADevice.borderColour = value & BORDER_BIT;
+            ULADevice.RenderScreen((int)CurrentFrameCycle);
+            ULADevice.BorderColor = value & BORDER_BIT;
 
             // Buzzer
             BuzzerDevice.ProcessPulseValue((value & EAR_BIT) != 0);
@@ -124,6 +123,40 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
 
         }
-       
+
+        /// <summary>
+        /// Simulates IO port contention based on the supplied address
+        /// This method is for 48k and 128k/+2 machines only and should be overridden for other models
+        /// </summary>
+        /// <param name="addr"></param>
+        public override void ContendPort(ushort addr)
+        {
+            /*
+            It takes four T states for the Z80 to read a value from an I/O port, or write a value to a port. As is the case with memory access, 
+            this can be lengthened by the ULA. There are two effects which occur here:
+
+            If the port address being accessed has its low bit reset, the ULA is required to supply the result, which leads to a delay if it is 
+            currently busy handling the screen.
+            The address of the port being accessed is placed on the data bus. If this is in the range 0x4000 to 0x7fff, the ULA treats this as an 
+            attempted access to contended memory and therefore introduces a delay. If the port being accessed is between 0xc000 and 0xffff, 
+            this effect does not apply, even on a 128K machine if a contended memory bank is paged into the range 0xc000 to 0xffff.
+
+            These two effects combine to lead to the following contention patterns:
+
+                High byte   |         | 
+                in 40 - 7F? | Low bit | Contention pattern  
+                ------------+---------+-------------------
+                     No     |  Reset  | N:1, C:3
+                     No     |   Set   | N:4
+                    Yes     |  Reset  | C:1, C:3
+                    Yes     |   Set   | C:1, C:1, C:1, C:1
+            
+            The 'Contention pattern' column should be interpreted from left to right. An "N:n" entry means that no delay is applied at this cycle, and the Z80 continues uninterrupted for 'n' T states. A "C:n" entry means that the ULA halts the Z80; the delay is exactly the same as would occur for a contended memory access at this cycle (eg 6 T states at cycle 14335, 5 at 14336, etc on the 48K machine). After this delay, the Z80 then continues for 'n' cycles.
+            */
+
+            CPUMon.ContendPort(addr);
+            return;
+        }
+
     }
 }

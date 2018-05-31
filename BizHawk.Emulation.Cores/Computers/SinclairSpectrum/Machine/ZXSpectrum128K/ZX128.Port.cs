@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             bool deviceAddressed = true;
 
             // process IO contention
-            ContendPortAddress(port);
+            ContendPort(port);
 
             int result = 0xFF;
 
@@ -56,6 +56,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // Floating bus is read on the previous cycle
                 long _tStates = CurrentFrameCycle - 1;
 
+                ULADevice.ReadFloatingBus((int)_tStates, ref result);
+
+                /*
                 // if we are on the top or bottom border return 0xff
                 if ((_tStates < ULADevice.contentionStartPeriod) || (_tStates > ULADevice.contentionEndPeriod))
                 {
@@ -72,6 +75,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         result = ReadBus((ushort)ULADevice.floatingBusTable[_tStates]);
                     }
                 }
+                */
             }
 
             return (byte)result;
@@ -85,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public override void WritePort(ushort port, byte value)
         {
             // process IO contention
-            ContendPortAddress(port);
+            ContendPort(port);
 
             // get a BitArray of the port
             BitArray portBits = new BitArray(BitConverter.GetBytes(port));
@@ -142,7 +146,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 // store the last OUT byte
                 LastULAOutByte = value;
-                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
+                CPU.TotalExecutedCycles += ULADevice.GetContentionValue();
 
                 /*
                     Bit   7   6   5   4   3   2   1   0
@@ -152,10 +156,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 */
 
                 // Border - LSB 3 bits hold the border colour
-                if (ULADevice.borderColour != (value & BORDER_BIT))
-                    ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
+                if (ULADevice.BorderColor != (value & BORDER_BIT))
+                    ULADevice.RenderScreen((int)CurrentFrameCycle);
 
-                ULADevice.borderColour = value & BORDER_BIT;
+                ULADevice.BorderColor = value & BORDER_BIT;
 
                 // Buzzer
                 BuzzerDevice.ProcessPulseValue((value & EAR_BIT) != 0);
@@ -164,6 +168,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // Tape
                 //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);                
             }    
+        }
+
+        /// <summary>
+        /// Contend port if necessary
+        /// </summary>
+        /// <param name="addr"></param>
+        public override void ContendPort(ushort addr)
+        {
+            throw new NotImplementedException();
         }
     }
 }

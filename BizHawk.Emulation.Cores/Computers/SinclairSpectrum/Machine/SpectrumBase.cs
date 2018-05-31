@@ -32,7 +32,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The emulated ULA device
         /// </summary>
-        public ULABase ULADevice { get; set; }
+        //public ULABase ULADevice { get; set; }
+        public ULA ULADevice { get; set; }
+
+        /// <summary>
+        /// Monitors CPU cycles
+        /// </summary>
+        public CPUMonitor CPUMon { get; set; }
 
         /// <summary>
         /// The spectrum buzzer/beeper
@@ -152,9 +158,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             if (_renderSound)
             {
-                //BuzzerDevice.StartFrame();
-                //TapeBuzzer.StartFrame();
-
                 if (AYDevice != null)
                     AYDevice.StartFrame();
             }
@@ -169,23 +172,23 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // run a single CPU instruction
                 CPU.ExecuteOne();
 
+                CPUMon.Cycle();
+
                 // cycle the tape device
                 if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
                     TapeDevice.TapeCycle();
             }
 
+            OverFlow = (int)CurrentFrameCycle - ULADevice.FrameLength;
+
             // we have reached the end of a frame
             LastFrameStartCPUTick = CPU.TotalExecutedCycles - OverFlow;
 
-            // paint the buffer if needed
-            if (ULADevice.needsPaint && _render)
-                ULADevice.UpdateScreenBuffer(ULADevice.FrameLength);
+            // paint the buffer at end of frame
+            if (_render)
+                ULADevice.RenderScreen(ULADevice.FrameLength);
 
-            if (_renderSound)
-            {
-                //BuzzerDevice.EndFrame();
-                //TapeBuzzer.EndFrame();
-            }
+            ULADevice.LastTState = 0;
 
             if (AYDevice != null)
                 AYDevice.EndFrame();
@@ -194,7 +197,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // setup for next frame
             ULADevice.ResetInterrupt();
-
+                        
             if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
                 TapeDevice.EndFrame();
 

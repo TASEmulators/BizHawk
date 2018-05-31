@@ -1,6 +1,9 @@
 ﻿
+using System.Linq;
+
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /*
     class ULA48 : ULABase
     {
         #region Construction
@@ -8,8 +11,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public ULA48(SpectrumBase machine)
             : base(machine)
         {
-            InterruptPeriod = 32;
-            LongestOperationCycles = 64;
+            InterruptStart = 0;// 5; // 0; // 3; // 0;// 32;
+            //LongestOperationCycles = 32;
             FrameLength = 69888;
             ClockSpeed = 3500000;
 
@@ -55,7 +58,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public override void Reset()
         {
-            contentionStartPeriod = 14335; // + LateTiming;
+            contentionOffset = 0;
+            InterruptStart = 0;
+
+            contentionStartPeriod = 14335;// + contentionOffset; // + LateTiming;
             contentionEndPeriod = contentionStartPeriod + (ScreenHeight * TstatesPerScanline);
             screen = _machine.RAM0;
             screenByteCtr = DisplayStart;
@@ -160,6 +166,30 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 h += TstatesPerScanline - 128;
             }
 
+            // offset floating bus table
+            var offset = 0;
+
+            if (offset != 0)
+            {
+                var fbt = floatingBusTable.ToArray();
+                for (int i = 0; i < FrameLength; i++)
+                {
+                    var off = i + offset;
+                    if (off < 0)
+                    {
+                        off = FrameLength - 1 + off;
+                    }
+                    else if (off >= FrameLength)
+                    {
+                        off = off - FrameLength;
+                    }                       
+
+                    fbt[off] = floatingBusTable[i];
+                }
+
+                floatingBusTable = fbt.ToArray();
+            }
+
             //build bottom border
             while (t < actualULAStart + (TstateAtTop) + (ScreenHeight * TstatesPerScanline) + (TstateAtBottom))
             {
@@ -177,4 +207,5 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 
     }
+    */
 }

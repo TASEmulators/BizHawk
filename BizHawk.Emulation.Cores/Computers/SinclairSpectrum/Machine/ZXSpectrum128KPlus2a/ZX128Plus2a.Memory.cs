@@ -344,7 +344,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // update ULA screen buffer if necessary
             if ((addr & 49152) == 16384 && _render)
-                ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
+                ULADevice.RenderScreen((int)CurrentFrameCycle);
         }
 
         /// <summary>
@@ -355,9 +355,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadMemory(ushort addr)
         {
-            if (ULADevice.IsContended(addr))
-                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
-            
+            ContendMemory(addr);
+
             var data = ReadBus(addr);
             return data;
         }
@@ -370,13 +369,74 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WriteMemory(ushort addr, byte value)
         {
-            // apply contention if necessary
-            if (ULADevice.IsContended(addr))
-                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
-            
+            // update ULA screen buffer if necessary BEFORE T1 write
+            if (!SpecialPagingMode)
+            {
+                if (((addr & 49152) == 16384 || ((addr & 0xc000) == 0xc000) && (RAMPaged == 5 || RAMPaged == 7)) && _render)
+                    ULADevice.RenderScreen((int)CurrentFrameCycle);
+            }
+            else
+            {
+                switch (PagingConfiguration)
+                {
+                    case 2:
+                    case 3:
+                        if ((addr & 49152) == 16384)
+                            ULADevice.RenderScreen((int)CurrentFrameCycle);
+                        break;
+                    case 1:
+                        if ((addr & 49152) == 16384 || addr >= 0xc000)
+                            ULADevice.RenderScreen((int)CurrentFrameCycle);
+                        break;
+                }
+            }
+
+            ContendMemory(addr);
             WriteBus(addr, value);
         }
-       
+
+        /// <summary>
+        /// Contends memory if necessary
+        /// </summary>
+        public override void ContendMemory(ushort addr)
+        {
+            if (IsContended(addr))
+            {
+                var delay = ULADevice.GetContentionValue((int)CurrentFrameCycle);
+                CPU.TotalExecutedCycles += delay;
+            }
+        }
+
+        /// <summary>
+        /// Checks whether supplied address is in a potentially contended bank
+        /// </summary>
+        /// <param name="addr"></param>
+        public override bool IsContended(ushort addr)
+        {
+            var a = addr & 0xc000;
+
+            if (a == 0x4000)
+            {
+                // low port contention
+                return true;
+            }
+
+            if (a == 0xc000)
+            {
+                // high port contention - check for contended bank paged in
+                switch (RAMPaged)
+                {
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// ULA reads the memory at the specified address
         /// (No memory contention)
