@@ -176,7 +176,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="addr"></param>
         public override void ContendPort(ushort addr)
         {
-            throw new NotImplementedException();
+            CPUMon.ContendPort(addr);
+            return;
         }
     }
 }

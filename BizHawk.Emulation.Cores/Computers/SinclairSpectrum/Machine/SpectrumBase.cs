@@ -169,7 +169,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // check for interrupt
                 ULADevice.CheckForInterrupt(CurrentFrameCycle);
 
-                // run a single CPU instruction
+                // run a single CPU instruction              
+
                 CPU.ExecuteOne();
 
                 CPUMon.Cycle();
