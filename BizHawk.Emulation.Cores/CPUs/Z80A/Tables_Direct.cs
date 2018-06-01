@@ -10,10 +10,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		private void NOP_()
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						IDLE,
-						OP };
+						{ IDLE,
+						  WAIT,
+						  OP_F,
+						  OP };
 		}
 
 		// NOTE: In a real Z80, this operation just flips a switch to choose between 2 registers
@@ -22,8 +22,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{EXCH,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -31,8 +31,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{EXX,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -41,19 +41,19 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{EXCH_16, dest_l, dest_h, src_l, src_h,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
 		private void INC_16(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
+						{INC16,  src_l, src_h,
 						IDLE,
 						IDLE,
-						INC16,  src_l, src_h,					
-						IDLE,
+						WAIT,					
+						OP_F,
 						OP };
 		}
 
@@ -61,11 +61,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		private void DEC_16(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						DEC16, src_l, src_h,
+						{DEC16, src_l, src_h,
 						IDLE,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -74,16 +74,16 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		private void ADD_16(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
+						{TR16, Z, W, dest_l, dest_h,
 						IDLE,
-						IDLE,
-						TR16, Z, W, dest_l, dest_h,
 						INC16, Z, W,
-						IDLE,
 						IDLE,
 						ADD16, dest_l, dest_h, src_l, src_h,
 						IDLE,
 						IDLE,
+						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -91,8 +91,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{operation, dest, src,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -101,9 +101,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{operation, dest, src,
-						IDLE,
-						IDLE,
 						SET_FL_IR, dest,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -114,17 +114,17 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			{
 				cur_instr = new ushort[]
 							{IDLE,
+							ASGN, B, (ushort)((Regs[B] - 1) & 0xFF),
+							WAIT,
+							RD_INC, Z, PCl, PCh,
 							IDLE,
-							ASGN, B, (ushort)((Regs[B] - 1) & 0xFF), 
-							IDLE,
-							RD, Z, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
 							IDLE,
 							ASGN, W, 0,
-							IDLE,
 							ADDS, PCl, PCh, Z, W,
 							TR16, Z, W, PCl, PCh,
+							IDLE,
+							WAIT,
+							OP_F,
 							OP };
 			}
 			else
@@ -132,11 +132,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				cur_instr = new ushort[]
 							{IDLE,
 							ASGN, B, (ushort)((Regs[B] - 1) & 0xFF),
+							WAIT,
+							RD_INC, ALU, PCl, PCh,
 							IDLE,
-							RD, ALU, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
-							IDLE,
+							WAIT,
+							OP_F,
 							OP };
 			}
 		}
@@ -156,27 +156,27 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			{
 				cur_instr = new ushort[]
 							{IDLE,
-							IDLE,
-							RD, Z, PCl, PCh,
-							INC16, PCl, PCh,
-							IDLE,							
+							WAIT,
+							RD_INC, Z, PCl, PCh,
 							IDLE,
 							ASGN, W, 0,
-							IDLE,
 							ADDS, PCl, PCh, Z, W,
-							TR16, Z, W, PCl, PCh,						
+							TR16, Z, W, PCl, PCh,
 							IDLE,
+							IDLE,
+							WAIT,					
+							OP_F,
 							OP };
 			}
 			else
 			{
 				cur_instr = new ushort[]
 							{IDLE,
+							WAIT,
+							RD_INC, ALU, PCl, PCh,
 							IDLE,
-							IDLE,
-							RD, ALU, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
+							WAIT,
+							OP_F,
 							OP };
 			}
 		}
@@ -187,28 +187,28 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			{
 				cur_instr = new ushort[]
 							{IDLE,
+							WAIT,
+							RD_INC, Z, PCl, PCh,
 							IDLE,
-							RD, Z, PCl, PCh,
-							INC16, PCl, PCh,
-							RD, W, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
+							WAIT,
+							RD_INC, W, PCl, PCh,
 							TR16, PCl, PCh, Z, W,
-							IDLE,
+							WAIT,
+							OP_F,
 							OP };
 			}
 			else
 			{
 				cur_instr = new ushort[]
 							{IDLE,
+							WAIT,
+							RD_INC, Z, PCl, PCh,
 							IDLE,
-							RD, Z, PCl, PCh,
-							INC16, PCl, PCh,
+							WAIT,
+							RD_INC, W, PCl, PCh,
 							IDLE,
-							RD, W, PCl, PCh,
-							INC16, PCl, PCh,
-							IDLE,						
-							IDLE,
+							WAIT,						
+							OP_F,
 							OP };
 			}
 		}
@@ -217,14 +217,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
+						WAIT,
+						RD_INC, Z, SPl, SPh,
 						IDLE,
-						RD, Z, SPl, SPh,
-						INC16, SPl, SPh,
-						IDLE,						
-						IDLE,
-						RD, W, SPl, SPh,
-						INC16, SPl, SPh,
-						TR16, PCl, PCh, Z, W,						
+						WAIT,
+						RD_INC, W, SPl, SPh,
+						TR16, PCl, PCh, Z, W,
+						WAIT,
+						OP_F,						
 						OP };
 		}
 
@@ -232,14 +232,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
+						WAIT,
+						RD_INC, Z, SPl, SPh,
 						IDLE,
-						RD, Z, SPl, SPh,
-						INC16, SPl, SPh,
-						IDLE,						
-						IDLE,
-						RD, W, SPl, SPh,
-						INC16, SPl, SPh,
+						WAIT,
+						RD_INC, W, SPl, SPh,
 						TR16, PCl, PCh, Z, W,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -247,14 +247,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
-						RD, Z, SPl, SPh,
-						INC16, SPl, SPh,
-						IDLE,
-						RD, W, SPl, SPh,
-						INC16, SPl, SPh,
+						WAIT,
+						RD_INC, Z, SPl, SPh,
 						EI_RETN,
+						WAIT,
+						RD_INC, W, SPl, SPh,
 						TR16, PCl, PCh, Z, W,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -266,14 +266,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				cur_instr = new ushort[]
 							{IDLE,
 							IDLE,
-							RD, Z, SPl, SPh,
-							INC16, SPl, SPh,
+							WAIT,
+							RD_INC, Z, SPl, SPh,	
 							IDLE,						
-							IDLE,
-							RD, W, SPl, SPh,
-							INC16, SPl, SPh,
-							IDLE,							
+							WAIT,
+							RD_INC, W, SPl, SPh,
 							TR16, PCl, PCh, Z, W,
+							WAIT,							
+							OP_F,
 							OP };
 			}
 			else
@@ -281,8 +281,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				cur_instr = new ushort[]
 							{IDLE,
 							IDLE,
-							IDLE,
-							IDLE,
+							WAIT,
+							OP_F,
 							OP };
 			}
 		}
@@ -293,35 +293,35 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			{
 				cur_instr = new ushort[]
 							{IDLE,
+							WAIT,
+							RD_INC, Z, PCl, PCh,
 							IDLE,
-							RD, Z, PCl, PCh,
-							INC16, PCl, PCh,
-							IDLE,							
-							RD, W, PCl, PCh,
-							INC16, PCl, PCh,
 							IDLE,
+							WAIT,
+							RD_INC, W, PCl, PCh,
 							DEC16, SPl, SPh,
-							IDLE,
-							WR, SPl, SPh, PCh,						
+							WAIT,
+							WR, SPl, SPh, PCh,
 							DEC16, SPl, SPh,
+							WAIT,
 							WR, SPl, SPh, PCl,
-							IDLE,
-							TR, PCl, Z,
-							TR, PCh, W,
+							TR16, PCl, PCh, Z, W,
+							WAIT,
+							OP_F,
 							OP };
 			}
 			else
 			{
 				cur_instr = new ushort[]
 							{IDLE,
+							WAIT,
+							RD_INC, Z, PCl, PCh,
 							IDLE,
-							RD, Z, PCl, PCh,
+							WAIT,
+							RD_INC, W, PCl, PCh,
 							IDLE,
-							INC16, PCl, PCh,
-							IDLE,
-							RD, W, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
+							WAIT,
+							OP_F,
 							OP };
 			}
 		}
@@ -330,8 +330,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{operation, src,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -339,8 +339,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{operation, bit, src,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -348,15 +348,15 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
 						DEC16, SPl, SPh,
-						IDLE,
+						WAIT,
 						WR, SPl, SPh, src_h,
-						IDLE,
 						DEC16, SPl, SPh,
-						IDLE,
+						WAIT,
 						WR, SPl, SPh, src_l,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -365,14 +365,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						RD, src_l, SPl, SPh,
+						WAIT,
+						RD_INC, src_l, SPl, SPh,
 						IDLE,
-						INC16, SPl, SPh,
+						WAIT,
+						RD_INC, src_h, SPl, SPh,
 						IDLE,
-						RD, src_h, SPl, SPh,
-						IDLE,
-						INC16, SPl, SPh,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -380,15 +380,15 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
 						DEC16, SPl, SPh,
+						WAIT,
 						WR, SPl, SPh, PCh,
 						DEC16, SPl, SPh,
+						WAIT,
 						WR, SPl, SPh, PCl,
-						IDLE,
-						ASGN, Z, n,
-						ASGN, W, 0,						
-						TR16, PCl, PCh, Z, W,
+						RST, n,
+						WAIT,						
+						OP_F,
 						OP };
 		}
 
@@ -396,17 +396,17 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						PREFIX, src};
 		}
 
 		private void PREFETCH_(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{TR16, Z, W, src_l, src_h,
-						ADDS, Z, W, ALU, ZERO,
-						IDLE,
+						{ADDS, Z, W, ALU, ZERO,
+						WAIT,
+						OP_F,
 						PREFIX, IXYprefetch };
 		}
 
@@ -414,8 +414,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{DI,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -423,17 +423,17 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{EI,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
 		private void JP_16(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{TR, PCl, src_l,
-						IDLE,
-						TR, PCh, src_h,
+						{TR16, PCl, PCh, src_l, src_h,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -442,9 +442,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			cur_instr = new ushort[]
 						{IDLE,						
 						IDLE,
-						TR, SPl, src_l,
-						TR, SPh, src_h,
-						IDLE,
+						TR16, SPl, SPh, src_l, src_h,
+						WAIT, 
+						OP_F,
 						OP };
 		}
 
@@ -452,15 +452,15 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						RD, Z, PCl, PCh,
+						WAIT,
+						RD_INC, Z, PCl, PCh,
 						IDLE,
-						INC16, PCl, PCh,
 						TR, W, A,
 						OUT, Z, W, A,
-						IDLE,
 						INC16, Z, W,
 						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP};
 		}
 
@@ -468,12 +468,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
 						TR16, Z, W, C, B,
 						OUT, Z, W, src,
-						IDLE,					
 						INC16, Z, W,
-						IDLE,
+						IDLE,					
+						WAIT,
+						OP_F,
 						OP};
 		}
 
@@ -481,15 +481,15 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						RD, Z, PCl, PCh,
+						WAIT,
+						RD_INC, Z, PCl, PCh,
 						IDLE,
-						INC16, PCl, PCh,
 						TR, W, A,
 						IN, A, Z, W,
-						IDLE,
 						INC16, Z, W,
 						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP};
 		}
 
@@ -497,12 +497,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
 						IN, dest, src, B,
-						IDLE,
 						TR16, Z, W, C, B,
 						INC16, Z, W,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP};
 		}
 
@@ -511,61 +511,61 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,
 						TR16, Z, W, dest_l, dest_h,
 						INC16, Z, W,
 						IDLE,
 						IDLE,
 						op, dest_l, dest_h, src_l, src_h,
 						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP};
 		}
 
 		private void INT_MODE_(ushort src)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						INT_MODE, src,
+						{INT_MODE, src,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
 		private void RRD_()
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						TR16, Z, W, L, H,
-						IDLE,
+						{TR16, Z, W, L, H,
+						WAIT,
 						RD, ALU, Z, W,
 						IDLE,
 						RRD, ALU, A,
 						IDLE,
+						IDLE,
+						IDLE,
+						WAIT,
 						WR, Z, W, ALU,
-						IDLE,
 						INC16, Z, W,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
 		private void RLD_()
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						TR16, Z, W, L, H,
-						IDLE,
+						{TR16, Z, W, L, H,
+						WAIT,
 						RD, ALU, Z, W,
 						IDLE,
 						RLD, ALU, A,
 						IDLE,
+						IDLE,
+						IDLE,
+						WAIT,
 						WR, Z, W, ALU,
-						IDLE,
 						INC16, Z, W,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 	}

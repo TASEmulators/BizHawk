@@ -33,16 +33,16 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		private void NMI_()
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						DEC16, SPl, SPh,
+						{DEC16, SPl, SPh,
+						WAIT,
 						WR, SPl, SPh, PCh,
-						IDLE,
 						DEC16, SPl, SPh,
+						WAIT,
 						WR, SPl, SPh, PCl,
-						IDLE,
 						ASGN, PCl, 0x66,
 						ASGN, PCh, 0,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -55,11 +55,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
+						WAIT,
 						RD, ALU, PCl, PCh,
-						IDLE,
 						INC16, PCl, PCh,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -68,17 +68,17 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{DEC16, SPl, SPh,
-						IDLE,
+						WAIT,
 						WR, SPl, SPh, PCh,
-						IDLE,
 						DEC16, SPl, SPh,
-						IDLE,
+						WAIT,
 						WR, SPl, SPh, PCl,
-						IDLE,
 						ASGN, PCl, 0x38,
 						IDLE,
 						ASGN, PCh, 0,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -87,23 +87,23 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
+						WAIT,
 						FTCH_DB,
-						TR, Z, DB,
-						TR, W, I,						
-						IDLE,
+						TR16, Z, W, DB, I,
 						DEC16, SPl, SPh,
+						WAIT,
 						WR, SPl, SPh, PCh,
-						IDLE,
 						DEC16, SPl, SPh,
-						WR, SPl, SPh, PCl,										
+						WAIT,
+						WR, SPl, SPh, PCl,
 						IDLE,
-						RD, PCl, Z, W,
-						INC16, Z, W,
+						WAIT,
+						RD_INC, PCl, Z, W,
 						IDLE,
 						RD, PCh, Z, W,
 						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 

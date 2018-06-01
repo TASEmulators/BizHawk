@@ -6,15 +6,15 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
-						IDLE,
+						WAIT,
 						RD, ALU, src_l, src_h,
 						IDLE,
 						operation, ALU,
-						IDLE,
+						WAIT,
 						WR, src_l, src_h, ALU,
-						IDLE,					
-						IDLE,						
+						IDLE,
+						WAIT,					
+						OP_F,						
 						OP };
 		}
 
@@ -23,14 +23,14 @@
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,	
+						WAIT,	
 						RD, ALU, src_l, src_h,
-						IDLE,
 						operation, bit, ALU,
-						IDLE,
+						WAIT,
 						WR, src_l, src_h, ALU,
 						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -43,11 +43,11 @@
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,
+						WAIT,
 						RD, ALU, src_l, src_h,
-						IDLE,
 						I_BIT, bit, ALU,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -55,23 +55,23 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,					
-						IDLE,					
-						RD, ALU, src_l, src_h,
-						IDLE,
+						WAIT,					
+						RD_INC, ALU, src_l, src_h,
 						operation, dest, ALU,
-						INC16, src_l, src_h,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
 		private void REG_OP_IND(ushort operation, ushort dest, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						TR16, Z, W, src_l, src_h,
-						RD, ALU, Z, W,
-						INC16, Z, W,
-						operation, dest, ALU,									
+						{TR16, Z, W, src_l, src_h,
+						WAIT,
+						RD_INC, ALU, Z, W,
+						operation, dest, ALU,
+						WAIT,
+						OP_F,									
 						OP };
 		}
 
@@ -79,20 +79,20 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						RD, Z, PCl, PCh,
+						WAIT,
+						RD_INC, Z, PCl, PCh,
 						IDLE,
-						INC16, PCl, PCh,
+						WAIT,
+						RD_INC, W, PCl, PCh,
 						IDLE,
-						RD, W, PCl, PCh,
-						IDLE,
-						INC16, PCl, PCh,
-						IDLE,
+						WAIT,
 						WR, Z, W, src_l,
-						IDLE,
 						INC16, Z, W,
-						IDLE,
+						WAIT,
 						WR, Z, W, src_h,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -100,20 +100,20 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						RD, Z, PCl, PCh,
+						WAIT,
+						RD_INC, Z, PCl, PCh,
 						IDLE,
-						INC16, PCl, PCh,
+						WAIT,
+						RD_INC, W, PCl, PCh,
 						IDLE,
-						RD, W, PCl, PCh,
+						WAIT,
+						RD_INC, dest_l, Z, W,
 						IDLE,
-						INC16, PCl, PCh,
-						IDLE,
-						RD, dest_l, Z, W,
-						IDLE,
-						INC16, Z, W,
-						IDLE,
+						WAIT,
 						RD, dest_h, Z, W,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -121,17 +121,17 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						RD, Z, PCl, PCh,
+						WAIT,
+						RD_INC, Z, PCl, PCh,
 						IDLE,
-						INC16, PCl, PCh,
+						WAIT,
+						RD_INC, W, PCl, PCh,
 						IDLE,
-						RD, W, PCl, PCh,
-						IDLE,
-						INC16, PCl, PCh,
-						IDLE,
-						WR, Z, W, src,
-						INC16, Z, W,
+						WAIT,
+						WR_INC, Z, W, src,
 						TR, W, A,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -139,29 +139,29 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						RD, Z, PCl, PCh,
+						WAIT,
+						RD_INC, Z, PCl, PCh,
 						IDLE,
-						INC16, PCl, PCh,
+						WAIT,
+						RD_INC, W, PCl, PCh,
 						IDLE,
-						RD, W, PCl, PCh,
+						WAIT,
+						RD_INC, dest, Z, W,
 						IDLE,
-						INC16, PCl, PCh,
-						IDLE,
-						RD, dest, Z, W,
-						IDLE,
-						INC16, Z, W,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
 		private void LD_8_IND(ushort dest_l, ushort dest_h, ushort src)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						TR16, Z, W, dest_l, dest_h,
-						WR, Z, W, src,
-						INC16, Z, W,
-						TR,	W, A,					
+						{TR16, Z, W, dest_l, dest_h,
+						WAIT,
+						WR_INC, Z, W, src,
+						TR, W, A,
+						WAIT,
+						OP_F,				
 						OP };
 		}
 
@@ -169,14 +169,14 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
+						WAIT,
+						RD_INC, ALU, src_l, src_h,
 						IDLE,
-						IDLE,
-						RD, ALU, src_l, src_h,
-						IDLE,
-						INC16, src_l, src_h,
-						IDLE,
+						WAIT,
 						WR, dest_l, dest_h, ALU,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -184,24 +184,11 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
+						WAIT,
+						RD_INC, dest, src_l, src_h,
 						IDLE,
-						IDLE,
-						RD, dest, src_l, src_h,
-						IDLE,
-						INC16, src_l, src_h,
-						OP };
-		}
-
-		private void LD_IND_8_DEC(ushort dest, ushort src_l, ushort src_h)
-		{
-			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						IDLE,
-						RD, dest, src_l, src_h,
-						IDLE,
-						DEC16, src_l, src_h,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -209,14 +196,14 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
+						WAIT,
+						RD_INC, dest_l, src_l, src_h,
 						IDLE,
+						WAIT,
+						RD_INC, dest_h, src_l, src_h,
 						IDLE,
-						RD, dest_l, src_l, src_h,
-						IDLE,
-						INC16, src_l, src_h,
-						RD, dest_h, src_l, src_h,
-						IDLE,
-						INC16, src_l, src_h,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -225,14 +212,14 @@
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,					
+						WAIT,					
 						RD, ALU, src_l, src_h,
-						IDLE,
 						INC8, ALU,
-						IDLE,
+						WAIT,
 						WR,  src_l, src_h, ALU,
 						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -241,14 +228,14 @@
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,	
+						WAIT,	
 						RD, ALU, src_l, src_h,
-						IDLE,
 						DEC8, ALU,
-						IDLE,
+						WAIT,
 						WR, src_l, src_h, ALU,
 						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -258,14 +245,14 @@
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
+						WAIT,
 						RD, ALU, Z, W,
-						IDLE,
 						operation, ALU,
-						IDLE,
+						WAIT,
 						WR, Z, W, ALU,
-						IDLE,
 						TR, dest, ALU,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -274,14 +261,14 @@
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
+						WAIT,
 						RD, ALU, Z, W,
-						IDLE,
 						operation, bit, ALU,
-						IDLE,
+						WAIT,
 						WR, Z, W, ALU,
-						IDLE,
 						TR, dest, ALU,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -290,11 +277,11 @@
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,
+						WAIT,
 						RD, ALU, Z, W,
-						IDLE,
 						I_BIT, bit, ALU,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -302,23 +289,23 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
+						WAIT,
+						RD_INC, ALU, PCl, PCh,
 						IDLE,
-						RD, ALU, PCl, PCh,
-						INC16, PCl, PCh,
 						IDLE,
 						TR16, Z, W, src_l, src_h,
+						ADDS, Z, W, ALU, ZERO,
 						IDLE,
-						ADDS, Z, W, ALU, ZERO,					
 						IDLE,
+						IDLE,
+						WAIT,
 						RD, ALU, Z, W,
-						IDLE,
-						IDLE,
 						operation, ALU,
-						IDLE,
-						IDLE,
-						IDLE,
+						WAIT,
 						WR, Z, W, ALU,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -326,19 +313,19 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
-						RD, ALU, PCl, PCh,
-						INC16, PCl, PCh,
+						WAIT,
+						RD_INC, ALU, PCl, PCh,
 						IDLE,
 						TR16, Z, W, src_l, src_h,
-						IDLE,
 						ADDS, Z, W, ALU, ZERO,
+						WAIT,
+						RD_INC, ALU, PCl, PCh,
 						IDLE,
-						RD, ALU, PCl, PCh,
-						INC16, PCl, PCh,
-						IDLE,
+						WAIT,
 						WR, Z, W, ALU,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -346,19 +333,19 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
-						RD, ALU, PCl, PCh,
-						IDLE,
-						INC16, PCl, PCh,
+						WAIT,
+						RD_INC, ALU, PCl, PCh,
 						IDLE,
 						TR16, Z, W, src_l, src_h,
 						IDLE,
 						ADDS, Z, W, ALU, ZERO,
 						IDLE,
+						WAIT,
 						RD, ALU, Z, W,
-						IDLE,
 						operation, dest, ALU,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
@@ -366,36 +353,36 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						RD, ALU, PCl, PCh,
+						WAIT,
+						RD_INC, ALU, PCl, PCh,
 						IDLE,
-						INC16, PCl, PCh,
 						IDLE,					
 						TR16, Z, W, dest_l, dest_h,
-						IDLE,
 						ADDS, Z, W, ALU, ZERO,
 						IDLE,
-						WR, Z, W, src,						
 						IDLE,
+						WAIT,
+						WR, Z, W, src,
 						IDLE,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
 		}
 
 		private void LD_OP_R(ushort operation, ushort repeat_instr)
 		{
 			cur_instr = new ushort[]
-						{RD, ALU, L, H,
+						{IDLE,
+						WAIT,
+						RD, ALU, L, H,
 						IDLE,
+						WAIT,
 						WR, E, D, ALU,
-						IDLE,
 						operation, L, H,
-						IDLE,
 						operation, E, D,
-						IDLE,
-						DEC16, C, B,
-						SET_FL_LD, 
-						IDLE,
+						SET_FL_LD, // BC gets decremented in here
+						WAIT, 
+						OP_F,
 						OP_R, 0, operation, repeat_instr };
 		}
 
@@ -403,16 +390,16 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,						
-						IDLE,
+						WAIT,
 						RD, ALU, L, H,
 						operation, L, H,
-						IDLE,						
-						IDLE,
 						DEC16, C, B,
 						SET_FL_CP,
-						IDLE,
 						operation, Z, W,
 						IDLE,
+						IDLE,
+						WAIT,
+						OP_F,
 						OP_R, 1, operation, repeat_instr };
 		}
 
@@ -421,32 +408,32 @@
 			cur_instr = new ushort[]
 						{IN, ALU, C, B,
 						IDLE,
+						IDLE,
+						IDLE,
+						IDLE,
+						WAIT,
 						WR, L, H, ALU,
+						REP_OP_I, operation,
 						IDLE,
-						operation, L, H,
-						IDLE,
-						TR16, Z, W, C, B,
-						operation, Z, W,					
-						IDLE,
-						DEC8, B,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP_R, 2, operation, repeat_instr };
 		}
 
 		private void OUT_OP_R(ushort operation, ushort repeat_instr)
 		{
 			cur_instr = new ushort[]
-						{RD, ALU, L, H,
+						{IDLE,
+						WAIT,
+						RD, ALU, L, H,
 						IDLE,
 						OUT, C, B, ALU,
 						IDLE,
 						IDLE,
-						operation, L, H,
-						DEC8, B,
+						REP_OP_O, operation,
 						IDLE,
-						TR16, Z, W, C, B,
-						operation, Z, W,							
-						IDLE,
+						WAIT,
+						OP_F,
 						OP_R, 3, operation, repeat_instr };
 		}
 
@@ -455,23 +442,23 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
+						WAIT,
 						RD, Z, dest_l, dest_h,
 						IDLE,				
 						IDLE,
+						WAIT,
 						I_RD, W, dest_l, dest_h, 1,
 						IDLE,
+						WAIT,
+						WR, dest_l, dest_h, src_l,
 						IDLE,
-						WR, dest_l, dest_h, src_l,						
 						IDLE,
-						IDLE,
+						IDLE,						
+						WAIT,
 						I_WR, dest_l, dest_h, 1, src_h,
-						IDLE,						
-						IDLE,
 						TR16, src_l, src_h, Z, W,
-						IDLE,
-						IDLE,						
-						IDLE,
+						WAIT,						
+						OP_F,
 						OP };
 		}
 	}

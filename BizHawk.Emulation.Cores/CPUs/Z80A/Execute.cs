@@ -20,13 +20,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public int instr_pntr = 0;
 		public ushort instr_swap;
 		public ushort[] cur_instr;
-		public int opcode;
+		public byte opcode;
 		public bool NO_prefix, CB_prefix, IX_prefix, EXTD_prefix, IY_prefix, IXCB_prefix, IYCB_prefix;
 		public bool IXCB_prefetch, IYCB_prefetch; // value is fetched before opcode
 		public bool halted;
 		public ushort PF;
 
-		public void FetchInstruction(byte opcode)
+		public void FetchInstruction()
 		{
 			if (NO_prefix)
 			{
@@ -1186,6 +1186,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					IXCB_prefetch = false;
 					PF = opcode;
 					Regs[ALU] = PF;
+					Regs[W] = Regs[Ixh];
+					Regs[Z] = Regs[Ixl];
 					PREFETCH_(Ixl, Ixh);
 					return;
 				}
@@ -1195,6 +1197,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					IYCB_prefetch = false;
 					PF = opcode;
 					Regs[ALU] = PF;
+					Regs[W] = Regs[Iyh];
+					Regs[Z] = Regs[Iyl];
 					PREFETCH_(Iyl, Iyh);					
 					return;
 				}

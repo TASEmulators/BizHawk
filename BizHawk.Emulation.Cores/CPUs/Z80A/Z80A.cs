@@ -76,6 +76,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort HL_BIT = 61;
 		public const ushort FTCH_DB = 62;
 		public const ushort WAIT = 63; // enterred when readin or writing and FlagW is true
+		public const ushort OP_F = 64; // fetch the opcode, happens on cycle 3 of fetch cycle
+		public const ushort RD_INC = 65; // read and increment
+		public const ushort RST = 66;
+		public const ushort WR_INC = 67; // write and increment
+		public const ushort REP_OP_I = 68;
+		public const ushort REP_OP_O = 69;
 
 		public byte temp_R;
 
@@ -90,7 +96,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			ResetRegisters();
 			ResetInterrupts();
 			TotalExecutedCycles = 0;
-			cur_instr = new ushort[] { OP };
+			cur_instr = new ushort[] 
+						{ IDLE,
+						  WAIT,
+						  OP_F,
+						  OP };
 			instr_pntr = 0;
 			NO_prefix = true;
 		}
@@ -205,19 +215,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					}
 					else
 					{
-						if(!FlagW)
-						{
-							if (OnExecFetch != null) OnExecFetch(RegPC);
-							if (TraceCallback != null) TraceCallback(State());
-							FetchInstruction(FetchMemory(RegPC++));
-							instr_pntr = 0;
-						}
-						else
-						{
-							instr_pntr--;
-							instr_swap = OP;
-							cur_instr[instr_pntr] = WAIT;
-						}						
+						if (OnExecFetch != null) OnExecFetch(RegPC);
+						if (TraceCallback != null) TraceCallback(State());
+						RegPC++;
+						FetchInstruction();
+						instr_pntr = 0;				
 					}
 
 					temp_R = (byte)(Regs[R] & 0x7F);
@@ -255,10 +257,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					if (repeat && temp3 > 0)
 					{
 						cur_instr = new ushort[]
-									{IDLE,
+									{DEC16, PCl, PCh,
 									DEC16, PCl, PCh,
-									IDLE,
-									DEC16, PCl, PCh,
+									WAIT,
+									OP_F,
 									OP };
 
 						instr_pntr = 0;
@@ -340,19 +342,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						}
 						else
 						{
-							if (!FlagW)
-							{
-								if (OnExecFetch != null) OnExecFetch(RegPC);
-								if (TraceCallback != null) TraceCallback(State());
-								FetchInstruction(FetchMemory(RegPC++));
-								instr_pntr = 0;
-							}
-							else
-							{
-								instr_pntr--;
-								instr_swap = OP;
-								cur_instr[instr_pntr] = WAIT;
-							}
+							if (OnExecFetch != null) OnExecFetch(RegPC);
+							if (TraceCallback != null) TraceCallback(State());
+							RegPC++;
+							FetchInstruction();
+							instr_pntr = 0;
 						}
 
 						temp_R = (byte)(Regs[R] & 0x7F);
@@ -432,53 +426,16 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					instr_pntr = 0;
 					break;
 				case RD:
-					if (!FlagW)
-					{
-						Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					}
-					else
-					{
-						instr_pntr--;
-						instr_swap = RD;
-						cur_instr[instr_pntr] = WAIT;
-					}
-					
+					Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case WR:
-					if (!FlagW)
-					{
-						Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					}
-					else
-					{
-						instr_pntr--;
-						instr_swap = WR;
-						cur_instr[instr_pntr] = WAIT;
-					}
+					Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case I_RD:
-					if (!FlagW)
-					{
-						I_Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					}
-					else
-					{
-						instr_pntr--;
-						instr_swap = I_RD;
-						cur_instr[instr_pntr] = WAIT;
-					}
+					I_Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case I_WR:
-					if (!FlagW)
-					{
-						I_Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					}
-					else
-					{
-						instr_pntr--;
-						instr_swap =I_WR;
-						cur_instr[instr_pntr] = WAIT;
-					}
+					I_Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case TR:
 					TR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -606,7 +563,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					if (prefix_src == IXCBpre) { IXCB_prefix = true; IXCB_prefetch = true; }
 					if (prefix_src == IYCBpre) { IYCB_prefix = true; IYCB_prefetch = true; }
 
-					FetchInstruction(FetchMemory(RegPC++));
+					RegPC++;
+					FetchInstruction();
 					instr_pntr = 0;
 					// only the first prefix in a double prefix increases R, although I don't know how / why
 					if (prefix_src < 4)
@@ -632,28 +590,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					iff1 = iff2;
 					break;
 				case OUT:
-					if (!FlagW)
-					{
-						OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					}
-					else
-					{
-						instr_pntr--;
-						instr_swap = OUT;
-						cur_instr[instr_pntr] = WAIT;
-					}
+					OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case IN:
-					if (!FlagW)
-					{
-						IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-					}
-					else
-					{
-						instr_pntr--;
-						instr_swap = IN;
-						cur_instr[instr_pntr] = WAIT;
-					}
+					IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case NEG:
 					NEG_8_Func(cur_instr[instr_pntr++]);
@@ -668,6 +608,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					RLD_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case SET_FL_LD:
+					DEC16_Func(C, B);
 					SET_FL_LD_Func();
 					break;
 				case SET_FL_CP:
@@ -684,35 +625,54 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					{
 						instr_pntr--;
 					}
+					break;
+				case OP_F:
+					opcode = FetchMemory(RegPC);
+					break;
+				case RD_INC:
+					Read_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+				case WR_INC:
+					Write_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+				case RST:
+					Regs[Z] = cur_instr[instr_pntr++];
+					Regs[W] = 0;
+					Regs[PCl] = Regs[Z];
+					Regs[PCh] = Regs[W];
+					break;
+				case REP_OP_I:
+					ushort temp4 = cur_instr[instr_pntr++];
+					if (temp4 == DEC16)
+					{
+						DEC16_Func(L, H);
+						TR16_Func(Z, W, C, B);
+						DEC16_Func(Z, W);
+						DEC8_Func(B);
+					}
 					else
 					{
-						switch (instr_swap)
-						{
-							case OP:
-								if (OnExecFetch != null) OnExecFetch(RegPC);
-								if (TraceCallback != null) TraceCallback(State());
-								FetchInstruction(FetchMemory(RegPC++));
-								instr_pntr = 0;
-								break;
-							case RD:
-								Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-								break;
-							case WR:
-								Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-								break;
-							case I_RD:
-								I_Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-								break;
-							case I_WR:
-								I_Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-								break;
-							case IN:
-								IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-								break;
-							case OUT:
-								OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
-								break;
-						}
+						INC16_Func(L, H);
+						TR16_Func(Z, W, C, B);
+						INC16_Func(Z, W);
+						DEC8_Func(B);
+					}
+					break;
+				case REP_OP_O:
+					ushort temp5 = cur_instr[instr_pntr++];
+					if (temp5 == DEC16)
+					{
+						DEC16_Func(L, H);
+						DEC8_Func(B);
+						TR16_Func(Z, W, C, B);
+						DEC16_Func(Z, W);			
+					}
+					else
+					{
+						INC16_Func(L, H);
+						DEC8_Func(B);
+						TR16_Func(Z, W, C, B);
+						INC16_Func(Z, W);
 					}
 					break;
 			}
