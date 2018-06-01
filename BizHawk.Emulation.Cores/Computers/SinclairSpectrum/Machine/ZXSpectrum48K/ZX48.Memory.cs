@@ -124,7 +124,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             if (IsContended(addr))
             {
-                var delay = ULADevice.GetContentionValue((int)CurrentFrameCycle);
+                var off = 1;
+                var offset = CurrentFrameCycle + off;
+                if (offset < 0)
+                    offset += ULADevice.FrameCycleLength;
+                if (offset >= ULADevice.FrameCycleLength)
+                    offset -= ULADevice.FrameCycleLength;
+
+                var delay = ULADevice.GetContentionValue((int)offset);
                 if (delay > 0)
                 {
 

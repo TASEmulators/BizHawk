@@ -30,7 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             PagingDisabled = false;
 
             //ULADevice = new ULA128(this);
-            ULADevice = new Screen48(this); // still todo
+            ULADevice = new Screen128(this); // still todo
 
             BuzzerDevice = new Beeper(this);
             BuzzerDevice.Init(44100, ULADevice.FrameLength);
