@@ -385,7 +385,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WR, SPl, SPh, PCh,
 						DEC16, SPl, SPh,
 						WAIT,
-						WR, SPl, SPh, PCl,
+						WR, SPl, SPh, PCl,	
 						RST, n,
 						WAIT,						
 						OP_F,
@@ -497,10 +497,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IN, dest, src, B,
 						TR16, Z, W, C, B,
+						WAIT,
+						IN, dest, src, B,						
 						INC16, Z, W,
-						IDLE,
 						WAIT,
 						OP_F,
 						OP};
