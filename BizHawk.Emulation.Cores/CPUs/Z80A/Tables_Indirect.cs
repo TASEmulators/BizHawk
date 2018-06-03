@@ -16,6 +16,8 @@
 						WAIT,					
 						OP_F,						
 						OP };
+
+			BUSRQ = new ushort[] { src_l, 0, 0, src_l, 0, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void BIT_OP_IND(ushort operation, ushort bit, ushort src_l, ushort src_h)
@@ -32,6 +34,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { 0, src_l, 0, 0, src_l, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		// Note that this operation uses I_BIT, same as indexed BIT.
@@ -49,6 +53,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { 0, src_l, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void REG_OP_IND_INC(ushort operation, ushort dest, ushort src_l, ushort src_h)
@@ -61,6 +67,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { src_l, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void REG_OP_IND(ushort operation, ushort dest, ushort src_l, ushort src_h)
@@ -73,6 +81,8 @@
 						WAIT,
 						OP_F,									
 						OP };
+
+			BUSRQ = new ushort[] { src_l, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void LD_16_IND_nn(ushort src_l, ushort src_h)
@@ -86,14 +96,16 @@
 						RD_INC, W, PCl, PCh,
 						IDLE,
 						WAIT,
-						WR, Z, W, src_l,
-						INC16, Z, W,
+						WR_INC, Z, W, src_l,
+						IDLE,
 						WAIT,
 						WR, Z, W, src_h,
 						IDLE,
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, PCl, 0, 0, Z, 0, 0, Z, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void LD_IND_16_nn(ushort dest_l, ushort dest_h)
@@ -115,6 +127,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, PCl, 0, 0, Z, 0, 0, Z, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void LD_8_IND_nn(ushort src)
@@ -133,6 +147,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, PCl, 0, 0, Z, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void LD_IND_8_nn(ushort dest)
@@ -151,6 +167,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, PCl, 0, 0, Z, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void LD_8_IND(ushort dest_l, ushort dest_h, ushort src)
@@ -163,6 +181,8 @@
 						WAIT,
 						OP_F,				
 						OP };
+
+			BUSRQ = new ushort[] { dest_l, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void LD_8_IND_IND(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
@@ -178,6 +198,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { src_l, 0, 0, dest_l, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void LD_IND_8_INC(ushort dest, ushort src_l, ushort src_h)
@@ -190,6 +212,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { src_l, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void LD_IND_16(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
@@ -205,6 +229,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { src_l, 0, 0, src_l, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void INC_8_IND(ushort src_l, ushort src_h)
@@ -221,6 +247,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { 0, src_l, 0, 0, src_l, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void DEC_8_IND(ushort src_l, ushort src_h)
@@ -237,6 +265,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { 0, src_l, 0, 0, src_l, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		// NOTE: WZ implied for the wollowing 3 functions
@@ -254,6 +284,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { 0, Z, 0, 0, Z, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void I_BIT_OP(ushort operation, ushort bit, ushort dest)
@@ -270,6 +302,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { 0, Z, 0, 0, Z, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void I_BIT_TE(ushort bit)
@@ -283,6 +317,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { 0, Z, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void I_OP_n(ushort operation, ushort src_l, ushort src_h)
@@ -307,6 +343,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0, 0, 0, 0, 0, 0, Z, 0, 0, Z, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void I_OP_n_n(ushort src_l, ushort src_h)
@@ -327,6 +365,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0, 0, PCl, 0, 0, Z, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void I_REG_OP_IND_n(ushort operation, ushort dest, ushort src_l, ushort src_h)
@@ -347,6 +387,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0, 0, 0, 0, Z, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void I_LD_8_IND_n(ushort dest_l, ushort dest_h, ushort src)
@@ -367,6 +409,8 @@
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0, 0, 0, 0, Z, 0, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void LD_OP_R(ushort operation, ushort repeat_instr)
@@ -384,6 +428,8 @@
 						WAIT, 
 						OP_F,
 						OP_R, 0, operation, repeat_instr };
+
+			BUSRQ = new ushort[] { L, 0, 0, E, 0, 0, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void CP_OP_R(ushort operation, ushort repeat_instr)
@@ -401,6 +447,8 @@
 						WAIT,
 						OP_F,
 						OP_R, 1, operation, repeat_instr };
+
+			BUSRQ = new ushort[] { L, 0, 0, 0, 0, 0, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void IN_OP_R(ushort operation, ushort repeat_instr)
@@ -418,6 +466,8 @@
 						WAIT,
 						OP_F,
 						OP_R, 2, operation, repeat_instr };
+
+			BUSRQ = new ushort[] { 0, 0, 0, 0, L, 0, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void OUT_OP_R(ushort operation, ushort repeat_instr)
@@ -435,6 +485,8 @@
 						WAIT,
 						OP_F,
 						OP_R, 3, operation, repeat_instr };
+
+			BUSRQ = new ushort[] { L, 0, 0, 0, 0, 0, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		// this is an indirect change of a a 16 bit register with memory
@@ -444,22 +496,24 @@
 						{IDLE,
 						WAIT,
 						RD, Z, dest_l, dest_h,
-						IDLE,				
+						INC16, dest_l, dest_h,				
 						IDLE,
 						WAIT,
-						I_RD, W, dest_l, dest_h, 1,
+						RD, W, dest_l, dest_h,
 						IDLE,
 						WAIT,
-						WR, dest_l, dest_h, src_l,
+						WR_DEC, dest_l, dest_h, src_h,
 						IDLE,
 						IDLE,
 						IDLE,						
 						WAIT,
-						I_WR, dest_l, dest_h, 1, src_h,
+						WR, dest_l, dest_h, 1, src_l,
 						TR16, src_l, src_h, Z, W,
 						WAIT,						
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { dest_l, 0, 0, 0, dest_l, 0, 0, dest_l, 0, 0, 0, 0, dest_l, 0, 0, PCl, 0, 0, 0 };
 		}
 	}
 }

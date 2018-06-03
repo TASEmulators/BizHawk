@@ -123,8 +123,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     case Z80A.RD_INC:
                     case Z80A.WR:
                     case Z80A.WR_INC:
-                    case Z80A.I_RD:
-                    case Z80A.I_WR:
                         addr = (ushort)(_cpu.Regs[cur_instr[instr_pntr + 4]] | _cpu.Regs[cur_instr[instr_pntr + 5]] << 8);
                         if (_machine.IsContended(addr))
                         {

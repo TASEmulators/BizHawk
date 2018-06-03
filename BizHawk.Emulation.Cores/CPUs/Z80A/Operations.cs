@@ -18,12 +18,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			INC16_Func(src_l, src_h);
 		}
 
-		public void I_Read_Func(ushort dest, ushort src_l, ushort src_h, ushort inc)
-		{
-			Regs[dest] = ReadMemory((ushort)((Regs[src_l] | (Regs[src_h] << 8)) + inc));
-			Regs[DB] = Regs[dest];
-		}
-
 		public void Write_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
 			Regs[DB] = Regs[src];
@@ -37,10 +31,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			INC16_Func(dest_l, dest_h);
 		}
 
-		public void I_Write_Func(ushort dest_l, ushort dest_h, ushort inc,  ushort src)
+		public void Write_DEC_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
 			Regs[DB] = Regs[src];
-			WriteMemory((ushort)((Regs[dest_l] | (Regs[dest_h] << 8)) + inc), (byte)Regs[src]);
+			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
+			DEC16_Func(dest_l, dest_h);
 		}
 
 		public void OUT_Func(ushort dest_l, ushort dest_h, ushort src)

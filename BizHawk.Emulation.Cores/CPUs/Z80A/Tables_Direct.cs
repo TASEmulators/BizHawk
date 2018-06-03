@@ -14,6 +14,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						  WAIT,
 						  OP_F,
 						  OP };
+
+			BUSRQ = new ushort[] {PCl, 0, 0, 0 };
 		}
 
 		// NOTE: In a real Z80, this operation just flips a switch to choose between 2 registers
@@ -25,6 +27,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0 };
 		}
 
 		private void EXX_()
@@ -34,6 +38,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0 };
 		}
 
 		// this exchanges 2 16 bit registers
@@ -44,17 +50,21 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0 };
 		}
 
 		private void INC_16(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{INC16,  src_l, src_h,
+						{INC16, src_l, src_h,
 						IDLE,
 						IDLE,
 						WAIT,					
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] {0, 0, PCl, 0, 0, 0};
 		}
 
 
@@ -67,6 +77,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] {0, 0, PCl, 0, 0, 0};
 		}
 
 		// this is done in two steps technically, but the flags don't work out using existing funcitons
@@ -85,6 +97,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] {0, 0, 0, 0, 0, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void REG_OP(ushort operation, ushort dest, ushort src)
@@ -94,6 +108,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] {PCl, 0, 0, 0 };
 		}
 
 		// Operations using the I and R registers take one T-cycle longer
@@ -105,6 +121,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] {0, PCl, 0, 0, 0 };
 		}
 
 		// note: do not use DEC here since no flags are affected by this operation
@@ -126,6 +144,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							WAIT,
 							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] {0, PCl, 0, 0, 0, 0, 0, 0, 0, PCl, 0, 0, 0};
 			}
 			else
 			{
@@ -138,6 +158,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							WAIT,
 							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] {0, PCl, 0, 0, PCl, 0, 0, 0};
 			}
 		}
 
@@ -148,6 +170,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						IDLE,
 						IDLE,
 						HALT };
+
+			BUSRQ = new ushort[] {PCl, 0, 0, 0 };
 		}
 
 		private void JR_COND(bool cond)
@@ -167,6 +191,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							WAIT,					
 							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] {PCl, 0, 0, 0, 0, 0, 0, 0, PCl, 0, 0, 0};
 			}
 			else
 			{
@@ -178,6 +204,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							WAIT,
 							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] {PCl, 0, 0, PCl, 0, 0, 0};
 			}
 		}
 
@@ -196,6 +224,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							WAIT,
 							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] {PCl, 0, 0, PCl, 0, 0, Z, 0, 0, 0};
 			}
 			else
 			{
@@ -210,6 +240,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							WAIT,						
 							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] {PCl, 0, 0, PCl, 0, 0, PCl, 0, 0, 0};
 			}
 		}
 
@@ -226,6 +258,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,						
 						OP };
+
+			BUSRQ = new ushort[] {SPl, 0, 0, SPl, 0, 0, Z, 0, 0, 0};
 		}
 
 		private void RETI_()
@@ -241,6 +275,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] {SPl, 0, 0, SPl, 0, 0, Z, 0, 0, 0};
 		}
 
 		private void RETN_()
@@ -256,6 +292,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] {SPl, 0, 0, SPl, 0, 0, Z, 0, 0, 0};
 		}
 
 
@@ -275,6 +313,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							WAIT,							
 							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] {0, SPl, 0, 0, SPl, 0, 0, Z, 0, 0, 0};
 			}
 			else
 			{
@@ -284,6 +324,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							WAIT,
 							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] {0, PCl, 0, 0, 0};
 			}
 		}
 
@@ -296,19 +338,21 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							WAIT,
 							RD_INC, Z, PCl, PCh,
 							IDLE,
-							IDLE,
+							DEC16, SPl, SPh,
 							WAIT,
 							RD_INC, W, PCl, PCh,
-							DEC16, SPl, SPh,
+							IDLE,
 							WAIT,
-							WR, SPl, SPh, PCh,
-							DEC16, SPl, SPh,
+							WR_DEC, SPl, SPh, PCh,
+							IDLE,
 							WAIT,
 							WR, SPl, SPh, PCl,
 							TR16, PCl, PCh, Z, W,
 							WAIT,
 							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] {PCl, 0, 0, PCl, 0, 0, 0, SPl, 0, 0, SPl, 0, 0, Z, 0, 0, 0};
 			}
 			else
 			{
@@ -323,6 +367,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							WAIT,
 							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] { PCl, 0, 0, PCl, 0, 0, PCl, 0, 0, 0 };
 			}
 		}
 
@@ -333,6 +379,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0 };
 		}
 
 		private void BIT_OP(ushort operation, ushort bit, ushort src)
@@ -342,22 +390,26 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0 };
 		}
 
 		private void PUSH_(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						DEC16, SPl, SPh,
+						{DEC16, SPl, SPh,
+						IDLE,
 						WAIT,
-						WR, SPl, SPh, src_h,
-						DEC16, SPl, SPh,
+						WR_DEC, SPl, SPh, src_h,
+						IDLE,
 						WAIT,
 						WR, SPl, SPh, src_l,
 						IDLE,
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { 0, SPl, 0, 0, SPl, 0, 0, PCl, 0, 0, 0 };
 		}
 
 
@@ -374,22 +426,26 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { SPl, 0, 0, SPl, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void RST_(ushort n)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						DEC16, SPl, SPh,
+						{DEC16, SPl, SPh,
+						IDLE,
 						WAIT,
-						WR, SPl, SPh, PCh,
-						DEC16, SPl, SPh,
+						WR_DEC, SPl, SPh, PCh,
+						RST, n,
 						WAIT,
 						WR, SPl, SPh, PCl,	
-						RST, n,
+						TR16, PCl, PCh, Z, W,
 						WAIT,						
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { 0, SPl, 0, 0, SPl, 0, 0, Z, 0, 0, 0 };
 		}
 
 		private void PREFIX_(ushort src)
@@ -399,6 +455,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						PREFIX, src};
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0 };
 		}
 
 		private void PREFETCH_(ushort src_l, ushort src_h)
@@ -408,6 +466,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						PREFIX, IXYprefetch };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0 };
 		}
 
 		private void DI_()
@@ -417,6 +477,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0 };
 		}
 
 		private void EI_()
@@ -426,6 +488,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0 };
 		}
 
 		private void JP_16(ushort src_l, ushort src_h)
@@ -435,6 +499,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { src_l, 0, 0, 0 };
 		}
 
 		private void LD_SP_16(ushort src_l, ushort src_h)
@@ -446,6 +512,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT, 
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { 0, 0, src_l, 0, 0, 0 };
 		}
 
 		private void OUT_()
@@ -462,6 +530,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP};
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0, 0, 0 ,0, PCl, 0, 0, 0};
 		}
 
 		private void OUT_REG_(ushort dest, ushort src)
@@ -475,6 +545,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP};
+
+			BUSRQ = new ushort[] { 0, 0, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void IN_()
@@ -491,6 +563,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP};
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0, 0, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void IN_REG_(ushort dest, ushort src)
@@ -504,6 +578,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP};
+
+			BUSRQ = new ushort[] { 0, 0, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void REG_OP_16_(ushort op, ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
@@ -520,6 +596,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP};
+
+			BUSRQ = new ushort[] { 0, 0, 0, 0, 0, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void INT_MODE_(ushort src)
@@ -529,6 +607,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, 0 };
 		}
 
 		private void RRD_()
@@ -543,11 +623,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						IDLE,
 						IDLE,
 						WAIT,
-						WR, Z, W, ALU,
-						INC16, Z, W,
+						WR_INC, Z, W, ALU,
+						IDLE,
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { L, 0, 0, 0, 0, 0, Z, 0, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void RLD_()
@@ -562,11 +644,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						IDLE,
 						IDLE,
 						WAIT,
-						WR, Z, W, ALU,
-						INC16, Z, W,
+						WR_INC, Z, W, ALU,
+						IDLE,
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { L, 0, 0, 0, 0, 0, Z, 0, 0, 0, PCl, 0, 0, 0 };
 		}
 	}
 }
