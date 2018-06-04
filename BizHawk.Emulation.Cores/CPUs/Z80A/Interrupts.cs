@@ -72,7 +72,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						ASGN, ALU, PCl,
+						TR, ALU, PCl,
 						DEC16, SPl, SPh,
 						IDLE,
 						WAIT,
