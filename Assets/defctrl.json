@@ -1551,7 +1551,7 @@
       },
       "P1 Y Axis": {
         "Value": "X1 LeftThumbY",
-        "Mult": 1.0,
+        "Mult": -1.0,
         "Deadzone": 0.1
       },
       "P2 X Axis": {
@@ -1703,7 +1703,7 @@
       },
       "P1 Right Throttle": {
         "Value": "X1 RightThumbY",
-        "Mult": 1.0,
+        "Mult": -1.0,
         "Deadzone": 0.1
       },
       "P1 Left Stick Horizontal": {
@@ -1713,7 +1713,7 @@
       },
       "P1 Left Stick Vertical": {
         "Value": "X1 LeftThumbY",
-        "Mult": 1.0,
+        "Mult": -1.0,
         "Deadzone": 0.1
       },
       "P1 Left Throttle": {
@@ -1733,7 +1733,7 @@
       },
       "P1 Stick Vertical": {
         "Value": "X1 LeftThumbY",
-        "Mult": 1.0,
+        "Mult": -1.0,
         "Deadzone": 0.1
       },
       "P1 Throttle": {
