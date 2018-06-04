@@ -752,7 +752,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public int GetContentionValue()
         {
-            return RenderingTable.Renderer[_machine.CurrentFrameCycle].ContentionValue;
+            var f = _machine.CurrentFrameCycle;
+            if (f >= FrameCycleLength)
+                f -= FrameCycleLength;
+
+            return RenderingTable.Renderer[f].ContentionValue;
         }
 
         /// <summary>

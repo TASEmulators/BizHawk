@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
 
                 if (_machine.IsContended(addr))
-                    _cpu.TotalExecutedCycles += _machine.ULADevice.GetContentionValue();
+                    _cpu.TotalExecutedCycles += _machine.ULADevice.GetContentionValue((int)(_machine.CurrentFrameCycle + 1));
             }
         }
 
