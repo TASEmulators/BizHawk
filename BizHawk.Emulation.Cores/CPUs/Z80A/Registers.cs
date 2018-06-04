@@ -40,6 +40,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public ushort H_s = 30;
 		public ushort L_s = 31;
 		public ushort DB = 32;
+		public ushort IRQ_V = 34; // IRQ mode 1 vector
+		public ushort NMI_V = 35; // NMI vector
 
 		public ushort[] Regs = new ushort[36];
 
@@ -111,6 +113,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			{
 				Regs[i] = 0;
 			}
+
+			// the IRQ1 vector is 0x38
+			Regs[IRQ_V] = 0x38;
+			// The NMI vector is constant 0x66
+			Regs[NMI_V] = 0x66;
 
 			FlagI = false;
 			FlagW = false;

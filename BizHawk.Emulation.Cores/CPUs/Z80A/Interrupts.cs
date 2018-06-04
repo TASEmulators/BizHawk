@@ -34,16 +34,18 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{DEC16, SPl, SPh,
+						TR, ALU, PCl,
 						WAIT,
-						WR, SPl, SPh, PCh,
-						DEC16, SPl, SPh,
+						WR_DEC, SPl, SPh, PCh,
+						TR16, PCl, PCh, NMI_V, ZERO,
 						WAIT,
-						WR, SPl, SPh, PCl,
-						ASGN, PCl, 0x66,
-						ASGN, PCh, 0,
+						WR, SPl, SPh, ALU,
+						IDLE,						
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { 0, SPl, 0, 0, SPl, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		// Mode 0 interrupts only take effect if a CALL or RST is on the data bus
@@ -56,55 +58,61 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			cur_instr = new ushort[]
 						{IDLE,
 						WAIT,
-						RD, ALU, PCl, PCh,
-						INC16, PCl, PCh,
+						RD_INC, ALU, PCl, PCh,
+						IDLE,
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCl, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		// Just jump to $0038
 		private void INTERRUPT_1()
 		{
 			cur_instr = new ushort[]
-						{DEC16, SPl, SPh,
-						WAIT,
-						WR, SPl, SPh, PCh,
+						{IDLE,
+						ASGN, ALU, PCl,
 						DEC16, SPl, SPh,
-						WAIT,
-						WR, SPl, SPh, PCl,
-						ASGN, PCl, 0x38,
 						IDLE,
-						ASGN, PCh, 0,
+						WAIT,
+						WR_DEC, SPl, SPh, PCh,
+						TR16, PCl, PCh, IRQ_V, ZERO,
+						WAIT,
+						WR, SPl, SPh, ALU,
 						IDLE,
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { 0, 0, 0, SPl, 0, 0, SPl, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		// Interrupt mode 2 uses the I vector combined with a byte on the data bus
 		private void INTERRUPT_2()
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						WAIT,
-						FTCH_DB,
-						TR16, Z, W, DB, I,
+						{FTCH_DB,
+						IDLE,
 						DEC16, SPl, SPh,
+						TR16, Z, W, DB, I,						
 						WAIT,
-						WR, SPl, SPh, PCh,
-						DEC16, SPl, SPh,
+						WR_DEC, SPl, SPh, PCh,
+						IDLE,
 						WAIT,
 						WR, SPl, SPh, PCl,
 						IDLE,
 						WAIT,
 						RD_INC, PCl, Z, W,
 						IDLE,
+						WAIT,
 						RD, PCh, Z, W,
 						IDLE,
 						WAIT,
 						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { 0, 0, 0, SPl, 0, 0, SPl, 0, 0, Z, 0, 0, Z, 0 ,0 ,PCl, 0, 0, 0 };
 		}
 
 		private static ushort[] INT_vectors = new ushort[] {0x40, 0x48, 0x50, 0x58, 0x60};
