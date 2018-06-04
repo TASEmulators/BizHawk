@@ -380,15 +380,15 @@
 						IDLE,
 						ADDS, Z, W, ALU, ZERO,
 						IDLE,
+						IDLE,
 						WAIT,
 						RD, ALU, Z, W,
-						operation, dest, ALU,
-						IDLE,
+						operation, dest, ALU,						
 						WAIT,
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] { PCl, 0, 0, 0, 0, 0, 0, Z, 0, 0, PCl, 0, 0, 0 };
+			BUSRQ = new ushort[] { PCl, 0, 0, 0, 0, 0, 0, 0, Z, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void I_LD_8_IND_n(ushort dest_l, ushort dest_h, ushort src)
@@ -410,7 +410,7 @@
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] { PCl, 0, 0, 0, 0, 0, 0, Z, 0, 0, 0, PCl, 0, 0, 0 };
+			BUSRQ = new ushort[] { PCl, 0, 0, 0, 0, 0, 0, 0, Z, 0, 0, PCl, 0, 0, 0 };
 		}
 
 		private void LD_OP_R(ushort operation, ushort repeat_instr)
