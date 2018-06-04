@@ -400,11 +400,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public override void ContendMemory(ushort addr)
         {
+            /*
             if (IsContended(addr))
             {
                 var delay = ULADevice.GetContentionValue((int)CurrentFrameCycle);
                 CPU.TotalExecutedCycles += delay;
             }
+            */
         }
 
         /// <summary>

@@ -23,6 +23,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public int instr_pntr => _cpu.instr_pntr;
         public ushort RegPC => _cpu.RegPC;
         public long TotalExecutedCycles => _cpu.TotalExecutedCycles;
+        public ushort BUSRQ
+        {
+            get
+            {
+                if (_cpu.bus_pntr < _cpu.BUSRQ.Length - 1)
+                    return _cpu.BUSRQ[_cpu.bus_pntr];
+
+                return 0;
+            }
+        }
 
         /// <summary>
         /// Called when the first byte of an instruction is fetched
@@ -39,106 +49,67 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public void Cycle()
         {
-            
             if (portContending)
             {
                 RunPortContention();
             }
-            /*
             else
             {
-                // check for wait state on cycle that has just happened
-                // next cycle should be a read/write operation
-                if (cur_instr[instr_pntr] == Z80A.WAIT)
-                {
-                    ushort addr = 0;
-                    bool abort = false;
+                // check for upcoming BUSRQ
+                if (BUSRQ == 0)
+                    return;
 
-                    // identify the type of operation and get the targetted address
-                    switch (cur_instr[instr_pntr + 1])
-                    {
-                        // op fetch
-                        case Z80A.OP_F:
-                            addr = RegPC;
-                            break;
-                        // read/writes
-                        case Z80A.RD:
-                        case Z80A.RD_INC:
-                        case Z80A.WR:
-                        case Z80A.WR_INC:
-                            addr = (ushort)(_cpu.Regs[cur_instr[instr_pntr + 3]] | _cpu.Regs[cur_instr[instr_pntr + 4]] << 8);
-                            break;
-                        default:
-                            abort = true;
-                            break;
-                    }
-
-                    if (!abort)
-                    {
-                        // is the address in a potentially contended bank?
-                        if (_machine.IsContended(addr))
-                        {
-                            // will the ULA be contending this address on the next cycle?
-                            var delay = _machine.ULADevice.GetContentionValue((int)_machine.CurrentFrameCycle + 1);
-                            _cpu.TotalExecutedCycles += delay;
-                        }
-                    }
-                }
-                
-            }
-            */
-            return;
-            // check for wait state on next cycle
-            // the cycle after that should be a read/write operation or op fetch
-            if (instr_pntr >= cur_instr.Length - 1)
-            {
-                // will overflow
-                return;
-            }
-
-            if (cur_instr[instr_pntr + 1] == Z80A.WAIT)
-            {
-               // return;
                 ushort addr = 0;
 
-                // identify the type of operation and get the targetted address
-                var op = cur_instr[instr_pntr + 2];
-                switch (op)
+                switch (BUSRQ)
                 {
-                    // op fetch
-                    case Z80A.OP_F:
-                        addr = (ushort)(RegPC);
-                        if (_machine.IsContended(addr))
-                        {
-                            var delay = _machine.ULADevice.GetContentionValue((int)_machine.CurrentFrameCycle);
-                            if (delay > 0)
-                            {
-                                _cpu.TotalExecutedCycles += delay;
-                                _machine.ULADevice.RenderScreen((int)_machine.CurrentFrameCycle);
-                            }
-                        }
+                    // PCl
+                    case 0:
+                        addr = (ushort)(_cpu.Regs[_cpu.PCl] | _cpu.Regs[_cpu.PCh] << 8);
                         break;
-                    // read/writes
-                    case Z80A.RD:
-                    case Z80A.RD_INC:
-                    case Z80A.WR:
-                    case Z80A.WR_INC:
-                        addr = (ushort)(_cpu.Regs[cur_instr[instr_pntr + 4]] | _cpu.Regs[cur_instr[instr_pntr + 5]] << 8);
-                        if (_machine.IsContended(addr))
-                        {
-                            var delay = _machine.ULADevice.GetContentionValue((int)_machine.CurrentFrameCycle);
-                            if (delay > 0)
-                            {
-                                _cpu.TotalExecutedCycles += delay;
-                                _machine.ULADevice.RenderScreen((int)_machine.CurrentFrameCycle);
-                            }
-                        }
+                    // Z
+                    case 13:
+                        addr = (ushort)(_cpu.Regs[_cpu.Z] | _cpu.Regs[_cpu.W] << 8);
                         break;
-                    case Z80A.FTCH_DB:
+                    // SPl
+                    case 2:
+                        addr = (ushort)(_cpu.Regs[_cpu.SPl] | _cpu.Regs[_cpu.SPh] << 8);
                         break;
+                    // L
+                    case 11:
+                        addr = (ushort)(_cpu.Regs[_cpu.L] | _cpu.Regs[_cpu.H] << 8);
+                        break;
+                    // I
+                    case 21:
+                        addr = (ushort)(_cpu.Regs[_cpu.R] | _cpu.Regs[_cpu.I] << 8);
+                        break;
+                    // Ixl
+                    case 15:
+                        addr = (ushort)(_cpu.Regs[_cpu.Ixl] | _cpu.Regs[_cpu.Ixh] << 8);
+                        break;
+                    // Iyl
+                    case 17:
+                        addr = (ushort)(_cpu.Regs[_cpu.Iyl] | _cpu.Regs[_cpu.Iyh] << 8);
+                        break;
+                    // A
+                    case 4:
+                        addr = (ushort)(_cpu.Regs[_cpu.F] | _cpu.Regs[_cpu.A] << 8);
+                        break;
+                    // B
+                    case 6:
+                        addr = (ushort)(_cpu.Regs[_cpu.C] | _cpu.Regs[_cpu.B] << 8);
+                        break;
+                    // D
+                    case 8:
+                        addr = (ushort)(_cpu.Regs[_cpu.E] | _cpu.Regs[_cpu.D] << 8);
+                        break;
+
                     default:
                         break;
                 }
+
+                if (_machine.IsContended(addr))
+                    _cpu.TotalExecutedCycles += _machine.ULADevice.GetContentionValue();
             }
         }
 

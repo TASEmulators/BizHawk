@@ -122,6 +122,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public override void ContendMemory(ushort addr)
         {
+            return;
+            /*
             if (IsContended(addr))
             {
                 var off = 1;
@@ -138,6 +140,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
                 CPU.TotalExecutedCycles += delay;
             }
+            */
         }
 
         /// <summary>
