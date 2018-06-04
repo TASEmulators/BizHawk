@@ -507,7 +507,7 @@
 						IDLE,
 						IDLE,						
 						WAIT,
-						WR, dest_l, dest_h, 1, src_l,
+						WR, dest_l, dest_h, src_l,
 						TR16, src_l, src_h, Z, W,
 						WAIT,						
 						OP_F,
