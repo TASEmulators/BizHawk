@@ -27,10 +27,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             get
             {
-                if (_cpu.bus_pntr < _cpu.BUSRQ.Length - 1)
-                    return _cpu.BUSRQ[_cpu.bus_pntr];
+                //if (_cpu.bus_pntr < _cpu.BUSRQ.Length - 1)
+                return _cpu.BUSRQ[_cpu.bus_pntr];
 
-                return 0;
+                //return 0;
             }
         }
 
@@ -63,48 +63,47 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 switch (BUSRQ)
                 {
-                    // PCl
-                    case 0:
+                    // PCh
+                    case 1:
                         addr = (ushort)(_cpu.Regs[_cpu.PCl] | _cpu.Regs[_cpu.PCh] << 8);
                         break;
-                    // Z
-                    case 13:
-                        addr = (ushort)(_cpu.Regs[_cpu.Z] | _cpu.Regs[_cpu.W] << 8);
-                        break;
-                    // SPl
-                    case 2:
+                    // SPh
+                    case 3:
                         addr = (ushort)(_cpu.Regs[_cpu.SPl] | _cpu.Regs[_cpu.SPh] << 8);
                         break;
-                    // L
-                    case 11:
+					// A
+					case 4:
+						addr = (ushort)(_cpu.Regs[_cpu.F] | _cpu.Regs[_cpu.A] << 8);
+						break;
+					// B
+					case 6:
+						addr = (ushort)(_cpu.Regs[_cpu.C] | _cpu.Regs[_cpu.B] << 8);
+						break;
+					// D
+					case 8:
+						addr = (ushort)(_cpu.Regs[_cpu.E] | _cpu.Regs[_cpu.D] << 8);
+						break;
+					// H
+					case 10:
                         addr = (ushort)(_cpu.Regs[_cpu.L] | _cpu.Regs[_cpu.H] << 8);
                         break;
-                    // I
-                    case 21:
-                        addr = (ushort)(_cpu.Regs[_cpu.R] | _cpu.Regs[_cpu.I] << 8);
-                        break;
-                    // Ixl
-                    case 15:
+					// W
+					case 12:
+						addr = (ushort)(_cpu.Regs[_cpu.Z] | _cpu.Regs[_cpu.W] << 8);
+						break;
+                    // Ixh
+                    case 16:
                         addr = (ushort)(_cpu.Regs[_cpu.Ixl] | _cpu.Regs[_cpu.Ixh] << 8);
                         break;
-                    // Iyl
-                    case 17:
+                    // Iyh
+                    case 18:
                         addr = (ushort)(_cpu.Regs[_cpu.Iyl] | _cpu.Regs[_cpu.Iyh] << 8);
                         break;
-                    // A
-                    case 4:
-                        addr = (ushort)(_cpu.Regs[_cpu.F] | _cpu.Regs[_cpu.A] << 8);
-                        break;
-                    // B
-                    case 6:
-                        addr = (ushort)(_cpu.Regs[_cpu.C] | _cpu.Regs[_cpu.B] << 8);
-                        break;
-                    // D
-                    case 8:
-                        addr = (ushort)(_cpu.Regs[_cpu.E] | _cpu.Regs[_cpu.D] << 8);
-                        break;
-
-                    default:
+					// I
+					case 21:
+						addr = (ushort)(_cpu.Regs[_cpu.R] | _cpu.Regs[_cpu.I] << 8);
+						break;
+					default:
                         break;
                 }
 

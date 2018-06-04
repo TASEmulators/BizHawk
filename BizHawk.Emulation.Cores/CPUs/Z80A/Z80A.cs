@@ -266,7 +266,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 									OP_F,
 									OP };
 
-						BUSRQ = new ushort[] { 0, PCl, 0, 0, 0 };
+						BUSRQ = new ushort[] { 0, PCh, 0, 0, 0 };
 						
 						instr_pntr = 0; bus_pntr = 0;
 						// adjust WZ register accordingly
