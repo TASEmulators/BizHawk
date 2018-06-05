@@ -166,14 +166,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             while (CurrentFrameCycle < ULADevice.FrameLength)
             {
-                // check for interrupt
                 ULADevice.CheckForInterrupt(CurrentFrameCycle);
-
-                // run a single CPU instruction   
-                CPU.ExecuteOne();
-                // check contention for next cycle
-                CPUMon.Cycle();
-
+                CPUMon.ExecuteCycle();
                 // cycle the tape device
                 if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
                     TapeDevice.TapeCycle();

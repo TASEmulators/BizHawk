@@ -110,8 +110,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public override void WriteMemory(ushort addr, byte value)
         {
             // update ULA screen buffer if necessary BEFORE T1 write
-            if ((addr & 49152) == 16384 && _render)
-                ULADevice.RenderScreen((int)CurrentFrameCycle);
+            //if ((addr & 49152) == 16384 && _render)
+                //ULADevice.RenderScreen((int)CurrentFrameCycle);
 
             ContendMemory(addr);                       
             WriteBus(addr, value);

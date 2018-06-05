@@ -287,6 +287,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             /// </summary>
             public MachineType _machineType;
 
+            public int Offset;
+
             /// <summary>
             /// Constructor
             /// </summary>
@@ -305,6 +307,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             /// <param name="machineType"></param>
             private void InitRenderer(MachineType machineType)
             {
+                switch (machineType)
+                {
+                    case MachineType.ZXSpectrum16:
+                    case MachineType.ZXSpectrum48:
+                        Offset = 0;
+                        break;
+                }
+
                 for (var t = 0; t < _ula.FrameCycleLength; t++)
                 {
                     var tStateScreen = t + _ula.InterruptStartTime;
@@ -438,7 +448,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // calculate contention values
                 for (int t = 0; t < _ula.FrameCycleLength; t++)
                 {
-                    int shifted = (t + 1) + _ula.InterruptStartTime;
+                    int shifted = (t + 1) + _ula.InterruptStartTime + Offset;
                     if (shifted < 0)
                         shifted += _ula.FrameCycleLength;
                     shifted %= _ula.FrameCycleLength;
@@ -466,7 +476,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // calculate floating bus values
                 for (int t = 0; t < _ula.FrameCycleLength; t++)
                 {
-                    int shifted = (t + 1) + _ula.InterruptStartTime;
+                    int shifted = (t + 10) + _ula.InterruptStartTime;
                     if (shifted < 0)
                         shifted += _ula.FrameCycleLength;
                     shifted %= _ula.FrameCycleLength;
@@ -580,7 +590,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (toCycle > FrameCycleLength)
                 toCycle = FrameCycleLength;
             if (LastTState > toCycle)
-                LastTState = 0;
+                LastTState = toCycle - 2;
+            if (toCycle < 0)
+                toCycle = 0;
 
             // render the required number of cycles
             for (int t = LastTState; t < toCycle; t++)
@@ -701,6 +713,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public void ReadFloatingBus(int tstate, ref int result)
         {
+            int off = 1;
+            tstate += off;
+            if (tstate >= RenderingTable.Renderer.Length)
+                tstate -= RenderingTable.Renderer.Length;
+            if (tstate < 0)
+                tstate += RenderingTable.Renderer.Length;
+
             var item = RenderingTable.Renderer[tstate];
 
             switch (RenderingTable._machineType)
@@ -752,11 +771,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public int GetContentionValue()
         {
-            var f = _machine.CurrentFrameCycle;
-            if (f >= FrameCycleLength)
-                f -= FrameCycleLength;
-
-            return RenderingTable.Renderer[f].ContentionValue;
+            return GetContentionValue((int)_machine.CurrentFrameCycle);
         }
 
         /// <summary>
@@ -765,6 +780,25 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public int GetContentionValue(int tstate)
         {
+            int off = 5;
+            tstate += off;
+            if (tstate >= FrameCycleLength)
+                tstate -= FrameCycleLength;
+
+            if (tstate < 0)
+                tstate += FrameCycleLength;
+
+            return RenderingTable.Renderer[tstate].ContentionValue;
+        }
+
+        /// <summary>
+        /// Returns the contention value for the supplied t-state
+        /// </summary>
+        /// <returns></returns>
+        public int GetPortContentionValue(int tstate)
+        {
+            int off = 1;
+            tstate += off;
             if (tstate >= FrameCycleLength)
                 tstate -= FrameCycleLength;
 
@@ -926,6 +960,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         protected void SetupScreenSize()
         {
+            BufferWidth = ScreenWidth + BorderLeftWidth + BorderRightWidth;
+            BufferHeight = ScreenHeight + BorderTopHeight + BorderBottomHeight;
+            VirtualHeight = BufferHeight;
+            VirtualWidth = BufferWidth;
+            ScreenBuffer = new int[BufferWidth * BufferHeight];
+
             switch (borderType)
             {
                 case ZXSpectrum.BorderType.Full:
@@ -987,7 +1027,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("ULA");
-            ser.Sync("ScreenBuffer", ref ScreenBuffer, false);
+            if (ScreenBuffer != null)
+                ser.Sync("ScreenBuffer", ref ScreenBuffer, false);
             ser.Sync("FrameLength", ref FrameCycleLength);
             ser.Sync("ClockSpeed", ref ClockSpeed);
             ser.Sync("BorderColor", ref BorderColor);

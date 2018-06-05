@@ -289,7 +289,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="addr"></param>
         public override void ContendPort(ushort addr)
         {
-            CPUMon.ContendPort(addr);
+            //CPUMon.ContendPort(addr);
             return;
         }
     }
