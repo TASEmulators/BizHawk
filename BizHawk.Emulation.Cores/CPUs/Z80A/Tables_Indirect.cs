@@ -292,9 +292,9 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
 						WAIT,
 						RD, ALU, Z, W,
+						IDLE,
 						operation, bit, ALU,
 						WAIT,
 						WR, Z, W, ALU,
@@ -303,22 +303,22 @@
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] { 0, W, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { W, 0, 0, W, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void I_BIT_TE(ushort bit)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
 						WAIT,
 						RD, ALU, Z, W,
+						IDLE,
 						I_BIT, bit, ALU,
 						WAIT,
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] { 0, W, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { W, 0, 0, W, PCh, 0, 0, 0 };
 		}
 
 		private void I_OP_n(ushort operation, ushort src_l, ushort src_h)
@@ -333,10 +333,10 @@
 						ADDS, Z, W, ALU, ZERO,
 						IDLE,
 						IDLE,
-						IDLE,
 						WAIT,
 						RD, ALU, Z, W,
 						operation, ALU,
+						IDLE,
 						WAIT,
 						WR, Z, W, ALU,
 						IDLE,
@@ -344,7 +344,7 @@
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] { PCh, 0, 0, 0, 0, 0, 0, 0, 0, W, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, PCh, PCh, PCh, PCh, W, 0, 0, W, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void I_OP_n_n(ushort src_l, ushort src_h)
@@ -419,74 +419,58 @@
 						{IDLE,
 						WAIT,
 						RD, ALU, L, H,
-						IDLE,
+						operation, L, H,
 						WAIT,
 						WR, E, D, ALU,
-						operation, L, H,
 						operation, E, D,
-						SET_FL_LD, // BC gets decremented in here
-						WAIT, 
-						OP_F,
-						OP_R, 0, operation, repeat_instr };
+						SET_FL_LD_R, 0, operation, repeat_instr};
 
-			BUSRQ = new ushort[] { H, 0, 0, D, 0, 0, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { H, 0, 0, D, 0, 0, D, D};
 		}
 
 		private void CP_OP_R(ushort operation, ushort repeat_instr)
 		{
 			cur_instr = new ushort[]
-						{IDLE,						
+						{IDLE,
 						WAIT,
 						RD, ALU, L, H,
 						operation, L, H,
 						DEC16, C, B,
-						SET_FL_CP,
 						operation, Z, W,
 						IDLE,
-						IDLE,
-						WAIT,
-						OP_F,
-						OP_R, 1, operation, repeat_instr };
+						SET_FL_CP_R, 1, operation, repeat_instr};
 
-			BUSRQ = new ushort[] { H, 0, 0, 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { H, 0, 0, H, H, H, H, H };
 		}
 
 		private void IN_OP_R(ushort operation, ushort repeat_instr)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
+						WAIT,
 						WAIT,
 						IN, ALU, C, B,
 						IDLE,
 						WAIT,
 						WR, L, H, ALU,
-						REP_OP_I, operation,
-						IDLE,
-						WAIT,
-						OP_F,
-						OP_R, 2, operation, repeat_instr };
+						REP_OP_I, operation, 2, operation, repeat_instr };
 
-			BUSRQ = new ushort[] { 0, 0, 0, 0, H, 0, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { I, 0, 0, 0, H, 0, 0, 0};
 		}
 
 		private void OUT_OP_R(ushort operation, ushort repeat_instr)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
+						{IDLE,						
+						IDLE,
 						WAIT,
 						RD, ALU, L, H,
 						IDLE,
-						IDLE,
 						WAIT,
 						OUT, C, B, ALU,
-						REP_OP_O, operation,
-						IDLE,
-						WAIT,
-						OP_F,
-						OP_R, 3, operation, repeat_instr };
+						REP_OP_O, operation,  3, operation, repeat_instr };
 
-			BUSRQ = new ushort[] { H, 0, 0, 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { I, H, 0, 0, 0, 0, 0, 0};
 		}
 
 		// this is an indirect change of a a 16 bit register with memory

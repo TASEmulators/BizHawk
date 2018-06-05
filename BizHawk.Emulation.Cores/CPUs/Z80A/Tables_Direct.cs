@@ -145,7 +145,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							OP_F,
 							OP };
 
-				BUSRQ = new ushort[] {0, PCh, 0, 0, 0, 0, 0, 0, 0, PCh, 0, 0, 0};
+				BUSRQ = new ushort[] {I, PCh, 0, 0, PCh, PCh, PCh, PCh, PCh, PCh, 0, 0, 0};
 			}
 			else
 			{
@@ -159,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							OP_F,
 							OP };
 
-				BUSRQ = new ushort[] {0, PCh, 0, 0, PCh, 0, 0, 0};
+				BUSRQ = new ushort[] {I, PCh, 0, 0, PCh, 0, 0, 0};
 			}
 		}
 
@@ -482,7 +482,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						IDLE,
 						PREFIX, src,};
 
-			BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, 0, 0 };
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, PCh, PCh };
 		}
 
 		private void DI_()

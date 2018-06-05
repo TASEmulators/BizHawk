@@ -70,8 +70,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort NEG = 55;		
 		public const ushort RRD = 56;
 		public const ushort RLD = 57;		
-		public const ushort SET_FL_LD = 58;
-		public const ushort SET_FL_CP = 59;
+		public const ushort SET_FL_LD_R = 58;
+		public const ushort SET_FL_CP_R = 59;
 		public const ushort SET_FL_IR = 60;
 		public const ushort I_BIT = 61;
 		public const ushort HL_BIT = 62;
@@ -102,7 +102,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						  OP_F,
 						  OP };
 
-			BUSRQ = new ushort[] { PCl, 0, 0, 0 };
+			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
 			instr_pntr = 0; bus_pntr = 0;
 			NO_prefix = true;
 		}
@@ -231,134 +231,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					Regs[R] = (byte)((Regs[R] & 0x80) | temp_R);
 					break;
 				case OP_R:
-					// determine if we repeat based on what operation we are doing
-					// single execution versions also come here, but never repeat
-					ushort temp1 = cur_instr[instr_pntr++];
-					ushort temp2 = cur_instr[instr_pntr++];
-					ushort temp3 = cur_instr[instr_pntr++];
-
-					bool repeat = false;
-					int Reg16_d = Regs[C] | (Regs[B] << 8);
-					switch (temp1)
-					{
-						case 0:
-							repeat = Reg16_d != 0;
-							break;
-						case 1:
-							repeat = (Reg16_d != 0) && !FlagZ;
-							break;
-						case 2:
-							repeat = Regs[B] != 0;
-							break;
-						case 3:
-							repeat = Regs[B] != 0;
-							break;
-					}
-
-					// if we repeat, we do a 5 cycle refresh which decrements PC by 2
-					// if we don't repeat, continue on as a normal opcode fetch
-					if (repeat && temp3 > 0)
-					{
-						cur_instr = new ushort[]
-									{DEC16, PCl, PCh,
-									DEC16, PCl, PCh,
-									WAIT,
-									OP_F,
-									OP };
-
-						BUSRQ = new ushort[] { 0, PCh, 0, 0, 0 };
-						
-						instr_pntr = 0; bus_pntr = 0;
-						// adjust WZ register accordingly
-						switch (temp1)
-						{
-							case 0:
-								// TEST: PC before or after the instruction?
-								Regs[Z] = Regs[PCl];
-								Regs[W] = Regs[PCh];
-								INC16_Func(Z, W);
-								break;
-							case 1:
-								// TEST: PC before or after the instruction?
-								Regs[Z] = Regs[PCl];
-								Regs[W] = Regs[PCh];
-								INC16_Func(Z, W);
-								break;
-							case 2:
-								// Nothing
-								break;
-							case 3:
-								// Nothing
-								break;
-						}
-					}
-					else
-					{
-						// Interrupts can occur at this point, so process them accordingly
-						// Read the opcode of the next instruction				
-						if (EI_pending > 0)
-						{
-							EI_pending--;
-							if (EI_pending == 0) { IFF1 = IFF2 = true; }
-						}
-
-						// Process interrupt requests.
-						if (nonMaskableInterruptPending)
-						{
-							nonMaskableInterruptPending = false;
-
-							if (TraceCallback != null)
-							{
-								TraceCallback(new TraceInfo{Disassembly = "====NMI====", RegisterInfo = ""});
-							}
-
-							iff2 = iff1;
-							iff1 = false;
-							NMI_();
-							NMICallback();
-							instr_pntr = 0; bus_pntr = 0;
-						}
-						else if (iff1 && FlagI)
-						{
-							iff1 = iff2 = false;
-							EI_pending = 0;
-
-							if (TraceCallback != null)
-							{
-								TraceCallback(new TraceInfo{Disassembly = "====IRQ====", RegisterInfo = ""});
-							}
-
-							switch (interruptMode)
-							{
-								case 0:
-									// Requires something to be pushed onto the data bus
-									// we'll assume it's a zero for now
-									INTERRUPT_0(0);
-									break;
-								case 1:
-									INTERRUPT_1();
-									break;
-								case 2:
-									INTERRUPT_2();
-									break;
-							}
-							IRQCallback();
-							instr_pntr = 0; bus_pntr = 0;
-						}
-						else
-						{
-							if (OnExecFetch != null) OnExecFetch(RegPC);
-							if (TraceCallback != null) TraceCallback(State());
-							RegPC++;
-							FetchInstruction();
-							instr_pntr = 0; bus_pntr = 0;
-						}
-
-						temp_R = (byte)(Regs[R] & 0x7F);
-						temp_R++;
-						temp_R &= 0x7F;
-						Regs[R] = (byte)((Regs[R] & 0x80) | temp_R);
-					}
+					
 					break;
 
 				case HALT:
@@ -608,12 +481,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				case RLD:
 					RLD_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case SET_FL_LD:
+				case SET_FL_LD_R:
 					DEC16_Func(C, B);
 					SET_FL_LD_Func();
+					Repeat_Op();
 					break;
-				case SET_FL_CP:
+				case SET_FL_CP_R:
 					SET_FL_CP_Func();
+					Repeat_Op();
 					break;
 				case SET_FL_IR:
 					SET_FL_IR_Func(cur_instr[instr_pntr++]);
@@ -651,6 +526,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						INC16_Func(Z, W);
 						DEC8_Func(B);
 					}
+					Repeat_Op();
 					break;
 				case REP_OP_O:
 					ushort temp5 = cur_instr[instr_pntr++];
@@ -668,9 +544,105 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						TR16_Func(Z, W, C, B);
 						INC16_Func(Z, W);
 					}
+					Repeat_Op();
 					break;
 			}
 			TotalExecutedCycles++;
+		}
+
+		public void Repeat_Op()
+		{
+			// determine if we repeat based on what operation we are doing
+			// single execution versions also come here, but never repeat
+			ushort temp1 = cur_instr[instr_pntr++];
+			ushort temp2 = cur_instr[instr_pntr++];
+			ushort temp3 = cur_instr[instr_pntr++];
+
+			bool repeat = false;
+			int Reg16_d = Regs[C] | (Regs[B] << 8);
+			switch (temp1)
+			{
+				case 0:
+					repeat = Reg16_d != 0;
+					break;
+				case 1:
+					repeat = (Reg16_d != 0) && !FlagZ;
+					break;
+				case 2:
+					repeat = Regs[B] != 0;
+					break;
+				case 3:
+					repeat = Regs[B] != 0;
+					break;
+			}
+
+			// if we repeat, we do a 5 cycle refresh which decrements PC by 2
+			// if we don't repeat, continue on as a normal opcode fetch
+			if (repeat && temp3 > 0)
+			{
+				cur_instr = new ushort[]
+							{DEC16, PCl, PCh,
+							DEC16, PCl, PCh,
+							IDLE,
+							IDLE,
+							IDLE,
+							IDLE,
+							WAIT,
+							OP_F,
+							OP};
+
+				if (temp1 == 0)
+				{
+					BUSRQ = new ushort[] { D, D, D, D, D, PCh, 0, 0, 0 };
+				}
+				else if (temp1 == 1)
+				{
+					BUSRQ = new ushort[] { H, H, H, H, H, PCh, 0, 0, 0 };
+				}
+				else if (temp1 == 2)
+				{
+					BUSRQ = new ushort[] { H, H, H, H, H, PCh, 0, 0, 0 };
+				}
+				else if (temp1 == 3)
+				{
+					BUSRQ = new ushort[] { B, B, B, B, B, PCh, 0, 0, 0 };
+				}
+
+				instr_pntr = 0; bus_pntr = 0;
+				// adjust WZ register accordingly
+				switch (temp1)
+				{
+					case 0:
+						// TEST: PC before or after the instruction?
+						Regs[Z] = Regs[PCl];
+						Regs[W] = Regs[PCh];
+						INC16_Func(Z, W);
+						break;
+					case 1:
+						// TEST: PC before or after the instruction?
+						Regs[Z] = Regs[PCl];
+						Regs[W] = Regs[PCh];
+						INC16_Func(Z, W);
+						break;
+					case 2:
+						// Nothing
+						break;
+					case 3:
+						// Nothing
+						break;
+				}
+			}
+			else
+			{
+				cur_instr = new ushort[]
+						{ IDLE,
+						  WAIT,
+						  OP_F,
+						  OP };
+
+				BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+				instr_pntr = 0; bus_pntr = 0;
+			}
 		}
 
 		// tracer stuff
