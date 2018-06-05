@@ -561,8 +561,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					if (prefix_src == EXTDpre) { EXTD_prefix = true; }
 					if (prefix_src == IXpre) { IX_prefix = true; }
 					if (prefix_src == IYpre) { IY_prefix = true; }
-					if (prefix_src == IXCBpre) { IXCB_prefix = true; IXCB_prefetch = true; }
-					if (prefix_src == IYCBpre) { IYCB_prefix = true; IYCB_prefetch = true; }
+					if (prefix_src == IXCBpre) { IXCB_prefix = true; }
+					if (prefix_src == IYCBpre) { IYCB_prefix = true; }
 
 					RegPC++;
 					FetchInstruction();

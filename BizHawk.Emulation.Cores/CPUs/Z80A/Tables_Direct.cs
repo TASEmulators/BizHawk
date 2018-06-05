@@ -184,15 +184,15 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							RD_INC, Z, PCl, PCh,
 							IDLE,
 							ASGN, W, 0,
+							IDLE,
+							IDLE,
 							ADDS, PCl, PCh, Z, W,
 							TR16, Z, W, PCl, PCh,
-							IDLE,
-							IDLE,
 							WAIT,					
 							OP_F,
 							OP };
 
-				BUSRQ = new ushort[] {PCh, 0, 0, 0, 0, 0, 0, 0, PCh, 0, 0, 0};
+				BUSRQ = new ushort[] {PCh, 0, 0, PCh, PCh, PCh, PCh, PCh, PCh, 0, 0, 0};
 			}
 			else
 			{
@@ -459,15 +459,30 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
 		}
 
-		private void PREFETCH_(ushort src_l, ushort src_h)
+		private void PREFETCH_(ushort src)
 		{
+			if (src == IXCBpre)
+			{
+				Regs[W] = Regs[Ixh];
+				Regs[Z] = Regs[Ixl];
+			}
+			else
+			{
+				Regs[W] = Regs[Iyh];
+				Regs[Z] = Regs[Iyl];
+			}
+
 			cur_instr = new ushort[]
-						{ADDS, Z, W, ALU, ZERO,
+						{IDLE,
+						WAIT,
+						RD_INC, ALU, PCl, PCh,
+						ADDS, Z, W, ALU, ZERO,
 						WAIT,
 						OP_F,
-						PREFIX, IXYprefetch };
+						IDLE,
+						PREFIX, src,};
 
-			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, 0, 0 };
 		}
 
 		private void DI_()

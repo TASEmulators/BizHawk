@@ -858,7 +858,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0xC8: RET_COND(FlagZ);							break; // RET Z
 					case 0xC9: RET_();									break; // RET
 					case 0xCA: JP_COND(FlagZ);							break; // JP Z
-					case 0xCB: PREFIX_(IXCBpre);						break; // PREFIX IXCB
+					case 0xCB: PREFETCH_(IXCBpre);						break; // PREFIX IXCB
 					case 0xCC: CALL_COND(FlagZ);						break; // CALL Z
 					case 0xCD: CALL_COND(true);							break; // CALL
 					case 0xCE: REG_OP_IND_INC(ADC8, A, PCl, PCh);		break; // ADC A, n
@@ -1123,7 +1123,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0xC8: RET_COND(FlagZ);							break; // RET Z
 					case 0xC9: RET_();									break; // RET
 					case 0xCA: JP_COND(FlagZ);							break; // JP Z
-					case 0xCB: PREFIX_(IYCBpre);						break; // PREFIy IyCB
+					case 0xCB: PREFETCH_(IYCBpre);						break; // PREFIX IyCB
 					case 0xCC: CALL_COND(FlagZ);						break; // CALL Z
 					case 0xCD: CALL_COND(true);							break; // CALL
 					case 0xCE: REG_OP_IND_INC(ADC8, A, PCl, PCh);		break; // ADC A, n
@@ -1183,28 +1183,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				// the first byte fetched is the prefetch value to use with the instruction
 				// we pick Ix or Iy here, the indexed value is stored in WZ
 				// In this way, we don't need to pass them as an argument to the I_Funcs.
-				if (IXCB_prefetch)
-				{
-					IXCB_prefetch = false;
-					PF = opcode;
-					Regs[ALU] = PF;
-					Regs[W] = Regs[Ixh];
-					Regs[Z] = Regs[Ixl];
-					PREFETCH_(Ixl, Ixh);
-					return;
-				}
-
-				if (IYCB_prefetch)
-				{
-					IYCB_prefetch = false;
-					PF = opcode;
-					Regs[ALU] = PF;
-					Regs[W] = Regs[Iyh];
-					Regs[Z] = Regs[Iyl];
-					PREFETCH_(Iyl, Iyh);					
-					return;
-				}
-
 				IXCB_prefix = false;
 				IYCB_prefix = false;
 				NO_prefix = true;
