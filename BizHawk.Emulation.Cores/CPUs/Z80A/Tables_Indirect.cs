@@ -350,14 +350,14 @@
 		private void I_OP_n_n(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
+						{TR16, Z, W, src_l, src_h,
 						WAIT,
 						RD_INC, ALU, PCl, PCh,
-						IDLE,
-						TR16, Z, W, src_l, src_h,
 						ADDS, Z, W, ALU, ZERO,
 						WAIT,
 						RD_INC, ALU, PCl, PCh,
+						IDLE,
+						IDLE,
 						IDLE,
 						WAIT,
 						WR, Z, W, ALU,
@@ -366,7 +366,7 @@
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] { PCh, 0, 0, 0, 0, PCh, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, PCh, PCh, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void I_REG_OP_IND_n(ushort operation, ushort dest, ushort src_l, ushort src_h)
@@ -388,7 +388,7 @@
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] { PCh, 0, 0, 0, 0, 0, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, PCh, PCh, PCh, PCh, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void I_LD_8_IND_n(ushort dest_l, ushort dest_h, ushort src)
@@ -410,7 +410,7 @@
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] { PCh, 0, 0, 0, 0, 0, 0, 0, Z, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, PCh, PCh, PCh, PCh, Z, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void LD_OP_R(ushort operation, ushort repeat_instr)
