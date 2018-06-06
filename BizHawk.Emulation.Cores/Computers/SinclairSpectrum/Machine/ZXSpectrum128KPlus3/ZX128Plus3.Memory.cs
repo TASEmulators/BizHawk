@@ -341,10 +341,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         break;
                 }
             }
-
-            // update ULA screen buffer if necessary
-            if ((addr & 49152) == 16384 && _render)
-                ULADevice.RenderScreen((int)CurrentFrameCycle);
         }
 
         /// <summary>
@@ -355,8 +351,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadMemory(ushort addr)
         {
-            ContendMemory(addr);
-
             var data = ReadBus(addr);
             return data;
         }
@@ -369,6 +363,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WriteMemory(ushort addr, byte value)
         {
+            /*
             // update ULA screen buffer if necessary BEFORE T1 write
             if (!SpecialPagingMode)
             {
@@ -390,23 +385,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         break;
                 }
             }
-
-            ContendMemory(addr);
-            WriteBus(addr, value);
-        }
-
-        /// <summary>
-        /// Contends memory if necessary
-        /// </summary>
-        public override void ContendMemory(ushort addr)
-        {
-            /*
-            if (IsContended(addr))
-            {
-                var delay = ULADevice.GetContentionValue((int)CurrentFrameCycle);
-                CPU.TotalExecutedCycles += delay;
-            }
             */
+            
+            WriteBus(addr, value);
         }
 
         /// <summary>

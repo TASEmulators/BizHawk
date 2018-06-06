@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// This method is for 48k and 128k/+2 machines only and should be overridden for other models
         /// </summary>
         /// <param name="addr"></param>
-        public abstract void ContendPort(ushort addr);
+        //public abstract void ContendPort(ushort addr);
         
     }
 }

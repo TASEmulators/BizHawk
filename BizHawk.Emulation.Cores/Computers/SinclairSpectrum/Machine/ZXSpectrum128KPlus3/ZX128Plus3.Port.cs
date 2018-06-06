@@ -18,9 +18,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             bool deviceAddressed = true;
 
-            // process IO contention
-            ContendPort(port);
-
             int result = 0xFF;
 
             // check AY
@@ -57,30 +54,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (!deviceAddressed)
             {
                 // If this is an unused port the floating memory bus should be returned
-                // Floating bus is read on the previous cycle
-                long _tStates = CurrentFrameCycle - 1;
-
-                ULADevice.ReadFloatingBus((int)_tStates, ref result);
-
-                /*
-
-                // if we are on the top or bottom border return 0xff
-                if ((_tStates < ULADevice.contentionStartPeriod) || (_tStates > ULADevice.contentionEndPeriod))
-                {
-                    result = 0xff;
-                }
-                else
-                {
-                    if (ULADevice.floatingBusTable[_tStates] < 0)
-                    {
-                        result = 0xff;
-                    }
-                    else
-                    {
-                        result = ReadBus((ushort)ULADevice.floatingBusTable[_tStates]);
-                    }
-                }
-                */
+                ULADevice.ReadFloatingBus((int)CurrentFrameCycle, ref result);              
             }
 
             return (byte)result;
@@ -93,9 +67,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WritePort(ushort port, byte value)
         {
-            // process IO contention
-            ContendPort(port);
-
             // get a BitArray of the port
             BitArray portBits = new BitArray(BitConverter.GetBytes(port));
             // get a BitArray of the value byte
@@ -179,9 +150,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 */
 
                 // Border - LSB 3 bits hold the border colour
-                if (ULADevice.BorderColor != (value & BORDER_BIT))
-                    ULADevice.RenderScreen((int)CurrentFrameCycle);
-
                 ULADevice.BorderColor = value & BORDER_BIT;
 
                 // Buzzer
@@ -216,16 +184,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 return rp;
             }
             set { ROMPaged = value; }
-        }
-
-        /// <summary>
-        /// Contend port if necessary
-        /// </summary>
-        /// <param name="addr"></param>
-        public override void ContendPort(ushort addr)
-        {
-            //CPUMon.ContendPort(addr);
-            return;
         }
     }
 }

@@ -96,7 +96,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadMemory(ushort addr)
         {
-            ContendMemory(addr);
             var data = ReadBus(addr);
             return data;
         }
@@ -108,39 +107,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="addr"></param>
         /// <param name="value"></param>
         public override void WriteMemory(ushort addr, byte value)
-        {
-            // update ULA screen buffer if necessary BEFORE T1 write
-            //if ((addr & 49152) == 16384 && _render)
-                //ULADevice.RenderScreen((int)CurrentFrameCycle);
-
-            ContendMemory(addr);                       
+        {                     
             WriteBus(addr, value);
-        }
-
-        /// <summary>
-        /// Contends memory if necessary
-        /// </summary>
-        public override void ContendMemory(ushort addr)
-        {
-            return;
-            /*
-            if (IsContended(addr))
-            {
-                var off = 1;
-                var offset = CurrentFrameCycle + off;
-                if (offset < 0)
-                    offset += ULADevice.FrameCycleLength;
-                if (offset >= ULADevice.FrameCycleLength)
-                    offset -= ULADevice.FrameCycleLength;
-
-                var delay = ULADevice.GetContentionValue((int)offset);
-                if (delay > 0)
-                {
-
-                }
-                CPU.TotalExecutedCycles += delay;
-            }
-            */
         }
 
         /// <summary>

@@ -156,11 +156,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
-        /// Contends memory if necessary
-        /// </summary>
-        public abstract void ContendMemory(ushort addr);
-
-        /// <summary>
         /// Checks whether supplied address is in a potentially contended bank
         /// </summary>
         /// <param name="addr"></param>
