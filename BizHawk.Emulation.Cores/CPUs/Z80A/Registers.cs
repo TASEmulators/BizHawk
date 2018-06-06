@@ -40,6 +40,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public ushort H_s = 30;
 		public ushort L_s = 31;
 		public ushort DB = 32;
+		public ushort scratch = 33;
 		public ushort IRQ_V = 34; // IRQ mode 1 vector
 		public ushort NMI_V = 35; // NMI vector
 

@@ -85,6 +85,21 @@
 			BUSRQ = new ushort[] { src_h, 0, 0, PCh, 0, 0, 0 };
 		}
 
+		// different because HL doesn't effect WZ
+		private void REG_OP_IND_HL(ushort operation, ushort dest)
+		{
+			cur_instr = new ushort[]
+						{IDLE,
+						WAIT,
+						RD, ALU, L, H,
+						operation, dest, ALU,
+						WAIT,
+						OP_F,
+						OP };
+
+			BUSRQ = new ushort[] { H, 0, 0, PCh, 0, 0, 0 };
+		}
+
 		private void LD_16_IND_nn(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
@@ -183,6 +198,21 @@
 						OP };
 
 			BUSRQ = new ushort[] { dest_h, 0, 0, PCh, 0, 0, 0 };
+		}
+
+		// seperate HL needed since it doesn't effect the WZ pair
+		private void LD_8_IND_HL(ushort src)
+		{
+			cur_instr = new ushort[]
+						{IDLE,
+						WAIT,
+						WR, L, H, src,
+						IDLE,
+						WAIT,
+						OP_F,
+						OP };
+
+			BUSRQ = new ushort[] { H, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void LD_8_IND_IND(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)

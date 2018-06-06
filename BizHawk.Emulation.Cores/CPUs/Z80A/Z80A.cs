@@ -506,6 +506,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					Regs[W] = 0;
 					break;
 				case REP_OP_I:
+
+					
 					Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 
 					ushort temp4 = cur_instr[instr_pntr++];
@@ -515,14 +517,34 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						TR16_Func(Z, W, C, B);
 						DEC16_Func(Z, W);
 						DEC8_Func(B);
+
+						// take care of other flags
+						// taken from 'undocumented z80 documented'
+						FlagN = Regs[ALU].Bit(7);
+						FlagH = FlagC = (Regs[ALU] + (Regs[C] - 1) & 0xFF) > 0xFF;
+						FlagP = TableParity[((Regs[ALU] + (Regs[C] - 1) & 0xFF) & 7) ^ (Regs[B])];
 					}
 					else
 					{
 						INC16_Func(L, H);
+						
 						TR16_Func(Z, W, C, B);
 						INC16_Func(Z, W);
 						DEC8_Func(B);
+
+						//Read_Func(scratch, L, H);
+						if (opcode == 0xA2)
+						{
+							Console.Write(Regs[ALU]);
+							Console.Write(" ");
+						}
+						// take care of other flags
+						// taken from 'undocumented z80 documented'
+						FlagN = Regs[ALU].Bit(7);
+						FlagH = FlagC = (Regs[ALU] + (Regs[W]) & 0xFF) > 0xFF;
+						FlagP = TableParity[((Regs[ALU] + (Regs[W]) & 0xFF) & 7) ^ Regs[Z]];
 					}
+
 					Repeat_Op();
 					break;
 				case REP_OP_O:
@@ -543,6 +565,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						TR16_Func(Z, W, C, B);
 						INC16_Func(Z, W);
 					}
+
+					// take care of other flags
+					// taken from 'undocumented z80 documented'
+					FlagN = Regs[ALU].Bit(7);
+					FlagH = FlagC = (Regs[ALU] + Regs[L]) > 0xFF;
+					FlagP = TableParity[((Regs[ALU] + Regs[L]) & 7) ^ (Regs[B])];
+
 					Repeat_Op();
 					break;
 			}

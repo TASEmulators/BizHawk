@@ -757,7 +757,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				FlagZ = Regs[A] == 0;
 				FlagS = Regs[A] > 127;
 				FlagP = iff2;
-				Flag5 = (Regs[A] & 0x02) != 0;
+				Flag5 = (Regs[A] & 0x20) != 0;
 				Flag3 = (Regs[A] & 0x08) != 0;
 			}
 		}

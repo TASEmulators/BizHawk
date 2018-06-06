@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0x43: REG_OP(TR, B, E);						break; // LD B, E
 					case 0x44: REG_OP(TR, B, H);						break; // LD B, H
 					case 0x45: REG_OP(TR, B, L);						break; // LD B, L
-					case 0x46: REG_OP_IND(TR, B, L, H);					break; // LD B, (HL)
+					case 0x46: REG_OP_IND_HL(TR, B);					break; // LD B, (HL)
 					case 0x47: REG_OP(TR, B, A);						break; // LD B, A
 					case 0x48: REG_OP(TR, C, B);						break; // LD C, B
 					case 0x49: REG_OP(TR, C, C);						break; // LD C, C
@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0x4B: REG_OP(TR, C, E);						break; // LD C, E
 					case 0x4C: REG_OP(TR, C, H);						break; // LD C, H
 					case 0x4D: REG_OP(TR, C, L);						break; // LD C, L
-					case 0x4E: REG_OP_IND(TR, C, L, H);					break; // LD C, (HL)
+					case 0x4E: REG_OP_IND_HL(TR, C);					break; // LD C, (HL)
 					case 0x4F: REG_OP(TR, C, A);						break; // LD C, A
 					case 0x50: REG_OP(TR, D, B);						break; // LD D, B
 					case 0x51: REG_OP(TR, D, C);						break; // LD D, C
@@ -120,7 +120,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0x53: REG_OP(TR, D, E);						break; // LD D, E
 					case 0x54: REG_OP(TR, D, H);						break; // LD D, H
 					case 0x55: REG_OP(TR, D, L);						break; // LD D, L
-					case 0x56: REG_OP_IND(TR, D, L, H);					break; // LD D, (HL)
+					case 0x56: REG_OP_IND_HL(TR, D);					break; // LD D, (HL)
 					case 0x57: REG_OP(TR, D, A);						break; // LD D, A
 					case 0x58: REG_OP(TR, E, B);						break; // LD E, B
 					case 0x59: REG_OP(TR, E, C);						break; // LD E, C
@@ -128,7 +128,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0x5B: REG_OP(TR, E, E);						break; // LD E, E
 					case 0x5C: REG_OP(TR, E, H);						break; // LD E, H
 					case 0x5D: REG_OP(TR, E, L);						break; // LD E, L
-					case 0x5E: REG_OP_IND(TR, E, L, H);					break; // LD E, (HL)
+					case 0x5E: REG_OP_IND_HL(TR, E);					break; // LD E, (HL)
 					case 0x5F: REG_OP(TR, E, A);						break; // LD E, A
 					case 0x60: REG_OP(TR, H, B);						break; // LD H, B
 					case 0x61: REG_OP(TR, H, C);						break; // LD H, C
@@ -136,7 +136,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0x63: REG_OP(TR, H, E);						break; // LD H, E
 					case 0x64: REG_OP(TR, H, H);						break; // LD H, H
 					case 0x65: REG_OP(TR, H, L);						break; // LD H, L
-					case 0x66: REG_OP_IND(TR, H, L, H);					break; // LD H, (HL)
+					case 0x66: REG_OP_IND_HL(TR, H);					break; // LD H, (HL)
 					case 0x67: REG_OP(TR, H, A);						break; // LD H, A
 					case 0x68: REG_OP(TR, L, B);						break; // LD L, B
 					case 0x69: REG_OP(TR, L, C);						break; // LD L, C
@@ -144,23 +144,23 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					case 0x6B: REG_OP(TR, L, E);						break; // LD L, E
 					case 0x6C: REG_OP(TR, L, H);						break; // LD L, H
 					case 0x6D: REG_OP(TR, L, L);						break; // LD L, L
-					case 0x6E: REG_OP_IND(TR, L, L, H);					break; // LD L, (HL)
+					case 0x6E: REG_OP_IND_HL(TR, L);					break; // LD L, (HL)
 					case 0x6F: REG_OP(TR, L, A);						break; // LD L, A
-					case 0x70: LD_8_IND(L, H, B);						break; // LD (HL), B
-					case 0x71: LD_8_IND(L, H, C);						break; // LD (HL), C
-					case 0x72: LD_8_IND(L, H, D);						break; // LD (HL), D
-					case 0x73: LD_8_IND(L, H, E);						break; // LD (HL), E
-					case 0x74: LD_8_IND(L, H, H);						break; // LD (HL), H
-					case 0x75: LD_8_IND(L, H, L);						break; // LD (HL), L
+					case 0x70: LD_8_IND_HL(B);							break; // LD (HL), B
+					case 0x71: LD_8_IND_HL(C);							break; // LD (HL), C
+					case 0x72: LD_8_IND_HL(D);							break; // LD (HL), D
+					case 0x73: LD_8_IND_HL(E);							break; // LD (HL), E
+					case 0x74: LD_8_IND_HL(H);							break; // LD (HL), H
+					case 0x75: LD_8_IND_HL(L);							break; // LD (HL), L
 					case 0x76: HALT_();									break; // HALT
-					case 0x77: LD_8_IND(L, H, A);						break; // LD (HL), A
+					case 0x77: LD_8_IND_HL( A);							break; // LD (HL), A
 					case 0x78: REG_OP(TR, A, B);						break; // LD A, B
 					case 0x79: REG_OP(TR, A, C);						break; // LD A, C
 					case 0x7A: REG_OP(TR, A, D);						break; // LD A, D
 					case 0x7B: REG_OP(TR, A, E);						break; // LD A, E
 					case 0x7C: REG_OP(TR, A, H);						break; // LD A, H
 					case 0x7D: REG_OP(TR, A, L);						break; // LD A, L
-					case 0x7E: REG_OP_IND(TR, A, L, H);					break; // LD A, (HL)
+					case 0x7E: REG_OP_IND_HL(TR, A);					break; // LD A, (HL)
 					case 0x7F: REG_OP(TR, A, A);						break; // LD A, A
 					case 0x80: REG_OP(ADD8, A, B);						break; // ADD A, B
 					case 0x81: REG_OP(ADD8, A, C);						break; // ADD A, C
