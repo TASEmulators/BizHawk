@@ -1,4 +1,5 @@
-﻿using BizHawk.Emulation.Cores.Components.Z80A;
+﻿using BizHawk.Common;
+using BizHawk.Emulation.Cores.Components.Z80A;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,19 +20,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #region Lookups
 
-        public ushort[] cur_instr => _cpu.cur_instr;
-        public int instr_pntr => _cpu.instr_pntr;
-        public ushort RegPC => _cpu.RegPC;
+        /// <summary>
+        /// CPU total executes t-states
+        /// </summary>
         public long TotalExecutedCycles => _cpu.TotalExecutedCycles;
+
+        /// <summary>
+        /// Current BUSRQ line array
+        /// </summary>
         public ushort BUSRQ
         {
-            get
-            {
-                //if (_cpu.bus_pntr < _cpu.BUSRQ.Length - 1)
-                return _cpu.BUSRQ[_cpu.bus_pntr];
-
-                //return 0;
-            }
+            get {  return _cpu.BUSRQ[_cpu.bus_pntr]; }
         }
 
         #endregion
@@ -48,18 +47,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #region State
 
-        public bool IsContending = false;
-        public int ContCounter = -1;
-        public int portContCounter = 0;
-        public int portContTotalLen = 0;
-        public bool portContending = false;
+        /// <summary>
+        /// The last 16-bit port address that was detected
+        /// </summary>
         public ushort lastPortAddr;
-        public int[] portContArr = new int[4];
 
         #endregion
 
         #region Methods
-        
+
         /// <summary>
         /// Handles the ULA and CPU cycle clocks, along with any memory and port contention
         /// </summary>
@@ -89,7 +85,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
-        /// Looks up the BUSRQ address that is about to be signalled
+        /// Looks up the current BUSRQ address that is about to be signalled on the upcoming cycle
         /// </summary>
         /// <returns></returns>
         private ushort AscertainBUSRQAddress()
@@ -154,6 +150,79 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             return addr;
+        }
+
+        /// <summary>
+        /// Running every cycle, this determines whether the upcoming BUSRQ is for an IO operation
+        /// Also processes any contention
+        /// </summary>
+        /// <returns></returns>
+        private bool CheckIO()
+        {
+            bool isIO = false;
+
+            switch (BUSRQ)
+            {
+                // BC: T1
+                case Z80A.BIO1:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(1))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+                // BC: T2
+                case Z80A.BIO2:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(2))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+                // BC: T3
+                case Z80A.BIO3:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(3))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+                // BC: T4
+                case Z80A.BIO4:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(4))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+
+                // WZ: T1
+                case Z80A.WIO1:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(1))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+                // WZ: T2
+                case Z80A.WIO2:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(2))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+                // WZ: T3
+                case Z80A.WIO3:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(3))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+                // WZ: T4
+                case Z80A.WIO4:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(4))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+            }
+
+            return isIO;
         }
 
         /// <summary>
@@ -236,80 +305,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             return false;
-        }
-
-        /// <summary>
-        /// Running every cycle, this determines whether the upcoming BUSRQ is for an IO operation
-        /// Also processes any contention
-        /// </summary>
-        /// <returns></returns>
-        private bool CheckIO()
-        {
-            bool isIO = false;
-
-            switch (BUSRQ)
-            {
-                // BC: T1
-                case Z80A.BIO1:
-                    lastPortAddr = AscertainBUSRQAddress();
-                    isIO = true;
-                    if (IsIOCycleContended(1))
-                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
-                    break;
-                // BC: T2
-                case Z80A.BIO2:
-                    lastPortAddr = AscertainBUSRQAddress();
-                    isIO = true;
-                    if (IsIOCycleContended(2))
-                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
-                    break;
-                // BC: T3
-                case Z80A.BIO3:
-                    lastPortAddr = AscertainBUSRQAddress();
-                    isIO = true;
-                    if (IsIOCycleContended(3))
-                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
-                    break;
-                // BC: T4
-                case Z80A.BIO4:
-                    lastPortAddr = AscertainBUSRQAddress();
-                    isIO = true;
-                    if (IsIOCycleContended(4))
-                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
-                    break;
-
-                // WZ: T1
-                case Z80A.WIO1:
-                    lastPortAddr = AscertainBUSRQAddress();
-                    isIO = true;
-                    if (IsIOCycleContended(1))
-                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
-                    break;
-                // WZ: T2
-                case Z80A.WIO2:
-                    lastPortAddr = AscertainBUSRQAddress();
-                    isIO = true;
-                    if (IsIOCycleContended(2))
-                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
-                    break;
-                // WZ: T3
-                case Z80A.WIO3:
-                    lastPortAddr = AscertainBUSRQAddress();
-                    isIO = true;
-                    if (IsIOCycleContended(3))
-                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
-                    break;
-                // WZ: T4
-                case Z80A.WIO4:
-                    lastPortAddr = AscertainBUSRQAddress();
-                    isIO = true;
-                    if (IsIOCycleContended(4))
-                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
-                    break;
-            }
-
-            return isIO;
-        }
+        }        
 
         /// <summary>
         /// Called when the first byte of an instruction is fetched
@@ -323,5 +319,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #endregion
 
+        #region Serialization
+
+        public void SyncState(Serializer ser)
+        {
+            ser.BeginSection("CPUMonitor");
+            ser.Sync("", ref lastPortAddr);
+            ser.EndSection();
+        }
+
+        #endregion
     }
 }
