@@ -561,7 +561,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						OP_F,
 						OP};
 
-			BUSRQ = new ushort[] { WIO1, WIO2, WIO3, WIO4, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { BIO1, BIO2, BIO3, BIO4, PCh, 0, 0, 0 };
 		}
 
 		private void IN_()
@@ -594,7 +594,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						OP_F,
 						OP};
 
-			BUSRQ = new ushort[] { WIO1, WIO2, WIO3, WIO4, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { BIO1, BIO2, BIO3, BIO4, PCh, 0, 0, 0 };
 		}
 
 		private void REG_OP_16_(ushort op, ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
