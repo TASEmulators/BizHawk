@@ -534,19 +534,19 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		private void OUT_()
 		{
 			cur_instr = new ushort[]
-						{IDLE,
+						{TR, W, A,
 						WAIT,
 						RD_INC, Z, PCl, PCh,
 						IDLE,
-						IDLE,
-						TR, W, A,
+						WAIT,
+						WAIT,
 						OUT, Z, W, A,
 						INC16, Z, W,					
 						WAIT,
 						OP_F,
 						OP};
 
-			BUSRQ = new ushort[] { PCh, 0, 0, 0, 0, 0 ,0, PCh, 0, 0, 0};
+			BUSRQ = new ushort[] { PCh, 0, 0, WIO1, WIO2, WIO3, WIO4, PCh, 0, 0, 0};
 		}
 
 		private void OUT_REG_(ushort dest, ushort src)
@@ -561,40 +561,40 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						OP_F,
 						OP};
 
-			BUSRQ = new ushort[] { 0, 0, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { WIO1, WIO2, WIO3, WIO4, PCh, 0, 0, 0 };
 		}
 
 		private void IN_()
 		{
 			cur_instr = new ushort[]
-						{IDLE,
+						{TR, W, A,
 						WAIT,
 						RD_INC, Z, PCl, PCh,
 						IDLE,
-						IDLE,
-						TR, W, A,
+						WAIT,
+						WAIT,
 						IN, A, Z, W,
 						INC16, Z, W,
 						WAIT,
 						OP_F,
 						OP};
 
-			BUSRQ = new ushort[] { PCh, 0, 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { PCh, 0, 0, WIO1, WIO2, WIO3, WIO4, PCh, 0, 0, 0 };
 		}
 
 		private void IN_REG_(ushort dest, ushort src)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						TR16, Z, W, C, B,
+						{TR16, Z, W, C, B,
 						WAIT,
-						IN, dest, src, B,						
+						WAIT,
+						IN, dest, Z, W,						
 						INC16, Z, W,
 						WAIT,
 						OP_F,
 						OP};
 
-			BUSRQ = new ushort[] { 0, 0, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { WIO1, WIO2, WIO3, WIO4, PCh, 0, 0, 0 };
 		}
 
 		private void REG_OP_16_(ushort op, ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)

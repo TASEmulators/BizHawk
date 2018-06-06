@@ -45,6 +45,18 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 		public ushort[] Regs = new ushort[36];
 
+		// IO Contention Constants. Need to distinguish port access and normal memory accesses for zx spectrum
+		public const ushort BIO1 = 100;
+		public const ushort BIO2 = 101;
+		public const ushort BIO3 = 102;
+		public const ushort BIO4 = 103;
+
+		public const ushort WIO1 = 105;
+		public const ushort WIO2 = 106;
+		public const ushort WIO3 = 107;
+		public const ushort WIO4 = 108;
+
+
 		public bool FlagI;
 
 		public bool FlagW; // wait flag, when set to true reads / writes will be delayed

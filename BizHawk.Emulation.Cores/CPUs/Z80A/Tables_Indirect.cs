@@ -447,15 +447,15 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
+						IDLE,
 						WAIT,
 						WAIT,
 						IN, ALU, C, B,
 						IDLE,
 						WAIT,
-						WR, L, H, ALU,
-						REP_OP_I, operation, 2, operation, repeat_instr };
+						REP_OP_I, L, H, ALU, operation, 2, operation, repeat_instr };
 
-			BUSRQ = new ushort[] { I, 0, 0, 0, H, 0, 0, 0};
+			BUSRQ = new ushort[] { I, BIO1, BIO2, BIO3, BIO4, H, 0, 0};
 		}
 
 		private void OUT_OP_R(ushort operation, ushort repeat_instr)
@@ -467,10 +467,10 @@
 						RD, ALU, L, H,
 						IDLE,
 						WAIT,
-						OUT, C, B, ALU,
-						REP_OP_O, operation,  3, operation, repeat_instr };
+						WAIT, 
+						REP_OP_O, C, B, ALU, operation, 3, operation, repeat_instr };
 
-			BUSRQ = new ushort[] { I, H, 0, 0, 0, 0, 0, 0};
+			BUSRQ = new ushort[] { I, H, 0, 0, BIO1, BIO2, BIO3, BIO4 };
 		}
 
 		// this is an indirect change of a a 16 bit register with memory

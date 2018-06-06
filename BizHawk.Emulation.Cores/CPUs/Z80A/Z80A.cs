@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// operations that can take place in an instruction
 		public const ushort IDLE = 0; 
 		public const ushort OP = 1;
-		public const ushort OP_R = 2; // used for repeating operations
+		public const ushort OP_F = 2; // used for repeating operations
 		public const ushort HALT = 3;
 		public const ushort RD = 4;
 		public const ushort WR = 5;
@@ -77,10 +77,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort HL_BIT = 62;
 		public const ushort FTCH_DB = 63;
 		public const ushort WAIT = 64; // enterred when readin or writing and FlagW is true
-		public const ushort OP_F = 65; // fetch the opcode, happens on cycle 3 of fetch cycle
-		public const ushort RST = 66;
-		public const ushort REP_OP_I = 67;
-		public const ushort REP_OP_O = 68;
+		public const ushort RST = 65;
+		public const ushort REP_OP_I = 66;
+		public const ushort REP_OP_O = 67;
 		
 
 		public byte temp_R;
@@ -230,10 +229,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					temp_R &= 0x7F;
 					Regs[R] = (byte)((Regs[R] & 0x80) | temp_R);
 					break;
-				case OP_R:
-					
+				case OP_F:
+					opcode = FetchMemory(RegPC);
 					break;
-
 				case HALT:
 					halted = true;
 					// NOTE: Check how halt state effects the DB
@@ -503,14 +501,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						bus_pntr--;
 					}
 					break;
-				case OP_F:
-					opcode = FetchMemory(RegPC);
-					break;
 				case RST:
 					Regs[Z] = cur_instr[instr_pntr++];
 					Regs[W] = 0;
 					break;
 				case REP_OP_I:
+					Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+
 					ushort temp4 = cur_instr[instr_pntr++];
 					if (temp4 == DEC16)
 					{
@@ -529,6 +526,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					Repeat_Op();
 					break;
 				case REP_OP_O:
+					OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+
 					ushort temp5 = cur_instr[instr_pntr++];
 					if (temp5 == DEC16)
 					{
