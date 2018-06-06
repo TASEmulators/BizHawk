@@ -154,7 +154,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             The 'Contention pattern' column should be interpreted from left to right. An "N:n" entry means that no delay is applied at this cycle, and the Z80 continues uninterrupted for 'n' T states. A "C:n" entry means that the ULA halts the Z80; the delay is exactly the same as would occur for a contended memory access at this cycle (eg 6 T states at cycle 14335, 5 at 14336, etc on the 48K machine). After this delay, the Z80 then continues for 'n' cycles.
             */
 
-            CPUMon.ContendPort(addr);
+            //CPUMon.ContendPort(addr);
             return;
         }
 

@@ -797,7 +797,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public int GetPortContentionValue(int tstate)
         {
-            int off = 1;
+            int off = 5;
             tstate += off;
             if (tstate >= FrameCycleLength)
                 tstate -= FrameCycleLength;

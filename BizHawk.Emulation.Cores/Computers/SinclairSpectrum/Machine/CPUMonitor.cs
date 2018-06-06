@@ -67,14 +67,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             _machine.ULADevice.RenderScreen((int)_machine.CurrentFrameCycle);
 
-            if (portContending)
+            // is the next CPU cycle causing a BUSRQ or IORQ?
+            if (BUSRQ > 0)
             {
-                RunPortContention();
-            }
-            else
-            {
-                // is the next CPU cycle causing a BUSRQ?
-                if (BUSRQ > 0)
+                // check for IORQ
+                if (!CheckIO())
                 {
                     // is the memory address of the BUSRQ potentially contended?
                     if (_machine.IsContended(AscertainBUSRQAddress()))
@@ -89,129 +86,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             _cpu.ExecuteOne();
-
-            /*
-            else if (ContCounter > 0)
-            {
-                // still contention cycles to process
-                IsContending = true;
-            }
-            else
-            {
-                // is the next CPU cycle causing a BUSRQ?
-                if (BUSRQ > 0)
-                {
-                    // is the memory address of the BUSRQ potentially contended?
-                    if (_machine.IsContended(AscertainBUSRQAddress()))
-                    {
-                        var cont = _machine.ULADevice.GetContentionValue((int)_machine.CurrentFrameCycle);
-                        if (cont > 0)
-                        {
-                            ContCounter = cont + 1;
-                            IsContending = true;
-                        }
-                    }
-                }
-            }
-            /*
-            else
-            {
-                // no contention cycles to process (so far) on this cycle
-                IsContending = false;
-                ContCounter = 0;
-
-                if (portContending)
-                {
-                    // a port operation is still in progress
-                    portContCounter++;
-                    if (portContCounter > 3)
-                    {
-                        // we are now out of the IN/OUT operation
-                        portContCounter = 0;
-                        portContending = false;
-                    }
-                    else
-                    {
-                        // still IN/OUT cycles to process
-                        if (IsPortContended(portContCounter))
-                        {
-                            var cont = _machine.ULADevice.GetContentionValue((int)_machine.CurrentFrameCycle);
-                            if (cont > 0)
-                            {
-                                ContCounter = cont + 1;
-                                IsContending = true;
-                                // dont let this fall through
-                                // just manually do the first contention cycle
-                                ContCounter--;
-                                _cpu.TotalExecutedCycles++;
-                                return;
-                            }
-                        }
-                    }
-                }
-
-                // is the next CPU cycle causing a BUSRQ?
-                if (BUSRQ > 0)
-                {
-                    // is the memory address of the BUSRQ potentially contended?
-                    if (_machine.IsContended(AscertainBUSRQAddress()))
-                    {
-                        var cont = _machine.ULADevice.GetContentionValue((int)_machine.CurrentFrameCycle);
-                        if (cont > 0)
-                        {
-                            ContCounter = cont + 1;
-                            IsContending = true;
-                        }
-                    }
-                }
-                /*
-                // is the next CPU cycle an OUT operation?
-                else if (cur_instr[instr_pntr] == Z80A.OUT)
-                {
-                    portContending = true;
-                    lastPortAddr = (ushort)(_cpu.Regs[cur_instr[instr_pntr + 1]] | _cpu.Regs[cur_instr[instr_pntr + 2]] << 8);
-                    portContCounter = 0;
-                    if (IsPortContended(portContCounter))
-                    {
-                        var cont = _machine.ULADevice.GetContentionValue((int)_machine.CurrentFrameCycle);
-                        if (cont > 0)
-                        {
-                            ContCounter = cont;
-                            IsContending = true;
-                        }
-                    }
-                }
-                // is the next cpu cycle an IN operation?
-                else if (cur_instr[instr_pntr] == Z80A.IN)
-                {
-                    portContending = true;
-                    lastPortAddr = (ushort)(_cpu.Regs[cur_instr[instr_pntr + 2]] | _cpu.Regs[cur_instr[instr_pntr + 3]] << 8);
-                    portContCounter = 0;
-                    if (IsPortContended(portContCounter))
-                    {
-                        var cont = _machine.ULADevice.GetContentionValue((int)_machine.CurrentFrameCycle);
-                        if (cont > 0)
-                        {
-                            ContCounter = cont;
-                            IsContending = true;
-                        }
-                    }
-                }
-                */
-          /*  }*/
-        
-            /*
-            // run a CPU cycle if no contention is applicable
-            if (!IsContending)
-            {
-                _cpu.ExecuteOne();
-            }
-            else
-            {
-                _cpu.TotalExecutedCycles++;
-                ContCounter--;
-            }
-            */
         }
 
         /// <summary>
@@ -263,33 +137,35 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 case 21:
                     addr = (ushort)(_cpu.Regs[_cpu.R] | _cpu.Regs[_cpu.I] << 8);
                     break;
+                // BC
+                case Z80A.BIO1:
+                case Z80A.BIO2:
+                case Z80A.BIO3:
+                case Z80A.BIO4:
+                    addr = (ushort)(_cpu.Regs[_cpu.C] | _cpu.Regs[_cpu.B] << 8);
+                    break;
+                // WZ
+                case Z80A.WIO1:
+                case Z80A.WIO2:
+                case Z80A.WIO3:
+                case Z80A.WIO4:
+                    addr = (ushort)(_cpu.Regs[_cpu.Z] | _cpu.Regs[_cpu.W] << 8);
+                    break;
             }
 
             return addr;
         }
-        
+
         /// <summary>
-        /// Perfors the actual port contention (if necessary)
+        /// Returns TRUE if the supplied T-cycle within an IO operation has the possibility of being contended
+        /// This can be different based on the emulated ZX Spectrum model
         /// </summary>
-        private void RunPortContention()
+        /// <param name="T"></param>
+        /// <returns></returns>
+        private bool IsIOCycleContended(int T)
         {
-            //return;
-            bool lowBitSet = false;
+            bool lowBitSet = (lastPortAddr & 0x0001) != 0;
             bool highByte407f = false;
-
-            int offset = 0; // _machine.ULADevice.contentionOffset; // -5;// 57;// - 10;
-            var c = _machine.CurrentFrameCycle;
-            var t = _machine.ULADevice.FrameLength;
-            int f = (int)c + offset;
-            if (f >= t)
-                f = f - t;
-            else if (f < 0)
-                f = t + f;
-
-            if ((lastPortAddr & 0x0001) != 0)
-                lowBitSet = true;
-
-            portContCounter--;
 
             switch (machineType)
             {
@@ -309,20 +185,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             // high byte 40-7f
                             // low bit set
                             // C:1, C:1, C:1, C:1
-                            switch (portContCounter)
+                            switch (T)
                             {
-                                case 3: _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue(f); break;
-                                case 2: _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue(f); break;
-                                case 1: _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue(f); break;
-                                case 0:
-                                    _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue(f);
-                                    portContCounter = 0;
-                                    portContending = false;
-                                    break;
-                                default:
-                                    portContCounter = 0;
-                                    portContending = false;
-                                    break;
+                                case 1:
+                                case 2:
+                                case 3:
+                                case 4:
+                                    return true;
                             }
                         }
                         else
@@ -330,19 +199,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             // high byte 40-7f
                             // low bit reset
                             // C:1, C:3
-                            switch (portContCounter)
+                            switch (T)
                             {
-                                case 3: _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue(f); break;
-                                case 2: _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue(f); break;
-                                case 1: break;
-                                case 0:
-                                    portContCounter = 0;
-                                    portContending = false;
-                                    break;
-                                default:
-                                    portContCounter = 0;
-                                    portContending = false;
-                                    break;
+                                case 1:
+                                case 2:
+                                    return true;
                             }
                         }
                     }
@@ -353,40 +214,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         {
                             // high byte not 40-7f
                             // low bit set
-                            // N:4
-                            switch (portContCounter)
-                            {
-                                case 3: break;
-                                case 2: break;
-                                case 1: break;
-                                case 0:
-                                    portContCounter = 0;
-                                    portContending = false;
-                                    break;
-                                default:
-                                    portContCounter = 0;
-                                    portContending = false;
-                                    break;
-                            }
+                            // N:4                            
                         }
                         else
                         {
                             // high byte not 40-7f
                             // low bit reset
                             // N:1, C:3
-                            switch (portContCounter)
+                            switch (T)
                             {
-                                case 3: break;
-                                case 2: _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue(f); break;
-                                case 1: break;
-                                case 0:
-                                    portContCounter = 0;
-                                    portContending = false;
-                                    break;
-                                default:
-                                    portContCounter = 0;
-                                    portContending = false;
-                                    break;
+                                case 2:
+                                    return true;
                             }
                         }
                     }
@@ -396,17 +234,81 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 case MachineType.ZXSpectrum128Plus3:
                     break;
             }
+
+            return false;
         }
 
         /// <summary>
-        /// Starts the port contention process
+        /// Running every cycle, this determines whether the upcoming BUSRQ is for an IO operation
+        /// Also processes any contention
         /// </summary>
-        /// <param name="type"></param>
-        public void ContendPort(ushort port)
+        /// <returns></returns>
+        private bool CheckIO()
         {
-            portContending = true;
-            portContCounter = 4;
-            lastPortAddr = port;
+            bool isIO = false;
+
+            switch (BUSRQ)
+            {
+                // BC: T1
+                case Z80A.BIO1:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(1))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+                // BC: T2
+                case Z80A.BIO2:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(2))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+                // BC: T3
+                case Z80A.BIO3:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(3))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+                // BC: T4
+                case Z80A.BIO4:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(4))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+
+                // WZ: T1
+                case Z80A.WIO1:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(1))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+                // WZ: T2
+                case Z80A.WIO2:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(2))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+                // WZ: T3
+                case Z80A.WIO3:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(3))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+                // WZ: T4
+                case Z80A.WIO4:
+                    lastPortAddr = AscertainBUSRQAddress();
+                    isIO = true;
+                    if (IsIOCycleContended(4))
+                        _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
+                    break;
+            }
+
+            return isIO;
         }
 
         /// <summary>
