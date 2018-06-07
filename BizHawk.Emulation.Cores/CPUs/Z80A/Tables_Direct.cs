@@ -541,7 +541,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WAIT,
 						WAIT,
 						OUT, Z, W, A,
-						INC16, Z, W,					
+						INC16, Z, ALU,					
 						WAIT,
 						OP_F,
 						OP};

@@ -491,10 +491,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					if (((Regs[C] | (Regs[B] << 8)) != 0) && (Ztemp3 > 0))
 					{
 						cur_instr = new ushort[]
-									{TR16, Z, W, PCl, PCh,
-									INC16, Z, W,
+									{DEC16, PCl, PCh,
 									DEC16, PCl, PCh,
-									DEC16, PCl, PCh,
+									TR16, Z, W, PCl, PCh,
+									INC16, Z, W,								
 									IDLE,
 									Ztemp2, E, D,
 									WAIT,
@@ -525,10 +525,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					if (((Regs[C] | (Regs[B] << 8)) != 0) && (Ztemp3 > 0) && !FlagZ)
 					{
 						cur_instr = new ushort[]
-									{TR16, Z, W, PCl, PCh,
-									INC16, Z, W,
+									{DEC16, PCl, PCh,
 									DEC16, PCl, PCh,
-									DEC16, PCl, PCh,
+									TR16, Z, W, PCl, PCh,
+									INC16, Z, W,								
 									IDLE,
 									Ztemp2, L, H,
 									WAIT,
