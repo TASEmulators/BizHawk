@@ -89,6 +89,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public int InterruptLength;
 
         /// <summary>
+        /// Arbitrary offset into the contention array (for memory ops)
+        /// </summary>
+        public int MemoryContentionOffset;
+
+        /// <summary>
+        /// Arbitrary offset into the contention array (for port ops)
+        /// </summary>
+        public int PortContentionOffset;
+
+        /// <summary>
         /// The time in T-States for one scanline to complete
         /// </summary>
         public int ScanlineTime;
@@ -776,8 +786,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public int GetContentionValue(int tstate)
         {
-            int off = 5;
-            tstate += off;
+            tstate += MemoryContentionOffset;
             if (tstate >= FrameCycleLength)
                 tstate -= FrameCycleLength;
 
@@ -793,8 +802,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public int GetPortContentionValue(int tstate)
         {
-            int off = 5;
-            tstate += off;
+            tstate +=  PortContentionOffset;
             if (tstate >= FrameCycleLength)
                 tstate -= FrameCycleLength;
 

@@ -237,10 +237,66 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             switch (machineType)
             {
                 case MachineType.ZXSpectrum16:
-                case MachineType.ZXSpectrum48:
+                case MachineType.ZXSpectrum48:                
+
+                    if ((lastPortAddr & 0xc000) == 0x4000)
+                        highByte407f = true;
+
+                    if (highByte407f)
+                    {
+                        // high byte 40-7f
+                        if (lowBitSet)
+                        {
+                            // high byte 40-7f
+                            // low bit set
+                            // C:1, C:1, C:1, C:1
+                            switch (T)
+                            {
+                                case 1:
+                                case 2:
+                                case 3:
+                                case 4:
+                                    return true;
+                            }
+                        }
+                        else
+                        {
+                            // high byte 40-7f
+                            // low bit reset
+                            // C:1, C:3
+                            switch (T)
+                            {
+                                case 1:
+                                case 2:
+                                    return true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // high byte not 40-7f
+                        if (lowBitSet)
+                        {
+                            // high byte not 40-7f
+                            // low bit set
+                            // N:4                            
+                        }
+                        else
+                        {
+                            // high byte not 40-7f
+                            // low bit reset
+                            // N:1, C:3
+                            switch (T)
+                            {
+                                case 2:
+                                    return true;
+                            }
+                        }
+                    }
+                    break;
+
                 case MachineType.ZXSpectrum128:
                 case MachineType.ZXSpectrum128Plus2:
-
                     if ((lastPortAddr & 0xc000) == 0x4000)
                         highByte407f = true;
 
@@ -299,6 +355,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 case MachineType.ZXSpectrum128Plus2a:
                 case MachineType.ZXSpectrum128Plus3:
+                    // No contention occurs as the ULA only applies contention when the Z80 MREQ line is active
+                    // (which is not during an IO operation)
                     break;
             }
 

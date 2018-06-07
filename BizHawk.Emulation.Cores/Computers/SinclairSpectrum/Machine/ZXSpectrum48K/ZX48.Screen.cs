@@ -20,6 +20,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             InterruptLength = 32;
             ScanlineTime = 224;
 
+            MemoryContentionOffset = 5;
+            PortContentionOffset = 5;
+
             BorderLeftTime = 24;
             BorderRightTime = 24;
 
