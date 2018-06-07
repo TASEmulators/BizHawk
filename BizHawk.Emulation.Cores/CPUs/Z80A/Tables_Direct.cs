@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] {0, 0, PCh, 0, 0, 0};
+			BUSRQ = new ushort[] {I, I, PCh, 0, 0, 0};
 		}
 
 
@@ -78,7 +78,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] {0, 0, PCh, 0, 0, 0};
+			BUSRQ = new ushort[] {I, I, PCh, 0, 0, 0};
 		}
 
 		// this is done in two steps technically, but the flags don't work out using existing funcitons
@@ -98,7 +98,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] {0, 0, 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] {I, I, I, I, I, I, I, PCh, 0, 0, 0 };
 		}
 
 		private void REG_OP(ushort operation, ushort dest, ushort src)
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] {0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { I, PCh, 0, 0, 0 };
 		}
 
 		// note: do not use DEC here since no flags are affected by this operation
@@ -314,7 +314,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							OP_F,
 							OP };
 
-				BUSRQ = new ushort[] {0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, 0};
+				BUSRQ = new ushort[] {I, SPh, 0, 0, SPh, 0, 0, W, 0, 0, 0};
 			}
 			else
 			{
@@ -325,7 +325,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 							OP_F,
 							OP };
 
-				BUSRQ = new ushort[] {0, PCh, 0, 0, 0};
+				BUSRQ = new ushort[] {I, PCh, 0, 0, 0};
 			}
 		}
 
