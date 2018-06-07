@@ -589,10 +589,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // check boundaries
             if (toCycle > FrameCycleLength)
                 toCycle = FrameCycleLength;
-            if (LastTState > toCycle)
-                LastTState = toCycle - 2;
-            if (toCycle < 0)
-                toCycle = 0;
 
             // render the required number of cycles
             for (int t = LastTState; t < toCycle; t++)

@@ -77,10 +77,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     // cannot write to ROM
                     break;
                 case 1:
+                    ULADevice.RenderScreen((int)CurrentFrameCycle);
                     RAM0[index] = value;
                     break;
                 case 2:
-                    RAM1[index] = value;
+                    RAM1[index] = value;                    
                     break;
                 case 3:
                     RAM2[index] = value;

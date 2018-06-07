@@ -134,6 +134,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // RAM 0x4000 (RAM5 - Bank5 or shadow bank RAM7)
                 case 1:
+                    ULADevice.RenderScreen((int)CurrentFrameCycle);
                     RAM5[addr % 0x4000] = value;
                     break;
 
@@ -162,6 +163,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             RAM4[addr % 0x4000] = value;
                             break;
                         case 5:
+                            ULADevice.RenderScreen((int)CurrentFrameCycle);
                             RAM5[addr % 0x4000] = value;
                             break;
                         case 6:

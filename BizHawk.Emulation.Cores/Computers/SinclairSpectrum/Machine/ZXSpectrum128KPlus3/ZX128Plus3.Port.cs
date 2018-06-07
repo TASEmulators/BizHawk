@@ -150,7 +150,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 */
 
                 // Border - LSB 3 bits hold the border colour
-                ULADevice.BorderColor = value & BORDER_BIT;
+                if (ULADevice.BorderColor != (value & BORDER_BIT))
+                {
+                    ULADevice.RenderScreen((int)CurrentFrameCycle);
+                    ULADevice.BorderColor = value & BORDER_BIT;
+                }
 
                 // Buzzer
                 BuzzerDevice.ProcessPulseValue((value & EAR_BIT) != 0);

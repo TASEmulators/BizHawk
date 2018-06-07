@@ -85,6 +85,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     // cannot write to ROM
                     break;
                 case 1:
+                    ULADevice.RenderScreen((int)CurrentFrameCycle);
                     RAM0[index] = value;
                     break;
             }          
@@ -98,11 +99,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadMemory(ushort addr)
         {
-            /*
-            if (IsContended(addr))
-                CPU.TotalExecutedCycles += ULADevice.GetContentionValue((int)CurrentFrameCycle);
-                */
-
             var data = ReadBus(addr);
             return data;
         }
@@ -115,15 +111,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WriteMemory(ushort addr, byte value)
         {
-            /*
-            // apply contention if necessary
-            if (IsContended(addr))
-            {
-                ULADevice.RenderScreen((int)CurrentFrameCycle);
-                CPU.TotalExecutedCycles += ULADevice.GetContentionValue((int)CurrentFrameCycle);
-            }
-            */
-
             WriteBus(addr, value);
         }
         

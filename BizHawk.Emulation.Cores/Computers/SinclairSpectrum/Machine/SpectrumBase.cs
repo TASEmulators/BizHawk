@@ -167,7 +167,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             while (CurrentFrameCycle < ULADevice.FrameLength)
             {
                 ULADevice.CheckForInterrupt(CurrentFrameCycle);
+
                 CPUMon.ExecuteCycle();
+
                 // cycle the tape device
                 if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
                     TapeDevice.TapeCycle();

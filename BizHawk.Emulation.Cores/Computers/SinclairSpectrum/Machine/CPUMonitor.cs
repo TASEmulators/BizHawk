@@ -61,8 +61,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public void ExecuteCycle()
         {
-            _machine.ULADevice.RenderScreen((int)_machine.CurrentFrameCycle);
-
             // is the next CPU cycle causing a BUSRQ or IORQ?
             if (BUSRQ > 0)
             {
@@ -208,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     break;
                 // WZ: T3
                 case Z80A.WIO3:
-                    lastPortAddr = AscertainBUSRQAddress();
+                    lastPortAddr = AscertainBUSRQAddress();                    
                     isIO = true;
                     if (IsIOCycleContended(3))
                         _cpu.TotalExecutedCycles += _machine.ULADevice.GetPortContentionValue((int)_machine.CurrentFrameCycle);
