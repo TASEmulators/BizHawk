@@ -446,16 +446,16 @@
 		private void LD_OP_R(ushort operation, ushort repeat_instr)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						WAIT,
-						RD, ALU, L, H,
-						operation, L, H,
-						WAIT,
-						WR, E, D, ALU,
-						operation, E, D,
-						SET_FL_LD_R, 0, operation, repeat_instr};
+					{IDLE,
+					WAIT,
+					RD, ALU, L, H,
+					operation, L, H,
+					WAIT,
+					WR, E, D, ALU,
+					IDLE,
+					SET_FL_LD_R, 0, operation, repeat_instr};
 
-			BUSRQ = new ushort[] { H, 0, 0, D, 0, 0, D, D};
+			BUSRQ = new ushort[] { H, 0, 0, D, 0, 0, D, D };
 		}
 
 		private void CP_OP_R(ushort operation, ushort repeat_instr)
@@ -464,7 +464,7 @@
 						{IDLE,
 						WAIT,
 						RD, ALU, L, H,
-						operation, L, H,
+						IDLE,
 						DEC16, C, B,
 						operation, Z, W,
 						IDLE,

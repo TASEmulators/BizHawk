@@ -80,8 +80,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort RST = 65;
 		public const ushort REP_OP_I = 66;
 		public const ushort REP_OP_O = 67;
-		
 
+		// non-state variables
+		public ushort Ztemp1, Ztemp2, Ztemp3, Ztemp4;	
 		public byte temp_R;
 
 		public Z80A()
@@ -482,11 +483,71 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				case SET_FL_LD_R:
 					DEC16_Func(C, B);
 					SET_FL_LD_Func();
-					Repeat_Op();
+
+					Ztemp1 = cur_instr[instr_pntr++];
+					Ztemp2 = cur_instr[instr_pntr++];
+					Ztemp3 = cur_instr[instr_pntr++];
+
+					if (((Regs[C] | (Regs[B] << 8)) != 0) && (Ztemp3 > 0))
+					{
+						cur_instr = new ushort[]
+									{TR16, Z, W, PCl, PCh,
+									INC16, Z, W,
+									DEC16, PCl, PCh,
+									DEC16, PCl, PCh,
+									IDLE,
+									Ztemp2, E, D,
+									WAIT,
+									OP_F,
+									OP};
+
+						BUSRQ = new ushort[] { D, D, D, D, D, PCh, 0, 0, 0 };
+					}
+					else
+					{
+						cur_instr = new ushort[]
+									{ Ztemp2, E, D,
+									  WAIT,
+									  OP_F,
+									  OP };
+
+						BUSRQ = new ushort[] { PCh, 0, 0, 0 };						
+					}
+					instr_pntr = 0; bus_pntr = 0;
 					break;
 				case SET_FL_CP_R:
 					SET_FL_CP_Func();
-					Repeat_Op();
+
+					Ztemp1 = cur_instr[instr_pntr++];
+					Ztemp2 = cur_instr[instr_pntr++];
+					Ztemp3 = cur_instr[instr_pntr++];
+
+					if (((Regs[C] | (Regs[B] << 8)) != 0) && (Ztemp3 > 0) && !FlagZ)
+					{
+						cur_instr = new ushort[]
+									{TR16, Z, W, PCl, PCh,
+									INC16, Z, W,
+									DEC16, PCl, PCh,
+									DEC16, PCl, PCh,
+									IDLE,
+									Ztemp2, L, H,
+									WAIT,
+									OP_F,
+									OP};
+
+						BUSRQ = new ushort[] { H, H, H, H, H, PCh, 0, 0, 0 };
+					}
+					else
+					{
+						cur_instr = new ushort[]
+									{ Ztemp2, L, H,
+									  WAIT,
+									  OP_F,
+									  OP };
+
+						BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+					}
+					instr_pntr = 0; bus_pntr = 0;
 					break;
 				case SET_FL_IR:
 					SET_FL_IR_Func(cur_instr[instr_pntr++]);
@@ -508,10 +569,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				case REP_OP_I:			
 					Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 
-					ushort temp4 = cur_instr[instr_pntr++];
-					if (temp4 == DEC16)
+					Ztemp4 = cur_instr[instr_pntr++];
+					if (Ztemp4 == DEC16)
 					{
-						DEC16_Func(L, H);
 						TR16_Func(Z, W, C, B);
 						DEC16_Func(Z, W);
 						DEC8_Func(B);
@@ -523,8 +583,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						FlagP = TableParity[((Regs[ALU] + Regs[C] - 1) & 7) ^ Regs[B]];
 					}
 					else
-					{
-						INC16_Func(L, H);					
+					{				
 						TR16_Func(Z, W, C, B);
 						INC16_Func(Z, W);
 						DEC8_Func(B);
@@ -536,13 +595,42 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						FlagP = TableParity[((Regs[ALU] + Regs[C] + 1) & 7) ^ Regs[B]];
 					}
 
-					Repeat_Op();
+					Ztemp1 = cur_instr[instr_pntr++];
+					Ztemp2 = cur_instr[instr_pntr++];
+					Ztemp3 = cur_instr[instr_pntr++];
+
+					if ((Regs[B] != 0) && (Ztemp3 > 0))
+					{
+						cur_instr = new ushort[]
+									{IDLE,
+									IDLE,
+									DEC16, PCl, PCh,
+									DEC16, PCl, PCh,
+									IDLE,
+									Ztemp2, L, H,
+									WAIT,
+									OP_F,
+									OP};
+
+						BUSRQ = new ushort[] { H, H, H, H, H, PCh, 0, 0, 0 };
+					}
+					else
+					{
+						cur_instr = new ushort[]
+									{ Ztemp2, L, H,
+									  WAIT,
+									  OP_F,
+									  OP };
+
+						BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+					}
+					instr_pntr = 0; bus_pntr = 0;
 					break;
 				case REP_OP_O:
 					OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 
-					ushort temp5 = cur_instr[instr_pntr++];
-					if (temp5 == DEC16)
+					Ztemp4 = cur_instr[instr_pntr++];
+					if (Ztemp4 == DEC16)
 					{
 						DEC16_Func(L, H);
 						DEC8_Func(B);
@@ -563,105 +651,39 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					FlagH = FlagC = (Regs[ALU] + Regs[L]) > 0xFF;
 					FlagP = TableParity[((Regs[ALU] + Regs[L]) & 7) ^ (Regs[B])];
 
-					Repeat_Op();
+					Ztemp1 = cur_instr[instr_pntr++];
+					Ztemp2 = cur_instr[instr_pntr++];
+					Ztemp3 = cur_instr[instr_pntr++];
+
+					if ((Regs[B] != 0) && (Ztemp3 > 0))
+					{
+						cur_instr = new ushort[]
+									{IDLE,
+									IDLE,
+									DEC16, PCl, PCh,
+									DEC16, PCl, PCh,
+									IDLE,
+									IDLE,
+									WAIT,
+									OP_F,
+									OP};
+
+						BUSRQ = new ushort[] { B, B, B, B, B, PCh, 0, 0, 0 };
+					}
+					else
+					{
+						cur_instr = new ushort[]
+									{ IDLE,
+									  WAIT,
+									  OP_F,
+									  OP };
+
+						BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+					}
+					instr_pntr = 0; bus_pntr = 0;
 					break;
 			}
 			TotalExecutedCycles++;
-		}
-
-		public void Repeat_Op()
-		{
-			// determine if we repeat based on what operation we are doing
-			// single execution versions also come here, but never repeat
-			ushort temp1 = cur_instr[instr_pntr++];
-			ushort temp2 = cur_instr[instr_pntr++];
-			ushort temp3 = cur_instr[instr_pntr++];
-
-			bool repeat = false;
-			int Reg16_d = Regs[C] | (Regs[B] << 8);
-			switch (temp1)
-			{
-				case 0:
-					repeat = Reg16_d != 0;
-					break;
-				case 1:
-					repeat = (Reg16_d != 0) && !FlagZ;
-					break;
-				case 2:
-					repeat = Regs[B] != 0;
-					break;
-				case 3:
-					repeat = Regs[B] != 0;
-					break;
-			}
-
-			// if we repeat, we do a 5 cycle refresh which decrements PC by 2
-			// if we don't repeat, continue on as a normal opcode fetch
-			if (repeat && temp3 > 0)
-			{
-				cur_instr = new ushort[]
-							{DEC16, PCl, PCh,
-							DEC16, PCl, PCh,
-							IDLE,
-							IDLE,
-							IDLE,
-							IDLE,
-							WAIT,
-							OP_F,
-							OP};
-
-				if (temp1 == 0)
-				{
-					BUSRQ = new ushort[] { D, D, D, D, D, PCh, 0, 0, 0 };
-				}
-				else if (temp1 == 1)
-				{
-					BUSRQ = new ushort[] { H, H, H, H, H, PCh, 0, 0, 0 };
-				}
-				else if (temp1 == 2)
-				{
-					BUSRQ = new ushort[] { H, H, H, H, H, PCh, 0, 0, 0 };
-				}
-				else if (temp1 == 3)
-				{
-					BUSRQ = new ushort[] { B, B, B, B, B, PCh, 0, 0, 0 };
-				}
-
-				instr_pntr = 0; bus_pntr = 0;
-				// adjust WZ register accordingly
-				switch (temp1)
-				{
-					case 0:
-						// TEST: PC before or after the instruction?
-						Regs[Z] = Regs[PCl];
-						Regs[W] = Regs[PCh];
-						INC16_Func(Z, W);
-						break;
-					case 1:
-						// TEST: PC before or after the instruction?
-						Regs[Z] = Regs[PCl];
-						Regs[W] = Regs[PCh];
-						INC16_Func(Z, W);
-						break;
-					case 2:
-						// Nothing
-						break;
-					case 3:
-						// Nothing
-						break;
-				}
-			}
-			else
-			{
-				cur_instr = new ushort[]
-						{ IDLE,
-						  WAIT,
-						  OP_F,
-						  OP };
-
-				BUSRQ = new ushort[] { PCh, 0, 0, 0 };
-				instr_pntr = 0; bus_pntr = 0;
-			}
 		}
 
 		// tracer stuff
