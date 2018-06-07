@@ -159,6 +159,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// Execute instructions
 		public void ExecuteOne()
 		{
+			/*FlagI6 = FlagI;
+			FlagI5 = FlagI4;
+			FlagI4 = FlagI3;
+			FlagI3 = FlagI2;
+			FlagI2 = FlagI1;
+			FlagI1 = FlagI;
+			*/
 			bus_pntr++;
 			switch (cur_instr[instr_pntr++])
 			{
@@ -663,10 +670,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 									DEC16, PCl, PCh,
 									DEC16, PCl, PCh,
 									IDLE,
-									IDLE,
+									DEC16, B, ALU,
 									WAIT,
 									OP_F,
 									OP};
+
+						Regs[B] = (ushort)((Regs[B] + 1) & 0xFF);
+
 
 						BUSRQ = new ushort[] { B, B, B, B, B, PCh, 0, 0, 0 };
 					}

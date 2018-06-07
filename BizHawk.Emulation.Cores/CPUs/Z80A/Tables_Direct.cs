@@ -537,11 +537,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						{TR, W, A,
 						WAIT,
 						RD_INC, Z, PCl, PCh,
-						IDLE,
-						WAIT,
+						IDLE,						
+						WAIT,					
 						WAIT,
 						OUT, Z, W, A,
-						INC16, Z, ALU,					
+						INC16, Z, ALU,
 						WAIT,
 						OP_F,
 						OP};
@@ -552,9 +552,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		private void OUT_REG_(ushort dest, ushort src)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
+						{TR16, Z, W, C, B,					
+						IDLE,					
 						IDLE,
-						TR16, Z, W, C, B,
 						OUT, Z, W, src,
 						INC16, Z, W,					
 						WAIT,

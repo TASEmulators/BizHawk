@@ -17,17 +17,17 @@
 						OP_F,						
 						OP };
 
-			BUSRQ = new ushort[] { src_h, 0, 0, src_h, 0, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { src_h, 0, 0, src_h, src_h, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void BIT_OP_IND(ushort operation, ushort bit, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
 						WAIT,	
 						RD, ALU, src_l, src_h,
 						operation, bit, ALU,
+						IDLE,
 						WAIT,
 						WR, src_l, src_h, ALU,
 						IDLE,
@@ -35,7 +35,7 @@
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] { 0, src_h, 0, 0, src_h, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { src_h, 0, 0, src_h, src_h, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		// Note that this operation uses I_BIT, same as indexed BIT.
@@ -46,15 +46,15 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
 						WAIT,
 						RD, ALU, src_l, src_h,
+						IDLE,
 						I_BIT, bit, ALU,
 						WAIT,
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] { 0, src_h, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { src_h, 0, 0, src_h, PCh, 0, 0, 0 };
 		}
 
 		private void REG_OP_IND_INC(ushort operation, ushort dest, ushort src_l, ushort src_h)
@@ -267,10 +267,10 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
 						WAIT,					
 						RD, ALU, src_l, src_h,
 						INC8, ALU,
+						IDLE,
 						WAIT,
 						WR,  src_l, src_h, ALU,
 						IDLE,
@@ -278,17 +278,17 @@
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] { 0, src_h, 0, 0, src_h, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { src_h, 0, 0, src_h, src_h, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void DEC_8_IND(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
 						WAIT,	
 						RD, ALU, src_l, src_h,
 						DEC8, ALU,
+						IDLE,
 						WAIT,
 						WR, src_l, src_h, ALU,
 						IDLE,
@@ -296,7 +296,7 @@
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] { 0, src_h, 0, 0, src_h, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { src_h, 0, 0, src_h, src_h, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		// NOTE: WZ implied for the wollowing 3 functions
@@ -304,10 +304,10 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
 						WAIT,
 						RD, ALU, Z, W,
 						operation, ALU,
+						IDLE,
 						WAIT,
 						WR, Z, W, ALU,
 						TR, dest, ALU,
@@ -315,7 +315,7 @@
 						OP_F,
 						OP };
 
-			BUSRQ = new ushort[] { 0, W, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { W, 0, 0, W, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void I_BIT_OP(ushort operation, ushort bit, ushort dest)
