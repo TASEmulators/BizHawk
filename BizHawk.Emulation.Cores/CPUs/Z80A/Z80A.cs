@@ -159,13 +159,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// Execute instructions
 		public void ExecuteOne()
 		{
-			/*FlagI6 = FlagI;
+			//FlagI6 = FlagI5;
 			FlagI5 = FlagI4;
 			FlagI4 = FlagI3;
 			FlagI3 = FlagI2;
 			FlagI2 = FlagI1;
 			FlagI1 = FlagI;
-			*/
+			
 			bus_pntr++;
 			switch (cur_instr[instr_pntr++])
 			{
@@ -196,7 +196,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						NMICallback();
 						instr_pntr = 0; bus_pntr = 0;
 					}
-					else if (iff1 && FlagI)
+					else if (iff1 && FlagI5)
 					{
 						iff1 = iff2 = false;
 						EI_pending = 0;
@@ -267,7 +267,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						NMICallback();
 						halted = false;
 					}
-					else if (iff1 && FlagI)
+					else if (iff1 && FlagI5)
 					{
 						iff1 = iff2 = false;
 						EI_pending = 0;
@@ -670,12 +670,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 									DEC16, PCl, PCh,
 									DEC16, PCl, PCh,
 									IDLE,
-									DEC16, B, ALU,
+									IDLE,//DEC16, B, ALU,
 									WAIT,
 									OP_F,
 									OP};
 
-						Regs[B] = (ushort)((Regs[B] + 1) & 0xFF);
+						//Regs[B] = (ushort)((Regs[B] + 1) & 0xFF);
 
 
 						BUSRQ = new ushort[] { B, B, B, B, B, PCh, 0, 0, 0 };
@@ -770,6 +770,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			ser.Sync("instr_swap", ref instr_swap);
 			ser.Sync("opcode", ref opcode);
 			ser.Sync("FlagI", ref FlagI);
+			ser.Sync("FlagI1", ref FlagI1);
+			ser.Sync("FlagI2", ref FlagI2);
+			ser.Sync("FlagI3", ref FlagI3);
+			ser.Sync("FlagI4", ref FlagI4);
+			ser.Sync("FlagI5", ref FlagI5);
+			ser.Sync("FlagI6", ref FlagI6);
 			ser.Sync("FlagW", ref FlagW);
 
 			ser.Sync("NO Preifx", ref NO_prefix);
