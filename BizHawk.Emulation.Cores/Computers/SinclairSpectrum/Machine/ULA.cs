@@ -327,7 +327,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 for (var t = 0; t < _ula.FrameCycleLength; t++)
                 {
-                    var tStateScreen = t + _ula.InterruptStartTime;
+                    var tStateScreen = t + 1 + _ula.InterruptStartTime;
 
                     if (tStateScreen < 0)
                         tStateScreen += _ula.FrameCycleLength;
@@ -719,7 +719,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public void ReadFloatingBus(int tstate, ref int result)
         {
-            int off = 1;
+            int off = 0;
             tstate += off;
             if (tstate >= RenderingTable.Renderer.Length)
                 tstate -= RenderingTable.Renderer.Length;
