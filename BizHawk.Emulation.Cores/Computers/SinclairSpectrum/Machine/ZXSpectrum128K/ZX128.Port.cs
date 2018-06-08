@@ -20,6 +20,25 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             int result = 0xFF;
 
+            // ports 0x3ffd & 0x7ffd
+            // traditionally thought to be write-only
+            if (port == 0x3ffd || port == 0x7ffd)
+            {
+                // https://faqwiki.zxnet.co.uk/wiki/ZX_Spectrum_128
+                // HAL bugs
+                // Reads from port 0x7ffd cause a crash, as the 128's HAL10H8 chip does not distinguish between reads and writes to this port, 
+                // resulting in a floating data bus being used to set the paging registers.
+
+                // -asni (2018-06-08) - need this to pass the final portread tests from fusetest.tap
+
+                // get the floating bus value
+                ULADevice.ReadFloatingBus((int)CurrentFrameCycle, ref result);
+                // use this to set the paging registers
+                WritePort(port, (byte)result);
+                // return the floating bus value
+                return (byte)result;
+            }
+
             // check AY
             if (AYDevice.ReadPort(port, ref result))
                 return (byte)result;
