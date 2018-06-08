@@ -581,9 +581,9 @@
 			this.PluginComboBox.FormattingEnabled = true;
 			this.PluginComboBox.Items.AddRange(new object[] {
             "Rice",
+            "Jabo 1.6.1",
             "Glide64",
             "Glide64mk2",
-            "Jabo 1.6.1",
             "GLideN64"});
 			this.PluginComboBox.Location = new System.Drawing.Point(13, 91);
 			this.PluginComboBox.Name = "PluginComboBox";

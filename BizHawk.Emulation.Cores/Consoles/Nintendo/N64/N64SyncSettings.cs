@@ -11,9 +11,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 	{
 		public N64SyncSettings()
 		{
-			// this is meant to be a WinXPx86 compatible release,
-			// but GlideN64 doesn't work. still default away from jabo :U
-			VideoPlugin = PluginType.GlideMk2;
+			VideoPlugin = PluginType.GLideN64; // works on win xp 32bit, just needs something like opengl 3.3+
 			Core = CoreType.Dynarec;
 			Rsp = RspType.Rsp_Hle;
 			DisableExpansionSlot = true;
