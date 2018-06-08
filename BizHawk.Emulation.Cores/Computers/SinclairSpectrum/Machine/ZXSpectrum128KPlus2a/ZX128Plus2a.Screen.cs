@@ -22,6 +22,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             MemoryContentionOffset = 7;
             PortContentionOffset = 7;
+            RenderTableOffset = 1;
+            FloatingBusOffset = 1;
 
             BorderLeftTime = 24;
             BorderRightTime = 24;

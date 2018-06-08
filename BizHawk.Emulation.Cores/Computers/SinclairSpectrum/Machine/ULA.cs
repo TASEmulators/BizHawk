@@ -99,6 +99,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public int PortContentionOffset;
 
         /// <summary>
+        /// Arbitrary offset for render table generation
+        /// </summary>
+        public int RenderTableOffset;
+
+        /// <summary>
+        /// The offset when return floating bus bytes
+        /// </summary>
+        public int FloatingBusOffset;
+
+        /// <summary>
         /// The time in T-States for one scanline to complete
         /// </summary>
         public int ScanlineTime;
@@ -317,17 +327,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             /// <param name="machineType"></param>
             private void InitRenderer(MachineType machineType)
             {
-                switch (machineType)
-                {
-                    case MachineType.ZXSpectrum16:
-                    case MachineType.ZXSpectrum48:
-                        Offset = 0;
-                        break;
-                }
-
                 for (var t = 0; t < _ula.FrameCycleLength; t++)
                 {
-                    var tStateScreen = t + 1 + _ula.InterruptStartTime;
+                    var tStateScreen = t + _ula.RenderTableOffset + _ula.InterruptStartTime;
 
                     if (tStateScreen < 0)
                         tStateScreen += _ula.FrameCycleLength;
@@ -458,7 +460,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // calculate contention values
                 for (int t = 0; t < _ula.FrameCycleLength; t++)
                 {
-                    int shifted = (t + 1) + _ula.InterruptStartTime + Offset;
+                    int shifted = t + _ula.RenderTableOffset + _ula.InterruptStartTime;
                     if (shifted < 0)
                         shifted += _ula.FrameCycleLength;
                     shifted %= _ula.FrameCycleLength;
@@ -481,46 +483,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     int pixByte = scrPix % 8;
 
                     Renderer[t].ContentionValue = conPattern[pixByte];
-                }
-
-                // calculate floating bus values
-                for (int t = 0; t < _ula.FrameCycleLength; t++)
-                {
-                    int shifted = (t + 10) + _ula.InterruptStartTime;
-                    if (shifted < 0)
-                        shifted += _ula.FrameCycleLength;
-                    shifted %= _ula.FrameCycleLength;
-
-                    Renderer[t].FloatingBusAddress = 0;
-
-                    int line = shifted / _ula.ScanlineTime;
-                    int pix = shifted % _ula.ScanlineTime;
-                    if (line < _ula.FirstPaperLine || line >= (_ula.FirstPaperLine + 192))
-                    {
-                        Renderer[t].FloatingBusAddress = 0;
-                        continue;
-                    }
-                    int scrPix = pix - _ula.FirstPaperTState;
-                    if (scrPix < 0 || scrPix >= 128)
-                    {
-                        Renderer[t].FloatingBusAddress = 0;
-                        continue;
-                    }
-
-                    int pixByte = scrPix % 8;
-                    int chunk = scrPix % 16;
-
-                    switch (chunk)
-                    {
-                        case 0:
-                        case 2:
-                            Renderer[t].FloatingBusAddress = CalculateByteAddress(scrPix, line);
-                            break;
-                        case 1:
-                        case 3:
-                            Renderer[t].FloatingBusAddress = CalculateAttributeAddress(scrPix, line);
-                            break;
-                    }
                 }
             }
 
@@ -719,8 +681,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public void ReadFloatingBus(int tstate, ref int result)
         {
-            int off = 0;
-            tstate += off;
+            tstate += FloatingBusOffset;
             if (tstate >= RenderingTable.Renderer.Length)
                 tstate -= RenderingTable.Renderer.Length;
             if (tstate < 0)
