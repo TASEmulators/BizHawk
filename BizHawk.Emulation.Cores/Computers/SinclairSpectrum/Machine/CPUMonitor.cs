@@ -297,7 +297,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 case MachineType.ZXSpectrum128:
                 case MachineType.ZXSpectrum128Plus2:
-                    if ((lastPortAddr & 0xc000) == 0x4000)
+                    if ((lastPortAddr & 0xc000) == 0x4000 || (lastPortAddr & 0xc000) == 0xc000 && _machine.ContendedBankPaged())
                         highByte407f = true;
 
                     if (highByte407f)

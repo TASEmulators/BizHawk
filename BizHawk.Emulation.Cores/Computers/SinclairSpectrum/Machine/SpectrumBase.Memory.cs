@@ -161,6 +161,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="addr"></param>
         public abstract bool IsContended(ushort addr);
 
+
+        /// <summary>
+        /// Returns TRUE if there is a contended bank paged in
+        /// </summary>
+        /// <returns></returns>
+        public abstract bool ContendedBankPaged();
+
         #endregion
 
         #region Helper Methods

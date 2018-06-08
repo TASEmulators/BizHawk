@@ -426,6 +426,24 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
+        /// Returns TRUE if there is a contended bank paged in
+        /// </summary>
+        /// <returns></returns>
+        public override bool ContendedBankPaged()
+        {
+            switch (RAMPaged)
+            {
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// ULA reads the memory at the specified address
         /// (No memory contention)
         /// Will read RAM5 (screen0) by default, unless RAM7 (screen1) is selected as output

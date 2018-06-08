@@ -124,6 +124,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
+        /// Returns TRUE if there is a contended bank paged in
+        /// </summary>
+        /// <returns></returns>
+        public override bool ContendedBankPaged()
+        {
+            return false;
+        }
+
+        /// <summary>
         /// Sets up the ROM
         /// </summary>
         /// <param name="buffer"></param>
