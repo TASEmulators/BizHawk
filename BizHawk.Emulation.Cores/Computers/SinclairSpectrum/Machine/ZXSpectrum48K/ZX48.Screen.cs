@@ -16,13 +16,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 			// timing
 			ClockSpeed = 3500000;
             FrameCycleLength = 69888;
-            InterruptStartTime = 30;
+            InterruptStartTime = 33;
             InterruptLength = 32;
             ScanlineTime = 224;
 
             MemoryContentionOffset = 6;
             PortContentionOffset = 6;
-            RenderTableOffset = 2;
+            RenderTableOffset = -9; // 2;
             FloatingBusOffset = 1;
 
             BorderLeftTime = 24;

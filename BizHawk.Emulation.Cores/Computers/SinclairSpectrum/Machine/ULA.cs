@@ -164,13 +164,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 return;
             }
 
-            if (currentCycle < InterruptStartTime)
+            if (currentCycle <= InterruptStartTime)
             {
                 // interrupt does not need to be raised yet
                 return;
             }
 
-            if (currentCycle >= InterruptStartTime + InterruptLength)
+            if (currentCycle > InterruptStartTime + InterruptLength)
             {
                 // interrupt should have already been raised and the cpu may or
                 // may not have caught it. The time has passed so revoke the signal
