@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // screen layout
             ScreenWidth = 256;
             ScreenHeight = 192;
-            BorderTopHeight = 48;
+            BorderTopHeight = 55; // 48;
             BorderBottomHeight = 56;
             BorderLeftWidth = 48;
             BorderRightWidth = 48;
