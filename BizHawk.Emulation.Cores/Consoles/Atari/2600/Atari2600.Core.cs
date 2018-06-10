@@ -33,6 +33,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		internal byte[] Rom { get; }
 		internal int DistinctAccessCount { get; private set; }
 
+		public bool SP_FRAME = false;
+
 		internal struct CpuLink : IMOS6502XLink
 		{
 			private readonly Atari2600 _atari2600;
@@ -338,6 +340,12 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			// Show mapper class on romstatusdetails
 			CoreComm.RomStatusDetails = $"{this._game.Name}\r\nSHA1:{Rom.HashSHA1()}\r\nMD5:{Rom.HashMD5()}\r\nMapper Impl \"{_mapper.GetType()}\"";
+
+			// Some games (ex. 3D tic tac toe), turn off the screen for extended periods, so we need to allow for this here.
+			if (_game.GetOptionsDict()["SP_FRAME"] == "true")
+			{
+				SP_FRAME = true;
+			}
 		}
 
 		private bool _pal;

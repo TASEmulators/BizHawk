@@ -27,11 +27,11 @@ sha1:b13080675116318af2b8cda7e71bee2a8f39be63		3-D Corridor (Green) (30-03-2003)
 sha1:76f9020ace43a20a11e3d540ebabc793e6fa4a40		3-D Corridor (Pink Spiral) (31-03-2003) (AD)	A26		m=4K;NTSC=true
 sha1:136b7d61ca887a8687b48cf8b1ee6244d5090cde		3-D Corridor (Spiral Words) (31-03-2003) (AD)	A26		m=4K;NTSC=true
 sha1:77466b40034e5d7603be2e1a46fc69803de5b685		3-D Corridor Demo (27-03-2003) (MP)	A26		m=4K;NTSC=true
-sha1:6b163aa967e4204a5bd98a59bd8e80f159004e34		3-D Tic-Tac-Toe (1978) (Atari) (PAL) [!]	A26		m=2K;PAL=true
-sha1:e5a370e4f9531836e5b12951e44ea4a4afe9f5d7		3-D Tic-Tac-Toe (1978) (Atari) (PAL) [p1][o1]	A26		m=2K;PAL=true
-sha1:21d983f2f52b84c22ecae84b0943678ae2c31c10		3-D Tic-Tac-Toe (1978) (Atari) [!]	A26		m=2K;NTSC=true
-sha1:f93a1067958a17c14ee72c6b611cffc16901f58b		3-D Tic-Tac-Toe (1978) (Atari) [o1]	A26		m=2K;NTSC=true
-sha1:fd8f2a6eb9248227edca6ae60de93ca38c0ed2ea		3-D Tic-Tac-Toe (32-in-1) (Atari) (PAL) [!]	A26		m=2K;PAL=true
+sha1:6b163aa967e4204a5bd98a59bd8e80f159004e34		3-D Tic-Tac-Toe (1978) (Atari) (PAL) [!]	A26		SP_FRAME=true;m=2K;PAL=true
+sha1:e5a370e4f9531836e5b12951e44ea4a4afe9f5d7		3-D Tic-Tac-Toe (1978) (Atari) (PAL) [p1][o1]	A26		SP_FRAME=true;m=2K;PAL=true
+sha1:21d983f2f52b84c22ecae84b0943678ae2c31c10		3-D Tic-Tac-Toe (1978) (Atari) [!]	A26		SP_FRAME=true;m=2K;NTSC=true
+sha1:f93a1067958a17c14ee72c6b611cffc16901f58b		3-D Tic-Tac-Toe (1978) (Atari) [o1]	A26		SP_FRAME=true;m=2K;NTSC=true
+sha1:fd8f2a6eb9248227edca6ae60de93ca38c0ed2ea		3-D Tic-Tac-Toe (32-in-1) (Atari) (PAL) [!]	A26		SP_FRAME=true;m=2K;PAL=true
 sha1:a100ecfae6ef7f825648f7c9c1f1a35029f4fb5b		2600 Collison Demo 1 (Piero Cavina) (PD)	A26		m=4K;NTSC=true
 sha1:f750d96d811c6cea9dcddf752ba3716ba3dd5dde		2600 Collison Demo 2 (Piero Cavina) (PD)	A26		m=4K;NTSC=true
 sha1:5bb83bdbd49bf0c9cbbd0381e99dbb5b7f58d074		2600 Digital Clock (Demo 1) (PD)	A26		m=4K;NTSC=true
@@ -93,10 +93,10 @@ sha1:a1f660827ce291f19719a5672f2c5d277d903b03		Alpha Beam with Ernie (1983) (Ata
 sha1:f22872b1a1d6156f81335e605b83c180faae6209		Alpha Demo - The Beta Demo 2 (2000) (MP)	A26		m=4K;NTSC=true
 sha1:ff8c849db0e963d9e3962d887fb389ef90f968c8		Amanda Invaders (PD) [o1]	A26		m=4K;NTSC=true
 sha1:316c851551956c8e73956ee073f918380b9fa778		Amanda Invaders (PD)	A26		m=4K;NTSC=true
-sha1:fb9bba6556fc45904dac8750fa18155e6196b2c0		Amidar (1983) (Parker Bros) (PAL) [!]	A26		m=4K;PAL=true
-sha1:b89a5ac6593e83fbebee1fe7d4cec81a7032c544		Amidar (1983) (Parker Bros)	A26		m=4K;NTSC=true
-sha1:59657177bc7e2eaf7736ac121defdd891328ae00		Amidar DS (2003) (TJ) (Amidar Hack)	A26		m=4K;NTSC=true
-sha1:f4688fc8278a2c2040b3eaf90ef7323f6523555a		Amidar DS (Fast Enemies) (2003) (TJ) (Amidar Hack)	A26		m=4K;NTSC=true
+sha1:fb9bba6556fc45904dac8750fa18155e6196b2c0		Amidar (1983) (Parker Bros) (PAL) [!]	A26		SP_FRAME=true;m=4K;PAL=true
+sha1:b89a5ac6593e83fbebee1fe7d4cec81a7032c544		Amidar (1983) (Parker Bros)	A26		SP_FRAME=true;m=4K;NTSC=true
+sha1:59657177bc7e2eaf7736ac121defdd891328ae00		Amidar DS (2003) (TJ) (Amidar Hack)	A26		SP_FRAME=true;m=4K;NTSC=true
+sha1:f4688fc8278a2c2040b3eaf90ef7323f6523555a		Amidar DS (Fast Enemies) (2003) (TJ) (Amidar Hack)	A26		SP_FRAME=true;m=4K;NTSC=true
 sha1:2d29ce1ff161b1cdae935bbbd84fc330254696b6		An Exercise In Minimalism (V1) (1999) (Marc de Smet) (PD)	A26		m=4K;NTSC=true
 sha1:50e383e0e2e652e0b067f56bc3964cf6641139f1		An Exercise In Minimalism (V2) (1999) (Eckhard Stolberg)	A26		m=4K;NTSC=true
 sha1:3ad5c5a35f5e198f35de6066df6c0d15e7b89e02		Analog Clock (Additional Frame Info) (V0.0) (20-01-2003) (AD)	A26		m=3F;NTSC=true

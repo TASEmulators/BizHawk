@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			{
 				Cycle();
 				count++;
-				if (count > 1000000) { throw new Exception("ERROR: Unable to resolve Frame. Please Report."); }
+				if (count > 1000000 && !SP_FRAME) { throw new Exception("ERROR: Unable to resolve Frame. Please Report."); }
 			}
 
 			_tia.New_Frame = false;
