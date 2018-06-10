@@ -1,6 +1,17 @@
 RSP High-Level Emulation plugin for Mupen64Plus
 -----------------------------------------------
 
+Mupen64Plus-rsp-hle v2.5 - April 26, 2015
+-------------------------------------------------
+ - Game-specific fixes: Bottom of the 9th, IndianaJones, BattleForNaboo, Conkers Bad Fur Day
+ - Support for MusyX microcodes
+ - Improve audio microcode identification
+ - Huge quantity of code cleanups and refactoring to improve organization
+ - Add support for additional audio commands: #16, POLEF, RESAMPLE_ZOH
+ - Multiple bugfixes in audio processing code
+ - Move global variables into a struct so code is re-entrant
+ - bugfix: microcode detection could sometimes fail after reset
+
 Mupen64Plus-rsp-hle v2.0 - July 4, 2013
 -------------------------------------------------
  - Add support for MusyX ucode detection
