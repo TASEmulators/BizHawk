@@ -93,10 +93,10 @@ sha1:a1f660827ce291f19719a5672f2c5d277d903b03		Alpha Beam with Ernie (1983) (Ata
 sha1:f22872b1a1d6156f81335e605b83c180faae6209		Alpha Demo - The Beta Demo 2 (2000) (MP)	A26		m=4K;NTSC=true
 sha1:ff8c849db0e963d9e3962d887fb389ef90f968c8		Amanda Invaders (PD) [o1]	A26		m=4K;NTSC=true
 sha1:316c851551956c8e73956ee073f918380b9fa778		Amanda Invaders (PD)	A26		m=4K;NTSC=true
-sha1:fb9bba6556fc45904dac8750fa18155e6196b2c0		Amidar (1983) (Parker Bros) (PAL) [!]	A26		SP_FRAME=true;m=4K;PAL=true
-sha1:b89a5ac6593e83fbebee1fe7d4cec81a7032c544		Amidar (1983) (Parker Bros)	A26		SP_FRAME=true;m=4K;NTSC=true
-sha1:59657177bc7e2eaf7736ac121defdd891328ae00		Amidar DS (2003) (TJ) (Amidar Hack)	A26		SP_FRAME=true;m=4K;NTSC=true
-sha1:f4688fc8278a2c2040b3eaf90ef7323f6523555a		Amidar DS (Fast Enemies) (2003) (TJ) (Amidar Hack)	A26		SP_FRAME=true;m=4K;NTSC=true
+sha1:fb9bba6556fc45904dac8750fa18155e6196b2c0		Amidar (1983) (Parker Bros) (PAL) [!]	A26		SP_RESET=true;m=4K;PAL=true
+sha1:b89a5ac6593e83fbebee1fe7d4cec81a7032c544		Amidar (1983) (Parker Bros)	A26		SP_RESET=true;m=4K;NTSC=true
+sha1:59657177bc7e2eaf7736ac121defdd891328ae00		Amidar DS (2003) (TJ) (Amidar Hack)	A26		SP_RESET=true;m=4K;NTSC=true
+sha1:f4688fc8278a2c2040b3eaf90ef7323f6523555a		Amidar DS (Fast Enemies) (2003) (TJ) (Amidar Hack)	A26		SP_RESET=true;m=4K;NTSC=true
 sha1:2d29ce1ff161b1cdae935bbbd84fc330254696b6		An Exercise In Minimalism (V1) (1999) (Marc de Smet) (PD)	A26		m=4K;NTSC=true
 sha1:50e383e0e2e652e0b067f56bc3964cf6641139f1		An Exercise In Minimalism (V2) (1999) (Eckhard Stolberg)	A26		m=4K;NTSC=true
 sha1:3ad5c5a35f5e198f35de6066df6c0d15e7b89e02		Analog Clock (Additional Frame Info) (V0.0) (20-01-2003) (AD)	A26		m=3F;NTSC=true
@@ -328,7 +328,7 @@ sha1:1819ef408c1216c83dcfeceec28d13f6ea5ca477		Bump 'N' Jump (1983) (Mattel)	A26
 sha1:35bc4048f58bb170313872a0bce44fb1ca3217cc		Bump 'N' Jump (Telegames) (PAL) [!]	A26		m=F8;PAL=true
 sha1:ad48f4952e867a2b97900d965b69f50fddf8ba2d		Bumper Bash (1983) (Spectravideo) (PAL) [!]	A26		m=4K;PAL=true
 sha1:6c199782c79686dc0cbce6d5fe805f276a86a3f5		Bumper Bash (1983) (Spectravideo)	A26		m=4K;NTSC=true
-sha1:49e01b8048ae344cb65838f6b1c1de0e1f416f29		Burgertime (1982) (Mattel)	A26		m=E7;NTSC=true
+sha1:49e01b8048ae344cb65838f6b1c1de0e1f416f29		Burgertime (1982) (Mattel)	A26		SP_RESET=true;m=E7;NTSC=true
 sha1:3f1f17cf620f462355009f5302cddffa730fa2fa		Cakewalk (CommaVid)	A26		m=4K;NTSC=true
 sha1:4ca390f8dc4d0f8dce889dfc21ddd675c5860095		Cakewalk (PAL Conversion) (Fabrizio Zavagli)	A26		m=4K;NTSC=true
 sha1:def9502c5a37700ae03461b2d7cf2f73e91b4cec		California Games (1988) (Epyx) (PAL) [!]	A26		m=F6;PAL=true

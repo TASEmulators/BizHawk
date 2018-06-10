@@ -34,6 +34,8 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		internal int DistinctAccessCount { get; private set; }
 
 		public bool SP_FRAME = false;
+		public bool SP_RESET = false;
+		public bool unselect_reset;
 
 		internal struct CpuLink : IMOS6502XLink
 		{
@@ -342,9 +344,19 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			CoreComm.RomStatusDetails = $"{this._game.Name}\r\nSHA1:{Rom.HashSHA1()}\r\nMD5:{Rom.HashMD5()}\r\nMapper Impl \"{_mapper.GetType()}\"";
 
 			// Some games (ex. 3D tic tac toe), turn off the screen for extended periods, so we need to allow for this here.
-			if (_game.GetOptionsDict()["SP_FRAME"] == "true")
+			if (_game.GetOptionsDict().ContainsKey("SP_FRAME"))
 			{
-				SP_FRAME = true;
+				if (_game.GetOptionsDict()["SP_FRAME"] == "true")
+				{
+					SP_FRAME = true;
+				}
+			}
+			if (_game.GetOptionsDict().ContainsKey("SP_RESET"))
+			{
+				if (_game.GetOptionsDict()["SP_RESET"] == "true")
+				{
+					SP_RESET = true;
+				}
 			}
 		}
 
@@ -428,6 +440,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			byte value = 0xFF;
 			bool select = _controller.IsPressed("Select");
 			bool reset = _controller.IsPressed("Reset");
+
+			if (unselect_reset)
+			{
+				reset = false;
+			}
 
 			if (reset) { value &= 0xFE; }
 			if (select) { value &= 0xFD; }
