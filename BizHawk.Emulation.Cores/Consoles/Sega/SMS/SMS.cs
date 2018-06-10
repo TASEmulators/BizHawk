@@ -5,6 +5,7 @@ using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Common.Components;
 using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80A;
+using BizHawk.Common.BufferExtensions;
 
 /*****************************************************
   TODO: 
@@ -205,6 +206,15 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 			Cpu.ReadMemory = ReadMemory;
 			Cpu.WriteMemory = WriteMemory;
+
+			// This particular game relies on an uninitialized Stack pointer to not be 0 or 0xFFFF
+			// It does not appear from documentation that the stack pointer is initialized to anything
+			// so just give it a value that doesn't break the game.
+			if (rom.HashSHA1() == "CBDBAAEB62A8483D9D5A8757B0F19233DFB9B416")
+			{
+				Cpu.Regs[Cpu.SPl] = 0x4;
+				Cpu.Regs[Cpu.SPh] = 0xFF;
+			}	
 		}
 
 		// Constants
