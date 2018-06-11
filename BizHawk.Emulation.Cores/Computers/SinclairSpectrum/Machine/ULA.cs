@@ -89,14 +89,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public int InterruptLength;
 
         /// <summary>
-        /// Arbitrary offset into the contention array (for memory ops)
-        /// </summary>
-        public int MemoryContentionOffset;
-
-        /// <summary>
-        /// Arbitrary offset into the contention array (for port ops)
-        /// </summary>
-        public int PortContentionOffset;
+        /// Contention offset
+        /// </summary> 
+        public int ContentionOffset;
 
         /// <summary>
         /// Arbitrary offset for render table generation
@@ -137,60 +132,58 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         protected bool InterruptRaised;
 
-        /// <summary>
-        /// Signs that the interrupt signal has been revoked
-        /// </summary>
-        protected bool InterruptRevoked;
+        public long ULACycleCounter;
+        public long LastULATick;
+        public bool FrameEnd;
 
         /// <summary>
-        /// Resets the interrupt - this should happen every frame in order to raise
-        /// the VBLANK interrupt in the proceding frame
-        /// </summary>
-        public virtual void ResetInterrupt()
-        {
-            InterruptRaised = false;
-            InterruptRevoked = false;
-        }
-
-        /// <summary>
-        /// Generates an interrupt in the current phase if needed
+        /// Cycles the ULA clock
+        /// Handles interrupt generation
         /// </summary>
         /// <param name="currentCycle"></param>
-        public virtual void CheckForInterrupt(long currentCycle)
+        public virtual void CycleClock(long totalCycles)
         {
-            if (InterruptRevoked)
+            // has more than one cycle past since this last ran
+            // (this can be true if contention has taken place)
+            var ticksToProcess = totalCycles - LastULATick;
+
+            // store the current cycle
+            LastULATick = totalCycles;
+            
+            // process the cycles past as well as the upcoming one
+            for (int i = 0; i < ticksToProcess; i++)
             {
-                // interrupt has already been handled
-                return;
-            }
+                ULACycleCounter++;
 
-            if (currentCycle <= InterruptStartTime)
-            {
-                // interrupt does not need to be raised yet
-                return;
-            }
-
-            if (currentCycle > InterruptStartTime + InterruptLength)
-            {
-                // interrupt should have already been raised and the cpu may or
-                // may not have caught it. The time has passed so revoke the signal
-                InterruptRevoked = true;
-                _machine.CPU.FlagI = false;
-                return;
-            }
-
-            if (InterruptRaised)
-            {
-                // INT is raised but not yet revoked
-                // CPU has NOT handled it yet
-                return;
-            }
-
-            // Raise the interrupt
-            InterruptRaised = true;
-            _machine.CPU.FlagI = true;
-
-            CalcFlashCounter();
+                if (InterruptRaised)
+                {
+                    // /INT pin is currently being held low
+                    if (ULACycleCounter < InterruptLength + InterruptStartTime)
+                    {
+                        // ULA should still hold the /INT pin low
+                        _machine.CPU.FlagI = true;
+                    }
+                    else
+                    {
+                        // its time (or past time) to stop holding the /INT pin low
+                        _machine.CPU.FlagI = false;
+                        InterruptRaised = false;
+                    }
+                }
+                else
+                {
+                    // interrupt is currently not raised
+                    if (ULACycleCounter == FrameLength + InterruptStartTime)
+                    {
+                        // time to raise the interrupt
+                        InterruptRaised = true;
+                        _machine.CPU.FlagI = true;
+                        FrameEnd = true;
+                        ULACycleCounter = InterruptStartTime;
+                        CalcFlashCounter();
+                    }
+                }
+            }            
         }
 
         /// <summary>
@@ -329,7 +322,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 for (var t = 0; t < _ula.FrameCycleLength; t++)
                 {
-                    var tStateScreen = t + _ula.RenderTableOffset + _ula.InterruptStartTime;
+                    var tStateScreen = t + _ula.RenderTableOffset;// + _ula.InterruptStartTime;
 
                     if (tStateScreen < 0)
                         tStateScreen += _ula.FrameCycleLength;
@@ -460,7 +453,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // calculate contention values
                 for (int t = 0; t < _ula.FrameCycleLength; t++)
                 {
-                    int shifted = t + _ula.RenderTableOffset + _ula.InterruptStartTime;
+                    int shifted = t + _ula.RenderTableOffset + _ula.ContentionOffset; // _ula.InterruptStartTime;
                     if (shifted < 0)
                         shifted += _ula.FrameCycleLength;
                     shifted %= _ula.FrameCycleLength;
@@ -747,7 +740,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public int GetContentionValue(int tstate)
         {
-            tstate += MemoryContentionOffset;
+            //tstate += MemoryContentionOffset;
             if (tstate >= FrameCycleLength)
                 tstate -= FrameCycleLength;
 
@@ -763,7 +756,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public int GetPortContentionValue(int tstate)
         {
-            tstate +=  PortContentionOffset;
+            //tstate +=  PortContentionOffset;
             if (tstate >= FrameCycleLength)
                 tstate -= FrameCycleLength;
 
@@ -994,8 +987,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.BeginSection("ULA");
             if (ScreenBuffer != null)
                 ser.Sync("ScreenBuffer", ref ScreenBuffer, false);
-            ser.Sync("FrameLength", ref FrameCycleLength);
-            ser.Sync("ClockSpeed", ref ClockSpeed);
             ser.Sync("BorderColor", ref BorderColor);
             ser.Sync("LastTState", ref LastTState);
             ser.Sync("flashOn", ref flashOn);
@@ -1010,6 +1001,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Sync("flash", ref flash);
             ser.Sync("palPaper", ref palPaper);
             ser.Sync("palInk", ref palInk);
+
+            ser.Sync("LastULATick", ref LastULATick);
+            ser.Sync("ULACycleCounter", ref ULACycleCounter);
+            ser.Sync("FrameEnd", ref FrameEnd);
             ser.EndSection();
         }
 

@@ -13,32 +13,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public Screen128(SpectrumBase machine)
 			: base(machine)
         {
+            // interrupt
+            InterruptStartTime = 3;
+            InterruptLength = 36;
+            // offsets
+            RenderTableOffset = 58;
+            ContentionOffset = 6;
+            FloatingBusOffset = 1;
             // timing
             ClockSpeed = 3546900;
             FrameCycleLength = 70908;
-            InterruptStartTime = 34;
-            InterruptLength = 36;
             ScanlineTime = 228;
-
-            MemoryContentionOffset = 6;
-            PortContentionOffset = 6;
-            RenderTableOffset = -4;
-            FloatingBusOffset = 1;
-
             BorderLeftTime = 24;
             BorderRightTime = 24;
-
             FirstPaperLine = 63;
             FirstPaperTState = 64;
-
-            Border4T = true;
-            Border4TStage = 2;
-
             // screen layout
+            Border4T = true;
+            Border4TStage = 2;            
             ScreenWidth = 256;
             ScreenHeight = 192;
-            BorderTopHeight = 55; // 48;
-            BorderBottomHeight = 56;
+            BorderTopHeight = 48; // 55; // 48;
+            BorderBottomHeight = 48; // 56;
             BorderLeftWidth = 48;
             BorderRightWidth = 48;
             ScanLineWidth = BorderLeftWidth + ScreenWidth + BorderRightWidth;

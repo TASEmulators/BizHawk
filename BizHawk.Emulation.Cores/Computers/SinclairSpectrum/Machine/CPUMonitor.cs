@@ -61,6 +61,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public void ExecuteCycle()
         {
+            // simulate the ULA clock cycle before the CPU cycle
+            _machine.ULADevice.CycleClock(TotalExecutedCycles);
+
             // is the next CPU cycle causing a BUSRQ or IORQ?
             if (BUSRQ > 0)
             {

@@ -147,6 +147,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public virtual void ExecuteFrame(bool render, bool renderSound)
         {
+            ULADevice.FrameEnd = false;
+            ULADevice.ULACycleCounter = CurrentFrameCycle;
+
             InputRead = false;
             _render = render;
             _renderSound = renderSound;
@@ -164,15 +167,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             PollInput();
 
-            while (CurrentFrameCycle < ULADevice.FrameLength)
+            for (;;)
             {
-                ULADevice.CheckForInterrupt(CurrentFrameCycle);
-
+                // run the CPU Monitor cycle
                 CPUMon.ExecuteCycle();
 
                 // cycle the tape device
                 if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
                     TapeDevice.TapeCycle();
+
+                // has frame end been reached?
+                if (ULADevice.FrameEnd)
+                    break;
             }
 
             OverFlow = (int)CurrentFrameCycle - ULADevice.FrameLength;
@@ -190,9 +196,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 AYDevice.EndFrame();
 
             FrameCount++;
-
-            // setup for next frame
-            ULADevice.ResetInterrupt();
                         
             if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
                 TapeDevice.EndFrame();
@@ -202,8 +205,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // is this a lag frame?
             Spectrum.IsLagFrame = !InputRead;
 
-            // FDC debug
-            
+            // FDC debug            
             if (UPDDiskDevice != null && UPDDiskDevice.writeDebug)
             {
                 // only write UPD log every second
@@ -222,7 +224,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public virtual void HardReset()
         {
-            ULADevice.ResetInterrupt();
+            //ULADevice.ResetInterrupt();
             ROMPaged = 0;
             SpecialPagingMode = false;
             RAMPaged = 0;
@@ -274,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public virtual void SoftReset()
         {
-             ULADevice.ResetInterrupt();
+             //ULADevice.ResetInterrupt();
             ROMPaged = 0;
             SpecialPagingMode = false;
             RAMPaged = 0;
