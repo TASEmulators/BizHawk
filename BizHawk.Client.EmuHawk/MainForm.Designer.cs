@@ -384,6 +384,7 @@
             this.zXSpectrumToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ZXSpectrumCoreEmulationSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ZXSpectrumControllerConfigurationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ZXSpectrumAudioSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ZXSpectrumNonSyncSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Atari7800HawkCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainStatusBar = new StatusStripEx();
@@ -457,7 +458,7 @@
             this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-            this.ZXSpectrumAudioSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ZXSpectrumPokeMemoryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -3401,7 +3402,8 @@
             this.ZXSpectrumCoreEmulationSettingsMenuItem,
             this.ZXSpectrumControllerConfigurationMenuItem,
             this.ZXSpectrumAudioSettingsMenuItem,
-            this.ZXSpectrumNonSyncSettingsMenuItem});
+            this.ZXSpectrumNonSyncSettingsMenuItem,
+            this.ZXSpectrumPokeMemoryMenuItem});
             this.zXSpectrumToolStripMenuItem.Name = "zXSpectrumToolStripMenuItem";
             this.zXSpectrumToolStripMenuItem.Size = new System.Drawing.Size(87, 19);
             this.zXSpectrumToolStripMenuItem.Text = "ZX Spectrum";
@@ -3420,6 +3422,13 @@
             this.ZXSpectrumControllerConfigurationMenuItem.Size = new System.Drawing.Size(201, 22);
             this.ZXSpectrumControllerConfigurationMenuItem.Text = "Joystick Configuration";
             this.ZXSpectrumControllerConfigurationMenuItem.Click += new System.EventHandler(this.ZXSpectrumControllerConfigurationMenuItem_Click);
+            // 
+            // ZXSpectrumAudioSettingsMenuItem
+            // 
+            this.ZXSpectrumAudioSettingsMenuItem.Name = "ZXSpectrumAudioSettingsMenuItem";
+            this.ZXSpectrumAudioSettingsMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.ZXSpectrumAudioSettingsMenuItem.Text = "Audio Settings";
+            this.ZXSpectrumAudioSettingsMenuItem.Click += new System.EventHandler(this.ZXSpectrumAudioSettingsMenuItem_Click);
             // 
             // ZXSpectrumNonSyncSettingsMenuItem
             // 
@@ -4054,12 +4063,12 @@
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
             // 
-            // ZXSpectrumAudioSettingsMenuItem
+            // ZXSpectrumPokeMemoryMenuItem
             // 
-            this.ZXSpectrumAudioSettingsMenuItem.Name = "ZXSpectrumAudioSettingsMenuItem";
-            this.ZXSpectrumAudioSettingsMenuItem.Size = new System.Drawing.Size(201, 22);
-            this.ZXSpectrumAudioSettingsMenuItem.Text = "Audio Settings";
-            this.ZXSpectrumAudioSettingsMenuItem.Click += new System.EventHandler(this.ZXSpectrumAudioSettingsMenuItem_Click);
+            this.ZXSpectrumPokeMemoryMenuItem.Name = "ZXSpectrumPokeMemoryMenuItem";
+            this.ZXSpectrumPokeMemoryMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.ZXSpectrumPokeMemoryMenuItem.Text = "POKE Memory";
+            this.ZXSpectrumPokeMemoryMenuItem.Click += new System.EventHandler(this.ZXSpectrumPokeMemoryMenuItem_Click);
             // 
             // MainForm
             // 
@@ -4530,5 +4539,6 @@
         private System.Windows.Forms.ToolStripMenuItem ZXSpectrumCoreEmulationSettingsMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ZXSpectrumNonSyncSettingsMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ZXSpectrumAudioSettingsMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumPokeMemoryMenuItem;
     }
 }

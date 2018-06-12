@@ -2487,6 +2487,11 @@ namespace BizHawk.Client.EmuHawk
             new ZXSpectrumAudioSettings().ShowDialog();
         }
 
+        private void ZXSpectrumPokeMemoryMenuItem_Click(object sender, EventArgs e)
+        {
+            new ZXSpectrumPokeMemory().ShowDialog();
+        }
+
         #endregion
 
         #region Help
