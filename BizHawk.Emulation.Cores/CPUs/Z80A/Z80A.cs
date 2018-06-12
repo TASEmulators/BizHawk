@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
 			MEMRQ = new ushort[] { PCh, 0, 0, 0 };
-			instr_pntr = 0; bus_pntr = 0;
+			instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 			NO_prefix = true;
 		}
 
@@ -167,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			FlagI2 = FlagI1;
 			FlagI1 = FlagI;
 			
-			bus_pntr++;
+			bus_pntr++; mem_pntr++;
 			switch (cur_instr[instr_pntr++])
 			{
 				case IDLE:
@@ -195,7 +195,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						iff1 = false;
 						NMI_();
 						NMICallback();
-						instr_pntr = 0; bus_pntr = 0;
+						instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					}
 					else if (iff1 && FlagI5)
 					{
@@ -222,7 +222,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 								break;
 						}
 						IRQCallback();
-						instr_pntr = 0; bus_pntr = 0;
+						instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					}
 					else
 					{
@@ -230,7 +230,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						if (TraceCallback != null) TraceCallback(State());
 						RegPC++;
 						FetchInstruction();
-						instr_pntr = 0; bus_pntr = 0;
+						instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					}
 
 					temp_R = (byte)(Regs[R] & 0x7F);
@@ -301,7 +301,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					temp_R &= 0x7F;
 					Regs[R] = (byte)((Regs[R] & 0x80) | temp_R);
 
-					instr_pntr = 0; bus_pntr = 0;
+					instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					break;
 				case RD:
 					Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -446,7 +446,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 					RegPC++;
 					FetchInstruction();
-					instr_pntr = 0; bus_pntr = 0;
+					instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					// only the first prefix in a double prefix increases R, although I don't know how / why
 					if (prefix_src < 4)
 					{
@@ -523,7 +523,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						BUSRQ = new ushort[] { PCh, 0, 0, 0 };
 						MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 					}
-					instr_pntr = 0; bus_pntr = 0;
+					instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					break;
 				case SET_FL_CP_R:
 					SET_FL_CP_Func();
@@ -559,7 +559,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						BUSRQ = new ushort[] { PCh, 0, 0, 0 };
 						MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 					}
-					instr_pntr = 0; bus_pntr = 0;
+					instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					break;
 				case SET_FL_IR:
 					SET_FL_IR_Func(cur_instr[instr_pntr++]);
@@ -570,8 +570,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				case WAIT:
 					if (FlagW)
 					{
-						instr_pntr--;
-						bus_pntr--;
+						instr_pntr--; bus_pntr--; mem_pntr--;
 					}
 					break;
 				case RST:
@@ -638,7 +637,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						BUSRQ = new ushort[] { PCh, 0, 0, 0 };
 						MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 					}
-					instr_pntr = 0; bus_pntr = 0;
+					instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					break;
 				case REP_OP_O:
 					OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -699,7 +698,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						BUSRQ = new ushort[] { PCh, 0, 0, 0 };
 						MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 					}
-					instr_pntr = 0; bus_pntr = 0;
+					instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					break;
 			}
 			TotalExecutedCycles++;
@@ -774,6 +773,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			ser.Sync("instr_pntr", ref instr_pntr);
 			ser.Sync("bus_pntr", ref bus_pntr);
+			ser.Sync("mem_pntr", ref mem_pntr);
 			ser.Sync("cur_instr", ref cur_instr, false);
 			ser.Sync("BUSRQ", ref BUSRQ, false);
 			ser.Sync("MEMRQ", ref MEMRQ, false);

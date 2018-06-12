@@ -19,6 +19,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// variables for executing instructions
 		public int instr_pntr = 0;
 		public int bus_pntr = 0;
+		public int mem_pntr = 0;
 		public ushort instr_swap;
 		public ushort[] cur_instr;
 		public ushort[] BUSRQ;
