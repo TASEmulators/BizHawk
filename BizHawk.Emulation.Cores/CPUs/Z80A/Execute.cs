@@ -22,6 +22,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public ushort instr_swap;
 		public ushort[] cur_instr;
 		public ushort[] BUSRQ;
+		public ushort[] MEMRQ;
 		public byte opcode;
 		public bool NO_prefix, CB_prefix, IX_prefix, EXTD_prefix, IY_prefix, IXCB_prefix, IYCB_prefix;
 		public bool IXCB_prefetch, IYCB_prefetch; // value is fetched before opcode

@@ -103,6 +103,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						  OP };
 
 			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 			instr_pntr = 0; bus_pntr = 0;
 			NO_prefix = true;
 		}
@@ -509,6 +510,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 									OP};
 
 						BUSRQ = new ushort[] { D, D, D, D, D, PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
 					}
 					else
 					{
@@ -518,7 +520,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 									  OP_F,
 									  OP };
 
-						BUSRQ = new ushort[] { PCh, 0, 0, 0 };						
+						BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 					}
 					instr_pntr = 0; bus_pntr = 0;
 					break;
@@ -543,6 +546,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 									OP};
 
 						BUSRQ = new ushort[] { H, H, H, H, H, PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
 					}
 					else
 					{
@@ -553,6 +557,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 									  OP };
 
 						BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 					}
 					instr_pntr = 0; bus_pntr = 0;
 					break;
@@ -620,6 +625,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 									OP};
 
 						BUSRQ = new ushort[] { H, H, H, H, H, PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
 					}
 					else
 					{
@@ -630,6 +636,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 									  OP };
 
 						BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 					}
 					instr_pntr = 0; bus_pntr = 0;
 					break;
@@ -679,6 +686,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 
 						BUSRQ = new ushort[] { B, B, B, B, B, PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
 					}
 					else
 					{
@@ -689,6 +697,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 									  OP };
 
 						BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 					}
 					instr_pntr = 0; bus_pntr = 0;
 					break;
@@ -767,6 +776,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			ser.Sync("bus_pntr", ref bus_pntr);
 			ser.Sync("cur_instr", ref cur_instr, false);
 			ser.Sync("BUSRQ", ref BUSRQ, false);
+			ser.Sync("MEMRQ", ref MEMRQ, false);
 			ser.Sync("instr_swap", ref instr_swap);
 			ser.Sync("opcode", ref opcode);
 			ser.Sync("FlagI", ref FlagI);
