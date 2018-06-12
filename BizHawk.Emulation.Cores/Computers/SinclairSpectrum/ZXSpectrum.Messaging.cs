@@ -410,6 +410,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             sb.Append(p.ToString("N0") + "%");
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
             sb.Clear();
+
+            // get position within the tape itself
+            sb.Append("Tape Pos: ");
+            var ind = _machine.TapeDevice.CurrentDataBlockIndex;
+            int cnt = 0;
+            for (int i = 0; i < ind; i++)
+            {
+                cnt += _machine.TapeDevice.DataBlocks[i].DataPeriods.Count;
+            }
+            // now we are at our current block
+            int ourPos = cnt + pos;
+            cnt += end;
+            // count periods in the remaining blocks
+            for (int i = ind + 1; i < _machine.TapeDevice.DataBlocks.Count; i++)
+            {
+                cnt += _machine.TapeDevice.DataBlocks[i].DataPeriods.Count;
+            }
+            // work out overall position within the tape
+            p = 0;
+            p = ((double)ourPos / (double)cnt) * (double)100;
+            sb.Append(p.ToString("N0") + "%");
+            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
         }
 
         #endregion
