@@ -36,5 +36,34 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             _machine.WriteBus(addr, value);
         }
+
+
+        public string GetMachineType()
+        {
+            string m = "";
+            switch (SyncSettings.MachineType)
+            {
+                case MachineType.ZXSpectrum16:
+                    m = "(Sinclair) ZX Spectrum 16K";
+                    break;
+                case MachineType.ZXSpectrum48:
+                    m = "(Sinclair) ZX Spectrum 48K";
+                    break;
+                case MachineType.ZXSpectrum128:
+                    m = "(Sinclair) ZX Spectrum 128K";
+                    break;
+                case MachineType.ZXSpectrum128Plus2:
+                    m = "(Amstrad) ZX Spectrum 128K +2";
+                    break;
+                case MachineType.ZXSpectrum128Plus2a:
+                    m = "(Amstrad) ZX Spectrum 128K +2a";
+                    break;
+                case MachineType.ZXSpectrum128Plus3:
+                    m = "(Amstrad) ZX Spectrum 128K +3";
+                    break;
+            }
+
+            return m;
+        }
     }
 }
