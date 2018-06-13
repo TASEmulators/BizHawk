@@ -4,6 +4,7 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /*
     /// <summary>
     /// ULA (Uncommitted Logic Array) implementation
     /// </summary>
@@ -78,6 +79,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public byte[] contentionTable;
 
+        /// <summary>
+        /// Contention offset (used for testing)
+        /// </summary>
+        public int contentionOffset = 0; // -5;
+
         #endregion
 
         #region Screen Rendering
@@ -86,6 +92,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Video output buffer
         /// </summary>
         public int[] ScreenBuffer;
+
+        /// <summary>
+        /// Screen rendering T-State info
+        /// </summary>
+        public RenderCycle[] RenderTable;
+
         /// <summary>
         /// Display memory
         /// </summary>
@@ -246,14 +258,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         #region Interrupt
 
         /// <summary>
-        /// The number of T-States that the INT pin is simulated to be held low
+        /// The t-state within the frame that an interrupt is raised
         /// </summary>
-        public int InterruptPeriod;
+        public int InterruptStart;
 
         /// <summary>
-        /// The longest instruction cycle count
+        /// The number of T-States that the INT pin is simulated to be held low
         /// </summary>
-        protected int LongestOperationCycles = 23;
+        public int InterruptDuration = 32;
 
         /// <summary>
         /// Signs that an interrupt has been raised in this frame.
@@ -287,13 +299,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 return;
             }
 
-            if (currentCycle < LongestOperationCycles)// InterruptPeriod)
+            if (currentCycle < InterruptStart)
             {
                 // interrupt does not need to be raised yet
                 return;
             }
 
-            if (currentCycle >= InterruptPeriod + LongestOperationCycles)
+            if (currentCycle > InterruptStart + InterruptDuration)
             {
                 // interrupt should have already been raised and the cpu may or
                 // may not have caught it. The time has passed so revoke the signal
@@ -350,31 +362,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="addr"></param>
         /// <returns></returns>
         public abstract bool IsContended(int addr);
-
-        /// <summary>
-        /// Contends the machine for a given address
-        /// </summary>
-        /// <param name="addr"></param>
-        public virtual void Contend(ushort addr)
-        {
-            if (IsContended(addr) && !(_machine is ZX128Plus3))
-            {
-                _machine.CPU.TotalExecutedCycles += contentionTable[CurrentTStateInFrame];
-            }
-        }
-
-        public virtual void Contend(int addr, int time, int count)
-        {
-            if (IsContended(addr) && !(_machine is ZX128Plus3))
-            {
-                for (int f = 0; f < count; f++)
-                {
-                    _machine.CPU.TotalExecutedCycles += contentionTable[CurrentTStateInFrame] + time;
-                }
-            }
-            else
-                _machine.CPU.TotalExecutedCycles += count * time;
-        }
+       
 
         /// <summary>
         /// Resets render state once interrupt is generated
@@ -400,6 +388,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 flashCounter = 0;
             }
         }
+
 
         /// <summary>
         /// Builds the T-State to attribute map used with the floating bus
@@ -427,6 +416,32 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
+        /// Returns the floating bus value
+        /// </summary>
+        public virtual void ReadFloatingBus(ref int result)
+        {
+            // Floating bus is read on the previous cycle
+            long _tStates = _machine.CurrentFrameCycle - 1;
+
+            // if we are on the top or bottom border return 0xff
+            if ((_tStates < contentionStartPeriod) || (_tStates > contentionEndPeriod))
+            {
+                result = 0xff;
+            }
+            else
+            {
+                if (floatingBusTable[_tStates] < 0)
+                {
+                    result = 0xff;
+                }
+                else
+                {
+                    result = _machine.ReadBus((ushort)floatingBusTable[_tStates]);
+                }
+            }
+        }
+
+        /// <summary>
         /// Updates the screen buffer based on the number of T-States supplied
         /// </summary>
         /// <param name="_tstates"></param>
@@ -444,7 +459,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             //the additional 1 tstate is required to get correct number of bytes to output in ircontention.sna
-            elapsedTStates = (_tstates + 1 - lastTState) - 1;
+            elapsedTStates = (_tstates + 1 - lastTState);
 
             //It takes 4 tstates to write 1 byte. Or, 2 pixels per t-state.
 
@@ -755,6 +770,27 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
         */
+        /*
         #endregion
     }
+
+    /// <summary>
+    /// T-State display mapping
+    /// </summary>
+    public class RenderCycle
+    {
+        public RenderType Type { get; set; }
+        public short DisplayAddress { get; set; }
+        public short AttributeAddress { get; set; }
+        public int ContentionValue { get; set; }
+        public short FloatingBusAddress { get; set; }
+    }
+
+    public enum RenderType
+    {
+        None,
+        Border,
+        Display        
+    }
+    */
 }

@@ -509,6 +509,12 @@
     <Compile Include="config\ZXSpectrum\ZXSpectrumAudioSettings.Designer.cs">
       <DependentUpon>ZXSpectrumAudioSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumPokeMemory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\ZXSpectrum\ZXSpectrumPokeMemory.Designer.cs">
+      <DependentUpon>ZXSpectrumPokeMemory.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\ZXSpectrum\ZXSpectrumNonSyncSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1430,6 +1436,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumAudioSettings.resx">
       <DependentUpon>ZXSpectrumAudioSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumPokeMemory.resx">
+      <DependentUpon>ZXSpectrumPokeMemory.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\ZXSpectrum\ZXSpectrumNonSyncSettings.resx">
       <DependentUpon>ZXSpectrumNonSyncSettings.cs</DependentUpon>

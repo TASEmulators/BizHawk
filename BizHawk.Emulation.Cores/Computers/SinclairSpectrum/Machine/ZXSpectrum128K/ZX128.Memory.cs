@@ -134,6 +134,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // RAM 0x4000 (RAM5 - Bank5 or shadow bank RAM7)
                 case 1:
+                    ULADevice.RenderScreen((int)CurrentFrameCycle);
                     RAM5[addr % 0x4000] = value;
                     break;
 
@@ -162,6 +163,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             RAM4[addr % 0x4000] = value;
                             break;
                         case 5:
+                            ULADevice.RenderScreen((int)CurrentFrameCycle);
                             RAM5[addr % 0x4000] = value;
                             break;
                         case 6:
@@ -175,10 +177,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 default:
                     break;
             }
-
-            // update ULA screen buffer if necessary
-            if ((addr & 49152) == 16384 && _render)
-                ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
         }
 
         /// <summary>
@@ -189,9 +187,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadMemory(ushort addr)
         {
-            if (ULADevice.IsContended(addr))
-                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
-            
             var data = ReadBus(addr);
             return data;
         }
@@ -204,13 +199,57 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WriteMemory(ushort addr, byte value)
         {
-            // apply contention if necessary
-            if (ULADevice.IsContended(addr))
-                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
-
             WriteBus(addr, value);
         }
-        
+
+        /// <summary>
+        /// Checks whether supplied address is in a potentially contended bank
+        /// </summary>
+        /// <param name="addr"></param>
+        public override bool IsContended(ushort addr)
+        {
+            var a = addr & 0xc000;
+
+            if (a == 0x4000)
+            {
+                // low port contention
+                return true;
+            }
+
+            if (a == 0xc000)
+            {
+                // high port contention - check for contended bank paged in
+                switch (RAMPaged)
+                {
+                    case 1:
+                    case 3:
+                    case 5:
+                    case 7:
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns TRUE if there is a contended bank paged in
+        /// </summary>
+        /// <returns></returns>
+        public override bool ContendedBankPaged()
+        {
+            switch (RAMPaged)
+            {
+                case 1:
+                case 3:
+                case 5:
+                case 7:
+                    return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// ULA reads the memory at the specified address
         /// (No memory contention)

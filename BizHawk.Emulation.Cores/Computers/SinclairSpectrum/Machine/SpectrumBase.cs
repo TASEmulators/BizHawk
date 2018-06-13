@@ -32,7 +32,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The emulated ULA device
         /// </summary>
-        public ULABase ULADevice { get; set; }
+        //public ULABase ULADevice { get; set; }
+        public ULA ULADevice { get; set; }
+
+        /// <summary>
+        /// Monitors CPU cycles
+        /// </summary>
+        public CPUMonitor CPUMon { get; set; }
 
         /// <summary>
         /// The spectrum buzzer/beeper
@@ -141,6 +147,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public virtual void ExecuteFrame(bool render, bool renderSound)
         {
+            ULADevice.FrameEnd = false;
+            ULADevice.ULACycleCounter = CurrentFrameCycle;
+
             InputRead = false;
             _render = render;
             _renderSound = renderSound;
@@ -152,49 +161,42 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             if (_renderSound)
             {
-                //BuzzerDevice.StartFrame();
-                //TapeBuzzer.StartFrame();
-
                 if (AYDevice != null)
                     AYDevice.StartFrame();
             }
 
             PollInput();
 
-            while (CurrentFrameCycle < ULADevice.FrameLength)
+            for (;;)
             {
-                // check for interrupt
-                ULADevice.CheckForInterrupt(CurrentFrameCycle);
-
-                // run a single CPU instruction
-                CPU.ExecuteOne();
+                // run the CPU Monitor cycle
+                CPUMon.ExecuteCycle();
 
                 // cycle the tape device
                 if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
                     TapeDevice.TapeCycle();
+
+                // has frame end been reached?
+                if (ULADevice.FrameEnd)
+                    break;
             }
+
+            OverFlow = (int)CurrentFrameCycle - ULADevice.FrameLength;
 
             // we have reached the end of a frame
             LastFrameStartCPUTick = CPU.TotalExecutedCycles - OverFlow;
 
-            // paint the buffer if needed
-            if (ULADevice.needsPaint && _render)
-                ULADevice.UpdateScreenBuffer(ULADevice.FrameLength);
+            // paint the buffer at end of frame
+            if (_render)
+                ULADevice.RenderScreen(ULADevice.FrameLength);
 
-            if (_renderSound)
-            {
-                //BuzzerDevice.EndFrame();
-                //TapeBuzzer.EndFrame();
-            }
+            ULADevice.LastTState = 0;
 
             if (AYDevice != null)
                 AYDevice.EndFrame();
 
             FrameCount++;
-
-            // setup for next frame
-            ULADevice.ResetInterrupt();
-
+                        
             if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
                 TapeDevice.EndFrame();
 
@@ -203,8 +205,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // is this a lag frame?
             Spectrum.IsLagFrame = !InputRead;
 
-            // FDC debug
-            
+            // FDC debug            
             if (UPDDiskDevice != null && UPDDiskDevice.writeDebug)
             {
                 // only write UPD log every second
@@ -223,7 +224,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public virtual void HardReset()
         {
-            ULADevice.ResetInterrupt();
+            //ULADevice.ResetInterrupt();
             ROMPaged = 0;
             SpecialPagingMode = false;
             RAMPaged = 0;
@@ -275,7 +276,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public virtual void SoftReset()
         {
-             ULADevice.ResetInterrupt();
+             //ULADevice.ResetInterrupt();
             ROMPaged = 0;
             SpecialPagingMode = false;
             RAMPaged = 0;
@@ -356,11 +357,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Sync("PagingConfiguration", ref PagingConfiguration);
             ser.Sync("ROMhigh", ref ROMhigh);
             ser.Sync("ROMlow", ref ROMlow);
+            ser.Sync("LastContendedReadByte", ref LastContendedReadByte);
 
             KeyboardDevice.SyncState(ser);
             BuzzerDevice.SyncState(ser);
             TapeBuzzer.SyncState(ser);
             ULADevice.SyncState(ser);
+            CPUMon.SyncState(ser);
 
             if (AYDevice != null)
             {

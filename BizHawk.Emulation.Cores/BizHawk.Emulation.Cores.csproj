@@ -261,6 +261,9 @@
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IFDDHost.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\AY38912.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\Beeper.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\CPUMonitor.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ULA.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.Screen.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Disk\FloppyDisk.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IJoystick.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IPortIODevice.cs" />
@@ -1434,6 +1437,8 @@
   <ItemGroup>
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\StandardKeyboard.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Port.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Screen.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Screen.cs" />
     <None Include="Computers\SinclairSpectrum\readme.md" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.Media.cs" />
     <None Include="Consoles\Atari\docs\stella.pdf" />

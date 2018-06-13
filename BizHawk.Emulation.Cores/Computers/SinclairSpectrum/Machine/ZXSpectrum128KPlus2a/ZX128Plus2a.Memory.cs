@@ -236,9 +236,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 break;
                             case 1:
                             case 2:
+                                ULADevice.RenderScreen((int)CurrentFrameCycle);
                                 RAM5[addr % 0x4000] = value;
                                 break;
                             case 3:
+                                ULADevice.RenderScreen((int)CurrentFrameCycle);
                                 RAM7[addr % 0x4000] = value;
                                 break;
                         }
@@ -265,6 +267,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 RAM3[addr % 0x4000] = value;
                                 break;
                             case 1:
+                                ULADevice.RenderScreen((int)CurrentFrameCycle);
                                 RAM7[addr % 0x4000] = value;
                                 break;
                         }
@@ -299,6 +302,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                     // RAM 0x4000 (RAM5 - Bank5 only)
                     case 1:
+                        ULADevice.RenderScreen((int)CurrentFrameCycle);
                         RAM5[addr % 0x4000] = value;
                         break;
 
@@ -327,12 +331,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 RAM4[addr % 0x4000] = value;
                                 break;
                             case 5:
+                                ULADevice.RenderScreen((int)CurrentFrameCycle);
                                 RAM5[addr % 0x4000] = value;
                                 break;
                             case 6:
                                 RAM6[addr % 0x4000] = value;
                                 break;
                             case 7:
+                                ULADevice.RenderScreen((int)CurrentFrameCycle);
                                 RAM7[addr % 0x4000] = value;
                                 break;
                         }
@@ -341,10 +347,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         break;
                 }
             }
-
-            // update ULA screen buffer if necessary
-            if ((addr & 49152) == 16384 && _render)
-                ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
         }
 
         /// <summary>
@@ -355,10 +357,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadMemory(ushort addr)
         {
-            if (ULADevice.IsContended(addr))
-                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
-            
             var data = ReadBus(addr);
+            if (CPUMon.NextMemReadContended)
+            {
+                LastContendedReadByte = data;
+                CPUMon.NextMemReadContended = false;
+            }
+                
             return data;
         }
 
@@ -370,13 +375,80 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WriteMemory(ushort addr, byte value)
         {
-            // apply contention if necessary
-            if (ULADevice.IsContended(addr))
-                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
-            
+            // update ULA screen buffer if necessary BEFORE T1 write
+            /*
+            if (!SpecialPagingMode)
+            {
+                if (((addr & 49152) == 16384 || ((addr & 0xc000) == 0xc000) && (RAMPaged == 5 || RAMPaged == 7)) && _render)
+                    ULADevice.RenderScreen((int)CurrentFrameCycle);
+            }
+            else
+            {
+                switch (PagingConfiguration)
+                {
+                    case 2:
+                    case 3:
+                        if ((addr & 49152) == 16384)
+                            ULADevice.RenderScreen((int)CurrentFrameCycle);
+                        break;
+                    case 1:
+                        if ((addr & 49152) == 16384 || addr >= 0xc000)
+                            ULADevice.RenderScreen((int)CurrentFrameCycle);
+                        break;
+                }
+            }
+            */
             WriteBus(addr, value);
         }
-       
+
+        /// <summary>
+        /// Checks whether supplied address is in a potentially contended bank
+        /// </summary>
+        /// <param name="addr"></param>
+        public override bool IsContended(ushort addr)
+        {
+            var a = addr & 0xc000;
+
+            if (a == 0x4000)
+            {
+                // low port contention
+                return true;
+            }
+
+            if (a == 0xc000)
+            {
+                // high port contention - check for contended bank paged in
+                switch (RAMPaged)
+                {
+                    case 4:
+                    case 5:
+                    case 6:
+                    case 7:
+                        return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Returns TRUE if there is a contended bank paged in
+        /// </summary>
+        /// <returns></returns>
+        public override bool ContendedBankPaged()
+        {
+            switch (RAMPaged)
+            {
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                    return true;
+            }
+
+            return false;
+        }
+
         /// <summary>
         /// ULA reads the memory at the specified address
         /// (No memory contention)

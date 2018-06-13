@@ -24,7 +24,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #endregion
 
-
         #region Memory
 
         /* 48K Spectrum has NO memory paging
@@ -86,13 +85,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     // cannot write to ROM
                     break;
                 case 1:
+                    ULADevice.RenderScreen((int)CurrentFrameCycle);
                     RAM0[index] = value;
                     break;
-            }
-
-            // update ULA screen buffer if necessary
-            if ((addr & 49152) == 16384 && _render)
-                ULADevice.UpdateScreenBuffer(CurrentFrameCycle);            
+            }          
         }
 
         /// <summary>
@@ -103,9 +99,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadMemory(ushort addr)
         {
-            if (ULADevice.IsContended(addr))
-                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
-
             var data = ReadBus(addr);
             return data;
         }
@@ -118,10 +111,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WriteMemory(ushort addr, byte value)
         {
-            // apply contention if necessary
-            if (ULADevice.IsContended(addr))
-                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
-
             WriteBus(addr, value);
         }
         

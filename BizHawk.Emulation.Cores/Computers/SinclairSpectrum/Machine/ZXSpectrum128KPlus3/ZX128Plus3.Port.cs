@@ -18,18 +18,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             bool deviceAddressed = true;
 
-            // process IO contention
-            ContendPortAddress(port);
-
             int result = 0xFF;
 
             // check AY
             if (AYDevice.ReadPort(port, ref result))
                 return (byte)result;
 
-            // Kempston joystick input takes priority over all other input
+            byte lowByte = (byte)(port & 0xff);
+
+            // Kempston joystick input takes priority over all keyboard input
             // if this is detected just return the kempston byte
-            if ((port & 0xe0) == 0 || (port & 0x20) == 0)
+            if (lowByte == 0x1f)
             {
                 if (LocateUniqueJoystick(JoystickType.Kempston) != null)
                     return (byte)((KempstonJoystick)LocateUniqueJoystick(JoystickType.Kempston) as KempstonJoystick).JoyLine;
@@ -57,25 +56,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (!deviceAddressed)
             {
                 // If this is an unused port the floating memory bus should be returned
-                // Floating bus is read on the previous cycle
-                long _tStates = CurrentFrameCycle - 1;
-
-                // if we are on the top or bottom border return 0xff
-                if ((_tStates < ULADevice.contentionStartPeriod) || (_tStates > ULADevice.contentionEndPeriod))
-                {
-                    result = 0xff;
-                }
-                else
-                {
-                    if (ULADevice.floatingBusTable[_tStates] < 0)
-                    {
-                        result = 0xff;
-                    }
-                    else
-                    {
-                        result = ReadBus((ushort)ULADevice.floatingBusTable[_tStates]);
-                    }
-                }
+                ULADevice.ReadFloatingBus((int)CurrentFrameCycle, ref result, port);              
             }
 
             return (byte)result;
@@ -88,9 +69,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WritePort(ushort port, byte value)
         {
-            // process IO contention
-            ContendPortAddress(port);
-
             // get a BitArray of the port
             BitArray portBits = new BitArray(BitConverter.GetBytes(port));
             // get a BitArray of the value byte
@@ -174,10 +152,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 */
 
                 // Border - LSB 3 bits hold the border colour
-                if (ULADevice.borderColour != (value & BORDER_BIT))
-                    ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
-
-                ULADevice.borderColour = value & BORDER_BIT;
+                if (ULADevice.BorderColor != (value & BORDER_BIT))
+                {
+                    ULADevice.RenderScreen((int)CurrentFrameCycle);
+                    ULADevice.BorderColor = value & BORDER_BIT;
+                }
 
                 // Buzzer
                 BuzzerDevice.ProcessPulseValue((value & EAR_BIT) != 0);
@@ -211,16 +190,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 return rp;
             }
             set { ROMPaged = value; }
-        }
-
-        /// <summary>
-        /// Override port contention
-        /// +3/2a does not have the same ULA IO contention
-        /// </summary>
-        /// <param name="addr"></param>
-        public override void ContendPortAddress(ushort addr)
-        {
-            //CPU.TotalExecutedCycles += 4;
         }
     }
 }

@@ -2752,8 +2752,16 @@ namespace BizHawk.Client.EmuHawk
 			var attributes = Emulator.Attributes();
 
 			CoreNameStatusBarButton.Text = Emulator.DisplayName();
-			CoreNameStatusBarButton.Image = Emulator.Icon();
-			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : "";
+            CoreNameStatusBarButton.Image = Emulator.Icon();
+            CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : "";
+
+
+            if (Emulator.SystemId == "ZXSpectrum")
+            {
+                var core = (Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum)Emulator as Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum;
+                CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
+
+            }			
 		}
 
 		private void ToggleKeyPriority()
@@ -4304,6 +4312,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
 		}
+                
 
         private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
 		{

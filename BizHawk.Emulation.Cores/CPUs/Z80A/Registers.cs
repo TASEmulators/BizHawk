@@ -40,10 +40,25 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public ushort H_s = 30;
 		public ushort L_s = 31;
 		public ushort DB = 32;
+		public ushort scratch = 33;
+		public ushort IRQ_V = 34; // IRQ mode 1 vector
+		public ushort NMI_V = 35; // NMI vector
 
 		public ushort[] Regs = new ushort[36];
 
-		public bool FlagI;
+		// IO Contention Constants. Need to distinguish port access and normal memory accesses for zx spectrum
+		public const ushort BIO1 = 100;
+		public const ushort BIO2 = 101;
+		public const ushort BIO3 = 102;
+		public const ushort BIO4 = 103;
+
+		public const ushort WIO1 = 105;
+		public const ushort WIO2 = 106;
+		public const ushort WIO3 = 107;
+		public const ushort WIO4 = 108;
+
+
+		public bool FlagI, FlagI1, FlagI2, FlagI3, FlagI4, FlagI5, FlagI6;
 
 		public bool FlagW; // wait flag, when set to true reads / writes will be delayed
 
@@ -111,6 +126,17 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			{
 				Regs[i] = 0;
 			}
+
+			// These registers are set as part of the reset process
+			Regs[A] = 0xFF;
+			Regs[F] = 0xFF;
+			Regs[SPl] = 0xFF;
+			Regs[SPh] = 0xFF;
+
+			// the IRQ1 vector is 0x38
+			Regs[IRQ_V] = 0x38;
+			// The NMI vector is constant 0x66
+			Regs[NMI_V] = 0x66;
 
 			FlagI = false;
 			FlagW = false;
