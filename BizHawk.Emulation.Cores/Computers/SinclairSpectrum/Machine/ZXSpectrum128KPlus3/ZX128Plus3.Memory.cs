@@ -359,7 +359,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             var data = ReadBus(addr);
             if (CPUMon.NextMemReadContended)
+            {
                 LastContendedReadByte = data;
+                CPUMon.NextMemReadContended = false;
+            }
+                
             return data;
         }
 
