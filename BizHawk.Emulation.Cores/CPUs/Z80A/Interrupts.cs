@@ -119,8 +119,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			MEMRQ = new ushort[] { I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
-		private static ushort[] INT_vectors = new ushort[] {0x40, 0x48, 0x50, 0x58, 0x60};
-
 		private void ResetInterrupts()
 		{
 			IFF1 = false;

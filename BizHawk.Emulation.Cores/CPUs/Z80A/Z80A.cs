@@ -160,7 +160,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// Execute instructions
 		public void ExecuteOne()
 		{
-			//FlagI6 = FlagI5;
 			FlagI5 = FlagI4;
 			FlagI4 = FlagI3;
 			FlagI3 = FlagI2;
@@ -676,13 +675,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 									DEC16, PCl, PCh,
 									DEC16, PCl, PCh,
 									IDLE,
-									IDLE,//DEC16, B, ALU,
+									IDLE,
 									WAIT,
 									OP_F,
 									OP};
-
-						//Regs[B] = (ushort)((Regs[B] + 1) & 0xFF);
-
 
 						BUSRQ = new ushort[] { B, B, B, B, B, PCh, 0, 0, 0 };
 						MEMRQ = new ushort[] { 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
@@ -777,7 +773,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			ser.Sync("cur_instr", ref cur_instr, false);
 			ser.Sync("BUSRQ", ref BUSRQ, false);
 			ser.Sync("MEMRQ", ref MEMRQ, false);
-			ser.Sync("instr_swap", ref instr_swap);
 			ser.Sync("opcode", ref opcode);
 			ser.Sync("FlagI", ref FlagI);
 			ser.Sync("FlagI1", ref FlagI1);
@@ -785,7 +780,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			ser.Sync("FlagI3", ref FlagI3);
 			ser.Sync("FlagI4", ref FlagI4);
 			ser.Sync("FlagI5", ref FlagI5);
-			ser.Sync("FlagI6", ref FlagI6);
 			ser.Sync("FlagW", ref FlagW);
 
 			ser.Sync("NO Preifx", ref NO_prefix);
@@ -795,9 +789,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			ser.Sync("IXCB_prefix", ref IXCB_prefix);
 			ser.Sync("IYCB_prefix", ref IYCB_prefix);
 			ser.Sync("EXTD_prefix", ref EXTD_prefix);
-			ser.Sync("IXCB_prefetch", ref IXCB_prefetch);
-			ser.Sync("IYCB_prefetch", ref IYCB_prefetch);
-			ser.Sync("PF", ref PF);
 
 			ser.EndSection();
 		}
