@@ -30,7 +30,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public ushort BUSRQ
         {
-            get {  return _cpu.BUSRQ[_cpu.bus_pntr]; }
+            get
+            {
+                switch (machineType)
+                {
+                    case MachineType.ZXSpectrum128Plus2a:
+                    case MachineType.ZXSpectrum128Plus3:
+                        return _cpu.MEMRQ[_cpu.bus_pntr];
+                    default:
+                        return _cpu.BUSRQ[_cpu.mem_pntr];
+                }
+            }
         }
 
         #endregion
