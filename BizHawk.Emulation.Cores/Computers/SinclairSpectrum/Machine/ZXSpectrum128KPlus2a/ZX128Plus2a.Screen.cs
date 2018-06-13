@@ -19,7 +19,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // offsets
             RenderTableOffset = 58;
             ContentionOffset = 9;
-            FloatingBusOffset = 1;
+            FloatingBusOffset = 0;
             // timing
             ClockSpeed = 3546900;
             FrameCycleLength = 70908;
@@ -43,6 +43,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 MachineType.ZXSpectrum128Plus2a);
 
             SetupScreenSize();
+
+            GenerateP3PortTable();
         }
 
         #endregion

@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Signs that all paging is disabled
         /// If this is TRUE, then 128k and above machines need a hard reset before paging is allowed again
         /// </summary>
-        protected bool PagingDisabled;
+        public bool PagingDisabled;
 
         /// <summary>
         /// Index of the currently paged ROM
@@ -86,6 +86,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Index of the current special paging mode (0-3)
         /// </summary>
         protected int PagingConfiguration;
+
+        /// <summary>
+        /// The last byte that was read after contended cycles
+        /// </summary>
+        public byte LastContendedReadByte;
 
         #endregion
 

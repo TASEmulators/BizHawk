@@ -358,6 +358,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public override byte ReadMemory(ushort addr)
         {
             var data = ReadBus(addr);
+            if (CPUMon.NextMemReadContended)
+            {
+                LastContendedReadByte = data;
+                CPUMon.NextMemReadContended = false;
+            }
+                
             return data;
         }
 

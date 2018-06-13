@@ -32,7 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // -asni (2018-06-08) - need this to pass the final portread tests from fusetest.tap
 
                 // get the floating bus value
-                ULADevice.ReadFloatingBus((int)CurrentFrameCycle, ref result);
+                ULADevice.ReadFloatingBus((int)CurrentFrameCycle, ref result, port);
                 // use this to set the paging registers
                 WritePort(port, (byte)result);
                 // return the floating bus value
@@ -71,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (!deviceAddressed)
             {
                 // If this is an unused port the floating memory bus should be returned
-                ULADevice.ReadFloatingBus((int)CurrentFrameCycle, ref result);
+                ULADevice.ReadFloatingBus((int)CurrentFrameCycle, ref result, port);
             }
 
             return (byte)result;

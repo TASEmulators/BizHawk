@@ -357,11 +357,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Sync("PagingConfiguration", ref PagingConfiguration);
             ser.Sync("ROMhigh", ref ROMhigh);
             ser.Sync("ROMlow", ref ROMlow);
+            ser.Sync("LastContendedReadByte", ref LastContendedReadByte);
 
             KeyboardDevice.SyncState(ser);
             BuzzerDevice.SyncState(ser);
             TapeBuzzer.SyncState(ser);
             ULADevice.SyncState(ser);
+            CPUMon.SyncState(ser);
 
             if (AYDevice != null)
             {

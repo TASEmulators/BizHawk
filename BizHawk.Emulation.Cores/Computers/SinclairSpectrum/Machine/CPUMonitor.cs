@@ -62,6 +62,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public ushort lastPortAddr;
 
+        /// <summary>
+        /// If true, the next read memory operation has been contended
+        /// </summary>
+        public bool NextMemReadContended;
+
         #endregion
 
         #region Methods
@@ -87,6 +92,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         if (cont > 0)
                         {
                             _cpu.TotalExecutedCycles += cont;
+                            NextMemReadContended = true;
                         }
                     }
                 }
@@ -393,7 +399,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("CPUMonitor");
-            ser.Sync("", ref lastPortAddr);
+            ser.Sync("lastPortAddr", ref lastPortAddr);
+            ser.Sync("NextMemReadContended", ref NextMemReadContended);
             ser.EndSection();
         }
 

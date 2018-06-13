@@ -668,11 +668,30 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
+        /// Generates the port lookup table for +2a/+3 allowed floating bus ports
+        /// </summary>
+        public void GenerateP3PortTable()
+        {
+            List<ushort> table = new List<ushort>();
+            for (int i = 0; i < 0x1000; i++)
+            {
+                ushort r = (ushort)(1 + (4 * i));
+                if (r > 4093)
+                    break;
+                table.Add(r);
+            }
+
+            Plus3FBPortTable = table.ToArray();
+        }
+
+        private ushort[] Plus3FBPortTable = new ushort[1];
+
+        /// <summary>
         /// Returns floating bus value (if available)
         /// </summary>
         /// <param name="tstate"></param>
         /// <returns></returns>
-        public void ReadFloatingBus(int tstate, ref int result)
+        public void ReadFloatingBus(int tstate, ref int result, ushort port)
         {
             tstate += FloatingBusOffset;
             if (tstate >= RenderingTable.Renderer.Length)
@@ -688,13 +707,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 case MachineType.ZXSpectrum48:
                 case MachineType.ZXSpectrum128:
                 case MachineType.ZXSpectrum128Plus2:
-                    /*
-                    if (item.FloatingBusAddress > 0)
-                    {
-                        result = _machine.FetchScreenMemory(item.FloatingBusAddress);
-                        //result = 0x00;
-                    }
-                    */
+
                     switch (item.RAction)
                     {
                         case RenderTable.RenderAction.BorderAndFetchByte1:
@@ -708,15 +721,46 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             result = _machine.FetchScreenMemory(item.AttributeAddress);
                             break;
                         default:
-                            //result = _machine.FetchScreenMemory(fetchA2);
                             break;
                     }
-                    
-
                     break;
 
                 case MachineType.ZXSpectrum128Plus2a:
                 case MachineType.ZXSpectrum128Plus3:
+                    
+                    // http://sky.relative-path.com/zx/floating_bus.html
+                    if (_machine.PagingDisabled)
+                    {
+                        result = 0xff;
+                        break;
+                    }
+
+                    // check whether fb is found on this port
+                    ushort pLook = Array.Find(Plus3FBPortTable, s => s == port);
+                    if (pLook == 0)
+                    {
+                        result = 0xff;
+                        break;
+                    }  
+
+                    // floating bus on +2a/+3 always returns a byte with Bit0 set
+                    switch (item.RAction)
+                    {
+                        case RenderTable.RenderAction.BorderAndFetchByte1:
+                        case RenderTable.RenderAction.Shift1AndFetchByte2:
+                        case RenderTable.RenderAction.Shift2AndFetchByte1:
+                            result = (byte)(_machine.FetchScreenMemory(item.ByteAddress) | 0x01);
+                            break;
+                        case RenderTable.RenderAction.BorderAndFetchAttribute1:
+                        case RenderTable.RenderAction.Shift1AndFetchAttribute2:
+                        case RenderTable.RenderAction.Shift2AndFetchAttribute1:
+                            result = (byte)(_machine.FetchScreenMemory(item.AttributeAddress) | 0x01);
+                            break;
+                        default:
+                            result = (byte)(_machine.LastContendedReadByte | 0x01);
+                            break;
+                    }
+
                     break;
             }
         }
