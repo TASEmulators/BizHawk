@@ -1,39 +1,34 @@
 ﻿## ZXHawk
 
-At the moment this is experimental and is still being worked on.
+ZXHawk is still in dev but is potentially nearing a release state.
 
-### Implemented and working (as far as I can tell)
-* IEmulator
-* ZX Spectrum 48k, 128k, +2 & +2A models
-* ULA video output (implementing IVideoProvider)
-* ULA Mode 1 VBLANK interrupt generation
-* IM2 Interrupts and DataBus implementation (thanks Aloysha)
-* Beeper/Buzzer output (implementing ISoundProvider)
-* AY-3-8912 sound chip implementation (multiple stereo or mono  panning options available as a setting)
-* Keyboard input (implementing IInputPollable)
-* Default keyboard keymappings
-* Kempston, Cursor and Sinclair (Left & Right) joysticks emulated
-* Tape device that will load spectrum games in realtime (*.tzx and *.tap)
-* Most tape protection/loading schemes that I've tested are currently working
-* IStatable
-* ISettable core settings
-* IDebuggable (for what it's worth)
-* DeterministicEmulation as a SyncSetting, LagFrame detection and FrameAdvance render & renderSound bools respected (when DeterministicEmulation == false)
-* Tape auto-loading routines (as a setting - default ON)
-* Basic tape block navigation (NextBlock, PrevBlock)
-* Tape-related OSD messages (verbosity level configured in settings)
+### Whats in the box?
+* Emulates the Sinclair ZX Spectrum 16k, 48k, 128k, +2, +2A & +3
+* Accurate Z80A implementation
+* Precise screen timing, floating bus, memory contention and port contention for all models
+* Full keyboard emulation
+* Kempston, Cursor and Sinclair joysticks emulated
+* Full beeper and AY-3-3912 sound emulation
+* Tape device (datacorder) emulation
+* Internal 3" disk drive emulation (found in the +3 model)
+* Currently supports the following tape image formats: *.tzx, *.tap
+* Currently supports the following disk image formats (+3 only): *.dsk
+* Fully integrated into the Bizhawk ecosystem
+* See the ZXSpectrum menu for all available configuration options
 
-### Work in progress
-* ZX Spectrum +3 emulation (partially working, see below)
-* Exact emulator timings
-* Floating memory bus emulation
-* TASStudio (need to verify that this works as it should)
+### Firmware
+ZXHawk ships with the official ZX Spectrum ROMs embedded (licensed by Amstrad).
 
-### Not working
-* +3 disk drive - no implementation yet
-* Hard & Soft Reset menu options in the client (they are greyed out for some reason)
+"Amstrad have kindly given their permission for the redistribution of their copyrighted material but retain that copyright"
+http://www.worldofspectrum.org/permits/amstrad-roms.txt
 
-### Help needed
-* I'm not a TASer, i've never TASed before. It would be really useful if someone (anyone) can build this branch and test this core from a TAS-workflow / TAStudio perpective. There may still be some work to do an exact timings and memory contention, but otherwise this core is able to play the majority of speccy games out there.
+### Issues
+* Tape images are read-only. This may change in the future, but with bizhawk's savestate system this is not strictly a necessity 
+* Disk images are currently read-only as well. There is certain write functionality implemented within the emulated UPD756A disk controller (in order to make games work that require this), but this is not persistent
+* Disk drive emulation timing is currently not accurate, meaning that disk games will load faster than they would on a real +3. Due to how the Spectrum interfaces with the disk controller though, this should not cause any compatibility issues
+
+Any questions, issues or bug reports, either use the GitHub issue tracker, or post in the forum thread:
+
+http://tasvideos.org/forum/viewtopic.php?t=20004
 
 -Asnivor
