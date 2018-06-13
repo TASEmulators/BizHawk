@@ -20,10 +20,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = (port & 0x0001) == 0;
-
-            // Kempston joystick input takes priority over all other input
+            byte lowByte = (byte)(port & 0xff);
+            
+            // Kempston joystick input takes priority over keyboard input
             // if this is detected just return the kempston byte
-            if ((port & 0xe0) == 0 || (port & 0x20) == 0)
+            if (lowByte == 0x1f)
             {
                 if (LocateUniqueJoystick(JoystickType.Kempston) != null)
                     return (byte)((KempstonJoystick)LocateUniqueJoystick(JoystickType.Kempston) as KempstonJoystick).JoyLine;
@@ -31,6 +32,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // not a lag frame
                 InputRead = true;
             }
+            // Even ports always address the ULA
             else if (lowBitReset)
             {
                 // Even I/O address so get input from keyboard

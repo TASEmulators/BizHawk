@@ -43,9 +43,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (AYDevice.ReadPort(port, ref result))
                 return (byte)result;
 
-            // Kempston joystick input takes priority over all other input
+            byte lowByte = (byte)(port & 0xff);
+
+            // Kempston joystick input takes priority over keyboard input
             // if this is detected just return the kempston byte
-            if ((port & 0xe0) == 0 || (port & 0x20) == 0)
+            if (lowByte == 0x1f)
             {
                 if (LocateUniqueJoystick(JoystickType.Kempston) != null)
                     return (byte)((KempstonJoystick)LocateUniqueJoystick(JoystickType.Kempston) as KempstonJoystick).JoyLine;
