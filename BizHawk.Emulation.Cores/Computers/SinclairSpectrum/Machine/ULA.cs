@@ -1049,6 +1049,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Sync("LastULATick", ref LastULATick);
             ser.Sync("ULACycleCounter", ref ULACycleCounter);
             ser.Sync("FrameEnd", ref FrameEnd);
+
+            ser.Sync("InterruptRaised", ref InterruptRaised);
             ser.EndSection();
         }
 
