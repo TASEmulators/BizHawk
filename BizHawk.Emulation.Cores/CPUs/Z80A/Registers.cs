@@ -127,12 +127,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				Regs[i] = 0;
 			}
 
-			// These registers are set as part of the reset process
-			Regs[A] = 0xFF;
-			Regs[F] = 0xFF;
-			Regs[SPl] = 0xFF;
-			Regs[SPh] = 0xFF;
-
 			// the IRQ1 vector is 0x38
 			Regs[IRQ_V] = 0x38;
 			// The NMI vector is constant 0x66

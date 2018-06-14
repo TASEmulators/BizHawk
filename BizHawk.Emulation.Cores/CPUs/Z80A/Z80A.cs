@@ -97,13 +97,16 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			ResetInterrupts();
 			TotalExecutedCycles = 0;
 			cur_instr = new ushort[] 
-						{ IDLE,
-						  WAIT,
-						  OP_F,
-						  OP };
+						{IDLE,
+						DEC16, F, A,
+						DEC16, SPl, SPh,
+						IDLE,
+						WAIT,
+						OP_F,
+						OP };
 
-			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
-			MEMRQ = new ushort[] { PCh, 0, 0, 0 };
+			BUSRQ = new ushort[] { 0, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { 0, 0, 0, PCh, 0, 0, 0 };
 			instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 			NO_prefix = true;
 		}
