@@ -655,7 +655,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				window_latch = LCDC.Bit(5);
 
 				// TODO: If Window is turned on midscanline what happens? When is this check done exactly?
-				if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY > window_y)))
+				if ((window_started && window_latch) || (window_is_reset && !window_latch && (LY >= window_y)))
 				{
 					window_y_tile_inc++;
 					if (window_y_tile_inc==8)

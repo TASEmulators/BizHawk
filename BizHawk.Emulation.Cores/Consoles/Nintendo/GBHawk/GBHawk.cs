@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		"GBHawk",
 		"",
 		isPorted: false,
-		isReleased: false)]
+		isReleased: true)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, IGameboyCommon,
 	ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
