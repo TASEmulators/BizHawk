@@ -141,7 +141,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public virtual void CycleClock(long totalCycles)
         {
             // render the screen
-            RenderScreen((int)_machine.CurrentFrameCycle);
+            if (_machine._render)
+                RenderScreen((int)_machine.CurrentFrameCycle);
 
             // has more than one cycle past since this last ran
             // (this can be true if contention has taken place)

@@ -183,10 +183,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // we have reached the end of a frame
             LastFrameStartCPUTick = CPU.TotalExecutedCycles - OverFlow;
 
-            // paint the buffer at end of frame
-            if (_render)
-                ULADevice.RenderScreen(ULADevice.FrameLength);
-
             ULADevice.LastTState = 0;
 
             if (AYDevice != null)
