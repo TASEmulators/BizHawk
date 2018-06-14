@@ -236,11 +236,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 break;
                             case 1:
                             case 2:
-                                ULADevice.RenderScreen((int)CurrentFrameCycle);
+                                //ULADevice.RenderScreen((int)CurrentFrameCycle);
                                 RAM5[addr % 0x4000] = value;
                                 break;
                             case 3:
-                                ULADevice.RenderScreen((int)CurrentFrameCycle);
+                                //ULADevice.RenderScreen((int)CurrentFrameCycle);
                                 RAM7[addr % 0x4000] = value;
                                 break;
                         }
@@ -267,7 +267,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 RAM3[addr % 0x4000] = value;
                                 break;
                             case 1:
-                                ULADevice.RenderScreen((int)CurrentFrameCycle);
+                                //ULADevice.RenderScreen((int)CurrentFrameCycle);
                                 RAM7[addr % 0x4000] = value;
                                 break;
                         }
@@ -302,7 +302,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                     // RAM 0x4000 (RAM5 - Bank5 only)
                     case 1:
-                        ULADevice.RenderScreen((int)CurrentFrameCycle);
+                        //ULADevice.RenderScreen((int)CurrentFrameCycle);
                         RAM5[addr % 0x4000] = value;
                         break;
 
@@ -331,14 +331,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 RAM4[addr % 0x4000] = value;
                                 break;
                             case 5:
-                                ULADevice.RenderScreen((int)CurrentFrameCycle);
+                                //ULADevice.RenderScreen((int)CurrentFrameCycle);
                                 RAM5[addr % 0x4000] = value;
                                 break;
                             case 6:
                                 RAM6[addr % 0x4000] = value;
                                 break;
                             case 7:
-                                ULADevice.RenderScreen((int)CurrentFrameCycle);
+                                //ULADevice.RenderScreen((int)CurrentFrameCycle);
                                 RAM7[addr % 0x4000] = value;
                                 break;
                         }
