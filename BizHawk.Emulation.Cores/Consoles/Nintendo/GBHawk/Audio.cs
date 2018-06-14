@@ -112,7 +112,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public byte sample;
 
-		public int master_audio_clock;
+		public uint master_audio_clock;
 
 		public int latched_sample_L, latched_sample_R;
 
@@ -714,13 +714,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (L_final != latched_sample_L)
 			{
-				_blip_L.AddDelta((uint)master_audio_clock, L_final - latched_sample_L);
+				_blip_L.AddDelta(master_audio_clock, L_final - latched_sample_L);
 				latched_sample_L = L_final;
 			}
 
 			if (R_final != latched_sample_R)
 			{
-				_blip_R.AddDelta((uint)master_audio_clock, R_final - latched_sample_R);
+				_blip_R.AddDelta(master_audio_clock, R_final - latched_sample_R);
 				latched_sample_R = R_final;
 			}
 
@@ -730,6 +730,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// the sequencer is actually the timer DIV register
 			// so if it's constantly written to, these values won't update
 			bool check = Core.double_speed ? Core.timer.divider_reg.Bit(13) : Core.timer.divider_reg.Bit(12);
+
 			if (check && !timer_bit_old)
 			{
 				sequencer_vol++; sequencer_vol &= 0x7;
@@ -930,7 +931,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			
 			Audio_Regs = new byte[21];
 
-			AudioClocks = 0;
 			master_audio_clock = 0;
 
 			sequencer_len = 0;
@@ -1064,7 +1064,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public bool CanProvideAsync => false;
 
-		public int AudioClocks;
 		public short[] AudioSamples = new short[150000];
 
 		public void SetSyncMode(SyncSoundMode mode)
@@ -1079,8 +1078,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			_blip_L.EndFrame((uint)master_audio_clock);
-			_blip_R.EndFrame((uint)master_audio_clock);
+			_blip_L.EndFrame(master_audio_clock);
+			_blip_R.EndFrame(master_audio_clock);
 			
 			nsamp = _blip_R.SamplesAvailable();
 
@@ -1089,9 +1088,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_blip_L.ReadSamplesLeft(samples, nsamp);
 			_blip_R.ReadSamplesRight(samples, nsamp);
 
-			AudioClocks = 0;
 			master_audio_clock = 0;
-
 		}
 
 		public void GetSamplesAsync(short[] samples)
@@ -1101,7 +1098,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void DiscardSamples()
 		{
-			AudioClocks = 0;
 			_blip_L.Clear();
 			_blip_R.Clear();
 			master_audio_clock = 0;
