@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -20,6 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     #endregion
     public partial class NECUPD765 : IPortIODevice
     {
+        #region Dev Logging
 
         public string outputfile = @"D:\Dropbox\Dropbox\_Programming\TASVideos\BizHawk\output\zxhawkio-" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv";
         public string outputString = "STATUS,WRITE,READ,CODE,MT,MF,SK,CMDCNT,RESCNT,EXECCNT,EXECLEN\r\n";
@@ -48,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             sb.Append(ActiveCommand.CommandCode).Append(",");
-            
+
             sb.Append(CMD_FLAG_MT).Append(",");
             sb.Append(CMD_FLAG_MF).Append(",");
             sb.Append(CMD_FLAG_SK).Append(",");
@@ -62,6 +60,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             outputString += sb.ToString();
         }
+
+        #endregion
 
         /// <summary>
         /// Device responds to an IN instruction

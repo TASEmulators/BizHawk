@@ -2,14 +2,11 @@
 using BizHawk.Emulation.Common;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     /// <summary>
-    /// 3rd attempt at a base ULA implementation
+    /// Uncommitted logic array implementation (ULA)
     /// </summary>
     public abstract class ULA : IVideoProvider
     {

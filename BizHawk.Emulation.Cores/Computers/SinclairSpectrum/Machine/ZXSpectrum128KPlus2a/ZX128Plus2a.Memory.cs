@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// +2A Memory
+    /// </summary>
     public partial class ZX128Plus2a : SpectrumBase
     {
         /*  http://www.worldofspectrum.org/faq/reference/128kreference.htm

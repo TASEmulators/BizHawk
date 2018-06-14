@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// +3 Port
+    /// </summary>
     public partial class ZX128Plus3 : SpectrumBase
     {
         /// <summary>

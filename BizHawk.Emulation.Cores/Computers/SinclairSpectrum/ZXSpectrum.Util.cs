@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     /// <summary>
-    /// Utilities
+    /// ZXHawk: Core Class
+    /// * Misc Utilities *
     /// </summary>
     public partial class ZXSpectrum
     {

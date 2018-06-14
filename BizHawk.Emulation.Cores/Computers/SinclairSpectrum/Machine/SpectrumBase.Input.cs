@@ -1,11 +1,11 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     /// <summary>
-    /// Handles all ZX-level input
+    /// The abstract class that all emulated models will inherit from
+    /// * Input *
     /// </summary>
     public abstract partial class SpectrumBase
     {

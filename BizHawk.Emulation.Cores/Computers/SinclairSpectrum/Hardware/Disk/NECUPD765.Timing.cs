@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     /// <summary>
@@ -95,29 +90,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             StatesPerDriveTick = TStatesPerDriveCycle;
 
         }
-        /*
-        /// <summary>
-        /// Called every cycle by the emulated machine
-        /// Simulates the floppy drive and updates execution phase bits
-        /// </summary>
-        public void RunCPUCycle()
-        {
-            // decrement tick counter
-            TickCounter--;
-
-            if (TickCounter > 0)
-            {
-                // not ready to emulate a floppy drive cycle yet
-                return;
-            }
-
-            // time to emulate a floppy drive cycle
-            // reset the tick counter
-            TickCounter = StatesPerDriveTick;
-
-            //RunDriveCycle();
-        }
-        */
 
         /// <summary>
         /// Called by reads to the main status register
@@ -144,9 +116,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 LastCPUCycle = CurrentCPUCycle;
                 return true;
             }
-
         }
-
-        
     }
 }

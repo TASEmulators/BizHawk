@@ -9,7 +9,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
     /// My attempt at mixing multiple ISoundProvider sources together and outputting another ISoundProvider
     /// Currently only supports SyncSoundMode.Sync
     /// Attached ISoundProvider sources must already be stereo 44.1khz and ideally sound buffers should be the same length (882)
-    /// (if not, their buffer will be truncated/expanded)
+    /// (if not, only 882 samples of their buffer will be used)
     /// </summary>
     internal sealed class SoundProviderMixer : ISoundProvider
     {
@@ -208,7 +208,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         #endregion
-
 
     }
 }

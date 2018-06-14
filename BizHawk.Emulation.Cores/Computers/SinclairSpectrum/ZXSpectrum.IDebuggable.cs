@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using BizHawk.Common.NumberExtensions;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// ZXHawk: Core Class
+    /// * IDebugggable *
+    /// </summary>
     public partial class ZXSpectrum : IDebuggable
     {
         public IDictionary<string, RegisterValue> GetCpuFlagsAndRegisters()

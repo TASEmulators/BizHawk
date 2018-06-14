@@ -1,13 +1,9 @@
-﻿using BizHawk.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
-
+    /// <summary>
+    /// Information about spectrum ROM
+    /// </summary>
     public class RomData
     {
         /// <summary>
@@ -82,18 +78,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             return RD;
-        }
-
-        public void SyncState(Serializer ser)
-        {
-            ser.BeginSection("RomData");
-            ser.Sync("RomBytes", ref _romBytes, false);
-            ser.Sync("_saveBytesRoutineAddress", ref _saveBytesRoutineAddress);
-            ser.Sync("_loadBytesRoutineAddress", ref _loadBytesRoutineAddress);
-            ser.Sync("_saveBytesResumeAddress", ref _saveBytesResumeAddress);
-            ser.Sync("_loadBytesResumeAddress", ref _loadBytesResumeAddress);
-            ser.Sync("_loadBytesInvalidHeaderAddress", ref _loadBytesInvalidHeaderAddress);
-            ser.EndSection();
         }
     }
 }

@@ -1,12 +1,11 @@
 ﻿using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// 16K is idential to 48K, just without the top 32KB of RAM
+    /// </summary>
     public class ZX16 : ZX48
     {
         #region Construction

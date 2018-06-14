@@ -1,10 +1,13 @@
 ﻿using System.IO;
-
 using BizHawk.Common;
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// ZXHawk: Core Class
+    /// * IStatable *
+    /// </summary>
     public partial class ZXSpectrum : IStatable
     {
         public bool BinarySaveStatesPreferred

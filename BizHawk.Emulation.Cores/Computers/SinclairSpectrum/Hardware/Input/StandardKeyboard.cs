@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -95,118 +93,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     ? (byte)(_keyLine[lineIndex] & ~lineMask)
                     : (byte)(_keyLine[lineIndex] | lineMask);
             }
-            
-            /*
-            if (isPressed)
-            {
-                switch (k)
-                {
-                    // 0xfefe	-	0 - 4
-                    case 0: _keyLine[0] = (_keyLine[0] & ~(0x1)); break;
-                    case 1: _keyLine[0] = (_keyLine[0] & ~(0x02)); break;
-                    case 2: _keyLine[0] = (_keyLine[0] & ~(0x04)); break;
-                    case 3: _keyLine[0] = (_keyLine[0] & ~(0x08)); break;
-                    case 4: _keyLine[0] = (_keyLine[0] & ~(0x10)); break;
-                    // 0xfdfe	-	5 - 9
-                    case 5: _keyLine[1] = (_keyLine[1] & ~(0x1)); break;
-                    case 6: _keyLine[1] = (_keyLine[1] & ~(0x02)); break;
-                    case 7: _keyLine[1] = (_keyLine[1] & ~(0x04)); break;
-                    case 8: _keyLine[1] = (_keyLine[1] & ~(0x08)); break;
-                    case 9: _keyLine[1] = (_keyLine[1] & ~(0x10)); break;
-                    // 0xfbfe	-	10 - 14
-                    case 10: _keyLine[2] = (_keyLine[2] & ~(0x1)); break;
-                    case 11: _keyLine[2] = (_keyLine[2] & ~(0x02)); break;
-                    case 12: _keyLine[2] = (_keyLine[2] & ~(0x04)); break;
-                    case 13: _keyLine[2] = (_keyLine[2] & ~(0x08)); break;
-                    case 14: _keyLine[2] = (_keyLine[2] & ~(0x10)); break;
-                    // 0xf7fe	-	15 - 19
-                    case 15: _keyLine[3] = (_keyLine[3] & ~(0x1)); break;
-                    case 16: _keyLine[3] = (_keyLine[3] & ~(0x02)); break;
-                    case 17: _keyLine[3] = (_keyLine[3] & ~(0x04)); break;
-                    case 18: _keyLine[3] = (_keyLine[3] & ~(0x08)); break;
-                    case 19: _keyLine[3] = (_keyLine[3] & ~(0x10)); break;
-                    // 0xeffe	-	20 - 24
-                    case 20: _keyLine[4] = (_keyLine[4] & ~(0x1)); break;
-                    case 21: _keyLine[4] = (_keyLine[4] & ~(0x02)); break;
-                    case 22: _keyLine[4] = (_keyLine[4] & ~(0x04)); break;
-                    case 23: _keyLine[4] = (_keyLine[4] & ~(0x08)); break;
-                    case 24: _keyLine[4] = (_keyLine[4] & ~(0x10)); break;
-                    // 0xdffe	-	25 - 29
-                    case 25: _keyLine[5] = (_keyLine[5] & ~(0x1)); break;
-                    case 26: _keyLine[5] = (_keyLine[5] & ~(0x02)); break;
-                    case 27: _keyLine[5] = (_keyLine[5] & ~(0x04)); break;
-                    case 28: _keyLine[5] = (_keyLine[5] & ~(0x08)); break;
-                    case 29: _keyLine[5] = (_keyLine[5] & ~(0x10)); break;
-                    // 0xbffe	-	30 - 34
-                    case 30: _keyLine[6] = (_keyLine[6] & ~(0x1)); break;
-                    case 31: _keyLine[6] = (_keyLine[6] & ~(0x02)); break;
-                    case 32: _keyLine[6] = (_keyLine[6] & ~(0x04)); break;
-                    case 33: _keyLine[6] = (_keyLine[6] & ~(0x08)); break;
-                    case 34: _keyLine[6] = (_keyLine[6] & ~(0x10)); break;
-                    // 0x7ffe	-	35 - 39
-                    case 35: _keyLine[7] = (_keyLine[7] & ~(0x1)); break;
-                    case 36: _keyLine[7] = (_keyLine[7] & ~(0x02)); break;
-                    case 37: _keyLine[7] = (_keyLine[7] & ~(0x04)); break;
-                    case 38: _keyLine[7] = (_keyLine[7] & ~(0x08)); break;
-                    case 39: _keyLine[7] = (_keyLine[7] & ~(0x10)); break;
-                }
-            }
-            else
-            {
-                switch (k)
-                {
-                    // 0xfefe	-	0 - 4
-                    case 0: _keyLine[0] = (_keyLine[0] | (0x1)); break;
-                    case 1: _keyLine[0] = (_keyLine[0] | (0x02)); break;
-                    case 2: _keyLine[0] = (_keyLine[0] | (0x04)); break;
-                    case 3: _keyLine[0] = (_keyLine[0] | (0x08)); break;
-                    case 4: _keyLine[0] = (_keyLine[0] | (0x10)); break;
-                    // 0xfdfe	-	5 - 9
-                    case 5: _keyLine[1] = (_keyLine[1] | (0x1)); break;
-                    case 6: _keyLine[1] = (_keyLine[1] | (0x02)); break;
-                    case 7: _keyLine[1] = (_keyLine[1] | (0x04)); break;
-                    case 8: _keyLine[1] = (_keyLine[1] | (0x08)); break;
-                    case 9: _keyLine[1] = (_keyLine[1] | (0x10)); break;
-                    // 0xfbfe	-	10 - 14
-                    case 10: _keyLine[2] = (_keyLine[2] | (0x1)); break;
-                    case 11: _keyLine[2] = (_keyLine[2] | (0x02)); break;
-                    case 12: _keyLine[2] = (_keyLine[2] | (0x04)); break;
-                    case 13: _keyLine[2] = (_keyLine[2] | (0x08)); break;
-                    case 14: _keyLine[2] = (_keyLine[2] | (0x10)); break;
-                    // 0xf7fe	-	15 - 19
-                    case 15: _keyLine[3] = (_keyLine[3] | (0x1)); break;
-                    case 16: _keyLine[3] = (_keyLine[3] | (0x02)); break;
-                    case 17: _keyLine[3] = (_keyLine[3] | (0x04)); break;
-                    case 18: _keyLine[3] = (_keyLine[3] | (0x08)); break;
-                    case 19: _keyLine[3] = (_keyLine[3] | (0x10)); break;
-                    // 0xeffe	-	20 - 24
-                    case 20: _keyLine[4] = (_keyLine[4] | (0x1)); break;
-                    case 21: _keyLine[4] = (_keyLine[4] | (0x02)); break;
-                    case 22: _keyLine[4] = (_keyLine[4] | (0x04)); break;
-                    case 23: _keyLine[4] = (_keyLine[4] | (0x08)); break;
-                    case 24: _keyLine[4] = (_keyLine[4] | (0x10)); break;
-                    // 0xdffe	-	25 - 29
-                    case 25: _keyLine[5] = (_keyLine[5] | (0x1)); break;
-                    case 26: _keyLine[5] = (_keyLine[5] | (0x02)); break;
-                    case 27: _keyLine[5] = (_keyLine[5] | (0x04)); break;
-                    case 28: _keyLine[5] = (_keyLine[5] | (0x08)); break;
-                    case 29: _keyLine[5] = (_keyLine[5] | (0x10)); break;
-                    // 0xbffe	-	30 - 34
-                    case 30: _keyLine[6] = (_keyLine[6] | (0x1)); break;
-                    case 31: _keyLine[6] = (_keyLine[6] | (0x02)); break;
-                    case 32: _keyLine[6] = (_keyLine[6] | (0x04)); break;
-                    case 33: _keyLine[6] = (_keyLine[6] | (0x08)); break;
-                    case 34: _keyLine[6] = (_keyLine[6] | (0x10)); break;
-                    // 0x7ffe	-	35 - 39
-                    case 35: _keyLine[7] = (_keyLine[7] | (0x1)); break;
-                    case 36: _keyLine[7] = (_keyLine[7] | (0x02)); break;
-                    case 37: _keyLine[7] = (_keyLine[7] | (0x04)); break;
-                    case 38: _keyLine[7] = (_keyLine[7] | (0x08)); break;
-                    case 39: _keyLine[7] = (_keyLine[7] | (0x10)); break;                    
-                }
-            }
-
-            */
 
             // Combination keys that are not in the keyboard matrix
             // but are available on the Spectrum+, 128k +2 & +3
@@ -284,21 +170,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 return result;
             }
-            
-            /*
-                    switch (lines)
-            {
-                case 0xfe: return (byte)KeyLine[0];
-                case 0xfd: return (byte)KeyLine[1];
-                case 0xfb: return (byte)KeyLine[2];
-                case 0xf7: return (byte)KeyLine[3];
-                case 0xef: return (byte)KeyLine[4];
-                case 0xdf: return (byte)KeyLine[5];
-                case 0xbf: return (byte)KeyLine[6];
-                case 0x7f: return (byte)KeyLine[7];
-                default: return 0;
-            }
-            */
         }
 
         public byte ReadKeyboardByte(ushort addr)

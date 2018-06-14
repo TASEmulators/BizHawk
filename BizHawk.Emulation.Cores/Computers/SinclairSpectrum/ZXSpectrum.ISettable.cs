@@ -1,13 +1,14 @@
-﻿using System;
-using Newtonsoft.Json;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using System.ComponentModel;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// ZXHawk: Core Class
+    /// * ISettable *
+    /// </summary>
     public partial class ZXSpectrum : ISettable<ZXSpectrum.ZXSpectrumSettings, ZXSpectrum.ZXSpectrumSyncSettings>
     {
         internal ZXSpectrumSettings Settings = new ZXSpectrumSettings();
@@ -150,6 +151,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
         }
 
+        /// <summary>
+        /// Verbosity of the ZXHawk generated OSD messages
+        /// </summary>
         public enum OSDVerbosity
         {
             /// <summary>

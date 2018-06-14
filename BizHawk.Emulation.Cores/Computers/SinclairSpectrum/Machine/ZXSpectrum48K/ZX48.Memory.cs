@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// 48K Memory
+    /// </summary>
     public partial class ZX48 : SpectrumBase
     {
         /* 48K Spectrum has NO memory paging

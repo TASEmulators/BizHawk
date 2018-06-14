@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// 128K and +2 Memory
+    /// </summary>
     public partial class ZX128 : SpectrumBase
     {
         /* 128k paging controlled by writes to port 0x7ffd

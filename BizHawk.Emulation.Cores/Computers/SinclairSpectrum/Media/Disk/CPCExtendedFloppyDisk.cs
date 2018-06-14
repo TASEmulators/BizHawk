@@ -1,9 +1,4 @@
-﻿using BizHawk.Common.NumberExtensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using BizHawk.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum

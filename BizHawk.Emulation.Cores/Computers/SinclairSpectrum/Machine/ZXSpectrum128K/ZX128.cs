@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using BizHawk.Emulation.Cores.Components.Z80A;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// 128K Constructor
+    /// </summary>
     public partial class ZX128 : SpectrumBase
     {
         #region Construction
@@ -28,9 +27,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             SHADOWPaged = false;
             RAMPaged = 0;
             PagingDisabled = false;
-
-            //ULADevice = new ULA128(this);
-            ULADevice = new Screen128(this); // still todo
+            
+            ULADevice = new Screen128(this);
 
             BuzzerDevice = new Beeper(this);
             BuzzerDevice.Init(44100, ULADevice.FrameLength);
@@ -51,7 +49,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             InitializeMedia(files);
         }
 
-        #endregion
-        
+        #endregion        
     }
 }

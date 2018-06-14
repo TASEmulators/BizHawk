@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
-    public partial class ZXSpectrum //: IMemoryDomains
+    /// <summary>
+    /// ZXHawk: Core Class
+    /// * Memory Domains *
+    /// </summary>
+    public partial class ZXSpectrum
     {
         internal IMemoryDomains memoryDomains;
         private readonly Dictionary<string, MemoryDomainByteArray> _byteArrayDomains = new Dictionary<string, MemoryDomainByteArray>();

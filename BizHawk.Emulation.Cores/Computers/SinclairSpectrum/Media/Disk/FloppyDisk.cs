@@ -1,15 +1,13 @@
 ﻿using BizHawk.Common;
-using BizHawk.Common.NumberExtensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     /// <summary>
-    /// This interface defines a logical floppy disk
+    /// This abstract class defines a logical floppy disk
     /// </summary>
     public abstract class FloppyDisk
     {

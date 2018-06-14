@@ -274,14 +274,12 @@
     <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.FDC.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.FDD.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.IPortIODevice.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.Registers.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPD765.Timing.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Disk\NECUPS765.Static.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\CursorJoystick.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\SinclairJoystick2.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\SinclairJoystick1.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\NullJoystick.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\Buzzer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Datacorder\DatacorderDevice.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Abstraction\IKeyboard.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Input\KempstonJoystick.cs" />
@@ -314,7 +312,6 @@
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128K\ZX128.Port.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum48K\ZX48.Memory.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\Pulse.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\Rom\RomData.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.Controllers.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.cs" />

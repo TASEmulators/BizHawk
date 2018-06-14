@@ -1,13 +1,12 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// An intermediary class that manages cycling the ULA and CPU
+    /// along with inherent Port and Memory contention
+    /// </summary>
     public class CPUMonitor
     {
         #region Devices
