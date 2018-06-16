@@ -5,7 +5,8 @@ Mupen64Plus-rsp-hle is licensed under the GNU General Public License version 2.
 
 The authors of Mupen64Plus-rsp-hle are:
   * Richard Goedeken (Richard42)
-  * Bobby Smiles
+  * Bobby Smiles (bsmiles32)
+  * Sven Eckelmann (ecsv)
   * John Chadwick (NMN)
   * James Hood (Ebenblues)
   * Scott Gorman (okaygo)
@@ -29,7 +30,7 @@ Mupen64Plus is based on GPL-licensed source code from Mupen64 v0.5, originally w
 		       Version 2, June 1991  
   
  Copyright (C) 1989, 1991 Free Software Foundation, Inc.  
-                          675 Mass Ave, Cambridge, MA 02139, USA  
+ 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  Everyone is permitted to copy and distribute verbatim copies  
  of this license document, but changing it is not allowed.  
   
