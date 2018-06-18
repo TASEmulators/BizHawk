@@ -84,8 +84,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // Power functions
                 List<string> power = new List<string>
                 {
-                    // Tape functions
-                    "Soft Reset", "Hard Reset"
+                    // Power functions
+                    "Reset", "Power"
                 };
 
                 foreach (var s in power)

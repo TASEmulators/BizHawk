@@ -24,8 +24,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         string EjectDisk = "Eject Current Disk";
         string DiskStatus = "Get Disk Status";
 
-        string HardResetStr = "Hard Reset";
-        string SoftResetStr = "Soft Reset";
+        string HardResetStr = "Power";
+        string SoftResetStr = "Reset";
 
         bool pressed_Play = false;
         bool pressed_Stop = false;
