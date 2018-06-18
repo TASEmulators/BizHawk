@@ -766,17 +766,19 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // issue stop the tape command
                 t.Command = TapeCommand.STOP_THE_TAPE;
                 // add 1ms period
-                t.DataPeriods.Add(3500);
-                pauseDuration = -1;
+                //t.DataPeriods.Add(3500);
+                //pauseDuration = -1;
+                
             }
             else
             {
                 // this is actually just a pause
                 pauseDuration = 3500 * pauseDuration;
+                t.DataPeriods.Add(pauseDuration);
             }
 
             // add end of block pause
-            t.DataPeriods.Add(pauseDuration);
+            //t.DataPeriods.Add(pauseDuration);
 
             // add to tape
             _datacorder.DataBlocks.Add(t);
