@@ -203,9 +203,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 // only write UPD log every second
                 if (FrameCount % 10 == 0)
-                    System.IO.File.WriteAllText(UPDDiskDevice.outputfile, UPDDiskDevice.outputString);
-            }
-            
+                {
+                    System.IO.File.AppendAllLines(UPDDiskDevice.outputfile, UPDDiskDevice.dLog);
+                    UPDDiskDevice.dLog = new System.Collections.Generic.List<string>();
+                    //System.IO.File.WriteAllText(UPDDiskDevice.outputfile, UPDDiskDevice.outputString);
+                }                    
+            }            
         }
 
         #endregion

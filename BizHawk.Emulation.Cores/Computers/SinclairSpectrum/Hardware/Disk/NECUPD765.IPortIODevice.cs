@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
@@ -22,6 +23,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public string outputfile = @"D:\Dropbox\Dropbox\_Programming\TASVideos\BizHawk\output\zxhawkio-" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".csv";
         public string outputString = "STATUS,WRITE,READ,CODE,MT,MF,SK,CMDCNT,RESCNT,EXECCNT,EXECLEN\r\n";
         public bool writeDebug = false;
+
+        public List<string> dLog = new List<string>
+        {
+            "STATUS,WRITE,READ,CODE,MT,MF,SK,CMDCNT,RESCNT,EXECCNT,EXECLEN"
+        };
+
 
         /*
          * Status read
@@ -56,9 +63,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             sb.Append(ExecCounter).Append(",");
             sb.Append(ExecLength);
 
-            sb.Append("\r\n");
+            //sb.Append("\r\n");
 
-            outputString += sb.ToString();
+            //outputString += sb.ToString();
+            dLog.Add(sb.ToString());
         }
 
         #endregion

@@ -2415,6 +2415,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             switch (ActivePhase)
             {
                 case Phase.Execution:
+                    // reset overrun counter
+                    OverrunCounter = 0;
 
                     // execute read
                     ActiveCommand.CommandDelegate();
