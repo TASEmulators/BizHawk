@@ -173,6 +173,50 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 Protection = ProtectionType.Hexagon;
             }
+            else if (DetectShadowOfTheBeast())
+            {
+                Protection = ProtectionType.ShadowOfTheBeast;
+            }
+        }
+
+        /// <summary>
+        /// Detection routine for shadow of the beast game
+        /// Still cannot get this to work, but at least the game is detected
+        /// </summary>
+        /// <returns></returns>
+        public bool DetectShadowOfTheBeast()
+        {
+            if (DiskTracks[0].Sectors.Length != 9)
+                return false;
+
+            var zeroSecs = DiskTracks[0].Sectors;
+            if (zeroSecs[0].SectorID != 65 ||
+                zeroSecs[1].SectorID != 66 ||
+                zeroSecs[2].SectorID != 67 ||
+                zeroSecs[3].SectorID != 68 ||
+                zeroSecs[4].SectorID != 69 ||
+                zeroSecs[5].SectorID != 70 ||
+                zeroSecs[6].SectorID != 71 ||
+                zeroSecs[7].SectorID != 72 ||
+                zeroSecs[8].SectorID != 73)
+                return false;
+
+            var oneSecs = DiskTracks[1].Sectors;
+
+            if (oneSecs.Length != 8)
+                return false;
+
+            if (oneSecs[0].SectorID != 17 ||
+                oneSecs[1].SectorID != 18 ||
+                oneSecs[2].SectorID != 19 ||
+                oneSecs[3].SectorID != 20 ||
+                oneSecs[4].SectorID != 21 ||
+                oneSecs[5].SectorID != 22 ||
+                oneSecs[6].SectorID != 23 ||
+                oneSecs[7].SectorID != 24)
+                return false;
+
+            return true;
         }
 
         /// <summary>
@@ -676,7 +720,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         Alkatraz,
         Hexagon,
         Frontier,
-        PaulOwens
+        PaulOwens,
+        ShadowOfTheBeast
     }
 
 }
