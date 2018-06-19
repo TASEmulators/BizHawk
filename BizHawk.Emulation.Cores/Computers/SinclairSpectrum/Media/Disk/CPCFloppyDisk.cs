@@ -42,6 +42,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             DiskData = data;
             int pos = 0x32;
 
+            if (DiskHeader.NumberOfSides > 1)
+            {
+                StringBuilder sbm = new StringBuilder();
+                sbm.AppendLine();
+                sbm.AppendLine();
+                sbm.AppendLine("The detected disk image contains multiple sides.");
+                sbm.AppendLine("This is NOT currently supported in ZXHawk.");
+                sbm.AppendLine("Please find an alternate image/dump where each side has been saved as a separate *.dsk image (and use the mutli-disk bundler tool to load into Bizhawk).");
+                throw new System.NotImplementedException(sbm.ToString());
+            }
+
             // standard CPC format all track sizes are the same in the image
             for (int i = 0; i < DiskHeader.NumberOfTracks * DiskHeader.NumberOfSides; i++)
             {
