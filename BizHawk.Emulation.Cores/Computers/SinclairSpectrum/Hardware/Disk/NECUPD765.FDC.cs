@@ -1172,6 +1172,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     // was that the last parameter byte?
                     if (CommCounter == ActiveCommand.ParameterByteCount)
                     {
+                        DriveLight = true;
+
                         // all parameter bytes received
                         ClearResultBuffer();
                         Status0 = 0;
@@ -1392,6 +1394,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             ExecCounter = byteCounter;
                             ExecLength = byteCounter;
                             ActivePhase = Phase.Execution;
+                            DriveLight = true;
                             break;
                         }
                     }
@@ -1493,6 +1496,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     if (CommCounter == ActiveCommand.ParameterByteCount)
                     {
                         // all parameter bytes received - setup for execution phase
+                        DriveLight = true;
 
                         // clear exec buffer and status registers
                         ClearExecBuffer();
@@ -1683,6 +1687,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             ExecCounter = byteCounter;
                             ExecLength = byteCounter;
                             ActivePhase = Phase.Execution;
+                            DriveLight = true;
                             break;
                         }
                     }
@@ -1991,6 +1996,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     if (CommCounter == ActiveCommand.ParameterByteCount)
                     {
                         // all parameter bytes received
+                        DriveLight = true;
                         ActivePhase = Phase.Execution;
                         ActiveCommand.CommandDelegate();
                     }
@@ -2068,6 +2074,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     if (CommCounter == ActiveCommand.ParameterByteCount)
                     {
                         // all parameter bytes received
+                        DriveLight = true;
                         ActivePhase = Phase.Execution;
                         ActiveCommand.CommandDelegate();
                     }
