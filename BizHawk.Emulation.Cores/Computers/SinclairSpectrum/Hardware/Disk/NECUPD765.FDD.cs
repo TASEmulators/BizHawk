@@ -857,7 +857,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 #endregion
 
-                #region StateSerialization
+            #region StateSerialization
 
             public void SyncState(Serializer ser)
             {

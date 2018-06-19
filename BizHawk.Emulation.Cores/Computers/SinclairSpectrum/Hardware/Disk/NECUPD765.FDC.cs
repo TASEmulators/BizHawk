@@ -480,6 +480,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 ExecBuffer[buffPos++] = sector.ActualData[i];
                             }
 
+                            // mark the sector read
+                            sector.SectorReadCompleted();
+
                             // any CRC errors?
                             if (Status1.Bit(SR1_DE) || Status2.Bit(SR2_DD))
                             {
@@ -806,6 +809,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                     ExecBuffer[buffPos++] = sector.ActualData[i];
                                 }
 
+                                // mark the sector read
+                                sector.SectorReadCompleted();
+
                                 if (sector.SectorID == ActiveCommandParams.EOT)
                                 {
                                     // this was the last sector to read
@@ -1043,6 +1049,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             {
                                 ExecBuffer[buffPos++] = sec.ActualData[b];
                             }
+
+                            // mark the sector read
+                            sec.SectorReadCompleted();
 
                             // end of sector - compare IDs
                             if (sec.TrackNumber != ActiveCommandParams.Cylinder ||

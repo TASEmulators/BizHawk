@@ -636,6 +636,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             public byte[] SectorData { get; set; }
             public bool ContainsMultipleWeakSectors { get; set; }
 
+            public int WeakReadIndex = 0;
+
+            public void SectorReadCompleted()
+            {
+                if (ContainsMultipleWeakSectors)
+                    WeakReadIndex++;
+            }
+
             public int DataLen
             {
                 get
@@ -681,6 +689,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     }
                     else
                     {
+                        // weak read neccessary
+                        int copies = ActualDataByteLength / (0x80 << SectorSize);
+
+                        // handle index wrap-around
+                        if (WeakReadIndex > copies - 1)
+                            WeakReadIndex = copies - 1;
+
+                        // get the sector data based on the current weakreadindex
+                        int step = WeakReadIndex * (0x80 << SectorSize);
+                        byte[] res = new byte[(0x80 << SectorSize)];
+                        Array.Copy(SectorData, step, res, 0, 0x80 << SectorSize);
+                        return res;
+
+                        /*
                         int copies = ActualDataByteLength / (0x80 << SectorSize);
                         Random rnd = new Random();
                         int r = rnd.Next(0, copies - 1);
@@ -688,6 +710,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         byte[] res = new byte[(0x80 << SectorSize)];
                         Array.Copy(SectorData, step, res, 0, 0x80 << SectorSize);
                         return res;
+                        */
                     }
                 }
             }
