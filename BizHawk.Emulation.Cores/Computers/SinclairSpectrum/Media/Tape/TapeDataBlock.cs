@@ -113,6 +113,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public List<int> DataPeriods = new List<int>();
 
+        public List<bool> InitialPulseLevel = new List<bool>();
+
         /// <summary>
         /// Command that is raised by this data block
         /// (that may or may not need to be acted on)
@@ -229,8 +231,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         Snapshot_Block = 0x40,
 
         // unsupported / undetected
-        Unsupported
+        Unsupported,
+
+        // PZX blocks
+        PZXT,
+        PULS,
+        DATA,
+        BRWS,
+        PAUS
+
     }
+    
 
     /// <summary>
     /// Different title possibilities

@@ -320,8 +320,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="tapeData"></param>
         public void LoadTape(byte[] tapeData)
         {
-            // check TZX first
+            // instantiate converters
             TzxConverter tzxSer = new TzxConverter(this);
+            TapConverter tapSer = new TapConverter(this);
+            PzxConverter pzxSer = new PzxConverter(this);
+
+            // TZX
             if (tzxSer.CheckType(tapeData))
             {
                 // this file has a tzx header - attempt serialization
@@ -340,9 +344,30 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     "\n\nTape image file has a valid TZX header, but threw an exception whilst data was being parsed.\n\n" + e.ToString());
                 }
             }
+
+            // PZX
+            else if (pzxSer.CheckType(tapeData))
+            {
+                // this file has a pzx header - attempt serialization
+                try
+                {
+                    pzxSer.Read(tapeData);
+                    // reset block index
+                    CurrentDataBlockIndex = 0;
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    // exception during operation
+                    var e = ex;
+                    throw new Exception(this.GetType().ToString() +
+                    "\n\nTape image file has a valid PZX header, but threw an exception whilst data was being parsed.\n\n" + e.ToString());
+                }
+            }
+
+            // Assume TAP
             else
             {
-                TapConverter tapSer = new TapConverter(this);
                 try
                 {
                     tapSer.Read(tapeData);
@@ -383,7 +408,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 counter++;
 
-                if (counter > 50)
+                if (counter > 30)
                 {
                     counter = 0;
                     bool state = GetEarBit(_machine.CPU.TotalExecutedCycles);
@@ -421,7 +446,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             // process the cycles based on the waitEdge
-             while (cycles >= _waitEdge)
+            while (cycles >= _waitEdge)
             {
                 // decrement cycles
                 cycles -= _waitEdge;
@@ -432,6 +457,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 if (_position == 0 && _tapeIsPlaying)
                 {
                     // start of block
+
+                    //if (!_dataBlocks[_currentDataBlockIndex].InitialPulseLevel[_position])
+                        //currentState = !currentState;
 
                     // notify about the current block
                     var bl = _dataBlocks[_currentDataBlockIndex];

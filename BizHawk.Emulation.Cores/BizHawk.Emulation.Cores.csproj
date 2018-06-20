@@ -293,10 +293,11 @@
     <Compile Include="Computers\SinclairSpectrum\Media\Disk\DiskType.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\MediaConverter.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\MediaConverterType.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\PZX\PzxConverter.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\TapeCommand.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\TapeDataBlock.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TapConverter.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TzxConverter.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TAP\TapConverter.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\TZX\TzxConverter.cs" />
     <Compile Include="Computers\SinclairSpectrum\SoundProviderMixer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\MachineType.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.cs" />
