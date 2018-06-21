@@ -322,6 +322,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // advance the position to the next block
             _position += blockLen;
+
+            // generate PAUSE block
+            CreatePauseBlock(_datacorder.DataBlocks.Last());
         }
         #endregion
 
@@ -379,6 +382,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // advance the position to the next block
             _position += blockLen;
+
+            // generate PAUSE block
+            CreatePauseBlock(_datacorder.DataBlocks.Last());
         }
         #endregion
 
@@ -502,6 +508,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // advance the position to the next block
             _position += blockLen;
+
+            // generate PAUSE block
+            CreatePauseBlock(_datacorder.DataBlocks.Last());
         }
         #endregion
 
@@ -595,7 +604,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // add end of block pause
             if (pauseAfterBlock > 0)
             {
-                t.DataPeriods.Add(3500 * pauseAfterBlock);
+                //t.DataPeriods.Add(3500 * pauseAfterBlock);
             }
 
             t.PauseInMS = pauseAfterBlock;
@@ -605,6 +614,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // add the block
             _datacorder.DataBlocks.Add(t);
+
+            // generate PAUSE block
+            CreatePauseBlock(_datacorder.DataBlocks.Last());
         }
         #endregion
 
@@ -773,8 +785,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             else
             {
                 // this is actually just a pause
-                pauseDuration = 3500 * pauseDuration;
-                t.DataPeriods.Add(pauseDuration);
+                //pauseDuration = 3500 * pauseDuration;
+                //t.DataPeriods.Add(pauseDuration);
             }
 
             // add end of block pause
@@ -785,6 +797,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             // advanced position to next block
             _position += 2;
+
+            // generate PAUSE block
+            CreatePauseBlock(_datacorder.DataBlocks.Last());
+
         }
         #endregion
 
@@ -1764,8 +1780,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // add block pause if pause is not 0
             if (pauseAfterBlock != 0)
             {
-                int actualPause = pauseAfterBlock * 3500;
-                dataPeriods.Add(actualPause);
+                block.PauseInMS = pauseAfterBlock;
+                //int actualPause = pauseAfterBlock * 3500;
+                //dataPeriods.Add(actualPause);
             }            
 
             // add to the tapedatablock object
@@ -1824,6 +1841,44 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 
             return nBlock;
+        }
+
+        #endregion
+
+        #region Pause Block Creator
+
+        /// <summary>
+        /// If neccessary a seperate PAUSE block will be created
+        /// </summary>
+        /// <param name="original"></param>
+        private void CreatePauseBlock(TapeDataBlock original)
+        {
+            if (original.PauseInMS > 0)
+            {
+                TapeDataBlock pBlock = new TapeDataBlock();
+                pBlock.DataPeriods = new List<int>();
+                pBlock.BlockDescription = BlockType.PAUSE_BLOCK;
+                pBlock.PauseInMS = 0;
+                var pauseInTStates = TranslatePause(original.PauseInMS);
+
+                pBlock.AddMetaData(BlockDescriptorTitle.Block_ID, pauseInTStates.ToString() + " cycles");
+
+                int by1000 = pauseInTStates / 70000;
+                int rem1000 = pauseInTStates % 70000;
+
+                if (by1000 > 1)
+                {
+                    pBlock.DataPeriods.Add(35000);
+                    pBlock.DataPeriods.Add(pauseInTStates - 35000);
+                }
+                else
+                {
+                    pBlock.DataPeriods.Add(pauseInTStates);
+                    pBlock.DataPeriods.Add(0);
+                }
+
+                _datacorder.DataBlocks.Add(pBlock);
+            }
         }
 
         #endregion

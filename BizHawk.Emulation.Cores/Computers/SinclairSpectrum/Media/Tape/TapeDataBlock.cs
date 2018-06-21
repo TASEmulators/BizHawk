@@ -238,8 +238,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         PULS,
         DATA,
         BRWS,
-        PAUS
+        PAUS,
 
+        // zxhawk proprietry
+        PAUSE_BLOCK,
     }
     
 

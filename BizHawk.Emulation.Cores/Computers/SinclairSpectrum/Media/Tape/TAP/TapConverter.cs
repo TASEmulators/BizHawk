@@ -44,7 +44,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #endregion
 
-
         #region TAP Format Constants
 
         /// <summary>
@@ -337,7 +336,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // add block pause
                 int actualPause = PAUSE_MS * 1000;
-                dataPeriods.Add(actualPause);
+                //dataPeriods.Add(actualPause);
 
                 // default pause for tap files
                 tdb.PauseInMS = 1000;
@@ -348,9 +347,40 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // add the raw data
                 tdb.BlockData = blockdata;
 
+                // generate separate PAUS block
+                TapeDataBlock tdbPause = new TapeDataBlock();
+                tdbPause.DataPeriods = new List<int>();
+                tdbPause.BlockDescription = BlockType.PAUSE_BLOCK;
+                tdbPause.PauseInMS = 0;
+                var pauseInTStates = TranslatePause(tdb.PauseInMS);
+                //if (pauseInTStates > 0)
+                    //tdbPause.DataPeriods.Add(pauseInTStates);
+                tdb.PauseInMS = 0;
+
                 // add block to the tape
                 _datacorder.DataBlocks.Add(tdb);
-               
+
+                // PAUS block if neccessary
+                if (pauseInTStates > 0)
+                {
+                    tdbPause.AddMetaData(BlockDescriptorTitle.Block_ID, pauseInTStates.ToString() + " cycles");
+
+                    int by1000 = pauseInTStates / 70000;
+                    int rem1000 = pauseInTStates % 70000;
+
+                    if (by1000 > 1)
+                    {
+                        tdbPause.DataPeriods.Add(35000);
+                        tdbPause.DataPeriods.Add(pauseInTStates - 35000);
+                    }
+                    else
+                    {
+                        tdbPause.DataPeriods.Add(pauseInTStates);
+                        tdbPause.DataPeriods.Add(0);
+                    }
+
+                    _datacorder.DataBlocks.Add(tdbPause);
+                }  
             }
         }
     }

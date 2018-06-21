@@ -115,6 +115,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             buf[offsetIndex + 1] = (byte)(value >> 8);
         }
 
+        /// <summary>
+        /// Takes a PauseInMilliseconds value and returns the value in T-States
+        /// </summary>
+        /// <param name="pauseInMS"></param>
+        /// <returns></returns>
+        public static int TranslatePause(int pauseInMS)
+        {
+            // t-states per millisecond
+            var tspms = (69888 * 50) / 1000;
+            // get value
+            int res = pauseInMS * tspms;
+
+            return res;
+        }
+
         #endregion
     }
 }
