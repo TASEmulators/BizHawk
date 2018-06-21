@@ -531,6 +531,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             case TapeCommand.STOP_THE_TAPE:
 
                                 _machine.Spectrum.OSD_TapeStoppedAuto();
+                                shouldStop = true;
 
                                 if (_currentDataBlockIndex >= _dataBlocks.Count())
                                     RTZ();
@@ -546,6 +547,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 if (is48k)
                                 {
                                     _machine.Spectrum.OSD_TapeStoppedAuto();
+                                    shouldStop = true;
 
                                     if (_currentDataBlockIndex >= _dataBlocks.Count())
                                         RTZ();
