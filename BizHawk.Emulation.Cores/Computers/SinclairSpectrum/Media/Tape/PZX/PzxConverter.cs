@@ -339,7 +339,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                         // convert to tape block
                         t.BlockDescription = BlockType.PAUS;
+                        t.DataPeriods.Add(0);
                         t.DataPeriods.Add(pCount);
+                        t.DataPeriods.Add(0);
 
                         _datacorder.DataBlocks.Add(t);
 
