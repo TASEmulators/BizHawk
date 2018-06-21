@@ -174,6 +174,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         t.BlockID = GetInt32(b, 0);
                         t.DataPeriods = new List<int>();
 
+                        t.InitialPulseLevel = false;
+
                         List<ushort[]> pulses = new List<ushort[]>();
 
                         while (pos < blockSize + 8)
@@ -210,7 +212,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             for (int i = 0; i < x[0]; i++)
                             {
                                 t.DataPeriods.Add(x[1]);
-                                t.InitialPulseLevel.Add(true);
                             }
                         }
 
@@ -248,6 +249,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             dCount = GetInt32(b, pos);
                             initPulseLevel = (uint)((dCount & 0x80000000) == 0 ? 0 : 1);
 
+                            t.InitialPulseLevel =  initPulseLevel == 1 ? true : false;
+
                             dCount = (int)(dCount & 0x7FFFFFFF);
                             pos += 4;
 
@@ -277,8 +280,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 dData.Add(buff);
                             }
 
-                            bool initPulse = initPulseLevel == 1 ? true : false;
-
                             foreach (var by in dData)
                             {
                                 for (int i = 7; i >= 0; i--)
@@ -288,7 +289,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                         foreach (var pu in s1)
                                         {
                                             t.DataPeriods.Add((int)pu);
-                                            t.InitialPulseLevel.Add(initPulse);
                                         }
                                             
                                     }
@@ -297,13 +297,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                         foreach (var pu in s0)
                                         {
                                             t.DataPeriods.Add((int)pu);
-                                            t.InitialPulseLevel.Add(initPulse);
                                         }
                                             
                                     }
                                 }
                             }
-
+                            if (tail > 0)
+                                t.DataPeriods.Add(tail);
                             dData.Clear();
                         }
 
@@ -312,7 +312,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                         t.PauseInMS = 0;
 
                         // tail
-                        t.DataPeriods.Add(tail);
+                        //t.DataPeriods.Add(tail);
 
                         _datacorder.DataBlocks.Add(t);
 
@@ -334,16 +334,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                         var d = GetInt32(b, pos);
                         iniPulseLevel = ((d & 0x80000000) == 0 ? 0 : 1);
+                        t.InitialPulseLevel = iniPulseLevel == 1 ? true : false;
                         pCount = (d & 0x7FFFFFFF);
 
                         // convert to tape block
                         t.BlockDescription = BlockType.PAUS;
                         t.DataPeriods.Add(pCount);
-
-                        if (iniPulseLevel == 1)
-                            t.InitialPulseLevel.Add(true);
-                        else
-                            t.InitialPulseLevel.Add(false);
 
                         _datacorder.DataBlocks.Add(t);
 

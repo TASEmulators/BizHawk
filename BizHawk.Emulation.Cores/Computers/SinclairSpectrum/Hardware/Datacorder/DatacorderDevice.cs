@@ -408,7 +408,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 counter++;
 
-                if (counter > 30)
+                if (counter > 20)
                 {
                     counter = 0;
                     bool state = GetEarBit(_machine.CPU.TotalExecutedCycles);
@@ -451,15 +451,27 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // decrement cycles
                 cycles -= _waitEdge;
 
-                // flip the current state
-                currentState = !currentState;
-
                 if (_position == 0 && _tapeIsPlaying)
                 {
-                    // start of block
-
-                    //if (!_dataBlocks[_currentDataBlockIndex].InitialPulseLevel[_position])
-                        //currentState = !currentState;
+                    // start of block - take care of initial pulse level for PZX
+                    switch (_dataBlocks[_currentDataBlockIndex].BlockDescription)
+                    {
+                        case BlockType.PULS:
+                            // initial pulse level is always low
+                            if (currentState)
+                                FlipTapeState();
+                            break;
+                        case BlockType.DATA:
+                            // initial pulse level is stored in block
+                            if (currentState != _dataBlocks[_currentDataBlockIndex].InitialPulseLevel)
+                                FlipTapeState();
+                            break;
+                        case BlockType.PAUS:
+                            // initial pulse level is stored in block
+                            if (currentState != _dataBlocks[_currentDataBlockIndex].InitialPulseLevel)
+                                FlipTapeState();
+                            break;
+                    }
 
                     // notify about the current block
                     var bl = _dataBlocks[_currentDataBlockIndex];
@@ -569,7 +581,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
 
                 // update waitEdge with current position within the current block
-                _waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods[_position];                
+                _waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods[_position];
+
+                // flip the current state
+                FlipTapeState();
 
             }
 
@@ -580,6 +595,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             //_buzzer.ProcessPulseValue(false, currentState);
 
             return currentState;
+        }
+
+        private void FlipTapeState()
+        {
+            currentState = !currentState;
         }
 
         /// <summary>

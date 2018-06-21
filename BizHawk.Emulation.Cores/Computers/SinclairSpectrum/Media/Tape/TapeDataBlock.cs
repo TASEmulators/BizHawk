@@ -113,7 +113,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public List<int> DataPeriods = new List<int>();
 
-        public List<bool> InitialPulseLevel = new List<bool>();
+        public bool InitialPulseLevel;
 
         /// <summary>
         /// Command that is raised by this data block
