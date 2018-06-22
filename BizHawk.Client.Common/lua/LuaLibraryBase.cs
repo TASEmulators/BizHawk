@@ -70,13 +70,12 @@ namespace BizHawk.Client.Common
 				return null;
 			}
 
-			double tryNum;
-			var result = double.TryParse(color.ToString(), out tryNum);
+			int tryNum;
+			var result = int.TryParse(color.ToString(), out tryNum);
 
 			if (result)
 			{
-				var stringResult = ((int)tryNum).ToString();
-				return ColorTranslator.FromHtml(stringResult);
+				return Color.FromArgb(tryNum);
 			}
 
 			if (!string.IsNullOrWhiteSpace(color.ToString()))
