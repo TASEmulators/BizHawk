@@ -627,7 +627,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex.Value < Movie.BranchCount)
 			{
+				int currenthash = Movie.BranchHashByIndex(Movie.CurrentBranch);
 				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
+				int newindex = Movie.BranchIndexByHash(currenthash);
+				Movie.CurrentBranch = newindex;
+				BranchView.SelectRow(newindex, true);
 			}
 		}
 
