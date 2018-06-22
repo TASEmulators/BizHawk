@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				UseNativeResolutionFactor = 0;
 				bilinearMode = bilinearFilteringMode.Standard;
 				MaxAnisotropy = false;
-				CacheSize = 500;
+				CacheSize = 8000;
 				EnableNoise = true;
 				EnableLOD = true;
 				EnableHWLighting = false;
