@@ -2119,7 +2119,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 
 				return FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.32x;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.mds;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.ngp;*.ngc;*.prg;*.d64;*.g64;*.minipsf;*.nsf;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.32x;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.mds;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.ngp;*.ngc;*.prg;*.d64;*.g64;*.minipsf;*.nsf;*.tzx;*.pzx;*.csw;*.wav;%ARCH%",
 					"Disc Images", "*.cue;*.ccd;*.mds;*.m3u",
 					"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -2144,7 +2144,8 @@ namespace BizHawk.Client.EmuHawk
 					"Virtual Boy", "*.vb;%ARCH%",
 					"Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%",
 					"Commodore 64", "*.prg; *.d64, *.g64; *.crt; *.tap;%ARCH%",
-					"All Files", "*.*");
+                    "Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%",
+                    "All Files", "*.*");
 			}
 		}
 

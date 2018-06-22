@@ -17,7 +17,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         "ZXHawk",
         "Asnivor, Alyosha",
         isPorted: false,
-        isReleased: false)]
+        isReleased: true)]
     public partial class ZXSpectrum : IRegionable, IDriveLight
     {
         public ZXSpectrum(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, object settings, object syncSettings)

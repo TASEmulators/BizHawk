@@ -1,7 +1,5 @@
 ﻿## ZXHawk
 
-ZXHawk is still in dev but is potentially nearing a release state.
-
 ### Whats in the box?
 * Emulates the Sinclair ZX Spectrum 16k, 48k, 128k, +2, +2A & +3
 * Accurate Z80A implementation
