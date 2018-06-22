@@ -306,11 +306,11 @@ namespace BizHawk.Emulation.Common
                 case ".TZX":
                 case ".PZX":
                 case ".CSW":
+                case ".WAV":
                     game.System = "ZXSpectrum";
                     break;
 
-                case ".TAP":
-                    
+                case ".TAP":                    
                     byte[] head = romData.Take(8).ToArray();
                     if (System.Text.Encoding.Default.GetString(head).Contains("C64-TAPE"))
                         game.System = "C64";

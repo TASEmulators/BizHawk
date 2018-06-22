@@ -299,6 +299,10 @@
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\TapeDataBlock.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\TAP\TapConverter.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\TZX\TzxConverter.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\WAV\StreamHelper.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\WAV\WavConverter.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\WAV\WavHeader.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Tape\WAV\WavStreamReader.cs" />
     <Compile Include="Computers\SinclairSpectrum\SoundProviderMixer.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\MachineType.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\SpectrumBase.cs" />

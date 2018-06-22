@@ -242,6 +242,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         // zxhawk proprietry
         PAUSE_BLOCK,
+
+        WAV_Recording
     }
     
 

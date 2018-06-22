@@ -11,7 +11,7 @@ ZXHawk is still in dev but is potentially nearing a release state.
 * Full beeper and AY-3-3912 sound emulation
 * Tape device (datacorder) emulation
 * Internal 3" disk drive emulation (found in the +3 model)
-* Currently supports the following tape image formats: *.tzx, *.tap
+* Currently supports the following tape image formats: *.tzx, *.tap, *.pzx, *.csw, *.wav
 * Currently supports the following disk image formats (+3 only): *.dsk
 * Fully integrated into the Bizhawk ecosystem
 * See the ZXSpectrum menu for all available configuration options
