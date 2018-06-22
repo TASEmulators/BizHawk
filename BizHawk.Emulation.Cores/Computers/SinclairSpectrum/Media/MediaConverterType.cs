@@ -10,6 +10,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         TZX,
         TAP,
         PZX,
+        CSW,
         DSK
     }
 }

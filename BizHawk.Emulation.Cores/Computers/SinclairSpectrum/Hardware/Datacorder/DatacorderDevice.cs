@@ -324,6 +324,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             TzxConverter tzxSer = new TzxConverter(this);
             TapConverter tapSer = new TapConverter(this);
             PzxConverter pzxSer = new PzxConverter(this);
+            CswConverter cswSer = new CswConverter(this);
 
             // TZX
             if (tzxSer.CheckType(tapeData))
@@ -362,6 +363,26 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     var e = ex;
                     throw new Exception(this.GetType().ToString() +
                     "\n\nTape image file has a valid PZX header, but threw an exception whilst data was being parsed.\n\n" + e.ToString());
+                }
+            }
+
+            // CSW
+            else if (cswSer.CheckType(tapeData))
+            {
+                // this file has a csw header - attempt serialization
+                try
+                {
+                    cswSer.Read(tapeData);
+                    // reset block index
+                    CurrentDataBlockIndex = 0;
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    // exception during operation
+                    var e = ex;
+                    throw new Exception(this.GetType().ToString() +
+                    "\n\nTape image file has a valid CSW header, but threw an exception whilst data was being parsed.\n\n" + e.ToString());
                 }
             }
 
@@ -817,7 +838,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             if (_tapeIsPlaying && _autoPlay)
             {
-                _monitorTimeOut--;
+                if (DataBlocks.Count > 1 || _dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.CSW_Recording)
+                {
+                    // we should only stop the tape when there are multiple blocks
+                    // if we just have one big block (maybe a CSW or WAV) then auto stopping will cock things up
+                    _monitorTimeOut--;
+                }
 
                 if (_monitorTimeOut < 0)
                 {
@@ -841,6 +867,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // dont use autostop detection if block has no pause at the end
                 if (timeout == 0)
+                    return;
+
+                // dont autostop if there is only 1 block
+                if (DataBlocks.Count > 2 || _dataBlocks[_currentDataBlockIndex].BlockDescription == BlockType.CSW_Recording)
                     return;
 
                 if (diff >= timeout * 2)

@@ -643,10 +643,51 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             int blockLen = GetInt32(data, _position);
             _position += 4;
 
-            _position += blockLen;
+            t.PauseInMS = GetWordValue(data, _position);
+
+            _position += 2;
+
+            int sampleRate = data[_position++] << 16 | data[_position++] << 8 | data[_position++];
+            byte compType = data[_position++];
+            int pulses = GetInt32(data, _position);
+            _position += 4;
+
+            int dataLen = blockLen - 10;
+
+            // build source array
+            byte[] src = new byte[dataLen];
+            // build destination array
+            byte[] dest = new byte[pulses + 1];
+
+            // process the CSW data
+            CswConverter.ProcessCSWV2(src, ref dest, compType, pulses);
+
+            // create the periods
+            var rate = (69888 * 50) / sampleRate;
+
+            for (int i = 0; i < dest.Length;)
+            {
+                int length = dest[i++] * rate;
+                if (length == 0)
+                {
+                    length = GetInt32(dest, i) / rate;
+                    i += 4;
+                }
+
+                t.DataPeriods.Add(length);
+            }
+
+            // add closing period
+            t.DataPeriods.Add((69888 * 50) / 10);
+
+            _position += dataLen;
+            //_position += blockLen;
 
             // add the block
             _datacorder.DataBlocks.Add(t);
+
+            // generate PAUSE block
+            CreatePauseBlock(_datacorder.DataBlocks.Last());
         }
         #endregion
 

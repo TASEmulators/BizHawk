@@ -61,7 +61,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         #endregion
 
         /// <summary>
-        /// Returns TRUE if tzx header is detected
+        /// Returns TRUE if pzx header is detected
         /// </summary>
         /// <param name="data"></param>
         public override bool CheckType(byte[] data)

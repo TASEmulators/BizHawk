@@ -305,6 +305,7 @@ namespace BizHawk.Emulation.Common
 
                 case ".TZX":
                 case ".PZX":
+                case ".CSW":
                     game.System = "ZXSpectrum";
                     break;
 

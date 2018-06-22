@@ -202,6 +202,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // spectrum .tzx tape file
                 return SpectrumMediaType.Tape;
             }
+            if (hdr.ToUpper().StartsWith("COMPRESSED SQ"))
+            {
+                // spectrum .tzx tape file
+                return SpectrumMediaType.Tape;
+            }
 
             // if we get this far, assume a .tap file
             return SpectrumMediaType.Tape;

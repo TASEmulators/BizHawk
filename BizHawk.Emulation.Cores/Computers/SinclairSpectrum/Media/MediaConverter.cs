@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.IO.Compression;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -128,6 +130,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             int res = pauseInMS * tspms;
 
             return res;
+        }
+
+        /// <summary>
+        /// Decompresses a byte array that is Z-RLE compressed
+        /// </summary>
+        /// <param name="sourceBuffer"></param>
+        /// <param name="destBuffer"></param>
+        public static void DecompressZRLE(byte[] sourceBuffer, ref byte[] destBuffer)
+        {
+            MemoryStream stream = new MemoryStream();
+            stream.Write(sourceBuffer, 0, sourceBuffer.Length);
+            stream.Position = 0;
+            stream.ReadByte();
+            stream.ReadByte();
+            DeflateStream ds = new DeflateStream(stream, CompressionMode.Decompress, false);
+            ds.Read(destBuffer, 0, destBuffer.Length);
         }
 
         #endregion
