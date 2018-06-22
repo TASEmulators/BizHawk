@@ -74,10 +74,15 @@ namespace BizHawk.Client.Common
 			var result = double.TryParse(color.ToString(), out tryNum);
 
 			if (result)
-			{
-				var stringResult = ((int)tryNum).ToString();
-				return ColorTranslator.FromHtml(stringResult);
-			}
+			unchecked
+				{
+					var argb = (long)tryNum;
+					return Color.FromArgb(
+						(byte)(argb >> 24),
+						(byte)(argb >> 16),
+						(byte)(argb >> 8),
+						(byte)argb);
+				}
 
 			if (!string.IsNullOrWhiteSpace(color.ToString()))
 			{
