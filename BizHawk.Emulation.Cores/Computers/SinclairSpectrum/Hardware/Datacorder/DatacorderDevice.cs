@@ -847,7 +847,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 if (_monitorTimeOut < 0)
                 {
-                    AutoStopTape();
+                    if (_dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.PAUSE_BLOCK &&
+                        _dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.PAUS)
+                    {
+                        AutoStopTape();
+                    }
+                    
                     return;
                 }
 
@@ -858,6 +863,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
                 // get current datablock
                 var block = DataBlocks[_currentDataBlockIndex];
+
+                // is this a pause block?
+                if (block.BlockDescription == BlockType.PAUS || block.BlockDescription == BlockType.PAUSE_BLOCK)
+                {
+                    // dont autostop the tape here
+                    return;
+                }
 
                 // pause in ms at the end of the current block
                 int blockPause = block.PauseInMS;
