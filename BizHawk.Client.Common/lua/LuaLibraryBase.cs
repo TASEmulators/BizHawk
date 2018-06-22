@@ -63,24 +63,21 @@ namespace BizHawk.Client.Common
 			return (uint)(double)luaArg;
 		}
 
-		protected static Color? ToColor(object color)
+		protected static Color? ToColor(object o)
 		{
-			if (color == null)
+			if (o == null)
 			{
 				return null;
 			}
 
-			int tryNum;
-			var result = int.TryParse(color.ToString(), out tryNum);
-
-			if (result)
+			if (o.GetType() == typeof(double))
 			{
-				return Color.FromArgb(tryNum);
+				return Color.FromArgb((int)(long)(double)o);
 			}
 
-			if (!string.IsNullOrWhiteSpace(color.ToString()))
+			if (o.GetType() == typeof(string))
 			{
-				return Color.FromName(color.ToString());
+				return Color.FromName(o.ToString());
 			}
 
 			return null;
