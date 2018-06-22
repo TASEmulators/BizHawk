@@ -1559,6 +1559,11 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrEmpty(Emulator.CoreComm.RomStatusAnnotation))
 			{
 				annotation = Emulator.CoreComm.RomStatusAnnotation;
+
+                if (annotation == "Multi-disk bundler")
+                {
+                    DumpStatusButton.Image = Properties.Resources.RetroQuestion;
+                }
 			}
 
 			DumpStatusButton.ToolTipText = annotation;
@@ -3634,6 +3639,38 @@ namespace BizHawk.Client.EmuHawk
 					CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 					InputManager.SyncControls();
 
+                    if (Path.GetExtension(loaderName).ToLower() == ".xml")
+                    {
+                        // this is a multi-disk bundler file
+                        // determine the xml assets and create RomStatusDetails for all of them
+                        var xmlGame = XmlGame.Create(new HawkFile(loaderName.Replace("*OpenRom*", "")));
+
+                        StringWriter xSw = new StringWriter();
+
+                        for (int xg = 0; xg < xmlGame.Assets.Count; xg++)
+                        {
+                            var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg]).ToLower();
+
+                            if (ext == ".cue" || ext == ".ccd" || ext == ".toc" || ext == ".mds")
+                            {
+                                xSw.WriteLine(Path.GetFileNameWithoutExtension(xmlGame.Assets[xg].Key));
+                                xSw.WriteLine("SHA1:N/A");
+                                xSw.WriteLine("MD5:N/A");
+                                xSw.WriteLine();
+                            }
+                            else
+                            {
+                                xSw.WriteLine(xmlGame.Assets[xg].Key);
+                                xSw.WriteLine("SHA1:" + xmlGame.Assets[xg].Value.HashSHA1());
+                                xSw.WriteLine("MD5:" + xmlGame.Assets[xg].Value.HashMD5());
+                                xSw.WriteLine();
+                            }
+                        }
+
+                        Emulator.CoreComm.RomStatusDetails = xSw.ToString();
+                        Emulator.CoreComm.RomStatusAnnotation = "Multi-disk bundler";
+                    }
+
 					if (Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
 					{
 						GlobalWin.Tools.Load<TI83KeyPad>();
@@ -3663,10 +3700,15 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
-					{
-						Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:{loader.Rom.RomData.HashSHA1()}\r\nMD5:{loader.Rom.RomData.HashMD5()}\r\n";
-					}
+                    if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
+                    {
+                        Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:{loader.Rom.RomData.HashSHA1()}\r\nMD5:{loader.Rom.RomData.HashMD5()}\r\n";
+                    }
+                    else if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom == null)
+                    {
+                        // single disc game
+                        Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:N/A\r\nMD5:N/A\r\n";
+                    }
 
 					if (Emulator.HasBoardInfo())
 					{
