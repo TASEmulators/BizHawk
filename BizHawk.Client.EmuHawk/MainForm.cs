@@ -3640,7 +3640,7 @@ namespace BizHawk.Client.EmuHawk
 					CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 					InputManager.SyncControls();
 
-                    if (Path.GetExtension(loaderName).ToLower() == ".xml")
+                    if (Path.GetExtension(loaderName.Replace("*OpenRom*", "").Replace("|", "")).ToLower() == ".xml")
                     {
                         // this is a multi-disk bundler file
                         // determine the xml assets and create RomStatusDetails for all of them
