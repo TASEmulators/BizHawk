@@ -855,6 +855,7 @@ namespace BizHawk.Client.EmuHawk
 		private void ClearChangeCountsMenuItem_Click(object sender, EventArgs e)
 		{
 			_watches.ClearChangeCounts();
+			UpdateValues();
 		}
 
 		private void MoveUpMenuItem_Click(object sender, EventArgs e)

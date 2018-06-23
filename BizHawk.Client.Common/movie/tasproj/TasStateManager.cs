@@ -262,16 +262,16 @@ namespace BizHawk.Client.Common
 			return _movie.Markers.IsMarker(frame + 1);
 		}
 
-		public void RemoveState(int frame)
+		public bool RemoveState(int frame)
 		{
 			int index = _states.IndexOfKey(frame);
 
 			if (frame < 1 || index < 1)
 			{
-				return;
+				return false;
 			}
 
-			StateManagerState state = _states.ElementAt(index).Value;
+			StateManagerState state = _states.Values[index];
 
 			if (state.IsOnDisk)
 			{
@@ -283,6 +283,8 @@ namespace BizHawk.Client.Common
 			}
 
 			_states.RemoveAt(index);
+
+			return true;
 		}
 
 		/// <summary>
@@ -407,11 +409,10 @@ namespace BizHawk.Client.Common
 				{
 					continue;
 				}
-
-				KeyValuePair<int, StateManagerState> kvp = _states.ElementAt(i);
-				bw.Write(kvp.Key);
-				bw.Write(kvp.Value.Length);
-				bw.Write(kvp.Value.State);
+				
+				bw.Write(_states.Keys[i]);
+				bw.Write(_states.Values[i].Length);
+				bw.Write(_states.Values[i].State);
 			}
 		}
 
@@ -504,6 +505,7 @@ namespace BizHawk.Client.Common
 		}
 
 		public int StateCount => _states.Count;
+		public int LastEditedFrame => _movie.LastEditedFrame;
 
 		public bool Any()
 		{

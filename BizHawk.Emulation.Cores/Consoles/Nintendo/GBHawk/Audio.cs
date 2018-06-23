@@ -12,6 +12,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public GBHawk Core { get; set; }
 
+		private readonly BlipBuffer _blip_L = new BlipBuffer(15000);
+		private readonly BlipBuffer _blip_R = new BlipBuffer(15000);
+
 		public static int[] DUTY_CYCLES = new int[] {0, 0, 0, 0, 0, 0, 0, 1,
 													 1, 0, 0, 0, 0, 0, 0, 1,
 													 1, 0, 0, 0, 0, 1, 1, 1,
@@ -104,9 +107,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte AUD_CTRL_vol_L;
 		public byte AUD_CTRL_vol_R;
 
-		public int sequencer_len, sequencer_vol, sequencer_swp, sequencer_tick;
+		public int sequencer_len, sequencer_vol, sequencer_swp;
+		public bool timer_bit_old;
 
-		public int master_audio_clock;
+		public byte sample;
+
+		public uint master_audio_clock;
+
+		public int latched_sample_L, latched_sample_R;
 
 		public byte ReadReg(int addr)
 		{
@@ -155,7 +163,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				case 0xFF3F:
 					if (WAVE_enable)
 					{
-						if (WAVE_can_get) { ret = Wave_RAM[WAVE_wave_cntr >> 1]; }
+						if (WAVE_can_get || Core.is_GBC) { ret = Wave_RAM[WAVE_wave_cntr >> 1]; }
 						else { ret = 0xFF; }						
 					}
 					else { ret = Wave_RAM[addr & 0x0F]; }
@@ -367,7 +375,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (WAVE_trigger)
 						{
 							// some corruption occurs if triggering while reading
-							if (WAVE_enable && WAVE_intl_cntr == 2)
+							if (WAVE_enable && (WAVE_intl_cntr == 2) && !Core.is_GBC)
 							{
 								// we want to use the previous wave cntr value since it was just incremented
 								int t_wave_cntr = (WAVE_wave_cntr + 1) & 31;
@@ -500,33 +508,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					case 0xFF3F:
 						if (WAVE_enable)
 						{
-							if (WAVE_can_get) { Wave_RAM[WAVE_wave_cntr >> 1] = value; }
+							if (WAVE_can_get || Core.is_GBC) { Wave_RAM[WAVE_wave_cntr >> 1] = value; }
 						}
-						else { Wave_RAM[addr & 0xF] = value; }
+						else
+						{
+							Wave_RAM[addr & 0xF] = value;
+						}
 
 						break;
 				}
 			}
 			// when power is off, only length counters and waveRAM are effected by writes
+			// ON GBC, length counters cannot be written to either
 			else
 			{
 				switch (addr)
 				{
 					case 0xFF11:                                        // NR11 (sound length / wave pattern duty %)
-						SQ1_length = (ushort)(64 - (value & 0x3F));
-						SQ1_len_cntr = SQ1_length;
+						if (!Core.is_GBC)
+						{
+							SQ1_length = (ushort)(64 - (value & 0x3F));
+							SQ1_len_cntr = SQ1_length;
+						}
 						break;
 					case 0xFF16:                                        // NR21 (sound length / wave pattern duty %)		
-						SQ2_length = (ushort)(64 - (value & 0x3F));
-						SQ2_len_cntr = SQ2_length;
+						if (!Core.is_GBC)
+						{
+							SQ2_length = (ushort)(64 - (value & 0x3F));
+							SQ2_len_cntr = SQ2_length;
+						}
 						break;
 					case 0xFF1B:                                        // NR31 (length)
-						WAVE_length = (ushort)(256 - value);
-						WAVE_len_cntr = WAVE_length;
+						if (!Core.is_GBC)
+						{
+							WAVE_length = (ushort)(256 - value);
+							WAVE_len_cntr = WAVE_length;
+						}
 						break;
 					case 0xFF20:                                        // NR41 (length)
-						NOISE_length = (ushort)(64 - (value & 0x3F));
-						NOISE_len_cntr = NOISE_length;
+						if (!Core.is_GBC)
+						{
+							NOISE_length = (ushort)(64 - (value & 0x3F));
+							NOISE_len_cntr = NOISE_length;
+						}
 						break;
 					case 0xFF26:                                        // NR52 (ctrl)
 						AUD_CTRL_power = (value & 0x80) > 0;
@@ -607,13 +631,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 				if (WAVE_intl_cntr == 0)
 				{
-					WAVE_intl_cntr = (2048 - WAVE_frq) * 2;
-					WAVE_wave_cntr++;
-					WAVE_wave_cntr &= 0x1F;
-
 					WAVE_can_get = true;
 
-					byte sample = Wave_RAM[WAVE_wave_cntr >> 1];
+					WAVE_intl_cntr = (2048 - WAVE_frq) * 2;
 
 					if ((WAVE_wave_cntr & 1) == 0)
 					{
@@ -639,10 +659,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 					WAVE_output = sample;
 
+					// NOTE: The sample buffer is only reloaded after the current sample is played, even if just triggered
+					WAVE_wave_cntr++;
+					WAVE_wave_cntr &= 0x1F;
+					sample = Wave_RAM[WAVE_wave_cntr >> 1];
+
 					if (!WAVE_DAC_pow) { WAVE_output = 0; }
 
 					// avoid aliasing at high frequenices
-					if (WAVE_frq > 0x7F0) { WAVE_output = 0; }
+					//if (WAVE_frq > 0x7F0) { WAVE_output = 0; }
 				}
 			}
 
@@ -665,7 +690,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						NOISE_LFSR |= (bit_lfsr << 6);
 					}
 
-					NOISE_output = NOISE_LFSR & 1;
+					NOISE_output = (NOISE_LFSR & 1) > 0 ? 0 : 1;
 					NOISE_output *= NOISE_vol_state;
 				}
 			}
@@ -684,30 +709,30 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (AUD_CTRL_wave_R_en) { R_final += WAVE_output; }
 			if (AUD_CTRL_noise_R_en) { R_final += NOISE_output; }
 
-			L_final *= (AUD_CTRL_vol_L + 1);
-			R_final *= (AUD_CTRL_vol_R + 1);
+			L_final *= (AUD_CTRL_vol_L + 1) * 40;
+			R_final *= (AUD_CTRL_vol_R + 1) * 40;
 
-			// send out an actual sample every 94 cycles
-			master_audio_clock++;
-			if (master_audio_clock == 94)
+			if (L_final != latched_sample_L)
 			{
-				master_audio_clock = 0;
-				if (AudioClocks < 1500)
-				{
-					AudioSamples[AudioClocks] = (short)(L_final * 20);
-					AudioClocks++;
-					AudioSamples[AudioClocks] = (short)(R_final * 20);
-					AudioClocks++;
-				}
+				_blip_L.AddDelta(master_audio_clock, L_final - latched_sample_L);
+				latched_sample_L = L_final;
 			}
 
-			// frame sequencer ticks at a rate of 512 hz (or every time a 13 bit counter rolls over)
-			sequencer_tick++;
-
-			if (sequencer_tick == 8192)
+			if (R_final != latched_sample_R)
 			{
-				sequencer_tick = 0;
+				_blip_R.AddDelta(master_audio_clock, R_final - latched_sample_R);
+				latched_sample_R = R_final;
+			}
 
+			master_audio_clock++;
+
+			// frame sequencer ticks at a rate of 512 hz (or every time a 13 bit counter rolls over)
+			// the sequencer is actually the timer DIV register
+			// so if it's constantly written to, these values won't update
+			bool check = Core.double_speed ? Core.timer.divider_reg.Bit(13) : Core.timer.divider_reg.Bit(12);
+
+			if (check && !timer_bit_old)
+			{
 				sequencer_vol++; sequencer_vol &= 0x7;
 				sequencer_len++; sequencer_len &= 0x7;
 				sequencer_swp++; sequencer_swp &= 0x7;
@@ -859,13 +884,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 				}
 			}
+			timer_bit_old = Core.double_speed ? Core.timer.divider_reg.Bit(13) : Core.timer.divider_reg.Bit(12);
 		}
 
 		public void power_off()
 		{
 			for (int i = 0; i < 0x16; i++)
 			{
-				WriteReg(0xFF10 + i, 0);		
+				WriteReg(0xFF10 + i, 0);
 			}
 
 			// duty and length are reset
@@ -878,6 +904,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			SQ1_output = SQ2_output = WAVE_output = NOISE_output = 0;
 
+			// on GBC, lengths are also reset
+			if (Core.is_GBC)
+			{ 
+				SQ1_length = SQ2_length = WAVE_length = NOISE_length = 0;
+				SQ1_len_cntr = SQ2_len_cntr = WAVE_len_cntr = NOISE_len_cntr = 0;
+			}
+
 			sequencer_len = 0;
 			sequencer_vol = 0;
 			sequencer_swp = 0;
@@ -885,18 +918,29 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void Reset()
 		{
-			Wave_RAM = new byte[] { 0x84, 0x40, 0x43, 0xAA, 0x2D, 0x78, 0x92, 0x3C,
+			if (Core.is_GBC)
+			{
+				Wave_RAM = new byte[] { 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF,
+									0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF, 0x00, 0xFF };
+			}
+			else
+			{
+				Wave_RAM = new byte[] { 0x84, 0x40, 0x43, 0xAA, 0x2D, 0x78, 0x92, 0x3C,
 									0x60, 0x59, 0x59, 0xB0, 0x34, 0xB8, 0x2E, 0xDA };
-
+			}
+			
 			Audio_Regs = new byte[21];
 
-			AudioClocks = 0;
 			master_audio_clock = 0;
 
 			sequencer_len = 0;
 			sequencer_swp = 0;
 			sequencer_vol = 0;
-			sequencer_tick = 0;
+
+			sample = 0;
+
+			_blip_L.SetRates(4194304, 44100);
+			_blip_R.SetRates(4194304, 44100);
 		}
 
 		public void SyncState(Serializer ser)
@@ -983,9 +1027,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("sequencer_len", ref sequencer_len);
 			ser.Sync("sequencer_vol", ref sequencer_vol);
 			ser.Sync("sequencer_swp", ref sequencer_swp);
-			ser.Sync("sequencer_tick", ref sequencer_tick);
+			ser.Sync("timer_bit_old", ref timer_bit_old);
 
 			ser.Sync("master_audio_clock", ref master_audio_clock);
+
+			ser.Sync("sample", ref sample);
+			ser.Sync("latched_sample_L", ref latched_sample_L);
+			ser.Sync("latched_sample_R", ref latched_sample_R);
 
 			ser.Sync("AUD_CTRL_vin_L_en", ref AUD_CTRL_vin_L_en);
 			ser.Sync("AUD_CTRL_vin_R_en", ref AUD_CTRL_vin_R_en);
@@ -1016,8 +1064,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public bool CanProvideAsync => false;
 
-		public int AudioClocks;
-		public short[] AudioSamples = new short[1500];
+		public short[] AudioSamples = new short[150000];
 
 		public void SetSyncMode(SyncSoundMode mode)
 		{
@@ -1031,17 +1078,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			nsamp = AudioClocks / 2;
-			short[] temp_samp = new short[AudioClocks];
+			_blip_L.EndFrame(master_audio_clock);
+			_blip_R.EndFrame(master_audio_clock);
+			
+			nsamp = _blip_R.SamplesAvailable();
 
-			for (int i = 0; i < AudioClocks; i++)
-			{
-				temp_samp[i] = AudioSamples[i];
-			}
+			samples = new short[nsamp * 2];
 
-			samples = temp_samp;
+			_blip_L.ReadSamplesLeft(samples, nsamp);
+			_blip_R.ReadSamplesRight(samples, nsamp);
 
-			AudioClocks = 0;
+			master_audio_clock = 0;
 		}
 
 		public void GetSamplesAsync(short[] samples)
@@ -1051,7 +1098,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public void DiscardSamples()
 		{
-			AudioClocks = 0;
+			_blip_L.Clear();
+			_blip_R.Clear();
+			master_audio_clock = 0;
 		}
 
 		private void GetSamples(short[] samples)
@@ -1060,5 +1109,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 
 		#endregion
+
+		public void DisposeSound()
+		{
+			_blip_L.Dispose();
+			_blip_R.Dispose();
+		}
 	}
 }

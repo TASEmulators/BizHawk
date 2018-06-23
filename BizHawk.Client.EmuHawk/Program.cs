@@ -121,8 +121,19 @@ namespace BizHawk.Client.EmuHawk
 			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();
 
 			string iniPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "config.ini");
-			Global.Config = ConfigService.Load<Config>(iniPath);
+
+			try
+			{
+				Global.Config = ConfigService.Load<Config>(iniPath);
+			} catch (Exception e) {
+				new ExceptionBox(e).ShowDialog();
+				new ExceptionBox("Since your config file is corrupted, we're going to recreate it. Back it up before proceeding if you want to investigate further.").ShowDialog();
+				File.Delete(iniPath);
+				Global.Config = ConfigService.Load<Config>(iniPath);
+			}
+
 			Global.Config.ResolveDefaults();
+
 			BizHawk.Client.Common.StringLogUtil.DefaultToDisk = Global.Config.MoviesOnDisk;
 			BizHawk.Client.Common.StringLogUtil.DefaultToAWE = Global.Config.MoviesInAWE;
 

@@ -25,6 +25,7 @@ using BizHawk.Emulation.Cores.Computers.AppleII;
 using BizHawk.Client.ApiHawk;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
+using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -695,12 +696,12 @@ namespace BizHawk.Client.EmuHawk
 
 		public void CloseEmulator()
 		{
-			_exit = true;
+			_exitRequestPending = true;
 		}
 
 		public void CloseEmulator(int exitCode)
 		{
-			_exit = true;
+			_exitRequestPending = true;
 			_exitCode = exitCode;
 		}
 
@@ -2451,11 +2452,123 @@ namespace BizHawk.Client.EmuHawk
 			new IntvControllerSettings().ShowDialog();
 		}
 
-		#endregion
+        #endregion
 
-		#region Help
+        #region ZXSpectrum
 
-		private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
+        private void zXSpectrumToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+
+        }
+
+        
+        private void preferencesToolStripMenuItem4_Click(object sender, EventArgs e)
+        {
+            GenericCoreConfig.DoDialog(this, "ZXSpectrum Settings");
+        }
+        
+
+        private void ZXSpectrumControllerConfigurationMenuItem_Click(object sender, EventArgs e)
+        {
+            new ZXSpectrumJoystickSettings().ShowDialog();
+        }
+
+        private void ZXSpectrumCoreEmulationSettingsMenuItem_Click(object sender, EventArgs e)
+        {
+            new ZXSpectrumCoreEmulationSettings().ShowDialog();
+        }
+
+        private void ZXSpectrumNonSyncSettingsMenuItem_Click(object sender, EventArgs e)
+        {
+            new ZXSpectrumNonSyncSettings().ShowDialog();
+        }
+
+        private void ZXSpectrumAudioSettingsMenuItem_Click(object sender, EventArgs e)
+        {
+            new ZXSpectrumAudioSettings().ShowDialog();
+        }
+
+        private void ZXSpectrumPokeMemoryMenuItem_Click(object sender, EventArgs e)
+        {
+            new ZXSpectrumPokeMemory().ShowDialog();
+        }
+
+        private void ZXSpectrumMediaMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            if (Emulator is ZXSpectrum)
+            {
+                ZXSpectrumTapesSubMenu.Enabled = ((ZXSpectrum)Emulator)._tapeInfo.Count > 0;
+                ZXSpectrumDisksSubMenu.Enabled = ((ZXSpectrum)Emulator)._diskInfo.Count > 0;
+            }
+        }
+
+        private void ZXSpectrumTapesSubMenu_DropDownOpened(object sender, EventArgs e)
+        {
+            ZXSpectrumTapesSubMenu.DropDownItems.Clear();
+
+            if (Emulator is ZXSpectrum)
+            {
+                var speccy = (ZXSpectrum)Emulator;
+                var currSel = speccy._machine.TapeMediaIndex;
+
+                for (int i = 0; i < speccy._tapeInfo.Count; i++)
+                {
+                    string name = speccy._tapeInfo[i].Name;
+
+                    var menuItem = new ToolStripMenuItem
+                    {
+                        Name = i + "_" + name,
+                        Text = i + ": " + name,
+                        Checked = currSel == i
+                    };
+
+                    int dummy = i;
+                    menuItem.Click += (o, ev) =>
+                    {
+                        speccy._machine.TapeMediaIndex = dummy;
+                    };
+
+                    ZXSpectrumTapesSubMenu.DropDownItems.Add(menuItem);
+                }                
+            }
+        }
+
+        private void ZXSpectrumDisksSubMenu_DropDownOpened(object sender, EventArgs e)
+        {
+            ZXSpectrumDisksSubMenu.DropDownItems.Clear();
+
+            if (Emulator is ZXSpectrum)
+            {
+                var speccy = (ZXSpectrum)Emulator;
+                var currSel = speccy._machine.DiskMediaIndex;
+
+                for (int i = 0; i < speccy._diskInfo.Count; i++)
+                {
+                    string name = speccy._diskInfo[i].Name;
+
+                    var menuItem = new ToolStripMenuItem
+                    {
+                        Name = i + "_" + name,
+                        Text = i + ": " + name,
+                        Checked = currSel == i
+                    };
+
+                    int dummy = i;
+                    menuItem.Click += (o, ev) =>
+                    {
+                        speccy._machine.DiskMediaIndex = dummy;
+                    };
+
+                    ZXSpectrumDisksSubMenu.DropDownItems.Add(menuItem);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Help
+
+        private void HelpSubMenu_DropDownOpened(object sender, EventArgs e)
 		{
 			FeaturesMenuItem.Visible = VersionInfo.DeveloperBuild;
 		}
@@ -2911,7 +3024,7 @@ namespace BizHawk.Client.EmuHawk
 
 		protected override void OnClosed(EventArgs e)
 		{
-			_exit = true;
+			_windowClosedAndSafeToExitProcess = true;
 			base.OnClosed(e);
 		}
 

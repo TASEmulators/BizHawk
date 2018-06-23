@@ -52,6 +52,7 @@ namespace BizHawk.Client.EmuHawk
 			{ "GBC", "Game Boy Color" },
 			{ "PCFX", "PC-FX" },
 			{ "32X", "32X" },
+            { "ZXSpectrum", "ZX Spectrum" }
 		};
 
 		public string TargetSystem = null;

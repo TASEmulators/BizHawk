@@ -80,7 +80,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			}
 		}
 
-		int IDebuggable.TotalExecutedCycles => _cpu.TotalExecutedCycles;
+		long IDebuggable.TotalExecutedCycles => _cpu.TotalExecutedCycles;
 
 		private void StepInto()
 		{

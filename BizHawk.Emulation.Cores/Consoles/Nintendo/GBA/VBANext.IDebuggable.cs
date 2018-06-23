@@ -33,7 +33,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBA
 		}
 
 		[FeatureNotImplemented]
-		public int TotalExecutedCycles
+		public long TotalExecutedCycles
 		{
 			get { throw new NotImplementedException(); }
 		}

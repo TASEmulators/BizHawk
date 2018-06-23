@@ -124,7 +124,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		private VPC VPC;
 		private ScsiCDBus SCSI;
 		private ADPCM ADPCM;
-		private IController _controller;
+		private IController _controller = NullController.Instance;
 
 		public HuC6280PSG PSG;
 		internal CDAudio CDAudio;

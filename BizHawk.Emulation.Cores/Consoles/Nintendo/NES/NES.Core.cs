@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 	public partial class NES : IEmulator, ICycleTiming
 	{
 		//hardware/state
-		public MOS6502X cpu;
+		public MOS6502X<CpuLink> cpu;
 		public PPU ppu;
 		public APU apu;
 		public byte[] ram;
@@ -159,11 +159,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public void HardReset()
 		{
-			cpu = new MOS6502X();
-			cpu.SetCallbacks(ReadMemory, ReadMemory, PeekMemory, WriteMemory);
+			cpu = new MOS6502X<CpuLink>(new CpuLink(this))
+			{
+				BCD_Enabled = false
+			};
 
-			cpu.BCD_Enabled = false;
-			cpu.OnExecFetch = ExecFetch;
 			ppu = new PPU(this);
 			ram = new byte[0x800];
 			CIRAM = new byte[0x800];
@@ -309,7 +309,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		private int VsyncNum { get; set; }
 		private int VsyncDen { get; set; }
 
-		private IController _controller;
+		private IController _controller = NullController.Instance;
 
 		bool resetSignal;
 		bool hardResetSignal;

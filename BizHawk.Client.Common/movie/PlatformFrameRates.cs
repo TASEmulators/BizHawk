@@ -6,7 +6,7 @@ namespace BizHawk.Client.Common
 	public class PlatformFrameRates
 	{
 		// these are political numbers, designed to be in accord with tasvideos.org tradition. theyre not necessarily mathematical factualities (although they may be in some cases)
-		// it would be nice if we could turn this into a rational expression natively, and also, to write some comments about the derivation and ideal valees (since this seems to be where theyre all collected)
+		// it would be nice if we could turn this into a rational expression natively, and also, to write some comments about the derivation and ideal values (since this seems to be where theyre all collected)
 		// are we collecting them anywhere else? for avi-writing code perhaps?
 
 		// just some constants, according to specs
@@ -59,7 +59,9 @@ namespace BizHawk.Client.Common
 			["C64_NTSC"] = NTSCCarrier * 2 / 7 / 263 / 65,
 			["C64_NTSC_OLD"] = NTSCCarrier * 2 / 7 / 262 / 64,
 			["C64_DREAN"] = PALNCarrier * 2 / 7 / 312 / 65,
-			["INTV"] = 59.92
+			["INTV"] = 59.92,
+
+            ["ZXSpectrum_PAL"] = 50.080128205
 
 			// according to ryphecha, using
 			// clocks[2] = { 53.693182e06, 53.203425e06 }; //ntsc console, pal console

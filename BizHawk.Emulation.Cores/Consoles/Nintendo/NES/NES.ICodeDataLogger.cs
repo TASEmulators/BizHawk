@@ -9,18 +9,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		public void SetCDL(ICodeDataLog cdl)
 		{
 			CDL = cdl;
-			if (cdl == null)
-			{
-				cpu.ReadMemory = ReadMemory;
-				cpu.WriteMemory = WriteMemory;
-				cpu.PeekMemory = PeekMemory;
-			}
-			else
-			{
-				cpu.ReadMemory = ReadMemory_CDL;
-				cpu.WriteMemory = WriteMemory;
-				cpu.PeekMemory = FetchMemory_CDL;
-			}
 		}
 
 		public void NewCDL(ICodeDataLog cdl)

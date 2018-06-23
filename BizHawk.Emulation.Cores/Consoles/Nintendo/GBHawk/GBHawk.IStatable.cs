@@ -62,6 +62,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_controllerDeck.SyncState(ser);
 
 			ser.Sync("controller_state", ref controller_state);
+			ser.Sync("Acc_X_state", ref Acc_X_state);
+			ser.Sync("Acc_Y_state", ref Acc_Y_state);
 			ser.Sync("in_vblank", ref in_vblank);
 			ser.Sync("in_vblank_old", ref in_vblank_old);	
 			ser.Sync("vblank_rise", ref vblank_rise);
@@ -70,21 +72,25 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			ser.Sync("REG_FFFF", ref REG_FFFF);
 			ser.Sync("REG_FF0F", ref REG_FF0F);
-			ser.Sync("enable_VBL", ref enable_VBL);
-			ser.Sync("enable_LCDC", ref enable_PRS);
-			ser.Sync("enable_TIMO", ref enable_TIMO);
-			ser.Sync("enable_SER", ref enable_SER);
-			ser.Sync("enable_STAT", ref enable_STAT);
 
 			// memory domains
 			ser.Sync("RAM", ref RAM, false);
 			ser.Sync("ZP_RAM", ref ZP_RAM, false);
-			ser.Sync("CHR_RAM", ref CHR_RAM, false);
-			ser.Sync("BG_map_1", ref BG_map_1, false);
-			ser.Sync("BG_map_2", ref BG_map_2, false);
+			ser.Sync("VRAM", ref VRAM, false);
 			ser.Sync("OAM", ref OAM, false);
 
-			ser.Sync("Use_RTC", ref Use_RTC);
+			ser.Sync("_bios", ref _bios, false);
+
+			ser.Sync("RAM_Bank", ref RAM_Bank);
+			ser.Sync("VRAM_Bank", ref VRAM_Bank);
+			ser.Sync("is_GBC", ref is_GBC);
+			ser.Sync("GBC_compat", ref GBC_compat);
+			ser.Sync("double_speed", ref double_speed);
+			ser.Sync("speed_switch", ref speed_switch);
+			ser.Sync("HDMA_transfer", ref HDMA_transfer);
+
+			ser.Sync("Use_MT", ref Use_MT);
+			ser.Sync("addr_access", ref addr_access);
 
 			// probably a better way to do this
 			if (cart_RAM != null)

@@ -46,6 +46,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			throw new NotImplementedException();
 		}
 
-		public int TotalExecutedCycles => (int)Cpu.TotalExecutedCycles;
+		public long TotalExecutedCycles => Cpu.TotalExecutedCycles;
 	}
 }

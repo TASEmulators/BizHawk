@@ -50,7 +50,7 @@ namespace BizHawk.Emulation.Cores.Calculators
 		private readonly byte[] _rom;
 
 		// configuration
-		private IController _controller;
+		private IController _controller = NullController.Instance;
 
 		private byte[] _ram;
 		private byte[] _vram = new byte[0x300];
@@ -137,6 +137,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		private void WriteHardware(ushort addr, byte value)
 		{
+			addr &= 0xFF;
+
 			switch (addr)
 			{
 				case 0: // PORT_LINK
@@ -232,6 +234,8 @@ namespace BizHawk.Emulation.Cores.Calculators
 
 		private byte ReadHardware(ushort addr)
 		{
+			addr &= 0xFF;
+
 			switch (addr)
 			{
 				case 0: // PORT_LINK

@@ -108,15 +108,15 @@ void GB::setInputGetter(unsigned (*getInput)()) {
 	p_->cpu.setInputGetter(getInput);
 }
 
-void GB::setReadCallback(void (*callback)(unsigned)) {
+void GB::setReadCallback(MemoryCallback callback) {
 	p_->cpu.setReadCallback(callback);
 }
 
-void GB::setWriteCallback(void (*callback)(unsigned)) {
+void GB::setWriteCallback(MemoryCallback callback) {
 	p_->cpu.setWriteCallback(callback);
 }
 
-void GB::setExecCallback(void (*callback)(unsigned)) {
+void GB::setExecCallback(MemoryCallback callback) {
 	p_->cpu.setExecCallback(callback);
 }
 

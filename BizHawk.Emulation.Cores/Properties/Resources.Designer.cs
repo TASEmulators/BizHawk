@@ -89,5 +89,85 @@ namespace BizHawk.Emulation.Cores.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Spectrum3_V4_0_ROM0_bin {
+            get {
+                object obj = ResourceManager.GetObject("Spectrum3_V4_0_ROM0_bin", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Spectrum3_V4_0_ROM1_bin {
+            get {
+                object obj = ResourceManager.GetObject("Spectrum3_V4_0_ROM1_bin", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Spectrum3_V4_0_ROM2_bin {
+            get {
+                object obj = ResourceManager.GetObject("Spectrum3_V4_0_ROM2_bin", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Spectrum3_V4_0_ROM3_bin {
+            get {
+                object obj = ResourceManager.GetObject("Spectrum3_V4_0_ROM3_bin", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ZX_128_ROM {
+            get {
+                object obj = ResourceManager.GetObject("ZX_128_ROM", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ZX_48_ROM {
+            get {
+                object obj = ResourceManager.GetObject("ZX_48_ROM", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ZX_plus2_rom {
+            get {
+                object obj = ResourceManager.GetObject("ZX_plus2_rom", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ZX_plus2a_rom {
+            get {
+                object obj = ResourceManager.GetObject("ZX_plus2a_rom", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }

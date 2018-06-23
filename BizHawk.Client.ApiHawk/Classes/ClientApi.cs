@@ -427,11 +427,11 @@ namespace BizHawk.Client.ApiHawk
 						}
 						else
 						{
-							return SystemInfo.DualGB;
+							return SystemInfo.DualGB;                            
 						}
 
 					default:
-						return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert(Global.Emulator.SystemId));
+                        return SystemInfo.FindByCoreSystem(SystemIdConverter.Convert(Global.Emulator.SystemId));
 				}
 			}
 		}

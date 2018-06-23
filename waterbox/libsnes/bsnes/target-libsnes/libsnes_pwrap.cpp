@@ -113,6 +113,7 @@ struct CPURegsComm {
 	u8 p, nothing;
 	u32 aa, rd;
 	u8 sp, dp, db, mdr;
+	u16 v, h;
 }
 #ifndef _MSC_VER
 __attribute__((__packed__))
@@ -173,8 +174,6 @@ struct CommStruct
 	//static configuration-type information which can be grabbed off the core at any time without even needing a QUERY command
 	uint32 region;
 	uint32 mapper;
-
-	int32 padding4;
 
 	//===========================================================
 
@@ -537,6 +536,8 @@ void QUERY_peek_cpu_regs() {
 	comm.cpuregs.vector = SNES::cpu.regs.vector;
 	comm.cpuregs.p = SNES::cpu.regs.p;
 	comm.cpuregs.nothing = 0;
+	comm.cpuregs.v = SNES::cpu.vcounter();
+	comm.cpuregs.h = SNES::cpu.hdot();
 }
 void QUERY_peek_set_cdl() {
 	for (int i = 0; i<eCDLog_AddrType_NUM; i++)
@@ -624,9 +625,9 @@ EXPORT void* DllInit()
 	T(cdl_ptr, 128);
 	T(cdl_size, 160);
 	T(cpuregs, 176);
-	T(layerEnables, 208);
-	T(region, 220);
-	T(mapper, 224);
+	T(layerEnables, 212);
+	T(region, 224);
+	T(mapper, 228);
 	// start of private stuff
 	T(privbuf, 232);
 	#undef T

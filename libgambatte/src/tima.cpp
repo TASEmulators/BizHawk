@@ -119,7 +119,7 @@ void Tima::setTma(const unsigned data, const unsigned long cycleCounter, const T
 	tma_ = data;
 }
 
-void Tima::setTac(const unsigned data, const unsigned long cycleCounter, const TimaInterruptRequester timaIrq) {
+void Tima::setTac(const unsigned data, const unsigned long cycleCounter, const TimaInterruptRequester timaIrq, bool gbIsCgb) {
 	if (tac_ ^ data) {
 		unsigned long nextIrqEventTime = timaIrq.nextIrqEventTime();
 		
@@ -142,6 +142,13 @@ void Tima::setTac(const unsigned data, const unsigned long cycleCounter, const T
 
 		if (data & 4) {
 			lastUpdate_ = (cycleCounter >> timaClock[data & 3]) << timaClock[data & 3];
+			unsigned long diff = cycleCounter - basetime_;
+			
+			if (gbIsCgb) {
+				if (((diff >> (timaClock[tac_ & 3] - 1)) & 1) == 1 && ((diff >> (timaClock[data & 3] - 1)) & 1) == 0)
+					tima_++;
+			}		
+			lastUpdate_ = basetime_ + ((diff >> timaClock[data & 3]) << timaClock[data & 3]);
 			nextIrqEventTime = lastUpdate_ + ((256u - tima_) << timaClock[data & 3]) + 3;
 		}
 		
@@ -149,6 +156,14 @@ void Tima::setTac(const unsigned data, const unsigned long cycleCounter, const T
 	}
 	
 	tac_ = data;
+}
+
+void Tima::resTac(unsigned long const cycleCounter, TimaInterruptRequester timaIrq) {
+	basetime_ = cycleCounter;
+	if (tac_ & 0x04) {
+		setTac(tac_ & ~0x04, cycleCounter, timaIrq, false);
+		setTac(tac_ | 0x04, cycleCounter, timaIrq, false);
+	}
 }
 
 unsigned Tima::tima(unsigned long cycleCounter) {
@@ -166,6 +181,7 @@ void Tima::doIrqEvent(const TimaInterruptRequester timaIrq) {
 SYNCFUNC(Tima)
 {
 	NSS(lastUpdate_);
+	NSS(basetime_);
 	NSS(tmatime_);
 	NSS(tima_);
 	NSS(tma_);

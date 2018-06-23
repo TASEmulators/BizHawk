@@ -157,6 +157,7 @@ namespace BizHawk.Client.EmuHawk
 			BranchView.RowCount = Movie.BranchCount;
 			Movie.CurrentBranch = Movie.BranchCount - 1;
 			BranchView.ScrollToIndex(Movie.CurrentBranch);
+			BranchView.SelectRow(Movie.CurrentBranch, true);
 			BranchView.Refresh();
 			Tastudio.RefreshDialog();
 		}
@@ -626,7 +627,11 @@ namespace BizHawk.Client.EmuHawk
 		{
 			if (e.NewCell != null && e.NewCell.IsDataCell && e.OldCell.RowIndex.Value < Movie.BranchCount)
 			{
+				int currenthash = Movie.BranchHashByIndex(Movie.CurrentBranch);
 				Movie.SwapBranches(e.OldCell.RowIndex.Value, e.NewCell.RowIndex.Value);
+				int newindex = Movie.BranchIndexByHash(currenthash);
+				Movie.CurrentBranch = newindex;
+				BranchView.SelectRow(newindex, true);
 			}
 		}
 

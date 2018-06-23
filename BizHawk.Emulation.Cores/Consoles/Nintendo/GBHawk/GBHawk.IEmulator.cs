@@ -13,6 +13,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public ControllerDefinition ControllerDefinition => _controllerDeck.Definition;
 
 		public byte controller_state;
+		public ushort Acc_X_state;
+		public ushort Acc_Y_state;
 		public bool in_vblank_old;
 		public bool in_vblank;
 		public bool vblank_rise;
@@ -50,8 +52,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (controller.IsPressed("Power"))
 			{
-				// it seems that theMachine.Reset() doesn't clear ram, etc
-				// this should leave hsram intact but clear most other things
 				HardReset();
 			}
 
@@ -63,8 +63,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			if (_scanlineCallback != null)
 			{
-				GetGPU();
-				_scanlineCallback(ppu.LCDC);
+				if (_scanlineCallbackLine == -1)
+				{
+					GetGPU();
+					_scanlineCallback(ppu.LCDC);
+				}
 			}
 
 			if (_islag)
@@ -114,16 +117,41 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			
 			while (!vblank_rise)
 			{
+				// These things do not change speed in GBC double spped mode
 				audio.tick();
-				timer.tick_1();
 				ppu.tick();
-				serialport.serial_transfer_tick();
+				if (Use_MT) { mapper.Mapper_Tick(); }
 
-				if (Use_RTC) { mapper.RTC_Tick(); }
+				if (!HDMA_transfer)
+				{
+					// These things all tick twice as fast in GBC double speed mode
+					ppu.DMA_tick();
+					timer.tick_1();
+					serialport.serial_transfer_tick();					
+					cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
+					timer.tick_2();
 
-				cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
-
-				timer.tick_2();
+					if (double_speed)
+					{
+						ppu.DMA_tick();
+						timer.tick_1();
+						serialport.serial_transfer_tick();
+						cpu.ExecuteOne(ref REG_FF0F, REG_FFFF);
+						timer.tick_2();
+					}
+				}
+				else
+				{
+					timer.tick_1();
+					timer.tick_2();
+					cpu.TotalExecutedCycles++;
+					if (double_speed)
+					{
+						timer.tick_1();
+						timer.tick_2();
+						cpu.TotalExecutedCycles++;
+					}
+				}
 
 				if (in_vblank && !in_vblank_old)
 				{
@@ -131,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 
 				ticker++;
-				if (ticker > 10000000) { throw new Exception("ERROR: Unable to Resolve Frame"); }
+				//if (ticker > 10000000) { vblank_rise = true; }//throw new Exception("ERROR: Unable to Resolve Frame"); }
 
 				in_vblank_old = in_vblank;
 			}
@@ -139,15 +167,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			vblank_rise = false;
 		}
 
-		public void RunCPUCycle()
+		// Switch Speed (GBC only)
+		public int SpeedFunc(int temp)
 		{
-			
+			if (is_GBC)
+			{
+				if (speed_switch)
+				{
+					speed_switch = false;
+
+					int ret = double_speed ? 50000 : 25000; // actual time needs checking
+					double_speed = !double_speed;
+					return ret;
+				}
+
+				// if we are not switching speed, return 0
+				return 0;
+			}
+
+			// if we are in GB mode, return 0 indicating not switching speed
+			return 0;
 		}
 
 		public void GetControllerState(IController controller)
 		{
 			InputCallbacks.Call();
 			controller_state = _controllerDeck.ReadPort1(controller);
+
+			Acc_X_state = _controllerDeck.ReadAccX1(controller);
+			Acc_Y_state = _controllerDeck.ReadAccY1(controller);
 		}
 
 		public int Frame => _frame;
@@ -171,6 +219,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			Marshal.FreeHGlobal(iptr1);
 			Marshal.FreeHGlobal(iptr2);
 			Marshal.FreeHGlobal(iptr3);
+
+			audio.DisposeSound();
 		}
 
 		#region Video provider

@@ -64,7 +64,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 		[FeatureNotImplemented]
 		public void Step(StepType type) { throw new NotImplementedException(); }
 
-		public int TotalExecutedCycles
+		public long TotalExecutedCycles
 		{
 			get { return cpu.TotalExecutedCycles; }
 		}

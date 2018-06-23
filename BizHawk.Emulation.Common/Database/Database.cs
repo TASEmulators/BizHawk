@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 
 using BizHawk.Common.BufferExtensions;
+using System.Linq;
 
 namespace BizHawk.Emulation.Common
 {
@@ -298,12 +299,26 @@ namespace BizHawk.Emulation.Common
 				case ".D64":
 				case ".T64":
 				case ".G64":
-				case ".CRT":
-				case ".TAP":
+				case ".CRT":				
 					game.System = "C64";
 					break;
 
-				case ".Z64":
+                case ".TZX":
+                case ".PZX":
+                case ".CSW":
+                case ".WAV":
+                    game.System = "ZXSpectrum";
+                    break;
+
+                case ".TAP":                    
+                    byte[] head = romData.Take(8).ToArray();
+                    if (System.Text.Encoding.Default.GetString(head).Contains("C64-TAPE"))
+                        game.System = "C64";
+                    else
+                        game.System = "ZXSpectrum";
+                    break;
+
+                case ".Z64":
 				case ".V64":
 				case ".N64":
 					game.System = "N64";
@@ -327,6 +342,15 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".DSK":
+                    byte[] head2 = romData.Take(20).ToArray();
+                    string ident = System.Text.Encoding.Default.GetString(head2);
+                    if (ident.ToUpper().Contains("EXTENDED CPC DSK") ||
+                        ident.ToUpper().Contains("MV - CPC"))
+                        game.System = "ZXSpectrum";
+                    else
+                        game.System = "AppleII";
+                    break;
+
 				case ".PO":
 				case ".DO":
 					game.System = "AppleII";

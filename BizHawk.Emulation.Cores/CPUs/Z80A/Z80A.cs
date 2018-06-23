@@ -14,67 +14,75 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// operations that can take place in an instruction
 		public const ushort IDLE = 0; 
 		public const ushort OP = 1;
-		public const ushort OP_R = 2; // used for repeating operations
+		public const ushort OP_F = 2; // used for repeating operations
 		public const ushort HALT = 3;
 		public const ushort RD = 4;
 		public const ushort WR = 5;
-		public const ushort I_RD = 6;
-		public const ushort I_WR = 7;
-		public const ushort TR = 8;
-		public const ushort TR16 = 9;
-		public const ushort ADD16 = 10;
-		public const ushort ADD8 = 11;
-		public const ushort SUB8 = 12;
-		public const ushort ADC8 = 13;
-		public const ushort SBC8 = 14;
-		public const ushort SBC16 = 15;
-		public const ushort ADC16 = 16;
-		public const ushort INC16 = 17;
-		public const ushort INC8 = 18;
-		public const ushort DEC16 = 19;
-		public const ushort DEC8 = 20;
-		public const ushort RLC = 21;
-		public const ushort RL = 22;
-		public const ushort RRC = 23;
-		public const ushort RR = 24;	
-		public const ushort CPL = 25;
-		public const ushort DA = 26;
-		public const ushort SCF = 27;
-		public const ushort CCF = 28;
-		public const ushort AND8 = 29;
-		public const ushort XOR8 = 30;
-		public const ushort OR8 = 31;
-		public const ushort CP8 = 32;
-		public const ushort SLA = 33;
-		public const ushort SRA = 34;
-		public const ushort SRL = 35;
-		public const ushort SLL = 36;
-		public const ushort BIT = 37;
-		public const ushort RES = 38;
-		public const ushort SET = 39;		
-		public const ushort EI = 40;
-		public const ushort DI = 41;	
-		public const ushort EXCH = 42;
-		public const ushort EXX = 43;
-		public const ushort EXCH_16 = 44;
-		public const ushort PREFIX = 45;
-		public const ushort PREFETCH = 46;
-		public const ushort ASGN = 47;
-		public const ushort ADDS = 48; // signed 16 bit operation used in 2 instructions
-		public const ushort INT_MODE = 49;
-		public const ushort EI_RETN = 50;
-		public const ushort EI_RETI = 51; // reti has no delay in interrupt enable
-		public const ushort OUT = 52;
-		public const ushort IN = 53;
-		public const ushort NEG = 54;		
-		public const ushort RRD = 55;
-		public const ushort RLD = 56;		
-		public const ushort SET_FL_LD = 57;
-		public const ushort SET_FL_CP = 58;
-		public const ushort SET_FL_IR = 59;
-		public const ushort I_BIT = 60;
-		public const ushort HL_BIT = 61;
+		public const ushort RD_INC = 6; // read and increment
+		public const ushort WR_INC = 7; // write and increment
+		public const ushort WR_DEC = 8; // write and increment (for stack pointer)
+		public const ushort TR = 9;
+		public const ushort TR16 = 10;
+		public const ushort ADD16 = 11;
+		public const ushort ADD8 = 12;
+		public const ushort SUB8 = 13;
+		public const ushort ADC8 = 14;
+		public const ushort SBC8 = 15;
+		public const ushort SBC16 = 16;
+		public const ushort ADC16 = 17;
+		public const ushort INC16 = 18;
+		public const ushort INC8 = 19;
+		public const ushort DEC16 = 20;
+		public const ushort DEC8 = 21;
+		public const ushort RLC = 22;
+		public const ushort RL = 23;
+		public const ushort RRC = 24;
+		public const ushort RR = 25;	
+		public const ushort CPL = 26;
+		public const ushort DA = 27;
+		public const ushort SCF = 28;
+		public const ushort CCF = 29;
+		public const ushort AND8 = 30;
+		public const ushort XOR8 = 31;
+		public const ushort OR8 = 32;
+		public const ushort CP8 = 33;
+		public const ushort SLA = 34;
+		public const ushort SRA = 35;
+		public const ushort SRL = 36;
+		public const ushort SLL = 37;
+		public const ushort BIT = 38;
+		public const ushort RES = 39;
+		public const ushort SET = 40;		
+		public const ushort EI = 41;
+		public const ushort DI = 42;	
+		public const ushort EXCH = 43;
+		public const ushort EXX = 44;
+		public const ushort EXCH_16 = 45;
+		public const ushort PREFIX = 46;
+		public const ushort PREFETCH = 47;
+		public const ushort ASGN = 48;
+		public const ushort ADDS = 49; // signed 16 bit operation used in 2 instructions
+		public const ushort INT_MODE = 50;
+		public const ushort EI_RETN = 51;
+		public const ushort EI_RETI = 52; // reti has no delay in interrupt enable
+		public const ushort OUT = 53;
+		public const ushort IN = 54;
+		public const ushort NEG = 55;		
+		public const ushort RRD = 56;
+		public const ushort RLD = 57;		
+		public const ushort SET_FL_LD_R = 58;
+		public const ushort SET_FL_CP_R = 59;
+		public const ushort SET_FL_IR = 60;
+		public const ushort I_BIT = 61;
+		public const ushort HL_BIT = 62;
+		public const ushort FTCH_DB = 63;
+		public const ushort WAIT = 64; // enterred when readin or writing and FlagW is true
+		public const ushort RST = 65;
+		public const ushort REP_OP_I = 66;
+		public const ushort REP_OP_O = 67;
 
+		// non-state variables
+		public ushort Ztemp1, Ztemp2, Ztemp3, Ztemp4;	
 		public byte temp_R;
 
 		public Z80A()
@@ -88,8 +96,18 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			ResetRegisters();
 			ResetInterrupts();
 			TotalExecutedCycles = 0;
-			cur_instr = new ushort[] { OP };
-			instr_pntr = 0;
+			cur_instr = new ushort[] 
+						{IDLE,
+						DEC16, F, A,
+						DEC16, SPl, SPh,
+						IDLE,
+						WAIT,
+						OP_F,
+						OP };
+
+			BUSRQ = new ushort[] { 0, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { 0, 0, 0, PCh, 0, 0, 0 };
+			instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 			NO_prefix = true;
 		}
 
@@ -105,6 +123,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// Hardware I/O Port Access
 		public Func<ushort, byte> ReadHardware;
 		public Action<ushort, byte> WriteHardware;
+
+		// Data Bus
+		// Interrupting Devices are responsible for putting a value onto the data bus
+		// for as long as the interrupt is valid
+		public Func<byte> FetchDB;
 
 		//this only calls when the first byte of an instruction is fetched.
 		public Action<ushort> OnExecFetch;
@@ -140,7 +163,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		// Execute instructions
 		public void ExecuteOne()
 		{
-			if (Regs[A] > 255) { Console.WriteLine(RegPC); }
+			FlagI5 = FlagI4;
+			FlagI4 = FlagI3;
+			FlagI3 = FlagI2;
+			FlagI2 = FlagI1;
+			FlagI1 = FlagI;
+			
+			bus_pntr++; mem_pntr++;
 			switch (cur_instr[instr_pntr++])
 			{
 				case IDLE:
@@ -168,8 +197,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						iff1 = false;
 						NMI_();
 						NMICallback();
+						instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					}
-					else if (iff1 && FlagI)
+					else if (iff1 && FlagI5)
 					{
 						iff1 = iff2 = false;
 						EI_pending = 0;
@@ -190,155 +220,34 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 								INTERRUPT_1();
 								break;
 							case 2:
-								// Low byte of interrupt vector comes from data bus
-								// We'll assume it's zero for now
-								INTERRUPT_2(0);
+								INTERRUPT_2();
 								break;
 						}
 						IRQCallback();
+						instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					}
 					else
 					{
 						if (OnExecFetch != null) OnExecFetch(RegPC);
 						if (TraceCallback != null) TraceCallback(State());
-						FetchInstruction(FetchMemory(RegPC++));
+						RegPC++;
+						FetchInstruction();
+						instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					}
-					instr_pntr = 0;
 
 					temp_R = (byte)(Regs[R] & 0x7F);
 					temp_R++;
 					temp_R &= 0x7F;
 					Regs[R] = (byte)((Regs[R] & 0x80) | temp_R);
 					break;
-				case OP_R:
-					// determine if we repeat based on what operation we are doing
-					// single execution versions also come here, but never repeat
-					ushort temp1 = cur_instr[instr_pntr++];
-					ushort temp2 = cur_instr[instr_pntr++];
-					ushort temp3 = cur_instr[instr_pntr++];
-
-					bool repeat = false;
-					int Reg16_d = Regs[C] | (Regs[B] << 8);
-					switch (temp1)
-					{
-						case 0:
-							repeat = Reg16_d != 0;
-							break;
-						case 1:
-							repeat = (Reg16_d != 0) && !FlagZ;
-							break;
-						case 2:
-							repeat = Regs[B] != 0;
-							break;
-						case 3:
-							repeat = Regs[B] != 0;
-							break;
-					}
-
-					// if we repeat, we do a 5 cycle refresh which decrements PC by 2
-					// if we don't repeat, continue on as a normal opcode fetch
-					if (repeat && temp3 > 0)
-					{
-						cur_instr = new ushort[]
-									{IDLE,
-									DEC16, PCl, PCh,
-									IDLE,
-									DEC16, PCl, PCh,
-									OP };
-
-						// adjust WZ register accordingly
-						switch (temp1)
-						{
-							case 0:
-								// TEST: PC before or after the instruction?
-								Regs[Z] = Regs[PCl];
-								Regs[W] = Regs[PCh];
-								INC16_Func(Z, W);
-								break;
-							case 1:
-								// TEST: PC before or after the instruction?
-								Regs[Z] = Regs[PCl];
-								Regs[W] = Regs[PCh];
-								INC16_Func(Z, W);
-								break;
-							case 2:
-								// Nothing
-								break;
-							case 3:
-								// Nothing
-								break;
-						}
-					}
-					else
-					{
-						// Interrupts can occur at this point, so process them accordingly
-						// Read the opcode of the next instruction				
-						if (EI_pending > 0)
-						{
-							EI_pending--;
-							if (EI_pending == 0) { IFF1 = IFF2 = true; }
-						}
-
-						// Process interrupt requests.
-						if (nonMaskableInterruptPending)
-						{
-							nonMaskableInterruptPending = false;
-
-							if (TraceCallback != null)
-							{
-								TraceCallback(new TraceInfo{Disassembly = "====NMI====", RegisterInfo = ""});
-							}
-
-							iff2 = iff1;
-							iff1 = false;
-							NMI_();
-							NMICallback();
-						}
-						else if (iff1 && FlagI)
-						{
-							iff1 = iff2 = false;
-							EI_pending = 0;
-
-							if (TraceCallback != null)
-							{
-								TraceCallback(new TraceInfo{Disassembly = "====IRQ====", RegisterInfo = ""});
-							}
-
-							switch (interruptMode)
-							{
-								case 0:
-									// Requires something to be pushed onto the data bus
-									// we'll assume it's a zero for now
-									INTERRUPT_0(0);
-									break;
-								case 1:
-									INTERRUPT_1();
-									break;
-								case 2:
-									// Low byte of interrupt vector comes from data bus
-									// We'll assume it's zero for now
-									INTERRUPT_2(0);
-									break;
-							}
-							IRQCallback();
-						}
-						else
-						{
-							if (OnExecFetch != null) OnExecFetch(RegPC);
-							if (TraceCallback != null) TraceCallback(State());
-							FetchInstruction(FetchMemory(RegPC++));
-						}
-
-						temp_R = (byte)(Regs[R] & 0x7F);
-						temp_R++;
-						temp_R &= 0x7F;
-						Regs[R] = (byte)((Regs[R] & 0x80) | temp_R);
-					}
-					instr_pntr = 0;
+				case OP_F:
+					opcode = FetchMemory(RegPC);
 					break;
-
 				case HALT:
 					halted = true;
+					// NOTE: Check how halt state effects the DB
+					Regs[DB] = 0xFF;
+
 					if (EI_pending > 0)
 					{
 						EI_pending--;
@@ -361,7 +270,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						NMICallback();
 						halted = false;
 					}
-					else if (iff1 && FlagI)
+					else if (iff1 && FlagI5)
 					{
 						iff1 = iff2 = false;
 						EI_pending = 0;
@@ -382,28 +291,19 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 								INTERRUPT_1();
 								break;
 							case 2:
-								// Low byte of interrupt vector comes from data bus
-								// We'll assume it's zero for now
-								INTERRUPT_2(0);
+								INTERRUPT_2();
 								break;
 						}
 						IRQCallback();
 						halted = false;
 					}
-					else
-					{
-						cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						IDLE,
-						HALT };
-					}
+
 					temp_R = (byte)(Regs[R] & 0x7F);
 					temp_R++;
 					temp_R &= 0x7F;
 					Regs[R] = (byte)((Regs[R] & 0x80) | temp_R);
 
-					instr_pntr = 0;
+					instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					break;
 				case RD:
 					Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -411,11 +311,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				case WR:
 					Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case I_RD:
-					I_Read_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				case RD_INC:
+					Read_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case I_WR:
-					I_Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+				case WR_INC:
+					Write_INC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					break;
+				case WR_DEC:
+					Write_DEC_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case TR:
 					TR_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
@@ -540,11 +443,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					if (prefix_src == EXTDpre) { EXTD_prefix = true; }
 					if (prefix_src == IXpre) { IX_prefix = true; }
 					if (prefix_src == IYpre) { IY_prefix = true; }
-					if (prefix_src == IXCBpre) { IXCB_prefix = true; IXCB_prefetch = true; }
-					if (prefix_src == IYCBpre) { IYCB_prefix = true; IYCB_prefetch = true; }
+					if (prefix_src == IXCBpre) { IXCB_prefix = true; }
+					if (prefix_src == IYCBpre) { IYCB_prefix = true; }
 
-					FetchInstruction(FetchMemory(RegPC++));
-					instr_pntr = 0;
+					RegPC++;
+					FetchInstruction();
+					instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					// only the first prefix in a double prefix increases R, although I don't know how / why
 					if (prefix_src < 4)
 					{
@@ -569,10 +473,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					iff1 = iff2;
 					break;
 				case OUT:
-					OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case IN:
-					IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+					IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case NEG:
 					NEG_8_Func(cur_instr[instr_pntr++]);
@@ -586,17 +490,217 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				case RLD:
 					RLD_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
-				case SET_FL_LD:
+				case SET_FL_LD_R:
+					DEC16_Func(C, B);
 					SET_FL_LD_Func();
+
+					Ztemp1 = cur_instr[instr_pntr++];
+					Ztemp2 = cur_instr[instr_pntr++];
+					Ztemp3 = cur_instr[instr_pntr++];
+
+					if (((Regs[C] | (Regs[B] << 8)) != 0) && (Ztemp3 > 0))
+					{
+						cur_instr = new ushort[]
+									{DEC16, PCl, PCh,
+									DEC16, PCl, PCh,
+									TR16, Z, W, PCl, PCh,
+									INC16, Z, W,								
+									IDLE,
+									Ztemp2, E, D,
+									WAIT,
+									OP_F,
+									OP};
+
+						BUSRQ = new ushort[] { D, D, D, D, D, PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
+					}
+					else
+					{
+						cur_instr = new ushort[]
+									{ Ztemp2, E, D,
+									  WAIT,
+									  OP_F,
+									  OP };
+
+						BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { PCh, 0, 0, 0 };
+					}
+					instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					break;
-				case SET_FL_CP:
+				case SET_FL_CP_R:
 					SET_FL_CP_Func();
+
+					Ztemp1 = cur_instr[instr_pntr++];
+					Ztemp2 = cur_instr[instr_pntr++];
+					Ztemp3 = cur_instr[instr_pntr++];
+
+					if (((Regs[C] | (Regs[B] << 8)) != 0) && (Ztemp3 > 0) && !FlagZ)
+					{
+						cur_instr = new ushort[]
+									{DEC16, PCl, PCh,
+									DEC16, PCl, PCh,
+									TR16, Z, W, PCl, PCh,
+									INC16, Z, W,								
+									IDLE,
+									Ztemp2, L, H,
+									WAIT,
+									OP_F,
+									OP};
+
+						BUSRQ = new ushort[] { H, H, H, H, H, PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
+					}
+					else
+					{
+						cur_instr = new ushort[]
+									{ Ztemp2, L, H,
+									  WAIT,
+									  OP_F,
+									  OP };
+
+						BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { PCh, 0, 0, 0 };
+					}
+					instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
 					break;
 				case SET_FL_IR:
 					SET_FL_IR_Func(cur_instr[instr_pntr++]);
 					break;
+				case FTCH_DB:
+					FTCH_DB_Func();
+					break;
+				case WAIT:
+					if (FlagW)
+					{
+						instr_pntr--; bus_pntr--; mem_pntr--;
+					}
+					break;
+				case RST:
+					Regs[Z] = cur_instr[instr_pntr++];
+					Regs[W] = 0;
+					break;
+				case REP_OP_I:			
+					Write_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+
+					Ztemp4 = cur_instr[instr_pntr++];
+					if (Ztemp4 == DEC16)
+					{
+						TR16_Func(Z, W, C, B);
+						DEC16_Func(Z, W);
+						DEC8_Func(B);
+
+						// take care of other flags
+						// taken from 'undocumented z80 documented' and Fuse
+						FlagN = Regs[ALU].Bit(7);
+						FlagH = FlagC = ((Regs[ALU] + Regs[C] - 1) & 0xFF) < Regs[ALU];
+						FlagP = TableParity[((Regs[ALU] + Regs[C] - 1) & 7) ^ Regs[B]];
+					}
+					else
+					{				
+						TR16_Func(Z, W, C, B);
+						INC16_Func(Z, W);
+						DEC8_Func(B);
+
+						// take care of other flags
+						// taken from 'undocumented z80 documented' and Fuse
+						FlagN = Regs[ALU].Bit(7);
+						FlagH = FlagC = ((Regs[ALU] + Regs[C] + 1) & 0xFF) < Regs[ALU];
+						FlagP = TableParity[((Regs[ALU] + Regs[C] + 1) & 7) ^ Regs[B]];
+					}
+
+					Ztemp1 = cur_instr[instr_pntr++];
+					Ztemp2 = cur_instr[instr_pntr++];
+					Ztemp3 = cur_instr[instr_pntr++];
+
+					if ((Regs[B] != 0) && (Ztemp3 > 0))
+					{
+						cur_instr = new ushort[]
+									{IDLE,
+									IDLE,
+									DEC16, PCl, PCh,
+									DEC16, PCl, PCh,
+									IDLE,
+									Ztemp2, L, H,
+									WAIT,
+									OP_F,
+									OP};
+
+						BUSRQ = new ushort[] { H, H, H, H, H, PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
+					}
+					else
+					{
+						cur_instr = new ushort[]
+									{ Ztemp2, L, H,
+									  WAIT,
+									  OP_F,
+									  OP };
+
+						BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { PCh, 0, 0, 0 };
+					}
+					instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
+					break;
+				case REP_OP_O:
+					OUT_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+
+					Ztemp4 = cur_instr[instr_pntr++];
+					if (Ztemp4 == DEC16)
+					{
+						DEC16_Func(L, H);
+						DEC8_Func(B);
+						TR16_Func(Z, W, C, B);
+						DEC16_Func(Z, W);			
+					}
+					else
+					{
+						INC16_Func(L, H);
+						DEC8_Func(B);
+						TR16_Func(Z, W, C, B);
+						INC16_Func(Z, W);
+					}
+
+					// take care of other flags
+					// taken from 'undocumented z80 documented'
+					FlagN = Regs[ALU].Bit(7);
+					FlagH = FlagC = (Regs[ALU] + Regs[L]) > 0xFF;
+					FlagP = TableParity[((Regs[ALU] + Regs[L]) & 7) ^ (Regs[B])];
+
+					Ztemp1 = cur_instr[instr_pntr++];
+					Ztemp2 = cur_instr[instr_pntr++];
+					Ztemp3 = cur_instr[instr_pntr++];
+
+					if ((Regs[B] != 0) && (Ztemp3 > 0))
+					{
+						cur_instr = new ushort[]
+									{IDLE,
+									IDLE,
+									DEC16, PCl, PCh,
+									DEC16, PCl, PCh,
+									IDLE,
+									IDLE,
+									WAIT,
+									OP_F,
+									OP};
+
+						BUSRQ = new ushort[] { B, B, B, B, B, PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
+					}
+					else
+					{
+						cur_instr = new ushort[]
+									{ IDLE,
+									  WAIT,
+									  OP_F,
+									  OP };
+
+						BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+						MEMRQ = new ushort[] { PCh, 0, 0, 0 };
+					}
+					instr_pntr = 0; bus_pntr = 0; mem_pntr = 0;
+					break;
 			}
-			totalExecutedCycles++;
+			TotalExecutedCycles++;
 		}
 
 		// tracer stuff
@@ -651,8 +755,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					FlagI ? "E" : "e")
 			};
 		}
-		// State Save/Load
 
+		// State Save/Load
 		public void SyncState(Serializer ser)
 		{
 			ser.BeginSection("Z80A");
@@ -663,13 +767,23 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			ser.Sync("IFF1", ref iff1);
 			ser.Sync("IFF2", ref iff2);
 			ser.Sync("Halted", ref halted);
-			ser.Sync("ExecutedCycles", ref totalExecutedCycles);
+			ser.Sync("ExecutedCycles", ref TotalExecutedCycles);
 			ser.Sync("EI_pending", ref EI_pending);
 
-			ser.Sync("instruction_pointer", ref instr_pntr);
-			ser.Sync("current instruction", ref cur_instr, false);		
+			ser.Sync("instr_pntr", ref instr_pntr);
+			ser.Sync("bus_pntr", ref bus_pntr);
+			ser.Sync("mem_pntr", ref mem_pntr);
+			ser.Sync("cur_instr", ref cur_instr, false);
+			ser.Sync("BUSRQ", ref BUSRQ, false);
+			ser.Sync("MEMRQ", ref MEMRQ, false);
 			ser.Sync("opcode", ref opcode);
 			ser.Sync("FlagI", ref FlagI);
+			ser.Sync("FlagI1", ref FlagI1);
+			ser.Sync("FlagI2", ref FlagI2);
+			ser.Sync("FlagI3", ref FlagI3);
+			ser.Sync("FlagI4", ref FlagI4);
+			ser.Sync("FlagI5", ref FlagI5);
+			ser.Sync("FlagW", ref FlagW);
 
 			ser.Sync("NO Preifx", ref NO_prefix);
 			ser.Sync("CB Preifx", ref CB_prefix);
@@ -678,9 +792,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			ser.Sync("IXCB_prefix", ref IXCB_prefix);
 			ser.Sync("IYCB_prefix", ref IYCB_prefix);
 			ser.Sync("EXTD_prefix", ref EXTD_prefix);
-			ser.Sync("IXCB_prefetch", ref IXCB_prefetch);
-			ser.Sync("IYCB_prefetch", ref IYCB_prefetch);
-			ser.Sync("PF", ref PF);
 
 			ser.EndSection();
 		}

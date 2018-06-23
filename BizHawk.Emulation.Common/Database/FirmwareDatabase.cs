@@ -50,9 +50,17 @@ namespace BizHawk.Emulation.Common
 			FirmwareAndOption("AB16F56989B27D89BABE5F89C5A8CB3DA71A82F0", 16384, "C64", "Drive1541", "drive-1541.bin", "1541 Disk Drive Rom");
 			FirmwareAndOption("D3B78C3DBAC55F5199F33F3FE0036439811F7FB3", 16384, "C64", "Drive1541II", "drive-1541ii.bin", "1541-II Disk Drive Rom");
 
-			// for saturn, we think any bios region can pretty much run any iso
-			// so, we're going to lay this out carefully so that we choose things in a sensible order, but prefer the correct region
-			var ss_100_j = File("2B8CB4F87580683EB4D760E4ED210813D667F0A2", 524288, "saturn-1.00-(J).bin", "Bios v1.00 (J)");
+            // ZX Spectrum
+            /* These are now shipped with bizhawk
+            FirmwareAndOption("5EA7C2B824672E914525D1D5C419D71B84A426A2", 16384, "ZXSpectrum", "48ROM", "48.ROM", "Spectrum 48K ROM");
+            FirmwareAndOption("16375D42EA109B47EDDED7A16028DE7FDB3013A1", 32768, "ZXSpectrum", "128ROM", "128.ROM", "Spectrum 128K ROM");
+            FirmwareAndOption("8CAFB292AF58617907B9E6B9093D3588A75849B8", 32768, "ZXSpectrum", "PLUS2ROM", "PLUS2.ROM", "Spectrum 128K +2 ROM");
+            FirmwareAndOption("929BF1A5E5687EBD8D7245F9B513A596C0EC21A4", 65536, "ZXSpectrum", "PLUS3ROM", "PLUS3.ROM", "Spectrum 128K +3 ROM");
+            */
+
+            // for saturn, we think any bios region can pretty much run any iso
+            // so, we're going to lay this out carefully so that we choose things in a sensible order, but prefer the correct region
+            var ss_100_j = File("2B8CB4F87580683EB4D760E4ED210813D667F0A2", 524288, "saturn-1.00-(J).bin", "Bios v1.00 (J)");
 			var ss_100_ue = File("FAA8EA183A6D7BBE5D4E03BB1332519800D3FBC3", 524288, "saturn-1.00-(U+E).bin", "Bios v1.00 (U+E)");
 			var ss_100a_ue = File("3BB41FEB82838AB9A35601AC666DE5AACFD17A58", 524288, "saturn-1.00a-(U+E).bin", "Bios v1.00a (U+E)"); // ?? is this size correct?
 			var ss_101_j = File("DF94C5B4D47EB3CC404D88B33A8FDA237EAF4720", 524288, "saturn-1.01-(J).bin", "Bios v1.01 (J)"); // ?? is this size correct?

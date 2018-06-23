@@ -76,7 +76,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			GetControllerState(controller);
 			GetConsoleState(controller);
-			
+
 			maria.RunFrame();
 
 			if (_islag)

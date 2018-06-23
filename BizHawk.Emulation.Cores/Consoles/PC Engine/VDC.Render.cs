@@ -22,6 +22,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 		public int BackgroundY;
 		public int RCRCounter;
 		public int ActiveLine;
+		public bool latch_bgy;
+		public int ActiveDisplayStartLine;
 
 		public int HBlankCycles = 79;
 		public bool PerformSpriteLimit;
@@ -31,10 +33,28 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public void ExecFrame(bool render)
 		{
-			if (MultiResHack > 0 && render)
-				Array.Clear(FrameBuffer, 0, FrameBuffer.Length);
+			Array.Clear(FrameBuffer, 0, FrameBuffer.Length);
 
-			int ActiveDisplayStartLine = DisplayStartLine;
+			ActiveDisplayStartLine = DisplayStartLine;
+
+			/*
+			Console.Write("VDS: ");
+			Console.Write((Registers[VPR] >> 8));
+			Console.Write(" VSW: ");
+			Console.Write((Registers[VPR] & 0xFF));
+			Console.Write(" VDR: ");
+			Console.Write((Registers[VDW] & 0xFF));
+			Console.Write(" VCR: ");
+			Console.Write((Registers[VCR] & 0xFF));
+			Console.Write(" HDS: ");
+			Console.Write((Registers[HSR] >> 8));
+			Console.Write(" HSW: ");
+			Console.Write((Registers[HSR] & 0xFF));
+			Console.Write(" HDE: ");
+			Console.Write((Registers[HDR] >> 8));
+			Console.Write(" HDW: ");
+			Console.WriteLine((Registers[HDR] & 0xFF));
+			*/
 
 			while (true)
 			{
@@ -59,7 +79,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					}
 				}
 
-				cpu.Execute(HBlankCycles);
+				cpu.Execute(24);
 
 				if (InActiveDisplay)
 				{
@@ -67,10 +87,21 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						BackgroundY = Registers[BYR];
 					else
 					{
+						if (latch_bgy)
+						{
+							BackgroundY = Registers[BYR];
+							latch_bgy = false;
+						}
 						BackgroundY++;
 						BackgroundY &= 0x01FF;
+						
 					}
+				}
 
+				cpu.Execute(HBlankCycles - 24);
+
+				if (InActiveDisplay)
+				{
 					if (render) RenderScanLine();
 				}
 
@@ -107,8 +138,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 		public void RenderScanLine()
 		{
-			if (((ActiveLine + ViewStartLine) >= pce.Settings.Bottom_Line) ||
-				((ActiveLine + ViewStartLine) < pce.Settings.Top_Line))	
+			if ((ScanLine >= pce.Settings.Bottom_Line) ||
+				(ScanLine < pce.Settings.Top_Line))	
 				return;
 
 			RenderBackgroundScanline(pce.Settings.ShowBG1);
@@ -126,7 +157,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 				int p = vce.Palette[256];
 				fixed (int* FBptr = FrameBuffer)
 				{
-					int* dst = FBptr + (ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch;
+					int* dst = FBptr + (ScanLine - pce.Settings.Top_Line) * FramePitch;
 					for (int i = 0; i < FrameWidth; i++)
 						*dst++ = p;
 				}
@@ -150,7 +181,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			{
 				// pointer to the BAT and the framebuffer for this line
 				ushort* BatRow = VRAMptr + yTile * BatWidth;
-				int* dst = FBptr + (ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch;
+				int* dst = FBptr + (ScanLine - pce.Settings.Top_Line) * FramePitch;
 
 				// parameters that change per tile
 				ushort BatEnt;
@@ -204,7 +235,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			if (BackgroundEnabled == false)
 			{
 				for (int i = 0; i < FrameWidth; i++)
-					FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch) + i] = vce.Palette[256];
+					FrameBuffer[((ScanLine - pce.Settings.Top_Line) * FramePitch) + i] = vce.Palette[256];
 				return;
 			}
 
@@ -228,10 +259,10 @@ namespace BizHawk.Emulation.Cores.PCEngine
 
 				byte c = PatternBuffer[(tileNo * 64) + (yOfs * 8) + xOfs];
 				if (c == 0)
-					FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch) + x] = vce.Palette[0];
+					FrameBuffer[((ScanLine - pce.Settings.Top_Line) * FramePitch) + x] = vce.Palette[0];
 				else
 				{
-					FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch) + x] = show ? vce.Palette[paletteBase + c] : vce.Palette[0];
+					FrameBuffer[((ScanLine - pce.Settings.Top_Line) * FramePitch) + x] = show ? vce.Palette[paletteBase + c] : vce.Palette[0];
 					PriorityBuffer[x] = 1;
 				}
 			}
@@ -363,7 +394,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 							{
 								InterSpritePriorityBuffer[xs] = 1;
 								if ((priority || PriorityBuffer[xs] == 0) && show)
-									FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
+									FrameBuffer[((ScanLine - pce.Settings.Top_Line) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
 							}
 						}
 					}
@@ -380,7 +411,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 							{
 								InterSpritePriorityBuffer[xs] = 1;
 								if ((priority || PriorityBuffer[xs] == 0) && show)
-									FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
+									FrameBuffer[((ScanLine - pce.Settings.Top_Line) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
 							}
 
 						}
@@ -401,7 +432,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 							{
 								InterSpritePriorityBuffer[xs] = 1;
 								if ((priority || PriorityBuffer[xs] == 0) && show)
-									FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
+									FrameBuffer[((ScanLine - pce.Settings.Top_Line) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
 							}
 						}
 						if (width == 32)
@@ -417,7 +448,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 								{
 									InterSpritePriorityBuffer[xs] = 1;
 									if ((priority || PriorityBuffer[xs] == 0) && show)
-										FrameBuffer[((ActiveLine + ViewStartLine - pce.Settings.Top_Line) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
+										FrameBuffer[((ScanLine - pce.Settings.Top_Line) * FramePitch) + xs] = vce.Palette[paletteBase + pixel];
 								}
 							}
 						}

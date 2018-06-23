@@ -10,10 +10,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		private void NOP_()
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						IDLE,
-						OP };
+						{ IDLE,
+						  WAIT,
+						  OP_F,
+						  OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 		}
 
 		// NOTE: In a real Z80, this operation just flips a switch to choose between 2 registers
@@ -22,18 +25,24 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{EXCH,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 		}
 
 		private void EXX_()
 		{
 			cur_instr = new ushort[]
 						{EXX,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 		}
 
 		// this exchanges 2 16 bit registers
@@ -41,32 +50,41 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{EXCH_16, dest_l, dest_h, src_l, src_h,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 		}
 
 		private void INC_16(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
+						{INC16, src_l, src_h,
 						IDLE,
 						IDLE,
-						INC16,  src_l, src_h,					
-						IDLE,
+						WAIT,					
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { I, I, PCh, 0, 0, 0};
+			MEMRQ = new ushort[] { 0, 0, PCh, 0, 0, 0 };
 		}
 
 
 		private void DEC_16(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						DEC16, src_l, src_h,
+						{DEC16, src_l, src_h,
 						IDLE,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { I, I, PCh, 0, 0, 0};
+			MEMRQ = new ushort[] { 0, 0, PCh, 0, 0, 0 };
 		}
 
 		// this is done in two steps technically, but the flags don't work out using existing funcitons
@@ -74,26 +92,32 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		private void ADD_16(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
+						{TR16, Z, W, dest_l, dest_h,
 						IDLE,
-						IDLE,
-						TR16, Z, W, dest_l, dest_h,
 						INC16, Z, W,
-						IDLE,
 						IDLE,
 						ADD16, dest_l, dest_h, src_l, src_h,
 						IDLE,
 						IDLE,
+						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { I, I, I, I, I, I, I, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { 0, 0, 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void REG_OP(ushort operation, ushort dest, ushort src)
 		{
 			cur_instr = new ushort[]
 						{operation, dest, src,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 		}
 
 		// Operations using the I and R registers take one T-cycle longer
@@ -101,10 +125,13 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{operation, dest, src,
-						IDLE,
-						IDLE,
 						SET_FL_IR, dest,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { I, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { 0, PCh, 0, 0, 0 };
 		}
 
 		// note: do not use DEC here since no flags are affected by this operation
@@ -114,30 +141,36 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			{
 				cur_instr = new ushort[]
 							{IDLE,
+							ASGN, B, (ushort)((Regs[B] - 1) & 0xFF),
+							WAIT,
+							RD_INC, Z, PCl, PCh,
 							IDLE,
-							ASGN, B, (ushort)((Regs[B] - 1) & 0xFF), 
-							IDLE,
-							RD, Z, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
 							IDLE,
 							ASGN, W, 0,
-							IDLE,
 							ADDS, PCl, PCh, Z, W,
 							TR16, Z, W, PCl, PCh,
+							IDLE,
+							WAIT,
+							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] { I, PCh, 0, 0, PCh, PCh, PCh, PCh, PCh, PCh, 0, 0, 0 };
+				MEMRQ = new ushort[] { 0, PCh, 0, 0, 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
 			}
 			else
 			{
 				cur_instr = new ushort[]
 							{IDLE,
 							ASGN, B, (ushort)((Regs[B] - 1) & 0xFF),
+							WAIT,
+							RD_INC, ALU, PCl, PCh,
 							IDLE,
-							RD, ALU, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
-							IDLE,
+							WAIT,
+							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] { I, PCh, 0, 0, PCh, 0, 0, 0 };
+				MEMRQ = new ushort[] { 0, PCh, 0, 0, PCh, 0, 0, 0 };
 			}
 		}
 
@@ -148,6 +181,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						IDLE,
 						IDLE,
 						HALT };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 		}
 
 		private void JR_COND(bool cond)
@@ -156,28 +192,34 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			{
 				cur_instr = new ushort[]
 							{IDLE,
-							IDLE,
-							RD, Z, PCl, PCh,
-							INC16, PCl, PCh,
-							IDLE,							
+							WAIT,
+							RD_INC, Z, PCl, PCh,
 							IDLE,
 							ASGN, W, 0,
 							IDLE,
-							ADDS, PCl, PCh, Z, W,
-							TR16, Z, W, PCl, PCh,						
 							IDLE,
+							ADDS, PCl, PCh, Z, W,
+							TR16, Z, W, PCl, PCh,
+							WAIT,					
+							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] { PCh, 0, 0, PCh, PCh, PCh, PCh, PCh, PCh, 0, 0, 0 };
+				MEMRQ = new ushort[] { PCh, 0, 0, 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
 			}
 			else
 			{
 				cur_instr = new ushort[]
 							{IDLE,
+							WAIT,
+							RD_INC, ALU, PCl, PCh,
 							IDLE,
-							IDLE,
-							RD, ALU, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
+							WAIT,
+							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, 0 };
+				MEMRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, 0 };
 			}
 		}
 
@@ -187,29 +229,35 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			{
 				cur_instr = new ushort[]
 							{IDLE,
+							WAIT,
+							RD_INC, Z, PCl, PCh,
 							IDLE,
-							RD, Z, PCl, PCh,
-							INC16, PCl, PCh,
-							RD, W, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
+							WAIT,
+							RD_INC, W, PCl, PCh,
 							TR16, PCl, PCh, Z, W,
-							IDLE,
+							WAIT,
+							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, W, 0, 0, 0 };
+				MEMRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, W, 0, 0, 0 };
 			}
 			else
 			{
 				cur_instr = new ushort[]
 							{IDLE,
+							WAIT,
+							RD_INC, Z, PCl, PCh,
 							IDLE,
-							RD, Z, PCl, PCh,
-							INC16, PCl, PCh,
+							WAIT,
+							RD_INC, W, PCl, PCh,
 							IDLE,
-							RD, W, PCl, PCh,
-							INC16, PCl, PCh,
-							IDLE,						
-							IDLE,
+							WAIT,						
+							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, PCh, 0, 0, 0 };
+				MEMRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, PCh, 0, 0, 0 };
 			}
 		}
 
@@ -217,45 +265,54 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
+						WAIT,
+						RD_INC, Z, SPl, SPh,
 						IDLE,
-						RD, Z, SPl, SPh,
-						INC16, SPl, SPh,
-						IDLE,						
-						IDLE,
-						RD, W, SPl, SPh,
-						INC16, SPl, SPh,
-						TR16, PCl, PCh, Z, W,						
+						WAIT,
+						RD_INC, W, SPl, SPh,
+						TR16, PCl, PCh, Z, W,
+						WAIT,
+						OP_F,						
 						OP };
+
+			BUSRQ = new ushort[] { SPh, 0, 0, SPh, 0, 0, W, 0, 0, 0 };
+			MEMRQ = new ushort[] { SPh, 0, 0, SPh, 0, 0, W, 0, 0, 0 };
 		}
 
 		private void RETI_()
 		{
 			cur_instr = new ushort[]
 						{IDLE,
+						WAIT,
+						RD_INC, Z, SPl, SPh,
 						IDLE,
-						RD, Z, SPl, SPh,
-						INC16, SPl, SPh,
-						IDLE,						
-						IDLE,
-						RD, W, SPl, SPh,
-						INC16, SPl, SPh,
+						WAIT,
+						RD_INC, W, SPl, SPh,
 						TR16, PCl, PCh, Z, W,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { SPh, 0, 0, SPh, 0, 0, W, 0, 0, 0 };
+			MEMRQ = new ushort[] { SPh, 0, 0, SPh, 0, 0, W, 0, 0, 0 };
 		}
 
 		private void RETN_()
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
-						RD, Z, SPl, SPh,
-						INC16, SPl, SPh,
-						IDLE,
-						RD, W, SPl, SPh,
-						INC16, SPl, SPh,
+						WAIT,
+						RD_INC, Z, SPl, SPh,
 						EI_RETN,
+						WAIT,
+						RD_INC, W, SPl, SPh,
 						TR16, PCl, PCh, Z, W,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { SPh, 0, 0, SPh, 0, 0, W, 0, 0, 0 };
+			MEMRQ = new ushort[] { SPh, 0, 0, SPh, 0, 0, W, 0, 0, 0 };
 		}
 
 
@@ -266,24 +323,30 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				cur_instr = new ushort[]
 							{IDLE,
 							IDLE,
-							RD, Z, SPl, SPh,
-							INC16, SPl, SPh,
+							WAIT,
+							RD_INC, Z, SPl, SPh,	
 							IDLE,						
-							IDLE,
-							RD, W, SPl, SPh,
-							INC16, SPl, SPh,
-							IDLE,							
+							WAIT,
+							RD_INC, W, SPl, SPh,
 							TR16, PCl, PCh, Z, W,
+							WAIT,							
+							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] { I, SPh, 0, 0, SPh, 0, 0, W, 0, 0, 0 };
+				MEMRQ = new ushort[] { 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, 0 };
 			}
 			else
 			{
 				cur_instr = new ushort[]
 							{IDLE,
 							IDLE,
-							IDLE,
-							IDLE,
+							WAIT,
+							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] { I, PCh, 0, 0, 0 };
+				MEMRQ = new ushort[] { 0, PCh, 0, 0, 0 };
 			}
 		}
 
@@ -293,36 +356,42 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			{
 				cur_instr = new ushort[]
 							{IDLE,
+							WAIT,
+							RD_INC, Z, PCl, PCh,
 							IDLE,
-							RD, Z, PCl, PCh,
-							INC16, PCl, PCh,
-							IDLE,							
+							WAIT,
 							RD, W, PCl, PCh,
 							INC16, PCl, PCh,
-							IDLE,
 							DEC16, SPl, SPh,
+							WAIT,
+							WR_DEC, SPl, SPh, PCh,
 							IDLE,
-							WR, SPl, SPh, PCh,						
-							DEC16, SPl, SPh,
+							WAIT,
 							WR, SPl, SPh, PCl,
-							IDLE,
-							TR, PCl, Z,
-							TR, PCh, W,
+							TR16, PCl, PCh, Z, W,
+							WAIT,
+							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, PCh, SPh, 0, 0, SPh, 0, 0, W, 0, 0, 0 };
+				MEMRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, 0 };
 			}
 			else
 			{
 				cur_instr = new ushort[]
 							{IDLE,
+							WAIT,
+							RD_INC, Z, PCl, PCh,
 							IDLE,
-							RD, Z, PCl, PCh,
+							WAIT,
+							RD_INC, W, PCl, PCh,
 							IDLE,
-							INC16, PCl, PCh,
-							IDLE,
-							RD, W, PCl, PCh,
-							IDLE,
-							INC16, PCl, PCh,
+							WAIT,
+							OP_F,
 							OP };
+
+				BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, PCh, 0, 0, 0 };
+				MEMRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, PCh, 0, 0, 0 };
 			}
 		}
 
@@ -330,34 +399,43 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{operation, src,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 		}
 
 		private void BIT_OP(ushort operation, ushort bit, ushort src)
 		{
 			cur_instr = new ushort[]
 						{operation, bit, src,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 		}
 
 		private void PUSH_(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
+						{DEC16, SPl, SPh,
 						IDLE,
-						DEC16, SPl, SPh,
+						WAIT,
+						WR_DEC, SPl, SPh, src_h,
 						IDLE,
-						WR, SPl, SPh, src_h,
-						IDLE,
-						DEC16, SPl, SPh,
-						IDLE,
+						WAIT,
 						WR, SPl, SPh, src_l,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { I, SPh, 0, 0, SPh, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { 0, SPh, 0, 0, SPh, 0, 0, PCh, 0, 0, 0 };
 		}
 
 
@@ -365,76 +443,112 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						RD, src_l, SPl, SPh,
+						WAIT,
+						RD_INC, src_l, SPl, SPh,
 						IDLE,
-						INC16, SPl, SPh,
+						WAIT,
+						RD_INC, src_h, SPl, SPh,
 						IDLE,
-						RD, src_h, SPl, SPh,
-						IDLE,
-						INC16, SPl, SPh,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { SPh, 0, 0, SPh, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { SPh, 0, 0, SPh, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void RST_(ushort n)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
+						{DEC16, SPl, SPh,
 						IDLE,
-						DEC16, SPl, SPh,
-						WR, SPl, SPh, PCh,
-						DEC16, SPl, SPh,
-						WR, SPl, SPh, PCl,
-						IDLE,
-						ASGN, Z, n,
-						ASGN, W, 0,						
+						WAIT,
+						WR_DEC, SPl, SPh, PCh,
+						RST, n,
+						WAIT,
+						WR, SPl, SPh, PCl,	
 						TR16, PCl, PCh, Z, W,
+						WAIT,						
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { I, SPh, 0, 0, SPh, 0, 0, W, 0, 0, 0 };
+			MEMRQ = new ushort[] { 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, 0 };
 		}
 
 		private void PREFIX_(ushort src)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						PREFIX, src};
+
+			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 		}
 
-		private void PREFETCH_(ushort src_l, ushort src_h)
+		private void PREFETCH_(ushort src)
 		{
+			if (src == IXCBpre)
+			{
+				Regs[W] = Regs[Ixh];
+				Regs[Z] = Regs[Ixl];
+			}
+			else
+			{
+				Regs[W] = Regs[Iyh];
+				Regs[Z] = Regs[Iyl];
+			}
+
 			cur_instr = new ushort[]
-						{TR16, Z, W, src_l, src_h,
+						{IDLE,
+						WAIT,
+						RD_INC, ALU, PCl, PCh,
 						ADDS, Z, W, ALU, ZERO,
+						WAIT,
+						OP_F,
 						IDLE,
-						PREFIX, IXYprefetch };
+						PREFIX, src,};
+
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, PCh, PCh };
+			MEMRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, 0, 0 };
 		}
 
 		private void DI_()
 		{
 			cur_instr = new ushort[]
 						{DI,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 		}
 
 		private void EI_()
 		{
 			cur_instr = new ushort[]
 						{EI,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 		}
 
 		private void JP_16(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{TR, PCl, src_l,
-						IDLE,
-						TR, PCh, src_h,
+						{TR16, PCl, PCh, src_l, src_h,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { src_h, 0, 0, 0 };
+			MEMRQ = new ushort[] { src_h, 0, 0, 0 };
 		}
 
 		private void LD_SP_16(ushort src_l, ushort src_h)
@@ -442,68 +556,83 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			cur_instr = new ushort[]
 						{IDLE,						
 						IDLE,
-						TR, SPl, src_l,
-						TR, SPh, src_h,
-						IDLE,
+						TR16, SPl, SPh, src_l, src_h,
+						WAIT, 
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { I, I, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void OUT_()
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						RD, ALU, PCl, PCh,
-						IDLE,
-						INC16, PCl, PCh,
-						TR, W, A,
-						OUT, ALU, A,
-						TR, Z, ALU,
+						{TR, W, A,
+						WAIT,
+						RD_INC, Z, PCl, PCh,
+						IDLE,						
+						WAIT,					
+						WAIT,
+						OUT, Z, W, A,
 						INC16, Z, ALU,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP};
+
+			BUSRQ = new ushort[] { PCh, 0, 0, WIO1, WIO2, WIO3, WIO4, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, WIO1, WIO2, WIO3, WIO4, PCh, 0, 0, 0 };
 		}
 
 		private void OUT_REG_(ushort dest, ushort src)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
+						{TR16, Z, W, C, B,					
+						IDLE,					
 						IDLE,
-						OUT, dest, src,
-						IDLE,
-						TR16, Z, W, C, B,
-						INC16, Z, W,
-						IDLE,
+						OUT, Z, W, src,
+						INC16, Z, W,					
+						WAIT,
+						OP_F,
 						OP};
+
+			BUSRQ = new ushort[] { BIO1, BIO2, BIO3, BIO4, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { BIO1, BIO2, BIO3, BIO4, PCh, 0, 0, 0 };
 		}
 
 		private void IN_()
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						RD, ALU, PCl, PCh,
+						{TR, W, A,
+						WAIT,
+						RD_INC, Z, PCl, PCh,
 						IDLE,
-						INC16, PCl, PCh,
-						TR, W, A,
-						IN, A, ALU,
-						TR, Z, ALU,
+						WAIT,
+						WAIT,
+						IN, A, Z, W,
 						INC16, Z, W,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP};
+
+			BUSRQ = new ushort[] { PCh, 0, 0, WIO1, WIO2, WIO3, WIO4, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, WIO1, WIO2, WIO3, WIO4, PCh, 0, 0, 0 };
 		}
 
 		private void IN_REG_(ushort dest, ushort src)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						IN, dest, src,
-						IDLE,
-						TR16, Z, W, C, B,
+						{TR16, Z, W, C, B,
+						WAIT,
+						WAIT,
+						IN, dest, Z, W,						
 						INC16, Z, W,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP};
+
+			BUSRQ = new ushort[] { BIO1, BIO2, BIO3, BIO4, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { BIO1, BIO2, BIO3, BIO4, PCh, 0, 0, 0 };
 		}
 
 		private void REG_OP_16_(ushort op, ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
@@ -511,62 +640,74 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,
 						TR16, Z, W, dest_l, dest_h,
 						INC16, Z, W,
 						IDLE,
 						IDLE,
 						op, dest_l, dest_h, src_l, src_h,
 						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP};
+
+			BUSRQ = new ushort[] { I, I, I, I, I, I, I, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { 0, 0, 0, 0, 0, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void INT_MODE_(ushort src)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						INT_MODE, src,
+						{INT_MODE, src,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0 };
 		}
 
 		private void RRD_()
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						TR16, Z, W, L, H,
-						IDLE,
+						{TR16, Z, W, L, H,
+						WAIT,
 						RD, ALU, Z, W,
 						IDLE,
 						RRD, ALU, A,
 						IDLE,
-						WR, Z, W, ALU,
-						IDLE,
-						INC16, Z, W,
 						IDLE,
 						IDLE,
+						WAIT,
+						WR_INC, Z, W, ALU,
+						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { H, 0, 0, H, H, H, H, W, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { H, 0, 0, 0, 0, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void RLD_()
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						TR16, Z, W, L, H,
-						IDLE,
+						{TR16, Z, W, L, H,
+						WAIT,
 						RD, ALU, Z, W,
 						IDLE,
 						RLD, ALU, A,
 						IDLE,
-						WR, Z, W, ALU,
-						IDLE,
-						INC16, Z, W,
 						IDLE,
 						IDLE,
+						WAIT,
+						WR_INC, Z, W, ALU,
+						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { H, 0, 0, H, H, H, H, W, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { H, 0, 0, 0, 0, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
 		}
 	}
 }

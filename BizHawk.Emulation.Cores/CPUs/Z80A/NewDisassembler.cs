@@ -435,6 +435,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			addr += extra_inc;
 
 			size = addr - start_addr;
+			// handle case of addr wrapping around at 16 bit boundary
+			if (addr < start_addr)
+			{
+				size = (0x10000 + addr) - start_addr;
+			}
+
 			return temp;
 		}
 

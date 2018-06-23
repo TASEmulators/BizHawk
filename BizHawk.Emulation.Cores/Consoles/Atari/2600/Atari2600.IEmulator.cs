@@ -42,12 +42,24 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 				_rightDifficultySwitchHeld = false;
 			}
 
+			unselect_reset = false;
+
 			int count = 0;
 			while (!_tia.New_Frame)
 			{
 				Cycle();
 				count++;
-				if (count > 1000000) { throw new Exception("ERROR: Unable to resolve Frame. Please Report."); }
+				if (count > 1000000 && !SP_FRAME)
+				{
+					if (SP_RESET)
+					{
+						unselect_reset = true;
+					}
+					else
+					{
+						throw new Exception("ERROR: Unable to resolve Frame. Please Report.");
+					}					
+				}
 			}
 
 			_tia.New_Frame = false;

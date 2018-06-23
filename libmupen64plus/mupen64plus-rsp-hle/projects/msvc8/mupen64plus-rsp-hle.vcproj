@@ -183,7 +183,27 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\alist_audio.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\alist_naudio.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\alist_nead.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\audio.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\cicx105.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\hle.c"
 				>
 			</File>
 			<File
@@ -191,23 +211,27 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\main.c"
+				RelativePath="..\..\src\memory.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\ucode1.cpp"
+				RelativePath="..\..\src\mp3.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\ucode2.cpp"
+				RelativePath="..\..\src\musyx.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\ucode3.cpp"
+				RelativePath="..\..\src\osal_dynamiclib_win32.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\ucode3mp3.cpp"
+				RelativePath="..\..\src\plugin.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\re2.c"
 				>
 			</File>
 		</Filter>
@@ -221,11 +245,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\alist_internal.h"
+				RelativePath="..\..\src\arithmetics.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\cicx105.h"
+				RelativePath="..\..\src\audio.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\common.h"
 				>
 			</File>
 			<File
@@ -233,7 +261,23 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\jpeg.h"
+				RelativePath="..\..\src\hle_external.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\hle_internal.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\memory.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\osal_dynamiclib.h"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\ucodes.h"
 				>
 			</File>
 		</Filter>

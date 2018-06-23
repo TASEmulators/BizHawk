@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 		}
 
-		public virtual void RTC_Tick()
+		public virtual void Mapper_Tick()
 		{
 		}
 

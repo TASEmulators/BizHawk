@@ -104,7 +104,7 @@ namespace BizHawk.Emulation.Cores.Computers.AppleII
 			}
 		}
 
-		public int TotalExecutedCycles => (int)_machine.Cpu.Cycles;
+		public long TotalExecutedCycles => _machine.Cpu.Cycles;
 
 		private RegisterValue GetRegisterValue(KeyValuePair<string, int> reg)
 		{

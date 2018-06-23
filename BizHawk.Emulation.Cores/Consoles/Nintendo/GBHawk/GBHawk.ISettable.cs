@@ -58,22 +58,49 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public class GBSyncSettings
 		{
-			private string _port1 = GBHawkControllerDeck.DefaultControllerName;
+			[JsonIgnore]
+			public string Port1 = GBHawkControllerDeck.DefaultControllerName;
+
+			public enum ControllerType
+			{
+				Default,
+				Tilt
+			}
 
 			[JsonIgnore]
-			public string Port1
+			private ControllerType _GBController;
+
+			[DisplayName("Controller")]
+			[Description("Select Controller Type")]
+			[DefaultValue(ControllerType.Default)]
+			public ControllerType GBController
 			{
-				get { return _port1; }
+				get { return _GBController; }
 				set
 				{
-					if (!GBHawkControllerDeck.ValidControllerTypes.ContainsKey(value))
-					{
-						throw new InvalidOperationException("Invalid controller type: " + value);
-					}
+					if (value == ControllerType.Default) { Port1 = GBHawkControllerDeck.DefaultControllerName; }
+					else { Port1 = "Gameboy Controller + Tilt"; }
 
-					_port1 = value;
+					_GBController = value;
 				}
 			}
+
+			public enum ConsoleModeType
+			{
+				Auto,
+				GB,
+				GBC
+			}
+
+			[DisplayName("Console Mode")]
+			[Description("Pick which console to run, 'Auto' chooses from ROM extension, 'GB' and 'GBC' chooses the respective system")]
+			[DefaultValue(ConsoleModeType.Auto)]
+			public ConsoleModeType ConsoleMode { get; set; }
+
+			[DisplayName("CGB in GBA")]
+			[Description("Emulate GBA hardware running a CGB game, instead of CGB hardware.  Relevant only for titles that detect the presense of a GBA, such as Shantae.")]
+			[DefaultValue(false)]
+			public bool GBACGB { get; set; }
 
 			[DisplayName("RTC Initial Time")]
 			[Description("Set the initial RTC time in terms of elapsed seconds.")]
@@ -84,6 +111,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				set { _RTCInitialTime = Math.Max(0, Math.Min(1024 * 24 * 60 * 60, value)); }
 			}
 
+			[DisplayName("Timer Div Initial Time")]
+			[Description("Don't change from 0 unless it's hardware accurate. GBA GBC mode is known to be 8.")]
+			[DefaultValue(8)]
+			public int DivInitialTime
+			{
+				get { return _DivInitialTime; }
+				set { _DivInitialTime = Math.Min((ushort)65535, (ushort)value); }
+			}
+
 			[DisplayName("Use Existing SaveRAM")]
 			[Description("When true, existing SaveRAM will be loaded at boot up")]
 			[DefaultValue(false)]
@@ -92,6 +128,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			[JsonIgnore]
 			private int _RTCInitialTime;
+			[JsonIgnore]
+			public ushort _DivInitialTime;
 
 
 			public GBSyncSettings Clone()

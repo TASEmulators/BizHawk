@@ -6,32 +6,38 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
-						IDLE,
+						WAIT,
 						RD, ALU, src_l, src_h,
 						IDLE,
 						operation, ALU,
-						IDLE,
+						WAIT,
 						WR, src_l, src_h, ALU,
-						IDLE,					
-						IDLE,						
+						IDLE,
+						WAIT,					
+						OP_F,						
 						OP };
+
+			BUSRQ = new ushort[] { src_h, 0, 0, src_h, src_h, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { src_h, 0, 0, 0, src_h, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void BIT_OP_IND(ushort operation, ushort bit, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
-						IDLE,	
+						WAIT,	
 						RD, ALU, src_l, src_h,
-						IDLE,
 						operation, bit, ALU,
 						IDLE,
+						WAIT,
 						WR, src_l, src_h, ALU,
 						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { src_h, 0, 0, src_h, src_h, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { src_h, 0, 0, 0, src_h, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		// Note that this operation uses I_BIT, same as indexed BIT.
@@ -42,214 +48,272 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
-						IDLE,
+						WAIT,
 						RD, ALU, src_l, src_h,
 						IDLE,
 						I_BIT, bit, ALU,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { src_h, 0, 0, src_h, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { src_h, 0, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void REG_OP_IND_INC(ushort operation, ushort dest, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
 						{IDLE,					
-						IDLE,					
-						RD, ALU, src_l, src_h,
-						IDLE,
+						WAIT,					
+						RD_INC, ALU, src_l, src_h,
 						operation, dest, ALU,
-						INC16, src_l, src_h,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { src_h, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { src_h, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void REG_OP_IND(ushort operation, ushort dest, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						TR16, Z, W, src_l, src_h,
-						RD, ALU, Z, W,
-						INC16, Z, W,
-						operation, dest, ALU,									
+						{TR16, Z, W, src_l, src_h,
+						WAIT,
+						RD_INC, ALU, Z, W,
+						operation, dest, ALU,
+						WAIT,
+						OP_F,									
 						OP };
+
+			BUSRQ = new ushort[] { src_h, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { src_h, 0, 0, PCh, 0, 0, 0 };
+		}
+
+		// different because HL doesn't effect WZ
+		private void REG_OP_IND_HL(ushort operation, ushort dest)
+		{
+			cur_instr = new ushort[]
+						{IDLE,
+						WAIT,
+						RD, ALU, L, H,
+						operation, dest, ALU,
+						WAIT,
+						OP_F,
+						OP };
+
+			BUSRQ = new ushort[] { H, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { H, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void LD_16_IND_nn(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						RD, Z, PCl, PCh,
+						WAIT,
+						RD_INC, Z, PCl, PCh,
 						IDLE,
-						INC16, PCl, PCh,
+						WAIT,
+						RD_INC, W, PCl, PCh,
 						IDLE,
-						RD, W, PCl, PCh,
+						WAIT,
+						WR_INC, Z, W, src_l,
 						IDLE,
-						INC16, PCl, PCh,
-						IDLE,
-						WR, Z, W, src_l,
-						IDLE,
-						INC16, Z, W,
-						IDLE,
+						WAIT,
 						WR, Z, W, src_h,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, W, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, W, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void LD_IND_16_nn(ushort dest_l, ushort dest_h)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						RD, Z, PCl, PCh,
+						WAIT,
+						RD_INC, Z, PCl, PCh,
 						IDLE,
-						INC16, PCl, PCh,
+						WAIT,
+						RD_INC, W, PCl, PCh,
 						IDLE,
-						RD, W, PCl, PCh,
+						WAIT,
+						RD_INC, dest_l, Z, W,
 						IDLE,
-						INC16, PCl, PCh,
-						IDLE,
-						RD, dest_l, Z, W,
-						IDLE,
-						INC16, Z, W,
-						IDLE,
+						WAIT,
 						RD, dest_h, Z, W,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, W, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, W, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void LD_8_IND_nn(ushort src)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						RD, Z, PCl, PCh,
+						WAIT,
+						RD_INC, Z, PCl, PCh,
 						IDLE,
-						INC16, PCl, PCh,
+						WAIT,
+						RD_INC, W, PCl, PCh,
 						IDLE,
-						RD, W, PCl, PCh,
-						IDLE,
-						INC16, PCl, PCh,
-						IDLE,
-						WR, Z, W, src,
-						INC16, Z, W,
+						WAIT,
+						WR_INC, Z, W, src,
 						TR, W, A,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void LD_IND_8_nn(ushort dest)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						RD, Z, PCl, PCh,
+						WAIT,
+						RD_INC, Z, PCl, PCh,
 						IDLE,
-						INC16, PCl, PCh,
+						WAIT,
+						RD_INC, W, PCl, PCh,
 						IDLE,
-						RD, W, PCl, PCh,
+						WAIT,
+						RD_INC, dest, Z, W,
 						IDLE,
-						INC16, PCl, PCh,
-						IDLE,
-						RD, dest, Z, W,
-						IDLE,
-						INC16, Z, W,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void LD_8_IND(ushort dest_l, ushort dest_h, ushort src)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						TR16, Z, W, dest_l, dest_h,
-						WR, Z, W, src,
-						INC16, Z, W,
-						TR,	W, A,					
+						{TR16, Z, W, dest_l, dest_h,
+						WAIT,
+						WR_INC, Z, W, src,
+						TR, W, A,
+						WAIT,
+						OP_F,				
 						OP };
+
+			BUSRQ = new ushort[] { dest_h, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { dest_h, 0, 0, PCh, 0, 0, 0 };
+		}
+
+		// seperate HL needed since it doesn't effect the WZ pair
+		private void LD_8_IND_HL(ushort src)
+		{
+			cur_instr = new ushort[]
+						{IDLE,
+						WAIT,
+						WR, L, H, src,
+						IDLE,
+						WAIT,
+						OP_F,
+						OP };
+
+			BUSRQ = new ushort[] { H, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { H, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void LD_8_IND_IND(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
+						WAIT,
+						RD_INC, ALU, src_l, src_h,
 						IDLE,
-						IDLE,
-						RD, ALU, src_l, src_h,
-						IDLE,
-						INC16, src_l, src_h,
-						IDLE,
+						WAIT,
 						WR, dest_l, dest_h, ALU,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { src_h, 0, 0, dest_h, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { src_h, 0, 0, dest_h, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void LD_IND_8_INC(ushort dest, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
+						WAIT,
+						RD_INC, dest, src_l, src_h,
 						IDLE,
-						IDLE,
-						RD, dest, src_l, src_h,
-						IDLE,
-						INC16, src_l, src_h,
+						WAIT,
+						OP_F,
 						OP };
-		}
 
-		private void LD_IND_8_DEC(ushort dest, ushort src_l, ushort src_h)
-		{
-			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						IDLE,
-						RD, dest, src_l, src_h,
-						IDLE,
-						DEC16, src_l, src_h,
-						IDLE,
-						OP };
+			BUSRQ = new ushort[] { src_h, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { src_h, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void LD_IND_16(ushort dest_l, ushort dest_h, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
+						WAIT,
+						RD_INC, dest_l, src_l, src_h,
 						IDLE,
+						WAIT,
+						RD_INC, dest_h, src_l, src_h,
 						IDLE,
-						RD, dest_l, src_l, src_h,
-						IDLE,
-						INC16, src_l, src_h,
-						RD, dest_h, src_l, src_h,
-						IDLE,
-						INC16, src_l, src_h,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { src_h, 0, 0, src_h, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { src_h, 0, 0, src_h, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void INC_8_IND(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
-						IDLE,					
+						WAIT,					
 						RD, ALU, src_l, src_h,
-						IDLE,
 						INC8, ALU,
 						IDLE,
+						WAIT,
 						WR,  src_l, src_h, ALU,
 						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { src_h, 0, 0, src_h, src_h, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { src_h, 0, 0, 0, src_h, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void DEC_8_IND(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
-						IDLE,	
+						WAIT,	
 						RD, ALU, src_l, src_h,
-						IDLE,
 						DEC8, ALU,
 						IDLE,
+						WAIT,
 						WR, src_l, src_h, ALU,
 						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { src_h, 0, 0, src_h, src_h, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { src_h, 0, 0, 0, src_h, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		// NOTE: WZ implied for the wollowing 3 functions
@@ -257,197 +321,214 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
+						WAIT,
 						RD, ALU, Z, W,
-						IDLE,
 						operation, ALU,
 						IDLE,
+						WAIT,
 						WR, Z, W, ALU,
-						IDLE,
 						TR, dest, ALU,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { W, 0, 0, W, W, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { W, 0, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void I_BIT_OP(ushort operation, ushort bit, ushort dest)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
+						WAIT,
 						RD, ALU, Z, W,
 						IDLE,
 						operation, bit, ALU,
-						IDLE,
+						WAIT,
 						WR, Z, W, ALU,
-						IDLE,
 						TR, dest, ALU,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { W, 0, 0, W, W, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { W, 0, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void I_BIT_TE(ushort bit)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
-						IDLE,
+						WAIT,
 						RD, ALU, Z, W,
 						IDLE,
 						I_BIT, bit, ALU,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { W, 0, 0, W, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { W, 0, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void I_OP_n(ushort operation, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
+						WAIT,
 						RD, ALU, PCl, PCh,
-						INC16, PCl, PCh,
+						IDLE,
 						IDLE,
 						TR16, Z, W, src_l, src_h,
+						ADDS, Z, W, ALU, ZERO,
 						IDLE,
-						ADDS, Z, W, ALU, ZERO,					
-						IDLE,
+						INC16, PCl, PCh,
+						WAIT,
 						RD, ALU, Z, W,
-						IDLE,
-						IDLE,
 						operation, ALU,
 						IDLE,
-						IDLE,
-						IDLE,
+						WAIT,
 						WR, Z, W, ALU,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, PCh, PCh, PCh, PCh, W, 0, 0, W, W, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0, 0, 0, 0, 0, W, 0, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void I_OP_n_n(ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						IDLE,
-						RD, ALU, PCl, PCh,
-						INC16, PCl, PCh,
-						IDLE,
-						TR16, Z, W, src_l, src_h,
-						IDLE,
+						{TR16, Z, W, src_l, src_h,
+						WAIT,
+						RD_INC, ALU, PCl, PCh,
 						ADDS, Z, W, ALU, ZERO,
-						IDLE,
+						WAIT,
 						RD, ALU, PCl, PCh,
-						INC16, PCl, PCh,
 						IDLE,
+						IDLE,
+						INC16, PCl, PCh,
+						WAIT,
 						WR, Z, W, ALU,
 						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, PCh, PCh, W, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void I_REG_OP_IND_n(ushort operation, ushort dest, ushort src_l, ushort src_h)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
+						WAIT,
 						RD, ALU, PCl, PCh,
-						IDLE,
-						INC16, PCl, PCh,
 						IDLE,
 						TR16, Z, W, src_l, src_h,
 						IDLE,
 						ADDS, Z, W, ALU, ZERO,
 						IDLE,
+						INC16, PCl, PCh,
+						WAIT,
 						RD, ALU, Z, W,
-						IDLE,
-						operation, dest, ALU,
-						IDLE,
+						operation, dest, ALU,						
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, PCh, PCh, PCh, PCh, W, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0, 0, 0, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void I_LD_8_IND_n(ushort dest_l, ushort dest_h, ushort src)
 		{
 			cur_instr = new ushort[]
 						{IDLE,
+						WAIT,
 						RD, ALU, PCl, PCh,
 						IDLE,
-						INC16, PCl, PCh,
 						IDLE,					
 						TR16, Z, W, dest_l, dest_h,
-						IDLE,
 						ADDS, Z, W, ALU, ZERO,
 						IDLE,
-						WR, Z, W, src,						
+						INC16, PCl, PCh,
+						WAIT,
+						WR, Z, W, src,
 						IDLE,
-						IDLE,
-						IDLE,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, PCh, PCh, PCh, PCh, Z, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, 0, 0, 0, 0, 0, Z, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		private void LD_OP_R(ushort operation, ushort repeat_instr)
 		{
 			cur_instr = new ushort[]
-						{RD, ALU, L, H,
-						IDLE,
-						WR, E, D, ALU,
-						IDLE,
-						operation, L, H,
-						IDLE,
-						operation, E, D,
-						IDLE,
-						DEC16, C, B,
-						SET_FL_LD, 
-						IDLE,
-						OP_R, 0, operation, repeat_instr };
+					{IDLE,
+					WAIT,
+					RD, ALU, L, H,
+					operation, L, H,
+					WAIT,
+					WR, E, D, ALU,
+					IDLE,
+					SET_FL_LD_R, 0, operation, repeat_instr};
+
+			BUSRQ = new ushort[] { H, 0, 0, D, 0, 0, D, D };
+			MEMRQ = new ushort[] { H, 0, 0, D, 0, 0, 0, 0 };
 		}
 
 		private void CP_OP_R(ushort operation, ushort repeat_instr)
 		{
 			cur_instr = new ushort[]
-						{IDLE,						
-						IDLE,
+						{IDLE,
+						WAIT,
 						RD, ALU, L, H,
-						operation, L, H,
-						IDLE,						
 						IDLE,
 						DEC16, C, B,
-						SET_FL_CP,
-						IDLE,
 						operation, Z, W,
 						IDLE,
-						OP_R, 1, operation, repeat_instr };
+						SET_FL_CP_R, 1, operation, repeat_instr};
+
+			BUSRQ = new ushort[] { H, 0, 0, H, H, H, H, H };
+			MEMRQ = new ushort[] { H, 0, 0, 0, 0, 0, 0, 0 };
 		}
 
 		private void IN_OP_R(ushort operation, ushort repeat_instr)
 		{
 			cur_instr = new ushort[]
-						{IN, ALU, C,
+						{IDLE,
 						IDLE,
-						WR, L, H, ALU,
+						WAIT,
+						WAIT,
+						IN, ALU, C, B,
 						IDLE,
-						operation, L, H,
-						IDLE,
-						TR16, Z, W, C, B,
-						operation, Z, W,					
-						IDLE,
-						DEC8, B,
-						IDLE,
-						OP_R, 2, operation, repeat_instr };
+						WAIT,
+						REP_OP_I, L, H, ALU, operation, 2, operation, repeat_instr };
+
+			BUSRQ = new ushort[] { I, BIO1, BIO2, BIO3, BIO4, H, 0, 0};
+			MEMRQ = new ushort[] { 0, BIO1, BIO2, BIO3, BIO4, H, 0, 0 };
 		}
 
 		private void OUT_OP_R(ushort operation, ushort repeat_instr)
 		{
 			cur_instr = new ushort[]
-						{RD, ALU, L, H,
+						{IDLE,						
 						IDLE,
-						OUT, C, ALU,
+						WAIT,
+						RD, ALU, L, H,
 						IDLE,
-						IDLE,
-						operation, L, H,
-						DEC8, B,
-						IDLE,
-						TR16, Z, W, C, B,
-						operation, Z, W,							
-						IDLE,
-						OP_R, 3, operation, repeat_instr };
+						WAIT,
+						WAIT, 
+						REP_OP_O, C, B, ALU, operation, 3, operation, repeat_instr };
+
+			BUSRQ = new ushort[] { I, H, 0, 0, BIO1, BIO2, BIO3, BIO4 };
+			MEMRQ = new ushort[] { 0, H, 0, 0, BIO1, BIO2, BIO3, BIO4 };
 		}
 
 		// this is an indirect change of a a 16 bit register with memory
@@ -455,24 +536,27 @@
 		{
 			cur_instr = new ushort[]
 						{IDLE,
-						IDLE,
-						RD, Z, dest_l, dest_h,
+						WAIT,
+						RD_INC, Z, dest_l, dest_h,
 						IDLE,				
-						IDLE,
-						I_RD, W, dest_l, dest_h, 1,
-						IDLE,
-						IDLE,
-						WR, dest_l, dest_h, src_l,						
+						WAIT,
+						RD, W, dest_l, dest_h,
 						IDLE,
 						IDLE,
-						I_WR, dest_l, dest_h, 1, src_h,
+						WAIT,
+						WR_DEC, dest_l, dest_h, src_h,
 						IDLE,						
+						WAIT,
+						WR, dest_l, dest_h, src_l,
+						IDLE,
 						IDLE,
 						TR16, src_l, src_h, Z, W,
-						IDLE,
-						IDLE,						
-						IDLE,
+						WAIT,						
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { dest_h, 0, 0, dest_h, 0, 0, dest_h, dest_h, 0, 0, dest_h, 0, 0, dest_h, dest_h, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { dest_h, 0, 0, dest_h, 0, 0, 0, dest_h, 0, 0, dest_h, 0, 0, 0, 0, PCh, 0, 0, 0 };
 		}
 	}
 }

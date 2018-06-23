@@ -28,6 +28,7 @@
 namespace gambatte {
 enum { BG_PALETTE = 0, SP1_PALETTE = 1, SP2_PALETTE = 2 };
 
+typedef void (*MemoryCallback)(int32_t address, int64_t cycleOffset);
 typedef void (*CDCallback)(int32_t addr, int32_t addrtype, int32_t flags);
 
 enum eCDLog_AddrType
@@ -105,9 +106,9 @@ public:
 	/** Sets the callback used for getting input state. */
 	void setInputGetter(unsigned (*getInput)());
 	
-	void setReadCallback(void (*callback)(unsigned));
-	void setWriteCallback(void (*callback)(unsigned));
-	void setExecCallback(void (*callback)(unsigned));
+	void setReadCallback(MemoryCallback);
+	void setWriteCallback(MemoryCallback);
+	void setExecCallback(MemoryCallback);
 	void setCDCallback(CDCallback);
 	void setTraceCallback(void (*callback)(void *));
 	void setScanlineCallback(void (*callback)(), int sl);

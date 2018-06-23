@@ -45,6 +45,7 @@ CPU::CPU()
 }
 
 long CPU::runFor(const unsigned long cycles) {
+	memory.setBasetime(cycleCounter_);
 	process(cycles/* << memory.isDoubleSpeed()*/);
 	
 	const long csb = memory.cyclesSinceBlit(cycleCounter_);
@@ -633,15 +634,6 @@ void CPU::process(const unsigned long cycles) {
 				//Halt CPU and LCD display until button pressed:
 			case 0x10:
 				{
-					unsigned char followingByte;
-					PEEK(followingByte, PC);
-					PC = (PC + 1) & 0xFFFF;
-
-					//if (followingByte != 0x00) {
-						//memory.di();
-						//memory.blackScreen();
-					//}
-
 					cycleCounter = memory.stop(cycleCounter);
 
 					if (cycleCounter < memory.nextEventTime()) {
@@ -1164,13 +1156,13 @@ void CPU::process(const unsigned long cycles) {
 
 				//halt (4 cycles):
 			case 0x76:
-				if (!memory.ime() && (memory.ff_read(0xFF0F, cycleCounter) & memory.ff_read(0xFFFF, cycleCounter) & 0x1F)) {
-					if (memory.isCgb())
-						cycleCounter += 4;
+				if (memory.ff_read(0xFF0F, cycleCounter) & memory.ff_read(0xFFFF, cycleCounter) & 0x1F) {
+					if (memory.ime())
+						PC = (PC - 1) & 0xFFFF;
 					else
 						skip = true;
 				} else {
-					memory.halt();
+					memory.halt(cycleCounter);
 
 					if (cycleCounter < memory.nextEventTime()) {
 						const unsigned long cycles = memory.nextEventTime() - cycleCounter;

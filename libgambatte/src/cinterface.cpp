@@ -85,17 +85,17 @@ GBEXPORT void gambatte_setinputgetter(GB *g, unsigned (*getinput)(void))
 	g->setInputGetter(getinput);
 }
 
-GBEXPORT void gambatte_setreadcallback(GB *g, void (*callback)(unsigned))
+GBEXPORT void gambatte_setreadcallback(GB *g, MemoryCallback callback)
 {
 	g->setReadCallback(callback);
 }
 
-GBEXPORT void gambatte_setwritecallback(GB *g, void (*callback)(unsigned))
+GBEXPORT void gambatte_setwritecallback(GB *g, MemoryCallback callback)
 {
 	g->setWriteCallback(callback);
 }
 
-GBEXPORT void gambatte_setexeccallback(GB *g, void (*callback)(unsigned))
+GBEXPORT void gambatte_setexeccallback(GB *g, MemoryCallback callback)
 {
 	g->setExecCallback(callback);
 }

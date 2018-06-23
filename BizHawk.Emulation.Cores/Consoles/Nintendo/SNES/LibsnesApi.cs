@@ -215,6 +215,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 			public uint aa, rd;
 			[FieldOffset(28)]
 			public byte sp, dp, db, mdr;
+			[FieldOffset(32)]
+			public ushort v, h;
 		}
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -300,17 +302,14 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 
 			[FieldOffset(176)]
 			public CPURegs cpuregs;
-			[FieldOffset(208)]
+			[FieldOffset(212)]
 			public LayerEnables layerEnables;
 
-			[FieldOffset(220)]
+			[FieldOffset(224)]
 			//static configuration-type information which can be grabbed off the core at any time without even needing a QUERY command
 			public SNES_REGION region;
-			[FieldOffset(224)]
-			public SNES_MAPPER mapper;
-
 			[FieldOffset(228)]
-			public int unused;
+			public SNES_MAPPER mapper;
 
 			//utilities
 			//TODO: make internal, wrap on the API instead of the comm

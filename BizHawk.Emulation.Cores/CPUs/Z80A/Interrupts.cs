@@ -33,17 +33,20 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		private void NMI_()
 		{
 			cur_instr = new ushort[]
-						{IDLE,
-						DEC16, SPl, SPh,
-						WR, SPl, SPh, PCh,
-						IDLE,
-						DEC16, SPl, SPh,
-						WR, SPl, SPh, PCl,
-						IDLE,
-						ASGN, PCl, 0x66,
-						ASGN, PCh, 0,
-						IDLE,
+						{DEC16, SPl, SPh,
+						TR, ALU, PCl,
+						WAIT,
+						WR_DEC, SPl, SPh, PCh,
+						TR16, PCl, PCh, NMI_V, ZERO,
+						WAIT,
+						WR, SPl, SPh, ALU,
+						IDLE,						
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { 0, SPh, 0, 0, SPh, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { 0, SPh, 0, 0, SPh, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		// Mode 0 interrupts only take effect if a CALL or RST is on the data bus
@@ -55,60 +58,66 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			cur_instr = new ushort[]
 						{IDLE,
+						WAIT,
+						RD_INC, ALU, PCl, PCh,
 						IDLE,
-						RD, ALU, PCl, PCh,
-						IDLE,
-						INC16, PCl, PCh,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		// Just jump to $0038
 		private void INTERRUPT_1()
 		{
 			cur_instr = new ushort[]
-						{DEC16, SPl, SPh,
-						IDLE,
-						WR, SPl, SPh, PCh,
-						IDLE,
+						{IDLE,
+						TR, ALU, PCl,
 						DEC16, SPl, SPh,
 						IDLE,
-						WR, SPl, SPh, PCl,
+						WAIT,
+						WR_DEC, SPl, SPh, PCh,
+						TR16, PCl, PCh, IRQ_V, ZERO,
+						WAIT,
+						WR, SPl, SPh, ALU,
 						IDLE,
-						ASGN, PCl, 0x38,
-						IDLE,
-						ASGN, PCh, 0,
-						IDLE,
+						WAIT,
+						OP_F,
 						OP };
+
+			BUSRQ = new ushort[] { I, 0, 0, SPh, 0, 0, SPh, 0, 0, PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { I, 0, 0, SPh, 0, 0, SPh, 0, 0, PCh, 0, 0, 0 };
 		}
 
 		// Interrupt mode 2 uses the I vector combined with a byte on the data bus
-		// Again for now we assume only a 0 on the data bus and jump to (0xI00)
-		private void INTERRUPT_2(ushort src)
+		private void INTERRUPT_2()
 		{
 			cur_instr = new ushort[]
-						{IDLE,
+						{FTCH_DB,
 						IDLE,
 						DEC16, SPl, SPh,
-						WR, SPl, SPh, PCh,
+						TR16, Z, W, DB, I,						
+						WAIT,
+						WR_DEC, SPl, SPh, PCh,
 						IDLE,
-						DEC16, SPl, SPh,
+						WAIT,
 						WR, SPl, SPh, PCl,
-						IDLE,					
-						ASGN, PCl, 0,
-						TR, PCh, I,
-						IDLE,					
 						IDLE,
-						RD, Z, PCl, PCh,
-						INC16, PCl, PCh,
+						WAIT,
+						RD_INC, PCl, Z, W,
 						IDLE,
-						RD, W, PCl, PCh,
+						WAIT,
+						RD, PCh, Z, W,
 						IDLE,
-						TR16, PCl, PCh, Z, W,
+						WAIT,
+						OP_F,
 						OP };
-		}
 
-		private static ushort[] INT_vectors = new ushort[] {0x40, 0x48, 0x50, 0x58, 0x60};
+			BUSRQ = new ushort[] { I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0 ,0 ,PCh, 0, 0, 0 };
+			MEMRQ = new ushort[] { I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
+		}
 
 		private void ResetInterrupts()
 		{

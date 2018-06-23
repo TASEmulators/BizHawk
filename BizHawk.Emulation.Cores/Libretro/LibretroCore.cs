@@ -150,7 +150,7 @@ namespace BizHawk.Emulation.Cores.Libretro
 		[FeatureNotImplemented]
 		public void SetCpuRegister(string register, int value) { throw new NotImplementedException(); }
 		[FeatureNotImplemented]
-		public int TotalExecutedCycles { get { throw new NotImplementedException(); } }
+		public long TotalExecutedCycles { get { throw new NotImplementedException(); } }
 
 		private IController _controller;
 

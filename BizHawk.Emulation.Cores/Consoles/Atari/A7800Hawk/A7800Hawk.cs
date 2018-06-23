@@ -44,12 +44,32 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		private readonly ITraceable _tracer;
 
-		public MOS6502X cpu;
+		public MOS6502X<CpuLink> cpu;
 		public Maria maria;
 		public bool _isPAL;
 		public M6532 m6532;
 		public TIA tia;
 		public Pokey pokey;
+
+		public struct CpuLink : IMOS6502XLink
+		{
+			private readonly A7800Hawk _a7800;
+
+			public CpuLink(A7800Hawk a7800)
+			{
+				_a7800 = a7800;
+			}
+
+			public byte DummyReadMemory(ushort address) => _a7800.ReadMemory(address);
+
+			public void OnExecFetch(ushort address) => _a7800.ExecFetch(address);
+
+			public byte PeekMemory(ushort address) => _a7800.ReadMemory(address);
+
+			public byte ReadMemory(ushort address) => _a7800.ReadMemory(address);
+
+			public void WriteMemory(ushort address, byte value) => _a7800.WriteMemory(address, value);
+		}
 
 		public A7800Hawk(CoreComm comm, GameInfo game, byte[] rom, string gameDbFn, object settings, object syncSettings)
 		{
@@ -60,14 +80,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			m6532 = new M6532();
 			pokey = new Pokey();
 
-			cpu = new MOS6502X
-			{
-				ReadMemory = ReadMemory,
-				WriteMemory = WriteMemory,
-				PeekMemory = ReadMemory,
-				DummyReadMemory = ReadMemory,
-				OnExecFetch = ExecFetch
-			};
+			cpu = new MOS6502X<CpuLink>(new CpuLink(this));
 
 			maria = new Maria
 			{
@@ -255,7 +268,6 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			tia.Reset();
 			cpu.Reset();
-			cpu.SetCallbacks(ReadMemory, ReadMemory, ReadMemory, WriteMemory);
 
 			maria.Reset();
 			m6532.Reset();

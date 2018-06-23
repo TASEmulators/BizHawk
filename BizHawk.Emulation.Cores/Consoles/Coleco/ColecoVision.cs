@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public bool temp_1_prev, temp_2_prev;
 
 		private int _frame;
-		private IController _controller;
+		private IController _controller = NullController.Instance;
 
 		private enum InputPortMode
 		{

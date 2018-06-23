@@ -99,9 +99,64 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					ret = ppu.ReadReg(addr);
 					break;
 
+				// Speed Control for GBC
+				case 0xFF4D:
+					if (is_GBC)
+					{
+						ret = (byte)(((double_speed ? 1 : 0) << 7) + ((speed_switch ? 1 : 0)));
+					}
+					else
+					{
+						ret = 0xFF;
+					}
+					break;
+
+				case 0xFF4F: // VBK
+					if (is_GBC)
+					{
+						ret = VRAM_Bank;
+					}
+					else
+					{
+						ret = 0xFF;
+					}
+					break;
+
 				// Bios control register. Not sure if it is readable
 				case 0xFF50:
 					ret = 0xFF;
+					break;
+
+				// PPU Regs for GBC
+				case 0xFF51:
+				case 0xFF52:
+				case 0xFF53:
+				case 0xFF54:
+				case 0xFF55:
+				case 0xFF68:
+				case 0xFF69:
+				case 0xFF6A:
+				case 0xFF6B:
+					if (is_GBC)
+					{
+						ret = ppu.ReadReg(addr);
+					}
+					else
+					{
+						ret = 0xFF;
+					}
+					break;
+
+				// Speed Control for GBC
+				case 0xFF70:
+					if (is_GBC)
+					{
+						ret = (byte)RAM_Bank;
+					}
+					else
+					{
+						ret = 0xFF;
+					}
 					break;
 
 				// interrupt control register
@@ -254,6 +309,32 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					ppu.WriteReg(addr, value);
 					break;
 
+				// GBC compatibility register (I think)
+				case 0xFF4C:
+					if ((value != 0xC0) && (value != 0x80))
+					{
+						Console.Write("GBC Compatibility? ");
+						Console.WriteLine(value);
+						GBC_compat = false;
+					}
+					break;
+
+				// Speed Control for GBC
+				case 0xFF4D:
+					if (is_GBC)
+					{
+						speed_switch = (value & 1) > 0;
+					}
+					break;
+
+				// VBK
+				case 0xFF4F:
+					if (is_GBC && !ppu.HDMA_active)
+					{
+						VRAM_Bank = (byte)(value & 1);
+					}
+					break;
+
 				// Bios control register. Writing 1 permanently disables BIOS until a power cycle occurs
 				case 0xFF50:
 					//Console.WriteLine(value);
@@ -263,14 +344,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}			
 					break;
 
+				// PPU Regs for GBC
+				case 0xFF51:
+				case 0xFF52:
+				case 0xFF53:
+				case 0xFF54:
+				case 0xFF55:
+				case 0xFF68:
+				case 0xFF69:
+				case 0xFF6A:
+				case 0xFF6B:
+					if (is_GBC)
+					{
+						ppu.WriteReg(addr, value);
+					}
+					break;
+
+				// RAM Bank in GBC mode
+				case 0xFF70:
+					//Console.WriteLine(value);
+					if (is_GBC)
+					{
+						RAM_Bank = value & 7;
+						if (RAM_Bank == 0) { RAM_Bank = 1; }
+					}
+					break;
+
 				// interrupt control register
 				case 0xFFFF:
 					REG_FFFF = value;
-					enable_VBL = REG_FFFF.Bit(0);
-					enable_STAT = REG_FFFF.Bit(1);
-					enable_TIMO = REG_FFFF.Bit(2);
-					enable_SER = REG_FFFF.Bit(3);
-					enable_PRS = REG_FFFF.Bit(4);
 
 					// check if enabling any of the bits triggered an IRQ
 					for (int i = 0; i < 5; i++)
@@ -284,6 +386,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// if no bits are in common between flags and enables, de-assert the IRQ
 					if (((REG_FF0F & 0x1F) & REG_FFFF) == 0) { cpu.FlagI = false; }
 
+					break;
+
+				default:
+					Console.Write(addr);
+					Console.Write(" ");
+					Console.WriteLine(value);
 					break;
 			}
 		}

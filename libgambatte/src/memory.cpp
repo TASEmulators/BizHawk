@@ -154,6 +154,9 @@ unsigned long Memory::event(unsigned long cycleCounter) {
 
 	switch (intreq.minEventId()) {
 	case UNHALT:
+		nontrivial_ff_write(0xFF04, 0, cycleCounter);
+		PC = (PC + 1) & 0xFFFF;
+		cycleCounter += 4;
 		intreq.unhalt();
 		intreq.setEventTime<UNHALT>(DISABLED_TIME);
 		break;
@@ -265,8 +268,12 @@ unsigned long Memory::event(unsigned long cycleCounter) {
 		display.update(cycleCounter);
 		break;
 	case INTERRUPTS:
+		if (stopped) {
+			intreq.setEventTime<INTERRUPTS>(DISABLED_TIME);
+			break;
+		}
 		if (halted()) {
-			if (gbIsCgb_)
+			if (gbIsCgb_ || (!gbIsCgb_ && cycleCounter <= halttime + 4))
 				cycleCounter += 4;
 			
 			intreq.unhalt();
@@ -311,7 +318,7 @@ unsigned long Memory::event(unsigned long cycleCounter) {
 }
 
 unsigned long Memory::stop(unsigned long cycleCounter) {
-	cycleCounter += 4 << isDoubleSpeed();
+	cycleCounter += 4;
 	
 	if (ioamhram[0x14D] & isCgb()) {
 		sound.generate_samples(cycleCounter, isDoubleSpeed());
@@ -329,17 +336,11 @@ unsigned long Memory::stop(unsigned long cycleCounter) {
 		// otherwise, the cpu should be allowed to stay halted as long as needed
 		// so only execute this line when switching speed
 		intreq.halt();
-		intreq.setEventTime<UNHALT>(cycleCounter + 0x20000 + isDoubleSpeed() * 8);
+		intreq.setEventTime<UNHALT>(cycleCounter + 0x20000);
 	}
 	else {
-		if ((ioamhram[0x100] & 0x30) == 0x30) {
-			di();
-			intreq.halt();
-		}
-		else {
-			intreq.halt();
-			intreq.setEventTime<UNHALT>(cycleCounter + 0x20000 + isDoubleSpeed() * 8);
-		}
+		stopped = true;
+		intreq.halt();
 	}
 
 	return cycleCounter;
@@ -651,6 +652,7 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 	case 0x04:
 		ioamhram[0x104] = 0;
 		divLastUpdate = cycleCounter;
+		tima.resTac(cycleCounter, TimaInterruptRequester(intreq));
 		return;
 	case 0x05:
 		tima.setTima(data, cycleCounter, TimaInterruptRequester(intreq));
@@ -660,7 +662,7 @@ void Memory::nontrivial_ff_write(const unsigned P, unsigned data, const unsigned
 		break;
 	case 0x07:
 		data |= 0xF8;
-		tima.setTac(data, cycleCounter, TimaInterruptRequester(intreq));
+		tima.setTac(data, cycleCounter, TimaInterruptRequester(intreq), gbIsCgb_);
 		break;
 	case 0x0F:
 		updateIrqs(cycleCounter);
@@ -1141,6 +1143,8 @@ SYNCFUNC(Memory)
 	NSS(cgbSwitching);
 	NSS(agbMode);
 	NSS(gbIsCgb_);
+	NSS(stopped);
+	NSS(halttime);
 
 	SSS(intreq);
 	SSS(tima);

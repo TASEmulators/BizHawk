@@ -36,6 +36,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			return Port1.Read(c);
 		}
 
+		public ushort ReadAccX1(IController c)
+		{
+			return Port1.ReadAccX(c);
+		}
+
+		public ushort ReadAccY1(IController c)
+		{
+			return Port1.ReadAccY(c);
+		}
+
 		public ControllerDefinition Definition { get; }
 
 		public void SyncState(Serializer ser)
