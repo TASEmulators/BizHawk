@@ -1271,6 +1271,11 @@ namespace BizHawk.Client.EmuHawk
 
 		private bool LoadTable(string path)
 		{
+			if (string.IsNullOrWhiteSpace(path))
+			{
+				return false;
+			}
+
 			var file = new FileInfo(path);
 			if (!file.Exists)
 			{
