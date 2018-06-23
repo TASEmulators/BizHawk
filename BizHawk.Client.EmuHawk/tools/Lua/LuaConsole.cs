@@ -260,22 +260,8 @@ namespace BizHawk.Client.EmuHawk
 
 				if (!Global.Config.DisableLuaScriptsOnLoad)
 				{
-					try
-					{
-						LuaSandbox.Sandbox(null, () =>
-						{
-							luaFile.Thread = LuaImp.SpawnCoroutine(pathToLoad);
-							LuaSandbox.CreateSandbox(luaFile.Thread, Path.GetDirectoryName(pathToLoad));
-							luaFile.State = LuaFile.RunState.Running;
-						}, () =>
-						{
-							luaFile.State = LuaFile.RunState.Disabled;
-						});
-					}
-					catch (Exception e)
-					{
-						MessageBox.Show(e.ToString());
-					}
+					luaFile.State = LuaFile.RunState.Running;
+					EnableLuaFile(luaFile);
 				}
 				else
 				{
@@ -815,46 +801,18 @@ namespace BizHawk.Client.EmuHawk
 		private void ToggleScriptMenuItem_Click(object sender, EventArgs e)
 		{
 			var files = !SelectedFiles.Any() && Global.Config.ToggleAllIfNoneSelected ? LuaImp.ScriptList : SelectedFiles;
-			foreach (var item in files)
+			foreach (var file in files)
 			{
-				item.Toggle();
+				file.Toggle();
 
-				if (item.Enabled && item.Thread == null)
+				if (file.Enabled && file.Thread == null)
 				{
-					try
-					{
-						LuaSandbox.Sandbox(null, () =>
-						{
-							string pathToLoad = Path.IsPathRooted(item.Path)
-							? item.Path
-							: PathManager.MakeProgramRelativePath(item.Path);
-
-							item.Thread = LuaImp.SpawnCoroutine(pathToLoad);
-							LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(pathToLoad));
-						}, () =>
-						{
-							item.State = LuaFile.RunState.Disabled;
-						});
-
-						// Shenanigans
-						// We want any gui.text messages from a script to immediately update even when paused
-						GlobalWin.OSD.ClearGUIText();
-						GlobalWin.Tools.UpdateToolsAfter();
-						LuaImp.EndLuaDrawing();
-						LuaImp.StartLuaDrawing();
-					}
-					catch (IOException)
-					{
-						ConsoleLog("Unable to access file " + item.Path);
-					}
-					catch (Exception ex)
-					{
-						MessageBox.Show(ex.ToString());
-					}
+					EnableLuaFile(file);
 				}
-				else if (!item.Enabled && item.Thread != null)
+
+				else if (!file.Enabled && file.Thread != null)
 				{
-					LuaImp.CallExitEvent(item.Thread);
+					LuaImp.CallExitEvent(file.Thread);
 
 					var items = SelectedItems.ToList();
 					foreach (var sitem in items)
@@ -869,8 +827,8 @@ namespace BizHawk.Client.EmuHawk
 						UpdateRegisteredFunctionsDialog();
 					}
 
-					LuaImp.CallExitEvent(item.Thread);
-					item.Stop();
+					LuaImp.CallExitEvent(file.Thread);
+					file.Stop();
 					if (Global.Config.RemoveRegisteredFunctionsOnToggle)
 					{
 						LuaImp.RegisteredFunctions.ClearAll();
@@ -881,6 +839,40 @@ namespace BizHawk.Client.EmuHawk
 			UpdateDialog();
 			UpdateNumberOfScripts();
 			LuaListView.Refresh();
+		}
+
+		private void EnableLuaFile(LuaFile item)
+		{
+			try
+			{
+				LuaSandbox.Sandbox(null, () =>
+				{
+					string pathToLoad = Path.IsPathRooted(item.Path)
+					? item.Path
+					: PathManager.MakeProgramRelativePath(item.Path);
+
+					item.Thread = LuaImp.SpawnCoroutine(pathToLoad);
+					LuaSandbox.CreateSandbox(item.Thread, Path.GetDirectoryName(pathToLoad));
+				}, () =>
+				{
+					item.State = LuaFile.RunState.Disabled;
+				});
+
+				// Shenanigans
+				// We want any gui.text messages from a script to immediately update even when paused
+				GlobalWin.OSD.ClearGUIText();
+				GlobalWin.Tools.UpdateToolsAfter();
+				LuaImp.EndLuaDrawing();
+				LuaImp.StartLuaDrawing();
+			}
+			catch (IOException)
+			{
+				ConsoleLog("Unable to access file " + item.Path);
+			}
+			catch (Exception ex)
+			{
+				MessageBox.Show(ex.ToString());
+			}
 		}
 
 		private void PauseScriptMenuItem_Click(object sender, EventArgs e)
