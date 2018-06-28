@@ -38,7 +38,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			PortNum = portNum;
 			Definition = new ControllerDefinition
 			{
-				BoolButtons = new List<string>()
+				Name = "Unplugged Controller",
+				BoolButtons = BaseDefinition
+				.Select(b => "P" + PortNum + " " + b)
+				.ToList()
 			};
 		}
 
@@ -70,6 +73,11 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		}
 
 		public ControllerDefinition Definition { get; }
+
+		private static readonly string[] BaseDefinition =
+		{
+			""
+		};
 
 		public void SyncState(Serializer ser)
 		{
