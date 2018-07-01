@@ -12,8 +12,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public GBHawk Core { get; set; }
 
-		private readonly BlipBuffer _blip_L = new BlipBuffer(15000);
-		private readonly BlipBuffer _blip_R = new BlipBuffer(15000);
+		private BlipBuffer _blip_L = new BlipBuffer(15000);
+		private BlipBuffer _blip_R = new BlipBuffer(15000);
 
 		public static int[] DUTY_CYCLES = new int[] {0, 0, 0, 0, 0, 0, 0, 1,
 													 1, 0, 0, 0, 0, 0, 0, 1,
@@ -1117,12 +1117,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		}
 
-		#endregion
-
 		public void DisposeSound()
 		{
+			_blip_L.Clear();
+			_blip_R.Clear();
 			_blip_L.Dispose();
 			_blip_R.Dispose();
+			_blip_L = null;
+			_blip_R = null;
 		}
+
+		#endregion
 	}
 }
