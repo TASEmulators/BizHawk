@@ -34,8 +34,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _cpu = new Z80A();
 
             _tracer = new TraceBuffer { Header = _cpu.TraceHeader };
-
-            //_file = file;
+            
             _files = files?.ToList() ?? new List<byte[]>();
 
             if (settings == null)
@@ -123,9 +122,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 ((Beeper)_machine.TapeBuzzer as Beeper).Volume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).TapeVolume;
             }
 
-            ser.Register<ISoundProvider>(SoundMixer);
-            //ser.Register < ISoundProvider>(((ISoundProvider)_machine.BuzzerDevice));
-
+            DCFilter dc = new DCFilter(SoundMixer, 512);            
+            ser.Register<ISoundProvider>(dc);
 
             HardReset();
             SetupMemoryDomains();
