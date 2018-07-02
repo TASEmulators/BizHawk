@@ -311,18 +311,20 @@ namespace BizHawk.Bizware.BizwareGL.Drivers.SlimDX
 			if(glmode == gl.BlendingFactorSrc.DstColor) return Blend.DestinationColor;
 			if(glmode == gl.BlendingFactorSrc.OneMinusDstColor) return Blend.InverseDestinationColor;
 			if(glmode == gl.BlendingFactorSrc.SrcAlphaSaturate) return Blend.SourceAlphaSaturated;
-			if(glmode == gl.BlendingFactorSrc.ConstantColorExt) throw new NotSupportedException();
 			if(glmode == gl.BlendingFactorSrc.ConstantColor) return Blend.BlendFactor;
 			if(glmode == gl.BlendingFactorSrc.OneMinusConstantColor) return Blend.InverseBlendFactor;
-			if(glmode == gl.BlendingFactorSrc.OneMinusConstantColorExt) throw new NotSupportedException();
 			if(glmode == gl.BlendingFactorSrc.ConstantAlpha) throw new NotSupportedException();
-			if(glmode == gl.BlendingFactorSrc.ConstantAlphaExt) throw new NotSupportedException();
-			if(glmode == gl.BlendingFactorSrc.OneMinusConstantAlphaExt) throw new NotSupportedException();
 			if(glmode == gl.BlendingFactorSrc.OneMinusConstantAlpha) throw new NotSupportedException();
 			if(glmode == gl.BlendingFactorSrc.Src1Alpha) throw new NotSupportedException();
 			if(glmode == gl.BlendingFactorSrc.Src1Color) throw new NotSupportedException();
 			if(glmode == gl.BlendingFactorSrc.OneMinusSrc1Color) throw new NotSupportedException();
 			if (glmode == gl.BlendingFactorSrc.OneMinusSrc1Alpha) throw new NotSupportedException();
+			/* Compiles when commented
+			if(glmode == gl.BlendingFactorSrc.ConstantColorExt) throw new NotSupportedException();
+			if(glmode == gl.BlendingFactorSrc.OneMinusConstantColorExt) throw new NotSupportedException();
+			if(glmode == gl.BlendingFactorSrc.ConstantAlphaExt) throw new NotSupportedException();
+			if(glmode == gl.BlendingFactorSrc.OneMinusConstantAlphaExt) throw new NotSupportedException();
+			*/
 			throw new ArgumentOutOfRangeException();
 		}
 
