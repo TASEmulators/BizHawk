@@ -682,7 +682,7 @@ namespace BizHawk.Client.Common
                                         cpcGI.Add(new GameInfo { Name = Path.GetFileNameWithoutExtension(a.Key) });
                                     }
 
-                                    nextEmulator = new ZXSpectrum(
+                                    nextEmulator = new AmstradCPC(
                                         nextComm,
                                         xmlGame.Assets.Select(a => a.Value), //.First(),
                                         cpcGI, // GameInfo.NullInstance,
