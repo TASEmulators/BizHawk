@@ -151,4 +151,7 @@
   <data name="ZX_plus2_rom" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\plus2.rom.gz;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="cpc464_rom" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cpc464.rom.gz;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

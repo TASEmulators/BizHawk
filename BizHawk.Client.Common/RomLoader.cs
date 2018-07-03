@@ -25,6 +25,7 @@ using BizHawk.Emulation.DiscSystem;
 using GPGX64 = BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 using BizHawk.Emulation.Cores.Consoles.Sega.Saturn;
 using BizHawk.Emulation.Cores.Consoles.NEC.PCFX;
+using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 
 namespace BizHawk.Client.Common
 {
@@ -673,7 +674,22 @@ namespace BizHawk.Client.Common
                                         (ZXSpectrum.ZXSpectrumSettings)GetCoreSettings<ZXSpectrum>(),
                                         (ZXSpectrum.ZXSpectrumSyncSettings)GetCoreSyncSettings<ZXSpectrum>());
                                     break;
-								case "PSX":
+                                case "AmstradCPC":
+
+                                    List<GameInfo> cpcGI = new List<GameInfo>();
+                                    foreach (var a in xmlGame.Assets)
+                                    {
+                                        cpcGI.Add(new GameInfo { Name = Path.GetFileNameWithoutExtension(a.Key) });
+                                    }
+
+                                    nextEmulator = new ZXSpectrum(
+                                        nextComm,
+                                        xmlGame.Assets.Select(a => a.Value), //.First(),
+                                        cpcGI, // GameInfo.NullInstance,
+                                        (AmstradCPC.AmstradCPCSettings)GetCoreSettings<ZXSpectrum>(),
+                                        (AmstradCPC.AmstradCPCSyncSettings)GetCoreSyncSettings<ZXSpectrum>());
+                                    break;
+                                case "PSX":
 									var entries = xmlGame.AssetFullPaths;
 									var discs = new List<Disc>();
 									var discNames = new List<string>();
@@ -1017,7 +1033,11 @@ namespace BizHawk.Client.Common
                                 var zx = new ZXSpectrum(nextComm, Enumerable.Repeat(rom.RomData, 1), Enumerable.Repeat(rom.GameInfo, 1).ToList(), GetCoreSettings<ZXSpectrum>(), GetCoreSyncSettings<ZXSpectrum>());
                                 nextEmulator = zx;
                                 break;
-							case "GBA":
+                            case "AmstradCPC":
+                                var cpc = new AmstradCPC(nextComm, Enumerable.Repeat(rom.RomData, 1), Enumerable.Repeat(rom.GameInfo, 1).ToList(), GetCoreSettings<AmstradCPC>(), GetCoreSyncSettings<AmstradCPC>());
+                                nextEmulator = cpc;
+                                break;
+                            case "GBA":
 								if (Global.Config.GBA_UsemGBA)
 								{
 									core = CoreInventory.Instance["GBA", "mGBA"];

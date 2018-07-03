@@ -310,6 +310,10 @@ namespace BizHawk.Emulation.Common
                     game.System = "ZXSpectrum";
                     break;
 
+                case ".CDT":
+                    game.System = "AmstradCPC";
+                    break;
+
                 case ".TAP":                    
                     byte[] head = romData.Take(8).ToArray();
                     if (System.Text.Encoding.Default.GetString(head).Contains("C64-TAPE"))

@@ -63,6 +63,16 @@ namespace BizHawk.Emulation.Cores.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] cpc464_rom {
+            get {
+                object obj = ResourceManager.GetObject("cpc464_rom", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] SameboyCgbBoot {
             get {
                 object obj = ResourceManager.GetObject("SameboyCgbBoot", resourceCulture);

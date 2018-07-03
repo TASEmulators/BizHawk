@@ -43,6 +43,7 @@ namespace BizHawk.Emulation.Cores
 
 		C64, 
         ZXSpectrum,
+        AmstradCPC,
 		INT,
 		A26, A52, A78, LNX,
 
