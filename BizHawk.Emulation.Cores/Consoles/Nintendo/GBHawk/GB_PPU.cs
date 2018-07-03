@@ -61,6 +61,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 					}
 					STAT = (byte)((value & 0xF8) | (STAT & 7) | 0x80);
+
+					if (!STAT.Bit(6)) { LYC_INT = false; }
+					if (!STAT.Bit(4)) { VBL_INT = false; }
 					break; 
 				case 0xFF42: // SCY
 					scroll_y = value;
@@ -136,9 +139,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						LY_inc = 1;
 						Core.in_vblank = false;
 
-						VBL_INT = false;
-						if (STAT.Bit(3)) { HBL_INT = true; }
-
 						STAT &= 0xFC;
 
 						// special note here, the y coordiate of the window is kept if the window is deactivated
@@ -198,18 +198,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 						HBL_INT = false;
 
+						// there is an edge case where a VBL INT is triggered if STAT bit 5 is set
+						if (STAT.Bit(5)) { VBL_INT = true; }
+
 						// set STAT mode to 1 (VBlank) and interrupt flag if it is enabled
 						STAT &= 0xFC;
 						STAT |= 0x01;
 
 						if (Core.REG_FFFF.Bit(0)) { Core.cpu.FlagI = true; }
 						Core.REG_FF0F |= 0x01;
-					}
-
-					if ((LY >= 144) && (cycle == 4))
-					{
-						// a special case of OAM mode 2 IRQ assertion, even though PPU Mode still is 1
-						if (STAT.Bit(5)) { OAM_INT = true; }
 					}
 
 					if ((LY == 153) && (cycle == 6))
@@ -275,8 +272,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						if (cycle < 80)
 						{
 							if (cycle == 2)
-							{
-								if (LY != 0) { if (STAT.Bit(5)) { OAM_INT = true; } }
+							{							
+								if (LY != 0)
+								{
+									HBL_INT = false;
+									if (STAT.Bit(5)) { OAM_INT = true; }
+								}								
 							}
 							else if (cycle == 4)
 							{
@@ -287,9 +288,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								STAT &= 0xFC;
 								STAT |= 0x2;
 
-								if (LY == 0) { if (STAT.Bit(5)) { OAM_INT = true; } }
-
-								HBL_INT = false;
+								if (LY == 0)
+								{
+									VBL_INT = false;
+									if (STAT.Bit(5)) { OAM_INT = true; }
+								}
 							}
 
 							// here OAM scanning is performed
@@ -326,12 +329,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							STAT |= 0x04;
 							if (STAT.Bit(6)) { LYC_INT = true; }
 						}
-
-						// also a special case of OAM mode 2 IRQ assertion, even though PPU Mode still is 1
-						if (STAT.Bit(5)) { OAM_INT = true; }
 					}
-
-					if (cycle == 92) { OAM_INT = false; }
 				}
 
 				// here LY=LYC will be asserted or cleared (but only if LY isnt 0 as that's a special case)
