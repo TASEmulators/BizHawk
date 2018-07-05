@@ -37,6 +37,12 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				}, 1)
 			};
 
+			if (use_SGM)
+			{
+				var SGMRam = new MemoryDomainByteArray("SGM RAM", MemoryDomain.Endian.Little, SGM_high_RAM, true, 1);
+				domains.Add(SGMRam);
+			}
+
 			SyncAllByteArrayDomains();
 
 			memoryDomains = new MemoryDomainList(_byteArrayDomains.Values.Concat(domains).ToList());

@@ -51,15 +51,15 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				skipbios = false;
 			}
 
+			use_SGM = _syncSettings.UseSGM;
+			Console.WriteLine("Using the Super Game Module");
+
 			LoadRom(rom, skipbios);
 			SetupMemoryDomains();
 
 			_tracer.Header = _cpu.TraceHeader;
 			ser.Register<IDisassemblable>(_cpu);
 			ser.Register<ITraceable>(_tracer);
-
-			use_SGM = _syncSettings.UseSGM;
-			Console.WriteLine("Using the Super Game Module");
 		}
 
 		private readonly Z80A _cpu;

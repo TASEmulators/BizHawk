@@ -260,8 +260,8 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				BoolButtons = BaseBoolDefinition
 				.Select(b => "P" + PortNum + " " + b)
 				.ToList(),
-				FloatControls = { "P" + PortNum + " Disc X"},
-				FloatRanges = { new[] { -360.0f, 0, 360.0f }}
+				FloatControls = { "P" + PortNum + " Disc X", "P" + PortNum + " Disc Y" },
+				FloatRanges = { new[] { -127.0f, 0, 127.0f }, new[] { -127.0f, 0, 127.0f } }
 			};
 		}
 
