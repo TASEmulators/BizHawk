@@ -1,17 +1,13 @@
 ﻿using BizHawk.Common;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
     /// <summary>
     /// Cathode Ray Tube Controller Chip - 6845
     /// http://www.cpcwiki.eu/index.php/CRTC
-    /// 
+    /// https://web.archive.org/web/20170501112330/http://www.grimware.org/doku.php/documentations/devices/crtc
     /// </summary>
     public class CRCT_6845 : IPortIODevice
     {
@@ -32,7 +28,33 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         #endregion
 
-        #region State
+        #region Public Lines
+
+        /// <summary>
+        /// Denotes that HSYNC is active
+        /// </summary>
+        public bool HSYNC = false;
+
+        /// <summary>
+        /// Denotes that VSYNC is active
+        /// </summary>
+        public bool VSYNC = false;
+
+        /// <summary>
+        /// TRUE:   bits outputted to screen from video RAM
+        /// FALSE:  current border colour is outputted
+        /// </summary>
+        public bool DISPTMG = true;
+
+        /// <summary>
+        /// 16-bit memory address lines
+        /// The gate array uses this to grab the correct bits from video RAM
+        /// </summary>
+        public short MA;
+
+        #endregion
+
+        #region Internal Registers and State
 
         /*
         Index	Register Name	                    Range	    CPC Setting	Notes
@@ -60,6 +82,124 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// </summary>
         private byte[] Regs = new byte[18];
 
+        // CRTC Register constants
+        /// <summary>
+        /// R0:     Horizontal total character number
+        /// Unit:   Character
+        /// Notes:  Defines the width of a scanline
+        /// </summary>     
+        public const int HOR_TOTAL = 0;
+        /// <summary>
+        /// R1:     Horizontal displayed character number
+        /// Unit:   Character
+        /// Notes:  Defines when DISPEN goes OFF on the scanline
+        /// </summary>     
+        public const int HOR_DISPLAYED = 1;
+        /// <summary>
+        /// R2:     Position of horizontal sync. pulse
+        /// Unit:   Character
+        /// Notes:  Defines when the HSync goes ON on the scanline
+        /// </summary>
+        public const int HOR_SYNC_POS = 2;
+        /// <summary>
+        /// R3:     Width of horizontal/vertical sync. pulses
+        /// Unit:   Character
+        /// Notes:  VSync width can only be changed on type 3 and 4
+        /// </summary>
+        public const int HOR_AND_VER_SYNC_WIDTHS = 3;
+        /// <summary>
+        /// R4:     Vertical total Line character number
+        /// Unit:   Character
+        /// Notes:  Defines the height of a screen
+        /// </summary>
+        public const int VER_TOTAL = 4;
+        /// <summary>
+        /// R5:     Vertical raster adjust
+        /// Unit:   Scanline
+        /// Notes:  Defines additionnal scanlines at the end of a screen
+        ///         can be used for smooth vertical scrolling on CPC
+        /// </summary>
+        public const int VER_TOTAL_ADJUST = 5;
+        /// <summary>
+        /// R6:     Vertical displayed character number
+        /// Unit:   Character
+        /// Notes:  Define when DISPEN remains OFF until a new screen starts
+        ///         Height of displayed screen in characters (Once vertical character count (VCC) matches this value, DISPTMG is set to 1)
+        /// </summary>
+        public const int VER_DISPLAYED = 6;
+        /// <summary>
+        /// R7:     Position of vertical sync. pulse
+        /// Unit:   Character
+        /// Notes:  Define when the VSync goes ON on a screen
+        /// </summary>
+        public const int VER_SYNC_POS = 7;
+        /// <summary>
+        /// R8:     Interlaced mode
+        /// Unit:   
+        /// Notes:  00: No interlace; 01: Interlace Sync Raster Scan Mode; 10: No Interlace; 11: Interlace Sync and Video Raster Scan Mode
+        ///         (crct type specific)
+        /// </summary>
+        public const int INTERLACE_SKEW = 8;
+        /// <summary>
+        /// R9:     Maximum raster
+        /// Unit:   Scanline
+        /// Notes:  Defines the height of a CRTC-Char in scanlines
+        /// </summary>
+        public const int MAX_RASTER_ADDR = 9;
+        /// <summary>
+        /// R10:    Cursor start raster
+        /// Unit:   
+        /// Notes:  Cursor not used on CPC.
+        ///         (xBP00000)
+        ///         B = Blink On/Off; 
+        ///         P = Blink Period Control (Slow/Fast). 
+        ///         Sets first raster row of character that cursor is on to invert
+        /// </summary>
+        public const int CUR_START_RASTER = 10;
+        /// <summary>
+        /// R11:    Cursor end
+        /// Unit:   
+        /// Notes:  Sets last raster row of character that cursor is on to invert
+        /// </summary>
+        public const int CUR_END_RASTER = 11;
+        /// <summary>
+        /// R12:    Display Start Address (High)
+        /// Unit:   
+        /// Notes:  Define the MSB of MA when a CRTC-screen starts
+        /// </summary>
+        public const int DISP_START_ADDR_H = 12;
+        /// <summary>
+        /// R13:    Display Start Address (Low)
+        /// Unit:   
+        /// Notes:  Define the LSB of MA when a CRTC-screen starts
+        ///         Allows you to offset the start of screen memory for hardware scrolling, and if using memory from address &0000 with the firmware.
+        /// </summary>
+        public const int DISP_START_ADDR_L = 13;
+        /// <summary>
+        /// R14:    Cursor Address (High)
+        /// Unit:   
+        /// Notes:  Useless on the Amstrad CPC/Plus (text-mode is not wired)
+        /// </summary>
+        public const int CUR_ADDR_H = 14;
+        /// <summary>
+        /// R15:    Cursor Address (Low)
+        /// Unit:   
+        /// Notes:  Useless on the Amstrad CPC/Plus (text-mode is not wired)
+        /// </summary>
+        public const int CUR_ADDR_L = 15;
+        /// <summary>
+        /// R16:    Light Pen Address (High)
+        /// Unit:   
+        /// Notes:  Hold the MSB of the cursor position when the lightpen was ON
+        /// </summary>
+        public const int LPEN_ADDR_H = 16;
+        /// <summary>
+        /// R17:    Light Pen Address (Low)
+        /// Unit:   
+        /// Notes:  Hold the LSB of the cursor position when the lightpen was ON
+        /// </summary>
+        public const int LPEN_ADDR_L = 17;
+
         /// <summary>
         /// The currently selected register
         /// </summary>
@@ -67,8 +207,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         /// <summary>
         /// CPC register default values
+        /// Taken from https://web.archive.org/web/20170501112330/http://www.grimware.org/doku.php/documentations/devices/crtc
+        /// (The defaults values given here are those programmed by the firmware ROM after a cold/warm boot of the CPC/Plus)
         /// </summary>
-        private byte[] RegDefaults = new byte[] { 63, 40, 52, 52, 20, 8, 16, 19, 0, 11, 73, 10, 0, 0, 0, 0, 0, 0 };
+        private byte[] RegDefaults = new byte[] { 63, 40, 46, 0x8e, 38, 0, 25, 30, 0, 7, 0, 0, 0x20, 0x00, 0, 0, 0, 0 };
 
         /// <summary>
         /// Register masks
@@ -76,111 +218,166 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         private byte[] CPCMask = new byte[] { 255, 255, 255, 255, 127, 31, 127, 126, 3, 31, 31, 31, 63, 255, 63, 255, 63, 255 };
 
         /// <summary>
-        /// CRTC Register constants
+        /// Horizontal Character Count
         /// </summary>
-        public const int HOR_TOTAL = 0;
-        public const int HOR_DISPLAYED = 1;
-        public const int HOR_SYNC_POS = 2;
-        public const int HOR_AND_VER_SYNC_WIDTHS = 3;
-        public const int VER_TOTAL = 4;
-        public const int VER_TOTAL_ADJUST = 5;
-        public const int VER_DISPLAYED = 6;
-        public const int VER_SYNC_POS = 7;
-        public const int INTERLACE_SKEW = 8;
-        public const int MAX_RASTER_ADDR = 9;
-        public const int CUR_START_RASTER = 10;
-        public const int CUR_END_RASTER = 11;
-        public const int DISP_START_ADDR_H = 12;
-        public const int DISP_START_ADDR_L = 13;
-        public const int CUR_ADDR_H = 14;
-        public const int CUR_ADDR_L = 15;
-        public const int LPEN_ADDR_H = 16;
-        public const int LPEN_ADDR_L = 17;
+        private int HCC;
 
-        public int horSyncWidth;
-        public int verSyncWidth;
+        /// <summary>
+        /// Vertical Character Count
+        /// </summary>
+        private int VCC;
 
-        public int currCol;
-        public int currLineInRow;
-        public int currRow;
+        /// <summary>
+        /// Vertical Scanline Count 
+        /// </summary>
+        private int VLC;
 
-        public bool isHSYNC;
-        public bool isVSYNC;
+        /// <summary>
+        /// Internal cycle counter
+        /// </summary>
+        private int CycleCounter;
 
-        public int HSYNCcnt;
-        public int VSYNCcnt;
+        /// <summary>
+        /// Signs that we have finished the last character row
+        /// </summary>
+        private bool EndOfScreen;
 
-        public bool DISPTMG;
+        /// <summary>
+        /// HSYNC pulse width (in characters)
+        /// </summary>
+        private int HSYNCWidth;
 
-        private long LastTCycle;
+        /// <summary>
+        /// Internal HSYNC counter
+        /// </summary>
+        private int HSYNCCounter;
+
+        /// <summary>
+        /// VSYNC pulse width (in characters)
+        /// </summary>
+        private int VSYNCWidth;
+
+        /// <summary>
+        /// Internal VSYNC counter
+        /// </summary>
+        private int VSYNCCounter;
 
         #endregion
 
         #region Public Methods
 
         /// <summary>
-        /// The CRTC runs at 1MHz, so effectively every 4 T-States
+        /// Runs a CRCT clock cycle
+        /// This should be called at 1Mhz / 1us / every 4 uncontended CPU t-states
         /// </summary>
-        public void CycleClock()
+        public void ClockCycle()
         {
-            if (HSYNCcnt > 0)
+            if (HSYNC)
             {
-                HSYNCcnt--;
-                if (HSYNCcnt == 0)
+                // HSYNC in progress
+                HSYNCCounter++;
+
+                if (HSYNCCounter == HSYNCWidth)
                 {
-                    // HSYNC is over
-                    isHSYNC = false;
+                    // end of HSYNC
+                    HSYNCCounter = 0;
+                    HSYNC = false;
                 }
             }
 
-            // move one column
-            currCol++;
+            // move one horizontal character
+            HCC++;
 
-            // scanline
-            if (currCol == Regs[HOR_TOTAL] + 1)
+            // check for DISPTMG
+            if (HCC >= Regs[HOR_DISPLAYED] + 1)
             {
-                // we have reached the end of the current scanline
-                currCol = 0;
-
-                // take care of VSYNC
-                if (VSYNCcnt > 0)
-                {
-                    VSYNCcnt--;
-                    if (VSYNCcnt == 0)
-                    {
-                        // VSYNC is over
-                        isVSYNC = false;
-                    }
-                }
-
-                // increment row
-                currLineInRow++;
-
-                if (currLineInRow == Regs[MAX_RASTER_ADDR] + 1)
-                {
-                    currLineInRow = 0;
-                    currRow++;
-
-                    if (currRow == Regs[VER_TOTAL] + 1)
-                    {
-                        currRow = 0;
-                    }
-                }
-
-                // check for vsync
-                if (!isVSYNC && currRow == Regs[VER_SYNC_POS])
-                {
-                    isVSYNC = true;
-                    VSYNCcnt = verSyncWidth;
-                    //vsync happening
-                }
+                DISPTMG = false;
             }
-            else if (!isHSYNC && currCol == Regs[HOR_SYNC_POS])
+            else
             {
-                // HSYNC starts
-                isHSYNC = true;
-                HSYNCcnt = horSyncWidth;
-                // hsync happening
+                DISPTMG = true;
+            }
+
+            // check for the end of the current scanline
+            if (HCC == Regs[HOR_TOTAL] + 1)
+            {
+                // end of the current scanline
+                HCC = 0;
+
+                if (VSYNC)
+                {
+                    // VSYNC in progress
+                    VSYNCCounter++;
+
+                    if (VSYNCCounter == VSYNCWidth)
+                    {
+                        // end of VSYNC
+                        VSYNCCounter = 0;
+                        VSYNC = false;
+                    }
+                }
+
+                // increment line counter
+                VLC++;
+
+                if (EndOfScreen)
+                {
+                    // we have finished the last character row
+                    // are their additional scanlines specified?
+                    if (VLC < Regs[VER_TOTAL_ADJUST] + 1)
+                    {
+                        // still doing extra scanlines
+                    }
+                    else
+
+                    {
+                        // finished doing extra scanlines
+                        EndOfScreen = false;
+                        VLC = 0;
+                        VCC = 0;
+                    }
+                }
+                else
+                {
+                    // check for the completion of a vertical character
+                    if (VLC == Regs[MAX_RASTER_ADDR] + 1)
+                    {
+                        // vertical character line has been completed
+                        // increment vcc and reset vlc
+                        VCC++;
+                        VLC = 0;
+                    }
+
+                    // end of screen?
+                    if (VCC >= Regs[VER_TOTAL] + 1)
+                    {
+                        VCC = 0;
+                        EndOfScreen = true;
+                    }
+                }
+
+                // does VSYNC need to be raised?
+                if (!VSYNC)
+                {
+                    if (VCC == Regs[VER_SYNC_POS])
+                    {
+                        VSYNC = true;
+                        VSYNCCounter = 0;
+                    }
+                }                
+            }
+            else
+            {
+                // still processing a scanline
+                // check whether HSYNC needs raising
+                if (!HSYNC)
+                {
+                    if (HCC == Regs[HOR_SYNC_POS])
+                    {
+                        HSYNC = true;
+                        HSYNCCounter = 0;
+                    }
+                }
             }
         }
 
@@ -194,6 +391,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 Regs[i] = RegDefaults[i];
 
             SelectedRegister = 0;
+
+            // populate initial MA address
+            MA = (short)(((Regs[DISP_START_ADDR_H]) & 0xff) << 8 | (Regs[DISP_START_ADDR_L]) & 0xff);
         }
 
         #endregion
@@ -259,31 +459,31 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     case CRCTType.Hitachi_HD6845S:
                         // Bits 7..4 define Vertical Sync Width. If 0 is programmed this gives 16 lines of VSYNC. Bits 3..0 define Horizontal Sync Width. 
                         // If 0 is programmed no HSYNC is generated.
-                        horSyncWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
-                        verSyncWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 4) & 0x0F;
+                        HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
+                        VSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 4) & 0x0F;
                         break;
                     case CRCTType.UMC_UM6845R:
                         // Bits 7..4 are ignored. Vertical Sync is fixed at 16 lines. Bits 3..0 define Horizontal Sync Width. If 0 is programmed no HSYNC is generated.
-                        horSyncWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
-                        verSyncWidth = 16;
+                        HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
+                        VSYNCWidth = 16;
                         break;
                     case CRCTType.Motorola_MC6845:
                         // Bits 7..4 are ignored. Vertical Sync is fixed at 16 lines. Bits 3..0 define Horizontal Sync Width. If 0 is programmed this gives a HSYNC width of 16.
-                        horSyncWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
-                        if (horSyncWidth == 0)
-                            horSyncWidth = 16;
-                        verSyncWidth = 16;
+                        HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
+                        if (HSYNCWidth == 0)
+                            HSYNCWidth = 16;
+                        VSYNCWidth = 16;
                         break;
                     case CRCTType.Amstrad_AMS40489:
                     case CRCTType.Amstrad_40226:
                         // Bits 7..4 define Vertical Sync Width. If 0 is programmed this gives 16 lines of VSYNC.Bits 3..0 define Horizontal Sync Width. 
                         // If 0 is programmed this gives a HSYNC width of 16.
-                        horSyncWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
-                        verSyncWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 4) & 0x0F;
-                        if (horSyncWidth == 0)
-                            horSyncWidth = 16;
-                        if (verSyncWidth == 0)
-                            verSyncWidth = 16;
+                        HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
+                        VSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 4) & 0x0F;
+                        if (HSYNCWidth == 0)
+                            HSYNCWidth = 16;
+                        if (VSYNCWidth == 0)
+                            VSYNCWidth = 16;
                         break;
                 }
             }
@@ -465,19 +665,69 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         {
             ser.BeginSection("CRTC");
             ser.SyncEnum("ChipType", ref ChipType);
+            ser.Sync("HSYNC", ref HSYNC);
+            ser.Sync("VSYNC", ref VSYNC);
+            ser.Sync("DISPTMG", ref DISPTMG);
+            ser.Sync("MA", ref MA);
             ser.Sync("Regs", ref Regs, false);
             ser.Sync("SelectedRegister", ref SelectedRegister);
-            ser.Sync("verSyncWidth", ref verSyncWidth);
-            ser.Sync("currCol", ref currCol);
-            ser.Sync("currLineInRow", ref currLineInRow);
-            ser.Sync("currRow", ref currRow);
-            ser.Sync("isHSYNC", ref isHSYNC);
-            ser.Sync("isVSYNC", ref isVSYNC);
-            ser.Sync("HSYNCcnt", ref HSYNCcnt);
-            ser.Sync("VSYNCcnt", ref VSYNCcnt);
-            ser.Sync("LastTCycle", ref LastTCycle);
-            ser.Sync("DISPTMG", ref DISPTMG);
+            ser.Sync("HCC", ref HCC);
+            ser.Sync("VCC", ref VCC);
+            ser.Sync("VLC", ref VLC);
+            ser.Sync("CycleCounter", ref CycleCounter);
+            ser.Sync("EndOfScreen", ref EndOfScreen);
+            ser.Sync("HSYNCWidth", ref HSYNCWidth);
+            ser.Sync("HSYNCCounter", ref HSYNCCounter);
+            ser.Sync("VSYNCWidth", ref VSYNCWidth);
+            ser.Sync("VSYNCCounter", ref VSYNCCounter);
             ser.EndSection();
+
+            /*
+             * /// <summary>
+        /// Horizontal Character Count
+        /// </summary>
+        private int ;
+
+        /// <summary>
+        /// Vertical Character Count
+        /// </summary>
+        private int ;
+
+        /// <summary>
+        /// Vertical Scanline Count 
+        /// </summary>
+        private int ;
+
+        /// <summary>
+        /// Internal cycle counter
+        /// </summary>
+        private int ;
+
+        /// <summary>
+        /// Signs that we have finished the last character row
+        /// </summary>
+        private bool ;
+
+        /// <summary>
+        /// HSYNC pulse width (in characters)
+        /// </summary>
+        private int ;
+
+        /// <summary>
+        /// Internal HSYNC counter
+        /// </summary>
+        private int ;
+
+        /// <summary>
+        /// VSYNC pulse width (in characters)
+        /// </summary>
+        private int ;
+
+        /// <summary>
+        /// Internal VSYNC counter
+        /// </summary>
+        private int ;
+             * */
         }
 
         #endregion

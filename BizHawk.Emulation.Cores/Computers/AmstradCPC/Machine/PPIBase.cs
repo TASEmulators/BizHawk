@@ -161,7 +161,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 BitArray rBits = new BitArray(8);
 
                 // Bit0 - Vertical Sync ("1"=VSYNC active, "0"=VSYNC inactive)
-                if (CRTC.isVSYNC)
+                if (CRTC.VSYNC)
                     rBits[0] = true;
 
                 // Bits1-3 - Distributor ID. Usually set to 4=Awa, 5=Schneider, or 7=Amstrad

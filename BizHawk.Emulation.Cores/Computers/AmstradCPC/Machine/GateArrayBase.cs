@@ -250,7 +250,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 {
                     // Phase 1
                     case 1:
-                        CRCT.CycleClock();
+                        CRCT.ClockCycle();
                         CPU.ExecuteOne();
                         break;
                     // Phase 2
