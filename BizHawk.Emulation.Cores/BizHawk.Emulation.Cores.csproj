@@ -149,6 +149,7 @@
     <Compile Include="Computers\AmstradCPC\Hardware\Disk\NECUPD765.IPortIODevice.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\Disk\NECUPD765.Timing.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\Disk\NECUPS765.Static.cs" />
+    <Compile Include="Computers\AmstradCPC\Hardware\GateArray\AmstradGateArray.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\Input\StandardKeyboard.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\SoundOutput\AY38912.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\SoundOutput\Beeper.cs" />
@@ -164,7 +165,7 @@
     <Compile Include="Computers\AmstradCPC\Machine\CPCBase.Port.cs" />
     <Compile Include="Computers\AmstradCPC\Machine\GateArrayBase.cs" />
     <Compile Include="Computers\AmstradCPC\Machine\MachineType.cs" />
-    <Compile Include="Computers\AmstradCPC\Machine\PPIBase.cs" />
+    <Compile Include="Computers\AmstradCPC\Hardware\PPI\PPI_8255.cs" />
     <Compile Include="Computers\AmstradCPC\Media\Disk\CPCExtendedFloppyDisk.cs" />
     <Compile Include="Computers\AmstradCPC\Media\Disk\CPCFloppyDisk.cs" />
     <Compile Include="Computers\AmstradCPC\Media\Disk\DiskType.cs" />

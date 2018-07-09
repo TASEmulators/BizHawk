@@ -24,6 +24,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         {
             _machine = machine;
             ChipType = chipType;
+
+            Reset();
         }
 
         #endregion
@@ -51,6 +53,114 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// The gate array uses this to grab the correct bits from video RAM
         /// </summary>
         public short MA;
+
+        #endregion
+        
+        #region Public Lookups
+
+        /*
+         *  These are not accessible on real hardware
+         *  It just makes screen generation easier to have these accessbile from the gate array
+         */
+        
+        /// <summary>
+        /// The total frame width (in characters)
+        /// </summary>
+        public int FrameWidth
+        {
+            get
+            {
+                return (int)Regs[HOR_TOTAL] + 1;
+            }
+        }
+
+        /// <summary>
+        /// The total frame height (in scanlines)
+        /// </summary>
+        public int FrameHeight
+        {
+            get
+            {
+                return ((int)Regs[VER_TOTAL] + 1) * ((int)Regs[MAX_RASTER_ADDR] + 1);
+            }
+        }
+
+        /// <summary>
+        /// The width of the display area (in characters)
+        /// </summary>
+        public int DisplayWidth
+        {
+            get
+            {
+                return (int)Regs[HOR_DISPLAYED];
+            }
+        }
+
+        /// <summary>
+        /// The width of the display area (in scanlines)
+        /// </summary>
+        public int DisplayHeight
+        {
+            get
+            {
+                return (int)Regs[VER_DISPLAYED] * ((int)Regs[MAX_RASTER_ADDR] + 1);
+            }
+        }
+
+        /// <summary>
+        /// The character at which to start HSYNC
+        /// </summary>
+        public int HorizontalSyncPos
+        {
+            get
+            {
+                return (int)Regs[HOR_SYNC_POS];
+            }
+        }
+
+        /// <summary>
+        /// Width (in characters) of the HSYNC
+        /// </summary>
+        public int HorizontalSyncWidth
+        {
+            get
+            {
+                return HSYNCWidth;
+            }
+        }
+
+        /// <summary>
+        /// The vertical scanline at which to start VSYNC
+        /// </summary>
+        public int VerticalSyncPos
+        {
+            get
+            {
+                return (int)Regs[VER_SYNC_POS] * ((int)Regs[MAX_RASTER_ADDR] + 1);
+            }
+        }
+
+        /// <summary>
+        /// Height (in scanlines) of the VSYNC
+        /// </summary>
+        public int VerticalSyncHeight
+        {
+            get
+            {
+                return VSYNCWidth * ((int)Regs[MAX_RASTER_ADDR] + 1);
+            }
+        }
+
+        /// <summary>
+        /// The number of scanlines in one character
+        /// </summary>
+        public int ScanlinesPerCharacter
+        {
+            get
+            {
+                return (int)Regs[MAX_RASTER_ADDR] + 1;
+            }
+        }
 
         #endregion
 
@@ -277,7 +387,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 // HSYNC in progress
                 HSYNCCounter++;
 
-                if (HSYNCCounter == HSYNCWidth)
+                if (HSYNCCounter >= HSYNCWidth)
                 {
                     // end of HSYNC
                     HSYNCCounter = 0;
@@ -303,6 +413,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             {
                 // end of the current scanline
                 HCC = 0;
+
+                if (ChipType == CRCTType.UMC_UM6845R && VLC <= Regs[MAX_RASTER_ADDR])
+                {
+                    // https://web.archive.org/web/20170501112330/http://www.grimware.org/doku.php/documentations/devices/crtc
+                    // The MA is reloaded with the value from R12 and R13 when VCC=0 and VLC=0 (that's when a new CRTC screen begin). 
+                    // However, CRTC Type 1 keep updating the MA on every new scanline while VCC=0 (and VLC=<R9).
+                    MA = (short)(((Regs[DISP_START_ADDR_H]) & 0xff) << 8 | (Regs[DISP_START_ADDR_L]) & 0xff);
+                }
 
                 if (VSYNC)
                 {
@@ -335,6 +453,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                         EndOfScreen = false;
                         VLC = 0;
                         VCC = 0;
+
+                        // populate MA address
+                        MA = (short)(((Regs[DISP_START_ADDR_H]) & 0xff) << 8 | (Regs[DISP_START_ADDR_L]) & 0xff);
                     }
                 }
                 else
@@ -394,6 +515,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             // populate initial MA address
             MA = (short)(((Regs[DISP_START_ADDR_H]) & 0xff) << 8 | (Regs[DISP_START_ADDR_L]) & 0xff);
+
+            // updates widths
+            UpdateWidths();
         }
 
         #endregion
@@ -454,38 +578,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             if (SelectedRegister == HOR_AND_VER_SYNC_WIDTHS)
             {
-                switch (ChipType)
-                {
-                    case CRCTType.Hitachi_HD6845S:
-                        // Bits 7..4 define Vertical Sync Width. If 0 is programmed this gives 16 lines of VSYNC. Bits 3..0 define Horizontal Sync Width. 
-                        // If 0 is programmed no HSYNC is generated.
-                        HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
-                        VSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 4) & 0x0F;
-                        break;
-                    case CRCTType.UMC_UM6845R:
-                        // Bits 7..4 are ignored. Vertical Sync is fixed at 16 lines. Bits 3..0 define Horizontal Sync Width. If 0 is programmed no HSYNC is generated.
-                        HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
-                        VSYNCWidth = 16;
-                        break;
-                    case CRCTType.Motorola_MC6845:
-                        // Bits 7..4 are ignored. Vertical Sync is fixed at 16 lines. Bits 3..0 define Horizontal Sync Width. If 0 is programmed this gives a HSYNC width of 16.
-                        HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
-                        if (HSYNCWidth == 0)
-                            HSYNCWidth = 16;
-                        VSYNCWidth = 16;
-                        break;
-                    case CRCTType.Amstrad_AMS40489:
-                    case CRCTType.Amstrad_40226:
-                        // Bits 7..4 define Vertical Sync Width. If 0 is programmed this gives 16 lines of VSYNC.Bits 3..0 define Horizontal Sync Width. 
-                        // If 0 is programmed this gives a HSYNC width of 16.
-                        HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
-                        VSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 4) & 0x0F;
-                        if (HSYNCWidth == 0)
-                            HSYNCWidth = 16;
-                        if (VSYNCWidth == 0)
-                            VSYNCWidth = 16;
-                        break;
-                }
+                UpdateWidths();
             }
         }
 
@@ -591,6 +684,45 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     break;
             }
             return addressed;
+        }
+
+        /// <summary>
+        /// Updates the V and H SYNC widths
+        /// </summary>
+        private void UpdateWidths()
+        {
+            switch (ChipType)
+            {
+                case CRCTType.Hitachi_HD6845S:
+                    // Bits 7..4 define Vertical Sync Width. If 0 is programmed this gives 16 lines of VSYNC. Bits 3..0 define Horizontal Sync Width. 
+                    // If 0 is programmed no HSYNC is generated.
+                    HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
+                    VSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 4) & 0x0F;
+                    break;
+                case CRCTType.UMC_UM6845R:
+                    // Bits 7..4 are ignored. Vertical Sync is fixed at 16 lines. Bits 3..0 define Horizontal Sync Width. If 0 is programmed no HSYNC is generated.
+                    HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
+                    VSYNCWidth = 16;
+                    break;
+                case CRCTType.Motorola_MC6845:
+                    // Bits 7..4 are ignored. Vertical Sync is fixed at 16 lines. Bits 3..0 define Horizontal Sync Width. If 0 is programmed this gives a HSYNC width of 16.
+                    HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
+                    if (HSYNCWidth == 0)
+                        HSYNCWidth = 16;
+                    VSYNCWidth = 16;
+                    break;
+                case CRCTType.Amstrad_AMS40489:
+                case CRCTType.Amstrad_40226:
+                    // Bits 7..4 define Vertical Sync Width. If 0 is programmed this gives 16 lines of VSYNC.Bits 3..0 define Horizontal Sync Width. 
+                    // If 0 is programmed this gives a HSYNC width of 16.
+                    HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
+                    VSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 4) & 0x0F;
+                    if (HSYNCWidth == 0)
+                        HSYNCWidth = 16;
+                    if (VSYNCWidth == 0)
+                        VSYNCWidth = 16;
+                    break;
+            }
         }
 
         #endregion

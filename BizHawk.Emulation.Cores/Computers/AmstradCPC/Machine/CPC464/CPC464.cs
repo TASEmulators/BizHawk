@@ -24,8 +24,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             FrameLength = 79872;
 
             CRCT = new CRCT_6845(CRCT_6845.CRCTType.Motorola_MC6845, this);
-            GateArray = new GateArray_CPC464(this);
-            PPI = new PPIBase(this);
+            GateArray = new AmstradGateArray(this, AmstradGateArray.GateArrayType.Amstrad40007);
+            PPI = new PPI_8255(this);
 
             KeyboardDevice = new StandardKeyboard(this);
 

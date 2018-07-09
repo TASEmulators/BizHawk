@@ -130,6 +130,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 if (RomData.RomBytes.Length > 0x4000)
                     ROM1[i] = RomData.RomBytes[i + 0x4000];
             }
+
+            LowerROMPaged = true;
+            UpperROMPaged = true;
         }
     }
 }

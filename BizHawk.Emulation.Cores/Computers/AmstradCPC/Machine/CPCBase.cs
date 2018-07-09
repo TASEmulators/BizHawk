@@ -60,12 +60,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// The Amstrad gate array
         /// </summary>
-        public GateArrayBase GateArray { get; set; }
+        public AmstradGateArray GateArray { get; set; }
 
         /// <summary>
         /// The PPI contoller chip
         /// </summary>
-        public PPIBase PPI { get; set; }
+        public PPI_8255 PPI { get; set; }
 
         /// <summary>
         /// The length of a standard frame in CPU cycles
@@ -154,20 +154,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             PollInput();
 
-            for (;;)
+            GateArray.SetupVideo();
+
+            while (!GateArray.FrameEnd)
             {
-                // run the CPU Monitor cycle
-                //CPUMon.ExecuteCycle();
-
-                GateArray.ClockCycle();
-
-                // cycle the tape device
-                if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
-                    TapeDevice.TapeCycle();
-
-                // has frame end been reached?
-                if (GateArray.FrameEnd)
-                    break;
+                GateArray.DoCycles();
             }
 
             OverFlow = (int)CurrentFrameCycle - GateArray.FrameLength;

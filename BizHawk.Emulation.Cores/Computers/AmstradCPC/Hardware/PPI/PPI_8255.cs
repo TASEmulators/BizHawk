@@ -10,13 +10,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
     /// http://www.cpcwiki.eu/imgs/d/df/PPI_M5L8255AP-5.pdf
     /// http://www.cpcwiki.eu/index.php/8255
     /// </summary>
-    public class PPIBase : IPortIODevice
+    public class PPI_8255 : IPortIODevice
     {
         #region Devices
 
         private CPCBase _machine;
         private CRCT_6845 CRTC => _machine.CRCT;
-        private GateArrayBase GateArray => _machine.GateArray;
+        private AmstradGateArray GateArray => _machine.GateArray;
         private IPSG PSG => _machine.AYDevice;
         private DatacorderDevice Tape => _machine.TapeDevice;
         private IKeyboard Keyboard => _machine.KeyboardDevice;
@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         #region Construction
 
-        public PPIBase(CPCBase machine)
+        public PPI_8255(CPCBase machine)
         {
             _machine = machine;
             Reset();
