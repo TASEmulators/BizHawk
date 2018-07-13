@@ -213,7 +213,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 return _keyboard.ReadCurrentLine();
             }
 
-            return _registers[_activeRegister];
+            if (_activeRegister < 16)
+                return _registers[_activeRegister];
+
+            return 0;
         }
 
         /// <summary>

@@ -63,6 +63,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public AmstradGateArray GateArray { get; set; }
 
         /// <summary>
+        /// Renders pixels to the screen
+        /// </summary>
+        public CRTDevice CRT { get; set; }
+
+        /// <summary>
         /// The PPI contoller chip
         /// </summary>
         public PPI_8255 PPI { get; set; }
@@ -135,7 +140,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public virtual void ExecuteFrame(bool render, bool renderSound)
         {
             GateArray.FrameEnd = false;
-            //ULADevice.ULACycleCounter = CurrentFrameCycle;
 
             InputRead = false;
             _render = render;
@@ -154,11 +158,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             PollInput();
 
-            GateArray.SetupVideo();
+            CRT.SetupVideo();
+            CRT.ScanlineCounter = 0;
 
             while (!GateArray.FrameEnd)
             {
-                GateArray.DoCycles();
+                GateArray.ClockCycle();
+
+                // cycle the tape device
+                if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
+                    TapeDevice.TapeCycle();
             }
 
             OverFlow = (int)CurrentFrameCycle - GateArray.FrameLength;

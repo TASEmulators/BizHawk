@@ -94,9 +94,35 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <returns></returns>
         public virtual byte FetchScreenMemory(ushort addr)
         {
-            var value = ReadBus((ushort)((addr & 0x3FFF) + 0x4000));
-            //var value = ReadBus(addr);
-            return value;
+            int divisor = addr / 0x4000;
+            byte result = 0xff;
+
+            switch (divisor)
+            {
+                // 0x000
+                case 0:
+                    result = RAM0[addr % 0x4000];
+                    break;
+
+                // 0x4000
+                case 1:
+                    result = RAM1[addr % 0x4000];
+                    break;
+
+                // 0x8000
+                case 2:
+                    result = RAM2[addr % 0x4000];
+                    break;
+
+                // 0xc000 or UpperROM
+                case 3:
+                    result = RAM3[addr % 0x4000];
+                    break;
+                default:
+                    break;
+            }
+
+            return result;
         }
 
         #endregion

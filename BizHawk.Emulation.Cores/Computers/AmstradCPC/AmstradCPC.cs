@@ -63,11 +63,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             _cpu.ReadHardware = _machine.ReadPort;
             _cpu.WriteHardware = _machine.WritePort;
             _cpu.FetchDB = _machine.PushBus;
+            _cpu.IRQACKCallback = _machine.GateArray.IORQA;
             //_cpu.OnExecFetch = _machine.CPUMon.OnExecFetch;
 
             ser.Register<ITraceable>(_tracer);
             ser.Register<IDisassemblable>(_cpu);
-            ser.Register<IVideoProvider>(_machine.GateArray);
+            ser.Register<IVideoProvider>(_machine.CRT);
 
             // initialize sound mixer and attach the various ISoundProvider devices
             SoundMixer = new SoundProviderMixer((int)(32767 / 10), "Tape Audio", (ISoundProvider)_machine.TapeBuzzer);

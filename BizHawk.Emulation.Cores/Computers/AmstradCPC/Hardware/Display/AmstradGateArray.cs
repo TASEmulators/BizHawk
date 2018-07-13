@@ -16,13 +16,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
     /// http://www.cpcwiki.eu/index.php/Gate_Array
     /// https://web.archive.org/web/20170612081209/http://www.grimware.org/doku.php/documentations/devices/gatearray
     /// </summary>
-    public class AmstradGateArray : IVideoProvider, IPortIODevice
+    public class AmstradGateArray : IPortIODevice
     {
         #region Devices
 
         private CPCBase _machine;
         private Z80A CPU => _machine.CPU;
         private CRCT_6845 CRCT => _machine.CRCT;
+        private CRTDevice CRT => _machine.CRT;
         private IPSG PSG => _machine.AYDevice;
         private NECUPD765 FDC => _machine.UPDDiskDevice;
         private DatacorderDevice DATACORDER => _machine.TapeDevice;
@@ -67,84 +68,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         #endregion
 
-        #region Palletes
-
-        /// <summary>
-        /// The standard CPC Pallete (ordered by firmware #)
-        /// http://www.cpcwiki.eu/index.php/CPC_Palette
-        /// </summary>
-        private static readonly int[] CPCFirmwarePalette =
-        {
-            Colors.ARGB(0x00, 0x00, 0x00), // Black
-            Colors.ARGB(0x00, 0x00, 0x80), // Blue
-            Colors.ARGB(0x00, 0x00, 0xFF), // Bright Blue
-            Colors.ARGB(0x80, 0x00, 0x00), // Red            
-            Colors.ARGB(0x80, 0x00, 0x80), // Magenta
-            Colors.ARGB(0x80, 0x00, 0xFF), // Mauve
-            Colors.ARGB(0xFF, 0x00, 0x00), // Bright Red
-            Colors.ARGB(0xFF, 0x00, 0x80), // Purple
-            Colors.ARGB(0xFF, 0x00, 0xFF), // Bright Magenta
-            Colors.ARGB(0x00, 0x80, 0x00), // Green
-            Colors.ARGB(0x00, 0x80, 0x80), // Cyan
-            Colors.ARGB(0x00, 0x80, 0xFF), // Sky Blue
-            Colors.ARGB(0x80, 0x80, 0x00), // Yellow
-            Colors.ARGB(0x80, 0x80, 0x80), // White
-            Colors.ARGB(0x80, 0x80, 0xFF), // Pastel Blue
-            Colors.ARGB(0xFF, 0x80, 0x00), // Orange
-            Colors.ARGB(0xFF, 0x80, 0x80), // Pink
-            Colors.ARGB(0xFF, 0x80, 0xFF), // Pastel Magenta
-            Colors.ARGB(0x00, 0xFF, 0x00), // Bright Green
-            Colors.ARGB(0x00, 0xFF, 0x80), // Sea Green
-            Colors.ARGB(0x00, 0xFF, 0xFF), // Bright Cyan
-            Colors.ARGB(0x80, 0xFF, 0x00), // Lime
-            Colors.ARGB(0x80, 0xFF, 0x80), // Pastel Green
-            Colors.ARGB(0x80, 0xFF, 0xFF), // Pastel Cyan
-            Colors.ARGB(0xFF, 0xFF, 0x00), // Bright Yellow
-            Colors.ARGB(0xFF, 0xFF, 0x80), // Pastel Yellow
-            Colors.ARGB(0xFF, 0xFF, 0xFF), // Bright White
-        };
-
-        /// <summary>
-        /// The standard CPC Pallete (ordered by hardware #)
-        /// http://www.cpcwiki.eu/index.php/CPC_Palette
-        /// </summary>
-        private static readonly int[] CPCHardwarePalette =
-        {
-            Colors.ARGB(0x80, 0x80, 0x80), // White
-            Colors.ARGB(0x80, 0x80, 0x80), // White (duplicate)
-            Colors.ARGB(0x00, 0xFF, 0x80), // Sea Green
-            Colors.ARGB(0xFF, 0xFF, 0x80), // Pastel Yellow
-            Colors.ARGB(0x00, 0x00, 0x80), // Blue
-            Colors.ARGB(0xFF, 0x00, 0x80), // Purple
-            Colors.ARGB(0x00, 0x80, 0x80), // Cyan
-            Colors.ARGB(0xFF, 0x80, 0x80), // Pink
-            Colors.ARGB(0xFF, 0x00, 0x80), // Purple (duplicate)
-            Colors.ARGB(0xFF, 0xFF, 0x80), // Pastel Yellow (duplicate)
-            Colors.ARGB(0xFF, 0xFF, 0x00), // Bright Yellow
-            Colors.ARGB(0xFF, 0xFF, 0xFF), // Bright White
-            Colors.ARGB(0xFF, 0x00, 0x00), // Bright Red
-            Colors.ARGB(0xFF, 0x00, 0xFF), // Bright Magenta
-            Colors.ARGB(0xFF, 0x80, 0x00), // Orange
-            Colors.ARGB(0xFF, 0x80, 0xFF), // Pastel Magenta
-            Colors.ARGB(0x00, 0x00, 0x80), // Blue (duplicate)
-            Colors.ARGB(0x00, 0xFF, 0x80), // Sea Green (duplicate)
-            Colors.ARGB(0x00, 0xFF, 0x00), // Bright Green
-            Colors.ARGB(0x00, 0xFF, 0xFF), // Bright Cyan
-            Colors.ARGB(0x00, 0x00, 0x00), // Black
-            Colors.ARGB(0x00, 0x00, 0xFF), // Bright Blue
-            Colors.ARGB(0x00, 0x80, 0x00), // Green
-            Colors.ARGB(0x00, 0x80, 0xFF), // Sky Blue
-            Colors.ARGB(0x80, 0x00, 0x80), // Magenta
-            Colors.ARGB(0x80, 0xFF, 0x80), // Pastel Green
-            Colors.ARGB(0x80, 0xFF, 0x00), // Lime
-            Colors.ARGB(0x80, 0xFF, 0xFF), // Pastel Cyan
-            Colors.ARGB(0x80, 0x00, 0x00), // Red     
-            Colors.ARGB(0x80, 0x00, 0xFF), // Mauve
-            Colors.ARGB(0x80, 0x80, 0x00), // Yellow            
-            Colors.ARGB(0x80, 0x80, 0xFF), // Pastel Blue
-        };
-
-        #endregion
+        
 
         #region Construction
 
@@ -153,7 +77,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             _machine = machine;
             ChipType = chipType;
             //PenColours = new int[17];
-            SetupScreenSize();
+            CRT.SetupScreenSize();
             //Reset();
         }
 
@@ -193,10 +117,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         }
 
         /// <summary>
-        /// 0-16:   Pen Registers
-        /// 17:     Border Colour
+        /// 0-15:   Pen Registers
+        /// 16:     Border Colour
         /// </summary>
-        private int[] ColourRegisters = new int[17];
+        public int[] ColourRegisters = new int[17];
 
         /// <summary>
         /// The currently selected Pen
@@ -243,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             set
             {
                 _RMR = value;
-                ScreenMode = _RMR & 0x03;
+                //ScreenMode = _RMR & 0x03;
 
                 if ((_RMR & 0x08) != 0)
                     _machine.UpperROMPaged = false;
@@ -254,6 +178,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     _machine.LowerROMPaged = false;
                 else
                     _machine.LowerROMPaged = true;
+
+                if (_RMR.Bit(4))
+                {
+                    // reset interrupt counter
+                    InterruptCounter = 0;
+                }
             }
         }
 
@@ -297,7 +227,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         }
 
         /// <summary>
-        /// The selected screen mode
+        /// The selected screen mode (updated after every HSYNC)
         /// </summary>
         private int ScreenMode;
 
@@ -345,12 +275,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         }
 
         /// <summary>
-        /// Video mode change is syncronised with HSYNC. When the mode is change it takes effect
-        /// from the next HSYNC
-        /// </summary>
-        private int LatchedMode;
-
-        /// <summary>
         /// Set when the HSYNC signal is detected from the CRCT
         /// </summary>
         private bool HSYNC;
@@ -383,16 +307,34 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         private int InterruptHoldCounter;
 
         /// <summary>
-        /// 2 state field
-        /// Because the renderer outputs 1 pixel for every 2 GA cycles
+        /// Set at the start of a new frame
         /// </summary>
-        private bool RendererFlipFlop = true;
+        public bool IsNewFrame;
 
         /// <summary>
-        /// Used for counting the screen buffer positions
+        /// Set when a new line is beginning
         /// </summary>
-        private int RenderCounter;
+        public bool IsNewLine;
 
+        /// <summary>
+        /// Horizontal Character Counter
+        /// </summary>
+        private int HCC;
+
+        /// <summary>
+        /// Vertical Line Counter
+        /// </summary>
+        private int VLC;
+
+        /// <summary>
+        /// The first video byte fetched
+        /// </summary>
+        private byte VideoByte1;
+
+        /// <summary>
+        /// The second video byte fetched
+        /// </summary>
+        private byte VideoByte2;
 
         #endregion
 
@@ -406,14 +348,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             FrameClock++;
             ClockCounter++;
 
-            if (ClockCounter == 16)
+            if (ClockCounter == 4)
                 ClockCounter = 0;
 
             // check for frame end
-            if (FrameClock == GAFrameLength)
+            if (FrameClock == FrameLength)
             {
                 FrameClock = 0;
-                //FrameEnd = true;
+                FrameEnd = true;
             }
         }
 
@@ -433,8 +375,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             // /WAIT line is active            
             switch (ClockCounter)
             {
-                case 8:
-                case 12:
+                case 2:
+                case 3:
                     // gate array video fetch is occuring
                     // check for memory access
                     if (BUSRQ > 0)
@@ -444,7 +386,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     }
                     break;
 
-                case 4:
+                case 1:
                     // CPU accesses RAM if it's performing a non-opcode read or write
                     // assume for now that an opcode fetch is always looking at PC
                     if (BUSRQ == PCh)
@@ -462,10 +404,145 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         }
 
         /// <summary>
-        /// Performs one gate array (rendering) cycle
+        /// Handles interrupt generation
         /// </summary>
-        private void DoCycle()
+        private void InterruptGenerator()
         {
+            if (HSYNC && !CRCT.HSYNC)
+            {
+                // falling edge of the HSYNC detected
+                InterruptCounter++;
+
+                if (CRCT.VSYNC)
+                {
+                    if (HSYNC_counter >= 2)
+                    {
+                        // x2 HSYNC have happened during VSYNC
+                        if (InterruptCounter >= 32)
+                        {
+                            // no interrupt
+                            InterruptCounter = 0;
+                        }
+                        else if (InterruptCounter < 32)
+                        {
+                            // interrupt
+                            InterruptRaised = true;
+                            InterruptCounter = 0;
+                        }
+
+                        HSYNC_counter = 0;
+                    }
+                    else
+                    {
+                        HSYNC_counter++;
+                    }
+                }
+
+                if (InterruptCounter == 52)
+                {
+                    // gatearray should raise an interrupt
+                    InterruptRaised = true;
+                    InterruptCounter = 0;
+                }
+            }
+
+            if (InterruptRaised)
+            {
+                // interrupt should been raised
+                CPU.FlagI = true;
+                InterruptHoldCounter++;
+
+                // the INT signal should be held low for 1.4us.
+                // in gatearray cycles, this equates to 22.4
+                // we will round down to 22 for emulation purposes
+                if (InterruptHoldCounter >= 22)
+                {
+                    CPU.FlagI = false;
+                    InterruptRaised = false;
+                    InterruptHoldCounter = 0;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The CRCT builds the picture in a strange way, so that the top left of the display area is the first pixel from
+        /// video RAM. The borders come either side of the HSYNC and VSYNCs later on:
+        /// https://web.archive.org/web/20170501112330im_/http://www.grimware.org/lib/exe/fetch.php/documentations/devices/crtc.6845/crtc.standard.video.frame.png?w=800&h=500
+        /// Therefore when the gate array initialises, we will attempt end the frame early in order to
+        /// sync up at the point where VSYNC is active and HSYNC just begins. This is roughly how a CRT monitor would display the picture.
+        /// The CRT would start a new line at the point where an HSYNC is detected.
+        /// </summary>
+        private void FrameDetector()
+        {
+            if (CRCT.HSYNC && !IsNewLine)
+            {
+                // start of a new line on the next render cycle
+                IsNewLine = true;
+
+                // process scanline
+                CRT.CurrentLine.CommitScanline();
+
+                // check for end of frame
+                if (CRCT.VSYNC && !IsNewFrame)
+                {
+                    // start of a new frame on the next render cycle
+                    IsNewFrame = true;
+                    //FrameEnd = true;                    
+                    VLC = 0;
+                }
+                else if (!CRCT.VSYNC)
+                {
+                    // increment line counter
+                    VLC++;
+                    IsNewFrame = false;
+                }
+
+                HCC = 0;
+
+                // update screenmode
+                ScreenMode = RMR & 0x03;
+                CRT.CurrentLine.InitScanline(ScreenMode, VLC);
+                //CRT.InitScanline(VLC, ScreenMode);
+            }
+            else if (!CRCT.HSYNC)
+            {
+                // reset the flags
+                IsNewLine = false;
+                IsNewFrame = false;
+            }
+        }
+
+        /// <summary>
+        /// Fetches a video RAM byte
+        /// This happens at 2Mhz when a memory fetch is due
+        /// </summary>
+        /// <param name="index"></param>
+        private void FetchByte(int index)
+        {
+            switch (index)
+            {
+                case 1:
+                    VideoByte1 = _machine.FetchScreenMemory(CRCT.CurrentByteAddress);
+                    break;
+                case 2:
+                    VideoByte2 = _machine.FetchScreenMemory((ushort)(CRCT.CurrentByteAddress + 1));
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Called at 1Mhz
+        /// Generates the internal screen layout (to be displayed at the end of the frame by the CRT)
+        /// Each PixelGenerator cycle will process 1 horizontal character
+        /// If the area to generate is in display RAM, 2 bytes will be processed
+        /// </summary>
+        private void PixelGenerator()
+        {
+            // mode 0: 160x200 pixels:  1 character == 1Mhz == 2 pixels == 4 bits per pixel = 2 pixels per screenbyte
+            // mode 1: 320x200 pixels:  1 character == 1Mhz == 4 pixels == 2 bits per pixel = 4 pixels per screenbyte
+            // mode 2: 640x200 pixels:  1 character == 1Mhz == 8 pixels == 1 bits per pixel = 8 pixels per screenbyte
+            // mode 3: 160x200 pixels:  1 character == 1Mhz == 2 pixels == 2 bits per pixel = 2 pixels per screenbyte
+
             /*
                 http://www.cpcmania.com/Docs/Programming/Painting_pixels_introduction_to_video_memory.htm
                 http://www.cantrell.org.uk/david/tech/cpc/cpc-firmware/
@@ -524,157 +601,34 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 Screen layout and generation:  http://www.cpcwiki.eu/forum/programming/rupture/?action=dlattach;attach=16221
             */
 
-            // run the interrupt generator routine
-            InterruptGenerator();
-
-            #region Testing
-
-            if (CRCT.DISPTMG)
+            if (CRCT.VSYNC && CRCT.HSYNC)
             {
-                displayCounter++;
-            }
-            else if (CRCT.HSYNC)
-            {
-                hsyncCounter++;
-            }
-            else if (!CRCT.DISPTMG)
-            {
-                borderCounter++;
+                // both hsync and vsync active
+                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.HSYNCandVSYNC, VideoByte1, VideoByte2, ColourRegisters);
+                //CRT.AddScanlineCharacter(VLC, HCC++, RenderPhase.HSYNCandVSYNC, VideoByte1, VideoByte2, ColourRegisters);
             }
             else if (CRCT.VSYNC)
             {
-                vsyncCounter++;
+                // vsync is active but hsync is not
+                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.VSYNC, VideoByte1, VideoByte2, ColourRegisters);
+                //CRT.AddScanlineCharacter(VLC, HCC++, RenderPhase.VSYNC, VideoByte1, VideoByte2, ColourRegisters);
             }
-
-            if (!CRCT.HSYNC && HSYNC)
+            else if (CRCT.HSYNC)
             {
-                // end of line
-                displayCounter = 0;
-                hsyncCounter = 0;
-                borderCounter = 0;
-                vsyncCounter = 0;
-
-                lineCounter++;
+                // hsync is active but vsync is not
+                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.HSYNC, VideoByte1, VideoByte2, ColourRegisters);
+                //CRT.AddScanlineCharacter(VLC, HCC++, RenderPhase.HSYNC, VideoByte1, VideoByte2, ColourRegisters);
             }
-
-            if (borderCounter > 160)
+            else if (!CRCT.DISPTMG)
             {
-
+                // border generation
+                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.BORDER, VideoByte1, VideoByte2, ColourRegisters);
+                //CRT.AddScanlineCharacter(VLC, HCC++, RenderPhase.BORDER, VideoByte1, VideoByte2, ColourRegisters);
             }
-
-            if (CRCT.VSYNC)
+            else if (CRCT.DISPTMG)
             {
-
-            }
-            if (!CRCT.VSYNC && VSYNC)
-            {
-                // end of screen
-                lineCounter = 0;
-            }
-
-            #endregion
-
-            // When the start of the vertical sync is seen by the monitor it starts the next frame. This means border
-            // is effectively split between top and bottom of the display. Border above the VSYNC is the bottom
-            // border, Border below the VSYNC is the top border
-            if (!VSYNC && CRCT.VSYNC)
-            {
-                VSYNC = true;
-                FrameEnd = true;
-                return;
-            }
-
-            // update HSYNC & VSYNC from CRCT
-            HSYNC = CRCT.HSYNC;
-            VSYNC = CRCT.VSYNC;
-
-            // 2 GA cycles per pixel
-            RendererFlipFlop = !RendererFlipFlop;
-            if (RendererFlipFlop)
-            {
-                if (HSYNC)
-                {
-                    // HSYNC in progress
-                    // output black
-                }
-                else if (!CRCT.DISPTMG)
-                {
-                    // outputting border colour
-                    ScreenBuffer[RenderCounter++] = CPCHardwarePalette[ColourRegisters[16]];
-                }
-                else if (CRCT.DISPTMG)
-                {
-                    // outputting vid RAM
-                    Random rnd = new Random();
-                    ScreenBuffer[RenderCounter++] = CPCHardwarePalette[ColourRegisters[1]];
-                }
-                if (CRCT.VSYNC)
-                {
-                    RenderCounter = 40;
-                }
-            }
-        }
-
-        int displayCounter = 0;
-        int hsyncCounter = 0;
-        int borderCounter = 0;
-        int vsyncCounter = 0;
-
-        int lineCounter = 0;
-
-        /// <summary>
-        /// Handles interrupt generation
-        /// </summary>
-        private void InterruptGenerator()
-        {
-            if (HSYNC && !CRCT.HSYNC)
-            {
-                // falling edge of the HSYNC detected
-                InterruptCounter++;
-
-                if (CRCT.VSYNC)
-                {
-                    if (HSYNC_counter == 2)
-                    {
-                        // x2 HSYNC have happened during VSYNC
-                        if (InterruptCounter >= 32)
-                        {
-                            // no interrupt
-                            InterruptCounter = 0;
-                        }
-                        else if (InterruptCounter < 32)
-                        {
-                            // interrupt
-                            InterruptRaised = true;
-                            InterruptCounter = 0;
-                        }
-
-                        HSYNC_counter = 0;
-                    }
-                }
-
-                if (InterruptCounter == 52)
-                {
-                    // gatearray should raise an interrupt
-                    InterruptRaised = true;
-                    InterruptCounter = 0;
-                }
-            }
-
-            if (InterruptRaised)
-            {
-                // interrupt has been raised
-                CPU.IFF1 = true;
-                InterruptHoldCounter++;
-
-                // the INT signal should be held low for 1.4us.
-                // in gatearray cycles, this equates to 22.4
-                // we will round down to 22 for emulation purposes
-                if (InterruptHoldCounter >= 22)
-                {
-                    CPU.IFF1 = false;
-                    InterruptRaised = false;
-                }
+                // pixels generated from video RAM
+                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.DISPLAY, VideoByte1, VideoByte2, ColourRegisters);
             }
         }
 
@@ -683,118 +637,63 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         #region Public Methods
 
         /// <summary>
-        /// The gate array is clocked at 16Mhz
-        /// It provides the CPU clock at 4Mhz
-        /// The CRCT clock at 1Mhz
-        /// The PSG clock at 1Mhz
-        /// 
-        /// Each time this method is called, the gatearray performs 16 cycles
-        /// (equivalent to 4 uncontended CPU cycles)
+        /// Called every CPU cycle
+        /// In reality the GA is clocked at 16Mhz (4 times the frequency of the CPU)
+        /// Therefore this method has to take care of:
+        /// 4 GA cycles
+        /// 1 CRCT cycle every 4 calls
+        /// 1 PSG cycle every 4 calls
+        /// 1 CPU cycle (uncontended)
         /// </summary>
-        public void DoCycles()
+        public void ClockCycle()
         {
-            // 16 gatearray cycles
+            // gatearray uses 4-phase clock to supply clocks to other devices
             switch (ClockCounter)
             {
-                // 0Mhz
                 case 0:
-                    // wait line inactive
-                    WaitLine = false;
-
                     CRCT.ClockCycle();
-                    //psg
-
-                    // GA render cycle
-                    DoCycle();
-
-                    // CPU
-                    DoConditionalCPUCycle();
-
-                    // cycle the tape device
-                    if (FDC == null || !FDC.FDD_IsDiskLoaded)
-                        DATACORDER.TapeCycle();
+                    //psg clockcycle
+                    WaitLine = false;
                     break;
-                // 4Mhz
-                case 4:
-                    // wait line active
+                case 1:
                     WaitLine = true;
-
-                    // GA render cycle
-                    DoCycle();
-
-                    // CPU
-                    DoConditionalCPUCycle();
-
-                    // cycle the tape device
-                    if (FDC == null || !FDC.FDD_IsDiskLoaded)
-                        DATACORDER.TapeCycle();
+                    // detect new scanline and upcoming new frame on next render cycle
+                    FrameDetector();
                     break;
-                // 8Mhz
-                case 8:
-                    // wait line active
-                    WaitLine = true;
-
-                    // GA render cycle
-                    DoCycle();
-
-                    // CPU
-                    DoConditionalCPUCycle();
-
+                case 2:
                     // video fetch
-
-                    // cycle the tape device
-                    if (FDC == null || !FDC.FDD_IsDiskLoaded)
-                        DATACORDER.TapeCycle();
-                    break;
-                // 12Mhz
-                case 12:
-                    // wait line active
                     WaitLine = true;
-
-                    // GA render cycle
-                    DoCycle();
-
-                    // CPU
-                    DoConditionalCPUCycle();
-
-                    // video fetch
-
-                    // cycle the tape device
-                    if (FDC == null || !FDC.FDD_IsDiskLoaded)
-                        DATACORDER.TapeCycle();
-                    break;
-                // all other GA cycles
-                default:
-                    // GA render cycle
-                    DoCycle();
+                    //if (CRCT.DISPTMG)
+                        FetchByte(1);
+                    break;                    
+                case 3:
+                    // video fetch and render
+                    WaitLine = true;
+                    //if (CRCT.DISPTMG)
+                        FetchByte(2);
+                    PixelGenerator();
                     break;
             }
+
+            // run the interrupt generator routine
+            InterruptGenerator();
+
+            // conditional CPU cycle
+            DoConditionalCPUCycle(); 
 
             AdvanceClock();
         }
 
-        #endregion
-
-        #region VideoLookups
-
-
-        public struct PixelLookupTable
-        {
-
-        }
-
         /// <summary>
-        /// Runs at the start of a frame in order to setup the 
-        /// video buffer (in case the CRCT has changed anything)
+        /// Called when the Z80 acknowledges an interrupt
         /// </summary>
-        public void SetupVideo()
+        public void IORQA()
         {
-
+            // bit 5 of the interrupt counter is reset
+            InterruptCounter &= ~(1 << 5);
         }
 
         #endregion
-
-
 
         #region IPortIODevice
 
@@ -856,101 +755,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         #endregion
 
-        #region IVideoProvider
-
-        /// <summary>
-        /// Video output buffer
-        /// </summary>
-        public int[] ScreenBuffer;
-
-        private int _virtualWidth;
-        private int _virtualHeight;
-        private int _bufferWidth;
-        private int _bufferHeight;
-
-        public int BackgroundColor
-        {
-            get { return CPCHardwarePalette[16]; }
-        }
-
-        public int VirtualWidth
-        {
-            get { return _virtualWidth; }
-            set { _virtualWidth = value; }
-        }
-
-        public int VirtualHeight
-        {
-            get { return _virtualHeight; }
-            set { _virtualHeight = value; }
-        }
-
-        public int BufferWidth
-        {
-            get { return _bufferWidth; }
-            set { _bufferWidth = value; }
-        }
-
-        public int BufferHeight
-        {
-            get { return _bufferHeight; }
-            set { _bufferHeight = value; }
-        }
-
-        public int VsyncNumerator
-        {
-            get { return Z80ClockSpeed * 50; }
-            set { }
-        }
-
-        public int VsyncDenominator
-        {
-            get { return Z80ClockSpeed; }
-        }
-
-        public int[] GetVideoBuffer()
-        {
-            /*
-            Random rnd = new Random();
-            for (int i = 0; i < BufferWidth * BufferHeight; i++)
-            {
-                ScreenBuffer[i] = CPCHardwarePalette[rnd.Next(0, CPCHardwarePalette.Length - 1)];
-            }
-            */
-            //RenderCounter = 0;
-            return ScreenBuffer;
-        }
-
-        protected void SetupScreenSize()
-        {
-            /*
-             *  Rect Pixels:        Mode 0: 160×200 pixels with 16 colors (4 bpp)
-                Square Pixels:      Mode 1: 320×200 pixels with 4 colors (2 bpp)
-                Rect Pixels:        Mode 2: 640×200 pixels with 2 colors (1 bpp)
-                Rect Pixels:        Mode 3: 160×200 pixels with 4 colors (2bpp) (this is not an official mode, but rather a side-effect of the hardware)
-             * 
-             * */
-
-            // define maximum screen buffer size
-            // to fit all possible resolutions, 640x400 should do it
-            // therefore a scanline will take two buffer rows
-            // and buffer columns will be:
-            //  Mode 1: 2 pixels
-            //  Mode 2: 1 pixel
-            //  Mode 0: 4 pixels
-            //  Mode 3: 4 pixels
-
-            BufferWidth = 400; // 640;
-            BufferHeight = 400;
-            VirtualHeight = BufferHeight;
-            VirtualWidth = BufferWidth;
-            ScreenBuffer = new int[BufferWidth * BufferHeight];
-            croppedBuffer = ScreenBuffer;
-        }
-
-        protected int[] croppedBuffer;
-
-        #endregion
+        
 
         #region Serialization
 
@@ -969,35 +774,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ser.Sync("WaitLine", ref WaitLine);
             ser.Sync("_interruptCounter", ref _interruptCounter);
             ser.Sync("ScreenMode", ref ScreenMode);
-            ser.Sync("LatchedMode", ref LatchedMode);
             ser.Sync("HSYNC", ref HSYNC);
             ser.Sync("HSYNC_falling", ref HSYNC_falling);
             ser.Sync("HSYNC_counter", ref HSYNC_counter);
             ser.Sync("VSYNC", ref VSYNC);
             ser.Sync("InterruptRaised", ref InterruptRaised);
             ser.Sync("InterruptHoldCounter", ref InterruptHoldCounter);
-            ser.Sync("RendererFlipFlop", ref RendererFlipFlop);
             ser.Sync("_MA", ref _MA);
             ser.EndSection();
-
-            /*
-             * /// <summary>
-        /// Is set when an initial HSYNC is seen from the CRCT
-        /// On real hardware interrupt generation is based on the falling edge of the HSYNC signal
-        /// So in this emulation, once the falling edge is detected, processing happens
-        /// </summary>
-        private bool ;
-
-        /// <summary>
-        /// Used to count HSYNCs during a VSYNC
-        /// </summary>
-        private int ;
-             * */
         }
 
         #endregion
 
-        #region Enums
+        #region Enums & Classes
 
         public enum GateArrayType
         {

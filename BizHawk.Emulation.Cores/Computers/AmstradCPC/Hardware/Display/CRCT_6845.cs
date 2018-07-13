@@ -1,4 +1,5 @@
 ﻿using BizHawk.Common;
+using BizHawk.Common.NumberExtensions;
 using System;
 using System.Collections;
 
@@ -59,7 +60,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         #region Public Lookups
 
         /*
-         *  These are not accessible on real hardware
+         *  These are not accessible directlyon real hardware
          *  It just makes screen generation easier to have these accessbile from the gate array
          */
         
@@ -147,7 +148,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         {
             get
             {
-                return VSYNCWidth * ((int)Regs[MAX_RASTER_ADDR] + 1);
+                return VSYNCWidth; // * ((int)Regs[MAX_RASTER_ADDR] + 1);
             }
         }
 
@@ -161,6 +162,53 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 return (int)Regs[MAX_RASTER_ADDR] + 1;
             }
         }
+
+        /// <summary>
+        /// Returns the starting video page address as specified within R12
+        /// </summary>
+        public int VideoPageBase
+        {
+            get
+            {
+                if (!Regs[12].Bit(4) && Regs[12].Bit(5))
+                    return 0x8000;
+
+                if (Regs[12].Bit(4) && !Regs[12].Bit(5))
+                    return 0x4000;
+
+                if (!Regs[12].Bit(4) && !Regs[12].Bit(5))
+                    return 0x0000;
+
+                return 0xC000;
+            }
+        }
+
+        /// <summary>
+        /// Returns the video buffer size as specified within R12
+        /// </summary>
+        public int VideoBufferSize
+        {
+            get
+            {
+                if (Regs[12].Bit(3) && Regs[12].Bit(2))
+                    return 0x8000;
+
+                return 0x4000;
+            }
+        }
+
+
+        /* Easier memory functions */
+
+        /// <summary>
+        /// The current byte address
+        /// </summary>
+        public ushort CurrentByteAddress;
+
+        /// <summary>
+        /// ByteCOunter
+        /// </summary>
+        public int ByteCounter;
 
         #endregion
 
@@ -387,6 +435,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 // HSYNC in progress
                 HSYNCCounter++;
 
+                ByteCounter = 0;
+
                 if (HSYNCCounter >= HSYNCWidth)
                 {
                     // end of HSYNC
@@ -403,9 +453,20 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             {
                 DISPTMG = false;
             }
+            else if (VCC >= Regs[VER_DISPLAYED])
+            {
+                DISPTMG = false;
+            }
             else
             {
                 DISPTMG = true;
+                
+                var line = VCC;
+                var row = VLC;
+                var addr = VideoPageBase + (line * 0x50) + (row * 0x800) + (ByteCounter);
+                CurrentByteAddress = (ushort)addr;
+
+                ByteCounter += 2;
             }
 
             // check for the end of the current scanline
@@ -573,6 +634,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             // non existing registers
             if (SelectedRegister > 17)
                 return;
+
+            if (SelectedRegister == DISP_START_ADDR_L)
+            {
+
+            }
+
+            if (SelectedRegister == DISP_START_ADDR_H)
+            {
+
+            }
 
             Regs[SelectedRegister] = (byte)(data & CPCMask[SelectedRegister]);
 
