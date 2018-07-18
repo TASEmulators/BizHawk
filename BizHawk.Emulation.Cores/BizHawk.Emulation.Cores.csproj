@@ -158,6 +158,9 @@
     <Compile Include="Computers\AmstradCPC\Machine\CPC464\CPC464.cs" />
     <Compile Include="Computers\AmstradCPC\Machine\CPC464\CPC464.Memory.cs" />
     <Compile Include="Computers\AmstradCPC\Machine\CPC464\CPC464.Port.cs" />
+    <Compile Include="Computers\AmstradCPC\Machine\CPC6128\CPC6128.Port.cs" />
+    <Compile Include="Computers\AmstradCPC\Machine\CPC6128\CPC6128.Memory.cs" />
+    <Compile Include="Computers\AmstradCPC\Machine\CPC6128\CPC6128.cs" />
     <Compile Include="Computers\AmstradCPC\Machine\CPCBase.cs" />
     <Compile Include="Computers\AmstradCPC\Machine\CPCBase.Input.cs" />
     <Compile Include="Computers\AmstradCPC\Machine\CPCBase.Media.cs" />
@@ -1501,8 +1504,12 @@
     <None Include="Resources\128.ROM.gz" />
     <None Include="Resources\48.ROM.gz" />
     <None Include="Resources\cgb_boot.bin.gz" />
-    <None Include="Resources\cpc464.rom.gz" />
+    <None Include="Resources\CPC_AMSDOS_0.5.ROM.gz" />
+    <None Include="Resources\CPC_BASIC_1.0.ROM.gz" />
+    <None Include="Resources\CPC_BASIC_1.1.ROM.gz" />
+    <None Include="Resources\CPC_OS_6128.ROM.gz" />
     <None Include="Resources\dmg_boot.bin.gz" />
+    <None Include="Resources\OS_464.ROM.gz" />
     <None Include="Resources\plus2.rom.gz" />
     <None Include="Resources\plus2a.rom.gz" />
     <None Include="Resources\sgb-cart-present.spc.gz" />

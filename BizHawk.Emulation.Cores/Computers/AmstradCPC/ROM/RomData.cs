@@ -14,58 +14,52 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             get { return _romBytes; }
             set { _romBytes = value; }
         }
+        private byte[] _romBytes;
+
+        public enum ROMChipType
+        {
+            Lower,
+            Upper
+        }
 
         /// <summary>
-        /// Useful ROM addresses that are needed during tape operations
+        /// Whether this is an Upper or Lower ROM
         /// </summary>
-        public ushort SaveBytesRoutineAddress
-        {
-            get { return _saveBytesRoutineAddress; }
-            set { _saveBytesRoutineAddress = value; }
-        }
-        public ushort LoadBytesRoutineAddress
-        {
-            get { return _loadBytesRoutineAddress; }
-            set { _loadBytesRoutineAddress = value; }
-        }
-        public ushort SaveBytesResumeAddress
-        {
-            get { return _saveBytesResumeAddress; }
-            set { _saveBytesResumeAddress = value; }
-        }
-        public ushort LoadBytesResumeAddress
-        {
-            get { return _loadBytesResumeAddress; }
-            set { _loadBytesResumeAddress = value; }
-        }
-        public ushort LoadBytesInvalidHeaderAddress
-        {
-            get { return _loadBytesInvalidHeaderAddress; }
-            set { _loadBytesInvalidHeaderAddress = value; }
-        }
+        public ROMChipType ROMType;
 
-        private byte[] _romBytes;
-        private ushort _saveBytesRoutineAddress;
-        private ushort _loadBytesRoutineAddress;
-        private ushort _saveBytesResumeAddress;
-        private ushort _loadBytesResumeAddress;
-        private ushort _loadBytesInvalidHeaderAddress;
+        /// <summary>
+        /// The designated ROM position for this ROM
+        /// </summary>
+        public int ROMPosition;
 
-
-        public static RomData InitROM(MachineType machineType, byte[] rom)
+        /// <summary>
+        /// Initialise a RomData object
+        /// </summary>
+        /// <param name="machineType"></param>
+        /// <param name="rom"></param>
+        /// <param name="type"></param>
+        /// <param name="romPosition"></param>
+        /// <returns></returns>
+        public static RomData InitROM(MachineType machineType, byte[] rom, ROMChipType type, int romPosition = 0)
         {
             RomData RD = new RomData();
             RD.RomBytes = new byte[rom.Length];
             RD.RomBytes = rom;
+            RD.ROMType = type;
+
+            if (type == ROMChipType.Upper)
+            {
+                RD.ROMPosition = romPosition;
+            }
+
+            for (int i = 0; i < rom.Length; i++)
+                RD.RomBytes[i] = rom[i];
 
             switch (machineType)
             {
                 case MachineType.CPC464:
-                    RD.SaveBytesRoutineAddress = 0x04C2;
-                    RD.SaveBytesResumeAddress = 0x0000;
-                    RD.LoadBytesRoutineAddress = 0x0808; //0x0556; //0x056C;
-                    RD.LoadBytesResumeAddress = 0x05E2;
-                    RD.LoadBytesInvalidHeaderAddress = 0x05B6;
+                    break;
+                case MachineType.CPC6128:
                     break;
             }
 

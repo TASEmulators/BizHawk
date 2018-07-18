@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -10,19 +11,31 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
     {
         #region Memory Fields & Properties
 
+        /* ROM Banks */
         /// <summary>
-        /// ROM Banks
-        /// </summary>        
-        public byte[] ROM0 = new byte[0x4000];
-        public byte[] ROM1 = new byte[0x4000];
-
-        /// <summary>
-        /// RAM Banks
+        /// Lower: OS ROM
         /// </summary>
-        public byte[] RAM0 = new byte[0x4000];  // Bank 0
-        public byte[] RAM1 = new byte[0x4000];  // Bank 1
-        public byte[] RAM2 = new byte[0x4000];  // Bank 2
-        public byte[] RAM3 = new byte[0x4000];  // Bank 3
+        public byte[] ROMLower = new byte[0x4000];
+        /// <summary>
+        /// Upper: POS 0 (usually BASIC)
+        /// </summary>
+        public byte[] ROM0 = new byte[0x4000];
+        /// <summary>
+        /// Upper: POS 7 (usually AMSDOS)
+        /// </summary>
+        public byte[] ROM7 = new byte[0x4000];
+
+        /* RAM Banks - Lower 64K */
+        public byte[] RAM0 = new byte[0x4000];
+        public byte[] RAM1 = new byte[0x4000];
+        public byte[] RAM2 = new byte[0x4000];
+        public byte[] RAM3 = new byte[0x4000];
+
+        /* RAM Banks - Upper 64K */
+        public byte[] RAM4 = new byte[0x4000];
+        public byte[] RAM5 = new byte[0x4000];
+        public byte[] RAM6 = new byte[0x4000];
+        public byte[] RAM7 = new byte[0x4000];
 
         /// <summary>
         /// Signs whether Upper ROM is paged in
@@ -30,9 +43,28 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public bool UpperROMPaged;
 
         /// <summary>
+        /// The position of the currently paged upper ROM
+        /// </summary>
+        public int UpperROMPosition;
+
+        /// <summary>
         /// Signs whether Lower ROM is paged in
         /// </summary>
         public bool LowerROMPaged;
+
+        /// <summary>
+        /// The currently selected RAM config
+        /// </summary>
+        public int RAMConfig;
+
+        /// <summary>
+        /// Always 0 on a CPC6128
+        /// On a machine with more than 128K RAM (standard memory expansion) this selects each additional 64K above the first upper 64K
+        /// </summary>
+        public int RAM64KBank;
+
+
+
 
         #endregion
 
@@ -84,7 +116,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// Sets up the ROM
         /// </summary>
         /// <param name="buffer"></param>
-        public abstract void InitROM(RomData romData);
+        public abstract void InitROM(RomData[] romData);
 
         /// <summary>
         /// ULA reads the memory at the specified address

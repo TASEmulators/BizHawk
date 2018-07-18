@@ -120,8 +120,23 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             bool embeddedFound = true;
             switch (names.FirstOrDefault())
             {
-                case "464ROM":
-                    embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.cpc464_rom));
+                // CPC 464 ROMS
+                case "OS464ROM":
+                    embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.OS_464_ROM));
+                    break;
+                case "BASIC1-0ROM":
+                    embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_BASIC_1_0_ROM));
+                    break;
+
+                // CPC 6128 ROMS
+                case "OS6128ROM":
+                    embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_OS_6128_ROM));
+                    break;
+                case "BASIC1-1ROM":
+                    embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_BASIC_1_1_ROM));
+                    break;
+                case "AMSDOS0-5ROM":
+                    embeddedRom = Util.DecompressGzipFile(new MemoryStream(Resources.CPC_AMSDOS_0_5_ROM));
                     break;
                 default:
                     embeddedFound = false;
@@ -152,9 +167,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             {
                 case MachineType.CPC464:
                     _machine = new CPC464(this, _cpu, files, autoTape);
-                    var _systemRom16 = GetFirmware(0x4000, "464ROM");
-                    var romData16 = RomData.InitROM(machineType, _systemRom16);
-                    _machine.InitROM(romData16);
+                    List<RomData> roms64 = new List<RomData>();
+                    roms64.Add(RomData.InitROM(MachineType.CPC464, GetFirmware(0x4000, "OS464ROM"), RomData.ROMChipType.Lower));
+                    roms64.Add(RomData.InitROM(MachineType.CPC464, GetFirmware(0x4000, "BASIC1-0ROM"), RomData.ROMChipType.Upper, 0));
+                    _machine.InitROM(roms64.ToArray());
+                    break;
+
+                case MachineType.CPC6128:
+                    _machine = new CPC6128(this, _cpu, files, autoTape);
+                    List<RomData> roms128 = new List<RomData>();
+                    roms128.Add(RomData.InitROM(MachineType.CPC6128, GetFirmware(0x4000, "OS6128ROM"), RomData.ROMChipType.Lower));
+                    roms128.Add(RomData.InitROM(MachineType.CPC6128, GetFirmware(0x4000, "BASIC1-1ROM"), RomData.ROMChipType.Upper, 0));
+                    roms128.Add(RomData.InitROM(MachineType.CPC6128, GetFirmware(0x4000, "AMSDOS0-5ROM"), RomData.ROMChipType.Upper, 7));
+                    _machine.InitROM(roms128.ToArray());
                     break;
             }
         }

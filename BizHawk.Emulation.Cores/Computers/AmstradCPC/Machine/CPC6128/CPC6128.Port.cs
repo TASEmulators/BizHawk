@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BizHawk.Common.NumberExtensions;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +9,10 @@ using System.Threading.Tasks;
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
     /// <summary>
-    /// CPC464
+    /// CPC6128
     /// * Port *
     /// </summary>
-    public partial class CPC464 : CPCBase
+    public partial class CPC6128 : CPCBase
     {
         /// <summary>
         /// Reads a byte of data from a specified port address
@@ -77,7 +78,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 }
                 else if (d == PortDevice.RAMManagement)
                 {
-                    // not present in the unexpanded CPC464
+                    if (value.Bit(7) && value.Bit(6))
+                    {
+                        RAMConfig = value & 0x07;
+
+                        // additional 64K bank index
+                        var b64 = value & 0x38;                        
+                    }
                 }
                 else if (d == PortDevice.CRCT)
                 {
@@ -85,7 +92,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 }
                 else if (d == PortDevice.ROMSelect)
                 {
-
+                    UpperROMPosition = value;
                 }
                 else if (d == PortDevice.Printer)
                 {

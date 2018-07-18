@@ -328,12 +328,23 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ser.Sync("_frameCycles", ref _frameCycles);
             ser.Sync("inputRead", ref inputRead);
             ser.Sync("LastFrameStartCPUTick", ref LastFrameStartCPUTick);
+            ser.Sync("ROMLower", ref ROMLower, false);
             ser.Sync("ROM0", ref ROM0, false);
-            ser.Sync("ROM1", ref ROM1, false);
+            ser.Sync("ROM7", ref ROM7, false);
             ser.Sync("RAM0", ref RAM0, false);
             ser.Sync("RAM1", ref RAM1, false);
             ser.Sync("RAM2", ref RAM2, false);
             ser.Sync("RAM3", ref RAM3, false);
+            ser.Sync("RAM4", ref RAM4, false);
+            ser.Sync("RAM5", ref RAM5, false);
+            ser.Sync("RAM6", ref RAM6, false);
+            ser.Sync("RAM7", ref RAM7, false);
+
+            ser.Sync("UpperROMPosition", ref UpperROMPosition);
+            ser.Sync("UpperROMPaged", ref UpperROMPaged);
+            ser.Sync("LowerROMPaged", ref LowerROMPaged);
+            ser.Sync("RAMConfig", ref RAMConfig);
+            ser.Sync("RAM64KBank", ref RAM64KBank);
 
             CRCT.SyncState(ser);
             CRT.SyncState(ser);

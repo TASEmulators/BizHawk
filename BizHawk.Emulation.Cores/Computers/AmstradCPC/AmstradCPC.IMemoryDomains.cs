@@ -34,7 +34,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     {
                         throw new ArgumentOutOfRangeException();
                     }
-
                     _machine.WriteBus((ushort)addr, value);
                 }, 1)
             };
@@ -48,18 +47,22 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         }
 
         private void SyncAllByteArrayDomains()
-        {       
+        {
+            SyncByteArrayDomain("ROMLower", _machine.ROMLower);
             SyncByteArrayDomain("ROM0", _machine.ROM0);
-            SyncByteArrayDomain("ROM1", _machine.ROM1);
+            SyncByteArrayDomain("ROM7", _machine.ROM7);
             SyncByteArrayDomain("RAM0", _machine.RAM0);
             SyncByteArrayDomain("RAM1", _machine.RAM1);
             SyncByteArrayDomain("RAM2", _machine.RAM2);
-            SyncByteArrayDomain("RAM3", _machine.RAM3); 
+            SyncByteArrayDomain("RAM3", _machine.RAM3);
+            SyncByteArrayDomain("RAM4", _machine.RAM4);
+            SyncByteArrayDomain("RAM5", _machine.RAM5);
+            SyncByteArrayDomain("RAM6", _machine.RAM6);
+            SyncByteArrayDomain("RAM7", _machine.RAM7);
         }
 
         private void SyncByteArrayDomain(string name, byte[] data)
-        {
-            
+        {            
             if (_memoryDomainsInit || _byteArrayDomains.ContainsKey(name))
             {
                 var m = _byteArrayDomains[name];
@@ -69,8 +72,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             {
                 var m = new MemoryDomainByteArray(name, MemoryDomain.Endian.Little, data, true, 1);
                 _byteArrayDomains.Add(name, m);
-            }
-            
+            }            
         }
     }
 }

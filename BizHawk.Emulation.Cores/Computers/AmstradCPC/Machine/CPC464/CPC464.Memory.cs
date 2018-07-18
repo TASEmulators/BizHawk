@@ -28,7 +28,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 // 0x000 or LowerROM
                 case 0:
                     if (LowerROMPaged)
-                        result = ROM0[addr % 0x4000];
+                        result = ROMLower[addr % 0x4000];
                     else
                         result = RAM0[addr % 0x4000];
                     break;
@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 // 0xc000 or UpperROM
                 case 3:
                     if (UpperROMPaged)
-                        result = ROM1[addr % 0x4000];
+                        result = ROM0[addr % 0x4000];
                     else
                         result = RAM3[addr % 0x4000];
                     break;
@@ -121,14 +121,33 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// </summary>
         /// <param name="buffer"></param>
         /// <param name="startAddress"></param>
-        public override void InitROM(RomData romData)
+        public override void InitROM(RomData[] romData)
         {
-            RomData = romData;
-            for (int i = 0; i < 0x4000; i++)
+            foreach (var r in romData)
             {
-                ROM0[i] = RomData.RomBytes[i];
-                if (RomData.RomBytes.Length > 0x4000)
-                    ROM1[i] = RomData.RomBytes[i + 0x4000];
+                if (r.ROMType == RomData.ROMChipType.Lower)
+                {
+                    for (int i = 0; i < 0x4000; i++)
+                    {
+                        ROMLower[i] = r.RomBytes[i];
+
+                    }
+                }
+                else
+                {
+                    for (int i = 0; i < 0x4000; i++)
+                    {
+                        switch (r.ROMPosition)
+                        {
+                            case 0:
+                                ROM0[i] = r.RomBytes[i];
+                                break;
+                            case 7:
+                                ROM7[i] = r.RomBytes[i];
+                                break;
+                        }
+                    }
+                }
             }
 
             LowerROMPaged = true;
