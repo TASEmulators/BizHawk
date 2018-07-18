@@ -48,6 +48,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     ControllerDefinition = AmstradCPCControllerDefinition;
                     Init(MachineType.CPC464, _files, ((AmstradCPCSyncSettings)syncSettings as AmstradCPCSyncSettings).AutoStartStopTape);
                     break;
+                case MachineType.CPC6128:
+                    ControllerDefinition = AmstradCPCControllerDefinition;
+                    Init(MachineType.CPC6128, _files, ((AmstradCPCSyncSettings)syncSettings as AmstradCPCSyncSettings).AutoStartStopTape);
+                    break;
                 default:
                     throw new InvalidOperationException("Machine not yet emulated");
             }

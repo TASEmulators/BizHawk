@@ -26,6 +26,7 @@ using BizHawk.Client.ApiHawk;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
+using BizHawk.Emulation.Cores.Computers.AmstradCPC;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -2562,6 +2563,101 @@ namespace BizHawk.Client.EmuHawk
                     ZXSpectrumDisksSubMenu.DropDownItems.Add(menuItem);
                 }
             }
+        }
+
+        #endregion
+
+        #region AmstradCPC
+
+        private void amstradCPCCoreEmulationSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AmstradCPCCoreEmulationSettings().ShowDialog();
+        }
+
+        private void AmstradCPCAudioSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AmstradCPCAudioSettings().ShowDialog();
+        }
+
+        private void AmstradCPCPokeMemoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AmstradCPCPokeMemory().ShowDialog();
+        }
+
+        private void AmstradCPCMediaToolStripMenuItem_DropDownOpened(object sender, EventArgs e)
+        {
+            if (Emulator is AmstradCPC)
+            {
+                AmstradCPCTapesSubMenu.Enabled = ((AmstradCPC)Emulator)._tapeInfo.Count > 0;
+                AmstradCPCDisksSubMenu.Enabled = ((AmstradCPC)Emulator)._diskInfo.Count > 0;
+            }
+        }
+
+        private void AmstradCPCTapesSubMenu_DropDownOpened(object sender, EventArgs e)
+        {
+            AmstradCPCTapesSubMenu.DropDownItems.Clear();
+
+            if (Emulator is AmstradCPC)
+            {
+                var ams = (AmstradCPC)Emulator;
+                var currSel = ams._machine.TapeMediaIndex;
+
+                for (int i = 0; i < ams._tapeInfo.Count; i++)
+                {
+                    string name = ams._tapeInfo[i].Name;
+
+                    var menuItem = new ToolStripMenuItem
+                    {
+                        Name = i + "_" + name,
+                        Text = i + ": " + name,
+                        Checked = currSel == i
+                    };
+
+                    int dummy = i;
+                    menuItem.Click += (o, ev) =>
+                    {
+                        ams._machine.TapeMediaIndex = dummy;
+                    };
+
+                    AmstradCPCTapesSubMenu.DropDownItems.Add(menuItem);
+                }
+            }
+        }
+
+        private void AmstradCPCDisksSubMenu_DropDownOpened(object sender, EventArgs e)
+        {
+            AmstradCPCDisksSubMenu.DropDownItems.Clear();
+
+            if (Emulator is AmstradCPC)
+            {
+                var ams = (AmstradCPC)Emulator;
+                var currSel = ams._machine.DiskMediaIndex;
+
+                for (int i = 0; i < ams._diskInfo.Count; i++)
+                {
+                    string name = ams._diskInfo[i].Name;
+
+                    var menuItem = new ToolStripMenuItem
+                    {
+                        Name = i + "_" + name,
+                        Text = i + ": " + name,
+                        Checked = currSel == i
+                    };
+
+                    int dummy = i;
+                    menuItem.Click += (o, ev) =>
+                    {
+                        ams._machine.DiskMediaIndex = dummy;
+                    };
+
+                    AmstradCPCDisksSubMenu.DropDownItems.Add(menuItem);
+                }
+            }
+        }
+
+        private void AmstradCPCNonSyncSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            new AmstradCPCNonSyncSettings().ShowDialog();
         }
 
         #endregion

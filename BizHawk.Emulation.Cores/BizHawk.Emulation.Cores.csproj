@@ -133,6 +133,7 @@
     <Compile Include="Computers\AmstradCPC\AmstradCPC.ISettable.cs" />
     <Compile Include="Computers\AmstradCPC\AmstradCPC.IStatable.cs" />
     <Compile Include="Computers\AmstradCPC\AmstradCPC.Messaging.cs" />
+    <Compile Include="Computers\AmstradCPC\AmstradCPC.Util.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\Abstraction\IBeeperDevice.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\Abstraction\IFDDHost.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\Abstraction\IJoystick.cs" />

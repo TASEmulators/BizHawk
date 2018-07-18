@@ -1725,6 +1725,7 @@ namespace BizHawk.Client.EmuHawk
 			neoGeoPocketToolStripMenuItem.Visible = false;
 			pCFXToolStripMenuItem.Visible = false;
             zXSpectrumToolStripMenuItem.Visible = false;
+            amstradCPCToolStripMenuItem.Visible = false;
 
 			switch (system)
 			{
@@ -1824,6 +1825,9 @@ namespace BizHawk.Client.EmuHawk
 					break;
                 case "ZXSpectrum":
                     zXSpectrumToolStripMenuItem.Visible = true;
+                    break;
+                case "AmstradCPC":
+                    amstradCPCToolStripMenuItem.Visible = true;
                     break;
 			}
 		}
@@ -2767,9 +2771,14 @@ namespace BizHawk.Client.EmuHawk
             {
                 var core = (Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum)Emulator as Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum;
                 CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
+            }
 
-            }			
-		}
+            if (Emulator.SystemId == "AmstradCPC")
+            {
+                var core = (Emulation.Cores.Computers.AmstradCPC.AmstradCPC)Emulator as Emulation.Cores.Computers.AmstradCPC.AmstradCPC;
+                CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
+            }
+        }
 
 		private void ToggleKeyPriority()
 		{
@@ -4355,8 +4364,7 @@ namespace BizHawk.Client.EmuHawk
 		private void preferencesToolStripMenuItem3_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
-		}
-                
+		}        
 
         private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
 		{
