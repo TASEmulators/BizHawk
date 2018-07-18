@@ -23,44 +23,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         #endregion
 
-        #region State
-
-        private State PortA = new State("PortA");
-        private State PortB = new State("PortB");
-        private State PortCU = new State("PortCU");
-        private State PortCL = new State("PortCL");
-
-        private class State
-        {
-            public string Ident;
-            public int Data;
-            public bool Input;
-            public int OpMode;
-
-            public void Reset()
-            {
-                OpMode = 0;
-                Input = true;
-                Data = 255;
-            }
-
-            public State(string ident)
-            {
-                Ident = ident;
-            }
-
-            public void SyncState(Serializer ser)
-            {
-                ser.BeginSection("PPI_" + Ident);
-                ser.Sync("Data", ref Data);
-                ser.Sync("Input", ref Input);
-                ser.Sync("OpMode", ref OpMode);
-                ser.EndSection();
-            }
-        }
-
-        #endregion
-
         #region Construction
 
         public PPI_8255(CPCBase machine)
@@ -71,83 +33,202 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         #endregion
 
-        #region Reset
+        #region Implementation
 
-        public void Reset()
-        {
-            PortA.Reset();
-            PortB.Reset();
-            PortCL.Reset();
-            PortCU.Reset();
-        }
-
-        #endregion
-
-        #region PORT A
-        /*
-        I/O Mode 0,
-        For writing data to PSG all bits must be set to output,
-        for reading data from PSG all bits must be set to input (thereafter, output direction should be restored, for compatibility with the BIOS).
-
-        Bit	    Description	Usage
-        7-0	    PSG.DATA	PSG Databus (Sound/Keyboard/Joystick)
-        */
         /// <summary>
-        /// Reads from Port A
+        /// BDIR Line connected to PSG
         /// </summary>
-        /// <returns></returns>
-        private int INPortA()
+        public bool BDIR
         {
-            if (PortA.Input)
-            {
-                // read from AY
-                return PSG.PortRead();
-            }
-            else
-            {
-                // return stored port data
-                return PortA.Data;
-            }
+            get { return Regs[PORT_C].Bit(7); }
         }
+
+        /// <summary>
+        /// BC1 Line connected to PSG
+        /// </summary>
+        public bool BC1
+        {
+            get { return Regs[PORT_C].Bit(6); }
+        }
+
+        /* Port Constants */
+        private const int PORT_A = 0;
+        private const int PORT_B = 1;
+        private const int PORT_C = 2;
+        private const int PORT_CONTROL = 3;
+
+        /// <summary>
+        /// The i8255 internal data registers
+        /// </summary>
+        private byte[] Regs = new byte[4];
+
+        /// <summary>
+        /// Returns the currently latched port direction for Port A
+        /// </summary>
+        private PortDirection DirPortA
+        {
+            get { return Regs[PORT_CONTROL].Bit(4) ? PortDirection.Input : PortDirection.Output; }
+        }
+
+        /// <summary>
+        /// Returns the currently latched port direction for Port B
+        /// </summary>
+        private PortDirection DirPortB
+        {
+            get { return Regs[PORT_CONTROL].Bit(1) ? PortDirection.Input : PortDirection.Output; }
+        }
+
+        /// <summary>
+        /// Returns the currently latched port direction for Port C (lower half)
+        /// </summary>
+        private PortDirection DirPortCL
+        {
+            get { return Regs[PORT_CONTROL].Bit(0) ? PortDirection.Input : PortDirection.Output; }
+        }
+
+        /// <summary>
+        /// Returns the currently latched port direction for Port C (upper half)
+        /// </summary>
+        private PortDirection DirPortCU
+        {
+            get { return Regs[PORT_CONTROL].Bit(3) ? PortDirection.Input : PortDirection.Output; }
+        }
+
+        #region OUT Methods
 
         /// <summary>
         /// Writes to Port A
         /// </summary>
         private void OUTPortA(int data)
         {
-            PortA.Data = data;
+            // latch the data
+            Regs[PORT_A] = (byte)data;
 
-            if (!PortA.Input)
+            if (DirPortA == PortDirection.Output)
             {
-                // write to AY
+                // PSG write
                 PSG.PortWrite(data);
+            }
+        }
+
+        /// <summary>
+        /// Writes to Port B
+        /// </summary>
+        private void OUTPortB(int data)
+        {
+            // PortB is read only
+            // just latch the data
+            Regs[PORT_B] = (byte)data;
+        }
+
+        /// <summary>
+        /// Writes to Port C
+        /// </summary>
+        private void OUTPortC(int data)
+        {
+            // latch the data
+            Regs[PORT_C] = (byte)data;
+
+            if (DirPortCL == PortDirection.Output)
+            {
+                // lower Port C bits OUT
+                // keyboard line update
+                Keyboard.CurrentLine = Regs[PORT_C] & 0x0f;
+            }
+
+            if (DirPortCU == PortDirection.Output)
+            {
+                // upper Port C bits OUT
+                // write to PSG using latched data
+                PSG.SetFunction(data);
+                PSG.PortWrite(Regs[PORT_A]);
+
+                // cassete write data
+                //not implemeted
+
+                // cas motor control
+                Tape.TapeMotor = Regs[PORT_C].Bit(4);
+            }
+        }
+
+        /// <summary>
+        /// Writes to the control register
+        /// </summary>
+        /// <param name="data"></param>
+        private void OUTControl(int data)
+        {
+            if (data.Bit(7))
+            {
+                // update configuration
+                Regs[PORT_CONTROL] = (byte)data;
+
+                // Writing to PIO Control Register (with Bit7 set), automatically resets PIO Ports A,B,C to 00h each
+                Regs[PORT_A] = 0;
+                Regs[PORT_B] = 0;
+                Regs[PORT_C] = 0;
+            }
+            else
+            {
+                // register is used to set/reset a single bit in Port C
+                bool isSet = data.Bit(0);
+
+                // get the bit in PortC that we wish to change
+                var bit = (data >> 1) & 7;
+
+                // modify this bit
+                if (isSet)
+                {
+                    Regs[PORT_C] = (byte)(Regs[PORT_C] | (bit * bit));
+                }
+                else
+                {
+                    Regs[PORT_C] = (byte)(Regs[PORT_C] & ~(bit * bit));
+                }
+
+                // any other ouput business
+                if (DirPortCL == PortDirection.Output)
+                {
+                    // update keyboard line
+                    Keyboard.CurrentLine = Regs[PORT_C] & 0x0f;
+                }
+
+                if (DirPortCU == PortDirection.Output)
+                {
+                    // write to PSG using latched data
+                    PSG.SetFunction(data);
+                    PSG.PortWrite(Regs[PORT_A]);
+
+                    // cassete write data
+                    //not implemeted
+
+                    // cas motor control
+                    Tape.TapeMotor = Regs[PORT_C].Bit(4);
+                }
             }
         }
 
         #endregion
 
-        #region Port B
-        /*
-        I/O Mode 0,
-        Input
+        #region IN Methods
 
-        Bit	Description	Usage in CPC	Usage in KC Compact
-        7	CAS.IN	    Cassette data input	Same as on CPC
-        6	PRN.BUSY	Parallel/Printer port ready signal, "1" = not ready, "0" = Ready	Same as on CPC
-        5	/EXP	    Expansion Port /EXP pin	Same as on CPC
-        4	LK4	        Screen Refresh Rate ("1"=50Hz, "0"=60Hz)	Set to "1"=50Hz (but ignored by the KC BIOS, which always uses 50Hz even if LK4 is changed)
-        3	LK3	        3bit Distributor ID. Usually set to 4=Awa, 5=Schneider, or 7=Amstrad, see LK-selectable Brand Names for details.	Purpose unknown (set to "1")
-        2	LK2	        Purpose unknown (set to "0")
-        1	LK1	        Expansion Port /TEST pin
-        0	CRTC VSYNC	Vertical Sync ("1"=VSYNC active, "0"=VSYNC inactive)	Same as on CPC
-
-        LK1-4 are links on the mainboard ("0" bits are wired to GND). On CPC464,CPC664,CPC6128 and GX4000 they are labeled LK1-LK4, on the CPC464+ and CPC6128+ they are labeled LK101-LK103 
-        (and LK104, presumably?).
-        Bit5 (/EXP) can be used by a expansion device to report its presence. "1" = device connected, "0" = device not connected. 
-        This is not always used by all expansion devices. is it used by any expansions? [in the DDI-1 disc interface, /EXP connects to the ROM bank selection, bank 0 or bank 7]
-        If port B is programmed as an output, you can make a fake vsync visible to the Gate-Array by writing 1 to bit 0. You can then turn it off by writing 0 to bit 0. 
-        It is fake in the sense that it is not generated by the CRTC as it normally is. This fake vsync doesn't work on all CPCs. It is not known if it is dependent on CRTC or 8255 or both.
-        */
+        /// <summary>
+        /// Reads from Port A
+        /// </summary>
+        /// <returns></returns>
+        private int INPortA()
+        {
+            if (DirPortA == PortDirection.Input)
+            {
+                // read from PSG
+                return PSG.PortRead();
+            }
+            else
+            {
+                // Port A is set to output
+                // return latched value
+                return Regs[PORT_A];
+            }
+        }
 
         /// <summary>
         /// Reads from Port B
@@ -155,8 +236,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <returns></returns>
         private int INPortB()
         {
-            if (PortB.Input)
+            if (DirPortB == PortDirection.Input)
             {
+                // build the PortB output
                 // start with every bit reset
                 BitArray rBits = new BitArray(8);
 
@@ -189,41 +271,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             }
             else
             {
-                return PortB.Data;
+                // return the latched value
+                return Regs[PORT_B];
             }
         }
-
-        /// <summary>
-        /// Writes to Port B
-        /// </summary>
-        private void OUTPortB(int data)
-        {
-            // just store the value
-            PortB.Data = data;
-        }
-
-        #endregion
-
-        #region Port C
-        /*
-        upper: I/O Mode 0, lower: I/O mode 0,
-        upper: output, lower: output
-
-        Bit	Description	Usage
-        7	PSG BDIR	PSG function selection
-        6	PSG BC1	
-        5	Cassette    Write data	Cassette Out (sometimes also used as Printer Bit7, see 8bit Printer Ports)
-        4	Cassette    Motor Control	set bit to "1" for motor on, or "0" for motor off
-        0-3	Keyboard    line	Select keyboard line to be scanned (0-15)
-
-        PSG function selection:
-
-        Bit 7	Bit 6	Function
-        0	    0	    Inactive
-        0	    1	    Read from selected PSG register
-        1	    0	    Write to selected PSG register
-        1	    1	    Select PSG register
-        */
 
         /// <summary>
         /// Reads from Port C
@@ -231,151 +282,69 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <returns></returns>
         private int INPortC()
         {
-            var val = PortCU.Data;
+            // get the PortC value
+            int val = Regs[PORT_C];
 
-            if (PortCU.Input)
-                val |= 0xf0;
+            if (DirPortCU == PortDirection.Input)
+            {
+                // upper port C bits
+                // remove upper half
+                val &= 0x0f;
 
-            if (PortCL.Input)
+                // isolate control bits
+                var v = Regs[PORT_C] & 0xc0;
+
+                if (v == 0xc0)
+                {
+                    // set reg is present. change to write reg
+                    v = 0x80;
+                }
+
+                // cas wr is always set
+                val |= v | 0x20;
+
+                if (Tape.TapeMotor)
+                {
+                    val |= 0x10;
+                }
+            }
+
+            if (DirPortCL == PortDirection.Input)
+            {
+                // lower port C bits
                 val |= 0x0f;
+            }
 
             return val;
         }
 
-        /// <summary>
-        /// Writes to Port C
-        /// </summary>
-        private void OUTPortC(int data)
-        {
-            PortCL.Data = data;
-            PortCU.Data = data;
-
-            if (!PortCU.Input)
-            {
-                // ay register set and write
-                PSG.SelectedRegister = data;
-                PSG.PortWrite(data);
-
-                // cassette motor control
-                byte val = (byte)data;
-                var motor = val.Bit(4);
-            }
-
-            if (!PortCL.Input)
-            {
-                // which keyboard row to scan
-                Keyboard.CurrentLine = PortCL.Data & 0x0f;
-            }
-        }
 
         #endregion
 
-        #region PPI Control
-        /*
-        This register has two different functions depending on bit7 of the data written to this register.
-        
-        PPI Control with Bit7=1
+        #endregion        
 
-        If Bit 7 is "1" then the other bits will initialize Port A-B as Input or Output:
+        #region Reset
 
-        Bit 0    IO-Cl    Direction for Port C, lower bits (always 0=Output in CPC)
-        Bit 1    IO-B     Direction for Port B             (always 1=Input in CPC)
-        Bit 2    MS0      Mode for Port B and Port Cl      (always zero in CPC)
-        Bit 3    IO-Ch    Direction for Port C, upper bits (always 0=Output in CPC)
-        Bit 4    IO-A     Direction for Port A             (0=Output, 1=Input)
-        Bit 5,6  MS0,MS1  Mode for Port A and Port Ch      (always zero in CPC)
-        Bit 7    SF       Must be "1" to setup the above bits
-
-        CAUTION: Writing to PIO Control Register (with Bit7 set), automatically resets PIO Ports A,B,C to 00h each!
-        In the CPC only Bit 4 is of interest, all other bits are always having the same value. In order to write to the PSG sound registers, a value of 82h must 
-        be written to this register. In order to read from the keyboard (through PSG register 0Eh), a value of 92h must be written to this register.
-
-        PPI Control with Bit7=0
-
-        Otherwise, if Bit 7 is "0" then the register is used to set or clear a single bit in Port C:
-
-        Bit 0    B        New value for the specified bit (0=Clear, 1=Set)
-        Bit 1-3  N0,N1,N2 Specifies the number of a bit (0-7) in Port C
-        Bit 4-6  -        Not Used
-        Bit 7    SF       Must be "0" in this case
-        */
-
-        /// <summary>
-        /// Deals with bytes written to the control
-        /// </summary>
-        /// <param name="data"></param>
-        private void ControlHandler(int data)
+        public void Reset()
         {
-            byte val = (byte)data;
-
-            // Bit7 = 1
-            if (val.Bit(7))
+            for (int i = 0; i < 3; i++)
             {
-                // Bit0 - Direction for Port C, lower bits
-                PortCL.Input = val.Bit(0);
-
-                // Bit1 - Direction for Port B
-                PortB.Input = val.Bit(1);
-
-                // Bit2 - Mode for Port B and Port Cl (CPC always 0)
-                PortB.OpMode = 0;
-                PortCL.OpMode = 0;
-
-                // Bit3 - Direction for Port C, upper bits
-                PortCU.Input = val.Bit(3);
-
-                // Bit4 - Direction for Port A
-                PortA.Input = val.Bit(4);
-
-                // Bits 5,6 - Mode for Port A and Port Ch (CPC always 0)
-                PortA.OpMode = 0;
-                PortCU.OpMode = 0;
-
-                // reset ports
-                PortA.Data = 0x00;
-                PortB.Data = 0x00;
-                PortCL.Data = 0x00;
-                PortCU.Data = 0x00;
+                Regs[i] = 0xff;
             }
-            // Bit7 = 0
-            else
-            {
-                // Bit0 - New value for the specified bit (0=Clear, 1=Set)
-                var newBit = val.Bit(0);
 
-                // Bits 1-3 - Specifies the number of a bit (0-7) in Port C
-                var bit = (data >> 1) & 7;
-
-                if (newBit)
-                {
-                    // set the bit
-                    PortCL.Data |= ~(1 << bit);
-                    PortCU.Data |= ~(1 << bit);
-                }
-                else
-                {
-                    // reset the bit
-                    PortCL.Data &= ~(1 << bit);
-                    PortCU.Data &= ~(1 << bit);
-                }
-
-                if (!PortCL.Input)
-                {
-                    // keyboard set row
-                }
-
-                if (!PortCU.Input)
-                {
-                    // ay register set and write
-                    PSG.SelectedRegister = val;
-                    PSG.PortWrite(data);
-                }
-            }
+            Regs[3] = 0xff;
         }
 
         #endregion
 
         #region IPortIODevice
+
+        /*
+            #F4XX	%xxxx0x00 xxxxxxxx	8255 PIO Port A (PSG Data)	                Read	Write
+            #F5XX	%xxxx0x01 xxxxxxxx	8255 PIO Port B (Vsync,PrnBusy,Tape,etc.)	Read	-
+            #F6XX	%xxxx0x10 xxxxxxxx	8255 PIO Port C (KeybRow,Tape,PSG Control)	-	    Write
+            #F7XX	%xxxx0x11 xxxxxxxx	8255 PIO Control-Register	                -	    Write
+         */
 
         /// <summary>
         /// Device responds to an IN instruction
@@ -385,39 +354,40 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <returns></returns>
         public bool ReadPort(ushort port, ref int result)
         {
-            BitArray portBits = new BitArray(BitConverter.GetBytes(port));
-            BitArray dataBits = new BitArray(BitConverter.GetBytes((byte)result));
+            byte portUpper = (byte)(port >> 8);
+            byte portLower = (byte)(port & 0xff);
 
-            // The 8255 responds to bit 11 reset
-            bool accessed = !portBits[11];
-            if (!accessed)
-                return false;
+            // The 8255 responds to bit 11 reset with A10 and A12-A15 set
+            //if (portUpper.Bit(3))
+            //return false;
 
-            if (!portBits[8] && !portBits[9])
+            var PPIFunc = (port & 0x0300) >> 8; // portUpper & 3;
+
+            switch (PPIFunc)
             {
-                // Port A Data
-                // PSG (Sound/Keyboard/Joystick)
-                result = INPortA();
-            }
+                // Port A Read
+                case 0:
+                    
+                    // PSG (Sound/Keyboard/Joystick)
+                    result = INPortA();
 
-            if (portBits[8] && !portBits[9])
-            {
-                // Port B Data
-                // Vsync/Jumpers/PrinterBusy/CasIn/Exp
-                result = INPortB();
-            }
+                    break;
 
-            if (!portBits[8] && portBits[9])
-            {
-                // Port C Data
-                // KeybRow/CasOut/PSG
-                result = INPortC();
-            }
+                // Port B Read
+                case 1:
 
-            if (portBits[8] && portBits[9])
-            {
-                // Control
-                return false;
+                    // Vsync/Jumpers/PrinterBusy/CasIn/Exp
+                    result = INPortB();
+
+                    break;
+
+                // Port C Read (docs define this as write-only but we do need to do some processing)
+                case 2:
+
+                    // KeybRow/CasOut/PSG
+                    result = INPortC();
+
+                    break;
             }
 
             return true;
@@ -431,39 +401,48 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <returns></returns>
         public bool WritePort(ushort port, int result)
         {
-            BitArray portBits = new BitArray(BitConverter.GetBytes(port));
-            BitArray dataBits = new BitArray(BitConverter.GetBytes((byte)result));
+            byte portUpper = (byte)(port >> 8);
+            byte portLower = (byte)(port & 0xff);
 
-            // The 8255 responds to bit 11 reset
-            bool accessed = !portBits[11];
-            if (!accessed)
+            // The 8255 responds to bit 11 reset with A10 and A12-A15 set
+            if (portUpper.Bit(3))
                 return false;
 
-            if (!portBits[8] && !portBits[9])
-            {
-                // Port A Data
-                // PSG (Sound/Keyboard/Joystick)
-                OUTPortA(result);
-            }
+            var PPIFunc = portUpper & 3;
 
-            if (portBits[8] && !portBits[9])
+            switch (PPIFunc)
             {
-                // Port B Data
-                // Vsync/Jumpers/PrinterBusy/CasIn/Exp
-                OUTPortB(result);
-            }
+                // Port A Write
+                case 0:
 
-            if (!portBits[8] && portBits[9])
-            {
-                // Port C Data
-                // KeybRow/CasOut/PSG
-                OUTPortC(result);
-            }
+                    // PSG (Sound/Keyboard/Joystick)
+                    OUTPortA(result);
 
-            if (portBits[8] && portBits[9])
-            {
-                // Control
-                ControlHandler(result);
+                    break;
+
+                // Port B Write
+                case 1:
+
+                    // Vsync/Jumpers/PrinterBusy/CasIn/Exp
+                    OUTPortB(result);
+
+                    break;
+
+                // Port C Write
+                case 2:
+
+                    // KeybRow/CasOut/PSG
+                    OUTPortC(result);
+
+                    break;
+
+                // Control Register Write
+                case 3:
+
+                    // Control
+                    OUTControl((byte)result);
+
+                    break;
             }
 
             return true;
@@ -476,13 +455,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("PPI");
-            PortA.SyncState(ser);
-            PortB.SyncState(ser);
-            PortCU.SyncState(ser);
-            PortCL.SyncState(ser);
+            ser.Sync("Regs", ref Regs, false);
             ser.EndSection();
         }
 
-        #endregion
+        #endregion        
+    }
+
+    public enum PortDirection
+    {
+        Input,
+        Output
     }
 }

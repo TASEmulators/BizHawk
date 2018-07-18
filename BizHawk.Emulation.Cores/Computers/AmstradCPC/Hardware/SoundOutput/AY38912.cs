@@ -202,19 +202,44 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         }
 
         /// <summary>
+        /// 0:  Inactive
+        /// 1:  Read Register
+        /// 2:  Write Register
+        /// 3:  Select Register
+        /// </summary>
+        public int ActiveFunction;
+
+        public void SetFunction(int val)
+        {
+            int b = ((val & 0xc0) >> 6);
+            ActiveFunction = b;
+        }
+
+        /// <summary>
         /// Reads the value from the currently selected register
         /// </summary>
         /// <returns></returns>
         public int PortRead()
         {
-            if (_activeRegister == 14)
+            if (ActiveFunction == 1)
             {
-                // exteral keyboard register
-                return _keyboard.ReadCurrentLine();
-            }
+                if (_activeRegister == 14)
+                {
+                    if (PortAInput)
+                    {
+                        // exteral keyboard register
+                        return _keyboard.ReadCurrentLine();
+                    }
+                    else
+                    {
+                        return _keyboard.ReadCurrentLine() & _registers[_activeRegister];
+                    }
+                }
 
-            if (_activeRegister < 16)
-                return _registers[_activeRegister];
+                if (_activeRegister < 16)
+                    return _registers[_activeRegister];
+            }
+            
 
             return 0;
         }
@@ -225,102 +250,127 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <param name="value"></param>
         public void PortWrite(int value)
         {
-            if (_activeRegister == 14)
+            switch (ActiveFunction)
             {
-                // external keyboard register
-                return;
-            }
-
-            if (_activeRegister >= 0x10)
-                return;
-
-            byte val = (byte)value;
-
-            if (((1 << _activeRegister) & ((1 << 1) | (1 << 3) | (1 << 5) | (1 << 13))) != 0)
-                val &= 0x0F;
-
-            if (((1 << _activeRegister) & ((1 << 6) | (1 << 8) | (1 << 9) | (1 << 10))) != 0)
-                val &= 0x1F;
-
-            if (_activeRegister != 13 && _registers[_activeRegister] == val)
-                return;
-
-            _registers[_activeRegister] = val;
-
-            switch (_activeRegister)
-            {
-                // Channel A (Combined Pitch)
-                // (not written to directly)
-                case 0:
-                case 1:
-                    _dividerA = _registers[AY_A_FINE] | (_registers[AY_A_COARSE] << 8);
+                default:
                     break;
-                // Channel B (Combined Pitch)
-                // (not written to directly)
-                case 2:
+                // select reg
                 case 3:
-                    _dividerB = _registers[AY_B_FINE] | (_registers[AY_B_COARSE] << 8);
-                    break;
-                // Channel C (Combined Pitch)
-                // (not written to directly)
-                case 4:
-                case 5:
-                    _dividerC = _registers[AY_C_FINE] | (_registers[AY_C_COARSE] << 8);
-                    break;
-                // Noise Pitch
-                case 6:
-                    _dividerN = val * 2;
-                    break;
-                // Mixer
-                case 7:
-                    _bit0 = 0 - ((val >> 0) & 1);
-                    _bit1 = 0 - ((val >> 1) & 1);
-                    _bit2 = 0 - ((val >> 2) & 1);
-                    _bit3 = 0 - ((val >> 3) & 1);
-                    _bit4 = 0 - ((val >> 4) & 1);
-                    _bit5 = 0 - ((val >> 5) & 1);
-                    break;
-                // Channel Volumes
-                case 8:
-                    _eMaskA = (val & 0x10) != 0 ? -1 : 0;
-                    _vA = ((val & 0x0F) * 2 + 1) & ~_eMaskA;
-                    break;
-                case 9:
-                    _eMaskB = (val & 0x10) != 0 ? -1 : 0;
-                    _vB = ((val & 0x0F) * 2 + 1) & ~_eMaskB;
-                    break;
-                case 10:
-                    _eMaskC = (val & 0x10) != 0 ? -1 : 0;
-                    _vC = ((val & 0x0F) * 2 + 1) & ~_eMaskC;
-                    break;
-                // Envelope (Combined Duration)
-                // (not written to directly)
-                case 11:
-                case 12:
-                    _dividerE = _registers[AY_E_FINE] | (_registers[AY_E_COARSE] << 8);
-                    break;
-                // Envelope Shape
-                case 13:
-                    // reset the envelope counter
-                    _countE = 0;
 
-                    if ((_registers[AY_E_SHAPE] & 4) != 0)
-                    {
-                        // attack
-                        _eState = 0;
-                        _eDirection = 1;
-                    }
-                    else
-                    {
-                        // decay
-                        _eState = 31;
-                        _eDirection = -1;
-                    }
+                    int b = (value & 0x0f);
+                    SelectedRegister = b;
+
                     break;
-                case 14:
-                    // IO Port - not implemented
+
+                // write reg      
+                case 2:
+
+                    if (_activeRegister == 14)
+                    {
+                        // external keyboard register
+                        //return;
+                    }
+
+                    if (_activeRegister >= 0x10)
+                        return;
+
+                    byte val = (byte)value;
+
+                    if (((1 << _activeRegister) & ((1 << 1) | (1 << 3) | (1 << 5) | (1 << 13))) != 0)
+                        val &= 0x0F;
+
+                    if (((1 << _activeRegister) & ((1 << 6) | (1 << 8) | (1 << 9) | (1 << 10))) != 0)
+                        val &= 0x1F;
+
+                    if (_activeRegister != 13 && _registers[_activeRegister] == val)
+                        return;
+
+                    _registers[_activeRegister] = val;
+
+                    switch (_activeRegister)
+                    {
+                        // Channel A (Combined Pitch)
+                        // (not written to directly)
+                        case 0:
+                        case 1:
+                            _dividerA = _registers[AY_A_FINE] | (_registers[AY_A_COARSE] << 8);
+                            break;
+                        // Channel B (Combined Pitch)
+                        // (not written to directly)
+                        case 2:
+                        case 3:
+                            _dividerB = _registers[AY_B_FINE] | (_registers[AY_B_COARSE] << 8);
+                            break;
+                        // Channel C (Combined Pitch)
+                        // (not written to directly)
+                        case 4:
+                        case 5:
+                            _dividerC = _registers[AY_C_FINE] | (_registers[AY_C_COARSE] << 8);
+                            break;
+                        // Noise Pitch
+                        case 6:
+                            _dividerN = val * 2;
+                            break;
+                        // Mixer
+                        case 7:
+                            _bit0 = 0 - ((val >> 0) & 1);
+                            _bit1 = 0 - ((val >> 1) & 1);
+                            _bit2 = 0 - ((val >> 2) & 1);
+                            _bit3 = 0 - ((val >> 3) & 1);
+                            _bit4 = 0 - ((val >> 4) & 1);
+                            _bit5 = 0 - ((val >> 5) & 1);
+
+                            PortAInput = ((value & 0x40) == 0);
+                            PortBInput = ((value & 0x80) == 0);
+
+                            break;
+                        // Channel Volumes
+                        case 8:
+                            _eMaskA = (val & 0x10) != 0 ? -1 : 0;
+                            _vA = ((val & 0x0F) * 2 + 1) & ~_eMaskA;
+                            break;
+                        case 9:
+                            _eMaskB = (val & 0x10) != 0 ? -1 : 0;
+                            _vB = ((val & 0x0F) * 2 + 1) & ~_eMaskB;
+                            break;
+                        case 10:
+                            _eMaskC = (val & 0x10) != 0 ? -1 : 0;
+                            _vC = ((val & 0x0F) * 2 + 1) & ~_eMaskC;
+                            break;
+                        // Envelope (Combined Duration)
+                        // (not written to directly)
+                        case 11:
+                        case 12:
+                            _dividerE = _registers[AY_E_FINE] | (_registers[AY_E_COARSE] << 8);
+                            break;
+                        // Envelope Shape
+                        case 13:
+                            // reset the envelope counter
+                            _countE = 0;
+
+                            if ((_registers[AY_E_SHAPE] & 4) != 0)
+                            {
+                                // attack
+                                _eState = 0;
+                                _eDirection = 1;
+                            }
+                            else
+                            {
+                                // decay
+                                _eState = 31;
+                                _eDirection = -1;
+                            }
+                            break;
+                        case 14:
+                            // IO Port - not implemented
+                            break;
+                    }
+
+                    
                     break;
             }
+
+            
         }
 
         /// <summary>
@@ -413,6 +463,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// The currently selected register
         /// </summary>
         private byte _activeRegister;
+
+
+        private bool PortAInput = true;
+        private bool PortBInput = true;
 
         /// <summary>
         /// The frequency of the AY chip
@@ -764,12 +818,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         {
             ser.BeginSection("PSG-AY");
 
+            ser.Sync("ActiveFunction", ref ActiveFunction);
+
             ser.Sync("_tStatesPerFrame", ref _tStatesPerFrame);
             ser.Sync("_sampleRate", ref _sampleRate);
             ser.Sync("_samplesPerFrame", ref _samplesPerFrame);
             ser.Sync("_tStatesPerSample", ref _tStatesPerSample);
             ser.Sync("_audioBufferIndex", ref _audioBufferIndex);
             ser.Sync("_audioBuffer", ref _audioBuffer, false);
+            ser.Sync("PortAInput", ref PortAInput);
+            ser.Sync("PortBInput", ref PortBInput);
 
             ser.Sync("_registers", ref _registers, false);
             ser.Sync("_activeRegister", ref _activeRegister);

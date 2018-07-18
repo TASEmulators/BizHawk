@@ -15,6 +15,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <param name="tStatesPerFrame"></param>
         void Init(int sampleRate, int tStatesPerFrame);
 
+        void SetFunction(int data);
+
         /// <summary>
         /// Activates a register
         /// </summary>

@@ -154,9 +154,7 @@
     <Compile Include="Computers\AmstradCPC\Hardware\Input\StandardKeyboard.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\SoundOutput\AY38912.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\SoundOutput\Beeper.cs" />
-    <Compile Include="Computers\AmstradCPC\Hardware\SoundOutput\PSG.cs" />
     <Compile Include="Computers\AmstradCPC\Machine\CPC464\CPC464.cs" />
-    <Compile Include="Computers\AmstradCPC\Machine\CPC464\CPC464.GateArray.cs" />
     <Compile Include="Computers\AmstradCPC\Machine\CPC464\CPC464.Memory.cs" />
     <Compile Include="Computers\AmstradCPC\Machine\CPC464\CPC464.Port.cs" />
     <Compile Include="Computers\AmstradCPC\Machine\CPCBase.cs" />

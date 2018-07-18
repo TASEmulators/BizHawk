@@ -800,6 +800,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         #region PortIODevice
 
+        /*
+            #BCXX	%x0xxxx00 xxxxxxxx	6845 CRTC Index	                        -	    Write
+            #BDXX	%x0xxxx01 xxxxxxxx	6845 CRTC Data Out	                    -	    Write
+            #BEXX	%x0xxxx10 xxxxxxxx	6845 CRTC Status (as far as supported)	Read	-
+            #BFXX	%x0xxxx11 xxxxxxxx	6845 CRTC Data In (as far as supported)	Read	-
+         */
+
         /// <summary>
         /// Device responds to an IN instruction
         /// </summary>
@@ -808,23 +815,29 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <returns></returns>
         public bool ReadPort(ushort port, ref int result)
         {
-            BitArray portBits = new BitArray(BitConverter.GetBytes(port));
+            byte portUpper = (byte)(port >> 8);
+            byte portLower = (byte)(port & 0xff);
+
+            bool accessed = false;
 
             // The 6845 is selected when bit 14 of the I/O port address is set to "0"
-            bool accessed = !portBits[14];
-            if (!accessed)
-                return false;
+            if (portUpper.Bit(6))
+                return accessed;
 
             // Bit 9 and 8 of the I/O port address define the function to access
-            if (portBits[8] == false && portBits[9] == true)
+            if (portUpper.Bit(1) && !portUpper.Bit(0))
             {
                 // read status register
                 accessed = ReadStatus(ref result);
             }
-            else if (portBits[8] == true && portBits[9] == true)
+            else if ((portUpper & 3) == 3)
             {
                 // read data register
                 accessed = ReadRegister(ref result);
+            }
+            else
+            {
+                result = 0;
             }
 
             return accessed;
@@ -838,26 +851,31 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <returns></returns>
         public bool WritePort(ushort port, int result)
         {
-            BitArray portBits = new BitArray(BitConverter.GetBytes(port));
+            byte portUpper = (byte)(port >> 8);
+            byte portLower = (byte)(port & 0xff);
+
+            bool accessed = false;
 
             // The 6845 is selected when bit 14 of the I/O port address is set to "0"
-            bool accessed = !portBits[14];
-            if (!accessed)
-                return false;
+            if (portUpper.Bit(6))
+                return accessed;
 
-            // Bit 9 and 8 of the I/O port address define the function to access
-            if (portBits[8] == false && portBits[9] == false)
+            var func = portUpper & 3;
+
+            switch (func)
             {
-                // Select 6845 register
-                RegisterSelect(result);
-            }
-            else if (portBits[8] == true && portBits[9] == false)
-            {
-                // Write 6845 register data
-                WriteRegister(result);
+                // reg select
+                case 0:
+                    RegisterSelect(result);
+                    break;
+
+                // data write
+                case 1:
+                    WriteRegister(result);
+                    break;
             }
 
-            return true;
+            return accessed;
         }
 
         #endregion
@@ -884,53 +902,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ser.Sync("VSYNCWidth", ref VSYNCWidth);
             ser.Sync("VSYNCCounter", ref VSYNCCounter);
             ser.EndSection();
-
-            /*
-             * /// <summary>
-        /// Horizontal Character Count
-        /// </summary>
-        private int ;
-
-        /// <summary>
-        /// Vertical Character Count
-        /// </summary>
-        private int ;
-
-        /// <summary>
-        /// Vertical Scanline Count 
-        /// </summary>
-        private int ;
-
-        /// <summary>
-        /// Internal cycle counter
-        /// </summary>
-        private int ;
-
-        /// <summary>
-        /// Signs that we have finished the last character row
-        /// </summary>
-        private bool ;
-
-        /// <summary>
-        /// HSYNC pulse width (in characters)
-        /// </summary>
-        private int ;
-
-        /// <summary>
-        /// Internal HSYNC counter
-        /// </summary>
-        private int ;
-
-        /// <summary>
-        /// VSYNC pulse width (in characters)
-        /// </summary>
-        private int ;
-
-        /// <summary>
-        /// Internal VSYNC counter
-        /// </summary>
-        private int ;
-             * */
         }
 
         #endregion

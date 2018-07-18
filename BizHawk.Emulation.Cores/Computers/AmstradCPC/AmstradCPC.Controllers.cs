@@ -43,19 +43,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     definition.BoolButtons.Add(s);
                     definition.CategoryLabels[s] = "J2";
                 }
-                /*
-                List<string> joys3 = new List<string>
-                {
-                    // P3 Joystick
-                    "P3 Up", "P3 Down", "P3 Left", "P3 Right", "P3 Button",
-                };
-
-                foreach (var s in joys3)
-                {
-                    definition.BoolButtons.Add(s);
-                    definition.CategoryLabels[s] = "J3 (" + ((ZXSpectrumSyncSettings)SyncSettings as ZXSpectrumSyncSettings).JoystickType3.ToString() + ")";
-                }
-                */
 
                 // keyboard
                 List<string> keys = new List<string>

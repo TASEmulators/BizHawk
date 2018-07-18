@@ -28,13 +28,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             GateArray = new AmstradGateArray(this, AmstradGateArray.GateArrayType.Amstrad40007);
             PPI = new PPI_8255(this);
 
-            KeyboardDevice = new StandardKeyboard(this);
-
             TapeBuzzer = new Beeper(this);
             TapeBuzzer.Init(44100, FrameLength);
 
+            //AYDevice = new PSG(this, PSG.ay38910_type_t.AY38910_TYPE_8912, GateArray.PSGClockSpeed, 882 * 50);
             AYDevice = new AY38912(this);
             AYDevice.Init(44100, FrameLength);
+
+            KeyboardDevice = new StandardKeyboard(this);            
 
             TapeDevice = new DatacorderDevice();
             TapeDevice.Init(this);

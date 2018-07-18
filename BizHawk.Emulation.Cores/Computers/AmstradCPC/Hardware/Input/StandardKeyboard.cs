@@ -17,7 +17,18 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public int CurrentLine
         {
             get { return _currentLine; }
-            set { _currentLine = value; }
+            set
+            {
+                // bits 0-3 contain the line
+                var line = value & 0x0f;
+
+                if (line > 0)
+                {
+
+                }
+
+                _currentLine = line;
+            }
         }
 
         private bool[] _keyStatus;
@@ -44,6 +55,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public StandardKeyboard(CPCBase machine)
         {
             _machine = machine;
+            //_machine.AYDevice.PortA_IN_CallBack = INCallback;
+            //_machine.AYDevice.PortA_OUT_CallBack = OUTCallback;
 
             // scancode rows, ascending (Bit0 - Bit7)
             KeyboardMatrix = new string[]
@@ -92,13 +105,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <returns></returns>
         public byte ReadCurrentLine()
         {
-            var lin = _currentLine - 0x40;
+            var lin = _currentLine; // - 0x40;
             var pos = lin * 8;
-            var l = KeyStatus.Skip(pos).Take(8).Reverse().ToArray();
+            var l = KeyStatus.Skip(pos).Take(8).ToArray();
             BitArray bi = new BitArray(l);
             byte[] bytes = new byte[1];
             bi.CopyTo(bytes, 0);
-            return bytes[0];
+            byte inv = (byte)(~bytes[0]);
+            return inv;
         }
 
         /// <summary>

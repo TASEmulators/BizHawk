@@ -652,7 +652,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             {
                 case 0:
                     CRCT.ClockCycle();
-                    //psg clockcycle
+                    //PSG.ClockCycle();
                     WaitLine = false;
                     break;
                 case 1:
@@ -675,8 +675,18 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     break;
             }
 
+            if (!HSYNC && CRCT.HSYNC)
+            {
+                HSYNC = true;
+            }            
+
             // run the interrupt generator routine
             InterruptGenerator();
+
+            if (!CRCT.HSYNC)
+            {
+                HSYNC = false;
+            }
 
             // conditional CPU cycle
             DoConditionalCPUCycle(); 
@@ -719,11 +729,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         {
             BitArray portBits = new BitArray(BitConverter.GetBytes(port));
             BitArray dataBits = new BitArray(BitConverter.GetBytes((byte)result));
+            byte portUpper = (byte)(port >> 8);
+            byte portLower = (byte)(port & 0xff);
 
-            // The gate array responds to port 0x7F
-            bool accessed = !portBits[15];
+            // The gate array is selected when bit 15 of the I/O port address is set to "0" and bit 14 of the I/O port address is set to "1"
+            bool accessed = false;
+            if (!portUpper.Bit(7) && portUpper.Bit(6))
+                accessed = true;
+
             if (!accessed)
-                return false;
+                return accessed;
 
             // Bit 9 and 8 of the data byte define the function to access
             if (!dataBits[6] && !dataBits[7])

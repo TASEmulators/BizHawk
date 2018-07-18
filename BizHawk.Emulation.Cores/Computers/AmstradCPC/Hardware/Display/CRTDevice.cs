@@ -284,6 +284,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <param name="phase"></param>
         public void AddScanlineCharacter(int index, RenderPhase phase, byte vid1, byte vid2, int[] pens)
         {
+            if (index >= 64)
+            {
+                return;
+            }
+
             switch (phase)
             {
                 case RenderPhase.BORDER:

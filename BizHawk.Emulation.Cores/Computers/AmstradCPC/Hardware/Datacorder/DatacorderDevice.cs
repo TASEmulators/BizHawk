@@ -42,6 +42,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         #region State Information
 
         /// <summary>
+        /// Signs whether the tape motor is running
+        /// </summary>
+        public bool TapeMotor;
+
+        /// <summary>
         /// Internal counter used to trigger tape buzzer output
         /// </summary>
         private int counter = 0;
@@ -970,6 +975,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ser.Sync("_monitorTimeOut", ref _monitorTimeOut);
             ser.Sync("_monitorLastPC", ref _monitorLastPC);
             ser.Sync("_monitorLastRegs", ref _monitorLastRegs, false);
+            ser.Sync("TapeMotor", ref TapeMotor);
             ser.EndSection();
         }
 

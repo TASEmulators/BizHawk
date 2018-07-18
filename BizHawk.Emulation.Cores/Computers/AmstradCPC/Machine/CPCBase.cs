@@ -338,14 +338,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             //KeyboardDevice.SyncState(ser);
             //BuzzerDevice.SyncState(ser);
             TapeBuzzer.SyncState(ser);
+
+            AYDevice.SyncState(ser);
             //.SyncState(ser);
             //CPUMon.SyncState(ser);
-
-            if (AYDevice != null)
-            {
-                AYDevice.SyncState(ser);
-                ((AY38912)AYDevice as AY38912).PanningConfiguration = CPC.Settings.AYPanConfig;
-            }
 
             ser.Sync("tapeMediaIndex", ref tapeMediaIndex);
             if (ser.IsReader)
