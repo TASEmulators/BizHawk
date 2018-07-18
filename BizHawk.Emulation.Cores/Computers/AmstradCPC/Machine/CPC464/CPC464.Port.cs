@@ -56,56 +56,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             }
 
             return (byte)result;
-
-            if ((port & 0x8000) == 0)
-            {
-                if ((port & 0x4000) != 0)
-                {
-                    GateArray.ReadPort(port, ref result);
-                }
-                else
-                {
-                    // ram
-                }
-            }
-            else if ((port & 0x4000) == 0)
-            {
-                CRCT.ReadPort(port, ref result);
-            }
-            else if ((port & 0x0300) == 0)
-            {
-                // rom
-            }
-            else if ((port & 0x1000) == 0)
-            {
-                // printer
-            }
-            else if ((port & 0x0800) == 0)
-            {
-                PPI.ReadPort(port, ref result);
-            }
-            else if ((port & 0x0400) == 0)
-            {
-                // exp
-            }
-
-            return (byte)result;
-
-
-            if (CRCT.ReadPort(port, ref result))
-            {
-                return (byte)result;
-            }
-            else if (PPI.ReadPort(port, ref result))
-            {
-                return (byte)result;
-            }
-            else if (GateArray.ReadPort(port, ref result))
-            {
-                return (byte)result;
-            }
-
-            return (byte)result;
         }
 
         /// <summary>
@@ -156,18 +106,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             }
 
             return;
-
-            if (GateArray.WritePort(port, value))
-            { }
-
-            if (CRCT.WritePort(port, value))
-            { }
-
-            // rom select
-            // printer port
-
-            if (PPI.WritePort(port, value))
-            { }
         }
     }
 }

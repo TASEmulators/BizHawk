@@ -206,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public ushort CurrentByteAddress;
 
         /// <summary>
-        /// ByteCOunter
+        /// ByteCounter
         /// </summary>
         public int ByteCounter;
 
@@ -890,6 +890,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ser.Sync("VSYNC", ref VSYNC);
             ser.Sync("DISPTMG", ref DISPTMG);
             ser.Sync("MA", ref MA);
+            ser.Sync("CurrentByteAddress", ref CurrentByteAddress);
+            ser.Sync("ByteCounter", ref ByteCounter);
             ser.Sync("Regs", ref Regs, false);
             ser.Sync("SelectedRegister", ref SelectedRegister);
             ser.Sync("HCC", ref HCC);

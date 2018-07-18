@@ -168,6 +168,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             {
                 _RMR = value;
                 //ScreenMode = _RMR & 0x03;
+                var sm = _RMR & 0x03;
+                if (sm != 1)
+                {
+
+                }
 
                 if ((_RMR & 0x08) != 0)
                     _machine.UpperROMPaged = false;
@@ -254,7 +259,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Master frame clock counter
         /// </summary>
-        private int FrameClock;
+        public int FrameClock;
 
         /// <summary>
         /// Simulates the gate array memory /WAIT line
@@ -354,7 +359,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             // check for frame end
             if (FrameClock == FrameLength)
             {
-                FrameClock = 0;
+                //FrameClock = 0;
                 FrameEnd = true;
             }
         }
@@ -502,7 +507,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 // update screenmode
                 ScreenMode = RMR & 0x03;
                 CRT.CurrentLine.InitScanline(ScreenMode, VLC);
-                //CRT.InitScanline(VLC, ScreenMode);
             }
             else if (!CRCT.HSYNC)
             {
@@ -786,6 +790,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ser.Sync("CurrentPen", ref CurrentPen);
             ser.Sync("ClockCounter", ref ClockCounter);
             ser.Sync("FrameClock", ref FrameClock);
+            ser.Sync("FrameEnd", ref FrameEnd);
             ser.Sync("WaitLine", ref WaitLine);
             ser.Sync("_interruptCounter", ref _interruptCounter);
             ser.Sync("ScreenMode", ref ScreenMode);
@@ -796,6 +801,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ser.Sync("InterruptRaised", ref InterruptRaised);
             ser.Sync("InterruptHoldCounter", ref InterruptHoldCounter);
             ser.Sync("_MA", ref _MA);
+            ser.Sync("IsNewFrame", ref IsNewFrame);
+            ser.Sync("IsNewLine", ref IsNewLine);
+            ser.Sync("HCC", ref HCC);
+            ser.Sync("VLC", ref VLC);
+            ser.Sync("VideoByte1", ref VideoByte1);
+            ser.Sync("VideoByte2", ref VideoByte2);
             ser.EndSection();
         }
 

@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// </summary>
         /// <param name="spectrum"></param>
         /// <param name="cpu"></param>
-        public CPC464(AmstradCPC cpc, Z80A cpu, List<byte[]> files)
+        public CPC464(AmstradCPC cpc, Z80A cpu, List<byte[]> files, bool autoTape)
         {
             CPC = cpc;
             CPU = cpu;
@@ -37,7 +37,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             KeyboardDevice = new StandardKeyboard(this);            
 
-            TapeDevice = new DatacorderDevice();
+            TapeDevice = new DatacorderDevice(autoTape);
             TapeDevice.Init(this);
 
             InitializeMedia(files);

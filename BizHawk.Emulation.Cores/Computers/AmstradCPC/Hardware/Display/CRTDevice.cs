@@ -231,7 +231,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         public void SyncState(Serializer ser)
         {
-            ser.BeginSection("CRT");            
+            ser.BeginSection("CRT");
+            ser.Sync("BufferWidth", ref _bufferWidth);
+            ser.Sync("BufferHeight", ref _bufferHeight);
+            ser.Sync("VirtualHeight", ref _virtualHeight);
+            ser.Sync("VirtualWidth", ref _virtualWidth);
+            ser.Sync("ScreenBuffer", ref ScreenBuffer, false);
+            ser.Sync("ScanlineCounter", ref ScanlineCounter);
             ser.EndSection();
         }
 
@@ -322,7 +328,24 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         private void AddBorderValue(int charIndex, int colourValue)
         {
             Characters[charIndex].Phase = RenderPhase.BORDER;
-            Characters[charIndex].Pixels = new int[8];
+
+            switch (ScreenMode)
+            {
+                case 0:
+                    Characters[charIndex].Pixels = new int[8];
+                    break;
+                case 1:
+                    Characters[charIndex].Pixels = new int[8];
+                    break;
+                case 2:
+                    Characters[charIndex].Pixels = new int[16];
+                    break;
+                case 3:
+                    Characters[charIndex].Pixels = new int[8];
+                    break;
+            }
+
+            
 
             for (int i = 0; i < Characters[charIndex].Pixels.Length; i++)
             {
@@ -345,8 +368,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             switch (ScreenMode)
             {
                 // 4 bits per pixel - 2 bytes - 4 pixels (8 CRT pixels)
+                // RECT
                 case 0:
-                    Characters[charIndex].Pixels = new int[4];
+                    Characters[charIndex].Pixels = new int[8];
 
                     int m0Count = 0;
 
@@ -356,18 +380,23 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     int m0B0P1 = ((m0B0P1i & 0x40) >> 6) | ((m0B0P1i & 0x04) >> 1) | ((m0B0P1i & 0x10) >> 2) | ((m0B0P1i & 0x01 << 3));
 
                     Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[m0B0P0]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[m0B0P0]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[m0B0P1]];
                     Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[m0B0P1]];
 
-                    int m0B1P0i = vid1 & 170;
+                    int m0B1P0i = vid2 & 170;
                     int m0B1P0 = ((m0B1P0i & 0x80) >> 7) | ((m0B1P0i & 0x08) >> 2) | ((m0B1P0i & 0x20) >> 3) | ((m0B1P0i & 0x02 << 2));
-                    int m0B1P1i = vid1 & 85;
+                    int m0B1P1i = vid2 & 85;
                     int m0B1P1 = ((m0B1P1i & 0x40) >> 6) | ((m0B1P1i & 0x04) >> 1) | ((m0B1P1i & 0x10) >> 2) | ((m0B1P1i & 0x01 << 3));
 
                     Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[m0B1P0]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[m0B1P0]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[m0B1P1]];
                     Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[m0B1P1]];
                     break;
 
                 // 2 bits per pixel - 2 bytes - 8 pixels (16 CRT pixels)
+                // SQUARE
                 case 1:
                     Characters[charIndex].Pixels = new int[8];
 
@@ -394,18 +423,21 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     Characters[charIndex].Pixels[m1Count++] = CRTDevice.CPCHardwarePalette[pens[m1B1P3]];
                     break;
 
-                // 1 bit per pixel - 2 bytes - 16 pixels (32 CRT pixels)
+                // 1 bit per pixel - 2 bytes - 16 pixels (16 CRT pixels)
+                // RECT
                 case 2:
                     Characters[charIndex].Pixels = new int[16];
 
                     int m2Count = 0;
 
+                    int[] pixBuff = new int[16];
+
                     for (int bit = 7; bit >= 0; bit--)
                     {
                         int val = vid1.Bit(bit) ? 1 : 0;
                         Characters[charIndex].Pixels[m2Count++] = CRTDevice.CPCHardwarePalette[pens[val]];
-                    }
 
+                    }
                     for (int bit = 7; bit >= 0; bit--)
                     {
                         int val = vid2.Bit(bit) ? 1 : 0;
@@ -414,6 +446,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     break;
 
                 // 4 bits per pixel - 2 bytes - 4 pixels (8 CRT pixels)
+                // RECT
                 case 3:
                     Characters[charIndex].Pixels = new int[4];
 
@@ -460,8 +493,27 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// Processes and adds the scanline to the Screen Buffer
         /// </summary>
         public void CommitScanline()
-        {
-            int hPix = GetPixelCount() * 2;
+        {            
+            int hScale = 1;
+            int vScale = 1;
+
+            switch (ScreenMode)
+            {
+                case 0:
+                case 1:
+                case 3:                    
+                    hScale = 2;
+                    vScale = 2;
+                    break;
+
+                case 2:
+                    hScale = 1;
+                    vScale = 2;
+                    break;
+            }
+
+            int hPix = GetPixelCount() * hScale;
+            //int hPix = GetPixelCount() * 2;
             int leftOver = CRT.BufferWidth - hPix;
             int lPad = leftOver / 2;
             int rPad = lPad;
@@ -477,8 +529,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             // render out the scanline
             int pCount = (LineIndex - CRT.TopLinesToTrim) * 2 * CRT.BufferWidth;
 
-            // double up
-            for (int s = 0; s < 2; s++)
+            // vScale
+            for (int s = 0; s < vScale; s++)
             {
                 // left padding
                 for (int lP = 0; lP < lPad; lP++)
@@ -494,8 +546,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
                     for (int p = 0; p < c.Pixels.Length; p++)
                     {
-                        CRT.ScreenBuffer[pCount++] = c.Pixels[p];
-                        CRT.ScreenBuffer[pCount++] = c.Pixels[p];
+                        // hScale
+                        for (int h = 0; h < hScale; h++)
+                        {
+                            CRT.ScreenBuffer[pCount++] = c.Pixels[p];
+                        }
+                        
+                        //CRT.ScreenBuffer[pCount++] = c.Pixels[p];
                     }
                 }
 

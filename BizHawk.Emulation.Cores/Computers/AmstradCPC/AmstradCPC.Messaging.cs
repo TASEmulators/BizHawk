@@ -170,13 +170,41 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Tape message that is fired when tape is playing
         /// </summary>
+        public void OSD_TapeMotorActive()
+        {
+            if (_tapeInfo.Count == 0)
+                return;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("MOTOR ON (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
+
+            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+        }
+
+        /// <summary>
+        /// Tape message that is fired when tape is playing
+        /// </summary>
+        public void OSD_TapeMotorInactive()
+        {
+            if (_tapeInfo.Count == 0)
+                return;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("MOTOR OFF (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
+
+            SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
+        }
+
+        /// <summary>
+        /// Tape message that is fired when tape is playing
+        /// </summary>
         public void OSD_TapePlaying()
         {
             if (_tapeInfo.Count == 0)
                 return;
 
             StringBuilder sb = new StringBuilder();
-            sb.Append("PLAYING (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
+            sb.Append("PLAYING MANUAL (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
 
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
         }
@@ -190,7 +218,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 return;
 
             StringBuilder sb = new StringBuilder();
-            sb.Append("STOPPED (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
+            sb.Append("STOPPED MANUAL (" + _machine.TapeMediaIndex + ": " + _tapeInfo[_machine.TapeMediaIndex].Name + ")");
 
             SendMessage(sb.ToString().TrimEnd('\n'), MessageCategory.Tape);
         }

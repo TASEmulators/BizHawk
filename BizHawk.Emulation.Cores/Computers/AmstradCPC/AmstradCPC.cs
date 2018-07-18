@@ -46,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             {
                 case MachineType.CPC464:
                     ControllerDefinition = AmstradCPCControllerDefinition;
-                    Init(MachineType.CPC464, _files);
+                    Init(MachineType.CPC464, _files, ((AmstradCPCSyncSettings)syncSettings as AmstradCPCSyncSettings).AutoStartStopTape);
                     break;
                 default:
                     throw new InvalidOperationException("Machine not yet emulated");
@@ -139,7 +139,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         private MachineType _machineType;
 
-        private void Init(MachineType machineType, List<byte[]> files)
+        private void Init(MachineType machineType, List<byte[]> files, bool autoTape)
         {
             _machineType = machineType;
 
@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             switch (machineType)
             {
                 case MachineType.CPC464:
-                    _machine = new CPC464(this, _cpu, files);
+                    _machine = new CPC464(this, _cpu, files, autoTape);
                     var _systemRom16 = GetFirmware(0x4000, "464ROM");
                     var romData16 = RomData.InitROM(machineType, _systemRom16);
                     _machine.InitROM(romData16);

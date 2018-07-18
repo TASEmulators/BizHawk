@@ -91,10 +91,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             [DefaultValue(true)]
             public bool DeterministicEmulation { get; set; }
 
-            [DisplayName("CPC model")]
+            [DisplayName("CPC Model")]
             [Description("The model of Amstrad CPC machine to be emulated")]
             [DefaultValue(MachineType.CPC464)]
             public MachineType MachineType { get; set; }
+
+            [DisplayName("Auto Start/Stop Tape")]
+            [Description("If true, CPCHawk will automatically start and stop the tape when the tape motor is triggered")]
+            [DefaultValue(true)]
+            public bool AutoStartStopTape { get; set; }
 
             public AmstradCPCSyncSettings Clone()
             {

@@ -8,22 +8,22 @@ using System.Text;
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
     /// <summary>
-    /// Represents the tape device (or build-in datacorder as it was called +2 and above)
+    /// Represents the tape device
     /// </summary>
-    public class DatacorderDevice : IPortIODevice
+    public class DatacorderDevice
     {
         #region Construction
 
-        private CPCBase _machine { get; set; }
-        private Z80A _cpu { get; set; }
-        private IBeeperDevice _buzzer { get; set; }
+        private CPCBase _machine;
+        private Z80A _cpu => _machine.CPU;
+        private IBeeperDevice _buzzer => _machine.TapeBuzzer;
 
         /// <summary>
         /// Default constructor
         /// </summary>
-        public DatacorderDevice()
+        public DatacorderDevice(bool autoTape)
         {
-            
+            _autoPlay = autoTape;
         }
 
         /// <summary>
@@ -33,8 +33,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public void Init(CPCBase machine)
         {
             _machine = machine;
-            _cpu = _machine.CPU;
-            _buzzer = machine.TapeBuzzer;
         }
 
         #endregion
@@ -44,7 +42,38 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Signs whether the tape motor is running
         /// </summary>
-        public bool TapeMotor;
+        private bool tapeMotor;
+        public bool TapeMotor
+        {
+            get { return tapeMotor; }
+            set
+            {
+                if (tapeMotor == value)
+                    return;
+
+                tapeMotor = value;
+                if (tapeMotor)
+                {
+                    _machine.CPC.OSD_TapeMotorActive();
+
+                    if (_autoPlay)
+                    {
+                        Play();
+                    }
+                }
+                    
+                else
+                {
+                    _machine.CPC.OSD_TapeMotorInactive();
+
+                    if (_autoPlay)
+                    {
+                        Stop();
+                    }
+                }
+                    
+            }
+        }
 
         /// <summary>
         /// Internal counter used to trigger tape buzzer output
@@ -140,7 +169,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// </summary>
         public void EndFrame()
         {
-            MonitorFrame();
+            //MonitorFrame();
         }
 
         public void StartFrame()
@@ -160,7 +189,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             if (_tapeIsPlaying)
                 return;
 
+            if (!_autoPlay)
             _machine.CPC.OSD_TapePlaying();
+
+            _machine.CPC.OSD_TapeMotorActive();
 
             // update the lastCycle
             _lastCycle = _cpu.TotalExecutedCycles;
@@ -368,7 +400,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// </summary>
         public void TapeCycle()
         {              
-            if (TapeIsPlaying)
+            if (TapeMotor)
             {
                 counter++;
 
@@ -391,10 +423,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             // decide how many cycles worth of data we are capturing
             long cycles = cpuCycle - _lastCycle;
 
-            //bool is48k = _machine.IsIn48kMode();
-
             // check whether tape is actually playing
-            if (_tapeIsPlaying == false)
+            if (tapeMotor == false)
             {
                 // it's not playing. Update lastCycle and return
                 _lastCycle = cpuCycle;
@@ -415,7 +445,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 // decrement cycles
                 cycles -= _waitEdge;
 
-                if (_position == 0 && _tapeIsPlaying)
+                if (_position == 0 && tapeMotor)
                 {
                     // start of block - take care of initial pulse level for PZX
                     switch (_dataBlocks[_currentDataBlockIndex].BlockDescription)
@@ -434,6 +464,53 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                             // initial pulse level is stored in block
                             if (currentState != _dataBlocks[_currentDataBlockIndex].InitialPulseLevel)
                                 FlipTapeState();
+                            break;
+                    }
+
+                    // most of these amstrad tapes appear to have a pause block at the start
+                    // skip this if it is the first block
+                    switch (_dataBlocks[_currentDataBlockIndex].BlockDescription)
+                    {
+                        case BlockType.PAUS:
+                        case BlockType.PAUSE_BLOCK:
+                        case BlockType.Pause_or_Stop_the_Tape:
+                            if (_currentDataBlockIndex == 0)
+                            {
+                                // this is the first block on the tape
+                                SkipBlock(true);
+                            }
+                            else
+                            {
+                                // there may be non-data blocks before this
+                                bool okToSkipPause = true;
+                                for (int i = _currentDataBlockIndex; i >= 0; i--)
+                                {
+                                    switch (_dataBlocks[i].BlockDescription)
+                                    {
+                                        case BlockType.Archive_Info:
+                                        case BlockType.BRWS:
+                                        case BlockType.Custom_Info_Block:
+                                        case BlockType.Emulation_Info:
+                                        case BlockType.Glue_Block:
+                                        case BlockType.Hardware_Type:
+                                        case BlockType.Message_Block:
+                                        case BlockType.PZXT:
+                                        case BlockType.Text_Description:
+                                            break;
+                                        default:
+                                            okToSkipPause = false;
+                                            break;
+                                    }
+
+                                    if (!okToSkipPause)
+                                        break;
+                                }
+
+                                if (okToSkipPause)
+                                {
+                                    SkipBlock(true);
+                                }
+                            }
                             break;
                     }
 
@@ -576,188 +653,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             currentState = !currentState;
         }
 
-        /// <summary>
-        /// Flash loading implementation
-        /// (Deterministic Emulation must be FALSE)
-        /// </summary>
-        private bool FlashLoad()
-        {
-            // deterministic emulation must = false
-            //if (_machine.Spectrum.SyncSettings.DeterministicEmulation)
-            //return;
-
-            var util = _machine.CPC;
-
-            if (_currentDataBlockIndex < 0)
-                _currentDataBlockIndex = 0;
-
-            if (_currentDataBlockIndex >= DataBlocks.Count)
-                return false;            
-
-            //var val = GetEarBit(_cpu.TotalExecutedCycles);
-            //_buzzer.ProcessPulseValue(true, val);
-
-            ushort addr = _cpu.RegPC;
-
-            if (_machine.CPC.SyncSettings.DeterministicEmulation)
-            {
-
-            }
-
-            var tb = DataBlocks[_currentDataBlockIndex];
-            var tData = tb.BlockData;
-
-            if (tData == null || tData.Length < 2)
-            {
-                // skip this
-                return false;
-            }
-
-            var toRead = tData.Length - 1;
-
-            if (toRead < _cpu.Regs[_cpu.E] + (_cpu.Regs[_cpu.D] << 8))
-            {
-
-            }
-            else
-            {
-                toRead = _cpu.Regs[_cpu.E] + (_cpu.Regs[_cpu.D] << 8);
-            }
-
-            if (toRead <= 0)
-                return false;
-
-            var parity = tData[0];
-
-            if (parity != _cpu.Regs[_cpu.F_s] + (_cpu.Regs[_cpu.A_s] << 8) >> 8)
-                return false;
-
-            util.SetCpuRegister("Shadow AF", 0x0145);
-
-            for (var i = 0; i < toRead; i++)
-            {
-                var v = tData[i + 1];
-                _cpu.Regs[_cpu.L] = v;
-                parity ^= v;
-                var d = (ushort)(_cpu.Regs[_cpu.Ixl] + (_cpu.Regs[_cpu.Ixh] << 8) + 1);
-                _machine.WriteBus(d, v);
-            }
-            var pc = (ushort)0x05DF;
-
-            if (_cpu.Regs[_cpu.E] + (_cpu.Regs[_cpu.D] << 8) == toRead &&
-                toRead + 1 < tData.Length)
-            {
-                var v = tData[toRead + 1];
-                _cpu.Regs[_cpu.L] = v;
-                parity ^= v;
-                _cpu.Regs[_cpu.B] = 0xB0;
-            }
-            else
-            {
-                _cpu.Regs[_cpu.L] = 1;
-                _cpu.Regs[_cpu.B] = 0;
-                _cpu.Regs[_cpu.F] = 0x50;
-                _cpu.Regs[_cpu.A] = parity;
-                pc = 0x05EE;
-            }
-
-            _cpu.Regs[_cpu.H] = parity;
-            var de = _cpu.Regs[_cpu.E] + (_cpu.Regs[_cpu.D] << 8);
-            util.SetCpuRegister("DE", de - toRead);
-            var ix = _cpu.Regs[_cpu.Ixl] + (_cpu.Regs[_cpu.Ixh] << 8);
-            util.SetCpuRegister("IX", ix + toRead);
-
-            util.SetCpuRegister("PC", pc);
-
-            _currentDataBlockIndex++;
-
-            return true;
-           
-        }
-
         #endregion
 
         #region TapeMonitor
 
-        private long _lastINCycle = 0;
-        private int _monitorCount;
-        private int _monitorTimeOut;
-        private ushort _monitorLastPC;
-        private ushort[] _monitorLastRegs = new ushort[7];
-
-        /// <summary>
-        /// Resets the TapeMonitor
-        /// </summary>
-        private void MonitorReset()
-        {
-            _lastINCycle = 0;
-            _monitorCount = 0;
-            _monitorLastPC = 0;
-            _monitorLastRegs = null;
-        }
-
-        /// <summary>
-        /// An iteration of the monitor process
-        /// </summary>
-        public void MonitorRead()
-        {      
-            long cpuCycle = _cpu.TotalExecutedCycles;
-            int delta = (int)(cpuCycle - _lastINCycle);
-            _lastINCycle = cpuCycle;
-
-            var nRegs = new ushort[]
-            {
-                _cpu.Regs[_cpu.A],
-                _cpu.Regs[_cpu.B],
-                _cpu.Regs[_cpu.C],
-                _cpu.Regs[_cpu.D],
-                _cpu.Regs[_cpu.E],
-                _cpu.Regs[_cpu.H],
-                _cpu.Regs[_cpu.L]
-            };
-
-            if (delta > 0 &&
-                delta < 96 &&
-                _cpu.RegPC == _monitorLastPC &&
-                _monitorLastRegs != null)
-            {
-                int dCnt = 0;
-                int dVal = 0;
-
-                for (int i = 0; i < nRegs.Length; i++)
-                {
-                    if (_monitorLastRegs[i] != nRegs[i])
-                    {
-                        dVal = _monitorLastRegs[i] - nRegs[i];
-                        dCnt++;
-                    }
-                }
-
-                if (dCnt == 1 &&
-                    (dVal == 1 || dVal == -1))
-                {
-                    _monitorCount++;
-
-                    if (_monitorCount >= 16 && _autoPlay)
-                    {
-                        if (!_tapeIsPlaying)
-                        {
-                            Play();
-                            _machine.CPC.OSD_TapePlayingAuto();
-                        }
-
-                        _monitorTimeOut = 50;
-                    }
-                }
-                else
-                {
-                    _monitorCount = 0;
-                }
-            }
-
-            _monitorLastRegs = nRegs;
-            _monitorLastPC = _cpu.RegPC;
-        }
+        
 
         public void AutoStopTape()
         {
@@ -783,6 +683,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             _machine.CPC.OSD_TapePlayingAuto();
         }
 
+        /*
         public int MaskableInterruptCount = 0;
 
         private void MonitorFrame()
@@ -851,6 +752,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 }
             }
         }
+        */
 
         #endregion
 
@@ -866,15 +768,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device responds to an IN instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
         /// <returns></returns>
-        public bool ReadPort(ushort port, ref int result)
+        public bool ReadPort()
         {
             if (TapeIsPlaying)
             {
                 GetEarBit(_cpu.TotalExecutedCycles);
             }
+            /*
             if (currentState)
             {
                 result |= TAPE_BIT;
@@ -883,55 +784,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             {
                 result &= ~TAPE_BIT;
             }
+            */
 
             if (!TapeIsPlaying)
             {
-                if (_machine.UPDDiskDevice == null || !_machine.UPDDiskDevice.FDD_IsDiskLoaded)
-                    MonitorRead();
+                //if (_machine.UPDDiskDevice == null || !_machine.UPDDiskDevice.FDD_IsDiskLoaded)
+                    //MonitorRead();
             }
-            if (_machine.UPDDiskDevice == null || !_machine.UPDDiskDevice.FDD_IsDiskLoaded)
-                MonitorRead();
-
-            /*
-
-            if (TapeIsPlaying)
-            {
-                if (GetEarBit(_cpu.TotalExecutedCycles))
-                {
-                    result &= ~(TAPE_BIT);      // reset is EAR ON
-                }
-                else
-                {
-                    result |= (TAPE_BIT);       // set is EAR Off
-                }
-            }
-            else
-            {
-                if (_machine.KeyboardDevice.IsIssue2Keyboard)
-                {
-                    if ((_machine.LASTULAOutByte & (EAR_BIT + MIC_BIT)) == 0)
-                    {
-                        result &= ~(TAPE_BIT);
-                    }
-                    else
-                    {
-                        result |= (TAPE_BIT);
-                    }
-                }
-                else
-                {
-                    if ((_machine.LASTULAOutByte & EAR_BIT) == 0)
-                    {
-                        result &= ~(TAPE_BIT);
-                    }
-                    else
-                    {
-                        result |= TAPE_BIT;
-                    }
-                }
-            }
-
-    */
+            //if (_machine.UPDDiskDevice == null || !_machine.UPDDiskDevice.FDD_IsDiskLoaded)
+                //MonitorRead();
 
             return true;
         }
@@ -939,17 +800,18 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device responds to an OUT instruction
         /// </summary>
-        /// <param name="port"></param>
-        /// <param name="result"></param>
+        /// <param name="state"></param>
         /// <returns></returns>
-        public bool WritePort(ushort port, int result)
+        public void WritePort(bool state)
         {
+            // not implemented
+
+            /*
             if (!TapeIsPlaying)
             {
                 currentState = ((byte)result & 0x10) != 0;
             }
-
-            return true;
+            */
         }
 
         #endregion
@@ -970,12 +832,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ser.Sync("_lastCycle", ref _lastCycle);
             ser.Sync("_waitEdge", ref _waitEdge);
             ser.Sync("currentState", ref currentState);
-            ser.Sync("_lastINCycle", ref _lastINCycle);
-            ser.Sync("_monitorCount", ref _monitorCount);
-            ser.Sync("_monitorTimeOut", ref _monitorTimeOut);
-            ser.Sync("_monitorLastPC", ref _monitorLastPC);
-            ser.Sync("_monitorLastRegs", ref _monitorLastRegs, false);
-            ser.Sync("TapeMotor", ref TapeMotor);
+            ser.Sync("TapeMotor", ref tapeMotor);
             ser.EndSection();
         }
 

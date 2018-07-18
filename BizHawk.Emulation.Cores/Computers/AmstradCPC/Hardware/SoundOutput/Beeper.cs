@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device blipbuffer
         /// </summary>
-        private readonly BlipBuffer blip = new BlipBuffer(882);
+        private readonly BlipBuffer blip = new BlipBuffer(1024);
 
         #endregion
 

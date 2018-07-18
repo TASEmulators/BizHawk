@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Gets the current frame cycle according to the CPU tick count
         /// </summary>
-        public virtual long CurrentFrameCycle => CPU.TotalExecutedCycles - LastFrameStartCPUTick;
+        public virtual long CurrentFrameCycle => GateArray.FrameClock; // CPU.TotalExecutedCycles - LastFrameStartCPUTick;
 
         /// <summary>
         /// Non-Deterministic bools
@@ -170,10 +170,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     TapeDevice.TapeCycle();
             }
 
-            OverFlow = (int)CurrentFrameCycle - GateArray.FrameLength;
+            //OverFlow = (int)CurrentFrameCycle - GateArray.FrameLength;
 
             // we have reached the end of a frame
-            LastFrameStartCPUTick = CPU.TotalExecutedCycles - OverFlow;
+            LastFrameStartCPUTick = CPU.TotalExecutedCycles; // - OverFlow;
 
             if (AYDevice != null)
                 AYDevice.EndFrame();
@@ -199,6 +199,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     //System.IO.File.WriteAllText(UPDDiskDevice.outputfile, UPDDiskDevice.outputString);
                 }
             }
+
+            GateArray.FrameClock = 0;
         }
 
         #endregion
@@ -334,14 +336,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ser.Sync("RAM3", ref RAM3, false);
 
             CRCT.SyncState(ser);
-
-            //KeyboardDevice.SyncState(ser);
-            //BuzzerDevice.SyncState(ser);
+            CRT.SyncState(ser);
+            GateArray.SyncState(ser);
+            KeyboardDevice.SyncState(ser);
             TapeBuzzer.SyncState(ser);
-
             AYDevice.SyncState(ser);
-            //.SyncState(ser);
-            //CPUMon.SyncState(ser);
 
             ser.Sync("tapeMediaIndex", ref tapeMediaIndex);
             if (ser.IsReader)
