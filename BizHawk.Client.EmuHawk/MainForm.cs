@@ -2119,7 +2119,7 @@ namespace BizHawk.Client.EmuHawk
 						"Virtual Boy", "*.vb;%ARCH%",
 						"Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%",
                         "Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%",
-                        "Amstrad CPC", "*.cdt;%ARCH%",
+                        "Amstrad CPC", "*.cdt;*.dsk;%ARCH%",
 						"All Files", "*.*");
 				}
 

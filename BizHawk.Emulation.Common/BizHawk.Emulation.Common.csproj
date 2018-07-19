@@ -79,6 +79,7 @@
     <Compile Include="CoreComms.cs" />
     <Compile Include="Database\CRC32.cs" />
     <Compile Include="Database\Database.cs" />
+    <Compile Include="DSKIdentifier.cs" />
     <Compile Include="Database\FirmwareDatabase.cs" />
     <Compile Include="Database\GameInfo.cs" />
     <Compile Include="EmulationExceptions.cs" />
