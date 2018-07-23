@@ -24,10 +24,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         private int _tStatesPerFrame;
         private int _sampleRate;
         private int _samplesPerFrame;
-        private int _tStatesPerSample;
+        private double _tStatesPerSample;
         private short[] _audioBuffer;
         private int _audioBufferIndex;
         private int _lastStateRendered;
+        private int _clockCyclesPerFrame;
+        private int _cyclesPerSample;
 
         #endregion
 
@@ -39,6 +41,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public AY38912(CPCBase machine)
         {
             _machine = machine;
+
+            //_blipL.SetRates(1000000, 44100);
+            //_blipL.SetRates((_machine.GateArray.FrameLength * 50) / 4, 44100);
+            //_blipR.SetRates(1000000, 44100);
+            //_blipR.SetRates((_machine.GateArray.FrameLength * 50) / 4, 44100);
         }
 
         /// <summary>
@@ -51,46 +58,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             Reset();
         }
 
-        #endregion
-
-        #region IPortIODevice
-
-        public bool ReadPort(ushort port, ref int value)
-        {
-            if (port != 0xfffd)
-            {
-                // port read is not addressing this device
-                return false;
-            }
-
-            value = PortRead();
-
-            return true;
-        }
-
-        public bool WritePort(ushort port, int value)
-        {
-            if (port == 0xfffd)
-            {
-                // register select
-                SelectedRegister = value & 0x0f;
-                return true;
-            }
-            else if (port == 0xbffd)
-            {
-                // Update the audiobuffer based on the current CPU cycle
-                // (this process the previous data BEFORE writing to the currently selected register)                
-                int d = (int)(_machine.CurrentFrameCycle);
-                BufferUpdate(d);
-
-                // write to register
-                PortWrite(value);
-                return true;
-            }
-            return false;
-        }
-
-        #endregion
+        #endregion        
 
         #region AY Implementation
 
@@ -239,7 +207,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 if (_activeRegister < 16)
                     return _registers[_activeRegister];
             }
-            
+
 
             return 0;
         }
@@ -366,11 +334,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                             break;
                     }
 
-                    
+                    // do audio processing
+                    BufferUpdate((int)_machine.CurrentFrameCycle);
+
                     break;
             }
 
-            
+
         }
 
         /// <summary>
@@ -396,7 +366,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <param name="frameCycle"></param>
         public void UpdateSound(int frameCycle)
         {
-            BufferUpdate(frameCycle);
+           BufferUpdate(frameCycle);
         }
 
         #endregion
@@ -471,7 +441,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// The frequency of the AY chip
         /// </summary>
-        private static int _chipFrequency = 1773400;
+        private static int _chipFrequency = 1000000; // 1773400;
 
         /// <summary>
         /// The rendering resolution of the chip
@@ -640,8 +610,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             }
         }
 
-        private int mult_const;
-
         /// <summary>
         /// Initializes timing information for the frame
         /// </summary>
@@ -651,21 +619,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         {
             _sampleRate = sampleRate;
             _tStatesPerFrame = frameTactCount;
-            _samplesPerFrame = 882;
+            _samplesPerFrame = sampleRate / 50; //882
 
-            _tStatesPerSample = 79; //(int)Math.Round(((double)_tStatesPerFrame * 50D) / 
-                                    //(16D * (double)_sampleRate),
-                                    //MidpointRounding.AwayFromZero);
-
-            //_samplesPerFrame = _tStatesPerFrame / _tStatesPerSample;
-            _audioBuffer = new short[_samplesPerFrame * 2]; //[_sampleRate / 50];
+            _tStatesPerSample = (double)frameTactCount / (double)_samplesPerFrame; // 90; //(int)Math.Round(((double)_tStatesPerFrame * 50D) / 
+                                                                   //(16D * (double)_sampleRate),
+                                                                   //MidpointRounding.AwayFromZero);
+            _audioBuffer = new short[_samplesPerFrame * 2];
             _audioBufferIndex = 0;
 
-            mult_const = ((_chipFrequency / 8) << 14) / _machine.GateArray.Z80ClockSpeed;
-
-            var aytickspercputick = (double)_machine.GateArray.Z80ClockSpeed / (double)_chipFrequency;
-            int ayCyclesPerSample = (int)((double)_tStatesPerSample * (double)aytickspercputick);
+            ticksPerSample = ((double)_chipFrequency / sampleRate / 8);
         }
+        private double ticksPerSample;
+        
+        private double tickCounter = 0;
 
         /// <summary>
         /// Updates the audiobuffer based on the current frame t-state
@@ -682,14 +648,18 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             // get the current length of the audiobuffer
             int bufferLength = _samplesPerFrame; // _audioBuffer.Length;
 
-            int toEnd = ((bufferLength * cycle) / _tStatesPerFrame);
+            double toEnd = ((double)(bufferLength * cycle) / (double)_tStatesPerFrame);
 
             // loop through the number of samples we need to render
             while (_audioBufferIndex < toEnd)
             {
                 // run the AY chip processing at the correct resolution
-                for (int i = 0; i < _tStatesPerSample / 14; i++)
+                tickCounter += ticksPerSample;
+
+                while (tickCounter > 0)
                 {
+                    tickCounter--;
+
                     if (++_countA >= _dividerA)
                     {
                         _countA = 0;
@@ -795,6 +765,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public void DiscardSamples()
         {
             _audioBuffer = new short[_samplesPerFrame * 2];
+            //_blipL.Clear();
+            //_blipR.Clear();
         }
 
         public void GetSamplesSync(out short[] samples, out int nsamp)
@@ -802,6 +774,43 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             nsamp = _samplesPerFrame;
             samples = _audioBuffer;
             DiscardSamples();
+            tickCounter = 0;
+            return;
+            /*
+            _blipL.EndFrame((uint)SampleClock);
+            _blipR.EndFrame((uint)SampleClock);
+            SampleClock = 0;
+
+            int sampL = _blipL.SamplesAvailable();
+            int sampR = _blipR.SamplesAvailable();
+
+            if (sampL > sampR)
+                nsamp = sampL;
+            else
+                nsamp = sampR;
+
+            short[] buffL = new short[sampL];
+            short[] buffR = new short[sampR];
+
+            _blipL.ReadSamples(buffL, sampL - 1, false);
+            _blipR.ReadSamples(buffR, sampR - 1, false);
+
+            if (_audioBuffer.Length != nsamp * 2)
+                _audioBuffer = new short[nsamp * 2];
+
+            int p = 0;
+            for (int i = 0; i < nsamp; i++)
+            {
+                if (i < sampL)
+                    _audioBuffer[p++] = buffL[i];
+                if (i < sampR)
+                    _audioBuffer[p++] = buffR[i];
+            }
+
+            //nsamp = _samplesPerFrame;
+            samples = _audioBuffer;
+            DiscardSamples();
+            */
         }
 
         #endregion
@@ -823,7 +832,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ser.Sync("_tStatesPerFrame", ref _tStatesPerFrame);
             ser.Sync("_sampleRate", ref _sampleRate);
             ser.Sync("_samplesPerFrame", ref _samplesPerFrame);
-            ser.Sync("_tStatesPerSample", ref _tStatesPerSample);
+            //ser.Sync("_tStatesPerSample", ref _tStatesPerSample);
             ser.Sync("_audioBufferIndex", ref _audioBufferIndex);
             ser.Sync("_audioBuffer", ref _audioBuffer, false);
             ser.Sync("PortAInput", ref PortAInput);

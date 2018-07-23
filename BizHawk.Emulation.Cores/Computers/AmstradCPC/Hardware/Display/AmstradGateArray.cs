@@ -608,31 +608,31 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             if (CRCT.VSYNC && CRCT.HSYNC)
             {
                 // both hsync and vsync active
-                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.HSYNCandVSYNC, VideoByte1, VideoByte2, ColourRegisters);
+                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.HSYNCandVSYNC, VideoByte1, VideoByte2, ColourRegisters.ToArray());
                 //CRT.AddScanlineCharacter(VLC, HCC++, RenderPhase.HSYNCandVSYNC, VideoByte1, VideoByte2, ColourRegisters);
             }
             else if (CRCT.VSYNC)
             {
                 // vsync is active but hsync is not
-                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.VSYNC, VideoByte1, VideoByte2, ColourRegisters);
+                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.VSYNC, VideoByte1, VideoByte2, ColourRegisters.ToArray());
                 //CRT.AddScanlineCharacter(VLC, HCC++, RenderPhase.VSYNC, VideoByte1, VideoByte2, ColourRegisters);
             }
             else if (CRCT.HSYNC)
             {
                 // hsync is active but vsync is not
-                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.HSYNC, VideoByte1, VideoByte2, ColourRegisters);
+                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.HSYNC, VideoByte1, VideoByte2, ColourRegisters.ToArray());
                 //CRT.AddScanlineCharacter(VLC, HCC++, RenderPhase.HSYNC, VideoByte1, VideoByte2, ColourRegisters);
             }
             else if (!CRCT.DISPTMG)
             {
                 // border generation
-                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.BORDER, VideoByte1, VideoByte2, ColourRegisters);
+                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.BORDER, VideoByte1, VideoByte2, ColourRegisters.ToArray());
                 //CRT.AddScanlineCharacter(VLC, HCC++, RenderPhase.BORDER, VideoByte1, VideoByte2, ColourRegisters);
             }
             else if (CRCT.DISPTMG)
             {
                 // pixels generated from video RAM
-                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.DISPLAY, VideoByte1, VideoByte2, ColourRegisters);
+                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.DISPLAY, VideoByte1, VideoByte2, ColourRegisters.ToArray());
             }
         }
 
@@ -656,7 +656,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             {
                 case 0:
                     CRCT.ClockCycle();
-                    //PSG.ClockCycle();
+                    //PSG.ClockCycle(FrameClock);
                     WaitLine = false;
                     break;
                 case 1:

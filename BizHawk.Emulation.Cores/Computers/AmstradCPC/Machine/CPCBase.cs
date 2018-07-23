@@ -152,8 +152,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             if (_renderSound)
             {
-                if (AYDevice != null)
-                    AYDevice.StartFrame();
+                AYDevice.StartFrame();
             }
 
             PollInput();

@@ -73,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Device blipbuffer
         /// </summary>
-        private readonly BlipBuffer blip = new BlipBuffer(1024);
+        private readonly BlipBuffer blip = new BlipBuffer(883);
 
         #endregion
 
@@ -122,7 +122,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// </summary>
         public void Init(int sampleRate, int tStatesPerFrame)
         {
-            blip.SetRates((tStatesPerFrame * 50), sampleRate);
+            blip.SetRates((4000000), sampleRate);
             _sampleRate = sampleRate;
             _tStatesPerFrame = tStatesPerFrame;
         }

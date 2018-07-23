@@ -184,8 +184,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 }
                 else
                 {
-                    // just process what we have as-is
-                }
+                    // just process what we have as-is 
+                }                   
             }
 
             // mix the soundproviders together
@@ -197,10 +197,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 short sectorVal = 0;
                 foreach (var sp in SoundProviders)
                 {
-                    if (sp.Buffer[i] > sp.MaxVolume)
-                        sectorVal += (short)sp.MaxVolume;
-                    else
-                        sectorVal += sp.Buffer[i];
+                    if (i < sp.Buffer.Length)
+                    {
+                        if (sp.Buffer[i] > sp.MaxVolume)
+                            sectorVal += (short)sp.MaxVolume;
+                        else
+                            sectorVal += sp.Buffer[i];
+                    }
+                    
                 }
 
                 samples[i] = sectorVal;

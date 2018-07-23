@@ -59,6 +59,55 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         #endregion
 
         /// <summary>
+        /// CDT format is essentially exactly the same as the TZX format
+        /// However all timings are based on spectrum timings (3.5Mhz)
+        /// so need to be adjusted for the CPC (4Mhz)
+        /// </summary>
+        /// <param name="db"></param>
+        /// <returns></returns>
+        private TapeDataBlock ConvertClock(TapeDataBlock db)
+        {
+            TapeDataBlock tb = new TapeDataBlock();
+            tb.BlockDescription = db.BlockDescription;
+            tb.BlockID = db.BlockID;
+            tb.Command = db.Command;
+            tb.DataPeriods = new List<int>();
+            tb.InitialPulseLevel = db.InitialPulseLevel;
+            tb.MetaData = db.MetaData;
+            tb.PauseInMS = db.PauseInMS;
+
+            double multiplier = (double)4 / (double)3.5;
+            double cycleScale = ((40 << 16) / 35);
+            double origPeriods = db.DataPeriods.Count();
+
+            for (int i = 0; i < origPeriods; i++)
+            {
+                int orig = db.DataPeriods[i];
+                int np = (int)((double)orig * multiplier);
+                int nnp = ClockAdjust(orig);
+                tb.DataPeriods.Add(np);
+            }
+
+            return tb;
+        }
+
+        private int ClockAdjust(int val)
+        {
+            int cycleScale = ((40 << 16) / 35);
+            int res = (val * cycleScale) >> 16;
+            return res;
+        }
+
+        private int Scale => ((40 << 16) / 35);
+
+        private int Adjust(int val)
+        {
+            return (int)((val * CLOCK_MULTIPLIER));
+        }
+
+        private const double CLOCK_MULTIPLIER = 1.142857;
+
+        /// <summary>
         /// Returns TRUE if tzx header is detected
         /// </summary>
         /// <param name="data"></param>
@@ -142,6 +191,17 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 ProcessBlock(data, ID);
             }
 
+            /*
+            // convert for Amstrad CPC
+            List<TapeDataBlock> newBlocks = new List<TapeDataBlock>();
+            for (int i = 0; i < _datacorder.DataBlocks.Count(); i++)
+            {
+                newBlocks.Add(ConvertClock(_datacorder.DataBlocks[i]));
+            }
+
+            _datacorder.DataBlocks.Clear();
+            _datacorder.DataBlocks.AddRange(newBlocks);
+            */
         }
 
         /// <summary>
@@ -1632,6 +1692,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 int bitsInLastByte = 8
             )
         {
+
             // first get the block description
             string description = string.Empty;
 
@@ -1857,12 +1918,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             )
         {
 
+            
+            int pilotCount = 3220;
+            /*
             // pilot count needs to be ascertained from flag byte
             int pilotCount;
             if (blockData[0] < 128)
                 pilotCount = 8063;
             else
                 pilotCount = 3223;
+                */
 
             // now we can decode
             var nBlock = DecodeDataBlock

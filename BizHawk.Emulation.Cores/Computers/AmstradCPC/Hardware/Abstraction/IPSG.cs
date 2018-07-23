@@ -6,7 +6,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
     /// <summary>
     /// Represents a PSG device (in this case an AY-3-891x)
     /// </summary>
-    public interface IPSG : ISoundProvider, IPortIODevice
+    public interface IPSG : ISoundProvider
     {
         /// <summary>
         /// Initlization routine
@@ -16,6 +16,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         void Init(int sampleRate, int tStatesPerFrame);
 
         void SetFunction(int data);
+
+        //void ClockCycle();
 
         /// <summary>
         /// Activates a register

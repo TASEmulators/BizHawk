@@ -49,7 +49,20 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             }
             else if (DecodeINPort(port) == PortDevice.Expansion)
             {
-
+                if (!port.Bit(7))
+                {
+                    // FDC
+                    if (port.Bit(8) && !port.Bit(0))
+                    {
+                        // FDC status register
+                        UPDDiskDevice.ReadStatus(ref result);
+                    }
+                    if (port.Bit(8) && port.Bit(0))
+                    {
+                        // FDC data register
+                        UPDDiskDevice.ReadData(ref result);
+                    }
+                }
             }
 
             return (byte)result;
@@ -104,7 +117,20 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 }
                 else if (d == PortDevice.Expansion)
                 {
-
+                    if (!port.Bit(7))
+                    {
+                        // FDC
+                        if (port.Bit(8) && !port.Bit(0) || port.Bit(8) && port.Bit(0))
+                        {
+                            // FDC data register
+                            UPDDiskDevice.WriteData(value);
+                        }
+                        if ((!port.Bit(8) && !port.Bit(0)) || (!port.Bit(8) && port.Bit(0)))
+                        {
+                            // FDC motor
+                            UPDDiskDevice.Motor(value);
+                        }
+                    }
                 }
             }
 

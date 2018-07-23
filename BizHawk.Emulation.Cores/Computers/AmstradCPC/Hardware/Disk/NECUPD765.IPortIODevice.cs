@@ -71,6 +71,54 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         #endregion
 
+        public void ReadStatus(ref int data)
+        {
+            // read main status register
+            // this can happen at any time
+            data = ReadMainStatus();
+            if (writeDebug)
+            {
+                //outputString += data + ",,," + ActiveCommand.CommandCode + "\r\n";
+                workingArr[0] = data.ToString();
+                BuildCSVLine();
+                //System.IO.File.WriteAllText(outputfile, outputString);
+            }
+        }
+
+        public void ReadData(ref int data)
+        {
+            // Z80 is trying to read from the data register
+            data = ReadDataRegister();
+            if (writeDebug)
+            {
+                workingArr[2] = data.ToString();
+                //outputString += ",," + data + "," + ActiveCommand.CommandCode + "\r\n";
+                BuildCSVLine();
+            }
+        }
+
+        public void WriteData(int data)
+        {
+            // Z80 is attempting to write to the data register
+            WriteDataRegister((byte)data);
+            if (writeDebug)
+            {
+                //outputString += "," + data + ",," + ActiveCommand.CommandCode + "\r\n";
+                workingArr[1] = data.ToString();
+                BuildCSVLine();
+                //System.IO.File.WriteAllText(outputfile, outputString);
+            }
+        }
+
+        public void Motor(int data)
+        {
+            // set disk motor on/off
+            if (data > 0)
+                FDD_FLAG_MOTOR = true;
+            else
+                FDD_FLAG_MOTOR = false;
+        }
+
         /// <summary>
         /// Device responds to an IN instruction
         /// </summary>

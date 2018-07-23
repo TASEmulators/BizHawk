@@ -63,9 +63,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// </summary>
         public int RAM64KBank;
 
-
-
-
         #endregion
 
         #region Memory Related Methods

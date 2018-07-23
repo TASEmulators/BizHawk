@@ -197,6 +197,19 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             }
         }
 
+        /// <summary>
+        /// The offset into vRAM
+        /// </summary>
+        public int VideoRAMOffset
+        {
+            get
+            {
+                ushort combined = (ushort)(Regs[12] << 8 | Regs[13]);
+                int offset = combined & 0x3ff;                
+                return offset;
+            }
+        }
+
 
         /* Easier memory functions */
 
@@ -209,6 +222,21 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// ByteCounter
         /// </summary>
         public int ByteCounter;
+
+        /// <summary>
+        /// Set at every HSYNC
+        /// </summary>
+        public int LatchedRAMOffset;
+
+        /// <summary>
+        /// set at every HSYNC
+        /// </summary>
+        public int LatchedRAMStartAddress;
+
+        /// <summary>
+        /// set at every HSYNC
+        /// </summary>
+        public int LatchedScreenWidthBytes;
 
         #endregion
 
@@ -383,12 +411,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Vertical Character Count
         /// </summary>
-        private int VCC;
+        public int VCC;
 
         /// <summary>
         /// Vertical Scanline Count 
         /// </summary>
-        private int VLC;
+        public int VLC;
 
         /// <summary>
         /// Internal cycle counter
@@ -445,6 +473,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 }
             }
 
+            if (HSYNC && HSYNCCounter == 1)
+            {
+                
+            }
+
             // move one horizontal character
             HCC++;
 
@@ -463,8 +496,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 
                 var line = VCC;
                 var row = VLC;
-                var addr = VideoPageBase + (line * 0x50) + (row * 0x800) + (ByteCounter);
-                CurrentByteAddress = (ushort)addr;
+                var addrX = (LatchedRAMOffset * 2) + ((VCC * LatchedScreenWidthBytes) & 0x7ff) + ByteCounter;
+                // remove artifacts caused by certain hardware scrolling addresses
+                addrX &= 0x7ff;
+                var addrY = LatchedRAMStartAddress + (2048 * VLC);
+
+                //var addr = VideoPageBase + (line * (0x50)) + (row * 0x800) + (ByteCounter);
+                CurrentByteAddress = (ushort)(addrX + addrY);
+                
+                
 
                 ByteCounter += 2;
             }
@@ -558,6 +598,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     {
                         HSYNC = true;
                         HSYNCCounter = 0;
+
+                        LatchedRAMStartAddress = VideoPageBase;
+                        LatchedRAMOffset = VideoRAMOffset;
+                        LatchedScreenWidthBytes = DisplayWidth * 2;
+
                     }
                 }
             }

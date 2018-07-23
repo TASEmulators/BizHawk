@@ -157,19 +157,13 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// </summary>
         protected void LoadDiskMedia()
         {
-            /*
-            if (this.GetType() != typeof(ZX128Plus3))
+            if (this.GetType() == typeof(CPC464))
             {
-                Spectrum.CoreComm.ShowMessage("You are trying to load one of more disk images.\n\n Please select ZX Spectrum +3 emulation immediately and reboot the core");
+                CPC.CoreComm.ShowMessage("You are trying to load one of more disk images.\n\n Please select something other than CPC 464 emulation immediately and reboot the core");
                 return;
-            }
-            else
-            {
-                //Spectrum.CoreComm.ShowMessage("You are attempting to load a disk into the +3 disk drive.\n\nThis DOES NOT currently work properly but IS under active development.");
             }
 
             UPDDiskDevice.FDD_LoadDisk(diskImages[diskMediaIndex]);
-            */
         }
 
         /// <summary>
@@ -194,7 +188,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 // cdt tape file
                 return CPCMediaType.Tape;
             }
-            
 
             // not found
             return CPCMediaType.None;

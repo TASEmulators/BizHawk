@@ -332,7 +332,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             switch (ScreenMode)
             {
                 case 0:
-                    Characters[charIndex].Pixels = new int[8];
+                    Characters[charIndex].Pixels = new int[4];
                     break;
                 case 1:
                     Characters[charIndex].Pixels = new int[8];
@@ -527,7 +527,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             }
 
             // render out the scanline
-            int pCount = (LineIndex - CRT.TopLinesToTrim) * 2 * CRT.BufferWidth;
+            int pCount = (LineIndex - CRT.TopLinesToTrim) * vScale * CRT.BufferWidth;
 
             // vScale
             for (int s = 0; s < vScale; s++)
