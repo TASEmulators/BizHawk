@@ -80,6 +80,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             [DefaultValue(75)]
             public int AYVolume { get; set; }
 
+            [DisplayName("Default Background Color")]
+            [Description("The default BG color")]
+            [DefaultValue(0)]
+            public int BackgroundColor { get; set; }
+
+            [DisplayName("Use Core Border Color")]
+            [Description("The core renders the background color from the last detected generated border color")]
+            [DefaultValue(false)]
+            public bool UseCoreBorderForBackground { get; set; }
 
             public ZXSpectrumSettings Clone()
             {

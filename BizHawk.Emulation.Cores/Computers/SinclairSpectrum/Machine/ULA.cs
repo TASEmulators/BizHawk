@@ -827,7 +827,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public int BackgroundColor
         {
-            get { return ULAPalette[7]; } //ULAPalette[borderColour]; }
+            get
+            {
+                var settings = _machine.Spectrum.GetSettings();
+                var color = settings.BackgroundColor;
+                if (!settings.UseCoreBorderForBackground)
+                    return color;
+                else
+                    return ULAPalette[fetchBorder];
+            }
         }
 
         public int VirtualWidth
