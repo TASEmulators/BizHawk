@@ -25,6 +25,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
 		public List<byte[]> diskImages { get; set; }
 
+        /// <summary>
+        /// Set when a savestate is loaded
+        /// (Used to cancel any tape/disk load messages after a loadstate)
+        /// </summary>
+        public bool IsLoadState;
+
 		/// <summary>
         /// The index of the currently 'loaded' tape image
         /// </summary>
@@ -57,7 +63,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // load the media into the tape device
                 tapeMediaIndex = result;
                 // fire osd message
-                Spectrum.OSD_TapeInserted();
+                if (!IsLoadState)
+                    Spectrum.OSD_TapeInserted();
+
                 LoadTapeMedia();
             }
         }
@@ -95,7 +103,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 diskMediaIndex = result;
 
                 // fire osd message
-                Spectrum.OSD_DiskInserted();
+                if (!IsLoadState)
+                    Spectrum.OSD_DiskInserted();
 
                 LoadDiskMedia();
             }

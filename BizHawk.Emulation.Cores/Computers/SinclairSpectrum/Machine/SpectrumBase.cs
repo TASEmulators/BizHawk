@@ -369,13 +369,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             ser.Sync("tapeMediaIndex", ref tapeMediaIndex);
             if (ser.IsReader)
+            {
+                IsLoadState = true;
                 TapeMediaIndex = tapeMediaIndex;
+                IsLoadState = false;
+            }
+                
 
             TapeDevice.SyncState(ser);
 
             ser.Sync("diskMediaIndex", ref diskMediaIndex);
             if (ser.IsReader)
+            {
+                IsLoadState = true;
                 DiskMediaIndex = diskMediaIndex;
+                IsLoadState = false;
+            }
 
             if (UPDDiskDevice != null)
             {
