@@ -82,11 +82,13 @@ namespace BizHawk.Client.Common
 								using (var hf = new HawkFile(fullpath))
 								{
 									if (hf.IsArchive)
-									{
-										var archiveItem = hf.ArchiveItems.First(ai => ai.Name == filename.Split('|').Skip(1).First());
+									{                                       
+                                        var archiveItem = hf.ArchiveItems.First(ai => ai.Name == filename.Split('|').Skip(1).First());
 										hf.Unbind();
 										hf.BindArchiveMember(archiveItem);
 										data = hf.GetStream().ReadAllBytes();
+
+                                        filename = filename.Split('|').Skip(1).First();
 									}
 									else
 									{
