@@ -97,6 +97,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			switch (borderType)
 			{
+                /*
 				case C64.BorderType.Full:
 					newHblankStart = -1;
 					newHblankEnd = -1;
@@ -105,6 +106,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					newVblankEnd = -1;
 					_vblank = false;
 					break;
+                    */
 				case C64.BorderType.Normal:
 					newHblankStart = hblankStart;
 					newHblankEnd = hblankEnd;
