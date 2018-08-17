@@ -310,7 +310,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     m.Name = "Sinclair ZX Spectrum +3";
                     m.Description = "Amstrad released the +3 the same year as the +2a, but it featured a built-in floppy drive rather than a datacorder. An external cassette player could still be connected though as in the older 48k models. ";
                     m.Description += "Memory paging again changed significantly and this (along with memory contention timing changes) caused more compatibility issues with some older games. ";
-                    m.Description += "Currently ZXHawk does not emulate the floppy drive or floppy controller so the machine reports as a +2a on boot.";
                     m.Released = "1987";
                     m.CPU = "Zilog Z80A @ 3.5469 MHz";
                     m.Memory = "64KB ROM / 128KB RAM";
