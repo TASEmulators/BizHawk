@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             AYDevice.WritePort(port, value);
 
             // port 0x7ffd - hardware should only respond when bits 1 & 15 are reset and bit 14 is set
-            if (port == 0x7ffd)
+            if (!portBits[1] && !portBits[15] && portBits[14])
             {
                 if (!PagingDisabled)
                 {
@@ -95,7 +95,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
             }
             // port 0x1ffd - hardware should only respond when bits 1, 13, 14 & 15 are reset and bit 12 is set
-            if (port == 0x1ffd)
+            if (!portBits[1] && portBits[12] && !portBits[13] && !portBits[14] && !portBits[15])
             {
                 if (!PagingDisabled)
                 {
