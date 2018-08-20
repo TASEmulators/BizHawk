@@ -280,7 +280,16 @@ namespace BizHawk.Client.Common
 				["Cursor Left/Right"] = 'l',
 				["Space"] = '_'
 			},
-			["N64"] = new Dictionary<string, char>
+            ["ZXSpectrum"] = new Dictionary<string, char>
+            {
+                ["Return"] = 'e',
+                ["Space"] = 's',
+                ["Up Cursor"] = 'u',
+                ["Down Cursor"] = 'd',
+                ["Left Cursor"] = 'l',
+                ["Right Cursor"] = 'r'
+            },
+            ["N64"] = new Dictionary<string, char>
 			{
 				["C Up"] = 'u',
 				["C Down"] = 'd',

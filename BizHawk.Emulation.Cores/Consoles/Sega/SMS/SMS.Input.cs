@@ -587,14 +587,14 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 
 		byte ReadPort0()
 		{
-			if (IsGameGear == false)
+			if (IsGameGear_C == false)
 			{
 				return 0xFF;
 			}
 
 			byte value = 0xFF;
 			if ((_controller.IsPressed("Pause") && !IsGameGear) ||
-				(_controller.IsPressed("P1 Start") && IsGameGear))
+				(_controller.IsPressed("P1 Start") && IsGameGear_C))
 			{
 				value ^= 0x80;
 			}

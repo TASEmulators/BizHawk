@@ -1,12 +1,12 @@
 ﻿using BizHawk.Emulation.Cores.Components.Z80A;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// 48K construction
+    /// </summary>
     public partial class ZX48 : SpectrumBase
     {
         #region Construction
@@ -21,16 +21,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             Spectrum = spectrum;
             CPU = cpu;
 
-            ULADevice = new ULA48(this);
+            CPUMon = new CPUMonitor(this);
 
-            BuzzerDevice = new Buzzer(this);
+            //ULADevice = new ULA48(this);
+            ULADevice = new Screen48(this);
+
+            BuzzerDevice = new Beeper(this);
             BuzzerDevice.Init(44100, ULADevice.FrameLength);
+
+            TapeBuzzer = new Beeper(this);
+            TapeBuzzer.Init(44100, ULADevice.FrameLength);
 
             KeyboardDevice = new StandardKeyboard(this);
 
             InitJoysticks(joysticks);
 
-            TapeDevice = new DatacorderDevice();
+            TapeDevice = new DatacorderDevice(spectrum.SyncSettings.AutoLoadTape);
             TapeDevice.Init(this);
 
             InitializeMedia(files);

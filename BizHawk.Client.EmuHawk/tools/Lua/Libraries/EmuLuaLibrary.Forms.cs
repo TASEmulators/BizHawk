@@ -183,7 +183,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			for (var i = _luaForms.Count - 1; i >= 0; i--)
 			{
-				_luaForms.ElementAt(i).Close();
+				_luaForms[i].Close();
 			}
 		}
 

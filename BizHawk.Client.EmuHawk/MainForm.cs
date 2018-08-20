@@ -493,7 +493,7 @@ namespace BizHawk.Client.EmuHawk
 					Close();
 				}
 
-				if (_exit)
+				if (_windowClosedAndSafeToExitProcess)
 				{
 					break;
 				}
@@ -1370,7 +1370,7 @@ namespace BizHawk.Client.EmuHawk
 		private int _avwriterResizeh;
 		private bool _avwriterpad;
 
-		private bool _exit;
+		private bool _windowClosedAndSafeToExitProcess;
 		private int _exitCode;
 		private bool _exitRequestPending;
 		private bool _runloopFrameProgress;
@@ -1559,6 +1559,11 @@ namespace BizHawk.Client.EmuHawk
 			if (!string.IsNullOrEmpty(Emulator.CoreComm.RomStatusAnnotation))
 			{
 				annotation = Emulator.CoreComm.RomStatusAnnotation;
+
+                if (annotation == "Multi-disk bundler")
+                {
+                    DumpStatusButton.Image = Properties.Resources.RetroQuestion;
+                }
 			}
 
 			DumpStatusButton.ToolTipText = annotation;
@@ -2081,7 +2086,7 @@ namespace BizHawk.Client.EmuHawk
 				if (VersionInfo.DeveloperBuild)
 				{
 					return FormatFilter(
-						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.mds;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.32x;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.vb;*.ngp;*.ngc;*.psf;*.minipsf;*.nsf;*.tzx;%ARCH%",
+						"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.pce;*.sgx;*.bin;*.smd;*.rom;*.a26;*.a78;*.lnx;*.m3u;*.cue;*.ccd;*.mds;*.exe;*.gb;*.gbc;*.gba;*.gen;*.md;*.32x;*.col;*.int;*.smc;*.sfc;*.prg;*.d64;*.g64;*.crt;*.tap;*.sgb;*.xml;*.z64;*.v64;*.n64;*.ws;*.wsc;*.dsk;*.do;*.po;*.vb;*.ngp;*.ngc;*.psf;*.minipsf;*.nsf;*.tzx;*.pzx;*.csw;*.wav;%ARCH%",
 						"Music Files", "*.psf;*.minipsf;*.sid;*.nsf",
 						"Disc Images", "*.cue;*.ccd;*.mds;*.m3u",
 						"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
@@ -2109,12 +2114,12 @@ namespace BizHawk.Client.EmuHawk
 						"Apple II", "*.dsk;*.do;*.po;%ARCH%",
 						"Virtual Boy", "*.vb;%ARCH%",
 						"Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%",
-                        "Sinclair ZX Spectrum", "*.tzx;*.tap;%ARCH%",
+                        "Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%",
 						"All Files", "*.*");
 				}
 
 				return FormatFilter(
-					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.32x;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.mds;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.ngp;*.ngc;*.prg;*.d64;*.g64;*.minipsf;*.nsf;%ARCH%",
+					"Rom Files", "*.nes;*.fds;*.unf;*.sms;*.gg;*.sg;*.gb;*.gbc;*.gba;*.pce;*.sgx;*.bin;*.smd;*.gen;*.md;*.32x;*.smc;*.sfc;*.a26;*.a78;*.lnx;*.col;*.int;*.rom;*.m3u;*.cue;*.ccd;*.mds;*.sgb;*.z64;*.v64;*.n64;*.ws;*.wsc;*.xml;*.dsk;*.do;*.po;*.psf;*.ngp;*.ngc;*.prg;*.d64;*.g64;*.minipsf;*.nsf;*.tzx;*.pzx;*.csw;*.wav;%ARCH%",
 					"Disc Images", "*.cue;*.ccd;*.mds;*.m3u",
 					"NES", "*.nes;*.fds;*.unf;*.nsf;%ARCH%",
 					"Super NES", "*.smc;*.sfc;*.xml;%ARCH%",
@@ -2139,7 +2144,8 @@ namespace BizHawk.Client.EmuHawk
 					"Virtual Boy", "*.vb;%ARCH%",
 					"Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%",
 					"Commodore 64", "*.prg; *.d64, *.g64; *.crt; *.tap;%ARCH%",
-					"All Files", "*.*");
+                    "Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%",
+                    "All Files", "*.*");
 			}
 		}
 
@@ -2752,8 +2758,16 @@ namespace BizHawk.Client.EmuHawk
 			var attributes = Emulator.Attributes();
 
 			CoreNameStatusBarButton.Text = Emulator.DisplayName();
-			CoreNameStatusBarButton.Image = Emulator.Icon();
-			CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : "";
+            CoreNameStatusBarButton.Image = Emulator.Icon();
+            CoreNameStatusBarButton.ToolTipText = attributes.Ported ? "(ported) " : "";
+
+
+            if (Emulator.SystemId == "ZXSpectrum")
+            {
+                var core = (Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum)Emulator as Emulation.Cores.Computers.SinclairSpectrum.ZXSpectrum;
+                CoreNameStatusBarButton.ToolTipText = core.GetMachineType();
+
+            }			
 		}
 
 		private void ToggleKeyPriority()
@@ -3160,6 +3174,12 @@ namespace BizHawk.Client.EmuHawk
 					aw = new AudioStretcher(aw);
 				}
 
+				if (unattended && Global.Config.TargetZoomFactor > 1)
+				{
+					_avwriterResizew = Global.Config.TargetZoomFactor * _currentVideoProvider.BufferWidth;
+					_avwriterResizeh = Global.Config.TargetZoomFactor * _currentVideoProvider.BufferHeight;
+				}
+
 				aw.SetMovieParameters(Emulator.VsyncNumerator(), Emulator.VsyncDenominator());
 				if (_avwriterResizew > 0 && _avwriterResizeh > 0)
 				{
@@ -3427,7 +3447,7 @@ namespace BizHawk.Client.EmuHawk
 						StopAv();
 						if (argParse._autoCloseOnDump)
 						{
-							_exit = true;
+							_exitRequestPending = true;
 						}
 					}
 				}
@@ -3620,6 +3640,38 @@ namespace BizHawk.Client.EmuHawk
 					CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 					InputManager.SyncControls();
 
+                    if (Path.GetExtension(loaderName.Replace("*OpenRom*", "").Replace("|", "")).ToLower() == ".xml")
+                    {
+                        // this is a multi-disk bundler file
+                        // determine the xml assets and create RomStatusDetails for all of them
+                        var xmlGame = XmlGame.Create(new HawkFile(loaderName.Replace("*OpenRom*", "")));
+
+                        StringWriter xSw = new StringWriter();
+
+                        for (int xg = 0; xg < xmlGame.Assets.Count; xg++)
+                        {
+                            var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg]).ToLower();
+
+                            if (ext == ".cue" || ext == ".ccd" || ext == ".toc" || ext == ".mds")
+                            {
+                                xSw.WriteLine(Path.GetFileNameWithoutExtension(xmlGame.Assets[xg].Key));
+                                xSw.WriteLine("SHA1:N/A");
+                                xSw.WriteLine("MD5:N/A");
+                                xSw.WriteLine();
+                            }
+                            else
+                            {
+                                xSw.WriteLine(xmlGame.Assets[xg].Key);
+                                xSw.WriteLine("SHA1:" + xmlGame.Assets[xg].Value.HashSHA1());
+                                xSw.WriteLine("MD5:" + xmlGame.Assets[xg].Value.HashMD5());
+                                xSw.WriteLine();
+                            }
+                        }
+
+                        Emulator.CoreComm.RomStatusDetails = xSw.ToString();
+                        Emulator.CoreComm.RomStatusAnnotation = "Multi-disk bundler";
+                    }
+
 					if (Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
 					{
 						GlobalWin.Tools.Load<TI83KeyPad>();
@@ -3649,10 +3701,15 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-					if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
-					{
-						Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:{loader.Rom.RomData.HashSHA1()}\r\nMD5:{loader.Rom.RomData.HashMD5()}\r\n";
-					}
+                    if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
+                    {
+                        Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:{loader.Rom.RomData.HashSHA1()}\r\nMD5:{loader.Rom.RomData.HashMD5()}\r\n";
+                    }
+                    else if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom == null)
+                    {
+                        // single disc game
+                        Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:N/A\r\nMD5:N/A\r\n";
+                    }
 
 					if (Emulator.HasBoardInfo())
 					{
@@ -4298,6 +4355,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
 		}
+                
 
         private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
 		{

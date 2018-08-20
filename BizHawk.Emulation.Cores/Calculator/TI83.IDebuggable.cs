@@ -145,6 +145,6 @@ namespace BizHawk.Emulation.Cores.Calculators
 			return false;
 		}
 
-		public int TotalExecutedCycles => (int)_cpu.TotalExecutedCycles;
+		public long TotalExecutedCycles => _cpu.TotalExecutedCycles;
 	}
 }

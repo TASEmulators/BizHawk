@@ -533,7 +533,10 @@
       "Insert Previous Tape": "F5",
 	  "Next Tape Block": "F8",
 	  "Prev Tape Block": "F7",
-	  "Get Tape Status": "F10"
+	  "Get Tape Status": "F9",
+	  "Insert Next Disk": "F11",
+	  "Insert Previous Disk": "F10",
+	  "Get Disk Status": "F12"
     },
     "Intellivision Controller": {
       "P1 Up": "UpArrow, J1 POV1U, X1 DpadUp, X1 LStickUp",

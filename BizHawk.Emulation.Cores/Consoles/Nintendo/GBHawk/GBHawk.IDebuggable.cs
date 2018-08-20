@@ -69,9 +69,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			throw new NotImplementedException();
 		}
 
-		public int TotalExecutedCycles
+		public long TotalExecutedCycles
 		{
-			get { return cpu.TotalExecutedCycles; }
+			get { return (long)cpu.TotalExecutedCycles; }
 		}
 	}
 }

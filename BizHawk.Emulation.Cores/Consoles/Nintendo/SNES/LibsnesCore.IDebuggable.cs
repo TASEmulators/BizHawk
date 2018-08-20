@@ -46,6 +46,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 				["Flag I"] = fi,
 				["Flag Z"] = fz,
 				["Flag C"] = fc,
+				["V"] = regs.v,
+				["H"] = regs.h
 			};
 		}
 
@@ -69,7 +71,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.SNES
 		}
 
 		[FeatureNotImplemented]
-		public int TotalExecutedCycles
+		public long TotalExecutedCycles
 		{
 			get { throw new NotImplementedException(); }
 		}

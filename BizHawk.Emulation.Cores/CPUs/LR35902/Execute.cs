@@ -4,8 +4,8 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 {
 	public partial class LR35902
 	{
-		private int totalExecutedCycles;
-		public int TotalExecutedCycles { get { return totalExecutedCycles; } set { totalExecutedCycles = value; } }
+		private ulong totalExecutedCycles;
+		public ulong TotalExecutedCycles { get { return totalExecutedCycles; } set { totalExecutedCycles = value; } }
 
 		private int EI_pending;
 		private bool interrupts_enabled;

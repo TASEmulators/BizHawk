@@ -384,7 +384,12 @@
             this.zXSpectrumToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ZXSpectrumCoreEmulationSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ZXSpectrumControllerConfigurationMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ZXSpectrumAudioSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ZXSpectrumNonSyncSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ZXSpectrumPokeMemoryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ZXSpectrumMediaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ZXSpectrumTapesSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.ZXSpectrumDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.Atari7800HawkCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainStatusBar = new StatusStripEx();
             this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
@@ -457,7 +462,8 @@
             this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-            this.ZXSpectrumAudioSettingsMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.zxt1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.zxt2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -3401,7 +3407,9 @@
             this.ZXSpectrumCoreEmulationSettingsMenuItem,
             this.ZXSpectrumControllerConfigurationMenuItem,
             this.ZXSpectrumAudioSettingsMenuItem,
-            this.ZXSpectrumNonSyncSettingsMenuItem});
+            this.ZXSpectrumNonSyncSettingsMenuItem,
+            this.ZXSpectrumPokeMemoryMenuItem,
+            this.ZXSpectrumMediaMenuItem});
             this.zXSpectrumToolStripMenuItem.Name = "zXSpectrumToolStripMenuItem";
             this.zXSpectrumToolStripMenuItem.Size = new System.Drawing.Size(87, 19);
             this.zXSpectrumToolStripMenuItem.Text = "ZX Spectrum";
@@ -3421,12 +3429,54 @@
             this.ZXSpectrumControllerConfigurationMenuItem.Text = "Joystick Configuration";
             this.ZXSpectrumControllerConfigurationMenuItem.Click += new System.EventHandler(this.ZXSpectrumControllerConfigurationMenuItem_Click);
             // 
+            // ZXSpectrumAudioSettingsMenuItem
+            // 
+            this.ZXSpectrumAudioSettingsMenuItem.Name = "ZXSpectrumAudioSettingsMenuItem";
+            this.ZXSpectrumAudioSettingsMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.ZXSpectrumAudioSettingsMenuItem.Text = "Audio Settings";
+            this.ZXSpectrumAudioSettingsMenuItem.Click += new System.EventHandler(this.ZXSpectrumAudioSettingsMenuItem_Click);
+            // 
             // ZXSpectrumNonSyncSettingsMenuItem
             // 
             this.ZXSpectrumNonSyncSettingsMenuItem.Name = "ZXSpectrumNonSyncSettingsMenuItem";
             this.ZXSpectrumNonSyncSettingsMenuItem.Size = new System.Drawing.Size(201, 22);
             this.ZXSpectrumNonSyncSettingsMenuItem.Text = "Non-Sync Settings";
             this.ZXSpectrumNonSyncSettingsMenuItem.Click += new System.EventHandler(this.ZXSpectrumNonSyncSettingsMenuItem_Click);
+            // 
+            // ZXSpectrumPokeMemoryMenuItem
+            // 
+            this.ZXSpectrumPokeMemoryMenuItem.Name = "ZXSpectrumPokeMemoryMenuItem";
+            this.ZXSpectrumPokeMemoryMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.ZXSpectrumPokeMemoryMenuItem.Text = "POKE Memory";
+            this.ZXSpectrumPokeMemoryMenuItem.Click += new System.EventHandler(this.ZXSpectrumPokeMemoryMenuItem_Click);
+            // 
+            // ZXSpectrumMediaMenuItem
+            // 
+            this.ZXSpectrumMediaMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ZXSpectrumTapesSubMenu,
+            this.ZXSpectrumDisksSubMenu});
+            this.ZXSpectrumMediaMenuItem.Name = "ZXSpectrumMediaMenuItem";
+            this.ZXSpectrumMediaMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.ZXSpectrumMediaMenuItem.Text = "Media";
+            this.ZXSpectrumMediaMenuItem.DropDownOpened += new System.EventHandler(this.ZXSpectrumMediaMenuItem_DropDownOpened);
+            // 
+            // ZXSpectrumTapesSubMenu
+            // 
+            this.ZXSpectrumTapesSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.zxt1ToolStripMenuItem});
+            this.ZXSpectrumTapesSubMenu.Name = "ZXSpectrumTapesSubMenu";
+            this.ZXSpectrumTapesSubMenu.Size = new System.Drawing.Size(152, 22);
+            this.ZXSpectrumTapesSubMenu.Text = "Tapes";
+            this.ZXSpectrumTapesSubMenu.DropDownOpened += new System.EventHandler(this.ZXSpectrumTapesSubMenu_DropDownOpened);
+            // 
+            // ZXSpectrumDisksSubMenu
+            // 
+            this.ZXSpectrumDisksSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.zxt2ToolStripMenuItem});
+            this.ZXSpectrumDisksSubMenu.Name = "ZXSpectrumDisksSubMenu";
+            this.ZXSpectrumDisksSubMenu.Size = new System.Drawing.Size(152, 22);
+            this.ZXSpectrumDisksSubMenu.Text = "Disks";
+            this.ZXSpectrumDisksSubMenu.DropDownOpened += new System.EventHandler(this.ZXSpectrumDisksSubMenu_DropDownOpened);
             // 
             // Atari7800HawkCoreMenuItem
             // 
@@ -4054,12 +4104,17 @@
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
             // 
-            // ZXSpectrumAudioSettingsMenuItem
+            // zxt1ToolStripMenuItem
             // 
-            this.ZXSpectrumAudioSettingsMenuItem.Name = "ZXSpectrumAudioSettingsMenuItem";
-            this.ZXSpectrumAudioSettingsMenuItem.Size = new System.Drawing.Size(201, 22);
-            this.ZXSpectrumAudioSettingsMenuItem.Text = "Audio Settings";
-            this.ZXSpectrumAudioSettingsMenuItem.Click += new System.EventHandler(this.ZXSpectrumAudioSettingsMenuItem_Click);
+            this.zxt1ToolStripMenuItem.Name = "zxt1ToolStripMenuItem";
+            this.zxt1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.zxt1ToolStripMenuItem.Text = "zxt1";
+            // 
+            // zxt2ToolStripMenuItem
+            // 
+            this.zxt2ToolStripMenuItem.Name = "zxt2ToolStripMenuItem";
+            this.zxt2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.zxt2ToolStripMenuItem.Text = "zxt2";
             // 
             // MainForm
             // 
@@ -4530,5 +4585,11 @@
         private System.Windows.Forms.ToolStripMenuItem ZXSpectrumCoreEmulationSettingsMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ZXSpectrumNonSyncSettingsMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ZXSpectrumAudioSettingsMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumPokeMemoryMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumMediaMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumTapesSubMenu;
+        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumDisksSubMenu;
+        private System.Windows.Forms.ToolStripMenuItem zxt1ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem zxt2ToolStripMenuItem;
     }
 }

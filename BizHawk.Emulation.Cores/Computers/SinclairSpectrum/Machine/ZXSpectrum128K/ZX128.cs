@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using BizHawk.Emulation.Cores.Components.Z80A;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// 128K Constructor
+    /// </summary>
     public partial class ZX128 : SpectrumBase
     {
         #region Construction
@@ -21,30 +20,35 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             Spectrum = spectrum;
             CPU = cpu;
 
+            CPUMon = new CPUMonitor(this);
+            CPUMon.machineType = MachineType.ZXSpectrum128;
+
             ROMPaged = 0;
             SHADOWPaged = false;
             RAMPaged = 0;
             PagingDisabled = false;
+            
+            ULADevice = new Screen128(this);
 
-            ULADevice = new ULA128(this);
-
-            BuzzerDevice = new Buzzer(this);
+            BuzzerDevice = new Beeper(this);
             BuzzerDevice.Init(44100, ULADevice.FrameLength);
 
-            AYDevice = new AYChip(this);
+            TapeBuzzer = new Beeper(this);
+            TapeBuzzer.Init(44100, ULADevice.FrameLength);
+
+            AYDevice = new AY38912(this);
             AYDevice.Init(44100, ULADevice.FrameLength);
 
             KeyboardDevice = new StandardKeyboard(this);
 
             InitJoysticks(joysticks);
 
-            TapeDevice = new DatacorderDevice();
+            TapeDevice = new DatacorderDevice(spectrum.SyncSettings.AutoLoadTape);
             TapeDevice.Init(this);
 
             InitializeMedia(files);
         }
 
-        #endregion
-        
+        #endregion        
     }
 }

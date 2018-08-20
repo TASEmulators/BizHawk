@@ -9,8 +9,14 @@
 	means that we lower the priority of a state that goes at that index. Priority changes
 	depending on current frame and amount of states. States with biggest priority get erased
 	first. With a 4-bit battern and no initial gap between states, total frame coverage is
-	about 5 times state count. Initial state gap can screw up our patterns, so do all
-	calculations like gap isn't there, and take it back into account afterwards.
+	about 5 times state count.
+	
+	Initial state gap can screw up our patterns, so do all the calculations like the gap
+	isn't there, and take it back into account afterwards. The algo only works with integral
+	greenzone, so we make it think it is integral by reducing the frame numbers. Before any
+	decay logic starts for each state, we check if it has a marker on it (in which case we
+	don't drop it) or appears inside the state gap (in which case we forcibly drop it). This
+	step doesn't involve numbers reduction.
 
 	_zeros values are essentialy the values of rshiftby here:
 	bitwise view     frame    rshiftby priority
@@ -59,7 +65,7 @@ namespace BizHawk.Client.Common
 			for (; decayStates > 0 && _tsm.StateCount > 1;)
 			{
 				int baseStateIndex = _tsm.GetStateIndexByFrame(Global.Emulator.Frame);
-				int baseStateFrame = _tsm.GetStateFrameByIndex(baseStateIndex) / _step;	
+				int baseStateFrame = _tsm.GetStateFrameByIndex(baseStateIndex) / _step;	// reduce right away
 				int forwardPriority = -1000000;
 				int backwardPriority = -1000000;
 				int forwardFrame = -1;
@@ -73,17 +79,21 @@ namespace BizHawk.Client.Common
 					{
 						continue;
 					}
-					else if (currentFrame % _step > 0)
+					else if ((currentFrame % _step > 0) && (currentFrame + 1 != _tsm.LastEditedFrame))
 					{
 						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
-						_tsm.RemoveState(currentFrame);
-						decayStates--;
+						if (_tsm.RemoveState(currentFrame))
+						{
+							// decrementing this if no state was removed is BAD
+							decayStates--;
 
-						// this is the kind of highly complex loops that might justify goto
-						goto next_state;
+							// this is the kind of highly complex loops that might justify goto
+							goto next_state;
+						}
 					}
 					else
 					{
+						// reduce to imaginary integral greenzone for all the decay logic
 						currentFrame /= _step;
 					}
 
@@ -104,23 +114,27 @@ namespace BizHawk.Client.Common
 
 				for (int currentStateIndex = _tsm.StateCount - 1; currentStateIndex > baseStateIndex; currentStateIndex--)
 				{
-					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex) / _step;
+					int currentFrame = _tsm.GetStateFrameByIndex(currentStateIndex);
 
 					if (_tsm.StateIsMarker(currentFrame))
 					{
 						continue;
 					}
-					else if (currentFrame % _step > 0)
+					else if ((currentFrame % _step > 0) && (currentFrame + 1 != _tsm.LastEditedFrame))
 					{
 						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
-						_tsm.RemoveState(currentFrame);
-						decayStates--;
+						if (_tsm.RemoveState(currentFrame))
+						{
+							// decrementing this if no state was removed is BAD
+							decayStates--;
 
-						// this is the kind of highly complex loops that might justify goto
-						goto next_state;
+							// this is the kind of highly complex loops that might justify goto
+							goto next_state;
+						}
 					}
 					else
 					{
+						// reduce to imaginary integral greenzone for all the decay logic
 						currentFrame /= _step;
 					}
 
@@ -143,30 +157,46 @@ namespace BizHawk.Client.Common
 				{
 					if (baseStateFrame - forwardFrame > backwardFrame - baseStateFrame)
 					{
-						_tsm.RemoveState(forwardFrame * _step);
+						if (_tsm.RemoveState(forwardFrame * _step))
+						{
+							// decrementing this if no state was removed is BAD
+							decayStates--;
+						}
 					}
 					else
 					{
-						_tsm.RemoveState(backwardFrame * _step);
+						if (_tsm.RemoveState(backwardFrame * _step))
+						{
+							// decrementing this if no state was removed is BAD
+							decayStates--;
+						}
 					}
-
-					decayStates--;
 				}
 				else if (forwardFrame > -1)
 				{
-					_tsm.RemoveState(forwardFrame * _step);
-					decayStates--;
+					if (_tsm.RemoveState(forwardFrame * _step))
+					{
+						// decrementing this if no state was removed is BAD
+						decayStates--;
+					}
 				}
 				else if (backwardFrame > -1)
 				{
-					_tsm.RemoveState(backwardFrame * _step);
-					decayStates--;
+					if (_tsm.RemoveState(backwardFrame * _step))
+					{
+						// decrementing this if no state was removed is BAD
+						decayStates--;
+					}
 				}
 				else
 				{
 					// we're very sorry about failing to find states to remove, but we can't go beyond capacity, so remove at least something
 					// this shouldn't happen, but if we don't do it here, nothing good will happen either
-					_tsm.RemoveState(_tsm.GetStateFrameByIndex(1));
+					if (_tsm.RemoveState(_tsm.GetStateFrameByIndex(1)))
+					{
+						// decrementing this if no state was removed is BAD
+						decayStates--;
+					}
 				}
 
 				// this is the kind of highly complex loops that might justify goto

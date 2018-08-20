@@ -63,7 +63,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 			_selectedDebuggable.Step(type);
 		}
 
-		public int TotalExecutedCycles => _selectedDebuggable.TotalExecutedCycles;
+		public long TotalExecutedCycles => _selectedDebuggable.TotalExecutedCycles;
 
 		private readonly IMemoryCallbackSystem _memoryCallbacks;
 

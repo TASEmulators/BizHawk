@@ -44,19 +44,35 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 			throw new NotImplementedException();
 		}
 
-		[FeatureNotImplemented]
-		public int TotalExecutedCycles
+		public long TotalExecutedCycles
 		{
-			get { throw new NotImplementedException(); }
+			get { return Math.Max((long)_cycleCount, (long)callbackCycleCount); }
 		}
 
+		private MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 		public IMemoryCallbackSystem MemoryCallbacks => _memorycallbacks;
 
 		private LibGambatte.MemoryCallback _readcb;
 		private LibGambatte.MemoryCallback _writecb;
 		private LibGambatte.MemoryCallback _execcb;
 
-		private MemoryCallbackSystem _memorycallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
+		private void ReadCallback(uint address, ulong cycleOffset)
+		{
+			callbackCycleCount = _cycleCount + cycleOffset;
+			MemoryCallbacks.CallReads(address, "System Bus");
+		}
+
+		private void WriteCallback(uint address, ulong cycleOffset)
+		{
+			callbackCycleCount = _cycleCount + cycleOffset;
+			MemoryCallbacks.CallWrites(address, "System Bus");
+		}
+
+		private void ExecCallback(uint address, ulong cycleOffset)
+		{
+			callbackCycleCount = _cycleCount + cycleOffset;
+			MemoryCallbacks.CallExecutes(address, "System Bus");
+		}
 
 		/// <summary>
 		/// for use in dual core
@@ -68,9 +84,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		private void InitMemoryCallbacks()
 		{
-			_readcb = addr => MemoryCallbacks.CallReads(addr, "System Bus");
-			_writecb = addr => MemoryCallbacks.CallWrites(addr, "System Bus");
-			_execcb = addr => MemoryCallbacks.CallExecutes(addr, "System Bus");
+			_readcb = new LibGambatte.MemoryCallback(ReadCallback);
+			_writecb = new LibGambatte.MemoryCallback(WriteCallback);
+			_execcb = new LibGambatte.MemoryCallback(ExecCallback);
 			_memorycallbacks.ActiveChanged += RefreshMemoryCallbacks;
 		}
 

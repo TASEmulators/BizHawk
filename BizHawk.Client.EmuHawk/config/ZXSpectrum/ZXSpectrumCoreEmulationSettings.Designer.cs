@@ -39,12 +39,14 @@
             this.label2 = new System.Windows.Forms.Label();
             this.borderTypecomboBox1 = new System.Windows.Forms.ComboBox();
             this.lblBorderInfo = new System.Windows.Forms.Label();
+            this.lblAutoLoadText = new System.Windows.Forms.Label();
+            this.autoLoadcheckBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // OkBtn
             // 
             this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OkBtn.Location = new System.Drawing.Point(247, 393);
+            this.OkBtn.Location = new System.Drawing.Point(247, 434);
             this.OkBtn.Name = "OkBtn";
             this.OkBtn.Size = new System.Drawing.Size(60, 23);
             this.OkBtn.TabIndex = 3;
@@ -56,7 +58,7 @@
             // 
             this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelBtn.Location = new System.Drawing.Point(313, 393);
+            this.CancelBtn.Location = new System.Drawing.Point(313, 434);
             this.CancelBtn.Name = "CancelBtn";
             this.CancelBtn.Size = new System.Drawing.Size(60, 23);
             this.CancelBtn.TabIndex = 4;
@@ -144,13 +146,36 @@
             this.lblBorderInfo.Text = "null";
             this.lblBorderInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // lblAutoLoadText
+            // 
+            this.lblAutoLoadText.Font = new System.Drawing.Font("Lucida Console", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblAutoLoadText.Location = new System.Drawing.Point(175, 388);
+            this.lblAutoLoadText.Name = "lblAutoLoadText";
+            this.lblAutoLoadText.Size = new System.Drawing.Size(196, 30);
+            this.lblAutoLoadText.TabIndex = 27;
+            this.lblAutoLoadText.Text = "When enabled ZXHawk will attempt to control the tape device automatically when th" +
+    "e correct traps are detected";
+            this.lblAutoLoadText.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // autoLoadcheckBox1
+            // 
+            this.autoLoadcheckBox1.AutoSize = true;
+            this.autoLoadcheckBox1.Location = new System.Drawing.Point(15, 394);
+            this.autoLoadcheckBox1.Name = "autoLoadcheckBox1";
+            this.autoLoadcheckBox1.Size = new System.Drawing.Size(103, 17);
+            this.autoLoadcheckBox1.TabIndex = 26;
+            this.autoLoadcheckBox1.Text = "Auto-Load Tape";
+            this.autoLoadcheckBox1.UseVisualStyleBackColor = true;
+            // 
             // ZXSpectrumCoreEmulationSettings
             // 
             this.AcceptButton = this.OkBtn;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelBtn;
-            this.ClientSize = new System.Drawing.Size(385, 428);
+            this.ClientSize = new System.Drawing.Size(385, 469);
+            this.Controls.Add(this.lblAutoLoadText);
+            this.Controls.Add(this.autoLoadcheckBox1);
             this.Controls.Add(this.lblBorderInfo);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.borderTypecomboBox1);
@@ -183,5 +208,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox borderTypecomboBox1;
         private System.Windows.Forms.Label lblBorderInfo;
+        private System.Windows.Forms.Label lblAutoLoadText;
+        private System.Windows.Forms.CheckBox autoLoadcheckBox1;
     }
 }

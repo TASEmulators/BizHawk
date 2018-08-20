@@ -70,7 +70,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		}
 
 
-		public int TotalExecutedCycles => Cpu.TotalExecutedCycles;
+		public long TotalExecutedCycles => Cpu.TotalExecutedCycles;
 
 		private int JSRCount = 0;
 

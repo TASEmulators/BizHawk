@@ -41,6 +41,9 @@ namespace BizHawk.Client.EmuHawk
 
             // deterministic emulation
             determEmucheckBox1.Checked = _syncSettings.DeterministicEmulation;
+
+            // autoload tape
+            autoLoadcheckBox1.Checked = _syncSettings.AutoLoadTape;
         }
 
 		private void OkBtn_Click(object sender, EventArgs e)
@@ -48,13 +51,15 @@ namespace BizHawk.Client.EmuHawk
             bool changed =
                 _syncSettings.MachineType.ToString() != MachineSelectionComboBox.SelectedItem.ToString()
                 || _syncSettings.BorderType.ToString() != borderTypecomboBox1.SelectedItem.ToString()
-                || _syncSettings.DeterministicEmulation != determEmucheckBox1.Checked;
+                || _syncSettings.DeterministicEmulation != determEmucheckBox1.Checked
+                || _syncSettings.AutoLoadTape != autoLoadcheckBox1.Checked;
 
             if (changed)
 			{
                 _syncSettings.MachineType = (MachineType)Enum.Parse(typeof(MachineType), MachineSelectionComboBox.SelectedItem.ToString());
                 _syncSettings.BorderType = (ZXSpectrum.BorderType)Enum.Parse(typeof(ZXSpectrum.BorderType), borderTypecomboBox1.SelectedItem.ToString());
                 _syncSettings.DeterministicEmulation = determEmucheckBox1.Checked;
+                _syncSettings.AutoLoadTape = autoLoadcheckBox1.Checked;
 
                 GlobalWin.MainForm.PutCoreSyncSettings(_syncSettings);
 

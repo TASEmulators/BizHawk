@@ -1,6 +1,5 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
-using BizHawk.Emulation.Cores.Components;
 using BizHawk.Emulation.Cores.Components.Z80A;
 using BizHawk.Emulation.Cores.Properties;
 using System;
@@ -10,17 +9,21 @@ using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// ZXHawk: Core Class
+    /// * Main Initialization *
+    /// </summary>
     [Core(
         "ZXHawk",
-        "Asnivor",
+        "Asnivor, Alyosha",
         isPorted: false,
-        isReleased: false)]
+        isReleased: true)]
     public partial class ZXSpectrum : IRegionable, IDriveLight
     {
         public ZXSpectrum(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, object settings, object syncSettings)
-        {            
+        {
             var ser = new BasicServiceProvider(this);
-            ServiceProvider = ser;    
+            ServiceProvider = ser;
             InputCallbacks = new InputCallbackSystem();
             MemoryCallbacks = new MemoryCallbackSystem(new[] { "System Bus" });
 
@@ -31,8 +34,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _cpu = new Z80A();
 
             _tracer = new TraceBuffer { Header = _cpu.TraceHeader };
-
-            //_file = file;
+            
             _files = files?.ToList() ?? new List<byte[]>();
 
             if (settings == null)
@@ -43,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             PutSyncSettings((ZXSpectrumSyncSettings)syncSettings ?? new ZXSpectrumSyncSettings());
             PutSettings((ZXSpectrumSettings)settings ?? new ZXSpectrumSettings());
 
-            List <JoystickType> joysticks = new List<JoystickType>();
+            List<JoystickType> joysticks = new List<JoystickType>();
             joysticks.Add(((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).JoystickType1);
             joysticks.Add(((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).JoystickType2);
             joysticks.Add(((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).JoystickType3);
@@ -57,7 +59,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     Init(MachineType.ZXSpectrum16, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files, joysticks);
                     break;
                 case MachineType.ZXSpectrum48:
-                    ControllerDefinition = ZXSpectrumControllerDefinition;                    
+                    ControllerDefinition = ZXSpectrumControllerDefinition;
                     Init(MachineType.ZXSpectrum48, SyncSettings.BorderType, SyncSettings.TapeLoadSpeed, _files, joysticks);
                     break;
                 case MachineType.ZXSpectrum128:
@@ -78,10 +80,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     break;
                 default:
                     throw new InvalidOperationException("Machine not yet emulated");
-            }  
+            }
 
-            
-            
             _cpu.MemoryCallbacks = MemoryCallbacks;
 
             HardReset = _machine.HardReset;
@@ -92,38 +92,43 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _cpu.WriteMemory = _machine.WriteMemory;
             _cpu.ReadHardware = _machine.ReadPort;
             _cpu.WriteHardware = _machine.WritePort;
-			_cpu.FetchDB = _machine.PushBus;   
+            _cpu.FetchDB = _machine.PushBus;
+            _cpu.OnExecFetch = _machine.CPUMon.OnExecFetch;
 
             ser.Register<ITraceable>(_tracer);
             ser.Register<IDisassemblable>(_cpu);
             ser.Register<IVideoProvider>(_machine.ULADevice);
 
-            SoundMixer = new SoundProviderMixer((int)(32767 / 10), (ISoundProvider)_machine.BuzzerDevice);
+            // initialize sound mixer and attach the various ISoundProvider devices
+            SoundMixer = new SoundProviderMixer((int)(32767 / 10), "System Beeper", (ISoundProvider)_machine.BuzzerDevice);
+            SoundMixer.AddSource((ISoundProvider)_machine.TapeBuzzer, "Tape Audio");
             if (_machine.AYDevice != null)
-                SoundMixer.AddSource(_machine.AYDevice);
-            //SoundMixer.Stereo = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).StereoSound;
+                SoundMixer.AddSource(_machine.AYDevice, "AY-3-3912");
 
-            if (_machine.AYDevice != null && _machine.AYDevice.GetType() == typeof(AYChip))
+            // set audio device settings
+            if (_machine.AYDevice != null && _machine.AYDevice.GetType() == typeof(AY38912))
             {
-                ((AYChip)_machine.AYDevice as AYChip).PanningConfiguration = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).AYPanConfig;
+                ((AY38912)_machine.AYDevice as AY38912).PanningConfiguration = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).AYPanConfig;
                 _machine.AYDevice.Volume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).AYVolume;
             }
 
             if (_machine.BuzzerDevice != null)
             {
-                ((Buzzer)_machine.BuzzerDevice as Buzzer).TapeVolume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).TapeVolume;
-                ((Buzzer)_machine.BuzzerDevice as Buzzer).EarVolume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).EarVolume;
+                ((Beeper)_machine.BuzzerDevice as Beeper).Volume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).EarVolume;
             }
 
+            if (_machine.TapeBuzzer != null)
+            {
+                ((Beeper)_machine.TapeBuzzer as Beeper).Volume = ((ZXSpectrumSettings)settings as ZXSpectrumSettings).TapeVolume;
+            }
 
-            ser.Register<ISoundProvider>(SoundMixer);
-            
+            DCFilter dc = new DCFilter(SoundMixer, 512);            
+            ser.Register<ISoundProvider>(dc);
 
             HardReset();
-
-			SetupMemoryDomains();
+            SetupMemoryDomains();
         }
-                
+
         public Action HardReset;
         public Action SoftReset;
 
@@ -132,10 +137,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public IController _controller;
         public SpectrumBase _machine;
 
-        private List<GameInfo> _gameInfo;
+        public List<GameInfo> _gameInfo;
 
-        private SoundProviderMixer SoundMixer;        
-        
+        public List<GameInfo> _tapeInfo = new List<GameInfo>();
+        public List<GameInfo> _diskInfo = new List<GameInfo>();
+
+        private SoundProviderMixer SoundMixer;
+
         private readonly List<byte[]> _files;
 
         public bool DiagRom = false;
@@ -267,8 +275,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             get
             {
                 if (_machine != null &&
-                    _machine.TapeDevice != null &&
-                    _machine.TapeDevice.TapeIsPlaying)
+                    (_machine.TapeDevice != null && _machine.TapeDevice.TapeIsPlaying) ||
+                    (_machine.UPDDiskDevice != null && _machine.UPDDiskDevice.DriveLight))
                     return true;
 
                 return false;

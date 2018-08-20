@@ -18,7 +18,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private MapperBase _mapper;
 		private byte[] _ram;
 
-		private IController _controller;
+		private IController _controller = NullController.Instance;
 		private int _frame;
 		private int _lastAddress;
 
@@ -28,10 +28,34 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 		private bool _leftDifficultySwitchHeld;
 		private bool _rightDifficultySwitchHeld;
 
-		internal MOS6502X Cpu { get; private set; }
+		internal MOS6502X<CpuLink> Cpu { get; private set; }
 		internal byte[] Ram => _ram;
 		internal byte[] Rom { get; }
 		internal int DistinctAccessCount { get; private set; }
+
+		public bool SP_FRAME = false;
+		public bool SP_RESET = false;
+		public bool unselect_reset;
+
+		internal struct CpuLink : IMOS6502XLink
+		{
+			private readonly Atari2600 _atari2600;
+
+			public CpuLink(Atari2600 atari2600)
+			{
+				_atari2600 = atari2600;
+			}
+
+			public byte DummyReadMemory(ushort address) => _atari2600.ReadMemory(address);
+
+			public void OnExecFetch(ushort address) => _atari2600.ExecFetch(address);
+
+			public byte PeekMemory(ushort address) => _atari2600.ReadMemory(address);
+
+			public byte ReadMemory(ushort address) => _atari2600.ReadMemory(address);
+
+			public void WriteMemory(ushort address, byte value) => _atari2600.WriteMemory(address, value);
+		}
 
 		// keeps track of tia cycles, 3 cycles per CPU cycle
 		private int cyc_counter;
@@ -292,14 +316,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_mapper.Core = this;
 
 			_lagcount = 0;
-			Cpu = new MOS6502X
-			{
-				ReadMemory = ReadMemory,
-				WriteMemory = WriteMemory,
-				PeekMemory = PeekMemory,
-				DummyReadMemory = ReadMemory,
-				OnExecFetch = ExecFetch
-			};
+			Cpu = new MOS6502X<CpuLink>(new CpuLink(this));
 
 			if (_game["PAL"])
 			{
@@ -325,6 +342,22 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 
 			// Show mapper class on romstatusdetails
 			CoreComm.RomStatusDetails = $"{this._game.Name}\r\nSHA1:{Rom.HashSHA1()}\r\nMD5:{Rom.HashMD5()}\r\nMapper Impl \"{_mapper.GetType()}\"";
+
+			// Some games (ex. 3D tic tac toe), turn off the screen for extended periods, so we need to allow for this here.
+			if (_game.GetOptionsDict().ContainsKey("SP_FRAME"))
+			{
+				if (_game.GetOptionsDict()["SP_FRAME"] == "true")
+				{
+					SP_FRAME = true;
+				}
+			}
+			if (_game.GetOptionsDict().ContainsKey("SP_RESET"))
+			{
+				if (_game.GetOptionsDict()["SP_RESET"] == "true")
+				{
+					SP_RESET = true;
+				}
+			}
 		}
 
 		private bool _pal;
@@ -334,14 +367,7 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			_ram = new byte[128];
 			_mapper.HardReset();
 
-			Cpu = new MOS6502X
-			{
-				ReadMemory = ReadMemory,
-				WriteMemory = WriteMemory,
-				PeekMemory = PeekMemory,
-				DummyReadMemory = ReadMemory,
-				OnExecFetch = ExecFetch
-			};
+			Cpu = new MOS6502X<CpuLink>(new CpuLink(this));
 
 			_tia.Reset();
 			_m6532 = new M6532(this);
@@ -414,6 +440,11 @@ namespace BizHawk.Emulation.Cores.Atari.Atari2600
 			byte value = 0xFF;
 			bool select = _controller.IsPressed("Select");
 			bool reset = _controller.IsPressed("Reset");
+
+			if (unselect_reset)
+			{
+				reset = false;
+			}
 
 			if (reset) { value &= 0xFE; }
 			if (select) { value &= 0xFD; }

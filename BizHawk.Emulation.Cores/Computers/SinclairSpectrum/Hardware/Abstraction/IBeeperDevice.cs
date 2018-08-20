@@ -1,24 +1,29 @@
 ﻿using BizHawk.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// Represents a beeper/buzzer device
+    /// </summary>
     public interface IBeeperDevice
     {
+        /// <summary>
+        /// Initialisation
+        /// </summary>
+        /// <param name="sampleRate"></param>
+        /// <param name="tStatesPerFrame"></param>
         void Init(int sampleRate, int tStatesPerFrame);
 
-        void ProcessPulseValue(bool fromTape, bool earPulse);
+        /// <summary>
+        /// Processes an incoming pulse value and adds it to the blipbuffer
+        /// </summary>
+        /// <param name="pulse"></param>
+        void ProcessPulseValue(bool pulse);
 
-        void StartFrame();
-
-        void EndFrame();
-
-        void SetTapeMode(bool tapeMode);
-
+        /// <summary>
+        /// State serialization
+        /// </summary>
+        /// <param name="ser"></param>
         void SyncState(Serializer ser);
     }
 }

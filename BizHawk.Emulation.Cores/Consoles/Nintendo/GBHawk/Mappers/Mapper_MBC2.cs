@@ -4,7 +4,7 @@ using System;
 
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
-	// MBC1 with bank switching and RAM
+	// MBC2 with bank switching and RAM
 	public class MapperMBC2 : MapperBase
 	{
 		public int ROM_bank;
@@ -62,7 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if ((addr & 0x100) > 0)
 				{
-					ROM_bank = value & 0xF;
+					ROM_bank = value & 0xF & ROM_mask;
 					if (ROM_bank==0) { ROM_bank = 1; }
 				}
 			}

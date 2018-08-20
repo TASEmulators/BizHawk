@@ -1,8 +1,11 @@
 ﻿using BizHawk.Emulation.Common;
-using BizHawk.Common.NumberExtensions;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// ZXHawk: Core Class
+    /// * IEmulator *
+    /// </summary>
     public partial class ZXSpectrum : IEmulator
     {
         public IEmulatorServiceProvider ServiceProvider { get; }
@@ -59,8 +62,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             get { return deterministicEmulation; }
         }
-
-        //public bool DeterministicEmulation => true;
 
         public void ResetCounters()
         {

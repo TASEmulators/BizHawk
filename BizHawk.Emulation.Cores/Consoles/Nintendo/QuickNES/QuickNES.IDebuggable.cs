@@ -39,7 +39,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES
 		}
 
 		[FeatureNotImplemented]
-		public int TotalExecutedCycles
+		public long TotalExecutedCycles
 		{
 			get { throw new NotImplementedException(); }
 		}

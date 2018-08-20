@@ -47,7 +47,7 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 		public void Step(StepType type) { throw new NotImplementedException(); }
 
 		[FeatureNotImplemented]
-		public int TotalExecutedCycles
+		public long TotalExecutedCycles
 		{
 			get { throw new NotImplementedException(); }
 		}

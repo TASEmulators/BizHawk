@@ -30,13 +30,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte ReadMemory(ushort addr)
 		{
 			MemoryCallbacks.CallReads(addr, "System Bus");
+			addr_access = addr;
 			
 			if (ppu.DMA_start)
 			{
 				// some of gekkio's tests require these to be accessible during DMA
-				if (addr < 0x4000)
+				if (addr < 0x8000)
 				{
-					return mapper.ReadMemory(addr); 
+					if (ppu.DMA_addr < 0x80)
+					{
+						return 0xFF;
+					}
+					else
+					{
+						return mapper.ReadMemory(addr);
+					}
 				}
 				else if ((addr >= 0xE000) && (addr < 0xF000))
 				{
@@ -150,7 +158,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public void WriteMemory(ushort addr, byte value)
 		{
 			MemoryCallbacks.CallWrites(addr, "System Bus");
-			
+			addr_access = addr;
+
 			if (ppu.DMA_start)
 			{
 				// some of gekkio's tests require this to be accessible during DMA
@@ -261,9 +270,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if (ppu.DMA_start)
 			{
 				// some of gekkio's tests require these to be accessible during DMA
-				if (addr < 0x4000)
+				if (addr < 0x8000)
 				{
-					return mapper.ReadMemory(addr);
+					if (ppu.DMA_addr < 0x80)
+					{
+						return 0xFF;
+					}
+					else
+					{
+						return mapper.ReadMemory(addr);
+					}
 				}
 				else if ((addr >= 0xE000) && (addr < 0xF000))
 				{

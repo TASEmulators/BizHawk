@@ -51,15 +51,15 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 				skipbios = false;
 			}
 
+			use_SGM = _syncSettings.UseSGM;
+			Console.WriteLine("Using the Super Game Module");
+
 			LoadRom(rom, skipbios);
 			SetupMemoryDomains();
 
 			_tracer.Header = _cpu.TraceHeader;
 			ser.Register<IDisassemblable>(_cpu);
 			ser.Register<ITraceable>(_tracer);
-
-			use_SGM = _syncSettings.UseSGM;
-			Console.WriteLine("Using the Super Game Module");
 		}
 
 		private readonly Z80A _cpu;
@@ -75,7 +75,7 @@ namespace BizHawk.Emulation.Cores.ColecoVision
 		public bool temp_1_prev, temp_2_prev;
 
 		private int _frame;
-		private IController _controller;
+		private IController _controller = NullController.Instance;
 
 		private enum InputPortMode
 		{

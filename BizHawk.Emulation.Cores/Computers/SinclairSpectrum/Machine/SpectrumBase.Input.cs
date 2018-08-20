@@ -1,11 +1,11 @@
-﻿
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
     /// <summary>
-    /// Handles all ZX-level input
+    /// The abstract class that all emulated models will inherit from
+    /// * Input *
     /// </summary>
     public abstract partial class SpectrumBase
     {
@@ -19,8 +19,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         string PrevBlock = "Prev Tape Block";
         string TapeStatus = "Get Tape Status";
 
-        string HardResetStr = "Hard Reset";
-        string SoftResetStr = "Soft Reset";
+        string NextDisk = "Insert Next Disk";
+        string PrevDisk = "Insert Previous Disk";
+        string EjectDisk = "Eject Current Disk";
+        string DiskStatus = "Get Disk Status";
+
+        string HardResetStr = "Power";
+        string SoftResetStr = "Reset";
 
         bool pressed_Play = false;
         bool pressed_Stop = false;
@@ -30,6 +35,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         bool pressed_NextBlock = false;
         bool pressed_PrevBlock = false;
         bool pressed_TapeStatus = false;
+        bool pressed_NextDisk = false;
+        bool pressed_PrevDisk = false;
+        bool pressed_EjectDisk = false;
+        bool pressed_DiskStatus = false;
         bool pressed_HardReset = false;
         bool pressed_SoftReset = false;
 
@@ -218,6 +227,55 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
             else
                 pressed_SoftReset = false;
+
+            // disk control
+            if (Spectrum._controller.IsPressed(NextDisk))
+            {
+                if (!pressed_NextDisk)
+                {
+                    Spectrum.OSD_FireInputMessage(NextDisk);
+                    DiskMediaIndex++;
+                    pressed_NextDisk = true;
+                }
+            }
+            else
+                pressed_NextDisk = false;
+
+            if (Spectrum._controller.IsPressed(PrevDisk))
+            {
+                if (!pressed_PrevDisk)
+                {
+                    Spectrum.OSD_FireInputMessage(PrevDisk);
+                    DiskMediaIndex--;
+                    pressed_PrevDisk = true;
+                }
+            }
+            else
+                pressed_PrevDisk = false;
+
+            if (Spectrum._controller.IsPressed(EjectDisk))
+            {
+                if (!pressed_EjectDisk)
+                {
+                    Spectrum.OSD_FireInputMessage(EjectDisk);
+                    if (UPDDiskDevice != null)
+                        UPDDiskDevice.FDD_EjectDisk();
+                }
+            }
+            else
+                pressed_EjectDisk = false;
+
+            if (Spectrum._controller.IsPressed(DiskStatus))
+            {
+                if (!pressed_DiskStatus)
+                {
+                    //Spectrum.OSD_FireInputMessage(TapeStatus);
+                    Spectrum.OSD_ShowDiskStatus();
+                    pressed_DiskStatus = true;
+                }
+            }
+            else
+                pressed_DiskStatus = false;
         }
 
         /// <summary>

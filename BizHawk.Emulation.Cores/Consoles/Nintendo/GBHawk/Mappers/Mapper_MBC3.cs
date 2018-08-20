@@ -158,7 +158,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			RTC_regs[index] = value;
 		}
 
-		public override void RTC_Tick()
+		public override void Mapper_Tick()
 		{
 			if (!halt)
 			{

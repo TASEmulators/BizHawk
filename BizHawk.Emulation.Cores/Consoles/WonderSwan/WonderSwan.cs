@@ -131,7 +131,7 @@ namespace BizHawk.Emulation.Cores.WonderSwan
 		public void Step(StepType type) { throw new NotImplementedException(); }
 
 		[FeatureNotImplemented]
-		public int TotalExecutedCycles {  get { throw new NotImplementedException(); } }
+		public long TotalExecutedCycles {  get { throw new NotImplementedException(); } }
 
 		BizSwan.MemoryCallback ReadCallbackD;
 		BizSwan.MemoryCallback WriteCallbackD;

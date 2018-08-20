@@ -10,7 +10,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 		{
 			get
 			{
-				if (IsGameGear)
+				if (IsGameGear_C)
 				{
 					return GGController;
 				}
@@ -58,9 +58,13 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 				Cpu.TraceCallback = null;
 			}
 
-			if (IsGameGear == false)
+			if (IsGameGear_C == false)
 			{
 				Cpu.NonMaskableInterrupt = controller.IsPressed("Pause");
+			}
+			else if (!IsGameGear && IsGameGear_C)
+			{
+				Cpu.NonMaskableInterrupt = controller.IsPressed("P1 Start");
 			}
 
 			if (IsGame3D && Settings.Fix3D)

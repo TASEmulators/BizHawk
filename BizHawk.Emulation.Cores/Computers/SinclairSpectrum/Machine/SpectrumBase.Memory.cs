@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -50,7 +46,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Signs that all paging is disabled
         /// If this is TRUE, then 128k and above machines need a hard reset before paging is allowed again
         /// </summary>
-        protected bool PagingDisabled;
+        public bool PagingDisabled;
 
         /// <summary>
         /// Index of the currently paged ROM
@@ -87,9 +83,12 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         protected int PagingConfiguration;
 
+        /// <summary>
+        /// The last byte that was read after contended cycles
+        /// </summary>
+        public byte LastContendedReadByte;
+
         #endregion
-
-
 
         #region Memory Related Methods
 
@@ -131,6 +130,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public abstract byte ReadMemory(ushort addr);
 
         /// <summary>
+        /// Returns the ROM/RAM enum that relates to this particular memory read operation
+        /// </summary>
+        /// <param name="addr"></param>
+        /// <returns></returns>
+        public abstract ZXSpectrum.CDLResult ReadCDL(ushort addr);
+
+        /// <summary>
         /// Writes a byte of data to a specified memory address
         /// (with memory contention if appropriate)
         /// </summary>
@@ -153,8 +159,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public virtual byte FetchScreenMemory(ushort addr)
         {
             var value = ReadBus((ushort)((addr & 0x3FFF) + 0x4000));
+            //var value = ReadBus(addr);
             return value;
         }
+
+        /// <summary>
+        /// Checks whether supplied address is in a potentially contended bank
+        /// </summary>
+        /// <param name="addr"></param>
+        public abstract bool IsContended(ushort addr);
+
+
+        /// <summary>
+        /// Returns TRUE if there is a contended bank paged in
+        /// </summary>
+        /// <returns></returns>
+        public abstract bool ContendedBankPaged();
 
         #endregion
 

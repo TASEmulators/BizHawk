@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// 48K Memory
+    /// </summary>
     public partial class ZX48 : SpectrumBase
     {
         /* 48K Spectrum has NO memory paging
@@ -77,19 +80,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     // cannot write to ROM
                     break;
                 case 1:
+                    //ULADevice.RenderScreen((int)CurrentFrameCycle);
                     RAM0[index] = value;
                     break;
                 case 2:
-                    RAM1[index] = value;
+                    RAM1[index] = value;                    
                     break;
                 case 3:
                     RAM2[index] = value;
                     break;
             }
-            
-            // update ULA screen buffer if necessary
-            if ((addr & 49152) == 16384 && _render)
-                ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
         }
 
         /// <summary>
@@ -100,11 +100,32 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadMemory(ushort addr)
         {
-            if (ULADevice.IsContended(addr))
-                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];            
-
             var data = ReadBus(addr);
             return data;
+        }
+
+        /// <summary>
+        /// Returns the ROM/RAM enum that relates to this particular memory read operation
+        /// </summary>
+        /// <param name="addr"></param>
+        /// <returns></returns>
+        public override ZXSpectrum.CDLResult ReadCDL(ushort addr)
+        {
+            var res = new ZXSpectrum.CDLResult();
+
+            int divisor = addr / 0x4000;
+            res.Address = addr % 0x4000;
+
+            // paging logic goes here
+            switch (divisor)
+            {
+                case 0: res.Type = ZXSpectrum.CDLType.ROM0; break;
+                case 1: res.Type = ZXSpectrum.CDLType.RAM0; break;
+                case 2: res.Type = ZXSpectrum.CDLType.RAM1; break;
+                case 3: res.Type = ZXSpectrum.CDLType.RAM2; break;
+            }
+
+            return res;
         }
 
         /// <summary>
@@ -114,12 +135,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="addr"></param>
         /// <param name="value"></param>
         public override void WriteMemory(ushort addr, byte value)
-        {
-            // apply contention if necessary
-            if (ULADevice.IsContended(addr))
-                CPU.TotalExecutedCycles += ULADevice.contentionTable[CurrentFrameCycle];
-                       
+        {                     
             WriteBus(addr, value);
+        }
+
+        /// <summary>
+        /// Checks whether supplied address is in a potentially contended bank
+        /// </summary>
+        /// <param name="addr"></param>
+        public override bool IsContended(ushort addr)
+        {
+            if ((addr & 49152) == 16384)
+                return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Returns TRUE if there is a contended bank paged in
+        /// </summary>
+        /// <returns></returns>
+        public override bool ContendedBankPaged()
+        {
+            return false;
         }
 
         /// <summary>

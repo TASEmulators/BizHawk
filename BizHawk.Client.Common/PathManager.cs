@@ -231,7 +231,8 @@ namespace BizHawk.Client.Common
 			var filesystemSafeName = game.Name
 				.Replace("|", "+")
 				.Replace(":", " -") // adelikat - Path.GetFileName scraps everything to the left of a colon unfortunately, so we need this hack here
-				.Replace("\"", ""); // adelikat - Ivan Ironman Stewart's Super Off-Road has quotes in game name
+				.Replace("\"", "")  // adelikat - Ivan Ironman Stewart's Super Off-Road has quotes in game name
+				.Replace("/", "+"); // Narry - Mario Bros / Duck hunt has a slash in the name which GetDirectoryName and GetFileName treat as if it were a folder
 
 			// zero 06-nov-2015 - regarding the below, i changed my mind. for libretro i want subdirectories here.
 			var filesystemDir = Path.GetDirectoryName(filesystemSafeName);

@@ -1,6 +1,7 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.H6280;
+using System;
 
 namespace BizHawk.Emulation.Cores.PCEngine
 {
@@ -161,7 +162,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 					FramePitch = MultiResHack == 0 ? FrameWidth : MultiResHack;
 					//if (FrameBuffer.Length != FramePitch * FrameHeight)
 						//FrameBuffer = new int[FramePitch * FrameHeight];
-					FrameBuffer = new int[320 * 262];
 					break;
 				case VDW: // Vertical Display Word? - update framebuffer size
 					//FrameHeight = RequestedFrameHeight;
@@ -172,7 +172,6 @@ namespace BizHawk.Emulation.Cores.PCEngine
 						FramePitch = MultiResHack;
 					//if (FrameBuffer.Length != FramePitch * FrameHeight)
 						//FrameBuffer = new int[FramePitch * FrameHeight];
-					FrameBuffer = new int[320 * 262];
 					break;
 				case LENR: // Initiate DMA transfer
 					if (!msbComplete) break;

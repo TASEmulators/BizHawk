@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// 48K Port
+    /// </summary>
     public partial class ZX48 : SpectrumBase
     {
         /// <summary>
@@ -15,18 +13,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <returns></returns>
         public override byte ReadPort(ushort port)
         {
-            // process IO contention
-            ContendPortAddress(port);
-
             int result = 0xFF;
 
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
             bool lowBitReset = (port & 0x0001) == 0;
-
-            // Kempston joystick input takes priority over all other input
+            byte lowByte = (byte)(port & 0xff);
+            
+            // Kempston joystick input takes priority over keyboard input
             // if this is detected just return the kempston byte
-            if ((port & 0xe0) == 0 || (port & 0x20) == 0)
+            if (lowByte == 0x1f)
             {
                 if (LocateUniqueJoystick(JoystickType.Kempston) != null)
                     return (byte)((KempstonJoystick)LocateUniqueJoystick(JoystickType.Kempston) as KempstonJoystick).JoyLine;
@@ -34,6 +30,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // not a lag frame
                 InputRead = true;
             }
+            // Even ports always address the ULA
             else if (lowBitReset)
             {
                 // Even I/O address so get input from keyboard
@@ -56,25 +53,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
 
                 // If this is an unused port the floating memory bus should be returned
-                // Floating bus is read on the previous cycle
-                long _tStates = CurrentFrameCycle - 1;
-
-                // if we are on the top or bottom border return 0xff
-                if ((_tStates < ULADevice.contentionStartPeriod) || (_tStates > ULADevice.contentionEndPeriod))
-                {
-                    result = 0xff;
-                }
-                else
-                {
-                    if (ULADevice.floatingBusTable[_tStates] < 0)
-                    {
-                        result = 0xff;
-                    }
-                    else
-                    {
-                        result = ReadBus((ushort)ULADevice.floatingBusTable[_tStates]);
-                    }
-                }
+                ULADevice.ReadFloatingBus((int)CurrentFrameCycle, ref result, port);                
             }
 
             return (byte)result;
@@ -87,9 +66,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WritePort(ushort port, byte value)
         {
-            // process IO contention
-            ContendPortAddress(port);
-
             // Check whether the low bit is reset
             // Technically the ULA should respond to every even I/O address
             if ((port & 0x0001) != 0)
@@ -106,16 +82,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             */
 
             // Border - LSB 3 bits hold the border colour
-            if (ULADevice.borderColour != (value & BORDER_BIT))
+            if (ULADevice.BorderColor != (value & BORDER_BIT))
             {
-                // border value has changed - update the screen buffer
-                ULADevice.UpdateScreenBuffer(CurrentFrameCycle);
+                //ULADevice.RenderScreen((int)CurrentFrameCycle);
+                ULADevice.BorderColor = value & BORDER_BIT;
             }
 
-            ULADevice.borderColour = value & BORDER_BIT;
-
             // Buzzer
-            BuzzerDevice.ProcessPulseValue(false, (value & EAR_BIT) != 0);
+            BuzzerDevice.ProcessPulseValue((value & EAR_BIT) != 0);
 
             // Tape
             TapeDevice.WritePort(port, value);
@@ -124,6 +98,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             //TapeDevice.ProcessMicBit((value & MIC_BIT) != 0);
 
         }
-       
+
     }
 }

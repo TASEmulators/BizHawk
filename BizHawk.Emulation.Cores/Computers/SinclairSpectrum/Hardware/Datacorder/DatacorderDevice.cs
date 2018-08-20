@@ -1,12 +1,9 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -24,9 +21,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Default constructor
         /// </summary>
-        public DatacorderDevice()
+        public DatacorderDevice(bool autoplay)
         {
-            
+            _autoPlay = autoplay;
         }
 
         /// <summary>
@@ -37,12 +34,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             _machine = machine;
             _cpu = _machine.CPU;
-            _buzzer = machine.BuzzerDevice;
+            _buzzer = machine.TapeBuzzer;
         }
 
         #endregion
 
         #region State Information
+
+        /// <summary>
+        /// Internal counter used to trigger tape buzzer output
+        /// </summary>
+        private int counter = 0;
 
         /// <summary>
         /// The index of the current tape data block that is loaded
@@ -122,12 +124,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// 'load' mode and auto-play the tape if neccesary
         /// </summary>
         private bool _autoPlay;
-        public bool AutoPlay
-        {
-            get { return _machine.Spectrum.Settings.AutoLoadTape; }
-            set { _autoPlay = value; MonitorReset(); }
-        }
-
 
         #endregion
 
@@ -144,8 +140,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public void StartFrame()
         {
-            //if (TapeIsPlaying && AutoPlay)
-                //FlashLoad();
+            //_buzzer.ProcessPulseValue(currentState);
         }
 
         #endregion
@@ -159,8 +154,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             if (_tapeIsPlaying)
                 return;
-
-            _machine.BuzzerDevice.SetTapeMode(true);
 
             _machine.Spectrum.OSD_TapePlaying();
 
@@ -214,8 +207,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             if (!_tapeIsPlaying)
                 return;
-
-            _machine.BuzzerDevice.SetTapeMode(false);
 
             _machine.Spectrum.OSD_TapeStopped();
 
@@ -329,14 +320,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="tapeData"></param>
         public void LoadTape(byte[] tapeData)
         {
-            // check TZX first
-            TzxSerializer tzxSer = new TzxSerializer(this);
+            // instantiate converters
+            TzxConverter tzxSer = new TzxConverter(this);
+            TapConverter tapSer = new TapConverter(this);
+            PzxConverter pzxSer = new PzxConverter(this);
+            CswConverter cswSer = new CswConverter(this);
+            WavConverter wavSer = new WavConverter(this);
+
+            // TZX
             if (tzxSer.CheckType(tapeData))
             {
                 // this file has a tzx header - attempt serialization
                 try
                 {
-                    tzxSer.DeSerialize(tapeData);
+                    tzxSer.Read(tapeData);
+                    // reset block index
+                    CurrentDataBlockIndex = 0;
                     return;
                 }
                 catch (Exception ex)
@@ -347,12 +346,75 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     "\n\nTape image file has a valid TZX header, but threw an exception whilst data was being parsed.\n\n" + e.ToString());
                 }
             }
-            else
+
+            // PZX
+            else if (pzxSer.CheckType(tapeData))
             {
-                TapSerializer tapSer = new TapSerializer(this);
+                // this file has a pzx header - attempt serialization
                 try
                 {
-                    tapSer.DeSerialize(tapeData);
+                    pzxSer.Read(tapeData);
+                    // reset block index
+                    CurrentDataBlockIndex = 0;
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    // exception during operation
+                    var e = ex;
+                    throw new Exception(this.GetType().ToString() +
+                    "\n\nTape image file has a valid PZX header, but threw an exception whilst data was being parsed.\n\n" + e.ToString());
+                }
+            }
+
+            // CSW
+            else if (cswSer.CheckType(tapeData))
+            {
+                // this file has a csw header - attempt serialization
+                try
+                {
+                    cswSer.Read(tapeData);
+                    // reset block index
+                    CurrentDataBlockIndex = 0;
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    // exception during operation
+                    var e = ex;
+                    throw new Exception(this.GetType().ToString() +
+                    "\n\nTape image file has a valid CSW header, but threw an exception whilst data was being parsed.\n\n" + e.ToString());
+                }
+            }
+
+            // WAV
+            else if (wavSer.CheckType(tapeData))
+            {
+                // this file has a csw header - attempt serialization
+                try
+                {
+                    wavSer.Read(tapeData);
+                    // reset block index
+                    CurrentDataBlockIndex = 0;
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    // exception during operation
+                    var e = ex;
+                    throw new Exception(this.GetType().ToString() +
+                    "\n\nTape image file has a valid WAV header, but threw an exception whilst data was being parsed.\n\n" + e.ToString());
+                }
+            }
+
+            // Assume TAP
+            else
+            {
+                try
+                {
+                    tapSer.Read(tapeData);
+                    // reset block index
+                    CurrentDataBlockIndex = 0;
                     return;
                 }
                 catch (Exception ex)
@@ -375,7 +437,27 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         #endregion
 
-        #region Tape Device Methods
+        #region Tape Device Methods        
+
+        /// <summary>
+        /// Is called every cpu cycle but runs every 50 t-states
+        /// This enables the tape devices to play out even if the spectrum itself is not
+        /// requesting tape data
+        /// </summary>
+        public void TapeCycle()
+        {              
+            if (TapeIsPlaying)
+            {
+                counter++;
+
+                if (counter > 20)
+                {
+                    counter = 0;
+                    bool state = GetEarBit(_machine.CPU.TotalExecutedCycles);
+                    _buzzer.ProcessPulseValue(state);
+                }
+            }
+        }
         
         /// <summary>
         /// Simulates the spectrum 'EAR' input reading data from the tape
@@ -411,12 +493,27 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // decrement cycles
                 cycles -= _waitEdge;
 
-                // flip the current state
-                currentState = !currentState;
-
                 if (_position == 0 && _tapeIsPlaying)
                 {
-                    // start of block
+                    // start of block - take care of initial pulse level for PZX
+                    switch (_dataBlocks[_currentDataBlockIndex].BlockDescription)
+                    {
+                        case BlockType.PULS:
+                            // initial pulse level is always low
+                            if (currentState)
+                                FlipTapeState();
+                            break;
+                        case BlockType.DATA:
+                            // initial pulse level is stored in block
+                            if (currentState != _dataBlocks[_currentDataBlockIndex].InitialPulseLevel)
+                                FlipTapeState();
+                            break;
+                        case BlockType.PAUS:
+                            // initial pulse level is stored in block
+                            if (currentState != _dataBlocks[_currentDataBlockIndex].InitialPulseLevel)
+                                FlipTapeState();
+                            break;
+                    }
 
                     // notify about the current block
                     var bl = _dataBlocks[_currentDataBlockIndex];
@@ -476,6 +573,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             case TapeCommand.STOP_THE_TAPE:
 
                                 _machine.Spectrum.OSD_TapeStoppedAuto();
+                                shouldStop = true;
 
                                 if (_currentDataBlockIndex >= _dataBlocks.Count())
                                     RTZ();
@@ -491,6 +589,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 if (is48k)
                                 {
                                     _machine.Spectrum.OSD_TapeStoppedAuto();
+                                    shouldStop = true;
 
                                     if (_currentDataBlockIndex >= _dataBlocks.Count())
                                         RTZ();
@@ -526,7 +625,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }
 
                 // update waitEdge with current position within the current block
-                _waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods[_position];                
+                _waitEdge = _dataBlocks[_currentDataBlockIndex].DataPeriods[_position];
+
+                // flip the current state
+                FlipTapeState();
 
             }
 
@@ -534,9 +636,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             _lastCycle = cpuCycle - (long)cycles;
 
             // play the buzzer
-            _buzzer.ProcessPulseValue(false, currentState);
+            //_buzzer.ProcessPulseValue(false, currentState);
 
             return currentState;
+        }
+
+        private void FlipTapeState()
+        {
+            currentState = !currentState;
         }
 
         /// <summary>
@@ -701,7 +808,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 {
                     _monitorCount++;
 
-                    if (_monitorCount >= 16 && _machine.Spectrum.Settings.AutoLoadTape)
+                    if (_monitorCount >= 16 && _autoPlay)
                     {
                         if (!_tapeIsPlaying)
                         {
@@ -727,7 +834,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (!_tapeIsPlaying)
                 return;
 
-            if (!_machine.Spectrum.Settings.AutoLoadTape)
+            if (!_autoPlay)
                 return;
 
             Stop();
@@ -739,7 +846,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             if (_tapeIsPlaying)
                 return;
 
-            if (!_machine.Spectrum.Settings.AutoLoadTape)
+            if (!_autoPlay)
                 return;
 
             Play();
@@ -750,13 +857,25 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         private void MonitorFrame()
         {
-            if (_tapeIsPlaying && _machine.Spectrum.Settings.AutoLoadTape)
+            if (_tapeIsPlaying && _autoPlay)
             {
-                _monitorTimeOut--;
+                if (DataBlocks.Count > 1 || 
+                    (_dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.CSW_Recording &&
+                    _dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.WAV_Recording))
+                {
+                    // we should only stop the tape when there are multiple blocks
+                    // if we just have one big block (maybe a CSW or WAV) then auto stopping will cock things up
+                    _monitorTimeOut--;
+                }
 
                 if (_monitorTimeOut < 0)
                 {
-                    AutoStopTape();
+                    if (_dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.PAUSE_BLOCK &&
+                        _dataBlocks[_currentDataBlockIndex].BlockDescription != BlockType.PAUS)
+                    {
+                        AutoStopTape();
+                    }
+                    
                     return;
                 }
 
@@ -768,6 +887,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // get current datablock
                 var block = DataBlocks[_currentDataBlockIndex];
 
+                // is this a pause block?
+                if (block.BlockDescription == BlockType.PAUS || block.BlockDescription == BlockType.PAUSE_BLOCK)
+                {
+                    // dont autostop the tape here
+                    return;
+                }
+
                 // pause in ms at the end of the current block
                 int blockPause = block.PauseInMS;
 
@@ -777,6 +903,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 // dont use autostop detection if block has no pause at the end
                 if (timeout == 0)
                     return;
+
+                // dont autostop if there is only 1 block
+                if (DataBlocks.Count == 1 || _dataBlocks[_currentDataBlockIndex].BlockDescription == BlockType.CSW_Recording ||
+                    _dataBlocks[_currentDataBlockIndex].BlockDescription == BlockType.WAV_Recording
+                    )
+                {
+                    return;
+                }                    
 
                 if (diff >= timeout * 2)
                 {
@@ -822,10 +956,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             if (!TapeIsPlaying)
             {
-                MonitorRead();
+                if (_machine.UPDDiskDevice == null || !_machine.UPDDiskDevice.FDD_IsDiskLoaded)
+                    MonitorRead();
             }
-
-            MonitorRead();
+            if (_machine.UPDDiskDevice == null || !_machine.UPDDiskDevice.FDD_IsDiskLoaded)
+                MonitorRead();
 
             /*
 
@@ -898,6 +1033,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public void SyncState(Serializer ser)
         {
             ser.BeginSection("DatacorderDevice");
+            ser.Sync("counter", ref counter);
             ser.Sync("_currentDataBlockIndex", ref _currentDataBlockIndex);
             ser.Sync("_position", ref _position);
             ser.Sync("_tapeIsPlaying", ref _tapeIsPlaying);

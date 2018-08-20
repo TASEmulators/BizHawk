@@ -198,6 +198,63 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue(false)]
 			public bool PadScreen320 { get { return _PadScreen320; } set { _PadScreen320 = value; } }
 
+
+			[DeepEqualsIgnore]
+			[JsonIgnore]
+			private bool _Backdrop;
+
+			[DisplayName("Use custom backdrop color")]
+			[Description("Filler when layers are off")]
+			[DefaultValue((bool)false)]
+			public bool Backdrop { get { return _Backdrop; } set { _Backdrop = value; } }
+
+
+			public GPGXSettings()
+			{
+				SettingsUtil.SetDefaultValues(this);
+			}
+
+			public GPGXSettings Clone()
+			{
+				return (GPGXSettings)MemberwiseClone();
+			}
+
+			public LibGPGX.DrawMask GetDrawMask()
+			{
+				LibGPGX.DrawMask ret = 0;
+				if (DrawBGA) ret |= LibGPGX.DrawMask.BGA;
+				if (DrawBGB) ret |= LibGPGX.DrawMask.BGB;
+				if (DrawBGW) ret |= LibGPGX.DrawMask.BGW;
+				if (DrawObj) ret |= LibGPGX.DrawMask.Obj;
+				if (Backdrop) ret |= LibGPGX.DrawMask.Backdrop;
+				return ret;
+			}
+
+			public static bool NeedsReboot(GPGXSettings x, GPGXSettings y)
+			{
+				return !DeepEquality.DeepEquals(x, y);
+			}
+
+			
+		}
+
+		public class GPGXSyncSettings
+		{
+			[DisplayName("Use Six Button Controllers")]
+			[Description("Controls the type of any attached normal controllers; six button controllers are used if true, otherwise three button controllers.  Some games don't work correctly with six button controllers.  Not relevant if other controller types are connected.")]
+			[DefaultValue(true)]
+			public bool UseSixButton { get; set; }
+
+			[DisplayName("Control Type")]
+			[Description("Sets the type of controls that are plugged into the console.  Some games will automatically load with a different control type.")]
+			[DefaultValue(ControlType.Normal)]
+			public ControlType ControlType { get; set; }
+
+			[DisplayName("Autodetect Region")]
+			[Description("Sets the region of the emulated console.  Many games can run on multiple regions and will behave differently on different ones.  Some games may require a particular region.")]
+			[DefaultValue(LibGPGX.Region.Autodetect)]
+			public LibGPGX.Region Region { get; set; }
+
 			[DisplayName("Audio Filter")]
 			[DefaultValue(LibGPGX.InitSettings.FilterType.LowPass)]
 			public LibGPGX.InitSettings.FilterType Filter { get; set; }
@@ -233,45 +290,10 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 			[DefaultValue((short)1)]
 			public short HighGain { get; set; }
 
-			[DeepEqualsIgnore]
-			[JsonIgnore]
-			private bool _Backdrop;
-
-			[DisplayName("Use custom backdrop color")]
-			[Description("Filler when layers are off")]
-			[DefaultValue((bool)false)]
-			public bool Backdrop { get { return _Backdrop; } set { _Backdrop = value; } }
-
 			[Description("Magic pink by default. Requires core reboot")]
 			[TypeConverter(typeof(UintToHexConverter))]
 			[DefaultValue((uint)0xffff00ff)]
 			public uint BackdropColor { get; set; }
-
-			public GPGXSettings()
-			{
-				SettingsUtil.SetDefaultValues(this);
-			}
-
-			public GPGXSettings Clone()
-			{
-				return (GPGXSettings)MemberwiseClone();
-			}
-
-			public LibGPGX.DrawMask GetDrawMask()
-			{
-				LibGPGX.DrawMask ret = 0;
-				if (DrawBGA) ret |= LibGPGX.DrawMask.BGA;
-				if (DrawBGB) ret |= LibGPGX.DrawMask.BGB;
-				if (DrawBGW) ret |= LibGPGX.DrawMask.BGW;
-				if (DrawObj) ret |= LibGPGX.DrawMask.Obj;
-				if (Backdrop) ret |= LibGPGX.DrawMask.Backdrop;
-				return ret;
-			}
-
-			public static bool NeedsReboot(GPGXSettings x, GPGXSettings y)
-			{
-				return !DeepEquality.DeepEquals(x, y);
-			}
 
 			public LibGPGX.InitSettings GetNativeSettings()
 			{
@@ -287,24 +309,6 @@ namespace BizHawk.Emulation.Cores.Consoles.Sega.gpgx
 					BackdropColor = BackdropColor
 				};
 			}
-		}
-
-		public class GPGXSyncSettings
-		{
-			[DisplayName("Use Six Button Controllers")]
-			[Description("Controls the type of any attached normal controllers; six button controllers are used if true, otherwise three button controllers.  Some games don't work correctly with six button controllers.  Not relevant if other controller types are connected.")]
-			[DefaultValue(true)]
-			public bool UseSixButton { get; set; }
-
-			[DisplayName("Control Type")]
-			[Description("Sets the type of controls that are plugged into the console.  Some games will automatically load with a different control type.")]
-			[DefaultValue(ControlType.Normal)]
-			public ControlType ControlType { get; set; }
-
-			[DisplayName("Autodetect Region")]
-			[Description("Sets the region of the emulated console.  Many games can run on multiple regions and will behave differently on different ones.  Some games may require a particular region.")]
-			[DefaultValue(LibGPGX.Region.Autodetect)]
-			public LibGPGX.Region Region { get; set; }
 
 			public GPGXSyncSettings()
 			{

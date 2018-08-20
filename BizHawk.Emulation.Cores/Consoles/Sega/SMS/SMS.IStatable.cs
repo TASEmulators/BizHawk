@@ -64,6 +64,7 @@ namespace BizHawk.Emulation.Cores.Sega.MasterSystem
 			ser.Sync("Bios_bank", ref Bios_bank);
 			ser.Sync("Port01", ref Port01);
 			ser.Sync("Port02", ref Port02);
+			ser.Sync("Port05", ref Port05);
 			ser.Sync("Port3E", ref Port3E);
 			ser.Sync("Port3F", ref Port3F);
 			ser.Sync("Controller1SelectHigh", ref Controller1SelectHigh);

@@ -1,8 +1,5 @@
 ﻿using BizHawk.Common;
-using BizHawk.Emulation.Common;
 using BizHawk.Emulation.Cores.Components.Z80A;
-using System;
-using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -32,12 +29,23 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// The emulated ULA device
         /// </summary>
-        public ULABase ULADevice { get; set; }
+        //public ULABase ULADevice { get; set; }
+        public ULA ULADevice { get; set; }
+
+        /// <summary>
+        /// Monitors CPU cycles
+        /// </summary>
+        public CPUMonitor CPUMon { get; set; }
 
         /// <summary>
         /// The spectrum buzzer/beeper
         /// </summary>
         public IBeeperDevice BuzzerDevice { get; set; }
+
+        /// <summary>
+        /// A second beeper for the tape
+        /// </summary>
+        public IBeeperDevice TapeBuzzer { get; set; }
 
         /// <summary>
         /// Device representing the AY-3-8912 chip found in the 128k and up spectrums
@@ -55,6 +63,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public virtual DatacorderDevice TapeDevice { get; set; }
 
         /// <summary>
+        /// The +3 built-in disk drive
+        /// </summary>
+        public virtual NECUPD765 UPDDiskDevice { get; set; }
+
+        /// <summary>
         /// Holds the currently selected joysticks
         /// </summary>
         public virtual IJoystick[] JoystickCollection { get; set; }
@@ -62,7 +75,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// Signs whether the disk motor is on or off
         /// </summary>
-        protected bool DiskMotorState;
+        //protected bool DiskMotorState;
 
         /// <summary>
         /// +3/2a printer port strobe
@@ -131,56 +144,71 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public virtual void ExecuteFrame(bool render, bool renderSound)
         {
+            ULADevice.FrameEnd = false;
+            ULADevice.ULACycleCounter = CurrentFrameCycle;
+
             InputRead = false;
             _render = render;
             _renderSound = renderSound;
 
             FrameCompleted = false;
 
-            TapeDevice.StartFrame();
+            if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
+                TapeDevice.StartFrame();
 
             if (_renderSound)
             {
-                BuzzerDevice.StartFrame();
                 if (AYDevice != null)
                     AYDevice.StartFrame();
             }
 
             PollInput();
 
-            while (CurrentFrameCycle < ULADevice.FrameLength)
+            for (;;)
             {
-                // check for interrupt
-                ULADevice.CheckForInterrupt(CurrentFrameCycle);
+                // run the CPU Monitor cycle
+                CPUMon.ExecuteCycle();
 
-                // run a single CPU instruction
-                CPU.ExecuteOne();                
+                // cycle the tape device
+                if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
+                    TapeDevice.TapeCycle();
+
+                // has frame end been reached?
+                if (ULADevice.FrameEnd)
+                    break;
             }
+
+            OverFlow = (int)CurrentFrameCycle - ULADevice.FrameLength;
 
             // we have reached the end of a frame
             LastFrameStartCPUTick = CPU.TotalExecutedCycles - OverFlow;
 
-            // paint the buffer if needed
-            if (ULADevice.needsPaint && _render)
-                ULADevice.UpdateScreenBuffer(ULADevice.FrameLength);
-
-            if (_renderSound)
-                BuzzerDevice.EndFrame();
+            ULADevice.LastTState = 0;
 
             if (AYDevice != null)
                 AYDevice.EndFrame();
 
             FrameCount++;
-
-            // setup for next frame
-            ULADevice.ResetInterrupt();
-
-            TapeDevice.EndFrame();
+                        
+            if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
+                TapeDevice.EndFrame();
 
             FrameCompleted = true;
 
             // is this a lag frame?
             Spectrum.IsLagFrame = !InputRead;
+
+            // FDC debug            
+            if (UPDDiskDevice != null && UPDDiskDevice.writeDebug)
+            {
+                // only write UPD log every second
+                if (FrameCount % 10 == 0)
+                {
+                    System.IO.File.AppendAllLines(UPDDiskDevice.outputfile, UPDDiskDevice.dLog);
+                    UPDDiskDevice.dLog = new System.Collections.Generic.List<string>();
+                    //System.IO.File.WriteAllText(UPDDiskDevice.outputfile, UPDDiskDevice.outputString);
+                }                    
+            }            
         }
 
         #endregion
@@ -192,7 +220,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public virtual void HardReset()
         {
-            ULADevice.ResetInterrupt();
+            //ULADevice.ResetInterrupt();
             ROMPaged = 0;
             SpecialPagingMode = false;
             RAMPaged = 0;
@@ -244,7 +272,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// </summary>
         public virtual void SoftReset()
         {
-             ULADevice.ResetInterrupt();
+             //ULADevice.ResetInterrupt();
             ROMPaged = 0;
             SpecialPagingMode = false;
             RAMPaged = 0;
@@ -325,26 +353,43 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             ser.Sync("PagingConfiguration", ref PagingConfiguration);
             ser.Sync("ROMhigh", ref ROMhigh);
             ser.Sync("ROMlow", ref ROMlow);
+            ser.Sync("LastContendedReadByte", ref LastContendedReadByte);
 
-            RomData.SyncState(ser);
             KeyboardDevice.SyncState(ser);
             BuzzerDevice.SyncState(ser);
+            TapeBuzzer.SyncState(ser);
             ULADevice.SyncState(ser);
+            CPUMon.SyncState(ser);
 
             if (AYDevice != null)
             {
                 AYDevice.SyncState(ser);
-                ((AYChip)AYDevice as AYChip).PanningConfiguration = Spectrum.Settings.AYPanConfig;
+                ((AY38912)AYDevice as AY38912).PanningConfiguration = Spectrum.Settings.AYPanConfig;
+            }
+
+            ser.Sync("tapeMediaIndex", ref tapeMediaIndex);
+            if (ser.IsReader)
+            {
+                IsLoadState = true;
+                TapeMediaIndex = tapeMediaIndex;
+                IsLoadState = false;
             }
                 
 
-            ser.Sync("tapeMediaIndex", ref tapeMediaIndex);
-            TapeMediaIndex = tapeMediaIndex;
+            TapeDevice.SyncState(ser);
 
             ser.Sync("diskMediaIndex", ref diskMediaIndex);
-            DiskMediaIndex = diskMediaIndex;
+            if (ser.IsReader)
+            {
+                IsLoadState = true;
+                DiskMediaIndex = diskMediaIndex;
+                IsLoadState = false;
+            }
 
-            TapeDevice.SyncState(ser);
+            if (UPDDiskDevice != null)
+            {
+                UPDDiskDevice.SyncState(ser);
+            }
 
             ser.EndSection();
         }

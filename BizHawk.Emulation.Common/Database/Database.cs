@@ -304,11 +304,13 @@ namespace BizHawk.Emulation.Common
 					break;
 
                 case ".TZX":
+                case ".PZX":
+                case ".CSW":
+                case ".WAV":
                     game.System = "ZXSpectrum";
                     break;
 
-                case ".TAP":
-                    
+                case ".TAP":                    
                     byte[] head = romData.Take(8).ToArray();
                     if (System.Text.Encoding.Default.GetString(head).Contains("C64-TAPE"))
                         game.System = "C64";
@@ -340,6 +342,15 @@ namespace BizHawk.Emulation.Common
 					break;
 
 				case ".DSK":
+                    byte[] head2 = romData.Take(20).ToArray();
+                    string ident = System.Text.Encoding.Default.GetString(head2);
+                    if (ident.ToUpper().Contains("EXTENDED CPC DSK") ||
+                        ident.ToUpper().Contains("MV - CPC"))
+                        game.System = "ZXSpectrum";
+                    else
+                        game.System = "AppleII";
+                    break;
+
 				case ".PO":
 				case ".DO":
 					game.System = "AppleII";

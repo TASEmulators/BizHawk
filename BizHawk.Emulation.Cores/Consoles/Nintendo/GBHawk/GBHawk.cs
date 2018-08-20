@@ -14,7 +14,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		"GBHawk",
 		"",
 		isPorted: false,
-		isReleased: false)]
+		isReleased: true)]
 	[ServiceNotApplicable(typeof(IDriveLight))]
 	public partial class GBHawk : IEmulator, ISaveRam, IDebuggable, IStatable, IInputPollable, IRegionable, IGameboyCommon,
 	ISettable<GBHawk.GBSettings, GBHawk.GBSyncSettings>
@@ -28,12 +28,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte REG_FFFF;
 		// The unused bits in this register (interrupt flags) are always set
 		public byte REG_FF0F = 0xE0;
-		public bool enable_VBL;
-		public bool enable_STAT;
-		public bool enable_TIMO;
-		public bool enable_SER;
-		public bool enable_PRS;
-
 
 		// memory domains
 		public byte[] RAM = new byte[0x8000]; // only 0x2000 available to GB
@@ -54,6 +48,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int RAM_Bank;
 		public byte VRAM_Bank;
 		public bool is_GBC;
+		public bool GBC_compat; // compatibility mode for GB games played on GBC
 		public bool double_speed;
 		public bool speed_switch;
 		public bool HDMA_transfer; // stalls CPU when in progress
@@ -67,7 +62,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		private int _frame = 0;
 
-		public bool Use_RTC;
+		public bool Use_MT;
+		public ushort addr_access;
 
 		public MapperBase mapper;
 
@@ -186,15 +182,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 			iptr0 = Marshal.AllocHGlobal(VRAM.Length + 1);
 			iptr1 = Marshal.AllocHGlobal(OAM.Length + 1);
-			iptr2 = Marshal.AllocHGlobal(color_palette.Length * 2 * 8 + 1);
-			iptr3 = Marshal.AllocHGlobal(color_palette.Length * 8 + 1);
+			iptr2 = Marshal.AllocHGlobal(color_palette.Length * 8 * 8 + 1);
+			iptr3 = Marshal.AllocHGlobal(color_palette.Length * 8 * 8 + 1);
 
 			_scanlineCallback = null;
 		}
 
 		#region GPUViewer
 
-		public bool IsCGBMode() => false;
+		public bool IsCGBMode() => is_GBC;
 
 		public IntPtr iptr0 = IntPtr.Zero;
 		public IntPtr iptr1 = IntPtr.Zero;
@@ -208,21 +204,36 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				Marshal.Copy(VRAM, 0, iptr0, VRAM.Length);
 				Marshal.Copy(OAM, 0, iptr1, OAM.Length);
 
-				int[] cp2 = new int[8];
-				for (int i = 0; i < 4; i++)
+				if (is_GBC)
 				{
-					cp2[i] = (int)color_palette[(ppu.obj_pal_0 >> (i * 2)) & 3];
-					cp2[i + 4] = (int)color_palette[(ppu.obj_pal_1 >> (i * 2)) & 3];
-				}
-				Marshal.Copy(cp2, 0, iptr2, cp2.Length);
+					int[] cp2 = new int[32];
+					int[] cp = new int[32];
+					for (int i = 0; i < 32; i++)
+					{
+						cp2[i] = (int)ppu.OBJ_palette[i];
+						cp[i] = (int)ppu.BG_palette[i];
+					}
 
-				int[] cp = new int[4];
-				for (int i = 0; i < 4; i++)
+					Marshal.Copy(cp2, 0, iptr2, ppu.OBJ_palette.Length);
+					Marshal.Copy(cp, 0, iptr3, ppu.BG_palette.Length);
+				}
+				else
 				{
-					cp[i] = (int)color_palette[(ppu.BGP >> (i * 2)) & 3];
-				}
-				Marshal.Copy(cp, 0, iptr3, cp.Length);
+					int[] cp2 = new int[8];
+					for (int i = 0; i < 4; i++)
+					{
+						cp2[i] = (int)color_palette[(ppu.obj_pal_0 >> (i * 2)) & 3];
+						cp2[i + 4] = (int)color_palette[(ppu.obj_pal_1 >> (i * 2)) & 3];
+					}
+					Marshal.Copy(cp2, 0, iptr2, cp2.Length);
 
+					int[] cp = new int[4];
+					for (int i = 0; i < 4; i++)
+					{
+						cp[i] = (int)color_palette[(ppu.BGP >> (i * 2)) & 3];
+					}
+					Marshal.Copy(cp, 0, iptr3, cp.Length);
+				}
 
 				return new GPUMemoryAreas(iptr0, iptr1, iptr2, iptr3);
 			}
@@ -261,6 +272,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		private void HardReset()
 		{
 			GB_bios_register = 0; // bios enable
+			GBC_compat = true;
 			in_vblank = true; // we start off in vblank since the LCD is off
 			in_vblank_old = true;
 
@@ -350,6 +362,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				mapper = new MapperMBC1Multi();
 			}
 
+			// special case for bootlegs
+			if ((_rom.HashMD5(0, _rom.Length) == "CAE0998A899DF2EE6ABA8E7695C2A096"))
+			{
+				Console.WriteLine("Using RockMan 8 (Unlicensed) Mapper");
+				mapper = new MapperRM8();
+			}
+			if ((_rom.HashMD5(0, _rom.Length) == "D3C1924D847BC5D125BF54C2076BE27A"))
+			{
+				Console.WriteLine("Using Sachen 1 (Unlicensed) Mapper");
+				mapper = new MapperSachen1();
+				mppr = "Schn1";
+			}
+
 			Console.Write("Mapper: ");
 			Console.WriteLine(mppr);
 
@@ -383,6 +408,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			if ((mppr == "Schn1") || (mppr == "Schn2"))
 			{
 				cart_RAM = null;
+				Use_MT = true;
 			}
 
 			// mbc2 carts have built in RAM
@@ -391,12 +417,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				cart_RAM = new byte[0x200];
 			}
 
+			// mbc7 has 256 bytes of RAM, regardless of any header info
+			if (mppr == "MBC7")
+			{
+				cart_RAM = new byte[0x100];
+				has_bat = true;
+			}
+
 			mapper.Core = this;
 			mapper.Initialize();
 
-			if (cart_RAM != null)
+			if (cart_RAM != null && (mppr != "MBC7"))
 			{
-
 				Console.Write("RAM: "); Console.WriteLine(cart_RAM.Length);
 
 				for (int i = 0; i < cart_RAM.Length; i++)
@@ -405,11 +437,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 			}
 			
-
 			// Extra RTC initialization for mbc3
 			if (mppr == "MBC3")
 			{
-				Use_RTC = true;
+				Use_MT = true;
 				int days = (int)Math.Floor(_syncSettings.RTCInitialTime / 86400.0);
 
 				int days_upper = ((days & 0x100) >> 8) | ((days & 0x200) >> 2);

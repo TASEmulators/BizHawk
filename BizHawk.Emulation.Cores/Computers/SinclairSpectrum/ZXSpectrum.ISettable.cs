@@ -1,13 +1,14 @@
-﻿using System;
-using Newtonsoft.Json;
-
-using BizHawk.Common;
+﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using System.ComponentModel;
 using System.Text;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
+    /// <summary>
+    /// ZXHawk: Core Class
+    /// * ISettable *
+    /// </summary>
     public partial class ZXSpectrum : ISettable<ZXSpectrum.ZXSpectrumSettings, ZXSpectrum.ZXSpectrumSyncSettings>
     {
         internal ZXSpectrumSettings Settings = new ZXSpectrumSettings();
@@ -28,13 +29,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             // restore user settings to devices
             if (_machine != null && _machine.AYDevice != null)
             {
-                ((AYChip)_machine.AYDevice as AYChip).PanningConfiguration = o.AYPanConfig;
+                ((AY38912)_machine.AYDevice as AY38912).PanningConfiguration = o.AYPanConfig;
                 _machine.AYDevice.Volume = o.AYVolume;
             }                
             if (_machine != null && _machine.BuzzerDevice != null)
             {
-                ((Buzzer)_machine.BuzzerDevice as Buzzer).TapeVolume = o.TapeVolume;
-                ((Buzzer)_machine.BuzzerDevice as Buzzer).EarVolume = o.EarVolume;
+                ((Beeper)_machine.BuzzerDevice as Beeper).Volume = o.EarVolume;
+            }
+            if (_machine != null && _machine.TapeBuzzer != null)
+            {
+                ((Beeper)_machine.TapeBuzzer as Beeper).Volume = o.TapeVolume;
             }
 
             Settings = o;
@@ -51,15 +55,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public class ZXSpectrumSettings
         {
-            [DisplayName("Auto-load/stop tape")]
-            [Description("Auto or manual tape operation. Auto will attempt to detect CPU tape traps and automatically Stop/Start the tape")]
-            [DefaultValue(true)]
-            public bool AutoLoadTape { get; set; }
-
             [DisplayName("AY-3-8912 Panning Config")]
             [Description("Set the PSG panning configuration.\nThe chip has 3 audio channels that can be outputed in different configurations")]
-            [DefaultValue(AYChip.AYPanConfig.ABC)]
-            public AYChip.AYPanConfig AYPanConfig { get; set; }
+            [DefaultValue(AY38912.AYPanConfig.ABC)]
+            public AY38912.AYPanConfig AYPanConfig { get; set; }
 
             [DisplayName("Core OSD Message Verbosity")]
             [Description("Full: Display all GUI messages\nMedium: Display only emulator/device generated messages\nNone: Show no messages")]
@@ -81,6 +80,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             [DefaultValue(75)]
             public int AYVolume { get; set; }
 
+            [DisplayName("Default Background Color")]
+            [Description("The default BG color")]
+            [DefaultValue(0)]
+            public int BackgroundColor { get; set; }
+
+            [DisplayName("Use Core Border Color")]
+            [Description("The core renders the background color from the last detected generated border color")]
+            [DefaultValue(false)]
+            public bool UseCoreBorderForBackground { get; set; }
 
             public ZXSpectrumSettings Clone()
             {
@@ -130,6 +138,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             [DefaultValue(JoystickType.SinclairRIGHT)]
             public JoystickType JoystickType3 { get; set; }
 
+            [DisplayName("Auto-load/stop tape")]
+            [Description("Auto or manual tape operation. Auto will attempt to detect CPU tape traps and automatically Stop/Start the tape")]
+            [DefaultValue(true)]
+            public bool AutoLoadTape { get; set; }
+
 
             public ZXSpectrumSyncSettings Clone()
             {
@@ -147,6 +160,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
         }
 
+        /// <summary>
+        /// Verbosity of the ZXHawk generated OSD messages
+        /// </summary>
         public enum OSDVerbosity
         {
             /// <summary>
@@ -294,7 +310,6 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     m.Name = "Sinclair ZX Spectrum +3";
                     m.Description = "Amstrad released the +3 the same year as the +2a, but it featured a built-in floppy drive rather than a datacorder. An external cassette player could still be connected though as in the older 48k models. ";
                     m.Description += "Memory paging again changed significantly and this (along with memory contention timing changes) caused more compatibility issues with some older games. ";
-                    m.Description += "Currently ZXHawk does not emulate the floppy drive or floppy controller so the machine reports as a +2a on boot.";
                     m.Released = "1987";
                     m.CPU = "Zilog Z80A @ 3.5469 MHz";
                     m.Memory = "64KB ROM / 128KB RAM";

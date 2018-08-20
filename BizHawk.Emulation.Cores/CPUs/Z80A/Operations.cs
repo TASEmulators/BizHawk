@@ -11,10 +11,11 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			Regs[DB] = Regs[dest];
 		}
 
-		public void I_Read_Func(ushort dest, ushort src_l, ushort src_h, ushort inc)
+		public void Read_INC_Func(ushort dest, ushort src_l, ushort src_h)
 		{
-			Regs[dest] = ReadMemory((ushort)((Regs[src_l] | (Regs[src_h] << 8)) + inc));
+			Regs[dest] = ReadMemory((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
+			INC16_Func(src_l, src_h);
 		}
 
 		public void Write_Func(ushort dest_l, ushort dest_h, ushort src)
@@ -23,10 +24,18 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
 		}
 
-		public void I_Write_Func(ushort dest_l, ushort dest_h, ushort inc,  ushort src)
+		public void Write_INC_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
 			Regs[DB] = Regs[src];
-			WriteMemory((ushort)((Regs[dest_l] | (Regs[dest_h] << 8)) + inc), (byte)Regs[src]);
+			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
+			INC16_Func(dest_l, dest_h);
+		}
+
+		public void Write_DEC_Func(ushort dest_l, ushort dest_h, ushort src)
+		{
+			Regs[DB] = Regs[src];
+			WriteMemory((ushort)(Regs[dest_l] | (Regs[dest_h] << 8)), (byte)Regs[src]);
+			DEC16_Func(dest_l, dest_h);
 		}
 
 		public void OUT_Func(ushort dest_l, ushort dest_h, ushort src)
@@ -39,6 +48,14 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		{
 			Regs[dest] = ReadHardware((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
+
+			FlagZ = Regs[dest] == 0;
+			FlagP = TableParity[Regs[dest]];
+			FlagH = false;
+			FlagN = false;
+			FlagS = Regs[dest].Bit(7);
+			Flag5 = Regs[dest].Bit(5);
+			Flag3 = Regs[dest].Bit(3);
 		}
 
 		public void TR_Func(ushort dest, ushort src)
@@ -740,7 +757,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				FlagZ = Regs[A] == 0;
 				FlagS = Regs[A] > 127;
 				FlagP = iff2;
-				Flag5 = (Regs[A] & 0x02) != 0;
+				Flag5 = (Regs[A] & 0x20) != 0;
 				Flag3 = (Regs[A] & 0x08) != 0;
 			}
 		}

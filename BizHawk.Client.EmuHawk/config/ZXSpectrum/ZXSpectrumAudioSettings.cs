@@ -22,7 +22,7 @@ namespace BizHawk.Client.EmuHawk
 			_settings = ((ZXSpectrum)Global.Emulator).GetSettings().Clone();
 
             // AY panning config
-            var panTypes = Enum.GetNames(typeof(AYChip.AYPanConfig));
+            var panTypes = Enum.GetNames(typeof(AY38912.AYPanConfig));
 			foreach (var val in panTypes)
 			{
 				panTypecomboBox1.Items.Add(val);
@@ -51,7 +51,7 @@ namespace BizHawk.Client.EmuHawk
 
             if (changed)
 			{
-                _settings.AYPanConfig = (AYChip.AYPanConfig)Enum.Parse(typeof(AYChip.AYPanConfig), panTypecomboBox1.SelectedItem.ToString());
+                _settings.AYPanConfig = (AY38912.AYPanConfig)Enum.Parse(typeof(AY38912.AYPanConfig), panTypecomboBox1.SelectedItem.ToString());
 
                 _settings.TapeVolume = tapeVolumetrackBar.Value;
                 _settings.EarVolume = earVolumetrackBar.Value;

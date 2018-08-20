@@ -1,9 +1,7 @@
 ﻿using BizHawk.Common;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -114,6 +112,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// List containing the pulse timing values
         /// </summary>
         public List<int> DataPeriods = new List<int>();
+
+        public bool InitialPulseLevel;
 
         /// <summary>
         /// Command that is raised by this data block
@@ -231,8 +231,21 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         Snapshot_Block = 0x40,
 
         // unsupported / undetected
-        Unsupported
+        Unsupported,
+
+        // PZX blocks
+        PZXT,
+        PULS,
+        DATA,
+        BRWS,
+        PAUS,
+
+        // zxhawk proprietry
+        PAUSE_BLOCK,
+
+        WAV_Recording
     }
+    
 
     /// <summary>
     /// Different title possibilities

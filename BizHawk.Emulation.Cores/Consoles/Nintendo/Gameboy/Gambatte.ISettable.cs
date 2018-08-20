@@ -47,11 +47,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 		public class GambatteSettings
 		{
+			/* Green Palette
 			private static readonly int[] DefaultPalette =
 			{
 				10798341, 8956165, 1922333, 337157,
 				10798341, 8956165, 1922333, 337157,
 				10798341, 8956165, 1922333, 337157
+			};
+			*/
+			// Grey Scale Palette
+			private static readonly int[] DefaultPalette =
+			{
+				0xFFFFFF, 0xAAAAAA, 0x555555, 0,
+				0xFFFFFF, 0xAAAAAA, 0x555555, 0,
+				0xFFFFFF, 0xAAAAAA, 0x555555, 0
 			};
 
 			public int[] GBPalette;
@@ -121,7 +130,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.Gameboy
 
 			[DisplayName("Equal Length Frames")]
 			[Description("When false, emulation frames sync to vblank.  Only useful for high level TASing.")]
-			[DefaultValue(true)]
+			[DefaultValue(false)]
 			public bool EqualLengthFrames
 			{
 				get { return _equalLengthFrames; }

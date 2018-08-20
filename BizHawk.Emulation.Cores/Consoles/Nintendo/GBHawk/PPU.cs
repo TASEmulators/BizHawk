@@ -9,12 +9,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 	{
 		public GBHawk Core { get; set; }
 
+		public uint[] BG_palette = new uint[32];
+		public uint[] OBJ_palette = new uint[32];
+
+
+		public bool HDMA_active;
+
 		// register variables
 		public byte LCDC;
 		public byte STAT;
 		public byte scroll_y;
 		public byte scroll_x;
 		public byte LY;
+		public byte LY_actual;
 		public byte LY_inc;
 		public byte LYC;
 		public byte DMA_addr;
@@ -62,6 +69,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public bool fetch_sprite_01;
 		public bool fetch_sprite_4;
 		public bool going_to_fetch;
+		public bool first_fetch;
 		public int sprite_fetch_counter;
 		public byte[] sprite_attr_list = new byte[160];
 		public byte[] sprite_pixel_list = new byte[160];
@@ -69,8 +77,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int temp_fetch;
 		public int tile_inc;
 		public bool pre_render;
-		public byte[] tile_data = new byte[2];
-		public byte[] tile_data_latch = new byte[2];
+		public byte[] tile_data = new byte[3];
+		public byte[] tile_data_latch = new byte[3];
 		public int latch_counter;
 		public bool latch_new_data;
 		public int render_counter;
@@ -85,11 +93,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public int evaled_sprites;
 		public int sprite_ordered_index;
 		public bool blank_frame;
+		public bool window_latch;
 
 		// windowing state
 		public int window_counter;
 		public bool window_pre_render;
 		public bool window_started;
+		public bool window_is_reset;
 		public int window_tile_inc;
 		public int window_y_tile;
 		public int window_x_tile;
@@ -154,11 +164,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public virtual void SyncState(Serializer ser)
 		{
+
+			ser.Sync("BG_palette", ref BG_palette, false);
+			ser.Sync("OBJ_palette", ref OBJ_palette, false);
+			ser.Sync("HDMA_active", ref HDMA_active);
+
 			ser.Sync("LCDC", ref LCDC);
 			ser.Sync("STAT", ref STAT);
 			ser.Sync("scroll_y", ref scroll_y);
 			ser.Sync("scroll_x", ref scroll_x);
 			ser.Sync("LY", ref LY);
+			ser.Sync("LY_actual", ref LY_actual);
 			ser.Sync("LYinc", ref LY_inc);
 			ser.Sync("LYC", ref LYC);
 			ser.Sync("DMA_addr", ref DMA_addr);
@@ -205,6 +221,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("fetch_sprite_01", ref fetch_sprite_01);
 			ser.Sync("fetch_sprite_4", ref fetch_sprite_4);
 			ser.Sync("going_to_fetch", ref going_to_fetch);
+			ser.Sync("first_fetch", ref first_fetch);
 			ser.Sync("sprite_fetch_counter", ref sprite_fetch_counter);
 			ser.Sync("sprite_attr_list", ref sprite_attr_list, false);
 			ser.Sync("sprite_pixel_list", ref sprite_pixel_list, false);
@@ -228,10 +245,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			ser.Sync("SL_sprites_ordered", ref SL_sprites_ordered, false);
 			ser.Sync("sprite_ordered_index", ref sprite_ordered_index);
 			ser.Sync("blank_frame", ref blank_frame);
+			ser.Sync("window_latch", ref window_latch);
 
 			ser.Sync("window_counter", ref window_counter);
 			ser.Sync("window_pre_render", ref window_pre_render);
 			ser.Sync("window_started", ref window_started);
+			ser.Sync("window_is_reset", ref window_is_reset);
 			ser.Sync("window_tile_inc", ref window_tile_inc);
 			ser.Sync("window_y_tile", ref window_y_tile);
 			ser.Sync("window_x_tile", ref window_x_tile);
