@@ -49,11 +49,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         private void SyncAllByteArrayDomains()
         {
-            switch (SyncSettings.MachineType)
+            switch (_machineType)
             {
                 case MachineType.ZXSpectrum16:
                     SyncByteArrayDomain("ROM - 48K BASIC", _machine.ROM0);
-                    SyncByteArrayDomain("RAM - BANK 0", _machine.RAM0);
+                    SyncByteArrayDomain("RAM - BANK 0 (Screen)", _machine.RAM0);
                     break;
                 case MachineType.ZXSpectrum48:
                     SyncByteArrayDomain("ROM - 48K BASIC", _machine.ROM0);

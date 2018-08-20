@@ -130,6 +130,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public abstract byte ReadMemory(ushort addr);
 
         /// <summary>
+        /// Returns the ROM/RAM enum that relates to this particular memory read operation
+        /// </summary>
+        /// <param name="addr"></param>
+        /// <returns></returns>
+        public abstract ZXSpectrum.CDLResult ReadCDL(ushort addr);
+
+        /// <summary>
         /// Writes a byte of data to a specified memory address
         /// (with memory contention if appropriate)
         /// </summary>

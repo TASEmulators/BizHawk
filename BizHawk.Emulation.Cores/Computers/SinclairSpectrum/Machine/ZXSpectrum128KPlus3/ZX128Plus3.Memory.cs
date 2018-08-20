@@ -371,6 +371,150 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
+        /// Returns the ROM/RAM enum that relates to this particular memory read operation
+        /// </summary>
+        /// <param name="addr"></param>
+        /// <returns></returns>
+        public override ZXSpectrum.CDLResult ReadCDL(ushort addr)
+        {
+            var result = new ZXSpectrum.CDLResult();
+
+            int divisor = addr / 0x4000;
+            result.Address = addr % 0x4000;
+
+            // special paging
+            if (SpecialPagingMode)
+            {
+                switch (divisor)
+                {
+                    case 0:
+                        switch (PagingConfiguration)
+                        {
+                            case 0:
+                                result.Type = ZXSpectrum.CDLType.RAM0;
+                                break;
+                            case 1:
+                            case 2:
+                            case 3:
+                                result.Type = ZXSpectrum.CDLType.RAM4;
+                                break;
+                        }
+                        break;
+                    case 1:
+                        switch (PagingConfiguration)
+                        {
+                            case 0:
+                                result.Type = ZXSpectrum.CDLType.RAM1;
+                                break;
+                            case 1:
+                            case 2:
+                                result.Type = ZXSpectrum.CDLType.RAM5;
+                                break;
+                            case 3:
+                                result.Type = ZXSpectrum.CDLType.RAM7;
+                                break;
+                        }
+                        break;
+                    case 2:
+                        switch (PagingConfiguration)
+                        {
+                            case 0:
+                                result.Type = ZXSpectrum.CDLType.RAM0;
+                                break;
+                            case 1:
+                            case 2:
+                            case 3:
+                                result.Type = ZXSpectrum.CDLType.RAM6;
+                                break;
+                        }
+                        break;
+                    case 3:
+                        switch (PagingConfiguration)
+                        {
+                            case 0:
+                            case 2:
+                            case 3:
+                                result.Type = ZXSpectrum.CDLType.RAM3;
+                                break;
+                            case 1:
+                                result.Type = ZXSpectrum.CDLType.RAM7;
+                                break;
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                switch (divisor)
+                {
+                    // ROM 0x000
+                    case 0:
+                        switch (_ROMpaged)
+                        {
+                            case 0:
+                                result.Type = ZXSpectrum.CDLType.ROM0;
+                                break;
+                            case 1:
+                                result.Type = ZXSpectrum.CDLType.ROM1;
+                                break;
+                            case 2:
+                                result.Type = ZXSpectrum.CDLType.ROM2;
+                                break;
+                            case 3:
+                                result.Type = ZXSpectrum.CDLType.ROM3;
+                                break;
+                        }
+                        break;
+
+                    // RAM 0x4000 (RAM5 - Bank5 always)
+                    case 1:
+                        result.Type = ZXSpectrum.CDLType.RAM5;
+                        break;
+
+                    // RAM 0x8000 (RAM2 - Bank2)
+                    case 2:
+                        result.Type = ZXSpectrum.CDLType.RAM2;
+                        break;
+
+                    // RAM 0xc000 (any ram bank 0 - 7 may be paged in - default bank0)
+                    case 3:
+                        switch (RAMPaged)
+                        {
+                            case 0:
+                                result.Type = ZXSpectrum.CDLType.RAM0;
+                                break;
+                            case 1:
+                                result.Type = ZXSpectrum.CDLType.RAM1;
+                                break;
+                            case 2:
+                                result.Type = ZXSpectrum.CDLType.RAM2;
+                                break;
+                            case 3:
+                                result.Type = ZXSpectrum.CDLType.RAM3;
+                                break;
+                            case 4:
+                                result.Type = ZXSpectrum.CDLType.RAM4;
+                                break;
+                            case 5:
+                                result.Type = ZXSpectrum.CDLType.RAM5;
+                                break;
+                            case 6:
+                                result.Type = ZXSpectrum.CDLType.RAM6;
+                                break;
+                            case 7:
+                                result.Type = ZXSpectrum.CDLType.RAM7;
+                                break;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+        /// <summary>
         /// Writes a byte of data to a specified memory address
         /// (with memory contention if appropriate)
         /// </summary>

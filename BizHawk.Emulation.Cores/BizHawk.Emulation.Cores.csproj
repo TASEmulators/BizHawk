@@ -324,6 +324,7 @@
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IDebuggable.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IEmulator.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IInputPollable.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.ICodeDataLog.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IMemoryDomains.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.ISettable.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IStatable.cs" />
