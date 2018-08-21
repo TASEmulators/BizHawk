@@ -97,6 +97,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 
 			switch (borderType)
 			{
+                /*
 				case C64.BorderType.Full:
 					newHblankStart = -1;
 					newHblankEnd = -1;
@@ -105,6 +106,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					newVblankEnd = -1;
 					_vblank = false;
 					break;
+                    */
 				case C64.BorderType.Normal:
 					newHblankStart = hblankStart;
 					newHblankEnd = hblankEnd;
@@ -129,13 +131,27 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.MOS
 					newVblankStart = 0xFA + hBorderSize;
 					newVblankEnd = 0x32 - hBorderSize;
 					break;
+                case C64.BorderType.None:
+                    newHblankStart = 0x158 + PixBufferSize;
+                    newHblankEnd = 0x018 + PixBufferSize;
+                    newVblankStart = 0xFA;
+                    newVblankEnd = 0x32;
+                    _vblank = true;
+                    _hblank = true;
+                    break;
 			}
 
 			// wrap values
-			newHblankStart = WrapValue(0, maxWidth, newHblankStart);
-			newHblankEnd = WrapValue(0, maxWidth, newHblankEnd);
-			newVblankStart = WrapValue(0, lines, newVblankStart);
-			newVblankEnd = WrapValue(0, lines, newVblankEnd);
+            if (_hblank)
+            {
+                newHblankStart = WrapValue(0, maxWidth, newHblankStart);
+                newHblankEnd = WrapValue(0, maxWidth, newHblankEnd);
+            }
+			if (_vblank)
+            {
+                newVblankStart = WrapValue(0, lines, newVblankStart);
+                newVblankEnd = WrapValue(0, lines, newVblankEnd);
+            }
 
 			// calculate output dimensions
 			_hblankStartCheckXRaster = newHblankStart & 0xFFC;
