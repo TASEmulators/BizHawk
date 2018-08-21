@@ -20,7 +20,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         isReleased: true)]
     public partial class ZXSpectrum : IRegionable, IDriveLight
     {
-        public ZXSpectrum(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, object settings, object syncSettings)
+        public ZXSpectrum(CoreComm comm, IEnumerable<byte[]> files, List<GameInfo> game, object settings, object syncSettings, bool? deterministic)
         {
             var ser = new BasicServiceProvider(this);
             ServiceProvider = ser;
@@ -51,6 +51,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             joysticks.Add(((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).JoystickType3);
 
             deterministicEmulation = ((ZXSpectrumSyncSettings)syncSettings as ZXSpectrumSyncSettings).DeterministicEmulation;
+
+            if (deterministic != null && deterministic == true)
+            {
+                if (deterministicEmulation == false)
+                {
+                    CoreComm.Notify("Forcing Deterministic Emulation");
+                }
+                
+                deterministicEmulation = deterministic.Value;
+            }
 
             switch (SyncSettings.MachineType)
             {
