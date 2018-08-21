@@ -3555,9 +3555,29 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			try
-			{
-				// If deterministic emulation is passed in, respect that value regardless, else determine a good value (currently that simply means movies require deterministic emulaton)
-				bool deterministic = args.Deterministic ?? Global.MovieSession.QueuedMovie != null;
+			{                
+                bool deterministic;
+
+                if (args.Deterministic == null)
+                {
+                    // force deterministic in this case
+                    // this is usually null for most cores
+                    // previously this was getting set to false if a movie was not queued for recording - surely that can't be good..
+                    deterministic = true;
+                }
+                else
+                {
+                    // a value was actually supplied somehow - use this
+                    deterministic = args.Deterministic.Value;
+                }
+
+                if (Global.MovieSession.QueuedMovie != null)
+                {
+                    // movies should require deterministic emulation in ALL cases
+                    // if the core is managing its own DE through SyncSettings a 'deterministic' bool should be passed into the core's constructor
+                    // it is then up to the core itself to override its own local DeterministicEmulation setting
+                    deterministic = true;
+                }
 
 				if (!GlobalWin.Tools.AskSave())
 				{
