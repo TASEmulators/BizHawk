@@ -1623,7 +1623,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}		
 
-		public void FlushSaveRAM(bool autosave = false)
+		public bool FlushSaveRAM(bool autosave = false)
 		{
 			if (Emulator.HasSaveRam())
 			{
@@ -1644,7 +1644,15 @@ namespace BizHawk.Client.EmuHawk
 				var backupFile = new FileInfo(backupPath);
 				if (file.Directory != null && !file.Directory.Exists)
 				{
-					file.Directory.Create();
+                    try
+                    {
+                        file.Directory.Create();
+                    }
+                    catch
+                    {
+                        GlobalWin.OSD.AddMessage("Unable to flush SaveRAM to: " + newFile.Directory);                        
+                        return false;
+                    }
 				}
 
 				var writer = new BinaryWriter(new FileStream(newPath, FileMode.Create, FileAccess.Write));
@@ -1675,6 +1683,8 @@ namespace BizHawk.Client.EmuHawk
 
 				newFile.MoveTo(path);
 			}
+
+            return true;
 		}
 
 		private void RewireSound()
@@ -3859,7 +3869,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Emulator.HasSaveRam() && Emulator.AsSaveRam().SaveRamModified)
 			{
-				FlushSaveRAM();
+				if (!FlushSaveRAM())
+                {
+                    var msgRes = MessageBox.Show("Failed flushing the game's Save RAM to your disk.\nClose without flushing Save RAM?",
+                            "Directory IO Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+
+                    if (msgRes != DialogResult.Yes)
+                    {
+                        return;
+                    }
+                }
 			}
 
 			StopAv();
