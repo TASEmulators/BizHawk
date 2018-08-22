@@ -87,6 +87,8 @@ namespace BizHawk.Client.Common
 						return SystemInfo.Intellivision;
 					case "SG":
 						return SystemInfo.SG;
+                    case "GG":
+                        return SystemInfo.GG;
 					case "SMS":
 						if ((Emulator as SMS).IsGameGear)
 						{
