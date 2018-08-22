@@ -79,7 +79,11 @@ namespace BizHawk.Client.Common
 					{
 						continue;
 					}
-					else if ((currentFrame % _step > 0) && (currentFrame + 1 != _tsm.LastEditedFrame))
+					else if (currentFrame + 1 == _tsm.LastEditedFrame)
+					{
+						continue;
+					}
+					else if (currentFrame % _step > 0)
 					{
 						// ignore the pattern if the state doesn't belong already, drop it blindly and skip everything
 						if (_tsm.RemoveState(currentFrame))
@@ -190,8 +194,8 @@ namespace BizHawk.Client.Common
 				}
 				else
 				{
-					// we're very sorry about failing to find states to remove, but we can't go beyond capacity, so remove at least something
-					// this shouldn't happen, but if we don't do it here, nothing good will happen either
+				// we're very sorry about failing to find states to remove, but we can't go beyond capacity, so remove at least something
+				// this shouldn't happen, but if we don't do it here, nothing good will happen either
 					if (_tsm.RemoveState(_tsm.GetStateFrameByIndex(1)))
 					{
 						// decrementing this if no state was removed is BAD
