@@ -48,14 +48,12 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return new[]
 				{
-					new FormatPreset("AVI Uncompressed", "Uncompressed video and audio in an AVI container. Very large.",
+					new FormatPreset("AVI Lossless", "Lossless AVC video and uncompressed audio in an AVI container. High speed and compression, compatible with AVISource().",
+						"-c:a pcm_s16le -c:v libx264rgb -qp 0 -preset ultrafast -g 30 -pix_fmt rgb24 -f avi", false, "avi"),
+					new FormatPreset("AVI Uncompressed", "Uncompressed video and audio in an AVI container. Very large, don't use!",
 						"-c:a pcm_s16le -c:v rawvideo -f avi", false, "avi"),
-					new FormatPreset("AVI Lossless", "Lossless FFV1 video and uncompressed audio in an AVI container. Compatible with AVISource, if ffmpeg based decoder is installed.",
-						"-c:a pcm_s16le -c:v ffv1 -pix_fmt bgr0 -level 1 -g 1 -coder 1 -context 1 -f avi", false, "avi"),
-					//new FormatPreset("AVI Lossless", "Lossless zlib video and uncompressed audio in an AVI container.",
-					//	"-c:a pcm_s16le -c:v zlib -f avi", false, "avi"),
 					new FormatPreset("Matroska Lossless", "Lossless AVC video and uncompressed audio in a Matroska container.",
-						"-c:a pcm_s16le -c:v libx264rgb -crf 0 -f matroska", false, "mkv"),
+						"-c:a pcm_s16le -c:v libx264rgb -qp 0 -pix_fmt rgb24 -f matroska", false, "mkv"),
 					new FormatPreset("Matroska", "AVC video and Vorbis audio in a Matroska container.",
 						"-c:a libvorbis -c:v libx264 -f matroska", false, "mkv"),
 					new FormatPreset("MP4", "AVC video and AAC audio in an MP4 container.",
