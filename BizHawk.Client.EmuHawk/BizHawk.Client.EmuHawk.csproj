@@ -634,6 +634,8 @@
     </Compile>
     <Compile Include="GLManager.cs" />
     <Compile Include="GlobalWin.cs" />
+    <Compile Include="Plugins\Libraries\GUIDrawLibrary.cs" />
+    <Compile Include="Plugins\Gen_MD\Ecco2\Ecco2Gui.cs" />
     <!--<Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />-->
     <Compile Include="Input\GamePad.cs" />
     <Compile Include="Input\GamePad360.cs" />
