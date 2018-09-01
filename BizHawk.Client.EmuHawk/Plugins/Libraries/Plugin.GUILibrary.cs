@@ -1,17 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
-using System.IO;
 
-using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class GUIDrawLibrary : GUIDrawPluginLibrary
+	public sealed class GUIPluginLibrary : GUIDrawPluginLibrary
     {
-		public GUIDrawLibrary()
+		public GUIPluginLibrary()
 		{
 		}
 
