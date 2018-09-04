@@ -634,7 +634,9 @@
     </Compile>
     <Compile Include="GLManager.cs" />
     <Compile Include="GlobalWin.cs" />
-    <Compile Include="Plugins\Libraries\GUIDrawLibrary.cs" />
+    <Compile Include="Plugins\Example\Ecco2AssistantPlugin.cs" />
+    <Compile Include="Plugins\Libraries\PluginLibrary.Client.cs" />
+    <Compile Include="Plugins\Libraries\PluginLibrary.GUI.cs" />
     <!--<Compile Include="Input\GamePad.cs" Condition=" '$(OS)' == 'Windows_NT' " />-->
     <Compile Include="Input\GamePad.cs" />
     <Compile Include="Input\GamePad360.cs" />
@@ -719,6 +721,10 @@
     <Compile Include="PlatformChooser.Designer.cs">
       <DependentUpon>PlatformChooser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Plugins\Libraries\PluginLibrary.Input.cs" />
+    <Compile Include="Plugins\Libraries\PluginLibrary.Savestate.cs" />
+    <Compile Include="Plugins\PluginAPI.cs" />
+    <Compile Include="Plugins\Libraries\PluginLibrary.cs" />
     <Compile Include="PresentationPanel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -1841,6 +1847,7 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Plugins\Libraries\PluginLibrary.Communications.cs" />
     <None Include="Resources\ZXSpectrumKeyboard.bmp" />
     <None Include="images\WSW.png" />
     <None Include="images\WNW.png" />

@@ -7,6 +7,7 @@ namespace BizHawk.Client.EmuHawk
 	{
 		public static MainForm MainForm;
 		public static ToolManager Tools;
+		public static PluginLibrary Plugins;
 
 		/// <summary>
 		/// the IGL to be used for rendering
