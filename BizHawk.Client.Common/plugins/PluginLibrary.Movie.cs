@@ -4,9 +4,9 @@ using System.IO;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class MoviePluginLibrary 
+	public sealed class MoviePluginLibrary : PluginLibraryBase
 	{
-		public MoviePluginLibrary()
+		public MoviePluginLibrary() : base()
 		{ }
 
 		[LuaMethodExample("if ( movie.startsfromsavestate( ) ) then\r\n\tconsole.log( \"Returns whether or not the movie is a savestate-anchored movie\" );\r\nend;")]

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class JoypadPluginLibrary
+	public sealed class JoypadPluginLibrary : PluginLibraryBase
 	{
-		public JoypadPluginLibrary() { }
+		public JoypadPluginLibrary() : base()
+		{ }
 
 		public Dictionary<string,dynamic> Get(int? controller = null)
 		{
@@ -82,8 +83,6 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		[LuaMethodExample("joypad.set( { [\"Left\"] = true, [ \"A\" ] = true, [ \"B\" ] = true } );")]
-		[LuaMethod("set", "sets the given buttons to their provided values for the current frame")]
 		public void Set(Dictionary<string,bool> buttons, int? controller = null)
 		{
 			try
@@ -146,9 +145,24 @@ namespace BizHawk.Client.Common
 				/*Eat it*/
 			}
 		}
+		public void Set(string button, bool state, int? controller = null)
+		{
+			try
+			{
+				var toPress = button;
+				if (controller.HasValue)
+				{
+					toPress = "P" + controller + " " + button;
+				}
 
-		[LuaMethodExample("joypad.setanalog( { [ \"Tilt X\" ] = true, [ \"Tilt Y\" ] = false } );")]
-		[LuaMethod("setanalog", "sets the given analog controls to their provided values for the current frame. Note that unlike set() there is only the logic of overriding with the given value.")]
+				Global.LuaAndAdaptor.SetButton(toPress, state);
+				Global.ActiveController.Overrides(Global.LuaAndAdaptor);
+			}
+			catch
+			{
+				/*Eat it*/
+			}
+		}
 		public void SetAnalog(Dictionary<string,float> controls, object controller = null)
 		{
 			try
@@ -175,6 +189,24 @@ namespace BizHawk.Client.Common
 					{
 						Global.StickyXORAdapter.SetFloat("P" + controller + " " + name, theValue);
 					}
+				}
+			}
+			catch
+			{
+				/*Eat it*/
+			}
+		}
+		public void SetAnalog(string control, float value, object controller = null)
+		{
+			try
+			{
+				if (controller == null)
+				{
+					Global.StickyXORAdapter.SetFloat(control, value);
+				}
+				else
+				{
+					Global.StickyXORAdapter.SetFloat("P" + controller + " " + control, value);
 				}
 			}
 			catch

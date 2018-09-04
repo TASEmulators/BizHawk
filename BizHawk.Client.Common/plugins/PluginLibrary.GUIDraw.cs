@@ -8,15 +8,13 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public abstract class GUIDrawPluginLibrary
+	public abstract class GUIDrawPluginBase : PluginLibraryBase
 	{
 		[RequiredService]
 		protected IEmulator Emulator { get; set; }
 
-		public GUIDrawPluginLibrary()
-		{
-
-		}
+		public GUIDrawPluginBase() : base()
+		{ }
 
 		public bool HasGUISurface = false;
 
@@ -166,32 +164,36 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
+					float w;
+					float h;
 					if (x < x2)
 					{
-						x2 = Math.Abs(x - x2);
+						w = x2 - x;
 					}
 					else
 					{
 						x2 = x - x2;
 						x -= x2;
+						w = Math.Max(x2, 0.1f);
 					}
 
 					if (y < y2)
 					{
-						y2 = Math.Abs(y - y2);
+						h = y2 - y;
 					}
 					else
 					{
 						y2 = y - y2;
 						y -= y2;
+						h = Math.Max(y2, 0.1f);
 					}
 
-					g.DrawRectangle(GetPen(line ?? _defaultForeground), x, y, x2, y2);
+					g.DrawRectangle(GetPen(line ?? _defaultForeground), x, y, w, h);
 
 					var bg = background ?? _defaultBackground;
 					if (bg.HasValue)
 					{
-						g.FillRectangle(GetBrush(bg.Value), x + 1, y + 1, x2 - 1, y2 - 1);
+						g.FillRectangle(GetBrush(bg.Value), x + 1, y + 1, Math.Max(w - 1, 0), Math.Max(h - 1, 0));
 					}
 				}
 				catch (Exception)
@@ -389,12 +391,13 @@ namespace BizHawk.Client.Common
 		{
 			using (var g = GetGraphics())
 			{
-				g.DrawRectangle(GetPen(line ?? _defaultForeground), x, y, width, height);
+				var w = Math.Max(width, 0.1F);
+				var h = Math.Max(height, 0.1F);
+				g.DrawRectangle(GetPen(line ?? _defaultForeground), x, y, w, h);
 				var bg = background ?? _defaultBackground;
 				if (bg.HasValue)
 				{
-					g.FillRectangle(GetBrush(bg.Value), x + 1, y + 1, width - 1, height - 1);
-				}
+					g.FillRectangle(GetBrush(bg.Value), x + 1, y + 1, Math.Max(w - 1, 0), Math.Max(h - 1, 0));				}
 			}
 		}
 

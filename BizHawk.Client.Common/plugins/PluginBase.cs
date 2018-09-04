@@ -4,16 +4,47 @@ namespace BizHawk.Client.Common
 {
 	public abstract class PluginBase : IPlugin
 	{
-		[RequiredService]
-		private IEmulator Emulator { get; set; }
+		/// <summary>
+		/// The base class from which all
+		/// plugins will be derived
+		/// 
+		/// Actual plugins should implement
+		/// one of the below callback methods
+		/// or register memory callbacks in
+		/// their Init function.
+		/// </summary>
+		protected IPluginAPI _api;
 
-		[RequiredService]
-		private IMemoryDomains Domains { get; set; }
+		public PluginBase()	{ }
 
-		[OptionalService]
-		private IInputPollable InputPollableCore { get; set; }
+		public abstract string Name { get; }
+		public abstract string Description { get; }
+		
+		public bool Enabled => Running;
+		public bool Paused => !Running;
 
-		[OptionalService]
-		private IDebuggable DebuggableCore { get; set; }
+		public bool Running { get; set; }
+
+		public void Stop()
+		{
+			Running = false;
+		}
+
+		public void Toggle()
+		{
+			Running = !Running;
+		}
+
+		public virtual void PreFrameCallback() { }
+		public virtual void PostFrameCallback() { }
+		public virtual void SaveStateCallback(string name) { }
+		public virtual void LoadStateCallback(string name) { }
+		public virtual void InputPollCallback() { }
+		public virtual void ExitCallback() { }
+		public virtual void Init (IPluginAPI api)
+		{
+			_api = api;
+			Running = true;
+		}
 	}
 }

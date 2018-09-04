@@ -15,7 +15,7 @@ using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 namespace BizHawk.Client.Common
 {
 	[Description("A library for interacting with the currently loaded emulator core")]
-	public sealed class EmulatorPluginLibrary
+	public sealed class EmulatorPluginLibrary : PluginLibraryBase
 	{
 		[RequiredService]
 		private IEmulator Emulator { get; set; }
@@ -41,7 +41,7 @@ namespace BizHawk.Client.Common
 		public Action FrameAdvanceCallback { get; set; }
 		public Action YieldCallback { get; set; }
 
-		public EmulatorPluginLibrary()
+		public EmulatorPluginLibrary() : base()
 		{ }
 
 		public static void DisplayVsync(bool enabled)

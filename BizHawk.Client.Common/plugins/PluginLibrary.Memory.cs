@@ -10,11 +10,14 @@ namespace BizHawk.Client.Common
 	public sealed class MemoryPluginLibrary : PluginMemoryBase
 	{
 		private MemoryDomain _currentMemoryDomain;
-		private bool _isBigEndian;
-		public MemoryPluginLibrary(bool Big = false)
+		private bool _isBigEndian = false;
+		public MemoryPluginLibrary()
 			: base()
 		{
-			_isBigEndian = Big;
+		}
+		public void SetBigEndian()
+		{
+			_isBigEndian = true;
 		}
 
 		protected override MemoryDomain Domain
@@ -94,7 +97,7 @@ namespace BizHawk.Client.Common
 			return false;
 		}
 
-		public string HashRegion(int addr, int count, string domain = null)
+		public string HashRegion(long addr, int count, string domain = null)
 		{
 			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 
@@ -128,25 +131,25 @@ namespace BizHawk.Client.Common
 
 		#region Endian Handling
 
-		private int ReadSigned(int addr, int size, string domain = null)
+		private int ReadSigned(long addr, int size, string domain = null)
 		{
 			if (_isBigEndian) return ReadSignedBig(addr, size, domain);
 			else return ReadSignedLittle(addr, size, domain);
 		}
 
-		private uint ReadUnsigned(int addr, int size, string domain = null)
+		private uint ReadUnsigned(long addr, int size, string domain = null)
 		{
 			if (_isBigEndian) return ReadUnsignedBig(addr, size, domain);
 			else return ReadUnsignedLittle(addr, size, domain);
 		}
 
-		private void WriteSigned(int addr, int value, int size, string domain = null)
+		private void WriteSigned(long addr, int value, int size, string domain = null)
 		{
 			if (_isBigEndian) WriteSignedBig(addr, value, size, domain);
 			else WriteSignedLittle(addr, value, size, domain);
 		}
 
-		private void WriteUnsigned(int addr, uint value, int size, string domain = null)
+		private void WriteUnsigned(long addr, uint value, int size, string domain = null)
 		{
 			if (_isBigEndian) WriteUnsignedBig(addr, value, size, domain);
 			else WriteUnsignedLittle(addr, value, size, domain);
@@ -156,32 +159,32 @@ namespace BizHawk.Client.Common
 
 		#region Common Special and Legacy Methods
 
-		public uint ReadByte(int addr, string domain = null)
+		public uint ReadByte(long addr, string domain = null)
 		{
 			return ReadUnsignedByte(addr, domain);
 		}
 
-		public void WriteByte(int addr, uint value, string domain = null)
+		public void WriteByte(long addr, uint value, string domain = null)
 		{
 			WriteUnsignedByte(addr, value, domain);
 		}
 
-		public new List<byte> ReadByteRange(int addr, int length, string domain = null)
+		public new List<byte> ReadByteRange(long addr, int length, string domain = null)
 		{
 			return base.ReadByteRange(addr, length, domain);
 		}
 
-		public new void WriteByteRange(int addr, List<byte> memoryblock, string domain = null)
+		public new void WriteByteRange(long addr, List<byte> memoryblock, string domain = null)
 		{
 			base.WriteByteRange(addr, memoryblock, domain);
 		}
 
-		public float ReadFloat(int addr, string domain = null)
+		public float ReadFloat(long addr, string domain = null)
 		{
 			return base.ReadFloat(addr, _isBigEndian, domain);
 		}
 
-		public void WriteFloat(int addr, double value, string domain = null)
+		public void WriteFloat(long addr, double value, string domain = null)
 		{
 			base.WriteFloat(addr, value, _isBigEndian, domain);
 		}
@@ -190,22 +193,22 @@ namespace BizHawk.Client.Common
 
 		#region 1 Byte
 
-		public int ReadS8(int addr, string domain = null)
+		public int ReadS8(long addr, string domain = null)
 		{
 			return (sbyte)ReadUnsignedByte(addr, domain);
 		}
 
-		public void WriteS8(int addr, uint value, string domain = null)
+		public void WriteS8(long addr, uint value, string domain = null)
 		{
 			WriteUnsignedByte(addr, value, domain);
 		}
 
-		public uint ReadU8(int addr, string domain = null)
+		public uint ReadU8(long addr, string domain = null)
 		{
-			return ReadUnsignedByte(addr, domain);
+			return (byte)ReadUnsignedByte(addr, domain);
 		}
 
-		public void WriteU8(int addr, uint value, string domain = null)
+		public void WriteU8(long addr, uint value, string domain = null)
 		{
 			WriteUnsignedByte(addr, value, domain);
 		}
@@ -213,22 +216,22 @@ namespace BizHawk.Client.Common
 		#endregion
 
 		#region 2 Byte
-		public int ReadS16(int addr, string domain = null)
+		public int ReadS16(long addr, string domain = null)
 		{
-			return ReadSigned(addr, 2, domain);
+			return (short)ReadSigned(addr, 2, domain);
 		}
 
-		public void WriteS16(int addr, int value, string domain = null)
+		public void WriteS16(long addr, int value, string domain = null)
 		{
 			WriteSigned(addr, value, 2, domain);
 		}
 
-		public uint ReadU16(int addr, string domain = null)
+		public uint ReadU16(long addr, string domain = null)
 		{
-			return ReadUnsigned(addr, 2, domain);
+			return (ushort)ReadUnsigned(addr, 2, domain);
 		}
 
-		public void WriteU16(int addr, uint value, string domain = null)
+		public void WriteU16(long addr, uint value, string domain = null)
 		{
 			WriteUnsigned(addr, value, 2, domain);
 		}
@@ -236,21 +239,21 @@ namespace BizHawk.Client.Common
 
 		#region 3 Byte
 
-		public int ReadS24(int addr, string domain = null)
+		public int ReadS24(long addr, string domain = null)
 		{
 			return ReadSigned(addr, 3, domain);
 		}
-		public void WriteS24(int addr, int value, string domain = null)
+		public void WriteS24(long addr, int value, string domain = null)
 		{
 			WriteSigned(addr, value, 3, domain);
 		}
 
-		public uint ReadU24(int addr, string domain = null)
+		public uint ReadU24(long addr, string domain = null)
 		{
 			return ReadUnsigned(addr, 3, domain);
 		}
 
-		public void WriteU24(int addr, uint value, string domain = null)
+		public void WriteU24(long addr, uint value, string domain = null)
 		{
 			WriteUnsigned(addr, value, 3, domain);
 		}
@@ -259,22 +262,22 @@ namespace BizHawk.Client.Common
 
 		#region 4 Byte
 
-		public int ReadS32(int addr, string domain = null)
+		public int ReadS32(long addr, string domain = null)
 		{
 			return ReadSigned(addr, 4, domain);
 		}
 
-		public void WriteS32(int addr, int value, string domain = null)
+		public void WriteS32(long addr, int value, string domain = null)
 		{
 			WriteSigned(addr, value, 4, domain);
 		}
 
-		public uint ReadU32(int addr, string domain = null)
+		public uint ReadU32(long addr, string domain = null)
 		{
 			return ReadUnsigned(addr, 4, domain);
 		}
 
-		public void WriteU32(int addr, uint value, string domain = null)
+		public void WriteU32(long addr, uint value, string domain = null)
 		{
 			WriteUnsigned(addr, value, 4, domain);
 		}

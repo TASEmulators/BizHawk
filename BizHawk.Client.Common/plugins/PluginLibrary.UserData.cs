@@ -5,9 +5,9 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class UserDataPluginLibrary
+	public sealed class UserDataPluginLibrary : PluginLibraryBase
 	{
-		public UserDataPluginLibrary()
+		public UserDataPluginLibrary() : base()
 		{ }
 
 		public void Set(string name, object value)

@@ -8,7 +8,7 @@ namespace BizHawk.Client.Common
 	/// <summary>
 	/// Base class for the Memory and MainMemory plugin libraries
 	/// </summary>
-	public abstract class PluginMemoryBase
+	public abstract class PluginMemoryBase : PluginLibraryBase
 	{
 		[RequiredService]
 		protected IEmulator Emulator { get; set; }
@@ -18,10 +18,8 @@ namespace BizHawk.Client.Common
 
 		protected abstract MemoryDomain Domain { get; }
 
-		protected PluginMemoryBase()
-		{
-
-		}
+		protected PluginMemoryBase() : base()
+		{ }
 
 		protected IMemoryDomains DomainList
 		{
@@ -58,7 +56,7 @@ namespace BizHawk.Client.Common
 			return Domain.Name;
 		}
 
-		protected uint ReadUnsignedByte(int addr, string domain = null)
+		protected uint ReadUnsignedByte(long addr, string domain = null)
 		{
 			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 			if (addr < d.Size)
@@ -70,7 +68,7 @@ namespace BizHawk.Client.Common
 			return 0;
 		}
 
-		protected void WriteUnsignedByte(int addr, uint v, string domain = null)
+		protected void WriteUnsignedByte(long addr, uint v, string domain = null)
 		{
 			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 			if (d.CanPoke())
@@ -98,12 +96,12 @@ namespace BizHawk.Client.Common
 			return s;
 		}
 
-		protected int ReadSignedLittle(int addr, int size, string domain = null)
+		protected int ReadSignedLittle(long addr, int size, string domain = null)
 		{
 			return U2S(ReadUnsignedLittle(addr, size, domain), size);
 		}
 
-		protected uint ReadUnsignedLittle(int addr, int size, string domain = null)
+		protected uint ReadUnsignedLittle(long addr, int size, string domain = null)
 		{
 			uint v = 0;
 			for (var i = 0; i < size; ++i)
@@ -114,12 +112,12 @@ namespace BizHawk.Client.Common
 			return v;
 		}
 
-		protected int ReadSignedBig(int addr, int size, string domain = null)
+		protected int ReadSignedBig(long addr, int size, string domain = null)
 		{
 			return U2S(ReadUnsignedBig(addr, size, domain), size);
 		}
 
-		protected uint ReadUnsignedBig(int addr, int size, string domain = null)
+		protected uint ReadUnsignedBig(long addr, int size, string domain = null)
 		{
 			uint v = 0;
 			for (var i = 0; i < size; ++i)
@@ -130,12 +128,12 @@ namespace BizHawk.Client.Common
 			return v;
 		}
 
-		protected void WriteSignedLittle(int addr, int v, int size, string domain = null)
+		protected void WriteSignedLittle(long addr, int v, int size, string domain = null)
 		{
 			WriteUnsignedLittle(addr, (uint)v, size, domain);
 		}
 
-		protected void WriteUnsignedLittle(int addr, uint v, int size, string domain = null)
+		protected void WriteUnsignedLittle(long addr, uint v, int size, string domain = null)
 		{
 			for (var i = 0; i < size; ++i)
 			{
@@ -143,12 +141,12 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected void WriteSignedBig(int addr, int v, int size, string domain = null)
+		protected void WriteSignedBig(long addr, int v, int size, string domain = null)
 		{
 			WriteUnsignedBig(addr, (uint)v, size, domain);
 		}
 
-		protected void WriteUnsignedBig(int addr, uint v, int size, string domain = null)
+		protected void WriteUnsignedBig(long addr, uint v, int size, string domain = null)
 		{
 			for (var i = 0; i < size; ++i)
 			{
@@ -158,7 +156,7 @@ namespace BizHawk.Client.Common
 
 		#region public Library implementations
 
-		protected List<byte> ReadByteRange(int addr, int length, string domain = null)
+		protected List<byte> ReadByteRange(long addr, int length, string domain = null)
 		{
 			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 			var lastAddr = length + addr;
@@ -176,7 +174,7 @@ namespace BizHawk.Client.Common
 			return list;
 		}
 
-		protected void WriteByteRange(int addr, List<byte> memoryblock, string domain = null)
+		protected void WriteByteRange(long addr, List<byte> memoryblock, string domain = null)
 		{
 			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 			if (d.CanPoke())
@@ -199,7 +197,7 @@ namespace BizHawk.Client.Common
 			}
 		}
 
-		protected float ReadFloat(int addr, bool bigendian, string domain = null)
+		protected float ReadFloat(long addr, bool bigendian, string domain = null)
 		{
 			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 			if (addr < d.Size)
@@ -214,7 +212,7 @@ namespace BizHawk.Client.Common
 			return 0;
 		}
 
-		protected void WriteFloat(int addr, double value, bool bigendian, string domain = null)
+		protected void WriteFloat(long addr, double value, bool bigendian, string domain = null)
 		{
 			var d = string.IsNullOrEmpty(domain) ? Domain : DomainList[VerifyMemoryDomain(domain)];
 			if (d.CanPoke())

@@ -6,10 +6,10 @@ using BizHawk.Emulation.Common;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class MemorySavestatePluginLibrary
+	public sealed class MemorySavestatePluginLibrary : PluginLibraryBase
 	{
-		public MemorySavestatePluginLibrary()
-		{	}
+		public MemorySavestatePluginLibrary() : base()
+		{ }
 
 		[RequiredService]
 		private IStatable StatableCore { get; set; }

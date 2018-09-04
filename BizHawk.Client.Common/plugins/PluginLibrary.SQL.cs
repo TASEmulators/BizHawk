@@ -5,9 +5,9 @@ using System.Data.SQLite;
 
 namespace BizHawk.Client.Common
 {
-	public sealed class SQLPluginLibrary
+	public sealed class SQLPluginLibrary : PluginLibraryBase
 	{
-		public SQLPluginLibrary()
+		public SQLPluginLibrary() : base()
 		{ }
 
 		SQLiteConnection m_dbConnection;

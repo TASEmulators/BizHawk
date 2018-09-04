@@ -5,11 +5,10 @@ using BizHawk.Client.Common;
 
 namespace BizHawk.Client.EmuHawk
 {
-	public sealed class GUIPluginLibrary : GUIDrawPluginLibrary
+	public sealed class GUIPluginLibrary : GUIDrawPluginBase
     {
-		public GUIPluginLibrary()
-		{
-		}
+		public GUIPluginLibrary() : base()
+		{ }
 
         private DisplaySurface _GUISurface = null;
 
@@ -114,7 +113,7 @@ namespace BizHawk.Client.EmuHawk
                     var font = new Font(GlobalWin.DisplayManager.CustomFonts.Families[index], 8, FontStyle.Regular, GraphicsUnit.Pixel);
                     Size sizeOfText = g.MeasureString(message, font, 0, f).ToSize();
                     var rect = new Rectangle(new Point(x, y), sizeOfText + new Size(1, 0));
-                    g.FillRectangle(GetBrush(backcolor ?? _defaultTextBackground.Value), rect);
+                    if (backcolor.HasValue) g.FillRectangle(GetBrush(backcolor.Value), rect);
                     g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.SingleBitPerPixelGridFit;
                     g.DrawString(message, font, GetBrush(forecolor ?? _defaultForeground), x, y);
                 }

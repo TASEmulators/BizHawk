@@ -5,7 +5,6 @@ namespace BizHawk.Client.Common
 	public abstract class PluginLibraryBase
 	{
 		protected PluginLibraryBase() { }
-		public abstract string Name { get; }
 
 		protected static Color? ToColor(object o)
 		{
