@@ -807,7 +807,7 @@ namespace BizHawk.Client.EmuHawk
 
 			TasView.Refresh();
 
-			SetSplicer();
+			//SetSplicer();
 			CurrentTasMovie.FlushInputCache();
 			CurrentTasMovie.UseInputCache = false;
 
