@@ -309,7 +309,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public override void SyncState(Serializer ser)
 		{
-			// feos: drop these 4MB of useful data from savestates until we learn why it's critical to store it
+			// feos: drop 4MB of ROM data from savestates
 			//SaveState.SyncDelta("MediaStateA", ser, _originalMediaA, ref _banksA);
 			//SaveState.SyncDelta("MediaStateB", ser, _originalMediaB, ref _banksB);
 			base.SyncState(ser);
