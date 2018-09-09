@@ -1206,6 +1206,7 @@ namespace BizHawk.Client.EmuHawk
 				.Where(x => x.Name != "FrameColumn");
 
 			ToolStripMenuItem keysMenu = new ToolStripMenuItem("Keys");
+			ToolStripMenuItem keysMenuExtra = new ToolStripMenuItem("Extra Keys");
 
 			ToolStripMenuItem[] playerMenus = new ToolStripMenuItem[Emulator.ControllerDefinition.PlayerCount + 1];
 			playerMenus[0] = ColumnsSubMenu;
@@ -1213,6 +1214,8 @@ namespace BizHawk.Client.EmuHawk
 			{
 				playerMenus[i] = new ToolStripMenuItem("Player " + i);
 			}
+
+			int rowCount = Screen.FromControl(this).WorkingArea.Height / (keysMenu.Height + 4);
 
 			foreach (InputRoll.RollColumn column in columns)
 			{
@@ -1237,7 +1240,14 @@ namespace BizHawk.Client.EmuHawk
 
 				if (column.Name.StartsWith("Key "))
 				{
-					keysMenu.DropDownItems.Add(menuItem);
+					if (keysMenu.DropDownItems.Count < rowCount)
+					{
+						keysMenu.DropDownItems.Add(menuItem);
+					}
+					else
+					{
+						keysMenuExtra.DropDownItems.Add(menuItem);
+					}
 				}
 				else
 				{
@@ -1259,6 +1269,11 @@ namespace BizHawk.Client.EmuHawk
 			if (keysMenu.DropDownItems.Count > 0)
 			{
 				ColumnsSubMenu.DropDownItems.Add(keysMenu);
+			}
+
+			if (keysMenuExtra.DropDownItems.Count > 0)
+			{
+				ColumnsSubMenu.DropDownItems.Add(keysMenuExtra);
 			}
 
 			for (int i = 1; i < playerMenus.Length; i++)
