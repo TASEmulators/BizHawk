@@ -1205,6 +1205,8 @@ namespace BizHawk.Client.EmuHawk
 				.Where(x => !string.IsNullOrWhiteSpace(x.Text))
 				.Where(x => x.Name != "FrameColumn");
 
+			ToolStripMenuItem keysMenu = new ToolStripMenuItem("Keys");
+
 			ToolStripMenuItem[] playerMenus = new ToolStripMenuItem[Emulator.ControllerDefinition.PlayerCount + 1];
 			playerMenus[0] = ColumnsSubMenu;
 			for (int i = 1; i < playerMenus.Length; i++)
@@ -1233,17 +1235,30 @@ namespace BizHawk.Client.EmuHawk
 					(sender.OwnerItem as ToolStripMenuItem).ShowDropDown();
 				};
 
-				int player;
-				if (column.Name.StartsWith("P") && column.Name.Length > 1 && char.IsNumber(column.Name, 1))
+				if (column.Name.StartsWith("Key "))
 				{
-					player = int.Parse(column.Name[1].ToString());
+					keysMenu.DropDownItems.Add(menuItem);
 				}
 				else
 				{
-					player = 0;
-				}
+					int player;
 
-				playerMenus[player].DropDownItems.Add(menuItem);
+					if (column.Name.StartsWith("P") && column.Name.Length > 1 && char.IsNumber(column.Name, 1))
+					{
+						player = int.Parse(column.Name[1].ToString());
+					}
+					else
+					{
+						player = 0;
+					}
+
+					playerMenus[player].DropDownItems.Add(menuItem);
+				}
+			}
+
+			if (keysMenu.DropDownItems.Count > 0)
+			{
+				ColumnsSubMenu.DropDownItems.Add(keysMenu);
 			}
 
 			for (int i = 1; i < playerMenus.Length; i++)
@@ -1263,6 +1278,31 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
+			if (keysMenu.DropDownItems.Count > 0)
+			{
+				var item = new ToolStripMenuItem("Show Keys")
+				{
+					CheckOnClick = true,
+					Checked = false
+				};
+
+				ToolStripMenuItem dummyObject = keysMenu;
+				item.CheckedChanged += (o, ev) =>
+				{
+					ToolStripMenuItem sender = o as ToolStripMenuItem;
+					foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
+					{
+						TasView.AllColumns.Find(c => c.Name == (string)menuItem.Tag).Visible = sender.Checked;
+					}
+
+					CurrentTasMovie.FlagChanges();
+					TasView.AllColumns.ColumnsChanged();
+					RefreshTasView();
+				};
+
+				ColumnsSubMenu.DropDownItems.Add(item);
+			}
+
 			for (int i = 1; i < playerMenus.Length; i++)
 			{
 				if (playerMenus[i].DropDownItems.Count > 0)
@@ -1273,7 +1313,6 @@ namespace BizHawk.Client.EmuHawk
 						Checked = true
 					};
 
-					int dummyInt = i;
 					ToolStripMenuItem dummyObject = playerMenus[i];
 					item.CheckedChanged += (o, ev) =>
 					{
