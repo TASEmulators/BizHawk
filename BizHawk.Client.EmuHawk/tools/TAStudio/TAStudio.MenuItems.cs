@@ -1248,34 +1248,48 @@ namespace BizHawk.Client.EmuHawk
 
 			for (int i = 1; i < playerMenus.Length; i++)
 			{
-				ColumnsSubMenu.DropDownItems.Add(playerMenus[i]);
+				if (playerMenus[i].DropDownItems.Count > 0)
+				{
+					ColumnsSubMenu.DropDownItems.Add(playerMenus[i]);
+				}
 			}
 
-			ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
 			for (int i = 1; i < playerMenus.Length; i++)
 			{
-				var item = new ToolStripMenuItem("Show Player " + i)
+				if (playerMenus[i].DropDownItems.Count > 0)
 				{
-					CheckOnClick = true,
-					Checked = true
-				};
+					ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
+					break;
+				}
+			}
 
-				int dummyInt = i;
-				ToolStripMenuItem dummyObject = playerMenus[i];
-				item.CheckedChanged += (o, ev) =>
+			for (int i = 1; i < playerMenus.Length; i++)
+			{
+				if (playerMenus[i].DropDownItems.Count > 0)
 				{
-					ToolStripMenuItem sender = o as ToolStripMenuItem;
-					foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
+					var item = new ToolStripMenuItem("Show Player " + i)
 					{
-						TasView.AllColumns.Find(c => c.Name == (string)menuItem.Tag).Visible = sender.Checked;
-					}
+						CheckOnClick = true,
+						Checked = true
+					};
 
-					CurrentTasMovie.FlagChanges();
-					TasView.AllColumns.ColumnsChanged();
-					RefreshTasView();
-				};
+					int dummyInt = i;
+					ToolStripMenuItem dummyObject = playerMenus[i];
+					item.CheckedChanged += (o, ev) =>
+					{
+						ToolStripMenuItem sender = o as ToolStripMenuItem;
+						foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
+						{
+							TasView.AllColumns.Find(c => c.Name == (string)menuItem.Tag).Visible = sender.Checked;
+						}
 
-				ColumnsSubMenu.DropDownItems.Add(item);
+						CurrentTasMovie.FlagChanges();
+						TasView.AllColumns.ColumnsChanged();
+						RefreshTasView();
+					};
+
+					ColumnsSubMenu.DropDownItems.Add(item);
+				}
 			}
 
 			ColumnsSubMenu.DropDownItems.Add(new ToolStripSeparator());
