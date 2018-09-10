@@ -11,3 +11,6 @@
 	path = waterbox/snes9x
 	url = https://github.com/TASVideos/snes9x.git
 	branch = bizsnes
+[submodule "mgba"]
+	path = mgba
+	url = https://github.com/TASVideos/mgba.git
