@@ -392,7 +392,7 @@ namespace BizHawk.Client.EmuHawk
 		}
 
         [LuaMethodExample("local incbhver = client.getversion( );")]
-        [LuaMethod("getversion", "Returns the current (non-dev) BizHawk version")]
+        [LuaMethod("getversion", "Returns the current stable BizHawk version")]
         public static string GetVersion()
         {
             return VersionInfo.GetEmuVersionNonDev();            
