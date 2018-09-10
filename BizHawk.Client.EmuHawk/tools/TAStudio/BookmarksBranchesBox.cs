@@ -644,12 +644,17 @@ namespace BizHawk.Client.EmuHawk
 					BranchView.CurrentCell.RowIndex < Movie.BranchCount)
 				{
 					TasBranch branch = GetBranch(BranchView.CurrentCell.RowIndex.Value);
-					Point location = Location;
+					Point location = PointToScreen(Location);
 					int width = branch.OSDFrameBuffer.Width;
 					int height = branch.OSDFrameBuffer.Height;
 					location.Offset(-width, 0);
 
-					Screenshot.UpdateValues(branch, PointToScreen(location), width, height,
+					if (location.X < 0)
+					{
+						location.Offset(width + Width, 0);
+					}
+
+					Screenshot.UpdateValues(branch, location, width, height,
 						(int)Graphics.FromHwnd(this.Handle).MeasureString(
 							branch.UserText, Screenshot.Font, width).Height);
 

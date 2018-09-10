@@ -309,8 +309,9 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Cartridge
 
 		public override void SyncState(Serializer ser)
 		{
-			SaveState.SyncDelta("MediaStateA", ser, _originalMediaA, ref _banksA);
-			SaveState.SyncDelta("MediaStateB", ser, _originalMediaB, ref _banksB);
+			// feos: drop 4MB of ROM data from savestates
+			//SaveState.SyncDelta("MediaStateA", ser, _originalMediaA, ref _banksA);
+			//SaveState.SyncDelta("MediaStateB", ser, _originalMediaB, ref _banksB);
 			base.SyncState(ser);
 			DriveLightOn = _boardLed;
 		}
