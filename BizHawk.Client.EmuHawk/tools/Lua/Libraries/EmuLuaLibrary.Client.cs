@@ -391,6 +391,13 @@ namespace BizHawk.Client.EmuHawk
 			return GlobalWin.MainForm.DesktopLocation.Y;
 		}
 
+        [LuaMethodExample("local incbhver = client.getversion( );")]
+        [LuaMethod("getversion", "Returns the current (non-dev) BizHawk version")]
+        public static string GetVersion()
+        {
+            return VersionInfo.GetEmuVersionNonDev();            
+        }
+
 		[LuaMethodExample("local nlcliget = client.getavailabletools( );")]
 		[LuaMethod("getavailabletools", "Returns a list of the tools currently open")]
 		public LuaTable GetAvailableTools()
