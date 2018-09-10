@@ -14,3 +14,4 @@
 [submodule "mgba"]
 	path = mgba
 	url = https://github.com/TASVideos/mgba.git
+	branch = bizhawk-0.6
