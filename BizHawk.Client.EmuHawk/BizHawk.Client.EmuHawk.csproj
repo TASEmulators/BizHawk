@@ -1267,6 +1267,12 @@
     <Compile Include="tools\Watch\RamWatch.Designer.cs">
       <DependentUpon>RamWatch.cs</DependentUpon>
     </Compile>
+    <Compile Include="tools\Watch\SeparatorEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="tools\Watch\SeparatorEditor.Designer.cs">
+      <DependentUpon>SeparatorEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="tools\Watch\WatchEditor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1699,6 +1705,9 @@
     <EmbeddedResource Include="tools\Watch\RamWatch.resx">
       <DependentUpon>RamWatch.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="tools\Watch\SeparatorEditor.resx">
+      <DependentUpon>SeparatorEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="tools\Watch\WatchEditor.resx">
       <DependentUpon>WatchEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -1840,6 +1849,9 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\MoveTop.png" />
+    <None Include="Resources\MoveBottom.png" />
+    <None Include="Resources\MoveTop.bmp" />
     <None Include="Resources\ZXSpectrumKeyboard.bmp" />
     <None Include="images\WSW.png" />
     <None Include="images\WNW.png" />
