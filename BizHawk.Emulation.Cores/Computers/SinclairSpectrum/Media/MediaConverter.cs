@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.IO.Compression;
+using System.Runtime.InteropServices;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -89,9 +90,20 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="buf"></param>
         /// <param name="offsetIndex"></param>
         /// <returns></returns>
-       public static int GetInt32(byte[] buf, int offsetIndex)
+        public static int GetInt32(byte[] buf, int offsetIndex)
         {
             return buf[offsetIndex] | buf[offsetIndex + 1] << 8 | buf[offsetIndex + 2] << 16 | buf[offsetIndex + 3] << 24;
+        }
+
+        /// <summary>
+        /// Returns an int32 from a byte array based on offset
+        /// </summary>
+        /// <param name="buf"></param>
+        /// <param name="offsetIndex"></param>
+        /// <returns></returns>
+        public static uint GetUInt32(byte[] buf, int offsetIndex)
+        {
+            return (uint)(buf[offsetIndex] | buf[offsetIndex + 1] << 8 | buf[offsetIndex + 2] << 16 | buf[offsetIndex + 3] << 24);
         }
 
         /// <summary>
@@ -146,6 +158,29 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             stream.ReadByte();
             DeflateStream ds = new DeflateStream(stream, CompressionMode.Decompress, false);
             ds.Read(destBuffer, 0, destBuffer.Length);
+        }
+
+
+        public static byte[] SerializeRaw(object obj)
+        {
+            int rSize = Marshal.SizeOf(obj);
+            IntPtr buff = Marshal.AllocHGlobal(rSize);
+            Marshal.StructureToPtr(obj, buff, false);
+            byte[] rData = new byte[rSize];
+            Marshal.Copy(buff, rData, 0, rSize);
+            return rData;
+        }
+
+        public static T DeserializeRaw<T>(byte[] rData, int pos)
+        {
+            int rSize = Marshal.SizeOf(typeof(T));
+            if (rSize > rData.Length - pos)
+                throw new Exception();
+            IntPtr buff = Marshal.AllocHGlobal(rSize);
+            Marshal.Copy(rData, pos, buff, rSize);
+            T rObj = (T)Marshal.PtrToStructure(buff, typeof(T));
+            Marshal.FreeHGlobal(buff);
+            return rObj;
         }
 
         #endregion

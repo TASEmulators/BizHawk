@@ -293,6 +293,8 @@
     <Compile Include="Computers\SinclairSpectrum\Media\Disk\DiskType.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\MediaConverter.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\MediaConverterType.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Snapshot\SZX\SZX.Objects.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Snapshot\SZX\SZX.Methods.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\CSW\CswConverter.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\PZX\PzxConverter.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\TapeCommand.cs" />

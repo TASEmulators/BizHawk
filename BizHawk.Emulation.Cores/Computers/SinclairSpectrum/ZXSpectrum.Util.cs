@@ -62,5 +62,11 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             return m;
         }
+
+        public byte[] GetSZXSnapshot()
+        {
+            return SZX.ExportSZX(_machine);
+            //return System.Text.Encoding.Default.GetString(data);
+        }
     }
 }

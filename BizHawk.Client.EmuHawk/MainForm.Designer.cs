@@ -389,7 +389,9 @@
             this.ZXSpectrumPokeMemoryMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ZXSpectrumMediaMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ZXSpectrumTapesSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.zxt1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ZXSpectrumDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.zxt2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Atari7800HawkCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainStatusBar = new StatusStripEx();
             this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
@@ -462,8 +464,7 @@
             this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-            this.zxt1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.zxt2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -3454,7 +3455,8 @@
             // 
             this.ZXSpectrumMediaMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ZXSpectrumTapesSubMenu,
-            this.ZXSpectrumDisksSubMenu});
+            this.ZXSpectrumDisksSubMenu,
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem});
             this.ZXSpectrumMediaMenuItem.Name = "ZXSpectrumMediaMenuItem";
             this.ZXSpectrumMediaMenuItem.Size = new System.Drawing.Size(201, 22);
             this.ZXSpectrumMediaMenuItem.Text = "Media";
@@ -3465,18 +3467,30 @@
             this.ZXSpectrumTapesSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.zxt1ToolStripMenuItem});
             this.ZXSpectrumTapesSubMenu.Name = "ZXSpectrumTapesSubMenu";
-            this.ZXSpectrumTapesSubMenu.Size = new System.Drawing.Size(152, 22);
+            this.ZXSpectrumTapesSubMenu.Size = new System.Drawing.Size(159, 22);
             this.ZXSpectrumTapesSubMenu.Text = "Tapes";
             this.ZXSpectrumTapesSubMenu.DropDownOpened += new System.EventHandler(this.ZXSpectrumTapesSubMenu_DropDownOpened);
+            // 
+            // zxt1ToolStripMenuItem
+            // 
+            this.zxt1ToolStripMenuItem.Name = "zxt1ToolStripMenuItem";
+            this.zxt1ToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
+            this.zxt1ToolStripMenuItem.Text = "zxt1";
             // 
             // ZXSpectrumDisksSubMenu
             // 
             this.ZXSpectrumDisksSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.zxt2ToolStripMenuItem});
             this.ZXSpectrumDisksSubMenu.Name = "ZXSpectrumDisksSubMenu";
-            this.ZXSpectrumDisksSubMenu.Size = new System.Drawing.Size(152, 22);
+            this.ZXSpectrumDisksSubMenu.Size = new System.Drawing.Size(159, 22);
             this.ZXSpectrumDisksSubMenu.Text = "Disks";
             this.ZXSpectrumDisksSubMenu.DropDownOpened += new System.EventHandler(this.ZXSpectrumDisksSubMenu_DropDownOpened);
+            // 
+            // zxt2ToolStripMenuItem
+            // 
+            this.zxt2ToolStripMenuItem.Name = "zxt2ToolStripMenuItem";
+            this.zxt2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.zxt2ToolStripMenuItem.Text = "zxt2";
             // 
             // Atari7800HawkCoreMenuItem
             // 
@@ -4104,17 +4118,12 @@
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
             // 
-            // zxt1ToolStripMenuItem
+            // ZXSpectrumExportSnapshotMenuItemMenuItem
             // 
-            this.zxt1ToolStripMenuItem.Name = "zxt1ToolStripMenuItem";
-            this.zxt1ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.zxt1ToolStripMenuItem.Text = "zxt1";
-            // 
-            // zxt2ToolStripMenuItem
-            // 
-            this.zxt2ToolStripMenuItem.Name = "zxt2ToolStripMenuItem";
-            this.zxt2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.zxt2ToolStripMenuItem.Text = "zxt2";
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Name = "ZXSpectrumExportSnapshotMenuItemMenuItem";
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Text = "Export Snapshot";
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Click += new System.EventHandler(this.ZXSpectrumExportSnapshotMenuItemMenuItem_Click);
             // 
             // MainForm
             // 
@@ -4591,5 +4600,6 @@
         private System.Windows.Forms.ToolStripMenuItem ZXSpectrumDisksSubMenu;
         private System.Windows.Forms.ToolStripMenuItem zxt1ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem zxt2ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumExportSnapshotMenuItemMenuItem;
     }
 }

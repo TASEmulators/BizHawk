@@ -389,6 +389,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         {
             // fetch instruction without incrementing pc
             //_cpu.FetchInstruction(_cpu.FetchMemory(firstByte));
+            
         }
 
         #endregion

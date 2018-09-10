@@ -2564,6 +2564,32 @@ namespace BizHawk.Client.EmuHawk
             }
         }
 
+        private void ZXSpectrumExportSnapshotMenuItemMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog zxSnapExpDialog = new SaveFileDialog();
+            zxSnapExpDialog.RestoreDirectory = true;
+            zxSnapExpDialog.Title = "EXPERIMENTAL - Export 3rd party snapshot formats";
+            zxSnapExpDialog.DefaultExt = "szx";
+            zxSnapExpDialog.Filter = "ZX-State files (*.szx)|*.szx";
+            zxSnapExpDialog.SupportMultiDottedExtensions = true;
+
+            try
+            {
+                var res = zxSnapExpDialog.ShowDialog();
+                if (res == DialogResult.OK)
+                {
+                    var speccy = (ZXSpectrum)Emulator;
+                    var snap = speccy.GetSZXSnapshot();
+                    File.WriteAllBytes(zxSnapExpDialog.FileName, snap);
+                    //File.WriteAllText(zxSnapExpDialog.FileName, snap);
+                }
+            }
+            catch (Exception ex)
+            {
+                var ee = ex;
+            }
+        }
+
         #endregion
 
         #region Help

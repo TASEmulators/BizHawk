@@ -62,7 +62,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 deterministicEmulation = deterministic.Value;
             }
 
-            switch (SyncSettings.MachineType)
+            MachineType = SyncSettings.MachineType;
+
+            switch (MachineType)
             {
                 case MachineType.ZXSpectrum16:
                     ControllerDefinition = ZXSpectrumControllerDefinition;
@@ -146,6 +148,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         private readonly TraceBuffer _tracer;
         public IController _controller;
         public SpectrumBase _machine;
+        public MachineType MachineType;
 
         public List<GameInfo> _gameInfo;
 
