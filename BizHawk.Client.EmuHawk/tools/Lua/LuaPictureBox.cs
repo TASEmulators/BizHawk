@@ -346,7 +346,7 @@ namespace BizHawk.Client.EmuHawk
 						x -= sizeOfText.Width / 2;
 						break;
 					case "right":
-						x -= sizeOfText.Width / 2;
+						x -= sizeOfText.Width;
 						break;
 				}
 			}
