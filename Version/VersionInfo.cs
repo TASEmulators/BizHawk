@@ -15,11 +15,6 @@ internal static class VersionInfo
 		return DeveloperBuild ? ("GIT " + SubWCRev.GIT_BRANCH + "#" + SubWCRev.GIT_SHORTHASH) : ("Version " + Mainversion);
 	}
 
-    public static string GetEmuVersionNonDev()
-    {
-        return Mainversion;
-    }
-
 	static VersionInfo()
 	{
 		string path = Path.Combine(GetExeDirectoryAbsolute(), "dll");
