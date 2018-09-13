@@ -128,7 +128,6 @@ namespace BizHawk.Client.Common
 
         /// <summary>
         /// Test to determine whether the supplied firmware file matches something in the firmware database
-        /// For customization overrides then perhaps the user can copy into the firmware directory manually?
         /// </summary>
         /// <param name="f"></param>
         /// <returns></returns>
