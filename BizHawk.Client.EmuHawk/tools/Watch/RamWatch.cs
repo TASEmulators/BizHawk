@@ -437,21 +437,25 @@ namespace BizHawk.Client.EmuHawk
 			}
             else if (SelectedSeparators.Any() && !duplicate)
             {
-                var se = new SeparatorEditor
+                var inputPrompt = new InputPrompt
                 {
-                    InitialLocation = this.ChildPointToScreen(WatchListView)
+                    Text = "Edit Separator",
+                    StartLocation = this.ChildPointToScreen(WatchListView),
+                    Message = "Separator Text:",
+                    TextInputType = InputPrompt.InputType.Text
                 };
 
-                se.SetWatch(SelectedSeparators);
+                var result = inputPrompt.ShowHawkDialog();
 
-                var result = se.ShowHawkDialog(this);
                 if (result == DialogResult.OK)
                 {
                     Changes();
 
-                    for (var i = 0; i < se.Watches.Count; i++)
+                    for (int i = 0; i < SelectedSeparators.Count(); i++)
                     {
-                        _watches[indexes[i]] = se.Watches[i];
+                        var sep = SelectedSeparators.ToList()[i];
+                        sep.Notes = inputPrompt.PromptText;
+                        _watches[indexes[i]] = sep;
                     }
                 }
 
