@@ -341,7 +341,13 @@ namespace BizHawk.Client.EmuHawk
 			DoScan();
 		}
 
-		private void lvFirmwares_KeyDown(object sender, KeyEventArgs e)
+        private void tbbOpenFolder_Click(object sender, EventArgs e)
+        {
+            var frmWares = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
+            System.Diagnostics.Process.Start(frmWares);
+        }
+
+        private void lvFirmwares_KeyDown(object sender, KeyEventArgs e)
 		{
 			if (e.KeyCode == Keys.C && e.Control && !e.Alt && !e.Shift)
 			{
@@ -367,8 +373,9 @@ namespace BizHawk.Client.EmuHawk
 			{
 				ofd.InitialDirectory = currSelectorDir;
 				ofd.RestoreDirectory = true;
+                string frmwarePath = PathManager.MakeAbsolutePath(Global.Config.PathEntries.FirmwaresPathFragment, null);
 
-				if (ofd.ShowDialog() == DialogResult.OK)
+                if (ofd.ShowDialog() == DialogResult.OK)
 				{
 					// remember the location we selected this firmware from, maybe there are others
 					currSelectorDir = Path.GetDirectoryName(ofd.FileName);
@@ -377,7 +384,29 @@ namespace BizHawk.Client.EmuHawk
 					foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
 					{
 						var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
-						Global.Config.FirmwareUserSpecifications[fr.ConfigKey] = ofd.FileName;
+                        string filePath = ofd.FileName;
+
+                        // check whether this file is currently outside of the global firmware directory
+                        if (currSelectorDir != frmwarePath)
+                        {
+                            var askMoveResult = MessageBox.Show(this, "The selected custom firmware does not reside in the root of the global firmware directory.\nDo you want to copy it there?", "Import Custom Firmware", MessageBoxButtons.YesNo);
+                            if (askMoveResult == DialogResult.Yes)
+                            {
+                                try
+                                {
+                                    FileInfo fi = new FileInfo(filePath);
+                                    filePath = Path.Combine(frmwarePath, fi.Name);
+                                    File.Copy(ofd.FileName, filePath);
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show(this, "There was an issue copying the file. The customization has NOT been set.\n\n" + ex.StackTrace);
+                                    continue;
+                                }
+                            }
+                        }
+
+						Global.Config.FirmwareUserSpecifications[fr.ConfigKey] = filePath;                        
 					}
 
 					DoScan();
@@ -584,7 +613,11 @@ namespace BizHawk.Client.EmuHawk
 								outfile = Path.Combine(extractpath, myname);
 								File.WriteAllBytes(outfile, ms.ToArray());
 								hf.Unbind();
-								didSomething |= RunImportJobSingle(basepath, outfile, ref errors);
+
+                                if (Manager.CanFileBeImported(outfile))
+                                {
+                                    didSomething |= RunImportJobSingle(basepath, outfile, ref errors);
+                                }
 							}
 						}
 						finally
@@ -594,7 +627,10 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-						didSomething |= RunImportJobSingle(basepath, f, ref errors);
+                        if (Manager.CanFileBeImported(hf.CanonicalFullPath))
+                        {
+                            didSomething |= RunImportJobSingle(basepath, f, ref errors);
+                        } 
 					}
 				}
 			}
@@ -621,7 +657,7 @@ namespace BizHawk.Client.EmuHawk
 			return base.ProcessCmdKey(ref msg, keyData);
 		}
 
-		private void lvFirmwares_DragEnter(object sender, DragEventArgs e)
+        private void lvFirmwares_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
