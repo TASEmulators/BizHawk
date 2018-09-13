@@ -115,7 +115,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 
-			BizHawk.Common.TempFileCleaner.Start();
+			BizHawk.Common.TempFileManager.Start();
 
 
 			HawkFile.ArchiveHandlerFactory = new SevenZipSharpArchiveHandler();

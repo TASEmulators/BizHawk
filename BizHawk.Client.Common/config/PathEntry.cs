@@ -165,6 +165,8 @@ namespace BizHawk.Client.Common
 
 		public string GlobalRomFragment => Global.Config.PathEntries["Global", "ROM"].Path;
 
+		public string TempFilesFragment => Global.Config.PathEntries["Global", "Temp Files"].Path;
+
 		// this one is special
 		public string GlobalBaseFragment => Global.Config.PathEntries["Global", "Base"].Path;
 
@@ -184,6 +186,7 @@ namespace BizHawk.Client.Common
 			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "TAStudio states", Path = Path.Combine(".", "Movies", "TAStudio states"), Ordinal = 12 },
 			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "Multi-Disk Bundles", Path = Path.Combine(".", ""), Ordinal = 13 },
 			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "External Tools", Path = Path.Combine(".", "ExternalTools"), Ordinal = 14 },
+			new PathEntry { System = "Global_NULL", SystemDisplayName = "Global", Type = "Temp Files", Path = "", Ordinal = 15 },
 
 			new PathEntry { System = "INTV", SystemDisplayName = "Intellivision", Type = "Base", Path = Path.Combine(".", "Intellivision"), Ordinal = 0 },
 			new PathEntry { System = "INTV", SystemDisplayName = "Intellivision", Type = "ROM", Path = ".", Ordinal = 1 },
