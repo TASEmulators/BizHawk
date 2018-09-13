@@ -158,6 +158,9 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                                 case DiskType.CPC:
                                     found = CPCFloppyDisk.SplitDoubleSided(m, working);
                                     break;
+                                case DiskType.UDI:
+                                    found =  UDI1_0FloppyDisk.SplitDoubleSided(m, working);
+                                    break;
                             }
 
                             if (found)
@@ -261,6 +264,26 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             {
                 // spectrum .fdi disk file
                 return SpectrumMediaType.Disk;
+            }
+            if (hdr.ToUpper().StartsWith("CAPS"))
+            {
+                // IPF format file
+                return SpectrumMediaType.Disk;
+            }
+            if (hdr.ToUpper().StartsWith("UDI!") && data[0x08] == 0)
+            {
+                // UDI v1.0
+                if (hdr.StartsWith("udi!"))
+                {
+                    throw new NotSupportedException("ZXHawk currently does not supported UDIv1.0 with compression.");
+                }
+                else
+                {
+                    if (data[0x0A] == 0x01)
+                        return SpectrumMediaType.DiskDoubleSided;
+                    else
+                        return SpectrumMediaType.Disk;
+                }
             }
 
             // tape checking
