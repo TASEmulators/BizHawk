@@ -380,36 +380,74 @@ namespace BizHawk.Client.EmuHawk
 					// remember the location we selected this firmware from, maybe there are others
 					currSelectorDir = Path.GetDirectoryName(ofd.FileName);
 
-					// for each selected item, set the user choice (even though multiple selection for this operation is no longer allowed)
-					foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
-					{
-						var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
-                        string filePath = ofd.FileName;
-
-                        // check whether this file is currently outside of the global firmware directory
-                        if (currSelectorDir != frmwarePath)
+                    try
+                    {
+                        using (var hf = new HawkFile(ofd.FileName))
                         {
-                            var askMoveResult = MessageBox.Show(this, "The selected custom firmware does not reside in the root of the global firmware directory.\nDo you want to copy it there?", "Import Custom Firmware", MessageBoxButtons.YesNo);
-                            if (askMoveResult == DialogResult.Yes)
+                            // for each selected item, set the user choice (even though multiple selection for this operation is no longer allowed)
+                            foreach (ListViewItem lvi in lvFirmwares.SelectedItems)
                             {
-                                try
+                                var fr = lvi.Tag as FirmwareDatabase.FirmwareRecord;
+                                string filePath = ofd.FileName;
+
+                                // if the selected file is an archive, allow the user to pick the inside file
+                                // to always be copied to the global firmwares directory                            
+                                if (hf.IsArchive)
                                 {
-                                    FileInfo fi = new FileInfo(filePath);
-                                    filePath = Path.Combine(frmwarePath, fi.Name);
-                                    File.Copy(ofd.FileName, filePath);
+                                    var ac = new ArchiveChooser(new HawkFile(filePath));
+                                    int memIdx = -1;
+
+                                    if (ac.ShowDialog(this) == DialogResult.OK)
+                                    {
+                                        memIdx = ac.SelectedMemberIndex;
+                                    }
+                                    else
+                                    {
+                                        return;
+                                    }
+
+                                    var insideFile = hf.BindArchiveMember(memIdx);
+                                    var fileData = insideFile.ReadAllBytes();
+
+                                    // write to file in the firmwares folder
+                                    File.WriteAllBytes(Path.Combine(frmwarePath, insideFile.Name), fileData);
+                                    filePath = Path.Combine(frmwarePath, insideFile.Name);
                                 }
-                                catch (Exception ex)
+                                else
                                 {
-                                    MessageBox.Show(this, "There was an issue copying the file. The customization has NOT been set.\n\n" + ex.StackTrace);
-                                    continue;
+                                    // selected file is not an archive
+                                    // check whether this file is currently outside of the global firmware directory
+                                    if (currSelectorDir != frmwarePath)
+                                    {
+                                        var askMoveResult = MessageBox.Show(this, "The selected custom firmware does not reside in the root of the global firmware directory.\nDo you want to copy it there?", "Import Custom Firmware", MessageBoxButtons.YesNo);
+                                        if (askMoveResult == DialogResult.Yes)
+                                        {
+                                            try
+                                            {
+                                                FileInfo fi = new FileInfo(filePath);
+                                                filePath = Path.Combine(frmwarePath, fi.Name);
+                                                File.Copy(ofd.FileName, filePath);
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                MessageBox.Show(this, "There was an issue copying the file. The customization has NOT been set.\n\n" + ex.StackTrace);
+                                                continue;
+                                            }
+                                        }
+                                    }
                                 }
+
+                                Global.Config.FirmwareUserSpecifications[fr.ConfigKey] = filePath;
                             }
                         }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(this, "There was an issue during the process. The customization has NOT been set.\n\n" + ex.StackTrace);
+                        return;
+                    }
 
-						Global.Config.FirmwareUserSpecifications[fr.ConfigKey] = filePath;                        
-					}
-
-					DoScan();
+                    DoScan();
 				}
 			}
 		}
