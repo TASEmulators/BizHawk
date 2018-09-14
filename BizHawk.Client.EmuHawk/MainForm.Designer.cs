@@ -392,6 +392,7 @@
             this.zxt1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ZXSpectrumDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.zxt2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Atari7800HawkCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainStatusBar = new StatusStripEx();
             this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
@@ -464,7 +465,6 @@
             this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
-            this.ZXSpectrumExportSnapshotMenuItemMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -502,8 +502,8 @@
             this.pCFXToolStripMenuItem,
             this.virtualBoyToolStripMenuItem,
             this.neoGeoPocketToolStripMenuItem,
-            this.HelpSubMenu,
-            this.zXSpectrumToolStripMenuItem});
+            this.zXSpectrumToolStripMenuItem,
+            this.HelpSubMenu});
             this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.MainformMenu.Location = new System.Drawing.Point(0, 0);
             this.MainformMenu.Name = "MainformMenu";
@@ -3163,7 +3163,7 @@
             // DGBsettingsToolStripMenuItem
             // 
             this.DGBsettingsToolStripMenuItem.Name = "DGBsettingsToolStripMenuItem";
-            this.DGBsettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.DGBsettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.DGBsettingsToolStripMenuItem.Text = "Settings...";
             this.DGBsettingsToolStripMenuItem.Click += new System.EventHandler(this.DgbSettingsMenuItem_Click);
             // 
@@ -3489,8 +3489,15 @@
             // zxt2ToolStripMenuItem
             // 
             this.zxt2ToolStripMenuItem.Name = "zxt2ToolStripMenuItem";
-            this.zxt2ToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.zxt2ToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
             this.zxt2ToolStripMenuItem.Text = "zxt2";
+            // 
+            // ZXSpectrumExportSnapshotMenuItemMenuItem
+            // 
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Name = "ZXSpectrumExportSnapshotMenuItemMenuItem";
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Text = "Export Snapshot";
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Click += new System.EventHandler(this.ZXSpectrumExportSnapshotMenuItemMenuItem_Click);
             // 
             // Atari7800HawkCoreMenuItem
             // 
@@ -4117,13 +4124,6 @@
             this.timerMouseIdle.Enabled = true;
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
-            // 
-            // ZXSpectrumExportSnapshotMenuItemMenuItem
-            // 
-            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Name = "ZXSpectrumExportSnapshotMenuItemMenuItem";
-            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Size = new System.Drawing.Size(159, 22);
-            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Text = "Export Snapshot";
-            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Click += new System.EventHandler(this.ZXSpectrumExportSnapshotMenuItemMenuItem_Click);
             // 
             // MainForm
             // 
