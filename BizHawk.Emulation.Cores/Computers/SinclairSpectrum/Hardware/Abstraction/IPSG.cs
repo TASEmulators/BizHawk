@@ -19,6 +19,8 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Activates a register
         /// </summary>
         int SelectedRegister { get; set; }
+
+        int[] ExportRegisters();
         
         /// <summary>
         /// Writes to the PSG

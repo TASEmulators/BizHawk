@@ -1314,7 +1314,7 @@ namespace BizHawk.Client.EmuHawk
 						ToolStripMenuItem sender = o as ToolStripMenuItem;
 						foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
 						{
-							TasView.AllColumns.Find(c => c.Name == (string)menuItem.Tag).Visible = sender.Checked;
+							menuItem.Checked ^= true;
 						}
 
 						CurrentTasMovie.FlagChanges();
@@ -1342,7 +1342,7 @@ namespace BizHawk.Client.EmuHawk
 						ToolStripMenuItem sender = o as ToolStripMenuItem;
 						foreach (ToolStripMenuItem menuItem in dummyObject.DropDownItems)
 						{
-							TasView.AllColumns.Find(c => c.Name == (string)menuItem.Tag).Visible = sender.Checked;
+							menuItem.Checked ^= true;
 						}
 
 						CurrentTasMovie.FlagChanges();

@@ -76,7 +76,7 @@
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(291, 165);
 			this.label2.TabIndex = 2;
-			this.label2.Text = "EMULATES\r\nYOUR\r\nMOM";
+			this.label2.Text = "EMULATES\r\nY̶̷̼̬̟̘̦̼͙̝̯̦̠̜͙͖̘ͨ̒͂͐ͪ͂̒̄ͯͯ͌ͨͯ̽ͨ́͝ͅO̡̝̞̗̩͖͖̼̹̖̫͍̙̖͓̩ͪ͂̊ͭ͑ͮͤ̀̄͌̑ͨͣͩ̿ͫ͂͟͝͞ͅU̴̮̝͍̜̰̦ͥ̓ͩ̌̎̾ͥͪ̋̾́͠Rͨ͊̉̾҉̢̫͔̗͓͖̫̫̘̖̰͟\r\nMOM";
 			// 
 			// timer1
 			// 

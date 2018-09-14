@@ -68,6 +68,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WritePort(ushort port, byte value)
         {
+            if (port == 0x7ffd)
+                Last7ffd = value;
+            else if (port == 0x1ffd)
+                Last1ffd = value;
+            else if ((port & 0x01) == 0)
+                LastFe = value;
+
             // get a BitArray of the port
             BitArray portBits = new BitArray(BitConverter.GetBytes(port));
             // get a BitArray of the value byte

@@ -1834,6 +1834,11 @@ namespace BizHawk.Client.EmuHawk
 					break;
                 case "ZXSpectrum":
                     zXSpectrumToolStripMenuItem.Visible = true;
+#if DEBUG
+                    ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = true;
+#else
+                    ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = false;
+#endif
                     break;
 			}
 		}
@@ -4368,7 +4373,6 @@ namespace BizHawk.Client.EmuHawk
 		{
 			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
 		}
-                
 
         private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
 		{

@@ -602,13 +602,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             public byte NumberOfSectors { get; set; }
             public byte GAP3Length { get; set; }
             public byte FillerByte { get; set; }
-            public Sector[] Sectors { get; set; }
+            public virtual Sector[] Sectors { get; set; }
+
+            #region UDI
+
+            public virtual byte TrackType { get; set; }
+            public virtual int TLEN { get; set; }
+            public virtual int CLEN { get { return TLEN / 8 + (TLEN % 8 / 7) / 8; } }
+            public virtual byte[] TrackData { get; set; }
+
+            #endregion
 
             /// <summary>
             /// Presents a contiguous byte array of all sector data for this track
             /// (including any multiple weak/random data)
             /// </summary>
-            public byte[] TrackSectorData
+            public virtual byte[] TrackSectorData
             {
                 get
                 {
@@ -626,15 +635,15 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
         public class Sector
         {
-            public byte TrackNumber { get; set; }
-            public byte SideNumber { get; set; }
-            public byte SectorID { get; set; }
-            public byte SectorSize { get; set; }
-            public byte Status1 { get; set; }
-            public byte Status2 { get; set; }
-            public int ActualDataByteLength { get; set; }
-            public byte[] SectorData { get; set; }
-            public bool ContainsMultipleWeakSectors { get; set; }
+            public virtual byte TrackNumber { get; set; }
+            public virtual byte SideNumber { get; set; }
+            public virtual byte SectorID { get; set; }
+            public virtual byte SectorSize { get; set; }
+            public virtual byte Status1 { get; set; }
+            public virtual byte Status2 { get; set; }
+            public virtual int ActualDataByteLength { get; set; }
+            public virtual byte[] SectorData { get; set; }
+            public virtual bool ContainsMultipleWeakSectors { get; set; }
 
             public int WeakReadIndex = 0;
 

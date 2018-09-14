@@ -308,6 +308,9 @@ namespace BizHawk.Client.EmuHawk
 		private void Ok_Click(object sender, EventArgs e)
 		{
 			SaveSettings();
+
+			PathManager.RefreshTempPath();
+
 			GlobalWin.OSD.AddMessage("Path settings saved");
 			Close();
 		}
