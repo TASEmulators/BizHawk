@@ -1840,6 +1840,9 @@
     <None Include="config\ControllerImages\GENController.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\MoveTop.png" />
+    <None Include="Resources\MoveBottom.png" />
+    <None Include="Resources\MoveTop.bmp" />
     <None Include="Resources\ZXSpectrumKeyboard.bmp" />
     <None Include="images\WSW.png" />
     <None Include="images\WNW.png" />
