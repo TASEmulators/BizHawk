@@ -570,6 +570,7 @@ namespace BizHawk.Client.EmuHawk
 							case "left":
 								break;
 							case "center":
+							case "middle":
 								x -= sizeOfText.Width / 2;
 								break;
 							case "right":
@@ -583,12 +584,13 @@ namespace BizHawk.Client.EmuHawk
 						switch (vertalign.ToLower())
 						{
 							default:
-							case "bottom":
+							case "top":
 								break;
+							case "center":
 							case "middle":
 								y -= sizeOfText.Height / 2;
 								break;
-							case "top":
+							case "bottom":
 								y -= sizeOfText.Height;
 								break;
 						}
