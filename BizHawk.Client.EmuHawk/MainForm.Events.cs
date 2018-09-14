@@ -26,6 +26,7 @@ using BizHawk.Client.ApiHawk;
 using BizHawk.Emulation.Cores.Computers.Commodore64;
 using BizHawk.Emulation.Cores.Nintendo.Gameboy;
 using BizHawk.Emulation.Cores.Computers.SinclairSpectrum;
+using System.Collections.Generic;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -2506,6 +2507,8 @@ namespace BizHawk.Client.EmuHawk
         {
             ZXSpectrumTapesSubMenu.DropDownItems.Clear();
 
+            List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
+
             if (Emulator is ZXSpectrum)
             {
                 var speccy = (ZXSpectrum)Emulator;
@@ -2528,14 +2531,18 @@ namespace BizHawk.Client.EmuHawk
                         speccy._machine.TapeMediaIndex = dummy;
                     };
 
-                    ZXSpectrumTapesSubMenu.DropDownItems.Add(menuItem);
-                }                
+                    items.Add(menuItem);
+                }
             }
+
+            ZXSpectrumTapesSubMenu.DropDownItems.AddRange(items.ToArray());
         }
 
         private void ZXSpectrumDisksSubMenu_DropDownOpened(object sender, EventArgs e)
         {
             ZXSpectrumDisksSubMenu.DropDownItems.Clear();
+
+            List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
 
             if (Emulator is ZXSpectrum)
             {
@@ -2559,9 +2566,11 @@ namespace BizHawk.Client.EmuHawk
                         speccy._machine.DiskMediaIndex = dummy;
                     };
 
-                    ZXSpectrumDisksSubMenu.DropDownItems.Add(menuItem);
+                    items.Add(menuItem);
                 }
             }
+
+            ZXSpectrumDisksSubMenu.DropDownItems.AddRange(items.ToArray());
         }
 
         private void ZXSpectrumExportSnapshotMenuItemMenuItem_Click(object sender, EventArgs e)
