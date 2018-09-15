@@ -408,6 +408,8 @@ namespace BizHawk.Client.EmuHawk
 			_ss.GLideN64Plugin.CacheSize = GLideN64_CacheSize.Text.IsSigned()
 				? int.Parse(GLideN64_CacheSize.Text)
 				: 500;
+			_ss.GLideN64Plugin.ShowInternalResolution = GLideN64_ShowInternalResolution.Checked;
+			_ss.GLideN64Plugin.ShowRenderingResolution = GLideN64_ShowRenderingResolution.Checked;
 			_ss.GLideN64Plugin.FXAA = GLideN64_FXAA.Checked;
 			_ss.GLideN64Plugin.EnableNoise = GLideN64_EnableNoise.Checked;
 			_ss.GLideN64Plugin.EnableLOD = GLideN64_EnableLOD.Checked;
@@ -749,6 +751,8 @@ namespace BizHawk.Client.EmuHawk
 				.PopulateFromEnum<N64SyncSettings.N64GLideN64PluginSettings.bilinearFilteringMode>(_ss.GLideN64Plugin.bilinearMode);
 			GLideN64_MaxAnisotropy.Checked = _ss.GLideN64Plugin.MaxAnisotropy;
 			GLideN64_CacheSize.Text = _ss.GLideN64Plugin.CacheSize.ToString();
+			GLideN64_ShowInternalResolution.Checked = _ss.GLideN64Plugin.ShowInternalResolution;
+			GLideN64_ShowRenderingResolution.Checked = _ss.GLideN64Plugin.ShowRenderingResolution;
 			GLideN64_FXAA.Checked = _ss.GLideN64Plugin.FXAA;
 			GLideN64_EnableNoise.Checked = _ss.GLideN64Plugin.EnableNoise;
 			GLideN64_EnableLOD.Checked = _ss.GLideN64Plugin.EnableLOD;

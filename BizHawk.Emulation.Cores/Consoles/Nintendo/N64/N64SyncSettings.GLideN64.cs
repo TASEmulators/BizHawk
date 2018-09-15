@@ -21,6 +21,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				bilinearMode = bilinearFilteringMode.Standard;
 				MaxAnisotropy = false;
 				CacheSize = 8000;
+				ShowInternalResolution = false;
+				ShowRenderingResolution = false;
 				FXAA = false;
 				EnableNoise = true;
 				EnableLOD = true;
@@ -133,6 +135,16 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[DisplayName("Cache Size")]
 			[Description("Size of texture cache in megabytes. Good value is VRAM*3/4")]
 			public int CacheSize { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Show Internal Resolution")]
+			[Description("Show internal resolution.")]
+			public bool ShowInternalResolution { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Show Rendering Resolution")]
+			[Description("Show rendering resolution.")]
+			public bool ShowRenderingResolution { get; set; }
 
 			[DefaultValue(false)]
 			[DisplayName("FXAA")]

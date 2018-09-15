@@ -48,6 +48,7 @@
 			this.GLideN64Tab = new System.Windows.Forms.TabPage();
 			this.tabControl3 = new System.Windows.Forms.TabControl();
 			this.tabPage5 = new System.Windows.Forms.TabPage();
+			this.GLideN64_FXAA = new System.Windows.Forms.CheckBox();
 			this.label88 = new System.Windows.Forms.Label();
 			this.GLideN64_GammaCorrectionLevel = new System.Windows.Forms.TextBox();
 			this.GLideN64_ForceGammaCorrection = new System.Windows.Forms.CheckBox();
@@ -361,7 +362,8 @@
 			this.SaveButton = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-			this.GLideN64_FXAA = new System.Windows.Forms.CheckBox();
+			this.GLideN64_ShowInternalResolution = new System.Windows.Forms.CheckBox();
+			this.GLideN64_ShowRenderingResolution = new System.Windows.Forms.CheckBox();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.GLideN64Tab.SuspendLayout();
@@ -605,6 +607,8 @@
 			// 
 			// tabPage5
 			// 
+			this.tabPage5.Controls.Add(this.GLideN64_ShowRenderingResolution);
+			this.tabPage5.Controls.Add(this.GLideN64_ShowInternalResolution);
 			this.tabPage5.Controls.Add(this.GLideN64_FXAA);
 			this.tabPage5.Controls.Add(this.label88);
 			this.tabPage5.Controls.Add(this.GLideN64_GammaCorrectionLevel);
@@ -636,6 +640,16 @@
 			this.tabPage5.TabIndex = 0;
 			this.tabPage5.Text = "General";
 			this.tabPage5.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_FXAA
+			// 
+			this.GLideN64_FXAA.AutoSize = true;
+			this.GLideN64_FXAA.Location = new System.Drawing.Point(6, 237);
+			this.GLideN64_FXAA.Name = "GLideN64_FXAA";
+			this.GLideN64_FXAA.Size = new System.Drawing.Size(53, 17);
+			this.GLideN64_FXAA.TabIndex = 79;
+			this.GLideN64_FXAA.Text = "FXAA";
+			this.GLideN64_FXAA.UseVisualStyleBackColor = true;
 			// 
 			// label88
 			// 
@@ -4384,15 +4398,25 @@
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			// 
-			// GLideN64_FXAA
+			// GLideN64_ShowInternalResolution
 			// 
-			this.GLideN64_FXAA.AutoSize = true;
-			this.GLideN64_FXAA.Location = new System.Drawing.Point(6, 237);
-			this.GLideN64_FXAA.Name = "GLideN64_FXAA";
-			this.GLideN64_FXAA.Size = new System.Drawing.Size(53, 17);
-			this.GLideN64_FXAA.TabIndex = 79;
-			this.GLideN64_FXAA.Text = "FXAA";
-			this.GLideN64_FXAA.UseVisualStyleBackColor = true;
+			this.GLideN64_ShowInternalResolution.AutoSize = true;
+			this.GLideN64_ShowInternalResolution.Location = new System.Drawing.Point(309, 210);
+			this.GLideN64_ShowInternalResolution.Name = "GLideN64_ShowInternalResolution";
+			this.GLideN64_ShowInternalResolution.Size = new System.Drawing.Size(144, 17);
+			this.GLideN64_ShowInternalResolution.TabIndex = 80;
+			this.GLideN64_ShowInternalResolution.Text = "Show Internal Resolution";
+			this.GLideN64_ShowInternalResolution.UseVisualStyleBackColor = true;
+			// 
+			// GLideN64_ShowRenderingResolution
+			// 
+			this.GLideN64_ShowRenderingResolution.AutoSize = true;
+			this.GLideN64_ShowRenderingResolution.Location = new System.Drawing.Point(309, 234);
+			this.GLideN64_ShowRenderingResolution.Name = "GLideN64_ShowRenderingResolution";
+			this.GLideN64_ShowRenderingResolution.Size = new System.Drawing.Size(158, 17);
+			this.GLideN64_ShowRenderingResolution.TabIndex = 81;
+			this.GLideN64_ShowRenderingResolution.Text = "Show Rendering Resolution";
+			this.GLideN64_ShowRenderingResolution.UseVisualStyleBackColor = true;
 			// 
 			// N64VideoPluginconfig
 			// 
@@ -4788,5 +4812,7 @@
 		private System.Windows.Forms.Label label89;
 		private System.Windows.Forms.TextBox GLideN64_UseNativeResolutionFactor;
 		private System.Windows.Forms.CheckBox GLideN64_FXAA;
+		private System.Windows.Forms.CheckBox GLideN64_ShowRenderingResolution;
+		private System.Windows.Forms.CheckBox GLideN64_ShowInternalResolution;
 	}
 }
