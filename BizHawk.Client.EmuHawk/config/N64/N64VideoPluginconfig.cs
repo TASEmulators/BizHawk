@@ -456,6 +456,32 @@ namespace BizHawk.Client.EmuHawk
 				? float.Parse(GLideN64_GammaCorrectionLevel.Text)
 				: 2.0f;
 
+			_ss.GLideN64Plugin.EnableOverscan = GLideN64_EnableOverscan.Checked;
+			_ss.GLideN64Plugin.OverscanNtscTop = GLideN64_OverscanNtscTop.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanNtscTop.Text)
+				: 0;
+			_ss.GLideN64Plugin.OverscanNtscBottom = GLideN64_OverscanNtscBottom.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanNtscBottom.Text)
+				: 0;
+			_ss.GLideN64Plugin.OverscanNtscLeft = GLideN64_OverscanNtscLeft.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanNtscLeft.Text)
+				: 0;
+			_ss.GLideN64Plugin.OverscanNtscRight = GLideN64_OverscanNtscRight.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanNtscRight.Text)
+				: 0;
+			_ss.GLideN64Plugin.OverscanPalTop = GLideN64_OverscanPalTop.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanPalTop.Text)
+				: 0;
+			_ss.GLideN64Plugin.OverscanPalBottom = GLideN64_OverscanPalBottom.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanPalBottom.Text)
+				: 0;
+			_ss.GLideN64Plugin.OverscanPalLeft = GLideN64_OverscanPalLeft.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanPalLeft.Text)
+				: 0;
+			_ss.GLideN64Plugin.OverscanPalRight = GLideN64_OverscanPalRight.Text.IsSigned()
+				? int.Parse(GLideN64_OverscanPalRight.Text)
+				: 0;
+
 			_ss.GLideN64Plugin.EnableN64DepthCompare = GLideN64_EnableN64DepthCompare.Checked;
 			_ss.GLideN64Plugin.EnableCopyColorToRDRAM = GLideN64_EnableCopyColorToRDRAM.SelectedItem
 				.ToString()
@@ -791,6 +817,27 @@ namespace BizHawk.Client.EmuHawk
 			GLideN64_ForceGammaCorrection.Checked = _ss.GLideN64Plugin.ForceGammaCorrection;
 			GLideN64_GammaCorrectionLevel.Text = _ss.GLideN64Plugin.GammaCorrectionLevel.ToString();
 
+			GLideN64_OverscanNtscTop.Enabled =
+			GLideN64_OverscanNtscBottom.Enabled =
+			GLideN64_OverscanNtscLeft.Enabled =
+			GLideN64_OverscanNtscRight.Enabled =
+			GLideN64_OverscanPalTop.Enabled =
+			GLideN64_OverscanPalBottom.Enabled =
+			GLideN64_OverscanPalLeft.Enabled =
+			GLideN64_OverscanPalRight.Enabled =
+			GLideN64_EnableOverscan.Checked =
+			_ss.GLideN64Plugin.EnableOverscan =
+			GLideN64_EnableOverscan.Enabled =
+				false;
+			GLideN64_OverscanNtscTop.Text = _ss.GLideN64Plugin.OverscanNtscTop.ToString();
+			GLideN64_OverscanNtscBottom.Text = _ss.GLideN64Plugin.OverscanNtscBottom.ToString();
+			GLideN64_OverscanNtscLeft.Text = _ss.GLideN64Plugin.OverscanNtscLeft.ToString();
+			GLideN64_OverscanNtscRight.Text = _ss.GLideN64Plugin.OverscanNtscRight.ToString();
+			GLideN64_OverscanPalTop.Text = _ss.GLideN64Plugin.OverscanPalTop.ToString();
+			GLideN64_OverscanPalBottom.Text = _ss.GLideN64Plugin.OverscanPalBottom.ToString();
+			GLideN64_OverscanPalLeft.Text = _ss.GLideN64Plugin.OverscanPalLeft.ToString();
+			GLideN64_OverscanPalRight.Text = _ss.GLideN64Plugin.OverscanPalRight.ToString();
+
 			UpdateGLideN64HacksSection();
 			if (!_ss.GLideN64Plugin.UseDefaultHacks)
 			{
@@ -1098,6 +1145,19 @@ namespace BizHawk.Client.EmuHawk
 			GLideN64_EnableCopyDepthToRDRAM.Enabled = val;
 			GLideN64_EnableCopyColorFromRDRAM.Enabled = val;
 			GLideN64_EnableCopyAuxiliaryToRDRAM.Enabled = val;
+		}
+
+		private void GLideN64_EnableOverscan_CheckedChanged(object sender, EventArgs e)
+		{
+			GLideN64_OverscanNtscTop.Enabled =
+			GLideN64_OverscanNtscBottom.Enabled =
+			GLideN64_OverscanNtscLeft.Enabled =
+			GLideN64_OverscanNtscRight.Enabled =
+			GLideN64_OverscanPalTop.Enabled =
+			GLideN64_OverscanPalBottom.Enabled =
+			GLideN64_OverscanPalLeft.Enabled =
+			GLideN64_OverscanPalRight.Enabled =
+				GLideN64_EnableOverscan.Checked;
 		}
 
 		private void GlideUseDefaultHacks1_CheckedChanged(object sender, EventArgs e)

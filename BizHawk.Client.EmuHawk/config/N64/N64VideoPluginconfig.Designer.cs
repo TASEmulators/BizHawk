@@ -364,6 +364,23 @@
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.GLideN64_ShowInternalResolution = new System.Windows.Forms.CheckBox();
 			this.GLideN64_ShowRenderingResolution = new System.Windows.Forms.CheckBox();
+			this.GLideN64_EnableOverscan = new System.Windows.Forms.CheckBox();
+			this.label90 = new System.Windows.Forms.Label();
+			this.label91 = new System.Windows.Forms.Label();
+			this.label92 = new System.Windows.Forms.Label();
+			this.label93 = new System.Windows.Forms.Label();
+			this.GLideN64_OverscanNtscTop = new System.Windows.Forms.TextBox();
+			this.GLideN64_OverscanNtscBottom = new System.Windows.Forms.TextBox();
+			this.GLideN64_OverscanNtscLeft = new System.Windows.Forms.TextBox();
+			this.GLideN64_OverscanNtscRight = new System.Windows.Forms.TextBox();
+			this.label94 = new System.Windows.Forms.Label();
+			this.label95 = new System.Windows.Forms.Label();
+			this.label96 = new System.Windows.Forms.Label();
+			this.label97 = new System.Windows.Forms.Label();
+			this.GLideN64_OverscanPalTop = new System.Windows.Forms.TextBox();
+			this.GLideN64_OverscanPalBottom = new System.Windows.Forms.TextBox();
+			this.GLideN64_OverscanPalLeft = new System.Windows.Forms.TextBox();
+			this.GLideN64_OverscanPalRight = new System.Windows.Forms.TextBox();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.GLideN64Tab.SuspendLayout();
@@ -1251,6 +1268,23 @@
 			// 
 			// tabPage7
 			// 
+			this.tabPage7.Controls.Add(this.GLideN64_OverscanPalRight);
+			this.tabPage7.Controls.Add(this.GLideN64_OverscanNtscRight);
+			this.tabPage7.Controls.Add(this.GLideN64_OverscanPalLeft);
+			this.tabPage7.Controls.Add(this.GLideN64_OverscanNtscLeft);
+			this.tabPage7.Controls.Add(this.GLideN64_OverscanPalBottom);
+			this.tabPage7.Controls.Add(this.GLideN64_OverscanNtscBottom);
+			this.tabPage7.Controls.Add(this.GLideN64_OverscanPalTop);
+			this.tabPage7.Controls.Add(this.label97);
+			this.tabPage7.Controls.Add(this.GLideN64_OverscanNtscTop);
+			this.tabPage7.Controls.Add(this.label96);
+			this.tabPage7.Controls.Add(this.label93);
+			this.tabPage7.Controls.Add(this.label95);
+			this.tabPage7.Controls.Add(this.label92);
+			this.tabPage7.Controls.Add(this.label94);
+			this.tabPage7.Controls.Add(this.label91);
+			this.tabPage7.Controls.Add(this.label90);
+			this.tabPage7.Controls.Add(this.GLideN64_EnableOverscan);
 			this.tabPage7.Controls.Add(this.label89);
 			this.tabPage7.Controls.Add(this.GLideN64_UseNativeResolutionFactor);
 			this.tabPage7.Controls.Add(this.GLideN64_DisableFBInfo);
@@ -4418,6 +4452,145 @@
 			this.GLideN64_ShowRenderingResolution.Text = "Show Rendering Resolution";
 			this.GLideN64_ShowRenderingResolution.UseVisualStyleBackColor = true;
 			// 
+			// GLideN64_EnableOverscan
+			// 
+			this.GLideN64_EnableOverscan.AutoSize = true;
+			this.GLideN64_EnableOverscan.Location = new System.Drawing.Point(293, 171);
+			this.GLideN64_EnableOverscan.Name = "GLideN64_EnableOverscan";
+			this.GLideN64_EnableOverscan.Size = new System.Drawing.Size(108, 17);
+			this.GLideN64_EnableOverscan.TabIndex = 79;
+			this.GLideN64_EnableOverscan.Text = "Enable Overscan";
+			this.GLideN64_EnableOverscan.UseVisualStyleBackColor = true;
+			this.GLideN64_EnableOverscan.CheckedChanged += new System.EventHandler(this.GLideN64_EnableOverscan_CheckedChanged);
+			// 
+			// label90
+			// 
+			this.label90.AutoSize = true;
+			this.label90.Location = new System.Drawing.Point(290, 201);
+			this.label90.Name = "label90";
+			this.label90.Size = new System.Drawing.Size(58, 13);
+			this.label90.TabIndex = 80;
+			this.label90.Text = "NTSC Top";
+			// 
+			// label91
+			// 
+			this.label91.AutoSize = true;
+			this.label91.Location = new System.Drawing.Point(290, 224);
+			this.label91.Name = "label91";
+			this.label91.Size = new System.Drawing.Size(72, 13);
+			this.label91.TabIndex = 81;
+			this.label91.Text = "NTSC Bottom";
+			// 
+			// label92
+			// 
+			this.label92.AutoSize = true;
+			this.label92.Location = new System.Drawing.Point(290, 247);
+			this.label92.Name = "label92";
+			this.label92.Size = new System.Drawing.Size(57, 13);
+			this.label92.TabIndex = 82;
+			this.label92.Text = "NTSC Left";
+			// 
+			// label93
+			// 
+			this.label93.AutoSize = true;
+			this.label93.Location = new System.Drawing.Point(290, 269);
+			this.label93.Name = "label93";
+			this.label93.Size = new System.Drawing.Size(64, 13);
+			this.label93.TabIndex = 83;
+			this.label93.Text = "NTSC Right";
+			// 
+			// GLideN64_OverscanNtscTop
+			// 
+			this.GLideN64_OverscanNtscTop.Location = new System.Drawing.Point(368, 198);
+			this.GLideN64_OverscanNtscTop.Name = "GLideN64_OverscanNtscTop";
+			this.GLideN64_OverscanNtscTop.Size = new System.Drawing.Size(42, 20);
+			this.GLideN64_OverscanNtscTop.TabIndex = 84;
+			// 
+			// GLideN64_OverscanNtscBottom
+			// 
+			this.GLideN64_OverscanNtscBottom.Location = new System.Drawing.Point(368, 221);
+			this.GLideN64_OverscanNtscBottom.Name = "GLideN64_OverscanNtscBottom";
+			this.GLideN64_OverscanNtscBottom.Size = new System.Drawing.Size(42, 20);
+			this.GLideN64_OverscanNtscBottom.TabIndex = 85;
+			// 
+			// GLideN64_OverscanNtscLeft
+			// 
+			this.GLideN64_OverscanNtscLeft.Location = new System.Drawing.Point(368, 244);
+			this.GLideN64_OverscanNtscLeft.Name = "GLideN64_OverscanNtscLeft";
+			this.GLideN64_OverscanNtscLeft.Size = new System.Drawing.Size(42, 20);
+			this.GLideN64_OverscanNtscLeft.TabIndex = 86;
+			// 
+			// GLideN64_OverscanNtscRight
+			// 
+			this.GLideN64_OverscanNtscRight.Location = new System.Drawing.Point(368, 266);
+			this.GLideN64_OverscanNtscRight.Name = "GLideN64_OverscanNtscRight";
+			this.GLideN64_OverscanNtscRight.Size = new System.Drawing.Size(42, 20);
+			this.GLideN64_OverscanNtscRight.TabIndex = 87;
+			// 
+			// label94
+			// 
+			this.label94.AutoSize = true;
+			this.label94.Location = new System.Drawing.Point(448, 201);
+			this.label94.Name = "label94";
+			this.label94.Size = new System.Drawing.Size(49, 13);
+			this.label94.TabIndex = 80;
+			this.label94.Text = "PAL Top";
+			// 
+			// label95
+			// 
+			this.label95.AutoSize = true;
+			this.label95.Location = new System.Drawing.Point(448, 224);
+			this.label95.Name = "label95";
+			this.label95.Size = new System.Drawing.Size(63, 13);
+			this.label95.TabIndex = 81;
+			this.label95.Text = "PAL Bottom";
+			// 
+			// label96
+			// 
+			this.label96.AutoSize = true;
+			this.label96.Location = new System.Drawing.Point(448, 247);
+			this.label96.Name = "label96";
+			this.label96.Size = new System.Drawing.Size(48, 13);
+			this.label96.TabIndex = 82;
+			this.label96.Text = "PAL Left";
+			// 
+			// label97
+			// 
+			this.label97.AutoSize = true;
+			this.label97.Location = new System.Drawing.Point(448, 269);
+			this.label97.Name = "label97";
+			this.label97.Size = new System.Drawing.Size(55, 13);
+			this.label97.TabIndex = 83;
+			this.label97.Text = "PAL Right";
+			// 
+			// GLideN64_OverscanPalTop
+			// 
+			this.GLideN64_OverscanPalTop.Location = new System.Drawing.Point(517, 198);
+			this.GLideN64_OverscanPalTop.Name = "GLideN64_OverscanPalTop";
+			this.GLideN64_OverscanPalTop.Size = new System.Drawing.Size(42, 20);
+			this.GLideN64_OverscanPalTop.TabIndex = 84;
+			// 
+			// GLideN64_OverscanPalBottom
+			// 
+			this.GLideN64_OverscanPalBottom.Location = new System.Drawing.Point(517, 221);
+			this.GLideN64_OverscanPalBottom.Name = "GLideN64_OverscanPalBottom";
+			this.GLideN64_OverscanPalBottom.Size = new System.Drawing.Size(42, 20);
+			this.GLideN64_OverscanPalBottom.TabIndex = 85;
+			// 
+			// GLideN64_OverscanPalLeft
+			// 
+			this.GLideN64_OverscanPalLeft.Location = new System.Drawing.Point(517, 244);
+			this.GLideN64_OverscanPalLeft.Name = "GLideN64_OverscanPalLeft";
+			this.GLideN64_OverscanPalLeft.Size = new System.Drawing.Size(42, 20);
+			this.GLideN64_OverscanPalLeft.TabIndex = 86;
+			// 
+			// GLideN64_OverscanPalRight
+			// 
+			this.GLideN64_OverscanPalRight.Location = new System.Drawing.Point(517, 266);
+			this.GLideN64_OverscanPalRight.Name = "GLideN64_OverscanPalRight";
+			this.GLideN64_OverscanPalRight.Size = new System.Drawing.Size(42, 20);
+			this.GLideN64_OverscanPalRight.TabIndex = 87;
+			// 
 			// N64VideoPluginconfig
 			// 
 			this.AcceptButton = this.SaveButton;
@@ -4814,5 +4987,22 @@
 		private System.Windows.Forms.CheckBox GLideN64_FXAA;
 		private System.Windows.Forms.CheckBox GLideN64_ShowRenderingResolution;
 		private System.Windows.Forms.CheckBox GLideN64_ShowInternalResolution;
+		private System.Windows.Forms.CheckBox GLideN64_EnableOverscan;
+		private System.Windows.Forms.TextBox GLideN64_OverscanPalRight;
+		private System.Windows.Forms.TextBox GLideN64_OverscanNtscRight;
+		private System.Windows.Forms.TextBox GLideN64_OverscanPalLeft;
+		private System.Windows.Forms.TextBox GLideN64_OverscanNtscLeft;
+		private System.Windows.Forms.TextBox GLideN64_OverscanPalBottom;
+		private System.Windows.Forms.TextBox GLideN64_OverscanNtscBottom;
+		private System.Windows.Forms.TextBox GLideN64_OverscanPalTop;
+		private System.Windows.Forms.Label label97;
+		private System.Windows.Forms.TextBox GLideN64_OverscanNtscTop;
+		private System.Windows.Forms.Label label96;
+		private System.Windows.Forms.Label label93;
+		private System.Windows.Forms.Label label95;
+		private System.Windows.Forms.Label label92;
+		private System.Windows.Forms.Label label94;
+		private System.Windows.Forms.Label label91;
+		private System.Windows.Forms.Label label90;
 	}
 }
