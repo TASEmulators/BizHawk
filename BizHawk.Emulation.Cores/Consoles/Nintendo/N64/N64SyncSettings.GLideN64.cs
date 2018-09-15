@@ -21,6 +21,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				bilinearMode = bilinearFilteringMode.Standard;
 				MaxAnisotropy = false;
 				CacheSize = 8000;
+				FXAA = false;
 				EnableNoise = true;
 				EnableLOD = true;
 				EnableHWLighting = false;
@@ -132,6 +133,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[DisplayName("Cache Size")]
 			[Description("Size of texture cache in megabytes. Good value is VRAM*3/4")]
 			public int CacheSize { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("FXAA")]
+			[Description("Enable Fast Approximate Anti-Aliasing.")]
+			public bool FXAA { get; set; }
 
 			[DefaultValue(true)]
 			[DisplayName("Color noise emulation")]

@@ -361,6 +361,7 @@
 			this.SaveButton = new System.Windows.Forms.Button();
 			this.CancelBT = new System.Windows.Forms.Button();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.GLideN64_FXAA = new System.Windows.Forms.CheckBox();
 			this.N64plugintabcontrol.SuspendLayout();
 			this.N64vpluginglobaltab.SuspendLayout();
 			this.GLideN64Tab.SuspendLayout();
@@ -518,7 +519,7 @@
 			this.label47.AutoSize = true;
 			this.label47.Location = new System.Drawing.Point(10, 115);
 			this.label47.Name = "label47";
-            this.label47.Size = new System.Drawing.Size(275, 13);
+			this.label47.Size = new System.Drawing.Size(319, 13);
 			this.label47.TabIndex = 14;
 			this.label47.Text = "(GLideN64 is the newest pluging and has the highest compatibility)";
 			// 
@@ -604,6 +605,7 @@
 			// 
 			// tabPage5
 			// 
+			this.tabPage5.Controls.Add(this.GLideN64_FXAA);
 			this.tabPage5.Controls.Add(this.label88);
 			this.tabPage5.Controls.Add(this.GLideN64_GammaCorrectionLevel);
 			this.tabPage5.Controls.Add(this.GLideN64_ForceGammaCorrection);
@@ -4382,6 +4384,16 @@
 			this.toolTip1.ReshowDelay = 100;
 			this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 			// 
+			// GLideN64_FXAA
+			// 
+			this.GLideN64_FXAA.AutoSize = true;
+			this.GLideN64_FXAA.Location = new System.Drawing.Point(6, 237);
+			this.GLideN64_FXAA.Name = "GLideN64_FXAA";
+			this.GLideN64_FXAA.Size = new System.Drawing.Size(53, 17);
+			this.GLideN64_FXAA.TabIndex = 79;
+			this.GLideN64_FXAA.Text = "FXAA";
+			this.GLideN64_FXAA.UseVisualStyleBackColor = true;
+			// 
 			// N64VideoPluginconfig
 			// 
 			this.AcceptButton = this.SaveButton;
@@ -4775,5 +4787,6 @@
 		private System.Windows.Forms.TextBox GLideN64_GammaCorrectionLevel;
 		private System.Windows.Forms.Label label89;
 		private System.Windows.Forms.TextBox GLideN64_UseNativeResolutionFactor;
+		private System.Windows.Forms.CheckBox GLideN64_FXAA;
 	}
 }
