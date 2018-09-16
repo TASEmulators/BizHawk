@@ -614,13 +614,14 @@ namespace BizHawk.Client.EmuHawk
 			if (!job.simulate && !job.offscreen)
 			{
 				GLManager.Activate(CR_GraphicsControl);
-			}
 
-			if (job.chain_outsize.Width == 0 || job.chain_outsize.Height == 0)
-			{
-				//this has to be a NOP, because lots of stuff will malfunction on a 0-sized viewport
-				UpdateSourceDrawingWork(job); //but we still need to do this, because of vsync
-				return null;
+				if (job.chain_outsize.Width == 0 || job.chain_outsize.Height == 0)
+				{
+					//this has to be a NOP, because lots of stuff will malfunction on a 0-sized viewport
+					if (CurrentFilterProgram != null)
+						UpdateSourceDrawingWork(job); //but we still need to do this, because of vsync
+					return null;
+				}
 			}
 
 			IVideoProvider videoProvider = job.videoProvider;
