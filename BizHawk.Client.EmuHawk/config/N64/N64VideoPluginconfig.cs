@@ -826,9 +826,7 @@ namespace BizHawk.Client.EmuHawk
 			GLideN64_OverscanPalLeft.Enabled =
 			GLideN64_OverscanPalRight.Enabled =
 			GLideN64_EnableOverscan.Checked =
-			_ss.GLideN64Plugin.EnableOverscan =
-			GLideN64_EnableOverscan.Enabled =
-				false;
+				_ss.GLideN64Plugin.EnableOverscan;
 			GLideN64_OverscanNtscTop.Text = _ss.GLideN64Plugin.OverscanNtscTop.ToString();
 			GLideN64_OverscanNtscBottom.Text = _ss.GLideN64Plugin.OverscanNtscBottom.ToString();
 			GLideN64_OverscanNtscLeft.Text = _ss.GLideN64Plugin.OverscanNtscLeft.ToString();
