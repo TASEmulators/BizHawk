@@ -308,7 +308,7 @@ namespace BizHawk.Client.EmuHawk
 		public string DesiredExtension()
 		{
 			// this needs to interface with the codec token
-			return _token.Defaultext;
+			return _token.Extension;
 		}
 
 		public void SetDefaultVideoCodecToken()
