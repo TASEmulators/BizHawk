@@ -129,7 +129,6 @@ CCB76C009E52E32E2DCC528481F0E039		Captain Silver (JE)	SMS		FM	Europe;Japan
 EC16428B908A2C0036B799E55614BE3D		Casino Games (UE)	SMS	Card Game	FM	USA;Europe
 47F513D0F9D2896BF1A87254337D5B29		Castelo Ra-Tim-Bum (B)	SMS			Brazil
 E9B4B92BC29CA8FBE9978DA6720BD1EB		Castle of Illusion Starring Mickey Mouse (U)	SMS	Disney		USA
-16B6EA96908C17D4389A5907710A0F4E		Castle of Illusion Starring Mickey Mouse (UE) (SMSGG)	SMS	Disney		USA;Europe
 E7E1EF0A9E20585E2266E8ADBAF4B8C9		Castle of Illusion Starring Mickey Mouse (E)	SMS	Disney		Europe
 290056BCB4303D3C53EA7B6AA2A268A7		Castle of Illusion Starring Mickey Mouse (J) (SMSGG)	SMS	Disney		Japan
 66CAA446178F98BC9FCEAA3C781BC601		Castle of Illusion Starring Mickey Mouse (Sample)	SMS	Disney		
