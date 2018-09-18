@@ -1,5 +1,7 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 
@@ -238,6 +240,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         public string Media { get; set; }
         public string OtherMisc { get; set; }
 
+        Dictionary<string, string> Data = new Dictionary<string, string>();
 
         public static ZXMachineMetaData GetMetaObject(MachineType type)
         {
@@ -318,6 +321,16 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     m.Media = "3\" Floppy Disk (via built-in Floppy Drive)";
                     break;
             }
+
+            m.Data.Add(ZXSpectrum.GetMemberName((ZXMachineMetaData c) => c.Name), m.Name.Trim());
+            m.Data.Add(ZXSpectrum.GetMemberName((ZXMachineMetaData c) => c.Description), m.Description.Trim());
+            m.Data.Add(ZXSpectrum.GetMemberName((ZXMachineMetaData c) => c.Released), m.Released.Trim());
+            m.Data.Add(ZXSpectrum.GetMemberName((ZXMachineMetaData c) => c.CPU), m.CPU.Trim());
+            m.Data.Add(ZXSpectrum.GetMemberName((ZXMachineMetaData c) => c.Memory), m.Memory.Trim());
+            m.Data.Add(ZXSpectrum.GetMemberName((ZXMachineMetaData c) => c.Video), m.Video.Trim());
+            m.Data.Add(ZXSpectrum.GetMemberName((ZXMachineMetaData c) => c.Audio), m.Audio.Trim());
+            m.Data.Add(ZXSpectrum.GetMemberName((ZXMachineMetaData c) => c.Media), m.Media.Trim());
+
             return m;
         }
 
@@ -327,48 +340,70 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 
             StringBuilder sb = new StringBuilder();
 
-            sb.Append(m.Name);
-            sb.Append("\n");
-            sb.Append("-----------------------------------------------------------------\n");
-            // Release
-            sb.Append("Released:");
-            sb.Append(" ");
-            sb.Append(m.Released);
-            sb.Append("\n");
-            // CPU
-            sb.Append("CPU:");
-            sb.Append("      ");
-            sb.Append(m.CPU);
-            sb.Append("\n");
-            // Memory
-            sb.Append("Memory:");
-            sb.Append("   ");
-            sb.Append(m.Memory);
-            sb.Append("\n");
-            // Video
-            sb.Append("Video:");
-            sb.Append("    ");
-            sb.Append(m.Video);
-            sb.Append("\n");
-            // Audio
-            sb.Append("Audio:");
-            sb.Append("    ");
-            sb.Append(m.Audio);
-            sb.Append("\n");
-            // Audio
-            sb.Append("Media:");
-            sb.Append("    ");
-            sb.Append(m.Media);
-            sb.Append("\n");
+            // get longest title
+            int titleLen = 0;
+            foreach (var d in m.Data)
+            {
+                if (d.Key.Length > titleLen)
+                    titleLen = d.Key.Length;
+            }
 
-            sb.Append("-----------------------------------------------------------------\n");
-            // description
-            sb.Append(m.Description);
-            if (m.OtherMisc != null)
-                sb.Append("\n" + m.OtherMisc);
+            var maxDataLineLen = 40;
+
+            // generate layout
+            foreach (var d in m.Data)
+            {
+                var tLen = d.Key.Length;
+                var makeup = (titleLen - tLen) / 4;
+                sb.Append(d.Key + ":\t");
+                for (int i = 0; i < makeup; i++)
+                {
+                    if (tLen > 4)
+                        sb.Append("\t");
+                    else
+                    {
+                        makeup--;
+                        sb.Append("\t");
+                    }
+                }
+
+                // output the data splitting and tabbing as neccessary
+                var arr = d.Value.Split(' ');
+                int cnt = 0;
+
+                List<string> builder = new List<string>();
+                string working = "";
+                foreach (var s in arr)
+                {
+                    var len = s.Length;
+                    if (working.Length + 1 + len > maxDataLineLen)
+                    {
+                        // new line needed
+                        builder.Add(working.Trim(' '));
+                        working = "";
+                    }
+                    working += s + " ";
+                }
+
+                builder.Add(working.Trim(' '));
+
+                // output the data
+                for (int i = 0; i < builder.Count; i++)
+                {
+                    if (i != 0)
+                    {
+                        sb.Append("\t");
+                        sb.Append("\t");
+                    }
+
+                    sb.Append(builder[i]);
+                    sb.Append("\r\n");
+                }
+
+                //sb.Append("\r\n");
+            }
 
             return sb.ToString();
-            
         }
     }
 }

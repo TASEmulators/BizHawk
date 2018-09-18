@@ -43,7 +43,7 @@
             // OkBtn
             // 
             this.OkBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.OkBtn.Location = new System.Drawing.Point(247, 142);
+            this.OkBtn.Location = new System.Drawing.Point(247, 160);
             this.OkBtn.Name = "OkBtn";
             this.OkBtn.Size = new System.Drawing.Size(60, 23);
             this.OkBtn.TabIndex = 3;
@@ -55,7 +55,7 @@
             // 
             this.CancelBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelBtn.Location = new System.Drawing.Point(313, 142);
+            this.CancelBtn.Location = new System.Drawing.Point(313, 160);
             this.CancelBtn.Name = "CancelBtn";
             this.CancelBtn.Size = new System.Drawing.Size(60, 23);
             this.CancelBtn.TabIndex = 4;
@@ -74,10 +74,10 @@
             // 
             // lblOSDVerbinfo
             // 
-            this.lblOSDVerbinfo.Font = new System.Drawing.Font("Lucida Console", 6.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblOSDVerbinfo.Location = new System.Drawing.Point(175, 117);
+            this.lblOSDVerbinfo.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblOSDVerbinfo.Location = new System.Drawing.Point(175, 89);
             this.lblOSDVerbinfo.Name = "lblOSDVerbinfo";
-            this.lblOSDVerbinfo.Size = new System.Drawing.Size(196, 21);
+            this.lblOSDVerbinfo.Size = new System.Drawing.Size(196, 68);
             this.lblOSDVerbinfo.TabIndex = 28;
             this.lblOSDVerbinfo.Text = "null";
             this.lblOSDVerbinfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -138,7 +138,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.CancelBtn;
-            this.ClientSize = new System.Drawing.Size(385, 177);
+            this.ClientSize = new System.Drawing.Size(385, 195);
             this.Controls.Add(this.checkBoxShowCoreBrdColor);
             this.Controls.Add(this.buttonChooseBGColor);
             this.Controls.Add(this.label2);
@@ -148,6 +148,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.CancelBtn);
             this.Controls.Add(this.OkBtn);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ZXSpectrumNonSyncSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

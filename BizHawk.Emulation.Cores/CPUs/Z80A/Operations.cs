@@ -49,7 +49,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			Regs[dest] = ReadHardware((ushort)(Regs[src_l] | (Regs[src_h]) << 8));
 			Regs[DB] = Regs[dest];
 
-			FlagZ = Regs[dest] == 0;
+			//FlagZ = Regs[dest] == 0;
 			FlagP = TableParity[Regs[dest]];
 			FlagH = false;
 			FlagN = false;
