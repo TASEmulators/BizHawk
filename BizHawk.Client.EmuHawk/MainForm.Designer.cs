@@ -393,6 +393,15 @@
             this.ZXSpectrumDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.zxt2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ZXSpectrumExportSnapshotMenuItemMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.amstradCPCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.amstradCPCCoreEmulationSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AmstradCPCAudioSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AmstradCPCPokeMemoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AmstradCPCMediaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AmstradCPCTapesSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.cpct1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.AmstradCPCDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.cpcd1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Atari7800HawkCoreMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainStatusBar = new StatusStripEx();
             this.DumpStatusButton = new System.Windows.Forms.ToolStripDropDownButton();
@@ -465,6 +474,7 @@
             this.ShowMenuContextMenuSeparator = new System.Windows.Forms.ToolStripSeparator();
             this.ShowMenuContextMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerMouseIdle = new System.Windows.Forms.Timer(this.components);
+            this.AmstradCPCNonSyncSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainformMenu.SuspendLayout();
             this.MainStatusBar.SuspendLayout();
             this.MainFormContextMenu.SuspendLayout();
@@ -503,7 +513,8 @@
             this.virtualBoyToolStripMenuItem,
             this.neoGeoPocketToolStripMenuItem,
             this.zXSpectrumToolStripMenuItem,
-            this.HelpSubMenu});
+            this.HelpSubMenu,
+            this.amstradCPCToolStripMenuItem});
             this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.MainformMenu.Location = new System.Drawing.Point(0, 0);
             this.MainformMenu.Name = "MainformMenu";
@@ -3498,6 +3509,79 @@
             this.ZXSpectrumExportSnapshotMenuItemMenuItem.Size = new System.Drawing.Size(159, 22);
             this.ZXSpectrumExportSnapshotMenuItemMenuItem.Text = "Export Snapshot";
             this.ZXSpectrumExportSnapshotMenuItemMenuItem.Click += new System.EventHandler(this.ZXSpectrumExportSnapshotMenuItemMenuItem_Click);
+            //
+            // amstradCPCToolStripMenuItem
+            // 
+            this.amstradCPCToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.amstradCPCCoreEmulationSettingsToolStripMenuItem,
+            this.AmstradCPCAudioSettingsToolStripMenuItem,
+            this.AmstradCPCNonSyncSettingsToolStripMenuItem,
+            this.AmstradCPCPokeMemoryToolStripMenuItem,
+            this.AmstradCPCMediaToolStripMenuItem});
+            this.amstradCPCToolStripMenuItem.Name = "amstradCPCToolStripMenuItem";
+            this.amstradCPCToolStripMenuItem.Size = new System.Drawing.Size(90, 19);
+            this.amstradCPCToolStripMenuItem.Text = "Amstrad CPC";
+            // 
+            // amstradCPCCoreEmulationSettingsToolStripMenuItem
+            // 
+            this.amstradCPCCoreEmulationSettingsToolStripMenuItem.Name = "amstradCPCCoreEmulationSettingsToolStripMenuItem";
+            this.amstradCPCCoreEmulationSettingsToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.amstradCPCCoreEmulationSettingsToolStripMenuItem.Text = "Core Emulation Settings";
+            this.amstradCPCCoreEmulationSettingsToolStripMenuItem.Click += new System.EventHandler(this.amstradCPCCoreEmulationSettingsToolStripMenuItem_Click);
+            // 
+            // AmstradCPCAudioSettingsToolStripMenuItem
+            // 
+            this.AmstradCPCAudioSettingsToolStripMenuItem.Name = "AmstradCPCAudioSettingsToolStripMenuItem";
+            this.AmstradCPCAudioSettingsToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.AmstradCPCAudioSettingsToolStripMenuItem.Text = "Audio Settings";
+            this.AmstradCPCAudioSettingsToolStripMenuItem.Click += new System.EventHandler(this.AmstradCPCAudioSettingsToolStripMenuItem_Click);
+            // 
+            // AmstradCPCPokeMemoryToolStripMenuItem
+            // 
+            this.AmstradCPCPokeMemoryToolStripMenuItem.Name = "AmstradCPCPokeMemoryToolStripMenuItem";
+            this.AmstradCPCPokeMemoryToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.AmstradCPCPokeMemoryToolStripMenuItem.Text = "POKE Memory";
+            this.AmstradCPCPokeMemoryToolStripMenuItem.Click += new System.EventHandler(this.AmstradCPCPokeMemoryToolStripMenuItem_Click);
+            // 
+            // AmstradCPCMediaToolStripMenuItem
+            // 
+            this.AmstradCPCMediaToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.AmstradCPCTapesSubMenu,
+            this.AmstradCPCDisksSubMenu});
+            this.AmstradCPCMediaToolStripMenuItem.Name = "AmstradCPCMediaToolStripMenuItem";
+            this.AmstradCPCMediaToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.AmstradCPCMediaToolStripMenuItem.Text = "Media";
+            this.AmstradCPCMediaToolStripMenuItem.DropDownOpened += new System.EventHandler(this.AmstradCPCMediaToolStripMenuItem_DropDownOpened);
+            // 
+            // AmstradCPCTapesSubMenu
+            // 
+            this.AmstradCPCTapesSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cpct1ToolStripMenuItem});
+            this.AmstradCPCTapesSubMenu.Name = "AmstradCPCTapesSubMenu";
+            this.AmstradCPCTapesSubMenu.Size = new System.Drawing.Size(105, 22);
+            this.AmstradCPCTapesSubMenu.Text = "Tapes";
+            this.AmstradCPCTapesSubMenu.DropDownOpened += new System.EventHandler(this.AmstradCPCTapesSubMenu_DropDownOpened);
+            // 
+            // cpct1ToolStripMenuItem
+            // 
+            this.cpct1ToolStripMenuItem.Name = "cpct1ToolStripMenuItem";
+            this.cpct1ToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.cpct1ToolStripMenuItem.Text = "cpct1";
+            // 
+            // AmstradCPCDisksSubMenu
+            // 
+            this.AmstradCPCDisksSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cpcd1ToolStripMenuItem});
+            this.AmstradCPCDisksSubMenu.Name = "AmstradCPCDisksSubMenu";
+            this.AmstradCPCDisksSubMenu.Size = new System.Drawing.Size(105, 22);
+            this.AmstradCPCDisksSubMenu.Text = "Disks";
+            this.AmstradCPCDisksSubMenu.DropDownOpened += new System.EventHandler(this.AmstradCPCDisksSubMenu_DropDownOpened);
+            // 
+            // cpcd1ToolStripMenuItem
+            // 
+            this.cpcd1ToolStripMenuItem.Name = "cpcd1ToolStripMenuItem";
+            this.cpcd1ToolStripMenuItem.Size = new System.Drawing.Size(106, 22);
+            this.cpcd1ToolStripMenuItem.Text = "cpcd1";
             // 
             // Atari7800HawkCoreMenuItem
             // 
@@ -4125,6 +4209,13 @@
             this.timerMouseIdle.Interval = 2000;
             this.timerMouseIdle.Tick += new System.EventHandler(this.TimerMouseIdle_Tick);
             // 
+            // AmstradCPCNonSyncSettingsToolStripMenuItem
+            // 
+            this.AmstradCPCNonSyncSettingsToolStripMenuItem.Name = "AmstradCPCNonSyncSettingsToolStripMenuItem";
+            this.AmstradCPCNonSyncSettingsToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
+            this.AmstradCPCNonSyncSettingsToolStripMenuItem.Text = "Non-Sync Settings";
+            this.AmstradCPCNonSyncSettingsToolStripMenuItem.Click += new System.EventHandler(this.AmstradCPCNonSyncSettingsToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -4589,17 +4680,27 @@
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerLightPhaserToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerSportsPadToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerKeyboardToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem zXSpectrumToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumControllerConfigurationMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumCoreEmulationSettingsMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumNonSyncSettingsMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumAudioSettingsMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumPokeMemoryMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumMediaMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumTapesSubMenu;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumDisksSubMenu;
-        private System.Windows.Forms.ToolStripMenuItem zxt1ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem zxt2ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumExportSnapshotMenuItemMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem zXSpectrumToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumControllerConfigurationMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumCoreEmulationSettingsMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumNonSyncSettingsMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumAudioSettingsMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumPokeMemoryMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumMediaMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumTapesSubMenu;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumDisksSubMenu;
+    private System.Windows.Forms.ToolStripMenuItem zxt1ToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem zxt2ToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumExportSnapshotMenuItemMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem amstradCPCToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem amstradCPCCoreEmulationSettingsToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem AmstradCPCAudioSettingsToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem AmstradCPCPokeMemoryToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem AmstradCPCMediaToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem AmstradCPCTapesSubMenu;
+    private System.Windows.Forms.ToolStripMenuItem cpct1ToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem AmstradCPCDisksSubMenu;
+    private System.Windows.Forms.ToolStripMenuItem cpcd1ToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem AmstradCPCNonSyncSettingsToolStripMenuItem;
     }
 }

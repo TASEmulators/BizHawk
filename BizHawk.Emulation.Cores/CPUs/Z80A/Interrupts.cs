@@ -30,6 +30,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public Action IRQCallback = delegate () { };
 		public Action NMICallback = delegate () { };
 
+        // this will be a few cycles off for now
+        // it should suffice for now until Alyosha returns from hiatus
+        public Action IRQACKCallback = delegate () { };
+
 		private void NMI_()
 		{
 			cur_instr = new ushort[]
@@ -47,7 +51,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			BUSRQ = new ushort[] { 0, SPh, 0, 0, SPh, 0, 0, PCh, 0, 0, 0 };
 			MEMRQ = new ushort[] { 0, SPh, 0, 0, SPh, 0, 0, PCh, 0, 0, 0 };
-		}
+        }
 
 		// Mode 0 interrupts only take effect if a CALL or RST is on the data bus
 		// Otherwise operation just continues as normal
@@ -67,7 +71,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			BUSRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, 0 };
 			MEMRQ = new ushort[] { PCh, 0, 0, PCh, 0, 0, 0 };
-		}
+
+            IRQACKCallback();
+        }
 
 		// Just jump to $0038
 		private void INTERRUPT_1()
@@ -89,7 +95,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			BUSRQ = new ushort[] { I, 0, 0, SPh, 0, 0, SPh, 0, 0, PCh, 0, 0, 0 };
 			MEMRQ = new ushort[] { I, 0, 0, SPh, 0, 0, SPh, 0, 0, PCh, 0, 0, 0 };
-		}
+
+            IRQACKCallback();
+        }
 
 		// Interrupt mode 2 uses the I vector combined with a byte on the data bus
 		private void INTERRUPT_2()
@@ -117,7 +125,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 
 			BUSRQ = new ushort[] { I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0 ,0 ,PCh, 0, 0, 0 };
 			MEMRQ = new ushort[] { I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0, 0, PCh, 0, 0, 0 };
-		}
+
+            IRQACKCallback();
+        }
 
 		private void ResetInterrupts()
 		{

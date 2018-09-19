@@ -199,6 +199,30 @@
       <DependentUpon>BizBoxInfoControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Communication.cs" />
+    <Compile Include="config\AmstradCPC\AmstradCPCCoreEmulationSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\AmstradCPC\AmstradCPCCoreEmulationSettings.Designer.cs">
+      <DependentUpon>AmstradCPCCoreEmulationSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\AmstradCPC\AmstradCPCAudioSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\AmstradCPC\AmstradCPCAudioSettings.Designer.cs">
+      <DependentUpon>AmstradCPCAudioSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\AmstradCPC\AmstradCPCPokeMemory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\AmstradCPC\AmstradCPCPokeMemory.Designer.cs">
+      <DependentUpon>AmstradCPCPokeMemory.cs</DependentUpon>
+    </Compile>
+    <Compile Include="config\AmstradCPC\AmstradCPCNonSyncSettings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="config\AmstradCPC\AmstradCPCNonSyncSettings.Designer.cs">
+      <DependentUpon>AmstradCPCNonSyncSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="config\AnalogRangeConfig.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -1297,6 +1321,18 @@
     </EmbeddedResource>
     <EmbeddedResource Include="BizBoxInfoControl.resx">
       <DependentUpon>BizBoxInfoControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\AmstradCPC\AmstradCPCCoreEmulationSettings.resx">
+      <DependentUpon>AmstradCPCCoreEmulationSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\AmstradCPC\AmstradCPCAudioSettings.resx">
+      <DependentUpon>AmstradCPCAudioSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\AmstradCPC\AmstradCPCPokeMemory.resx">
+      <DependentUpon>AmstradCPCPokeMemory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="config\AmstradCPC\AmstradCPCNonSyncSettings.resx">
+      <DependentUpon>AmstradCPCNonSyncSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="config\AnalogRangeConfigControl.resx">
       <DependentUpon>AnalogRangeConfigControl.cs</DependentUpon>

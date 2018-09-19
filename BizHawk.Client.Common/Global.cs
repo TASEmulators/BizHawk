@@ -153,6 +153,8 @@ namespace BizHawk.Client.Common
 						return SystemInfo.NeoGeoPocket;
                     case "ZXSpectrum":
                         return SystemInfo.ZXSpectrum;
+                    case "AmstradCPC":
+                        return SystemInfo.AmstradCPC;
 				}
 			}
 		}
