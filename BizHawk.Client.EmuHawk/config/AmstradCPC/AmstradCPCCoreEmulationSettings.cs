@@ -31,6 +31,15 @@ namespace BizHawk.Client.EmuHawk
             MachineSelectionComboBox.SelectedItem = _syncSettings.MachineType.ToString();
             UpdateMachineNotes((MachineType)Enum.Parse(typeof(MachineType), MachineSelectionComboBox.SelectedItem.ToString()));
 
+            // border selecton
+            var borderTypes = Enum.GetNames(typeof(AmstradCPC.BorderType));
+            foreach (var val in borderTypes)
+            {
+                borderTypecomboBox1.Items.Add(val);
+            }
+            borderTypecomboBox1.SelectedItem = _syncSettings.BorderType.ToString();
+            UpdateBorderNotes((AmstradCPC.BorderType)Enum.Parse(typeof(AmstradCPC.BorderType), borderTypecomboBox1.SelectedItem.ToString()));
+
             // deterministic emulation
             determEmucheckBox1.Checked = _syncSettings.DeterministicEmulation;
 
@@ -42,12 +51,14 @@ namespace BizHawk.Client.EmuHawk
 		{
             bool changed =
                 _syncSettings.MachineType.ToString() != MachineSelectionComboBox.SelectedItem.ToString()
+                || _syncSettings.BorderType.ToString() != borderTypecomboBox1.SelectedItem.ToString()
                 || _syncSettings.DeterministicEmulation != determEmucheckBox1.Checked
                 || _syncSettings.AutoStartStopTape != autoLoadcheckBox1.Checked;
 
             if (changed)
 			{
                 _syncSettings.MachineType = (MachineType)Enum.Parse(typeof(MachineType), MachineSelectionComboBox.SelectedItem.ToString());
+                _syncSettings.BorderType = (AmstradCPC.BorderType)Enum.Parse(typeof(AmstradCPC.BorderType), borderTypecomboBox1.SelectedItem.ToString());
                 _syncSettings.DeterministicEmulation = determEmucheckBox1.Checked;
                 _syncSettings.AutoStartStopTape = autoLoadcheckBox1.Checked;
 
@@ -79,6 +90,29 @@ namespace BizHawk.Client.EmuHawk
         private void UpdateMachineNotes(MachineType type)
         {
             lblMachineNotes.Text = CPCMachineMetaData.GetMetaString(type);
+        }
+
+        private void borderTypecomboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ComboBox cb = sender as ComboBox;
+            UpdateBorderNotes((AmstradCPC.BorderType)Enum.Parse(typeof(AmstradCPC.BorderType), cb.SelectedItem.ToString()));
+        }
+
+        private void UpdateBorderNotes(AmstradCPC.BorderType type)
+        {
+            switch (type)
+            {
+                case AmstradCPC.BorderType.Uniform:
+                    lblBorderInfo.Text = "Attempts to equalise the border areas";
+                    break;
+                case AmstradCPC.BorderType.Uncropped:
+                    lblBorderInfo.Text = "Pretty much the signal the gate array is generating (looks pants)";
+                    break;
+
+                case AmstradCPC.BorderType.Widescreen:
+                    lblBorderInfo.Text = "Top and bottom border removed so that the result is *almost* 16:9";
+                    break;
+            }
         }
     }
 }

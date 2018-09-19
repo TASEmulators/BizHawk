@@ -686,8 +686,8 @@ namespace BizHawk.Client.Common
                                         nextComm,
                                         xmlGame.Assets.Select(a => a.Value), //.First(),
                                         cpcGI, // GameInfo.NullInstance,
-                                        (AmstradCPC.AmstradCPCSettings)GetCoreSettings<ZXSpectrum>(),
-                                        (AmstradCPC.AmstradCPCSyncSettings)GetCoreSyncSettings<ZXSpectrum>());
+                                        (AmstradCPC.AmstradCPCSettings)GetCoreSettings<AmstradCPC>(),
+                                        (AmstradCPC.AmstradCPCSyncSettings)GetCoreSyncSettings<AmstradCPC>());
                                     break;
                                 case "PSX":
 									var entries = xmlGame.AssetFullPaths;

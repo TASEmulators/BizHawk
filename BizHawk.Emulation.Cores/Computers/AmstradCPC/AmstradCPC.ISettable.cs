@@ -101,6 +101,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             [DefaultValue(true)]
             public bool AutoStartStopTape { get; set; }
 
+            [DisplayName("Border type")]
+            [Description("Select how to show the border area")]
+            [DefaultValue(BorderType.Uniform)]
+            public BorderType BorderType { get; set; }
+
             public AmstradCPCSyncSettings Clone()
             {
                 return (AmstradCPCSyncSettings)MemberwiseClone();
@@ -299,5 +304,26 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             }
         }
-    }
+
+        /// <summary>
+        /// The size of the Spectrum border
+        /// </summary>
+        public enum BorderType
+        {
+            /// <summary>
+            /// Attempts to equalise the border areas
+            /// </summary>
+            Uniform,
+
+            /// <summary>
+            /// Pretty much the signal the gate array is generating (looks shit)
+            /// </summary>
+            Uncropped,
+
+            /// <summary>
+            /// Top and bottom border removed so that the result is *almost* 16:9
+            /// </summary>
+            Widescreen,
+        }
+    }    
 }

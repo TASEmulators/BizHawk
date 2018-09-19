@@ -28,12 +28,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         {
             _machine = machine;
             CurrentLine = new ScanLine(this);
+
+            CRCT.AttachHSYNCCallback(OnHSYNC);
+            CRCT.AttachVSYNCCallback(OnVSYNC);
         }
 
         #endregion
 
         #region Palettes
-
+        
         /// <summary>
         /// The standard CPC Pallete (ordered by firmware #)
         /// http://www.cpcwiki.eu/index.php/CPC_Palette
@@ -108,6 +111,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             Colors.ARGB(0x80, 0x80, 0x00), // Yellow            
             Colors.ARGB(0x80, 0x80, 0xFF), // Pastel Blue
         };
+       
 
         #endregion
 
@@ -152,6 +156,22 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             VirtualHeight = BufferHeight / 2;
 
             ScreenBuffer = new int[BufferWidth * BufferHeight];
+        }
+
+        /// <summary>
+        /// Fired when the CRCT flags HSYNC
+        /// </summary>
+        public void OnHSYNC()
+        {
+
+        }
+
+        /// <summary>
+        /// Fired when the CRCT flags VSYNC
+        /// </summary>
+        public void OnVSYNC()
+        {
+
         }
 
         #endregion
@@ -370,11 +390,37 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 // 4 bits per pixel - 2 bytes - 4 pixels (8 CRT pixels)
                 // RECT
                 case 0:
-                    Characters[charIndex].Pixels = new int[8];
+                    Characters[charIndex].Pixels = new int[16];
 
                     int m0Count = 0;
 
-                    int m0B0P0i = vid1 & 170;
+                    int pix = vid1 & 0xaa;
+                    pix = ((pix & 0x80) >> 7) | ((pix & 0x08) >> 2) | ((pix & 0x20) >> 3) | ((pix & 0x02 << 2));
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+                    pix = vid1 & 0x55;
+                    pix = (((pix & 0x40) >> 6) | ((pix & 0x04) >> 1) | ((pix & 0x10) >> 2) | ((pix & 0x01 << 3)));
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+
+                    pix = vid2 & 0xaa;
+                    pix = ((pix & 0x80) >> 7) | ((pix & 0x08) >> 2) | ((pix & 0x20) >> 3) | ((pix & 0x02 << 2));
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+                    pix = vid2 & 0x55;
+                    pix = (((pix & 0x40) >> 6) | ((pix & 0x04) >> 1) | ((pix & 0x10) >> 2) | ((pix & 0x01 << 3)));
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+                    Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[pix]];
+                    /*
+                    int m0B0P0i = vid1 & 0xaa;
                     int m0B0P0 = ((m0B0P0i & 0x80) >> 7) | ((m0B0P0i & 0x08) >> 2) | ((m0B0P0i & 0x20) >> 3) | ((m0B0P0i & 0x02 << 2));
                     int m0B0P1i = vid1 & 85;
                     int m0B0P1 = ((m0B0P1i & 0x40) >> 6) | ((m0B0P1i & 0x04) >> 1) | ((m0B0P1i & 0x10) >> 2) | ((m0B0P1i & 0x01 << 3));
@@ -393,6 +439,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[m0B1P0]];
                     Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[m0B1P1]];
                     Characters[charIndex].Pixels[m0Count++] = CRTDevice.CPCHardwarePalette[pens[m0B1P1]];
+                    */
                     break;
 
                 // 2 bits per pixel - 2 bytes - 8 pixels (16 CRT pixels)
@@ -500,6 +547,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             switch (ScreenMode)
             {
                 case 0:
+                    hScale = 1;
+                    vScale = 2;
+                    break;
                 case 1:
                 case 3:                    
                     hScale = 2;

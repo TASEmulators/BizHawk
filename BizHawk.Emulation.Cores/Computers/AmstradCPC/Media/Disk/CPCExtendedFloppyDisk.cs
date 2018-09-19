@@ -1,5 +1,7 @@
 ﻿using System.Text;
 using BizHawk.Common;
+using System;
+using System.Collections.Generic;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -140,6 +142,88 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             // run protection scheme detector
             ParseProtection();
+
+            return true;
+        }
+
+        /// <summary>
+        /// Takes a double-sided disk byte array and converts into 2 single-sided arrays
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="results"></param>
+        /// <returns></returns>
+        public static bool SplitDoubleSided(byte[] data, List<byte[]> results)
+        {
+            // look for standard magic string
+            string ident = Encoding.ASCII.GetString(data, 0, 16);
+            if (!ident.ToUpper().Contains("EXTENDED CPC DSK"))
+            {
+                // incorrect format
+                return false;
+            }
+
+            byte[] S0 = new byte[data.Length];
+            byte[] S1 = new byte[data.Length];
+
+            // disk info block
+            Array.Copy(data, 0, S0, 0, 0x100);
+            Array.Copy(data, 0, S1, 0, 0x100);
+            // change side number
+            S0[0x31] = 1;
+            S1[0x31] = 1;
+
+            // extended format has different track sizes
+            int[] trkSizes = new int[data[0x30] * data[0x31]];
+
+            int pos = 0x34;
+            for (int i = 0; i < data[0x30] * data[0x31]; i++)
+            {
+                trkSizes[i] = data[pos] * 256;
+                // clear destination trk sizes (will be added later)
+                S0[pos] = 0;
+                S1[pos] = 0;
+                pos++;
+            }
+
+            // start at track info blocks
+            int mPos = 0x100;
+            int s0Pos = 0x100;
+            int s0tCount = 0;
+            int s1tCount = 0;
+            int s1Pos = 0x100;
+            int tCount = 0;
+
+            while (tCount < data[0x30] * data[0x31])
+            {
+                // which side is this?
+                var side = data[mPos + 0x11];
+                if (side == 0)
+                {
+                    // side 1
+                    Array.Copy(data, mPos, S0, s0Pos, trkSizes[tCount]);
+                    s0Pos += trkSizes[tCount];
+                    // trk size table
+                    S0[0x34 + s0tCount++] = (byte)(trkSizes[tCount] / 256);
+                }
+                else if (side == 1)
+                {
+                    // side 2
+                    Array.Copy(data, mPos, S1, s1Pos, trkSizes[tCount]);
+                    s1Pos += trkSizes[tCount];
+                    // trk size table
+                    S1[0x34 + s1tCount++] = (byte)(trkSizes[tCount] / 256);
+                }
+                
+                mPos += trkSizes[tCount++];
+            }
+
+            byte[] s0final = new byte[s0Pos];
+            byte[] s1final = new byte[s1Pos];
+            Array.Copy(S0, 0, s0final, 0, s0Pos);
+            Array.Copy(S1, 0, s1final, 0, s1Pos);
+
+            results.Add(s0final);
+            results.Add(s1final);
 
             return true;
         }

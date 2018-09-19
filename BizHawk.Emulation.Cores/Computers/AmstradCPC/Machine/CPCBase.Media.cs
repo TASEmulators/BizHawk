@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -95,7 +96,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 diskMediaIndex = result;
 
                 // fire osd message
-                //Spectrum.OSD_DiskInserted();
+                CPC.OSD_DiskInserted();
 
                 LoadDiskMedia();
             }
@@ -131,6 +132,63 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     case CPCMediaType.Disk:
                         diskImages.Add(m);
                         CPC._diskInfo.Add(CPC._gameInfo[cnt]);
+                        break;
+                    case CPCMediaType.DiskDoubleSided:
+                        // this is a bit tricky. we will attempt to parse the double sided disk image byte array,
+                        // then output two separate image byte arrays
+                        List<byte[]> working = new List<byte[]>();
+                        foreach (DiskType type in Enum.GetValues(typeof(DiskType)))
+                        {
+                            bool found = false;
+
+                            switch (type)
+                            {
+                                case DiskType.CPCExtended:
+                                    found = CPCExtendedFloppyDisk.SplitDoubleSided(m, working);
+                                    break;
+                                case DiskType.CPC:
+                                    found = CPCFloppyDisk.SplitDoubleSided(m, working);
+                                    break;
+                            }
+
+                            if (found)
+                            {
+                                // add side 1
+                                diskImages.Add(working[0]);
+                                // add side 2
+                                diskImages.Add(working[1]);
+
+                                Common.GameInfo one = new Common.GameInfo();
+                                Common.GameInfo two = new Common.GameInfo();
+                                var gi = CPC._gameInfo[cnt];
+                                for (int i = 0; i < 2; i++)
+                                {
+                                    Common.GameInfo work = new Common.GameInfo();
+                                    if (i == 0)
+                                    {
+                                        work = one;
+                                    }
+                                    else if (i == 1)
+                                    {
+                                        work = two;
+                                    }
+
+                                    work.FirmwareHash = gi.FirmwareHash;
+                                    work.Hash = gi.Hash;
+                                    work.Name = gi.Name + " (Parsed Side " + (i + 1) + ")";
+                                    work.Region = gi.Region;
+                                    work.NotInDatabase = gi.NotInDatabase;
+                                    work.Status = gi.Status;
+                                    work.System = gi.System;
+
+                                    CPC._diskInfo.Add(work);
+                                }
+                            }
+                            else
+                            {
+
+                            }
+                        }
                         break;
                 }
 
@@ -179,7 +237,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             if (hdr.ToUpper().Contains("EXTENDED CPC DSK") || hdr.ToUpper().Contains("MV - CPC"))
             {
                 // amstrad .dsk disk file
-                return CPCMediaType.Disk;
+                // check for number of sides
+                var sides = data[0x31];
+                if (sides == 1)
+                    return CPCMediaType.Disk;
+                else
+                    return CPCMediaType.DiskDoubleSided;
             }
 
             // tape checking
@@ -198,7 +261,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
     {
         None,
         Tape,
-        Disk
+        Disk,
+        DiskDoubleSided
     }
 }
 

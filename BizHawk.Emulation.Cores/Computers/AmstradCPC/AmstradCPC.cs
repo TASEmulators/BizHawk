@@ -46,11 +46,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             {
                 case MachineType.CPC464:
                     ControllerDefinition = AmstradCPCControllerDefinition;
-                    Init(MachineType.CPC464, _files, ((AmstradCPCSyncSettings)syncSettings as AmstradCPCSyncSettings).AutoStartStopTape);
+                    Init(MachineType.CPC464, _files, ((AmstradCPCSyncSettings)syncSettings as AmstradCPCSyncSettings).AutoStartStopTape,
+                        ((AmstradCPCSyncSettings)syncSettings as AmstradCPCSyncSettings).BorderType);
                     break;
                 case MachineType.CPC6128:
                     ControllerDefinition = AmstradCPCControllerDefinition;
-                    Init(MachineType.CPC6128, _files, ((AmstradCPCSyncSettings)syncSettings as AmstradCPCSyncSettings).AutoStartStopTape);
+                    Init(MachineType.CPC6128, _files, ((AmstradCPCSyncSettings)syncSettings as AmstradCPCSyncSettings).AutoStartStopTape, ((AmstradCPCSyncSettings)syncSettings as AmstradCPCSyncSettings).BorderType);
                     break;
                 default:
                     throw new InvalidOperationException("Machine not yet emulated");
@@ -72,7 +73,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             ser.Register<ITraceable>(_tracer);
             ser.Register<IDisassemblable>(_cpu);
-            ser.Register<IVideoProvider>(_machine.CRT);
+            ser.Register<IVideoProvider>(_machine.GateArray);
 
             // initialize sound mixer and attach the various ISoundProvider devices
             SoundMixer = new SoundProviderMixer((int)(32767 / 10), "Tape Audio", (ISoundProvider)_machine.TapeBuzzer);
@@ -158,7 +159,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         private MachineType _machineType;
 
-        private void Init(MachineType machineType, List<byte[]> files, bool autoTape)
+        private void Init(MachineType machineType, List<byte[]> files, bool autoTape, BorderType bType)
         {
             _machineType = machineType;
 
@@ -166,7 +167,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             switch (machineType)
             {
                 case MachineType.CPC464:
-                    _machine = new CPC464(this, _cpu, files, autoTape);
+                    _machine = new CPC464(this, _cpu, files, autoTape, bType);
                     List<RomData> roms64 = new List<RomData>();
                     roms64.Add(RomData.InitROM(MachineType.CPC464, GetFirmware(0x4000, "OS464ROM"), RomData.ROMChipType.Lower));
                     roms64.Add(RomData.InitROM(MachineType.CPC464, GetFirmware(0x4000, "BASIC1-0ROM"), RomData.ROMChipType.Upper, 0));
@@ -174,7 +175,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     break;
 
                 case MachineType.CPC6128:
-                    _machine = new CPC6128(this, _cpu, files, autoTape);
+                    _machine = new CPC6128(this, _cpu, files, autoTape, bType);
                     List<RomData> roms128 = new List<RomData>();
                     roms128.Add(RomData.InitROM(MachineType.CPC6128, GetFirmware(0x4000, "OS6128ROM"), RomData.ROMChipType.Lower));
                     roms128.Add(RomData.InitROM(MachineType.CPC6128, GetFirmware(0x4000, "BASIC1-1ROM"), RomData.ROMChipType.Upper, 0));

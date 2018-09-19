@@ -19,15 +19,36 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         #endregion
 
+        #region CallBacks
+
+        public delegate void CallBack();
+
+        private CallBack HSYNC_Callbacks;
+        private CallBack VSYNC_Callbacks;
+
+        public void AttachVSYNCCallback(CallBack vCall)
+        {
+            VSYNC_Callbacks += vCall;
+        }
+
+        public void AttachHSYNCCallback(CallBack hCall)
+        {
+            HSYNC_Callbacks += hCall;
+        }
+
+        #endregion
+
         #region Construction
 
         public CRCT_6845(CRCTType chipType, CPCBase machine)
         {
             _machine = machine;
             ChipType = chipType;
-
             Reset();
         }
+
+        private const int WRITE = 0;
+        private const int READ = 1;
 
         #endregion
 
@@ -55,15 +76,25 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// </summary>
         public short MA;
 
+        /// <summary>
+        /// Vertical Character Count
+        /// </summary>
+        public int VCC;
+
+        /// <summary>
+        /// Vertical Scanline Count (within the current vertical character)
+        /// </summary>
+        public int VLC;
+
         #endregion
-        
+
         #region Public Lookups
 
         /*
          *  These are not accessible directlyon real hardware
          *  It just makes screen generation easier to have these accessbile from the gate array
          */
-        
+
         /// <summary>
         /// The total frame width (in characters)
         /// </summary>
@@ -87,6 +118,17 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         }
 
         /// <summary>
+        /// The total frame height (in scanlines)
+        /// </summary>
+        public int FrameHeightInChars
+        {
+            get
+            {
+                return ((int)Regs[VER_TOTAL] + 1);
+            }
+        }
+
+        /// <summary>
         /// The width of the display area (in characters)
         /// </summary>
         public int DisplayWidth
@@ -105,6 +147,17 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             get
             {
                 return (int)Regs[VER_DISPLAYED] * ((int)Regs[MAX_RASTER_ADDR] + 1);
+            }
+        }
+
+        /// <summary>
+        /// The width of the display area (in scanlines)
+        /// </summary>
+        public int DisplayHeightInChars
+        {
+            get
+            {
+                return (int)Regs[VER_DISPLAYED];
             }
         }
 
@@ -153,7 +206,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         }
 
         /// <summary>
-        /// The number of scanlines in one character
+        /// The number of scanlines in one character (MAXRASTER)
         /// </summary>
         public int ScanlinesPerCharacter
         {
@@ -182,6 +235,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 return 0xC000;
             }
         }
+
+        public int DStartHigh
+        { get { return Regs[DISP_START_ADDR_H]; } }
+
+        public int DStartLow
+        { get { return Regs[DISP_START_ADDR_L]; } }
 
         /// <summary>
         /// Returns the video buffer size as specified within R12
@@ -394,12 +453,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// CPC register default values
         /// Taken from https://web.archive.org/web/20170501112330/http://www.grimware.org/doku.php/documentations/devices/crtc
+        /// http://www.cantrell.org.uk/david/tech/cpc/cpc-firmware/firmware.pdf
         /// (The defaults values given here are those programmed by the firmware ROM after a cold/warm boot of the CPC/Plus)
         /// </summary>
-        private byte[] RegDefaults = new byte[] { 63, 40, 46, 0x8e, 38, 0, 25, 30, 0, 7, 0, 0, 0x20, 0x00, 0, 0, 0, 0 };
+        private byte[] RegDefaults = new byte[] { 63, 40, 46, 112, 38, 0, 25, 30, 0, 7, 0, 0, 48, 0, 192, 7, 0, 0 };
 
         /// <summary>
         /// Register masks
+        /// 0 = WRITE
+        /// 1 = READ
         /// </summary>
         private byte[] CPCMask = new byte[] { 255, 255, 255, 255, 127, 31, 127, 126, 3, 31, 31, 31, 63, 255, 63, 255, 63, 255 };
 
@@ -407,16 +469,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// Horizontal Character Count
         /// </summary>
         private int HCC;
-
-        /// <summary>
-        /// Vertical Character Count
-        /// </summary>
-        public int VCC;
-
-        /// <summary>
-        /// Vertical Scanline Count 
-        /// </summary>
-        public int VLC;
 
         /// <summary>
         /// Internal cycle counter
@@ -452,11 +504,99 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         #region Public Methods
 
+        public void ClockCycle()
+        {
+            CheckHSYNCOff();           
+
+            HCC++;
+
+            if (HCC == Regs[HOR_TOTAL] + 1)
+            {
+                // end of scanline
+                HCC = 0;                
+                
+                if (VSYNCCounter > 0)
+                {
+                    VSYNCCounter--;
+                    if (VSYNCCounter == 0)
+                    {
+                        VSYNC = false;
+                    }
+                }
+
+                VLC++;
+
+                if (VLC == Regs[MAX_RASTER_ADDR] + 1)
+                {
+                    // end of rasterline
+                    VLC = 0;
+                    VCC++;
+
+                    if (VCC == Regs[VER_TOTAL] + 1)
+                    {
+                        // end of screen
+                        VCC = 0;
+                    }
+
+                    if (VCC == Regs[VER_SYNC_POS] && !VSYNC)
+                    {
+                        VSYNC = true;
+                        VSYNCCounter = VSYNCWidth;
+                        VSYNC_Callbacks();
+                    }
+                }
+            }
+            else
+            {
+                // still on the current scanline
+                if (HCC == Regs[HOR_SYNC_POS] && !HSYNC)
+                {
+                    HSYNC = true;
+                    HSYNCCounter = HSYNCWidth;
+                    HSYNC_Callbacks();
+                    ByteCounter = 0;
+                }
+
+                if (HCC >= Regs[HOR_DISPLAYED] + 1 || VCC >= Regs[VER_DISPLAYED])
+                {
+                    DISPTMG = false;
+                }
+                else
+                {
+                    DISPTMG = true;
+
+                    var line = VCC;
+                    var row = VLC;
+                    var addrX = (LatchedRAMOffset * 2) + ((VCC * LatchedScreenWidthBytes) & 0x7ff) + ByteCounter;
+                    // remove artifacts caused by certain hardware scrolling addresses
+                    addrX &= 0x7ff;
+                    var addrY = LatchedRAMStartAddress + (2048 * VLC);
+
+                    //var addr = VideoPageBase + (line * (0x50)) + (row * 0x800) + (ByteCounter);
+                    CurrentByteAddress = (ushort)(addrX + addrY);
+
+                    ByteCounter += 2;
+                }
+            }
+        }
+
+        private void CheckHSYNCOff()
+        {
+            if (HSYNCCounter > 0)
+            {
+                HSYNCCounter--;
+                if (HSYNCCounter == 0)
+                {
+                    HSYNC = false;
+                }
+            }
+        }
+
         /// <summary>
         /// Runs a CRCT clock cycle
         /// This should be called at 1Mhz / 1us / every 4 uncontended CPU t-states
         /// </summary>
-        public void ClockCycle()
+        public void ClockCycle2()
         {
             if (HSYNC)
             {
@@ -475,7 +615,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             if (HSYNC && HSYNCCounter == 1)
             {
-                
+
             }
 
             // move one horizontal character
@@ -493,7 +633,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             else
             {
                 DISPTMG = true;
-                
+
                 var line = VCC;
                 var row = VLC;
                 var addrX = (LatchedRAMOffset * 2) + ((VCC * LatchedScreenWidthBytes) & 0x7ff) + ByteCounter;
@@ -503,8 +643,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
                 //var addr = VideoPageBase + (line * (0x50)) + (row * 0x800) + (ByteCounter);
                 CurrentByteAddress = (ushort)(addrX + addrY);
-                
-                
 
                 ByteCounter += 2;
             }
@@ -515,7 +653,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 // end of the current scanline
                 HCC = 0;
 
-                if (ChipType == CRCTType.UMC_UM6845R && VLC <= Regs[MAX_RASTER_ADDR])
+
+                if (ChipType == (CRCTType)1 && VLC <= Regs[MAX_RASTER_ADDR])
                 {
                     // https://web.archive.org/web/20170501112330/http://www.grimware.org/doku.php/documentations/devices/crtc
                     // The MA is reloaded with the value from R12 and R13 when VCC=0 and VLC=0 (that's when a new CRTC screen begin). 
@@ -548,7 +687,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                         // still doing extra scanlines
                     }
                     else
-
                     {
                         // finished doing extra scanlines
                         EndOfScreen = false;
@@ -585,8 +723,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     {
                         VSYNC = true;
                         VSYNCCounter = 0;
+                        VSYNC_Callbacks();
                     }
-                }                
+                }
             }
             else
             {
@@ -598,6 +737,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                     {
                         HSYNC = true;
                         HSYNCCounter = 0;
+                        HSYNC_Callbacks();
+                        lineCounter++;
 
                         LatchedRAMStartAddress = VideoPageBase;
                         LatchedRAMOffset = VideoRAMOffset;
@@ -607,6 +748,95 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 }
             }
         }
+
+        /// <summary>
+        /// Runs a CRCT clock cycle
+        /// This should be called at 1Mhz / 1us / every 4 uncontended CPU t-states
+        /// </summary>
+        public void ClockCycle1()
+        {
+            // HSYNC processing
+            if (HSYNCCounter > 0)
+            {
+                HSYNCCounter--;
+                if (HSYNCCounter == 0)
+                    HSYNC = false;
+            }
+
+            HCC++;
+
+            if (HCC == FrameWidth)
+            {
+                // we have finished the current scanline
+                HCC = 0;
+
+                if (VSYNCCounter > 0)
+                {
+                    VSYNCCounter--;
+                    if (VSYNCCounter == 0)
+                        VSYNC = false;
+                }
+
+                VLC++;
+
+                if (VLC == ScanlinesPerCharacter)
+                {
+                    // completed a vertical character
+                    VLC = 0;
+                    VCC++;
+
+                    if (VCC == FrameHeight)
+                    {
+                        // screen has completed
+                        VCC = 0;
+                    }
+                }
+
+                // check whether VSYNC should be raised
+                if (VCC == VerticalSyncPos && !VSYNC)
+                {
+                    VSYNC = true;
+                    VSYNCCounter = VSYNCWidth;
+                    VSYNC_Callbacks();
+                }
+            }
+            else if (HCC == HorizontalSyncPos && !HSYNC)
+            {
+                // start of HSYNC period
+                HSYNC = true;
+                HSYNCCounter = HSYNCWidth;
+                HSYNC_Callbacks();
+            }
+
+            // DISPTMG
+            if (HCC >= Regs[HOR_DISPLAYED] || VCC >= Regs[VER_DISPLAYED])
+            {
+                DISPTMG = false;
+            }
+            else
+            {
+                DISPTMG = true;
+            }
+            /*
+            // check for DISPTMG
+            if (HCC >= Regs[HOR_DISPLAYED] + 1)
+            {
+                DISPTMG = false;
+            }
+            else if (VCC >= Regs[VER_DISPLAYED])
+            {
+                DISPTMG = false;
+            }
+            else
+            {
+                DISPTMG = true;
+            }
+            */
+        }
+
+        public int lineCounter = 0;
+
+        
 
         /// <summary>
         /// Resets the chip
@@ -624,6 +854,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             // updates widths
             UpdateWidths();
+
+            HSYNC = false;
+            VSYNC = false;
+
+            HSYNCCounter = 0;
+            VSYNCCounter = 0;
+
+            HCC = 0;
+            VCC = 0;
+            VLC = 0;
         }
 
         #endregion
@@ -688,6 +928,18 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             if (SelectedRegister == DISP_START_ADDR_H)
             {
 
+            }
+
+            if (SelectedRegister == HOR_TOTAL)
+            {
+                // always 63
+                if (data != 63)
+                    return;
+            }
+
+            if (SelectedRegister == 1)
+            {
+                var d = data;
             }
 
             Regs[SelectedRegister] = (byte)(data & CPCMask[SelectedRegister]);
@@ -809,26 +1061,26 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         {
             switch (ChipType)
             {
-                case CRCTType.Hitachi_HD6845S:
+                case CRCTType.HD6845S:
                     // Bits 7..4 define Vertical Sync Width. If 0 is programmed this gives 16 lines of VSYNC. Bits 3..0 define Horizontal Sync Width. 
                     // If 0 is programmed no HSYNC is generated.
                     HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
                     VSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 4) & 0x0F;
                     break;
-                case CRCTType.UMC_UM6845R:
+                case CRCTType.UM6845R:
                     // Bits 7..4 are ignored. Vertical Sync is fixed at 16 lines. Bits 3..0 define Horizontal Sync Width. If 0 is programmed no HSYNC is generated.
                     HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
                     VSYNCWidth = 16;
                     break;
-                case CRCTType.Motorola_MC6845:
+                case CRCTType.MC6845:
                     // Bits 7..4 are ignored. Vertical Sync is fixed at 16 lines. Bits 3..0 define Horizontal Sync Width. If 0 is programmed this gives a HSYNC width of 16.
                     HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
                     if (HSYNCWidth == 0)
                         HSYNCWidth = 16;
                     VSYNCWidth = 16;
                     break;
-                case CRCTType.Amstrad_AMS40489:
-                case CRCTType.Amstrad_40226:
+                case CRCTType.AMS40489:
+                case CRCTType.AMS40226:
                     // Bits 7..4 define Vertical Sync Width. If 0 is programmed this gives 16 lines of VSYNC.Bits 3..0 define Horizontal Sync Width. 
                     // If 0 is programmed this gives a HSYNC width of 16.
                     HSYNCWidth = (Regs[HOR_AND_VER_SYNC_WIDTHS] >> 0) & 0x0F;
@@ -960,11 +1212,12 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// </summary>
         public enum CRCTType
         {
-            Hitachi_HD6845S = 0,
-            UMC_UM6845R = 1,
-            Motorola_MC6845 = 2,
-            Amstrad_AMS40489 = 3,
-            Amstrad_40226 = 4
+            HD6845S = 0,
+            UM6845 = 0,
+            UM6845R = 1,
+            MC6845 = 2,
+            AMS40489 = 3,
+            AMS40226 = 4
         }
 
         #endregion

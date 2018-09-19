@@ -65,7 +65,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// <summary>
         /// Renders pixels to the screen
         /// </summary>
-        public CRTDevice CRT { get; set; }
+        //public CRTDevice CRT { get; set; }
 
         /// <summary>
         /// The PPI contoller chip
@@ -140,6 +140,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public virtual void ExecuteFrame(bool render, bool renderSound)
         {
             GateArray.FrameEnd = false;
+            CRCT.lineCounter = 0;
 
             InputRead = false;
             _render = render;
@@ -157,8 +158,8 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             PollInput();
 
-            CRT.SetupVideo();
-            CRT.ScanlineCounter = 0;
+            //CRT.SetupVideo();
+            //CRT.ScanlineCounter = 0;
 
             while (!GateArray.FrameEnd)
             {
@@ -168,9 +169,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                 if (UPDDiskDevice == null || !UPDDiskDevice.FDD_IsDiskLoaded)
                     TapeDevice.TapeCycle();
             }
-
-            //OverFlow = (int)CurrentFrameCycle - GateArray.FrameLength;
-
             // we have reached the end of a frame
             LastFrameStartCPUTick = CPU.TotalExecutedCycles; // - OverFlow;
 
@@ -346,7 +344,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ser.Sync("RAM64KBank", ref RAM64KBank);
 
             CRCT.SyncState(ser);
-            CRT.SyncState(ser);
+            //CRT.SyncState(ser);
             GateArray.SyncState(ser);
             KeyboardDevice.SyncState(ser);
             TapeBuzzer.SyncState(ser);

@@ -16,14 +16,14 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
     /// http://www.cpcwiki.eu/index.php/Gate_Array
     /// https://web.archive.org/web/20170612081209/http://www.grimware.org/doku.php/documentations/devices/gatearray
     /// </summary>
-    public class AmstradGateArray : IPortIODevice
+    public class AmstradGateArray : IPortIODevice, IVideoProvider
     {
         #region Devices
 
         private CPCBase _machine;
         private Z80A CPU => _machine.CPU;
         private CRCT_6845 CRCT => _machine.CRCT;
-        private CRTDevice CRT => _machine.CRT;
+        //private CRTDevice CRT => _machine.CRT;
         private IPSG PSG => _machine.AYDevice;
         private NECUPD765 FDC => _machine.UPDDiskDevice;
         private DatacorderDevice DATACORDER => _machine.TapeDevice;
@@ -31,6 +31,85 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         public const ushort PCh = 1;
 
         private GateArrayType ChipType;
+
+        #endregion
+
+        #region Palettes
+
+        /// <summary>
+        /// The standard CPC Pallete (ordered by firmware #)
+        /// http://www.cpcwiki.eu/index.php/CPC_Palette
+        /// </summary>
+        public static readonly int[] CPCFirmwarePalette =
+        {
+            Colors.ARGB(0x00, 0x00, 0x00), // Black
+            Colors.ARGB(0x00, 0x00, 0x80), // Blue
+            Colors.ARGB(0x00, 0x00, 0xFF), // Bright Blue
+            Colors.ARGB(0x80, 0x00, 0x00), // Red            
+            Colors.ARGB(0x80, 0x00, 0x80), // Magenta
+            Colors.ARGB(0x80, 0x00, 0xFF), // Mauve
+            Colors.ARGB(0xFF, 0x00, 0x00), // Bright Red
+            Colors.ARGB(0xFF, 0x00, 0x80), // Purple
+            Colors.ARGB(0xFF, 0x00, 0xFF), // Bright Magenta
+            Colors.ARGB(0x00, 0x80, 0x00), // Green
+            Colors.ARGB(0x00, 0x80, 0x80), // Cyan
+            Colors.ARGB(0x00, 0x80, 0xFF), // Sky Blue
+            Colors.ARGB(0x80, 0x80, 0x00), // Yellow
+            Colors.ARGB(0x80, 0x80, 0x80), // White
+            Colors.ARGB(0x80, 0x80, 0xFF), // Pastel Blue
+            Colors.ARGB(0xFF, 0x80, 0x00), // Orange
+            Colors.ARGB(0xFF, 0x80, 0x80), // Pink
+            Colors.ARGB(0xFF, 0x80, 0xFF), // Pastel Magenta
+            Colors.ARGB(0x00, 0xFF, 0x00), // Bright Green
+            Colors.ARGB(0x00, 0xFF, 0x80), // Sea Green
+            Colors.ARGB(0x00, 0xFF, 0xFF), // Bright Cyan
+            Colors.ARGB(0x80, 0xFF, 0x00), // Lime
+            Colors.ARGB(0x80, 0xFF, 0x80), // Pastel Green
+            Colors.ARGB(0x80, 0xFF, 0xFF), // Pastel Cyan
+            Colors.ARGB(0xFF, 0xFF, 0x00), // Bright Yellow
+            Colors.ARGB(0xFF, 0xFF, 0x80), // Pastel Yellow
+            Colors.ARGB(0xFF, 0xFF, 0xFF), // Bright White
+        };
+
+        /// <summary>
+        /// The standard CPC Pallete (ordered by hardware #)
+        /// http://www.cpcwiki.eu/index.php/CPC_Palette
+        /// </summary>
+        public static readonly int[] CPCHardwarePalette =
+        {
+            Colors.ARGB(0x80, 0x80, 0x80), // White
+            Colors.ARGB(0x80, 0x80, 0x80), // White (duplicate)
+            Colors.ARGB(0x00, 0xFF, 0x80), // Sea Green
+            Colors.ARGB(0xFF, 0xFF, 0x80), // Pastel Yellow
+            Colors.ARGB(0x00, 0x00, 0x80), // Blue
+            Colors.ARGB(0xFF, 0x00, 0x80), // Purple
+            Colors.ARGB(0x00, 0x80, 0x80), // Cyan
+            Colors.ARGB(0xFF, 0x80, 0x80), // Pink
+            Colors.ARGB(0xFF, 0x00, 0x80), // Purple (duplicate)
+            Colors.ARGB(0xFF, 0xFF, 0x80), // Pastel Yellow (duplicate)
+            Colors.ARGB(0xFF, 0xFF, 0x00), // Bright Yellow
+            Colors.ARGB(0xFF, 0xFF, 0xFF), // Bright White
+            Colors.ARGB(0xFF, 0x00, 0x00), // Bright Red
+            Colors.ARGB(0xFF, 0x00, 0xFF), // Bright Magenta
+            Colors.ARGB(0xFF, 0x80, 0x00), // Orange
+            Colors.ARGB(0xFF, 0x80, 0xFF), // Pastel Magenta
+            Colors.ARGB(0x00, 0x00, 0x80), // Blue (duplicate)
+            Colors.ARGB(0x00, 0xFF, 0x80), // Sea Green (duplicate)
+            Colors.ARGB(0x00, 0xFF, 0x00), // Bright Green
+            Colors.ARGB(0x00, 0xFF, 0xFF), // Bright Cyan
+            Colors.ARGB(0x00, 0x00, 0x00), // Black
+            Colors.ARGB(0x00, 0x00, 0xFF), // Bright Blue
+            Colors.ARGB(0x00, 0x80, 0x00), // Green
+            Colors.ARGB(0x00, 0x80, 0xFF), // Sky Blue
+            Colors.ARGB(0x80, 0x00, 0x80), // Magenta
+            Colors.ARGB(0x80, 0xFF, 0x80), // Pastel Green
+            Colors.ARGB(0x80, 0xFF, 0x00), // Lime
+            Colors.ARGB(0x80, 0xFF, 0xFF), // Pastel Cyan
+            Colors.ARGB(0x80, 0x00, 0x00), // Red     
+            Colors.ARGB(0x80, 0x00, 0xFF), // Mauve
+            Colors.ARGB(0x80, 0x80, 0x00), // Yellow            
+            Colors.ARGB(0x80, 0x80, 0xFF), // Pastel Blue
+        };
 
         #endregion
 
@@ -68,8 +147,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         #endregion
 
-        
-
         #region Construction
 
         public AmstradGateArray(CPCBase machine, GateArrayType chipType)
@@ -77,8 +154,16 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             _machine = machine;
             ChipType = chipType;
             //PenColours = new int[17];
-            CRT.SetupScreenSize();
+            borderType = _machine.CPC.SyncSettings.BorderType;
+            SetupScreenSize();
             //Reset();
+
+            CRCT.AttachHSYNCCallback(OnHSYNC);
+            CRCT.AttachVSYNCCallback(OnVSYNC);
+
+            CurrentLine = new CharacterLine();
+            InitByteLookup();
+            CalculateNextScreenMemory();
         }
 
         #endregion
@@ -220,14 +305,15 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// The Video RAM is always located in the first 64K, VRAM is in no way affected by this register
         /// </summary>
         private byte _RAMR;
+        /// <summary>
+        /// This is actually implemented outside of here. These values do nothing.
+        /// </summary>
         public byte RAMR
         {
             get { return _RAMR; }
             set
             {
                 _RAMR = value;
-
-                // still todo
             }
         }
 
@@ -245,6 +331,11 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             get { return _interruptCounter; }
             set { _interruptCounter = value; }
         }
+
+        /// <summary>
+        /// Interrupts are delayed when a VSYNC occurs
+        /// </summary>
+        private int VSYNCDelay;
 
         /// <summary>
         /// Signals that the frame end has been reached
@@ -289,7 +380,7 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         /// On real hardware interrupt generation is based on the falling edge of the HSYNC signal
         /// So in this emulation, once the falling edge is detected, interrupt processing happens
         /// </summary>
-        private bool HSYNC_falling;
+        //private bool HSYNC_falling;
 
         /// <summary>
         /// Used to count HSYNCs during a VSYNC
@@ -343,7 +434,63 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         #endregion
 
-        #region Internal Methods
+        #region Clock Business
+
+        /// <summary>
+        /// Called every CPU cycle
+        /// In reality the GA is clocked at 16Mhz (4 times the frequency of the CPU)
+        /// Therefore this method has to take care of:
+        /// 4 GA cycles
+        /// 1 CRCT cycle every 4 calls
+        /// 1 PSG cycle every 4 calls
+        /// 1 CPU cycle (uncontended)
+        /// </summary>
+        public void ClockCycle()
+        {
+            // gatearray uses 4-phase clock to supply clocks to other devices
+            switch (ClockCounter)
+            {
+                case 0:
+                    CRCT.ClockCycle();
+                    WaitLine = false;
+                    break;
+                case 1:
+                    WaitLine = true;
+                    // detect new scanline and upcoming new frame on next render cycle
+                    //FrameDetector();
+                    break;
+                case 2:
+                    // video fetch
+                    WaitLine = true;
+                    //FetchByte(1);
+                    break;
+                case 3:
+                    // video fetch and render
+                    WaitLine = true;
+                    //FetchByte(2);
+                    GACharacterCycle();
+                    //PixelGenerator();
+                    break;
+            }
+
+            if (!HSYNC && CRCT.HSYNC)
+            {
+                HSYNC = true;
+            }
+
+            // run the interrupt generator routine
+            InterruptGenerator();
+
+            if (!CRCT.HSYNC)
+            {
+                HSYNC = false;
+            }
+
+            // conditional CPU cycle
+            DoConditionalCPUCycle();
+
+            AdvanceClock();
+        }
 
         /// <summary>
         /// Increments the internal clock counters by one
@@ -359,7 +506,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             // check for frame end
             if (FrameClock == FrameLength)
             {
-                //FrameClock = 0;
                 FrameEnd = true;
             }
         }
@@ -405,6 +551,57 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                         CPU.ExecuteOne();
                     }
                     break;
+            }
+        }
+
+        #endregion
+
+        #region Frame & Interrupt Handling
+
+        /// <summary>
+        /// The CRCT builds the picture in a strange way, so that the top left of the display area is the first pixel from
+        /// video RAM. The borders come either side of the HSYNC and VSYNCs later on:
+        /// https://web.archive.org/web/20170501112330im_/http://www.grimware.org/lib/exe/fetch.php/documentations/devices/crtc.6845/crtc.standard.video.frame.png?w=800&h=500
+        /// Therefore when the gate array initialises, we will attempt end the frame early in order to
+        /// sync up at the point where VSYNC is active and HSYNC just begins. This is roughly how a CRT monitor would display the picture.
+        /// The CRT would start a new line at the point where an HSYNC is detected.
+        /// </summary>
+        private void FrameDetector()
+        {
+            if (CRCT.HSYNC && !IsNewLine)
+            {
+                // start of a new line on the next render cycle
+                IsNewLine = true;
+
+                // process scanline
+                //CRT.CurrentLine.CommitScanline();
+
+                // check for end of frame
+                if (CRCT.VSYNC && !IsNewFrame)
+                {
+                    // start of a new frame on the next render cycle
+                    IsNewFrame = true;
+                    //FrameEnd = true;                    
+                    VLC = 0;
+                }
+                else if (!CRCT.VSYNC)
+                {
+                    // increment line counter
+                    VLC++;
+                    IsNewFrame = false;
+                }
+
+                HCC = 0;
+
+                // update screenmode
+                //ScreenMode = RMR & 0x03;
+                //CRT.CurrentLine.InitScanline(ScreenMode, VLC);
+            }
+            else if (!CRCT.HSYNC)
+            {
+                // reset the flags
+                IsNewLine = false;
+                IsNewFrame = false;
             }
         }
 
@@ -469,234 +666,271 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             }
         }
 
-        /// <summary>
-        /// The CRCT builds the picture in a strange way, so that the top left of the display area is the first pixel from
-        /// video RAM. The borders come either side of the HSYNC and VSYNCs later on:
-        /// https://web.archive.org/web/20170501112330im_/http://www.grimware.org/lib/exe/fetch.php/documentations/devices/crtc.6845/crtc.standard.video.frame.png?w=800&h=500
-        /// Therefore when the gate array initialises, we will attempt end the frame early in order to
-        /// sync up at the point where VSYNC is active and HSYNC just begins. This is roughly how a CRT monitor would display the picture.
-        /// The CRT would start a new line at the point where an HSYNC is detected.
-        /// </summary>
-        private void FrameDetector()
-        {
-            if (CRCT.HSYNC && !IsNewLine)
-            {
-                // start of a new line on the next render cycle
-                IsNewLine = true;
+        #endregion
 
-                // process scanline
-                CRT.CurrentLine.CommitScanline();
-
-                // check for end of frame
-                if (CRCT.VSYNC && !IsNewFrame)
-                {
-                    // start of a new frame on the next render cycle
-                    IsNewFrame = true;
-                    //FrameEnd = true;                    
-                    VLC = 0;
-                }
-                else if (!CRCT.VSYNC)
-                {
-                    // increment line counter
-                    VLC++;
-                    IsNewFrame = false;
-                }
-
-                HCC = 0;
-
-                // update screenmode
-                ScreenMode = RMR & 0x03;
-                CRT.CurrentLine.InitScanline(ScreenMode, VLC);
-            }
-            else if (!CRCT.HSYNC)
-            {
-                // reset the flags
-                IsNewLine = false;
-                IsNewFrame = false;
-            }
-        }
+        #region Rendering Business
 
         /// <summary>
-        /// Fetches a video RAM byte
-        /// This happens at 2Mhz when a memory fetch is due
+        /// Builds up current scanline character information
+        /// Ther GA modifies HSYNC and VSYNC signals before they are sent to the monitor
+        /// This is handled here
+        /// Runs at 1Mhz
         /// </summary>
-        /// <param name="index"></param>
-        private void FetchByte(int index)
+        private void GACharacterCycle()
         {
-            switch (index)
-            {
-                case 1:
-                    VideoByte1 = _machine.FetchScreenMemory(CRCT.CurrentByteAddress);
-                    break;
-                case 2:
-                    VideoByte2 = _machine.FetchScreenMemory((ushort)(CRCT.CurrentByteAddress + 1));
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// Called at 1Mhz
-        /// Generates the internal screen layout (to be displayed at the end of the frame by the CRT)
-        /// Each PixelGenerator cycle will process 1 horizontal character
-        /// If the area to generate is in display RAM, 2 bytes will be processed
-        /// </summary>
-        private void PixelGenerator()
-        {
-            // mode 0: 160x200 pixels:  1 character == 1Mhz == 2 pixels == 4 bits per pixel = 2 pixels per screenbyte
-            // mode 1: 320x200 pixels:  1 character == 1Mhz == 4 pixels == 2 bits per pixel = 4 pixels per screenbyte
-            // mode 2: 640x200 pixels:  1 character == 1Mhz == 8 pixels == 1 bits per pixel = 8 pixels per screenbyte
-            // mode 3: 160x200 pixels:  1 character == 1Mhz == 2 pixels == 2 bits per pixel = 2 pixels per screenbyte
-
-            /*
-                http://www.cpcmania.com/Docs/Programming/Painting_pixels_introduction_to_video_memory.htm
-                http://www.cantrell.org.uk/david/tech/cpc/cpc-firmware/
-                All 3 video modes are 200 lines in height.
-                Each line is 80 video bytes in size, representing 160, 320 or 640 pixels in width depending on the mode
-
-                Video memory organisation:
-            
-                LINE	    R0W0	R0W1	R0W2	R0W3	R0W4	R0W5	R0W6	R0W7
-                1	        C000	C800	D000	D800	E000	E800	F000	F800
-                2	        C050	C850	D050	D850	E050	E850	F050	F850
-                3	        C0A0	C8A0	D0A0	D8A0	E0A0	E8A0	F0A0	F8A0
-                4	        C0F0	C8F0	D0F0	D8F0	E0F0	E8F0	F0F0	F8F0
-                5	        C140	C940	D140	D940	E140	E940	F140	F940
-                6	        C190	C990	D190	D990	E190	E990	F190	F990
-                7	        C1E0	C9E0	D1E0	D9E0	E1E0	E9E0	F1E0	F9E0
-                8	        C230	CA30	D230	DA30	E230	EA30	F230	FA30
-                9	        C280	CA80	D280	DA80	E280	EA80	F280	FA80
-                10	        C2D0	CAD0	D2D0	DAD0	E2D0	EAD0	F2D0	FAD0
-                11	        C320	CB20	D320	DB20	E320	EB20	F320	FB20
-                12	        C370	CB70	D370	DB70	E370	EB70	F370	FB70
-                13	        C3C0	CBC0	D3C0	DBC0	E3C0	EBC0	F3C0	FBC0
-                14	        C410	CC10	D410	DC10	E410	EC10	F410	FC10
-                15	        C460	CC60	D460	DC60	E460	EC60	F460	FC60
-                16	        C4B0	CCB0	D4B0	DCB0	E4B0	ECB0	F4B0	FCB0
-                17	        C500	CD00	D500	DD00	E500	ED00	F500	FD00
-                18	        C550	CD50	D550	DD50	E550	ED50	F550	FD50
-                19	        C5A0	CDA0	D5A0	DDA0	E5A0	EDA0	F5A0	FDA0
-                20	        C5F0	CDF0	D5F0	DDF0	E5F0	ED50	F550	FD50
-                21	        C640	CE40	D640	DE40	E640	EE40	F640	FE40
-                22	        C690	CE90	D690	DE90	E690	EE90	F690	FE90
-                23	        C6E0	CEE0	D6E0	DEE0	E6E0	EEE0	F6E0	FEE0
-                24	        C730	CF30	D730	DF30	E730	EF30	F730	FF30
-                25	        C780	CF80	D780	DF80	E780	EF80	F780	FF80
-                spare start	C7D0	CFD0	D7D0	DFD0	E7D0	EFD0	F7D0	FFD0
-                spare end	C7FF	CFFF	D7FF	DFFF	E7FF	EFFF	F7FF	FFFF
-
-                Each byte represents 2, 4 or 8 pixels of the display depending on the mode.
-
-                Mode 2, 640×200, 2 colors (each byte of video memory represents 8 pixels):
-                --------------------------------------------------------------------------
-                bit 7	bit 6	bit 5	bit 4	bit 3	bit 2	bit 1	bit 0
-                pixel 0	pixel 1	pixel 2	pixel 3	pixel 4	pixel 5	pixel 6	pixel 7
-
-                Mode 1, 320×200, 4 colors (each byte of video memory represents 4 pixels):
-                --------------------------------------------------------------------------
-                bit 7	        bit 6	        bit 5	        bit 4	        bit 3	        bit 2	        bit 1	        bit 0
-                pixel 0 (bit 1)	pixel 1 (bit 1)	pixel 2 (bit 1)	pixel 3 (bit 1)	pixel 0 (bit 0)	pixel 1(bit 0)	pixel 2 (bit 0)	pixel 3 (bit 0)
-
-                Mode 0, 160×200, 16 colors (each byte of video memory represents 2 pixels):
-                ---------------------------------------------------------------------------
-                bit 7	        bit 6	        bit 5	        bit 4	        bit 3	        bit 2	        bit 1	        bit 0
-                pixel 0 (bit 0)	pixel 1 (bit 0)	pixel 0 (bit 2)	pixel 1 (bit 2)	pixel 0 (bit 1)	pixel 1 (bit 1)	pixel 0 (bit 3)	pixel 1 (bit 3)
-
-
-                Screen layout and generation:  http://www.cpcwiki.eu/forum/programming/rupture/?action=dlattach;attach=16221
-            */
-
             if (CRCT.VSYNC && CRCT.HSYNC)
             {
                 // both hsync and vsync active
-                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.HSYNCandVSYNC, VideoByte1, VideoByte2, ColourRegisters.ToArray());
-                //CRT.AddScanlineCharacter(VLC, HCC++, RenderPhase.HSYNCandVSYNC, VideoByte1, VideoByte2, ColourRegisters);
+                CurrentLine.AddCharacter(Phase.HSYNCandVSYNC);
             }
             else if (CRCT.VSYNC)
             {
                 // vsync is active but hsync is not
-                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.VSYNC, VideoByte1, VideoByte2, ColourRegisters.ToArray());
-                //CRT.AddScanlineCharacter(VLC, HCC++, RenderPhase.VSYNC, VideoByte1, VideoByte2, ColourRegisters);
+                CurrentLine.AddCharacter(Phase.VSYNC);
             }
             else if (CRCT.HSYNC)
             {
                 // hsync is active but vsync is not
-                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.HSYNC, VideoByte1, VideoByte2, ColourRegisters.ToArray());
-                //CRT.AddScanlineCharacter(VLC, HCC++, RenderPhase.HSYNC, VideoByte1, VideoByte2, ColourRegisters);
+                CurrentLine.AddCharacter(Phase.HSYNC);
             }
             else if (!CRCT.DISPTMG)
             {
                 // border generation
-                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.BORDER, VideoByte1, VideoByte2, ColourRegisters.ToArray());
-                //CRT.AddScanlineCharacter(VLC, HCC++, RenderPhase.BORDER, VideoByte1, VideoByte2, ColourRegisters);
+                CurrentLine.AddCharacter(Phase.BORDER);
             }
             else if (CRCT.DISPTMG)
             {
                 // pixels generated from video RAM
-                CRT.CurrentLine.AddScanlineCharacter(HCC++, RenderPhase.DISPLAY, VideoByte1, VideoByte2, ColourRegisters.ToArray());
+                CurrentLine.AddCharacter(Phase.DISPLAY);
             }
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
-        /// Called every CPU cycle
-        /// In reality the GA is clocked at 16Mhz (4 times the frequency of the CPU)
-        /// Therefore this method has to take care of:
-        /// 4 GA cycles
-        /// 1 CRCT cycle every 4 calls
-        /// 1 PSG cycle every 4 calls
-        /// 1 CPU cycle (uncontended)
+        /// Holds the upcoming video RAM addresses for the next scanline
+        /// Firmware default size is 80 (40 characters - 2 bytes per character)
         /// </summary>
-        public void ClockCycle()
+        private ushort[] NextVidRamLine = new ushort[40 * 2];
+
+        /// <summary>
+        /// The current character line we are working from
+        /// </summary>
+        private CharacterLine CurrentLine;
+
+        /// <summary>
+        /// List of screen lines as they are built up
+        /// </summary>
+        private List<CharacterLine> ScreenLines = new List<CharacterLine>();
+
+        /// <summary>
+        /// Pixel value lookups for every scanline byte value
+        /// Based on the lookup at https://github.com/gavinpugh/xnacpc
+        /// </summary>
+        private int[][] ByteLookup = new int[4][];
+        private void InitByteLookup()
         {
-            // gatearray uses 4-phase clock to supply clocks to other devices
-            switch (ClockCounter)
+            int pix;
+            for (int m = 0; m < 4; m++)
             {
-                case 0:
-                    CRCT.ClockCycle();
-                    //PSG.ClockCycle(FrameClock);
-                    WaitLine = false;
-                    break;
-                case 1:
-                    WaitLine = true;
-                    // detect new scanline and upcoming new frame on next render cycle
-                    FrameDetector();
-                    break;
-                case 2:
-                    // video fetch
-                    WaitLine = true;
-                    //if (CRCT.DISPTMG)
-                        FetchByte(1);
-                    break;                    
-                case 3:
-                    // video fetch and render
-                    WaitLine = true;
-                    //if (CRCT.DISPTMG)
-                        FetchByte(2);
-                    PixelGenerator();
-                    break;
+                int pos = 0;
+                ByteLookup[m] = new int[256 * 8];
+                for (int b = 0; b < 256; b++)
+                {
+                    switch (m)
+                    {
+                        case 0:
+                            pix = b & 0xaa;
+                            pix = (((pix & 0x80) >> 7) | ((pix & 0x08) >> 2) | ((pix & 0x20) >> 3) | ((pix & 0x02) << 2));
+                            for (int c = 0; c < 4; c++)
+                                ByteLookup[m][pos++] = pix;
+                            pix = b & 0x55;
+                            pix = (((pix & 0x40) >> 6) | ((pix & 0x04) >> 1) | ((pix & 0x10) >> 2) | ((pix & 0x01) << 3));
+                            for (int c = 0; c < 4; c++)
+                                ByteLookup[m][pos++] = pix;
+                            break;
+                        case 1:
+                            pix = (((b & 0x80) >> 7) | ((b & 0x08) >> 2));
+                            ByteLookup[m][pos++] = pix;
+                            ByteLookup[m][pos++] = pix;
+                            pix = (((b & 0x40) >> 6) | ((b & 0x04) >> 1));
+                            ByteLookup[m][pos++] = pix;
+                            ByteLookup[m][pos++] = pix;
+                            pix = (((b & 0x20) >> 5) | (b & 0x02));
+                            ByteLookup[m][pos++] = pix;
+                            ByteLookup[m][pos++] = pix;
+                            pix = (((b & 0x10) >> 4) | ((b & 0x01) << 1));
+                            ByteLookup[m][pos++] = pix;
+                            ByteLookup[m][pos++] = pix;
+                            break;
+                        case 2:
+                            for (int i = 7; i >= 0; i--)
+                                ByteLookup[m][pos++] = ((b & (1 << i)) != 0) ? 1 : 0;
+                            break;
+                        case 3:
+                            pix = b & 0xaa;
+                            pix = (((pix & 0x80) >> 7) | ((pix & 0x08) >> 2) | ((pix & 0x20) >> 3) | ((pix & 0x02) << 2));
+                            for (int c = 0; c < 4; c++)
+                                ByteLookup[m][pos++] = pix;
+                            pix = b & 0x55;
+                            pix = (((pix & 0x40) >> 6) | ((pix & 0x04) >> 1) | ((pix & 0x10) >> 2) | ((pix & 0x01) << 3));
+                            for (int c = 0; c < 4; c++)
+                                ByteLookup[m][pos++] = pix;
+                            break;
+                    }
+                }
             }
-
-            if (!HSYNC && CRCT.HSYNC)
-            {
-                HSYNC = true;
-            }            
-
-            // run the interrupt generator routine
-            InterruptGenerator();
-
-            if (!CRCT.HSYNC)
-            {
-                HSYNC = false;
-            }
-
-            // conditional CPU cycle
-            DoConditionalCPUCycle(); 
-
-            AdvanceClock();
         }
+
+        /// <summary>
+        /// Runs at HSYNC *AFTER* the scanline has been commmitted
+        /// Sets up the upcoming memory addresses for the next scanline
+        /// </summary>
+        private void CalculateNextScreenMemory()
+        {
+            var verCharCount = CRCT.VCC;
+            var verRasCount = CRCT.VLC;
+
+            var screenWidthByteCount = CRCT.DisplayWidth * 2;
+            NextVidRamLine = new ushort[screenWidthByteCount * 2];
+            var screenHeightCharCount = CRCT.DisplayHeightInChars;
+            var screenAddress = CRCT.MA;
+
+            int baseAddress = ((screenAddress << 2) & 0xf000);
+            int offset = (screenAddress * 2) & 0x7ff;
+
+            int x = offset + ((verCharCount * screenWidthByteCount) & 0x7ff);
+            int y = baseAddress + (verRasCount * 0x800);
+
+            for (int b = 0; b < screenWidthByteCount; b++)
+            {
+                NextVidRamLine[b] = (ushort)(y + x);
+                x++;
+                x &= 0x7ff;
+            }
+        }
+
+        /// <summary>
+        /// Called at the start of HSYNC, this renders the currently built-up scanline
+        /// </summary>
+        private void RenderScanline()
+        {
+            // memory addresses
+            int cRow = CRCT.VCC;
+            int cRas = CRCT.VLC;
+
+            int screenByteWidth = CRCT.DisplayWidth * 2;
+            var screenHeightCharCount = CRCT.DisplayHeightInChars;
+            //CalculateNextScreenMemory();
+            var crctAddr = CRCT.DStartHigh << 8;
+            crctAddr |= CRCT.DStartLow;
+            var baseAddr =  ((crctAddr << 2) & (0xF000)); //CRCT.VideoPageBase;//
+            var baseOffset =  (crctAddr * 2) & 0x7FF; //CRCT.VideoRAMOffset * 2; //
+            var xA = baseOffset + ((cRow * screenByteWidth) & 0x7ff);
+            var yA = baseAddr + (cRas * 2048);
+
+            // border and display
+            int pix = 0;
+            int scrByte = 0;
+            
+            for (int i = 0; i < CurrentLine.PhaseCount; i++)
+            {
+                // every character renders 8 pixels
+                switch (CurrentLine.Phases[i])
+                {
+                    case Phase.NONE:
+                        break;
+                    
+                    case Phase.HSYNC:
+                        break;
+                    case Phase.HSYNCandVSYNC:
+                        break;
+                    case Phase.VSYNC:
+                        break;
+                    case Phase.BORDER:
+                        // output current border colour
+                        for (pix = 0; pix < 16; pix++)
+                        {
+                            CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[16]]);
+                        }
+                        break;
+                    case Phase.DISPLAY:
+                        // each character references 2 bytes in video RAM
+                        byte data;
+
+                        for (int by = 0; by < 2; by++)
+                        {
+                            ushort addr = (ushort)(yA + xA);
+                            data = _machine.FetchScreenMemory(addr);
+                            scrByte++;
+
+                            switch (CurrentLine.ScreenMode)
+                            {
+                                case 0:
+                                    pix = data & 0xaa;
+                                    pix = (((pix & 0x80) >> 7) | ((pix & 0x08) >> 2) | ((pix & 0x20) >> 3) | ((pix & 0x02) << 2));
+                                    for (int c = 0; c < 4; c++)
+                                        CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix]]);
+                                    pix = data & 0x55;
+                                    pix = (((pix & 0x40) >> 6) | ((pix & 0x04) >> 1) | ((pix & 0x10) >> 2) | ((pix & 0x01) << 3));
+                                    for (int c = 0; c < 4; c++)
+                                        CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix]]);
+                                    break;
+                                case 1:
+                                    pix = (((data & 0x80) >> 7) | ((data & 0x08) >> 2));
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix]]);
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix]]);
+                                    pix = (((data & 0x40) >> 6) | ((data & 0x04) >> 1));
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix]]);
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix]]);
+                                    pix = (((data & 0x20) >> 5) | (data & 0x02));
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix]]);
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix]]);
+                                    pix = (((data & 0x10) >> 4) | ((data & 0x01) << 1));
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix]]);
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix]]);
+                                    break;
+                                case 2:
+                                    pix = data;
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix.Bit(7) ? 1 : 0]]);
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix.Bit(6) ? 1 : 0]]);
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix.Bit(5) ? 1 : 0]]);
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix.Bit(4) ? 1 : 0]]);
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix.Bit(3) ? 1 : 0]]);
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix.Bit(2) ? 1 : 0]]);
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix.Bit(1) ? 1 : 0]]);
+                                    CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix.Bit(0) ? 1 : 0]]);
+                                    break;
+                                case 3:
+                                    pix = data & 0xaa;
+                                    pix = (((pix & 0x80) >> 7) | ((pix & 0x08) >> 2) | ((pix & 0x20) >> 3) | ((pix & 0x02) << 2));
+                                    for (int c = 0; c < 4; c++)
+                                        CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix]]);
+                                    pix = data & 0x55;
+                                    pix = (((pix & 0x40) >> 6) | ((pix & 0x04) >> 1) | ((pix & 0x10) >> 2) | ((pix & 0x01) << 3));
+                                    for (int c = 0; c < 4; c++)
+                                        CurrentLine.Pixels.Add(CPCHardwarePalette[ColourRegisters[pix]]);
+                                    break;
+                            }
+
+                            xA++;
+                            xA &= 0x7ff;
+                        }
+
+                        break;
+                }
+            }
+
+            // add to the list
+            ScreenLines.Add(new CharacterLine
+            {
+                ScreenMode = CurrentLine.ScreenMode,
+                Phases = CurrentLine.Phases.ToList(),
+                Pixels = CurrentLine.Pixels.ToList()
+            });
+        }
+
+        #endregion       
+
+        #region Public Methods
 
         /// <summary>
         /// Called when the Z80 acknowledges an interrupt
@@ -705,6 +939,254 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
         {
             // bit 5 of the interrupt counter is reset
             InterruptCounter &= ~(1 << 5);
+        }
+
+        private int slCounter = 0;
+        private int slBackup = 0;
+
+        /// <summary>
+        /// Fired when the CRCT flags HSYNC
+        /// </summary>
+        public void OnHSYNC()
+        {
+            HSYNC = true;
+            slCounter++;
+
+            // commit the scanline
+            RenderScanline();
+
+            // setup vid memory for next scanline
+            CalculateNextScreenMemory();
+
+            if (CRCT.VLC == 0)
+            {
+                // update screenmode
+                ScreenMode = _RMR & 0x03;
+            }
+
+            // setup scanline for next
+            CurrentLine.Clear(ScreenMode);
+        }
+
+        /// <summary>
+        /// Fired when the CRCT flags VSYNC
+        /// </summary>
+        public void OnVSYNC()
+        {
+            FrameEnd = true;
+            slBackup = slCounter;
+            slCounter = 0;
+        }
+
+        #endregion
+
+        #region IVideoProvider
+
+        public int[] ScreenBuffer;
+
+        private int _virtualWidth;
+        private int _virtualHeight;
+        private int _bufferWidth;
+        private int _bufferHeight;
+
+        public int BackgroundColor
+        {
+            get { return CPCHardwarePalette[0]; }
+        }
+
+        public int VirtualWidth
+        {
+            get { return _virtualWidth; }
+            set { _virtualWidth = value; }
+        }
+
+        public int VirtualHeight
+        {
+            get { return _virtualHeight; }
+            set { _virtualHeight = value; }
+        }
+
+        public int BufferWidth
+        {
+            get { return _bufferWidth; }
+            set { _bufferWidth = value; }
+        }
+
+        public int BufferHeight
+        {
+            get { return _bufferHeight; }
+            set { _bufferHeight = value; }
+        }
+
+        public int SysBufferWidth;
+        public int SysBufferHeight;
+
+        public int VsyncNumerator
+        {
+            get { return 200000000; }
+            set { }
+        }
+
+        public int VsyncDenominator
+        {
+            get { return Z80ClockSpeed; }
+        }
+
+        public int[] GetVideoBuffer()
+        {
+            // get only lines that have pixel data
+            var lines = ScreenLines.Where(a => a.Pixels.Count > 0).ToList();
+            var height = lines.Count();
+
+            int pos = 0;
+            int lCount = 0;
+            foreach (var l in lines)
+            {
+                var lCop = l.Pixels.ToList();
+                var len = l.Pixels.Count;
+                if (l.Phases.Contains(Phase.VSYNC) && l.Phases.Contains(Phase.BORDER))
+                    continue;
+
+                if (len < 320)
+                    continue;
+
+                var pad = BufferWidth - len;
+                if (pad < 0)
+                {
+                    // trim the left and right
+                    var padPos = pad * -1;
+                    var excessL = padPos / 2;
+                    var excessR = excessL + (padPos % 2);
+                    for (int i = 0; i < excessL; i++)
+                    {
+                        var lThing = lCop.First();
+
+                        lCop.Remove(lThing);
+                    }
+                    for (int i = 0; i < excessL; i++)
+                    {
+                        var lThing = lCop.Last();
+
+                        lCop.Remove(lThing);
+                    }
+                }
+
+                var lPad = pad / 2;
+                var rPad = lPad + (pad % 2);
+
+                for (int i = 0; i < 2; i++)
+                {
+                    lCount++;
+
+                    for (int pL = 0; pL < lPad; pL++)
+                    {
+                        ScreenBuffer[pos++] = 0;
+                    }
+
+                    for (int pix = 0; pix < lCop.Count; pix++)
+                    {
+                        ScreenBuffer[pos++] = lCop[pix];
+                    }
+
+                    for (int pR = 0; pR < rPad; pR++)
+                    {
+                        ScreenBuffer[pos++] = 0;
+                    }
+                } 
+                
+                if (lCount >= BufferHeight - 2)
+                {
+                    break;
+                }       
+            }
+
+            ScreenLines.Clear();
+
+            return ScreenBuffer;
+
+            switch (borderType)
+            {
+                // crop to 768x272 (544)
+                // borders 64px - 64 scanlines
+                case AmstradCPC.BorderType.Uniform:
+                    /*
+                    var slSize = 64;
+                    var dispLines = (24 * 8) * 2;
+                    var origTopBorder = (7 * 8) * 2;                    
+                    var origBotBorder = (5 * 8) * 2;
+
+                    var lR = 16;
+                    var rR = 16;
+
+                    var trimTop = origTopBorder - slSize;
+
+                    var startP = SysBufferWidth * (origTopBorder - 64);
+                    var index1 = 0;
+
+                    // line by line
+                    int cnt = 0;
+                    for (int line = startP; line < ScreenBuffer.Length; line += SysBufferWidth)
+                    {
+                        cnt++;
+                        // pixels in line
+                        for (int p = lR; p < SysBufferWidth - rR; p++)
+                        {
+                            if (index1 == croppedBuffer.Length)
+                                break;
+
+                            croppedBuffer[index1++] = ScreenBuffer[line + p];
+                        }
+                    }
+                    return croppedBuffer;
+                    */
+
+                    var slWidth = BufferWidth;
+                    return ScreenBuffer;
+
+                    break;
+                    
+            }
+
+            return ScreenBuffer;
+        }
+
+        public void SetupScreenSize()
+        {
+            SysBufferWidth = 800;
+            SysBufferHeight = 600;
+            BufferHeight = SysBufferHeight;
+            BufferWidth = SysBufferWidth;
+            VirtualHeight = BufferHeight;
+            VirtualWidth = BufferWidth;
+            ScreenBuffer = new int[BufferWidth * BufferHeight];
+            croppedBuffer = ScreenBuffer;
+
+            switch (borderType)
+            {
+                case AmstradCPC.BorderType.Uncropped:
+                    break;
+
+                case AmstradCPC.BorderType.Uniform:
+                    BufferWidth = 800;
+                    BufferHeight = 600;
+                    VirtualHeight = BufferHeight;
+                    VirtualWidth = BufferWidth;
+                    croppedBuffer = new int[BufferWidth * BufferHeight];
+                    break;
+
+                case AmstradCPC.BorderType.Widescreen:
+                    break;
+            }
+        }
+
+        protected int[] croppedBuffer;
+
+        private AmstradCPC.BorderType _borderType;
+
+        public AmstradCPC.BorderType borderType
+        {
+            get { return _borderType; }
+            set { _borderType = value; }
         }
 
         #endregion
@@ -774,8 +1256,6 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
         #endregion
 
-        
-
         #region Serialization
 
         public void SyncState(Serializer ser)
@@ -793,9 +1273,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ser.Sync("FrameEnd", ref FrameEnd);
             ser.Sync("WaitLine", ref WaitLine);
             ser.Sync("_interruptCounter", ref _interruptCounter);
+            ser.Sync("VSYNCDelay", ref VSYNCDelay);
             ser.Sync("ScreenMode", ref ScreenMode);
             ser.Sync("HSYNC", ref HSYNC);
-            ser.Sync("HSYNC_falling", ref HSYNC_falling);
+            //ser.Sync("HSYNC_falling", ref HSYNC_falling);
             ser.Sync("HSYNC_counter", ref HSYNC_counter);
             ser.Sync("VSYNC", ref VSYNC);
             ser.Sync("InterruptRaised", ref InterruptRaised);
@@ -807,12 +1288,83 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             ser.Sync("VLC", ref VLC);
             ser.Sync("VideoByte1", ref VideoByte1);
             ser.Sync("VideoByte2", ref VideoByte2);
+            ser.Sync("NextVidRamLine", ref NextVidRamLine, false);
             ser.EndSection();
         }
 
         #endregion
 
-        #region Enums & Classes
+        #region Enums, Classes & Lookups
+
+        /// <summary>
+        /// Represents a single scanline (in characters)
+        /// </summary>
+        public class CharacterLine
+        {
+            /// <summary>
+            /// Screenmode is defined at each HSYNC (start of a new character line)
+            /// Therefore we pass the mode in via constructor
+            /// </summary>
+            /// <param name="screenMode"></param>
+            //public CharacterLine(int screenMode)
+            //{
+                //ScreenMode = screenMode;
+            //}
+
+            public int ScreenMode = 1;
+            public List<Phase> Phases = new List<Phase>();
+            public List<int> Pixels = new List<int>();
+
+            /// <summary>
+            /// Adds a new horizontal character to the list
+            /// </summary>
+            /// <param name="phase"></param>
+            public void AddCharacter(Phase phase)
+            {
+                Phases.Add(phase);
+            }
+
+            public int PhaseCount
+            {
+                get { return Phases.Count(); }
+            }
+
+            public void Clear(int screenMode)
+            {
+                ScreenMode = screenMode;
+                Phases.Clear();
+                Pixels.Clear();
+            }
+        }
+
+        [Flags]
+        public enum Phase : int
+        {
+            /// <summary>
+            /// Nothing
+            /// </summary>
+            NONE = 0,
+            /// <summary>
+            /// Border is being rendered
+            /// </summary>
+            BORDER = 1,
+            /// <summary>
+            /// Display rendered from video RAM
+            /// </summary>
+            DISPLAY = 2,
+            /// <summary>
+            /// HSYNC in progress
+            /// </summary>
+            HSYNC = 3,
+            /// <summary>
+            /// VSYNC in process
+            /// </summary>
+            VSYNC = 4,
+            /// <summary>
+            /// HSYNC occurs within a VSYNC
+            /// </summary>
+            HSYNCandVSYNC = 5
+        }
 
         public enum GateArrayType
         {
