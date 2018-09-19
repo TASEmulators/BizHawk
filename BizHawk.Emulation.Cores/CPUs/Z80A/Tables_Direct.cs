@@ -609,7 +609,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						IDLE,
 						WAIT,
 						WAIT,
-						IN, A, Z, W,
+						IN_A_N, A, Z, W,
 						INC16, Z, W,
 						WAIT,
 						OP_F,
