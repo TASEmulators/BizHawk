@@ -80,6 +80,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort RST = 65;
 		public const ushort REP_OP_I = 66;
 		public const ushort REP_OP_O = 67;
+        public const ushort IN_A_N = 68;
 
 		// non-state variables
 		public ushort Ztemp1, Ztemp2, Ztemp3, Ztemp4;	
@@ -478,6 +479,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 				case IN:
 					IN_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
+                case IN_A_N:
+                    IN_A_N_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
+                    break;
 				case NEG:
 					NEG_8_Func(cur_instr[instr_pntr++]);
 					break;
