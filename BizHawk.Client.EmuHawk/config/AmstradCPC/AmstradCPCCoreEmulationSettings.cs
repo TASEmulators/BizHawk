@@ -89,7 +89,7 @@ namespace BizHawk.Client.EmuHawk
 
         private void UpdateMachineNotes(MachineType type)
         {
-            lblMachineNotes.Text = CPCMachineMetaData.GetMetaString(type);
+            textBoxMachineNotes.Text = CPCMachineMetaData.GetMetaString(type);
         }
 
         private void borderTypecomboBox1_SelectedIndexChanged(object sender, EventArgs e)

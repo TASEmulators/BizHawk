@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq.Expressions;
 
 namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 {
@@ -49,5 +50,10 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
 
             return m;
         }
-    }
+
+		public static string GetMemberName<T, TValue>(Expression<Func<T, TValue>> memberAccess)
+		{
+			return ((MemberExpression)memberAccess.Body).Member.Name;
+		}
+	}
 }

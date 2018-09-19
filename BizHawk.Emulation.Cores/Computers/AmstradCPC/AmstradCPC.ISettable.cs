@@ -1,5 +1,6 @@
 ﻿using BizHawk.Common;
 using BizHawk.Emulation.Common;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
 
@@ -157,8 +158,9 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
             public string Media { get; set; }
             public string OtherMisc { get; set; }
 
+			Dictionary<string, string> Data = new Dictionary<string, string>();
 
-            public static CPCMachineMetaData GetMetaObject(MachineType type)
+			public static CPCMachineMetaData GetMetaObject(MachineType type)
             {
                 CPCMachineMetaData m = new CPCMachineMetaData();
                 m.MachineType = type;
@@ -187,74 +189,93 @@ namespace BizHawk.Emulation.Cores.Computers.AmstradCPC
                         m.Audio = "General Instruments AY-3-8912 PSG (3ch)";
                         m.Media = "3\" Floppy Disk (via built-in Floppy Drive) & Cassette Tape (via external cassette player)";
                         break;
-                        /*
-                    case MachineType.ZXSpectrum48:
-                        m.Name = "Sinclair ZX Spectrum 48K / 48K+";
-                        m.Description = "The original ZX Spectrum 48K RAM version. 2 years later a 'plus' version was released that had a better keyboard. ";
-                        m.Description += "Electronically both the 48K and + are identical, so ZXHawk treats them as the same emulated machine. ";
-                        m.Description += "These machines dominated the UK 8-bit home computer market throughout the 1980's so most non-128k only games are compatible.";
-                        m.Released = "1982 (48K) / 1984 (48K+)";
-                        m.CPU = "Zilog Z80A @ 3.5MHz";
-                        m.Memory = "16KB ROM / 48KB RAM";
-                        m.Video = "ULA @ 7MHz - PAL (50.08Hz Interrupt)";
-                        m.Audio = "Beeper (HW 1ch. / 10oct.) - Internal Speaker";
-                        m.Media = "Cassette Tape (via 3rd party external tape player)";
-                        break;
-                    case MachineType.ZXSpectrum128:
-                        m.Name = "Sinclair ZX Spectrum 128";
-                        m.Description = "The first Spectrum 128K machine released in Spain in 1985 and later UK in 1986. ";
-                        m.Description += "With an updated ROM and new memory paging system to work around the Z80's 16-bit address bus. ";
-                        m.Description += "The 128 shipped with a copy of the 48k ROM (that is paged in when required) and a new startup menu with the option of dropping into a '48k mode'. ";
-                        m.Description += "Even so, there were some compatibility issues with older Spectrum games that were written to utilise some of the previous model's intricacies. ";
-                        m.Description += "Many games released after 1985 supported the new AY-3-8912 PSG chip making for far superior audio. The extra memory also enabled many games to be loaded in all at once (rather than loading each level from tape when needed).";
-                        m.Released = "1985 / 1986";
-                        m.CPU = "Zilog Z80A @ 3.5469 MHz";
-                        m.Memory = "32KB ROM / 128KB RAM";
-                        m.Video = "ULA @ 7.0938MHz - PAL (50.01Hz Interrupt)";
-                        m.Audio = "Beeper (HW 1ch. / 10oct.) & General Instruments AY-3-8912 PSG (3ch) - RF Output";
-                        m.Media = "Cassette Tape (via 3rd party external tape player)";
-                        break;
-                    case MachineType.ZXSpectrum128Plus2:
-                        m.Name = "Sinclair ZX Spectrum +2";
-                        m.Description = "The first Sinclair Spectrum 128K machine that was released after Amstrad purchased Sinclair in 1986. ";
-                        m.Description += "Electronically it was almost identical to the 128, but with the addition of a built-in tape deck and 2 Sinclair Joystick ports.";
-                        m.Released = "1986";
-                        m.CPU = "Zilog Z80A @ 3.5469 MHz";
-                        m.Memory = "32KB ROM / 128KB RAM";
-                        m.Video = "ULA @ 7.0938MHz - PAL (50.01Hz Interrupt)";
-                        m.Audio = "Beeper (HW 1ch. / 10oct.) & General Instruments AY-3-8912 PSG (3ch) - RF Output";
-                        m.Media = "Cassette Tape (via built-in Datacorder)";
-                        break;
-                    case MachineType.ZXSpectrum128Plus2a:
-                        m.Name = "Sinclair ZX Spectrum +2a";
-                        m.Description = "The +2a looks almost identical to the +2 but is a variant of the +3 machine that was released the same year (except with the same built-in datacorder that the +2 had rather than a floppy drive). ";
-                        m.Description += "Memory paging again changed significantly and this (along with memory contention timing changes) caused more compatibility issues with some older games. ";
-                        m.Description += "Although functionally identical to the +3, it does not contain floppy disk controller.";
-                        m.Released = "1987";
-                        m.CPU = "Zilog Z80A @ 3.5469 MHz";
-                        m.Memory = "64KB ROM / 128KB RAM";
-                        m.Video = "ULA @ 7.0938MHz - PAL (50.01Hz Interrupt)";
-                        m.Audio = "Beeper (HW 1ch. / 10oct.) & General Instruments AY-3-8912 PSG (3ch) - RF Output";
-                        m.Media = "Cassette Tape (via built-in Datacorder)";
-                        break;
-                    case MachineType.ZXSpectrum128Plus3:
-                        m.Name = "Sinclair ZX Spectrum +3";
-                        m.Description = "Amstrad released the +3 the same year as the +2a, but it featured a built-in floppy drive rather than a datacorder. An external cassette player could still be connected though as in the older 48k models. ";
-                        m.Description += "Memory paging again changed significantly and this (along with memory contention timing changes) caused more compatibility issues with some older games. ";
-                        m.Description += "Currently ZXHawk does not emulate the floppy drive or floppy controller so the machine reports as a +2a on boot.";
-                        m.Released = "1987";
-                        m.CPU = "Zilog Z80A @ 3.5469 MHz";
-                        m.Memory = "64KB ROM / 128KB RAM";
-                        m.Video = "ULA @ 7.0938MHz - PAL (50.01Hz Interrupt)";
-                        m.Audio = "Beeper (HW 1ch. / 10oct.) & General Instruments AY-3-8912 PSG (3ch) - RF Output";
-                        m.Media = "3\" Floppy Disk (via built-in Floppy Drive)";
-                        break;
-                        */
                 }
-                return m;
+
+				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.Name), m.Name.Trim());
+				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.Description), m.Description.Trim());
+				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.Released), m.Released.Trim());
+				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.CPU), m.CPU.Trim());
+				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.Memory), m.Memory.Trim());
+				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.Video), m.Video.Trim());
+				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.Audio), m.Audio.Trim());
+				m.Data.Add(AmstradCPC.GetMemberName((CPCMachineMetaData c) => c.Media), m.Media.Trim());
+
+				return m;
             }
 
-            public static string GetMetaString(MachineType type)
+			public static string GetMetaString(MachineType type)
+			{
+				var m = GetMetaObject(type);
+
+				StringBuilder sb = new StringBuilder();
+
+				// get longest title
+				int titleLen = 0;
+				foreach (var d in m.Data)
+				{
+					if (d.Key.Length > titleLen)
+						titleLen = d.Key.Length;
+				}
+
+				var maxDataLineLen = 40;
+
+				// generate layout
+				foreach (var d in m.Data)
+				{
+					var tLen = d.Key.Length;
+					var makeup = (titleLen - tLen) / 4;
+					sb.Append(d.Key + ":\t");
+					for (int i = 0; i < makeup; i++)
+					{
+						if (tLen > 4)
+							sb.Append("\t");
+						else
+						{
+							makeup--;
+							sb.Append("\t");
+						}
+					}
+
+					// output the data splitting and tabbing as neccessary
+					var arr = d.Value.Split(' ');
+					int cnt = 0;
+
+					List<string> builder = new List<string>();
+					string working = "";
+					foreach (var s in arr)
+					{
+						var len = s.Length;
+						if (working.Length + 1 + len > maxDataLineLen)
+						{
+							// new line needed
+							builder.Add(working.Trim(' '));
+							working = "";
+						}
+						working += s + " ";
+					}
+
+					builder.Add(working.Trim(' '));
+
+					// output the data
+					for (int i = 0; i < builder.Count; i++)
+					{
+						if (i != 0)
+						{
+							sb.Append("\t");
+							sb.Append("\t");
+						}
+
+						sb.Append(builder[i]);
+						sb.Append("\r\n");
+					}
+
+					//sb.Append("\r\n");
+				}
+
+				return sb.ToString();
+			}
+
+			public static string GetMetaStringOld(MachineType type)
             {
                 var m = GetMetaObject(type);
 

@@ -2632,7 +2632,9 @@ namespace BizHawk.Client.EmuHawk
         {
             AmstradCPCTapesSubMenu.DropDownItems.Clear();
 
-            if (Emulator is AmstradCPC)
+			List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
+
+			if (Emulator is AmstradCPC)
             {
                 var ams = (AmstradCPC)Emulator;
                 var currSel = ams._machine.TapeMediaIndex;
@@ -2654,16 +2656,20 @@ namespace BizHawk.Client.EmuHawk
                         ams._machine.TapeMediaIndex = dummy;
                     };
 
-                    AmstradCPCTapesSubMenu.DropDownItems.Add(menuItem);
-                }
+					items.Add(menuItem);
+				}
             }
-        }
+
+			AmstradCPCTapesSubMenu.DropDownItems.AddRange(items.ToArray());
+		}
 
         private void AmstradCPCDisksSubMenu_DropDownOpened(object sender, EventArgs e)
         {
-            AmstradCPCDisksSubMenu.DropDownItems.Clear();
+			AmstradCPCDisksSubMenu.DropDownItems.Clear();
 
-            if (Emulator is AmstradCPC)
+			List<ToolStripMenuItem> items = new List<ToolStripMenuItem>();
+
+			if (Emulator is AmstradCPC)
             {
                 var ams = (AmstradCPC)Emulator;
                 var currSel = ams._machine.DiskMediaIndex;
@@ -2685,10 +2691,12 @@ namespace BizHawk.Client.EmuHawk
                         ams._machine.DiskMediaIndex = dummy;
                     };
 
-                    AmstradCPCDisksSubMenu.DropDownItems.Add(menuItem);
-                }
+					items.Add(menuItem);
+				}
             }
-        }
+
+			AmstradCPCDisksSubMenu.DropDownItems.AddRange(items.ToArray());
+		}
 
         private void AmstradCPCNonSyncSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
