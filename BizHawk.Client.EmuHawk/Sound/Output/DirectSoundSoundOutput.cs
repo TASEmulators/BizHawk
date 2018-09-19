@@ -156,7 +156,9 @@ namespace BizHawk.Client.EmuHawk
 		public void WriteSamples(short[] samples, int sampleCount)
 		{
 			if (sampleCount == 0) return;
-			_deviceBuffer.Write(samples, 0, sampleCount * Sound.ChannelCount, _actualWriteOffsetBytes, LockFlags.None);
+			int total = sampleCount * Sound.ChannelCount;
+			if (total > samples.Length) { total = samples.Length; }
+			_deviceBuffer.Write(samples, 0, total, _actualWriteOffsetBytes, LockFlags.None);
 			_actualWriteOffsetBytes = (_actualWriteOffsetBytes + (sampleCount * Sound.BlockAlign)) % BufferSizeBytes;
 			_filledBufferSizeBytes += sampleCount * Sound.BlockAlign;
 		}

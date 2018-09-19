@@ -21,6 +21,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				bilinearMode = bilinearFilteringMode.Standard;
 				MaxAnisotropy = false;
 				CacheSize = 8000;
+				ShowInternalResolution = false;
+				ShowRenderingResolution = false;
+				FXAA = false;
 				EnableNoise = true;
 				EnableLOD = true;
 				EnableHWLighting = false;
@@ -58,6 +61,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 				blurStrength = 20;
 				ForceGammaCorrection = false;
 				GammaCorrectionLevel = 2.0f;
+				EnableOverscan = false;
+				OverscanNtscTop = 0;
+				OverscanNtscBottom = 0;
+				OverscanNtscLeft = 0;
+				OverscanNtscRight = 0;
+				OverscanPalTop = 0;
+				OverscanPalBottom = 0;
+				OverscanPalLeft = 0;
+				OverscanPalRight = 0;
 			}
 
 			public bool UseDefaultHacks { get; set; }
@@ -133,6 +145,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[Description("Size of texture cache in megabytes. Good value is VRAM*3/4")]
 			public int CacheSize { get; set; }
 
+			[DefaultValue(false)]
+			[DisplayName("Show Internal Resolution")]
+			[Description("Show internal resolution.")]
+			public bool ShowInternalResolution { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Show Rendering Resolution")]
+			[Description("Show rendering resolution.")]
+			public bool ShowRenderingResolution { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("FXAA")]
+			[Description("Enable Fast Approximate Anti-Aliasing.")]
+			public bool FXAA { get; set; }
+
 			[DefaultValue(true)]
 			[DisplayName("Color noise emulation")]
 			[Description("Enable color noise emulation.")]
@@ -199,6 +226,51 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64
 			[DisplayName("N64 Depth Compare")]
 			[Description("Enable N64 depth compare instead of OpenGL standard one. Experimental.")]
 			public bool EnableN64DepthCompare { get; set; }
+
+			[DefaultValue(false)]
+			[DisplayName("Enable Overscan")]
+			[Description("Enable resulted image crop by Overscan.")]
+			public bool EnableOverscan { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Overscan NTSC Top")]
+			[Description("NTSC mode. Top bound of Overscan.")]
+			public int OverscanNtscTop { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Overscan NTSC Bottom")]
+			[Description("NTSC mode. Bottom bound of Overscan.")]
+			public int OverscanNtscBottom { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Overscan NTSC Left")]
+			[Description("NTSC mode. Left bound of Overscan.")]
+			public int OverscanNtscLeft { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Overscan NTSC Right")]
+			[Description("NTSC mode. Right bound of Overscan.")]
+			public int OverscanNtscRight { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Overscan PAL Top")]
+			[Description("PAL mode. Top bound of Overscan.")]
+			public int OverscanPalTop { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Overscan PAL Bottom")]
+			[Description("PAL mode. Bottom bound of Overscan.")]
+			public int OverscanPalBottom { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Overscan PAL Left")]
+			[Description("PAL mode. Left bound of Overscan.")]
+			public int OverscanPalLeft { get; set; }
+
+			[DefaultValue(0)]
+			[DisplayName("Overscan PAL Right")]
+			[Description("PAL mode. Right bound of Overscan.")]
+			public int OverscanPalRight { get; set; }
 
 			[DefaultValue(true)]
 			[DisplayName("FB Info")]

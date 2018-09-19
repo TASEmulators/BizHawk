@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Linq.Expressions;
 
 namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
 {
@@ -61,6 +62,17 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             }
 
             return m;
+        }
+
+        public byte[] GetSZXSnapshot()
+        {
+            return SZX.ExportSZX(_machine);
+            //return System.Text.Encoding.Default.GetString(data);
+        }
+
+        public static string GetMemberName<T, TValue>(Expression<Func<T, TValue>> memberAccess)
+        {
+            return ((MemberExpression)memberAccess.Body).Member.Name;
         }
     }
 }

@@ -37,6 +37,7 @@ namespace BizHawk.Client.Common
 		{
 			PathEntries.ResolveWithDefaults();
 			HotkeyBindings.ResolveWithDefaults();
+			PathManager.RefreshTempPath();
 		}
 
 		// Core preference for generic file extension, key: file extension, value: a systemID or empty if no preference

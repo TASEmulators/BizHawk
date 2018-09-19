@@ -38,7 +38,7 @@ namespace BizHawk.Client.EmuHawk
 			/// <summary>
 			/// Gets the default file extension
 			/// </summary>
-			public string Defaultext { get; }
+			public string Extension { get; set; }
 
 			/// <summary>
 			/// get a list of canned presets
@@ -48,14 +48,14 @@ namespace BizHawk.Client.EmuHawk
 			{
 				return new[]
 				{
-					new FormatPreset("AVI Uncompressed", "Uncompressed video and audio in an AVI container. Very large.",
-						"-c:a pcm_s16le -c:v rawvideo -f avi", false, "avi"),
-					new FormatPreset("AVI Lossless", "Lossless FFV1 video and uncompressed audio in an AVI container. Compatible with AVISource, if ffmpeg based decoder is installed.",
+					new FormatPreset("AVI Lossless AVC", "Lossless AVC video and uncompressed audio in an AVI container. High speed and compression, compatible with AVISource().",
+						"-c:a pcm_s16le -c:v libx264rgb -qp 0 -preset ultrafast -g 10 -pix_fmt rgb24 -f avi", false, "avi"),
+					new FormatPreset("AVI Lossless FFV1", "Lossless FFV1 video and uncompressed audio in an AVI container. Compatible with AVISource(), if ffmpeg based decoder is installed.",
 						"-c:a pcm_s16le -c:v ffv1 -pix_fmt bgr0 -level 1 -g 1 -coder 1 -context 1 -f avi", false, "avi"),
-					//new FormatPreset("AVI Lossless", "Lossless zlib video and uncompressed audio in an AVI container.",
-					//	"-c:a pcm_s16le -c:v zlib -f avi", false, "avi"),
+					new FormatPreset("AVI Uncompressed", "Uncompressed video and audio in an AVI container. Very large, don't use!",
+						"-c:a pcm_s16le -c:v rawvideo -f avi", false, "avi"),
 					new FormatPreset("Matroska Lossless", "Lossless AVC video and uncompressed audio in a Matroska container.",
-						"-c:a pcm_s16le -c:v libx264rgb -crf 0 -f matroska", false, "mkv"),
+						"-c:a pcm_s16le -c:v libx264rgb -qp 0 -pix_fmt rgb24 -f matroska", false, "mkv"),
 					new FormatPreset("Matroska", "AVC video and Vorbis audio in a Matroska container.",
 						"-c:a libvorbis -c:v libx264 -f matroska", false, "mkv"),
 					new FormatPreset("MP4", "AVC video and AAC audio in an MP4 container.",
@@ -106,7 +106,19 @@ namespace BizHawk.Client.EmuHawk
 			{
 			}
 
-			private FormatPreset(string name, string desc, string commandline, bool custom, string defaultext)
+			public void DeduceFormat(string commandline)
+			{
+				string formatkey = "-f ";
+				Extension = commandline.Substring(commandline.IndexOf(formatkey) + formatkey.Length);
+
+				// are there other formats that don't match their file extensions?
+				if (Extension == "matroska")
+				{
+					Extension = "mkv";
+				}
+			}
+
+			private FormatPreset(string name, string desc, string commandline, bool custom, string ext)
 			{
 				Name = name;
 				Desc = desc;
@@ -116,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 					? Global.Config.FFmpegCustomCommand
 					: commandline;
 
-				Defaultext = defaultext;
+				DeduceFormat(Commandline);
 			}
 		}
 
@@ -130,11 +142,9 @@ namespace BizHawk.Client.EmuHawk
 			if (listBox1.SelectedIndex != -1)
 			{
 				var f = (FormatPreset)listBox1.SelectedItem;
-
-				label5.Text = "Extension: " + f.Defaultext;
+				label5.Text = "Extension: " + f.Extension;
 				label3.Text = f.Desc;
 				textBox1.Text = f.Commandline;
-				textBox1.ReadOnly = !f.Custom;
 			}
 		}
 
@@ -165,8 +175,11 @@ namespace BizHawk.Client.EmuHawk
 				Global.Config.FFmpegFormat = ret.ToString();
 				if (ret.Custom)
 				{
-					ret.Commandline = dlg.textBox1.Text;
-					Global.Config.FFmpegCustomCommand = dlg.textBox1.Text;
+					ret.Commandline = 
+						Global.Config.FFmpegCustomCommand =
+						dlg.textBox1.Text;
+
+					ret.DeduceFormat(ret.Commandline);
 				}
 			}
 

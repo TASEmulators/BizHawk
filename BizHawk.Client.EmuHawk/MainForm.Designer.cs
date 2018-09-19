@@ -392,6 +392,7 @@
             this.zxt1ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ZXSpectrumDisksSubMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.zxt2ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.amstradCPCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.amstradCPCCoreEmulationSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.AmstradCPCAudioSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -511,8 +512,8 @@
             this.pCFXToolStripMenuItem,
             this.virtualBoyToolStripMenuItem,
             this.neoGeoPocketToolStripMenuItem,
-            this.HelpSubMenu,
             this.zXSpectrumToolStripMenuItem,
+            this.HelpSubMenu,
             this.amstradCPCToolStripMenuItem});
             this.MainformMenu.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
             this.MainformMenu.Location = new System.Drawing.Point(0, 0);
@@ -3173,7 +3174,7 @@
             // DGBsettingsToolStripMenuItem
             // 
             this.DGBsettingsToolStripMenuItem.Name = "DGBsettingsToolStripMenuItem";
-            this.DGBsettingsToolStripMenuItem.Size = new System.Drawing.Size(125, 22);
+            this.DGBsettingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.DGBsettingsToolStripMenuItem.Text = "Settings...";
             this.DGBsettingsToolStripMenuItem.Click += new System.EventHandler(this.DgbSettingsMenuItem_Click);
             // 
@@ -3465,7 +3466,8 @@
             // 
             this.ZXSpectrumMediaMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ZXSpectrumTapesSubMenu,
-            this.ZXSpectrumDisksSubMenu});
+            this.ZXSpectrumDisksSubMenu,
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem});
             this.ZXSpectrumMediaMenuItem.Name = "ZXSpectrumMediaMenuItem";
             this.ZXSpectrumMediaMenuItem.Size = new System.Drawing.Size(201, 22);
             this.ZXSpectrumMediaMenuItem.Text = "Media";
@@ -3476,7 +3478,7 @@
             this.ZXSpectrumTapesSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.zxt1ToolStripMenuItem});
             this.ZXSpectrumTapesSubMenu.Name = "ZXSpectrumTapesSubMenu";
-            this.ZXSpectrumTapesSubMenu.Size = new System.Drawing.Size(105, 22);
+            this.ZXSpectrumTapesSubMenu.Size = new System.Drawing.Size(159, 22);
             this.ZXSpectrumTapesSubMenu.Text = "Tapes";
             this.ZXSpectrumTapesSubMenu.DropDownOpened += new System.EventHandler(this.ZXSpectrumTapesSubMenu_DropDownOpened);
             // 
@@ -3491,7 +3493,7 @@
             this.ZXSpectrumDisksSubMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.zxt2ToolStripMenuItem});
             this.ZXSpectrumDisksSubMenu.Name = "ZXSpectrumDisksSubMenu";
-            this.ZXSpectrumDisksSubMenu.Size = new System.Drawing.Size(105, 22);
+            this.ZXSpectrumDisksSubMenu.Size = new System.Drawing.Size(159, 22);
             this.ZXSpectrumDisksSubMenu.Text = "Disks";
             this.ZXSpectrumDisksSubMenu.DropDownOpened += new System.EventHandler(this.ZXSpectrumDisksSubMenu_DropDownOpened);
             // 
@@ -3501,6 +3503,13 @@
             this.zxt2ToolStripMenuItem.Size = new System.Drawing.Size(94, 22);
             this.zxt2ToolStripMenuItem.Text = "zxt2";
             // 
+            // ZXSpectrumExportSnapshotMenuItemMenuItem
+            // 
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Name = "ZXSpectrumExportSnapshotMenuItemMenuItem";
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Size = new System.Drawing.Size(159, 22);
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Text = "Export Snapshot";
+            this.ZXSpectrumExportSnapshotMenuItemMenuItem.Click += new System.EventHandler(this.ZXSpectrumExportSnapshotMenuItemMenuItem_Click);
+            //
             // amstradCPCToolStripMenuItem
             // 
             this.amstradCPCToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -4671,26 +4680,27 @@
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerLightPhaserToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerSportsPadToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem SMSControllerKeyboardToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem zXSpectrumToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumControllerConfigurationMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumCoreEmulationSettingsMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumNonSyncSettingsMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumAudioSettingsMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumPokeMemoryMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumMediaMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumTapesSubMenu;
-        private System.Windows.Forms.ToolStripMenuItem ZXSpectrumDisksSubMenu;
-        private System.Windows.Forms.ToolStripMenuItem zxt1ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem zxt2ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem amstradCPCToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem amstradCPCCoreEmulationSettingsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem AmstradCPCAudioSettingsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem AmstradCPCPokeMemoryToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem AmstradCPCMediaToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem AmstradCPCTapesSubMenu;
-        private System.Windows.Forms.ToolStripMenuItem cpct1ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem AmstradCPCDisksSubMenu;
-        private System.Windows.Forms.ToolStripMenuItem cpcd1ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem AmstradCPCNonSyncSettingsToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem zXSpectrumToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumControllerConfigurationMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumCoreEmulationSettingsMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumNonSyncSettingsMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumAudioSettingsMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumPokeMemoryMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumMediaMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumTapesSubMenu;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumDisksSubMenu;
+    private System.Windows.Forms.ToolStripMenuItem zxt1ToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem zxt2ToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem ZXSpectrumExportSnapshotMenuItemMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem amstradCPCToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem amstradCPCCoreEmulationSettingsToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem AmstradCPCAudioSettingsToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem AmstradCPCPokeMemoryToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem AmstradCPCMediaToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem AmstradCPCTapesSubMenu;
+    private System.Windows.Forms.ToolStripMenuItem cpct1ToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem AmstradCPCDisksSubMenu;
+    private System.Windows.Forms.ToolStripMenuItem cpcd1ToolStripMenuItem;
+    private System.Windows.Forms.ToolStripMenuItem AmstradCPCNonSyncSettingsToolStripMenuItem;
     }
 }

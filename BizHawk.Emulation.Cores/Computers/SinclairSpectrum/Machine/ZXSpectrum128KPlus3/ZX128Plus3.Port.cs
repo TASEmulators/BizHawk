@@ -68,6 +68,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="value"></param>
         public override void WritePort(ushort port, byte value)
         {
+            if (port == 0x7ffd)
+                Last7ffd = value;
+            else if (port == 0x1ffd)
+                Last1ffd = value;
+            else if ((port & 0x01) == 0)
+                LastFe = value;
+
             // get a BitArray of the port
             BitArray portBits = new BitArray(BitConverter.GetBytes(port));
             // get a BitArray of the value byte
@@ -81,7 +88,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             UPDDiskDevice.WritePort(port, value);
 
             // port 0x7ffd - hardware should only respond when bits 1 & 15 are reset and bit 14 is set
-            if (port == 0x7ffd)
+            if (!portBits[1] && !portBits[15] && portBits[14])
             {
                 if (!PagingDisabled)
                 {
@@ -101,7 +108,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                 }                         
             }
             // port 0x1ffd - hardware should only respond when bits 1, 13, 14 & 15 are reset and bit 12 is set
-            if (port == 0x1ffd)
+            if (!portBits[1] && portBits[12] && !portBits[13] && !portBits[14] && !portBits[15])
             {
                 if (!PagingDisabled)
                 {

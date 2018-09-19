@@ -672,7 +672,8 @@ namespace BizHawk.Client.Common
                                         xmlGame.Assets.Select(a => a.Value), //.First(),
                                         zxGI, // GameInfo.NullInstance,
                                         (ZXSpectrum.ZXSpectrumSettings)GetCoreSettings<ZXSpectrum>(),
-                                        (ZXSpectrum.ZXSpectrumSyncSettings)GetCoreSyncSettings<ZXSpectrum>());
+                                        (ZXSpectrum.ZXSpectrumSyncSettings)GetCoreSyncSettings<ZXSpectrum>(),
+                                        Deterministic);
                                     break;
                                 case "AmstradCPC":
 
@@ -1030,7 +1031,12 @@ namespace BizHawk.Client.Common
 								nextEmulator = c64;
 								break;
                             case "ZXSpectrum":
-                                var zx = new ZXSpectrum(nextComm, Enumerable.Repeat(rom.RomData, 1), Enumerable.Repeat(rom.GameInfo, 1).ToList(), GetCoreSettings<ZXSpectrum>(), GetCoreSyncSettings<ZXSpectrum>());
+                                var zx = new ZXSpectrum(nextComm, 
+                                    Enumerable.Repeat(rom.RomData, 1), 
+                                    Enumerable.Repeat(rom.GameInfo, 1).ToList(), 
+                                    GetCoreSettings<ZXSpectrum>(), 
+                                    GetCoreSyncSettings<ZXSpectrum>(),
+                                    Deterministic);
                                 nextEmulator = zx;
                                 break;
                             case "AmstradCPC":

@@ -383,7 +383,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				pokey.GetSamples(ret2);
 				for (int i = 0; i < _spf * 2; i ++)
 				{
-					ret[i] += ret2[i];
+					ret[i] += (short)(ret2[i] * 3);
 				}
 			}
 

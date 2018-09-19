@@ -100,7 +100,8 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64.Serial
 			ser.Sync("SystemCpuClockNumerator", ref _cpuClockNum);
 			ser.Sync("SystemDriveCpuRatioDifference", ref _ratioDifference);
 			ser.Sync("DriveLightOffTime", ref _driveLightOffTime);
-			ser.Sync("TrackImageData", ref _trackImageData, useNull: false);
+			// feos: drop 400KB of ROM data from savestates
+			//ser.Sync("TrackImageData", ref _trackImageData, useNull: false);
 
 			ser.Sync("DiskDensityCounter", ref _diskDensityCounter);
 			ser.Sync("DiskSupplementaryCounter", ref _diskSupplementaryCounter);

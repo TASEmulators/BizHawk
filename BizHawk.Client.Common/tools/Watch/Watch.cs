@@ -142,7 +142,7 @@ namespace BizHawk.Client.Common
 			{
 				default:
 				case WatchSize.Separator:
-					return SeparatorWatch.Instance;
+					return SeparatorWatch.NewSeparatorWatch(note);
 				case WatchSize.Byte:
 					return new ByteWatch(domain, address, type, bigEndian, note, (byte)value, (byte)prev, changeCount);
 				case WatchSize.Word:

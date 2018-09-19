@@ -435,7 +435,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 						//enabled
 						irq_enabled = true;
 						irq_counter = irq_reload;
-						irq_prescaler = 341;
+						irq_prescaler = 341 + 3;
 					}
 					else
 					{
@@ -466,7 +466,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 			{
 				irq_pending = true;
 				irq_counter = irq_reload;
-				SyncIRQ();
+				//SyncIRQ();
 			}
 			else
 				irq_counter++;
@@ -474,6 +474,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.NES
 
 		public override void ClockCPU()
 		{
+			if (irq_pending)
+			{
+				SyncIRQ();
+			}
+
 			if (type == 2) return;
 			if (!irq_enabled) return;
 

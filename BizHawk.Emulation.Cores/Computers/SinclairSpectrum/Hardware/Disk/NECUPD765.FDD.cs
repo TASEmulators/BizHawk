@@ -816,6 +816,14 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                             fdd = new CPCFloppyDisk();
                             found = fdd.ParseDisk(diskData);
                             break;
+                        case DiskType.IPF:
+                            fdd = new IPFFloppyDisk();
+                            found = fdd.ParseDisk(diskData);
+                            break;
+                        case DiskType.UDI:
+                            fdd = new UDI1_0FloppyDisk();
+                            found = fdd.ParseDisk(diskData);
+                            break;
                     }
 
                     if (found)

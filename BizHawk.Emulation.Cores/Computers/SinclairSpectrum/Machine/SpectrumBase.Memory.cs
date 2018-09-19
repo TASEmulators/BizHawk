@@ -34,7 +34,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// Signs that the shadow screen is now displaying
         /// Note: normal screen memory in RAM5 is not altered, the ULA just outputs Screen1 instead (RAM7)
         /// </summary>
-        protected bool SHADOWPaged;
+        public bool SHADOWPaged;
 
         /// <summary>
         /// Index of the current RAM page
@@ -66,22 +66,22 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <summary>
         /// High bit of the ROM selection (in normal paging mode)
         /// </summary>
-        protected bool ROMhigh = false;
+        public bool ROMhigh = false;
 
         /// <summary>
         /// Low bit of the ROM selection (in normal paging mode)
         /// </summary>
-        protected bool ROMlow = false;
+       public bool ROMlow = false;
 
         /// <summary>
         /// Signs that the +2a/+3 special paging mode is activated
         /// </summary>
-        protected bool SpecialPagingMode;
+        public bool SpecialPagingMode;
 
         /// <summary>
         /// Index of the current special paging mode (0-3)
         /// </summary>
-        protected int PagingConfiguration;
+        public int PagingConfiguration;
 
         /// <summary>
         /// The last byte that was read after contended cycles
@@ -128,6 +128,13 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         /// <param name="addr"></param>
         /// <returns></returns>
         public abstract byte ReadMemory(ushort addr);
+
+        /// <summary>
+        /// Returns the ROM/RAM enum that relates to this particular memory read operation
+        /// </summary>
+        /// <param name="addr"></param>
+        /// <returns></returns>
+        public abstract ZXSpectrum.CDLResult ReadCDL(ushort addr);
 
         /// <summary>
         /// Writes a byte of data to a specified memory address

@@ -346,11 +346,15 @@
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.Memory.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.Port.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum16K\ZX16.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Media\Disk\CPCExtendedFloppyDisk.cs" />
-    <Compile Include="Computers\SinclairSpectrum\Media\Disk\CPCFloppyDisk.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Disk\CPCFormat\CPCExtendedFloppyDisk.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Disk\CPCFormat\CPCFloppyDisk.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Disk\DiskType.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Disk\IPFFormat\IPFFloppyDisk.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Disk\UDIFormat\UDI1_0FloppyDisk.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\MediaConverter.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\MediaConverterType.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Snapshot\SZX\SZX.Objects.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Media\Snapshot\SZX\SZX.Methods.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\CSW\CswConverter.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\PZX\PzxConverter.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Tape\TapeCommand.cs" />
@@ -382,6 +386,7 @@
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IDebuggable.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IEmulator.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IInputPollable.cs" />
+    <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.ICodeDataLog.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IMemoryDomains.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.ISettable.cs" />
     <Compile Include="Computers\SinclairSpectrum\ZXSpectrum.IStatable.cs" />

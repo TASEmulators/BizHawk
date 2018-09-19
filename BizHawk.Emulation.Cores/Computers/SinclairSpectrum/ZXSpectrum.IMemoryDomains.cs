@@ -48,7 +48,51 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         private void SyncAllByteArrayDomains()
-        {       
+        {
+            switch (_machineType)
+            {
+                case MachineType.ZXSpectrum16:
+                    SyncByteArrayDomain("ROM - 48K BASIC", _machine.ROM0);
+                    SyncByteArrayDomain("RAM - BANK 0 (Screen)", _machine.RAM0);
+                    break;
+                case MachineType.ZXSpectrum48:
+                    SyncByteArrayDomain("ROM - 48K BASIC", _machine.ROM0);
+                    SyncByteArrayDomain("RAM - BANK 0 (Screen)", _machine.RAM0);
+                    SyncByteArrayDomain("RAM - BANK 1", _machine.RAM1);
+                    SyncByteArrayDomain("RAM - BANK 2", _machine.RAM2);
+                    break;
+
+                case MachineType.ZXSpectrum128:
+                case MachineType.ZXSpectrum128Plus2:
+                    SyncByteArrayDomain("ROM - 128K Editor & Menu", _machine.ROM0);
+                    SyncByteArrayDomain("ROM - 48K BASIC", _machine.ROM1);
+                    SyncByteArrayDomain("RAM - BANK 5 (Screen)", _machine.RAM5);
+                    SyncByteArrayDomain("RAM - BANK 2", _machine.RAM2);
+                    SyncByteArrayDomain("RAM - BANK 0", _machine.RAM0);
+                    SyncByteArrayDomain("RAM - BANK 1", _machine.RAM1);
+                    SyncByteArrayDomain("RAM - BANK 3", _machine.RAM3);
+                    SyncByteArrayDomain("RAM - BANK 4", _machine.RAM4);
+                    SyncByteArrayDomain("RAM - BANK 6", _machine.RAM6);
+                    SyncByteArrayDomain("RAM - BANK 7 (Shadow Screen)", _machine.RAM7);
+                    break;
+
+                case MachineType.ZXSpectrum128Plus2a:
+                case MachineType.ZXSpectrum128Plus3:
+                    SyncByteArrayDomain("ROM - 128K Editor & Menu", _machine.ROM0);
+                    SyncByteArrayDomain("ROM - 128K Syntax Checker", _machine.ROM1);
+                    SyncByteArrayDomain("ROM - +3DOS", _machine.ROM2);
+                    SyncByteArrayDomain("ROM - 48K BASIC", _machine.ROM3);
+                    SyncByteArrayDomain("RAM - BANK 5 (Screen)", _machine.RAM5);
+                    SyncByteArrayDomain("RAM - BANK 2", _machine.RAM2);
+                    SyncByteArrayDomain("RAM - BANK 0", _machine.RAM0);
+                    SyncByteArrayDomain("RAM - BANK 1", _machine.RAM1);
+                    SyncByteArrayDomain("RAM - BANK 3", _machine.RAM3);
+                    SyncByteArrayDomain("RAM - BANK 4", _machine.RAM4);
+                    SyncByteArrayDomain("RAM - BANK 6", _machine.RAM6);
+                    SyncByteArrayDomain("RAM - BANK 7 (Shadow Screen)", _machine.RAM7);
+                    break;
+            }
+            /*
             SyncByteArrayDomain("ROM0", _machine.ROM0);
             SyncByteArrayDomain("ROM1", _machine.ROM1);
             SyncByteArrayDomain("ROM2", _machine.ROM2);
@@ -61,6 +105,7 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             SyncByteArrayDomain("RAM5", _machine.RAM5);
             SyncByteArrayDomain("RAM6", _machine.RAM6);
             SyncByteArrayDomain("RAM7", _machine.RAM7);  
+            */
         }
 
         private void SyncByteArrayDomain(string name, byte[] data)

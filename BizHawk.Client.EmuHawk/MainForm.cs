@@ -1623,7 +1623,7 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}		
 
-		public void FlushSaveRAM(bool autosave = false)
+		public bool FlushSaveRAM(bool autosave = false)
 		{
 			if (Emulator.HasSaveRam())
 			{
@@ -1644,7 +1644,15 @@ namespace BizHawk.Client.EmuHawk
 				var backupFile = new FileInfo(backupPath);
 				if (file.Directory != null && !file.Directory.Exists)
 				{
-					file.Directory.Create();
+                    try
+                    {
+                        file.Directory.Create();
+                    }
+                    catch
+                    {
+                        GlobalWin.OSD.AddMessage("Unable to flush SaveRAM to: " + newFile.Directory);                        
+                        return false;
+                    }
 				}
 
 				var writer = new BinaryWriter(new FileStream(newPath, FileMode.Create, FileAccess.Write));
@@ -1675,6 +1683,8 @@ namespace BizHawk.Client.EmuHawk
 
 				newFile.MoveTo(path);
 			}
+
+            return true;
 		}
 
 		private void RewireSound()
@@ -1825,6 +1835,11 @@ namespace BizHawk.Client.EmuHawk
 					break;
                 case "ZXSpectrum":
                     zXSpectrumToolStripMenuItem.Visible = true;
+#if DEBUG
+                    ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = true;
+#else
+                    ZXSpectrumExportSnapshotMenuItemMenuItem.Visible = false;
+#endif
                     break;
                 case "AmstradCPC":
                     amstradCPCToolStripMenuItem.Visible = true;
@@ -3184,12 +3199,6 @@ namespace BizHawk.Client.EmuHawk
 					aw = new AudioStretcher(aw);
 				}
 
-				if (unattended && Global.Config.TargetZoomFactor > 1)
-				{
-					_avwriterResizew = Global.Config.TargetZoomFactor * _currentVideoProvider.BufferWidth;
-					_avwriterResizeh = Global.Config.TargetZoomFactor * _currentVideoProvider.BufferHeight;
-				}
-
 				aw.SetMovieParameters(Emulator.VsyncNumerator(), Emulator.VsyncDenominator());
 				if (_avwriterResizew > 0 && _avwriterResizeh > 0)
 				{
@@ -3869,7 +3878,16 @@ namespace BizHawk.Client.EmuHawk
 			}
 			else if (Emulator.HasSaveRam() && Emulator.AsSaveRam().SaveRamModified)
 			{
-				FlushSaveRAM();
+				if (!FlushSaveRAM())
+                {
+                    var msgRes = MessageBox.Show("Failed flushing the game's Save RAM to your disk.\nClose without flushing Save RAM?",
+                            "Directory IO Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+
+                    if (msgRes != DialogResult.Yes)
+                    {
+                        return;
+                    }
+                }
 			}
 
 			StopAv();
@@ -4364,7 +4382,7 @@ namespace BizHawk.Client.EmuHawk
 		private void preferencesToolStripMenuItem3_Click(object sender, EventArgs e)
 		{
 			GenericCoreConfig.DoDialog(this, "PC-FX Settings");
-		}        
+		}
 
         private bool Rewind(ref bool runFrame, long currentTimestamp, out bool returnToRecording)
 		{

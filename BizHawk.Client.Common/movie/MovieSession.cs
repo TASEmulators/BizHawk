@@ -133,10 +133,10 @@ namespace BizHawk.Client.Common
 			var input = Movie.GetInputState(Global.Emulator.Frame);
 
 			// adelikat: TODO: this is likely the source of frame 0 TAStudio bugs, I think the intent is to check if the movie is 0 length?
-			if (Global.Emulator.Frame == 0) // Hacky
-			{
-				HandleMovieAfterFrameLoop(); // Frame 0 needs to be handled.
-			}
+			//if (Global.Emulator.Frame == 0) // Hacky
+			//{
+			//	HandleMovieAfterFrameLoop(); // Frame 0 needs to be handled.
+			//}
 
 			if (input == null)
 			{
@@ -327,6 +327,10 @@ namespace BizHawk.Client.Common
 			{
 				HandlePlaybackEnd();
 			}
+			else if (Movie.IsPlaying && !Movie.IsFinished)
+			{
+				LatchInputFromLog();
+			}
 		}
 
 		public bool HandleMovieLoadState(string path)
@@ -456,6 +460,7 @@ namespace BizHawk.Client.Common
 			else
 			{
 				Movie.StartNewPlayback();
+				LatchInputFromLog();
 			}
 		}
 

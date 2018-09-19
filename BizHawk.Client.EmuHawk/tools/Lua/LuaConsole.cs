@@ -488,6 +488,34 @@ namespace BizHawk.Client.EmuHawk
 			});
 		}
 
+		public void SelectAll()
+		{
+			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
+			{
+				return;
+			}
+
+			OutputBox.Invoke(() =>
+			{
+				OutputBox.SelectAll();
+				OutputBox.Refresh();
+			});
+		}
+
+		public void Copy()
+		{
+			if (!OutputBox.IsHandleCreated || OutputBox.IsDisposed)
+			{
+				return;
+			}
+
+			OutputBox.Invoke(() =>
+			{
+				OutputBox.Copy();
+				OutputBox.Refresh();
+			});
+		}
+
 		public bool LoadLuaSession(string path)
 		{
 			var result = LuaImp.ScriptList.LoadLuaSession(path);
@@ -1182,11 +1210,25 @@ namespace BizHawk.Client.EmuHawk
 		private void ConsoleContextMenu_Opening(object sender, CancelEventArgs e)
 		{
 			RegisteredFunctionsContextItem.Enabled = LuaImp.RegisteredFunctions.Any();
+			CopyContextItem.Enabled = OutputBox.SelectedText.Any();
+			ClearConsoleContextItem.Enabled = 
+				SelectAllContextItem.Enabled = 
+				OutputBox.Text.Any();
 		}
 
 		private void ClearConsoleContextItem_Click(object sender, EventArgs e)
 		{
 			ClearOutputWindow();
+		}
+
+		private void SelectAllContextItem_Click(object sender, EventArgs e)
+		{
+			SelectAll();
+		}
+
+		private void CopyContextItem_Click(object sender, EventArgs e)
+		{
+			Copy();
 		}
 
 		#endregion

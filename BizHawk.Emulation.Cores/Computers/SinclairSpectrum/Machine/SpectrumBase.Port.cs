@@ -17,6 +17,10 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
             set { LastULAOutByte = value; }
         }
 
+        public byte Last7ffd;
+        public byte LastFe;
+        public byte Last1ffd;
+
         /// <summary>
         /// Reads a byte of data from a specified port address
         /// </summary>

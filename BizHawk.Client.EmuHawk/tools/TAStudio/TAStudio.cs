@@ -433,7 +433,11 @@ namespace BizHawk.Client.EmuHawk
 					|| c.Name == "Close"
 					|| c.Name == "Disc Select"
 					|| c.Name.StartsWith("Tilt")
-					|| c.Name.StartsWith("Key "));
+					|| c.Name.StartsWith("Key ")
+					|| c.Name.EndsWith("Tape")
+					|| c.Name.EndsWith("Disk")
+					|| c.Name.EndsWith("Block")
+					|| c.Name.EndsWith("Status"));
 
 			foreach (var column in columnsToHide)
 			{
@@ -807,7 +811,7 @@ namespace BizHawk.Client.EmuHawk
 
 			TasView.Refresh();
 
-			SetSplicer();
+			//SetSplicer();
 			CurrentTasMovie.FlushInputCache();
 			CurrentTasMovie.UseInputCache = false;
 

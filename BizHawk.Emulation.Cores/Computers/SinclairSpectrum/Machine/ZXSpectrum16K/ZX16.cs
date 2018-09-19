@@ -103,6 +103,28 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
         }
 
         /// <summary>
+        /// Returns the ROM/RAM enum that relates to this particular memory read operation
+        /// </summary>
+        /// <param name="addr"></param>
+        /// <returns></returns>
+        public override ZXSpectrum.CDLResult ReadCDL(ushort addr)
+        {
+            var res = new ZXSpectrum.CDLResult();
+
+            int divisor = addr / 0x4000;
+            res.Address = addr % 0x4000;
+
+            // paging logic goes here
+            switch (divisor)
+            {
+                case 0: res.Type = ZXSpectrum.CDLType.ROM0; break;
+                case 1: res.Type = ZXSpectrum.CDLType.RAM0; break;
+            }
+
+            return res;
+        }
+
+        /// <summary>
         /// Writes a byte of data to a specified memory address
         /// (with memory contention if appropriate)
         /// </summary>
