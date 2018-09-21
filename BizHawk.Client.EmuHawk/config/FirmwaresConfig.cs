@@ -189,8 +189,7 @@ namespace BizHawk.Client.EmuHawk
 			cbAllowImport.Font = new Font("Segeo UI", 9, FontStyle.Regular, GraphicsUnit.Point, 1, false);
 			cbAllowImport.Checked = false;
 			ToolStripControlHost host = new ToolStripControlHost(cbAllowImport);
-			var iCount = toolStrip1.Items.Count;
-			toolStrip1.Items.Insert(iCount - 2, host);
+			toolStrip1.Items.Add(host);
 		}
 
 
