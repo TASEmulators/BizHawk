@@ -103,6 +103,10 @@ namespace BizHawk.Client.DBMan
 				AddCommentBlock("Translated");
 				AppendCSVData(trans);
 
+				var pd = working.Where(st => st.Status == "D").OrderBy(na => na.Name).ToList();
+				AddCommentBlock("Home Brew");
+				AppendCSVData(pd);
+
 				var good = working.Where(st => st.Status == "" || st.Status == null).OrderBy(na => na.Name).ToList();
 				AddCommentBlock("Believed Good");
 				AppendCSVData(good);
@@ -144,6 +148,12 @@ namespace BizHawk.Client.DBMan
 			if (d.Length > 3)
 			{
 				// publisher field
+			}
+
+			// public domain
+			if (nameString.Contains("(PD)"))
+			{
+				g.Status = "D";
 			}
 
 			if (d.Length > 4)
@@ -189,6 +199,8 @@ namespace BizHawk.Client.DBMan
 					{
 						continue;
 					}
+
+					
 
 					// Media Type - ignore for now
 					// Media Label - ignore for now

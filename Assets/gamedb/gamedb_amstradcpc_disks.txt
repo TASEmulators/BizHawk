@@ -1,87 +1,7 @@
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Type:	TOSEC
-;;; Source:	Amstrad CPC - Applications - [BIN] (TOSEC-v2014-10-28)
-;;; FileGen:	2018-09-21 14:29:01 (UTC)
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Bad Dumps
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Hacks
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Over Dumps
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Translated
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Believed Good
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-6BC5333E3A819B3C2A9FA28AAE9CE5CA		Amram 2 - Sideways RAM Toolkit ROM (19xx)(Silicon Systems)	AmstradCPC	
-F7F3B668537B135DD42195E76C5D490E		Amstrad CPC 464 BASIC (1985)(Amstrad)	AmstradCPC	
-8EC3F0906553DD5B4D7687B54DB5953B		Amstrad CPC 464+ and 6128+ BASIC (1991)(Amstrad)	AmstradCPC	
-8BA59E3889B049430E51B774C3B5D7E5		Amstrad CPC 6128 BASIC (1985)(Amstrad)(es)	AmstradCPC	es	
-21509A8C20E3F6D96F21AF895B4AC632		Amstrad CPC 6128 BASIC (1985)(Amstrad)(fr)	AmstradCPC	fr	
-2CC1BA759F835C98A480A152D786B877		Amstrad CPC 6128 BASIC (1986)(Amstrad)	AmstradCPC	
-D81AB6EB0FA175124329BF56EEC0A272		Amstrad CPC 664 BASIC (1985)(Amstrad)	AmstradCPC	
-13B262C6632C00F87FA4375BB8FD0F3E		Amstrad EPROM Programmer (19xx)(Fleet Microsystems - F. Kup)	AmstradCPC	
-1B5F3E40EBF46703A6AA0DDF17C34077		Amstrad Toolkit v1.4 (1986)(Beebugsoft)	AmstradCPC	
-F286581EEF2867DE30CE7F9714BBB4BD		Bos v2.1 (1987)(Vortex Software)	AmstradCPC	
-91BCCE0C21B0A35DAFB2C9D7DCD6467E		Cage Comms v1.1 (19xx)(D. Gorski - I. Hoare)	AmstradCPC	
-55A279B8A1568AE6484A75B0848FB7F0		Communication Interface Unit Driver Softare 1.5 (1986)(Panda Electronics)	AmstradCPC	
-C1E41F458B23EB3DDCAC0125271DD509		Comstar v1.25 #1 (1986)(Honeysoft - Pace)	AmstradCPC	
-A51779EA054692CB8535B931BA0AAF8B		Comstar v1.25 #2 (1986)(Honeysoft - Pace)	AmstradCPC	
-8BB853BDC3669E765C6218B9A8254D19		Copy Lock v6.0 (1988)(Romantic Robot UK)	AmstradCPC	
-C1D3BD5A2D8FA58E6186062F451ED6E8		Copymate+ v3.2 (1990)(Marco Vieth)(de)	AmstradCPC	de	
-2BF44FA16FE1C3EE8D1BA523A726C6A9		CPM Accessory ROM 1 (1988)(Graduate Software)	AmstradCPC	
-BC80B8F8AE6F1F0B5709949D9421AC80		Disc Demon v1.1 (1986)(Beebugsoft)	AmstradCPC	
-12F5BDA0A5D1B05E663637F1DFE861F4		Disc Power (19xx)(-)	AmstradCPC	
-8A42DEDB313B39245E48BE5C60C03CEB		Discology Disccopier (1987)(Meridien Software)	AmstradCPC	
-C259477AF5ECA8AA54E5BA20BBD29B8B		Discology Filecopier (19xx)(-)(fr)	AmstradCPC	fr	
-25351D672613FC86E4CFE291C6057C7A		Discology v6.0 (19xx)(Meridien Software)	AmstradCPC	
-9783ACA18CE2F569936E818F9B6944E6		DK'Tronics Speech ROM v1.1 (19xx)(DK'Tronics)	AmstradCPC	
-2D98E873C68BC4713323196C1822511B		Dos Copy v1.3 and Crime v1.3 (1991)(-)	AmstradCPC	
-E9CA63730A6CB05E8BBAA3A8A9D1B39B		Dragon Breed ROM 1 (19xx)(Dragon Breed)	AmstradCPC	
-51C33D0D1FE994CE116DAFF070B5CC0A		Extended BASIC v1.1 (1986)(John Morrison)	AmstradCPC	
-EFC9B1FF3F764CAEF76B3D39C5140613		Hack It-Le Hackeur (19xx)(Siren Software)(en-fr)	AmstradCPC	en-fr	
-D886F9E04C751AE17D9B58A8EC49FCF1		JL Utilities v1.2 (19xx)(JLCS)	AmstradCPC	
-DB16477775C21B7D3C6AA60AC2AE3D62		JL Utilities v2.1 (19xx)(JLCS)	AmstradCPC	
-B8CC10B74474AFC16053AB8F92400321		Jm EPROM Programmer (1985)(John Morrison)	AmstradCPC	
-A6D20CF1B91ECE10AEF9F87FDE4E4392		Jm Maxidos v1.2 (19xx)(Nemesis)	AmstradCPC	
-F645759551059BFC84B40D908D940B05		KDS Serial Interface + Comms Pack 5 v4.2B (19xx)(KDS Electronics)	AmstradCPC	
-CE7C1CA8F5A6CFC61F6CB42F2F35EDC4		Kns ROM 6128 v1.01 (1989)(MFW)	AmstradCPC	
-E3E3D0D2B87D354C956AE374230C47C2		Lock Smith (1985)(Beebugsoft)	AmstradCPC	
-44EBAA8039D09A468204381744847A05		Masterfile 128 v2.2 (1984)(Campbell Systems - GoldMark Systems)	AmstradCPC	
-3A0C27486687E9AF75C378E036AC8DA2		Masterfile 464 v1.1 (1984)(Campbell Systems - Amsoft)	AmstradCPC	
-2F2D20C532F3A08D7F07149F8DD9C611		Micro Music Creator #1 (1988)(First Byte)	AmstradCPC	
-1EF0C8DAFA1475C3FA97AC0D97342B72		Micro Music Creator #2 (1988)(First Byte)	AmstradCPC	
-F7C0B231623FE55712928316CBD6AB88		Micro Style ROM v2.11 (1989)(Micro Style - PotPlant Systems)	AmstradCPC	
-4C9F014E91D407CC6509FAD0095AB909		Multiface 2 (19xx)(Romantic Robot UK)	AmstradCPC	
-8086B866E611514374F5CB660B346E26		Nirvana v1.1 (1990)(GoldMark Systems)	AmstradCPC	
-8D282B1243F0E589909FBA05E34A360F		Nwc Utilities v1.1 (19xx)(Nwc)	AmstradCPC	
-D4112DF17DDE28355E2E0ED00B26245A		Odd Job v2.2 (1985)(Pride Utilities - GoldMark Systems)	AmstradCPC	
-9CF43AF245BB9792B884407CD380D25A		Pro Skey - Procopy v1.2 and Speed Key (1990)(Nemesis)	AmstradCPC	
-AFD6C5DDD98BE8B2BE62B9FBA49AE6BD		Programmers Tool Box v1.2a (19xx)(-)	AmstradCPC	
-C4EDB85430DCF1C328739C847325AC30		Programmer's Toolbox v1.0a (19xx)(-)	AmstradCPC	
-B33E4E00A9E8D099D96115E74C3CB88E		Super Power Mailing List (1985)(Micro Power)	AmstradCPC	
-DCF9D10A1E7DC88E8F2EF25C815E8A07		Super ROM v1.0 (1991)(Vorax)	AmstradCPC	
-8108B05B220353D557F4C8DD95E7AA8C		Super Romplus - Auto Rom Control System v1.6 (1986)(Britannia Software)	AmstradCPC	
-BFA1104CC305222A2B15C4A84D3D597D		System-X v2.1 (1985)(Pride Utilities)	AmstradCPC	
-20616170D0848D363AFA35A4AC2B0E1D		T3m ROM (19xx)(-)	AmstradCPC	
-4F59C311341191F84EBAE7E5A790C1CF		Transmat v2.1 (1985)(Pride Utilities)	AmstradCPC	
-49757727F69C51CEC73BDFF42D41C623		UNCR v2.4 - Cruncher Accessory ROM for CPM (1988)(Graduate Software)	AmstradCPC	
-224B22E5AECD441DEB3C1E3B6ECCF848		Utility Suite (19xx)(-)	AmstradCPC	
-A00A6FF832C7FBDCFD68206912E7621C		Vortex RAM - Expansion Card ID (19xx)(Vortex Software)(de)	AmstradCPC	de	
-9DA6391EA1820CB41A08DAF413A1D512		XROM Eprommer v1.16 (1986)(Timatic Systems)	AmstradCPC	
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Type:	TOSEC
 ;;; Source:	Amstrad CPC - Applications - [DSK] (TOSEC-v2015-05-07)
-;;; FileGen:	2018-09-21 14:29:01 (UTC)
+;;; FileGen:	2018-09-21 15:09:03 (UTC)
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Bad Dumps
@@ -109,6 +29,11 @@ A58711AC7D63648B7E8836FA32817BBB	H	Ultra Son (1988)(M.B.C. Informatique)[cr PHG]
 ;;; Translated
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Home Brew
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+C01DEBBC6845C74A9550DE3DF3D3FFA5	D	Domain Word (1992)(Rob Buckley)(PD)	AmstradCPC	
+8BEEF8CD22BDF1BF6AB56AF9B8C81C28	D	Footbal Forecaster v1 (1991)(Mannan Ali)(PD)	AmstradCPC	
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Believed Good
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
@@ -203,7 +128,6 @@ B8D42AFF42F1C06266B94F427258AB61		Discology v2.0 (1986)(Meridien Informatique)(f
 708D0C22D38CFA0282F0DCC4157C99A4		Diskfile Executer (1987)(Vicious)	AmstradCPC	
 A1F45B9B569388F193215F5757CA7E99		DK'Tronics Lightpen (19xx)(DK'Tronics)	AmstradCPC	
 947E35E189AE40AF66C64BD7DFA83AE0		DMON Disk Tool (1986)(Ben Twijnstra)	AmstradCPC	
-C01DEBBC6845C74A9550DE3DF3D3FFA5		Domain Word (1992)(Rob Buckley)(PD)	AmstradCPC	
 976F7C8113AA35F69B1BB7499A59D6A0		Dos-Copy v1.3 (1993)(Andreas Stroiczek)	AmstradCPC	
 5F34DEE1379D3B2E896D8F1E688C759F		Drum Studio, The (1990)(J.K. Software)	AmstradCPC	
 A967B1C951F521AF521CAA7F664375E4		DSK-CPC v1.0 (1997)(Divine Coding)	AmstradCPC	
@@ -216,7 +140,6 @@ B4F485DFBE2E56330BBE57EFF928C8F1		Epic v1.0 (1992)(Michael Beckett)	AmstradCPC
 B3F935B1C4E7AE1E717791C80C585590		Equinoxe (1991)(Ubisoft)(fr)	AmstradCPC	fr	
 00C0E83E311D54DD8D9B66A130ED43D1		Equinoxe (1991)(Ubisoft)(fr)[a]	AmstradCPC	fr	
 A962D43BC727CA2B0340574DF77A62E5		Expense Manager (1984)(Gameworx Software)	AmstradCPC	
-8BEEF8CD22BDF1BF6AB56AF9B8C81C28		Footbal Forecaster v1 (1991)(Mannan Ali)(PD)	AmstradCPC	
 6A8CAA2A7C1C462676F71008269E4C57		Fraktal Generator 3D (1988)(DMV Software)(de)	AmstradCPC	de	
 5D912C9E6A86AD198AF49DF18FDE3EB1		Gena Assembler Loader v3.1 (1984)(HiSoft - Amsoft)	AmstradCPC	
 FF0D4F9BBBAB7773B46A1DCD4C13E711		Geometri (19xx)(-)(fr)	AmstradCPC	fr	
@@ -356,12 +279,11 @@ DE2BA1235E415AC6E095040DD8837E1B		Worktop v1.1 (19xx)(Robot-PD)	AmstradCPC
 D14BC98CD109A93ECF44FA13C8507BAC		Xexor v2.6 (1993)(Electro Software)(Disk 2 of 2)	AmstradCPC	
 E96FB844C22371505D30887D193E7B5D		X-Press v1.3 (1988)(C. Medway - N.King)	AmstradCPC	
 D8A7A1C08C7509955D7D7D88B4D6749C		XRom (1986)(Timatic Systems)	AmstradCPC	
-9DA6391EA1820CB41A08DAF413A1D512		XROM Eprommer v1.16 (1986)(Timatic Systems)	AmstradCPC	
 D43014458EB34D3E5217E0B8CDC38E14		XSshow (1993)(Bollaware)	AmstradCPC	
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Type:	TOSEC
 ;;; Source:	Amstrad CPC - Compilations (TOSEC-v2015-05-07)
-;;; FileGen:	2018-09-21 14:29:01 (UTC)
+;;; FileGen:	2018-09-21 15:09:03 (UTC)
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Bad Dumps
@@ -379,6 +301,393 @@ D43014458EB34D3E5217E0B8CDC38E14		XSshow (1993)(Bollaware)	AmstradCPC
 ;;; Translated
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Home Brew
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+C5E0FC4A13FD7E7EC24CD7263645D45F	D	Robot PD 00001 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+B56CB8EFFEAEA2B98017171EAABE6FF1	D	Robot PD 00001 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+7DD0319882730F86036A84D3424279B8	D	Robot PD 03000 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+67E15C78E5EF29F5DD3D5C9D38DFC1E0	D	Robot PD 03000 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+25BA0DEDE85054CA28C05F34EF79723C	D	Robot PD 04000 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+3212BDB2FFB5881FCE801CE022C37B3A	D	Robot PD 04000 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+9CE5E08A426B47595AC264AD92522DDB	D	Robot PD 04400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+CCCEC9277FE1AE59664DFB18048B20CB	D	Robot PD 04400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+3AD0170A70E134EB68B844C8152A30A9	D	Robot PD 04401 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+6476785ED6ABCCB41F695CB24C628E22	D	Robot PD 04401 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+9F4EBA03CE0685932D5D14CA1CF8808C	D	Robot PD 06100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+A626682A6DB76C5E31C909FC483FF1AF	D	Robot PD 06100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+A839ADAE09271A1CC29CEA90E5FEA0FD	D	Robot PD 06101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+71274F00DEE272EECEF5A50EF226DE05	D	Robot PD 06101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+A1046E1994589DF43BFB0D2E16DBE2AB	D	Robot PD 09100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+A23E7DB040E823E6FD83474751FE6B5A	D	Robot PD 09100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+1BC870B4388F0E3385E1758546DFB247	D	Robot PD 10000 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+EB22E0958CA9EB7AD7D7D11F279B2244	D	Robot PD 10000 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+722B4BB435651EB2CBA3061703BBF902	D	Robot PD 10001 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+694F0D52F5DCBAF538A433BC1BE96CFD	D	Robot PD 10001 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+A7534E6E54357A787E3BC7AAD828150D	D	Robot PD 10002 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+E164C67624A2C9345115EB240F632219	D	Robot PD 10002 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+58209CA85F12B262CD88CA5DA888F85F	D	Robot PD 10100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+41F83B3BF0FFEE31FED126554EDC808E	D	Robot PD 10100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+0FA07AE4E9E348A938C87C9EED3112A2	D	Robot PD 10200 (19xx)(Fairhurst, Richard)(PD)	AmstradCPC	
+6A441C75B7A48F066BC1A16AA32EF967	D	Robot PD 10300 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+A2480194CA2412AC6850F194F08FFC69	D	Robot PD 10300 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+8B2E6CAE4F29EDFAC4D02FBF04F0B8F9	D	Robot PD 10301 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+09830E95628BB6F3AA2A158C8E64C1B5	D	Robot PD 10301 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+A651C7C5C186DFAF58F928C361D137F1	D	Robot PD 10302 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+BF6F0A0FF7A7BCB359C5FC44A9D120AA	D	Robot PD 10302 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+787E7639FFCAC7B04526CFB67ED3436D	D	Robot PD 10304 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+94AF01FD224E23B2553743827A361707	D	Robot PD 10304 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+F864EF8478EAD0362406DCCEE528275B	D	Robot PD 10305 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+55B11DFBCA43C2431E854D3EB2D7FF31	D	Robot PD 10305 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+E682A0A505A87532BAEB72CD68D1F5D2	D	Robot PD 10306 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+CA5784D09FF29A1A8AACD43AE68AB348	D	Robot PD 10306 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+6CEED23E18C18EE987FD57C8AE0841FA	D	Robot PD 10307 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+89A03AF10A49D6E10A4692EF5745BAAD	D	Robot PD 10307 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+B9CA9F65287C60AA928C2EB08E1EE7FA	D	Robot PD 10308 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+FA0D9603773CE3ADA9725A7F9A866281	D	Robot PD 10308 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+2F8A6E4BD1CB1EBC7D2DA79F441AAD50	D	Robot PD 10310 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+F8771947B09E60E1B1E46497E2DDDAA3	D	Robot PD 10310 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+D0D4CEA9BC45408B51990CBBA5A95B98	D	Robot PD 10311 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+8C97EFAF05CBC60448F11F997EE3FD8A	D	Robot PD 10311 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+274BABA2B81CD6064B80A8A80B3F1C0B	D	Robot PD 10314 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+B3AC68BAF135C5A8B947C1B51DD1F485	D	Robot PD 10314 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+EFE8B7DD90C5C4BE659AB1D24FDB18F2	D	Robot PD 10315 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+787D5842B8C9BA3B05AD15B80C2C4CCD	D	Robot PD 10315 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+017084D62350C9D71A7C553EB32548BB	D	Robot PD 11000 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+1828C32C640A8B216D4EB84F9A57EADF	D	Robot PD 11000 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+B6BB9C752540041639217789C2D87F75	D	Robot PD 11100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+03A655470A361A3167B1E712419474CC	D	Robot PD 11100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+13A8EAA805F65075C2C0F78324997CAB	D	Robot PD 11200 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+7628D2F921D4BC537A595A8E9CE7E7E6	D	Robot PD 11200 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+82581D1AF9776599756022A6F854365E	D	Robot PD 11400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+405E4828E2F2456B0F7EE1DCBE868505	D	Robot PD 11400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+80F25B20AA5CAEDA049EA7681E768509	D	Robot PD 11401 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+7390AB1F1923C4CED79E8515011B7FE5	D	Robot PD 11401 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+24F57AE7047E8BEF83B1270A4EDC24A4	D	Robot PD 11402 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+E96573198C1746B53409F471BBC15471	D	Robot PD 11402 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+EB10FCF96358FF727F235772D1ABC0FF	D	Robot PD 11500 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+3D09EE760ABCA621FBED48F8F19BF019	D	Robot PD 11500 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+73BE0B80B555DAFAF969598ACF0DD9AE	D	Robot PD 12002 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+753BD235AF1CE0074D83276D44898217	D	Robot PD 12002 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+DBDDEE84BDF439A5E48973E7732D69A9	D	Robot PD 12003 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+36289B691E16FD520710D9D2368A4EFE	D	Robot PD 12003 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+9756DB9592A0B4FEC271C729D08FE213	D	Robot PD 12004 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+C9924EFDCE6424BB759526C61F8C7C1B	D	Robot PD 12004 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+2C2535A00D499E897056D6BF3DBA152F	D	Robot PD 12005 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+F7E99DC387F130E9A30A215B0DC522A9	D	Robot PD 12005 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+BEE85A0B897391053D9CE8FD13BACB91	D	Robot PD 12100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+B560C2BA2DD2BAED7372FC521DD45A4C	D	Robot PD 12100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+1413501712AFA859EF861FE992F24E3F	D	Robot PD 12201 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+9F44C37EB8CAD07E4FE1ECEA34BF6E06	D	Robot PD 12201 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+8CDD0F2160C02E55734F2ECD2DF65F8A	D	Robot PD 12400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+581BA752D28B19552FC7E70619649D5A	D	Robot PD 12400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+A79C14565A36C0D115F736B99ABD09D0	D	Robot PD 13100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+1465A5F728C4F4E14A94C6BD05046710	D	Robot PD 13100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+A1FEE8856DF149660A4C0576CA1C0B6D	D	Robot PD 14400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+7BCC2676D0F5549AC3134E4966B70D7F	D	Robot PD 14400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+E21F25F93044CA27477F40540A6726EF	D	Robot PD 16000 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+7B29BEA684E9DB1A4E568C8339E806A3	D	Robot PD 16000 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+3481EDB6D4E7A9FE41F3E847BF84B4F4	D	Robot PD 16100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+3DFA42B56A6724B4CD85FEF63DEB51F5	D	Robot PD 16100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+4DB77C03971AB4C9183736B34EB3D517	D	Robot PD 16101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+FE28BB5AB68DB04DD21D372AF70361B8	D	Robot PD 16101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+34D48E8737693B1C07DACFDEF8038D97	D	Robot PD 16103 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+4597E41F61CE03A3B35129C5031D1A29	D	Robot PD 16103 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+A905B0E60228DED07ABDAC422EE59B9F	D	Robot PD 16104 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+E687ABBEFD4B4B4C73F6D3E9567EE734	D	Robot PD 16104 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+8903B2248D9F52B6B449FB40C2218176	D	Robot PD 16105 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+BAF41A7A038B0C9405FE6FE4652A8BE7	D	Robot PD 16105 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+8E633CA99035A0033E08416774B2DBDD	D	Robot PD 16106 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+0679C94F3C9D4DF2D243826DD625CB21	D	Robot PD 16106 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+E1FD98A10F7C27C2AAF09F3044F4AF88	D	Robot PD 16200 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+BB2FB3C084A23D00DA70172E1674D11D	D	Robot PD 16200 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+D06EE05B240B87797E36C819668B2C54	D	Robot PD 16201 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+6BA26B2922386C2A6F4EC3049B198D94	D	Robot PD 16201 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+4A835EC1ACD86636EE286BE84691B82B	D	Robot PD 16202 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+5A305F32DA28E25D84AB91F63DC9B06B	D	Robot PD 16202 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+77F77686CD14B6918D04E405EC958D5C	D	Robot PD 16203 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+EE4E34C89A1543B48025D98621D7C69B	D	Robot PD 16203 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+C5C1509615B8E40A08E9FDF0339609F8	D	Robot PD 16204 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+27315104B1E46D941C7AEEC822110E86	D	Robot PD 16204 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+DE061A84E9CDD8317410A2BB916CC4B3	D	Robot PD 16300 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+F3311A7A537FCDD18A3177DB42E4D088	D	Robot PD 16300 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+060E66B0113958C0D596598DD893DE81	D	Robot PD 16301 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+E663E4B341549D0505F1F9D06516F18A	D	Robot PD 16301 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+D0761CCF472AF592EC90015E67DBC038	D	Robot PD 16303 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+216C9C19F7634E552AB4EA38CEE277D8	D	Robot PD 16303 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+2D263C21B001B1F53A1FAE64B5DFBDE2	D	Robot PD 16304 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+AA78A7B97B262BD2A7E7280011550667	D	Robot PD 16304 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+BCF93012351C448D23B6140DA47DEAF3	D	Robot PD 16307 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+F944028DC60513506831039C153EB2BF	D	Robot PD 16307 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+475CAFE380C0FE74B5878DCC76B629DE	D	Robot PD 16308 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+51EDCAC6461CD63C8176C2A81367C138	D	Robot PD 16308 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+A57EDEBD49A19475DC5A7CBCA39D7261	D	Robot PD 17000 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+49BA4541E948EB59C23694ED665BEBEC	D	Robot PD 17000 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+0C3FFC5CFEEA383E2D5A9217CF64D45B	D	Robot PD 17100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+1F9523CA49A56B889B41BA0DE98CE8FE	D	Robot PD 17100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+C4BF0742E3EE9249E288656BD46FD608	D	Robot PD 17101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+45B990907DDED7039A1D798451E057B0	D	Robot PD 17101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+C084EF7C8CD6FFA20E0354F769D0A6B7	D	Robot PD 17102 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+0E7909A52F86BA2C6212C16CC6FD0E3B	D	Robot PD 17102 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+D080A225B0C716D8EE08BD565A696CA5	D	Robot PD 17103 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+452F946561CE66E8ECB7D15F8F50DEC2	D	Robot PD 17103 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+C00987A5CA4AEE6E584F314B6831D1D3	D	Robot PD 17104 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+52624517A4691E0CA0EED6DC3E5C4F8C	D	Robot PD 17104 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+0CC48CA02AEEE4D8DDB8825D540CAF47	D	Robot PD 17105 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+AB98D1198AC41C011B808D4AAED6C0E3	D	Robot PD 17105 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+0C8B60CB7CF80AA7EB630A2F1CD5FE75	D	Robot PD 17106 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+37A5739FA988C2696CECE10B3B7E1CF9	D	Robot PD 17106 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+6101B9E78F5A01813BDD4CE4297FB4B0	D	Robot PD 17107 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+996E48313B7E7C330732E248ACC3226D	D	Robot PD 17107 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+56A7E1080824349FC7A3B4743C34EE05	D	Robot PD 17108 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+0B11F970081A3DE22446725AF35C488C	D	Robot PD 17108 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+0B67A4CB8FA28AA2DD11A79740B3FD90	D	Robot PD 17109 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+451EC924005F32697566ED74230E4D7B	D	Robot PD 17109 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+292BBE39D02820BDE73BA53D4DF25A04	D	Robot PD 17110 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+6D3E5BD0D82DB93BE2DB116F69A7D8DB	D	Robot PD 17110 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+60F27AE5AAC6E53CE1C817732F652EA2	D	Robot PD 17111 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+7A491CB9A69D544BB23BF383767C4228	D	Robot PD 17111 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+8A83833AC2A465F7FAEACB0E79A7D3BD	D	Robot PD 17114 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+7A9C9744E1E773C762E0D44E3519BBE4	D	Robot PD 17114 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+90F27D38EF540DEE468394A0925D0A41	D	Robot PD 17115 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+6FA6C0B3229BBFC865D1AB4F4FE4E29C	D	Robot PD 17115 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+20A2FA4CE576C5D0C6BC07C8790B14B9	D	Robot PD 17200 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+F2C492B03D4465969F5955FC525D2625	D	Robot PD 17200 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+9DED774E6AF641FDFFEB2E6A99A8A3E7	D	Robot PD 17201 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+F2984639B6FE9F1E753735F45E5C8DAA	D	Robot PD 17201 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+D38DF8AFEAF2A82D1B3325A2988FB4E7	D	Robot PD 17202 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+976F4D764C6C499C4B8C7B3D787BA34C	D	Robot PD 17202 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+0AAB947C8890ED69521C0EF2AE40090D	D	Robot PD 17203 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+EA0C09EEE6A8303DF18360011C4387CF	D	Robot PD 17203 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+15FD9FAA502AA48DB25F7F516DB0B92E	D	Robot PD 17204 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+CD83159BA26BF4046519372AB6976165	D	Robot PD 17204 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+B2036610427FE9AC98B1EE390D1EAE48	D	Robot PD 17205 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+87EB13385F0A6F80F69BDEF1A21517E9	D	Robot PD 17205 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+15D6BE35B6AF2EDB1D5880B85FBCFD16	D	Robot PD 17206 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+69E980642723331F0C11BEC5286BA30B	D	Robot PD 17206 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+DFE053D49D89E11D18AB0CD0319049E2	D	Robot PD 17207 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+5777ED860EB2A3B3B7B2297BA7151A0D	D	Robot PD 17207 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+BA7F34DC402A609BDFD8EF7E51643325	D	Robot PD 17208 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+F5E73DE629C1F4332A3A4DBDACE37B5C	D	Robot PD 17208 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+BF64AE9CF168D14113D0FC30E7AD44A7	D	Robot PD 17209 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+0F12905B6D0171D11FE146A9E9AF57FC	D	Robot PD 17209 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+C1098084497B8F6DB77843D79FC947B7	D	Robot PD 17210 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+00CEF6FED72A675C6845A60183A4A0EA	D	Robot PD 17210 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+1AC50CEE85577B2DF94A82B69AE06CBF	D	Robot PD 17211 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+7876A13734B9C0D5048E5369CA07EF30	D	Robot PD 17211 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+605E56014D20B7C1F93A7EA40F1F478D	D	Robot PD 17212 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+293054DBEE8D652CCF357656A1CE4F87	D	Robot PD 17212 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+9CF9F38F5414CBF50C62A7EC06F574AA	D	Robot PD 17213 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+57F8A24A9B8855D139F12256001C0BAA	D	Robot PD 17213 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+C950B4B363FB9E95A1F55481188A3C00	D	Robot PD 17300 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+CD1AE1FF672C24666013808CE6859E4A	D	Robot PD 17300 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+2F26D09852558223F231BD6DA6EB2A71	D	Robot PD 17301 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+0A353A4B00DEFF64733E87A2DD68F799	D	Robot PD 17301 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+8CD106107BA1B813949C4836A1141D6C	D	Robot PD 17401 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+79224FADC52ABC8440849B642D71AEBC	D	Robot PD 17401 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+7B952318404BD7BBD904BA13847017FD	D	Robot PD 17500 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+0A02F020178252D885FE266C97937F30	D	Robot PD 17500 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+892A0F9D489142FD28D831ED7C13E53A	D	Robot PD 18100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+918AF9A1DC97552256D2577612AE9D72	D	Robot PD 18100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+4D000237AE96C5573E12B16F09F65972	D	Robot PD 18101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+2A6372F59B281A58F3EDD58D3F8791C0	D	Robot PD 18101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+FF2E5A01599768BCB2DC5D6ED35785F6	D	Robot PD 18102 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+F52485AAC38D9D4A90BDF6019BADC7D2	D	Robot PD 18102 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+7393F15398BC887293C2488DF23B0421	D	Robot PD 18103 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+A4F2D34840F78FDEAD5AD39C5FA5FF74	D	Robot PD 18103 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+321A1156783DA4FBF4AAE2B4BA746FD5	D	Robot PD 18104 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+5D8C1E3FE3A0493900A82CD1CC83B739	D	Robot PD 18104 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+360C18227B5B53A72AA1C1E7F203E760	D	Robot PD 18105 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+4AA411AA30743472946B2A3E94F8D27C	D	Robot PD 18105 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+C874880E447A01443656CE9551FFA255	D	Robot PD 18106 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+BDCD7A6D01B341BBCFEEF1F0BAF60EE1	D	Robot PD 18106 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+5A37E583E9411523BCAFFE38B4CAA296	D	Robot PD 18108 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+33AD4EA23E7A791E0B9671D727709447	D	Robot PD 18108 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+E2EB169BBB2E493B55511C789E3FCC30	D	Robot PD 18200 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+0327471C5D2D942CDBF0B0CEFAF28546	D	Robot PD 18200 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+2F87D69F792E38DDFB22F1B6B3B4670F	D	Robot PD 18201 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+9EF24B3EB0ED56CE39A15ECD19336C08	D	Robot PD 18201 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+688694E57B8B21F6E726188E55EA5295	D	Robot PD 18202 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+111F6FF6F5E25D0AAFB3F545D4BA957B	D	Robot PD 18202 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+EE9DE5057EAA0025D1599F743FEF96A8	D	Robot PD 18203 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+3860639F980DC3677F573B313C09F798	D	Robot PD 18203 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+4DE8CACA1CEEE470D0B80C803684BCC0	D	Robot PD 18204 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+E8F720C1F84962F32891B7D453FAC5DC	D	Robot PD 18204 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+37A018F93B4E678E7D14B5F8FCBBB551	D	Robot PD 18205 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+3474343361F9E55616DCC4C668FCE54B	D	Robot PD 18205 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+8167B907610CD12FCCAFF18CDDC33DC0	D	Robot PD 18206 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+721D756DA388B9D4E67917EF48EB4261	D	Robot PD 18206 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+778327BC2437DE5226EBF6C5C76801AC	D	Robot PD 18207 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+EF1DCFDF2050760266CB7262B78F928A	D	Robot PD 18207 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+5EBF98426A3E0852189EBC2B8DDEF364	D	Robot PD 18212 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+6E3ED11EA58E573027786A93210478DA	D	Robot PD 18212 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+B0305DE9FEE55F5A988C1E8FC8EB42E5	D	Robot PD 18213 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+D1798171B41B69ED229523BC2E7D1C9C	D	Robot PD 18213 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+907A9FE95AEBEE26BFCB57F62F7B7846	D	Robot PD 18214 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+0824F6A4D1BBB4B49B6F2D6F57EE71D3	D	Robot PD 18214 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+9ACDB5A08EBB93A5D5AD76F09FF6A888	D	Robot PD 18215 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+47BE15294051A6AD70808AAAFCD708D3	D	Robot PD 18215 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+E7AC30303BB3C057856B37FD3D4B7B41	D	Robot PD 18216 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+B21FEFB8E896C58DAD1C988305BFB66D	D	Robot PD 18216 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+C06E321628DD90B2517B7084EE7BE5D2	D	Robot PD 18217 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+474ABE7CDFFE8AC652CAF982DF380BB4	D	Robot PD 18217 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+296A5ED97AB50C268BAA5C2463E83609	D	Robot PD 18218 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+08828E314A2F82F2733EE2457D42B3F6	D	Robot PD 18218 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+707E93A4D8DDE7FD813D645D9DE4DB30	D	Robot PD 18300 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+31BB6F9BC64B7CAFD3A11D91042A002D	D	Robot PD 18300 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+DCC96408D7B4697CD8D5FE3724E59EEC	D	Robot PD 18303 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+870C3A8BBED72C040B111F0CD2F5EC7E	D	Robot PD 18303 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+F9BDCDEFC2D479507FB1CD002D30E890	D	Robot PD 18400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+FA4CEE979C8E5908C600D6B1C6D4E4E4	D	Robot PD 18400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+CA8DA3E762C4CD2E36D135A035D0D378	D	Robot PD 18401 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+1B711B9B0DD820B0E626397212E34E83	D	Robot PD 18401 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+4BE0637CC803C9973467C23B0F0DFCCF	D	Robot PD 19100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+E3F18EF16CAE5165EFBC40A7D3354952	D	Robot PD 19100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+2BACBFACE219FC13B49F770ED032BF13	D	Robot PD 19101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+701D4DB637F782BE46A90DD89F595CA6	D	Robot PD 19101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+C59F2AD24C2614264F7B5BCD4700519B	D	Robot PD 19102 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+9079D920FDBE0F18DC83795C390E1771	D	Robot PD 19102 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+F74D58C2ECFD7A5D2D11D5885DD4F1C2	D	Robot PD 19103 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+D4596D5BBB05FF0E7E658DD4330F63E4	D	Robot PD 19103 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+7A71B8A0FDA411075EFE3F7D9367D842	D	Robot PD 19104 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+B18150AA7196191E4D94C2033E6CDB71	D	Robot PD 19104 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+E48B9B372BC6DC4B86AF8073A9C6971F	D	Robot PD 19105 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+5A51F7F0ABF0518359EB0B923C2DAE11	D	Robot PD 19105 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+F207FC47E41660A156BAC15884FA53AC	D	Robot PD 19106 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+B9BE61645EC2A37135EDD8405CE3480C	D	Robot PD 19106 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+60CD5F0748D8F951DC6693ED67E2A3DF	D	Robot PD 19107 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+53C30381D7BEA66DAE197370EF02B150	D	Robot PD 19107 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+E54AF42DC8C3BF731225B999C30DDFC8	D	Robot PD 19108 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+8A415E019B0D10162186D9659507C799	D	Robot PD 19108 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+A40C8CCB70A2F5EAEE1FF730121F4843	D	Robot PD 19109 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+FD4D93B636B39BA740985262B6443436	D	Robot PD 19109 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+5EE178F7339804C3BBAE836352B52464	D	Robot PD 19110 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+C36DA19474726B7A9CF09F9EE5FD5F09	D	Robot PD 19110 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+CF0EEF0038B1C54534CD4929CE3B6FA9	D	Robot PD 19111 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+613DCB147BA9C2EA052097B1E8C55D2E	D	Robot PD 19111 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+90DE38C33ED3DD7E7AC7C2F50E956603	D	Robot PD 19112 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+47EC3DCF34F94956F685947B48104C2F	D	Robot PD 19112 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+DF707AD5EB4E0133956DFE78089F8D30	D	Robot PD 19113 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+06D67616F45C808B370C717BD3EA90E7	D	Robot PD 19113 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+1D7E8D61FB154EBA6E8A0D658BDB64D5	D	Robot PD 19114 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+1B566AE31B777BED52E97635C925210F	D	Robot PD 19114 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+05AD9DCEB26CF8AA6017C3D632269CDA	D	Robot PD 19121 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+5AC7BA49BEDAB5483A0B6E774C2FD960	D	Robot PD 19121 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+5FB88DDB98047F2FF4FCD068EA04E033	D	Robot PD 19122 (19xx)(Fairhurst, Richard)(PD)	AmstradCPC	
+79139188D169F6559CB7038F4E3BB1E9	D	Robot PD 19125 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+6F49E27BA34E15578CF18C732431B251	D	Robot PD 19125 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+D51DC6A7C97907974533835923B8D31B	D	Robot PD 19126 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+8E04262A3F60739C058A26A54B6455DF	D	Robot PD 19126 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+871BA9EFAA691ECC535C10A1B2CEB812	D	Robot PD 19127 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+C0D63756FA3607822F775B26959C5393	D	Robot PD 19127 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+C54098CDBCD94A3BD4C1197A69C09E68	D	Robot PD 19128 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+45808453ADECC9343D201D718754A3D5	D	Robot PD 19128 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+5AFFD39C0884CF07EEBCAC5165159FAB	D	Robot PD 19129 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+BE3C0C672A8D9EC30C939E660B51BA78	D	Robot PD 19129 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+8E82C5B21B544B2C5A18F38CD925530A	D	Robot PD 19130 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+B03F1CAA1C47E0939FA147A7F4F55BB6	D	Robot PD 19130 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+A70DA91A15DDFDACDFEA1B7C2B942F32	D	Robot PD 19131 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+97816045E1E15027E0B402B497C9DABE	D	Robot PD 19131 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+DDB2EA5AFFF6C54EC913A0E99BC5C13B	D	Robot PD 19132 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+FA00E03D04CE12A897903FE9D6D72334	D	Robot PD 19132 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+EF7C6D265B8204F44CA481227AD8F0D5	D	Robot PD 19133 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+7EF3FA257CF5209FD0BB7191CB848660	D	Robot PD 19133 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+C9052986C807B1EB189C2014C4060E1C	D	Robot PD 19201 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+97A419E9CBB37959EFCC61F513D64697	D	Robot PD 19201 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+E618E435663834C3776D7D8634BDB2C4	D	Robot PD 19202 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+E002DC3D0D87BB9EA60231D0ADD6904A	D	Robot PD 19202 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+80F2E5DDA4A66CE4A8E81B7FBC200A59	D	Robot PD 19203 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+2D632627796E271D3FC6BC57AEAAA035	D	Robot PD 19203 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+869B9BF50518BBC446E4E485AA3E29C3	D	Robot PD 19204 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+B0508E0A0B7BA90DC251E8EC0FB5B56E	D	Robot PD 19204 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+EC37131E56C50824AC27B6702D777162	D	Robot PD 19205 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+E0EB7E0888D10B88273A7362795D5A14	D	Robot PD 19205 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+BD608C8715A44809AB814F221CE50190	D	Robot PD 19207 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+618B8E8C28CA7B1F87F7EBBC9576DEAB	D	Robot PD 19207 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+3B90FB0B939AD6AB2F69A6356C3B46F1	D	Robot PD 19208 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+998D32D70E26C982C0D9CC3ECC9A888F	D	Robot PD 19208 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+63FDBD81F14603D2B841BAE4CD7E067C	D	Robot PD 19209 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+C26D0B1829926CA4A1FA3C8D28EC440F	D	Robot PD 19209 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+872A6C4417A14B7E59A793FF0BD126E7	D	Robot PD 19210 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+5610255CEDD3B509C69F7DB7FC3EC4ED	D	Robot PD 19210 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+554ECB10B1DE840E26FCD432890A2932	D	Robot PD 19211 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+AAD094F036C972BCB98A0019790E3EA0	D	Robot PD 19211 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+5C84875D4CF9BC5D96BAF003E73C5237	D	Robot PD 19212 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+25364B351B538E02168220586739B3A1	D	Robot PD 19212 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+32B393AD710BFAD5021BA639C31ADA69	D	Robot PD 19213 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+499419F1487A29A756BADEF936C4F66F	D	Robot PD 19213 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+292CFD6A7EB49474B32E31F91736AC18	D	Robot PD 19214 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+2B78763013BAFF8458850A167863E0DD	D	Robot PD 19214 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+4346F0AD75B0382EB3BFF335B0EE7BDE	D	Robot PD 19215 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+76FA2D4BA25E9026282F35F1CCC13ABD	D	Robot PD 19215 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+CCB16AA83C22862B11E534274A4A7A60	D	Robot PD 19300 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+0F51A1D2B0700E42B75CDFF49C392E78	D	Robot PD 19300 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+8B9D823BFE7C6C7EE9910CE59D71D8BA	D	Robot PD 19301 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+A31D83A4AB455F32C5DD596FEE714D5D	D	Robot PD 19301 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+15CB2D4A8D62793447A8111687A1BA00	D	Robot PD 19302 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+9CD507D57240AD7D36D39DABC2AC634C	D	Robot PD 19302 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+11E65D228CAAE89D48EC636F527A27D9	D	Robot PD 19303 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+979578E4104251C63200F506235CCDC2	D	Robot PD 19303 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+75E9116AA4F69998B13F22B861300A49	D	Robot PD 19304 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+D624F2AD568C1F981D7037E359EEB221	D	Robot PD 19304 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+D2F7BCCFA1BCDDC2CB3111D5C880688B	D	Robot PD 19305 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+0D7663D3DCD644A3F73DBB2AC02C6A8E	D	Robot PD 19305 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+BB6A3D4598075E4DC38B3F524BA8EFE4	D	Robot PD 19306 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+0C791167D0FF0D52F9452A6A1CC3C2D1	D	Robot PD 19306 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+425C9C19438E7EF7C1EC9AFD5CDADD7C	D	Robot PD 19307 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+2F076EB5C6511B6DC89ABC57B31AC53E	D	Robot PD 19307 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+7899DA776E9D3DC5D1BF5A8FC1B55821	D	Robot PD 19308 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+2AAB2A1F6B483D42418570B80187BC0D	D	Robot PD 19308 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+473140DBA286EA962AA99133C79DED34	D	Robot PD 19309 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+431E53348A0727A6F0BFC2C6BD255263	D	Robot PD 19309 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+B52BBF72F1978614AB4C7C26DE16DDEE	D	Robot PD 19310 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+09CD3C8A464BA62621B01A4A37B32296	D	Robot PD 19310 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+C5D44A6583E42F992E6980F2D0BA4EE0	D	Robot PD 19311 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+05B480B8A2FCE3AB146C9AFDD7A40FCE	D	Robot PD 19311 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+6B27A1F11F73BA3350D453D6B5713436	D	Robot PD 21100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+DC26E5235B24B11EA1CA64A6FBA51341	D	Robot PD 21100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+7562A99B7D0172FDFDC1E3BF468FF596	D	Robot PD 21101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+B8E14C4E079EB8B2DF1C7E8954C33992	D	Robot PD 21101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+C632FD24AB26BA0C41E7CF2CFE7FD35E	D	Robot PD 21400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+2D39793C58E76DD7FE34E6A944CD979D	D	Robot PD 21400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+5FB01625BF57C66D408144EF4C9E114C	D	Robot PD 21600 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+BF311F3DE4FC27CD9F305B72782D1D87	D	Robot PD 21600 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+B701C4EA04ECD68F7EDA166060E73DFE	D	Robot PD 22000 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+4737A3888602058AF6E34E6BF88AD84D	D	Robot PD 22000 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+C1E15E2734614F44A2AE05E3083EBBD6	D	Robot PD 22100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+BBF6D66E491ADF83031233B45F4B8ECF	D	Robot PD 22100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+CD34CCEF35C7D3B2FE5A820C4744EF01	D	Robot PD 22101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+4E48DE1B5FEF0813C60737EA04745771	D	Robot PD 22101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+5591E97B6E23BB5DECBB5CE183B61FD1	D	Robot PD 22300 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+33432E445F7927F3BAF5C52FC2F1EA76	D	Robot PD 22300 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+D8CEF7FE4255A2E9194B2487D4712B4B	D	Robot PD 22301 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+4B30AB2350FE2927F7DB39727349FEB2	D	Robot PD 22301 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+54F15BB2E2CC9FFFBA52D205D31604BC	D	Robot PD 22400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+F8FED0A5DA45D3EF0CF7BC6323ACD04A	D	Robot PD 22400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+8C191B63DBCDAB05D8564EDE7D83A5DC	D	Robot PD 23102 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+C86D60A841313B7DC7B2FB70E0EAAA27	D	Robot PD 23102 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+8F3AFC6D555A687EA8992F0CCE1C18E9	D	Robot PD 23103 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+C77DC870404CD9FA53D32FAD42A4E73B	D	Robot PD 23103 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+CF7AB7060E78996F02F98ED55DC189D4	D	Robot PD 23205 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+38213791AE429FDB1174873A82CAAD8B	D	Robot PD 23205 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+A1AC0AE65CBA90928384E01DA2C9A105	D	Robot PD 24100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+5F391B21D2B41B87136BA02C2A6BC153	D	Robot PD 24100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+6E08E047560627AB8A232F0B9CBD2F64	D	Robot PD 24201 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+E6F69C2B5773CBA94D6049FAE54A322D	D	Robot PD 24201 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+258E65C02C52B1EA638A59612D2F9874	D	Robot PD 24300 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+EDCCCB023750BDECF30C67A2AEBAEB43	D	Robot PD 24300 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+ED9D164E292737E8FF5D05D4DBEDCB49	D	Robot PD 24301 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+88A85B9DC549446AF4D85ED0A520EE2B	D	Robot PD 24301 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+28069B871D32B960D2209ED43CEF516A	D	Robot PD 24302 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+2819F85E262C3C9BAE609DC38ED881CA	D	Robot PD 24302 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+F50ECC3A5CDC4FFA5838A8FCCF9BE54D	D	Robot PD 24400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+7BDFDB8975FB746ADB53F509216C985E	D	Robot PD 24400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+DEFE46E7EF2CAB9CD92703BA38E9D3F5	D	Robot PD 24401 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+82B32AF802AE066F21998033068BE844	D	Robot PD 24401 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+8417185B14062C8E69CE1EFD6D9D9F9B	D	Robot PD 26100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+ED17F3BAF2416E2F9C27AD58C71D931D	D	Robot PD 26100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
+A024BA736B6F08A899E21969F3F9067A	D	Robot PD 26101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
+F9419916C064DFEE6DDB39F5D4D66424	D	Robot PD 26101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Believed Good
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
@@ -744,390 +1053,6 @@ D27E822CF38320FE78DC6EAE35600C10		Magnificent 7, The (1988)(Ocean)[CPM Version]	
 9FBCC64C1D8F576C349C0A75A42CCE5E		Ocean Compilation (19xx)(Ocean)	AmstradCPC	
 D6436680DA9B5D2C15FB096619D75B8D		Ocean's All Star Hits 2 (19xx)(Ocean)(Disk 1 of 2)	AmstradCPC	
 0B56284D4A775FC9130EF7F2368DCC2A		Ocean's All Star Hits 2 (19xx)(Ocean)(Disk 2 of 2)	AmstradCPC	
-C5E0FC4A13FD7E7EC24CD7263645D45F		Robot PD 00001 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-B56CB8EFFEAEA2B98017171EAABE6FF1		Robot PD 00001 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-7DD0319882730F86036A84D3424279B8		Robot PD 03000 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-67E15C78E5EF29F5DD3D5C9D38DFC1E0		Robot PD 03000 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-25BA0DEDE85054CA28C05F34EF79723C		Robot PD 04000 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-3212BDB2FFB5881FCE801CE022C37B3A		Robot PD 04000 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-9CE5E08A426B47595AC264AD92522DDB		Robot PD 04400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-CCCEC9277FE1AE59664DFB18048B20CB		Robot PD 04400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-3AD0170A70E134EB68B844C8152A30A9		Robot PD 04401 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-6476785ED6ABCCB41F695CB24C628E22		Robot PD 04401 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-9F4EBA03CE0685932D5D14CA1CF8808C		Robot PD 06100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-A626682A6DB76C5E31C909FC483FF1AF		Robot PD 06100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-A839ADAE09271A1CC29CEA90E5FEA0FD		Robot PD 06101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-71274F00DEE272EECEF5A50EF226DE05		Robot PD 06101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-A1046E1994589DF43BFB0D2E16DBE2AB		Robot PD 09100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-A23E7DB040E823E6FD83474751FE6B5A		Robot PD 09100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-1BC870B4388F0E3385E1758546DFB247		Robot PD 10000 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-EB22E0958CA9EB7AD7D7D11F279B2244		Robot PD 10000 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-722B4BB435651EB2CBA3061703BBF902		Robot PD 10001 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-694F0D52F5DCBAF538A433BC1BE96CFD		Robot PD 10001 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-A7534E6E54357A787E3BC7AAD828150D		Robot PD 10002 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-E164C67624A2C9345115EB240F632219		Robot PD 10002 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-58209CA85F12B262CD88CA5DA888F85F		Robot PD 10100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-41F83B3BF0FFEE31FED126554EDC808E		Robot PD 10100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-0FA07AE4E9E348A938C87C9EED3112A2		Robot PD 10200 (19xx)(Fairhurst, Richard)(PD)	AmstradCPC	
-6A441C75B7A48F066BC1A16AA32EF967		Robot PD 10300 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-A2480194CA2412AC6850F194F08FFC69		Robot PD 10300 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-8B2E6CAE4F29EDFAC4D02FBF04F0B8F9		Robot PD 10301 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-09830E95628BB6F3AA2A158C8E64C1B5		Robot PD 10301 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-A651C7C5C186DFAF58F928C361D137F1		Robot PD 10302 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-BF6F0A0FF7A7BCB359C5FC44A9D120AA		Robot PD 10302 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-787E7639FFCAC7B04526CFB67ED3436D		Robot PD 10304 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-94AF01FD224E23B2553743827A361707		Robot PD 10304 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-F864EF8478EAD0362406DCCEE528275B		Robot PD 10305 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-55B11DFBCA43C2431E854D3EB2D7FF31		Robot PD 10305 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-E682A0A505A87532BAEB72CD68D1F5D2		Robot PD 10306 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-CA5784D09FF29A1A8AACD43AE68AB348		Robot PD 10306 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-6CEED23E18C18EE987FD57C8AE0841FA		Robot PD 10307 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-89A03AF10A49D6E10A4692EF5745BAAD		Robot PD 10307 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-B9CA9F65287C60AA928C2EB08E1EE7FA		Robot PD 10308 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-FA0D9603773CE3ADA9725A7F9A866281		Robot PD 10308 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-2F8A6E4BD1CB1EBC7D2DA79F441AAD50		Robot PD 10310 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-F8771947B09E60E1B1E46497E2DDDAA3		Robot PD 10310 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-D0D4CEA9BC45408B51990CBBA5A95B98		Robot PD 10311 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-8C97EFAF05CBC60448F11F997EE3FD8A		Robot PD 10311 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-274BABA2B81CD6064B80A8A80B3F1C0B		Robot PD 10314 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-B3AC68BAF135C5A8B947C1B51DD1F485		Robot PD 10314 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-EFE8B7DD90C5C4BE659AB1D24FDB18F2		Robot PD 10315 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-787D5842B8C9BA3B05AD15B80C2C4CCD		Robot PD 10315 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-017084D62350C9D71A7C553EB32548BB		Robot PD 11000 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-1828C32C640A8B216D4EB84F9A57EADF		Robot PD 11000 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-B6BB9C752540041639217789C2D87F75		Robot PD 11100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-03A655470A361A3167B1E712419474CC		Robot PD 11100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-13A8EAA805F65075C2C0F78324997CAB		Robot PD 11200 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-7628D2F921D4BC537A595A8E9CE7E7E6		Robot PD 11200 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-82581D1AF9776599756022A6F854365E		Robot PD 11400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-405E4828E2F2456B0F7EE1DCBE868505		Robot PD 11400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-80F25B20AA5CAEDA049EA7681E768509		Robot PD 11401 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-7390AB1F1923C4CED79E8515011B7FE5		Robot PD 11401 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-24F57AE7047E8BEF83B1270A4EDC24A4		Robot PD 11402 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-E96573198C1746B53409F471BBC15471		Robot PD 11402 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-EB10FCF96358FF727F235772D1ABC0FF		Robot PD 11500 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-3D09EE760ABCA621FBED48F8F19BF019		Robot PD 11500 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-73BE0B80B555DAFAF969598ACF0DD9AE		Robot PD 12002 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-753BD235AF1CE0074D83276D44898217		Robot PD 12002 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-DBDDEE84BDF439A5E48973E7732D69A9		Robot PD 12003 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-36289B691E16FD520710D9D2368A4EFE		Robot PD 12003 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-9756DB9592A0B4FEC271C729D08FE213		Robot PD 12004 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-C9924EFDCE6424BB759526C61F8C7C1B		Robot PD 12004 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-2C2535A00D499E897056D6BF3DBA152F		Robot PD 12005 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-F7E99DC387F130E9A30A215B0DC522A9		Robot PD 12005 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-BEE85A0B897391053D9CE8FD13BACB91		Robot PD 12100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-B560C2BA2DD2BAED7372FC521DD45A4C		Robot PD 12100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-1413501712AFA859EF861FE992F24E3F		Robot PD 12201 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-9F44C37EB8CAD07E4FE1ECEA34BF6E06		Robot PD 12201 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-8CDD0F2160C02E55734F2ECD2DF65F8A		Robot PD 12400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-581BA752D28B19552FC7E70619649D5A		Robot PD 12400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-A79C14565A36C0D115F736B99ABD09D0		Robot PD 13100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-1465A5F728C4F4E14A94C6BD05046710		Robot PD 13100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-A1FEE8856DF149660A4C0576CA1C0B6D		Robot PD 14400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-7BCC2676D0F5549AC3134E4966B70D7F		Robot PD 14400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-E21F25F93044CA27477F40540A6726EF		Robot PD 16000 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-7B29BEA684E9DB1A4E568C8339E806A3		Robot PD 16000 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-3481EDB6D4E7A9FE41F3E847BF84B4F4		Robot PD 16100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-3DFA42B56A6724B4CD85FEF63DEB51F5		Robot PD 16100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-4DB77C03971AB4C9183736B34EB3D517		Robot PD 16101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-FE28BB5AB68DB04DD21D372AF70361B8		Robot PD 16101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-34D48E8737693B1C07DACFDEF8038D97		Robot PD 16103 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-4597E41F61CE03A3B35129C5031D1A29		Robot PD 16103 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-A905B0E60228DED07ABDAC422EE59B9F		Robot PD 16104 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-E687ABBEFD4B4B4C73F6D3E9567EE734		Robot PD 16104 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-8903B2248D9F52B6B449FB40C2218176		Robot PD 16105 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-BAF41A7A038B0C9405FE6FE4652A8BE7		Robot PD 16105 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-8E633CA99035A0033E08416774B2DBDD		Robot PD 16106 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-0679C94F3C9D4DF2D243826DD625CB21		Robot PD 16106 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-E1FD98A10F7C27C2AAF09F3044F4AF88		Robot PD 16200 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-BB2FB3C084A23D00DA70172E1674D11D		Robot PD 16200 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-D06EE05B240B87797E36C819668B2C54		Robot PD 16201 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-6BA26B2922386C2A6F4EC3049B198D94		Robot PD 16201 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-4A835EC1ACD86636EE286BE84691B82B		Robot PD 16202 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-5A305F32DA28E25D84AB91F63DC9B06B		Robot PD 16202 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-77F77686CD14B6918D04E405EC958D5C		Robot PD 16203 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-EE4E34C89A1543B48025D98621D7C69B		Robot PD 16203 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-C5C1509615B8E40A08E9FDF0339609F8		Robot PD 16204 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-27315104B1E46D941C7AEEC822110E86		Robot PD 16204 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-DE061A84E9CDD8317410A2BB916CC4B3		Robot PD 16300 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-F3311A7A537FCDD18A3177DB42E4D088		Robot PD 16300 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-060E66B0113958C0D596598DD893DE81		Robot PD 16301 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-E663E4B341549D0505F1F9D06516F18A		Robot PD 16301 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-D0761CCF472AF592EC90015E67DBC038		Robot PD 16303 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-216C9C19F7634E552AB4EA38CEE277D8		Robot PD 16303 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-2D263C21B001B1F53A1FAE64B5DFBDE2		Robot PD 16304 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-AA78A7B97B262BD2A7E7280011550667		Robot PD 16304 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-BCF93012351C448D23B6140DA47DEAF3		Robot PD 16307 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-F944028DC60513506831039C153EB2BF		Robot PD 16307 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-475CAFE380C0FE74B5878DCC76B629DE		Robot PD 16308 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-51EDCAC6461CD63C8176C2A81367C138		Robot PD 16308 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-A57EDEBD49A19475DC5A7CBCA39D7261		Robot PD 17000 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-49BA4541E948EB59C23694ED665BEBEC		Robot PD 17000 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-0C3FFC5CFEEA383E2D5A9217CF64D45B		Robot PD 17100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-1F9523CA49A56B889B41BA0DE98CE8FE		Robot PD 17100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-C4BF0742E3EE9249E288656BD46FD608		Robot PD 17101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-45B990907DDED7039A1D798451E057B0		Robot PD 17101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-C084EF7C8CD6FFA20E0354F769D0A6B7		Robot PD 17102 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-0E7909A52F86BA2C6212C16CC6FD0E3B		Robot PD 17102 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-D080A225B0C716D8EE08BD565A696CA5		Robot PD 17103 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-452F946561CE66E8ECB7D15F8F50DEC2		Robot PD 17103 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-C00987A5CA4AEE6E584F314B6831D1D3		Robot PD 17104 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-52624517A4691E0CA0EED6DC3E5C4F8C		Robot PD 17104 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-0CC48CA02AEEE4D8DDB8825D540CAF47		Robot PD 17105 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-AB98D1198AC41C011B808D4AAED6C0E3		Robot PD 17105 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-0C8B60CB7CF80AA7EB630A2F1CD5FE75		Robot PD 17106 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-37A5739FA988C2696CECE10B3B7E1CF9		Robot PD 17106 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-6101B9E78F5A01813BDD4CE4297FB4B0		Robot PD 17107 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-996E48313B7E7C330732E248ACC3226D		Robot PD 17107 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-56A7E1080824349FC7A3B4743C34EE05		Robot PD 17108 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-0B11F970081A3DE22446725AF35C488C		Robot PD 17108 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-0B67A4CB8FA28AA2DD11A79740B3FD90		Robot PD 17109 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-451EC924005F32697566ED74230E4D7B		Robot PD 17109 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-292BBE39D02820BDE73BA53D4DF25A04		Robot PD 17110 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-6D3E5BD0D82DB93BE2DB116F69A7D8DB		Robot PD 17110 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-60F27AE5AAC6E53CE1C817732F652EA2		Robot PD 17111 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-7A491CB9A69D544BB23BF383767C4228		Robot PD 17111 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-8A83833AC2A465F7FAEACB0E79A7D3BD		Robot PD 17114 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-7A9C9744E1E773C762E0D44E3519BBE4		Robot PD 17114 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-90F27D38EF540DEE468394A0925D0A41		Robot PD 17115 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-6FA6C0B3229BBFC865D1AB4F4FE4E29C		Robot PD 17115 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-20A2FA4CE576C5D0C6BC07C8790B14B9		Robot PD 17200 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-F2C492B03D4465969F5955FC525D2625		Robot PD 17200 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-9DED774E6AF641FDFFEB2E6A99A8A3E7		Robot PD 17201 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-F2984639B6FE9F1E753735F45E5C8DAA		Robot PD 17201 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-D38DF8AFEAF2A82D1B3325A2988FB4E7		Robot PD 17202 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-976F4D764C6C499C4B8C7B3D787BA34C		Robot PD 17202 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-0AAB947C8890ED69521C0EF2AE40090D		Robot PD 17203 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-EA0C09EEE6A8303DF18360011C4387CF		Robot PD 17203 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-15FD9FAA502AA48DB25F7F516DB0B92E		Robot PD 17204 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-CD83159BA26BF4046519372AB6976165		Robot PD 17204 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-B2036610427FE9AC98B1EE390D1EAE48		Robot PD 17205 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-87EB13385F0A6F80F69BDEF1A21517E9		Robot PD 17205 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-15D6BE35B6AF2EDB1D5880B85FBCFD16		Robot PD 17206 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-69E980642723331F0C11BEC5286BA30B		Robot PD 17206 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-DFE053D49D89E11D18AB0CD0319049E2		Robot PD 17207 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-5777ED860EB2A3B3B7B2297BA7151A0D		Robot PD 17207 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-BA7F34DC402A609BDFD8EF7E51643325		Robot PD 17208 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-F5E73DE629C1F4332A3A4DBDACE37B5C		Robot PD 17208 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-BF64AE9CF168D14113D0FC30E7AD44A7		Robot PD 17209 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-0F12905B6D0171D11FE146A9E9AF57FC		Robot PD 17209 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-C1098084497B8F6DB77843D79FC947B7		Robot PD 17210 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-00CEF6FED72A675C6845A60183A4A0EA		Robot PD 17210 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-1AC50CEE85577B2DF94A82B69AE06CBF		Robot PD 17211 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-7876A13734B9C0D5048E5369CA07EF30		Robot PD 17211 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-605E56014D20B7C1F93A7EA40F1F478D		Robot PD 17212 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-293054DBEE8D652CCF357656A1CE4F87		Robot PD 17212 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-9CF9F38F5414CBF50C62A7EC06F574AA		Robot PD 17213 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-57F8A24A9B8855D139F12256001C0BAA		Robot PD 17213 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-C950B4B363FB9E95A1F55481188A3C00		Robot PD 17300 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-CD1AE1FF672C24666013808CE6859E4A		Robot PD 17300 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-2F26D09852558223F231BD6DA6EB2A71		Robot PD 17301 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-0A353A4B00DEFF64733E87A2DD68F799		Robot PD 17301 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-8CD106107BA1B813949C4836A1141D6C		Robot PD 17401 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-79224FADC52ABC8440849B642D71AEBC		Robot PD 17401 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-7B952318404BD7BBD904BA13847017FD		Robot PD 17500 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-0A02F020178252D885FE266C97937F30		Robot PD 17500 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-892A0F9D489142FD28D831ED7C13E53A		Robot PD 18100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-918AF9A1DC97552256D2577612AE9D72		Robot PD 18100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-4D000237AE96C5573E12B16F09F65972		Robot PD 18101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-2A6372F59B281A58F3EDD58D3F8791C0		Robot PD 18101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-FF2E5A01599768BCB2DC5D6ED35785F6		Robot PD 18102 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-F52485AAC38D9D4A90BDF6019BADC7D2		Robot PD 18102 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-7393F15398BC887293C2488DF23B0421		Robot PD 18103 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-A4F2D34840F78FDEAD5AD39C5FA5FF74		Robot PD 18103 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-321A1156783DA4FBF4AAE2B4BA746FD5		Robot PD 18104 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-5D8C1E3FE3A0493900A82CD1CC83B739		Robot PD 18104 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-360C18227B5B53A72AA1C1E7F203E760		Robot PD 18105 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-4AA411AA30743472946B2A3E94F8D27C		Robot PD 18105 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-C874880E447A01443656CE9551FFA255		Robot PD 18106 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-BDCD7A6D01B341BBCFEEF1F0BAF60EE1		Robot PD 18106 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-5A37E583E9411523BCAFFE38B4CAA296		Robot PD 18108 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-33AD4EA23E7A791E0B9671D727709447		Robot PD 18108 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-E2EB169BBB2E493B55511C789E3FCC30		Robot PD 18200 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-0327471C5D2D942CDBF0B0CEFAF28546		Robot PD 18200 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-2F87D69F792E38DDFB22F1B6B3B4670F		Robot PD 18201 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-9EF24B3EB0ED56CE39A15ECD19336C08		Robot PD 18201 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-688694E57B8B21F6E726188E55EA5295		Robot PD 18202 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-111F6FF6F5E25D0AAFB3F545D4BA957B		Robot PD 18202 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-EE9DE5057EAA0025D1599F743FEF96A8		Robot PD 18203 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-3860639F980DC3677F573B313C09F798		Robot PD 18203 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-4DE8CACA1CEEE470D0B80C803684BCC0		Robot PD 18204 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-E8F720C1F84962F32891B7D453FAC5DC		Robot PD 18204 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-37A018F93B4E678E7D14B5F8FCBBB551		Robot PD 18205 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-3474343361F9E55616DCC4C668FCE54B		Robot PD 18205 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-8167B907610CD12FCCAFF18CDDC33DC0		Robot PD 18206 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-721D756DA388B9D4E67917EF48EB4261		Robot PD 18206 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-778327BC2437DE5226EBF6C5C76801AC		Robot PD 18207 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-EF1DCFDF2050760266CB7262B78F928A		Robot PD 18207 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-5EBF98426A3E0852189EBC2B8DDEF364		Robot PD 18212 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-6E3ED11EA58E573027786A93210478DA		Robot PD 18212 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-B0305DE9FEE55F5A988C1E8FC8EB42E5		Robot PD 18213 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-D1798171B41B69ED229523BC2E7D1C9C		Robot PD 18213 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-907A9FE95AEBEE26BFCB57F62F7B7846		Robot PD 18214 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-0824F6A4D1BBB4B49B6F2D6F57EE71D3		Robot PD 18214 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-9ACDB5A08EBB93A5D5AD76F09FF6A888		Robot PD 18215 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-47BE15294051A6AD70808AAAFCD708D3		Robot PD 18215 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-E7AC30303BB3C057856B37FD3D4B7B41		Robot PD 18216 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-B21FEFB8E896C58DAD1C988305BFB66D		Robot PD 18216 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-C06E321628DD90B2517B7084EE7BE5D2		Robot PD 18217 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-474ABE7CDFFE8AC652CAF982DF380BB4		Robot PD 18217 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-296A5ED97AB50C268BAA5C2463E83609		Robot PD 18218 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-08828E314A2F82F2733EE2457D42B3F6		Robot PD 18218 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-707E93A4D8DDE7FD813D645D9DE4DB30		Robot PD 18300 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-31BB6F9BC64B7CAFD3A11D91042A002D		Robot PD 18300 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-DCC96408D7B4697CD8D5FE3724E59EEC		Robot PD 18303 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-870C3A8BBED72C040B111F0CD2F5EC7E		Robot PD 18303 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-F9BDCDEFC2D479507FB1CD002D30E890		Robot PD 18400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-FA4CEE979C8E5908C600D6B1C6D4E4E4		Robot PD 18400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-CA8DA3E762C4CD2E36D135A035D0D378		Robot PD 18401 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-1B711B9B0DD820B0E626397212E34E83		Robot PD 18401 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-4BE0637CC803C9973467C23B0F0DFCCF		Robot PD 19100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-E3F18EF16CAE5165EFBC40A7D3354952		Robot PD 19100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-2BACBFACE219FC13B49F770ED032BF13		Robot PD 19101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-701D4DB637F782BE46A90DD89F595CA6		Robot PD 19101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-C59F2AD24C2614264F7B5BCD4700519B		Robot PD 19102 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-9079D920FDBE0F18DC83795C390E1771		Robot PD 19102 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-F74D58C2ECFD7A5D2D11D5885DD4F1C2		Robot PD 19103 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-D4596D5BBB05FF0E7E658DD4330F63E4		Robot PD 19103 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-7A71B8A0FDA411075EFE3F7D9367D842		Robot PD 19104 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-B18150AA7196191E4D94C2033E6CDB71		Robot PD 19104 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-E48B9B372BC6DC4B86AF8073A9C6971F		Robot PD 19105 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-5A51F7F0ABF0518359EB0B923C2DAE11		Robot PD 19105 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-F207FC47E41660A156BAC15884FA53AC		Robot PD 19106 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-B9BE61645EC2A37135EDD8405CE3480C		Robot PD 19106 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-60CD5F0748D8F951DC6693ED67E2A3DF		Robot PD 19107 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-53C30381D7BEA66DAE197370EF02B150		Robot PD 19107 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-E54AF42DC8C3BF731225B999C30DDFC8		Robot PD 19108 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-8A415E019B0D10162186D9659507C799		Robot PD 19108 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-A40C8CCB70A2F5EAEE1FF730121F4843		Robot PD 19109 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-FD4D93B636B39BA740985262B6443436		Robot PD 19109 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-5EE178F7339804C3BBAE836352B52464		Robot PD 19110 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-C36DA19474726B7A9CF09F9EE5FD5F09		Robot PD 19110 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-CF0EEF0038B1C54534CD4929CE3B6FA9		Robot PD 19111 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-613DCB147BA9C2EA052097B1E8C55D2E		Robot PD 19111 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-90DE38C33ED3DD7E7AC7C2F50E956603		Robot PD 19112 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-47EC3DCF34F94956F685947B48104C2F		Robot PD 19112 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-DF707AD5EB4E0133956DFE78089F8D30		Robot PD 19113 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-06D67616F45C808B370C717BD3EA90E7		Robot PD 19113 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-1D7E8D61FB154EBA6E8A0D658BDB64D5		Robot PD 19114 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-1B566AE31B777BED52E97635C925210F		Robot PD 19114 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-05AD9DCEB26CF8AA6017C3D632269CDA		Robot PD 19121 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-5AC7BA49BEDAB5483A0B6E774C2FD960		Robot PD 19121 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-5FB88DDB98047F2FF4FCD068EA04E033		Robot PD 19122 (19xx)(Fairhurst, Richard)(PD)	AmstradCPC	
-79139188D169F6559CB7038F4E3BB1E9		Robot PD 19125 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-6F49E27BA34E15578CF18C732431B251		Robot PD 19125 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-D51DC6A7C97907974533835923B8D31B		Robot PD 19126 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-8E04262A3F60739C058A26A54B6455DF		Robot PD 19126 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-871BA9EFAA691ECC535C10A1B2CEB812		Robot PD 19127 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-C0D63756FA3607822F775B26959C5393		Robot PD 19127 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-C54098CDBCD94A3BD4C1197A69C09E68		Robot PD 19128 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-45808453ADECC9343D201D718754A3D5		Robot PD 19128 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-5AFFD39C0884CF07EEBCAC5165159FAB		Robot PD 19129 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-BE3C0C672A8D9EC30C939E660B51BA78		Robot PD 19129 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-8E82C5B21B544B2C5A18F38CD925530A		Robot PD 19130 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-B03F1CAA1C47E0939FA147A7F4F55BB6		Robot PD 19130 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-A70DA91A15DDFDACDFEA1B7C2B942F32		Robot PD 19131 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-97816045E1E15027E0B402B497C9DABE		Robot PD 19131 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-DDB2EA5AFFF6C54EC913A0E99BC5C13B		Robot PD 19132 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-FA00E03D04CE12A897903FE9D6D72334		Robot PD 19132 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-EF7C6D265B8204F44CA481227AD8F0D5		Robot PD 19133 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-7EF3FA257CF5209FD0BB7191CB848660		Robot PD 19133 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-C9052986C807B1EB189C2014C4060E1C		Robot PD 19201 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-97A419E9CBB37959EFCC61F513D64697		Robot PD 19201 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-E618E435663834C3776D7D8634BDB2C4		Robot PD 19202 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-E002DC3D0D87BB9EA60231D0ADD6904A		Robot PD 19202 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-80F2E5DDA4A66CE4A8E81B7FBC200A59		Robot PD 19203 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-2D632627796E271D3FC6BC57AEAAA035		Robot PD 19203 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-869B9BF50518BBC446E4E485AA3E29C3		Robot PD 19204 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-B0508E0A0B7BA90DC251E8EC0FB5B56E		Robot PD 19204 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-EC37131E56C50824AC27B6702D777162		Robot PD 19205 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-E0EB7E0888D10B88273A7362795D5A14		Robot PD 19205 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-BD608C8715A44809AB814F221CE50190		Robot PD 19207 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-618B8E8C28CA7B1F87F7EBBC9576DEAB		Robot PD 19207 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-3B90FB0B939AD6AB2F69A6356C3B46F1		Robot PD 19208 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-998D32D70E26C982C0D9CC3ECC9A888F		Robot PD 19208 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-63FDBD81F14603D2B841BAE4CD7E067C		Robot PD 19209 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-C26D0B1829926CA4A1FA3C8D28EC440F		Robot PD 19209 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-872A6C4417A14B7E59A793FF0BD126E7		Robot PD 19210 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-5610255CEDD3B509C69F7DB7FC3EC4ED		Robot PD 19210 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-554ECB10B1DE840E26FCD432890A2932		Robot PD 19211 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-AAD094F036C972BCB98A0019790E3EA0		Robot PD 19211 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-5C84875D4CF9BC5D96BAF003E73C5237		Robot PD 19212 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-25364B351B538E02168220586739B3A1		Robot PD 19212 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-32B393AD710BFAD5021BA639C31ADA69		Robot PD 19213 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-499419F1487A29A756BADEF936C4F66F		Robot PD 19213 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-292CFD6A7EB49474B32E31F91736AC18		Robot PD 19214 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-2B78763013BAFF8458850A167863E0DD		Robot PD 19214 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-4346F0AD75B0382EB3BFF335B0EE7BDE		Robot PD 19215 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-76FA2D4BA25E9026282F35F1CCC13ABD		Robot PD 19215 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-CCB16AA83C22862B11E534274A4A7A60		Robot PD 19300 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-0F51A1D2B0700E42B75CDFF49C392E78		Robot PD 19300 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-8B9D823BFE7C6C7EE9910CE59D71D8BA		Robot PD 19301 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-A31D83A4AB455F32C5DD596FEE714D5D		Robot PD 19301 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-15CB2D4A8D62793447A8111687A1BA00		Robot PD 19302 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-9CD507D57240AD7D36D39DABC2AC634C		Robot PD 19302 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-11E65D228CAAE89D48EC636F527A27D9		Robot PD 19303 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-979578E4104251C63200F506235CCDC2		Robot PD 19303 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-75E9116AA4F69998B13F22B861300A49		Robot PD 19304 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-D624F2AD568C1F981D7037E359EEB221		Robot PD 19304 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-D2F7BCCFA1BCDDC2CB3111D5C880688B		Robot PD 19305 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-0D7663D3DCD644A3F73DBB2AC02C6A8E		Robot PD 19305 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-BB6A3D4598075E4DC38B3F524BA8EFE4		Robot PD 19306 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-0C791167D0FF0D52F9452A6A1CC3C2D1		Robot PD 19306 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-425C9C19438E7EF7C1EC9AFD5CDADD7C		Robot PD 19307 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-2F076EB5C6511B6DC89ABC57B31AC53E		Robot PD 19307 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-7899DA776E9D3DC5D1BF5A8FC1B55821		Robot PD 19308 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-2AAB2A1F6B483D42418570B80187BC0D		Robot PD 19308 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-473140DBA286EA962AA99133C79DED34		Robot PD 19309 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-431E53348A0727A6F0BFC2C6BD255263		Robot PD 19309 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-B52BBF72F1978614AB4C7C26DE16DDEE		Robot PD 19310 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-09CD3C8A464BA62621B01A4A37B32296		Robot PD 19310 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-C5D44A6583E42F992E6980F2D0BA4EE0		Robot PD 19311 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-05B480B8A2FCE3AB146C9AFDD7A40FCE		Robot PD 19311 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-6B27A1F11F73BA3350D453D6B5713436		Robot PD 21100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-DC26E5235B24B11EA1CA64A6FBA51341		Robot PD 21100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-7562A99B7D0172FDFDC1E3BF468FF596		Robot PD 21101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-B8E14C4E079EB8B2DF1C7E8954C33992		Robot PD 21101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-C632FD24AB26BA0C41E7CF2CFE7FD35E		Robot PD 21400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-2D39793C58E76DD7FE34E6A944CD979D		Robot PD 21400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-5FB01625BF57C66D408144EF4C9E114C		Robot PD 21600 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-BF311F3DE4FC27CD9F305B72782D1D87		Robot PD 21600 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-B701C4EA04ECD68F7EDA166060E73DFE		Robot PD 22000 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-4737A3888602058AF6E34E6BF88AD84D		Robot PD 22000 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-C1E15E2734614F44A2AE05E3083EBBD6		Robot PD 22100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-BBF6D66E491ADF83031233B45F4B8ECF		Robot PD 22100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-CD34CCEF35C7D3B2FE5A820C4744EF01		Robot PD 22101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-4E48DE1B5FEF0813C60737EA04745771		Robot PD 22101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-5591E97B6E23BB5DECBB5CE183B61FD1		Robot PD 22300 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-33432E445F7927F3BAF5C52FC2F1EA76		Robot PD 22300 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-D8CEF7FE4255A2E9194B2487D4712B4B		Robot PD 22301 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-4B30AB2350FE2927F7DB39727349FEB2		Robot PD 22301 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-54F15BB2E2CC9FFFBA52D205D31604BC		Robot PD 22400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-F8FED0A5DA45D3EF0CF7BC6323ACD04A		Robot PD 22400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-8C191B63DBCDAB05D8564EDE7D83A5DC		Robot PD 23102 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-C86D60A841313B7DC7B2FB70E0EAAA27		Robot PD 23102 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-8F3AFC6D555A687EA8992F0CCE1C18E9		Robot PD 23103 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-C77DC870404CD9FA53D32FAD42A4E73B		Robot PD 23103 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-CF7AB7060E78996F02F98ED55DC189D4		Robot PD 23205 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-38213791AE429FDB1174873A82CAAD8B		Robot PD 23205 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-A1AC0AE65CBA90928384E01DA2C9A105		Robot PD 24100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-5F391B21D2B41B87136BA02C2A6BC153		Robot PD 24100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-6E08E047560627AB8A232F0B9CBD2F64		Robot PD 24201 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-E6F69C2B5773CBA94D6049FAE54A322D		Robot PD 24201 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-258E65C02C52B1EA638A59612D2F9874		Robot PD 24300 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-EDCCCB023750BDECF30C67A2AEBAEB43		Robot PD 24300 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-ED9D164E292737E8FF5D05D4DBEDCB49		Robot PD 24301 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-88A85B9DC549446AF4D85ED0A520EE2B		Robot PD 24301 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-28069B871D32B960D2209ED43CEF516A		Robot PD 24302 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-2819F85E262C3C9BAE609DC38ED881CA		Robot PD 24302 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-F50ECC3A5CDC4FFA5838A8FCCF9BE54D		Robot PD 24400 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-7BDFDB8975FB746ADB53F509216C985E		Robot PD 24400 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-DEFE46E7EF2CAB9CD92703BA38E9D3F5		Robot PD 24401 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-82B32AF802AE066F21998033068BE844		Robot PD 24401 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-8417185B14062C8E69CE1EFD6D9D9F9B		Robot PD 26100 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-ED17F3BAF2416E2F9C27AD58C71D931D		Robot PD 26100 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
-A024BA736B6F08A899E21969F3F9067A		Robot PD 26101 (19xx)(Fairhurst, Richard)(Disk 1 of 2)(PD)	AmstradCPC	
-F9419916C064DFEE6DDB39F5D4D66424		Robot PD 26101 (19xx)(Fairhurst, Richard)(Disk 2 of 2)(PD)	AmstradCPC	
 ED488F894FE4E701130FE9C12101E53B		Selection, La (19xx)(Ocean)(Disk 1 of 2)	AmstradCPC	
 BABCBC02A16205AF8DB9EFE7C4605A14		Selection, La (19xx)(Ocean)(Disk 2 of 2)	AmstradCPC	
 3333F3C1C727C485E353A5AFE46358E9		Taito Coin-Op Hits 1 (1989)(Imagine Software)	AmstradCPC	
@@ -1140,7 +1065,7 @@ D43014458EB34D3E5217E0B8CDC38E14		XSshow (1993)(Bollaware)	AmstradCPC
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Type:	TOSEC
 ;;; Source:	Amstrad CPC - Demos (TOSEC-v2013-10-29)
-;;; FileGen:	2018-09-21 14:29:01 (UTC)
+;;; FileGen:	2018-09-21 15:09:03 (UTC)
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Bad Dumps
@@ -1156,6 +1081,10 @@ D43014458EB34D3E5217E0B8CDC38E14		XSshow (1993)(Bollaware)	AmstradCPC
 ;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Translated
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Home Brew
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
@@ -1578,7 +1507,7 @@ B3FB4B0AA13346798D50A3B6214A90F7		Zona 0 Crack Intro (1991)(The Spanish Hacker)	
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Type:	TOSEC
 ;;; Source:	Amstrad CPC - Educational (TOSEC-v2015-05-07)
-;;; FileGen:	2018-09-21 14:29:01 (UTC)
+;;; FileGen:	2018-09-21 15:09:03 (UTC)
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Bad Dumps
@@ -1594,6 +1523,10 @@ B3FB4B0AA13346798D50A3B6214A90F7		Zona 0 Crack Intro (1991)(The Spanish Hacker)	
 ;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Translated
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Home Brew
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
@@ -1610,124 +1543,8 @@ EF4A2E38157CB4DE09B9EE8AD70F2459		Map Game (1985)(Erbe Software)(ES)	AmstradCPC	
 B3FB4B0AA13346798D50A3B6214A90F7		Zona 0 Crack Intro (1991)(The Spanish Hacker)	AmstradCPC	
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Type:	TOSEC
-;;; Source:	Amstrad CPC - Games - [BIN] (TOSEC-v2015-05-07)
-;;; FileGen:	2018-09-21 14:29:01 (UTC)
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Bad Dumps
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Hacks
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Over Dumps
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Translated
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Believed Good
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-FC89EEA6BEDCA7AD15EBBDA838A2A103		Barbarian II (1990)(Ocean)	AmstradCPC	
-50FBD88A8039077EDF89ADF2FDB394A8		Batman - The Movie (1990)(Ocean)	AmstradCPC	
-CD08124728B66DEA9C1A858E64532F5F		Burnin' Rubber (1990)(Ocean)	AmstradCPC	
-9F7590818F5F9E712B5FA87D22722BD4		Copter 271 (1991)(Loriciel)	AmstradCPC	
-DB735E726D785FF3924906D7DAFB2FF7		Crazy Cars 2 (1990)(Titus)	AmstradCPC	
-378DCB360F350FA268371F132B07176D		Dick Tracy (1990)(Titus)	AmstradCPC	
-B975B23C9369DF71533AEA58647880FE		Enforcer, The (1990)(Trojan)	AmstradCPC	
-EFDC2468E1C90ED3FFE0EA41B77EB51B		Fire and Forget 2 (1990)(Titus)	AmstradCPC	
-661E5515DF7ECC592191D047E58DB1BA		Klax (1990)(Domark)	AmstradCPC	
-911609021E3D8BE055C0AE71E4DDA7D7		Mirando a las Estrellas (1984)(Amsoft)(ES)	AmstradCPC			ES
-51F5E14006AC81698595718A6690C884		Mystical (1990)(Infogrames)	AmstradCPC	
-5AE0A926B53C3DF6F56A1EA776FCA8D4		Navy Seals (1990)(Ocean)	AmstradCPC	
-37EF67AEFFF8FCA9685D320CD330C357		No Exit (1990)(Tomahawk)	AmstradCPC	
-A9892500F22E6F7518F21F3FCACD18A3		Operation Thunderbolt (1990)(Ocean)	AmstradCPC	
-010EC62CF5253C09742D34403A3085CE		Pang (1990)(Ocean)	AmstradCPC	
-3EC08B18A7E66FB130B63A7DFB6CDFCF		Pang (1990)(Ocean)[a]	AmstradCPC	
-828F0C3054E8A5C76202176A14D19B38		Panza Kick Boxing (1991)(Loriciel)	AmstradCPC	
-0E209BADA0B36E1C2E7F22461D121FE6		Plotting (1990)(Ocean)	AmstradCPC	
-529C8ED15A5A97C63C9C939ED311C468		Pro Tennis Tour (1990)(Ubisoft)	AmstradCPC	
-FEBE0C1814B0707C39532519865973D3		Robocop 2 (1990)(Ocean)	AmstradCPC	
-4EDB88A9477AC6E577BF86B415A6A88A		Skeet Shoot (1990)(Trojan)	AmstradCPC	
-586668666E2B36FF0FA9B1D915F2488B		Super Pinball Magic (1991)(Loricel)	AmstradCPC	
-037368B0311C1B8B751DBEB261AF31C6		Switchblade (1990)(Gremlin)	AmstradCPC	
-A202EF4CE9F2E6D55304711B77C1A2F6		Tennis Cup 2 (1990)(Loriciel)	AmstradCPC	
-D9005FAD361CD5B41F26DA4517E59287		Tin Tin on the Moon (1990)(Infogrames)	AmstradCPC	
-B6F11C0D3F502A8863FEC1CB271CDD8F		Wild Streets (19xx)(Titus)	AmstradCPC	
-8B367F13FE1DDDAD393615A01BE82E9C		World of Sports (1990)(Epyx)	AmstradCPC	
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Type:	TOSEC
-;;; Source:	Amstrad CPC - Games - [CPR] (TOSEC-v2015-05-07)
-;;; FileGen:	2018-09-21 14:29:01 (UTC)
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Bad Dumps
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Hacks
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Over Dumps
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Translated
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Believed Good
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-2C6ADD7EAA979243C5B2D05CEFEC5977		Barbarian II (1990)(Ocean)	AmstradCPC	
-FD34B1C049FE780548E71E8D415EF366		Batman - The Movie (1990)(Ocean)	AmstradCPC	
-10774B497C40ADE7FB653F6E2B284195		Batman - The Movie (1990)(Ocean)[a]	AmstradCPC	
-0A527172192C50C2FD2567BDBCB7ACD0		Burnin' Rubber (1990)(Ocean)	AmstradCPC	
-39B565E648172980AA552293E667070F		Burnin' Rubber (1990)(Ocean)[a]	AmstradCPC	
-81AA76BF8FB23BB7724A7C1ADD3D3370		Copter 271 (1991)(Loriciels)	AmstradCPC	
-5ECE66A96BEABCFDF0E8F1182ED5B3C9		Crazy Cars 2 (1990)(Titus)	AmstradCPC	
-D4F709FFEE3F09B3E29FA9F68539B65B		Crazy Cars 2 (1990)(Titus)[a]	AmstradCPC	
-A0E68ECA8F401CCE2746C2E59C1B750E		Dick Tracy (1990)(Titus)	AmstradCPC	
-40124DA6F0C49118FD8AC9E9DDE4D340		Enforcer, The (1990)(Trojan)	AmstradCPC	
-B3FBAA7F42E29153119FA386189E7C0C		Fire and Forget 2 (1990)(Titus)	AmstradCPC	
-1DE6260EA8FF5A392E5FC6E5A6B90379		Klax (1990)(Domark)	AmstradCPC	
-AD9677338B94D3669272B8DEE13AED68		Klax (1990)(Domark)[a]	AmstradCPC	
-5E18976EE9758F701E03E6C2B0ACDDC7		Mystical (1990)(Infogrames)	AmstradCPC	
-EF8EDAFA6349C8DD98CDDD525A0CA3B2		Navy Seals (1990)(Ocean)	AmstradCPC	
-DD485C05318E7AA0552E788B399CA6A6		Navy Seals (1990)(Ocean)[a]	AmstradCPC	
-106EFF8AE55D16FAD2D528625E41DD48		No Exit (1990)(Tomahawk)	AmstradCPC	
-48B4111F51E639F3AE56AB8132E38A54		No Exit (1990)(Tomahawk)[a]	AmstradCPC	
-E0703BA12BB3C87057AE3FB963B7E096		Operation Thunderbolt (1990)(Ocean)	AmstradCPC	
-77C530C537DFBBE154DFA2D87D9E5EBA		Operation Thunderbolt (1990)(Ocean)[a]	AmstradCPC	
-58612FB91920158F31B2D22C951D1506		Pang (1990)(Ocean)	AmstradCPC	
-BC2FE038D7D0D8CE232730DB74D86291		Pang (1990)(Ocean)[a]	AmstradCPC	
-E93A1DCCD5036F5F0CC1F3413D4A7417		Pang (1990)(Ocean)[a2]	AmstradCPC	
-F53A3EA13AE27AFEF72515BAAC2B63D9		Panza Kick Boxing (1991)(Loriciel)	AmstradCPC	
-27F343CE1F006FA3519A1947D496BD43		Plotting (1990)(Ocean)	AmstradCPC	
-F9A62B9F6421D1FFAE3616D9BE7D13AE		Plotting (1990)(Ocean)[a]	AmstradCPC	
-A993D0BD3787F491C7E4D0ACE98BC46C		Pro Tennis Tour (1990)(Ubisoft)	AmstradCPC	
-16BFB85B4F78C44E22814BF53956183C		Pro Tennis Tour (1990)(Ubisoft)[a]	AmstradCPC	
-59C4050F3AA02C692087302D90EA68BA		Robocop 2 (1990)(Ocean)	AmstradCPC	
-2406314C5273BB225069A17E424CF18F		Robocop 2 (1990)(Ocean)[a]	AmstradCPC	
-4F79690CB1CFB2FA59BE9094E2438309		Skeet Shoot (1990)(Trojan)	AmstradCPC	
-34E33DD966B86BBAC68C055F6DABF1E8		Super Pinball Magic (1991)(Loricel)	AmstradCPC	
-599EED2F04995EE842163FD454654D59		Switchblade (1990)(Gremlin)	AmstradCPC	
-37E856530853D6B3E69B04BB26961AAA		Switchblade (1990)(Gremlin)[a]	AmstradCPC	
-632E92FD6773A701E784754118AC7EA1		Tennis Cup 2 (1990)(Loriciel)	AmstradCPC	
-4DDD73649FC989BEE9EB9ED3FFC5227C		Tin Tin on the Moon (1990)(Infogrames)	AmstradCPC	
-6C1AB447C191E12E0751EE85D46F77EA		Wild Streets (1990)(Titus)	AmstradCPC	
-2E8564E222E5599476263FEA242B6893		Wild Streets (1990)(Titus)[a]	AmstradCPC	
-8B367F13FE1DDDAD393615A01BE82E9C		World of Sports (1990)(Epyx)	AmstradCPC	
-5810DDD42CFB695509E57738AEF54033		World of Sports (1990)(Epyx)	AmstradCPC	
-29158F6E3A54F8E424721C092E55051C		World of Sports (1990)(Epyx)[a]	AmstradCPC	
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Type:	TOSEC
 ;;; Source:	Amstrad CPC - Games - [DSK] (TOSEC-v2015-05-07)
-;;; FileGen:	2018-09-21 14:29:01 (UTC)
+;;; FileGen:	2018-09-21 15:09:03 (UTC)
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Bad Dumps
@@ -3142,6 +2959,12 @@ AF2B11853E5EC386E9B3381D5690ADFA	H	Zygy (1987)(Grid Kit)(fr)[cr Mc Spe][a]	Amstr
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Home Brew
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+7070F2962361B6EC481DBA74A1552EE8	D	Alien Tank Attack (1991)(Rolex)(de)(PD)	AmstradCPC	de	
+8E126FB5DE770B3E22F3D07DF89680F0	D	Firestone, The (1990)(Simon Avery)(PD)	AmstradCPC	
+73421B65E2CBECE2AE1D1D8D2485E39C	D	Spaced-Out (1990)(Simon Avery)(PD)	AmstradCPC	
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Believed Good
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 3C4B2710ABE985B4CEFFF9C453713916		007 - A View to a Kill (1985)(Domark)	AmstradCPC	
@@ -3269,7 +3092,6 @@ F2C421D53ECF68A51538AEC79F716F6A		Alien Break-In (1985)(Romik Software - Amsoft)
 32D3436E8A7F90DA2211EC5B014BC2D1		Alien Highway - Encounter 2 (1986)(Vortex Software)	AmstradCPC	
 EADC27D45AA298C97D525EF463BECD3F		Alien Intervention (1986)(Sean McManus)	AmstradCPC	
 021B7C88C0DD847BFD555BD070A10395		Alien Syndrome (1987)(ACE Software)	AmstradCPC	
-7070F2962361B6EC481DBA74A1552EE8		Alien Tank Attack (1991)(Rolex)(de)(PD)	AmstradCPC	de	
 71071CB5C409126538544814073E75DE		Aliens (19xx)(-)	AmstradCPC	
 A8A2E62310E24AE016C25D408076C518		Aliens US (1987)(Electric Dreams Software)	AmstradCPC	
 DFFA0A0CEDF570B19F264FDF3E3346E2		Alinka (1991)(Eric Boucher)(fr)	AmstradCPC	fr	
@@ -4051,7 +3873,6 @@ AE428B1BE7737BF783DEA28E3F8B4127		Fighting Warrior (1985)(Melbourne House)	Amstr
 AFF1F51C13C4F9B2F963EEE0650538D0		Fire Ant (1984)(Mogul Communications)	AmstradCPC	
 AFEF6B7AF7D7707A8EBCE0B83074689C		Firefox 2 (1987)(Yie Ar Soft)	AmstradCPC	
 65C5625E7F5EAF451300AF89CB9364B7		Firescape (1987)(Loriciels)(fr)	AmstradCPC	fr	
-8E126FB5DE770B3E22F3D07DF89680F0		Firestone, The (1990)(Simon Avery)(PD)	AmstradCPC	
 895E6F2C02E846510AF1C6F0957BDFF8		Firetrap (1987)(Electric Dreams Software)	AmstradCPC	
 48C5F7429954FE131E9A736F91CACDDC		Firetrap (1987)(Electric Dreams Software)[a]	AmstradCPC	
 13DAA4B3E99DE6D526115F46C4CFD333		Five-a-Side Soccer (1986)(Mastertronic Added Dimension)	AmstradCPC	
@@ -4733,6 +4554,7 @@ BDBF317974BDF258B7A6FAABC1216A54		Minesweeper (1992)(Dream Soft)	AmstradCPC
 8C42C3B56B708E6EFFEF5FAF1494C372		Mineur (1988)(-)	AmstradCPC	
 08FE62C223DCBAF4774847BD5A727724		Minicent (19xx)(-)	AmstradCPC	
 4F2B4942ECE04EF660AF74478D9D8441		Minisenso (1992)(JM)	AmstradCPC	
+911609021E3D8BE055C0AE71E4DDA7D7		Mirando a las Estrellas (1984)(Amsoft)(ES)	AmstradCPC			ES
 14941AB81F277CE66CE99A990A0CA140		Missile Ground Zero (1989)(Virgin Mastertronic)	AmstradCPC	
 1C439EC5973506F496DA1FD22F85B79F		Mission 2 (1987)(ERE Informatique)	AmstradCPC	
 5A7A03800BFA1530F5F17D92C30C09E1		Mission Delta (1985)(ERE Informatique)(fr)	AmstradCPC	fr	
@@ -5406,7 +5228,6 @@ A28288603A5DFFCE4E435C7F399A1202		Space Smugglers (1989)(MHT Ingenieros)(es)[gun
 46FC1E5D4714429BA52AE4F4AE433227		Space Thief (19xx)(R.O.S. Soft)	AmstradCPC	
 7AF5B66DDC69FEFA63ADF9BD2E061B36		Space Thief (19xx)(R.O.S. Soft)[a]	AmstradCPC	
 2BB2E01B74F9F992F4D87905830F6E84		Spaced Out (1987)(Firebird Software)	AmstradCPC	
-73421B65E2CBECE2AE1D1D8D2485E39C		Spaced-Out (1990)(Simon Avery)(PD)	AmstradCPC	
 2EDDD46FD3C745B093C0A448B3EC90BC		Spanner Man (1984)(Amsoft)	AmstradCPC	
 D57111BAD3FEE58B2F3A3A091AA0F010		Sparse Invaders (1986)(Ifie)	AmstradCPC	
 25DEC707B8F232D019AE382F2A3E9B56		Special Operations (1984)(MC Lothlorien)	AmstradCPC	
@@ -5905,7 +5726,6 @@ BBEBE09AD1802F68CF3671F666B588D5		World Cup Carnival Mexico 86 (1984)(US Gold)	A
 BE4118A0EAB3AE861382075E0A1A9255		World Games (1987)(US Gold)	AmstradCPC	
 167958F62752118FE5A419B8E089F73B		World Games (1987)(US Gold)(Disk 1 of 2)	AmstradCPC	
 794429BBBFCA9302BA896D84A99BF84D		World Games (1987)(US Gold)(Disk 2 of 2)	AmstradCPC	
-29158F6E3A54F8E424721C092E55051C		World of Sports (1990)(Epyx)[a]	AmstradCPC	
 C6F3404075130C0629692A90DE54389F		World Series Baseball (1985)(Imagine Software)	AmstradCPC	
 44FE0E6828B877D40F81A3EE5DADE35E		World Soccer (1990)(Zeppelin Games)	AmstradCPC	
 1707DDFEBFE05D752057410E6CA2BA94		World Soccer (1990)(Zeppelin Games)[master disk]	AmstradCPC	
@@ -5974,52 +5794,8 @@ FA40EBCF9EF16DC236B84D1D77B76A49		Zynaps (1987)(Hewson Consultants)	AmstradCPC
 AC914D3650DF96748958156FEC3B9258		Zynaps (1987)(Hewson Consultants)[a2]	AmstradCPC	
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Type:	TOSEC
-;;; Source:	Amstrad CPC - Operating Systems - [BIN] (TOSEC-v2015-05-07)
-;;; FileGen:	2018-09-21 14:29:01 (UTC)
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Bad Dumps
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Hacks
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-43FC2F5259540EA6440CCCD6CCED52A7	H	Amstrad CPC 464 OS (19xx)(Amstrad)(da)[h]	AmstradCPC	da	
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Over Dumps
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Translated
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Believed Good
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-5D303A75991674FE71817BE126FEF8D8		Amsdos 720k (19xx)(-)	AmstradCPC	
-A175623BE3162846C46EAE2CA1723031		Amstrad CPC 464 OS (1985)(Amstrad)	AmstradCPC	
-354305D3A5AD9443A440A71C5E858EDF		Amstrad CPC 464+ and 6128+ OS (1991)(Amstrad)	AmstradCPC	
-2840D5277A39534F018501E1663F75AE		Amstrad CPC 464+ Plus A2 OS (1991)(Amstrad)	AmstradCPC	
-9BA1B052C77713024BF2EB224CAD2062		Amstrad CPC 6128 OS (1985)(Amstrad)	AmstradCPC	
-78C6B8912865B786EFC7E91E3B0776C5		Amstrad CPC 6128 OS (1985)(Amstrad)(es)	AmstradCPC	es	
-6EF8704C2816E66E8689A1B471827B42		Amstrad CPC 6128 OS (1985)(Amstrad)(fr)	AmstradCPC	fr	
-25629DFE870D097469C217B95FDC1C95		Amstrad CPC 664 Amsdos (1985)(Amstrad)	AmstradCPC	
-2B04CC6C472E2D405092DD10B26B074E		Amstrad CPC 664 OS (1985)(Amstrad)	AmstradCPC	
-88B0CFD1282AB93CA84440C9918C6828		CPM+ #1 (1988)(Amstrad - Digital Research - Graduate Software)	AmstradCPC	
-86F35DD7C408F7C6D848B5559F198184		CPM+ #2 (1988)(Amstrad - Digital Research - Graduate Software)	AmstradCPC	
-1E79236407F6D23F4A6A615762D68F9D		Nigdos v2.24 (1988)(-)	AmstradCPC	
-572D2DB2E7AB14FD386975FDF6F386AA		Rodos v2.11 (19xx)(Romantic Robot UK)	AmstradCPC	
-3608D682C6176AE461B56E2761CE4A9B		Rodos v2.15 (19xx)(Romantic Robot UK)	AmstradCPC	
-12F5C4CE57175E8DE3D6E9FDC6685C80		Rom Dos (1988)(KDS Electronics)	AmstradCPC	
-0DE35E1FB4EE9170813F98FB20639071		Rom Dos XL (1992)(KDS Electronics - Siren Software)	AmstradCPC	
-404BD0C8E485E6648A5E10E5293E0A6C		Rom Dos XL v4.88 (1993)(Siren Software)	AmstradCPC	
-F8715B9991E97C3575BD6C2ADFF039CF		Vorax's CPM Plus ROM #1 (19xx)(Graduate - Vorax)	AmstradCPC	
-2F4BAE4FAADB9B393CB3C1D231EB22AB		X-Ddos (1987)(-)	AmstradCPC	
-3E6D72A817056D17BED2F3BBCFC2E4BD		Zynaps (1987)(Hewson Consultants)[a]	AmstradCPC	
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
-;;; Type:	TOSEC
 ;;; Source:	Amstrad CPC - Operating Systems - [DSK] (TOSEC-v2013-10-29)
-;;; FileGen:	2018-09-21 14:29:01 (UTC)
+;;; FileGen:	2018-09-21 15:09:03 (UTC)
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Bad Dumps
@@ -6035,10 +5811,14 @@ F8715B9991E97C3575BD6C2ADFF039CF		Vorax's CPM Plus ROM #1 (19xx)(Graduate - Vora
 ;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Translated
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;
+;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+;;; Home Brew
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Believed Good
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 AF6D6920130F7BDB83C3F1C2EC88149C		SymbOS (demo) (2001)(SymbiosiS)	AmstradCPC	
-2F4BAE4FAADB9B393CB3C1D231EB22AB		X-Ddos (1987)(-)	AmstradCPC	
+3E6D72A817056D17BED2F3BBCFC2E4BD		Zynaps (1987)(Hewson Consultants)[a]	AmstradCPC	
