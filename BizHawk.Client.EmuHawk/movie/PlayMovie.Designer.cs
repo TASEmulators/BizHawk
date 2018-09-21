@@ -128,7 +128,8 @@
 			// 
 			// groupBox1
 			// 
-			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.groupBox1.Controls.Add(this.SubtitlesBtn);
 			this.groupBox1.Controls.Add(this.CommentsBtn);
 			this.groupBox1.Controls.Add(this.DetailsView);
@@ -174,11 +175,11 @@
 			// 
 			// ReadOnlyCheckBox
 			// 
-			this.ReadOnlyCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.ReadOnlyCheckBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.ReadOnlyCheckBox.AutoSize = true;
 			this.ReadOnlyCheckBox.Checked = true;
 			this.ReadOnlyCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(503, 367);
+			this.ReadOnlyCheckBox.Location = new System.Drawing.Point(405, 367);
 			this.ReadOnlyCheckBox.Name = "ReadOnlyCheckBox";
 			this.ReadOnlyCheckBox.Size = new System.Drawing.Size(74, 17);
 			this.ReadOnlyCheckBox.TabIndex = 45;
@@ -240,7 +241,7 @@
 			// 
 			this.StopOnFrameCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.StopOnFrameCheckbox.AutoSize = true;
-			this.StopOnFrameCheckbox.Location = new System.Drawing.Point(342, 357);
+			this.StopOnFrameCheckbox.Location = new System.Drawing.Point(244, 357);
 			this.StopOnFrameCheckbox.Name = "StopOnFrameCheckbox";
 			this.StopOnFrameCheckbox.Size = new System.Drawing.Size(95, 17);
 			this.StopOnFrameCheckbox.TabIndex = 57;
@@ -253,7 +254,7 @@
 			this.StopOnFrameTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.StopOnFrameTextBox.ByteSize = BizHawk.Client.Common.WatchSize.DWord;
 			this.StopOnFrameTextBox.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper;
-			this.StopOnFrameTextBox.Location = new System.Drawing.Point(438, 355);
+			this.StopOnFrameTextBox.Location = new System.Drawing.Point(340, 355);
 			this.StopOnFrameTextBox.MaxLength = 10;
 			this.StopOnFrameTextBox.Name = "StopOnFrameTextBox";
 			this.StopOnFrameTextBox.Nullable = true;
@@ -265,7 +266,8 @@
 			// MovieView
 			// 
 			this.MovieView.AllowDrop = true;
-			this.MovieView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+			this.MovieView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
 			this.MovieView.BlazingFast = false;
 			this.MovieView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -319,7 +321,7 @@
 			// 
 			this.LastFrameCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.LastFrameCheckbox.AutoSize = true;
-			this.LastFrameCheckbox.Location = new System.Drawing.Point(342, 376);
+			this.LastFrameCheckbox.Location = new System.Drawing.Point(244, 376);
 			this.LastFrameCheckbox.Name = "LastFrameCheckbox";
 			this.LastFrameCheckbox.Size = new System.Drawing.Size(75, 17);
 			this.LastFrameCheckbox.TabIndex = 59;
@@ -331,7 +333,7 @@
 			// 
 			this.TurboCheckbox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.TurboCheckbox.AutoSize = true;
-			this.TurboCheckbox.Location = new System.Drawing.Point(438, 376);
+			this.TurboCheckbox.Location = new System.Drawing.Point(340, 376);
 			this.TurboCheckbox.Name = "TurboCheckbox";
 			this.TurboCheckbox.Size = new System.Drawing.Size(54, 17);
 			this.TurboCheckbox.TabIndex = 60;
