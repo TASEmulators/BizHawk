@@ -57,6 +57,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public string TargetSystem = null;
 
+		private CheckBox cbAllowImport;
+
 		private const int idUnsure = 0;
 		private const int idMissing = 1;
 		private const int idOk = 2;
@@ -178,6 +180,18 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			RefreshBasePath();
+
+			cbAllowImport = new CheckBox();
+			cbAllowImport.Text = "Allow Importing of Unknown Files";
+			//cbAllowImport.CheckStateChanged += (s, ex) => this.Text = cbAllowImport.CheckState.ToString();
+			cbAllowImport.BackColor = Color.Transparent;
+			cbAllowImport.CheckAlign = ContentAlignment.MiddleLeft;
+			cbAllowImport.TextAlign = ContentAlignment.MiddleLeft;
+			cbAllowImport.Font = new Font("Segeo UI", 9, FontStyle.Regular, GraphicsUnit.Point, 1, false);
+			//cbAllowImport.AutoSize = false;
+			ToolStripControlHost host = new ToolStripControlHost(cbAllowImport);
+			var iCount = toolStrip1.Items.Count;
+			toolStrip1.Items.Insert(iCount - 2, host);
 		}
 
 
@@ -652,7 +666,7 @@ namespace BizHawk.Client.EmuHawk
 								File.WriteAllBytes(outfile, ms.ToArray());
 								hf.Unbind();
 
-                                if (Manager.CanFileBeImported(outfile))
+                                if (cbAllowImport.Checked || Manager.CanFileBeImported(outfile))
                                 {
                                     didSomething |= RunImportJobSingle(basepath, outfile, ref errors);
                                 }
@@ -665,7 +679,7 @@ namespace BizHawk.Client.EmuHawk
 					}
 					else
 					{
-                        if (Manager.CanFileBeImported(hf.CanonicalFullPath))
+                        if (cbAllowImport.Checked || Manager.CanFileBeImported(hf.CanonicalFullPath))
                         {
                             didSomething |= RunImportJobSingle(basepath, f, ref errors);
                         } 
