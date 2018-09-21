@@ -61,6 +61,7 @@
       <DependentUpon>DATConverter.cs</DependentUpon>
     </Compile>
     <Compile Include="DATTools\DATParserBase.cs" />
+    <Compile Include="DATTools\NOINTROParser.cs" />
     <Compile Include="DATTools\TOSECParser.cs" />
     <Compile Include="DB.cs" />
     <Compile Include="DBMan_MainForm.cs">

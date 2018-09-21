@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace BizHawk.Client.DBMan
 {
-	public class TOSECParser : DATParser
+	public class NOINTROParser : DATParser
 	{
 		/// <summary>
 		/// Required to generate a GameDB file
@@ -19,7 +19,7 @@ namespace BizHawk.Client.DBMan
 
 		private List<XDocument> xmls = new List<XDocument>();
 
-		public TOSECParser(SystemType type)
+		public NOINTROParser(SystemType type)
 		{
 			SysType = type;
 		}
@@ -53,15 +53,14 @@ namespace BizHawk.Client.DBMan
 				startIndex = Data.Count > 0 ? Data.Count - 1 : 0;
 				// get header info
 				var header = obj.Root.Descendants("header").First();
-				var category = header.Element("category").Value;
 				var name = header.Element("name").Value;
 				var version = header.Element("version").Value;
-				var description = header.Element("description").Value;
+				var description = header.Element("description").Value + " - " + version;
 
 				// start comment block
 				List<string> comments = new List<string>
 				{
-					"Type:\t" + category,
+					"Type:\t" + "NO-INTRO",
 					"Source:\t" + description,
 					"FileGen:\t" + DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss") + " (UTC)",
 				};
@@ -78,7 +77,7 @@ namespace BizHawk.Client.DBMan
 					item.MD5 = g.Elements("rom").First().Attribute("md5").Value.ToUpper();
 					item.System = GameDB.GetSystemCode(SysType);
 
-					ParseTOSECFlags(item);
+					ParseNOINTROFlags(item);
 
 					Data.Add(item);
 				}
@@ -118,7 +117,7 @@ namespace BizHawk.Client.DBMan
 		/// Guts of this has been reused from here: https://github.com/Asnivor/MedLaunch/blob/master/MedLaunch/_Debug/DATDB/Platforms/TOSEC/StringConverterToSec.cs
 		/// </summary>
 		/// <param name="g"></param>
-		private void ParseTOSECFlags(GameDB g)
+		private void ParseNOINTROFlags(GameDB g)
 		{
 			string nameString = g.Name;
 
@@ -135,32 +134,39 @@ namespace BizHawk.Client.DBMan
 
 			if (d.Length > 1)
 			{
-				if (d[1].Length > 3)
+				if (d[1].Length >= 3)
 				{
-					// year field
+					// country
+					g.Region = d[1].Trim();
 				}
 			}
 
-			if (d.Length > 3)
-			{
-				// publisher field
-			}
-
-			if (d.Length > 4)
+			if (d.Length > 2)
 			{
 				// parse all other () fields
 				// because these are not mandatory this can be a confusing process
 				for (int i = 4; i < d.Length; i++)
 				{
-					string f = d[i];
+					string f = d[i].Trim();
 
-					// system field
-					if (f == "Aladdin Deck Enhancer" ||
-						f == "PlayChoice-10" ||
-						f == "VS DualSystem" ||
-						f == "VS UniSystem")
+					// check for language
+					if (IsLanguageFlag(f) == true)
 					{
-						// ignore for now (not currently implemented)
+						g.Notes = f;
+						continue;
+					}
+
+					// version - ignore
+
+					// check development status (not currently implemented)
+					if (IsDevelopmenttStatus(f) == true)
+					{
+						continue;
+					}
+
+					// check copyright status (not currently implemented)
+					if (IsCopyrightStatus(f) == true)
+					{
 						continue;
 					}
 
@@ -175,18 +181,6 @@ namespace BizHawk.Client.DBMan
 					if (IsLanguageFlag(f) == true)
 					{
 						g.Notes = f;
-						continue;
-					}
-
-					// check copyright status (not currently implemented)
-					if (IsCopyrightStatus(f) == true)
-					{
-						continue;
-					}
-
-					// check development status (not currently implemented)
-					if (IsDevelopmenttStatus(f) == true)
-					{
 						continue;
 					}
 
@@ -217,53 +211,21 @@ namespace BizHawk.Client.DBMan
 
 						if (e.Where(str => 
 						// bad dump
-						str == "b" || str.StartsWith("b ") ||
-						// virus
-						str == "v" || str.StartsWith("v ") ||
-						// under dump
-						str == "u" || str.StartsWith("u ")).ToList().Count > 0)
+						str == "b" || str.StartsWith("b ")).ToList().Count > 0)
 						{
 							// RomStatus.BadDump
 							g.Status = "B";
 						}							
 						else if (e.Where(str => 
-						// cracked
-						str == "cr" || str.StartsWith("cr ") ||
-						// fixed
-						str == "f" || str.StartsWith("f ") ||
-						// hack
-						str == "h" || str.StartsWith("h ") ||
-						// modified
-						str == "m" || str.StartsWith("m ") ||
-						// pirated
-						str == "p" || str.StartsWith("p ") ||
-						// trained
-						str == "t" || str.StartsWith("t ")
-						).ToList().Count > 0)
+						// BIOS
+						str == "BIOS" || str.StartsWith("BIOS ")).ToList().Count > 0)
 						{
-							// RomStatus.Hack
-							g.Status = "H";
+							// RomStatus.BIOS
+							g.Status = "I";
 						}
-						else if (e.Where(str =>
-						// over dump
-						str == "o" || str.StartsWith("o ")).ToList().Count > 0)
+						else
 						{
-							// RomStatus.Overdump
-							g.Status = "O";
-						}
-						else if (e.Where(str =>
-						// known verified dump
-						str == "!").ToList().Count > 0)
-						{
-							// RomStatus.GoodDump
 							g.Status = "";
-						}
-						else if (e.Where(str =>
-						// translated
-						str == "tr" || str.StartsWith("tr ")).ToList().Count > 0)
-						{
-							// RomStatus.TranslatedRom
-							g.Status = "T";
 						}
 					}
 				}
@@ -296,10 +258,7 @@ namespace BizHawk.Client.DBMan
 		{
 			List<string> LC = new List<string>
 			{
-				"ar", "bg", "bs", "cs", "cy", "da", "de", "el", "en", "eo", "es", "et", "fa", "fi", "fr", "ga",
-				"gu", "he", "hi", "hr", "hu", "is", "it", "ja", "ko", "lt", "lv", "ms", "nl", "no", "pl", "pt",
-				"ro", "ru", "sk", "sl", "sq", "sr", "sv", "th", "tr", "ur", "vi", "yi", "zh", "M1", "M2", "M3",
-				"M4", "M5", "M6", "M7", "M8", "M9"
+				"En", "Ja", "Fr", "De", "Es", "It", "Nl", "Pt", "Sv", "No", "Da", "Fi", "Zh", "Ko", "Pl"
 			};
 
 			bool b = false;
@@ -308,7 +267,7 @@ namespace BizHawk.Client.DBMan
 			{
 				foreach (var x in LC)
 				{
-					if (s == x || s.StartsWith(x) || s.EndsWith(x))
+					if (s == x || s.StartsWith(x + ",") || s.EndsWith("," + x))
 					{
 						b = true;
 						break;
@@ -325,11 +284,8 @@ namespace BizHawk.Client.DBMan
 		{
 			List<string> CC = new List<string>
 			{
-				"AE", "AL", "AS", "AT", "AU", "BA", "BE", "BG", "BR", "CA", "CH", "CL", "CN", "CS", "CY", "CZ",
-				"DE", "DK", "EE", "EG", "EU", "ES", "FI", "FR", "GB", "GR", "HK", "HR", "HU", "ID", "IE", "IL",
-				"IN", "IR", "IS", "IT", "JO", "JP", "KR", "LT", "LU", "LV", "MN", "MX", "MY", "NL", "NO", "NP",
-				"NZ", "OM", "PE", "PH", "PL", "PT", "QA", "RO", "RU", "SE", "SG", "SI", "SK", "TH", "TR", "TW",
-				"US", "VN", "YU", "ZA"
+				"World", "Australia", "Brazil", "Canada", "China", "France", "Germany", "Hong Kong", "Italy",
+				"Japan", "Korea", "Netherlands", "Spain", "Sweden", "USA", "Europe", "Asia"
 			};
 
 			bool b = false;

@@ -40,6 +40,7 @@
 			this.label2 = new System.Windows.Forms.Label();
 			this.label3 = new System.Windows.Forms.Label();
 			this.button2 = new System.Windows.Forms.Button();
+			this.radioNOINTRO = new System.Windows.Forms.RadioButton();
 			this.groupImportTypes.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -62,6 +63,7 @@
 			// 
 			// groupImportTypes
 			// 
+			this.groupImportTypes.Controls.Add(this.radioNOINTRO);
 			this.groupImportTypes.Controls.Add(this.radioTOSEC);
 			this.groupImportTypes.Location = new System.Drawing.Point(13, 50);
 			this.groupImportTypes.Name = "groupImportTypes";
@@ -157,6 +159,17 @@
 			this.button2.UseVisualStyleBackColor = true;
 			this.button2.Click += new System.EventHandler(this.button2_Click);
 			// 
+			// radioNOINTRO
+			// 
+			this.radioNOINTRO.AutoSize = true;
+			this.radioNOINTRO.Location = new System.Drawing.Point(7, 44);
+			this.radioNOINTRO.Name = "radioNOINTRO";
+			this.radioNOINTRO.Size = new System.Drawing.Size(172, 17);
+			this.radioNOINTRO.TabIndex = 1;
+			this.radioNOINTRO.TabStop = true;
+			this.radioNOINTRO.Text = "NOINTRO (standard DAT only)";
+			this.radioNOINTRO.UseVisualStyleBackColor = true;
+			// 
 			// DATConverter
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -197,5 +210,6 @@
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Button button2;
+		private System.Windows.Forms.RadioButton radioNOINTRO;
 	}
 }

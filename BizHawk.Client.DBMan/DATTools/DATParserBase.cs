@@ -15,13 +15,6 @@ namespace BizHawk.Client.DBMan
 		public abstract SystemType SysType { get; set; }
 
 		/// <summary>
-		/// Parses a single DAT file
-		/// </summary>
-		/// <param name="filePath"></param>
-		/// <returns></returns>
-		public abstract void ParseDAT(object dat);
-
-		/// <summary>
 		/// Parses multiple DAT files and returns a single GamesDB format csv string
 		/// </summary>
 		/// <param name="filePath"></param>
@@ -72,11 +65,39 @@ namespace BizHawk.Client.DBMan
 				sb.Append("\t");
 				// system
 				sb.Append(d.System);
+
+				// additional optional fields
+				bool[] populated = new bool[4];
+				if (d.Notes != null)
+					populated[0] = true;
+				if (d.MetaData != null)
+					populated[1] = true;
+				if (d.Region != null)
+					populated[2] = true;
+				if (d.ForcedCore != null)
+					populated[3] = true;
+
+				int last = 0;
+				for (int i = 3; i >= 0; i--)
+				{
+					if (populated[i])
+					{
+						last = i;
+						break;
+					}
+				}
+
+				int cnt = 0;
+
 				// notes
 				if (d.Notes != null)
 				{
 					sb.Append("\t");
 					sb.Append(d.Notes);
+				}
+				else if (cnt++ <= last)
+				{
+					sb.Append("\t");
 				}
 				// metadata
 				if (d.MetaData != null)
@@ -84,11 +105,19 @@ namespace BizHawk.Client.DBMan
 					sb.Append("\t");
 					sb.Append(d.MetaData);
 				}
+				else if (cnt++ <= last)
+				{
+					sb.Append("\t");
+				}
 				// region
 				if (d.Region != null)
 				{
 					sb.Append("\t");
 					sb.Append(d.Region);
+				}
+				else if (cnt++ <= last)
+				{
+					sb.Append("\t");
 				}
 				// force core
 				if (d.ForcedCore != null)
@@ -188,6 +217,7 @@ namespace BizHawk.Client.DBMan
 		WSWAN,
 		Lynx,
 		VB,
-		UZE
+		UZE,
+		NGP
 	}
 }

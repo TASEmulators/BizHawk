@@ -134,6 +134,11 @@ namespace BizHawk.Client.DBMan
 				DATParser tp = new TOSECParser((SystemType)Enum.Parse(typeof(SystemType), comboBoxSystemSelect.SelectedValue.ToString()));
 				res = tp.ParseDAT(files.ToArray());
 			}
+			else if (radioNOINTRO.Checked)
+			{
+				DATParser dp = new NOINTROParser((SystemType)Enum.Parse(typeof(SystemType), comboBoxSystemSelect.SelectedValue.ToString()));
+				res = dp.ParseDAT(files.ToArray());
+			}
 
 			string fName = "gamedb_" + 
 				GameDB.GetSystemCode((SystemType)Enum.Parse(typeof(SystemType), comboBoxSystemSelect.SelectedValue.ToString())) +
