@@ -137,7 +137,7 @@ namespace BizHawk.Client.DBMan
 
 			string fName = "gamedb_" + 
 				GameDB.GetSystemCode((SystemType)Enum.Parse(typeof(SystemType), comboBoxSystemSelect.SelectedValue.ToString())) +
-				"_DevExport_" + DateTime.UtcNow.ToString("yyyy-MM-dd_HH_mm_ss");
+				"_DevExport_" + DateTime.UtcNow.ToString("yyyy-MM-dd_HH_mm_ss") + ".txt";
 
 			try
 			{
