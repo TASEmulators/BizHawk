@@ -183,12 +183,11 @@ namespace BizHawk.Client.EmuHawk
 
 			cbAllowImport = new CheckBox();
 			cbAllowImport.Text = "Allow Importing of Unknown Files";
-			//cbAllowImport.CheckStateChanged += (s, ex) => this.Text = cbAllowImport.CheckState.ToString();
 			cbAllowImport.BackColor = Color.Transparent;
 			cbAllowImport.CheckAlign = ContentAlignment.MiddleLeft;
 			cbAllowImport.TextAlign = ContentAlignment.MiddleLeft;
 			cbAllowImport.Font = new Font("Segeo UI", 9, FontStyle.Regular, GraphicsUnit.Point, 1, false);
-			//cbAllowImport.AutoSize = false;
+			cbAllowImport.Checked = false;
 			ToolStripControlHost host = new ToolStripControlHost(cbAllowImport);
 			var iCount = toolStrip1.Items.Count;
 			toolStrip1.Items.Insert(iCount - 2, host);
