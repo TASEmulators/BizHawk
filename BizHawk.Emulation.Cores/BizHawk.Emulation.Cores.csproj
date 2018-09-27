@@ -140,7 +140,6 @@
     <Compile Include="Computers\AmstradCPC\Hardware\Abstraction\IKeyboard.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\Abstraction\IPortIODevice.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\Abstraction\IPSG.cs" />
-    <Compile Include="Computers\AmstradCPC\Hardware\Display\CRCTChip.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\Display\CRCT_6845.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\Datacorder\DatacorderDevice.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\Disk\CHRN.cs" />
@@ -152,6 +151,7 @@
     <Compile Include="Computers\AmstradCPC\Hardware\Disk\NECUPD765.Timing.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\Disk\NECUPS765.Static.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\Display\AmstradGateArray.cs" />
+    <Compile Include="Computers\AmstradCPC\Hardware\Display\CRTC6845.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\Display\CRTDevice.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\Input\StandardKeyboard.cs" />
     <Compile Include="Computers\AmstradCPC\Hardware\SoundOutput\AY38912.cs" />
