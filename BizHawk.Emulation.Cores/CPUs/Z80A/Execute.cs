@@ -17,17 +17,21 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort IXCBpre = 4;
 		public const ushort IYCBpre = 5;
 		public const ushort IXYprefetch = 6;
+		public ushort PRE_SRC;
 
 		// variables for executing instructions
 		public int instr_pntr = 0;
 		public int bus_pntr = 0;
 		public int mem_pntr = 0;
+		public int irq_pntr = 0;
 		public ushort[] cur_instr;
 		public ushort[] BUSRQ;
 		public ushort[] MEMRQ;
+		public ushort[] IRQS;
 		public byte opcode;
 		public bool NO_prefix, CB_prefix, IX_prefix, EXTD_prefix, IY_prefix, IXCB_prefix, IYCB_prefix;
 		public bool halted;
+		public bool I_skip;
 
 		public void FetchInstruction()
 		{
