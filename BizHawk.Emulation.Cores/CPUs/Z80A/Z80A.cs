@@ -81,14 +81,12 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort REP_OP_I = 66;
 		public const ushort REP_OP_O = 67;
         public const ushort IN_A_N_INC = 68;
-		public const ushort IRQ_S_F = 69; // called when IRQ line is polled
-		public const ushort NMI_S_F = 70; // called for NMI
-		public const ushort RD_INC_TR_PC = 71; // transfer WZ to PC after read
-		public const ushort WR_TR_PC = 72; // transfer WZ to PC after write
-		public const ushort OUT_INC = 73;
-		public const ushort IN_INC = 74;
-		public const ushort WR_INC_WA = 75; // A -> W after WR_INC
-		public const ushort RD_OP = 76;
+		public const ushort RD_INC_TR_PC = 69; // transfer WZ to PC after read
+		public const ushort WR_TR_PC = 70; // transfer WZ to PC after write
+		public const ushort OUT_INC = 71;
+		public const ushort IN_INC = 72;
+		public const ushort WR_INC_WA = 73; // A -> W after WR_INC
+		public const ushort RD_OP = 74;
 
 		// non-state variables
 		public ushort Ztemp1, Ztemp2, Ztemp3, Ztemp4;	
@@ -176,7 +174,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					// do nothing
 					break;
 				case OP:
-					
+					// should never reach here
 				
 					break;
 				case OP_F:
@@ -381,6 +379,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					EXCH_16_Func(cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++], cur_instr[instr_pntr++]);
 					break;
 				case PREFIX:
+					ushort src_t = PRE_SRC;
+
 					NO_prefix = false;
 					if (PRE_SRC == CBpre) { CB_prefix = true; }
 					if (PRE_SRC == EXTDpre) { EXTD_prefix = true; }
@@ -404,7 +404,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					I_skip = true;
 					
 					// for prefetched case, the PC stays on the BUS one cycle longer
-					if ((PRE_SRC == IXCBpre) || (PRE_SRC == IXCBpre)) { BUSRQ[0] = PCh; }
+					if ((src_t == IXCBpre) || (src_t == IXCBpre)) { BUSRQ[0] = PCh; }
 
 					break;
 				case ASGN:
@@ -508,7 +508,9 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 					}
 					break;
 				case SET_FL_IR:
-					SET_FL_IR_Func(cur_instr[instr_pntr++]);
+					ushort dest_t = cur_instr[instr_pntr++];
+					TR_Func(dest_t, cur_instr[instr_pntr++]);
+					SET_FL_IR_Func(dest_t);
 					break;
 				case FTCH_DB:
 					FTCH_DB_Func();
@@ -624,14 +626,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
 						I_skip = true;
 					}
-					break;
-
-				case IRQ_S_F:
-
-					break;
-
-				case NMI_S_F:
-
 					break;
 			}
 

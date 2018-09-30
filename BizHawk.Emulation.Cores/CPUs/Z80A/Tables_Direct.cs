@@ -108,8 +108,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		private void REG_OP_IR(ushort operation, ushort dest, ushort src)
 		{
 			cur_instr = new ushort[]
-						{operation, dest, src,
-						SET_FL_IR, dest };
+						{IDLE,
+						SET_FL_IR, dest, src };
 
 			BUSRQ = new ushort[] { 0, I };
 			MEMRQ = new ushort[] { 0, 0 };
@@ -413,11 +413,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						WR_DEC, SPl, SPh, PCh,
 						RST, n,
 						WAIT,
-						WR_TR_PC, SPl, SPh, PCl,	
-						TR16, PCl, PCh, Z, W,
-						WAIT,						
-						OP_F,
-						OP };
+						WR_TR_PC, SPl, SPh, PCl };
 
 			BUSRQ = new ushort[] { 0, I, SPh, 0, 0, SPh, 0, 0 };
 			MEMRQ = new ushort[] { 0, 0, SPh, 0, 0, SPh, 0, 0 };
