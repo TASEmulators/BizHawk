@@ -128,7 +128,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 
 					cycle = 0;
-
 					LY += LY_inc;
 					Core.cpu.LY = LY;
 
@@ -209,6 +208,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						Core.REG_FF0F |= 0x01;
 					}
 
+					if ((cycle == 84) && (LY == 144))
+					{
+						if (STAT.Bit(5)) { VBL_INT = false; }
+					}
+
 					if ((LY == 153) && (cycle == 6))
 					{
 						LY = 0;
@@ -243,7 +247,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 						if (cycle == 84)
 						{
-
 							STAT &= 0xFC;
 							STAT |= 0x03;
 							OAM_INT = false;
@@ -340,7 +343,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						LYC_INT = false;
 						STAT &= 0xFB;
 					}
-
 				}
 				else if ((cycle == 4) && (LY != 0))
 				{
@@ -419,7 +421,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				first_fetch = true;
 				no_sprites = false;
 				evaled_sprites = 0;
-
 				window_pre_render = false;
 				window_latch = LCDC.Bit(5);
 

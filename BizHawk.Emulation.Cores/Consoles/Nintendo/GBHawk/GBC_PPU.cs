@@ -109,6 +109,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 
 					LCDC = value;
+
+					Console.WriteLine(value);
 					break; 
 				case 0xFF41: // STAT
 					// writing to STAT during mode 0 or 2 causes a STAT IRQ
@@ -363,6 +365,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						LY_inc = 1;
 						Core.in_vblank = false;
 
+						STAT &= 0xFC;
+
 						// special note here, the y coordiate of the window is kept if the window is deactivated
 						// meaning it will pick up where it left off if re-enabled later
 						// so we don't reset it in the scanline loop
@@ -431,6 +435,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						Core.REG_FF0F |= 0x01;
 					}
 
+					if ((cycle == 84) && (LY == 144))
+					{
+						if (STAT.Bit(5)) { VBL_INT = false; }
+					}
+					
 					if ((LY == 153) && (cycle == 6))
 					{
 						LY = 0;
@@ -521,7 +530,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else if ((cycle >= 80) && (LY < 144))
 						{
-
 							if (cycle == 84)
 							{
 								STAT &= 0xFC;
@@ -613,8 +621,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		}
 
 		public override void render(int render_cycle)
-		{
-		
+		{	
 			// we are now in STAT mode 3
 			// NOTE: presumably the first necessary sprite is fetched at sprite evaulation
 			// i.e. just keeping track of the lowest x-value sprite
@@ -768,7 +775,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 								}
 
 								// There is another priority bit in GBC, that can still override sprite priority
-								if (LCDC.Bit(0) && tile_data_latch[2].Bit(7) && Core.GBC_compat)
+								if (LCDC.Bit(0) && tile_data_latch[2].Bit(7) && (ref_pixel != 0) && Core.GBC_compat)
 								{
 									use_sprite = false;
 								}
