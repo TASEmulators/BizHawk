@@ -606,6 +606,23 @@ namespace BizHawk.Client.EmuHawk
 							|| TasView.CurrentCell.Column.Emphasis)))
 						{
 							BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].Reset();
+
+							if (patternFromSelectionToolStripMenuItem.Checked)
+							{
+								int index = Global.MovieSession.MovieControllerAdapter.Definition.BoolButtons.IndexOf(buttonName);
+								List <bool>  p = new List<bool>();
+
+								for(int i = TasView.SelectedRows.First(); i<TasView.SelectedRows.First()+TasView.SelectedRows.Count(); i++)
+								{
+									p.Add(Convert.ToBoolean(CurrentTasMovie.BoolIsPressed(i, buttonName)));
+									
+								};
+
+								BoolPatterns[index] = new AutoPatternBool(p.ToArray(), true, 0, 0);
+								BoolPatterns[index].Reset();
+							}
+
+							
 							//BoolPatterns[ControllerType.BoolButtons.IndexOf(buttonName)].GetNextValue();
 							_patternPaint = true;
 							_startrow = TasView.CurrentCell.RowIndex.Value;
