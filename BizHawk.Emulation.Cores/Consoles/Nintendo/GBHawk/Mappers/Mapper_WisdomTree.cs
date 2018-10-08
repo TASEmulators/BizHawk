@@ -12,7 +12,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public override void Initialize()
 		{
-			ROM_bank = 1;
+			ROM_bank = 0;
 			ROM_mask = Core._rom.Length / 0x8000 - 1;
 
 			// some games have sizes that result in a degenerate ROM, account for it here

@@ -362,6 +362,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				mapper = new MapperMBC1Multi();
 			}
 
+			// Wisdom Tree does not identify their mapper, so use hash instead
+			if ((_rom.HashMD5(0, _rom.Length) == "2C07CAEE51A1F0C91C72C7C6F380B0F6") || // Joshua
+				(_rom.HashMD5(0, _rom.Length) == "37E017C8D1A45BAB609FB5B43FB64337") || // Spiritual Warfare
+				(_rom.HashMD5(0, _rom.Length) == "AB1FA0ED0207B1D0D5F401F0CD17BEBF") || // Exodus
+				(_rom.HashMD5(0, _rom.Length) == "BA2AC3587B3E1B36DE52E740274071B0") || // Bible - KJV
+				(_rom.HashMD5(0, _rom.Length) == "8CDDB8B2DCD3EC1A3FDD770DF8BDA07C")    // Bible - NIV
+				)
+			{
+				Console.WriteLine("Using Wisdom Tree Mapper");
+				mapper = new MapperWT();
+			}
+
 			// special case for bootlegs
 			if ((_rom.HashMD5(0, _rom.Length) == "CAE0998A899DF2EE6ABA8E7695C2A096"))
 			{
