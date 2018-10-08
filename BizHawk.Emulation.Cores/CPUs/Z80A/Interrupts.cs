@@ -64,8 +64,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,
-						IDLE,
+						IORQ,
+						WAIT,
 						IDLE,
 						WAIT,
 						RD_INC, ALU, PCl, PCh };
@@ -73,8 +73,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			BUSRQ = new ushort[] { 0, 0, 0, 0, PCh, 0, 0 };
 			MEMRQ = new ushort[] { 0, 0, 0, 0, PCh, 0, 0 };
 			IRQS = new ushort[] { 0, 0, 0, 0, 0, 0, 1 };
-
-			IRQACKCallback();
         }
 
 		// Just jump to $0038
@@ -83,8 +81,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,
-						IDLE,
+						IORQ,
+						WAIT,
 						IDLE,
 						TR, ALU, PCl,
 						DEC16, SPl, SPh,
@@ -98,8 +96,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			BUSRQ = new ushort[] { 0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0 };
 			MEMRQ = new ushort[] { 0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0 };
 			IRQS = new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
-
-			IRQACKCallback();
         }
 
 		// Interrupt mode 2 uses the I vector combined with a byte on the data bus
@@ -108,8 +104,8 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			cur_instr = new ushort[]
 						{IDLE,
 						IDLE,
-						IDLE,
-						IDLE,
+						IORQ,
+						WAIT,
 						FTCH_DB,
 						IDLE,
 						DEC16, SPl, SPh,
@@ -129,8 +125,6 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 			BUSRQ = new ushort[] { 0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0 ,0 };
 			MEMRQ = new ushort[] { 0, 0, 0, 0, I, 0, 0, SPh, 0, 0, SPh, 0, 0, W, 0, 0, W, 0, 0 };
 			IRQS = new ushort[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
-
-			IRQACKCallback();
         }
 
 		private void ResetInterrupts()

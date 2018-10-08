@@ -87,6 +87,7 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 		public const ushort IN_INC = 72;
 		public const ushort WR_INC_WA = 73; // A -> W after WR_INC
 		public const ushort RD_OP = 74;
+		public const ushort IORQ = 75;
 
 		// non-state variables
 		public ushort Ztemp1, Ztemp2, Ztemp3, Ztemp4;	
@@ -626,6 +627,10 @@ namespace BizHawk.Emulation.Cores.Components.Z80A
 						instr_pntr = mem_pntr = bus_pntr = irq_pntr = 0;
 						I_skip = true;
 					}
+					break;
+
+				case IORQ:
+					IRQACKCallback();
 					break;
 			}
 
