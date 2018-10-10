@@ -173,6 +173,7 @@
 			this.miAutoSave.Name = "miAutoSave";
 			this.miAutoSave.Size = new System.Drawing.Size(193, 22);
 			this.miAutoSave.Text = "Auto-Save";
+			this.miAutoSave.Click += new System.EventHandler(this.miAutoSave_Click);
 			// 
 			// toolStripSeparator2
 			// 
