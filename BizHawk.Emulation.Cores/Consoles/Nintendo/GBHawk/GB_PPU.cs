@@ -570,8 +570,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					// before we go on to read case 3, we need to know if we stall there or not
 					// Gekkio's tests show that if sprites are at position 0 or 1 (mod 8) 
 					// then it takes an extra cycle (1 or 2 more t-states) to process them
-
-					if (!no_sprites && (pixel_counter < 160))
+					// Also, on DMG only, this process only runs if sprites are on in the LCDC (on GBC it always runs)
+					if (!no_sprites && (pixel_counter < 160) && LCDC.Bit(1))
 					{
 						for (int i = 0; i < SL_sprites_index; i++)
 						{
@@ -900,7 +900,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						fetch_sprite = false;
 					}
-				}				
+				}	
 			}
 		}
 
