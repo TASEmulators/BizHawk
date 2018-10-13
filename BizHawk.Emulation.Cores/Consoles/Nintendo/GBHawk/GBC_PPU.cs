@@ -109,8 +109,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 
 					LCDC = value;
-
-					Console.WriteLine(value);
 					break; 
 				case 0xFF41: // STAT
 					// writing to STAT during mode 0 or 2 causes a STAT IRQ
@@ -131,8 +129,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					break; 
 				case 0xFF43: // SCX
 					scroll_x = value;
-					// calculate the column number of the tile to start with
-					x_tile = (int)Math.Floor((float)(scroll_x) / 8);
+
 					break; 
 				case 0xFF44: // LY
 					LY = 0; /*reset*/
@@ -530,17 +527,26 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 						}
 						else if ((cycle >= 80) && (LY < 144))
 						{
-							if (cycle == 84)
+							if (cycle >= 84)
 							{
-								STAT &= 0xFC;
-								STAT |= 0x03;
-								OAM_INT = false;
-								OAM_access_write = false;
-								VRAM_access_write = false;
-							}
+								if (cycle == 84)
+								{
+									STAT &= 0xFC;
+									STAT |= 0x03;
+									OAM_INT = false;
+									OAM_access_write = false;
+									VRAM_access_write = false;
+								}
 
-							// render the screen and handle hblank
-							render(cycle - 80);
+								// render the screen and handle hblank
+								render(cycle - 84);
+							}
+							else if (cycle == 80)
+							{
+								OAM_access_read = false;
+								OAM_access_write = true;
+								VRAM_access_read = false;
+							}
 						}
 					}
 				}
@@ -627,12 +633,17 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			// i.e. just keeping track of the lowest x-value sprite
 			if (render_cycle == 0)
 			{
+				/*
 				OAM_access_read = false;
 				OAM_access_write = true;
 				VRAM_access_read = false;
-
+				*/
 				// window X is latched for the scanline, mid-line changes have no effect
 				window_x_latch = window_x;
+
+				// calculate the column number of the tile to start with
+				x_tile = (int)Math.Floor((float)(scroll_x) / 8);
+				render_offset = scroll_x % 8;
 
 				OAM_scan_index = 0;
 				read_case = 0;
@@ -831,7 +842,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					if (pixel_counter == 160)
 					{
 						read_case = 8;
-						hbl_countdown = 5;
+						hbl_countdown = 1;
 					}
 				}
 				else if (pixel_counter < 0)
@@ -963,7 +974,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 							{
 								// here we set up rendering
 								pre_render = false;
-								render_offset = scroll_x % 8;
+								
 								render_counter = 0;
 								latch_counter = 0;
 								read_case = 0;
