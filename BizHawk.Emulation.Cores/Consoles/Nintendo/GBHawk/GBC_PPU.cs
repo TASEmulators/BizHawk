@@ -111,8 +111,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					LCDC = value;
 					break; 
 				case 0xFF41: // STAT
-					// writing to STAT during mode 0 or 2 causes a STAT IRQ
-					if (LCDC.Bit(7))
+					// note that their is no stat interrupt bug in GBC
+					// writing to STAT during mode 0 or 1 causes a STAT IRQ
+					if (LCDC.Bit(7) && !Core.GBC_compat)
 					{
 						if (((STAT & 3) == 0) || ((STAT & 3) == 1))
 						{
