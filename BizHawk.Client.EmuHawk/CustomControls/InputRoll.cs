@@ -1608,7 +1608,9 @@ namespace BizHawk.Client.EmuHawk
 				{
 					_vBar.Maximum = Math.Max((VisibleRows - 1) * CellHeight, _vBar.Maximum); // ScrollBar.Maximum is dumb
 					_vBar.LargeChange = (VisibleRows - 1) * CellHeight;
-					_hBar.LargeChange = DrawWidth / 2;
+					// DrawWidth can be negative if the TAStudio window is small enough
+					// Clamp LargeChange to 0 here to prevent exceptions
+					_hBar.LargeChange = Math.Max(0, DrawWidth / 2);
 				}
 			}
 
