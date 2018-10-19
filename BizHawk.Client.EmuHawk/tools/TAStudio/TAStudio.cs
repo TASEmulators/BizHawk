@@ -283,12 +283,27 @@ namespace BizHawk.Client.EmuHawk
 
 			if (Settings.MainVerticalSplitDistance > 0)
 			{
-				MainVertialSplit.SplitterDistance = Settings.MainVerticalSplitDistance;
+				try
+				{
+					MainVertialSplit.SplitterDistance = Settings.MainVerticalSplitDistance;
+				}
+				catch (Exception)
+				{
+					MainVertialSplit.SplitterDistance = defaultMainSplitDistance;
+				}
+				
 			}
 
 			if (Settings.BranchMarkerSplitDistance > 0)
 			{
-				BranchesMarkersSplit.SplitterDistance = Settings.BranchMarkerSplitDistance;
+				try
+				{
+					BranchesMarkersSplit.SplitterDistance = Settings.BranchMarkerSplitDistance;
+				}
+				catch (Exception)
+				{
+					BranchesMarkersSplit.SplitterDistance = defaultBranchMarkerSplitDistance;
+				}
 			}
 
 			RefreshDialog();
