@@ -28,6 +28,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					return Core._hsbios[addr - 0x3000];
 				}
+				else if (Core.is_pokey)
+				{
+					return Core.pokey.ReadReg(addr & 0xF);
+				}
 				else
 				{
 					return Core.RAM[0x800 + addr & 0x7FF];
@@ -84,6 +88,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				// could be either RAM mirror or ROM
 				if (addr >= 0x3000 && Core._hsbios != null)
 				{
+				}
+				else if (Core.is_pokey)
+				{
+					Core.pokey.WriteReg(addr & 0xF, value);
 				}
 				else
 				{
