@@ -398,6 +398,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public void DiscardSamples()
 		{
 			tia.AudioClocks = 0;
+			if (is_pokey) { pokey.AudioClocks = 0; }
 		}
 
 		#endregion
