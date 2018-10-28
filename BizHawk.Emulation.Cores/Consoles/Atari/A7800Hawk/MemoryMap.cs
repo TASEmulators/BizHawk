@@ -75,7 +75,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 			else if ((addr >= 0x2800) && (addr < 0x3000))
 			{
-				return RAM[(addr & 0x7FF) + 0x800];
+				// this mirror evidently does not exist on hardware despite being in the documentation
+				return 0xFF;// RAM[(addr & 0x7FF) + 0x800];
 			}
 			else if ((addr >= 0x3000) && (addr < 0x4000))
 			{
@@ -167,7 +168,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 			else if ((addr >= 0x2800) && (addr < 0x3000))
 			{
-				RAM[(addr & 0x7FF) + 0x800] = value;
+				// this mirror evidently does not exist on hardware despite being in the documentation
+				//RAM[(addr & 0x7FF) + 0x800] = value;
 			}
 			else if ((addr >= 0x3000) && (addr < 0x4000))
 			{

@@ -32,7 +32,8 @@ md5:6010a398070dfacb4c0173d75d73c50a		Beef Drop	A78		NTSC=true;board=0
 md5:c534db0a062225b17cfb8ecce0fb9090		Beef Drop	A78		NTSC=true;board=0		
 md5:CE25D34071B2C798ACE4C8792EAE8E84		Beef Drop	A78		NTSC=true;board=0
 md5:6da5b1b9fa0001e3517f6084ff651b07		Bentley Bear - Crystal Quest	A78		NTSC=true;board=2;Pokey=true
-md5:4D0B5BF95E4CB366990DBAEECB7F706D		Bentley Bear - Crystal Quest	A78		NTSC=true;board=2;Pokey=true		
+md5:4D0B5BF95E4CB366990DBAEECB7F706D		Bentley Bear - Crystal Quest	A78		NTSC=true;board=2;Pokey=true
+md5:34483432B92F565F4CED82A141119164		Bentley Bear - Crystal Quest	A78		NTSC=true;board=2;Pokey=true		
 md5:5a09946e57dbe30408a8f253a28d07db		Centipede	A78		NTSC=true;board=0		
 md5:38c056a48472d9a9e16ebda5ed91dae7		Centipede	A78		PAL=true;board=0		
 md5:93e4387864b014c155d7c17877990d1e		Choplifter!	A78		NTSC=true;board=0		
