@@ -393,7 +393,8 @@
 			// 
 			this.ToggleMenuItem.Image = global::BizHawk.Client.EmuHawk.Properties.Resources.Refresh1;
 			this.ToggleMenuItem.Name = "ToggleMenuItem";
-			this.ToggleMenuItem.ShortcutKeyDisplayString = "Enter";
+			this.ToggleMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Enter)));
+			this.ToggleMenuItem.ShortcutKeyDisplayString = "Ctrl + Enter";
 			this.ToggleMenuItem.Size = new System.Drawing.Size(233, 22);
 			this.ToggleMenuItem.Text = "&Toggle";
 			this.ToggleMenuItem.Click += new System.EventHandler(this.ToggleMenuItem_Click);
