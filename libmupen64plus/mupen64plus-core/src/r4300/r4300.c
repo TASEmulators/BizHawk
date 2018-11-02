@@ -236,9 +236,6 @@ static void NOTCOMPILED(void)
    else
 	 {
 		 DebugMessage(M64MSG_ERROR, "not compiled exception");
-		 //trigger a vsync just to get out of frame advance
-		 new_vi(); 
-		 WaitForSingleObject(rompausesem, INFINITE);
 	 }
 
 /*#ifdef DBG

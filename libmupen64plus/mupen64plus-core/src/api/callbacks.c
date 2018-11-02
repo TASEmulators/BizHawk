@@ -55,6 +55,15 @@ void DebugMessage(int level, const char *message, ...)
 {
   char msgbuf[256];
   va_list args;
+	extern HANDLE rompausesem;
+	extern int stop;
+
+	if(level == M64MSG_ERROR)
+	{
+		//trigger a vsync just to get out of frame advance
+		new_vi(); 
+		WaitForSingleObject(rompausesem, INFINITE);
+	}
 
   if (pDebugFunc == NULL)
       return;
