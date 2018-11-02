@@ -3659,39 +3659,44 @@ namespace BizHawk.Client.EmuHawk
 					CoreFileProvider.SyncCoreCommInputSignals(nextComm);
 					InputManager.SyncControls();
 
-                    if (Path.GetExtension(loaderName.Replace("*OpenRom*", "").Replace("|", "")).ToLower() == ".xml")
-                    {
-                        // this is a multi-disk bundler file
-                        // determine the xml assets and create RomStatusDetails for all of them
-                        var xmlGame = XmlGame.Create(new HawkFile(loaderName.Replace("*OpenRom*", "")));
+					if (ioa is OpenAdvanced_OpenRom)
+					{
+						OpenAdvanced_OpenRom ioa_openRom = ioa as OpenAdvanced_OpenRom;
 
-                        StringWriter xSw = new StringWriter();
+						if (Path.GetExtension(ioa_openRom.Path).ToLower() == ".xml")
+						{
+							// this is a multi-disk bundler file
+							// determine the xml assets and create RomStatusDetails for all of them
+							var xmlGame = XmlGame.Create(new HawkFile(ioa_openRom.Path));
 
-                        for (int xg = 0; xg < xmlGame.Assets.Count; xg++)
-                        {
-                            var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg]).ToLower();
+							StringWriter xSw = new StringWriter();
 
-                            if (ext == ".cue" || ext == ".ccd" || ext == ".toc" || ext == ".mds")
-                            {
-                                xSw.WriteLine(Path.GetFileNameWithoutExtension(xmlGame.Assets[xg].Key));
-                                xSw.WriteLine("SHA1:N/A");
-                                xSw.WriteLine("MD5:N/A");
-                                xSw.WriteLine();
-                            }
-                            else
-                            {
-                                xSw.WriteLine(xmlGame.Assets[xg].Key);
-                                xSw.WriteLine("SHA1:" + xmlGame.Assets[xg].Value.HashSHA1());
-                                xSw.WriteLine("MD5:" + xmlGame.Assets[xg].Value.HashMD5());
-                                xSw.WriteLine();
-                            }
-                        }
+							for (int xg = 0; xg < xmlGame.Assets.Count; xg++)
+							{
+								var ext = Path.GetExtension(xmlGame.AssetFullPaths[xg]).ToLower();
 
-                        Emulator.CoreComm.RomStatusDetails = xSw.ToString();
-                        Emulator.CoreComm.RomStatusAnnotation = "Multi-disk bundler";
-                    }
+								if (ext == ".cue" || ext == ".ccd" || ext == ".toc" || ext == ".mds")
+								{
+									xSw.WriteLine(Path.GetFileNameWithoutExtension(xmlGame.Assets[xg].Key));
+									xSw.WriteLine("SHA1:N/A");
+									xSw.WriteLine("MD5:N/A");
+									xSw.WriteLine();
+								}
+								else
+								{
+									xSw.WriteLine(xmlGame.Assets[xg].Key);
+									xSw.WriteLine("SHA1:" + xmlGame.Assets[xg].Value.HashSHA1());
+									xSw.WriteLine("MD5:" + xmlGame.Assets[xg].Value.HashMD5());
+									xSw.WriteLine();
+								}
+							}
 
-					if (Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
+							Emulator.CoreComm.RomStatusDetails = xSw.ToString();
+							Emulator.CoreComm.RomStatusAnnotation = "Multi-disk bundler";
+						}
+					}
+
+						if (Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
 					{
 						GlobalWin.Tools.Load<TI83KeyPad>();
 					}
