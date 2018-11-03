@@ -235,7 +235,7 @@ DECLARE_INSTRUCTION(ERET)
    if (Status & 0x4)
    {
      DebugMessage(M64MSG_ERROR, "error in ERET");
-     stop=1;
+     //stop=1;
    }
    else
    {

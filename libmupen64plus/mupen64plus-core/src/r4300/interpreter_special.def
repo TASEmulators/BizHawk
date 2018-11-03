@@ -359,7 +359,7 @@ DECLARE_INSTRUCTION(TEQ)
    if (rrs == rrt)
    {
      DebugMessage(M64MSG_ERROR, "trap exception in TEQ");
-     stop=1;
+     //stop=1;
    }
    ADD_TO_PC(1);
 }
