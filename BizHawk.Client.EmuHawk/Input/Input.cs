@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Threading;
 #if WINDOWS
 using SlimDX.DirectInput;
+#else
+using OpenTK.Input;
 #endif
 
 using BizHawk.Common;
@@ -126,12 +128,18 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void Initialize()
 		{
-#if WINDOWS
-			KeyInput.Initialize();
-			IPCKeyInput.Initialize();
-			GamePad.Initialize();
-			GamePad360.Initialize();
-#endif
+			if (Global.RunningOnUnix)
+			{
+				OTK_Keyboard.Initialize();
+//				OTK_Gamepad.Initialize();
+			}
+			else
+			{
+				KeyInput.Initialize();
+				IPCKeyInput.Initialize();
+				GamePad.Initialize();
+				GamePad360.Initialize();
+			}
 			Instance = new Input();
 		}
 

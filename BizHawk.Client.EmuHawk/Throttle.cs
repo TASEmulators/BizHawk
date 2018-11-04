@@ -137,10 +137,33 @@ namespace BizHawk.Client.EmuHawk
 				return (ulong)Environment.TickCount;
 		}
 
-#if WINDOWS
-		[DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
-		static extern uint timeBeginPeriod(uint uMilliseconds);
-#endif
+		private interface PlatformSpecificSysTimer
+		{
+			uint TimeBeginPeriod(uint ms);
+		}
+		private class WinSysTimer : PlatformSpecificSysTimer
+		{
+			[DllImport("winmm.dll", EntryPoint = "timeBeginPeriod")]
+			private static extern uint timeBeginPeriod(uint uMilliseconds);
+			public uint TimeBeginPeriod(uint ms)
+			{
+				return timeBeginPeriod(ms);
+			}
+		}
+		private class UnixMonoSysTimer : PlatformSpecificSysTimer
+		{
+			[DllImport("winmm.dll.so", EntryPoint = "timeBeginPeriod")]
+			private static extern uint timeBeginPeriod(uint uMilliseconds);
+			public uint TimeBeginPeriod(uint ms)
+			{
+				return timeBeginPeriod(ms);
+			}
+		}
+		static PlatformSpecificSysTimer sysTimer = Global.RunningOnUnix ? (PlatformSpecificSysTimer) new UnixMonoSysTimer() : (PlatformSpecificSysTimer) new WinSysTimer();
+		static uint TimeBeginPeriod(uint ms)
+		{
+			return sysTimer.TimeBeginPeriod(ms);
+		}
 
 		static readonly int tmethod;
 		static readonly ulong afsfreq;
@@ -148,9 +171,7 @@ namespace BizHawk.Client.EmuHawk
 
 		static Throttle()
 		{
-#if WINDOWS
-			timeBeginPeriod(1);
-#endif
+			TimeBeginPeriod(1);
 			if (Stopwatch.IsHighResolution)
 			{
 				afsfreq = (ulong)Stopwatch.Frequency;
@@ -341,7 +362,7 @@ namespace BizHawk.Client.EmuHawk
 				if (sleepTime >= 2 || paused)
 				{
 #if WINDOWS
-					// Assuming a timer period of 1 ms (i.e. timeBeginPeriod(1)): The actual sleep time
+					// Assuming a timer period of 1 ms (i.e. TimeBeginPeriod(1)): The actual sleep time
 					// on Windows XP is generally within a half millisecond either way of the requested
 					// time. The actual sleep time on Windows 8 is generally between the requested time
 					// and up to a millisecond over. So we'll subtract 1 ms from the time to avoid
