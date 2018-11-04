@@ -3663,7 +3663,7 @@ namespace BizHawk.Client.EmuHawk
 					{
 						OpenAdvanced_OpenRom ioa_openRom = ioa as OpenAdvanced_OpenRom;
 
-						if (Path.GetExtension(ioa_openRom.Path).ToLower() == ".xml")
+						if (Path.GetExtension(ioa_openRom.Path.Replace("|","")).ToLower() == ".xml")
 						{
 							// this is a multi-disk bundler file
 							// determine the xml assets and create RomStatusDetails for all of them
