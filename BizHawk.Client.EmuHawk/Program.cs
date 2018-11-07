@@ -17,13 +17,15 @@ namespace BizHawk.Client.EmuHawk
 {
 	static class Program
 	{
+		static bool RunningOnUnix = Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX;
+
 		static Program()
 		{
 			//this needs to be done before the warnings/errors show up
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			PlatformSpecificLinkedLibs libLoader = Global.RunningOnUnix ? (PlatformSpecificLinkedLibs) new UnixMono() : (PlatformSpecificLinkedLibs) new Win32();
+			PlatformSpecificLinkedLibs libLoader = RunningOnUnix ? (PlatformSpecificLinkedLibs) new UnixMono() : (PlatformSpecificLinkedLibs) new Win32();
 
 			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 
@@ -64,7 +66,7 @@ namespace BizHawk.Client.EmuHawk
 			libLoader.FreePlatformSpecific(vc2010);
 			libLoader.FreePlatformSpecific(vc2010p);
 
-			if (!Global.RunningOnUnix)
+			if (!RunningOnUnix)
 			{
 				// this will look in subdirectory "dll" to load pinvoked stuff
 				string dllDir = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "dll");
@@ -256,7 +258,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 			}
 		}
-		private static PlatformSpecificMainLoopCrashHandler mainLoopCrashHandler = Global.RunningOnUnix
+		private static PlatformSpecificMainLoopCrashHandler mainLoopCrashHandler = RunningOnUnix
 			? (PlatformSpecificMainLoopCrashHandler) new UnixMonoMainLoopCrashHandler()
 			: (PlatformSpecificMainLoopCrashHandler) new Win32MainLoopCrashHandler();
 
@@ -320,7 +322,7 @@ namespace BizHawk.Client.EmuHawk
 			GlobalWin.GLManager = GLManager.Instance;
 
 			//now create the "GL" context for the display method. we can reuse the IGL_TK context if opengl display method is chosen
-			if (Global.RunningOnUnix) Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
+			if (RunningOnUnix) Global.Config.DispMethod = Config.EDispMethod.GdiPlus;
 		REDO_DISPMETHOD:
 			if (Global.Config.DispMethod == Config.EDispMethod.GdiPlus)
 				GlobalWin.GL = new Bizware.BizwareGL.Drivers.GdiPlus.IGL_GdiPlus();
@@ -368,7 +370,7 @@ namespace BizHawk.Client.EmuHawk
 				goto REDO_DISPMETHOD;
 			}
 
-			if (!Global.RunningOnUnix)
+			if (!RunningOnUnix)
 			{
 				//WHY do we have to do this? some intel graphics drivers (ig7icd64.dll 10.18.10.3304 on an unknown chip on win8.1) are calling SetDllDirectory() for the process, which ruins stuff.
 				//The relevant initialization happened just before in "create IGL context".
