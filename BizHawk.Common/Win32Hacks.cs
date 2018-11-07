@@ -400,9 +400,9 @@ namespace BizHawk.Common
 		/// <summary>
 		/// functionally the same as WaitOne, but does not message pump
 		/// </summary>
-		public static void HackyPinvokeWaitOne(WaitHandle handle)
+		public static void HackyPinvokeWaitOne(WaitHandle handle, uint timeout = 0xFFFFFFFF)
 		{
-			NativeMethods.WaitForSingleObject(handle.SafeWaitHandle, 0xFFFFFFFF);
+			NativeMethods.WaitForSingleObject(handle.SafeWaitHandle, timeout);
 		}
 
 		/// <summary>

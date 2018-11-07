@@ -733,6 +733,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 		public void frame_advance()
 		{
+			if (!emulator_running)
+				return;
+
 			event_frameend = false;
 			m64pCoreDoCommandPtr(m64p_command.M64CMD_ADVANCE_FRAME, 0, IntPtr.Zero);
 
@@ -751,7 +754,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 			for(;;)
 			{
-				BizHawk.Common.Win32ThreadHacks.HackyPinvokeWaitOne(m64pEvent);
+				BizHawk.Common.Win32ThreadHacks.HackyPinvokeWaitOne(m64pEvent, 200);
 				if (event_frameend)
 					break;
 				if (event_breakpoint)
@@ -771,7 +774,13 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 					event_breakpoint = false;
 					Resume();
+					continue;
 				}
+				//no event.. must be a timeout
+				//check if the core crashed and bail if it did
+				//otherwise wait longer (could be inside slow emulation or lua logic)
+				if (!emulator_running)
+					break;
 			}
 		}
 
