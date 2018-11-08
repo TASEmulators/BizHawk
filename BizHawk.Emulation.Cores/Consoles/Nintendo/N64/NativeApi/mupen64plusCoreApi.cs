@@ -572,6 +572,8 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 
 		volatile bool emulator_running = false;
 
+		public bool IsCrashed => !emulator_running;
+
 		/// <summary>
 		/// Starts executing the emulator asynchronously
 		/// Waits until the emulator booted up and than returns
