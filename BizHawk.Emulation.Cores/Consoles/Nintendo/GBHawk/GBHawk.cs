@@ -28,6 +28,9 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		public byte REG_FFFF;
 		// The unused bits in this register (interrupt flags) are always set
 		public byte REG_FF0F = 0xE0;
+		// Updating reg FF0F seemsto be delayed by one cycle
+		// tests 
+		public byte REG_FF0F_OLD = 0xE0;
 
 		// memory domains
 		public byte[] RAM = new byte[0x8000]; // only 0x2000 available to GB
@@ -109,12 +112,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				if (game.System == "GB")
 				{
-					Bios = comm.CoreFileProvider.GetFirmware("GB", "World", true, "BIOS Not Found, Cannot Load");
+					Bios = comm.CoreFileProvider.GetFirmware("GBS", "World", true, "BIOS Not Found, Cannot Load");
 					ppu = new GB_PPU();
 				}
 				else
 				{
-					Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
+					Bios = comm.CoreFileProvider.GetFirmware("GBCS", "World", true, "BIOS Not Found, Cannot Load");
 					ppu = new GBC_PPU();
 					is_GBC = true;
 				}
@@ -122,12 +125,12 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (_syncSettings.ConsoleMode == GBSyncSettings.ConsoleModeType.GB)
 			{
-				Bios = comm.CoreFileProvider.GetFirmware("GB", "World", true, "BIOS Not Found, Cannot Load");
+				Bios = comm.CoreFileProvider.GetFirmware("GBS", "World", true, "BIOS Not Found, Cannot Load");
 				ppu = new GB_PPU();
 			}
 			else
 			{
-				Bios = comm.CoreFileProvider.GetFirmware("GBC", "World", true, "BIOS Not Found, Cannot Load");
+				Bios = comm.CoreFileProvider.GetFirmware("GBCS", "World", true, "BIOS Not Found, Cannot Load");
 				ppu = new GBC_PPU();
 				is_GBC = true;
 			}			

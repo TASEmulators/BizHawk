@@ -162,9 +162,10 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				//if (ticker > 10000000) { vblank_rise = true; }//throw new Exception("ERROR: Unable to Resolve Frame"); }
 
 				in_vblank_old = in_vblank;
+				REG_FF0F_OLD = REG_FF0F;
 			}
 
-			vblank_rise = false;
+			vblank_rise = false;			
 		}
 
 		// Switch Speed (GBC only)
