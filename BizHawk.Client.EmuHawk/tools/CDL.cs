@@ -203,8 +203,15 @@ namespace BizHawk.Client.EmuHawk
 			if (string.IsNullOrWhiteSpace(_currentFilename))
 			{
 				if (RunSaveAs())
+				{
+					ShutdownCDL();
 					return true;
-				else return false;
+				}
+				else
+				{
+					ShutdownCDL();
+					return false;
+				}
 			}
 			else
 			{

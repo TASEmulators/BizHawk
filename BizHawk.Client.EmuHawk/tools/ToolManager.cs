@@ -991,7 +991,7 @@ namespace BizHawk.Client.EmuHawk
 		public void LoadGameGenieEc()
 		{
 			if (GlobalWin.Tools.IsAvailable<GameShark>())
-			{                
+			{
 				GlobalWin.Tools.Load<GameShark>();
 			}
 		}
