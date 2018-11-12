@@ -30,7 +30,7 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				_recent_fld = value;
-				if (_recent_fld.AutoLoad)
+				if (_recent_fld.AutoLoad && !_recent_fld.Empty)
 				{
 					LoadFile(_recent.MostRecent);
 					SetCurrentFilename(_recent.MostRecent);
@@ -189,23 +189,28 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 
 			//try auto-saving if appropriate
-			if (Global.Config.CDLAutoSave)
-			{
-				//TODO - I dont like this system. It's hard to figure out how to use it. It should be done in multiple passes.
-				var result = MessageBox.Show("Save changes to CDL session?", "CDL Auto Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-				if (result == DialogResult.No)
-					return true;
+			if (!Global.Config.CDLAutoSave)
+				return true;
 
-				if (string.IsNullOrWhiteSpace(_currentFilename))
-				{
-					if (!RunSaveAs())
-						return false;
-				}
-				else
-				{
-					RunSave();
+			//TODO - I dont like this system. It's hard to figure out how to use it. It should be done in multiple passes.
+			var result = MessageBox.Show("Save changes to CDL session?", "CDL Auto Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+			if (result == DialogResult.No)
+			{
+				ShutdownCDL();
+				return true;
+			}
+
+			if (string.IsNullOrWhiteSpace(_currentFilename))
+			{
+				if (RunSaveAs())
 					return true;
-				}
+				else return false;
+			}
+			else
+			{
+				RunSave();
+				ShutdownCDL();
+				return true;
 			}
 
 			return true;
@@ -432,7 +437,14 @@ namespace BizHawk.Client.EmuHawk
 
 		private void ExitMenuItem_Click(object sender, EventArgs e)
 		{
+			ShutdownCDL();
 			Close();
+		}
+
+		void ShutdownCDL()
+		{
+			_cdl = null;
+			CodeDataLogger.SetCDL(null);
 		}
 
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
