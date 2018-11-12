@@ -46,6 +46,12 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public byte lg_1_trigger_hit;
 		public byte lg_2_trigger_hit;
 
+		public int temp_s_tia;
+		public int temp_s_pokey;
+		public int samp_l, samp_c;
+		public uint master_audio_clock;
+		public int temp;
+
 		// there are 4 maria cycles in a CPU cycle (fast access, both NTSC and PAL)
 		// if the 6532 or TIA are accessed (PC goes to one of those addresses) the next access will be slower by 1/2 a CPU cycle
 		// i.e. it will take 6 Maria cycles instead of 4
@@ -159,10 +165,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			// do the audio sampling
 			if (tia._hsyncCnt == 113 || tia._hsyncCnt == 340)
 			{
-				tia.Execute(0);
+				temp_s_tia = tia.Execute(0);
 
 				// even though its clocked seperately, we sample the Pokey here
-				if (is_pokey) { pokey.sample(); }
+				//if (is_pokey) { pokey.sample(); }
 			}
 
 			// tick the m6532 timer, which is still active although not recommended to use
@@ -173,11 +179,28 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				m6532.Timer.Tick();
 			}
 
-			// the pokey chip ticks at the nominal clock rate (same as maria) 
-			if (is_pokey)
+			samp_l = temp_s_tia + 3 * temp_s_pokey;
+
+			if (samp_l != samp_c)
 			{
-				pokey.Tick();
+				_blip.AddDelta(master_audio_clock, samp_l - samp_c);
+				samp_c = samp_l;
 			}
+
+			temp++;
+			if (temp == 4)
+			{
+				// the pokey chip ticks at the nominal cpu speed, but is unaffected by cpu slowdown (I think)
+				if (is_pokey)
+				{
+					pokey.Tick();
+					temp_s_pokey = pokey.sample();
+				}
+
+				master_audio_clock++;
+				temp = 0;
+			}
+			
 
 			if (cpu_cycle <= (2 + (slow_access ? 1 : 0)))
 			{
@@ -312,6 +335,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			maria = null;
 			tia = null;
 			m6532 = null;
+			DisposeSound();
 		}
 
 
@@ -357,8 +381,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		#region Sound provider
 
-		private int _spf;
-		
+		private BlipBuffer _blip = new BlipBuffer(4096);
+
 		public bool CanProvideAsync => false;
 
 		public void SetSyncMode(SyncSoundMode mode)
@@ -373,21 +397,21 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		public void GetSamplesSync(out short[] samples, out int nsamp)
 		{
-			short[] ret = new short[_spf * 2];
+			_blip.EndFrame(master_audio_clock);
 			
-			nsamp = _spf;
-			tia.GetSamples(ret);
-			if (is_pokey)
+			nsamp = _blip.SamplesAvailable();
+
+			samples = new short[nsamp * 2];
+
+			_blip.ReadSamples(samples, nsamp, true);
+
+			for (int i = 0; i < nsamp * 2; i += 2)
 			{
-				short[] ret2 = new short[_spf * 2];
-				pokey.GetSamples(ret2);
-				for (int i = 0; i < _spf * 2; i ++)
-				{
-					ret[i] += (short)(ret2[i] * 3);
-				}
+				samples[i + 1] = samples[i];
 			}
 
-			samples = ret;
+			master_audio_clock = 0;
+			temp = 0;
 		}
 
 		public void GetSamplesAsync(short[] samples)
@@ -398,7 +422,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		public void DiscardSamples()
 		{
 			tia.AudioClocks = 0;
-			if (is_pokey) { pokey.AudioClocks = 0; }
+			master_audio_clock = 0;
+			_blip.Clear();
+
+		}
+
+		public void DisposeSound()
+		{
+			_blip.Clear();
+			_blip.Dispose();
+			_blip = null;
 		}
 
 		#endregion

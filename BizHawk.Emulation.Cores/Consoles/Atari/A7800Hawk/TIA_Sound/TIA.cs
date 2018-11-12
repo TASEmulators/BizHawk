@@ -22,7 +22,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 		// current audio register state used to sample correct positions in the scanline (clrclk 0 and 114)
 		////public byte[] current_audio_register = new byte[6];
-		public readonly short[] LocalAudioCycles = new short[2000];
+		public int LocalAudioCycles;
 
 		public void Reset()
 		{
@@ -34,13 +34,16 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		}
 
 		// Execute TIA cycles
-		public void Execute(int cycles)
-		{			
-			LocalAudioCycles[AudioClocks] += (short)(AUD[0].Cycle() / 2);
-			LocalAudioCycles[AudioClocks] += (short)(AUD[1].Cycle() / 2);
-			AudioClocks++;
-		}
+		public int Execute(int cycles)
+		{
+			LocalAudioCycles = 0;
+			LocalAudioCycles += (AUD[0].Cycle() / 2);
+			LocalAudioCycles += (AUD[1].Cycle() / 2);
+			//AudioClocks++;
 
+			return LocalAudioCycles;
+		}
+		/*
 		public void GetSamples(short[] samples)
 		{
 			if (AudioClocks > 0)
@@ -63,7 +66,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			AudioClocks = 0;
 		}
-
+		*/
 		public byte ReadMemory(ushort addr, bool peek)
 		{
 			var maskedAddr = (ushort)(addr & 0x000F);
