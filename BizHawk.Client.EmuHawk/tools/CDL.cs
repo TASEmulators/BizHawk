@@ -30,11 +30,11 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				_recent_fld = value;
-				if (_recent_fld.AutoLoad && !_recent_fld.Empty)
-				{
-					LoadFile(_recent.MostRecent);
-					SetCurrentFilename(_recent.MostRecent);
-				}
+				//if (_recent_fld.AutoLoad && !_recent_fld.Empty)
+				//{
+				//	LoadFile(_recent.MostRecent);
+				//	SetCurrentFilename(_recent.MostRecent);
+				//}
 			}
 		}
 
@@ -228,6 +228,12 @@ namespace BizHawk.Client.EmuHawk
 			get { return false; }
 		}
 
+		protected override void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+		}
+
+		bool autoloading = false;
 		public void LoadFile(string path)
 		{
 			using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
@@ -240,7 +246,8 @@ namespace BizHawk.Client.EmuHawk
 				CodeDataLogger.NewCDL(testCDL);
 				if (!newCDL.Check(testCDL))
 				{
-					MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
+					if(!autoloading)
+						MessageBox.Show(this, "CDL file does not match emulator's current memory map!");
 					return;
 				}
 
@@ -464,7 +471,10 @@ namespace BizHawk.Client.EmuHawk
 		protected override void OnShown(EventArgs e)
 		{
 			if (Global.Config.CDLAutoStart)
-				NewFileLogic();
+			{
+				if (_cdl == null)
+					NewFileLogic();
+			}
 			base.OnShown(e);
 		}
 
@@ -475,16 +485,32 @@ namespace BizHawk.Client.EmuHawk
 				CodeDataLogger.SetCDL(null);
 		}
 
-		private void PCECDL_Load(object sender, EventArgs e)
+		private void CDL_Load(object sender, EventArgs e)
 		{
+			if (_recent_fld.AutoLoad && !_recent_fld.Empty)
+			{
+				if (File.Exists(_recent.MostRecent))
+				{
+					try
+					{
+						autoloading = true;
+						LoadFile(_recent.MostRecent);
+					}
+					finally
+					{
+						autoloading = false;
+					}
+					SetCurrentFilename(_recent.MostRecent);
+				}
+			}
 		}
 
-		private void PCECDL_DragEnter(object sender, DragEventArgs e)
+		private void CDL_DragEnter(object sender, DragEventArgs e)
 		{
 			e.Effect = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
 		}
 
-		private void PCECDL_DragDrop(object sender, DragEventArgs e)
+		private void CDL_DragDrop(object sender, DragEventArgs e)
 		{
 			var filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			if (Path.GetExtension(filePaths[0]) == ".cdl")

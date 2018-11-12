@@ -381,9 +381,9 @@
 			this.Name = "CDL";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Code Data Logger";
-			this.Load += new System.EventHandler(this.PCECDL_Load);
-			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.PCECDL_DragDrop);
-			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.PCECDL_DragEnter);
+			this.Load += new System.EventHandler(this.CDL_Load);
+			this.DragDrop += new System.Windows.Forms.DragEventHandler(this.CDL_DragDrop);
+			this.DragEnter += new System.Windows.Forms.DragEventHandler(this.CDL_DragEnter);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.toolStrip1.ResumeLayout(false);
