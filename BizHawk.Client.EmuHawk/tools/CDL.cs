@@ -30,11 +30,6 @@ namespace BizHawk.Client.EmuHawk
 			set
 			{
 				_recent_fld = value;
-				//if (_recent_fld.AutoLoad && !_recent_fld.Empty)
-				//{
-				//	LoadFile(_recent.MostRecent);
-				//	SetCurrentFilename(_recent.MostRecent);
-				//}
 			}
 		}
 
@@ -189,8 +184,12 @@ namespace BizHawk.Client.EmuHawk
 				return true;
 
 			//try auto-saving if appropriate
-			if (!Global.Config.CDLAutoSave)
+			if (Global.Config.CDLAutoSave)
+			{
+				RunSave();
+				ShutdownCDL();
 				return true;
+			}
 
 			//TODO - I dont like this system. It's hard to figure out how to use it. It should be done in multiple passes.
 			var result = MessageBox.Show("Save changes to CDL session?", "CDL Auto Save", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -255,7 +254,10 @@ namespace BizHawk.Client.EmuHawk
 				_cdl = newCDL;
 				CodeDataLogger.SetCDL(null);
 				if (tsbLoggingActive.Checked || Global.Config.CDLAutoStart)
+				{
+					tsbLoggingActive.Checked = true;
 					CodeDataLogger.SetCDL(_cdl);
+				}
 
 				SetCurrentFilename(path);
 			}
@@ -274,6 +276,7 @@ namespace BizHawk.Client.EmuHawk
 
 			miAutoSave.Checked = Global.Config.CDLAutoSave;
 			miAutoStart.Checked = Global.Config.CDLAutoStart;
+			miAutoResume.Checked = Global.Config.CDLAutoResume;
 		}
 
 		private void RecentSubMenu_DropDownOpened(object sender, EventArgs e)
@@ -487,6 +490,23 @@ namespace BizHawk.Client.EmuHawk
 
 		private void CDL_Load(object sender, EventArgs e)
 		{
+			if (Global.Config.CDLAutoResume)
+			{
+				try
+				{
+					autoloading = true;
+					var autoresume_file = PathManager.FilesystemSafeName(Global.Game) + ".cdl";
+					var autoresume_dir = PathManager.MakeAbsolutePath(Global.Config.PathEntries.LogPathFragment, null);
+					var autoresume_path = Path.Combine(autoresume_dir, autoresume_file);
+					if (File.Exists(autoresume_path))
+						LoadFile(autoresume_path);
+				}
+				finally
+				{
+					autoloading = false;
+				}
+			}
+
 			if (_recent_fld.AutoLoad && !_recent_fld.Empty)
 			{
 				if (File.Exists(_recent.MostRecent))
@@ -567,6 +587,9 @@ namespace BizHawk.Client.EmuHawk
 			Global.Config.CDLAutoStart ^= true;
 		}
 
-
+		private void miAutoResume_Click(object sender, EventArgs e)
+		{
+			Global.Config.CDLAutoResume ^= true;
+		}
 	}
 }

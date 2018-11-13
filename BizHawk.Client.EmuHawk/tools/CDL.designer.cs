@@ -66,6 +66,7 @@
 			this.colFlag20 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.colFlag40 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.colFlag80 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.miAutoResume = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuStrip1.SuspendLayout();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -92,6 +93,7 @@
             this.RecentSubMenu,
             this.miAutoStart,
             this.miAutoSave,
+            this.miAutoResume,
             this.toolStripSeparator2,
             this.ClearMenuItem,
             this.DisassembleMenuItem,
@@ -366,6 +368,13 @@
 			// 
 			this.colFlag80.Text = "0x80";
 			// 
+			// miAutoResume
+			// 
+			this.miAutoResume.Name = "miAutoResume";
+			this.miAutoResume.Size = new System.Drawing.Size(193, 22);
+			this.miAutoResume.Text = "Auto-Resume";
+			this.miAutoResume.Click += new System.EventHandler(this.miAutoResume_Click);
+			// 
 			// CDL
 			// 
 			this.AllowDrop = true;
@@ -432,6 +441,6 @@
 		private System.Windows.Forms.ToolStripMenuItem miAutoStart;
 		private System.Windows.Forms.ToolStripMenuItem miAutoSave;
 		private ToolStripEx toolStrip1;
-
+		private System.Windows.Forms.ToolStripMenuItem miAutoResume;
 	}
 }

@@ -132,7 +132,7 @@ namespace BizHawk.Client.Common
 		public DateTime? Update_LastCheckTimeUTC = null;
 		public string Update_LatestVersion = "";
 		public string Update_IgnoreVersion = "";
-		public bool CDLAutoSave = true, CDLAutoStart = true;
+		public bool CDLAutoSave = true, CDLAutoStart = true, CDLAutoResume = true;
 
 		/// <summary>
 		/// Makes a .bak file before any saveram-writing operation (could be extended to make timestamped backups)
