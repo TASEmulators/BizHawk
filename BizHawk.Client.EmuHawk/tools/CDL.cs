@@ -186,9 +186,12 @@ namespace BizHawk.Client.EmuHawk
 			//try auto-saving if appropriate
 			if (Global.Config.CDLAutoSave)
 			{
-				RunSave();
-				ShutdownCDL();
-				return true;
+				if (_currentFilename != null)
+				{
+					RunSave();
+					ShutdownCDL();
+					return true;
+				}
 			}
 
 			//TODO - I dont like this system. It's hard to figure out how to use it. It should be done in multiple passes.
