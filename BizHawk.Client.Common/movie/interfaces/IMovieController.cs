@@ -12,6 +12,8 @@ namespace BizHawk.Client.Common
 
 		void LatchSticky();
 
+		void SetSticky();
+
 		void SetControllersAsMnemonic(string mnemonic);
 	}
 }
