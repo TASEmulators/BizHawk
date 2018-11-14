@@ -151,6 +151,24 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void SetSticky()
+		{
+			foreach (var button in Definition.BoolButtons)
+			{
+				_myBoolButtons[button] = Global.AutofireStickyXORAdapter.IsSticky(button);
+			}
+
+			int i = 0;
+			// float controls don't have sticky logic. but old values remain in MovieOutputHardpoint if we don't update this here
+			foreach (var name in Definition.FloatControls)
+			{
+				var temp = Definition.FloatRanges[i];
+				_myFloatControls[name] = temp.Mid;
+				AutoPatternFloat pattern = new AutoPatternFloat(temp.Mid, 1, temp.Mid, 0);
+				i++;
+			}
+		}
+
 		/// <summary>
 		/// latches all buttons from the supplied mnemonic string
 		/// </summary>
