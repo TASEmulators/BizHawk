@@ -71,6 +71,11 @@ namespace BizHawk.Client.Common
 			}
 		}
 
+		public void SetSticky()
+		{
+
+		}
+
 		/// <summary>
 		/// latches all buttons from the supplied mnemonic string
 		/// </summary>
