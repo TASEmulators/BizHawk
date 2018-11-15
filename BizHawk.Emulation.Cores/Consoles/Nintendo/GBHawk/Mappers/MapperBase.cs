@@ -1,6 +1,8 @@
 ﻿using BizHawk.Common;
 using System;
 
+using BizHawk.Emulation.Common.Components.LR35902;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	public class MapperBase
@@ -43,6 +45,20 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 
 		public virtual void RTC_Get(byte value, int index)
 		{
+		}
+
+		public virtual void MapCDL(ushort addr, LR35902.eCDLog_Flags flags)
+		{
+		}
+
+		protected void SetCDLROM(LR35902.eCDLog_Flags flags, int cdladdr)
+		{
+			Core.DoCDL2(flags, "ROM", cdladdr);
+		}
+
+		protected void SetCDLRAM(LR35902.eCDLog_Flags flags, int cdladdr)
+		{
+			Core.DoCDL2(flags, "CartRAM", cdladdr);
 		}
 	}
 }

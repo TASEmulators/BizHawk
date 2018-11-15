@@ -720,6 +720,7 @@
     </Compile>
     <Compile Include="Consoles\Nintendo\GBA\VBARegisterHelper.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\Audio.cs" />
+    <Compile Include="Consoles\Nintendo\GBHawk\GBHawk.ICodeDataLog.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_WisdomTree.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_RockMan8.cs" />
     <Compile Include="Consoles\Nintendo\GBHawk\Mappers\Mapper_Sachen_MMC2.cs" />

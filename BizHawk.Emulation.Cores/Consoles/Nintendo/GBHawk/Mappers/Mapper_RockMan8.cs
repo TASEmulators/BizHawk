@@ -2,6 +2,8 @@
 using BizHawk.Common.NumberExtensions;
 using System;
 
+using BizHawk.Emulation.Common.Components.LR35902;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// RockMan 8, just some simple bankswitching 
@@ -34,6 +36,24 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			else
 			{
 				return 0xFF;
+			}
+		}
+
+		public override void MapCDL(ushort addr, LR35902.eCDLog_Flags flags)
+		{
+			if (addr < 0x4000)
+			{
+				// lowest bank is fixed
+				SetCDLROM(flags, addr);
+			
+			}
+			else if (addr < 0x8000)
+			{
+				SetCDLROM(flags, (addr - 0x4000) + ROM_bank * 0x4000);
+			}
+			else
+			{
+				return;
 			}
 		}
 

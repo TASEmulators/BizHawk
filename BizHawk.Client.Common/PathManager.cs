@@ -100,17 +100,10 @@ namespace BizHawk.Client.Common
 				return Environment.SpecialFolder.Recent.ToString();
 			}
 
-			if (path.Length >= 5 && path.Substring(0, 5) == "%exe%")
-			{
-				if (path.Length == 5)
-				{
-					return GetExeDirectoryAbsolute();
-				}
-
-				var tmp = path.Remove(0, 5);
-				tmp = tmp.Insert(0, GetExeDirectoryAbsolute());
-				return tmp;
-			}
+			if (path.StartsWith("%exe%"))
+				return GetExeDirectoryAbsolute() + path.Substring(5);
+			if (path.StartsWith("%rom%"))
+				return Global.Config.LastRomPath + path.Substring(5);
 
 			if (path[0] == '.')
 			{

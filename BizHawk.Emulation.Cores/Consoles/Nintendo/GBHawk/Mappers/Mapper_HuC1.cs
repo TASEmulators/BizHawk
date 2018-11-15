@@ -2,6 +2,8 @@
 using BizHawk.Common.NumberExtensions;
 using System;
 
+using BizHawk.Emulation.Common.Components.LR35902;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// hudson mapper used in ex Daikaijuu monogatari
@@ -72,6 +74,47 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			else
 			{
 				return 0xFF;
+			}
+		}
+
+		public override void MapCDL(ushort addr, LR35902.eCDLog_Flags flags)
+		{
+			if (addr < 0x4000)
+			{
+				SetCDLROM(flags, addr);
+			}
+			else if (addr < 0x8000)
+			{
+				SetCDLROM(flags, (addr - 0x4000) + ROM_bank * 0x4000);
+			}
+			else if ((addr >= 0xA000) && (addr < 0xC000))
+			{
+				if (RAM_enable)
+				{
+					if (Core.cart_RAM != null)
+					{
+						if (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length)
+						{
+							SetCDLRAM(flags, (addr - 0xA000) + RAM_bank * 0x2000);
+						}
+						else
+						{
+							return;
+						}
+					}
+					else
+					{
+						return;
+					}
+				}
+				else
+				{
+					return;
+				}
+			}
+			else
+			{
+				return;
 			}
 		}
 

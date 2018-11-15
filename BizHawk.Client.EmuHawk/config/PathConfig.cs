@@ -33,6 +33,7 @@ namespace BizHawk.Client.EmuHawk
 		{
 			"%recent%",
 			"%exe%",
+			"%rom%",
 			".\\",
 			"..\\",
 		};
