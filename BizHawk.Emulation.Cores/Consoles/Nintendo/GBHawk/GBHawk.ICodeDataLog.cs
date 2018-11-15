@@ -62,8 +62,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else
 					{
-						//return;  mapper.ReadMemory(addr);
-						//TODO
+						mapper.MapCDL(addr, flags);
 						return;
 					}
 				}
@@ -101,8 +100,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else
 					{
-						//return mapper.ReadMemory(addr);
-						//TODO
+						mapper.MapCDL(addr, flags);
 						return;
 					}
 				}
@@ -115,22 +113,19 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					}
 					else
 					{
-						//return mapper.ReadMemory(addr);
-						//TODO
+						mapper.MapCDL(addr, flags);
 						return;
 					}
 				}
 				else
 				{
-					//return mapper.ReadMemory(addr);
-					//TODO
+					mapper.MapCDL(addr, flags);
 					return;
 				}
 			}
 			else if (addr < 0x8000)
 			{
-				//return mapper.ReadMemory(addr);
-				//TODO
+				mapper.MapCDL(addr, flags);
 				return;
 			}
 			else if (addr < 0xA000)
@@ -139,8 +134,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (addr < 0xC000)
 			{
-				//return mapper.ReadMemory(addr);
-				//TODO
+				mapper.MapCDL(addr, flags);
 				return;
 			}
 			else if (addr < 0xD000)
