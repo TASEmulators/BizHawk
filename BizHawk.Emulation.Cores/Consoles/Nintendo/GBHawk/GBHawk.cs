@@ -356,7 +356,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 
 			// special case for multi cart mappers
-			if ((_rom.HashMD5(0,_rom.Length) == "97122B9B183AAB4079C8D36A4CE6E9C1") ||
+			if ((_rom.HashMD5(0, _rom.Length) == "97122B9B183AAB4079C8D36A4CE6E9C1") ||
 				(_rom.HashMD5(0, _rom.Length) == "9FB9C42CF52DCFDCFBAD5E61AE1B5777") ||
 				(_rom.HashMD5(0, _rom.Length) == "CF1F58AB72112716D3C615A553B2F481")				
 				)
@@ -367,7 +367,6 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			
 			// Wisdom Tree does not identify their mapper, so use hash instead
 			if ((_rom.HashMD5(0, _rom.Length) == "2C07CAEE51A1F0C91C72C7C6F380B0F6") || // Joshua
-				(_rom.HashMD5(0, _rom.Length) == "4905f2156e597da6e6519c0cbbb1f884") || // Joshua (another version?)
 				(_rom.HashMD5(0, _rom.Length) == "37E017C8D1A45BAB609FB5B43FB64337") || // Spiritual Warfare
 				(_rom.HashMD5(0, _rom.Length) == "AB1FA0ED0207B1D0D5F401F0CD17BEBF") || // Exodus
 				(_rom.HashMD5(0, _rom.Length) == "BA2AC3587B3E1B36DE52E740274071B0") || // Bible - KJV
@@ -376,6 +375,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			{
 				Console.WriteLine("Using Wisdom Tree Mapper");
 				mapper = new MapperWT();
+				mppr = "Wtree";
 			}
 
 			// special case for bootlegs
