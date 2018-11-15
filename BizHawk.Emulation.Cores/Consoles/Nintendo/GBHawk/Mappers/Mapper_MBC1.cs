@@ -45,7 +45,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				else
 				{
 					return Core._rom[addr];
-				}				
+				}
 			}
 			else if (addr < 0x8000)
 			{

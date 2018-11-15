@@ -133,7 +133,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			else if (addr < 0xFEA0)
 			{
 				if (ppu.OAM_access_read) { return OAM[addr - 0xFE00]; }
-				else { return 0xFF; }		
+				else { return 0xFF; }
 			}
 			else if (addr < 0xFF00)
 			{
