@@ -83,7 +83,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 		}
 
-		public override void MapCDL(ushort addr, LR35902.eCDLog_Flags flags)
+		public override void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
 		{
 			if (addr < 0x4000)
 			{

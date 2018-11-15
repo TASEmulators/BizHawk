@@ -47,18 +47,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 		}
 
-		public virtual void MapCDL(ushort addr, LR35902.eCDLog_Flags flags)
+		public virtual void MapCDL(ushort addr, LR35902.eCDLogMemFlags flags)
 		{
 		}
 
-		protected void SetCDLROM(LR35902.eCDLog_Flags flags, int cdladdr)
+		protected void SetCDLROM(LR35902.eCDLogMemFlags flags, int cdladdr)
 		{
-			Core.DoCDL2(flags, "ROM", cdladdr);
+			Core.SetCDL(flags, "ROM", cdladdr);
 		}
 
-		protected void SetCDLRAM(LR35902.eCDLog_Flags flags, int cdladdr)
+		protected void SetCDLRAM(LR35902.eCDLogMemFlags flags, int cdladdr)
 		{
-			Core.DoCDL2(flags, "CartRAM", cdladdr);
+			Core.SetCDL(flags, "CartRAM", cdladdr);
 		}
 	}
 }

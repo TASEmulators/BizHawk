@@ -109,15 +109,16 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		}
 
 		//a little CDL related stuff
-		public delegate void DoCDLCallbackType(ushort addr, LR35902.eCDLog_Flags flags);
+		public delegate void DoCDLCallbackType(ushort addr, LR35902.eCDLogMemFlags flags);
 
 		public DoCDLCallbackType CDLCallback;
 
-		public enum eCDLog_Flags
+		public enum eCDLogMemFlags
 		{
-			eCDLog_Flags_ExecFirst = 1,
-			eCDLog_Flags_ExecOperand = 2,
-			eCDLog_Flags_Data = 4,
+			FetchFirst = 1,
+			FetchOperand = 2,
+			Data = 4,
+			Write = 8
 		};
 
 		// Execute instructions
@@ -160,7 +161,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 					{
 						if (OnExecFetch != null) OnExecFetch(RegPC);
 						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
-						if (CDLCallback != null) CDLCallback(RegPC, eCDLog_Flags.eCDLog_Flags_ExecFirst);
+						if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
 						FetchInstruction(ReadMemory(RegPC++));
 					}
 					instr_pntr = 0;
@@ -346,7 +347,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							{
 								if (OnExecFetch != null) OnExecFetch(RegPC);
 								if (TraceCallback != null && !CB_prefix) TraceCallback(State());
-								if (CDLCallback != null) CDLCallback(RegPC, eCDLog_Flags.eCDLog_Flags_ExecFirst);
+								if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
 
 								RegPC++;
 								FetchInstruction(ReadMemory(RegPC));
@@ -366,7 +367,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						{
 							if (OnExecFetch != null) OnExecFetch(RegPC);
 							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
-							if (CDLCallback != null) CDLCallback(RegPC, eCDLog_Flags.eCDLog_Flags_ExecFirst);
+							if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
 
 							if (Halt_bug_3)
 							{
@@ -431,7 +432,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 							stopped = false;
 							if (OnExecFetch != null) OnExecFetch(RegPC);
 							if (TraceCallback != null && !CB_prefix) TraceCallback(State());
-							if (CDLCallback != null) CDLCallback(RegPC, eCDLog_Flags.eCDLog_Flags_ExecFirst);
+							if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
 							FetchInstruction(ReadMemory(RegPC++));
 							instr_pntr = 0;
 
@@ -461,7 +462,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 						stopped = false;
 						if (OnExecFetch != null) OnExecFetch(RegPC);
 						if (TraceCallback != null && !CB_prefix) TraceCallback(State());
-						if (CDLCallback != null) CDLCallback(RegPC, eCDLog_Flags.eCDLog_Flags_ExecFirst);
+						if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
 						FetchInstruction(ReadMemory(RegPC++));
 						instr_pntr = 0;
 
@@ -489,7 +490,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 				case OP_G:
 					if (OnExecFetch != null) OnExecFetch(RegPC);
 					if (TraceCallback != null) TraceCallback(State());
-					if (CDLCallback != null) CDLCallback(RegPC, eCDLog_Flags.eCDLog_Flags_ExecFirst);
+					if (CDLCallback != null) CDLCallback(RegPC, eCDLogMemFlags.FetchFirst);
 
 					FetchInstruction(ReadMemory(RegPC)); // note no increment
 

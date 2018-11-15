@@ -16,7 +16,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			_cdl = cdl;
 			if (cdl == null)
 				this.cpu.CDLCallback = null;
-			else this.cpu.CDLCallback = DoCDL;
+			else this.cpu.CDLCallback = CDLCpuCallback;
 		}
 
 		public void NewCDL(ICodeDataLog cdl)
@@ -40,16 +40,21 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 		{
 		}
 
-		public void DoCDL2(LR35902.eCDLog_Flags flags, string type, int cdladdr)
+		public void SetCDL(LR35902.eCDLogMemFlags flags, string type, int cdladdr)
 		{
 			if (type == null) return;
+			byte val = (byte)flags;
 			_cdl[type][cdladdr] |= (byte)flags;
 		}
 
-		public void DoCDL(ushort addr, LR35902.eCDLog_Flags flags)
+		void CDLCpuCallback(ushort addr, LR35902.eCDLogMemFlags flags)
 		{
-			MemoryCallbacks.CallReads(addr, "System Bus");
-			addr_access = addr;
+			if (addr < 0x8000)
+			{
+				//don't record writes to the ROM, it's just noisy
+				//NOTE: in principle a mapper could mount a useful resource here, but I doubt it)
+				if ((flags & LR35902.eCDLogMemFlags.Write) != 0) return;
+			}
 			
 			if (ppu.DMA_start)
 			{
@@ -68,11 +73,11 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else if ((addr >= 0xE000) && (addr < 0xF000))
 				{
-					DoCDL2(flags, "WRAM", addr - 0xE000);
+					SetCDL(flags, "WRAM", addr - 0xE000);
 				}
 				else if ((addr >= 0xF000) && (addr < 0xFE00))
 				{
-					DoCDL2(flags, "WRAM", (RAM_Bank * 0x1000) + (addr - 0xF000));
+					SetCDL(flags, "WRAM", (RAM_Bank * 0x1000) + (addr - 0xF000));
 				}
 				else if ((addr >= 0xFE00) && (addr < 0xFEA0) && ppu.DMA_OAM_access)
 				{
@@ -84,7 +89,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 				}
 				else if ((addr >= 0xFF80))
 				{
-					DoCDL2(flags, "HRAM", addr - 0xFF80);
+					SetCDL(flags, "HRAM", addr - 0xFF80);
 				}
 				
 			}
@@ -143,15 +148,15 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (addr < 0xE000)
 			{
-				DoCDL2(flags, "WRAM", (RAM_Bank * 0x1000) + (addr - 0xD000));
+				SetCDL(flags, "WRAM", (RAM_Bank * 0x1000) + (addr - 0xD000));
 			}
 			else if (addr < 0xF000)
 			{
-				DoCDL2(flags, "WRAM", addr - 0xE000);
+				SetCDL(flags, "WRAM", addr - 0xE000);
 			}
 			else if (addr < 0xFE00)
 			{
-				DoCDL2(flags, "WRAM", (RAM_Bank * 0x1000) + (addr - 0xF000));
+				SetCDL(flags, "WRAM", (RAM_Bank * 0x1000) + (addr - 0xF000));
 			}
 			else if (addr < 0xFEA0)
 			{
@@ -167,7 +172,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			}
 			else if (addr < 0xFFFF)
 			{
-				DoCDL2(flags, "HRAM", addr - 0xFF80);
+				SetCDL(flags, "HRAM", addr - 0xFF80);
 			}
 			else
 			{

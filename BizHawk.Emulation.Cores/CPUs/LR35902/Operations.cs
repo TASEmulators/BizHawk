@@ -10,8 +10,8 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 			ushort addr = (ushort)(Regs[src_l] | (Regs[src_h]) << 8);
 			if (CDLCallback != null)
 			{
-				if (src_l == PCl) CDLCallback(addr, eCDLog_Flags.eCDLog_Flags_ExecOperand);
-				else CDLCallback(addr, eCDLog_Flags.eCDLog_Flags_Data);
+				if (src_l == PCl) CDLCallback(addr, eCDLogMemFlags.FetchOperand);
+				else CDLCallback(addr, eCDLogMemFlags.Data);
 			}
 			Regs[dest] = ReadMemory(addr);
 		}
@@ -25,7 +25,7 @@ namespace BizHawk.Emulation.Common.Components.LR35902
 		public void Write_Func(ushort dest_l, ushort dest_h, ushort src)
 		{
 			ushort addr = (ushort)(Regs[dest_l] | (Regs[dest_h]) << 8);
-			if (CDLCallback != null) CDLCallback(addr, eCDLog_Flags.eCDLog_Flags_Data);
+			if (CDLCallback != null) CDLCallback(addr, eCDLogMemFlags.Write | eCDLogMemFlags.Data);
 			WriteMemory(addr, (byte)Regs[src]);
 		}
 
