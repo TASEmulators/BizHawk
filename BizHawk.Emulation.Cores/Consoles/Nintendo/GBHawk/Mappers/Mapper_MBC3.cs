@@ -2,6 +2,8 @@
 using BizHawk.Common.NumberExtensions;
 using System;
 
+using BizHawk.Emulation.Common.Components.LR35902;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// MBC3 mapper with Real Time Clock
@@ -79,10 +81,52 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 					{
 						return 0xFF;
 					}
-				}				
+				}
 				else
 				{
 					return 0xFF;
+				}
+			}
+		}
+
+		public override void MapCDL(ushort addr, LR35902.eCDLog_Flags flags)
+		{
+			if (addr < 0x4000)
+			{
+				SetCDLROM(flags, addr);
+			}
+			else if (addr < 0x8000)
+			{
+				SetCDLROM(flags, (addr - 0x4000) + ROM_bank * 0x4000);
+			}
+			else
+			{
+				if (RAM_enable)
+				{
+					if ((Core.cart_RAM != null) && (RAM_bank < 3))
+					{
+						if (((addr - 0xA000) + RAM_bank * 0x2000) < Core.cart_RAM.Length)
+						{
+							SetCDLRAM(flags, (addr - 0xA000) + RAM_bank * 0x2000);
+						}
+						else
+						{
+							return;
+						}
+					}
+
+					if ((RAM_bank >= 8) && (RAM_bank < 0xC))
+					{
+						return;
+					}
+					else
+					{
+						return;
+					}
+				}
+				else
+				{
+					return;
 				}
 			}
 		}

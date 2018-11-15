@@ -2,6 +2,8 @@
 using BizHawk.Common.NumberExtensions;
 using System;
 
+using BizHawk.Emulation.Common.Components.LR35902;
+
 namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 {
 	// Wisdom tree mapper (32K bank switching)
@@ -29,6 +31,18 @@ namespace BizHawk.Emulation.Cores.Nintendo.GBHawk
 			else
 			{
 				return 0xFF;
+			}
+		}
+
+		public override void MapCDL(ushort addr, LR35902.eCDLog_Flags flags)
+		{
+			if (addr < 0x8000)
+			{
+				SetCDLROM(flags, ROM_bank * 0x8000 + addr);
+			}
+			else
+			{
+				return;
 			}
 		}
 
