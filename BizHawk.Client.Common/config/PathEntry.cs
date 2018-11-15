@@ -128,14 +128,14 @@ namespace BizHawk.Client.Common
 
 		private static string ResolveToolsPath(string subPath)
 		{
-			if (Path.IsPathRooted(subPath))
+			if (Path.IsPathRooted(subPath) || subPath.StartsWith("%"))
 			{
 				return subPath;
 			}
 
 			var toolsPath = Global.Config.PathEntries["Global", "Tools"].Path;
 
-			// Hack for backwards compabitilbity, preior to 1.11.5, .wch files were in .\Tools, we don't want that to turn into .Tools\Tools
+			// Hack for backwards compatibility, prior to 1.11.5, .wch files were in .\Tools, we don't want that to turn into .Tools\Tools
 			if (subPath == "Tools")
 			{
 				return toolsPath;

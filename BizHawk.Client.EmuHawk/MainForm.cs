@@ -2133,8 +2133,8 @@ namespace BizHawk.Client.EmuHawk
 						"Apple II", "*.dsk;*.do;*.po;%ARCH%",
 						"Virtual Boy", "*.vb;%ARCH%",
 						"Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%",
-                        "Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%",
-                        "Amstrad CPC", "*.cdt;*.dsk;%ARCH%",
+						"Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%",
+						"Amstrad CPC", "*.cdt;*.dsk;%ARCH%",
 						"All Files", "*.*");
 				}
 
@@ -2164,8 +2164,8 @@ namespace BizHawk.Client.EmuHawk
 					"Virtual Boy", "*.vb;%ARCH%",
 					"Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%",
 					"Commodore 64", "*.prg; *.d64, *.g64; *.crt; *.tap;%ARCH%",
-                    "Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%",
-                    "All Files", "*.*");
+					"Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%",
+					"All Files", "*.*");
 			}
 		}
 
@@ -2186,7 +2186,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 
 			var file = new FileInfo(ofd.FileName);
-			Global.Config.LastRomPath = file.DirectoryName;
 			_lastOpenRomFilter = ofd.FilterIndex;
 
 			var lra = new LoadRomArgs { OpenAdvanced = new OpenAdvanced_OpenRom { Path = file.FullName } };
@@ -3550,8 +3549,16 @@ namespace BizHawk.Client.EmuHawk
 
 		private LoadRomArgs _currentLoadRomArgs;
 
-		// Still needs a good bit of refactoring
 		public bool LoadRom(string path, LoadRomArgs args)
+		{
+			bool ret = _LoadRom(path, args);
+			if(!ret) return false;
+			Global.Config.LastRomPath = Path.GetFullPath(Path.GetDirectoryName(path));
+			return true;
+		}
+
+		// Still needs a good bit of refactoring
+		public bool _LoadRom(string path, LoadRomArgs args)
 		{
 			path = HawkFile.Util_ResolveLink(path);
 
@@ -3696,7 +3703,7 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-						if (Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
+					if (Emulator is TI83 && Global.Config.TI83autoloadKeyPad)
 					{
 						GlobalWin.Tools.Load<TI83KeyPad>();
 					}
@@ -3725,15 +3732,15 @@ namespace BizHawk.Client.EmuHawk
 						}
 					}
 
-                    if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
-                    {
-                        Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:{loader.Rom.RomData.HashSHA1()}\r\nMD5:{loader.Rom.RomData.HashMD5()}\r\n";
-                    }
-                    else if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom == null)
-                    {
-                        // single disc game
-                        Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:N/A\r\nMD5:N/A\r\n";
-                    }
+					if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom != null)
+					{
+						Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:{loader.Rom.RomData.HashSHA1()}\r\nMD5:{loader.Rom.RomData.HashMD5()}\r\n";
+					}
+					else if (Emulator.CoreComm.RomStatusDetails == null && loader.Rom == null)
+					{
+						// single disc game
+						Emulator.CoreComm.RomStatusDetails = $"{loader.Game.Name}\r\nSHA1:N/A\r\nMD5:N/A\r\n";
+					}
 
 					if (Emulator.HasBoardInfo())
 					{
