@@ -143,8 +143,11 @@ namespace BizHawk.Client.Common
 			if (Global.Emulator.Frame == 0)
 			{
 				MovieControllerAdapter.LatchFromSource(input);
-				(Movie as TasMovie).GreenzoneCurrentFrame();
-				Movie.RecordFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+				if (Movie.IsRecording)
+				{
+					(Movie as TasMovie).GreenzoneCurrentFrame();
+					Movie.RecordFrame(Global.Emulator.Frame, Global.MovieOutputHardpoint);
+				}
 				return;
 			}
 
