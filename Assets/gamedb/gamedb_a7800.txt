@@ -34,6 +34,8 @@ md5:fba002089fcfa176454ab507e0eb76cb		Basketbrawl	A78		PAL=true;board=1
 md5:6010a398070dfacb4c0173d75d73c50a		Beef Drop	A78		NTSC=true;board=0		
 md5:c534db0a062225b17cfb8ecce0fb9090		Beef Drop	A78		NTSC=true;board=0		
 md5:CE25D34071B2C798ACE4C8792EAE8E84		Beef Drop	A78		NTSC=true;board=0
+md5:707E98991390A4E8874508E5ED4EDEEF		Bentley Bear - Crystal Quest	A78		NTSC=true;board=2;Pokey=true
+md5:AD35A98040A2FACB10ECB120BF83BCC3		Bentley Bear - Crystal Quest	A78		NTSC=true;board=2;Pokey=true
 md5:6da5b1b9fa0001e3517f6084ff651b07		Bentley Bear - Crystal Quest	A78		NTSC=true;board=2;Pokey=true
 md5:4D0B5BF95E4CB366990DBAEECB7F706D		Bentley Bear - Crystal Quest	A78		NTSC=true;board=2;Pokey=true
 md5:34483432B92F565F4CED82A141119164		Bentley Bear - Crystal Quest	A78		NTSC=true;board=2;Pokey=true		
@@ -152,6 +154,8 @@ md5:a84c1b2300fbfbf21b1c02387f613dad		Space Duel	A78		PAL=true;board=0
 md5:771cb4609347657f63e6f0eb26036e35		Space Duel	A78		NTSC=true;board=0		
 md5:6adf79558a3d7f5beca1bb8d34337417		Space Invaders	A78		NTSC=true;board=0		
 md5:cbb0746192540a13b4c7775c7ce2021f		Summer Games	A78		NTSC=true;board=1;RAM=16
+md5:02508E6DF5E173B4063A7E6E63295817		Super Circus Atari Age (NTSC) (Joystick) (POKEY 0450) (20170611)	A78		NTSC=true;board=0;Pokey=true
+md5:81CEE326B99D6831DE10A566E338BD25		Super Circus Atari Age (NTSC) (Joystick) (POKEY 4000) (20170611)	A78		NTSC=true;board=0;Pokey=true
 md5:37E60CAC38E78A5562590CB1B8BC0578		Super Circus	A78		NTSC=true;board=0;Pokey=true
 md5:57B6D9380A188A32D5C3814B8AF2EA9A		Super Circus	A78		PAL=true;board=0;Pokey=true		
 md5:cc18e3b37a507c4217eb6cb1de8c8538		Super Huey UH-IX	A78		NTSC=true;board=0		
