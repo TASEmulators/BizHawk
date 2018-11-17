@@ -152,10 +152,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				if (clock_ch[0])
 				{
-					if ((ch_div[0] + 1) >= (Regs[0 * 2] + 1))
-					{
-						clock_ch[1] = true;
-					}					
+					clock_ch[1] = true;					
 				}
 			}
 			else
@@ -176,10 +173,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			{
 				if (clock_ch[2])
 				{
-					if ((ch_div[2] + 1) >= (Regs[2 * 2] + 1))
-					{
-						clock_ch[3] = true;
-					}
+					clock_ch[3] = true;
 				}
 			}
 			else
@@ -205,7 +199,19 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					ch_div[i]++;
 
-					if (ch_div[i] >= (Regs[i * 2] + 1))
+					int test = (Regs[i * 2] + 1);
+
+					if ((i == 1) && Regs[8].Bit(4))
+					{
+						test = Regs[i * 2] * 256 + Regs[0] + 1;
+					}
+
+					if ((i == 3) && Regs[8].Bit(3))
+					{
+						test = Regs[i * 2] * 256 + Regs[2] + 1;
+					}
+
+					if (ch_div[i] >= test)
 					{
 						ch_div[i] = 0;
 
