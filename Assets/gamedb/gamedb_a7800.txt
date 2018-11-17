@@ -122,7 +122,8 @@ md5:220121f771fc4b98cef97dc040e8d378		Ninja Golf	A78		NTSC=true;board=1
 md5:ea0c859aa54fe5eaf4c1f327fab06221		Ninja Golf	A78		PAL=true;board=1		
 md5:74569571a208f8b0b1ccfb22d7c914e1		One on One Basketball	A78		NTSC=true;board=0		
 md5:8dba0425f0262e5704581d8757a1a6e3		One on One Basketball	A78		PAL=true;board=0		
-md5:5d7bc7092de69095137456733e7b685d		Pac-Man Collection	A78		NTSC=true;board=0		
+md5:5d7bc7092de69095137456733e7b685d		Pac-Man Collection	A78		NTSC=true;board=0
+md5:5013B69CB05B21A1194CE48517DF7BFC		Pac-Man Collection (Pokey)	A78		NTSC=true;board=0;Pokey=true		
 md5:90223a8a363bdf643a19d0f97e63b1b2		PacArcade	A78		NTSC=true;board=0		
 md5:386bded4a944bae455fedf56206dd1dd		Pete Rose Baseball	A78		PAL=true;board=0		
 md5:1a5207870dec6fae9111cb747e20d8e3		Pete Rose Baseball	A78		NTSC=true;board=0		
