@@ -3555,8 +3555,11 @@ namespace BizHawk.Client.EmuHawk
 			if(!ret) return false;
 
 			//what's the meaning of the last rom path when opening an archive? based on the archive file location
-			var leftpart = path.Split('|')[0];
-			Global.Config.LastRomPath = Path.GetFullPath(Path.GetDirectoryName(leftpart));
+			if (args.OpenAdvanced is OpenAdvanced_OpenRom)
+			{
+				var leftpart = path.Split('|')[0];
+				Global.Config.LastRomPath = Path.GetFullPath(Path.GetDirectoryName(leftpart));
+			}
 
 			return true;
 		}
