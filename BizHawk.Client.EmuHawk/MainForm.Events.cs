@@ -501,6 +501,31 @@ namespace BizHawk.Client.EmuHawk
 					// Do nothing and allow the user to continue to record the movie
 				}
 			}
+			else if (Emulator is QuickNES) // This is unsustainable :( But mixing the logic together is even worse, this needs to be rethought
+			{
+				var box = new MsgBox(
+					"While the QuickNes core is faster, it is not nearly as accurate as NesHawk. \nIt is recommended that you switch to the NesHawk core for movie recording\nSwitch to NesHawk?",
+					"Accuracy Warning",
+					MessageBoxIcon.Warning);
+
+				box.SetButtons(
+					new[] { "Switch", "Continue" },
+					new[] { DialogResult.Yes, DialogResult.Cancel });
+
+				box.MaximumSize = new Size(475, 350);
+				box.SetMessageToAutoSize();
+				var result = box.ShowDialog();
+
+				if (result == DialogResult.Yes)
+				{
+					Global.Config.NES_InQuickNES = false;
+					RebootCore();
+				}
+				else if (result == DialogResult.Cancel)
+				{
+					// Do nothing and allow the user to continue to record the movie
+				}
+			}
 
 			new RecordMovie(Emulator).ShowDialog();
 		}

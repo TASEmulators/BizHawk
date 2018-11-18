@@ -15,6 +15,7 @@ using BizHawk.Client.Common.MovieConversionExtensions;
 
 using BizHawk.Client.EmuHawk.WinFormExtensions;
 using BizHawk.Client.EmuHawk.ToolExtensions;
+using BizHawk.Emulation.Cores.Consoles.Nintendo.QuickNES;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -334,6 +335,31 @@ namespace BizHawk.Client.EmuHawk
 				if (result == DialogResult.Yes)
 				{
 					Global.Config.SNES_InSnes9x = false;
+					Mainform.RebootCore();
+				}
+				else if (result == DialogResult.Cancel)
+				{
+					//return false;
+				}
+			}
+			else if (Emulator is QuickNES) // Copy pasta of unsustainable logic, even better
+			{
+				var box = new CustomControls.MsgBox(
+					"While the QuickNes core is faster, it is not nearly as accurate as NesHawk. \nIt is recommended that you switch to the NesHawk core for movie recording\nSwitch to NesHawk?",
+					"Accuracy Warning",
+					MessageBoxIcon.Warning);
+
+				box.SetButtons(
+					new[] { "Switch", "Continue" },
+					new[] { DialogResult.Yes, DialogResult.Cancel });
+
+				box.MaximumSize = new Size(475, 350);
+				box.SetMessageToAutoSize();
+				var result = box.ShowDialog();
+
+				if (result == DialogResult.Yes)
+				{
+					Global.Config.NES_InQuickNES = false;
 					Mainform.RebootCore();
 				}
 				else if (result == DialogResult.Cancel)
