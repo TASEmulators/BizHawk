@@ -484,7 +484,7 @@ namespace BizHawk.Client.EmuHawk
 					MessageBoxIcon.Warning);
 
 				box.SetButtons(
-					new[] { "Switch", "Cancel" },
+					new[] { "Switch", "Continue" },
 					new[] { DialogResult.Yes, DialogResult.Cancel });
 
 				box.MaximumSize = new Size(475, 350);
@@ -498,7 +498,7 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else if (result == DialogResult.Cancel)
 				{
-					return;
+					// Do nothing and allow the user to continue to record the movie
 				}
 			}
 
