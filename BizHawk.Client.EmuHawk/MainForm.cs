@@ -4461,7 +4461,7 @@ namespace BizHawk.Client.EmuHawk
 					if (isRewinding)
 					{
 						runFrame = true; // TODO: the master should be deciding this!
-						Master.Rewind();
+						Master.Rewind(ref runFrame);
 					}
 				}
 				else
