@@ -28,7 +28,7 @@ namespace BizHawk.Client.EmuHawk
 		// TODO: We probably want to do this
 		public bool WantsToControlRewind { get { return false; } }
 		public void CaptureRewind() { }
-		public bool Rewind() { return false; }
+		public bool Rewind(ref bool runframe) { return false; }
 
 		public bool WantsToControlRestartMovie { get { return false; } }
 		public void RestartMovie() { }
