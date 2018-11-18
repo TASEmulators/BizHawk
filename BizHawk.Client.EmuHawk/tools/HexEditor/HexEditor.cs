@@ -44,7 +44,6 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-
 		[RequiredService]
 		private IMemoryDomains MemoryDomains { get; set; }
 
@@ -78,6 +77,9 @@ namespace BizHawk.Client.EmuHawk
 		private byte[] _rom;
 		private MemoryDomain _romDomain;
 		private HexFind _hexFind = new HexFind();
+
+		[ConfigPersist]
+		private string LastDomain { get; set; }
 
 		[ConfigPersist]
 		private bool SwapBytes { get; set; }
@@ -489,6 +491,12 @@ namespace BizHawk.Client.EmuHawk
 			DataSize = _domain.WordSize;
 			SetDataSize(DataSize);
 
+			if (!string.IsNullOrWhiteSpace(LastDomain)
+				&& MemoryDomains.Any(m => m.Name == LastDomain))
+			{
+				SetMemoryDomain(LastDomain);
+			}
+
 			if (RecentTables.AutoLoad)
 			{
 				LoadFileFromRecent(RecentTables[0]);
@@ -569,12 +577,12 @@ namespace BizHawk.Client.EmuHawk
 
 							if (SwapBytes)
 							{
-								t_val += (t_next << (k * 8));															
+								t_val += (t_next << (k * 8));
 							}
 							else
 							{
 								t_val += (t_next << ((DataSize - k - 1) * 8));
-							}							
+							}
 						}
 
 						rowStr.AppendFormat(_digitFormatString, t_val);
@@ -682,6 +690,7 @@ namespace BizHawk.Client.EmuHawk
 			UpdateGroupBoxTitle();
 			SetHeader();
 			UpdateValues();
+			LastDomain = _domain.Name;
 		}
 
 		private void SetDomain(MemoryDomain domain)
@@ -809,7 +818,7 @@ namespace BizHawk.Client.EmuHawk
 			switch (DataSize)
 			{
 				default:
-				case 1:										
+				case 1:
 					return Watch.GenerateWatch(_domain, address, WatchSize.Byte, Client.Common.DisplayType.Hex, BigEndian, "");
 				case 2:
 					return Watch.GenerateWatch(_domain, address, WatchSize.Word, Client.Common.DisplayType.Hex, BigEndian, "");
@@ -1639,7 +1648,6 @@ namespace BizHawk.Client.EmuHawk
 			MemoryDomainsMenuItem.DropDownItems.Add(romMenuItem);
 
 			romMenuItem.Click += (o, ev) => SetMemoryDomain(_romDomain.Name);
-
 		}
 
 		private void DataSizeByteMenuItem_Click(object sender, EventArgs e)
