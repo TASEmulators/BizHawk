@@ -1,4 +1,4 @@
-;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
+﻿;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Type:	TOSEC
 ;;; Source:	Sinclair ZX Spectrum - Games - [CSW] (TOSEC-v2018-03-24)
 ;;; FileGen:	2018-09-21 15:07:47 (UTC)
@@ -91,8 +91,7 @@ A4FA699933936EC232CD97843F535044	B	Superkid (1989)(Atlantis)[b]	ZXSpectrum
 D155020310A17FAF21B056958ABF3662	B	Titanic - part 1 (1988)(Topo Soft)(ES)(en)[b]	ZXSpectrum	en		ES
 9267FE535D41C37A3E892CB509F240E4	B	Ultimatum en la Astronave (19xx)(EP)(ES)[b]	ZXSpectrum			ES
 09A9FF92DCC090C904411DB4876C82EA	B	Uridium (1986)(Hewson Consultants)[b]	ZXSpectrum	
-5D8D8ADE00F7C303B06587F270740485	B	V - The Game (1986)(Ocean)[cr Superfish][b]	ZXSpectrum	
-7523B0CC085B2572EC1A1B5BE4DE7E85	B	World Cup Football (1984)(Artic Computing)[b]	ZXSpectrum	
+5D8D8ADE00F7C303B06587F270740485	B	V - The Game (1986)(Ocean)[cr Superfish][b]	ZXSpectrum		
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Hacks
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
@@ -32400,8 +32399,7 @@ B2847C2459D0C1FF19450B0D9898C7F9		Zorro (1986)(U.S. Gold)	ZXSpectrum
 8A53BADD5527D9F49CF1711ABA1C6FE6		Zorro (1986)(U.S. Gold)[a]	ZXSpectrum	
 DF4EEC6155F995C54BD94A3D4E86E1E9		Zorro (1986)(U.S. Gold)[a2]	ZXSpectrum	
 392A4614ECDDD43AE775D5DCF22FC203		Zorro (1986)(U.S. Gold)[SpeedLock 1]	ZXSpectrum	
-BE5E79BA58FE36FDBF41221B9A716A19		Z-Pilot (1987)(Rino)	ZXSpectrum	
-27B6AC93B101900C5744AFDD4219F34B		ztrack 1k (2002)(Marks, Russell)(16K)	ZXSpectrum	
+BE5E79BA58FE36FDBF41221B9A716A19		Z-Pilot (1987)(Rino)	ZXSpectrum		
 6CAC09639465FEDD036C316A3123DA91		Zub (1986)(Mastertronic Added Dimension)(48K-128K)[a][aka Zob]	ZXSpectrum	
 B75E626C9F26068303D9E6717E925E16		Zub (1986)(Mastertronic Added Dimension)(48K-128K)[aka Zob]	ZXSpectrum	
 77868EE20132FDF76988A0A04FC4D223		Zulu Wars - Ulundi (1987)(CCS)	ZXSpectrum	
@@ -32600,8 +32598,7 @@ E6FB169B7034A4D8C0B8512D1C808185		Subliminal Extacy 2 (1995)(Extacy-3)(128K)	ZXS
 4063E32F1B922CCFDB7739449FD61DFD		SUUG issue 4 (1986)(SUUG)	ZXSpectrum	
 8115A39F6B15B6649D5C8CC4A4D5BF89		WOOT! Tape Magazine issue #0 - ZXMAS 2016 Edition (2016-12-16)(Hughes, Dave)(48K-128K)	ZXSpectrum	
 9CF88C952FD096853FD1ED648E7EE63B		WOOT! Tape Magazine issue #1 - ZXMAS 2017 Edition (2017)(Hughes, Dave)	ZXSpectrum	
-573471CF26BE049B7624A1F0F3842FFC		WOOT! Tape Magazine issue #1 - ZXMAS 2017 Edition (2017)(Hughes, Dave)(128K)	ZXSpectrum	
-D22CB9056462DFD3F97EFD89013774B6		ylliW teS teJ (2004)(Broadsoft)	ZXSpectrum	
+573471CF26BE049B7624A1F0F3842FFC		WOOT! Tape Magazine issue #1 - ZXMAS 2017 Edition (2017)(Hughes, Dave)(128K)	ZXSpectrum		
 360E2F21C919A700E8C757318C055B97		YS2-100 issue 1 (1998)(Nash, Jonathan)	ZXSpectrum	
 9ED6C29411B4560F65B56FFE54FE2C5C		YS2-100 issue 2 (1998)(Nash, Jonathan)[aka YS2 issue 2]	ZXSpectrum	
 F7CA79CB1E7F2C650C1C1A03D91CDC62		YS2-100 issue 3 (1998)(Nash, Jonathan)[aka YS2 issue 3]	ZXSpectrum	
@@ -33524,8 +33521,7 @@ A6AAA88D4EAD6E9B2F23B0D90BBF9431		Your Computer issue 5 (1986)(Sintax)(ES)	ZXSpe
 3898DB5F67014CC98FB2817B36F4576C		Your Computer issue 6 (1986)(Sintax)(ES)	ZXSpectrum			ES
 668E71B88CF16B7F05DE9D97AF64121A		Your Computer issue 7 (1986)(Sintax)(ES)	ZXSpectrum			ES
 D2DE9423A55A87AD95627956FFAD1319		YS2 issue 1 (1993)(Y-Not)	ZXSpectrum	
-1D3EB051AA70CF2B624E10F82E7AD9C4		YS2 issue 2 (1993)(Delta 4 - Y-Not)	ZXSpectrum	
-3FBB2372002BD25FD9E47310FB36E19C		ZX Land issue 5 (1995)(Illusion Group)(PL)	ZXSpectrum			PL
+1D3EB051AA70CF2B624E10F82E7AD9C4		YS2 issue 2 (1993)(Delta 4 - Y-Not)	ZXSpectrum				PL
 467D0E3EF5A418161815D2F5A627BEC7		ZX Revija - Issue 02 (1990)(Stivsoft)(RU)(sr)	ZXSpectrum	sr		RU
 F8466B7E6DC03093015C099D19146A2E		ZX Revija - Issue 03 (1990)(Stivsoft)(RU)(sr)	ZXSpectrum	sr		RU
 AD00AF1F68EBC4FF5EEAE51DC24D260A		ZX Revija - Issue 04 (1990)(Stivsoft)(RU)(sr)	ZXSpectrum	sr		RU
@@ -33626,7 +33622,6 @@ A3835CE638468A32AC5A0CECA7AA1F93		Tubular Bells (1988)(Garcia, Ignacio Prini)(12
 A77D17CB49C931851FE21CF081F86B59		Tubular Bells (1988)(Garcia, Ignacio Prini)(128K)(ES)(en)(Tape 2 of 2)	ZXSpectrum	en		ES
 0C9347E6E324C0F2D5C81F2C18933CEA		Tunes (1992)(Your Sinclair)(128K)	ZXSpectrum	
 1FE31FF48FDE8A74D1E1F34FE0694DC8		Unfunny Joke (2011)(Darkman007)(RU)[Beeper][DiHalt]	ZXSpectrum			RU
-130F0E67958174FDB06A390ACA3AA810		ZX Soft issue 3 (1985)(Sonnen Verlag AG)(DE)(Side B)	ZXSpectrum			DE
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Type:	TOSEC
 ;;; Source:	Sinclair ZX Spectrum - Music - [TZX] (TOSEC-v2018-03-24)
@@ -33662,7 +33657,6 @@ A05422DA710CE8B4889F20B7CB2C911E		Beethoven's Arrangement (1985)(Load 'n' Run)(I
 0883F0EC875D8C4CB260000F580E01A5		Carols (1986)(R.D. Foord)(128K)	ZXSpectrum	
 2FCDDE9DA0C59EE056E62EF5BFC3A528		Chrismas128K Songs (2004)(NyitraiSOFT)(128K)(HU)	ZXSpectrum			HU
 C78F37242E8CFBDDBE2270F5BBA28D2D		Flying Start (1989)(Garcia, Ignacio Prini)(128K)(ES)(en)	ZXSpectrum	en		ES
-8D16210A4C1C4DCFEE670386739DC450		harder-better-faster-stronger (2011)(Siril)(RU)[Beeper][DiHalt]	ZXSpectrum			RU
 1700B07E2F9B3AF59683E4FB32B98D0F		Hergest Ridge (2011)(Garcia, Ignacio Prini)(128K)(ES)(en)	ZXSpectrum	en		ES
 027A0DBBB0253248E3AB52859FDFAF7D		Jukebox-1 (1986)(StalVs)(ES)	ZXSpectrum			ES
 D24FA941EDE05DA910735769DBA30E4C		Marcha Turca (1987)(MicroHobby)(ES)	ZXSpectrum			ES
@@ -33674,7 +33668,6 @@ CFCA24990522FB6D04DCEE668876AA6B		Melody Music II (1988)(UniSoft)(128K)(CZ)(en)	
 A2E411A5FEE2131845304FDEC87CB190		Micro Music (1985)(ZX Computing)	ZXSpectrum	
 5081E375A937803DCB60D25829676D6C		Music Menu (1984)(Radio Student)(SI)(en)	ZXSpectrum	en		SI
 DEE5AA0B172400C20A8857212B30A57F		Ommadawn V0.4 (2001)(Garcia, Ignacio Prini)(128K)(ES)(en)	ZXSpectrum	en		ES
-F127A8C7FD66E9AD0819D92B3C1869AC		Pop Corn (2007)(Garcia, Ignacio Prini)(128K)(ES)	ZXSpectrum			ES
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Type:	TOSEC
 ;;; Source:	Sinclair ZX Spectrum - Unknown - [TAP] (TOSEC-v2018-03-24)
@@ -33708,8 +33701,7 @@ E051D29BDA2BBB2A95E6F93D459C9C6D		ZZZ-UNK-dr_plzak (19xx)(-)	ZXSpectrum
 B960114F82445EC53CE6DD31C37D3C87		ZZZ-UNK-FUNSCH_4 (19xx)(-)	ZXSpectrum	
 5F16DDED77BA415629DDCA2DBCD5A94C		ZZZ-UNK-hungaro@ (19xx)(-)	ZXSpectrum	
 66841B2E84336DD7ECC06C5C380FA5FC		ZZZ-UNK-PATCH (19xx)(-)	ZXSpectrum	
-97A35FDCB9FA002E2B465802B87CD75E		ZZZ-UNK-sexsyp (19xx)(-)(de)	ZXSpectrum	de	
-E1D0ADACE051B6F4E0AD979C0A8813E5		ZZZ-UNK-ysspeedlockhacker (19xx)(-)	ZXSpectrum	
+97A35FDCB9FA002E2B465802B87CD75E		ZZZ-UNK-sexsyp (19xx)(-)(de)	ZXSpectrum	de		
 ;;;;;;;;;;--------------------------------------------------;;;;;;;;;;
 ;;; Type:	TOSEC
 ;;; Source:	Sinclair ZX Spectrum - Unknown - [TZX] (TOSEC-v2018-03-24)
