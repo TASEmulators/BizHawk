@@ -79,6 +79,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		int temp_bit_0;
 		int temp_bit_1;
 		int disp_mode;
+		byte BG_latch_1;
 		int pixel;
 
 		// each frame contains 263 scanlines
@@ -210,7 +211,13 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					pixel = cycle - 133;
 					local_GFX_index = (GFX_index == 1) ? 0 : 1; // whatever the current index is, we use the opposite
-					disp_mode = Core.Maria_regs[0x1C] & 0x3;
+
+					if (cycle == 133)
+					{
+						disp_mode = Core.Maria_regs[0x1C] & 0x3;
+						BG_latch_1 = Core.Maria_regs[0];
+
+					}
 
 					color = line_ram[local_GFX_index, pixel];
 
@@ -261,7 +268,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 					}
 					else
 					{
-						scanline_buffer[pixel] = _palette[Core.Maria_regs[0x00]];
+						scanline_buffer[pixel] = _palette[BG_latch_1];
 					}
 					
 					// send buffer to the video buffer
