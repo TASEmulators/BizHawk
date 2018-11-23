@@ -194,6 +194,8 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				{
 					s_mapper = "0";
 				}
+
+				if (cart_2.Bit(0)) { is_pokey = true; }
 			}
 			else
 			{
@@ -212,9 +214,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 				}
 			}
 
-			Reset_Mapper(s_mapper);
-
 			_rom = rom;
+
+			Reset_Mapper(s_mapper);
+			
 			_hsbios = highscoreBios;
 			_bios = _isPAL ? palBios : ntscBios;
 
@@ -323,6 +326,7 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			}
 
 			mapper.Core = this;
+			mapper.mask = _rom.Length / 0x4000 - 1;
 		}
 
 		/*
