@@ -486,6 +486,19 @@ namespace BizHawk.Client.EmuHawk
 				Render();
 
 				CheckMessages();
+				
+				if (GlobalWin.Tools.Has<TAStudio>())
+				{
+					// There are instances where the movie will be switched out of recording mode but TAStudio doesn't know about it
+					// update the state here
+					if (GlobalWin.Tools.TAStudio.TasPlaybackBox.RecordingModeCheckbox.Checked != Global.MovieSession.Movie.IsRecording)
+					{
+						Global.MovieSession.ReadOnly = true;
+						GlobalWin.Tools.TAStudio.WasRecording = false;
+						GlobalWin.Tools.TAStudio.TasPlaybackBox.RecordingModeCheckbox.Checked = Global.MovieSession.Movie.IsRecording;
+					}
+					
+				}
 
 				if (_exitRequestPending)
 				{
