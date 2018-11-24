@@ -192,7 +192,7 @@
 		private System.Windows.Forms.CheckBox AutoRestoreCheckbox;
 		private System.Windows.Forms.CheckBox TurboSeekCheckbox;
 		private System.Windows.Forms.CheckBox FollowCursorCheckbox;
-		private System.Windows.Forms.CheckBox RecordingModeCheckbox;
+		public System.Windows.Forms.CheckBox RecordingModeCheckbox;
 		private System.Windows.Forms.ToolTip toolTip1;
 	}
 }
