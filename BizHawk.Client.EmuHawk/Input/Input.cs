@@ -128,7 +128,7 @@ namespace BizHawk.Client.EmuHawk
 
 		public static void Initialize()
 		{
-			if (Global.RunningOnUnix)
+			if (PlatformLinkedLibSingleton.RunningOnUnix)
 			{
 				OTK_Keyboard.Initialize();
 //				OTK_Gamepad.Initialize();

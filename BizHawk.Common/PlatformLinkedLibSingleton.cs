@@ -5,10 +5,11 @@ namespace BizHawk.Common
 {
 	public sealed class PlatformLinkedLibSingleton
 	{
-		private static readonly Lazy<PlatformLinkedLibManager> lazy = new Lazy<PlatformLinkedLibManager>(() =>
-			(Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX)
-				? (PlatformLinkedLibManager) new UnixMonoLinkedLibManager()
-				: (PlatformLinkedLibManager) new Win32LinkedLibManager());
+		public static readonly bool RunningOnUnix = Environment.OSVersion.Platform == PlatformID.Unix || Environment.OSVersion.Platform == PlatformID.MacOSX;
+
+		private static readonly Lazy<PlatformLinkedLibManager> lazy = new Lazy<PlatformLinkedLibManager>(() => RunningOnUnix
+			? (PlatformLinkedLibManager) new UnixMonoLinkedLibManager()
+			: (PlatformLinkedLibManager) new Win32LinkedLibManager());
 
 		public static PlatformLinkedLibManager LinkedLibManager { get { return lazy.Value; } }
 
