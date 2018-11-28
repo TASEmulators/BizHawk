@@ -32,11 +32,12 @@ namespace BizHawk.Client.EmuHawk
 			//try loading libraries we know we'll need
 			//something in the winforms, etc. code below will cause .net to popup a missing msvcr100.dll in case that one's missing
 			//but oddly it lets us proceed and we'll then catch it here
-			var d3dx9 = libLoader.LoadPlatformSpecific("d3dx9_43.dll");
-			var vc2015 = libLoader.LoadPlatformSpecific("vcruntime140.dll");
-			var vc2012 = libLoader.LoadPlatformSpecific("msvcr120.dll"); //TODO - check version?
-			var vc2010 = libLoader.LoadPlatformSpecific("msvcr100.dll"); //TODO - check version?
-			var vc2010p = libLoader.LoadPlatformSpecific("msvcp100.dll");
+			var libExt = RunningOnUnix ? ".dll.so" : ".dll";
+			var d3dx9 = libLoader.LoadPlatformSpecific($"d3dx9_43{libExt}");
+			var vc2015 = libLoader.LoadPlatformSpecific($"vcruntime140{libExt}");
+			var vc2012 = libLoader.LoadPlatformSpecific($"msvcr120{libExt}"); //TODO - check version?
+			var vc2010 = libLoader.LoadPlatformSpecific($"msvcr100{libExt}"); //TODO - check version?
+			var vc2010p = libLoader.LoadPlatformSpecific($"msvcp100{libExt}");
 			bool fail = false, warn = false;
 			warn |= d3dx9 == IntPtr.Zero;
 			fail |= vc2015 == IntPtr.Zero;

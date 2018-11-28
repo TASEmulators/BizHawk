@@ -35,7 +35,7 @@ namespace BizHawk.Common
 			private static extern int dlclose(IntPtr handle);
 			public IntPtr LoadPlatformSpecific(string dllToLoad)
 			{
-				return dlopen(dllToLoad + ".so", RTLD_NOW);
+				return dlopen(dllToLoad, RTLD_NOW);
 			}
 			public IntPtr GetProcAddr(IntPtr hModule, string procName)
 			{
