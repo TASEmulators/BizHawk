@@ -25,7 +25,7 @@ namespace BizHawk.Client.EmuHawk
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
 
-			PlatformSpecificLinkedLibs libLoader = RunningOnUnix ? (PlatformSpecificLinkedLibs) new UnixMono() : (PlatformSpecificLinkedLibs) new Win32();
+			var libLoader = PlatformLinkedLibSingleton.LinkedLibManager;
 
 			//http://www.codeproject.com/Articles/310675/AppDomain-AssemblyResolve-Event-Tips
 
@@ -88,63 +88,6 @@ namespace BizHawk.Client.EmuHawk
 		static int Main(string[] args)
 		{
 			return SubMain(args);
-		}
-
-		private interface PlatformSpecificLinkedLibs
-		{
-			IntPtr LoadPlatformSpecific(string dllToLoad);
-			IntPtr GetProcAddr(IntPtr hModule, string procName);
-			void FreePlatformSpecific(IntPtr hModule);
-		}
-		private class Win32 : PlatformSpecificLinkedLibs
-		{
-			[DllImport("kernel32.dll")]
-			private static extern IntPtr LoadLibrary(string dllToLoad);
-			[DllImport("kernel32.dll")]
-			private static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
-			[DllImport("kernel32.dll")]
-			private static extern void FreeLibrary(IntPtr hModule);
-			public IntPtr LoadPlatformSpecific(string dllToLoad)
-			{
-				return LoadLibrary(dllToLoad);
-			}
-			public IntPtr GetProcAddr(IntPtr hModule, string procName)
-			{
-				return GetProcAddress(hModule, procName);
-			}
-			public void FreePlatformSpecific(IntPtr hModule)
-			{
-				FreeLibrary(hModule);
-			}
-		}
-		private class UnixMono : PlatformSpecificLinkedLibs
-		{
-			// This class is copied from a tutorial, so don't git blame and then email me expecting insight.
-			const int RTLD_NOW = 2;
-			[DllImport("libdl.so")]
-			private static extern IntPtr dlopen(String fileName, int flags);
-			[DllImport("libdl.so")]
-			private static extern IntPtr dlerror();
-			[DllImport("libdl.so")]
-			private static extern IntPtr dlsym(IntPtr handle, String symbol);
-			[DllImport("libdl.so")]
-			private static extern int dlclose(IntPtr handle);
-			public IntPtr LoadPlatformSpecific(string dllToLoad)
-			{
-				return dlopen(dllToLoad + ".so", RTLD_NOW);
-			}
-			public IntPtr GetProcAddr(IntPtr hModule, string procName)
-			{
-				dlerror();
-				var res = dlsym(hModule, procName);
-				var errPtr = dlerror();
-				if (errPtr != IntPtr.Zero) throw new Exception("dlsym: " + Marshal.PtrToStringAnsi(errPtr));
-				return res;
-			}
-			public void FreePlatformSpecific(IntPtr hModule)
-			{
-				dlclose(hModule);
-			}
 		}
 
 		private interface PlatformSpecificMainLoopCrashHandler
