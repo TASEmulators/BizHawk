@@ -43,7 +43,7 @@
 		/// Returns whether or not the rewind action actually occured
 		/// </summary>
 		/// <returns></returns>
-		bool Rewind(ref bool runframe);
+		bool Rewind();
 
 		bool WantsToControlRestartMovie { get; }
 

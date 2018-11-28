@@ -880,17 +880,14 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
-		private int StartAtNearestFrameAndEmulate(int frame, bool fromLua, bool fromRewinding)
+		private void StartAtNearestFrameAndEmulate(int frame, bool fromLua, bool fromRewinding)
 		{
 			if (frame == Emulator.Frame)
-				return 0;
+				return;
 
 			_unpauseAfterSeeking = (fromRewinding || WasRecording) && !Mainform.EmulatorPaused;
 			TastudioPlayMode();
 			KeyValuePair<int, byte[]> closestState = CurrentTasMovie.TasStateManager.GetStateClosestToFrame(frame);
-
-			int dist = frame - closestState.Key;
-
 			if (closestState.Value != null && (frame < Emulator.Frame || closestState.Key > Emulator.Frame))
 			{
 				LoadState(closestState);
@@ -942,8 +939,6 @@ namespace BizHawk.Client.EmuHawk
 					// users who are clicking around.. I dont know.
 				}
 			}
-
-			return dist;
 		}
 
 		public void LoadState(KeyValuePair<int, byte[]> state)

@@ -84,7 +84,7 @@
 			// Do nothing, Tastudio handles this just fine
 		}
 
-		public bool Rewind(ref bool runframe)
+		public bool Rewind()
 		{
 			// copypasted from TasView_MouseWheel(), just without notch logic
 			if (Mainform.IsSeeking && !Mainform.EmulatorPaused)
@@ -105,9 +105,7 @@
 			else
 			{
 				StopSeeking(); // late breaking memo: dont know whether this is needed
-				int dist = GoToPreviousFrame();
-
-				if (Emulator.Frame == 0) { runframe = false; }
+				GoToPreviousFrame();
 			}
 
 			return true;
