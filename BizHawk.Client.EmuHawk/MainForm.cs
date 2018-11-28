@@ -4467,7 +4467,7 @@ namespace BizHawk.Client.EmuHawk
 
 					if (isRewinding)
 					{
-						runFrame = true; // TODO: the master should be deciding this!
+						runFrame = Emulator.Frame > 1; // TODO: the master should be deciding this!
 						Master.Rewind();
 					}
 				}
@@ -4501,7 +4501,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (isRewinding)
 				{
-					runFrame = Global.Rewinder.Rewind(1);
+					runFrame = Global.Rewinder.Rewind(1) && Emulator.Frame > 1;
 
 					if (runFrame && Global.MovieSession.Movie.IsRecording)
 					{
