@@ -28,18 +28,17 @@ namespace BizHawk.Client.EmuHawk
 		}
 
 		// SuuperW: I changed this to public so that it could be used by MarkerControl.cs
-		public int GoToFrame(int frame, bool fromLua = false, bool fromRewinding = false)
+		public void GoToFrame(int frame, bool fromLua = false, bool fromRewinding = false)
 		{
 			// If seeking to a frame before or at the end of the movie, use StartAtNearestFrameAndEmulate
 			// Otherwise, load the latest state (if not already there) and seek while recording.
-			int dist = 0;
 
 			WasRecording = CurrentTasMovie.IsRecording || WasRecording;
 
 			if (frame <= CurrentTasMovie.InputLogLength)
 			{
 				// Get as close as we can then emulate there
-				dist = StartAtNearestFrameAndEmulate(frame, fromLua, fromRewinding);
+				StartAtNearestFrameAndEmulate(frame, fromLua, fromRewinding);
 
 				MaybeFollowCursor();
 			}
@@ -70,20 +69,14 @@ namespace BizHawk.Client.EmuHawk
 
 			RefreshDialog();
 			UpdateOtherTools();
-
-			return dist;
 		}
 
-		public int GoToPreviousFrame()
+		public void GoToPreviousFrame()
 		{
-			int dist = -1;
-
 			if (Emulator.Frame > 0)
 			{
-				dist = GoToFrame(Emulator.Frame - 1);
+				GoToFrame(Emulator.Frame - 1);
 			}
-
-			return dist;
 		}
 
 		public void GoToNextFrame()
