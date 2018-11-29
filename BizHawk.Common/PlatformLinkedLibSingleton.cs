@@ -55,6 +55,8 @@ namespace BizHawk.Common
 		public class Win32LinkedLibManager : PlatformLinkedLibManager
 		{
 			[DllImport("kernel32.dll")]
+			private static extern UInt32 GetLastError();
+			[DllImport("kernel32.dll")]
 			private static extern IntPtr LoadLibrary(string dllToLoad);
 			[DllImport("kernel32.dll")]
 			private static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
@@ -62,7 +64,9 @@ namespace BizHawk.Common
 			private static extern void FreeLibrary(IntPtr hModule);
 			public IntPtr LoadPlatformSpecific(string dllToLoad)
 			{
-				return LoadLibrary(dllToLoad);
+				var p = LoadLibrary(dllToLoad);
+				if (p == IntPtr.Zero) throw new InvalidOperationException($"got null pointer, error code {GetLastError()}");
+				return p;
 			}
 			public IntPtr GetProcAddr(IntPtr hModule, string procName)
 			{
