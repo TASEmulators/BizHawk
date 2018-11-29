@@ -19,7 +19,7 @@ namespace BizHawk.Common
 		{
 			IntPtr LoadPlatformSpecific(string dllToLoad);
 			IntPtr GetProcAddr(IntPtr hModule, string procName);
-			void FreePlatformSpecific(IntPtr hModule);
+			int FreePlatformSpecific(IntPtr hModule);
 		}
 
 		public class UnixMonoLinkedLibManager : PlatformLinkedLibManager
@@ -46,9 +46,9 @@ namespace BizHawk.Common
 				if (errPtr != IntPtr.Zero) throw new InvalidOperationException($"error in dlsym: {Marshal.PtrToStringAnsi(errPtr)}");
 				return res;
 			}
-			public void FreePlatformSpecific(IntPtr hModule)
+			public int FreePlatformSpecific(IntPtr hModule)
 			{
-				dlclose(hModule);
+				return dlclose(hModule);
 			}
 		}
 
@@ -61,7 +61,7 @@ namespace BizHawk.Common
 			[DllImport("kernel32.dll")]
 			private static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
 			[DllImport("kernel32.dll")]
-			private static extern void FreeLibrary(IntPtr hModule);
+			private static extern bool FreeLibrary(IntPtr hModule);
 			public IntPtr LoadPlatformSpecific(string dllToLoad)
 			{
 				var p = LoadLibrary(dllToLoad);
@@ -72,9 +72,9 @@ namespace BizHawk.Common
 			{
 				return GetProcAddress(hModule, procName);
 			}
-			public void FreePlatformSpecific(IntPtr hModule)
+			public int FreePlatformSpecific(IntPtr hModule)
 			{
-				FreeLibrary(hModule);
+				return FreeLibrary(hModule) ? 1 : 0;
 			}
 		}
 	}
