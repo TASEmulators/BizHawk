@@ -43,7 +43,7 @@ namespace BizHawk.Common
 				dlerror();
 				var res = dlsym(hModule, procName);
 				var errPtr = dlerror();
-				if (errPtr != IntPtr.Zero) throw new Exception("dlsym: " + Marshal.PtrToStringAnsi(errPtr));
+				if (errPtr != IntPtr.Zero) throw new InvalidOperationException($"error in dlsym: {Marshal.PtrToStringAnsi(errPtr)}");
 				return res;
 			}
 			public void FreePlatformSpecific(IntPtr hModule)
