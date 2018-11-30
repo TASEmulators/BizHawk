@@ -147,7 +147,7 @@ namespace BizHawk.Emulation.Common
 
 		public int SamplesAvailable()
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix) return 0; // temporary workaround
+			if (PlatformLinkedLibSingleton.RunningOnUnix) return 882; // temporary workaround
 			return BlipBufDll.blip_samples_avail(_context);
 		}
 
