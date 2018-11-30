@@ -56,10 +56,15 @@ namespace BizHawk.Common
 		{
 			[DllImport("kernel32.dll")]
 			private static extern UInt32 GetLastError();
+			// was annotated `[DllImport("kernel32.dll", BestFitMapping = false, ThrowOnUnmappableChar = true)]` in SevenZip.NativeMethods
+			// param dllToLoad was annotated `[MarshalAs(UnmanagedType.LPStr)]` in SevenZip.NativeMethods
 			[DllImport("kernel32.dll")]
 			private static extern IntPtr LoadLibrary(string dllToLoad);
+			// was annotated `[DllImport("kernel32.dll", BestFitMapping = false, ThrowOnUnmappableChar = true)]` in SevenZip.NativeMethods
+			// param procName was annotated `[MarshalAs(UnmanagedType.LPStr)]` in SevenZip.NativeMethods
 			[DllImport("kernel32.dll")]
 			private static extern IntPtr GetProcAddress(IntPtr hModule, string procName);
+			// was annotated `[return: MarshalAs(UnmanagedType.Bool)]` in SevenZip.NativeMethods
 			[DllImport("kernel32.dll")]
 			private static extern bool FreeLibrary(IntPtr hModule);
 			public IntPtr LoadPlatformSpecific(string dllToLoad)
