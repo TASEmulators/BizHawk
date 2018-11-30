@@ -565,7 +565,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 			result = m64pDebugSetCallbacks(m64pDebugInitCallback, m64pDebugUpdateCallback, null);
 
 			// Prepare to start the emulator in a different thread
-			m64pEmulator = new Thread(ExecuteEmulator);
+			m64pEmulator = new Thread(ExecuteEmulatorThread);
 
 			AttachedCore = this;
 		}
@@ -590,7 +590,7 @@ namespace BizHawk.Emulation.Cores.Nintendo.N64.NativeApi
 		/// Starts execution of mupen64plus
 		/// Does not return until the emulator stops
 		/// </summary>
-		private void ExecuteEmulator()
+		private void ExecuteEmulatorThread()
 		{
 			emulator_running = true;
 			var cb = new StartupCallback(() => m64pStartupComplete.Set());
