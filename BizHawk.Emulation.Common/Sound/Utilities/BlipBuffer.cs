@@ -1,4 +1,6 @@
-﻿using System;
+﻿using BizHawk.Common;
+
+using System;
 using System.Runtime.InteropServices;
 
 // ReSharper disable StyleCop.SA1300
@@ -79,6 +81,7 @@ namespace BizHawk.Emulation.Common
 
 		public BlipBuffer(int sampleCount)
 		{
+			if (PlatformLinkedLibSingleton.RunningOnUnix) return; // temporary workaround
 			_context = BlipBufDll.blip_new(sampleCount);
 			if (_context == IntPtr.Zero)
 			{
@@ -93,6 +96,7 @@ namespace BizHawk.Emulation.Common
 
 		public void Dispose()
 		{
+			if (PlatformLinkedLibSingleton.RunningOnUnix) return; // temporary workaround
 			if (_context != IntPtr.Zero)
 			{
 				BlipBufDll.blip_delete(_context);
@@ -103,6 +107,7 @@ namespace BizHawk.Emulation.Common
 
 		public void SetRates(double clockRate, double sampleRate)
 		{
+			if (PlatformLinkedLibSingleton.RunningOnUnix) return; // temporary workaround
 			BlipBufDll.blip_set_rates(_context, clockRate, sampleRate);
 		}
 
@@ -110,21 +115,25 @@ namespace BizHawk.Emulation.Common
 
 		public void Clear()
 		{
+			if (PlatformLinkedLibSingleton.RunningOnUnix) return; // temporary workaround
 			BlipBufDll.blip_clear(_context);
 		}
 
 		public void AddDelta(uint clockTime, int delta)
 		{
+			if (PlatformLinkedLibSingleton.RunningOnUnix) return; // temporary workaround
 			BlipBufDll.blip_add_delta(_context, clockTime, delta);
 		}
 
 		public void AddDeltaFast(uint clockTime, int delta)
 		{
+			if (PlatformLinkedLibSingleton.RunningOnUnix) return; // temporary workaround
 			BlipBufDll.blip_add_delta_fast(_context, clockTime, delta);
 		}
 
 		public int ClocksNeeded(int sampleCount)
 		{
+			if (PlatformLinkedLibSingleton.RunningOnUnix) return 0; // temporary workaround
 			return BlipBufDll.blip_clocks_needed(_context, sampleCount);
 		}
 
@@ -132,16 +141,19 @@ namespace BizHawk.Emulation.Common
 
 		public void EndFrame(uint clockDuration)
 		{
+			if (PlatformLinkedLibSingleton.RunningOnUnix) return; // temporary workaround
 			BlipBufDll.blip_end_frame(_context, clockDuration);
 		}
 
 		public int SamplesAvailable()
 		{
+			if (PlatformLinkedLibSingleton.RunningOnUnix) return 0; // temporary workaround
 			return BlipBufDll.blip_samples_avail(_context);
 		}
 
 		public int ReadSamples(short[] output, int count, bool stereo)
 		{
+			if (PlatformLinkedLibSingleton.RunningOnUnix) return 0; // temporary workaround
 			if (output.Length < count * (stereo ? 2 : 1))
 			{
 				throw new ArgumentOutOfRangeException();
@@ -152,6 +164,7 @@ namespace BizHawk.Emulation.Common
 
 		public int ReadSamplesLeft(short[] output, int count)
 		{
+			if (PlatformLinkedLibSingleton.RunningOnUnix) return 0; // temporary workaround
 			if (output.Length < count * 2)
 			{
 				throw new ArgumentOutOfRangeException();
@@ -162,6 +175,7 @@ namespace BizHawk.Emulation.Common
 
 		public int ReadSamplesRight(short[] output, int count)
 		{
+			if (PlatformLinkedLibSingleton.RunningOnUnix) return 0; // temporary workaround
 			if (output.Length < count * 2)
 			{
 				throw new ArgumentOutOfRangeException();
