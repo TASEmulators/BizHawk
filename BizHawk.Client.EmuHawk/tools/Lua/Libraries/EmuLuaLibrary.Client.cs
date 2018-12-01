@@ -8,6 +8,8 @@ using BizHawk.Common;
 using BizHawk.Emulation.Common;
 using BizHawk.Client.Common;
 
+// ReSharper disable StringLiteralTypo
+// ReSharper disable UnusedMember.Global
 namespace BizHawk.Client.EmuHawk
 {
 	[Description("A library for manipulating the EmuHawk client UI")]
@@ -338,6 +340,13 @@ namespace BizHawk.Client.EmuHawk
 			{
 				Log("Invalid speed value");
 			}
+		}
+
+		[LuaMethodExample("local curSpeed = client.getconfig().SpeedPercent")]
+		[LuaMethod("getconfig", "gets the current config settings object")]
+		public object GetConfig()
+		{
+			return Global.Config;
 		}
 
 		[LuaMethodExample("client.togglepause( );")]
