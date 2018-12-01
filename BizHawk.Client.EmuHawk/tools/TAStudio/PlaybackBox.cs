@@ -83,6 +83,20 @@ namespace BizHawk.Client.EmuHawk
 			}
 		}
 
+		[Browsable(true)]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public bool RecordingIsChecked
+		{
+			get
+			{
+				return RecordingModeCheckbox.Checked;
+			}
+			set
+			{
+				RecordingModeCheckbox.Checked = value;
+			}
+		}
+
 		public PlaybackBox()
 		{
 			InitializeComponent();
