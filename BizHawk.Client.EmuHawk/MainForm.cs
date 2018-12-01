@@ -480,25 +480,25 @@ namespace BizHawk.Client.EmuHawk
 					GlobalWin.Tools.LuaConsole.ResumeScripts(false);
 				}
 
+				if (GlobalWin.Tools.Has<TAStudio>())
+				{
+					// There are instances where the movie will be switched out of recording mode but TAStudio doesn't know about it
+					// update the state here
+					if (GlobalWin.Tools.TAStudio.TasPlaybackBox.RecordingIsChecked != Global.MovieSession.Movie.IsRecording)
+					{
+						Global.MovieSession.ReadOnly = true;
+						GlobalWin.Tools.TAStudio.WasRecording = false;
+						GlobalWin.Tools.TAStudio.TasPlaybackBox.RecordingIsChecked = Global.MovieSession.Movie.IsRecording;
+					}
+
+				}
+
 				StepRunLoop_Core();
 				StepRunLoop_Throttle();
 
 				Render();
 
 				CheckMessages();
-				
-				if (GlobalWin.Tools.Has<TAStudio>())
-				{
-					// There are instances where the movie will be switched out of recording mode but TAStudio doesn't know about it
-					// update the state here
-					if (GlobalWin.Tools.TAStudio.TasPlaybackBox.RecordingModeCheckbox.Checked != Global.MovieSession.Movie.IsRecording)
-					{
-						Global.MovieSession.ReadOnly = true;
-						GlobalWin.Tools.TAStudio.WasRecording = false;
-						GlobalWin.Tools.TAStudio.TasPlaybackBox.RecordingModeCheckbox.Checked = Global.MovieSession.Movie.IsRecording;
-					}
-					
-				}
 
 				if (_exitRequestPending)
 				{
@@ -4480,8 +4480,8 @@ namespace BizHawk.Client.EmuHawk
 
 					if (isRewinding)
 					{
-						runFrame = true; // TODO: the master should be deciding this!
-						Master.Rewind(ref runFrame);
+						runFrame = Emulator.Frame > 1; // TODO: the master should be deciding this!
+						Master.Rewind();
 					}
 				}
 				else
@@ -4514,7 +4514,7 @@ namespace BizHawk.Client.EmuHawk
 
 				if (isRewinding)
 				{
-					runFrame = Global.Rewinder.Rewind(1);
+					runFrame = Global.Rewinder.Rewind(1) && Emulator.Frame > 1;
 
 					if (runFrame && Global.MovieSession.Movie.IsRecording)
 					{
