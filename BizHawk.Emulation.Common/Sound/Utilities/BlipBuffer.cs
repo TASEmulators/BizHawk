@@ -19,12 +19,12 @@ namespace BizHawk.Emulation.Common
 			/** Creates new buffer that can hold at most sample_count samples. Sets rates
 			so that there are blip_max_ratio clocks per sample. Returns pointer to new
 			buffer, or NULL if insufficient memory. */
-			[DllImport("blip_buf.dll", CallingConvention = CallingConvention.Cdecl)]
+			[DllImport("blip_buf", CallingConvention = CallingConvention.Cdecl)]
 			public static extern IntPtr blip_new(int sample_count);
 
 			/** Sets approximate input clock rate and output sample rate. For every
 			clock_rate input clocks, approximately sample_rate samples are generated. */
-			[DllImport("blip_buf.dll", CallingConvention = CallingConvention.Cdecl)]
+			[DllImport("blip_buf", CallingConvention = CallingConvention.Cdecl)]
 			public static extern void blip_set_rates(IntPtr context, double clock_rate, double sample_rate);
 
 			/** Maximum clock_rate/sample_rate ratio. For a given sample_rate,
@@ -32,20 +32,20 @@ namespace BizHawk.Emulation.Common
 			public const int BlipMaxRatio = 1 << 20;
 
 			/** Clears entire buffer. Afterwards, blip_samples_avail() == 0. */
-			[DllImport("blip_buf.dll", CallingConvention = CallingConvention.Cdecl)]
+			[DllImport("blip_buf", CallingConvention = CallingConvention.Cdecl)]
 			public static extern void blip_clear(IntPtr context);
 
 			/** Adds positive/negative delta into buffer at specified clock time. */
-			[DllImport("blip_buf.dll", CallingConvention = CallingConvention.Cdecl)]
+			[DllImport("blip_buf", CallingConvention = CallingConvention.Cdecl)]
 			public static extern void blip_add_delta(IntPtr context, uint clock_time, int delta);
 
 			/** Same as blip_add_delta(), but uses faster, lower-quality synthesis. */
-			[DllImport("blip_buf.dll", CallingConvention = CallingConvention.Cdecl)]
+			[DllImport("blip_buf", CallingConvention = CallingConvention.Cdecl)]
 			public static extern void blip_add_delta_fast(IntPtr context, uint clock_time, int delta);
 
 			/** Length of time frame, in clocks, needed to make sample_count additional
 			samples available. */
-			[DllImport("blip_buf.dll", CallingConvention = CallingConvention.Cdecl)]
+			[DllImport("blip_buf", CallingConvention = CallingConvention.Cdecl)]
 			public static extern int blip_clocks_needed(IntPtr context, int sample_count);
 
 			/** Maximum number of samples that can be generated from one time frame. */
@@ -56,24 +56,24 @@ namespace BizHawk.Emulation.Common
 			the new time frame specifies the same clock as clock_duration in the old time
 			frame specified. Deltas can have been added slightly past clock_duration (up to
 			however many clocks there are in two output samples). */
-			[DllImport("blip_buf.dll", CallingConvention = CallingConvention.Cdecl)]
+			[DllImport("blip_buf", CallingConvention = CallingConvention.Cdecl)]
 			public static extern void blip_end_frame(IntPtr context, uint clock_duration);
 
 			/** Number of buffered samples available for reading. */
-			[DllImport("blip_buf.dll", CallingConvention = CallingConvention.Cdecl)]
+			[DllImport("blip_buf", CallingConvention = CallingConvention.Cdecl)]
 			public static extern int blip_samples_avail(IntPtr context);
 
 			/** Reads and removes at most 'count' samples and writes them to 'out'. If
 			'stereo' is true, writes output to every other element of 'out', allowing easy
 			interleaving of two buffers into a stereo sample stream. Outputs 16-bit signed
 			samples. Returns number of samples actually read.  */
-			[DllImport("blip_buf.dll", CallingConvention = CallingConvention.Cdecl)]
+			[DllImport("blip_buf", CallingConvention = CallingConvention.Cdecl)]
 			public static extern int blip_read_samples(IntPtr context, short[] @out, int count, int stereo);
-			[DllImport("blip_buf.dll", CallingConvention = CallingConvention.Cdecl)]
+			[DllImport("blip_buf", CallingConvention = CallingConvention.Cdecl)]
 			public static extern int blip_read_samples(IntPtr context, IntPtr @out, int count, int stereo);
 
 			/** Frees buffer. No effect if NULL is passed. */
-			[DllImport("blip_buf.dll", CallingConvention = CallingConvention.Cdecl)]
+			[DllImport("blip_buf", CallingConvention = CallingConvention.Cdecl)]
 			public static extern void blip_delete(IntPtr context);
 		}
 
@@ -81,7 +81,6 @@ namespace BizHawk.Emulation.Common
 
 		public BlipBuffer(int sampleCount)
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix) return; // temporary workaround
 			_context = BlipBufDll.blip_new(sampleCount);
 			if (_context == IntPtr.Zero)
 			{
@@ -96,7 +95,6 @@ namespace BizHawk.Emulation.Common
 
 		public void Dispose()
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix) return; // temporary workaround
 			if (_context != IntPtr.Zero)
 			{
 				BlipBufDll.blip_delete(_context);
@@ -107,7 +105,6 @@ namespace BizHawk.Emulation.Common
 
 		public void SetRates(double clockRate, double sampleRate)
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix) return; // temporary workaround
 			BlipBufDll.blip_set_rates(_context, clockRate, sampleRate);
 		}
 
@@ -115,25 +112,21 @@ namespace BizHawk.Emulation.Common
 
 		public void Clear()
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix) return; // temporary workaround
 			BlipBufDll.blip_clear(_context);
 		}
 
 		public void AddDelta(uint clockTime, int delta)
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix) return; // temporary workaround
 			BlipBufDll.blip_add_delta(_context, clockTime, delta);
 		}
 
 		public void AddDeltaFast(uint clockTime, int delta)
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix) return; // temporary workaround
 			BlipBufDll.blip_add_delta_fast(_context, clockTime, delta);
 		}
 
 		public int ClocksNeeded(int sampleCount)
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix) return 0; // temporary workaround
 			return BlipBufDll.blip_clocks_needed(_context, sampleCount);
 		}
 
@@ -141,19 +134,16 @@ namespace BizHawk.Emulation.Common
 
 		public void EndFrame(uint clockDuration)
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix) return; // temporary workaround
 			BlipBufDll.blip_end_frame(_context, clockDuration);
 		}
 
 		public int SamplesAvailable()
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix) return 882; // temporary workaround
 			return BlipBufDll.blip_samples_avail(_context);
 		}
 
 		public int ReadSamples(short[] output, int count, bool stereo)
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix) return 0; // temporary workaround
 			if (output.Length < count * (stereo ? 2 : 1))
 			{
 				throw new ArgumentOutOfRangeException();
@@ -164,7 +154,6 @@ namespace BizHawk.Emulation.Common
 
 		public int ReadSamplesLeft(short[] output, int count)
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix) return 0; // temporary workaround
 			if (output.Length < count * 2)
 			{
 				throw new ArgumentOutOfRangeException();
@@ -175,7 +164,6 @@ namespace BizHawk.Emulation.Common
 
 		public int ReadSamplesRight(short[] output, int count)
 		{
-			if (PlatformLinkedLibSingleton.RunningOnUnix) return 0; // temporary workaround
 			if (output.Length < count * 2)
 			{
 				throw new ArgumentOutOfRangeException();
