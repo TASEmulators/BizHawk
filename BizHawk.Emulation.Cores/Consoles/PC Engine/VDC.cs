@@ -227,8 +227,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			for (; Registers[LENR] < 0xFFFF; Registers[LENR]--, wordsDone++)
 			{
 				VRAM[Registers[DESR] & 0x7FFF] = VRAM[Registers[SOUR] & 0x7FFF];
-				UpdatePatternData(Registers[DESR]);
-				UpdateSpriteData(Registers[DESR]);
+				UpdatePatternData((ushort)(Registers[DESR] & 0x7FFF));
+				UpdateSpriteData((ushort)(Registers[DESR] & 0x7FFF));
 				Registers[DESR] = (ushort)(Registers[DESR] + advanceDest);
 				Registers[SOUR] = (ushort)(Registers[SOUR] + advanceSource);
 
