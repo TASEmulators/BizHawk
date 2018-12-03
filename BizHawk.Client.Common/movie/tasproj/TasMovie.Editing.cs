@@ -379,11 +379,6 @@ namespace BizHawk.Client.Common
 			{
 				ChangeLog.EndBatch();
 			}
-
-			if (Global.Emulator.Frame < Log.Count) // Don't stay in recording mode? Fixes TAStudio recording after paint inserting.
-			{
-				//SwitchToPlay();
-			}
 		}
 
 		private void ExtendMovieForEdit(int numFrames)
@@ -408,11 +403,6 @@ namespace BizHawk.Client.Common
 			if (endBatch)
 			{
 				ChangeLog.EndBatch();
-			}
-
-			if (Global.Emulator.Frame < Log.Count) // Don't stay in recording mode? Fixes TAStudio recording after paint inserting.
-			{
-				//SwitchToPlay();
 			}
 		}
 
