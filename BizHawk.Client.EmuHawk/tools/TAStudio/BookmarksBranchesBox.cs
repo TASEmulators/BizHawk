@@ -429,7 +429,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					NonExistentBranchMessage(slot);
+					//NonExistentBranchMessage(slot);
+					AddBranchExternal();
 					return;
 				}
 			}
