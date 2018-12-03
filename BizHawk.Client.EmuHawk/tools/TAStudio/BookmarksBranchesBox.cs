@@ -197,6 +197,10 @@ namespace BizHawk.Client.EmuHawk
 			var stateInfo = new KeyValuePair<int, byte[]>(branch.Frame, branch.CoreData);
 			Tastudio.LoadState(stateInfo);
 			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.OSDFrameBuffer), Tastudio.VideoProvider);
+
+			if (!Tastudio.Settings.BranchesRestoreEntireMovie && Tastudio.TasPlaybackBox.RecordingMode)
+				Tastudio.CurrentTasMovie.Truncate(branch.Frame);
+
 			GlobalWin.MainForm.PauseOnFrame = null;
 			Tastudio.RefreshDialog();
 		}
@@ -603,7 +607,10 @@ namespace BizHawk.Client.EmuHawk
 
 		private void BranchView_MouseDoubleClick(object sender, MouseEventArgs e)
 		{
-			LoadBranchToolStripMenuItem_Click(null, null);
+			if (Tastudio.Settings.LoadBranchOnDoubleClick)
+			{
+				LoadBranchToolStripMenuItem_Click(null, null);
+			}
 		}
 
 		private void BranchView_MouseMove(object sender, MouseEventArgs e)

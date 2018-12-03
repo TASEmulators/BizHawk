@@ -64,13 +64,15 @@ namespace BizHawk.Client.EmuHawk
 				FollowCursorAlwaysScroll = false;
 				FollowCursorScrollMethod = "near";
 				BranchCellHoverInterval = 1;
-				SeekingCutoffInterval = 2; // unused, relying on VisibleRows is smarter
-				AutoRestoreOnMouseUpOnly = false; // default to taseditor way, must be harmless since we suspend rerecord counting while drawing
+				SeekingCutoffInterval = 2;
+				AutoRestoreOnMouseUpOnly = false;
 				AutosaveInterval = 120000;
 				AutosaveAsBk2 = false;
 				AutosaveAsBackupFile = false;
 				BackupPerFileSave = false;
 				SingleClickFloatEdit = false;
+				BranchesRestoreEntireMovie = true;
+				LoadBranchOnDoubleClick = true;
 
 				// default to taseditor fashion
 				DenoteStatesWithIcons = false;
@@ -89,13 +91,15 @@ namespace BizHawk.Client.EmuHawk
 			public bool FollowCursorAlwaysScroll { get; set; }
 			public string FollowCursorScrollMethod { get; set; }
 			public int BranchCellHoverInterval { get; set; }
-			public int SeekingCutoffInterval { get; set; }
-			public bool AutoRestoreOnMouseUpOnly { get; set; }
+			public int SeekingCutoffInterval { get; set; } // unused, relying on VisibleRows is smarter
+			public bool AutoRestoreOnMouseUpOnly { get; set; } // default to taseditor way, must be harmless since we suspend rerecord counting while drawing
 			public uint AutosaveInterval { get; set; }
 			public bool AutosaveAsBk2 { get; set; }
 			public bool AutosaveAsBackupFile { get; set; }
 			public bool BackupPerFileSave { get; set; }
 			public bool SingleClickFloatEdit { get; set; }
+			public bool BranchesRestoreEntireMovie { get; set; } // loading a branch in recording mode may truncate the movie, old-school way
+			public bool LoadBranchOnDoubleClick { get; set; }
 			public bool DenoteStatesWithIcons { get; set; }
 			public bool DenoteStatesWithBGColor { get; set; }
 			public bool DenoteMarkersWithIcons { get; set; }

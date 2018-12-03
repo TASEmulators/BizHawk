@@ -820,6 +820,8 @@ namespace BizHawk.Client.EmuHawk
 			AutosaveAsBackupFileMenuItem.Checked = Settings.AutosaveAsBackupFile;
 			BackupPerFileSaveMenuItem.Checked = Settings.BackupPerFileSave;
 			SingleClickFloatEditMenuItem.Checked = Settings.SingleClickFloatEdit;
+			BranchesRestoreEntireMovieMenuItem.Checked = Settings.BranchesRestoreEntireMovie;
+			LoadBranchOnDoubleclickMenuItem.Checked = Settings.LoadBranchOnDoubleClick;
 		}
 
 		private void SetMaxUndoLevelsMenuItem_Click(object sender, EventArgs e)
@@ -1008,6 +1010,16 @@ namespace BizHawk.Client.EmuHawk
 			// Exceptions in UndoForm are caught, which makes it weirder.
 			var pForm = new PatternsForm(this) { Owner = this };
 			pForm.Show();
+		}
+
+		private void BranchesRestoreEntireMovieMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.BranchesRestoreEntireMovie ^= true;
+		}
+
+		private void LoadBranchOnDoubleclickMenuItem_Click(object sender, EventArgs e)
+		{
+			Settings.LoadBranchOnDoubleClick ^= true;
 		}
 
 		#endregion
