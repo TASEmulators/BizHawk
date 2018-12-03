@@ -71,7 +71,7 @@ namespace BizHawk.Client.EmuHawk
 				AutosaveAsBackupFile = false;
 				BackupPerFileSave = false;
 				SingleClickFloatEdit = false;
-				BranchesRestoreEntireMovie = true;
+				OldControlSchemeForBranches = false;
 				LoadBranchOnDoubleClick = true;
 
 				// default to taseditor fashion
@@ -98,7 +98,7 @@ namespace BizHawk.Client.EmuHawk
 			public bool AutosaveAsBackupFile { get; set; }
 			public bool BackupPerFileSave { get; set; }
 			public bool SingleClickFloatEdit { get; set; }
-			public bool BranchesRestoreEntireMovie { get; set; } // loading a branch in recording mode may truncate the movie, old-school way
+			public bool OldControlSchemeForBranches { get; set; } // branch loading will behave differently depending on the recording mode
 			public bool LoadBranchOnDoubleClick { get; set; }
 			public bool DenoteStatesWithIcons { get; set; }
 			public bool DenoteStatesWithBGColor { get; set; }

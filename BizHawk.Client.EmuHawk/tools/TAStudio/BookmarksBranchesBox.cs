@@ -193,12 +193,18 @@ namespace BizHawk.Client.EmuHawk
 
 		private void LoadBranch(TasBranch branch)
 		{
+			if (Tastudio.Settings.OldControlSchemeForBranches && !Tastudio.TasPlaybackBox.RecordingMode)
+			{
+				JumpToBranchToolStripMenuItem_Click(null, null);
+				return;
+			}
+
 			Tastudio.CurrentTasMovie.LoadBranch(branch);
 			var stateInfo = new KeyValuePair<int, byte[]>(branch.Frame, branch.CoreData);
 			Tastudio.LoadState(stateInfo);
 			QuickBmpFile.Copy(new BitmapBufferVideoProvider(branch.OSDFrameBuffer), Tastudio.VideoProvider);
 
-			if (!Tastudio.Settings.BranchesRestoreEntireMovie && Tastudio.TasPlaybackBox.RecordingMode)
+			if (Tastudio.Settings.OldControlSchemeForBranches && Tastudio.TasPlaybackBox.RecordingMode)
 				Tastudio.CurrentTasMovie.Truncate(branch.Frame);
 
 			GlobalWin.MainForm.PauseOnFrame = null;
@@ -429,8 +435,8 @@ namespace BizHawk.Client.EmuHawk
 				}
 				else
 				{
-					//NonExistentBranchMessage(slot);
-					AddBranchExternal();
+					//NonExistentBranchMessage(slot); // some people can't get used to creating branches explicitly with unusual hotkeys
+					AddBranchExternal(); // so just make a new branch, even though the index may be wrong
 					return;
 				}
 			}

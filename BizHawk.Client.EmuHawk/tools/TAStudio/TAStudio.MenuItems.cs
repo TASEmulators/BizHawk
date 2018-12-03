@@ -820,7 +820,7 @@ namespace BizHawk.Client.EmuHawk
 			AutosaveAsBackupFileMenuItem.Checked = Settings.AutosaveAsBackupFile;
 			BackupPerFileSaveMenuItem.Checked = Settings.BackupPerFileSave;
 			SingleClickFloatEditMenuItem.Checked = Settings.SingleClickFloatEdit;
-			BranchesRestoreEntireMovieMenuItem.Checked = Settings.BranchesRestoreEntireMovie;
+			OldControlSchemeForBranchesMenuItem.Checked = Settings.OldControlSchemeForBranches;
 			LoadBranchOnDoubleclickMenuItem.Checked = Settings.LoadBranchOnDoubleClick;
 		}
 
@@ -1012,9 +1012,9 @@ namespace BizHawk.Client.EmuHawk
 			pForm.Show();
 		}
 
-		private void BranchesRestoreEntireMovieMenuItem_Click(object sender, EventArgs e)
+		private void OldControlSchemeForBranchesMenuItem_Click(object sender, EventArgs e)
 		{
-			Settings.BranchesRestoreEntireMovie ^= true;
+			Settings.OldControlSchemeForBranches ^= true;
 		}
 
 		private void LoadBranchOnDoubleclickMenuItem_Click(object sender, EventArgs e)
