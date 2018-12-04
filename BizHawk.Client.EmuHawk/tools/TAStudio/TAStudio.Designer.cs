@@ -971,14 +971,14 @@ namespace BizHawk.Client.EmuHawk
             this.toolStripSeparator25,
             this.wheelScrollSpeedToolStripMenuItem});
 			this.SettingsSubMenu.Name = "SettingsSubMenu";
-			this.SettingsSubMenu.Size = new System.Drawing.Size(41, 20);
-			this.SettingsSubMenu.Text = "&View";
+			this.SettingsSubMenu.Size = new System.Drawing.Size(58, 20);
+			this.SettingsSubMenu.Text = "&Settings";
 			this.SettingsSubMenu.DropDownOpened += new System.EventHandler(this.SettingsSubMenu_DropDownOpened);
 			// 
 			// RotateMenuItem
 			// 
 			this.RotateMenuItem.Name = "RotateMenuItem";
-			this.RotateMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.RotateMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.RotateMenuItem.Text = "Rotate";
 			this.RotateMenuItem.Click += new System.EventHandler(this.RotateMenuItem_Click);
 			// 
@@ -992,7 +992,7 @@ namespace BizHawk.Client.EmuHawk
             this.toolStripSeparator12,
             this.hideWasLagFramesToolStripMenuItem});
 			this.HideLagFramesSubMenu.Name = "HideLagFramesSubMenu";
-			this.HideLagFramesSubMenu.Size = new System.Drawing.Size(177, 22);
+			this.HideLagFramesSubMenu.Size = new System.Drawing.Size(180, 22);
 			this.HideLagFramesSubMenu.Text = "Hide Lag Frames";
 			this.HideLagFramesSubMenu.DropDownOpened += new System.EventHandler(this.HideLagFramesSubMenu_DropDownOpened);
 			// 
@@ -1054,7 +1054,7 @@ namespace BizHawk.Client.EmuHawk
             this.DenoteMarkersWithIconsToolStripMenuItem,
             this.DenoteMarkersWithBGColorToolStripMenuItem});
 			this.iconsToolStripMenuItem.Name = "iconsToolStripMenuItem";
-			this.iconsToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.iconsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.iconsToolStripMenuItem.Text = "Icons";
 			this.iconsToolStripMenuItem.DropDownOpened += new System.EventHandler(this.IconsMenuItem_DropDownOpened);
 			// 
@@ -1093,7 +1093,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripSeparator23
 			// 
 			this.toolStripSeparator23.Name = "toolStripSeparator23";
-			this.toolStripSeparator23.Size = new System.Drawing.Size(174, 6);
+			this.toolStripSeparator23.Size = new System.Drawing.Size(177, 6);
 			// 
 			// followCursorToolStripMenuItem
 			// 
@@ -1105,7 +1105,7 @@ namespace BizHawk.Client.EmuHawk
             this.scrollToBottomToolStripMenuItem,
             this.scrollToCenterToolStripMenuItem});
 			this.followCursorToolStripMenuItem.Name = "followCursorToolStripMenuItem";
-			this.followCursorToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.followCursorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.followCursorToolStripMenuItem.Text = "Follow Cursor";
 			this.followCursorToolStripMenuItem.DropDownOpened += new System.EventHandler(this.FollowCursorMenuItem_DropDownOpened);
 			// 
@@ -1159,12 +1159,12 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripSeparator25
 			// 
 			this.toolStripSeparator25.Name = "toolStripSeparator25";
-			this.toolStripSeparator25.Size = new System.Drawing.Size(174, 6);
+			this.toolStripSeparator25.Size = new System.Drawing.Size(177, 6);
 			// 
 			// wheelScrollSpeedToolStripMenuItem
 			// 
 			this.wheelScrollSpeedToolStripMenuItem.Name = "wheelScrollSpeedToolStripMenuItem";
-			this.wheelScrollSpeedToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+			this.wheelScrollSpeedToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
 			this.wheelScrollSpeedToolStripMenuItem.Text = "Wheel Scroll Speed...";
 			this.wheelScrollSpeedToolStripMenuItem.Click += new System.EventHandler(this.WheelScrollSpeedMenuItem_Click);
 			// 
@@ -1179,7 +1179,7 @@ namespace BizHawk.Client.EmuHawk
 			// toolStripSeparator19
 			// 
 			this.toolStripSeparator19.Name = "toolStripSeparator19";
-			this.toolStripSeparator19.Size = new System.Drawing.Size(57, 6);
+			this.toolStripSeparator19.Size = new System.Drawing.Size(177, 6);
 			// 
 			// HelpSubMenu
 			// 
