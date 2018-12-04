@@ -267,8 +267,8 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			int tileNo = addr >> 4;
 			int tileLineOffset = addr & 0x7;
 
-			int bitplane01 = VRAM[(tileNo * 16) + tileLineOffset];
-			int bitplane23 = VRAM[(tileNo * 16) + tileLineOffset + 8];
+			int bitplane01 = VRAM[((tileNo * 16) + tileLineOffset) & 0x7FFF];
+			int bitplane23 = VRAM[((tileNo * 16) + tileLineOffset + 8) & 0x7FFF];
 
 			int patternBufferBase = (tileNo * 64) + (tileLineOffset * 8);
 
@@ -290,7 +290,7 @@ namespace BizHawk.Emulation.Cores.PCEngine
 			int line = addr & 0x0F;
 
 			int ofs = (tileNo * 256) + (line * 16) + 15;
-			ushort value = VRAM[addr];
+			ushort value = VRAM[addr & 0x7FFF];
 			byte bitAnd = (byte)(~(1 << bitplane));
 			byte bitOr = (byte)(1 << bitplane);
 
