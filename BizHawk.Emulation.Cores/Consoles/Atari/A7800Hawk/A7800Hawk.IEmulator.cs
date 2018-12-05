@@ -1,5 +1,4 @@
-﻿using BizHawk.Common.NumberExtensions;
-using BizHawk.Emulation.Common;
+﻿using BizHawk.Emulation.Common;
 using System;
 using System.Collections.Generic;
 
@@ -162,13 +161,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 
 			tia._hsyncCnt++;
 			tia._hsyncCnt %= 454;
-			// do the audio sampling
+			// do the audio sampling of TIA audio
 			if (tia._hsyncCnt == 113 || tia._hsyncCnt == 340)
 			{
 				temp_s_tia = tia.Execute(0);
-
-				// even though its clocked seperately, we sample the Pokey here
-				//if (is_pokey) { pokey.sample(); }
 			}
 
 			// tick the m6532 timer, which is still active although not recommended to use
@@ -435,6 +431,5 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 		}
 
 		#endregion
-
 	}
 }

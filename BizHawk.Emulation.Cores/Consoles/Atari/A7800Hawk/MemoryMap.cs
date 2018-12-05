@@ -1,8 +1,5 @@
 ﻿using System;
 
-using BizHawk.Common.BufferExtensions;
-using BizHawk.Emulation.Common;
-
 // X = don't care
 /*
 1. TIA   0000 00XX 0000 0000 - 0000 00XX 0001 1111

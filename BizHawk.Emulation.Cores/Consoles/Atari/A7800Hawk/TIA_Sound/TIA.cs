@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Numerics;
-
-using BizHawk.Emulation.Common;
 
 namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 {
@@ -39,34 +36,10 @@ namespace BizHawk.Emulation.Cores.Atari.A7800Hawk
 			LocalAudioCycles = 0;
 			LocalAudioCycles += (AUD[0].Cycle() / 2);
 			LocalAudioCycles += (AUD[1].Cycle() / 2);
-			//AudioClocks++;
 
 			return LocalAudioCycles;
 		}
-		/*
-		public void GetSamples(short[] samples)
-		{
-			if (AudioClocks > 0)
-			{
-				var samples31Khz = new short[AudioClocks]; // mono
 
-				for (int i = 0; i < AudioClocks; i++)
-				{
-					samples31Khz[i] = LocalAudioCycles[i];
-					LocalAudioCycles[i] = 0;
-				}
-
-				// convert from 31khz to 44khz
-				for (var i = 0; i < samples.Length / 2; i++)
-				{
-					samples[i * 2] = samples31Khz[(int)(((double)samples31Khz.Length / (double)(samples.Length / 2)) * i)];
-					samples[(i * 2) + 1] = samples[i * 2];
-				}
-			}
-
-			AudioClocks = 0;
-		}
-		*/
 		public byte ReadMemory(ushort addr, bool peek)
 		{
 			var maskedAddr = (ushort)(addr & 0x000F);
