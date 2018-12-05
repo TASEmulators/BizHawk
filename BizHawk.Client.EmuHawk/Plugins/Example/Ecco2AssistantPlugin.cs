@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Drawing;
 
+using System.Linq;
 using BizHawk.Client.Common;
+using BizHawk.Emulation.Cores.Consoles.Sega.gpgx;
 
 namespace BizHawk.Client.EmuHawk
 {
@@ -19,102 +22,490 @@ namespace BizHawk.Client.EmuHawk
 		private int _camY = 0;
 		private int _camXAddr;
 		private int _camYAddr;
-		private bool _prevOn = false;
-		private uint _prevCharge = 0;
 		private uint _prevF = 0;
-
-		void DrawEccoOct(int x, int y, int r, Color? color = null, int fillAlpha = 0)
+		private int _top = 0;
+		private int _bottom = 0;
+		private int _left = 0;
+		private int _right = 0;
+		private const int _signalAlpha = 255;
+		private int _tickerY = 81;
+		private int _dumpMap = 0;
+		private int _prevX = 0;
+		private int _prevY = 0;
+		private int _destX = 0;
+		private int _destY = 0;
+		private int _snapPast = 0;
+		private string _rowStateGuid = string.Empty;
+		private EmuHawkPluginLibrary _clientLib;
+		private Color[] _turnSignalColors =
 		{
-			Point[] octPoints = {
-				new Point(x, y - r), 
-				new Point((int)(x + Math.Sin(Math.PI / 4) * r), (int)(y - Math.Sin(Math.PI / 4) *r)), 
-				new Point(x + r, y), 
-				new Point((int)(x + Math.Sin(Math.PI / 4) * r), (int)(y + Math.Sin(Math.PI / 4) *r)), 
-				new Point(x, y + r), 
-				new Point((int)(x - Math.Sin(Math.PI / 4) * r), (int)(y + Math.Sin(Math.PI / 4) *r)), 
-				new Point(x - r, y), 
-				new Point((int)(x - Math.Sin(Math.PI / 4) * r), (int)(y - Math.Sin(Math.PI / 4) *r))
-			};
-			Color fillColor = color.HasValue ? Color.FromArgb(fillAlpha, color.Value) : Color.Empty;
-			_api.GUILib.DrawPolygon(octPoints, color, fillColor);
+			Color.FromArgb(_signalAlpha, 127, 127,   0),
+			Color.FromArgb(_signalAlpha, 255,   0,   0),
+			Color.FromArgb(_signalAlpha, 192,   0,  63),
+			Color.FromArgb(_signalAlpha,  63,   0, 192),
+			Color.FromArgb(_signalAlpha,   0,   0, 255),
+			Color.FromArgb(_signalAlpha,   0,  63, 192),
+			Color.FromArgb(_signalAlpha,   0, 192,  63),
+			Color.FromArgb(_signalAlpha,   0, 255,   0)
+		};
+		private int _rseed = 1;
+		private int EccoRand(bool refresh = false)
+		{
+			if (refresh)
+			{
+				_rseed = (int)(_api.MemLib.ReadU16(0xFFE2F8));
+			}
+			bool odd = (_rseed & 1) != 0;
+			_rseed >>= 1;
+			if (odd)
+			{
+				_rseed ^= 0xB400;
+			}
+			return _rseed;
 		}
-		void DrawBoxMWH(int x, int y, int w, int h, Color? color = null, int fillAlpha = 0)
+		private void DrawEccoRhomb(int x, int y, int radius, Color color, int fillAlpha = 63)
 		{
-			Color fillColor = color.HasValue ? Color.FromArgb(fillAlpha, color.Value) : Color.Empty;
+			Point[] rhombus = {
+				new Point(x, y - radius),
+				new Point(x + radius, y),
+				new Point(x, y + radius),
+				new Point(x - radius, y)
+			};
+			Color? fillColor = null;
+			if (fillAlpha > 0) fillColor = Color.FromArgb(fillAlpha, color);
+			_api.GUILib.DrawPolygon(rhombus, color, fillColor);
+		}
+		private void DrawEccoRhomb_scaled(int x, int y, int width, int height, int rscale, int bscale, int lscale, int tscale, Color color, int fillAlpha = 63)
+		{
+			Point[] rhombus = {
+				new Point(x + (width << rscale), y),
+				new Point(x, y + (height << bscale)),
+				new Point(x - (width << lscale), y),
+				new Point(x, y - (height << tscale))
+			};
+			Color? fillColor = null;
+			if (fillAlpha > 0) fillColor = Color.FromArgb(fillAlpha, color);
+			_api.GUILib.DrawPolygon(rhombus, color, fillColor);
+		}
+		private void DrawEccoOct(int x, int y, int r, Color color, int fillAlpha = 63)
+		{
+			var octOff = (int)(Math.Sqrt(2) * r) >> 1;
+			Point[] octagon = {
+				new Point(x, y - r), 
+				new Point(x + octOff, y - octOff), 
+				new Point(x + r, y), 
+				new Point(x + octOff, y + octOff), 
+				new Point(x, y + r), 
+				new Point(x - octOff, y + octOff), 
+				new Point(x - r, y), 
+				new Point(x - octOff, y - octOff)
+			};
+			Color? fillColor = null;
+			if (fillAlpha > 0) fillColor = Color.FromArgb(fillAlpha, color);
+			_api.GUILib.DrawPolygon(octagon, color, fillColor);
+		}
+		private void DrawEccoOct_scaled(int x, int y, int xscale, int yscale, int r, Color color, int fillAlpha = 63)
+		{
+			var octOff = (int)(Math.Sin(Math.PI / 4) * r);
+			var xoctOff = octOff << xscale;
+			var yoctOff = octOff << yscale;
+			var xr = r << xscale;
+			var yr = r << yscale;
+			Point[] octagon = {
+				new Point(x, y - yr),
+				new Point(x + xoctOff, y - yoctOff),
+				new Point(x + xr, y),
+				new Point(x + xoctOff, y + yoctOff),
+				new Point(x, y + yr),
+				new Point(x - xoctOff, y + yoctOff),
+				new Point(x - xr, y),
+				new Point(x - xoctOff, y - yoctOff)
+			};
+			Color? fillColor = null;
+			if (fillAlpha > 0) fillColor = Color.FromArgb(fillAlpha, color);
+			_api.GUILib.DrawPolygon(octagon, color, fillColor);
+		}
+		private Point? Intersection(Point start1, Point end1, Point start2, Point end2)
+		{
+			if ((Math.Max(start1.X, end1.X) < Math.Min(start2.X, end2.X))
+			 || (Math.Min(start1.X, end1.X) > Math.Max(start2.X, end2.X))
+			 || (Math.Max(start1.Y, end1.Y) < Math.Min(start2.Y, end2.Y))
+			 || (Math.Min(start1.Y, end1.Y) > Math.Max(start2.Y, end2.Y)))
+				return null;
+
+
+			double ay_cy, ax_cx, px, py;
+			double dx_cx = end2.X - start2.X,
+				dy_cy = end2.Y - start2.Y,
+				bx_ax = end1.X - start1.X,
+				by_ay = end1.Y - start1.Y;
+
+			double de = (bx_ax) * (dy_cy) - (by_ay) * (dx_cx);
+
+			if (Math.Abs(de) < 0.01)
+				return null;
+
+			ax_cx = start1.X - start2.X;
+			ay_cy = start1.Y - start2.Y;
+			double r = ((ay_cy) * (dx_cx) - (ax_cx) * (dy_cy)) / de;
+			double s = ((ay_cy) * (bx_ax) - (ax_cx) * (by_ay)) / de;
+			px = start1.X + r * (bx_ax);
+			py = start1.Y + r * (by_ay);
+			if ((px < Math.Min(start1.X, end1.X)) || (px > Math.Max(start1.X, end1.X))
+			 || (px < Math.Min(start2.X, end2.X)) || (px > Math.Max(start2.X, end2.X))
+			 || (py < Math.Min(start1.Y, end1.Y)) || (py > Math.Max(start1.Y, end1.Y))
+			 || (py < Math.Min(start2.Y, end2.Y)) || (py > Math.Max(start2.Y, end2.Y)))
+				return null;
+			return new Point((int)px, (int)py);
+		}
+		private void DrawRectRhombusIntersection(Point rectMid, Point rhombMid, int rw, int rh, int r, Color color, int fillAlpha = 63) // Octagon provided by the intersection of a rectangle and a rhombus
+		{
+			Point[] rect =
+			{
+				new Point(rectMid.X - rw, rectMid.Y + rh),
+				new Point(rectMid.X - rw, rectMid.Y - rh),
+				new Point(rectMid.X + rw, rectMid.Y - rh),
+				new Point(rectMid.X + rw, rectMid.Y + rh)
+			};
+			Point[] rhombus =
+			{
+				new Point(rhombMid.X - r, rhombMid.Y),
+				new Point(rhombMid.X, rhombMid.Y - r),
+				new Point(rhombMid.X + r, rhombMid.Y),
+				new Point(rhombMid.X, rhombMid.Y + r)
+			};
+			List<Point> finalShape = new List<Point>();
+			foreach (Point p in rect)
+			{
+				if (Math.Abs(p.X - rhombMid.X) + Math.Abs(p.Y - rhombMid.Y) <= r)
+					finalShape.Add(p);
+			}
+			foreach (Point p in rhombus)
+			{
+				if ((Math.Abs(p.X - rectMid.X) <= rw) && (Math.Abs(p.Y - rectMid.Y) <= rh))
+					finalShape.Add(p);
+			}
+			for (int i = 0; i < 5; i++)
+			{
+				Point? p = Intersection(rhombus[i & 3], rhombus[(i + 1) & 3], rect[i & 3], rect[(i + 1) & 3]);
+				if (p.HasValue) finalShape.Add(p.Value);
+				p = Intersection(rhombus[i & 3], rhombus[(i + 1) & 3], rect[(i + 1) & 3], rect[(i + 2) & 3]);
+				if (p.HasValue) finalShape.Add(p.Value);
+			}
+			double mX = 0;
+			double my = 0;
+			foreach (Point p in finalShape)
+			{
+				mX += p.X;
+				my += p.Y;
+			}
+			mX /= finalShape.ToArray().Length;
+			my /= finalShape.ToArray().Length;
+			Color? fillColor = null;
+			if (fillAlpha > 0) fillColor = Color.FromArgb(fillAlpha, color);
+			_api.GUILib.DrawPolygon(finalShape.OrderBy(p => Math.Atan2(p.Y - my, p.X - mX)).ToArray(), color, fillColor);
+		}
+		private void DrawEccoTriangle(int x1, int y1, int x2, int y2, int x3, int y3, Color color, int fillAlpha = 63)
+		{
+			Color? fillColor = null;
+			Point[] triPoints =
+			{
+				new Point(x1, y1),
+				new Point(x2, y2),
+				new Point(x3, y3)
+			};
+			if (fillAlpha > 0) fillColor = Color.FromArgb(fillAlpha, color);
+			_api.GUILib.DrawPolygon(triPoints, color, fillColor);
+		}
+		private void DrawBoxMWH(int x, int y, int w, int h, Color color, int fillAlpha = 63)
+		{
+			Color? fillColor = null;
+			if (fillAlpha > 0) fillColor = Color.FromArgb(fillAlpha, color);
 			_api.GUILib.DrawRectangle(x - w, y - h, w << 1, h << 1, color, fillColor);
 		}
-		void Print_Text(string message, int size, int x, int y, Color color)
+		private void DrawBox(int x, int y, int x2, int y2, Color color, int fillAlpha = 63)
+		{
+			Color? fillColor = null;
+			if (fillAlpha > 0) fillColor = Color.FromArgb(fillAlpha, color);
+			_api.GUILib.DrawBox(x, y, x2, y2, color, fillColor);
+		}
+		private void Print_Text(string message, int x, int y, Color color)
 		{
 			_api.GUILib.DrawText(x, y, message, color, null);
 		}
-		void PutText(string message, int x, int y, int xl, int yl, int xh, int yh, Color bg, Color fg)
+		private void PutText(string message, int x, int y, int xl, int yl, int xh, int yh, Color bg, Color fg)
 		{
 			xl = Math.Max(xl, 0);
-			yl = Math.Max(xl, 0);
+			yl = Math.Max(yl, 0);
 			xh = Math.Min(xh + 639, 639);
 			yh = Math.Min(yh + 441, 441);
 			xh -= 4 * message.Length;
 			x = x - ((5 * (message.Length - 1)) / 2);
-			x = Math.Min(Math.Max(x, Math.Max(xl, 1)), Math.Min(xh, 638 - 4 * (int)message.Length));
-			y = Math.Min(Math.Max(y - 3, Math.Max(yl, 1)), yh);
+			y -= 3;
+//			x = Math.Min(Math.Max(x, Math.Max(xl, 1)), Math.Min(xh, 638 - 4 * (int)message.Length));
+//			y = Math.Min(Math.Max(y - 3, Math.Max(yl, 1)), yh);
 			int[] xOffset = { -1, -1, -1, 0, 1, 1, 1, 0 };
 			int[] yOffset = { -1, 0, 1, 1, 1, 0, -1, -1 };
 			for (int i = 0; i < 8; i++)
-				Print_Text(message, message.Length, x + xOffset[i], y + yOffset[i], bg);
-			Print_Text(message, message.Length, x, y, fg);
+				Print_Text(message, x + xOffset[i], y + yOffset[i], bg);
+			Print_Text(message, x, y, fg);
 		}
-
-
-		void EccoDraw3D()
+		private void TickerText(string message, Color? fg = null)
 		{
-			int ScreenX = (_api.MemLib.ReadS32(0xFFD5E0) >> 0xC);
-			int ScreenY = (_api.MemLib.ReadS32(0xFFD5E8) >> 0xC);
-			int ScreenZ = (_api.MemLib.ReadS32(0xFFD5E4) >> 0xB);
+			if (_dumpMap == 0)
+				_api.GUILib.Text(1, _tickerY, message, fg);
+			_tickerY += 16;
+		}
+		private void EccoDraw3D()
+		{
+			int CamX = (_api.MemLib.ReadS32(0xFFD5E0) >> 0xC) - _left;
+			int CamY = (_api.MemLib.ReadS32(0xFFD5E8) >> 0xC) + _top;
+			int CamZ = (_api.MemLib.ReadS32(0xFFD5E4) >> 0xC) + _top;
 			uint curObj = _api.MemLib.ReadU24(0xFFD4C1);
 			while (curObj != 0)
 			{
 				int Xpos = (_api.MemLib.ReadS32(curObj + 0x6) >> 0xC);
 				int Ypos = (_api.MemLib.ReadS32(curObj + 0xE) >> 0xC);
-				int Zpos = (_api.MemLib.ReadS32(curObj + 0xA) >> 0xB);
-				int Y = 224 - (Zpos - ScreenZ);
-				int X = (Xpos - ScreenX) + 0xA0;
+				int Zpos = (_api.MemLib.ReadS32(curObj + 0xA) >> 0xC);
+				int Xmid =		  160 + (Xpos - CamX);
+				int Ymid =		  112 - (Ypos - CamY);
+				int Zmid = _top + 112 - (Zpos - CamZ);
 				uint type = _api.MemLib.ReadU32(curObj + 0x5A);
-				short height, width;
-				int display = 0;
-				if ((type == 0xD817E) || (type == 0xD4AB8))
+				int width, height, depth = height = width = 0;
+				if (type == 0xD4AB8) // 3D poison Bubble
 				{
-					Y = 113 - (Ypos - ScreenY);
-					height = 0x10;
-					if (_api.MemLib.ReadU32(0xFFB166) < 0x1800) height = 0x8;
-					short radius = 31;
-					if (type == 0xD4AB8)
-					{
-						radius = 7;
-						height = 0x20;
-					}
+					depth = 0x10;
+					int radius = 8;
 					width = radius;
-					DrawEccoOct(X, Y, radius, Color.Lime, 0);
-					display = 1;
+					DrawEccoOct(Xmid, Ymid, radius, Color.Lime);
+					DrawBoxMWH(Xmid, Zmid, width, depth, Color.Blue);
+					DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Lime, 0);
+					DrawBoxMWH(Xmid, Zmid, 1, 1, Color.Blue, 0);
+				}
+				else if (type == 0xD817E)// 3D Ring
+				{
+					depth = 8;
+					if (_api.MemLib.ReadU32(0xFFB166) < 0x1800) depth = 4;
+					int radius = 32;
+					width = radius;
+					DrawEccoOct(Xmid, Ymid, radius, (_api.MemLib.ReadS16(curObj + 0x62) == 0) ? Color.Orange : Color.Gray);
+					DrawBoxMWH(Xmid, Zmid, width, depth, Color.Red);
+					DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Orange, 0);
+					DrawBoxMWH(Xmid, Zmid, 1, 1, Color.Red, 0);
+					TickerText($"{_api.MemLib.ReadS32(curObj + 0x6) / 4096.0:0.######}:{_api.MemLib.ReadS32(curObj + 0xE) / 4096.0:0.######}:{_api.MemLib.ReadS32(curObj + 0xA) / 2048.0:0.######}:{_api.MemLib.ReadByte(curObj + 0x72)}",Color.Lime);
+				}
+				else if (type == 0xD49CC) // Vines collisions are based on draw position, which is a fucking pain in the ass to calculate
+				{
+					int Xvel = (_api.MemLib.ReadS32(curObj + 0x3A) - _api.MemLib.ReadS32(curObj + 0x6));
+					int Zvel = (_api.MemLib.ReadS32(curObj + 0x3E) - _api.MemLib.ReadS32(curObj + 0xA));
+					int dx = _api.MemLib.ReadS32(0xFFD5E0) - _api.MemLib.ReadS32(0xFFD5C8) >> 3;
+					int dy = _api.MemLib.ReadS32(0xFFD5E8) - _api.MemLib.ReadS32(0xFFD600) >> 3;
+					int dz = _api.MemLib.ReadS32(0xFFD5E4) - _api.MemLib.ReadS32(0xFFD5CC);
+					var chargeCount = _api.MemLib.ReadByte(0xFFB19B);
+					if (chargeCount == 0)
+					{
+						dz >>= 2;
+					}
+					else if ((chargeCount > 0x20) || (chargeCount <= 0x10))
+					{
+						dz >>= 3;
+					}
+					else if (chargeCount > 0x10)
+					{
+						dz >>= 4;
+					}
+					if (_api.MemLib.ReadByte(curObj + 0x64) == 0)
+					{
+						Xvel >>= 0xA;
+						Zvel >>= 9;
+					}
+					else
+					{
+						Xvel >>= 9;
+						Zvel >>= 0xA;
+					}
+					Xvel += _api.MemLib.ReadS32(curObj + 0x2E);
+					Zvel += _api.MemLib.ReadS32(curObj + 0x32);
+					Zpos = (_api.MemLib.ReadS32(curObj + 0x26) + dz - _api.MemLib.ReadS32(0xFFD5E4)) >> 0xB;
+					if ((Zpos < 0x600) && (Zpos > 0))
+					{
+						Zpos += 0x20;
+						int Xcur, Xmax, Ycur, Ymax;
+						int Zpos2 = (_api.MemLib.ReadS32(curObj + 0xA) + Zvel  + dz - _api.MemLib.ReadS32(0xFFD5E4)) >> 0xB;
+						Zpos2 = Math.Max(Zpos2 + 0x20, 1);
+						if (_api.MemLib.ReadS16(curObj + 0x62) != 0)
+						{
+							Xmid = _api.MemLib.ReadS32(curObj + 0x6) + dx + Xvel - _api.MemLib.ReadS32(0xFFD5E0);
+							if (Math.Abs(Xmid) > 0x400000)
+								continue;
+							Xpos = _api.MemLib.ReadS32(curObj + 0x22) + dx - _api.MemLib.ReadS32(0xFFD5E0);
+							if (Math.Abs(Xpos) > 0x400000)
+								continue;
+							Xcur = (Xmid << 2) / Zpos2 + (Xmid >> 5) + 0xA000 + (Xmid >> 5);
+							Xmax = (Xpos << 2) / Zpos + (Xpos >> 5) + 0xA000 + (Xpos >> 5);
+						}
+						else
+						{
+							Xcur = 0;
+							Xmax = 256;
+						}
+						Ymid = _api.MemLib.ReadS32(0xFFD5E8) + dy - _api.MemLib.ReadS32(curObj + 0xE);
+						Ycur = ((Ymid << 3) / Zpos2) + 0x6000;
+						Ypos = _api.MemLib.ReadS32(0xFFD5E8) + dy - _api.MemLib.ReadS32(curObj + 0x2A);
+						Ymax = ((Ypos << 3) / Zpos) + 0x6000;
+						dx = Xmax - Xcur;
+						dy = Ymax - Ycur;
+						int asindx = Math.Abs(dx >> 6) & 0xFFFF;
+						int asindy = Math.Abs(dy >> 6) & 0xFFFF;
+						int ang;
+						if (asindx == asindy)
+						{
+							if (dx > 0)
+							{
+								if (dy > 0)
+								{
+									ang = 0x20;
+								}
+								else
+								{
+									ang = 0xE0;
+								}
+							}
+							else
+							{
+								if (dy > 0)
+								{
+									ang = 0x60;
+								}
+								else
+								{
+									ang = 0xA0;
+								}
+							}
+						}
+						else
+						{
+							if (asindx > asindy)
+							{
+								asindy <<= 5;
+								asindy += asindx - 1;
+								asindy &= 0xFFFF;
+								asindy /= asindx;
+							}
+							else
+							{
+								asindx <<= 5;
+								asindx += asindy - 1;
+								asindx &= 0xFFFF;
+								asindx /= asindy;
+								asindy = 0x40 - asindx;
+							}
+							if (dx > 0)
+							{
+								if (dy > 0)
+								{
+									ang = asindy;
+								}
+								else
+								{
+									ang = 0xff - asindy;
+								}
+							}
+							else
+							{
+								if (dy > 0)
+								{
+									ang = 0x7f - asindy;
+								}
+								else
+								{
+									ang = 0x81 + asindy;
+								}
+							}
+						}
+						Xcur += _api.MemLib.ReadS8(0x2CC8 + ang) << 6;
+						Ycur += _api.MemLib.ReadS8(0x2BC8 + ang) << 6;
+						var dSml = Math.Abs(dx);
+						var dBig = Math.Abs(dy);
+						if (dBig < dSml)
+						{
+							dSml ^= dBig;
+							dBig ^= dSml;
+							dSml ^= dBig;
+						}
+						int OctRad = (dBig + (dSml >> 1) - (dSml >> 3));
+						int i = Math.Max(((OctRad >> 8) + 0x1F) >> 5, 1);
+						dx /= i;
+						dy /= i;
+
+						Zmid = (_api.MemLib.ReadS32(curObj + 0xA) + _api.MemLib.ReadS32(curObj + 0x26)) >> 1;
+						Zmid >>= 0xC;
+						Zmid = 112 + _top - (Zmid - CamZ);
+						do
+						{
+							i--;
+							DrawEccoRhomb((Xcur >> 8) + _left, (Ycur >> 8) + _top, 8, Color.Lime);
+							DrawBoxMWH((Xcur >> 8) + _left, Zmid, 8, 0x10, Color.Blue);
+							Xcur += dx;
+							Ycur += dy;
+						} while (i >= 0);
+						DrawBoxMWH((_api.MemLib.ReadS32(0xFFB1AA) >> 8) + _left, (_api.MemLib.ReadS32(0xFFB1AE) >> 8) + _top, 1, 1, Color.Lime, 0);
+					}
+				}
+				else if ((type == 0xD3B40) || (type == 0xD3DB2)) // 3D Shark and Jellyfish
+				{
+					width = (_api.MemLib.ReadS32(curObj + 0x12) >> 0xC);
+					height = (_api.MemLib.ReadS32(curObj + 0x1A) >> 0xC);
+					depth = (_api.MemLib.ReadS32(curObj + 0x16) >> 0xC);
+					DrawBoxMWH(Xmid, Ymid, width, height, Color.Lime);
+					DrawBoxMWH(Xmid, Zmid, width, depth, Color.Blue);
+					DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Lime, 0);
+					DrawBoxMWH(Xmid, Zmid, 1, 1, Color.Blue, 0);
+				}
+				else if ((type == 0xD4028) || (type == 0xD4DBA)) // 3D Eagle and 3D Shell
+				{
+					DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Lime, 0);
+					DrawBoxMWH(Xmid, Zmid, 1, 1, Color.Blue, 0);
+				}
+				else if (type == 0xD4432) // 3D Sonar Blast
+				{
+					DrawEccoOct(Xmid, Ymid, 48, Color.Orange);
+					DrawEccoOct(Xmid, Ymid, 32, Color.Lime);
+					DrawBoxMWH(Xmid, Zmid, 32, 32, Color.Blue);
+					DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Lime, 0);
+					DrawBoxMWH(Xmid, Zmid, 1, 1, Color.Blue, 0);
+				}
+				else if (type == 0xD463A) // 3D Homing Bubble
+				{
+					DrawEccoOct(Xmid, Ymid, 48, Color.Orange);
+					DrawEccoOct(Xmid, Ymid, 32, Color.Lime);
+					DrawBoxMWH(Xmid, Zmid, 32, 32, Color.Blue);
+					DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Lime, 0);
+					DrawBoxMWH(Xmid, Zmid, 1, 1, Color.Blue, 0);
+				}
+				else if ((type == 0xD37CE) || (type == 0xD4214) || (type == 0xD3808)) // bubbles, splashes, gfx sprites
+				{
+					width = height = depth = 0;
 				}
 				else
 				{
-					width = height = 1;
-					if (curObj == 0xFFB134) display = 3;
-				}
-				if ((display & 1) != 0)
-				{
-					Y = 224 - (Zpos - ScreenZ);
-					DrawBoxMWH(X, Y, width, height, Color.Blue, 0);
-				}
-				if ((display & 2) != 0)
-				{
-					Y = 113 - (Ypos - ScreenY);
-					DrawBoxMWH(X, Y, width, height, Color.Lime, 0);
+					if (curObj != 0xFFB134)
+					{
+						DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Lime, 0);
+						DrawBoxMWH(Xmid, Zmid, 1, 1, Color.Blue, 0);
+						PutText(type.ToString("X8"), Xmid, Ymid - 4, 1, 1, -1, -9, Color.White, Color.Blue);
+						PutText(curObj.ToString("X8"), Xmid, Ymid + 4, 1, 9, -1, -1, Color.White, Color.Blue);
+					}
+					else
+					{
+						DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Orange);
+						DrawBoxMWH(Xmid, Zmid, 1, 1, Color.Red);
+					}
 				}
 				curObj = _api.MemLib.ReadU24(curObj+1);
 			}
 		}
-		void EccoDrawBoxes()
+		private void EccoDrawBoxes()
 		{
 		//	CamX-=8;
 			int Width2, Height2;
@@ -131,59 +522,74 @@ namespace BizHawk.Client.EmuHawk
 					i++; off += 448;
 				}
 				color = Color.FromArgb(j >> 2, j >> 2, j >> 2);
-				_api.GUILib.DrawLine(128, j - off, 144, j - off, color);
+				_api.GUILib.DrawLine(_left - 32, j - off, _left - 17, j - off, color);
 			}
-			for (i = 0; i < 16; i++)
-				for (int j = 0; j < Math.Min(HP, 448); j++)
-				{
-					color = Color.FromArgb(0, 0, (j>>1 & 0xF0));
-					_api.GUILib.DrawPixel(144 + i, j, color);
-				}
+			for (int j = 0; j < HP; j += 8)
+			{
+				color = Color.FromArgb(Math.Max(0x38 - (j >> 3),0), 0, Math.Min(j >> 1,255));
+				_api.GUILib.DrawRectangle(_left - 16, j, 15, 7, color, color);
+			}
 
 			//Asterite
-			uint curObj = _api.MemLib.ReadU24(0xFFCFC9);
+			uint type = _api.MemLib.ReadU32(0xFFD440);
+			uint curObj = 0;
 			int Xpos, Xpos2, Ypos, Ypos2, Xmid, Ymid, X, X2, Y, Y2;
-			Xmid = 0;
-			Ymid = 0;
-			while (curObj != 0)
+			Xpos = Ypos = Xpos2 = Ypos2 = Xmid = Ymid = X = X2 = Y = Y2 = 0;
+			if (type == 0xB119A)
 			{
-				if (_api.MemLib.ReadU32(curObj + 8) != 0)
+				curObj = _api.MemLib.ReadU24(_api.MemLib.ReadU24(0xFFD429)+5);
+				while (curObj != 0)
 				{
 					Xpos = _api.MemLib.ReadS16(curObj + 0x3C);
-					Xpos2= _api.MemLib.ReadS16(curObj + 0x24);
+					Xpos2 = _api.MemLib.ReadS16(curObj + 0x24);
 					Ypos = _api.MemLib.ReadS16(curObj + 0x40);
-					Ypos2= _api.MemLib.ReadS16(curObj + 0x28);
+					Ypos2 = _api.MemLib.ReadS16(curObj + 0x28);
 					Xpos -= _camX; Xpos2 -= _camX;
 					Ypos -= _camY; Ypos2 -= _camY;
 					Xmid = (Xpos + Xpos2) >> 1;
 					Ymid = (Ypos + Ypos2) >> 1;
 					if (_api.MemLib.ReadU8(curObj + 0x71) != 0)
 					{
-						DrawEccoOct(Xpos, Ypos, 40, Color.FromArgb(255, 192, 0), 0x7F);
-						DrawEccoOct(Xpos2, Ypos2, 40, Color.FromArgb(255, 192, 0), 0x7F);
+						DrawEccoOct(Xpos, Ypos, 48, Color.Blue, 16);
+						DrawEccoOct(Xpos2, Ypos2, 48, Color.Blue, 16);
+					}
+					curObj = _api.MemLib.ReadU24(curObj + 5);
+				}
+				if ((_api.MemLib.ReadU8(0xFFA7D0) == 30))
+				{
+					curObj = _api.MemLib.ReadU24(0xFFD425);
+					if ((curObj != 0) && (_api.MemLib.ReadU32(curObj + 8) != 0))
+					{
+						Xpos = _api.MemLib.ReadS16(curObj + 0x1C) - _camX;
+						Ypos = _api.MemLib.ReadS16(curObj + 0x20) - _camY;
+						DrawEccoOct(Xpos, Ypos, 20, Color.Orange);
 					}
 				}
-				else 
-				{
-					Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
-					Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
-				}
-				Print_Text(curObj.ToString("X8"), 8, Math.Min(Math.Max(0, Xmid-16), 605), Math.Min(Math.Max(0, Ymid-5), 424), Color.Lime);
-				Print_Text(curObj.ToString("X8"), 8, Math.Min(Math.Max(2, Xmid-14), 607), Math.Min(Math.Max(2, Ymid-3), 426), Color.Lime);
-				Print_Text(curObj.ToString("X8"), 8, Math.Min(Math.Max(0, Xmid-16), 605), Math.Min(Math.Max(2, Ymid-3), 426), Color.Lime);
-				Print_Text(curObj.ToString("X8"), 8, Math.Min(Math.Max(2, Xmid-14), 607), Math.Min(Math.Max(0, Ymid-5), 424), Color.Lime);
-				Print_Text(curObj.ToString("X8"), 8, Math.Min(Math.Max(1, Xmid-15), 606), Math.Min(Math.Max(1, Ymid-4), 425), Color.Blue);
-				curObj = _api.MemLib.ReadU24(curObj+1);
 			}
-			uint curlev = _api.MemLib.ReadU8(0xFFA7E0);
-			if ((_api.MemLib.ReadU8(0xFFA7D0) == 30))
+			else if (type == 0xB2CB8)
 			{
-				curObj = _api.MemLib.ReadU24(0xFFD425);
-				if ((curObj != 0) && (_api.MemLib.ReadU32(curObj + 8) != 0))
+				curObj = _api.MemLib.ReadU24(_api.MemLib.ReadU24(0xFFD429) + 5);
+				while (curObj != 0)
 				{
-					Xpos = _api.MemLib.ReadS16(curObj + 0x1C) - _camX;
-					Ypos = _api.MemLib.ReadS16(curObj + 0x20) - _camY;
-					DrawEccoOct(Xpos, Ypos, 20, Color.FromArgb(255, 192, 0));
+					Xpos = _api.MemLib.ReadS16(curObj + 0x3C);
+					Xpos2 = _api.MemLib.ReadS16(curObj + 0x24);
+					Ypos = _api.MemLib.ReadS16(curObj + 0x40);
+					Ypos2 = _api.MemLib.ReadS16(curObj + 0x28);
+					Xpos -= _camX; Xpos2 -= _camX;
+					Ypos -= _camY; Ypos2 -= _camY;
+					Xmid = (Xpos + Xpos2) >> 1;
+					Ymid = (Ypos + Ypos2) >> 1;
+					if (_api.MemLib.ReadU8(curObj + 0x71) != 0)
+					{
+						if (_api.MemLib.ReadByte(0xFFA7D0) != 0x1F)
+						{
+							DrawEccoOct(Xpos, Ypos, 40, Color.Lime);
+							DrawEccoOct(Xpos2, Ypos2, 40, Color.Lime);
+						}
+						DrawEccoOct(Xpos, Ypos, 48, Color.Blue, 16);
+						DrawEccoOct(Xpos2, Ypos2, 48, Color.Blue, 16);
+					}
+					curObj = _api.MemLib.ReadU24(curObj + 5);
 				}
 			}
 			//aqua tubes
@@ -199,254 +605,408 @@ namespace BizHawk.Client.EmuHawk
 				Xmid = (Xpos + Xpos2) >> 1;
 				Ymid = (Ypos + Ypos2) >> 1;
 		//		displayed = false;
-				uint type = _api.MemLib.ReadU8(curObj + 0x7E);
-				int yoff = 0;
+				type = _api.MemLib.ReadU8(curObj + 0x7E);
 				switch (type)
 				{
-		/*			case 0x11:
-						Xpos2 = Xmid;
-						Xmid = (Xpos + Xpos2) >> 1;
-						break;
-					case 0x12:
-						Xpos = Xmid;
-						Xmid = (Xpos + Xpos2) >> 1;
-						break;
-					case 0x13:
-						Ypos = Ymid;
-						Ymid = (Ypos + Ypos2) >> 1;
-						break;
-					case 0x14:
-						Ypos2 = Ymid;
-						Ymid = (Ypos + Ypos2) >> 1;
-						break;*/
 					case 0x15:
-						for (int TempX = 0; TempX <= Xmid-Xpos; TempX++, yoff++)
-							_api.GUILib.DrawPixel(Xpos2 - TempX, Ymid + yoff, Color.FromArgb(127, 0, 255));
-						for (int TempX = Math.Min(Math.Max(0, Xmid), 320); TempX <= Math.Min(Math.Max(8, Xpos2), 327); TempX++)
-							_api.GUILib.DrawPixel(TempX, Ymid, Color.FromArgb(127, 0, 255));
-						for (uint TempX = (uint)Math.Min(Math.Max(0, Ymid), 223); TempX <= Math.Min(Math.Max(0, Ypos2), 223); TempX++)
-							_api.GUILib.DrawPixel(Xmid, (int)TempX, Color.FromArgb(127, 0, 255));
-						break;
 					case 0x18:
 					case 0x19:
-						for (int TempX = 0; TempX <= Ymid-Ypos; TempX++)
-						{
-							_api.GUILib.DrawPixel(Xmid + yoff, Ypos2-TempX, Color.FromArgb(127, 0, 255));
-							if ((TempX & 1) != 0) yoff++;
-						}
+						DrawEccoTriangle(Xmid, Ymid, Xmid, Ypos2, Xpos2, Ymid, Color.Purple);
 						break;
 					case 0x1A:
-						for (int TempX = 0; TempX <= Xmid-Xpos; TempX++, yoff++)
-							_api.GUILib.DrawPixel(Xpos + TempX, Ymid + yoff, Color.FromArgb(127, 0, 255));
-						for (int TempX = Math.Min(Math.Max(0, Xpos), 320); TempX <= Math.Min(Math.Max(8, Xmid), 327); TempX++)
-							_api.GUILib.DrawPixel(TempX, Ymid, Color.FromArgb(127, 0, 255));
-						for (uint TempX = (uint)Math.Min(Math.Max(0, Ymid), 223); TempX <= Math.Min(Math.Max(0, Ypos2), 223); TempX++)
-							_api.GUILib.DrawPixel(Xmid, (int)TempX, Color.FromArgb(127, 0, 255));
-						break;
 					case 0x1D:
-						for (int TempX = 0; TempX <= Ymid-Ypos; TempX++)
-						{
-							_api.GUILib.DrawPixel(Xmid - yoff, Ypos2 - TempX, Color.FromArgb(127, 0, 255));
-							if ((TempX & 1) != 0) yoff++;
-						}
-						break;
-					case 0x1F:
-						for (int TempX = 0; TempX <= Xmid-Xpos; TempX++, yoff++)
-							_api.GUILib.DrawPixel(Xpos + TempX, Ymid - yoff, Color.FromArgb(127, 0, 255));
-						for (int TempX = Math.Min(Math.Max(0, Xpos), 320); TempX <= Math.Min(Math.Max(8, Xmid), 327); TempX++)
-							_api.GUILib.DrawPixel(TempX, Ymid, Color.FromArgb(127, 0, 255));
-						for (uint TempX = (uint)Math.Min(Math.Max(0, Ypos), 223); TempX <= Math.Min(Math.Max(0, Ymid), 223); TempX++)
-							_api.GUILib.DrawPixel(Xmid, (int)TempX, Color.FromArgb(127, 0, 255));
-						break;
 					case 0x20:
 					case 0x21:
-						for (int TempX = 0; TempX <= Xmid-Xpos; TempX++)
-						{
-							_api.GUILib.DrawPixel(Xpos + TempX, Ymid - yoff, Color.FromArgb(127, 0, 255));
-							if ((TempX & 1) != 0) yoff++;
-						}
+						DrawEccoTriangle(Xmid, Ymid, Xmid, Ypos2, Xpos, Ymid, Color.Purple);
 						break;
+					case 0x1F:
 					case 0x22:
 					case 0x23:
-						for (int TempX = 0; TempX <= Ymid-Ypos; TempX++)
-						{
-							_api.GUILib.DrawPixel(Xmid - yoff, Ypos + TempX, Color.FromArgb(127, 0, 255));
-							if ((TempX & 1) != 0) yoff++;
-						}
+						DrawEccoTriangle(Xmid, Ymid, Xmid, Ypos, Xpos, Ymid, Color.Purple);
 						break;
 					case 0x24:
-						for (int TempX = 0; TempX <= Xmid-Xpos; TempX++, yoff++)
-							_api.GUILib.DrawPixel(Xpos2 - TempX, Ymid - yoff, Color.FromArgb(127, 0, 255));
-						break;
 					case 0x25:
 					case 0x26:
-						for (int TempX = 0; TempX <= Xmid-Xpos; TempX++)
-						{
-							_api.GUILib.DrawPixel(Xpos2 - TempX, Ymid - yoff, Color.FromArgb(127, 0, 255));
-							if ((TempX & 1) != 0) yoff++;
-						}
-						break;
 					case 0x27:
 					case 0x28:
-						for (int TempX = 0; TempX <= Ymid-Ypos; TempX++)
-						{
-							_api.GUILib.DrawPixel(Xmid + yoff, Ypos + TempX, Color.FromArgb(127, 0, 255));
-							if ((TempX & 1) != 0) yoff++;
-						}
+						DrawEccoTriangle(Xmid, Ymid, Xmid, Ypos, Xpos2, Ymid, Color.Purple);
 						break;
 					case 0x2B:
-                        _api.GUILib.DrawLine(Xpos, Ymid, Xpos2, Ymid, Color.FromArgb(127, 0, 255));
-                        for (int TempX = 0; TempX <= Ymid - Ypos; TempX++)
-                        {
-                            _api.GUILib.DrawPixel(Xpos + yoff, Ymid - TempX, Color.FromArgb(127, 0, 255));
-                            _api.GUILib.DrawPixel(Xpos2 - yoff, Ymid - TempX, Color.FromArgb(127, 0, 255));
-                            if ((TempX & 1) != 0) yoff++;
-                        }
-                        yoff = Xmid - (Xpos + yoff);
-                        _api.GUILib.DrawLine(Xmid - yoff, Ypos, Xmid + yoff, Ypos, Color.FromArgb(127, 0, 255));
+						Point[] trapPoints =
+						{
+							new Point(Xpos, Ymid),
+							new Point(Xpos + (Ymid - Ypos >> 1), Ypos),
+							new Point(Xpos2 - (Ymid - Ypos >> 1), Ypos),
+							new Point(Xpos2, Ymid)
+						};
+						_api.GUILib.DrawPolygon(trapPoints, Color.Purple, Color.FromArgb(63, Color.Purple));
 						break;
 					default:
-						_api.GUILib.DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.FromArgb(255, 127, 0, 255));
+						DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Purple);
+						if (type != 0x10)
+							PutText(type.ToString("X2"), Xmid, Ymid, 1, 1, -1, -1, Color.Red, Color.Blue);
 						break;
-				}
-		//		if (!displayed)
-				if (type != 0x10)
-				{
-					uint temp = _api.MemLib.ReadU8(curObj + 0x7E);
-					Print_Text(temp.ToString("%02X"), 2, Math.Min(Math.Max(0, Xmid-3), 628), Math.Min(Math.Max(0, Ymid-5), 424), Color.Red);
-					Print_Text(temp.ToString("%02X"), 2, Math.Min(Math.Max(2, Xmid-1), 630), Math.Min(Math.Max(2, Ymid-3), 426), Color.Red);
-					Print_Text(temp.ToString("%02X"), 2, Math.Min(Math.Max(0, Xmid-3), 628), Math.Min(Math.Max(2, Ymid-3), 426), Color.Red);
-					Print_Text(temp.ToString("%02X"), 2, Math.Min(Math.Max(2, Xmid-1), 630), Math.Min(Math.Max(0, Ymid-5), 424), Color.Red);
-					Print_Text(temp.ToString("%02X"), 2, Math.Min(Math.Max(1, Xmid-2), 629), Math.Min(Math.Max(1, Ymid-4), 425), Color.Blue);
 				}
 				curObj = _api.MemLib.ReadU24(curObj+1);
 			}
 			//walls
-			bool displayed;
 			curObj = _api.MemLib.ReadU24(0xFFCFC1);
 			while (curObj != 0)
 			{
-
+				Xmid = _api.MemLib.ReadS16(curObj + 0x24);
+				Xmid = _api.MemLib.ReadS16(curObj + 0x28);
 				Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
 				Xpos2= _api.MemLib.ReadS16(curObj + 0x34);
 				Ypos = _api.MemLib.ReadS16(curObj + 0x30);
 				Ypos2= _api.MemLib.ReadS16(curObj + 0x38);
 				Xpos -= _camX; Xpos2 -= _camX;
 				Ypos -= _camY; Ypos2 -= _camY;
-				Xmid = (Xpos + Xpos2) >> 1;
-				Ymid = (Ypos + Ypos2) >> 1;
-				displayed = false;
-				uint type = _api.MemLib.ReadU8(curObj + 0x7E);
-				int yoff = 0;
-				switch (type)
+				Xmid -= _camX; Ymid -= _camY;
+				int colltype = _api.MemLib.ReadS8(curObj + 0x7E);
+				switch (colltype)
 				{
+					case 0x10:
+					case 0x2D:
+					case 0x2E:
+						DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.PowderBlue);
+						break;
 					case 0x11:
-						Xpos2 = Xmid;
 						Xmid = (Xpos + Xpos2) >> 1;
+						Xpos2 = Xmid;
+						DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.FromArgb(63, Color.Yellow));
+						_api.GUILib.DrawLine(Xpos2, Ypos, Xpos2, Ypos2, Color.PowderBlue);
 						break;
 					case 0x12:
-						Xpos = Xmid;
 						Xmid = (Xpos + Xpos2) >> 1;
+						Xpos = Xmid;
+						DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.FromArgb(63, Color.Yellow));
+						_api.GUILib.DrawLine(Xpos, Ypos, Xpos, Ypos2, Color.PowderBlue);
 						break;
 					case 0x13:
-						Ypos = Ymid;
 						Ymid = (Ypos + Ypos2) >> 1;
+						Ypos = Ymid;
+						DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.FromArgb(63, Color.Yellow));
+						_api.GUILib.DrawLine(Xpos, Ypos, Xpos2, Ypos, Color.PowderBlue);
 						break;
 					case 0x14:
-						Ypos2 = Ymid;
 						Ymid = (Ypos + Ypos2) >> 1;
+						Ypos2 = Ymid;
+						DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.FromArgb(63, Color.Yellow));
+						_api.GUILib.DrawLine(Xpos, Ypos2, Xpos2, Ypos2, Color.PowderBlue);
 						break;
 					case 0x15:
 					case 0x16:
 					case 0x17:
 					case 0x18:
 					case 0x19:
-						_api.GUILib.DrawLine(Xmid, Ypos2, Xpos2, Ymid, Color.White);
-                        _api.GUILib.DrawLine(Xmid, Ypos2,  Xmid, Ymid, Color.FromArgb(127,Color.White));
-                        _api.GUILib.DrawLine(Xmid,  Ymid, Xpos2, Ymid, Color.FromArgb(127, Color.White));
-                        displayed = true;
+						Xmid = (Xpos + Xpos2) >> 1;
+						Ymid = (Ypos + Ypos2) >> 1;
+						DrawEccoTriangle(Xmid, Ymid, Xmid, Ypos2, Xpos2, Ymid, Color.FromArgb(63, Color.Yellow));
+						_api.GUILib.DrawLine(Xmid, Ypos2, Xpos2, Ymid, Color.PowderBlue);
 						break;
 					case 0x1A:
 					case 0x1B:
 					case 0x1C:
 					case 0x1D:
 					case 0x1E:
-						_api.GUILib.DrawLine(Xpos, Ymid, Xmid, Ypos2, Color.White);
-                        _api.GUILib.DrawLine(Xmid, Ymid, Xmid, Ypos2, Color.FromArgb(127, Color.White));
-                        _api.GUILib.DrawLine(Xpos, Ymid, Xmid, Ymid, Color.FromArgb(127, Color.White));
-                        displayed = true;
+						Xmid = (Xpos + Xpos2) >> 1;
+						Ymid = (Ypos + Ypos2) >> 1;
+						DrawEccoTriangle(Xmid, Ymid, Xmid, Ypos2, Xpos, Ymid, Color.FromArgb(63, Color.Yellow));
+                        _api.GUILib.DrawLine(Xpos, Ymid, Xmid, Ypos2, Color.PowderBlue);
 						break;
 					case 0x1F:
 					case 0x20:
 					case 0x21:
 					case 0x22:
 					case 0x23:
-						_api.GUILib.DrawLine(Xpos, Ymid, Xmid, Ypos, Color.White);
-                        _api.GUILib.DrawLine(Xmid, Ymid, Xmid, Ypos, Color.FromArgb(127, Color.White));
-                        _api.GUILib.DrawLine(Xpos, Ymid, Xmid, Ymid, Color.FromArgb(127, Color.White));
-                        displayed = true;
+						Xmid = (Xpos + Xpos2) >> 1;
+						Ymid = (Ypos + Ypos2) >> 1;
+						DrawEccoTriangle(Xmid, Ymid, Xmid, Ypos, Xpos, Ymid, Color.FromArgb(63,Color.Yellow));
+                        _api.GUILib.DrawLine(Xpos, Ymid, Xmid, Ypos, Color.PowderBlue);
 						break;
 					case 0x24:
 					case 0x25:
 					case 0x26:
 					case 0x27:
 					case 0x28:
-						_api.GUILib.DrawLine(Xmid, Ypos, Xpos2, Ymid, Color.White);
-                        _api.GUILib.DrawLine(Xmid, Ypos,  Xmid, Ymid, Color.FromArgb(127, Color.White));
-                        _api.GUILib.DrawLine(Xmid, Ymid, Xpos2, Ymid, Color.FromArgb(127, Color.White));
-                        displayed = true;
+						Xmid = (Xpos + Xpos2) >> 1;
+						Ymid = (Ypos + Ypos2) >> 1;
+						DrawEccoTriangle(Xmid, Ymid, Xmid, Ypos, Xpos2, Ymid, Color.FromArgb(63,Color.Yellow));
+                        _api.GUILib.DrawLine(Xmid, Ypos, Xpos2, Ymid, Color.PowderBlue);
+						break;
+					case 0x29:
+						DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.FromArgb(63, Color.Black));
+						_api.GUILib.DrawLine(Xpos , Ypos, Xpos , Ypos2, Color.Black);
+						_api.GUILib.DrawLine(Xpos2, Ypos, Xpos2, Ypos2, Color.Black);
+						break;
+					case 0x2A:
+						DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.FromArgb(63, Color.Black));
+						_api.GUILib.DrawLine(Xpos,  Ypos, Xpos2,  Ypos, Color.Black);
+						_api.GUILib.DrawLine(Xpos, Ypos2, Xpos2, Ypos2, Color.Black);
 						break;
 					case 0x2B:
-                        _api.GUILib.DrawLine(Xpos, Ymid, Xpos2, Ymid, Color.FromArgb(127, Color.White));
-						for (int TempX = 0; TempX <= Ymid-Ypos; TempX++)
+						Xmid = (Xpos + Xpos2) >> 1;
+						Ymid = (Ypos + Ypos2) >> 1;
+						Point[] trapPoints =
 						{
-							_api.GUILib.DrawPixel(Xpos + yoff, Ymid - TempX, Color.White);
-							_api.GUILib.DrawPixel(Xpos2 - yoff, Ymid - TempX, Color.White);
-							if ((TempX & 1) != 0) yoff++;
-						}
-						yoff = Xmid - (Xpos + yoff);
-                        _api.GUILib.DrawLine(Xmid - yoff, Ypos, Xmid + yoff, Ypos);
-						displayed = true;
+							new Point(Xpos, Ymid),
+							new Point(Xpos + (Ymid - Ypos >> 1), Ypos),
+							new Point(Xpos2 - (Ymid - Ypos >> 1), Ypos),
+							new Point(Xpos2, Ymid)
+						};
+						_api.GUILib.DrawPolygon(trapPoints, Color.PowderBlue, Color.FromArgb(63, Color.PowderBlue));
+                        //_api.GUILib.DrawLine(Xpos, Ymid, Xpos2, Ymid, Color.Yellow);
 						break;
 					default:
-						if (type != 0x10)
-						{
-							var temp = _api.MemLib.ReadU8(curObj + 0x7E);
-							Print_Text(temp.ToString("%02X"), 2, Math.Min(Math.Max(0, Xmid-3), 628), Math.Min(Math.Max(0, Ymid-5), 424), Color.Red);
-							Print_Text(temp.ToString("%02X"), 2, Math.Min(Math.Max(2, Xmid-1), 630), Math.Min(Math.Max(2, Ymid-3), 426), Color.Red);
-							Print_Text(temp.ToString("%02X"), 2, Math.Min(Math.Max(0, Xmid-3), 628), Math.Min(Math.Max(2, Ymid-3), 426), Color.Red);
-							Print_Text(temp.ToString("%02X"), 2, Math.Min(Math.Max(2, Xmid-1), 630), Math.Min(Math.Max(0, Ymid-5), 424), Color.Red);
-							Print_Text(temp.ToString("%02X"), 2, Math.Min(Math.Max(1, Xmid-2), 629), Math.Min(Math.Max(1, Ymid-4), 425), Color.Lime);
-						}
+						DrawEccoRhomb_scaled(Xmid, Ymid, _api.MemLib.ReadS16(curObj + 0x44), _api.MemLib.ReadS16(curObj + 0x44), (colltype & 1), (colltype & 2) >> 1, (colltype & 4) >> 2, (colltype & 8) >> 3, Color.PowderBlue);
 						break;
 				}
-				if (!displayed) _api.GUILib.DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.White);
 				curObj = _api.MemLib.ReadU24(curObj+1);
 			}
 			//inanimate objects
 			curObj = _api.MemLib.ReadU24(0xFFCFBD);
 			while (curObj != 0)
 			{
-				if (_api.MemLib.ReadU8(curObj + 0x7E) > 0xF);
+				type = _api.MemLib.ReadU32(curObj + 0xC);
+				int colltype = _api.MemLib.ReadS8(curObj + 0x7E);
+				Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+				Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+				int Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54) + _api.MemLib.ReadS32(curObj + 0x5C)) >> 16) - _camX;
+				int Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58) + _api.MemLib.ReadS32(curObj + 0x60)) >> 16) - _camY;
+				Xpos = _api.MemLib.ReadS16(curObj + 0x2C) - _camX;
+				Xpos2 = _api.MemLib.ReadS16(curObj + 0x34) - _camX;
+				Ypos = _api.MemLib.ReadS16(curObj + 0x30) - _camY;
+				Ypos2 = _api.MemLib.ReadS16(curObj + 0x38) - _camY;
+				Xmid >>= 16; Ymid >>= 16;
+				Xmid -= _camX; Ymid -= _camY;
+				if (type == 0x9CE3A) //Remnant Stars
 				{
-					Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
-					Xpos2= _api.MemLib.ReadS16(curObj + 0x34);
-					Ypos = _api.MemLib.ReadS16(curObj + 0x30);
-					Ypos2= _api.MemLib.ReadS16(curObj + 0x38);
-					Xpos -= _camX; Xpos2 -= _camX;
-					Ypos -= _camY; Ypos2 -= _camY;
-                    _api.GUILib.DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Blue);
-                }
-                Xpos += Xpos2;
-				Ypos += Ypos2;
-				Xpos >>= 1;
-				Ypos >>= 1;
-				Print_Text(curObj.ToString("X8"), 8, Math.Min(Math.Max(0, Xpos-16), 605), Math.Min(Math.Max(0, Ypos-5), 424), Color.Lime);
-				Print_Text(curObj.ToString("X8"), 8, Math.Min(Math.Max(2, Xpos-14), 607), Math.Min(Math.Max(2, Ypos-3), 426), Color.Lime);
-				Print_Text(curObj.ToString("X8"), 8, Math.Min(Math.Max(0, Xpos-16), 605), Math.Min(Math.Max(2, Ypos-3), 426), Color.Lime);
-				Print_Text(curObj.ToString("X8"), 8, Math.Min(Math.Max(2, Xpos-14), 607), Math.Min(Math.Max(0, Ypos-5), 424), Color.Lime);
-				Print_Text(curObj.ToString("X8"), 8, Math.Min(Math.Max(1, Xpos-15), 606), Math.Min(Math.Max(1, Ypos-4), 425), Color.Blue);
-                curObj = _api.MemLib.ReadU24(curObj+1);
+					uint subObj = _api.MemLib.ReadU24(curObj + 0x5);
+					uint anim = _api.MemLib.ReadU16(curObj + 0x6C);
+					if ((anim <= 7) && (subObj == 0xFFA9D4))
+					{
+						DrawEccoRhomb(Xmid, Ymid, 96, Color.Red);
+						PutText($"{((7 - anim) * 4) - ((_api.MemLib.ReadByte(0xFFA7C9) & 3) - 4)}", Xmid, Ymid + 4, 1, 1, -1, -1, Color.Lime, Color.Blue);
+					}
+				}
+				else if ((type == 0x9CC06) || (type == 0x9CA10))
+				{
+					Xvec = ((_api.MemLib.ReadS32(curObj + 0x24) + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+					Yvec = ((_api.MemLib.ReadS32(curObj + 0x28) + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+				}
+				else if (type == 0x9B5D8)
+				{
+					Xvec = Xmid;
+					Yvec = Ymid;
+				}
+				else if (type == 0xC0152) // Vortex Future Vertical Gate
+				{
+					Xvec = _api.MemLib.ReadS16(curObj + 0x1C) - _camX;
+					Yvec = (_api.MemLib.ReadS32(curObj + 0x20) + _api.MemLib.ReadS32(curObj + 0x60) >> 16) - _camY;
+					_api.GUILib.DrawLine(Xmid, 0, Xmid, 448, Color.PowderBlue);
+					DrawBoxMWH(Xvec, Yvec, 1, 1, Color.Blue, 0);
+					DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+				}
+				else if (type == 0xC3330) // City Of Forever Horizontal Gate Slave
+				{
+					Xvec = (_api.MemLib.ReadS32(curObj + 0x1C) + _api.MemLib.ReadS32(curObj + 0x5C) >> 16) - _camX;
+					Yvec = _api.MemLib.ReadS16(curObj + 0x20) - _camY;
+					DrawBoxMWH(Xvec, Yvec, 1, 1, Color.Blue, 0);
+					DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+				}
+				else if (type == 0xC35B0) // City Of Forever Horizontal Gate Master
+				{
+					var mode = _api.MemLib.ReadByte(curObj + 0x15);
+					var tmpx = Xpos;
+					Xpos = _api.MemLib.ReadS32(curObj + 0x1C);
+					Xvec = (Xpos + _api.MemLib.ReadS32(curObj + 0x5C) >> 16) - _camX;
+					Xpos >>= 16; Xpos -= _camX;
+					Yvec = _api.MemLib.ReadS16(curObj + 0x20) - _camY;
+					if ((mode == 1) || (mode == 3))
+					{
+						DrawEccoOct(Xpos, Yvec, 128, Color.Orange);
+					}
+					Xpos = tmpx;
+					DrawBoxMWH(Xvec, Yvec, 1, 1, Color.Blue, 0);
+					DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+				}
+				else if (type == 0xC343A) // City Of Forever Vertical Gate
+				{
+					var mode = _api.MemLib.ReadByte(curObj + 0x15);
+					if ((mode == 1) || (mode == 3))
+					{
+						DrawEccoOct(Xmid, Ymid, 128, Color.Orange);
+					}
+					Xvec = _api.MemLib.ReadS16(curObj + 0x1C) - _camX;
+					Yvec = (_api.MemLib.ReadS32(curObj + 0x20) + _api.MemLib.ReadS32(curObj + 0x60) >> 16) - _camY;
+					DrawBoxMWH(Xvec, Yvec, 1, 1, Color.Blue, 0);
+					DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+				}
+				else if (type == 0xA579A) // Antigrav Ball
+				{
+					DrawEccoOct(Xmid, Ymid, _api.MemLib.ReadS16(curObj + 0x4C), (_api.MemLib.ReadU16(0xFFA7C8) & 7) == 7 ? Color.Blue : Color.Gray);
+					DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Blue);
+					DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.PowderBlue, 0);
+					Xpos = Ypos = Xpos2 = Ypos2 = _camX - 128;
+				}
+				else if (type == 0xDF4E2) // Moray Abyss Conch Shell
+				{
+					Xpos = _api.MemLib.ReadS16(curObj + 0x1C) - _camX;
+					Ypos = _api.MemLib.ReadS16(curObj + 0x20) - _camY;
+					DrawBox(Xpos - 96, 0 - _camY, Xpos + 96, _api.MemLib.ReadS16(0xFFA7AC) - _camY - 64, Color.Orange, 0);
+					var mode = _api.MemLib.ReadByte(curObj + 0x15);
+					var modeTimer = _api.MemLib.ReadS16(curObj + 0x6E);
+					var Xvel1 = _api.MemLib.ReadS32(curObj + 0x54) / 65536.0;
+					var Yvel1 = _api.MemLib.ReadS32(curObj + 0x58) / 65536.0;
+					var Xvel2 = _api.MemLib.ReadS32(curObj + 0x5C) / 65536.0;
+					var Yvel2 = _api.MemLib.ReadS32(curObj + 0x60) / 65536.0;
+					TickerText($"{mode}:{modeTimer}:{_api.MemLib.ReadS16(0xFFA7AC) - 64 - Ymid - _camY}", Color.Red);
+					TickerText($"{Xvel1:0.######}:{Yvel1:0.######}", Color.Red);
+					TickerText($"{Xvel2:0.######}:{Yvel2:0.######}", Color.Red);
+					TickerText($"{Xvel1 + Xvel2:0.######}:{Yvel1 + Yvel2:0.######}", Color.Red);
+					switch (mode)
+					{
+						case 0:
+							Xpos2 = Math.Abs(Xmid - Xpos);
+							if (Xpos2 > 0x48)
+							{
+								Xpos2 = (0x60 - Xpos2) << 1;
+								Ypos2 = Ymid + Xpos2;
+							}
+							else
+							{
+								Ypos2 = Ymid - (Xpos2 >> 1) + 0x60;
+							}
+							DrawBoxMWH(Xpos, Ypos2, 1, 1, Color.Gray, 0);
+							DrawBoxMWH(Xpos, 112 + _top, 72, 224, (modeTimer <= 1) ? Color.Orange : Color.Gray, 0);
+							break;
+						case 1:
+							DrawBoxMWH(Xpos, Ypos, 1, 1, Color.Orange, 0);
+							Xpos2 = _api.MemLib.ReadS32(0xFFAA1A) - _api.MemLib.ReadS32(curObj + 0x24);
+							Ypos2 = _api.MemLib.ReadS32(0xFFAA1E) - _api.MemLib.ReadS32(curObj + 0x28);
+							var dSml = Math.Abs(Xpos2);
+							var dBig = Math.Abs(Ypos2);
+							if (dBig < dSml)
+							{
+								dSml ^= dBig;
+								dBig ^= dSml;
+								dSml ^= dBig;
+							}
+							var rad = (dBig + (dSml >> 1) - (dSml >> 3)) / 65536.0;
+							Xpos2 = (int)(Xpos2 * (256.0 / (rad+1))) >> 20;
+							Ypos2 = (int)(Ypos2 * (256.0 / (rad+1))) >> 20;
+							_api.GUILib.DrawLine(Xmid, Ymid, Xmid + Xpos2, Ymid + Ypos2, Color.Gray);
+							TickerText($"{Xpos2 / 512.0:0.######}:{Ypos2 / 512.0:0.######}", Color.Red);
+							break;
+						case 2:
+							TickerText($"{_api.MemLib.ReadS32(curObj + 0x4C) / 65536.0:0.######}:{_api.MemLib.ReadS32(curObj + 0x50) / 65536.0:0.######}", Color.Red);
+							break;
+					}
+				}
+				else if ((type == 0xC57A6) || (type == 0xDEE3C) || (type == 0xDF8A0) || (type == 0xDFA98) 
+					  || (type == 0xA0BE4) || (type == 0x9FEB2) || (type == 0xA5670) || (type == 0xAEC1A) 
+					  || (type == 0xA6C4A) || (type == 0xAB65A) || (type == 0x9F2EC)) { }
+				else
+				{
+					PutText($"{type:X5}:{_api.MemLib.ReadByte(curObj + 0x13)}", Xmid, Ymid - 4, 1, 1, -1, -9, Color.Lime, Color.Blue);
+					PutText(curObj.ToString("X6"), Xmid, Ymid + 4, 1, 9, -1, -1, Color.Lime, Color.Blue);
+				}
+				colltype = _api.MemLib.ReadS8(curObj + 0x7E);
+				switch (colltype)
+				{
+					case 0x10:
+					case 0x2D:
+					case 0x2E:
+						DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.PowderBlue);
+						break;
+					case 0x11:
+						Xmid = (Xpos + Xpos2) >> 1;
+						Xpos2 = Xmid;
+						DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.PowderBlue);
+						break;
+					case 0x12:
+						Xmid = (Xpos + Xpos2) >> 1;
+						Xpos = Xmid;
+						DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.PowderBlue);
+						break;
+					case 0x13:
+						Ymid = (Ypos + Ypos2) >> 1;
+						Ypos = Ymid;
+						DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.PowderBlue);
+						break;
+					case 0x14:
+						Ymid = (Ypos + Ypos2) >> 1;
+						Ypos2 = Ymid;
+						DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.PowderBlue);
+						break;
+					case 0x15:
+					case 0x16:
+					case 0x17:
+					case 0x18:
+					case 0x19:
+						Xmid = (Xpos + Xpos2) >> 1;
+						Ymid = (Ypos + Ypos2) >> 1;
+						DrawEccoTriangle(Xmid, Ymid, Xmid, Ypos2, Xpos2, Ymid, Color.FromArgb(63, Color.Yellow));
+						_api.GUILib.DrawLine(Xmid, Ypos2, Xpos2, Ymid, Color.PowderBlue);
+						break;
+					case 0x1A:
+					case 0x1B:
+					case 0x1C:
+					case 0x1D:
+					case 0x1E:
+						Xmid = (Xpos + Xpos2) >> 1;
+						Ymid = (Ypos + Ypos2) >> 1;
+						DrawEccoTriangle(Xmid, Ymid, Xmid, Ypos2, Xpos, Ymid, Color.FromArgb(63, Color.Yellow));
+						_api.GUILib.DrawLine(Xpos, Ymid, Xmid, Ypos2, Color.PowderBlue);
+						break;
+					case 0x1F:
+					case 0x20:
+					case 0x21:
+					case 0x22:
+					case 0x23:
+						Xmid = (Xpos + Xpos2) >> 1;
+						Ymid = (Ypos + Ypos2) >> 1;
+						DrawEccoTriangle(Xmid, Ymid, Xmid, Ypos, Xpos, Ymid, Color.FromArgb(63, Color.Yellow));
+						_api.GUILib.DrawLine(Xpos, Ymid, Xmid, Ypos, Color.PowderBlue);
+						break;
+					case 0x24:
+					case 0x25:
+					case 0x26:
+					case 0x27:
+					case 0x28:
+						Xmid = (Xpos + Xpos2) >> 1;
+						Ymid = (Ypos + Ypos2) >> 1;
+						DrawEccoTriangle(Xmid, Ymid, Xmid, Ypos, Xpos2, Ymid, Color.FromArgb(63, Color.Yellow));
+						_api.GUILib.DrawLine(Xmid, Ypos, Xpos2, Ymid, Color.PowderBlue);
+						break;
+					case 0x2A:
+						DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.FromArgb(63, Color.Black));
+						_api.GUILib.DrawLine(Xpos, Ypos, Xpos2, Ypos, Color.Black);
+						_api.GUILib.DrawLine(Xpos, Ypos2, Xpos2, Ypos2, Color.Black);
+						break;
+					case 0x2B:
+						Xmid = (Xpos + Xpos2) >> 1;
+						Ymid = (Ypos + Ypos2) >> 1;
+						Point[] trapPoints =
+						{
+							new Point(Xpos, Ymid),
+							new Point(Xpos + (Ymid - Ypos >> 1), Ypos),
+							new Point(Xpos2 - (Ymid - Ypos >> 1), Ypos),
+							new Point(Xpos2, Ymid)
+						};
+						_api.GUILib.DrawPolygon(trapPoints, Color.PowderBlue, Color.FromArgb(63, Color.PowderBlue));
+						break;
+					case 0x2C:
+						break;
+					default:
+						DrawEccoRhomb_scaled(Xmid, Ymid, _api.MemLib.ReadS16(curObj + 0x44), _api.MemLib.ReadS16(curObj + 0x44), (colltype & 1), (colltype & 2) >> 1, (colltype & 4) >> 2, (colltype & 8) >> 3, Color.PowderBlue);
+						break;
+				}
+				Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+				Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+				DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+				_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+				curObj = _api.MemLib.ReadU24(curObj+1);
 			}
 			//animate objects
 			if (_mode == Modes.Ecco2)
@@ -455,78 +1015,1416 @@ namespace BizHawk.Client.EmuHawk
 				curObj = _api.MemLib.ReadU24(0xFFD829); 
 			while (curObj != 0)
 			{
-				uint type = 0;
+				type = 0;
 				switch (_mode) {
 					case Modes.Ecco2:
-					{
-						uint flags = _api.MemLib.ReadU16(curObj + 0x10);
-						//if ((flags & 0x2000) || !(flags & 2));
-						type = _api.MemLib.ReadU32(curObj + 0xC);
-						if ((type == 0xBA52E) || (type == 0xBA66E))
 						{
-							uint Adelikat = curObj;
-							while (Adelikat != 0)
+							uint flags = _api.MemLib.ReadU16(curObj + 0x10);
+							int Xvec = 0;
+							int Yvec = 0;
+							//if ((flags & 0x2000) || !(flags & 2));
+							HP = _api.MemLib.ReadS8(curObj + 0x7B);
+							type = _api.MemLib.ReadU32(curObj + 0xC);
+							if ((type == 0xA1FE6) || (type == 0xA208E) // Chain link creatures such as vortex worm, magic arm, etc
+							 || (type == 0xA2288) || (type == 0xA27A4) || (type == 0xA2BB0) || (type == 0xA2C50))
 							{
-								Xpos = _api.MemLib.ReadS16(Adelikat + 0x24);
-								Ypos = _api.MemLib.ReadS16(Adelikat + 0x28);
+								uint subObj = curObj;
+								while (subObj != 0)
+								{
+									Xpos = _api.MemLib.ReadS32(subObj + 0x24);
+									Ypos = _api.MemLib.ReadS32(subObj + 0x28);
+									Xvec = ((Xpos + _api.MemLib.ReadS32(subObj + 0x54)) >> 16) - _camX;
+									Yvec = ((Ypos + _api.MemLib.ReadS32(subObj + 0x58)) >> 16) - _camY;
+									Xpos >>= 16; Ypos >>= 16;
+									Xpos -= _camX;
+									Ypos -= _camY;
+									if (_api.MemLib.ReadS16(subObj + 0x44) == _api.MemLib.ReadS16(subObj + 0x48))
+									{
+										DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(subObj + 0x44), Color.FromArgb(255, 0, 127));
+										DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(subObj + 0x44), Color.Cyan, 0);
+									}
+									else
+									{
+										DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(subObj + 0x44), Color.FromArgb(255, 0, 127));
+										DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(subObj + 0x44), Color.Lime, 0);
+										DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(subObj + 0x44), Color.FromArgb(255, 0, 127));
+										DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(subObj + 0x48), Color.Blue, 0);
+									}
+									DrawBoxMWH(Xpos, Ypos, 1, 1, Color.Blue, 0);
+									_api.GUILib.DrawLine(Xpos, Ypos, Xvec, Yvec, Color.Orange);
+									subObj = _api.MemLib.ReadU24(subObj + 5);
+								}
+								if (HP > 2)
+								{
+									Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+									Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+									PutText($"{HP - 1}", Xmid, Ymid, 1, 1, -1, -9, Color.Blue, Color.Red);
+								}
+							}
+							else if ((type == 0xB7486) || (type == 0xB864E) //Chain link creatures such as eels and worms
+								  || (type == 0xB8A64) || (type == 0xB8C1A) 
+								  || (type == 0xB904A) || (type == 0xB9728) || (type == 0xB9B6A) || (type == 0xBA52E) 
+								  || (type == 0xBA66E) || (type == 0xE0988) || (type == 0xA18E2) || (type == 0xE069A))
+							{
+								uint subObj = curObj;
+								while (subObj != 0)
+								{
+									Xpos = _api.MemLib.ReadS32(subObj + 0x24);
+									Ypos = _api.MemLib.ReadS32(subObj + 0x28);
+									Xvec = ((Xpos + _api.MemLib.ReadS32(subObj + 0x54)) >> 16) - _camX;
+									Yvec = ((Ypos + _api.MemLib.ReadS32(subObj + 0x58)) >> 16) - _camY;
+									Xpos >>= 16; Ypos >>= 16;
+									Xpos -= _camX;
+									Ypos -= _camY;
+									if (_api.MemLib.ReadS16(subObj + 0x44) == _api.MemLib.ReadS16(subObj + 0x48))
+									{
+										DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(subObj + 0x44), Color.FromArgb(255, 0, 127));
+										DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(subObj + 0x44), Color.White, 0);
+									}
+									else
+									{
+										DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(subObj + 0x44), Color.FromArgb(255, 0, 127));
+										DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(subObj + 0x44), Color.Lime, 0);
+										DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(subObj + 0x48), Color.FromArgb(255, 0, 127));
+										DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(subObj + 0x48), Color.Magenta, 0);
+									}
+									DrawBoxMWH(Xpos, Ypos, 1, 1, Color.Blue, 0);
+									_api.GUILib.DrawLine(Xpos, Ypos, Xvec, Yvec, Color.Orange);
+									if (type == 0xBA66E)
+									{
+										DrawEccoOct(Xpos, Ypos, 32, Color.Blue, 16);
+										if (subObj == curObj)
+										{
+											var mode = _api.MemLib.ReadByte(subObj + 0x15);
+											TickerText($"{_api.MemLib.ReadByte(subObj + 0x14)}:{mode}:{_api.MemLib.ReadByte(subObj + 0x70)}", Color.Red);
+											TickerText($"{_api.MemLib.ReadS32(subObj + 0x54) / 65536.0:0.######}:{_api.MemLib.ReadS32(subObj + 0x58) / 65536.0:0.######}", Color.Red);
+											TickerText($"{_api.MemLib.ReadS32(subObj + 0x4C) / 65536.0:0.######}:{_api.MemLib.ReadS32(subObj + 0x50) / 65536.0:0.######}", Color.Red);
+											switch (mode)
+											{
+												case 0:
+												case 2:
+												case 4:
+													Xpos2 = _api.MemLib.ReadS32(0xFFAA22) - _api.MemLib.ReadS32(subObj + 0x24);
+													Ypos2 = _api.MemLib.ReadS32(0xFFAA26) - _api.MemLib.ReadS32(subObj + 0x28);
+													var dSml = Math.Abs(Xpos2);
+													var dBig = Math.Abs(Ypos2);
+													if (dBig < dSml)
+													{
+														dSml ^= dBig;
+														dBig ^= dSml;
+														dSml ^= dBig;
+													}
+													var rad = (dBig + (dSml >> 1) - (dSml >> 3)) / 65536.0;
+													Xpos2 = (int)(Xpos2 * (256.0 / (rad + 1))) >> 20;
+													Ypos2 = (int)(Ypos2 * (256.0 / (rad + 1))) >> 20;
+													_api.GUILib.DrawLine(Xpos, Ypos, Xpos + Xpos2, Ypos + Ypos2, Color.Red);
+													break;
+												default:
+													break;
+
+											}
+										}
+									}
+									else if ((type == 0xBA52E) && (subObj == _api.MemLib.ReadU24(curObj + 0x1D)))
+									{
+										DrawEccoOct(Xpos, Ypos, 32, (_api.MemLib.ReadByte(subObj + 0x70) == 0) ? Color.Blue : Color.Gray, 16);
+										var mode = _api.MemLib.ReadByte(curObj + 0x15);
+										TickerText($"{_api.MemLib.ReadByte(curObj + 0x14)}:{mode}:{_api.MemLib.ReadS16(curObj + 0x6E)}:{_api.MemLib.ReadByte(subObj + 0x70)}", Color.Red);
+										TickerText($"{_api.MemLib.ReadS32(subObj + 0x54) / 65536.0:0.######}:{_api.MemLib.ReadS32(subObj + 0x58) / 65536.0:0.######}", Color.Red);
+										TickerText($"{_api.MemLib.ReadS32(curObj + 0x4C) / 65536.0:0.######}:{_api.MemLib.ReadS32(curObj + 0x50) / 65536.0:0.######}", Color.Red);
+									}
+									else if (type == 0xE0988)
+									{
+										DrawEccoOct(Xpos, Ypos, 48, Color.FromArgb(64, Color.Blue), 16);
+									}
+									if (HP > 2)
+									{
+										Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+										Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+										PutText($"{HP - 1}", Xmid, Ymid, 1, 1, -1, -9, Color.Blue, Color.Red);
+									}
+									subObj = _api.MemLib.ReadU24(subObj + 5);
+								}
+							}
+							else if (type == 0xB7DF4)
+							{
+								Xpos = _api.MemLib.ReadS32(curObj + 0x24);
+								Ypos = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xpos + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ypos + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xpos >>= 16; Ypos >>= 16;
 								Xpos -= _camX;
 								Ypos -= _camY;
-								DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(Adelikat + 0x44), Color.Lime);
-								Adelikat = _api.MemLib.ReadU32(Adelikat + 4);
+								DrawEccoOct(Xpos, Ypos, 26, Color.PowderBlue);
+								DrawEccoOct(Xpos, Ypos, 26, Color.White);
+								DrawBoxMWH(Xpos, Ypos, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xpos, Ypos, Xvec, Yvec);
 							}
-							Xpos = _api.MemLib.ReadS16(curObj + 0x24);
-							Ypos = _api.MemLib.ReadS16(curObj + 0x28);
-							Xpos -= _camX;
-							Ypos -= _camY;
-						}
-						else if (type == 0xE47EE)
-						{
-							uint Adelikat = curObj;
-							while (Adelikat != 0)
+							else if (type == 0xE47EE)
 							{
-								Xpos = _api.MemLib.ReadS16(Adelikat + 0x1C);
-								Ypos = _api.MemLib.ReadS16(Adelikat + 0x20);
+								uint subObj = _api.MemLib.ReadU24(curObj + 5);
+								while (subObj != 0)
+								{
+									Xpos = _api.MemLib.ReadS32(subObj + 0x1C);
+									Ypos = _api.MemLib.ReadS32(subObj + 0x20);
+									Xvec = ((Xpos + _api.MemLib.ReadS32(subObj + 0x54)) >> 16) - _camX;
+									Yvec = ((Ypos + _api.MemLib.ReadS32(subObj + 0x58)) >> 16) - _camY;
+									Xpos >>= 16; Ypos >>= 16;
+									Xpos -= _camX;
+									Ypos -= _camY;
+									DrawEccoOct(Xpos, Ypos, ((_api.MemLib.ReadS16(subObj + 0x2C) & 0xFFFF) >> 1) + 16, Color.White);
+									DrawEccoOct(Xpos, Ypos, ((_api.MemLib.ReadS16(subObj + 0x2C) & 0xFFFF) >> 1) + 16, Color.Yellow, 0);
+									DrawBoxMWH(Xpos, Ypos, 1, 1, Color.Blue, 0);
+									_api.GUILib.DrawLine(Xpos, Ypos, Xvec, Yvec, Color.Orange);
+									subObj = _api.MemLib.ReadU24(subObj + 5);
+								}
+							}
+							else if (type == 0xDBE64) // Medusa Boss
+							{
+								uint subObj = curObj;
+								uint next;
+								do
+								{
+									next = _api.MemLib.ReadU24(subObj + 5);
+									if (next != 0) subObj = next;
+								} while (next != 0);
+								Xpos = _api.MemLib.ReadS16(subObj + 0x2C);
+								Xpos2 = _api.MemLib.ReadS16(subObj + 0x34);
+								Ypos = _api.MemLib.ReadS16(subObj + 0x30);
+								Ypos2 = _api.MemLib.ReadS16(subObj + 0x38);
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								DrawEccoOct(Xpos, Ypos, 32, Color.Red);
+								DrawEccoOct(Xpos2, Ypos2, 32, Color.Red);
+								Xpos = _api.MemLib.ReadS32(curObj + 0x24);
+								Ypos = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xpos + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ypos + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xpos >>= 16; Ypos >>= 16;
 								Xpos -= _camX;
 								Ypos -= _camY;
-								DrawEccoOct(Xpos, Ypos, (_api.MemLib.ReadS16(Adelikat + 0x2C) >> 1) + 16, Color.Lime);
-								Adelikat = _api.MemLib.ReadU32(Adelikat + 4);
+								var octOff = (int)(Math.Sqrt(2) * 60) >> 1;
+								Point[] hemiOctPoints =
+								{
+									new Point(Xpos - 60, Ypos),
+									new Point(Xpos - octOff, Ypos - octOff),
+									new Point(Xpos, Ypos - 60),
+									new Point(Xpos + octOff, Ypos - octOff),
+									new Point(Xpos + 60, Ypos)
+								};
+								_api.GUILib.DrawPolygon(hemiOctPoints, Color.Cyan, Color.FromArgb(0x3F, Color.Cyan));
+								for (int l = 0; l < 4; l++)
+								{
+									_api.GUILib.DrawLine(hemiOctPoints[l].X, hemiOctPoints[l].Y, hemiOctPoints[l + 1].X, hemiOctPoints[l + 1].Y, Color.Cyan);
+								}
+								DrawBoxMWH(Xpos, Ypos + 12, 52, 12, Color.Cyan);
+								DrawBoxMWH(Xpos, Ypos, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xpos, Ypos, Xvec, Yvec, Color.Orange);
 							}
-							Xpos = _api.MemLib.ReadS16(curObj + 0x24);
-							Ypos = _api.MemLib.ReadS16(curObj + 0x28);
-							Xpos -= _camX;
-							Ypos -= _camY;
+							else if (type == 0xDCEE0) // Globe Holder boss
+							{
+								uint subObj;
+								var mode = _api.MemLib.ReadByte(curObj + 0x15);
+								if (mode < 4)
+								{
+									subObj = _api.MemLib.ReadU24(curObj + 9);
+									while (subObj != 0)
+									{
+										Xmid = _api.MemLib.ReadS32(subObj + 0x24);
+										Ymid = _api.MemLib.ReadS32(subObj + 0x28);
+										Xvec = ((Xmid + _api.MemLib.ReadS32(subObj + 0x54) + _api.MemLib.ReadS32(subObj + 0x5C)) >> 16) - _camX;
+										Yvec = ((Ymid + _api.MemLib.ReadS32(subObj + 0x58) + _api.MemLib.ReadS32(subObj + 0x60)) >> 16) - _camY;
+										Xmid >>= 16; Ymid >>= 16;
+										Xmid -= _camX; Ymid -= _camY;
+										DrawEccoOct(Xmid, Ymid, 12, Color.Orange);
+										DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+										_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+										var next = _api.MemLib.ReadU24(subObj + 9);
+										if ((next == 0) && ((mode & 1) != 0))
+										{
+											DrawEccoOct(Xmid, Ymid, _api.MemLib.ReadS16(subObj + 0x3C), Color.Orange);
+										}
+										subObj = _api.MemLib.ReadU24(subObj + 9);
+									}
+									subObj = _api.MemLib.ReadU24(curObj + 5);
+									while (subObj != 0)
+									{
+										Xmid = _api.MemLib.ReadS32(subObj + 0x24);
+										Ymid = _api.MemLib.ReadS32(subObj + 0x28);
+										Xvec = ((Xmid + _api.MemLib.ReadS32(subObj + 0x54) + _api.MemLib.ReadS32(subObj + 0x5C)) >> 16) - _camX;
+										Yvec = ((Ymid + _api.MemLib.ReadS32(subObj + 0x58) + _api.MemLib.ReadS32(subObj + 0x60)) >> 16) - _camY;
+										Xmid >>= 16; Ymid >>= 16;
+										Xmid -= _camX; Ymid -= _camY;
+										DrawEccoOct(Xmid, Ymid, 12, Color.Orange);
+										DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+										_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+										var next = _api.MemLib.ReadU24(subObj + 5);
+										if ((next == 0) && ((mode & 2) != 0))
+										{
+											DrawEccoOct(Xmid, Ymid, _api.MemLib.ReadS16(subObj + 0x3C), Color.Orange);
+										}
+										subObj = _api.MemLib.ReadU24(subObj + 5);
+									}
+								}
+								Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+								Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+								int Xtmp = _api.MemLib.ReadS32(curObj + 0x2C);
+								int Ytmp = _api.MemLib.ReadS32(curObj + 0x30);
+								int Xtmp2 = _api.MemLib.ReadS32(curObj + 0x34);
+								int Ytmp2 = _api.MemLib.ReadS32(curObj + 0x38);
+								Xpos = (Xtmp >> 16) - _camX; Xpos2 = (Xtmp2 >> 16) - _camX;
+								Ypos = (Ytmp >> 16) - _camY; Ypos2 = (Ytmp2 >> 16) - _camY;
+								Xvec = ((_api.MemLib.ReadS32(curObj + 0x24) + _api.MemLib.ReadS32(curObj + 0x54) + _api.MemLib.ReadS32(curObj + 0x5C)) >> 16) - _camX;
+								Yvec = ((_api.MemLib.ReadS32(curObj + 0x28) + +_api.MemLib.ReadS32(curObj + 0x58) + _api.MemLib.ReadS32(curObj + 0x60)) >> 16) - _camY;
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+								if (mode < 7)
+								{
+									double overlap = 0;
+									DrawEccoOct(Xmid, Ymid, 0x5C, _api.MemLib.ReadByte(curObj + 0x7C) == 0 ? Color.Blue : Color.Gray);
+									DrawEccoOct(Xmid, Ymid, 0x5C, Color.Cyan, 0);
+									Xvec = (_api.MemLib.ReadS32(curObj + 0x54) + _api.MemLib.ReadS32(curObj + 0x5C));
+									Yvec = (_api.MemLib.ReadS32(curObj + 0x58) + _api.MemLib.ReadS32(curObj + 0x60));
+									subObj = _api.MemLib.ReadU24(curObj + 0x69);
+									if (subObj != 0)
+									{
+										Xpos = _api.MemLib.ReadS32(subObj + 0x2C);
+										Ypos = _api.MemLib.ReadS32(subObj + 0x30);
+										Xpos2 = _api.MemLib.ReadS32(subObj + 0x34);
+										Ypos2 = _api.MemLib.ReadS32(subObj + 0x38);
+										while ((Xtmp > Xpos) && (Xtmp2 < Xpos2) && (Ytmp > Ypos) && (Ytmp2 < Ypos2) && ((Xvec != 0) || (Yvec != 0)))
+										{
+											Xtmp += Xvec; Xtmp2 += Xvec;
+											Ytmp += Yvec; Ytmp2 += Yvec;
+										}
+										overlap = Math.Max(Math.Max(Xpos - Xtmp, Xtmp2 - Xpos2), Math.Max(Ypos - Ytmp, Ytmp2 - Ypos2)) / 65536.0;
+										Xpos >>= 16; Xpos2 >>= 16;
+										Ypos >>= 16; Ypos2 >>= 16;
+										Xpos -= _camX; Xpos2 -= _camX;
+										Ypos -= _camY; Ypos2 -= _camY;
+										DrawBox(Xpos, Ypos, Xpos2, Ypos2, (overlap >= 6) ? Color.Orange : Color.White, 0);
+									}
+									Xpos = _api.MemLib.ReadS16(curObj + 0x2C) - _camX;
+									Ypos = _api.MemLib.ReadS16(curObj + 0x30) - _camY;
+									Xpos2 = _api.MemLib.ReadS16(curObj + 0x34) - _camX;
+									Ypos2 = _api.MemLib.ReadS16(curObj + 0x38) - _camY;
+									DrawBox(Xpos, Ypos, Xpos2, Ypos2, (overlap >= 6) ? Color.Orange : Color.White, (overlap >= 6) ? 63 : 0);
+									if (mode < 4)
+									{
+										Xmid = _api.MemLib.ReadS16(curObj + 0x4C) - _camX;
+										Ymid = _api.MemLib.ReadS16(curObj + 0x50) - _camY;
+										if ((mode & 1) == 0) DrawEccoOct(Xmid, Ymid - 0xAE, 32, Color.Orange);
+										if ((mode & 2) == 0) DrawEccoOct(Xmid, Ymid + 0xAE, 32, Color.Orange);
+									}
+									TickerText($"{mode}:{_api.MemLib.ReadByte(curObj + 0x7F)}:{_api.MemLib.ReadByte(curObj + 0x6D)}:{_api.MemLib.ReadByte(curObj + 0x7C)}", Color.Red);
+								}
+								else if (mode == 8)
+								{
+									DrawEccoOct(Xmid - 16, Ymid - 16, 12, Color.Red);
+								}
+							}
+							else if (type == 0xE1BA2) // Vortex Queen Boss
+							{
+								var vulnCount = _api.MemLib.ReadByte(curObj + 0x7F);
+								var state = _api.MemLib.ReadByte(curObj + 0x7C);
+								var stateCounter = _api.MemLib.ReadU16(curObj + 0x6E);
+								var mode = _api.MemLib.ReadU16(curObj + 0x64);
+								var modeCounter = _api.MemLib.ReadU16(curObj + 0x66);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x40);
+								Xvec = Xmid + _api.MemLib.ReadS32(curObj + 0x54);
+								Yvec = Ymid + _api.MemLib.ReadS32(curObj + 0x58);
+								Xvec >>= 16; Yvec >>= 16;
+								Xmid >>= 16; Ymid >>= 16;
+								Xvec -= _camX; Yvec -= _camY;
+								Xmid -= _camX; Ymid -= _camY;
+								if (mode < 5)
+								{
+									var octOff = (int)(80 * Math.Sqrt(2)) >> 1;
+									Point hexOff = Intersection(new Point(-80, 0), new Point(-octOff, -octOff), new Point(-80, -32), new Point(-octOff, -32)).Value;
+									Point[] roundedRect = {
+										new Point(Xmid -       80, Ymid),
+										new Point(Xmid + hexOff.X, Ymid - 32),
+										new Point(Xmid - hexOff.X, Ymid - 32),
+										new Point(Xmid +       80, Ymid),
+										new Point(Xmid - hexOff.X, Ymid + 32),
+										new Point(Xmid + hexOff.X, Ymid + 32)
+									};
+									_api.GUILib.DrawPolygon(roundedRect, Color.Orange, Color.FromArgb(63, Color.Orange));
+								}
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+								TickerText($"{state:X2}:{stateCounter}:{mode}:{modeCounter}:{_api.MemLib.ReadByte(curObj + 0x70) & 0xF}", Color.Red);
+								var subObj = _api.MemLib.ReadU24(curObj + 0x5);
+								var tongueMode = mode;
+								mode = _api.MemLib.ReadByte(subObj + 0x15);
+								modeCounter = _api.MemLib.ReadU16(subObj + 0x6E);
+								Xmid = _api.MemLib.ReadS32(subObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(subObj + 0x40);
+								Xvec = (Xmid + _api.MemLib.ReadS32(subObj + 0x5C) >> 16) - _camX;
+								Yvec = (Ymid + _api.MemLib.ReadS32(subObj + 0x60) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								Ymid -= 32; Yvec -= 32;
+								var levelHeight = _api.MemLib.ReadS16(0xFFA7AC) - _camY;
+								switch (mode)
+								{
+									case 0:
+										DrawBox(Xmid - 32, Ymid - ((state == 5) ? 0x60 : 0x70), Xmid + 32, Ymid - 16, Color.Red);
+										break;
+									case 2:
+										Ypos = _api.MemLib.ReadS16(subObj + 0x50) - _camY;
+										_api.GUILib.DrawLine(Xmid - 48, Ypos, Xmid + 48, Ypos, Color.Orange);
+										DrawBoxMWH(Xmid, Ymid + 32, 1, 1, Color.Orange, 0);
+										break;
+									case 3:
+										modeCounter = _api.MemLib.ReadByte(subObj + 0x7C);
+										break;
+									case 5:
+										Point[] throatShape =
+										{
+											new Point(Xmid - 48, levelHeight),
+											new Point(Xmid - 48, Ymid + 60),
+											new Point(Xmid - 16, Ymid + 20),
+											new Point(Xmid + 16, Ymid + 20),
+											new Point(Xmid + 48, Ymid + 60),
+											new Point(Xmid + 48, levelHeight)
+										};
+										_api.GUILib.DrawPolygon(throatShape, Color.Red, Color.FromArgb(63, Color.Red));
+										DrawEccoOct(Xmid, Ymid, 24, Color.Red);
+										DrawEccoOct(Xmid, Ymid, 24, Color.White, 0);
+										break;
+									case 6:
+										if ((state != 7) && (vulnCount == 0) && (tongueMode != 7))
+										{
+											DrawEccoOct(Xmid, Ymid + 16, 64, Color.Blue);
+										}
+										if (tongueMode == 7)
+										{
+											uint subObj2 = _api.MemLib.ReadU24(0xFFCFCD);
+											while (subObj2 != 0)
+											{
+												if (_api.MemLib.ReadU16(subObj2 + 0x10) == 0xFF)
+												{
+													Xpos = _api.MemLib.ReadS16(subObj2 + 0x24) - _camX;
+													Ypos = _api.MemLib.ReadS16(subObj2 + 0x28) - _camY;
+													Xpos2 = ((_api.MemLib.ReadS32(subObj2 + 0x24) + _api.MemLib.ReadS32(subObj2 + 0x54)) >> 16) - _camX;
+													Ypos2 = ((_api.MemLib.ReadS32(subObj2 + 0x28) + _api.MemLib.ReadS32(subObj2 + 0x58)) >> 16) - _camY;
+													DrawBoxMWH(Xpos, Ypos, 1, 1, Color.Blue, 0);
+													_api.GUILib.DrawLine(Xpos, Ypos, Xpos2, Ypos2, Color.Orange);
+												}
+												subObj2 = _api.MemLib.ReadU24(subObj2 + 1);
+											}
+										}
+										Ypos = _api.MemLib.ReadS16(subObj + 0x50) - _camY;
+										_api.GUILib.DrawLine(Xmid - 48, Ypos - 94, Xmid + 48, Ypos - 94, Color.Orange);
+										_api.GUILib.DrawLine(Xmid - 48, Ypos, Xmid + 48, Ypos, Color.Orange);
+										DrawBoxMWH(Xmid, Ymid + 32, 1, 1, Color.Orange, 0);
+										break;
+									default:
+										break;
+								}
+								if ((mode < 7) || ((mode == 7) && (_api.MemLib.ReadU24(0xFFCFC9) != 0)))
+								{
+									if (_api.MemLib.ReadByte(subObj + 0x70) == 0)
+									{
+										DrawEccoOct(Xmid, Ymid, 32, Color.Red);
+										DrawBox(Xmid - 48, Ymid + 32, Xmid + 48, levelHeight, Color.Red);
+									}
+									Ypos = _api.MemLib.ReadS16(subObj + 0x50) - _camY - 94;
+									_api.GUILib.DrawLine(Xmid - 48, Ypos, Xmid + 48, Ypos, Color.Orange);
+									DrawBoxMWH(Xmid, Ymid + 32, 1, 1, Color.Orange, 0);
+								}
+								if (_api.MemLib.ReadS32(subObj + 0xC) == 0xE17B4)
+								{
+									Point[] shapePoints =
+									{
+										new Point(Xmid - 48, levelHeight),
+										new Point(Xmid - 48, Ymid + 60),
+										new Point(Xmid - 16, Ymid + 20),
+										new Point(Xmid + 16, Ymid + 20),
+										new Point(Xmid + 48, Ymid + 60),
+										new Point(Xmid + 48, levelHeight)
+									};
+									_api.GUILib.DrawPolygon(shapePoints, Color.Red, Color.FromArgb(63, Color.Red));
+									DrawEccoOct(Xmid, Ymid, 24, Color.Red);
+									DrawEccoOct(Xmid, Ymid, 24, Color.White, 0);
+								}
+								Ypos = (_api.MemLib.ReadS16(subObj + 0x50) - _camY) - 264;
+								DrawBoxMWH(160 + _left, Ypos, 320, 12, (32 < stateCounter) && (stateCounter < 160) ? Color.Brown : Color.Gray);
+								if ((32 < stateCounter) && (stateCounter < 160))
+								{
+									DrawBoxMWH(_left + 160, Ypos, 320, 12, Color.White, 0);
+								}
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+								TickerText($"{mode:X2}:{modeCounter}:{HP}:{vulnCount}", Color.Red);
+								HP = 0;
+							}
+							else if (type == 0xA5BD2) // Telekinetic future dolphins
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Blue);
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Red, 0);
+								DrawEccoOct(Xmid, Ymid, 4, Color.Red);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if ((type == 0x9F5B0) || (type == 0x9F4DC) || (type == 0x9F6A0)) // Falling rock, breaks barriers
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Lime);
+								_api.GUILib.DrawLine(Xpos, Ypos2, Xpos2, Ypos, Color.Lime);
+								_api.GUILib.DrawLine(Xpos, Ypos, Xpos2, Ypos2, Color.Lime);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+								if (type == 0x9F6A0)
+								{
+									int width = _api.MemLib.ReadS16(curObj + 0x44) << 1;
+									DrawBox(Xpos - width, Ypos - (width << 2), Xpos2 + width, Ypos2, Color.Lime);
+								}
+								TickerText($"{_api.MemLib.ReadS32(curObj + 0x54) / 65536.0:0.######}:{_api.MemLib.ReadS32(curObj + 0x58) / 65536.0:0.######}", Color.Lime);
+							}
+							else if (type == 0xA3B18)
+							{
+								Xpos = _api.MemLib.ReadS32(curObj + 0x24);
+								Ypos = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xpos + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ypos + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xpos >>= 16; Ypos >>= 16;
+								Xpos -= _camX;
+								Ypos -= _camY;
+								DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(curObj + 0x44), Color.Yellow);
+								DrawBoxMWH(Xpos, Ypos, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xpos, Ypos, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xA4018)
+							{
+								Xpos = _api.MemLib.ReadS32(curObj + 0x24);
+								Ypos = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xpos + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ypos + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xpos >>= 16; Ypos >>= 16;
+								Xpos -= _camX;
+								Ypos -= _camY;
+								DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(curObj + 0x44), Color.Gray);
+								DrawBoxMWH(Xpos, Ypos, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xpos, Ypos, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xA091E) // Blue Whale
+							{
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								Xpos = Xmid; Ypos = Ymid;
+								Ymid -= 64; Yvec -= 64;
+								DrawEccoOct_scaled(Xmid, Ymid, 2, 0, 0x50, Color.Red, 31);
+								DrawEccoOct_scaled(Xmid, Ymid, 2, 0, 0x40, Color.Red, 31);
+								DrawEccoOct_scaled(Xmid, Ymid, 2, 0, 0x30, Color.Red, 31);
+								DrawEccoOct_scaled(Xmid, Ymid, 2, 0, 0x20, Color.Red, 31);
+								DrawEccoOct_scaled(Xmid, Ymid, 2, 0, 0x10, Color.Red, 31);
+								if (_api.MemLib.ReadByte(curObj + 0x7F) == 0)
+								{
+									Xpos += (_api.MemLib.ReadS16(curObj + 0x6E) == 0) ? -278 : 162;
+									Ypos += 44 - _api.MemLib.ReadS16(curObj + 0x48);
+									DrawEccoOct(Xpos, Ypos, 32, Color.Blue);
+								}
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+
+							}
+							else if (type == 0xE66D8) //Vortex Larva
+							{
+								uint subObj = _api.MemLib.ReadU24(curObj + 5);
+								while (subObj != 0)
+								{
+									Xpos = _api.MemLib.ReadS16(subObj + 0x1C);
+									Ypos = _api.MemLib.ReadS16(subObj + 0x20);
+									Xpos2 = _api.MemLib.ReadS16(subObj + 0x24);
+									Ypos2 = _api.MemLib.ReadS16(subObj + 0x28);
+									Xpos -= _camX; Ypos -= _camY;
+									Xpos2 -= _camX; Ypos2 -= _camY;
+									DrawEccoOct(Xpos, Ypos, 30, Color.White, 32);
+									DrawEccoOct(Xpos, Ypos, 30, Color.Yellow, 0);
+									DrawEccoOct(Xpos2, Ypos2, 30, Color.White, 32);
+									DrawEccoOct(Xpos2, Ypos2, 30, Color.Yellow, 0);
+									subObj = _api.MemLib.ReadU24(subObj + 5);
+								}
+								Xpos = _api.MemLib.ReadS32(curObj + 0x24);
+								Ypos = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xpos + _api.MemLib.ReadS32(curObj + 0x54) + _api.MemLib.ReadS32(curObj + 0x5C)) >> 16) - _camX;
+								Yvec = ((Ypos + _api.MemLib.ReadS32(curObj + 0x58) + _api.MemLib.ReadS32(curObj + 0x60)) >> 16) - _camY;
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x72) - _camX;
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x76) - _camY;
+								Xpos >>= 16; Ypos >>= 16;
+								Xpos -= _camX; Ypos -= _camY;
+								DrawEccoOct(Xpos, Ypos, 0xB0, Color.Yellow);
+								DrawEccoOct(Xpos, Ypos, 0xB0, Color.Red, 0);
+								DrawEccoOct(Xpos, Ypos, 0x70, Color.Red);
+								DrawEccoOct(Xpos, Ypos, 0x38, Color.White);
+								DrawEccoOct(Xpos, Ypos, 0x38, Color.Red, 0);
+								DrawEccoOct(Xpos, Ypos, 48, Color.Blue, ((_api.MemLib.ReadByte(curObj + 0x7B) > 2) && (_api.MemLib.ReadByte(curObj + 0x14) != 0)) ? 63 : 0);
+								DrawEccoOct(Xpos2, Ypos2, 32, Color.Orange);
+								DrawBoxMWH(Xpos, Ypos, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xpos, Ypos, Xvec, Yvec, Color.Orange);
+								_api.GUILib.DrawLine(Xpos, Ypos, Xpos2, Ypos2, Color.Orange);
+								TickerText($"{_api.MemLib.ReadByte(curObj + 0x14):X2}:{_api.MemLib.ReadByte(curObj + 0x7B):X2}:{_api.MemLib.ReadS16(curObj + 0x6E):D2}", Color.Red);
+								TickerText($"{ _api.MemLib.ReadByte(curObj + 0x7C):X2}:{_api.MemLib.ReadS16(curObj + 0x18):D3}", Color.Red);
+								TickerText($"{(_api.MemLib.ReadS32(curObj + 0x54) + _api.MemLib.ReadS32(curObj + 0x5C))/65536.0:0.######}:{(_api.MemLib.ReadS32(curObj + 0x58) + _api.MemLib.ReadS32(curObj + 0x60)) / 65536.0:0.######}", Color.Red);
+
+							}
+							else if (type == 0x9CE3A) //Remnant Stars
+							{
+								flags = _api.MemLib.ReadU16(curObj + 0x10);
+								uint subObj = _api.MemLib.ReadU24(curObj + 0x5);
+								uint anim = _api.MemLib.ReadU16(curObj + 0x6C);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								if ((anim <= 7) && (subObj == 0xFFA9D4))
+								{
+									DrawEccoRhomb(Xmid, Ymid, 96, Color.Red);
+									PutText($"{((7 - anim) * 4) - ((_api.MemLib.ReadByte(0xFFA7C9) & 3) - 4)}", Xmid, Ymid + 4, 1, 1, -1, -1, Color.Blue, Color.Red);
+
+								}
+							}
+							else if (type == 0xA997C) // Vortex Soldier
+							{
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = (Xmid + _api.MemLib.ReadS32(curObj + 0x54) >> 16) - _camX;
+								Yvec = (Ymid + _api.MemLib.ReadS32(curObj + 0x58) >> 16) - _camY;
+								Xvec += _api.MemLib.ReadS16(curObj + 0x64);
+								Yvec += _api.MemLib.ReadS16(curObj + 0x66);
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								if (_api.MemLib.ReadByte(curObj + 0x7A) == 0)
+								{
+									DrawRectRhombusIntersection(new Point(Xmid, Ymid + 6), new Point(Xmid, Ymid), 50, 44, 64, Color.Red);
+								}
+								DrawRectRhombusIntersection(new Point(Xmid, Ymid - 25), new Point(Xmid, Ymid), 38, 47, 64, Color.Red);
+								DrawBoxMWH(Xmid, Ymid, _api.MemLib.ReadS16(curObj + 0x44), _api.MemLib.ReadS16(curObj + 0x48), Color.Blue, 16);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if ((type == 0xA6C4A) || (type == 0xC43D4)) // Barrier Glyphs
+							{
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								var subType = _api.MemLib.ReadByte(curObj + 0x13);
+								if ((_api.MemLib.ReadU8(curObj + 0x7A) == 0) && (_api.MemLib.ReadU8(0xFFA7B5) != 0)
+								 && ((type != 0xA6C4A) || (subType == 0x14) || (subType == 0x97)))
+								{
+									DrawEccoOct(Xmid, Ymid, 70, Color.Red);
+								}
+								DrawBoxMWH(Xmid, Ymid, _api.MemLib.ReadS16(curObj + 0x44), _api.MemLib.ReadS16(curObj + 0x48), Color.Blue);
+								DrawBoxMWH(Xmid, Ymid, _api.MemLib.ReadS16(curObj + 0x44), _api.MemLib.ReadS16(curObj + 0x48), Color.PowderBlue, 0);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if ((type == 0xB4F46) || (type == 0xB4E1C) || (type == 0xB4C18) || (type == 0xB4ACC) || (type == 0xB4B72)) // Guiding Orca/Dolphin
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								Xmid -= _camX; Ymid -= _camY;
+								int Xdst = _api.MemLib.ReadS16(curObj + 0x64);
+								Xdst <<= 7;
+								Xdst = Xdst + 0x40 - _camX;
+								int Ydst = _api.MemLib.ReadS16(curObj + 0x66);
+								Ydst <<= 7;
+								Ydst = Ydst + 0x40 - _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Blue);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xdst, Ydst, Color.Orange);
+								DrawBoxMWH(Xdst, Ydst, 64, 64, Color.Orange);
+								TickerText($"{_api.MemLib.ReadS16(curObj + 0x24)}:{_api.MemLib.ReadS16(curObj + 0x28)}:{_api.MemLib.ReadByte(curObj + 0x7D)}:{_api.MemLib.ReadByte(curObj + 0x7A)}", Color.Lime);
+								TickerText($"{_api.MemLib.ReadS32(curObj + 0x54) / 65536.0:0.######}:{_api.MemLib.ReadS32(curObj + 0x58) / 65536.0:0.######}", Color.Lime);
+								TickerText($"{_api.MemLib.ReadS32(curObj + 0x72) / 65536.0:0.######}:{_api.MemLib.ReadS32(curObj + 0x76) / 65536.0:0.######}", Color.Lime);
+							}
+							else if (type == 0xB5938) // Lost Orca
+							{
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xpos = _api.MemLib.ReadS16(curObj + 0x1C) - _camX;
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								//DrawBoxMWH(Xmid, Ymid, 64, 32, Color.Lime);
+								if (_api.MemLib.ReadU16(curObj + 0x6E) == 0)
+								{
+									if (_api.MemLib.ReadByte(curObj + 0x7D) == 0)
+									{
+										DrawBox(Xmid + 8, Ymid - 32, Xmid + 64, Ymid + 32, Color.Red);
+									}
+									else
+									{
+										DrawBox(Xmid - 64, Ymid - 32, Xmid - 8, Ymid + 32, Color.Red);
+									}
+								}
+								_api.GUILib.DrawLine(Xpos - 80, Ymid, Xpos + 80, Ymid, Color.Green);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if ((type == 0xB552A) || (type == 0xB5C42) || (type == 0xB5AFE)) // Following Orca, Returning Orca, & Idling Orca
+							{
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xB624A) // Orca Mother
+							{
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								int height = _api.MemLib.ReadS16(curObj + 0x48) + 32;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBoxMWH(Xmid, Ymid, 80, 32, Color.Red, 31);
+								DrawBoxMWH(Xmid, Ymid, _api.MemLib.ReadS16(curObj + 0x44), _api.MemLib.ReadS16(curObj + 0x48), Color.Blue);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+								if (_api.MemLib.ReadS32(0xFFAB7E) != 0)
+								{
+									DrawEccoOct(Xmid, Ymid, 0x50, Color.Red, 31);
+								}
+							}
+							else if (type == 0xC047E)
+							{
+								Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+								Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+								var width = 2;
+								var height = 2;
+								if (_api.MemLib.ReadByte(curObj + 0x15) == 0)
+								{
+									width = _api.MemLib.ReadS16(curObj + 0x44);
+									height = _api.MemLib.ReadS16(curObj + 0x48);
+								}
+								DrawBoxMWH(Xmid, Ymid, width, height, Color.Lime);
+							}
+							else if (type == 0xC056E)
+							{
+								Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+								Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+								var width = _api.MemLib.ReadS16(curObj + 0x44);
+								var height = _api.MemLib.ReadS16(curObj + 0x48);
+								DrawBoxMWH(Xmid, Ymid, width, height, Color.Lime);
+							}
+							else if (type == 0xC4208) // Broken Glyph Base
+							{
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								var width = _api.MemLib.ReadS16(curObj + 0x44);
+								var height = _api.MemLib.ReadS16(curObj + 0x48);
+								DrawBoxMWH(Xmid, Ymid, width, height, Color.PowderBlue);
+								if (_api.MemLib.ReadByte(curObj + 0x15) == 0)
+								{
+									DrawRectRhombusIntersection(new Point(Xmid, Ymid), new Point(Xmid, Ymid), 80, 80, 120, Color.Orange);
+								}
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xAC242) // Broken Glyph Top repairing
+							{
+								uint subObj = _api.MemLib.ReadU24(curObj + 0x5);
+								Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+								Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+								Xpos = _api.MemLib.ReadS16(subObj + 0x24) - _camX;
+								Ypos = _api.MemLib.ReadS16(subObj + 0x28) - _camY;
+								var width = _api.MemLib.ReadS16(curObj + 0x44);
+								var height = _api.MemLib.ReadS16(curObj + 0x48);
+								DrawBoxMWH(Xmid, Ymid, width, height, Color.Gray);
+								Point[] rhombPoints =
+								{
+									new Point(Xpos - 3, Ypos),
+									new Point(Xpos, Ypos - 3),
+									new Point(Xpos + 3, Ypos),
+									new Point(Xpos, Ypos + 3)
+								};
+								_api.GUILib.DrawPolygon(rhombPoints, Color.Orange, Color.FromArgb(63, Color.Orange));
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xpos, Ypos, Color.Orange);
+							}
+							else if (type == 0xBE9C8) // Broken Glyph Top free
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C) - _camX;
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34) - _camX;
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30) - _camY;
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38) - _camY;
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Blue);
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Lime, 0);
+								_api.GUILib.DrawLine(Xpos, Ypos2, Xpos2, Ypos, Color.Lime);
+								_api.GUILib.DrawLine(Xpos, Ypos, Xpos2, Ypos2, Color.Lime);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								TickerText($"{_api.MemLib.ReadS32(curObj + 0x54) / 65536.0:0.######}:{_api.MemLib.ReadS32(curObj + 0x58) / 65536.0:0.######}", Color.Lime);								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if ((type == 0xD9C0E) || (type == 0xDA9EA))
+							{
+								Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+								Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+								DrawBoxMWH(Xmid, Ymid, 0xA0, 0x70, Color.Red);
+							}
+							else if ((type == 0xBF204) || (type == 0xDA2C0))
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54) + _api.MemLib.ReadS32(curObj + 0x5C)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58) + _api.MemLib.ReadS32(curObj + 0x60)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.PowderBlue);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xAF9CC) // Mirror Dolphin
+							{
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xpos = _api.MemLib.ReadS16(curObj + 0x1C) - _camX + (_api.MemLib.ReadByte(curObj + 0x15) == 0 ? 27 : -27);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54) + _api.MemLib.ReadS32(curObj + 0x5C)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58) + _api.MemLib.ReadS32(curObj + 0x60)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								var width = _api.MemLib.ReadS16(curObj + 0x44);
+								var height = _api.MemLib.ReadS16(curObj + 0x48);
+								DrawBoxMWH(Xmid, Ymid, width, height, Color.Blue, 31);
+								if (_api.MemLib.ReadByte(curObj + 0x13) != 0xAC)
+								{
+									DrawBoxMWH(Xmid, Ymid, 96, 96, Color.Orange);
+								}
+								_api.GUILib.DrawLine(Xpos, 0, Xpos, 448, Color.Red);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xAF43E) // Vortex Lightning Trap
+							{
+								Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+								Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+								if (_api.MemLib.ReadByte(curObj + 0x15) != 0)
+								{
+									if (_api.MemLib.ReadS16(0xFFAA12) != 0)
+									{
+										Ymid -= 8;
+									}
+									DrawBoxMWH(Xmid, Ymid, 92, 16, Color.Red);
+									PutText(_api.MemLib.ReadByte(curObj + 0x15).ToString(), Xmid, Ymid, 1, 1, -1, -1, Color.Blue, Color.Red);
+								}
+								else
+								{
+									DrawBoxMWH(Xmid, Ymid, 92, 16, Color.Gray);
+									PutText(_api.MemLib.ReadByte(curObj + 0x7F).ToString(), Xmid, Ymid, 1, 1, -1, -1, Color.Blue, Color.Red);
+								}
+							}
+							else if (type == 0xA6E24) // Barrier Glyph Forcefield 
+							{
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = _api.MemLib.ReadS32(0xFFAA1A) - Xmid;
+								Yvec = _api.MemLib.ReadS32(0xFFAA1E) - Ymid;
+								var div = Math.Abs(Xvec) + Math.Abs(Yvec);
+								Xvec /= div; Yvec /= div;
+								Xvec += Xmid; Yvec += Ymid;
+								Xmid >>= 16; Ymid >>= 16;
+								Xvec >>= 16; Yvec >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								Xvec -= _camX; Yvec -= _camY;
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if ((type == 0xC4A44) || (type == 0xAA32C)) // Pulsar power-up and Vortex bullet-spawner
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C) - _camX;
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34) - _camX;
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30) - _camY;
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38) - _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Blue, 16);
+							}
+							else if (type == 0xC2F00) // Sky bubbles
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								Xmid -= _camX; Ymid -= _camY;
+								var mode = _api.MemLib.ReadByte(curObj + 0x15);
+								switch (mode)
+								{
+									case 0:
+										DrawRectRhombusIntersection(new Point(Xmid, Ymid), new Point(Xmid, Ymid), 70, 70, 105, Color.Gray);
+										DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Blue);
+										break;
+									case 1:
+										DrawRectRhombusIntersection(new Point(Xmid, Ymid), new Point(Xmid, Ymid), 70, 70, 105, Color.Red);
+										break;
+									case 2:
+										DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Red);
+										break;
+									default:
+										DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Gray);
+										break;
+								}
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0x9FA7E)  //Air refiller/drainer
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.FromArgb(63, Color.Lime));
+							}
+							else if (type == 0xBFC14) //Pushable fish
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C) - _camX;
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34) - _camX;
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30) - _camY;
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38) - _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Blue);
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Lime, 0);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+								TickerText($"{_api.MemLib.ReadS32(curObj + 0x54) / 65536.0:0.######}:{_api.MemLib.ReadS32(curObj + 0x58) / 65536.0:0.######}", Color.Orange);
+
+							}
+							else if ((type == 0xBE97C)  //Slowing Kelp	//Default Bounds nose-responsive
+								  || (type == 0xACDAE))  //Metasphere
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Lime);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xACB42) // Turtle
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C) - _camX;
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34) - _camX;
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30) - _camY;
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38) - _camY;
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+								var mode = _api.MemLib.ReadByte(curObj + 0x15);
+								switch (mode)
+								{
+									case 0:
+									case 1:
+									case 2:
+									case 3:
+										Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x4C)) >> 16) - _camX;
+										break;
+									case 4:
+									case 5:
+									case 6:
+									case 7:
+										Xvec = ((Xmid - _api.MemLib.ReadS32(curObj + 0x4C)) >> 16) - _camX;
+										break;
+									default:
+										Xvec = (Xmid >> 16) - _camX;
+										break;
+								}
+								Yvec = Ymid;
+								Xmid >>= 16; Xmid -= _camX;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Lime);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xpos, Ypos, Xpos2, Ypos2, Color.Lime);
+								_api.GUILib.DrawLine(Xpos, Ypos2, Xpos2, Ypos, Color.Lime);
+								int width = _api.MemLib.ReadS16(curObj + 0x44) << 1;
+								DrawBox(Xpos - width, Ypos - (width << 2), Xpos2 + width, Ypos2, Color.Lime);
+								TickerText($"{_api.MemLib.ReadS32(curObj + 0x4C) / 65536.0:0.######}:{_api.MemLib.ReadS32(curObj + 0x50) / 65536.0:0.######}", Color.Lime);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xACA7E) // Retracting Turtle
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C) - _camX;
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34) - _camX;
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30) - _camY;
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38) - _camY;
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + (_api.MemLib.ReadS32(curObj + 0x4C) >> 1)) >> 16) - _camX;
+								Yvec = ((Ymid + (_api.MemLib.ReadS32(curObj + 0x50) >> 1)) >> 16) - _camY;
+								Xmid >>= 16; Xmid -= _camX;
+								Ymid >>= 16; Ymid -= _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Lime);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xpos, Ypos, Xpos2, Ypos2, Color.Lime);
+								_api.GUILib.DrawLine(Xpos, Ypos2, Xpos2, Ypos, Color.Lime);
+								int width = _api.MemLib.ReadS16(curObj + 0x44) << 1;
+								DrawBox(Xpos - width, Ypos - (width << 2), Xpos2 + width, Ypos2, Color.Lime);
+								TickerText($"{(_api.MemLib.ReadS32(curObj + 0x4C) >> 1) / 65536.0:0.######}:{(_api.MemLib.ReadS32(curObj + 0x50) >> 1) / 65536.0:0.######}", Color.Lime);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if ((type == 0xB5134) || (type == 0xA7E0C) //Default Bounds sonar-responsive
+								  || (type == 0xAF868) || (type == 0xAF960) || (type == 0xD8E5C) || (type == 0xAA5C6))
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Blue);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if ((type == 0xACCB4) || (type == 0xACD7E) //Default Baunds non-responsive
+								  || (type == 0xD8D96) || (type == 0xA955E) || (type == 0xA92E4) || (type == 0xC05DC) 
+								  || (type == 0xC2684))
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Gray);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0x9DE86) // Star Wreath
+							{
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								Xpos = _api.MemLib.ReadS32(curObj + 0x1C);
+								Ypos = _api.MemLib.ReadS32(curObj + 0x20);
+								Xpos2 = ((Xpos + _api.MemLib.ReadS32(curObj + 0x5C)) >> 16) - _camX;
+								Ypos2 = ((Ypos + _api.MemLib.ReadS32(curObj + 0x60)) >> 16) - _camY;
+								Xpos >>= 16; Ypos >>= 16;
+								Xpos -= _camX; Ypos -= _camY;
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Orange, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+								DrawBoxMWH(Xpos, Ypos, 1, 1, (_api.MemLib.ReadByte(curObj + 0x7F) == 0) ? Color.Blue : Color.Black, 0);
+								_api.GUILib.DrawLine(Xpos, Ypos, Xpos2, Ypos2, Color.Orange);
+								if (_api.MemLib.ReadByte(curObj + 0x12) % 7 == 0)
+								{
+									TickerText($"{_api.MemLib.ReadS32(curObj + 0x5C) / 65536.0:0.######}:{_api.MemLib.ReadS32(curObj + 0x60) / 65536.0:0.######}:{_api.MemLib.ReadByte(curObj + 0x7F)}", Color.Lime);
+								}
+							}
+							else if ((type == 0x9D774) || (type == 0x9DA26)) // Fish
+							{
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBoxMWH(Xmid, Ymid, 0x14, 0x14, Color.Lime);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xAD87C) // Enemy dolphins in metamorph levels
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBoxMWH(_api.MemLib.ReadS16(curObj + 0x1C) - _camX, _api.MemLib.ReadS16(curObj + 0x20) - _camY, 1024, 1024, Color.Orange, 0);
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Red);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xC6128) // Drone attacking dolphin 
+							{
+								Xmid = _api.MemLib.ReadS16(curObj + 0x4C) - _camX;
+								Ymid = _api.MemLib.ReadS16(curObj + 0x50) - _camY;
+								DrawEccoOct(Xmid, Ymid, 360, Color.Red, 0);
+							}
+							else if (type == 0xC605A) // Drone attacking dolphin sonar
+							{
+								Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camY;
+								Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+								DrawBox(Xmid, Ymid - 1, Xmid + 32, Ymid + 1, Color.Orange);
+							}
+							else if (type == 0xB1BE0) // Globe
+							{
+								int mode = _api.MemLib.ReadS8(curObj + 0x15);
+								if (mode == 1)
+								{
+									Xpos = _api.MemLib.ReadS16(curObj + 0x2C) - _camX;
+									Xpos2 = _api.MemLib.ReadS16(curObj + 0x34) - _camX;
+									Ypos = _api.MemLib.ReadS16(curObj + 0x30) - _camY;
+									Ypos2 = _api.MemLib.ReadS16(curObj + 0x38) - _camY;
+									DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Blue);
+									DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Lime, 0);
+									_api.GUILib.DrawLine(Xpos, Ypos2, Xpos2, Ypos, Color.Lime);
+									_api.GUILib.DrawLine(Xpos, Ypos, Xpos2, Ypos2, Color.Lime);
+									Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+									Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+									Xmid >>= 16; Ymid >>= 16;
+									DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+									_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+								}
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xB1A10) // Approaching globes
+							{
+								Xmid = _api.MemLib.ReadS16(0xFFAA1A) - _camX;
+								Ymid = _api.MemLib.ReadS16(0xFFAA1E) - _camY;
+								DrawEccoOct(Xmid - 56, Ymid, 8, Color.Orange);
+								DrawEccoOct(Xmid + 56, Ymid, 8, Color.Orange);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xpos = _api.MemLib.ReadS32(curObj + 0x4C);
+								Ypos = _api.MemLib.ReadS32(curObj + 0x50);
+								Xvec = ((Xmid - _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid - _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xpos2 = ((Xpos + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Ypos2 = ((Ypos + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								Xpos >>= 16; Ypos >>= 16;
+								Xpos -= _camX; Ypos -= _camY;
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+								DrawBoxMWH(Xpos, Ypos, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xpos, Ypos, Xpos2, Ypos2, Color.Orange);
+							}
+							else if (type == 0xB1920) // Orbiting globes
+							{
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xpos = _api.MemLib.ReadS16(curObj + 0x4C) - _camX;
+								Ypos = _api.MemLib.ReadS16(curObj + 0x50) - _camY;
+								Xvec = ((Xmid - _api.MemLib.ReadS32(curObj + 0x5C)) >> 16) - _camX;
+								Yvec = ((Ymid - _api.MemLib.ReadS32(curObj + 0x60)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+								DrawBoxMWH(Xpos, Ypos, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xpos, Ypos, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xC28A0) // Control point in Four Islands/Dolphin that gives Rock-breaking song
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, _api.MemLib.ReadByte(curObj + 0x15) == 0 ? Color.Orange : Color.Blue);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							// Crystal Springs merging glyphs
+							else if (type == 0xC651E) // Bound glyph
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x1C) - _camX;
+								Ypos = _api.MemLib.ReadS16(curObj + 0x20) - _camY;
+								DrawEccoRhomb(Xpos, Ypos, 4 << 4, Color.Orange);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C) - _camX;
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34) - _camX;
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30) - _camY;
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38) - _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Blue);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xC67E4) // Freed glyph
+							{
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C) - _camX;
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34) - _camX;
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30) - _camY;
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38) - _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Blue);
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.PowderBlue, 0);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xC6970) // Pulled glyph
+							{
+								uint subObj = _api.MemLib.ReadU24(curObj + 5);
+								Xvec = _api.MemLib.ReadS32(subObj + 0x54);
+								Yvec = _api.MemLib.ReadS32(subObj + 0x58);
+								for (i = 1; i < _api.MemLib.ReadByte(curObj + 0x7F); i++)
+								{
+									Xvec ^= Yvec;
+									Yvec ^= Xvec;
+									Xvec ^= Yvec;
+									Xvec = 0 - Xvec;
+								}
+								Xpos = (Xvec + _api.MemLib.ReadS32(subObj + 0x1C) >> 16) - _camX;
+								Ypos = (Yvec + _api.MemLib.ReadS32(subObj + 0x20) >> 16) - _camY;
+								DrawEccoRhomb(Xpos, Ypos, 3, Color.Orange);
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C) - _camX;
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34) - _camX;
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30) - _camY;
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38) - _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.PowderBlue, 0);
+								Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+								Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Orange, 0);
+							}
+							else if (type == 0xC6BA8) // Delivery Point
+							{
+								Xvec = _api.MemLib.ReadS32(curObj + 0x54);
+								Yvec = _api.MemLib.ReadS32(curObj + 0x58);
+								Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+								Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								for (i = 0; i < 4; i++)
+								{
+									Xpos = (Xvec + _api.MemLib.ReadS32(curObj + 0x1C) >> 16) - _camX;
+									Ypos = (Yvec + _api.MemLib.ReadS32(curObj + 0x20) >> 16) - _camY;
+									_api.GUILib.DrawLine(Xmid, Ymid, Xpos, Ypos, Color.Orange);
+									Xvec ^= Yvec;
+									Yvec ^= Xvec;
+									Xvec ^= Yvec;
+									Xvec = 0 - Xvec;
+								}
+							}
+							else if (type == 0xC6A6C) // Delivered glyph
+							{
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid - _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid - _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xC6F82) // Full delivery point
+							{
+								Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+								Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+								DrawEccoOct(Xmid, Ymid, 3, Color.Orange);
+							}
+							else if (type == 0xC6A9E) // Merging glyph
+							{
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid - _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid - _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Orange, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+							}
+							else if (type == 0xC7052) {
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+								Xmid = _api.MemLib.ReadS16(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS16(curObj + 0x28);
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								Xmid -= _camX; Ymid -= _camY;
+								uint dropSpeed = _api.MemLib.ReadU8(curObj + 0x16);
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Red);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xmid, Ymid + (int)(dropSpeed), Color.Orange);
+							}
+							else if ((type == 0xD8B7C) || (type == 0xD89EA) || (type == 0x9E3AA) || (type == 0x9E5A8) // GFX particles don't need displayed.
+								  || (type == 0x9B5D8) || (type == 0x9E2A6) || (type == 0xACD1E) || (type == 0xD9678)
+								  || (type == 0xD9A3C) || (type == 0xD9240) || (type == 0x9E1DE) || (type == 0xDF86A)
+								  || (type == 0xB159A) || (type == 0xDA898) || (type == 0xDA720) || (type == 0xD9FDC)
+								  || (type == 0xC0D4E) || (type == 0xC0D38) || (type == 0xDCDAC) || (type == 0xC0B42)
+								  || (type == 0xE3CD2) || (type == 0xE385E) || (type == 0xC20E8) || (type == 0xC22A6)
+								  || (type == 0xC31B4) || (type == 0xA9EF0) || (type == 0xA9D90) || (type == 0xC6304)
+								  || (type == 0xC26E4) || (type == 0xAEE68) || (type == 0xD9B2A) || (type == 0xD95AE)
+								  || (type == 0))
+							{
+								// This space intentionally left blank
+							}
+							else if ((type == 0xC152C) || (type == 0xA75E8) //Objects with default bounds confirmed
+								  || (type == 0x9D076) || (type == 0xA7092) || (type == 0xC02EA) || (type == 0xA5378)
+								  || (type == 0xACA7E) || (type == 0x9D28C) || (type == 0xA2D42) || (type == 0xA975E)
+								  || (type == 0xBE9C8) || (type == 0xBFDA4) || (type == 0xAC736) || (type == 0xB716E)
+								  || (type == 0xB1BE0) || (type == 0xB1A10) || (type == 0x9E546) || (type == 0xC2CB8)
+								  || (type == 0xA0F04) || (type == 0xA6ACA) || (type == 0xA35A6) || (type == 0xAA12E)
+								  || (type == 0xC651E) || (type == 0x9CC06) || (type == 0xA9202) || (type == 0xA6FDE)
+								  || (type == 0xA6F62) || (type == 0xA745C) || (type == 0xC3EF0) || (type == 0xC3F90)
+								  || (type == 0xC3FFC) || (type == 0xC3DB8) || (type == 0xAC766) || (type == 0xC5F66)
+								  || (type == 0xA306E) || (type == 0xB0C7E) || (type == 0xB17F2) || (type == 0xB0CDC) 
+								  || (type == 0xC2106) || (type == 0xC208C) || (type == 0xC1EBA) || (type == 0xC251C) 
+								  || (type == 0xC32C8) || (type == 0xAB5E6) || (type == 0xAC796) || (type == 0xAC9F2) 
+								  || (type == 0xA538A))
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.FromArgb(255, 0, 127));
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.PowderBlue, 0);
+								if (type != 0xA975E)
+								{
+									DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+									_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+								}
+								if (HP > 2)
+								{
+									PutText($"{HP - 1}", Xmid, Ymid, 1, 1, -1, -9, Color.Blue, Color.Red);
+								}
+							}
+							else // Default bounds
+							{
+								Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+								Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+								Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+								Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+								Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+								Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+								Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+								Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+								Xmid >>= 16; Ymid >>= 16;
+								Xpos -= _camX; Xpos2 -= _camX;
+								Ypos -= _camY; Ypos2 -= _camY;
+								Xmid -= _camX; Ymid -= _camY;
+								DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.PowderBlue, 0);
+								DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+								_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+								PutText(type.ToString("X5"), Xmid, Ymid + 8, 1, 9, -1, -1, Color.Blue, Color.Red);
+							}
+							break;
 						}
-						else if ((type == 0x9F5B0) || (type == 0xA3B18))
-						{
-							Xpos = _api.MemLib.ReadS16(curObj + 0x24);
-							Ypos = _api.MemLib.ReadS16(curObj + 0x28);
-							Xpos -= _camX;
-							Ypos -= _camY;
-							DrawEccoOct(Xpos, Ypos, _api.MemLib.ReadS16(curObj + 0x44), Color.Lime);
-						}
-						else if (type == 0xDCEE0)
-						{
-							Xpos = _api.MemLib.ReadS16(curObj + 0x24);
-							Ypos = _api.MemLib.ReadS16(curObj + 0x28);
-							Xpos -= _camX; Ypos -= _camY;
-							DrawEccoOct(Xpos, Ypos, 0x5C, Color.Lime);
-						}
-						else
-						{
-							Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
-							Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
-							Ypos = _api.MemLib.ReadS16(curObj + 0x30);
-							Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
-							Xmid = _api.MemLib.ReadS16(curObj + 0x24);
-							Ymid = _api.MemLib.ReadS16(curObj + 0x28);
-							Xpos -= _camX; Xpos2 -= _camX;
-							Ypos -= _camY; Ypos2 -= _camY;
-							Xmid -= _camX; Ymid -= _camY;
-							if ((type == 0xA6C4A) || (type == 0xC43D4)) DrawEccoOct(Xmid, Ymid, 70, Color.Lime);
-							_api.GUILib.DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Lime);
-						}
-						break;
-					}
 					case Modes.Ecco1:
 						type = _api.MemLib.ReadU32(curObj + 0x6);
 						Xpos = _api.MemLib.ReadS16(curObj + 0x17);
@@ -544,26 +2442,51 @@ namespace BizHawk.Client.EmuHawk
 						Xpos -= _camX; Xpos2 -= _camX;
 						Ypos -= _camY; Ypos2 -= _camY;
 						Xmid -= _camX; Ymid -= _camY;
-                        _api.GUILib.DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Lime);
-                        break;
+                        DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Lime);
+						PutText(type.ToString("X8"), Xmid, Ymid, 1, 1, -1, -1, Color.Blue, Color.Red);
+						break;
 				}
-				Print_Text(type.ToString("X8"), 8, Math.Min(Math.Max(0, Xmid-16), 605), Math.Min(Math.Max(0, Ymid-5), 424), Color.Blue);
-				Print_Text(type.ToString("X8"), 8, Math.Min(Math.Max(2, Xmid-14), 607), Math.Min(Math.Max(2, Ymid-3), 426), Color.Blue);
-				Print_Text(type.ToString("X8"), 8, Math.Min(Math.Max(0, Xmid-16), 605), Math.Min(Math.Max(2, Ymid-3), 426), Color.Blue);
-				Print_Text(type.ToString("X8"), 8, Math.Min(Math.Max(2, Xmid-14), 607), Math.Min(Math.Max(0, Ymid-5), 424), Color.Blue);
-				Print_Text(type.ToString("X8"), 8, Math.Min(Math.Max(1, Xmid-15), 606), Math.Min(Math.Max(1, Ymid-4), 425), Color.Red);
                 curObj = _api.MemLib.ReadU24(curObj+1);
 			}
 			//events
 			curObj = _api.MemLib.ReadU24(0xFFCFB5);
 			while (curObj != 0)
 			{
-				uint type = _api.MemLib.ReadU32(curObj + 0xC);
-				if ((type == 0xA44EE) || (type == 0xD120C))
+				type = _api.MemLib.ReadU32(curObj + 0xC);
+				if ((type == 0)							   // Null object
+				 || (type == 0x9C1FA) || (type == 0x9C6D0) // Skytubes BG Image manager
+				 || (type == 0x9ED72) || (type == 0xA57F2) // And Miscellaneous GFX particles
+				 || (type == 0xC3A42) || (type == 0xB33D8) // And Cutscene controller
+				 || (type == 0xB308A) || (type == 0xA1676) || (type == 0xB6822) || (type == 0xD12E2)) { } 
+				else if ((type == 0xA44EE) || (type == 0xD120C))
 				{
 					Xmid = _api.MemLib.ReadS16(curObj + 0x1C) - _camX;
 					Ymid = _api.MemLib.ReadS16(curObj + 0x20) - _camY;
-					DrawEccoOct(Xmid, Ymid, 0x20, Color.Cyan);
+					DrawEccoOct(Xmid, Ymid, 0x20, Color.Red);
+				}
+				else if (type == 0x9F0D0) // Water Current
+				{
+					int Xvec = _api.MemLib.ReadS32(curObj + 0x54);
+					int Yvec = _api.MemLib.ReadS32(curObj + 0x58);
+					if ((Xvec != 0) || (Yvec != 0))
+					{ 
+						Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+						Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+						Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+						Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+						Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+						Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+						Xvec += Xmid; Yvec += Ymid;
+						Xmid >>= 16; Ymid >>= 16;
+						Xvec >>= 16; Yvec >>= 16;
+						Xpos -= _camX; Xpos2 -= _camX;
+						Ypos -= _camY; Ypos2 -= _camY;
+						Xmid -= _camX; Ymid -= _camY;
+						Xvec -= _camX; Yvec -= _camY;
+						DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.FromArgb(63, Color.Red));
+						DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+						_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+					}
 				}
 				else if (type == 0xDEF94)
 				{
@@ -571,9 +2494,179 @@ namespace BizHawk.Client.EmuHawk
 					Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
 					DrawEccoOct(Xmid, Ymid, 0x18, Color.Cyan);
 				}
-				else 
+				else if (type == 0xA6584) // Eagle
 				{
-					Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+					Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+					Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+					DrawEccoOct(Xmid, Ymid, 0x10, Color.Red);
+				}
+				else if ((type == 0x9BA8A) // Autoscroller controller
+					  || (type == 0xE27D4) || (type == 0xE270E) || (type == 0xE26C2))
+				{
+					Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+					Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+					var Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+					var Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+					Xmid >>= 16; Ymid >>= 16;
+					Xmid -= _camX; Ymid -= _camY;
+					DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Orange, 0);
+					_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+				}
+				else if (type == 0x9B948) // Autoscroller waypoint
+				{
+					Xmid = _api.MemLib.ReadS32(curObj + 0x24);
+					Ymid = _api.MemLib.ReadS32(curObj + 0x28);
+					var Xvec = ((Xmid + _api.MemLib.ReadS32(curObj + 0x54)) >> 16) - _camX;
+					var Yvec = ((Ymid + _api.MemLib.ReadS32(curObj + 0x58)) >> 16) - _camY;
+					Xmid >>= 16; Ymid >>= 16;
+					Xmid -= _camX; Ymid -= _camY;
+					DrawBoxMWH(Xmid, Ymid, 8, 8, Color.Orange);
+					DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+					_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
+				}
+				else if (type == 0xA5448) // Bomb spawner
+				{
+					Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+					Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+					PutText($"{_api.MemLib.ReadU16(curObj + 0x6E)}", Xmid, Ymid, 1, 1, -1, -1, Color.White, Color.Blue);
+				}
+				else if ((type == 0xA529C) || (type == 0xA5236) || (type == 0xA51E6)) // Explosion
+				{
+					uint subObj = _api.MemLib.ReadU24(curObj + 5);
+					if (subObj != 0)
+					{
+						Xpos = _api.MemLib.ReadS16(subObj + 0x1C) - _camX;
+						Ypos = _api.MemLib.ReadS16(subObj + 0x28) - _camY;
+						int Width = _api.MemLib.ReadS16(subObj + 0x24) - Xpos - _camX;
+						DrawBoxMWH(Xpos, Ypos, Width, 16, Color.Red);
+					}
+					subObj = _api.MemLib.ReadU24(curObj + 9);
+					if (subObj != 0)
+					{
+						Xpos = _api.MemLib.ReadS16(subObj + 0x1C) - _camX;
+						Ypos = _api.MemLib.ReadS16(subObj + 0x28) - _camY;
+						int Width = _api.MemLib.ReadS16(subObj + 0x24) - Xpos - _camX;
+						DrawBoxMWH(Xpos, Ypos, Width, 16, Color.Red);
+					}
+				}
+				else if (type == 0x9B5D8)
+				{
+					var subtype = _api.MemLib.ReadByte(curObj + 0x13);
+					int width = 0;
+					int height = 0;
+					switch (subtype)
+					{
+						case 48:
+						case 49:
+						case 126:
+						case 145:
+						case 146:
+						case 213:
+							PutText($"{type:X5}:{subtype}", Xmid, Ymid - 4, 1, 1, -1, -9, Color.White, Color.Blue);
+							PutText(curObj.ToString("X6"), Xmid, Ymid + 4, 1, 9, -1, -1, Color.White, Color.Blue);
+							break;
+						case 59:
+						case 87:
+						case 181:
+							Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+							Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+							width = _api.MemLib.ReadS16(curObj + 0x44);
+							height = _api.MemLib.ReadS16(curObj + 0x48);
+							DrawEccoOct(Xmid, Ymid, (width + height) >> 1, Color.Lime);
+							break;
+						case 71:
+						case 72:
+						case 158:
+						case 159:
+						case 165:
+							Xpos = _api.MemLib.ReadS16(curObj + 0x2C) - _camX;
+							Xpos2 = _api.MemLib.ReadS16(curObj + 0x34) - _camX;
+							Ypos = _api.MemLib.ReadS16(curObj + 0x30) - _camY;
+							Ypos2 = _api.MemLib.ReadS16(curObj + 0x38) - _camY;
+							DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Red);
+							break;
+						case 82:
+						case 83:
+						case 84:
+						case 85:
+						case 86:
+							Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+							Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+							width = _api.MemLib.ReadS16(curObj + 0x44);
+							height = _api.MemLib.ReadS16(curObj + 0x48);
+							DrawBoxMWH(Xmid, Ymid, width, height, Color.Red);
+							break;
+						case 210:
+							Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+							Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+							width = _api.MemLib.ReadS16(curObj + 0x44);
+							height = _api.MemLib.ReadS16(curObj + 0x48);
+							DrawBoxMWH(Xmid, Ymid, width, height, Color.Blue);
+							break;
+						case 107:
+							Xmid = (_api.MemLib.ReadS16(curObj + 0x18) << 7) - _camX + 0x40;
+							Ymid = (_api.MemLib.ReadS16(curObj + 0x1A) << 7) - _camY + 0x40;
+							Xpos = (_api.MemLib.ReadS16(curObj + 0x64) << 7) - _camX + 0x40;
+							Ypos = (_api.MemLib.ReadS16(curObj + 0x66) << 7) - _camY + 0x40;
+							DrawBoxMWH(Xmid, Ymid, 64, 64, Color.Orange, 0);
+							DrawBoxMWH(Xpos, Ypos, 64, 64, Color.Orange, 0);
+							DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+							_api.GUILib.DrawLine(Xmid, Ymid, Xpos, Ypos, Color.Orange);
+							break;
+						case 110: //Gravity conrol points
+						case 179:
+							Xpos = _api.MemLib.ReadS16(curObj + 0x2C) - _camX;
+							Xpos2 = _api.MemLib.ReadS16(curObj + 0x34) - _camX;
+							Ypos = _api.MemLib.ReadS16(curObj + 0x30) - _camY;
+							Ypos2 = _api.MemLib.ReadS16(curObj + 0x38) - _camY;
+							DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.FromArgb(63,_api.MemLib.ReadByte(curObj + 0x15) == 0 ? Color.Gray : Color.Red));
+							DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Red, 0);
+							int dir = _api.MemLib.ReadS8(curObj + 0x71) & 7;
+							int[] xtable = {  7, 4, -3, -10, -14, -11,  -3,   4};
+							int[] ytable = { 11, 4,  7,   4,  -3, -11, -14, -11};
+							Xmid = _api.MemLib.ReadS16(curObj + 0x24) - _camX;
+							Ymid = _api.MemLib.ReadS16(curObj + 0x28) - _camY;
+							DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+							_api.GUILib.DrawImage(".\\dll\\gravitometer_bg.png", Xmid - 15, Ymid - 15);
+							_api.GUILib.DrawImage(".\\dll\\gravitometer_fg.png", Xmid + xtable[dir], Ymid + ytable[dir]);
+							break;
+						case 176:
+							Xmid = (_api.MemLib.ReadS16(curObj + 0x18) << 7) - _camX + 0x40;
+							Ymid = (_api.MemLib.ReadS16(curObj + 0x1A) << 7) - _camY + 0x40;
+							Xpos = (_api.MemLib.ReadS16(curObj + 0x64) << 7) - _camX + 0x40;
+							Ypos = (_api.MemLib.ReadS16(curObj + 0x66) << 7) - _camY + 0x40;
+							DrawEccoOct(Xmid, Ymid, 32, Color.Orange, 0);
+							DrawEccoOct(Xpos, Ypos, 32, Color.Orange, 0);
+							DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue, 0);
+							_api.GUILib.DrawLine(Xmid, Ymid, Xpos, Ypos, Color.Orange);
+							break;
+						case 194: // Kill plane
+							Xpos = _api.MemLib.ReadS16(curObj + 0x2C) - _camX;
+							Xpos2 = _api.MemLib.ReadS16(curObj + 0x34) - _camX;
+							Ypos = _api.MemLib.ReadS16(curObj + 0x30) - _camY;
+							Ypos2 = _api.MemLib.ReadS16(curObj + 0x38) - _camY;
+							DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Black, 127);
+							DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Red, 0);
+							break;
+						default:
+							Xpos = _api.MemLib.ReadS16(curObj + 0x2C);
+							Xpos2 = _api.MemLib.ReadS16(curObj + 0x34);
+							Ypos = _api.MemLib.ReadS16(curObj + 0x30);
+							Ypos2 = _api.MemLib.ReadS16(curObj + 0x38);
+							Xmid = _api.MemLib.ReadS16(curObj + 0x24);
+							Ymid = _api.MemLib.ReadS16(curObj + 0x28);
+							Xpos -= _camX; Xpos2 -= _camX;
+							Ypos -= _camY; Ypos2 -= _camY;
+							Xmid -= _camX; Ymid -= _camY;
+							DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Cyan);
+							PutText($"{type:X5}:{subtype}", Xmid, Ymid - 4, 1, 1, -1, -9, Color.White, Color.Blue);
+							PutText(curObj.ToString("X6"), Xmid, Ymid + 4, 1, 9, -1, -1, Color.White, Color.Blue);
+							break;
+					}
+				}
+				else
+				{
+					Xpos =  _api.MemLib.ReadS16(curObj + 0x2C);
 					Xpos2= _api.MemLib.ReadS16(curObj + 0x34);
 					Ypos = _api.MemLib.ReadS16(curObj + 0x30);
 					Ypos2= _api.MemLib.ReadS16(curObj + 0x38);
@@ -582,93 +2675,117 @@ namespace BizHawk.Client.EmuHawk
 					Xpos -= _camX; Xpos2 -= _camX;
 					Ypos -= _camY; Ypos2 -= _camY;
 					Xmid -= _camX; Ymid -= _camY;
-                    _api.GUILib.DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Cyan);
-                }
-                PutText(type.ToString("X8"), Xmid, Ymid, 1, 1, 0, 0, Color.White, Color.Blue);
-				PutText(curObj.ToString("X8"), Xmid, Ymid, 1, 9, 0, 0, Color.White, Color.Blue);
-                curObj = _api.MemLib.ReadU24(curObj+1);
+					DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Cyan);
+					PutText($"{type:X5}:{_api.MemLib.ReadByte(curObj + 0x13)}", Xmid, Ymid - 4, 1, 1, -1, -9, Color.White, Color.Blue);
+					PutText(curObj.ToString("X6"), Xmid, Ymid + 4, 1, 9, -1, -1, Color.White, Color.Blue);
+				}
+				curObj = _api.MemLib.ReadU24(curObj+1);
 			}
-			//Ecco body
-			Xpos = _api.MemLib.ReadS16(0xFFAA22);
-			Ypos = _api.MemLib.ReadS16(0xFFAA26);
-			Xpos2 = _api.MemLib.ReadS16(0xFFAA2A);
-			Ypos2 = _api.MemLib.ReadS16(0xFFAA2E);
-			Xmid = _api.MemLib.ReadS16(0xFFAA1A);
-			Ymid = _api.MemLib.ReadS16(0xFFAA1E);
-			Xpos -= _camX; Xpos2 -= _camX;
-			Ypos -= _camY; Ypos2 -= _camY;
-			Xmid -= _camX; Ymid -= _camY;
-			X = Xpos;
-			X2 = Xpos2;
-			Y = Ypos;
-			Y2 = Ypos2;
-			int X3 = (Xmid + (ushort) Xpos) >> 1;
-			int X4 = (Xmid + (ushort) Xpos2) >> 1;
-			int Y3 = (Ymid + (ushort) Ypos) >> 1;
-			int Y4 = (Ymid + (ushort) Ypos2) >> 1;
-			DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Magenta);
-			DrawBoxMWH(X, Y, 1, 1, Color.Magenta);
-			DrawBoxMWH(X2, Y2, 1, 1, Color.Magenta);
-			DrawBoxMWH(X3, Y3, 1, 1, Color.Magenta);
-			DrawBoxMWH(X4, Y4, 1, 1, Color.Magenta);
-			_api.GUILib.DrawPixel(Xmid, Ymid, Color.Blue);
-			_api.GUILib.DrawPixel(X, Y, Color.Blue);
-			_api.GUILib.DrawPixel(X2, Y2, Color.Blue);
-			_api.GUILib.DrawPixel(X3, Y3, Color.Blue);
-			_api.GUILib.DrawPixel(X4, Y4, Color.Blue);
-			_api.GUILib.DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.Blue);
 			//Ecco head
 			Xpos = _api.MemLib.ReadS16(0xFFA8F8);
 			Xpos2 = _api.MemLib.ReadS16(0xFFA900);
 			Ypos = _api.MemLib.ReadS16(0xFFA8FC);
 			Ypos2 = _api.MemLib.ReadS16(0xFFA904);
+			Xmid = _api.MemLib.ReadS16(0xFFA8F0);
+			Ymid = _api.MemLib.ReadS16(0xFFA8F4);
 			Xpos -= _camX; Xpos2 -= _camX;
 			Ypos -= _camY; Ypos2 -= _camY;
-			_api.GUILib.DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.White);
+			Xmid -= _camX; Ymid -= _camY;
+			DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.PowderBlue);
+			DrawBoxMWH(Xmid, Ymid, 1, 1, Color.PowderBlue, 0);
 			//Ecco tail
 			Xpos = _api.MemLib.ReadS16(0xFFA978);
 			Xpos2 = _api.MemLib.ReadS16(0xFFA980);
 			Ypos = _api.MemLib.ReadS16(0xFFA97C);
 			Ypos2 = _api.MemLib.ReadS16(0xFFA984);
+			Xmid = _api.MemLib.ReadS16(0xFFA970);
+			Ymid = _api.MemLib.ReadS16(0xFFA974);
 			Xpos -= _camX; Xpos2 -= _camX;
 			Ypos -= _camY; Ypos2 -= _camY;
-			_api.GUILib.DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.White);
+			Xmid -= _camX; Ymid -= _camY;
+			DrawBox(Xpos, Ypos, Xpos2, Ypos2, Color.PowderBlue);
+			DrawBoxMWH(Xmid, Ymid, 1, 1, Color.PowderBlue, 0);
+			//Ecco body
+			Xpos = _api.MemLib.ReadS32(0xFFAA22);
+			Ypos = _api.MemLib.ReadS32(0xFFAA26);
+			Xpos2 = _api.MemLib.ReadS32(0xFFAA2A);
+			Ypos2 = _api.MemLib.ReadS32(0xFFAA2E);
+			Xmid = _api.MemLib.ReadS16(0xFFAA1A);
+			Ymid = _api.MemLib.ReadS16(0xFFAA1E);
+			int Xvel = _api.MemLib.ReadS32(0xFFAA36);
+			if (_api.MemLib.ReadU32(0xFFA9D6) > 7) Xvel += _api.MemLib.ReadS32(0xFFA9D6);
+			if (_api.MemLib.ReadU32(0xFFAA3E) > 7) Xvel += _api.MemLib.ReadS32(0xFFAA3E);
+			int Yvel = _api.MemLib.ReadS32(0xFFAA3A);
+			if (_api.MemLib.ReadU32(0xFFA9DA) > 7) Yvel += _api.MemLib.ReadS32(0xFFA9DA);
+			if (_api.MemLib.ReadU32(0xFFAA42) > 7) Yvel += _api.MemLib.ReadS32(0xFFAA42);
+			int XV = ((Xpos + Xvel) >> 16) - _camX;
+			int YV = ((Ypos + Yvel) >> 16) - _camY;
+			int XV2 = ((Xpos2 + Xvel) >> 16) - _camX;
+			int YV2 = ((Ypos2 + Yvel) >> 16) - _camY;
+			X = Xpos >> 16;
+			X2 = Xpos2 >> 16;
+			Y = Ypos >> 16;
+			Y2 = Ypos2 >> 16;
+			X -= _camX; X2 -= _camX;
+			Y -= _camY; Y2 -= _camY;
+			Xmid -= _camX; Ymid -= _camY;
+			int X3 = (Xmid + X) >> 1;
+			int X4 = (Xmid + X2) >> 1;
+			int Y3 = (Ymid + Y) >> 1;
+			int Y4 = (Ymid + Y2) >> 1;
+			_api.GUILib.DrawLine(X, Y, Xmid, Ymid, Color.Green);
+			_api.GUILib.DrawLine(Xmid, Ymid, X2, Y2, Color.Green);
+			DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Red);
+			DrawBoxMWH(X, Y, 1, 1, Color.Lime);
+			DrawBoxMWH(X2, Y2, 1, 1, Color.Blue);
+			DrawBoxMWH(X3, Y3, 1, 1, Color.Yellow);
+			DrawBoxMWH(X4, Y4, 1, 1, Color.Yellow);
+			_api.GUILib.DrawLine(X, Y, XV, YV, Color.Orange);
+			_api.GUILib.DrawLine(X2, Y2, XV2, YV2, Color.Orange);
 			// sonar
 			if (_api.MemLib.ReadU8(0xFFAB77) != 0)
 			{
-				Xmid = _api.MemLib.ReadS16(0xFFA9EC);
+				Xmid = _api.MemLib.ReadS32(0xFFA9EC);
+				Ymid = _api.MemLib.ReadS32(0xFFA9F0);
+				int Xvec = ((_api.MemLib.ReadS32(0xFFAA04) + Xmid) >> 16) - _camX;
+				int Yvec = ((_api.MemLib.ReadS32(0xFFAA08) + Ymid) >> 16) - _camY;
+				Xmid >>= 16;
+				Ymid >>= 16;
+				Xmid -= _camX; Ymid -= _camY;
 				Width2 = _api.MemLib.ReadS16(0xFFA9FC);
-				Xmid -= _camX;
-				Ymid = _api.MemLib.ReadS16(0xFFA9F0);
-				Ymid -= _camY;
 				Height2 = _api.MemLib.ReadS16(0xFFAA00);
 				color = ((_api.MemLib.ReadU8(0xFFAA0C) != 0) ? Color.FromArgb(255, 0, 127) : Color.FromArgb(0, 0, 255));
 				DrawBoxMWH(Xmid, Ymid, Width2, Height2, color);
-				DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue);
-				_api.GUILib.DrawPixel(Xmid, Ymid, color);
+				DrawBoxMWH(Xmid, Ymid, 1, 1, color, 0);
+				_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
 			}
 			//Pulsar
 			curObj = _api.MemLib.ReadU24(0xFFCFD1);
-			if (curObj != 0)
+			if ((curObj != 0) && ((_api.MemLib.ReadU32(curObj + 0xC) == 0xC9222) || (_api.MemLib.ReadU32(curObj + 0xC) == 0xC9456)))
 			{
-		//		sbyte Blah = _api.MemLib.ReadU8(CardBoard + 0x15);
 				curObj += 0x26;
-		//		if (!(Blah & 1))
-		//			CardBoard += 0x14;
 				for (int l = 0; l < 4; l++)
 				{
 					if (_api.MemLib.ReadU16(curObj + 0x12) != 0)
 					{
-						Xmid = _api.MemLib.ReadS16(curObj);
-						Ymid = _api.MemLib.ReadS16(curObj + 4);
+						Xmid = _api.MemLib.ReadS32(curObj);
+						Ymid = _api.MemLib.ReadS32(curObj + 4);
+						int Xvec = (Xmid + _api.MemLib.ReadS32(curObj + 8) >> 16) - _camX;
+						int Yvec = (Ymid + _api.MemLib.ReadS32(curObj + 0xC) >> 16) - _camY;
+						Xmid >>= 16; Ymid >>= 16;
 						Xmid -= _camX; Ymid -= _camY;
 						DrawBoxMWH(Xmid, Ymid, 0x30, 0x30, Color.Red);
 						DrawBoxMWH(Xmid, Ymid, 1, 1, Color.Blue);
-						_api.GUILib.DrawPixel(Xmid, Ymid, Color.Red);
+						_api.GUILib.DrawLine(Xmid, Ymid, Xvec, Yvec, Color.Orange);
 					}
 					curObj += 0x14;
 				}
 			}
+
+			//Water Level
+			int waterLevel = _api.MemLib.ReadS16(0xFFA7B2);
+			_api.GUILib.DrawLine(0, waterLevel - _camY, _left + 320 + _right, waterLevel - _camY, Color.Aqua);
+
 		}
 
 		void EccoAutofire(bool on)
@@ -678,27 +2795,28 @@ namespace BizHawk.Client.EmuHawk
 			uint mode = _api.MemLib.ReadU8(0xFFA555);
 			int frameCount = _api.EmuLib.FrameCount();
 			int lagCount = _api.EmuLib.LagCount();
+			_api.JoypadLib.Set("Start", on, 1);
 			switch (mode)
 			{
 				case 0x00:
 					if (on)
 					{
 						if (_api.MemLib.ReadU16(0xFFF342) == 0xFFFD)
-							_api.JoypadLib.Set("C", false, 1);
-						else
 							_api.JoypadLib.Set("C", true, 1);
+						else
+							_api.JoypadLib.Set("C", false, 1);
 					}
 					break;
 				case 0xE6:
 					if (_api.MemLib.ReadU16(0xFFD5E8) == 0x00000002) {
 						Dictionary<string, bool> buttons = new Dictionary<string, bool>();
-						buttons["B"] = !(buttons["C"] = false);
+						buttons["B"] = buttons["C"] = true;
 						_api.JoypadLib.Set(buttons, 1);
 					}
 					else
 					{
 						Dictionary<string, bool> buttons = new Dictionary<string, bool>();
-						buttons["B"] = !(buttons["C"] = true);
+						buttons["B"] = buttons["C"] = false;
 						_api.JoypadLib.Set(buttons, 1);
 					}
 					break;
@@ -706,28 +2824,25 @@ namespace BizHawk.Client.EmuHawk
 					charge = _api.MemLib.ReadU8(0xFFB19B);
 					if (on)
 					{
-						if ((charge == 1) || (_prevCharge == 1) || !(_prevOn || (_api.MemLib.ReadU8(0xFFB19B) != 0)))
+						if ((charge <= 1) && ((_api.MemLib.ReadU8(0xFFB1A6) == 0) || (_api.MemLib.ReadU8(0xFFB1A9) != 0)))
 							_api.JoypadLib.Set("B", true, 1);
-						else
+						else if (charge > 1)
 							_api.JoypadLib.Set("B", false, 1);
-						if ((_api.MemLib.ReadU16(0xFFB168) == 0x3800) && ((_api.MemLib.ReadU16(0xFFA7C8) % 2) != 0))
-							_api.EmuLib.SetIsLagged(true);
-						_api.JoypadLib.Set("C", (_api.MemLib.ReadU16(0xFFA7C8) % 2) != 0, 1);
+						_api.JoypadLib.Set("C", (_api.MemLib.ReadU16(0xFFA7C8) % 2) == 0, 1);
 					}
-					_prevCharge = charge;
 					break;
 				case 0x20:
 				case 0x28:
 				case 0xAC:
 					if (on)
 					{
-						_api.JoypadLib.Set("C", (_api.MemLib.ReadS8(0xFFAA6E) >= 11), 1);
+						if ((_api.MemLib.ReadU8(0xFFAB72) & 3) == 0)
+							_api.JoypadLib.Set("C", (_api.MemLib.ReadS8(0xFFAA6E) < 11), 1);
 					}
 					break;
 				default:
 					break;
 			}
-			_prevOn = on;
 		}
 		public override void Init(IPluginAPI api) 
 		{
@@ -741,7 +2856,9 @@ namespace BizHawk.Client.EmuHawk
 				_mode = Modes.Ecco2;
 				_camXAddr = 0xFFAD9C;
 				_camYAddr = 0xFFAD9E;
-                EmuHawkPluginLibrary.SetGameExtraPadding(160, 112, 160, 112);
+				_top = _bottom = 112;
+				_left = _right = 160;
+				EmuHawkPluginLibrary.SetGameExtraPadding(_left, _top, _right, _bottom);
             }
 			else if ((gameName == "ECCO The Dolphin (J) [!]") ||
 					 (gameName == "ECCO The Dolphin (UE) [!]"))
@@ -750,7 +2867,9 @@ namespace BizHawk.Client.EmuHawk
 				_mode = Modes.Ecco1;
 				_camXAddr = 0xFFB836;
 				_camYAddr = 0xFFB834;
-				EmuHawkPluginLibrary.SetGameExtraPadding(160,112,160,112);
+				_top = _bottom = 112;
+				_left = _right = 160;
+				EmuHawkPluginLibrary.SetGameExtraPadding(_left, _top, _right, _bottom);
 			}
 			else
 			{
@@ -758,41 +2877,564 @@ namespace BizHawk.Client.EmuHawk
 				Running = false;
 			}
 		}
+		private Color BackdropColor()
+		{
+			uint color = _api.MemLib.ReadU16(0, "CRAM");
+			int r = (int)(( color       & 0x7) * 0x22);
+			int g = (int)(((color >> 3) & 0x7) * 0x22);
+			int b = (int)(((color >> 6) & 0x7) * 0x22);
+			return Color.FromArgb(r, g, b);
+
+		}
 		public override void PreFrameCallback()
 		{
+			_api.GUILib.ClearText();
 			if (_mode != Modes.disabled)
 			{
-				EccoAutofire(_api.JoypadLib.Get(1)["C"] != _api.JoypadLib.GetImmediate()["P1 C"]);
+				_camX = _api.MemLib.ReadS16(_camXAddr) - _left;
+				_camY = _api.MemLib.ReadS16(_camYAddr) - _top;
+				EccoAutofire(_api.JoypadLib.Get(1)["Start"]);
+				if (_dumpMap == 0)
+				{
+					Color bg = BackdropColor();
+					_api.GUILib.DrawRectangle(0, 0, _left + 320 + _right, _top, bg, bg);
+					_api.GUILib.DrawRectangle(0, 0, _left, _top + 224 + _bottom, bg, bg);
+					_api.GUILib.DrawRectangle(_left + 320, 0, _left + 320 + _right, _top + 224 + _bottom, bg, bg);
+					_api.GUILib.DrawRectangle(0, _top + 224, _left + 320 + _right, _top + 224 + _bottom, bg, bg);
+				}
+				uint mode = _api.MemLib.ReadByte(0xFFA555);
+				switch (mode)
+				{
+					case 0x20:
+					case 0x28:
+					case 0xAC:
+						//EmuHawkPluginLibrary.SetGameExtraPadding(160, 112, 160, 112);
+						if (_dumpMap <= 1) EccoDrawBoxes();
+						// Uncomment the following block to enable mapdumping
+						/*if ((_api.MemLib.ReadU16(0xFFA7C8) > 1) && (_api.MemLib.ReadU16(0xFFA7C8) < 4))
+						{
+							_dumpMap = 1;
+							_rowStateGuid = string.Empty;
+							_top = _bottom = _left = _right = 0;
+							EmuHawkPluginLibrary.SetGameExtraPadding(0, 0, 0, 0);
+						}*/
+						if (_dumpMap == 3)
+						{
+							var levelID = _api.MemLib.ReadS8(0xFFA7D0);
+							int[] nameGroupLengths =
+							{
+								7,1,11,6,
+								4,3,3,3,
+								7,1,2,1,
+								0,0,0,0
+							};
+							int[] nameStringPtrOffsets =
+							{
+								0xECBD0, 0x106BC0, 0x10AF8C, 0x135A48,
+								0x1558E8, 0x15F700, 0x16537C, 0x180B00,
+								0x193920, 0x1B3ECC, 0x1D7A44, 0x1DBF70,
+								0x2DF2, 0x2DF6, 0x2DFA, 0x2DFE
+							};
+							int nameGroup = 0;
+							var i = levelID;
+							while ((i >= 0) && (nameGroup < nameGroupLengths.Length))
+							{
+								i -= nameGroupLengths[nameGroup];
+								if (i >= 0) nameGroup++;
+							}
+							string name = "map";
+							if (i < 0)
+							{
+								i += nameGroupLengths[nameGroup];
+								uint strOffset = _api.MemLib.ReadU32(nameStringPtrOffsets[nameGroup] + 0x2E);
+								Console.WriteLine($"{i}");
+								strOffset = _api.MemLib.ReadU32(strOffset + ((i << 3) + (i << 5)) + 0x22);
+								strOffset += 0x20;
+								List<byte> strTmp = new List<byte>();
+								byte c;
+								do
+								{
+									c = (byte)_api.MemLib.ReadByte(strOffset++);
+									if (c != 0)
+										strTmp.Add(c);
+								} while (c != 0);
+								name = System.Text.Encoding.ASCII.GetString(strTmp.ToArray());
+								TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+								name = textInfo.ToTitleCase(name).Replace(" ", string.Empty);
+							}
+							EmuHawkPluginLibrary.Screenshot($"c:\\Ecco2Maps\\{levelID}_{name}_top.png");
+							_destX = _destY = 0;
+							EmuHawkPluginLibrary.SetGameExtraPadding(0, 0, 0, 0);
+							_dumpMap++;
+						}
+						if (_dumpMap == 6)
+						{
+							var levelID = _api.MemLib.ReadS8(0xFFA7D0);
+							int[] nameGroupLengths =
+							{
+								7,1,11,6,
+								4,3,3,3,
+								7,1,2,1,
+								0,0,0,0
+							};
+							int[] nameStringPtrOffsets =
+							{
+								0xECBD0, 0x106BC0, 0x10AF8C, 0x135A48,
+								0x1558E8, 0x15F700, 0x16537C, 0x180B00,
+								0x193920, 0x1B3ECC, 0x1D7A44, 0x1DBF70,
+								0x2DF2, 0x2DF6, 0x2DFA, 0x2DFE
+							};
+							int nameGroup = 0;
+							var i = levelID;
+							while ((i >= 0) && (nameGroup < nameGroupLengths.Length))
+							{
+								i -= nameGroupLengths[nameGroup];
+								if (i >= 0) nameGroup++;
+							}
+							string name = "map";
+							if (i < 0)
+							{
+								i += nameGroupLengths[nameGroup];
+								uint strOffset = _api.MemLib.ReadU32(nameStringPtrOffsets[nameGroup] + 0x2E);
+								Console.WriteLine($"{i}");
+								strOffset = _api.MemLib.ReadU32(strOffset + ((i << 3) + (i << 5)) + 0x22);
+								strOffset += 0x20;
+								List<byte> strTmp = new List<byte>();
+								byte c;
+								do
+								{
+									c = (byte)_api.MemLib.ReadByte(strOffset++);
+									if (c != 0)
+										strTmp.Add(c);
+								} while (c != 0);
+								name = System.Text.Encoding.ASCII.GetString(strTmp.ToArray());
+								TextInfo textInfo = new CultureInfo("en-US", false).TextInfo;
+								name = textInfo.ToTitleCase(name).Replace(" ", string.Empty);
+							}
+							EmuHawkPluginLibrary.Screenshot($"c:\\Ecco2Maps\\{levelID}_{name}_bottom.png");
+							_destX = _destY = 0;
+							_left = _right = 160;
+							_top = _bottom = 112;
+							EmuHawkPluginLibrary.SetGameExtraPadding(_left, _top, _right, _bottom);
+							_dumpMap = 0;
+						}
+						break;
+					case 0xF6:
+						EccoDraw3D();
+						break;
+					default:
+						break;
+				}
+			_prevF = _api.MemLib.ReadU32(0xFFA524);
 			}
 		}
 		public override void PostFrameCallback()
 		{
 			uint frame = _api.MemLib.ReadU32(0xFFA524);
+			if ((frame <= _prevF) && !_api.EmuLib.IsLagged())
+			{
+				_api.EmuLib.SetIsLagged(true);
+				_api.EmuLib.SetLagCount(_api.EmuLib.LagCount() + 1);
+			}
 			uint mode = _api.MemLib.ReadByte(0xFFA555);
-			switch (mode) {
+			_tickerY = 81;
+			string valueTicker = $"{_api.MemLib.ReadU32(0xFFA520)}:{_api.MemLib.ReadU32(0xFFA524)}:{_api.MemLib.ReadU16(0xFFA7C8)}:{mode:X2}";
+			TickerText(valueTicker);
+			switch (mode)
+			{
 				case 0x20:
 				case 0x28:
 				case 0xAC:
-                    EmuHawkPluginLibrary.SetGameExtraPadding(160, 112, 160, 112);
-                    EccoDrawBoxes();
+					valueTicker = $"{_api.MemLib.ReadS16(0xFFAD9C)}:{_api.MemLib.ReadS16(0xFFAD9E)}";
+					TickerText(valueTicker);
+					valueTicker = $"{_api.MemLib.ReadS32(0xFFAA1A) / 65536.0:0.######}:{_api.MemLib.ReadS32(0xFFAA1E) / 65536.0:0.######}";
+					TickerText(valueTicker);
+					valueTicker = $"{_api.MemLib.ReadS32(0xFFAA32) / 65536.0:0.######}:{_api.MemLib.ReadU8(0xFFAA6D)}:{_api.MemLib.ReadU8(0xFFAA6E)}";
+					TickerText(valueTicker);
+					valueTicker = $"{_api.MemLib.ReadS32(0xFFAA36) / 65536.0:0.######}:{_api.MemLib.ReadS32(0xFFAA3A) / 65536.0:0.######}";
+					TickerText(valueTicker);
+					valueTicker = $"{_api.MemLib.ReadS32(0xFFA9D6) / 65536.0:0.######}:{_api.MemLib.ReadS32(0xFFA9DA) / 65536.0:0.######}";
+					TickerText(valueTicker);
+					valueTicker = $"{_api.MemLib.ReadS32(0xFFAA3E) / 65536.0:0.######}:{_api.MemLib.ReadS32(0xFFAA42) / 65536.0:0.######}";
+					TickerText(valueTicker);
+					valueTicker = $"{(_api.MemLib.ReadS32(0xFFAA36) + _api.MemLib.ReadS32(0xFFA9D6) + _api.MemLib.ReadS32(0xFFAA3E)) / 65536.0:0.######}:" +
+								  $"{(_api.MemLib.ReadS32(0xFFAA3A) + _api.MemLib.ReadS32(0xFFA9DA) + _api.MemLib.ReadS32(0xFFAA42)) / 65536.0:0.######}";
+					TickerText(valueTicker);
+					valueTicker = $"{_api.MemLib.ReadU8(0xFFAB72)}:{_api.MemLib.ReadU8(0xFFAB70)}:{(short)_api.MemLib.ReadS16(0xFFAA52):X4}:{(short)_api.MemLib.ReadS16(0xFFAA5A):X4}";
+					TickerText(valueTicker);
+					switch (_api.MemLib.ReadU8(0xFFA7D0))
+					{
+						case 1:
+						case 2:
+						case 3:
+						case 30:
+						case 46:
+							var globeFlags = _api.MemLib.ReadU32(0xFFD434) >> 1;
+							var globeFlags2 = _api.MemLib.ReadU32(0xFFD438) >> 1;
+							int i, j = i = 0;
+							while (globeFlags > 0)
+							{
+								globeFlags >>= 1;
+								i++;
+							}
+							while (globeFlags2 > 0)
+							{
+								globeFlags2 >>= 1;
+								j++;
+							}
+							TickerText($"{i}:{j}", Color.Blue);
+							break;
+						default:
+							break;
+					}
+					if (_dumpMap != 0)
+					{
+						_api.MemLib.WriteS16(0xFFAA16, 7);
+						_api.MemLib.WriteS16(0xFFAA18, 56);
+						int PlayerX = _api.MemLib.ReadS16(0xFFAA1A) - _camX;
+						int PlayerY = _api.MemLib.ReadS16(0xFFAA1E) - _camY;
+						if ((PlayerX < -64) || (PlayerX > 384) || (PlayerY < -64) || (PlayerY > 288))
+						{
+							_api.MemLib.WriteByte(0xFFAA70, 0xC);
+							_api.MemLib.WriteS16(0xFFA7CA, 1);
+						}
+						else
+						{
+							_api.MemLib.WriteByte(0xFFAA70, 0x0);
+							_api.MemLib.WriteS16(0xFFA7CA, 0);
+						}
+					}
+					if (_dumpMap == 1)
+					{
+						int levelWidth = _api.MemLib.ReadS16(0xFFA7A8);
+						int levelHeight = _api.MemLib.ReadS16(0xFFA7AC);
+						var levelID = _api.MemLib.ReadByte(0xFFA7D0);
+						var s = _api.EmuLib.GetSettings() as GPGX.GPGXSettings;
+						s.DrawBGA = false;
+						s.DrawBGB = false;
+						s.DrawBGW = false;
+						s.DrawObj = false;
+						s.Backdrop = true;
+						_api.EmuLib.PutSettings(s);
+						if ((_camX == _destX) && (_camY == _destY))
+						{
+							if ((_prevX != _camX) || (_prevY != _camY))
+							{
+								if (_destX == 0)
+								{
+									if (_rowStateGuid != string.Empty)
+									{
+										_api.MemStateLib.DeleteState(_rowStateGuid);
+									}
+									_rowStateGuid = _api.MemStateLib.SaveCoreStateToMemory();
+								}
+								_snapPast = 1;
+							}
+							else
+							{
+								_snapPast--;
+							}
+							if (_snapPast == 0)
+							{
+								EmuHawkPluginLibrary.Screenshot($"c:\\Ecco2Maps\\{levelID}\\{_destY}_{_destX}_top.png");
+								if (_destX >= levelWidth - 320)
+								{
+									if (_destY < levelHeight - 224)
+									{
+										if (_rowStateGuid != string.Empty)
+										{
+											_api.MemStateLib.LoadCoreStateFromMemory(_rowStateGuid);
+										}
+										_destX = 0;
+										_destY = Math.Min(_destY + 111, levelHeight - 224);
+									}
+								}
+								else
+									_destX = Math.Min(_destX + 159, levelWidth - 320); 
+								if ((_prevX == _destX) && (_prevY == _destY))
+								{
+									EmuHawkPluginLibrary.SetGameExtraPadding(levelWidth - 320, levelHeight - 224, 0, 0);
+									_dumpMap++;
+								}
+							}
+						}
+						_api.MemLib.WriteS16(0xFFAD8C, _destX);
+						_api.MemLib.WriteS16(0xFFAD90, _destY);
+					}
+					else if (_dumpMap == 2)
+					{
+						if (_rowStateGuid != String.Empty)
+							_api.MemStateLib.DeleteState(_rowStateGuid);
+						_rowStateGuid = String.Empty;
+						int levelWidth = _api.MemLib.ReadS16(0xFFA7A8);
+						int levelHeight = _api.MemLib.ReadS16(0xFFA7AC);
+						EmuHawkPluginLibrary.SetGameExtraPadding(levelWidth - 320, levelHeight - 224, 0, 0);
+						var levelID = _api.MemLib.ReadS8(0xFFA7D0);
+						var s = _api.EmuLib.GetSettings() as GPGX.GPGXSettings;
+						s.DrawBGA = false;
+						s.DrawBGB = false;
+						s.DrawBGW = false;
+						s.DrawObj = false;
+						s.Backdrop = true;
+						_api.EmuLib.PutSettings(s);
+
+						var a = _api.GUILib.GetAttributes();
+						a.SetColorKey(Color.FromArgb(0, 0x11, 0x22, 0x33), Color.FromArgb(0, 0x11, 0x22, 0x33));
+						_api.GUILib.SetAttributes(a);
+						_api.GUILib.ToggleCompositingMode();
+						
+						_api.GUILib.DrawImageRegion($"c:\\Ecco2Maps\\{levelID}\\{levelHeight - 224}_{levelWidth - 320}_top.png", 2, 2, 318, 222, (levelWidth - 318), (levelHeight - 222), 318, 222);
+						for (int x = ((levelWidth - 320) / 159) * 159; x >= 0; x -= 159)
+						{
+							var dx = (x == 0) ? 0 : 2;
+							_api.GUILib.DrawImageRegion($"c:\\Ecco2Maps\\{levelID}\\{levelHeight - 224}_{x}_top.png", dx, 2, 320 - dx, 222, x + dx, (levelHeight - 222), 320 - dx, 222);
+						}
+						for (int y = ((levelHeight - 224) / 111) * 111; y >= 0; y -= 111)
+						{
+							var dy = (y == 0) ? 0 : 2;
+							_api.GUILib.DrawImageRegion($"c:\\Ecco2Maps\\{levelID}\\{y}_{levelWidth - 320}_top.png", 2, dy, 318, 224 - 2, levelWidth - 318, y + dy, 318, 224 - dy);
+							for (int x = ((levelWidth - 320) / 159) * 159; x >= 0; x -= 159)
+							{
+								var dx = (x == 0) ? 0 : 2;
+								_api.GUILib.DrawImageRegion($"c:\\Ecco2Maps\\{levelID}\\{y}_{x}_top.png", dx, dy, 320 - dx, 224 - dy, x + dx, y + dy, 320 - dx, 224 - dy);
+							}
+						}
+
+						_api.GUILib.ToggleCompositingMode();
+						_api.GUILib.SetAttributes(new System.Drawing.Imaging.ImageAttributes());
+						_api.GUILib.DrawFinish();
+						_dumpMap++;
+					}
+					else if (_dumpMap == 4)
+					{
+						int levelWidth = _api.MemLib.ReadS16(0xFFA7A8);
+						int levelHeight = _api.MemLib.ReadS16(0xFFA7AC);
+						var levelID = _api.MemLib.ReadByte(0xFFA7D0);
+						var s = _api.EmuLib.GetSettings() as GPGX.GPGXSettings;
+						s.DrawBGA = (levelID != 29);
+						s.DrawBGB = (levelID == 7);
+						s.DrawBGW = true;
+						s.DrawObj = true;
+						s.Backdrop = false;
+						_api.EmuLib.PutSettings(s);
+						if ((_camX == _destX) && (_camY == _destY))
+						{
+							if ((_prevX != _camX) || (_prevY != _camY))
+							{
+								if (_destX == 0)
+								{
+									if (_rowStateGuid != string.Empty)
+									{
+										_api.MemStateLib.DeleteState(_rowStateGuid);
+									}
+									_rowStateGuid = _api.MemStateLib.SaveCoreStateToMemory();
+								}
+								_snapPast = 1;
+							}
+							else
+							{
+								_snapPast--;
+							}
+							if (_snapPast == 0)
+							{
+								EmuHawkPluginLibrary.Screenshot($"c:\\Ecco2Maps\\{levelID}\\{_destY}_{_destX}_bottom.png");
+								if (_destX >= levelWidth - 320)
+								{
+									if (_destY < levelHeight - 224)
+									{
+										if (_rowStateGuid != string.Empty)
+										{
+											_api.MemStateLib.LoadCoreStateFromMemory(_rowStateGuid);
+										}
+										_destX = 0;
+										_destY = Math.Min(_destY + 111, levelHeight - 224);
+									}
+								}
+								else
+									_destX = Math.Min(_destX + 159, levelWidth - 320);
+								if ((_prevX == _destX) && (_prevY == _destY))
+								{
+									EmuHawkPluginLibrary.SetGameExtraPadding(levelWidth - 320, levelHeight - 224, 0, 0);
+									_dumpMap++;
+								}
+							}
+						}
+						_api.MemLib.WriteS16(0xFFAD8C, _destX);
+						_api.MemLib.WriteS16(0xFFAD90, _destY);
+					}
+					else if (_dumpMap == 5)
+					{
+						if (_rowStateGuid != String.Empty)
+							_api.MemStateLib.DeleteState(_rowStateGuid);
+						_rowStateGuid = String.Empty;
+						int levelWidth = _api.MemLib.ReadS16(0xFFA7A8);
+						int levelHeight = _api.MemLib.ReadS16(0xFFA7AC);
+						var levelID = _api.MemLib.ReadS8(0xFFA7D0);
+						var s = _api.EmuLib.GetSettings() as GPGX.GPGXSettings;
+						s.DrawBGA = (levelID != 29);
+						s.DrawBGB = (levelID == 7);
+						s.DrawBGW = true;
+						s.DrawObj = true;
+						s.Backdrop = false;
+						_api.EmuLib.PutSettings(s);
+						_api.GUILib.DrawImageRegion($"c:\\Ecco2Maps\\{levelID}\\{levelHeight - 224}_{levelWidth - 320}_bottom.png", 2, 2, 318, 222, (levelWidth - 318), (levelHeight - 222), 318, 222);
+						for (int x = ((levelWidth - 320) / 159) * 159; x >= 0; x -= 159)
+						{
+							var dx = (x == 0) ? 0 : 2;
+							_api.GUILib.DrawImageRegion($"c:\\Ecco2Maps\\{levelID}\\{levelHeight - 224}_{x}_bottom.png", dx, 2, 320 - dx, 222, x + dx, (levelHeight - 222), 320 - dx, 222);
+						}
+						for (int y = ((levelHeight - 224) / 111) * 111; y >= 0; y -= 111)
+						{
+							var dy = (y == 0) ? 0 : 2;
+							_api.GUILib.DrawImageRegion($"c:\\Ecco2Maps\\{levelID}\\{y}_{levelWidth - 320}_bottom.png", 2, dy, 318, 224 - 2, levelWidth - 318, y + dy, 318, 224 - dy);
+							for (int x = ((levelWidth - 320) / 159) * 159; x >= 0; x -= 159)
+							{
+								var dx = (x == 0) ? 0 : 2;
+								_api.GUILib.DrawImageRegion($"c:\\Ecco2Maps\\{levelID}\\{y}_{x}_bottom.png", dx, dy, 320 - dx, 224 - dy, x + dx, y + dy, 320 - dx, 224 - dy);
+							}
+						}
+						_api.GUILib.DrawFinish();
+						_dumpMap++;
+					}
+					_prevX = _camX;
+					_prevY = _camY;
 					break;
 				case 0xF6:
-                    EmuHawkPluginLibrary.SetGameExtraPadding(0, 0, 0, 0);
-					EccoDraw3D();
+					valueTicker = $"{_api.MemLib.ReadS32(0xFFD5E0) / 4096.0:0.######}:{_api.MemLib.ReadS32(0xFFD5E8) / 4096.0:0.######}:{_api.MemLib.ReadS32(0xFFD5E4) / 2048.0:0.######}";
+					TickerText(valueTicker);
+					valueTicker = $"{_api.MemLib.ReadS32(0xFFB13A) / 4096.0:0.######}:{_api.MemLib.ReadS32(0xFFB142) / 4096.0:0.######}:{_api.MemLib.ReadS32(0xFFB13E) / 2048.0:0.######}";
+					TickerText(valueTicker);
+					valueTicker = $"{_api.MemLib.ReadS32(0xFFB162) / 4096.0:0.######}:{_api.MemLib.ReadS32(0xFFB16A) / 4096.0:0.######}:{_api.MemLib.ReadS32(0xFFB166) / 2048.0:0.######}";
+					TickerText(valueTicker);
+					valueTicker = $"{_api.MemLib.ReadU8(0xFFB19B)}:{_api.MemLib.ReadU8(0xFFB1A6)}:{_api.MemLib.ReadU8(0xFFB1A9)}";
+					TickerText(valueTicker);
+					int SpawnZ = _api.MemLib.ReadS32(0xFFD5F0) + 0x180000;
+					int nextRingZ = SpawnZ;
+					while (((nextRingZ >> 17) & 0xF) != 0)
+					{
+						nextRingZ += 0x20000;
+					}
+					valueTicker = $"{_api.MemLib.ReadS32(0xFFD856) / 4096.0:0.######}:{_api.MemLib.ReadS32(0xFFD85A) / 4096.0:0.######}:{(nextRingZ - 0x160000) / 2048.0:0.######}:{nextRingZ / 2048.0:0.######}";
+					TickerText(valueTicker);
+					var levelId = -1 - _api.MemLib.ReadS16(0xFFA79E);
+					bool spawn = false;
+					bool firstRand = true;
+					int SpawnX, SpawnY, z;
+					int CamX = (_api.MemLib.ReadS32(0xFFD5E0) >> 0xC) - _left;
+					int CamY = (_api.MemLib.ReadS32(0xFFD5E8) >> 0xC) + _top;
+					int CamZ = (_api.MemLib.ReadS32(0xFFD5E4) >> 0xC) + _top;
+					while (!spawn)
+					{
+						var temp = (SpawnZ >> 17) & 0xFF;
+						var controlList = _api.MemLib.ReadS32(0x7B54 + (levelId << 2));
+						temp = _api.MemLib.ReadS16(controlList + (temp << 1));
+						var v = temp & 0xFF;
+						var num = (temp >> 8) + v;
+						temp = v;
+						spawn = (num > 2);
+						if (spawn) for (; temp < num; temp++)
+						{
+							switch (temp)
+							{
+								case 0:
+								case 1:
+								case 13:
+									// Nothing important spawns
+									break;
+								case 2:
+									// Jellyfish
+									SpawnX = _api.MemLib.ReadS32(0xFFB13A) + 0x40000 - (EccoRand(firstRand) << 3);
+									firstRand = false;
+									SpawnY = -0xC0000 + (EccoRand() << 3);
+									z = SpawnZ + 0x20000;// ? 
+									valueTicker = $"{SpawnX / 4096.0:0.######}:{SpawnY / 4096.0:0.######}:{(z - 0x180000) / 2048.0:0.######}:{z / 2048.0:0.######}";
+									TickerText(valueTicker);
+									SpawnX =		   160 + ((SpawnX >> 0xC) - CamX);
+									SpawnY =		   112 - ((SpawnY >> 0xC) - CamY);
+									z = _top + 112 - ((z >> 0xC) - CamZ);
+									DrawBoxMWH(SpawnX, SpawnY, 1, 1, Color.Gray);
+									DrawBoxMWH(SpawnX, z, 1, 1, Color.Gray);
+									break;
+								case 3:
+									// Eagle
+									SpawnX = _api.MemLib.ReadS32(0xFFB13A) + 0x40000 - (EccoRand(firstRand) << 3);
+									firstRand = false;
+									SpawnY = 0x50000;
+									z = SpawnZ - 0x40000 + 0x20000;// ? 
+									valueTicker = $"{SpawnX / 4096.0:0.######}:{SpawnY / 4096.0:0.######}:{(z - 0x180000) / 2048.0:0.######}:{z / 2048.0:0.######}";
+									TickerText(valueTicker);
+									SpawnX =		   160 + ((SpawnX >> 0xC) - CamX);
+									SpawnY =		   112 - ((SpawnY >> 0xC) - CamY);
+									z = _top + 112 - ((z >> 0xC) - CamZ);
+									DrawBoxMWH(SpawnX, SpawnY, 1, 1, Color.Gray);
+									DrawBoxMWH(SpawnX, z, 1, 1, Color.Gray);
+									break;
+								case 4:
+									// Shark
+									bool left = (EccoRand(firstRand) > 0x8000);
+									firstRand = false;
+									var xdiff = 0xC0000 + (EccoRand() << 3);
+									SpawnX = _api.MemLib.ReadS32(0xFFB13A) + (left ? -xdiff : xdiff);
+									SpawnY = Math.Min(_api.MemLib.ReadS32(0xFFB142), -0x10000) - (EccoRand() + 0x10000);
+									z = SpawnZ + 0x20000;
+									valueTicker = $"{SpawnX / 4096.0:0.######}:{SpawnY / 4096.0:0.######}:{(z - 0x180000) / 2048.0:0.######}:{z / 2048.0:0.######}";
+									TickerText(valueTicker);
+									SpawnX = 160 + ((SpawnX >> 0xC) - CamX);
+									SpawnY = 112 - ((SpawnY >> 0xC) - CamY);
+									z = _top + 112 - ((z >> 0xC) - CamZ);
+									DrawBoxMWH(SpawnX, SpawnY, 1, 1, Color.Gray);
+									DrawBoxMWH(SpawnX, z, 1, 1, Color.Gray);
+									break;
+								case 5:
+								case 6:
+								case 7:
+								case 8:
+									// Vine
+									EccoRand(firstRand);
+									firstRand = false;
+									if ((temp & 1) == 1) EccoRand();
+									EccoRand();
+									break;
+								case 9:
+								case 10:
+								case 11:
+								case 12:
+									// Unknown, possibly just rand incrementation?
+									EccoRand(firstRand);
+									firstRand = false;
+									if ((temp & 1) == 1) EccoRand();
+									break;
+								case 14:
+									// Shell
+									SpawnX = _api.MemLib.ReadS32(0xFFB13A) - 0x20000 + (EccoRand(firstRand) << 2);
+									firstRand = false;
+									SpawnY = -0x80000;
+									z = SpawnZ + 0x20000;
+									EccoRand();
+									valueTicker = $"{SpawnX / 4096.0:0.######}:{SpawnY / 4096.0:0.######}:{(z - 0x180000) / 2048.0:0.######}:{(z - 0x80000) / 2048.0:0.######}";
+									TickerText(valueTicker);
+									SpawnX = 160 + ((SpawnX >> 0xC) - CamX);
+									SpawnY = 112 - ((SpawnY >> 0xC) - CamY);
+									z = _top + 112 - ((z >> 0xC) - CamZ);
+									DrawBoxMWH(SpawnX, SpawnY, 1, 1, Color.Gray);
+									DrawBoxMWH(SpawnX, z, 1, 1, Color.Gray);
+									break;
+							}
+						}
+						SpawnZ += 0x20000;
+					}
 					break;
-				default:
-                    EmuHawkPluginLibrary.SetGameExtraPadding(0, 0, 0, 0);
-                    break;
 			}
-			_camX = _api.MemLib.ReadS16(_camXAddr)-160;
-			_camY = _api.MemLib.ReadS16(_camYAddr)-112;
-			if (frame <= _prevF)
-				_api.EmuLib.SetIsLagged(true);
-			_prevF = frame;
+			_api.JoypadLib.Set("C", null, 1);
+			_api.JoypadLib.Set("Start", null, 1);
+			var color = _turnSignalColors[_api.MemLib.ReadS8(0xFFA7C9) & 7];
+			_api.GUILib.DrawRectangle(_left - 48, _top - 112, 15, 15, color, color);
 		}
 		public override void LoadStateCallback(string name)
 		{
-			_prevF = _api.MemLib.ReadU32(0xFFA524);
+			_api.GUILib.DrawNew("emu");
+			PreFrameCallback();
+			_api.GUILib.DrawFinish();
 		}
 	}
 }
