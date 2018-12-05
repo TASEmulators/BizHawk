@@ -226,7 +226,90 @@ namespace BizHawk.Client.Common
 		{
 			Global.Config.AutoMinimizeSkipping = enabled;
 		}
-
+		public object GetSettings()
+		{
+			if (Emulator is GPGX)
+			{
+				var gpgx = Emulator as GPGX;
+				return gpgx.GetSettings();
+			}
+			else if (Emulator is LibsnesCore)
+			{
+				var snes = Emulator as LibsnesCore;
+				return snes.GetSettings();
+			}
+			else if (Emulator is NES)
+			{
+				var nes = Emulator as NES;
+				return nes.GetSettings();
+			}
+			else if (Emulator is QuickNES)
+			{
+				var quicknes = Emulator as QuickNES;
+				return quicknes.GetSettings();
+			}
+			else if (Emulator is PCEngine)
+			{
+				var pce = Emulator as PCEngine;
+				return pce.GetSettings();
+			}
+			else if (Emulator is SMS)
+			{
+				var sms = Emulator as SMS;
+				return sms.GetSettings();
+			}
+			else if (Emulator is WonderSwan)
+			{
+				var ws = Emulator as WonderSwan;
+				return ws.GetSettings();
+			}
+			else
+			{
+				return null;
+			}
+		}
+		public bool PutSettings(object settings)
+		{
+			if (Emulator is GPGX)
+			{
+				var gpgx = Emulator as GPGX;
+				return gpgx.PutSettings(settings as GPGX.GPGXSettings);
+			}
+			else if (Emulator is LibsnesCore)
+			{
+				var snes = Emulator as LibsnesCore;
+				return snes.PutSettings(settings as LibsnesCore.SnesSettings);
+			}
+			else if (Emulator is NES)
+			{
+				var nes = Emulator as NES;
+				return nes.PutSettings(settings as NES.NESSettings);
+			}
+			else if (Emulator is QuickNES)
+			{
+				var quicknes = Emulator as QuickNES;
+				return quicknes.PutSettings(settings as QuickNES.QuickNESSettings);
+			}
+			else if (Emulator is PCEngine)
+			{
+				var pce = Emulator as PCEngine;
+				return pce.PutSettings(settings as PCEngine.PCESettings);
+			}
+			else if (Emulator is SMS)
+			{
+				var sms = Emulator as SMS;
+				return sms.PutSettings(settings as SMS.SMSSettings);
+			}
+			else if (Emulator is WonderSwan)
+			{
+				var ws = Emulator as WonderSwan;
+				return ws.PutSettings(settings as WonderSwan.Settings);
+			}
+			else
+			{
+				return false;
+			}
+		}
 		public void SetRenderPlanes(params bool[] luaParam)
 		{
 			if (Emulator is GPGX)

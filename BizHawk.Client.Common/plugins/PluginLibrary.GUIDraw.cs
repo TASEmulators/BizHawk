@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.IO;
 
@@ -23,6 +24,22 @@ namespace BizHawk.Client.Common
 		protected Color? _defaultTextBackground = Color.FromArgb(128, 0, 0, 0);
 		protected int _defaultPixelFont = 1; // gens
 		protected Padding _padding = new Padding(0);
+		protected ImageAttributes _attributes = new ImageAttributes();
+		private System.Drawing.Drawing2D.CompositingMode _compositingMode = System.Drawing.Drawing2D.CompositingMode.SourceOver;
+
+		public virtual void ToggleCompositingMode()
+		{
+			_compositingMode = 1 - _compositingMode;
+		}
+
+		public virtual ImageAttributes GetAttributes()
+		{
+			return _attributes;
+		}
+		public virtual void SetAttributes(ImageAttributes a)
+		{
+			_attributes = a;
+		}
 
 		#region Gui API
 		public virtual void Dispose()
@@ -135,6 +152,7 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
+					g.CompositingMode = _compositingMode;
 					g.DrawBezier(GetPen(color ?? _defaultForeground), p1, p2, p3, p4);
 				}
 				catch (Exception)
@@ -150,6 +168,7 @@ namespace BizHawk.Client.Common
 			{
 				try
 				{
+					g.CompositingMode = _compositingMode;
 					g.DrawBeziers(GetPen(color ?? _defaultForeground), points);
 				}
 				catch (Exception)
@@ -188,6 +207,7 @@ namespace BizHawk.Client.Common
 						h = Math.Max(y2, 0.1f);
 					}
 
+					g.CompositingMode = _compositingMode;
 					g.DrawRectangle(GetPen(line ?? _defaultForeground), x, y, w, h);
 
 					var bg = background ?? _defaultBackground;
@@ -217,6 +237,7 @@ namespace BizHawk.Client.Common
 						g.FillEllipse(brush, x, y, width, height);
 					}
 
+					g.CompositingMode = _compositingMode;
 					g.DrawEllipse(GetPen(line ?? _defaultForeground), x, y, width, height);
 				}
 				catch (Exception)
@@ -249,6 +270,7 @@ namespace BizHawk.Client.Common
 						icon = new Icon(path);
 					}
 
+					g.CompositingMode = _compositingMode;
 					g.DrawIcon(icon, x, y);
 				}
 				catch (Exception)
@@ -281,8 +303,10 @@ namespace BizHawk.Client.Common
 						_imageCache.Add(path, img);
 					}
 				}
+				var destRect = new Rectangle(x, y, width ?? img.Width, height ?? img.Height);
 
-				g.DrawImage(img, x, y, width ?? img.Width, height ?? img.Height);
+				g.CompositingMode = _compositingMode;
+				g.DrawImage(img, destRect, 0, 0, img.Width, img.Height, GraphicsUnit.Pixel, _attributes);
 			}
 		}
 
@@ -319,7 +343,8 @@ namespace BizHawk.Client.Common
 
 				var destRect = new Rectangle(dest_x, dest_y, dest_width ?? source_width, dest_height ?? source_height);
 
-				g.DrawImage(img, destRect, source_x, source_y, source_width, source_height, GraphicsUnit.Pixel);
+				g.CompositingMode = _compositingMode;
+				g.DrawImage(img, destRect, source_x, source_y, source_width, source_height, GraphicsUnit.Pixel, _attributes);
 			}
 		}
 
@@ -327,6 +352,7 @@ namespace BizHawk.Client.Common
 		{
 			using (var g = GetGraphics())
 			{
+					g.CompositingMode = _compositingMode;
 				g.DrawLine(GetPen(color ?? _defaultForeground), x1, y1, x2, y2);
 			}
 		}
@@ -341,6 +367,7 @@ namespace BizHawk.Client.Common
 		{
 			using (var g = GetGraphics())
 			{
+				g.CompositingMode = _compositingMode;
 				var bg = background ?? _defaultBackground;
 				if (bg.HasValue)
 				{

@@ -145,7 +145,7 @@ namespace BizHawk.Client.Common
 				/*Eat it*/
 			}
 		}
-		public void Set(string button, bool state, int? controller = null)
+		public void Set(string button, bool? state = null, int? controller = null)
 		{
 			try
 			{
@@ -154,8 +154,10 @@ namespace BizHawk.Client.Common
 				{
 					toPress = "P" + controller + " " + button;
 				}
-
-				Global.LuaAndAdaptor.SetButton(toPress, state);
+				if (state.HasValue)
+					Global.LuaAndAdaptor.SetButton(toPress, state.Value);
+				else 
+					Global.LuaAndAdaptor.UnSet(toPress);
 				Global.ActiveController.Overrides(Global.LuaAndAdaptor);
 			}
 			catch
@@ -196,7 +198,7 @@ namespace BizHawk.Client.Common
 				/*Eat it*/
 			}
 		}
-		public void SetAnalog(string control, float value, object controller = null)
+		public void SetAnalog(string control, float? value = null, object controller = null)
 		{
 			try
 			{

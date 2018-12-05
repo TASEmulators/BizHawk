@@ -14,7 +14,7 @@ namespace BizHawk.Client.EmuHawk
 	public class PluginLibrary
 	{
 //		public LuaDocumentation Docs { get; }
-		public PluginLibrary(IEmulatorServiceProvider serviceProvider)
+		private void Register(IEmulatorServiceProvider serviceProvider)
 		{
 			// Docs.Clear();
 
@@ -37,22 +37,14 @@ namespace BizHawk.Client.EmuHawk
 
 			foreach (var lib in libs)
 			{
-				bool addLibrary = true;
-				//var attributes = lib.GetCustomAttributes(typeof(LuaLibraryAttribute), false);
-				//if (attributes.Any())
-				//{
-				//	addLibrary = VersionInfo.DeveloperBuild || (attributes.First() as LuaLibraryAttribute).Released;
-				//}
-
-				if (addLibrary)
-				{
-					var instance = (PluginLibraryBase)Activator.CreateInstance(lib);
-					//instance.LuaRegister(lib, Docs);
-					//instance.LogOutputCallback = ConsoleLuaLibrary.LogOutput;
-					ServiceInjector.UpdateServices(serviceProvider, instance);
-					Libraries.Add(lib, instance);
-				}
+				var instance = (PluginLibraryBase)Activator.CreateInstance(lib);
+				ServiceInjector.UpdateServices(serviceProvider, instance);
+				Libraries.Add(lib, instance);
 			}
+		}
+		public PluginLibrary(IEmulatorServiceProvider serviceProvider)
+		{
+			Register(serviceProvider);
 		}
 		private readonly Dictionary<Type, PluginLibraryBase> Libraries = new Dictionary<Type, PluginLibraryBase>();
 		public List<PluginBase> PluginList { get; } = new List<PluginBase>();
@@ -68,10 +60,8 @@ namespace BizHawk.Client.EmuHawk
 
 		public void Restart(IEmulatorServiceProvider newServiceProvider)
 		{
-			foreach (var lib in Libraries)
-			{
-				ServiceInjector.UpdateServices(newServiceProvider, lib.Value);
-			}
+			Libraries.Clear();
+			Register(newServiceProvider);
 			foreach (var plugin in PluginList)
 			{
 				plugin.Init(new PluginAPI(Libraries));
