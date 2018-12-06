@@ -2122,7 +2122,7 @@ namespace BizHawk.Client.EmuHawk
 						"PlayStation", "*.cue;*.ccd;*.mds;*.m3u",
 						"PSX Executables (experimental)", "*.exe",
 						"PSF Playstation Sound File", "*.psf;*.minipsf",
-						"Commodore 64", "*.prg; *.d64, *.g64; *.crt; *.tap;%ARCH%",
+						"Commodore 64", "*.prg;*.d64;*.g64;*.crt;*.tap;%ARCH%",
 						"SID Commodore 64 Music File", "*.sid;%ARCH%",
 						"Nintendo 64", "*.z64;*.v64;*.n64",
 						"WonderSwan", "*.ws;*.wsc;%ARCH%",
@@ -2159,7 +2159,7 @@ namespace BizHawk.Client.EmuHawk
 					"Apple II", "*.dsk;*.do;*.po;%ARCH%",
 					"Virtual Boy", "*.vb;%ARCH%",
 					"Neo Geo Pocket", "*.ngp;*.ngc;%ARCH%",
-					"Commodore 64", "*.prg; *.d64, *.g64; *.crt; *.tap;%ARCH%",
+					"Commodore 64", "*.prg;*.d64;*.g64;*.crt;*.tap;%ARCH%",
 					"Sinclair ZX Spectrum", "*.tzx;*.tap;*.dsk;*.pzx;*.csw;*.wav;%ARCH%",
 					"All Files", "*.*");
 			}
