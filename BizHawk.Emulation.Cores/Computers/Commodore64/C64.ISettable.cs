@@ -109,7 +109,7 @@ namespace BizHawk.Emulation.Cores.Computers.Commodore64
 
 		public enum BorderType
 		{
-			None, SmallProportional, SmallFixed, Normal
+			None, SmallProportional, SmallFixed, Normal, Full
 		}
 
 		public enum SidType
