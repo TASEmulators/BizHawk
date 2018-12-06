@@ -320,7 +320,18 @@ namespace BizHawk.Emulation.Cores.Computers.SinclairSpectrum
                     m.Audio = "Beeper (HW 1ch. / 10oct.) & General Instruments AY-3-8912 PSG (3ch) - RF Output";
                     m.Media = "3\" Floppy Disk (via built-in Floppy Drive)";
                     break;
-            }
+				case MachineType.Pentagon128:
+					m.Name = "(NOT WORKING YET) Pentagon 128 Clone";
+					m.Description = " ";
+					m.Description += " ";
+					m.Released = " ";
+					m.CPU = " ";
+					m.Memory = " ";
+					m.Video = " ";
+					m.Audio = " ";
+					m.Media = " ";
+					break;
+			}
 
             m.Data.Add(ZXSpectrum.GetMemberName((ZXMachineMetaData c) => c.Name), m.Name.Trim());
             m.Data.Add(ZXSpectrum.GetMemberName((ZXMachineMetaData c) => c.Description), m.Description.Trim());

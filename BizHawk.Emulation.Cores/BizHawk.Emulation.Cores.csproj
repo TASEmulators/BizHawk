@@ -320,6 +320,10 @@
     <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\AY38912.cs" />
     <Compile Include="Computers\SinclairSpectrum\Hardware\SoundOuput\Beeper.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\CPUMonitor.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\Pentagon128K\Pentagon128.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\Pentagon128K\Pentagon128.Memory.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\Pentagon128K\Pentagon128.Port.cs" />
+    <Compile Include="Computers\SinclairSpectrum\Machine\Pentagon128K\Pentagon128.Screen.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ULA.cs" />
     <Compile Include="Computers\SinclairSpectrum\Machine\ZXSpectrum128KPlus2a\ZX128Plus2a.Screen.cs" />
     <Compile Include="Computers\SinclairSpectrum\Media\Disk\FloppyDisk.cs" />
